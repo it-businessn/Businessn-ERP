@@ -3,6 +3,7 @@ import Loader from "features/Loader";
 import PageNotFound from "features/PageNotFound";
 import FederalTaxSummary from "features/calculate-payroll/FederalTax";
 import Home from "features/home";
+import Pipeline from "features/sales/pipeline";
 import RootLayout from "layouts/RootLayout";
 import { Suspense, lazy } from "react";
 import { createBrowserRouter } from "react-router-dom";
@@ -53,8 +54,8 @@ export const router = createBrowserRouter([
         element: <VerifyEmail />,
       },
       {
-        path: ROUTE_PATH.USERS,
-        element: <User />,
+        path: "/pipeline",
+        element: <Pipeline />,
       },
       {
         path: ROUTE_PATH.PROFILE,

@@ -1,17 +1,19 @@
-import { Stack } from '@chakra-ui/react'
-import { NavButton } from 'components'
-import { NavLink } from 'react-router-dom'
+import { Stack } from "@chakra-ui/react";
+import { NavButton } from "components";
+import { NavLink } from "react-router-dom";
 
-export default function Menu({path,name,icon}) {
+export default function Menu({ textTransform, color, item }) {
+  const { path, name, icon } = item;
   return (
     <NavLink to={path}>
-    <Stack>
-      <NavButton
-        color="primary"
-        label={name}
-        icon={icon}
-      />
-    </Stack>
-  </NavLink>
-  )
+      <Stack>
+        <NavButton
+          color={color ? color : "primary"}
+          label={name}
+          icon={icon}
+          textTransform={textTransform}
+        />
+      </Stack>
+    </NavLink>
+  );
 }

@@ -136,7 +136,7 @@ const Profile = () => {
                 </Box>
               </Stack>
             </CardBody>
-          </Card>{" "}
+          </Card>
           <Card>
             <CardBody>
               <Stack divider={<StackDivider />}>

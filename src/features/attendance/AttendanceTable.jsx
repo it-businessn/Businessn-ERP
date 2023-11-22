@@ -141,7 +141,7 @@ const AttendanceTable = ({ user, employees, handleFormSubmit }) => {
                         />
                       </FormControl>
                     )}
-                  </Field>{" "}
+                  </Field>
                   <Field name="breakInTime" key="breakInTime">
                     {({ field }) => (
                       <FormControl id="breakInTime">

@@ -5,7 +5,7 @@
     "dependencies": {
         "@chakra-ui/icons": "^2.0.19",
         "@chakra-ui/pro-theme": "^0.4.0",
-        "@chakra-ui/react": "^2.6.1",
+        "@chakra-ui/react": "^2.8.2",
         "@emotion/react": "^11.11.0",
         "@emotion/styled": "^11.11.0",
         "@fontsource/inter": "^5.0.3",
@@ -14,7 +14,7 @@
         "@testing-library/react": "^13.4.0",
         "@testing-library/user-event": "^13.5.0",
         "axios": "^1.4.0",
-        "chart.js": "^4.3.0",
+        "chart.js": "^4.4.0",
         "country-state-city": "^3.1.4",
         "downshift": "^8.0.0",
         "formik": "^2.2.9",
@@ -32,6 +32,7 @@
         "react-scripts": "5.0.1",
         "react-select": "^5.7.3",
         "react-to-print": "^2.14.13",
+        "recharts": "^2.10.1",
         "web-vitals": "^2.1.4",
         "yup": "^1.1.1"
     },
