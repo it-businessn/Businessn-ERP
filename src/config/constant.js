@@ -331,7 +331,7 @@ export const TOP_NAV_MENU_LIST = [
         name: "Calendar",
         children: [
           {
-            path: "/inventory",
+            path: "/calendar",
             name: "Add an Event",
             icon: LuLayoutDashboard,
           },

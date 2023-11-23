@@ -3,6 +3,7 @@ import Loader from "features/Loader";
 import PageNotFound from "features/PageNotFound";
 import FederalTaxSummary from "features/calculate-payroll/FederalTax";
 import Home from "features/home";
+import CalendarDashboard from "features/sales/calendar";
 import Pipeline from "features/sales/pipeline";
 import RootLayout from "layouts/RootLayout";
 import { Suspense, lazy } from "react";
@@ -52,6 +53,10 @@ export const router = createBrowserRouter([
       {
         path: "/verify-email",
         element: <VerifyEmail />,
+      },
+      {
+        path: "/calendar",
+        element: <CalendarDashboard />,
       },
       {
         path: "/pipeline",
