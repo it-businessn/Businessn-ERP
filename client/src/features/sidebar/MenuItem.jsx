@@ -4,10 +4,9 @@ import { useState } from "react";
 import { NavLink } from "react-router-dom";
 import "./Sidebar.css";
 
-const MenuItem = ({ menu, textTransform, isOpenMenu }) => {
-  const [isOpen, setIsOpen] = useState(true);
+const MenuItem = ({ menu, textTransform }) => {
+  const [isOpen, setIsOpen] = useState(false);
 
-  const toggle = () => setIsOpen(!isOpen);
   const handleToggle = () => {
     setIsOpen(!isOpen);
   };
@@ -22,7 +21,7 @@ const MenuItem = ({ menu, textTransform, isOpenMenu }) => {
         {menu?.children && (
           <Icon as={isOpen ? ChevronDownIcon : ChevronRightIcon} />
         )}
-        <NavLink to={menu?.path} activeClassName="active">
+        <NavLink to={menu?.path} activeclassname="active">
           <Button
             p={0}
             variant="ghost"

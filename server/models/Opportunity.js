@@ -6,6 +6,7 @@ const opportunitySchema = new mongoose.Schema({
   stage: String,
   probability: Number,
   dealAmount: Number,
+  createdOn: Date,
 });
 
 const Opportunity = mongoose.model("Opportunity", opportunitySchema);

@@ -9,9 +9,7 @@
 .active {
   background-color: var(--bullet-bg-color);
   padding: 0 5px;
-}
-.active.nav-active {
-  background-color: var(--bullet-bg-color);
+  width: 100%;
 }
 .active button {
   color: var(--active-menu-color);

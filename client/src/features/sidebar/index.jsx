@@ -1,16 +1,8 @@
 import { Button, Flex, Stack } from "@chakra-ui/react";
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import MenuItem from "./MenuItem";
 import "./Sidebar.css";
 
 const Sidebar = ({ activeMenu }) => {
-  const [isOpenMenu, setIsOpenMenu] = useState(false);
-  const navigate = useNavigate();
-
-  const [sideMenu, setActiveSideMenu] = useState(activeMenu);
-  const handleClick = (action) => setActiveSideMenu(action);
-
   return (
     <Flex
       bg="bg.surface"
@@ -27,7 +19,6 @@ const Sidebar = ({ activeMenu }) => {
         {activeMenu?.children?.length &&
           activeMenu?.children?.map((menu) => (
             <MenuItem
-              isOpenMenu={isOpenMenu}
               textTransform="uppercase"
               key={crypto.randomUUID()}
               menu={menu}

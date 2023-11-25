@@ -1,17 +1,31 @@
-import Loader from "features/Loader";
-import PageNotFound from "features/PageNotFound";
-import Contacts from "features/contacts";
-import Home from "features/home";
-import CalendarDashboard from "features/sales/calendar";
-import Pipeline from "features/sales/pipeline";
-import RootLayout from "layouts/RootLayout";
 import { Suspense, lazy } from "react";
 import { createBrowserRouter } from "react-router-dom";
-const Login = lazy(() => import("features/login"));
-const ForgotPassword = lazy(() => import("features/login/ForgotPassword"));
-const VerifyEmail = lazy(() => import("features/verify-user"));
-const SignUp = lazy(() => import("features/sign-up"));
+
+import Home from "features/home";
+import Loader from "features/Loader";
+import PageNotFound from "features/PageNotFound";
+import RootLayout from "layouts/RootLayout";
+
+const AddOpportunity = lazy(() =>
+  import("features/sales/pipeline/AddOpportunity")
+);
+const CalendarDashboard = lazy(() =>
+  import("features/sales/calendar/MyCalendar")
+);
+const Contacts = lazy(() => import("features/contacts"));
+const EditOpportunity = lazy(() =>
+  import("features/sales/pipeline/EditOpportunity")
+);
+const OpportunitiesList = lazy(() =>
+  import("features/sales/pipeline/OpportunitiesList")
+);
+const Pipeline = lazy(() => import("features/sales/pipeline"));
+
 const EditUser = lazy(() => import("features/user/profile/EditUser"));
+const ForgotPassword = lazy(() => import("features/login/ForgotPassword"));
+const Login = lazy(() => import("features/login"));
+const SignUp = lazy(() => import("features/sign-up"));
+const VerifyEmail = lazy(() => import("features/verify-user"));
 
 export const router = createBrowserRouter([
   {
@@ -49,6 +63,18 @@ export const router = createBrowserRouter([
       {
         path: "/pipeline",
         element: <Pipeline />,
+      },
+      {
+        path: "/add-opportunity",
+        element: <AddOpportunity />,
+      },
+      {
+        path: "/edit-opportunity",
+        element: <EditOpportunity />,
+      },
+      {
+        path: "/opportunities",
+        element: <OpportunitiesList />,
       },
       {
         path: "/view-contacts",

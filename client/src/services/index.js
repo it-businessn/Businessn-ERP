@@ -18,6 +18,14 @@ export const getContacts = () => API.get("/contacts");
 export const getActivities = (formData) => API.post("/activities", formData);
 export const getNotifications = () => API.get("/notifications");
 
+export const getOpportunities = () => API.get("/opportunities");
+export const getOpportunitiesByCategory = () =>
+  API.get("/opportunities/category");
+export const addOpportunity = (formData) =>
+  API.post("/opportunities", formData);
+export const updateOpportunity = (formData, id) =>
+  API.put(`/opportunities/${id}`, formData);
+
 export const getConfigurationsByName = (name) =>
   API.get(`/configuration/${name}`);
 

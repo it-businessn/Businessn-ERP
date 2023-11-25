@@ -1,12 +1,12 @@
 require("dotenv").config();
 
+const activityRoutes = require("./routes/activities");
 const bodyParser = require("body-parser");
+const contactRoutes = require("./routes/contacts");
 const cors = require("cors");
 const express = require("express");
 const mongoose = require("mongoose");
-
-const contactRoutes = require("./routes/contacts");
-const activityRoutes = require("./routes/activities");
+const opportunityRoutes = require("./routes/opportunity");
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -23,13 +23,15 @@ app.use((request, response, next) => {
 });
 
 //routes
-app.use("/api/contacts", contactRoutes);
 app.use("/api/activities", activityRoutes);
+app.use("/api/contacts", contactRoutes);
+app.use("/api/opportunities", opportunityRoutes);
 
 mongoose.connect(process.env.DB_CONNECTION_URL_LOCAL, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
+
 const db = mongoose.connection;
 
 db.once("open", () => {
