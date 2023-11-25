@@ -27,7 +27,7 @@ app.use("/api/activities", activityRoutes);
 app.use("/api/contacts", contactRoutes);
 app.use("/api/opportunities", opportunityRoutes);
 
-mongoose.connect(process.env.DB_CONNECTION_URL_LOCAL, {
+mongoose.connect(process.env.DB_CONNECTION_URL_LOCAL_CRM, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
