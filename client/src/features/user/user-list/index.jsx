@@ -1,7 +1,5 @@
 import {
   Box,
-  Button,
-  ButtonGroup,
   HStack,
   Icon,
   Input,
@@ -14,7 +12,7 @@ import {
 import { DashboardLayout, ProfileContainer } from "layouts";
 import { useEffect, useState } from "react";
 import { FiSearch } from "react-icons/fi";
-import api from "services";
+import * as api from "services";
 import { MemberTable } from "./MemberTable";
 
 export default function User() {

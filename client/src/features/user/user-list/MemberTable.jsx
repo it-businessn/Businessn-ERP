@@ -25,7 +25,7 @@ import { UserSchema } from "config/schema";
 import { useState } from "react";
 import { FiEdit2 } from "react-icons/fi";
 import { IoArrowDown } from "react-icons/io5";
-import api from "services";
+import * as api from "services";
 import { userCurrency } from "utils";
 
 export const MemberTable = (props) => {

@@ -18,9 +18,9 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import { PersonalInfoCard } from "components";
-import { TOAST } from "config/constant";
 import { signUpFormFields } from "config/formfields";
 import { UserSchema } from "config/schema";
+import { TOAST } from "constant";
 import "features/sidebar/Sidebar.css";
 import { FilterMatchMode, FilterOperator } from "primereact/api";
 import { Column } from "primereact/column";
@@ -30,7 +30,7 @@ import "primereact/resources/primereact.min.css";
 import "primereact/resources/themes/lara-light-indigo/theme.css";
 import { useEffect, useState } from "react";
 import { FiEdit2 } from "react-icons/fi";
-import api from "services";
+import * as api from "services";
 import { userCurrency } from "utils";
 
 const UserList = ({ employees }) => {

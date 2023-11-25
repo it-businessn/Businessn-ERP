@@ -14,7 +14,7 @@ import {
 import { Field, Form, FormikProvider, useFormik } from "formik";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import api from "services";
+import * as api from "services";
 
 function PersonalInfoCard({ initialValues, schema, formSubmit, formFields }) {
   const navigate = useNavigate();

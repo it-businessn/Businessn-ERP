@@ -18,14 +18,14 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import { UserProfile } from "components";
-import { ROUTE_PATH, TOAST } from "config/constant";
 import { UserSchema } from "config/schema";
+import { TOAST } from "constant";
 import { Field, Form, FormikProvider, useFormik } from "formik";
 import { useAuthContext } from "hooks/useAuthContext";
-import { DashboardLayout, ProfileContainer } from "layouts";
+import ProfileContainer from "layouts/ProfileContainer";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import api from "services";
+import * as api from "services";
 
 export default function EditUser() {
   const { user, dispatch } = useAuthContext();
@@ -73,7 +73,7 @@ export default function EditUser() {
       };
       dispatch({ type: "UPDATE_USER", payload: updatedUser });
       setTimeout(() => {
-        navigate(ROUTE_PATH.PROFILE);
+        navigate("/");
       }, 3000);
     } catch (error) {
       toast(TOAST.ERROR);
@@ -100,7 +100,7 @@ export default function EditUser() {
     fetchConfigurationOptionsByRole("role");
   }, []);
   return (
-    <DashboardLayout>
+    <>
       <ProfileContainer>
         <FormikProvider value={formik}>
           <Form>
@@ -310,6 +310,6 @@ export default function EditUser() {
           </Form>
         </FormikProvider>
       </ProfileContainer>
-    </DashboardLayout>
+    </>
   );
 }

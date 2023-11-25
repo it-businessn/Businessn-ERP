@@ -7,7 +7,7 @@ import { Country } from "country-state-city";
 import { useSignup } from "hooks/useSignup";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import api from "services";
+import * as api from "services";
 
 const SignUp = () => {
   const [countryList, setCountryList] = useState("");

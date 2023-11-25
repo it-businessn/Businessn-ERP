@@ -1,5 +1,5 @@
 import { useState } from "react";
-import api from "services";
+import * as api from "services";
 import { useAuthContext } from "./useAuthContext";
 
 export const useVerifyEmailOTP = () => {

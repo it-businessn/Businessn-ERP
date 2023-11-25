@@ -12,10 +12,10 @@ import {
   resetPasswordInitialValues,
 } from "config/formfields";
 import { ResetPasswordSchema } from "config/schema";
-import { CenterBoxLayout } from "layouts";
+import CenterBoxLayout from "layouts/CenterBoxLayout";
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import api from "services";
+import * as api from "services";
 import Logo from "../../components/logo";
 
 const ForgotPassword = () => {

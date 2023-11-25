@@ -4,7 +4,7 @@ import DashboardLayout from "./DashboardLayout";
 const RootLayout = () => {
   return (
     <DashboardLayout>
-      <main>
+      <main style={{ width: "85vw" }}>
         <Outlet />
       </main>
     </DashboardLayout>

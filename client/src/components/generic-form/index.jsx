@@ -1,17 +1,17 @@
 import { EmailIcon, PhoneIcon, ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
 import {
-    Button,
-    FormControl,
-    FormLabel,
-    HStack,
-    Input,
-    InputGroup,
-    InputLeftElement,
-    InputRightElement,
-    Select as SelectChakra,
-    Stack,
+  Button,
+  FormControl,
+  FormLabel,
+  HStack,
+  Input,
+  InputGroup,
+  InputLeftElement,
+  InputRightElement,
+  Select as SelectChakra,
+  Stack,
 } from "@chakra-ui/react";
-import { FORM_FIELD } from "config/constant";
+import { FORM_FIELD } from "constant";
 import { City, State } from "country-state-city";
 import { Field, Form, FormikProvider, useFormik } from "formik";
 import { useState } from "react";
