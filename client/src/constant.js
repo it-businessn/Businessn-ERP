@@ -283,17 +283,17 @@ export const TOP_NAV_MENU_LIST = [
             icon: EditIcon,
           },
           {
-            path: "/add",
+            path: "/add-contact",
             name: "Add a Contact",
             icon: EditIcon,
           },
           {
-            path: "/edit",
+            path: "/edit-contact",
             name: "Edit a Contact",
             icon: EditIcon,
           },
           {
-            path: "/log",
+            path: "/log-activity",
             name: "Log Activity",
             icon: EditIcon,
           },
@@ -304,32 +304,32 @@ export const TOP_NAV_MENU_LIST = [
         name: "Calendar",
         children: [
           {
-            path: "/calendar-event",
+            path: "/add-event",
             name: "Add an Event",
             icon: LuLayoutDashboard,
           },
           {
-            path: "/task",
+            path: "/add-task",
             name: "Add a Task",
             icon: LuLayoutDashboard,
           },
           {
-            path: "/notify",
+            path: "/set-alert",
             name: "Set a Notification",
             icon: LuLayoutDashboard,
           },
           {
-            path: "/agenda",
+            path: "/view-agenda",
             name: "View Itinerary",
             icon: LuLayoutDashboard,
           },
           {
-            path: "/list",
+            path: "/view-tasks",
             name: "View Task List",
             icon: LuLayoutDashboard,
           },
           {
-            path: "/log",
+            path: "/log-event",
             name: "Log an Event",
             icon: LuLayoutDashboard,
           },
@@ -340,17 +340,17 @@ export const TOP_NAV_MENU_LIST = [
         name: "Pipeline",
         children: [
           {
-            path: "/setup",
+            path: "/add-opportunity",
             name: "Setup New Opportunity",
             icon: LuLayoutDashboard,
           },
           {
-            path: "/edit",
+            path: "/edit-opportunity",
             name: "Edit An Opportunity",
             icon: LuLayoutDashboard,
           },
           {
-            path: "/stage",
+            path: "/list-view",
             name: "Stage Lists",
             icon: LuLayoutDashboard,
           },
@@ -376,22 +376,22 @@ export const TOP_NAV_MENU_LIST = [
         name: "Quotes",
         children: [
           {
-            path: "/view",
+            path: "/products",
             name: "View Product List",
             icon: LuLayoutDashboard,
           },
           {
-            path: "/price",
+            path: "/prices",
             name: "View Price List",
             icon: LuLayoutDashboard,
           },
           {
-            path: "/create",
+            path: "/add-quote",
             name: "Create Quote	",
             icon: LuLayoutDashboard,
           },
           {
-            path: "/request",
+            path: "/proposal",
             name: "Request Proposal",
             icon: LuLayoutDashboard,
           },
@@ -407,17 +407,17 @@ export const TOP_NAV_MENU_LIST = [
         name: "Resources",
         children: [
           {
-            path: "/learning",
+            path: "/access-learning",
             name: "Access Learning Materials",
             icon: LuLayoutDashboard,
           },
           {
-            path: "/org",
+            path: "/access-forms",
             name: "Access Company Forms",
             icon: LuLayoutDashboard,
           },
           {
-            path: "/script",
+            path: "/access-scripts",
             name: "Access Scripts",
             icon: LuLayoutDashboard,
           },
@@ -427,7 +427,7 @@ export const TOP_NAV_MENU_LIST = [
             icon: LuLayoutDashboard,
           },
           {
-            path: "/internal",
+            path: "/internal-contact",
             name: "Internal Contacts",
             icon: BsCalendar3,
           },

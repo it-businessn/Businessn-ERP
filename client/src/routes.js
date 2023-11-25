@@ -51,7 +51,7 @@ export const router = createBrowserRouter([
         element: <Pipeline />,
       },
       {
-        path: "/contacts",
+        path: "/view-contacts",
         element: <Contacts />,
       },
       {

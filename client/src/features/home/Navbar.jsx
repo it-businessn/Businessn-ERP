@@ -11,6 +11,7 @@ import { NavButton, UserProfile } from "components";
 import Logo from "components/logo";
 import { TOP_NAV_MENU_LIST } from "constant";
 import { FaSyncAlt } from "react-icons/fa";
+import { Link } from "react-router-dom";
 
 const Navbar = ({ handleClick }) => {
   return (
@@ -32,12 +33,14 @@ const Navbar = ({ handleClick }) => {
 
         {TOP_NAV_MENU_LIST.map((menu, index) => (
           <Stack ml="2em" color="#fff" key={menu.id}>
-            <NavButton
-              handleClick={handleClick}
-              color="primary"
-              menu={menu}
-              label={menu.name}
-            />
+            <Link to={menu?.path}>
+              <NavButton
+                handleClick={handleClick}
+                color="primary"
+                menu={menu}
+                label={menu.name}
+              />
+            </Link>
           </Stack>
         ))}
         <Spacer />

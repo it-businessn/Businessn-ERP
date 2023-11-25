@@ -8,16 +8,20 @@
 
 .active {
   background-color: var(--bullet-bg-color);
+  padding: 0 5px;
 }
-
+.active.nav-active {
+  background-color: var(--bullet-bg-color);
+}
 .active button {
   color: var(--active-menu-color);
 }
 
 .active::before {
   content: "\2022";
-  color: var(--bullet-color);
+  color: var(--active-menu-color);
   font-size: 1.5em;
-  position: absolute;
-  left: 12px;
+  position: relative;
+  left: -4px;
+  top: 3px;
 }
