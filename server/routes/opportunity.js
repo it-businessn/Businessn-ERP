@@ -4,12 +4,10 @@ const Opportunity = require("../models/Opportunity");
 
 router.get("/", async (req, res) => {
   try {
-    // const opportunities = await Opportunity.find();
-
-    // res.json(opportunities);
-    res.json({ name: "testdata" });
+    const opportunities = (await Opportunity.find()).sort();
+    response.status(200).json(opportunities);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    response.status(404).json({ error: error.message });
   }
 });
 
