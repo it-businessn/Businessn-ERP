@@ -1,18 +1,17 @@
 import { Suspense, lazy } from "react";
 import { createBrowserRouter } from "react-router-dom";
 
-import Home from "features/home";
 import Loader from "features/Loader";
 import PageNotFound from "features/PageNotFound";
+import Home from "features/home";
 import RootLayout from "layouts/RootLayout";
 
 const AddOpportunity = lazy(() =>
   import("features/sales/pipeline/AddOpportunity")
 );
-const CalendarDashboard = lazy(() =>
-  import("features/sales/calendar/MyCalendar")
-);
+const CalendarDashboard = lazy(() => import("features/sales/calendar"));
 const Contacts = lazy(() => import("features/contacts"));
+
 const EditOpportunity = lazy(() =>
   import("features/sales/pipeline/EditOpportunity")
 );
@@ -20,6 +19,8 @@ const OpportunitiesList = lazy(() =>
   import("features/sales/pipeline/OpportunitiesList")
 );
 const Pipeline = lazy(() => import("features/sales/pipeline"));
+
+const ResourceDashboard = lazy(() => import("features/resources"));
 
 const EditUser = lazy(() => import("features/user/profile/EditUser"));
 const ForgotPassword = lazy(() => import("features/login/ForgotPassword"));
@@ -79,6 +80,10 @@ export const router = createBrowserRouter([
       {
         path: "/view-contacts",
         element: <Contacts />,
+      },
+      {
+        path: "/resource",
+        element: <ResourceDashboard />,
       },
       {
         path: "/edit-user/:id",

@@ -9,8 +9,9 @@ const Sidebar = ({ activeMenu }) => {
       boxShadow="md"
       maxW={"15vw"}
       p={2}
-      minH="85vh"
+      minH="84vh"
       minW="15vw"
+      mt="7em"
     >
       <Stack justify="start" width="full">
         <Button width="full" bg="#000">

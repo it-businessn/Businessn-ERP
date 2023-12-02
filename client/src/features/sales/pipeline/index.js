@@ -33,7 +33,9 @@ const Pipeline = () => {
   }, []);
   return (
     <Box width="100%">
-      <GradientAreaFillColorChart />
+      <Box ml={-30} width="100%">
+        <GradientAreaFillColorChart />
+      </Box>
       <Grid templateColumns="repeat(5, 1fr)" mx={5}>
         {PIPELINE_STAGES?.map((item, columnIndex) => (
           <GridItem key={columnIndex}>

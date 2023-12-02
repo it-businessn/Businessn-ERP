@@ -15,8 +15,17 @@ export const forgotPassword = (formData) =>
 export const signOut = () => API.post("/logout");
 
 export const getContacts = () => API.get("/contacts");
-export const getActivities = (formData) => API.post("/activities", formData);
 export const getNotifications = () => API.get("/notifications");
+
+export const getActivities = () => API.get("/activities");
+export const addActivity = (formData) => API.post("/activities", formData);
+
+export const getTasks = () => API.get("/tasks");
+export const addTask = (formData) => API.post("/tasks", formData);
+export const updateTask = (formData, id) => API.put(`/tasks/${id}`, formData);
+
+export const getNotes = () => API.get("/notes");
+export const addNote = (formData) => API.post("/notes", formData);
 
 export const getOpportunities = () => API.get("/opportunities");
 export const getOpportunitiesByCategory = () =>

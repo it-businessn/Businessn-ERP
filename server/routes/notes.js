@@ -1,29 +1,26 @@
 const express = require("express");
 const router = express.Router();
-const Activity = require("../models/Activity");
+const Note = require("../models/Note");
 
 router.get("/", async (req, res) => {
   try {
-    const activities = (await Activity.find()).sort((a, b) => b.date - a.date);
-    res.status(200).json(activities);
+    const notes = (await Note.find()).sort((a, b) => b.date - a.date);
+    res.status(200).json(notes);
   } catch (error) {
     res.status(404).json({ error: error.message });
   }
 });
 
 router.post("/", async (req, res) => {
-  const { phoneCalls, type, duration, description } = req.body;
+  const { description } = req.body;
 
-  const activity = new Activity({
-    phoneCalls,
-    type,
-    duration,
+  const note = new Note({
     description,
     date: Date.now(),
   });
   try {
-    const newActivity = await activity.save();
-    res.status(201).json(newActivity);
+    const newNote = await note.save();
+    res.status(201).json(newNote);
   } catch (error) {
     res.status(400).json({ message: error.message });
   }

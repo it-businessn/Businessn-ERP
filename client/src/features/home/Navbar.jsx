@@ -15,7 +15,15 @@ import { Link } from "react-router-dom";
 
 const Navbar = ({ handleClick }) => {
   return (
-    <Box pl={3} pt={3} pr={3} bg="#000">
+    <Box
+      pl={3}
+      pt={3}
+      pr={3}
+      bg="#000"
+      position="fixed"
+      width="100%"
+      zIndex={1}
+    >
       <Flex justify="start" align="flex-end">
         <VStack align="start" m={0}>
           <Logo />
