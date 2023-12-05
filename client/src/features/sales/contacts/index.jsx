@@ -46,43 +46,50 @@ const Contacts = () => {
   }));
   return (
     <Flex>
-      <Box flex="1">
-        <ContactDetails showLogForm={handleButtonClick} />
-      </Box>
-      <Box flex="2" bg="#eeeeee">
-        <Tabs
-          isFitted
-          variant="enclosed"
-          index={currentTab}
-          onChange={handleTabChange}
-        >
-          <TabList>
-            {tabList.map((tab, index) => (
-              <Tab
-                key={tab.id}
-                bg={currentTab === tab.id ? "brand.600" : undefined}
-                color={currentTab === tab.id ? "brand.100" : undefined}
-              >
-                {tab.name}
-              </Tab>
-            ))}
-          </TabList>
-          <TabPanels>
-            <TabPanel>
-              <Notes />
-            </TabPanel>
-            <TabPanel>
-              <Logs />
-            </TabPanel>
-            <TabPanel>
-              <Tasks />
-            </TabPanel>
-            <TabPanel>
-              <Meetings />
-            </TabPanel>
-          </TabPanels>
-        </Tabs>
-      </Box>
+      {contacts.length && (
+        <>
+          <Box flex="1">
+            <ContactDetails
+              contact={contacts[0]}
+              showLogForm={handleButtonClick}
+            />
+          </Box>
+          <Box flex="2" bg="#eeeeee">
+            <Tabs
+              isFitted
+              variant="enclosed"
+              index={currentTab}
+              onChange={handleTabChange}
+            >
+              <TabList>
+                {tabList.map((tab, index) => (
+                  <Tab
+                    key={tab.id}
+                    bg={currentTab === tab.id ? "brand.600" : undefined}
+                    color={currentTab === tab.id ? "brand.100" : undefined}
+                  >
+                    {tab.name}
+                  </Tab>
+                ))}
+              </TabList>
+              <TabPanels>
+                <TabPanel>
+                  <Notes contact={contacts[0]._id} />
+                </TabPanel>
+                <TabPanel>
+                  <Logs contact={contacts[0]._id} />
+                </TabPanel>
+                <TabPanel>
+                  <Tasks contact={contacts[0]._id} />
+                </TabPanel>
+                <TabPanel>
+                  <Meetings contact={contacts[0]._id} />
+                </TabPanel>
+              </TabPanels>
+            </Tabs>
+          </Box>
+        </>
+      )}
     </Flex>
   );
 };

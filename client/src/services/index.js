@@ -21,13 +21,16 @@ export const updateContact = (formData, id) =>
   API.put(`/contacts/${id}`, formData);
 
 export const getActivities = () => API.get("/activities");
+export const getActivitiesByContactId = (id) => API.get(`/activities/${id}`);
 export const addActivity = (formData) => API.post("/activities", formData);
 
 export const getTasks = () => API.get("/tasks");
+export const getTaskByContactId = (id) => API.get(`/tasks/${id}`);
 export const addTask = (formData) => API.post("/tasks", formData);
 export const updateTask = (formData, id) => API.put(`/tasks/${id}`, formData);
 
 export const getNotes = () => API.get("/notes");
+export const getNotesByContactId = (id) => API.get(`/notes/${id}`);
 export const addNote = (formData) => API.post("/notes", formData);
 
 export const getOpportunities = () => API.get("/opportunities");

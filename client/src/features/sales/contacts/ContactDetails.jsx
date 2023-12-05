@@ -14,45 +14,30 @@ import {
   Button,
   Collapse,
   HStack,
-  Heading,
   IconButton,
   Text,
   VStack,
   useDisclosure,
 } from "@chakra-ui/react";
 
-const ContactDetails = ({ showLogForm }) => {
+const ContactDetails = ({ contact, showLogForm }) => {
+  contact.name = `${contact?.firstName} ${contact?.lastName}`;
   const { isOpen: isProfileOpen, onToggle: onProfileToggle } = useDisclosure({
     defaultIsOpen: true,
   });
   const { isOpen: isCompanyOpen, onToggle: onCompanyToggle } = useDisclosure({
     defaultIsOpen: true,
   });
-  const contactDetails = {
-    name: "Admin One",
-    firstName: "Admin ",
-    lastName: "One",
-    position: "CEO",
-    email: "john@example.com",
-    phone: "+1 123-456-7890",
-    address: "123 Main St, Cityville, USA",
-    birthday: "January 1, 1990",
-  };
-  const companyDetails = {
-    companyName: "ABC Inc.",
-    industry: "Technology",
-    address: "456 Tech Blvd, Tech City, USA",
-    revenue: "$10 million",
-    employees: "1000+",
-  };
 
   return (
     <Box px={15} pt={20}>
       <VStack align="center" justify="center" mb="4">
-        <Avatar name={contactDetails.name} size="lg" />
+        <Avatar name={contact?.name} size="lg" />
         <Box textAlign="center">
-          <Heading>{contactDetails.name}</Heading>
-          <Text>{contactDetails.position}</Text>
+          <Text fontSize="xl" fontWeight="bold">
+            {contact?.name}
+          </Text>
+          <Text>{contact?.email}</Text>
         </Box>
       </VStack>
 
@@ -113,18 +98,20 @@ const ContactDetails = ({ showLogForm }) => {
           Contact Profile Details
         </Button>
         <Collapse in={isProfileOpen}>
-          <Box p="4">
-            <Text color="brand.400">First Name: </Text>
-            <Text mb="2">{contactDetails.firstName}</Text>
-            <Text color="brand.400">Last Name:</Text>
-            <Text mb="2">{contactDetails.lastName}</Text>
-            <Text color="brand.400">Phone:</Text>
-            <Text mb="2">{contactDetails.phone}</Text>
-            <Text color="brand.400">Email:</Text>
-            <Text mb="2">{contactDetails.email}</Text>
-            <Text color="brand.400">Address:</Text>
-            <Text mb="2">{contactDetails.address}</Text>
-          </Box>
+          {contact && (
+            <Box p="4">
+              <Text color="brand.400">First Name: </Text>
+              <Text mb="2">{contact?.firstName}</Text>
+              <Text color="brand.400">Last Name:</Text>
+              <Text mb="2">{contact?.lastName}</Text>
+              <Text color="brand.400">Phone:</Text>
+              <Text mb="2">{contact?.phone}</Text>
+              <Text color="brand.400">Email:</Text>
+              <Text mb="2">{contact?.email}</Text>
+              <Text color="brand.400">Address:</Text>
+              <Text mb="2">{contact?.primaryContactAddress}</Text>
+            </Box>
+          )}
         </Collapse>
       </Box>
 
@@ -140,15 +127,15 @@ const ContactDetails = ({ showLogForm }) => {
         <Collapse in={isCompanyOpen}>
           <Box p="4">
             <Text color="brand.400">Company: </Text>
-            <Text mb="2">{companyDetails.companyName}</Text>
+            <Text mb="2">{contact?.companyName}</Text>
             <Text color="brand.400">Industry:</Text>
-            <Text mb="2">{companyDetails.industry}</Text>
+            <Text mb="2">{contact?.industryType}</Text>
             <Text color="brand.400">Address:</Text>
-            <Text mb="2">{companyDetails.address}</Text>
-            <Text color="brand.400">Revenue:</Text>
-            <Text mb="2">{companyDetails.revenue}</Text>
+            <Text mb="2">{contact?.companyAddress}</Text>
+            <Text color="brand.400">URL:</Text>
+            <Text mb="2">{contact?.revenue}</Text>
             <Text color="brand.400">Employees:</Text>
-            <Text mb="2">{companyDetails.employees}</Text>
+            <Text mb="2">{contact?.employees}</Text>
           </Box>
         </Collapse>
       </Box>

@@ -11,15 +11,22 @@ router.get("/", async (req, res) => {
   }
 });
 
-router.post("/", async (req, res) => {
-  const { status, name, dueDate } = req.body;
+router.get("/:id", async (req, res) => {
+  const id = req.params.id;
+  try {
+    const notes = (await Task.find({ contactId: id })).sort(
+      (a, b) => b.date - a.date
+    );
+    res.status(200).json(notes);
+  } catch (error) {
+    res.status(404).json({ error: error.message });
+  }
+});
 
-  const task = new Task({
-    status,
-    name,
-    dueDate,
-    date: Date.now(),
-  });
+router.post("/", async (req, res) => {
+  const { status, name, dueDate, contactId } = req.body;
+
+  const task = new Task({ contactId, status, name, dueDate, date: Date.now() });
   try {
     const newTask = await task.save();
     res.status(201).json(newTask);

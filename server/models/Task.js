@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 
 const taskSchema = new mongoose.Schema({
+  contactId: { type: mongoose.Schema.Types.ObjectId, ref: "Contact" },
   status: String,
   name: String,
   dueDate: Date,

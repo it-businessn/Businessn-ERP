@@ -20,10 +20,10 @@ import ReactDatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import * as api from "services";
 
-const Tasks = () => {
+const Tasks = ({ contact }) => {
   const [tasks, setTasks] = useState([]);
   useEffect(() => {
-    fetchTasks();
+    fetchTasksByContactId(contact);
   }, []);
   const [dueDate, setDueDate] = useState(null);
   const [taskName, setTaskName] = useState("");
@@ -34,8 +34,9 @@ const Tasks = () => {
         name: taskName,
         dueDate,
         status: "Open",
+        contactId: contact,
       });
-      fetchTasks();
+      fetchTasksByContactId(contact);
     } catch (error) {
       console.error(error);
     }
@@ -45,14 +46,14 @@ const Tasks = () => {
     task.status = checked ? "Closed" : "Open";
     try {
       await api.updateTask(task, task._id);
-      fetchTasks();
+      fetchTasksByContactId(contact);
     } catch (error) {
       console.error("Error adding opportunity:", error);
     }
   };
-  const fetchTasks = async () => {
+  const fetchTasksByContactId = async (contact) => {
     try {
-      const response = await api.getTasks();
+      const response = await api.getTaskByContactId(contact);
       setTasks(response.data);
     } catch (error) {
       console.error(error);

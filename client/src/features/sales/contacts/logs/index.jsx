@@ -4,25 +4,26 @@ import * as api from "services";
 import AddLogForm from "./AddLogForm";
 import LogActivityList from "./LogActivityList";
 
-const Logs = ({ showLogForm }) => {
+const Logs = ({ contact, showLogForm }) => {
   const [activities, setActivities] = useState([]);
   const [showAddForm, setShowAddForm] = useState(showLogForm);
   useEffect(() => {
-    fetchActivities();
+    fetchActivitiesByContactId(contact);
   }, []);
 
   const saveActivity = async (activity) => {
     try {
-      const response = await api.addActivity(activity);
-      fetchActivities();
+      activity.contactId = contact;
+      await api.addActivity(activity);
+      fetchActivitiesByContactId(contact);
       setShowAddForm((prev) => !prev);
     } catch (error) {
       console.error(error);
     }
   };
-  const fetchActivities = async () => {
+  const fetchActivitiesByContactId = async (contact) => {
     try {
-      const response = await api.getActivities();
+      const response = await api.getActivitiesByContactId(contact);
       setActivities(response.data);
     } catch (error) {
       console.error(error);

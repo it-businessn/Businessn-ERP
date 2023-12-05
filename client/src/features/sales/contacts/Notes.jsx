@@ -12,7 +12,7 @@ import moment from "moment";
 import { useEffect, useState } from "react";
 import * as api from "services";
 
-const Notes = () => {
+const Notes = ({ contact }) => {
   const [notes, setNotes] = useState([]);
   const [newNote, setNewNote] = useState({
     description: "",
@@ -20,13 +20,14 @@ const Notes = () => {
 
   const [showNoteForm, setShowNoteForm] = useState(true);
   useEffect(() => {
-    fetchNotes();
+    fetchNotesByContactId(contact);
   }, []);
 
   const saveNote = async (note) => {
     try {
+      note.contactId = contact;
       await api.addNote(note);
-      fetchNotes();
+      fetchNotesByContactId(contact);
       setNewNote({
         description: "",
       });
@@ -35,9 +36,9 @@ const Notes = () => {
       console.error(error);
     }
   };
-  const fetchNotes = async () => {
+  const fetchNotesByContactId = async (contact) => {
     try {
-      const response = await api.getNotes();
+      const response = await api.getNotesByContactId(contact);
       setNotes(response.data);
     } catch (error) {
       console.error(error);

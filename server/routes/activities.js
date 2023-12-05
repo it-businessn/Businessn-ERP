@@ -11,10 +11,23 @@ router.get("/", async (req, res) => {
   }
 });
 
+router.get("/:id", async (req, res) => {
+  const id = req.params.id;
+  try {
+    const notes = (await Activity.find({ contactId: id })).sort(
+      (a, b) => b.date - a.date
+    );
+    res.status(200).json(notes);
+  } catch (error) {
+    res.status(404).json({ error: error.message });
+  }
+});
+
 router.post("/", async (req, res) => {
-  const { phoneCalls, type, duration, description } = req.body;
+  const { phoneCalls, type, duration, description, contactId } = req.body;
 
   const activity = new Activity({
+    contactId,
     phoneCalls,
     type,
     duration,
