@@ -12,16 +12,51 @@ router.get("/", async (req, res) => {
 });
 
 router.post("/", async (req, res) => {
+  const {
+    firstName,
+    lastName,
+    email,
+    phone,
+    primaryContactAddress,
+    companyName,
+    industryType,
+    companyAddress,
+    revenue,
+    employees,
+  } = req.body;
+
   const contact = new Contact({
-    firstName: req.body.firstName,
-    lastName: req.body.lastName,
-    email: req.body.email,
-    phone: req.body.phone,
+    firstName,
+    lastName,
+    email,
+    phone,
+    primaryContactAddress,
+    companyName,
+    industryType,
+    companyAddress,
+    revenue,
+    employees,
+    date: Date.now(),
   });
 
   try {
     const newContact = await contact.save();
     res.status(201).json(newContact);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+});
+
+router.put("/:id", async (req, res) => {
+  const contactId = req.params.id;
+  try {
+    const updatedContact = await Contact.findByIdAndUpdate(
+      contactId,
+      req.body,
+      { new: true }
+    );
+
+    res.status(201).json(updatedContact);
   } catch (error) {
     res.status(400).json({ message: error.message });
   }

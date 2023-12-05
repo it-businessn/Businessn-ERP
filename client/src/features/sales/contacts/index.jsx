@@ -38,23 +38,34 @@ const Contacts = () => {
   const handleTabChange = (index) => {
     setCurrentTab(index);
   };
+  const tabs = ["Notes", "Logs", "Tasks", "Meetings"];
+
+  const tabList = tabs.map((item, index) => ({
+    id: index,
+    name: item,
+  }));
   return (
     <Flex>
       <Box flex="1">
         <ContactDetails showLogForm={handleButtonClick} />
       </Box>
-      <Box flex="2" pt={10} bg="#eeeeee">
+      <Box flex="2" bg="#eeeeee">
         <Tabs
           isFitted
           variant="enclosed"
           index={currentTab}
           onChange={handleTabChange}
         >
-          <TabList mb="1em">
-            <Tab>Notes</Tab>
-            <Tab>Logs</Tab>
-            <Tab>Tasks</Tab>
-            <Tab>Meetings</Tab>
+          <TabList>
+            {tabList.map((tab, index) => (
+              <Tab
+                key={tab.id}
+                bg={currentTab === tab.id ? "brand.600" : undefined}
+                color={currentTab === tab.id ? "brand.100" : undefined}
+              >
+                {tab.name}
+              </Tab>
+            ))}
           </TabList>
           <TabPanels>
             <TabPanel>

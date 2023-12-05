@@ -17,6 +17,7 @@ const DashboardLayout = ({ children }) => {
           lg: "row",
         }}
         bg="bg.canvas"
+        overflow="hidden"
       >
         <Sidebar activeMenu={activeMenu ? activeMenu : { name: "Insights" }} />
         {children}

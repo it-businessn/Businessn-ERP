@@ -10,7 +10,9 @@ const AddOpportunity = lazy(() =>
   import("features/sales/pipeline/AddOpportunity")
 );
 const CalendarDashboard = lazy(() => import("features/sales/calendar"));
-const Contacts = lazy(() => import("features/contacts"));
+const Contacts = lazy(() => import("features/sales/contacts"));
+const AddContact = lazy(() => import("features/sales/contacts/AddContact"));
+const EditContact = lazy(() => import("features/sales/contacts/EditContact"));
 
 const EditOpportunity = lazy(() =>
   import("features/sales/pipeline/EditOpportunity")
@@ -80,6 +82,14 @@ export const router = createBrowserRouter([
       {
         path: "/view-contacts",
         element: <Contacts />,
+      },
+      {
+        path: "/add-contact",
+        element: <AddContact />,
+      },
+      {
+        path: "/edit-contact",
+        element: <EditContact />,
       },
       {
         path: "/resource",

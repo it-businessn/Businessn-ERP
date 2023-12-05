@@ -9,14 +9,12 @@ import {
   Text,
   VStack,
 } from "@chakra-ui/react";
+import moment from "moment";
 
 const LogActivityList = ({ activities, showLogForm }) => {
   return (
     <Box w="100%">
-      <Flex justifyContent="space-between">
-        <Text fontSize="xl" fontWeight="bold" mb={4}>
-          Activities
-        </Text>
+      <Flex justifyContent="flex-end" mb={2}>
         <Button onClick={() => showLogForm(true)} colorScheme="teal">
           Add New Log
         </Button>
@@ -28,12 +26,10 @@ const LogActivityList = ({ activities, showLogForm }) => {
               <HStack justifyContent="space-between">
                 <Badge colorScheme="teal">{activity.type}</Badge>
                 <Text fontSize="sm" color="gray.500">
-                  {activity.date.toLocaleString()}
+                  {moment(activity.date).format("MMM DD, YYYY hh:mm A Z")}
                 </Text>
               </HStack>
-              <Text mt={2} fontSize="lg" fontWeight="bold">
-                {activity.description}
-              </Text>
+              <Text mt={2}>{activity.description}</Text>
               <Text mt={2}>Number of Phone Calls: {activity.phoneCalls}</Text>
               <Text>Duration: {activity.duration} minutes</Text>
             </CardBody>

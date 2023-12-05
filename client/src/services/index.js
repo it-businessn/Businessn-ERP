@@ -16,6 +16,9 @@ export const signOut = () => API.post("/logout");
 
 export const getContacts = () => API.get("/contacts");
 export const getNotifications = () => API.get("/notifications");
+export const addContact = (formData) => API.post("/contacts", formData);
+export const updateContact = (formData, id) =>
+  API.put(`/contacts/${id}`, formData);
 
 export const getActivities = () => API.get("/activities");
 export const addActivity = (formData) => API.post("/activities", formData);

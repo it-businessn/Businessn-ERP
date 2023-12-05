@@ -5,13 +5,16 @@ import {
   Card,
   CardBody,
   Checkbox,
+  Flex,
   FormControl,
   FormLabel,
   HStack,
   Input,
+  Spacer,
   Text,
   VStack,
 } from "@chakra-ui/react";
+import moment from "moment";
 import { useEffect, useState } from "react";
 import ReactDatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -23,7 +26,7 @@ const Tasks = () => {
     fetchTasks();
   }, []);
   const [dueDate, setDueDate] = useState(null);
-  const [taskName, setTaskName] = useState(null);
+  const [taskName, setTaskName] = useState("");
   const handleAddTask = async (e) => {
     e.preventDefault();
     try {
@@ -79,7 +82,11 @@ const Tasks = () => {
           />
         </FormControl>
 
-        <Button colorScheme="teal" onClick={handleAddTask}>
+        <Button
+          isDisabled={taskName === ""}
+          colorScheme="teal"
+          onClick={handleAddTask}
+        >
           Add Task
         </Button>
         <Box w="100%">
@@ -93,23 +100,28 @@ const Tasks = () => {
                   <CardBody>
                     <VStack alignItems="start" spacing={4}>
                       <Badge colorScheme="teal">{task.status}</Badge>
-                      <HStack spacing={4}>
-                        <Checkbox
-                          isChecked={task.isOpen}
-                          onChange={(e) =>
-                            handleCheckboxChange(e.target.checked, task)
-                          }
-                          borderRadius="full"
-                          borderColor="teal.500"
-                          iconColor="teal.500"
-                          size="md"
-                        />
-                        <Text fontSize="lg" fontWeight="bold">
-                          {task.name}
+                      <Flex w={"100%"}>
+                        <HStack spacing={4}>
+                          <Checkbox
+                            isChecked={task.status === "Closed"}
+                            onChange={(e) =>
+                              handleCheckboxChange(e.target.checked, task)
+                            }
+                            borderRadius="full"
+                            borderColor="teal.500"
+                            iconColor="teal.500"
+                            size="md"
+                          />
+                          <Text>{task.name}</Text>
+                        </HStack>
+                        <Spacer />
+                        <Text color="brand.400">
+                          Due Date:{" "}
+                          {moment(task?.dueDate).format(
+                            "MMM DD, YYYY hh:mm A Z"
+                          )}
                         </Text>
-                      </HStack>
-
-                      <Text>Due Date: {task?.dueDate?.toLocaleString()}</Text>
+                      </Flex>
                     </VStack>
                   </CardBody>
                 </Card>

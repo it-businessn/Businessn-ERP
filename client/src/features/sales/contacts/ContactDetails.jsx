@@ -114,15 +114,15 @@ const ContactDetails = ({ showLogForm }) => {
         </Button>
         <Collapse in={isProfileOpen}>
           <Box p="4">
-            <Text>First Name: </Text>
+            <Text color="brand.400">First Name: </Text>
             <Text mb="2">{contactDetails.firstName}</Text>
-            <Text>Last Name:</Text>
+            <Text color="brand.400">Last Name:</Text>
             <Text mb="2">{contactDetails.lastName}</Text>
-            <Text>Phone:</Text>
+            <Text color="brand.400">Phone:</Text>
             <Text mb="2">{contactDetails.phone}</Text>
-            <Text>Email:</Text>
+            <Text color="brand.400">Email:</Text>
             <Text mb="2">{contactDetails.email}</Text>
-            <Text>Address:</Text>
+            <Text color="brand.400">Address:</Text>
             <Text mb="2">{contactDetails.address}</Text>
           </Box>
         </Collapse>
@@ -139,15 +139,15 @@ const ContactDetails = ({ showLogForm }) => {
         </Button>
         <Collapse in={isCompanyOpen}>
           <Box p="4">
-            <Text>Company: </Text>
+            <Text color="brand.400">Company: </Text>
             <Text mb="2">{companyDetails.companyName}</Text>
-            <Text>Industry:</Text>
+            <Text color="brand.400">Industry:</Text>
             <Text mb="2">{companyDetails.industry}</Text>
-            <Text>Address:</Text>
+            <Text color="brand.400">Address:</Text>
             <Text mb="2">{companyDetails.address}</Text>
-            <Text>Revenue:</Text>
+            <Text color="brand.400">Revenue:</Text>
             <Text mb="2">{companyDetails.revenue}</Text>
-            <Text>Employees:</Text>
+            <Text color="brand.400">Employees:</Text>
             <Text mb="2">{companyDetails.employees}</Text>
           </Box>
         </Collapse>

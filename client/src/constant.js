@@ -360,7 +360,7 @@ export const TOP_NAV_MENU_LIST = [
             icon: LuLayoutDashboard,
           },
           {
-            path: "/setup-contact",
+            path: "/add-contact",
             name: "Setup Contact",
             icon: LuLayoutDashboard,
           },

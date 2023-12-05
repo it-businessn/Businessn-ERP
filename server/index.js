@@ -5,7 +5,7 @@ const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 
-const activityRoutes = require("./routes/tasks");
+const activityRoutes = require("./routes/activities");
 const contactRoutes = require("./routes/contacts");
 const noteRoutes = require("./routes/notes");
 const opportunityRoutes = require("./routes/opportunity");

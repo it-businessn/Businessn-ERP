@@ -8,6 +8,7 @@ import {
   Text,
   VStack,
 } from "@chakra-ui/react";
+import moment from "moment";
 import { useEffect, useState } from "react";
 import * as api from "services";
 
@@ -54,16 +55,17 @@ const Notes = () => {
             }
             placeholder="Add a new note"
           />
-          <Button onClick={() => saveNote(newNote)} colorScheme="teal">
+          <Button
+            isDisabled={newNote.description === ""}
+            onClick={() => saveNote(newNote)}
+            colorScheme="teal"
+          >
             Add Note
           </Button>
         </>
       )}
       <Box w="100%">
-        <Flex justifyContent="space-between">
-          <Text fontSize="xl" fontWeight="bold" mb={4}>
-            Notes
-          </Text>
+        <Flex justifyContent="flex-end" mb={2}>
           <Button onClick={() => setShowNoteForm(true)} colorScheme="teal">
             Add New Note
           </Button>
@@ -73,11 +75,9 @@ const Notes = () => {
             <Card key={index} borderWidth="1px" borderRadius="lg" w="100%">
               <CardBody>
                 <Flex justifyContent="space-between">
-                  <Text mt={2} fontSize="lg" fontWeight="bold">
-                    {note.description}
-                  </Text>
+                  <Text>{note.description}</Text>
                   <Text fontSize="sm" color="gray.500" align="end">
-                    {note.date.toLocaleString()}
+                    {moment(note.date).format("MMM DD, YYYY hh:mm A Z")}
                   </Text>
                 </Flex>
               </CardBody>

@@ -50,7 +50,7 @@ const AddLogForm = ({ onSave }) => {
             onChange={handleInputChange}
           >
             <option value="meeting">Meeting</option>
-            <option value="call">Email</option>
+            <option value="email">Email</option>
             <option value="call">Phone Call</option>
           </Select>
         </FormControl>
@@ -74,7 +74,12 @@ const AddLogForm = ({ onSave }) => {
           />
         </FormControl>
 
-        <Button mt={4} colorScheme="teal" onClick={handleSubmit}>
+        <Button
+          mt={4}
+          isDisabled={logActivity.description === ""}
+          colorScheme="teal"
+          onClick={handleSubmit}
+        >
           Save Activity
         </Button>
       </form>

@@ -1,6 +1,7 @@
 html {
   min-height: 80%;
   margin: 0 auto;
+  background: "#eeeeee";
 }
 
 body {
@@ -8,6 +9,7 @@ body {
   padding: 0;
   min-height: 100%;
 }
+
 .tab-form {
   width: 100%;
 }
