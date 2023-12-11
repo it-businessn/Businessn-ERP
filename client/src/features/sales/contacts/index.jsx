@@ -1,36 +1,49 @@
 import {
   Box,
   Flex,
+  HStack,
+  Input,
+  Popover,
+  PopoverArrow,
+  PopoverBody,
+  PopoverContent,
+  PopoverTrigger,
   Tab,
   TabList,
   TabPanel,
   TabPanels,
   Tabs,
+  Text,
 } from "@chakra-ui/react";
+import Loader from "features/Loader";
 import { useEffect, useState } from "react";
 import * as api from "services";
-import ContactDetails from "./ContactDetails";
-import Meetings from "./Meetings";
-import Notes from "./Notes";
+import ContactDetailsForm from "./ContactDetailsForm";
 import Logs from "./logs";
+import Meetings from "./meeting";
+import Notes from "./notes/Notes";
 import Tasks from "./tasks";
 
 const Contacts = () => {
   const [contacts, setContacts] = useState([]);
+  const [selectedContact, setSelectedContact] = useState(null);
+  const [reload, setReload] = useState(false);
+
+  const fetchContacts = async () => {
+    try {
+      const response = await api.getContacts();
+      setContacts(response.data);
+      setSelectedContact(response.data[0]);
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   useEffect(() => {
-    const fetchContacts = async () => {
-      try {
-        const response = await api.getContacts();
-        setContacts(response.data);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
     fetchContacts();
   }, []);
-  const [showLogForm, setShowLogForm] = useState(false);
+  useEffect(() => {}, [reload]);
+
   const [currentTab, setCurrentTab] = useState(0);
   const handleButtonClick = (value) => {
     setCurrentTab(value ? 1 : currentTab);
@@ -44,15 +57,72 @@ const Contacts = () => {
     id: index,
     name: item,
   }));
+  const [filter, setFilter] = useState("");
+  const [showList, setShowList] = useState(false);
+  const filteredContacts = contacts.filter(
+    (contact) =>
+      contact.companyName.toLowerCase().includes(filter.toLowerCase()) ||
+      contact.firstName.toLowerCase().includes(filter.toLowerCase())
+  );
+  const handleSelectedContact = (contact) => {
+    setSelectedContact((prev) => contact);
+    setShowList((prev) => false);
+    setReload(true);
+  };
+
   return (
     <Flex>
-      {contacts.length && (
+      {!selectedContact && <Loader />}
+      {selectedContact && (
         <>
+          {console.log("html", selectedContact)}
           <Box flex="1">
-            <ContactDetails
-              contact={contacts[0]}
-              showLogForm={handleButtonClick}
-            />
+            <Popover zIndex={0}>
+              <PopoverTrigger>
+                <Input
+                  zIndex={0}
+                  type="text"
+                  placeholder="Search Contact..."
+                  value={filter}
+                  onClick={() => setShowList(true)}
+                  onChange={(e) => setFilter(e.target.value)}
+                />
+              </PopoverTrigger>
+              {showList && (
+                <PopoverContent zIndex={0}>
+                  <PopoverArrow />
+                  <PopoverBody>
+                    {filteredContacts.map((contact, index) => (
+                      <div
+                        key={index}
+                        onClick={() => handleSelectedContact(contact)}
+                      >
+                        <Box
+                          key={contact.companyName}
+                          borderBottomWidth="1px"
+                          py={2}
+                        >
+                          <HStack>
+                            <Text>
+                              {contact.firstName} {contact.lastName}
+                            </Text>
+                            <Text fontWeight="bold">
+                              Client: {contact.companyName}
+                            </Text>
+                          </HStack>
+                        </Box>
+                      </div>
+                    ))}
+                  </PopoverBody>
+                </PopoverContent>
+              )}
+            </Popover>
+            {selectedContact && (
+              <ContactDetailsForm
+                contact={selectedContact}
+                showLogForm={handleButtonClick}
+              />
+            )}
           </Box>
           <Box flex="2" bg="#eeeeee">
             <Tabs
@@ -74,16 +144,16 @@ const Contacts = () => {
               </TabList>
               <TabPanels>
                 <TabPanel>
-                  <Notes contact={contacts[0]._id} />
+                  <Notes contactId={selectedContact?._id} />
                 </TabPanel>
                 <TabPanel>
-                  <Logs contact={contacts[0]._id} />
+                  <Logs contactId={selectedContact?._id} />
                 </TabPanel>
                 <TabPanel>
-                  <Tasks contact={contacts[0]._id} />
+                  <Tasks contactId={selectedContact?._id} />
                 </TabPanel>
                 <TabPanel>
-                  <Meetings contact={contacts[0]._id} />
+                  <Meetings contactId={selectedContact?._id} />
                 </TabPanel>
               </TabPanels>
             </Tabs>

@@ -13,3 +13,6 @@ body {
 .tab-form {
   width: 100%;
 }
+.date-picker {
+  padding: 8px;
+}

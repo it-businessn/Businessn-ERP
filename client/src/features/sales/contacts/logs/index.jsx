@@ -4,19 +4,17 @@ import * as api from "services";
 import AddLogForm from "./AddLogForm";
 import LogActivityList from "./LogActivityList";
 
-const Logs = ({ contact, showLogForm }) => {
+const Logs = ({ contactId }) => {
   const [activities, setActivities] = useState([]);
-  const [showAddForm, setShowAddForm] = useState(showLogForm);
   useEffect(() => {
-    fetchActivitiesByContactId(contact);
-  }, []);
+    fetchActivitiesByContactId(contactId);
+  }, [contactId]);
 
   const saveActivity = async (activity) => {
     try {
-      activity.contactId = contact;
+      activity.contactId = contactId;
       await api.addActivity(activity);
-      fetchActivitiesByContactId(contact);
-      setShowAddForm((prev) => !prev);
+      fetchActivitiesByContactId(contactId);
     } catch (error) {
       console.error(error);
     }
@@ -32,13 +30,8 @@ const Logs = ({ contact, showLogForm }) => {
 
   return (
     <VStack spacing="4" p="4" width="100%">
-      {showAddForm && <AddLogForm onSave={saveActivity} />}
-      {activities.length && (
-        <LogActivityList
-          showLogForm={(state) => setShowAddForm(state)}
-          activities={activities}
-        />
-      )}
+      <AddLogForm onSave={saveActivity} />
+      {activities.length && <LogActivityList activities={activities} />}
     </VStack>
   );
 };

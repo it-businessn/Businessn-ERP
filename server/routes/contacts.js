@@ -10,6 +10,17 @@ router.get("/", async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 });
+router.get("/:id", async (req, res) => {
+  const id = req.params.id;
+  try {
+    const notes = (await Contact.find({ contactId: id })).sort(
+      (a, b) => b.date - a.date
+    );
+    res.status(200).json(notes);
+  } catch (error) {
+    res.status(404).json({ error: error.message });
+  }
+});
 
 router.post("/", async (req, res) => {
   const {

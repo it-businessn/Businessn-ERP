@@ -4,8 +4,6 @@ import {
   ChatIcon,
   ChevronDownIcon,
   ChevronRightIcon,
-  EmailIcon,
-  PhoneIcon,
   TimeIcon,
 } from "@chakra-ui/icons";
 import {
@@ -19,28 +17,39 @@ import {
   VStack,
   useDisclosure,
 } from "@chakra-ui/react";
+import { FaBuilding } from "react-icons/fa";
 
-const ContactDetails = ({ contact, showLogForm }) => {
+const ContactDetailsForm = ({ contact, showLogForm }) => {
   contact.name = `${contact?.firstName} ${contact?.lastName}`;
   const { isOpen: isProfileOpen, onToggle: onProfileToggle } = useDisclosure({
     defaultIsOpen: true,
   });
+
   const { isOpen: isCompanyOpen, onToggle: onCompanyToggle } = useDisclosure({
     defaultIsOpen: true,
   });
 
+  const iconStyles = {
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    fontSize: "1.5em",
+    color: "white",
+  };
   return (
-    <Box px={15} pt={20}>
+    <Box px={15} pt={15}>
       <VStack align="center" justify="center" mb="4">
-        <Avatar name={contact?.name} size="lg" />
+        <Avatar name=" " size="lg" bg="gray.300" position="relative">
+          <FaBuilding style={iconStyles} />
+        </Avatar>
         <Box textAlign="center">
           <Text fontSize="xl" fontWeight="bold">
-            {contact?.name}
+            {contact?.companyName}
           </Text>
-          <Text>{contact?.email}</Text>
+          <Text>Contact: {contact?.name}</Text>
         </Box>
       </VStack>
-
       <HStack spacing="4" mb="4" justifyContent="center">
         <IconButton
           icon={<AddIcon />}
@@ -48,7 +57,7 @@ const ContactDetails = ({ contact, showLogForm }) => {
           colorScheme="teal"
           borderRadius="full"
         />
-        <IconButton
+        {/* <IconButton
           icon={<EmailIcon />}
           aria-label="Add Note"
           colorScheme="teal"
@@ -59,7 +68,7 @@ const ContactDetails = ({ contact, showLogForm }) => {
           aria-label="Add Note"
           colorScheme="teal"
           borderRadius="full"
-        />
+        /> */}
         <IconButton
           onClick={() => showLogForm(true)}
           icon={<ChatIcon />}
@@ -80,15 +89,39 @@ const ContactDetails = ({ contact, showLogForm }) => {
           borderRadius="full"
         />
       </HStack>
-      <HStack spacing="6" mb="4" mt={"-1em"} justifyContent="center">
+      <HStack ml="2px" spacing="6" mb="4" mt={"-1em"} justifyContent="center">
         <Text> Note</Text>
-        <Text> Email</Text>
-        <Text>Call</Text>
+        {/* <Text> Email</Text>
+        <Text>Call</Text> */}
         <Text>Log</Text>
-        <Text>Tasks</Text>
+        <Text>Task</Text>
         <Text>Meet</Text>
       </HStack>
       <Box mb="4">
+        <Button onClick={onCompanyToggle} variant="link" fontSize="sm">
+          {isCompanyOpen ? (
+            <ChevronDownIcon fontSize="md" />
+          ) : (
+            <ChevronRightIcon fontSize="md" />
+          )}
+          Company Profile Details
+        </Button>
+        <Collapse in={isCompanyOpen}>
+          <Box p="4">
+            <Text color="brand.400">Company: </Text>
+            <Text mb="2">{contact?.companyName}</Text>
+            <Text color="brand.400">Industry:</Text>
+            <Text mb="2">{contact?.industryType}</Text>
+            <Text color="brand.400">Address:</Text>
+            <Text mb="2">{contact?.companyAddress}</Text>
+            <Text color="brand.400">URL:</Text>
+            <Text mb="2">{contact?.revenue}</Text>
+            <Text color="brand.400">Employees:</Text>
+            <Text mb="2">{contact?.employees}</Text>
+          </Box>
+        </Collapse>
+      </Box>
+      <Box>
         <Button onClick={onProfileToggle} variant="link" fontSize="sm">
           {isProfileOpen ? (
             <ChevronDownIcon fontSize="md" />
@@ -114,33 +147,8 @@ const ContactDetails = ({ contact, showLogForm }) => {
           )}
         </Collapse>
       </Box>
-
-      <Box>
-        <Button onClick={onCompanyToggle} variant="link" fontSize="sm">
-          {isCompanyOpen ? (
-            <ChevronDownIcon fontSize="md" />
-          ) : (
-            <ChevronRightIcon fontSize="md" />
-          )}
-          Company Profile Details
-        </Button>
-        <Collapse in={isCompanyOpen}>
-          <Box p="4">
-            <Text color="brand.400">Company: </Text>
-            <Text mb="2">{contact?.companyName}</Text>
-            <Text color="brand.400">Industry:</Text>
-            <Text mb="2">{contact?.industryType}</Text>
-            <Text color="brand.400">Address:</Text>
-            <Text mb="2">{contact?.companyAddress}</Text>
-            <Text color="brand.400">URL:</Text>
-            <Text mb="2">{contact?.revenue}</Text>
-            <Text color="brand.400">Employees:</Text>
-            <Text mb="2">{contact?.employees}</Text>
-          </Box>
-        </Collapse>
-      </Box>
     </Box>
   );
 };
 
-export default ContactDetails;
+export default ContactDetailsForm;

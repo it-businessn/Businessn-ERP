@@ -34,15 +34,6 @@ const AddLogForm = ({ onSave }) => {
     <VStack spacing="4" p="4" width="100%">
       <form className="tab-form">
         <FormControl>
-          <FormLabel>Number of Phone Calls</FormLabel>
-          <Input
-            type="number"
-            name="phoneCalls"
-            value={logActivity.phoneCalls}
-            onChange={handleInputChange}
-          />
-        </FormControl>
-        <FormControl>
           <FormLabel>Type of Activity</FormLabel>
           <Select
             name="type"
@@ -56,7 +47,7 @@ const AddLogForm = ({ onSave }) => {
         </FormControl>
 
         <FormControl>
-          <FormLabel>Duration of Phone Call (minutes)</FormLabel>
+          <FormLabel>Duration (minutes)</FormLabel>
           <Input
             type="number"
             name="duration"

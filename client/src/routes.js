@@ -11,6 +11,11 @@ const AddOpportunity = lazy(() =>
 );
 const CalendarDashboard = lazy(() => import("features/sales/calendar"));
 const Contacts = lazy(() => import("features/sales/contacts"));
+const ContactsDashboard = lazy(() =>
+  import("features/sales/contacts/ContactsDashboard")
+);
+
+const TaskDashboard = lazy(() => import("features/sales/tasks"));
 const AddContact = lazy(() => import("features/sales/contacts/AddContact"));
 const EditContact = lazy(() => import("features/sales/contacts/EditContact"));
 
@@ -44,22 +49,6 @@ export const router = createBrowserRouter([
         element: <Home />,
       },
       {
-        path: "/sign-in",
-        element: <Login />,
-      },
-      {
-        path: "/forgot-password",
-        element: <ForgotPassword />,
-      },
-      {
-        path: "/sign-up",
-        element: <SignUp />,
-      },
-      {
-        path: "/verify-email",
-        element: <VerifyEmail />,
-      },
-      {
         path: "/calendar",
         element: <CalendarDashboard />,
       },
@@ -80,6 +69,10 @@ export const router = createBrowserRouter([
         element: <OpportunitiesList />,
       },
       {
+        path: "/sales",
+        element: <ContactsDashboard />,
+      },
+      {
         path: "/view-contacts",
         element: <Contacts />,
       },
@@ -96,6 +89,10 @@ export const router = createBrowserRouter([
         element: <ResourceDashboard />,
       },
       {
+        path: "/tasks",
+        element: <TaskDashboard />,
+      },
+      {
         path: "/edit-user/:id",
         element: <EditUser />,
       },
@@ -104,5 +101,25 @@ export const router = createBrowserRouter([
         element: <PageNotFound />,
       },
     ],
+  },
+  {
+    path: "/login",
+    element: <Login />,
+  },
+  {
+    path: "/forgot-password",
+    element: <ForgotPassword />,
+  },
+  {
+    path: "/signup",
+    element: <SignUp />,
+  },
+  {
+    path: "/verify-email",
+    element: <VerifyEmail />,
+  },
+  {
+    path: "*",
+    element: <PageNotFound />,
   },
 ]);

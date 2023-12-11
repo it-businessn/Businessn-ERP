@@ -4,6 +4,8 @@ import {
   Card,
   CardBody,
   Flex,
+  FormControl,
+  FormLabel,
   Input,
   Text,
   VStack,
@@ -12,33 +14,32 @@ import moment from "moment";
 import { useEffect, useState } from "react";
 import * as api from "services";
 
-const Notes = ({ contact }) => {
+const Notes = ({ contactId }) => {
   const [notes, setNotes] = useState([]);
   const [newNote, setNewNote] = useState({
     description: "",
   });
 
-  const [showNoteForm, setShowNoteForm] = useState(true);
   useEffect(() => {
-    fetchNotesByContactId(contact);
-  }, []);
+    fetchNotesByContactId(contactId);
+  }, [contactId]);
 
   const saveNote = async (note) => {
     try {
-      note.contactId = contact;
+      note.contactId = contactId;
       await api.addNote(note);
-      fetchNotesByContactId(contact);
+      fetchNotesByContactId(contactId);
       setNewNote({
         description: "",
       });
-      setShowNoteForm((prev) => !prev);
     } catch (error) {
       console.error(error);
     }
   };
-  const fetchNotesByContactId = async (contact) => {
+
+  const fetchNotesByContactId = async (contactId) => {
     try {
-      const response = await api.getNotesByContactId(contact);
+      const response = await api.getNotesByContactId(contactId);
       setNotes(response.data);
     } catch (error) {
       console.error(error);
@@ -46,8 +47,9 @@ const Notes = ({ contact }) => {
   };
   return (
     <VStack spacing="4" p="4">
-      {showNoteForm && (
-        <>
+      <form className="tab-form">
+        <FormControl>
+          <FormLabel>Note description</FormLabel>
           <Input
             name="description"
             value={newNote.description}
@@ -56,21 +58,18 @@ const Notes = ({ contact }) => {
             }
             placeholder="Add a new note"
           />
-          <Button
-            isDisabled={newNote.description === ""}
-            onClick={() => saveNote(newNote)}
-            colorScheme="teal"
-          >
-            Add Note
-          </Button>
-        </>
-      )}
+        </FormControl>
+        <Button
+          mt={4}
+          isDisabled={newNote.description === ""}
+          onClick={() => saveNote(newNote)}
+          colorScheme="teal"
+        >
+          Add Note
+        </Button>
+      </form>
+
       <Box w="100%">
-        <Flex justifyContent="flex-end" mb={2}>
-          <Button onClick={() => setShowNoteForm(true)} colorScheme="teal">
-            Add New Note
-          </Button>
-        </Flex>
         <VStack spacing={4} w="100%">
           {notes.map((note, index) => (
             <Card key={index} borderWidth="1px" borderRadius="lg" w="100%">

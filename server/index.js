@@ -7,6 +7,7 @@ const cors = require("cors");
 
 const activityRoutes = require("./routes/activities");
 const contactRoutes = require("./routes/contacts");
+const meetingRoutes = require("./routes/meeting");
 const noteRoutes = require("./routes/notes");
 const opportunityRoutes = require("./routes/opportunity");
 const taskRoutes = require("./routes/tasks");
@@ -26,6 +27,7 @@ app.use((request, response, next) => {
 //routes
 app.use("/api/activities", activityRoutes);
 app.use("/api/contacts", contactRoutes);
+app.use("/api/meetings", meetingRoutes);
 app.use("/api/notes", noteRoutes);
 app.use("/api/opportunities", opportunityRoutes);
 app.use("/api/tasks", taskRoutes);

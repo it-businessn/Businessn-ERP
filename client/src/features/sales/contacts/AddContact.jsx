@@ -86,7 +86,7 @@ const AddContact = () => {
                 onChange={handleChange}
                 placeholder="Last Name"
               />
-            </FormControl>{" "}
+            </FormControl>
             <FormControl mb={4}>
               <FormLabel>Email</FormLabel>
               <Input
@@ -96,7 +96,7 @@ const AddContact = () => {
                 onChange={handleChange}
                 placeholder="Email"
               />
-            </FormControl>{" "}
+            </FormControl>
             <FormControl mb={4}>
               <FormLabel>Phone Number</FormLabel>
               <Input
@@ -106,7 +106,7 @@ const AddContact = () => {
                 onChange={handleChange}
                 placeholder="phone"
               />
-            </FormControl>{" "}
+            </FormControl>
             <FormControl mb={4}>
               <FormLabel>Primary Contact Address</FormLabel>
               <Input
@@ -116,7 +116,7 @@ const AddContact = () => {
                 onChange={handleChange}
                 placeholder="Primary Contact"
               />
-            </FormControl>{" "}
+            </FormControl>
           </Stack>
           <Stack flex={1} spacing={4}>
             <FormLabel as="legend">Company Information</FormLabel>
@@ -129,7 +129,7 @@ const AddContact = () => {
                 onChange={handleChange}
                 placeholder="Company Name"
               />
-            </FormControl>{" "}
+            </FormControl>
             <FormControl mb={4}>
               <FormLabel>Industry Type</FormLabel>
               <Input
@@ -139,7 +139,7 @@ const AddContact = () => {
                 onChange={handleChange}
                 placeholder="Industry Type"
               />
-            </FormControl>{" "}
+            </FormControl>
             <FormControl mb={4}>
               <FormLabel>Company Address</FormLabel>
               <Input
@@ -149,7 +149,7 @@ const AddContact = () => {
                 onChange={handleChange}
                 placeholder="Company Address"
               />
-            </FormControl>{" "}
+            </FormControl>
             <FormControl mb={4}>
               <FormLabel>Website URL</FormLabel>
               <Input
@@ -159,7 +159,7 @@ const AddContact = () => {
                 onChange={handleChange}
                 placeholder="Website URL"
               />
-            </FormControl>{" "}
+            </FormControl>
             <FormControl mb={4}>
               <FormLabel>Number of employees</FormLabel>
               <Input

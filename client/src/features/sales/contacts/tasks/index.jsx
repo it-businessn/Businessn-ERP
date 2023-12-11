@@ -20,13 +20,15 @@ import ReactDatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import * as api from "services";
 
-const Tasks = ({ contact }) => {
+const Tasks = ({ contactId }) => {
   const [tasks, setTasks] = useState([]);
-  useEffect(() => {
-    fetchTasksByContactId(contact);
-  }, []);
   const [dueDate, setDueDate] = useState(null);
   const [taskName, setTaskName] = useState("");
+
+  useEffect(() => {
+    fetchTasksByContactId(contactId);
+  }, [contactId]);
+
   const handleAddTask = async (e) => {
     e.preventDefault();
     try {
@@ -34,9 +36,11 @@ const Tasks = ({ contact }) => {
         name: taskName,
         dueDate,
         status: "Open",
-        contactId: contact,
+        contactId: contactId,
       });
-      fetchTasksByContactId(contact);
+      fetchTasksByContactId(contactId);
+      setTaskName("");
+      setDueDate(null);
     } catch (error) {
       console.error(error);
     }
@@ -46,7 +50,7 @@ const Tasks = ({ contact }) => {
     task.status = checked ? "Closed" : "Open";
     try {
       await api.updateTask(task, task._id);
-      fetchTasksByContactId(contact);
+      fetchTasksByContactId(contactId);
     } catch (error) {
       console.error("Error adding opportunity:", error);
     }
@@ -63,37 +67,41 @@ const Tasks = ({ contact }) => {
   return (
     <Box>
       <VStack spacing={4}>
-        <FormControl id="taskName" isRequired>
-          <FormLabel>Task Name</FormLabel>
-          <Input
-            type="text"
-            placeholder="Enter task name"
-            value={taskName}
-            onChange={(e) => setTaskName(e.target.value)}
-          />
-        </FormControl>
+        <form className="tab-form">
+          <FormControl id="taskName" isRequired>
+            <FormLabel>Task Name</FormLabel>
+            <Input
+              type="text"
+              placeholder="Enter task name"
+              value={taskName}
+              onChange={(e) => setTaskName(e.target.value)}
+            />
+          </FormControl>
 
-        <FormControl id="dueDate" isRequired>
-          <FormLabel>Due Date</FormLabel>
-          <ReactDatePicker
-            selected={dueDate}
-            onChange={(date) => setDueDate(date)}
-            dateFormat="yyyy-MM-dd"
-            placeholderText="Select due date"
-          />
-        </FormControl>
+          <FormControl id="dueDate" isRequired>
+            <FormLabel>Due Date</FormLabel>
+            <ReactDatePicker
+              className="date-picker"
+              selected={dueDate}
+              onChange={(date) => setDueDate(date)}
+              dateFormat="yyyy-MM-dd"
+              placeholderText="Select due date"
+            />
+          </FormControl>
 
-        <Button
-          isDisabled={taskName === ""}
-          colorScheme="teal"
-          onClick={handleAddTask}
-        >
-          Add Task
-        </Button>
+          <Button
+            mt={4}
+            isDisabled={taskName === ""}
+            colorScheme="teal"
+            onClick={handleAddTask}
+          >
+            Add Task
+          </Button>
+        </form>
         <Box w="100%">
-          <Text fontSize="xl" fontWeight="bold" mb={4}>
+          {/* <Text fontSize="xl" fontWeight="bold" mb={4}>
             Tasklist
-          </Text>
+          </Text> */}
           <VStack spacing={4} w="100%">
             {tasks.length > 0 &&
               tasks.map((task, index) => (
@@ -117,7 +125,7 @@ const Tasks = ({ contact }) => {
                         </HStack>
                         <Spacer />
                         <Text color="brand.400">
-                          Due Date:{" "}
+                          Due Date:
                           {moment(task?.dueDate).format(
                             "MMM DD, YYYY hh:mm A Z"
                           )}

@@ -5,7 +5,6 @@ import {
   FormLabel,
   HStack,
   Input,
-  Select,
   Stack,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
@@ -49,7 +48,7 @@ const EditContactForm = ({ selectedContact, onSave, onCancel }) => {
                 onChange={handleChange}
                 placeholder="Last Name"
               />
-            </FormControl>{" "}
+            </FormControl>
             <FormControl mb={4}>
               <FormLabel>Email</FormLabel>
               <Input
@@ -59,7 +58,7 @@ const EditContactForm = ({ selectedContact, onSave, onCancel }) => {
                 onChange={handleChange}
                 placeholder="Email"
               />
-            </FormControl>{" "}
+            </FormControl>
             <FormControl mb={4}>
               <FormLabel>Phone Number</FormLabel>
               <Input
@@ -69,7 +68,7 @@ const EditContactForm = ({ selectedContact, onSave, onCancel }) => {
                 onChange={handleChange}
                 placeholder="phone"
               />
-            </FormControl>{" "}
+            </FormControl>
             <FormControl mb={4}>
               <FormLabel>Primary Contact Address</FormLabel>
               <Input
@@ -79,7 +78,7 @@ const EditContactForm = ({ selectedContact, onSave, onCancel }) => {
                 onChange={handleChange}
                 placeholder="Primary Contact"
               />
-            </FormControl>{" "}
+            </FormControl>
           </Stack>
           <Stack flex={1} spacing={4}>
             <FormLabel as="legend">Company Information</FormLabel>
@@ -92,7 +91,7 @@ const EditContactForm = ({ selectedContact, onSave, onCancel }) => {
                 onChange={handleChange}
                 placeholder="Company Name"
               />
-            </FormControl>{" "}
+            </FormControl>
             <FormControl mb={4}>
               <FormLabel>Industry Type</FormLabel>
               <Input
@@ -102,7 +101,7 @@ const EditContactForm = ({ selectedContact, onSave, onCancel }) => {
                 onChange={handleChange}
                 placeholder="Industry Type"
               />
-            </FormControl>{" "}
+            </FormControl>
             <FormControl mb={4}>
               <FormLabel>Company Address</FormLabel>
               <Input
@@ -112,7 +111,7 @@ const EditContactForm = ({ selectedContact, onSave, onCancel }) => {
                 onChange={handleChange}
                 placeholder="Company Address"
               />
-            </FormControl>{" "}
+            </FormControl>
             <FormControl mb={4}>
               <FormLabel>Website URL</FormLabel>
               <Input
@@ -122,7 +121,7 @@ const EditContactForm = ({ selectedContact, onSave, onCancel }) => {
                 onChange={handleChange}
                 placeholder="Website URL"
               />
-            </FormControl>{" "}
+            </FormControl>
             <FormControl mb={4}>
               <FormLabel>Number of employees</FormLabel>
               <Input
