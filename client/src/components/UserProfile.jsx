@@ -1,17 +1,45 @@
-import { Avatar, Box, HStack, Text } from "@chakra-ui/react";
+import {
+  Avatar,
+  Box,
+  Button,
+  HStack,
+  Popover,
+  PopoverBody,
+  PopoverContent,
+  PopoverTrigger,
+  Text,
+} from "@chakra-ui/react";
+import { useNavigate } from "react-router-dom";
 
-const UserProfile = () => {
+const UserProfile = ({ user }) => {
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    localStorage.removeItem("user");
+    navigate("/login");
+  };
   return (
     <HStack color="#fff" pb={2}>
-      <Avatar name="jk" src="" boxSize="12" />
-      <Box>
-        <Text fontWeight="medium" fontSize="sm" textTransform="capitalize">
-          Admin one
-        </Text>
-        <Text color="muted" fontSize="sm">
-          admin@team.com
-        </Text>
-      </Box>
+      <Popover>
+        <Avatar name={user.fullName} src="" boxSize="12" />
+        <PopoverTrigger>
+          <Box cursor="pointer">
+            <Text fontWeight="medium" fontSize="sm" textTransform="capitalize">
+              {user.fullName}
+            </Text>
+            <Text color="muted" fontSize="sm">
+              {user.email}
+            </Text>
+          </Box>
+        </PopoverTrigger>
+        <PopoverContent>
+          <PopoverBody>
+            <Button colorScheme="teal" onClick={handleLogout}>
+              Logout
+            </Button>
+          </PopoverBody>
+        </PopoverContent>
+      </Popover>
     </HStack>
   );
 };

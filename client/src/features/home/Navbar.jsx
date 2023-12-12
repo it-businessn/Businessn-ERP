@@ -13,7 +13,7 @@ import { TOP_NAV_MENU_LIST } from "constant";
 import { FaSyncAlt } from "react-icons/fa";
 import { Link } from "react-router-dom";
 
-const Navbar = ({ handleClick }) => {
+const Navbar = ({ handleClick, user }) => {
   return (
     <Box
       pl={3}
@@ -52,7 +52,7 @@ const Navbar = ({ handleClick }) => {
           </Stack>
         ))}
         <Spacer />
-        <UserProfile />
+        <UserProfile user={user} />
       </Flex>
     </Box>
   );

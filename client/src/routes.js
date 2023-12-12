@@ -3,6 +3,7 @@ import { createBrowserRouter } from "react-router-dom";
 
 import Loader from "features/Loader";
 import PageNotFound from "features/PageNotFound";
+import Home from "features/home";
 import RootLayout from "layouts/RootLayout";
 
 const AddOpportunity = lazy(() =>
@@ -45,8 +46,7 @@ export const router = createBrowserRouter([
     children: [
       {
         index: true,
-        // element: <Home />,
-        element: <ContactsDashboard />,
+        element: <Home />,
       },
       {
         path: "/sales",

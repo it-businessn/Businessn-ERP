@@ -4,13 +4,13 @@ import Navbar from "features/home/Navbar";
 import Sidebar from "features/sidebar";
 import { useState } from "react";
 
-const DashboardLayout = ({ children }) => {
+const DashboardLayout = ({ children, user }) => {
   const [activeMenu, setActiveMenu] = useState(TOP_NAV_MENU_LIST[0]);
   const handleClick = (menu) => setActiveMenu(menu);
 
   return (
     <>
-      <Navbar handleClick={handleClick} />
+      <Navbar user={user} handleClick={handleClick} />
       <Flex
         as="section"
         direction={{

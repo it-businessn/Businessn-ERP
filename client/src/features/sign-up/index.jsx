@@ -1,69 +1,66 @@
-import { Box, Container, Heading, Stack, Text } from "@chakra-ui/react";
-import GenericForm from "components/generic-form";
+import {
+  Box,
+  Button,
+  Container,
+  Flex,
+  FormControl,
+  FormLabel,
+  Heading,
+  Input,
+  Stack,
+} from "@chakra-ui/react";
 import Logo from "components/logo";
-import { signUpFormFields, signUpInitialValues } from "config/formfields";
-import { UserSchema } from "config/schema";
-import { Country } from "country-state-city";
-import { useSignup } from "hooks/useSignup";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import * as api from "services";
 
 const SignUp = () => {
-  const [countryList, setCountryList] = useState("");
-  useEffect(() => {
-    const fetchCountry = async () => {
-      try {
-        let result = await Country.getAllCountries();
-        setCountryList(result);
-      } catch (error) {}
-    };
-    const fetchConfigurationOptionsByDepartment = async (key) => {
-      let configuration = await api.getConfigurationsByName(key);
-      let departmentField = signUpFormFields.find((item) => item.id === key);
-      configuration.data.items.forEach((department) =>
-        departmentField.options.push(department.name)
-      );
-    };
-    const fetchConfigurationOptionsByRole = async (key) => {
-      let configuration = await api.getConfigurationsByName(key);
-      let roleField = signUpFormFields.find((item) => item.id === key);
-      configuration.data.items.forEach((role) =>
-        roleField.options.push(role.name)
-      );
-    };
-    const fetchConfigurationOptionsByEmpType = async (key) => {
-      let configuration = await api.getConfigurationsByName(key);
-      let empTypeField = signUpFormFields.find((item) => item.id === key);
-      configuration.data.items.forEach((empType) =>
-        empTypeField.options.push(empType.name)
-      );
-    };
-    const fetchConfigurationOptionsByManager = async (key) => {
-      let configuration = await api.getConfigurationsByName(key);
-      let approverField = signUpFormFields.find((item) => item.id === key);
-      configuration.data.items.forEach((approver) =>
-        approverField.options.push(approver.name)
-      );
-    };
-    fetchConfigurationOptionsByDepartment("department");
-    fetchConfigurationOptionsByRole("role");
-    fetchConfigurationOptionsByEmpType("empType");
-    fetchConfigurationOptionsByManager("approver");
-    fetchCountry();
-  }, []);
-  const { signup, error, isLoading } = useSignup();
+  const [formData, setFormData] = useState({
+    companyId: "",
+    firstName: "",
+    middleName: "",
+    lastName: "",
+    fullName: "",
+    email: "",
+    password: "",
+    role: "",
+    department: "",
+    manager: "",
+    phoneNumber: "",
+    address: "",
+  });
   const navigate = useNavigate();
-  const handleSubmit = async (values) => {
+
+  const onCancel = () => {};
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    formData.fullName = `${formData.firstName} ${formData.middleName} ${formData.lastName}`;
     try {
-      const result = await signup(values);
-      if (result.statusText === "OK") {
-        navigate("/verify-email");
-      }
+      await api.signUp(formData);
+      setFormData({
+        companyId: "",
+        firstName: "",
+        middleName: "",
+        lastName: "",
+        fullName: "",
+        email: "",
+        password: "",
+        role: "",
+        department: "",
+        manager: "",
+        phoneNumber: "",
+        address: "",
+      });
+      navigate("/login");
     } catch (error) {
-      // setError(error.response.data.error);
-      console.log(error);
+      console.error("Error adding user:", error);
     }
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({ ...prevData, [name]: value }));
   };
 
   return (
@@ -88,31 +85,130 @@ const SignUp = () => {
               </Heading>
             </Stack>
           </Stack>
-          {countryList && (
-            <GenericForm
-              id="sign-up"
-              formSubmit={handleSubmit}
-              schema={UserSchema}
-              initialValues={signUpInitialValues}
-              formFields={signUpFormFields}
-              countryList={countryList}
-              isLoading={isLoading}
-            />
-          )}
-          {/* <HStack justify="center" spacing="1">
-            <Text textStyle="sm" color="fg.muted">
-              Already have an account?
-            </Text>
-            <Link to="/sign-in">
-              <Button variant="text" size="sm">
-                Log in
+          <form onSubmit={handleSubmit}>
+            <FormControl mb={4}>
+              <FormLabel>Company Id</FormLabel>
+              <Input
+                type="text"
+                name="companyId"
+                value={formData.companyId}
+                onChange={handleChange}
+                placeholder="Company Id"
+              />
+            </FormControl>
+            <FormControl mb={4}>
+              <FormLabel>First Name</FormLabel>
+              <Input
+                type="text"
+                name="firstName"
+                value={formData.firstName}
+                onChange={handleChange}
+                placeholder="First Name"
+              />
+            </FormControl>
+            <FormControl mb={4}>
+              <FormLabel>Middle Name</FormLabel>
+              <Input
+                type="text"
+                name="middleName"
+                value={formData.middleName}
+                onChange={handleChange}
+                placeholder="Middle Name"
+              />
+            </FormControl>
+            <FormControl mb={4}>
+              <FormLabel>Last Name</FormLabel>
+              <Input
+                type="text"
+                name="lastName"
+                value={formData.lastName}
+                onChange={handleChange}
+                placeholder="Last Name"
+              />
+            </FormControl>
+            <FormControl mb={4}>
+              <FormLabel>Email</FormLabel>
+              <Input
+                type="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                placeholder="Enter email address"
+              />
+            </FormControl>
+            <FormControl mb={4}>
+              <FormLabel>Password</FormLabel>
+              <Input
+                type="text"
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
+                placeholder="Enter password"
+              />
+            </FormControl>
+            <FormControl mb={4}>
+              <FormLabel>Role</FormLabel>
+              <Input
+                type="text"
+                name="role"
+                value={formData.role}
+                onChange={handleChange}
+                placeholder="Role"
+              />
+            </FormControl>
+            <FormControl mb={4}>
+              <FormLabel>Department</FormLabel>
+              <Input
+                type="text"
+                name="department"
+                value={formData.department}
+                onChange={handleChange}
+                placeholder="Department"
+              />
+            </FormControl>
+            <FormControl mb={4}>
+              <FormLabel>Manager</FormLabel>
+              <Input
+                type="text"
+                name="manager"
+                value={formData.manager}
+                onChange={handleChange}
+                placeholder="Manager"
+              />
+            </FormControl>
+            <FormControl mb={4}>
+              <FormLabel>Phone Number</FormLabel>
+              <Input
+                type="text"
+                name="phoneNumber"
+                value={formData.phoneNumber}
+                onChange={handleChange}
+                placeholder="Phone Number"
+              />
+            </FormControl>
+            <FormControl mb={4}>
+              <FormLabel>Address</FormLabel>
+              <Input
+                type="text"
+                name="address"
+                value={formData.address}
+                onChange={handleChange}
+                placeholder="Address"
+              />
+            </FormControl>
+            <Flex justifyContent="flex-end">
+              <Button colorScheme="teal" type="submit">
+                Add
               </Button>
-            </Link>
-          </HStack> */}
-          {error && <Text color="red">{error}</Text>}
+              <Button colorScheme="gray" ml={2} onClick={onCancel}>
+                Cancel
+              </Button>
+            </Flex>
+          </form>
         </Stack>
       </Box>
     </Container>
   );
 };
+
 export default SignUp;

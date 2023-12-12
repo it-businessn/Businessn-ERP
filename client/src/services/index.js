@@ -7,8 +7,8 @@ const withAuthHeader = (token) => ({
 });
 
 // Authentication APIs
-export const signIn = (formData) => API.post("/login", formData);
-export const signUp = (formData) => API.post("/register", formData);
+export const signIn = (formData) => API.post("/user/login", formData);
+export const signUp = (formData) => API.post("/user/register", formData);
 export const verifyUser = (formData) => API.post("/verify-email", formData);
 export const forgotPassword = (formData) =>
   API.post("/forgot-password", formData);

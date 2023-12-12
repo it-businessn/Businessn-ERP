@@ -1,25 +1,43 @@
 import {
+  Button,
   Center,
+  FormControl,
+  FormLabel,
   Heading,
+  Input,
   Stack,
   Text,
   useBreakpointValue,
 } from "@chakra-ui/react";
-import GenericForm from "components/generic-form";
-import { loginFormFields, loginInitialValues } from "config/formfields";
-import { LoginSchema } from "config/schema";
 import { useAuthContext } from "hooks/useAuthContext";
 import { useLogin } from "hooks/useLogin";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import * as api from "services";
 import Logo from "../../components/logo";
 
 const SignInForm = ({ title }) => {
   const { user } = useAuthContext();
   const { login, error, isLoading } = useLogin();
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+  });
   const navigate = useNavigate();
 
-  const handleSubmit = async (values) => {
-    await login(values);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await api.signIn(formData);
+      setFormData({
+        email: "",
+        password: "",
+      });
+      localStorage.setItem("user", JSON.stringify(response.data));
+      navigate("/");
+    } catch (error) {
+      console.error("Error adding user:", error);
+    }
   };
   if (user) {
     navigate("/");
@@ -29,6 +47,10 @@ const SignInForm = ({ title }) => {
     md: false,
   });
 
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({ ...prevData, [name]: value }));
+  };
   return (
     <Center flex="1">
       <Stack
@@ -64,13 +86,35 @@ const SignInForm = ({ title }) => {
           </Stack>
         </Stack>
         <Stack spacing="5">
-          <GenericForm
-            formSubmit={handleSubmit}
-            schema={LoginSchema}
-            initialValues={loginInitialValues}
-            formFields={loginFormFields}
-            isLoading={isLoading}
-          />
+          <form onSubmit={handleSubmit}>
+            <Stack spacing={4}>
+              <FormControl>
+                <FormLabel>Email</FormLabel>
+                <Input
+                  type="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  required
+                />
+              </FormControl>
+
+              <FormControl>
+                <FormLabel>Password</FormLabel>
+                <Input
+                  type="password"
+                  name="password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  required
+                />
+              </FormControl>
+
+              <Button type="submit" colorScheme="teal">
+                Login
+              </Button>
+            </Stack>
+          </form>
           {error && <Text color="red">{error}</Text>}
         </Stack>
       </Stack>

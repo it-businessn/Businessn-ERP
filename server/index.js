@@ -12,6 +12,7 @@ const meetingRoutes = require("./routes/meeting");
 const noteRoutes = require("./routes/notes");
 const opportunityRoutes = require("./routes/opportunity");
 const taskRoutes = require("./routes/tasks");
+const userRoutes = require("./routes/user");
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -26,6 +27,7 @@ app.use((request, response, next) => {
 });
 
 //routes
+app.use("/api/user", userRoutes);
 app.use("/api/activities", activityRoutes);
 app.use("/api/contacts", contactRoutes);
 app.use("/api/events", eventRoutes);
