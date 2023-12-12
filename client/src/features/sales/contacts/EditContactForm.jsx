@@ -1,13 +1,18 @@
 import {
+  Avatar,
   Box,
   Button,
+  Divider,
   FormControl,
   FormLabel,
   HStack,
   Input,
   Stack,
+  Text,
+  VStack,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
+import { FaAddressCard, FaBuilding } from "react-icons/fa";
 
 const EditContactForm = ({ selectedContact, onSave, onCancel }) => {
   const [formData, setFormData] = useState(selectedContact);
@@ -24,64 +29,20 @@ const EditContactForm = ({ selectedContact, onSave, onCancel }) => {
     onSave(formData);
   };
   return (
-    <Box mx="auto" mt={8} p={4} borderWidth="1px" borderRadius="lg">
+    <Box mx="auto" m="2em" p={4} borderWidth="1px" borderRadius="lg">
       <form>
         <HStack maxW="100%" justify="center">
-          <Stack flex={1} spacing={4}>
-            <FormLabel as="legend">Primary Contact Information</FormLabel>
-            <FormControl mb={4}>
-              <FormLabel>First Name</FormLabel>
-              <Input
-                type="text"
-                name="firstName"
-                value={formData.firstName}
-                onChange={handleChange}
-                placeholder="First Name"
-              />
-            </FormControl>
-            <FormControl mb={4}>
-              <FormLabel>Last Name</FormLabel>
-              <Input
-                type="text"
-                name="lastName"
-                value={formData.lastName}
-                onChange={handleChange}
-                placeholder="Last Name"
-              />
-            </FormControl>
-            <FormControl mb={4}>
-              <FormLabel>Email</FormLabel>
-              <Input
-                type="email"
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-                placeholder="Email"
-              />
-            </FormControl>
-            <FormControl mb={4}>
-              <FormLabel>Phone Number</FormLabel>
-              <Input
-                type="text"
-                name="phone"
-                value={formData.phone}
-                onChange={handleChange}
-                placeholder="phone"
-              />
-            </FormControl>
-            <FormControl mb={4}>
-              <FormLabel>Primary Contact Address</FormLabel>
-              <Input
-                type="text"
-                name="primaryContactAddress"
-                value={formData.primaryContactAddress}
-                onChange={handleChange}
-                placeholder="Primary Contact"
-              />
-            </FormControl>
-          </Stack>
-          <Stack flex={1} spacing={4}>
-            <FormLabel as="legend">Company Information</FormLabel>
+          <Stack flex={1}>
+            <VStack align="center" justify="center" mb="4">
+              <Avatar name=" " size="lg" bg="gray.300" position="relative">
+                <FaBuilding className="header-logo" />
+              </Avatar>
+              <Box textAlign="center">
+                <Text fontSize="xl" fontWeight="bold">
+                  Company Information
+                </Text>
+              </Box>
+            </VStack>
             <FormControl mb={4}>
               <FormLabel>Company Name</FormLabel>
               <Input
@@ -133,13 +94,83 @@ const EditContactForm = ({ selectedContact, onSave, onCancel }) => {
               />
             </FormControl>
           </Stack>
+          <Divider
+            orientation="vertical"
+            height="600px"
+            borderWidth="1px"
+            borderColor="gray.300"
+          />
+          <Stack flex={1}>
+            <VStack align="center" justify="center" mb="4">
+              <Avatar name=" " size="lg" bg="gray.300" position="relative">
+                <FaAddressCard className="header-logo" />
+              </Avatar>
+              <Box textAlign="center">
+                <Text fontSize="xl" fontWeight="bold">
+                  Primary Contact Information
+                </Text>
+              </Box>
+            </VStack>
+            <FormControl mb={4}>
+              <FormLabel>First Name</FormLabel>
+              <Input
+                type="text"
+                name="firstName"
+                value={formData.firstName}
+                onChange={handleChange}
+                placeholder="First Name"
+              />
+            </FormControl>
+            <FormControl mb={4}>
+              <FormLabel>Last Name</FormLabel>
+              <Input
+                type="text"
+                name="lastName"
+                value={formData.lastName}
+                onChange={handleChange}
+                placeholder="Last Name"
+              />
+            </FormControl>
+            <FormControl mb={4}>
+              <FormLabel>Email</FormLabel>
+              <Input
+                type="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                placeholder="Email"
+              />
+            </FormControl>
+            <FormControl mb={4}>
+              <FormLabel>Phone Number</FormLabel>
+              <Input
+                type="text"
+                name="phone"
+                value={formData.phone}
+                onChange={handleChange}
+                placeholder="phone"
+              />
+            </FormControl>
+            <FormControl mb={4}>
+              <FormLabel>Primary Contact Address</FormLabel>
+              <Input
+                type="text"
+                name="primaryContactAddress"
+                value={formData.primaryContactAddress}
+                onChange={handleChange}
+                placeholder="Primary Contact"
+              />
+            </FormControl>
+          </Stack>
         </HStack>
-        <Button colorScheme="teal" onClick={handleSave}>
-          Save
-        </Button>
-        <Button colorScheme="gray" ml={2} onClick={onCancel}>
-          Cancel
-        </Button>
+        <HStack>
+          <Button colorScheme="teal" onClick={handleSave}>
+            Save
+          </Button>
+          <Button colorScheme="gray" ml={2} onClick={onCancel}>
+            Cancel
+          </Button>
+        </HStack>
       </form>
     </Box>
   );

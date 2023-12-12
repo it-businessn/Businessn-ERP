@@ -18,12 +18,34 @@ import GradientAreaFillColorChart from "./AreaFillColorChart";
 
 const Pipeline = () => {
   const [opportunities, setOpportunities] = useState([]);
+  const [opportunityData, setOpportunityData] = useState([]);
 
   useEffect(() => {
     const fetchOpportunities = async () => {
       try {
         const response = await api.getOpportunitiesByCategory();
         setOpportunities(response.data);
+        const opportunityStat = [];
+        const sortOrder = [
+          "New",
+          "Presentation",
+          "Meeting",
+          "Negotiating",
+          "Won",
+        ];
+        for (const status in response.data) {
+          opportunityStat.push({
+            name: status,
+            value: response.data[status]?.opportunities?.length || 0,
+          });
+        }
+        const sortedData = opportunityStat.sort((a, b) => {
+          const indexA = sortOrder.indexOf(a.name);
+          const indexB = sortOrder.indexOf(b.name);
+
+          return indexA - indexB;
+        });
+        setOpportunityData(sortedData);
       } catch (error) {
         console.error(error);
       }
@@ -34,7 +56,9 @@ const Pipeline = () => {
   return (
     <Box width="100%">
       <Box ml={-30} width="100%">
-        <GradientAreaFillColorChart />
+        {opportunityData && (
+          <GradientAreaFillColorChart opportunityData={opportunityData} />
+        )}
       </Box>
       <Grid templateColumns="repeat(5, 1fr)" mx={5}>
         {PIPELINE_STAGES?.map((item, columnIndex) => (

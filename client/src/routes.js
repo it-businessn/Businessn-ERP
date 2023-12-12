@@ -3,7 +3,6 @@ import { createBrowserRouter } from "react-router-dom";
 
 import Loader from "features/Loader";
 import PageNotFound from "features/PageNotFound";
-import Home from "features/home";
 import RootLayout from "layouts/RootLayout";
 
 const AddOpportunity = lazy(() =>
@@ -46,7 +45,24 @@ export const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <Home />,
+        // element: <Home />,
+        element: <ContactsDashboard />,
+      },
+      {
+        path: "/sales",
+        element: <ContactsDashboard />,
+      },
+      {
+        path: "/view-contacts",
+        element: <Contacts />,
+      },
+      {
+        path: "/add-contact",
+        element: <AddContact />,
+      },
+      {
+        path: "/edit-contact",
+        element: <EditContact />,
       },
       {
         path: "/calendar",
@@ -67,22 +83,6 @@ export const router = createBrowserRouter([
       {
         path: "/opportunities",
         element: <OpportunitiesList />,
-      },
-      {
-        path: "/sales",
-        element: <ContactsDashboard />,
-      },
-      {
-        path: "/view-contacts",
-        element: <Contacts />,
-      },
-      {
-        path: "/add-contact",
-        element: <AddContact />,
-      },
-      {
-        path: "/edit-contact",
-        element: <EditContact />,
       },
       {
         path: "/resource",

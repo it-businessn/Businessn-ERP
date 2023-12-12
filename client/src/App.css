@@ -13,6 +13,16 @@ body {
 .tab-form {
   width: 100%;
 }
+
 .date-picker {
   padding: 8px;
+}
+
+.header-logo {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 1.5em;
+  color: white;
 }

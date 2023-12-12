@@ -29,19 +29,11 @@ const ContactDetailsForm = ({ contact, showLogForm }) => {
     defaultIsOpen: true,
   });
 
-  const iconStyles = {
-    position: "absolute",
-    top: "50%",
-    left: "50%",
-    transform: "translate(-50%, -50%)",
-    fontSize: "1.5em",
-    color: "white",
-  };
   return (
     <Box px={15} pt={15}>
       <VStack align="center" justify="center" mb="4">
         <Avatar name=" " size="lg" bg="gray.300" position="relative">
-          <FaBuilding style={iconStyles} />
+          <FaBuilding className="header-logo" />
         </Avatar>
         <Box textAlign="center">
           <Text fontSize="xl" fontWeight="bold">

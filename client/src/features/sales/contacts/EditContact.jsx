@@ -52,32 +52,34 @@ const EditContact = () => {
   const handleCancel = () => {
     setSelectedContact(null);
     setEditForm((prev) => !prev);
-    navigate("/view-contacts");
   };
   return (
     <Box>
-      <Stack direction="row" spacing={4} mb={4}>
-        <Input
-          placeholder="Search Contact..."
-          value={filter}
-          onChange={(e) => setFilter(e.target.value)}
-        />
-      </Stack>
-      {!edit &&
-        filteredContacts.map((contact) => (
-          <Box key={contact.companyName} borderWidth="1px" p={2}>
-            <HStack>
-              <Text>
-                {contact.firstName} {contact.lastName}
-              </Text>
-              <Text fontWeight="bold">Client: {contact.companyName}</Text>
-              <Spacer />
-              <Button colorScheme="teal" onClick={() => editContact(contact)}>
-                Edit
-              </Button>
-            </HStack>
-          </Box>
-        ))}
+      {!edit && (
+        <>
+          <Stack direction="row" spacing={4} mb={4}>
+            <Input
+              placeholder="Search Contact..."
+              value={filter}
+              onChange={(e) => setFilter(e.target.value)}
+            />
+          </Stack>
+          {filteredContacts.map((contact) => (
+            <Box key={contact.companyName} borderWidth="1px" p={2}>
+              <HStack>
+                <Text>
+                  {contact.firstName} {contact.lastName}
+                </Text>
+                <Text fontWeight="bold">Client: {contact.companyName}</Text>
+                <Spacer />
+                <Button colorScheme="teal" onClick={() => editContact(contact)}>
+                  Edit
+                </Button>
+              </HStack>
+            </Box>
+          ))}
+        </>
+      )}
       {edit && (
         <EditContactForm
           onSave={handleSave}

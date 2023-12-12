@@ -1,4 +1,14 @@
-import { Flex, Input, Table, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
+import {
+  Flex,
+  HStack,
+  Input,
+  Table,
+  Tbody,
+  Td,
+  Th,
+  Thead,
+  Tr,
+} from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import * as api from "services";
 
@@ -21,6 +31,7 @@ const OpportunitiesList = () => {
     name: "",
     clientName: "",
     stage: "",
+    dealAmount: 0,
   });
 
   const handleFilterChange = (field, value) => {
@@ -41,23 +52,33 @@ const OpportunitiesList = () => {
   return (
     <Flex direction="column" p={4}>
       <Flex mb={4}>
-        <Input
-          placeholder="Filter by Opportunity Name"
-          value={filter.name}
-          onChange={(e) => handleFilterChange("name", e.target.value)}
-          mr={2}
-        />
-        <Input
-          placeholder="Filter by Client Name"
-          value={filter.clientName}
-          onChange={(e) => handleFilterChange("clientName", e.target.value)}
-          mr={2}
-        />
-        <Input
-          placeholder="Filter by Stage"
-          value={filter.stage}
-          onChange={(e) => handleFilterChange("stage", e.target.value)}
-        />
+        <HStack width="100%">
+          <Input
+            placeholder="Filter by Opportunity Name"
+            value={filter.name}
+            onChange={(e) => handleFilterChange("name", e.target.value)}
+          />
+          <Input
+            placeholder="Filter by Client Name"
+            value={filter.clientName}
+            onChange={(e) => handleFilterChange("clientName", e.target.value)}
+          />
+          <Input
+            placeholder="Filter by Stage"
+            value={filter.stage}
+            onChange={(e) => handleFilterChange("stage", e.target.value)}
+          />
+          {/* <Input
+            placeholder="Filter by Deal Amount"
+            value={filter.dealAmount}
+            onChange={(e) => handleFilterChange("dealAmount", e.target.value)}
+          /> */}
+          {/* <Input
+            placeholder="Filter by Probability"
+            value={filter.probability}
+            onChange={(e) => handleFilterChange("probability", e.target.value)}
+          /> */}
+        </HStack>
       </Flex>
 
       <Table variant="striped" colorScheme="teal">
@@ -66,14 +87,18 @@ const OpportunitiesList = () => {
             <Th>Opportunity Name</Th>
             <Th>Client Name</Th>
             <Th>Stage</Th>
+            <Th>Deal Amount</Th>
+            <Th>Probability</Th>
           </Tr>
         </Thead>
         <Tbody>
           {filteredOpportunities.map((opp) => (
-            <Tr key={opp.id}>
+            <Tr key={opp._id}>
               <Td>{opp.name}</Td>
               <Td>{opp.clientName}</Td>
               <Td>{opp.stage}</Td>
+              <Td>{opp.dealAmount}</Td>
+              <Td>{opp.probability}</Td>
             </Tr>
           ))}
         </Tbody>
