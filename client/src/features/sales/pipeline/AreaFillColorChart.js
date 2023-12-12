@@ -9,16 +9,6 @@ import {
 } from "recharts";
 
 const GradientAreaFillColorChart = ({ opportunityData }) => {
-  const gradientOffset = () => {
-    const dataMax = Math.max(...opportunityData.map((entry) => entry.value));
-    const dataMin = Math.min(...opportunityData.map((entry) => entry.value));
-
-    if (dataMax <= 0) return 0;
-    if (dataMin >= 0) return 1;
-
-    return dataMax / (dataMax - dataMin);
-  };
-
   return (
     <ResponsiveContainer width="100%" height={250}>
       <AreaChart
@@ -27,23 +17,19 @@ const GradientAreaFillColorChart = ({ opportunityData }) => {
       >
         <defs>
           <linearGradient id="colorGradient" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="5%" stopColor="#8884d8" stopOpacity={0.8} />
-            <stop
-              offset={`${gradientOffset() * 100}%`}
-              stopColor="#8884d8"
-              stopOpacity={0.2}
-            />
-            <stop
-              offset={`${gradientOffset() * 100}%`}
-              stopColor="red"
-              stopOpacity={0.2}
-            />
-            <stop offset="95%" stopColor="red" stopOpacity={0.8} />
+            {opportunityData.map(({ name, color }, index) => (
+              <stop
+                key={name}
+                offset={`${(index / (opportunityData.length - 1)) * 100}%`}
+                stopColor={color}
+                stopOpacity={1}
+              />
+            ))}
           </linearGradient>
         </defs>
         <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="name" tick={false} />
-        <YAxis tick={false} />
+        <XAxis dataKey="name" />
+        <YAxis allowDecimals={false} />
         <Tooltip />
         <Area
           type="monotone"

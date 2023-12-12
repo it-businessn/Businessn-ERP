@@ -8,6 +8,7 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import moment from "moment";
+import { Link } from "react-router-dom";
 
 const MeetingList = ({ meetings }) => {
   return (
@@ -29,7 +30,14 @@ const MeetingList = ({ meetings }) => {
                 Meeting Date: {moment(meeting.fromDate).format("MMM DD, YYYY ")}
                 {meeting.fromTime}
               </Text>
-              <Text as="a">Meeting Link: {meeting.meetingLink} </Text>
+              <Text>
+                Meeting Link:{" "}
+                <Link href={meeting.meetingLink} isExternal>
+                  <Text as="span" color="blue.400">
+                    {meeting.meetingLink}
+                  </Text>
+                </Link>
+              </Text>
             </CardBody>
           </Card>
         ))}

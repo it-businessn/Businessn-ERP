@@ -5,11 +5,14 @@ import Loader from "features/Loader";
 import PageNotFound from "features/PageNotFound";
 import Home from "features/home";
 import RootLayout from "layouts/RootLayout";
+import UserProfileDetails from "components/UserProfileDetails";
 
 const AddOpportunity = lazy(() =>
   import("features/sales/pipeline/AddOpportunity")
 );
 const CalendarDashboard = lazy(() => import("features/sales/calendar"));
+const TaskByDate = lazy(() => import("features/sales/calendar/TaskByDate"));
+
 const Contacts = lazy(() => import("features/sales/contacts"));
 const ContactsDashboard = lazy(() =>
   import("features/sales/contacts/ContactsDashboard")
@@ -49,6 +52,10 @@ export const router = createBrowserRouter([
         element: <Home />,
       },
       {
+        path: "/profile",
+        element: <UserProfileDetails />,
+      },
+      {
         path: "/sales",
         element: <ContactsDashboard />,
       },
@@ -67,6 +74,10 @@ export const router = createBrowserRouter([
       {
         path: "/calendar",
         element: <CalendarDashboard />,
+      },
+      {
+        path: "/view-tasks",
+        element: <TaskByDate />,
       },
       {
         path: "/pipeline",

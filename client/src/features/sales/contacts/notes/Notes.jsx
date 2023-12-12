@@ -75,7 +75,7 @@ const Notes = ({ contactId }) => {
             <Card key={index} borderWidth="1px" borderRadius="lg" w="100%">
               <CardBody>
                 <Flex justifyContent="space-between">
-                  <Text>{note.description}</Text>
+                  <Text w="80%">{note.description}</Text>
                   <Text fontSize="sm" color="gray.500" align="end">
                     {moment(note.date).format("MMM DD, YYYY hh:mm A Z")}
                   </Text>

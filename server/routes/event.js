@@ -4,7 +4,7 @@ const Event = require("../models/Event");
 
 router.get("/", async (req, res) => {
   try {
-    const events = (await Event.find()).sort((a, b) => b.date - a.date);
+    const events = await Event.find({}).sort({ date: -1 });
     res.status(200).json(events);
   } catch (error) {
     res.status(404).json({ error: error.message });

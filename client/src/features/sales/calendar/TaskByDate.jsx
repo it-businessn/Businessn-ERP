@@ -1,64 +1,45 @@
 import {
   Badge,
   Box,
-  Button,
   Card,
   CardBody,
   Checkbox,
   Flex,
-  FormControl,
-  FormLabel,
   HStack,
-  Input,
   Spacer,
   Text,
   VStack,
 } from "@chakra-ui/react";
 import moment from "moment";
 import { useEffect, useState } from "react";
-import ReactDatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import * as api from "services";
 
-const Tasks = ({ contactId }) => {
+const TaskByDate = () => {
   const [tasks, setTasks] = useState([]);
-  const [dueDate, setDueDate] = useState(null);
-  const [taskName, setTaskName] = useState("");
 
   useEffect(() => {
-    fetchTasksByContactId(contactId);
-  }, [contactId]);
-
-  const handleAddTask = async (e) => {
-    e.preventDefault();
-    try {
-      await api.addTask({
-        name: taskName,
-        dueDate,
-        status: "Open",
-        contactId,
-      });
-      fetchTasksByContactId(contactId);
-      setTaskName("");
-      setDueDate(null);
-    } catch (error) {
-      console.error(error);
-    }
-  };
+    fetchAllTasksByDate();
+  }, []);
 
   const handleCheckboxChange = async (checked, task) => {
     task.status = checked ? "Closed" : "Open";
     try {
-      await api.updateTask(task, task._id);
-      fetchTasksByContactId(contactId);
+      await api.updateEvent(task, task._id);
+      fetchAllTasksByDate();
     } catch (error) {
       console.error("Error adding opportunity:", error);
     }
   };
-  const fetchTasksByContactId = async (contact) => {
+
+  const fetchAllTasksByDate = async () => {
     try {
-      const response = await api.getTaskByContactId(contact);
-      setTasks(response.data);
+      const response = await api.getEvents();
+      const tasksByDate = response.data.filter(
+        (task) => task.taskDueDate !== null
+      );
+      tasksByDate.map((task) => (task.status = "Open"));
+      setTasks(tasksByDate);
     } catch (error) {
       console.error(error);
     }
@@ -67,41 +48,10 @@ const Tasks = ({ contactId }) => {
   return (
     <Box>
       <VStack spacing={4}>
-        <form className="tab-form">
-          <FormControl id="taskName" isRequired>
-            <FormLabel>Task Name</FormLabel>
-            <Input
-              type="text"
-              placeholder="Enter task name"
-              value={taskName}
-              onChange={(e) => setTaskName(e.target.value)}
-            />
-          </FormControl>
-
-          <FormControl id="dueDate" isRequired>
-            <FormLabel>Due Date</FormLabel>
-            <ReactDatePicker
-              className="date-picker"
-              selected={dueDate}
-              onChange={(date) => setDueDate(date)}
-              dateFormat="yyyy-MM-dd"
-              placeholderText="Select due date"
-            />
-          </FormControl>
-
-          <Button
-            mt={4}
-            isDisabled={taskName === ""}
-            colorScheme="teal"
-            onClick={handleAddTask}
-          >
-            Add Task
-          </Button>
-        </form>
-        <Box w="100%">
-          {/* <Text fontSize="xl" fontWeight="bold" mb={4}>
-            Tasklist
-          </Text> */}
+        <Box w="98%">
+          <Text fontSize="xl" fontWeight="bold" mb={4}>
+            Tasks
+          </Text>
           <VStack spacing={4} w="100%">
             {tasks.length > 0 &&
               tasks.map((task, index) => (
@@ -121,7 +71,7 @@ const Tasks = ({ contactId }) => {
                             iconColor="teal.500"
                             size="md"
                           />
-                          <Text>{task.name}</Text>
+                          <Text>{task.description}</Text>
                         </HStack>
                         <Spacer />
                         <Text color="brand.400">
@@ -142,4 +92,4 @@ const Tasks = ({ contactId }) => {
   );
 };
 
-export default Tasks;
+export default TaskByDate;

@@ -23,6 +23,7 @@ export const updateContact = (formData, id) =>
 
 export const getEvents = () => API.get("/events");
 export const addEvent = (formData) => API.post("/events", formData);
+export const updateEvent = (formData, id) => API.put(`/events/${id}`, formData);
 
 export const getActivities = () => API.get("/activities");
 export const getActivitiesByContactId = (id) => API.get(`/activities/${id}`);

@@ -4,20 +4,20 @@ import {
   Button,
   HStack,
   Popover,
+  PopoverArrow,
   PopoverBody,
   PopoverContent,
   PopoverTrigger,
   Text,
+  VStack,
 } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 
-const UserProfile = ({ user }) => {
+const UserProfile = ({ user, handleLogout }) => {
   const navigate = useNavigate();
 
-  const handleLogout = () => {
-    localStorage.removeItem("user");
-    navigate("/login");
-  };
+  const handleProfileClick = () => navigate("/profile");
+
   return (
     <HStack color="#fff" pb={2}>
       <Popover>
@@ -32,11 +32,18 @@ const UserProfile = ({ user }) => {
             </Text>
           </Box>
         </PopoverTrigger>
-        <PopoverContent>
+        <PopoverContent maxW="xs" w="12rem">
+          <PopoverArrow />
+
           <PopoverBody>
-            <Button colorScheme="teal" onClick={handleLogout}>
-              Logout
-            </Button>
+            <VStack w="100%" alignItems="start">
+              <Button variant="ghost" onClick={handleProfileClick}>
+                Profile
+              </Button>
+              <Button variant="ghost" onClick={handleLogout}>
+                Logout
+              </Button>
+            </VStack>
           </PopoverBody>
         </PopoverContent>
       </Popover>

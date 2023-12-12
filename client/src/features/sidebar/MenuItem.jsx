@@ -5,7 +5,7 @@ import { NavLink } from "react-router-dom";
 import "./Sidebar.css";
 
 const MenuItem = ({ menu, textTransform }) => {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(true);
 
   const handleToggle = () => {
     setIsOpen(!isOpen);

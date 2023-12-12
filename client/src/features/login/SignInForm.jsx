@@ -1,4 +1,6 @@
 import {
+  Alert,
+  AlertIcon,
   Button,
   Center,
   FormControl,
@@ -10,7 +12,6 @@ import {
   useBreakpointValue,
 } from "@chakra-ui/react";
 import { useAuthContext } from "hooks/useAuthContext";
-import { useLogin } from "hooks/useLogin";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import * as api from "services";
@@ -18,7 +19,8 @@ import Logo from "../../components/logo";
 
 const SignInForm = ({ title }) => {
   const { user } = useAuthContext();
-  const { login, error, isLoading } = useLogin();
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -27,6 +29,7 @@ const SignInForm = ({ title }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
     try {
       const response = await api.signIn(formData);
       setFormData({
@@ -34,9 +37,12 @@ const SignInForm = ({ title }) => {
         password: "",
       });
       localStorage.setItem("user", JSON.stringify(response.data));
+      setIsLoading(false);
       navigate("/");
     } catch (error) {
-      console.error("Error adding user:", error);
+      setIsLoading(false);
+      console.error("Error adding user:", error?.response?.data);
+      setError(error?.response?.data?.error);
     }
   };
   if (user) {
@@ -110,12 +116,17 @@ const SignInForm = ({ title }) => {
                 />
               </FormControl>
 
-              <Button type="submit" colorScheme="teal">
+              <Button isLoading={isLoading} type="submit" colorScheme="teal">
                 Login
               </Button>
             </Stack>
           </form>
-          {error && <Text color="red">{error}</Text>}
+          {error && (
+            <Alert status="error" mt={4}>
+              <AlertIcon />
+              {error}
+            </Alert>
+          )}
         </Stack>
       </Stack>
     </Center>

@@ -1,4 +1,6 @@
 import {
+  Alert,
+  AlertIcon,
   Box,
   Button,
   Container,
@@ -30,12 +32,15 @@ const SignUp = () => {
     phoneNumber: "",
     address: "",
   });
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
   const navigate = useNavigate();
 
   const onCancel = () => {};
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
     formData.fullName = `${formData.firstName} ${formData.middleName} ${formData.lastName}`;
     try {
       await api.signUp(formData);
@@ -53,9 +58,12 @@ const SignUp = () => {
         phoneNumber: "",
         address: "",
       });
+      setIsLoading(false);
       navigate("/login");
     } catch (error) {
-      console.error("Error adding user:", error);
+      setIsLoading(false);
+      console.error("Error adding user:", error?.response?.data);
+      setError(error?.response?.data?.error);
     }
   };
 
@@ -150,9 +158,9 @@ const SignUp = () => {
             <FormControl mb={4}>
               <FormLabel>Type of Role</FormLabel>
               <Select name="role" value={formData.role} onChange={handleChange}>
-                <option value="employee">Employee</option>
-                <option value="sales_manager">Sales Manager</option>
-                <option value="administrator">Administrator</option>
+                <option value="Employee">Employee</option>
+                <option value="Sales Manager">Sales Manager</option>
+                <option value="Administrator">Administrator</option>
               </Select>
             </FormControl>
             <FormControl mb={4}>
@@ -162,7 +170,7 @@ const SignUp = () => {
                 value={formData.department}
                 onChange={handleChange}
               >
-                <option value="sales">Sales and Marketing</option>
+                <option value="Sales and Marketing">Sales and Marketing</option>
               </Select>
             </FormControl>
             <FormControl mb={4}>
@@ -196,7 +204,7 @@ const SignUp = () => {
               />
             </FormControl>
             <Flex justifyContent="flex-end">
-              <Button colorScheme="teal" type="submit">
+              <Button isLoading={isLoading} colorScheme="teal" type="submit">
                 Add
               </Button>
               <Button colorScheme="gray" ml={2} onClick={onCancel}>
@@ -204,6 +212,12 @@ const SignUp = () => {
               </Button>
             </Flex>
           </form>
+          {error && (
+            <Alert status="error" mt={4}>
+              <AlertIcon />
+              {error}
+            </Alert>
+          )}
         </Stack>
       </Box>
     </Container>

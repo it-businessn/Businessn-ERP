@@ -4,7 +4,7 @@ const Contact = require("../models/Contact");
 
 router.get("/", async (req, res) => {
   try {
-    const contacts = await Contact.find();
+    const contacts = await Contact.find({}).sort({ date: -1 });
     res.json(contacts);
   } catch (error) {
     res.status(500).json({ message: error.message });
