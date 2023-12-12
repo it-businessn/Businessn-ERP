@@ -44,11 +44,10 @@ const LoginCover = () => {
                     xl: "xl",
                   }}
                 >
-                  Simplify your payroll process
+                  Connect, Collaborate, Conquer.
                 </Heading>
                 <Text textStyle="lg" maxW="md" fontWeight="medium">
-                  Create/Login an account and discover the best Payroll
-                  accounting software.
+                  Your CRM Journey Starts with a Login.
                 </Text>
               </Stack>
               <HStack spacing="4">

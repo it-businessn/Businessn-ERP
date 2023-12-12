@@ -7,6 +7,7 @@ import {
   FormLabel,
   Heading,
   Input,
+  Select,
   Stack,
 } from "@chakra-ui/react";
 import Logo from "components/logo";
@@ -23,8 +24,8 @@ const SignUp = () => {
     fullName: "",
     email: "",
     password: "",
-    role: "",
-    department: "",
+    role: "employee",
+    department: "sales",
     manager: "",
     phoneNumber: "",
     address: "",
@@ -46,8 +47,8 @@ const SignUp = () => {
         fullName: "",
         email: "",
         password: "",
-        role: "",
-        department: "",
+        role: "employee",
+        department: "sales",
         manager: "",
         phoneNumber: "",
         address: "",
@@ -147,24 +148,22 @@ const SignUp = () => {
               />
             </FormControl>
             <FormControl mb={4}>
-              <FormLabel>Role</FormLabel>
-              <Input
-                type="text"
-                name="role"
-                value={formData.role}
-                onChange={handleChange}
-                placeholder="Role"
-              />
+              <FormLabel>Type of Role</FormLabel>
+              <Select name="role" value={formData.role} onChange={handleChange}>
+                <option value="employee">Employee</option>
+                <option value="sales_manager">Sales Manager</option>
+                <option value="administrator">Administrator</option>
+              </Select>
             </FormControl>
             <FormControl mb={4}>
-              <FormLabel>Department</FormLabel>
-              <Input
-                type="text"
+              <FormLabel>Type of Department</FormLabel>
+              <Select
                 name="department"
                 value={formData.department}
                 onChange={handleChange}
-                placeholder="Department"
-              />
+              >
+                <option value="sales">Sales and Marketing</option>
+              </Select>
             </FormControl>
             <FormControl mb={4}>
               <FormLabel>Manager</FormLabel>
