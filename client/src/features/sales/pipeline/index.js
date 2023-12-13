@@ -33,12 +33,13 @@ const Pipeline = () => {
           "Negotiating",
           "Won",
         ];
-        for (const status in response.data) {
+        PIPELINE_STAGES.map((stage) =>
           opportunityStat.push({
-            name: status,
-            value: response.data[status]?.opportunities?.length || 0,
-          });
-        }
+            name: stage.name,
+            value: response.data[stage.name]?.opportunities?.length || 0,
+            color: stage.color,
+          })
+        );
         const sortedData = opportunityStat.sort((a, b) => {
           const indexA = sortOrder.indexOf(a.name);
           const indexB = sortOrder.indexOf(b.name);
@@ -61,8 +62,8 @@ const Pipeline = () => {
         )}
       </Box>
       <Grid templateColumns="repeat(5, 1fr)" mx={5}>
-        {PIPELINE_STAGES?.map((item, columnIndex) => (
-          <GridItem key={columnIndex}>
+        {PIPELINE_STAGES?.map((item) => (
+          <GridItem key={item.name}>
             <Box
               height="50px"
               bg={item.color}
@@ -78,7 +79,7 @@ const Pipeline = () => {
                 )}
               </Text>
               {opportunities[item.name]?.opportunities?.map((opportunity) => (
-                <Card mt={2} mx={2.5}>
+                <Card mt={2} mx={2.5} key={opportunity._id}>
                   <CardBody p={2}>
                     <Flex>
                       <Stack>

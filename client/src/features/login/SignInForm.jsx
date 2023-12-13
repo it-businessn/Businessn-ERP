@@ -1,3 +1,4 @@
+import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
 import {
   Alert,
   AlertIcon,
@@ -7,18 +8,17 @@ import {
   FormLabel,
   Heading,
   Input,
+  InputGroup,
+  InputRightElement,
   Stack,
-  Text,
   useBreakpointValue,
 } from "@chakra-ui/react";
-import { useAuthContext } from "hooks/useAuthContext";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import * as api from "services";
 import Logo from "../../components/logo";
 
 const SignInForm = ({ title }) => {
-  const { user } = useAuthContext();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const [formData, setFormData] = useState({
@@ -26,7 +26,6 @@ const SignInForm = ({ title }) => {
     password: "",
   });
   const navigate = useNavigate();
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
@@ -45,9 +44,6 @@ const SignInForm = ({ title }) => {
       setError(error?.response?.data?.error);
     }
   };
-  if (user) {
-    navigate("/");
-  }
   const isMobile = useBreakpointValue({
     base: true,
     md: false,
@@ -56,6 +52,10 @@ const SignInForm = ({ title }) => {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({ ...prevData, [name]: value }));
+  };
+  const [showPassword, setShowPassword] = useState(false);
+  const handleTogglePassword = () => {
+    setShowPassword((prevShowPassword) => !prevShowPassword);
   };
   return (
     <Center flex="1">
@@ -107,13 +107,24 @@ const SignInForm = ({ title }) => {
 
               <FormControl>
                 <FormLabel>Password</FormLabel>
-                <Input
-                  type="password"
-                  name="password"
-                  value={formData.password}
-                  onChange={handleChange}
-                  required
-                />
+                <InputGroup>
+                  <Input
+                    type={showPassword ? "text" : "password"}
+                    name="password"
+                    value={formData.password}
+                    onChange={handleChange}
+                    required
+                  />
+                  <InputRightElement>
+                    <Button
+                      size="sm"
+                      variant="unstyled"
+                      onClick={handleTogglePassword}
+                    >
+                      {showPassword ? <ViewOffIcon /> : <ViewIcon />}
+                    </Button>
+                  </InputRightElement>
+                </InputGroup>
               </FormControl>
 
               <Button isLoading={isLoading} type="submit" colorScheme="teal">

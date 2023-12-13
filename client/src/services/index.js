@@ -13,6 +13,10 @@ export const verifyUser = (formData) => API.post("/verify-email", formData);
 export const forgotPassword = (formData) =>
   API.post("/forgot-password", formData);
 export const signOut = () => API.post("/logout");
+export const updateUserProfile = (formData, id) =>
+  API.put(`/user/${id}`, formData);
+export const updateUserPassword = (formData, id) =>
+  API.put(`/user/change-password/${id}`, formData);
 
 export const getContacts = () => API.get("/contacts");
 export const getContactDetailsById = (id) => API.get(`/contacts/${id}`);

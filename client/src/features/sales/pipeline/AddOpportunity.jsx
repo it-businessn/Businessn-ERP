@@ -2,6 +2,7 @@ import {
   Box,
   Button,
   FormControl,
+  FormHelperText,
   FormLabel,
   Input,
   Select,
@@ -43,6 +44,7 @@ const AddOpportunity = () => {
       <form onSubmit={handleSubmit}>
         <FormControl mb={4}>
           <FormLabel>Opportunity Name</FormLabel>
+          <FormHelperText>Enter opportunity name description</FormHelperText>
           <Input
             type="text"
             name="name"
@@ -77,7 +79,7 @@ const AddOpportunity = () => {
           </Select>
         </FormControl>
         <FormControl mb={4}>
-          <FormLabel>Probability (in %)</FormLabel>
+          <FormLabel>Closing Probability (in %)</FormLabel>
           <Input
             type="number"
             name="probability"
@@ -87,7 +89,7 @@ const AddOpportunity = () => {
           />
         </FormControl>
         <FormControl mb={4}>
-          <FormLabel>Deal Amount</FormLabel>
+          <FormLabel>Deal Amount (Annual)</FormLabel>
           <Input
             type="number"
             name="dealAmount"

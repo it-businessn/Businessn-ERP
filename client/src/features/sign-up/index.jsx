@@ -1,3 +1,4 @@
+import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
 import {
   Alert,
   AlertIcon,
@@ -9,6 +10,8 @@ import {
   FormLabel,
   Heading,
   Input,
+  InputGroup,
+  InputRightElement,
   Select,
   Stack,
 } from "@chakra-ui/react";
@@ -36,7 +39,9 @@ const SignUp = () => {
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
-  const onCancel = () => {};
+  const onCancel = () => {
+    navigate(-1);
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -72,6 +77,10 @@ const SignUp = () => {
     setFormData((prevData) => ({ ...prevData, [name]: value }));
   };
 
+  const [showPassword, setShowPassword] = useState(false);
+  const handleTogglePassword = () => {
+    setShowPassword((prevShowPassword) => !prevShowPassword);
+  };
   return (
     <Container
       py={{
@@ -146,14 +155,25 @@ const SignUp = () => {
               />
             </FormControl>
             <FormControl mb={4}>
-              <FormLabel>Password</FormLabel>
-              <Input
-                type="text"
-                name="password"
-                value={formData.password}
-                onChange={handleChange}
-                placeholder="Enter password"
-              />
+              <FormLabel>Password</FormLabel>{" "}
+              <InputGroup>
+                <Input
+                  type={showPassword ? "text" : "password"}
+                  name="password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  placeholder="Enter password"
+                />
+                <InputRightElement>
+                  <Button
+                    size="sm"
+                    variant="unstyled"
+                    onClick={handleTogglePassword}
+                  >
+                    {showPassword ? <ViewOffIcon /> : <ViewIcon />}
+                  </Button>
+                </InputRightElement>
+              </InputGroup>
             </FormControl>
             <FormControl mb={4}>
               <FormLabel>Type of Role</FormLabel>

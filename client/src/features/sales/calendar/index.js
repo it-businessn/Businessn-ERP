@@ -18,7 +18,6 @@ import {
   RadioGroup,
   Select,
   Stack,
-  Text,
   Textarea,
 } from "@chakra-ui/react";
 import Loader from "features/Loader";
@@ -32,7 +31,11 @@ import * as api from "services";
 const localizer = momentLocalizer(moment);
 
 const CalendarDashboard = () => {
-  const [events, setEvents] = useState([]);
+  const [events, setEvents] = useState({
+    title: "",
+    start: moment().toDate(),
+    end: moment().toDate(),
+  });
   const [showModal, setShowModal] = useState(false);
   const [eventType, setEventType] = useState("meeting");
   const [taskType, setTaskType] = useState("dueDate");
@@ -62,10 +65,8 @@ const CalendarDashboard = () => {
       const response = await api.getEvents();
       response.data.map((event) => {
         event.title = event.description;
-        event.start = moment(event.meetingFromDate).toDate();
-        event.end = event.meetingToDate
-          ? moment(event.meetingToDate).toDate()
-          : moment(formData.meetingFromDate).add(1, "hour").toDate();
+        event.start = new Date(event.meetingFromDate);
+        event.end = new Date(event.meetingToDate);
         return event;
       });
       setEvents(response.data);
@@ -74,7 +75,7 @@ const CalendarDashboard = () => {
     }
   };
 
-  const handleDateSelect = () => {
+  const handleDateSelect = (event) => {
     setShowModal(true);
   };
 
@@ -203,14 +204,24 @@ const CalendarDashboard = () => {
       console.error(error);
     }
   };
-
+  const defaultEvent = {
+    title: "No events available",
+    start: new Date(),
+    end: new Date(),
+    allDay: true,
+  };
+  const formatEventTime = (event) => {
+    const startDate = moment(event.start).format("LT z");
+    const endDate = moment(event.end).add(1, "hour").format("LT z");
+    return `${startDate} - ${endDate}`;
+  };
   return (
     <Box width="100%">
       {!events && <Loader />}
-      {events?.length && (
+      {events && (
         <BigCalendar
           localizer={localizer}
-          events={events}
+          events={events.length ? events : [defaultEvent]}
           startAccessor="start"
           endAccessor="end"
           selectable
@@ -220,12 +231,12 @@ const CalendarDashboard = () => {
             eventTimeRangeFormat: () => null,
           }}
           components={{
-            event: (event) => (
-              <div onClick={() => handleEvent(event)}>
-                <div>{moment(event.start).format("LT")}</div>
-                <Text fontSize="sm">{event.title}</Text>
-              </div>
-            ),
+            // event: (event) => (
+            //   <div onClick={() => handleEvent(event)}>
+            //     <div>{formatEventTime(event.event)}</div>
+            //     <Text fontSize="sm">{event?.event?.title}</Text>
+            //   </div>
+            // ),
             toolbar: ScrollToolbar,
           }}
           dayFormat={(date, culture, localizer) => moment(date).format("D dd")}

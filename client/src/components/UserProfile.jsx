@@ -17,7 +17,7 @@ const UserProfile = ({ user, handleLogout }) => {
   const navigate = useNavigate();
 
   const handleProfileClick = () => navigate("/profile");
-
+  const handleAccountClick = () => navigate("/signup");
   return (
     <HStack color="#fff" pb={2}>
       <Popover>
@@ -39,6 +39,9 @@ const UserProfile = ({ user, handleLogout }) => {
             <VStack w="100%" alignItems="start">
               <Button variant="ghost" onClick={handleProfileClick}>
                 Profile
+              </Button>
+              <Button variant="ghost" onClick={handleAccountClick}>
+                Create Account
               </Button>
               <Button variant="ghost" onClick={handleLogout}>
                 Logout
