@@ -39,7 +39,9 @@ const ContactDetailsForm = ({ contact, showLogForm }) => {
           <Text fontSize="xl" fontWeight="bold">
             {contact?.companyName}
           </Text>
-          <Text>Contact: {contact?.name}</Text>
+          <Text fontSize="sm" fontWeight="bold">
+            Primary Contact: {contact?.name}
+          </Text>
         </Box>
       </VStack>
       <HStack spacing="4" mb="4" justifyContent="center">
@@ -96,17 +98,17 @@ const ContactDetailsForm = ({ contact, showLogForm }) => {
           ) : (
             <ChevronRightIcon fontSize="md" />
           )}
-          Company Profile Details
+          Company Information
         </Button>
         <Collapse in={isCompanyOpen}>
           <Box p="4">
-            <Text color="brand.400">Company: </Text>
+            <Text color="brand.400"> Name: </Text>
             <Text mb="2">{contact?.companyName}</Text>
-            <Text color="brand.400">Industry:</Text>
+            <Text color="brand.400">Industry Type:</Text>
             <Text mb="2">{contact?.industryType}</Text>
             <Text color="brand.400">Address:</Text>
             <Text mb="2">{contact?.companyAddress}</Text>
-            <Text color="brand.400">URL:</Text>
+            <Text color="brand.400">Website :</Text>
             <Text mb="2">{contact?.revenue}</Text>
             <Text color="brand.400">Employees:</Text>
             <Text mb="2">{contact?.employees}</Text>
@@ -120,7 +122,7 @@ const ContactDetailsForm = ({ contact, showLogForm }) => {
           ) : (
             <ChevronRightIcon fontSize="md" />
           )}
-          Contact Profile Details
+          Primary Contact Information
         </Button>
         <Collapse in={isProfileOpen}>
           {contact && (
@@ -129,11 +131,11 @@ const ContactDetailsForm = ({ contact, showLogForm }) => {
               <Text mb="2">{contact?.firstName}</Text>
               <Text color="brand.400">Last Name:</Text>
               <Text mb="2">{contact?.lastName}</Text>
-              <Text color="brand.400">Phone:</Text>
-              <Text mb="2">{contact?.phone}</Text>
               <Text color="brand.400">Email:</Text>
               <Text mb="2">{contact?.email}</Text>
-              <Text color="brand.400">Address:</Text>
+              <Text color="brand.400">Phone Number:</Text>
+              <Text mb="2">{contact?.phone}</Text>
+              <Text color="brand.400">Business Address:</Text>
               <Text mb="2">{contact?.primaryContactAddress}</Text>
             </Box>
           )}

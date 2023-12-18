@@ -177,7 +177,7 @@ const UserProfileDetails = () => {
                   <FormLabel>Phone Number</FormLabel>
                   <Input
                     type="text"
-                    name="phone"
+                    name="phoneNumber"
                     value={profileData?.phoneNumber}
                     onChange={handleChange}
                     placeholder="phone"
@@ -187,7 +187,7 @@ const UserProfileDetails = () => {
                   <FormLabel>Address</FormLabel>
                   <Input
                     type="text"
-                    name="primaryContactAddress"
+                    name="address"
                     value={profileData?.address}
                     onChange={handleChange}
                     placeholder="Primary Contact"

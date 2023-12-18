@@ -6,7 +6,6 @@ import {
   FormControl,
   FormLabel,
   Heading,
-  IconButton,
   SimpleGrid,
   Spacer,
   Stack,
@@ -17,18 +16,12 @@ import { UserProfile } from "components";
 import { useAuthContext } from "hooks/useAuthContext";
 import { DashboardLayout, ProfileContainer } from "layouts";
 import { useEffect } from "react";
-import { FiEdit2 } from "react-icons/fi";
-import { useNavigate } from "react-router-dom";
 
 const Profile = () => {
   const { user } = useAuthContext();
 
   const bank = JSON.parse(localStorage.getItem("bank"));
-  const navigate = useNavigate();
-  const handleClick = (e) => {
-    e.preventDefault();
-    return navigate(`/edit-user/${user?.user?._id}`);
-  };
+
   useEffect(() => {}, [user]);
   return (
     <DashboardLayout>

@@ -17,14 +17,8 @@ const GradientAreaFillColorChart = ({ opportunityData }) => {
       >
         <defs>
           <linearGradient id="colorGradient" x1="0" y1="0" x2="0" y2="1">
-            {opportunityData.map(({ name, color }, index) => (
-              <stop
-                key={name}
-                offset={`${(index / (opportunityData.length - 1)) * 100}%`}
-                stopColor={color}
-                stopOpacity={1}
-              />
-            ))}
+            <stop offset="5%" stopColor="#8884d8" stopOpacity={0.3} />
+            <stop offset="100%" stopColor="#8884d8" stopOpacity={0.8} />
           </linearGradient>
         </defs>
         <CartesianGrid strokeDasharray="3 3" />

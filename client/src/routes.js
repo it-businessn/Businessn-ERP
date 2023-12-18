@@ -5,8 +5,8 @@ import Loader from "features/Loader";
 import PageNotFound from "features/PageNotFound";
 import Home from "features/home";
 import RootLayout from "layouts/RootLayout";
-import UserProfileDetails from "components/UserProfileDetails";
 
+const UserProfileDetails = lazy(() => import("components/UserProfileDetails"));
 const AddOpportunity = lazy(() =>
   import("features/sales/pipeline/AddOpportunity")
 );

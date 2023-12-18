@@ -22,6 +22,14 @@ export const getContacts = () => API.get("/contacts");
 export const getContactDetailsById = (id) => API.get(`/contacts/${id}`);
 export const getNotifications = () => API.get("/notifications");
 export const addContact = (formData) => API.post("/contacts", formData);
+
+export const getIndustryType = () => API.get(`/contacts/industry-type`);
+export const addIndustryType = (formData) =>
+  API.post("/contacts/industry-type", formData);
+// export const getIndustryType = (id) => API.get(`/contacts/industry-type${id}`);
+// export const updateIndustryType = (formData, id) =>
+//   API.put(`/contacts/industry-type${id}`, formData);
+
 export const updateContact = (formData, id) =>
   API.put(`/contacts/${id}`, formData);
 
