@@ -1,6 +1,18 @@
 import { EditIcon } from "@chakra-ui/icons";
 import { BsCalendar3 } from "react-icons/bs";
-import { LuLayoutDashboard } from "react-icons/lu";
+import { FaDashcube } from "react-icons/fa";
+import { FiShoppingBag } from "react-icons/fi";
+import { GrResources } from "react-icons/gr";
+import { IoIosHelpCircleOutline } from "react-icons/io";
+import { LuCalendarDays, LuLayoutDashboard, LuSettings } from "react-icons/lu";
+import { MdOutlinePayment, MdOutlineWorkspaces } from "react-icons/md";
+import { RxDashboard } from "react-icons/rx";
+import { SlPeople } from "react-icons/sl";
+import {
+  TbFileInvoice,
+  TbReportAnalytics,
+  TbShoppingBag,
+} from "react-icons/tb";
 
 export const TOAST = {
   SUCCESS: {
@@ -41,12 +53,26 @@ export const TOP_NAV_MENU_LIST = [
     children: [
       {
         path: "/sales-insight",
-        name: "Insights",
+        name: "Dashboard",
         children: [],
+        icon: <RxDashboard />,
+      },
+      {
+        path: "/",
+        name: "Products",
+        children: [],
+        icon: <FiShoppingBag />,
+      },
+      {
+        path: "/",
+        name: "Orders",
+        children: [],
+        icon: <TbShoppingBag />,
       },
       {
         path: "/sales",
-        name: "Contacts",
+        name: "Customers",
+        icon: <SlPeople />,
         children: [
           {
             path: "/view-contacts",
@@ -66,8 +92,27 @@ export const TOP_NAV_MENU_LIST = [
         ],
       },
       {
+        path: "/",
+        name: "Sales Reports",
+        children: [],
+        icon: <TbReportAnalytics />,
+      },
+      {
+        path: "/",
+        name: "Payment",
+        children: [],
+        icon: <MdOutlinePayment />,
+      },
+      {
+        path: "/",
+        name: "Invoice",
+        children: [],
+        icon: <TbFileInvoice />,
+      },
+      {
         path: "/calendar",
         name: "Calendar",
+        icon: <LuCalendarDays />,
         children: [
           // {
           //   path: "/add-event",
@@ -99,6 +144,7 @@ export const TOP_NAV_MENU_LIST = [
       {
         path: "/pipeline",
         name: "Pipeline",
+        icon: <MdOutlineWorkspaces />,
         children: [
           {
             path: "/add-opportunity",
@@ -115,47 +161,43 @@ export const TOP_NAV_MENU_LIST = [
             name: "Stage Lists",
             icon: LuLayoutDashboard,
           },
-          {
-            path: "/add-contact",
-            name: "Setup Contact",
-            icon: LuLayoutDashboard,
-          },
         ],
       },
-      {
-        path: "/tasks",
-        name: "Activities",
-        children: [],
-      },
-      {
-        path: "/quotes",
-        name: "Orders",
-        children: [
-          {
-            path: "/products",
-            name: "View Product List",
-            icon: LuLayoutDashboard,
-          },
-          {
-            path: "/add-quote",
-            name: "Create Order",
-            icon: LuLayoutDashboard,
-          },
-          {
-            path: "/proposal",
-            name: "Request Proposal",
-            icon: LuLayoutDashboard,
-          },
-          {
-            path: "/setup-org",
-            name: "Organization Setup",
-            icon: LuLayoutDashboard,
-          },
-        ],
-      },
+      // {
+      //   path: "/tasks",
+      //   name: "Activities",
+      //   children: [],
+      // },
+      // {
+      //   path: "/quotes",
+      //   name: "Orders",
+      //   children: [
+      //     {
+      //       path: "/products",
+      //       name: "View Product List",
+      //       icon: LuLayoutDashboard,
+      //     },
+      //     {
+      //       path: "/add-quote",
+      //       name: "Create Order",
+      //       icon: LuLayoutDashboard,
+      //     },
+      //     {
+      //       path: "/proposal",
+      //       name: "Request Proposal",
+      //       icon: LuLayoutDashboard,
+      //     },
+      //     {
+      //       path: "/setup-org",
+      //       name: "Organization Setup",
+      //       icon: LuLayoutDashboard,
+      //     },
+      //   ],
+      // },
       {
         path: "/resource",
         name: "Resources",
+        icon: <GrResources />,
         children: [
           {
             path: "/access-learning",
@@ -184,17 +226,25 @@ export const TOP_NAV_MENU_LIST = [
           },
         ],
       },
-      // {
-      //   path: "/report",
-      //   name: "Reports",
-      //   children: [],
-      // },
+      {
+        path: "/",
+        name: "Settings",
+        icon: <LuSettings />,
+        children: [],
+      },
+      {
+        path: "/",
+        name: "Help",
+        icon: <IoIosHelpCircleOutline />,
+        children: [],
+      },
     ],
   },
   {
     path: "/payroll",
     name: "Payroll",
     id: "payroll",
+    icon: <FaDashcube />,
     children: [
       {
         path: "/payroll-insight",
@@ -387,37 +437,37 @@ export const TOP_NAV_MENU_LIST = [
           },
         ],
       },
-      {
-        path: "/report",
-        name: "Reports",
-        children: [
-          {
-            path: "/payroll",
-            name: "Payroll Reports",
-            icon: LuLayoutDashboard,
-          },
-          {
-            path: "/employee",
-            name: "Employee Reports",
-            icon: LuLayoutDashboard,
-          },
-          {
-            path: "/org",
-            name: "Organizational Reports",
-            icon: LuLayoutDashboard,
-          },
-          {
-            path: "/journal",
-            name: "Journal Entry",
-            icon: LuLayoutDashboard,
-          },
-          {
-            path: "/analytics",
-            name: "Analytics Reports",
-            icon: LuLayoutDashboard,
-          },
-        ],
-      },
+      // {
+      //   path: "/report",
+      //   name: "Reports",
+      //   children: [
+      //     {
+      //       path: "/payroll",
+      //       name: "Payroll Reports",
+      //       icon: LuLayoutDashboard,
+      //     },
+      //     {
+      //       path: "/employee",
+      //       name: "Employee Reports",
+      //       icon: LuLayoutDashboard,
+      //     },
+      //     {
+      //       path: "/org",
+      //       name: "Organizational Reports",
+      //       icon: LuLayoutDashboard,
+      //     },
+      //     {
+      //       path: "/journal",
+      //       name: "Journal Entry",
+      //       icon: LuLayoutDashboard,
+      //     },
+      //     {
+      //       path: "/analytics",
+      //       name: "Analytics Reports",
+      //       icon: LuLayoutDashboard,
+      //     },
+      //   ],
+      // },
     ],
   },
 

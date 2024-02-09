@@ -1,5 +1,12 @@
 import { ChevronDownIcon, ChevronRightIcon, Icon } from "@chakra-ui/icons";
-import { Button, Collapse, HStack, VStack } from "@chakra-ui/react";
+import {
+  Button,
+  Collapse,
+  Flex,
+  HStack,
+  IconButton,
+  VStack,
+} from "@chakra-ui/react";
 import { useState } from "react";
 import { NavLink } from "react-router-dom";
 import "./Sidebar.css";
@@ -21,17 +28,25 @@ const MenuItem = ({ menu, textTransform }) => {
         {menu?.children && (
           <Icon as={isOpen ? ChevronDownIcon : ChevronRightIcon} />
         )}
-        <NavLink to={menu?.path} activeclassname="active">
-          <Button
-            p={0}
+        <Flex align="center">
+          <IconButton
             variant="ghost"
-            color="brand.200"
-            fontSize="sm"
-            textTransform={textTransform}
-          >
-            {menu?.name}
-          </Button>
-        </NavLink>
+            icon={menu.icon}
+            colorScheme="teal"
+            size="xs"
+            aria-label="Calendar Icon"
+          />
+          <NavLink to={menu?.path} activeclassname="active">
+            <Button
+              variant="ghost"
+              color="brand.200"
+              fontSize="sm"
+              textTransform={textTransform}
+            >
+              {menu?.name}
+            </Button>
+          </NavLink>
+        </Flex>
       </HStack>
       {menu?.children && (
         <Collapse in={isOpen}>

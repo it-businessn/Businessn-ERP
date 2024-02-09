@@ -33,7 +33,7 @@ const Contacts = () => {
     try {
       const response = await api.getContacts();
       setContacts(response.data);
-      setSelectedContact(response.data[0]);
+      setSelectedContact(response.data.length > 0 ? response.data[0] : []);
     } catch (error) {
       console.error(error);
     }
@@ -73,9 +73,14 @@ const Contacts = () => {
   return (
     <Flex>
       {!selectedContact && <Loader />}
+      {selectedContact?.length === 0 && (
+        <Box p={4}>
+          <Text>No contacts added. Please add a contact.</Text>
+        </Box>
+      )}
+
       {selectedContact && (
         <>
-          {console.log("html", selectedContact)}
           <Box flex="1">
             <Popover zIndex={0}>
               <PopoverTrigger>

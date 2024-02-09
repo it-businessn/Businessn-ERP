@@ -4,8 +4,12 @@ import { createBrowserRouter } from "react-router-dom";
 import Loader from "features/Loader";
 import PageNotFound from "features/PageNotFound";
 import Home from "features/home";
+import AddPayrun from "features/payroll/AddPayRun";
+import CRMDashboard from "features/sales";
 import RootLayout from "layouts/RootLayout";
 
+const PayrollTable = lazy(() => import("features/payroll"));
+const GeneratePayRun = lazy(() => import("features/payroll/GeneratePayRun"));
 const UserProfileDetails = lazy(() => import("components/UserProfileDetails"));
 const AddOpportunity = lazy(() =>
   import("features/sales/pipeline/AddOpportunity")
@@ -60,6 +64,10 @@ export const router = createBrowserRouter([
         element: <ContactsDashboard />,
       },
       {
+        path: "/sales-insight",
+        element: <CRMDashboard />,
+      },
+      {
         path: "/view-contacts",
         element: <Contacts />,
       },
@@ -106,6 +114,18 @@ export const router = createBrowserRouter([
       {
         path: "/edit-user/:id",
         element: <EditUser />,
+      },
+      {
+        path: "/generate",
+        element: <PayrollTable />,
+      },
+      {
+        path: "/generate-payrun",
+        element: <GeneratePayRun />,
+      },
+      {
+        path: "/add-payrun",
+        element: <AddPayrun />,
       },
       {
         path: "*",

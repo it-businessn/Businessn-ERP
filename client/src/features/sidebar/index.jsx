@@ -19,11 +19,7 @@ const Sidebar = ({ activeMenu }) => {
         </Button>
         {activeMenu?.children?.length &&
           activeMenu?.children?.map((menu) => (
-            <MenuItem
-              textTransform="uppercase"
-              key={crypto.randomUUID()}
-              menu={menu}
-            />
+            <MenuItem key={crypto.randomUUID()} menu={menu} />
           ))}
       </Stack>
     </Flex>

@@ -15,11 +15,11 @@
   color: var(--active-menu-color);
 }
 
-.active::before {
+/* .active::before {
   content: "\2022";
   color: var(--active-menu-color);
   font-size: 1.5em;
   position: relative;
   left: -4px;
   top: 3px;
-}
+} */
