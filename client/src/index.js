@@ -4,6 +4,7 @@ import proTheme from "config/themeConfig";
 import { AuthContextProvider } from "context/AuthContext";
 import ReactDOM from "react-dom/client";
 import registerServiceWorker from "registerServiceWorker";
+import "./App.css";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 

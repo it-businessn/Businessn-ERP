@@ -23,7 +23,7 @@ const RootLayout = () => {
     <>
       {user && (
         <DashboardLayout handleLogout={handleLogout} user={user}>
-          <main style={{ width: "85vw", marginTop: "110px" }}>
+          <main style={{ width: "85vw", marginTop: "6em" }}>
             <Outlet />
           </main>
         </DashboardLayout>

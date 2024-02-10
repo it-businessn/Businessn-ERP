@@ -1,22 +1,21 @@
-import { Button, Flex, Stack } from "@chakra-ui/react";
+import { Flex, Stack } from "@chakra-ui/react";
 import MenuItem from "./MenuItem";
 import "./Sidebar.css";
 
 const Sidebar = ({ activeMenu }) => {
   return (
     <Flex
-      bg="bg.surface"
       boxShadow="md"
       maxW={"15vw"}
       p={2}
-      minH="84vh"
       minW="15vw"
-      mt="7em"
+      mt="6.7em"
+      color="brand.nav_color"
     >
-      <Stack justify="start" width="full">
-        <Button width="full" bg="#000">
-          {activeMenu?.name}
-        </Button>
+      <Stack justify="start" width="full" my={0}>
+        {/* <Heading fontSize="xl" mr={"auto"}>
+          {activeMenu?.name === "Sales" && "CRM DASHBOARD"}
+        </Heading> */}
         {activeMenu?.children?.length &&
           activeMenu?.children?.map((menu) => (
             <MenuItem key={crypto.randomUUID()} menu={menu} />

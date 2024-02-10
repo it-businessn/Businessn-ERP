@@ -46,7 +46,6 @@ export default function User() {
                     <UserList employees={employees} />
                 </Stack> */}
         <Box
-          bg="bg-surface"
           boxShadow={{
             base: "none",
             md: "sm",

@@ -56,16 +56,16 @@ export const router = createBrowserRouter([
         element: <Home />,
       },
       {
+        path: "/dashboard",
+        element: <CRMDashboard />,
+      },
+      {
         path: "/profile",
         element: <UserProfileDetails />,
       },
       {
         path: "/sales",
         element: <ContactsDashboard />,
-      },
-      {
-        path: "/sales-insight",
-        element: <CRMDashboard />,
       },
       {
         path: "/view-contacts",

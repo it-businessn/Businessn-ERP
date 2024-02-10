@@ -1,17 +1,26 @@
-import { EditIcon } from "@chakra-ui/icons";
-import { BsCalendar3 } from "react-icons/bs";
-import { FaDashcube } from "react-icons/fa";
-import { FiShoppingBag } from "react-icons/fi";
-import { GrResources } from "react-icons/gr";
-import { IoIosHelpCircleOutline } from "react-icons/io";
-import { LuCalendarDays, LuLayoutDashboard, LuSettings } from "react-icons/lu";
-import { MdOutlinePayment, MdOutlineWorkspaces } from "react-icons/md";
-import { RxDashboard } from "react-icons/rx";
-import { SlPeople } from "react-icons/sl";
+import { EditIcon, EmailIcon } from "@chakra-ui/icons";
+import { BsCalendar3, BsChatTextFill, BsListTask } from "react-icons/bs";
+import { FaDashcube, FaSalesforce } from "react-icons/fa";
+import { FiTarget } from "react-icons/fi";
+import { HiOutlineCalendar } from "react-icons/hi";
+import { IoIosPeople, IoMdCall } from "react-icons/io";
+import { IoBagRemoveOutline, IoDocumentTextOutline } from "react-icons/io5";
+import { LuLayoutDashboard } from "react-icons/lu";
 import {
+  MdCall,
+  MdCleanHands,
+  MdOutlineEventNote,
+  MdOutlineSettingsApplications,
+  MdPayments,
+} from "react-icons/md";
+import { PiBooks, PiListMagnifyingGlassFill } from "react-icons/pi";
+import { RiUserSearchLine, RiUserStarLine } from "react-icons/ri";
+import { RxDashboard } from "react-icons/rx";
+import {
+  TbChartDots,
   TbFileInvoice,
-  TbReportAnalytics,
   TbShoppingBag,
+  TbUsersPlus,
 } from "react-icons/tb";
 
 export const TOAST = {
@@ -52,67 +61,21 @@ export const TOP_NAV_MENU_LIST = [
     id: "sale",
     children: [
       {
-        path: "/sales-insight",
+        path: "/dashboard",
         name: "Dashboard",
         children: [],
         icon: <RxDashboard />,
       },
       {
-        path: "/",
-        name: "Products",
+        path: "/activities",
+        name: "Activities",
         children: [],
-        icon: <FiShoppingBag />,
-      },
-      {
-        path: "/",
-        name: "Orders",
-        children: [],
-        icon: <TbShoppingBag />,
-      },
-      {
-        path: "/sales",
-        name: "Customers",
-        icon: <SlPeople />,
-        children: [
-          {
-            path: "/view-contacts",
-            name: "View Contact",
-            icon: EditIcon,
-          },
-          {
-            path: "/add-contact",
-            name: "Add a Contact",
-            icon: EditIcon,
-          },
-          {
-            path: "/edit-contact",
-            name: "Edit a Contact",
-            icon: EditIcon,
-          },
-        ],
-      },
-      {
-        path: "/",
-        name: "Sales Reports",
-        children: [],
-        icon: <TbReportAnalytics />,
-      },
-      {
-        path: "/",
-        name: "Payment",
-        children: [],
-        icon: <MdOutlinePayment />,
-      },
-      {
-        path: "/",
-        name: "Invoice",
-        children: [],
-        icon: <TbFileInvoice />,
+        icon: <PiListMagnifyingGlassFill />,
       },
       {
         path: "/calendar",
         name: "Calendar",
-        icon: <LuCalendarDays />,
+        icon: <HiOutlineCalendar />,
         children: [
           // {
           //   path: "/add-event",
@@ -142,27 +105,124 @@ export const TOP_NAV_MENU_LIST = [
         ],
       },
       {
-        path: "/pipeline",
-        name: "Pipeline",
-        icon: <MdOutlineWorkspaces />,
+        path: "/",
+        name: "Payouts",
+        children: [],
+        icon: <MdPayments />,
+      },
+      {
+        path: "/sales",
+        name: "Customers",
+        icon: <IoIosPeople />,
         children: [
           {
-            path: "/add-opportunity",
-            name: "Setup New Opportunity",
-            icon: LuLayoutDashboard,
+            path: "/view-contacts",
+            name: "View Contact",
+            icon: EditIcon,
           },
           {
-            path: "/edit-opportunity",
-            name: "Edit An Opportunity",
-            icon: LuLayoutDashboard,
+            path: "/add-contact",
+            name: "Add a Contact",
+            icon: EditIcon,
           },
           {
-            path: "/opportunities",
-            name: "Stage Lists",
-            icon: LuLayoutDashboard,
+            path: "/edit-contact",
+            name: "Edit a Contact",
+            icon: EditIcon,
           },
         ],
       },
+      {
+        path: "/",
+        name: "Target Leads",
+        children: [],
+        icon: <TbUsersPlus />,
+      },
+      {
+        path: "/",
+        name: "Lead Docket",
+        children: [],
+        icon: <IoDocumentTextOutline />,
+      },
+      {
+        path: "/",
+        name: "Lead Disbursement",
+        children: [],
+        icon: <MdCleanHands />,
+      },
+      {
+        path: "/",
+        name: "Fresh Leads",
+        children: [],
+        icon: <RiUserStarLine />,
+      },
+      {
+        path: "/",
+        name: "Target Leads Pipeline",
+        children: [],
+        icon: <RiUserSearchLine />,
+      },
+      {
+        path: "/",
+        name: "Products",
+        children: [],
+        icon: <IoBagRemoveOutline />,
+      },
+      {
+        path: "/",
+        name: "Orders",
+        children: [],
+        icon: <TbShoppingBag />,
+      },
+      {
+        path: "/",
+        name: "Invoices",
+        children: [],
+        icon: <TbFileInvoice />,
+      },
+
+      // {
+      //   path: "/",
+      //   name: "Products",
+      //   children: [],
+      //   icon: <FiShoppingBag />,
+      // },
+      // {
+      //   path: "/",
+      //   name: "Orders",
+      //   children: [],
+      //   icon: <TbShoppingBag />,
+      // },
+
+      // {
+      //   path: "/",
+      //   name: "Payment",
+      //   children: [],
+      //   icon: <MdOutlinePayment />,
+      // },
+
+      // {
+      //   path: "/pipeline",
+      //   name: "Pipeline",
+      //   icon: <MdOutlineWorkspaces />,
+      //   children: [
+      //     {
+      //       path: "/add-opportunity",
+      //       name: "Setup New Opportunity",
+      //       icon: LuLayoutDashboard,
+      //     },
+      //     {
+      //       path: "/edit-opportunity",
+      //       name: "Edit An Opportunity",
+      //       icon: LuLayoutDashboard,
+      //     },
+      //     {
+      //       path: "/opportunities",
+      //       name: "Stage Lists",
+      //       icon: LuLayoutDashboard,
+      //     },
+      //   ],
+      // },
       // {
       //   path: "/tasks",
       //   name: "Activities",
@@ -197,7 +257,7 @@ export const TOP_NAV_MENU_LIST = [
       {
         path: "/resource",
         name: "Resources",
-        icon: <GrResources />,
+        icon: <PiBooks />,
         children: [
           {
             path: "/access-learning",
@@ -228,16 +288,22 @@ export const TOP_NAV_MENU_LIST = [
       },
       {
         path: "/",
-        name: "Settings",
-        icon: <LuSettings />,
+        name: "Sales Reports",
         children: [],
+        icon: <TbChartDots />,
       },
       {
         path: "/",
-        name: "Help",
-        icon: <IoIosHelpCircleOutline />,
+        name: "Setup",
+        icon: <MdOutlineSettingsApplications />,
         children: [],
       },
+      // {
+      //   path: "/",
+      //   name: "Help",
+      //   icon: <IoIosHelpCircleOutline />,
+      //   children: [],
+      // },
     ],
   },
   {
@@ -520,5 +586,108 @@ export const PIPELINE_STAGES = [
     type: "Won",
     color: "#69cb36",
     name: "Won",
+  },
+];
+export const leaderBoardData = [
+  {
+    position: 1,
+    id: 2223,
+    salesperson: "John Doe",
+    category: "Electronics",
+    calls: 150,
+    value: 120,
+    profilePic: "url-to-profile-pic-1",
+    icon: IoMdCall,
+  },
+  {
+    position: 2,
+    id: 4544,
+    salesperson: "Jane Smith",
+    category: "Clothing",
+    calls: 120,
+    value: 100,
+    profilePic: "url-to-profile-pic-1",
+    icon: EmailIcon,
+  },
+  {
+    position: 3,
+    id: 4534,
+    salesperson: "Bob Johnson",
+    category: "Appliances",
+    calls: 100,
+    value: 90,
+    profilePic: "url-to-profile-pic-1",
+    icon: FiTarget,
+  },
+  {
+    position: 4,
+    id: 6767,
+    salesperson: "Bob Johnson",
+    category: "Appliances",
+    calls: 100,
+    value: 90,
+    profilePic: "url-to-profile-pic-1",
+    icon: FaSalesforce,
+  },
+];
+
+export const upcomingTask = [
+  { icon: <MdOutlineEventNote />, title: "4 Tasks", color: "#3498db" },
+  { icon: <BsListTask />, title: "6 Events", color: "#2ecc71" },
+  { icon: <BsChatTextFill />, title: "2 Meetings", color: "#008080" },
+  { icon: <MdCall />, title: "2 Appointments", color: "#008080" },
+];
+export const activityChartData = {
+  labels: ["Calls", "Emails", "Meetings"],
+  datasets: [
+    {
+      data: [65, 25, 10],
+      backgroundColor: ["#517ae8", "#67afc8", "#8aa8ee"],
+      hoverBackgroundColor: ["#517ae8", "#67afc8", "#8aa8ee"],
+    },
+  ],
+};
+export const activityData = [
+  { angle: 65, label: "Calls", color: "#3498db" },
+  { angle: 25, label: "Emails", color: "#2ecc71" },
+  { angle: 10, label: "Meetings Done", color: "#008080" },
+];
+export const callsMadeBarData = [
+  { day: "Mon", call: 10 },
+  { day: "Tue", call: 15 },
+  { day: "Wed", call: 20 },
+  { day: "Thu", call: 25 },
+  { day: "Fri", call: 18 },
+  { day: "Sat", call: 12 },
+  { day: "Sun", call: 8 },
+];
+export const meetingsData = [
+  {
+    profilePic: "url-to-profile-pic-1",
+    customerName: "John Doe",
+    meetingDate: "01/01/2023",
+    duration: { hours: 1, minutes: 30 },
+    status: "completed",
+  },
+  {
+    profilePic: "url-to-profile-pic-1",
+    customerName: "John Doe",
+    meetingDate: "01/01/2023",
+    duration: { hours: 1, minutes: 30 },
+    status: "completed",
+  },
+  {
+    profilePic: "url-to-profile-pic-1",
+    customerName: "John Doe",
+    meetingDate: "01/01/2023",
+    duration: { hours: 1, minutes: 30 },
+    status: "completed",
+  },
+  {
+    profilePic: "url-to-profile-pic-1",
+    customerName: "John Doe",
+    meetingDate: "01/01/2023",
+    duration: { hours: 1, minutes: 30 },
+    status: "completed",
   },
 ];

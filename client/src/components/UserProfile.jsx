@@ -1,16 +1,17 @@
 import {
   Avatar,
-  Box,
   Button,
   HStack,
+  IconButton,
   Popover,
   PopoverArrow,
   PopoverBody,
   PopoverContent,
   PopoverTrigger,
-  Text,
   VStack,
 } from "@chakra-ui/react";
+import { faBell } from "@fortawesome/free-regular-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -33,19 +34,28 @@ const UserProfile = ({ user, handleLogout }) => {
   };
 
   return (
-    <HStack color="#fff" pb={2}>
+    <HStack pb={2} _hover={{ cursor: "pointer" }}>
       <Popover>
-        <Avatar name={user.fullName} src="" boxSize="12" />
+        <IconButton
+          aria-label="Notification Bell"
+          icon={<FontAwesomeIcon icon={faBell} />}
+          borderRadius="full"
+          color="brand.600"
+          bg={"brand.100"}
+          boxShadow="md"
+          _hover={{ bg: "brand.icon_hover" }}
+        />
         <PopoverTrigger>
-          <Box cursor="pointer">
-            <Text fontWeight="medium" fontSize="sm" textTransform="capitalize">
-              {user.fullName}
-            </Text>
-            <Text color="muted" fontSize="sm">
-              {user.email}
-            </Text>
-          </Box>
+          <Avatar name={user.fullName} src="" boxSize="12" />
         </PopoverTrigger>
+        {/* <Box cursor="pointer">
+          <Text fontWeight="medium" fontSize="sm" textTransform="capitalize">
+            {user.fullName}
+          </Text>
+          <Text color="muted" fontSize="sm">
+            {user.email}
+          </Text>
+        </Box> */}
         <PopoverContent maxW="xs" w="12rem">
           <PopoverArrow />
 
