@@ -287,7 +287,7 @@ export const TOP_NAV_MENU_LIST = [
         ],
       },
       {
-        path: "/sad",
+        path: "/reports",
         name: "Sales Reports",
         children: [],
         icon: <TbChartDots />,

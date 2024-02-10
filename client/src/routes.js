@@ -6,6 +6,7 @@ import PageNotFound from "features/PageNotFound";
 import Home from "features/home";
 import AddPayrun from "features/payroll/AddPayRun";
 import CRMDashboard from "features/sales";
+import SalesReport from "features/sales/reports";
 import RootLayout from "layouts/RootLayout";
 
 const PayrollTable = lazy(() => import("features/payroll"));
@@ -62,6 +63,10 @@ export const router = createBrowserRouter([
       {
         path: "/customers",
         element: <CustomersDashboard />,
+      },
+      {
+        path: "/reports",
+        element: <SalesReport />,
       },
       {
         path: "/profile",
