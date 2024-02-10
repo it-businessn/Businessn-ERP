@@ -18,8 +18,8 @@ const CalendarDashboard = lazy(() => import("features/sales/calendar"));
 const TaskByDate = lazy(() => import("features/sales/calendar/TaskByDate"));
 
 const Contacts = lazy(() => import("features/sales/contacts"));
-const ContactsDashboard = lazy(() =>
-  import("features/sales/contacts/ContactsDashboard")
+const CustomersDashboard = lazy(() =>
+  import("features/sales/contacts/CustomersDashboard")
 );
 
 const TaskDashboard = lazy(() => import("features/sales/tasks"));
@@ -60,12 +60,12 @@ export const router = createBrowserRouter([
         element: <CRMDashboard />,
       },
       {
-        path: "/profile",
-        element: <UserProfileDetails />,
+        path: "/customers",
+        element: <CustomersDashboard />,
       },
       {
-        path: "/sales",
-        element: <ContactsDashboard />,
+        path: "/profile",
+        element: <UserProfileDetails />,
       },
       {
         path: "/view-contacts",

@@ -147,7 +147,7 @@ const CRMDashboard = () => {
           p="4"
           bg={"brand.primary_bg"}
           border="3px solid white"
-          borderRadius="12px"
+          borderRadius="10px"
           fontWeight="bold"
         >
           <Flex justify="space-between" align="center" mb="2">
@@ -174,7 +174,7 @@ const CRMDashboard = () => {
           p="4"
           bg={"brand.primary_bg"}
           border="3px solid white"
-          borderRadius="12px"
+          borderRadius="10px"
           fontWeight="bold"
         >
           <Flex justify="space-between" align="center" mb="2">
@@ -201,7 +201,7 @@ const CRMDashboard = () => {
           p="4"
           bg={"brand.primary_bg"}
           border="3px solid white"
-          borderRadius="12px"
+          borderRadius="10px"
           fontWeight="bold"
         >
           <Flex justify="space-between" align="center" mb="2">
@@ -228,7 +228,7 @@ const CRMDashboard = () => {
           p="4"
           bg={"brand.primary_bg"}
           border="3px solid white"
-          borderRadius="12px"
+          borderRadius="10px"
           fontWeight="bold"
         >
           <Flex justify="space-between" align="center" mb="2">
@@ -258,7 +258,7 @@ const CRMDashboard = () => {
           p="4"
           bg={"brand.primary_bg"}
           border="3px solid white"
-          borderRadius="12px"
+          borderRadius="10px"
           fontWeight="bold"
         >
           <Flex
@@ -310,7 +310,7 @@ const CRMDashboard = () => {
           p="4"
           bg={"brand.primary_bg"}
           border="3px solid white"
-          borderRadius="12px"
+          borderRadius="10px"
           fontWeight="bold"
           color={"brand.nav_color"}
         >
@@ -340,12 +340,12 @@ const CRMDashboard = () => {
           p="4"
           bg={"brand.primary_bg"}
           border="3px solid white"
-          borderRadius="12px"
+          borderRadius="10px"
           fontWeight="bold"
         >
           <Text mt={2} mb={5} fontSize="lg" fontWeight="bold">
             Contacts Added
-          </Text>
+          </Text>{" "}
           <Table color={"brand.nav_color"} bg={"brand.primary_bg"}>
             <Thead>
               <Tr fontSize={"sm"}>
@@ -395,7 +395,7 @@ const CRMDashboard = () => {
           p="4"
           bg={"brand.primary_bg"}
           border="3px solid white"
-          borderRadius="12px"
+          borderRadius="10px"
           fontWeight="bold"
         >
           <Flex
@@ -419,7 +419,7 @@ const CRMDashboard = () => {
           p="4"
           bg={"brand.primary_bg"}
           border="3px solid white"
-          borderRadius="12px"
+          borderRadius="10px"
           fontWeight="bold"
         >
           <Flex
@@ -444,7 +444,7 @@ const CRMDashboard = () => {
           p="4"
           bg={"brand.primary_bg"}
           border="3px solid white"
-          borderRadius="12px"
+          borderRadius="10px"
           fontWeight="bold"
         >
           <Flex
@@ -468,7 +468,7 @@ const CRMDashboard = () => {
           color={"brand.nav_color"}
           bg={"brand.primary_bg"}
           border="3px solid white"
-          borderRadius="12px"
+          borderRadius="10px"
           fontWeight="bold"
         >
           <Text mt={2} mb={5} fontSize="lg" fontWeight="bold">
