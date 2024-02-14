@@ -3,7 +3,7 @@ import { useState } from "react";
 import { NavLink } from "react-router-dom";
 import "./Sidebar.css";
 
-const MenuItem = ({ menu, textTransform }) => {
+const MenuItem = ({ menu, textTransform, handleMenuItemClick }) => {
   const [isOpen, setIsOpen] = useState(true);
 
   const handleToggle = () => {
@@ -21,7 +21,7 @@ const MenuItem = ({ menu, textTransform }) => {
           <Icon as={isOpen ? ChevronDownIcon : ChevronRightIcon} />
         )} */}
         <Flex align="center" w={"100%"}>
-          <NavLink to={menu?.path} activeclassname="active">
+          <NavLink to={menu?.path} onClick={handleMenuItemClick} activeclassname="active">
             <IconButton
               variant="ghost"
               icon={menu.icon}

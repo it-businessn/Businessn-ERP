@@ -9,11 +9,17 @@ body {
   padding: 0;
   min-height: 100%;
   background: rgb(244, 240, 255);
-  background: linear-gradient(
+  /* background: linear-gradient(
     103deg,
     rgba(244, 240, 255, 1) 0%,
     rgba(238, 239, 241, 1) 100%
-  ) !important;
+  ) !important; */
+  background:linear-gradient(0deg, rgb(228 235 255) 0%, rgb(240 245 255) 100%) !important;
+}
+
+.main_content{
+  width: 85vw;
+  margin-top: 6em;
 }
 
 .tab-form {
@@ -31,4 +37,15 @@ body {
   transform: translate(-50%, -50%);
   font-size: 1.5em;
   color: white;
+}
+@media only screen and (max-width: 767px) {
+  .main_content{
+    width: 100vw;
+    margin-top: 6em;
+  }
+}
+@media only screen and (min-width: 768px) and (max-width: 991px) {
+}
+
+@media only screen and (min-width: 992px) {
 }
