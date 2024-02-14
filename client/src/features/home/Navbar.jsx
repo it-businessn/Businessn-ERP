@@ -27,7 +27,7 @@ const Navbar = ({ handleClick, user, handleLogout, onOpen, isMobile }) => {
       zIndex={1}
       bg="linear-gradient(103deg, rgba(244,240,255,1) 0%, rgba(238,239,241,1) 100%)"
     >
-      <HStack spacing={0} alignItems="center">
+      <HStack spacing={0} alignItems="center" >
         {isMobile && (
           <IconButton
             icon={<HamburgerIcon />}
@@ -36,7 +36,7 @@ const Navbar = ({ handleClick, user, handleLogout, onOpen, isMobile }) => {
             onClick={() => onOpen()}
           />
         )}
-        <Flex justify="start" align="flex-end">
+        <Flex justify="start" align="flex-end" w="100%">
           <VStack align="start" m={0}>
             <Logo />
             <Text fontWeight="bold">

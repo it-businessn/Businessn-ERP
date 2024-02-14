@@ -53,7 +53,9 @@ const DashboardLayout = ({ children, user, handleLogout }) => {
 
       <Drawer isOpen={isOpen} placement="left" onClose={onClose} maxW="300px">
         <DrawerOverlay>
-          <DrawerContent bg="linear-gradient(0deg, rgb(228 235 255) 0%, rgb(240 245 255) 100%)">
+          <DrawerContent bg="linear-gradient(0deg, rgb(228 235 255) 0%, rgb(240 245 255) 100%)"
+            maxHeight={"100vh"}
+            overflowY="auto">
             <DrawerCloseButton />
             <DrawerBody>
               <MobileSidebar

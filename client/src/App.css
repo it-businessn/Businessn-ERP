@@ -15,11 +15,14 @@ body {
     rgba(238, 239, 241, 1) 100%
   ) !important; */
   background:linear-gradient(0deg, rgb(228 235 255) 0%, rgb(240 245 255) 100%) !important;
+  overflow: hidden;
 }
 
 .main_content{
   width: 85vw;
   margin-top: 6em;
+  max-height: calc(100vh - 6em);
+  overflow: auto;
 }
 
 .tab-form {
