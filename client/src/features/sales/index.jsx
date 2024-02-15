@@ -18,7 +18,6 @@ import {
   Tr,
   VStack,
 } from "@chakra-ui/react";
-import ChartDataLabels from "chartjs-plugin-datalabels";
 import {
   activityChartData,
   callsMadeBarData,
@@ -117,31 +116,9 @@ const CRMDashboard = () => {
     },
   };
 
-  const centerTextPlugin = {
-    afterDraw: (chart) => {
-      const ctx = chart.ctx;
-      const width = chart.width;
-      const height = chart.height;
-
-      ctx.restore();
-      const fontSize = (height / 114).toFixed(2);
-      ctx.font = fontSize + "em sans-serif";
-      ctx.fillStyle = "#000";
-      ctx.textBaseline = "middle";
-      ctx.textAlign = "center";
-
-      const text = "100%";
-      ctx.fillText(text, width / 2, height / 2);
-
-      ctx.save();
-    },
-  };
-
-  options.plugins = ChartDataLabels;
-  options.plugins = { ...options.plugins, ...centerTextPlugin };
-
   return (
-    <Box p="6">
+    <Box p={6} mt={{ base: "3em", md: 0 }}
+      overflow={"auto"}>
       <SimpleGrid columns={{ base: 1, md: 4 }} spacing="5" color={"brand.200"}>
         <Box
           p="4"

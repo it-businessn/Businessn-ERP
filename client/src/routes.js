@@ -5,8 +5,6 @@ import Loader from "features/Loader";
 import PageNotFound from "features/PageNotFound";
 import Home from "features/home";
 import AddPayrun from "features/payroll/AddPayRun";
-import CRMDashboard from "features/sales";
-import SalesReport from "features/sales/reports";
 import RootLayout from "layouts/RootLayout";
 
 const PayrollTable = lazy(() => import("features/payroll"));
@@ -19,9 +17,6 @@ const CalendarDashboard = lazy(() => import("features/sales/calendar"));
 const TaskByDate = lazy(() => import("features/sales/calendar/TaskByDate"));
 
 const Contacts = lazy(() => import("features/sales/contacts"));
-const CustomersDashboard = lazy(() =>
-  import("features/sales/contacts/CustomersDashboard")
-);
 
 const TaskDashboard = lazy(() => import("features/sales/tasks"));
 const AddContact = lazy(() => import("features/sales/contacts/AddContact"));
@@ -43,6 +38,11 @@ const Login = lazy(() => import("features/login"));
 const SignUp = lazy(() => import("features/sign-up"));
 const VerifyEmail = lazy(() => import("features/verify-user"));
 
+const CRMDashboard = lazy(() => import("features/sales"));
+const Customers = lazy(() => import("features/sales/customers"));
+const SalesReport = lazy(() => import("features/sales/reports"));
+const FreshLeads = lazy(() => import("features/sales/fresh_leads"));
+
 export const router = createBrowserRouter([
   {
     path: "/",
@@ -62,11 +62,15 @@ export const router = createBrowserRouter([
       },
       {
         path: "/customers",
-        element: <CustomersDashboard />,
+        element: <Customers />,
       },
       {
         path: "/reports",
         element: <SalesReport />,
+      },
+      {
+        path: "/fresh-leads",
+        element: <FreshLeads />,
       },
       {
         path: "/profile",

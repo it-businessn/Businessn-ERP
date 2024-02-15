@@ -27,7 +27,7 @@ import { PiUserSquareBold } from "react-icons/pi";
 import { RiMore2Fill } from "react-icons/ri";
 import * as api from "services";
 
-const CustomersDashboard = () => {
+const Customers = () => {
   const [contacts, setContacts] = useState(null);
   const fetchAllContacts = async () => {
     try {
@@ -43,8 +43,8 @@ const CustomersDashboard = () => {
     fetchAllContacts();
   }, []);
   return (
-    <Container maxW="container.xxl" mt={5}>
-      <Box
+    <Container maxW="container.xxl" >
+      <Box mt={{ base: "3em", md: 0 }}
         p="4"
         bg={"brand.primary_bg"}
         border="2px solid white"
@@ -163,7 +163,7 @@ const CustomersDashboard = () => {
                       icon={<RiMore2Fill />}
                       size="sm"
                       variant="ghost"
-                      // onClick={() => handleEdit(row.id)}
+                    // onClick={() => handleEdit(row.id)}
                     />
                   </Td>
                 </Tr>
@@ -176,4 +176,4 @@ const CustomersDashboard = () => {
   );
 };
 
-export default CustomersDashboard;
+export default Customers;

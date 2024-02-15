@@ -151,7 +151,7 @@ export const TOP_NAV_MENU_LIST = [
         icon: <MdCleanHands />,
       },
       {
-        path: "/as22das",
+        path: "/fresh-leads",
         name: "Fresh Leads",
         children: [],
         icon: <RiUserStarLine />,

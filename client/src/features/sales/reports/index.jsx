@@ -98,7 +98,8 @@ const SalesReport = () => {
     fetchAllContacts();
   }, []);
   return (
-    <Container maxW="container.xxl" mt={5}>
+    <Container maxW="container.xxl"
+      mt={{ base: "3em", md: 5 }}>
       <SimpleGrid columns={{ base: 1, md: 2 }} spacing="5" my="5">
         <Box
           color={"brand.nav_color"}
@@ -116,7 +117,7 @@ const SalesReport = () => {
             <Text fontSize="lg" fontWeight="bold">
               Sales Overview
             </Text>
-            <Select width="120px" border={"none"} fontSize={"sm"}>
+            <Select width="100px" border={"none"} fontSize={"sm"}>
               <option>Weekly </option>
               <option>Last Month</option>
             </Select>
