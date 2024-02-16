@@ -56,12 +56,12 @@ export const TOP_NAV_MENU_LIST = [
 	//   id: "inv",
 	// },
 	{
-		path: "/sales",
+		path: "/sales-dashboard",
 		name: "Sales",
 		id: "sale",
 		children: [
 			{
-				path: "/dashboard",
+				path: "/sales-dashboard",
 				name: "Dashboard",
 				children: [],
 				icon: <RxDashboard />,

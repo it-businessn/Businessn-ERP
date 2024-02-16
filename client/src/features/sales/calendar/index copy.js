@@ -1,7 +1,8 @@
 import {
 	Box,
 	Button,
-	Container,
+	ButtonGroup,
+	Center,
 	Flex,
 	FormControl,
 	FormLabel,
@@ -16,26 +17,20 @@ import {
 	Radio,
 	RadioGroup,
 	Select,
-	Spacer,
 	Stack,
-	Text,
 	Textarea,
-	useBreakpointValue,
 } from "@chakra-ui/react";
 import Loader from "features/Loader";
 import moment from "moment";
 import { useEffect, useState } from "react";
 import { Calendar as BigCalendar, momentLocalizer } from "react-big-calendar";
 import "react-big-calendar/lib/css/react-big-calendar.css";
-import { FaCaretLeft, FaCaretRight, FaClock } from "react-icons/fa";
+import { MdChevronLeft, MdChevronRight } from "react-icons/md";
 import * as api from "services";
 
+const localizer = momentLocalizer(moment);
+
 const Calendar = () => {
-	const isMobileView = useBreakpointValue({
-		base: true,
-		md: false,
-	});
-	const localizer = momentLocalizer(moment);
 	const [events, setEvents] = useState({
 		title: "",
 		start: moment().toDate(),
@@ -93,10 +88,54 @@ const Calendar = () => {
 
 	const eventStyleGetter = () => ({
 		style: {
-			backgroundColor: "transparent",
+			backgroundColor: "#6074c5",
+			color: "white",
 			border: "none",
 		},
 	});
+
+	const ScrollToolbar = (toolbar) => {
+		const goToBack = () => {
+			toolbar.onNavigate("PREV");
+		};
+
+		const goToNext = () => {
+			toolbar.onNavigate("NEXT");
+		};
+
+		return (
+			<Flex justifyContent="space-between">
+				<HStack>
+					<button onClick={goToBack}>
+						<MdChevronLeft />
+					</button>
+					<button onClick={goToNext}>
+						<MdChevronRight />
+					</button>
+				</HStack>
+				<Center>
+					<button>{toolbar.label}</button>
+				</Center>
+				<HStack>
+					<ButtonGroup spacing="0">
+						<Button variant="ghost" onClick={() => toolbar.onView("day")}>
+							Day
+						</Button>
+						<Button variant="ghost" onClick={() => toolbar.onView("week")}>
+							Week
+						</Button>
+						<Button variant="ghost" onClick={() => toolbar.onView("month")}>
+							Month
+						</Button>
+						<Button variant="ghost" onClick={() => toolbar.onView("agenda")}>
+							Agenda
+						</Button>
+					</ButtonGroup>
+				</HStack>
+				{/* <button onClick={toolbar.onNavigateToday}>Today</button> */}
+			</Flex>
+		);
+	};
 
 	const handleTypeChange = (e) => {
 		setEventType((prev) => e.target.value);
@@ -179,134 +218,39 @@ const Calendar = () => {
 		const endDate = moment(event.end).add(1, "hour").format("LT z");
 		return `${startDate} - ${endDate}`;
 	};
-
-	const ScrollToolbar = (toolbar) => {
-		const goToBack = () => {
-			toolbar.onNavigate("PREV");
-		};
-
-		const goToNext = () => {
-			toolbar.onNavigate("NEXT");
-		};
-
-		return (
-			<Flex
-				justifyContent="space-between"
-				py={isMobileView ? 1 : 4}
-				flexDir={isMobileView && "column"}
-			>
-				<Text fontSize="lg" fontWeight="bold" mb={isMobileView && "0.5em"}>
-					All Events
-				</Text>
-				<Spacer />
-				<HStack
-					justifyContent={isMobileView && "space-between"}
-					spacing={"1em"}
-				>
-					<Button
-						color={"#a9a9ab"}
-						leftIcon={<FaCaretLeft onClick={goToBack} />}
-						rightIcon={<FaCaretRight onClick={goToNext} />}
-						border={"2px solid #d3d3d3"}
-						borderRadius={"10px"}
-						variant={"ghost"}
-						_hover={{ color: "brand.600", bg: "transparent" }}
-					>
-						{toolbar.label}
-					</Button>
-					<Button
-						minW={"150px"}
-						bg={"#537eee"}
-						color={"brand.primary_bg"}
-						variant={"solid"}
-						_hover={{ color: "brand.600" }}
-						borderRadius={"10px"}
-					>
-						Create Event
-					</Button>
-				</HStack>
-				{/* <HStack>
-					<ButtonGroup spacing="0">
-						<Button variant="ghost" onClick={() => toolbar.onView("day")}>
-							Day
-						</Button>
-						<Button variant="ghost" onClick={() => toolbar.onView("week")}>
-							Week
-						</Button>
-						<Button variant="ghost" onClick={() => toolbar.onView("month")}>
-							Month
-						</Button>
-						<Button variant="ghost" onClick={() => toolbar.onView("agenda")}>
-							Agenda
-						</Button>
-					</ButtonGroup>
-				</HStack> */}
-				{/* <button onClick={toolbar.onNavigateToday}>Today</button> */}
-			</Flex>
-		);
-	};
-	const customFormats = {
-		monthHeaderFormat: (date) => moment(date).format("MMM YYYY"),
-	};
-	const CustomEvent = ({ event }) => (
-		<Box
-			overflow="auto"
-			color="#67aa89"
-			bg={"#deeced"}
-			pl={"10px"}
-			py={"5px"}
-			borderLeft="4px solid #67aa89"
-		>
-			<Text fontWeight="bold" fontSize="sm">
-				{event.title}
-			</Text>
-			<Button
-				p={0}
-				color={"#67aa89"}
-				leftIcon={<FaClock />}
-				size="xs"
-				variant={"ghost"}
-				_hover={{ color: "brand.600", bg: "transparent" }}
-			>
-				{moment(event.start).format("h:mm A")} -{" "}
-				{moment(event.end).format("h:mm A")}
-			</Button>
-		</Box>
-	);
 	return (
-		<Container maxW="100vw" mt={5}>
+		<Box width="100%">
 			{!events && <Loader />}
 			{events && (
-				<Box
-					px={{ base: "0", md: "4" }}
-					bg={"brand.primary_bg"}
-					border="2px solid white"
-					borderRadius="10px"
-				>
-					<BigCalendar
-						localizer={localizer}
-						events={events.length ? events : [defaultEvent]}
-						startAccessor="start"
-						endAccessor="end"
-						selectable
-						onSelectSlot={handleDateSelect}
-						eventPropGetter={eventStyleGetter}
-						formats={customFormats}
-						components={{
-							event: CustomEvent,
-							toolbar: ScrollToolbar,
-						}}
-						dayFormat={(date, culture, localizer) =>
-							moment(date).format("D dd")
-						}
-						dayHeaderFormat={(date, culture, localizer) =>
-							moment(date).format("D dddd")
-						}
-						views={["day", "week", "month", "agenda"]}
-						style={{ minHeight: 750 }}
-					/>
-				</Box>
-			)}{" "}
+				<BigCalendar
+					localizer={localizer}
+					events={events.length ? events : [defaultEvent]}
+					startAccessor="start"
+					endAccessor="end"
+					selectable
+					onSelectSlot={handleDateSelect}
+					eventPropGetter={eventStyleGetter}
+					formats={{
+						eventTimeRangeFormat: () => null,
+					}}
+					components={{
+						// event: (event) => (
+						//   <div onClick={() => handleEvent(event)}>
+						//     <div>{formatEventTime(event.event)}</div>
+						//     <Text fontSize="sm">{event?.event?.title}</Text>
+						//   </div>
+						// ),
+						toolbar: ScrollToolbar,
+					}}
+					dayFormat={(date, culture, localizer) => moment(date).format("D dd")}
+					dayHeaderFormat={(date, culture, localizer) =>
+						moment(date).format("D dddd")
+					}
+					views={["day", "week", "month", "agenda"]}
+					style={{ height: 800 }}
+				/>
+			)}
+
 			<Modal isOpen={showModal} size="xl" onClose={() => setShowModal(false)}>
 				<ModalOverlay />
 				<ModalContent zIndex="2">
@@ -498,7 +442,7 @@ const Calendar = () => {
 					</form>
 				</ModalContent>
 			</Modal>
-		</Container>
+		</Box>
 	);
 };
 

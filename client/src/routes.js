@@ -4,16 +4,16 @@ import { createBrowserRouter } from "react-router-dom";
 import Loader from "features/Loader";
 import PageNotFound from "features/PageNotFound";
 import Home from "features/home";
-import AddPayrun from "features/payroll/AddPayRun";
+// import AddPayrun from "features/payroll/AddPayRun";
 import RootLayout from "layouts/RootLayout";
 
-const PayrollTable = lazy(() => import("features/payroll"));
-const GeneratePayRun = lazy(() => import("features/payroll/GeneratePayRun"));
+// const PayrollTable = lazy(() => import("features/payroll"));
+// const GeneratePayRun = lazy(() => import("features/payroll/GeneratePayRun"));
 const UserProfileDetails = lazy(() => import("components/UserProfileDetails"));
 const AddOpportunity = lazy(() =>
 	import("features/sales/pipeline/AddOpportunity"),
 );
-const CalendarDashboard = lazy(() => import("features/sales/calendar"));
+const Calendar = lazy(() => import("features/sales/calendar"));
 const TaskByDate = lazy(() => import("features/sales/calendar/TaskByDate"));
 
 const Contacts = lazy(() => import("features/sales/contacts"));
@@ -56,7 +56,7 @@ export const router = createBrowserRouter([
 				element: <Home />,
 			},
 			{
-				path: "/dashboard",
+				path: "/sales-dashboard",
 				element: <CRMDashboard />,
 			},
 			{
@@ -76,6 +76,10 @@ export const router = createBrowserRouter([
 				element: <Resources />,
 			},
 			{
+				path: "/calendar",
+				element: <Calendar />,
+			},
+			{
 				path: "/profile",
 				element: <UserProfileDetails />,
 			},
@@ -90,10 +94,6 @@ export const router = createBrowserRouter([
 			{
 				path: "/edit-contact",
 				element: <EditContact />,
-			},
-			{
-				path: "/calendar",
-				element: <CalendarDashboard />,
 			},
 			{
 				path: "/view-tasks",
@@ -123,18 +123,18 @@ export const router = createBrowserRouter([
 				path: "/edit-user/:id",
 				element: <EditUser />,
 			},
-			{
-				path: "/generate",
-				element: <PayrollTable />,
-			},
-			{
-				path: "/generate-payrun",
-				element: <GeneratePayRun />,
-			},
-			{
-				path: "/add-payrun",
-				element: <AddPayrun />,
-			},
+			// {
+			// 	path: "/generate",
+			// 	element: <PayrollTable />,
+			// },
+			// {
+			// 	path: "/generate-payrun",
+			// 	element: <GeneratePayRun />,
+			// },
+			// {
+			// 	path: "/add-payrun",
+			// 	element: <AddPayrun />,
+			// },
 			{
 				path: "*",
 				element: <PageNotFound />,
