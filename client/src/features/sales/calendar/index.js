@@ -1,7 +1,6 @@
 import {
 	Box,
 	Button,
-	Container,
 	Flex,
 	FormControl,
 	FormLabel,
@@ -195,7 +194,7 @@ const Calendar = () => {
 				py={isMobileView ? 1 : 4}
 				flexDir={isMobileView && "column"}
 			>
-				<Text fontSize="lg" fontWeight="bold" mb={isMobileView && "0.5em"}>
+				<Text fontWeight="bold" mb={isMobileView && "0.5em"}>
 					All Events
 				</Text>
 				<Spacer />
@@ -268,17 +267,21 @@ const Calendar = () => {
 				variant={"ghost"}
 				_hover={{ color: "brand.600", bg: "transparent" }}
 			>
-				{moment(event.start).format("h:mm A")} -{" "}
+				{moment(event.start).format("h:mm A")} -
 				{moment(event.end).format("h:mm A")}
 			</Button>
 		</Box>
 	);
+
 	return (
-		<Container maxW="100vw" mt={5}>
+		<Box mt={5} px={"1em"} mb={"1em"}>
+			<Text fontWeight="bold" mb={"0.5em"}>
+				Calendar
+			</Text>
 			{!events && <Loader />}
 			{events && (
 				<Box
-					px={{ base: "0", md: "4" }}
+					px={{ base: "0", md: "1em" }}
 					bg={"brand.primary_bg"}
 					border="2px solid white"
 					borderRadius="10px"
@@ -306,7 +309,7 @@ const Calendar = () => {
 						style={{ minHeight: 750 }}
 					/>
 				</Box>
-			)}{" "}
+			)}
 			<Modal isOpen={showModal} size="xl" onClose={() => setShowModal(false)}>
 				<ModalOverlay />
 				<ModalContent zIndex="2">
@@ -498,7 +501,7 @@ const Calendar = () => {
 					</form>
 				</ModalContent>
 			</Modal>
-		</Container>
+		</Box>
 	);
 };
 
