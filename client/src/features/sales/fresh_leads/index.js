@@ -217,7 +217,7 @@ const FreshLeads = () => {
 								+123 456 6778
 							</Text>
 						</VStack>
-					</Card>{" "}
+					</Card>
 					<Card m="1em" bg={"#eef0fc"} border={"1px solid #e3e5f1"}>
 						<VStack
 							align="flex-start"

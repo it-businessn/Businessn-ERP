@@ -410,7 +410,7 @@ const CRMDashboard = () => {
 						color={"brand.nav_color"}
 						w={{ base: "auto", md: "103%" }}
 					>
-						<Text fontWeight="bold">Calls Made</Text>{" "}
+						<Text fontWeight="bold">Calls Made</Text>
 						<Select width="auto" border={"none"} fontSize={"xs"} ml={"1em"}>
 							<option>Last Week</option>
 							<option>Last Month</option>
