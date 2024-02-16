@@ -8,7 +8,7 @@ const MobileSidebar = ({ activeMenu, handleMenuItemClick }) => {
             p={2}
             color="brand.nav_color"
         >
-            <Stack justify="start" width="full" my={0}>
+            <Stack justify="start" width="90%" my={0}>
                 {activeMenu?.children?.length &&
                     activeMenu?.children?.map((menu) => (
                         <MenuItem

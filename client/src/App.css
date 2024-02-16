@@ -1,51 +1,55 @@
 html {
-  min-height: 80%;
-  margin: 0 auto;
-  background: "#eeeeee";
+	min-height: 80%;
+	margin: 0 auto;
+	background: "#eeeeee";
 }
 
 body {
-  margin: 0;
-  padding: 0;
-  min-height: 100%;
-  background: rgb(244, 240, 255);
-  /* background: linear-gradient(
+	margin: 0;
+	padding: 0;
+	min-height: 100%;
+	background: rgb(244, 240, 255);
+	/* background: linear-gradient(
     103deg,
     rgba(244, 240, 255, 1) 0%,
     rgba(238, 239, 241, 1) 100%
   ) !important; */
-  background:linear-gradient(0deg, rgb(228 235 255) 0%, rgb(240 245 255) 100%) !important;
-  overflow: hidden;
+	background: linear-gradient(
+		0deg,
+		rgb(228 235 255) 0%,
+		rgb(240 245 255) 100%
+	) !important;
+	overflow: hidden;
 }
 
-.main_content{
-  width: 85vw;
-  margin-top: 6em;
-  max-height: calc(100vh - 6em);
-  overflow: auto;
+.main_content {
+	width: 85vw;
+	margin-top: 6em;
+	max-height: calc(100vh - 6em);
+	overflow: auto;
 }
 
 .tab-form {
-  width: 100%;
+	width: 100%;
 }
 
 .date-picker {
-  padding: 8px;
+	padding: 8px;
 }
 
 .header-logo {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  font-size: 1.5em;
-  color: white;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	font-size: 1.5em;
+	color: white;
 }
 @media only screen and (max-width: 767px) {
-  .main_content{
-    width: 100vw;
-    margin-top: 6em;
-  }
+	.main_content {
+		width: 100vw;
+		margin-top: 3.5em;
+	}
 }
 @media only screen and (min-width: 768px) and (max-width: 991px) {
 }

@@ -3,8 +3,6 @@ import {
   Avatar,
   Box,
   Flex,
-  Grid,
-  HStack,
   Icon,
   IconButton,
   Select,
@@ -17,6 +15,7 @@ import {
   Thead,
   Tr,
   VStack,
+  useBreakpointValue
 } from "@chakra-ui/react";
 import {
   activityChartData,
@@ -35,12 +34,15 @@ import { TfiTarget } from "react-icons/tfi";
 import MeetingsConductedTable from "./MeetingsConductedTable";
 
 const CRMDashboard = () => {
+  const isMobileView = useBreakpointValue({
+    base: true,
+    md: false,
+  });
   const [selectedDateFilter, setSelectedDateFilter] = useState("This Week");
 
   const handleDateFilterChange = (event) => {
     setSelectedDateFilter(event.target.value);
     // Fetch data based on the selected date filter
-    // Update the 'data' array with the fetched data
   };
 
   const callsBarData = {
@@ -108,17 +110,24 @@ const CRMDashboard = () => {
     },
   };
   const activityChartOptions = {
-    cutout: "50%",
+    cutout: "40%",
     plugins: {
       datalabels: {
-        display: false,
+        display: true,
       },
+    }, legend: {
+      position: "bottom",
+      align: "center",
     },
   };
 
   return (
-    <Box p={6} mt={{ base: "3em", md: 0 }}
-      overflow={"auto"}>
+    <Box p={6}
+      overflow={"hidden"}>
+      {isMobileView &&
+        <Text fontSize="lg" fontWeight="bold">
+          Dashboard
+        </Text>}
       <SimpleGrid columns={{ base: 1, md: 4 }} spacing="5" color={"brand.200"}>
         <Box
           p="4"
@@ -146,7 +155,7 @@ const CRMDashboard = () => {
               10%
             </Text>
           </Flex>
-        </Box>{" "}
+        </Box>
         <Box
           p="4"
           bg={"brand.primary_bg"}
@@ -173,7 +182,7 @@ const CRMDashboard = () => {
               2.22%
             </Text>
           </Flex>
-        </Box>{" "}
+        </Box>
         <Box
           p="4"
           bg={"brand.primary_bg"}
@@ -200,7 +209,7 @@ const CRMDashboard = () => {
               3.34%
             </Text>
           </Flex>
-        </Box>{" "}
+        </Box>
         <Box
           p="4"
           bg={"brand.primary_bg"}
@@ -230,13 +239,15 @@ const CRMDashboard = () => {
         </Box>
       </SimpleGrid>
 
-      <Grid templateColumns="1fr 1fr 1fr" gap={5} mt="4" width="100%">
+      <SimpleGrid
+        columns={{ base: 1, md: 3 }}
+        spacing="5" mt={5} h={{ base: "auto", md: "400px" }}>
         <Box
           p="4"
           bg={"brand.primary_bg"}
           border="3px solid white"
           borderRadius="10px"
-          fontWeight="bold"
+          fontWeight="bold" maxH={{ base: "auto", md: "70%" }}
         >
           <Flex
             justify="space-between"
@@ -252,36 +263,38 @@ const CRMDashboard = () => {
               <option>Last Month</option>
             </Select>
           </Flex>
-          <Table color={"brand.nav_color"} bg={"brand.primary_bg"}>
-            <Thead>
-              <Tr>
-                <Th>Position</Th>
-                <Th>Salesperson </Th>
-                <Th>Category</Th>
-                <Th>Value</Th>
-              </Tr>
-            </Thead>
-            <Tbody color={"brand.nav_color"}>
-              {leaderBoardData.map((item, index) => (
-                <Tr key={index} fontSize={"sm"}>
-                  <Td>{item.position}</Td>
-                  <Td>{item.salesperson}</Td>
-                  <Td>
-                    <Flex align="center">
-                      <Icon as={item.icon} />
-                      <Text ml="2"> {item.category}</Text>
-                    </Flex>
-                  </Td>
-                  <Td>
-                    ${item.value}
-                    <Text fontSize={"xs"} as={"span"} fontWeight="normal">
-                      {`/ this month`}
-                    </Text>
-                  </Td>
+          <Box overflow="auto" maxH="88%" >
+            <Table size="sm" color={"brand.nav_color"} bg={"brand.primary_bg"} >
+              <Thead>
+                <Tr>
+                  <Th>Position</Th>
+                  <Th>Salesperson </Th>
+                  <Th>Category</Th>
+                  <Th>Value</Th>
                 </Tr>
-              ))}
-            </Tbody>
-          </Table>
+              </Thead>
+              <Tbody color={"brand.nav_color"}>
+                {leaderBoardData.map((item, index) => (
+                  <Tr key={index} fontSize={"sm"}>
+                    <Td>{item.position}</Td>
+                    <Td>{item.salesperson}</Td>
+                    <Td>
+                      <Flex align="center">
+                        <Icon as={item.icon} />
+                        <Text ml="2"> {item.category}</Text>
+                      </Flex>
+                    </Td>
+                    <Td>
+                      ${item.value}
+                      <Text fontSize={"xs"} as={"span"} fontWeight="normal">
+                        {`/ this month`}
+                      </Text>
+                    </Td>
+                  </Tr>
+                ))}
+              </Tbody>
+            </Table>
+          </Box>
         </Box>
         <Box
           p="4"
@@ -289,27 +302,13 @@ const CRMDashboard = () => {
           border="3px solid white"
           borderRadius="10px"
           fontWeight="bold"
-          color={"brand.nav_color"}
+          color={"brand.nav_color"} maxH={{ base: "auto", md: "70%" }}
         >
           <Text fontSize="lg" fontWeight="bold" mt="2" mb="2">
             Activity Tracking
           </Text>
-          <Box textAlign="center">
+          <Box textAlign="center" w="59%" h="80%" mx={"auto"}>
             <Doughnut data={activityChartData} options={activityChartOptions} />
-            <Box display="flex" justifyContent="center" mt="2">
-              <HStack mr="4">
-                <Box w="1rem" h="1rem" bg="#517ae8" mr="1" />
-                <Text>Calls-65%</Text>
-              </HStack>
-              <HStack mr="4">
-                <Box w="1rem" h="1rem" bg="#67afc8" mr="1" />
-                <Text>Emails-25%</Text>
-              </HStack>
-              <HStack>
-                <Box w="1rem" h="1rem" bg="#8aa8ee" mr="1" />
-                <Text>Meetings-10%</Text>
-              </HStack>
-            </Box>
           </Box>
         </Box>
         <Box
@@ -318,54 +317,56 @@ const CRMDashboard = () => {
           bg={"brand.primary_bg"}
           border="3px solid white"
           borderRadius="10px"
-          fontWeight="bold"
+          fontWeight="bold" maxH={{ base: "auto", md: "70%" }}
         >
           <Text mt={2} mb={5} fontSize="lg" fontWeight="bold">
             Contacts Added
-          </Text>{" "}
-          <Table color={"brand.nav_color"} bg={"brand.primary_bg"}>
-            <Thead>
-              <Tr fontSize={"sm"}>
-                <Th>#ID</Th>
-                <Th> Name</Th>
-                <Th>Email</Th>
-                <Th></Th>
-              </Tr>
-            </Thead>
-            <Tbody border={"none"} color={"brand.nav_color"}>
-              {leaderBoardData.map((item, index) => (
-                <Tr key={index} fontSize={"sm"}>
-                  <Td>#{item.id}</Td>
-                  <Td border={"none"} py={0}>
-                    <Flex align="center">
-                      <Avatar
-                        size="sm"
-                        src={item.profilePic}
-                        name={item.salesperson}
-                      />
-                      <Text ml="2">{item.salesperson}</Text>
-                    </Flex>
-                  </Td>
-                  <Td border={"none"} py={0}>
-                    {"user@gmail.com"}
-                  </Td>
-                  <Td border={"none"} py={0}>
-                    <IconButton
-                      icon={<ArrowForwardIcon />}
-                      borderRadius="full"
-                      size={"xs"}
-                      color="purple.500"
-                      bg={"#dedaf4"}
-                      boxShadow="md"
-                      _hover={{ bg: "#8385d5", color: "brand.100" }}
-                    />
-                  </Td>
+          </Text>
+          <Box overflow="auto" maxH="88%" >
+            <Table size="sm" color={"brand.nav_color"} bg={"brand.primary_bg"} >
+              <Thead>
+                <Tr fontSize={"sm"}>
+                  <Th>#ID</Th>
+                  <Th> Name</Th>
+                  <Th>Email</Th>
+                  <Th></Th>
                 </Tr>
-              ))}
-            </Tbody>
-          </Table>
+              </Thead>
+              <Tbody border={"none"} color={"brand.nav_color"}>
+                {leaderBoardData.map((item, index) => (
+                  <Tr key={index} fontSize={"sm"}>
+                    <Td>#{item.id}</Td>
+                    <Td border={"none"} py={0}>
+                      <Flex align="center">
+                        <Avatar
+                          size="sm"
+                          src={item.profilePic}
+                          name={item.salesperson}
+                        />
+                        <Text ml="2">{item.salesperson}</Text>
+                      </Flex>
+                    </Td>
+                    <Td border={"none"} py={0}>
+                      {"user@gmail.com"}
+                    </Td>
+                    <Td border={"none"} py={0}>
+                      <IconButton
+                        icon={<ArrowForwardIcon />}
+                        borderRadius="full"
+                        size={"xs"}
+                        color="purple.500"
+                        bg={"#dedaf4"}
+                        boxShadow="md"
+                        _hover={{ bg: "#8385d5", color: "brand.100" }}
+                      />
+                    </Td>
+                  </Tr>
+                ))}
+              </Tbody>
+            </Table>
+          </Box>
         </Box>
-      </Grid>
+      </SimpleGrid>
       <SimpleGrid columns={{ base: 1, md: 2 }} spacing="5" mt="4">
         <Box
           color={"brand.nav_color"}
@@ -438,7 +439,9 @@ const CRMDashboard = () => {
               <option>This Week</option>
             </Select>
           </Flex>
-          <MeetingsConductedTable meetingsData={meetingsData} />
+          <Box overflow="auto">
+            <MeetingsConductedTable meetingsData={meetingsData} />
+          </Box>
         </Box>
         <Box
           p="4"

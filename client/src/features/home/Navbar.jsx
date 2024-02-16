@@ -8,6 +8,7 @@ import {
   Stack,
   Text,
   VStack,
+  useBreakpointValue,
 } from "@chakra-ui/react";
 import { NavButton, UserProfile } from "components";
 import Logo from "components/logo";
@@ -15,7 +16,8 @@ import { TOP_NAV_MENU_LIST } from "constant";
 import { FaSyncAlt } from "react-icons/fa";
 import { Link } from "react-router-dom";
 
-const Navbar = ({ handleClick, user, handleLogout, onOpen, isMobile }) => {
+const Navbar = ({ handleClick, user, handleLogout, onOpen }) => {
+  const isMobile = useBreakpointValue({ base: true, sm: false });
   return (
     <Box
       pl={3}
@@ -36,18 +38,20 @@ const Navbar = ({ handleClick, user, handleLogout, onOpen, isMobile }) => {
             onClick={() => onOpen()}
           />
         )}
-        <Flex justify="start" align="flex-end" w="100%">
+        <Flex justify="start" align={{ base: "center", md: "flex-end" }} w="100%">
           <VStack align="start" m={0}>
             <Logo />
-            <Text fontWeight="bold">
-              Fractional Departments
-              <IconButton
-                size="sm"
-                icon={<FaSyncAlt />}
-                aria-label="Refresh"
-                variant="round"
-              />
-            </Text>
+            {!isMobile &&
+              <Text fontWeight="bold">
+                Fractional Departments
+                <IconButton
+                  size="sm"
+                  icon={<FaSyncAlt />}
+                  aria-label="Refresh"
+                  variant="round"
+                />
+              </Text>
+            }
           </VStack>
 
           {TOP_NAV_MENU_LIST.map((menu, index) => (

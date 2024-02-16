@@ -18,6 +18,7 @@ import {
   Th,
   Thead,
   Tr,
+  useBreakpointValue,
 } from "@chakra-ui/react";
 import Loader from "features/Loader";
 import { useEffect, useState } from "react";
@@ -42,65 +43,119 @@ const Customers = () => {
   useEffect(() => {
     fetchAllContacts();
   }, []);
+  const isMobileView = useBreakpointValue({
+    base: true,
+    md: false,
+  });
   return (
-    <Container maxW="container.xxl" >
-      <Box mt={{ base: "3em", md: 0 }}
+    <Container maxH="100vh" maxW={"100vw"} overflow="hidden"
+      mt={{ base: 0, md: 5 }}>
+      <Box
         p="4"
         bg={"brand.primary_bg"}
         border="2px solid white"
         borderRadius="10px"
         color={"brand.nav_color"}
       >
-        <Flex>
-          <Text fontSize="lg" fontWeight="bold">
-            Customers
-          </Text>
-          <Spacer />
-          <HStack w={"50%"} spacing={3} justify={"flex-end"}>
-            <Button
-              color={"brand.nav_color"}
-              leftIcon={<MdOutlineFilterList />}
-              border={"2px solid #d3d3d3"}
-              borderRadius={"10px"}
-              variant={"ghost"}
-              _hover={{ color: "brand.600", bg: "transparent" }}
-              ml={2}
-            >
-              Filter
-            </Button>
-            <InputGroup
-              w={"40%"}
-              borderRadius={"10px"}
-              border={"1px solid #d3d3d3"}
-              fontSize="sm"
-              fontWeight="bold"
-            >
-              <InputLeftElement children={<FaSearch />} />
-              <Input
-                _placeholder={{
-                  color: "brand.nav_color",
-                  fontSize: "sm",
-                }}
+        {isMobileView ?
+          <Flex flexDir="column">
+            <Flex justify="space-between">
+              <Text fontSize="lg" fontWeight="bold">
+                Customers
+              </Text>
+              <Button
+                bg={"#537eee"}
+                color={"brand.primary_bg"}
+                variant={"solid"}
+                _hover={{ color: "brand.600" }}
+                borderRadius={"10px"}
+              >
+                Add new customer
+              </Button>
+            </Flex>
+            <HStack spacing="1em" mt="1em">
+              <Button
                 color={"brand.nav_color"}
-                bg={"brand.primary_bg"}
-                type="text"
-                placeholder="Search here"
-                pr="4.5rem"
-              />
-            </InputGroup>
-            <Button
-              bg={"#537eee"}
-              color={"brand.primary_bg"}
-              variant={"solid"}
-              _hover={{ color: "brand.600" }}
-              borderRadius={"10px"}
-            >
-              Add new customer
-            </Button>
-          </HStack>
-        </Flex>
+                leftIcon={<MdOutlineFilterList />}
+                border={"2px solid #d3d3d3"}
+                borderRadius={"10px"}
+                variant={"ghost"}
+                _hover={{ color: "brand.600", bg: "transparent" }}
+
+              >
+                Filter
+              </Button>
+              <InputGroup
+                borderRadius={"10px"}
+                border={"1px solid #d3d3d3"}
+                fontSize="sm"
+                fontWeight="bold"
+              >
+                <InputLeftElement children={<FaSearch />} />
+                <Input
+                  _placeholder={{
+                    color: "brand.nav_color",
+                    fontSize: "sm",
+                  }}
+                  color={"brand.nav_color"}
+                  bg={"brand.primary_bg"}
+                  type="text"
+                  placeholder="Search here"
+                  pr="4.5rem"
+                />
+              </InputGroup>
+            </HStack>
+          </Flex> :
+          <Flex>
+            <Text fontSize="lg" fontWeight="bold">
+              Customers
+            </Text>
+            <Spacer />
+            <HStack w={"50%"} spacing={3} justify={"flex-end"}>
+              <Button
+                color={"brand.nav_color"}
+                leftIcon={<MdOutlineFilterList />}
+                border={"2px solid #d3d3d3"}
+                borderRadius={"10px"}
+                variant={"ghost"}
+                _hover={{ color: "brand.600", bg: "transparent" }}
+                ml={2}
+              >
+                Filter
+              </Button>
+              <InputGroup
+                w={"40%"}
+                borderRadius={"10px"}
+                border={"1px solid #d3d3d3"}
+                fontSize="sm"
+                fontWeight="bold"
+              >
+                <InputLeftElement children={<FaSearch />} />
+                <Input
+                  _placeholder={{
+                    color: "brand.nav_color",
+                    fontSize: "sm",
+                  }}
+                  color={"brand.nav_color"}
+                  bg={"brand.primary_bg"}
+                  type="text"
+                  placeholder="Search here"
+                  pr="4.5rem"
+                />
+              </InputGroup>
+              <Button
+                bg={"#537eee"}
+                color={"brand.primary_bg"}
+                variant={"solid"}
+                _hover={{ color: "brand.600" }}
+                borderRadius={"10px"}
+              >
+                Add new customer
+              </Button>
+            </HStack>
+          </Flex>}
         {!contacts && <Loader />}
-        {contacts && (
+        {contacts && (<Box overflow="auto">
           <Table color={"brand.nav_color"} bg={"brand.primary_bg"}>
             <Thead>
               <Tr>
@@ -170,6 +225,7 @@ const Customers = () => {
               ))}
             </Tbody>
           </Table>
+        </Box>
         )}
       </Box>
     </Container>
