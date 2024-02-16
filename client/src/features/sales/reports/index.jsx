@@ -224,6 +224,7 @@ const SalesReport = () => {
 									bg={"#537eee"}
 									color={"brand.primary_bg"}
 									variant={"solid"}
+									size="xs"
 									_hover={{ color: "brand.600" }}
 									borderRadius={"10px"}
 								>
@@ -237,6 +238,7 @@ const SalesReport = () => {
 									border={"2px solid #d3d3d3"}
 									borderRadius={"10px"}
 									variant={"ghost"}
+									size={"xs"}
 									_hover={{ color: "brand.600", bg: "transparent" }}
 								>
 									Filter
@@ -245,19 +247,21 @@ const SalesReport = () => {
 									borderRadius={"10px"}
 									border={"1px solid #d3d3d3"}
 									fontSize="xs"
+									size={"xs"}
 									fontWeight="bold"
 								>
 									<InputLeftElement children={<FaSearch />} />
 									<Input
 										_placeholder={{
 											color: "brand.nav_color",
-											fontSize: "sm",
+											fontSize: "xs",
 										}}
 										color={"brand.nav_color"}
 										bg={"brand.primary_bg"}
 										type="text"
 										placeholder="Search here"
 										pr="4.5rem"
+										py={"1.2em"}
 									/>
 								</InputGroup>
 							</HStack>
@@ -318,11 +322,7 @@ const SalesReport = () => {
 					{!contacts && <Loader />}
 					{contacts && (
 						<Box overflow="auto">
-							<Table
-								color={"brand.nav_color"}
-								bg={"brand.primary_bg"}
-								size={"small"}
-							>
+							<Table color={"brand.nav_color"} bg={"brand.primary_bg"}>
 								<Thead>
 									<Tr fontSize="xs">
 										<Th fontWeight={"bolder"} p={0}>
@@ -331,7 +331,7 @@ const SalesReport = () => {
 										<Th fontWeight={"bolder"}>Deals </Th>
 										<Th fontWeight={"bolder"}>Amount</Th>
 										<Th fontWeight={"bolder"}>Top Product</Th>
-										<Th></Th>
+										<Th p={0}></Th>
 									</Tr>
 								</Thead>
 								<Tbody color={"brand.nav_color"}>
@@ -343,7 +343,7 @@ const SalesReport = () => {
 											<Td fontSize={"xs"}>{contact.companyName}</Td>
 											<Td fontSize={"xs"}>$345</Td>
 											<Td fontSize={"xs"}>Product1</Td>
-											<Td fontSize={"xs"}>
+											<Td fontSize={"xs"} p={0}>
 												<HStack>
 													<Button
 														bgGradient="linear-gradient(103deg, rgba(107,73,201,1) 0%, rgba(180,165,222,1) 43%, rgba(36,249,225,1) 100%);"

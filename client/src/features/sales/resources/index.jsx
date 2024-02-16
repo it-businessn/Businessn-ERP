@@ -52,7 +52,7 @@ const Resources = () => {
 		setSelectedFilter(filter);
 	};
 	return (
-		<Box p={"1em"}>
+		<Box px={"1em"} pt={"1em"}>
 			<Text fontWeight="bold">Resources</Text>
 			<SimpleGrid columns={{ base: 1, md: 2 }} spacing="1em">
 				<SimpleGrid columns={{ base: 1, md: 2 }} spacing="1em" mt={"0.5em"}>

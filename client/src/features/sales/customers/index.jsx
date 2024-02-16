@@ -65,6 +65,7 @@ const Customers = () => {
 							<Text fontWeight="bold">Customers</Text>
 							<Button
 								bg={"#537eee"}
+								size="xs"
 								color={"brand.primary_bg"}
 								variant={"solid"}
 								_hover={{ color: "brand.600" }}
@@ -112,6 +113,7 @@ const Customers = () => {
 						<HStack w={"50%"} spacing={3} justify={"flex-end"}>
 							<Button
 								color={"brand.nav_color"}
+								size="xs"
 								leftIcon={<MdOutlineFilterList />}
 								border={"2px solid #d3d3d3"}
 								borderRadius={"10px"}
@@ -122,14 +124,16 @@ const Customers = () => {
 								Filter
 							</Button>
 							<InputGroup
+								size="xs"
 								w={"40%"}
 								borderRadius={"10px"}
 								border={"1px solid #d3d3d3"}
-								fontSize="sm"
+								fontSize="xs"
 								fontWeight="bold"
 							>
-								<InputLeftElement children={<FaSearch />} />
+								<InputLeftElement size="xs" children={<FaSearch />} />
 								<Input
+									size="xs"
 									_placeholder={{
 										color: "brand.nav_color",
 										fontSize: "sm",
@@ -139,10 +143,12 @@ const Customers = () => {
 									type="text"
 									placeholder="Search here"
 									pr="4.5rem"
+									py={"1.1em"}
 								/>
 							</InputGroup>
 							<Button
 								bg={"#537eee"}
+								size="xs"
 								color={"brand.primary_bg"}
 								variant={"solid"}
 								_hover={{ color: "brand.600" }}

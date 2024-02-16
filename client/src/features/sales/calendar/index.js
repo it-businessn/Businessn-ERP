@@ -204,6 +204,7 @@ const Calendar = () => {
 				>
 					<Button
 						color={"#a9a9ab"}
+						size="xs"
 						leftIcon={<FaCaretLeft onClick={goToBack} />}
 						rightIcon={<FaCaretRight onClick={goToNext} />}
 						border={"2px solid #d3d3d3"}
@@ -216,6 +217,7 @@ const Calendar = () => {
 					<Button
 						minW={"150px"}
 						bg={"#537eee"}
+						size="xs"
 						color={"brand.primary_bg"}
 						variant={"solid"}
 						_hover={{ color: "brand.600" }}
