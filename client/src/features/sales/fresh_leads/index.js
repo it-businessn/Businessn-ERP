@@ -18,7 +18,7 @@ const FreshLeads = () => {
 				Fresh Leads
 			</Text>
 			<SimpleGrid
-				columns={{ base: 1, md: 4 }}
+				columns={{ base: 1, md: 2, lg: 4 }}
 				spacing="1em"
 				color={"brand.200"}
 			>

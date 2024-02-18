@@ -25,6 +25,7 @@
         "moment": "^2.29.4",
         "primereact": "^9.6.0",
         "react": "^18.2.0",
+        "react-beautiful-dnd": "^13.1.1",
         "react-big-calendar": "^1.8.5",
         "react-calendar": "^4.6.1",
         "react-chartjs-2": "^3.0.4",

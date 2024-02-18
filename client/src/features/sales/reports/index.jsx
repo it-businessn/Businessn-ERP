@@ -107,7 +107,7 @@ const SalesReport = () => {
 		<Box m={"1em"}>
 			<Text fontWeight="bold">Sales Reports</Text>
 			<Flex direction="column" h="100%">
-				<SimpleGrid columns={{ base: 1, md: 2 }} spacing="5" my="5" h={"50%"}>
+				<SimpleGrid columns={{ base: 1, lg: 2 }} spacing="5" my="5" h={"50%"}>
 					<Box
 						color={"brand.nav_color"}
 						p="1em"
@@ -127,7 +127,9 @@ const SalesReport = () => {
 								<option>Last Month</option>
 							</Select>
 						</Flex>
-						<Bar data={callsBarData} options={options} />
+						<Box w={{ xl: "55%" }} mx={"auto"}>
+							<Bar data={callsBarData} options={options} />
+						</Box>
 					</Box>
 					<Box
 						overflow="auto"
@@ -270,7 +272,7 @@ const SalesReport = () => {
 						<Flex>
 							<Text fontWeight="bold">Sales Performance</Text>
 							<Spacer />
-							<HStack w={"50%"} spacing={3} justify={"flex-end"}>
+							<HStack w={{ lg: "50%" }} spacing={3} justify={"flex-end"}>
 								<Button
 									color={"brand.nav_color"}
 									leftIcon={<MdOutlineFilterList />}

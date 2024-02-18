@@ -110,7 +110,7 @@ const Customers = () => {
 					<Flex>
 						<Text fontWeight="bold">Customers</Text>
 						<Spacer />
-						<HStack w={"50%"} spacing={3} justify={"flex-end"}>
+						<HStack w={{ lg: "50%" }} spacing={3} justify={"flex-end"}>
 							<Button
 								color={"brand.nav_color"}
 								size="xs"

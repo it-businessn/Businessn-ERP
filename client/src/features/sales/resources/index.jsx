@@ -21,6 +21,7 @@ import bookCover from "../../../assets/logos/BusinessN_all.jpg";
 
 const Resources = () => {
 	const isMobileView = useBreakpointValue({ base: true, sm: false });
+	const isTabletView = useBreakpointValue({ md: true, lg: false });
 
 	const [contacts, setContacts] = useState(null);
 	const fetchAllContacts = async () => {
@@ -54,151 +55,144 @@ const Resources = () => {
 	return (
 		<Box px={"1em"} pt={"1em"}>
 			<Text fontWeight="bold">Resources</Text>
-			<SimpleGrid columns={{ base: 1, md: 2 }} spacing="1em">
-				<SimpleGrid columns={{ base: 1, md: 2 }} spacing="1em" mt={"0.5em"}>
-					<Box
-						px="1em"
-						py="0.5em"
-						bg={"brand.primary_bg"}
-						border="3px solid white"
-						borderRadius="10px"
-						fontWeight="bold"
-						color={"brand.nav_color"}
-					>
-						<Text fontWeight="bold">Training</Text>
+			<SimpleGrid
+				columns={{ base: 1, md: 1, lg: 2 }}
+				spacing="1em"
+				mt={"0.5em"}
+			>
+				<Box
+					px="1em"
+					py="0.5em"
+					bg={"brand.primary_bg"}
+					border="3px solid white"
+					borderRadius="10px"
+					fontWeight="bold"
+					color={"brand.nav_color"}
+				>
+					<Text fontWeight="bold">Training</Text>
+					<Box w={{ base: "70%", lg: "40%" }} mx={"auto"}>
 						<Doughnut data={trainingChartData} options={activityChartOptions} />
-						{/* <Box display="flex" justifyContent="center" mt="2">
-              <HStack mr="4">
-                <Box w="1rem" h="1rem" bg="#517ae8" mr="1" />
-                <Text fontSize="xs">Completed 65%</Text>
-              </HStack>
-              <HStack>
-                <Box w="1rem" h="1rem" bg="#8aa8ee" mr="1" />
-                <Text fontSize="xs">Ongoing 10%</Text>
-              </HStack>
-            </Box> */}
 					</Box>
-					<Box
-						w={{ base: "auto", md: "310%" }}
-						p="1em"
-						pt={"0.5em"}
-						border="3px solid white"
-						borderRadius="10px"
-						fontWeight="bold"
-						color={"brand.nav_color"}
+				</Box>
+				<Box
+					p="1em"
+					pt={"0.5em"}
+					border="3px solid white"
+					borderRadius="10px"
+					fontWeight="bold"
+					color={"brand.nav_color"}
+				>
+					<Text mb={"0.5em"} fontWeight="bold">
+						Your Overall Results
+					</Text>
+					<SimpleGrid
+						columns={{ base: 1, md: 1, lg: 3 }}
+						minH={{ base: "auto", md: "90%" }}
+						spacing="1em"
 					>
-						<Text mb={"0.5em"} fontWeight="bold">
-							Your Overall Results
-						</Text>
-						<SimpleGrid
-							columns={{ base: 1, md: 3 }}
-							minH={{ base: "auto", md: "90%" }}
-							spacing="1em"
+						<Box
+							p="1em"
+							h={{ base: "auto", md: "80%" }}
+							my={"auto"}
+							bg={"brand.primary_bg"}
+							border="3px solid white"
+							borderRadius="10px"
+							fontWeight="bold"
+							display="flex"
+							flexDir="column"
+							justifyContent="space-evenly"
+							alignItems="flex-start"
 						>
-							<Box
-								p="1em"
-								h={{ base: "auto", md: "80%" }}
-								my={"auto"}
-								bg={"brand.primary_bg"}
-								border="3px solid white"
-								borderRadius="10px"
-								fontWeight="bold"
-								display="flex"
-								flexDir="column"
-								justifyContent="space-evenly"
-								alignItems="flex-start"
+							<Text color={"brand.nav_color"} fontSize="xs" fontWeight="bold">
+								Assessment 1
+							</Text>
+							<Text fontSize="xs" fontWeight="bold">
+								Know your customer
+							</Text>
+							<Badge bg="green" color="white">
+								EXCELLENT
+							</Badge>
+							<Text color={"brand.nav_color"} fontSize="xs" fontWeight="bold">
+								Your result
+							</Text>
+							<Text fontWeight="bolder">8/10</Text>
+						</Box>
+						<Box
+							p="1em"
+							h={{ base: "auto", xl: "80%" }}
+							my={"auto"}
+							bg={"brand.primary_bg"}
+							border="3px solid white"
+							borderRadius="10px"
+							fontWeight="bold"
+							display="flex"
+							flexDir="column"
+							justifyContent="space-evenly"
+							alignItems="flex-start"
+						>
+							<Text color={"brand.nav_color"} fontSize="xs" fontWeight="bold">
+								Assessment 2
+							</Text>
+							<Text fontSize="xs" fontWeight="bold">
+								Know the product a
+							</Text>
+							<Heading></Heading>
+							<Heading></Heading>
+							<Heading color="transparent">ss</Heading>
+							<Button
+								w={"100%"}
+								bg={"#537eee"}
+								size="xs"
+								color={"brand.primary_bg"}
+								variant={"solid"}
+								_hover={{ color: "brand.600" }}
+								borderRadius={"10px"}
 							>
-								<Text color={"brand.nav_color"} fontSize="xs" fontWeight="bold">
-									Assessment 1
-								</Text>
-								<Text fontSize="xs" fontWeight="bold">
-									Know your customer
-								</Text>
-								<Badge bg="green" color="white">
-									EXCELLENT
-								</Badge>
-								<Text color={"brand.nav_color"} fontSize="xs" fontWeight="bold">
-									Your result
-								</Text>
-								<Text fontWeight="bolder">8/10</Text>
-							</Box>
-							<Box
-								p="1em"
-								h={{ base: "auto", md: "80%" }}
-								my={"auto"}
-								bg={"brand.primary_bg"}
-								border="3px solid white"
-								borderRadius="10px"
-								fontWeight="bold"
-								display="flex"
-								flexDir="column"
-								justifyContent="space-evenly"
-								alignItems="flex-start"
+								Take Assessment
+							</Button>
+						</Box>
+						<Box
+							p="1em"
+							h={{ base: "auto", xl: "80%" }}
+							my={"auto"}
+							bg={"brand.primary_bg"}
+							border="3px solid white"
+							borderRadius="10px"
+							fontWeight="bold"
+							display="flex"
+							flexDir="column"
+							justifyContent="space-evenly"
+							alignItems="flex-start"
+						>
+							<Text color={"brand.nav_color"} fontSize="xs" fontWeight="bold">
+								Assessment 3
+							</Text>
+							<Text fontSize="xs" fontWeight="bold">
+								Know the product b
+							</Text>
+							<Heading></Heading>
+							<Heading></Heading>
+							<Heading color="transparent">ss</Heading>
+							<Button
+								w={"100%"}
+								bg={"#537eee"}
+								size="xs"
+								color={"brand.primary_bg"}
+								variant={"solid"}
+								_hover={{ color: "brand.600" }}
+								borderRadius={"10px"}
 							>
-								<Text color={"brand.nav_color"} fontSize="xs" fontWeight="bold">
-									Assessment 2
-								</Text>
-								<Text fontSize="xs" fontWeight="bold">
-									Know the product a
-								</Text>
-								<Heading></Heading>
-								<Heading></Heading>
-								<Heading color="transparent">ss</Heading>
-								<Button
-									w={"100%"}
-									bg={"#537eee"}
-									size="xs"
-									color={"brand.primary_bg"}
-									variant={"solid"}
-									_hover={{ color: "brand.600" }}
-									borderRadius={"10px"}
-								>
-									Take Assessment
-								</Button>
-							</Box>
-							<Box
-								p="1em"
-								h={{ base: "auto", md: "80%" }}
-								my={"auto"}
-								bg={"brand.primary_bg"}
-								border="3px solid white"
-								borderRadius="10px"
-								fontWeight="bold"
-								display="flex"
-								flexDir="column"
-								justifyContent="space-evenly"
-								alignItems="flex-start"
-							>
-								<Text color={"brand.nav_color"} fontSize="xs" fontWeight="bold">
-									Assessment 3
-								</Text>
-								<Text fontSize="xs" fontWeight="bold">
-									Know the product b
-								</Text>
-								<Heading></Heading>
-								<Heading></Heading>
-								<Heading color="transparent">ss</Heading>
-								<Button
-									w={"100%"}
-									bg={"#537eee"}
-									size="xs"
-									color={"brand.primary_bg"}
-									variant={"solid"}
-									_hover={{ color: "brand.600" }}
-									borderRadius={"10px"}
-								>
-									Take Assessment
-								</Button>
-							</Box>
-						</SimpleGrid>
-					</Box>
-				</SimpleGrid>
+								Take Assessment
+							</Button>
+						</Box>
+					</SimpleGrid>
+				</Box>
 			</SimpleGrid>
 			<Text mt={2} mb={5} fontWeight="bold">
 				Browse by subject
 			</Text>
-			{isMobileView ? (
-				<SimpleGrid columns={{ base: 2 }} spacing="1em" my="5">
+			{isMobileView || isTabletView ? (
+				<SimpleGrid columns={{ base: 2, md: 3 }} spacing="1em" my="5">
 					<Button
 						borderRadius={"50px"}
 						p={"1em"}

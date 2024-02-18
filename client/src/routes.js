@@ -13,7 +13,6 @@ const UserProfileDetails = lazy(() => import("components/UserProfileDetails"));
 const AddOpportunity = lazy(() =>
 	import("features/sales/pipeline/AddOpportunity"),
 );
-const Calendar = lazy(() => import("features/sales/calendar"));
 const TaskByDate = lazy(() => import("features/sales/calendar/TaskByDate"));
 
 const Contacts = lazy(() => import("features/sales/contacts"));
@@ -36,11 +35,14 @@ const Login = lazy(() => import("features/login"));
 const SignUp = lazy(() => import("features/sign-up"));
 const VerifyEmail = lazy(() => import("features/verify-user"));
 
-const CRMDashboard = lazy(() => import("features/sales"));
+const CRMDashboard = lazy(() => import("features/sales/dashboard"));
+const Calendar = lazy(() => import("features/sales/calendar"));
 const Customers = lazy(() => import("features/sales/customers"));
-const SalesReport = lazy(() => import("features/sales/reports"));
 const FreshLeads = lazy(() => import("features/sales/fresh_leads"));
+const Products = lazy(() => import("features/sales/products"));
+const Orders = lazy(() => import("features/sales/orders"));
 const Resources = lazy(() => import("features/sales/resources"));
+const SalesReport = lazy(() => import("features/sales/reports"));
 
 export const router = createBrowserRouter([
 	{
@@ -78,6 +80,14 @@ export const router = createBrowserRouter([
 			{
 				path: "/calendar",
 				element: <Calendar />,
+			},
+			{
+				path: "/products",
+				element: <Products />,
+			},
+			{
+				path: "/orders",
+				element: <Orders />,
 			},
 			{
 				path: "/profile",
