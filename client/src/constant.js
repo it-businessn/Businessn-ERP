@@ -134,7 +134,7 @@ export const TOP_NAV_MENU_LIST = [
 			},
 			{
 				path: "/target-leads",
-				name: "Target Leads",
+				name: "Leads",
 				children: [],
 				icon: <TbUsersPlus />,
 			},

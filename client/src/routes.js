@@ -43,6 +43,7 @@ const Products = lazy(() => import("features/sales/products"));
 const Orders = lazy(() => import("features/sales/orders"));
 const Resources = lazy(() => import("features/sales/resources"));
 const SalesReport = lazy(() => import("features/sales/reports"));
+const Invoice = lazy(() => import("features/sales/invoice"));
 
 export const router = createBrowserRouter([
 	{
@@ -88,6 +89,10 @@ export const router = createBrowserRouter([
 			{
 				path: "/orders",
 				element: <Orders />,
+			},
+			{
+				path: "/invoice",
+				element: <Invoice />,
 			},
 			{
 				path: "/profile",

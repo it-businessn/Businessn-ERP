@@ -4,11 +4,10 @@ import {
 	Button,
 	Flex,
 	HStack,
-	Icon,
-	IconButton,
 	Input,
 	InputGroup,
 	InputLeftElement,
+	SimpleGrid,
 	Spacer,
 	Table,
 	Tbody,
@@ -19,16 +18,17 @@ import {
 	Tr,
 	useBreakpointValue,
 } from "@chakra-ui/react";
+import { activityChartData } from "constant";
 import Loader from "features/Loader";
 import { useEffect, useState } from "react";
+import { Doughnut } from "react-chartjs-2";
 import { FaSearch } from "react-icons/fa";
 import { MdOutlineFilterList } from "react-icons/md";
-import { PiUserSquareBold } from "react-icons/pi";
-import { RiMore2Fill } from "react-icons/ri";
 import * as api from "services";
 import { generateLighterShade } from "utils";
+import InvoiceReceipt from "./InvoiceReceipt";
 
-const Customers = () => {
+const Invoice = () => {
 	const isMobileView = useBreakpointValue({
 		base: true,
 		md: false,
@@ -43,16 +43,93 @@ const Customers = () => {
 			console.error(error);
 		}
 	};
-
+	const fetchAllInvoices = () => {
+		const invoiceData = [
+			{
+				InvoiceNumber: "INV-001",
+				ClientName: "John Doe",
+				Amount: 1000.0,
+				DueDate: "2024-03-01",
+				Status: "Paid",
+			},
+			{
+				InvoiceNumber: "INV-002",
+				ClientName: "Jane Smith",
+				Amount: 750.5,
+				DueDate: "2024-02-28",
+				Status: "Unpaid",
+			},
+			{
+				InvoiceNumber: "INV-003",
+				ClientName: "Bob Johnson",
+				Amount: 1200.75,
+				DueDate: "2024-03-10",
+				Status: "Unpaid",
+			},
+		];
+		invoiceData.map((invoice) => {
+			invoice.statusColor = invoice.Status === "Paid" ? "#6da585" : "#ed6175";
+			invoice.statusBgColor =
+				invoice.Status === "Paid"
+					? generateLighterShade("#6da585", 0.8)
+					: generateLighterShade("#ed6175", 0.8);
+			return invoice;
+		});
+		setContacts(invoiceData);
+	};
 	useEffect(() => {
-		fetchAllContacts();
+		fetchAllInvoices();
 	}, []);
+	const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+	const [currentInvoice, setInvoice] = useState(null);
 
+	const openInvoice = (invoice) => {
+		setInvoice((prev) => invoice);
+		setIsDrawerOpen(true);
+	};
+
+	const closeDrawer = () => {
+		setInvoice(null);
+		setIsDrawerOpen(false);
+	};
 	return (
-		<Box m={"1em"}>
+		<Box p={"1em"} overflow={"hidden"}>
 			<Text fontWeight="bold" mb={"0.5em"}>
-				Customers
+				Invoices
 			</Text>
+			<Box
+				overflow="auto"
+				p="1em"
+				bg={"brand.primary_bg"}
+				border="3px solid white"
+				borderRadius="10px"
+				fontWeight="bold"
+				mb="1em"
+			>
+				<Text fontWeight="bold" mb="1em" color={"brand.nav_color"}>
+					Invoice Categories
+				</Text>
+				<SimpleGrid columns={{ base: 1, lg: 3 }} spacing="1em">
+					<Box
+						px="1em"
+						bg={"brand.primary_bg"}
+						border="3px solid white"
+						borderRadius="10px"
+						fontWeight="bold"
+					>
+						<Text fontWeight="bold" color={"brand.600"} mt="2" mb="1">
+							Data
+						</Text>
+						<Box w={{ base: "70%", md: "55%" }} mx={"auto"}>
+							<Doughnut
+								data={activityChartData}
+								// options={activityChartOptions}
+							/>
+						</Box>
+					</Box>
+				</SimpleGrid>
+			</Box>
+
 			<Box
 				p="1em"
 				bg={"brand.primary_bg"}
@@ -63,7 +140,7 @@ const Customers = () => {
 				{isMobileView ? (
 					<Flex flexDir="column">
 						<Flex justify="space-between">
-							<Text fontWeight="bold">Customers</Text>
+							<Text fontWeight="bold">Invoices</Text>
 							<Button
 								bg={"#537eee"}
 								size="xs"
@@ -72,7 +149,7 @@ const Customers = () => {
 								_hover={{ color: "brand.600" }}
 								borderRadius={"10px"}
 							>
-								Add new customer
+								Add new invoices
 							</Button>
 						</Flex>
 						<HStack spacing="1em" mt="1em">
@@ -109,7 +186,7 @@ const Customers = () => {
 					</Flex>
 				) : (
 					<Flex>
-						<Text fontWeight="bold">Customers</Text>
+						<Text fontWeight="bold">Invoices</Text>
 						<Spacer />
 						<HStack w={{ lg: "50%" }} spacing={3} justify={"flex-end"}>
 							<Button
@@ -154,8 +231,9 @@ const Customers = () => {
 								variant={"solid"}
 								_hover={{ color: "brand.600" }}
 								borderRadius={"10px"}
+								px={"2em"}
 							>
-								Add new customer
+								Add new invoices
 							</Button>
 						</HStack>
 					</Flex>
@@ -167,65 +245,57 @@ const Customers = () => {
 							<Thead>
 								<Tr>
 									<Th fontWeight={"bolder"} p={0}>
-										Customer name
+										Invoice number
 									</Th>
-									<Th fontWeight={"bolder"}>Company </Th>
-									<Th fontWeight={"bolder"}>Email</Th>
-									<Th fontWeight={"bolder"}>Communication History</Th>
-									<Th></Th>
+									<Th fontWeight={"bolder"}>Client name </Th>
+									<Th fontWeight={"bolder"}>Amount</Th>
+									<Th fontWeight={"bolder"}>Due date</Th>
+									<Th>Status</Th>
 									<Th></Th>
 								</Tr>
 							</Thead>
 							<Tbody color={"brand.nav_color"}>
-								{contacts.map((contact, index) => (
-									<Tr key={contact._id}>
+								{contacts.map((invoice, index) => (
+									<Tr key={invoice.InvoiceNumber}>
 										<Td fontSize={"xs"} p={0}>
-											{`${contact.firstName} ${contact.lastName}`}
+											{`#${invoice.InvoiceNumber}`}
 										</Td>
-										<Td fontSize={"xs"}>{contact.companyName}</Td>
-										<Td fontSize={"xs"}>{contact.email}</Td>
+										<Td fontSize={"xs"}>{invoice.ClientName}</Td>
+										<Td fontSize={"xs"}>{invoice.Amount}</Td>
+										<Td fontSize={"xs"}>{invoice.DueDate}</Td>
 										<Td fontSize={"xs"}>
 											<Flex align="center">
 												<HStack
-													bg={generateLighterShade("#5e51c5", 0.8)}
-													color={"#5e51c5"}
+													bg={invoice.statusBgColor}
+													color={invoice.statusColor}
 													px={2}
 													borderRadius={"10px"}
 												>
-													<Icon as={PiUserSquareBold} />
-													<Text>{contact.comm}</Text>
+													<Text>{invoice.Status}</Text>
 												</HStack>
 											</Flex>
 										</Td>
 										<Td fontSize={"xs"}>
-											<HStack>
-												<Button
-													bgGradient="linear-gradient(58deg, rgb(115 70 236) 0%, rgb(136 107 217) 43%, rgb(50 240 218) 100%)"
-													bgClip="text"
-													size={"xxs"}
-													rightIcon={
-														<IconButton
-															icon={<ArrowForwardIcon />}
-															borderRadius="full"
-															color="purple.500"
-															bg={"#dedaf4"}
-															p={"0.4em"}
-															size={"xxs"}
-															_hover={{ bg: "#8385d5", color: "brand.100" }}
-														/>
-													}
-												>
-													See full profile
-												</Button>
-											</HStack>
-										</Td>
-										<Td>
-											<IconButton
-												icon={<RiMore2Fill />}
-												size="sm"
-												variant="ghost"
-												// onClick={() => handleEdit(row.id)}
-											/>
+											<Button
+												onClick={() => openInvoice(invoice)}
+												bgGradient="linear-gradient(58deg, rgb(115 70 236) 0%, rgb(136 107 217) 43%, rgb(50 240 218) 100%)"
+												bgClip="text"
+												size={"xxs"}
+												rightIcon={
+													<ArrowForwardIcon
+														color="purple.500"
+														bg={"#dedaf4"}
+														borderRadius="full"
+														w={"1.5em"}
+														h={"1.5em"}
+														p={"3px"}
+														_hover={{ bg: "#8385d5", color: "brand.100" }}
+													/>
+												}
+												variant="link"
+											>
+												See details
+											</Button>
 										</Td>
 									</Tr>
 								))}
@@ -234,8 +304,14 @@ const Customers = () => {
 					</Box>
 				)}
 			</Box>
+			<InvoiceReceipt
+				isMobileView={isMobileView}
+				invoice={currentInvoice}
+				isOpen={isDrawerOpen}
+				onClose={closeDrawer}
+			/>
 		</Box>
 	);
 };
 
-export default Customers;
+export default Invoice;

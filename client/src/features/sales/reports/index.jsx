@@ -348,21 +348,20 @@ const SalesReport = () => {
 											<Td fontSize={"xs"} p={0}>
 												<HStack>
 													<Button
-														bgGradient="linear-gradient(103deg, rgba(107,73,201,1) 0%, rgba(180,165,222,1) 43%, rgba(36,249,225,1) 100%);"
+														bgGradient="linear-gradient(58deg, rgb(115 70 236) 0%, rgb(136 107 217) 43%, rgb(50 240 218) 100%)"
 														bgClip="text"
-														size={"xs"}
+														size={"xxs"}
 														rightIcon={
 															<IconButton
 																icon={<ArrowForwardIcon />}
 																borderRadius="full"
 																color="purple.500"
-																size={"xs"}
 																bg={"#dedaf4"}
-																boxShadow="md"
+																p={"0.4em"}
+																size={"xxs"}
 																_hover={{ bg: "#8385d5", color: "brand.100" }}
 															/>
 														}
-														variant="link"
 													>
 														See details
 													</Button>
