@@ -17,7 +17,6 @@ import {
 	Th,
 	Thead,
 	Tr,
-	useBreakpointValue,
 } from "@chakra-ui/react";
 import Loader from "features/Loader";
 import { useEffect, useState } from "react";
@@ -26,13 +25,11 @@ import { MdOutlineFilterList } from "react-icons/md";
 import { PiUserSquareBold } from "react-icons/pi";
 import { RiMore2Fill } from "react-icons/ri";
 import * as api from "services";
+import { useBreakpointValue } from "services/Breakpoint";
 import { generateLighterShade } from "utils";
 
 const Customers = () => {
-	const isMobileView = useBreakpointValue({
-		base: true,
-		md: false,
-	});
+	const { isMobile } = useBreakpointValue();
 	const [contacts, setContacts] = useState(null);
 	const fetchAllContacts = async () => {
 		try {
@@ -60,7 +57,7 @@ const Customers = () => {
 				borderRadius="10px"
 				color={"brand.nav_color"}
 			>
-				{isMobileView ? (
+				{isMobile ? (
 					<Flex flexDir="column">
 						<Flex justify="space-between">
 							<Text fontWeight="bold">Customers</Text>

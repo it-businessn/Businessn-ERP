@@ -16,7 +16,6 @@ import {
 	Th,
 	Thead,
 	Tr,
-	useBreakpointValue,
 } from "@chakra-ui/react";
 import { activityChartData } from "constant";
 import Loader from "features/Loader";
@@ -25,12 +24,10 @@ import { Doughnut } from "react-chartjs-2";
 import { FaSearch } from "react-icons/fa";
 import { MdOutlineFilterList } from "react-icons/md";
 import * as api from "services";
+import { useBreakpointValue } from "services/Breakpoint";
 
 const Orders = () => {
-	const isMobileView = useBreakpointValue({
-		base: true,
-		md: false,
-	});
+	const { isMobile } = useBreakpointValue();
 
 	const [selectedDateFilter, setSelectedDateFilter] = useState("This Week");
 
@@ -227,7 +224,7 @@ const Orders = () => {
 				borderRadius="10px"
 				color={"brand.nav_color"}
 			>
-				{isMobileView ? (
+				{isMobile ? (
 					<Flex flexDir="column">
 						<Flex justify="space-between">
 							<Text fontWeight="bold">Orders</Text>

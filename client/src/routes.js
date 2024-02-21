@@ -9,7 +9,9 @@ import RootLayout from "layouts/RootLayout";
 
 // const PayrollTable = lazy(() => import("features/payroll"));
 // const GeneratePayRun = lazy(() => import("features/payroll/GeneratePayRun"));
-const UserProfileDetails = lazy(() => import("components/UserProfileDetails"));
+const UserProfileDetails = lazy(() =>
+	import("components/user/UserProfileDetails"),
+);
 const AddOpportunity = lazy(() =>
 	import("features/sales/pipeline/AddOpportunity"),
 );
@@ -60,6 +62,10 @@ export const router = createBrowserRouter([
 				element: <Home />,
 			},
 			{
+				path: "/profile",
+				element: <UserProfileDetails />,
+			},
+			{
 				path: "/sales-dashboard",
 				element: <CRMDashboard />,
 			},
@@ -98,10 +104,6 @@ export const router = createBrowserRouter([
 			{
 				path: "/invoice",
 				element: <Invoice />,
-			},
-			{
-				path: "/profile",
-				element: <UserProfileDetails />,
 			},
 			{
 				path: "/view-contacts",

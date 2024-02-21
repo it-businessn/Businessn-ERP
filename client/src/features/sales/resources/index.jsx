@@ -10,18 +10,17 @@ import {
 	SimpleGrid,
 	Text,
 	VStack,
-	useBreakpointValue,
 } from "@chakra-ui/react";
 import { trainingChartData } from "constant";
 import { useEffect, useState } from "react";
 import { Doughnut } from "react-chartjs-2";
 import { FaDownload } from "react-icons/fa";
 import * as api from "services";
+import { useBreakpointValue } from "services/Breakpoint";
 import bookCover from "../../../assets/logos/BusinessN_all.jpg";
 
 const Resources = () => {
-	const isMobileView = useBreakpointValue({ base: true, sm: false });
-	const isTabletView = useBreakpointValue({ md: true, lg: false });
+	const { isMobile, isIpad } = useBreakpointValue();
 
 	const [contacts, setContacts] = useState(null);
 	const fetchAllContacts = async () => {
@@ -191,7 +190,7 @@ const Resources = () => {
 			<Text mt={2} mb={5} fontWeight="bold">
 				Browse by subject
 			</Text>
-			{isMobileView || isTabletView ? (
+			{isMobile || isIpad ? (
 				<SimpleGrid columns={{ base: 2, md: 3 }} spacing="1em" my="5">
 					<Button
 						borderRadius={"50px"}

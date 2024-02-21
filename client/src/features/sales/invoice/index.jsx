@@ -16,7 +16,6 @@ import {
 	Th,
 	Thead,
 	Tr,
-	useBreakpointValue,
 } from "@chakra-ui/react";
 import { activityChartData } from "constant";
 import Loader from "features/Loader";
@@ -25,14 +24,12 @@ import { Doughnut } from "react-chartjs-2";
 import { FaSearch } from "react-icons/fa";
 import { MdOutlineFilterList } from "react-icons/md";
 import * as api from "services";
+import { useBreakpointValue } from "services/Breakpoint";
 import { generateLighterShade } from "utils";
 import InvoiceReceipt from "./InvoiceReceipt";
 
 const Invoice = () => {
-	const isMobileView = useBreakpointValue({
-		base: true,
-		md: false,
-	});
+	const { isMobile } = useBreakpointValue();
 	const [contacts, setContacts] = useState(null);
 	const fetchAllContacts = async () => {
 		try {
@@ -137,7 +134,7 @@ const Invoice = () => {
 				borderRadius="10px"
 				color={"brand.nav_color"}
 			>
-				{isMobileView ? (
+				{isMobile ? (
 					<Flex flexDir="column">
 						<Flex justify="space-between">
 							<Text fontWeight="bold">Invoices</Text>
@@ -305,7 +302,7 @@ const Invoice = () => {
 				)}
 			</Box>
 			<InvoiceReceipt
-				isMobileView={isMobileView}
+				isMobileView={isMobile}
 				invoice={currentInvoice}
 				isOpen={isDrawerOpen}
 				onClose={closeDrawer}

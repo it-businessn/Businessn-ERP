@@ -8,16 +8,16 @@ import {
 	Stack,
 	Text,
 	VStack,
-	useBreakpointValue,
 } from "@chakra-ui/react";
 import { NavButton, UserProfile } from "components";
 import Logo from "components/logo";
-import { TOP_NAV_MENU_LIST } from "constant";
+import { SIDEBAR_MENU } from "constant";
 import { FaSyncAlt } from "react-icons/fa";
 import { Link } from "react-router-dom";
+import { useBreakpointValue } from "services/Breakpoint";
 
 const Navbar = ({ handleClick, user, handleLogout, onOpen }) => {
-	const isMobile = useBreakpointValue({ base: true, sm: false });
+	const { isMobile } = useBreakpointValue();
 
 	return (
 		<Box
@@ -28,7 +28,7 @@ const Navbar = ({ handleClick, user, handleLogout, onOpen }) => {
 			width="100%"
 			color="brand.nav_color"
 			zIndex={1}
-			bg="linear-gradient(103deg, rgba(244,240,255,1) 0%, rgba(238,239,241,1) 100%)"
+			bg="brand.nav_gradient"
 		>
 			<HStack spacing={0} alignItems="center">
 				{isMobile && (
@@ -59,7 +59,7 @@ const Navbar = ({ handleClick, user, handleLogout, onOpen }) => {
 						)}
 					</VStack>
 
-					{TOP_NAV_MENU_LIST.map((menu) => (
+					{SIDEBAR_MENU.map((menu) => (
 						<Stack ml="2em" key={menu.id}>
 							<Link to={menu?.path}>
 								<NavButton

@@ -19,7 +19,6 @@ import {
 	Stack,
 	Text,
 	Textarea,
-	useBreakpointValue,
 } from "@chakra-ui/react";
 import Loader from "features/Loader";
 import moment from "moment";
@@ -28,12 +27,10 @@ import { Calendar as BigCalendar, momentLocalizer } from "react-big-calendar";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import { FaCaretLeft, FaCaretRight, FaClock } from "react-icons/fa";
 import * as api from "services";
+import { useBreakpointValue } from "services/Breakpoint";
 
 const Calendar = () => {
-	const isMobileView = useBreakpointValue({
-		base: true,
-		md: false,
-	});
+	const { isMobile } = useBreakpointValue();
 	const localizer = momentLocalizer(moment);
 	const [events, setEvents] = useState({
 		title: "",
@@ -191,17 +188,14 @@ const Calendar = () => {
 		return (
 			<Flex
 				justifyContent="space-between"
-				py={isMobileView ? 1 : 4}
-				flexDir={isMobileView && "column"}
+				py={isMobile ? 1 : 4}
+				flexDir={isMobile && "column"}
 			>
-				<Text fontWeight="bold" mb={isMobileView && "0.5em"}>
+				<Text fontWeight="bold" mb={isMobile && "0.5em"}>
 					All Events
 				</Text>
 				<Spacer />
-				<HStack
-					justifyContent={isMobileView && "space-between"}
-					spacing={"1em"}
-				>
+				<HStack justifyContent={isMobile && "space-between"} spacing={"1em"}>
 					<Button
 						color={"#a9a9ab"}
 						size="xs"
@@ -490,7 +484,7 @@ const Calendar = () => {
 							<Button
 								isDisabled={formData.description === ""}
 								onClick={handleSubmit}
-								colorScheme="teal"
+								bg="brand.logo_bg"
 								isLoading={isLoading}
 								loadingText="Loading"
 							>

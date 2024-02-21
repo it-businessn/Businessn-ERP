@@ -36,7 +36,7 @@ export const TOAST = {
 	},
 };
 
-export const TOP_NAV_MENU_LIST = [
+export const SIDEBAR_MENU = [
 	// {
 	//   path: "/insight",
 	//   name: "Insights",
@@ -58,7 +58,7 @@ export const TOP_NAV_MENU_LIST = [
 	{
 		path: "/sales-dashboard",
 		name: "Sales",
-		id: "sale",
+		id: "sales",
 		children: [
 			{
 				path: "/sales-dashboard",

@@ -20,7 +20,6 @@ import {
 	Thead,
 	Tr,
 	VStack,
-	useBreakpointValue,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { Bar } from "react-chartjs-2";
@@ -30,13 +29,11 @@ import { MdOutlineFilterList } from "react-icons/md";
 import { RxDotFilled } from "react-icons/rx";
 import { TbCalendarDollar } from "react-icons/tb";
 import * as api from "services";
+import { useBreakpointValue } from "services/Breakpoint";
 import { generateLighterShade } from "utils";
 
 const Payouts = () => {
-	const isMobileView = useBreakpointValue({
-		base: true,
-		md: false,
-	});
+	const { isMobile } = useBreakpointValue();
 
 	const [contacts, setContacts] = useState(null);
 	const fetchAllContacts = async () => {
@@ -238,7 +235,7 @@ const Payouts = () => {
 					borderRadius="10px"
 					color={"brand.nav_color"}
 				>
-					{isMobileView ? (
+					{isMobile ? (
 						<Flex flexDir="column">
 							<Flex justify="space-between">
 								<Text fontWeight="bold">All Sales</Text>

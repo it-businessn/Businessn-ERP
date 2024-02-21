@@ -4,21 +4,23 @@ import {
 	DrawerCloseButton,
 	DrawerContent,
 	Flex,
-	useBreakpointValue,
 	useDisclosure,
 } from "@chakra-ui/react";
-import { TOP_NAV_MENU_LIST } from "constant";
+import { SIDEBAR_MENU } from "constant";
 import Navbar from "features/home/Navbar";
 import Sidebar from "features/sidebar";
 import MobileSidebar from "features/sidebar/MobileSidebar";
 import { useState } from "react";
+import { useBreakpointValue } from "services/Breakpoint";
 
 const DashboardLayout = ({ children, user, handleLogout }) => {
-	const isMobile = useBreakpointValue({ base: true, sm: false });
+	const { isMobile } = useBreakpointValue();
 
 	const { isOpen, onOpen, onClose } = useDisclosure();
 
-	const [activeMenu, setActiveMenu] = useState(TOP_NAV_MENU_LIST[0]);
+	const [activeMenu, setActiveMenu] = useState(
+		SIDEBAR_MENU.find((menu) => menu.id === "sales"),
+	);
 
 	const handleClick = (menu) => setActiveMenu(menu);
 

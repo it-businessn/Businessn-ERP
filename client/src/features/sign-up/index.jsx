@@ -21,7 +21,7 @@ import { useNavigate } from "react-router-dom";
 import * as api from "services";
 
 const SignUp = () => {
-	const [formData, setFormData] = useState({
+	const defaultFormData = {
 		companyId: "",
 		firstName: "",
 		middleName: "",
@@ -34,12 +34,14 @@ const SignUp = () => {
 		manager: "",
 		phoneNumber: "",
 		address: "",
-	});
+	};
+	const [formData, setFormData] = useState(defaultFormData);
 	const [isLoading, setIsLoading] = useState(false);
+	const [showPassword, setShowPassword] = useState(false);
 	const [error, setError] = useState(null);
 	const navigate = useNavigate();
 
-	const onCancel = () => {
+	const goBack = () => {
 		navigate(-1);
 	};
 
@@ -49,21 +51,11 @@ const SignUp = () => {
 		formData.fullName = `${formData.firstName} ${formData.middleName} ${formData.lastName}`;
 		try {
 			await api.signUp(formData);
-			setFormData({
-				companyId: "",
-				firstName: "",
-				middleName: "",
-				lastName: "",
-				fullName: "",
-				email: "",
-				password: "",
-				role: "employee",
-				department: "sales",
-				manager: "",
-				phoneNumber: "",
-				address: "",
-			});
+
+			resetForm();
+
 			setIsLoading(false);
+
 			navigate("/login");
 		} catch (error) {
 			setIsLoading(false);
@@ -71,25 +63,32 @@ const SignUp = () => {
 			setError(error?.response?.data?.error);
 		}
 	};
+	const resetForm = () => setFormData(defaultFormData);
 
 	const handleChange = (e) => {
 		const { name, value } = e.target;
 		setFormData((prevData) => ({ ...prevData, [name]: value }));
 	};
 
-	const [showPassword, setShowPassword] = useState(false);
 	const handleTogglePassword = () => {
 		setShowPassword((prevShowPassword) => !prevShowPassword);
 	};
 	return (
-		<Container
-			py={{
-				base: "3",
-			}}
-			maxW="3xl"
-		>
-			<Box>
-				<Stack spacing="8">
+		<Box overflow="auto" height={"100vh"}>
+			<Container
+				py={{
+					base: "3",
+				}}
+				maxW="4xl"
+			>
+				<Stack
+					spacing={10}
+					borderRadius="10px"
+					border={"1px solid #e3e5f1"}
+					bg={"#dbe5ff"}
+					p="1em"
+					color={"brand.logo_bg"}
+				>
 					<Stack align="center">
 						<Logo />
 						<Stack spacing="3" textAlign="center">
@@ -177,7 +176,12 @@ const SignUp = () => {
 						</FormControl>
 						<FormControl mb={4}>
 							<FormLabel>Type of Role</FormLabel>
-							<Select name="role" value={formData.role} onChange={handleChange}>
+							<Select
+								name="role"
+								value={formData.role}
+								bg={"brand.100"}
+								onChange={handleChange}
+							>
 								<option value="Employee">Employee</option>
 								<option value="Sales Manager">Sales Manager</option>
 								<option value="Administrator">Administrator</option>
@@ -186,6 +190,7 @@ const SignUp = () => {
 						<FormControl mb={4}>
 							<FormLabel>Type of Department</FormLabel>
 							<Select
+								bg={"brand.100"}
 								name="department"
 								value={formData.department}
 								onChange={handleChange}
@@ -224,10 +229,10 @@ const SignUp = () => {
 							/>
 						</FormControl>
 						<Flex justifyContent="flex-end">
-							<Button isLoading={isLoading} colorScheme="teal" type="submit">
+							<Button isLoading={isLoading} bg="brand.logo_bg" type="submit">
 								Add
 							</Button>
-							<Button colorScheme="gray" ml={2} onClick={onCancel}>
+							<Button colorScheme="gray" ml={2} onClick={goBack}>
 								Cancel
 							</Button>
 						</Flex>
@@ -239,8 +244,8 @@ const SignUp = () => {
 						</Alert>
 					)}
 				</Stack>
-			</Box>
-		</Container>
+			</Container>
+		</Box>
 	);
 };
 

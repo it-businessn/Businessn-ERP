@@ -1,35 +1,34 @@
 import { useEffect, useState } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
+import LocalStorageService from "services/LocalStorageService";
 import DashboardLayout from "./DashboardLayout";
 
 const RootLayout = () => {
-  const [user, setUser] = useState(
-    JSON.parse(localStorage.getItem("user")) || null
-  );
-  const navigate = useNavigate();
+	const [user, setUser] = useState(LocalStorageService.getItem("user"));
 
-  useEffect(() => {
-    if (!user) {
-      navigate("/login");
-    }
-  }, [user]);
+	const navigate = useNavigate();
 
-  const handleLogout = () => {
-    localStorage.removeItem("user");
-    setUser(null);
-  };
+	useEffect(() => {
+		if (!user) {
+			navigate("/login");
+		}
+	}, [user]);
 
-  return (
-    <>
-      {user && (
-        <DashboardLayout handleLogout={handleLogout} user={user}>
-          <main className="main_content">
-            <Outlet />
-          </main>
-        </DashboardLayout>
-      )}
-    </>
-  );
+	const handleLogout = () => {
+		setUser(LocalStorageService.removeItem("user"));
+	};
+
+	return (
+		<>
+			{user && (
+				<DashboardLayout handleLogout={handleLogout} user={user}>
+					<main className="main_content">
+						<Outlet />
+					</main>
+				</DashboardLayout>
+			)}
+		</>
+	);
 };
 
 export default RootLayout;
