@@ -429,7 +429,7 @@ const Calendar = () => {
 							<Button
 								isDisabled={formData.description === ""}
 								onClick={handleSubmit}
-								colorScheme="teal"
+								bg="brand.logo_bg"
 								isLoading={isLoading}
 								loadingText="Loading"
 							>
