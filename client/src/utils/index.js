@@ -28,3 +28,6 @@ export const generateLighterShade = (color, factor) => {
 
 	return lightenColor(color, factor);
 };
+
+export const toCapitalize = (str) =>
+	str.replace(/\b\w/g, (match) => match.toUpperCase());
