@@ -37,6 +37,7 @@ const VerifyEmail = lazy(() => import("features/verify-user"));
 
 const CRMDashboard = lazy(() => import("features/sales/dashboard"));
 const Calendar = lazy(() => import("features/sales/calendar"));
+const Payouts = lazy(() => import("features/sales/payouts"));
 const Customers = lazy(() => import("features/sales/customers"));
 const FreshLeads = lazy(() => import("features/sales/fresh_leads"));
 const Products = lazy(() => import("features/sales/products"));
@@ -81,6 +82,10 @@ export const router = createBrowserRouter([
 			{
 				path: "/calendar",
 				element: <Calendar />,
+			},
+			{
+				path: "/payouts",
+				element: <Payouts />,
 			},
 			{
 				path: "/products",

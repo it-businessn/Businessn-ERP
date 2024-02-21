@@ -105,7 +105,7 @@ export const TOP_NAV_MENU_LIST = [
 				],
 			},
 			{
-				path: "/payout",
+				path: "/payouts",
 				name: "Payouts",
 				children: [],
 				icon: <MdPayments />,
