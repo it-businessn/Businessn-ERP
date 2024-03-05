@@ -29,7 +29,7 @@ import * as api from "services";
 import { useBreakpointValue } from "services/Breakpoint";
 
 const SalesReport = () => {
-	const { isMobile } = useBreakpointValue();
+	const { isMobile, isIpad } = useBreakpointValue();
 
 	const [contacts, setContacts] = useState(null);
 	const fetchAllContacts = async () => {
@@ -101,10 +101,19 @@ const SalesReport = () => {
 	}, []);
 
 	return (
-		<Box m={"1em"}>
+		<Box
+			p={{ base: "1em", md: "2em" }}
+			h={{ base: "auto", md: "70vh", lg: "auto" }}
+			overflow={"auto"}
+		>
 			<Text fontWeight="bold">Sales Reports</Text>
 			<Flex direction="column" h="100%">
-				<SimpleGrid columns={{ base: 1, lg: 2 }} spacing="5" my="5" h={"50%"}>
+				<SimpleGrid
+					columns={{ base: 1, lg: 2 }}
+					spacing="5"
+					my="5"
+					h={{ xl: "50%" }}
+				>
 					<Box
 						color={"brand.nav_color"}
 						p="1em"
@@ -124,7 +133,7 @@ const SalesReport = () => {
 								<option>Last Month</option>
 							</Select>
 						</Flex>
-						<Box w={{ xl: "55%" }} mx={"auto"}>
+						<Box w={{ base: "90%", md: "90%", xl: "60%" }} mx={"auto"}>
 							<Bar data={callsBarData} options={options} />
 						</Box>
 					</Box>
@@ -215,7 +224,7 @@ const SalesReport = () => {
 					borderRadius="10px"
 					color={"brand.nav_color"}
 				>
-					{isMobile ? (
+					{isMobile || isIpad ? (
 						<Flex flexDir="column">
 							<Flex justify="space-between">
 								<Text fontWeight="bold">Sales Performance</Text>

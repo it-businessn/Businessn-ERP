@@ -270,7 +270,7 @@ const Calendar = () => {
 	);
 
 	return (
-		<Box mt={5} px={"1em"} mb={"1em"}>
+		<Box p={{ base: "1em", md: "2em" }} mb={"1em"}>
 			<Text fontWeight="bold" mb={"0.5em"}>
 				Calendar
 			</Text>

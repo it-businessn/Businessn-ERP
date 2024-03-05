@@ -12,20 +12,19 @@ import {
 	InputRightElement,
 	Stack,
 } from "@chakra-ui/react";
-import { buildUserInfo } from "models";
+import { useLogin } from "hooks/useLogin";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import * as api from "services";
 import { useBreakpointValue } from "services/Breakpoint";
-import LocalStorageService from "services/LocalStorageService";
 import Logo from "../../components/logo";
 
 const SignInForm = ({ title }) => {
 	const { isMobile } = useBreakpointValue();
 
-	const [isLoading, setIsLoading] = useState(false);
+	// const [isLoading, setIsLoading] = useState(false);
 
 	const [error, setError] = useState(null);
+	const { login, isLoading, errorMessage } = useLogin();
 	const defaultFormData = {
 		email: "",
 		password: "",
@@ -33,35 +32,22 @@ const SignInForm = ({ title }) => {
 	const [formData, setFormData] = useState(defaultFormData);
 
 	const [showPassword, setShowPassword] = useState(false);
-
 	const navigate = useNavigate();
 
 	const handleLogin = async (e) => {
 		e.preventDefault();
-		setIsLoading(true);
 		try {
-			const response = await api.signIn(formData);
-
+			await login(formData);
 			resetForm();
-
-			saveUser(response.data);
-
-			setIsLoading(false);
-
-			navigate("/");
 		} catch (error) {
-			setIsLoading(false);
-			console.error("Error adding user:", error?.response?.data);
-			setError(error?.response?.data?.error);
+			console.log(error);
 		}
 	};
 
-	const saveUser = (info) => {
-		const user = buildUserInfo(info);
-		LocalStorageService.setItem("user", user);
+	const resetForm = () => {
+		setFormData(defaultFormData);
+		navigate("/");
 	};
-
-	const resetForm = () => setFormData(defaultFormData);
 
 	const handleChange = (e) => {
 		const { name, value } = e.target;
@@ -135,14 +121,19 @@ const SignInForm = ({ title }) => {
 											size="sm"
 											variant="unstyled"
 											onClick={handleTogglePassword}
+											aria-label="Toggle Password Visibility"
 										>
 											{showPassword ? <ViewOffIcon /> : <ViewIcon />}
 										</Button>
 									</InputRightElement>
 								</InputGroup>
 							</FormControl>
-
-							<Button isLoading={isLoading} type="submit" bg="brand.logo_bg">
+							<Button
+								isLoading={isLoading}
+								type="submit"
+								bg="brand.logo_bg"
+								_hover={{ color: "brand.nav_color" }}
+							>
 								Login
 							</Button>
 						</Stack>

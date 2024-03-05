@@ -1,123 +1,256 @@
+import { ArrowUpIcon, CopyIcon } from "@chakra-ui/icons";
 import {
-	Badge,
 	Box,
+	Button,
 	Card,
-	CardBody,
 	Flex,
-	Grid,
-	GridItem,
+	FormControl,
+	FormLabel,
 	HStack,
+	Icon,
+	IconButton,
+	Input,
+	Modal,
+	ModalBody,
+	ModalCloseButton,
+	ModalContent,
+	ModalHeader,
+	ModalOverlay,
+	Select,
+	SimpleGrid,
 	Stack,
 	Text,
+	VStack,
+	useDisclosure,
 } from "@chakra-ui/react";
-import { PIPELINE_STAGES } from "constant";
-import { useEffect, useState } from "react";
-import * as api from "services";
-import { userCurrency } from "utils";
-import GradientAreaFillColorChart from "./AreaFillColorChart";
+import { RiEditLine } from "react-icons/ri";
 
 const Pipeline = () => {
-	const [opportunities, setOpportunities] = useState([]);
-	const [opportunityData, setOpportunityData] = useState([]);
-
-	useEffect(() => {
-		const fetchOpportunities = async () => {
-			try {
-				const response = await api.getOpportunitiesByCategory();
-				setOpportunities(response.data);
-				const opportunityStat = [];
-				const sortOrder = [
-					"New",
-					"Presentation",
-					"Meeting",
-					"Negotiating",
-					"Won",
-				];
-				PIPELINE_STAGES.map((stage) =>
-					opportunityStat.push({
-						name: stage.name,
-						value: response.data[stage.name]?.opportunities?.length || 0,
-						color: stage.color,
-					}),
-				);
-				const sortedData = opportunityStat.sort((a, b) => {
-					const indexA = sortOrder.indexOf(a.name);
-					const indexB = sortOrder.indexOf(b.name);
-
-					return indexA - indexB;
-				});
-				setOpportunityData(sortedData);
-			} catch (error) {
-				console.error(error);
-			}
-		};
-
-		fetchOpportunities();
-	}, []);
+	const categories = [
+		{ name: "New", color: "#dbe5ff" },
+		{ name: "Presentation", color: "#ffe4e1" },
+		{ name: "Meeting", color: "#caeaf5" },
+		{ name: "Negotiating", color: "lightgrey" },
+		{ name: "Won", color: "#c4f7d8" },
+	];
+	const { isOpen, onOpen, onClose } = useDisclosure();
+	const handleSubmit = () => console.log("submit");
 	return (
-		<Box width="100%">
-			<Box ml={-30} width="100%">
-				{opportunityData && (
-					<GradientAreaFillColorChart opportunityData={opportunityData} />
-				)}
-			</Box>
-			<Grid templateColumns="repeat(5, 1fr)" mx={5}>
-				{PIPELINE_STAGES?.map((item) => (
-					<GridItem key={item.name}>
+		<Box p={{ base: "1em", md: "2em" }}>
+			<Text fontWeight="bold" mb={"0.5em"}>
+				Target Leads
+			</Text>
+			<SimpleGrid
+				columns={{ base: 1, md: 2, lg: 5 }}
+				spacing="1em"
+				color={"brand.200"}
+			>
+				{categories.map((category) => (
+					<Box borderRadius="10px" border="3px solid white" key={category.name}>
 						<Box
-							height="50px"
-							bg={item.color}
-							borderRadius="md"
-							marginBottom="2"
+							fontWeight="bold"
+							px="1em"
+							bg={category.color}
+							borderTopLeftRadius="10px"
+							borderTopRightRadius="10px"
 						>
-							<Text color="#fff" p={2.1} px={5}>
-								{item.name}
-								{opportunities && (
-									<Text fontSize="xs" color="#fff">
-										{opportunities[item.name]?.opportunities?.length} records
-									</Text>
-								)}
-							</Text>
-							{opportunities[item.name]?.opportunities?.map((opportunity) => (
-								<Card mt={2} mx={2.5} key={opportunity._id}>
-									<CardBody p={2}>
-										<Flex>
-											<Stack>
-												<Text
-													fontWeight="medium"
-													fontSize="sm"
-													textTransform="capitalize"
-												>
-													{opportunity.name}
-												</Text>
-												<Text color="muted" fontSize="sm">
-													{opportunity.clientName}
-												</Text>
-												<HStack>
-													<Text color="muted" fontSize="xs">
-														Probability:
-													</Text>
-													<Badge bg="brand.logo_bg" fontSize="0.8em" mr={2}>
-														{opportunity.probability} %
-													</Badge>
-												</HStack>
-												<HStack>
-													<Text color="muted" fontSize="xs">
-														Deal Amount:
-													</Text>
-													<Text color="muted" fontSize="xs" fontWeight="bold">
-														{userCurrency("CAD").format(opportunity.dealAmount)}
-													</Text>
-												</HStack>
-											</Stack>
-										</Flex>
-									</CardBody>
-								</Card>
-							))}
+							<Flex justify="space-between" align="center">
+								<Text fontSize="xs" fontWeight="bold">
+									{category.name}
+								</Text>
+								<Select width="90px" border={"none"} fontSize={"xs"}>
+									<option>Weekly</option>
+									<option>Last month</option>
+								</Select>
+							</Flex>
+							<Flex align="center" color={"brand.600"} pb="1">
+								<Text mr="3">1245</Text>
+								<Icon mr="1" as={ArrowUpIcon} color="green.500" />
+								<Text color="green.500" fontSize="xs">
+									10%
+								</Text>
+							</Flex>
 						</Box>
-					</GridItem>
+						<Card m="1em" bg={"#eef0fc"} border={"1px solid #e3e5f1"}>
+							<VStack
+								align="flex-start"
+								color={"brand.200"}
+								fontSize="xs"
+								p={"1em"}
+								spacing={0.5}
+							>
+								<HStack justifyContent={"space-between"} w={"100%"}>
+									<Text fontSize="xs" fontWeight="bold">
+										Name of Company
+									</Text>
+									<RiEditLine onClick={onOpen} />
+								</HStack>
+								<Text fontSize="xs" fontWeight="bold" color={"brand.600"}>
+									ABC
+								</Text>
+								<Text fontSize="xs" fontWeight="bold">
+									Email
+								</Text>
+								<Text fontSize="xs" fontWeight="bold" color={"brand.600"}>
+									abc@gmail.com
+									<IconButton
+										icon={<CopyIcon />}
+										size={"xs"}
+										color="brand.600"
+									/>
+								</Text>
+								<Text fontSize="xs" fontWeight="bold">
+									Phone
+								</Text>
+								<Text fontSize="xs" fontWeight="bold" color={"brand.600"}>
+									+123 456 6778
+								</Text>
+							</VStack>
+						</Card>
+						<Card m="1em" bg={"#eef0fc"} border={"1px solid #e3e5f1"}>
+							<VStack
+								align="flex-start"
+								color={"brand.200"}
+								fontSize="xs"
+								p={"1em"}
+								spacing={0.5}
+							>
+								<HStack justifyContent={"space-between"} w={"100%"}>
+									<Text fontSize="xs" fontWeight="bold">
+										Name of Company
+									</Text>
+									<RiEditLine onClick={onOpen} />
+								</HStack>
+								<Text fontSize="xs" fontWeight="bold" color={"brand.600"}>
+									ABC
+								</Text>
+								<Text fontSize="xs" fontWeight="bold">
+									Email
+								</Text>
+								<Text fontSize="xs" fontWeight="bold" color={"brand.600"}>
+									abc@gmail.com
+									<IconButton
+										icon={<CopyIcon />}
+										size={"xs"}
+										color="brand.600"
+									/>
+								</Text>
+								<Text fontSize="xs" fontWeight="bold">
+									Phone
+								</Text>
+								<Text fontSize="xs" fontWeight="bold" color={"brand.600"}>
+									+123 456 6778
+								</Text>
+							</VStack>
+						</Card>
+						<Card m="1em" bg={"#eef0fc"} border={"1px solid #e3e5f1"}>
+							<VStack
+								align="flex-start"
+								color={"brand.200"}
+								fontSize="xs"
+								p={"1em"}
+								spacing={0.5}
+							>
+								<HStack justifyContent={"space-between"} w={"100%"}>
+									<Text fontSize="xs" fontWeight="bold">
+										Name of Company
+									</Text>
+									<RiEditLine onClick={onOpen} />
+								</HStack>
+								<Text fontSize="xs" fontWeight="bold" color={"brand.600"}>
+									ABC
+								</Text>
+								<Text fontSize="xs" fontWeight="bold">
+									Email
+								</Text>
+								<Text fontSize="xs" fontWeight="bold" color={"brand.600"}>
+									abc@gmail.com
+									<IconButton
+										icon={<CopyIcon />}
+										size={"xs"}
+										color="brand.600"
+									/>
+								</Text>
+								<Text fontSize="xs" fontWeight="bold">
+									Phone
+								</Text>
+								<Text fontSize="xs" fontWeight="bold" color={"brand.600"}>
+									+123 456 6778
+								</Text>
+							</VStack>
+						</Card>
+					</Box>
 				))}
-			</Grid>
+			</SimpleGrid>
+			{/* {record && ( */}
+			<Modal isCentered isOpen={isOpen} onClose={onClose}>
+				<ModalOverlay />
+				<ModalContent>
+					<ModalHeader>Edit Lead</ModalHeader>
+					<ModalCloseButton />
+					<ModalBody>
+						<Stack spacing="5">
+							<form onSubmit={handleSubmit}>
+								<Stack spacing={4}>
+									<FormControl>
+										<FormLabel>Name of Company</FormLabel>
+										<Input
+											type="text"
+											name="company"
+											// value={formData.email}
+											// onChange={handleChange}
+											required
+										/>
+									</FormControl>
+									<FormControl>
+										<FormLabel>Email</FormLabel>
+										<Input
+											type="email"
+											name="email"
+											// value={formData.email}
+											// onChange={handleChange}
+											required
+										/>
+									</FormControl>
+									<FormControl>
+										<FormLabel>Phone</FormLabel>
+										<Input
+											type="text"
+											name="phone"
+											// value={formData.email}
+											// onChange={handleChange}
+											required
+										/>
+									</FormControl>
+									<HStack justifyContent={"end"}>
+										<Button
+											// isLoading={isLoading}
+											type="submit"
+											bg="brand.logo_bg"
+											// _hover={{ color: "brand.100" }}
+										>
+											Save
+										</Button>
+										<Button
+											// isLoading={isLoading}
+											colorScheme="gray"
+										>
+											Cancel
+										</Button>
+									</HStack>
+								</Stack>
+							</form>
+							{/* {error && (
+						<Alert status="error" mt={4}>
+							<AlertIcon />
+							{error}
+						</Alert>
+					)} */}
+						</Stack>
+					</ModalBody>
+				</ModalContent>
+			</Modal>
+			{/* )} */}
 		</Box>
 	);
 };

@@ -13,10 +13,11 @@ import { useEffect, useState } from "react";
 import { FiSearch } from "react-icons/fi";
 import * as api from "services";
 import { useBreakpointValue } from "services/Breakpoint";
+import LocalStorageService from "services/LocalStorageService";
 import { MemberTable } from "./MemberTable";
 
 export default function User() {
-	const user = JSON.parse(localStorage.getItem("user"));
+	const user = LocalStorageService.getItem("user");
 	const [employees, setEmployees] = useState(null);
 	const { isMobile } = useBreakpointValue();
 	const [isUpdated, setIsUpdated] = useState(false);

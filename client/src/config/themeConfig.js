@@ -17,7 +17,7 @@ const theme = extendTheme(
 				logo_bg: "#01193d",
 				primary_button_bg: "#537eee",
 				nav_gradient:
-					"linear-gradient(103deg, rgba(244,240,255,1) 0%, rgba(238,239,241,1) 100%)",
+					"linear-gradient(180deg, rgb(108 118 134) 0%, rgb(237 243 255) 100%)",
 			},
 		},
 	},

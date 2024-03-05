@@ -16,8 +16,9 @@ import {
 	Th,
 	Thead,
 	Tr,
+	VStack,
 } from "@chakra-ui/react";
-import { activityChartData } from "constant";
+import { activityChartData, doughnutOptions } from "constant";
 import Loader from "features/Loader";
 import { useEffect, useState } from "react";
 import { Doughnut } from "react-chartjs-2";
@@ -35,19 +36,6 @@ const Orders = () => {
 		setSelectedDateFilter(event.target.value);
 		// Fetch data based on the selected date filter
 	};
-
-	const activityChartOptions = {
-		cutout: "0%",
-		plugins: {
-			datalabels: {
-				display: true,
-			},
-		},
-		legend: {
-			position: "bottom",
-			align: "center",
-		},
-	};
 	const [contacts, setContacts] = useState(null);
 	const fetchAllContacts = async () => {
 		try {
@@ -63,13 +51,16 @@ const Orders = () => {
 		fetchAllContacts();
 	}, []);
 	return (
-		<Box p={"1em"} overflow={"hidden"}>
-			<Text fontWeight="bold" mb={"0.5em"}>
+		<Box
+			p={{ base: "1em", md: "2em" }}
+			h={{ base: "auto", md: "70vh", lg: "auto" }}
+			overflow="auto"
+		>
+			<Text fontWeight="bold" mb={"1em"}>
 				Orders
 			</Text>
 
 			<Box
-				overflow="auto"
 				p="1em"
 				bg={"brand.primary_bg"}
 				border="3px solid white"
@@ -91,12 +82,18 @@ const Orders = () => {
 						<Text fontWeight="bold" color={"brand.600"} mt="2" mb="1">
 							Open stage mix
 						</Text>
-						<Box w={{ base: "70%", md: "55%" }} mx={"auto"}>
-							<Doughnut
-								data={activityChartData}
-								options={activityChartOptions}
-							/>
-						</Box>
+						<VStack>
+							<Box h={"40px"} />
+							<Box
+								w={{ base: "70%", md: "50%", lg: "100%", xl: "65%" }}
+								mx={"auto"}
+							>
+								<Doughnut
+									data={activityChartData}
+									options={doughnutOptions("0%")}
+								/>
+							</Box>
+						</VStack>
 					</Box>
 					<Box
 						p="1em"
@@ -108,7 +105,7 @@ const Orders = () => {
 						<Flex justify="space-between" align="center" mb="2">
 							<Text fontWeight="bold">Orders to fulfill</Text>
 						</Flex>
-						<SimpleGrid columns={2} gap={4} h={"85%"}>
+						<SimpleGrid columns={{ base: 2, md: 1 }} gap={4} h={"85%"}>
 							<Box
 								p={4}
 								border={"2px solid #d3d3d3"}
@@ -166,7 +163,7 @@ const Orders = () => {
 						<Flex justify="space-between" align="center" mb="2">
 							<Text fontWeight="bold">Key Metrics</Text>
 						</Flex>
-						<SimpleGrid columns={2} gap={4} h={"80%"}>
+						<SimpleGrid columns={{ base: 2, md: 1 }} gap={4} h={"80%"}>
 							<Box
 								p={4}
 								border={"2px solid #d3d3d3"}

@@ -1,52 +1,60 @@
 import { Suspense, lazy } from "react";
 import { createBrowserRouter } from "react-router-dom";
 
-import Loader from "features/Loader";
-import PageNotFound from "features/PageNotFound";
-import Home from "features/home";
-// import AddPayrun from "features/payroll/AddPayRun";
-import RootLayout from "layouts/RootLayout";
+import Loader from "./features/Loader";
+import PageNotFound from "./features/PageNotFound";
+import Home from "./features/home";
+// import AddPayrun from "./features/payroll/AddPayRun";
+import RootLayout from "./layouts/RootLayout";
 
-// const PayrollTable = lazy(() => import("features/payroll"));
-// const GeneratePayRun = lazy(() => import("features/payroll/GeneratePayRun"));
+// const PayrollTable = lazy(() => import("./features/payroll"));
+// const GeneratePayRun = lazy(() => import("./features/payroll/GeneratePayRun"));
 const UserProfileDetails = lazy(() =>
-	import("components/user/UserProfileDetails"),
+	import("./components/user/UserProfileDetails"),
 );
 const AddOpportunity = lazy(() =>
-	import("features/sales/pipeline/AddOpportunity"),
+	import("./features/sales/pipeline/AddOpportunity"),
 );
-const TaskByDate = lazy(() => import("features/sales/calendar/TaskByDate"));
+const TaskByDate = lazy(() => import("./features/sales/calendar/TaskByDate"));
 
-const Contacts = lazy(() => import("features/sales/contacts"));
+const Contacts = lazy(() => import("./features/sales/contacts"));
 
-const TaskDashboard = lazy(() => import("features/sales/tasks"));
-const AddContact = lazy(() => import("features/sales/contacts/AddContact"));
-const EditContact = lazy(() => import("features/sales/contacts/EditContact"));
+const TaskDashboard = lazy(() => import("./features/sales/tasks"));
+const AddContact = lazy(() => import("./features/sales/contacts/AddContact"));
+const EditContact = lazy(() => import("./features/sales/contacts/EditContact"));
 
 const EditOpportunity = lazy(() =>
-	import("features/sales/pipeline/EditOpportunity"),
+	import("./features/sales/pipeline/EditOpportunity"),
 );
 const OpportunitiesList = lazy(() =>
-	import("features/sales/pipeline/OpportunitiesList"),
+	import("./features/sales/pipeline/OpportunitiesList"),
 );
-const Pipeline = lazy(() => import("features/sales/pipeline"));
 
-const EditUser = lazy(() => import("features/user/profile/EditUser"));
-const ForgotPassword = lazy(() => import("features/login/ForgotPassword"));
-const Login = lazy(() => import("features/login"));
-const SignUp = lazy(() => import("features/sign-up"));
-const VerifyEmail = lazy(() => import("features/verify-user"));
+const EditUser = lazy(() => import("./features/user/profile/EditUser"));
+const ForgotPassword = lazy(() => import("./features/login/ForgotPassword"));
+const Login = lazy(() => import("./features/login"));
+const SignUp = lazy(() => import("./features/sign-up"));
+const VerifyEmail = lazy(() => import("./features/verify-user"));
 
-const CRMDashboard = lazy(() => import("features/sales/dashboard"));
-const Calendar = lazy(() => import("features/sales/calendar"));
-const Payouts = lazy(() => import("features/sales/payouts"));
-const Customers = lazy(() => import("features/sales/customers"));
-const FreshLeads = lazy(() => import("features/sales/fresh_leads"));
-const Products = lazy(() => import("features/sales/products"));
-const Orders = lazy(() => import("features/sales/orders"));
-const Resources = lazy(() => import("features/sales/resources"));
-const SalesReport = lazy(() => import("features/sales/reports"));
-const Invoice = lazy(() => import("features/sales/invoice"));
+const CRMDashboard = lazy(() => import("./features/sales/dashboard"));
+const Activities = lazy(() => import("./features/sales/activities"));
+const Calendar = lazy(() => import("./features/sales/calendar"));
+const Payouts = lazy(() => import("./features/sales/payouts"));
+const Customers = lazy(() => import("./features/sales/customers"));
+
+const Leads = lazy(() => import("./features/sales/leads"));
+const LeadsDocket = lazy(() => import("./features/sales/lead docket"));
+const LeadsDisburse = lazy(() => import("./features/sales/lead disburse"));
+const FreshLeads = lazy(() => import("./features/sales/fresh_leads"));
+const Pipeline = lazy(() => import("./features/sales/pipeline"));
+
+const Products = lazy(() => import("./features/sales/products"));
+const Orders = lazy(() => import("./features/sales/orders"));
+const Invoice = lazy(() => import("./features/sales/invoice"));
+
+const Resources = lazy(() => import("./features/sales/resources"));
+const SalesReport = lazy(() => import("./features/sales/reports"));
+const Setup = lazy(() => import("./features/sales/setup"));
 
 export const router = createBrowserRouter([
 	{
@@ -70,20 +78,8 @@ export const router = createBrowserRouter([
 				element: <CRMDashboard />,
 			},
 			{
-				path: "/customers",
-				element: <Customers />,
-			},
-			{
-				path: "/reports",
-				element: <SalesReport />,
-			},
-			{
-				path: "/fresh-leads",
-				element: <FreshLeads />,
-			},
-			{
-				path: "/resources",
-				element: <Resources />,
+				path: "/activities",
+				element: <Activities />,
 			},
 			{
 				path: "/calendar",
@@ -92,6 +88,30 @@ export const router = createBrowserRouter([
 			{
 				path: "/payouts",
 				element: <Payouts />,
+			},
+			{
+				path: "/customers",
+				element: <Customers />,
+			},
+			{
+				path: "/leads",
+				element: <Leads />,
+			},
+			{
+				path: "/leads-docket",
+				element: <LeadsDocket />,
+			},
+			{
+				path: "/leads-disburse",
+				element: <LeadsDisburse />,
+			},
+			{
+				path: "/fresh-leads",
+				element: <FreshLeads />,
+			},
+			{
+				path: "/pipeline",
+				element: <Pipeline />,
 			},
 			{
 				path: "/products",
@@ -104,6 +124,18 @@ export const router = createBrowserRouter([
 			{
 				path: "/invoice",
 				element: <Invoice />,
+			},
+			{
+				path: "/resources",
+				element: <Resources />,
+			},
+			{
+				path: "/reports",
+				element: <SalesReport />,
+			},
+			{
+				path: "/set-up",
+				element: <Setup />,
 			},
 			{
 				path: "/view-contacts",
@@ -120,10 +152,6 @@ export const router = createBrowserRouter([
 			{
 				path: "/view-tasks",
 				element: <TaskByDate />,
-			},
-			{
-				path: "/pipeline",
-				element: <Pipeline />,
 			},
 			{
 				path: "/add-opportunity",

@@ -13,6 +13,7 @@ export const buildUserInfo = (user) => {
 		phoneNumber,
 		address,
 	} = user;
+
 	return new User(
 		_id,
 		firstName,

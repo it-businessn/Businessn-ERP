@@ -46,7 +46,7 @@ const Customers = () => {
 	}, []);
 
 	return (
-		<Box m={"1em"}>
+		<Box p={{ base: "1em", md: "2em" }}>
 			<Text fontWeight="bold" mb={"0.5em"}>
 				Customers
 			</Text>

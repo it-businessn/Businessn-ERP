@@ -34,6 +34,7 @@ const MenuItem = ({ menu, textTransform, handleMenuItemClick }) => {
 							aria-label="Calendar Icon"
 						/>
 						<Button
+							justifyContent={"space-between"}
 							p={0}
 							variant="ghost"
 							color="brand.200"

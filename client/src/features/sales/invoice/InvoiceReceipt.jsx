@@ -19,6 +19,7 @@ import {
 	VStack,
 } from "@chakra-ui/react";
 import Logo from "components/logo";
+import fd_logo from "../../../assets/fd_blue.png";
 
 const InvoiceReceipt = ({ invoice, isOpen, onClose, isMobileView }) => {
 	return (
@@ -27,7 +28,7 @@ const InvoiceReceipt = ({ invoice, isOpen, onClose, isMobileView }) => {
 			<DrawerContent>
 				<DrawerCloseButton />
 				<DrawerHeader>Invoice Receipt</DrawerHeader>
-				<DrawerBody>
+				<DrawerBody overflowX={"hidden"}>
 					<Box p={4}>
 						<SimpleGrid columns={2}>
 							<VStack fontSize={"sm"} spacing={0} alignItems={"flex-start"}>
@@ -37,7 +38,7 @@ const InvoiceReceipt = ({ invoice, isOpen, onClose, isMobileView }) => {
 								<Text>US</Text>
 							</VStack>
 							<VStack alignItems={"end"}>
-								<Logo />
+								<Logo src={fd_logo} />
 							</VStack>
 						</SimpleGrid>
 						<SimpleGrid columns={2}>

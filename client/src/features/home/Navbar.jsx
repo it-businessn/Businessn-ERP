@@ -21,7 +21,7 @@ const Navbar = ({ handleClick, user, handleLogout, onOpen }) => {
 
 	return (
 		<Box
-			pl={3}
+			pl={{ base: 0, md: 3 }}
 			pt={3}
 			pr={3}
 			position="fixed"
@@ -30,7 +30,7 @@ const Navbar = ({ handleClick, user, handleLogout, onOpen }) => {
 			zIndex={1}
 			bg="brand.nav_gradient"
 		>
-			<HStack spacing={0} alignItems="center">
+			<HStack spacing={0} alignItems="center" pr={{ base: "0em", md: "1em" }}>
 				{isMobile && (
 					<IconButton
 						icon={<HamburgerIcon />}
@@ -60,7 +60,7 @@ const Navbar = ({ handleClick, user, handleLogout, onOpen }) => {
 					</VStack>
 
 					{SIDEBAR_MENU.map((menu) => (
-						<Stack ml="2em" key={menu.id}>
+						<Stack ml={{ base: "1em", md: "2em" }} key={menu.id}>
 							<Link to={menu?.path}>
 								<NavButton
 									handleClick={handleClick}

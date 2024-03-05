@@ -16,35 +16,23 @@ import {
 	Thead,
 	Tr,
 } from "@chakra-ui/react";
-import { activityChartData } from "constant";
-import Loader from "features/Loader";
+import { doughnutOptions } from "constant";
 import { useEffect, useState } from "react";
 import { Doughnut } from "react-chartjs-2";
 import { FaSearch } from "react-icons/fa";
 import { MdOutlineFilterList } from "react-icons/md";
 import * as api from "services";
 import { useBreakpointValue } from "services/Breakpoint";
+import { productsInfo } from "../../../data";
+import "./products.css";
 
 const Products = () => {
-	const { isMobile } = useBreakpointValue();
+	const { isMobile, isIpad } = useBreakpointValue();
 
 	const [selectedDateFilter, setSelectedDateFilter] = useState("This Week");
 
 	const handleDateFilterChange = (event) => {
 		setSelectedDateFilter(event.target.value);
-	};
-
-	const activityChartOptions = {
-		cutout: "0%",
-		plugins: {
-			datalabels: {
-				display: true,
-			},
-		},
-		legend: {
-			position: "bottom",
-			align: "center",
-		},
 	};
 	const [contacts, setContacts] = useState(null);
 	const fetchAllContacts = async () => {
@@ -57,12 +45,84 @@ const Products = () => {
 		}
 	};
 
+	const [totalCost, setTotalCost] = useState(0);
+	const [totalQuantity, setTotalQuantity] = useState(0);
+
 	useEffect(() => {
+		productsInfo.forEach((product) => {
+			setTotalCost(
+				(prev) => (prev += parseFloat(product.cost) * product.quantity),
+			);
+			setTotalQuantity((prev) => (prev += parseFloat(product.quantity)));
+		});
 		fetchAllContacts();
 	}, []);
+
+	const groupedData = productsInfo.reduce((acc, product) => {
+		const category = product.category;
+		acc[category] = (acc[category] || 0) + product.quantity;
+		return acc;
+	}, {});
+
+	const sumQuantity = productsInfo.reduce(
+		(sum, product) => sum + product.quantity,
+		0,
+	);
+
+	const percentages = {};
+	for (const category in groupedData) {
+		percentages[category] = (
+			(groupedData[category] / sumQuantity) *
+			100
+		).toFixed(2);
+	}
+
+	const combinedData = Object.keys(percentages);
+	const data = Object.values(groupedData);
+	const labels = combinedData.map(
+		(category, index) => `${category} - ${data[index]}%`,
+	);
+
+	const productsChartData = {
+		labels,
+		datasets: [
+			{
+				data,
+				backgroundColor: [
+					"#517ae8",
+					"#67afc8",
+					"#8aa8ee",
+					"#c4f7d8",
+					"#caeaf5",
+				],
+				hoverBackgroundColor: [
+					"#517ae8",
+					"#67afc8",
+					"#8aa8ee",
+					"#c4f7d8",
+					"#caeaf5",
+				],
+			},
+		],
+	};
+	const customTooltips = {
+		callbacks: {
+			label(tooltipItem) {
+				// return `${data.labels[tooltipItem.index]}: ${
+				// 	data.datasets[0].data[tooltipItem.index]
+				// }%`;
+				return tooltipItem.label;
+			},
+		},
+	};
+
 	return (
-		<Box p={"1em"} overflow={"hidden"}>
-			<Text fontWeight="bold" mb={"0.5em"}>
+		<Box
+			p={{ base: "1em", md: "2em" }}
+			overflowY={{ base: "hidden", md: "auto" }}
+			h={{ base: "auto", md: "70vh", lg: "auto" }}
+		>
+			<Text fontWeight="bold" mb={"1em"}>
 				Products
 			</Text>
 
@@ -78,9 +138,9 @@ const Products = () => {
 				<Text fontWeight="bold" mb="1em" color={"brand.nav_color"}>
 					Product Categories
 				</Text>
-				<SimpleGrid columns={{ base: 1, md: 1, lg: 3 }} spacing="1em">
+				<SimpleGrid columns={{ base: 1, md: 1, lg: 2, xl: 3 }} spacing="1em">
 					<Box
-						px="1em"
+						p="1em"
 						bg={"brand.primary_bg"}
 						border="3px solid white"
 						borderRadius="10px"
@@ -89,10 +149,13 @@ const Products = () => {
 						<Text fontWeight="bold" color={"brand.600"} mt="2" mb="1">
 							All Categories
 						</Text>
-						<Box w={{ base: "70%", xl: "55%" }} mx={"auto"}>
+						<Box
+							w={{ base: "70%", md: "50%", lg: "70%", xl: "70%" }}
+							mx={"auto"}
+						>
 							<Doughnut
-								data={activityChartData}
-								options={activityChartOptions}
+								data={productsChartData}
+								options={doughnutOptions("0%")}
 							/>
 						</Box>
 					</Box>
@@ -106,7 +169,7 @@ const Products = () => {
 						<Flex justify="space-between" align="center" mb="2">
 							<Text fontWeight="bold">Inventory</Text>
 						</Flex>
-						<SimpleGrid columns={2} gap={4} h={"85%"}>
+						<SimpleGrid columns={2} gap={4}>
 							<Box
 								p={4}
 								border={"2px solid #d3d3d3"}
@@ -119,7 +182,7 @@ const Products = () => {
 									Total SKUs
 								</Text>
 								<Text mr="3" fontSize={"1.25em"}>
-									123
+									{productsInfo.length}
 								</Text>
 							</Box>
 							<Box
@@ -134,7 +197,7 @@ const Products = () => {
 									Total Products
 								</Text>
 								<Text mr="3" fontSize={"1.25em"}>
-									455
+									{totalQuantity}
 								</Text>
 							</Box>
 							<Box
@@ -149,7 +212,7 @@ const Products = () => {
 									$ Inventory #Skus
 								</Text>
 								<Text mr="3" fontSize={"1.25em"}>
-									$55
+									${totalCost}
 								</Text>
 							</Box>
 						</SimpleGrid>
@@ -164,7 +227,7 @@ const Products = () => {
 						<Flex justify="space-between" align="center" mb="2">
 							<Text fontWeight="bold">Key Metrics</Text>
 						</Flex>
-						<SimpleGrid columns={2} gap={4} h={"80%"}>
+						<SimpleGrid columns={2} gap={4}>
 							<Box
 								p={4}
 								border={"2px solid #d3d3d3"}
@@ -195,15 +258,13 @@ const Products = () => {
 									5 days
 								</Text>
 							</Box>
-							{!isMobile && (
-								<Box
-									p={8}
-									borderRadius={"10px"}
-									justifyContent="space-evenly"
-									display="flex"
-									flexDir="column"
-								/>
-							)}
+							<Box
+								display={{ base: "none", xl: "flex" }}
+								p={8}
+								borderRadius={"10px"}
+								justifyContent="space-evenly"
+								flexDir="column"
+							/>
 						</SimpleGrid>
 					</Box>
 				</SimpleGrid>
@@ -304,54 +365,65 @@ const Products = () => {
 									py={"1.2em"}
 								/>
 							</InputGroup>
-							{/* <Button
-								bg={"#537eee"}
-								color={"brand.primary_bg"}
-								variant={"solid"}
-								size={"xs"}
-								_hover={{ color: "brand.600" }}
-								borderRadius={"10px"}
-							>
-								Add new sales
-							</Button> */}
 						</HStack>
 					</Flex>
 				)}
-				{!contacts && <Loader />}
-				{contacts && (
-					<Box overflow="auto">
-						<Table color={"brand.nav_color"} bg={"brand.primary_bg"}>
-							<Thead>
-								<Tr fontSize="xs">
-									<Th fontWeight={"bolder"} p={0}>
-										Product ID
-									</Th>
-									<Th fontWeight={"bolder"}>Name </Th>
-									<Th fontWeight={"bolder"}>Product Category</Th>
-									<Th fontWeight={"bolder"}> Price</Th>
-									<Th p={0}>Cost</Th>
-									<Th fontWeight={"bolder"}> List Price</Th>
-									<Th fontWeight={"bolder"}> Qty on hand</Th>
-								</Tr>
-							</Thead>
-							<Tbody color={"brand.nav_color"}>
-								{contacts.map((contact, index) => (
-									<Tr key={contact._id}>
+				{/* {!contacts && <Loader />} */}
+				{/* {contacts && ( */}
+				<Box overflow="auto" h="350px">
+					<Table color={"brand.nav_color"} bg={"brand.primary_bg"}>
+						<Thead>
+							<Tr fontSize="xs">
+								<Th fontWeight={"bolder"} p={0}>
+									Product ID
+								</Th>
+								<Th fontWeight={"bolder"} p={0}>
+									Name{" "}
+								</Th>
+								<Th fontWeight={"bolder"} p={0}>
+									Product Category
+								</Th>
+								<Th fontWeight={"bolder"} p={0}>
+									Price
+								</Th>
+								<Th p={0}>Cost</Th>
+								<Th fontWeight={"bolder"} p={0}>
+									Qty on hand
+								</Th>
+							</Tr>
+						</Thead>
+						<Tbody color={"brand.nav_color"}>
+							{productsInfo.map(
+								(
+									{ _id, name, category, base_price, cost, quantity },
+									index,
+								) => (
+									<Tr key={_id}>
 										<Td fontSize={"xs"} p={0}>
-											04/02/2024
+											{_id}
 										</Td>
-										<Td fontSize={"xs"}>{contact.companyName}</Td>
-										<Td fontSize={"xs"}>$345</Td>
-										<Td fontSize={"xs"}>Product1</Td>
-										<Td fontSize={"xs"}>Product1</Td>
-										<Td fontSize={"xs"}>Product1</Td>
-										<Td fontSize={"xs"}>Product1</Td>
+										<Td fontSize={"xs"} p={0}>
+											{name}
+										</Td>
+										<Td fontSize={"xs"} p={0}>
+											{category}
+										</Td>
+										<Td fontSize={"xs"} p={0}>
+											{base_price}
+										</Td>
+										<Td fontSize={"xs"} p={1}>
+											{cost}
+										</Td>
+										<Td fontSize={"xs"} p={0}>
+											{quantity}
+										</Td>
 									</Tr>
-								))}
-							</Tbody>
-						</Table>
-					</Box>
-				)}
+								),
+							)}
+						</Tbody>
+					</Table>
+				</Box>
+				{/* )} */}
 			</Box>
 		</Box>
 	);

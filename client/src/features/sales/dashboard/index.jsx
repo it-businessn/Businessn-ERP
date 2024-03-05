@@ -17,8 +17,9 @@ import {
 	VStack,
 } from "@chakra-ui/react";
 import {
+	BAR_DATA,
 	activityChartData,
-	callsMadeBarData,
+	doughnutOptions,
 	leaderBoardData,
 	meetingsData,
 	upcomingTask,
@@ -40,29 +41,6 @@ const CRMDashboard = () => {
 		// Fetch data based on the selected date filter
 	};
 
-	const callsBarData = {
-		labels: callsMadeBarData.map((item) => item.day),
-		datasets: [
-			{
-				label: "Calls Made",
-				data: callsMadeBarData.map((item) => item.call),
-				backgroundColor: "#5580f1",
-				borderRadius: 12,
-				fill: false,
-			},
-		],
-	};
-	const emailsBarData = {
-		labels: callsMadeBarData.map((item) => item.day),
-		datasets: [
-			{
-				label: "Emails Sent",
-				data: callsMadeBarData.map((item) => item.call),
-				backgroundColor: "#61a9c1",
-				borderRadius: 12,
-			},
-		],
-	};
 	const options = {
 		scales: {
 			y: {
@@ -92,6 +70,11 @@ const CRMDashboard = () => {
 				},
 			},
 		},
+		plugins: {
+			legend: {
+				display: false,
+			},
+		},
 		layout: {
 			padding: {
 				left: 10,
@@ -100,25 +83,10 @@ const CRMDashboard = () => {
 				bottom: 0,
 			},
 		},
-		legend: {
-			display: false,
-		},
-	};
-	const activityChartOptions = {
-		cutout: "40%",
-		plugins: {
-			datalabels: {
-				display: true,
-			},
-		},
-		legend: {
-			position: "bottom",
-			align: "center",
-		},
 	};
 
 	return (
-		<Box p={"1em"} overflow={"hidden"}>
+		<Box p={{ base: "1em", md: "2em" }} overflow={"hidden"}>
 			<Text fontWeight="bold" mb={"0.5em"}>
 				CRM Dashboard
 			</Text>
@@ -292,7 +260,7 @@ const CRMDashboard = () => {
 							</Thead>
 							<Tbody color={"brand.nav_color"}>
 								{leaderBoardData.map((item, index) => (
-									<Tr key={index}>
+									<Tr key={item.id}>
 										<Td fontSize={"xs"} p={0}>
 											{item.position}
 										</Td>
@@ -327,13 +295,19 @@ const CRMDashboard = () => {
 					<Text fontWeight="bold" mt="2" mb="1">
 						Activity Tracking
 					</Text>
-					<Box
-						w={{ base: "90%", md: "55%", lg: "70%", xl: "65%" }}
-						mx={"auto"}
-						h={{ base: "auto", md: "350px" }}
-					>
-						<Doughnut data={activityChartData} options={activityChartOptions} />
-					</Box>
+					<VStack spacing={0}>
+						<Box h={"30px"} />
+						<Box
+							w={{ base: "50%", md: "50%", lg: "100%", xl: "65%" }}
+							h={{ base: "50%", md: "50%", lg: "100%", xl: "65%" }}
+							m={"0 auto"}
+						>
+							<Doughnut
+								data={activityChartData}
+								options={doughnutOptions("50%")}
+							/>
+						</Box>
+					</VStack>
 				</Box>
 				<Box
 					color={"brand.nav_color"}
@@ -359,7 +333,7 @@ const CRMDashboard = () => {
 							</Thead>
 							<Tbody border={"none"} color={"brand.nav_color"}>
 								{leaderBoardData.map((item, index) => (
-									<Tr key={index}>
+									<Tr key={item.id * 20}>
 										<Td fontSize={"xs"} p={0}>
 											#{item.id}
 										</Td>
@@ -394,56 +368,37 @@ const CRMDashboard = () => {
 				</Box>
 			</SimpleGrid>
 			<SimpleGrid columns={{ base: 1, md: 1, lg: 2 }} spacing="1em" mt="4">
-				<Box
-					color={"brand.nav_color"}
-					px="1em"
-					bg={"brand.primary_bg"}
-					border="3px solid white"
-					borderRadius="10px"
-					fontWeight="bold"
-				>
-					<Flex
-						justify="space-between"
-						align="center"
-						mb="1"
+				{BAR_DATA.map((bar) => (
+					<Box
+						key={bar.title}
 						color={"brand.nav_color"}
-						w={{ base: "auto", md: "103%" }}
+						px="1em"
+						bg={"brand.primary_bg"}
+						border="3px solid white"
+						borderRadius="10px"
+						fontWeight="bold"
 					>
-						<Text fontWeight="bold">Calls Made</Text>
-						<Select width="auto" border={"none"} fontSize={"xs"} ml={"1em"}>
-							<option>Last Week</option>
-							<option>Last Month</option>
-						</Select>
-					</Flex>
-					<Box w={{ base: "", md: "65%" }} mx={"auto"}>
-						<Bar data={callsBarData} options={options} />
+						<Flex
+							justify="space-between"
+							align="center"
+							mb="1"
+							color={"brand.nav_color"}
+							w={{ base: "auto", md: "103%" }}
+						>
+							<Text fontWeight="bold">{bar.title}</Text>
+							<Select width="auto" border={"none"} fontSize={"xs"} ml={"1em"}>
+								<option>Last Week</option>
+								<option>Last Month</option>
+							</Select>
+						</Flex>
+						<Box
+							w={{ base: "70%", md: "65%", lg: "70%", xl: "50%" }}
+							mx={"auto"}
+						>
+							<Bar data={bar.data} options={options} />
+						</Box>
 					</Box>
-				</Box>
-
-				<Box
-					px="1em"
-					bg={"brand.primary_bg"}
-					border="3px solid white"
-					borderRadius="10px"
-					fontWeight="bold"
-				>
-					<Flex
-						justify="space-between"
-						align="center"
-						mb="1"
-						color={"brand.nav_color"}
-						w={{ base: "auto", md: "103%" }}
-					>
-						<Text fontWeight="bold">Emails Sent</Text>
-						<Select width="auto" border={"none"} fontSize={"xs"} ml={"1em"}>
-							<option>Last Week</option>
-							<option>Last Month</option>
-						</Select>
-					</Flex>
-					<Box w={{ base: "", md: "65%" }} mx={"auto"}>
-						<Bar data={emailsBarData} options={options} />
-					</Box>
-				</Box>
+				))}
 			</SimpleGrid>
 			<SimpleGrid columns={{ base: 1, md: 1, lg: 2 }} spacing="4" mt="4">
 				<Box
@@ -488,7 +443,7 @@ const CRMDashboard = () => {
 					>
 						<Tbody border={"none"} color={"brand.nav_color"}>
 							{upcomingTask.map((item, index) => (
-								<Tr key={index}>
+								<Tr key={item.title}>
 									<Td width={"80px"} p={0}>
 										<IconButton
 											bg={"#d8dce9"}

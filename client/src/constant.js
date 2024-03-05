@@ -1,20 +1,31 @@
 import { EditIcon, EmailIcon } from "@chakra-ui/icons";
 import { BsCalendar3, BsChatTextFill, BsListTask } from "react-icons/bs";
+import { CiPercent } from "react-icons/ci";
 import { FaDashcube, FaSalesforce } from "react-icons/fa";
 import { FiTarget } from "react-icons/fi";
+import { GiVideoCamera } from "react-icons/gi";
 import { HiOutlineCalendar } from "react-icons/hi";
 import { IoIosPeople, IoMdCall } from "react-icons/io";
-import { IoBagRemoveOutline, IoDocumentTextOutline } from "react-icons/io5";
+import {
+	IoBagRemoveOutline,
+	IoCall,
+	IoDocumentTextOutline,
+} from "react-icons/io5";
 import { LuLayoutDashboard } from "react-icons/lu";
 import {
 	MdCall,
 	MdCleanHands,
+	MdContactPage,
 	MdOutlineEventNote,
 	MdOutlineSettingsApplications,
 	MdPayments,
 } from "react-icons/md";
 import { PiBooks, PiListMagnifyingGlassFill } from "react-icons/pi";
-import { RiUserSearchLine, RiUserStarLine } from "react-icons/ri";
+import {
+	RiAspectRatioLine,
+	RiUserSearchLine,
+	RiUserStarLine,
+} from "react-icons/ri";
 import { RxDashboard } from "react-icons/rx";
 import {
 	TbChartDots,
@@ -36,6 +47,109 @@ export const TOAST = {
 	},
 };
 
+export const ACTIVITY_CARDS = [
+	{
+		color: "#ed6175",
+		icon: CiPercent,
+		title: "Pending Sales",
+		count: 2000,
+		action: "Add New Emails",
+	},
+	{
+		color: "#62ad84",
+		icon: MdContactPage,
+		title: "New Contracts Added",
+		count: 2000,
+		action: "Add New Contracts",
+	},
+	{
+		color: "purple",
+		icon: IoCall,
+		title: "Phone Calls Made",
+		count: 2000,
+		action: "Add New Calls",
+	},
+	{
+		color: "grey",
+		icon: GiVideoCamera,
+		title: "Meetings",
+		count: 2000,
+		action: "Add New Meetings",
+	},
+	{
+		color: "grey",
+		icon: RiAspectRatioLine,
+		title: "Sales Target",
+		count: 2000,
+		action: "Add New Target",
+	},
+];
+
+export const callsMadeBarData = [
+	{ day: "Mon", call: 10 },
+	{ day: "Tue", call: 15 },
+	{ day: "Wed", call: 20 },
+	{ day: "Thu", call: 25 },
+	{ day: "Fri", call: 18 },
+	{ day: "Sat", call: 12 },
+	{ day: "Sun", call: 8 },
+];
+
+const callsBarData = {
+	labels: callsMadeBarData.map((item) => item.day),
+	datasets: [
+		{
+			label: "Calls Made",
+			data: callsMadeBarData.map((item) => item.call),
+			backgroundColor: "#5580f1",
+			borderRadius: 12,
+			fill: false,
+		},
+	],
+};
+const emailsBarData = {
+	labels: callsMadeBarData.map((item) => item.day),
+	datasets: [
+		{
+			label: "Emails Sent",
+			data: callsMadeBarData.map((item) => item.call),
+			backgroundColor: "#61a9c1",
+			borderRadius: 12,
+		},
+	],
+};
+
+export const BAR_DATA = [
+	{
+		title: "Calls Made",
+		data: callsBarData,
+	},
+	{
+		title: "Emails Sent",
+		data: emailsBarData,
+	},
+];
+
+export const doughnutOptions = (cutout) => ({
+	cutout,
+	plugins: {
+		datalabels: {
+			display: true,
+		},
+		legend: {
+			align: "center",
+			position: "bottom",
+		},
+	},
+});
+export const barOptions = {
+	plugins: {
+		legend: {
+			align: "center",
+			position: "bottom",
+		},
+	},
+};
 export const SIDEBAR_MENU = [
 	// {
 	//   path: "/insight",
@@ -133,19 +247,19 @@ export const SIDEBAR_MENU = [
 				],
 			},
 			{
-				path: "/target-leads",
-				name: "Leads",
-				children: [],
+				path: "/opportunities",
+				name: "Opportunities",
 				icon: <TbUsersPlus />,
+				children: [],
 			},
 			{
-				path: "/lead-docket",
+				path: "/leads-docket",
 				name: "Lead Docket",
 				children: [],
 				icon: <IoDocumentTextOutline />,
 			},
 			{
-				path: "/disburse-lead",
+				path: "/leads-disburse",
 				name: "Lead Disbursement",
 				children: [],
 				icon: <MdCleanHands />,
@@ -293,7 +407,7 @@ export const SIDEBAR_MENU = [
 				icon: <TbChartDots />,
 			},
 			{
-				path: "/setup",
+				path: "/set-up",
 				name: "Setup",
 				icon: <MdOutlineSettingsApplications />,
 				children: [],
@@ -588,6 +702,7 @@ export const PIPELINE_STAGES = [
 		name: "Won",
 	},
 ];
+
 export const leaderBoardData = [
 	{
 		position: 1,
@@ -717,6 +832,7 @@ export const upcomingTask = [
 	{ icon: <BsChatTextFill />, title: "2 Meetings", color: "#008080" },
 	{ icon: <MdCall />, title: "2 Appointments", color: "#008080" },
 ];
+
 export const activityChartData = {
 	labels: ["Calls-75%", "Emails-25%", "Meetings-10%"],
 	datasets: [
@@ -727,6 +843,7 @@ export const activityChartData = {
 		},
 	],
 };
+
 export const trainingChartData = {
 	labels: ["Completed", "Ongoing"],
 	datasets: [
@@ -737,20 +854,13 @@ export const trainingChartData = {
 		},
 	],
 };
+
 export const activityData = [
 	{ angle: 65, label: "Calls", color: "#3498db" },
 	{ angle: 25, label: "Emails", color: "#2ecc71" },
 	{ angle: 10, label: "Meetings Done", color: "#008080" },
 ];
-export const callsMadeBarData = [
-	{ day: "Mon", call: 10 },
-	{ day: "Tue", call: 15 },
-	{ day: "Wed", call: 20 },
-	{ day: "Thu", call: 25 },
-	{ day: "Fri", call: 18 },
-	{ day: "Sat", call: 12 },
-	{ day: "Sun", call: 8 },
-];
+
 export const meetingsData = [
 	{
 		profilePic: "url-to-profile-pic-1",
