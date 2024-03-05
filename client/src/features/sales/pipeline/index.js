@@ -24,24 +24,47 @@ import {
 	useDisclosure,
 } from "@chakra-ui/react";
 import { RiEditLine } from "react-icons/ri";
+import GradientAreaFillColorChart from "./AreaFillColorChart";
 
 const Pipeline = () => {
 	const categories = [
-		{ name: "New", color: "#dbe5ff" },
-		{ name: "Presentation", color: "#ffe4e1" },
-		{ name: "Meeting", color: "#caeaf5" },
-		{ name: "Negotiating", color: "lightgrey" },
-		{ name: "Won", color: "#c4f7d8" },
+		{ name: "Meeting Set", color: "#dbe5ff" },
+		{ name: "Discovery Call", color: "#c4f7d8" },
+		{ name: "Onboard", color: "#caeaf5" },
+		{ name: "Closing", color: "#ffe4e1" },
 	];
 	const { isOpen, onOpen, onClose } = useDisclosure();
 	const handleSubmit = () => console.log("submit");
+	const opportunityData = [
+		{ name: "Jan", value: 400 },
+		{ name: "Feb", value: 550 },
+		{ name: "Mar", value: 400 },
+		{ name: "Apr", value: 200 },
+		{ name: "May", value: 600 },
+		{ name: "Jun", value: 350 },
+		{ name: "Jul", value: 300 },
+		{ name: "Aug", value: 600 },
+		{ name: "Sep", value: 800 },
+		{ name: "Oct", value: 400 },
+		{ name: "Nov", value: 350 },
+		{ name: "Dec", value: 400 },
+	];
 	return (
 		<Box p={{ base: "1em", md: "2em" }}>
 			<Text fontWeight="bold" mb={"0.5em"}>
 				Target Leads
 			</Text>
+			<Box p={"1em"} width="100%" borderRadius="10px" border="3px solid white">
+				<Text fontWeight="bold" color={"brand.200"} mb={"0.5em"}>
+					Pipeline
+				</Text>
+				{opportunityData && (
+					<GradientAreaFillColorChart opportunityData={opportunityData} />
+				)}
+			</Box>
 			<SimpleGrid
-				columns={{ base: 1, md: 2, lg: 5 }}
+				mt={"1em"}
+				columns={{ base: 1, md: 2, lg: 4 }}
 				spacing="1em"
 				color={"brand.200"}
 			>

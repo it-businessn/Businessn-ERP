@@ -1,7 +1,6 @@
 import {
 	Box,
 	Button,
-	Checkbox,
 	Flex,
 	HStack,
 	Icon,
@@ -26,7 +25,7 @@ import * as api from "services";
 import { useBreakpointValue } from "services/Breakpoint";
 import { generateLighterShade } from "utils";
 
-const LeadsDocket = () => {
+const Opportunities = () => {
 	const { isMobile } = useBreakpointValue();
 	const [contacts, setContacts] = useState(null);
 	const fetchAllContacts = async () => {
@@ -42,25 +41,21 @@ const LeadsDocket = () => {
 	useEffect(() => {
 		fetchAllContacts();
 	}, []);
-
-	const [checkedRows, setCheckedRows] = useState([]);
-	const handleCheckboxChange = (rowId) => {
-		if (checkedRows.includes(rowId)) {
-			setCheckedRows(checkedRows.filter((id) => id !== rowId));
-		} else {
-			setCheckedRows([...checkedRows, rowId]);
-		}
-	};
 	const ele_bg = generateLighterShade("#537eee", 0.9);
 	const ele_color = "#537eee";
-	const regions = [{ name: "BC" }, { name: "Toronto" }];
-	const industries = [
+	const leadsStages = [
+		{ category: "L1" },
+		{ category: "L2" },
+		{ category: "L3" },
+		{ category: "L4" },
+	];
+	const primaryAssignee = [
 		{ name: "L1" },
 		{ name: "L2" },
 		{ name: "L3" },
 		{ name: "L4" },
 	];
-	const sources = [
+	const supervisorAssignee = [
 		{ name: "L1" },
 		{ name: "L2" },
 		{ name: "L3" },
@@ -69,7 +64,6 @@ const LeadsDocket = () => {
 	const showOptions = () => (
 		<>
 			<Button
-				w={"200px"}
 				color={"brand.nav_color"}
 				leftIcon={<MdOutlineFilterList />}
 				border={"2px solid #d3d3d3"}
@@ -82,37 +76,40 @@ const LeadsDocket = () => {
 			<InputGroup
 				borderRadius={"10px"}
 				border={"1px solid #d3d3d3"}
+				fontSize="sm"
 				fontWeight="bold"
 			>
-				<InputLeftElement size="xs" children={<FaSearch />} />
+				<InputLeftElement children={<FaSearch />} />
 				<Input
 					_placeholder={{
 						color: "brand.nav_color",
+						fontSize: "sm",
 					}}
 					color={"brand.nav_color"}
 					bg={"brand.primary_bg"}
 					type="text"
 					placeholder="Search here"
+					pr="4.5rem"
 				/>
 			</InputGroup>
 		</>
 	);
-	const showDisburse = () => (
+	const showAddContact = () => (
 		<Button
-			w={{ lg: "400px" }}
-			bg={ele_bg}
-			color={ele_color}
-			variant={"ghost"}
+			bg={"#537eee"}
+			px={{ lg: "3em" }}
+			color={"brand.primary_bg"}
+			variant={"solid"}
 			_hover={{ color: "brand.600" }}
 			borderRadius={"10px"}
 		>
-			Confirm Disbursement
+			Add new lead
 		</Button>
 	);
 	return (
 		<Box p={{ base: "1em", md: "2em" }}>
 			<Text fontWeight="bold" mb={"0.5em"}>
-				Lead Disbursement
+				Opportunities
 			</Text>
 			<Box
 				p="1em"
@@ -125,78 +122,44 @@ const LeadsDocket = () => {
 					<Flex flexDir="column">
 						<Flex justify="space-between">
 							<Text fontWeight="bold">Contact</Text>
-							{showDisburse()}
+							{showAddContact()}
 						</Flex>
-						<Select mt="1em" border={"2px solid #d3d3d3"} borderRadius={"10px"}>
-							<option value="">Region</option>
-						</Select>
 						<HStack spacing="1em" mt="1em">
 							{showOptions()}
 						</HStack>
 					</Flex>
 				) : (
 					<Flex>
-						<Text fontWeight="bold">Lead Disbursement</Text>
+						<Text fontWeight="bold">Contact</Text>
 						<Spacer />
 						<HStack spacing={3}>
-							<Spacer />
-							{showDisburse()}
-							<Select
-								icon={<Icon as={FaCaretDown} />}
-								border={"2px solid #d3d3d3"}
-								borderRadius={"10px"}
-							>
-								<option value="">Region</option>
-							</Select>
-							{showOptions()}
+							{showOptions("sm")}
+							{showAddContact()}
 						</HStack>
 					</Flex>
 				)}
+
 				{!contacts && <Loader />}
 				{contacts && (
 					<Box overflow="auto">
 						<Table variant="simple">
 							<Thead>
 								<Tr>
-									<Th>
-										<Checkbox />
-									</Th>
-									<Th>Name</Th>
-									<Th>Leads</Th>
-									<Th>Areas</Th>
-									<Th>Last Login</Th>
-									<Th>Role</Th>
-									<Th>Address</Th>
-									<Th>Areas</Th>
-									<Th>Weighting</Th>
-									<Th>Product Service</Th>
+									<Th>Opportunity name</Th>
+									<Th>Abbr</Th>
+									<Th>Created On </Th>
+									<Th>Email</Th>
+									<Th>Stage</Th>
+									<Th>Primary Assignee</Th>
+									<Th>Supervisor Assignee</Th>
 								</Tr>
 							</Thead>
 							<Tbody>
 								{contacts?.map((item) => (
 									<Tr key={item.id}>
 										<Td>
-											<Checkbox
-												isChecked={checkedRows.includes(item.id)}
-												onChange={() => handleCheckboxChange(item.id)}
-											/>
-										</Td>
-										<Td>ss</Td>
-										<Td>
-											<Select
-												icon={<Icon as={FaCaretDown} />}
-												borderRadius={"10px"}
-												size={"sm"}
-												color={ele_color}
-												bg={ele_bg}
-												border={`1px solid ${ele_color}`}
-											>
-												{industries.map(({ name }) => (
-													<option value="" key={name}>
-														{name}
-													</option>
-												))}
-											</Select>
+											{/* Product/Service Text */}
+											ss
 										</Td>
 										<Td>
 											{/* Company Name */}
@@ -211,10 +174,6 @@ const LeadsDocket = () => {
 											ss
 										</Td>
 										<Td>
-											{/* Address */}
-											ss
-										</Td>
-										<Td>
 											<Select
 												icon={<Icon as={FaCaretDown} />}
 												borderRadius={"10px"}
@@ -223,9 +182,9 @@ const LeadsDocket = () => {
 												bg={ele_bg}
 												border={`1px solid ${ele_color}`}
 											>
-												{sources.map(({ name }) => (
-													<option value="" key={name}>
-														{name}
+												{leadsStages.map(({ category }) => (
+													<option value="" key={category}>
+														{category}
 													</option>
 												))}
 											</Select>
@@ -239,27 +198,30 @@ const LeadsDocket = () => {
 												bg={ele_bg}
 												border={`1px solid ${ele_color}`}
 											>
-												{regions.map(({ name }) => (
+												{primaryAssignee.map(({ name }) => (
 													<option value="" key={name}>
 														{name}
 													</option>
 												))}
+												{/* <option value="">Choose primary assignee</option> */}
 											</Select>
 										</Td>
 										<Td>
 											<Select
 												icon={<Icon as={FaCaretDown} />}
+												placeholder="Choose supervisor "
 												borderRadius={"10px"}
 												size={"sm"}
 												color={ele_color}
 												bg={ele_bg}
 												border={`1px solid ${ele_color}`}
 											>
-												{regions.map(({ name }) => (
+												{supervisorAssignee.map(({ name }) => (
 													<option value="" key={name}>
 														{name}
 													</option>
 												))}
+												{/* <option value="">Choose supervisor </option> */}
 											</Select>
 										</Td>
 									</Tr>
@@ -273,4 +235,4 @@ const LeadsDocket = () => {
 	);
 };
 
-export default LeadsDocket;
+export default Opportunities;

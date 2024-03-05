@@ -42,7 +42,7 @@ const Calendar = lazy(() => import("./features/sales/calendar"));
 const Payouts = lazy(() => import("./features/sales/payouts"));
 const Customers = lazy(() => import("./features/sales/customers"));
 
-const Leads = lazy(() => import("./features/sales/leads"));
+const Opportunities = lazy(() => import("./features/sales/opportunities"));
 const LeadsDocket = lazy(() => import("./features/sales/lead docket"));
 const LeadsDisburse = lazy(() => import("./features/sales/lead disburse"));
 const FreshLeads = lazy(() => import("./features/sales/fresh_leads"));
@@ -95,7 +95,7 @@ export const router = createBrowserRouter([
 			},
 			{
 				path: "/leads",
-				element: <Leads />,
+				element: <Opportunities />,
 			},
 			{
 				path: "/leads-docket",

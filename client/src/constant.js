@@ -1,11 +1,11 @@
 import { EditIcon, EmailIcon } from "@chakra-ui/icons";
 import { BsCalendar3, BsChatTextFill, BsListTask } from "react-icons/bs";
 import { CiPercent } from "react-icons/ci";
-import { FaDashcube, FaSalesforce } from "react-icons/fa";
+import { FaAddressBook, FaDashcube, FaSalesforce } from "react-icons/fa";
 import { FiTarget } from "react-icons/fi";
 import { GiVideoCamera } from "react-icons/gi";
 import { HiOutlineCalendar } from "react-icons/hi";
-import { IoIosPeople, IoMdCall } from "react-icons/io";
+import { IoMdCall } from "react-icons/io";
 import {
 	IoBagRemoveOutline,
 	IoCall,
@@ -227,7 +227,7 @@ export const SIDEBAR_MENU = [
 			{
 				path: "/customers",
 				name: "Customers",
-				icon: <IoIosPeople />,
+				icon: <FaAddressBook />,
 				children: [
 					{
 						path: "/view-contacts",
@@ -247,7 +247,7 @@ export const SIDEBAR_MENU = [
 				],
 			},
 			{
-				path: "/opportunities",
+				path: "/leads",
 				name: "Opportunities",
 				icon: <TbUsersPlus />,
 				children: [],
