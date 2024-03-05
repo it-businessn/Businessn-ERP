@@ -14,9 +14,6 @@ const Sidebar = ({ activeMenu }) => {
 			overflowY="auto"
 		>
 			<Stack justify="start" width="full" my={0} spacing={0}>
-				{/* <Heading fontSize="xl" mr={"auto"}>
-          {activeMenu?.name === "Sales" && "CRM DASHBOARD"}
-        </Heading> */}
 				{activeMenu?.children?.length &&
 					activeMenu?.children?.map((menu) => (
 						<MenuItem key={crypto.randomUUID()} menu={menu} />

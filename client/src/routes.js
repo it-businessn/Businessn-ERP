@@ -56,6 +56,9 @@ const Resources = lazy(() => import("./features/sales/resources"));
 const SalesReport = lazy(() => import("./features/sales/reports"));
 const Setup = lazy(() => import("./features/sales/setup"));
 
+const ProjectDashboard = lazy(() => import("./features/project/dashboard"));
+const Workbench = lazy(() => import("./features/project/workbench"));
+
 export const router = createBrowserRouter([
 	{
 		path: "/",
@@ -185,6 +188,15 @@ export const router = createBrowserRouter([
 			// 	path: "/add-payrun",
 			// 	element: <AddPayrun />,
 			// },
+
+			{
+				path: "/project-dashboard",
+				element: <ProjectDashboard />,
+			},
+			{
+				path: "/workbench-insight",
+				element: <Workbench />,
+			},
 			{
 				path: "*",
 				element: <PageNotFound />,

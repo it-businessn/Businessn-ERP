@@ -4,6 +4,7 @@ import {
 	Flex,
 	HStack,
 	IconButton,
+	Select,
 	Spacer,
 	Stack,
 	Text,
@@ -11,14 +12,64 @@ import {
 } from "@chakra-ui/react";
 import { NavButton, UserProfile } from "components";
 import Logo from "components/logo";
-import { SIDEBAR_MENU } from "constant";
+import { BUSINESSN_SIDEBAR_MENU, FD_SIDEBAR_MENU } from "constant";
 import { FaSyncAlt } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { useBreakpointValue } from "services/Breakpoint";
 
-const Navbar = ({ handleClick, user, handleLogout, onOpen }) => {
+const COMPANIES = [
+	{ name: "Fractional Departments", value: "FD" },
+	{ name: "BusinessN Corporate", value: "BusinessN" },
+];
+
+const Navbar = ({
+	company,
+	selectedCompany,
+	handleClick,
+	user,
+	handleLogout,
+	onOpen,
+}) => {
 	const { isMobile } = useBreakpointValue();
 
+	const handleChange = (value) => {
+		selectedCompany(value);
+	};
+
+	const showCompany = () => (
+		<Flex flexDir={"column"} w={{ base: "60%", md: "auto" }}>
+			<Select
+				fontSize={{ base: "sm", md: "md" }}
+				icon={
+					<IconButton
+						ml={"1em"}
+						size="sm"
+						icon={<FaSyncAlt />}
+						aria-label="Refresh"
+						variant="round"
+					/>
+				}
+				border={"none"}
+				fontWeight="bold"
+				onChange={(e) => handleChange(e.target.value)}
+			>
+				{COMPANIES.map(({ name, value }) => (
+					<option value={value}>
+						<Text>{name}</Text>
+					</option>
+				))}
+			</Select>
+		</Flex>
+	);
+	const getMenuList = () =>
+		company === "FD" ? FD_SIDEBAR_MENU : BUSINESSN_SIDEBAR_MENU;
+
+	const showProfileAction = () => (
+		<>
+			<Spacer />
+			<UserProfile user={user} handleLogout={handleLogout} />
+		</>
+	);
 	return (
 		<Box
 			pl={{ base: 0, md: 3 }}
@@ -30,6 +81,12 @@ const Navbar = ({ handleClick, user, handleLogout, onOpen }) => {
 			zIndex={1}
 			bg="brand.nav_gradient"
 		>
+			{isMobile && (
+				<HStack>
+					{showCompany()}
+					{showProfileAction()}
+				</HStack>
+			)}
 			<HStack spacing={0} alignItems="center" pr={{ base: "0em", md: "1em" }}>
 				{isMobile && (
 					<IconButton
@@ -46,20 +103,10 @@ const Navbar = ({ handleClick, user, handleLogout, onOpen }) => {
 				>
 					<VStack align="start" m={0}>
 						<Logo />
-						{!isMobile && (
-							<Text fontWeight="bold">
-								Fractional Departments
-								<IconButton
-									size="sm"
-									icon={<FaSyncAlt />}
-									aria-label="Refresh"
-									variant="round"
-								/>
-							</Text>
-						)}
+						{!isMobile && showCompany()}
 					</VStack>
 
-					{SIDEBAR_MENU.map((menu) => (
+					{getMenuList().map((menu) => (
 						<Stack ml={{ base: "1em", md: "2em" }} key={menu.id}>
 							<Link to={menu?.path}>
 								<NavButton
@@ -71,8 +118,7 @@ const Navbar = ({ handleClick, user, handleLogout, onOpen }) => {
 							</Link>
 						</Stack>
 					))}
-					<Spacer />
-					<UserProfile user={user} handleLogout={handleLogout} />
+					{!isMobile && showProfileAction()}
 				</Flex>
 			</HStack>
 		</Box>

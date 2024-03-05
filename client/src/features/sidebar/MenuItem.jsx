@@ -17,9 +17,6 @@ const MenuItem = ({ menu, textTransform, handleMenuItemClick }) => {
 				cursor="pointer"
 				onClick={menu?.children ? handleToggle : undefined}
 			>
-				{/* {menu?.children && (
-          <Icon as={isOpen ? ChevronDownIcon : ChevronRightIcon} />
-        )} */}
 				<Flex align="center" w={"100%"}>
 					<NavLink
 						to={menu?.path}
@@ -46,15 +43,6 @@ const MenuItem = ({ menu, textTransform, handleMenuItemClick }) => {
 					</NavLink>
 				</Flex>
 			</HStack>
-			{/* {menu?.children && (
-        <Collapse in={isOpen}>
-          <VStack ml={"1.5rem"} align="stretch">
-            {menu?.children.map((menu) => (
-              <MenuItem key={crypto.randomUUID()} menu={menu} />
-            ))}
-          </VStack>
-        </Collapse>
-      )} */}
 		</VStack>
 	);
 };

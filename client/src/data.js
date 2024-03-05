@@ -1008,3 +1008,101 @@ export const productsInfo = [
 		quantity: 1,
 	},
 ];
+
+export const projectsData = [
+	{
+		id: 1,
+		name: "Project A",
+		tasksLeft: 5,
+		assignees: [
+			{
+				id: 1,
+				name: "John Doe",
+				avatarUrl:
+					"https://images.unsplash.com/photo-1484863137850-59afcfe05386?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8ZnJlZSUyMHBlb3BsZSUyMGF2YXRhciUyMGljb258ZW58MHx8MHx8fDI%3D",
+			},
+			{
+				id: 2,
+				name: "Jane Smith",
+				avatarUrl:
+					"https://images.unsplash.com/photo-1479936343636-73cdc5aae0c3?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8ZnJlZSUyMHBlb3BsZSUyMGF2YXRhciUyMGljb258ZW58MHx8MHx8fDI%3D",
+			},
+		],
+	},
+	{
+		id: 2,
+		name: "Project B",
+		tasksLeft: 8,
+		assignees: [
+			{
+				id: 3,
+				name: "Alice Johnson",
+				avatarUrl:
+					"https://images.unsplash.com/photo-1479936343636-73cdc5aae0c3?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8ZnJlZSUyMHBlb3BsZSUyMGF2YXRhciUyMGljb258ZW58MHx8MHx8fDI%3D",
+			},
+			{
+				id: 4,
+				name: "Bob Wilson",
+				avatarUrl:
+					"https://images.unsplash.com/photo-1484863137850-59afcfe05386?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8ZnJlZSUyMHBlb3BsZSUyMGF2YXRhciUyMGljb258ZW58MHx8MHx8fDI%3D",
+			},
+		],
+	},
+	{
+		id: 3,
+		name: "Project C",
+		tasksLeft: 3,
+		assignees: [
+			{
+				id: 5,
+				name: "Charlie Brown",
+				avatarUrl:
+					"https://images.unsplash.com/photo-1488751045188-3c55bbf9a3fa?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OHx8ZnJlZSUyMHBlb3BsZSUyMGF2YXRhciUyMGljb258ZW58MHx8MHx8fDI%3D",
+			},
+			{
+				id: 6,
+				name: "Diana Miller",
+				avatarUrl:
+					"https://images.unsplash.com/photo-1489424731084-a5d8b219a5bb?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OXx8ZnJlZSUyMHBlb3BsZSUyMGF2YXRhciUyMGljb258ZW58MHx8MHx8fDI%3D",
+			},
+		],
+	},
+	{
+		id: 4,
+		name: "Project D",
+		tasksLeft: 12,
+		assignees: [
+			{
+				id: 7,
+				name: "Eva White",
+				avatarUrl:
+					"https://images.unsplash.com/photo-1488426862026-3ee34a7d66df?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTV8fGZyZWUlMjBwZW9wbGUlMjBhdmF0YXIlMjBpY29ufGVufDB8fDB8fHwy",
+			},
+			{
+				id: 8,
+				name: "Frank Black",
+				avatarUrl:
+					"https://images.unsplash.com/photo-1463453091185-61582044d556?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTZ8fGZyZWUlMjBwZW9wbGUlMjBhdmF0YXIlMjBpY29ufGVufDB8fDB8fHwy",
+			},
+		],
+	},
+	{
+		id: 5,
+		name: "Project E",
+		tasksLeft: 2,
+		assignees: [
+			{
+				id: 9,
+				name: "Grace Turner",
+				avatarUrl:
+					"https://images.unsplash.com/photo-1506277886164-e25aa3f4ef7f?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTl8fGZyZWUlMjBwZW9wbGUlMjBhdmF0YXIlMjBpY29ufGVufDB8fDB8fHwy",
+			},
+			{
+				id: 10,
+				name: "Harry Green",
+				avatarUrl:
+					"https://images.unsplash.com/photo-1488426862026-3ee34a7d66df?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTV8fGZyZWUlMjBwZW9wbGUlMjBhdmF0YXIlMjBpY29ufGVufDB8fDB8fHwy",
+			},
+		],
+	},
+];

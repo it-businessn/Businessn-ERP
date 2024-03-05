@@ -6,11 +6,11 @@ import {
 	Flex,
 	useDisclosure,
 } from "@chakra-ui/react";
-import { SIDEBAR_MENU } from "constant";
+import { BUSINESSN_SIDEBAR_MENU, FD_SIDEBAR_MENU } from "constant";
 import Navbar from "features/home/Navbar";
 import Sidebar from "features/sidebar";
 import MobileSidebar from "features/sidebar/MobileSidebar";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useBreakpointValue } from "services/Breakpoint";
 
 const DashboardLayout = ({ children, user, handleLogout }) => {
@@ -18,21 +18,35 @@ const DashboardLayout = ({ children, user, handleLogout }) => {
 
 	const { isOpen, onOpen, onClose } = useDisclosure();
 
-	const [activeMenu, setActiveMenu] = useState(
-		SIDEBAR_MENU.find((menu) => menu.id === "sales"),
-	);
+	const [activeMenu, setActiveMenu] = useState(null);
 
 	const handleClick = (menu) => setActiveMenu(menu);
 
 	const handleMenuItemClick = () => onClose();
 
+	const [company, selectedCompany] = useState("FD");
+
+	const handleCompany = (company = "FD") => {
+		if (company === "FD") {
+			setActiveMenu(FD_SIDEBAR_MENU.find((menu) => menu.id === "sales"));
+		} else {
+			setActiveMenu(BUSINESSN_SIDEBAR_MENU.find((menu) => menu.id === "sales"));
+		}
+	};
+
+	useEffect(() => {
+		handleCompany(company);
+	}, [company]);
 	return (
 		<>
 			<Navbar
+				company={company}
+				selectedCompany={selectedCompany}
 				user={user}
 				handleClick={handleClick}
 				handleLogout={handleLogout}
 				onOpen={onOpen}
+				handleCompany={handleCompany}
 			/>
 			<Flex minH={"100vh"} as="section">
 				{isMobile ? (
@@ -54,9 +68,7 @@ const DashboardLayout = ({ children, user, handleLogout }) => {
 						</DrawerContent>
 					</Drawer>
 				) : (
-					<Sidebar
-						activeMenu={activeMenu ? activeMenu : { name: "CRM Dashboard" }}
-					/>
+					<Sidebar activeMenu={activeMenu} />
 				)}
 				{children}
 			</Flex>
