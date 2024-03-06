@@ -12,7 +12,7 @@ import {
 } from "@chakra-ui/react";
 import moment from "moment";
 import { useEffect, useState } from "react";
-import * as api from "services";
+import NotesService from "services/NotesService";
 
 const Notes = ({ contactId }) => {
 	const [notes, setNotes] = useState([]);
@@ -27,7 +27,7 @@ const Notes = ({ contactId }) => {
 	const saveNote = async (note) => {
 		try {
 			note.contactId = contactId;
-			await api.addNote(note);
+			await NotesService.addNote(note);
 			fetchNotesByContactId(contactId);
 			setNewNote({
 				description: "",
@@ -39,7 +39,7 @@ const Notes = ({ contactId }) => {
 
 	const fetchNotesByContactId = async (contactId) => {
 		try {
-			const response = await api.getNotesByContactId(contactId);
+			const response = await NotesService.getNotesByContactId(contactId);
 			setNotes(response.data);
 		} catch (error) {
 			console.error(error);

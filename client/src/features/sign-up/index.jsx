@@ -18,7 +18,7 @@ import {
 import Logo from "components/logo";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import * as api from "services";
+import LoginService from "services/LoginService";
 
 const SignUp = () => {
 	const defaultFormData = {
@@ -50,7 +50,7 @@ const SignUp = () => {
 		setIsLoading(true);
 		formData.fullName = `${formData.firstName} ${formData.middleName} ${formData.lastName}`;
 		try {
-			await api.signUp(formData);
+			await LoginService.signUp(formData);
 
 			resetForm();
 

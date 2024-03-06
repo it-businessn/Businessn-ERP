@@ -12,7 +12,7 @@ import {
 } from "@chakra-ui/react";
 import { PIPELINE_STAGES } from "constant";
 import { useEffect, useState } from "react";
-import * as api from "services";
+import OpportunityService from "services/OpportunityService";
 import { userCurrency } from "utils";
 import GradientAreaFillColorChart from "./AreaFillColorChart";
 
@@ -23,7 +23,7 @@ const Pipeline = () => {
 	useEffect(() => {
 		const fetchOpportunities = async () => {
 			try {
-				const response = await api.getOpportunitiesByCategory();
+				const response = await OpportunityService.getOpportunitiesByCategory();
 				setOpportunities(response.data);
 				const opportunityStat = [];
 				const sortOrder = [

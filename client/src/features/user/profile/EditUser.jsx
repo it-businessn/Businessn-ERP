@@ -25,7 +25,8 @@ import { useAuthContext } from "hooks/useAuthContext";
 import ProfileContainer from "layouts/ProfileContainer";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import * as api from "services";
+import SettingService from "services/SettingService";
+import UserService from "services/UserService";
 
 export default function EditUser() {
 	const { user, dispatch } = useAuthContext();
@@ -66,7 +67,11 @@ export default function EditUser() {
 	const toast = useToast();
 	const handleSubmit = async (values) => {
 		try {
-			const updatedData = await api.updateUserById(id, values, user.token);
+			const updatedData = await UserService.updateUserById(
+				id,
+				values,
+				user.token,
+			);
 
 			const updatedUser = {
 				user: updatedData.data,
@@ -84,14 +89,14 @@ export default function EditUser() {
 	};
 	useEffect(() => {
 		const fetchConfigurationOptionsByDepartment = async (key) => {
-			let configuration = await api.getConfigurationsByName(key);
+			const configuration = await SettingService.getConfigurationsByName(key);
 
 			configuration.data.items.forEach((department) =>
 				setDepartment((prev) => [...prev, department.name]),
 			);
 		};
 		const fetchConfigurationOptionsByRole = async (key) => {
-			let configuration = await api.getConfigurationsByName(key);
+			const configuration = await SettingService.getConfigurationsByName(key);
 
 			configuration.data.items.forEach((role) =>
 				setUserRole((prev) => [...prev, role.name]),

@@ -21,8 +21,8 @@ import { useEffect, useState } from "react";
 import { Doughnut } from "react-chartjs-2";
 import { FaSearch } from "react-icons/fa";
 import { MdOutlineFilterList } from "react-icons/md";
-import * as api from "services";
 import { useBreakpointValue } from "services/Breakpoint";
+import ContactService from "services/ContactService";
 import { productsInfo } from "../../../data";
 import "./products.css";
 
@@ -37,7 +37,7 @@ const Products = () => {
 	const [contacts, setContacts] = useState(null);
 	const fetchAllContacts = async () => {
 		try {
-			const response = await api.getContacts();
+			const response = await ContactService.getContacts();
 			response.data.map((item) => (item.comm = "Meeting"));
 			setContacts(response.data);
 		} catch (error) {

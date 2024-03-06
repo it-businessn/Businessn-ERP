@@ -14,7 +14,7 @@ import {
 	VStack,
 } from "@chakra-ui/react";
 import { useState } from "react";
-import * as api from "services";
+import PasswordService from "services/PasswordService";
 
 const ChangePassword = ({
 	setPasswordMode,
@@ -57,7 +57,10 @@ const ChangePassword = ({
 	const handleSubmit = async (e) => {
 		e.preventDefault();
 		try {
-			const response = await api.updateUserPassword(passwordData, userData.id);
+			const response = await PasswordService.updateUserPassword(
+				passwordData,
+				userData.id,
+			);
 			setUserData(response.data.updatedUser);
 			setPasswordMode(false);
 		} catch (error) {

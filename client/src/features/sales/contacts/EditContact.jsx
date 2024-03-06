@@ -9,7 +9,7 @@ import {
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import * as api from "services";
+import ContactService from "services/ContactService";
 import EditContactForm from "./EditContactForm";
 
 const EditContact = () => {
@@ -19,7 +19,7 @@ const EditContact = () => {
 	useEffect(() => {
 		const fetchContacts = async () => {
 			try {
-				const response = await api.getContacts();
+				const response = await ContactService.getContacts();
 				setContacts(response.data);
 			} catch (error) {
 				console.error(error);
@@ -40,7 +40,7 @@ const EditContact = () => {
 	};
 	const handleSave = async (updatedContact) => {
 		try {
-			await api.updateContact(updatedContact, updatedContact._id);
+			await ContactService.updateContact(updatedContact, updatedContact._id);
 			setSelectedContact(null);
 			setEditForm((prev) => !prev);
 			navigate("/view-contacts");

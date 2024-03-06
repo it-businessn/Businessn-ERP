@@ -28,8 +28,8 @@ import { FaSearch } from "react-icons/fa";
 import { MdOutlineFilterList } from "react-icons/md";
 import { RxDotFilled } from "react-icons/rx";
 import { TbCalendarDollar } from "react-icons/tb";
-import * as api from "services";
 import { useBreakpointValue } from "services/Breakpoint";
+import ContactService from "services/ContactService";
 import { generateLighterShade } from "utils";
 
 const Payouts = () => {
@@ -38,7 +38,7 @@ const Payouts = () => {
 	const [contacts, setContacts] = useState(null);
 	const fetchAllContacts = async () => {
 		try {
-			const response = await api.getContacts();
+			const response = await ContactService.getContacts();
 			response.data.map((item) => (item.comm = "Meeting"));
 			setContacts(response.data);
 		} catch (error) {

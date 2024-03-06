@@ -1,14 +1,14 @@
-import React, { useState } from "react";
-import { Textarea, Button } from "@chakra-ui/react";
+import { Button, Textarea } from "@chakra-ui/react";
+import { useState } from "react";
 
-import * as api from "services";
+import ActivityService from "services/ActivityService";
 
 const Activities = ({ contactId }) => {
 	const [description, setDescription] = useState("");
 
 	const handleLogActivity = async () => {
 		try {
-			await api.getActivities({
+			await ActivityService.getActivities({
 				contactId,
 				description,
 			});

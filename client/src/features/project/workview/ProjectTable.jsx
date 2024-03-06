@@ -8,12 +8,25 @@ import {
 	Text,
 } from "@chakra-ui/react";
 import { projectsData } from "data";
+import { useEffect } from "react";
+import ProjectService from "services/ProjectService";
 
 const ProjectTable = () => {
 	const totalTasks = projectsData.reduce(
 		(total, project) => total + project.tasksLeft,
 		0,
 	);
+	useEffect(() => {
+		const fetchAllProjectInfo = async () => {
+			try {
+				const response = await ProjectService.getAllProjects();
+				console.log(response);
+			} catch (error) {
+				console.error(error);
+			}
+		};
+		fetchAllProjectInfo();
+	}, []);
 	return (
 		<Box>
 			{projectsData.map((project) => (

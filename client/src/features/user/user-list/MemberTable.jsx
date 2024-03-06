@@ -25,8 +25,8 @@ import { UserSchema } from "config/schema";
 import { useState } from "react";
 import { FiEdit2 } from "react-icons/fi";
 import { IoArrowDown } from "react-icons/io5";
-import * as api from "services";
 import LocalStorageService from "services/LocalStorageService";
+import UserService from "services/UserService";
 import { userCurrency } from "utils";
 
 export const MemberTable = (props) => {
@@ -58,7 +58,7 @@ export const MemberTable = (props) => {
 	};
 	const handleSubmit = async (values) => {
 		try {
-			const updateData = await api.updateUserById(
+			const updateData = await UserService.updateUserById(
 				record._id,
 				values,
 				user?.token,

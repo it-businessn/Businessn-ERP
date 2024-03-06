@@ -9,7 +9,7 @@ import {
 } from "@chakra-ui/react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import * as api from "services";
+import OpportunityService from "services/OpportunityService";
 
 const AddOpportunity = () => {
 	const [formData, setFormData] = useState({
@@ -26,7 +26,7 @@ const AddOpportunity = () => {
 		e.preventDefault();
 
 		try {
-			await api.addOpportunity(formData);
+			await OpportunityService.addOpportunity(formData);
 			setFormData({ name: "", amount: "", closingDate: "" });
 			navigate("/pipeline");
 		} catch (error) {

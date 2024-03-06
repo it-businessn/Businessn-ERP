@@ -9,7 +9,7 @@ import {
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import * as api from "services";
+import OpportunityService from "services/OpportunityService";
 import EditOpportunityForm from "./EditOpportunityForm";
 
 const EditOpportunity = () => {
@@ -18,7 +18,7 @@ const EditOpportunity = () => {
 	useEffect(() => {
 		const fetchOpportunities = async () => {
 			try {
-				const response = await api.getOpportunities();
+				const response = await OpportunityService.getOpportunities();
 				setOpportunities(response.data);
 			} catch (error) {
 				console.error(error);
@@ -40,7 +40,10 @@ const EditOpportunity = () => {
 	};
 	const handleSave = async (updatedOpportunity) => {
 		try {
-			await api.updateOpportunity(updatedOpportunity, updatedOpportunity._id);
+			await OpportunityService.updateOpportunity(
+				updatedOpportunity,
+				updatedOpportunity._id,
+			);
 			setSelectedOpportunity(null);
 			setEditForm((prev) => !prev);
 			navigate("/pipeline");

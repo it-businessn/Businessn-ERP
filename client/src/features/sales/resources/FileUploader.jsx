@@ -1,6 +1,6 @@
 import { Box, Button, Flex, Input, Select, Text } from "@chakra-ui/react";
 import { useState } from "react";
-import * as api from "services";
+import ResourceService from "services/ResourceService";
 
 const FileUploader = ({ fileTypes, userName, setNewUpload }) => {
 	const [file, setFile] = useState(null);
@@ -17,7 +17,7 @@ const FileUploader = ({ fileTypes, userName, setNewUpload }) => {
 		formData.append("uploadedBy", userName);
 
 		try {
-			await api.upload(formData);
+			await ResourceService.upload(formData);
 			setNewUpload(true);
 		} catch (error) {
 			console.error("Error uploading file:", error);

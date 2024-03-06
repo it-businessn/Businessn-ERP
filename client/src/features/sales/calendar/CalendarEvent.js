@@ -26,7 +26,7 @@ import { useEffect, useState } from "react";
 import { Calendar as BigCalendar, momentLocalizer } from "react-big-calendar";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import { MdChevronLeft, MdChevronRight } from "react-icons/md";
-import * as api from "services";
+import CalendarService from "services/CalendarService";
 
 const localizer = momentLocalizer(moment);
 
@@ -63,7 +63,7 @@ const Calendar = () => {
 
 	const fetchAllEvents = async () => {
 		try {
-			const response = await api.getEvents();
+			const response = await CalendarService.getEvents();
 			response.data.map((event) => {
 				event.title = event.description;
 				event.start = new Date(event.meetingFromDate);
@@ -184,7 +184,7 @@ const Calendar = () => {
 		e.preventDefault();
 		try {
 			setIsLoading(true);
-			await api.addEvent(formData);
+			await CalendarService.addEvent(formData);
 			setFormData({
 				eventType: "meeting",
 				description: "",

@@ -15,9 +15,9 @@ import { doughnutOptions, trainingChartData } from "constant";
 import { useEffect, useState } from "react";
 import { Doughnut } from "react-chartjs-2";
 import { FaDownload } from "react-icons/fa";
-import * as api from "services";
 import { useBreakpointValue } from "services/Breakpoint";
 import LocalStorageService from "services/LocalStorageService";
+import ResourceService from "services/ResourceService";
 import bookCover from "../../../assets/logos/BusinessN_all.jpg";
 import FileUploader from "./FileUploader";
 
@@ -32,7 +32,7 @@ const Resources = () => {
 	useEffect(() => {
 		const fetchAllResources = async () => {
 			try {
-				const response = await api.getResources();
+				const response = await ResourceService.getResources();
 				setResources(response.data);
 			} catch (error) {
 				console.error(error);
@@ -44,7 +44,9 @@ const Resources = () => {
 	useEffect(() => {
 		const fetchResourceByType = async () => {
 			try {
-				const response = await api.getResourcesByType(selectedFilter);
+				const response = await ResourceService.getResourcesByType(
+					selectedFilter,
+				);
 
 				setResources(response.data);
 				console.log(resources);

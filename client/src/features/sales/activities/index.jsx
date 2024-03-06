@@ -12,9 +12,8 @@ import {
 	VStack,
 } from "@chakra-ui/react";
 import { ACTIVITY_CARDS, barOptions } from "constant";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { RiAspectRatioLine } from "react-icons/ri";
-import * as api from "services";
 import { useBreakpointValue } from "services/Breakpoint";
 import { generateLighterShade } from "utils";
 import GaugeChartComponent from "./GaugeChartC";
@@ -23,19 +22,19 @@ import HorizontalBarChart from "./Horizontal";
 const Activities = () => {
 	const { isMobile, isIpad } = useBreakpointValue();
 
-	const [contacts, setContacts] = useState(null);
-	const fetchAllContacts = async () => {
-		try {
-			const response = await api.getContacts();
-			response.data.map((item) => (item.comm = "Meeting"));
-			setContacts(response.data);
-		} catch (error) {
-			console.error(error);
-		}
-	};
-	useEffect(() => {
-		fetchAllContacts();
-	}, []);
+	// const [contacts, setContacts] = useState(null);
+	// const fetchAllContacts = async () => {
+	// 	try {
+	// 		const response = await ActivityService.getContacts();
+	// 		response.data.map((item) => (item.comm = "Meeting"));
+	// 		setContacts(response.data);
+	// 	} catch (error) {
+	// 		console.error(error);
+	// 	}
+	// };
+	// useEffect(() => {
+	// 	fetchAllContacts();
+	// }, []);
 	const [selectedFilter, setSelectedFilter] = useState("monthly");
 
 	const handleFilterClick = (filter) => {

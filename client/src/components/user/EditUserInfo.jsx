@@ -10,7 +10,7 @@ import {
 	Text,
 	VStack,
 } from "@chakra-ui/react";
-import * as api from "services";
+import UserService from "services/UserService";
 
 const EditUserInfo = ({
 	setEditMode,
@@ -22,7 +22,10 @@ const EditUserInfo = ({
 	const handleSaveClick = async (e) => {
 		e.preventDefault();
 		try {
-			const response = await api.updateUserProfile(userData, userData._id);
+			const response = await UserService.updateUserProfile(
+				userData,
+				userData._id,
+			);
 			setEditMode(false);
 			setUserData(response.data);
 		} catch (error) {

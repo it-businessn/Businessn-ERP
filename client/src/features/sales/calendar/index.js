@@ -26,8 +26,8 @@ import { useEffect, useState } from "react";
 import { Calendar as BigCalendar, momentLocalizer } from "react-big-calendar";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import { FaCaretLeft, FaCaretRight, FaClock } from "react-icons/fa";
-import * as api from "services";
 import { useBreakpointValue } from "services/Breakpoint";
+import CalendarService from "services/CalendarService";
 
 const Calendar = () => {
 	const { isMobile } = useBreakpointValue();
@@ -64,7 +64,7 @@ const Calendar = () => {
 
 	const fetchAllEvents = async () => {
 		try {
-			const response = await api.getEvents();
+			const response = await CalendarService.getAllEvents();
 			response.data.map((event) => {
 				event.title = event.description;
 				event.start = new Date(event.meetingFromDate);
@@ -141,7 +141,7 @@ const Calendar = () => {
 		e.preventDefault();
 		try {
 			setIsLoading(true);
-			await api.addEvent(formData);
+			await CalendarService.addEvent(formData);
 			setFormData({
 				eventType: "meeting",
 				description: "",

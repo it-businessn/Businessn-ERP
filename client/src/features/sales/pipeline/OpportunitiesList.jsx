@@ -10,7 +10,7 @@ import {
 	Tr,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
-import * as api from "services";
+import OpportunityService from "services/OpportunityService";
 
 const OpportunitiesList = () => {
 	const [opportunities, setOpportunities] = useState([]);
@@ -18,7 +18,7 @@ const OpportunitiesList = () => {
 	useEffect(() => {
 		const fetchOpportunities = async () => {
 			try {
-				const response = await api.getOpportunities();
+				const response = await OpportunityService.getOpportunities();
 				setOpportunities(response.data);
 			} catch (error) {
 				console.error(error);

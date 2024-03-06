@@ -12,7 +12,7 @@ import {
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import "react-datepicker/dist/react-datepicker.css";
-import * as api from "services";
+import CalendarService from "services/CalendarService";
 import MeetingList from "./MeetingList";
 
 const Meetings = ({ contactId }) => {
@@ -36,7 +36,7 @@ const Meetings = ({ contactId }) => {
 
 	const fetchMeetingsByContactId = async (contactId) => {
 		try {
-			const response = await api.getMeetingsByContactId(contactId);
+			const response = await CalendarService.getMeetingsByContactId(contactId);
 			setMeetings(response.data);
 		} catch (error) {
 			console.error(error);
@@ -47,7 +47,7 @@ const Meetings = ({ contactId }) => {
 		e.preventDefault();
 		formData.contactId = contactId;
 		try {
-			await api.addMeeting(formData);
+			await CalendarService.addMeeting(formData);
 			fetchMeetingsByContactId(contactId);
 			setFormData({
 				description: "",

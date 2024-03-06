@@ -30,8 +30,8 @@ import "primereact/resources/primereact.min.css";
 import "primereact/resources/themes/lara-light-indigo/theme.css";
 import { useEffect, useState } from "react";
 import { FiEdit2 } from "react-icons/fi";
-import * as api from "services";
 import LocalStorageService from "services/LocalStorageService";
+import UserService from "services/UserService";
 import { userCurrency } from "utils";
 
 const UserList = ({ employees }) => {
@@ -43,9 +43,9 @@ const UserList = ({ employees }) => {
 	const toast = useToast();
 	const handleSubmit = async (values) => {
 		try {
-			const updateData = await api.updateUserById(
-				record._id,
+			const updateData = await UserService.updateUserById(
 				values,
+				record._id,
 				user.token,
 			);
 			toast(TOAST.SUCCESS);

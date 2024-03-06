@@ -1,5 +1,5 @@
 import { useState } from "react";
-import * as api from "services";
+import LoginService from "services/LoginService";
 import { useAuthContext } from "./useAuthContext";
 
 export const useLogin = () => {
@@ -11,7 +11,7 @@ export const useLogin = () => {
 		setIsLoading(true);
 		setError(null);
 		try {
-			const response = await api.signIn(values);
+			const response = await LoginService.signIn(values);
 			const json = response.data;
 			if (response.status === 200) {
 				dispatch({ type: "LOGIN", payload: json });
