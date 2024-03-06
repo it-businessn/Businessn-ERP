@@ -1119,8 +1119,26 @@ export const tasksData = [
 			},
 		],
 		checklist: [
-			{ item: "Create wireframes", completed: true },
-			{ item: "Gather feedback", completed: false },
+			{
+				item: "Create wireframes",
+				completed: true,
+				assignee: {
+					id: 54,
+					name: "Jane Smith",
+					avatarUrl:
+						"https://images.unsplash.com/photo-1479936343636-73cdc5aae0c3?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8ZnJlZSUyMHBlb3BsZSUyMGF2YXRhciUyMGljb258ZW58MHx8MHx8fDI%3D",
+				},
+			},
+			{
+				item: "Gather feedback",
+				completed: false,
+				assignee: {
+					id: 55,
+					name: "Jane Smith",
+					avatarUrl:
+						"https://images.unsplash.com/photo-1479936343636-73cdc5aae0c3?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8ZnJlZSUyMHBlb3BsZSUyMGF2YXRhciUyMGljb258ZW58MHx8MHx8fDI%3D",
+				},
+			},
 		],
 		projectName: "Project A",
 		lastUpdated: "2024-03-05",
@@ -1143,9 +1161,36 @@ export const tasksData = [
 			},
 		],
 		checklist: [
-			{ item: "Write code", completed: true },
-			{ item: "Test functionality", completed: true },
-			{ item: "Document code", completed: true },
+			{
+				item: "Write code",
+				completed: true,
+				assignee: {
+					id: 51,
+					name: "Jane Smith",
+					avatarUrl:
+						"https://images.unsplash.com/photo-1479936343636-73cdc5aae0c3?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8ZnJlZSUyMHBlb3BsZSUyMGF2YXRhciUyMGljb258ZW58MHx8MHx8fDI%3D",
+				},
+			},
+			{
+				item: "Test functionality",
+				completed: true,
+				assignee: {
+					id: 52,
+					name: "Jane Smith",
+					avatarUrl:
+						"https://images.unsplash.com/photo-1479936343636-73cdc5aae0c3?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8ZnJlZSUyMHBlb3BsZSUyMGF2YXRhciUyMGljb258ZW58MHx8MHx8fDI%3D",
+				},
+			},
+			{
+				item: "Document code",
+				completed: true,
+				assignee: {
+					id: 53,
+					name: "Jane Smith",
+					avatarUrl:
+						"https://images.unsplash.com/photo-1479936343636-73cdc5aae0c3?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8ZnJlZSUyMHBlb3BsZSUyMGF2YXRhciUyMGljb258ZW58MHx8MHx8fDI%3D",
+				},
+			},
 		],
 		projectName: "Project B",
 		lastUpdated: "2024-03-04",

@@ -177,11 +177,25 @@ const TaskTable = ({ filter }) => {
 									<Box mt={2}>
 										<Text fontWeight="bold">Checklist:</Text>
 										{task?.checklist?.map((item, i) => (
-											<Box key={i} ml={4}>
-												<Checkbox isChecked={item.completed} isDisabled>
-													{item.item}
-												</Checkbox>
-											</Box>
+											<Table key={i} ml={4} size={"small"}>
+												<Tbody>
+													<Tr>
+														<Td>
+															<Checkbox isChecked={item.completed} isDisabled>
+																{item.item}
+															</Checkbox>
+														</Td>
+														<Td>
+															<Avatar
+																key={item.assignee.id}
+																name={item.assignee.name}
+																size={{ base: "xs", md: "md" }}
+																src={item.assignee.avatarUrl}
+															/>
+														</Td>
+													</Tr>
+												</Tbody>
+											</Table>
 										))}
 									</Box>
 								</Td>
