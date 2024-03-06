@@ -57,7 +57,7 @@ const SalesReport = lazy(() => import("./features/sales/reports"));
 const Setup = lazy(() => import("./features/sales/setup"));
 
 const ProjectDashboard = lazy(() => import("./features/project/dashboard"));
-const Workbench = lazy(() => import("./features/project/workbench"));
+const WorkView = lazy(() => import("./features/project/workview"));
 
 export const router = createBrowserRouter([
 	{
@@ -194,8 +194,8 @@ export const router = createBrowserRouter([
 				element: <ProjectDashboard />,
 			},
 			{
-				path: "/workbench-insight",
-				element: <Workbench />,
+				path: "/workview",
+				element: <WorkView />,
 			},
 			{
 				path: "*",

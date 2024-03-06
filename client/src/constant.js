@@ -649,8 +649,8 @@ export const BUSINESSN_SIDEBAR_MENU = [
 				children: [],
 			},
 			{
-				path: "/workbench-insight",
-				name: "Workbench",
+				path: "/workview",
+				name: "WorkView",
 				children: [],
 			},
 		],

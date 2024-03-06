@@ -1106,3 +1106,91 @@ export const projectsData = [
 		],
 	},
 ];
+
+export const tasksData = [
+	{
+		taskName: "Design Mockup",
+		assignees: [
+			{
+				id: 1,
+				name: "John Doe",
+				avatarUrl:
+					"https://images.unsplash.com/photo-1484863137850-59afcfe05386?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8ZnJlZSUyMHBlb3BsZSUyMGF2YXRhciUyMGljb258ZW58MHx8MHx8fDI%3D",
+			},
+		],
+		checklist: [
+			{ item: "Create wireframes", completed: true },
+			{ item: "Gather feedback", completed: false },
+		],
+		projectName: "Project A",
+		lastUpdated: "2024-03-05",
+		taskStatus: "In Progress",
+	},
+	{
+		taskName: "Code Implementation",
+		assignees: [
+			{
+				id: 2,
+				name: "Jane Smith",
+				avatarUrl:
+					"https://images.unsplash.com/photo-1479936343636-73cdc5aae0c3?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8ZnJlZSUyMHBlb3BsZSUyMGF2YXRhciUyMGljb258ZW58MHx8MHx8fDI%3D",
+			},
+			{
+				id: 23,
+				name: "Jane Smiths",
+				avatarUrl:
+					"https://images.unsplash.com/photo-1479936343636-73cdc5aae0c3?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8ZnJlZSUyMHBlb3BsZSUyMGF2YXRhciUyMGljb258ZW58MHx8MHx8fDI%3D",
+			},
+		],
+		checklist: [
+			{ item: "Write code", completed: true },
+			{ item: "Test functionality", completed: true },
+			{ item: "Document code", completed: true },
+		],
+		projectName: "Project B",
+		lastUpdated: "2024-03-04",
+		taskStatus: "Completed",
+	},
+	{
+		taskName: "Testing",
+		assignees: [
+			{
+				id: 3,
+				name: "Jane Smith",
+				avatarUrl:
+					"https://images.unsplash.com/photo-1479936343636-73cdc5aae0c3?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8ZnJlZSUyMHBlb3BsZSUyMGF2YXRhciUyMGljb258ZW58MHx8MHx8fDI%3D",
+			},
+		],
+		projectName: "Project C",
+		lastUpdated: "2024-03-03",
+		taskStatus: "Pending",
+	},
+	{
+		taskName: "Documentation",
+		assignees: [
+			{
+				id: 4,
+				name: "Jane Smith",
+				avatarUrl:
+					"https://images.unsplash.com/photo-1479936343636-73cdc5aae0c3?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8ZnJlZSUyMHBlb3BsZSUyMGF2YXRhciUyMGljb258ZW58MHx8MHx8fDI%3D",
+			},
+		],
+		projectName: "Project A",
+		lastUpdated: "2024-03-02",
+		taskStatus: "In Progress",
+	},
+	{
+		taskName: "Bug Fixing",
+		assignees: [
+			{
+				id: 5,
+				name: "Jane Smith",
+				avatarUrl:
+					"https://images.unsplash.com/photo-1479936343636-73cdc5aae0c3?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8ZnJlZSUyMHBlb3BsZSUyMGF2YXRhciUyMGljb258ZW58MHx8MHx8fDI%3D",
+			},
+		],
+		projectName: "Project B",
+		lastUpdated: "2024-03-01",
+		taskStatus: "In Progress",
+	},
+];

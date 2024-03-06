@@ -378,7 +378,7 @@ const Products = () => {
 									Product ID
 								</Th>
 								<Th fontWeight={"bolder"} p={0}>
-									Name{" "}
+									Name
 								</Th>
 								<Th fontWeight={"bolder"} p={0}>
 									Product Category
