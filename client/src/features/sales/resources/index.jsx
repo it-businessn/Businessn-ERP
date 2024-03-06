@@ -15,6 +15,7 @@ import { doughnutOptions, trainingChartData } from "constant";
 import { useEffect, useState } from "react";
 import { Doughnut } from "react-chartjs-2";
 import { FaDownload } from "react-icons/fa";
+import { BASE_URL } from "services";
 import { useBreakpointValue } from "services/Breakpoint";
 import LocalStorageService from "services/LocalStorageService";
 import ResourceService from "services/ResourceService";
@@ -71,7 +72,8 @@ const Resources = () => {
 	];
 
 	const handleDownload = (fileName) => {
-		const downloadUrl = `http://localhost:5000/api/resources/download/${fileName}`;
+		const url = BASE_URL;
+		const downloadUrl = `${url}/resources/download/${fileName}`;
 		window.location.href = downloadUrl;
 	};
 

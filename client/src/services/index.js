@@ -78,7 +78,7 @@ const generateTimestamp = () => Math.floor(Date.now() / 1000); // Current time i
 const timestamp = generateTimestamp();
 const expirationTime = timestamp + 300; // 5 minutes = (5 * 60seconds per minute)
 
-const BASE_URL = process.env.REACT_APP_BASE_URL;
+export const BASE_URL = process.env.REACT_APP_BASE_URL;
 
 const buildURL = (path) => {
 	const url = new URL(BASE_URL);
