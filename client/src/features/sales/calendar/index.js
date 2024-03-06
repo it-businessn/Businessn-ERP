@@ -64,7 +64,7 @@ const Calendar = () => {
 
 	const fetchAllEvents = async () => {
 		try {
-			const response = await CalendarService.getAllEvents();
+			const response = await CalendarService.getEvents();
 			response.data.map((event) => {
 				event.title = event.description;
 				event.start = new Date(event.meetingFromDate);
