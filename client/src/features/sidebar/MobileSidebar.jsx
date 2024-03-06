@@ -3,22 +3,20 @@ import MenuItem from "./MenuItem";
 import "./Sidebar.css";
 
 const MobileSidebar = ({ activeMenu, handleMenuItemClick }) => {
-    return (
-        <Flex
-            p={2}
-            color="brand.nav_color"
-        >
-            <Stack justify="start" width="90%" my={0}>
-                {activeMenu?.children?.length &&
-                    activeMenu?.children?.map((menu) => (
-                        <MenuItem
-                            handleMenuItemClick={handleMenuItemClick}
-                            key={crypto.randomUUID()}
-                            menu={menu} />
-                    ))}
-            </Stack>
-        </Flex>
-    );
+	return (
+		<Flex p={2} color="brand.nav_color">
+			<Stack justify="start" width="90%" my={0} spacing={0}>
+				{activeMenu?.children?.length &&
+					activeMenu?.children?.map((menu) => (
+						<MenuItem
+							handleMenuItemClick={handleMenuItemClick}
+							key={crypto.randomUUID()}
+							menu={menu}
+						/>
+					))}
+			</Stack>
+		</Flex>
+	);
 };
 
 export default MobileSidebar;

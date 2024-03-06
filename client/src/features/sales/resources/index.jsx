@@ -1,324 +1,316 @@
 import {
-  Badge,
-  Box,
-  Button,
-  Card,
-  Container,
-  Flex,
-  HStack,
-  Heading,
-  Icon,
-  Image,
-  SimpleGrid,
-  Text,
-  VStack,
-  useBreakpointValue
+	Badge,
+	Box,
+	Button,
+	Card,
+	Flex,
+	Heading,
+	Icon,
+	Image,
+	SimpleGrid,
+	Text,
+	VStack,
 } from "@chakra-ui/react";
-import { trainingChartData } from "constant";
+import { doughnutOptions, trainingChartData } from "constant";
 import { useEffect, useState } from "react";
 import { Doughnut } from "react-chartjs-2";
 import { FaDownload } from "react-icons/fa";
-import * as api from "services";
+import { BASE_URL } from "services";
+import { useBreakpointValue } from "services/Breakpoint";
+import LocalStorageService from "services/LocalStorageService";
+import ResourceService from "services/ResourceService";
 import bookCover from "../../../assets/logos/BusinessN_all.jpg";
+import FileUploader from "./FileUploader";
+
 const Resources = () => {
-  const isMobileView = useBreakpointValue({ base: true, sm: false });
-  const [contacts, setContacts] = useState(null);
-  const fetchAllContacts = async () => {
-    try {
-      const response = await api.getContacts();
-      response.data.map((item) => (item.comm = "Meeting"));
-      setContacts(response.data);
-    } catch (error) {
-      console.error(error);
-    }
-  };
+	const { isMobile, isIpad } = useBreakpointValue();
+	const user = LocalStorageService.getItem("user");
 
-  const activityChartOptions = {
-    cutout: "40%",
-    plugins: {
-      datalabels: {
-        display: false,
-      },
-    },
-  };
-  useEffect(() => {
-    fetchAllContacts();
-  }, []); const [selectedFilter, setSelectedFilter] = useState('all');
+	const [resources, setResources] = useState(null);
+	const [newUpload, setNewUpload] = useState(null);
+	const [selectedFilter, setSelectedFilter] = useState(null);
 
-  const filters = ['All', 'Category 1', 'Category 2', 'Category 3'];
+	useEffect(() => {
+		const fetchAllResources = async () => {
+			try {
+				const response = await ResourceService.getResources();
+				setResources(response.data);
+			} catch (error) {
+				console.error(error);
+			}
+		};
+		fetchAllResources();
+	}, [newUpload]);
 
-  const handleFilterClick = (filter) => {
-    setSelectedFilter(filter);
-  };
-  return (
-    <Container maxW="container.xxl"
-      mt={5}>
-      {isMobileView && <Text fontSize="lg" fontWeight="bold">
-        Resources
-      </Text>}
-      <SimpleGrid columns={{ base: 1, md: 2 }} spacing="5" >
-        <SimpleGrid columns={{ base: 1, md: 2 }} spacing="5" my="5">
-          <Box
-            p="4"
-            bg={"brand.primary_bg"}
-            border="3px solid white"
-            borderRadius="10px"
-            fontWeight="bold"
-            color={"brand.nav_color"}
-          >
-            <Text fontSize="lg" fontWeight="bold" mt="2" mb="2">
-              Training
-            </Text>
-            <Doughnut data={trainingChartData} options={activityChartOptions} />
-            <Box display="flex" justifyContent="center" mt="2">
-              <HStack mr="4">
-                <Box w="1rem" h="1rem" bg="#517ae8" mr="1" />
-                <Text fontSize="xs">Completed 65%</Text>
-              </HStack>
-              <HStack>
-                <Box w="1rem" h="1rem" bg="#8aa8ee" mr="1" />
-                <Text fontSize="xs">Ongoing 10%</Text>
-              </HStack>
-            </Box>
-          </Box>
-          <Box w={{ base: "auto", md: "310%" }}
-            p="4"
-            bg={"brand.primary_bg"}
-            border="3px solid white"
-            borderRadius="10px"
-            fontWeight="bold"
-            color={"brand.nav_color"}
-          ><Text mt={2} fontSize="lg" fontWeight="bold">
-              Your Overall Results
-            </Text>
-            <SimpleGrid columns={{ base: 1, md: 3 }} minH={{ base: "auto", md: "90%" }} spacing="5">
-              <Box
-                p="4" h={{ base: "120%", md: "80%" }} my={"auto"}
-                bg={"brand.primary_bg"}
-                border="3px solid white"
-                borderRadius="10px"
-                fontWeight="bold" display="flex" flexDir="column" justifyContent="space-evenly" alignItems="flex-start"
+	useEffect(() => {
+		const fetchResourceByType = async () => {
+			try {
+				const response = await ResourceService.getResourcesByType(
+					selectedFilter,
+				);
 
-              >
-                <Text
-                  color={"brand.nav_color"} fontSize="sm" fontWeight="bold">
-                  Assessment 1
-                </Text>
-                <Text fontSize="sm" fontWeight="bold">
-                  Know your customer
-                </Text>
-                <Badge bg="green" color="white" >EXCELLENT</Badge>
-                <Text
-                  color={"brand.nav_color"} fontSize="sm" fontWeight="bold">
-                  Your result
-                </Text>
-                <Heading fontWeight="bold">
-                  8/10
-                </Heading>
-              </Box>
-              <Box
-                p="4" h={{ base: "120%", md: "80%" }} my={"auto"}
-                bg={"brand.primary_bg"}
-                border="3px solid white"
-                borderRadius="10px"
-                fontWeight="bold" display="flex" flexDir="column" justifyContent="space-evenly" alignItems="flex-start"
+				setResources(response.data);
+				console.log(resources);
+			} catch (error) {
+				console.error(error);
+			}
+		};
+		if (selectedFilter) {
+			fetchResourceByType();
+		}
+	}, [selectedFilter]);
 
-              >
-                <Text
-                  color={"brand.nav_color"} fontSize="sm" fontWeight="bold">
-                  Assessment 2
-                </Text>
-                <Text fontSize="sm" fontWeight="bold">
-                  Know the product a
-                </Text>
-                <Heading></Heading><Heading></Heading><Heading color="transparent">ss</Heading>
-                <Button w={"100%"}
-                  bg={"#537eee"}
-                  color={"brand.primary_bg"}
-                  variant={"solid"}
-                  _hover={{ color: "brand.600" }}
-                  borderRadius={"10px"}
-                >
-                  Take Assessment
-                </Button>
-              </Box><Box
-                p="4" h={{ base: "120%", md: "80%" }} my={"auto"}
-                bg={"brand.primary_bg"}
-                border="3px solid white"
-                borderRadius="10px"
-                fontWeight="bold" display="flex" flexDir="column" justifyContent="space-evenly" alignItems="flex-start"
+	const handleFilterClick = (filter) => {
+		setSelectedFilter(filter);
+	};
+	const FILE_TYPES = [
+		{ type: "Scripts" },
+		{ type: "Product Knowledge" },
+		{ type: "Employee Handbook" },
+		{ type: "Associated" },
+		{ type: "Training resources" },
+	];
 
-              >
-                <Text
-                  color={"brand.nav_color"} fontSize="sm" fontWeight="bold">
-                  Assessment 3
-                </Text>
-                <Text fontSize="sm" fontWeight="bold">
-                  Know the product b
-                </Text>
-                <Heading></Heading><Heading></Heading><Heading color="transparent">ss</Heading>
-                <Button w={"100%"}
-                  bg={"#537eee"}
-                  color={"brand.primary_bg"}
-                  variant={"solid"}
-                  _hover={{ color: "brand.600" }}
-                  borderRadius={"10px"}
-                >
-                  Take Assessment
-                </Button>
-              </Box>
-            </SimpleGrid></Box>
-        </SimpleGrid>
+	const handleDownload = (fileName) => {
+		const url = BASE_URL;
+		const downloadUrl = `${url}/resources/download/${fileName}`;
+		window.location.href = downloadUrl;
+	};
 
+	const showFiles = () => (
+		<>
+			<Flex justifyContent={"space-between"}>
+				<VStack alignItems={"self-start"}>
+					<Text mt={2} mb={5} fontWeight="bold">
+						Browse by subject
+					</Text>
+					{isMobile || isIpad ? (
+						<SimpleGrid columns={{ base: 2, md: 3 }} spacing="1em" my="5">
+							{FILE_TYPES.map(({ type }) => (
+								<Button
+									key={type}
+									borderRadius={"50px"}
+									p={"1em"}
+									color={selectedFilter === type ? "#4c67c3" : "#676e78"}
+									onClick={() => handleFilterClick(type)}
+									variant={"outline"}
+									leftIcon={<Icon as={FaDownload} />}
+									size="xs"
+								>
+									{type}
+								</Button>
+							))}
+						</SimpleGrid>
+					) : (
+						<Flex gap="1em">
+							{FILE_TYPES.map(({ type }) => (
+								<Button
+									key={type}
+									borderRadius={"50px"}
+									p={"1em"}
+									color={selectedFilter === type ? "#4c67c3" : "#676e78"}
+									onClick={() => handleFilterClick(type)}
+									variant={"outline"}
+									leftIcon={<Icon as={FaDownload} />}
+									size="xs"
+								>
+									{type}
+								</Button>
+							))}
+						</Flex>
+					)}
+				</VStack>
+			</Flex>
+			<SimpleGrid columns={{ base: 1, md: 3, lg: 5 }} spacing="1em" my="5">
+				{resources?.map((resource) => (
+					<Box
+						key={resource._id}
+						p="1em"
+						bg={"brand.primary_bg"}
+						border="3px solid white"
+						borderRadius="10px"
+					>
+						<VStack spacing={"1em"}>
+							<Card maxW="md" borderRadius="0" overflow="hidden">
+								<Image src={bookCover} alt={"book.title"} />
+							</Card>
+							<Text fontSize={"sm"}>{resource.originalname}</Text>
+							<Button
+								onClick={() => handleDownload(resource.originalname)}
+								w={"100%"}
+								bg={"#537eee"}
+								color={"brand.primary_bg"}
+								variant={"solid"}
+								_hover={{ color: "brand.600" }}
+								borderRadius={"10px"}
+								size="xs"
+							>
+								Download
+							</Button>
+						</VStack>
+					</Box>
+				))}
+			</SimpleGrid>
+		</>
+	);
 
-      </SimpleGrid><Text mt={2} mb={5} fontSize="lg" fontWeight="bold">
-        Browse by subject
-      </Text>
-      {
-        isMobileView ? <SimpleGrid columns={{ base: 2 }} spacing="5" my="5">
-          <Button borderRadius={"50px"} p={"1em"}
-            color={selectedFilter === "Scripts".toLowerCase() ? '#4c67c3' : '#676e78'}
-            onClick={() => handleFilterClick("scripts")}
-            variant={"outline"} leftIcon={<Icon as={FaDownload} />} size="sm">
-            Scripts
-          </Button>
-          <Button borderRadius={"50px"} color="#676e78" p={"1em"}
-            variant={"outline"} leftIcon={<Icon as={FaDownload} />} size="sm">
-            Product Knowledge
-          </Button><Button borderRadius={"50px"} color="#676e78" p={"1em"}
-            variant={"outline"} leftIcon={<Icon as={FaDownload} />} size="sm">
-            Employee Handbook
-          </Button><Button borderRadius={"50px"} color="#676e78" p={"1em"}
-            variant={"outline"} leftIcon={<Icon as={FaDownload} />} size="sm">
-            Associated
-          </Button><Button borderRadius={"50px"} color="#676e78" p={"1em"}
-            variant={"outline"} leftIcon={<Icon as={FaDownload} />} size="sm">
-            Training Resources
-          </Button></SimpleGrid> : <Flex gap="1em">
-          <Button borderRadius={"50px"} p={"1em"}
-            color={selectedFilter === "Scripts".toLowerCase() ? '#4c67c3' : '#676e78'}
-            onClick={() => handleFilterClick("scripts")}
-            variant={"outline"} leftIcon={<Icon as={FaDownload} />} size="sm">
-            Scriptss
-          </Button>
-          <Button borderRadius={"50px"} color="#676e78" p={"1em"}
-            variant={"outline"} leftIcon={<Icon as={FaDownload} />} size="sm">
-            Product Knowledge
-          </Button><Button borderRadius={"50px"} color="#676e78" p={"1em"}
-            variant={"outline"} leftIcon={<Icon as={FaDownload} />} size="sm">
-            Employee Handbook
-          </Button><Button borderRadius={"50px"} color="#676e78" p={"1em"}
-            variant={"outline"} leftIcon={<Icon as={FaDownload} />} size="sm">
-            Associated
-          </Button><Button borderRadius={"50px"} color="#676e78" p={"1em"}
-            variant={"outline"} leftIcon={<Icon as={FaDownload} />} size="sm">
-            Training Resources
-          </Button>
-        </Flex>
-      }
-
-      <SimpleGrid columns={{ base: 1, md: 5 }} spacing="5" my="5">
-        <Box
-          p="4"
-          bg={"brand.primary_bg"}
-          border="3px solid white"
-          borderRadius="10px"
-          fontWeight="bold"
-        ><VStack spacing={"1em"}>
-            <Card maxW="md" borderRadius="0" overflow="hidden">
-              <Image src={bookCover} alt={"book.title"} />
-
-            </Card> <Button w={"100%"}
-              bg={"#537eee"}
-              color={"brand.primary_bg"}
-              variant={"solid"}
-              _hover={{ color: "brand.600" }}
-              borderRadius={"10px"}
-            >
-              Download
-            </Button></VStack>
-        </Box>
-
-        <Box
-          p="4"
-          bg={"brand.primary_bg"}
-          border="3px solid white"
-          borderRadius="10px"
-          fontWeight="bold"
-        ><VStack spacing={"1em"}>
-            <Card maxW="md" borderRadius="0" overflow="hidden">
-              <Image src={bookCover} alt={"book.title"} />
-
-            </Card> <Button w={"100%"}
-              bg={"#537eee"}
-              color={"brand.primary_bg"}
-              variant={"solid"}
-              _hover={{ color: "brand.600" }}
-              borderRadius={"10px"}
-            >
-              Download
-            </Button></VStack>
-        </Box>  <Box
-          p="4"
-          bg={"brand.primary_bg"}
-          border="3px solid white"
-          borderRadius="10px"
-          fontWeight="bold"
-        ><VStack spacing={"1em"}>
-            <Card maxW="md" borderRadius="0" overflow="hidden">
-              <Image src={bookCover} alt={"book.title"} />
-
-            </Card> <Button w={"100%"}
-              bg={"#537eee"}
-              color={"brand.primary_bg"}
-              variant={"solid"}
-              _hover={{ color: "brand.600" }}
-              borderRadius={"10px"}
-            >
-              Download
-            </Button></VStack>
-        </Box>  <Box
-          p="4"
-          bg={"brand.primary_bg"}
-          border="3px solid white"
-          borderRadius="10px"
-          fontWeight="bold"
-        ><VStack spacing={"1em"}>
-            <Card maxW="md" borderRadius="0" overflow="hidden">
-              <Image src={bookCover} alt={"book.title"} />
-
-            </Card> <Button w={"100%"}
-              bg={"#537eee"}
-              color={"brand.primary_bg"}
-              variant={"solid"}
-              _hover={{ color: "brand.600" }}
-              borderRadius={"10px"}
-            >
-              Download
-            </Button></VStack>
-        </Box>  <Box
-          p="4"
-          bg={"brand.primary_bg"}
-          border="3px solid white"
-          borderRadius="10px"
-          fontWeight="bold"
-        ><VStack spacing={"1em"}>
-            <Card maxW="md" borderRadius="0" overflow="hidden">
-              <Image src={bookCover} alt={"book.title"} />
-
-            </Card> <Button w={"100%"}
-              bg={"#537eee"}
-              color={"brand.primary_bg"}
-              variant={"solid"}
-              _hover={{ color: "brand.600" }}
-              borderRadius={"10px"}
-            >
-              Download
-            </Button></VStack>
-        </Box>
-      </SimpleGrid>
-    </Container >
-  );
+	return (
+		<Box p={{ base: "1em", md: "2em" }} overflow={"auto"}>
+			<Text fontWeight="bold" mb={"1em"}>
+				Resources
+			</Text>
+			<SimpleGrid
+				columns={{ base: 1, md: 1, lg: 2 }}
+				spacing="1em"
+				mt={"0.5em"}
+			>
+				<Box
+					px="1em"
+					py="0.5em"
+					bg={"brand.primary_bg"}
+					border="3px solid white"
+					borderRadius="10px"
+					fontWeight="bold"
+					color={"brand.nav_color"}
+				>
+					<Text fontWeight="bold">Training</Text>
+					<Box w={{ base: "60%", md: "40%", lg: "60%", xl: "40%" }} mx={"auto"}>
+						<Doughnut
+							data={trainingChartData}
+							options={doughnutOptions("40%")}
+						/>
+					</Box>
+				</Box>
+				<Box
+					p="1em"
+					pt={"0.5em"}
+					border="3px solid white"
+					borderRadius="10px"
+					fontWeight="bold"
+					color={"brand.nav_color"}
+				>
+					<Text mb={"0.5em"} fontWeight="bold">
+						Your Overall Results
+					</Text>
+					<SimpleGrid
+						columns={{ base: 1, md: 1, lg: 3, xl: 3 }}
+						minH={{ base: "auto", md: "90%", lg: "auto" }}
+						spacing={"1em"}
+					>
+						<Box
+							p={{ base: "1em", lg: "1em 5px" }}
+							my={"auto"}
+							bg={"brand.primary_bg"}
+							border="3px solid white"
+							borderRadius="10px"
+							fontWeight="bold"
+							display="flex"
+							flexDir="column"
+							justifyContent="space-evenly"
+							alignItems="flex-start"
+						>
+							<Text color={"brand.nav_color"} fontSize="xs" fontWeight="bold">
+								Assessment 1
+							</Text>
+							<Text fontSize="xs" fontWeight="bold">
+								Know your customer
+							</Text>
+							<Badge bg="green" color="white">
+								EXCELLENT
+							</Badge>
+							<Text color={"brand.nav_color"} fontSize="xs" fontWeight="bold">
+								Your result
+							</Text>
+							<Text fontWeight="bolder">8/10</Text>
+						</Box>
+						<Box
+							p={{ base: "1em", lg: "1em 5px" }}
+							h={{ base: "auto" }}
+							my={"auto"}
+							bg={"brand.primary_bg"}
+							border="3px solid white"
+							borderRadius="10px"
+							fontWeight="bold"
+							display="flex"
+							flexDir="column"
+							justifyContent="space-evenly"
+							alignItems="flex-start"
+						>
+							<Text color={"brand.nav_color"} fontSize="xs" fontWeight="bold">
+								Assessment 2
+							</Text>
+							<Text fontSize="xs" fontWeight="bold">
+								Know the product a
+							</Text>
+							<Heading></Heading>
+							<Heading></Heading>
+							<Heading color="transparent">ss</Heading>
+							<Button
+								w={"100%"}
+								p={"5px 0"}
+								bg={"#537eee"}
+								h={"3em"}
+								fontSize="10px"
+								color={"brand.primary_bg"}
+								variant={"solid"}
+								_hover={{ color: "brand.600" }}
+								borderRadius={"10px"}
+							>
+								Take Assessment
+							</Button>
+						</Box>
+						<Box
+							p={{ base: "1em", lg: "1em 5px" }}
+							my={"auto"}
+							bg={"brand.primary_bg"}
+							border="3px solid white"
+							borderRadius="10px"
+							fontWeight="bold"
+							display="flex"
+							flexDir="column"
+							justifyContent="space-evenly"
+							alignItems="flex-start"
+						>
+							<Text color={"brand.nav_color"} fontSize="xs" fontWeight="bold">
+								Assessment 3
+							</Text>
+							<Text fontSize="xs" fontWeight="bold">
+								Know the product b
+							</Text>
+							<Heading></Heading>
+							<Heading></Heading>
+							<Heading color="transparent">ss</Heading>
+							<Button
+								w={"100%"}
+								bg={"#537eee"}
+								p={"5px 0"}
+								h={"3em"}
+								fontSize="10px"
+								color={"brand.primary_bg"}
+								variant={"solid"}
+								_hover={{ color: "brand.600" }}
+								borderRadius={"10px"}
+							>
+								Take Assessment
+							</Button>
+						</Box>
+					</SimpleGrid>
+				</Box>
+			</SimpleGrid>
+			{user && user.role !== "Employee" ? (
+				<SimpleGrid columns={{ base: 1, md: 1, lg: 1 }}>
+					<FileUploader
+						setNewUpload={setNewUpload}
+						fileTypes={FILE_TYPES}
+						userName={user.fullName}
+					/>
+					{showFiles()}
+				</SimpleGrid>
+			) : (
+				showFiles()
+			)}
+		</Box>
+	);
 };
 
 export default Resources;

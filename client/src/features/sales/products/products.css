@@ -1,0 +1,9 @@
+thead {
+	position: sticky;
+	top: -1px;
+	background-color: #f7f7ff;
+	z-index: 1;
+}
+th {
+	position: sticky;
+}
