@@ -12,13 +12,11 @@ import {
 	Thead,
 	Tr,
 } from "@chakra-ui/react";
-import { tasksData } from "data";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { FaCaretDown, FaFilter } from "react-icons/fa";
 import { generateLighterShade } from "utils";
 
-const TaskTable = ({ filter }) => {
-	const [tasks, setTasks] = useState(tasksData);
+const TaskTable = ({ data }) => {
 	// const [filters, setFilters] = useState({
 	// 	taskName: "",
 	// 	assignee: "",
@@ -32,11 +30,11 @@ const TaskTable = ({ filter }) => {
 	const handleToggle = (index) => {
 		setExpandedIndex(expandedIndex === index ? -1 : index);
 	};
-	useEffect(() => {
-		if (filter) {
-			setTasks(tasksData.filter((task) => task.checklist));
-		}
-	}, [filter]);
+	// useEffect(() => {
+	// 	if (filter) {
+	// 		setTasks(tasksData.filter((task) => task.checklist));
+	// 	}
+	// }, [filter]);
 	return (
 		<Table variant="simple">
 			<Thead>
@@ -122,87 +120,95 @@ const TaskTable = ({ filter }) => {
 				</Tr>
 			</Thead>
 			<Tbody>
-				{tasks.map((task, index) => (
-					<React.Fragment key={task.taskName}>
-						<Tr key={task.taskName}>
-							<Td
-								onClick={() => handleToggle(index)}
-								cursor={task?.checklist ? "pointer" : "default"}
-							>
-								<HStack spacing={3}>
-									<Text>{task.taskName}</Text>
-									{task?.checklist && <FaCaretDown />}
-								</HStack>
-							</Td>
-							<Td>
-								<HStack>
-									{task.assignees.map((assignee) => (
-										<Avatar
-											key={assignee.id}
-											name={assignee.name}
-											size={{ base: "xs", md: "md" }}
-											src={assignee.avatarUrl}
-										/>
-									))}
-								</HStack>
-							</Td>
-							<Td>{task.projectName}</Td>
-							<Td>{task.lastUpdated}</Td>
-							<Td
-								color={
-									task.taskStatus === "Completed"
-										? "#213622"
-										: task.taskStatus === "In Progress"
-										? "#cc4673"
-										: task.taskStatus === "Pending"
-										? "#d04a20"
-										: "#cc4673"
-								}
-								bgColor={
-									task.taskStatus === "Completed"
-										? "#e3ffe4"
-										: task.taskStatus === "In Progress"
-										? generateLighterShade("#ffe4e1", 0.8)
-										: task.taskStatus === "Pending"
-										? "#ffc5b2"
-										: generateLighterShade("#cc4673", 0.8)
-								}
-							>
-								{task.taskStatus}
-							</Td>
-						</Tr>
-						<Collapse in={expandedIndex === index}>
-							<Tr>
-								<Td colSpan={5}>
-									<Box mt={2}>
-										<Text fontWeight="bold">Checklist:</Text>
-										{task?.checklist?.map((item, i) => (
-											<Table key={i} ml={4} size={"small"}>
-												<Tbody>
-													<Tr>
-														<Td>
-															<Checkbox isChecked={item.completed} isDisabled>
-																{item.item}
-															</Checkbox>
-														</Td>
-														<Td>
-															<Avatar
-																key={item.assignee.id}
-																name={item.assignee.name}
-																size={{ base: "xs", md: "md" }}
-																src={item.assignee.avatarUrl}
-															/>
-														</Td>
-													</Tr>
-												</Tbody>
-											</Table>
+				{data?.map((task, index) => {
+					task.taskStatus = "Pending";
+					return (
+						<React.Fragment key={task._id}>
+							<Tr key={task.taskName}>
+								<Td
+									onClick={() => handleToggle(index)}
+									cursor={task?.todoItems.length > 0 ? "pointer" : "default"}
+								>
+									<HStack spacing={3}>
+										<Text>{task.taskName}</Text>
+										{task?.todoItems.length > 0 && <FaCaretDown />}
+									</HStack>
+								</Td>
+								<Td>
+									<HStack>
+										{task.selectedAssignees.map((assignee) => (
+											<Avatar
+												key={assignee.name}
+												name={assignee.name}
+												size={{ base: "xs", md: "md" }}
+												src={assignee.avatarUrl}
+											/>
 										))}
-									</Box>
+									</HStack>
+								</Td>
+								<Td>{task.projectName}</Td>
+								<Td>
+									{new Date(task.date).toLocaleDateString()}{" "}
+									{new Date(task.date).toLocaleTimeString()}
+								</Td>
+								<Td
+									color={
+										task.taskStatus === "Completed"
+											? "#213622"
+											: task.taskStatus === "In Progress"
+											? "#cc4673"
+											: task.taskStatus === "Pending"
+											? "#d04a20"
+											: "#cc4673"
+									}
+									bgColor={
+										task.taskStatus === "Completed"
+											? "#e3ffe4"
+											: task.taskStatus === "In Progress"
+											? generateLighterShade("#ffe4e1", 0.8)
+											: task.taskStatus === "Pending"
+											? "#ffc5b2"
+											: generateLighterShade("#cc4673", 0.8)
+									}
+								>
+									{task.taskStatus}
 								</Td>
 							</Tr>
-						</Collapse>
-					</React.Fragment>
-				))}
+							{task?.todoItems.length > 0 && (
+								<Collapse in={expandedIndex === index}>
+									<Tr>
+										<Td colSpan={5}>
+											<Box mt={2}>
+												<Text fontWeight="bold">Checklist:</Text>
+												{task?.todoItems?.map((task, i) => (
+													<Table key={i} ml={4} size={"small"}>
+														<Tbody>
+															<Tr>
+																<Td>
+																	<Checkbox isChecked={true} isDisabled>
+																		{task.taskName}
+																	</Checkbox>
+																</Td>
+																<Td>
+																	<Avatar
+																		key={task.taskName}
+																		name={task.assignee}
+																		size={{ base: "xs", md: "md" }}
+																		src={task.avatarUrl}
+																	/>
+																</Td>
+															</Tr>
+														</Tbody>
+													</Table>
+												))}
+											</Box>
+										</Td>
+									</Tr>
+								</Collapse>
+							)}
+						</React.Fragment>
+					);
+				})}
 			</Tbody>
 		</Table>
 	);

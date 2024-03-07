@@ -11,8 +11,9 @@ const eventRoutes = require("./routes/event");
 const meetingRoutes = require("./routes/meeting");
 const noteRoutes = require("./routes/notes");
 const opportunityRoutes = require("./routes/opportunity");
+const projectRoutes = require("./routes/project");
+const resourcesRoutes = require("./routes/upload");
 const taskRoutes = require("./routes/tasks");
-const uploadRoutes = require("./routes/upload");
 const userRoutes = require("./routes/user");
 
 const app = express();
@@ -34,7 +35,8 @@ app.use("/api/events", eventRoutes);
 app.use("/api/meetings", meetingRoutes);
 app.use("/api/notes", noteRoutes);
 app.use("/api/opportunities", opportunityRoutes);
-app.use("/api/resources", uploadRoutes);
+app.use("/api/projects", projectRoutes);
+app.use("/api/resources", resourcesRoutes);
 app.use("/api/tasks", taskRoutes);
 app.use("/api/user", userRoutes);
 

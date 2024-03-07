@@ -7,31 +7,37 @@ import {
 	Progress,
 	Text,
 } from "@chakra-ui/react";
-import { projectsData } from "data";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import ProjectService from "services/ProjectService";
 
 const ProjectTable = () => {
-	const totalTasks = projectsData.reduce(
-		(total, project) => total + project.tasksLeft,
-		0,
-	);
+	const [projects, setProjects] = useState([]);
 	useEffect(() => {
 		const fetchAllProjectInfo = async () => {
 			try {
 				const response = await ProjectService.getAllProjects();
-				console.log(response);
+				setProjects(response.data);
 			} catch (error) {
 				console.error(error);
 			}
 		};
 		fetchAllProjectInfo();
 	}, []);
+	const getPercentComplete = (project) => {
+		return project.todoItems.length === 0
+			? 100
+			: ((project.todoItems.length / totalTasks) * 100).toFixed(2);
+	};
+	const totalTasks = projects.reduce(
+		(total, project) => total + project.todoItems.length,
+		0,
+	);
+
 	return (
 		<Box>
-			{projectsData.map((project) => (
+			{projects.map((project) => (
 				<Card
-					key={project.id}
+					key={project._id}
 					mb={4}
 					borderRadius="md"
 					boxShadow="md"
@@ -48,16 +54,16 @@ const ProjectTable = () => {
 							spacing={{ base: 1, md: 5 }}
 						>
 							<Text fontWeight="bold" fontSize={{ base: "xs", md: "md" }}>
-								{project.name}
+								{project.projectName}
 							</Text>
 							<Badge bg="#e3c9c9" borderRadius={"40%"}>
-								{project.tasksLeft}
+								{project.todoItems.length}
 							</Badge>
 						</HStack>
 						<HStack direction="row" spacing={{ base: 1, md: 2 }}>
-							{project.assignees.map((assignee) => (
+							{project.selectedAssignees.map((assignee) => (
 								<Avatar
-									key={assignee.id}
+									key={assignee.name}
 									name={assignee.name}
 									size={{ base: "xs", md: "md" }}
 									src={assignee.avatarUrl}
@@ -75,7 +81,7 @@ const ProjectTable = () => {
 							<Progress
 								colorScheme="blue"
 								bg={"#d8e1ff"}
-								value={((project.tasksLeft / totalTasks) * 100).toFixed(2)}
+								value={getPercentComplete}
 							/>
 							<Text
 								textAlign="center"
@@ -83,9 +89,10 @@ const ProjectTable = () => {
 								color="black"
 								fontWeight="bold"
 							>
-								{`${((project.tasksLeft / totalTasks) * 100).toFixed(
-									2,
-								)}% Complete`}
+								{project.todoItems.length === 0
+									? 100
+									: getPercentComplete(project)}
+								% Complete
 							</Text>
 						</Box>
 					</HStack>

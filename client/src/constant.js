@@ -650,7 +650,7 @@ export const BUSINESSN_SIDEBAR_MENU = [
 			},
 			{
 				path: "/workview",
-				name: "WorkView",
+				name: "Workview",
 				children: [],
 			},
 		],
@@ -1136,6 +1136,24 @@ export const FD_SIDEBAR_MENU = [
 			//     },
 			//   ],
 			// },
+		],
+	},
+	{
+		path: "/project-dashboard",
+		name: "Project",
+		id: "project",
+		icon: <FaRProject />,
+		children: [
+			{
+				path: "/project-dashboard",
+				name: "Dashboard",
+				children: [],
+			},
+			{
+				path: "/workview",
+				name: "Workview",
+				children: [],
+			},
 		],
 	},
 ];
