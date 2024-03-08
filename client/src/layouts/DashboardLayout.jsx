@@ -6,10 +6,11 @@ import {
 	Flex,
 	useDisclosure,
 } from "@chakra-ui/react";
-import { BUSINESSN_SIDEBAR_MENU, FD_SIDEBAR_MENU } from "constant";
+
 import Navbar from "features/home/Navbar";
 import Sidebar from "features/sidebar";
 import MobileSidebar from "features/sidebar/MobileSidebar";
+import { SIDEBAR_MENU } from "features/sidebar/data";
 import { useEffect, useState } from "react";
 import { useBreakpointValue } from "services/Breakpoint";
 
@@ -27,11 +28,13 @@ const DashboardLayout = ({ children, user, handleLogout }) => {
 	const [company, selectedCompany] = useState("FD");
 
 	const handleCompany = (company = "FD") => {
-		if (company === "FD") {
-			setActiveMenu(FD_SIDEBAR_MENU.find((menu) => menu.id === "sales"));
-		} else {
-			setActiveMenu(BUSINESSN_SIDEBAR_MENU.find((menu) => menu.id === "sales"));
-		}
+		// if (company === "FD") {
+		// 	setActiveMenu(FD_SIDEBAR_MENU.find((menu) => menu.id === "sales"));
+		// } else {
+		// 	setActiveMenu(BUSINESSN_SIDEBAR_MENU.find((menu) => menu.id === "sales"));
+		// }
+
+		setActiveMenu(SIDEBAR_MENU.find((menu) => menu.id === "sales"));
 	};
 
 	useEffect(() => {

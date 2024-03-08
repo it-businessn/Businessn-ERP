@@ -12,7 +12,7 @@ import {
 } from "@chakra-ui/react";
 import { NavButton, UserProfile } from "components";
 import Logo from "components/logo";
-import { BUSINESSN_SIDEBAR_MENU, FD_SIDEBAR_MENU } from "constant";
+import { SIDEBAR_MENU } from "features/sidebar/data";
 import { FaSyncAlt } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { useBreakpointValue } from "services/Breakpoint";
@@ -61,9 +61,10 @@ const Navbar = ({
 			</Select>
 		</Flex>
 	);
-	const getMenuList = () =>
-		company === "FD" ? FD_SIDEBAR_MENU : BUSINESSN_SIDEBAR_MENU;
-
+	const getMenuList = () => {
+		// company === "FD" ? FD_SIDEBAR_MENU : BUSINESSN_SIDEBAR_MENU;
+		return SIDEBAR_MENU;
+	};
 	const showProfileAction = () => (
 		<>
 			<Spacer />
@@ -107,16 +108,16 @@ const Navbar = ({
 					</VStack>
 
 					{getMenuList().map((menu) => (
-						<Stack ml={{ base: "1em", md: "2em" }} key={menu.id}>
-							<Link to={menu?.path}>
+						<Link to={menu?.path}>
+							<Stack ml={{ base: "1em", md: "2em" }} key={menu.id}>
 								<NavButton
 									handleClick={handleClick}
 									color="primary"
 									menu={menu}
 									label={menu.name}
 								/>
-							</Link>
-						</Stack>
+							</Stack>
+						</Link>
 					))}
 					{!isMobile && showProfileAction()}
 				</Flex>

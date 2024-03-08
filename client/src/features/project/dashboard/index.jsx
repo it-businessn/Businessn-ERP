@@ -3,7 +3,7 @@ import ProjectTable from "../workview/ProjectTable";
 
 const ProjectDashboard = () => {
 	return (
-		<Box p={{ base: "1em", md: "2em" }} overflow={"hidden"}>
+		<Box p={{ base: "1em", md: "2em" }} mt={{ base: "3em", md: 0 }}>
 			<Text fontWeight="bold" mb={"0.5em"}>
 				Project Dashboard
 			</Text>

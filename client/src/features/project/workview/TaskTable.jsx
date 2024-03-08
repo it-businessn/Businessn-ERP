@@ -1,9 +1,15 @@
 import {
 	Avatar,
 	Box,
+	Button,
 	Checkbox,
+	CircularProgress,
+	CircularProgressLabel,
 	Collapse,
+	Flex,
 	HStack,
+	Icon,
+	ListItem,
 	Table,
 	Tbody,
 	Td,
@@ -11,9 +17,12 @@ import {
 	Th,
 	Thead,
 	Tr,
+	UnorderedList,
+	VStack,
 } from "@chakra-ui/react";
 import React, { useState } from "react";
-import { FaCaretDown, FaFilter } from "react-icons/fa";
+import { FaCaretDown, FaSort } from "react-icons/fa";
+import { GoTasklist } from "react-icons/go";
 import { generateLighterShade } from "utils";
 
 const TaskTable = ({ data }) => {
@@ -30,187 +39,225 @@ const TaskTable = ({ data }) => {
 	const handleToggle = (index) => {
 		setExpandedIndex(expandedIndex === index ? -1 : index);
 	};
+
 	// useEffect(() => {
 	// 	if (filter) {
 	// 		setTasks(tasksData.filter((task) => task.checklist));
 	// 	}
 	// }, [filter]);
+
+	const CircularProgressBarCell = ({ completionPercentage }) => {
+		return (
+			<CircularProgress
+				value={completionPercentage}
+				color={
+					completionPercentage >= 75 ? "green.400" : "brand.primary_button_bg"
+				}
+			>
+				<CircularProgressLabel>{`${completionPercentage}%`}</CircularProgressLabel>
+			</CircularProgress>
+		);
+	};
+
+	const TaskButton = ({ totalTasks }) => {
+		return (
+			<Button
+				size="xxs"
+				display={"flex"}
+				p={"2px"}
+				fontSize={"8px"}
+				color={"brand.primary_button_bg"}
+				border={`1px solid ${generateLighterShade("#517ae8", 0.5)}`}
+				bg={generateLighterShade("#517ae8", 0.8)}
+				leftIcon={
+					<Icon
+						as={GoTasklist}
+						sx={{ marginRight: "-4px", fontsize: "10px" }}
+					/>
+				}
+				rightIcon={
+					<Icon
+						as={FaCaretDown}
+						sx={{ marginLeft: "-4px", fontsize: "10px" }}
+					/>
+				}
+			>
+				{totalTasks}
+			</Button>
+		);
+	};
+	const renderPriorityBars = (priority) => {
+		const barCount = 3;
+		const bars = [];
+
+		for (let i = 0; i < barCount; i++) {
+			const barColor = priority <= (i + 1) * 33.33 ? "#e9a923" : "orange.400";
+			bars.push(
+				<Box key={i} h="2em" w="10px" bgColor={barColor} borderRadius="2px" />,
+			);
+		}
+
+		return bars;
+	};
+	const workView_Table = {
+		cols: [
+			"Task name",
+			"Assignee(s)",
+			"Priority",
+			"Project",
+			"Last Updated",
+			"Due Date",
+			"Status",
+		],
+	};
+	const headerCell = (key) => (
+		<Th fontWeight={"bolder"} fontSize={"xs"}>
+			<Flex alignItems={"center"} gap={0.5}>
+				{key}
+				<FaSort sx={{ width: "5px" }} />
+			</Flex>
+		</Th>
+	);
 	return (
-		<Table variant="simple">
-			<Thead>
-				<Tr>
-					<Th>
-						<HStack>
-							<Text>Task Name</Text>
-							<FaFilter />
-							{/* <Input
-								size="sm"
-								placeholder="Filter"
-								value={filters.taskName}
-								onChange={(e) => handleFilterChange("taskName", e.target.value)}
-							/> */}
-						</HStack>
-					</Th>
-					<Th>
-						<HStack>
-							<Text>Assignee </Text>
+		<Box overflow="auto">
+			<Table color={"brand.nav_color"} bg={"brand.primary_bg"} size={"small"}>
+				<Thead>
+					<Tr>
+						<Th>
+							<Checkbox sx={{ verticalAlign: "middle" }} />
+						</Th>
+						{workView_Table.cols.map((col) => headerCell(col))}
+					</Tr>
+				</Thead>
+				<Tbody>
+					{data?.map((task, index) => {
+						task.taskStatus = "Completed";
 
-							<FaFilter />
-							{/* <Select
-								size="sm"
-								placeholder="Filter"
-								value={filters.assignee}
-								onChange={(e) => handleFilterChange("assignee", e.target.value)}
-							>
-							</Select> */}
-						</HStack>
-					</Th>
-					<Th>
-						<HStack>
-							<Text> Project Name </Text>
-
-							<FaFilter />
-							{/* <Input
-								size="sm"
-								placeholder="Filter"
-								value={filters.projectName}
-								onChange={(e) =>
-									handleFilterChange("projectName", e.target.value)
-								}
-							/> */}
-						</HStack>
-					</Th>
-					<Th>
-						<HStack>
-							<Text> Last Updated </Text>
-
-							<FaFilter />
-							{/* <Input
-								size="sm"
-								type="date"
-								placeholder="Filter"
-								value={filters.lastUpdated}
-								onChange={(e) =>
-									handleFilterChange("lastUpdated", e.target.value)
-								}
-							/> */}
-						</HStack>
-					</Th>
-					<Th>
-						<HStack>
-							<Text>Task Status </Text>
-
-							<FaFilter />
-							{/* <Select
-								size="sm"
-								placeholder="Filter"
-								value={filters.status}
-								onChange={(e) => handleFilterChange("status", e.target.value)}
-							>
-							</Select> */}
-						</HStack>
-						{/* <Select
-							placeholder="Task Status"
-							onChange={(e) => handleFilterChange(e, "taskStatus")}
-						>
-							<option value="In Progress">In Progress</option>
-							<option value="Completed">Completed</option>
-						</Select> */}
-					</Th>
-				</Tr>
-			</Thead>
-			<Tbody>
-				{data?.map((task, index) => {
-					task.taskStatus = "Pending";
-					return (
-						<React.Fragment key={task._id}>
-							<Tr key={task.taskName}>
-								<Td
-									onClick={() => handleToggle(index)}
-									cursor={task?.todoItems.length > 0 ? "pointer" : "default"}
-								>
-									<HStack spacing={3}>
-										<Text>{task.taskName}</Text>
-										{task?.todoItems.length > 0 && <FaCaretDown />}
-									</HStack>
-								</Td>
-								<Td>
-									<HStack>
-										{task.selectedAssignees.map((assignee) => (
-											<Avatar
-												key={assignee.name}
-												name={assignee.name}
-												size={{ base: "xs", md: "md" }}
-												src={assignee.avatarUrl}
-											/>
-										))}
-									</HStack>
-								</Td>
-								<Td>{task.projectName}</Td>
-								<Td>
-									{new Date(task.date).toLocaleDateString()}{" "}
-									{new Date(task.date).toLocaleTimeString()}
-								</Td>
-								<Td
-									color={
-										task.taskStatus === "Completed"
-											? "#213622"
-											: task.taskStatus === "In Progress"
-											? "#cc4673"
-											: task.taskStatus === "Pending"
-											? "#d04a20"
-											: "#cc4673"
-									}
-									bgColor={
-										task.taskStatus === "Completed"
-											? "#e3ffe4"
-											: task.taskStatus === "In Progress"
-											? generateLighterShade("#ffe4e1", 0.8)
-											: task.taskStatus === "Pending"
-											? "#ffc5b2"
-											: generateLighterShade("#cc4673", 0.8)
-									}
-								>
-									{task.taskStatus}
-								</Td>
-							</Tr>
-							{task?.todoItems.length > 0 && (
-								<Collapse in={expandedIndex === index}>
-									<Tr>
-										<Td colSpan={5}>
-											<Box mt={2}>
-												<Text fontWeight="bold">Checklist:</Text>
-												{task?.todoItems?.map((task, i) => (
-													<Table key={i} ml={4} size={"small"}>
-														<Tbody>
-															<Tr>
-																<Td>
-																	<Checkbox isChecked={true} isDisabled>
-																		{task.taskName}
-																	</Checkbox>
-																</Td>
-																<Td>
-																	<Avatar
-																		key={task.taskName}
-																		name={task.assignee}
-																		size={{ base: "xs", md: "md" }}
-																		src={task.avatarUrl}
-																	/>
-																</Td>
-															</Tr>
-														</Tbody>
-													</Table>
-												))}
-											</Box>
-										</Td>
-									</Tr>
-								</Collapse>
-							)}
-						</React.Fragment>
-					);
-				})}
-			</Tbody>
-		</Table>
+						return (
+							<React.Fragment key={task._id}>
+								<Tr key={task.taskName}>
+									<Td
+									// maxW="200px"
+									// overflow="hidden"
+									// textOverflow="ellipsis"
+									// whiteSpace="nowrap"
+									>
+										<Checkbox
+											sx={{ verticalAlign: "middle" }}
+											// isChecked={checkedRows.includes(item.id)}
+											// onChange={() => handleCheckboxChange(item.id)}
+										/>
+									</Td>
+									<Td
+										fontSize={"xs"}
+										onClick={() => handleToggle(index)}
+										cursor={task?.todoItems.length > 0 ? "pointer" : "default"}
+									>
+										<HStack spacing={3}>
+											<CircularProgressBarCell completionPercentage={25} />
+											<Text>{task.taskName}</Text>
+											<TaskButton totalTasks={task?.todoItems.length} />
+										</HStack>
+									</Td>
+									<Td fontSize={"xs"}>
+										<HStack>
+											{task.selectedAssignees.map((assignee) => (
+												<Avatar
+													key={assignee.name}
+													name={assignee.name}
+													size={{ base: "xs", md: "sm" }}
+													src={assignee.avatarUrl}
+												/>
+											))}
+										</HStack>
+									</Td>
+									<Td fontSize={"xs"}>
+										<HStack spacing="1">{renderPriorityBars(2)}</HStack>
+									</Td>
+									<Td fontSize={"xs"}>{task.projectName}</Td>
+									<Td fontSize={"xs"}>
+										{new Date(task.date).toLocaleDateString("en-US", {
+											year: "numeric",
+											month: "2-digit",
+											day: "2-digit",
+										})}{" "}
+										{/* {new Date(task.date).toLocaleTimeString()} */}
+									</Td>
+									<Td fontSize={"xs"}></Td>
+									<Td
+										fontSize={"12px"}
+										// color={
+										// 	task.taskStatus === "Completed"
+										// 		? "#213622"
+										// 		: task.taskStatus === "In Progress"
+										// 		? "#cc4673"
+										// 		: task.taskStatus === "Pending"
+										// 		? "#d04a20"
+										// 		: "#cc4673"
+										// }
+										// bgColor={
+										// 	task.taskStatus === "Completed"
+										// 		? "#e3ffe4"
+										// 		: task.taskStatus === "In Progress"
+										// 		? generateLighterShade("#ffe4e1", 0.8)
+										// 		: task.taskStatus === "Pending"
+										// 		? "#ffc5b2"
+										// 		: generateLighterShade("#cc4673", 0.8)
+										// }
+									>
+										<HStack
+											justifyContent={"space-around"}
+											spacing={0}
+											fontWeight={"bold"}
+											bg={generateLighterShade("#76c094", 0.9)}
+											p={"5px"}
+											borderRadius={"8px"}
+											border={"1px solid #76c094"}
+											color={"#76c094"}
+										>
+											<Text> {task.taskStatus}</Text>
+											<Text>7d over</Text>
+										</HStack>
+									</Td>
+								</Tr>
+								<Tr>
+									<Td colSpan="3" p={0} fontSize={"xs"}>
+										<Collapse in={expandedIndex === index}>
+											<VStack align="start" spacing={2} ml={"5em"} p={0} my={2}>
+												<UnorderedList listStyleType={"none"}>
+													{task?.todoItems?.map((task, i) => (
+														<ListItem p={0}>
+															<HStack align="center" spacing={2} p={0}>
+																<Checkbox
+																	isChecked={true}
+																	onChange={(e) => console.log(e)}
+																	sx={{
+																		bgColor: "#517ae8",
+																		color: "#fff",
+																		borderRadius: "10px !important",
+																	}}
+																/>
+																<Text>{task.taskName}</Text>
+																<Avatar
+																	key={task.taskName}
+																	name={task.assignee}
+																	size={{ base: "xs", md: "sm" }}
+																	src={task.avatarUrl}
+																/>
+															</HStack>
+														</ListItem>
+													))}
+												</UnorderedList>
+											</VStack>
+										</Collapse>
+									</Td>
+								</Tr>
+							</React.Fragment>
+						);
+					})}
+				</Tbody>
+			</Table>
+		</Box>
 	);
 };
 
