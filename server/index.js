@@ -5,15 +5,15 @@ const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 
-const activityRoutes = require("./routes/activities");
-const contactRoutes = require("./routes/contacts");
+const activityRoutes = require("./routes/activity");
+const contactRoutes = require("./routes/contact");
 const eventRoutes = require("./routes/event");
 const meetingRoutes = require("./routes/meeting");
-const noteRoutes = require("./routes/notes");
+const noteRoutes = require("./routes/note");
 const opportunityRoutes = require("./routes/opportunity");
 const projectRoutes = require("./routes/project");
-const resourcesRoutes = require("./routes/upload");
-const taskRoutes = require("./routes/tasks");
+const resourcesRoutes = require("./routes/resource");
+const taskRoutes = require("./routes/task");
 const userRoutes = require("./routes/user");
 
 const app = express();
