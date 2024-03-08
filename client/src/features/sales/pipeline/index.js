@@ -35,27 +35,36 @@ const Pipeline = () => {
 	];
 	const { isOpen, onOpen, onClose } = useDisclosure();
 	const handleSubmit = () => console.log("submit");
+
 	const opportunityData = [
-		{ name: "Jan", value: 400 },
-		{ name: "Feb", value: 550 },
-		{ name: "Mar", value: 400 },
-		{ name: "Apr", value: 200 },
-		{ name: "May", value: 600 },
-		{ name: "Jun", value: 350 },
-		{ name: "Jul", value: 300 },
-		{ name: "Aug", value: 600 },
-		{ name: "Sep", value: 800 },
-		{ name: "Oct", value: 400 },
-		{ name: "Nov", value: 350 },
-		{ name: "Dec", value: 400 },
+		{ name: "Meeting Set", value: 100 },
+		{ name: "Meeting Set", value: 250 },
+		{ name: "Meeting Set", value: 550 },
+		{ name: "Meeting Set", value: 350 },
+		{ name: "Meeting Set", value: 100 },
+		{ name: "Discovery Call", value: 150 },
+		{ name: "Discovery Call", value: 250 },
+		{ name: "Discovery Call", value: 550 },
+		{ name: "Discovery Call", value: 300 },
+		{ name: "Discovery Call", value: 100 },
+		{ name: "Onboard", value: 100 },
+		{ name: "Onboard", value: 250 },
+		{ name: "Onboard", value: 550 },
+		{ name: "Onboard", value: 300 },
+		{ name: "Onboard", value: 200 },
+		{ name: "Closing", value: 100 },
+		{ name: "Closing", value: 250 },
+		{ name: "Closing", value: 550 },
+		{ name: "Closing", value: 300 },
 	];
+
 	return (
 		<Box p={{ base: "1em", md: "2em" }}>
 			<Text fontWeight="bold" mb={"0.5em"}>
 				Target Leads
 			</Text>
-			<Box p={"1em"} width="100%" borderRadius="10px" border="3px solid white">
-				<Text fontWeight="bold" color={"brand.200"} mb={"0.5em"}>
+			<Box width="100%" borderRadius="10px" border="3px solid white">
+				<Text p={"1em"} fontWeight="bold" color={"brand.200"} mb={"0.5em"}>
 					Pipeline
 				</Text>
 				{opportunityData && (
