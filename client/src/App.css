@@ -1,10 +1,12 @@
 :root {
-	--primary_button_bg: #537eee;
-	--white: #fff;
-	--status_button_border: #76c094;
 	--filter_color: #d3d3d3;
 	--lead_cards_bg: #eef0fc;
 	--lead_cards_border: #e3e5f1;
+	--main_color: #ffffff;
+	--main_color_black: #000000;
+	--primary_button_bg: #537eee;
+	--status_button_border: #76c094;
+	--calendar_color: #a9a9ab;
 }
 
 html {
@@ -30,7 +32,31 @@ body {
 	) !important;
 	overflow: hidden;
 }
+.active {
+	background: linear-gradient(
+		103deg,
+		rgba(84, 61, 210, 1) 0%,
+		rgba(62, 138, 232, 1) 100%
+	);
+	padding: 0 5px;
+	width: 100%;
+	border-radius: 10px;
+}
+.active button {
+	color: var(--main_color);
+}
+button:active {
+	background: transparent !important;
+}
 
+/* .active::before {
+  content: "\2022";
+  color: var(--active-menu-color);
+  font-size: 1.5em;
+  position: relative;
+  left: -4px;
+  top: 3px;
+} */
 .main_content {
 	width: 85vw;
 	margin-top: 6em;
@@ -52,7 +78,7 @@ body {
 	left: 50%;
 	transform: translate(-50%, -50%);
 	font-size: 1.5em;
-	color: white;
+	color: var(--main_color);
 }
 
 /* react calendar css overrides */
@@ -62,7 +88,7 @@ body {
 	display: flex;
 	justify-content: center;
 	text-transform: uppercase;
-	color: #a9a9ab;
+	color: var(--calendar_color);
 }
 
 .rbc-month-view {
@@ -72,7 +98,7 @@ body {
 .rbc-date-cell {
 	padding: 1em;
 	text-align: left !important;
-	color: black;
+	color: var(--main_color_black);
 }
 
 .rbc-button-link {

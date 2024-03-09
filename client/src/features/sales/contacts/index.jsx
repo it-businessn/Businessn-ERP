@@ -15,7 +15,7 @@ import {
 	Tabs,
 	Text,
 } from "@chakra-ui/react";
-import Loader from "features/Loader";
+import Loader from "components/Loader";
 import { useEffect, useState } from "react";
 import ContactService from "services/ContactService";
 import ContactDetailsForm from "./ContactDetailsForm";

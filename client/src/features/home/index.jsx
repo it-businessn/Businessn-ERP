@@ -1,4 +1,3 @@
-import CRMDashboard from "features/sales/dashboard";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import LocalStorageService from "services/LocalStorageService";
@@ -11,8 +10,9 @@ const Home = () => {
 		if (!user) {
 			navigate("/login");
 		}
+		navigate("sales-dashboard");
 	}, [user]);
-	return <CRMDashboard />;
+	return <></>;
 };
 
 export default Home;

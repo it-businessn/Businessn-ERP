@@ -1,15 +1,15 @@
 const mongoose = require("mongoose");
 
 const opportunitySchema = new mongoose.Schema(
-  {
-    name: String,
-    clientName: String,
-    stage: String,
-    probability: Number,
-    dealAmount: Number,
-    createdOn: Date,
-  },
-  { collection: "Opportunities" }
+	{
+		clientName: String,
+		createdOn: Date,
+		dealAmount: Number,
+		name: String,
+		probability: Number,
+		stage: String,
+	},
+	{ collection: "Opportunities" },
 );
 
 const Opportunity = mongoose.model("Opportunities", opportunitySchema);

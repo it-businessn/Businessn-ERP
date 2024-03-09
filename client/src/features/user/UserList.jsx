@@ -21,7 +21,6 @@ import { PersonalInfoCard } from "components";
 import { signUpFormFields } from "config/formfields";
 import { UserSchema } from "config/schema";
 import { TOAST } from "constant";
-import "features/sidebar/Sidebar.css";
 import { FilterMatchMode, FilterOperator } from "primereact/api";
 import { Column } from "primereact/column";
 import { DataTable } from "primereact/datatable";

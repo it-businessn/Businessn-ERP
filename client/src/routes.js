@@ -1,7 +1,7 @@
 import { Suspense, lazy } from "react";
 import { createBrowserRouter } from "react-router-dom";
 
-import Loader from "./features/Loader";
+import Loader from "./components/Loader";
 import PageNotFound from "./features/PageNotFound";
 import Home from "./features/home";
 // import AddPayrun from "./features/payroll/AddPayRun";
@@ -13,9 +13,11 @@ const UserProfileDetails = lazy(() =>
 	import("./components/user/UserProfileDetails"),
 );
 const AddOpportunity = lazy(() =>
-	import("./features/sales/pipeline/AddOpportunity"),
+	import("./erp-modules/sales/target-leads-pipeline/AddOpportunity"),
 );
-const TaskByDate = lazy(() => import("./features/sales/calendar/TaskByDate"));
+const TaskByDate = lazy(() =>
+	import("./erp-modules/sales/calendar/TaskByDate"),
+);
 
 const Contacts = lazy(() => import("./features/sales/contacts"));
 
@@ -24,10 +26,10 @@ const AddContact = lazy(() => import("./features/sales/contacts/AddContact"));
 const EditContact = lazy(() => import("./features/sales/contacts/EditContact"));
 
 const EditOpportunity = lazy(() =>
-	import("./features/sales/pipeline/EditOpportunity"),
+	import("./erp-modules/sales/target-leads-pipeline/EditOpportunity"),
 );
 const OpportunitiesList = lazy(() =>
-	import("./features/sales/pipeline/OpportunitiesList"),
+	import("./erp-modules/sales/target-leads-pipeline/OpportunitiesList"),
 );
 
 const EditUser = lazy(() => import("./features/user/profile/EditUser"));
@@ -36,28 +38,34 @@ const Login = lazy(() => import("./features/login"));
 const SignUp = lazy(() => import("./features/sign-up"));
 const VerifyEmail = lazy(() => import("./features/verify-user"));
 
-const CRMDashboard = lazy(() => import("./features/sales/dashboard"));
-const Activities = lazy(() => import("./features/sales/activities"));
-const Calendar = lazy(() => import("./features/sales/calendar"));
-const Payouts = lazy(() => import("./features/sales/payouts"));
-const Customers = lazy(() => import("./features/sales/customers"));
+const CRMDashboard = lazy(() => import("./erp-modules/sales/dashboard"));
+const Activities = lazy(() => import("./erp-modules/sales/activities"));
+const Calendar = lazy(() => import("./erp-modules/sales/calendar"));
+const Payouts = lazy(() => import("./erp-modules/sales/payouts"));
+const Customers = lazy(() => import("./erp-modules/sales/customers"));
 
-const Opportunities = lazy(() => import("./features/sales/opportunities"));
-const LeadsDocket = lazy(() => import("./features/sales/lead docket"));
-const LeadsDisburse = lazy(() => import("./features/sales/lead disburse"));
-const FreshLeads = lazy(() => import("./features/sales/fresh_leads"));
-const Pipeline = lazy(() => import("./features/sales/pipeline"));
+const Opportunities = lazy(() => import("./erp-modules/sales/opportunities"));
+const LeadsDocket = lazy(() => import("./erp-modules/sales/lead docket"));
+const LeadsDisburse = lazy(() => import("./erp-modules/sales/lead disburse"));
+const FreshLeads = lazy(() => import("./erp-modules/sales/fresh_leads"));
+const Pipeline = lazy(() =>
+	import("./erp-modules/sales/target-leads-pipeline"),
+);
 
-const Products = lazy(() => import("./features/sales/products"));
-const Orders = lazy(() => import("./features/sales/orders"));
-const Invoice = lazy(() => import("./features/sales/invoice"));
+const Products = lazy(() => import("./erp-modules/sales/products"));
+const Orders = lazy(() => import("./erp-modules/sales/orders"));
+const Invoice = lazy(() => import("./erp-modules/sales/invoice"));
 
-const Resources = lazy(() => import("./features/sales/resources"));
-const SalesReport = lazy(() => import("./features/sales/reports"));
-const Setup = lazy(() => import("./features/sales/setup"));
+const Resources = lazy(() => import("./erp-modules/sales/resources"));
+const SalesReport = lazy(() => import("./erp-modules/sales/reports"));
+const Setup = lazy(() => import("./erp-modules/sales/setup"));
 
-const ProjectDashboard = lazy(() => import("./features/project/dashboard"));
-const WorkView = lazy(() => import("./features/project/workview"));
+const ProjectDashboard = lazy(() =>
+	import("./erp-modules/project-management/dashboard"),
+);
+const WorkView = lazy(() =>
+	import("./erp-modules/project-management/workview"),
+);
 
 export const router = createBrowserRouter([
 	{

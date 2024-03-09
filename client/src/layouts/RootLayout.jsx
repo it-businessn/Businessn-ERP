@@ -1,7 +1,12 @@
+import { Flex, useDisclosure } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
+
+import Navbar from "components/Navbar";
+import Sidebar from "components/sidebar";
+import { SIDEBAR_MENU } from "components/sidebar/data";
+import { useBreakpointValue } from "services/Breakpoint";
 import LocalStorageService from "services/LocalStorageService";
-import DashboardLayout from "./DashboardLayout";
 
 const RootLayout = () => {
 	const [user, setUser] = useState(LocalStorageService.getItem("user"));
@@ -20,14 +25,57 @@ const RootLayout = () => {
 		setUser(LocalStorageService.removeItem("user"));
 	};
 
+	const { isMobile } = useBreakpointValue();
+
+	const { isOpen, onOpen, onClose } = useDisclosure();
+
+	const [activeMenu, setActiveMenu] = useState(null);
+
+	const handleClick = (menu) => setActiveMenu(menu);
+
+	const handleMenuItemClick = () => onClose();
+
+	const [company, selectedCompany] = useState("FD");
+
+	const handleCompany = (company = "FD") => {
+		// if (company === "FD") {
+		// 	setActiveMenu(FD_SIDEBAR_MENU.find((menu) => menu.id === "sales"));
+		// } else {
+		// 	setActiveMenu(BUSINESSN_SIDEBAR_MENU.find((menu) => menu.id === "sales"));
+		// }
+
+		setActiveMenu(SIDEBAR_MENU.find((menu) => menu.id === "sales"));
+	};
+
+	useEffect(() => {
+		handleCompany(company);
+	}, [company]);
+
 	return (
 		<>
 			{user && (
-				<DashboardLayout handleLogout={handleLogout} user={user}>
-					<main className="main_content">
-						<Outlet />
-					</main>
-				</DashboardLayout>
+				<>
+					<Navbar
+						company={company}
+						selectedCompany={selectedCompany}
+						user={user}
+						handleClick={handleClick}
+						handleLogout={handleLogout}
+						onOpen={onOpen}
+						handleCompany={handleCompany}
+					/>
+					<Flex minH={"100vh"} as="section">
+						<Sidebar
+							activeMenu={activeMenu}
+							isOpen={isOpen}
+							onClose={onClose}
+							handleMenuItemClick={handleMenuItemClick}
+						/>
+						<main className="main_content">
+							<Outlet />
+						</main>
+					</Flex>
+				</>
 			)}
 		</>
 	);

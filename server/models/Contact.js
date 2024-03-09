@@ -1,17 +1,17 @@
 const mongoose = require("mongoose");
 
 const contactSchema = new mongoose.Schema({
-  firstName: String,
-  lastName: String,
-  email: String,
-  phone: String,
-  primaryContactAddress: String,
-  companyName: String,
-  industryType: String,
-  companyAddress: String,
-  revenue: String,
-  employees: Number,
-  date: { type: Date, default: Date.now },
+	companyAddress: String,
+	companyName: String,
+	date: { type: Date, default: Date.now },
+	email: String,
+	employees: Number,
+	firstName: String,
+	industryType: String,
+	lastName: String,
+	phone: String,
+	primaryContactAddress: String,
+	revenue: String,
 });
 
 const Contact = mongoose.model("Contact", contactSchema);

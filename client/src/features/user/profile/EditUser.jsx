@@ -18,11 +18,11 @@ import {
 	useToast,
 } from "@chakra-ui/react";
 import { UserProfile } from "components";
+import ProfileContainer from "components/ui/ProfileContainer";
 import { UserSchema } from "config/schema";
 import { TOAST } from "constant";
 import { Field, Form, FormikProvider, useFormik } from "formik";
 import { useAuthContext } from "hooks/useAuthContext";
-import ProfileContainer from "layouts/ProfileContainer";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import SettingService from "services/SettingService";
