@@ -1,3 +1,10 @@
+:root {
+	--primary_button_bg: #537eee;
+	--white: #fff;
+	--status_button_border: #76c094;
+	--filter_color: #d3d3d3;
+}
+
 html {
 	min-height: 80%;
 	margin: 0 auto;
@@ -45,6 +52,7 @@ body {
 	font-size: 1.5em;
 	color: white;
 }
+
 /* react calendar css overrides */
 .rbc-header {
 	min-height: 2.5em !important;
@@ -54,21 +62,26 @@ body {
 	text-transform: uppercase;
 	color: #a9a9ab;
 }
+
 .rbc-month-view {
 	border: none !important;
 }
+
 .rbc-date-cell {
 	padding: 1em;
 	text-align: left !important;
 	color: black;
 }
+
 .rbc-button-link {
 	font-weight: 600;
 }
+
 .rbc-event {
 	margin-left: -2px !important;
 	padding: 0 !important;
 }
+
 @media only screen and (max-width: 767px) {
 	.main_content {
 		width: 100vw;

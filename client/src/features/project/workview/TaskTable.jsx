@@ -23,7 +23,7 @@ import {
 import React, { useState } from "react";
 import { FaCaretDown, FaSort } from "react-icons/fa";
 import { GoTasklist } from "react-icons/go";
-import { generateLighterShade } from "utils";
+import { formatDate, generateLighterShade } from "utils";
 
 const TaskTable = ({ data }) => {
 	// const [filters, setFilters] = useState({
@@ -67,8 +67,11 @@ const TaskTable = ({ data }) => {
 				p={"2px"}
 				fontSize={"8px"}
 				color={"brand.primary_button_bg"}
-				border={`1px solid ${generateLighterShade("#517ae8", 0.5)}`}
-				bg={generateLighterShade("#517ae8", 0.8)}
+				border={`1px solid ${generateLighterShade(
+					"var(--primary_button_bg)",
+					0.5,
+				)}`}
+				bg={generateLighterShade("var(--primary_button_bg)", 0.8)}
 				leftIcon={
 					<Icon
 						as={GoTasklist}
@@ -91,7 +94,8 @@ const TaskTable = ({ data }) => {
 		const bars = [];
 
 		for (let i = 0; i < barCount; i++) {
-			const barColor = priority <= (i + 1) * 33.33 ? "#e9a923" : "orange.400";
+			const barColor =
+				priority <= (i + 1) * 33.33 ? "brand.priority_medium" : "orange.400";
 			bars.push(
 				<Box key={i} h="2em" w="10px" bgColor={barColor} borderRadius="2px" />,
 			);
@@ -175,14 +179,7 @@ const TaskTable = ({ data }) => {
 										<HStack spacing="1">{renderPriorityBars(2)}</HStack>
 									</Td>
 									<Td fontSize={"xs"}>{task.projectName}</Td>
-									<Td fontSize={"xs"}>
-										{new Date(task.date).toLocaleDateString("en-US", {
-											year: "numeric",
-											month: "2-digit",
-											day: "2-digit",
-										})}{" "}
-										{/* {new Date(task.date).toLocaleTimeString()} */}
-									</Td>
+									<Td fontSize={"xs"}>{formatDate(task.date)}</Td>
 									<Td fontSize={"xs"}></Td>
 									<Td
 										fontSize={"12px"}
@@ -212,8 +209,8 @@ const TaskTable = ({ data }) => {
 											bg={generateLighterShade("#76c094", 0.9)}
 											p={"5px"}
 											borderRadius={"8px"}
-											border={"1px solid #76c094"}
-											color={"#76c094"}
+											border={"1px solid var(--status_button_border)"}
+											color="var(--status_button_border)"
 										>
 											<Text> {task.taskStatus}</Text>
 											<Text>7d over</Text>
@@ -232,8 +229,8 @@ const TaskTable = ({ data }) => {
 																	isChecked={true}
 																	onChange={(e) => console.log(e)}
 																	sx={{
-																		bgColor: "#517ae8",
-																		color: "#fff",
+																		bgColor: "var(--primary_button_bg)",
+																		color: "var(--white)",
 																		borderRadius: "10px !important",
 																	}}
 																/>

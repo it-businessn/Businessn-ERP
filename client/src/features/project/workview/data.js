@@ -28,4 +28,12 @@ export const RANDOM_PEOPLE_ICON = [
 	},
 ];
 
-export const PROJECT_ASSIGNEES = [{ name: "David" }, { name: "Juli" }];
+export const PROJECT_ASSIGNEES = [
+	{ name: "Assignee1", id: "Assignee1" },
+	{ name: "Assignee2", id: "Assignee2" },
+];
+
+export const SUPERVISOR_ASSIGNEES = [
+	{ name: "Supervisor1", id: "Supervisor1" },
+	{ name: "Supervisor2", id: "Supervisor2" },
+];

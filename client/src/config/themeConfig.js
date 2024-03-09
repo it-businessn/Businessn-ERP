@@ -11,6 +11,7 @@ const theme = extendTheme(
 				400: "#959595",
 				500: "##78d624",
 				600: "#000000",
+				700: "#E2E8F0",
 				primary_bg: "#f7f7ff",
 				nav_color: "#485763",
 				icon_hover: "#f2f2f2",
@@ -18,6 +19,8 @@ const theme = extendTheme(
 				primary_button_bg: "#537eee",
 				nav_gradient:
 					"linear-gradient(180deg, rgb(108 118 134) 0%, rgb(237 243 255) 100%)",
+				priority_medium: "#e9a923",
+				task_status_color: "#76c094",
 			},
 		},
 	},
