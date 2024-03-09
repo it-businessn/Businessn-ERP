@@ -3,17 +3,22 @@ import { FaCaretDown } from "react-icons/fa";
 
 import { generateLighterShade } from "utils";
 
-const SelectBox = ({ data, selectedValue, code }) => {
+const SelectBox = ({ data, selectedValue, code, bg_color = "#537eee" }) => {
+	const handleChange = (event) => {
+		console.log(event.target.value);
+	};
+	const value = Array.isArray(selectedValue) ? selectedValue[0] : selectedValue;
+
 	return (
 		<Select
 			icon={<Icon as={FaCaretDown} />}
 			borderRadius={"10px"}
 			size={"sm"}
 			color={"brand.primary_button_bg"}
-			bg={generateLighterShade("var(--primary_button_bg)", 0.9)}
+			bg={generateLighterShade(bg_color, 0.9)}
 			border={`1px solid var(--primary_button_bg)`}
-			value={selectedValue}
-			onChange={(e) => console.log(e.target.value)}
+			value={value}
+			onChange={handleChange}
 		>
 			{data.map((item) => (
 				<option value={item[code]} key={item.id}>

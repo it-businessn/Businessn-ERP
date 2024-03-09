@@ -9,7 +9,13 @@ import {
 } from "@chakra-ui/react";
 import ModalLayout from "components/ui/ModalLayout";
 import PrimaryButton from "components/ui/PrimaryButton";
-import { PROJECT_ASSIGNEES } from "features/project/workview/data";
+import {
+	INDUSTRIES,
+	LEAD_SOURCES,
+	PRODUCTS_SERVICES,
+	PROJECT_ASSIGNEES,
+	REGIONS,
+} from "features/project/workview/data";
 import { useState } from "react";
 import { FaCaretDown } from "react-icons/fa";
 import LeadsService from "services/LeadsService";
@@ -24,12 +30,19 @@ const AddNewOpportunity = ({ isOpen, onClose, setIsAdded }) => {
 		stage: "",
 		primaryAssignee: [],
 		supervisorAssignee: [],
+		region: "",
+		industry: "",
+		productService: [],
+		phone: "",
+		address: "",
+		source: "",
 	};
 
 	const [isSubmitting, setSubmitting] = useState(false);
 	const [error, setError] = useState(false);
 	const [formData, setFormData] = useState(defaultOpportunity);
 
+	const [selectedProductService, setSelectedProductService] = useState([]);
 	const [selectedPrimaryAssignees, setSelectedPrimaryAssignees] = useState([]);
 	const [selectedSupervisorAssignees, setSelectedSupervisorAssignees] =
 		useState([]);
@@ -41,6 +54,7 @@ const AddNewOpportunity = ({ isOpen, onClose, setIsAdded }) => {
 
 	const handleSubmit = async (e) => {
 		e.preventDefault();
+		formData.productService = selectedProductService;
 		formData.primaryAssignee = selectedPrimaryAssignees;
 		formData.supervisorAssignee = selectedSupervisorAssignees;
 
@@ -78,26 +92,112 @@ const AddNewOpportunity = ({ isOpen, onClose, setIsAdded }) => {
 							required
 						/>
 					</FormControl>
+					<HStack>
+						<FormControl>
+							<FormLabel>Abbreviation</FormLabel>
+							<Input
+								type="text"
+								name="abbreviation"
+								value={formData.abbreviation}
+								onChange={handleChange}
+								required
+							/>
+						</FormControl>
+						<FormControl>
+							<FormLabel>Phone</FormLabel>
+							<Input
+								type="text"
+								name="phone"
+								value={formData.phone}
+								onChange={handleChange}
+								required
+							/>
+						</FormControl>
+						<FormControl>
+							<FormLabel>Email</FormLabel>
+							<Input
+								type="email"
+								name="email"
+								value={formData.email}
+								onChange={handleChange}
+								required
+							/>
+						</FormControl>
+					</HStack>
+
 					<FormControl>
-						<FormLabel>Abbreviation</FormLabel>
+						<FormLabel>Address</FormLabel>
 						<Input
 							type="text"
-							name="abbreviation"
-							value={formData.abbreviation}
+							name="address"
+							value={formData.address}
 							onChange={handleChange}
 							required
 						/>
 					</FormControl>
-					<FormControl>
-						<FormLabel>Email</FormLabel>
-						<Input
-							type="email"
-							name="email"
-							value={formData.email}
-							onChange={handleChange}
-							required
-						/>
-					</FormControl>
+
+					<AssigneeSelector
+						assignees={PRODUCTS_SERVICES}
+						selectedAssignees={selectedProductService}
+						onAssigneeChange={setSelectedProductService}
+						onRemoveAssignee={setSelectedProductService}
+						label="Products/Services"
+						name="supervisorAssignee"
+					/>
+					<HStack>
+						<FormControl>
+							<FormLabel>Region</FormLabel>
+							<Select
+								icon={<FaCaretDown />}
+								borderRadius="10px"
+								size="sm"
+								placeholder="Select Region"
+								name="region"
+								value={formData.region}
+								onChange={handleChange}
+							>
+								{REGIONS.map(({ id, name }) => (
+									<option value={name} key={id}>
+										{name}
+									</option>
+								))}
+							</Select>
+						</FormControl>
+						<FormControl>
+							<FormLabel>Industry</FormLabel>
+							<Select
+								icon={<FaCaretDown />}
+								borderRadius="10px"
+								size="sm"
+								placeholder="Select Industry"
+								name="industry"
+								value={formData.industry}
+								onChange={handleChange}
+							>
+								{INDUSTRIES.map(({ id, name }) => (
+									<option value={name} key={id}>
+										{name}
+									</option>
+								))}
+							</Select>
+						</FormControl>
+					</HStack>
+					<AssigneeSelector
+						assignees={PROJECT_ASSIGNEES}
+						selectedAssignees={selectedPrimaryAssignees}
+						onAssigneeChange={setSelectedPrimaryAssignees}
+						onRemoveAssignee={setSelectedPrimaryAssignees}
+						label="Primary Assignee"
+						name="primaryAssignee"
+					/>
+					<AssigneeSelector
+						assignees={PROJECT_ASSIGNEES}
+						selectedAssignees={selectedSupervisorAssignees}
+						onAssigneeChange={setSelectedSupervisorAssignees}
+						onRemoveAssignee={setSelectedSupervisorAssignees}
+						label="Supervisor Assignee"
+						name="supervisorAssignee"
+					/>
 					<FormControl>
 						<FormLabel>Stage</FormLabel>
 						<Select
@@ -117,24 +217,24 @@ const AddNewOpportunity = ({ isOpen, onClose, setIsAdded }) => {
 						</Select>
 					</FormControl>
 
-					<AssigneeSelector
-						assignees={PROJECT_ASSIGNEES}
-						selectedAssignees={selectedPrimaryAssignees}
-						onAssigneeChange={setSelectedPrimaryAssignees}
-						onRemoveAssignee={setSelectedPrimaryAssignees}
-						label="Primary Assignee"
-						name="primaryAssignee"
-					/>
-
-					<AssigneeSelector
-						assignees={PROJECT_ASSIGNEES}
-						selectedAssignees={selectedSupervisorAssignees}
-						onAssigneeChange={setSelectedSupervisorAssignees}
-						onRemoveAssignee={setSelectedSupervisorAssignees}
-						label="Supervisor Assignee"
-						name="supervisorAssignee"
-					/>
-
+					<FormControl>
+						<FormLabel>Source</FormLabel>
+						<Select
+							icon={<FaCaretDown />}
+							borderRadius="10px"
+							size="sm"
+							placeholder="Select Lead Source"
+							name="source"
+							value={formData.source}
+							onChange={handleChange}
+						>
+							{LEAD_SOURCES.map(({ id, name }) => (
+								<option value={name} key={id}>
+									{name}
+								</option>
+							))}
+						</Select>
+					</FormControl>
 					<HStack justifyContent={"end"}>
 						<PrimaryButton name="Add" isLoading={isSubmitting} px="2em" />
 

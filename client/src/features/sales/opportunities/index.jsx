@@ -8,7 +8,6 @@ import {
 	Spacer,
 	Tbody,
 	Td,
-	Text,
 	Tr,
 	useDisclosure,
 } from "@chakra-ui/react";
@@ -16,6 +15,7 @@ import BoxLayout from "components/ui/BoxLayout";
 import PrimaryButton from "components/ui/PrimaryButton";
 import SelectBox from "components/ui/SelectBox";
 import TableLayout from "components/ui/TableLayout";
+import TextTitle from "components/ui/TextTitle";
 import Loader from "features/Loader";
 import {
 	PROJECT_ASSIGNEES,
@@ -85,7 +85,7 @@ const Opportunities = () => {
 	const createOpportunity = () => (
 		<PrimaryButton onOpen={onOpen} name={"Add new opportunity"} />
 	);
-	const caption = () => <Text fontWeight="bold">Contact</Text>;
+	const caption = () => <TextTitle title={"Contact"} />;
 
 	const columns = [
 		"Opportunity name",
@@ -121,15 +121,15 @@ const Opportunities = () => {
 			)}
 			{!opportunities && <Loader />}
 			{opportunities && (
-				<TableLayout data={opportunities} cols={columns}>
+				<TableLayout cols={columns}>
 					<Tbody>
 						{opportunities?.map(
 							({
 								_id,
-								opportunityName,
 								abbreviation,
-								email,
 								createdOn,
+								email,
+								opportunityName,
 								primaryAssignee,
 								stage,
 								supervisorAssignee,

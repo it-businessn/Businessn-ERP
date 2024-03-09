@@ -37,3 +37,36 @@ export const SUPERVISOR_ASSIGNEES = [
 	{ name: "Supervisor1", id: "Supervisor1" },
 	{ name: "Supervisor2", id: "Supervisor2" },
 ];
+
+export const REGIONS = [
+	{ name: "North America", id: "NA" },
+	{ name: "Europe", id: "EU" },
+	{ name: "Asia-Pacific", id: "APAC" },
+];
+
+export const PRODUCTS_SERVICES = [
+	{ name: "Software", id: "software" },
+	{ name: "Hardware", id: "hardware" },
+	{ name: "Consulting", id: "consulting" },
+];
+
+export const INDUSTRIES = [
+	{ name: "Technology", id: "technology" },
+	{ name: "Healthcare", id: "healthcare" },
+	{ name: "Finance", id: "finance" },
+	{ name: "Manufacturing", id: "manufacturing" },
+	{ name: "Education", id: "education" },
+];
+
+export const LEAD_SOURCES = [
+	{ name: "Referral", id: "referral" },
+	{ name: "Cold Call", id: "cold-call" },
+	{ name: "Website Inquiry", id: "website-inquiry" },
+	{ name: "Trade Show", id: "trade-show" },
+	{ name: "Social Media", id: "social-media" },
+];
+
+export const WEIGHTING = [
+	{ name: "0", id: "0" },
+	{ name: "1", id: "1" },
+];

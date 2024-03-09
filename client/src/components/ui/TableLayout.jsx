@@ -1,13 +1,20 @@
-import { Box, Table, Th, Thead, Tr } from "@chakra-ui/react";
+import { Box, Checkbox, Table, Th, Thead, Tr } from "@chakra-ui/react";
 
-const TableLayout = ({ cols, children }) => {
+const TableLayout = ({ hasMulti, cols, children, isSmall }) => {
 	return (
 		<Box overflow="auto">
 			<Table variant="simple">
 				<Thead>
 					<Tr>
+						{hasMulti && (
+							<Th>
+								<Checkbox />
+							</Th>
+						)}
 						{cols.map((col) => (
-							<Th key={col}>{col}</Th>
+							<Th p={isSmall ? 1 : "auto"} key={col}>
+								{col}
+							</Th>
 						))}
 					</Tr>
 				</Thead>
@@ -18,3 +25,17 @@ const TableLayout = ({ cols, children }) => {
 };
 
 export default TableLayout;
+//  {columns.map((column) => (
+// 							<Th key={column}>
+// 								<Menu>
+// 									<MenuButton as={Text} cursor="pointer">
+// 										{column}
+// 									</MenuButton>
+// 									<MenuList>
+// 										<MenuItem onClick={() => handleColumnSelect(column)}>
+// 											{selectedColumns.includes(column) ? "Hide" : "Show"}
+// 										</MenuItem>
+// 									</MenuList>
+// 								</Menu>
+// 							</Th>
+// 						))}

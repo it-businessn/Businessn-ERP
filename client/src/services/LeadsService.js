@@ -1,6 +1,14 @@
 import apiService from "services";
 
 const LeadsService = {
+	async getDisbursedLeads(data) {
+		return apiService.get("/leads/disburse", data);
+	},
+
+	async getConfirmedDisbursedLeads(data) {
+		return apiService.get("/leads/disburse/isConfirmed", data);
+	},
+
 	async getOpportunities() {
 		return apiService.get("/leads/opportunities");
 	},
@@ -15,6 +23,14 @@ const LeadsService = {
 
 	async updateOpportunity(data, id) {
 		return apiService.put(`/opportunities/${id}`, data, id);
+	},
+
+	async disburseLeads(data) {
+		return apiService.post("/leads/disburse", data);
+	},
+
+	async confirmDisburseLeads(data) {
+		return apiService.post("/leads/confirm-disburse", data);
 	},
 };
 

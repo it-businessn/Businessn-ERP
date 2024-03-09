@@ -32,11 +32,21 @@ export const generateLighterShade = (color, factor) => {
 export const toCapitalize = (str) =>
 	str.replace(/\b\w/g, (match) => match.toUpperCase());
 
-/* {new Date(task.date).toLocaleTimeString()} */
-
 export const formatDate = (date) =>
 	new Date(date).toLocaleDateString("en-US", {
 		year: "numeric",
 		month: "2-digit",
 		day: "2-digit",
 	});
+
+export const formatDateTime = (date) =>
+	`${formatDate(date)} ${new Date(date).toLocaleTimeString()}`;
+
+export const generateRandomData = (name, count) => {
+	const data = [];
+	for (let i = 0; i < count; i++) {
+		const value = Math.floor(Math.random() * 100) + 1;
+		data.push({ name, value });
+	}
+	return data;
+};
