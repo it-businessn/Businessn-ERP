@@ -50,3 +50,8 @@ export const generateRandomData = (name, count) => {
 	}
 	return data;
 };
+
+export const isValidPhoneNumber = (phoneNumber) => {
+	const phoneRegex = /^[0-9]{10}$/;
+	return phoneRegex.test(phoneNumber);
+};

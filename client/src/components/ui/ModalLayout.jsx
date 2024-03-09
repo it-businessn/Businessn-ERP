@@ -10,9 +10,16 @@ import {
 	Stack,
 } from "@chakra-ui/react";
 
-const ModalLayout = ({ title, isOpen, onClose, children, error }) => {
+const ModalLayout = ({
+	title,
+	isOpen,
+	onClose,
+	children,
+	error,
+	size = "4xl",
+}) => {
 	return (
-		<Modal isCentered size={"4xl"} isOpen={isOpen} onClose={onClose}>
+		<Modal isCentered size={size} isOpen={isOpen} onClose={onClose}>
 			<ModalOverlay />
 			<ModalContent>
 				<ModalHeader>{title}</ModalHeader>

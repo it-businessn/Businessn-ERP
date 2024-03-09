@@ -1,24 +1,13 @@
 import { ArrowUpIcon, CopyIcon } from "@chakra-ui/icons";
 import {
 	Box,
-	Button,
 	Card,
 	Flex,
-	FormControl,
-	FormLabel,
 	HStack,
 	Icon,
 	IconButton,
-	Input,
-	Modal,
-	ModalBody,
-	ModalCloseButton,
-	ModalContent,
-	ModalHeader,
-	ModalOverlay,
 	Select,
 	SimpleGrid,
-	Stack,
 	Text,
 	VStack,
 	useDisclosure,
@@ -27,11 +16,21 @@ import { useEffect, useState } from "react";
 import { RiEditLine } from "react-icons/ri";
 import LeadsService from "services/LeadsService";
 import { FRESH_LEADS } from "../opportunities/data";
+import EditLead from "./EditLead";
 
 const FreshLeads = () => {
-	const { isOpen, onOpen, onClose } = useDisclosure();
-	const handleSubmit = () => console.log("submit");
+	const defaultLeadInfo = {
+		_id: null,
+		opportunityName: "",
+		email: "",
+		stage: "",
+		phone: "",
+	};
 
+	const { isOpen, onOpen, onClose } = useDisclosure();
+
+	const [formData, setFormData] = useState(defaultLeadInfo);
+	const [isUpdated, setIsUpdated] = useState(false);
 	const [leads, setLeads] = useState(null);
 
 	const fetchAllLeads = async () => {
@@ -42,13 +41,25 @@ const FreshLeads = () => {
 			console.error(error);
 		}
 	};
-
 	useEffect(() => {
 		fetchAllLeads();
-	}, []);
+	}, [isUpdated]);
 
 	const totalLeads = (name) =>
 		leads.filter((lead) => lead.stage === name).length;
+
+	const handleEdit = (_id, opportunityName, email, phone, stage) => {
+		setFormData((prevData) => ({
+			...prevData,
+			_id,
+			opportunityName,
+			email,
+			phone,
+			stage,
+		}));
+		onOpen();
+	};
+
 	return (
 		<Box p={{ base: "1em", md: "2em" }}>
 			<Text fontWeight="bold" mb={"0.5em"}>
@@ -86,124 +97,86 @@ const FreshLeads = () => {
 									</Text>
 								</Flex>
 							</Box>
-							{leads.map(({ _id, opportunityName, email, phone, stage }) => {
-								return category.abbr === stage ? (
-									<Card
-										key={_id}
-										m="1em"
-										bg="var(--lead_cards_bg)"
-										border={"1px solid var(--lead_cards_border)"}
-									>
-										<VStack
-											align="flex-start"
-											color={"brand.200"}
-											fontSize="xs"
-											p={"1em"}
-											spacing={0.5}
+							{leads.map(
+								({ _id, opportunityName, email, phone, stage }) =>
+									category.abbr === stage && (
+										<Card
+											key={_id}
+											m="1em"
+											bg="var(--lead_cards_bg)"
+											border={"1px solid var(--lead_cards_border)"}
 										>
-											<HStack justifyContent={"space-between"} w={"100%"}>
-												<Text fontSize="xs" fontWeight="bold">
-													Name of Company
+											<VStack
+												align="flex-start"
+												color={"brand.200"}
+												fontSize="xs"
+												p={"1em"}
+												spacing={0.5}
+											>
+												<HStack justifyContent={"space-between"} w={"100%"}>
+													<Text fontSize="xs" fontWeight="bold">
+														Name of Company
+													</Text>
+													<RiEditLine
+														onClick={() =>
+															handleEdit(
+																_id,
+																opportunityName,
+																email,
+																phone,
+																stage,
+															)
+														}
+													/>
+												</HStack>
+												<Text
+													fontSize="xs"
+													fontWeight="bold"
+													color={"brand.600"}
+												>
+													{opportunityName}
 												</Text>
-												<RiEditLine onClick={onOpen} />
-											</HStack>
-											<Text fontSize="xs" fontWeight="bold" color={"brand.600"}>
-												{opportunityName}
-											</Text>
-											<Text fontSize="xs" fontWeight="bold">
-												Email
-											</Text>
-											<Text fontSize="xs" fontWeight="bold" color={"brand.600"}>
-												{email}
-												<IconButton
-													icon={<CopyIcon />}
-													size={"xs"}
-													color="brand.600"
-												/>
-											</Text>
-											<Text fontSize="xs" fontWeight="bold">
-												Phone
-											</Text>
-											<Text fontSize="xs" fontWeight="bold" color={"brand.600"}>
-												{phone}
-											</Text>
-										</VStack>
-									</Card>
-								) : (
-									<></>
-								);
-							})}
+												<Text fontSize="xs" fontWeight="bold">
+													Email
+												</Text>
+												<Text
+													fontSize="xs"
+													fontWeight="bold"
+													color={"brand.600"}
+												>
+													{email}
+													<IconButton
+														icon={<CopyIcon />}
+														size={"xs"}
+														color="brand.600"
+													/>
+												</Text>
+												<Text fontSize="xs" fontWeight="bold">
+													Phone
+												</Text>
+												<Text
+													fontSize="xs"
+													fontWeight="bold"
+													color={"brand.600"}
+												>
+													{phone}
+												</Text>
+											</VStack>
+										</Card>
+									),
+							)}
 						</Box>
 					))}
 			</SimpleGrid>
-			<Modal isCentered isOpen={isOpen} onClose={onClose}>
-				<ModalOverlay />
-				<ModalContent>
-					<ModalHeader>Edit Lead</ModalHeader>
-					<ModalCloseButton />
-					<ModalBody>
-						<Stack spacing="5">
-							<form onSubmit={handleSubmit}>
-								<Stack spacing={4}>
-									<FormControl>
-										<FormLabel>Name of Company</FormLabel>
-										<Input
-											type="text"
-											name="company"
-											// value={formData.email}
-											// onChange={handleChange}
-											required
-										/>
-									</FormControl>
-									<FormControl>
-										<FormLabel>Email</FormLabel>
-										<Input
-											type="email"
-											name="email"
-											// value={formData.email}
-											// onChange={handleChange}
-											required
-										/>
-									</FormControl>
-									<FormControl>
-										<FormLabel>Phone</FormLabel>
-										<Input
-											type="text"
-											name="phone"
-											// value={formData.email}
-											// onChange={handleChange}
-											required
-										/>
-									</FormControl>
-									<HStack justifyContent={"end"}>
-										<Button
-											// isLoading={isLoading}
-											type="submit"
-											bg="brand.logo_bg"
-											// _hover={{ color: "brand.100" }}
-										>
-											Save
-										</Button>
-										<Button
-											onClick={onClose}
-											// isLoading={isLoading}
-											colorScheme="gray"
-										>
-											Cancel
-										</Button>
-									</HStack>
-								</Stack>
-							</form>
-							{/* {error && (
-						<Alert status="error" mt={4}>
-							<AlertIcon />
-							{error}
-						</Alert>
-					)} */}
-						</Stack>
-					</ModalBody>
-				</ModalContent>
-			</Modal>
+
+			<EditLead
+				defaultLeadInfo={defaultLeadInfo}
+				formData={formData}
+				isOpen={isOpen}
+				onClose={onClose}
+				setFormData={setFormData}
+				setIsUpdated={setIsUpdated}
+			/>
 		</Box>
 	);
 };

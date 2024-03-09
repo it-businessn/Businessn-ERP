@@ -1,8 +1,9 @@
 import { Button } from "@chakra-ui/react";
 
-const PrimaryButton = ({ name, onOpen, isLoading, px }) => {
+const PrimaryButton = ({ name, onOpen, isLoading, px, isDisabled = false }) => {
 	return (
 		<Button
+			isDisabled={isDisabled}
 			isLoading={isLoading}
 			onClick={onOpen}
 			bg={"brand.primary_button_bg"}

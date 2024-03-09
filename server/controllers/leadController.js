@@ -135,6 +135,23 @@ const confirmDisburseLeads = () => async (req, res) => {
 	}
 };
 
+const updateLeadInfo = () => async (req, res) => {
+	const { id } = req.params;
+	const { email, opportunityName, phone, stage } = req.body;
+
+	try {
+		const updatedData = { email, opportunityName, phone, stage };
+		const updatedLead = await Lead.findByIdAndUpdate(
+			id,
+			{ $set: updatedData },
+			{ new: true },
+		);
+		res.status(201).json(updatedLead);
+	} catch (error) {
+		res.status(400).json({ message: error.message });
+	}
+};
+
 module.exports = {
 	confirmDisburseLeads,
 	createLeadOpportunity,
@@ -142,4 +159,5 @@ module.exports = {
 	getConfirmedDisbursedLeads,
 	getDisbursedLeads,
 	getOpportunities,
+	updateLeadInfo,
 };

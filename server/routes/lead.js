@@ -16,6 +16,8 @@ router.get("/opportunities", leadController.getOpportunities());
 
 router.post("/opportunity", leadController.createLeadOpportunity());
 
+router.put("/opportunity/:id", leadController.updateLeadInfo());
+
 router.post("/confirm-disburse", leadController.confirmDisburseLeads());
 
 module.exports = router;

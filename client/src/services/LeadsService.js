@@ -25,6 +25,10 @@ const LeadsService = {
 		return apiService.put(`/opportunities/${id}`, data, id);
 	},
 
+	async updateLeadInfo(data, id) {
+		return apiService.put(`/leads/opportunity/${id}`, data, id);
+	},
+
 	async disburseLeads(data) {
 		return apiService.post("/leads/disburse", data);
 	},
