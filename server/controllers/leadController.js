@@ -35,6 +35,7 @@ const createLeadOpportunity = () => async (req, res) => {
 	const {
 		abbreviation,
 		address,
+		companyName,
 		email,
 		industry,
 		opportunityName,
@@ -50,6 +51,7 @@ const createLeadOpportunity = () => async (req, res) => {
 	const lead = new Lead({
 		abbreviation,
 		address,
+		companyName,
 		email,
 		industry,
 		opportunityName,

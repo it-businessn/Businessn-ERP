@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 const leadSchema = new mongoose.Schema({
 	abbreviation: String,
 	address: String,
+	companyName: String,
 	createdOn: { type: Date, default: Date.now },
 	disbursedTo: String,
 	email: String,

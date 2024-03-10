@@ -12,6 +12,8 @@ router.post("/register", userController.createUser());
 
 router.put("/:id", userController.updateUser());
 
+router.put("/lead/:id", userController.updateUserAssignedLeads);
+
 router.put(
 	"/change-password/:id",
 	authMiddleware.authenticate,

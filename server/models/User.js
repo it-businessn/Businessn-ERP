@@ -10,11 +10,13 @@ const userSchema = new mongoose.Schema({
 	address: String,
 	companyId: String,
 	department: String,
-	date: { type: Date, default: Date.now },
+	createdOn: { type: Date, default: Date.now },
 	email: { type: String, unique: true, required: true },
 	firstName: String,
 	fullName: String,
+	isActive: Boolean,
 	lastName: String,
+	lastLogin: Date,
 	manager: {
 		type: String,
 		required: true,
@@ -26,6 +28,10 @@ const userSchema = new mongoose.Schema({
 	},
 	phoneNumber: String,
 	role: { type: String, required: true },
+	assignedLeads: Number,
+	assignedAreas: Object,
+	assignedProducts: Object,
+	assignedWeight: Number,
 });
 
 const User = mongoose.model("User", userSchema);

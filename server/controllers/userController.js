@@ -1,8 +1,10 @@
 const User = require("../models/User");
+const Lead = require("../models/Lead");
 
 const getUsers = () => async (req, res) => {
 	try {
-		const users = (await User.find()).sort({ date: -1 });
+		// const users = (await User.find()).sort((a, b) => b.createdOn - a.createdOn);
+		const users = await User.find();
 		res.status(200).json(users);
 	} catch (error) {
 		res.status(404).json({ error: error.message });
@@ -99,4 +101,46 @@ const updateUser = () => async (req, res) => {
 	}
 };
 
-module.exports = { changePassword, createUser, getUsers, login, updateUser };
+const updateUserAssignedLeads = async (req, res) => {
+	const assignedNewWeights = req.body;
+
+	try {
+		const leads = await Lead.find({ isDisbursed: true });
+		let totalRecords = leads.length;
+		let totalWeight = assignedNewWeights.reduce(
+			(sum, item) => sum + item.weight,
+			0,
+		);
+
+		let assignedLeads = 0;
+		let updatedLeads = [];
+		assignedNewWeights.forEach(({ id, weight }) => {
+			assignedLeads = Math.round((weight / totalWeight) * leads.length);
+
+			updatedLeads.push({ id, assignedLeads, weight });
+			totalRecords -= assignedLeads;
+			totalWeight -= weight;
+		});
+		for (const lead of updatedLeads) {
+			const { id, assignedLeads, weight } = lead;
+
+			await User.findByIdAndUpdate(
+				id,
+				{ $set: { assignedLeads, assignedWeight: weight } },
+				{ new: true },
+			);
+		}
+		res.status(200).json({ message: "Update successful" });
+	} catch (error) {
+		res.status(404).json({ error: error.message });
+	}
+};
+
+module.exports = {
+	changePassword,
+	createUser,
+	getUsers,
+	login,
+	updateUser,
+	updateUserAssignedLeads,
+};
