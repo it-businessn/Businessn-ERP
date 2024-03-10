@@ -47,14 +47,19 @@ const UserProfileDetails = () => {
 		<HStack
 			flexDir={{ base: "column", md: "row" }}
 			borderRadius="10px"
-			border="3px solid white"
+			border="3px solid var(--main_color)"
 			m="1em"
 		>
-			<Card flex={1} m="1em" bg={"#eef0fc"} border={"1px solid #e3e5f1"}>
+			<Card
+				flex={1}
+				m="1em"
+				bg={"var(--lead_cards_bg)"}
+				border={"1px solid var(--lead_cards_bg)"}
+			>
 				<Box
 					fontWeight="bold"
 					p="1em"
-					bg={"#dbe5ff"}
+					bg="var(--bg_color_1)"
 					borderTopLeftRadius="10px"
 					borderTopRightRadius="10px"
 				>
@@ -100,7 +105,7 @@ const UserProfileDetails = () => {
 						Change Password
 					</Button>
 					<Button
-						bg="#dbe5ff"
+						bg="var(--bg_color_1)"
 						color={"brand.logo_bg"}
 						ml={2}
 						onClick={handleReset}

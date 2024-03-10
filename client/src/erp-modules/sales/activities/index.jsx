@@ -16,7 +16,7 @@ import { useState } from "react";
 import { RiAspectRatioLine } from "react-icons/ri";
 import { useBreakpointValue } from "services/Breakpoint";
 import { generateLighterShade } from "utils";
-import GaugeChartComponent from "./GaugeChartC";
+import GaugeChartComponent from "./GaugeChart";
 import HorizontalBarChart from "./Horizontal";
 
 const Activities = () => {
@@ -221,7 +221,7 @@ const Activities = () => {
 						<Box
 							p="1em"
 							bg={"brand.primary_bg"}
-							border="3px solid white"
+							border="3px solid var(--main_color)"
 							borderRadius="10px"
 							fontWeight="bold"
 							justifyContent="space-between"
@@ -275,7 +275,7 @@ const Activities = () => {
 						alignItems="center"
 						display={"flex"}
 						bg={"brand.primary_bg"}
-						border="3px solid white"
+						border="3px solid var(--main_color)"
 						borderRadius="10px"
 					>
 						<GaugeChartComponent value={70} maxValue={100} />
@@ -283,7 +283,7 @@ const Activities = () => {
 					<Box
 						p="1em"
 						bg={"brand.primary_bg"}
-						border="3px solid white"
+						border="3px solid var(--main_color)"
 						borderRadius="10px"
 					>
 						<Text fontWeight="bold">Contests For Sales</Text>
@@ -291,7 +291,7 @@ const Activities = () => {
 							<Box
 								p="1em"
 								bg={"brand.primary_bg"}
-								border="3px solid white"
+								border="3px solid var(--main_color)"
 								borderRadius="10px"
 								fontWeight="bold"
 							>
@@ -316,7 +316,7 @@ const Activities = () => {
 									<Progress
 										colorScheme="green"
 										size="sm"
-										bg={"white"}
+										bg={"var(--main_color)"}
 										value={50}
 									/>
 									<Flex mt={"2em"} borderTop="2px solid #e8ebf4">
@@ -342,7 +342,7 @@ const Activities = () => {
 							<Box
 								p="1em"
 								bg={"brand.primary_bg"}
-								border="3px solid white"
+								border="3px solid var(--main_color)"
 								borderRadius="10px"
 								fontWeight="bold"
 							>
@@ -367,7 +367,7 @@ const Activities = () => {
 									<Progress
 										colorScheme="green"
 										size="sm"
-										bg={"white"}
+										bg={"var(--main_color)"}
 										value={50}
 									/>
 									<Flex mt={"2em"} borderTop="2px solid #e8ebf4">
@@ -393,7 +393,7 @@ const Activities = () => {
 							<Box
 								p="1em"
 								bg={"brand.primary_bg"}
-								border="3px solid white"
+								border="3px solid var(--main_color)"
 								borderRadius="10px"
 								fontWeight="bold"
 							>
@@ -418,7 +418,7 @@ const Activities = () => {
 									<Progress
 										colorScheme="green"
 										size="sm"
-										bg={"white"}
+										bg={"var(--main_color)"}
 										value={50}
 									/>
 									<Flex mt={"2em"} borderTop="2px solid #e8ebf4">
@@ -446,7 +446,7 @@ const Activities = () => {
 							my={"1em"}
 							p="1em"
 							bg={"brand.primary_bg"}
-							border="3px solid white"
+							border="3px solid var(--main_color)"
 							borderRadius="10px"
 							fontWeight="bold"
 						>
@@ -471,7 +471,7 @@ const Activities = () => {
 								<Progress
 									colorScheme="green"
 									size="sm"
-									bg={"white"}
+									bg={"var(--main_color)"}
 									value={50}
 								/>
 								<Flex mt={"2em"} borderTop="2px solid #e8ebf4">
@@ -498,7 +498,7 @@ const Activities = () => {
 							my={"1em"}
 							p="1em"
 							bg={"brand.primary_bg"}
-							border="3px solid white"
+							border="3px solid var(--main_color)"
 							borderRadius="10px"
 							fontWeight="bold"
 						>
@@ -523,7 +523,7 @@ const Activities = () => {
 								<Progress
 									colorScheme="green"
 									size="sm"
-									bg={"white"}
+									bg={"var(--main_color)"}
 									value={50}
 								/>
 								<Flex mt={"2em"} borderTop="2px solid #e8ebf4">
@@ -550,7 +550,7 @@ const Activities = () => {
 					<Box
 						p="1em"
 						bg={"brand.primary_bg"}
-						border="3px solid white"
+						border="3px solid var(--main_color)"
 						borderRadius="10px"
 					>
 						<Text fontWeight="bold">Contests For Activity</Text>
@@ -558,7 +558,7 @@ const Activities = () => {
 							<Box
 								p="1em"
 								bg={"brand.primary_bg"}
-								border="3px solid white"
+								border="3px solid var(--main_color)"
 								borderRadius="10px"
 								fontWeight="bold"
 							>
@@ -583,7 +583,7 @@ const Activities = () => {
 									<Progress
 										colorScheme="green"
 										size="sm"
-										bg={"white"}
+										bg={"var(--main_color)"}
 										value={50}
 									/>
 									<Flex mt={"2em"} borderTop="2px solid #e8ebf4">
@@ -609,7 +609,7 @@ const Activities = () => {
 							<Box
 								p="1em"
 								bg={"brand.primary_bg"}
-								border="3px solid white"
+								border="3px solid var(--main_color)"
 								borderRadius="10px"
 								fontWeight="bold"
 							>
@@ -634,7 +634,7 @@ const Activities = () => {
 									<Progress
 										colorScheme="green"
 										size="sm"
-										bg={"white"}
+										bg={"var(--main_color)"}
 										value={50}
 									/>
 									<Flex mt={"2em"} borderTop="2px solid #e8ebf4">
@@ -660,7 +660,7 @@ const Activities = () => {
 							<Box
 								p="1em"
 								bg={"brand.primary_bg"}
-								border="3px solid white"
+								border="3px solid var(--main_color)"
 								borderRadius="10px"
 								fontWeight="bold"
 							>
@@ -685,7 +685,7 @@ const Activities = () => {
 									<Progress
 										colorScheme="green"
 										size="sm"
-										bg={"white"}
+										bg={"var(--main_color)"}
 										value={50}
 									/>
 									<Flex mt={"2em"} borderTop="2px solid #e8ebf4">
@@ -713,7 +713,7 @@ const Activities = () => {
 							my={"1em"}
 							p="1em"
 							bg={"brand.primary_bg"}
-							border="3px solid white"
+							border="3px solid var(--main_color)"
 							borderRadius="10px"
 							fontWeight="bold"
 						>
@@ -738,7 +738,7 @@ const Activities = () => {
 								<Progress
 									colorScheme="green"
 									size="sm"
-									bg={"white"}
+									bg={"var(--main_color)"}
 									value={50}
 								/>
 								<Flex mt={"2em"} borderTop="2px solid #e8ebf4">
@@ -765,7 +765,7 @@ const Activities = () => {
 							my={"1em"}
 							p="1em"
 							bg={"brand.primary_bg"}
-							border="3px solid white"
+							border="3px solid var(--main_color)"
 							borderRadius="10px"
 							fontWeight="bold"
 						>
@@ -790,7 +790,7 @@ const Activities = () => {
 								<Progress
 									colorScheme="green"
 									size="sm"
-									bg={"white"}
+									bg={"var(--main_color)"}
 									value={50}
 								/>
 								<Flex mt={"2em"} borderTop="2px solid #e8ebf4">

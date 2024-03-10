@@ -102,7 +102,7 @@ const Invoice = () => {
 				overflow="auto"
 				p="1em"
 				bg={"brand.primary_bg"}
-				border="3px solid white"
+				border="3px solid var(--main_color)"
 				borderRadius="10px"
 				fontWeight="bold"
 				mb="1em"
@@ -114,7 +114,7 @@ const Invoice = () => {
 					<Box
 						px="1em"
 						bg={"brand.primary_bg"}
-						border="3px solid white"
+						border="3px solid var(--main_color)"
 						borderRadius="10px"
 						fontWeight="bold"
 					>
@@ -134,7 +134,7 @@ const Invoice = () => {
 			<Box
 				p="1em"
 				bg={"brand.primary_bg"}
-				border="2px solid white"
+				border="2px solid var(--main_color)"
 				borderRadius="10px"
 				color={"brand.nav_color"}
 			>
@@ -143,7 +143,7 @@ const Invoice = () => {
 						<Flex justify="space-between">
 							<Text fontWeight="bold">Invoices</Text>
 							<Button
-								bg={"#537eee"}
+								bg="var(--primary_button_bg)"
 								size="xs"
 								color={"brand.primary_bg"}
 								variant={"solid"}
@@ -157,7 +157,7 @@ const Invoice = () => {
 							<Button
 								color={"brand.nav_color"}
 								leftIcon={<MdOutlineFilterList />}
-								border={"2px solid #d3d3d3"}
+								border={"2px solid var(--filter_border_color)"}
 								borderRadius={"10px"}
 								variant={"ghost"}
 								_hover={{ color: "brand.600", bg: "transparent" }}
@@ -166,7 +166,7 @@ const Invoice = () => {
 							</Button>
 							<InputGroup
 								borderRadius={"10px"}
-								border={"1px solid #d3d3d3"}
+								border={"1px solid var(--filter_border_color)"}
 								fontSize="sm"
 								fontWeight="bold"
 							>
@@ -194,7 +194,7 @@ const Invoice = () => {
 								color={"brand.nav_color"}
 								size="xs"
 								leftIcon={<MdOutlineFilterList />}
-								border={"2px solid #d3d3d3"}
+								border={"2px solid var(--filter_border_color)"}
 								borderRadius={"10px"}
 								variant={"ghost"}
 								_hover={{ color: "brand.600", bg: "transparent" }}
@@ -206,7 +206,7 @@ const Invoice = () => {
 								size="xs"
 								w={"40%"}
 								borderRadius={"10px"}
-								border={"1px solid #d3d3d3"}
+								border={"1px solid var(--filter_border_color)"}
 								fontSize="xs"
 								fontWeight="bold"
 							>
@@ -226,7 +226,7 @@ const Invoice = () => {
 								/>
 							</InputGroup>
 							<Button
-								bg={"#537eee"}
+								bg="var(--primary_button_bg)"
 								size="xs"
 								color={"brand.primary_bg"}
 								variant={"solid"}

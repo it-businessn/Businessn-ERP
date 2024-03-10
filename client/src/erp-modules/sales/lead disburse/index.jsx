@@ -15,11 +15,12 @@ import {
 	useToast,
 } from "@chakra-ui/react";
 import Loader from "components/Loader";
-import BoxLayout from "components/ui/BoxLayout";
-import SelectBox from "components/ui/SelectBox";
+import SectionLayout from "components/ui/SectionLayout";
+import SelectList from "components/ui/SelectList";
 import TableLayout from "components/ui/TableLayout";
 import TextTitle from "components/ui/TextTitle";
 import {
+	COLORS,
 	INDUSTRIES,
 	PRODUCTS_SERVICES,
 	PROJECT_ASSIGNEES,
@@ -93,7 +94,7 @@ const LeadsDocket = () => {
 				w={"200px"}
 				color={"brand.nav_color"}
 				leftIcon={<MdOutlineFilterList />}
-				border={"2px solid #d3d3d3"}
+				border={"2px solid var(--filter_border_color)"}
 				borderRadius={"10px"}
 				variant={"ghost"}
 				_hover={{ color: "brand.600", bg: "transparent" }}
@@ -102,7 +103,7 @@ const LeadsDocket = () => {
 			</Button>
 			<InputGroup
 				borderRadius={"10px"}
-				border={"1px solid #d3d3d3"}
+				border={"1px solid var(--filter_border_color)"}
 				fontWeight="bold"
 			>
 				<InputLeftElement size="xs" children={<FaSearch />} />
@@ -122,7 +123,7 @@ const LeadsDocket = () => {
 	const showDisburse = () => (
 		<Button
 			w={{ lg: "400px" }}
-			bg={generateLighterShade("#537eee", 0.9)}
+			bg={generateLighterShade(COLORS.primary, 0.9)}
 			color={"var(--primary_button_bg)"}
 			variant={"outlined"}
 			_hover={{ color: "brand.600" }}
@@ -138,7 +139,7 @@ const LeadsDocket = () => {
 		<Select
 			icon={<Icon as={FaCaretDown} />}
 			mt={{ base: "1em", md: 0 }}
-			border={"2px solid var(--filter_color)"}
+			border={"2px solid var(--filter_border_color)"}
 			borderRadius={"10px"}
 		>
 			{REGIONS.map(({ name, id }) => (
@@ -167,7 +168,7 @@ const LeadsDocket = () => {
 	];
 
 	return (
-		<BoxLayout title="Lead Disbursement">
+		<SectionLayout title="Lead Disbursement">
 			{isMobile ? (
 				<Flex flexDir="column">
 					<Flex justify="space-between">
@@ -225,7 +226,7 @@ const LeadsDocket = () => {
 									<Td p={1}>{opportunityName}</Td>
 									<Td p={1}>{opportunityName}</Td>
 									<Td p={1}>
-										<SelectBox
+										<SelectList
 											code="name"
 											selectedValue={region}
 											data={REGIONS}
@@ -233,7 +234,7 @@ const LeadsDocket = () => {
 									</Td>
 									<Td p={1}>{formatDateTime(new Date())}</Td>
 									<Td p={1}>
-										<SelectBox
+										<SelectList
 											code="name"
 											selectedValue={industry}
 											data={INDUSTRIES}
@@ -241,7 +242,7 @@ const LeadsDocket = () => {
 									</Td>
 									<Td p={1}>{address}</Td>
 									<Td p={1}>
-										<SelectBox
+										<SelectList
 											code="name"
 											selectedValue={source}
 											data={WEIGHTING}
@@ -249,28 +250,28 @@ const LeadsDocket = () => {
 									</Td>
 									<Td p={1}>{formatDate(createdOn)}</Td>
 									<Td p={1}>
-										<SelectBox
+										<SelectList
 											code="abbr"
 											selectedValue={stage}
 											data={LEAD_STAGES}
 										/>
 									</Td>
 									<Td p={1}>
-										<SelectBox
+										<SelectList
 											code="name"
 											selectedValue={primaryAssignee[0].name}
 											data={PROJECT_ASSIGNEES}
 										/>
 									</Td>
 									<Td p={1}>
-										<SelectBox
+										<SelectList
 											code="name"
 											selectedValue={supervisorAssignee[0].name}
 											data={SUPERVISOR_ASSIGNEES}
 										/>
 									</Td>
 									<Td p={1}>
-										<SelectBox
+										<SelectList
 											code="name"
 											selectedValue={productService}
 											data={PRODUCTS_SERVICES}
@@ -282,7 +283,7 @@ const LeadsDocket = () => {
 					</Tbody>
 				</TableLayout>
 			)}
-		</BoxLayout>
+		</SectionLayout>
 	);
 };
 

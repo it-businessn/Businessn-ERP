@@ -70,10 +70,10 @@ const Pipeline = () => {
 							borderRadius="md"
 							marginBottom="2"
 						>
-							<Text color="#fff" p={2.1} px={5}>
+							<Text color="var(--main_color)" p={2.1} px={5}>
 								{item.name}
 								{opportunities && (
-									<Text fontSize="xs" color="#fff">
+									<Text fontSize="xs" color="var(--main_color)">
 										{opportunities[item.name]?.opportunities?.length} records
 									</Text>
 								)}

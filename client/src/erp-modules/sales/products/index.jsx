@@ -130,7 +130,7 @@ const Products = () => {
 				overflow="auto"
 				p="1em"
 				bg={"brand.primary_bg"}
-				border="3px solid white"
+				border="3px solid var(--main_color)"
 				borderRadius="10px"
 				fontWeight="bold"
 				mb="1em"
@@ -142,7 +142,7 @@ const Products = () => {
 					<Box
 						p="1em"
 						bg={"brand.primary_bg"}
-						border="3px solid white"
+						border="3px solid var(--main_color)"
 						borderRadius="10px"
 						fontWeight="bold"
 					>
@@ -162,7 +162,7 @@ const Products = () => {
 					<Box
 						p="1em"
 						bg={"brand.primary_bg"}
-						border="3px solid white"
+						border="3px solid var(--main_color)"
 						borderRadius="10px"
 						fontWeight="bold"
 					>
@@ -172,7 +172,7 @@ const Products = () => {
 						<SimpleGrid columns={2} gap={4}>
 							<Box
 								p={4}
-								border={"2px solid #d3d3d3"}
+								border={"2px solid var(--filter_border_color)"}
 								borderRadius={"10px"}
 								justifyContent="space-evenly"
 								display="flex"
@@ -187,7 +187,7 @@ const Products = () => {
 							</Box>
 							<Box
 								p={4}
-								border={"2px solid #d3d3d3"}
+								border={"2px solid var(--filter_border_color)"}
 								borderRadius={"10px"}
 								justifyContent="space-evenly"
 								display="flex"
@@ -202,7 +202,7 @@ const Products = () => {
 							</Box>
 							<Box
 								p={4}
-								border={"2px solid #d3d3d3"}
+								border={"2px solid var(--filter_border_color)"}
 								borderRadius={"10px"}
 								justifyContent="space-evenly"
 								display="flex"
@@ -220,7 +220,7 @@ const Products = () => {
 					<Box
 						p="1em"
 						bg={"brand.primary_bg"}
-						border="3px solid white"
+						border="3px solid var(--main_color)"
 						borderRadius="10px"
 						fontWeight="bold"
 					>
@@ -230,7 +230,7 @@ const Products = () => {
 						<SimpleGrid columns={2} gap={4}>
 							<Box
 								p={4}
-								border={"2px solid #d3d3d3"}
+								border={"2px solid var(--filter_border_color)"}
 								borderRadius={"10px"}
 								justifyContent="space-evenly"
 								display="flex"
@@ -245,7 +245,7 @@ const Products = () => {
 							</Box>
 							<Box
 								p={4}
-								border={"2px solid #d3d3d3"}
+								border={"2px solid var(--filter_border_color)"}
 								borderRadius={"10px"}
 								justifyContent="space-evenly"
 								display="flex"
@@ -272,7 +272,7 @@ const Products = () => {
 			<Box
 				p="1em"
 				bg={"brand.primary_bg"}
-				border="2px solid white"
+				border="2px solid var(--main_color)"
 				borderRadius="10px"
 				color={"brand.nav_color"}
 			>
@@ -281,7 +281,7 @@ const Products = () => {
 						<Flex justify="space-between">
 							<Text fontWeight="bold">Products</Text>
 							{/* <Button
-								bg={"#537eee"}
+								bg="var(--primary_button_bg)"
 								color={"brand.primary_bg"}
 								variant={"solid"}
 								size="xs"
@@ -295,7 +295,7 @@ const Products = () => {
 							<Button
 								color={"brand.nav_color"}
 								leftIcon={<MdOutlineFilterList />}
-								border={"2px solid #d3d3d3"}
+								border={"2px solid var(--filter_border_color)"}
 								borderRadius={"10px"}
 								variant={"ghost"}
 								size={"xs"}
@@ -305,7 +305,7 @@ const Products = () => {
 							</Button>
 							<InputGroup
 								borderRadius={"10px"}
-								border={"1px solid #d3d3d3"}
+								border={"1px solid var(--filter_border_color)"}
 								fontSize="xs"
 								size={"xs"}
 								fontWeight="bold"
@@ -334,7 +334,7 @@ const Products = () => {
 							<Button
 								color={"brand.nav_color"}
 								leftIcon={<MdOutlineFilterList />}
-								border={"2px solid #d3d3d3"}
+								border={"2px solid var(--filter_border_color)"}
 								borderRadius={"10px"}
 								variant={"ghost"}
 								size={"xs"}
@@ -346,7 +346,7 @@ const Products = () => {
 							<InputGroup
 								w={"40%"}
 								borderRadius={"10px"}
-								border={"1px solid #d3d3d3"}
+								border={"1px solid var(--filter_border_color)"}
 								fontSize="xs"
 								fontWeight="bold"
 								size={"xs"}

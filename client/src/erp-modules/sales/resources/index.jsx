@@ -127,7 +127,7 @@ const Resources = () => {
 						key={resource._id}
 						p="1em"
 						bg={"brand.primary_bg"}
-						border="3px solid white"
+						border="3px solid var(--main_color)"
 						borderRadius="10px"
 					>
 						<VStack spacing={"1em"}>
@@ -138,7 +138,7 @@ const Resources = () => {
 							<Button
 								onClick={() => handleDownload(resource.originalname)}
 								w={"100%"}
-								bg={"#537eee"}
+								bg="var(--primary_button_bg)"
 								color={"brand.primary_bg"}
 								variant={"solid"}
 								_hover={{ color: "brand.600" }}
@@ -168,7 +168,7 @@ const Resources = () => {
 					px="1em"
 					py="0.5em"
 					bg={"brand.primary_bg"}
-					border="3px solid white"
+					border="3px solid var(--main_color)"
 					borderRadius="10px"
 					fontWeight="bold"
 					color={"brand.nav_color"}
@@ -184,7 +184,7 @@ const Resources = () => {
 				<Box
 					p="1em"
 					pt={"0.5em"}
-					border="3px solid white"
+					border="3px solid var(--main_color)"
 					borderRadius="10px"
 					fontWeight="bold"
 					color={"brand.nav_color"}
@@ -201,7 +201,7 @@ const Resources = () => {
 							p={{ base: "1em", lg: "1em 5px" }}
 							my={"auto"}
 							bg={"brand.primary_bg"}
-							border="3px solid white"
+							border="3px solid var(--main_color)"
 							borderRadius="10px"
 							fontWeight="bold"
 							display="flex"
@@ -215,7 +215,7 @@ const Resources = () => {
 							<Text fontSize="xs" fontWeight="bold">
 								Know your customer
 							</Text>
-							<Badge bg="green" color="white">
+							<Badge bg="green" color="var(--main_color)">
 								EXCELLENT
 							</Badge>
 							<Text color={"brand.nav_color"} fontSize="xs" fontWeight="bold">
@@ -228,7 +228,7 @@ const Resources = () => {
 							h={{ base: "auto" }}
 							my={"auto"}
 							bg={"brand.primary_bg"}
-							border="3px solid white"
+							border="3px solid var(--main_color)"
 							borderRadius="10px"
 							fontWeight="bold"
 							display="flex"
@@ -248,7 +248,7 @@ const Resources = () => {
 							<Button
 								w={"100%"}
 								p={"5px 0"}
-								bg={"#537eee"}
+								bg="var(--primary_button_bg)"
 								h={"3em"}
 								fontSize="10px"
 								color={"brand.primary_bg"}
@@ -263,7 +263,7 @@ const Resources = () => {
 							p={{ base: "1em", lg: "1em 5px" }}
 							my={"auto"}
 							bg={"brand.primary_bg"}
-							border="3px solid white"
+							border="3px solid var(--main_color)"
 							borderRadius="10px"
 							fontWeight="bold"
 							display="flex"
@@ -282,7 +282,7 @@ const Resources = () => {
 							<Heading color="transparent">ss</Heading>
 							<Button
 								w={"100%"}
-								bg={"#537eee"}
+								bg="var(--primary_button_bg)"
 								p={"5px 0"}
 								h={"3em"}
 								fontSize="10px"

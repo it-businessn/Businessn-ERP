@@ -5,19 +5,23 @@ import logoImg from "../../assets/logos/logo.png";
 
 const Logo = ({ src }) => {
 	const { isMobile } = useBreakpointValue();
+
+	const linkStyle = isMobile ? { display: "inline-flex", width: "25px" } : {};
+	const imageHeight = src ? (isMobile ? "200%" : "50px") : "50px";
+	const imageWidth = src ? (isMobile ? "200%" : "50px") : "50px";
+	const imageMarginLeft = src ? (isMobile ? "3em" : "6.5em") : "auto";
+	const imageMarginTop = src ? (isMobile ? "-2em" : "-4.5em") : "auto";
+
 	return (
 		<Box>
-			<Link
-				to="/"
-				style={isMobile ? { display: "inline-flex", width: "25px" } : {}}
-			>
+			<Link to="/" style={linkStyle}>
 				<Image
-					height={src ? (isMobile ? "200%" : "auto") : "50px"}
-					width={src ? (isMobile ? "200%" : "auto") : "50px"}
-					ml={src ? (isMobile ? "3em" : "6.5em") : "auto"}
-					mt={src ? (isMobile ? "-2em" : "-4.5em") : "auto"}
-					objectFit={"contain"}
-					src={src ? src : logoImg}
+					height={imageHeight}
+					width={imageWidth}
+					ml={imageMarginLeft}
+					mt={imageMarginTop}
+					objectFit="contain"
+					src={src || logoImg}
 					alt="Company logo"
 				/>
 			</Link>

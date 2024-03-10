@@ -1,5 +1,6 @@
 :root {
-	--filter_color: #d3d3d3;
+	--filter_border_color: #d3d3d3;
+	--bg_color_1: #dbe5ff;
 	--lead_cards_bg: #eef0fc;
 	--lead_cards_border: #e3e5f1;
 	--main_color: #ffffff;
@@ -7,12 +8,19 @@
 	--primary_button_bg: #537eee;
 	--status_button_border: #76c094;
 	--calendar_color: #a9a9ab;
+	--gray2_color: #959595;
+	--tas_item_color: #858181;
+	--nav_gradient: linear-gradient(
+		180deg,
+		rgb(108 118 134) 0%,
+		rgb(237 243 255) 100%
+	);
 }
 
 html {
 	min-height: 80%;
 	margin: 0 auto;
-	background: "#eeeeee";
+	background: var(--lead_cards_bg);
 }
 
 body {

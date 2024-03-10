@@ -2,7 +2,7 @@ import { Flex, useDisclosure } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 
-import Navbar from "components/Navbar";
+import Navbar from "components/header";
 import Sidebar from "components/sidebar";
 import { SIDEBAR_MENU } from "components/sidebar/data";
 import { useBreakpointValue } from "services/Breakpoint";

@@ -24,6 +24,7 @@ import React, { useState } from "react";
 import { FaCaretDown, FaSort } from "react-icons/fa";
 import { GoTasklist } from "react-icons/go";
 import { formatDate, generateLighterShade } from "utils";
+import { COLORS } from "./data";
 
 const TaskTable = ({ data }) => {
 	// const [filters, setFilters] = useState({
@@ -67,11 +68,8 @@ const TaskTable = ({ data }) => {
 				p={"2px"}
 				fontSize={"8px"}
 				color={"brand.primary_button_bg"}
-				border={`1px solid ${generateLighterShade(
-					"var(--primary_button_bg)",
-					0.5,
-				)}`}
-				bg={generateLighterShade("var(--primary_button_bg)", 0.8)}
+				border={`1px solid ${generateLighterShade(COLORS.primary, 0.5)}`}
+				bg={generateLighterShade(COLORS.primary, 0.8)}
 				leftIcon={
 					<Icon
 						as={GoTasklist}
@@ -206,7 +204,7 @@ const TaskTable = ({ data }) => {
 											justifyContent={"space-around"}
 											spacing={0}
 											fontWeight={"bold"}
-											bg={generateLighterShade("#76c094", 0.9)}
+											bg={generateLighterShade(COLORS.task_status, 0.9)}
 											p={"5px"}
 											borderRadius={"8px"}
 											border={"1px solid var(--status_button_border)"}

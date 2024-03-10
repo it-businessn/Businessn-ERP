@@ -63,7 +63,7 @@ const Orders = () => {
 			<Box
 				p="1em"
 				bg={"brand.primary_bg"}
-				border="3px solid white"
+				border="3px solid var(--main_color)"
 				borderRadius="10px"
 				fontWeight="bold"
 				mb="1em"
@@ -75,7 +75,7 @@ const Orders = () => {
 					<Box
 						px="1em"
 						bg={"brand.primary_bg"}
-						border="3px solid white"
+						border="3px solid var(--main_color)"
 						borderRadius="10px"
 						fontWeight="bold"
 					>
@@ -98,7 +98,7 @@ const Orders = () => {
 					<Box
 						p="1em"
 						bg={"brand.primary_bg"}
-						border="3px solid white"
+						border="3px solid var(--main_color)"
 						borderRadius="10px"
 						fontWeight="bold"
 					>
@@ -108,7 +108,7 @@ const Orders = () => {
 						<SimpleGrid columns={{ base: 2, md: 1 }} gap={4} h={"85%"}>
 							<Box
 								p={4}
-								border={"2px solid #d3d3d3"}
+								border={"2px solid var(--filter_border_color)"}
 								borderRadius={"10px"}
 								justifyContent="space-evenly"
 								display="flex"
@@ -123,7 +123,7 @@ const Orders = () => {
 							</Box>
 							<Box
 								p={4}
-								border={"2px solid #d3d3d3"}
+								border={"2px solid var(--filter_border_color)"}
 								borderRadius={"10px"}
 								justifyContent="space-evenly"
 								display="flex"
@@ -138,7 +138,7 @@ const Orders = () => {
 							</Box>
 							<Box
 								p={4}
-								border={"2px solid #d3d3d3"}
+								border={"2px solid var(--filter_border_color)"}
 								borderRadius={"10px"}
 								justifyContent="space-evenly"
 								display="flex"
@@ -156,7 +156,7 @@ const Orders = () => {
 					<Box
 						p="1em"
 						bg={"brand.primary_bg"}
-						border="3px solid white"
+						border="3px solid var(--main_color)"
 						borderRadius="10px"
 						fontWeight="bold"
 					>
@@ -166,7 +166,7 @@ const Orders = () => {
 						<SimpleGrid columns={{ base: 2, md: 1 }} gap={4} h={"80%"}>
 							<Box
 								p={4}
-								border={"2px solid #d3d3d3"}
+								border={"2px solid var(--filter_border_color)"}
 								borderRadius={"10px"}
 								justifyContent="space-evenly"
 								display="flex"
@@ -181,7 +181,7 @@ const Orders = () => {
 							</Box>
 							<Box
 								p={4}
-								border={"2px solid #d3d3d3"}
+								border={"2px solid var(--filter_border_color)"}
 								borderRadius={"10px"}
 								justifyContent="space-evenly"
 								display="flex"
@@ -197,7 +197,7 @@ const Orders = () => {
 
 							<Box
 								p={4}
-								border={"2px solid #d3d3d3"}
+								border={"2px solid var(--filter_border_color)"}
 								borderRadius={"10px"}
 								justifyContent="space-evenly"
 								display="flex"
@@ -217,7 +217,7 @@ const Orders = () => {
 			<Box
 				p="1em"
 				bg={"brand.primary_bg"}
-				border="2px solid white"
+				border="2px solid var(--main_color)"
 				borderRadius="10px"
 				color={"brand.nav_color"}
 			>
@@ -226,7 +226,7 @@ const Orders = () => {
 						<Flex justify="space-between">
 							<Text fontWeight="bold">Orders</Text>
 							{/* <Button
-								bg={"#537eee"}
+								bg="var(--primary_button_bg)"
 								color={"brand.primary_bg"}
 								variant={"solid"}
 								size="xs"
@@ -240,7 +240,7 @@ const Orders = () => {
 							<Button
 								color={"brand.nav_color"}
 								leftIcon={<MdOutlineFilterList />}
-								border={"2px solid #d3d3d3"}
+								border={"2px solid var(--filter_border_color)"}
 								borderRadius={"10px"}
 								variant={"ghost"}
 								size={"xs"}
@@ -250,7 +250,7 @@ const Orders = () => {
 							</Button>
 							<InputGroup
 								borderRadius={"10px"}
-								border={"1px solid #d3d3d3"}
+								border={"1px solid var(--filter_border_color)"}
 								fontSize="xs"
 								size={"xs"}
 								fontWeight="bold"
@@ -279,7 +279,7 @@ const Orders = () => {
 							<Button
 								color={"brand.nav_color"}
 								leftIcon={<MdOutlineFilterList />}
-								border={"2px solid #d3d3d3"}
+								border={"2px solid var(--filter_border_color)"}
 								borderRadius={"10px"}
 								variant={"ghost"}
 								size={"xs"}
@@ -291,7 +291,7 @@ const Orders = () => {
 							<InputGroup
 								w={"40%"}
 								borderRadius={"10px"}
-								border={"1px solid #d3d3d3"}
+								border={"1px solid var(--filter_border_color)"}
 								fontSize="xs"
 								fontWeight="bold"
 								size={"xs"}
@@ -311,7 +311,7 @@ const Orders = () => {
 								/>
 							</InputGroup>
 							<Button
-								bg={"#537eee"}
+								bg="var(--primary_button_bg)"
 								color={"brand.primary_bg"}
 								variant={"solid"}
 								size={"xs"}

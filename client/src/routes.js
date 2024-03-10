@@ -10,7 +10,7 @@ import RootLayout from "./layouts/RootLayout";
 // const PayrollTable = lazy(() => import("./features/payroll"));
 // const GeneratePayRun = lazy(() => import("./features/payroll/GeneratePayRun"));
 const UserProfileDetails = lazy(() =>
-	import("./components/user/UserProfileDetails"),
+	import("./features/user1/UserProfileDetails"),
 );
 const AddOpportunity = lazy(() =>
 	import("./erp-modules/sales/target-leads-pipeline/AddOpportunity"),

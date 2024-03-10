@@ -1,6 +1,6 @@
 import { Box, Text } from "@chakra-ui/react";
 
-const BoxLayout = ({ title, children }) => {
+const SectionLayout = ({ title, children }) => {
 	return (
 		<Box p={{ base: "1em", md: "2em" }}>
 			<Text fontWeight="bold" mb={"0.5em"}>
@@ -9,7 +9,7 @@ const BoxLayout = ({ title, children }) => {
 			<Box
 				p="1em"
 				bg={"brand.primary_bg"}
-				border="2px solid white"
+				border="2px solid var(--main_color)"
 				borderRadius="10px"
 				color={"brand.nav_color"}
 			>
@@ -19,4 +19,4 @@ const BoxLayout = ({ title, children }) => {
 	);
 };
 
-export default BoxLayout;
+export default SectionLayout;

@@ -21,6 +21,7 @@ import {
 	Tr,
 	VStack,
 } from "@chakra-ui/react";
+import { COLORS } from "erp-modules/project-management/workview/data";
 import { useEffect, useState } from "react";
 import { Bar } from "react-chartjs-2";
 import { CiPercent } from "react-icons/ci";
@@ -102,7 +103,7 @@ const Payouts = () => {
 			{
 				label: "Dataset 2",
 				data: [20, 30, 10, 5, 25],
-				backgroundColor: "#537eee",
+				backgroundColor: COLORS.primary,
 				borderWidth: 1,
 			},
 		],
@@ -143,7 +144,7 @@ const Payouts = () => {
 					<Box
 						p="1em"
 						bg={"brand.primary_bg"}
-						border="3px solid white"
+						border="3px solid var(--main_color)"
 						borderRadius="10px"
 						fontWeight="bold"
 						justifyContent="space-between"
@@ -180,7 +181,7 @@ const Payouts = () => {
 					<Box
 						p="1em"
 						bg={"brand.primary_bg"}
-						border="3px solid white"
+						border="3px solid var(--main_color)"
 						borderRadius="10px"
 						fontWeight="bold"
 						justifyContent="space-between"
@@ -220,7 +221,7 @@ const Payouts = () => {
 					color={"brand.nav_color"}
 					p="1em"
 					bg={"brand.primary_bg"}
-					border="3px solid white"
+					border="3px solid var(--main_color)"
 					borderRadius="10px"
 					fontWeight="bold"
 				>
@@ -243,7 +244,7 @@ const Payouts = () => {
 			<Box
 				p="1em"
 				bg={"brand.primary_bg"}
-				border="2px solid white"
+				border="2px solid var(--main_color)"
 				borderRadius="10px"
 				color={"brand.nav_color"}
 			>
@@ -256,7 +257,7 @@ const Payouts = () => {
 							<Button
 								color={"brand.nav_color"}
 								leftIcon={<MdOutlineFilterList />}
-								border={"2px solid #d3d3d3"}
+								border={"2px solid var(--filter_border_color)"}
 								borderRadius={"10px"}
 								variant={"ghost"}
 								size={"xs"}
@@ -266,7 +267,7 @@ const Payouts = () => {
 							</Button>
 							<InputGroup
 								borderRadius={"10px"}
-								border={"1px solid #d3d3d3"}
+								border={"1px solid var(--filter_border_color)"}
 								fontSize="xs"
 								size={"xs"}
 								fontWeight="bold"
@@ -295,7 +296,7 @@ const Payouts = () => {
 							<Button
 								color={"brand.nav_color"}
 								leftIcon={<MdOutlineFilterList />}
-								border={"2px solid #d3d3d3"}
+								border={"2px solid var(--filter_border_color)"}
 								borderRadius={"10px"}
 								variant={"ghost"}
 								size={"xs"}
@@ -307,7 +308,7 @@ const Payouts = () => {
 							<InputGroup
 								w={"40%"}
 								borderRadius={"10px"}
-								border={"1px solid #d3d3d3"}
+								border={"1px solid var(--filter_border_color)"}
 								fontSize="xs"
 								fontWeight="bold"
 								size={"xs"}

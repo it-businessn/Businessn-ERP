@@ -197,11 +197,11 @@ const Calendar = () => {
 				<Spacer />
 				<HStack justifyContent={isMobile && "space-between"} spacing={"1em"}>
 					<Button
-						color={"#a9a9ab"}
+						color={"var(--calendar_color)"}
 						size="xs"
 						leftIcon={<FaCaretLeft onClick={goToBack} />}
 						rightIcon={<FaCaretRight onClick={goToNext} />}
-						border={"2px solid #d3d3d3"}
+						border={"2px solid var(--filter_border_color)"}
 						borderRadius={"10px"}
 						variant={"ghost"}
 						_hover={{ color: "brand.600", bg: "transparent" }}
@@ -210,7 +210,7 @@ const Calendar = () => {
 					</Button>
 					<Button
 						minW={"150px"}
-						bg={"#537eee"}
+						bg={"var(--primary_button_bg)"}
 						size="xs"
 						color={"brand.primary_bg"}
 						variant={"solid"}
@@ -279,7 +279,7 @@ const Calendar = () => {
 				<Box
 					px={{ base: "0", md: "1em" }}
 					bg={"brand.primary_bg"}
-					border="2px solid white"
+					border="2px solid var(--main_color)"
 					borderRadius="10px"
 				>
 					<BigCalendar

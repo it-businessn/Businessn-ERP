@@ -12,9 +12,9 @@ import {
 	useDisclosure,
 } from "@chakra-ui/react";
 import Loader from "components/Loader";
-import BoxLayout from "components/ui/BoxLayout";
 import PrimaryButton from "components/ui/PrimaryButton";
-import SelectBox from "components/ui/SelectBox";
+import SectionLayout from "components/ui/SectionLayout";
+import SelectList from "components/ui/SelectList";
 import TableLayout from "components/ui/TableLayout";
 import TextTitle from "components/ui/TextTitle";
 import {
@@ -53,7 +53,7 @@ const Opportunities = () => {
 			<Button
 				color={"brand.nav_color"}
 				leftIcon={<MdOutlineFilterList />}
-				border={"2px solid var(--filter_color)"}
+				border={"2px solid var(--filter_border_color)"}
 				borderRadius={"10px"}
 				px={"2em"}
 				_hover={{ color: "brand.600", bg: "transparent" }}
@@ -62,7 +62,7 @@ const Opportunities = () => {
 			</Button>
 			<InputGroup
 				borderRadius={"10px"}
-				border={"1px solid var(--filter_color)"}
+				border={"1px solid var(--filter_border_color)"}
 				fontSize="sm"
 				fontWeight="bold"
 			>
@@ -98,7 +98,7 @@ const Opportunities = () => {
 	];
 
 	return (
-		<BoxLayout title="Opportunities">
+		<SectionLayout title="Opportunities">
 			{isMobile ? (
 				<Flex flexDir="column">
 					<Flex justify="space-between">
@@ -140,21 +140,21 @@ const Opportunities = () => {
 									<Td>{formatDate(createdOn)}</Td>
 									<Td>{email}</Td>
 									<Td>
-										<SelectBox
+										<SelectList
 											code="abbr"
 											selectedValue={stage}
 											data={LEAD_STAGES}
 										/>
 									</Td>
 									<Td>
-										<SelectBox
+										<SelectList
 											code="name"
 											selectedValue={primaryAssignee[0].name}
 											data={PROJECT_ASSIGNEES}
 										/>
 									</Td>
 									<Td>
-										<SelectBox
+										<SelectList
 											code="name"
 											selectedValue={supervisorAssignee[0].name}
 											data={SUPERVISOR_ASSIGNEES}
@@ -171,7 +171,7 @@ const Opportunities = () => {
 				isOpen={isOpen}
 				onClose={onClose}
 			/>
-		</BoxLayout>
+		</SectionLayout>
 	);
 };
 

@@ -89,7 +89,7 @@ const Calendar = () => {
 	const eventStyleGetter = () => ({
 		style: {
 			backgroundColor: "#6074c5",
-			color: "white",
+			color: "var(--main_color)",
 			border: "none",
 		},
 	});

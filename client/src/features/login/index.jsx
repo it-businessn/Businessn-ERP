@@ -10,7 +10,7 @@ const Login = () => (
 		}}
 		bgGradient={{
 			md: mode(
-				"linear(to-r, brand.600 50%, white 50%)",
+				"linear(to-r, brand.600 50%, var(--main_color) 50%)",
 				"linear(to-r, brand.600 50%, gray.900 50%)",
 			),
 		}}

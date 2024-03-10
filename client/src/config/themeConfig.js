@@ -5,20 +5,18 @@ const theme = extendTheme(
 	{
 		colors: {
 			brand: {
-				100: "#ffffff",
-				200: "#858181",
-				300: "#d5f8b6",
-				400: "#959595",
+				100: "var(--main_color)",
+				200: "var(--menu_item_color)",
+				400: "var(--gray2_color)",
 				500: "##78d624",
-				600: "#000000",
+				600: "var(--main_color_black)",
 				700: "#E2E8F0",
 				primary_bg: "#f7f7ff",
 				nav_color: "#485763",
 				icon_hover: "#f2f2f2",
 				logo_bg: "#01193d",
-				primary_button_bg: "#537eee",
-				nav_gradient:
-					"linear-gradient(180deg, rgb(108 118 134) 0%, rgb(237 243 255) 100%)",
+				primary_button_bg: "var(--primary_button_bg)",
+				nav_gradient: "var(--nav_gradient)",
 				priority_medium: "#e9a923",
 				task_status_color: "#76c094",
 			},

@@ -28,7 +28,7 @@ const GaugeChartComponent = ({ value, maxValue }) => {
 				left="10%"
 				bottom="0px"
 				transform="translateX(-50%)"
-				color="black"
+				color="var(--main_color_black)"
 			>
 				$0
 			</Text>
@@ -37,7 +37,7 @@ const GaugeChartComponent = ({ value, maxValue }) => {
 				left="50%"
 				bottom={{ base: "-20px", md: "-10px" }}
 				transform="translateX(-50%)"
-				color="black"
+				color="var(--main_color_black)"
 			>
 				Remaining $400
 			</Text>
@@ -46,7 +46,7 @@ const GaugeChartComponent = ({ value, maxValue }) => {
 				top={{ base: "-5px", md: "0" }}
 				left="50%"
 				transform="translate(-50%, -50%)"
-				color="black"
+				color="var(--main_color_black)"
 			>
 				$1600
 			</Text>
@@ -55,7 +55,7 @@ const GaugeChartComponent = ({ value, maxValue }) => {
 				bottom="0px"
 				right={{ base: "-80px", md: "-10%" }}
 				transform="translateX(-50%)"
-				color="black"
+				color="var(--main_color_black)"
 			>
 				Target $2000
 			</Text>

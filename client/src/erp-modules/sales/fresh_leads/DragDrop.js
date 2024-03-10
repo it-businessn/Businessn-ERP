@@ -6,12 +6,12 @@ const getItemStyle = (isDragging, draggableStyle) => ({
 	userSelect: "none",
 	padding: "8px",
 	margin: `0 0 8px 0`,
-	background: isDragging ? "#eef0fc" : "white",
+	background: isDragging ? "var(--lead_cards_bg)" : "var(--main_color)",
 	...draggableStyle,
 });
 
 const getListStyle = (isDraggingOver) => ({
-	background: isDraggingOver ? "#dbe5ff" : "white",
+	background: isDraggingOver ? "#dbe5ff" : "var(--main_color)",
 	padding: 8,
 	width: 250,
 });

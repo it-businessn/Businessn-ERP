@@ -49,6 +49,7 @@ function PersonalInfoCard({ initialValues, schema, formSubmit, formFields }) {
 	}, []);
 	const [userRole, setUserRole] = useState([]);
 	const [departments, setDepartment] = useState([]);
+
 	return (
 		<FormikProvider value={formik}>
 			<Form>

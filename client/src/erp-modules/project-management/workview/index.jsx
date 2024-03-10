@@ -24,9 +24,10 @@ import ProjectService from "services/ProjectService";
 import AddNewTask from "./AddNewTask";
 import ProjectTable from "./ProjectTable";
 import TaskTable from "./TaskTable";
+import { VIEW_MODE } from "./data";
 
 const WorkView = () => {
-	const [viewMode, setViewMode] = useState("Task");
+	const [viewMode, setViewMode] = useState(VIEW_MODE[0].name);
 	const { isOpen, onOpen, onClose } = useDisclosure();
 
 	const switchToView = (name) => setViewMode(name);
@@ -42,6 +43,7 @@ const WorkView = () => {
 		};
 		fetchAllProjectInfo();
 	}, []);
+
 	return (
 		<Box p={{ base: "1em", md: "2em" }} mt={{ base: "3em", md: 0 }}>
 			<Text fontWeight="bold" mb={"0.5em"}>
@@ -52,10 +54,11 @@ const WorkView = () => {
 				gap={{ base: 0, lg: "1.5em" }}
 				flexDir={{ base: "column", lg: "row" }}
 			>
-				<Box mb={4} bg={"white"} borderRadius={"1em"} px="5px">
+				<Box mb={4} bg={"var(--main_color)"} borderRadius={"1em"} px="5px">
 					<ButtonGroup variant="solid" p={0} m={0}>
-						{["Task", "Project", "Activity"].map((name) => (
+						{VIEW_MODE.map(({ name, id }) => (
 							<Button
+								key={id}
 								m={"0 !important"}
 								onClick={() => switchToView(name)}
 								color={viewMode === name ? "brand.100" : "brand.nav_color"}
@@ -70,7 +73,7 @@ const WorkView = () => {
 								fontWeight={viewMode === name ? "bold" : "normal"}
 								_hover={{ bg: "transparent", color: "brand.600" }}
 							>
-								{name} View
+								{name}
 							</Button>
 						))}
 					</ButtonGroup>
@@ -79,7 +82,7 @@ const WorkView = () => {
 				<Box>
 					<InputGroup
 						borderRadius={"1em"}
-						border={"1px solid var(--filter_color)"}
+						border={"1px solid var(--filter_border_color)"}
 						fontWeight="bold"
 					>
 						<InputLeftElement size="xs" children={<FaSearch />} />
@@ -104,7 +107,7 @@ const WorkView = () => {
 						p={0}
 						m={0}
 						borderRadius={"1em"}
-						border={"1px solid var(--filter_color)"}
+						border={"1px solid var(--filter_border_color)"}
 					>
 						<IconButton
 							icon={<AiOutlineUser />}
@@ -127,7 +130,7 @@ const WorkView = () => {
 				<Box mb={{ base: "1em", lg: "0" }}>
 					<HStack
 						borderRadius={"1em"}
-						border={"1px solid var(--filter_color)"}
+						border={"1px solid var(--filter_border_color)"}
 						color="brand.nav_color"
 					>
 						<Icon as={MdDateRange} boxSize={4} ml={2} />
@@ -140,7 +143,7 @@ const WorkView = () => {
 			<Box
 				p="2em"
 				bg={"brand.primary_bg"}
-				border="2px solid white"
+				border="2px solid var(--main_color)"
 				borderRadius="10px"
 				color={"brand.nav_color"}
 			>
@@ -160,11 +163,11 @@ const WorkView = () => {
 					</Button>
 				</Flex>
 				{!projects && <Loader />}
-				{projects && viewMode === "Task" ? (
+				{projects && viewMode === "Tasks" ? (
 					<TaskTable data={projects} />
-				) : viewMode === "Project" ? (
+				) : viewMode === "Projects" ? (
 					<ProjectTable data={projects} />
-				) : viewMode === "Activity" ? (
+				) : viewMode === "Activities" ? (
 					<TaskTable
 						data={projects.filter((task) => task.todoItems.length > 0)}
 					/>

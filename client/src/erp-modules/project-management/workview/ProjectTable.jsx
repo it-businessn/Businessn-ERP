@@ -86,7 +86,7 @@ const ProjectTable = () => {
 							<Text
 								textAlign="center"
 								fontSize={{ base: "xs", md: "md" }}
-								color="black"
+								color="var(--main_color_black)"
 								fontWeight="bold"
 							>
 								{project.todoItems.length === 0

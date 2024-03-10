@@ -36,7 +36,7 @@ const FileUploader = ({ fileTypes, userName, setNewUpload }) => {
 			<Box
 				p="1em"
 				bg={"brand.primary_bg"}
-				border="3px solid white"
+				border="3px solid var(--main_color)"
 				borderRadius="10px"
 				fontWeight="bold"
 			>
@@ -55,7 +55,7 @@ const FileUploader = ({ fileTypes, userName, setNewUpload }) => {
 					{/* <Spacer /> */}
 					<Button
 						isDisabled={!file}
-						bg={"#537eee"}
+						bg="var(--primary_button_bg)"
 						onClick={handleUpload}
 						color={"brand.primary_bg"}
 						variant={"solid"}

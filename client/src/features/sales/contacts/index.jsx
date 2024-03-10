@@ -129,7 +129,7 @@ const Contacts = () => {
 							/>
 						)}
 					</Box>
-					<Box flex="2" bg="#eeeeee">
+					<Box flex="2" bg="var(--lead_cards_bg)">
 						<Tabs
 							isFitted
 							variant="enclosed"

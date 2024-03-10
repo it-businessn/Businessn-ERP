@@ -99,7 +99,7 @@ const CRMDashboard = () => {
 				<Box
 					px="1em"
 					bg={"brand.primary_bg"}
-					border="3px solid white"
+					border="3px solid var(--main_color)"
 					borderRadius="10px"
 					fontWeight="bold"
 				>
@@ -131,7 +131,7 @@ const CRMDashboard = () => {
 				<Box
 					px="1em"
 					bg={"brand.primary_bg"}
-					border="3px solid white"
+					border="3px solid var(--main_color)"
 					borderRadius="10px"
 					fontWeight="bold"
 				>
@@ -163,7 +163,7 @@ const CRMDashboard = () => {
 				<Box
 					px="1em"
 					bg={"brand.primary_bg"}
-					border="3px solid white"
+					border="3px solid var(--main_color)"
 					borderRadius="10px"
 					fontWeight="bold"
 				>
@@ -196,7 +196,7 @@ const CRMDashboard = () => {
 					px="1em"
 					pb="10px"
 					bg={"brand.primary_bg"}
-					border="3px solid white"
+					border="3px solid var(--main_color)"
 					borderRadius="10px"
 					fontWeight="bold"
 				>
@@ -231,7 +231,7 @@ const CRMDashboard = () => {
 				<Box
 					px="1em"
 					bg={"brand.primary_bg"}
-					border="3px solid white"
+					border="3px solid var(--main_color)"
 					borderRadius="10px"
 					fontWeight="bold"
 					h="350px"
@@ -286,7 +286,7 @@ const CRMDashboard = () => {
 				<Box
 					px="1em"
 					bg={"brand.primary_bg"}
-					border="3px solid white"
+					border="3px solid var(--main_color)"
 					borderRadius="10px"
 					fontWeight="bold"
 					color={"brand.nav_color"}
@@ -313,7 +313,7 @@ const CRMDashboard = () => {
 					color={"brand.nav_color"}
 					px="1em"
 					bg={"brand.primary_bg"}
-					border="3px solid white"
+					border="3px solid var(--main_color)"
 					borderRadius="10px"
 					fontWeight="bold"
 					h="350px"
@@ -374,7 +374,7 @@ const CRMDashboard = () => {
 						color={"brand.nav_color"}
 						px="1em"
 						bg={"brand.primary_bg"}
-						border="3px solid white"
+						border="3px solid var(--main_color)"
 						borderRadius="10px"
 						fontWeight="bold"
 					>
@@ -404,7 +404,7 @@ const CRMDashboard = () => {
 				<Box
 					px="1em"
 					bg={"brand.primary_bg"}
-					border="3px solid white"
+					border="3px solid var(--main_color)"
 					borderRadius="10px"
 					fontWeight="bold"
 				>
@@ -429,7 +429,7 @@ const CRMDashboard = () => {
 					px="1em"
 					color={"brand.nav_color"}
 					bg={"brand.primary_bg"}
-					border="3px solid white"
+					border="3px solid var(--main_color)"
 					borderRadius="10px"
 					fontWeight="bold"
 				>

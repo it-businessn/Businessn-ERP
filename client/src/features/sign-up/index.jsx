@@ -84,8 +84,8 @@ const SignUp = () => {
 				<Stack
 					spacing={10}
 					borderRadius="10px"
-					border={"1px solid #e3e5f1"}
-					bg={"#dbe5ff"}
+					border={"1px solid var(--lead_cards_border)"}
+					bg={"var(--bg_color_1)"}
 					p="1em"
 					color={"brand.logo_bg"}
 				>

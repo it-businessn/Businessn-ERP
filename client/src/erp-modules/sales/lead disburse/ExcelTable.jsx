@@ -13,6 +13,7 @@ import {
 	Tr,
 	useToast,
 } from "@chakra-ui/react";
+import { COLORS } from "erp-modules/project-management/workview/data";
 import { useState } from "react";
 import { FaCaretDown } from "react-icons/fa";
 import { generateLighterShade } from "utils";
@@ -27,8 +28,8 @@ const LeadsDocket = () => {
 			setCheckedRows([...checkedRows, rowId]);
 		}
 	};
-	const ele_bg = generateLighterShade("#537eee", 0.9);
-	const ele_color = "#537eee";
+	const ele_bg = generateLighterShade(COLORS.primary, 0.9);
+	const ele_color = COLORS.primary;
 
 	const [data, setData] = useState([]);
 	const toast = useToast();

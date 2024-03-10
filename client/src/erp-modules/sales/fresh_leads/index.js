@@ -72,7 +72,11 @@ const FreshLeads = () => {
 			>
 				{leads &&
 					FRESH_LEADS.map((category) => (
-						<Box borderRadius="10px" border="3px solid white" key={category.id}>
+						<Box
+							borderRadius="10px"
+							border="3px solid var(--main_color)"
+							key={category.id}
+						>
 							<Box
 								fontWeight="bold"
 								px="1em"
