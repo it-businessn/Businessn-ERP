@@ -8,7 +8,7 @@ import {
 	Stack,
 } from "@chakra-ui/react";
 import ModalLayout from "components/ui/ModalLayout";
-import PrimaryButton from "components/ui/PrimaryButton";
+import PrimaryButton from "components/ui/button/PrimaryButton";
 import {
 	INDUSTRIES,
 	LEAD_SOURCES,
@@ -24,18 +24,19 @@ import { LEAD_STAGES } from "./data";
 
 const AddNewOpportunity = ({ isOpen, onClose, setIsAdded }) => {
 	const defaultOpportunity = {
-		opportunityName: "",
 		abbreviation: "",
-		email: "",
-		stage: "",
-		primaryAssignee: [],
-		supervisorAssignee: [],
-		region: "",
-		industry: "",
-		productService: [],
-		phone: "",
 		address: "",
+		companyName: "",
+		email: "",
+		industry: "",
+		opportunityName: "",
+		phone: "",
+		primaryAssignee: [],
+		productService: [],
+		region: "",
 		source: "",
+		stage: "",
+		supervisorAssignee: [],
 	};
 
 	const [isSubmitting, setSubmitting] = useState(false);
@@ -104,6 +105,18 @@ const AddNewOpportunity = ({ isOpen, onClose, setIsAdded }) => {
 							/>
 						</FormControl>
 						<FormControl>
+							<FormLabel>Company Name</FormLabel>
+							<Input
+								type="text"
+								name="companyName"
+								value={formData.companyName}
+								onChange={handleChange}
+								required
+							/>
+						</FormControl>
+					</HStack>
+					<HStack>
+						<FormControl>
 							<FormLabel>Phone</FormLabel>
 							<Input
 								type="text"
@@ -135,15 +148,6 @@ const AddNewOpportunity = ({ isOpen, onClose, setIsAdded }) => {
 							required
 						/>
 					</FormControl>
-
-					<AssigneeSelector
-						assignees={PRODUCTS_SERVICES}
-						selectedAssignees={selectedProductService}
-						onAssigneeChange={setSelectedProductService}
-						onRemoveAssignee={setSelectedProductService}
-						label="Products/Services"
-						name="supervisorAssignee"
-					/>
 					<HStack>
 						<FormControl>
 							<FormLabel>Region</FormLabel>
@@ -182,6 +186,32 @@ const AddNewOpportunity = ({ isOpen, onClose, setIsAdded }) => {
 							</Select>
 						</FormControl>
 					</HStack>
+					<FormControl>
+						<FormLabel>Source</FormLabel>
+						<Select
+							icon={<FaCaretDown />}
+							borderRadius="10px"
+							size="sm"
+							placeholder="Select Lead Source"
+							name="source"
+							value={formData.source}
+							onChange={handleChange}
+						>
+							{LEAD_SOURCES.map(({ id, name }) => (
+								<option value={name} key={id}>
+									{name}
+								</option>
+							))}
+						</Select>
+					</FormControl>
+					<AssigneeSelector
+						assignees={PRODUCTS_SERVICES}
+						selectedAssignees={selectedProductService}
+						onAssigneeChange={setSelectedProductService}
+						onRemoveAssignee={setSelectedProductService}
+						label="Product Service"
+						name="supervisorAssignee"
+					/>
 					<AssigneeSelector
 						assignees={PROJECT_ASSIGNEES}
 						selectedAssignees={selectedPrimaryAssignees}
@@ -217,24 +247,6 @@ const AddNewOpportunity = ({ isOpen, onClose, setIsAdded }) => {
 						</Select>
 					</FormControl>
 
-					<FormControl>
-						<FormLabel>Source</FormLabel>
-						<Select
-							icon={<FaCaretDown />}
-							borderRadius="10px"
-							size="sm"
-							placeholder="Select Lead Source"
-							name="source"
-							value={formData.source}
-							onChange={handleChange}
-						>
-							{LEAD_SOURCES.map(({ id, name }) => (
-								<option value={name} key={id}>
-									{name}
-								</option>
-							))}
-						</Select>
-					</FormControl>
 					<HStack justifyContent={"end"}>
 						<PrimaryButton name="Add" isLoading={isSubmitting} px="2em" />
 

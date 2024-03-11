@@ -1,16 +1,15 @@
-import { ArrowForwardIcon } from "@chakra-ui/icons";
 import {
 	Box,
 	Button,
 	Flex,
 	HStack,
 	Icon,
-	IconButton,
 	Progress,
 	SimpleGrid,
 	Text,
 	VStack,
 } from "@chakra-ui/react";
+import RightIconButton from "components/ui/button/RightIconButton";
 import { ACTIVITY_CARDS, barOptions } from "constant";
 import { useState } from "react";
 import { RiAspectRatioLine } from "react-icons/ri";
@@ -40,7 +39,6 @@ const Activities = () => {
 	const handleFilterClick = (filter) => {
 		setSelectedFilter(filter);
 	};
-
 	return (
 		<Box p={{ base: "1em", md: "2em" }}>
 			<Text fontWeight="bold">Activities</Text>
@@ -53,161 +51,47 @@ const Activities = () => {
 					borderRadius={"20px"}
 					p={"8px"}
 				>
-					<Button
-						borderRadius={selectedFilter === "daily" ? "50px" : 0}
-						border={selectedFilter === "daily" ? "1px" : "none"}
-						p={"1em"}
-						color={selectedFilter === "daily" ? "#517ae8" : "#676e78"}
-						bgColor={
-							selectedFilter === "daily" && generateLighterShade("#517ae8", 0.8)
-						}
-						onClick={() => handleFilterClick("daily")}
-						variant={"outline"}
-						size="xs"
-					>
-						Daily
-					</Button>
-
-					<Button
-						borderRadius={selectedFilter === "weekly" ? "50px" : 0}
-						border={selectedFilter === "weekly" ? "1px" : "none"}
-						p={"1em"}
-						color={selectedFilter === "weekly" ? "#517ae8" : "#676e78"}
-						bgColor={
-							selectedFilter === "weekly" &&
-							generateLighterShade("#517ae8", 0.8)
-						}
-						onClick={() => handleFilterClick("weekly")}
-						variant={"outline"}
-						size="xs"
-					>
-						Weekly
-					</Button>
-					<Button
-						borderRadius={selectedFilter === "monthly" ? "50px" : 0}
-						border={selectedFilter === "monthly" ? "1px" : "none"}
-						p={"1em"}
-						color={selectedFilter === "monthly" ? "#517ae8" : "#676e78"}
-						bgColor={
-							selectedFilter === "monthly" &&
-							generateLighterShade("#517ae8", 0.8)
-						}
-						onClick={() => handleFilterClick("monthly")}
-						variant={"outline"}
-						size="xs"
-					>
-						Monthly
-					</Button>
-					<Button
-						borderRadius={selectedFilter === "quarterly" ? "50px" : 0}
-						border={selectedFilter === "quarterly" ? "1px" : "none"}
-						p={"1em"}
-						color={selectedFilter === "quarterly" ? "#517ae8" : "#676e78"}
-						bgColor={
-							selectedFilter === "quarterly" &&
-							generateLighterShade("#517ae8", 0.8)
-						}
-						onClick={() => handleFilterClick("quarterly")}
-						variant={"outline"}
-						size="xs"
-					>
-						Quarterly
-					</Button>
-					<Button
-						borderRadius={selectedFilter === "annual" ? "50px" : 0}
-						border={selectedFilter === "annual" ? "1px" : "none"}
-						p={"1em"}
-						color={selectedFilter === "annual" ? "#517ae8" : "#676e78"}
-						bgColor={
-							selectedFilter === "annual" &&
-							generateLighterShade("#517ae8", 0.8)
-						}
-						onClick={() => handleFilterClick("annual")}
-						variant={"outline"}
-						size="xs"
-					>
-						Annual
-					</Button>
+					{["Daily", "Weekly", "Monthly", "Quarterly", "Annual"].map((name) => (
+						<Button
+							key={name}
+							borderRadius={selectedFilter === name ? "50px" : 0}
+							border={selectedFilter === name ? "1px" : "none"}
+							p={"1em"}
+							color={selectedFilter === name ? "#517ae8" : "#676e78"}
+							bgColor={
+								selectedFilter === name && generateLighterShade("#517ae8", 0.8)
+							}
+							onClick={() => handleFilterClick(name)}
+							variant={"outline"}
+							size="xs"
+						>
+							{name}
+						</Button>
+					))}
 				</SimpleGrid>
 			) : (
 				<SimpleGrid columns={{ base: 5, lg: 2 }} spacing="1em" my="5">
 					<Flex gap="2em" bg={"brand.100"} borderRadius={"20px"} p={"8px"}>
-						<Button
-							borderRadius={selectedFilter === "daily" ? "50px" : 0}
-							border={selectedFilter === "daily" ? "1px" : "none"}
-							p={"1em"}
-							color={selectedFilter === "daily" ? "#517ae8" : "#676e78"}
-							bgColor={
-								selectedFilter === "daily" &&
-								generateLighterShade("#517ae8", 0.8)
-							}
-							onClick={() => handleFilterClick("daily")}
-							variant={"outline"}
-							size="xs"
-						>
-							Daily
-						</Button>
-
-						<Button
-							borderRadius={selectedFilter === "weekly" ? "50px" : 0}
-							border={selectedFilter === "weekly" ? "1px" : "none"}
-							p={"1em"}
-							color={selectedFilter === "weekly" ? "#517ae8" : "#676e78"}
-							bgColor={
-								selectedFilter === "weekly" &&
-								generateLighterShade("#517ae8", 0.8)
-							}
-							onClick={() => handleFilterClick("weekly")}
-							variant={"outline"}
-							size="xs"
-						>
-							Weekly
-						</Button>
-						<Button
-							borderRadius={selectedFilter === "monthly" ? "50px" : 0}
-							border={selectedFilter === "monthly" ? "1px" : "none"}
-							p={"1em"}
-							color={selectedFilter === "monthly" ? "#517ae8" : "#676e78"}
-							bgColor={
-								selectedFilter === "monthly" &&
-								generateLighterShade("#517ae8", 0.8)
-							}
-							onClick={() => handleFilterClick("monthly")}
-							variant={"outline"}
-							size="xs"
-						>
-							Monthly
-						</Button>
-						<Button
-							borderRadius={selectedFilter === "quarterly" ? "50px" : 0}
-							border={selectedFilter === "quarterly" ? "1px" : "none"}
-							p={"1em"}
-							color={selectedFilter === "quarterly" ? "#517ae8" : "#676e78"}
-							bgColor={
-								selectedFilter === "quarterly" &&
-								generateLighterShade("#517ae8", 0.8)
-							}
-							onClick={() => handleFilterClick("quarterly")}
-							variant={"outline"}
-							size="xs"
-						>
-							Quarterly
-						</Button>
-						<Button
-							borderRadius={selectedFilter === "annual" ? "50px" : 0}
-							border={selectedFilter === "annual" ? "1px" : "none"}
-							p={"1em"}
-							color={selectedFilter === "annual" ? "#517ae8" : "#676e78"}
-							bgColor={
-								selectedFilter === "annual" &&
-								generateLighterShade("#517ae8", 0.8)
-							}
-							onClick={() => handleFilterClick("annual")}
-							variant={"outline"}
-							size="xs"
-						>
-							Annual
-						</Button>
+						{["Daily", "Weekly", "Monthly", "Quarterly", "Annual"].map(
+							(name) => (
+								<Button
+									key={name}
+									borderRadius={selectedFilter === name ? "50px" : 0}
+									border={selectedFilter === name ? "1px" : "none"}
+									p={"1em"}
+									color={selectedFilter === name ? "#517ae8" : "#676e78"}
+									bgColor={
+										selectedFilter === name &&
+										generateLighterShade("#517ae8", 0.8)
+									}
+									onClick={() => handleFilterClick(name)}
+									variant={"outline"}
+									size="xs"
+								>
+									{name}
+								</Button>
+							),
+						)}
 					</Flex>
 				</SimpleGrid>
 			)}
@@ -219,6 +103,7 @@ const Activities = () => {
 				<SimpleGrid columns={1} spacing={4}>
 					{ACTIVITY_CARDS.map((activity) => (
 						<Box
+							key={activity.title}
 							p="1em"
 							bg={"brand.primary_bg"}
 							border="3px solid var(--main_color)"
@@ -245,26 +130,23 @@ const Activities = () => {
 
 							<Flex borderTop="2px solid #e8ebf4">
 								<Button
+									variant="solid"
 									bgGradient="linear-gradient(58deg, rgb(115 70 236) 0%, rgb(136 107 217) 43%, rgb(50 240 218) 100%)"
 									bgClip="text"
 									size={"xxs"}
-									rightIcon={
-										<IconButton
-											icon={<ArrowForwardIcon />}
-											color="purple.500"
-											p={"0.4em"}
-											size={"xxs"}
-											_hover={{ bg: "#8385d5", color: "brand.100" }}
-										/>
-									}
+									_hover={{
+										bgGradient:
+											"linear-gradient(58deg, rgb(115 70 236) 0%, rgb(136 107 217) 43%, rgb(50 240 218) 100%)",
+										bgClip: "text",
+									}}
 								>
 									{activity.action}
+									<RightIconButton />
 								</Button>
 							</Flex>
 						</Box>
 					))}
 				</SimpleGrid>
-
 				<SimpleGrid
 					columns={1}
 					spacing={4}
@@ -280,66 +162,69 @@ const Activities = () => {
 					>
 						<GaugeChartComponent value={70} maxValue={100} />
 					</Box>
-					<Box
-						p="1em"
-						bg={"brand.primary_bg"}
-						border="3px solid var(--main_color)"
-						borderRadius="10px"
-					>
-						<Text fontWeight="bold">Contests For Sales</Text>
-						<SimpleGrid columns={{ md: 3 }} spacing={4}>
-							<Box
-								p="1em"
-								bg={"brand.primary_bg"}
-								border="3px solid var(--main_color)"
-								borderRadius="10px"
-								fontWeight="bold"
-							>
-								<HStack alignItems="self-start" spacing={2}>
-									<Icon as={RiAspectRatioLine} color="orange" boxSize={10} />
-									<VStack spacing={0} alignItems={"start"}>
-										<Text fontWeight="bold">Sale 1</Text>
-										<Text fontSize="xs" p={0}>
-											1st place
-										</Text>
-									</VStack>
-								</HStack>
-								<Box>
-									<Text
-										mt={"2em"}
-										fontSize={"xs"}
-										display={"flex"}
-										justifyContent={"end"}
+					{["Contests For Sales", "Contests For Activity"].map((item) => (
+						<Box
+							key={item}
+							p="1em"
+							bg={"brand.primary_bg"}
+							border="3px solid var(--main_color)"
+							borderRadius="10px"
+						>
+							<Text fontWeight="bold">{item}</Text>
+							<SimpleGrid columns={{ md: 3 }} spacing={4}>
+								{["Sale 1", "Sale 2", "Sale 3"].map((item) => (
+									<Box
+										key={item}
+										p="1em"
+										bg={"brand.primary_bg"}
+										border="3px solid var(--main_color)"
+										borderRadius="10px"
+										fontWeight="bold"
 									>
-										$5460
-									</Text>
-									<Progress
-										colorScheme="green"
-										size="sm"
-										bg={"var(--main_color)"}
-										value={50}
-									/>
-									<Flex mt={"2em"} borderTop="2px solid #e8ebf4">
-										<Button
-											bgGradient="linear-gradient(58deg, rgb(115 70 236) 0%, rgb(136 107 217) 43%, rgb(50 240 218) 100%)"
-											bgClip="text"
-											size={"xxs"}
-											rightIcon={
-												<IconButton
-													icon={<ArrowForwardIcon />}
-													color="purple.500"
-													p={"0.4em"}
+										<HStack alignItems="self-start" spacing={2}>
+											<Icon
+												as={RiAspectRatioLine}
+												color="orange"
+												boxSize={10}
+											/>
+											<VStack spacing={0} alignItems={"start"}>
+												<Text fontWeight="bold">{item}</Text>
+												<Text fontSize="xs" p={0}>
+													1st place
+												</Text>
+											</VStack>
+										</HStack>
+										<Box>
+											<Text
+												mt={"2em"}
+												fontSize={"xs"}
+												display={"flex"}
+												justifyContent={"end"}
+											>
+												$5460
+											</Text>
+											<Progress
+												colorScheme="green"
+												size="sm"
+												bg={"var(--main_color)"}
+												value={50}
+											/>
+											<Flex mt={"2em"} borderTop="2px solid #e8ebf4">
+												<Button
+													bgGradient="linear-gradient(58deg, rgb(115 70 236) 0%, rgb(136 107 217) 43%, rgb(50 240 218) 100%)"
+													bgClip="text"
 													size={"xxs"}
-													_hover={{ bg: "#8385d5", color: "brand.100" }}
-												/>
-											}
-										>
-											More details
-										</Button>
-									</Flex>
-								</Box>
-							</Box>
+												>
+													More details
+													<RightIconButton />
+												</Button>
+											</Flex>
+										</Box>
+									</Box>
+								))}
+							</SimpleGrid>
 							<Box
+								my={"1em"}
 								p="1em"
 								bg={"brand.primary_bg"}
 								border="3px solid var(--main_color)"
@@ -349,58 +234,7 @@ const Activities = () => {
 								<HStack alignItems="self-start" spacing={2}>
 									<Icon as={RiAspectRatioLine} color="orange" boxSize={10} />
 									<VStack spacing={0} alignItems={"start"}>
-										<Text fontWeight="bold">Sale 2</Text>
-										<Text fontSize="xs" p={0}>
-											2nd place
-										</Text>
-									</VStack>
-								</HStack>
-								<Box>
-									<Text
-										mt={"2em"}
-										fontSize={"xs"}
-										display={"flex"}
-										justifyContent={"end"}
-									>
-										$5460
-									</Text>
-									<Progress
-										colorScheme="green"
-										size="sm"
-										bg={"var(--main_color)"}
-										value={50}
-									/>
-									<Flex mt={"2em"} borderTop="2px solid #e8ebf4">
-										<Button
-											bgGradient="linear-gradient(58deg, rgb(115 70 236) 0%, rgb(136 107 217) 43%, rgb(50 240 218) 100%)"
-											bgClip="text"
-											size={"xxs"}
-											rightIcon={
-												<IconButton
-													icon={<ArrowForwardIcon />}
-													color="purple.500"
-													p={"0.4em"}
-													size={"xxs"}
-													_hover={{ bg: "#8385d5", color: "brand.100" }}
-												/>
-											}
-										>
-											More details
-										</Button>
-									</Flex>
-								</Box>
-							</Box>
-							<Box
-								p="1em"
-								bg={"brand.primary_bg"}
-								border="3px solid var(--main_color)"
-								borderRadius="10px"
-								fontWeight="bold"
-							>
-								<HStack alignItems="self-start" spacing={2}>
-									<Icon as={RiAspectRatioLine} color="orange" boxSize={10} />
-									<VStack spacing={0} alignItems={"start"}>
-										<Text fontWeight="bold">Sale 3</Text>
+										<Text fontWeight="bold">Sale 4</Text>
 										<Text fontSize="xs" p={0}>
 											1st Place
 										</Text>
@@ -426,136 +260,15 @@ const Activities = () => {
 											bgGradient="linear-gradient(58deg, rgb(115 70 236) 0%, rgb(136 107 217) 43%, rgb(50 240 218) 100%)"
 											bgClip="text"
 											size={"xxs"}
-											rightIcon={
-												<IconButton
-													icon={<ArrowForwardIcon />}
-													color="purple.500"
-													p={"0.4em"}
-													size={"xxs"}
-													_hover={{ bg: "#8385d5", color: "brand.100" }}
-												/>
-											}
 										>
 											More details
+											<RightIconButton />
 										</Button>
 									</Flex>
 								</Box>
 							</Box>
-						</SimpleGrid>
-						<Box
-							my={"1em"}
-							p="1em"
-							bg={"brand.primary_bg"}
-							border="3px solid var(--main_color)"
-							borderRadius="10px"
-							fontWeight="bold"
-						>
-							<HStack alignItems="self-start" spacing={2}>
-								<Icon as={RiAspectRatioLine} color="orange" boxSize={10} />
-								<VStack spacing={0} alignItems={"start"}>
-									<Text fontWeight="bold">Sale 4</Text>
-									<Text fontSize="xs" p={0}>
-										1st Place
-									</Text>
-								</VStack>
-							</HStack>
-							<Box>
-								<Text
-									mt={"2em"}
-									fontSize={"xs"}
-									display={"flex"}
-									justifyContent={"end"}
-								>
-									$5460
-								</Text>
-								<Progress
-									colorScheme="green"
-									size="sm"
-									bg={"var(--main_color)"}
-									value={50}
-								/>
-								<Flex mt={"2em"} borderTop="2px solid #e8ebf4">
-									<Button
-										bgGradient="linear-gradient(58deg, rgb(115 70 236) 0%, rgb(136 107 217) 43%, rgb(50 240 218) 100%)"
-										bgClip="text"
-										size={"xxs"}
-										rightIcon={
-											<IconButton
-												icon={<ArrowForwardIcon />}
-												color="purple.500"
-												p={"0.4em"}
-												size={"xxs"}
-												_hover={{ bg: "#8385d5", color: "brand.100" }}
-											/>
-										}
-									>
-										More details
-									</Button>
-								</Flex>
-							</Box>
-						</Box>
-						<Box
-							my={"1em"}
-							p="1em"
-							bg={"brand.primary_bg"}
-							border="3px solid var(--main_color)"
-							borderRadius="10px"
-							fontWeight="bold"
-						>
-							<HStack alignItems="self-start" spacing={2}>
-								<Icon as={RiAspectRatioLine} color="orange" boxSize={10} />
-								<VStack spacing={0} alignItems={"start"}>
-									<Text fontWeight="bold">Sale 5</Text>
-									<Text fontSize="xs" p={0}>
-										1st Place
-									</Text>
-								</VStack>
-							</HStack>
-							<Box>
-								<Text
-									mt={"2em"}
-									fontSize={"xs"}
-									display={"flex"}
-									justifyContent={"end"}
-								>
-									$5460
-								</Text>
-								<Progress
-									colorScheme="green"
-									size="sm"
-									bg={"var(--main_color)"}
-									value={50}
-								/>
-								<Flex mt={"2em"} borderTop="2px solid #e8ebf4">
-									<Button
-										bgGradient="linear-gradient(58deg, rgb(115 70 236) 0%, rgb(136 107 217) 43%, rgb(50 240 218) 100%)"
-										bgClip="text"
-										size={"xxs"}
-										rightIcon={
-											<IconButton
-												icon={<ArrowForwardIcon />}
-												color="purple.500"
-												p={"0.4em"}
-												size={"xxs"}
-												_hover={{ bg: "#8385d5", color: "brand.100" }}
-											/>
-										}
-									>
-										More details
-									</Button>
-								</Flex>
-							</Box>
-						</Box>
-					</Box>
-					<Box
-						p="1em"
-						bg={"brand.primary_bg"}
-						border="3px solid var(--main_color)"
-						borderRadius="10px"
-					>
-						<Text fontWeight="bold">Contests For Activity</Text>
-						<SimpleGrid columns={{ md: 3 }} spacing={4}>
 							<Box
+								my={"1em"}
 								p="1em"
 								bg={"brand.primary_bg"}
 								border="3px solid var(--main_color)"
@@ -565,7 +278,7 @@ const Activities = () => {
 								<HStack alignItems="self-start" spacing={2}>
 									<Icon as={RiAspectRatioLine} color="orange" boxSize={10} />
 									<VStack spacing={0} alignItems={"start"}>
-										<Text fontWeight="bold">Emails Sent</Text>
+										<Text fontWeight="bold">Sale 5</Text>
 										<Text fontSize="xs" p={0}>
 											1st Place
 										</Text>
@@ -578,7 +291,7 @@ const Activities = () => {
 										display={"flex"}
 										justifyContent={"end"}
 									>
-										450
+										$5460
 									</Text>
 									<Progress
 										colorScheme="green"
@@ -591,229 +304,15 @@ const Activities = () => {
 											bgGradient="linear-gradient(58deg, rgb(115 70 236) 0%, rgb(136 107 217) 43%, rgb(50 240 218) 100%)"
 											bgClip="text"
 											size={"xxs"}
-											rightIcon={
-												<IconButton
-													icon={<ArrowForwardIcon />}
-													color="purple.500"
-													p={"0.4em"}
-													size={"xxs"}
-													_hover={{ bg: "#8385d5", color: "brand.100" }}
-												/>
-											}
 										>
 											More details
+											<RightIconButton />
 										</Button>
 									</Flex>
 								</Box>
-							</Box>
-							<Box
-								p="1em"
-								bg={"brand.primary_bg"}
-								border="3px solid var(--main_color)"
-								borderRadius="10px"
-								fontWeight="bold"
-							>
-								<HStack alignItems="self-start" spacing={2}>
-									<Icon as={RiAspectRatioLine} color="orange" boxSize={10} />
-									<VStack spacing={0} alignItems={"start"}>
-										<Text fontWeight="bold">Contacts</Text>
-										<Text fontSize="xs" p={0}>
-											1st Place
-										</Text>
-									</VStack>
-								</HStack>
-								<Box>
-									<Text
-										mt={"2em"}
-										fontSize={"xs"}
-										display={"flex"}
-										justifyContent={"end"}
-									>
-										340
-									</Text>
-									<Progress
-										colorScheme="green"
-										size="sm"
-										bg={"var(--main_color)"}
-										value={50}
-									/>
-									<Flex mt={"2em"} borderTop="2px solid #e8ebf4">
-										<Button
-											bgGradient="linear-gradient(58deg, rgb(115 70 236) 0%, rgb(136 107 217) 43%, rgb(50 240 218) 100%)"
-											bgClip="text"
-											size={"xxs"}
-											rightIcon={
-												<IconButton
-													icon={<ArrowForwardIcon />}
-													color="purple.500"
-													p={"0.4em"}
-													size={"xxs"}
-													_hover={{ bg: "#8385d5", color: "brand.100" }}
-												/>
-											}
-										>
-											More details
-										</Button>
-									</Flex>
-								</Box>
-							</Box>
-							<Box
-								p="1em"
-								bg={"brand.primary_bg"}
-								border="3px solid var(--main_color)"
-								borderRadius="10px"
-								fontWeight="bold"
-							>
-								<HStack alignItems="self-start" spacing={2}>
-									<Icon as={RiAspectRatioLine} color="orange" boxSize={10} />
-									<VStack spacing={0} alignItems={"start"}>
-										<Text fontWeight="bold">Calls Made</Text>
-										<Text fontSize="xs" p={0}>
-											1st Place
-										</Text>
-									</VStack>
-								</HStack>
-								<Box>
-									<Text
-										mt={"2em"}
-										fontSize={"xs"}
-										display={"flex"}
-										justifyContent={"end"}
-									>
-										250
-									</Text>
-									<Progress
-										colorScheme="green"
-										size="sm"
-										bg={"var(--main_color)"}
-										value={50}
-									/>
-									<Flex mt={"2em"} borderTop="2px solid #e8ebf4">
-										<Button
-											bgGradient="linear-gradient(58deg, rgb(115 70 236) 0%, rgb(136 107 217) 43%, rgb(50 240 218) 100%)"
-											bgClip="text"
-											size={"xxs"}
-											rightIcon={
-												<IconButton
-													icon={<ArrowForwardIcon />}
-													color="purple.500"
-													p={"0.4em"}
-													size={"xxs"}
-													_hover={{ bg: "#8385d5", color: "brand.100" }}
-												/>
-											}
-										>
-											More details
-										</Button>
-									</Flex>
-								</Box>
-							</Box>
-						</SimpleGrid>
-						<Box
-							my={"1em"}
-							p="1em"
-							bg={"brand.primary_bg"}
-							border="3px solid var(--main_color)"
-							borderRadius="10px"
-							fontWeight="bold"
-						>
-							<HStack alignItems="self-start" spacing={2}>
-								<Icon as={RiAspectRatioLine} color="orange" boxSize={10} />
-								<VStack spacing={0} alignItems={"start"}>
-									<Text fontWeight="bold">Meetings</Text>
-									<Text fontSize="xs" p={0}>
-										1st Place
-									</Text>
-								</VStack>
-							</HStack>
-							<Box>
-								<Text
-									mt={"2em"}
-									fontSize={"xs"}
-									display={"flex"}
-									justifyContent={"end"}
-								>
-									160
-								</Text>
-								<Progress
-									colorScheme="green"
-									size="sm"
-									bg={"var(--main_color)"}
-									value={50}
-								/>
-								<Flex mt={"2em"} borderTop="2px solid #e8ebf4">
-									<Button
-										bgGradient="linear-gradient(58deg, rgb(115 70 236) 0%, rgb(136 107 217) 43%, rgb(50 240 218) 100%)"
-										bgClip="text"
-										size={"xxs"}
-										rightIcon={
-											<IconButton
-												icon={<ArrowForwardIcon />}
-												color="purple.500"
-												p={"0.4em"}
-												size={"xxs"}
-												_hover={{ bg: "#8385d5", color: "brand.100" }}
-											/>
-										}
-									>
-										More details
-									</Button>
-								</Flex>
 							</Box>
 						</Box>
-						<Box
-							my={"1em"}
-							p="1em"
-							bg={"brand.primary_bg"}
-							border="3px solid var(--main_color)"
-							borderRadius="10px"
-							fontWeight="bold"
-						>
-							<HStack alignItems="self-start" spacing={2}>
-								<Icon as={RiAspectRatioLine} color="orange" boxSize={10} />
-								<VStack spacing={0} alignItems={"start"}>
-									<Text fontWeight="bold">Sales Target</Text>
-									<Text fontSize="xs" p={0}>
-										1st Place
-									</Text>
-								</VStack>
-							</HStack>
-							<Box>
-								<Text
-									mt={"2em"}
-									fontSize={"xs"}
-									display={"flex"}
-									justifyContent={"end"}
-								>
-									$5,5k
-								</Text>
-								<Progress
-									colorScheme="green"
-									size="sm"
-									bg={"var(--main_color)"}
-									value={50}
-								/>
-								<Flex mt={"2em"} borderTop="2px solid #e8ebf4">
-									<Button
-										bgGradient="linear-gradient(58deg, rgb(115 70 236) 0%, rgb(136 107 217) 43%, rgb(50 240 218) 100%)"
-										bgClip="text"
-										size={"xxs"}
-										rightIcon={
-											<IconButton
-												icon={<ArrowForwardIcon />}
-												color="purple.500"
-												p={"0.4em"}
-												size={"xxs"}
-												_hover={{ bg: "#8385d5", color: "brand.100" }}
-											/>
-										}
-									>
-										More details
-									</Button>
-								</Flex>
-							</Box>
-						</Box>
-					</Box>
+					))}
 				</SimpleGrid>
 			</SimpleGrid>
 		</Box>

@@ -28,7 +28,6 @@ import { RiEditLine } from "react-icons/ri";
 import LeadsService from "services/LeadsService";
 import { generateRandomData } from "utils";
 import { TARGET_LEADS } from "../opportunities/data";
-import GradientAreaFillColorChart from "./AreaFillColorChart";
 
 const Pipeline = () => {
 	const [leads, setLeads] = useState(null);
@@ -105,9 +104,9 @@ const Pipeline = () => {
 				<Text p={"1em"} fontWeight="bold" color={"brand.200"} mb={"0.5em"}>
 					Pipeline
 				</Text>
-				{opportunityData && (
+				{/* {opportunityData && (
 					<GradientAreaFillColorChart opportunityData={opportunityData} />
-				)}
+				)} */}
 			</Box>
 			<SimpleGrid
 				columns={{ base: 1, md: 2, lg: 4 }}
@@ -146,50 +145,62 @@ const Pipeline = () => {
 								</Flex>
 							</Box>
 							{leads.map(({ _id, opportunityName, email, phone, stage }) => {
-								return category.abbr === stage ? (
-									<Card
-										key={_id}
-										m="1em"
-										bg={category.color}
-										border={"1px solid var(--lead_cards_border)"}
-									>
-										<VStack
-											align="flex-start"
-											color={"brand.200"}
-											fontSize="xs"
-											p={"1em"}
-											spacing={0.5}
+								return (
+									category.abbr === stage && (
+										<Card
+											key={_id}
+											m="1em"
+											bg={category.color}
+											border={"1px solid var(--lead_cards_border)"}
 										>
-											<HStack justifyContent={"space-between"} w={"100%"}>
-												<Text fontSize="xs" fontWeight="bold">
-													Name of Company
+											<VStack
+												align="flex-start"
+												color={"brand.200"}
+												fontSize="xs"
+												p={"1em"}
+												spacing={0.5}
+											>
+												<HStack justifyContent={"space-between"} w={"100%"}>
+													<Text fontSize="xs" fontWeight="bold">
+														Name of Company
+													</Text>
+													<RiEditLine onClick={onOpen} />
+												</HStack>
+												<Text
+													fontSize="xs"
+													fontWeight="bold"
+													color={"brand.600"}
+												>
+													{opportunityName}
 												</Text>
-												<RiEditLine onClick={onOpen} />
-											</HStack>
-											<Text fontSize="xs" fontWeight="bold" color={"brand.600"}>
-												{opportunityName}
-											</Text>
-											<Text fontSize="xs" fontWeight="bold">
-												Email
-											</Text>
-											<Text fontSize="xs" fontWeight="bold" color={"brand.600"}>
-												{email}
-												<IconButton
-													icon={<CopyIcon />}
-													size={"xs"}
-													color="brand.600"
-												/>
-											</Text>
-											<Text fontSize="xs" fontWeight="bold">
-												Phone
-											</Text>
-											<Text fontSize="xs" fontWeight="bold" color={"brand.600"}>
-												{phone}
-											</Text>
-										</VStack>
-									</Card>
-								) : (
-									<></>
+												<Text fontSize="xs" fontWeight="bold">
+													Email
+												</Text>
+												<Text
+													fontSize="xs"
+													fontWeight="bold"
+													color={"brand.600"}
+												>
+													{email}
+													<IconButton
+														icon={<CopyIcon />}
+														size={"xs"}
+														color="brand.600"
+													/>
+												</Text>
+												<Text fontSize="xs" fontWeight="bold">
+													Phone
+												</Text>
+												<Text
+													fontSize="xs"
+													fontWeight="bold"
+													color={"brand.600"}
+												>
+													{phone}
+												</Text>
+											</VStack>
+										</Card>
+									)
 								);
 							})}
 						</Box>

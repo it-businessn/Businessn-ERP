@@ -12,11 +12,11 @@ import {
 	useDisclosure,
 } from "@chakra-ui/react";
 import Loader from "components/Loader";
-import PrimaryButton from "components/ui/PrimaryButton";
 import SectionLayout from "components/ui/SectionLayout";
 import SelectList from "components/ui/SelectList";
 import TableLayout from "components/ui/TableLayout";
 import TextTitle from "components/ui/TextTitle";
+import PrimaryButton from "components/ui/button/PrimaryButton";
 import {
 	PROJECT_ASSIGNEES,
 	SUPERVISOR_ASSIGNEES,
@@ -31,8 +31,9 @@ import AddNewOpportunity from "./AddNewOpportunity";
 import { LEAD_STAGES } from "./data";
 
 const Opportunities = () => {
-	const { isMobile } = useBreakpointValue();
+	const { isMobile, isIpad } = useBreakpointValue();
 	const [isAdded, setIsAdded] = useState(false);
+
 	const [opportunities, setOpportunities] = useState(null);
 
 	useEffect(() => {
@@ -83,23 +84,24 @@ const Opportunities = () => {
 
 	const { isOpen, onOpen, onClose } = useDisclosure();
 	const createOpportunity = () => (
-		<PrimaryButton onOpen={onOpen} name={"Add new opportunity"} />
+		<PrimaryButton onOpen={onOpen} name={"Add new lead"} />
 	);
-	const caption = () => <TextTitle title={"Contact"} />;
+	const caption = () => <TextTitle title={"Opportunities"} />;
 
 	const columns = [
 		"Opportunity name",
 		"Abbr",
-		"Created On",
+		"Company name",
 		"Email",
 		"Stage",
-		"Primary Assignee",
-		"Supervisor Assignee",
+		"Primary assignee",
+		"Supervisor assignee",
+		"Created On",
 	];
 
 	return (
 		<SectionLayout title="Opportunities">
-			{isMobile ? (
+			{isMobile || isIpad ? (
 				<Flex flexDir="column">
 					<Flex justify="space-between">
 						{caption()}
@@ -128,40 +130,44 @@ const Opportunities = () => {
 								_id,
 								abbreviation,
 								createdOn,
+								companyName,
 								email,
 								opportunityName,
 								primaryAssignee,
 								stage,
 								supervisorAssignee,
-							}) => (
-								<Tr key={_id}>
-									<Td>{opportunityName}</Td>
-									<Td>{abbreviation}</Td>
-									<Td>{formatDate(createdOn)}</Td>
-									<Td>{email}</Td>
-									<Td>
-										<SelectList
-											code="abbr"
-											selectedValue={stage}
-											data={LEAD_STAGES}
-										/>
-									</Td>
-									<Td>
-										<SelectList
-											code="name"
-											selectedValue={primaryAssignee[0].name}
-											data={PROJECT_ASSIGNEES}
-										/>
-									</Td>
-									<Td>
-										<SelectList
-											code="name"
-											selectedValue={supervisorAssignee[0].name}
-											data={SUPERVISOR_ASSIGNEES}
-										/>
-									</Td>
-								</Tr>
-							),
+							}) => {
+								return (
+									<Tr key={_id}>
+										<Td>{opportunityName}</Td>
+										<Td>{abbreviation}</Td>
+										<Td>{companyName}</Td>
+										<Td>{email}</Td>
+										<Td>
+											<SelectList
+												code="abbr"
+												selectedValue={"defaultSelected.stag"}
+												data={LEAD_STAGES}
+											/>
+										</Td>
+										<Td>
+											<SelectList
+												code="name"
+												selectedValue={"defaultSelected.primaryAssignee"}
+												data={PROJECT_ASSIGNEES}
+											/>
+										</Td>
+										<Td>
+											<SelectList
+												code="name"
+												selectedValue={""}
+												data={SUPERVISOR_ASSIGNEES}
+											/>
+										</Td>
+										<Td>{formatDate(createdOn)}</Td>
+									</Tr>
+								);
+							},
 						)}
 					</Tbody>
 				</TableLayout>

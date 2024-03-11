@@ -1,10 +1,8 @@
-import { ArrowForwardIcon } from "@chakra-ui/icons";
 import {
 	Box,
 	Button,
 	Flex,
 	HStack,
-	IconButton,
 	Input,
 	InputGroup,
 	InputLeftElement,
@@ -20,6 +18,7 @@ import {
 	Tr,
 } from "@chakra-ui/react";
 import Loader from "components/Loader";
+import RightIconButton from "components/ui/button/RightIconButton";
 import { callsMadeBarData } from "constant";
 import { useEffect, useState } from "react";
 import { Bar } from "react-chartjs-2";
@@ -357,19 +356,9 @@ const SalesReport = () => {
 														bgGradient="linear-gradient(58deg, rgb(115 70 236) 0%, rgb(136 107 217) 43%, rgb(50 240 218) 100%)"
 														bgClip="text"
 														size={"xxs"}
-														rightIcon={
-															<IconButton
-																icon={<ArrowForwardIcon />}
-																borderRadius="full"
-																color="purple.500"
-																bg={"#dedaf4"}
-																p={"0.4em"}
-																size={"xxs"}
-																_hover={{ bg: "#8385d5", color: "brand.100" }}
-															/>
-														}
 													>
 														See details
+														<RightIconButton />
 													</Button>
 												</HStack>
 											</Td>

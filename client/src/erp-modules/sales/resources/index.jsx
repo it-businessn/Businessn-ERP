@@ -50,7 +50,6 @@ const Resources = () => {
 				);
 
 				setResources(response.data);
-				console.log(resources);
 			} catch (error) {
 				console.error(error);
 			}

@@ -7,7 +7,6 @@ import {
 	Select,
 	Spacer,
 	Stack,
-	Text,
 	VStack,
 } from "@chakra-ui/react";
 import { Tab, UserProfile } from "components";
@@ -54,8 +53,8 @@ const Navbar = ({
 				onChange={(e) => handleChange(e.target.value)}
 			>
 				{COMPANIES.map(({ name, value }) => (
-					<option value={value}>
-						<Text>{name}</Text>
+					<option value={value} key={name}>
+						{name}
 					</option>
 				))}
 			</Select>
@@ -111,7 +110,7 @@ const Navbar = ({
 					</VStack>
 
 					{SIDEBAR_MENU?.map((menu) => (
-						<Link to={menu?.path}>
+						<Link to={menu?.path} key={menu.name}>
 							<Stack ml={{ base: "1em", md: "2em" }} key={menu.id}>
 								<Tab
 									handleClick={handleClick}

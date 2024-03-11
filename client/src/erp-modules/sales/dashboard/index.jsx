@@ -24,13 +24,14 @@ import {
 	meetingsData,
 	upcomingTask,
 } from "constant";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Bar, Doughnut } from "react-chartjs-2";
 import { FaAward } from "react-icons/fa";
 import { GiDiamondTrophy } from "react-icons/gi";
 import { HiOutlineReceiptPercent } from "react-icons/hi2";
 import { RxCaretRight } from "react-icons/rx";
 import { TfiTarget } from "react-icons/tfi";
+import UserService from "services/UserService";
 import MeetingsConductedTable from "./MeetingsConductedTable";
 
 const CRMDashboard = () => {
@@ -85,11 +86,23 @@ const CRMDashboard = () => {
 		},
 	};
 
+	const [agents, setAgents] = useState(null);
+	useEffect(() => {
+		const fetchAllAgents = async () => {
+			try {
+				const response = await UserService.getAllUsers();
+				setAgents(response.data.filter((user) => user.role.includes("Sales")));
+			} catch (error) {
+				console.error(error);
+			}
+		};
+		fetchAllAgents();
+	}, []);
 	return (
 		<Box p={{ base: "1em", md: "2em" }} overflow={"hidden"}>
 			<Text fontWeight="bold" mb={"0.5em"}>
 				CRM Dashboard
-			</Text>
+			</Text>{" "}
 			<SimpleGrid
 				mb={"1em"}
 				columns={{ base: 1, md: 2, lg: 4 }}
@@ -226,7 +239,6 @@ const CRMDashboard = () => {
 					</Flex>
 				</Box>
 			</SimpleGrid>
-
 			<SimpleGrid columns={{ base: 1, md: 1, lg: 3 }} spacing="1em">
 				<Box
 					px="1em"
@@ -260,7 +272,7 @@ const CRMDashboard = () => {
 							</Thead>
 							<Tbody color={"brand.nav_color"}>
 								{leaderBoardData.map((item, index) => (
-									<Tr key={item.id}>
+									<Tr key={index}>
 										<Td fontSize={"xs"} p={0}>
 											{item.position}
 										</Td>
@@ -332,23 +344,24 @@ const CRMDashboard = () => {
 								</Tr>
 							</Thead>
 							<Tbody border={"none"} color={"brand.nav_color"}>
-								{leaderBoardData.map((item, index) => (
-									<Tr key={item.id * 20}>
+								{agents?.map(({ _id, fullName, email }, index) => (
+									<Tr key={_id}>
 										<Td fontSize={"xs"} p={0}>
-											#{item.id}
+											#{index + 1}
 										</Td>
 										<Td fontSize={"xs"} border={"none"} py={0}>
 											<Flex align="center">
 												<Avatar
 													size="sm"
-													src={item.profilePic}
-													name={item.salesperson}
+													src=""
+													// src={item.profilePic}
+													name={fullName}
 												/>
-												<Text ml="2">{item.salesperson}</Text>
+												<Text ml="2">{fullName}</Text>
 											</Flex>
 										</Td>
 										<Td fontSize={"xs"} border={"none"} py={0}>
-											{"user@gmail.com"}
+											{email}
 										</Td>
 										<Td border={"none"} py={0}>
 											<IconButton

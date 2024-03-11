@@ -4,6 +4,7 @@ import {
 	Flex,
 	HStack,
 	Icon,
+	IconButton,
 	Input,
 	InputGroup,
 	InputLeftElement,
@@ -12,9 +13,11 @@ import {
 	Tbody,
 	Td,
 	Tr,
+	useDisclosure,
 	useToast,
 } from "@chakra-ui/react";
 import Loader from "components/Loader";
+import PrimaryButton from "components/ui/button/PrimaryButton";
 import SectionLayout from "components/ui/SectionLayout";
 import SelectList from "components/ui/SelectList";
 import TableLayout from "components/ui/TableLayout";
@@ -24,26 +27,28 @@ import {
 	INDUSTRIES,
 	LEAD_SOURCES,
 	PRODUCTS_SERVICES,
-	PROJECT_ASSIGNEES,
 	REGIONS,
-	SUPERVISOR_ASSIGNEES,
 } from "erp-modules/project-management/workview/data";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { FaCaretDown, FaSearch } from "react-icons/fa";
 import { MdOutlineFilterList } from "react-icons/md";
+import { SiMicrosoftexcel } from "react-icons/si";
+import { useNavigate } from "react-router";
 import { useBreakpointValue } from "services/Breakpoint";
 import LeadsService from "services/LeadsService";
 import { formatDate, generateLighterShade } from "utils";
-import { LEAD_STAGES } from "../opportunities/data";
 
 const LeadsDocket = () => {
-	const { isMobile } = useBreakpointValue();
+	const { isMobile, isIpad } = useBreakpointValue();
 	const [leads, setLeads] = useState(null);
+	const [allLeadIDs, setAllLeadIDs] = useState([]);
+	const toast = useToast();
 
 	const fetchAllLeads = async () => {
 		try {
 			const response = await LeadsService.getOpportunities();
 			setLeads(response.data);
+			setAllLeadIDs(response.data.map((item) => item._id));
 		} catch (error) {
 			console.error(error);
 		}
@@ -54,7 +59,7 @@ const LeadsDocket = () => {
 	}, []);
 
 	const [checkedRows, setCheckedRows] = useState([]);
-	const toast = useToast();
+	const [isAllChecked, setIsAllChecked] = useState(false);
 
 	const handleCheckboxChange = (rowId) => {
 		if (checkedRows.includes(rowId)) {
@@ -63,18 +68,26 @@ const LeadsDocket = () => {
 			setCheckedRows([...checkedRows, rowId]);
 		}
 	};
+
+	const handleHeaderCheckboxChange = (e) => {
+		setIsAllChecked(e.target.checked);
+		if (e.target.checked) setCheckedRows(allLeadIDs);
+		if (!e.target.checked) setCheckedRows([]);
+	};
+	const navigate = useNavigate();
 	const handleDisburse = async (e) => {
 		e.preventDefault();
 		try {
 			await LeadsService.disburseLeads(checkedRows);
-			toast({
-				title: "Leads disbursed",
-				description:
-					"Leads has been successfully distributed among team members",
-				status: "success",
-				duration: 3000,
-				isClosable: true,
-			});
+			// toast({
+			// 	title: "Leads disbursed",
+			// 	description:
+			// 		"Leads has been successfully distributed among team members",
+			// 	status: "success",
+			// 	duration: 3000,
+			// 	isClosable: true,
+			// });
+			navigate("/leads-disburse");
 		} catch (error) {
 			console.error(error);
 			toast({
@@ -121,6 +134,7 @@ const LeadsDocket = () => {
 
 	const showDisburse = () => (
 		<Button
+			isDisabled={checkedRows.length === 0}
 			w={{ lg: "400px" }}
 			bg={generateLighterShade(COLORS.primary, 0.9)}
 			color={"var(--primary_button_bg)"}
@@ -152,20 +166,85 @@ const LeadsDocket = () => {
 	const caption = () => <TextTitle title={"Lead Docket"} />;
 
 	const columns = [
+		"Opportunity name",
+		"Abbr",
+		"Company name",
 		"Region",
 		"Industry",
 		"Product Service",
-		"Opportunity Name",
-		"Phone",
-		"Email",
-		"Address",
 		"Source",
+		"Address",
 		"Created On",
-		"Stage",
-		"Primary Assignee",
-		"Supervisor Assignee",
 	];
 
+	const { isOpen, onOpen, onClose } = useDisclosure();
+	const fileInputRef = useRef(null);
+
+	const handleIconButtonClick = () => {
+		if (fileInputRef.current) {
+			fileInputRef.current.click();
+		}
+	};
+	const handleFileUpload = (event) => {
+		const file = event.target.files[0];
+
+		if (file) {
+			const reader = new FileReader();
+
+			reader.onload = (e) => {
+				// try {
+				// 	const workbook = XLSX.read(e.target.result, { type: "binary" });
+				// 	const sheetName = workbook.SheetNames[0];
+				// 	const excelData = XLSX.utils.sheet_to_json(
+				// 		workbook.Sheets[sheetName],
+				// 	);
+				// 	const formattedData = excelData.map((row) => ({
+				// 		...row,
+				// 		selected: false,
+				// 	}));
+				// 	setData(formattedData);
+				// 	// setData(excelData);
+				// 	toast({
+				// 		title: "File Uploaded",
+				// 		description: "Excel sheet data has been loaded successfully.",
+				// 		status: "success",
+				// 		duration: 3000,
+				// 		isClosable: true,
+				// 	});
+				// } catch (error) {
+				// 	console.error("Error reading the Excel file:", error);
+				// 	toast({
+				// 		title: "Error",
+				// 		description: "There was an error reading the Excel file.",
+				// 		status: "error",
+				// 		duration: 3000,
+				// 		isClosable: true,
+				// 	});
+				// }
+			};
+
+			reader.readAsBinaryString(file);
+		}
+	};
+	const createOpportunity = () => (
+		<HStack justify={"flex-end"}>
+			<input
+				type="file"
+				ref={fileInputRef}
+				onChange={handleFileUpload}
+				accept=".xlsx, .xls"
+				style={{ display: "none" }}
+			/>
+			<PrimaryButton onOpen={onOpen} name={"Add new lead"} />
+			<IconButton
+				icon={<SiMicrosoftexcel />}
+				bg="var(--primary_button_bg)"
+				variant={"solid"}
+				aria-label="Attach Excel file"
+				onClick={handleIconButtonClick}
+			/>
+		</HStack>
+	);
 	return (
 		<SectionLayout title="Lead Docket">
 			{isMobile ? (
@@ -175,7 +254,21 @@ const LeadsDocket = () => {
 						{showDisburse()}
 					</Flex>
 					{showRegion()}
-					<HStack spacing="1em" mt="1em">
+					<HStack spacing="1em" my="1em">
+						{showFilterSearchOption()}
+					</HStack>
+					{createOpportunity()}
+				</Flex>
+			) : isIpad ? (
+				<Flex flexDir="column">
+					<Flex gap={3} mb={"1em"}>
+						{caption()}
+						<Spacer />
+						{showDisburse()}
+						{createOpportunity()}
+					</Flex>
+					{showRegion()}
+					<HStack spacing="1em" my="1em">
 						{showFilterSearchOption()}
 					</HStack>
 				</Flex>
@@ -188,18 +281,26 @@ const LeadsDocket = () => {
 						{showDisburse()}
 						{showRegion()}
 						{showFilterSearchOption()}
+						{createOpportunity()}
 					</HStack>
 				</Flex>
 			)}
 			{!leads && <Loader />}
 			{leads && (
-				<TableLayout hasMulti cols={columns} isSmall>
+				<TableLayout
+					hasMulti
+					cols={columns}
+					isSmall
+					isAllChecked={isAllChecked}
+					handleHeaderCheckboxChange={handleHeaderCheckboxChange}
+				>
 					<Tbody>
 						{leads?.map(
 							({
 								_id,
 								address,
 								createdOn,
+								companyName,
 								email,
 								industry,
 								opportunityName,
@@ -211,15 +312,19 @@ const LeadsDocket = () => {
 								stage,
 								supervisorAssignee,
 								isDisbursed,
+								abbreviation,
 							}) => (
 								<Tr key={_id}>
 									<Td>
 										<Checkbox
 											colorScheme="facebook"
-											isChecked={isDisbursed || checkedRows.includes(_id)}
+											isChecked={checkedRows.includes(_id)}
 											onChange={() => handleCheckboxChange(_id)}
 										/>
 									</Td>
+									<Td p={1}>{opportunityName}</Td>
+									<Td p={1}>{abbreviation}</Td>
+									<Td p={1}>{companyName}</Td>
 									<Td p={1}>
 										<SelectList
 											code="name"
@@ -241,10 +346,6 @@ const LeadsDocket = () => {
 											data={PRODUCTS_SERVICES}
 										/>
 									</Td>
-									<Td p={1}>{opportunityName}</Td>
-									<Td p={1}>{phone}</Td>
-									<Td p={1}>{email}</Td>
-									<Td p={1}>{address}</Td>
 									<Td p={1}>
 										<SelectList
 											code="name"
@@ -252,28 +353,8 @@ const LeadsDocket = () => {
 											data={LEAD_SOURCES}
 										/>
 									</Td>
+									<Td p={1}>{address}</Td>
 									<Td p={1}>{formatDate(createdOn)}</Td>
-									<Td p={1}>
-										<SelectList
-											code="abbr"
-											selectedValue={stage}
-											data={LEAD_STAGES}
-										/>
-									</Td>
-									<Td p={1}>
-										<SelectList
-											code="name"
-											selectedValue={primaryAssignee[0].name}
-											data={PROJECT_ASSIGNEES}
-										/>
-									</Td>
-									<Td p={1}>
-										<SelectList
-											code="name"
-											selectedValue={supervisorAssignee[0].name}
-											data={SUPERVISOR_ASSIGNEES}
-										/>
-									</Td>
 								</Tr>
 							),
 						)}

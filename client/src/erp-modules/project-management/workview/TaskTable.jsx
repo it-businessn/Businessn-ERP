@@ -113,7 +113,7 @@ const TaskTable = ({ data }) => {
 		],
 	};
 	const headerCell = (key) => (
-		<Th fontWeight={"bolder"} fontSize={"xs"}>
+		<Th fontWeight={"bolder"} key={key} fontSize={"xs"}>
 			<Flex alignItems={"center"} gap={0.5}>
 				{key}
 				<FaSort sx={{ width: "5px" }} />
@@ -221,11 +221,13 @@ const TaskTable = ({ data }) => {
 											<VStack align="start" spacing={2} ml={"5em"} p={0} my={2}>
 												<UnorderedList listStyleType={"none"}>
 													{task?.todoItems?.map((task, i) => (
-														<ListItem p={0}>
+														<ListItem p={0} key={task.taskName}>
 															<HStack align="center" spacing={2} p={0}>
 																<Checkbox
 																	isChecked={true}
-																	onChange={(e) => console.log(e)}
+																	onChange={(e) =>
+																		console.log(e.target.checked)
+																	}
 																	sx={{
 																		bgColor: "var(--primary_button_bg)",
 																		color: "var(--main_color)",

@@ -8,6 +8,14 @@ const UserService = {
 	async updateUserById(data, id, token) {
 		return apiService.put(`/employee/${id}`, data, id, token);
 	},
+
+	async updateUserAssignedLeads(data, id) {
+		return apiService.put(`/user/lead/${id}`, data, id);
+	},
+
+	async getAllUsers() {
+		return apiService.get(`/user`);
+	},
 };
 
 export default UserService;

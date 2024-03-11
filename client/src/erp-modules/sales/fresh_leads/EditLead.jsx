@@ -9,7 +9,7 @@ import {
 	Stack,
 } from "@chakra-ui/react";
 import ModalLayout from "components/ui/ModalLayout";
-import PrimaryButton from "components/ui/PrimaryButton";
+import PrimaryButton from "components/ui/button/PrimaryButton";
 import { useState } from "react";
 import { FaCaretDown } from "react-icons/fa";
 import LeadsService from "services/LeadsService";

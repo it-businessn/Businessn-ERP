@@ -66,6 +66,7 @@ const RootLayout = () => {
 					/>
 					<Flex minH={"100vh"} as="section">
 						<Sidebar
+							isMobile={isMobile}
 							activeMenu={activeMenu}
 							isOpen={isOpen}
 							onClose={onClose}

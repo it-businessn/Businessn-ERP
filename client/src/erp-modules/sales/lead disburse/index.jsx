@@ -20,12 +20,11 @@ import SelectList from "components/ui/SelectList";
 import TableLayout from "components/ui/TableLayout";
 import TextTitle from "components/ui/TextTitle";
 import {
+	AREAS,
 	COLORS,
-	INDUSTRIES,
+	DISBURSE_MODE_OPTIONS,
 	PRODUCTS_SERVICES,
-	PROJECT_ASSIGNEES,
 	REGIONS,
-	SUPERVISOR_ASSIGNEES,
 	WEIGHTING,
 } from "erp-modules/project-management/workview/data";
 import { useEffect, useState } from "react";
@@ -33,28 +32,57 @@ import { FaCaretDown, FaSearch } from "react-icons/fa";
 import { MdOutlineFilterList } from "react-icons/md";
 import { useBreakpointValue } from "services/Breakpoint";
 import LeadsService from "services/LeadsService";
-import { formatDate, formatDateTime, generateLighterShade } from "utils";
-import { LEAD_STAGES } from "../opportunities/data";
+import UserService from "services/UserService";
+import { generateLighterShade } from "utils";
 
 const LeadsDocket = () => {
-	const { isMobile } = useBreakpointValue();
-	const [leads, setLeads] = useState(null);
+	const { isMobile, isIpad } = useBreakpointValue();
+	const [agents, setAgents] = useState(null);
 
-	const fetchAllLeads = async () => {
+	const fetchAllAgents = async () => {
 		try {
-			const response = await LeadsService.getDisbursedLeads();
-			setLeads(response.data);
+			const response = await UserService.getAllUsers();
+			setAgents(response.data.filter((user) => user.role.includes("Sales")));
 		} catch (error) {
 			console.error(error);
 		}
 	};
 
-	useEffect(() => {
-		fetchAllLeads();
-	}, []);
-
+	const [leads, setLeads] = useState(null);
 	const [checkedRows, setCheckedRows] = useState([]);
 	const toast = useToast();
+	const [assignedNewWeights, setAssignedNewWeights] = useState([]);
+	const [assignedLeadWeights, setAssignedLeadWeights] = useState([]);
+
+	useEffect(() => {
+		const fetchAllLeads = async () => {
+			try {
+				const response = await LeadsService.getDisbursedLeads();
+				setLeads(response.data);
+			} catch (error) {
+				console.error(error);
+			}
+		};
+		fetchAllLeads();
+		fetchAllAgents();
+	}, []);
+
+	const handleSelect = (weight, id) => {
+		setAssignedNewWeights([
+			...assignedNewWeights,
+			{ id, weight: parseInt(weight) },
+		]);
+
+		updateUserAssignedLeads(
+			[...assignedNewWeights, { id, weight: parseInt(weight) }],
+			id,
+		);
+	};
+
+	const updateUserAssignedLeads = async (assignedNewWeights, id) => {
+		await UserService.updateUserAssignedLeads(assignedNewWeights, id);
+		fetchAllAgents();
+	};
 
 	const handleCheckboxChange = (rowId) => {
 		if (checkedRows.includes(rowId)) {
@@ -91,7 +119,7 @@ const LeadsDocket = () => {
 	const showFilterSearchOption = () => (
 		<>
 			<Button
-				w={"200px"}
+				w={{ lg: "100px" }}
 				color={"brand.nav_color"}
 				leftIcon={<MdOutlineFilterList />}
 				border={"2px solid var(--filter_border_color)"}
@@ -102,6 +130,7 @@ const LeadsDocket = () => {
 				Filter
 			</Button>
 			<InputGroup
+				w={{ lg: "180px" }}
 				borderRadius={"10px"}
 				border={"1px solid var(--filter_border_color)"}
 				fontWeight="bold"
@@ -122,7 +151,8 @@ const LeadsDocket = () => {
 
 	const showDisburse = () => (
 		<Button
-			w={{ lg: "400px" }}
+			w={{ lg: "200px" }}
+			isDisabled={checkedRows.length === 0}
 			bg={generateLighterShade(COLORS.primary, 0.9)}
 			color={"var(--primary_button_bg)"}
 			variant={"outlined"}
@@ -136,47 +166,64 @@ const LeadsDocket = () => {
 	);
 
 	const showRegion = () => (
-		<Select
-			icon={<Icon as={FaCaretDown} />}
-			mt={{ base: "1em", md: 0 }}
-			border={"2px solid var(--filter_border_color)"}
-			borderRadius={"10px"}
-		>
-			{REGIONS.map(({ name, id }) => (
-				<option key={id} value={name}>
-					{name}
-				</option>
-			))}
-		</Select>
+		<>
+			<Select
+				w={{ lg: "250px" }}
+				icon={<Icon as={FaCaretDown} />}
+				mt={{ base: "1em", md: 0 }}
+				border={"2px solid var(--filter_border_color)"}
+				borderRadius={"10px"}
+			>
+				{REGIONS.map(({ name, id }) => (
+					<option key={id} value={name}>
+						{name}
+					</option>
+				))}
+			</Select>
+			<Select
+				w={{ lg: "300px" }}
+				icon={<Icon as={FaCaretDown} />}
+				mt={{ base: "1em", md: 0 }}
+				border={"2px solid var(--filter_border_color)"}
+				borderRadius={"10px"}
+			>
+				{DISBURSE_MODE_OPTIONS.map(({ name, id }) => (
+					<option key={id} value={name}>
+						{name}
+					</option>
+				))}
+			</Select>
+		</>
 	);
 
 	const caption = () => <TextTitle title={"Lead Disbursement"} />;
 
 	const columns = [
-		"Opportunity Name",
+		"Active",
+		"Name",
 		"Leads",
-		"Region",
 		"Last Login",
 		"Role",
 		"Address",
-		"Weighting",
-		"Created On",
-		"Stage",
-		"Primary Assignee",
-		"Supervisor Assignee",
+		"Areas",
 		"Product Service",
+		"Weighting",
 	];
 
 	return (
 		<SectionLayout title="Lead Disbursement">
-			{isMobile ? (
-				<Flex flexDir="column">
+			{isMobile || isIpad ? (
+				<Flex flexDir="column" gap={{ base: 0, md: 3 }}>
 					<Flex justify="space-between">
 						{caption()}
 						{showDisburse()}
 					</Flex>
 					{showRegion()}
-					<HStack spacing="1em" mt="1em">
+					<HStack
+						justify={{ md: "flex-end" }}
+						spacing="1em"
+						mt={{ base: "1em", md: 0 }}
+					>
 						{showFilterSearchOption()}
 					</HStack>
 				</Flex>
@@ -185,96 +232,73 @@ const LeadsDocket = () => {
 					{caption()}
 					<Spacer />
 					<HStack spacing={3}>
-						<Spacer />
 						{showDisburse()}
 						{showRegion()}
 						{showFilterSearchOption()}
 					</HStack>
 				</Flex>
 			)}
-			{!leads && <Loader />}
-			{leads && (
-				<TableLayout hasMulti cols={columns} isSmall>
+			{!agents && <Loader />}
+			{agents && (
+				<TableLayout cols={columns} isSmall>
 					<Tbody>
-						{leads?.map(
+						{agents?.map(
 							({
 								_id,
+								isActive,
+								lastLogin,
+								fullName,
+								assignedLeads,
+								role,
 								address,
-								createdOn,
-								email,
-								industry,
-								opportunityName,
-								phone,
-								primaryAssignee,
-								productService,
-								region,
-								source,
-								stage,
-								supervisorAssignee,
-								isDisbursedConfirmed,
+								assignedAreas,
+								assignedProducts,
+								assignedWeight,
 							}) => (
 								<Tr key={_id}>
-									<Td>
+									<Td p={1}>
 										<Checkbox
 											colorScheme="facebook"
-											isChecked={
-												isDisbursedConfirmed || checkedRows.includes(_id)
-											}
+											isChecked={isActive || checkedRows.includes(_id)}
 											onChange={() => handleCheckboxChange(_id)}
 										/>
 									</Td>
-									<Td p={1}>{opportunityName}</Td>
-									<Td p={1}>{opportunityName}</Td>
+									<Td p={1}>{fullName}</Td>
 									<Td p={1}>
-										<SelectList
+										{/* <SelectList
+											isRight
 											code="name"
-											selectedValue={region}
+											selectedValue={assignedLeads}
 											data={REGIONS}
-										/>
+										/> */}
+										{`${assignedLeads || 0} leads`}
 									</Td>
-									<Td p={1}>{formatDateTime(new Date())}</Td>
-									<Td p={1}>
-										<SelectList
-											code="name"
-											selectedValue={industry}
-											data={INDUSTRIES}
-										/>
-									</Td>
+									{/* <Td p={1}>{formatDateTime(lastLogin || new Date())}</Td> */}
+									<Td p={1}>{"1 hr ago"}</Td>
+
+									<Td p={1}>{role}</Td>
 									<Td p={1}>{address}</Td>
 									<Td p={1}>
 										<SelectList
 											code="name"
-											selectedValue={source}
-											data={WEIGHTING}
-										/>
-									</Td>
-									<Td p={1}>{formatDate(createdOn)}</Td>
-									<Td p={1}>
-										<SelectList
-											code="abbr"
-											selectedValue={stage}
-											data={LEAD_STAGES}
+											selectedValue={assignedAreas}
+											data={AREAS}
 										/>
 									</Td>
 									<Td p={1}>
 										<SelectList
 											code="name"
-											selectedValue={primaryAssignee[0].name}
-											data={PROJECT_ASSIGNEES}
-										/>
-									</Td>
-									<Td p={1}>
-										<SelectList
-											code="name"
-											selectedValue={supervisorAssignee[0].name}
-											data={SUPERVISOR_ASSIGNEES}
-										/>
-									</Td>
-									<Td p={1}>
-										<SelectList
-											code="name"
-											selectedValue={productService}
+											selectedValue={assignedProducts}
 											data={PRODUCTS_SERVICES}
+										/>
+									</Td>
+									<Td p={1}>
+										<SelectList
+											id={_id}
+											handleSelect={handleSelect}
+											code="name"
+											selectedValue={assignedWeight}
+											data={WEIGHTING}
 										/>
 									</Td>
 								</Tr>

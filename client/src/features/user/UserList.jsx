@@ -57,7 +57,7 @@ const UserList = ({ employees }) => {
 	};
 	const processPayroll = async () => {
 		try {
-			console.log(selectedUsers);
+			// console.log(selectedUsers);
 			// selectedUsers.map((item) => delete item._id);
 			// const updateData = await api.processPayroll(
 			//     selectedUsers,

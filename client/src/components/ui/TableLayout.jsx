@@ -1,6 +1,13 @@
 import { Box, Checkbox, Table, Th, Thead, Tr } from "@chakra-ui/react";
 
-const TableLayout = ({ hasMulti, cols, children, isSmall }) => {
+const TableLayout = ({
+	hasMulti,
+	cols,
+	children,
+	isSmall,
+	isAllChecked,
+	handleHeaderCheckboxChange,
+}) => {
 	return (
 		<Box overflow="auto">
 			<Table variant="simple">
@@ -8,7 +15,11 @@ const TableLayout = ({ hasMulti, cols, children, isSmall }) => {
 					<Tr>
 						{hasMulti && (
 							<Th>
-								<Checkbox />
+								<Checkbox
+									checked={isAllChecked}
+									colorScheme="facebook"
+									onChange={(e) => handleHeaderCheckboxChange(e)}
+								/>
 							</Th>
 						)}
 						{cols.map((col) => (

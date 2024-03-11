@@ -7,7 +7,7 @@ const PrimaryButton = ({ name, onOpen, isLoading, px, isDisabled = false }) => {
 			isLoading={isLoading}
 			onClick={onOpen}
 			bg={"brand.primary_button_bg"}
-			px={{ lg: px ? px : "3em" }}
+			px={{ base: px ? px : "2em" }}
 			color={"brand.primary_bg"}
 			_hover={{
 				color: "brand.primary_button_bg",
