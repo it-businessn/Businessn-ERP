@@ -20,6 +20,17 @@ const getDisbursedLeads = () => async (req, res) => {
 	}
 };
 
+const getNotDisbursedLeads = () => async (req, res) => {
+	try {
+		const leads = (await Lead.find({ isDisbursed: false })).sort(
+			(a, b) => b.createdOn - a.createdOn,
+		);
+		res.status(200).json(leads);
+	} catch (error) {
+		res.status(404).json({ error: error.message });
+	}
+};
+
 const getConfirmedDisbursedLeads = () => async (req, res) => {
 	try {
 		const leads = (await Lead.find({ isDisbursedConfirmed: true })).sort(
@@ -161,5 +172,6 @@ module.exports = {
 	getConfirmedDisbursedLeads,
 	getDisbursedLeads,
 	getOpportunities,
+	getNotDisbursedLeads,
 	updateLeadInfo,
 };

@@ -102,35 +102,27 @@ const updateUser = () => async (req, res) => {
 };
 
 const updateUserAssignedLeads = async (req, res) => {
-	const assignedNewWeights = req.body;
-
 	try {
 		const leads = await Lead.find({ isDisbursed: true });
-		let totalRecords = leads.length;
-		let totalWeight = assignedNewWeights.reduce(
-			(sum, item) => sum + item.weight,
+		const totalRecords = leads.length;
+
+		const activeUsers = await User.find({ isActive: true });
+		const totalWeight = activeUsers.reduce(
+			(sum, item) => sum + item.assignedWeight,
 			0,
 		);
-
-		let assignedLeads = 0;
-		let updatedLeads = [];
-		assignedNewWeights.forEach(({ id, weight }) => {
-			assignedLeads = Math.round((weight / totalWeight) * leads.length);
-
-			updatedLeads.push({ id, assignedLeads, weight });
-			totalRecords -= assignedLeads;
-			totalWeight -= weight;
-		});
-		for (const lead of updatedLeads) {
-			const { id, assignedLeads, weight } = lead;
-
+		for (const user of activeUsers) {
+			const assignedLeads = Math.round(
+				(user.assignedWeight / totalWeight) * totalRecords,
+			);
 			await User.findByIdAndUpdate(
-				id,
-				{ $set: { assignedLeads, assignedWeight: weight } },
+				user._id,
+				{ $set: { assignedLeads } },
 				{ new: true },
 			);
 		}
-		res.status(200).json({ message: "Update successful" });
+
+		res.status(200).json({ message: "Updated successfully" });
 	} catch (error) {
 		res.status(404).json({ error: error.message });
 	}

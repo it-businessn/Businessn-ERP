@@ -14,6 +14,7 @@ const noteRoutes = require("./routes/note");
 const opportunityRoutes = require("./routes/opportunity");
 const projectRoutes = require("./routes/project");
 const resourcesRoutes = require("./routes/resource");
+const setUpRoutes = require("./routes/setup");
 const taskRoutes = require("./routes/task");
 const userRoutes = require("./routes/user");
 
@@ -39,6 +40,7 @@ app.use("/api/notes", noteRoutes);
 app.use("/api/opportunities", opportunityRoutes);
 app.use("/api/projects", projectRoutes);
 app.use("/api/resources", resourcesRoutes);
+app.use("/api/set-up", setUpRoutes);
 app.use("/api/tasks", taskRoutes);
 app.use("/api/user", userRoutes);
 
