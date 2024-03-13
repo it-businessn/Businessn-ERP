@@ -30,36 +30,31 @@ import Caption from "erp-modules/sales/lead docket/Caption";
 import { useState } from "react";
 import { FaCaretDown } from "react-icons/fa";
 import ProjectService from "services/ProjectService";
+import { getDefaultDate } from "utils";
 import MultiCheckboxMenu from "./MultiCheckboxMenu";
 import { PROJECT_ASSIGNEES } from "./data";
 
-const AddNewTask = ({
+const AddNewProjectTask = ({
 	isOpen,
 	onClose,
+	task,
+	projectId,
 	setRefresh,
-	allProjects,
-	isFiltered,
-	allProjectTasks,
 }) => {
 	const defaultTask = {
-		projectId: "",
-		projectName: "",
-		taskName: "",
-		taskId: null,
+		taskId: task._id,
+		taskName: task.taskName,
+		subtasks: task?.subtasks,
+		selectedAssignees: task?.selectedAssignees,
 		hasChecklist: false,
-		todoItems: [],
-		subtasks: [],
-		selectedAssignees: [],
 		action: [],
-		dueDate: null,
-		timeToComplete: 0,
+		dueDate: task?.dueDate && getDefaultDate(task?.dueDate),
+		timeToComplete: task?.timeToComplete,
 	};
-
 	const defaultChecklist = {
 		taskName: "",
 		selectedAssignee: "",
 	};
-
 	const [hasChecklist, setHasChecklist] = useState(defaultTask.hasChecklist);
 	const defaultSubtask = { taskName: "", selectedAssignees: [] };
 
@@ -91,7 +86,6 @@ const AddNewTask = ({
 			taskName: updatedTaskName,
 		}));
 	};
-
 	const [todoItems, setTodoItems] = useState(defaultTask.action);
 
 	const handleAddTodoItem = () => {
@@ -106,7 +100,7 @@ const AddNewTask = ({
 		formData.hasChecklist = hasChecklist;
 		formData.action = todoItems;
 		try {
-			await ProjectService.addProjectTask(formData, formData.projectId);
+			await ProjectService.addProjectTask(formData, projectId);
 			onClose();
 			setFormData(defaultTask);
 			setSubTasks([]);
@@ -121,87 +115,27 @@ const AddNewTask = ({
 		<Modal isCentered size={"4xl"} isOpen={isOpen} onClose={onClose}>
 			<ModalOverlay />
 			<ModalContent>
-				<ModalHeader>Add New {isFiltered ? "Activity" : "Task"}</ModalHeader>
+				<ModalHeader>Add New Task</ModalHeader>
 				<ModalCloseButton />
 				<ModalBody>
 					<Stack spacing="5">
 						<form onSubmit={handleSubmit}>
 							<Stack spacing={4}>
 								<FormControl>
-									<FormLabel>Select Project</FormLabel>
-									<Select
-										icon={<FaCaretDown />}
-										borderRadius="10px"
-										value={formData?.projectId || ""}
-										placeholder="Select Project"
-										onChange={(e) => {
-											const selectedValue = e.target.value;
-											if (selectedValue !== "") {
-												const { id, projectName } = allProjects.find(
-													(project) => project.id === selectedValue,
-												);
-												setFormData((prevData) => ({
-													...prevData,
-													projectName,
-													projectId: id,
-												}));
-											}
-										}}
-									>
-										{allProjects?.map(({ id, projectName }) => (
-											<option value={id} key={id}>
-												{projectName}
-											</option>
-										))}
-									</Select>
+									<FormLabel>Task name</FormLabel>
+									<Input
+										type="text"
+										name="taskName"
+										value={formData.taskName}
+										onChange={(e) =>
+											setFormData((prevData) => ({
+												...prevData,
+												taskName: e.target.value,
+											}))
+										}
+										required
+									/>
 								</FormControl>
-								{isFiltered ? (
-									<FormControl>
-										<FormLabel>Select Tasks</FormLabel>
-										<Select
-											icon={<FaCaretDown />}
-											borderRadius="10px"
-											value={formData?.taskId || ""}
-											placeholder="Select Tasks"
-											onChange={(e) => {
-												const selectedValue = e.target.value;
-												if (selectedValue !== "") {
-													const { id, taskName } = allProjectTasks.find(
-														(task) => task.id === selectedValue,
-													);
-													setFormData((prevData) => ({
-														...prevData,
-														taskName,
-														taskId: id,
-													}));
-												}
-											}}
-										>
-											{allProjectTasks?.map(({ id, taskName }) => (
-												<option value={id} key={id}>
-													{taskName}
-												</option>
-											))}
-										</Select>
-									</FormControl>
-								) : (
-									<FormControl>
-										<FormLabel>Task name</FormLabel>
-										<Input
-											type="text"
-											name="taskName"
-											value={formData.taskName}
-											onChange={(e) =>
-												setFormData((prevData) => ({
-													...prevData,
-													taskName: e.target.value,
-												}))
-											}
-											required
-										/>
-									</FormControl>
-								)}
-
 								<HStack>
 									<FormControl>
 										<FormLabel>Due date</FormLabel>
@@ -236,59 +170,57 @@ const AddNewTask = ({
 										/>
 									</FormControl>
 								</HStack>
-								{!isFiltered && (
-									<HStack spacing={4}>
-										<FormControl>
-											<FormLabel>Subtask Name</FormLabel>
-											<Input
-												type="text"
-												value={subtask.taskName}
-												onChange={handleSubTaskNameChange}
-											/>
-										</FormControl>
-										<FormControl>
-											<FormLabel visibility={openAssigneeMenu ? "" : "hidden"}>
-												Select Assignee
-											</FormLabel>
-											<Button
-												rightIcon={<FaCaretDown />}
-												bg={"brand.primary_bg"}
-												color={"brand.primary_button_bg"}
-												_hover={{
-													bg: "brand.primary_bg",
-													color: "brand.primary_button_bg",
-												}}
-											>
-												{openAssigneeMenu ? (
-													<MultiCheckboxMenu
-														openMenu={openAssigneeMenu}
-														handleCloseMenu={handleCloseMenu}
-													/>
-												) : (
-													<Text onClick={handleMenuToggle}>
-														{subtask.selectedAssignees?.length > 0
-															? `${subtask.selectedAssignees?.length} assignees`
-															: "Select Assignee"}
-													</Text>
-												)}
-											</Button>
-										</FormControl>
-
-										<IconButton
-											icon={<AddIcon />}
-											isDisabled={formData.taskName === ""}
-											onClick={(e) => {
-												e.preventDefault();
-												setSubTaskAdded(true);
-												setSubTasks((prev) => [...prev, subtask]);
-												setSubTask(defaultSubtask);
-											}}
-											variant={"ghost"}
-											size={"xs"}
-											mt={5}
+								<HStack spacing={4}>
+									<FormControl>
+										<FormLabel>Subtask Name</FormLabel>
+										<Input
+											type="text"
+											value={subtask.taskName}
+											onChange={handleSubTaskNameChange}
 										/>
-									</HStack>
-								)}
+									</FormControl>
+									<FormControl>
+										<FormLabel visibility={openAssigneeMenu ? "" : "hidden"}>
+											Select Assignee
+										</FormLabel>
+										<Button
+											rightIcon={<FaCaretDown />}
+											bg={"brand.primary_bg"}
+											color={"brand.primary_button_bg"}
+											_hover={{
+												bg: "brand.primary_bg",
+												color: "brand.primary_button_bg",
+											}}
+										>
+											{openAssigneeMenu ? (
+												<MultiCheckboxMenu
+													openMenu={openAssigneeMenu}
+													handleCloseMenu={handleCloseMenu}
+												/>
+											) : (
+												<Text onClick={handleMenuToggle}>
+													{subtask.selectedAssignees?.length > 0
+														? `${subtask.selectedAssignees?.length} assignees`
+														: "Select Assignee"}
+												</Text>
+											)}
+										</Button>
+									</FormControl>
+
+									<IconButton
+										icon={<AddIcon />}
+										isDisabled={formData.taskName === ""}
+										onClick={(e) => {
+											e.preventDefault();
+											setSubTaskAdded(true);
+											setSubTasks((prev) => [...prev, subtask]);
+											setSubTask(defaultSubtask);
+										}}
+										variant={"ghost"}
+										size={"xs"}
+										mt={5}
+									/>
+								</HStack>
 								<FormControl>
 									<FormLabel>Has To-Do Checklist</FormLabel>
 									<Checkbox
@@ -340,7 +272,10 @@ const AddNewTask = ({
 										</FormControl>
 										<IconButton
 											icon={<AddIcon />}
-											isDisabled={todoItem.taskName === ""}
+											isDisabled={
+												todoItem.taskName === "" ||
+												todoItem.selectedAssignee === ""
+											}
 											onClick={handleAddTodoItem}
 											variant={"ghost"}
 											size={"xs"}
@@ -417,7 +352,7 @@ const AddNewTask = ({
 										isLoading={isSubmitting}
 										type="submit"
 										bg="brand.logo_bg"
-										isDisabled={formData.taskName === ""}
+										isDisabled={subTasks.length === 0}
 									>
 										Add
 									</Button>
@@ -440,4 +375,4 @@ const AddNewTask = ({
 	);
 };
 
-export default AddNewTask;
+export default AddNewProjectTask;

@@ -98,7 +98,7 @@ const LeadsDocket = () => {
 				<Thead>
 					<Tr>
 						<Th>
-							<Checkbox />
+							<Checkbox colorScheme="facebook" />
 						</Th>
 						{data.length > 0 &&
 							Object.keys(data[0]).map((header) => (
@@ -111,6 +111,7 @@ const LeadsDocket = () => {
 						<Tr key={rowIndex}>
 							<Td>
 								<Checkbox
+									colorScheme="facebook"
 									isChecked={selectedRows[rowIndex] || false}
 									onChange={() => handleCheckboxChange(rowIndex)}
 								/>

@@ -1,10 +1,6 @@
 import {
-	Button,
 	Flex,
 	HStack,
-	Input,
-	InputGroup,
-	InputLeftElement,
 	Spacer,
 	Tbody,
 	Td,
@@ -15,18 +11,18 @@ import Loader from "components/Loader";
 import SectionLayout from "components/ui/SectionLayout";
 import SelectList from "components/ui/SelectList";
 import TableLayout from "components/ui/TableLayout";
-import TextTitle from "components/ui/TextTitle";
 import PrimaryButton from "components/ui/button/PrimaryButton";
 import {
 	PROJECT_ASSIGNEES,
 	SUPERVISOR_ASSIGNEES,
 } from "erp-modules/project-management/workview/data";
 import { useEffect, useState } from "react";
-import { FaSearch } from "react-icons/fa";
-import { MdOutlineFilterList } from "react-icons/md";
 import { useBreakpointValue } from "services/Breakpoint";
 import LeadsService from "services/LeadsService";
 import { formatDate } from "utils";
+import Caption from "../lead docket/Caption";
+import SearchFilter from "../lead docket/SearchFilter";
+import { OPP_COLUMNS } from "../lead docket/data";
 import AddNewOpportunity from "./AddNewOpportunity";
 import { LEAD_STAGES } from "./data";
 
@@ -49,81 +45,36 @@ const Opportunities = () => {
 		fetchAllOpportunities();
 	}, [isAdded]);
 
-	const showFilterSearchOption = () => (
-		<>
-			<Button
-				color={"brand.nav_color"}
-				leftIcon={<MdOutlineFilterList />}
-				border={"2px solid var(--filter_border_color)"}
-				borderRadius={"10px"}
-				px={"2em"}
-				_hover={{ color: "brand.600", bg: "transparent" }}
-			>
-				Filter
-			</Button>
-			<InputGroup
-				borderRadius={"10px"}
-				border={"1px solid var(--filter_border_color)"}
-				fontSize="sm"
-				fontWeight="bold"
-			>
-				<InputLeftElement children={<FaSearch />} />
-				<Input
-					_placeholder={{
-						color: "brand.nav_color",
-						fontSize: "sm",
-					}}
-					color={"brand.nav_color"}
-					bg={"brand.primary_bg"}
-					type="text"
-					placeholder="Search here"
-				/>
-			</InputGroup>
-		</>
-	);
-
 	const { isOpen, onOpen, onClose } = useDisclosure();
 	const createOpportunity = () => (
 		<PrimaryButton onOpen={onOpen} name={"Add new lead"} />
 	);
-	const caption = () => <TextTitle title={"Opportunities"} />;
-
-	const columns = [
-		"Opportunity name",
-		"Abbr",
-		"Company name",
-		"Email",
-		"Stage",
-		"Primary assignee",
-		"Supervisor assignee",
-		"Created On",
-	];
 
 	return (
 		<SectionLayout title="Opportunities">
 			{isMobile || isIpad ? (
 				<Flex flexDir="column">
 					<Flex justify="space-between">
-						{caption()}
+						<Caption title={"Opportunities"} />
 						{createOpportunity()}
 					</Flex>
 					<HStack spacing="1em" mt="1em">
-						{showFilterSearchOption()}
+						<SearchFilter />
 					</HStack>
 				</Flex>
 			) : (
 				<Flex>
-					{caption()}
+					<Caption title={"Opportunities"} />
 					<Spacer />
 					<HStack spacing={3}>
-						{showFilterSearchOption()}
+						<SearchFilter />
 						{createOpportunity()}
 					</HStack>
 				</Flex>
 			)}
 			{!opportunities && <Loader />}
 			{opportunities && (
-				<TableLayout cols={columns}>
+				<TableLayout cols={OPP_COLUMNS}>
 					<Tbody>
 						{opportunities?.map(
 							({

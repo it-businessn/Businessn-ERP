@@ -112,6 +112,7 @@ const Tasks = ({ contactId }) => {
 											<Flex w={"100%"}>
 												<HStack spacing={4} w="70%">
 													<Checkbox
+														colorScheme="facebook"
 														isChecked={task.status === "Closed"}
 														onChange={(e) =>
 															handleCheckboxChange(e.target.checked, task)

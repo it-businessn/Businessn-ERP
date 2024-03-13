@@ -12,11 +12,11 @@ const SelectList = ({
 	bg_color = COLORS.primary,
 	isRight,
 	handleSelect,
+	type,
 }) => {
 	const handleChange = (event) => {
-		console.log(event.target.value);
-		if (handleSelect) {
-			handleSelect(event.target.value, id);
+		if (handleSelect && type) {
+			handleSelect(type, event.target.value, id);
 		}
 	};
 

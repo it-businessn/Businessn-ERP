@@ -12,20 +12,46 @@ import {
 	Select,
 	Spacer,
 	Text,
+	Th,
 	useDisclosure,
 } from "@chakra-ui/react";
 import Loader from "components/Loader";
 import { useEffect, useState } from "react";
 import { AiOutlineUser } from "react-icons/ai";
-import { FaCaretDown, FaSearch } from "react-icons/fa";
+import { FaCaretDown, FaSearch, FaSort } from "react-icons/fa";
 import { HiOutlineUserGroup } from "react-icons/hi2";
 import { MdDateRange } from "react-icons/md";
 import ProjectService from "services/ProjectService";
-import AddNewTask from "./AddNewTask";
+import { generateLighterShade } from "utils";
 import ProjectTable from "./ProjectTable";
 import TaskTable from "./TaskTable";
 import { VIEW_MODE } from "./data";
 
+export const statusColor = (status) => {
+	if (status?.includes("Overdue")) {
+		return { color: "blue", bg: generateLighterShade("red", 0.8) };
+	} else if (status?.includes("Due Today")) {
+		return { color: "green", bg: generateLighterShade("#e3ffe4", 0.8) };
+	} else if (status?.includes("Upcoming")) {
+		return { color: "#d04a20", bg: generateLighterShade("#d04a20", 0.8) };
+	} else {
+		return { color: "#213622", bg: generateLighterShade("#213622", 0.8) };
+	}
+};
+
+export const headerCell = (key, weight) => (
+	<Th
+		fontWeight={weight ? weight : "bolder"}
+		key={key}
+		fontSize={"xs"}
+		p={"0.5em 1em"}
+	>
+		<Flex alignItems={"center"} gap={0.5}>
+			{key}
+			<FaSort sx={{ width: "5px" }} />
+		</Flex>
+	</Th>
+);
 const WorkView = () => {
 	const [viewMode, setViewMode] = useState(VIEW_MODE[0].name);
 	const { isOpen, onOpen, onClose } = useDisclosure();
@@ -147,35 +173,22 @@ const WorkView = () => {
 				borderRadius="10px"
 				color={"brand.nav_color"}
 			>
-				<Flex>
-					<Text fontWeight="bold">Tasks</Text>
-					<Spacer />
-					<Button
-						onClick={onOpen}
-						// leftIcon={<Icon as={SmallAddIcon} />}
-						color={"brand.100"}
-						bg={"brand.primary_button_bg"}
-						borderRadius={"8px"}
-						size={"sm"}
-						px={"2em"}
-					>
-						Add new task
-					</Button>
-				</Flex>
 				{!projects && <Loader />}
 				{projects && viewMode === "Tasks" ? (
-					<TaskTable data={projects} />
+					<TaskTable onOpen={onOpen} data={projects} />
 				) : viewMode === "Projects" ? (
-					<ProjectTable data={projects} />
+					<ProjectTable onOpen={onOpen} data={projects} />
 				) : viewMode === "Activities" ? (
 					<TaskTable
-						data={projects.filter((task) => task.todoItems.length > 0)}
+						viewMode={viewMode}
+						onOpen={onOpen}
+						isFiltered
+						data={projects}
 					/>
 				) : (
 					<></>
 				)}
 			</Box>
-			<AddNewTask isOpen={isOpen} onClose={onClose} />
 		</Box>
 	);
 };

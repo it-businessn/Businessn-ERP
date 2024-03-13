@@ -7,4 +7,8 @@ router.get("/", projectController.getProjects());
 
 router.post("/", projectController.createProject());
 
+router.put("/:id", projectController.updateProject());
+
+router.put("/task/:id", projectController.updateProjectTask());
+
 module.exports = router;

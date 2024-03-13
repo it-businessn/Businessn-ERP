@@ -199,7 +199,7 @@ export const router = createBrowserRouter([
 
 			{
 				path: "/project-dashboard",
-				element: <ProjectDashboard />,
+				element: <WorkView />,
 			},
 			{
 				path: "/workview",

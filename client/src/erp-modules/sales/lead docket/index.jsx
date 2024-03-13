@@ -1,42 +1,34 @@
 import {
-	Button,
 	Checkbox,
 	Flex,
 	HStack,
-	Icon,
-	IconButton,
-	Input,
-	InputGroup,
-	InputLeftElement,
-	Select,
 	Spacer,
 	Tbody,
 	Td,
 	Tr,
-	useDisclosure,
 	useToast,
 } from "@chakra-ui/react";
 import Loader from "components/Loader";
-import PrimaryButton from "components/ui/button/PrimaryButton";
 import SectionLayout from "components/ui/SectionLayout";
 import SelectList from "components/ui/SelectList";
 import TableLayout from "components/ui/TableLayout";
-import TextTitle from "components/ui/TextTitle";
 import {
-	COLORS,
 	INDUSTRIES,
 	LEAD_SOURCES,
 	PRODUCTS_SERVICES,
 	REGIONS,
 } from "erp-modules/project-management/workview/data";
-import { useEffect, useRef, useState } from "react";
-import { FaCaretDown, FaSearch } from "react-icons/fa";
-import { MdOutlineFilterList } from "react-icons/md";
-import { SiMicrosoftexcel } from "react-icons/si";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { useBreakpointValue } from "services/Breakpoint";
 import LeadsService from "services/LeadsService";
-import { formatDate, generateLighterShade } from "utils";
+import { formatDate } from "utils";
+import AddOpportunity from "./AddOpportunity";
+import Caption from "./Caption";
+import Disburse from "./Disburse";
+import Region from "./Region";
+import SearchFilter from "./SearchFilter";
+import { LEAD_DOCKET_COLUMNS } from "./data";
 
 const LeadsDocket = () => {
 	const { isMobile, isIpad } = useBreakpointValue();
@@ -46,7 +38,7 @@ const LeadsDocket = () => {
 
 	const fetchAllLeads = async () => {
 		try {
-			const response = await LeadsService.getOpportunities();
+			const response = await LeadsService.getNotDisbursedLeads();
 			setLeads(response.data);
 			setAllLeadIDs(response.data.map((item) => item._id));
 		} catch (error) {
@@ -74,7 +66,9 @@ const LeadsDocket = () => {
 		if (e.target.checked) setCheckedRows(allLeadIDs);
 		if (!e.target.checked) setCheckedRows([]);
 	};
+
 	const navigate = useNavigate();
+
 	const handleDisburse = async (e) => {
 		e.preventDefault();
 		try {
@@ -100,188 +94,53 @@ const LeadsDocket = () => {
 			});
 		}
 	};
-	const showFilterSearchOption = () => (
-		<>
-			<Button
-				w={"200px"}
-				color={"brand.nav_color"}
-				leftIcon={<MdOutlineFilterList />}
-				border={"2px solid var(--filter_border_color)"}
-				borderRadius={"10px"}
-				variant={"ghost"}
-				_hover={{ color: "brand.600", bg: "transparent" }}
-			>
-				Filter
-			</Button>
-			<InputGroup
-				borderRadius={"10px"}
-				border={"1px solid var(--filter_border_color)"}
-				fontWeight="bold"
-			>
-				<InputLeftElement size="xs" children={<FaSearch />} />
-				<Input
-					_placeholder={{
-						color: "brand.nav_color",
-					}}
-					color={"brand.nav_color"}
-					bg={"brand.primary_bg"}
-					type="text"
-					placeholder="Search here"
-				/>
-			</InputGroup>
-		</>
-	);
 
-	const showDisburse = () => (
-		<Button
-			isDisabled={checkedRows.length === 0}
-			w={{ lg: "400px" }}
-			bg={generateLighterShade(COLORS.primary, 0.9)}
-			color={"var(--primary_button_bg)"}
-			variant={"outlined"}
-			_hover={{ color: "brand.600" }}
-			borderRadius={"10px"}
-			border={`1px solid var(--primary_button_bg)`}
-			onClick={handleDisburse}
-		>
-			Disburse Selected
-		</Button>
-	);
-
-	const showRegion = () => (
-		<Select
-			icon={<Icon as={FaCaretDown} />}
-			mt={{ base: "1em", md: 0 }}
-			border={"2px solid var(--filter_border_color)"}
-			borderRadius={"10px"}
-		>
-			{REGIONS.map(({ name, id }) => (
-				<option key={id} value={name}>
-					{name}
-				</option>
-			))}
-		</Select>
-	);
-
-	const caption = () => <TextTitle title={"Lead Docket"} />;
-
-	const columns = [
-		"Opportunity name",
-		"Abbr",
-		"Company name",
-		"Region",
-		"Industry",
-		"Product Service",
-		"Source",
-		"Address",
-		"Created On",
-	];
-
-	const { isOpen, onOpen, onClose } = useDisclosure();
-	const fileInputRef = useRef(null);
-
-	const handleIconButtonClick = () => {
-		if (fileInputRef.current) {
-			fileInputRef.current.click();
-		}
-	};
-	const handleFileUpload = (event) => {
-		const file = event.target.files[0];
-
-		if (file) {
-			const reader = new FileReader();
-
-			reader.onload = (e) => {
-				// try {
-				// 	const workbook = XLSX.read(e.target.result, { type: "binary" });
-				// 	const sheetName = workbook.SheetNames[0];
-				// 	const excelData = XLSX.utils.sheet_to_json(
-				// 		workbook.Sheets[sheetName],
-				// 	);
-				// 	const formattedData = excelData.map((row) => ({
-				// 		...row,
-				// 		selected: false,
-				// 	}));
-				// 	setData(formattedData);
-				// 	// setData(excelData);
-				// 	toast({
-				// 		title: "File Uploaded",
-				// 		description: "Excel sheet data has been loaded successfully.",
-				// 		status: "success",
-				// 		duration: 3000,
-				// 		isClosable: true,
-				// 	});
-				// } catch (error) {
-				// 	console.error("Error reading the Excel file:", error);
-				// 	toast({
-				// 		title: "Error",
-				// 		description: "There was an error reading the Excel file.",
-				// 		status: "error",
-				// 		duration: 3000,
-				// 		isClosable: true,
-				// 	});
-				// }
-			};
-
-			reader.readAsBinaryString(file);
-		}
-	};
-	const createOpportunity = () => (
-		<HStack justify={"flex-end"}>
-			<input
-				type="file"
-				ref={fileInputRef}
-				onChange={handleFileUpload}
-				accept=".xlsx, .xls"
-				style={{ display: "none" }}
-			/>
-			<PrimaryButton onOpen={onOpen} name={"Add new lead"} />
-			<IconButton
-				icon={<SiMicrosoftexcel />}
-				bg="var(--primary_button_bg)"
-				variant={"solid"}
-				aria-label="Attach Excel file"
-				onClick={handleIconButtonClick}
-			/>
-		</HStack>
-	);
 	return (
 		<SectionLayout title="Lead Docket">
 			{isMobile ? (
 				<Flex flexDir="column">
 					<Flex justify="space-between">
-						{caption()}
-						{showDisburse()}
+						<Caption title={"Lead Docket"} />
+						<Disburse
+							checkedRows={checkedRows}
+							handleDisburse={handleDisburse}
+						/>
 					</Flex>
-					{showRegion()}
+					<Region />
 					<HStack spacing="1em" my="1em">
-						{showFilterSearchOption()}
+						<SearchFilter width={"200px"} />
 					</HStack>
-					{createOpportunity()}
+					<AddOpportunity />
 				</Flex>
 			) : isIpad ? (
 				<Flex flexDir="column">
 					<Flex gap={3} mb={"1em"}>
-						{caption()}
+						<Caption title={"Lead Docket"} />
 						<Spacer />
-						{showDisburse()}
-						{createOpportunity()}
+						<Disburse
+							checkedRows={checkedRows}
+							handleDisburse={handleDisburse}
+						/>
+						<AddOpportunity />
 					</Flex>
-					{showRegion()}
+					<Region />
 					<HStack spacing="1em" my="1em">
-						{showFilterSearchOption()}
+						<SearchFilter width={"200px"} />
 					</HStack>
 				</Flex>
 			) : (
 				<Flex>
-					{caption()}
+					<Caption title={"Lead Docket"} />
 					<Spacer />
 					<HStack spacing={3}>
 						<Spacer />
-						{showDisburse()}
-						{showRegion()}
-						{showFilterSearchOption()}
-						{createOpportunity()}
+						<Disburse
+							checkedRows={checkedRows}
+							handleDisburse={handleDisburse}
+						/>
+						<Region />
+						<SearchFilter width={"200px"} />
+						<AddOpportunity />
 					</HStack>
 				</Flex>
 			)}
@@ -289,7 +148,7 @@ const LeadsDocket = () => {
 			{leads && (
 				<TableLayout
 					hasMulti
-					cols={columns}
+					cols={LEAD_DOCKET_COLUMNS}
 					isSmall
 					isAllChecked={isAllChecked}
 					handleHeaderCheckboxChange={handleHeaderCheckboxChange}

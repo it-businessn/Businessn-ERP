@@ -18,6 +18,7 @@ const MultiSelectCheckboxDropdown = () => {
 		<VStack spacing={4}>
 			{options.map((option) => (
 				<Checkbox
+					colorScheme="facebook"
 					key={option}
 					isChecked={selectedOptions.includes(option)}
 					onChange={() => handleCheckboxChange(option)}

@@ -44,10 +44,15 @@ app.use("/api/set-up", setUpRoutes);
 app.use("/api/tasks", taskRoutes);
 app.use("/api/user", userRoutes);
 
-mongoose.connect(process.env.DB_CONNECTION_URL_LOCAL_CRM, {
+mongoose.connect(process.env.DB_CONNECTION_URL_STAGING_CRM, {
 	useNewUrlParser: true,
 	useUnifiedTopology: true,
 });
+
+// mongoose.connect(process.env.DB_CONNECTION_URL_PROD_CRM, {
+// 	useNewUrlParser: true,
+// 	useUnifiedTopology: true,
+// });
 
 const db = mongoose.connection;
 

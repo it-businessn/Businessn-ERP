@@ -66,6 +66,7 @@ const TaskByDate = () => {
 														onChange={(e) =>
 															handleCheckboxChange(e.target.checked, task)
 														}
+														colorScheme="facebook"
 														borderRadius="full"
 														borderColor="brand.logo_bg"
 														iconColor="brand.logo_bg"

@@ -33,14 +33,42 @@ export const RANDOM_PEOPLE_ICON = [
 	},
 ];
 
+export const workView_Table = {
+	projects_cols: [
+		"Project name",
+		"Assignee(s)",
+		"Priority",
+		"Last Updated",
+		"Due Date",
+		"Status",
+	],
+	task_cols: [
+		"Task name",
+		"Assignee(s)",
+		"Priority",
+		"Last Updated",
+		"Due Date",
+		"Status",
+	],
+	task_view_cols: [
+		"Task name",
+		"Assignee(s)",
+		"Priority",
+		"Project",
+		"Last Updated",
+		"Due Date",
+		"Status",
+	],
+};
+
 export const PROJECT_ASSIGNEES = [
-	{ name: "Assignee1", id: "Assignee1" },
-	{ name: "Assignee2", id: "Assignee2" },
+	{ name: "Assignee 1", id: "Assignee1" },
+	{ name: "Assignee 2", id: "Assignee2" },
 ];
 
 export const SUPERVISOR_ASSIGNEES = [
-	{ name: "Supervisor1", id: "Supervisor1" },
-	{ name: "Supervisor2", id: "Supervisor2" },
+	{ name: "Supervisor 1", id: "Supervisor1" },
+	{ name: "Supervisor 2", id: "Supervisor2" },
 ];
 
 export const REGIONS = [

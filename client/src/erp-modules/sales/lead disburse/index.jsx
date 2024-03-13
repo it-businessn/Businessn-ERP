@@ -3,11 +3,6 @@ import {
 	Checkbox,
 	Flex,
 	HStack,
-	Icon,
-	Input,
-	InputGroup,
-	InputLeftElement,
-	Select,
 	Spacer,
 	Tbody,
 	Td,
@@ -18,24 +13,23 @@ import Loader from "components/Loader";
 import SectionLayout from "components/ui/SectionLayout";
 import SelectList from "components/ui/SelectList";
 import TableLayout from "components/ui/TableLayout";
-import TextTitle from "components/ui/TextTitle";
 import {
 	AREAS,
 	COLORS,
-	DISBURSE_MODE_OPTIONS,
 	PRODUCTS_SERVICES,
-	REGIONS,
 	WEIGHTING,
 } from "erp-modules/project-management/workview/data";
 import { useEffect, useState } from "react";
-import { FaCaretDown, FaSearch } from "react-icons/fa";
-import { MdOutlineFilterList } from "react-icons/md";
+import { FaCaretRight } from "react-icons/fa";
 import { useBreakpointValue } from "services/Breakpoint";
 import LeadsService from "services/LeadsService";
 import UserService from "services/UserService";
 import { generateLighterShade } from "utils";
+import AutoAssign from "./AutoAssign";
+import Disburse from "./Disburse";
+import { caption, columns, showFilterSearchOption, showRegion } from "./data";
 
-const LeadsDocket = () => {
+const LeadsDisbursed = () => {
 	const { isMobile, isIpad } = useBreakpointValue();
 	const [agents, setAgents] = useState(null);
 
@@ -43,6 +37,7 @@ const LeadsDocket = () => {
 		try {
 			const response = await UserService.getAllUsers();
 			setAgents(response.data.filter((user) => user.role.includes("Sales")));
+			setCheckedRows(response.data.filter((user) => user.isActive === true));
 		} catch (error) {
 			console.error(error);
 		}
@@ -51,8 +46,14 @@ const LeadsDocket = () => {
 	const [leads, setLeads] = useState(null);
 	const [checkedRows, setCheckedRows] = useState([]);
 	const toast = useToast();
-	const [assignedNewWeights, setAssignedNewWeights] = useState([]);
-	const [assignedLeadWeights, setAssignedLeadWeights] = useState([]);
+
+	const [formData, setFormData] = useState({
+		_id: null,
+		isActive: false,
+		assignedAreas: [],
+		assignedProducts: [],
+		assignedWeight: 0,
+	});
 
 	useEffect(() => {
 		const fetchAllLeads = async () => {
@@ -67,29 +68,87 @@ const LeadsDocket = () => {
 		fetchAllAgents();
 	}, []);
 
-	const handleSelect = (weight, id) => {
-		setAssignedNewWeights([
-			...assignedNewWeights,
-			{ id, weight: parseInt(weight) },
-		]);
-
-		updateUserAssignedLeads(
-			[...assignedNewWeights, { id, weight: parseInt(weight) }],
-			id,
-		);
-	};
-
-	const updateUserAssignedLeads = async (assignedNewWeights, id) => {
-		await UserService.updateUserAssignedLeads(assignedNewWeights, id);
-		fetchAllAgents();
-	};
-
-	const handleCheckboxChange = (rowId) => {
-		if (checkedRows.includes(rowId)) {
-			setCheckedRows(checkedRows.filter((id) => id !== rowId));
-		} else {
-			setCheckedRows([...checkedRows, rowId]);
+	useEffect(() => {
+		const updateUserProfile = async () => {
+			try {
+				await UserService.updateUserProfile(formData, formData._id);
+				fetchAllAgents();
+			} catch (error) {}
+		};
+		if (formData._id) {
+			updateUserProfile(formData);
 		}
+	}, [formData]);
+
+	useEffect(() => {
+		const updateUserAssignedLeads = async () => {
+			try {
+				await UserService.updateUserAssignedLeads(formData, formData._id);
+				fetchAllAgents();
+			} catch (error) {}
+		};
+		if (formData._id && formData.assignedWeight) {
+			updateUserAssignedLeads(formData);
+		}
+	}, [formData.assignedWeight]);
+
+	const handleSelect = (type, value, rowId) => {
+		const user = agents.find((agent) => agent._id === rowId);
+		if (user) {
+			setFormData({
+				assignedAreas: user?.assignedAreas,
+				assignedProducts: user?.assignedProducts,
+				assignedWeight: user?.assignedWeight,
+			});
+		}
+
+		if (type === "areas") {
+			setFormData((prev) => {
+				if (!prev.assignedAreas.includes(value)) {
+					return {
+						...prev,
+						_id: rowId,
+						assignedAreas: [...prev.assignedAreas, value],
+					};
+				}
+				return prev;
+			});
+		}
+		if (type === "product_service") {
+			setFormData((prev) => {
+				if (!prev.assignedProducts.includes(value)) {
+					return {
+						...prev,
+						_id: rowId,
+						assignedProducts: [...prev.assignedProducts, value],
+					};
+				}
+				return prev;
+			});
+		}
+		if (type === "weight") {
+			setFormData((prev) => {
+				if (prev.assignedWeight === parseInt(value)) {
+					return prev;
+				}
+				return {
+					...prev,
+					_id: rowId,
+					assignedWeight: parseInt(value),
+				};
+			});
+		}
+	};
+
+	const handleCheckboxChange = (rowId, checked) => {
+		setFormData({ _id: rowId, isActive: checked });
+		try {
+			if (checkedRows.includes(rowId)) {
+				setCheckedRows(checkedRows.filter((id) => id !== rowId));
+			} else {
+				setCheckedRows([...checkedRows, rowId]);
+			}
+		} catch (error) {}
 	};
 
 	const handleDisburse = async (e) => {
@@ -116,107 +175,18 @@ const LeadsDocket = () => {
 			});
 		}
 	};
-	const showFilterSearchOption = () => (
-		<>
-			<Button
-				w={{ lg: "100px" }}
-				color={"brand.nav_color"}
-				leftIcon={<MdOutlineFilterList />}
-				border={"2px solid var(--filter_border_color)"}
-				borderRadius={"10px"}
-				variant={"ghost"}
-				_hover={{ color: "brand.600", bg: "transparent" }}
-			>
-				Filter
-			</Button>
-			<InputGroup
-				w={{ lg: "180px" }}
-				borderRadius={"10px"}
-				border={"1px solid var(--filter_border_color)"}
-				fontWeight="bold"
-			>
-				<InputLeftElement size="xs" children={<FaSearch />} />
-				<Input
-					_placeholder={{
-						color: "brand.nav_color",
-					}}
-					color={"brand.nav_color"}
-					bg={"brand.primary_bg"}
-					type="text"
-					placeholder="Search here"
-				/>
-			</InputGroup>
-		</>
-	);
-
-	const showDisburse = () => (
-		<Button
-			w={{ lg: "200px" }}
-			isDisabled={checkedRows.length === 0}
-			bg={generateLighterShade(COLORS.primary, 0.9)}
-			color={"var(--primary_button_bg)"}
-			variant={"outlined"}
-			_hover={{ color: "brand.600" }}
-			borderRadius={"10px"}
-			border={`1px solid var(--primary_button_bg)`}
-			onClick={handleDisburse}
-		>
-			Confirm Disbursement
-		</Button>
-	);
-
-	const showRegion = () => (
-		<>
-			<Select
-				w={{ lg: "250px" }}
-				icon={<Icon as={FaCaretDown} />}
-				mt={{ base: "1em", md: 0 }}
-				border={"2px solid var(--filter_border_color)"}
-				borderRadius={"10px"}
-			>
-				{REGIONS.map(({ name, id }) => (
-					<option key={id} value={name}>
-						{name}
-					</option>
-				))}
-			</Select>
-			<Select
-				w={{ lg: "300px" }}
-				icon={<Icon as={FaCaretDown} />}
-				mt={{ base: "1em", md: 0 }}
-				border={"2px solid var(--filter_border_color)"}
-				borderRadius={"10px"}
-			>
-				{DISBURSE_MODE_OPTIONS.map(({ name, id }) => (
-					<option key={id} value={name}>
-						{name}
-					</option>
-				))}
-			</Select>
-		</>
-	);
-
-	const caption = () => <TextTitle title={"Lead Disbursement"} />;
-
-	const columns = [
-		"Active",
-		"Name",
-		"Leads",
-		"Last Login",
-		"Role",
-		"Address",
-		"Areas",
-		"Product Service",
-		"Weighting",
-	];
 
 	return (
-		<SectionLayout title="Lead Disbursement">
+		<SectionLayout title="Lead Disbursement" hasSubHeader={<AutoAssign />}>
 			{isMobile || isIpad ? (
 				<Flex flexDir="column" gap={{ base: 0, md: 3 }}>
 					<Flex justify="space-between">
 						{caption()}
-						{showDisburse()}
+						<Disburse
+							leads={leads}
+							checkedRows={checkedRows}
+							handleDisburse={handleDisburse}
+						/>
 					</Flex>
 					{showRegion()}
 					<HStack
@@ -232,7 +202,11 @@ const LeadsDocket = () => {
 					{caption()}
 					<Spacer />
 					<HStack spacing={3}>
-						{showDisburse()}
+						<Disburse
+							leads={leads}
+							checkedRows={checkedRows}
+							handleDisburse={handleDisburse}
+						/>
 						{showRegion()}
 						{showFilterSearchOption()}
 					</HStack>
@@ -260,18 +234,26 @@ const LeadsDocket = () => {
 										<Checkbox
 											colorScheme="facebook"
 											isChecked={isActive || checkedRows.includes(_id)}
-											onChange={() => handleCheckboxChange(_id)}
+											onChange={(e) =>
+												handleCheckboxChange(_id, e.target.checked)
+											}
 										/>
 									</Td>
 									<Td p={1}>{fullName}</Td>
 									<Td p={1}>
-										{/* <SelectList
-											isRight
-											code="name"
-											selectedValue={assignedLeads}
-											data={REGIONS}
-										/> */}
-										{`${assignedLeads || 0} leads`}
+										<Button
+											borderRadius={"10px"}
+											h={"2.25em"}
+											w={"10em"}
+											_hover={{ bg: "transparent" }}
+											px={3}
+											variant={"outline"}
+											justifyContent={"space-between"}
+											color={"brand.primary_button_bg"}
+											rightIcon={<FaCaretRight />}
+											bg={generateLighterShade(COLORS.primary, 0.9)}
+											border={`1px solid var(--primary_button_bg)`}
+										>{`${assignedLeads} leads`}</Button>
 									</Td>
 									{/* <Td p={1}>{formatDateTime(lastLogin || new Date())}</Td> */}
 									<Td p={1}>{"1 hr ago"}</Td>
@@ -280,6 +262,9 @@ const LeadsDocket = () => {
 									<Td p={1}>{address}</Td>
 									<Td p={1}>
 										<SelectList
+											id={_id}
+											type="areas"
+											handleSelect={handleSelect}
 											code="name"
 											selectedValue={assignedAreas}
 											data={AREAS}
@@ -287,6 +272,9 @@ const LeadsDocket = () => {
 									</Td>
 									<Td p={1}>
 										<SelectList
+											id={_id}
+											type="product_service"
+											handleSelect={handleSelect}
 											code="name"
 											selectedValue={assignedProducts}
 											data={PRODUCTS_SERVICES}
@@ -295,6 +283,7 @@ const LeadsDocket = () => {
 									<Td p={1}>
 										<SelectList
 											id={_id}
+											type="weight"
 											handleSelect={handleSelect}
 											code="name"
 											selectedValue={assignedWeight}
@@ -311,4 +300,4 @@ const LeadsDocket = () => {
 	);
 };
 
-export default LeadsDocket;
+export default LeadsDisbursed;

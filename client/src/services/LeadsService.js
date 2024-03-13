@@ -1,6 +1,10 @@
 import apiService from "services";
 
 const LeadsService = {
+	async getNotDisbursedLeads(data) {
+		return apiService.get("/leads/not-disbursed", data);
+	},
+
 	async getDisbursedLeads(data) {
 		return apiService.get("/leads/disburse", data);
 	},

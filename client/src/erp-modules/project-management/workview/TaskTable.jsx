@@ -3,13 +3,10 @@ import {
 	Box,
 	Button,
 	Checkbox,
-	CircularProgress,
-	CircularProgressLabel,
 	Collapse,
 	Flex,
 	HStack,
-	Icon,
-	ListItem,
+	Spacer,
 	Table,
 	Tbody,
 	Td,
@@ -19,14 +16,24 @@ import {
 	Tr,
 	UnorderedList,
 	VStack,
+	useDisclosure,
 } from "@chakra-ui/react";
-import React, { useState } from "react";
-import { FaCaretDown, FaSort } from "react-icons/fa";
-import { GoTasklist } from "react-icons/go";
-import { formatDate, generateLighterShade } from "utils";
-import { COLORS } from "./data";
+import Caption from "erp-modules/sales/lead docket/Caption";
+import React, { useEffect, useState } from "react";
+import { FaSort } from "react-icons/fa";
+import {
+	CircularProgressBarCell,
+	TaskButton,
+	formatDate,
+	renderPriorityBars,
+} from "utils";
+import { statusColor } from ".";
+import AddNewTask from "./AddNewTask";
+import Subtask from "./Subtask";
+import TodoItem from "./TodoItem";
+import { workView_Table } from "./data";
 
-const TaskTable = ({ data }) => {
+const TaskTable = ({ data, isFiltered }) => {
 	// const [filters, setFilters] = useState({
 	// 	taskName: "",
 	// 	assignee: "",
@@ -36,82 +43,19 @@ const TaskTable = ({ data }) => {
 	// const handleFilterChange = (event, columnName) => {
 	// 	console.log(`Filtering ${columnName} by ${event.target.value}`);
 	// };
-	const [expandedIndex, setExpandedIndex] = useState(null);
-	const handleToggle = (index) => {
-		setExpandedIndex(expandedIndex === index ? -1 : index);
-	};
-
 	// useEffect(() => {
 	// 	if (filter) {
 	// 		setTasks(tasksData.filter((task) => task.checklist));
 	// 	}
 	// }, [filter]);
+	const { isOpen, onOpen, onClose } = useDisclosure();
+	const [expandedIndex, setExpandedIndex] = useState(null);
+	const [refresh, setRefresh] = useState(false);
 
-	const CircularProgressBarCell = ({ completionPercentage }) => {
-		return (
-			<CircularProgress
-				value={completionPercentage}
-				color={
-					completionPercentage >= 75 ? "green.400" : "brand.primary_button_bg"
-				}
-			>
-				<CircularProgressLabel>{`${completionPercentage}%`}</CircularProgressLabel>
-			</CircularProgress>
-		);
+	const handleToggle = (index) => {
+		setExpandedIndex(expandedIndex === index ? -1 : index);
 	};
 
-	const TaskButton = ({ totalTasks }) => {
-		return (
-			<Button
-				size="xxs"
-				display={"flex"}
-				p={"2px"}
-				fontSize={"8px"}
-				color={"brand.primary_button_bg"}
-				border={`1px solid ${generateLighterShade(COLORS.primary, 0.5)}`}
-				bg={generateLighterShade(COLORS.primary, 0.8)}
-				leftIcon={
-					<Icon
-						as={GoTasklist}
-						sx={{ marginRight: "-4px", fontsize: "10px" }}
-					/>
-				}
-				rightIcon={
-					<Icon
-						as={FaCaretDown}
-						sx={{ marginLeft: "-4px", fontsize: "10px" }}
-					/>
-				}
-			>
-				{totalTasks}
-			</Button>
-		);
-	};
-	const renderPriorityBars = (priority) => {
-		const barCount = 3;
-		const bars = [];
-
-		for (let i = 0; i < barCount; i++) {
-			const barColor =
-				priority <= (i + 1) * 33.33 ? "brand.priority_medium" : "orange.400";
-			bars.push(
-				<Box key={i} h="2em" w="10px" bgColor={barColor} borderRadius="2px" />,
-			);
-		}
-
-		return bars;
-	};
-	const workView_Table = {
-		cols: [
-			"Task name",
-			"Assignee(s)",
-			"Priority",
-			"Project",
-			"Last Updated",
-			"Due Date",
-			"Status",
-		],
-	};
 	const headerCell = (key) => (
 		<Th fontWeight={"bolder"} key={key} fontSize={"xs"}>
 			<Flex alignItems={"center"} gap={0.5}>
@@ -120,141 +64,173 @@ const TaskTable = ({ data }) => {
 			</Flex>
 		</Th>
 	);
-	return (
-		<Box overflow="auto">
-			<Table color={"brand.nav_color"} bg={"brand.primary_bg"} size={"small"}>
-				<Thead>
-					<Tr>
-						<Th>
-							<Checkbox sx={{ verticalAlign: "middle" }} />
-						</Th>
-						{workView_Table.cols.map((col) => headerCell(col))}
-					</Tr>
-				</Thead>
-				<Tbody>
-					{data?.map((task, index) => {
-						task.taskStatus = "Completed";
+	const allProjects = data.map((project) => ({
+		projectName: project.projectName,
+		id: project._id,
+	}));
 
-						return (
-							<React.Fragment key={task._id}>
-								<Tr key={task.taskName}>
-									<Td
-									// maxW="200px"
-									// overflow="hidden"
-									// textOverflow="ellipsis"
-									// whiteSpace="nowrap"
-									>
-										<Checkbox
-											sx={{ verticalAlign: "middle" }}
-											// isChecked={checkedRows.includes(item.id)}
-											// onChange={() => handleCheckboxChange(item.id)}
-										/>
-									</Td>
-									<Td
-										fontSize={"xs"}
-										onClick={() => handleToggle(index)}
-										cursor={task?.todoItems.length > 0 ? "pointer" : "default"}
-									>
-										<HStack spacing={3}>
-											<CircularProgressBarCell completionPercentage={25} />
-											<Text>{task.taskName}</Text>
-											<TaskButton totalTasks={task?.todoItems.length} />
-										</HStack>
-									</Td>
-									<Td fontSize={"xs"}>
-										<HStack>
-											{task.selectedAssignees.map((assignee) => (
-												<Avatar
-													key={assignee.name}
-													name={assignee.name}
-													size={{ base: "xs", md: "sm" }}
-													src={assignee.avatarUrl}
-												/>
-											))}
-										</HStack>
-									</Td>
-									<Td fontSize={"xs"}>
-										<HStack spacing="1">{renderPriorityBars(2)}</HStack>
-									</Td>
-									<Td fontSize={"xs"}>{task.projectName}</Td>
-									<Td fontSize={"xs"}>{formatDate(task.date)}</Td>
-									<Td fontSize={"xs"}></Td>
-									<Td
-										fontSize={"12px"}
-										// color={
-										// 	task.taskStatus === "Completed"
-										// 		? "#213622"
-										// 		: task.taskStatus === "In Progress"
-										// 		? "#cc4673"
-										// 		: task.taskStatus === "Pending"
-										// 		? "#d04a20"
-										// 		: "#cc4673"
-										// }
-										// bgColor={
-										// 	task.taskStatus === "Completed"
-										// 		? "#e3ffe4"
-										// 		: task.taskStatus === "In Progress"
-										// 		? generateLighterShade("#ffe4e1", 0.8)
-										// 		: task.taskStatus === "Pending"
-										// 		? "#ffc5b2"
-										// 		: generateLighterShade("#cc4673", 0.8)
-										// }
-									>
-										<HStack
-											justifyContent={"space-around"}
-											spacing={0}
-											fontWeight={"bold"}
-											bg={generateLighterShade(COLORS.task_status, 0.9)}
-											p={"5px"}
-											borderRadius={"8px"}
-											border={"1px solid var(--status_button_border)"}
-											color="var(--status_button_border)"
+	const allTasks = data?.flatMap(
+		(project) =>
+			project?.tasks?.map((task) => ({
+				...task,
+				projectName: project.projectName,
+			})) || [],
+	);
+	const allProjectTasks = allTasks.map((task) => ({
+		taskName: task.taskName,
+		id: task._id,
+	}));
+
+	const allActivities = allTasks?.filter((task) => task?.action?.length > 0);
+	const [filteredData, setFilteredData] = useState(data);
+
+	useEffect(() => {
+		if (isFiltered) {
+			setFilteredData(allActivities);
+		} else {
+			setFilteredData(allTasks);
+		}
+	}, [isFiltered]);
+
+	const handleAddTask = () => {
+		// setOpenEditTask(false);
+		// setProject(null);
+		// setProjectId(null);
+		onOpen();
+	};
+
+	return (
+		<>
+			<Flex>
+				<Text fontWeight="bold">{isFiltered ? "Activities" : "Tasks"}</Text>
+				<Spacer />
+				<Button
+					onClick={handleAddTask}
+					color={"brand.100"}
+					bg={"brand.primary_button_bg"}
+					borderRadius={"8px"}
+					size={"sm"}
+					px={"2em"}
+				>
+					Add new {isFiltered ? "activity" : "task"}
+				</Button>
+			</Flex>
+			<AddNewTask
+				isOpen={isOpen}
+				isFiltered={isFiltered}
+				onClose={onClose}
+				setRefresh={setRefresh}
+				allProjects={allProjects}
+				allProjectTasks={allProjectTasks}
+			/>
+			<Box overflow="auto">
+				<Table color={"brand.nav_color"} bg={"brand.primary_bg"} size={"small"}>
+					<Thead>
+						<Tr>
+							<Th>{/* <Checkbox sx={{ verticalAlign: "middle" }} /> */}</Th>
+							{workView_Table.task_view_cols.map((col) => headerCell(col))}
+						</Tr>
+					</Thead>
+					<Tbody>
+						{filteredData?.map((task, index) => {
+							return (
+								<React.Fragment key={task._id}>
+									<Tr key={task.taskName}>
+										<Td>
+											<Checkbox
+												colorScheme="facebook"
+												sx={{ verticalAlign: "middle" }}
+												// isChecked={checkedRows.includes(item.id)}
+												// onChange={() => handleCheckboxChange(item.id)}
+											/>
+										</Td>
+										<Td
+											fontSize={"xs"}
+											onClick={() => handleToggle(index)}
+											cursor={
+												task?.subtasks?.length > 0 ? "pointer" : "default"
+											}
 										>
-											<Text> {task.taskStatus}</Text>
-											<Text>7d over</Text>
-										</HStack>
-									</Td>
-								</Tr>
-								<Tr>
-									<Td colSpan="3" p={0} fontSize={"xs"}>
-										<Collapse in={expandedIndex === index}>
-											<VStack align="start" spacing={2} ml={"5em"} p={0} my={2}>
-												<UnorderedList listStyleType={"none"}>
-													{task?.todoItems?.map((task, i) => (
-														<ListItem p={0} key={task.taskName}>
-															<HStack align="center" spacing={2} p={0}>
-																<Checkbox
-																	isChecked={true}
-																	onChange={(e) =>
-																		console.log(e.target.checked)
-																	}
-																	sx={{
-																		bgColor: "var(--primary_button_bg)",
-																		color: "var(--main_color)",
-																		borderRadius: "10px !important",
-																	}}
+											<HStack spacing={3}>
+												<CircularProgressBarCell completionPercentage={25} />
+												<Text>{task.taskName}</Text>
+												<TaskButton totalTasks={task?.subtasks?.length} />
+											</HStack>
+										</Td>
+										<Td fontSize={"xs"}>
+											<HStack>
+												{task?.selectedAssignees?.map((assignee) => (
+													<Avatar
+														key={assignee}
+														name={assignee}
+														size={{ base: "xs", md: "sm" }}
+														src={assignee}
+													/>
+												))}
+											</HStack>
+										</Td>
+										<Td fontSize={"xs"}>
+											<HStack spacing="1">{renderPriorityBars(2)}</HStack>
+										</Td>
+										<Td fontSize={"xs"}>{task.projectName}</Td>
+										<Td fontSize={"xs"}>
+											{task?.updatedOn && formatDate(task.updatedOn)}
+										</Td>
+										<Td fontSize={"xs"}>
+											{task.dueDate && formatDate(task.dueDate)}
+										</Td>
+										<Td fontSize={"12px"}>
+											<HStack
+												justifyContent={"space-around"}
+												spacing={0}
+												fontWeight={"bold"}
+												p={"5px"}
+												borderRadius={"8px"}
+												color={statusColor(task.status).color}
+												bgColor={statusColor(task.status).bg}
+											>
+												<Text> {task?.status}d over</Text>
+											</HStack>
+										</Td>
+									</Tr>
+									<Tr>
+										<Td colSpan="3" p={0} fontSize={"xs"}>
+											<Collapse in={expandedIndex === index}>
+												<VStack
+													align="start"
+													spacing={2}
+													ml={"3em"}
+													p={0}
+													my={2}
+												>
+													{!isFiltered && (
+														<UnorderedList listStyleType={"none"}>
+															<Caption title={"Sub tasks"} />
+															{task?.subtasks?.map((subtask) => (
+																<Subtask
+																	key={subtask.taskName}
+																	task={subtask}
 																/>
-																<Text>{task.taskName}</Text>
-																<Avatar
-																	key={task.taskName}
-																	name={task.assignee}
-																	size={{ base: "xs", md: "sm" }}
-																	src={task.avatarUrl}
-																/>
-															</HStack>
-														</ListItem>
-													))}
-												</UnorderedList>
-											</VStack>
-										</Collapse>
-									</Td>
-								</Tr>
-							</React.Fragment>
-						);
-					})}
-				</Tbody>
-			</Table>
-		</Box>
+															))}
+														</UnorderedList>
+													)}
+													<UnorderedList listStyleType={"none"}>
+														<Caption title={"Todos"} />
+														{task?.action?.map((action, i) => (
+															<TodoItem key={action.taskName} task={action} />
+														))}
+													</UnorderedList>
+												</VStack>
+											</Collapse>
+										</Td>
+									</Tr>
+								</React.Fragment>
+							);
+						})}
+					</Tbody>
+				</Table>
+			</Box>
+		</>
 	);
 };
 

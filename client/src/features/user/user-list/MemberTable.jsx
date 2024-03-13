@@ -81,7 +81,7 @@ export const MemberTable = (props) => {
 					<Tr>
 						<Th>
 							<HStack spacing="3">
-								{props.isEditable && <Checkbox />}
+								{props.isEditable && <Checkbox colorScheme="facebook" />}
 								<HStack spacing="1">
 									<Text>Name</Text>
 									<Icon as={IoArrowDown} color="muted" boxSize="4" />
@@ -101,7 +101,7 @@ export const MemberTable = (props) => {
 						<Tr key={member._id}>
 							<Td>
 								<HStack spacing="3">
-									{props.isEditable && <Checkbox />}
+									{props.isEditable && <Checkbox colorScheme="facebook" />}
 									{/* <Avatar
                                 name={member.name}
                                 src={member.avatarUrl}
