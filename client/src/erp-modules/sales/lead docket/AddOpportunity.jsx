@@ -2,6 +2,7 @@ import { HStack, IconButton, useDisclosure } from "@chakra-ui/react";
 import PrimaryButton from "components/ui/button/PrimaryButton";
 import { useRef } from "react";
 import { SiMicrosoftexcel } from "react-icons/si";
+import AddNewOpportunity from "../opportunities/AddNewOpportunity";
 
 const AddOpportunity = () => {
 	const fileInputRef = useRef(null);
@@ -70,6 +71,12 @@ const AddOpportunity = () => {
 				variant={"solid"}
 				aria-label="Attach Excel file"
 				onClick={handleIconButtonClick}
+			/>
+			<AddNewOpportunity
+				// setIsAdded={setIsAdded}
+				isDocket
+				isOpen={isOpen}
+				onClose={onClose}
 			/>
 		</HStack>
 	);

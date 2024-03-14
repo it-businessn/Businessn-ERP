@@ -212,7 +212,9 @@ const LeadsDocket = () => {
 											data={LEAD_SOURCES}
 										/>
 									</Td>
-									<Td p={1}>{address}</Td>
+									<Td
+										p={1}
+									>{`${address.streetNumber} ${address.city} ${address.state} ${address.country} ${address.postalCode}`}</Td>
 									<Td p={1}>{formatDate(createdOn)}</Td>
 								</Tr>
 							),

@@ -166,8 +166,8 @@ export const calculateProjectCompletion = (project) => {
 	// 	project.status = "Completed";
 	// }
 
-	project.completionPercentage = completionPercentage;
-	return completionPercentage;
+	project.completionPercentage = completionPercentage || 0;
+	return project.completionPercentage;
 	// const totalTasks = project.tasks.length;
 	// const completedTasks = project.tasks.filter(
 	// 	(task) => calculateTaskCompletion(task) === 100,

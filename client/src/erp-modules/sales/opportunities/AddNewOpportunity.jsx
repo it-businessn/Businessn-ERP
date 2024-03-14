@@ -22,10 +22,16 @@ import LeadsService from "services/LeadsService";
 import AssigneeSelector from "./AssigneeSelector";
 import { LEAD_STAGES } from "./data";
 
-const AddNewOpportunity = ({ isOpen, onClose, setIsAdded }) => {
+const AddNewOpportunity = ({ isOpen, onClose, setIsAdded, isDocket }) => {
 	const defaultOpportunity = {
 		abbreviation: "",
-		address: "",
+		address: {
+			streetNumber: "",
+			city: "",
+			state: "",
+			postalCode: "",
+			country: "",
+		},
 		companyName: "",
 		email: "",
 		industry: "",
@@ -68,7 +74,8 @@ const AddNewOpportunity = ({ isOpen, onClose, setIsAdded }) => {
 			setFormData(defaultOpportunity);
 			setSubmitting(false);
 		} catch (error) {
-			setError("An error occurred while creating new opportunity");
+			console.log(error);
+			// setError("An error occurred while creating new opportunity");
 		} finally {
 			setSubmitting(false);
 		}
@@ -140,13 +147,86 @@ const AddNewOpportunity = ({ isOpen, onClose, setIsAdded }) => {
 
 					<FormControl>
 						<FormLabel>Address</FormLabel>
-						<Input
-							type="text"
-							name="address"
-							value={formData.address}
-							onChange={handleChange}
-							required
-						/>
+						<HStack>
+							<Input
+								type="text"
+								name="streetNumber"
+								value={formData.address.streetNumber}
+								onChange={(e) => {
+									setFormData({
+										...formData,
+										address: {
+											...formData.address,
+											streetNumber: e.target.value,
+										},
+									});
+								}}
+								placeholder="Street Number"
+							/>
+
+							<Input
+								type="text"
+								name="city"
+								value={formData.address.city}
+								onChange={(e) => {
+									setFormData({
+										...formData,
+										address: {
+											...formData.address,
+											city: e.target.value,
+										},
+									});
+								}}
+								placeholder="City"
+							/>
+						</HStack>
+						<HStack mt={3}>
+							<Input
+								type="text"
+								name="state"
+								value={formData.address.state}
+								onChange={(e) => {
+									setFormData({
+										...formData,
+										address: {
+											...formData.address,
+											state: e.target.value,
+										},
+									});
+								}}
+								placeholder="State"
+							/>
+							<Input
+								type="text"
+								name="postalCode"
+								value={formData.address.postalCode}
+								onChange={(e) => {
+									setFormData({
+										...formData,
+										address: {
+											...formData.address,
+											postalCode: e.target.value,
+										},
+									});
+								}}
+								placeholder="Postal Code"
+							/>
+							<Input
+								type="text"
+								name="country"
+								value={formData.address.country}
+								onChange={(e) => {
+									setFormData({
+										...formData,
+										address: {
+											...formData.address,
+											country: e.target.value,
+										},
+									});
+								}}
+								placeholder="Country"
+							/>
+						</HStack>
 					</FormControl>
 					<HStack>
 						<FormControl>
@@ -212,40 +292,44 @@ const AddNewOpportunity = ({ isOpen, onClose, setIsAdded }) => {
 						label="Product Service"
 						name="supervisorAssignee"
 					/>
-					<AssigneeSelector
-						assignees={PROJECT_ASSIGNEES}
-						selectedAssignees={selectedPrimaryAssignees}
-						onAssigneeChange={setSelectedPrimaryAssignees}
-						onRemoveAssignee={setSelectedPrimaryAssignees}
-						label="Primary Assignee"
-						name="primaryAssignee"
-					/>
-					<AssigneeSelector
-						assignees={PROJECT_ASSIGNEES}
-						selectedAssignees={selectedSupervisorAssignees}
-						onAssigneeChange={setSelectedSupervisorAssignees}
-						onRemoveAssignee={setSelectedSupervisorAssignees}
-						label="Supervisor Assignee"
-						name="supervisorAssignee"
-					/>
-					<FormControl>
-						<FormLabel>Stage</FormLabel>
-						<Select
-							icon={<FaCaretDown />}
-							borderRadius="10px"
-							size="sm"
-							placeholder="Select Stage"
-							name="stage"
-							value={formData.stage}
-							onChange={handleChange}
-						>
-							{LEAD_STAGES.map(({ abbr, name }) => (
-								<option value={abbr} key={abbr}>
-									{`${abbr} - ${name}`}
-								</option>
-							))}
-						</Select>
-					</FormControl>
+					{!isDocket && (
+						<>
+							<AssigneeSelector
+								assignees={PROJECT_ASSIGNEES}
+								selectedAssignees={selectedPrimaryAssignees}
+								onAssigneeChange={setSelectedPrimaryAssignees}
+								onRemoveAssignee={setSelectedPrimaryAssignees}
+								label="Primary Assignee"
+								name="primaryAssignee"
+							/>
+							<AssigneeSelector
+								assignees={PROJECT_ASSIGNEES}
+								selectedAssignees={selectedSupervisorAssignees}
+								onAssigneeChange={setSelectedSupervisorAssignees}
+								onRemoveAssignee={setSelectedSupervisorAssignees}
+								label="Supervisor Assignee"
+								name="supervisorAssignee"
+							/>
+							<FormControl>
+								<FormLabel>Stage</FormLabel>
+								<Select
+									icon={<FaCaretDown />}
+									borderRadius="10px"
+									size="sm"
+									placeholder="Select Stage"
+									name="stage"
+									value={formData.stage}
+									onChange={handleChange}
+								>
+									{LEAD_STAGES.map(({ abbr, name }) => (
+										<option value={abbr} key={abbr}>
+											{`${abbr} - ${name}`}
+										</option>
+									))}
+								</Select>
+							</FormControl>
+						</>
+					)}
 
 					<HStack justifyContent={"end"}>
 						<PrimaryButton name="Add" isLoading={isSubmitting} px="2em" />

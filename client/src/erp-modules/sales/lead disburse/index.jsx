@@ -36,7 +36,8 @@ const LeadsDisbursed = () => {
 	const fetchAllAgents = async () => {
 		try {
 			const response = await UserService.getAllUsers();
-			setAgents(response.data.filter((user) => user.role.includes("Sales")));
+			// setAgents(response.data.filter((user) => user.role.includes("Sales")));
+			setAgents(response.data);
 			setCheckedRows(response.data.filter((user) => user.isActive === true));
 		} catch (error) {
 			console.error(error);
@@ -212,6 +213,7 @@ const LeadsDisbursed = () => {
 					</HStack>
 				</Flex>
 			)}
+
 			{!agents && <Loader />}
 			{agents && (
 				<TableLayout cols={columns} isSmall>
@@ -222,9 +224,10 @@ const LeadsDisbursed = () => {
 								isActive,
 								lastLogin,
 								fullName,
+								leads,
 								assignedLeads,
 								role,
-								address,
+								primaryAddress,
 								assignedAreas,
 								assignedProducts,
 								assignedWeight,
@@ -259,7 +262,9 @@ const LeadsDisbursed = () => {
 									<Td p={1}>{"1 hr ago"}</Td>
 
 									<Td p={1}>{role}</Td>
-									<Td p={1}>{address}</Td>
+									<Td
+										p={1}
+									>{`${primaryAddress.streetNumber} ${primaryAddress.city} ${primaryAddress.state} ${primaryAddress.country} ${primaryAddress.postalCode}`}</Td>
 									<Td p={1}>
 										<SelectList
 											id={_id}

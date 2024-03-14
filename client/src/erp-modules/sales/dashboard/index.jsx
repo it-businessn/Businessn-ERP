@@ -91,7 +91,8 @@ const CRMDashboard = () => {
 		const fetchAllAgents = async () => {
 			try {
 				const response = await UserService.getAllUsers();
-				setAgents(response.data.filter((user) => user.role.includes("Sales")));
+				// setAgents(response.data.filter((user) => user.role.includes("Sales")));
+				setAgents(response.data);
 			} catch (error) {
 				console.error(error);
 			}
@@ -310,8 +311,7 @@ const CRMDashboard = () => {
 					<VStack spacing={0}>
 						<Box h={"30px"} />
 						<Box
-							w={{ base: "50%", md: "50%", lg: "100%", xl: "65%" }}
-							h={{ base: "50%", md: "50%", lg: "100%", xl: "65%" }}
+							w={{ base: "50%", md: "50%", lg: "100%", xl: "50%" }}
 							m={"0 auto"}
 						>
 							<Doughnut

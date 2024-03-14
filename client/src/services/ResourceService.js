@@ -2,15 +2,15 @@ import apiService from "services";
 
 const ResourceService = {
 	async getResources() {
-		return apiService.get("/resources");
+		return apiService.get("/companyResource");
 	},
 
 	async getResourcesByType(id) {
-		return apiService.get(`/resources/${id}`);
+		return apiService.get(`/companyResource/${id}`);
 	},
 
 	async upload(data) {
-		return apiService.post("/resources/upload", data);
+		return apiService.post("/companyResource/upload", data);
 	},
 };
 

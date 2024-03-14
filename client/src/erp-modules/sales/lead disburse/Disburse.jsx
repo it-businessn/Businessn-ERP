@@ -6,7 +6,7 @@ const Disburse = ({ leads, checkedRows, handleDisburse }) => {
 	return (
 		<Button
 			w={{ lg: "200px" }}
-			isDisabled={!leads || checkedRows.length === 0}
+			isDisabled={leads?.length === 0 || checkedRows?.length === 0}
 			bg={generateLighterShade(COLORS.primary, 0.9)}
 			color={"var(--primary_button_bg)"}
 			variant={"outlined"}

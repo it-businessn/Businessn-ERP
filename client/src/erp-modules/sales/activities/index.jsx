@@ -100,7 +100,11 @@ const Activities = () => {
 				spacing={4}
 				templateColumns={{ lg: "35% 65%" }}
 			>
-				<SimpleGrid columns={1} spacing={4}>
+				<SimpleGrid
+					columns={1}
+					spacing={4}
+					templateRows={{ lg: "13% 13% 13% 13% 13%" }}
+				>
 					{ACTIVITY_CARDS.map((activity) => (
 						<Box
 							key={activity.title}
@@ -118,9 +122,9 @@ const Activities = () => {
 								<Text fontWeight="bold">{activity.title}</Text>
 							</VStack>
 							<Box
+								my={0}
 								mx={"auto"}
-								h={{ base: "50%", md: "40%", lg: "80%", xl: "50%" }}
-								w={{ base: "50%", md: "40%", lg: "80%", xl: "50%" }}
+								w={{ base: "50%", md: "40%", lg: "40%", xl: "40%" }}
 							>
 								<HorizontalBarChart
 									data={activity.count}
@@ -128,7 +132,7 @@ const Activities = () => {
 								/>
 							</Box>
 
-							<Flex borderTop="2px solid #e8ebf4">
+							<Flex borderTop="2px solid #e8ebf4" gap={0}>
 								<Button
 									variant="solid"
 									bgGradient="linear-gradient(58deg, rgb(115 70 236) 0%, rgb(136 107 217) 43%, rgb(50 240 218) 100%)"
@@ -150,7 +154,7 @@ const Activities = () => {
 				<SimpleGrid
 					columns={1}
 					spacing={4}
-					templateRows={{ md: "15% auto auto" }}
+					templateRows={{ md: "13% auto auto" }}
 				>
 					<Box
 						p="1em"
@@ -224,7 +228,7 @@ const Activities = () => {
 								))}
 							</SimpleGrid>
 							<Box
-								my={"1em"}
+								mt={"1em"}
 								p="1em"
 								bg={"brand.primary_bg"}
 								border="3px solid var(--main_color)"
@@ -268,7 +272,7 @@ const Activities = () => {
 								</Box>
 							</Box>
 							<Box
-								my={"1em"}
+								mt={"1em"}
 								p="1em"
 								bg={"brand.primary_bg"}
 								border="3px solid var(--main_color)"

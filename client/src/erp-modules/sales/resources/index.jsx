@@ -72,7 +72,7 @@ const Resources = () => {
 
 	const handleDownload = (fileName) => {
 		const url = BASE_URL;
-		const downloadUrl = `${url}/resources/download/${fileName}`;
+		const downloadUrl = `${url}/companyResource/download/${fileName}`;
 		window.location.href = downloadUrl;
 	};
 
