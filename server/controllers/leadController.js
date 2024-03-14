@@ -1,3 +1,4 @@
+const Employee = require("../models/Employee");
 const Lead = require("../models/Lead");
 
 const getOpportunities = () => async (req, res) => {
@@ -11,9 +12,9 @@ const getOpportunities = () => async (req, res) => {
 
 const getDisbursedLeads = () => async (req, res) => {
 	try {
-		const leads = (await Lead.find({ isDisbursed: true })).sort(
-			(a, b) => b.createdOn - a.createdOn,
-		);
+		const leads = (
+			await Lead.find({ isDisbursed: true, isDisbursedConfirmed: false })
+		).sort((a, b) => b.createdOn - a.createdOn);
 		res.status(200).json(leads);
 	} catch (error) {
 		res.status(404).json({ error: error.message });
@@ -59,24 +60,25 @@ const createLeadOpportunity = () => async (req, res) => {
 		supervisorAssignee,
 	} = req.body;
 
-	const lead = new Lead({
-		abbreviation,
-		address,
-		companyName,
-		email,
-		industry,
-		opportunityName,
-		phone,
-		primaryAssignee,
-		productService,
-		region,
-		source,
-		stage,
-		supervisorAssignee,
-	});
+	const { streetNumber, city, state, postalCode, country } = address;
 
 	try {
-		const newLeadOpportunity = await lead.save();
+		const newLeadOpportunity = await Lead.create({
+			abbreviation,
+			companyName,
+			email,
+			industry,
+			opportunityName,
+			phone,
+			primaryAssignee,
+			productService,
+			region,
+			source,
+			stage,
+			supervisorAssignee,
+			address: { streetNumber, city, state, postalCode, country },
+		});
+
 		res.status(201).json(newLeadOpportunity);
 	} catch (error) {
 		res.status(400).json({ message: error.message });
@@ -119,22 +121,7 @@ const disburseLeads = () => async (req, res) => {
 	const distributedLeadIDs = req.body;
 
 	try {
-		const leads = await Lead.find({ _id: { $in: distributedLeadIDs } }).sort({
-			createdOn: -1,
-		});
-
-		const distributedLeads = distributeLeadsAmongTeamMembers(leads);
-		res.status(201).json(distributedLeads);
-	} catch (error) {
-		res.status(400).json({ message: error.message });
-	}
-};
-
-const confirmDisburseLeads = () => async (req, res) => {
-	const distributedLeadIDs = req.body;
-
-	try {
-		const updatedData = { isDisbursedConfirmed: true };
+		const updatedData = { isDisbursed: true };
 		const updatedLeads = await Lead.updateMany(
 			{ _id: { $in: distributedLeadIDs } },
 			{ $set: updatedData },
@@ -143,6 +130,54 @@ const confirmDisburseLeads = () => async (req, res) => {
 		});
 
 		res.status(201).json(updatedLeads);
+	} catch (error) {
+		res.status(400).json({ message: error.message });
+	}
+
+	// try {
+	// 	const leads = await Lead.find({ _id: { $in: distributedLeadIDs } }).sort({
+	// 		createdOn: -1,
+	// 	});
+
+	// 	// const distributedLeads = distributeLeadsAmongTeamMembers(leads);
+	// 	res.status(201).json(distributedLeads);
+	// } catch (error) {
+	// 	res.status(400).json({ message: error.message });
+	// }
+};
+
+const confirmDisburseLeads = () => async (req, res) => {
+	const distributedLeadIDs = req.body;
+
+	try {
+		for (let i = 0; i < distributedLeadIDs.length; i++) {
+			const skip = i * distributedLeadIDs[i].assignedLeads;
+
+			const leads = await Lead.find({
+				isDisbursedConfirmed: false,
+				isDisbursed: true,
+			})
+				.skip(skip)
+				.limit(distributedLeadIDs[i].assignedLeads)
+				.exec();
+
+			distributedLeadIDs[i].leads = leads.map((lead) => lead._id);
+			distributedLeadIDs[i].assignedLeads = 0;
+			const employee = await Employee.findById(distributedLeadIDs[i]._id);
+			if (employee && employee.assignedLeads > 0) {
+				employee.leads = leads.map((lead) => lead._id);
+				employee.assignedLeads = 0;
+				await employee.save();
+			}
+
+			const leadIdsToUpdate = leads.map((lead) => lead._id);
+			await Lead.updateMany(
+				{ _id: { $in: leadIdsToUpdate } },
+				{ $set: { isDisbursedConfirmed: true } },
+			);
+		}
+
+		res.status(201).json("Disbursement confirmed successfully");
 	} catch (error) {
 		res.status(400).json({ message: error.message });
 	}

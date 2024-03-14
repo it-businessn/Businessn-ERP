@@ -2,7 +2,14 @@ const mongoose = require("mongoose");
 
 const leadSchema = new mongoose.Schema({
 	abbreviation: String,
-	address: String,
+	address: {
+		type: Object,
+		streetNumber: String,
+		city: String,
+		state: String,
+		postalCode: String,
+		country: String,
+	},
 	companyName: String,
 	createdOn: { type: Date, default: Date.now },
 	updatedOn: { type: Date, default: Date.now },
@@ -19,10 +26,6 @@ const leadSchema = new mongoose.Schema({
 	source: String,
 	stage: String,
 	supervisorAssignee: Object,
-
-	// name: String,
-	// source: String,
-	// status: String,
 });
 
 const Lead = mongoose.model("Lead", leadSchema);

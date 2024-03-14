@@ -13,14 +13,14 @@ const {
 
 router.post("/signup", createEmployee());
 // router.post("/send-verification-email", sendVerificationCode);
-router.get("/", getAllUsers);
+router.get("/", getAllUsers());
 // router.get("/reset-password/:id/:token", resetPassword);
 // router.post("/forgot-password", forgotPassword);
 router.post("/login", loginUser());
 // router.post("/logout", logoutUser);
 // router.post("/reset-password/:id/:token", setNewPassword);
 // router.post("/verify-email", verifyUser);
-router.put("/:id", updateUser);
+router.put("/:id", updateUser());
 // router.put("/change-password/:id", authMiddleware.authenticate, changePassword);
 router.put("/lead/:id", updateUserAssignedLeads);
 

@@ -7,11 +7,12 @@ const Department = require("../models/Department");
 const EmploymentType = require("../models/EmploymentType");
 const Company = require("../models/Company");
 const bcrypt = require("bcrypt");
+const Lead = require("../models/Lead");
 
 const getAllUsers = () => async (req, res) => {
 	try {
 		// const users = (await User.find()).sort((a, b) => b.createdOn - a.createdOn);
-		const users = await User.find();
+		const users = await Employee.find();
 		res.status(200).json(users);
 	} catch (error) {
 		res.status(404).json({ error: error.message });
@@ -122,7 +123,7 @@ const changePassword = () => async (req, res) => {
 const updateUser = () => async (req, res) => {
 	const userId = req.params.id;
 	try {
-		const updatedUser = await User.findByIdAndUpdate(userId, req.body, {
+		const updatedUser = await Employee.findByIdAndUpdate(userId, req.body, {
 			new: true,
 		});
 		res.status(201).json(updatedUser);
@@ -133,9 +134,12 @@ const updateUser = () => async (req, res) => {
 
 const updateUserAssignedLeads = async (req, res) => {
 	try {
-		const leads = await Lead.find({ isDisbursed: true });
+		const leads = await Lead.find({
+			isDisbursed: true,
+			isDisbursedConfirmed: false,
+		});
 		const totalRecords = leads.length;
-		const activeUsers = await User.find({ isActive: true });
+		const activeUsers = await Employee.find({ isActive: true });
 		const totalWeight = activeUsers.reduce(
 			(sum, item) => sum + item.assignedWeight,
 			0,
@@ -144,7 +148,7 @@ const updateUserAssignedLeads = async (req, res) => {
 			const assignedLeads = Math.round(
 				(user.assignedWeight / totalWeight) * totalRecords,
 			);
-			await User.findByIdAndUpdate(
+			await Employee.findByIdAndUpdate(
 				user._id,
 				{ $set: { assignedLeads } },
 				{ new: true },
