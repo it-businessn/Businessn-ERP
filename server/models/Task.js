@@ -1,11 +1,20 @@
 const mongoose = require("mongoose");
 
 const taskSchema = new mongoose.Schema({
-	contactId: { type: mongoose.Schema.Types.ObjectId, ref: "Contact" },
-	date: { type: Date, default: Date.now },
+	projectId: { type: mongoose.Schema.Types.ObjectId, ref: "Project" },
+	createdOn: { type: Date, default: Date.now },
 	dueDate: Date,
 	name: String,
 	status: String,
+	isOpen: Boolean,
+	subtasks: [{ type: mongoose.Schema.Types.ObjectId, ref: "SubTask" }],
+	activities: [{ type: mongoose.Schema.Types.ObjectId, ref: "Activity" }],
+	selectedAssigneesId: [
+		{ type: mongoose.Schema.Types.ObjectId, ref: "Employee" },
+	],
+	selectedAssignees: Object,
+	updatedOn: { type: Date, default: Date.now },
+	timeToComplete: Number,
 });
 
 const Task = mongoose.model("Task", taskSchema);

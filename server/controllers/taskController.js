@@ -1,3 +1,5 @@
+const Activity = require("../models/Activity");
+const SubTask = require("../models/SubTask");
 const Task = require("../models/Task");
 
 const getTasks = () => async (req, res) => {
@@ -37,7 +39,6 @@ const createTask = () => async (req, res) => {
 
 const updateTask = () => async (req, res) => {
 	const taskId = req.params.id;
-
 	try {
 		const updatedTask = await Task.findByIdAndUpdate(taskId, req.body, {
 			new: true,
@@ -49,4 +50,36 @@ const updateTask = () => async (req, res) => {
 	}
 };
 
-module.exports = { createTask, getTaskById, getTasks, updateTask };
+const updateSubTask = () => async (req, res) => {
+	const { id } = req.params;
+	try {
+		const updatedSubTask = await SubTask.findByIdAndUpdate(id, req.body, {
+			new: true,
+		});
+
+		res.status(201).json(updatedSubTask);
+	} catch (error) {
+		res.status(400).json({ message: error.message });
+	}
+};
+const updateActivity = () => async (req, res) => {
+	const { id } = req.params;
+	try {
+		const updatedActivity = await Activity.findByIdAndUpdate(id, req.body, {
+			new: true,
+		});
+
+		res.status(201).json(updatedActivity);
+	} catch (error) {
+		res.status(400).json({ message: error.message });
+	}
+};
+
+module.exports = {
+	createTask,
+	getTaskById,
+	getTasks,
+	updateSubTask,
+	updateTask,
+	updateActivity,
+};

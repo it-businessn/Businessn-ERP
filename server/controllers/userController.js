@@ -1,7 +1,14 @@
-const User = require("../models/User");
-const Lead = require("../models/Lead");
+const mongoose = require("mongoose");
 
-const getUsers = () => async (req, res) => {
+// const User = require("../models/User");
+const Employee = require("../models/Employee");
+const EmployeeRole = require("../models/EmployeeRole");
+const Department = require("../models/Department");
+const EmploymentType = require("../models/EmploymentType");
+const Company = require("../models/Company");
+const bcrypt = require("bcrypt");
+
+const getAllUsers = () => async (req, res) => {
 	try {
 		// const users = (await User.find()).sort((a, b) => b.createdOn - a.createdOn);
 		const users = await User.find();
@@ -11,54 +18,78 @@ const getUsers = () => async (req, res) => {
 	}
 };
 
-const login = () => async (req, res) => {
-	const { email } = req.body;
+const loginUser = () => async (req, res) => {
+	const { email, password } = req.body;
 	try {
-		const user = await User.findOne({ email });
+		const user = await Employee.findOne({ email });
 		if (!user) {
 			res.status(404).json({ error: "User does not exist" });
 			return;
 		}
+
+		//check password pending
+		// const match = await bcrypt.compare(password, password);
+		// if (!match) {
+		// 	res.status(404).json({ error: "Incorrect password" });
+		// 	return;
+		// }
 		res.status(200).json(user);
 	} catch (error) {
 		res.status(404).json({ error: error.message });
 	}
 };
 
-const createUser = () => async (req, res) => {
+const createEmployee = () => async (req, res) => {
 	const {
-		address,
 		companyId,
-		department,
-		email,
 		firstName,
-		fullName,
-		lastName,
-		manager,
 		middleName,
+		lastName,
+		email,
 		password,
-		phoneNumber,
 		role,
+		department,
+		manager,
+		phoneNumber,
+		primaryAddress,
+		employmentType,
 	} = req.body;
 
-	const user = new User({
-		address,
-		companyId,
-		date: Date.now(),
-		department,
-		email,
-		firstName,
-		fullName,
-		lastName,
-		manager,
-		middleName,
-		password,
-		phoneNumber,
-		role,
-	});
+	const { streetNumber, city, state, postalCode, country } = primaryAddress;
+
 	try {
-		const newUser = await user.save();
-		res.status(201).json(newUser);
+		const company = await Company.create({ name: "ABC Company" });
+
+		const employeeRole = await EmployeeRole.create({ name: role });
+
+		const newDepartment = await Department.create({ name: department });
+
+		const newEmploymentType = await EmploymentType.create({
+			name: employmentType,
+		});
+
+		const hashedPassword = await bcrypt.hash(password, 10);
+		const employee = await Employee.create({
+			employeeId: companyId,
+			firstName,
+			middleName,
+			lastName,
+			email,
+			role,
+			department,
+			manager,
+			phoneNumber,
+			primaryAddress: { streetNumber, city, state, postalCode, country },
+			employmentType,
+			password: hashedPassword,
+			fullName: `${firstName} ${middleName} ${lastName}`,
+			// role: employeeRole._id,
+			// department: department._id,
+			// employmentType: employmentType._id,
+		});
+		employee.companyId = company._id;
+		employee.save();
+		res.status(201).json(employee);
 	} catch (error) {
 		res.status(400).json({ message: error.message });
 	}
@@ -94,7 +125,6 @@ const updateUser = () => async (req, res) => {
 		const updatedUser = await User.findByIdAndUpdate(userId, req.body, {
 			new: true,
 		});
-
 		res.status(201).json(updatedUser);
 	} catch (error) {
 		res.status(400).json({ message: error.message });
@@ -105,7 +135,6 @@ const updateUserAssignedLeads = async (req, res) => {
 	try {
 		const leads = await Lead.find({ isDisbursed: true });
 		const totalRecords = leads.length;
-
 		const activeUsers = await User.find({ isActive: true });
 		const totalWeight = activeUsers.reduce(
 			(sum, item) => sum + item.assignedWeight,
@@ -121,7 +150,6 @@ const updateUserAssignedLeads = async (req, res) => {
 				{ new: true },
 			);
 		}
-
 		res.status(200).json({ message: "Updated successfully" });
 	} catch (error) {
 		res.status(404).json({ error: error.message });
@@ -130,9 +158,9 @@ const updateUserAssignedLeads = async (req, res) => {
 
 module.exports = {
 	changePassword,
-	createUser,
-	getUsers,
-	login,
+	createEmployee,
+	getAllUsers,
+	loginUser,
 	updateUser,
 	updateUserAssignedLeads,
 };

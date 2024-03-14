@@ -16,6 +16,22 @@ const ProjectService = {
 	async addProjectTask(data, id) {
 		return apiService.put(`/projects/task/${id}`, data, id);
 	},
+
+	async addTaskActivity(data, id) {
+		return apiService.put(`/projects/task/activity/${id}`, data, id);
+	},
+
+	async updateTaskStatus(data, id) {
+		return apiService.put(`/projects/task/status/${id}`, data, id);
+	},
+
+	async updateSubTaskStatus(data, id) {
+		return apiService.put(`/projects/subtask/status/${id}`, data, id);
+	},
+
+	async updateTaskActivityStatus(data, id) {
+		return apiService.put(`/projects/activity/status/${id}`, data, id);
+	},
 };
 
 export default ProjectService;

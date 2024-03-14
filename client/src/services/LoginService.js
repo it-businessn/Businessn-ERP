@@ -9,6 +9,10 @@ const LoginService = {
 		return apiService.post("/user/register", data);
 	},
 
+	async createEmployee(data) {
+		return apiService.post("/signup", data);
+	},
+
 	async verifyUser(data) {
 		return apiService.post("/verify-email", data);
 	},

@@ -1,15 +1,33 @@
 import { Avatar, Checkbox, HStack, Td, Text, Tr } from "@chakra-ui/react";
-import React from "react";
+import React, { useState } from "react";
+import ProjectService from "services/ProjectService";
 
-const Subtask = ({ task }) => {
-	const { taskName, selectedAssignees } = task;
+const Subtask = ({ id, task }) => {
+	const { _id, name, selectedAssignees, isOpen } = task;
+
+	const [isOpenTask, setIsOpenTask] = useState(!isOpen);
+
+	const handleTaskStatus = async (e, taskId) => {
+		const isOpen = e.target.checked;
+		setIsOpenTask(isOpen);
+		try {
+			await ProjectService.updateSubTaskStatus({ isOpen }, taskId);
+		} catch (error) {
+			console.error("Error updating subtask status:", error);
+		}
+	};
 	return (
-		<React.Fragment key={taskName}>
+		<React.Fragment key={_id}>
 			<Tr>
 				<Td>
 					<HStack spacing={3}>
-						<Checkbox sx={{ verticalAlign: "middle" }} colorScheme="facebook" />
-						<Text fontSize={"xs"}>{taskName}</Text>
+						<Checkbox
+							isChecked={isOpenTask}
+							sx={{ verticalAlign: "middle" }}
+							colorScheme="facebook"
+							onChange={(e) => handleTaskStatus(e, _id)}
+						/>
+						<Text fontSize={"xs"}>{name}</Text>
 						{selectedAssignees?.map((assignee) => (
 							<Avatar name={assignee} size={"xs"} src={assignee} />
 						))}

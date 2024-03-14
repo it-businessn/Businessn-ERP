@@ -8,6 +8,7 @@ import {
 	Flex,
 	FormControl,
 	FormLabel,
+	HStack,
 	Heading,
 	Input,
 	InputGroup,
@@ -22,18 +23,24 @@ import LoginService from "services/LoginService";
 
 const SignUp = () => {
 	const defaultFormData = {
-		companyId: "",
+		companyId: "20240001",
 		firstName: "",
 		middleName: "",
 		lastName: "",
-		fullName: "",
 		email: "",
 		password: "",
-		role: "employee",
-		department: "sales",
+		role: "",
+		department: "",
 		manager: "",
 		phoneNumber: "",
-		address: "",
+		primaryAddress: {
+			streetNumber: "",
+			city: "",
+			state: "",
+			postalCode: "",
+			country: "",
+		},
+		employmentType: "",
 	};
 	const [formData, setFormData] = useState(defaultFormData);
 	const [isLoading, setIsLoading] = useState(false);
@@ -47,15 +54,11 @@ const SignUp = () => {
 
 	const handleSubmit = async (e) => {
 		e.preventDefault();
-		setIsLoading(true);
-		formData.fullName = `${formData.firstName} ${formData.middleName} ${formData.lastName}`;
+		// setIsLoading(true);
 		try {
-			await LoginService.signUp(formData);
-
+			await LoginService.createEmployee(formData);
 			resetForm();
-
 			setIsLoading(false);
-
 			navigate("/login");
 		} catch (error) {
 			setIsLoading(false);
@@ -102,6 +105,7 @@ const SignUp = () => {
 							</Heading>
 						</Stack>
 					</Stack>
+
 					<form onSubmit={handleSubmit}>
 						<FormControl mb={4}>
 							<FormLabel>Company Id</FormLabel>
@@ -175,14 +179,32 @@ const SignUp = () => {
 							</InputGroup>
 						</FormControl>
 						<FormControl mb={4}>
+							<FormLabel>Type of Employment</FormLabel>
+							<Select
+								name="employmentType"
+								value={formData.employmentType}
+								bg={"brand.100"}
+								onChange={handleChange}
+								placeholder="Select employment type"
+							>
+								<option value="Part-Time Employee">Part-Time Employee</option>
+								<option value="Full-Time Employee">Full-Time Employee</option>
+								<option value="Temporary Employee (Contractor)">
+									Temporary Employee (Contractor)
+								</option>
+							</Select>
+						</FormControl>
+						<FormControl mb={4}>
 							<FormLabel>Type of Role</FormLabel>
 							<Select
 								name="role"
 								value={formData.role}
 								bg={"brand.100"}
 								onChange={handleChange}
+								placeholder="Select role"
 							>
 								<option value="Employee">Employee</option>
+								<option value="HR Manager">HR Manager</option>
 								<option value="Sales Manager">Sales Manager</option>
 								<option value="Administrator">Administrator</option>
 							</Select>
@@ -194,19 +216,35 @@ const SignUp = () => {
 								name="department"
 								value={formData.department}
 								onChange={handleChange}
+								placeholder="Select department"
 							>
+								<option value="Human Resources/HR Department">
+									Human Resources/HR Department
+								</option>
+								<option value="Information Technology (IT)">
+									Information Technology (IT)
+								</option>
+								<option value="Finance and Accounting">
+									Finance and Accounting
+								</option>
 								<option value="Sales and Marketing">Sales and Marketing</option>
+								<option value="Customer Service and Support">
+									Customer Service and Support
+								</option>
 							</Select>
 						</FormControl>
 						<FormControl mb={4}>
 							<FormLabel>Manager</FormLabel>
-							<Input
-								type="text"
+							<Select
+								bg={"brand.100"}
 								name="manager"
 								value={formData.manager}
 								onChange={handleChange}
-								placeholder="Manager"
-							/>
+								placeholder="Select manager"
+							>
+								<option value="Manager 1">Manager 1</option>
+								<option value="Manager 2">Manager 2</option>
+							</Select>
 						</FormControl>
 						<FormControl mb={4}>
 							<FormLabel>Phone Number</FormLabel>
@@ -220,13 +258,86 @@ const SignUp = () => {
 						</FormControl>
 						<FormControl mb={4}>
 							<FormLabel>Address</FormLabel>
-							<Input
-								type="text"
-								name="address"
-								value={formData.address}
-								onChange={handleChange}
-								placeholder="Address"
-							/>
+							<HStack>
+								<Input
+									type="text"
+									name="streetNumber"
+									value={formData.primaryAddress.streetNumber}
+									onChange={(e) => {
+										setFormData({
+											...formData,
+											primaryAddress: {
+												...formData.primaryAddress,
+												streetNumber: e.target.value,
+											},
+										});
+									}}
+									placeholder="Street Number"
+								/>
+
+								<Input
+									type="text"
+									name="city"
+									value={formData.primaryAddress.city}
+									onChange={(e) => {
+										setFormData({
+											...formData,
+											primaryAddress: {
+												...formData.primaryAddress,
+												city: e.target.value,
+											},
+										});
+									}}
+									placeholder="City"
+								/>
+							</HStack>
+							<HStack mt={3}>
+								<Input
+									type="text"
+									name="state"
+									value={formData.primaryAddress.state}
+									onChange={(e) => {
+										setFormData({
+											...formData,
+											primaryAddress: {
+												...formData.primaryAddress,
+												state: e.target.value,
+											},
+										});
+									}}
+									placeholder="State"
+								/>
+								<Input
+									type="text"
+									name="postalCode"
+									value={formData.primaryAddress.postalCode}
+									onChange={(e) => {
+										setFormData({
+											...formData,
+											primaryAddress: {
+												...formData.primaryAddress,
+												postalCode: e.target.value,
+											},
+										});
+									}}
+									placeholder="Postal Code"
+								/>
+								<Input
+									type="text"
+									name="country"
+									value={formData.primaryAddress.country}
+									onChange={(e) => {
+										setFormData({
+											...formData,
+											primaryAddress: {
+												...formData.primaryAddress,
+												country: e.target.value,
+											},
+										});
+									}}
+									placeholder="Country"
+								/>
+							</HStack>
 						</FormControl>
 						<Flex justifyContent="flex-end">
 							<Button isLoading={isLoading} bg="brand.logo_bg" type="submit">

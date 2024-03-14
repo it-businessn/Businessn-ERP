@@ -25,6 +25,8 @@ import {
 	CircularFillProgress,
 	CircularProgressBarCell,
 	TaskButton,
+	calculateProjectCompletion,
+	calculateTaskCompletion,
 	formatDate,
 	renderPriorityBars,
 } from "utils";
@@ -84,37 +86,58 @@ const ProjectTable = ({ data }) => {
 		setProjectId(projectId);
 	};
 
-	const Task = ({ task, projectId, taskIndex }) => {
+	const Task = ({ task }) => {
 		const [isExpanded, setExpanded] = useState(null);
 		const handleToggle = () => {
 			setExpanded((prev) => !prev);
 		};
+		const [isOpenTask, setIsOpenTask] = useState(!task.isOpen);
+
+		const handleTaskStatus = async (e, taskId) => {
+			const isOpen = e.target.checked;
+			setIsOpenTask(isOpen);
+			try {
+				await ProjectService.updateTaskStatus({ isOpen }, taskId);
+			} catch (error) {
+				console.error("Error updating task status:", error);
+			}
+		};
+
 		return (
 			<React.Fragment key={task._id}>
-				<Tr key={task.taskName}>
+				<Tr>
 					<Td p={0} pl={"3em"}>
-						<Checkbox sx={{ verticalAlign: "middle" }} colorScheme="facebook" />
+						<Checkbox
+							sx={{ verticalAlign: "middle" }}
+							colorScheme="facebook"
+							isChecked={isOpenTask}
+							onChange={(e) => handleTaskStatus(e, task._id)}
+						/>
 					</Td>
 					<Td
 						fontSize={"xs"}
 						onClick={handleToggle}
-						cursor={task?.todoItems?.length > 0 ? "pointer" : "default"}
+						cursor={task?.activities?.length > 0 ? "pointer" : "default"}
 					>
 						<HStack spacing={3}>
-							<CircularProgressBarCell completionPercentage={25} />
-							<Text>{task.taskName}</Text>
+							<CircularProgressBarCell
+								completionPercentage={
+									calculateTaskCompletion(task).completionPercentage
+								}
+							/>
+							<Text>{task.name}</Text>
 							<TaskButton totalTasks={task?.subtasks?.length || 0} />
-							<FaEdit onClick={() => handleEditTask(task, projectId)} />
+							<FaEdit onClick={() => handleEditTask(task, task.projectId)} />
 						</HStack>
 					</Td>
 					<Td fontSize={"xs"}>
 						<HStack>
 							{task?.selectedAssignees?.map((assignee) => (
 								<Avatar
-									key={assignee.name}
-									name={assignee.name}
+									key={assignee}
+									name={assignee}
 									size={{ base: "xs", md: "sm" }}
-									src={assignee.avatarUrl}
+									src={assignee}
 								/>
 							))}
 						</HStack>
@@ -144,18 +167,22 @@ const ProjectTable = ({ data }) => {
 					<Td colSpan="3" p={0} fontSize={"xs"}>
 						<Collapse in={isExpanded}>
 							<VStack align="start" spacing={2} ml={"10em"} p={0} my={2}>
-								<UnorderedList listStyleType={"none"}>
-									<Caption title={"Sub tasks"} />
-									{task?.subtasks?.map((subtask) => (
-										<Subtask key={subtask.taskName} task={subtask} />
-									))}
-								</UnorderedList>
-								<UnorderedList listStyleType={"none"}>
-									<Caption title={"Todos"} />
-									{task?.action?.map((action, i) => (
-										<TodoItem key={action.taskName} task={action} />
-									))}
-								</UnorderedList>
+								{task?.subtasks?.length > 0 && (
+									<UnorderedList listStyleType={"none"}>
+										<Caption title={"Sub tasks"} />
+										{task?.subtasks?.map((subtask) => (
+											<Subtask id={task._id} key={subtask._id} task={subtask} />
+										))}
+									</UnorderedList>
+								)}
+								{task?.activities?.length > 0 && (
+									<UnorderedList listStyleType={"none"}>
+										<Caption title={"Todos"} />
+										{task?.activities?.map((activity) => (
+											<TodoItem key={activity._id} task={activity} />
+										))}
+									</UnorderedList>
+								)}
 							</VStack>
 						</Collapse>
 					</Td>
@@ -200,9 +227,11 @@ const ProjectTable = ({ data }) => {
 									cursor={project?.tasks?.length > 0 ? "pointer" : "default"}
 								>
 									<HStack spacing={3}>
-										<CircularFillProgress completionPercentage={20} />
+										<CircularFillProgress
+											completionPercentage={calculateProjectCompletion(project)}
+										/>
 										<HStack spacing={3} onClick={() => handleToggle(index)}>
-											<Text>{project?.projectName}</Text>
+											<Text>{project?.name}</Text>
 											<TaskButton totalTasks={project?.tasks?.length} />
 										</HStack>
 										<FaEdit
@@ -214,8 +243,8 @@ const ProjectTable = ({ data }) => {
 								<Td fontSize={"xs"}>
 									<HStack spacing="1">{renderPriorityBars(2)}</HStack>
 								</Td>
-								<Td fontSize={"xs"}>{formatDate(project.date)}</Td>
-								<Td fontSize={"xs"}>{formatDate(project.date)}</Td>
+								<Td fontSize={"xs"}>{formatDate(project.updatedOn)}</Td>
+								<Td fontSize={"xs"}>{formatDate(project.dueDate)}</Td>
 								<Td fontSize={"12px"} p={"0.5em 1em"}>
 									<HStack
 										justifyContent={"space-around"}
@@ -248,7 +277,6 @@ const ProjectTable = ({ data }) => {
 											</Thead>
 											<Tbody>
 												{project?.tasks?.map((task, index) => {
-													task.taskStatus = "Completed";
 													return (
 														<Task
 															key={index}

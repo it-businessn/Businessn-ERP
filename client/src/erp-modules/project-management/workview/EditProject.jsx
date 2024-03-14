@@ -32,12 +32,12 @@ import MultiCheckboxMenu from "./MultiCheckboxMenu";
 
 const EditProject = ({ isOpen, onClose, project, projectId, setRefresh }) => {
 	const defaultProject = {
-		projectName: project.projectName,
+		projectName: project.name,
 		tasks: project.tasks,
 		dueDate: project?.dueDate && getDefaultDate(project.dueDate),
 		timeToComplete: project.timeToComplete,
 	};
-	const defaultTask = { taskName: "", selectedAssignees: [] };
+	const defaultTask = { name: "", selectedAssignees: [] };
 
 	const [isSubmitting, setSubmitting] = useState(false);
 	const [message, setMessage] = useState(false);
@@ -70,7 +70,7 @@ const EditProject = ({ isOpen, onClose, project, projectId, setRefresh }) => {
 		const updatedTaskName = e.target.value;
 		setTask((prevTask) => ({
 			...prevTask,
-			taskName: updatedTaskName,
+			name: updatedTaskName,
 		}));
 	};
 
@@ -155,8 +155,8 @@ const EditProject = ({ isOpen, onClose, project, projectId, setRefresh }) => {
 										<FormLabel>Task Name</FormLabel>
 										<Input
 											type="text"
-											name="taskName"
-											value={task.taskName}
+											name="name"
+											value={task.name}
 											onChange={handleTaskNameChange}
 										/>
 									</FormControl>
@@ -210,7 +210,7 @@ const EditProject = ({ isOpen, onClose, project, projectId, setRefresh }) => {
 											<Tbody>
 												{tasks?.map((task, index) => (
 													<Tr key={`task_${index}`}>
-														<Td>{task.taskName}</Td>
+														<Td>{task.name}</Td>
 														<Td>
 															<HStack>
 																{task.selectedAssignees?.map((assignee) => (

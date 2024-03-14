@@ -103,6 +103,79 @@ export const CircularProgressBarCell = ({ completionPercentage }) => {
 	);
 };
 
+// const countClosedSubitems = (subitems) => {
+// 	return subitems?.length > 0
+// 		? subitems?.filter((subitem) => subitem.isOpen === false)?.length
+// 		: 0;
+// };
+
+export const calculateTaskCompletion = (task) => {
+	let totalTaskHours = 0;
+	let completedTaskHours = 0;
+	if (task?.activities?.length > 0) {
+		for (const activity of task?.activities) {
+			totalTaskHours += activity.timeToComplete;
+			if (activity.isOpen === false) {
+				completedTaskHours += activity.timeToComplete;
+			}
+		}
+	}
+	if (task?.subtasks?.length > 0) {
+		for (const subtask of task?.subtasks) {
+			// const { totalSubtaskHours, completedSubtaskHours } =
+			// 	calculateSubtaskCompletion(subtask);
+			// totalTaskHours += totalSubtaskHours;
+			// completedTaskHours += completedSubtaskHours;
+			totalTaskHours += subtask.timeToComplete;
+			if (subtask.isOpen === false) {
+				completedTaskHours += subtask.timeToComplete;
+			}
+		}
+	}
+	const completionPercentage =
+		Math.floor(completedTaskHours / totalTaskHours) * 100 || 0;
+	return { totalTaskHours, completedTaskHours, completionPercentage };
+	// const totalSubTasks =
+	// 	task?.subtasks?.length > 0 ? Object.keys(task?.subtasks)?.length : 0;
+	// const totalActionItems =
+	// 	task?.activities?.length > 0 ? Object.keys(task?.activities)?.length : 0;
+	// const totalSubitems = totalSubTasks + totalActionItems;
+
+	// const closedSubitems =
+	// 	countClosedSubitems(task?.subtasks) + countClosedSubitems(task?.activities);
+
+	// return totalSubitems > 0
+	// 	? Math.floor((closedSubitems / totalSubitems) * 100)
+	// 	: 0;
+};
+
+export const calculateProjectCompletion = (project) => {
+	let totalHours = 0;
+	let completedHours = 0;
+	for (const task of project.tasks) {
+		const { totalTaskHours, completedTaskHours } =
+			calculateTaskCompletion(task);
+
+		totalHours += totalTaskHours;
+		completedHours += completedTaskHours;
+	}
+	const completionPercentage = Math.floor(completedHours / totalHours) * 100;
+
+	// Update project status based on completion percentage
+	// if (completionPercentage === 100) {
+	// 	project.status = "Completed";
+	// }
+
+	project.completionPercentage = completionPercentage;
+	return completionPercentage;
+	// const totalTasks = project.tasks.length;
+	// const completedTasks = project.tasks.filter(
+	// 	(task) => calculateTaskCompletion(task) === 100,
+	// ).length;
+
+	// return totalTasks > 0 ? Math.floor((completedTasks / totalTasks) * 100) : 0;
+};
+
 export const TaskButton = ({ totalTasks, onClick }) => {
 	return (
 		<Button

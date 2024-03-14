@@ -5,6 +5,7 @@ const leadSchema = new mongoose.Schema({
 	address: String,
 	companyName: String,
 	createdOn: { type: Date, default: Date.now },
+	updatedOn: { type: Date, default: Date.now },
 	disbursedTo: String,
 	email: String,
 	industry: String,
@@ -18,6 +19,10 @@ const leadSchema = new mongoose.Schema({
 	source: String,
 	stage: String,
 	supervisorAssignee: Object,
+
+	// name: String,
+	// source: String,
+	// status: String,
 });
 
 const Lead = mongoose.model("Lead", leadSchema);

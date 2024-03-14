@@ -1,7 +1,7 @@
 const fs = require("fs");
 const path = require("path");
 
-const Resource = require("../models/Resource");
+const Resource = require("../models/CompanyResource");
 
 const getResources = () => async (req, res) => {
 	try {

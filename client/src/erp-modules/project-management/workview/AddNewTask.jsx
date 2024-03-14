@@ -105,16 +105,30 @@ const AddNewTask = ({
 		formData.subtasks = subTasks;
 		formData.hasChecklist = hasChecklist;
 		formData.action = todoItems;
-		try {
-			await ProjectService.addProjectTask(formData, formData.projectId);
-			onClose();
-			setFormData(defaultTask);
-			setSubTasks([]);
-			setRefresh(true);
-		} catch (error) {
-			setMessage("An error occurred while submitting the application.");
-		} finally {
-			setSubmitting(false);
+		if (formData.taskId) {
+			try {
+				await ProjectService.addTaskActivity(formData, formData.taskId);
+				onClose();
+				setFormData(defaultTask);
+				setSubTasks([]);
+				setRefresh(true);
+			} catch (error) {
+				setMessage("An error occurred while submitting the application.");
+			} finally {
+				setSubmitting(false);
+			}
+		} else {
+			try {
+				await ProjectService.addProjectTask(formData, formData.projectId);
+				onClose();
+				setFormData(defaultTask);
+				setSubTasks([]);
+				setRefresh(true);
+			} catch (error) {
+				setMessage("An error occurred while submitting the application.");
+			} finally {
+				setSubmitting(false);
+			}
 		}
 	};
 	return (

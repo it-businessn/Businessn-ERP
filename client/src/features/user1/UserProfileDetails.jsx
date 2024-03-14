@@ -24,10 +24,6 @@ const UserProfileDetails = () => {
 	const [changePasswordMode, setPasswordMode] = useState(false);
 	const [error, setError] = useState(null);
 
-	// useEffect(() => {console.log()
-	// 	LocalStorageService.setItem("user", userData);
-	// }, [userData]);
-
 	const handleEditClick = () => {
 		setEditMode(true);
 		setPasswordMode(false);
