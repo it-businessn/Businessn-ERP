@@ -68,15 +68,10 @@ app.use("/api/setup", setUpRoutes);
 // app.use("/api/tax", taxRoutes);
 // app.use("/api/user-roles", rolesRoutes);
 
-mongoose.connect(process.env.DB_CONNECTION_URL_STAGING_TEST_CRM, {
+mongoose.connect(process.env.DB_CONNECTION_URL_STAGING_CRM, {
 	useNewUrlParser: true,
 	useUnifiedTopology: true,
 });
-
-// mongoose.connect(process.env.DB_CONNECTION_URL_PROD_CRM, {
-// 	useNewUrlParser: true,
-// 	useUnifiedTopology: true,
-// });
 
 const db = mongoose.connection;
 
