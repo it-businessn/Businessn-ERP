@@ -8,11 +8,15 @@ import {
 	Stack,
 	useDisclosure,
 } from "@chakra-ui/react";
-import { useState } from "react";
 import { PROJECT_ASSIGNEES } from "./data";
 
-const MultiCheckboxMenu = ({ openMenu, handleCloseMenu }) => {
-	const [selectedOptions, setSelectedOptions] = useState([]);
+const MultiCheckboxMenu = ({
+	openMenu,
+	handleCloseMenu,
+	selectedOptions,
+	setSelectedOptions,
+	data = PROJECT_ASSIGNEES,
+}) => {
 	const { isOpen, onOpen, onClose } = useDisclosure();
 
 	const handleCheckboxChange = (value) => {
@@ -42,7 +46,7 @@ const MultiCheckboxMenu = ({ openMenu, handleCloseMenu }) => {
 					<CloseButton onClick={handleClose} />
 				</MenuItem>
 				<Stack spacing={2}>
-					{PROJECT_ASSIGNEES.map((assignee) => (
+					{data.map((assignee) => (
 						<MenuItem key={assignee.id}>
 							<Checkbox
 								colorScheme="facebook"

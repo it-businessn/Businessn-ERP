@@ -16,6 +16,14 @@ const UserService = {
 	async getAllUsers() {
 		return apiService.get(`/user`);
 	},
+
+	async signUp(data) {
+		return apiService.post("/user/register", data);
+	},
+
+	async verifyUser(data) {
+		return apiService.post("/user/verify-email", data);
+	},
 };
 
 export default UserService;

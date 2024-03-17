@@ -20,6 +20,7 @@ import Logo from "components/logo";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import LoginService from "services/LoginService";
+// import signUpImg from "../../assets/logos/BusinessN_dark.jpg";
 
 const SignUp = () => {
 	const defaultFormData = {

@@ -3,11 +3,11 @@ const mongoose = require("mongoose");
 const activitySchema = new mongoose.Schema({
 	projectId: { type: mongoose.Schema.Types.ObjectId, ref: "Project" },
 	taskId: { type: mongoose.Schema.Types.ObjectId, ref: "Task" },
-	name: String,
+
 	completed: { type: Boolean, default: false },
 	createdOn: { type: Date, default: Date.now },
 	dueDate: Date,
-	name: String,
+	taskName: String,
 	status: String,
 	isOpen: Boolean,
 	selectedAssignees: String,

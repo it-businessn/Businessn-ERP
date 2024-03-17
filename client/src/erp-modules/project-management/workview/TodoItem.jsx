@@ -3,9 +3,9 @@ import React, { useState } from "react";
 import ProjectService from "services/ProjectService";
 
 const TodoItem = ({ task }) => {
-	const { _id, name, selectedAssignees, isOpen } = task;
+	const { _id, taskName, selectedAssignees, completed } = task;
 
-	const [isOpenTask, setIsOpenTask] = useState(!isOpen);
+	const [isOpenTask, setIsOpenTask] = useState(completed);
 
 	const handleTaskStatus = async (e, taskId) => {
 		const isOpen = e.target.checked;
@@ -18,7 +18,7 @@ const TodoItem = ({ task }) => {
 	};
 	return (
 		<React.Fragment key={_id}>
-			<Tr key={name}>
+			<Tr>
 				<Td>
 					<HStack spacing={3}>
 						<Checkbox
@@ -27,7 +27,7 @@ const TodoItem = ({ task }) => {
 							sx={{ verticalAlign: "middle" }}
 							colorScheme="facebook"
 						/>
-						<Text fontSize={"xs"}>{name}</Text>
+						<Text fontSize={"xs"}>{taskName}</Text>
 						<Avatar
 							name={selectedAssignees}
 							size={"xs"}

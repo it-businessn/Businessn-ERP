@@ -14,10 +14,10 @@ const RootLayout = () => {
 	const navigate = useNavigate();
 
 	useEffect(() => {
-		if (!user) {
-			navigate("/login");
+		if (user) {
+			navigate("/sales-dashboard");
 		} else {
-			navigate("/");
+			navigate("/login");
 		}
 	}, [user]);
 

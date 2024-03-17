@@ -3,9 +3,9 @@ import React, { useState } from "react";
 import ProjectService from "services/ProjectService";
 
 const Subtask = ({ id, task }) => {
-	const { _id, name, selectedAssignees, isOpen } = task;
+	const { _id, taskName, selectedAssignees, completed } = task;
 
-	const [isOpenTask, setIsOpenTask] = useState(!isOpen);
+	const [isOpenTask, setIsOpenTask] = useState(completed);
 
 	const handleTaskStatus = async (e, taskId) => {
 		const isOpen = e.target.checked;
@@ -27,7 +27,7 @@ const Subtask = ({ id, task }) => {
 							colorScheme="facebook"
 							onChange={(e) => handleTaskStatus(e, _id)}
 						/>
-						<Text fontSize={"xs"}>{name}</Text>
+						<Text fontSize={"xs"}>{taskName}</Text>
 						{selectedAssignees?.map((assignee) => (
 							<Avatar name={assignee} size={"xs"} src={assignee} />
 						))}

@@ -176,14 +176,14 @@ export const calculateProjectCompletion = (project) => {
 	// return totalTasks > 0 ? Math.floor((completedTasks / totalTasks) * 100) : 0;
 };
 
-export const TaskButton = ({ totalTasks, onClick }) => {
+export const TaskButton = ({ totalTasks, onClick, isTask }) => {
 	return (
 		<Button
 			onClick={onClick}
 			size="xxs"
 			display={"flex"}
 			p={"2px"}
-			fontSize={"8px"}
+			fontSize={"10px"}
 			color={"brand.primary_button_bg"}
 			border={`1px solid ${generateLighterShade(COLORS.primary, 0.5)}`}
 			bg={generateLighterShade(COLORS.primary, 0.8)}
@@ -198,7 +198,7 @@ export const TaskButton = ({ totalTasks, onClick }) => {
 				color: "brand.primary_button_bg",
 			}}
 		>
-			{totalTasks}
+			{`${totalTasks} ${isTask ? "T" : "P"}`}
 		</Button>
 	);
 };

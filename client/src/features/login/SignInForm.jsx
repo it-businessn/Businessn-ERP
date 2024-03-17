@@ -12,19 +12,19 @@ import {
 	InputRightElement,
 	Stack,
 } from "@chakra-ui/react";
-import { useLogin } from "hooks/useLogin";
+import { saveUser } from "context/AuthContext";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useBreakpointValue } from "services/Breakpoint";
+import LoginService from "services/LoginService";
 import Logo from "../../components/logo";
 
 const SignInForm = ({ title }) => {
 	const { isMobile } = useBreakpointValue();
 
-	// const [isLoading, setIsLoading] = useState(false);
+	const [isLoading, setIsLoading] = useState(false);
 
 	const [error, setError] = useState(null);
-	const { login, isLoading, errorMessage } = useLogin();
 	const defaultFormData = {
 		email: "",
 		password: "",
@@ -36,11 +36,16 @@ const SignInForm = ({ title }) => {
 
 	const handleLogin = async (e) => {
 		e.preventDefault();
+		setIsLoading(true);
 		try {
-			await login(formData);
+			const res = await LoginService.signIn(formData);
+
+			saveUser(res.data.user);
 			resetForm();
 		} catch (error) {
-			console.log(error);
+			setError(error.response.data.error);
+		} finally {
+			setIsLoading(false);
 		}
 	};
 

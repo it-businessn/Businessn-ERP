@@ -4,7 +4,7 @@ import LocalStorageService from "services/LocalStorageService";
 
 export const AuthContext = createContext();
 
-const saveUser = (info) => {
+export const saveUser = (info) => {
 	const user = buildUserInfo(info);
 	LocalStorageService.setItem("user", user);
 };

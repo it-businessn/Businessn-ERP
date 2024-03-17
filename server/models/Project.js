@@ -7,7 +7,9 @@ const projectSchema = new mongoose.Schema({
 	dueDate: Date,
 	status: String,
 	name: String,
+	selectedAssignees: Object,
 	tasks: [{ type: mongoose.Schema.Types.ObjectId, ref: "Task" }],
+	completed: { type: Boolean, default: false },
 });
 
 const Project = mongoose.model("Project", projectSchema);

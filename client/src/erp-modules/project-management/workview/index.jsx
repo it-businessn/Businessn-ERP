@@ -13,7 +13,6 @@ import {
 	Spacer,
 	Text,
 	Th,
-	useDisclosure,
 } from "@chakra-ui/react";
 import Loader from "components/Loader";
 import { useEffect, useState } from "react";
@@ -23,9 +22,9 @@ import { HiOutlineUserGroup } from "react-icons/hi2";
 import { MdDateRange } from "react-icons/md";
 import ProjectService from "services/ProjectService";
 import { generateLighterShade } from "utils";
-import ProjectTable from "./ProjectTable";
-import TaskTable from "./TaskTable";
 import { VIEW_MODE } from "./data";
+import ProjectTable from "./project/ProjectTable";
+import TaskTable from "./task/TaskTable";
 
 export const statusColor = (status) => {
 	if (status?.includes("Overdue")) {
@@ -52,12 +51,11 @@ export const headerCell = (key, weight) => (
 		</Flex>
 	</Th>
 );
+
 const WorkView = () => {
 	const [viewMode, setViewMode] = useState(VIEW_MODE[0].name);
-	const { isOpen, onOpen, onClose } = useDisclosure();
-
-	const switchToView = (name) => setViewMode(name);
 	const [projects, setProjects] = useState([]);
+	const [refresh, setRefresh] = useState(false);
 	useEffect(() => {
 		const fetchAllProjectInfo = async () => {
 			try {
@@ -68,8 +66,31 @@ const WorkView = () => {
 			}
 		};
 		fetchAllProjectInfo();
-	}, []);
+	}, [refresh]);
 
+	const switchToView = (name) => setViewMode(name);
+
+	const allProjects = projects?.map((project) => ({
+		projectName: project.name,
+		id: project._id,
+	}));
+
+	const allTasks = projects?.flatMap(
+		(project) =>
+			project?.tasks?.map((task) => ({
+				...task,
+				projectName: project.name,
+			})) || [],
+	);
+
+	const allProjectTasks = allTasks.map((task) => ({
+		taskName: task.taskName,
+		id: task._id,
+	}));
+
+	const allActivities = allTasks?.filter(
+		(task) => task?.activities?.length > 0,
+	);
 	return (
 		<Box p={{ base: "1em", md: "2em" }} mt={{ base: "3em", md: 0 }}>
 			<Text fontWeight="bold" mb={"0.5em"}>
@@ -175,13 +196,23 @@ const WorkView = () => {
 			>
 				{!projects && <Loader />}
 				{projects && viewMode === "Tasks" ? (
-					<TaskTable onOpen={onOpen} data={projects} />
+					<TaskTable
+						allProjects={allProjects}
+						allTasks={allTasks}
+						allProjectTasks={allProjectTasks}
+						allActivities={allActivities}
+						setRefresh={setRefresh}
+						data={projects}
+					/>
 				) : viewMode === "Projects" ? (
-					<ProjectTable onOpen={onOpen} data={projects} />
+					<ProjectTable setRefresh={setRefresh} data={projects} />
 				) : viewMode === "Activities" ? (
 					<TaskTable
-						viewMode={viewMode}
-						onOpen={onOpen}
+						allProjects={allProjects}
+						allTasks={allTasks}
+						allProjectTasks={allProjectTasks}
+						allActivities={allActivities}
+						setRefresh={setRefresh}
 						isFiltered
 						data={projects}
 					/>

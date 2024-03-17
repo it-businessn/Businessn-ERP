@@ -39,10 +39,15 @@ const createTask = () => async (req, res) => {
 
 const updateTask = () => async (req, res) => {
 	const taskId = req.params.id;
+	const { isOpen } = req.body;
 	try {
-		const updatedTask = await Task.findByIdAndUpdate(taskId, req.body, {
-			new: true,
-		});
+		const updatedTask = await Task.findByIdAndUpdate(
+			taskId,
+			{ isOpen, completed: isOpen },
+			{
+				new: true,
+			},
+		);
 
 		res.status(201).json(updatedTask);
 	} catch (error) {
@@ -52,10 +57,15 @@ const updateTask = () => async (req, res) => {
 
 const updateSubTask = () => async (req, res) => {
 	const { id } = req.params;
+	const { isOpen } = req.body;
 	try {
-		const updatedSubTask = await SubTask.findByIdAndUpdate(id, req.body, {
-			new: true,
-		});
+		const updatedSubTask = await SubTask.findByIdAndUpdate(
+			id,
+			{ isOpen, completed: isOpen },
+			{
+				new: true,
+			},
+		);
 
 		res.status(201).json(updatedSubTask);
 	} catch (error) {
@@ -64,10 +74,15 @@ const updateSubTask = () => async (req, res) => {
 };
 const updateActivity = () => async (req, res) => {
 	const { id } = req.params;
+	const { isOpen } = req.body;
 	try {
-		const updatedActivity = await Activity.findByIdAndUpdate(id, req.body, {
-			new: true,
-		});
+		const updatedActivity = await Activity.findByIdAndUpdate(
+			id,
+			{ isOpen, completed: isOpen },
+			{
+				new: true,
+			},
+		);
 
 		res.status(201).json(updatedActivity);
 	} catch (error) {

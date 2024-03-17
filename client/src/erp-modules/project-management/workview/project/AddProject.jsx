@@ -16,15 +16,13 @@ import {
 } from "@chakra-ui/react";
 import { useState } from "react";
 import ProjectService from "services/ProjectService";
-import { getDefaultDate } from "utils";
 
-const EditProject = ({ isOpen, onClose, project, projectId, setRefresh }) => {
+const AddProject = ({ isOpen, onClose, setRefresh }) => {
 	const defaultProject = {
-		projectName: project.name,
-		dueDate: project?.dueDate && getDefaultDate(project.dueDate),
-		timeToComplete: project.timeToComplete,
+		projectName: "",
+		dueDate: null,
+		timeToComplete: 0,
 	};
-
 	const [isSubmitting, setSubmitting] = useState(false);
 	const [message, setMessage] = useState(false);
 	const [formData, setFormData] = useState(defaultProject);
@@ -32,9 +30,8 @@ const EditProject = ({ isOpen, onClose, project, projectId, setRefresh }) => {
 	const handleSubmit = async (e) => {
 		e.preventDefault();
 		setSubmitting(true);
-
 		try {
-			await ProjectService.updateProject(formData, projectId);
+			await ProjectService.addProject(formData);
 			onClose();
 			setFormData(defaultProject);
 			setRefresh(true);
@@ -49,7 +46,7 @@ const EditProject = ({ isOpen, onClose, project, projectId, setRefresh }) => {
 		<Modal isCentered size={"4xl"} isOpen={isOpen} onClose={onClose}>
 			<ModalOverlay />
 			<ModalContent>
-				<ModalHeader>Edit New Project</ModalHeader>
+				<ModalHeader>Add New Project</ModalHeader>
 				<ModalCloseButton />
 				<ModalBody>
 					<Stack spacing="5">
@@ -60,7 +57,7 @@ const EditProject = ({ isOpen, onClose, project, projectId, setRefresh }) => {
 									<Input
 										type="text"
 										name="projectName"
-										value={formData.projectName}
+										value={formData?.projectName || ""}
 										onChange={(e) =>
 											setFormData((prevData) => ({
 												...prevData,
@@ -104,13 +101,15 @@ const EditProject = ({ isOpen, onClose, project, projectId, setRefresh }) => {
 										/>
 									</FormControl>
 								</HStack>
+
 								<HStack justifyContent={"end"}>
 									<Button
 										isLoading={isSubmitting}
 										type="submit"
 										bg="brand.logo_bg"
+										isDisabled={formData.projectName === ""}
 									>
-										Save
+										Add
 									</Button>
 									<Button onClick={onClose} colorScheme="gray">
 										Cancel
@@ -131,4 +130,4 @@ const EditProject = ({ isOpen, onClose, project, projectId, setRefresh }) => {
 	);
 };
 
-export default EditProject;
+export default AddProject;

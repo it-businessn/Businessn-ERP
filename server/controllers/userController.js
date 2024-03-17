@@ -21,22 +21,18 @@ const getAllUsers = () => async (req, res) => {
 
 const loginUser = () => async (req, res) => {
 	const { email, password } = req.body;
+	const user = await Employee.findOne({ email });
+	if (!user) {
+		return res.status(500).json({ error: "User does not exist" });
+	}
 	try {
-		const user = await Employee.findOne({ email });
-		if (!user) {
-			res.status(404).json({ error: "User does not exist" });
-			return;
-		}
-
-		//check password pending
-		// const match = await bcrypt.compare(password, password);
-		// if (!match) {
-		// 	res.status(404).json({ error: "Incorrect password" });
-		// 	return;
-		// }
-		res.status(200).json(user);
+		const match = await bcrypt.compare(password, user.password);
+		return match
+			? res.json({ message: "Login successful", user })
+			: res.status(401).json({ error: "Invalid password" });
 	} catch (error) {
-		res.status(404).json({ error: error.message });
+		console.error("Error checking password:", error);
+		return res.status(500).json({ error: "Internal server error" });
 	}
 };
 

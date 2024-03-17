@@ -1,3 +1,4 @@
+import { SmallAddIcon } from "@chakra-ui/icons";
 import {
 	Avatar,
 	Box,
@@ -6,6 +7,7 @@ import {
 	Collapse,
 	Flex,
 	HStack,
+	IconButton,
 	Spacer,
 	Table,
 	Tbody,
@@ -20,7 +22,7 @@ import {
 } from "@chakra-ui/react";
 import Caption from "erp-modules/sales/lead docket/Caption";
 import React, { useEffect, useState } from "react";
-import { FaEdit, FaSort } from "react-icons/fa";
+import { FaChevronDown, FaSort } from "react-icons/fa";
 import ProjectService from "services/ProjectService";
 import {
 	CircularProgressBarCell,
@@ -29,24 +31,38 @@ import {
 	formatDate,
 	renderPriorityBars,
 } from "utils";
-import { statusColor } from ".";
+import { statusColor } from "..";
+import EditTask from "../EditTask";
+import Subtask from "../Subtask";
+import TodoItem from "../TodoItem";
+import { workView_Table } from "../data";
+import AddNewActivity from "./AddNewActivity";
+import AddNewSubTask from "./AddNewSubTask";
 import AddNewTask from "./AddNewTask";
-import EditTask from "./EditTask";
-import Subtask from "./Subtask";
-import TodoItem from "./TodoItem";
-import { workView_Table } from "./data";
 
-const TaskTable = ({ data, isFiltered }) => {
+const TaskTable = ({
+	data,
+	isFiltered,
+	setRefresh,
+	allProjects,
+	allTasks,
+	allProjectTasks,
+	allActivities,
+}) => {
 	const { isOpen, onOpen, onClose } = useDisclosure();
 	const [expandedIndex, setExpandedIndex] = useState(null);
-	const [refresh, setRefresh] = useState(false);
 	const [filteredData, setFilteredData] = useState(data);
 	const [openEditTask, setOpenEditTask] = useState(false);
+	const [openSubTask, setOpenSubTask] = useState(false);
+	const [openActivity, setOpenActivity] = useState(false);
 	const [task, setTask] = useState(false);
 
 	const handleToggle = (index) => {
 		setExpandedIndex(expandedIndex === index ? -1 : index);
 	};
+	useEffect(() => {
+		setFilteredData(data);
+	}, [data]);
 
 	const headerCell = (key) => (
 		<Th fontWeight={"bolder"} key={key} fontSize={"xs"}>
@@ -55,28 +71,6 @@ const TaskTable = ({ data, isFiltered }) => {
 				<FaSort sx={{ width: "5px" }} />
 			</Flex>
 		</Th>
-	);
-
-	const allProjects = data.map((project) => ({
-		projectName: project.name,
-		id: project._id,
-	}));
-
-	const allTasks = data?.flatMap(
-		(project) =>
-			project?.tasks?.map((task) => ({
-				...task,
-				projectName: project.name,
-			})) || [],
-	);
-
-	const allProjectTasks = allTasks.map((task) => ({
-		taskName: task.name,
-		id: task._id,
-	}));
-
-	const allActivities = allTasks?.filter(
-		(task) => task?.activities?.length > 0,
 	);
 
 	useEffect(() => {
@@ -88,7 +82,16 @@ const TaskTable = ({ data, isFiltered }) => {
 	}, [isFiltered]);
 
 	const handleAddTask = () => {
-		onOpen();
+		if (isFiltered) {
+			setOpenActivity(true);
+		} else {
+			onOpen();
+		}
+	};
+
+	const handleAddSubTask = (task) => {
+		setOpenSubTask(true);
+		setTask(task);
 	};
 
 	const handleEditTask = (task) => {
@@ -97,7 +100,7 @@ const TaskTable = ({ data, isFiltered }) => {
 	};
 
 	const Task = ({ task, index }) => {
-		const [isOpenTask, setIsOpenTask] = useState(!task.isOpen);
+		const [isOpenTask, setIsOpenTask] = useState(task.completed);
 
 		const handleTaskStatus = async (e, taskId) => {
 			const isOpen = e.target.checked;
@@ -110,7 +113,7 @@ const TaskTable = ({ data, isFiltered }) => {
 		};
 		return (
 			<React.Fragment key={task._id}>
-				<Tr key={task.name}>
+				<Tr key={task.taskName}>
 					<Td>
 						<Checkbox
 							colorScheme="facebook"
@@ -129,12 +132,21 @@ const TaskTable = ({ data, isFiltered }) => {
 									calculateTaskCompletion(task).completionPercentage
 								}
 							/>
-							<Text onClick={() => handleToggle(index)}>{task.name}</Text>
-							<TaskButton
-								totalTasks={task?.subtasks?.length}
+							<Text>{task.taskName}</Text>
+							<HStack
+								spacing={0}
 								onClick={() => handleToggle(index)}
-							/>
-							<FaEdit onClick={() => handleEditTask(task)} />
+								cursor={task?.subtasks?.length > 0 ? "pointer" : "default"}
+							>
+								<TaskButton isTask totalTasks={task?.subtasks?.length} />
+
+								<IconButton
+									variant="ghost"
+									icon={<FaChevronDown />}
+									color="brand.nav_color"
+									aria-label="Calendar Icon"
+								/>
+							</HStack>
 						</HStack>
 					</Td>
 					<Td fontSize={"xs"}>
@@ -159,7 +171,7 @@ const TaskTable = ({ data, isFiltered }) => {
 					<Td fontSize={"xs"}>{task.dueDate && formatDate(task.dueDate)}</Td>
 					<Td fontSize={"12px"}>
 						<HStack
-							justifyContent={"space-around"}
+							justifyContent={"start"}
 							spacing={0}
 							fontWeight={"bold"}
 							p={"5px"}
@@ -168,6 +180,26 @@ const TaskTable = ({ data, isFiltered }) => {
 							bgColor={statusColor(task.status).bg}
 						>
 							<Text> {task?.status}d over</Text>
+						</HStack>
+					</Td>
+					<Td fontSize={"12px"}>
+						<HStack>
+							<Button
+								colorScheme="blue"
+								size="xs"
+								leftIcon={<SmallAddIcon />}
+								onClick={() => handleAddSubTask(task)}
+							>
+								Add
+							</Button>
+							{/* <Button
+								colorScheme="green"
+								size="xs"
+								onClick={() => handleEditTask(task)}
+								leftIcon={<CiEdit />}
+							>
+								Edit
+							</Button> */}
 						</HStack>
 					</Td>
 				</Tr>
@@ -179,7 +211,7 @@ const TaskTable = ({ data, isFiltered }) => {
 									<UnorderedList listStyleType={"none"}>
 										<Caption title={"Sub tasks"} />
 										{task?.subtasks?.map((subtask) => (
-											<Subtask key={subtask.name} task={subtask} />
+											<Subtask key={subtask.taskName} task={subtask} />
 										))}
 									</UnorderedList>
 								)}
@@ -187,7 +219,7 @@ const TaskTable = ({ data, isFiltered }) => {
 									<UnorderedList listStyleType={"none"}>
 										<Caption title={"Todos"} />
 										{task?.activities?.map((activity, i) => (
-											<TodoItem key={activity.name} task={activity} />
+											<TodoItem key={activity.taskName} task={activity} />
 										))}
 									</UnorderedList>
 								)}
@@ -198,6 +230,7 @@ const TaskTable = ({ data, isFiltered }) => {
 			</React.Fragment>
 		);
 	};
+
 	return (
 		<>
 			<Flex>
@@ -222,6 +255,21 @@ const TaskTable = ({ data, isFiltered }) => {
 				allProjects={allProjects}
 				allProjectTasks={allProjectTasks}
 			/>
+			<AddNewActivity
+				isOpen={openActivity}
+				isFiltered={isFiltered}
+				onClose={() => setOpenActivity(false)}
+				setRefresh={setRefresh}
+				allProjects={allProjects}
+				allProjectTasks={allProjectTasks}
+			/>
+			<AddNewSubTask
+				isOpen={openSubTask}
+				isFiltered={isFiltered}
+				onClose={() => setOpenSubTask(false)}
+				setRefresh={setRefresh}
+				task={task}
+			/>
 			<EditTask
 				isOpen={openEditTask}
 				isFiltered={isFiltered}
@@ -235,6 +283,7 @@ const TaskTable = ({ data, isFiltered }) => {
 						<Tr>
 							<Th>{/* <Checkbox sx={{ verticalAlign: "middle" }} /> */}</Th>
 							{workView_Table.task_view_cols.map((col) => headerCell(col))}
+							<Th />
 						</Tr>
 					</Thead>
 					<Tbody>

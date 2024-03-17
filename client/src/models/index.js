@@ -11,7 +11,7 @@ export const buildUserInfo = (user) => {
 		role,
 		department,
 		phoneNumber,
-		address,
+		primaryAddress,
 	} = user;
 
 	return new User(
@@ -24,6 +24,6 @@ export const buildUserInfo = (user) => {
 		role,
 		department,
 		phoneNumber,
-		address,
+		primaryAddress,
 	);
 };

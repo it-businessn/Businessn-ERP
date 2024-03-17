@@ -8,9 +8,13 @@ router.get("/", projectController.getProjects());
 
 router.post("/", projectController.createProject());
 
+router.post("/activity", projectController.createActivity());
+
 router.put("/:id", projectController.updateProject());
 
 router.put("/task/:id", projectController.updateProjectTask());
+
+router.put("/subtask/:id", projectController.updateProjectSubTask());
 
 router.put("/task/activity/:id", projectController.updateTaskActivity());
 
