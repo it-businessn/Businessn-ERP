@@ -13,7 +13,7 @@ import {
 	Tr,
 	useToast,
 } from "@chakra-ui/react";
-import { COLORS } from "erp-modules/project-management/workview/data";
+import { COLORS } from "erp-modules/project-management/workview/project/data";
 import { useState } from "react";
 import { FaCaretDown } from "react-icons/fa";
 import { generateLighterShade } from "utils";

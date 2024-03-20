@@ -19,6 +19,15 @@ const getAllUsers = () => async (req, res) => {
 	}
 };
 
+const getAllManagers = () => async (req, res) => {
+	try {
+		const users = await Employee.find({ role: { $regex: /manager/i } });
+		res.status(200).json(users);
+	} catch (error) {
+		res.status(404).json({ error: error.message });
+	}
+};
+
 const loginUser = () => async (req, res) => {
 	const { email, password } = req.body;
 	const user = await Employee.findOne({ email });
@@ -118,10 +127,12 @@ const changePassword = () => async (req, res) => {
 
 const updateUser = () => async (req, res) => {
 	const userId = req.params.id;
+
 	try {
 		const updatedUser = await Employee.findByIdAndUpdate(userId, req.body, {
 			new: true,
 		});
+
 		res.status(201).json(updatedUser);
 	} catch (error) {
 		res.status(400).json({ message: error.message });
@@ -160,6 +171,7 @@ module.exports = {
 	changePassword,
 	createEmployee,
 	getAllUsers,
+	getAllManagers,
 	loginUser,
 	updateUser,
 	updateUserAssignedLeads,

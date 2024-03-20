@@ -1,5 +1,5 @@
 import { Icon, Select } from "@chakra-ui/react";
-import { REGIONS } from "erp-modules/project-management/workview/data";
+import { REGIONS } from "erp-modules/project-management/workview/project/data";
 import { FaCaretDown } from "react-icons/fa";
 
 const Region = () => {

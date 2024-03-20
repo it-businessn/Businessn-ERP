@@ -12,19 +12,24 @@ import {
 	ModalContent,
 	ModalHeader,
 	ModalOverlay,
+	Select,
 	Stack,
 } from "@chakra-ui/react";
 import { useState } from "react";
+import { FaCaretDown } from "react-icons/fa";
 import ProjectService from "services/ProjectService";
 
-const AddProject = ({ isOpen, onClose, setRefresh }) => {
+const AddProject = ({ isOpen, onClose, setRefresh, managers }) => {
 	const defaultProject = {
 		projectName: "",
+		startDate: null,
 		dueDate: null,
 		timeToComplete: 0,
+		managerName: "",
+		managerId: "",
 	};
 	const [isSubmitting, setSubmitting] = useState(false);
-	const [message, setMessage] = useState(false);
+	const [error, setError] = useState(false);
 	const [formData, setFormData] = useState(defaultProject);
 
 	const handleSubmit = async (e) => {
@@ -34,16 +39,16 @@ const AddProject = ({ isOpen, onClose, setRefresh }) => {
 			await ProjectService.addProject(formData);
 			onClose();
 			setFormData(defaultProject);
-			setRefresh(true);
+			setRefresh((prev) => !prev);
 		} catch (error) {
-			setMessage("An error occurred while submitting the application.");
+			setError("An error occurred while submitting the application.");
 		} finally {
 			setSubmitting(false);
 		}
 	};
 
 	return (
-		<Modal isCentered size={"4xl"} isOpen={isOpen} onClose={onClose}>
+		<Modal isCentered size={"3xl"} isOpen={isOpen} onClose={onClose}>
 			<ModalOverlay />
 			<ModalContent>
 				<ModalHeader>Add New Project</ModalHeader>
@@ -67,7 +72,52 @@ const AddProject = ({ isOpen, onClose, setRefresh }) => {
 										required
 									/>
 								</FormControl>
+								<FormControl>
+									<FormLabel> Project Manager</FormLabel>
+									<Select
+										icon={<FaCaretDown />}
+										borderRadius="10px"
+										value={formData?.managerId || ""}
+										placeholder="Select Project Manager"
+										onChange={(e) => {
+											const selectedValue = e.target.value;
+											if (selectedValue !== "") {
+												const { _id, fullName } = managers.find(
+													(manager) => manager._id === selectedValue,
+												);
+												setFormData((prevData) => ({
+													...prevData,
+													managerName: fullName,
+													managerId: _id,
+												}));
+											}
+										}}
+									>
+										{managers?.map(({ _id, fullName }) => (
+											<option value={_id} key={_id}>
+												{fullName}
+											</option>
+										))}
+									</Select>
+								</FormControl>
 								<HStack>
+									<FormControl>
+										<FormLabel>Start date</FormLabel>
+										<input
+											className="date_picker"
+											type="date"
+											id="startDate"
+											name="startDate"
+											value={formData.startDate}
+											onChange={(e) =>
+												setFormData((prevData) => ({
+													...prevData,
+													startDate: e.target.value,
+												}))
+											}
+											required
+										/>
+									</FormControl>
 									<FormControl>
 										<FormLabel>Due date</FormLabel>
 										<input
@@ -117,10 +167,10 @@ const AddProject = ({ isOpen, onClose, setRefresh }) => {
 								</HStack>
 							</Stack>
 						</form>
-						{message && (
+						{error && (
 							<Alert status="error" mt={4}>
 								<AlertIcon />
-								{message}
+								{error}
 							</Alert>
 						)}
 					</Stack>

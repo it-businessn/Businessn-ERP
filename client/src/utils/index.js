@@ -1,3 +1,4 @@
+import { AddIcon } from "@chakra-ui/icons";
 import {
 	Box,
 	Button,
@@ -5,7 +6,7 @@ import {
 	CircularProgressLabel,
 	Icon,
 } from "@chakra-ui/react";
-import { COLORS } from "erp-modules/project-management/workview/data";
+import { COLORS } from "erp-modules/project-management/workview/project/data";
 import { FaCaretDown } from "react-icons/fa";
 import { GoTasklist } from "react-icons/go";
 
@@ -198,7 +199,30 @@ export const TaskButton = ({ totalTasks, onClick, isTask }) => {
 				color: "brand.primary_button_bg",
 			}}
 		>
-			{`${totalTasks} ${isTask ? "T" : "P"}`}
+			{`${totalTasks} T`}
+		</Button>
+	);
+};
+
+export const AddTaskButton = ({ onClick, isTask }) => {
+	return (
+		<Button
+			onClick={onClick}
+			size="xxs"
+			display={"flex"}
+			variant="solid"
+			p={"5px"}
+			color="brand.nav_color"
+			fontWeight={"bold"}
+			bg={generateLighterShade(COLORS.primary, 0.9)}
+			border={`1px solid ${generateLighterShade(COLORS.primary, 0.5)}`}
+			leftIcon={<AddIcon />}
+			_hover={{
+				bg: generateLighterShade(COLORS.primary, 0.8),
+				color: "brand.nav_color",
+			}}
+		>
+			<span style={{ marginLeft: "-2px", fontSize: "12px" }}>T</span>
 		</Button>
 	);
 };

@@ -38,8 +38,10 @@ export const workView_Table = {
 		"Project name",
 		"Assignee(s)",
 		"Priority",
-		"Last Updated",
+		"Start Date",
 		"Due Date",
+		"Manager",
+		"Last Updated",
 		"Status",
 	],
 	task_cols: [
@@ -127,6 +129,6 @@ export const AREAS = [
 
 export const VIEW_MODE = [
 	{ name: "Projects", id: "Projects" },
-	{ name: "Tasks", id: "Tasks" },
-	{ name: "Activities", id: "Activities" },
+	// { name: "Tasks", id: "Tasks" },
+	// { name: "Activities", id: "Activities" },
 ];

@@ -17,6 +17,10 @@ const UserService = {
 		return apiService.get(`/user`);
 	},
 
+	async getAllManagers() {
+		return apiService.get(`/user/managers`);
+	},
+
 	async signUp(data) {
 		return apiService.post("/user/register", data);
 	},

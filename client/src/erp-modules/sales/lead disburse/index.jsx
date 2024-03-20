@@ -18,7 +18,7 @@ import {
 	COLORS,
 	PRODUCTS_SERVICES,
 	WEIGHTING,
-} from "erp-modules/project-management/workview/data";
+} from "erp-modules/project-management/workview/project/data";
 import { useEffect, useState } from "react";
 import { FaCaretRight } from "react-icons/fa";
 import { useBreakpointValue } from "services/Breakpoint";

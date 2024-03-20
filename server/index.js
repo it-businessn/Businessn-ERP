@@ -42,7 +42,6 @@ app.use("/api/company", companyRoutes);
 app.use("/api/companyResource", companyResourceRoutes);
 app.use("/api/contacts", contactRoutes);
 app.use("/api/employee", employeeRoutes);
-app.use("/api/employee", employeeRoutes);
 app.use("/api/events", eventRoutes);
 app.use("/api/form", formRoutes);
 app.use("/api/leads", leadRoutes);

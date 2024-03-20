@@ -1,3 +1,4 @@
+import { SettingsIcon } from "@chakra-ui/icons";
 import {
 	Avatar,
 	Button,
@@ -10,15 +11,14 @@ import {
 	Tbody,
 	Td,
 	Text,
-	Th,
 	Thead,
 	Tr,
 	useDisclosure,
 } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
-import { CiEdit } from "react-icons/ci";
-import { FaChevronDown } from "react-icons/fa";
+import { FaChevronDown, FaChevronUp } from "react-icons/fa";
 import {
+	AddTaskButton,
 	CircularFillProgress,
 	TaskButton,
 	calculateProjectCompletion,
@@ -26,31 +26,37 @@ import {
 	renderPriorityBars,
 } from "utils";
 import { headerCell, statusColor } from "..";
-import EditProject from "../EditProject";
-import { workView_Table } from "../data";
+import AddNewProjectTask from "./AddNewProjectTask";
 import AddProject from "./AddProject";
+import EditProject from "./EditProject";
 import ProjectChild from "./ProjectChild";
+import { workView_Table } from "./data";
 
-const ProjectTable = ({ data, setRefresh }) => {
+const ProjectTable = ({ data, setRefresh, managers }) => {
 	const { isOpen, onOpen, onClose } = useDisclosure();
 	const [projects, setProjects] = useState([]);
 
 	const [openEditTask, setOpenEditTask] = useState(false);
 	const [task, setTask] = useState(null);
 	const [openEditProject, setOpenEditProject] = useState(false);
+	const [openAddTask, setOpenAddTask] = useState(false);
 	const [project, setProject] = useState(null);
 	const [projectId, setProjectId] = useState(null);
 	const [expandedIndex, setExpandedIndex] = useState(null);
+	const [assignees, setAssignees] = useState(null);
 
 	useEffect(() => {
 		setProjects(data);
 	}, [data]);
 
 	const handleAddProject = () => {
-		// setOpenEditProject(false);
-		// setProject(null);
-		// setProjectId(null);
 		onOpen();
+	};
+
+	const handleAddTask = (project, projectId) => {
+		setOpenAddTask(true);
+		setProject(project);
+		setProjectId(projectId);
 	};
 
 	const handleEditProject = (project, projectId) => {
@@ -79,7 +85,12 @@ const ProjectTable = ({ data, setRefresh }) => {
 				</Button>
 			</Flex>
 
-			<AddProject isOpen={isOpen} onClose={onClose} setRefresh={setRefresh} />
+			<AddProject
+				managers={managers}
+				isOpen={isOpen}
+				onClose={onClose}
+				setRefresh={setRefresh}
+			/>
 
 			<Table color={"brand.nav_color"} bg={"brand.primary_bg"}>
 				<Thead>
@@ -89,7 +100,7 @@ const ProjectTable = ({ data, setRefresh }) => {
 					{projects?.map((project, index) => (
 						<React.Fragment key={project._id}>
 							<Tr key={project._id}>
-								<Td p={"0.5em"} fontSize={"xs"}>
+								<Td p={"0.5em"} fontSize={"xs"} w={"350px"}>
 									<HStack spacing={2}>
 										<CircularFillProgress
 											completionPercentage={calculateProjectCompletion(project)}
@@ -97,23 +108,42 @@ const ProjectTable = ({ data, setRefresh }) => {
 										<Text>{project?.name}</Text>
 										<HStack
 											spacing={0}
-											onClick={() => handleToggle(index)}
 											cursor={
 												project?.tasks?.length > 0 ? "pointer" : "default"
 											}
 										>
-											<TaskButton totalTasks={project?.tasks?.length} />
-
+											{project?.tasks?.length > 0 && (
+												<TaskButton totalTasks={project?.totalTasks} />
+											)}
 											<IconButton
 												variant="ghost"
-												icon={<FaChevronDown />}
+												icon={<SettingsIcon />}
 												color="brand.nav_color"
-												aria-label="Calendar Icon"
+												aria-label="Settings Icon"
+												onClick={() => handleEditProject(project, project._id)}
 											/>
+											<AddTaskButton
+												onClick={() => handleAddTask(project, project._id)}
+											/>
+											{project?.tasks?.length > 0 && (
+												<IconButton
+													onClick={() => handleToggle(index)}
+													variant="ghost"
+													icon={
+														expandedIndex === index ? (
+															<FaChevronUp />
+														) : (
+															<FaChevronDown />
+														)
+													}
+													color="brand.nav_color"
+													aria-label="Calendar Icon"
+												/>
+											)}
 										</HStack>
 									</HStack>
 								</Td>
-								<Td fontSize={"xs"} p={"0.5em"}>
+								<Td fontSize={"xs"} p={"0.5em"} w={"200px"}>
 									<HStack>
 										{project?.selectedAssignees?.map((assignee) => (
 											<Avatar
@@ -125,16 +155,22 @@ const ProjectTable = ({ data, setRefresh }) => {
 										))}
 									</HStack>
 								</Td>
-								<Td fontSize={"xs"} pl={"1em"}>
+								<Td fontSize={"xs"} pl={"1em"} w={"100px"}>
 									<HStack spacing="1">{renderPriorityBars(2)}</HStack>
 								</Td>
-								<Td fontSize={"xs"} pl={"1em"}>
-									{formatDate(project.updatedOn)}
+								<Td fontSize={"xs"} pl={"1em"} w={"150px"}>
+									{project.startDate && formatDate(project.startDate)}
 								</Td>
-								<Td fontSize={"xs"} pl={"1em"}>
-									{formatDate(project.dueDate)}
+								<Td fontSize={"xs"} pl={"1em"} w={"150px"}>
+									{project.dueDate && formatDate(project.dueDate)}
 								</Td>
-								<Td fontSize={"12px"}>
+								<Td fontSize={"xs"} pl={"1em"} w={"150px"}>
+									{project.managerName}
+								</Td>
+								<Td fontSize={"xs"} pl={"1em"} w={"150px"}>
+									{project.updatedOn && formatDate(project.updatedOn)}
+								</Td>
+								<Td fontSize={"12px"} w={"200px"}>
 									<HStack
 										justifyContent={"space-around"}
 										spacing={0}
@@ -147,46 +183,23 @@ const ProjectTable = ({ data, setRefresh }) => {
 										<Text> {project.status || 0}d over</Text>
 									</HStack>
 								</Td>
-								<Td fontSize={"12px"} pl={0}>
-									<Button
-										colorScheme="green"
-										size="xs"
-										onClick={() => handleEditProject(project, project._id)}
-										leftIcon={<CiEdit />}
-									>
-										Edit
-									</Button>
-								</Td>
 							</Tr>
 							<Tr>
-								<Td colSpan="9" p={0} fontSize={"xs"}>
+								<Td colSpan="8" p={0} pl={"5em"} fontSize={"xs"}>
 									<Collapse in={expandedIndex === index}>
-										<Table
-											color={"brand.nav_color"}
-											bg={"brand.primary_bg"}
-											size={"small"}
-										>
-											<Thead visibility={"hidden"}>
-												<Tr>
-													<Th />
-													{workView_Table.task_cols.map((col) =>
-														headerCell(col, "normal"),
-													)}
-												</Tr>
-											</Thead>
-											<Tbody>
-												{project?.tasks?.map((task, index) => {
-													return (
-														<ProjectChild
-															key={index}
-															task={task}
-															taskIndex={index}
-															projectId={project._id}
-														/>
-													);
-												})}
-											</Tbody>
-										</Table>
+										{project?.tasks?.map((task, index) => {
+											return (
+												<ProjectChild
+													managerName={project.managerName}
+													key={index}
+													setRefresh={setRefresh}
+													task={task}
+													managers={managers}
+													taskIndex={index}
+													projectId={project._id}
+												/>
+											);
+										})}
 									</Collapse>
 								</Td>
 							</Tr>
@@ -194,15 +207,6 @@ const ProjectTable = ({ data, setRefresh }) => {
 					))}
 				</Tbody>
 			</Table>
-			{/* {openEditTask && (
-				<AddNewProjectTask
-					setRefresh={setRefresh}
-					isOpen={openEditTask}
-					projectId={projectId}
-					onClose={() => setOpenEditTask(false)}
-					task={task}
-				/>
-			)}*/}
 			{openEditProject && (
 				<EditProject
 					isOpen={openEditProject}
@@ -210,6 +214,17 @@ const ProjectTable = ({ data, setRefresh }) => {
 					project={project}
 					projectId={projectId}
 					setRefresh={setRefresh}
+					managers={managers}
+				/>
+			)}
+			{openAddTask && (
+				<AddNewProjectTask
+					isOpen={openAddTask}
+					onClose={() => setOpenAddTask(false)}
+					project={project}
+					projectId={projectId}
+					setRefresh={setRefresh}
+					managers={managers}
 				/>
 			)}
 		</>

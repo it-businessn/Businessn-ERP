@@ -17,7 +17,7 @@ import {
 	LEAD_SOURCES,
 	PRODUCTS_SERVICES,
 	REGIONS,
-} from "erp-modules/project-management/workview/data";
+} from "erp-modules/project-management/workview/project/data";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { useBreakpointValue } from "services/Breakpoint";

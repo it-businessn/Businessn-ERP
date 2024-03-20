@@ -10,7 +10,7 @@ import TextTitle from "components/ui/TextTitle";
 import {
 	DISBURSE_MODE_OPTIONS,
 	REGIONS,
-} from "erp-modules/project-management/workview/data";
+} from "erp-modules/project-management/workview/project/data";
 import { FaCaretDown, FaSearch } from "react-icons/fa";
 import { MdOutlineFilterList } from "react-icons/md";
 

@@ -20,7 +20,7 @@ import {
 	VStack,
 } from "@chakra-ui/react";
 import RightIconButton from "components/ui/button/RightIconButton";
-import { COLORS } from "erp-modules/project-management/workview/data";
+import { COLORS } from "erp-modules/project-management/workview/project/data";
 import { useEffect, useState } from "react";
 import { Bar } from "react-chartjs-2";
 import { CiPercent } from "react-icons/ci";

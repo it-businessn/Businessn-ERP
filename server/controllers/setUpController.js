@@ -1,3 +1,5 @@
+const Department = require("../models/Department");
+const EmployeeRole = require("../models/EmployeeRole");
 const Setup = require("../models/Setup");
 
 const getIdleLeadReAssignment = () => async (req, res) => {
@@ -9,6 +11,80 @@ const getIdleLeadReAssignment = () => async (req, res) => {
 	}
 };
 
+const getAllRoles = () => async (req, res) => {
+	try {
+		const roles = await EmployeeRole.find().sort({ createdOn: -1 });
+		res.status(200).json(roles);
+	} catch (error) {
+		res.status(404).json({ error: error.message });
+	}
+};
+
+const addRole = () => async (req, res) => {
+	const { name, description } = req.body;
+
+	const newRole = new EmployeeRole({
+		name,
+		description,
+	});
+
+	try {
+		await newRole.save();
+		res.status(201).json(newRole);
+	} catch (error) {
+		res.status(400).json({ message: error.message });
+	}
+};
+
+const getAllDepartments = () => async (req, res) => {
+	try {
+		const department = await Department.find().sort({ createdOn: -1 });
+		res.status(200).json(department);
+	} catch (error) {
+		res.status(404).json({ error: error.message });
+	}
+};
+
+const addDepartment = () => async (req, res) => {
+	const { name, description } = req.body;
+
+	const newDepartment = new Department({
+		name,
+		description,
+	});
+
+	try {
+		await newDepartment.save();
+		res.status(201).json(newDepartment);
+	} catch (error) {
+		res.status(400).json({ message: error.message });
+	}
+};
+
+const getAllApprovers = () => async (req, res) => {
+	try {
+		const approvers = await Department.find().sort({ createdOn: -1 });
+		res.status(200).json(approvers);
+	} catch (error) {
+		res.status(404).json({ error: error.message });
+	}
+};
+
+const addApprovers = () => async (req, res) => {
+	const { name, description } = req.body;
+
+	const approver = new Department({
+		name,
+		description,
+	});
+
+	try {
+		await approver.save();
+		res.status(201).json(approver);
+	} catch (error) {
+		res.status(400).json({ message: error.message });
+	}
+};
 const updateSetUp = () => async (req, res) => {
 	const { id } = req.params;
 	try {
@@ -51,4 +127,10 @@ module.exports = {
 	setUpIdleLeadReAssignment,
 	getIdleLeadReAssignment,
 	updateSetUp,
+	addRole,
+	getAllRoles,
+	getAllDepartments,
+	addDepartment,
+	getAllApprovers,
+	addApprovers,
 };

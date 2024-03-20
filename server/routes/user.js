@@ -9,11 +9,13 @@ const {
 	loginUser,
 	updateUser,
 	updateUserAssignedLeads,
+	getAllManagers,
 } = require("../controllers/userController");
 
 router.post("/signup", createEmployee());
 // router.post("/send-verification-email", sendVerificationCode);
 router.get("/", getAllUsers());
+router.get("/managers", getAllManagers());
 // router.get("/reset-password/:id/:token", resetPassword);
 // router.post("/forgot-password", forgotPassword);
 router.post("/login", loginUser());

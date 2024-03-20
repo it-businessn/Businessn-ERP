@@ -30,7 +30,7 @@ import { useState } from "react";
 import { FaCaretDown } from "react-icons/fa";
 import ProjectService from "services/ProjectService";
 import { getDefaultDate } from "utils";
-import { PROJECT_ASSIGNEES } from "../data";
+import { PROJECT_ASSIGNEES } from "../project/data";
 
 const AddNewActivity = ({
 	isOpen,
@@ -76,7 +76,7 @@ const AddNewActivity = ({
 			onClose();
 			setFormData(defaultTask);
 			setTodoItems([]);
-			setRefresh(true);
+			setRefresh((prev) => !prev);
 		} catch (error) {
 			setMessage("An error occurred while submitting the application.");
 		} finally {

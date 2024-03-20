@@ -21,23 +21,21 @@ import {
 	renderPriorityBars,
 } from "utils";
 import { statusColor } from "..";
-import AddNewSubTask from "./AddNewSubTask";
-import EditTask from "./EditTask";
-import Subtask from "./Subtask";
+import AddNewSubTasks from "./AddNewSubTasks";
+import EditSubTask from "./EditSubTask";
 
-const ProjectChild = ({
+const Subtask = ({
+	id,
 	task,
-	projectId,
+	subtask,
+	managerName,
 	setRefresh,
 	managers,
-	managerName,
+	isInner,
 }) => {
-	const [isExpanded, setExpanded] = useState(null);
-	const handleToggle = () => {
-		setExpanded((prev) => !prev);
-	};
+	const { _id, taskName, selectedAssignees, completed } = task;
 
-	const [isTaskCompleted, setIsTaskCompleted] = useState(task.completed);
+	const [isOpenTask, setIsOpenTask] = useState(completed);
 	const [openEditTask, setOpenEditTask] = useState(false);
 	const [openAddTask, setOpenAddTask] = useState(false);
 	const [currentTask, setCurrentTask] = useState(null);
@@ -45,74 +43,91 @@ const ProjectChild = ({
 
 	const handleTaskStatus = async (e, taskId) => {
 		const isOpen = e.target.checked;
-		setIsTaskCompleted(isOpen);
+		setIsOpenTask(isOpen);
 		try {
-			await ProjectService.updateTaskStatus({ isOpen }, taskId);
+			await ProjectService.updateSubTaskStatus({ isOpen }, taskId);
 		} catch (error) {
-			console.error("Error updating task status:", error);
+			console.error("Error updating subtask status:", error);
 		}
 	};
-
-	const handleEditTask = (task, taskId) => {
+	const [isExpanded, setExpanded] = useState(null);
+	const handleToggle = () => {
+		setExpanded((prev) => !prev);
+	};
+	const handleEditSubtask = (task, taskId) => {
 		setOpenEditTask(true);
 		setCurrentTask(task);
 		setTaskId(taskId);
 	};
 
-	const handleAddTask = (task, taskId) => {
+	const handleAddSubTask = (task, taskId) => {
 		setOpenAddTask(true);
 		setCurrentTask(task);
 		setTaskId(taskId);
 	};
-
 	return (
-		<React.Fragment key={task._id}>
+		<React.Fragment key={_id}>
 			<Tr p={0}>
-				<Td p={0} fontSize={"xs"} w={"380px"}>
+				<Td
+					p={0}
+					fontSize={"xs"}
+					w={"350px"}
+					cursor={task?.activities?.length > 0 ? "pointer" : "default"}
+				>
 					<HStack spacing={3}>
 						<Checkbox
+							isChecked={isOpenTask}
 							sx={{ verticalAlign: "middle" }}
 							colorScheme="facebook"
-							isChecked={isTaskCompleted}
-							onChange={(e) => handleTaskStatus(e, task._id)}
+							onChange={(e) => handleTaskStatus(e, _id)}
 						/>
 						<CircularProgressBarCell
 							completionPercentage={
 								calculateTaskCompletion(task).completionPercentage
 							}
 						/>
-						<Text>{task.taskName}</Text>
+						<Text>{taskName}</Text>
 						<HStack
 							spacing={0}
+							// onClick={() => handleToggle(index)}
 							// cursor={project?.tasks?.length > 0 ? "pointer" : "default"}
 						>
-							{task?.subtasks?.length > 0 && (
-								<TaskButton totalTasks={task?.totalTasks} />
-							)}
+							{!isInner && (
+								<>
+									{task?.subtasks?.length > 0 && (
+										<TaskButton
+											isTask
+											totalTasks={task?.totalTasks || task?.subtasks?.length}
+										/>
+									)}
 
-							<IconButton
-								variant="ghost"
-								icon={<SettingsIcon />}
-								color="brand.nav_color"
-								aria-label="Settings Icon"
-								onClick={() => handleEditTask(task, task._id)}
-							/>
-							<AddTaskButton onClick={() => handleAddTask(task, task._id)} />
-							{task?.subtasks?.length > 0 && (
-								<IconButton
-									onClick={handleToggle}
-									variant="ghost"
-									icon={<FaChevronDown />}
-									color="brand.nav_color"
-									aria-label="Calendar Icon"
-								/>
+									<IconButton
+										variant="ghost"
+										icon={<SettingsIcon />}
+										color="brand.nav_color"
+										aria-label="Settings Icon"
+										onClick={() => handleEditSubtask(task, task._id)}
+									/>
+									<AddTaskButton
+										onClick={() => handleAddSubTask(task, task._id)}
+									/>
+									{task?.subtasks?.length > 0 && (
+										<IconButton
+											onClick={handleToggle}
+											variant="ghost"
+											icon={<FaChevronDown />}
+											color="brand.nav_color"
+											aria-label="Calendar Icon"
+										/>
+									)}
+								</>
 							)}
 						</HStack>
 					</HStack>
 				</Td>
 				<Td fontSize={"xs"} w={"200px"} p={0}>
 					<HStack>
-						{task?.selectedAssignees?.map((assignee) => (
+						{selectedAssignees?.map((assignee) => (
 							<Avatar
 								key={assignee}
 								name={assignee}
@@ -152,18 +167,19 @@ const ProjectChild = ({
 				</Td>
 			</Tr>
 			<Tr>
-				<Td colSpan="8" p={0} pl={"2em"} fontSize={"xs"}>
+				<Td colSpan="8" p={0} fontSize={"xs"} pl={"3em"}>
 					<Collapse in={isExpanded}>
 						{task?.subtasks?.length > 0 &&
-							task?.subtasks?.map((subtask) => {
+							task?.subtasks?.map((subtasks) => {
 								return (
 									<Subtask
+										isInner
+										id={subtasks._id}
+										key={subtasks._id}
+										task={subtasks}
 										setRefresh={setRefresh}
 										managerName={managerName}
-										id={task._id}
-										key={subtask._id}
-										subtask={task?.subtasks}
-										task={subtask}
+										subtask={subtasks?.subtasks}
 										managers={managers}
 									/>
 								);
@@ -172,7 +188,7 @@ const ProjectChild = ({
 				</Td>
 			</Tr>
 			{openEditTask && (
-				<EditTask
+				<EditSubTask
 					isOpen={openEditTask}
 					onClose={() => setOpenEditTask(false)}
 					currentTask={currentTask}
@@ -181,7 +197,7 @@ const ProjectChild = ({
 				/>
 			)}
 			{openAddTask && (
-				<AddNewSubTask
+				<AddNewSubTasks
 					isOpen={openAddTask}
 					onClose={() => setOpenAddTask(false)}
 					currentTask={currentTask}
@@ -193,4 +209,4 @@ const ProjectChild = ({
 	);
 };
 
-export default ProjectChild;
+export default Subtask;

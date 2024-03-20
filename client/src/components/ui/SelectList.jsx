@@ -1,5 +1,5 @@
 import { Icon, Select } from "@chakra-ui/react";
-import { COLORS } from "erp-modules/project-management/workview/data";
+import { COLORS } from "erp-modules/project-management/workview/project/data";
 import { FaCaretDown, FaCaretRight } from "react-icons/fa";
 
 import { generateLighterShade } from "utils";

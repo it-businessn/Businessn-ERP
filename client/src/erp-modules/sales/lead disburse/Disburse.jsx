@@ -1,5 +1,5 @@
 import { Button } from "@chakra-ui/react";
-import { COLORS } from "erp-modules/project-management/workview/data";
+import { COLORS } from "erp-modules/project-management/workview/project/data";
 import { generateLighterShade } from "utils";
 
 const Disburse = ({ leads, checkedRows, handleDisburse }) => {

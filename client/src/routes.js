@@ -58,7 +58,7 @@ const Invoice = lazy(() => import("./erp-modules/sales/invoice"));
 
 const Resources = lazy(() => import("./erp-modules/sales/resources"));
 const SalesReport = lazy(() => import("./erp-modules/sales/reports"));
-const Setup = lazy(() => import("./erp-modules/sales/setup"));
+const Setup = lazy(() => import("./features/setup"));
 
 const ProjectDashboard = lazy(() =>
 	import("./erp-modules/project-management/dashboard"),
@@ -200,6 +200,10 @@ export const router = createBrowserRouter([
 			{
 				path: "/project-dashboard",
 				element: <WorkView />,
+			},
+			{
+				path: "/pm-setup",
+				element: <Setup />,
 			},
 			{
 				path: "/workview",

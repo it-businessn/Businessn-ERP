@@ -8,7 +8,7 @@ const taskSchema = new mongoose.Schema({
 	status: String,
 	isOpen: Boolean,
 	subtasks: [{ type: mongoose.Schema.Types.ObjectId, ref: "SubTask" }],
-	activities: [{ type: mongoose.Schema.Types.ObjectId, ref: "Activity" }],
+	// activities: [{ type: mongoose.Schema.Types.ObjectId, ref: "Activity" }],
 	selectedAssigneesId: [
 		{ type: mongoose.Schema.Types.ObjectId, ref: "Employee" },
 	],
@@ -16,6 +16,7 @@ const taskSchema = new mongoose.Schema({
 	selectedAssignees: Object,
 	updatedOn: { type: Date, default: Date.now },
 	timeToComplete: Number,
+	totalTasks: { type: Number, default: 0 },
 });
 
 const Task = mongoose.model("Task", taskSchema);

@@ -18,13 +18,13 @@ const getProjects = () => async (req, res) => {
 							model: "SubTask",
 						},
 					})
-					.populate({
-						path: "tasks",
-						populate: {
-							path: "activities",
-							model: "Activity",
-						},
-					})
+					// .populate({
+					// 	path: "tasks",
+					// 	populate: {
+					// 		path: "activities",
+					// 		model: "Activity",
+					// 	},
+					// })
 					.exec();
 
 				return populatedProject;
@@ -33,6 +33,117 @@ const getProjects = () => async (req, res) => {
 		res.status(200).json(populatedProjects);
 	} catch (error) {
 		res.status(404).json({ error: error.message });
+	}
+};
+const updateTaskSubTask = () => async (req, res) => {
+	const { id } = req.params;
+	const { subTaskName, subTaskDueDate, subTaskTimeToComplete } = req.body;
+
+	const status = getStatus(subTaskDueDate);
+
+	try {
+		const updatedData = {
+			timeToComplete: subTaskTimeToComplete,
+			dueDate: subTaskDueDate,
+			taskName: subTaskName,
+			status,
+		};
+
+		const updatedTask = await SubTask.findByIdAndUpdate(
+			id,
+			{ $set: updatedData },
+			{ new: true },
+		);
+		res.status(201).json(updatedTask);
+	} catch (error) {
+		res.status(400).json({ message: error.message });
+	}
+};
+const addTaskSubTask = () => async (req, res) => {
+	const { id } = req.params;
+	const { projectId, selectedAssignees, timeToComplete, dueDate, subTaskName } =
+		req.body;
+
+	try {
+		const newSubtask = new SubTask({
+			projectId,
+			taskId: id,
+			taskName: subTaskName,
+			selectedAssignees,
+			dueDate,
+			timeToComplete,
+			status: getStatus(dueDate),
+		});
+		await newSubtask.save();
+
+		const savedTask = await Task.findById(id);
+
+		savedTask.subtasks = savedTask.subtasks.concat(newSubtask._id);
+		savedTask.totalTasks += 1;
+		const concatenatedTaskArray = savedTask.selectedAssignees.concat(
+			newSubtask.selectedAssignees,
+		);
+		const uniqueTaskSet = new Set(concatenatedTaskArray);
+		const uniqueTaskArray = Array.from(uniqueTaskSet);
+		savedTask.selectedAssignees = uniqueTaskArray;
+
+		await savedTask.save();
+
+		const savedProject = await Project.findById(projectId);
+
+		const concatenatedProjectArray = savedProject.selectedAssignees.concat(
+			savedTask.selectedAssignees,
+		);
+		const uniqueProjectSet = new Set(concatenatedProjectArray);
+		const uniqueArray = Array.from(uniqueProjectSet);
+
+		savedProject.selectedAssignees = uniqueArray;
+
+		savedProject.totalTasks += 1;
+		await savedProject.save();
+
+		res.status(201).json(savedProject);
+	} catch (error) {
+		res.status(400).json({ message: error.message });
+	}
+};
+const addTaskSubTasks = () => async (req, res) => {
+	const { id } = req.params;
+	const {
+		projectId,
+		taskId,
+		subTaskId,
+		subTaskSelectedAssignees,
+		subTaskTimeToComplete,
+		subTaskDueDate,
+		subTaskName,
+	} = req.body;
+
+	const status = getStatus(subTaskDueDate);
+
+	try {
+		const savedSubtask = await SubTask.findById(id);
+		const updatedData = {
+			projectId,
+			taskId,
+			completed: false,
+			createdOn: Date.now,
+			isOpen: true,
+			subTaskId,
+			selectedAssignees: subTaskSelectedAssignees,
+			updatedOn: Date.now,
+			timeToComplete: subTaskTimeToComplete,
+			dueDate: subTaskDueDate,
+			taskName: subTaskName,
+			status,
+			totalTasks: 0,
+			subtasks: [],
+		};
+		savedSubtask.subtasks.push(updatedData);
+		await savedSubtask.save();
+		res.status(201).json(savedSubtask);
+	} catch (error) {
+		res.status(400).json({ message: error.message });
 	}
 };
 
@@ -191,107 +302,67 @@ const createActivity = () => async (req, res) => {
 	}
 };
 
-const updateProjectTask = () => async (req, res) => {
+const addProjectTask = () => async (req, res) => {
 	const { id } = req.params;
 
-	const {
-		// subtasks,
-		// action,
-		timeToComplete,
-		dueDate,
-		taskName,
-		selectedAssignees,
-		// projectName,
-		// projectId,
-	} = req.body;
+	const { timeToComplete, dueDate, taskName, selectedAssignees } = req.body;
 
 	const status = getStatus(dueDate);
 
 	try {
-		// 	const savedSubtasks = await Promise.all(
-		// 		subtasks.map(async (subtask) => {
-		// 			const newSubtask = new SubTask({
-		// 				projectId: id,
-		// 				name: subtask.taskName,
-		// 				selectedAssignees: subtask.selectedAssignees,
-		// 				isOpen: true,
-		// 				dueDate,
-		// 				timeToComplete,
-		// 				status,
-		// 			});
-		// 			return await newSubtask.save();
-		// 		}),
-		// 	);
-
-		// 	const savedActivities = await Promise.all(
-		// 		action.map(async (activity) => {
-		// 			const newActivity = new Activity({
-		// 				projectId: id,
-		// 				name: activity.taskName,
-		// 				selectedAssignees: activity.selectedAssignee,
-		// 				isOpen: true,
-		// 				dueDate,
-		// 				timeToComplete,
-		// 				status,
-		// 			});
-		// 			return await newActivity.save();
-		// 		}),
-		// 	);
-
-		// 	// const mergedAssignees = [
-		// 	// 	...savedSubtasks.reduce((assignees, subtask) => assignees.concat(subtask._id), []),
-		// 	// 	...savedActions.reduce((assignees, action) => assignees.concat(action._id), []),
-		// 	//   ];
-
-		// 	const mergedAssignees = [
-		// 		...savedSubtasks.reduce(
-		// 			(assignees, subtask) => assignees.concat(subtask.selectedAssignees),
-		// 			[],
-		// 		),
-		// 		...savedActivities.reduce(
-		// 			(assignees, action) => assignees.concat(action.selectedAssignees),
-		// 			[],
-		// 		),
-		// 	];
-
 		const newTask = new Task({
 			projectId: id,
 			dueDate,
 			taskName,
 			status,
 			isOpen: true,
-			// selectedAssignees: mergedAssignees,
 			selectedAssignees,
 			timeToComplete,
-			// subtasks: savedSubtasks.map((subtask) => subtask._id),
-			// activities: savedActivities.map((activity) => activity._id),
 		});
-
 		await newTask.save();
 
 		const savedProject = await Project.findById(id);
-		savedProject.selectedAssignees = selectedAssignees;
+
+		const concatenatedProjectArray = savedProject?.selectedAssignees?.concat(
+			newTask.selectedAssignees,
+		);
+		const uniqueProjectSet = new Set(concatenatedProjectArray);
+		const uniqueArray = Array.from(uniqueProjectSet);
+
+		savedProject.selectedAssignees = uniqueArray;
+
+		savedProject.totalTasks += 1;
 		savedProject.tasks.push(newTask._id);
 
 		await savedProject.save();
 
-		// 	// Update taskId in savedSubtasks
-		// 	await Promise.all(
-		// 		savedSubtasks.map(async (savedSubtask) => {
-		// 			savedSubtask.taskId = newTask._id;
-		// 			await savedSubtask.save();
-		// 		}),
-		// 	);
+		res.status(201).json(savedProject);
+	} catch (error) {
+		res.status(400).json({ message: error.message });
+	}
+};
 
-		// 	// Update taskId in savedActivities
-		// 	await Promise.all(
-		// 		savedActivities.map(async (savedActivity) => {
-		// 			savedActivity.taskId = newTask._id;
-		// 			await savedActivity.save();
-		// 		}),
-		// 	);
+const updateProjectTask = () => async (req, res) => {
+	const { id } = req.params;
 
-		res.status(201).json(newTask);
+	const { timeToComplete, dueDate, taskName } = req.body;
+
+	const status = getStatus(dueDate);
+
+	try {
+		const updatedData = {
+			timeToComplete,
+			dueDate,
+			taskName,
+			status,
+		};
+
+		const updatedTask = await Task.findByIdAndUpdate(
+			id,
+			{ $set: updatedData },
+			{ new: true },
+		);
+		res.status(201).json(updatedTask);
 	} catch (error) {
 		res.status(400).json({ message: error.message });
 	}
@@ -377,35 +448,24 @@ const getStatus = (dueDate) => {
 const updateProject = () => async (req, res) => {
 	const { id } = req.params;
 
-	const { projectName, timeToComplete, dueDate } = req.body;
+	const {
+		projectName,
+		timeToComplete,
+		startDate,
+		dueDate,
+		managerId,
+		managerName,
+	} = req.body;
 	const status = getStatus(dueDate);
 	try {
-		// const savedProject = await Project.findById(id);
-		// const savedTasks = await Promise.all(
-		// 	tasks.map(async (task) => {
-		// 		const newTask = new Task({
-		// 			projectId: id,
-		// 			dueDate: savedProject.dueDate,
-		// 			name: task.name,
-		// 			status: getStatus(savedProject.dueDate),
-		// 			isOpen: true,
-		// 			selectedAssignees: task.selectedAssignees,
-		// 			timeToComplete: savedProject.timeToComplete,
-		// 		});
-
-		// 		return await newTask.save();
-		// 	}),
-		// );
-		// savedTasks.forEach((savedTask) => {
-		// 	savedProject.tasks.push(savedTask._id);
-		// });
-		// await savedProject.save();
 		const updatedData = {
 			name: projectName,
-			// tasks: savedTasks,
 			timeToComplete,
-			dueDate,
 			status,
+			startDate,
+			dueDate,
+			managerId,
+			managerName,
 		};
 
 		const updatedProject = await Project.findByIdAndUpdate(
@@ -420,38 +480,26 @@ const updateProject = () => async (req, res) => {
 };
 
 const createProject = () => async (req, res) => {
-	const { projectName, timeToComplete, dueDate } = req.body;
+	const {
+		projectName,
+		timeToComplete,
+		startDate,
+		dueDate,
+		managerId,
+		managerName,
+	} = req.body;
 	const status = getStatus(dueDate);
 	const project = new Project({
 		name: projectName,
 		timeToComplete,
+		startDate,
 		dueDate,
+		managerName,
 		status,
+		managerId,
 	});
 	try {
 		const savedProject = await project.save();
-		// for (const task of tasks) {
-		// 	// const selectedAssigneesId = task.selectedAssignees.map((assigneeId) =>
-		// 	// 	mongoose.Types.ObjectId(assigneeId),
-		// 	// );
-
-		// 	const newTask = new Task({
-		// 		projectId: savedProject._id,
-		// 		dueDate: savedProject.dueDate,
-		// 		name: task.taskName,
-		// 		status: getStatus(savedProject.dueDate),
-		// 		isOpen: true,
-		// 		// selectedAssigneesId, // in future will use this for reference
-		// 		selectedAssignees: task.selectedAssignees,
-		// 		timeToComplete: savedProject.timeToComplete,
-		// 	});
-
-		// 	const savedTask = await newTask.save();
-
-		// 	savedProject.tasks.push(savedTask._id);
-		// 	await savedProject.save();
-		// 	console.log("Project updated with task:", savedProject);
-		// }
 
 		res.status(201).json(savedProject);
 	} catch (error) {
@@ -467,4 +515,8 @@ module.exports = {
 	updateTaskActivity,
 	updateProjectSubTask,
 	createActivity,
+	addProjectTask,
+	addTaskSubTask,
+	updateTaskSubTask,
+	addTaskSubTasks,
 };

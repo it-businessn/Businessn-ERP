@@ -21,6 +21,22 @@ const ProjectService = {
 		return apiService.put(`/projects/task/${id}`, data, id);
 	},
 
+	async addSubTask(data, id) {
+		return apiService.put(`/projects/task-subtask/${id}`, data, id);
+	},
+
+	async addSubTasks(data, id) {
+		return apiService.put(`/projects/task-add-subtask/${id}`, data, id);
+	},
+
+	async updateSubTask(data, id) {
+		return apiService.put(`/projects/update-subtask/${id}`, data, id);
+	},
+
+	async updateProjectTask(data, id) {
+		return apiService.put(`/projects/update-task/${id}`, data, id);
+	},
+
 	async addProjectSubTask(data, id) {
 		return apiService.put(`/projects/subtask/${id}`, data, id);
 	},

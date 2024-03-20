@@ -21,9 +21,10 @@ import { FaCaretDown, FaSearch, FaSort } from "react-icons/fa";
 import { HiOutlineUserGroup } from "react-icons/hi2";
 import { MdDateRange } from "react-icons/md";
 import ProjectService from "services/ProjectService";
+import UserService from "services/UserService";
 import { generateLighterShade } from "utils";
-import { VIEW_MODE } from "./data";
 import ProjectTable from "./project/ProjectTable";
+import { VIEW_MODE } from "./project/data";
 import TaskTable from "./task/TaskTable";
 
 export const statusColor = (status) => {
@@ -56,6 +57,8 @@ const WorkView = () => {
 	const [viewMode, setViewMode] = useState(VIEW_MODE[0].name);
 	const [projects, setProjects] = useState([]);
 	const [refresh, setRefresh] = useState(false);
+
+	const [managers, setManagers] = useState(null);
 	useEffect(() => {
 		const fetchAllProjectInfo = async () => {
 			try {
@@ -66,6 +69,15 @@ const WorkView = () => {
 			}
 		};
 		fetchAllProjectInfo();
+		const fetchAllManagers = async () => {
+			try {
+				const response = await UserService.getAllManagers();
+				setManagers(response.data);
+			} catch (error) {
+				console.error(error);
+			}
+		};
+		fetchAllManagers();
 	}, [refresh]);
 
 	const switchToView = (name) => setViewMode(name);
@@ -94,7 +106,8 @@ const WorkView = () => {
 	return (
 		<Box p={{ base: "1em", md: "2em" }} mt={{ base: "3em", md: 0 }}>
 			<Text fontWeight="bold" mb={"0.5em"}>
-				Workview
+				{/* Workview  */}
+				Projects Overview
 			</Text>
 			<Flex
 				justifyContent={"space-between"}
@@ -195,28 +208,32 @@ const WorkView = () => {
 				color={"brand.nav_color"}
 			>
 				{!projects && <Loader />}
-				{projects && viewMode === "Tasks" ? (
-					<TaskTable
-						allProjects={allProjects}
-						allTasks={allTasks}
-						allProjectTasks={allProjectTasks}
-						allActivities={allActivities}
+				{projects && viewMode === "Projects" ? (
+					<ProjectTable
 						setRefresh={setRefresh}
 						data={projects}
+						managers={managers}
 					/>
-				) : viewMode === "Projects" ? (
-					<ProjectTable setRefresh={setRefresh} data={projects} />
-				) : viewMode === "Activities" ? (
+				) : viewMode === "Tasks" ? (
 					<TaskTable
 						allProjects={allProjects}
 						allTasks={allTasks}
 						allProjectTasks={allProjectTasks}
 						allActivities={allActivities}
 						setRefresh={setRefresh}
-						isFiltered
 						data={projects}
 					/>
 				) : (
+					// ) : viewMode === "Activities" ? (
+					// 	<TaskTable
+					// 		allProjects={allProjects}
+					// 		allTasks={allTasks}
+					// 		allProjectTasks={allProjectTasks}
+					// 		allActivities={allActivities}
+					// 		setRefresh={setRefresh}
+					// 		isFiltered
+					// 		data={projects}
+					// 	/>
 					<></>
 				)}
 			</Box>

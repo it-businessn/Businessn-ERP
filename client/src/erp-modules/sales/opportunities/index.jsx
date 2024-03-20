@@ -15,7 +15,7 @@ import PrimaryButton from "components/ui/button/PrimaryButton";
 import {
 	PROJECT_ASSIGNEES,
 	SUPERVISOR_ASSIGNEES,
-} from "erp-modules/project-management/workview/data";
+} from "erp-modules/project-management/workview/project/data";
 import { useEffect, useState } from "react";
 import { useBreakpointValue } from "services/Breakpoint";
 import LeadsService from "services/LeadsService";

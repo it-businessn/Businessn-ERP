@@ -1,38 +1,37 @@
 import {
-	Alert,
-	AlertIcon,
-	Avatar,
-	Button,
-	FormControl,
-	FormLabel,
-	HStack,
-	Input,
-	Modal,
-	ModalBody,
-	ModalCloseButton,
-	ModalContent,
-	ModalHeader,
-	ModalOverlay,
-	Select,
-	Stack,
-	Text,
+    Alert,
+    AlertIcon,
+    Avatar,
+    Button,
+    FormControl,
+    FormLabel,
+    HStack,
+    Input,
+    Modal,
+    ModalBody,
+    ModalCloseButton,
+    ModalContent,
+    ModalHeader,
+    ModalOverlay,
+    Stack,
+    Text,
 } from "@chakra-ui/react";
 import { useState } from "react";
 import { FaCaretDown } from "react-icons/fa";
 import ProjectService from "services/ProjectService";
 import MultiCheckboxMenu from "../MultiCheckboxMenu";
 
-const AddNewTask = ({
+const AddNewProjectTask = ({
 	isOpen,
 	onClose,
 	setRefresh,
-	allProjects,
-	isFiltered,
-	allProjectTasks,
+	project,
+	projectId,
+	managers,
 }) => {
 	const defaultTask = {
-		projectId: "",
-		projectName: "",
+		projectId,
+		projectName: project?.name,
 		taskName: "",
 		selectedAssignees: [],
 		dueDate: null,
@@ -63,7 +62,7 @@ const AddNewTask = ({
 		e.preventDefault();
 		setSubmitting(true);
 		try {
-			await ProjectService.addProjectTask(formData, formData.projectId);
+			await ProjectService.addProjectTask(formData, projectId);
 			onClose();
 			setFormData(defaultTask);
 			setRefresh((prev) => !prev);
@@ -78,122 +77,65 @@ const AddNewTask = ({
 		<Modal isCentered size={"4xl"} isOpen={isOpen} onClose={onClose}>
 			<ModalOverlay />
 			<ModalContent>
-				<ModalHeader>Add New {isFiltered ? "Activity" : "Task"}</ModalHeader>
+				<ModalHeader>
+					Add New Task for Project - {formData.projectName}
+				</ModalHeader>
 				<ModalCloseButton />
 				<ModalBody>
 					<Stack spacing="5">
 						<form onSubmit={handleSubmit}>
 							<Stack spacing={4}>
-								<FormControl>
-									<FormLabel>Select Project</FormLabel>
-									<Select
-										icon={<FaCaretDown />}
-										borderRadius="10px"
-										value={formData?.projectId || ""}
-										placeholder="Select Project"
-										onChange={(e) => {
-											const selectedValue = e.target.value;
-											if (selectedValue !== "") {
-												const { id, projectName } = allProjects.find(
-													(project) => project.id === selectedValue,
-												);
+								<HStack>
+									<FormControl>
+										<FormLabel>Task name</FormLabel>
+										<Input
+											type="text"
+											name="taskName"
+											value={formData.taskName}
+											onChange={(e) =>
 												setFormData((prevData) => ({
 													...prevData,
-													projectName,
-													projectId: id,
-												}));
+													taskName: e.target.value,
+												}))
 											}
-										}}
-									>
-										{allProjects?.map(({ id, projectName }) => (
-											<option value={id} key={id}>
-												{projectName}
-											</option>
-										))}
-									</Select>
-								</FormControl>
-								{isFiltered ? (
+											required
+										/>
+									</FormControl>
 									<FormControl>
-										<FormLabel>Select Task</FormLabel>
-										<Select
-											icon={<FaCaretDown />}
-											borderRadius="10px"
-											value={formData?.taskId || ""}
-											placeholder="Select Task"
-											onChange={(e) => {
-												const selectedValue = e.target.value;
-												if (selectedValue !== "") {
-													const { id, taskName } = allProjectTasks.find(
-														(task) => task.id === selectedValue,
-													);
-													setFormData((prevData) => ({
-														...prevData,
-														taskName,
-														taskId: id,
-													}));
-												}
+										<FormLabel visibility={openAssigneeMenu ? "" : "hidden"}>
+											Select Assignee
+										</FormLabel>
+										<Button
+											rightIcon={<FaCaretDown />}
+											bg={"brand.primary_bg"}
+											color={"brand.primary_button_bg"}
+											_hover={{
+												bg: "brand.primary_bg",
+												color: "brand.primary_button_bg",
 											}}
 										>
-											{allProjectTasks?.map(({ id, taskName }) => (
-												<option value={id} key={id}>
-													{taskName}
-												</option>
+											{openAssigneeMenu ? (
+												<MultiCheckboxMenu
+													data={managers}
+													openMenu={openAssigneeMenu}
+													handleCloseMenu={handleCloseMenu}
+													selectedOptions={selectedOptions}
+													setSelectedOptions={setSelectedOptions}
+												/>
+											) : (
+												<Text onClick={handleMenuToggle}>
+													{formData.selectedAssignees?.length > 0
+														? `${formData.selectedAssignees?.length} assignee(s)`
+														: "Select Assignee"}
+												</Text>
+											)}
+										</Button>
+										{formData?.selectedAssignees?.length > 0 &&
+											formData.selectedAssignees.map((name) => (
+												<Avatar size={"sm"} name={name} src={name} />
 											))}
-										</Select>
 									</FormControl>
-								) : (
-									<HStack>
-										<FormControl>
-											<FormLabel>Task name</FormLabel>
-											<Input
-												type="text"
-												name="taskName"
-												value={formData.taskName}
-												onChange={(e) =>
-													setFormData((prevData) => ({
-														...prevData,
-														taskName: e.target.value,
-													}))
-												}
-												required
-											/>
-										</FormControl>
-										<FormControl>
-											<FormLabel visibility={openAssigneeMenu ? "" : "hidden"}>
-												Select Assignee
-											</FormLabel>
-											<Button
-												rightIcon={<FaCaretDown />}
-												bg={"brand.primary_bg"}
-												color={"brand.primary_button_bg"}
-												_hover={{
-													bg: "brand.primary_bg",
-													color: "brand.primary_button_bg",
-												}}
-											>
-												{openAssigneeMenu ? (
-													<MultiCheckboxMenu
-														openMenu={openAssigneeMenu}
-														handleCloseMenu={handleCloseMenu}
-														selectedOptions={selectedOptions}
-														setSelectedOptions={setSelectedOptions}
-													/>
-												) : (
-													<Text onClick={handleMenuToggle}>
-														{formData.selectedAssignees?.length > 0
-															? `${formData.selectedAssignees?.length} assignee(s)`
-															: "Select Assignee"}
-													</Text>
-												)}
-											</Button>
-											{formData?.selectedAssignees?.length > 0 &&
-												formData.selectedAssignees.map((name) => (
-													<Avatar size={"sm"} name={name} src={name} />
-												))}
-										</FormControl>
-									</HStack>
-								)}
-
+								</HStack>
 								<HStack>
 									<FormControl>
 										<FormLabel>Due date</FormLabel>
@@ -432,4 +374,4 @@ const AddNewTask = ({
 	);
 };
 
-export default AddNewTask;
+export default AddNewProjectTask;

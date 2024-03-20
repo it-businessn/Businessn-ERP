@@ -5,6 +5,30 @@ const SettingService = {
 		return apiService.get(`/configuration/${id}`);
 	},
 
+	async getAllRoles() {
+		return apiService.get(`/setup/roles`);
+	},
+
+	async addRole(data) {
+		return apiService.post("/setup/roles", data);
+	},
+
+	async getAllDepartments() {
+		return apiService.get(`/setup/departments`);
+	},
+
+	async addDepartment(data) {
+		return apiService.post("/setup/departments", data);
+	},
+
+	async getAllApprovers() {
+		return apiService.get(`/setup/approvers`);
+	},
+
+	async addApprover(data) {
+		return apiService.post("/setup/approvers", data);
+	},
+
 	async getIdleLeadReAssignment() {
 		return apiService.get("/set-up/idle-lead-config");
 	},

@@ -8,14 +8,13 @@ import {
 	Stack,
 	useDisclosure,
 } from "@chakra-ui/react";
-import { PROJECT_ASSIGNEES } from "./data";
 
 const MultiCheckboxMenu = ({
 	openMenu,
 	handleCloseMenu,
 	selectedOptions,
 	setSelectedOptions,
-	data = PROJECT_ASSIGNEES,
+	data,
 }) => {
 	const { isOpen, onOpen, onClose } = useDisclosure();
 
@@ -47,13 +46,13 @@ const MultiCheckboxMenu = ({
 				</MenuItem>
 				<Stack spacing={2}>
 					{data.map((assignee) => (
-						<MenuItem key={assignee.id}>
+						<MenuItem key={assignee._id}>
 							<Checkbox
 								colorScheme="facebook"
-								isChecked={selectedOptions.includes(assignee.name)}
-								onChange={() => handleCheckboxChange(assignee.name)}
+								isChecked={selectedOptions.includes(assignee.fullName)}
+								onChange={() => handleCheckboxChange(assignee.fullName)}
 							>
-								{assignee.name}
+								{assignee.fullName}
 							</Checkbox>
 						</MenuItem>
 					))}

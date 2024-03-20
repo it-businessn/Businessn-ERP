@@ -33,9 +33,9 @@ import {
 } from "utils";
 import { statusColor } from "..";
 import EditTask from "../EditTask";
-import Subtask from "../Subtask";
+import Subtask from "../project/Subtask";
 import TodoItem from "../TodoItem";
-import { workView_Table } from "../data";
+import { workView_Table } from "../project/data";
 import AddNewActivity from "./AddNewActivity";
 import AddNewSubTask from "./AddNewSubTask";
 import AddNewTask from "./AddNewTask";

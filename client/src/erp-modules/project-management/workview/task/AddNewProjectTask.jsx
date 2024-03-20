@@ -32,7 +32,7 @@ import { FaCaretDown } from "react-icons/fa";
 import ProjectService from "services/ProjectService";
 import { getDefaultDate } from "utils";
 import MultiCheckboxMenu from "../MultiCheckboxMenu";
-import { PROJECT_ASSIGNEES } from "../data";
+import { PROJECT_ASSIGNEES } from "../project/data";
 
 const AddNewProjectTask = ({
 	isOpen,
@@ -104,7 +104,7 @@ const AddNewProjectTask = ({
 			onClose();
 			setFormData(defaultTask);
 			setSubTasks([]);
-			setRefresh(true);
+			setRefresh((prev) => !prev);
 		} catch (error) {
 			setMessage("An error occurred while submitting the application.");
 		} finally {

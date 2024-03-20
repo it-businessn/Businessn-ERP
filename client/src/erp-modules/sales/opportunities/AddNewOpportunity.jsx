@@ -15,7 +15,7 @@ import {
 	PRODUCTS_SERVICES,
 	PROJECT_ASSIGNEES,
 	REGIONS,
-} from "erp-modules/project-management/workview/data";
+} from "erp-modules/project-management/workview/project/data";
 import { useState } from "react";
 import { FaCaretDown } from "react-icons/fa";
 import LeadsService from "services/LeadsService";

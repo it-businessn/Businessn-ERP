@@ -12,7 +12,15 @@ router.post("/activity", projectController.createActivity());
 
 router.put("/:id", projectController.updateProject());
 
-router.put("/task/:id", projectController.updateProjectTask());
+router.put("/task/:id", projectController.addProjectTask());
+
+router.put("/task-subtask/:id", projectController.addTaskSubTask());
+
+router.put("/task-add-subtask/:id", projectController.addTaskSubTasks());
+
+router.put("/update-subtask/:id", projectController.updateTaskSubTask());
+
+router.put("/update-task/:id", projectController.updateProjectTask());
 
 router.put("/subtask/:id", projectController.updateProjectSubTask());
 

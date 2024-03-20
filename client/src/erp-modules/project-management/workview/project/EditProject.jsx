@@ -12,17 +12,29 @@ import {
 	ModalContent,
 	ModalHeader,
 	ModalOverlay,
+	Select,
 	Stack,
 } from "@chakra-ui/react";
 import { useState } from "react";
+import { FaCaretDown } from "react-icons/fa";
 import ProjectService from "services/ProjectService";
 import { getDefaultDate } from "utils";
 
-const EditProject = ({ isOpen, onClose, project, projectId, setRefresh }) => {
+const EditProject = ({
+	isOpen,
+	onClose,
+	project,
+	projectId,
+	setRefresh,
+	managers,
+}) => {
 	const defaultProject = {
 		projectName: project.name,
+		startDate: project?.startDate && getDefaultDate(project.startDate),
 		dueDate: project?.dueDate && getDefaultDate(project.dueDate),
 		timeToComplete: project.timeToComplete,
+		managerName: project.managerName,
+		managerId: project.managerId,
 	};
 
 	const [isSubmitting, setSubmitting] = useState(false);
@@ -37,7 +49,7 @@ const EditProject = ({ isOpen, onClose, project, projectId, setRefresh }) => {
 			await ProjectService.updateProject(formData, projectId);
 			onClose();
 			setFormData(defaultProject);
-			setRefresh(true);
+			setRefresh((prev) => !prev);
 		} catch (error) {
 			setMessage("An error occurred while submitting the application.");
 		} finally {
@@ -46,7 +58,7 @@ const EditProject = ({ isOpen, onClose, project, projectId, setRefresh }) => {
 	};
 
 	return (
-		<Modal isCentered size={"4xl"} isOpen={isOpen} onClose={onClose}>
+		<Modal isCentered size={"3xl"} isOpen={isOpen} onClose={onClose}>
 			<ModalOverlay />
 			<ModalContent>
 				<ModalHeader>Edit New Project</ModalHeader>
@@ -70,7 +82,52 @@ const EditProject = ({ isOpen, onClose, project, projectId, setRefresh }) => {
 										required
 									/>
 								</FormControl>
+								<FormControl>
+									<FormLabel> Project Manager</FormLabel>
+									<Select
+										icon={<FaCaretDown />}
+										borderRadius="10px"
+										value={formData?.managerId || ""}
+										placeholder="Select Project Manager"
+										onChange={(e) => {
+											const selectedValue = e.target.value;
+											if (selectedValue !== "") {
+												const { _id, fullName } = managers.find(
+													(manager) => manager._id === selectedValue,
+												);
+												setFormData((prevData) => ({
+													...prevData,
+													managerName: fullName,
+													managerId: _id,
+												}));
+											}
+										}}
+									>
+										{managers?.map(({ _id, fullName }) => (
+											<option value={_id} key={_id}>
+												{fullName}
+											</option>
+										))}
+									</Select>
+								</FormControl>
 								<HStack>
+									<FormControl>
+										<FormLabel>Start date</FormLabel>
+										<input
+											className="date_picker"
+											type="date"
+											id="startDate"
+											name="startDate"
+											value={formData.startDate}
+											onChange={(e) =>
+												setFormData((prevData) => ({
+													...prevData,
+													startDate: e.target.value,
+												}))
+											}
+											required
+										/>
+									</FormControl>
 									<FormControl>
 										<FormLabel>Due date</FormLabel>
 										<input
