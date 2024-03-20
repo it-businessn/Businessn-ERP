@@ -21,7 +21,9 @@ const getAllUsers = () => async (req, res) => {
 
 const getAllManagers = () => async (req, res) => {
 	try {
-		const users = await Employee.find({ role: { $regex: /manager/i } });
+		const users = await Employee.find({
+			role: { $regex: /manager|administrator/i },
+		});
 		res.status(200).json(users);
 	} catch (error) {
 		res.status(404).json({ error: error.message });
