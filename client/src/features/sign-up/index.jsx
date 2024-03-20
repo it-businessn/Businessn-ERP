@@ -17,9 +17,11 @@ import {
 	Stack,
 } from "@chakra-ui/react";
 import Logo from "components/logo";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import LoginService from "services/LoginService";
+import SettingService from "services/SettingService";
+import UserService from "services/UserService";
 // import signUpImg from "../../assets/logos/BusinessN_dark.jpg";
 
 const SignUp = () => {
@@ -43,6 +45,50 @@ const SignUp = () => {
 		},
 		employmentType: "",
 	};
+	const [empTypes, setEmpTypes] = useState(false);
+	const [roles, setRoles] = useState(false);
+	const [departments, setDepartments] = useState(false);
+	const [managers, setManagers] = useState(false);
+
+	useEffect(() => {
+		const fetchAllEmpTypes = async () => {
+			try {
+				const response = await SettingService.getAllEmploymentTypes();
+				setEmpTypes(response.data);
+			} catch (error) {
+				console.error(error);
+			}
+		};
+		const fetchAllRoles = async () => {
+			try {
+				const response = await SettingService.getAllRoles();
+				setRoles(response.data);
+			} catch (error) {
+				console.error(error);
+			}
+		};
+		const fetchAllDepartments = async () => {
+			try {
+				const response = await SettingService.getAllDepartments();
+				setDepartments(response.data);
+			} catch (error) {
+				console.error(error);
+			}
+		};
+		const fetchAllManagers = async () => {
+			try {
+				const response = await UserService.getAllManagers();
+				setManagers(response.data);
+			} catch (error) {
+				console.error(error);
+			}
+		};
+		fetchAllManagers();
+		fetchAllRoles();
+		fetchAllDepartments();
+		fetchAllEmpTypes();
+	}, []);
+
 	const [formData, setFormData] = useState(defaultFormData);
 	const [isLoading, setIsLoading] = useState(false);
 	const [showPassword, setShowPassword] = useState(false);
@@ -179,74 +225,78 @@ const SignUp = () => {
 								</InputRightElement>
 							</InputGroup>
 						</FormControl>
-						<FormControl mb={4}>
-							<FormLabel>Type of Employment</FormLabel>
-							<Select
-								name="employmentType"
-								value={formData.employmentType}
-								bg={"brand.100"}
-								onChange={handleChange}
-								placeholder="Select employment type"
-							>
-								<option value="Part-Time Employee">Part-Time Employee</option>
-								<option value="Full-Time Employee">Full-Time Employee</option>
-								<option value="Temporary Employee (Contractor)">
-									Temporary Employee (Contractor)
-								</option>
-							</Select>
-						</FormControl>
-						<FormControl mb={4}>
-							<FormLabel>Type of Role</FormLabel>
-							<Select
-								name="role"
-								value={formData.role}
-								bg={"brand.100"}
-								onChange={handleChange}
-								placeholder="Select role"
-							>
-								<option value="Employee">Employee</option>
-								<option value="HR Manager">HR Manager</option>
-								<option value="Sales Manager">Sales Manager</option>
-								<option value="Administrator">Administrator</option>
-							</Select>
-						</FormControl>
-						<FormControl mb={4}>
-							<FormLabel>Type of Department</FormLabel>
-							<Select
-								bg={"brand.100"}
-								name="department"
-								value={formData.department}
-								onChange={handleChange}
-								placeholder="Select department"
-							>
-								<option value="Human Resources/HR Department">
-									Human Resources/HR Department
-								</option>
-								<option value="Information Technology (IT)">
-									Information Technology (IT)
-								</option>
-								<option value="Finance and Accounting">
-									Finance and Accounting
-								</option>
-								<option value="Sales and Marketing">Sales and Marketing</option>
-								<option value="Customer Service and Support">
-									Customer Service and Support
-								</option>
-							</Select>
-						</FormControl>
-						<FormControl mb={4}>
-							<FormLabel>Manager</FormLabel>
-							<Select
-								bg={"brand.100"}
-								name="manager"
-								value={formData.manager}
-								onChange={handleChange}
-								placeholder="Select manager"
-							>
-								<option value="Manager 1">Manager 1</option>
-								<option value="Manager 2">Manager 2</option>
-							</Select>
-						</FormControl>
+						{empTypes && (
+							<FormControl mb={4}>
+								<FormLabel>Type of Employment</FormLabel>
+								<Select
+									name="employmentType"
+									value={formData.employmentType}
+									bg={"brand.100"}
+									onChange={handleChange}
+									placeholder="Select employment type"
+								>
+									{empTypes?.map((empType) => (
+										<option key={empType._id} value={empType.name}>
+											{empType.name}
+										</option>
+									))}
+								</Select>
+							</FormControl>
+						)}
+						{roles && (
+							<FormControl mb={4}>
+								<FormLabel>Type of Role</FormLabel>
+								<Select
+									name="role"
+									value={formData.role}
+									bg={"brand.100"}
+									onChange={handleChange}
+									placeholder="Select role"
+								>
+									{roles?.map((role) => (
+										<option key={role._id} value={role.name}>
+											{role.name}
+										</option>
+									))}
+								</Select>
+							</FormControl>
+						)}
+						{departments && (
+							<FormControl mb={4}>
+								<FormLabel>Type of Department</FormLabel>
+								<Select
+									bg={"brand.100"}
+									name="department"
+									value={formData.department}
+									onChange={handleChange}
+									placeholder="Select department"
+								>
+									{departments?.map((dept) => (
+										<option key={dept._id} value={dept.name}>
+											{dept.name}
+										</option>
+									))}
+								</Select>
+							</FormControl>
+						)}
+						{managers && (
+							<FormControl mb={4}>
+								<FormLabel>Manager</FormLabel>
+								<Select
+									bg={"brand.100"}
+									name="manager"
+									value={formData.manager}
+									onChange={handleChange}
+									placeholder="Select manager"
+								>
+									{managers?.map((manager) => (
+										<option key={manager._id} value={manager.fullName}>
+											{manager.fullName}
+										</option>
+									))}
+								</Select>
+							</FormControl>
+						)}
 						<FormControl mb={4}>
 							<FormLabel>Phone Number</FormLabel>
 							<Input

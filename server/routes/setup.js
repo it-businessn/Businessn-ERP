@@ -11,6 +11,10 @@ router.get("/departments", setUpController.getAllDepartments());
 
 router.post("/departments", setUpController.addDepartment());
 
+router.get("/empTypes", setUpController.getAllEmpTypes());
+
+router.post("/empTypes", setUpController.addEmpType());
+
 router.get("/approvers", setUpController.getAllApprovers());
 
 router.post("/approvers", setUpController.addApprovers());

@@ -9,6 +9,9 @@ export const SETUP_LIST = [
 		type: "Departments",
 	},
 	{
+		type: "Employment Type",
+	},
+	{
 		type: "Assignees/Approvers",
 	},
 ];

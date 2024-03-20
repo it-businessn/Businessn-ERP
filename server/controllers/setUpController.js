@@ -1,5 +1,6 @@
 const Department = require("../models/Department");
 const EmployeeRole = require("../models/EmployeeRole");
+const EmploymentType = require("../models/EmploymentType");
 const Setup = require("../models/Setup");
 
 const getIdleLeadReAssignment = () => async (req, res) => {
@@ -56,6 +57,31 @@ const addDepartment = () => async (req, res) => {
 	try {
 		await newDepartment.save();
 		res.status(201).json(newDepartment);
+	} catch (error) {
+		res.status(400).json({ message: error.message });
+	}
+};
+
+const getAllEmpTypes = () => async (req, res) => {
+	try {
+		const empTypes = await EmploymentType.find().sort({ createdOn: -1 });
+		res.status(200).json(empTypes);
+	} catch (error) {
+		res.status(404).json({ error: error.message });
+	}
+};
+
+const addEmpType = () => async (req, res) => {
+	const { name, description } = req.body;
+
+	const newEmpType = new EmploymentType({
+		name,
+		description,
+	});
+
+	try {
+		await newEmpType.save();
+		res.status(201).json(newEmpType);
 	} catch (error) {
 		res.status(400).json({ message: error.message });
 	}
@@ -133,4 +159,6 @@ module.exports = {
 	addDepartment,
 	getAllApprovers,
 	addApprovers,
+	getAllEmpTypes,
+	addEmpType,
 };

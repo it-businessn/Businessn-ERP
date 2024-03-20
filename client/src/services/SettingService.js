@@ -12,13 +12,20 @@ const SettingService = {
 	async addRole(data) {
 		return apiService.post("/setup/roles", data);
 	},
-
 	async getAllDepartments() {
 		return apiService.get(`/setup/departments`);
 	},
 
 	async addDepartment(data) {
 		return apiService.post("/setup/departments", data);
+	},
+
+	async getAllEmploymentTypes() {
+		return apiService.get(`/setup/empTypes`);
+	},
+
+	async addEmploymentType(data) {
+		return apiService.post("/setup/empTypes", data);
 	},
 
 	async getAllApprovers() {
