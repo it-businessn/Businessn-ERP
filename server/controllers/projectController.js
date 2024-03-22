@@ -30,11 +30,73 @@ const getProjects = () => async (req, res) => {
 				return populatedProject;
 			}),
 		);
-		res.status(200).json(populatedProjects);
+		const calculateAndSaveTotalEstimatedHours = async (projects) => {
+			try {
+				for (const project of projects) {
+					let totalEstimatedHours = parseInt(project.timeToComplete) || 0;
+					project.completionPercent = project.completed ? 100 : 0;
+					for (const task of project.tasks) {
+						let taskTotalEstimatedHours = parseInt(task.timeToComplete) || 0;
+
+						task.completionPercent = task.completed ? 100 : 0;
+						for (const subtask of task.subtasks) {
+							let subTaskTotalEstimatedHours =
+								parseInt(subtask.timeToComplete) || 0;
+
+							subtask.completionPercent = subtask.completed ? 100 : 0;
+							for (const subtasks of subtask.subtasks) {
+								subTaskTotalEstimatedHours +=
+									parseInt(subtasks.timeToComplete) || 0;
+								subtasks.completionPercent = subtasks.completed ? 100 : 0;
+							}
+							await SubTask.findByIdAndUpdate(
+								subtask._id,
+								{ totalEstimatedHours: subTaskTotalEstimatedHours },
+								{ new: true },
+							);
+
+							taskTotalEstimatedHours += subTaskTotalEstimatedHours;
+						}
+						task.completionPercent =
+							(taskTotalEstimatedHours / totalEstimatedHours) * 100;
+
+						await Task.findByIdAndUpdate(
+							task._id,
+							{ totalEstimatedHours: taskTotalEstimatedHours },
+							{ new: true },
+						);
+
+						totalEstimatedHours += taskTotalEstimatedHours;
+					}
+					project.completionPercent =
+						(totalEstimatedHours / totalEstimatedHours) * 100; // Project completion percentage
+
+					await Project.findByIdAndUpdate(
+						project._id,
+						{ totalEstimatedHours },
+						{ new: true },
+					);
+				}
+				console.log("Total estimated hours calculated and saved successfully.");
+				return projects;
+			} catch (error) {
+				console.error(
+					"Error calculating and saving total estimated hours:",
+					error,
+				);
+				throw error;
+			}
+		};
+		const updatedProjects = await calculateAndSaveTotalEstimatedHours(
+			populatedProjects,
+		);
+
+		res.status(200).json(updatedProjects);
 	} catch (error) {
 		res.status(404).json({ error: error.message });
 	}
 };
+
 const updateTaskSubTask = () => async (req, res) => {
 	const { id } = req.params;
 	const { subTaskName, subTaskDueDate, subTaskTimeToComplete } = req.body;
@@ -43,7 +105,7 @@ const updateTaskSubTask = () => async (req, res) => {
 
 	try {
 		const updatedData = {
-			timeToComplete: subTaskTimeToComplete,
+			timeToComplete: parseInt(subTaskTimeToComplete),
 			dueDate: subTaskDueDate,
 			taskName: subTaskName,
 			status,
@@ -132,7 +194,7 @@ const addTaskSubTasks = () => async (req, res) => {
 			subTaskId,
 			selectedAssignees: subTaskSelectedAssignees,
 			updatedOn: Date.now,
-			timeToComplete: subTaskTimeToComplete,
+			timeToComplete: parseInt(subTaskTimeToComplete),
 			dueDate: subTaskDueDate,
 			taskName: subTaskName,
 			status,

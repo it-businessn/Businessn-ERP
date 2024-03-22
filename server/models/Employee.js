@@ -58,6 +58,7 @@ const employeeSchema = new mongoose.Schema({
 	},
 	otp: String,
 	userId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+	manager: String,
 	managerId: { type: mongoose.Schema.Types.ObjectId, ref: "Employee" },
 	assignedLeads: { type: Number, default: 0 },
 	leads: [{ type: mongoose.Schema.Types.ObjectId, ref: "Lead" }],

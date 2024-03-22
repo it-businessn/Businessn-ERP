@@ -3,7 +3,8 @@ const mongoose = require("mongoose");
 const projectSchema = new mongoose.Schema({
 	createdOn: { type: Date, default: Date.now },
 	updatedOn: { type: Date, default: Date.now },
-	timeToComplete: Number,
+	timeToComplete: Number, // estimatedHours
+	actualHours: { type: Number, default: 0 },
 	startDate: Date,
 	dueDate: Date,
 	status: String,
@@ -15,6 +16,8 @@ const projectSchema = new mongoose.Schema({
 	tasks: [{ type: mongoose.Schema.Types.ObjectId, ref: "Task" }],
 	completed: { type: Boolean, default: false },
 	totalTasks: { type: Number, default: 0 },
+	totalEstimatedHours: Number,
+	completionPercent: Number,
 });
 
 const Project = mongoose.model("Project", projectSchema);

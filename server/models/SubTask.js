@@ -11,9 +11,12 @@ const subTaskSchema = new mongoose.Schema({
 	isOpen: { type: Boolean, default: true },
 	selectedAssignees: Object,
 	updatedOn: { type: Date, default: Date.now },
-	timeToComplete: Number,
+	timeToComplete: Number, // estimatedHours
+	actualHours: { type: Number, default: 0 },
 	totalTasks: { type: Number, default: 0 },
 	subtasks: { type: Array, default: [] },
+	totalEstimatedHours: Number,
+	completionPercent: Number,
 });
 
 const SubTask = mongoose.model("SubTask", subTaskSchema);

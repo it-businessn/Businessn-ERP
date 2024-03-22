@@ -15,8 +15,11 @@ const taskSchema = new mongoose.Schema({
 	completed: { type: Boolean, default: false },
 	selectedAssignees: Object,
 	updatedOn: { type: Date, default: Date.now },
-	timeToComplete: Number,
+	timeToComplete: Number, // estimatedHours
+	actualHours: { type: Number, default: 0 },
 	totalTasks: { type: Number, default: 0 },
+	totalEstimatedHours: Number,
+	completionPercent: Number,
 });
 
 const Task = mongoose.model("Task", taskSchema);
