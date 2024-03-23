@@ -13,7 +13,7 @@ const taskSchema = new mongoose.Schema({
 		{ type: mongoose.Schema.Types.ObjectId, ref: "Employee" },
 	],
 	completed: { type: Boolean, default: false },
-	selectedAssignees: Object,
+	selectedAssignees: { type: Array, default: [] },
 	updatedOn: { type: Date, default: Date.now },
 	timeToComplete: Number, // estimatedHours
 	actualHours: { type: Number, default: 0 },

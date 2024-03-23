@@ -123,18 +123,25 @@ const updateTaskSubTask = () => async (req, res) => {
 };
 const addTaskSubTask = () => async (req, res) => {
 	const { id } = req.params;
-	const { projectId, selectedAssignees, timeToComplete, dueDate, subTaskName } =
-		req.body;
+	const {
+		projectId,
+		subTaskSelectedAssignees,
+		subTaskTimeToComplete,
+		subTaskDueDate,
+		subTaskName,
+	} = req.body;
 
 	try {
 		const newSubtask = new SubTask({
 			projectId,
 			taskId: id,
 			taskName: subTaskName,
-			selectedAssignees,
-			dueDate,
-			timeToComplete,
-			status: getStatus(dueDate),
+			selectedAssignees: subTaskSelectedAssignees,
+			dueDate: subTaskDueDate,
+			timeToComplete: subTaskTimeToComplete,
+			status: getStatus(subTaskDueDate),
+			updatedOn: Date.now,
+			createdOn: Date.now,
 		});
 		await newSubtask.save();
 
@@ -142,6 +149,7 @@ const addTaskSubTask = () => async (req, res) => {
 
 		savedTask.subtasks = savedTask.subtasks.concat(newSubtask._id);
 		savedTask.totalTasks += 1;
+
 		const concatenatedTaskArray = savedTask.selectedAssignees.concat(
 			newSubtask.selectedAssignees,
 		);
@@ -385,14 +393,17 @@ const addProjectTask = () => async (req, res) => {
 
 		const savedProject = await Project.findById(id);
 
-		const concatenatedProjectArray = savedProject?.selectedAssignees?.concat(
-			newTask.selectedAssignees,
-		);
-		const uniqueProjectSet = new Set(concatenatedProjectArray);
-		const uniqueArray = Array.from(uniqueProjectSet);
+		if (savedProject?.selectedAssignees?.length === 0) {
+			savedProject.selectedAssignees = newTask.selectedAssignees;
+		} else {
+			const concatenatedProjectArray = savedProject?.selectedAssignees?.concat(
+				newTask.selectedAssignees,
+			);
+			const uniqueProjectSet = new Set(concatenatedProjectArray);
+			const uniqueArray = Array.from(uniqueProjectSet);
 
-		savedProject.selectedAssignees = uniqueArray;
-
+			savedProject.selectedAssignees = uniqueArray;
+		}
 		savedProject.totalTasks += 1;
 		savedProject.tasks.push(newTask._id);
 
