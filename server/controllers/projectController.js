@@ -140,8 +140,6 @@ const addTaskSubTask = () => async (req, res) => {
 			dueDate: subTaskDueDate,
 			timeToComplete: subTaskTimeToComplete,
 			status: getStatus(subTaskDueDate),
-			updatedOn: Date.now,
-			createdOn: Date.now,
 		});
 		await newSubtask.save();
 
