@@ -49,7 +49,9 @@ const updateTask = () => async (req, res) => {
 		savedTask.completed = isOpen;
 		savedTask.actualHours = actualHours;
 		savedTask.completionPercent =
-			(actualHours / savedTask.timeToComplete) * 100;
+			savedTask.timeToComplete > actualHours
+				? (actualHours / savedTask.timeToComplete) * 100
+				: (actualHours / actualHours) * 100;
 
 		await savedTask.save();
 
@@ -64,8 +66,12 @@ const updateTask = () => async (req, res) => {
 
 		savedSubtaskProject.actualHours = totalActualHoursTasks;
 		savedSubtaskProject.completionPercent =
-			(savedSubtaskProject.actualHours / savedSubtaskProject.timeToComplete) *
-			100;
+			savedSubtaskProject.timeToComplete > savedSubtaskProject.actualHours
+				? (savedSubtaskProject.actualHours /
+						savedSubtaskProject.timeToComplete) *
+				  100
+				: (savedSubtaskProject.actualHours / savedSubtaskProject.actualHours) *
+				  100;
 
 		await savedSubtaskProject.save();
 
@@ -93,7 +99,9 @@ const updateInnerSubTask = () => async (req, res) => {
 			matchingInnerSubtask.actualHours = actualHours;
 			matchingInnerSubtask.completed = isOpen;
 			matchingInnerSubtask.completionPercent =
-				(actualHours / matchingInnerSubtask.timeToComplete) * 100;
+				matchingInnerSubtask.timeToComplete > actualHours
+					? (actualHours / matchingInnerSubtask.timeToComplete) * 100
+					: (actualHours / actualHours) * 100;
 		} else {
 			console.log("InnerSubtask not found.");
 		}
@@ -111,7 +119,9 @@ const updateInnerSubTask = () => async (req, res) => {
 			savedSubtask.actualHours = totalActualHoursInnerTasks;
 		}
 		savedSubtask.completionPercent =
-			(savedSubtask.actualHours / savedSubtask.timeToComplete) * 100;
+			savedSubtask.timeToComplete > savedSubtask.actualHours
+				? (savedSubtask.actualHours / savedSubtask.timeToComplete) * 100
+				: (savedSubtask.actualHours / savedSubtask.actualHours) * 100;
 
 		await savedSubtask.save();
 
@@ -127,8 +137,11 @@ const updateInnerSubTask = () => async (req, res) => {
 			savedSubtaskParent.actualHours = totalActualHoursSubTasks;
 		}
 		savedSubtaskParent.completionPercent =
-			(savedSubtaskParent.actualHours / savedSubtaskParent.timeToComplete) *
-			100;
+			savedSubtaskParent.timeToComplete > savedSubtaskParent.actualHours
+				? (savedSubtaskParent.actualHours / savedSubtaskParent.timeToComplete) *
+				  100
+				: (savedSubtaskParent.actualHours / savedSubtaskParent.actualHours) *
+				  100;
 
 		await savedSubtaskParent.save();
 
@@ -142,8 +155,12 @@ const updateInnerSubTask = () => async (req, res) => {
 		}
 		savedSubtaskProject.actualHours = totalActualHoursTasks;
 		savedSubtaskProject.completionPercent =
-			(savedSubtaskProject.actualHours / savedSubtaskProject.timeToComplete) *
-			100;
+			savedSubtaskProject.timeToComplete > savedSubtaskProject.actualHours
+				? (savedSubtaskProject.actualHours /
+						savedSubtaskProject.timeToComplete) *
+				  100
+				: (savedSubtaskProject.actualHours / savedSubtaskProject.actualHours) *
+				  100;
 
 		await savedSubtaskProject.save();
 
@@ -164,7 +181,9 @@ const updateSubTask = () => async (req, res) => {
 		savedSubtask.completed = isOpen;
 		savedSubtask.actualHours = actualHours;
 		savedSubtask.completionPercent =
-			(actualHours / savedSubtask.timeToComplete) * 100;
+			savedSubtask.timeToComplete > actualHours
+				? (actualHours / savedSubtask.timeToComplete) * 100
+				: (actualHours / actualHours) * 100;
 
 		await savedSubtask.save();
 
@@ -181,8 +200,11 @@ const updateSubTask = () => async (req, res) => {
 		}
 
 		savedSubtaskParent.completionPercent =
-			(savedSubtaskParent.actualHours / savedSubtaskParent.timeToComplete) *
-			100;
+			savedSubtaskParent.timeToComplete > savedSubtaskParent.actualHours
+				? (savedSubtaskParent.actualHours / savedSubtaskParent.timeToComplete) *
+				  100
+				: (savedSubtaskParent.actualHours / savedSubtaskParent.actualHours) *
+				  100;
 
 		await savedSubtaskParent.save();
 
@@ -196,8 +218,12 @@ const updateSubTask = () => async (req, res) => {
 		}
 		savedSubtaskProject.actualHours = totalActualHoursTasks;
 		savedSubtaskProject.completionPercent =
-			(savedSubtaskProject.actualHours / savedSubtaskProject.timeToComplete) *
-			100;
+			savedSubtaskProject.timeToComplete > savedSubtaskProject.actualHours
+				? (savedSubtaskProject.actualHours /
+						savedSubtaskProject.timeToComplete) *
+				  100
+				: (savedSubtaskProject.actualHours / savedSubtaskProject.actualHours) *
+				  100;
 
 		await savedSubtaskProject.save();
 
