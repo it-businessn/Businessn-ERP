@@ -42,7 +42,7 @@ const EditTask = ({ isOpen, onClose, setRefresh, isFiltered, task }) => {
 		selectedAssignees: task?.selectedAssignees,
 		action: task?.activities,
 		dueDate: task?.dueDate && getDefaultDate(task?.dueDate),
-		timeToComplete: task?.timeToComplete,
+		timeToComplete: task?.timeToComplete || 0,
 	};
 	const defaultChecklist = {
 		taskName: "",

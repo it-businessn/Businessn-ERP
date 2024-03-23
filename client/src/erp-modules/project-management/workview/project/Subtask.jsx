@@ -81,7 +81,9 @@ const Subtask = ({
 							colorScheme="facebook"
 							onChange={(e) => handleTaskStatus(e, _id)}
 						/>
+
 						<CircularProgressBarCell
+							// completionPercentage={task.completionPercent}
 							completionPercentage={
 								calculateTaskCompletion(task).completionPercentage
 							}

@@ -49,7 +49,7 @@ const AddNewSubTask = ({
 		subtasks: task?.subtasks,
 		taskId: task?._id,
 		taskName: task?.taskName,
-		timeToComplete: task?.timeToComplete,
+		timeToComplete: task?.timeToComplete || 0,
 	};
 
 	const [formData, setFormData] = useState(defaultTask);

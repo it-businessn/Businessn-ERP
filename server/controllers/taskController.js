@@ -39,11 +39,11 @@ const createTask = () => async (req, res) => {
 
 const updateTask = () => async (req, res) => {
 	const taskId = req.params.id;
-	const { isOpen } = req.body;
+	const { isOpen, actualHours } = req.body;
 	try {
 		const updatedTask = await Task.findByIdAndUpdate(
 			taskId,
-			{ isOpen, completed: isOpen },
+			{ isOpen, actualHours, completed: isOpen },
 			{
 				new: true,
 			},
@@ -55,13 +55,42 @@ const updateTask = () => async (req, res) => {
 	}
 };
 
+const updateInnerSubTask = () => async (req, res) => {
+	const { id } = req.params;
+	const { isOpen, actualHours, taskName } = req.body;
+	try {
+		const savedSubtask = await SubTask.findById(id);
+
+		const matchingInnerSubtaskIndex = savedSubtask.subtasks.findIndex(
+			(innerSubtask) => innerSubtask.taskName === taskName,
+		);
+		const matchingInnerSubtask = savedSubtask.subtasks.find(
+			(innerSubtask) => innerSubtask.taskName === taskName,
+		);
+
+		if (matchingInnerSubtaskIndex > -1) {
+			matchingInnerSubtask.isOpen = isOpen;
+			matchingInnerSubtask.actualHours = actualHours;
+			matchingInnerSubtask.completed = isOpen;
+		} else {
+			console.log("InnerSubtask not found.");
+		}
+
+		savedSubtask.subtasks[matchingInnerSubtaskIndex] = matchingInnerSubtask;
+		await savedSubtask.save();
+
+		res.status(201).json(savedSubtask);
+	} catch (error) {
+		res.status(400).json({ message: error.message });
+	}
+};
 const updateSubTask = () => async (req, res) => {
 	const { id } = req.params;
-	const { isOpen } = req.body;
+	const { isOpen, actualHours } = req.body;
 	try {
 		const updatedSubTask = await SubTask.findByIdAndUpdate(
 			id,
-			{ isOpen, completed: isOpen },
+			{ isOpen, actualHours, completed: isOpen },
 			{
 				new: true,
 			},
@@ -97,4 +126,5 @@ module.exports = {
 	updateSubTask,
 	updateTask,
 	updateActivity,
+	updateInnerSubTask,
 };

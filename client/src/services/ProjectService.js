@@ -49,6 +49,10 @@ const ProjectService = {
 		return apiService.put(`/projects/task/status/${id}`, data, id);
 	},
 
+	async updateInnerSubTaskStatus(data, id) {
+		return apiService.put(`/projects/inner-subtask/status/${id}`, data, id);
+	},
+
 	async updateSubTaskStatus(data, id) {
 		return apiService.put(`/projects/subtask/status/${id}`, data, id);
 	},

@@ -32,7 +32,7 @@ const EditProject = ({
 		projectName: project.name,
 		startDate: project?.startDate && getDefaultDate(project.startDate),
 		dueDate: project?.dueDate && getDefaultDate(project.dueDate),
-		timeToComplete: project.timeToComplete,
+		timeToComplete: project.timeToComplete || 0,
 		managerName: project.managerName,
 		managerId: project.managerId,
 	};

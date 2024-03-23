@@ -79,6 +79,10 @@ body {
 	background-color: var(--lead_cards_bg);
 }
 
+.fill-complete {
+	background-color: var(--primary_button_bg);
+}
+
 .label {
 	position: absolute;
 	top: 50%;

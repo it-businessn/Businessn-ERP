@@ -49,7 +49,7 @@ const AddNewProjectTask = ({
 		hasChecklist: false,
 		action: [],
 		dueDate: task?.dueDate && getDefaultDate(task?.dueDate),
-		timeToComplete: task?.timeToComplete,
+		timeToComplete: task?.timeToComplete || 0,
 	};
 	const defaultChecklist = {
 		taskName: "",

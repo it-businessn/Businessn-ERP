@@ -1,18 +1,18 @@
 import {
-    Alert,
-    AlertIcon,
-    Button,
-    FormControl,
-    FormLabel,
-    HStack,
-    Input,
-    Modal,
-    ModalBody,
-    ModalCloseButton,
-    ModalContent,
-    ModalHeader,
-    ModalOverlay,
-    Stack,
+	Alert,
+	AlertIcon,
+	Button,
+	FormControl,
+	FormLabel,
+	HStack,
+	Input,
+	Modal,
+	ModalBody,
+	ModalCloseButton,
+	ModalContent,
+	ModalHeader,
+	ModalOverlay,
+	Stack,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import ProjectService from "services/ProjectService";
@@ -24,7 +24,7 @@ const EditTask = ({ isOpen, onClose, setRefresh, currentTask, managers }) => {
 		taskId: currentTask?._id,
 		selectedAssignees: currentTask?.selectedAssignees,
 		dueDate: currentTask?.dueDate && getDefaultDate(currentTask?.dueDate),
-		timeToComplete: currentTask?.timeToComplete,
+		timeToComplete: currentTask?.timeToComplete || 0,
 	};
 	const [isSubmitting, setSubmitting] = useState(false);
 	const [message, setMessage] = useState(false);

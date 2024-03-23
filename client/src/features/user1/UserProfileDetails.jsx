@@ -39,6 +39,24 @@ const UserProfileDetails = () => {
 		setPasswordMode(false);
 	};
 
+	const {
+		fullName,
+		email,
+		role,
+		department,
+		phoneNumber,
+		primaryAddress,
+		employmentType,
+		manager,
+	} = userData || {};
+
+	const { streetNumber, city, state, country, postalCode } =
+		(userData && primaryAddress) || {};
+
+	const getAddress = primaryAddress
+		? toCapitalize(`${streetNumber} ${city} ${state} ${country} ${postalCode}`)
+		: "";
+
 	return (
 		<HStack
 			flexDir={{ base: "column", md: "row" }}
@@ -62,24 +80,37 @@ const UserProfileDetails = () => {
 					<VStack alignItems="self-start" spacing={5}>
 						<Icon as={FaAddressCard} boxSize={10} />
 						<Text fontSize="xl" fontWeight="bold">
-							{userData.fullName}
+							{fullName}
 						</Text>
-						<Text mr="3">{userData.email}</Text>
+						<Text mr="3">{email}</Text>
 					</VStack>
 				</Box>
 				<VStack align="flex-start" color={"brand.200"} p={"1em"}>
 					<Text fontWeight="bold">Phone Number</Text>
 					<Text fontWeight="bold" color={"brand.600"}>
-						{userData.phoneNumber}
+						{phoneNumber}
 					</Text>
-
+					<Text fontWeight="bold">Address</Text>
+					<Text fontWeight="bold" color={"brand.600"}>
+						{getAddress}
+					</Text>
+				</VStack>
+				<VStack align="flex-start" color={"brand.200"} p={"1em"}>
+					<Text fontWeight="bold">Manager</Text>
+					<Text fontWeight="bold" color={"brand.600"}>
+						{manager && toCapitalize(manager)}
+					</Text>
 					<Text fontWeight="bold">Role</Text>
 					<Text fontWeight="bold" color={"brand.600"}>
-						{toCapitalize(userData.role)}
+						{role && toCapitalize(role)}
 					</Text>
 					<Text fontWeight="bold">Department</Text>
 					<Text fontWeight="bold" color={"brand.600"}>
-						{toCapitalize(userData.department)}
+						{department && toCapitalize(department)}
+					</Text>
+					<Text fontWeight="bold">Employment Type</Text>
+					<Text fontWeight="bold" color={"brand.600"}>
+						{employmentType && toCapitalize(employmentType)}
 					</Text>
 				</VStack>
 				<HStack p={"1em"}>

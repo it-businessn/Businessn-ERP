@@ -30,58 +30,138 @@ const getProjects = () => async (req, res) => {
 				return populatedProject;
 			}),
 		);
+		const getPercent = (totalActualHours, totalEstimatedHours) =>
+			Math.min(
+				Math.max((totalActualHours / totalEstimatedHours) * 100, 0),
+				100,
+			).toFixed(2);
+
+		function calculateTaskCompletionPercent(task) {
+			let totalEstimatedHours = parseInt(task.timeToComplete) || 0;
+			const totalActualHours = parseInt(task.actualHours) || 0;
+
+			let totalEstimatedHoursGGC = 0;
+			for (const subtask of task.subtasks) {
+				for (const grandchildTask of subtask.subtasks) {
+					totalEstimatedHoursGGC +=
+						parseInt(grandchildTask.timeToComplete) || 0;
+				}
+			}
+
+			if (totalActualHours > totalEstimatedHoursGGC) {
+				totalEstimatedHours = totalActualHours / 0.9; // Assuming a 10% increase
+			}
+
+			return getPercent(totalActualHours, totalEstimatedHours);
+		}
+
+		function calculateSubtaskCompletionPercent(subtask) {
+			let totalEstimatedHours = parseInt(subtask.timeToComplete) || 0;
+			const totalActualHours = parseInt(subtask.actualHours) || 0;
+
+			let totalEstimatedHoursTasks = 0;
+			for (const task of subtask.subtasks) {
+				totalEstimatedHoursTasks += parseInt(task.timeToComplete) || 0;
+			}
+
+			if (totalActualHours > totalEstimatedHoursTasks) {
+				totalEstimatedHours = totalActualHours / 0.9; // Assuming a 10% increase
+			}
+
+			return getPercent(totalActualHours, totalEstimatedHours);
+		}
+
+		function calculateSubSubtaskCompletionPercent(subSubtask) {
+			const totalEstimatedHours = parseInt(subSubtask.timeToComplete) || 0;
+			const totalActualHours = parseInt(subSubtask.actualHours) || 0;
+
+			return getPercent(totalActualHours, totalEstimatedHours);
+		}
+
+		function calculateProjectCompletionPercent(project, childTotalActualHours) {
+			let totalEstimatedHours = parseInt(project.timeToComplete) || 0;
+			const totalActualHours = parseInt(childTotalActualHours) || 0;
+
+			let totalEstimatedHoursTasks = 0;
+			for (const task of project.tasks) {
+				totalEstimatedHoursTasks += parseInt(task.timeToComplete) || 0;
+			}
+
+			if (totalActualHours > totalEstimatedHoursTasks) {
+				totalEstimatedHours = totalActualHours / 0.9;
+			}
+
+			return getPercent(totalActualHours, totalEstimatedHours);
+		}
+
 		const calculateAndSaveTotalEstimatedHours = async (projects) => {
 			try {
 				for (const project of projects) {
-					let totalEstimatedHours = parseInt(project.timeToComplete) || 0;
-					project.completionPercent = project.completed ? 100 : 0;
+					let childTotalActualHours = 0;
 					for (const task of project.tasks) {
-						let taskTotalEstimatedHours = parseInt(task.timeToComplete) || 0;
+						let subtaskTotalActualHours = parseInt(task.actualHours);
+						childTotalActualHours += subtaskTotalActualHours;
 
-						task.completionPercent = task.completed ? 100 : 0;
 						for (const subtask of task.subtasks) {
-							let subTaskTotalEstimatedHours =
-								parseInt(subtask.timeToComplete) || 0;
+							let subtaskTotalActualHours = parseInt(subtask.actualHours);
+							childTotalActualHours += subtaskTotalActualHours;
 
-							subtask.completionPercent = subtask.completed ? 100 : 0;
-							for (const subtasks of subtask.subtasks) {
-								subTaskTotalEstimatedHours +=
-									parseInt(subtasks.timeToComplete) || 0;
-								subtasks.completionPercent = subtasks.completed ? 100 : 0;
+							for (const subsubtask of subtask.subtasks) {
+								let subtaskTotalActualHours = parseInt(subsubtask.actualHours);
+								childTotalActualHours += subtaskTotalActualHours;
+
+								subsubtask.completionPercent =
+									calculateSubSubtaskCompletionPercent(subsubtask);
+
+								const index = subtask.subtasks.findIndex(
+									(item) => item.taskName === subsubtask.taskName,
+								);
+								if (index === -1) {
+									console.error("Subsubtask not found in subtask.subtasks.");
+								} else {
+									subtask.subtasks[index] = subsubtask;
+								}
 							}
+
+							subtask.completionPercent =
+								calculateSubtaskCompletionPercent(subtask);
+
 							await SubTask.findByIdAndUpdate(
 								subtask._id,
-								{ totalEstimatedHours: subTaskTotalEstimatedHours },
+								{
+									completionPercent: subtask.completionPercent,
+								},
 								{ new: true },
 							);
-
-							taskTotalEstimatedHours += subTaskTotalEstimatedHours;
 						}
-						task.completionPercent =
-							(taskTotalEstimatedHours / totalEstimatedHours) * 100;
+						task.completionPercent = calculateTaskCompletionPercent(task);
 
 						await Task.findByIdAndUpdate(
 							task._id,
-							{ totalEstimatedHours: taskTotalEstimatedHours },
+							{
+								completionPercent: task.completionPercent,
+							},
 							{ new: true },
 						);
-
-						totalEstimatedHours += taskTotalEstimatedHours;
 					}
-					project.completionPercent =
-						(totalEstimatedHours / totalEstimatedHours) * 100; // Project completion percentage
+					project.completionPercent = calculateProjectCompletionPercent(
+						project,
+						childTotalActualHours,
+					);
 
 					await Project.findByIdAndUpdate(
 						project._id,
-						{ totalEstimatedHours },
+						{
+							completionPercent: project.completionPercent,
+						},
 						{ new: true },
 					);
 				}
-				console.log("Total estimated hours calculated and saved successfully.");
+				console.log("Completion percentage calculated and saved successfully.");
 				return projects;
 			} catch (error) {
 				console.error(
-					"Error calculating and saving total estimated hours:",
+					"Error calculating and saving completion percentage:",
 					error,
 				);
 				throw error;

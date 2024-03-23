@@ -31,7 +31,7 @@ const EditSubTask = ({
 		selectedAssignees: currentTask?.selectedAssignees,
 		subTaskDueDate:
 			currentTask?.dueDate && getDefaultDate(currentTask?.dueDate),
-		subTaskTimeToComplete: currentTask?.timeToComplete,
+		subTaskTimeToComplete: currentTask?.timeToComplete || 0,
 	};
 	const [isSubmitting, setSubmitting] = useState(false);
 	const [message, setMessage] = useState(false);
