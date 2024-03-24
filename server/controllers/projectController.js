@@ -530,4 +530,5 @@ module.exports = {
 	addTaskSubTask,
 	updateTaskSubTask,
 	addTaskSubTasks,
+	getStatus,
 };

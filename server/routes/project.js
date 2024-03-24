@@ -30,6 +30,8 @@ router.put("/task/status/:id", taskController.updateTask());
 
 router.put("/subtask/status/:id", taskController.updateSubTask());
 
+router.put("/inner-subtask/:id", taskController.updateInnerSubTasks());
+
 router.put("/inner-subtask/status/:id", taskController.updateInnerSubTask());
 
 router.put("/activity/status/:id", taskController.updateActivity());
