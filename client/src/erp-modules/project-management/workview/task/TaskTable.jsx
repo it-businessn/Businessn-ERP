@@ -33,8 +33,8 @@ import {
 } from "utils";
 import { statusColor } from "..";
 import EditTask from "../EditTask";
-import Subtask from "../project/Subtask";
 import TodoItem from "../TodoItem";
+import Subtask from "../project/Subtask";
 import { workView_Table } from "../project/data";
 import AddNewActivity from "./AddNewActivity";
 import AddNewSubTask from "./AddNewSubTask";
@@ -128,6 +128,7 @@ const TaskTable = ({
 					>
 						<HStack spacing={3}>
 							<CircularProgressBarCell
+								// completionPercentage={task.completionPercent}
 								completionPercentage={
 									calculateTaskCompletion(task).completionPercentage
 								}

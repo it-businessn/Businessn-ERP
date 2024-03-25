@@ -645,12 +645,6 @@ export const FD_SIDEBAR_MENU = [
 				icon: <TbShoppingBag />,
 			},
 			{
-				path: "/invoice",
-				name: "Invoices",
-				children: [],
-				icon: <TbFileInvoice />,
-			},
-			{
 				path: "/resources",
 				name: "Resources",
 				icon: <PiBooks />,
@@ -1016,12 +1010,6 @@ export const SIDEBAR_MENU = [
 				icon: <TbShoppingBag />,
 			},
 			{
-				path: "/invoice",
-				name: "Invoices",
-				children: [],
-				icon: <TbFileInvoice />,
-			},
-			{
 				path: "/resources",
 				name: "Resources",
 				icon: <PiBooks />,
@@ -1067,205 +1055,205 @@ export const SIDEBAR_MENU = [
 			},
 		],
 	},
-	{
-		path: "/payroll",
-		name: "Payroll",
-		id: "payroll",
-		icon: <FaDashcube />,
-		children: [
-			{
-				path: "/payroll-insight",
-				name: "Insights",
-				children: [],
-			},
-			{
-				path: "/run-payroll",
-				name: "Run Payroll",
-				children: [
-					{
-						path: "/generate",
-						name: "Generate Payroll",
-						icon: LuLayoutDashboard,
-					},
-					{
-						path: "/extra-run",
-						name: "Add Extra Payroll Run",
-						icon: LuLayoutDashboard,
-					},
-					{
-						path: "/issue",
-						name: "Issue Form",
-						icon: LuLayoutDashboard,
-					},
-					{
-						path: "/notify",
-						name: "Send Notification",
-						icon: LuLayoutDashboard,
-					},
-					{
-						path: "/individual-setup",
-						name: "Setup Individual",
-						icon: LuLayoutDashboard,
-					},
-					{
-						path: "/org-setup",
-						name: "Setup Organization",
-						icon: LuLayoutDashboard,
-					},
-					{
-						path: "/terminate",
-						name: "Terminate Employee",
-						icon: LuLayoutDashboard,
-					},
-				],
-			},
-			{
-				path: "/timekeeping",
-				name: "Timekeeping",
-				children: [
-					{
-						path: "/log",
-						name: "Log a Timesheet",
-						icon: LuLayoutDashboard,
-					},
-					{
-						path: "/review",
-						name: "Review Timesheets",
-						icon: LuLayoutDashboard,
-					},
-					{
-						path: "/approve",
-						name: "Approve Timesheets",
-						icon: LuLayoutDashboard,
-					},
-					{
-						path: "/notify",
-						name: "Send Notification ",
-						icon: LuLayoutDashboard,
-					},
-					{
-						path: "/variance",
-						name: "Analyze Variances",
-						icon: LuLayoutDashboard,
-					},
-				],
-			},
-			{
-				path: "/scheduling",
-				name: "Scheduling",
-				children: [
-					{
-						path: "/generate",
-						name: "Generate Ongoing Schedule",
-						icon: LuLayoutDashboard,
-					},
-					{
-						path: "/setup",
-						name: "Setup New Schedule",
-						icon: LuLayoutDashboard,
-					},
-					{
-						path: "/notify",
-						name: "Send Notification",
-						icon: LuLayoutDashboard,
-					},
-					{
-						path: "/org-setup",
-						name: "Setup Organization",
-						icon: LuLayoutDashboard,
-					},
-					{
-						path: "/individual-setup",
-						name: "Setup Individual",
-						icon: LuLayoutDashboard,
-					},
-				],
-			},
-			{
-				path: "/attendance",
-				name: "Attendance",
-				children: [
-					{
-						path: "/leave-request",
-						name: "Request Leave",
-						icon: LuLayoutDashboard,
-					},
-					{
-						path: "/approve",
-						name: "Approve Leave",
-						icon: LuLayoutDashboard,
-					},
-					{
-						path: "/log",
-						name: "Log Form",
-						icon: LuLayoutDashboard,
-					},
-					{
-						path: "/view-record",
-						name: "View Employee Records",
-						icon: LuLayoutDashboard,
-					},
-					{
-						path: "/view-balance",
-						name: "View Employee Balances",
-						icon: LuLayoutDashboard,
-					},
-				],
-			},
-			{
-				path: "/reimburse",
-				name: "Reimbursements",
-				children: [
-					{
-						path: "/initiate-expense",
-						name: "Initiate Expense Reimbursement",
-						icon: LuLayoutDashboard,
-					},
-					{
-						path: "/approve-expense",
-						name: "Approve Expense Reimbursement",
-						icon: LuLayoutDashboard,
-					},
-					{
-						path: "/reimburse-cash",
-						name: "Initiate Petty Cash Reimbursement",
-						icon: LuLayoutDashboard,
-					},
-					{
-						path: "/approve-cash",
-						name: "Approve Petty Cash Reimbursement",
-						icon: LuLayoutDashboard,
-					},
-				],
-			},
-			{
-				path: "/maintain",
-				name: "Maintenance",
-				children: [
-					{
-						path: "/add-individual",
-						name: "Add Individual",
-						icon: LuLayoutDashboard,
-					},
-					{
-						path: "/edit",
-						name: "Edit Individual",
-						icon: LuLayoutDashboard,
-					},
-					{
-						path: "/setup-org",
-						name: "Setup Organization",
-						icon: LuLayoutDashboard,
-					},
-					{
-						path: "/setup-admin",
-						name: "Setup Administrator",
-						icon: LuLayoutDashboard,
-					},
-				],
-			},
-		],
-	},
+	// {
+	// 	path: "/payroll",
+	// 	name: "Payroll",
+	// 	id: "payroll",
+	// 	icon: <FaDashcube />,
+	// 	children: [
+	// 		{
+	// 			path: "/payroll-insight",
+	// 			name: "Insights",
+	// 			children: [],
+	// 		},
+	// 		{
+	// 			path: "/run-payroll",
+	// 			name: "Run Payroll",
+	// 			children: [
+	// 				{
+	// 					path: "/generate",
+	// 					name: "Generate Payroll",
+	// 					icon: LuLayoutDashboard,
+	// 				},
+	// 				{
+	// 					path: "/extra-run",
+	// 					name: "Add Extra Payroll Run",
+	// 					icon: LuLayoutDashboard,
+	// 				},
+	// 				{
+	// 					path: "/issue",
+	// 					name: "Issue Form",
+	// 					icon: LuLayoutDashboard,
+	// 				},
+	// 				{
+	// 					path: "/notify",
+	// 					name: "Send Notification",
+	// 					icon: LuLayoutDashboard,
+	// 				},
+	// 				{
+	// 					path: "/individual-setup",
+	// 					name: "Setup Individual",
+	// 					icon: LuLayoutDashboard,
+	// 				},
+	// 				{
+	// 					path: "/org-setup",
+	// 					name: "Setup Organization",
+	// 					icon: LuLayoutDashboard,
+	// 				},
+	// 				{
+	// 					path: "/terminate",
+	// 					name: "Terminate Employee",
+	// 					icon: LuLayoutDashboard,
+	// 				},
+	// 			],
+	// 		},
+	// 		{
+	// 			path: "/timekeeping",
+	// 			name: "Timekeeping",
+	// 			children: [
+	// 				{
+	// 					path: "/log",
+	// 					name: "Log a Timesheet",
+	// 					icon: LuLayoutDashboard,
+	// 				},
+	// 				{
+	// 					path: "/review",
+	// 					name: "Review Timesheets",
+	// 					icon: LuLayoutDashboard,
+	// 				},
+	// 				{
+	// 					path: "/approve",
+	// 					name: "Approve Timesheets",
+	// 					icon: LuLayoutDashboard,
+	// 				},
+	// 				{
+	// 					path: "/notify",
+	// 					name: "Send Notification ",
+	// 					icon: LuLayoutDashboard,
+	// 				},
+	// 				{
+	// 					path: "/variance",
+	// 					name: "Analyze Variances",
+	// 					icon: LuLayoutDashboard,
+	// 				},
+	// 			],
+	// 		},
+	// 		{
+	// 			path: "/scheduling",
+	// 			name: "Scheduling",
+	// 			children: [
+	// 				{
+	// 					path: "/generate",
+	// 					name: "Generate Ongoing Schedule",
+	// 					icon: LuLayoutDashboard,
+	// 				},
+	// 				{
+	// 					path: "/setup",
+	// 					name: "Setup New Schedule",
+	// 					icon: LuLayoutDashboard,
+	// 				},
+	// 				{
+	// 					path: "/notify",
+	// 					name: "Send Notification",
+	// 					icon: LuLayoutDashboard,
+	// 				},
+	// 				{
+	// 					path: "/org-setup",
+	// 					name: "Setup Organization",
+	// 					icon: LuLayoutDashboard,
+	// 				},
+	// 				{
+	// 					path: "/individual-setup",
+	// 					name: "Setup Individual",
+	// 					icon: LuLayoutDashboard,
+	// 				},
+	// 			],
+	// 		},
+	// 		{
+	// 			path: "/attendance",
+	// 			name: "Attendance",
+	// 			children: [
+	// 				{
+	// 					path: "/leave-request",
+	// 					name: "Request Leave",
+	// 					icon: LuLayoutDashboard,
+	// 				},
+	// 				{
+	// 					path: "/approve",
+	// 					name: "Approve Leave",
+	// 					icon: LuLayoutDashboard,
+	// 				},
+	// 				{
+	// 					path: "/log",
+	// 					name: "Log Form",
+	// 					icon: LuLayoutDashboard,
+	// 				},
+	// 				{
+	// 					path: "/view-record",
+	// 					name: "View Employee Records",
+	// 					icon: LuLayoutDashboard,
+	// 				},
+	// 				{
+	// 					path: "/view-balance",
+	// 					name: "View Employee Balances",
+	// 					icon: LuLayoutDashboard,
+	// 				},
+	// 			],
+	// 		},
+	// 		{
+	// 			path: "/reimburse",
+	// 			name: "Reimbursements",
+	// 			children: [
+	// 				{
+	// 					path: "/initiate-expense",
+	// 					name: "Initiate Expense Reimbursement",
+	// 					icon: LuLayoutDashboard,
+	// 				},
+	// 				{
+	// 					path: "/approve-expense",
+	// 					name: "Approve Expense Reimbursement",
+	// 					icon: LuLayoutDashboard,
+	// 				},
+	// 				{
+	// 					path: "/reimburse-cash",
+	// 					name: "Initiate Petty Cash Reimbursement",
+	// 					icon: LuLayoutDashboard,
+	// 				},
+	// 				{
+	// 					path: "/approve-cash",
+	// 					name: "Approve Petty Cash Reimbursement",
+	// 					icon: LuLayoutDashboard,
+	// 				},
+	// 			],
+	// 		},
+	// 		{
+	// 			path: "/maintain",
+	// 			name: "Maintenance",
+	// 			children: [
+	// 				{
+	// 					path: "/add-individual",
+	// 					name: "Add Individual",
+	// 					icon: LuLayoutDashboard,
+	// 				},
+	// 				{
+	// 					path: "/edit",
+	// 					name: "Edit Individual",
+	// 					icon: LuLayoutDashboard,
+	// 				},
+	// 				{
+	// 					path: "/setup-org",
+	// 					name: "Setup Organization",
+	// 					icon: LuLayoutDashboard,
+	// 				},
+	// 				{
+	// 					path: "/setup-admin",
+	// 					name: "Setup Administrator",
+	// 					icon: LuLayoutDashboard,
+	// 				},
+	// 			],
+	// 		},
+	// 	],
+	// },
 	{
 		path: "/project-dashboard",
 		name: "Project Management",
@@ -1322,4 +1310,18 @@ export const SIDEBAR_MENU = [
 			},
 		],
 	},
+	// {
+	// 	path: "/payroll",
+	// 	name: "Accounting",
+	// 	id: "accounting",
+	// 	icon: <FaDashcube />,
+	// 	children: [
+	// 		{
+	// 			path: "/invoice",
+	// 			name: "Invoices",
+	// 			children: [],
+	// 			icon: <TbFileInvoice />,
+	// 		},
+	// 	],
+	// },
 ];

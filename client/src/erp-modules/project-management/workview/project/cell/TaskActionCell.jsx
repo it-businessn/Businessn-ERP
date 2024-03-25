@@ -71,7 +71,7 @@ const TaskActionCell = ({
 
 	return (
 		<>
-			<HStack spacing={3} pl={"3em"} mt={"-1em"}>
+			<HStack spacing={3} pl={"3em"}>
 				<Checkbox
 					sx={{ verticalAlign: "middle" }}
 					colorScheme="facebook"
@@ -79,10 +79,13 @@ const TaskActionCell = ({
 					onChange={(e) => handleTaskStatus(e, task._id)}
 				/>
 				<CircularProgressBarCell
-					// completionPercentage={
-					// 	calculateTaskCompletion(task).completionPercentage
-					// }
-					completionPercentage={parseFloat(task.completionPercent)}
+					completionPercentage={
+						task.completionPercent
+							? Number.isInteger(task.completionPercent)
+								? task.completionPercent
+								: parseFloat(task.completionPercent).toFixed(2)
+							: 0
+					}
 				/>
 				<ActionItem
 					name={task.taskName}
@@ -91,17 +94,17 @@ const TaskActionCell = ({
 					handleEditProject={() => handleEditTask(task, task._id)}
 					handleAddTask={() => handleAddTask(task, task._id)}
 					handleToggle={() => handleTaskToggle(taskIndex)}
-					isExpanded={isExpanded}
+					isExpanded={isExpanded === taskIndex}
 				/>
 			</HStack>
-			{isExpanded &&
+			{isExpanded === taskIndex &&
 				task?.subtasks?.length > 0 &&
 				task?.subtasks?.map((subtask, subtask_index) => {
 					return (
 						<VStack key={subtask._id}>
 							<SubTaskActionCell
 								index={subtask_index}
-								isSubExpanded={isSubExpanded === subtask_index}
+								isSubExpanded={isSubExpanded}
 								task={subtask}
 								handleSubTaskToggle={handleSubTaskToggle}
 								setRefresh={setRefresh}

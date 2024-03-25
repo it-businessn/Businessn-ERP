@@ -20,12 +20,14 @@ const AddActualHours = ({
 	handleConfirm,
 	handleClose,
 }) => {
+	const calculatedTop = modalPosition.top > 600 ? 600 : modalPosition.top;
+
 	return (
 		<Modal isOpen={isOpen} onClose={handleClose} motionPreset="scale">
 			<ModalOverlay />
 			<ModalContent
 				position="absolute"
-				top={modalPosition.top}
+				top={calculatedTop}
 				left={modalPosition.left}
 			>
 				<ModalHeader>Enter Actual Hours to Complete</ModalHeader>

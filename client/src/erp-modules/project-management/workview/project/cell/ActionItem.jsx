@@ -1,6 +1,4 @@
-import { SettingsIcon } from "@chakra-ui/icons";
-import { HStack, IconButton, Text } from "@chakra-ui/react";
-import { FaChevronDown, FaChevronUp } from "react-icons/fa";
+import { HStack, Text } from "@chakra-ui/react";
 import { AddTaskButton, TaskButton } from "utils";
 
 const ActionItem = ({
@@ -16,31 +14,24 @@ const ActionItem = ({
 	return (
 		<>
 			<Text>{name}</Text>
-			{!isInner && (
-				<HStack
-					spacing={0}
-					cursor={totalTask?.length > 0 ? "pointer" : "default"}
-				>
-					{totalTask?.length > 0 && <TaskButton totalTasks={totalTasks} />}
-					<IconButton
-						variant="ghost"
-						icon={<SettingsIcon />}
-						color="brand.nav_color"
-						aria-label="Settings Icon"
-						onClick={handleEditProject}
+
+			<HStack
+				spacing={2}
+				cursor={totalTask?.length > 0 ? "pointer" : "default"}
+			>
+				{totalTask?.length > 0 && (
+					<TaskButton
+						isExpanded={isExpanded}
+						totalTasks={totalTasks}
+						onClick={handleToggle}
 					/>
-					<AddTaskButton onClick={handleAddTask} />
-					{totalTask?.length > 0 && (
-						<IconButton
-							onClick={handleToggle}
-							variant="ghost"
-							icon={isExpanded ? <FaChevronUp /> : <FaChevronDown />}
-							color="brand.nav_color"
-							aria-label="Calendar Icon"
-						/>
-					)}
-				</HStack>
-			)}
+				)}
+				<AddTaskButton
+					onClick={handleAddTask}
+					handleClick={handleEditProject}
+					isInner={isInner}
+				/>
+			</HStack>
 		</>
 	);
 };

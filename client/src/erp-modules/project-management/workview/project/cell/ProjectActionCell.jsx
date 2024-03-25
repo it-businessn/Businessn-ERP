@@ -1,6 +1,6 @@
-import { HStack, Td, VStack } from "@chakra-ui/react";
+import { Box, HStack, Td, VStack } from "@chakra-ui/react";
 import { useState } from "react";
-import { CircularFillProgress } from "utils";
+import { CircularProgressBarCell } from "utils";
 import AddNewProjectTask from "../AddNewProjectTask";
 import EditProject from "../EditProject";
 import ActionItem from "./ActionItem";
@@ -40,10 +40,27 @@ const ProjectActionCell = ({
 		<Td p={"0.5em"} fontSize={"xs"} w={"450px"}>
 			<VStack alignItems={"start"} spacing={0}>
 				<HStack spacing={2}>
-					<CircularFillProgress
-						// completionPercentage={calculateProjectCompletion(project)}
-						completionPercentage={parseFloat(project.completionPercent)}
-					/>
+					<Box position="relative" width="100px" height="100px">
+						<CircularProgressBarCell
+							size="100px"
+							completionPercentage={
+								project.completionPercent
+									? Number.isInteger(project.completionPercent)
+										? project.completionPercent
+										: parseFloat(project.completionPercent).toFixed(2)
+									: 0
+							}
+						/>
+					</Box>
+					{/* <CircularFillProgress
+						completionPercentage={
+							project.completionPercent
+								? Number.isInteger(project.completionPercent)
+									? project.completionPercent
+									: parseFloat(project.completionPercent).toFixed(2)
+								: 0
+						}
+					/> */}
 					<ActionItem
 						name={project.name}
 						totalTask={project?.tasks}
@@ -65,7 +82,7 @@ const ProjectActionCell = ({
 									isSubExpanded={isSubExpanded}
 									task={task}
 									handleAddTask={() => handleAddTask(task, task._id)}
-									isExpanded={isExpanded === taskIndex}
+									isExpanded={isExpanded}
 									handleTaskToggle={handleTaskToggle}
 									handleSubTaskToggle={handleSubTaskToggle}
 									setRefresh={setRefresh}

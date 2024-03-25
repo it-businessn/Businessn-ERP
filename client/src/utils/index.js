@@ -1,13 +1,14 @@
-import { AddIcon } from "@chakra-ui/icons";
+import { AddIcon, SettingsIcon } from "@chakra-ui/icons";
 import {
 	Box,
 	Button,
 	CircularProgress,
 	CircularProgressLabel,
+	HStack,
 	Icon,
 } from "@chakra-ui/react";
 import { COLORS } from "erp-modules/project-management/workview/project/data";
-import { FaCaretDown } from "react-icons/fa";
+import { FaChevronDown, FaChevronUp } from "react-icons/fa";
 import { GoTasklist } from "react-icons/go";
 
 export const userCurrency = (currency) =>
@@ -74,13 +75,14 @@ export const isValidPhoneNumber = (phoneNumber) => {
 };
 
 export const CircularFillProgress = ({ completionPercentage }) => {
+	completionPercentage = 95;
 	const rotation = completionPercentage * 3.6;
 	const fillColorClass =
 		completionPercentage === 100 ? "fill-complete" : "fill";
 	const clipLeft =
 		completionPercentage <= 50 ? 0 : 100 - completionPercentage * 2;
-	const clipRight =
-		completionPercentage >= 50 ? 100 : completionPercentage * 1.5;
+	const clipRight = completionPercentage >= 50 ? 100 : 100 - clipLeft;
+
 	const color =
 		completionPercentage >= 95
 			? "var(--lead_cards_bg)"
@@ -109,9 +111,10 @@ export const CircularFillProgress = ({ completionPercentage }) => {
 	);
 };
 
-export const CircularProgressBarCell = ({ completionPercentage }) => {
+export const CircularProgressBarCell = ({ completionPercentage, size }) => {
 	return (
 		<CircularProgress
+			size={size}
 			value={completionPercentage}
 			color={
 				completionPercentage >= 75 ? "green.400" : "brand.primary_button_bg"
@@ -195,14 +198,14 @@ export const calculateProjectCompletion = (project) => {
 	// return totalTasks > 0 ? Math.floor((completedTasks / totalTasks) * 100) : 0;
 };
 
-export const TaskButton = ({ totalTasks, onClick, isTask }) => {
+export const TaskButton = ({ totalTasks, onClick, isTask, isExpanded }) => {
 	return (
 		<Button
 			onClick={onClick}
 			size="xxs"
 			display={"flex"}
 			p={"2px"}
-			fontSize={"10px"}
+			fontSize={"12px"}
 			color={"brand.primary_button_bg"}
 			border={`1px solid ${generateLighterShade(COLORS.primary, 0.5)}`}
 			bg={generateLighterShade(COLORS.primary, 0.8)}
@@ -210,7 +213,10 @@ export const TaskButton = ({ totalTasks, onClick, isTask }) => {
 				<Icon as={GoTasklist} sx={{ marginRight: "-4px", fontsize: "10px" }} />
 			}
 			rightIcon={
-				<Icon as={FaCaretDown} sx={{ marginLeft: "-4px", fontsize: "10px" }} />
+				<Icon
+					as={isExpanded ? FaChevronDown : FaChevronUp}
+					sx={{ marginLeft: "-4px", fontsize: "10px" }}
+				/>
 			}
 			_hover={{
 				bg: generateLighterShade(COLORS.primary, 0.8),
@@ -222,26 +228,43 @@ export const TaskButton = ({ totalTasks, onClick, isTask }) => {
 	);
 };
 
-export const AddTaskButton = ({ onClick, isTask }) => {
+export const AddTaskButton = ({ onClick, isTask, handleClick, isInner }) => {
 	return (
-		<Button
-			onClick={onClick}
-			size="xxs"
-			display={"flex"}
-			variant="solid"
-			p={"5px"}
-			color="brand.nav_color"
-			fontWeight={"bold"}
-			bg={generateLighterShade(COLORS.primary, 0.9)}
-			border={`1px solid ${generateLighterShade(COLORS.primary, 0.5)}`}
-			leftIcon={<AddIcon />}
-			_hover={{
-				bg: generateLighterShade(COLORS.primary, 0.8),
-				color: "brand.nav_color",
-			}}
-		>
-			<span style={{ marginLeft: "-2px", fontSize: "12px" }}>T</span>
-		</Button>
+		<HStack>
+			{!isInner && (
+				<Button
+					onClick={onClick}
+					size="xxs"
+					display={"flex"}
+					variant="solid"
+					p={"3px"}
+					bg="var(--lead_cards_bg)"
+					fontWeight={"bold"}
+					color="var(--primary_button_bg)"
+					border={`1px solid ${generateLighterShade(COLORS.primary, 0.5)}`}
+					_hover={{
+						bg: generateLighterShade(COLORS.primary, 0.8),
+						color: "brand.nav_color",
+					}}
+				>
+					<AddIcon />
+				</Button>
+			)}
+			<Button
+				onClick={handleClick}
+				size="xxs"
+				display={"flex"}
+				variant="ghost"
+				fontWeight={"bold"}
+				color="brand.nav_color"
+				_hover={{
+					bg: generateLighterShade(COLORS.primary, 0.8),
+					color: "brand.nav_color",
+				}}
+			>
+				<SettingsIcon />
+			</Button>
+		</HStack>
 	);
 };
 

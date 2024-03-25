@@ -68,7 +68,7 @@ const ProjectChild = ({
 	return (
 		<React.Fragment key={task._id}>
 			<Tr p={0}>
-				<Td p={0} fontSize={"xs"} w={"380px"}>
+				<Td p={"0.5em"} fontSize={"xs"} w={"350px"}>
 					<HStack spacing={3}>
 						<Checkbox
 							sx={{ verticalAlign: "middle" }}
@@ -110,7 +110,7 @@ const ProjectChild = ({
 						</HStack>
 					</HStack>
 				</Td>
-				<Td fontSize={"xs"} w={"200px"} p={0}>
+				<Td fontSize={"xs"} p={"0.5em"} w={"200px"}>
 					<HStack>
 						{task?.selectedAssignees?.map((assignee) => (
 							<Avatar
@@ -122,22 +122,22 @@ const ProjectChild = ({
 						))}
 					</HStack>
 				</Td>
-				<Td fontSize={"xs"} w={"100px"} p={0}>
+				<Td fontSize={"xs"} pl={"1em"} w={"100px"}>
 					<HStack spacing="1">{renderPriorityBars(2)}</HStack>
 				</Td>
-				<Td fontSize={"xs"} w={"150px"} p={0}>
+				<Td fontSize={"xs"} pl={"1em"} w={"150px"}>
 					{task?.createdOn && formatDate(task?.createdOn)}
 				</Td>
-				<Td fontSize={"xs"} w={"150px"} p={0}>
+				<Td fontSize={"xs"} pl={"1em"} w={"150px"}>
 					{task?.dueDate && formatDate(task?.dueDate)}
 				</Td>
-				<Td fontSize={"xs"} w={"150px"} p={0}>
+				<Td fontSize={"xs"} pl={"1em"} w={"150px"}>
 					{managerName}
 				</Td>
-				<Td fontSize={"xs"} w={"150px"} p={0}>
+				<Td fontSize={"xs"} pl={"1em"} w={"150px"}>
 					{task?.updatedOn && formatDate(task?.updatedOn)}
 				</Td>
-				<Td p={"1em"} fontSize={"12px"} w={"200px"}>
+				<Td fontSize={"12px"} w={"200px"}>
 					<HStack
 						justifyContent={"space-around"}
 						spacing={0}

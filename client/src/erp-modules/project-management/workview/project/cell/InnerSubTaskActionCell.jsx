@@ -2,10 +2,11 @@ import { Checkbox, HStack } from "@chakra-ui/react";
 import { useState } from "react";
 import ProjectService from "services/ProjectService";
 import { CircularProgressBarCell } from "utils";
+import EditInnerSubTask from "../EditInnerSubTask";
 import ActionItem from "./ActionItem";
 import AddActualHours from "./AddActualHours";
 
-const InnerSubTaskActionCell = ({ task }) => {
+const InnerSubTaskActionCell = ({ task, setRefresh, managers }) => {
 	const { _id, taskName, subTaskId, completed } = task;
 
 	const [isOpenTask, setIsOpenTask] = useState(completed);
@@ -44,8 +45,27 @@ const InnerSubTaskActionCell = ({ task }) => {
 			console.error("Error updating task status:", error);
 		}
 	};
+
+	const [openEditTask, setOpenEditTask] = useState(false);
+	const [currentTask, setCurrentTask] = useState(null);
+
+	const handleEditSubtask = (task, taskId) => {
+		setOpenEditTask(true);
+		setCurrentTask(task);
+		setTaskId(taskId);
+	};
+
 	return (
 		<>
+			{openEditTask && (
+				<EditInnerSubTask
+					isOpen={openEditTask}
+					onClose={() => setOpenEditTask(false)}
+					currentTask={currentTask}
+					setRefresh={setRefresh}
+					managers={managers}
+				/>
+			)}
 			<AddActualHours
 				isOpen={isOpen}
 				setIsOpen={setIsOpen}
@@ -55,7 +75,7 @@ const InnerSubTaskActionCell = ({ task }) => {
 				handleClose={handleClose}
 				handleConfirm={handleConfirm}
 			/>
-			<HStack spacing={3} mt={"-1em"}>
+			<HStack spacing={3} pl={"35px"} mt={"-0.5em"}>
 				<Checkbox
 					sx={{ verticalAlign: "middle" }}
 					colorScheme="facebook"
@@ -66,9 +86,20 @@ const InnerSubTaskActionCell = ({ task }) => {
 					// completionPercentage={
 					// 	calculateTaskCompletion(task).completionPercentage
 					// }
-					completionPercentage={parseFloat(task.completionPercent)}
+
+					completionPercentage={
+						task.completionPercent
+							? Number.isInteger(task.completionPercent)
+								? task.completionPercent
+								: parseFloat(task.completionPercent).toFixed(2)
+							: 0
+					}
 				/>
-				<ActionItem isInner={true} name={taskName} />
+				<ActionItem
+					isInner={true}
+					name={taskName}
+					handleEditProject={() => handleEditSubtask(task, task._id)}
+				/>
 			</HStack>
 		</>
 	);

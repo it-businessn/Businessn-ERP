@@ -1,5 +1,5 @@
-import { Checkbox, HStack, VStack } from "@chakra-ui/react";
-import { useState } from "react";
+import { Checkbox, HStack } from "@chakra-ui/react";
+import React, { useState } from "react";
 import ProjectService from "services/ProjectService";
 import { CircularProgressBarCell } from "utils";
 import AddNewSubTasks from "../AddNewSubTasks";
@@ -83,7 +83,7 @@ const SubTaskActionCell = ({
 				handleClose={handleClose}
 				handleConfirm={handleConfirm}
 			/>
-			<HStack spacing={3} pl={"7em"} mt={"-1em"}>
+			<HStack spacing={3} pl={"7em"} mt={"-0.5em"}>
 				<Checkbox
 					sx={{ verticalAlign: "middle" }}
 					colorScheme="facebook"
@@ -91,29 +91,36 @@ const SubTaskActionCell = ({
 					onChange={(e) => handleTaskStatus(e, _id)}
 				/>
 				<CircularProgressBarCell
-					// completionPercentage={
-					// 	calculateTaskCompletion(task).completionPercentage
-					// }
-					completionPercentage={parseFloat(task.completionPercent)}
+					completionPercentage={
+						task.completionPercent
+							? Number.isInteger(task.completionPercent)
+								? task.completionPercent
+								: parseFloat(task.completionPercent).toFixed(2)
+							: 0
+					}
 				/>
 				<ActionItem
 					isInner={isInner}
 					name={taskName}
 					totalTask={task?.subtasks}
-					totalTasks={task?.totalTasks}
+					totalTasks={task?.subtasks?.length}
 					handleEditProject={() => handleEditSubtask(task, task._id)}
 					handleAddTask={() => handleAddSubTask(task, task._id)}
 					handleToggle={() => handleSubTaskToggle(index)}
-					isExpanded={isSubExpanded}
+					isExpanded={isSubExpanded === index}
 				/>
 			</HStack>
-			{isSubExpanded &&
+			{isSubExpanded === index &&
 				task?.subtasks?.length > 0 &&
 				task?.subtasks?.map((subtask) => {
 					return (
-						<VStack key={subtask._id}>
-							<InnerSubTaskActionCell task={subtask} />
-						</VStack>
+						<React.Fragment key={subtask._id}>
+							<InnerSubTaskActionCell
+								task={subtask}
+								setRefresh={setRefresh}
+								managers={managers}
+							/>
+						</React.Fragment>
 					);
 				})}
 			{openEditTask && (
