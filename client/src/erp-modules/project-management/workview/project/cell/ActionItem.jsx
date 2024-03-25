@@ -1,5 +1,7 @@
-import { HStack, Text } from "@chakra-ui/react";
-import { AddTaskButton, TaskButton } from "utils";
+import { DeleteIcon } from "@chakra-ui/icons";
+import { Button, HStack, Text } from "@chakra-ui/react";
+import { AddTaskButton, TaskButton, generateLighterShade } from "utils";
+import { COLORS } from "../data";
 
 const ActionItem = ({
 	name,
@@ -10,6 +12,8 @@ const ActionItem = ({
 	totalTask,
 	isInner,
 	isExpanded,
+	handleDelete,
+	isProject,
 }) => {
 	return (
 		<>
@@ -31,6 +35,22 @@ const ActionItem = ({
 					handleClick={handleEditProject}
 					isInner={isInner}
 				/>
+				{!isProject && (
+					<Button
+						onClick={handleDelete}
+						size="xxs"
+						display={"flex"}
+						variant="ghost"
+						fontWeight={"bold"}
+						color="brand.nav_color"
+						_hover={{
+							bg: generateLighterShade(COLORS.primary, 0.8),
+							color: "brand.nav_color",
+						}}
+					>
+						<DeleteIcon />
+					</Button>
+				)}
 			</HStack>
 		</>
 	);

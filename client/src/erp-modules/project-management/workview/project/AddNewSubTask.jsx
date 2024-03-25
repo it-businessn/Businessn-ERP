@@ -1,20 +1,20 @@
 import {
-    Alert,
-    AlertIcon,
-    Avatar,
-    Button,
-    FormControl,
-    FormLabel,
-    HStack,
-    Input,
-    Modal,
-    ModalBody,
-    ModalCloseButton,
-    ModalContent,
-    ModalHeader,
-    ModalOverlay,
-    Stack,
-    Text,
+	Alert,
+	AlertIcon,
+	Avatar,
+	Button,
+	FormControl,
+	FormLabel,
+	HStack,
+	Input,
+	Modal,
+	ModalBody,
+	ModalCloseButton,
+	ModalContent,
+	ModalHeader,
+	ModalOverlay,
+	Stack,
+	Text,
 } from "@chakra-ui/react";
 import { useState } from "react";
 import { FaCaretDown } from "react-icons/fa";
@@ -100,6 +100,7 @@ const AddNewSubTask = ({
 											required
 										/>
 									</FormControl>
+
 									<FormControl>
 										<FormLabel visibility={openAssigneeMenu ? "" : "hidden"}>
 											Select Assignee
@@ -123,14 +124,14 @@ const AddNewSubTask = ({
 												/>
 											) : (
 												<Text onClick={handleMenuToggle}>
-													{formData.selectedAssignees?.length > 0
-														? `${formData.selectedAssignees?.length} assignee(s)`
+													{formData.subTaskSelectedAssignees?.length > 0
+														? `${formData.subTaskSelectedAssignees?.length} assignee(s)`
 														: "Select Assignee"}
 												</Text>
 											)}
 										</Button>
-										{formData?.selectedAssignees?.length > 0 &&
-											formData.selectedAssignees.map((name) => (
+										{formData?.subTaskSelectedAssignees?.length > 0 &&
+											formData.subTaskSelectedAssignees.map((name) => (
 												<Avatar size={"sm"} name={name} src={name} />
 											))}
 									</FormControl>

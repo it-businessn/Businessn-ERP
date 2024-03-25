@@ -72,6 +72,14 @@ const SubTaskActionCell = ({
 		setTaskId(taskId);
 	};
 
+	const handleDelete = async (task, taskId) => {
+		try {
+			await ProjectService.deleteSubTask(task, taskId);
+			setRefresh((prev) => !prev);
+		} catch (error) {
+			console.error("Error updating task status:", error);
+		}
+	};
 	return (
 		<>
 			<AddActualHours
@@ -108,6 +116,7 @@ const SubTaskActionCell = ({
 					handleAddTask={() => handleAddSubTask(task, task._id)}
 					handleToggle={() => handleSubTaskToggle(index)}
 					isExpanded={isSubExpanded === index}
+					handleDelete={() => handleDelete(task, task._id)}
 				/>
 			</HStack>
 			{isSubExpanded === index &&

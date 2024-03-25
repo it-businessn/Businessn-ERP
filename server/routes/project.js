@@ -14,6 +14,15 @@ router.put("/:id", projectController.updateProject());
 
 router.put("/task/:id", projectController.addProjectTask());
 
+router.delete("/task/:id", projectController.deleteProjectTask);
+
+router.delete("/subtask/:id", projectController.deleteProjectSubTask);
+
+router.put(
+	"/delete-inner-subtask/:id",
+	projectController.deleteProjectInnerSubTask,
+);
+
 router.put("/task-subtask/:id", projectController.addTaskSubTask());
 
 router.put("/task-add-subtask/:id", projectController.addTaskSubTasks());

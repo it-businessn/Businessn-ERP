@@ -123,14 +123,14 @@ const AddNewSubTasks = ({
 												/>
 											) : (
 												<Text onClick={handleMenuToggle}>
-													{formData.selectedAssignees?.length > 0
-														? `${formData.selectedAssignees?.length} assignee(s)`
+													{formData.subTaskSelectedAssignees?.length > 0
+														? `${formData.subTaskSelectedAssignees?.length} assignee(s)`
 														: "Select Assignee"}
 												</Text>
 											)}
 										</Button>
-										{formData?.selectedAssignees?.length > 0 &&
-											formData.selectedAssignees.map((name) => (
+										{formData?.subTaskSelectedAssignees?.length > 0 &&
+											formData.subTaskSelectedAssignees.map((name) => (
 												<Avatar size={"sm"} name={name} src={name} />
 											))}
 									</FormControl>

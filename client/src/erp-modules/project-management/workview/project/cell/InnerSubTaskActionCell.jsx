@@ -41,6 +41,7 @@ const InnerSubTaskActionCell = ({ task, setRefresh, managers }) => {
 				{ isOpen: isOpenTask, actualHours, taskName },
 				subTaskId,
 			);
+			setRefresh((prev) => !prev);
 		} catch (error) {
 			console.error("Error updating task status:", error);
 		}
@@ -55,6 +56,14 @@ const InnerSubTaskActionCell = ({ task, setRefresh, managers }) => {
 		setTaskId(taskId);
 	};
 
+	const handleDelete = async (task) => {
+		try {
+			await ProjectService.deleteInnerSubTask(task, subTaskId);
+			setRefresh((prev) => !prev);
+		} catch (error) {
+			console.error("Error updating task status:", error);
+		}
+	};
 	return (
 		<>
 			{openEditTask && (
@@ -99,6 +108,7 @@ const InnerSubTaskActionCell = ({ task, setRefresh, managers }) => {
 					isInner={true}
 					name={taskName}
 					handleEditProject={() => handleEditSubtask(task, task._id)}
+					handleDelete={() => handleDelete(task)}
 				/>
 			</HStack>
 		</>

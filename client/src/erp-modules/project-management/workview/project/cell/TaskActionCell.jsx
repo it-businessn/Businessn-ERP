@@ -69,6 +69,14 @@ const TaskActionCell = ({
 		setTaskId(taskId);
 	};
 
+	const handleDelete = async (task, taskId) => {
+		try {
+			await ProjectService.deleteTask(task, taskId);
+			setRefresh((prev) => !prev);
+		} catch (error) {
+			console.error("Error updating task status:", error);
+		}
+	};
 	return (
 		<>
 			<HStack spacing={3} pl={"3em"}>
@@ -95,6 +103,7 @@ const TaskActionCell = ({
 					handleAddTask={() => handleAddTask(task, task._id)}
 					handleToggle={() => handleTaskToggle(taskIndex)}
 					isExpanded={isExpanded === taskIndex}
+					handleDelete={() => handleDelete(task, task._id)}
 				/>
 			</HStack>
 			{isExpanded === taskIndex &&

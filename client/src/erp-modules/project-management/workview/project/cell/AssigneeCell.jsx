@@ -23,7 +23,6 @@ const AssigneeCell = ({
 		<Td fontSize={"xs"} p={"0.5em"} w={"200px"}>
 			<VStack alignItems={"start"} spacing={4}>
 				<AssigneeList assignees={project?.selectedAssignees} />
-				{console.log(expandedIndex === index, isExpanded, isSubExpanded)}
 				{expandedIndex === index &&
 					project?.tasks?.map((task, index) => (
 						<VStack alignItems={"start"} spacing={4}>

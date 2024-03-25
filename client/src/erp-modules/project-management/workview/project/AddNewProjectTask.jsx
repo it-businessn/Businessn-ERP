@@ -1,20 +1,20 @@
 import {
-    Alert,
-    AlertIcon,
-    Avatar,
-    Button,
-    FormControl,
-    FormLabel,
-    HStack,
-    Input,
-    Modal,
-    ModalBody,
-    ModalCloseButton,
-    ModalContent,
-    ModalHeader,
-    ModalOverlay,
-    Stack,
-    Text,
+	Alert,
+	AlertIcon,
+	Avatar,
+	Button,
+	FormControl,
+	FormLabel,
+	HStack,
+	Input,
+	Modal,
+	ModalBody,
+	ModalCloseButton,
+	ModalContent,
+	ModalHeader,
+	ModalOverlay,
+	Stack,
+	Text,
 } from "@chakra-ui/react";
 import { useState } from "react";
 import { FaCaretDown } from "react-icons/fa";
@@ -170,182 +170,7 @@ const AddNewProjectTask = ({
 										/>
 									</FormControl>
 								</HStack>
-								{/* {!isFiltered && (
-									<HStack spacing={4}>
-										<FormControl>
-											<FormLabel>Subtask Name</FormLabel>
-											<Input
-												type="text"
-												value={subtask.taskName}
-												onChange={handleSubTaskNameChange}
-											/>
-										</FormControl>
-										<FormControl>
-											<FormLabel visibility={openAssigneeMenu ? "" : "hidden"}>
-												Select Assignee
-											</FormLabel>
-											<Button
-												rightIcon={<FaCaretDown />}
-												bg={"brand.primary_bg"}
-												color={"brand.primary_button_bg"}
-												_hover={{
-													bg: "brand.primary_bg",
-													color: "brand.primary_button_bg",
-												}}
-											>
-												{openAssigneeMenu ? (
-													<MultiCheckboxMenu
-														openMenu={openAssigneeMenu}
-														handleCloseMenu={handleCloseMenu}
-													/>
-												) : (
-													<Text onClick={handleMenuToggle}>
-														{subtask.selectedAssignees?.length > 0
-															? `${subtask.selectedAssignees?.length} assignees`
-															: "Select Assignee"}
-													</Text>
-												)}
-											</Button>
-										</FormControl>
 
-										<IconButton
-											icon={<AddIcon />}
-											isDisabled={formData.taskName === ""}
-											onClick={(e) => {
-												e.preventDefault();
-												setSubTaskAdded(true);
-												setSubTasks((prev) => [...prev, subtask]);
-												setSubTask(defaultSubtask);
-											}}
-											variant={"ghost"}
-											size={"xs"}
-											mt={5}
-										/>
-									</HStack>
-								)}
-								<FormControl>
-									<FormLabel>Has To-Do Checklist</FormLabel>
-									<Checkbox
-										colorScheme={"facebook"}
-										isChecked={hasChecklist}
-										onChange={() => setHasChecklist(!hasChecklist)}
-									>
-										Yes
-									</Checkbox>
-								</FormControl>
-								{hasChecklist && (
-									<HStack spacing={4}>
-										<FormControl>
-											<FormLabel>Todo Task Name</FormLabel>
-											<Input
-												type="text"
-												name=""
-												value={todoItem.taskName}
-												onChange={(e) =>
-													setTodoItem((prev) => ({
-														...prev,
-														taskName: e.target.value,
-													}))
-												}
-											/>
-										</FormControl>
-										<FormControl>
-											<FormLabel>Select Assignee</FormLabel>
-											<Select
-												icon={<FaCaretDown />}
-												borderRadius="10px"
-												value={todoItem.selectedAssignee}
-												onChange={(e) => {
-													if (e.target.value !== "") {
-														setTodoItem((prev) => ({
-															...prev,
-															selectedAssignee: e.target.value,
-														}));
-													}
-												}}
-												placeholder="Select Assignee"
-											>
-												{PROJECT_ASSIGNEES.map(({ name }) => (
-													<option value={name} key={name}>
-														{name}
-													</option>
-												))}
-											</Select>
-										</FormControl>
-										<IconButton
-											icon={<AddIcon />}
-											isDisabled={todoItem.taskName === ""}
-											onClick={handleAddTodoItem}
-											variant={"ghost"}
-											size={"xs"}
-											mt={5}
-										/>
-									</HStack>
-								)}
-								{subTaskAdded && (
-									<FormControl>
-										<Caption title={"All subtasks"} />
-										<Table variant="unstyled" mt={4} size={"small"}>
-											<Thead fontSize={"xs"}>
-												<Th>Subtask </Th>
-												<Th>Assignees</Th>
-											</Thead>
-											<Tbody>
-												{subTasks?.map((task) => (
-													<Tr>
-														<Td>{task.taskName}</Td>
-														<Td>
-															<HStack>
-																{task.selectedAssignees?.map((assignee) => (
-																	<Avatar
-																		name={assignee}
-																		size={"sm"}
-																		src={assignee}
-																	/>
-																))}
-															</HStack>
-														</Td>
-													</Tr>
-												))}
-											</Tbody>
-										</Table>
-									</FormControl>
-								)}
-								{todoItems.length > 0 && (
-									<FormControl>
-										<Caption title={"Checklist"} />
-										<Table variant="unstyled" size={"small"} w={"80%"}>
-											<Thead fontSize={"xs"}>
-												<Th>To-do Task </Th>
-												<Th>Assignee</Th>
-											</Thead>
-											<Tbody>
-												{todoItems?.map((todo) => (
-													<Tr>
-														<Td>
-															<HStack>
-																<Checkbox
-																	isChecked={true}
-																	isDisabled
-																	colorScheme="facebook"
-																/>
-																<Text fontSize={"xs"}>{todo.taskName}</Text>
-															</HStack>
-														</Td>
-
-														<Td>
-															<Avatar
-																name={todo.selectedAssignee}
-																size={"sm"}
-																src={todo.selectedAssignee}
-															/>
-														</Td>
-													</Tr>
-												))}
-											</Tbody>
-										</Table>
-									</FormControl>
-								)} */}
 								<HStack justifyContent={"end"}>
 									<Button
 										isLoading={isSubmitting}

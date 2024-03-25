@@ -104,6 +104,10 @@ const putData = async (path, data, id, token) => {
 		: API.put(buildURL(path), data);
 };
 
+const deleteData = async (path, data) => {
+	return API.delete(buildURL(path), data);
+};
+
 const apiService = {
 	async get(path, searchParams) {
 		return fetchData(path, searchParams);
@@ -115,6 +119,10 @@ const apiService = {
 
 	async put(path, data, id, token) {
 		return putData(path, data, id, token);
+	},
+
+	async delete(path, data, id, token) {
+		return deleteData(path, data, id, token);
 	},
 };
 

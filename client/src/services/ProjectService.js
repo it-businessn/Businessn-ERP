@@ -49,6 +49,18 @@ const ProjectService = {
 		return apiService.put(`/projects/task/status/${id}`, data, id);
 	},
 
+	async deleteTask(data, id) {
+		return apiService.delete(`/projects/task/${id}`, data, id);
+	},
+
+	async deleteSubTask(data, id) {
+		return apiService.delete(`/projects/subtask/${id}`, data, id);
+	},
+
+	async deleteInnerSubTask(data, id) {
+		return apiService.put(`/projects/delete-inner-subtask/${id}`, data, id);
+	},
+
 	async updateInnerSubTask(data, id) {
 		return apiService.put(`/projects/inner-subtask/${id}`, data, id);
 	},

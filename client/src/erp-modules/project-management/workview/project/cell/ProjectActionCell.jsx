@@ -36,6 +36,9 @@ const ProjectActionCell = ({
 		setProjectId(projectId);
 	};
 
+	const handleDelete = (index) => {
+		console.log(index);
+	};
 	return (
 		<Td p={"0.5em"} fontSize={"xs"} w={"450px"}>
 			<VStack alignItems={"start"} spacing={0}>
@@ -71,6 +74,8 @@ const ProjectActionCell = ({
 						index={index}
 						expandedIndex={expandedIndex}
 						isExpanded={expandedIndex === index}
+						handleDelete={() => handleDelete(project, project._id)}
+						isProject
 					/>
 				</HStack>
 				{expandedIndex === index &&

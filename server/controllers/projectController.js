@@ -309,6 +309,59 @@ const createActivity = () => async (req, res) => {
 		res.status(400).json({ message: error.message });
 	}
 };
+const deleteProjectTask = async (req, res) => {
+	const { id } = req.params;
+	try {
+		const task = await Task.findByIdAndDelete({
+			_id: id,
+		});
+		if (task) {
+			res.status(200).json(`Task with id ${id} deleted successfully.`);
+		} else {
+			res.status(200).json("Task Details not found.");
+		}
+	} catch (error) {
+		res.status(404).json({ error: "Error deleting Task:", error });
+	}
+};
+
+const deleteProjectInnerSubTask = async (req, res) => {
+	const { id } = req.params;
+	const { taskName } = req.body;
+	try {
+		const savedSubtask = await SubTask.findById(id);
+
+		const matchingInnerSubtaskIndex = savedSubtask.subtasks.findIndex(
+			(innerSubtask) => innerSubtask.taskName === taskName,
+		);
+
+		if (matchingInnerSubtaskIndex > -1) {
+			savedSubtask.subtasks.splice(matchingInnerSubtaskIndex, 1);
+		} else {
+			console.log("InnerSubtask not found.");
+		}
+		await savedSubtask.save();
+		res.status(201).json(savedSubtask);
+	} catch (error) {
+		res.status(400).json({ message: error.message });
+	}
+};
+
+const deleteProjectSubTask = async (req, res) => {
+	const { id } = req.params;
+	try {
+		const task = await SubTask.findByIdAndDelete({
+			_id: id,
+		});
+		if (task) {
+			res.status(200).json(`SubTask with id ${id} deleted successfully.`);
+		} else {
+			res.status(200).json("SubTask Details not found.");
+		}
+	} catch (error) {
+		res.status(404).json({ error: "Error deleting SubTask:", error });
+	}
+};
 
 const addProjectTask = () => async (req, res) => {
 	const { id } = req.params;
@@ -531,4 +584,7 @@ module.exports = {
 	updateTaskSubTask,
 	addTaskSubTasks,
 	getStatus,
+	deleteProjectTask,
+	deleteProjectSubTask,
+	deleteProjectInnerSubTask,
 };

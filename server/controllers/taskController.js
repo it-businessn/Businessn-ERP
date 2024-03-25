@@ -41,7 +41,9 @@ const createTask = () => async (req, res) => {
 
 const isAllSubTaskComplete = async (savedTask) => {
 	const subtasksPromises = savedTask.subtasks.map((id) =>
-		SubTask.findById(id).then((task) => task.completed),
+		SubTask.findById(id).then((task) => {
+			task?.completed;
+		}),
 	);
 
 	const subtasksCompleted = await Promise.all(subtasksPromises);
@@ -51,7 +53,7 @@ const isAllSubTaskComplete = async (savedTask) => {
 
 const isAllTaskComplete = async (savedTask) => {
 	const tasksPromises = savedTask.tasks.map((id) =>
-		Task.findById(id).then((task) => task.completed),
+		Task.findById(id).then((task) => task?.completed),
 	);
 
 	const tasksCompleted = await Promise.all(tasksPromises);
@@ -68,7 +70,7 @@ const updateTask = () => async (req, res) => {
 		savedTask.isOpen = isOpen;
 
 		savedTask.completed = isOpen;
-		savedTask.actualHours = actualHours;
+		savedTask.actualHours = parseInt(actualHours);
 		savedTask.completionPercent = (await isAllSubTaskComplete(savedTask))
 			? 100
 			: (actualHours / Math.max(savedTask.timeToComplete, actualHours)) * 100;
@@ -81,9 +83,10 @@ const updateTask = () => async (req, res) => {
 
 		for (const task of savedSubtaskProject.tasks) {
 			const savedTask = await Task.findById(task);
-			totalActualHoursTasks += savedTask.actualHours;
+			if (savedTask?.actualHours) {
+				totalActualHoursTasks += savedTask?.actualHours;
+			}
 		}
-
 		savedSubtaskProject.actualHours = totalActualHoursTasks;
 		savedSubtaskProject.completionPercent = (await isAllTaskComplete(
 			savedSubtaskProject,
@@ -156,7 +159,7 @@ const updateInnerSubTask = () => async (req, res) => {
 
 		if (matchingInnerSubtaskIndex > -1) {
 			matchingInnerSubtask.isOpen = isOpen;
-			matchingInnerSubtask.actualHours = actualHours;
+			matchingInnerSubtask.actualHours = parseInt(actualHours);
 			matchingInnerSubtask.completed = isOpen;
 			matchingInnerSubtask.completionPercent = 100;
 		} else {
@@ -188,9 +191,10 @@ const updateInnerSubTask = () => async (req, res) => {
 		if (savedSubtaskParent.subtasks.length > 0) {
 			for (const task of savedSubtaskParent.subtasks) {
 				const savedTask = await SubTask.findById(task);
-				totalActualHoursSubTasks += savedTask.actualHours;
+				if (savedTask?.actualHours) {
+					totalActualHoursSubTasks += savedTask?.actualHours;
+				}
 			}
-
 			savedSubtaskParent.actualHours = totalActualHoursSubTasks;
 		}
 
@@ -215,8 +219,9 @@ const updateInnerSubTask = () => async (req, res) => {
 
 		for (const task of savedSubtaskProject.tasks) {
 			const savedTask = await Task.findById(task);
-
-			totalActualHoursTasks += savedTask.actualHours;
+			if (savedTask?.actualHours) {
+				totalActualHoursTasks += savedTask?.actualHours;
+			}
 		}
 		savedSubtaskProject.actualHours = totalActualHoursTasks;
 		savedSubtaskProject.completionPercent =
@@ -249,7 +254,7 @@ const updateSubTask = () => async (req, res) => {
 		savedSubtask.isOpen = isOpen;
 
 		savedSubtask.completed = isOpen;
-		savedSubtask.actualHours = actualHours;
+		savedSubtask.actualHours = parseInt(actualHours);
 
 		const allSubTaskComplete = savedSubtask.subtasks.every(
 			(completed) => completed,
@@ -269,7 +274,9 @@ const updateSubTask = () => async (req, res) => {
 		if (savedSubtaskParent.subtasks.length > 0) {
 			for (const task of savedSubtaskParent.subtasks) {
 				const savedTask = await SubTask.findById(task);
-				totalActualHoursSubTasks += savedTask.actualHours;
+				if (savedTask?.actualHours) {
+					totalActualHoursSubTasks += savedTask?.actualHours;
+				}
 			}
 
 			savedSubtaskParent.actualHours = totalActualHoursSubTasks;
@@ -296,7 +303,9 @@ const updateSubTask = () => async (req, res) => {
 
 		for (const task of savedSubtaskProject.tasks) {
 			const savedTask = await Task.findById(task);
-			totalActualHoursTasks += savedTask.actualHours;
+			if (savedTask?.actualHours) {
+				totalActualHoursTasks += savedTask?.actualHours;
+			}
 		}
 		savedSubtaskProject.actualHours = totalActualHoursTasks;
 		savedSubtaskParent.completionPercent =

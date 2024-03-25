@@ -20,10 +20,10 @@ import {
 	formatDate,
 	renderPriorityBars,
 } from "utils";
-import { statusColor } from "..";
-import AddNewSubTask from "./AddNewSubTask";
-import EditTask from "./EditTask";
-import Subtask from "./Subtask";
+import { statusColor } from ".";
+import AddNewSubTask from "./project/AddNewSubTask";
+import EditTask from "./project/EditTask";
+import Subtask from "./project/Subtask";
 
 const ProjectChild = ({
 	task,
