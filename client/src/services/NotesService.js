@@ -8,6 +8,10 @@ const NotesService = {
 	async addNote(data) {
 		return apiService.post("/notes", data);
 	},
+
+	async updateNotes(data, id) {
+		return apiService.put(`/notes/${id}`, data, id);
+	},
 };
 
 export default NotesService;

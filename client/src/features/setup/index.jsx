@@ -9,11 +9,6 @@ import {
 } from "@chakra-ui/react";
 import { useState } from "react";
 import { useBreakpointValue } from "services/Breakpoint";
-import ApproversPanel from "./ApproversPanel";
-import DepartmentsPanel from "./DepartmentsPanel";
-import EmploymentPanel from "./EmploymentPanel";
-import ManagersPanel from "./ManagersPanel";
-import RolesPanel from "./RolesPanel";
 import { SETUP_LIST } from "./data";
 
 const Setup = () => {
@@ -48,11 +43,11 @@ const Setup = () => {
 					</TabList>
 
 					<TabPanels>
-						<TabPanel>{currentTab === 0 && <ManagersPanel />}</TabPanel>
-						<TabPanel>{currentTab === 1 && <RolesPanel />}</TabPanel>
-						<TabPanel>{currentTab === 2 && <DepartmentsPanel />}</TabPanel>
-						<TabPanel>{currentTab === 3 && <EmploymentPanel />}</TabPanel>
-						<TabPanel>{currentTab === 4 && <ApproversPanel />}</TabPanel>
+						{SETUP_LIST.map((item) => (
+							<TabPanel key={item.id}>
+								{currentTab === item.id && item.name}
+							</TabPanel>
+						))}
 					</TabPanels>
 				</Tabs>
 			</Box>

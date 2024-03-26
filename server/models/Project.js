@@ -10,6 +10,7 @@ const projectSchema = new mongoose.Schema({
 	status: String,
 	name: String,
 	priority: String,
+	notes: String,
 	selectedAssignees: { type: Array, default: [] },
 	managerName: String,
 	managerId: { type: mongoose.Schema.Types.ObjectId, ref: "Employee" },

@@ -26,6 +26,7 @@ import UserService from "services/UserService";
 
 const SignUp = () => {
 	const defaultFormData = {
+		company: "",
 		companyId: "20240001",
 		firstName: "",
 		middleName: "",
@@ -45,12 +46,21 @@ const SignUp = () => {
 		},
 		employmentType: "",
 	};
+	const [companies, setCompanies] = useState(null);
 	const [empTypes, setEmpTypes] = useState(false);
 	const [roles, setRoles] = useState(false);
 	const [departments, setDepartments] = useState(false);
 	const [managers, setManagers] = useState(false);
 
 	useEffect(() => {
+		const fetchAllCompanies = async () => {
+			try {
+				const response = await SettingService.getAllCompanies();
+				setCompanies(response.data);
+			} catch (error) {
+				console.error(error);
+			}
+		};
 		const fetchAllEmpTypes = async () => {
 			try {
 				const response = await SettingService.getAllEmploymentTypes();
@@ -87,6 +97,7 @@ const SignUp = () => {
 		fetchAllRoles();
 		fetchAllDepartments();
 		fetchAllEmpTypes();
+		fetchAllCompanies();
 	}, []);
 
 	const [formData, setFormData] = useState(defaultFormData);
@@ -154,6 +165,24 @@ const SignUp = () => {
 					</Stack>
 
 					<form onSubmit={handleSubmit}>
+						{companies && (
+							<FormControl mb={4}>
+								<FormLabel>Select Company</FormLabel>
+								<Select
+									name="company"
+									value={formData.company}
+									bg={"brand.100"}
+									onChange={handleChange}
+									placeholder="Select Company"
+								>
+									{companies?.map((company) => (
+										<option key={company._id} value={company._id}>
+											{company.name}
+										</option>
+									))}
+								</Select>
+							</FormControl>
+						)}
 						<FormControl mb={4}>
 							<FormLabel>Company Id</FormLabel>
 							<Input

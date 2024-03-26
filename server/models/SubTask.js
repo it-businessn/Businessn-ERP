@@ -8,6 +8,7 @@ const subTaskSchema = new mongoose.Schema({
 	dueDate: Date,
 	taskName: String,
 	status: String,
+	notes: String,
 	isOpen: { type: Boolean, default: true },
 	selectedAssignees: { type: Array, default: [] },
 	updatedOn: { type: Date, default: Date.now },

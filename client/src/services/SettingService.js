@@ -20,6 +20,14 @@ const SettingService = {
 		return apiService.post("/setup/departments", data);
 	},
 
+	async getAllCompanies() {
+		return apiService.get(`/setup/companies`);
+	},
+
+	async addCompany(data) {
+		return apiService.post("/setup/companies", data);
+	},
+
 	async getAllEmploymentTypes() {
 		return apiService.get(`/setup/empTypes`);
 	},

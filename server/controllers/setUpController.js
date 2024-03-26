@@ -1,3 +1,4 @@
+const Company = require("../models/Company");
 const Department = require("../models/Department");
 const EmployeeRole = require("../models/EmployeeRole");
 const EmploymentType = require("../models/EmploymentType");
@@ -57,6 +58,35 @@ const addDepartment = () => async (req, res) => {
 	try {
 		await newDepartment.save();
 		res.status(201).json(newDepartment);
+	} catch (error) {
+		res.status(400).json({ message: error.message });
+	}
+};
+
+const getAllCompanies = () => async (req, res) => {
+	try {
+		const companies = await Company.find().sort({ createdOn: -1 });
+		res.status(200).json(companies);
+	} catch (error) {
+		res.status(404).json({ error: error.message });
+	}
+};
+
+const addCompany = () => async (req, res) => {
+	const { name, founding_year, registration_number, address, industry_type } =
+		req.body;
+	const { streetNumber, city, state, postalCode, country } = address;
+	const company = new Company({
+		name,
+		founding_year,
+		registration_number,
+		industry_type,
+		address: { streetNumber, city, state, postalCode, country },
+	});
+
+	try {
+		await company.save();
+		res.status(201).json(company);
 	} catch (error) {
 		res.status(400).json({ message: error.message });
 	}
@@ -161,4 +191,6 @@ module.exports = {
 	addApprovers,
 	getAllEmpTypes,
 	addEmpType,
+	getAllCompanies,
+	addCompany,
 };

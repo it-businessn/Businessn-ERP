@@ -12,6 +12,7 @@ import {
 import { useEffect, useState } from "react";
 import { headerCell } from "..";
 import AddProject from "./AddProject";
+import AddNotes from "./cell/AddNotes";
 import AssigneeCell from "./cell/AssigneeCell";
 import DateCell from "./cell/DateCell";
 import ManagerCell from "./cell/ManagerCell";
@@ -144,6 +145,13 @@ const ProjectTable = ({ data, setRefresh, managers }) => {
 								project={project}
 							/>
 							<StatusCell
+								expandedIndex={expandedIndex}
+								index={index}
+								isExpanded={isTaskExpandedIndex}
+								isSubExpanded={isSubExpandedIndex}
+								project={project}
+							/>
+							<AddNotes
 								expandedIndex={expandedIndex}
 								index={index}
 								isExpanded={isTaskExpandedIndex}

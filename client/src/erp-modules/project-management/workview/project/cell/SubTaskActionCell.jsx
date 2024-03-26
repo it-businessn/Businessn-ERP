@@ -117,6 +117,8 @@ const SubTaskActionCell = ({
 					handleToggle={() => handleSubTaskToggle(index)}
 					isExpanded={isSubExpanded === index}
 					handleDelete={() => handleDelete(task, task._id)}
+					data={task}
+					type={"subtask"}
 				/>
 			</HStack>
 			{isSubExpanded === index &&

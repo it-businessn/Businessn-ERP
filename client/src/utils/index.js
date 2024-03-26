@@ -7,7 +7,10 @@ import {
 	HStack,
 	Icon,
 } from "@chakra-ui/react";
+import AddNotes from "erp-modules/project-management/workview/project/cell/AddNotes";
 import { COLORS } from "erp-modules/project-management/workview/project/data";
+import { useState } from "react";
+import { CgNotes } from "react-icons/cg";
 import { FaChevronDown, FaChevronUp } from "react-icons/fa";
 import { GoTasklist } from "react-icons/go";
 
@@ -228,43 +231,80 @@ export const TaskButton = ({ totalTasks, onClick, isTask, isExpanded }) => {
 	);
 };
 
-export const AddTaskButton = ({ onClick, isTask, handleClick, isInner }) => {
+export const AddTaskButton = ({
+	onClick,
+	isTask,
+	handleClick,
+	isInner,
+	data,
+	type,
+	setRefresh,
+}) => {
+	const [isOpen, setIsOpen] = useState(false);
 	return (
-		<HStack>
-			{!isInner && (
+		<>
+			<HStack spacing={2}>
+				{!isInner && (
+					<>
+						<Button
+							onClick={onClick}
+							size="xxs"
+							display={"flex"}
+							variant="solid"
+							p={"3px"}
+							bg="var(--lead_cards_bg)"
+							fontWeight={"bold"}
+							color="var(--primary_button_bg)"
+							border={`1px solid ${generateLighterShade(COLORS.primary, 0.5)}`}
+							_hover={{
+								bg: generateLighterShade(COLORS.primary, 0.8),
+								color: "brand.nav_color",
+							}}
+						>
+							<AddIcon />
+						</Button>
+						<Button
+							onClick={() => setIsOpen(true)}
+							size="xxs"
+							display={"flex"}
+							variant="ghost"
+							fontWeight={"bold"}
+							color="brand.nav_color"
+							_hover={{
+								bg: generateLighterShade(COLORS.primary, 0.8),
+								color: "brand.nav_color",
+							}}
+						>
+							<CgNotes />
+						</Button>
+					</>
+				)}
+
 				<Button
-					onClick={onClick}
+					onClick={handleClick}
 					size="xxs"
 					display={"flex"}
-					variant="solid"
-					p={"3px"}
-					bg="var(--lead_cards_bg)"
+					variant="ghost"
 					fontWeight={"bold"}
-					color="var(--primary_button_bg)"
-					border={`1px solid ${generateLighterShade(COLORS.primary, 0.5)}`}
+					color="brand.nav_color"
 					_hover={{
 						bg: generateLighterShade(COLORS.primary, 0.8),
 						color: "brand.nav_color",
 					}}
 				>
-					<AddIcon />
+					<SettingsIcon />
 				</Button>
+			</HStack>
+			{isOpen && (
+				<AddNotes
+					type={type}
+					data={data}
+					isOpen={isOpen}
+					setIsOpen={setIsOpen}
+					setRefresh={setRefresh}
+				/>
 			)}
-			<Button
-				onClick={handleClick}
-				size="xxs"
-				display={"flex"}
-				variant="ghost"
-				fontWeight={"bold"}
-				color="brand.nav_color"
-				_hover={{
-					bg: generateLighterShade(COLORS.primary, 0.8),
-					color: "brand.nav_color",
-				}}
-			>
-				<SettingsIcon />
-			</Button>
-		</HStack>
+		</>
 	);
 };
 

@@ -14,6 +14,9 @@ const ActionItem = ({
 	isExpanded,
 	handleDelete,
 	isProject,
+	data,
+	type,
+	setRefresh,
 }) => {
 	return (
 		<>
@@ -34,6 +37,9 @@ const ActionItem = ({
 					onClick={handleAddTask}
 					handleClick={handleEditProject}
 					isInner={isInner}
+					data={data}
+					type={type}
+					setRefresh={setRefresh}
 				/>
 				{!isProject && (
 					<Button

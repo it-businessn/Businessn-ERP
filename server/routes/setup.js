@@ -15,6 +15,10 @@ router.get("/empTypes", setUpController.getAllEmpTypes());
 
 router.post("/empTypes", setUpController.addEmpType());
 
+router.get("/companies", setUpController.getAllCompanies());
+
+router.post("/companies", setUpController.addCompany());
+
 router.get("/approvers", setUpController.getAllApprovers());
 
 router.post("/approvers", setUpController.addApprovers());

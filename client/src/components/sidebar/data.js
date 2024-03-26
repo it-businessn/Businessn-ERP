@@ -1055,17 +1055,81 @@ export const SIDEBAR_MENU = [
 			},
 		],
 	},
+
+	{
+		path: "/project-dashboard",
+		name: "Project Management",
+		id: "project",
+		icon: <FaRProject />,
+		children: [
+			{
+				path: "/project-dashboard",
+				name: "Dashboard",
+				children: [],
+				icon: <RxDashboard />,
+			},
+			{
+				path: "/workview",
+				name: "Work view",
+				children: [],
+				icon: <BiNotepad />,
+			},
+			{
+				path: "/comms",
+				name: "Communication",
+				children: [],
+				icon: <FaPeopleArrows />,
+			},
+			{
+				path: "/taskboard",
+				name: "Taskboard",
+				children: [],
+				icon: <GoTasklist />,
+			},
+			{
+				path: "/agenda",
+				name: "Agenda",
+				children: [],
+				icon: <BiTask />,
+			},
+			{
+				path: "/gantt",
+				name: "Gantt",
+				children: [],
+				icon: <FaChartGantt />,
+			},
+			{
+				path: "/pm-reports",
+				name: "PM Reports",
+				children: [],
+				icon: <IoDocumentTextOutline />,
+			},
+			{
+				path: "/pm-setup",
+				name: "Setup",
+				children: [],
+				icon: <MdOutlineSettingsApplications />,
+			},
+		],
+	},
+	{
+		path: "/payroll",
+		name: "Payroll",
+		id: "payroll",
+		icon: <FaDashcube />,
+		children: [
+			{
+				path: "/users",
+				name: "Employees",
+				children: [],
+			},
+		],
+	},
 	// {
-	// 	path: "/payroll",
-	// 	name: "Payroll",
-	// 	id: "payroll",
-	// 	icon: <FaDashcube />,
-	// 	children: [
-	// 		{
-	// 			path: "/payroll-insight",
-	// 			name: "Insights",
-	// 			children: [],
-	// 		},
+	// 	path: "/payroll-insight",
+	// 	name: "Insights",
+	// 	children: [],
+	// },
 	// 		{
 	// 			path: "/run-payroll",
 	// 			name: "Run Payroll",
@@ -1254,62 +1318,6 @@ export const SIDEBAR_MENU = [
 	// 		},
 	// 	],
 	// },
-	{
-		path: "/project-dashboard",
-		name: "Project Management",
-		id: "project",
-		icon: <FaRProject />,
-		children: [
-			{
-				path: "/project-dashboard",
-				name: "Dashboard",
-				children: [],
-				icon: <RxDashboard />,
-			},
-			{
-				path: "/workview",
-				name: "Work view",
-				children: [],
-				icon: <BiNotepad />,
-			},
-			{
-				path: "/comms",
-				name: "Communication",
-				children: [],
-				icon: <FaPeopleArrows />,
-			},
-			{
-				path: "/taskboard",
-				name: "Taskboard",
-				children: [],
-				icon: <GoTasklist />,
-			},
-			{
-				path: "/agenda",
-				name: "Agenda",
-				children: [],
-				icon: <BiTask />,
-			},
-			{
-				path: "/gantt",
-				name: "Gantt",
-				children: [],
-				icon: <FaChartGantt />,
-			},
-			{
-				path: "/pm-reports",
-				name: "PM Reports",
-				children: [],
-				icon: <IoDocumentTextOutline />,
-			},
-			{
-				path: "/pm-setup",
-				name: "Setup",
-				children: [],
-				icon: <MdOutlineSettingsApplications />,
-			},
-		],
-	},
 	// {
 	// 	path: "/payroll",
 	// 	name: "Accounting",

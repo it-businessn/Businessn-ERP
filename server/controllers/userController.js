@@ -49,6 +49,7 @@ const loginUser = () => async (req, res) => {
 
 const createEmployee = () => async (req, res) => {
 	const {
+		company,
 		companyId,
 		firstName,
 		middleName,
@@ -66,18 +67,9 @@ const createEmployee = () => async (req, res) => {
 	const { streetNumber, city, state, postalCode, country } = primaryAddress;
 
 	try {
-		// const company = await Company.create({ name: "ABC Company" });
-
-		// const employeeRole = await EmployeeRole.create({ name: role });
-
-		// const newDepartment = await Department.create({ name: department });
-
-		// const newEmploymentType = await EmploymentType.create({
-		// 	name: employmentType,
-		// });
-
 		const hashedPassword = await bcrypt.hash(password, 10);
 		const employee = await Employee.create({
+			companyId: company,
 			employeeId: companyId,
 			firstName,
 			middleName,
@@ -91,12 +83,7 @@ const createEmployee = () => async (req, res) => {
 			employmentType,
 			password: hashedPassword,
 			fullName: `${firstName} ${middleName} ${lastName}`,
-			// role: employeeRole._id,
-			// department: department._id,
-			// employmentType: employmentType._id,
 		});
-		// employee.companyId = company._id;
-		// employee.save();
 		res.status(201).json(employee);
 	} catch (error) {
 		res.status(400).json({ message: error.message });

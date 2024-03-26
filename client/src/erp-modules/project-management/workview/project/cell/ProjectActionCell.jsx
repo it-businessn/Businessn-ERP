@@ -65,6 +65,7 @@ const ProjectActionCell = ({
 						}
 					/> */}
 					<ActionItem
+						data={project}
 						name={project.name}
 						totalTask={project?.tasks}
 						totalTasks={project?.totalTasks}
@@ -76,6 +77,7 @@ const ProjectActionCell = ({
 						isExpanded={expandedIndex === index}
 						handleDelete={() => handleDelete(project, project._id)}
 						isProject
+						type={"project"}
 					/>
 				</HStack>
 				{expandedIndex === index &&

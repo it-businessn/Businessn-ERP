@@ -67,6 +67,8 @@ const WorkView = lazy(() =>
 	import("./erp-modules/project-management/workview"),
 );
 
+const Employees = lazy(() => import("./erp-modules/payroll/employees"));
+
 export const router = createBrowserRouter([
 	{
 		path: "/",
@@ -208,6 +210,10 @@ export const router = createBrowserRouter([
 			{
 				path: "/workview",
 				element: <WorkView />,
+			},
+			{
+				path: "/users",
+				element: <Employees />,
 			},
 			{
 				path: "*",

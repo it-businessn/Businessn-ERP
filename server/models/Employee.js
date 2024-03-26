@@ -66,7 +66,7 @@ const employeeSchema = new mongoose.Schema({
 	createdOn: { type: Date, default: Date.now },
 	updatedOn: { type: Date, default: Date.now },
 	updatedBy: { type: mongoose.Schema.Types.ObjectId, ref: "Employee" },
-	companyId: { type: mongoose.Schema.Types.ObjectId, ref: "Company" },
+	companyId: [{ type: mongoose.Schema.Types.ObjectId, ref: "Company" }],
 });
 
 const Employee = mongoose.model("Employee", employeeSchema);

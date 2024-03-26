@@ -12,6 +12,7 @@ const taskSchema = new mongoose.Schema({
 	selectedAssigneesId: [
 		{ type: mongoose.Schema.Types.ObjectId, ref: "Employee" },
 	],
+	notes: String,
 	completed: { type: Boolean, default: false },
 	selectedAssignees: { type: Array, default: [] },
 	updatedOn: { type: Date, default: Date.now },

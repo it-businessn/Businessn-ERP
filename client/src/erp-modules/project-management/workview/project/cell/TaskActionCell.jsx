@@ -104,6 +104,9 @@ const TaskActionCell = ({
 					handleToggle={() => handleTaskToggle(taskIndex)}
 					isExpanded={isExpanded === taskIndex}
 					handleDelete={() => handleDelete(task, task._id)}
+					type={"task"}
+					data={task}
+					setRefresh={setRefresh}
 				/>
 			</HStack>
 			{isExpanded === taskIndex &&
