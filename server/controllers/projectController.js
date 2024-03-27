@@ -45,7 +45,7 @@ const updateTaskSubTask = () => async (req, res) => {
 
 	try {
 		const updatedData = {
-			timeToComplete: parseInt(subTaskTimeToComplete),
+			timeToComplete: parseInt(Math.ceil(subTaskTimeToComplete)),
 			dueDate: subTaskDueDate,
 			taskName: subTaskName,
 			status,
@@ -140,7 +140,7 @@ const addTaskSubTasks = () => async (req, res) => {
 			subTaskId,
 			selectedAssignees: subTaskSelectedAssignees,
 			updatedOn: Date.now,
-			timeToComplete: parseInt(subTaskTimeToComplete),
+			timeToComplete: parseInt(Math.ceil(subTaskTimeToComplete)),
 			dueDate: subTaskDueDate,
 			taskName: subTaskName,
 			status,

@@ -52,6 +52,7 @@ const TaskActionCell = ({
 				{ isOpen: isTaskCompleted, actualHours },
 				taskId,
 			);
+			setRefresh((prev) => !prev);
 		} catch (error) {
 			console.error("Error updating task status:", error);
 		}

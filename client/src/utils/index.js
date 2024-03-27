@@ -217,7 +217,7 @@ export const TaskButton = ({ totalTasks, onClick, isTask, isExpanded }) => {
 			}
 			rightIcon={
 				<Icon
-					as={isExpanded ? FaChevronDown : FaChevronUp}
+					as={isExpanded ? FaChevronUp : FaChevronDown}
 					sx={{ marginLeft: "-4px", fontsize: "10px" }}
 				/>
 			}

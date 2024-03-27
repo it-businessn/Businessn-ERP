@@ -70,7 +70,7 @@ const updateTask = () => async (req, res) => {
 		savedTask.isOpen = isOpen;
 
 		savedTask.completed = isOpen;
-		savedTask.actualHours = parseInt(actualHours);
+		savedTask.actualHours = parseInt(Math.ceil(actualHours));
 		savedTask.completionPercent = (await isAllSubTaskComplete(savedTask))
 			? 100
 			: (actualHours / Math.max(savedTask.timeToComplete, actualHours)) * 100;
@@ -159,7 +159,7 @@ const updateInnerSubTask = () => async (req, res) => {
 
 		if (matchingInnerSubtaskIndex > -1) {
 			matchingInnerSubtask.isOpen = isOpen;
-			matchingInnerSubtask.actualHours = parseInt(actualHours);
+			matchingInnerSubtask.actualHours = parseInt(Math.ceil(actualHours));
 			matchingInnerSubtask.completed = isOpen;
 			matchingInnerSubtask.completionPercent = 100;
 		} else {
@@ -254,7 +254,7 @@ const updateSubTask = () => async (req, res) => {
 		savedSubtask.isOpen = isOpen;
 
 		savedSubtask.completed = isOpen;
-		savedSubtask.actualHours = parseInt(actualHours);
+		savedSubtask.actualHours = parseInt(Math.ceil(actualHours));
 
 		const allSubTaskComplete = savedSubtask.subtasks.every(
 			(completed) => completed,
