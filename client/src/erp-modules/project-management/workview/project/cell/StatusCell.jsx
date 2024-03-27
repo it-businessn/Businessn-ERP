@@ -18,7 +18,7 @@ const StatusCell = ({
 			p={"5px"}
 			borderRadius={"8px"}
 		>
-			<Text> {status || 0}d over</Text>
+			<Text> {status || 0}d</Text>
 		</HStack>
 	);
 	return (

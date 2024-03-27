@@ -180,7 +180,7 @@ const TaskTable = ({
 							color={statusColor(task.status).color}
 							bgColor={statusColor(task.status).bg}
 						>
-							<Text> {task?.status}d over</Text>
+							<Text> {task?.status}d</Text>
 						</HStack>
 					</Td>
 					<Td fontSize={"12px"}>

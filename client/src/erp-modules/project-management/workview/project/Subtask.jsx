@@ -164,7 +164,7 @@ const Subtask = ({
 						p={"5px"}
 						borderRadius={"8px"}
 					>
-						<Text> {task.status || 0}d over</Text>
+						<Text> {task.status || 0}d</Text>
 					</HStack>
 				</Td>
 			</Tr>

@@ -29,11 +29,11 @@ import TaskTable from "./task/TaskTable";
 
 export const statusColor = (status) => {
 	if (status?.includes("Overdue")) {
-		return { color: "blue", bg: generateLighterShade("red", 0.8) };
+		return { color: "red", bg: generateLighterShade("#c1acac", 0.8) };
 	} else if (status?.includes("Due Today")) {
-		return { color: "green", bg: generateLighterShade("#e3ffe4", 0.8) };
+		return { color: "green", bg: generateLighterShade("#b1c9b1", 0.8) };
 	} else if (status?.includes("Upcoming")) {
-		return { color: "#d04a20", bg: generateLighterShade("#d04a20", 0.8) };
+		return { color: "blue", bg: generateLighterShade("#d1d2ef", 0.5) };
 	} else {
 		return { color: "#213622", bg: generateLighterShade("#213622", 0.8) };
 	}
