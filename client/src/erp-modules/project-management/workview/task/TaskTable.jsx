@@ -163,7 +163,7 @@ const TaskTable = ({
 						</HStack>
 					</Td>
 					<Td fontSize={"xs"}>
-						<HStack spacing="1">{renderPriorityBars(2)}</HStack>
+						<HStack spacing="1">{renderPriorityBars(task.priority)}</HStack>
 					</Td>
 					<Td fontSize={"xs"}>{task.projectName}</Td>
 					<Td fontSize={"xs"}>

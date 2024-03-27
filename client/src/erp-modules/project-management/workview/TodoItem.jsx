@@ -92,7 +92,7 @@ const TodoItem = ({ task }) => {
 					/>
 				</Td>
 				<Td fontSize={"xs"} w={"200px"}>
-					<HStack spacing="1">{renderPriorityBars(2)}</HStack>
+					<HStack spacing="1">{renderPriorityBars(task.priority)}</HStack>
 				</Td>
 				<Td fontSize={"xs"} w={"180px"}>
 					{task?.updatedOn && formatDate(task?.updatedOn)}

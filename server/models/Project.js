@@ -9,7 +9,6 @@ const projectSchema = new mongoose.Schema({
 	dueDate: Date,
 	status: String,
 	name: String,
-	priority: String,
 	notes: String,
 	selectedAssignees: { type: Array, default: [] },
 	managerName: String,
@@ -17,6 +16,7 @@ const projectSchema = new mongoose.Schema({
 	tasks: [{ type: mongoose.Schema.Types.ObjectId, ref: "Task" }],
 	completed: { type: Boolean, default: false },
 	totalTasks: { type: Number, default: 0 },
+	priority: { type: String, default: "low" },
 	totalEstimatedHours: Number,
 	completionPercent: Number,
 });

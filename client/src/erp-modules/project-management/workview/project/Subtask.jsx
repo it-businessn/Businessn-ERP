@@ -140,7 +140,7 @@ const Subtask = ({
 					</HStack>
 				</Td>
 				<Td fontSize={"xs"} w={"100px"} p={0}>
-					<HStack spacing="1">{renderPriorityBars(2)}</HStack>
+					<HStack spacing="1">{renderPriorityBars(task.priority)}</HStack>
 				</Td>
 				<Td fontSize={"xs"} w={"150px"} p={0}>
 					{task?.createdOn && formatDate(task?.createdOn)}

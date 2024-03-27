@@ -113,15 +113,31 @@ export const CircularFillProgress = ({ completionPercentage }) => {
 		</Box>
 	);
 };
+const getProgressColor = (value) =>
+	value <= 0
+		? "#edebe9"
+		: value > 0 && value <= 14
+		? "rgb(228 46 43)"
+		: value > 14 && value <= 29
+		? "rgb(254 100 53)"
+		: value > 29 && value <= 44
+		? "rgb(255 146 50)"
+		: value > 44 && value <= 59
+		? "rgb(252 190 56)"
+		: value > 59 && value <= 74
+		? "rgb(196 226 49)"
+		: value > 74 && value <= 89
+		? "rgb(110 205 25)"
+		: value > 89 && value <= 99
+		? "rgb(22 179 83)"
+		: "rgb(3 150 151)";
 
 export const CircularProgressBarCell = ({ completionPercentage, size }) => {
 	return (
 		<CircularProgress
 			size={size}
 			value={completionPercentage}
-			color={
-				completionPercentage >= 75 ? "green.400" : "brand.primary_button_bg"
-			}
+			color={getProgressColor(completionPercentage)}
 		>
 			<CircularProgressLabel>{`${completionPercentage}%`}</CircularProgressLabel>
 		</CircularProgress>
@@ -314,7 +330,11 @@ export const renderPriorityBars = (priority) => {
 
 	for (let i = 0; i < barCount; i++) {
 		const barColor =
-			priority <= (i + 1) * 33.33 ? "brand.priority_medium" : "orange.400";
+			priority === "high"
+				? "rgb(228 45 46)"
+				: priority === "medium"
+				? "orange.400"
+				: "rgb(222 222 222)";
 		bars.push(
 			<Box key={i} h="2em" w="10px" bgColor={barColor} borderRadius="2px" />,
 		);

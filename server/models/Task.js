@@ -19,6 +19,7 @@ const taskSchema = new mongoose.Schema({
 	timeToComplete: Number, // estimatedHours
 	actualHours: { type: Number, default: 0 },
 	totalTasks: { type: Number, default: 0 },
+	priority: { type: String, default: "low" },
 	totalEstimatedHours: Number,
 	completionPercent: Number,
 });

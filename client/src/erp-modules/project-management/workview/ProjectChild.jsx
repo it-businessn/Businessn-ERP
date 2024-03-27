@@ -123,7 +123,7 @@ const ProjectChild = ({
 					</HStack>
 				</Td>
 				<Td fontSize={"xs"} pl={"1em"} w={"100px"}>
-					<HStack spacing="1">{renderPriorityBars(2)}</HStack>
+					<HStack spacing="1">{renderPriorityBars(task.priority)}</HStack>
 				</Td>
 				<Td fontSize={"xs"} pl={"1em"} w={"150px"}>
 					{task?.createdOn && formatDate(task?.createdOn)}
