@@ -1,5 +1,5 @@
-import { Checkbox, HStack } from "@chakra-ui/react";
-import React, { useState } from "react";
+import { Checkbox, HStack, VStack } from "@chakra-ui/react";
+import { useState } from "react";
 import ProjectService from "services/ProjectService";
 import { CircularProgressBarCell } from "utils";
 import AddNewSubTasks from "../AddNewSubTasks";
@@ -125,13 +125,18 @@ const SubTaskActionCell = ({
 				task?.subtasks?.length > 0 &&
 				task?.subtasks?.map((subtask) => {
 					return (
-						<React.Fragment key={subtask._id}>
+						<VStack
+							key={subtask._id}
+							w={"100%"}
+							alignItems={"flex-start"}
+							pl={"6em"}
+						>
 							<InnerSubTaskActionCell
 								task={subtask}
 								setRefresh={setRefresh}
 								managers={managers}
 							/>
-						</React.Fragment>
+						</VStack>
 					);
 				})}
 			{openEditTask && (

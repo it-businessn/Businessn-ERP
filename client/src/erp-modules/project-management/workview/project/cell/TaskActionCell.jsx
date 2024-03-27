@@ -114,7 +114,7 @@ const TaskActionCell = ({
 				task?.subtasks?.length > 0 &&
 				task?.subtasks?.map((subtask, subtask_index) => {
 					return (
-						<VStack key={subtask._id}>
+						<VStack key={subtask._id} w={"100%"} alignItems={"flex-start"}>
 							<SubTaskActionCell
 								index={subtask_index}
 								isSubExpanded={isSubExpanded}

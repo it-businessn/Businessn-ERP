@@ -83,7 +83,12 @@ const ProjectActionCell = ({
 				{expandedIndex === index &&
 					project?.tasks?.map((task, taskIndex) => {
 						return (
-							<VStack key={task._id}>
+							<VStack
+								key={task._id}
+								w={"100%"}
+								alignItems={"flex-start"}
+								pl={"2em"}
+							>
 								<TaskActionCell
 									taskIndex={taskIndex}
 									isSubExpanded={isSubExpanded}
