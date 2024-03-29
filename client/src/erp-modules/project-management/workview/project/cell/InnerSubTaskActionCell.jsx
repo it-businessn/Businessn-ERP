@@ -6,14 +6,14 @@ import EditInnerSubTask from "../EditInnerSubTask";
 import ActionItem from "./ActionItem";
 import AddActualHours from "./AddActualHours";
 
-const InnerSubTaskActionCell = ({ task, setRefresh, managers }) => {
+const InnerSubTaskActionCell = ({ task, setRefresh, managers, index }) => {
 	const { _id, taskName, subTaskId, completed } = task;
 
 	const [isOpenTask, setIsOpenTask] = useState(completed);
 	const [isOpen, setIsOpen] = useState(false);
 	const [isChecked, setIsChecked] = useState(false);
 	const [modalPosition, setModalPosition] = useState({ top: 0, left: 0 });
-	const [taskId, setTaskId] = useState(null);
+	const [innertaskId, setTaskId] = useState(null);
 	const [actualHours, setActualHours] = useState(0);
 
 	const handleTaskStatus = async (e, taskId) => {
@@ -84,7 +84,12 @@ const InnerSubTaskActionCell = ({ task, setRefresh, managers }) => {
 				handleClose={handleClose}
 				handleConfirm={handleConfirm}
 			/>
-			<HStack spacing={3} pl={"35px"} mt={"-0.5em"}>
+			<HStack
+				spacing={3}
+				mt={"-0.5em"}
+				className={`inner_subtask_div_${index}`}
+				whiteSpace={"pre-wrap"}
+			>
 				<Checkbox
 					sx={{ verticalAlign: "middle" }}
 					colorScheme="facebook"

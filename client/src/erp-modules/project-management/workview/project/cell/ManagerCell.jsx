@@ -1,4 +1,4 @@
-import { Td, Text, VStack } from "@chakra-ui/react";
+import { HStack, Td, Text, VStack } from "@chakra-ui/react";
 
 const ManagerCell = ({
 	project,
@@ -7,20 +7,29 @@ const ManagerCell = ({
 	isExpanded,
 	isSubExpanded,
 }) => {
-	const Manager = () => <Text>{project.managerName}</Text>;
+	const Manager = ({ main, task }) => (
+		<HStack
+			spacing="1"
+			marginTop={main ? "3em" : "1.75em"}
+			// top={main ? "3em" : task ? "6.5em" : "8em"}
+			// pos={"relative"}
+		>
+			<Text>{project.managerName}</Text>
+		</HStack>
+	);
 	return (
-		<Td fontSize={"xs"} pl={"1em"} w={"150px"}>
-			<VStack alignItems={"start"} spacing={7}>
-				<Manager />
+		<Td fontSize={"xs"} pl={"1em"} w={"130px"} display={"flex"} py={0}>
+			<VStack alignItems={"start"} w={"100%"}>
+				<Manager main />
 				{expandedIndex === index &&
 					project?.tasks?.map((task, task_index) => (
-						<VStack alignItems={"start"} spacing={7}>
-							<Manager />
+						<VStack alignItems={"start"} w={"100%"}>
+							<Manager task />
 							{isExpanded === task_index &&
 								task?.subtasks?.length > 0 &&
 								task?.subtasks?.map((subtask, subtask_index) => (
-									<VStack alignItems={"start"} spacing={7}>
-										<Manager />
+									<VStack alignItems={"start"} w={"100%"}>
+										<Manager sub />
 										{isSubExpanded === subtask_index &&
 											subtask?.subtasks?.length > 0 &&
 											subtask?.subtasks?.map((item) => <Manager />)}

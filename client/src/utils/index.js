@@ -330,9 +330,9 @@ export const renderPriorityBars = (priority) => {
 
 	for (let i = 0; i < barCount; i++) {
 		const barColor =
-			priority === "high"
+			priority.toLowerCase() === "high"
 				? "rgb(228 45 46)"
-				: priority === "medium"
+				: priority.toLowerCase() === "medium"
 				? "orange.400"
 				: "rgb(222 222 222)";
 		bars.push(

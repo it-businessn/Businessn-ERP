@@ -1,5 +1,5 @@
 import { DeleteIcon } from "@chakra-ui/icons";
-import { Button, HStack, Text } from "@chakra-ui/react";
+import { Button, HStack, Text, Tooltip } from "@chakra-ui/react";
 import { AddTaskButton, TaskButton, generateLighterShade } from "utils";
 import { COLORS } from "../data";
 
@@ -20,9 +20,20 @@ const ActionItem = ({
 }) => {
 	return (
 		<>
-			<Text>{name}</Text>
+			<Tooltip label={name} fontSize="xs" hasArrow>
+				<Text
+					overflow={"hidden"}
+					whiteSpace={"nowrap"}
+					textOverflow={"ellipsis"}
+					w={"160px"}
+					mt={"-1em"}
+				>
+					{name}
+				</Text>
+			</Tooltip>
 
 			<HStack
+				mt={"-1em"}
 				spacing={2}
 				cursor={totalTask?.length > 0 ? "pointer" : "default"}
 			>

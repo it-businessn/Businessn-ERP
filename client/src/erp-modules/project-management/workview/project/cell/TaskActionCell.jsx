@@ -80,7 +80,12 @@ const TaskActionCell = ({
 	};
 	return (
 		<>
-			<HStack spacing={3} pl={"3em"}>
+			<HStack
+				spacing={3}
+				mt={taskIndex === 0 ? "-1.3em" : "0"}
+				className={`task_div_${taskIndex}`}
+				whiteSpace={"pre-wrap"}
+			>
 				<Checkbox
 					sx={{ verticalAlign: "middle" }}
 					colorScheme="facebook"
@@ -114,7 +119,13 @@ const TaskActionCell = ({
 				task?.subtasks?.length > 0 &&
 				task?.subtasks?.map((subtask, subtask_index) => {
 					return (
-						<VStack key={subtask._id} w={"100%"} alignItems={"flex-start"}>
+						<VStack
+							key={subtask._id}
+							w={"100%"}
+							alignItems={"flex-start"}
+							ml={"2em"}
+							mt={subtask_index === 0 ? "-0.5em" : "0"}
+						>
 							<SubTaskActionCell
 								index={subtask_index}
 								isSubExpanded={isSubExpanded}

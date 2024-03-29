@@ -8,22 +8,25 @@ const PriorityCell = ({
 	isExpanded,
 	isSubExpanded,
 }) => {
-	const PriorityBar = ({ priority }) => (
-		<HStack spacing="1">{renderPriorityBars(priority)}</HStack>
+	// top={main ? "0" : "3.5em"} pos={"relative"}
+	const PriorityBar = ({ priority, main, task }) => (
+		<HStack spacing="1" marginTop={main ? "3em" : "1.4em"}>
+			{renderPriorityBars(priority)}
+		</HStack>
 	);
 	return (
-		<Td fontSize={"xs"} p={"1em"} w={"150px"}>
-			<VStack alignItems={"start"} spacing={5}>
-				<PriorityBar priority={project.priority} />
+		<Td fontSize={"xs"} p={"1em"} w={"100px"} display={"flex"} py={0}>
+			<VStack alignItems={"start"} w={"100%"}>
+				<PriorityBar priority={project.priority} main />
 				{expandedIndex === index &&
 					project?.tasks?.map((task, index) => (
-						<VStack alignItems={"start"} spacing={5}>
-							<PriorityBar priority={task.priority} />
+						<VStack alignItems={"start"} w={"100%"}>
+							<PriorityBar priority={task.priority} task />
 							{isExpanded === index &&
 								task?.subtasks?.length > 0 &&
 								task?.subtasks?.map((subtask, index) => (
-									<VStack alignItems={"start"} spacing={5}>
-										<PriorityBar priority={subtask.priority} />
+									<VStack alignItems={"start"} w={"100%"}>
+										<PriorityBar priority={subtask.priority} sub />
 										{isSubExpanded === index &&
 											subtask?.subtasks?.length > 0 &&
 											subtask?.subtasks?.map((item) => (

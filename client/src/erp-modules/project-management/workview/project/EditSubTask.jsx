@@ -1,6 +1,7 @@
 import {
 	Alert,
 	AlertIcon,
+	Avatar,
 	Button,
 	FormControl,
 	FormLabel,
@@ -12,11 +13,16 @@ import {
 	ModalContent,
 	ModalHeader,
 	ModalOverlay,
+	Select,
 	Stack,
+	Text,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
+import { FaCaretDown } from "react-icons/fa";
 import ProjectService from "services/ProjectService";
 import { getDefaultDate } from "utils";
+import MultiCheckboxMenu from "../MultiCheckboxMenu";
+import { PRIORITY } from "./data";
 
 const EditSubTask = ({
 	isOpen,
@@ -28,14 +34,32 @@ const EditSubTask = ({
 	const defaultTask = {
 		subTaskName: currentTask?.taskName,
 		subTaskId: currentTask?._id,
-		selectedAssignees: currentTask?.selectedAssignees,
+		selectedAssignees: currentTask?.selectedAssignees || [],
 		subTaskDueDate:
 			currentTask?.dueDate && getDefaultDate(currentTask?.dueDate),
 		subTaskTimeToComplete: currentTask?.timeToComplete || 0,
+		priority: currentTask.priority,
+		projectId: currentTask?.projectId,
+		taskId: currentTask?.taskId,
 	};
 	const [isSubmitting, setSubmitting] = useState(false);
 	const [message, setMessage] = useState(false);
 	const [formData, setFormData] = useState(defaultTask);
+
+	const [selectedOptions, setSelectedOptions] = useState([]);
+	const [openAssigneeMenu, setOpenAssigneeMenu] = useState(false);
+
+	const handleMenuToggle = () => {
+		setOpenAssigneeMenu((prev) => !prev);
+	};
+
+	const handleCloseMenu = (selectedOptions) => {
+		setOpenAssigneeMenu(false);
+		setFormData((prevTask) => ({
+			...prevTask,
+			selectedAssignees: selectedOptions,
+		}));
+	};
 
 	const handleSubmit = async (e) => {
 		e.preventDefault();
@@ -113,6 +137,63 @@ const EditSubTask = ({
 											}
 											required
 										/>
+									</FormControl>
+								</HStack>
+								<HStack>
+									<FormControl>
+										<FormLabel> Priority</FormLabel>
+										<Select
+											icon={<FaCaretDown />}
+											borderRadius="10px"
+											value={formData.priority}
+											placeholder="Select Priority"
+											onChange={(e) =>
+												setFormData((prevData) => ({
+													...prevData,
+													priority: e.target.value,
+												}))
+											}
+										>
+											{PRIORITY?.map((item) => (
+												<option value={item} key={item}>
+													{item}
+												</option>
+											))}
+										</Select>
+									</FormControl>
+									<FormControl>
+										<FormLabel visibility={openAssigneeMenu ? "" : "hidden"}>
+											Select Assignee
+										</FormLabel>
+										<Button
+											rightIcon={<FaCaretDown />}
+											bg={"brand.primary_bg"}
+											color={"brand.primary_button_bg"}
+											_hover={{
+												bg: "brand.primary_bg",
+												color: "brand.primary_button_bg",
+											}}
+										>
+											{openAssigneeMenu ? (
+												<MultiCheckboxMenu
+													data={managers}
+													openMenu={openAssigneeMenu}
+													handleCloseMenu={handleCloseMenu}
+													selectedOptions={selectedOptions}
+													setSelectedOptions={setSelectedOptions}
+												/>
+											) : (
+												<Text onClick={handleMenuToggle}>
+													{formData.selectedAssignees?.length > 0
+														? `${formData.selectedAssignees?.length} assignee(s)`
+														: "Select Assignee"}
+												</Text>
+											)}
+										</Button>
+										{formData?.selectedAssignees?.length > 0 &&
+											formData.selectedAssignees.map((name) => (
+												<Avatar size={"sm"} name={name} src={name} />
+											))}
 									</FormControl>
 								</HStack>
 

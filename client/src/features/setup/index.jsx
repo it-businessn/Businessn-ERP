@@ -1,23 +1,12 @@
-import {
-	Box,
-	Tab,
-	TabList,
-	TabPanel,
-	TabPanels,
-	Tabs,
-	Text,
-} from "@chakra-ui/react";
+import { Box, Button, ButtonGroup, Text } from "@chakra-ui/react";
 import { useState } from "react";
-import { useBreakpointValue } from "services/Breakpoint";
 import { SETUP_LIST } from "./data";
 
 const Setup = () => {
-	const { isMobile } = useBreakpointValue();
-	const [currentTab, setCurrentTab] = useState(0);
+	const [viewMode, setViewMode] = useState(SETUP_LIST[0].type);
+	const showComponent = (viewMode) =>
+		SETUP_LIST.find(({ type }) => type === viewMode)?.name;
 
-	const handleTabChange = (index) => {
-		setCurrentTab(index);
-	};
 	return (
 		<Box p={{ base: "1em", md: "2em" }}>
 			<Text fontWeight="bold" mb={"1em"}>
@@ -30,26 +19,30 @@ const Setup = () => {
 				borderRadius="10px"
 				color={"brand.nav_color"}
 			>
-				<Tabs
-					variant="soft-rounded"
-					colorScheme="blue"
-					index={currentTab}
-					onChange={handleTabChange}
-				>
-					<TabList>
-						{SETUP_LIST.map((item) => (
-							<Tab key={item.type}>Set Up {item.type}</Tab>
+				<Box mb={4} bg={"var(--main_color)"} borderRadius={"1em"} px="5px">
+					<ButtonGroup variant="solid" p={0} m={0}>
+						{SETUP_LIST.map(({ type, id }) => (
+							<Button
+								key={id}
+								size={"lg"}
+								onClick={() => setViewMode(type)}
+								color={viewMode === type ? "brand.100" : "brand.nav_color"}
+								bg={
+									viewMode === type
+										? "var(--primary_button_bg)"
+										: "var(--main_color)"
+								}
+								borderRadius={"1em"}
+								variant={"solid"}
+								fontWeight={viewMode === type ? "bold" : "normal"}
+								_hover={{ bg: "transparent", color: "brand.600" }}
+							>
+								{type}
+							</Button>
 						))}
-					</TabList>
-
-					<TabPanels>
-						{SETUP_LIST.map((item) => (
-							<TabPanel key={item.id}>
-								{currentTab === item.id && item.name}
-							</TabPanel>
-						))}
-					</TabPanels>
-				</Tabs>
+					</ButtonGroup>
+				</Box>
+				{showComponent(viewMode)}
 			</Box>
 		</Box>
 	);

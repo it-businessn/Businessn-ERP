@@ -40,8 +40,8 @@ const ProjectActionCell = ({
 		console.log(index);
 	};
 	return (
-		<Td p={"0.5em"} fontSize={"xs"} w={"450px"}>
-			<VStack alignItems={"start"} spacing={0}>
+		<Td p={"0.5em"} fontSize={"xs"} w={"400px"} py={0}>
+			<VStack alignItems={"start"} spacing={0} w={"100%"} ml={"-1.5em"}>
 				<HStack spacing={2}>
 					<Box position="relative" width="100px" height="100px">
 						<CircularProgressBarCell
@@ -87,7 +87,7 @@ const ProjectActionCell = ({
 								key={task._id}
 								w={"100%"}
 								alignItems={"flex-start"}
-								pl={"2em"}
+								ml={"3em"}
 							>
 								<TaskActionCell
 									taskIndex={taskIndex}

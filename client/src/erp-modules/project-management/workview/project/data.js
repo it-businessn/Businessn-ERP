@@ -33,6 +33,8 @@ export const RANDOM_PEOPLE_ICON = [
 	},
 ];
 
+export const PRIORITY = ["High", "Medium", "Low"];
+
 export const workView_Table = {
 	projects_cols: [
 		"Project name",

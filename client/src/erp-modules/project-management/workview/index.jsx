@@ -39,8 +39,9 @@ export const statusColor = (status) => {
 	}
 };
 
-export const headerCell = (key, weight) => (
+export const headerCell = (key, weight, w) => (
 	<Th
+		w={w}
 		fontWeight={weight ? weight : "bolder"}
 		key={key}
 		fontSize={"xs"}
@@ -201,7 +202,7 @@ const WorkView = () => {
 				</Box>
 			</Flex>
 			<Box
-				p="2em"
+				p="1em"
 				bg={"brand.primary_bg"}
 				border="2px solid var(--main_color)"
 				borderRadius="10px"
