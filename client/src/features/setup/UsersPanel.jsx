@@ -1,25 +1,10 @@
 import { SmallAddIcon } from "@chakra-ui/icons";
-import {
-	Button,
-	HStack,
-	Input,
-	InputGroup,
-	InputRightElement,
-	Menu,
-	MenuButton,
-	MenuItem,
-	MenuList,
-	Table,
-	Tbody,
-	Td,
-	Th,
-	Thead,
-	Tr,
-} from "@chakra-ui/react";
+import { Button, HStack } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
-import { FaSearch } from "react-icons/fa";
 import UserService from "services/UserService";
 import AddNewUser from "./AddNewUser";
+import EmpSearchMenu from "./EmpSearchMenu";
+import UserList from "./UserList";
 
 const UsersPanel = () => {
 	const [employees, setEmployees] = useState(null);
@@ -81,45 +66,12 @@ const UsersPanel = () => {
 	return (
 		<>
 			<HStack>
-				<Menu>
-					<MenuButton>
-						<InputGroup
-							borderRadius={"10px"}
-							border={"1px solid var(--filter_border_color)"}
-							fontSize="xs"
-							fontWeight="bold"
-						>
-							<Input
-								_placeholder={{
-									color: "brand.nav_color",
-									fontSize: "sm",
-								}}
-								name="empName"
-								value={empName}
-								color={"brand.nav_color"}
-								bg={"brand.primary_bg"}
-								type="text"
-								placeholder="Search employee"
-								pr="4.5rem"
-								py={"1.1em"}
-							/>
-							<InputRightElement size="xs" children={<FaSearch />} />
-						</InputGroup>
-					</MenuButton>
-					<MenuList>
-						<Input
-							placeholder="Enter Manager Name"
-							value={empName}
-							onChange={(e) => handleInputChange(e.target.value)}
-							mb={2}
-						/>
-						{filteredEmployees?.map((emp) => (
-							<MenuItem key={emp._id} onClick={() => handleSelect(emp)}>
-								{emp.fullName}
-							</MenuItem>
-						))}
-					</MenuList>
-				</Menu>
+				<EmpSearchMenu
+					filteredEmployees={filteredEmployees}
+					empName={empName}
+					handleInputChange={handleInputChange}
+					handleSelect={handleSelect}
+				/>
 
 				<Button
 					// isDisabled={isDisabled}
@@ -147,33 +99,7 @@ const UsersPanel = () => {
 					/>
 				)}
 			</HStack>
-			{employees && (
-				<Table variant="simple">
-					<Thead>
-						<Tr>
-							<Th>Name</Th>
-							<Th>Email</Th>
-							<Th>Base Module</Th>
-							<Th>Team</Th>
-							<Th>Role</Th>
-						</Tr>
-					</Thead>
-					{console.log(filteredEmployees)}
-					<Tbody>
-						{filteredEmployees.map(
-							({ fullName, _id, email, baseModule, team, role }) => (
-								<Tr key={_id}>
-									<Td whiteSpace={"pre-wrap"}>{fullName}</Td>
-									<Td whiteSpace={"pre-wrap"}>{email}</Td>
-									<Td whiteSpace={"pre-wrap"}>{baseModule || ""}</Td>
-									<Td whiteSpace={"pre-wrap"}>{team || ""}</Td>
-									<Td whiteSpace={"pre-wrap"}>{role}</Td>
-								</Tr>
-							),
-						)}
-					</Tbody>
-				</Table>
-			)}
+			{employees && <UserList filteredEmployees={filteredEmployees} />}
 		</>
 	);
 };

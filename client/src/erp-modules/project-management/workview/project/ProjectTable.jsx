@@ -111,7 +111,7 @@ const ProjectTable = ({ data, setRefresh, managers }) => {
 							key={project._id}
 							className={`parent_div_${index}`}
 							display={"flex"}
-							justifyContent={"center"}
+							justifyContent={"start"}
 						>
 							<ProjectActionCell
 								expandedIndex={expandedIndex}

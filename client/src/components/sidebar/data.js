@@ -1113,7 +1113,7 @@ export const SIDEBAR_MENU = [
 		],
 	},
 	{
-		path: "/payroll",
+		path: "/users",
 		name: "Payroll",
 		id: "payroll",
 		icon: <FaDashcube />,

@@ -1,12 +1,6 @@
 import {
+	Box,
 	HStack,
-	Input,
-	InputGroup,
-	InputRightElement,
-	Menu,
-	MenuButton,
-	MenuItem,
-	MenuList,
 	Table,
 	Tbody,
 	Td,
@@ -17,10 +11,11 @@ import {
 } from "@chakra-ui/react";
 import { SIDEBAR_MENU } from "components/sidebar/data";
 import { useEffect, useState } from "react";
-import { FaChevronDown, FaSearch } from "react-icons/fa";
+import { FaChevronDown } from "react-icons/fa";
 import { GoCheckCircleFill } from "react-icons/go";
 import { IoMdCloseCircle } from "react-icons/io";
 import UserService from "services/UserService";
+import EmpSearchMenu from "./EmpSearchMenu";
 
 const PermissionsPanel = () => {
 	const [employees, setEmployees] = useState(null);
@@ -88,45 +83,12 @@ const PermissionsPanel = () => {
 	return (
 		<>
 			<HStack>
-				<Menu>
-					<MenuButton>
-						<InputGroup
-							borderRadius={"10px"}
-							border={"1px solid var(--filter_border_color)"}
-							fontSize="xs"
-							fontWeight="bold"
-						>
-							<Input
-								_placeholder={{
-									color: "brand.nav_color",
-									fontSize: "sm",
-								}}
-								name="empName"
-								value={empName}
-								color={"brand.nav_color"}
-								bg={"brand.primary_bg"}
-								type="text"
-								placeholder="Search employee"
-								pr="4.5rem"
-								py={"1.1em"}
-							/>
-							<InputRightElement size="xs" children={<FaSearch />} />
-						</InputGroup>
-					</MenuButton>
-					<MenuList>
-						<Input
-							placeholder="Enter Manager Name"
-							value={empName}
-							onChange={(e) => handleInputChange(e.target.value)}
-							mb={2}
-						/>
-						{filteredEmployees?.map((emp) => (
-							<MenuItem key={emp._id} onClick={() => handleSelect(emp)}>
-								{emp.fullName}
-							</MenuItem>
-						))}
-					</MenuList>
-				</Menu>
+				<EmpSearchMenu
+					filteredEmployees={filteredEmployees}
+					empName={empName}
+					handleInputChange={handleInputChange}
+					handleSelect={handleSelect}
+				/>
 			</HStack>
 			{employees && (
 				<Table variant="simple">
@@ -145,47 +107,108 @@ const PermissionsPanel = () => {
 					</Thead>
 					<Tbody>
 						{SIDEBAR_MENU.map((menu, index) => (
-							<>
-								<Tr>
-									<Td w={"550px"} key={menu.name}>
-										<HStack>
-											{menu.children.length > 0 && (
-												<FaChevronDown
-													onClick={(e) => {
-														e.preventDefault();
-														handleToggle(index, menu.children);
-													}}
-												/>
-											)}
-											<Text>{menu.name}</Text>
-										</HStack>
-									</Td>
-									<Td w={"50px"}>
-										<IoMdCloseCircle color={"red"} />
-									</Td>
-									<Td w={"50px"}>
-										<GoCheckCircleFill color={"green"} />
-									</Td>
-									<Td w={"50px"}>
-										<IoMdCloseCircle color={"red"} />
-									</Td>
-									<Td w={"50px"}>
-										<GoCheckCircleFill color={"green"} />
-									</Td>
-									<Td w={"50px"}>
-										<GoCheckCircleFill color={"green"} />
-									</Td>
-									<Td w={"50px"}>
-										<GoCheckCircleFill color={"green"} />
-									</Td>
-									<Td w={"50px"}>
-										<GoCheckCircleFill color={"green"} />
-									</Td>
-									<Td w={"50px"}>
-										<GoCheckCircleFill color={"green"} />
-									</Td>
-								</Tr>
-							</>
+							<Tr>
+								<Td w={"550px"} key={menu.name} py={1}>
+									<HStack spacing={2}>
+										{menu.children.length > 0 && (
+											<FaChevronDown
+												onClick={(e) => {
+													e.preventDefault();
+													handleToggle(index, menu.children);
+												}}
+											/>
+										)}
+										<Text>{menu.name}</Text>
+									</HStack>
+									{isExpanded === index &&
+										menu.children?.length > 0 &&
+										menu.children.map((child) => (
+											<Box mt={1.5}>
+												<Text>{child.name}</Text>
+											</Box>
+										))}
+								</Td>
+								<Td w={"50px"} py={1}>
+									<IoMdCloseCircle color={"red"} />
+									{isExpanded === index &&
+										menu.children?.length > 0 &&
+										menu.children.map((child) => (
+											<Box mt={3}>
+												<IoMdCloseCircle color={"red"} />
+											</Box>
+										))}
+								</Td>
+								<Td w={"50px"} py={1}>
+									<GoCheckCircleFill color={"green"} />
+									{isExpanded === index &&
+										menu.children?.length > 0 &&
+										menu.children.map((child) => (
+											<Box mt={3}>
+												<IoMdCloseCircle color={"red"} />
+											</Box>
+										))}
+								</Td>
+								<Td w={"50px"} py={1}>
+									<IoMdCloseCircle color={"red"} />
+									{isExpanded === index &&
+										menu.children?.length > 0 &&
+										menu.children.map((child) => (
+											<Box mt={3}>
+												<IoMdCloseCircle color={"red"} />
+											</Box>
+										))}
+								</Td>
+								<Td w={"50px"} py={1}>
+									<GoCheckCircleFill color={"green"} />
+									{isExpanded === index &&
+										menu.children?.length > 0 &&
+										menu.children.map((child) => (
+											<Box mt={3}>
+												<IoMdCloseCircle color={"red"} />
+											</Box>
+										))}
+								</Td>
+								<Td w={"50px"} py={1}>
+									<GoCheckCircleFill color={"green"} />
+									{isExpanded === index &&
+										menu.children?.length > 0 &&
+										menu.children.map((child) => (
+											<Box mt={3}>
+												<IoMdCloseCircle color={"red"} />
+											</Box>
+										))}
+								</Td>
+								<Td w={"50px"} py={1}>
+									<GoCheckCircleFill color={"green"} />
+									{isExpanded === index &&
+										menu.children?.length > 0 &&
+										menu.children.map((child) => (
+											<Box mt={3}>
+												<IoMdCloseCircle color={"red"} />
+											</Box>
+										))}
+								</Td>
+								<Td w={"50px"} py={1}>
+									<GoCheckCircleFill color={"green"} />
+									{isExpanded === index &&
+										menu.children?.length > 0 &&
+										menu.children.map((child) => (
+											<Box mt={3}>
+												<IoMdCloseCircle color={"red"} />
+											</Box>
+										))}
+								</Td>
+								<Td w={"50px"} py={1}>
+									<GoCheckCircleFill color={"green"} />
+									{isExpanded === index &&
+										menu.children?.length > 0 &&
+										menu.children.map((child) => (
+											<Box mt={3}>
+												<IoMdCloseCircle color={"red"} />
+											</Box>
+										))}
+								</Td>
+							</Tr>
 						))}
 					</Tbody>
 				</Table>

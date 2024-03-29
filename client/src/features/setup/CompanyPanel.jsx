@@ -1,4 +1,4 @@
-import { Tab, TabList, Tabs } from "@chakra-ui/react";
+import { Tab, TabList, TabPanel, TabPanels, Tabs } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import SettingService from "services/SettingService";
 import { COMPANY_SETUP_TAB } from "./data";
@@ -44,28 +44,26 @@ const CompanyPanel = () => {
 		setCurrentTab(index);
 	};
 	return (
-		<>
-			<Tabs
-				variant="soft-rounded"
-				colorScheme="blue"
-				index={currentTab}
-				onChange={handleTabChange}
-			>
-				<TabList>
-					{COMPANY_SETUP_TAB.map((item) => (
-						<Tab key={item.type}>{item.type}</Tab>
-					))}
-				</TabList>
+		<Tabs
+			variant="soft-rounded"
+			colorScheme="blue"
+			index={currentTab}
+			onChange={handleTabChange}
+		>
+			<TabList>
+				{COMPANY_SETUP_TAB.map((item) => (
+					<Tab key={item.type}>{item.type}</Tab>
+				))}
+			</TabList>
 
-				{/* <TabPanels>
-					{COMPANY_SETUP_TAB.map((item) => (
-						<TabPanel key={item.id}>
-							{currentTab === item.id && item.name}
-						</TabPanel>
-					))}
-				</TabPanels> */}
-			</Tabs>
-		</>
+			<TabPanels>
+				{COMPANY_SETUP_TAB.map((item) => (
+					<TabPanel key={item.id}>
+						{currentTab === item.id && item.name}
+					</TabPanel>
+				))}
+			</TabPanels>
+		</Tabs>
 	);
 };
 
