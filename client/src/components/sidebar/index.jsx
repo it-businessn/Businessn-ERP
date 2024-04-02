@@ -29,7 +29,11 @@ const Sidebar = ({
 			<Stack justify="start" width="full" my={0} spacing={0}>
 				{activeMenu?.children?.length &&
 					activeMenu?.children?.map((menu) => (
-						<MenuItem key={crypto.randomUUID()} menu={menu} />
+						<MenuItem
+							key={crypto.randomUUID()}
+							menu={menu}
+							parent={activeMenu.id}
+						/>
 					))}
 			</Stack>
 		</Flex>

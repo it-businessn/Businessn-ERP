@@ -1,6 +1,6 @@
 import { Flex, useDisclosure } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
-import { Outlet, useNavigate } from "react-router-dom";
+import { Outlet, useLocation, useNavigate } from "react-router-dom";
 
 import Navbar from "components/header";
 import Sidebar from "components/sidebar";
@@ -11,15 +11,18 @@ import LocalStorageService from "services/LocalStorageService";
 const RootLayout = () => {
 	const [user, setUser] = useState(LocalStorageService.getItem("user"));
 
+	const location = useLocation();
 	const navigate = useNavigate();
 
 	useEffect(() => {
-		if (user) {
-			navigate("/sales-dashboard");
-		} else {
-			navigate("/login");
+		if (!user || location.pathname === "/") {
+			if (user) {
+				navigate("/sales");
+			} else {
+				navigate("/login");
+			}
 		}
-	}, [user]);
+	}, [user, navigate, location.pathname]);
 
 	const handleLogout = () => {
 		setUser(LocalStorageService.removeItem("user"));

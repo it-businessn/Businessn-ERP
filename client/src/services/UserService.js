@@ -28,6 +28,18 @@ const UserService = {
 	async verifyUser(data) {
 		return apiService.post("/user/verify-email", data);
 	},
+
+	async getUserPermission(id) {
+		return apiService.get(`/permissions/${id}`);
+	},
+
+	async addUserPermission(data) {
+		return apiService.post(`/permissions/`, data);
+	},
+
+	async updateUserPermission(data, id) {
+		return apiService.put(`/permissions/${id}`, data, id);
+	},
 };
 
 export default UserService;

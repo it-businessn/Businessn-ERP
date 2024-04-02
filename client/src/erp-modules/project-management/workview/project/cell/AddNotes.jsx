@@ -8,6 +8,7 @@ import {
 	ModalContent,
 	ModalFooter,
 	ModalOverlay,
+	Textarea,
 } from "@chakra-ui/react";
 import ActionButton from "components/ui/button/ActionButton";
 import { useState } from "react";
@@ -23,15 +24,6 @@ const AddNotes = ({ data, type, setIsOpen, isOpen, setRefresh }) => {
 	const [isEdit, setIsEdit] = useState(false);
 	const [isSubmitting, setIsSubmitting] = useState(false);
 
-	const handleClick = (e) => {
-		e.preventDefault();
-
-		setIsEdit((prev) => !prev);
-		if (!isEdit) {
-			return;
-		}
-		handleConfirm();
-	};
 	const handleConfirm = async () => {
 		setIsSubmitting(true);
 		try {
@@ -62,31 +54,43 @@ const AddNotes = ({ data, type, setIsOpen, isOpen, setRefresh }) => {
 						readOnly
 					/>
 					<FormLabel>Description</FormLabel>
-					<Input
-						type="text"
-						name="notes"
+					<Textarea
 						value={formData.notes}
+						rows={5}
+						name="notes"
 						onChange={(e) =>
 							setFormData((prev) => ({
 								...prev,
 								notes: e.target.value,
 							}))
 						}
-						placeholder="Click on Edit to add notes"
+						onClick={(e) => {
+							e.preventDefault();
+							setIsEdit(true);
+						}}
 						readOnly={isEdit ? false : true}
-						border={isEdit ? "1px solid var(--chakra-colors-gray-300)" : "none"}
+						placeholder="Log notes..."
 					/>
 				</ModalBody>
-				<ModalFooter>
-					<ActionButton
-						isLoading={isSubmitting}
-						name={isEdit ? "Save" : "Edit"}
-						onClick={handleClick}
-					/>
 
-					<Button ml={3} colorScheme={"gray"} onClick={() => setIsOpen(false)}>
-						Cancel
-					</Button>
+				<ModalFooter>
+					{isEdit && (
+						<>
+							<ActionButton
+								isLoading={isSubmitting}
+								name={"Save"}
+								onClick={handleConfirm}
+							/>
+
+							<Button
+								ml={3}
+								colorScheme={"gray"}
+								onClick={() => setIsOpen(false)}
+							>
+								Cancel
+							</Button>
+						</>
+					)}
 				</ModalFooter>
 			</ModalContent>
 		</Modal>

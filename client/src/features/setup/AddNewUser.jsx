@@ -141,7 +141,7 @@ const AddNewUser = ({ isOpen, onClose, setRefresh }) => {
 											required
 										/>
 									</FormControl>
-								</HStack>{" "}
+								</HStack>
 								<HStack>
 									<FormControl>
 										<FormLabel visibility={openModuleMenu ? "" : "hidden"}>

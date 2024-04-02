@@ -35,11 +35,7 @@ const employeeSchema = new mongoose.Schema({
 		required: true,
 	},
 	role: { type: String, required: true, ref: "EmployeeRole" },
-	department: {
-		type: String,
-		ref: "Department",
-		required: true,
-	},
+
 	isActive: Boolean,
 	lastLogin: String,
 	employmentType: { type: String, required: true, ref: "EmploymentType" },
@@ -67,6 +63,8 @@ const employeeSchema = new mongoose.Schema({
 	updatedOn: { type: Date, default: Date.now },
 	updatedBy: { type: mongoose.Schema.Types.ObjectId, ref: "Employee" },
 	companyId: [{ type: mongoose.Schema.Types.ObjectId, ref: "Company" }],
+	baseModule: [{ type: String, ref: "Module" }],
+	department: [{ type: String, ref: "Department" }],
 });
 
 const Employee = mongoose.model("Employee", employeeSchema);

@@ -2,7 +2,7 @@ import { Button, Flex, HStack, IconButton, VStack } from "@chakra-ui/react";
 import { useState } from "react";
 import { NavLink } from "react-router-dom";
 
-const MenuItem = ({ menu, textTransform, handleMenuItemClick }) => {
+const MenuItem = ({ menu, parent, textTransform, handleMenuItemClick }) => {
 	const [isOpen, setIsOpen] = useState(true);
 
 	const handleToggle = () => {
@@ -18,7 +18,7 @@ const MenuItem = ({ menu, textTransform, handleMenuItemClick }) => {
 			>
 				<Flex align="center" w={"100%"}>
 					<NavLink
-						to={menu?.path}
+						to={`/${parent}/${menu.path}`}
 						onClick={handleMenuItemClick}
 						activeclassname="active"
 					>

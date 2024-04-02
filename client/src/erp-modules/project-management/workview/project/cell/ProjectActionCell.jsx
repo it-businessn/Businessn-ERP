@@ -55,15 +55,6 @@ const ProjectActionCell = ({
 							}
 						/>
 					</Box>
-					{/* <CircularFillProgress
-						completionPercentage={
-							project.completionPercent
-								? Number.isInteger(project.completionPercent)
-									? project.completionPercent
-									: parseFloat(project.completionPercent).toFixed(2)
-								: 0
-						}
-					/> */}
 					<ActionItem
 						data={project}
 						name={project.name}
@@ -78,6 +69,7 @@ const ProjectActionCell = ({
 						handleDelete={() => handleDelete(project, project._id)}
 						isProject
 						type={"project"}
+						setRefresh={setRefresh}
 					/>
 				</HStack>
 				{expandedIndex === index &&

@@ -3,8 +3,8 @@ import { createBrowserRouter } from "react-router-dom";
 
 import Loader from "./components/Loader";
 import PageNotFound from "./features/PageNotFound";
-import Home from "./features/home";
 // import AddPayrun from "./features/payroll/AddPayRun";
+import SalesHome from "./features/home";
 import RootLayout from "./layouts/RootLayout";
 
 // const PayrollTable = lazy(() => import("./features/payroll"));
@@ -80,112 +80,112 @@ export const router = createBrowserRouter([
 		children: [
 			{
 				index: true,
-				element: <Home />,
+				element: <SalesHome />,
 			},
 			{
-				path: "/profile",
-				element: <UserProfileDetails />,
-			},
-			{
-				path: "/sales-dashboard",
+				path: "/sales",
 				element: <CRMDashboard />,
 			},
 			{
-				path: "/activities",
+				path: "/sales/activities",
 				element: <Activities />,
 			},
 			{
-				path: "/calendar",
+				path: "/sales/calendar",
 				element: <Calendar />,
 			},
 			{
-				path: "/payouts",
+				path: "/sales/payouts",
 				element: <Payouts />,
 			},
 			{
-				path: "/customers",
+				path: "/sales/customers",
 				element: <Customers />,
 			},
 			{
-				path: "/leads",
+				path: "/sales/leads",
 				element: <Opportunities />,
 			},
 			{
-				path: "/leads-docket",
+				path: "/sales/leads-docket",
 				element: <LeadsDocket />,
 			},
 			{
-				path: "/leads-disburse",
+				path: "/sales/leads-disburse",
 				element: <LeadsDisburse />,
 			},
 			{
-				path: "/fresh-leads",
+				path: "/sales/fresh-leads",
 				element: <FreshLeads />,
 			},
 			{
-				path: "/pipeline",
+				path: "/sales/pipeline",
 				element: <Pipeline />,
 			},
 			{
-				path: "/products",
+				path: "/sales/products",
 				element: <Products />,
 			},
 			{
-				path: "/orders",
+				path: "/sales/orders",
 				element: <Orders />,
 			},
 			{
-				path: "/invoice",
-				element: <Invoice />,
+				path: "/sales/profile",
+				element: <UserProfileDetails />,
 			},
+			// {
+			// 	path: "/invoice",
+			// 	element: <Invoice />,
+			// },
 			{
-				path: "/resources",
+				path: "/sales/resources",
 				element: <Resources />,
 			},
 			{
-				path: "/reports",
+				path: "/sales/reports",
 				element: <SalesReport />,
 			},
 			{
-				path: "/set-up",
+				path: ":module/set-up",
 				element: <Setup />,
 			},
-			{
-				path: "/view-contacts",
-				element: <Contacts />,
-			},
-			{
-				path: "/add-contact",
-				element: <AddContact />,
-			},
-			{
-				path: "/edit-contact",
-				element: <EditContact />,
-			},
-			{
-				path: "/view-tasks",
-				element: <TaskByDate />,
-			},
-			{
-				path: "/add-opportunity",
-				element: <AddOpportunity />,
-			},
-			{
-				path: "/edit-opportunity",
-				element: <EditOpportunity />,
-			},
-			{
-				path: "/opportunities",
-				element: <OpportunitiesList />,
-			},
-			{
-				path: "/tasks",
-				element: <TaskDashboard />,
-			},
-			{
-				path: "/edit-user/:id",
-				element: <EditUser />,
-			},
+			// {
+			// 	path: "/view-contacts",
+			// 	element: <Contacts />,
+			// },
+			// {
+			// 	path: "/add-contact",
+			// 	element: <AddContact />,
+			// },
+			// {
+			// 	path: "/edit-contact",
+			// 	element: <EditContact />,
+			// },
+			// {
+			// 	path: "/view-tasks",
+			// 	element: <TaskByDate />,
+			// },
+			// {
+			// 	path: "/add-opportunity",
+			// 	element: <AddOpportunity />,
+			// },
+			// {
+			// 	path: "/edit-opportunity",
+			// 	element: <EditOpportunity />,
+			// },
+			// {
+			// 	path: "/opportunities",
+			// 	element: <OpportunitiesList />,
+			// },
+			// {
+			// 	path: "/tasks",
+			// 	element: <TaskDashboard />,
+			// },
+			// {
+			// 	path: "/edit-user/:id",
+			// 	element: <EditUser />,
+			// },
 			// {
 			// 	path: "/generate",
 			// 	element: <PayrollTable />,
@@ -200,19 +200,15 @@ export const router = createBrowserRouter([
 			// },
 
 			{
-				path: "/project-dashboard",
+				path: "/project",
 				element: <WorkView />,
 			},
 			{
-				path: "/pm-setup",
-				element: <Setup />,
-			},
-			{
-				path: "/workview",
+				path: "/project/workview",
 				element: <WorkView />,
 			},
 			{
-				path: "/users",
+				path: "/payroll",
 				element: <Employees />,
 			},
 			{
