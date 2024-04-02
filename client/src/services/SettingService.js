@@ -29,6 +29,22 @@ const SettingService = {
 		return apiService.post("/setup/modules", data);
 	},
 
+	async updateModuleActiveStatus(data, id) {
+		return apiService.put(`/setup/modules-status/${id}`, data, id);
+	},
+
+	async getAllGroups() {
+		return apiService.get(`/setup/groups`);
+	},
+
+	async addGroup(data) {
+		return apiService.post("/setup/groups", data);
+	},
+
+	async updateGroup(data, id) {
+		return apiService.put(`/setup/groups/${id}`, data, id);
+	},
+
 	async getAllCompanies() {
 		return apiService.get(`/setup/companies`);
 	},

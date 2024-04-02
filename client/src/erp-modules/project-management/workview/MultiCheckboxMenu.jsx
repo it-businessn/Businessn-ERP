@@ -49,10 +49,14 @@ const MultiCheckboxMenu = ({
 						<MenuItem key={assignee._id}>
 							<Checkbox
 								colorScheme="facebook"
-								isChecked={selectedOptions.includes(assignee.fullName)}
-								onChange={() => handleCheckboxChange(assignee.fullName)}
+								isChecked={selectedOptions?.includes(
+									assignee.fullName || assignee.name,
+								)}
+								onChange={() =>
+									handleCheckboxChange(assignee.fullName || assignee.name)
+								}
 							>
-								{assignee.fullName}
+								{assignee.fullName || assignee.name}
 							</Checkbox>
 						</MenuItem>
 					))}

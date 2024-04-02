@@ -24,7 +24,7 @@ const UserList = ({ filteredEmployees }) => {
 			</Thead>
 			<Tbody>
 				{filteredEmployees.map(
-					({ fullName, _id, email, baseModule, team, role }) => (
+					({ fullName, _id, email, baseModule, group, role }) => (
 						<Tr key={_id}>
 							<Td
 								w={"200px"}
@@ -60,7 +60,7 @@ const UserList = ({ filteredEmployees }) => {
 								px={1.5}
 								fontSize={"xs"}
 							>
-								{team || ""}
+								{group || ""}
 							</Td>
 							<Td
 								w={"100px"}

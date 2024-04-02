@@ -2,6 +2,8 @@ const Company = require("../models/Company");
 const Department = require("../models/Department");
 const EmployeeRole = require("../models/EmployeeRole");
 const EmploymentType = require("../models/EmploymentType");
+const Group = require("../models/Group");
+const Module = require("../models/Module");
 const Setup = require("../models/Setup");
 
 const getIdleLeadReAssignment = () => async (req, res) => {
@@ -60,6 +62,83 @@ const addDepartment = () => async (req, res) => {
 		res.status(201).json(newDepartment);
 	} catch (error) {
 		res.status(400).json({ message: error.message });
+	}
+};
+
+const getAllModules = () => async (req, res) => {
+	try {
+		const module = await Module.find().sort({ createdOn: -1 });
+		res.status(200).json(module);
+	} catch (error) {
+		res.status(404).json({ error: error.message });
+	}
+};
+
+const addModule = () => async (req, res) => {
+	const { name, description } = req.body;
+
+	const newModule = new Module({
+		name,
+		description,
+	});
+
+	try {
+		await newModule.save();
+		res.status(201).json(newModule);
+	} catch (error) {
+		res.status(400).json({ message: error.message });
+	}
+};
+const updateModuleActiveStatus = () => async (req, res) => {
+	const { id } = req.params;
+	try {
+		const setup = await Module.findByIdAndUpdate(
+			id,
+			{ $set: req.body },
+			{ new: true },
+		);
+		res.status(200).json(setup);
+	} catch (error) {
+		console.log(error, "Error in updating");
+	}
+};
+
+const getAllGroups = () => async (req, res) => {
+	try {
+		const group = await Group.find();
+		res.status(200).json(group);
+	} catch (error) {
+		res.status(404).json({ error: error.message });
+	}
+};
+
+const addGroup = () => async (req, res) => {
+	const { name, baseModule, admin } = req.body;
+
+	const newModule = new Group({
+		name,
+		modules: baseModule,
+		admin,
+	});
+
+	try {
+		await newModule.save();
+		res.status(201).json(newModule);
+	} catch (error) {
+		res.status(400).json({ message: error.message });
+	}
+};
+const updateGroup = () => async (req, res) => {
+	const { id } = req.params;
+	try {
+		const setup = await Group.findByIdAndUpdate(
+			id,
+			{ $set: req.body },
+			{ new: true },
+		);
+		res.status(200).json(setup);
+	} catch (error) {
+		console.log(error, "Error in updating");
 	}
 };
 
@@ -204,4 +283,10 @@ module.exports = {
 	getAllCompanies,
 	addCompany,
 	getCompanyById,
+	addModule,
+	getAllModules,
+	updateModuleActiveStatus,
+	updateGroup,
+	getAllGroups,
+	addGroup,
 };

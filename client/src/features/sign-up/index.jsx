@@ -24,7 +24,7 @@ import SettingService from "services/SettingService";
 import UserService from "services/UserService";
 // import signUpImg from "../../assets/logos/BusinessN_dark.jpg";
 
-const SignUp = () => {
+const SignUp = ({ isModal, setRefresh, onClose }) => {
 	const defaultFormData = {
 		company: "",
 		companyId: "20240001",
@@ -117,6 +117,11 @@ const SignUp = () => {
 			await LoginService.createEmployee(formData);
 			resetForm();
 			setIsLoading(false);
+			if (isModal) {
+				setRefresh((prev) => !prev);
+				onClose();
+				return;
+			}
 			navigate("/login");
 		} catch (error) {
 			setIsLoading(false);
@@ -135,34 +140,36 @@ const SignUp = () => {
 		setShowPassword((prevShowPassword) => !prevShowPassword);
 	};
 	return (
-		<Box overflow="auto" height={"100vh"}>
+		<Box overflow="auto" height={isModal ? "70vh" : "100vh"}>
 			<Container
 				py={{
 					base: "3",
 				}}
-				maxW="4xl"
+				maxW={isModal ? "" : "4xl"}
 			>
 				<Stack
 					spacing={10}
 					borderRadius="10px"
-					border={"1px solid var(--lead_cards_border)"}
-					bg={"var(--bg_color_1)"}
-					p="1em"
+					border={isModal ? "none" : "1px solid var(--lead_cards_border)"}
+					bg={isModal ? "" : "var(--bg_color_1)"}
+					p={isModal ? 0 : "1em"}
 					color={"brand.logo_bg"}
 				>
-					<Stack align="center">
-						<Logo />
-						<Stack spacing="3" textAlign="center">
-							<Heading
-								size={{
-									base: "xs",
-									md: "sm",
-								}}
-							>
-								Create an account
-							</Heading>
+					{!isModal && (
+						<Stack align="center">
+							<Logo />
+							<Stack spacing="3" textAlign="center">
+								<Heading
+									size={{
+										base: "xs",
+										md: "sm",
+									}}
+								>
+									Create an account
+								</Heading>
+							</Stack>
 						</Stack>
-					</Stack>
+					)}
 
 					<form onSubmit={handleSubmit}>
 						{companies && (
