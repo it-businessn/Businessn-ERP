@@ -27,7 +27,7 @@ const UserProfile = ({ user, handleLogout }) => {
 	}, [signUp]);
 
 	const showProfilePage = () => {
-		navigate("/profile");
+		navigate("/sales/profile");
 	};
 
 	const showRegisterPage = () => {

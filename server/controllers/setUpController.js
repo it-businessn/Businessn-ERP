@@ -65,8 +65,18 @@ const addDepartment = () => async (req, res) => {
 
 const getAllCompanies = () => async (req, res) => {
 	try {
-		const companies = await Company.find().sort({ createdOn: -1 });
+		const companies = await Company.find();
 		res.status(200).json(companies);
+	} catch (error) {
+		res.status(404).json({ error: error.message });
+	}
+};
+
+const getCompanyById = () => async (req, res) => {
+	const { id } = req.params;
+	try {
+		const company = await Company.find({ name: id });
+		res.status(200).json(company);
 	} catch (error) {
 		res.status(404).json({ error: error.message });
 	}
@@ -193,4 +203,5 @@ module.exports = {
 	addEmpType,
 	getAllCompanies,
 	addCompany,
+	getCompanyById,
 };

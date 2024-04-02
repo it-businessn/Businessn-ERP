@@ -12,27 +12,38 @@ import {
 import { Tab, UserProfile } from "components";
 import Logo from "components/logo";
 import { SIDEBAR_MENU } from "components/sidebar/data";
+import { useEffect, useState } from "react";
 import { FaSyncAlt } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { useBreakpointValue } from "services/Breakpoint";
-
-const COMPANIES = [
-	{ name: "Fractional Departments", value: "FD" },
-	{ name: "BusinessN Corporate", value: "BusinessN" },
-];
+import SettingService from "services/SettingService";
 
 const Navbar = ({
 	company,
-	selectedCompany,
+	setSelectedCompany,
 	handleClick,
 	user,
 	handleLogout,
 	onOpen,
 }) => {
+	const [companies, setCompanies] = useState(null);
+	useEffect(() => {
+		const fetchCompanyInfo = async () => {
+			try {
+				const response = await SettingService.getAllCompanies();
+				setCompanies(response.data);
+			} catch (error) {
+				console.error(error);
+			}
+		};
+
+		fetchCompanyInfo();
+	}, []);
+
 	const { isMobile } = useBreakpointValue();
 
 	const handleChange = (value) => {
-		selectedCompany(value);
+		setSelectedCompany(value);
 	};
 
 	const companyList = () => (
@@ -52,9 +63,9 @@ const Navbar = ({
 				fontWeight="bold"
 				onChange={(e) => handleChange(e.target.value)}
 			>
-				{COMPANIES.map(({ name, value }) => (
-					<option value={value} key={name}>
-						{name}
+				{companies?.map((company) => (
+					<option value={company.name} key={company._id}>
+						{company.name}
 					</option>
 				))}
 			</Select>

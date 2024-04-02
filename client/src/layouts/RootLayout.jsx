@@ -38,7 +38,7 @@ const RootLayout = () => {
 
 	const handleMenuItemClick = () => onClose();
 
-	const [company, selectedCompany] = useState("FD");
+	const [selectedCompany, setSelectedCompany] = useState(null);
 
 	const handleCompany = (company = "FD") => {
 		// if (company === "FD") {
@@ -46,21 +46,21 @@ const RootLayout = () => {
 		// } else {
 		// 	setActiveMenu(BUSINESSN_SIDEBAR_MENU.find((menu) => menu.id === "sales"));
 		// }
-
+		LocalStorageService.setItem("selectedCompany", selectedCompany);
 		setActiveMenu(SIDEBAR_MENU.find((menu) => menu.id === "sales"));
 	};
 
 	useEffect(() => {
-		handleCompany(company);
-	}, [company]);
+		handleCompany(selectedCompany);
+	}, [selectedCompany]);
 
 	return (
 		<>
 			{user && (
 				<>
 					<Navbar
-						company={company}
-						selectedCompany={selectedCompany}
+						company={selectedCompany}
+						setSelectedCompany={setSelectedCompany}
 						user={user}
 						handleClick={handleClick}
 						handleLogout={handleLogout}

@@ -1,6 +1,8 @@
+import CompanyDetails from "./CompanyDetails";
 import CompanyPanel from "./CompanyPanel";
+import GroupsPanel from "./GroupsPanel";
+import Naming from "./Naming";
 import PermissionsPanel from "./PermissionsPanel";
-import TeamsPanel from "./TeamsPanel";
 import UsersPanel from "./UsersPanel";
 
 // export const SETUP_LIST = [
@@ -16,11 +18,12 @@ export const SETUP_LIST = [
 	{ id: 0, type: "Users", name: <UsersPanel /> },
 	{ id: 1, type: "Company", name: <CompanyPanel /> },
 	{ id: 2, type: "Permissions", name: <PermissionsPanel /> },
+	// { id: 3, type: "Roles", name: <RolesPanel /> },
 ];
 
 export const COMPANY_SETUP_TAB = [
 	{ id: 0, type: "Modules", name: <UsersPanel /> },
-	{ id: 1, type: "Teams", name: <TeamsPanel /> },
-	{ id: 2, type: "Naming", name: <PermissionsPanel /> },
-	{ id: 2, type: "Acct. Info", name: <PermissionsPanel /> },
+	{ id: 1, type: "Groups", name: <GroupsPanel /> },
+	{ id: 2, type: "Naming", name: <Naming /> },
+	{ id: 3, type: "Company Info", name: <CompanyDetails /> },
 ];

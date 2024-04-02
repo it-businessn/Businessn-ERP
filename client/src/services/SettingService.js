@@ -12,6 +12,7 @@ const SettingService = {
 	async addRole(data) {
 		return apiService.post("/setup/roles", data);
 	},
+
 	async getAllDepartments() {
 		return apiService.get(`/setup/departments`);
 	},
@@ -20,8 +21,20 @@ const SettingService = {
 		return apiService.post("/setup/departments", data);
 	},
 
+	async getAllModules() {
+		return apiService.get(`/setup/modules`);
+	},
+
+	async addBaseModule(data) {
+		return apiService.post("/setup/modules", data);
+	},
+
 	async getAllCompanies() {
 		return apiService.get(`/setup/companies`);
+	},
+
+	async getCompanyInfo(id) {
+		return apiService.get(`/setup/companies/${id}`);
 	},
 
 	async addCompany(data) {

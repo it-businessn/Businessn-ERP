@@ -17,6 +17,8 @@ router.post("/empTypes", setUpController.addEmpType());
 
 router.get("/companies", setUpController.getAllCompanies());
 
+router.get("/companies/:id", setUpController.getCompanyById());
+
 router.post("/companies", setUpController.addCompany());
 
 router.get("/approvers", setUpController.getAllApprovers());
