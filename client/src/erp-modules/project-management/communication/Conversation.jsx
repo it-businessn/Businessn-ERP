@@ -121,7 +121,7 @@ const Conversation = ({
 				</VStack>
 			</HStack>
 			<VStack w={"100%"}>
-				<Box pr={3} w={"100%"} maxH={"66vh"} overflowY={"auto"}>
+				<Box pr={3} w={"100%"} minH={"55vh"} maxH={"66vh"} overflowY={"auto"}>
 					{conversations?.map((msg) => (
 						<MessageBubble
 							selectedGroupMember={
@@ -156,8 +156,10 @@ const Conversation = ({
 						onChange={(e) => setMessage(e.target.value)}
 						onKeyPress={handleKeyPress}
 					/>
+
 					<Button
 						onClick={sendMessage}
+						isDisabled={!selectedGroup}
 						variant={"ghost"}
 						size={"sm"}
 						rightIcon={<BsFillSendFill />}

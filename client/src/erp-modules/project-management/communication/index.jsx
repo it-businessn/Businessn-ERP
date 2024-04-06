@@ -28,14 +28,16 @@ const Communications = () => {
 			try {
 				const response = await UserService.getAllMemberGroups(userId);
 				setGroups(response.data);
-				response.data[0].members.forEach((member) => {
-					member.baseModule = response.data[0].modules;
-					member.group = response.data[0].name;
-				});
-				setGroupMembers(
-					response.data[0].members.filter((member) => member._id !== userId),
-				);
-				setSelectedGroup(response.data[0]);
+				if (response.data.length > 0) {
+					response.data[0].members.forEach((member) => {
+						member.baseModule = response.data[0].modules;
+						member.group = response.data[0].name;
+					});
+					setGroupMembers(
+						response.data[0].members.filter((member) => member._id !== userId),
+					);
+					setSelectedGroup(response.data[0]);
+				}
 			} catch (error) {
 				console.error(error);
 			}
