@@ -26,6 +26,7 @@ const getNotDisbursedLeads = () => async (req, res) => {
 		const leads = (await Lead.find({ isDisbursed: false })).sort(
 			(a, b) => b.createdOn - a.createdOn,
 		);
+
 		res.status(200).json(leads);
 	} catch (error) {
 		res.status(404).json({ error: error.message });
@@ -85,15 +86,57 @@ const createLeadOpportunity = () => async (req, res) => {
 	}
 };
 
+const createMultipleLeadOpportunity = () => async (req, res) => {
+	const { newRecord } = req.body;
+
+	let leadsCreated = 0;
+	try {
+		for (const rowData of newRecord) {
+			const {
+				abbreviation,
+				address,
+				companyName,
+				email,
+				industry,
+				opportunityName,
+				phone,
+			} = rowData;
+
+			const { streetNumber, city, state, postalCode, country } = address;
+			await Lead.create({
+				abbreviation,
+				companyName,
+				email,
+				industry,
+				opportunityName,
+				phone,
+				primaryAssignee: [],
+				productService: [],
+				region: "",
+				source: "",
+				stage: "",
+				supervisorAssignee: [],
+				address: { streetNumber, city, state, postalCode, country },
+			});
+			leadsCreated++;
+		}
+
+		const leads = (await Lead.find({ isDisbursed: false })).sort(
+			(a, b) => b.createdOn - a.createdOn,
+		);
+		res.status(200).json(leads);
+	} catch (error) {
+		res.status(400).json({ message: error.message });
+	}
+};
 const updateLeadDisburseStatus = async (id, salesperson) => {
 	try {
 		const updatedData = { isDisbursed: true, disbursedTo: salesperson };
-		const updatedLead = await Lead.findByIdAndUpdate(
+		return await Lead.findByIdAndUpdate(
 			id,
 			{ $set: updatedData },
 			{ new: true },
 		);
-		return updatedLead;
 	} catch (error) {
 		console.log(error, "Error in updating");
 	}
@@ -156,6 +199,7 @@ const confirmDisburseLeads = () => async (req, res) => {
 			const leads = await Lead.find({
 				isDisbursedConfirmed: false,
 				isDisbursed: true,
+				stage: "L1",
 			})
 				.skip(skip)
 				.limit(distributedLeadIDs[i].assignedLeads)
@@ -163,6 +207,7 @@ const confirmDisburseLeads = () => async (req, res) => {
 
 			distributedLeadIDs[i].leads = leads.map((lead) => lead._id);
 			distributedLeadIDs[i].assignedLeads = 0;
+
 			const employee = await Employee.findById(distributedLeadIDs[i]._id);
 			if (employee && employee.assignedLeads > 0) {
 				employee.leads = leads.map((lead) => lead._id);
@@ -199,6 +244,21 @@ const updateLeadInfo = () => async (req, res) => {
 		res.status(400).json({ message: error.message });
 	}
 };
+const deleteLead = async (req, res) => {
+	const { id } = req.params;
+	try {
+		const lead = await Lead.findByIdAndDelete({
+			_id: id,
+		});
+		if (lead) {
+			res.status(200).json(`lead with id ${id} deleted successfully.`);
+		} else {
+			res.status(200).json("lead Details not found.");
+		}
+	} catch (error) {
+		res.status(404).json({ error: "Error deleting lead:", error });
+	}
+};
 
 module.exports = {
 	confirmDisburseLeads,
@@ -209,4 +269,6 @@ module.exports = {
 	getOpportunities,
 	getNotDisbursedLeads,
 	updateLeadInfo,
+	createMultipleLeadOpportunity,
+	deleteLead,
 };

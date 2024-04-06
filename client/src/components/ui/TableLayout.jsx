@@ -27,6 +27,7 @@ const TableLayout = ({
 								{col}
 							</Th>
 						))}
+						{hasMulti && <Th>Action</Th>}
 					</Tr>
 				</Thead>
 				{children}

@@ -82,7 +82,7 @@ const LeadsDocket = () => {
 		<Box p={{ base: "1em", md: "2em" }}>
 			<Text fontWeight="bold" mb={"0.5em"}>
 				Lead Disbursement
-			</Text>{" "}
+			</Text>
 			<input type="file" onChange={handleFileUpload} accept=".xlsx, .xls" />
 			<Button
 				colorScheme="teal"

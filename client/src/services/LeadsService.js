@@ -13,8 +13,16 @@ const LeadsService = {
 		return apiService.get("/leads/disburse/isConfirmed", data);
 	},
 
+	async deleteLead(data, id) {
+		return apiService.delete(`/leads/${id}`, data, id);
+	},
+
 	async getOpportunities() {
 		return apiService.get("/leads/opportunities");
+	},
+
+	async createMultipleOpportunity(data) {
+		return apiService.post("/leads/multiple-opportunities", data);
 	},
 
 	async getOpportunitiesByCategory() {

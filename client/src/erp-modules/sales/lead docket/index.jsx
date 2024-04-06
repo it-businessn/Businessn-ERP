@@ -1,4 +1,6 @@
+import { DeleteIcon } from "@chakra-ui/icons";
 import {
+	Button,
 	Checkbox,
 	Flex,
 	HStack,
@@ -35,6 +37,8 @@ const LeadsDocket = () => {
 	const [leads, setLeads] = useState(null);
 	const [allLeadIDs, setAllLeadIDs] = useState([]);
 	const toast = useToast();
+	const [data, setData] = useState([]);
+	const [isRefresh, setIsRefresh] = useState(false);
 
 	const fetchAllLeads = async () => {
 		try {
@@ -48,7 +52,24 @@ const LeadsDocket = () => {
 
 	useEffect(() => {
 		fetchAllLeads();
-	}, []);
+	}, [isRefresh]);
+
+	useEffect(() => {
+		const addMultipleLeads = async () => {
+			try {
+				const response = await LeadsService.createMultipleOpportunity({
+					newRecord: data,
+				});
+				setLeads(response.data);
+				setAllLeadIDs(response.data.map((item) => item._id));
+			} catch (error) {
+				console.error(error);
+			}
+		};
+		if (data.length > 0) {
+			addMultipleLeads();
+		}
+	}, [data]);
 
 	const [checkedRows, setCheckedRows] = useState([]);
 	const [isAllChecked, setIsAllChecked] = useState(false);
@@ -68,20 +89,19 @@ const LeadsDocket = () => {
 	};
 
 	const navigate = useNavigate();
-
+	const handleDelete = async (_id) => {
+		try {
+			await LeadsService.deleteLead({}, _id);
+			setIsRefresh((prev) => !prev);
+		} catch (error) {
+			console.error(error);
+		}
+	};
 	const handleDisburse = async (e) => {
 		e.preventDefault();
 		try {
 			await LeadsService.disburseLeads(checkedRows);
-			// toast({
-			// 	title: "Leads disbursed",
-			// 	description:
-			// 		"Leads has been successfully distributed among team members",
-			// 	status: "success",
-			// 	duration: 3000,
-			// 	isClosable: true,
-			// });
-			navigate("/leads-disburse");
+			navigate("/sales/leads-disburse");
 		} catch (error) {
 			console.error(error);
 			toast({
@@ -110,7 +130,7 @@ const LeadsDocket = () => {
 					<HStack spacing="1em" my="1em">
 						<SearchFilter width={"200px"} />
 					</HStack>
-					<AddOpportunity />
+					<AddOpportunity data={data} setData={setData} />
 				</Flex>
 			) : isIpad ? (
 				<Flex flexDir="column">
@@ -121,7 +141,7 @@ const LeadsDocket = () => {
 							checkedRows={checkedRows}
 							handleDisburse={handleDisburse}
 						/>
-						<AddOpportunity />
+						<AddOpportunity data={data} setData={setData} />
 					</Flex>
 					<Region />
 					<HStack spacing="1em" my="1em">
@@ -140,7 +160,7 @@ const LeadsDocket = () => {
 						/>
 						<Region />
 						<SearchFilter width={"200px"} />
-						<AddOpportunity />
+						<AddOpportunity data={data} setData={setData} />
 					</HStack>
 				</Flex>
 			)}
@@ -216,6 +236,18 @@ const LeadsDocket = () => {
 										p={1}
 									>{`${address.streetNumber} ${address.city} ${address.state} ${address.country} ${address.postalCode}`}</Td>
 									<Td p={1}>{formatDate(createdOn)}</Td>
+									<Td>
+										<Button
+											onClick={() => handleDelete(_id)}
+											size="xxs"
+											display={"flex"}
+											variant="ghost"
+											fontWeight={"bold"}
+											color="brand.nav_color"
+										>
+											<DeleteIcon />
+										</Button>
+									</Td>
 								</Tr>
 							),
 						)}
