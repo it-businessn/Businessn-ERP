@@ -29,4 +29,6 @@ router.post(
 	resourceController.createResource(),
 );
 
+router.delete("/:id", resourceController.deleteResource);
+
 module.exports = router;

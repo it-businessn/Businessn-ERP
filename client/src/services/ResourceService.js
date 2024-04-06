@@ -12,6 +12,10 @@ const ResourceService = {
 	async upload(data) {
 		return apiService.post("/companyResource/upload", data);
 	},
+
+	async deleteResource(data, id) {
+		return apiService.delete(`/companyResource/${id}`, data, id);
+	},
 };
 
 export default ResourceService;

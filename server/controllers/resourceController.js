@@ -49,6 +49,7 @@ const createResource = () => async (req, res) => {
 		res.status(400).json({ message: error.message });
 	}
 };
+
 const downloadResource = () => async (req, res) => {
 	try {
 		const filename = req.params.filename;
@@ -83,9 +84,26 @@ const downloadResource = () => async (req, res) => {
 	}
 };
 
+const deleteResource = async (req, res) => {
+	const { id } = req.params;
+	try {
+		const resource = await Resource.findByIdAndDelete({
+			_id: id,
+		});
+		if (resource) {
+			res.status(200).json(`Resource with id ${id} deleted successfully.`);
+		} else {
+			res.status(200).json("Resource Details not found.");
+		}
+	} catch (error) {
+		res.status(404).json({ error: "Error deleting Resource:", error });
+	}
+};
+
 module.exports = {
 	createResource,
 	downloadResource,
 	getResourceByType,
 	getResources,
+	deleteResource,
 };

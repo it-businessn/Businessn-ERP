@@ -2,28 +2,19 @@ import {
 	Badge,
 	Box,
 	Button,
-	Card,
-	Flex,
 	Heading,
-	Icon,
-	Image,
 	SimpleGrid,
 	Text,
-	VStack,
 } from "@chakra-ui/react";
 import { doughnutOptions, trainingChartData } from "constant";
 import { useEffect, useState } from "react";
 import { Doughnut } from "react-chartjs-2";
-import { FaDownload } from "react-icons/fa";
-import { BASE_URL } from "services";
-import { useBreakpointValue } from "services/Breakpoint";
 import LocalStorageService from "services/LocalStorageService";
 import ResourceService from "services/ResourceService";
-import bookCover from "../../../assets/logos/BusinessN_all.jpg";
 import FileUploader from "./FileUploader";
+import ResourceFile from "./ResourceFile";
 
 const Resources = () => {
-	const { isMobile, isIpad } = useBreakpointValue();
 	const user = LocalStorageService.getItem("user");
 
 	const [resources, setResources] = useState(null);
@@ -59,9 +50,6 @@ const Resources = () => {
 		}
 	}, [selectedFilter]);
 
-	const handleFilterClick = (filter) => {
-		setSelectedFilter(filter);
-	};
 	const FILE_TYPES = [
 		{ type: "Scripts" },
 		{ type: "Product Knowledge" },
@@ -69,89 +57,6 @@ const Resources = () => {
 		{ type: "Associated" },
 		{ type: "Training resources" },
 	];
-
-	const handleDownload = (fileName) => {
-		const url = BASE_URL;
-		const downloadUrl = `${url}/companyResource/download/${fileName}`;
-		window.location.href = downloadUrl;
-	};
-
-	const showFiles = () => (
-		<>
-			<Flex justifyContent={"space-between"}>
-				<VStack alignItems={"self-start"}>
-					<Text mt={2} mb={5} fontWeight="bold">
-						Browse by subject
-					</Text>
-					{isMobile || isIpad ? (
-						<SimpleGrid columns={{ base: 2, md: 3 }} spacing="1em" my="5">
-							{FILE_TYPES.map(({ type }) => (
-								<Button
-									key={type}
-									borderRadius={"50px"}
-									p={"1em"}
-									color={selectedFilter === type ? "#4c67c3" : "#676e78"}
-									onClick={() => handleFilterClick(type)}
-									variant={"outline"}
-									leftIcon={<Icon as={FaDownload} />}
-									size="xs"
-								>
-									{type}
-								</Button>
-							))}
-						</SimpleGrid>
-					) : (
-						<Flex gap="1em">
-							{FILE_TYPES.map(({ type }) => (
-								<Button
-									key={type}
-									borderRadius={"50px"}
-									p={"1em"}
-									color={selectedFilter === type ? "#4c67c3" : "#676e78"}
-									onClick={() => handleFilterClick(type)}
-									variant={"outline"}
-									leftIcon={<Icon as={FaDownload} />}
-									size="xs"
-								>
-									{type}
-								</Button>
-							))}
-						</Flex>
-					)}
-				</VStack>
-			</Flex>
-			<SimpleGrid columns={{ base: 1, md: 3, lg: 5 }} spacing="1em" my="5">
-				{resources?.map((resource) => (
-					<Box
-						key={resource._id}
-						p="1em"
-						bg={"brand.primary_bg"}
-						border="3px solid var(--main_color)"
-						borderRadius="10px"
-					>
-						<VStack spacing={"1em"}>
-							<Card maxW="md" borderRadius="0" overflow="hidden">
-								<Image src={bookCover} alt={"book.title"} />
-							</Card>
-							<Text fontSize={"sm"}>{resource.originalname}</Text>
-							<Button
-								onClick={() => handleDownload(resource.originalname)}
-								w={"100%"}
-								bg="var(--primary_button_bg)"
-								color={"brand.primary_bg"}
-								variant={"solid"}
-								_hover={{ color: "brand.600" }}
-								borderRadius={"10px"}
-								size="xs"
-							>
-								Download
-							</Button>
-						</VStack>
-					</Box>
-				))}
-			</SimpleGrid>
-		</>
-	);
 
 	return (
 		<Box p={{ base: "1em", md: "2em" }} overflow={"auto"}>
@@ -303,10 +208,22 @@ const Resources = () => {
 						fileTypes={FILE_TYPES}
 						userName={user.fullName}
 					/>
-					{showFiles()}
+					<ResourceFile
+						fileTypes={FILE_TYPES}
+						selectedFilter={selectedFilter}
+						setSelectedFilter={setSelectedFilter}
+						resources={resources}
+						setNewUpload={setNewUpload}
+					/>
 				</SimpleGrid>
 			) : (
-				showFiles()
+				<ResourceFile
+					fileTypes={FILE_TYPES}
+					selectedFilter={selectedFilter}
+					setSelectedFilter={setSelectedFilter}
+					resources={resources}
+					setNewUpload={setNewUpload}
+				/>
 			)}
 		</Box>
 	);

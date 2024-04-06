@@ -18,7 +18,7 @@ const FileUploader = ({ fileTypes, userName, setNewUpload }) => {
 
 		try {
 			await ResourceService.upload(formData);
-			setNewUpload(true);
+			setNewUpload((prev) => !prev);
 		} catch (error) {
 			console.error("Error uploading file:", error);
 		}
