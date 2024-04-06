@@ -27,7 +27,7 @@ import UserService from "services/UserService";
 const SignUp = ({ isModal, setRefresh, onClose }) => {
 	const defaultFormData = {
 		company: "",
-		companyId: "20240001",
+		companyId: "",
 		firstName: "",
 		middleName: "",
 		lastName: "",
@@ -35,6 +35,7 @@ const SignUp = ({ isModal, setRefresh, onClose }) => {
 		password: "",
 		role: "",
 		department: "",
+		baseModule: "",
 		manager: "",
 		phoneNumber: "",
 		primaryAddress: {
@@ -50,6 +51,7 @@ const SignUp = ({ isModal, setRefresh, onClose }) => {
 	const [empTypes, setEmpTypes] = useState(false);
 	const [roles, setRoles] = useState(false);
 	const [departments, setDepartments] = useState(false);
+	const [modules, setModules] = useState(false);
 	const [managers, setManagers] = useState(false);
 
 	useEffect(() => {
@@ -93,6 +95,15 @@ const SignUp = ({ isModal, setRefresh, onClose }) => {
 				console.error(error);
 			}
 		};
+		const fetchAllModules = async () => {
+			try {
+				const response = await SettingService.getAllModules();
+				setModules(response.data);
+			} catch (error) {
+				console.error(error);
+			}
+		};
+		fetchAllModules();
 		fetchAllManagers();
 		fetchAllRoles();
 		fetchAllDepartments();
@@ -310,6 +321,24 @@ const SignUp = ({ isModal, setRefresh, onClose }) => {
 									{departments?.map((dept) => (
 										<option key={dept._id} value={dept.name}>
 											{dept.name}
+										</option>
+									))}
+								</Select>
+							</FormControl>
+						)}
+						{modules && (
+							<FormControl mb={4}>
+								<FormLabel>Type of Base module</FormLabel>
+								<Select
+									bg={"brand.100"}
+									name="baseModule"
+									value={formData.baseModule}
+									onChange={handleChange}
+									placeholder="Select base module"
+								>
+									{modules?.map((module) => (
+										<option key={module._id} value={module.name}>
+											{module.name}
 										</option>
 									))}
 								</Select>

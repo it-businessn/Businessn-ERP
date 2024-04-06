@@ -9,7 +9,9 @@ class User {
 		role,
 		department,
 		phoneNumber,
-		address,
+		primaryAddress,
+		employmentType,
+		manager,
 	) {
 		this._id = _id;
 		this.fullName = fullName;
@@ -20,7 +22,9 @@ class User {
 		this.role = role;
 		this.department = department;
 		this.phoneNumber = phoneNumber;
-		this.address = address;
+		this.primaryAddress = primaryAddress;
+		this.employmentType = employmentType;
+		this.manager = manager;
 	}
 }
 

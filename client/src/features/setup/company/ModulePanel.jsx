@@ -1,4 +1,5 @@
 import { Switch, Table, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
+import Loader from "components/Loader";
 import { useEffect, useState } from "react";
 import SettingService from "services/SettingService";
 
@@ -7,8 +8,8 @@ const ModulePanel = () => {
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [isRefresh, setIsRefresh] = useState(false);
 	const [moduleName, setModuleName] = useState("");
-
 	const [isModuleActive, setIsModuleActive] = useState(false);
+
 	useEffect(() => {
 		const fetchAllModules = async () => {
 			try {
@@ -21,20 +22,6 @@ const ModulePanel = () => {
 		fetchAllModules();
 	}, [isRefresh]);
 
-	const handleModuleSubmit = async () => {
-		setIsSubmitting(true);
-		try {
-			await SettingService.addBaseModule({
-				name: moduleName,
-			});
-			setIsRefresh(true);
-			setModuleName("");
-		} catch (error) {
-			console.log("An error occurred while submitting the application.");
-		} finally {
-			setIsSubmitting(false);
-		}
-	};
 	const handleToggle = async (menu) => {
 		try {
 			menu.isActive = !menu.isActive;
@@ -59,6 +46,7 @@ const ModulePanel = () => {
 				name={"Add Module"}
 				onClick={handleModuleSubmit}
 			/> */}
+			{!modules && <Loader isAuto />}
 			{modules && (
 				<Table variant="simple">
 					<Thead>

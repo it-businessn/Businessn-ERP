@@ -81,7 +81,7 @@ const TaskActionCell = ({
 	return (
 		<>
 			<HStack
-				spacing={3}
+				spacing={2}
 				mt={taskIndex === 0 ? "-1.3em" : "0"}
 				className={`task_div_${taskIndex}`}
 				whiteSpace={"pre-wrap"}
@@ -123,7 +123,7 @@ const TaskActionCell = ({
 							key={subtask._id}
 							w={"100%"}
 							alignItems={"flex-start"}
-							ml={"2em"}
+							ml={"1.5em"}
 							mt={subtask_index === 0 ? "-0.5em" : "0"}
 						>
 							<SubTaskActionCell

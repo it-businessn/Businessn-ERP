@@ -9,18 +9,25 @@ import {
 	Spacer,
 	Text,
 } from "@chakra-ui/react";
+import Loader from "components/Loader";
 import ActionButton from "components/ui/button/ActionButton";
 import MultiCheckboxMenu from "erp-modules/project-management/workview/MultiCheckboxMenu";
 import { useEffect, useState } from "react";
 import { FaCaretDown } from "react-icons/fa";
 import SettingService from "services/SettingService";
 import UserService from "services/UserService";
-import AddNewGroup from "./AddNewGroup";
-import EmpSearchMenu from "./EmpSearchMenu";
-import UserList from "./UserList";
+import AddNewGroup from "../AddNewGroup";
+import EmpSearchMenu from "../EmpSearchMenu";
+import UserList from "../UserList";
 
-const GroupsPanel = () => {
+const GroupsPanel = ({
+	employees,
+	setFilteredEmployees,
+	filteredEmployees,
+}) => {
 	const [groups, setGroups] = useState(null);
+	const [groupMembers, setGroupMembers] = useState(null);
+	const [selectedGroup, setSelectedGroup] = useState(null);
 	const [modules, setModules] = useState(null);
 	const [admins, setAdmins] = useState(null);
 	const [isSubmitting, setIsSubmitting] = useState(false);
@@ -30,14 +37,8 @@ const GroupsPanel = () => {
 	const [openModuleMenu, setOpenModuleMenu] = useState(null);
 	const [selectedModules, setSelectedModules] = useState(null);
 	const [selectedAdmins, setSelectedAdmins] = useState(null);
-	const [employees, setEmployees] = useState(null);
 	const [empName, setEmpName] = useState(null);
-	const [filteredEmployees, setFilteredEmployees] = useState(null);
-	const [groupMembers, setGroupMembers] = useState(null);
-	const [isEdit, setIsEdit] = useState(false);
-	const [openAddUser, setOpenAddUser] = useState(false);
 	const [openAddGroup, setOpenAddGroup] = useState(false);
-	const [group, setGroup] = useState(null);
 
 	useEffect(() => {
 		const fetchAllModules = async () => {
@@ -56,16 +57,6 @@ const GroupsPanel = () => {
 				console.error(error);
 			}
 		};
-		const fetchAllEmployees = async () => {
-			try {
-				const response = await UserService.getAllUsers();
-				setEmployees(response.data);
-				setFilteredEmployees(response.data);
-			} catch (error) {
-				console.error(error);
-			}
-		};
-		fetchAllEmployees();
 		fetchAllManagers();
 		fetchAllModules();
 	}, []);
@@ -82,7 +73,7 @@ const GroupsPanel = () => {
 					member.group = response.data[0].name;
 				});
 				setGroupMembers(response.data[0].members);
-				setGroup(response.data[0]);
+				setSelectedGroup(response.data[0]);
 			} catch (error) {
 				console.error(error);
 			}
@@ -129,15 +120,15 @@ const GroupsPanel = () => {
 	const handleConfirm = async (e) => {
 		e.preventDefault();
 		setIsSubmitting(true);
-		group.admin = selectedAdmins;
-		group.modules = selectedModules;
-		const memberExists = group.members.findIndex(
+		selectedGroup.admin = selectedAdmins;
+		selectedGroup.modules = selectedModules;
+		const memberExists = selectedGroup.members.findIndex(
 			(member) => member.fullName === filteredEmployees[0].fullName,
 		);
 		if (memberExists < 0) {
-			group.members.push(filteredEmployees[0]);
+			selectedGroup.members.push(filteredEmployees[0]);
 			try {
-				await SettingService.updateGroup(group, group._id);
+				await SettingService.updateGroup(selectedGroup, selectedGroup._id);
 				setIsRefresh((prev) => !prev);
 				setFilteredEmployees(employees);
 				setEmpName("");
@@ -154,7 +145,7 @@ const GroupsPanel = () => {
 	};
 	const handleGroup = (e) => {
 		const item = groups.find((name) => name.name === e.target.value);
-		setGroup(item);
+		setSelectedGroup(item);
 		setSelectedModules(item.modules);
 		setSelectedAdmins(item.admin);
 		item.members.forEach((member) => {
@@ -187,6 +178,7 @@ const GroupsPanel = () => {
 					/>
 				)}
 			</HStack>
+			{(!modules || !groups || !admins) && <Loader isAuto />}
 			<HStack>
 				{groups && (
 					<FormControl>
@@ -194,7 +186,7 @@ const GroupsPanel = () => {
 						<Select
 							icon={<FaCaretDown />}
 							borderRadius="10px"
-							value={group?.name}
+							value={selectedGroup?.name}
 							placeholder="Select Group"
 							onChange={handleGroup}
 						>
@@ -289,7 +281,6 @@ const GroupsPanel = () => {
 					/>
 					<Button
 						isDisabled={filteredEmployees?.length > 1}
-						// isLoading={isLoading}
 						onClick={handleConfirm}
 						bg={"brand.primary_button_bg"}
 						px={{ base: "2em" }}
@@ -308,7 +299,7 @@ const GroupsPanel = () => {
 				</HStack>
 				{groupMembers?.length > 0 && (
 					<Box w={"100%"} p={0} overflow={"auto"} fontWeight="normal">
-						<UserList filteredEmployees={groupMembers} group={group} />
+						<UserList filteredEmployees={groupMembers} group={selectedGroup} />
 					</Box>
 				)}
 			</Box>

@@ -5,6 +5,9 @@ const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 
+// const activityRoutes = require("./routes/activity");
+// const taskRoutes = require("./routes/task");
+const conversationRoutes = require("./routes/conversation");
 const companyResourceRoutes = require("./routes/companyResource");
 const companyRoutes = require("./routes/company");
 const contactRoutes = require("./routes/contact");
@@ -16,10 +19,8 @@ const meetingRoutes = require("./routes/meeting");
 const noteRoutes = require("./routes/note");
 const notificationRoutes = require("./routes/notification");
 const opportunityRoutes = require("./routes/opportunity");
-const projectRoutes = require("./routes/project");
 const permissionsRoutes = require("./routes/permission");
-// const taskRoutes = require("./routes/task");
-// const activityRoutes = require("./routes/activity");
+const projectRoutes = require("./routes/project");
 const setUpRoutes = require("./routes/setup");
 const userRoutes = require("./routes/user");
 
@@ -39,6 +40,8 @@ app.use((request, response, next) => {
 
 app.use("/api", userRoutes);
 app.use("/api/user", userRoutes);
+app.use("/api/comms", conversationRoutes);
+app.use("/api/conversations", conversationRoutes);
 app.use("/api/company", companyRoutes);
 app.use("/api/companyResource", companyResourceRoutes);
 app.use("/api/contacts", contactRoutes);
@@ -49,11 +52,10 @@ app.use("/api/leads", leadRoutes);
 app.use("/api/meetings", meetingRoutes);
 app.use("/api/notes", noteRoutes);
 app.use("/api/notification", notificationRoutes);
-app.use("/api/notification", notificationRoutes);
 app.use("/api/opportunities", opportunityRoutes);
+app.use("/api/permissions", permissionsRoutes);
 app.use("/api/projects", projectRoutes);
 app.use("/api/setup", setUpRoutes);
-app.use("/api/permissions", permissionsRoutes);
 // app.use("/api/activities", activityRoutes);
 // app.use("/api/attendance", attendanceRoutes);
 // app.use("/api/benefits", benefitsRoutes);

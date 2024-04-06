@@ -8,12 +8,25 @@ const EmploymentType = require("../models/EmploymentType");
 const Company = require("../models/Company");
 const bcrypt = require("bcrypt");
 const Lead = require("../models/Lead");
+const Group = require("../models/Group");
 
 const getAllUsers = () => async (req, res) => {
 	try {
 		// const users = (await User.find()).sort((a, b) => b.createdOn - a.createdOn);
 		const users = await Employee.find();
 		res.status(200).json(users);
+	} catch (error) {
+		res.status(404).json({ error: error.message });
+	}
+};
+
+const getAllMemberGroups = () => async (req, res) => {
+	try {
+		const group = await Group.find({
+			"members._id": req.params.id,
+		});
+
+		res.status(200).json(group);
 	} catch (error) {
 		res.status(404).json({ error: error.message });
 	}
@@ -167,4 +180,5 @@ module.exports = {
 	loginUser,
 	updateUser,
 	updateUserAssignedLeads,
+	getAllMemberGroups,
 };

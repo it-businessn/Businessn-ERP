@@ -1,4 +1,18 @@
-import { Box, Card, HStack, Icon, Text, VStack } from "@chakra-ui/react";
+import {
+	Box,
+	Card,
+	HStack,
+	Icon,
+	Table,
+	Tbody,
+	Td,
+	Text,
+	Th,
+	Thead,
+	Tr,
+	VStack,
+} from "@chakra-ui/react";
+import Loader from "components/Loader";
 import { useEffect, useState } from "react";
 import { HiOfficeBuilding } from "react-icons/hi";
 import LocalStorageService from "services/LocalStorageService";
@@ -7,7 +21,7 @@ import { toCapitalize } from "utils";
 
 const CompanyDetails = () => {
 	const [companyInfo, setCompanyInfo] = useState(null);
-	const [departments, setDepartments] = useState(null);
+	const [modules, setModules] = useState(null);
 	const company =
 		LocalStorageService.getItem("selectedCompany") || "BusinessN Corporate";
 
@@ -20,15 +34,15 @@ const CompanyDetails = () => {
 				console.error(error);
 			}
 		};
-		const fetchAllDepartments = async () => {
+		const fetchAllModules = async () => {
 			try {
-				const response = await SettingService.getAllDepartments();
-				setDepartments(response.data);
+				const response = await SettingService.getAllModules();
+				setModules(response.data);
 			} catch (error) {
 				console.error(error);
 			}
 		};
-		fetchAllDepartments();
+		fetchAllModules();
 		fetchCompanyInfo();
 	}, []);
 
@@ -86,27 +100,27 @@ const CompanyDetails = () => {
 							<Text color={"brand.600"}>{getAddress(companyInfo.address)}</Text>
 						</HStack>
 					</VStack>
-					{departments?.map((department) => (
-						<VStack alignItems={"self-start"} p={"1em"} key={department._id}>
-							<Text fontWeight="bolder"> Base Modules</Text>
-							<HStack>
-								<Text fontWeight="bold">Module Name:</Text>
-								<Text color={"brand.600"}>{department.name}</Text>
-								<HStack pl={3}>
-									<Text fontWeight="bold">Admin:</Text>
-									<Text fontWeight="bold" color={"brand.600"}>
-										{department.admin[0]}
-									</Text>
-								</HStack>
-								{/* <HStack pl={3}>
-									<Text fontWeight="bold">Is Active:</Text>
-									<Text fontWeight="bold" color={"brand.600"}>
-										{department.admin[0]}
-									</Text>
-								</HStack> */}
-							</HStack>
-						</VStack>
-					))}
+					{!modules && <Loader isAuto />}
+					{modules && (
+						<Table variant="simple" size={"small"}>
+							<Thead>
+								<Tr>
+									<Th px={"1em"}>Module Name</Th>
+									<Th>Admin</Th>
+								</Tr>
+							</Thead>
+							<Tbody>
+								{modules.map((module) => (
+									<Tr key={module._id}>
+										<Td w={"500px"} px={"1em"}>
+											{module.name}
+										</Td>
+										<Td>{module.admin[0]}</Td>
+									</Tr>
+								))}
+							</Tbody>
+						</Table>
+					)}
 				</Card>
 			</HStack>
 		)

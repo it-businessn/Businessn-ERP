@@ -45,7 +45,7 @@ const RolesPanel = () => {
 			setIsSubmitting(false);
 		}
 	};
-	const editRole = (id) => console.log(id);
+
 	return (
 		<>
 			<HStack>

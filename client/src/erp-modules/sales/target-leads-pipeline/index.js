@@ -46,7 +46,7 @@ const Pipeline = () => {
 	}, []);
 
 	const { isOpen, onOpen, onClose } = useDisclosure();
-	const handleSubmit = () => console.log("submit");
+	const handleSubmit = () => {};
 
 	// const opportunityData = [
 	// 	{ name: "Meeting Set", value: 100 },

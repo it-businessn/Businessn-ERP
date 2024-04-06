@@ -1,4 +1,5 @@
-import { Avatar, HStack, Td, VStack } from "@chakra-ui/react";
+import { Avatar, Button, HStack, Td, VStack } from "@chakra-ui/react";
+import { useState } from "react";
 
 const AssigneeCell = ({
 	project,
@@ -7,21 +8,33 @@ const AssigneeCell = ({
 	isExpanded,
 	isSubExpanded,
 }) => {
+	const [showAllAssignees, setShowAllAssignees] = useState(false);
 	const AssigneeList = ({ assignees, main, task, sub }) => (
 		<HStack
 			gap={0}
 			// top={main ? "3em" : task ? "5.5em" : "8em"}
 			// pos={"relative"}
-			marginTop={main ? "2.5em" : task ? "0.8em" : sub ? "0" : 0}
+			marginTop={main ? "2.5em" : task ? "0.9em" : sub ? "0.2em" : 0}
 		>
-			{assignees?.map((assignee) => (
-				<Avatar
-					key={assignee}
-					name={assignee}
-					size={{ base: "xs", md: "sm" }}
-					src={assignee}
-				/>
-			))}
+			{assignees?.map((assignee, index) =>
+				index < 3 && !showAllAssignees ? (
+					<Avatar
+						key={assignee}
+						name={assignee}
+						size={{ base: "xs", md: "sm" }}
+						src={assignee}
+					/>
+				) : null,
+			)}
+			{assignees && assignees.length > 3 && !showAllAssignees && (
+				<Button
+					size={"xs"}
+					bg={"var(--primary_button_bg)"}
+					borderRadius={"50%"}
+				>
+					+{assignees.length - 3}
+				</Button>
+			)}
 		</HStack>
 	);
 

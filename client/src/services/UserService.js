@@ -13,6 +13,10 @@ const UserService = {
 		return apiService.put(`/user/lead/${id}`, data, id);
 	},
 
+	async getAllMemberGroups(id) {
+		return apiService.get(`/user/groups/${id}`);
+	},
+
 	async getAllUsers() {
 		return apiService.get(`/user`);
 	},

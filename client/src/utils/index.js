@@ -259,7 +259,7 @@ export const AddTaskButton = ({
 	const [isOpen, setIsOpen] = useState(false);
 	return (
 		<>
-			<HStack spacing={2}>
+			<HStack spacing={1}>
 				{!isInner && (
 					<>
 						<Button

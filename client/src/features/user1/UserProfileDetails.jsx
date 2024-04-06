@@ -87,31 +87,19 @@ const UserProfileDetails = () => {
 				</Box>
 				<VStack align="flex-start" color={"brand.200"} p={"1em"}>
 					<Text fontWeight="bold">Phone Number</Text>
-					<Text fontWeight="bold" color={"brand.600"}>
-						{phoneNumber}
-					</Text>
+					<Text color={"brand.600"}>{phoneNumber}</Text>
 					<Text fontWeight="bold">Address</Text>
-					<Text fontWeight="bold" color={"brand.600"}>
-						{getAddress}
-					</Text>
+					<Text color={"brand.600"}>{getAddress}</Text>
 				</VStack>
 				<VStack align="flex-start" color={"brand.200"} p={"1em"}>
 					<Text fontWeight="bold">Manager</Text>
-					<Text fontWeight="bold" color={"brand.600"}>
-						{manager && toCapitalize(manager)}
-					</Text>
+					<Text color={"brand.600"}>{manager}</Text>
 					<Text fontWeight="bold">Role</Text>
-					<Text fontWeight="bold" color={"brand.600"}>
-						{role && toCapitalize(role)}
-					</Text>
+					<Text color={"brand.600"}>{role}</Text>
 					<Text fontWeight="bold">Department</Text>
-					<Text fontWeight="bold" color={"brand.600"}>
-						{department && toCapitalize(department)}
-					</Text>
+					<Text color={"brand.600"}>{department[0]}</Text>
 					<Text fontWeight="bold">Employment Type</Text>
-					<Text fontWeight="bold" color={"brand.600"}>
-						{employmentType && toCapitalize(employmentType)}
-					</Text>
+					<Text color={"brand.600"}>{employmentType}</Text>
 				</VStack>
 				<HStack p={"1em"}>
 					<Button

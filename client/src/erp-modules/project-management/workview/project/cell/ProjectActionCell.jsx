@@ -36,9 +36,7 @@ const ProjectActionCell = ({
 		setProjectId(projectId);
 	};
 
-	const handleDelete = (index) => {
-		console.log(index);
-	};
+	const handleDelete = (index) => {};
 	return (
 		<Td p={"0.5em"} fontSize={"xs"} w={"400px"} py={0}>
 			<VStack alignItems={"start"} spacing={0} w={"100%"} ml={"-1.5em"}>

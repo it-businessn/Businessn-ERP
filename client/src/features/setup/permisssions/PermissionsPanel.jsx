@@ -9,6 +9,7 @@ import {
 	Thead,
 	Tr,
 } from "@chakra-ui/react";
+import Loader from "components/Loader";
 import { SIDEBAR_MENU } from "components/sidebar/data";
 import { useEffect, useState } from "react";
 import { FaChevronDown } from "react-icons/fa";
@@ -17,82 +18,65 @@ import { IoMdCloseCircle } from "react-icons/io";
 import { useLocation } from "react-router-dom";
 import LocalStorageService from "services/LocalStorageService";
 import UserService from "services/UserService";
-import EmpSearchMenu from "./EmpSearchMenu";
+import EmpSearchMenu from "../EmpSearchMenu";
 
-const PermissionsPanel = () => {
-	const [employees, setEmployees] = useState(null);
+const PermissionsPanel = ({
+	employees,
+	setFilteredEmployees,
+	filteredEmployees,
+}) => {
 	const [isRefresh, setIsRefresh] = useState(false);
 	const [empName, setEmpName] = useState(null);
-	const [filteredEmployees, setFilteredEmployees] = useState(null);
 	const [userPermission, setUserPermission] = useState(null);
 	const location = useLocation();
 
 	const currentModule = location.pathname.split("/")[1];
+	const defaultIndex = SIDEBAR_MENU.findIndex(
+		(menu) => menu.id === currentModule,
+	);
+	const [isExpanded, setExpanded] = useState(defaultIndex);
+	const [children, setChildren] = useState(null);
 
 	const [userId, setUserId] = useState(LocalStorageService.getItem("user")._id);
 
-	const fetchUserPermissions = async () => {
-		try {
-			const response = await UserService.getUserPermission(userId);
+	useEffect(() => {
+		const fetchUserPermissions = async () => {
+			try {
+				const response = await UserService.getUserPermission(userId);
 
-			if (response.data) {
-				SIDEBAR_MENU.forEach((data, index) => {
-					const menu = response.data.permissionType.find(
-						(item) => item.name === data.name,
-					);
-					if (menu) {
-						SIDEBAR_MENU[index].permissions = menu;
-					}
-					data?.children?.forEach((child, cIndex) => {
-						const childMenu = response.data.permissionType.find(
-							(item) => item.name === `${data.name} ${child.name}`,
+				if (response.data) {
+					SIDEBAR_MENU.forEach((data, index) => {
+						const menu = response.data.permissionType.find(
+							(item) => item.name === data.name,
 						);
 						if (menu) {
-							SIDEBAR_MENU[index].children[cIndex].permissions = childMenu;
+							SIDEBAR_MENU[index].permissions = menu;
 						}
+						data?.children?.forEach((child, cIndex) => {
+							const childMenu = response.data.permissionType.find(
+								(item) => item.name === `${data.name} ${child.name}`,
+							);
+							if (menu) {
+								SIDEBAR_MENU[index].children[cIndex].permissions = childMenu;
+							}
+						});
 					});
-				});
-				setUserPermission(response.data);
-			} else {
-				setUserPermission(null);
-			}
-		} catch (error) {
-			console.error(error);
-		}
-	};
-
-	useEffect(() => {
-		const fetchAllEmployees = async () => {
-			try {
-				const response = await UserService.getAllUsers();
-				setEmployees(response.data);
-				setFilteredEmployees(response.data);
+					setUserPermission(response.data);
+				} else {
+					setUserPermission(null);
+				}
 			} catch (error) {
 				console.error(error);
 			}
 		};
 
 		fetchUserPermissions();
-		fetchAllEmployees();
 	}, [isRefresh, userId]);
 
 	const handleSubmit = async (emp) => {
 		setUserId(emp._id);
-		// setIsSubmitting(true);
-		// try {
-		// 	await SettingService.addDepartment({
-		// 		name: empName,
-		// 		description: deptDescription,
-		// 	});
-		// 	setIsRefresh(true);
-		// 	setEmpName("");
-		// 	setDeptDescription("");
-		// } catch (error) {
-		// 	console.log("An error occurred while submitting the application.");
-		// } finally {
-		// 	setIsSubmitting(false);
-		// }
 	};
+
 	const handleInputChange = (value) => {
 		setEmpName(value);
 		setFilteredEmployees(
@@ -111,11 +95,6 @@ const PermissionsPanel = () => {
 		);
 		handleSubmit(emp);
 	};
-	const defaultIndex = SIDEBAR_MENU.findIndex(
-		(menu) => menu.id === currentModule,
-	);
-	const [isExpanded, setExpanded] = useState(defaultIndex);
-	const [children, setChildren] = useState(null);
 
 	const handleToggle = (index, list) => {
 		setExpanded(isExpanded === index ? -1 : index);
@@ -191,6 +170,7 @@ const PermissionsPanel = () => {
 					handleSelect={handleSelect}
 				/>
 			</HStack>
+			{!employees && <Loader isAuto />}
 			{employees && (
 				<Table variant="simple">
 					<Thead>

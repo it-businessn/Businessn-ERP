@@ -4,6 +4,7 @@ import { createBrowserRouter } from "react-router-dom";
 import Loader from "./components/Loader";
 import PageNotFound from "./features/PageNotFound";
 // import AddPayrun from "./features/payroll/AddPayRun";
+import Communications from "erp-modules/project-management/communication";
 import SalesHome from "./features/home";
 import RootLayout from "./layouts/RootLayout";
 
@@ -206,6 +207,10 @@ export const router = createBrowserRouter([
 			{
 				path: "/project/workview",
 				element: <WorkView />,
+			},
+			{
+				path: "/project/comms",
+				element: <Communications />,
 			},
 			{
 				path: "/payroll",
