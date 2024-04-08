@@ -87,6 +87,7 @@ const Opportunities = () => {
 								primaryAssignee,
 								stage,
 								supervisorAssignee,
+								isDisbursedConfirmed,
 							}) => {
 								return (
 									<Tr key={_id}>
@@ -116,6 +117,7 @@ const Opportunities = () => {
 											/>
 										</Td>
 										<Td>{formatDate(createdOn)}</Td>
+										<Td>{isDisbursedConfirmed ? "Yes" : "No"}</Td>
 									</Tr>
 								);
 							},
