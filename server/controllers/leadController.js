@@ -193,35 +193,25 @@ const confirmDisburseLeads = () => async (req, res) => {
 	const distributedLeadIDs = req.body;
 
 	try {
-		for (let i = 0; i < distributedLeadIDs.length; i++) {
-			const skip = i * distributedLeadIDs[i].assignedLeads;
-
+		for (const id of distributedLeadIDs) {
 			const leads = await Lead.find({
 				isDisbursedConfirmed: false,
 				isDisbursed: true,
-				stage: "L1",
-			})
-				.skip(skip)
-				.limit(distributedLeadIDs[i].assignedLeads)
-				.exec();
+			});
+			const employee = await Employee.findById(id._id);
+			const slicedLeads = leads.slice(0, id.assignedLeads);
+			employee.leads = leads.slice(0, id.assignedLeads).map((lead) => lead._id);
 
-			distributedLeadIDs[i].leads = leads.map((lead) => lead._id);
-			distributedLeadIDs[i].assignedLeads = 0;
+			await employee.save();
 
-			const employee = await Employee.findById(distributedLeadIDs[i]._id);
-			if (employee && employee.assignedLeads > 0) {
-				employee.leads = leads.map((lead) => lead._id);
-				employee.assignedLeads = 0;
-				await employee.save();
+			for (const id of slicedLeads) {
+				const lead = await Lead.findById(id._id);
+				lead.isDisbursedConfirmed = true;
+				lead.stage = "L1";
+				lead.primaryAssignee = employee.fullName;
+				await lead.save();
 			}
-
-			const leadIdsToUpdate = leads.map((lead) => lead._id);
-			await Lead.updateMany(
-				{ _id: { $in: leadIdsToUpdate } },
-				{ $set: { isDisbursedConfirmed: true } },
-			);
 		}
-
 		res.status(201).json("Disbursement confirmed successfully");
 	} catch (error) {
 		res.status(400).json({ message: error.message });
