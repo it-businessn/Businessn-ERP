@@ -53,8 +53,14 @@ const createResource = () => async (req, res) => {
 const downloadResource = () => async (req, res) => {
 	try {
 		const filename = req.params.filename;
+		const resource = await Resource.find({ originalname: filename });
+		if (!resource) {
+			return res.status(404).json({ error: "Resource not found" });
+		}
 
 		const filePath = path.join(__dirname, "../", "uploads", filename);
+
+		fs.writeFileSync(filePath, resource[0].file.data);
 
 		const ext = path.extname(filePath).toLowerCase();
 
@@ -75,7 +81,9 @@ const downloadResource = () => async (req, res) => {
 		res.setHeader("Content-Type", contentType);
 
 		res.download(filePath, filename, (err) => {
+			fs.unlinkSync(filePath);
 			if (err) {
+				console.error("Error downloading file:", err);
 				res.status(404).json({ error: "File not found" });
 			}
 		});
