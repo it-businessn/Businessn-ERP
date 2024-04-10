@@ -23,6 +23,7 @@ const projectRoutes = require("./routes/project");
 const setUpRoutes = require("./routes/setup");
 const userRoutes = require("./routes/user");
 const taskRoutes = require("./routes/task");
+const questionnaireRoutes = require("./routes/questionnaire");
 
 const app = express();
 const PORT = process.env.PORT;
@@ -57,7 +58,7 @@ app.use("/api/permissions", permissionsRoutes);
 app.use("/api/projects", projectRoutes);
 app.use("/api/setup", setUpRoutes);
 app.use("/api/tasks", taskRoutes);
-// app.use("/api/activities", activityRoutes);
+app.use("/api/questionnaire", questionnaireRoutes);
 // app.use("/api/attendance", attendanceRoutes);
 // app.use("/api/benefits", benefitsRoutes);
 // app.use("/api/configuration", configurationRoutes);

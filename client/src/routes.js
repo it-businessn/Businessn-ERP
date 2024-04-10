@@ -4,6 +4,8 @@ import { createBrowserRouter } from "react-router-dom";
 import Loader from "./components/Loader";
 import PageNotFound from "./features/PageNotFound";
 // import AddPayrun from "./features/payroll/AddPayRun";
+import AddQuestionForm from "components/ui/AddQuestionForm";
+import Assessment from "components/ui/Assessment";
 import Communications from "erp-modules/project-management/communication";
 import SalesHome from "./features/home";
 import RootLayout from "./layouts/RootLayout";
@@ -142,6 +144,14 @@ export const router = createBrowserRouter([
 			{
 				path: "/sales/resources",
 				element: <Resources />,
+			},
+			{
+				path: "/sales/add-paper",
+				element: <AddQuestionForm />,
+			},
+			{
+				path: "/sales/assessment",
+				element: <Assessment />,
 			},
 			{
 				path: "/sales/reports",

@@ -7,6 +7,8 @@
 	--main_color_black: #000000;
 	--primary_button_bg: #537eee;
 	--status_button_border: #76c094;
+	--incorrect_ans: #f62f29;
+	--correct_ans: #49a86f;
 	--event_color: #6299ae;
 	--meeting_bg_light: #d8e3fd;
 	--phoneCall_bg_light: rgb(213, 242, 225);
