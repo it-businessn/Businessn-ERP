@@ -27,6 +27,10 @@ const AddEvent = ({
 	setIsRefresh,
 	isLoading,
 	setIsLoading,
+	isEdit,
+	setShowEditDetails,
+	event,
+	setEvent,
 }) => {
 	const [eventType, setEventType] = useState("event");
 	const [attendees, setAttendees] = useState(null);
@@ -52,9 +56,21 @@ const AddEvent = ({
 		toDate: "",
 		toTime: "",
 	};
+	const initialSavedForm = {
+		description: event?.description,
+		eventLink: event?.eventLink,
+		eventType: event?.eventType,
+		fromDate: event?.fromDate,
+		fromTime: event?.fromTime,
+		location: event?.location,
+		meetingAttendees: event?.meetingAttendees || [],
+		toDate: event?.toDate,
+		toTime: event?.toTime,
+	};
 	const [selectedOptions, setSelectedOptions] = useState([]);
 
 	const [formData, setFormData] = useState(initialFormData);
+
 	const [openAssigneeMenu, setOpenAssigneeMenu] = useState(false);
 
 	const handleMenuToggle = () => {
@@ -102,33 +118,50 @@ const AddEvent = ({
 		e.preventDefault();
 		try {
 			setIsLoading(true);
-			await CalendarService.addEvent(formData);
-			setFormData({
-				eventType: "meeting",
-				description: "",
-				fromDate: "",
-				fromTime: "",
-				toDate: "",
-				toTime: "",
-				meetingAttendees: "",
-				location: "",
-				eventLink: "",
-				taskType: "",
-				taskDueDate: "",
-				taskAssignee: "",
-				taskDuration: "",
-				phoneNo: "",
-			});
-			setFormData(initialFormData);
-			setShowModal(false);
+			if (isEdit) {
+				await CalendarService.updateEvent(formData, event._id);
+			} else {
+				await CalendarService.addEvent(formData);
+				setFormData(initialFormData);
+			}
+			// setFormData({
+			// 	eventType: "meeting",
+			// 	description: "",
+			// 	fromDate: "",
+			// 	fromTime: "",
+			// 	toDate: "",
+			// 	toTime: "",
+			// 	meetingAttendees: "",
+			// 	location: "",
+			// 	eventLink: "",
+			// 	taskType: "",
+			// 	taskDueDate: "",
+			// 	taskAssignee: "",
+			// 	taskDuration: "",
+			// 	phoneNo: "",
+			// });
+			handleClose();
 			setIsRefresh((prev) => !prev);
 		} catch (error) {
 			console.error(error);
 		}
 	};
+	useEffect(() => {
+		if (isEdit) {
+			setFormData(initialSavedForm);
+		} else {
+			setFormData(initialFormData);
+		}
+	}, [isEdit]);
+
+	const handleClose = () => {
+		setShowModal(false);
+		setShowEditDetails(false);
+		setEvent(null);
+	};
 
 	return (
-		<Modal isOpen={showModal} size="xl" onClose={() => setShowModal(false)}>
+		<Modal isOpen={showModal || isEdit} size="xl" onClose={handleClose}>
 			<ModalOverlay />
 			<ModalContent zIndex="2">
 				<ModalHeader>Add Event</ModalHeader>
@@ -246,12 +279,7 @@ const AddEvent = ({
 									</Button>
 									{formData?.meetingAttendees?.length > 0 &&
 										formData.meetingAttendees.map((name, index) => (
-											<Avatar
-												size={"sm"}
-												name={name}
-												src={name}
-												key={`${name}_${index}`}
-											/>
+											<Avatar size={"sm"} name={name} src={name} key={name} />
 										))}
 								</FormControl>
 								<FormControl>
@@ -286,7 +314,7 @@ const AddEvent = ({
 						>
 							Add Event
 						</Button>
-						<Button variant="ghost" onClick={() => setShowModal(false)}>
+						<Button variant="ghost" onClose={handleClose}>
 							Cancel
 						</Button>
 					</ModalFooter>

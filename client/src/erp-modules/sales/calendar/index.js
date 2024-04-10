@@ -8,11 +8,14 @@ import { FaCaretLeft, FaCaretRight, FaClock } from "react-icons/fa";
 import { useBreakpointValue } from "services/Breakpoint";
 import CalendarService from "services/CalendarService";
 import AddEvent from "./AddEvent";
+import EventDetails from "./EventDetails";
 
 const Calendar = () => {
 	const { isMobile } = useBreakpointValue();
 	const localizer = momentLocalizer(moment);
 	const [events, setEvents] = useState(null);
+	const [event, setEvent] = useState(null);
+	const [showEditDetails, setShowEditDetails] = useState(false);
 
 	const [isLoading, setIsLoading] = useState(false);
 	const [isRefresh, setIsRefresh] = useState(false);
@@ -43,6 +46,18 @@ const Calendar = () => {
 					event.title = event.description;
 					event.start = fromDateTimeString;
 					event.end = toDateTimeString;
+					event.color =
+						event.eventType === "phoneCall"
+							? "var(--status_button_border)"
+							: event.eventType === "meeting"
+							? "var(--primary_button_bg)"
+							: "var(--event_color)";
+					event.bgColor =
+						event.eventType === "phoneCall"
+							? "var(--phoneCall_bg_light)"
+							: event.eventType === "meeting"
+							? "var(--meeting_bg_light)"
+							: "var(--event_bg_light)";
 					return event;
 				});
 				setEvents(response.data);
@@ -55,13 +70,19 @@ const Calendar = () => {
 	}, [isRefresh]);
 
 	const [showModal, setShowModal] = useState(false);
+	const [showDetailsModal, setShowDetailsModal] = useState(false);
+	const [position, setPosition] = useState({ top: 0, left: 0 });
 
 	const handleDateSelect = (event) => {
 		// setShowModal(true);
 	};
-	const handleEvent = (e) => {
-		// setFormData((prevData) => event);
-		// handleDateSelect();
+	const handleEvent = (event) => {
+		setEvent(event);
+		// setPosition({
+		// 	top: event.clientY,
+		// 	left: event.clientX,
+		// });
+		setShowDetailsModal(true);
 	};
 
 	const eventStyleGetter = () => ({
@@ -130,23 +151,6 @@ const Calendar = () => {
 						Create Event
 					</Button>
 				</HStack>
-				{/* <HStack>
-					<ButtonGroup spacing="0">
-						<Button variant="ghost" onClick={() => toolbar.onView("day")}>
-							Day
-						</Button>
-						<Button variant="ghost" onClick={() => toolbar.onView("week")}>
-							Week
-						</Button>
-						<Button variant="ghost" onClick={() => toolbar.onView("month")}>
-							Month
-						</Button>
-						<Button variant="ghost" onClick={() => toolbar.onView("agenda")}>
-							Agenda
-						</Button>
-					</ButtonGroup>
-				</HStack> */}
-				{/* <button onClick={toolbar.onNavigateToday}>Today</button> */}
 			</Flex>
 		);
 	};
@@ -155,17 +159,17 @@ const Calendar = () => {
 	};
 	const CustomEvent = ({ event }) => (
 		<Box
-			color="#67aa89"
-			bg={"#deeced"}
+			color={event.color}
+			bg={event.bgColor}
 			pl={"10px"}
-			borderLeft="4px solid #67aa89"
+			borderLeft={`4px solid ${event.color}`}
 		>
 			<Text fontWeight="bold" fontSize="xs">
 				{event.title}
 			</Text>
 			<Button
 				p={0}
-				color={"#67aa89"}
+				color={event.color}
 				leftIcon={<FaClock />}
 				size="xs"
 				variant={"ghost"}
@@ -176,7 +180,6 @@ const Calendar = () => {
 			</Button>
 		</Box>
 	);
-
 	return (
 		<Box p={{ base: "1em", md: "2em" }} mb={"1em"}>
 			<Text fontWeight="bold" mb={"0.5em"}>
@@ -216,12 +219,25 @@ const Calendar = () => {
 				</Box>
 			)}
 			<AddEvent
+				isEdit={showEditDetails}
 				showModal={showModal}
 				setShowModal={setShowModal}
 				setIsRefresh={setIsRefresh}
 				isLoading={isLoading}
 				setIsLoading={setIsLoading}
+				event={event}
+				setShowEditDetails={setShowEditDetails}
+				setEvent={setEvent}
 			/>
+			{showDetailsModal && (
+				<EventDetails
+					setShowEditDetails={setShowEditDetails}
+					isOpen={showDetailsModal}
+					position={position}
+					onClose={() => setShowDetailsModal(false)}
+					event={event}
+				/>
+			)}
 		</Box>
 	);
 };
