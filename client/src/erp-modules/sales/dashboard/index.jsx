@@ -7,7 +7,9 @@ import {
 	VStack,
 } from "@chakra-ui/react";
 import Communications from "erp-modules/project-management/communication";
+import { useEffect, useState } from "react";
 import "react-big-calendar/lib/css/react-big-calendar.css";
+import CalendarService from "services/CalendarService";
 import LocalStorageService from "services/LocalStorageService";
 import MiniCalendar from "./MiniCalendar";
 import SalesCard from "./SalesCard";
@@ -17,18 +19,52 @@ import UpcomingList from "./Upcomings";
 const CRMDashboard = () => {
 	const user = LocalStorageService.getItem("user");
 
+	const [events, setEvents] = useState(null);
+	const [meetings, setMeetings] = useState(null);
+	const [appointments, setAppointments] = useState(null);
+
+	useEffect(() => {
+		const fetchAllEvents = async () => {
+			try {
+				const response = await CalendarService.getEventsByType("event");
+				setEvents(response.data);
+			} catch (error) {
+				console.error(error);
+			}
+		};
+		const fetchAllMeetings = async () => {
+			try {
+				const response = await CalendarService.getEventsByType("meeting");
+				setMeetings(response.data);
+			} catch (error) {
+				console.error(error);
+			}
+		};
+		const fetchAllAppointments = async () => {
+			try {
+				const response = await CalendarService.getEventsByType("phoneCall");
+				setAppointments(response.data);
+			} catch (error) {
+				console.error(error);
+			}
+		};
+		fetchAllEvents();
+		fetchAllMeetings();
+		fetchAllAppointments();
+	}, []);
+
 	const STATS = [
 		{
 			name: "Events",
-			count: 4,
+			count: events?.length,
 		},
 		{
 			name: "Meetings",
-			count: 4,
+			count: meetings?.length,
 		},
 		{
 			name: "Appointments",
-			count: 4,
+			count: appointments?.length,
 		},
 	];
 
@@ -67,7 +103,12 @@ const CRMDashboard = () => {
 							<Text mt={2} mb={2} fontWeight="bold">
 								Upcoming
 							</Text>
-							<UpcomingList user={user} />
+							<UpcomingList
+								events={events}
+								meetings={meetings}
+								appointments={appointments}
+								user={user}
+							/>
 						</Box>
 					</SimpleGrid>
 				</Box>

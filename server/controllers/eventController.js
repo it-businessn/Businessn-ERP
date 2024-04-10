@@ -2,7 +2,16 @@ const Event = require("../models/Event");
 
 const getEvents = () => async (req, res) => {
 	try {
-		const events = await Event.find({}).sort({ date: -1 });
+		const events = await Event.find({}).sort({ createdOn: -1 });
+		res.status(200).json(events);
+	} catch (error) {
+		res.status(404).json({ error: error.message });
+	}
+};
+const getEventsByType = () => async (req, res) => {
+	const { id } = req.params;
+	try {
+		const events = await Event.find({ eventType: id }).sort({ createdOn: -1 });
 		res.status(200).json(events);
 	} catch (error) {
 		res.status(404).json({ error: error.message });
@@ -10,25 +19,29 @@ const getEvents = () => async (req, res) => {
 };
 
 const createEvent = () => async (req, res) => {
-	const event = new Event({
-		date: Date.now(),
-		description: req.body?.description,
-		eventType: req.body?.title,
-		meetingAttendees: req.body?.meetingAttendees,
-		meetingFromDate: req.body?.meetingFromDate,
-		meetingFromTime: req.body?.meetingFromTime,
-		meetingLink: req.body?.meetingLink,
-		meetingLocation: req.body?.meetingLocation,
-		meetingToDate: req.body?.meetingToDate,
-		meetingToTime: req.body?.meetingToTime,
-		phoneNo: req.body?.phoneNo,
-		taskAssignee: req.body?.taskAssignee,
-		taskDueDate: req.body?.taskDueDate,
-		taskDuration: req.body?.taskDuration,
-		taskType: req.body?.taskType,
-	});
-
+	const {
+		description,
+		eventType,
+		meetingAttendees,
+		fromDate,
+		fromTime,
+		toDate,
+		toTime,
+		eventLink,
+		location,
+	} = req.body;
 	try {
+		const event = new Event({
+			description,
+			eventType,
+			meetingAttendees,
+			fromDate,
+			fromTime,
+			toDate,
+			toTime,
+			eventLink,
+			location,
+		});
 		const newEvent = await event.save();
 		res.status(201).json(newEvent);
 	} catch (error) {
@@ -36,4 +49,4 @@ const createEvent = () => async (req, res) => {
 	}
 };
 
-module.exports = { createEvent, getEvents };
+module.exports = { createEvent, getEvents, getEventsByType };

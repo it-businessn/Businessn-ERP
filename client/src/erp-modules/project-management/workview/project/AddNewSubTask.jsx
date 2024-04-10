@@ -19,7 +19,7 @@ import {
 import { useState } from "react";
 import { FaCaretDown } from "react-icons/fa";
 import ProjectService from "services/ProjectService";
-import MultiCheckboxMenu from "../MultiCheckboxMenu";
+import MultiCheckboxMenu from "../../../../components/ui/MultiCheckboxMenu";
 
 const AddNewSubTask = ({
 	isOpen,

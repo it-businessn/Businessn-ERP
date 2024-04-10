@@ -21,7 +21,7 @@ import { useEffect, useState } from "react";
 import { FaCaretDown } from "react-icons/fa";
 import ProjectService from "services/ProjectService";
 import { getDefaultDate } from "utils";
-import MultiCheckboxMenu from "../MultiCheckboxMenu";
+import MultiCheckboxMenu from "../../../../components/ui/MultiCheckboxMenu";
 import { PRIORITY } from "./data";
 
 const EditTask = ({ isOpen, onClose, setRefresh, currentTask, managers }) => {

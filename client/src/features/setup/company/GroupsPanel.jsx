@@ -10,8 +10,8 @@ import {
 	Text,
 } from "@chakra-ui/react";
 import Loader from "components/Loader";
+import MultiCheckboxMenu from "components/ui/MultiCheckboxMenu";
 import ActionButton from "components/ui/button/ActionButton";
-import MultiCheckboxMenu from "erp-modules/project-management/workview/MultiCheckboxMenu";
 import { useEffect, useState } from "react";
 import { FaCaretDown } from "react-icons/fa";
 import SettingService from "services/SettingService";

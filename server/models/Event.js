@@ -1,23 +1,16 @@
 const mongoose = require("mongoose");
 
 const eventSchema = new mongoose.Schema({
-	// date: { type: Date, default: Date.now },
-	// description: String,
-	// eventType: String,
-	// meetingAttendees: String,
-	// meetingFromDate: Date,
-	// meetingFromTime: String,
-	// meetingLink: String,
-	// meetingLocation: String,
-	// meetingToDate: Date,
-	// meetingToTime: String,
-	// phoneNo: String,
-	// taskAssignee: String,
-	// taskDueDate: Date,
-	// taskDuration: Number,
-	// taskType: String,
-	name: String,
-	date: { type: Date, default: Date.now },
+	description: String,
+	eventLink: String,
+	eventType: String,
+	fromDate: Date,
+	fromTime: String,
+	location: String,
+	meetingAttendees: Object,
+	toDate: Date,
+	toTime: String,
+	createdOn: { type: Date, default: Date.now },
 });
 
 const Event = mongoose.model("Event", eventSchema);

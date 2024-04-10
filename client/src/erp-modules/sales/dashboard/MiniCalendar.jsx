@@ -3,8 +3,10 @@ import moment from "moment";
 import { Calendar, momentLocalizer } from "react-big-calendar";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import { FaCaretLeft, FaCaretRight } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 
 const MiniCalendar = () => {
+	const navigate = useNavigate();
 	const eventStyleGetter = () => ({
 		style: {
 			backgroundColor: "transparent",
@@ -19,7 +21,6 @@ const MiniCalendar = () => {
 		const goToNext = () => {
 			toolbar.onNavigate("NEXT");
 		};
-
 		return (
 			<Flex justifyContent="space-between">
 				<Text fontWeight="bold">{toolbar.label}</Text>
@@ -73,7 +74,11 @@ const MiniCalendar = () => {
 					toolbar: ScrollToolbar,
 				}}
 			/>
-			<Button variant="link" colorScheme={"blue"}>
+			<Button
+				variant="link"
+				onClick={() => navigate("/sales/calendar")}
+				colorScheme={"blue"}
+			>
 				Go to calendar
 			</Button>
 		</Box>

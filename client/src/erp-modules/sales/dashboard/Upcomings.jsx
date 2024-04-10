@@ -3,12 +3,39 @@ import { useState } from "react";
 import CalendarTable from "./CalendarTable";
 import TaskTable from "./TaskTable";
 
-const UpcomingList = ({ user }) => {
+const UpcomingList = ({ user, events, meetings, appointments }) => {
 	const TABS = [
-		{ type: "Tasks", name: <TaskTable user={user} />, cols: ["Name"] },
-		{ type: "Events", name: <CalendarTable />, cols: ["Name"] },
-		{ type: "Meetings", name: <CalendarTable />, cols: ["Name"] },
-		{ type: "Appointments", name: <CalendarTable />, cols: ["Name"] },
+		{ type: "Tasks", name: <TaskTable user={user} /> },
+		{
+			type: "Events",
+			name: (
+				<CalendarTable
+					data={events}
+					filter="event"
+					cols={["Description", "From", "To", "Event Link", "Location"]}
+				/>
+			),
+		},
+		{
+			type: "Meetings",
+			name: (
+				<CalendarTable
+					data={meetings}
+					filter="meeting"
+					cols={["Description", "From", "To", "Event Link", "Location"]}
+				/>
+			),
+		},
+		{
+			type: "Appointments",
+			name: (
+				<CalendarTable
+					data={appointments}
+					filter="phoneCall"
+					cols={["Description", "From", "To", "s", "s1"]}
+				/>
+			),
+		},
 	];
 	const [viewMode, setViewMode] = useState(TABS[0].type);
 	const showComponent = (viewMode) =>

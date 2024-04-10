@@ -15,7 +15,7 @@ import {
 	Stack,
 	Text,
 } from "@chakra-ui/react";
-import MultiCheckboxMenu from "erp-modules/project-management/workview/MultiCheckboxMenu";
+import MultiCheckboxMenu from "components/ui/MultiCheckboxMenu";
 import { useState } from "react";
 import { FaCaretDown } from "react-icons/fa";
 import SettingService from "services/SettingService";

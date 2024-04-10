@@ -31,7 +31,7 @@ import { useState } from "react";
 import { FaCaretDown } from "react-icons/fa";
 import ProjectService from "services/ProjectService";
 import { getDefaultDate } from "utils";
-import MultiCheckboxMenu from "../MultiCheckboxMenu";
+import MultiCheckboxMenu from "../../../../components/ui/MultiCheckboxMenu";
 import { PROJECT_ASSIGNEES } from "../project/data";
 
 const AddNewProjectTask = ({
