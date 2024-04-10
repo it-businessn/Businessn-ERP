@@ -24,7 +24,7 @@ const MeetingsConductedTable = ({ meetingsData }) => {
 			</Thead>
 			<Tbody border={"none"} color={"brand.nav_color"}>
 				{meetingsData.map((meeting, index) => (
-					<Tr key={index}>
+					<Tr key={meeting}>
 						<Td p={0} fontSize={"xs"} py={0}>
 							<Flex align="center">
 								<Avatar

@@ -49,7 +49,7 @@ const GradientAreaFillColorChart = ({ opportunityData }) => {
 				<Tooltip />
 				<Area
 					type="monotone"
-					dataKey="value"
+					dataKey="total"
 					stroke="#4d7cb9"
 					fill="url(#colorGradient)"
 				/>

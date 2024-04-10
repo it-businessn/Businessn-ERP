@@ -78,7 +78,7 @@ const AddNewActivity = ({
 			setTodoItems([]);
 			setRefresh((prev) => !prev);
 		} catch (error) {
-			setMessage("An error occurred while submitting the application.");
+			setMessage("An error occurred. Please try again.");
 		} finally {
 			setSubmitting(false);
 		}
@@ -267,7 +267,7 @@ const AddNewActivity = ({
 											</Thead>
 											<Tbody>
 												{todoItems?.map((todo) => (
-													<Tr>
+													<Tr key={todo}>
 														<Td>
 															<HStack>
 																<Checkbox isDisabled colorScheme="facebook" />

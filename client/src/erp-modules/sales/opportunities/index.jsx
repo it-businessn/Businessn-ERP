@@ -12,13 +12,10 @@ import SectionLayout from "components/ui/SectionLayout";
 import SelectList from "components/ui/SelectList";
 import TableLayout from "components/ui/TableLayout";
 import PrimaryButton from "components/ui/button/PrimaryButton";
-import {
-	PROJECT_ASSIGNEES,
-	SUPERVISOR_ASSIGNEES,
-} from "erp-modules/project-management/workview/project/data";
 import { useEffect, useState } from "react";
 import { useBreakpointValue } from "services/Breakpoint";
 import LeadsService from "services/LeadsService";
+import UserService from "services/UserService";
 import { formatDate } from "utils";
 import Caption from "../lead docket/Caption";
 import SearchFilter from "../lead docket/SearchFilter";
@@ -31,6 +28,7 @@ const Opportunities = () => {
 	const [isAdded, setIsAdded] = useState(false);
 
 	const [opportunities, setOpportunities] = useState(null);
+	const [assignees, setAssignees] = useState(null);
 
 	useEffect(() => {
 		const fetchAllOpportunities = async () => {
@@ -43,6 +41,16 @@ const Opportunities = () => {
 		};
 
 		fetchAllOpportunities();
+		const fetchAllEmployees = async () => {
+			try {
+				const response = await UserService.getAllUsers();
+				setAssignees(response.data);
+			} catch (error) {
+				console.error(error);
+			}
+		};
+
+		fetchAllEmployees();
 	}, [isAdded]);
 
 	const { isOpen, onOpen, onClose } = useDisclosure();
@@ -97,23 +105,26 @@ const Opportunities = () => {
 										<Td>{email}</Td>
 										<Td>
 											<SelectList
+												_id={_id}
 												code="abbr"
-												selectedValue={"defaultSelected.stag"}
+												selectedValue={stage}
 												data={LEAD_STAGES}
 											/>
 										</Td>
 										<Td>
 											<SelectList
-												code="name"
-												selectedValue={"defaultSelected.primaryAssignee"}
-												data={PROJECT_ASSIGNEES}
+												_id={_id}
+												code="fullName"
+												selectedValue={primaryAssignee}
+												data={assignees}
 											/>
 										</Td>
 										<Td>
 											<SelectList
-												code="name"
-												selectedValue={""}
-												data={SUPERVISOR_ASSIGNEES}
+												_id={_id}
+												code="fullName"
+												selectedValue={supervisorAssignee}
+												data={assignees}
 											/>
 										</Td>
 										<Td>{formatDate(createdOn)}</Td>

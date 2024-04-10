@@ -14,10 +14,9 @@ import {
 import { useState } from "react";
 import { RiEditLine } from "react-icons/ri";
 import LocalStorageService from "services/LocalStorageService";
-import { FRESH_LEADS } from "../opportunities/data";
 import EditLead from "./EditLead";
 
-const AgentsView = ({ leads, setIsUpdated }) => {
+const AgentsView = ({ leads, setIsUpdated, reference }) => {
 	const defaultLeadInfo = {
 		_id: null,
 		opportunityName: "",
@@ -25,14 +24,26 @@ const AgentsView = ({ leads, setIsUpdated }) => {
 		stage: "",
 		phone: "",
 	};
+	const user = LocalStorageService.getItem("user").fullName;
+	const role = LocalStorageService.getItem("user")?.role;
+	const isManager =
+		role?.includes("Administrators") || role?.includes("Manager");
+
+	const leadList = isManager
+		? leads
+		: leads?.filter((lead) => lead.primaryAssignee === user);
 
 	const { isOpen, onOpen, onClose } = useDisclosure();
-	const user = LocalStorageService.getItem("user").fullName;
 	const [formData, setFormData] = useState(defaultLeadInfo);
 	const [copied, setCopied] = useState(false);
-	const totalLeads = (name) =>
-		leads.filter((lead) => lead.stage === name && lead.primaryAssignee === user)
-			.length;
+
+	const totalLeads = (name) => {
+		return isManager
+			? leads.filter((lead) => lead.stage === name).length
+			: leads.filter(
+					(lead) => lead.stage === name && lead.primaryAssignee === user,
+			  ).length;
+	};
 
 	const handleEdit = (_id, opportunityName, email, phone, stage) => {
 		setFormData((prevData) => ({
@@ -63,9 +74,9 @@ const AgentsView = ({ leads, setIsUpdated }) => {
 				spacing="1em"
 				color={"brand.200"}
 			>
-				{leads &&
-					leads.length > 0 &&
-					FRESH_LEADS.map((category) => (
+				{leadList &&
+					leadList.length > 0 &&
+					reference?.map((category) => (
 						<Box
 							borderRadius="10px"
 							border="3px solid var(--main_color)"
@@ -97,91 +108,88 @@ const AgentsView = ({ leads, setIsUpdated }) => {
 									</Text>
 								</Flex>
 							</Box>
-							{leads
-								.filter((lead) => lead.primaryAssignee === user)
-								?.map(
-									({ _id, opportunityName, email, phone, stage }) =>
-										category.abbr === stage && (
-											<Card
-												key={_id}
-												m="8px"
-												bg="var(--lead_cards_bg)"
-												border={"1px solid var(--lead_cards_border)"}
-											>
-												<VStack
-													align="flex-start"
-													color={"brand.200"}
+							{leadList
+								.filter((lead) => lead.stage === category.abbr)
+								?.map(({ _id, opportunityName, email, phone, stage }) => (
+									<Card
+										key={_id}
+										m="8px"
+										bg="var(--lead_cards_bg)"
+										border={"1px solid var(--lead_cards_border)"}
+									>
+										<VStack
+											align="flex-start"
+											color={"brand.200"}
+											fontSize="xs"
+											p={"0.5em"}
+											spacing={0.5}
+										>
+											<HStack justifyContent={"space-between"} w={"100%"}>
+												<Text fontSize="xs" fontWeight="bold">
+													Company
+												</Text>
+												<Text
 													fontSize="xs"
-													p={"0.5em"}
-													spacing={0.5}
+													// fontWeight="bold"
+													color={"brand.600"}
 												>
-													<HStack justifyContent={"space-between"} w={"100%"}>
-														<Text fontSize="xs" fontWeight="bold">
-															Company
-														</Text>
-														<Text
-															fontSize="xs"
-															// fontWeight="bold"
-															color={"brand.600"}
-														>
-															{opportunityName}
-														</Text>
-														<RiEditLine
-															cursor={"pointer"}
-															onClick={() =>
-																handleEdit(
-																	_id,
-																	opportunityName,
-																	email,
-																	phone,
-																	stage,
-																)
-															}
-														/>
-													</HStack>
-													<HStack justifyContent={"space-between"} w={"100%"}>
-														<Text fontSize="xs" fontWeight="bold">
-															Email
-														</Text>
-														<Text
-															fontSize="xs"
-															// fontWeight="bold"
-															color={"brand.600"}
-														>
-															{email}
-														</Text>
-														<Box>
-															<CopyIcon
-																cursor={"pointer"}
-																onClick={() =>
-																	handleCopy(
-																		_id,
-																		opportunityName,
-																		email,
-																		phone,
-																		stage,
-																	)
-																}
-															/>
-														</Box>
-													</HStack>
-													<HStack w={"100%"} justifyContent={"space-between"}>
-														<Text fontSize="xs" fontWeight="bold">
-															Phone
-														</Text>
-														<Text
-															fontSize="xs"
-															// fontWeight="bold"
-															color={"brand.600"}
-														>
-															{phone}
-														</Text>
-														<Box />
-													</HStack>
-												</VStack>
-											</Card>
-										),
-								)}
+													{opportunityName}
+												</Text>
+												<RiEditLine
+													cursor={"pointer"}
+													onClick={() =>
+														handleEdit(
+															_id,
+															opportunityName,
+															email,
+															phone,
+															stage,
+														)
+													}
+												/>
+											</HStack>
+											<HStack justifyContent={"space-between"} w={"100%"}>
+												<Text fontSize="xs" fontWeight="bold">
+													Email
+												</Text>
+												<Text
+													fontSize="xs"
+													// fontWeight="bold"
+													color={"brand.600"}
+												>
+													{email}
+												</Text>
+												<Box>
+													<CopyIcon
+														cursor={"pointer"}
+														onClick={() =>
+															handleCopy(
+																_id,
+																opportunityName,
+																email,
+																phone,
+																stage,
+															)
+														}
+													/>
+												</Box>
+											</HStack>
+											<HStack w={"100%"} justifyContent={"space-between"}>
+												<Text fontSize="xs" fontWeight="bold">
+													Phone
+												</Text>
+												<Text
+													fontSize="xs"
+													// fontWeight="bold"
+													color={"brand.600"}
+												>
+													{phone}
+												</Text>
+												<Box />
+											</HStack>
+										</VStack>
+									</Card>
+								))}
 						</Box>
 					))}
 			</SimpleGrid>

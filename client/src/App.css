@@ -183,6 +183,22 @@ button:active {
 	font-weight: 600;
 }
 
+.mini_cal .rbc-header,
+.mini_cal .rbc-button-link {
+	font-size: 70%;
+}
+.mini_cal .rbc-header {
+	font-weight: bold;
+}
+.mini_cal .rbc-date-cell {
+	padding: 0 !important;
+	text-align: center !important;
+}
+.mini_cal .rbc-month-row + .rbc-month-row,
+.mini_cal .rbc-day-bg + .rbc-day-bg,
+.mini_cal .rbc-header + .rbc-header {
+	border: none !important;
+}
 .rbc-event {
 	margin-left: -2px !important;
 	padding: 0 !important;

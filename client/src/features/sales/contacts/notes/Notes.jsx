@@ -72,7 +72,7 @@ const Notes = ({ contactId }) => {
 			<Box w="100%">
 				<VStack spacing={4} w="100%">
 					{notes.map((note, index) => (
-						<Card key={index} borderWidth="1px" borderRadius="lg" w="100%">
+						<Card key={note} borderWidth="1px" borderRadius="lg" w="100%">
 							<CardBody>
 								<Flex justifyContent="space-between">
 									<Text w="80%">{note.description}</Text>

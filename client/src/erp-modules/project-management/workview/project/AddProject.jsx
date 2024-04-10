@@ -41,7 +41,7 @@ const AddProject = ({ isOpen, onClose, setRefresh, managers }) => {
 			setFormData(defaultProject);
 			setRefresh((prev) => !prev);
 		} catch (error) {
-			setError("An error occurred while submitting the application.");
+			setError("An error occurred. Please try again.");
 		} finally {
 			setSubmitting(false);
 		}

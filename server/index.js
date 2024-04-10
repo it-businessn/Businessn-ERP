@@ -6,7 +6,6 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 
 // const activityRoutes = require("./routes/activity");
-// const taskRoutes = require("./routes/task");
 const conversationRoutes = require("./routes/conversation");
 const companyResourceRoutes = require("./routes/companyResource");
 const companyRoutes = require("./routes/company");
@@ -23,6 +22,7 @@ const permissionsRoutes = require("./routes/permission");
 const projectRoutes = require("./routes/project");
 const setUpRoutes = require("./routes/setup");
 const userRoutes = require("./routes/user");
+const taskRoutes = require("./routes/task");
 
 const app = express();
 const PORT = process.env.PORT;
@@ -56,6 +56,7 @@ app.use("/api/opportunities", opportunityRoutes);
 app.use("/api/permissions", permissionsRoutes);
 app.use("/api/projects", projectRoutes);
 app.use("/api/setup", setUpRoutes);
+app.use("/api/tasks", taskRoutes);
 // app.use("/api/activities", activityRoutes);
 // app.use("/api/attendance", attendanceRoutes);
 // app.use("/api/benefits", benefitsRoutes);

@@ -106,7 +106,7 @@ const AddNewProjectTask = ({
 			setSubTasks([]);
 			setRefresh((prev) => !prev);
 		} catch (error) {
-			setMessage("An error occurred while submitting the application.");
+			setMessage("An error occurred. Please try again.");
 		} finally {
 			setSubmitting(false);
 		}
@@ -213,7 +213,7 @@ const AddNewProjectTask = ({
 										onClick={(e) => {
 											e.preventDefault();
 											setSubTaskAdded(true);
-											setSubTasks((prev) => [...prev, subtask]);
+											setSubTasks([...subTasks, subtask]);
 											setSubTask(defaultSubtask);
 										}}
 										variant={"ghost"}
@@ -293,12 +293,13 @@ const AddNewProjectTask = ({
 											</Thead>
 											<Tbody>
 												{subTasks?.map((task) => (
-													<Tr>
+													<Tr key={task}>
 														<Td>{task.taskName}</Td>
 														<Td>
 															<HStack>
 																{task.selectedAssignees?.map((assignee) => (
 																	<Avatar
+																		key={assignee}
 																		name={assignee}
 																		size={"sm"}
 																		src={assignee}
@@ -322,7 +323,7 @@ const AddNewProjectTask = ({
 											</Thead>
 											<Tbody>
 												{todoItems?.map((todo) => (
-													<Tr>
+													<Tr key={todo}>
 														<Td>
 															<HStack>
 																<Checkbox

@@ -99,7 +99,7 @@ const Contacts = () => {
 									<PopoverBody>
 										{filteredContacts.map((contact, index) => (
 											<div
-												key={index}
+												key={contact}
 												onClick={() => handleSelectedContact(contact)}
 											>
 												<Box

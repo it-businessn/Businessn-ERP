@@ -70,7 +70,7 @@ const EditProject = ({
 			setFormData(defaultProject);
 			setRefresh((prev) => !prev);
 		} catch (error) {
-			setMessage("An error occurred while submitting the application.");
+			setMessage("An error occurred. Please try again.");
 		} finally {
 			setSubmitting(false);
 		}
@@ -233,7 +233,7 @@ const EditProject = ({
 										</Button>
 										{formData?.selectedAssignees?.length > 0 &&
 											formData.selectedAssignees.map((name) => (
-												<Avatar size={"sm"} name={name} src={name} />
+												<Avatar size={"sm"} name={name} src={name} key={name} />
 											))}
 									</FormControl>
 								</HStack>

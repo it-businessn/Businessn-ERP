@@ -23,16 +23,16 @@ const ManagerCell = ({
 				<Manager main />
 				{expandedIndex === index &&
 					project?.tasks?.map((task, task_index) => (
-						<VStack alignItems={"start"} w={"100%"}>
+						<VStack alignItems={"start"} w={"100%"} key={task}>
 							<Manager task />
 							{isExpanded === task_index &&
 								task?.subtasks?.length > 0 &&
 								task?.subtasks?.map((subtask, subtask_index) => (
-									<VStack alignItems={"start"} w={"100%"}>
+									<VStack alignItems={"start"} w={"100%"} key={subtask}>
 										<Manager sub />
 										{isSubExpanded === subtask_index &&
 											subtask?.subtasks?.length > 0 &&
-											subtask?.subtasks?.map((item) => <Manager />)}
+											subtask?.subtasks?.map((item) => <Manager key={item} />)}
 									</VStack>
 								))}
 						</VStack>

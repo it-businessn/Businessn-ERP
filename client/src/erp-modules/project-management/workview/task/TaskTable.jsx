@@ -283,7 +283,9 @@ const TaskTable = ({
 					<Thead>
 						<Tr>
 							<Th>{/* <Checkbox sx={{ verticalAlign: "middle" }} /> */}</Th>
-							{workView_Table.task_view_cols.map((col) => headerCell(col))}
+							{workView_Table.task_view_cols.map((col) => (
+								<React.Fragment key={col}>{headerCell(col)}</React.Fragment>
+							))}
 							<Th />
 						</Tr>
 					</Thead>

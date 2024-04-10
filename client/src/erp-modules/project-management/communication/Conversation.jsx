@@ -19,6 +19,7 @@ const Conversation = ({
 	userId,
 	conversations,
 	setConversations,
+	isDashboard,
 }) => {
 	const [message, setMessage] = useState("");
 	const [isRefresh, setIsRefresh] = useState(false);
@@ -75,7 +76,7 @@ const Conversation = ({
 			});
 			return { id: response.data._id, type: response.data.conversationType };
 		} catch (error) {
-			setMessage("An error occurred while submitting the application.");
+			setMessage("An error occurred. Please try again.");
 		}
 	};
 
@@ -99,7 +100,7 @@ const Conversation = ({
 			setIsRefresh((prev) => !prev);
 			setMessage("");
 		} catch (error) {
-			setMessage("An error occurred while submitting the application.");
+			setMessage("An error occurred. Please try again.");
 		}
 	};
 	const handleKeyPress = (event) => {
@@ -108,22 +109,31 @@ const Conversation = ({
 		}
 	};
 	return (
-		<Box p={"1em"} w={"100%"}>
-			<HStack>
-				<Avatar name="JK" />
-				<VStack align={"start"} spacing={1}>
-					<Text fontWeight="bold">
-						{selectedGroupMember
-							? selectedGroupMember?.fullName
-							: selectedGroup?.name}
-					</Text>
-					<Text fontSize={"xs"}>{selectedGroupMember?.email}</Text>
-				</VStack>
-			</HStack>
+		<Box p={isDashboard ? 0 : "1em"} w={"100%"}>
+			{!isDashboard && (
+				<HStack>
+					<Avatar name="JK" />
+					<VStack align={"start"} spacing={1}>
+						<Text fontWeight="bold">
+							{selectedGroupMember
+								? selectedGroupMember?.fullName
+								: selectedGroup?.name}
+						</Text>
+						<Text fontSize={"xs"}>{selectedGroupMember?.email}</Text>
+					</VStack>
+				</HStack>
+			)}
 			<VStack w={"100%"}>
-				<Box pr={3} w={"100%"} minH={"55vh"} maxH={"66vh"} overflowY={"auto"}>
+				<Box
+					pr={3}
+					w={"100%"}
+					minH={!isDashboard && "55vh"}
+					maxH={!isDashboard && "66vh"}
+					overflowY={"auto"}
+				>
 					{conversations?.map((msg) => (
 						<MessageBubble
+							isDashboard={isDashboard}
 							selectedGroupMember={
 								selectedGroupMember?.fullName || msg.senderName
 							}

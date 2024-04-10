@@ -69,7 +69,7 @@ const Meetings = () => {
 						</Thead>
 						<Tbody color={"brand.nav_color"}>
 							{leaderBoardData.map((item, index) => (
-								<Tr key={index}>
+								<Tr key={item}>
 									<Td fontSize={"xs"} p={0}>
 										{item.position}
 									</Td>

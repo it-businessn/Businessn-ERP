@@ -15,7 +15,7 @@ const MeetingList = ({ meetings }) => {
 		<Box w="100%">
 			<VStack spacing={4} w="100%">
 				{meetings.map((meeting, index) => (
-					<Card key={index} borderWidth="1px" borderRadius="lg" w="100%">
+					<Card key={meeting} borderWidth="1px" borderRadius="lg" w="100%">
 						<CardBody>
 							<HStack justifyContent="space-between">
 								<Badge bg="brand.logo_bg">{meeting.type}</Badge>

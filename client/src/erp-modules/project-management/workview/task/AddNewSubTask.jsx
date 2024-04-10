@@ -121,7 +121,7 @@ const AddNewSubTask = ({
 		// 		setSubTasks([]);
 		// 		setRefresh(true);
 		// 	} catch (error) {
-		// 		setMessage("An error occurred while submitting the application.");
+		// 		setMessage("An error occurred. Please try again.");
 		// 	} finally {
 		// 		setSubmitting(false);
 		// 	}
@@ -133,7 +133,7 @@ const AddNewSubTask = ({
 			// setSubTasks([]);
 			setRefresh((prev) => !prev);
 		} catch (error) {
-			setMessage("An error occurred while submitting the application.");
+			setMessage("An error occurred. Please try again.");
 		} finally {
 			setSubmitting(false);
 		}
@@ -176,7 +176,13 @@ const AddNewSubTask = ({
 
 										{formData?.selectedAssignees?.length > 0 &&
 											formData.selectedAssignees.map((name) => (
-												<Avatar size={"sm"} name={name} src={name} mr={2} />
+												<Avatar
+													size={"sm"}
+													name={name}
+													src={name}
+													mr={2}
+													key={name}
+												/>
 											))}
 									</FormControl>
 								</HStack>
@@ -257,7 +263,12 @@ const AddNewSubTask = ({
 												</Button>
 												{subtask?.selectedAssignees?.length > 0 &&
 													subtask.selectedAssignees.map((name) => (
-														<Avatar size={"sm"} name={name} src={name} />
+														<Avatar
+															size={"sm"}
+															name={name}
+															src={name}
+															key={name}
+														/>
 													))}
 											</FormControl>
 										</HStack>
@@ -300,7 +311,7 @@ const AddNewSubTask = ({
 												onClick={(e) => {
 													e.preventDefault();
 													setSubTaskAdded(true);
-													setSubTasks((prev) => [...prev, subtask]);
+													setSubTasks([...subTasks, subtask]);
 													setSubTask(defaultSubtask);
 												}}
 												size="sm"
@@ -327,12 +338,13 @@ const AddNewSubTask = ({
 											</Thead>
 											<Tbody>
 												{subTasks?.map((task) => (
-													<Tr>
+													<Tr key={task}>
 														<Td>{task.taskName}</Td>
 														<Td>
 															<HStack>
 																{task.selectedAssignees?.map((assignee) => (
 																	<Avatar
+																		key={assignee}
 																		name={assignee}
 																		size={"sm"}
 																		src={assignee}
@@ -464,7 +476,7 @@ const AddNewSubTask = ({
 											</Thead>
 											<Tbody>
 												{todoItems?.map((todo) => (
-													<Tr>
+													<Tr key={todo}>
 														<Td>
 															<HStack>
 																<Checkbox isDisabled colorScheme="facebook" />

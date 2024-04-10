@@ -42,6 +42,7 @@ const FileUploader = ({ fileTypes, userName, setNewUpload }) => {
 			>
 				<Input
 					type="file"
+					border={"none"}
 					bg={"transparent"}
 					onChange={handleFileChange}
 					alignItems={"center"}

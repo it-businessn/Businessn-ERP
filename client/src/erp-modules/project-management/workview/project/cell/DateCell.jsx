@@ -1,4 +1,5 @@
 import { Td, Text, VStack } from "@chakra-ui/react";
+import React from "react";
 import { formatDate, formatDateTime } from "utils";
 
 const DateCell = ({
@@ -23,7 +24,7 @@ const DateCell = ({
 				{project[date] && <FormattedDate date={project[date]} main />}
 				{expandedIndex === index &&
 					project?.tasks?.map((task, task_index) => (
-						<VStack alignItems="start" w={"100%"}>
+						<VStack alignItems="start" w={"100%"} key={task}>
 							{task[date] ? (
 								<FormattedDate date={task[date]} task />
 							) : (
@@ -32,7 +33,7 @@ const DateCell = ({
 							{isExpanded === task_index &&
 								task?.subtasks?.length > 0 &&
 								task?.subtasks?.map((subtask, subtask_index) => (
-									<VStack alignItems="start" w={"100%"}>
+									<VStack alignItems="start" w={"100%"} key={subtask}>
 										{subtask[date] ? (
 											<FormattedDate date={subtask[date]} sub />
 										) : (
@@ -40,11 +41,13 @@ const DateCell = ({
 										)}
 										{isSubExpanded === subtask_index &&
 											subtask?.subtasks?.length > 0 &&
-											subtask?.subtasks?.map((item) =>
-												item[date]
-													? formatDateTime(item[date])
-													: formatDate(new Date()),
-											)}
+											subtask?.subtasks?.map((item) => (
+												<React.Fragment key={item}>
+													{item[date]
+														? formatDateTime(item[date])
+														: formatDate(new Date())}
+												</React.Fragment>
+											))}
 									</VStack>
 								))}
 						</VStack>

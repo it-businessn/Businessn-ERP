@@ -47,7 +47,7 @@ const EditLead = ({
 
 		try {
 			await LeadsService.updateLeadInfo(formData, formData._id);
-			setIsUpdated(true);
+			setIsUpdated((prev) => !prev);
 			onClose();
 			setFormData(defaultLeadInfo);
 			setSubmitting(false);

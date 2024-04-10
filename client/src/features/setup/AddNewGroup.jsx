@@ -68,7 +68,7 @@ const AddNewGroup = ({ isOpen, onClose, setRefresh, modules, admins }) => {
 			setFormData(defaultGroup);
 			setRefresh((prev) => !prev);
 		} catch (error) {
-			setMessage("An error occurred while submitting the application.");
+			setMessage("An error occurred. Please try again.");
 		} finally {
 			setSubmitting(false);
 		}

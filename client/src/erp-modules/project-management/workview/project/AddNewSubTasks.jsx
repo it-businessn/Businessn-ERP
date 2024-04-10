@@ -68,7 +68,7 @@ const AddNewSubTasks = ({
 			setFormData(defaultTask);
 			setRefresh((prev) => !prev);
 		} catch (error) {
-			setMessage("An error occurred while submitting the application.");
+			setMessage("An error occurred. Please try again.");
 		} finally {
 			setSubmitting(false);
 		}
@@ -131,7 +131,7 @@ const AddNewSubTasks = ({
 										</Button>
 										{formData?.subTaskSelectedAssignees?.length > 0 &&
 											formData.subTaskSelectedAssignees.map((name) => (
-												<Avatar size={"sm"} name={name} src={name} />
+												<Avatar size={"sm"} name={name} src={name} key={name} />
 											))}
 									</FormControl>
 								</HStack>

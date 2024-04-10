@@ -133,7 +133,7 @@ const GroupsPanel = ({
 				setFilteredEmployees(employees);
 				setEmpName("");
 			} catch (error) {
-				console.log("An error occurred while submitting the application.");
+				console.log("An error occurred. Please try again.");
 			} finally {
 				setIsSubmitting(false);
 			}
@@ -280,7 +280,7 @@ const GroupsPanel = ({
 						handleSelect={handleSelect}
 					/>
 					<Button
-						isDisabled={filteredEmployees?.length > 1}
+						// isDisabled={filteredEmployees?.length > 1}
 						onClick={handleConfirm}
 						bg={"brand.primary_button_bg"}
 						px={{ base: "2em" }}

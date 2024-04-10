@@ -34,14 +34,14 @@ function PersonalInfoCard({ initialValues, schema, formSubmit, formFields }) {
 			let configuration = await SettingService.getConfigurationsByName(key);
 
 			configuration.data.items.forEach((department) =>
-				setDepartment((prev) => [...prev, department.name]),
+				setDepartment([...departments, department.name]),
 			);
 		};
 		const fetchConfigurationOptionsByRole = async (key) => {
 			let configuration = await SettingService.getConfigurationsByName(key);
 
 			configuration.data.items.forEach((role) =>
-				setUserRole((prev) => [...prev, role.name]),
+				setUserRole([...userRole, role.name]),
 			);
 		};
 		fetchConfigurationOptionsByDepartment("department");

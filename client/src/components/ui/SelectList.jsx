@@ -5,6 +5,7 @@ import { FaCaretDown, FaCaretRight } from "react-icons/fa";
 import { generateLighterShade } from "utils";
 
 const SelectList = ({
+	_id,
 	id,
 	data,
 	selectedValue,
@@ -20,7 +21,11 @@ const SelectList = ({
 		}
 	};
 
-	const value = Array.isArray(selectedValue) ? selectedValue[0] : selectedValue;
+	const value = selectedValue
+		? Array.isArray(selectedValue)
+			? selectedValue[0]
+			: selectedValue
+		: "";
 
 	return (
 		<Select
@@ -32,18 +37,14 @@ const SelectList = ({
 			border={`1px solid var(--primary_button_bg)`}
 			value={value}
 			onChange={handleChange}
+			placeholder="Select"
 		>
-			{data.map((item) =>
-				code === "abbr" ? (
-					<option value={item[code]} key={item.id}>
-						{`${item[code]} - ${item.name}`}
-					</option>
-				) : (
-					<option value={item[code]} key={item.id}>
-						{item[code]}
-					</option>
-				),
-			)}
+			{data?.map((item) => (
+				<option value={item[code]} key={`${_id}${item.name || item._id}`}>
+					{item[code]}
+					{code === "abbr" && ` - ${item.name}`}
+				</option>
+			))}
 		</Select>
 	);
 };

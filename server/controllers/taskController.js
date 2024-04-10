@@ -2,11 +2,10 @@ const Activity = require("../models/Activity");
 const Project = require("../models/Project");
 const SubTask = require("../models/SubTask");
 const Task = require("../models/Task");
-const { getStatus } = require("./projectController");
 
 const getTasks = () => async (req, res) => {
 	try {
-		const tasks = (await Task.find()).sort((a, b) => b.date - a.date);
+		const tasks = (await Task.find()).sort((a, b) => b.createdOn - a.createdOn);
 		res.status(200).json(tasks);
 	} catch (error) {
 		res.status(404).json({ error: error.message });
@@ -14,13 +13,10 @@ const getTasks = () => async (req, res) => {
 };
 
 const getTaskById = () => async (req, res) => {
-	const id = req.params.id;
-
+	const { id } = req.params;
 	try {
-		const notes = (await Task.find({ contactId: id })).sort(
-			(a, b) => b.date - a.date,
-		);
-		res.status(200).json(notes);
+		const tasks = await Task.find({ selectedAssignees: id });
+		res.status(200).json(tasks);
 	} catch (error) {
 		res.status(404).json({ error: error.message });
 	}

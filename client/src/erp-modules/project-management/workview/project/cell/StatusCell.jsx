@@ -32,17 +32,17 @@ const StatusCell = ({
 				<TaskStatus status={project.status} main />
 				{expandedIndex === index &&
 					project?.tasks?.map((task, task_index) => (
-						<VStack alignItems={"start"} gap={0} w={"100%"}>
+						<VStack alignItems={"start"} gap={0} w={"100%"} key={task}>
 							<TaskStatus status={task.status} />
 							{isExpanded === task_index &&
 								task?.subtasks?.length > 0 &&
 								task?.subtasks?.map((subtask, subtask_index) => (
-									<VStack alignItems={"start"} gap={0} w={"100%"}>
+									<VStack alignItems={"start"} gap={0} w={"100%"} key={subtask}>
 										<TaskStatus status={subtask.status} />
 										{isSubExpanded === subtask_index &&
 											subtask?.subtasks?.length > 0 &&
 											subtask?.subtasks?.map((item) => (
-												<TaskStatus status={item.status} />
+												<TaskStatus status={item.status} key={item} />
 											))}
 									</VStack>
 								))}

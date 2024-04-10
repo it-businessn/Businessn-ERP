@@ -44,12 +44,12 @@ const AssigneeCell = ({
 				<AssigneeList assignees={project?.selectedAssignees} main />
 				{expandedIndex === index &&
 					project?.tasks?.map((task, index) => (
-						<VStack w={"100%"}>
+						<VStack w={"100%"} key={task}>
 							<AssigneeList assignees={task.selectedAssignees} task />
 							{isExpanded === index &&
 								task?.subtasks?.length > 0 &&
 								task?.subtasks?.map((subtask, index) => (
-									<VStack w={"100%"}>
+									<VStack w={"100%"} key={subtask}>
 										<AssigneeList assignees={subtask.selectedAssignees} sub />
 
 										{isSubExpanded === index &&

@@ -116,26 +116,27 @@ const LeadsDocket = () => {
 									onChange={() => handleCheckboxChange(rowIndex)}
 								/>
 							</Td>
-							{Object.values(row).map((cell, cellIndex) => {
-								if (cellIndex === 2)
-									return (
-										<Select
-											icon={<Icon as={FaCaretDown} />}
-											borderRadius={"10px"}
-											size={"sm"}
-											color={ele_color}
-											bg={ele_bg}
-											border={`1px solid ${ele_color}`}
-										>
-											{["Abc"].map(({ name }) => (
-												<option value={cell} key={name}>
-													{cell}
-												</option>
-											))}
-										</Select>
-									);
-								else return <Td key={cellIndex}>{cell}</Td>;
-							})}
+							{Object.values(row).map((cell, cellIndex) =>
+								cellIndex === 2 ? (
+									<Select
+										key={cell}
+										icon={<Icon as={FaCaretDown} />}
+										borderRadius={"10px"}
+										size={"sm"}
+										color={ele_color}
+										bg={ele_bg}
+										border={`1px solid ${ele_color}`}
+									>
+										{["Abc"].map(({ name }) => (
+											<option value={cell} key={name}>
+												{cell}
+											</option>
+										))}
+									</Select>
+								) : (
+									<Td key={cell + cellIndex}>{cell}</Td>
+								),
+							)}
 						</Tr>
 					))}
 				</Tbody>

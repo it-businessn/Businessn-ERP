@@ -105,7 +105,7 @@ const Tasks = ({ contactId }) => {
 					<VStack spacing={4} w="100%">
 						{tasks.length > 0 &&
 							tasks.map((task, index) => (
-								<Card key={index} borderWidth="1px" borderRadius="lg" w="100%">
+								<Card key={task} borderWidth="1px" borderRadius="lg" w="100%">
 									<CardBody>
 										<VStack alignItems="start" spacing={4}>
 											<Badge bg="brand.logo_bg">{task.status}</Badge>

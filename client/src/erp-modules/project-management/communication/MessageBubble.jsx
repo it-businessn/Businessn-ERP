@@ -1,4 +1,4 @@
-import { Box, HStack, Spacer, Text, VStack } from "@chakra-ui/react";
+import { Avatar, Box, HStack, Spacer, Text, VStack } from "@chakra-ui/react";
 import moment from "moment";
 import LocalStorageService from "services/LocalStorageService";
 
@@ -7,6 +7,7 @@ const MessageBubble = ({
 	isMyMessage,
 	timestamp,
 	selectedGroupMember,
+	isDashboard,
 }) => {
 	const userName = LocalStorageService.getItem("user").fullName;
 
@@ -30,9 +31,16 @@ const MessageBubble = ({
 	});
 	timestamp = moment(timestamp).fromNow();
 	return (
-		<HStack w={"100%"} spacing={0}>
+		<HStack w={"100%"} spacing={isDashboard ? 1 : 0}>
 			{isMyMessage && <Spacer />}
-			<Box w="70%">
+			{isDashboard && !isMyMessage && (
+				<Avatar
+					size={"sm"}
+					src={selectedGroupMember}
+					name={selectedGroupMember}
+				/>
+			)}
+			<Box w={"70%"}>
 				<Box
 					borderRadius="lg"
 					borderBottomLeftRadius={!isMyMessage && "0"}
@@ -44,18 +52,31 @@ const MessageBubble = ({
 					px={3}
 					py={1.5}
 					justifyContent={isMyMessage ? "flex-end" : "flex-start"}
-					mb={2}
 				>
-					<VStack alignItems={"self-start"} spacing={1}>
-						<Text fontSize="sm" fontWeight={"bold"}>
-							{isMyMessage || selectedGroupMember === userName
-								? "You"
-								: selectedGroupMember}
+					<VStack alignItems={"self-start"} spacing={0}>
+						{isMyMessage || selectedGroupMember === userName ? (
+							!isDashboard && (
+								<Text fontSize="xs" fontWeight={"bold"}>
+									You
+								</Text>
+							)
+						) : (
+							<Text fontSize="xs" fontWeight={"bold"}>
+								{selectedGroupMember}
+							</Text>
+						)}
+
+						<Text fontSize="xs" fontWeight={"normal"}>
+							{message}
 						</Text>
-						<Text fontSize="sm">{message}</Text>
 					</VStack>
 				</Box>
-				<Text fontSize="xs" textAlign={isMyMessage && "right"} mt={1}>
+
+				<Text
+					fontSize="xs"
+					fontWeight={"normal"}
+					textAlign={isMyMessage && "right"}
+				>
 					{timestamp}
 				</Text>
 			</Box>

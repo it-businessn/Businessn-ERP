@@ -14,7 +14,7 @@ const LogActivityList = ({ activities, showLogForm }) => {
 		<Box w="100%">
 			<VStack spacing={4} w="100%">
 				{activities.map((activity, index) => (
-					<Card key={index} borderWidth="1px" borderRadius="lg" w="100%">
+					<Card key={activity} borderWidth="1px" borderRadius="lg" w="100%">
 						<CardBody>
 							<HStack justifyContent="space-between">
 								<Badge bg="brand.logo_bg">{activity.type}</Badge>

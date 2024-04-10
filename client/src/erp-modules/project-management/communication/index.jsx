@@ -15,7 +15,7 @@ import LocalStorageService from "services/LocalStorageService";
 import UserService from "services/UserService";
 import Conversation from "./Conversation";
 
-const Communications = () => {
+const Communications = ({ isDashboard }) => {
 	const [conversations, setConversations] = useState([]);
 	const [groups, setGroups] = useState(null);
 	const [groupMembers, setGroupMembers] = useState(null);
@@ -54,18 +54,22 @@ const Communications = () => {
 	const handleMemberClick = (member) => setSelectedGroupMember(member);
 
 	return (
-		<Box p={{ base: "1em", md: "2em" }} mt={{ base: "3em", md: 0 }}>
-			<Text fontWeight="bold" mb={"0.5em"}>
+		<Box
+			p={{ base: isDashboard ? 0 : "1em", md: isDashboard ? 0 : "2em" }}
+			mt={{ base: isDashboard ? 0 : "3em", md: 0 }}
+		>
+			<Text fontWeight="bold" mb={"0.5em"} display={isDashboard && "none"}>
 				Communication
 			</Text>
 
 			<Flex
-				bg={"brand.primary_bg"}
-				border="1px solid var(--main_color)"
+				bg={!isDashboard && "brand.primary_bg"}
+				border={!isDashboard && "1px solid var(--main_color)"}
 				borderRadius="10px"
 				color={"brand.nav_color"}
 			>
 				<Box
+					display={isDashboard && "none"}
 					borderRight="2px solid #eee"
 					h={`calc(100vh - 12em)`}
 					maxW={{ md: "24vw", lg: "18vw", xl: "12vw" }}
@@ -114,6 +118,7 @@ const Communications = () => {
 					</Stack>
 				</Box>
 				<Box
+					display={isDashboard && "none"}
 					borderRight="2px solid #eee"
 					h={`calc(100vh - 12em)`}
 					maxW={{ md: "24vw", lg: "18vw", xl: "15vw" }}
@@ -164,6 +169,7 @@ const Communications = () => {
 					</VStack>
 				</Box>
 				<Conversation
+					isDashboard={isDashboard}
 					userId={userId}
 					conversations={conversations}
 					setConversations={setConversations}

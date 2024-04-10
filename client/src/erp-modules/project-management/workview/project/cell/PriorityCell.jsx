@@ -20,17 +20,20 @@ const PriorityCell = ({
 				<PriorityBar priority={project.priority} main />
 				{expandedIndex === index &&
 					project?.tasks?.map((task, index) => (
-						<VStack alignItems={"start"} w={"100%"}>
+						<VStack alignItems={"start"} w={"100%"} key={task}>
 							<PriorityBar priority={task.priority} task />
 							{isExpanded === index &&
 								task?.subtasks?.length > 0 &&
 								task?.subtasks?.map((subtask, index) => (
-									<VStack alignItems={"start"} w={"100%"}>
+									<VStack alignItems={"start"} w={"100%"} key={subtask}>
 										<PriorityBar priority={subtask.priority} sub />
 										{isSubExpanded === index &&
 											subtask?.subtasks?.length > 0 &&
 											subtask?.subtasks?.map((item) => (
-												<PriorityBar priority={item?.priority || "low"} />
+												<PriorityBar
+													key={item}
+													priority={item?.priority || "low"}
+												/>
 											))}
 									</VStack>
 								))}

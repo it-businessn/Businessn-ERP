@@ -72,7 +72,7 @@ const ApproversPanel = () => {
 			);
 			setNewManager("");
 		} catch (error) {
-			console.log("An error occurred while submitting the application.");
+			console.log("An error occurred. Please try again.");
 		} finally {
 			setIsSubmitting(false);
 		}

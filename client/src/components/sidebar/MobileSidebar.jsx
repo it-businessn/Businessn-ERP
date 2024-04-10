@@ -26,10 +26,10 @@ const MobileSidebar = ({
 					<Flex p={2} color="brand.nav_color">
 						<Stack justify="start" width="90%" my={0} spacing={0}>
 							{activeMenu?.children?.length &&
-								activeMenu?.children?.map((menu) => (
+								activeMenu?.children?.map((menu, index) => (
 									<MenuItem
 										handleMenuItemClick={handleMenuItemClick}
-										key={crypto.randomUUID()}
+										key={`${menu} ${index}`}
 										menu={menu}
 									/>
 								))}
