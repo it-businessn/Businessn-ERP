@@ -1,18 +1,34 @@
 import { Box, Button, Flex, Spacer, Text } from "@chakra-ui/react";
 import moment from "moment";
+import { useEffect, useState } from "react";
 import { Calendar, momentLocalizer } from "react-big-calendar";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import { FaCaretLeft, FaCaretRight } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
+import CalendarService from "services/CalendarService";
 
 const MiniCalendar = () => {
 	const navigate = useNavigate();
-	const eventStyleGetter = () => ({
-		style: {
-			backgroundColor: "transparent",
-			border: "none",
-		},
-	});
+	const eventStyleGetter = (event) => {
+		if (event.fromDate) {
+			return {
+				style: {
+					backgroundColor: "var(--primary_button_bg)",
+					borderRadius: "0px",
+					opacity: 1,
+					color: "var(--primary_button_bg)",
+					border: "none",
+				},
+			};
+		}
+		return {
+			style: {
+				backgroundColor: "transparent",
+				border: "none",
+			},
+		};
+	};
+
 	const ScrollToolbar = (toolbar) => {
 		const goToBack = () => {
 			toolbar.onNavigate("PREV");
@@ -39,20 +55,47 @@ const MiniCalendar = () => {
 		);
 	};
 	const localizer = momentLocalizer(moment);
+	const [events, setEvents] = useState(null);
 
-	const events = [
-		{
-			title: "Event 1",
-			start: new Date(2024, 4, 10), // Year, Month (0-indexed), Day
-			end: new Date(2024, 4, 12),
-		},
-		{
-			title: "Event 2",
-			start: new Date(2024, 4, 15),
-			end: new Date(2024, 4, 18),
-		},
-		// Add more events as needed
-	];
+	useEffect(() => {
+		const fetchAllEvents = async () => {
+			try {
+				const response = await CalendarService.getEvents();
+				response.data.map((event) => {
+					const fromDateTimeString = `${event.fromDate.split("T")[0]}T${
+						event.fromTime
+					}`;
+					const toDateTimeString = `${event.toDate.split("T")[0]}T${
+						event.toTime
+					}`;
+
+					event.title = event.description;
+					event.start = fromDateTimeString;
+					event.end = toDateTimeString;
+					event.color =
+						event.eventType === "phoneCall"
+							? "var(--status_button_border)"
+							: event.eventType === "meeting"
+							? "var(--primary_button_bg)"
+							: "var(--event_color)";
+					event.bgColor =
+						event.eventType === "phoneCall"
+							? "var(--phoneCall_bg_light)"
+							: event.eventType === "meeting"
+							? "var(--meeting_bg_light)"
+							: "var(--event_bg_light)";
+					return event;
+				});
+				setEvents(response.data);
+			} catch (error) {
+				console.error(error);
+			}
+		};
+		fetchAllEvents();
+	}, []);
+	const handleDateSelect = (event) => {
+		// setShowModal(true);
+	};
 	return (
 		<Box
 			p={3}
@@ -61,19 +104,26 @@ const MiniCalendar = () => {
 			borderRadius="10px"
 			fontWeight="bold"
 		>
-			<Calendar
-				className="mini_cal"
-				localizer={localizer}
-				events={events}
-				views={["month"]}
-				startAccessor="start"
-				endAccessor="end"
-				style={{ height: 200 }}
-				eventPropGetter={eventStyleGetter}
-				components={{
-					toolbar: ScrollToolbar,
-				}}
-			/>
+			{events && (
+				<Calendar
+					className="mini_cal"
+					localizer={localizer}
+					events={events}
+					views={["month"]}
+					startAccessor="start"
+					endAccessor="end"
+					selectable={false}
+					style={{ height: 200 }}
+					// onSelectSlot={handleDateSelect}
+					onSelectEvent={handleDateSelect}
+					eventPropGetter={eventStyleGetter}
+					components={{
+						toolbar: ScrollToolbar,
+					}}
+					defaultDate={moment().toDate()}
+					value={["3", "10", "20"]}
+				/>
+			)}
 			<Button
 				variant="link"
 				onClick={() => navigate("/sales/calendar")}

@@ -199,7 +199,7 @@ const Calendar = () => {
 						startAccessor="start"
 						endAccessor="end"
 						selectable
-						onSelectSlot={handleDateSelect}
+						// onSelectSlot={handleDateSelect}
 						onSelectEvent={handleEvent}
 						eventPropGetter={eventStyleGetter}
 						formats={customFormats}
@@ -213,7 +213,8 @@ const Calendar = () => {
 						dayHeaderFormat={(date, culture, localizer) =>
 							moment(date).format("D dddd")
 						}
-						views={["day", "week", "month", "agenda"]}
+						views={["month"]}
+						// views={["day", "week", "month", "agenda"]}
 						style={{ minHeight: 750 }}
 					/>
 				</Box>
