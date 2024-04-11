@@ -10,10 +10,13 @@ import {
 	VStack,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import LocalStorageService from "services/LocalStorageService";
 import QuestionnaireService from "services/QuestionnaireService";
 
 const Assessment = () => {
+	const userId = LocalStorageService.getItem("user")?._id;
+	const { category } = useParams();
 	const [questionnaires, setQuestionnaires] = useState(null);
 	const navigate = useNavigate();
 	const [answers, setAnswers] = useState({});
@@ -23,7 +26,9 @@ const Assessment = () => {
 	useEffect(() => {
 		const fetchAllAssessments = async () => {
 			try {
-				const response = await QuestionnaireService.getQuestionnaires();
+				const response = await QuestionnaireService.getAssessmentByType(
+					category,
+				);
 				setQuestionnaires(response.data);
 			} catch (error) {
 				console.error(error);
@@ -44,10 +49,11 @@ const Assessment = () => {
 		try {
 			setShowExplanation(true);
 			const response = await QuestionnaireService.addAssessmentStatus({
-				subject: "Know your customer",
+				subject: category,
 				score: count,
 				category: count === questionnaires.length ? "Excellent" : "",
 				result: `${count}/${questionnaires.length}`,
+				empId: userId,
 			});
 		} catch (error) {
 			console.error(error);
@@ -64,23 +70,25 @@ const Assessment = () => {
 	return (
 		<Box p={{ base: "1em", md: "2em" }} overflow={"auto"}>
 			<Text fontWeight="bold" mb={"1em"}>
-				Resources
+				Assessment : {category}
 			</Text>
-			<Box maxWidth="600px" margin="auto">
+			<Box maxWidth="1000px">
 				<form onSubmit={handleSubmit}>
 					{questionnaires?.map((questionnaire, index) => (
 						<FormControl key={questionnaire._id}>
 							<FormLabel>{`${index + 1}: ${questionnaire.question}`}</FormLabel>
-							<RadioGroup
-								onChange={(e) => handleAnswerChange(questionnaire._id, e)}
-								value={answers[questionnaire._id]}
-							>
-								<HStack spacing={4} justify={"space-around"}>
-									{questionnaire.options.map((item) => (
-										<Radio value={item}>{item}</Radio>
-									))}
-								</HStack>
-							</RadioGroup>
+							<HStack w={"100%"}>
+								<RadioGroup
+									onChange={(e) => handleAnswerChange(questionnaire._id, e)}
+									value={answers[questionnaire._id]}
+								>
+									<HStack spacing={4} justify={"space-around"}>
+										{questionnaire.options.map((item) => (
+											<Radio value={item}>{item}</Radio>
+										))}
+									</HStack>
+								</RadioGroup>
+							</HStack>
 
 							{showExplanation && (
 								<VStack align={"self-start"} ml={4}>

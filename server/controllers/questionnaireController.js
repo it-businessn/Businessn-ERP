@@ -81,7 +81,7 @@ const createAssessmentType = async (req, res) => {
 	}
 };
 const createAssessment = async (req, res) => {
-	const { subject, score, category, result } = req.body;
+	const { subject, score, category, result, empId } = req.body;
 
 	try {
 		const assessment = new Assessment({
@@ -89,6 +89,7 @@ const createAssessment = async (req, res) => {
 			score,
 			category,
 			result,
+			empId,
 		});
 
 		const newAssessment = await assessment.save();

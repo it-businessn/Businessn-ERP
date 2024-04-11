@@ -4,9 +4,9 @@ import { createBrowserRouter } from "react-router-dom";
 import Loader from "./components/Loader";
 import PageNotFound from "./features/PageNotFound";
 // import AddPayrun from "./features/payroll/AddPayRun";
-import AddQuestionForm from "components/ui/AddQuestionForm";
-import Assessment from "components/ui/Assessment";
 import Communications from "erp-modules/project-management/communication";
+import AddQuestionForm from "erp-modules/sales/resources/add-paper/AddQuestionForm";
+import Assessment from "erp-modules/sales/resources/attempt-test/Assessment";
 import SalesHome from "./features/home";
 import RootLayout from "./layouts/RootLayout";
 
@@ -150,7 +150,7 @@ export const router = createBrowserRouter([
 				element: <AddQuestionForm />,
 			},
 			{
-				path: "/sales/assessment",
+				path: "/sales/assessment/:category",
 				element: <Assessment />,
 			},
 			{
