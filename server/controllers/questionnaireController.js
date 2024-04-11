@@ -1,5 +1,6 @@
 const Questionnaire = require("../models/Questionnaire");
 const Assessment = require("../models/Assessment");
+const AssessmentType = require("../models/AssessmentType");
 
 const getAllQuestions = async (req, res) => {
 	try {
@@ -23,11 +24,28 @@ const getQuestionById = async (req, res) => {
 	}
 };
 
+const getAssessmentQuestionsByType = async (req, res) => {
+	const { id } = req.params;
+	try {
+		const questions = await Questionnaire.find({ subject: id });
+		res.status(200).json(questions);
+	} catch (error) {
+		res.status(404).json({ error: error.message });
+	}
+};
+const getAssessmentType = async (req, res) => {
+	try {
+		const assessments = await AssessmentType.find({});
+		res.status(200).json(assessments);
+	} catch (error) {
+		res.status(404).json({ error: error.message });
+	}
+};
 const getAssessmentByUserId = async (req, res) => {
 	const { id } = req.params;
 	try {
 		const assessments = (await Assessment.find({ empId: id })).sort(
-			(a, b) => b.date - a.date,
+			(a, b) => b.createdOn - a.createdOn,
 		);
 		res.status(200).json(assessments);
 	} catch (error) {
@@ -48,6 +66,20 @@ const updateAssessment = async (req, res) => {
 	}
 };
 
+const createAssessmentType = async (req, res) => {
+	const { name } = req.body;
+
+	try {
+		const assessment = new AssessmentType({
+			name,
+		});
+
+		const newAssessment = await assessment.save();
+		res.status(201).json(newAssessment);
+	} catch (error) {
+		res.status(400).json({ message: error.message });
+	}
+};
 const createAssessment = async (req, res) => {
 	const { subject, score, category, result } = req.body;
 
@@ -67,7 +99,8 @@ const createAssessment = async (req, res) => {
 };
 
 const createQuestionnaire = async (req, res) => {
-	const { correctAnswer, explanation, options, question } = req.body;
+	const { assessmentType, correctAnswer, explanation, options, question } =
+		req.body;
 
 	try {
 		const questionnaire = new Questionnaire({
@@ -75,6 +108,7 @@ const createQuestionnaire = async (req, res) => {
 			explanation,
 			options,
 			question,
+			subject: assessmentType,
 		});
 
 		const newQuestionnaire = await questionnaire.save();
@@ -84,15 +118,13 @@ const createQuestionnaire = async (req, res) => {
 	}
 };
 
-const updateContact = async (req, res) => {
-	const contactId = req.params.id;
-
+const updateQuestionnaireById = async (req, res) => {
+	const { id } = req.params;
+	console.log(req.body);
 	try {
-		const updatedContact = await Questionnaire.findByIdAndUpdate(
-			contactId,
-			req.body,
-			{ new: true },
-		);
+		const updatedContact = await Questionnaire.findByIdAndUpdate(id, req.body, {
+			new: true,
+		});
 
 		res.status(201).json(updatedContact);
 	} catch (error) {
@@ -104,8 +136,11 @@ module.exports = {
 	createQuestionnaire,
 	getQuestionById,
 	getAllQuestions,
-	updateContact,
+	updateQuestionnaireById,
 	createAssessment,
 	getAssessmentByUserId,
 	updateAssessment,
+	getAssessmentType,
+	createAssessmentType,
+	getAssessmentQuestionsByType,
 };

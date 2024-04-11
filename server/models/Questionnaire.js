@@ -5,7 +5,7 @@ const questionnaireSchema = new mongoose.Schema({
 	explanation: String,
 	options: Object,
 	question: String,
-	subject: { type: String, default: "Know your customer" },
+	subject: { type: String, ref: "AssessmentType" },
 	createdOn: { type: Date, default: Date.now },
 	updatedOn: { type: Date, default: Date.now },
 });
