@@ -3,13 +3,20 @@ import { useState } from "react";
 import CalendarTable from "./CalendarTable";
 import TaskTable from "./TaskTable";
 
-const UpcomingList = ({ user, events, meetings, appointments }) => {
+const UpcomingList = ({
+	user,
+	events,
+	meetings,
+	appointments,
+	setIsRefresh,
+}) => {
 	const TABS = [
 		{ type: "Tasks", name: <TaskTable user={user} /> },
 		{
 			type: "Events",
 			name: (
 				<CalendarTable
+					setIsRefresh={setIsRefresh}
 					data={events}
 					filter="event"
 					cols={["Description", "From", "To", "Event Link", "Location"]}
@@ -20,6 +27,7 @@ const UpcomingList = ({ user, events, meetings, appointments }) => {
 			type: "Meetings",
 			name: (
 				<CalendarTable
+					setIsRefresh={setIsRefresh}
 					data={meetings}
 					filter="meeting"
 					cols={["Description", "From", "To", "Event Link", "Location"]}
@@ -30,6 +38,7 @@ const UpcomingList = ({ user, events, meetings, appointments }) => {
 			type: "Appointments",
 			name: (
 				<CalendarTable
+					setIsRefresh={setIsRefresh}
 					data={appointments}
 					filter="phoneCall"
 					cols={["Description", "From", "To", "s", "s1"]}

@@ -11,7 +11,8 @@ import ResourceFile from "./ResourceFile";
 
 const Resources = () => {
 	const user = LocalStorageService.getItem("user");
-	const isManager = user.role === "Administrators";
+	const isManager =
+		user.role.includes("Administrator") || user.role.includes("Administrators");
 
 	const [resources, setResources] = useState(null);
 	const [newUpload, setNewUpload] = useState(null);

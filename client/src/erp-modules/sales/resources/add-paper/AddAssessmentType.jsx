@@ -57,14 +57,14 @@ const AddAssessmentType = ({
 		>
 			<ModalOverlay />
 			<ModalContent>
-				<ModalHeader>Add New Assessment Subject</ModalHeader>
+				<ModalHeader>Add New Assessment Name</ModalHeader>
 				<ModalCloseButton />
 				<ModalBody>
 					<Stack spacing="5">
 						<form onSubmit={handleSubmit}>
 							<Stack spacing={4}>
 								<FormControl>
-									<FormLabel>Assessment Type</FormLabel>
+									<FormLabel>Assessment </FormLabel>
 									<Input
 										type="text"
 										name="name"

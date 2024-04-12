@@ -51,9 +51,10 @@ const Assessment = () => {
 			const response = await QuestionnaireService.addAssessmentStatus({
 				subject: category,
 				score: count,
-				category: count === questionnaires.length ? "Excellent" : "",
+				category: count === questionnaires.length ? "PASS" : "ALMOST!",
 				result: `${count}/${questionnaires.length}`,
 				empId: userId,
+				total: questionnaires.length,
 			});
 		} catch (error) {
 			console.error(error);

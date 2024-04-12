@@ -26,12 +26,15 @@ const Sidebar = ({
 			maxHeight={`calc(100vh - 6.7em)`}
 			overflowY="auto"
 		>
-			<Stack justify="start" width="full" my={0} spacing={0}>
-				{activeMenu?.children?.length &&
-					activeMenu?.children?.map((menu) => (
-						<MenuItem key={menu} menu={menu} parent={activeMenu.id} />
-					))}
-			</Stack>
+			{activeMenu && (
+				<Stack justify="start" width="full" my={0} spacing={0}>
+					{activeMenu?.children
+						?.filter((item) => item.permissions)
+						?.map((menu) => (
+							<MenuItem key={menu} menu={menu} parent={activeMenu.id} />
+						))}
+				</Stack>
+			)}
 		</Flex>
 	);
 };

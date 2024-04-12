@@ -18,10 +18,10 @@ import UpcomingList from "./Upcomings";
 
 const CRMDashboard = () => {
 	const user = LocalStorageService.getItem("user");
-
 	const [events, setEvents] = useState(null);
 	const [meetings, setMeetings] = useState(null);
 	const [appointments, setAppointments] = useState(null);
+	const [isRefresh, setIsRefresh] = useState(false);
 
 	useEffect(() => {
 		const fetchAllEvents = async () => {
@@ -51,7 +51,7 @@ const CRMDashboard = () => {
 		fetchAllEvents();
 		fetchAllMeetings();
 		fetchAllAppointments();
-	}, []);
+	}, [isRefresh]);
 
 	const STATS = [
 		{
@@ -108,6 +108,7 @@ const CRMDashboard = () => {
 								meetings={meetings}
 								appointments={appointments}
 								user={user}
+								setIsRefresh={setIsRefresh}
 							/>
 						</Box>
 					</SimpleGrid>

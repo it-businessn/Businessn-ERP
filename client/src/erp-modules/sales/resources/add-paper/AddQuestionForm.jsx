@@ -131,14 +131,14 @@ const AddQuestionForm = () => {
 							))}
 						</HStack>
 					</FormLabel>
-					<FormLabel>
+					<FormLabel color={"green"}>
 						<HStack>
 							<Text>Correct answer :</Text>
 							<Text>{questionnaire.correctAnswer}</Text>
 						</HStack>
 					</FormLabel>
 
-					<FormLabel>
+					<FormLabel fontWeight={"bold"}>
 						<HStack>
 							<Text>Explanation:</Text>
 							<Text>{questionnaire.explanation}</Text>
@@ -157,14 +157,14 @@ const AddQuestionForm = () => {
 				<form onSubmit={handleSubmit}>
 					{assessmentTypes && (
 						<FormControl>
-							<FormLabel>Assessment Type</FormLabel>
+							<FormLabel>Assessment</FormLabel>
 							<HStack justify={"space-between"}>
 								<Select
 									name="assessmentType"
 									value={assessmentType}
 									bg={"brand.100"}
 									onChange={(e) => setAssessmentType(e.target.value)}
-									placeholder="Select Assessment Type"
+									placeholder="Select Assessment"
 								>
 									{assessmentTypes?.map((assessment) => (
 										<option key={assessment._id} value={assessment.name}>

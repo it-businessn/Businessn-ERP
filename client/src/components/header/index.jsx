@@ -11,7 +11,6 @@ import {
 } from "@chakra-ui/react";
 import { Tab, UserProfile } from "components";
 import Logo from "components/logo";
-import { SIDEBAR_MENU } from "components/sidebar/data";
 import { useEffect, useState } from "react";
 import { FaSyncAlt } from "react-icons/fa";
 import { Link } from "react-router-dom";
@@ -25,6 +24,7 @@ const Navbar = ({
 	user,
 	handleLogout,
 	onOpen,
+	tabs,
 }) => {
 	const [companies, setCompanies] = useState(null);
 	useEffect(() => {
@@ -119,19 +119,20 @@ const Navbar = ({
 						<Logo />
 						{!isMobile && companyList()}
 					</VStack>
-
-					{SIDEBAR_MENU?.map((menu) => (
-						<Link to={menu?.path} key={menu.name}>
-							<Stack ml={{ base: "1em", md: "2em" }} key={menu.id}>
-								<Tab
-									handleClick={handleClick}
-									color="primary"
-									menu={menu}
-									label={menu.name}
-								/>
-							</Stack>
-						</Link>
-					))}
+					{tabs
+						?.filter((tab) => tab.permissions)
+						?.map((menu) => (
+							<Link to={menu?.path} key={menu.name}>
+								<Stack ml={{ base: "1em", md: "2em" }} key={menu.id}>
+									<Tab
+										handleClick={handleClick}
+										color="primary"
+										menu={menu}
+										label={menu.name}
+									/>
+								</Stack>
+							</Link>
+						))}
 					{!isMobile && profile()}
 				</Flex>
 			</HStack>

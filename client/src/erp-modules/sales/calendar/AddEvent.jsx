@@ -22,15 +22,14 @@ import CalendarService from "services/CalendarService";
 import UserService from "services/UserService";
 
 const AddEvent = ({
-	showModal,
-	setShowModal,
+	isOpen,
+	onClose,
 	setIsRefresh,
 	isLoading,
 	setIsLoading,
 	isEdit,
 	setShowEditDetails,
 	event,
-	setEvent,
 }) => {
 	const [eventType, setEventType] = useState("event");
 	const [attendees, setAttendees] = useState(null);
@@ -140,7 +139,7 @@ const AddEvent = ({
 			// 	taskDuration: "",
 			// 	phoneNo: "",
 			// });
-			handleClose();
+			onClose();
 			setIsRefresh((prev) => !prev);
 		} catch (error) {
 			console.error(error);
@@ -154,14 +153,8 @@ const AddEvent = ({
 		}
 	}, [isEdit]);
 
-	const handleClose = () => {
-		setShowModal(false);
-		setShowEditDetails(false);
-		setEvent(null);
-	};
-
 	return (
-		<Modal isOpen={showModal || isEdit} size="xl" onClose={handleClose}>
+		<Modal isOpen={isOpen} size="xl" onClose={onClose}>
 			<ModalOverlay />
 			<ModalContent zIndex="2">
 				<ModalHeader>Add Event</ModalHeader>
@@ -314,7 +307,7 @@ const AddEvent = ({
 						>
 							Add Event
 						</Button>
-						<Button variant="ghost" onClose={handleClose}>
+						<Button variant="ghost" onClick={onClose}>
 							Cancel
 						</Button>
 					</ModalFooter>

@@ -20,12 +20,12 @@ const TaskTable = ({ user }) => {
 
 	return (
 		<Box overflow="auto">
-			<Table variant="simple">
+			<Table variant="simple" size={"small"}>
 				<Thead>
 					<Tr>
-						<Th>Name</Th>
-						<Th>Priority</Th>
-						<Th>Due date</Th>
+						<Th fontSize={"12px"}>Name</Th>
+						<Th fontSize={"12px"}>Priority</Th>
+						<Th fontSize={"12px"}>Due date</Th>
 					</Tr>
 				</Thead>
 				<Tbody>

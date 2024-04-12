@@ -1,17 +1,48 @@
-import { Box, Table, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
+import { Box, Button, Table, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
+import { useState } from "react";
+import { BsPlus } from "react-icons/bs";
 import { formatDate } from "utils";
+import AddEvent from "../calendar/AddEvent";
 
-const CalendarTable = ({ cols, data }) => {
+const CalendarTable = ({ cols, data, setIsRefresh }) => {
+	const [showEventForm, setShowEventForm] = useState(false);
+	const [isLoading, setIsLoading] = useState(false);
 	return (
 		<Box overflow="auto" fontWeight={"normal"}>
-			<Table variant="simple">
+			<Button
+				size={"xs"}
+				onClick={() => setShowEventForm(true)}
+				color={"brand.100"}
+				bg={"var(--primary_button_bg)"}
+				variant={"outline"}
+				fontWeight={"bold"}
+				_hover={{ bg: "transparent", color: "brand.600" }}
+				leftIcon={<BsPlus />}
+			>
+				New
+			</Button>
+
+			{showEventForm && (
+				<AddEvent
+					setIsRefresh={setIsRefresh}
+					isLoading={isLoading}
+					setIsLoading={setIsLoading}
+					isOpen={showEventForm}
+					onClose={() => {
+						setShowEventForm(false);
+					}}
+				/>
+			)}
+			<Table variant="simple" size={"small"}>
 				<Thead>
 					<Tr>
 						{cols?.map((col) =>
 							col === "s" || col === "s1" ? (
-								<Th key={col} />
+								<Th fontSize={"12px"} key={col} />
 							) : (
-								<Th key={col}>{col}</Th>
+								<Th fontSize={"12px"} key={col}>
+									{col}
+								</Th>
 							),
 						)}
 					</Tr>

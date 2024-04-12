@@ -10,6 +10,7 @@ import {
 	Text,
 	VStack,
 } from "@chakra-ui/react";
+import { useData } from "context/DataContext";
 import { FaDownload } from "react-icons/fa";
 import { GoDownload } from "react-icons/go";
 import { MdDeleteOutline } from "react-icons/md";
@@ -42,6 +43,12 @@ const ResourceFile = ({
 			console.error(error);
 		}
 	};
+	const { permissionData } = useData();
+	const hasDeleteAccess = permissionData
+		.find((record) => record.id === "sales")
+		?.children?.find((item) => item.path === "resources")
+		.permissions?.canDeleteModule;
+
 	return (
 		<>
 			<Flex justifyContent={"space-between"}>
@@ -114,19 +121,21 @@ const ResourceFile = ({
 								>
 									Download
 								</Button>
-								<Button
-									onClick={() => handleDelete(resource._id)}
-									w={"100%"}
-									bg="var(--primary_button_bg)"
-									color={"brand.primary_bg"}
-									variant={"solid"}
-									_hover={{ color: "brand.600" }}
-									borderRadius={"10px"}
-									size="xs"
-									rightIcon={<MdDeleteOutline />}
-								>
-									Delete
-								</Button>
+								{hasDeleteAccess && (
+									<Button
+										onClick={() => handleDelete(resource._id)}
+										w={"100%"}
+										bg="var(--primary_button_bg)"
+										color={"brand.primary_bg"}
+										variant={"solid"}
+										_hover={{ color: "brand.600" }}
+										borderRadius={"10px"}
+										size="xs"
+										rightIcon={<MdDeleteOutline />}
+									>
+										Delete
+									</Button>
+								)}
 							</HStack>
 						</VStack>
 					</Box>

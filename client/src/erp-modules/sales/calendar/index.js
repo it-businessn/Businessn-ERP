@@ -221,14 +221,16 @@ const Calendar = () => {
 			)}
 			<AddEvent
 				isEdit={showEditDetails}
-				showModal={showModal}
-				setShowModal={setShowModal}
 				setIsRefresh={setIsRefresh}
 				isLoading={isLoading}
 				setIsLoading={setIsLoading}
 				event={event}
-				setShowEditDetails={setShowEditDetails}
-				setEvent={setEvent}
+				isOpen={showModal || showEditDetails}
+				onClose={() => {
+					setShowEditDetails(false);
+					setShowModal(false);
+					setEvent(null);
+				}}
 			/>
 			{showDetailsModal && (
 				<EventDetails

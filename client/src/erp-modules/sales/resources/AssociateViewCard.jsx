@@ -64,7 +64,16 @@ const AssociateViewCard = () => {
 					const assessmentResult = assessmentsTaken?.find(
 						(type) => type.subject === assessment.name,
 					);
-
+					if (assessmentResult) {
+						assessmentResult.color =
+							assessmentResult?.category === "PASS"
+								? "var(--correct_ans)"
+								: "var(--almost_pass)";
+						assessmentResult.bg =
+							assessmentResult?.category === "PASS"
+								? "var(--phoneCall_bg_light)"
+								: "var(--receiver_msg_bg)";
+					}
 					return (
 						<Box
 							key={assessment._id}
@@ -80,8 +89,14 @@ const AssociateViewCard = () => {
 							alignItems="flex-start"
 						>
 							<VStack align={"self-start"} spacing={2} w={"100%"}>
-								<Text color={"brand.nav_color"} fontSize="xs" fontWeight="bold">
-									Assessment Type :{" "}
+								<HStack>
+									<Text
+										color={"brand.nav_color"}
+										fontSize="xs"
+										fontWeight="bold"
+									>
+										Assessment :
+									</Text>
 									<Badge
 										bg="var(--meeting_bg_light)"
 										size={"xs"}
@@ -89,28 +104,63 @@ const AssociateViewCard = () => {
 									>
 										{assessment?.name}
 									</Badge>
-								</Text>
-
-								{assessmentResult?.category ? (
-									<Badge bg="green" color="var(--main_color)">
-										{assessmentResult?.category}
-									</Badge>
-								) : (
-									<Badge
-										bg="green"
-										color="var(--main_color)"
-										visibility={"hidden"}
+								</HStack>
+								<HStack>
+									<Text
+										color={"brand.nav_color"}
+										fontSize="xs"
+										fontWeight="bold"
 									>
-										NA
-									</Badge>
-								)}
+										Your Result :
+									</Text>
+									{assessmentResult?.category ? (
+										<Badge
+											bg={assessmentResult?.bg}
+											color={assessmentResult?.color}
+										>
+											{assessmentResult?.category}
+										</Badge>
+									) : (
+										<Badge
+											bg="green"
+											color="var(--main_color)"
+											visibility={"hidden"}
+										>
+											NA
+										</Badge>
+									)}
+								</HStack>
 
-								<Text color={"brand.nav_color"} fontSize="xs" fontWeight="bold">
-									Your result
-								</Text>
-								<Text fontWeight="bolder">
-									{assessmentResult ? assessmentResult.result : "NA"}
-								</Text>
+								<HStack justify={"space-between"} w={"100%"}>
+									<VStack>
+										<Text
+											color={"brand.nav_color"}
+											fontSize="xs"
+											fontWeight="bold"
+										>
+											Score
+										</Text>
+										<Text fontWeight="bolder">
+											{assessmentResult ? assessmentResult.result : "NA"}
+										</Text>
+									</VStack>
+									<VStack>
+										<Text
+											color={"brand.nav_color"}
+											fontSize="xs"
+											fontWeight="bold"
+										>
+											Score(%)
+										</Text>
+										<Text fontWeight="bolder">
+											{assessmentResult
+												? (assessmentResult.score / assessmentResult.total) *
+												  100
+												: "NA"}
+											%
+										</Text>
+									</VStack>
+								</HStack>
 
 								<Button
 									w={"100%"}

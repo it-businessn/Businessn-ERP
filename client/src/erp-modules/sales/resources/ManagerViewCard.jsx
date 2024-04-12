@@ -37,7 +37,7 @@ const ManagerViewCard = () => {
 		>
 			<HStack>
 				<Text flex={1} mb={"0.5em"} fontWeight="bold">
-					All Assessment Types
+					All Assessment
 				</Text>
 
 				<Button
@@ -47,8 +47,9 @@ const ManagerViewCard = () => {
 					variant={"link"}
 					_hover={{ color: "brand.600" }}
 					onClick={() => navigate("/sales/add-paper")}
+					textDecor={"underline"}
 				>
-					Add Assessment Paper
+					Add Assessment
 				</Button>
 			</HStack>
 
@@ -73,7 +74,7 @@ const ManagerViewCard = () => {
 					>
 						<VStack align={"self-start"} spacing={2} w={"100%"}>
 							<Text color={"brand.nav_color"} fontSize="xs" fontWeight="bold">
-								Assessment Type
+								Assessment
 							</Text>
 							<Badge bg="green" color="var(--main_color)">
 								{assessment.name}
