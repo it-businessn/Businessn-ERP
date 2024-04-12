@@ -122,7 +122,6 @@ const createQuestionnaire = async (req, res) => {
 
 const updateQuestionnaireById = async (req, res) => {
 	const { id } = req.params;
-	console.log(req.body);
 	try {
 		const updatedContact = await Questionnaire.findByIdAndUpdate(id, req.body, {
 			new: true,

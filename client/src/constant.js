@@ -1,43 +1,13 @@
-import { EditIcon, EmailIcon } from "@chakra-ui/icons";
-import { BsCalendar3, BsChatTextFill, BsListTask } from "react-icons/bs";
+import { EmailIcon } from "@chakra-ui/icons";
+import { BsChatTextFill, BsListTask } from "react-icons/bs";
 import { CiPercent } from "react-icons/ci";
-import {
-	FaAddressBook,
-	FaDashcube,
-	FaRProject,
-	FaSalesforce,
-} from "react-icons/fa";
+import { FaSalesforce } from "react-icons/fa";
 import { FiTarget } from "react-icons/fi";
 import { GiVideoCamera } from "react-icons/gi";
-import { HiOutlineCalendar } from "react-icons/hi";
 import { IoMdCall } from "react-icons/io";
-import {
-	IoBagRemoveOutline,
-	IoCall,
-	IoDocumentTextOutline,
-} from "react-icons/io5";
-import { LuLayoutDashboard } from "react-icons/lu";
-import {
-	MdCall,
-	MdCleanHands,
-	MdContactPage,
-	MdOutlineEventNote,
-	MdOutlineSettingsApplications,
-	MdPayments,
-} from "react-icons/md";
-import { PiBooks, PiListMagnifyingGlassFill } from "react-icons/pi";
-import {
-	RiAspectRatioLine,
-	RiUserSearchLine,
-	RiUserStarLine,
-} from "react-icons/ri";
-import { RxDashboard } from "react-icons/rx";
-import {
-	TbChartDots,
-	TbFileInvoice,
-	TbShoppingBag,
-	TbUsersPlus,
-} from "react-icons/tb";
+import { IoCall } from "react-icons/io5";
+import { MdCall, MdContactPage, MdOutlineEventNote } from "react-icons/md";
+import { RiAspectRatioLine } from "react-icons/ri";
 
 export const TOAST = {
 	SUCCESS: {
@@ -331,17 +301,6 @@ export const activityChartData = {
 			data: [65, 25, 10],
 			backgroundColor: ["#517ae8", "#67afc8", "#8aa8ee"],
 			hoverBackgroundColor: ["#517ae8", "#67afc8", "#8aa8ee"],
-		},
-	],
-};
-
-export const trainingChartData = {
-	labels: ["Completed", "Ongoing"],
-	datasets: [
-		{
-			data: [65, 10],
-			backgroundColor: ["#517ae8", "#8aa8ee"],
-			hoverBackgroundColor: ["#517ae8", "#8aa8ee"],
 		},
 	],
 };

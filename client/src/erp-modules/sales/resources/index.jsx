@@ -1,7 +1,6 @@
 import { Box, SimpleGrid, Text } from "@chakra-ui/react";
-import { doughnutOptions, trainingChartData } from "constant";
+import Loader from "components/Loader";
 import { useEffect, useState } from "react";
-import { Doughnut } from "react-chartjs-2";
 import LocalStorageService from "services/LocalStorageService";
 import ResourceService from "services/ResourceService";
 import AssociateViewCard from "./AssociateViewCard";
@@ -64,26 +63,10 @@ const Resources = () => {
 				spacing="1em"
 				mt={"0.5em"}
 			>
-				<Box
-					px="1em"
-					py="0.5em"
-					bg={"brand.primary_bg"}
-					border="3px solid var(--main_color)"
-					borderRadius="10px"
-					fontWeight="bold"
-					color={"brand.nav_color"}
-				>
-					<Text fontWeight="bold">Training</Text>
-					<Box w={{ base: "60%", md: "40%", lg: "60%", xl: "40%" }} mx={"auto"}>
-						<Doughnut
-							data={trainingChartData}
-							options={doughnutOptions("40%")}
-						/>
-					</Box>
-				</Box>
 				{isManager ? <ManagerViewCard /> : <AssociateViewCard />}
 			</SimpleGrid>
-			{isManager ? (
+			{!resources && <Loader isAuto />}
+			{resources && isManager ? (
 				<SimpleGrid columns={{ base: 1, md: 1, lg: 1 }}>
 					<FileUploader
 						setNewUpload={setNewUpload}
