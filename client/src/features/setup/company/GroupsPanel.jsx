@@ -145,6 +145,9 @@ const GroupsPanel = ({
 	};
 	const handleGroup = (e) => {
 		const item = groups.find((name) => name.name === e.target.value);
+		if (!item) {
+			return;
+		}
 		setSelectedGroup(item);
 		setSelectedModules(item.modules);
 		setSelectedAdmins(item.admin);

@@ -35,9 +35,12 @@ const ChatHistory = ({
 		}
 	};
 	const createConversation = async () => {
+		const participants = currentConversation?.participants.map(
+			(item) => item._id,
+		);
 		try {
 			const response = await CommunicationService.createConversation({
-				participants: currentConversation?.participants.map((item) => item._id),
+				participants,
 				conversationType: currentConversation?.conversationType,
 				groupName: currentConversation.groupName,
 			});

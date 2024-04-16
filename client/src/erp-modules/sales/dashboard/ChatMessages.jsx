@@ -12,6 +12,7 @@ import "react-big-calendar/lib/css/react-big-calendar.css";
 import { FaUsers } from "react-icons/fa";
 import { IoMdArrowRoundBack } from "react-icons/io";
 import CommunicationService from "services/CommsService";
+import UserService from "services/UserService";
 import ChatHistory from "./ChatHistory";
 
 const ChatMessages = ({ userId }) => {
@@ -20,6 +21,7 @@ const ChatMessages = ({ userId }) => {
 	const [currentConversation, setCurrentConversation] = useState(null);
 	const [isRefresh, setIsRefresh] = useState(false);
 
+	const [groups, setGroups] = useState(null);
 	useEffect(() => {
 		const fetchAllUserConversation = async () => {
 			try {
@@ -44,6 +46,9 @@ const ChatMessages = ({ userId }) => {
 						: "";
 				});
 				setUserConversation(response.data);
+				if (response.data.length === 0) {
+					fetchAllGroups();
+				}
 			} catch (error) {
 				console.error(error);
 			}
@@ -52,6 +57,23 @@ const ChatMessages = ({ userId }) => {
 			fetchAllUserConversation();
 		}
 	}, [isRefresh]);
+
+	const fetchAllGroups = async () => {
+		try {
+			const response = await UserService.getAllMemberGroups(userId);
+			setGroups(response.data);
+		} catch (error) {
+			console.error(error);
+		}
+	};
+
+	const handleStartChat = (group) => {
+		group.conversationType = "group";
+		group.participants = group.members;
+		group.groupName = group.name;
+		setCurrentConversation(group);
+		setCurrentChat([]);
+	};
 
 	const handleChat = (conversation, isPersonal) => {
 		setCurrentConversation(conversation);
@@ -78,9 +100,52 @@ const ChatMessages = ({ userId }) => {
 
 			{!currentChat && (
 				<VStack align="stretch" spacing={2}>
+					{userConversation?.length === 0 && (
+						<>
+							<Text fontSize={"xs"}>No recent conversation found.</Text>
+							{groups?.map((group) => (
+								<HStack
+									key={group._id}
+									w={"100%"}
+									spacing={"1em"}
+									bg={"var(--lead_cards_bg)"}
+									cursor="pointer"
+									onClick={() => handleStartChat(group)}
+								>
+									<Box
+										borderRadius="50%"
+										bg="var(--primary_button_bg)"
+										size={"sm"}
+										display="flex"
+										alignItems="center"
+										justifyContent="center"
+									>
+										<IconButton
+											icon={<FaUsers />}
+											variant="solid"
+											color="white"
+											size="sm"
+											aria-label="Avatar Icon"
+											_hover={{ bg: "transparent" }}
+										/>
+									</Box>
+									<Button
+										justifyContent={"space-between"}
+										p={0}
+										variant="ghost"
+										fontSize="xs"
+									>
+										<VStack align={"self-start"}>
+											<Text fontWeight="bold">{group.name}</Text>
+										</VStack>
+									</Button>
+								</HStack>
+							))}
+						</>
+					)}
 					{userConversation?.map((conversation) => (
 						<HStack
-							w={"1005"}
+							w={"100%"}
 							key={conversation._id}
 							spacing={"1em"}
 							bg={"var(--lead_cards_bg)"}

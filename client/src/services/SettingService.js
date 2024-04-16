@@ -74,15 +74,15 @@ const SettingService = {
 	},
 
 	async getIdleLeadReAssignment() {
-		return apiService.get("/set-up/idle-lead-config");
+		return apiService.get("/setup/idle-lead-config");
 	},
 
 	async setUpIdleLeadReAssignment(data) {
-		return apiService.post("/set-up/idle-lead", data);
+		return apiService.post("/setup/idle-lead", data);
 	},
 
 	async updateSetUpIdleLeadReAssignment(data, id) {
-		return apiService.put(`/set-up/idle-lead/${id}`, data, id);
+		return apiService.put(`/setup/idle-lead/${id}`, data, id);
 	},
 };
 
