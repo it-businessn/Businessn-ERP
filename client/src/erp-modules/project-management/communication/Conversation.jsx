@@ -10,7 +10,7 @@ import {
 import { useEffect, useState } from "react";
 import { BsFillSendFill } from "react-icons/bs";
 import CommunicationService from "services/CommsService";
-import MessageBubble from "./MessageBubble";
+import ChatHistory from "./ChatHistory";
 
 const Conversation = ({
 	groupMembers,
@@ -124,27 +124,17 @@ const Conversation = ({
 				</HStack>
 			)}
 			<VStack w={"100%"}>
-				<Box
-					pr={3}
-					w={"100%"}
-					minH={!isDashboard && "55vh"}
-					maxH={!isDashboard && "66vh"}
-					overflowY={"auto"}
-				>
-					{conversations?.map((msg) => (
-						<MessageBubble
-							isDashboard={isDashboard}
-							selectedGroupMember={
-								selectedGroupMember?.fullName || msg.senderName
-							}
-							key={msg._id}
-							message={msg?.text}
-							isMyMessage={msg.sender === userId}
-							timestamp={msg.timestamp}
-						/>
-					))}
-				</Box>
-
+				<ChatHistory
+					isDashboard={isDashboard}
+					conversations={conversations}
+					selectedGroupMember={selectedGroupMember}
+					userId={userId}
+					message={message}
+					setMessage={setMessage}
+					selectedGroup={selectedGroup}
+					handleKeyPress={handleKeyPress}
+					sendMessage={sendMessage}
+				/>
 				<HStack
 					w={"100%"}
 					spacing={2}

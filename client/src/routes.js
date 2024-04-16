@@ -7,7 +7,8 @@ import PageNotFound from "./features/PageNotFound";
 import Communications from "erp-modules/project-management/communication";
 import AddQuestionForm from "erp-modules/sales/resources/add-paper/AddQuestionForm";
 import Assessment from "erp-modules/sales/resources/attempt-test/Assessment";
-import SalesHome from "./features/home";
+import SchedulingDashboard from "erp-modules/scheduling/dashboard";
+import ScheduleWorkView from "erp-modules/scheduling/workview";
 import RootLayout from "./layouts/RootLayout";
 
 // const PayrollTable = lazy(() => import("./features/payroll"));
@@ -225,6 +226,14 @@ export const router = createBrowserRouter([
 			{
 				path: "/payroll",
 				element: <Employees />,
+			},
+			{
+				path: "/scheduling",
+				element: <SchedulingDashboard />,
+			},
+			{
+				path: "/scheduling/workview",
+				element: <ScheduleWorkView />,
 			},
 			{
 				path: "*",

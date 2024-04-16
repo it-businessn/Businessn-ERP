@@ -21,6 +21,10 @@ const UserService = {
 		return apiService.get(`/user`);
 	},
 
+	async getUserInfo(id) {
+		return apiService.get(`/user/${id}`);
+	},
+
 	async getAllManagers() {
 		return apiService.get(`/user/managers`);
 	},

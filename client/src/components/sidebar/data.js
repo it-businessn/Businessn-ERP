@@ -2,7 +2,7 @@ import { EditIcon } from "@chakra-ui/icons";
 import { BiNotepad, BiTask } from "react-icons/bi";
 import { BsCalendar3 } from "react-icons/bs";
 import { FaAddressBook, FaDashcube, FaRProject } from "react-icons/fa";
-import { FaChartGantt, FaPeopleArrows } from "react-icons/fa6";
+import { FaCalendar, FaChartGantt, FaPeopleArrows } from "react-icons/fa6";
 import { GoTasklist } from "react-icons/go";
 import { HiOutlineCalendar } from "react-icons/hi";
 import { IoBagRemoveOutline, IoDocumentTextOutline } from "react-icons/io5";
@@ -15,12 +15,7 @@ import {
 import { PiBooks, PiListMagnifyingGlassFill } from "react-icons/pi";
 import { RiUserSearchLine, RiUserStarLine } from "react-icons/ri";
 import { RxDashboard } from "react-icons/rx";
-import {
-	TbChartDots,
-	TbFileInvoice,
-	TbShoppingBag,
-	TbUsersPlus,
-} from "react-icons/tb";
+import { TbChartDots, TbShoppingBag, TbUsersPlus } from "react-icons/tb";
 
 // export const BUSINESSN_SIDEBAR_MENU = [
 // 	{
@@ -1125,6 +1120,44 @@ export const SIDEBAR_MENU = [
 			},
 		],
 	},
+	{
+		path: "scheduling",
+		name: "Scheduling",
+		id: "scheduling",
+		icon: <FaCalendar />,
+		children: [
+			{
+				path: "",
+				name: "Dashboard",
+				children: [],
+				icon: <BiTask />,
+			},
+			{
+				path: "workview",
+				name: "Workview",
+				children: [],
+				icon: <LuLayoutDashboard />,
+			},
+			{
+				path: "schedule-reports",
+				name: "Scheduling Reports",
+				children: [],
+				icon: <LuLayoutDashboard />,
+			},
+			{
+				path: "set-up",
+				name: "Setup",
+				children: [],
+				icon: <MdOutlineSettingsApplications />,
+			},
+			{
+				path: "shift-assign",
+				name: "Shift Assignment",
+				icon: <MdOutlineSettingsApplications />,
+			},
+		],
+	},
+	// }
 	// {
 	// 	path: "/payroll-insight",
 	// 	name: "Insights",

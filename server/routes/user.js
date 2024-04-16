@@ -11,11 +11,13 @@ const {
 	updateUserAssignedLeads,
 	getAllManagers,
 	getAllMemberGroups,
+	getUserInfo,
 } = require("../controllers/userController");
 
 router.post("/signup", createEmployee());
 // router.post("/send-verification-email", sendVerificationCode);
 router.get("/", getAllUsers());
+router.get("/:id", getUserInfo());
 router.get("/groups/:id", getAllMemberGroups());
 router.get("/managers", getAllManagers());
 // router.get("/reset-password/:id/:token", resetPassword);

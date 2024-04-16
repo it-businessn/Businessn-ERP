@@ -96,6 +96,67 @@ const getGroupConversation = () => async (req, res) => {
 	}
 };
 
+const getAllUserConversations = () => async (req, res) => {
+	const { id } = req.params;
+
+	try {
+		const userConversations = [];
+		const groupConversations = await Conversation.find({
+			$and: [{ participants: { $all: [id] } }, { conversationType: "group" }],
+		})
+			.populate({
+				path: "groupMessages",
+				populate: {
+					path: "sender",
+					model: "Employee",
+					select: "fullName",
+				},
+			})
+			.populate({
+				path: "participants",
+				model: "Employee",
+				select: "fullName",
+			});
+
+		userConversations.push(...groupConversations);
+
+		const oneToOneConversations = await Conversation.find({
+			$and: [
+				{ participants: { $all: [id] } },
+				{ conversationType: "one-on-one" },
+			],
+		})
+			.populate({
+				path: "messages",
+				populate: [
+					{
+						path: "sender",
+						model: "Employee",
+						select: "fullName",
+					},
+					{
+						path: "receiver",
+						model: "Employee",
+						select: "fullName",
+					},
+				],
+			})
+			.populate({
+				path: "participants",
+				model: "Employee",
+				select: "fullName",
+			});
+
+		userConversations.push(...oneToOneConversations);
+
+		const result = userConversations.sort((a, b) => b.createdOn - a.createdOn);
+
+		res.status(200).json(result);
+	} catch (error) {
+		res.status(404).json({ error: error.message });
+	}
+};
+
 const getGroupConversationById = () => async (req, res) => {
 	const id = req.params.id;
 	try {
@@ -203,6 +264,63 @@ const createGroupMessages = (io) => async (req, res) => {
 	}
 };
 
+const getConversationMessageById = () => async (req, res) => {
+	const { id, type } = req.body;
+	try {
+		if (type === "group") {
+			const groupConversations = await Conversation.findById(id)
+				.populate({
+					path: "groupMessages",
+					populate: {
+						path: "sender",
+						model: "Employee",
+						select: "fullName",
+					},
+				})
+				.populate({
+					path: "participants",
+					model: "Employee",
+					select: "fullName",
+				});
+			const result = groupConversations.groupMessages.sort(
+				(a, b) => a.timestamp - b.timestamp,
+			);
+
+			res.status(200).json(result);
+		} else {
+			const oneToOneConversations = await Conversation.findById(id)
+				.populate({
+					path: "messages",
+					populate: [
+						{
+							path: "sender",
+							model: "Employee",
+							select: "fullName",
+						},
+						{
+							path: "receiver",
+							model: "Employee",
+							select: "fullName",
+						},
+					],
+				})
+				.populate({
+					path: "participants",
+					model: "Employee",
+					select: "fullName",
+				});
+
+			const result = oneToOneConversations.messages.sort(
+				(a, b) => a.timestamp - b.timestamp,
+			);
+
+			res.status(200).json(result);
+		}
+	} catch (error) {
+		res.status(404).json({ error: error.message });
+	}
+};
+
 module.exports = {
 	createConversation,
 	getConversationById,
@@ -213,4 +331,6 @@ module.exports = {
 	getGroupConversation,
 	createConversationTwoUsers,
 	createGroupMessages,
+	getAllUserConversations,
+	getConversationMessageById,
 };

@@ -19,6 +19,15 @@ const getAllUsers = () => async (req, res) => {
 		res.status(404).json({ error: error.message });
 	}
 };
+const getUserInfo = () => async (req, res) => {
+	const { id } = req.params;
+	try {
+		const user = await Employee.findById(id);
+		res.status(200).json(user);
+	} catch (error) {
+		res.status(404).json({ error: error.message });
+	}
+};
 
 const getAllMemberGroups = () => async (req, res) => {
 	try {
@@ -181,4 +190,5 @@ module.exports = {
 	updateUser,
 	updateUserAssignedLeads,
 	getAllMemberGroups,
+	getUserInfo,
 };

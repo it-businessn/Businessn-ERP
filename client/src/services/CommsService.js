@@ -1,9 +1,14 @@
 import apiService from "services";
 
 const CommunicationService = {
+	async getAllUserConversations(id) {
+		return apiService.get(`/comms/all-conversations/${id}`);
+	},
+
 	async getGroupConversationById(id) {
 		return apiService.get(`/comms/group-conversations/${id}/messages`);
 	},
+
 	async getGroupConversationByName(id) {
 		return apiService.get(`/comms/group-conversations/${id}/messages`);
 	},
@@ -30,6 +35,9 @@ const CommunicationService = {
 
 	async getAllConversation(id) {
 		return apiService.get(`/conversations/${id}/messages`);
+	},
+	async messageHistory(data) {
+		return apiService.post("/conversations/history", data);
 	},
 
 	async getTwoUsersConversation(data) {

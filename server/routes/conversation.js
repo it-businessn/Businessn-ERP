@@ -4,6 +4,11 @@ const router = express.Router();
 const conversationController = require("../controllers/conversationController");
 
 router.get(
+	"/all-conversations/:id",
+	conversationController.getAllUserConversations(),
+);
+
+router.get(
 	"/group-conversations/:id/messages",
 	conversationController.getGroupConversationById(),
 );
@@ -21,6 +26,7 @@ router.get(
 	conversationController.getGroupConversation(),
 );
 router.get("/:id/messages", conversationController.getConversationById());
+router.post("/history", conversationController.getConversationMessageById());
 
 router.post(
 	"/group-conversations",

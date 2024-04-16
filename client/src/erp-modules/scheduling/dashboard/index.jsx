@@ -6,17 +6,17 @@ import {
 	Text,
 	VStack,
 } from "@chakra-ui/react";
+import Communications from "erp-modules/project-management/communication";
 import { useEffect, useState } from "react";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import CalendarService from "services/CalendarService";
 import LocalStorageService from "services/LocalStorageService";
-import ChatMessages from "./ChatMessages";
 import MiniCalendar from "./MiniCalendar";
 import SalesCard from "./SalesCard";
 import SalesChart from "./SalesChart";
 import UpcomingList from "./Upcomings";
 
-const CRMDashboard = () => {
+const SchedulingDashboard = () => {
 	const user = LocalStorageService.getItem("user");
 	const [events, setEvents] = useState(null);
 	const [meetings, setMeetings] = useState(null);
@@ -153,11 +153,14 @@ const CRMDashboard = () => {
 						</VStack> */}
 					</HStack>
 					<MiniCalendar />
-					<ChatMessages userId={user._id} />
+					<Box mt={2} fontWeight="bold">
+						<Text p="10px">Team chat</Text>
+						<Communications isDashboard />
+					</Box>
 				</Box>
 			</SimpleGrid>
 		</Box>
 	);
 };
 
-export default CRMDashboard;
+export default SchedulingDashboard;
