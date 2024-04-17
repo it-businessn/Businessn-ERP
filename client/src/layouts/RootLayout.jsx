@@ -55,6 +55,7 @@ const RootLayout = () => {
 		if (!user || location.pathname === "/") {
 			if (user) {
 				navigate("/sales");
+				window.location.reload();
 			} else {
 				navigate("/login");
 			}

@@ -7,6 +7,7 @@ import "react-big-calendar/lib/css/react-big-calendar.css";
 import { FaCaretLeft, FaCaretRight, FaClock } from "react-icons/fa";
 import { useBreakpointValue } from "services/Breakpoint";
 import CalendarService from "services/CalendarService";
+import LocalStorageService from "services/LocalStorageService";
 import AddEvent from "./AddEvent";
 import EventDetails from "./EventDetails";
 
@@ -19,47 +20,49 @@ const Calendar = () => {
 
 	const [isLoading, setIsLoading] = useState(false);
 	const [isRefresh, setIsRefresh] = useState(false);
+	const user = LocalStorageService.getItem("user").fullName;
+	// const checkClassExists = () => {
+	// 	const element = document.querySelector(".rbc-show-more");
 
-	const checkClassExists = () => {
-		const element = document.querySelector(".rbc-show-more");
-
-		if (element) {
-			element.style.display = "none";
-		} else {
-			setTimeout(checkClassExists, 1000);
-		}
-	};
+	// 	if (element) {
+	// 		element.style.display = "none";
+	// 	} else {
+	// 		setTimeout(checkClassExists, 1000);
+	// 	}
+	// };
 
 	useEffect(() => {
-		checkClassExists();
+		// checkClassExists();
 		const fetchAllEvents = async () => {
 			try {
 				const response = await CalendarService.getEvents();
-				response.data.map((event) => {
-					const fromDateTimeString = `${event.fromDate.split("T")[0]}T${
-						event.fromTime
-					}`;
-					const toDateTimeString = `${event.toDate.split("T")[0]}T${
-						event.toTime
-					}`;
+				response.data
+					?.filter((event) => event.meetingAttendees.includes(user))
+					.map((event) => {
+						const fromDateTimeString = `${event.fromDate.split("T")[0]}T${
+							event.fromTime
+						}`;
+						const toDateTimeString = `${event.toDate.split("T")[0]}T${
+							event.toTime
+						}`;
 
-					event.title = event.description;
-					event.start = fromDateTimeString;
-					event.end = toDateTimeString;
-					event.color =
-						event.eventType === "phoneCall"
-							? "var(--status_button_border)"
-							: event.eventType === "meeting"
-							? "var(--primary_button_bg)"
-							: "var(--event_color)";
-					event.bgColor =
-						event.eventType === "phoneCall"
-							? "var(--phoneCall_bg_light)"
-							: event.eventType === "meeting"
-							? "var(--meeting_bg_light)"
-							: "var(--event_bg_light)";
-					return event;
-				});
+						event.title = event.description;
+						event.start = fromDateTimeString;
+						event.end = toDateTimeString;
+						event.color =
+							event.eventType === "phoneCall"
+								? "var(--status_button_border)"
+								: event.eventType === "meeting"
+								? "var(--primary_button_bg)"
+								: "var(--event_color)";
+						event.bgColor =
+							event.eventType === "phoneCall"
+								? "var(--phoneCall_bg_light)"
+								: event.eventType === "meeting"
+								? "var(--meeting_bg_light)"
+								: "var(--event_bg_light)";
+						return event;
+					});
 				setEvents(response.data);
 				setIsLoading(false);
 			} catch (error) {
@@ -106,12 +109,12 @@ const Calendar = () => {
 
 	const ScrollToolbar = (toolbar) => {
 		const goToBack = () => {
-			checkClassExists();
+			// checkClassExists();
 			toolbar.onNavigate("PREV");
 		};
 
 		const goToNext = () => {
-			checkClassExists();
+			// checkClassExists();
 			toolbar.onNavigate("NEXT");
 		};
 
