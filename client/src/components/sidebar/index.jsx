@@ -9,6 +9,7 @@ const Sidebar = ({
 	onClose,
 	handleMenuItemClick,
 }) => {
+	const menuList = activeMenu?.children?.filter((item) => item.permissions);
 	return isMobile ? (
 		<MobileSidebar
 			isOpen={isOpen}
@@ -26,15 +27,11 @@ const Sidebar = ({
 			maxHeight={`calc(100vh - 6.7em)`}
 			overflowY="auto"
 		>
-			{activeMenu && (
-				<Stack justify="start" width="full" my={0} spacing={0}>
-					{activeMenu?.children
-						?.filter((item) => item.permissions)
-						?.map((menu) => (
-							<MenuItem key={menu} menu={menu} parent={activeMenu.id} />
-						))}
-				</Stack>
-			)}
+			<Stack justify="start" width="full" my={0} spacing={0}>
+				{menuList?.map((menu) => (
+					<MenuItem key={menu} menu={menu} parent={activeMenu.id} />
+				))}
+			</Stack>
 		</Flex>
 	);
 };

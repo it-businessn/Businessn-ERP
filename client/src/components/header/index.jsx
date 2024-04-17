@@ -84,6 +84,8 @@ const Navbar = ({
 		</>
 	);
 
+	const menuList = tabs?.filter((tab) => tab.permissions);
+
 	return (
 		<Box
 			pl={{ base: 0, md: 3 }}
@@ -119,20 +121,21 @@ const Navbar = ({
 						<Logo />
 						{!isMobile && companyList()}
 					</VStack>
-					{tabs
-						?.filter((tab) => tab.permissions)
-						?.map((menu) => (
-							<Link to={menu?.path} key={menu.name}>
-								<Stack ml={{ base: "1em", md: "2em" }} key={menu.id}>
-									<Tab
-										handleClick={handleClick}
-										color="primary"
-										menu={menu}
-										label={menu.name}
-									/>
-								</Stack>
-							</Link>
-						))}
+					{menuList?.map(
+						(menu) =>
+							menu.permissions?.canAccessModule && (
+								<Link to={menu?.path} key={menu.name}>
+									<Stack ml={{ base: "1em", md: "2em" }} key={menu.id}>
+										<Tab
+											handleClick={handleClick}
+											color="primary"
+											menu={menu}
+											label={menu.name}
+										/>
+									</Stack>
+								</Link>
+							),
+					)}
 					{!isMobile && profile()}
 				</Flex>
 			</HStack>
