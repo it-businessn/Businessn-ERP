@@ -2,18 +2,61 @@ const mongoose = require("mongoose");
 
 // const User = require("../models/User");
 const Employee = require("../models/Employee");
-const EmployeeRole = require("../models/EmployeeRole");
-const Department = require("../models/Department");
-const EmploymentType = require("../models/EmploymentType");
-const Company = require("../models/Company");
 const bcrypt = require("bcrypt");
 const Lead = require("../models/Lead");
 const Group = require("../models/Group");
+const Task = require("../models/Task");
 
 const getAllUsers = () => async (req, res) => {
 	try {
 		// const users = (await User.find()).sort((a, b) => b.createdOn - a.createdOn);
 		const users = await Employee.find({});
+		res.status(200).json(users);
+	} catch (error) {
+		res.status(404).json({ error: error.message });
+	}
+};
+
+const getAllEmployeesByRole = () => async (req, res) => {
+	try {
+		const tasksByEmployee = await Task.aggregate([
+			{
+				$group: {
+					_id: "$selectedAssignees",
+					tasks: {
+						$push: {
+							taskName: "$taskName",
+						},
+					},
+				},
+			},
+		]);
+		const users = await Employee.aggregate([
+			{
+				$group: {
+					_id: "$role",
+					employees: {
+						$push: {
+							fullName: "$fullName",
+							id: "$_id",
+							tasks: {
+								$reduce: {
+									input: tasksByEmployee,
+									initialValue: [],
+									in: {
+										$cond: {
+											if: { $in: ["$fullName", "$$this._id"] }, // if employee name is in the selectedAssignees of the task
+											then: { $concatArrays: ["$$value", "$$this.tasks"] }, // Merge tasks arrays
+											else: "$$value", // default value
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		]);
 		res.status(200).json(users);
 	} catch (error) {
 		res.status(404).json({ error: error.message });
@@ -181,4 +224,5 @@ module.exports = {
 	updateUser,
 	updateUserAssignedLeads,
 	getAllMemberGroups,
+	getAllEmployeesByRole,
 };
