@@ -20,7 +20,7 @@ const HeaderCards = () => {
 			icon: FaAward,
 			title: "Current % of projected revenue",
 			subIcon: ArrowDownIcon,
-			value: 55,
+			value: "55%",
 			percent: "2.22%",
 		},
 		{
@@ -28,7 +28,7 @@ const HeaderCards = () => {
 			icon: GiDiamondTrophy,
 			title: "Current % away from targeted % of projected revenue",
 			subIcon: ArrowUpIcon,
-			value: "$345",
+			value: "78%",
 			percent: "3.34%",
 		},
 	];

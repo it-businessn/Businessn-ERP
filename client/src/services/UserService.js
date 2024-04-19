@@ -48,6 +48,10 @@ const UserService = {
 	async updateUserPermission(data, id) {
 		return apiService.put(`/permissions/${id}`, data, id);
 	},
+
+	async getAllEmployeesByRole() {
+		return apiService.get(`/user/emp-roles`);
+	},
 };
 
 export default UserService;

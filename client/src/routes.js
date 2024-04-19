@@ -86,6 +86,7 @@ export const router = createBrowserRouter([
 				index: true,
 				element: <CRMDashboard />,
 			},
+			/* Sales */
 			{
 				path: "/sales",
 				element: <CRMDashboard />,
@@ -162,55 +163,7 @@ export const router = createBrowserRouter([
 				path: ":module/set-up",
 				element: <Setup />,
 			},
-			// {
-			// 	path: "/view-contacts",
-			// 	element: <Contacts />,
-			// },
-			// {
-			// 	path: "/add-contact",
-			// 	element: <AddContact />,
-			// },
-			// {
-			// 	path: "/edit-contact",
-			// 	element: <EditContact />,
-			// },
-			// {
-			// 	path: "/view-tasks",
-			// 	element: <TaskByDate />,
-			// },
-			// {
-			// 	path: "/add-opportunity",
-			// 	element: <AddOpportunity />,
-			// },
-			// {
-			// 	path: "/edit-opportunity",
-			// 	element: <EditOpportunity />,
-			// },
-			// {
-			// 	path: "/opportunities",
-			// 	element: <OpportunitiesList />,
-			// },
-			// {
-			// 	path: "/tasks",
-			// 	element: <TaskDashboard />,
-			// },
-			// {
-			// 	path: "/edit-user/:id",
-			// 	element: <EditUser />,
-			// },
-			// {
-			// 	path: "/generate",
-			// 	element: <PayrollTable />,
-			// },
-			// {
-			// 	path: "/generate-payrun",
-			// 	element: <GeneratePayRun />,
-			// },
-			// {
-			// 	path: "/add-payrun",
-			// 	element: <AddPayrun />,
-			// },
-
+			/* Project Management*/
 			{
 				path: "/project",
 				element: <WorkView />,
@@ -223,10 +176,12 @@ export const router = createBrowserRouter([
 				path: "/project/comms",
 				element: <Communications />,
 			},
+			/* Payroll */
 			{
 				path: "/payroll",
 				element: <Employees />,
 			},
+			/* Scheduling */
 			{
 				path: "/scheduling",
 				element: <SchedulingDashboard />,

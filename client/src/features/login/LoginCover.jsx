@@ -58,7 +58,7 @@ const LoginCover = () => {
 					<Flex h="24">
 						<VStack align="flex-start">
 							<Text color="fg.accent.subtle" textStyle="sm">
-								© 2023 BusinessN. All rights reserved.
+								© 2024 BusinessN. All rights reserved.
 							</Text>
 						</VStack>
 					</Flex>

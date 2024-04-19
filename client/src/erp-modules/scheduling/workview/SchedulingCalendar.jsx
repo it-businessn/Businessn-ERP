@@ -1,127 +1,173 @@
-import { Box, Button, Flex, Spacer, Text } from "@chakra-ui/react";
-import moment from "moment";
+import { Box, Table, Tbody, Td, Text, Th, Thead, Tr } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
-import { Calendar, momentLocalizer } from "react-big-calendar";
-import "react-big-calendar/lib/css/react-big-calendar.css";
-import { FaCaretLeft, FaCaretRight } from "react-icons/fa";
-import CalendarService from "services/CalendarService";
+import EmployeeDropToHourSlot from "./EmployeeDropToHourSlot";
 
 const SchedulingCalendar = () => {
-	const eventStyleGetter = (event) => {
-		if (event.fromDate) {
-			return {
-				style: {
-					backgroundColor: "var(--primary_button_bg)",
-					borderRadius: "0px",
-					opacity: 1,
-					color: "var(--primary_button_bg)",
-					border: "none",
-				},
-			};
-		}
-		return {
-			style: {
-				backgroundColor: "transparent",
-				border: "none",
-			},
-		};
-	};
+	const hours = [
+		"8:00 AM",
+		"9:00 AM",
+		"10:00 AM",
+		"11:00 AM",
+		"12:00 PM",
+		"1:00 PM",
+		"2:00 PM",
+		"3:00 PM",
+		"4:00 PM",
+		"5:00 PM",
+		"6:00 PM",
+		"7:00 PM",
+	];
+	const [shifts, setShifts] = useState([]);
+	const [employees, setEmployees] = useState([]);
+	const [updatedEmployees, setUpdatedEmployees] = useState([]);
+	const [hourDrop, setHourDrop] = useState(false);
 
-	const ScrollToolbar = (toolbar) => {
-		const goToBack = () => {
-			toolbar.onNavigate("PREV");
-		};
-
-		const goToNext = () => {
-			toolbar.onNavigate("NEXT");
-		};
-		return (
-			<Flex justifyContent="space-between">
-				<Text fontWeight="bold">{toolbar.label}</Text>
-				<Spacer />
-				<Button
-					p={0}
-					color={"brand.600"}
-					size="sm"
-					leftIcon={<FaCaretLeft onClick={goToBack} />}
-					rightIcon={<FaCaretRight onClick={goToNext} />}
-					borderRadius={"10px"}
-					variant={"ghost"}
-					_hover={{ color: "brand.600", bg: "transparent" }}
-				/>
-			</Flex>
-		);
-	};
-	const localizer = momentLocalizer(moment);
-	const [events, setEvents] = useState(null);
-
+	const [resized, setResized] = useState(false);
+	const [colSpan, setColSpan] = useState(1);
+	const [shiftHour, setShiftHour] = useState("");
+	const [shift, setShift] = useState("");
+	const [movement, setMovement] = useState("");
 	useEffect(() => {
-		const fetchAllEvents = async () => {
-			try {
-				const response = await CalendarService.getEvents();
-				response.data.map((event) => {
-					const fromDateTimeString = `${event.fromDate.split("T")[0]}T${
-						event.fromTime
-					}`;
-					const toDateTimeString = `${event.toDate.split("T")[0]}T${
-						event.toTime
-					}`;
+		updatedEmployees.forEach(
+			(emp) => (emp.shifts = shifts.filter((shift) => shift.name === emp.name)),
+		);
+		setEmployees(updatedEmployees);
+	}, [updatedEmployees]);
+	// const updatedShiftss = [...shifts];
+	// useEffect(() => {
+	// 	console.log(updatedShiftss);
+	// 	setShifts(updatedShiftss);
+	// }, []);
+	// useEffect(() => {
+	// 	if (movement < 0) {
+	// 		let k = shifts.find((item) => item.name === shift.name);
+	// 		if (k) {
+	// 			const newstart = parseInt(k.start.split(":")[0]);
+	// 			const newtime = k.start.split(":")[1];
+	// 			const newend = newstart + movement;
+	// 			updatedShiftss.push({
+	// 				start: `${newstart}:${newtime}`,
+	// 				end: `${newend}:${newtime}`,
+	// 				name: shift.name,
+	// 				color: shift.color,
+	// 			});
+	// 			setShifts(updatedShiftss);
+	// 		}
+	// 	} else {
+	// 		let l = shifts.find((item) => item.name === shift.name);
+	// 		if (l) {
+	// 			const newstart = parseInt(l.start.split(":")[0]);
+	// 			const newtime = l.start.split(":")[1];
+	// 			const newend = newstart + movement;
+	// 			updatedShiftss.push({
+	// 				start: `${newstart}:${newtime}`,
+	// 				end: `${newend}:${newtime}`,
+	// 				name: shift.name,
+	// 				color: shift.color,
+	// 			});
+	// 			setShifts(updatedShiftss);
+	// 		}
+	// 	}
+	// }, [shift, movement]);
 
-					event.title = event.description;
-					event.start = fromDateTimeString;
-					event.end = toDateTimeString;
-					event.color =
-						event.eventType === "phoneCall"
-							? "var(--status_button_border)"
-							: event.eventType === "meeting"
-							? "var(--primary_button_bg)"
-							: "var(--event_color)";
-					event.bgColor =
-						event.eventType === "phoneCall"
-							? "var(--phoneCall_bg_light)"
-							: event.eventType === "meeting"
-							? "var(--meeting_bg_light)"
-							: "var(--event_bg_light)";
-					return event;
-				});
-				setEvents(response.data);
-			} catch (error) {
-				console.error(error);
-			}
-		};
-		fetchAllEvents();
-	}, []);
-	const handleDateSelect = (event) => {
-		// setShowModal(true);
+	const handleHourDrop = (employee, hour) => {
+		const start = parseInt(hour.split(":")[0]);
+		const time = hour.split(":")[1];
+		const end = start + 1;
+		const updatedEmployees = [...employees];
+		const { id, name, color } = employee;
+
+		const existingEmpIndex = updatedEmployees.findIndex(
+			(emp) => emp.name === name,
+		);
+		if (existingEmpIndex === -1) {
+			setUpdatedEmployees([
+				...updatedEmployees,
+				{
+					id,
+					name,
+					color,
+				},
+			]);
+		} else {
+			setUpdatedEmployees([...updatedEmployees]);
+		}
+
+		const updatedShifts = [...shifts];
+		updatedShifts.push({
+			start: `${start}:${time}`,
+			end: `${end}:${time}`,
+			name,
+			color,
+		});
+		setShifts(updatedShifts);
 	};
 	return (
-		<Box
-			p={3}
-			bg={"brand.primary_bg"}
-			border="3px solid var(--main_color)"
-			borderRadius="10px"
-			fontWeight="bold"
-		>
-			{events && (
-				<Calendar
-					className="mini_cal"
-					localizer={localizer}
-					events={events}
-					views={["day", "week", "month", "agenda"]}
-					startAccessor="start"
-					endAccessor="end"
-					selectable={false}
-					style={{ height: 200 }}
-					// onSelectSlot={handleDateSelect}
-					onSelectEvent={handleDateSelect}
-					eventPropGetter={eventStyleGetter}
-					components={{
-						toolbar: ScrollToolbar,
-					}}
-					defaultDate={moment().toDate()}
-					value={["3", "10", "20"]}
-				/>
-			)}
+		<Box overflow={"auto"} w={"100%"}>
+			<Table>
+				<Thead fontSize={"xs"}>
+					<Th>Area 1</Th>
+					{hours.map((hour) => (
+						<Th>{hour}</Th>
+					))}
+				</Thead>
+				<Tbody>
+					<Tr>
+						<Td>
+							<Text fontWeight={"normal"}>Assign slot</Text>
+						</Td>
+						{hours.map((hour) => (
+							<Td key={hour}>
+								<EmployeeDropToHourSlot
+									shifts={shifts}
+									onDrop={handleHourDrop}
+									hour={hour}
+									employee={""}
+									hourDrop={hourDrop}
+									setHourDrop={setHourDrop}
+								/>
+							</Td>
+						))}
+					</Tr>
+					{employees?.map((employee) => (
+						<Tr>
+							<Td>
+								<Text>{employee.name}</Text>
+							</Td>
+							{
+								// resized ? (
+								// 	<Td>
+								// 		<EmployeeDropToHourSlot
+								// 			onDrop={handleHourDrop}
+								// 			resized={resized}
+								// 			colSpan={colSpan}
+								// 			setResized={setResized}
+								// 			employee={employee}
+								// 			setColSpan={setColSpan}
+								// 		/>
+								// 	</Td>
+								// ) : (
+								hours.map((hour) => (
+									<Td key={hour}>
+										<EmployeeDropToHourSlot
+											onDrop={handleHourDrop}
+											hour={hour}
+											colSpan={colSpan}
+											employee={employee}
+											resized={resized}
+											setResized={setResized}
+											setShiftHour={setShiftHour}
+											setShift={setShift}
+											shift={shift}
+											setMovement={setMovement}
+										/>
+									</Td>
+								))
+							}
+						</Tr>
+					))}
+				</Tbody>
+			</Table>
 		</Box>
 	);
 };
