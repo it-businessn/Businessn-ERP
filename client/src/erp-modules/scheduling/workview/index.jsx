@@ -14,6 +14,7 @@ const ScheduleWorkView = () => {
 	const [employees, setEmployees] = useState(null);
 	const [isExpandedIndex, setIsExpandedIndex] = useState(null);
 	const [isExpanded, setIsExpanded] = useState(false);
+	const [newEmployeeAdded, setNewEmployeeAdded] = useState(null);
 	const userId = LocalStorageService.getItem("user")._id;
 
 	useEffect(() => {
@@ -43,59 +44,18 @@ const ScheduleWorkView = () => {
 
 		fetchAllEmployeeByRole();
 	}, []);
-	// const [width, setWidth] = useState(200); // Initial width of the button
-	// const [isResizing, setIsResizing] = useState(false);
-	// const [isTouchpad, setIsTouchpad] = useState(false);
-
-	// useEffect(() => {
-	// 	const handleResize = (e) => {
-	// 		if (isResizing) {
-	// 			const movementX = isTouchpad
-	// 				? e.changedTouches[0].clientX - e.touches[0].clientX
-	// 				: e.movementX;
-	// 			setWidth((prevWidth) => prevWidth + movementX);
-	// 		}
-	// 	};
-
-	// 	const handleEndResize = () => {
-	// 		setIsResizing(false);
-	// 		setIsTouchpad(false);
-	// 	};
-
-	// 	document.addEventListener("mousemove", handleResize);
-	// 	document.addEventListener("touchmove", handleResize);
-	// 	document.addEventListener("mouseup", handleEndResize);
-	// 	document.addEventListener("touchend", handleEndResize);
-
-	// 	return () => {
-	// 		document.removeEventListener("mousemove", handleResize);
-	// 		document.removeEventListener("touchmove", handleResize);
-	// 		document.removeEventListener("mouseup", handleEndResize);
-	// 		document.removeEventListener("touchend", handleEndResize);
-	// 	};
-	// }, [isResizing, isTouchpad]);
-
-	// const handleStartResize = (e) => {
-	// 	setIsResizing(true);
-	// 	setIsTouchpad(e.type.startsWith("touch"));
-	// };
+	const addEmployee = (employee, color) => {
+		setNewEmployeeAdded({
+			id: employee.id,
+			name: employee.fullName,
+			color,
+		});
+	};
 	return (
 		<Box p={{ base: "1em" }} overflow={"hidden"}>
 			<Text fontWeight="bold" mb={"0.5em"}>
 				WorkView
 			</Text>
-			{/* <Box
-				as="button"
-				bg="blue.500"
-				color="white"
-				p={4}
-				w={width}
-				onMouseDown={handleStartResize}
-				onTouchStart={handleStartResize}
-				_focus={{ outline: "none", color: "red", bg: "blue.500" }}
-			>
-				Resize Me
-			</Box> */}
 			<SimpleGrid
 				mb={"1em"}
 				columns={{ base: 1, md: 3 }}
@@ -140,6 +100,7 @@ const ScheduleWorkView = () => {
 											isExpanded={isExpanded}
 											setIsExpandedIndex={setIsExpandedIndex}
 											setIsExpanded={setIsExpanded}
+											sendEmployee={addEmployee}
 										/>
 										{isExpanded &&
 											isExpandedIndex === index &&
@@ -174,7 +135,8 @@ const ScheduleWorkView = () => {
 						borderRadius="10px"
 						fontWeight="bold"
 					>
-						Location 1 <SchedulingCalendar />
+						Location 1
+						<SchedulingCalendar newEmployeeAdded={newEmployeeAdded} />
 					</Box>
 				</SimpleGrid>
 			</DndProvider>

@@ -19,7 +19,7 @@ import { useDrop } from "react-dnd";
 import SchedulerService from "services/SchedulerService";
 import "./Scheduler.css";
 
-const SchedulingCalendar = () => {
+const SchedulingCalendar = ({ newEmployeeAdded }) => {
 	const currentDate = new Date();
 
 	currentDate.setHours(6, 0, 0, 0);
@@ -85,7 +85,11 @@ const SchedulingCalendar = () => {
 		);
 		setItems(updatedItems);
 	};
-
+	useEffect(() => {
+		if (newEmployeeAdded) {
+			handleHourDrop(newEmployeeAdded);
+		}
+	}, [newEmployeeAdded]);
 	useEffect(() => {
 		const fetchShifts = async () => {
 			try {

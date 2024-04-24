@@ -53,6 +53,7 @@ const RootLayout = () => {
 	useEffect(() => {
 		if (user) {
 			navigate("/sales");
+			// navigate("/scheduling/workview");
 		} else {
 			navigate("/login");
 		}

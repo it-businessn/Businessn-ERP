@@ -10,6 +10,7 @@ const EmployeeDragFromQuickSelection = ({
 	setIsExpandedIndex,
 	setIsExpanded,
 	color,
+	sendEmployee,
 }) => {
 	const [{ isDragging }, drag] = useDrag({
 		type: "employee",
@@ -46,7 +47,11 @@ const EmployeeDragFromQuickSelection = ({
 				</Button>
 			</HStack>
 
-			<Icon as={RxDragHandleDots2} boxSize={5} />
+			<Icon
+				as={RxDragHandleDots2}
+				onClick={() => sendEmployee(employee, color)}
+				boxSize={5}
+			/>
 		</HStack>
 	);
 };
