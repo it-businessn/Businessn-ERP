@@ -20,7 +20,7 @@ const EmployeeDragFromQuickSelection = ({
 	});
 
 	return (
-		<HStack w={"100%"} ref={drag} opacity={isDragging ? 0.5 : 1}>
+		<HStack w={"100%"}>
 			<TaskButton
 				isExpanded={isExpanded}
 				totalTasks={employee?.tasks?.length}
@@ -36,6 +36,8 @@ const EmployeeDragFromQuickSelection = ({
 				px={"1"}
 				py={0}
 				spacing={0}
+				opacity={isDragging ? 0.5 : 1}
+				ref={drag}
 				cursor={"pointer"}
 			>
 				<Avatar size={"xs"} name={employee?.fullName} />
