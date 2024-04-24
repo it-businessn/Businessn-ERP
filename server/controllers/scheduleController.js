@@ -41,8 +41,22 @@ const addShifts = () => async (req, res) => {
 		res.status(400).json({ message: error.message });
 	}
 };
+const updateShift = () => async (req, res) => {
+	const { id } = req.params;
+
+	try {
+		const updatedShift = await EmployeeShift.findByIdAndUpdate(id, req.body, {
+			new: true,
+		});
+
+		res.status(201).json(updatedShift);
+	} catch (error) {
+		res.status(400).json({ message: error.message });
+	}
+};
 
 module.exports = {
 	addShifts,
 	getShifts,
+	updateShift,
 };

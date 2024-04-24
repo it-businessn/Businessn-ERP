@@ -83,6 +83,18 @@ const SchedulingCalendar = ({ newEmployeeAdded }) => {
 					  }
 				: item,
 		);
+		const updatedItem = updatedItems.find((item) => item.id === itemId);
+
+		if (updatedItem) {
+			const updateShifts = async () => {
+				try {
+					await SchedulerService.updateShift(updatedItem, updatedItem._id);
+				} catch (error) {
+					console.error(error);
+				}
+			};
+			updateShifts();
+		}
 		setItems(updatedItems);
 	};
 	useEffect(() => {

@@ -13,8 +13,8 @@ const SchedulerService = {
 		return apiService.post("/schedule", data);
 	},
 
-	async updateTask(data, id) {
-		return apiService.put(`/tasks/${id}`, data, id);
+	async updateShift(data, id) {
+		return apiService.put(`/schedule/${id}`, data, id);
 	},
 };
 

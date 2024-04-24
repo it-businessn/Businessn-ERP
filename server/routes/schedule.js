@@ -9,6 +9,6 @@ router.get("/", scheduleController.getShifts());
 
 router.post("/", scheduleController.addShifts());
 
-// router.put("/:id", scheduleController.updateTask());
+router.put("/:id", scheduleController.updateShift());
 
 module.exports = router;
