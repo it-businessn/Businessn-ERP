@@ -342,3 +342,15 @@ export const renderPriorityBars = (priority) => {
 
 	return bars;
 };
+
+export const getRandomColor = () => {
+	const colors = [
+		"var(--primary_button_bg)",
+		"var(--correct_ans)",
+		"var(--stat_item_color)",
+		"var(--event_color)",
+		"var(--incorrect_ans)",
+	];
+	const randomIndex = Math.floor(Math.random() * colors.length);
+	return colors[randomIndex];
+};

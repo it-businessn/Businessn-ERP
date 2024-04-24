@@ -32,28 +32,24 @@ const HeaderCards = () => {
 			percent: "3.34%",
 		},
 	];
-	return (
-		<>
-			{HEADER_CARDS.map((card) => (
-				<Box
-					key={card.title}
-					p="1em"
-					bg={"brand.primary_bg"}
-					border="3px solid var(--main_color)"
-					borderRadius="10px"
-					fontWeight="bold"
-				>
-					<Icon as={card.icon} color={card.color} boxSize={5} />
-					<Text fontSize="xs" fontWeight="bold">
-						{card.title}
-					</Text>
-					<Text mr="3" fontWeight="900">
-						{card.value}
-					</Text>
-				</Box>
-			))}
-		</>
-	);
+	return HEADER_CARDS.map((card) => (
+		<Box
+			key={card.title}
+			p="1em"
+			bg={"brand.primary_bg"}
+			border="3px solid var(--main_color)"
+			borderRadius="10px"
+			fontWeight="bold"
+		>
+			<Icon as={card.icon} color={card.color} boxSize={5} />
+			<Text fontSize="xs" fontWeight="bold">
+				{card.title}
+			</Text>
+			<Text mr="3" fontWeight="900">
+				{card.value}
+			</Text>
+		</Box>
+	));
 };
 
 export default HeaderCards;

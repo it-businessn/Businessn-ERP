@@ -2,20 +2,20 @@
 	cursor: ew-resize !important;
 	border: none !important;
 	background: transparent !important;
+	min-width: 98px !important;
 }
 
 .react-calendar-timeline .rct-calendar-header {
-	padding-top: 1em;
-	border: 1px solid var(--lead_cards_bg);
+	border: 1px solid var(--lead_cards_bg) !important;
 }
 
 .react-calendar-timeline .rct-vertical-lines .rct-vl {
-	border: none;
+	border: none !important;
 }
 
 .react-calendar-timeline .rct-header-root {
 	height: 50px !important;
-	background-color: var(--active-menu-color);
+	background-color: var(--active-menu-color) !important;
 }
 
 .react-calendar-timeline .rct-horizontal-lines .rct-hl-even,
@@ -26,5 +26,5 @@
 
 .react-calendar-timeline .rct-sidebar .rct-sidebar-row.rct-sidebar-row-odd,
 .react-calendar-timeline .rct-horizontal-lines .rct-hl-odd {
-	background: transparent;
+	background: transparent !important;
 }

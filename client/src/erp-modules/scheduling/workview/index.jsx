@@ -4,8 +4,8 @@ import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { GoDash } from "react-icons/go";
 import { RxDropdownMenu } from "react-icons/rx";
-import LocalStorageService from "services/LocalStorageService";
 import UserService from "services/UserService";
+import { getRandomColor } from "utils";
 import EmployeeDragFromQuickSelection from "./EmployeeDragFromQuickSelection";
 import HeaderCards from "./HeaderCards";
 import SchedulingCalendar from "./SchedulingCalendar";
@@ -15,27 +15,12 @@ const ScheduleWorkView = () => {
 	const [isExpandedIndex, setIsExpandedIndex] = useState(null);
 	const [isExpanded, setIsExpanded] = useState(false);
 	const [newEmployeeAdded, setNewEmployeeAdded] = useState(null);
-	const userId = LocalStorageService.getItem("user")._id;
 
 	useEffect(() => {
-		const getRandomColor = (index) => {
-			const colors = [
-				"var(--primary_button_bg)",
-				"var(--correct_ans)",
-				"var(--almost_pass)",
-				"var(--event_color)",
-				"var(--incorrect_ans)",
-			];
-			// var randomIndex = Math.floor(Math.random() * colors.length);
-			return colors[index];
-		};
 		const fetchAllEmployeeByRole = async () => {
 			try {
 				const response = await UserService.getAllEmployeesByRole();
-				response.data.forEach((user, index) => {
-					user.color = getRandomColor(index);
-					return user;
-				});
+				response.data.forEach((user) => (user.color = getRandomColor()));
 				setEmployees(response.data);
 			} catch (error) {
 				console.error(error);
