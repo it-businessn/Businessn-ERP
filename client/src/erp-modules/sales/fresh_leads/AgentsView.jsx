@@ -39,8 +39,8 @@ const AgentsView = ({ leads, setIsUpdated, reference }) => {
 
 	const totalLeads = (name) => {
 		return isManager
-			? leads.filter((lead) => lead.stage === name).length
-			: leads.filter(
+			? leads?.filter((lead) => lead.stage === name).length
+			: leads?.filter(
 					(lead) => lead.stage === name && lead.primaryAssignee === user,
 			  ).length;
 	};
@@ -74,71 +74,88 @@ const AgentsView = ({ leads, setIsUpdated, reference }) => {
 				spacing="1em"
 				color={"brand.200"}
 			>
-				{leadList &&
-					leadList.length > 0 &&
-					reference?.map((category) => (
+				{reference?.map((category) => (
+					<Box
+						borderRadius="10px"
+						border="3px solid var(--main_color)"
+						key={category.id}
+						p={0}
+					>
 						<Box
-							borderRadius="10px"
-							border="3px solid var(--main_color)"
-							key={category.id}
-							p={0}
+							fontWeight="bold"
+							px="1em"
+							py={0}
+							bg={category.color}
+							borderTopLeftRadius="10px"
+							borderTopRightRadius="10px"
 						>
-							<Box
-								fontWeight="bold"
-								px="1em"
-								py={0}
-								bg={category.color}
-								borderTopLeftRadius="10px"
-								borderTopRightRadius="10px"
-							>
-								<Flex justify="space-between" align="center" gap={0}>
-									<Text fontSize="xs" fontWeight="bold">
-										{category.name}
-									</Text>
-									<Select width="90px" border={"none"} fontSize={"xs"}>
-										<option>Weekly</option>
-										<option>Last month</option>
-									</Select>
-								</Flex>
-								<Flex align="center" color={"brand.600"} mt="-2">
-									<Text mr="3">{totalLeads(category.abbr)}</Text>
-									<Icon mr="1" as={ArrowUpIcon} color="green.500" />
-									<Text color="green.500" fontSize="xs">
-										10%
-									</Text>
-								</Flex>
-							</Box>
-							{leadList
-								.filter((lead) => lead.stage === category.abbr)
-								?.map(({ _id, opportunityName, email, phone, stage }) => (
-									<Card
-										key={_id}
-										m="8px"
-										bg="var(--lead_cards_bg)"
-										border={"1px solid var(--lead_cards_border)"}
+							<Flex justify="space-between" align="center" gap={0}>
+								<Text fontSize="xs" fontWeight="bold">
+									{category.name}
+								</Text>
+								<Select width="90px" border={"none"} fontSize={"xs"}>
+									<option>Weekly</option>
+									<option>Last month</option>
+								</Select>
+							</Flex>
+							<Flex align="center" color={"brand.600"} mt="-2">
+								<Text mr="3">{totalLeads(category.abbr)}</Text>
+								<Icon mr="1" as={ArrowUpIcon} color="green.500" />
+								<Text color="green.500" fontSize="xs">
+									10%
+								</Text>
+							</Flex>
+						</Box>
+						{leadList
+							?.filter((lead) => lead.stage === category.abbr)
+							?.map(({ _id, opportunityName, email, phone, stage }) => (
+								<Card
+									key={_id}
+									m="8px"
+									bg="var(--lead_cards_bg)"
+									border={"1px solid var(--lead_cards_border)"}
+								>
+									<VStack
+										align="flex-start"
+										color={"brand.200"}
+										fontSize="xs"
+										p={"0.5em"}
+										spacing={0.5}
 									>
-										<VStack
-											align="flex-start"
-											color={"brand.200"}
-											fontSize="xs"
-											p={"0.5em"}
-											spacing={0.5}
-										>
-											<HStack justifyContent={"space-between"} w={"100%"}>
-												<Text fontSize="xs" fontWeight="bold">
-													Company
-												</Text>
-												<Text
-													fontSize="xs"
-													// fontWeight="bold"
-													color={"brand.600"}
-												>
-													{opportunityName}
-												</Text>
-												<RiEditLine
+										<HStack justifyContent={"space-between"} w={"100%"}>
+											<Text fontSize="xs" fontWeight="bold">
+												Company
+											</Text>
+											<Text
+												fontSize="xs"
+												// fontWeight="bold"
+												color={"brand.600"}
+											>
+												{opportunityName}
+											</Text>
+											<RiEditLine
+												cursor={"pointer"}
+												onClick={() =>
+													handleEdit(_id, opportunityName, email, phone, stage)
+												}
+											/>
+										</HStack>
+										<HStack justifyContent={"space-between"} w={"100%"}>
+											<Text fontSize="xs" fontWeight="bold">
+												Email
+											</Text>
+											<Text
+												fontSize="xs"
+												// fontWeight="bold"
+												color={"brand.600"}
+											>
+												{email}
+											</Text>
+											<Box>
+												<CopyIcon
 													cursor={"pointer"}
 													onClick={() =>
-														handleEdit(
+														handleCopy(
 															_id,
 															opportunityName,
 															email,
@@ -147,51 +164,26 @@ const AgentsView = ({ leads, setIsUpdated, reference }) => {
 														)
 													}
 												/>
-											</HStack>
-											<HStack justifyContent={"space-between"} w={"100%"}>
-												<Text fontSize="xs" fontWeight="bold">
-													Email
-												</Text>
-												<Text
-													fontSize="xs"
-													// fontWeight="bold"
-													color={"brand.600"}
-												>
-													{email}
-												</Text>
-												<Box>
-													<CopyIcon
-														cursor={"pointer"}
-														onClick={() =>
-															handleCopy(
-																_id,
-																opportunityName,
-																email,
-																phone,
-																stage,
-															)
-														}
-													/>
-												</Box>
-											</HStack>
-											<HStack w={"100%"} justifyContent={"space-between"}>
-												<Text fontSize="xs" fontWeight="bold">
-													Phone
-												</Text>
-												<Text
-													fontSize="xs"
-													// fontWeight="bold"
-													color={"brand.600"}
-												>
-													{phone}
-												</Text>
-												<Box />
-											</HStack>
-										</VStack>
-									</Card>
-								))}
-						</Box>
-					))}
+											</Box>
+										</HStack>
+										<HStack w={"100%"} justifyContent={"space-between"}>
+											<Text fontSize="xs" fontWeight="bold">
+												Phone
+											</Text>
+											<Text
+												fontSize="xs"
+												// fontWeight="bold"
+												color={"brand.600"}
+											>
+												{phone}
+											</Text>
+											<Box />
+										</HStack>
+									</VStack>
+								</Card>
+							))}
+					</Box>
+				))}
 			</SimpleGrid>
 
 			<EditLead

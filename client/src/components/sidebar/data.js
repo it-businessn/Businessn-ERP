@@ -1126,14 +1126,14 @@ export const SIDEBAR_MENU = [
 		id: "scheduling",
 		icon: <FaCalendar />,
 		children: [
+			// {
+			// 	path: "",
+			// 	name: "Dashboard",
+			// 	children: [],
+			// 	icon: <BiTask />,
+			// },
 			{
 				path: "",
-				name: "Dashboard",
-				children: [],
-				icon: <BiTask />,
-			},
-			{
-				path: "workview",
 				name: "Workview",
 				children: [],
 				icon: <LuLayoutDashboard />,

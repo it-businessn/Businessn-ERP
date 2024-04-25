@@ -184,7 +184,8 @@ export const router = createBrowserRouter([
 			/* Scheduling */
 			{
 				path: "/scheduling",
-				element: <SchedulingDashboard />,
+				// element: <SchedulingDashboard />,
+				element: <ScheduleWorkView />,
 			},
 			{
 				path: "/scheduling/workview",
