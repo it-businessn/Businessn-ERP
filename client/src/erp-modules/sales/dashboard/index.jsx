@@ -1,7 +1,9 @@
 import {
 	Avatar,
 	Box,
+	Flex,
 	HStack,
+	Select,
 	SimpleGrid,
 	Text,
 	VStack,
@@ -10,6 +12,7 @@ import { useEffect, useState } from "react";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import CalendarService from "services/CalendarService";
 import LocalStorageService from "services/LocalStorageService";
+import UserService from "services/UserService";
 import ChatMessages from "./ChatMessages";
 import MiniCalendar from "./MiniCalendar";
 import SalesCard from "./SalesCard";
@@ -22,6 +25,8 @@ const CRMDashboard = () => {
 	const [meetings, setMeetings] = useState(null);
 	const [appointments, setAppointments] = useState(null);
 	const [isRefresh, setIsRefresh] = useState(false);
+	const [employees, setEmployees] = useState(null);
+	const [selectedUser, setSelectedUser] = useState(user);
 
 	useEffect(() => {
 		const fetchAllEvents = async () => {
@@ -48,6 +53,15 @@ const CRMDashboard = () => {
 				console.error(error);
 			}
 		};
+		const fetchAllEmployees = async () => {
+			try {
+				const response = await UserService.getAllUsers();
+				setEmployees(response.data);
+			} catch (error) {
+				console.error(error);
+			}
+		};
+		fetchAllEmployees();
 		fetchAllEvents();
 		fetchAllMeetings();
 		fetchAllAppointments();
@@ -68,11 +82,40 @@ const CRMDashboard = () => {
 		},
 	];
 
+	const handleChange = (event) => {
+		setSelectedUser(
+			employees.find(({ fullName }) => fullName === event.target.value),
+		);
+	};
+
+	const role = selectedUser?.role;
+	const isManager =
+		role?.includes("Administrators") || role?.includes("Manager");
+
 	return (
 		<Box p={{ base: "1em" }} overflow={"hidden"}>
-			<Text fontWeight="bold" mb={"0.5em"}>
-				CRM Dashboard
-			</Text>
+			<Flex w={"50%"}>
+				<Text fontWeight="bold" mb={"0.5em"} flex={0.2}>
+					CRM {isManager && "Manager"} Dashboard
+				</Text>
+				{isManager && employees && (
+					<Select
+						flex={0.4}
+						borderRadius={"10px"}
+						size={"sm"}
+						color={"brand.primary_button_bg"}
+						border={`1px solid var(--primary_button_bg)`}
+						value={selectedUser?.fullName}
+						onChange={handleChange}
+					>
+						{employees?.map(({ _id, fullName }) => (
+							<option value={fullName} key={_id}>
+								{fullName}
+							</option>
+						))}
+					</Select>
+				)}
+			</Flex>
 			<SimpleGrid
 				columns={{ base: 1, md: 1, lg: 2 }}
 				spacing="4"
@@ -107,7 +150,7 @@ const CRMDashboard = () => {
 								events={events}
 								meetings={meetings}
 								appointments={appointments}
-								user={user}
+								user={selectedUser}
 								setIsRefresh={setIsRefresh}
 							/>
 						</Box>
@@ -128,9 +171,12 @@ const CRMDashboard = () => {
 						w={{ base: "auto", md: "106%" }}
 						spacing={0}
 					>
-						<Avatar name={user?.fullName} src={user?.fullName} />
-						<Text fontWeight="bold">{user?.fullName}</Text>
-						<Text fontSize={"xs"}>{user?.email}</Text>
+						<Avatar
+							name={selectedUser?.fullName}
+							src={selectedUser?.fullName}
+						/>
+						<Text fontWeight="bold">{selectedUser?.fullName}</Text>
+						<Text fontSize={"xs"}>{selectedUser?.email}</Text>
 					</VStack>
 					<HStack spacing={2} justify={"space-between"}>
 						{STATS.map(({ name, count }) => (
@@ -152,8 +198,8 @@ const CRMDashboard = () => {
 							<Text fontWeight="bold">{formatDate(new Date())}</Text>
 						</VStack> */}
 					</HStack>
-					<MiniCalendar />
-					<ChatMessages userId={user._id} />
+					<MiniCalendar user={selectedUser.fullName} />
+					<ChatMessages userId={selectedUser._id} />
 				</Box>
 			</SimpleGrid>
 		</Box>

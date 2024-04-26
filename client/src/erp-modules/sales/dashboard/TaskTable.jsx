@@ -16,7 +16,7 @@ const TaskTable = ({ user }) => {
 			}
 		};
 		fetchAllUserTasks();
-	}, []);
+	}, [user]);
 
 	return (
 		<Box overflow="auto">

@@ -63,9 +63,7 @@ const ScheduleWorkView = () => {
 						borderRadius="10px"
 						fontWeight="bold"
 					>
-						<Text fontWeight="bold" color={"brand.600"}>
-							Quick Selections
-						</Text>
+						<Text>Quick Selections</Text>
 						<Text color={"brand.600"}>Role</Text>
 						{employees?.map((employee) => (
 							<VStack key={employee._id} w={"100%"} alignItems={"self-start"}>

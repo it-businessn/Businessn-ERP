@@ -56,7 +56,7 @@ const ChatMessages = ({ userId }) => {
 		if (userId) {
 			fetchAllUserConversation();
 		}
-	}, [isRefresh]);
+	}, [isRefresh, userId]);
 
 	const fetchAllGroups = async () => {
 		try {

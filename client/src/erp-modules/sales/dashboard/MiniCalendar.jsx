@@ -6,10 +6,8 @@ import "react-big-calendar/lib/css/react-big-calendar.css";
 import { FaCaretLeft, FaCaretRight } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import CalendarService from "services/CalendarService";
-import LocalStorageService from "services/LocalStorageService";
 
-const MiniCalendar = () => {
-	const user = LocalStorageService.getItem("user").fullName;
+const MiniCalendar = ({ user }) => {
 	const navigate = useNavigate();
 	const eventStyleGetter = (event) => {
 		if (event.fromDate) {
@@ -96,7 +94,7 @@ const MiniCalendar = () => {
 			}
 		};
 		fetchAllEvents();
-	}, []);
+	}, [user]);
 	const handleDateSelect = (event) => {
 		// setShowModal(true);
 	};
