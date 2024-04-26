@@ -1,4 +1,5 @@
 import { Box, Button, Flex, Spacer, Text } from "@chakra-ui/react";
+import LinkButton from "components/ui/button/LinkButton";
 import moment from "moment";
 import { useEffect, useState } from "react";
 import { Calendar, momentLocalizer } from "react-big-calendar";
@@ -126,13 +127,10 @@ const MiniCalendar = ({ user }) => {
 					value={["3", "10", "20"]}
 				/>
 			)}
-			<Button
-				variant="link"
+			<LinkButton
+				name="Go to calendar"
 				onClick={() => navigate("/sales/calendar")}
-				colorScheme={"blue"}
-			>
-				Go to calendar
-			</Button>
+			/>
 		</Box>
 	);
 };

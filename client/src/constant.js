@@ -98,10 +98,12 @@ export const BAR_DATA = [
 	{
 		title: "Calls Made",
 		data: callsBarData,
+		link: "a call",
 	},
 	{
 		title: "Emails Sent",
 		data: emailsBarData,
+		link: "an email",
 	},
 ];
 

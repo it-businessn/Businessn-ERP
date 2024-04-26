@@ -1,9 +1,12 @@
 import { Box, Flex, Select, Text } from "@chakra-ui/react";
+import LinkButton from "components/ui/button/LinkButton";
 import { BAR_DATA } from "constant";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import { Bar } from "react-chartjs-2";
+import { useNavigate } from "react-router-dom";
 
 const SalesChart = () => {
+	const navigate = useNavigate();
 	const options = {
 		scales: {
 			y: {
@@ -75,6 +78,10 @@ const SalesChart = () => {
 					<Box w={{ base: "70%", md: "65%", lg: "70%", xl: "70%" }} mx={"auto"}>
 						<Bar data={bar.data} options={options} />
 					</Box>
+					<LinkButton
+						name={`Log ${bar.link}`}
+						onClick={() => navigate("/sales/activities")}
+					/>
 				</Box>
 			))}
 		</>
