@@ -17,7 +17,8 @@ import {
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import LeadsService from "services/LeadsService";
-import AgentsView from "../fresh_leads/AgentsView";
+import LocalStorageService from "services/LocalStorageService";
+import AgentsView, { totalLeads } from "../fresh_leads/AgentsView";
 import { TARGET_LEADS } from "../opportunities/data";
 import GradientAreaFillColorChart from "./AreaFillColorChart";
 
@@ -41,18 +42,16 @@ const Pipeline = () => {
 	const { isOpen, onOpen, onClose } = useDisclosure();
 	const handleSubmit = () => {};
 
-	const totalMeetings =
-		leads?.filter((lead) => lead.stage === "T1").length || 0;
-	const totalDiscovery =
-		leads?.filter((lead) => lead.stage === "T2").length || 0;
-	const totalClosing = leads?.filter((lead) => lead.stage === "T3").length || 0;
-	const totalOnboard = leads?.filter((lead) => lead.stage === "T4").length || 0;
+	const user = LocalStorageService.getItem("user").fullName;
+	const role = LocalStorageService.getItem("user")?.role;
+	const isManager =
+		role?.includes("Administrators") || role?.includes("Manager");
 
 	const opportunityData = [
-		{ name: "Meeting Set", total: totalMeetings },
-		{ name: "Discovery Call", total: totalDiscovery },
-		{ name: "Closing", total: totalClosing },
-		{ name: "Onboard", total: totalOnboard },
+		{ name: "Meeting Set", total: totalLeads("T1", isManager, leads, user) },
+		{ name: "Discovery Call", total: totalLeads("T2", isManager, leads, user) },
+		{ name: "Closing", total: totalLeads("T3", isManager, leads, user) },
+		{ name: "Onboard", total: totalLeads("T4", isManager, leads, user) },
 	];
 
 	return (

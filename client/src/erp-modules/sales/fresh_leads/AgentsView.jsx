@@ -16,6 +16,14 @@ import { RiEditLine } from "react-icons/ri";
 import LocalStorageService from "services/LocalStorageService";
 import EditLead from "./EditLead";
 
+export const totalLeads = (name, isManager, leads, userName) => {
+	return isManager
+		? leads?.filter((lead) => lead.stage === name).length
+		: leads?.filter(
+				(lead) => lead.stage === name && lead.primaryAssignee === userName,
+		  ).length;
+};
+
 const AgentsView = ({ leads, setIsUpdated, reference }) => {
 	const defaultLeadInfo = {
 		_id: null,
@@ -36,14 +44,6 @@ const AgentsView = ({ leads, setIsUpdated, reference }) => {
 	const { isOpen, onOpen, onClose } = useDisclosure();
 	const [formData, setFormData] = useState(defaultLeadInfo);
 	const [copied, setCopied] = useState(false);
-
-	const totalLeads = (name) => {
-		return isManager
-			? leads?.filter((lead) => lead.stage === name).length
-			: leads?.filter(
-					(lead) => lead.stage === name && lead.primaryAssignee === user,
-			  ).length;
-	};
 
 	const handleEdit = (_id, opportunityName, email, phone, stage) => {
 		setFormData((prevData) => ({
@@ -99,7 +99,9 @@ const AgentsView = ({ leads, setIsUpdated, reference }) => {
 								</Select>
 							</Flex>
 							<Flex align="center" color={"brand.600"} mt="-2">
-								<Text mr="3">{totalLeads(category.abbr)}</Text>
+								<Text mr="3">
+									{totalLeads(category.abbr, isManager, leads, user)}
+								</Text>
 								<Icon mr="1" as={ArrowUpIcon} color="green.500" />
 								<Text color="green.500" fontSize="xs">
 									10%
