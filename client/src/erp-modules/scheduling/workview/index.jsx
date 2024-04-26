@@ -5,7 +5,7 @@ import { HTML5Backend } from "react-dnd-html5-backend";
 import { GoDash } from "react-icons/go";
 import { RxDropdownMenu } from "react-icons/rx";
 import UserService from "services/UserService";
-import { getRandomColor } from "utils";
+import { customOrder, getRoleColor } from "utils";
 import EmployeeDragFromQuickSelection from "./EmployeeDragFromQuickSelection";
 import HeaderCards from "./HeaderCards";
 import SchedulingCalendar from "./SchedulingCalendar";
@@ -20,8 +20,31 @@ const ScheduleWorkView = () => {
 		const fetchAllEmployeeByRole = async () => {
 			try {
 				const response = await UserService.getAllEmployeesByRole();
-				response.data.forEach((user) => (user.color = getRandomColor()));
-				setEmployees(response.data);
+				response.data.forEach((user) => {
+					user.color = getRoleColor(user._id);
+				});
+
+				const sortedArray = response.data.sort((a, b) => {
+					const titleA = a.title;
+					const titleB = b.title;
+					const indexA = customOrder.indexOf(titleA);
+					const indexB = customOrder.indexOf(titleB);
+					if (indexA !== -1 && indexB !== -1) {
+						return indexA - indexB;
+					}
+
+					if (indexA !== -1) {
+						return -1;
+					}
+
+					if (indexB !== -1) {
+						return 1;
+					}
+
+					return 0;
+				});
+
+				setEmployees(sortedArray);
 			} catch (error) {
 				console.error(error);
 			}

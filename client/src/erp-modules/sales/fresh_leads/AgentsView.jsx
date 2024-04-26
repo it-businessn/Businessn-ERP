@@ -14,6 +14,7 @@ import {
 import { useState } from "react";
 import { RiEditLine } from "react-icons/ri";
 import LocalStorageService from "services/LocalStorageService";
+import { isManager } from "utils";
 import EditLead from "./EditLead";
 
 export const totalLeads = (name, isManager, leads, userName) => {
@@ -32,14 +33,12 @@ const AgentsView = ({ leads, setIsUpdated, reference }) => {
 		stage: "",
 		phone: "",
 	};
-	const user = LocalStorageService.getItem("user").fullName;
-	const role = LocalStorageService.getItem("user")?.role;
-	const isManager =
-		role?.includes("Administrators") || role?.includes("Manager");
+	const { fullName, role } = LocalStorageService.getItem("user");
 
-	const leadList = isManager
+	const isUserManager = isManager(role);
+	const leadList = isUserManager
 		? leads
-		: leads?.filter((lead) => lead.primaryAssignee === user);
+		: leads?.filter((lead) => lead.primaryAssignee === fullName);
 
 	const { isOpen, onOpen, onClose } = useDisclosure();
 	const [formData, setFormData] = useState(defaultLeadInfo);
@@ -100,7 +99,7 @@ const AgentsView = ({ leads, setIsUpdated, reference }) => {
 							</Flex>
 							<Flex align="center" color={"brand.600"} mt="-2">
 								<Text mr="3">
-									{totalLeads(category.abbr, isManager, leads, user)}
+									{totalLeads(category.abbr, isUserManager, leads, fullName)}
 								</Text>
 								<Icon mr="1" as={ArrowUpIcon} color="green.500" />
 								<Text color="green.500" fontSize="xs">

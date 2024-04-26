@@ -18,6 +18,7 @@ import {
 import { useEffect, useState } from "react";
 import LeadsService from "services/LeadsService";
 import LocalStorageService from "services/LocalStorageService";
+import { isManager } from "utils";
 import AgentsView, { totalLeads } from "../fresh_leads/AgentsView";
 import { TARGET_LEADS } from "../opportunities/data";
 import GradientAreaFillColorChart from "./AreaFillColorChart";
@@ -42,16 +43,26 @@ const Pipeline = () => {
 	const { isOpen, onOpen, onClose } = useDisclosure();
 	const handleSubmit = () => {};
 
-	const user = LocalStorageService.getItem("user").fullName;
-	const role = LocalStorageService.getItem("user")?.role;
-	const isManager =
-		role?.includes("Administrators") || role?.includes("Manager");
+	const { fullName, role } = LocalStorageService.getItem("user");
+	const isUserManager = isManager(role);
 
 	const opportunityData = [
-		{ name: "Meeting Set", total: totalLeads("T1", isManager, leads, user) },
-		{ name: "Discovery Call", total: totalLeads("T2", isManager, leads, user) },
-		{ name: "Closing", total: totalLeads("T3", isManager, leads, user) },
-		{ name: "Onboard", total: totalLeads("T4", isManager, leads, user) },
+		{
+			name: "Meeting Set",
+			total: totalLeads("T1", isUserManager, leads, fullName),
+		},
+		{
+			name: "Discovery Call",
+			total: totalLeads("T2", isUserManager, leads, fullName),
+		},
+		{
+			name: "Closing",
+			total: totalLeads("T3", isUserManager, leads, fullName),
+		},
+		{
+			name: "Onboard",
+			total: totalLeads("T4", isUserManager, leads, fullName),
+		},
 	];
 
 	return (

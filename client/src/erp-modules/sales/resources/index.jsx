@@ -3,15 +3,15 @@ import Loader from "components/Loader";
 import { useEffect, useState } from "react";
 import LocalStorageService from "services/LocalStorageService";
 import ResourceService from "services/ResourceService";
+import { isManager } from "utils";
 import AssociateViewCard from "./AssociateViewCard";
 import FileUploader from "./FileUploader";
 import ManagerViewCard from "./ManagerViewCard";
 import ResourceFile from "./ResourceFile";
 
 const Resources = () => {
-	const user = LocalStorageService.getItem("user");
-	const isManager =
-		user.role.includes("Administrator") || user.role.includes("Administrators");
+	const { fullName, role } = LocalStorageService.getItem("user");
+	const isUserManager = isManager(role);
 
 	const [resources, setResources] = useState(null);
 	const [newUpload, setNewUpload] = useState(null);
@@ -63,15 +63,15 @@ const Resources = () => {
 				spacing="1em"
 				mt={"0.5em"}
 			>
-				{isManager ? <ManagerViewCard /> : <AssociateViewCard />}
+				{isUserManager ? <ManagerViewCard /> : <AssociateViewCard />}
 			</SimpleGrid>
 			{!resources && <Loader isAuto />}
-			{resources && isManager ? (
+			{resources && isUserManager ? (
 				<SimpleGrid columns={{ base: 1, md: 1, lg: 1 }}>
 					<FileUploader
 						setNewUpload={setNewUpload}
 						fileTypes={FILE_TYPES}
-						userName={user.fullName}
+						userName={fullName}
 					/>
 					<ResourceFile
 						fileTypes={FILE_TYPES}

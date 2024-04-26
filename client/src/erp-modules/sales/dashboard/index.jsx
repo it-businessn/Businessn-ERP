@@ -13,6 +13,7 @@ import "react-big-calendar/lib/css/react-big-calendar.css";
 import CalendarService from "services/CalendarService";
 import LocalStorageService from "services/LocalStorageService";
 import UserService from "services/UserService";
+import { isManager } from "utils";
 import ChatMessages from "./ChatMessages";
 import MiniCalendar from "./MiniCalendar";
 import SalesCard from "./SalesCard";
@@ -27,6 +28,8 @@ const CRMDashboard = () => {
 	const [isRefresh, setIsRefresh] = useState(false);
 	const [employees, setEmployees] = useState(null);
 	const [selectedUser, setSelectedUser] = useState(user);
+
+	const role = user?.role;
 
 	useEffect(() => {
 		const fetchAllEvents = async () => {
@@ -56,7 +59,7 @@ const CRMDashboard = () => {
 		const fetchAllEmployees = async () => {
 			try {
 				const response = await UserService.getAllUsers();
-				setEmployees(response.data);
+				setEmployees(response.data.filter(({ role }) => !isManager(role)));
 			} catch (error) {
 				console.error(error);
 			}
@@ -83,22 +86,22 @@ const CRMDashboard = () => {
 	];
 
 	const handleChange = (event) => {
-		setSelectedUser(
-			employees.find(({ fullName }) => fullName === event.target.value),
-		);
+		if (event.target.value === "") {
+			setSelectedUser(user);
+		} else {
+			setSelectedUser(
+				employees.find(({ fullName }) => fullName === event.target.value),
+			);
+		}
 	};
-
-	const role = selectedUser?.role;
-	const isManager =
-		role?.includes("Administrators") || role?.includes("Manager");
 
 	return (
 		<Box p={{ base: "1em" }} overflow={"hidden"}>
 			<Flex w={"50%"}>
 				<Text fontWeight="bold" mb={"0.5em"} flex={0.2}>
-					CRM {isManager && "Manager"} Dashboard
+					CRM {isManager(role) && "Manager"} Dashboard
 				</Text>
-				{isManager && employees && (
+				{isManager(role) && employees && (
 					<Select
 						flex={0.4}
 						borderRadius={"10px"}
@@ -107,6 +110,7 @@ const CRMDashboard = () => {
 						border={`1px solid var(--primary_button_bg)`}
 						value={selectedUser?.fullName}
 						onChange={handleChange}
+						placeholder="Select"
 					>
 						{employees?.map(({ _id, fullName }) => (
 							<option value={fullName} key={_id}>
