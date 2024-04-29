@@ -16,7 +16,7 @@ import { RiAspectRatioLine } from "react-icons/ri";
 import { useBreakpointValue } from "services/Breakpoint";
 import { generateLighterShade } from "utils";
 import GaugeChartComponent from "./GaugeChart";
-import HorizontalBarChart from "./Horizontal";
+import HorizontalBarChart from "./HorizontalBarChart";
 
 const Activities = () => {
 	const { isMobile, isIpad } = useBreakpointValue();
@@ -103,12 +103,12 @@ const Activities = () => {
 				<SimpleGrid
 					columns={1}
 					spacing={4}
-					templateRows={{ lg: "13% 13% 13% 13% 13%" }}
+					templateRows={{ lg: "8% 8% 8% 8% 8%" }}
 				>
 					{ACTIVITY_CARDS.map((activity) => (
 						<Box
 							key={activity.title}
-							p="1em"
+							p="0.5em 1em"
 							bg={"brand.primary_bg"}
 							border="3px solid var(--main_color)"
 							borderRadius="10px"
@@ -117,26 +117,31 @@ const Activities = () => {
 							display="flex"
 							flexDir={"column"}
 						>
-							<VStack alignItems="self-start" spacing={0}>
-								<Icon as={activity.icon} color={activity.color} boxSize={10} />
-								<Text fontWeight="bold">{activity.title}</Text>
-							</VStack>
-							<Box
-								my={0}
-								mx={"auto"}
-								w={{ base: "50%", md: "40%", lg: "40%", xl: "40%" }}
-							>
-								<HorizontalBarChart
-									data={activity.count}
-									options={barOptions}
-								/>
-							</Box>
+							<HStack>
+								<VStack alignItems="self-start" spacing={0}>
+									<Icon as={activity.icon} color={activity.color} boxSize={8} />
+									<Text fontWeight="bold" fontSize={"sm"}>
+										{activity.title}
+									</Text>
+								</VStack>
+								<Box
+									mt={-3}
+									mx={"auto"}
+									w={{ base: "50%", md: "40%", lg: "40%", xl: "40%" }}
+								>
+									<HorizontalBarChart
+										data={activity.count}
+										options={barOptions}
+									/>
+								</Box>
+							</HStack>
 
-							<Flex borderTop="2px solid #e8ebf4" gap={0}>
+							<Flex p={0} borderTop="2px solid #e8ebf4" gap={0}>
 								<Button
 									variant="solid"
 									bgGradient="linear-gradient(58deg, rgb(115 70 236) 0%, rgb(136 107 217) 43%, rgb(50 240 218) 100%)"
 									bgClip="text"
+									fontSize={"sm"}
 									size={"xxs"}
 									_hover={{
 										bgGradient:
@@ -154,27 +159,60 @@ const Activities = () => {
 				<SimpleGrid
 					columns={1}
 					spacing={4}
-					templateRows={{ md: "13% auto auto" }}
+					templateRows={{ md: "12% auto auto" }}
 				>
 					<Box
-						p="1em"
-						alignItems="center"
-						display={"flex"}
+						p="0.5em 1em"
 						bg={"brand.primary_bg"}
 						border="3px solid var(--main_color)"
 						borderRadius="10px"
+						fontWeight="bold"
+						justifyContent="space-between"
+						display="flex"
+						flexDir={"column"}
 					>
-						<GaugeChartComponent value={70} maxValue={100} />
+						<HStack spacing={0}>
+							<VStack alignItems="self-start" spacing={0}>
+								<Icon as={RiAspectRatioLine} color={"grey"} boxSize={8} />
+								<Text fontWeight="bold" fontSize={"sm"}>
+									Sales Target
+								</Text>
+								<Button
+									variant="solid"
+									bgGradient="linear-gradient(58deg, rgb(115 70 236) 0%, rgb(136 107 217) 43%, rgb(50 240 218) 100%)"
+									bgClip="text"
+									fontSize={"sm"}
+									size={"xxs"}
+									p={0}
+									_hover={{
+										bgGradient:
+											"linear-gradient(58deg, rgb(115 70 236) 0%, rgb(136 107 217) 43%, rgb(50 240 218) 100%)",
+										bgClip: "text",
+									}}
+								>
+									Process new sale
+									<RightIconButton />
+								</Button>
+							</VStack>
+							<Box
+								mx={"auto"}
+								w={{ base: "50%", md: "80%", lg: "80%", xl: "100%" }}
+							>
+								<GaugeChartComponent value={70} maxValue={100} />
+							</Box>
+						</HStack>
 					</Box>
 					{["Contests For Sales", "Contests For Activity"].map((item) => (
 						<Box
 							key={item}
-							p="1em"
+							p="0.5em 1em"
 							bg={"brand.primary_bg"}
 							border="3px solid var(--main_color)"
 							borderRadius="10px"
 						>
-							<Text fontWeight="bold">{item}</Text>
+							<Text fontWeight="bold" fontSize={"sm"}>
+								{item}
+							</Text>
 							<SimpleGrid columns={{ md: 3 }} spacing={4}>
 								{["Sale 1", "Sale 2", "Sale 3"].map((item) => (
 									<Box
@@ -186,13 +224,11 @@ const Activities = () => {
 										fontWeight="bold"
 									>
 										<HStack alignItems="self-start" spacing={2}>
-											<Icon
-												as={RiAspectRatioLine}
-												color="orange"
-												boxSize={10}
-											/>
+											<Icon as={RiAspectRatioLine} color="orange" boxSize={8} />
 											<VStack spacing={0} alignItems={"start"}>
-												<Text fontWeight="bold">{item}</Text>
+												<Text fontWeight="bold" fontSize={"sm"}>
+													{item}
+												</Text>
 												<Text fontSize="xs" p={0}>
 													1st place
 												</Text>
@@ -218,6 +254,7 @@ const Activities = () => {
 													bgGradient="linear-gradient(58deg, rgb(115 70 236) 0%, rgb(136 107 217) 43%, rgb(50 240 218) 100%)"
 													bgClip="text"
 													size={"xxs"}
+													fontSize={"sm"}
 												>
 													More details
 													<RightIconButton />
@@ -236,7 +273,7 @@ const Activities = () => {
 								fontWeight="bold"
 							>
 								<HStack alignItems="self-start" spacing={2}>
-									<Icon as={RiAspectRatioLine} color="orange" boxSize={10} />
+									<Icon as={RiAspectRatioLine} color="orange" boxSize={8} />
 									<VStack spacing={0} alignItems={"start"}>
 										<Text fontWeight="bold">Sale 4</Text>
 										<Text fontSize="xs" p={0}>
@@ -280,7 +317,7 @@ const Activities = () => {
 								fontWeight="bold"
 							>
 								<HStack alignItems="self-start" spacing={2}>
-									<Icon as={RiAspectRatioLine} color="orange" boxSize={10} />
+									<Icon as={RiAspectRatioLine} color="orange" boxSize={8} />
 									<VStack spacing={0} alignItems={"start"}>
 										<Text fontWeight="bold">Sale 5</Text>
 										<Text fontSize="xs" p={0}>

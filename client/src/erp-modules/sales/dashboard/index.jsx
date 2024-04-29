@@ -98,12 +98,11 @@ const CRMDashboard = () => {
 	return (
 		<Box p={{ base: "1em" }} overflow={"hidden"}>
 			<Flex w={"50%"}>
-				<Text fontWeight="bold" mb={"0.5em"} flex={0.2}>
+				<Text fontWeight="bold" mb={"0.5em"} w={"50%"}>
 					CRM {isManager(role) && "Manager"} Dashboard
 				</Text>
 				{isManager(role) && employees && (
 					<Select
-						flex={0.4}
 						borderRadius={"10px"}
 						size={"sm"}
 						color={"brand.primary_button_bg"}

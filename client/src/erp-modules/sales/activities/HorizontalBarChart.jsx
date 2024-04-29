@@ -9,8 +9,6 @@ const HorizontalBarChart = ({ data }) => {
 				backgroundColor: "#547fe9",
 				borderColor: "#547fe9",
 				borderWidth: 1,
-				hoverBackgroundColor: "#547fe9",
-				hoverBorderColor: "#547fe9",
 				data: [data],
 			},
 		],
@@ -22,6 +20,11 @@ const HorizontalBarChart = ({ data }) => {
 			x: {
 				beginAtZero: true,
 				max: 4000,
+			},
+		},
+		plugins: {
+			legend: {
+				display: false,
 			},
 		},
 	};

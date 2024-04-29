@@ -12,6 +12,7 @@ const {
 	getAllManagers,
 	getAllMemberGroups,
 	getAllEmployeesByRole,
+	getAllSalesAgents,
 } = require("../controllers/userController");
 
 router.post("/signup", createEmployee());
@@ -22,6 +23,7 @@ router.get("/emp-roles", getAllEmployeesByRole());
 
 router.get("/groups/:id", getAllMemberGroups());
 router.get("/managers", getAllManagers());
+router.get("/not-managers", getAllSalesAgents());
 // router.get("/reset-password/:id/:token", resetPassword);
 // router.post("/forgot-password", forgotPassword);
 router.post("/login", loginUser());

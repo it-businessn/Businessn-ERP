@@ -7,7 +7,6 @@ import { GiVideoCamera } from "react-icons/gi";
 import { IoMdCall } from "react-icons/io";
 import { IoCall } from "react-icons/io5";
 import { MdCall, MdContactPage, MdOutlineEventNote } from "react-icons/md";
-import { RiAspectRatioLine } from "react-icons/ri";
 
 export const TOAST = {
 	SUCCESS: {
@@ -28,35 +27,28 @@ export const ACTIVITY_CARDS = [
 		icon: CiPercent,
 		title: "Pending Sales",
 		count: 2000,
-		action: "Add New Emails",
-	},
-	{
-		color: "#62ad84",
-		icon: MdContactPage,
-		title: "New Contracts Added",
-		count: 2000,
-		action: "Add New Contracts",
+		action: "Log new email",
 	},
 	{
 		color: "purple",
 		icon: IoCall,
 		title: "Phone Calls Made",
 		count: 2000,
-		action: "Add New Calls",
+		action: "Log new call",
+	},
+	{
+		color: "#62ad84",
+		icon: MdContactPage,
+		title: "New Contracts Added",
+		count: 2000,
+		action: "Log new contract",
 	},
 	{
 		color: "grey",
 		icon: GiVideoCamera,
 		title: "Meetings",
 		count: 2000,
-		action: "Add New Meetings",
-	},
-	{
-		color: "grey",
-		icon: RiAspectRatioLine,
-		title: "Sales Target",
-		count: 2000,
-		action: "Add New Target",
+		action: "Log new meeting",
 	},
 ];
 

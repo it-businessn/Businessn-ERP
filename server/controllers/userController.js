@@ -86,6 +86,21 @@ const getAllManagers = () => async (req, res) => {
 	}
 };
 
+const getAllSalesAgents = () => async (req, res) => {
+	try {
+		const users = await Employee.find({
+			role: {
+				$not: {
+					$regex: /manager|administrator/i,
+				},
+			},
+		});
+		res.status(200).json(users);
+	} catch (error) {
+		res.status(404).json({ error: error.message });
+	}
+};
+
 const loginUser = () => async (req, res) => {
 	const { email, password } = req.body;
 	const user = await Employee.findOne({ email });
@@ -225,4 +240,5 @@ module.exports = {
 	updateUserAssignedLeads,
 	getAllMemberGroups,
 	getAllEmployeesByRole,
+	getAllSalesAgents,
 };

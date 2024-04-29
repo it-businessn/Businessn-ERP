@@ -6,7 +6,7 @@ const GaugeChartComponent = ({ value, maxValue }) => {
 		<Flex
 			direction="column"
 			position="relative"
-			w={{ base: "80%", md: "80%", xl: "50%" }}
+			w={{ base: "80%", md: "80%", xl: "57%" }}
 			mx={"auto"}
 		>
 			<GaugeChart
