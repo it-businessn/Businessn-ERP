@@ -9,6 +9,10 @@ const UserService = {
 		return apiService.put(`/employee/${id}`, data, id, token);
 	},
 
+	async updateUserInfoById(data, id, token) {
+		return apiService.put(`/user/${id}`, data, id, token);
+	},
+
 	async updateUserAssignedLeads(data, id) {
 		return apiService.put(`/user/lead/${id}`, data, id);
 	},

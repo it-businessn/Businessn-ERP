@@ -1,3 +1,4 @@
+const Contact = require("../models/Contact");
 const Employee = require("../models/Employee");
 const Lead = require("../models/Lead");
 
@@ -227,6 +228,10 @@ const updateLeadInfo = () => async (req, res) => {
 			{ $set: req.body },
 			{ new: true },
 		);
+		const { stage } = req.body;
+		if (stage === "T4" && updatedLead) {
+			await Contact.create({ leadId: updatedLead._id });
+		}
 		res.status(201).json(updatedLead);
 	} catch (error) {
 		res.status(400).json({ message: error.message });

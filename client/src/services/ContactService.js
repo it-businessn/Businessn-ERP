@@ -5,6 +5,10 @@ const ContactService = {
 		return apiService.get("/contacts");
 	},
 
+	async getContactDetails(id) {
+		return apiService.get(`/contacts/${id}`);
+	},
+
 	async getIndustryType() {
 		return apiService.get("/contacts/industry-type");
 	},

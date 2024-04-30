@@ -2,7 +2,7 @@ const Contact = require("../models/Contact");
 
 const getContacts = async (req, res) => {
 	try {
-		const contacts = await Contact.find({}).sort({ date: -1 });
+		const contacts = await Contact.find({}).populate("leadId");
 		res.json(contacts);
 	} catch (error) {
 		res.status(500).json({ message: error.message });
@@ -10,13 +10,11 @@ const getContacts = async (req, res) => {
 };
 
 const getContactById = async (req, res) => {
-	const id = req.params.id;
+	const { id } = req.params;
 
 	try {
-		const notes = (await Contact.find({ contactId: id })).sort(
-			(a, b) => b.date - a.date,
-		);
-		res.status(200).json(notes);
+		const contact = await Contact.findById(id).populate("leadId");
+		res.status(200).json(contact);
 	} catch (error) {
 		res.status(404).json({ error: error.message });
 	}

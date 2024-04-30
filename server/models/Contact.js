@@ -6,6 +6,7 @@ const contactSchema = new mongoose.Schema({
 	meetings: [{ type: mongoose.Schema.Types.ObjectId, ref: "Meeting" }],
 	events: [{ type: mongoose.Schema.Types.ObjectId, ref: "Event" }],
 	forms: [{ type: mongoose.Schema.Types.ObjectId, ref: "Form" }],
+	leadId: { type: mongoose.Schema.Types.ObjectId, ref: "Lead" },
 
 	// companyAddress: String,
 	// companyName: String,
