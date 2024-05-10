@@ -15,8 +15,9 @@ import PrimaryButton from "components/ui/button/PrimaryButton";
 import { useEffect, useState } from "react";
 import { useBreakpointValue } from "services/Breakpoint";
 import LeadsService from "services/LeadsService";
+import LocalStorageService from "services/LocalStorageService";
 import UserService from "services/UserService";
-import { formatDate } from "utils";
+import { formatDate, isManager } from "utils";
 import Caption from "../lead docket/Caption";
 import SearchFilter from "../lead docket/SearchFilter";
 import { OPP_COLUMNS } from "../lead docket/data";
@@ -29,30 +30,125 @@ const Opportunities = () => {
 
 	const [opportunities, setOpportunities] = useState(null);
 	const [assignees, setAssignees] = useState(null);
+	const user = LocalStorageService.getItem("user");
 
 	useEffect(() => {
-		const fetchAllOpportunities = async () => {
+		const fetchAllSalesAgents = async () => {
 			try {
-				const response = await LeadsService.getOpportunities();
-				setOpportunities(response.data);
-			} catch (error) {
-				console.error(error);
-			}
-		};
-
-		fetchAllOpportunities();
-		const fetchAllEmployees = async () => {
-			try {
-				const response = await UserService.getAllUsers();
+				const response = await UserService.getAllSalesAgents();
+				response.data.forEach((item) => (item.name = item.fullName));
 				setAssignees(response.data);
 			} catch (error) {
 				console.error(error);
 			}
 		};
 
-		fetchAllEmployees();
+		fetchAllSalesAgents();
+	}, []);
+
+	const fetchAllOpportunities = async () => {
+		try {
+			const response = await LeadsService.getOpportunities();
+			const leadList = isManager(user?.role)
+				? response.data
+				: response.data?.filter(
+						(item) =>
+							(item.primaryAssignee.length > 0 &&
+								item.primaryAssignee.find((_) => _.name === user?.fullName)) ||
+							(item.supervisorAssignee.length > 0 &&
+								item.supervisorAssignee.find((_) => _.name === user?.fullName)),
+				  );
+			setOpportunities(leadList);
+		} catch (error) {
+			console.error(error);
+		}
+	};
+
+	useEffect(() => {
+		fetchAllOpportunities();
 	}, [isAdded]);
 
+	const [formData, setFormData] = useState({
+		id: null,
+		stage: "",
+		primaryAssignee: null,
+		supervisorAssignee: null,
+	});
+
+	useEffect(() => {
+		const updateOpportunity = async () => {
+			try {
+				await LeadsService.updateLeadInfo(formData, formData.id);
+				fetchAllOpportunities();
+			} catch (error) {}
+		};
+		const updateAgentsLead = async () => {
+			try {
+				if (formData.primaryAssignee) {
+					const agent = assignees.find(
+						(agent) => agent.fullName === formData.primaryAssignee[0].name,
+					);
+					await UserService.updateUserInfoById(
+						{ leads: [formData.id] },
+						agent._id,
+					);
+					return;
+				}
+				if (formData.supervisorAssignee) {
+					const agent = assignees.find(
+						(agent) => agent.fullName === formData.supervisorAssignee[0].name,
+					);
+					await UserService.updateUserInfoById(
+						{ leads: [formData.id] },
+						agent._id,
+					);
+					return;
+				}
+			} catch (error) {}
+		};
+		if (formData.id) {
+			updateOpportunity();
+		}
+		if (formData.primaryAssignee || formData.supervisorAssignee) {
+			updateAgentsLead();
+		}
+	}, [formData]);
+
+	const handleSelect = (type, value, id) => {
+		const opportunity = opportunities.find(({ _id }) => _id === id);
+
+		if (type === "stage") {
+			setFormData((prevData) => ({
+				...prevData,
+				id,
+				stage: value,
+				primaryAssignee: opportunity.primaryAssignee,
+				supervisorAssignee: opportunity.supervisorAssignee,
+			}));
+		}
+		if (type === "primaryAssignee") {
+			setFormData((prevData) => ({
+				...prevData,
+				id,
+				stage: opportunity.stage,
+				primaryAssignee: [{ name: value }],
+				supervisorAssignee: opportunity.supervisorAssignee,
+				isDisbursed: true,
+				isDisbursedConfirmed: true,
+			}));
+		}
+		if (type === "supervisorAssignee") {
+			setFormData((prevData) => ({
+				...prevData,
+				id,
+				stage: opportunity.stage,
+				primaryAssignee: opportunity.primaryAssignee,
+				supervisorAssignee: [{ name: value }],
+				isDisbursed: true,
+				isDisbursedConfirmed: true,
+			}));
+		}
+	};
 	const { isOpen, onOpen, onClose } = useDisclosure();
 	const createOpportunity = () => (
 		<PrimaryButton onOpen={onOpen} name={"Add new lead"} />
@@ -105,25 +201,31 @@ const Opportunities = () => {
 										<Td>{email}</Td>
 										<Td>
 											<SelectList
-												_id={_id}
+												id={_id}
 												code="abbr"
 												selectedValue={stage}
+												handleSelect={handleSelect}
+												type="stage"
 												data={LEAD_STAGES}
 											/>
 										</Td>
 										<Td>
 											<SelectList
-												_id={_id}
+												id={_id}
 												code="fullName"
-												selectedValue={primaryAssignee}
+												selectedValue={primaryAssignee?.[0]?.name}
+												type="primaryAssignee"
+												handleSelect={handleSelect}
 												data={assignees}
 											/>
 										</Td>
 										<Td>
 											<SelectList
-												_id={_id}
+												id={_id}
 												code="fullName"
-												selectedValue={supervisorAssignee}
+												selectedValue={supervisorAssignee?.[0]?.name}
+												type="supervisorAssignee"
+												handleSelect={handleSelect}
 												data={assignees}
 											/>
 										</Td>
@@ -137,6 +239,7 @@ const Opportunities = () => {
 				</TableLayout>
 			)}
 			<AddNewOpportunity
+				assignees={assignees}
 				setIsAdded={setIsAdded}
 				isOpen={isOpen}
 				onClose={onClose}

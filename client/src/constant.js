@@ -8,6 +8,14 @@ import { IoMdCall } from "react-icons/io";
 import { IoCall } from "react-icons/io5";
 import { MdCall, MdContactPage, MdOutlineEventNote } from "react-icons/md";
 
+export const ROLES = {
+	PM: "Project Manager",
+	ASSOCIATE: "Sales Associate",
+	TECH_ADMIN: "Technical Administrator",
+	ADMIN: "Administrators",
+	MANAGER: "Manager",
+};
+
 export const TOAST = {
 	SUCCESS: {
 		title: "Data Updated Successfully",
@@ -74,6 +82,7 @@ const callsBarData = {
 		},
 	],
 };
+
 const emailsBarData = {
 	labels: callsMadeBarData.map((item) => item.day),
 	datasets: [
@@ -111,6 +120,7 @@ export const doughnutOptions = (cutout) => ({
 		},
 	},
 });
+
 export const barOptions = {
 	plugins: {
 		legend: {

@@ -35,8 +35,7 @@ const LeadsDisbursed = () => {
 
 	const fetchAllAgents = async () => {
 		try {
-			const response = await UserService.getAllUsers();
-			// setAgents(response.data.filter((user) => user.role.includes("Sales")));
+			const response = await UserService.getAllSalesAgents();
 			setAgents(response.data);
 			setCheckedRows(response.data.filter((user) => user.isActive === true));
 		} catch (error) {

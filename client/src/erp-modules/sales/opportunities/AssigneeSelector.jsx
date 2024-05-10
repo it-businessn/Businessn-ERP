@@ -16,6 +16,10 @@ const AssigneeSelector = ({
 	onRemoveAssignee,
 	label,
 	name,
+	setAssigneeError,
+	assigneeError,
+	isDisabled,
+	setIsDisabled,
 }) => {
 	const [selectedValue, setSelectedValue] = useState("");
 	const handleMultiAssigneesChange = (event) => {
@@ -32,6 +36,12 @@ const AssigneeSelector = ({
 			)
 		) {
 			onAssigneeChange((prevAssignees) => [...prevAssignees, selectedAssignee]);
+			if (assigneeError) {
+				setAssigneeError(null);
+			}
+			if (isDisabled) {
+				setIsDisabled(false);
+			}
 		}
 		setSelectedValue(selectedAssignee.name);
 	};

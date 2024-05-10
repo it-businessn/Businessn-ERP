@@ -16,9 +16,10 @@ import {
 	PRODUCTS_SERVICES,
 	REGIONS,
 } from "erp-modules/project-management/workview/project/data";
-import { useState } from "react";
-import { FaCaretDown } from "react-icons/fa";
+import { useEffect, useState } from "react";
+import { FaCaretDown, FaPlus } from "react-icons/fa";
 import LeadsService from "services/LeadsService";
+import AddCompany from "./AddCompany";
 import AssigneeSelector from "./AssigneeSelector";
 import { LEAD_STAGES } from "./data";
 
@@ -56,23 +57,49 @@ const AddNewOpportunity = ({
 	const [isDisabled, setIsDisabled] = useState(false);
 	const [assigneeError, setAssigneeError] = useState(null);
 	const [stageError, setStageError] = useState(null);
+	const [companyError, setCompanyError] = useState(null);
+
+	const [refresh, setRefresh] = useState(false);
+	const [showAddCompany, setShowAddCompany] = useState(false);
+
 	const [formData, setFormData] = useState(defaultOpportunity);
 
 	const [selectedProductService, setSelectedProductService] = useState([]);
 	const [selectedPrimaryAssignees, setSelectedPrimaryAssignees] = useState([]);
 	const [selectedSupervisorAssignees, setSelectedSupervisorAssignees] =
 		useState([]);
+	const [companies, setCompanies] = useState(null);
+
+	useEffect(() => {
+		const fetchAllCompanies = async () => {
+			try {
+				const response = await LeadsService.getLeadCompanies();
+				setCompanies(response.data);
+			} catch (error) {
+				console.error(error);
+			}
+		};
+
+		fetchAllCompanies();
+	}, [refresh]);
 
 	const handleChange = (e) => {
 		const { name, value } = e.target;
 		setFormData((prevData) => ({ ...prevData, [name]: value }));
-		setStageError(null);
-		setIsDisabled(false);
+		if (name === "stage") {
+			setStageError(null);
+		}
+		if (name === "companyName") {
+			setCompanyError(null);
+		}
+		if (isDisabled) {
+			setIsDisabled(false);
+		}
 	};
 
 	const handleSubmit = async (e) => {
 		e.preventDefault();
-		const { stage } = formData;
+		const { stage, companyName } = formData;
 		if (selectedPrimaryAssignees.length === 0) {
 			setAssigneeError("Please select primary assignee");
 			setIsDisabled(true);
@@ -82,27 +109,34 @@ const AddNewOpportunity = ({
 			setStageError("Please select stage");
 			setIsDisabled(true);
 		}
+		if (companyName === "") {
+			setCompanyError("Please select company");
+			setIsDisabled(true);
+		}
 		const isNotValid =
-			stage === "" || selectedPrimaryAssignees.length === 0 || isDisabled;
+			stage === "" ||
+			selectedPrimaryAssignees.length === 0 ||
+			companyName === "" ||
+			isDisabled;
 		if (isNotValid) return;
 
-		formData.productService = selectedProductService;
-		formData.primaryAssignee = selectedPrimaryAssignees;
-		formData.supervisorAssignee = selectedSupervisorAssignees;
-		setSubmitting(true);
+		// formData.productService = selectedProductService;
+		// formData.primaryAssignee = selectedPrimaryAssignees;
+		// formData.supervisorAssignee = selectedSupervisorAssignees;
+		// setSubmitting(true);
 
-		try {
-			await LeadsService.createOpportunity(formData);
-			setIsAdded(true);
-			onClose();
-			setFormData(defaultOpportunity);
-			setSubmitting(false);
-		} catch (error) {
-			console.log(error);
-			// setError("An error occurred while creating new opportunity");
-		} finally {
-			setSubmitting(false);
-		}
+		// try {
+		// 	await LeadsService.createOpportunity(formData);
+		// 	setIsAdded(true);
+		// 	onClose();
+		// 	setFormData(defaultOpportunity);
+		// 	setSubmitting(false);
+		// } catch (error) {
+		// 	console.log(error);
+		// 	// setError("An error occurred while creating new opportunity");
+		// } finally {
+		// 	setSubmitting(false);
+		// }
 	};
 
 	return (
@@ -136,14 +170,32 @@ const AddNewOpportunity = ({
 						</FormControl>
 						<FormControl>
 							<FormLabel>Company Name</FormLabel>
-							<Input
-								type="text"
-								name="companyName"
-								value={formData.companyName}
-								onChange={handleChange}
-								required
-							/>
+							<HStack justify={"space-between"}>
+								<Select
+									icon={<FaCaretDown />}
+									borderRadius="10px"
+									size="sm"
+									placeholder="Select Company"
+									name="companyName"
+									value={formData.companyName}
+									onChange={handleChange}
+								>
+									{companies?.map(({ _id, name }) => (
+										<option value={name} key={_id}>
+											{name}
+										</option>
+									))}
+								</Select>
+								<FaPlus onClick={() => setShowAddCompany(true)} />
+							</HStack>
 						</FormControl>
+						{companyError && <Text color={"red"}>{companyError}</Text>}
+
+						<AddCompany
+							showAddCompany={showAddCompany}
+							setRefresh={setRefresh}
+							setShowAddCompany={setShowAddCompany}
+						/>
 					</HStack>
 					<HStack>
 						<FormControl>

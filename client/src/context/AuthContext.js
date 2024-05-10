@@ -31,15 +31,15 @@ export const AuthContextProvider = ({ children }) => {
 	const [state, dispatch] = useReducer(authReducer, {
 		user: null,
 	});
+	const user = LocalStorageService.getItem("user");
 
 	useEffect(() => {
-		const user = LocalStorageService.getItem("user");
 		if (!user) return;
 		dispatch({ type: "LOGIN", payload: user });
 	}, []);
 
 	return (
-		<AuthContext.Provider value={{ ...state, dispatch }}>
+		<AuthContext.Provider value={{ ...state, dispatch, user }}>
 			{children}
 		</AuthContext.Provider>
 	);

@@ -6,6 +6,7 @@ import {
 	Flex,
 	HStack,
 	IconButton,
+	SimpleGrid,
 	Text,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
@@ -95,28 +96,17 @@ const SchedulingCalendar = ({ newEmployeeAdded }) => {
 			};
 			updateShifts();
 		}
+
 		setItems(updatedItems);
 	};
-	useEffect(() => {
-		if (newEmployeeAdded) {
-			handleHourDrop(newEmployeeAdded);
-		}
-	}, [newEmployeeAdded]);
+
 	useEffect(() => {
 		const fetchShifts = async () => {
 			try {
 				const response = await SchedulerService.getShifts();
 				if (response.data.length > 0) {
-					const options = {
-						weekday: "short",
-						month: "short",
-						day: "2-digit",
-						year: "numeric",
-						hour: "numeric",
-						minute: "numeric",
-						second: "numeric",
-						timeZoneName: "short",
-					};
+					const uniqueEvents = [];
+					const titles = {};
 
 					response.data.map((item) => {
 						const startDate = new Date(item.start_time);
@@ -129,18 +119,19 @@ const SchedulingCalendar = ({ newEmployeeAdded }) => {
 						item.end_time = new Date(
 							endDate.setUTCHours(hoursFromEndDate, 0, 0, 0),
 						);
+						if (!titles[item.title] && !item.id.endsWith("s")) {
+							titles[item.title] = true;
+							uniqueEvents.push(item);
+						}
 						return item;
 					});
-					const uniqueEvents = [];
-					const titles = {};
-
-					response.data.forEach((event) => {
-						if (!titles[event.title] && !event.id.endsWith("s")) {
-							titles[event.title] = true;
-							uniqueEvents.push(event);
-						}
+					uniqueEvents.sort((a, b) => {
+						if (a.title < b.title) return -11;
+						if (a.title > b.title) return 1;
+						return 0;
 					});
 					setGroups(uniqueEvents);
+
 					setItems(response.data);
 				}
 			} catch (error) {
@@ -150,6 +141,12 @@ const SchedulingCalendar = ({ newEmployeeAdded }) => {
 		fetchShifts();
 	}, []);
 
+	useEffect(() => {
+		if (newEmployeeAdded) {
+			handleHourDrop(newEmployeeAdded);
+		}
+	}, [newEmployeeAdded]);
+
 	const handleHourDrop = (employee) => {
 		const { id, name, color } = employee;
 		if (!id) {
@@ -158,6 +155,11 @@ const SchedulingCalendar = ({ newEmployeeAdded }) => {
 		const existingGroup = groups.find((item) => item.id === id);
 		if (!existingGroup) {
 			const newGroup = { id, title: name, color };
+			groups.sort((a, b) => {
+				if (a.title < b.title) return -1;
+				if (a.title > b.title) return 1;
+				return 0;
+			});
 			setGroups([...groups, newGroup]);
 		}
 
@@ -191,19 +193,19 @@ const SchedulingCalendar = ({ newEmployeeAdded }) => {
 	};
 
 	const groupRenderer = ({ group }) => {
-		return (
-			group.id && (
-				<Text
-					className="custom-group"
-					ref={drop}
-					fontSize={"sm"}
-					border={isOver && "2px solid #ccc"}
-					bgColor={isOver ? "green.100" : "transparent"}
-					onDrop={handleHourDrop}
-				>
-					{group.title}
-				</Text>
-			)
+		return group.id ? (
+			<Text
+				className="custom-group"
+				ref={drop}
+				fontSize={"sm"}
+				border={isOver && "2px solid #ccc"}
+				bgColor={isOver ? "green.100" : "transparent"}
+				onDrop={handleHourDrop}
+			>
+				{group.title}
+			</Text>
+		) : (
+			<></>
 		);
 	};
 
@@ -216,8 +218,12 @@ const SchedulingCalendar = ({ newEmployeeAdded }) => {
 		const { left: leftResizeProps, right: rightResizeProps } = getResizeProps();
 		const durationText = item.duration < 2 ? "hour" : "hours";
 		return (
-			<Box {...getItemProps(item.itemProps)}>
-				{itemContext.useResizeHandle ? <div {...leftResizeProps} /> : ""}
+			<Box {...getItemProps(item.itemProps)} w={"auto"}>
+				{itemContext.useResizeHandle ? (
+					<Box w={"auto"} {...leftResizeProps} />
+				) : (
+					""
+				)}
 				<HStack
 					maxHeight={itemContext.dimensions.height}
 					bgColor={item.color}
@@ -240,10 +246,15 @@ const SchedulingCalendar = ({ newEmployeeAdded }) => {
 					/>
 				</HStack>
 
-				{itemContext.useResizeHandle ? <div {...rightResizeProps} /> : ""}
+				{itemContext.useResizeHandle ? (
+					<Box w={"auto"} {...rightResizeProps} />
+				) : (
+					""
+				)}
 			</Box>
 		);
 	};
+
 	const yesterdayDate = new Date(currentDate);
 	yesterdayDate.setDate(currentDate.getDate() - 1); // Get yesterday's date
 	const tomorrowDate = new Date(currentDate);
@@ -251,6 +262,118 @@ const SchedulingCalendar = ({ newEmployeeAdded }) => {
 
 	return (
 		<Box overflow={"auto"} w={"100%"}>
+			<SimpleGrid
+				mb={"1em"}
+				columns={{ base: 1, md: 2, lg: 4 }}
+				spacing="1em"
+				color={"brand.200"}
+			>
+				<Box
+					px="1em"
+					bg={"brand.primary_bg"}
+					border="3px solid var(--main_color)"
+					borderRadius="10px"
+					fontWeight="bold"
+				>
+					<Text>Scheduling</Text>
+				</Box>
+				{/* <Box
+					px="1em"
+					bg={"brand.primary_bg"}
+					border="3px solid var(--main_color)"
+					borderRadius="10px"
+					fontWeight="bold"
+				>
+					<Flex
+						justify="space-between"
+						align="center"
+						mb="1"
+						w={{ base: "auto", md: "106%" }}
+					>
+						<Icon as={card.icon} color={card.color} boxSize={5} />
+						<Select width="auto" border={"none"} fontSize={"xs"} p={0}>
+							<option>This month</option>
+							<option>Last month</option>
+						</Select>
+					</Flex>
+					<Text fontSize="xs" fontWeight="bold">
+						{card.title}
+					</Text>
+					<Flex align="center" color={"brand.600"}>
+						<Text mr="3" fontWeight="900">
+							{card.value}
+						</Text>
+						<Icon mr="1" as={card.subIcon} color="green.500" />
+						<Text color="green.500" fontSize="xs">
+							{card.percent}
+						</Text>
+					</Flex>
+				</Box> */}
+				{/*<Box
+					px="1em"
+					bg={"brand.primary_bg"}
+					border="3px solid var(--main_color)"
+					borderRadius="10px"
+					fontWeight="bold"
+				>
+					<Flex
+						justify="space-between"
+						align="center"
+						mb="1"
+						w={{ base: "auto", md: "106%" }}
+					>
+						<Icon as={card.icon} color={card.color} boxSize={5} />
+						<Select width="auto" border={"none"} fontSize={"xs"} p={0}>
+							<option>This month</option>
+							<option>Last month</option>
+						</Select>
+					</Flex>
+					<Text fontSize="xs" fontWeight="bold">
+						{card.title}
+					</Text>
+					<Flex align="center" color={"brand.600"}>
+						<Text mr="3" fontWeight="900">
+							{card.value}
+						</Text>
+						<Icon mr="1" as={card.subIcon} color="green.500" />
+						<Text color="green.500" fontSize="xs">
+							{card.percent}
+						</Text>
+					</Flex>
+				</Box>
+				<Box
+					px="1em"
+					bg={"brand.primary_bg"}
+					border="3px solid var(--main_color)"
+					borderRadius="10px"
+					fontWeight="bold"
+				>
+					<Flex
+						justify="space-between"
+						align="center"
+						mb="1"
+						w={{ base: "auto", md: "106%" }}
+					>
+						<Icon as={card.icon} color={card.color} boxSize={5} />
+						<Select width="auto" border={"none"} fontSize={"xs"} p={0}>
+							<option>This month</option>
+							<option>Last month</option>
+						</Select>
+					</Flex>
+					<Text fontSize="xs" fontWeight="bold">
+						{card.title}
+					</Text>
+					<Flex align="center" color={"brand.600"}>
+						<Text mr="3" fontWeight="900">
+							{card.value}
+						</Text>
+						<Icon mr="1" as={card.subIcon} color="green.500" />
+						<Text color="green.500" fontSize="xs">
+							{card.percent}
+						</Text>
+					</Flex>
+				</Box> */}
+			</SimpleGrid>
 			<Timeline
 				groups={groups}
 				items={items}
@@ -261,12 +384,7 @@ const SchedulingCalendar = ({ newEmployeeAdded }) => {
 				canResize="both"
 				timeSteps={{
 					minute: 15,
-					hour: 1,
-					day: 1,
-					month: 1,
-					year: 1,
 				}}
-				leftSidebarWidth={150}
 				itemRenderer={itemRenderer}
 				viewMode="day"
 				groupRenderer={groupRenderer}
@@ -284,7 +402,7 @@ const SchedulingCalendar = ({ newEmployeeAdded }) => {
 							</Flex>
 						)}
 					</SidebarHeader>
-					<CustomHeader height={50} headerData={"data"} unit="hour">
+					<CustomHeader unit="hour">
 						{({
 							headerContext: { intervals },
 							getRootProps,

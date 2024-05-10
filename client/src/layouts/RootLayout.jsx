@@ -5,7 +5,6 @@ import { Outlet, useNavigate } from "react-router-dom";
 import Loader from "components/Loader";
 import Navbar from "components/header";
 import Sidebar from "components/sidebar";
-import { SIDEBAR_MENU } from "components/sidebar/data";
 import { useData } from "context/DataContext";
 import { useBreakpointValue } from "services/Breakpoint";
 import LocalStorageService from "services/LocalStorageService";
@@ -24,20 +23,18 @@ const RootLayout = () => {
 				const response = await UserService.getUserPermission(user?._id);
 
 				if (response.data) {
-					SIDEBAR_MENU.forEach((data, index) => {
+					permissionData.forEach((data, index) => {
 						const menu = response.data.permissionType.find(
 							(item) => item.name === data.name,
 						);
-						if (menu) {
-							SIDEBAR_MENU[index].permissions = menu;
-						}
+						permissionData[index].permissions = menu ? menu : null;
 						data?.children?.forEach((child, cIndex) => {
 							const childMenu = response.data.permissionType.find(
 								(item) => item.name === `${data.name} ${child.name}`,
 							);
-							if (menu) {
-								SIDEBAR_MENU[index].children[cIndex].permissions = childMenu;
-							}
+							permissionData[index].children[cIndex].permissions = childMenu
+								? childMenu
+								: null;
 						});
 					});
 				}

@@ -5,6 +5,10 @@ const LeadsService = {
 		return apiService.get("/leads/not-disbursed", data);
 	},
 
+	async getLeadCompanies(data) {
+		return apiService.get("/leads/companies", data);
+	},
+
 	async getDisbursedLeads(data) {
 		return apiService.get("/leads/disburse", data);
 	},
@@ -23,6 +27,10 @@ const LeadsService = {
 
 	async createMultipleOpportunity(data) {
 		return apiService.post("/leads/multiple-opportunities", data);
+	},
+
+	async addLeadCompany(data) {
+		return apiService.post("/leads/companies", data);
 	},
 
 	async getOpportunitiesByCategory() {

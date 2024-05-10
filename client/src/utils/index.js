@@ -7,6 +7,7 @@ import {
 	HStack,
 	Icon,
 } from "@chakra-ui/react";
+import { ROLES } from "constant";
 import AddNotes from "erp-modules/project-management/workview/project/cell/AddNotes";
 import { COLORS } from "erp-modules/project-management/workview/project/data";
 import { useState } from "react";
@@ -343,14 +344,26 @@ export const renderPriorityBars = (priority) => {
 	return bars;
 };
 
-export const getRandomColor = () => {
+export const customOrder = [
+	ROLES.PM,
+	ROLES.ASSOCIATE,
+	ROLES.TECH_ADMIN,
+	ROLES.ADMIN,
+];
+
+export const getRoleColor = (role) => {
 	const colors = [
-		"var(--primary_button_bg)",
-		"var(--correct_ans)",
-		"var(--stat_item_color)",
-		"var(--event_color)",
-		"var(--incorrect_ans)",
+		{ title: ROLES.PM, color: "var(--stat_item_color)" },
+		{ title: ROLES.ASSOCIATE, color: "var(--correct_ans)" },
+		{ title: ROLES.TECH_ADMIN, color: "var(--primary_button_bg)" },
+		{ title: ROLES.ADMIN, color: "var(--event_color)" },
+		// { title: "", color: "var(--incorrect_ans)" },
 	];
 	const randomIndex = Math.floor(Math.random() * colors.length);
-	return colors[randomIndex];
+	return colors.find(({ title }) => title === role).color;
 };
+
+export const isManager = (role) =>
+	role?.includes(ROLES.ADMIN) ||
+	role?.includes(ROLES.MANAGER) ||
+	role?.includes(ROLES.TECH_ADMIN);

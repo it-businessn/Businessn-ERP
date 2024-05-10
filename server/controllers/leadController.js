@@ -1,6 +1,7 @@
 const Contact = require("../models/Contact");
 const Employee = require("../models/Employee");
 const Lead = require("../models/Lead");
+const LeadCompany = require("../models/LeadCompany");
 
 const getOpportunities = () => async (req, res) => {
 	try {
@@ -29,6 +30,15 @@ const getNotDisbursedLeads = () => async (req, res) => {
 		);
 
 		res.status(200).json(leads);
+	} catch (error) {
+		res.status(404).json({ error: error.message });
+	}
+};
+const getLeadCompanies = () => async (req, res) => {
+	try {
+		const leadCompanies = await LeadCompany.find({});
+
+		res.status(200).json(leadCompanies);
 	} catch (error) {
 		res.status(404).json({ error: error.message });
 	}
@@ -82,6 +92,19 @@ const createLeadOpportunity = () => async (req, res) => {
 		});
 
 		res.status(201).json(newLeadOpportunity);
+	} catch (error) {
+		res.status(400).json({ message: error.message });
+	}
+};
+const createLeadCompany = () => async (req, res) => {
+	const { companyName } = req.body;
+
+	try {
+		const newLeadCompany = await LeadCompany.create({
+			name: companyName,
+		});
+
+		res.status(201).json(newLeadCompany);
 	} catch (error) {
 		res.status(400).json({ message: error.message });
 	}
@@ -264,4 +287,6 @@ module.exports = {
 	updateLeadInfo,
 	createMultipleLeadOpportunity,
 	deleteLead,
+	getLeadCompanies,
+	createLeadCompany,
 };

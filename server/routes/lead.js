@@ -12,13 +12,16 @@ router.get(
 
 router.get("/not-disbursed", leadController.getNotDisbursedLeads());
 
+router.get("/companies", leadController.getLeadCompanies());
+
 router.get("/opportunities", leadController.getOpportunities());
+
+router.post("/companies", leadController.createLeadCompany());
 
 router.post(
 	"/multiple-opportunities",
 	leadController.createMultipleLeadOpportunity(),
 );
-
 router.post("/confirm-disburse", leadController.confirmDisburseLeads());
 
 router.post("/disburse", leadController.disburseLeads());
