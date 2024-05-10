@@ -6,6 +6,7 @@ import {
 	Input,
 	Select,
 	Stack,
+	Text,
 } from "@chakra-ui/react";
 import ModalLayout from "components/ui/ModalLayout";
 import PrimaryButton from "components/ui/button/PrimaryButton";
@@ -13,7 +14,6 @@ import {
 	INDUSTRIES,
 	LEAD_SOURCES,
 	PRODUCTS_SERVICES,
-	PROJECT_ASSIGNEES,
 	REGIONS,
 } from "erp-modules/project-management/workview/project/data";
 import { useState } from "react";
@@ -22,7 +22,13 @@ import LeadsService from "services/LeadsService";
 import AssigneeSelector from "./AssigneeSelector";
 import { LEAD_STAGES } from "./data";
 
-const AddNewOpportunity = ({ isOpen, onClose, setIsAdded, isDocket }) => {
+const AddNewOpportunity = ({
+	isOpen,
+	onClose,
+	setIsAdded,
+	isDocket,
+	assignees,
+}) => {
 	const defaultOpportunity = {
 		abbreviation: "",
 		address: {
@@ -47,6 +53,9 @@ const AddNewOpportunity = ({ isOpen, onClose, setIsAdded, isDocket }) => {
 
 	const [isSubmitting, setSubmitting] = useState(false);
 	const [error, setError] = useState(false);
+	const [isDisabled, setIsDisabled] = useState(false);
+	const [assigneeError, setAssigneeError] = useState(null);
+	const [stageError, setStageError] = useState(null);
 	const [formData, setFormData] = useState(defaultOpportunity);
 
 	const [selectedProductService, setSelectedProductService] = useState([]);
@@ -57,14 +66,29 @@ const AddNewOpportunity = ({ isOpen, onClose, setIsAdded, isDocket }) => {
 	const handleChange = (e) => {
 		const { name, value } = e.target;
 		setFormData((prevData) => ({ ...prevData, [name]: value }));
+		setStageError(null);
+		setIsDisabled(false);
 	};
 
 	const handleSubmit = async (e) => {
 		e.preventDefault();
+		const { stage } = formData;
+		if (selectedPrimaryAssignees.length === 0) {
+			setAssigneeError("Please select primary assignee");
+			setIsDisabled(true);
+		}
+
+		if (stage === "") {
+			setStageError("Please select stage");
+			setIsDisabled(true);
+		}
+		const isNotValid =
+			stage === "" || selectedPrimaryAssignees.length === 0 || isDisabled;
+		if (isNotValid) return;
+
 		formData.productService = selectedProductService;
 		formData.primaryAssignee = selectedPrimaryAssignees;
 		formData.supervisorAssignee = selectedSupervisorAssignees;
-
 		setSubmitting(true);
 
 		try {
@@ -108,7 +132,6 @@ const AddNewOpportunity = ({ isOpen, onClose, setIsAdded, isDocket }) => {
 								name="abbreviation"
 								value={formData.abbreviation}
 								onChange={handleChange}
-								required
 							/>
 						</FormControl>
 						<FormControl>
@@ -151,6 +174,7 @@ const AddNewOpportunity = ({ isOpen, onClose, setIsAdded, isDocket }) => {
 							<Input
 								type="text"
 								name="streetNumber"
+								size={"sm"}
 								value={formData.address.streetNumber}
 								onChange={(e) => {
 									setFormData({
@@ -162,11 +186,13 @@ const AddNewOpportunity = ({ isOpen, onClose, setIsAdded, isDocket }) => {
 									});
 								}}
 								placeholder="Street Number"
+								required
 							/>
 
 							<Input
 								type="text"
 								name="city"
+								size={"sm"}
 								value={formData.address.city}
 								onChange={(e) => {
 									setFormData({
@@ -178,12 +204,14 @@ const AddNewOpportunity = ({ isOpen, onClose, setIsAdded, isDocket }) => {
 									});
 								}}
 								placeholder="City"
+								required
 							/>
 						</HStack>
 						<HStack mt={3}>
 							<Input
 								type="text"
 								name="state"
+								size={"sm"}
 								value={formData.address.state}
 								onChange={(e) => {
 									setFormData({
@@ -195,10 +223,12 @@ const AddNewOpportunity = ({ isOpen, onClose, setIsAdded, isDocket }) => {
 									});
 								}}
 								placeholder="State"
+								required
 							/>
 							<Input
 								type="text"
 								name="postalCode"
+								size={"sm"}
 								value={formData.address.postalCode}
 								onChange={(e) => {
 									setFormData({
@@ -210,10 +240,12 @@ const AddNewOpportunity = ({ isOpen, onClose, setIsAdded, isDocket }) => {
 									});
 								}}
 								placeholder="Postal Code"
+								required
 							/>
 							<Input
 								type="text"
 								name="country"
+								size={"sm"}
 								value={formData.address.country}
 								onChange={(e) => {
 									setFormData({
@@ -225,6 +257,7 @@ const AddNewOpportunity = ({ isOpen, onClose, setIsAdded, isDocket }) => {
 									});
 								}}
 								placeholder="Country"
+								required
 							/>
 						</HStack>
 					</FormControl>
@@ -295,15 +328,20 @@ const AddNewOpportunity = ({ isOpen, onClose, setIsAdded, isDocket }) => {
 					{!isDocket && (
 						<>
 							<AssigneeSelector
-								assignees={PROJECT_ASSIGNEES}
+								assigneeError={assigneeError}
+								setAssigneeError={setAssigneeError}
+								isDisabled={isDisabled}
+								setIsDisabled={setIsDisabled}
+								assignees={assignees}
 								selectedAssignees={selectedPrimaryAssignees}
 								onAssigneeChange={setSelectedPrimaryAssignees}
 								onRemoveAssignee={setSelectedPrimaryAssignees}
 								label="Primary Assignee"
 								name="primaryAssignee"
 							/>
+							{assigneeError && <Text color={"red"}>{assigneeError}</Text>}
 							<AssigneeSelector
-								assignees={PROJECT_ASSIGNEES}
+								assignees={assignees}
 								selectedAssignees={selectedSupervisorAssignees}
 								onAssigneeChange={setSelectedSupervisorAssignees}
 								onRemoveAssignee={setSelectedSupervisorAssignees}
@@ -328,11 +366,17 @@ const AddNewOpportunity = ({ isOpen, onClose, setIsAdded, isDocket }) => {
 									))}
 								</Select>
 							</FormControl>
+							{stageError && <Text color={"red"}>{stageError}</Text>}
 						</>
 					)}
 
 					<HStack justifyContent={"end"}>
-						<PrimaryButton name="Add" isLoading={isSubmitting} px="2em" />
+						<PrimaryButton
+							isDisabled={isDisabled}
+							name="Add"
+							isLoading={isSubmitting}
+							px="2em"
+						/>
 
 						<Button onClick={onClose} colorScheme="gray">
 							Cancel
