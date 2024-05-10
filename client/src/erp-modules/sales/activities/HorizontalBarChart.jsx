@@ -1,11 +1,11 @@
 import { Bar } from "react-chartjs-2";
 
-const HorizontalBarChart = ({ data }) => {
+const HorizontalBarChart = ({ data, label }) => {
 	const chartData = {
-		labels: ["Emails"],
+		labels: [label],
 		datasets: [
 			{
-				label: "Emails Sent",
+				label,
 				backgroundColor: "#547fe9",
 				borderColor: "#547fe9",
 				borderWidth: 1,

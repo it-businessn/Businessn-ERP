@@ -1,12 +1,14 @@
 import { EmailIcon } from "@chakra-ui/icons";
 import { BsChatTextFill, BsListTask } from "react-icons/bs";
 import { CiPercent } from "react-icons/ci";
-import { FaSalesforce } from "react-icons/fa";
+import { FaMailBulk, FaSalesforce } from "react-icons/fa";
 import { FiTarget } from "react-icons/fi";
 import { GiVideoCamera } from "react-icons/gi";
 import { IoMdCall } from "react-icons/io";
 import { IoCall } from "react-icons/io5";
 import { MdCall, MdContactPage, MdOutlineEventNote } from "react-icons/md";
+import { TbMailForward, TbMailShare } from "react-icons/tb";
+import { TiSocialLinkedin } from "react-icons/ti";
 
 export const ROLES = {
 	PM: "Project Manager",
@@ -31,32 +33,71 @@ export const TOAST = {
 
 export const ACTIVITY_CARDS = [
 	{
-		color: "#ed6175",
-		icon: CiPercent,
-		title: "Pending Sales",
+		color: "var(--status_button_border_",
+		icon: TbMailForward,
+		title: "Emails sent",
 		count: 2000,
 		action: "Log new email",
+		label: "Emails",
+	},
+	{
+		color: "var(--status_button_border)",
+		icon: FaMailBulk,
+		title: "Mailing list emails added",
+		count: 2000,
+		action: "Log new mailing list email",
+		label: "Mailing list",
 	},
 	{
 		color: "purple",
 		icon: IoCall,
-		title: "Phone Calls Made",
+		title: "Phone calls made",
 		count: 2000,
 		action: "Log new call",
+		label: "Calls",
 	},
 	{
-		color: "#62ad84",
-		icon: MdContactPage,
-		title: "New Contracts Added",
-		count: 2000,
-		action: "Log new contract",
-	},
-	{
-		color: "grey",
+		color: "var(--primary_button_bg)",
 		icon: GiVideoCamera,
 		title: "Meetings",
 		count: 2000,
 		action: "Log new meeting",
+		label: "Meetings",
+	},
+	{
+		color: "var(--primary_button_bg)",
+		icon: TiSocialLinkedin,
+		title: "Linked in friends added",
+		count: 2000,
+		action: "Log new linkedIn contact",
+		label: "Contacts",
+	},
+	{
+		color: "var(--primary_button_bg)",
+		icon: TbMailShare,
+		title: "Linked in messages sent",
+		count: 2000,
+		action: "Log new linkedIn message",
+		label: "Messages",
+	},
+];
+
+export const SALES_ACTIVITY_CARDS = [
+	{
+		color: "var(--almost_pass)",
+		icon: CiPercent,
+		title: "Pending Sales",
+		count: 2000,
+		action: "Log new sale",
+		label: "Sales",
+	},
+	{
+		color: "var(--status_button_border)",
+		icon: MdContactPage,
+		title: "New Contracts Added",
+		count: 2000,
+		action: "Log new contract",
+		label: "Contracts",
 	},
 ];
 

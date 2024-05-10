@@ -10,7 +10,7 @@ import {
 	VStack,
 } from "@chakra-ui/react";
 import RightIconButton from "components/ui/button/RightIconButton";
-import { ACTIVITY_CARDS, barOptions } from "constant";
+import { ACTIVITY_CARDS, SALES_ACTIVITY_CARDS, barOptions } from "constant";
 import { useState } from "react";
 import { RiAspectRatioLine } from "react-icons/ri";
 import { useBreakpointValue } from "services/Breakpoint";
@@ -41,7 +41,6 @@ const Activities = () => {
 	};
 	return (
 		<Box p={{ base: "1em", md: "2em" }}>
-			<Text fontWeight="bold">Activities</Text>
 			{isMobile || isIpad ? (
 				<SimpleGrid
 					columns={{ base: 3, md: 5 }}
@@ -103,8 +102,9 @@ const Activities = () => {
 				<SimpleGrid
 					columns={1}
 					spacing={4}
-					templateRows={{ lg: "8% 8% 8% 8% 8%" }}
+					templateRows={{ lg: "1% 8% 8% 8% 8% 8% 8%" }}
 				>
+					<Text fontWeight="bold">Activities</Text>
 					{ACTIVITY_CARDS.map((activity) => (
 						<Box
 							key={activity.title}
@@ -130,6 +130,7 @@ const Activities = () => {
 									w={{ base: "50%", md: "40%", lg: "40%", xl: "40%" }}
 								>
 									<HorizontalBarChart
+										label={activity.label}
 										data={activity.count}
 										options={barOptions}
 									/>
@@ -156,11 +157,64 @@ const Activities = () => {
 						</Box>
 					))}
 				</SimpleGrid>
+
 				<SimpleGrid
 					columns={1}
 					spacing={4}
-					templateRows={{ md: "12% auto auto" }}
+					templateRows={{ lg: "1% 8% 8% 12%" }}
 				>
+					<Text fontWeight="bold">Sales</Text>
+					{SALES_ACTIVITY_CARDS.map((activity) => (
+						<Box
+							key={activity.title}
+							p="0.5em 1em"
+							bg={"brand.primary_bg"}
+							border="3px solid var(--main_color)"
+							borderRadius="10px"
+							fontWeight="bold"
+							justifyContent="space-between"
+							display="flex"
+							flexDir={"column"}
+						>
+							<HStack>
+								<VStack alignItems="self-start" spacing={0}>
+									<Icon as={activity.icon} color={activity.color} boxSize={8} />
+									<Text fontWeight="bold" fontSize={"sm"}>
+										{activity.title}
+									</Text>
+								</VStack>
+								<Box
+									mt={-3}
+									mx={"auto"}
+									w={{ base: "50%", md: "40%", lg: "20%", xl: "20%" }}
+								>
+									<HorizontalBarChart
+										label={activity.label}
+										data={activity.count}
+										options={barOptions}
+									/>
+								</Box>
+							</HStack>
+
+							<Flex p={0} borderTop="2px solid #e8ebf4" gap={0}>
+								<Button
+									variant="solid"
+									bgGradient="linear-gradient(58deg, rgb(115 70 236) 0%, rgb(136 107 217) 43%, rgb(50 240 218) 100%)"
+									bgClip="text"
+									fontSize={"sm"}
+									size={"xxs"}
+									_hover={{
+										bgGradient:
+											"linear-gradient(58deg, rgb(115 70 236) 0%, rgb(136 107 217) 43%, rgb(50 240 218) 100%)",
+										bgClip: "text",
+									}}
+								>
+									{activity.action}
+									<RightIconButton />
+								</Button>
+							</Flex>
+						</Box>
+					))}
 					<Box
 						p="0.5em 1em"
 						bg={"brand.primary_bg"}
@@ -195,6 +249,7 @@ const Activities = () => {
 								</Button>
 							</VStack>
 							<Box
+								mt={3}
 								mx={"auto"}
 								w={{ base: "50%", md: "80%", lg: "80%", xl: "100%" }}
 							>
