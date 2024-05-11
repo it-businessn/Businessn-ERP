@@ -11,30 +11,33 @@ import {
 } from "@chakra-ui/react";
 import RightIconButton from "components/ui/button/RightIconButton";
 import { ACTIVITY_CARDS, SALES_ACTIVITY_CARDS, barOptions } from "constant";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { RiAspectRatioLine } from "react-icons/ri";
 import { useBreakpointValue } from "services/Breakpoint";
+import ContactService from "services/ContactService";
 import { generateLighterShade } from "utils";
 import GaugeChartComponent from "./GaugeChart";
 import HorizontalBarChart from "./HorizontalBarChart";
+import SelectCustomer from "./SelectCustomer";
 
 const Activities = () => {
 	const { isMobile, isIpad } = useBreakpointValue();
-
-	// const [contacts, setContacts] = useState(null);
-	// const fetchAllContacts = async () => {
-	// 	try {
-	// 		const response = await ActivityService.getContacts();
-	// 		response.data.map((item) => (item.comm = "Meeting"));
-	// 		setContacts(response.data);
-	// 	} catch (error) {
-	// 		console.error(error);
-	// 	}
-	// };
-	// useEffect(() => {
-	// 	fetchAllContacts();
-	// }, []);
+	const [contacts, setContacts] = useState(null);
 	const [selectedFilter, setSelectedFilter] = useState("monthly");
+	const [refresh, setRefresh] = useState(false);
+	const [showSelectCustomer, setShowSelectCustomer] = useState(false);
+
+	const fetchAllContacts = async () => {
+		try {
+			const response = await ContactService.getContacts();
+			setContacts(response.data);
+		} catch (error) {
+			console.error(error);
+		}
+	};
+	useEffect(() => {
+		fetchAllContacts();
+	}, []);
 
 	const handleFilterClick = (filter) => {
 		setSelectedFilter(filter);
@@ -149,6 +152,7 @@ const Activities = () => {
 											"linear-gradient(58deg, rgb(115 70 236) 0%, rgb(136 107 217) 43%, rgb(50 240 218) 100%)",
 										bgClip: "text",
 									}}
+									onClick={() => setShowSelectCustomer(true)}
 								>
 									{activity.action}
 									<RightIconButton />
@@ -157,6 +161,13 @@ const Activities = () => {
 						</Box>
 					))}
 				</SimpleGrid>
+
+				<SelectCustomer
+					showSelectCustomer={showSelectCustomer}
+					setRefresh={setRefresh}
+					setShowSelectCustomer={setShowSelectCustomer}
+					contacts={contacts}
+				/>
 
 				<SimpleGrid
 					columns={1}

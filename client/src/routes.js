@@ -5,9 +5,9 @@ import Loader from "./components/Loader";
 import PageNotFound from "./features/PageNotFound";
 // import AddPayrun from "./features/payroll/AddPayRun";
 import Communications from "erp-modules/project-management/communication";
+import Contacts from "erp-modules/sales/customers/contacts";
 import AddQuestionForm from "erp-modules/sales/resources/add-paper/AddQuestionForm";
 import Assessment from "erp-modules/sales/resources/attempt-test/Assessment";
-import SchedulingDashboard from "erp-modules/scheduling/dashboard";
 import ScheduleWorkView from "erp-modules/scheduling/workview";
 import RootLayout from "./layouts/RootLayout";
 
@@ -23,7 +23,7 @@ const TaskByDate = lazy(() =>
 	import("./erp-modules/sales/calendar/TaskByDate"),
 );
 
-const Contacts = lazy(() => import("./features/sales/contacts"));
+// const Contacts = lazy(() => import("./features/sales/contacts"));
 
 const TaskDashboard = lazy(() => import("./features/sales/tasks"));
 const AddContact = lazy(() => import("./features/sales/contacts/AddContact"));
@@ -106,6 +106,10 @@ export const router = createBrowserRouter([
 			{
 				path: "/sales/customers",
 				element: <Customers />,
+			},
+			{
+				path: "/sales/customers/profile/:id",
+				element: <Contacts />,
 			},
 			{
 				path: "/sales/leads",

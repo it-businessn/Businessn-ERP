@@ -11,6 +11,7 @@ import {
 import { useEffect, useState } from "react";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import CalendarService from "services/CalendarService";
+import LeadsService from "services/LeadsService";
 import LocalStorageService from "services/LocalStorageService";
 import UserService from "services/UserService";
 import { isManager } from "utils";
@@ -19,19 +20,48 @@ import MiniCalendar from "./MiniCalendar";
 import SalesCard from "./SalesCard";
 import SalesChart from "./SalesChart";
 import UpcomingList from "./Upcomings";
+import { HEADER_CARDS } from "./data";
 
 const CRMDashboard = () => {
 	const user = LocalStorageService.getItem("user");
+	const [headerCards, setHeaderCards] = useState(HEADER_CARDS);
+	const [opportunities, setOpportunities] = useState(null);
 	const [events, setEvents] = useState(null);
 	const [meetings, setMeetings] = useState(null);
 	const [appointments, setAppointments] = useState(null);
 	const [isRefresh, setIsRefresh] = useState(false);
 	const [employees, setEmployees] = useState(null);
 	const [selectedUser, setSelectedUser] = useState(user);
+	const currentDate = new Date();
+	const currentMonth = currentDate.getMonth() + 1;
+	const [month, setMonth] = useState(currentMonth);
 
 	const role = user?.role;
 
 	useEffect(() => {
+		headerCards[0].value = opportunities?.find(
+			(_) => _.month === parseInt(month),
+		)?.count;
+	}, [month]);
+
+	useEffect(() => {
+		const fetchAllOpportunities = async () => {
+			try {
+				const response = await LeadsService.getGroupedOpportunities(
+					isManager(selectedUser.role),
+				);
+				setOpportunities(response.data);
+
+				headerCards[0].value = response.data?.find(
+					(_) => _.month === month,
+				)?.count;
+				headerCards[1].value = response.data[0]?.pipeline;
+				headerCards[2].value = response.data[0]?.pipeline;
+				headerCards[3].value = response.data[0]?.salesMade;
+			} catch (error) {
+				console.error(error);
+			}
+		};
 		const fetchAllEvents = async () => {
 			try {
 				const response = await CalendarService.getEventsByType("event");
@@ -64,11 +94,12 @@ const CRMDashboard = () => {
 				console.error(error);
 			}
 		};
+		fetchAllOpportunities();
 		fetchAllEmployees();
 		fetchAllEvents();
 		fetchAllMeetings();
 		fetchAllAppointments();
-	}, [isRefresh]);
+	}, [isRefresh, selectedUser]);
 
 	const STATS = [
 		{
@@ -132,7 +163,12 @@ const CRMDashboard = () => {
 						spacing="1em"
 						color={"brand.200"}
 					>
-						<SalesCard />
+						<SalesCard
+							opportunities={opportunities}
+							headerCards={headerCards}
+							setMonth={setMonth}
+							currentMonth={currentMonth}
+						/>
 					</SimpleGrid>
 					<SimpleGrid columns={{ base: 1, md: 1, lg: 2 }} spacing="1em" mt="4">
 						<SalesChart />

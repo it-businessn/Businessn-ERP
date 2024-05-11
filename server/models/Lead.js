@@ -26,6 +26,7 @@ const leadSchema = new mongoose.Schema({
 	source: String,
 	stage: String,
 	supervisorAssignee: Object,
+	amount: Number,
 });
 
 const Lead = mongoose.model("Lead", leadSchema);

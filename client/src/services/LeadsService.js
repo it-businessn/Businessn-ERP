@@ -21,6 +21,10 @@ const LeadsService = {
 		return apiService.delete(`/leads/${id}`, data, id);
 	},
 
+	async getGroupedOpportunities() {
+		return apiService.get("/leads/grouped-opportunities");
+	},
+
 	async getOpportunities() {
 		return apiService.get("/leads/opportunities");
 	},

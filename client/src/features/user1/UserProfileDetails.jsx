@@ -105,6 +105,7 @@ const UserProfileDetails = () => {
 					<Button
 						bg="brand.logo_bg"
 						// isLoading={isLoading}
+						_hover={{ background: "var(--brand.logo_bg)" }}
 						isDisabled={editMode}
 						onClick={handleEditClick}
 						type="submit"
@@ -115,6 +116,7 @@ const UserProfileDetails = () => {
 						bg="brand.logo_bg"
 						ml={2}
 						isDisabled={changePasswordMode}
+						_hover={{ background: "var(--brand.logo_bg)" }}
 						onClick={handlePasswordClick}
 					>
 						Change Password
@@ -123,6 +125,7 @@ const UserProfileDetails = () => {
 						bg="var(--bg_color_1)"
 						color={"brand.logo_bg"}
 						ml={2}
+						_hover={{ background: "var(--bg_color_1)" }}
 						onClick={handleReset}
 					>
 						<FaUndoAlt />

@@ -934,12 +934,12 @@ export const SIDEBAR_MENU = [
 					},
 				],
 			},
-			{
-				path: "payouts",
-				name: "Payouts",
-				children: [],
-				icon: <MdPayments />,
-			},
+			// {
+			// 	path: "payouts",
+			// 	name: "Payouts",
+			// 	children: [],
+			// 	icon: <MdPayments />,
+			// },
 			{
 				path: "customers",
 				name: "Customers",
@@ -992,18 +992,18 @@ export const SIDEBAR_MENU = [
 				children: [],
 				icon: <RiUserSearchLine />,
 			},
-			{
-				path: "products",
-				name: "Products",
-				children: [],
-				icon: <IoBagRemoveOutline />,
-			},
-			{
-				path: "orders",
-				name: "Orders",
-				children: [],
-				icon: <TbShoppingBag />,
-			},
+			// {
+			// 	path: "products",
+			// 	name: "Products",
+			// 	children: [],
+			// 	icon: <IoBagRemoveOutline />,
+			// },
+			// {
+			// 	path: "orders",
+			// 	name: "Orders",
+			// 	children: [],
+			// 	icon: <TbShoppingBag />,
+			// },
 			{
 				path: "resources",
 				name: "Resources",
@@ -1036,12 +1036,12 @@ export const SIDEBAR_MENU = [
 					},
 				],
 			},
-			{
-				path: "reports",
-				name: "Sales Reports",
-				children: [],
-				icon: <TbChartDots />,
-			},
+			// {
+			// 	path: "reports",
+			// 	name: "Sales Reports",
+			// 	children: [],
+			// 	icon: <TbChartDots />,
+			// },
 			{
 				path: "set-up",
 				name: "Setup",
@@ -1075,30 +1075,30 @@ export const SIDEBAR_MENU = [
 				children: [],
 				icon: <FaPeopleArrows />,
 			},
-			{
-				path: "taskboard",
-				name: "Taskboard",
-				children: [],
-				icon: <GoTasklist />,
-			},
-			{
-				path: "agenda",
-				name: "Agenda",
-				children: [],
-				icon: <BiTask />,
-			},
-			{
-				path: "gantt",
-				name: "Gantt",
-				children: [],
-				icon: <FaChartGantt />,
-			},
-			{
-				path: "reports",
-				name: "PM Reports",
-				children: [],
-				icon: <IoDocumentTextOutline />,
-			},
+			// {
+			// 	path: "taskboard",
+			// 	name: "Taskboard",
+			// 	children: [],
+			// 	icon: <GoTasklist />,
+			// },
+			// {
+			// 	path: "agenda",
+			// 	name: "Agenda",
+			// 	children: [],
+			// 	icon: <BiTask />,
+			// },
+			// {
+			// 	path: "gantt",
+			// 	name: "Gantt",
+			// 	children: [],
+			// 	icon: <FaChartGantt />,
+			// },
+			// {
+			// 	path: "reports",
+			// 	name: "PM Reports",
+			// 	children: [],
+			// 	icon: <IoDocumentTextOutline />,
+			// },
 			{
 				path: "set-up",
 				name: "Setup",

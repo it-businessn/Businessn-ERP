@@ -3,6 +3,38 @@ const Employee = require("../models/Employee");
 const Lead = require("../models/Lead");
 const LeadCompany = require("../models/LeadCompany");
 
+const getGroupedOpportunities = () => async (req, res) => {
+	try {
+		const leadsByMonth = await Lead.aggregate([
+			{
+				$group: {
+					_id: { $month: "$createdOn" },
+					count: { $sum: 1 },
+				},
+			},
+			{
+				$sort: { _id: 1 },
+			},
+		]);
+		const pipelineLeads = await Lead.find({
+			stage: { $in: ["T1", "T2", "T3", "T4"] },
+		});
+
+		const salesMade = await Lead.find({
+			stage: { $in: ["T3", "T4"] },
+		});
+		const leadCounts = leadsByMonth.map((item) => ({
+			month: item._id,
+			count: item.count,
+			pipeline: pipelineLeads.length,
+			salesMade: salesMade.length,
+		}));
+		res.status(200).json(leadCounts);
+	} catch (error) {
+		res.status(404).json({ error: error.message });
+	}
+};
+
 const getOpportunities = () => async (req, res) => {
 	try {
 		const leads = (await Lead.find()).sort((a, b) => b.createdOn - a.createdOn);
@@ -34,6 +66,7 @@ const getNotDisbursedLeads = () => async (req, res) => {
 		res.status(404).json({ error: error.message });
 	}
 };
+
 const getLeadCompanies = () => async (req, res) => {
 	try {
 		const leadCompanies = await LeadCompany.find({});
@@ -289,4 +322,5 @@ module.exports = {
 	deleteLead,
 	getLeadCompanies,
 	createLeadCompany,
+	getGroupedOpportunities,
 };

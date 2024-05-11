@@ -156,7 +156,7 @@ const CustomersList = ({ contacts, handleProfileView }) => {
 									<Th fontWeight={"bolder"}>Email</Th>
 									<Th fontWeight={"bolder"}>Communication History</Th>
 									<Th></Th>
-									<Th></Th>
+									{/* <Th></Th> */}
 								</Tr>
 							</Thead>
 							<Tbody color={"brand.nav_color"}>
@@ -200,14 +200,14 @@ const CustomersList = ({ contacts, handleProfileView }) => {
 												</Button>
 											</HStack>
 										</Td>
-										<Td>
+										{/* <Td>
 											<IconButton
 												icon={<RiMore2Fill />}
 												size="sm"
 												variant="ghost"
 												onClick={() => handleEdit(_id)}
 											/>
-										</Td>
+										</Td> */}
 									</Tr>
 								))}
 							</Tbody>

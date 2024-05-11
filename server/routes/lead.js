@@ -14,6 +14,7 @@ router.get("/not-disbursed", leadController.getNotDisbursedLeads());
 
 router.get("/companies", leadController.getLeadCompanies());
 
+router.get("/grouped-opportunities", leadController.getGroupedOpportunities());
 router.get("/opportunities", leadController.getOpportunities());
 
 router.post("/companies", leadController.createLeadCompany());

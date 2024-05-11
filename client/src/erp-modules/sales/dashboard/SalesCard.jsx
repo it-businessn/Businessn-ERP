@@ -1,49 +1,12 @@
-import { ArrowDownIcon, ArrowUpIcon } from "@chakra-ui/icons";
 import { Box, Flex, Icon, Select, Text } from "@chakra-ui/react";
 import "react-big-calendar/lib/css/react-big-calendar.css";
-import { FaAward } from "react-icons/fa";
-import { GiDiamondTrophy } from "react-icons/gi";
-import { HiOutlineReceiptPercent } from "react-icons/hi2";
-import { TfiTarget } from "react-icons/tfi";
 
-const SalesCard = () => {
-	const HEADER_CARDS = [
-		{
-			color: "#cda4a8",
-			icon: TfiTarget,
-			title: "New Opportunities",
-			subIcon: TfiTarget,
-			value: 100,
-			percent: "10%",
-		},
-		{
-			color: "#9fd4d0",
-			icon: FaAward,
-			title: "No. of opportunities in the pipeline",
-			subIcon: ArrowDownIcon,
-			value: 55,
-			percent: "2.22%",
-		},
-		{
-			color: "#a5a4e0",
-			icon: GiDiamondTrophy,
-			title: "Value of opportunities in the pipeline",
-			subIcon: ArrowUpIcon,
-			value: "$345",
-			percent: "3.34%",
-		},
-		{
-			color: "#e0bb6c",
-			icon: HiOutlineReceiptPercent,
-			title: "Total Sales",
-			subIcon: ArrowUpIcon,
-			value: "122",
-			percent: "1.22%",
-		},
-	];
+const SalesCard = ({ headerCards, setMonth, currentMonth }) => {
+	const handleMonth = (e) => setMonth(e.target.value);
+
 	return (
 		<>
-			{HEADER_CARDS.map((card) => (
+			{headerCards.map((card, index) => (
 				<Box
 					key={card.title}
 					px="1em"
@@ -59,9 +22,17 @@ const SalesCard = () => {
 						w={{ base: "auto", md: "106%" }}
 					>
 						<Icon as={card.icon} color={card.color} boxSize={5} />
-						<Select width="auto" border={"none"} fontSize={"xs"} p={0}>
-							<option>This month</option>
-							<option>Last month</option>
+
+						<Select
+							visibility={index !== 0 && "hidden"}
+							width="auto"
+							border={"none"}
+							fontSize={"xs"}
+							p={0}
+							onChange={handleMonth}
+						>
+							<option value={currentMonth}>This month</option>
+							<option value={currentMonth - 1}>Last month</option>
 						</Select>
 					</Flex>
 					<Text fontSize="xs" fontWeight="bold">

@@ -11,6 +11,7 @@ import {
 import Loader from "components/Loader";
 import { useEffect, useState } from "react";
 import { FaArrowLeft } from "react-icons/fa";
+import { useNavigate, useParams } from "react-router-dom";
 import ContactService from "services/ContactService";
 import ContactDetailsForm from "./ContactDetailsForm";
 import Logs from "./logs";
@@ -19,12 +20,15 @@ import Notes from "./notes/Notes";
 import Tasks from "./tasks";
 
 const Contacts = ({ setViewProfile, selectedContact }) => {
+	const { id } = useParams();
+
 	const [contact, setContact] = useState(null);
 	const [reload, setReload] = useState(false);
-
 	const fetchContacts = async () => {
+		const o = selectedContact || id;
 		try {
-			const response = await ContactService.getContactDetails(selectedContact);
+			const response = await ContactService.getContactDetails(o);
+
 			setContact(response.data);
 			// setSelectedContact(response.data);
 		} catch (error) {
@@ -62,7 +66,7 @@ const Contacts = ({ setViewProfile, selectedContact }) => {
 	// 	setShowList((prev) => false);
 	// 	setReload(true);
 	// };
-
+	const navigate = useNavigate();
 	return (
 		<Flex>
 			{!contact && <Loader />}
@@ -73,8 +77,10 @@ const Contacts = ({ setViewProfile, selectedContact }) => {
 						variant={"ghost"}
 						icon={<FaArrowLeft />}
 						color="brand.nav_color"
-						aria-label="Go Back"
-						onClick={() => setViewProfile((prev) => !prev)}
+						aria-label="Cancel"
+						onClick={() =>
+							id ? navigate(-1) : setViewProfile((prev) => !prev)
+						}
 					/>
 					<Box flex="1">
 						{/* <Popover zIndex={0}>

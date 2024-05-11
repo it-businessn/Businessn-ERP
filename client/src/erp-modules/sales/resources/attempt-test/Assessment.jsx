@@ -138,7 +138,7 @@ const Assessment = () => {
 							onClick={() => navigate(-1)}
 							borderRadius={"10px"}
 						>
-							Go Back
+							Cancel
 						</Button>
 					</HStack>
 				</form>
