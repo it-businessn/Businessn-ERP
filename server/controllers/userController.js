@@ -177,7 +177,7 @@ const forgotPassword = () => async (req, res) => {
 		}
 		const token = createToken(user._id);
 
-		const link = `${process.env.BASE_URL_LOCAL}/api/reset-password/${user._id}/${token}`;
+		const link = `${process.env.BASE_URL_LIVE}/api/reset-password/${user._id}/${token}`;
 
 		await sendEmail(user.email, "Reset Password", link);
 
