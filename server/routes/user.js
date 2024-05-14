@@ -3,7 +3,7 @@ const router = express.Router();
 
 const authMiddleware = require("../middleware/auth");
 const {
-	// changePassword,
+	changePassword,
 	createEmployee,
 	getAllUsers,
 	loginUser,
@@ -13,6 +13,9 @@ const {
 	getAllMemberGroups,
 	getAllEmployeesByRole,
 	getAllSalesAgents,
+	forgotPassword,
+	resetPassword,
+	setNewPassword,
 } = require("../controllers/userController");
 
 router.post("/signup", createEmployee());
@@ -24,14 +27,13 @@ router.get("/emp-roles", getAllEmployeesByRole());
 router.get("/groups/:id", getAllMemberGroups());
 router.get("/managers", getAllManagers());
 router.get("/not-managers", getAllSalesAgents());
-// router.get("/reset-password/:id/:token", resetPassword);
-// router.post("/forgot-password", forgotPassword);
+router.get("/reset-password/:id/:token", resetPassword);
+router.post("/forgot-password", forgotPassword());
 router.post("/login", loginUser());
-// router.post("/logout", logoutUser);
-// router.post("/reset-password/:id/:token", setNewPassword);
+router.post("/reset-password/:id/:token", setNewPassword);
 // router.post("/verify-email", verifyUser);
 router.put("/:id", updateUser());
-// router.put("/change-password/:id", authMiddleware.authenticate, changePassword);
+router.put("/change-password/:id", changePassword());
 router.put("/lead/:id", updateUserAssignedLeads);
 
 // const userController = require("../controllers/userController");

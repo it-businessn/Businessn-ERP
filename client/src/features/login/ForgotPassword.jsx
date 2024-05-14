@@ -1,17 +1,14 @@
 import {
 	Button,
 	Divider,
+	Flex,
+	FormControl,
 	Heading,
 	HStack,
+	Input,
 	Stack,
 	Text,
 } from "@chakra-ui/react";
-import GenericForm from "components/generic-form";
-import {
-	resetPasswordFormFields,
-	resetPasswordInitialValues,
-} from "config/formfields";
-import { ResetPasswordSchema } from "config/schema";
 import CenterBoxLayout from "layouts/CenterBoxLayout";
 import { useState } from "react";
 import { Link } from "react-router-dom";
@@ -22,9 +19,11 @@ const ForgotPassword = () => {
 	const [hasError, setErrorMessage] = useState("");
 	const [captionTitle, setCaptionTitle] = useState("");
 
-	const handleSubmit = async (values) => {
+	const [email, setEmail] = useState("");
+	const handleSubmit = async (e) => {
+		e.preventDefault();
 		try {
-			const response = await PasswordService.forgotPassword(values);
+			const response = await PasswordService.sendPassword({ email });
 			setCaptionTitle(response.data.message);
 			setErrorMessage("");
 		} catch (error) {
@@ -35,41 +34,53 @@ const ForgotPassword = () => {
 	};
 	return (
 		<CenterBoxLayout>
-			<Stack spacing="6">
-				<Logo />
-				<Stack
-					spacing={{
-						base: "2",
-						md: "3",
+			<Stack
+				spacing={{
+					base: "2",
+					md: "3",
+				}}
+				textAlign="center"
+			>
+				<Flex h="24" m={"0 auto"}>
+					<Logo isCover isForgotPassword />
+				</Flex>
+				<Heading
+					size={{
+						base: "xs",
+						md: "sm",
 					}}
-					textAlign="center"
 				>
-					<Heading
-						size={{
-							base: "xs",
-							md: "sm",
-						}}
-					>
-						Forgot your password?
-					</Heading>
-					<Text color="fg.muted">You'll get an email with a reset link</Text>
-				</Stack>
+					Forgot your password?
+				</Heading>
+				<Text color="fg.muted">You'll get an email with a reset link</Text>
 			</Stack>
+
 			<Stack spacing="6">
 				<Stack spacing="4">
 					{!captionTitle && (
-						<GenericForm
-							formSubmit={handleSubmit}
-							schema={ResetPasswordSchema}
-							initialValues={resetPasswordInitialValues}
-							formFields={resetPasswordFormFields}
-						/>
+						<form onSubmit={handleSubmit}>
+							<Stack spacing={4}>
+								<FormControl>
+									<Input
+										type="email"
+										name="email"
+										placeholder="Enter your email"
+										value={email}
+										onChange={(e) => setEmail(e.target.value)}
+										required
+									/>
+								</FormControl>
+								<Button type="submit" bg="brand.logo_bg">
+									Continue with email
+								</Button>
+							</Stack>
+						</form>
 					)}
 					{captionTitle && (
 						<>
 							<Text color="green">{captionTitle}</Text>
 							<Link to="/">
-								<Button width="100%" variant="primary">
+								<Button width="100%" bg="brand.logo_bg">
 									Back to Login
 								</Button>
 							</Link>

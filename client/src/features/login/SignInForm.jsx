@@ -13,7 +13,7 @@ import {
 	Stack,
 } from "@chakra-ui/react";
 import { saveUser } from "context/AuthContext";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useBreakpointValue } from "services/Breakpoint";
 import LoginService from "services/LoginService";
@@ -33,6 +33,17 @@ const SignInForm = ({ title }) => {
 
 	const [showPassword, setShowPassword] = useState(false);
 	const navigate = useNavigate();
+	const [forgotPassword, setForgotPassword] = useState(false);
+
+	useEffect(() => {
+		if (forgotPassword) {
+			navigate("/forgot-password");
+		}
+	}, [forgotPassword]);
+
+	const showForgotPasswordPage = () => {
+		setForgotPassword(true);
+	};
 
 	const handleLogin = async (e) => {
 		e.preventDefault();
@@ -133,16 +144,14 @@ const SignInForm = ({ title }) => {
 									</InputRightElement>
 								</InputGroup>
 							</FormControl>
-							<Button
-								isLoading={isLoading}
-								type="submit"
-								bg="brand.logo_bg"
-								_hover={{ color: "brand.nav_color" }}
-							>
+							<Button isLoading={isLoading} type="submit" bg="brand.logo_bg">
 								Login
 							</Button>
 						</Stack>
 					</form>
+					<Button variant={"link"} onClick={showForgotPasswordPage}>
+						Forgot Password
+					</Button>
 					{error && (
 						<Alert status="error" mt={4}>
 							<AlertIcon />

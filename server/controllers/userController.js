@@ -1,11 +1,16 @@
-const mongoose = require("mongoose");
-
 // const User = require("../models/User");
-const Employee = require("../models/Employee");
 const bcrypt = require("bcrypt");
-const Lead = require("../models/Lead");
+const Employee = require("../models/Employee");
 const Group = require("../models/Group");
+const jwt = require("jsonwebtoken");
+const Lead = require("../models/Lead");
+const mongoose = require("mongoose");
+const sendEmail = require("../emailService/sendEmail");
 const Task = require("../models/Task");
+
+const createToken = (_id) => {
+	return jwt.sign({ _id }, process.env.JWT_SECRET_KEY, { expiresIn: "3d" });
+};
 
 const getAllUsers = () => async (req, res) => {
 	try {
@@ -108,11 +113,10 @@ const loginUser = () => async (req, res) => {
 		return res.status(500).json({ error: "User does not exist" });
 	}
 	try {
-		// const match = await bcrypt.compare(password, user.password);
-		// return match
-		// 	? res.json({ message: "Login successful", user })
-		// 	: res.status(401).json({ error: "Invalid password" });
-		res.json({ message: "Login successful", user });
+		const match = await bcrypt.compare(password, user.password);
+		return match
+			? res.json({ message: "Login successful", user })
+			: res.status(401).json({ error: "Invalid password" });
 	} catch (error) {
 		console.error("Error checking password:", error);
 		return res.status(500).json({ error: "Internal server error" });
@@ -164,6 +168,65 @@ const createEmployee = () => async (req, res) => {
 	}
 };
 
+const forgotPassword = () => async (req, res) => {
+	const { email } = req.body;
+	try {
+		const user = await Employee.findOne({ email });
+		if (!user) {
+			return response.status(404).json({ error: "Incorrect email" });
+		}
+		const token = createToken(user._id);
+
+		const link = `${process.env.BASE_URL_LOCAL}/api/reset-password/${user._id}/${token}`;
+
+		await sendEmail(user.email, "Reset Password", link);
+
+		return res.status(200).json({
+			message: "A password reset link has been sent to your email account",
+		});
+	} catch (error) {
+		res.status(400).json({ message: error.message });
+	}
+};
+
+const resetPassword = async (req, res) => {
+	const { id } = req.params;
+	try {
+		const user = await Employee.findById(id);
+		if (!user) {
+			return res.status(404).json({ error: "User does not exist" });
+		}
+		res.render("index", {
+			email: user.email,
+			status: "Not verified ",
+		});
+	} catch (error) {
+		res.status(500).json({ message: "User not Verified!" });
+	}
+};
+
+const setNewPassword = async (req, res) => {
+	const { id } = req.params;
+	const { password } = req.body;
+
+	const user = await Employee.findOne({ _id: id });
+	if (!user) {
+		return res.status(400).json({ status: "User Not Exist!" });
+	}
+
+	try {
+		const hash = await bcrypt.hash(password, 10);
+		await Employee.findByIdAndUpdate(
+			{ _id: id },
+			{
+				$set: { password: hash },
+			},
+		);
+		res.render("index", { email: user.email, status: "verified" });
+	} catch (error) {
+		res.status(500).json({ message: "Something Went Wrong" });
+	}
+};
 const changePassword = () => async (req, res) => {
 	const { newPassword } = req.body;
 	const user = req.user;
@@ -173,7 +236,7 @@ const changePassword = () => async (req, res) => {
 		}
 		const hashedPassword = bcrypt.hashSync(newPassword, 10);
 		user.password = hashedPassword;
-		const updatedUser = await User.findByIdAndUpdate(
+		const updatedUser = await Employee.findByIdAndUpdate(
 			user[0]._id,
 			{ password: hashedPassword },
 			{
@@ -241,4 +304,7 @@ module.exports = {
 	getAllMemberGroups,
 	getAllEmployeesByRole,
 	getAllSalesAgents,
+	forgotPassword,
+	resetPassword,
+	setNewPassword,
 };
