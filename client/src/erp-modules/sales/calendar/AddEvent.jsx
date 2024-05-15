@@ -1,38 +1,30 @@
-import {
-	Avatar,
-	Button,
-	Flex,
-	FormControl,
-	FormLabel,
-	Input,
-	Modal,
-	ModalBody,
-	ModalContent,
-	ModalFooter,
-	ModalHeader,
-	ModalOverlay,
-	Select,
-	Text,
-	Textarea,
-} from "@chakra-ui/react";
-import MultiCheckboxMenu from "components/ui/MultiCheckboxMenu";
+import { Flex, ModalBody, ModalFooter } from "@chakra-ui/react";
+import ActionButtonGroup from "components/form/ActionButtonGroup";
+import DateTimeFormControl from "components/form/DateTimeFormControl";
+import InputFormControl from "components/form/InputFormControl";
+import MultiSelectFormControl from "components/form/MultiSelectFormControl";
+import SelectFormControl from "components/form/SelectFormControl";
+import TextAreaFormControl from "components/form/TextAreaFormControl";
+import ModalLayout from "components/ui/modal/ModalLayout";
 import { useEffect, useState } from "react";
-import { FaCaretDown } from "react-icons/fa";
 import CalendarService from "services/CalendarService";
 import UserService from "services/UserService";
 
 const AddEvent = ({
+	event,
+	isEdit,
+	isLoading,
 	isOpen,
 	onClose,
-	setIsRefresh,
-	isLoading,
 	setIsLoading,
-	isEdit,
-	setShowEditDetails,
-	event,
+	setIsRefresh,
+	filterText,
+	filter,
+	// setShowEditDetails,
 }) => {
-	const [eventType, setEventType] = useState("event");
+	const [eventType, setEventType] = useState(filter);
 	const [attendees, setAttendees] = useState(null);
+
 	useEffect(() => {
 		const fetchAllAttendees = async () => {
 			try {
@@ -44,10 +36,11 @@ const AddEvent = ({
 		};
 		fetchAllAttendees();
 	}, []);
+
 	const initialFormData = {
 		description: "",
 		eventLink: "",
-		eventType: "event",
+		eventType: filter,
 		fromDate: "",
 		fromTime: "",
 		location: "",
@@ -55,7 +48,8 @@ const AddEvent = ({
 		toDate: "",
 		toTime: "",
 	};
-	const initialSavedForm = {
+
+	const initialSavedData = {
 		description: event?.description,
 		eventLink: event?.eventLink,
 		eventType: event?.eventType,
@@ -115,6 +109,7 @@ const AddEvent = ({
 
 	const handleSubmit = async (e) => {
 		e.preventDefault();
+
 		try {
 			setIsLoading(true);
 			if (isEdit) {
@@ -147,173 +142,122 @@ const AddEvent = ({
 	};
 	useEffect(() => {
 		if (isEdit) {
-			setFormData(initialSavedForm);
+			setFormData(initialSavedData);
 		} else {
 			setFormData(initialFormData);
 		}
 	}, [isEdit]);
 
 	return (
-		<Modal isOpen={isOpen} size="xl" onClose={onClose}>
-			<ModalOverlay />
-			<ModalContent zIndex="2">
-				<ModalHeader>Add Event</ModalHeader>
-				<form className="tab-form">
-					<ModalBody>
-						<FormControl>
-							<FormLabel>Type of Event</FormLabel>
-							<Select
-								name="eventType"
-								value={formData.eventType}
-								onChange={handleTypeChange}
-							>
-								<option value="event">Events</option>
-								<option value="meeting">Meeting</option>
-								{/* <option value="task">Task</option> */}
-								<option value="phoneCall">Phone Call</option>
-							</Select>
-						</FormControl>
-						<FormControl>
-							<FormLabel>Description</FormLabel>
-							<Textarea
-								name="description"
-								value={formData.description}
-								onChange={handleChange}
+		<ModalLayout
+			title={`Add ${filterText}`}
+			size="xl"
+			isOpen={isOpen}
+			onClose={onClose}
+		>
+			<form onSubmit={handleSubmit} className="tab-form">
+				<ModalBody>
+					<SelectFormControl
+						name="eventType"
+						label={"Type of Event"}
+						valueText={formData.eventType}
+						handleChange={handleTypeChange}
+						options={[
+							{
+								name: "Events",
+								value: "event",
+							},
+							{
+								name: "Meeting",
+								value: "meeting",
+							},
+							// {
+							// 	name: "Task",
+							// 	value: "task",
+							// },
+							{
+								name: "Phone Call",
+								value: "phoneCall",
+							},
+						]}
+					/>
+					<TextAreaFormControl
+						label={"Description"}
+						name="description"
+						valueText={formData.description}
+						handleChange={handleChange}
+						required
+					/>
+					{eventType === "phoneCall" && (
+						<InputFormControl
+							label={"Phone Number"}
+							name="phoneNo"
+							valueText={formData.phoneNo}
+							handleChange={handleChange}
+							required
+						/>
+					)}
+					<Flex>
+						<DateTimeFormControl
+							label={"From"}
+							valueText1={formData.fromDate}
+							valueText2={formData.fromTime}
+							name1="fromDate"
+							name2="fromTime"
+							handleChange={handleChange}
+							required
+						/>
+					</Flex>
+					<Flex>
+						<DateTimeFormControl
+							label={"To"}
+							valueText1={formData.toDate}
+							valueText2={formData.toTime}
+							name1="toDate"
+							name2="toTime"
+							handleChange={handleChange}
+							required
+						/>
+					</Flex>
+					{eventType !== "phoneCall" && (
+						<>
+							<MultiSelectFormControl
+								label={"Select Required Attendees"}
+								tag={"attendee(s)"}
+								showMultiSelect={openAssigneeMenu}
+								data={attendees}
+								handleCloseMenu={handleCloseMenu}
+								selectedOptions={selectedOptions}
+								setSelectedOptions={setSelectedOptions}
+								handleMenuToggle={handleMenuToggle}
+								list={formData.meetingAttendees}
+							/>
+							<InputFormControl
+								label={"Location"}
+								name="location"
+								valueText={formData.location}
+								handleChange={handleChange}
 								required
 							/>
-						</FormControl>
-						{eventType === "call" && (
-							<FormControl>
-								<FormLabel>Phone Number</FormLabel>
-								<Input
-									type="text"
-									name="phoneNo"
-									value={formData.phoneNo}
-									onChange={handleChange}
-									required
-								/>
-							</FormControl>
-						)}
-						<Flex>
-							<FormControl flex="1">
-								<FormLabel>From</FormLabel>
-								<Input
-									type="date"
-									name="fromDate"
-									value={formData.fromDate}
-									onChange={handleChange}
-									required
-								/>
-							</FormControl>
-							<FormControl flex="1">
-								<FormLabel>Time</FormLabel>
-								<Input
-									type="time"
-									name="fromTime"
-									value={formData.fromTime}
-									onChange={handleChange}
-									required
-								/>
-							</FormControl>
-						</Flex>
-						<Flex>
-							<FormControl flex="1">
-								<FormLabel>To</FormLabel>
-								<Input
-									type="date"
-									name="toDate"
-									value={formData.toDate}
-									onChange={handleChange}
-									required
-								/>
-							</FormControl>
-							<FormControl flex="1">
-								<FormLabel>Time</FormLabel>
-								<Input
-									type="time"
-									name="toTime"
-									value={formData.toTime}
-									onChange={handleChange}
-									required
-								/>
-							</FormControl>
-						</Flex>
-
-						{eventType !== "phoneCall" && (
-							<>
-								<FormControl>
-									<FormLabel visibility={openAssigneeMenu ? "" : "hidden"}>
-										Select Required Attendees
-									</FormLabel>
-									<Button
-										rightIcon={<FaCaretDown />}
-										bg={"brand.primary_bg"}
-										color={"brand.primary_button_bg"}
-										_hover={{
-											bg: "brand.primary_bg",
-											color: "brand.primary_button_bg",
-										}}
-									>
-										{openAssigneeMenu ? (
-											<MultiCheckboxMenu
-												data={attendees}
-												openMenu={openAssigneeMenu}
-												handleCloseMenu={handleCloseMenu}
-												selectedOptions={selectedOptions}
-												setSelectedOptions={setSelectedOptions}
-											/>
-										) : (
-											<Text onClick={handleMenuToggle}>
-												{formData.meetingAttendees?.length > 0
-													? `${formData.meetingAttendees?.length} attendee(s)`
-													: "Select Required Attendees"}
-											</Text>
-										)}
-									</Button>
-									{formData?.meetingAttendees?.length > 0 &&
-										formData.meetingAttendees.map((name, index) => (
-											<Avatar size={"sm"} name={name} src={name} key={name} />
-										))}
-								</FormControl>
-								<FormControl>
-									<FormLabel>Location </FormLabel>
-									<Input
-										type="text"
-										name="location"
-										value={formData.location}
-										onChange={handleChange}
-										required
-									/>
-								</FormControl>
-								<FormControl>
-									<FormLabel>Meeting Link</FormLabel>
-									<Textarea
-										name="eventLink"
-										value={formData.eventLink}
-										onChange={handleChange}
-										required
-									/>
-								</FormControl>
-							</>
-						)}
-					</ModalBody>
-					<ModalFooter>
-						<Button
-							isDisabled={formData.description === ""}
-							onClick={handleSubmit}
-							bg="brand.logo_bg"
-							isLoading={isLoading}
-							loadingText="Loading"
-						>
-							Add Event
-						</Button>
-						<Button variant="ghost" onClick={onClose}>
-							Cancel
-						</Button>
-					</ModalFooter>
-				</form>
-			</ModalContent>
-		</Modal>
+							<TextAreaFormControl
+								label={"Meeting Link"}
+								name="eventLink"
+								valueText={formData.eventLink}
+								handleChange={handleChange}
+								required
+							/>
+						</>
+					)}
+				</ModalBody>
+				<ModalFooter>
+					<ActionButtonGroup
+						isDisabled={formData.description === ""}
+						isLoading={isLoading}
+						onClose={onClose}
+					/>
+				</ModalFooter>
+			</form>
+		</ModalLayout>
 	);
 };
 

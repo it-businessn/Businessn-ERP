@@ -8,8 +8,8 @@ import {
 	Select,
 	Stack,
 } from "@chakra-ui/react";
-import ModalLayout from "components/ui/ModalLayout";
 import PrimaryButton from "components/ui/button/PrimaryButton";
+import ModalLayout from "components/ui/modal/ModalLayout";
 import { useState } from "react";
 import { FaCaretDown } from "react-icons/fa";
 import LeadsService from "services/LeadsService";

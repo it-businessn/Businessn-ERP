@@ -30,7 +30,7 @@ import { useEffect, useState } from "react";
 import { FaCaretDown } from "react-icons/fa";
 import ProjectService from "services/ProjectService";
 import { getDefaultDate } from "utils";
-import MultiCheckboxMenu from "../../../../components/ui/MultiCheckboxMenu";
+import MultiSelectBox from "../../../../components/ui/select/MultiSelectBox";
 import { PROJECT_ASSIGNEES } from "../project/data";
 
 const AddNewSubTask = ({
@@ -247,7 +247,7 @@ const AddNewSubTask = ({
 													}}
 												>
 													{openAssigneeMenu ? (
-														<MultiCheckboxMenu
+														<MultiSelectBox
 															openMenu={openAssigneeMenu}
 															handleCloseMenu={handleCloseMenu}
 															selectedOptions={selectedOptions}

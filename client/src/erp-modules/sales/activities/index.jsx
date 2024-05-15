@@ -9,6 +9,7 @@ import {
 	Text,
 	VStack,
 } from "@chakra-ui/react";
+import HighlightButton from "components/ui/button/HighlightButton";
 import RightIconButton from "components/ui/button/RightIconButton";
 import { ACTIVITY_CARDS, SALES_ACTIVITY_CARDS, barOptions } from "constant";
 import { useEffect, useState } from "react";
@@ -27,15 +28,15 @@ const Activities = () => {
 	const [refresh, setRefresh] = useState(false);
 	const [showSelectCustomer, setShowSelectCustomer] = useState(false);
 
-	const fetchAllContacts = async () => {
-		try {
-			const response = await ContactService.getContacts();
-			setContacts(response.data);
-		} catch (error) {
-			console.error(error);
-		}
-	};
 	useEffect(() => {
+		const fetchAllContacts = async () => {
+			try {
+				const response = await ContactService.getContacts();
+				setContacts(response.data);
+			} catch (error) {
+				console.error(error);
+			}
+		};
 		fetchAllContacts();
 	}, []);
 
@@ -141,22 +142,10 @@ const Activities = () => {
 							</HStack>
 
 							<Flex p={0} borderTop="2px solid #e8ebf4" gap={0}>
-								<Button
-									variant="solid"
-									bgGradient="linear-gradient(58deg, rgb(115 70 236) 0%, rgb(136 107 217) 43%, rgb(50 240 218) 100%)"
-									bgClip="text"
-									fontSize={"sm"}
-									size={"xxs"}
-									_hover={{
-										bgGradient:
-											"linear-gradient(58deg, rgb(115 70 236) 0%, rgb(136 107 217) 43%, rgb(50 240 218) 100%)",
-										bgClip: "text",
-									}}
+								<HighlightButton
+									name={activity.action}
 									onClick={() => setShowSelectCustomer(true)}
-								>
-									{activity.action}
-									<RightIconButton />
-								</Button>
+								/>
 							</Flex>
 						</Box>
 					))}

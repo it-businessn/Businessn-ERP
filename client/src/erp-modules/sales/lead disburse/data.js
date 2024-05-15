@@ -6,7 +6,7 @@ import {
 	InputLeftElement,
 	Select,
 } from "@chakra-ui/react";
-import TextTitle from "components/ui/TextTitle";
+import TextTitle from "components/ui/text/TextTitle";
 import {
 	DISBURSE_MODE_OPTIONS,
 	REGIONS,

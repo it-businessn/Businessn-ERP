@@ -1,6 +1,13 @@
 import { Button } from "@chakra-ui/react";
 
-const PrimaryButton = ({ name, onOpen, isLoading, px, isDisabled = false }) => {
+const PrimaryButton = ({
+	name,
+	onOpen,
+	isLoading,
+	px,
+	loadingText,
+	isDisabled = false,
+}) => {
 	return (
 		<Button
 			isDisabled={isDisabled}
@@ -10,12 +17,13 @@ const PrimaryButton = ({ name, onOpen, isLoading, px, isDisabled = false }) => {
 			px={{ base: px ? px : "2em" }}
 			color={"brand.primary_bg"}
 			_hover={{
-				color: "brand.primary_button_bg",
-				bg: "brand.700",
+				color: "brand.600",
+				bg: "transparent",
 				border: "1px solid var(--primary_button_bg)",
 			}}
 			type="submit"
 			borderRadius={"10px"}
+			loadingText={loadingText}
 		>
 			{name}
 		</Button>

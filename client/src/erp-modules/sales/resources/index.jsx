@@ -65,7 +65,7 @@ const Resources = () => {
 			>
 				{isUserManager ? <ManagerViewCard /> : <AssociateViewCard />}
 			</SimpleGrid>
-			{!resources && <Loader isAuto />}
+			{!resources && <Loader autoHeight />}
 			{resources && isUserManager ? (
 				<SimpleGrid columns={{ base: 1, md: 1, lg: 1 }}>
 					<FileUploader

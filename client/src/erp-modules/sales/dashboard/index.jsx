@@ -1,13 +1,5 @@
-import {
-	Avatar,
-	Box,
-	Flex,
-	HStack,
-	Select,
-	SimpleGrid,
-	Text,
-	VStack,
-} from "@chakra-ui/react";
+import { Box, Flex, SimpleGrid, Text } from "@chakra-ui/react";
+import SelectBox from "components/ui/select/SelectBox";
 import { useEffect, useState } from "react";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import CalendarService from "services/CalendarService";
@@ -15,12 +7,9 @@ import LeadsService from "services/LeadsService";
 import LocalStorageService from "services/LocalStorageService";
 import UserService from "services/UserService";
 import { isManager } from "utils";
-import ChatMessages from "./ChatMessages";
-import MiniCalendar from "./MiniCalendar";
-import SalesCard from "./SalesCard";
-import SalesChart from "./SalesChart";
-import UpcomingList from "./Upcomings";
 import { HEADER_CARDS } from "./data";
+import LeftPane from "./leftpane";
+import RightPane from "./rightpane";
 
 const CRMDashboard = () => {
 	const user = LocalStorageService.getItem("user");
@@ -35,14 +24,43 @@ const CRMDashboard = () => {
 	const currentDate = new Date();
 	const currentMonth = currentDate.getMonth() + 1;
 	const [month, setMonth] = useState(currentMonth);
+	const STATS = [
+		{
+			name: "Events",
+			count: 0,
+		},
+		{
+			name: "Meetings",
+			count: 0,
+		},
+		{
+			name: "Appointments",
+			count: 0,
+		},
+	];
+	const [stats, setStats] = useState(STATS);
 
 	const role = user?.role;
 
-	useEffect(() => {
-		headerCards[0].value = opportunities?.find(
-			(_) => _.month === parseInt(month),
-		)?.count;
-	}, [month]);
+	const headerCardsInfoDetails = (data) => {
+		const pipelineData = data[0]?.pipeline;
+		const salesData = data[0]?.salesMade;
+
+		headerCards[0].value = data?.find((_) => _.month === month)?.count;
+		headerCards[1].value = pipelineData;
+		headerCards[2].value = pipelineData;
+		headerCards[3].value = salesData;
+	};
+
+	const setStatInfo = (key, count) =>
+		setStats((prevStats) =>
+			prevStats.map((stat) => {
+				if (stat.name === key) {
+					return { ...stat, count };
+				}
+				return stat;
+			}),
+		);
 
 	useEffect(() => {
 		const fetchAllOpportunities = async () => {
@@ -51,13 +69,7 @@ const CRMDashboard = () => {
 					isManager(selectedUser.role),
 				);
 				setOpportunities(response.data);
-
-				headerCards[0].value = response.data?.find(
-					(_) => _.month === month,
-				)?.count;
-				headerCards[1].value = response.data[0]?.pipeline;
-				headerCards[2].value = response.data[0]?.pipeline;
-				headerCards[3].value = response.data[0]?.salesMade;
+				headerCardsInfoDetails(response.data);
 			} catch (error) {
 				console.error(error);
 			}
@@ -66,6 +78,7 @@ const CRMDashboard = () => {
 			try {
 				const response = await CalendarService.getEventsByType("event");
 				setEvents(response.data);
+				setStatInfo("Events", response.data.length);
 			} catch (error) {
 				console.error(error);
 			}
@@ -74,6 +87,7 @@ const CRMDashboard = () => {
 			try {
 				const response = await CalendarService.getEventsByType("meeting");
 				setMeetings(response.data);
+				setStatInfo("Meetings", response.data.length);
 			} catch (error) {
 				console.error(error);
 			}
@@ -82,6 +96,7 @@ const CRMDashboard = () => {
 			try {
 				const response = await CalendarService.getEventsByType("phoneCall");
 				setAppointments(response.data);
+				setStatInfo("Appointments", response.data.length);
 			} catch (error) {
 				console.error(error);
 			}
@@ -94,35 +109,25 @@ const CRMDashboard = () => {
 				console.error(error);
 			}
 		};
-		fetchAllOpportunities();
+
+		fetchAllAppointments();
 		fetchAllEmployees();
 		fetchAllEvents();
 		fetchAllMeetings();
-		fetchAllAppointments();
+		fetchAllOpportunities();
 	}, [isRefresh, selectedUser]);
 
-	const STATS = [
-		{
-			name: "Events",
-			count: events?.length,
-		},
-		{
-			name: "Meetings",
-			count: meetings?.length,
-		},
-		{
-			name: "Appointments",
-			count: appointments?.length,
-		},
-	];
+	useEffect(() => {
+		headerCards[0].value = opportunities?.find(
+			(_) => _.month === parseInt(month),
+		)?.count;
+	}, [month]);
 
-	const handleChange = (event) => {
-		if (event.target.value === "") {
+	const handleChange = (value) => {
+		if (value === "") {
 			setSelectedUser(user);
 		} else {
-			setSelectedUser(
-				employees.find(({ fullName }) => fullName === event.target.value),
-			);
+			setSelectedUser(employees.find(({ fullName }) => fullName === value));
 		}
 	};
 
@@ -133,21 +138,16 @@ const CRMDashboard = () => {
 					CRM {isManager(role) && "Manager"} Dashboard
 				</Text>
 				{isManager(role) && employees && (
-					<Select
-						borderRadius={"10px"}
-						size={"sm"}
+					<SelectBox
+						handleChange={handleChange}
+						data={employees}
+						name="fullName"
+						border="1px solid var(--primary_button_bg)"
 						color={"brand.primary_button_bg"}
-						border={`1px solid var(--primary_button_bg)`}
 						value={selectedUser?.fullName}
-						onChange={handleChange}
 						placeholder="Select"
-					>
-						{employees?.map(({ _id, fullName }) => (
-							<option value={fullName} key={_id}>
-								{fullName}
-							</option>
-						))}
-					</Select>
+						size={"sm"}
+					/>
 				)}
 			</Flex>
 			<SimpleGrid
@@ -156,90 +156,18 @@ const CRMDashboard = () => {
 				mt="4"
 				templateColumns={{ lg: "70% 30%" }}
 			>
-				<Box>
-					<SimpleGrid
-						mb={"1em"}
-						columns={{ base: 1, md: 2, lg: 4 }}
-						spacing="1em"
-						color={"brand.200"}
-					>
-						<SalesCard
-							opportunities={opportunities}
-							headerCards={headerCards}
-							setMonth={setMonth}
-							currentMonth={currentMonth}
-						/>
-					</SimpleGrid>
-					<SimpleGrid columns={{ base: 1, md: 1, lg: 2 }} spacing="1em" mt="4">
-						<SalesChart />
-					</SimpleGrid>
-					<SimpleGrid columns={{ base: 1, md: 1, lg: 1 }} spacing="4" mt="4">
-						<Box
-							px="1em"
-							color={"brand.nav_color"}
-							bg={"brand.primary_bg"}
-							border="3px solid var(--main_color)"
-							borderRadius="10px"
-							fontWeight="bold"
-						>
-							<Text mt={2} mb={2} fontWeight="bold">
-								Upcoming
-							</Text>
-							<UpcomingList
-								events={events}
-								meetings={meetings}
-								appointments={appointments}
-								user={selectedUser}
-								setIsRefresh={setIsRefresh}
-							/>
-						</Box>
-					</SimpleGrid>
-				</Box>
-				<Box
-					overflow={"hidden"}
-					overflowY={"auto"}
-					p="1em"
-					bg={"brand.primary_bg"}
-					border="3px solid var(--main_color)"
-					borderRadius="10px"
-				>
-					<VStack
-						justify="center"
-						align="center"
-						mb="1"
-						w={{ base: "auto", md: "106%" }}
-						spacing={0}
-					>
-						<Avatar
-							name={selectedUser?.fullName}
-							src={selectedUser?.fullName}
-						/>
-						<Text fontWeight="bold">{selectedUser?.fullName}</Text>
-						<Text fontSize={"xs"}>{selectedUser?.email}</Text>
-					</VStack>
-					<HStack spacing={2} justify={"space-between"}>
-						{STATS.map(({ name, count }) => (
-							<VStack spacing={0} key={name}>
-								<Text fontSize="sm">{name}</Text>
-								<Text fontWeight="bold">{count}</Text>
-							</VStack>
-						))}
-						{/* <VStack spacing={0}>
-							<Text fontSize="xs">Days till next</Text>
-							<Text fontWeight="bold">3</Text>
-						</VStack>
-						<VStack spacing={0}>
-							<Text fontSize="xs">Approval Date</Text>
-							<Text fontWeight="bold">{formatDate(new Date())}</Text>
-						</VStack>
-						<VStack spacing={0}>
-							<Text fontSize="xs">Payment Date</Text>
-							<Text fontWeight="bold">{formatDate(new Date())}</Text>
-						</VStack> */}
-					</HStack>
-					<MiniCalendar user={selectedUser.fullName} />
-					<ChatMessages userId={selectedUser._id} />
-				</Box>
+				<LeftPane
+					appointments={appointments}
+					currentMonth={currentMonth}
+					events={events}
+					headerCards={headerCards}
+					meetings={meetings}
+					opportunities={opportunities}
+					setIsRefresh={setIsRefresh}
+					setMonth={setMonth}
+					selectedUser={selectedUser}
+				/>
+				<RightPane stats={stats} selectedUser={selectedUser} />
 			</SimpleGrid>
 		</Box>
 	);

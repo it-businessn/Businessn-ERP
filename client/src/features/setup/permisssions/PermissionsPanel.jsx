@@ -177,7 +177,7 @@ const PermissionsPanel = ({
 					handleSelect={handleSelect}
 				/>
 			</HStack>
-			{!employees && <Loader isAuto />}
+			{!employees && <Loader autoHeight />}
 			{employees && (
 				<Table variant="simple">
 					<Thead>
@@ -197,7 +197,7 @@ const PermissionsPanel = ({
 						{showLoader && (
 							<Tr>
 								<Td colSpan={10}>
-									<Loader isAuto />
+									<Loader autoHeight />
 								</Td>
 							</Tr>
 						)}

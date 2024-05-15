@@ -1,12 +1,27 @@
-import { Box, Flex, Select, Text } from "@chakra-ui/react";
-import LinkButton from "components/ui/button/LinkButton";
+import { Box, Flex, Select } from "@chakra-ui/react";
+import HighlightButton from "components/ui/button/HighlightButton";
+import CardTitle from "components/ui/card/CardTitle";
 import { BAR_DATA } from "constant";
+import SelectCustomer from "erp-modules/sales/activities/SelectCustomer";
+import { useEffect, useState } from "react";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import { Bar } from "react-chartjs-2";
-import { useNavigate } from "react-router-dom";
+import ContactService from "services/ContactService";
 
 const SalesChart = () => {
-	const navigate = useNavigate();
+	const [contacts, setContacts] = useState(null);
+
+	useEffect(() => {
+		const fetchAllContacts = async () => {
+			try {
+				const response = await ContactService.getContacts();
+				setContacts(response.data);
+			} catch (error) {
+				console.error(error);
+			}
+		};
+		fetchAllContacts();
+	}, []);
 	const options = {
 		scales: {
 			y: {
@@ -50,6 +65,7 @@ const SalesChart = () => {
 			},
 		},
 	};
+	const [showSelectCustomer, setShowSelectCustomer] = useState(false);
 	return (
 		<>
 			{BAR_DATA.map((bar) => (
@@ -69,7 +85,7 @@ const SalesChart = () => {
 						color={"brand.nav_color"}
 						w={{ base: "auto", md: "103%" }}
 					>
-						<Text fontWeight="bold">{bar.title}</Text>
+						<CardTitle title={bar.title} />
 						<Select width="auto" border={"none"} fontSize={"xs"} ml={"1em"}>
 							<option>Last Week</option>
 							<option>Last Month</option>
@@ -78,12 +94,17 @@ const SalesChart = () => {
 					<Box w={{ base: "70%", md: "65%", lg: "70%", xl: "70%" }} mx={"auto"}>
 						<Bar data={bar.data} options={options} />
 					</Box>
-					<LinkButton
+					<HighlightButton
 						name={`Log ${bar.link}`}
-						onClick={() => navigate("/sales/activities")}
+						onClick={() => setShowSelectCustomer(true)}
 					/>
 				</Box>
 			))}
+			<SelectCustomer
+				showSelectCustomer={showSelectCustomer}
+				setShowSelectCustomer={setShowSelectCustomer}
+				contacts={contacts}
+			/>
 		</>
 	);
 };

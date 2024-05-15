@@ -46,7 +46,7 @@ const ModulePanel = () => {
 				name={"Add Module"}
 				onClick={handleModuleSubmit}
 			/> */}
-			{!modules && <Loader isAuto />}
+			{!modules && <Loader autoHeight />}
 			{modules && (
 				<Table variant="simple">
 					<Thead>

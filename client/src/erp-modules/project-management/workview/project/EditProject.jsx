@@ -21,7 +21,7 @@ import { useState } from "react";
 import { FaCaretDown } from "react-icons/fa";
 import ProjectService from "services/ProjectService";
 import { getDefaultDate } from "utils";
-import MultiCheckboxMenu from "../../../../components/ui/MultiCheckboxMenu";
+import MultiSelectBox from "../../../../components/ui/select/MultiSelectBox";
 import { PRIORITY } from "./data";
 
 const EditProject = ({
@@ -216,7 +216,7 @@ const EditProject = ({
 											}}
 										>
 											{openAssigneeMenu ? (
-												<MultiCheckboxMenu
+												<MultiSelectBox
 													data={managers}
 													openMenu={openAssigneeMenu}
 													handleCloseMenu={handleCloseMenu}

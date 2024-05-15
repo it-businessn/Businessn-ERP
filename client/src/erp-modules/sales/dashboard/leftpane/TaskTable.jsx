@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import TaskService from "services/TaskService";
 import { formatDate, renderPriorityBars } from "utils";
 
-const TaskTable = ({ user }) => {
+const TaskTable = ({ user, cols }) => {
 	const [tasks, setTasks] = useState([]);
 	useEffect(() => {
 		const fetchAllUserTasks = async () => {
@@ -23,19 +23,21 @@ const TaskTable = ({ user }) => {
 			<Table variant="simple" size={"small"}>
 				<Thead>
 					<Tr>
-						<Th fontSize={"12px"}>Name</Th>
-						<Th fontSize={"12px"}>Priority</Th>
-						<Th fontSize={"12px"}>Due date</Th>
+						{cols.map((_) => (
+							<Th key={_} fontSize={"12px"}>
+								{_}
+							</Th>
+						))}
 					</Tr>
 				</Thead>
 				<Tbody>
-					{tasks?.map((task) => (
-						<Tr key={task._id}>
-							<Td fontSize={"xs"}>{task.taskName}</Td>
+					{tasks?.map(({ _id, taskName, priority, dueDate }) => (
+						<Tr key={_id}>
+							<Td fontSize={"xs"}>{taskName}</Td>
 							<Td fontSize={"xs"}>
-								<HStack spacing="1">{renderPriorityBars(task.priority)}</HStack>
+								<HStack spacing="1">{renderPriorityBars(priority)}</HStack>
 							</Td>
-							<Td fontSize={"xs"}>{formatDate(task.dueDate)}</Td>
+							<Td fontSize={"xs"}>{formatDate(dueDate)}</Td>
 						</Tr>
 					))}
 				</Tbody>

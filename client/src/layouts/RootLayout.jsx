@@ -5,7 +5,8 @@ import { Outlet, useNavigate } from "react-router-dom";
 import Loader from "components/Loader";
 import Navbar from "components/header";
 import Sidebar from "components/sidebar";
-import { useData } from "context/DataContext";
+import { SIDEBAR_MENU } from "components/sidebar/data";
+import { ROUTE_PATH } from "routes";
 import { useBreakpointValue } from "services/Breakpoint";
 import LocalStorageService from "services/LocalStorageService";
 import UserService from "services/UserService";
@@ -15,24 +16,22 @@ const RootLayout = () => {
 
 	const navigate = useNavigate();
 
-	const { permissionData } = useData();
-
 	useEffect(() => {
 		const fetchUserPermissions = async () => {
 			try {
 				const response = await UserService.getUserPermission(user?._id);
 
 				if (response.data) {
-					permissionData.forEach((data, index) => {
+					SIDEBAR_MENU.forEach((data, index) => {
 						const menu = response.data.permissionType.find(
 							(item) => item.name === data.name,
 						);
-						permissionData[index].permissions = menu ? menu : null;
+						SIDEBAR_MENU[index].permissions = menu ? menu : null;
 						data?.children?.forEach((child, cIndex) => {
 							const childMenu = response.data.permissionType.find(
 								(item) => item.name === `${data.name} ${child.name}`,
 							);
-							permissionData[index].children[cIndex].permissions = childMenu
+							SIDEBAR_MENU[index].children[cIndex].permissions = childMenu
 								? childMenu
 								: null;
 						});
@@ -49,10 +48,10 @@ const RootLayout = () => {
 
 	useEffect(() => {
 		if (user) {
-			navigate("/sales");
+			navigate(ROUTE_PATH.SALES);
 			// navigate("/scheduling/workview");
 		} else {
-			navigate("/login");
+			navigate(ROUTE_PATH.LOGIN);
 		}
 	}, [user]);
 
@@ -65,8 +64,6 @@ const RootLayout = () => {
 	const { isOpen, onOpen, onClose } = useDisclosure();
 
 	const [activeMenu, setActiveMenu] = useState(null);
-
-	const handleClick = (menu) => setActiveMenu(menu);
 
 	const handleMenuItemClick = () => onClose();
 
@@ -82,7 +79,8 @@ const RootLayout = () => {
 		// }
 		LocalStorageService.setItem("selectedCompany", selectedCompany);
 
-		setActiveMenu(permissionData?.find((menu) => menu.id === "sales"));
+		setActiveMenu(SIDEBAR_MENU[0]);
+		// setActiveMenu(SIDEBAR_MENU?.find((menu) => menu.id === "sales"));
 	};
 	useEffect(() => {
 		handleCompany(selectedCompany);
@@ -97,25 +95,25 @@ const RootLayout = () => {
 	return (
 		<>
 			{!activeMenu && <Loader />}
-			{user && ((activeMenu && permissionData) || refresh) && (
+			{user && ((activeMenu && SIDEBAR_MENU) || refresh) && (
 				<>
 					<Navbar
-						tabs={permissionData}
-						company={selectedCompany}
-						setSelectedCompany={setSelectedCompany}
-						user={user}
-						handleClick={handleClick}
+						// company={selectedCompany}
+						handleClick={(menu) => setActiveMenu(menu)}
+						// handleCompany={handleCompany}
 						handleLogout={handleLogout}
 						onOpen={onOpen}
-						handleCompany={handleCompany}
+						setSelectedCompany={setSelectedCompany}
+						tabs={SIDEBAR_MENU}
+						user={user}
 					/>
 					<Flex minH={"100vh"} as="section">
 						<Sidebar
-							isMobile={isMobile}
 							activeMenu={activeMenu}
+							handleMenuItemClick={handleMenuItemClick}
+							isMobile={isMobile}
 							isOpen={isOpen}
 							onClose={onClose}
-							handleMenuItemClick={handleMenuItemClick}
 						/>
 						<main className="main_content">
 							<Outlet />

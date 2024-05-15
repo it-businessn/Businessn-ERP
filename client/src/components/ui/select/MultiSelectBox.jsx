@@ -9,7 +9,7 @@ import {
 	useDisclosure,
 } from "@chakra-ui/react";
 
-const MultiCheckboxMenu = ({
+const MultiSelectBox = ({
 	openMenu,
 	handleCloseMenu,
 	selectedOptions,
@@ -66,4 +66,4 @@ const MultiCheckboxMenu = ({
 	);
 };
 
-export default MultiCheckboxMenu;
+export default MultiSelectBox;

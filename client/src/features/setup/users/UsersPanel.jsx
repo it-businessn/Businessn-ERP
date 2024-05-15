@@ -60,7 +60,7 @@ const UsersPanel = ({
 					/>
 				)}
 			</HStack>
-			{!employees && <Loader isAuto />}
+			{!employees && <Loader autoHeight />}
 			{employees && <UserList filteredEmployees={filteredEmployees} />}
 		</>
 	);

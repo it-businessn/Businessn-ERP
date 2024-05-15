@@ -10,8 +10,8 @@ import {
 	Text,
 } from "@chakra-ui/react";
 import Loader from "components/Loader";
-import MultiCheckboxMenu from "components/ui/MultiCheckboxMenu";
 import ActionButton from "components/ui/button/ActionButton";
+import MultiSelectBox from "components/ui/select/MultiSelectBox";
 import { useEffect, useState } from "react";
 import { FaCaretDown } from "react-icons/fa";
 import SettingService from "services/SettingService";
@@ -181,7 +181,7 @@ const GroupsPanel = ({
 					/>
 				)}
 			</HStack>
-			{(!modules || !groups || !admins) && <Loader isAuto />}
+			{(!modules || !groups || !admins) && <Loader autoHeight />}
 			<HStack>
 				{groups && (
 					<FormControl>
@@ -216,7 +216,7 @@ const GroupsPanel = ({
 							}}
 						>
 							{openModuleMenu ? (
-								<MultiCheckboxMenu
+								<MultiSelectBox
 									data={modules}
 									openMenu={openModuleMenu}
 									selectedOptions={selectedModules}
@@ -248,7 +248,7 @@ const GroupsPanel = ({
 							}}
 						>
 							{openAdminMenu ? (
-								<MultiCheckboxMenu
+								<MultiSelectBox
 									data={admins}
 									openMenu={openAdminMenu}
 									selectedOptions={selectedAdmins}

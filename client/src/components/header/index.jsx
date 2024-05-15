@@ -4,13 +4,13 @@ import {
 	Flex,
 	HStack,
 	IconButton,
-	Select,
 	Spacer,
 	Stack,
 	VStack,
 } from "@chakra-ui/react";
 import { Tab, UserProfile } from "components";
 import Logo from "components/logo";
+import SelectBox from "components/ui/select/SelectBox";
 import { useEffect, useState } from "react";
 import { FaSyncAlt } from "react-icons/fa";
 import { Link } from "react-router-dom";
@@ -18,15 +18,16 @@ import { useBreakpointValue } from "services/Breakpoint";
 import SettingService from "services/SettingService";
 
 const Navbar = ({
-	company,
-	setSelectedCompany,
+	// company,
 	handleClick,
-	user,
 	handleLogout,
 	onOpen,
+	setSelectedCompany,
 	tabs,
+	user,
 }) => {
 	const [companies, setCompanies] = useState(null);
+
 	useEffect(() => {
 		const fetchCompanyInfo = async () => {
 			try {
@@ -48,8 +49,7 @@ const Navbar = ({
 
 	const companyList = () => (
 		<Flex flexDir={"column"} w={{ base: "60%", md: "auto" }}>
-			<Select
-				fontSize={{ base: "sm", md: "md" }}
+			<SelectBox
 				icon={
 					<IconButton
 						ml={"1em"}
@@ -59,16 +59,11 @@ const Navbar = ({
 						variant="round"
 					/>
 				}
-				border={"none"}
+				handleChange={handleChange}
+				data={companies}
+				name="name"
 				fontWeight="bold"
-				onChange={(e) => handleChange(e.target.value)}
-			>
-				{companies?.map((company) => (
-					<option value={company.name} key={company._id}>
-						{company.name}
-					</option>
-				))}
-			</Select>
+			/>
 		</Flex>
 	);
 

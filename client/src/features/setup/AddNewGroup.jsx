@@ -15,7 +15,7 @@ import {
 	Stack,
 	Text,
 } from "@chakra-ui/react";
-import MultiCheckboxMenu from "components/ui/MultiCheckboxMenu";
+import MultiSelectBox from "components/ui/select/MultiSelectBox";
 import { useState } from "react";
 import { FaCaretDown } from "react-icons/fa";
 import SettingService from "services/SettingService";
@@ -116,7 +116,7 @@ const AddNewGroup = ({ isOpen, onClose, setRefresh, modules, admins }) => {
 											}}
 										>
 											{openModuleMenu ? (
-												<MultiCheckboxMenu
+												<MultiSelectBox
 													data={modules}
 													openMenu={openModuleMenu}
 													handleCloseMenu={handleCloseModuleMenu}
@@ -146,7 +146,7 @@ const AddNewGroup = ({ isOpen, onClose, setRefresh, modules, admins }) => {
 											}}
 										>
 											{openTeamMenu ? (
-												<MultiCheckboxMenu
+												<MultiSelectBox
 													data={admins}
 													openMenu={openTeamMenu}
 													handleCloseMenu={handleCloseTeamMenu}

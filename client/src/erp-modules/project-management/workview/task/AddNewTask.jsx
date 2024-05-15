@@ -20,7 +20,7 @@ import {
 import { useState } from "react";
 import { FaCaretDown } from "react-icons/fa";
 import ProjectService from "services/ProjectService";
-import MultiCheckboxMenu from "../../../../components/ui/MultiCheckboxMenu";
+import MultiSelectBox from "../../../../components/ui/select/MultiSelectBox";
 
 const AddNewTask = ({
 	isOpen,
@@ -172,7 +172,7 @@ const AddNewTask = ({
 												}}
 											>
 												{openAssigneeMenu ? (
-													<MultiCheckboxMenu
+													<MultiSelectBox
 														openMenu={openAssigneeMenu}
 														handleCloseMenu={handleCloseMenu}
 														selectedOptions={selectedOptions}

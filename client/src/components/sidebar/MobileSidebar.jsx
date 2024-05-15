@@ -6,7 +6,7 @@ import {
 	Flex,
 	Stack,
 } from "@chakra-ui/react";
-import MenuItem from "../ui/MenuItem";
+import MenuItem from "../ui/menu/MenuItem";
 
 const MobileSidebar = ({
 	isOpen,

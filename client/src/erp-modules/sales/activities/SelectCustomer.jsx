@@ -44,7 +44,7 @@ const SelectCustomer = ({
 		>
 			<ModalOverlay />
 			<ModalContent>
-				<ModalHeader>Select a customer/opportunity</ModalHeader>
+				<ModalHeader>Select a contact</ModalHeader>
 				<ModalCloseButton />
 				<ModalBody>
 					<Select

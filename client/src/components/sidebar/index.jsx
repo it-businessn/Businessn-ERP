@@ -1,13 +1,13 @@
 import { Flex, Stack } from "@chakra-ui/react";
-import MenuItem from "../ui/MenuItem";
+import MenuItem from "../ui/menu/MenuItem";
 import MobileSidebar from "./MobileSidebar";
 
 const Sidebar = ({
 	activeMenu,
+	handleMenuItemClick,
 	isMobile,
 	isOpen,
 	onClose,
-	handleMenuItemClick,
 }) => {
 	const menuList = activeMenu?.children?.filter((item) => item.permissions);
 	return isMobile ? (

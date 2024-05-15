@@ -100,7 +100,7 @@ const CompanyDetails = () => {
 							<Text color={"brand.600"}>{getAddress(companyInfo.address)}</Text>
 						</HStack>
 					</VStack>
-					{!modules && <Loader isAuto />}
+					{!modules && <Loader autoHeight />}
 					{modules && (
 						<Table variant="simple" size={"small"}>
 							<Thead>

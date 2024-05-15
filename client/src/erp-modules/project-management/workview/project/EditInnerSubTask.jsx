@@ -21,7 +21,7 @@ import { useEffect, useState } from "react";
 import { FaCaretDown } from "react-icons/fa";
 import ProjectService from "services/ProjectService";
 import { getDefaultDate } from "utils";
-import MultiCheckboxMenu from "../../../../components/ui/MultiCheckboxMenu";
+import MultiSelectBox from "../../../../components/ui/select/MultiSelectBox";
 import { PRIORITY } from "./data";
 
 const EditInnerSubTask = ({
@@ -175,7 +175,7 @@ const EditInnerSubTask = ({
 											}}
 										>
 											{openAssigneeMenu ? (
-												<MultiCheckboxMenu
+												<MultiSelectBox
 													data={managers}
 													openMenu={openAssigneeMenu}
 													handleCloseMenu={handleCloseMenu}

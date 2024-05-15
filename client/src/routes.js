@@ -73,6 +73,11 @@ const WorkView = lazy(() =>
 
 const Employees = lazy(() => import("./erp-modules/payroll/employees"));
 
+export const ROUTE_PATH = {
+	SALES: "/sales",
+	LOGIN: "/login",
+};
+
 export const router = createBrowserRouter([
 	{
 		path: "/",
