@@ -229,15 +229,17 @@ const setNewPassword = async (req, res) => {
 };
 const changePassword = () => async (req, res) => {
 	const { newPassword } = req.body;
-	const user = req.user;
+	const { id } = req.params;
+	// const user = req.user;
 	try {
 		if (!newPassword) {
 			throw new Error("New password is required");
 		}
 		const hashedPassword = bcrypt.hashSync(newPassword, 10);
-		user.password = hashedPassword;
+		// user.password = hashedPassword;
 		const updatedUser = await Employee.findByIdAndUpdate(
-			user[0]._id,
+			// user[0]._id,
+			id,
 			{ password: hashedPassword },
 			{
 				new: true,

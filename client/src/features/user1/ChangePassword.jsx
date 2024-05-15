@@ -56,10 +56,11 @@ const ChangePassword = ({
 
 	const handleSubmit = async (e) => {
 		e.preventDefault();
+
 		try {
 			const response = await PasswordService.updateUserPassword(
 				passwordData,
-				userData.id,
+				userData._id,
 			);
 			setUserData(response.data.updatedUser);
 			setPasswordMode(false);
