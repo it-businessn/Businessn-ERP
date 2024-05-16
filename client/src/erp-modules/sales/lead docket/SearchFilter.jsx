@@ -11,6 +11,7 @@ const SearchFilter = ({ width }) => {
 				leftIcon={<MdOutlineFilterList />}
 				border={"2px solid var(--filter_border_color)"}
 				borderRadius={"10px"}
+				size="xs"
 				variant={"ghost"}
 				_hover={{ color: "brand.600", bg: "transparent" }}
 			>
@@ -20,6 +21,7 @@ const SearchFilter = ({ width }) => {
 				borderRadius={"10px"}
 				border={"1px solid var(--filter_border_color)"}
 				fontWeight="bold"
+				size="xs"
 			>
 				<InputLeftElement size="xs" children={<FaSearch />} />
 				<Input
@@ -30,6 +32,7 @@ const SearchFilter = ({ width }) => {
 					bg={"brand.primary_bg"}
 					type="text"
 					placeholder="Search here"
+					py={"1.1em"}
 				/>
 			</InputGroup>
 		</>

@@ -1,5 +1,4 @@
 import {
-	Button,
 	FormControl,
 	FormLabel,
 	HStack,
@@ -8,7 +7,8 @@ import {
 	Stack,
 	Text,
 } from "@chakra-ui/react";
-import PrimaryButton from "components/ui/button/PrimaryButton";
+import ActionButtonGroup from "components/ui/form/ActionButtonGroup";
+import InputFormControl from "components/ui/form/InputFormControl";
 import ModalLayout from "components/ui/modal/ModalLayout";
 import {
 	INDUSTRIES,
@@ -148,26 +148,21 @@ const AddNewOpportunity = ({
 		>
 			<form onSubmit={handleSubmit}>
 				<Stack spacing={4}>
-					<FormControl>
-						<FormLabel>Opportunity name</FormLabel>
-						<Input
-							type="text"
-							name="opportunityName"
-							value={formData.opportunityName}
-							onChange={handleChange}
+					<InputFormControl
+						label={"Opportunity name"}
+						name="opportunityName"
+						valueText={formData.opportunityName}
+						handleChange={handleChange}
+						required
+					/>
+					<HStack>
+						<InputFormControl
+							label={"Abbreviation"}
+							name="abbreviation"
+							valueText={formData.abbreviation}
+							handleChange={handleChange}
 							required
 						/>
-					</FormControl>
-					<HStack>
-						<FormControl>
-							<FormLabel>Abbreviation</FormLabel>
-							<Input
-								type="text"
-								name="abbreviation"
-								value={formData.abbreviation}
-								onChange={handleChange}
-							/>
-						</FormControl>
 						<FormControl>
 							<FormLabel>Company Name</FormLabel>
 							<HStack justify={"space-between"}>
@@ -198,26 +193,21 @@ const AddNewOpportunity = ({
 						/>
 					</HStack>
 					<HStack>
-						<FormControl>
-							<FormLabel>Phone</FormLabel>
-							<Input
-								type="text"
-								name="phone"
-								value={formData.phone}
-								onChange={handleChange}
-								required
-							/>
-						</FormControl>
-						<FormControl>
-							<FormLabel>Email</FormLabel>
-							<Input
-								type="email"
-								name="email"
-								value={formData.email}
-								onChange={handleChange}
-								required
-							/>
-						</FormControl>
+						<InputFormControl
+							label={"Phone"}
+							name="phone"
+							valueText={formData.phone}
+							handleChange={handleChange}
+							required
+						/>
+						<InputFormControl
+							label={"Email"}
+							name="email"
+							type="email"
+							valueText={formData.email}
+							handleChange={handleChange}
+							required
+						/>
 					</HStack>
 
 					<FormControl>
@@ -421,19 +411,12 @@ const AddNewOpportunity = ({
 							{stageError && <Text color={"red"}>{stageError}</Text>}
 						</>
 					)}
-
-					<HStack justifyContent={"end"}>
-						<PrimaryButton
-							isDisabled={isDisabled}
-							name="Add"
-							isLoading={isSubmitting}
-							px="2em"
-						/>
-
-						<Button onClick={onClose} colorScheme="gray">
-							Cancel
-						</Button>
-					</HStack>
+					<ActionButtonGroup
+						submitBtnName={"Add"}
+						isDisabled={isDisabled}
+						isLoading={isSubmitting}
+						onClose={onClose}
+					/>
 				</Stack>
 			</form>
 		</ModalLayout>

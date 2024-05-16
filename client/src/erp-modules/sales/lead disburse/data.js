@@ -1,11 +1,11 @@
 import {
-	Button,
 	Icon,
 	Input,
 	InputGroup,
 	InputLeftElement,
 	Select,
 } from "@chakra-ui/react";
+import LeftIconButton from "components/ui/button/LeftIconButton";
 import TextTitle from "components/ui/text/TextTitle";
 import {
 	DISBURSE_MODE_OPTIONS,
@@ -16,32 +16,40 @@ import { MdOutlineFilterList } from "react-icons/md";
 
 export const showFilterSearchOption = () => (
 	<>
-		<Button
-			w={{ lg: "100px" }}
+		<LeftIconButton
 			color={"brand.nav_color"}
-			leftIcon={<MdOutlineFilterList />}
 			border={"2px solid var(--filter_border_color)"}
+			name={"Filter"}
 			borderRadius={"10px"}
 			variant={"ghost"}
-			_hover={{ color: "brand.600", bg: "transparent" }}
-		>
-			Filter
-		</Button>
+			isFilter
+			size="xs"
+			ml={2}
+			w={{ lg: "150px" }}
+			// handleClick={() => setShowEditDetails(true)}
+			icon={<MdOutlineFilterList />}
+		/>
 		<InputGroup
-			w={{ lg: "180px" }}
+			size="xs"
+			w={"40%"}
 			borderRadius={"10px"}
 			border={"1px solid var(--filter_border_color)"}
+			fontSize="xs"
 			fontWeight="bold"
 		>
 			<InputLeftElement size="xs" children={<FaSearch />} />
 			<Input
+				size="xs"
 				_placeholder={{
 					color: "brand.nav_color",
+					fontSize: "xs",
 				}}
 				color={"brand.nav_color"}
 				bg={"brand.primary_bg"}
 				type="text"
 				placeholder="Search here"
+				pr="4.5rem"
+				py={"1.1em"}
 			/>
 		</InputGroup>
 	</>
@@ -55,6 +63,7 @@ export const showRegion = () => (
 			mt={{ base: "1em", md: 0 }}
 			border={"2px solid var(--filter_border_color)"}
 			borderRadius={"10px"}
+			size={"sm"}
 		>
 			{REGIONS.map(({ name, id }) => (
 				<option key={id} value={name}>
@@ -68,6 +77,7 @@ export const showRegion = () => (
 			mt={{ base: "1em", md: 0 }}
 			border={"2px solid var(--filter_border_color)"}
 			borderRadius={"10px"}
+			size={"sm"}
 		>
 			{DISBURSE_MODE_OPTIONS.map(({ name, id }) => (
 				<option key={id} value={name}>

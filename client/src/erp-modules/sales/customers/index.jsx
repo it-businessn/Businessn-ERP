@@ -1,4 +1,3 @@
-import { Box } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import ContactService from "services/ContactService";
 import CustomersList from "./CustomersList";
@@ -26,21 +25,17 @@ const Customers = () => {
 		setViewProfile((prev) => !prev);
 	};
 
-	return (
-		<Box p={{ base: "1em", md: "2em" }}>
-			{viewProfile ? (
-				<Contacts
-					setViewProfile={setViewProfile}
-					selectedContact={selectedContact}
-				/>
-			) : (
-				<CustomersList
-					contacts={contacts}
-					setViewProfile={setViewProfile}
-					handleProfileView={handleProfileView}
-				/>
-			)}
-		</Box>
+	return viewProfile ? (
+		<Contacts
+			setViewProfile={setViewProfile}
+			selectedContact={selectedContact}
+		/>
+	) : (
+		<CustomersList
+			contacts={contacts}
+			setViewProfile={setViewProfile}
+			handleProfileView={handleProfileView}
+		/>
 	);
 };
 

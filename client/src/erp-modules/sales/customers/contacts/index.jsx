@@ -17,9 +17,9 @@ const Contacts = ({ setViewProfile, selectedContact }) => {
 	const [contact, setContact] = useState(null);
 	const [reload, setReload] = useState(false);
 	const fetchContacts = async () => {
-		const o = selectedContact || id;
+		const activeContact = selectedContact || id;
 		try {
-			const response = await ContactService.getContactDetails(o);
+			const response = await ContactService.getContactDetails(activeContact);
 
 			setContact(response.data);
 			// setSelectedContact(response.data);
@@ -62,22 +62,23 @@ const Contacts = ({ setViewProfile, selectedContact }) => {
 	// };
 	const navigate = useNavigate();
 	return (
-		<Flex>
-			{!contact && <Loader />}
+		<Box px={{ base: "1em" }} py={{ base: "1.3em" }}>
+			<Flex>
+				{!contact && <Loader />}
 
-			{contact && (
-				<>
-					<IconButton
-						variant={"ghost"}
-						icon={<FaArrowLeft />}
-						color="brand.nav_color"
-						aria-label="Cancel"
-						onClick={() =>
-							id ? navigate(-1) : setViewProfile((prev) => !prev)
-						}
-					/>
-					<Box flex="1">
-						{/* <Popover zIndex={0}>
+				{contact && (
+					<>
+						<IconButton
+							variant={"ghost"}
+							icon={<FaArrowLeft />}
+							color="brand.nav_color"
+							aria-label="Cancel"
+							onClick={() =>
+								id ? navigate(-1) : setViewProfile((prev) => !prev)
+							}
+						/>
+						<Box flex="1">
+							{/* <Popover zIndex={0}>
 							{/* <PopoverTrigger>
 								<Input
 									zIndex={0}
@@ -117,21 +118,22 @@ const Contacts = ({ setViewProfile, selectedContact }) => {
 								</PopoverContent>
 							)}
 						</Popover> */}
-						<ContactDetailsInfo
-							contact={contact.leadId}
-							showLogForm={handleButtonClick}
-						/>
-					</Box>
-					<Box flex="2" bg="var(--lead_cards_bg)">
-						<TabGroup
-							currentTab={currentTab}
-							handleTabChange={handleTabChange}
-							data={tabList}
-						/>
-					</Box>
-				</>
-			)}
-		</Flex>
+							<ContactDetailsInfo
+								contact={contact.leadId}
+								showLogForm={handleButtonClick}
+							/>
+						</Box>
+						<Box flex="2" bg="var(--lead_cards_bg)">
+							<TabGroup
+								currentTab={currentTab}
+								handleTabChange={handleTabChange}
+								data={tabList}
+							/>
+						</Box>
+					</>
+				)}
+			</Flex>
+		</Box>
 	);
 };
 

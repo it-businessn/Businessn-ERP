@@ -10,6 +10,7 @@ import {
 	Text,
 	VStack,
 } from "@chakra-ui/react";
+import TextTitle from "components/ui/text/TextTitle";
 import { useData } from "context/DataContext";
 import { FaDownload } from "react-icons/fa";
 import { GoDownload } from "react-icons/go";
@@ -53,9 +54,7 @@ const ResourceFile = ({
 		<>
 			<Flex justifyContent={"space-between"}>
 				<VStack alignItems={"self-start"}>
-					<Text mt={2} mb={5} fontWeight="bold">
-						Browse by subject
-					</Text>
+					<TextTitle mt={2} mb={5} title="Browse by subject" />
 					{isMobile || isIpad ? (
 						<SimpleGrid columns={{ base: 2, md: 3 }} spacing="1em" my="5">
 							{fileTypes.map(({ type }) => (

@@ -131,16 +131,12 @@ export const router = createBrowserRouter([
 				element: <Calendar />,
 			},
 			{
-				path: `${ROUTE_PATH.SALES}${ROUTE_PATH.CUSTOMERS}`,
-				element: <Customers />,
-			},
-			{
-				path: `${ROUTE_PATH.SALES}${ROUTE_PATH.PAYOUT}`,
-				element: <Payouts />,
-			},
-			{
 				path: `${ROUTE_PATH.SALES}${ROUTE_PATH.CUSTOMERS}${ROUTE_PATH.CUST_PROFILE}`,
 				element: <Contacts />,
+			},
+			{
+				path: `${ROUTE_PATH.SALES}${ROUTE_PATH.CUSTOMERS}`,
+				element: <Customers />,
 			},
 			{
 				path: `${ROUTE_PATH.SALES}${ROUTE_PATH.LEADS}`,
@@ -163,6 +159,26 @@ export const router = createBrowserRouter([
 				element: <Pipeline />,
 			},
 			{
+				path: `${ROUTE_PATH.SALES}${ROUTE_PATH.RESOURCES}`,
+				element: <Resources />,
+			},
+			{
+				path: `${ROUTE_PATH.SALES}${ROUTE_PATH.ADD_PAPER}`,
+				element: <AddQuestionForm />,
+			},
+			{
+				path: `${ROUTE_PATH.SALES}${ROUTE_PATH.ASSESSMENT}`,
+				element: <Assessment />,
+			},
+			{
+				path: ROUTE_PATH.MODULE_SETUP,
+				element: <Setup />,
+			},
+			{
+				path: `${ROUTE_PATH.SALES}${ROUTE_PATH.PAYOUT}`,
+				element: <Payouts />,
+			},
+			{
 				path: `${ROUTE_PATH.SALES}${ROUTE_PATH.PRODUCTS}`,
 				element: <Products />,
 			},
@@ -179,24 +195,8 @@ export const router = createBrowserRouter([
 			// 	element: <Invoice />,
 			// },
 			{
-				path: `${ROUTE_PATH.SALES}${ROUTE_PATH.RESOURCES}`,
-				element: <Resources />,
-			},
-			{
-				path: `${ROUTE_PATH.SALES}${ROUTE_PATH.ADD_PAPER}`,
-				element: <AddQuestionForm />,
-			},
-			{
-				path: `${ROUTE_PATH.SALES}${ROUTE_PATH.ASSESSMENT}`,
-				element: <Assessment />,
-			},
-			{
 				path: `${ROUTE_PATH.SALES}${ROUTE_PATH.REPORT}`,
 				element: <SalesReport />,
-			},
-			{
-				path: ROUTE_PATH.MODULE_SETUP,
-				element: <Setup />,
 			},
 			/* Project Management*/
 			{

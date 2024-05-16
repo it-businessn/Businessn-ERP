@@ -6,7 +6,7 @@ const Disburse = ({ checkedRows, handleDisburse }) => {
 	return (
 		<Button
 			isDisabled={checkedRows.length === 0}
-			w={{ lg: "400px" }}
+			w={{ lg: "300px" }}
 			bg={generateLighterShade(COLORS.primary, 0.9)}
 			color={"var(--primary_button_bg)"}
 			variant={"outlined"}
@@ -14,6 +14,7 @@ const Disburse = ({ checkedRows, handleDisburse }) => {
 			borderRadius={"10px"}
 			border={`1px solid var(--primary_button_bg)`}
 			onClick={handleDisburse}
+			size={"xs"}
 		>
 			Disburse Selected
 		</Button>

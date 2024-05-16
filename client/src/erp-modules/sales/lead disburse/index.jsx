@@ -198,10 +198,10 @@ const LeadsDisbursed = () => {
 					</HStack>
 				</Flex>
 			) : (
-				<Flex>
+				<HStack spacing={5} justify={"space-between"}>
 					{caption()}
 					<Spacer />
-					<HStack spacing={3}>
+					<HStack spacing={2}>
 						<Disburse
 							leads={leads}
 							checkedRows={checkedRows}
@@ -210,7 +210,7 @@ const LeadsDisbursed = () => {
 						{showRegion()}
 						{showFilterSearchOption()}
 					</HStack>
-				</Flex>
+				</HStack>
 			)}
 
 			{!agents && <Loader />}

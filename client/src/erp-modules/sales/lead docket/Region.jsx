@@ -6,6 +6,7 @@ const Region = () => {
 	return (
 		<Select
 			icon={<Icon as={FaCaretDown} />}
+			size={"sm"}
 			mt={{ base: "1em", md: 0 }}
 			border={"2px solid var(--filter_border_color)"}
 			borderRadius={"10px"}

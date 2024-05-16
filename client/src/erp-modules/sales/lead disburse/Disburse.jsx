@@ -14,6 +14,7 @@ const Disburse = ({ leads, checkedRows, handleDisburse }) => {
 			borderRadius={"10px"}
 			border={`1px solid var(--primary_button_bg)`}
 			onClick={handleDisburse}
+			size={"xs"}
 		>
 			Confirm Disbursement
 		</Button>

@@ -12,9 +12,11 @@ const LeftIconButton = ({
 	isFilter,
 	size = "xs",
 	borderRadius,
+	w,
 }) => {
 	return (
 		<Button
+			w={w}
 			size={size}
 			border={border}
 			onClick={handleClick}

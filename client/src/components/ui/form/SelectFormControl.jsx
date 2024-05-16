@@ -7,11 +7,12 @@ const SelectFormControl = ({
 	valueText,
 	handleChange,
 	options,
+	icon,
 }) => {
 	return (
 		<FormControlMain>
 			<FormLabel>{label}</FormLabel>
-			<Select name={name} value={valueText} onChange={handleChange}>
+			<Select name={name} value={valueText} icon={icon} onChange={handleChange}>
 				{options.map(({ name, value }) => (
 					<option key={value} value={value}>
 						{name}

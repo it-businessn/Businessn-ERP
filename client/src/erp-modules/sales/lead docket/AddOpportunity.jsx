@@ -86,8 +86,9 @@ const AddOpportunity = ({ data, setData }) => {
 				accept=".xlsx, .xls"
 				style={{ display: "none" }}
 			/>
-			<PrimaryButton onOpen={onOpen} name={"Add new lead"} />
+			<PrimaryButton onOpen={onOpen} name={"Add new lead"} size={"xs"} />
 			<IconButton
+				size={"xs"}
 				icon={<SiMicrosoftexcel />}
 				bg="var(--primary_button_bg)"
 				variant={"solid"}

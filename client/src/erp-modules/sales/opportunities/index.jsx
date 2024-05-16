@@ -1,6 +1,9 @@
 import {
 	Flex,
 	HStack,
+	Input,
+	InputGroup,
+	InputLeftElement,
 	Spacer,
 	Tbody,
 	Td,
@@ -9,10 +12,13 @@ import {
 } from "@chakra-ui/react";
 import Loader from "components/Loader";
 import SectionLayout from "components/ui/SectionLayout";
+import LeftIconButton from "components/ui/button/LeftIconButton";
 import PrimaryButton from "components/ui/button/PrimaryButton";
 import SelectList from "components/ui/form/select/SelectList";
 import TableLayout from "components/ui/table/TableLayout";
 import { useEffect, useState } from "react";
+import { FaSearch } from "react-icons/fa";
+import { MdOutlineFilterList } from "react-icons/md";
 import { useBreakpointValue } from "services/Breakpoint";
 import LeadsService from "services/LeadsService";
 import LocalStorageService from "services/LocalStorageService";
@@ -151,7 +157,7 @@ const Opportunities = () => {
 	};
 	const { isOpen, onOpen, onClose } = useDisclosure();
 	const createOpportunity = () => (
-		<PrimaryButton onOpen={onOpen} name={"Add new lead"} />
+		<PrimaryButton onOpen={onOpen} name={"Add new lead"} size={"xs"} />
 	);
 
 	return (
@@ -170,8 +176,42 @@ const Opportunities = () => {
 				<Flex>
 					<Caption title={"Opportunities"} />
 					<Spacer />
-					<HStack spacing={3}>
-						<SearchFilter />
+					<HStack w={{ lg: "50%" }} spacing={3} justify={"flex-end"}>
+						<LeftIconButton
+							color={"brand.nav_color"}
+							border={"2px solid var(--filter_border_color)"}
+							name={"Filter"}
+							borderRadius={"10px"}
+							variant={"ghost"}
+							isFilter
+							size="xs"
+							ml={2}
+							// handleClick={() => setShowEditDetails(true)}
+							icon={<MdOutlineFilterList />}
+						/>
+						<InputGroup
+							size="xs"
+							w={"40%"}
+							borderRadius={"10px"}
+							border={"1px solid var(--filter_border_color)"}
+							fontSize="xs"
+							fontWeight="bold"
+						>
+							<InputLeftElement size="xs" children={<FaSearch />} />
+							<Input
+								size="xs"
+								_placeholder={{
+									color: "brand.nav_color",
+									fontSize: "xs",
+								}}
+								color={"brand.nav_color"}
+								bg={"brand.primary_bg"}
+								type="text"
+								placeholder="Search here"
+								pr="4.5rem"
+								py={"1.1em"}
+							/>
+						</InputGroup>
 						{createOpportunity()}
 					</HStack>
 				</Flex>

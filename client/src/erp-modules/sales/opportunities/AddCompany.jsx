@@ -1,21 +1,7 @@
-import {
-	Alert,
-	AlertIcon,
-	Button,
-	FormControl,
-	FormLabel,
-	HStack,
-	Input,
-	Modal,
-	ModalBody,
-	ModalCloseButton,
-	ModalContent,
-	ModalHeader,
-	ModalOverlay,
-	Stack,
-	useDisclosure,
-} from "@chakra-ui/react";
-import PrimaryButton from "components/ui/button/PrimaryButton";
+import { Alert, AlertIcon, Stack, useDisclosure } from "@chakra-ui/react";
+import ActionButtonGroup from "components/ui/form/ActionButtonGroup";
+import InputFormControl from "components/ui/form/InputFormControl";
+import ModalLayout from "components/ui/modal/ModalLayout";
 import { useState } from "react";
 import LeadsService from "services/LeadsService";
 
@@ -41,65 +27,41 @@ const AddCompany = ({ showAddCompany, setShowAddCompany, setRefresh }) => {
 			setShowAddCompany(false);
 		}
 	};
+	const handleClose = () => {
+		onClose();
+		setShowAddCompany(false);
+	};
 	return (
-		<Modal
-			isCentered
-			size={"md"}
+		<ModalLayout
+			title={"Add New Company"}
+			size="md"
 			isOpen={showAddCompany}
-			onClose={() => {
-				onClose();
-				setShowAddCompany(false);
-			}}
+			onClose={handleClose}
 		>
-			<ModalOverlay />
-			<ModalContent>
-				<ModalHeader>Add New Company</ModalHeader>
-				<ModalCloseButton />
-				<ModalBody>
-					<Stack spacing="5">
-						<form onSubmit={handleSubmit}>
-							<Stack spacing={4}>
-								<FormControl>
-									<FormLabel>Company Name </FormLabel>
-									<Input
-										type="text"
-										name="name"
-										value={companyName}
-										onChange={(e) => setCompanyName(e.target.value)}
-										required
-									/>
-								</FormControl>
-
-								<HStack justifyContent={"end"}>
-									<PrimaryButton
-										isDisabled={companyName === ""}
-										name="Add"
-										isLoading={isSubmitting}
-										px="2em"
-									/>
-
-									<Button
-										onClick={() => {
-											onClose();
-											setShowAddCompany(false);
-										}}
-										colorScheme="gray"
-									>
-										Cancel
-									</Button>
-								</HStack>
-							</Stack>
-						</form>
-						{error && (
-							<Alert status="error" mt={4}>
-								<AlertIcon />
-								{error}
-							</Alert>
-						)}
-					</Stack>
-				</ModalBody>
-			</ModalContent>
-		</Modal>
+			<form onSubmit={handleSubmit}>
+				<Stack spacing={4}>
+					<InputFormControl
+						label={"Company Name"}
+						name="name"
+						valueText={companyName}
+						handleChange={(e) => setCompanyName(e.target.value)}
+						required
+					/>
+					<ActionButtonGroup
+						submitBtnName={"Add"}
+						isDisabled={companyName === ""}
+						isLoading={isSubmitting}
+						onClose={handleClose}
+					/>
+				</Stack>
+			</form>
+			{error && (
+				<Alert status="error" mt={4}>
+					<AlertIcon />
+					{error}
+				</Alert>
+			)}
+		</ModalLayout>
 	);
 };
 

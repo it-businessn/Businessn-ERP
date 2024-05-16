@@ -1,5 +1,6 @@
-import { Box, SimpleGrid, Text } from "@chakra-ui/react";
+import { Box, SimpleGrid } from "@chakra-ui/react";
 import Loader from "components/Loader";
+import TextTitle from "components/ui/text/TextTitle";
 import { useEffect, useState } from "react";
 import LocalStorageService from "services/LocalStorageService";
 import ResourceService from "services/ResourceService";
@@ -55,9 +56,7 @@ const Resources = () => {
 	];
 	return (
 		<Box p={{ base: "1em", md: "2em" }} overflow={"auto"}>
-			<Text fontWeight="bold" mb={"1em"}>
-				Resources
-			</Text>
+			<TextTitle title="Resources" mb={"1em"} />
 			<SimpleGrid
 				columns={{ base: 1, md: 1, lg: 2 }}
 				spacing="1em"

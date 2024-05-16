@@ -8,9 +8,11 @@ const TextTitle = ({
 	color,
 	width,
 	align,
+	mt,
 }) => (
 	<Text
 		fontWeight={weight}
+		mt={mt}
 		mb={mb}
 		fontSize={size}
 		color={color}

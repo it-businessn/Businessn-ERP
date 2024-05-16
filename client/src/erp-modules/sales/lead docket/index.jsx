@@ -4,6 +4,9 @@ import {
 	Checkbox,
 	Flex,
 	HStack,
+	Input,
+	InputGroup,
+	InputLeftElement,
 	Spacer,
 	Tbody,
 	Td,
@@ -12,6 +15,7 @@ import {
 } from "@chakra-ui/react";
 import Loader from "components/Loader";
 import SectionLayout from "components/ui/SectionLayout";
+import LeftIconButton from "components/ui/button/LeftIconButton";
 import SelectList from "components/ui/form/select/SelectList";
 import TableLayout from "components/ui/table/TableLayout";
 import {
@@ -21,6 +25,8 @@ import {
 	REGIONS,
 } from "erp-modules/project-management/workview/project/data";
 import { useEffect, useState } from "react";
+import { FaSearch } from "react-icons/fa";
+import { MdOutlineFilterList } from "react-icons/md";
 import { useNavigate } from "react-router";
 import { useBreakpointValue } from "services/Breakpoint";
 import LeadsService from "services/LeadsService";
@@ -149,20 +155,56 @@ const LeadsDocket = () => {
 					</HStack>
 				</Flex>
 			) : (
-				<Flex>
+				<HStack spacing={5} justify={"space-between"}>
 					<Caption title={"Lead Docket"} />
 					<Spacer />
-					<HStack spacing={3}>
+					<HStack spacing={2}>
 						<Spacer />
 						<Disburse
 							checkedRows={checkedRows}
 							handleDisburse={handleDisburse}
 						/>
 						<Region />
-						<SearchFilter width={"200px"} />
+						<LeftIconButton
+							color={"brand.nav_color"}
+							border={"2px solid var(--filter_border_color)"}
+							name={"Filter"}
+							borderRadius={"10px"}
+							variant={"ghost"}
+							isFilter
+							size="xs"
+							ml={2}
+							w={{ lg: "150px" }}
+							// handleClick={() => setShowEditDetails(true)}
+							icon={<MdOutlineFilterList />}
+						/>
+						<InputGroup
+							size="xs"
+							w={"40%"}
+							borderRadius={"10px"}
+							border={"1px solid var(--filter_border_color)"}
+							fontSize="xs"
+							fontWeight="bold"
+						>
+							<InputLeftElement size="xs" children={<FaSearch />} />
+							<Input
+								w={{ lg: "200px" }}
+								size="xs"
+								_placeholder={{
+									color: "brand.nav_color",
+									fontSize: "xs",
+								}}
+								color={"brand.nav_color"}
+								bg={"brand.primary_bg"}
+								type="text"
+								placeholder="Search here"
+								pr="4.5rem"
+								py={"1.1em"}
+							/>
+						</InputGroup>
 						<AddOpportunity data={data} setData={setData} />
 					</HStack>
-				</Flex>
+				</HStack>
 			)}
 			{!leads && <Loader />}
 			{leads && (
