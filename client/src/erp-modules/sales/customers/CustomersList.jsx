@@ -1,10 +1,8 @@
 import {
 	Box,
-	Button,
 	Flex,
 	HStack,
 	Icon,
-	IconButton,
 	Input,
 	InputGroup,
 	InputLeftElement,
@@ -12,17 +10,18 @@ import {
 	Table,
 	Tbody,
 	Td,
-	Text,
 	Th,
 	Thead,
 	Tr,
 } from "@chakra-ui/react";
 import Loader from "components/Loader";
-import RightIconButton from "components/ui/button/RightIconButton";
+import HighlightButton from "components/ui/button/HighlightButton";
+import LeftIconButton from "components/ui/button/LeftIconButton";
+import PrimaryButton from "components/ui/button/PrimaryButton";
+import TextTitle from "components/ui/text/TextTitle";
 import { FaSearch } from "react-icons/fa";
 import { MdOutlineFilterList } from "react-icons/md";
 import { PiUserSquareBold } from "react-icons/pi";
-import { RiMore2Fill } from "react-icons/ri";
 import { useBreakpointValue } from "services/Breakpoint";
 import { generateLighterShade } from "utils";
 
@@ -33,9 +32,7 @@ const CustomersList = ({ contacts, handleProfileView }) => {
 	};
 	return (
 		<>
-			<Text fontWeight="bold" mb={"0.5em"}>
-				Customers
-			</Text>
+			<TextTitle title="Customers" mb={"0.5em"} />
 			<Box
 				p="1em"
 				bg={"brand.primary_bg"}
@@ -46,29 +43,21 @@ const CustomersList = ({ contacts, handleProfileView }) => {
 				{isMobile ? (
 					<Flex flexDir="column">
 						<Flex justify="space-between">
-							<Text fontWeight="bold">Customers</Text>
-							<Button
-								bg="var(--primary_button_bg)"
-								size="xs"
-								color={"brand.primary_bg"}
-								variant={"solid"}
-								_hover={{ color: "brand.600" }}
-								borderRadius={"10px"}
-							>
-								Add new customer
-							</Button>
+							<TextTitle title="Customers" mb={"0.5em"} />
+							<PrimaryButton name={"Add new customer"} size={"xs"} />
 						</Flex>
 						<HStack spacing="1em" mt="1em">
-							<Button
+							<LeftIconButton
 								color={"brand.nav_color"}
-								leftIcon={<MdOutlineFilterList />}
 								border={"2px solid var(--filter_border_color)"}
+								name={"Filter"}
 								borderRadius={"10px"}
 								variant={"ghost"}
-								_hover={{ color: "brand.600", bg: "transparent" }}
-							>
-								Filter
-							</Button>
+								isFilter
+								size="md"
+								// handleClick={() => setShowEditDetails(true)}
+								icon={<MdOutlineFilterList />}
+							/>
 							<InputGroup
 								borderRadius={"10px"}
 								border={"1px solid var(--filter_border_color)"}
@@ -92,21 +81,21 @@ const CustomersList = ({ contacts, handleProfileView }) => {
 					</Flex>
 				) : (
 					<Flex>
-						<Text fontWeight="bold">Customers</Text>
+						<TextTitle title="Customers" />
 						<Spacer />
 						<HStack w={{ lg: "50%" }} spacing={3} justify={"flex-end"}>
-							<Button
+							<LeftIconButton
 								color={"brand.nav_color"}
-								size="xs"
-								leftIcon={<MdOutlineFilterList />}
 								border={"2px solid var(--filter_border_color)"}
+								name={"Filter"}
 								borderRadius={"10px"}
 								variant={"ghost"}
-								_hover={{ color: "brand.600", bg: "transparent" }}
+								isFilter
+								size="xs"
 								ml={2}
-							>
-								Filter
-							</Button>
+								// handleClick={() => setShowEditDetails(true)}
+								icon={<MdOutlineFilterList />}
+							/>
 							<InputGroup
 								size="xs"
 								w={"40%"}
@@ -120,7 +109,7 @@ const CustomersList = ({ contacts, handleProfileView }) => {
 									size="xs"
 									_placeholder={{
 										color: "brand.nav_color",
-										fontSize: "sm",
+										fontSize: "xs",
 									}}
 									color={"brand.nav_color"}
 									bg={"brand.primary_bg"}
@@ -130,16 +119,7 @@ const CustomersList = ({ contacts, handleProfileView }) => {
 									py={"1.1em"}
 								/>
 							</InputGroup>
-							<Button
-								bg="var(--primary_button_bg)"
-								size="xs"
-								color={"brand.primary_bg"}
-								variant={"solid"}
-								_hover={{ color: "brand.600" }}
-								borderRadius={"10px"}
-							>
-								Add new customer
-							</Button>
+							<PrimaryButton name={"Add new customer"} size={"xs"} />
 						</HStack>
 					</Flex>
 				)}
@@ -176,28 +156,25 @@ const CustomersList = ({ contacts, handleProfileView }) => {
 													borderRadius={"10px"}
 												>
 													<Icon as={PiUserSquareBold} />
-													<Text>
-														{meetings.length === 0
-															? "No history"
-															: meetings.length}
-													</Text>
+													<TextTitle
+														weight="normal"
+														title={
+															meetings.length === 0
+																? "No history"
+																: meetings.length
+														}
+													/>
 												</HStack>
 											</Flex>
 										</Td>
 										<Td fontSize={"xs"}>
 											<HStack>
-												<Button
-													bgGradient="linear-gradient(58deg, rgb(115 70 236) 0%, rgb(136 107 217) 43%, rgb(50 240 218) 100%)"
-													bgClip="text"
-													size={"xxs"}
-													_hover={{ color: "transparent" }}
+												<HighlightButton
+													name={"See full profile"}
 													onClick={() => {
 														handleProfileView(_id);
 													}}
-												>
-													See full profile
-													<RightIconButton />
-												</Button>
+												/>
 											</HStack>
 										</Td>
 										{/* <Td>

@@ -131,12 +131,12 @@ export const router = createBrowserRouter([
 				element: <Calendar />,
 			},
 			{
-				path: `${ROUTE_PATH.SALES}${ROUTE_PATH.PAYOUT}`,
-				element: <Payouts />,
-			},
-			{
 				path: `${ROUTE_PATH.SALES}${ROUTE_PATH.CUSTOMERS}`,
 				element: <Customers />,
+			},
+			{
+				path: `${ROUTE_PATH.SALES}${ROUTE_PATH.PAYOUT}`,
+				element: <Payouts />,
 			},
 			{
 				path: `${ROUTE_PATH.SALES}${ROUTE_PATH.CUSTOMERS}${ROUTE_PATH.CUST_PROFILE}`,

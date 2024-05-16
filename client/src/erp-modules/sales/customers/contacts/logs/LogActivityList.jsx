@@ -1,12 +1,5 @@
-import {
-	Badge,
-	Box,
-	Card,
-	CardBody,
-	HStack,
-	Text,
-	VStack,
-} from "@chakra-ui/react";
+import { Badge, Box, Card, CardBody, HStack, VStack } from "@chakra-ui/react";
+import TextTitle from "components/ui/text/TextTitle";
 import moment from "moment";
 
 const LogActivityList = ({ activities, showLogForm }) => {
@@ -18,12 +11,15 @@ const LogActivityList = ({ activities, showLogForm }) => {
 						<CardBody>
 							<HStack justifyContent="space-between">
 								<Badge bg="brand.logo_bg">{activity.type}</Badge>
-								<Text fontSize="sm" color="gray.500">
-									{moment(activity.date).format("MMM DD, YYYY hh:mm A Z")}
-								</Text>
+								<TextTitle
+									mb={2}
+									size="sm"
+									color="gray.500"
+									title={moment(activity.date).format("MMM DD, YYYY hh:mm A Z")}
+								/>
 							</HStack>
-							<Text mt={2}>Description: {activity.description}</Text>
-							<Text>Duration: {activity.duration} minutes</Text>
+							<TextTitle title={`Description: ${activity.description}`} />
+							<TextTitle title={`Duration: ${activity.duration} minutes`} />
 						</CardBody>
 					</Card>
 				))}

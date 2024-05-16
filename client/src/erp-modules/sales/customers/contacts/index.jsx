@@ -1,19 +1,11 @@
-import {
-	Box,
-	Flex,
-	IconButton,
-	Tab,
-	TabList,
-	TabPanel,
-	TabPanels,
-	Tabs,
-} from "@chakra-ui/react";
+import { Box, Flex, IconButton } from "@chakra-ui/react";
 import Loader from "components/Loader";
+import TabGroup from "components/ui/tab";
 import { useEffect, useState } from "react";
 import { FaArrowLeft } from "react-icons/fa";
 import { useNavigate, useParams } from "react-router-dom";
 import ContactService from "services/ContactService";
-import ContactDetailsForm from "./ContactDetailsForm";
+import ContactDetailsInfo from "./ContactDetailsInfo";
 import Logs from "./logs";
 import Meetings from "./meeting";
 import Notes from "./notes/Notes";
@@ -48,12 +40,14 @@ const Contacts = ({ setViewProfile, selectedContact }) => {
 	const handleTabChange = (index) => {
 		setCurrentTab(index);
 	};
-	const tabs = ["Notes", "Logs", "Tasks", "Meetings"];
 
-	const tabList = tabs.map((item, index) => ({
-		id: index,
-		name: item,
-	}));
+	const tabList = [
+		{ name: "Notes", component: <Notes contactId={contact?._id} /> },
+		{ name: "Logs", component: <Logs contactId={contact?._id} /> },
+		{ name: "Tasks", component: <Tasks contactId={contact?._id} /> },
+		{ name: "Meetings", component: <Meetings contactId={contact?._id} /> },
+	];
+
 	const [filter, setFilter] = useState("");
 	// const [showList, setShowList] = useState(false);
 	// const filteredContacts = contact.filter(
@@ -123,48 +117,17 @@ const Contacts = ({ setViewProfile, selectedContact }) => {
 								</PopoverContent>
 							)}
 						</Popover> */}
-						<ContactDetailsForm
+						<ContactDetailsInfo
 							contact={contact.leadId}
 							showLogForm={handleButtonClick}
 						/>
 					</Box>
 					<Box flex="2" bg="var(--lead_cards_bg)">
-						<Tabs
-							isFitted
-							variant="enclosed"
-							index={currentTab}
-							onChange={handleTabChange}
-						>
-							<TabList>
-								{tabList.map((tab) => (
-									<Tab
-										key={tab.id}
-										bg={
-											currentTab === tab.id
-												? "brand.primary_button_bg"
-												: undefined
-										}
-										color={currentTab === tab.id ? "brand.100" : undefined}
-									>
-										{tab.name}
-									</Tab>
-								))}
-							</TabList>
-							<TabPanels>
-								<TabPanel>
-									<Notes contactId={contact?._id} />
-								</TabPanel>
-								<TabPanel>
-									<Logs contactId={contact?._id} />
-								</TabPanel>
-								<TabPanel>
-									<Tasks contactId={contact?._id} />
-								</TabPanel>
-								<TabPanel>
-									<Meetings contactId={contact?._id} />
-								</TabPanel>
-							</TabPanels>
-						</Tabs>
+						<TabGroup
+							currentTab={currentTab}
+							handleTabChange={handleTabChange}
+							data={tabList}
+						/>
 					</Box>
 				</>
 			)}

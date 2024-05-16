@@ -17,9 +17,11 @@ import {
 	VStack,
 	useDisclosure,
 } from "@chakra-ui/react";
+import TextTitle from "components/ui/text/TextTitle";
+import React from "react";
 import { FaBuilding } from "react-icons/fa";
 
-const ContactDetailsForm = ({ contact, showLogForm }) => {
+const ContactDetailsInfo = ({ contact, showLogForm }) => {
 	const { isOpen: isProfileOpen, onToggle: onProfileToggle } = useDisclosure({
 		defaultIsOpen: true,
 	});
@@ -65,6 +67,34 @@ const ContactDetailsForm = ({ contact, showLogForm }) => {
 		// 	icon: <EmailIcon />,	label: "Email",
 		// },
 	];
+	const DETAILS = [
+		{
+			title: "Name",
+			value: companyName,
+		},
+		{
+			title: "Industry Type",
+			value: industry,
+		},
+		{
+			title: "Address",
+			value: `${streetNumber} ${city} ${state} ${country} ${postalCode}`,
+		},
+	];
+	const DETAILS2 = [
+		{
+			title: "Name",
+			value: primaryAssignee[0].name,
+		},
+		{
+			title: "Email",
+			value: email,
+		},
+		{
+			title: "Phone Number",
+			value: phone,
+		},
+	];
 	return (
 		<>
 			<VStack align="center" justify="center" mb={3}>
@@ -77,12 +107,11 @@ const ContactDetailsForm = ({ contact, showLogForm }) => {
 					<FaBuilding className="header-logo" />
 				</Avatar>
 				<Box textAlign="center">
-					<Text fontSize="xl" fontWeight="bold">
-						{companyName}
-					</Text>
-					<Text fontSize="sm" fontWeight="bold">
-						Primary Contact: {primaryAssignee[0].name}
-					</Text>
+					<TextTitle size="xl" title={companyName} />
+					<TextTitle
+						size="sm"
+						title={`Primary Contact: ${primaryAssignee[0].name}`}
+					/>
 				</Box>
 			</VStack>
 			<HStack spacing="5" justifyContent="center">
@@ -114,12 +143,13 @@ const ContactDetailsForm = ({ contact, showLogForm }) => {
 				</Button>
 				<Collapse in={isCompanyOpen}>
 					<Box p="4">
-						<Text color="brand.400"> Name: </Text>
-						<Text mb="2">{companyName}</Text>
-						<Text color="brand.400">Industry Type:</Text>
-						<Text mb="2">{industry}</Text>
-						<Text color="brand.400">Address:</Text>
-						<Text mb="2">{`${streetNumber} ${city} ${state} ${country} ${postalCode}`}</Text>
+						{DETAILS.map(({ title, value }) => (
+							<React.Fragment key={title}>
+								<TextTitle size={"sm"} title={title} />
+								<TextTitle size={"sm"} mb="2" weight="normal" title={value} />
+							</React.Fragment>
+						))}
+
 						{/* <Text color="brand.400">Website :</Text>
 						<Text mb="2">{contact?.revenue}</Text>
 						<Text color="brand.400">Employees:</Text>
@@ -139,14 +169,13 @@ const ContactDetailsForm = ({ contact, showLogForm }) => {
 				<Collapse in={isProfileOpen}>
 					{contact && (
 						<Box p="4">
-							<Text color="brand.400">Name: </Text>
-							<Text mb="2">{primaryAssignee[0].name}</Text>
-							{/* <Text color="brand.400">Last Name:</Text>
-							<Text mb="2">{contact?.lastName}</Text> */}
-							<Text color="brand.400">Email:</Text>
-							<Text mb="2">{email}</Text>
-							<Text color="brand.400">Phone Number:</Text>
-							<Text mb="2">{phone}</Text>
+							{DETAILS2.map(({ title, value }) => (
+								<React.Fragment key={title}>
+									<TextTitle size={"sm"} title={title} />
+									<TextTitle size={"sm"} mb="2" weight="normal" title={value} />
+								</React.Fragment>
+							))}
+
 							{/* <Text color="brand.400">Business Address:</Text>
 							<Text mb="2">{contact?.primaryContactAddress}</Text> */}
 						</Box>
@@ -157,4 +186,4 @@ const ContactDetailsForm = ({ contact, showLogForm }) => {
 	);
 };
 
-export default ContactDetailsForm;
+export default ContactDetailsInfo;

@@ -1,15 +1,9 @@
-import {
-	Button,
-	Flex,
-	FormControl,
-	FormLabel,
-	Input,
-	Radio,
-	RadioGroup,
-	Stack,
-	Textarea,
-	VStack,
-} from "@chakra-ui/react";
+import { Flex, VStack } from "@chakra-ui/react";
+import PrimaryButton from "components/ui/button/PrimaryButton";
+import DateTimeFormControl from "components/ui/form/DateTimeFormControl";
+import InputFormControl from "components/ui/form/InputFormControl";
+import RadioFormControl from "components/ui/form/RadioFormControl";
+import TextAreaFormControl from "components/ui/form/TextAreaFormControl";
 import { useEffect, useState } from "react";
 import "react-datepicker/dist/react-datepicker.css";
 import CalendarService from "services/CalendarService";
@@ -77,109 +71,72 @@ const Meetings = ({ contactId }) => {
 	return (
 		<VStack spacing="4" p="4">
 			<form className="tab-form">
-				<FormControl isRequired>
-					<FormLabel>Meeting Type</FormLabel>
-					<RadioGroup
-						defaultValue="virtual"
-						onChange={handleRadioChange}
-						name="type"
-					>
-						<Stack direction="row">
-							<Radio value="virtual">Virtual</Radio>
-							<Radio value="inPerson">In-Person</Radio>
-						</Stack>
-					</RadioGroup>
-				</FormControl>
-				<FormControl isRequired>
-					<FormLabel>Meeting Description</FormLabel>
-					<Textarea
-						name="description"
-						value={formData.description}
-						onChange={handleChange}
-						required
-					/>
-				</FormControl>
-				<FormControl isRequired>
-					<FormLabel>Required Attendees</FormLabel>
-					<Input
-						type="text"
-						name="attendees"
-						value={formData.attendees}
-						onChange={handleChange}
-						required
-					/>
-				</FormControl>
-				<FormControl isRequired>
-					<FormLabel>Location </FormLabel>
-					<Input
-						type="text"
-						name="location"
-						value={formData.location}
-						onChange={handleChange}
-						required
-					/>
-				</FormControl>
+				<RadioFormControl
+					label={"Meeting Type"}
+					handleChange={handleRadioChange}
+					options={[
+						{ name: "Virtual", value: "virtual" },
+						{ name: "In-Person", value: "inPerson" },
+					]}
+					isRequired
+				/>
+				<TextAreaFormControl
+					label={"Meeting Description"}
+					name="description"
+					valueText={formData.description}
+					handleChange={handleChange}
+					required
+				/>
+				<InputFormControl
+					label={"Required Attendees"}
+					name="attendees"
+					valueText={formData.attendees}
+					handleChange={handleChange}
+					required
+				/>
+				<InputFormControl
+					label={"Location"}
+					name="location"
+					valueText={formData.location}
+					handleChange={handleChange}
+					required
+				/>
 				<Flex>
-					<FormControl flex="1">
-						<FormLabel>From</FormLabel>
-						<Input
-							type="date"
-							name="fromDate"
-							value={formData.fromDate}
-							onChange={handleChange}
-							required
-						/>
-					</FormControl>
-					<FormControl flex="1">
-						<FormLabel>Time</FormLabel>
-						<Input
-							type="time"
-							name="fromTime"
-							value={formData.fromTime}
-							onChange={handleChange}
-							required
-						/>
-					</FormControl>
+					<DateTimeFormControl
+						label={"From"}
+						valueText1={formData.fromDate}
+						valueText2={formData.fromTime}
+						name1="fromDate"
+						name2="fromTime"
+						handleChange={handleChange}
+						required
+					/>
 				</Flex>
 				<Flex>
-					<FormControl flex="1">
-						<FormLabel>To</FormLabel>
-						<Input
-							type="date"
-							name="toDate"
-							value={formData.toDate}
-							onChange={handleChange}
-							required
-						/>
-					</FormControl>
-					<FormControl flex="1">
-						<FormLabel>Time</FormLabel>
-						<Input
-							type="time"
-							name="toTime"
-							value={formData.toTime}
-							onChange={handleChange}
-							required
-						/>
-					</FormControl>
-				</Flex>
-				<FormControl>
-					<FormLabel>Meeting Link</FormLabel>
-					<Textarea
-						name="meetingLink"
-						value={formData.meetingLink}
-						onChange={handleChange}
+					<DateTimeFormControl
+						label={"To"}
+						valueText1={formData.toDate}
+						valueText2={formData.toTime}
+						name1="toDate"
+						name2="toTime"
+						handleChange={handleChange}
 						required
 					/>
-				</FormControl>
-				<Button
-					isDisabled={formData.description === ""}
+				</Flex>
+				<TextAreaFormControl
+					label={"Meeting Link"}
+					name="meetingLink"
+					valueText={formData.meetingLink}
+					handleChange={handleChange}
+					required
+				/>
+				<PrimaryButton
+					name={"Add Meeting"}
+					size={"sm"}
 					mt={4}
-					onClick={handleSubmit}
-					bg="brand.logo_bg"
-				>
-					Add Meeting
-				</Button>
+					isDisabled={formData.description === ""}
+					onOpen={handleSubmit}
+				/>
 			</form>
 			{meetings?.length && <MeetingList meetings={meetings} />}
 		</VStack>

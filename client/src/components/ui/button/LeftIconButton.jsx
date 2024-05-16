@@ -1,18 +1,32 @@
 import { Button } from "@chakra-ui/react";
 
-const LeftIconButton = ({ handleClick, icon, name, flex, colorScheme }) => {
+const LeftIconButton = ({
+	handleClick,
+	icon,
+	name,
+	flex,
+	colorScheme,
+	color = "brand.100",
+	border,
+	variant = "outline",
+	isFilter,
+	size = "xs",
+	borderRadius,
+}) => {
 	return (
 		<Button
-			size={"xs"}
+			size={size}
+			border={border}
 			onClick={handleClick}
 			flex={flex}
-			color={!colorScheme && "brand.100"}
-			bg={!colorScheme && "var(--primary_button_bg)"}
+			color={!colorScheme && color}
+			bg={!colorScheme && !isFilter && "var(--primary_button_bg)"}
 			colorScheme={colorScheme}
-			variant={"outline"}
-			fontWeight={"bold"}
+			variant={variant}
+			fontWeight={!isFilter && "bold"}
 			_hover={{ bg: "transparent", color: "brand.600" }}
 			leftIcon={icon}
+			borderRadius={borderRadius}
 		>
 			{name}
 		</Button>

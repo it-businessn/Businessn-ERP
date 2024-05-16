@@ -7,16 +7,19 @@ const InputFormControl = ({
 	handleChange,
 	required,
 	name,
+	placeholder,
+	type = "text",
 }) => {
 	return (
 		<FormControlMain>
 			<FormLabel>{label}</FormLabel>
 			<Input
-				type="text"
+				type={type}
 				name={name}
 				value={valueText}
 				onChange={handleChange}
 				required={required}
+				placeholder={placeholder}
 			/>
 		</FormControlMain>
 	);

@@ -1,7 +1,6 @@
 import {
 	Badge,
 	Box,
-	Button,
 	Card,
 	CardBody,
 	Checkbox,
@@ -9,11 +8,13 @@ import {
 	FormControl,
 	FormLabel,
 	HStack,
-	Input,
 	Spacer,
 	Text,
 	VStack,
 } from "@chakra-ui/react";
+import PrimaryButton from "components/ui/button/PrimaryButton";
+import InputFormControl from "components/ui/form/InputFormControl";
+import TextTitle from "components/ui/text/TextTitle";
 import moment from "moment";
 import { useEffect, useState } from "react";
 import ReactDatePicker from "react-datepicker";
@@ -68,15 +69,13 @@ const Tasks = ({ contactId }) => {
 		<Box>
 			<VStack spacing={4}>
 				<form className="tab-form">
-					<FormControl id="taskName" isRequired>
-						<FormLabel>Task Name</FormLabel>
-						<Input
-							type="text"
-							placeholder="Enter task name"
-							value={taskName}
-							onChange={(e) => setTaskName(e.target.value)}
-						/>
-					</FormControl>
+					<InputFormControl
+						label={"Task Name"}
+						valueText={taskName}
+						placeholder="Enter task name"
+						handleChange={(e) => setTaskName(e.target.value)}
+						required
+					/>
 
 					<FormControl id="dueDate" isRequired>
 						<FormLabel>Due Date</FormLabel>
@@ -88,15 +87,13 @@ const Tasks = ({ contactId }) => {
 							placeholderText="Select due date"
 						/>
 					</FormControl>
-
-					<Button
+					<PrimaryButton
+						name={"Add Task"}
+						size={"sm"}
 						mt={4}
 						isDisabled={taskName === ""}
-						bg="brand.logo_bg"
-						onClick={handleAddTask}
-					>
-						Add Task
-					</Button>
+						onOpen={handleAddTask}
+					/>
 				</form>
 				<Box w="100%">
 					{/* <Text fontSize="xl" fontWeight="bold" mb={4}>
@@ -104,7 +101,7 @@ const Tasks = ({ contactId }) => {
           </Text> */}
 					<VStack spacing={4} w="100%">
 						{tasks.length > 0 &&
-							tasks.map((task, index) => (
+							tasks.map((task) => (
 								<Card key={task} borderWidth="1px" borderRadius="lg" w="100%">
 									<CardBody>
 										<VStack alignItems="start" spacing={4}>
@@ -125,12 +122,13 @@ const Tasks = ({ contactId }) => {
 													<Text>{task.name}</Text>
 												</HStack>
 												<Spacer />
-												<Text color="brand.400">
-													Due Date:
-													{moment(task?.dueDate).format(
+												<TextTitle
+													color="brand.400"
+													weight="normal"
+													title={`Due Date: ${moment(task?.dueDate).format(
 														"MMM DD, YYYY hh:mm A Z",
-													)}
-												</Text>
+													)}`}
+												/>
 											</Flex>
 										</VStack>
 									</CardBody>

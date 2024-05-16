@@ -11,9 +11,11 @@ const PrimaryButton = ({
 	size,
 	minW,
 	flex,
+	mt,
 }) => {
 	return (
 		<Button
+			mt={mt}
 			flex={flex}
 			minW={minW}
 			isDisabled={isDisabled}

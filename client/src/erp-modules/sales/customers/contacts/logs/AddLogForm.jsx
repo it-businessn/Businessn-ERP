@@ -1,12 +1,8 @@
-import {
-	Button,
-	FormControl,
-	FormLabel,
-	Input,
-	Select,
-	Textarea,
-	VStack,
-} from "@chakra-ui/react";
+import { VStack } from "@chakra-ui/react";
+import PrimaryButton from "components/ui/button/PrimaryButton";
+import InputFormControl from "components/ui/form/InputFormControl";
+import SelectFormControl from "components/ui/form/SelectFormControl";
+import TextAreaFormControl from "components/ui/form/TextAreaFormControl";
 import { useState } from "react";
 
 const AddLogForm = ({ onSave }) => {
@@ -33,46 +29,46 @@ const AddLogForm = ({ onSave }) => {
 	return (
 		<VStack spacing="4" p="4" width="100%">
 			<form className="tab-form">
-				<FormControl>
-					<FormLabel>Type of Activity</FormLabel>
-					<Select
-						name="type"
-						value={logActivity.type}
-						onChange={handleInputChange}
-					>
-						<option value="meeting">Meeting</option>
-						<option value="email">Email</option>
-						<option value="call">Phone Call</option>
-					</Select>
-				</FormControl>
-
-				<FormControl>
-					<FormLabel>Duration (minutes)</FormLabel>
-					<Input
-						type="number"
-						name="duration"
-						value={logActivity.duration}
-						onChange={handleInputChange}
-					/>
-				</FormControl>
-
-				<FormControl>
-					<FormLabel>Description</FormLabel>
-					<Textarea
-						name="description"
-						value={logActivity.description}
-						onChange={handleInputChange}
-					/>
-				</FormControl>
-
-				<Button
+				<SelectFormControl
+					name="type"
+					label={"Type of Activity"}
+					valueText={logActivity.type}
+					handleChange={handleInputChange}
+					options={[
+						{
+							name: "Meeting",
+							value: "meeting",
+						},
+						{
+							name: "Email",
+							value: "email",
+						},
+						{
+							name: "Phone Call",
+							value: "phoneCall",
+						},
+					]}
+				/>
+				<InputFormControl
+					label={"Duration (minutes)"}
+					name="duration"
+					type="number"
+					valueText={logActivity.duration}
+					handleChange={handleInputChange}
+				/>
+				<TextAreaFormControl
+					label={"Description"}
+					name="description"
+					valueText={logActivity.description}
+					handleChange={handleInputChange}
+				/>
+				<PrimaryButton
+					name={"Save Activity"}
+					size={"sm"}
 					mt={4}
 					isDisabled={logActivity.description === ""}
-					bg="brand.logo_bg"
-					onClick={handleSubmit}
-				>
-					Save Activity
-				</Button>
+					onOpen={handleSubmit}
+				/>
 			</form>
 		</VStack>
 	);
