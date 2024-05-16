@@ -8,9 +8,14 @@ const PrimaryButton = ({
 	loadingText,
 	isDisabled = false,
 	ml,
+	size,
+	minW,
+	flex,
 }) => {
 	return (
 		<Button
+			flex={flex}
+			minW={minW}
 			isDisabled={isDisabled}
 			isLoading={isLoading}
 			onClick={onOpen}
@@ -23,6 +28,7 @@ const PrimaryButton = ({
 				border: "1px solid var(--primary_button_bg)",
 			}}
 			ml={ml}
+			size={size}
 			type="submit"
 			borderRadius={"10px"}
 			loadingText={loadingText}

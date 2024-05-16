@@ -1,12 +1,14 @@
 import { Button } from "@chakra-ui/react";
 
-const LeftIconButton = ({ handleClick, icon, name }) => {
+const LeftIconButton = ({ handleClick, icon, name, flex, colorScheme }) => {
 	return (
 		<Button
 			size={"xs"}
 			onClick={handleClick}
-			color={"brand.100"}
-			bg={"var(--primary_button_bg)"}
+			flex={flex}
+			color={!colorScheme && "brand.100"}
+			bg={!colorScheme && "var(--primary_button_bg)"}
+			colorScheme={colorScheme}
 			variant={"outline"}
 			fontWeight={"bold"}
 			_hover={{ bg: "transparent", color: "brand.600" }}

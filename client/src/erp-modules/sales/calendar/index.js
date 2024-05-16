@@ -1,5 +1,7 @@
-import { Box, Button, Flex, HStack, Spacer, Text } from "@chakra-ui/react";
+import { Box, Button, Flex, HStack, Spacer } from "@chakra-ui/react";
 import Loader from "components/Loader";
+import PrimaryButton from "components/ui/button/PrimaryButton";
+import TextTitle from "components/ui/text/TextTitle";
 import moment from "moment";
 import { useEffect, useState } from "react";
 import { Calendar as BigCalendar, momentLocalizer } from "react-big-calendar";
@@ -124,9 +126,7 @@ const Calendar = () => {
 				py={isMobile ? 1 : 4}
 				flexDir={isMobile && "column"}
 			>
-				<Text fontWeight="bold" mb={isMobile && "0.5em"}>
-					All Events
-				</Text>
+				<TextTitle title={"All Events"} mb={isMobile && "0.5em"} />
 				<Spacer />
 				<HStack justifyContent={isMobile && "space-between"} spacing={"1em"}>
 					<Button
@@ -141,18 +141,14 @@ const Calendar = () => {
 					>
 						{toolbar.label}
 					</Button>
-					<Button
-						minW={"150px"}
-						bg={"var(--primary_button_bg)"}
+					<PrimaryButton
 						size="xs"
-						color={"brand.primary_bg"}
-						variant={"solid"}
-						_hover={{ color: "brand.600" }}
-						borderRadius={"10px"}
-						onClick={() => setShowModal(true)}
-					>
-						Create Event
-					</Button>
+						minW={"150px"}
+						name={"Create Event"}
+						isLoading={isLoading}
+						loadingText="Loading"
+						onOpen={() => setShowModal(true)}
+					/>
 				</HStack>
 			</Flex>
 		);
@@ -167,9 +163,7 @@ const Calendar = () => {
 			pl={"10px"}
 			borderLeft={`4px solid ${event.color}`}
 		>
-			<Text fontWeight="bold" fontSize="xs">
-				{event.title}
-			</Text>
+			<TextTitle title={event.title} size="xs" />
 			<Button
 				p={0}
 				color={event.color}
@@ -185,9 +179,7 @@ const Calendar = () => {
 	);
 	return (
 		<Box p={{ base: "1em", md: "2em" }} mb={"1em"}>
-			<Text fontWeight="bold" mb={"0.5em"}>
-				Calendar
-			</Text>
+			<TextTitle title="Calendar" mb={"0.5em"} />
 			{!events && <Loader />}
 			{events && (
 				<Box

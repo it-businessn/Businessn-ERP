@@ -17,14 +17,15 @@ const ModalLayout = ({
 	children,
 	error,
 	size = "4xl",
+	hideOverlay,
 }) => {
 	return (
 		<Modal isCentered size={size} isOpen={isOpen} onClose={onClose}>
-			<ModalOverlay />
+			{!hideOverlay && <ModalOverlay />}
 			<ModalContent>
-				<ModalHeader>{title}</ModalHeader>
-				<ModalCloseButton />
-				<ModalBody>
+				{!hideOverlay && <ModalHeader>{title}</ModalHeader>}
+				{!hideOverlay && <ModalCloseButton />}
+				<ModalBody p={hideOverlay && 0}>
 					<Stack spacing="5">
 						{children}
 						{error && (

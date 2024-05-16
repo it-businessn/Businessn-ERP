@@ -18,7 +18,7 @@ const AddEvent = ({
 	onClose,
 	setIsLoading,
 	setIsRefresh,
-	filterText,
+	filterText = "Event",
 	filter,
 	// setShowEditDetails,
 }) => {
@@ -156,7 +156,7 @@ const AddEvent = ({
 			onClose={onClose}
 		>
 			<form onSubmit={handleSubmit} className="tab-form">
-				<ModalBody>
+				<ModalBody px={1}>
 					<SelectFormControl
 						name="eventType"
 						label={"Type of Event"}
@@ -249,7 +249,7 @@ const AddEvent = ({
 						</>
 					)}
 				</ModalBody>
-				<ModalFooter>
+				<ModalFooter px={1}>
 					<ActionButtonGroup
 						submitBtnName={"Add Event"}
 						isDisabled={formData.description === ""}
