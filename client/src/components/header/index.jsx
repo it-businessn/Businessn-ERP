@@ -10,7 +10,7 @@ import {
 } from "@chakra-ui/react";
 import { Tab, UserProfile } from "components";
 import Logo from "components/logo";
-import SelectBox from "components/ui/select/SelectBox";
+import SelectBox from "components/ui/form/select/SelectBox";
 import { useEffect, useState } from "react";
 import { FaSyncAlt } from "react-icons/fa";
 import { Link } from "react-router-dom";

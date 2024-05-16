@@ -19,7 +19,7 @@ import {
 import { useState } from "react";
 import { FaCaretDown } from "react-icons/fa";
 import ProjectService from "services/ProjectService";
-import MultiSelectBox from "../../../../components/ui/select/MultiSelectBox";
+import MultiSelectBox from "../../../../components/ui/form/select/MultiSelectBox";
 
 const AddNewSubTask = ({
 	isOpen,

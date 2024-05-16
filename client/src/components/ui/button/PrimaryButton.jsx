@@ -7,6 +7,7 @@ const PrimaryButton = ({
 	px,
 	loadingText,
 	isDisabled = false,
+	ml,
 }) => {
 	return (
 		<Button
@@ -21,6 +22,7 @@ const PrimaryButton = ({
 				bg: "transparent",
 				border: "1px solid var(--primary_button_bg)",
 			}}
+			ml={ml}
 			type="submit"
 			borderRadius={"10px"}
 			loadingText={loadingText}

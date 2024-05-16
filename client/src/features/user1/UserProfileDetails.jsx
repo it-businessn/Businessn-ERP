@@ -8,7 +8,9 @@ import {
 	Text,
 	VStack,
 } from "@chakra-ui/react";
-import { useState } from "react";
+import PrimaryButton from "components/ui/button/PrimaryButton";
+import TextTitle from "components/ui/text/TextTitle";
+import React, { useState } from "react";
 import { FaAddressCard, FaUndoAlt } from "react-icons/fa";
 import { useBreakpointValue } from "services/Breakpoint";
 import LocalStorageService from "services/LocalStorageService";
@@ -57,6 +59,44 @@ const UserProfileDetails = () => {
 		? toCapitalize(`${streetNumber} ${city} ${state} ${country} ${postalCode}`)
 		: "";
 
+	const SECTION1 = [
+		{ name: "Phone Number", value: phoneNumber },
+		{ name: "Address", value: getAddress },
+	];
+
+	const SECTION2 = [
+		{ name: "Manager", value: manager },
+		{ name: "Role", value: role },
+		{ name: "Department", value: department[0] },
+		{ name: "Employment Type", value: employmentType },
+	];
+	const showActionButton = () => (
+		<HStack p={"1em"}>
+			<PrimaryButton
+				isDisabled={editMode}
+				name="Edit"
+				type="submit"
+				// isLoading={isLoading}
+				onOpen={handleEditClick}
+			/>
+			<PrimaryButton
+				isDisabled={changePasswordMode}
+				name="Change Password"
+				ml={2}
+				// isLoading={isLoading}
+				onOpen={handlePasswordClick}
+			/>
+			<Button
+				variant={"outline"}
+				ml={2}
+				onClick={handleReset}
+				colorScheme="gray"
+			>
+				<FaUndoAlt />
+			</Button>
+		</HStack>
+	);
+
 	return (
 		<HStack
 			flexDir={{ base: "column", md: "row" }}
@@ -86,51 +126,22 @@ const UserProfileDetails = () => {
 					</VStack>
 				</Box>
 				<VStack align="flex-start" color={"brand.200"} p={"1em"}>
-					<Text fontWeight="bold">Phone Number</Text>
-					<Text color={"brand.600"}>{phoneNumber}</Text>
-					<Text fontWeight="bold">Address</Text>
-					<Text color={"brand.600"}>{getAddress}</Text>
+					{SECTION1.map(({ name, value }) => (
+						<React.Fragment key={name}>
+							<TextTitle title={name} />
+							<Text color={"brand.600"}>{value}</Text>
+						</React.Fragment>
+					))}
 				</VStack>
 				<VStack align="flex-start" color={"brand.200"} p={"1em"}>
-					<Text fontWeight="bold">Manager</Text>
-					<Text color={"brand.600"}>{manager}</Text>
-					<Text fontWeight="bold">Role</Text>
-					<Text color={"brand.600"}>{role}</Text>
-					<Text fontWeight="bold">Department</Text>
-					<Text color={"brand.600"}>{department[0]}</Text>
-					<Text fontWeight="bold">Employment Type</Text>
-					<Text color={"brand.600"}>{employmentType}</Text>
+					{SECTION2.map(({ name, value }) => (
+						<React.Fragment key={name}>
+							<TextTitle title={name} />
+							<Text color={"brand.600"}>{value}</Text>
+						</React.Fragment>
+					))}
 				</VStack>
-				<HStack p={"1em"}>
-					<Button
-						bg="brand.logo_bg"
-						// isLoading={isLoading}
-						_hover={{ background: "var(--brand.logo_bg)" }}
-						isDisabled={editMode}
-						onClick={handleEditClick}
-						type="submit"
-					>
-						Edit
-					</Button>
-					<Button
-						bg="brand.logo_bg"
-						ml={2}
-						isDisabled={changePasswordMode}
-						_hover={{ background: "var(--brand.logo_bg)" }}
-						onClick={handlePasswordClick}
-					>
-						Change Password
-					</Button>
-					<Button
-						bg="var(--bg_color_1)"
-						color={"brand.logo_bg"}
-						ml={2}
-						_hover={{ background: "var(--bg_color_1)" }}
-						onClick={handleReset}
-					>
-						<FaUndoAlt />
-					</Button>
-				</HStack>
+				{showActionButton()}
 			</Card>
 			{editMode && (
 				<>

@@ -10,7 +10,7 @@ import {
 import Loader from "components/Loader";
 import SectionLayout from "components/ui/SectionLayout";
 import PrimaryButton from "components/ui/button/PrimaryButton";
-import SelectList from "components/ui/select/SelectList";
+import SelectList from "components/ui/form/select/SelectList";
 import TableLayout from "components/ui/table/TableLayout";
 import { useEffect, useState } from "react";
 import { useBreakpointValue } from "services/Breakpoint";

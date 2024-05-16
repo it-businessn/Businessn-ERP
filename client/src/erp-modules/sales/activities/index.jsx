@@ -1,24 +1,23 @@
 import {
 	Box,
-	Button,
 	Flex,
 	HStack,
 	Icon,
-	Progress,
 	SimpleGrid,
 	Text,
 	VStack,
 } from "@chakra-ui/react";
 import HighlightButton from "components/ui/button/HighlightButton";
-import RightIconButton from "components/ui/button/RightIconButton";
-import { ACTIVITY_CARDS, SALES_ACTIVITY_CARDS, barOptions } from "constant";
+import RadioButtonGroup from "components/ui/tab/RadioButtonGroup";
+import TextTitle from "components/ui/text/TextTitle";
+import { ACTIVITY_CARDS, SALES_ACTIVITY_CARDS } from "constant";
 import { useEffect, useState } from "react";
 import { RiAspectRatioLine } from "react-icons/ri";
 import { useBreakpointValue } from "services/Breakpoint";
 import ContactService from "services/ContactService";
-import { generateLighterShade } from "utils";
+import Activity from "./Activity";
+import Contest from "./Contest";
 import GaugeChartComponent from "./GaugeChart";
-import HorizontalBarChart from "./HorizontalBarChart";
 import SelectCustomer from "./SelectCustomer";
 
 const Activities = () => {
@@ -54,47 +53,20 @@ const Activities = () => {
 					borderRadius={"20px"}
 					p={"8px"}
 				>
-					{["Daily", "Weekly", "Monthly", "Quarterly", "Annual"].map((name) => (
-						<Button
-							key={name}
-							borderRadius={selectedFilter === name ? "50px" : 0}
-							border={selectedFilter === name ? "1px" : "none"}
-							p={"1em"}
-							color={selectedFilter === name ? "#517ae8" : "#676e78"}
-							bgColor={
-								selectedFilter === name && generateLighterShade("#517ae8", 0.8)
-							}
-							onClick={() => handleFilterClick(name)}
-							variant={"outline"}
-							size="xs"
-						>
-							{name}
-						</Button>
-					))}
+					<RadioButtonGroup
+						data={["Daily", "Weekly", "Monthly", "Quarterly", "Annual"]}
+						selectedFilter={selectedFilter}
+						handleFilterClick={handleFilterClick}
+					/>
 				</SimpleGrid>
 			) : (
 				<SimpleGrid columns={{ base: 5, lg: 2 }} spacing="1em" my="5">
 					<Flex gap="2em" bg={"brand.100"} borderRadius={"20px"} p={"8px"}>
-						{["Daily", "Weekly", "Monthly", "Quarterly", "Annual"].map(
-							(name) => (
-								<Button
-									key={name}
-									borderRadius={selectedFilter === name ? "50px" : 0}
-									border={selectedFilter === name ? "1px" : "none"}
-									p={"1em"}
-									color={selectedFilter === name ? "#517ae8" : "#676e78"}
-									bgColor={
-										selectedFilter === name &&
-										generateLighterShade("#517ae8", 0.8)
-									}
-									onClick={() => handleFilterClick(name)}
-									variant={"outline"}
-									size="xs"
-								>
-									{name}
-								</Button>
-							),
-						)}
+						<RadioButtonGroup
+							data={["Daily", "Weekly", "Monthly", "Quarterly", "Annual"]}
+							selectedFilter={selectedFilter}
+							handleFilterClick={handleFilterClick}
+						/>
 					</Flex>
 				</SimpleGrid>
 			)}
@@ -110,44 +82,12 @@ const Activities = () => {
 				>
 					<Text fontWeight="bold">Activities</Text>
 					{ACTIVITY_CARDS.map((activity) => (
-						<Box
+						<Activity
+							activity={activity}
 							key={activity.title}
-							p="0.5em 1em"
-							bg={"brand.primary_bg"}
-							border="3px solid var(--main_color)"
-							borderRadius="10px"
-							fontWeight="bold"
-							justifyContent="space-between"
-							display="flex"
-							flexDir={"column"}
-						>
-							<HStack>
-								<VStack alignItems="self-start" spacing={0}>
-									<Icon as={activity.icon} color={activity.color} boxSize={8} />
-									<Text fontWeight="bold" fontSize={"sm"}>
-										{activity.title}
-									</Text>
-								</VStack>
-								<Box
-									mt={-3}
-									mx={"auto"}
-									w={{ base: "50%", md: "40%", lg: "40%", xl: "40%" }}
-								>
-									<HorizontalBarChart
-										label={activity.label}
-										data={activity.count}
-										options={barOptions}
-									/>
-								</Box>
-							</HStack>
-
-							<Flex p={0} borderTop="2px solid #e8ebf4" gap={0}>
-								<HighlightButton
-									name={activity.action}
-									onClick={() => setShowSelectCustomer(true)}
-								/>
-							</Flex>
-						</Box>
+							width={{ base: "50%", md: "40%", lg: "40%", xl: "40%" }}
+							onClick={() => setShowSelectCustomer(true)}
+						/>
 					))}
 				</SimpleGrid>
 
@@ -165,55 +105,12 @@ const Activities = () => {
 				>
 					<Text fontWeight="bold">Sales</Text>
 					{SALES_ACTIVITY_CARDS.map((activity) => (
-						<Box
+						<Activity
+							activity={activity}
 							key={activity.title}
-							p="0.5em 1em"
-							bg={"brand.primary_bg"}
-							border="3px solid var(--main_color)"
-							borderRadius="10px"
-							fontWeight="bold"
-							justifyContent="space-between"
-							display="flex"
-							flexDir={"column"}
-						>
-							<HStack>
-								<VStack alignItems="self-start" spacing={0}>
-									<Icon as={activity.icon} color={activity.color} boxSize={8} />
-									<Text fontWeight="bold" fontSize={"sm"}>
-										{activity.title}
-									</Text>
-								</VStack>
-								<Box
-									mt={-3}
-									mx={"auto"}
-									w={{ base: "50%", md: "40%", lg: "20%", xl: "20%" }}
-								>
-									<HorizontalBarChart
-										label={activity.label}
-										data={activity.count}
-										options={barOptions}
-									/>
-								</Box>
-							</HStack>
-
-							<Flex p={0} borderTop="2px solid #e8ebf4" gap={0}>
-								<Button
-									variant="solid"
-									bgGradient="linear-gradient(58deg, rgb(115 70 236) 0%, rgb(136 107 217) 43%, rgb(50 240 218) 100%)"
-									bgClip="text"
-									fontSize={"sm"}
-									size={"xxs"}
-									_hover={{
-										bgGradient:
-											"linear-gradient(58deg, rgb(115 70 236) 0%, rgb(136 107 217) 43%, rgb(50 240 218) 100%)",
-										bgClip: "text",
-									}}
-								>
-									{activity.action}
-									<RightIconButton />
-								</Button>
-							</Flex>
-						</Box>
+							onClick={() => setShowSelectCustomer(true)}
+							width={{ base: "50%", md: "40%", lg: "20%", xl: "20%" }}
+						/>
 					))}
 					<Box
 						p="0.5em 1em"
@@ -228,25 +125,8 @@ const Activities = () => {
 						<HStack spacing={0}>
 							<VStack alignItems="self-start" spacing={0}>
 								<Icon as={RiAspectRatioLine} color={"grey"} boxSize={8} />
-								<Text fontWeight="bold" fontSize={"sm"}>
-									Sales Target
-								</Text>
-								<Button
-									variant="solid"
-									bgGradient="linear-gradient(58deg, rgb(115 70 236) 0%, rgb(136 107 217) 43%, rgb(50 240 218) 100%)"
-									bgClip="text"
-									fontSize={"sm"}
-									size={"xxs"}
-									p={0}
-									_hover={{
-										bgGradient:
-											"linear-gradient(58deg, rgb(115 70 236) 0%, rgb(136 107 217) 43%, rgb(50 240 218) 100%)",
-										bgClip: "text",
-									}}
-								>
-									Process new sale
-									<RightIconButton />
-								</Button>
+								<TextTitle title={"Sales Target"} size={"sm"} />
+								<HighlightButton name={"Process new sale"} />
 							</VStack>
 							<Box
 								mt={3}
@@ -257,158 +137,7 @@ const Activities = () => {
 							</Box>
 						</HStack>
 					</Box>
-					{["Contests For Sales", "Contests For Activity"].map((item) => (
-						<Box
-							key={item}
-							p="0.5em 1em"
-							bg={"brand.primary_bg"}
-							border="3px solid var(--main_color)"
-							borderRadius="10px"
-						>
-							<Text fontWeight="bold" fontSize={"sm"}>
-								{item}
-							</Text>
-							<SimpleGrid columns={{ md: 3 }} spacing={4}>
-								{["Sale 1", "Sale 2", "Sale 3"].map((item) => (
-									<Box
-										key={item}
-										p="1em"
-										bg={"brand.primary_bg"}
-										border="3px solid var(--main_color)"
-										borderRadius="10px"
-										fontWeight="bold"
-									>
-										<HStack alignItems="self-start" spacing={2}>
-											<Icon as={RiAspectRatioLine} color="orange" boxSize={8} />
-											<VStack spacing={0} alignItems={"start"}>
-												<Text fontWeight="bold" fontSize={"sm"}>
-													{item}
-												</Text>
-												<Text fontSize="xs" p={0}>
-													1st place
-												</Text>
-											</VStack>
-										</HStack>
-										<Box>
-											<Text
-												mt={"2em"}
-												fontSize={"xs"}
-												display={"flex"}
-												justifyContent={"end"}
-											>
-												$5460
-											</Text>
-											<Progress
-												colorScheme="green"
-												size="sm"
-												bg={"var(--main_color)"}
-												value={50}
-											/>
-											<Flex mt={"2em"} borderTop="2px solid #e8ebf4">
-												<Button
-													bgGradient="linear-gradient(58deg, rgb(115 70 236) 0%, rgb(136 107 217) 43%, rgb(50 240 218) 100%)"
-													bgClip="text"
-													size={"xxs"}
-													fontSize={"sm"}
-												>
-													More details
-													<RightIconButton />
-												</Button>
-											</Flex>
-										</Box>
-									</Box>
-								))}
-							</SimpleGrid>
-							<Box
-								mt={"1em"}
-								p="1em"
-								bg={"brand.primary_bg"}
-								border="3px solid var(--main_color)"
-								borderRadius="10px"
-								fontWeight="bold"
-							>
-								<HStack alignItems="self-start" spacing={2}>
-									<Icon as={RiAspectRatioLine} color="orange" boxSize={8} />
-									<VStack spacing={0} alignItems={"start"}>
-										<Text fontWeight="bold">Sale 4</Text>
-										<Text fontSize="xs" p={0}>
-											1st Place
-										</Text>
-									</VStack>
-								</HStack>
-								<Box>
-									<Text
-										mt={"2em"}
-										fontSize={"xs"}
-										display={"flex"}
-										justifyContent={"end"}
-									>
-										$5460
-									</Text>
-									<Progress
-										colorScheme="green"
-										size="sm"
-										bg={"var(--main_color)"}
-										value={50}
-									/>
-									<Flex mt={"2em"} borderTop="2px solid #e8ebf4">
-										<Button
-											bgGradient="linear-gradient(58deg, rgb(115 70 236) 0%, rgb(136 107 217) 43%, rgb(50 240 218) 100%)"
-											bgClip="text"
-											size={"xxs"}
-										>
-											More details
-											<RightIconButton />
-										</Button>
-									</Flex>
-								</Box>
-							</Box>
-							<Box
-								mt={"1em"}
-								p="1em"
-								bg={"brand.primary_bg"}
-								border="3px solid var(--main_color)"
-								borderRadius="10px"
-								fontWeight="bold"
-							>
-								<HStack alignItems="self-start" spacing={2}>
-									<Icon as={RiAspectRatioLine} color="orange" boxSize={8} />
-									<VStack spacing={0} alignItems={"start"}>
-										<Text fontWeight="bold">Sale 5</Text>
-										<Text fontSize="xs" p={0}>
-											1st Place
-										</Text>
-									</VStack>
-								</HStack>
-								<Box>
-									<Text
-										mt={"2em"}
-										fontSize={"xs"}
-										display={"flex"}
-										justifyContent={"end"}
-									>
-										$5460
-									</Text>
-									<Progress
-										colorScheme="green"
-										size="sm"
-										bg={"var(--main_color)"}
-										value={50}
-									/>
-									<Flex mt={"2em"} borderTop="2px solid #e8ebf4">
-										<Button
-											bgGradient="linear-gradient(58deg, rgb(115 70 236) 0%, rgb(136 107 217) 43%, rgb(50 240 218) 100%)"
-											bgClip="text"
-											size={"xxs"}
-										>
-											More details
-											<RightIconButton />
-										</Button>
-									</Flex>
-								</Box>
-							</Box>
-						</Box>
-					))}
+					<Contest />
 				</SimpleGrid>
 			</SimpleGrid>
 		</Box>

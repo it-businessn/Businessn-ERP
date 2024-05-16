@@ -30,7 +30,7 @@ import { useEffect, useState } from "react";
 import { FaCaretDown } from "react-icons/fa";
 import ProjectService from "services/ProjectService";
 import { getDefaultDate } from "utils";
-import MultiSelectBox from "../../../../components/ui/select/MultiSelectBox";
+import MultiSelectBox from "../../../../components/ui/form/select/MultiSelectBox";
 import { PROJECT_ASSIGNEES } from "../project/data";
 
 const AddNewSubTask = ({

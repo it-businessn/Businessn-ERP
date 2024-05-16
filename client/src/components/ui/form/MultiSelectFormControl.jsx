@@ -1,7 +1,7 @@
 import { Avatar, Button, FormLabel, Text } from "@chakra-ui/react";
 import { FaCaretDown } from "react-icons/fa";
 import FormControlMain from ".";
-import MultiSelectBox from "../ui/select/MultiSelectBox";
+import MultiSelectBox from "./select/MultiSelectBox";
 
 const MultiSelectFormControl = ({
 	showMultiSelect,

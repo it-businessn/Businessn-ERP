@@ -1,10 +1,10 @@
 import { Flex, ModalBody, ModalFooter } from "@chakra-ui/react";
-import ActionButtonGroup from "components/form/ActionButtonGroup";
-import DateTimeFormControl from "components/form/DateTimeFormControl";
-import InputFormControl from "components/form/InputFormControl";
-import MultiSelectFormControl from "components/form/MultiSelectFormControl";
-import SelectFormControl from "components/form/SelectFormControl";
-import TextAreaFormControl from "components/form/TextAreaFormControl";
+import ActionButtonGroup from "components/ui/form/ActionButtonGroup";
+import DateTimeFormControl from "components/ui/form/DateTimeFormControl";
+import InputFormControl from "components/ui/form/InputFormControl";
+import MultiSelectFormControl from "components/ui/form/MultiSelectFormControl";
+import SelectFormControl from "components/ui/form/SelectFormControl";
+import TextAreaFormControl from "components/ui/form/TextAreaFormControl";
 import ModalLayout from "components/ui/modal/ModalLayout";
 import { useEffect, useState } from "react";
 import CalendarService from "services/CalendarService";
@@ -251,6 +251,7 @@ const AddEvent = ({
 				</ModalBody>
 				<ModalFooter>
 					<ActionButtonGroup
+						submitBtnName={"Add Event"}
 						isDisabled={formData.description === ""}
 						isLoading={isLoading}
 						onClose={onClose}

@@ -74,8 +74,34 @@ const WorkView = lazy(() =>
 const Employees = lazy(() => import("./erp-modules/payroll/employees"));
 
 export const ROUTE_PATH = {
-	SALES: "/sales",
+	ACTIVITIES: "/activities",
+	ADD_PAPER: "/add-paper",
+	ASSESSMENT: "/assessment/:category",
+	CALENDAR: "/calendar",
+	COMMS: "/comms",
+	CUST_PROFILE: "/profile/:id",
+	CUSTOMERS: "/customers",
+	DISBURSE: "/leads-disburse",
+	DOCKET: "/leads-docket",
+	FORGOT_PWD: "/forgot-password",
+	FRESH_LEADS: "/fresh-leads",
+	LEADS: "/leads",
 	LOGIN: "/login",
+	MODULE_SETUP: ":module/set-up",
+	ORDERS: "/orders",
+	PAYOUT: "/payouts",
+	PAYROLL: "/payroll",
+	PIPELINE: "/pipeline",
+	PRODUCTS: "/products",
+	PROFILE: "/profile",
+	PROJECT: "/project",
+	REPORT: "/reports",
+	RESOURCES: "/resources",
+	SALES: "/sales",
+	SCHEDULING: "/scheduling",
+	SIGNUP: "/signup",
+	VERIFY_EMAIL: "/verify-email",
+	WORKVIEW: "/workview",
 };
 
 export const router = createBrowserRouter([
@@ -93,59 +119,59 @@ export const router = createBrowserRouter([
 			},
 			/* Sales */
 			{
-				path: "/sales",
+				path: ROUTE_PATH.SALES,
 				element: <CRMDashboard />,
 			},
 			{
-				path: "/sales/activities",
+				path: `${ROUTE_PATH.SALES}${ROUTE_PATH.ACTIVITIES}`,
 				element: <Activities />,
 			},
 			{
-				path: "/sales/calendar",
+				path: `${ROUTE_PATH.SALES}${ROUTE_PATH.CALENDAR}`,
 				element: <Calendar />,
 			},
 			{
-				path: "/sales/payouts",
+				path: `${ROUTE_PATH.SALES}${ROUTE_PATH.PAYOUT}`,
 				element: <Payouts />,
 			},
 			{
-				path: "/sales/customers",
+				path: `${ROUTE_PATH.SALES}${ROUTE_PATH.CUSTOMERS}`,
 				element: <Customers />,
 			},
 			{
-				path: "/sales/customers/profile/:id",
+				path: `${ROUTE_PATH.SALES}${ROUTE_PATH.CUSTOMERS}${ROUTE_PATH.CUST_PROFILE}`,
 				element: <Contacts />,
 			},
 			{
-				path: "/sales/leads",
+				path: `${ROUTE_PATH.SALES}${ROUTE_PATH.LEADS}`,
 				element: <Opportunities />,
 			},
 			{
-				path: "/sales/leads-docket",
+				path: `${ROUTE_PATH.SALES}${ROUTE_PATH.DOCKET}`,
 				element: <LeadsDocket />,
 			},
 			{
-				path: "/sales/leads-disburse",
+				path: `${ROUTE_PATH.SALES}${ROUTE_PATH.DISBURSE}`,
 				element: <LeadsDisburse />,
 			},
 			{
-				path: "/sales/fresh-leads",
+				path: `${ROUTE_PATH.SALES}${ROUTE_PATH.FRESH_LEADS}`,
 				element: <FreshLeads />,
 			},
 			{
-				path: "/sales/pipeline",
+				path: `${ROUTE_PATH.SALES}${ROUTE_PATH.PIPELINE}`,
 				element: <Pipeline />,
 			},
 			{
-				path: "/sales/products",
+				path: `${ROUTE_PATH.SALES}${ROUTE_PATH.PRODUCTS}`,
 				element: <Products />,
 			},
 			{
-				path: "/sales/orders",
+				path: `${ROUTE_PATH.SALES}${ROUTE_PATH.ORDERS}`,
 				element: <Orders />,
 			},
 			{
-				path: "/sales/profile",
+				path: `${ROUTE_PATH.SALES}${ROUTE_PATH.PROFILE}`,
 				element: <UserProfileDetails />,
 			},
 			// {
@@ -153,51 +179,51 @@ export const router = createBrowserRouter([
 			// 	element: <Invoice />,
 			// },
 			{
-				path: "/sales/resources",
+				path: `${ROUTE_PATH.SALES}${ROUTE_PATH.RESOURCES}`,
 				element: <Resources />,
 			},
 			{
-				path: "/sales/add-paper",
+				path: `${ROUTE_PATH.SALES}${ROUTE_PATH.ADD_PAPER}`,
 				element: <AddQuestionForm />,
 			},
 			{
-				path: "/sales/assessment/:category",
+				path: `${ROUTE_PATH.SALES}${ROUTE_PATH.ASSESSMENT}`,
 				element: <Assessment />,
 			},
 			{
-				path: "/sales/reports",
+				path: `${ROUTE_PATH.SALES}${ROUTE_PATH.REPORT}`,
 				element: <SalesReport />,
 			},
 			{
-				path: ":module/set-up",
+				path: ROUTE_PATH.MODULE_SETUP,
 				element: <Setup />,
 			},
 			/* Project Management*/
 			{
-				path: "/project",
+				path: ROUTE_PATH.PROJECT,
 				element: <WorkView />,
 			},
 			{
-				path: "/project/workview",
+				path: `${ROUTE_PATH.PROJECT}${ROUTE_PATH.WORKVIEW}`,
 				element: <WorkView />,
 			},
 			{
-				path: "/project/comms",
+				path: `${ROUTE_PATH.PROJECT}${ROUTE_PATH.COMMS}`,
 				element: <Communications />,
 			},
 			/* Payroll */
 			{
-				path: "/payroll",
+				path: ROUTE_PATH.PAYROLL,
 				element: <Employees />,
 			},
 			/* Scheduling */
 			{
-				path: "/scheduling",
+				path: ROUTE_PATH.SCHEDULING,
 				// element: <SchedulingDashboard />,
 				element: <ScheduleWorkView />,
 			},
 			{
-				path: "/scheduling/workview",
+				path: `${ROUTE_PATH.SCHEDULING}${ROUTE_PATH.WORKVIEW}`,
 				element: <ScheduleWorkView />,
 			},
 			{
@@ -207,19 +233,19 @@ export const router = createBrowserRouter([
 		],
 	},
 	{
-		path: "/login",
+		path: ROUTE_PATH.LOGIN,
 		element: <Login />,
 	},
 	{
-		path: "/forgot-password",
+		path: ROUTE_PATH.FORGOT_PWD,
 		element: <ForgotPassword />,
 	},
 	{
-		path: "/signup",
+		path: ROUTE_PATH.SIGNUP,
 		element: <SignUp />,
 	},
 	{
-		path: "/verify-email",
+		path: ROUTE_PATH.VERIFY_EMAIL,
 		element: <VerifyEmail />,
 	},
 	{

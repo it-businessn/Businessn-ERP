@@ -15,7 +15,7 @@ import {
 	Stack,
 	Text,
 } from "@chakra-ui/react";
-import MultiSelectBox from "components/ui/select/MultiSelectBox";
+import MultiSelectBox from "components/ui/form/select/MultiSelectBox";
 import { useState } from "react";
 import { FaCaretDown } from "react-icons/fa";
 import SettingService from "services/SettingService";

@@ -10,12 +10,12 @@ import {
 	Table,
 	Tbody,
 	Td,
-	Text,
 	Th,
 	Thead,
 	Tr,
 } from "@chakra-ui/react";
 import Loader from "components/Loader";
+import TextTitle from "components/ui/text/TextTitle";
 import { useEffect, useState } from "react";
 import { FaSearch } from "react-icons/fa";
 import { MdOutlineFilterList } from "react-icons/md";
@@ -40,9 +40,7 @@ const Employees = () => {
 
 	return (
 		<Box p={{ base: "1em", md: "2em" }}>
-			<Text fontWeight="bold" mb={"0.5em"}>
-				Employees
-			</Text>
+			<TextTitle title={"Employees"} mb={"0.5em"} />
 			<Box
 				p="1em"
 				bg={"brand.primary_bg"}
@@ -53,7 +51,7 @@ const Employees = () => {
 				{isMobile ? (
 					<Flex flexDir="column">
 						<Flex justify="space-between">
-							<Text fontWeight="bold">Customers</Text>
+							<TextTitle title={"Customers"} />
 							<Button
 								bg="var(--primary_button_bg)"
 								size="xs"
@@ -99,7 +97,7 @@ const Employees = () => {
 					</Flex>
 				) : (
 					<Flex>
-						<Text fontWeight="bold">Employees</Text>
+						<TextTitle title={"Employees"} />
 						<Spacer />
 						<HStack w={{ lg: "50%" }} spacing={3} justify={"flex-end"}>
 							<Button

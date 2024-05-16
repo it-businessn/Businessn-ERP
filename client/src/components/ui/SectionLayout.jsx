@@ -1,11 +1,10 @@
-import { Box, Text } from "@chakra-ui/react";
+import { Box } from "@chakra-ui/react";
+import TextTitle from "./text/TextTitle";
 
 const SectionLayout = ({ title, children, hasSubHeader }) => {
 	return (
 		<Box p={{ base: "1em", md: "2em" }} pt={{ base: "4em", md: "auto" }}>
-			<Text fontWeight="bold" mb={"0.5em"}>
-				{title}
-			</Text>
+			<TextTitle title={title} mb={"0.5em"} />
 			{hasSubHeader}
 			<Box
 				p="1em"

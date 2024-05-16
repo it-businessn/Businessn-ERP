@@ -7,6 +7,7 @@ import {
 	Text,
 	VStack,
 } from "@chakra-ui/react";
+import TextTitle from "components/ui/text/TextTitle";
 import { useEffect, useState } from "react";
 import { BsFillSendFill } from "react-icons/bs";
 import CommunicationService from "services/CommsService";
@@ -114,11 +115,13 @@ const Conversation = ({
 				<HStack>
 					<Avatar name="JK" />
 					<VStack align={"start"} spacing={1}>
-						<Text fontWeight="bold">
-							{selectedGroupMember
-								? selectedGroupMember?.fullName
-								: selectedGroup?.name}
-						</Text>
+						<TextTitle
+							title={
+								selectedGroupMember
+									? selectedGroupMember?.fullName
+									: selectedGroup?.name
+							}
+						/>
 						<Text fontSize={"xs"}>{selectedGroupMember?.email}</Text>
 					</VStack>
 				</HStack>

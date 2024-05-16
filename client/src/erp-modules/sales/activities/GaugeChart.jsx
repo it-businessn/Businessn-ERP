@@ -14,10 +14,10 @@ const GaugeChartComponent = ({ value, maxValue }) => {
 				nrOfLevels={2}
 				arcWidth={0.3}
 				arcsLength={[1.5, 1]}
-				colors={["#547fe9", "#d8d8d8"]}
+				colors={["var(--primary_button_bg)", "var(--filter_border_color)"]}
 				arcPadding={0}
 				cornerRadius={0}
-				needleColor="#345243"
+				needleColor="var(--gauge_needle)"
 				animate={true}
 				needleBaseSize={1}
 				textColor={"transparent"}

@@ -12,7 +12,7 @@ import {
 } from "@chakra-ui/react";
 import Loader from "components/Loader";
 import SectionLayout from "components/ui/SectionLayout";
-import SelectList from "components/ui/select/SelectList";
+import SelectList from "components/ui/form/select/SelectList";
 import TableLayout from "components/ui/table/TableLayout";
 import {
 	INDUSTRIES,
