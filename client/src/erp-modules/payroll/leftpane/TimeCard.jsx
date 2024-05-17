@@ -51,7 +51,7 @@ const TimeCard = () => {
 						name={"Clock IN"}
 						variant="solid"
 						w={"50%"}
-						bg={"var(--status_button_border)"}
+						bg={"var(--correct_ans)"}
 						_hover={{ color: "var(--main_color)" }}
 						handleClick={clockIn}
 					/>

@@ -19,6 +19,13 @@ const projectSchema = new mongoose.Schema({
 	priority: { type: String, default: "low" },
 	totalEstimatedHours: Number,
 	completionPercent: Number,
+
+	clockIns: [Date],
+	clockOuts: [Date],
+	startBreaks: [Date],
+	endBreaks: [Date],
+	totalHours: Number,
+	totalTimeCardHours: Number,
 });
 
 const Project = mongoose.model("Project", projectSchema);

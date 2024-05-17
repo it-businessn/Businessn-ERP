@@ -7,6 +7,7 @@ const TableLayout = ({
 	isSmall,
 	isAllChecked,
 	handleHeaderCheckboxChange,
+	isTimesheet,
 }) => {
 	return (
 		// <Box overflow="auto">
@@ -22,8 +23,12 @@ const TableLayout = ({
 							/>
 						</Th>
 					)}
-					{cols.map((col) => (
-						<Th p={isSmall ? 1 : "auto"} key={col}>
+					{cols.map((col, index) => (
+						<Th
+							p={isSmall ? 1 : "auto"}
+							pl={isTimesheet && index === 0 && "5em !important"}
+							key={col}
+						>
 							{col}
 						</Th>
 					))}

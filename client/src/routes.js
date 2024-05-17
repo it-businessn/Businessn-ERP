@@ -3,119 +3,155 @@ import { createBrowserRouter } from "react-router-dom";
 
 import Loader from "./components/Loader";
 import PageNotFound from "./features/PageNotFound";
-// import AddPayrun from "./features/payroll/AddPayRun";
-import Dashboard from "erp-modules/payroll";
-import Approvals from "erp-modules/payroll/Approvals";
-import ProcessPayroll from "erp-modules/payroll/ProcessPayroll";
-import Reports from "erp-modules/payroll/Reports";
-import Timesheets from "erp-modules/payroll/Timesheets";
-import PayrollWorkview from "erp-modules/payroll/Workview";
-import EmployeeDashboard from "erp-modules/payroll/employees/EmployeeDashboard";
-import EmployeeRecord from "erp-modules/payroll/employees/EmployeeRecord";
-import Communications from "erp-modules/project-management/communication";
-import Contacts from "erp-modules/sales/customers/contacts";
-import AddQuestionForm from "erp-modules/sales/resources/add-paper/AddQuestionForm";
-import Assessment from "erp-modules/sales/resources/attempt-test/Assessment";
-import ScheduleWorkView from "erp-modules/scheduling/workview";
 import RootLayout from "./layouts/RootLayout";
 
+// import AddPayrun from "./features/payroll/AddPayRun";
 // const PayrollTable = lazy(() => import("./features/payroll"));
 // const GeneratePayRun = lazy(() => import("./features/payroll/GeneratePayRun"));
-const UserProfileDetails = lazy(() =>
-	import("./features/user1/UserProfileDetails"),
-);
-const AddOpportunity = lazy(() =>
-	import("./erp-modules/sales/target-leads-pipeline/AddOpportunity"),
-);
-const TaskByDate = lazy(() =>
-	import("./erp-modules/sales/calendar/TaskByDate"),
-);
-
+// const AddOpportunity = lazy(() =>
+// 	import("./erp-modules/sales/target-leads-pipeline/AddOpportunity"),
+// );
+// const TaskByDate = lazy(() =>
+// 	import("./erp-modules/sales/calendar/TaskByDate"),
+// );
 // const Contacts = lazy(() => import("./features/sales/contacts"));
+// const TaskDashboard = lazy(() => import("./features/sales/tasks"));
+// const AddContact = lazy(() => import("./features/sales/contacts/AddContact"));
+// const EditContact = lazy(() => import("./features/sales/contacts/EditContact"));
 
-const TaskDashboard = lazy(() => import("./features/sales/tasks"));
-const AddContact = lazy(() => import("./features/sales/contacts/AddContact"));
-const EditContact = lazy(() => import("./features/sales/contacts/EditContact"));
+// const EditOpportunity = lazy(() =>
+// 	import("./erp-modules/sales/target-leads-pipeline/EditOpportunity"),
+// );
+// const OpportunitiesList = lazy(() =>
+// 	import("./erp-modules/sales/target-leads-pipeline/OpportunitiesList"),
+// );
 
-const EditOpportunity = lazy(() =>
-	import("./erp-modules/sales/target-leads-pipeline/EditOpportunity"),
-);
-const OpportunitiesList = lazy(() =>
-	import("./erp-modules/sales/target-leads-pipeline/OpportunitiesList"),
-);
+// const EditUser = lazy(() => import("./features/user/profile/EditUser"));
+// const Invoice = lazy(() => import("./erp-modules/sales/invoice"));
+// const ProjectDashboard = lazy(() =>
+// 	import("./erp-modules/project-management/dashboard"),
+// );
 
-const EditUser = lazy(() => import("./features/user/profile/EditUser"));
-const ForgotPassword = lazy(() => import("./features/login/ForgotPassword"));
-const Login = lazy(() => import("./features/login"));
-const SignUp = lazy(() => import("./features/sign-up"));
-const VerifyEmail = lazy(() => import("./features/verify-user"));
-
-const CRMDashboard = lazy(() => import("./erp-modules/sales/dashboard"));
 const Activities = lazy(() => import("./erp-modules/sales/activities"));
+const AddQuestionForm = lazy(() =>
+	import("./erp-modules/sales/resources/add-paper/AddQuestionForm"),
+);
+const Agenda = lazy(() => import("./erp-modules/project-management/Agenda"));
+const Approvals = lazy(() => import("./erp-modules/payroll/Approvals"));
+const Assessment = lazy(() =>
+	import("./erp-modules/sales/resources/attempt-test/Assessment"),
+);
 const Calendar = lazy(() => import("./erp-modules/sales/calendar"));
-const Payouts = lazy(() => import("./erp-modules/sales/payouts"));
+const Communications = lazy(() =>
+	import("./erp-modules/project-management/communication"),
+);
+const Contacts = lazy(() => import("./erp-modules/sales/customers/contacts"));
+const CRMDashboard = lazy(() => import("./erp-modules/sales/dashboard"));
 const Customers = lazy(() => import("./erp-modules/sales/customers"));
-
-const Opportunities = lazy(() => import("./erp-modules/sales/opportunities"));
-const LeadsDocket = lazy(() => import("./erp-modules/sales/lead docket"));
-const LeadsDisburse = lazy(() => import("./erp-modules/sales/lead disburse"));
+const EmployeeDashboard = lazy(() =>
+	import("./erp-modules/payroll/employees/EmployeeDashboard"),
+);
+const EmployeeRecord = lazy(() =>
+	import("./erp-modules/payroll/employees/EmployeeRecord"),
+);
+const Employees = lazy(() => import("./erp-modules/payroll/Employees"));
+const ForgotPassword = lazy(() => import("./features/login/ForgotPassword"));
 const FreshLeads = lazy(() => import("./erp-modules/sales/fresh_leads"));
+const Gantt = lazy(() => import("./erp-modules/project-management/Gantt"));
+const LeadsDisburse = lazy(() => import("./erp-modules/sales/lead disburse"));
+const LeadsDocket = lazy(() => import("./erp-modules/sales/lead docket"));
+const Login = lazy(() => import("./features/login"));
+const Opportunities = lazy(() => import("./erp-modules/sales/opportunities"));
+const Orders = lazy(() => import("./erp-modules/sales/orders"));
+const Payouts = lazy(() => import("./erp-modules/sales/payouts"));
+const PayrollWorkview = lazy(() => import("./erp-modules/payroll/Workview"));
 const Pipeline = lazy(() =>
 	import("./erp-modules/sales/target-leads-pipeline"),
 );
-
+const PMReports = lazy(() =>
+	import("./erp-modules/project-management/Reports"),
+);
+const ProcessPayroll = lazy(() =>
+	import("./erp-modules/payroll/ProcessPayroll"),
+);
 const Products = lazy(() => import("./erp-modules/sales/products"));
-const Orders = lazy(() => import("./erp-modules/sales/orders"));
-const Invoice = lazy(() => import("./erp-modules/sales/invoice"));
-
+const Reports = lazy(() => import("./erp-modules/payroll/Reports"));
 const Resources = lazy(() => import("./erp-modules/sales/resources"));
 const SalesReport = lazy(() => import("./erp-modules/sales/reports"));
-const Setup = lazy(() => import("./features/setup"));
-
-const ProjectDashboard = lazy(() =>
-	import("./erp-modules/project-management/dashboard"),
+const ScheduleReports = lazy(() => import("./erp-modules/scheduling/Reports"));
+const ScheduleWorkView = lazy(() =>
+	import("./erp-modules/scheduling/workview"),
 );
+const Setup = lazy(() => import("./features/setup"));
+const ShiftAssignment = lazy(() =>
+	import("./erp-modules/scheduling/ShiftAssignment"),
+);
+const SignUp = lazy(() => import("./features/sign-up"));
+const Taskboard = lazy(() =>
+	import("./erp-modules/project-management/Taskboard"),
+);
+const Timesheets = lazy(() => import("./erp-modules/payroll/timesheets"));
+const UserProfileDetails = lazy(() =>
+	import("./features/user1/UserProfileDetails"),
+);
+const VerifyEmail = lazy(() => import("./features/verify-user"));
 const WorkView = lazy(() =>
 	import("./erp-modules/project-management/workview"),
 );
 
-const Employees = lazy(() => import("./erp-modules/payroll/Employees"));
-
 export const ROUTE_PATH = {
-	ACTIVITIES: "/activities",
-	ADD_PAPER: "/add-paper",
-	ASSESSMENT: "/assessment/:category",
-	CALENDAR: "/calendar",
-	COMMS: "/comms",
-	CUST_PROFILE: "/profile/:id",
-	CUSTOMERS: "/customers",
-	DISBURSE: "/leads-disburse",
-	DOCKET: "/leads-docket",
-	FORGOT_PWD: "/forgot-password",
-	FRESH_LEADS: "/fresh-leads",
-	LEADS: "/leads",
+	// login
 	LOGIN: "/login",
-	MODULE_SETUP: ":module/set-up",
-	ORDERS: "/orders",
-	PAYOUT: "/payouts",
-	PAYROLL: "/payroll",
-	EMPLOYEES: "/employees",
-	TIMESHEETS: "/timesheets",
-	EMP_DASHBOARD: "/emp-dashboard",
-	PROCESS: "/process",
-	APPROVALS: "/approvals",
-	EMP_RECORD: "/emp-records",
-	PIPELINE: "/pipeline",
-	PRODUCTS: "/products",
-	PROFILE: "/profile",
-	PROJECT: "/project",
-	REPORT: "/reports",
-	RESOURCES: "/resources",
-	SALES: "/sales",
-	SCHEDULING: "/scheduling",
 	SIGNUP: "/signup",
 	VERIFY_EMAIL: "/verify-email",
+	FORGOT_PWD: "/forgot-password",
+
+	CUST_PROFILE: "/profile/:id",
+	PROFILE: "/profile",
+
+	// sales
+	SALES: "/sales",
+	ACTIVITIES: "/activities",
+	CALENDAR: "/calendar",
+	PAYOUT: "/payouts",
+	CUSTOMERS: "/customers",
+	LEADS: "/leads",
+	DOCKET: "/leads-docket",
+	DISBURSE: "/leads-disburse",
+	FRESH_LEADS: "/fresh-leads",
+	PIPELINE: "/pipeline",
+	PRODUCTS: "/products",
+	ORDERS: "/orders",
+	RESOURCES: "/resources",
+	ADD_PAPER: "/add-paper",
+	ASSESSMENT: "/assessment/:category",
+
+	// projectmanagement
+	PROJECT: "/project",
 	WORKVIEW: "/workview",
+	COMMS: "/comms",
+	TASK_BOARD: "/taskboard",
+	AGENDA: "/agenda",
+	GANTT: "/gantt",
+
+	// payroll
+	PAYROLL: "/payroll",
+	PROCESS: "/process",
+	APPROVALS: "/approvals",
+	TIMESHEETS: "/timesheets",
+	EMPLOYEES: "/employees",
+	EMP_DASHBOARD: "/employee-details",
+	EMP_RECORD: "/emp-records",
+
+	// scheduling
+	SCHEDULING: "/scheduling",
+	SHIFT_ASSIGN: "/shift-assign",
+
+	// setup
+	MODULE_SETUP: ":module/set-up",
+
+	// reports
+	REPORT: "/reports",
 };
 
 export const router = createBrowserRouter([
@@ -149,6 +185,10 @@ export const router = createBrowserRouter([
 				element: <Contacts />,
 			},
 			{
+				path: `${ROUTE_PATH.SALES}${ROUTE_PATH.PAYOUT}`,
+				element: <Payouts />,
+			},
+			{
 				path: `${ROUTE_PATH.SALES}${ROUTE_PATH.CUSTOMERS}`,
 				element: <Customers />,
 			},
@@ -173,6 +213,14 @@ export const router = createBrowserRouter([
 				element: <Pipeline />,
 			},
 			{
+				path: `${ROUTE_PATH.SALES}${ROUTE_PATH.PRODUCTS}`,
+				element: <Products />,
+			},
+			{
+				path: `${ROUTE_PATH.SALES}${ROUTE_PATH.ORDERS}`,
+				element: <Orders />,
+			},
+			{
 				path: `${ROUTE_PATH.SALES}${ROUTE_PATH.RESOURCES}`,
 				element: <Resources />,
 			},
@@ -185,20 +233,8 @@ export const router = createBrowserRouter([
 				element: <Assessment />,
 			},
 			{
-				path: ROUTE_PATH.MODULE_SETUP,
-				element: <Setup />,
-			},
-			{
-				path: `${ROUTE_PATH.SALES}${ROUTE_PATH.PAYOUT}`,
-				element: <Payouts />,
-			},
-			{
-				path: `${ROUTE_PATH.SALES}${ROUTE_PATH.PRODUCTS}`,
-				element: <Products />,
-			},
-			{
-				path: `${ROUTE_PATH.SALES}${ROUTE_PATH.ORDERS}`,
-				element: <Orders />,
+				path: `${ROUTE_PATH.SALES}${ROUTE_PATH.REPORT}`,
+				element: <SalesReport />,
 			},
 			{
 				path: `${ROUTE_PATH.SALES}${ROUTE_PATH.PROFILE}`,
@@ -208,13 +244,11 @@ export const router = createBrowserRouter([
 			// 	path: "/invoice",
 			// 	element: <Invoice />,
 			// },
-			{
-				path: `${ROUTE_PATH.SALES}${ROUTE_PATH.REPORT}`,
-				element: <SalesReport />,
-			},
+
 			/* Project Management*/
 			{
 				path: ROUTE_PATH.PROJECT,
+				// element: <ProjectDashboard />,
 				element: <WorkView />,
 			},
 			{
@@ -225,10 +259,28 @@ export const router = createBrowserRouter([
 				path: `${ROUTE_PATH.PROJECT}${ROUTE_PATH.COMMS}`,
 				element: <Communications />,
 			},
+			{
+				path: `${ROUTE_PATH.PROJECT}${ROUTE_PATH.TASK_BOARD}`,
+				element: <Taskboard />,
+			},
+			{
+				path: `${ROUTE_PATH.PROJECT}${ROUTE_PATH.AGENDA}`,
+				element: <Agenda />,
+			},
+			{
+				path: `${ROUTE_PATH.PROJECT}${ROUTE_PATH.GANTT}`,
+				element: <Gantt />,
+			},
+			{
+				path: `${ROUTE_PATH.PROJECT}${ROUTE_PATH.REPORT}`,
+				element: <PMReports />,
+			},
+
 			/* Payroll */
 			{
 				path: ROUTE_PATH.PAYROLL,
-				element: <Dashboard />,
+				// element: <Dashboard />,
+				element: <EmployeeDashboard />,
 			},
 			{
 				path: `${ROUTE_PATH.PAYROLL}${ROUTE_PATH.WORKVIEW}`,
@@ -262,6 +314,7 @@ export const router = createBrowserRouter([
 				path: `${ROUTE_PATH.PAYROLL}${ROUTE_PATH.EMP_RECORD}`,
 				element: <EmployeeRecord />,
 			},
+
 			/* Scheduling */
 			{
 				path: ROUTE_PATH.SCHEDULING,
@@ -271,6 +324,18 @@ export const router = createBrowserRouter([
 			{
 				path: `${ROUTE_PATH.SCHEDULING}${ROUTE_PATH.WORKVIEW}`,
 				element: <ScheduleWorkView />,
+			},
+			{
+				path: `${ROUTE_PATH.SCHEDULING}${ROUTE_PATH.REPORT}`,
+				element: <ScheduleReports />,
+			},
+			{
+				path: `${ROUTE_PATH.SCHEDULING}${ROUTE_PATH.SHIFT_ASSIGN}`,
+				element: <ShiftAssignment />,
+			},
+			{
+				path: ROUTE_PATH.MODULE_SETUP,
+				element: <Setup />,
 			},
 			{
 				path: "*",

@@ -48,8 +48,8 @@ const RootLayout = () => {
 
 	useEffect(() => {
 		if (user) {
-			navigate(ROUTE_PATH.SALES);
-			// navigate(`${ROUTE_PATH.PAYROLL}${ROUTE_PATH.EMP_DASHBOARD}`);
+			// navigate(ROUTE_PATH.SALES);
+			navigate(`${ROUTE_PATH.PAYROLL}${ROUTE_PATH.TIMESHEETS}`);
 		} else {
 			navigate(ROUTE_PATH.LOGIN);
 		}
