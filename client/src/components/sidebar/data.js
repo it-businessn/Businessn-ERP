@@ -1115,8 +1115,57 @@ export const SIDEBAR_MENU = [
 		children: [
 			{
 				path: "",
+				name: "Dashboard",
+				children: [],
+				icon: <RxDashboard />,
+			},
+			{
+				path: "workview",
+				name: "Workview",
+				children: [],
+				icon: <RxDashboard />,
+			},
+			{
+				path: "process",
+				name: "Process Payroll",
+				children: [],
+				icon: <RxDashboard />,
+			},
+			{
+				path: "approvals",
+				name: "Approvals",
+				children: [],
+				icon: <RxDashboard />,
+			},
+			{
+				path: "timesheets",
+				name: "Timesheets",
+				children: [],
+				icon: <RxDashboard />,
+			},
+			{
+				path: "employees",
 				name: "Employees",
 				children: [],
+				icon: <RxDashboard />,
+			},
+			{
+				path: "reports",
+				name: "Reports",
+				children: [],
+				icon: <RxDashboard />,
+			},
+			{
+				path: "emp-dashboard",
+				name: "Employee Dashboard",
+				children: [],
+				icon: <RxDashboard />,
+			},
+			{
+				path: "emp-records",
+				name: "Employee Records",
+				children: [],
+				icon: <RxDashboard />,
 			},
 		],
 	},

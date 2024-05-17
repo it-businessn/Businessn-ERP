@@ -4,6 +4,14 @@ import { createBrowserRouter } from "react-router-dom";
 import Loader from "./components/Loader";
 import PageNotFound from "./features/PageNotFound";
 // import AddPayrun from "./features/payroll/AddPayRun";
+import Dashboard from "erp-modules/payroll";
+import Approvals from "erp-modules/payroll/Approvals";
+import ProcessPayroll from "erp-modules/payroll/ProcessPayroll";
+import Reports from "erp-modules/payroll/Reports";
+import Timesheets from "erp-modules/payroll/Timesheets";
+import PayrollWorkview from "erp-modules/payroll/Workview";
+import EmployeeDashboard from "erp-modules/payroll/employees/EmployeeDashboard";
+import EmployeeRecord from "erp-modules/payroll/employees/EmployeeRecord";
 import Communications from "erp-modules/project-management/communication";
 import Contacts from "erp-modules/sales/customers/contacts";
 import AddQuestionForm from "erp-modules/sales/resources/add-paper/AddQuestionForm";
@@ -71,7 +79,7 @@ const WorkView = lazy(() =>
 	import("./erp-modules/project-management/workview"),
 );
 
-const Employees = lazy(() => import("./erp-modules/payroll/employees"));
+const Employees = lazy(() => import("./erp-modules/payroll/Employees"));
 
 export const ROUTE_PATH = {
 	ACTIVITIES: "/activities",
@@ -91,6 +99,12 @@ export const ROUTE_PATH = {
 	ORDERS: "/orders",
 	PAYOUT: "/payouts",
 	PAYROLL: "/payroll",
+	EMPLOYEES: "/employees",
+	TIMESHEETS: "/timesheets",
+	EMP_DASHBOARD: "/emp-dashboard",
+	PROCESS: "/process",
+	APPROVALS: "/approvals",
+	EMP_RECORD: "/emp-records",
 	PIPELINE: "/pipeline",
 	PRODUCTS: "/products",
 	PROFILE: "/profile",
@@ -214,7 +228,39 @@ export const router = createBrowserRouter([
 			/* Payroll */
 			{
 				path: ROUTE_PATH.PAYROLL,
+				element: <Dashboard />,
+			},
+			{
+				path: `${ROUTE_PATH.PAYROLL}${ROUTE_PATH.WORKVIEW}`,
+				element: <PayrollWorkview />,
+			},
+			{
+				path: `${ROUTE_PATH.PAYROLL}${ROUTE_PATH.PROCESS}`,
+				element: <ProcessPayroll />,
+			},
+			{
+				path: `${ROUTE_PATH.PAYROLL}${ROUTE_PATH.APPROVALS}`,
+				element: <Approvals />,
+			},
+			{
+				path: `${ROUTE_PATH.PAYROLL}${ROUTE_PATH.TIMESHEETS}`,
+				element: <Timesheets />,
+			},
+			{
+				path: `${ROUTE_PATH.PAYROLL}${ROUTE_PATH.EMPLOYEES}`,
 				element: <Employees />,
+			},
+			{
+				path: `${ROUTE_PATH.PAYROLL}${ROUTE_PATH.REPORT}`,
+				element: <Reports />,
+			},
+			{
+				path: `${ROUTE_PATH.PAYROLL}${ROUTE_PATH.EMP_DASHBOARD}`,
+				element: <EmployeeDashboard />,
+			},
+			{
+				path: `${ROUTE_PATH.PAYROLL}${ROUTE_PATH.EMP_RECORD}`,
+				element: <EmployeeRecord />,
 			},
 			/* Scheduling */
 			{

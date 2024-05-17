@@ -14,6 +14,8 @@ const LeftIconButton = ({
 	borderRadius,
 	w,
 	type,
+	bg,
+	_hover,
 }) => {
 	return (
 		<Button
@@ -24,11 +26,11 @@ const LeftIconButton = ({
 			onClick={handleClick}
 			flex={flex}
 			color={!colorScheme && color}
-			bg={!colorScheme && !isFilter && "var(--primary_button_bg)"}
+			bg={bg || (!colorScheme && !isFilter && "var(--primary_button_bg)")}
 			colorScheme={colorScheme}
 			variant={variant}
 			fontWeight={!isFilter && "bold"}
-			_hover={{ bg: "transparent", color: "brand.600" }}
+			_hover={_hover || { bg: "transparent", color: "brand.600" }}
 			leftIcon={icon}
 			borderRadius={borderRadius}
 		>

@@ -11,7 +11,7 @@ import {
 } from "@chakra-ui/react";
 import Loader from "components/Loader";
 
-import { useData } from "context/DataContext";
+import { SIDEBAR_MENU } from "components/sidebar/data";
 import { useEffect, useState } from "react";
 import { FaChevronDown } from "react-icons/fa";
 import { GoCheckCircleFill } from "react-icons/go";
@@ -31,10 +31,8 @@ const PermissionsPanel = ({
 	const [userPermission, setUserPermission] = useState(null);
 	const [showLoader, setShowLoader] = useState(false);
 	const location = useLocation();
-
-	const { permissionData } = useData();
 	const currentModule = location.pathname.split("/")[1];
-	const defaultIndex = permissionData?.findIndex(
+	const defaultIndex = SIDEBAR_MENU?.findIndex(
 		(menu) => menu.id === currentModule,
 	);
 	const [isExpanded, setExpanded] = useState(defaultIndex);
@@ -48,19 +46,19 @@ const PermissionsPanel = ({
 			try {
 				const response = await UserService.getUserPermission(userId);
 				if (response.data) {
-					permissionData.forEach((data, index) => {
+					SIDEBAR_MENU.forEach((data, index) => {
 						const menu = response.data.permissionType.find(
 							(item) => item.name === data.name,
 						);
 						if (menu) {
-							permissionData[index].permissions = menu;
+							SIDEBAR_MENU[index].permissions = menu;
 						}
 						data?.children?.forEach((child, cIndex) => {
 							const childMenu = response.data.permissionType.find(
 								(item) => item.name === `${data.name} ${child.name}`,
 							);
 							if (menu) {
-								permissionData[index].children[cIndex].permissions = childMenu;
+								SIDEBAR_MENU[index].children[cIndex].permissions = childMenu;
 							}
 						});
 					});
@@ -202,7 +200,7 @@ const PermissionsPanel = ({
 							</Tr>
 						)}
 						{!showLoader &&
-							permissionData?.map((menu, index) => (
+							SIDEBAR_MENU?.map((menu, index) => (
 								<Tr key={menu.id}>
 									<Td w={"550px"} key={menu.name} py={1}>
 										<HStack spacing={2}>

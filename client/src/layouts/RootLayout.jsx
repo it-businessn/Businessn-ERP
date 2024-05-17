@@ -49,7 +49,7 @@ const RootLayout = () => {
 	useEffect(() => {
 		if (user) {
 			navigate(ROUTE_PATH.SALES);
-			// navigate("/scheduling/workview");
+			// navigate(`${ROUTE_PATH.PAYROLL}${ROUTE_PATH.EMP_DASHBOARD}`);
 		} else {
 			navigate(ROUTE_PATH.LOGIN);
 		}
