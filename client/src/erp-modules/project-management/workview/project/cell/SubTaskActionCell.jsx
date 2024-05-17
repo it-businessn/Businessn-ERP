@@ -124,6 +124,7 @@ const SubTaskActionCell = ({
 					handleDelete={() => handleDelete(task, task._id)}
 					data={task}
 					type={"subtask"}
+					setRefresh={setRefresh}
 				/>
 			</HStack>
 			{isSubExpanded === index &&
