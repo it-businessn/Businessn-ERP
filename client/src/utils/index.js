@@ -10,6 +10,7 @@ import {
 import { ROLES } from "constant";
 import AddNotes from "erp-modules/project-management/workview/project/cell/AddNotes";
 import { COLORS } from "erp-modules/project-management/workview/project/data";
+import moment from "moment";
 import { useState } from "react";
 import { CgNotes } from "react-icons/cg";
 import { FaChevronDown, FaChevronUp } from "react-icons/fa";
@@ -71,6 +72,17 @@ export const generateRandomData = (name, count) => {
 export function getDefaultDate(isoDate) {
 	const dateObject = new Date(isoDate);
 	return dateObject.toISOString().split("T")[0];
+}
+
+export function getDefaultTime(date) {
+	return moment(date, "HH:mm").format("hh:mm A");
+}
+
+export function getDateDiffHours(date1, date2) {
+	return `${moment(date2).diff(moment(date1), "hours")}.${moment(date2).diff(
+		moment(date1),
+		"minutes",
+	)}`;
 }
 
 export const isValidPhoneNumber = (phoneNumber) => {

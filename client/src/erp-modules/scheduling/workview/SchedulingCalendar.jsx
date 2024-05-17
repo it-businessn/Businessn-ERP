@@ -170,7 +170,7 @@ const SchedulingCalendar = ({ newEmployeeAdded }) => {
 		const end_time = existingItem ? eventPrevEndTime : eventInitialEndTime;
 
 		const newItem = {
-			id: existingItem ? id + 1 + "s" : id,
+			id: existingItem ? `${id + 1}s` : id,
 			group: id,
 			title: name,
 			color,

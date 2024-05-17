@@ -23,6 +23,7 @@ const projectRoutes = require("./routes/project");
 const scheduleRoutes = require("./routes/schedule");
 const setUpRoutes = require("./routes/setup");
 const userRoutes = require("./routes/user");
+const timesheetRoutes = require("./routes/timesheet");
 const taskRoutes = require("./routes/task");
 const questionnaireRoutes = require("./routes/questionnaire");
 
@@ -65,6 +66,7 @@ app.use("/api/permissions", permissionsRoutes);
 app.use("/api/projects", projectRoutes);
 app.use("/api/setup", setUpRoutes);
 app.use("/api/schedule", scheduleRoutes);
+app.use("/api/timesheet", timesheetRoutes);
 app.use("/api/tasks", taskRoutes);
 app.use("/api/questionnaire", questionnaireRoutes);
 // app.use("/api/attendance", attendanceRoutes);

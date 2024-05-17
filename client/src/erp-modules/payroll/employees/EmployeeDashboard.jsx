@@ -3,8 +3,8 @@ import TextTitle from "components/ui/text/TextTitle";
 
 import { useState } from "react";
 import LocalStorageService from "services/LocalStorageService";
-import LeftPane from "../leftpane";
-import RightPane from "../rightpane";
+import LeftPane from "./leftpane";
+import RightPane from "./rightpane";
 
 const EmployeeDashboard = () => {
 	const user = LocalStorageService.getItem("user");

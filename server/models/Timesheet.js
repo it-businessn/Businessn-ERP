@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 const timesheetSchema = new mongoose.Schema({
 	department: String,
-	approveStatus: String,
+	approveStatus: { type: String, default: "Pending" },
 	payRate: Number,
 	payType: String,
 	// clockIn: Date,
@@ -22,6 +22,8 @@ const timesheetSchema = new mongoose.Schema({
 	totalHours: Number,
 	totalTimeCardHours: Number,
 	projectEntries: [{ type: mongoose.Schema.Types.ObjectId, ref: "Project" }],
+	updatedOn: { type: Date, default: Date.now },
+	createdOn: { type: Date, default: Date.now },
 });
 
 const Timesheet = mongoose.model("Timesheet", timesheetSchema);

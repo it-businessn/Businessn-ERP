@@ -1,11 +1,14 @@
-import { Box, HStack, VStack } from "@chakra-ui/react";
+import { Box, HStack, VStack, useToast } from "@chakra-ui/react";
 import LeftIconButton from "components/ui/button/LeftIconButton";
 import TextTitle from "components/ui/text/TextTitle";
 import moment from "moment";
 import { useEffect, useState } from "react";
+import TimesheetService from "services/TimesheetService";
 
-const TimeCard = () => {
+const TimeCard = ({ selectedUser }) => {
 	const [time, setTime] = useState(new Date());
+
+	const toast = useToast();
 	useEffect(() => {
 		const timer = setInterval(() => {
 			setTime(new Date());
@@ -19,10 +22,52 @@ const TimeCard = () => {
 		second: "2-digit",
 	});
 	const formattedDate = moment(new Date()).format("MMM DD, YYYY");
-	const clockIn = () => console.log("clockIn", time.getTime());
-	const clockOut = () => console.log("clockOut", time.getTime());
-	const breakStart = () => console.log("breakStart", time.getTime());
-	const breakEnd = () => console.log("breakEnd", time.getTime());
+	const handleSubmit = async () => {
+		try {
+			await TimesheetService.addTimesheet({
+				employeeId: selectedUser?._id,
+			});
+			toast({
+				title: "Clock In successful!",
+				status: "success",
+				duration: 1500,
+				isClosable: true,
+			});
+		} catch (error) {
+			console.error(error);
+			toast({
+				title: "Please try again.",
+				status: "error",
+				duration: 1500,
+				isClosable: true,
+			});
+		}
+	};
+	const updateSubmit = async (key, message) => {
+		try {
+			await TimesheetService.updateTimesheet(
+				{
+					key,
+				},
+				selectedUser?._id,
+			);
+			toast({
+				title: message,
+				status: "success",
+				duration: 1500,
+				isClosable: true,
+			});
+		} catch (error) {
+			console.error(error);
+			toast({
+				title: "Please try again.",
+				status: "error",
+				duration: 1500,
+				isClosable: true,
+			});
+		}
+	};
+
 	return (
 		<Box
 			p="1em"
@@ -53,7 +98,7 @@ const TimeCard = () => {
 						w={"50%"}
 						bg={"var(--correct_ans)"}
 						_hover={{ color: "var(--main_color)" }}
-						handleClick={clockIn}
+						handleClick={handleSubmit}
 					/>
 					<LeftIconButton
 						size="xl"
@@ -61,7 +106,7 @@ const TimeCard = () => {
 						variant="solid"
 						w={"50%"}
 						_hover={{ color: "var(--main_color)" }}
-						handleClick={breakStart}
+						handleClick={() => updateSubmit("startBreaks", `Break Started!`)}
 					/>
 				</HStack>
 				<HStack justify={"space-between"} w={"100%"}>
@@ -72,7 +117,9 @@ const TimeCard = () => {
 						w={"50%"}
 						bg={"var(--incorrect_ans)"}
 						_hover={{ color: "var(--main_color)" }}
-						handleClick={clockOut}
+						handleClick={() =>
+							updateSubmit("clockOuts", `Clock Out Successful!`)
+						}
 					/>
 					<LeftIconButton
 						size="xl"
@@ -81,7 +128,7 @@ const TimeCard = () => {
 						w={"50%"}
 						bg={"var(--event_color)"}
 						_hover={{ color: "var(--main_color)" }}
-						handleClick={breakEnd}
+						handleClick={() => updateSubmit("endBreaks", `Break Ended!`)}
 					/>
 				</HStack>
 			</VStack>
