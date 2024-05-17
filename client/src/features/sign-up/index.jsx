@@ -5,7 +5,6 @@ import {
 	Box,
 	Button,
 	Container,
-	Flex,
 	FormControl,
 	FormLabel,
 	HStack,
@@ -17,6 +16,8 @@ import {
 	Stack,
 } from "@chakra-ui/react";
 import Logo from "components/logo";
+import ActionButtonGroup from "components/ui/form/ActionButtonGroup";
+import InputFormControl from "components/ui/form/InputFormControl";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import LoginService from "services/LoginService";
@@ -184,7 +185,7 @@ const SignUp = ({ isModal, setRefresh, onClose }) => {
 
 					<form onSubmit={handleSubmit}>
 						{companies && (
-							<FormControl mb={4}>
+							<FormControl>
 								<FormLabel>Select Company</FormLabel>
 								<Select
 									name="company"
@@ -201,56 +202,42 @@ const SignUp = ({ isModal, setRefresh, onClose }) => {
 								</Select>
 							</FormControl>
 						)}
-						<FormControl mb={4}>
-							<FormLabel>Company Id</FormLabel>
-							<Input
-								type="text"
-								name="companyId"
-								value={formData.companyId}
-								onChange={handleChange}
-								placeholder="Company Id"
-							/>
-						</FormControl>
-						<FormControl mb={4}>
-							<FormLabel>First Name</FormLabel>
-							<Input
-								type="text"
-								name="firstName"
-								value={formData.firstName}
-								onChange={handleChange}
-								placeholder="First Name"
-							/>
-						</FormControl>
-						<FormControl mb={4}>
-							<FormLabel>Middle Name</FormLabel>
-							<Input
-								type="text"
-								name="middleName"
-								value={formData.middleName}
-								onChange={handleChange}
-								placeholder="Middle Name"
-							/>
-						</FormControl>
-						<FormControl mb={4}>
-							<FormLabel>Last Name</FormLabel>
-							<Input
-								type="text"
-								name="lastName"
-								value={formData.lastName}
-								onChange={handleChange}
-								placeholder="Last Name"
-							/>
-						</FormControl>
-						<FormControl mb={4}>
-							<FormLabel>Email</FormLabel>
-							<Input
-								type="email"
-								name="email"
-								value={formData.email}
-								onChange={handleChange}
-								placeholder="Enter email address"
-							/>
-						</FormControl>
+						<InputFormControl
+							label={"Company Id"}
+							name="companyId"
+							valueText={formData.companyId}
+							handleChange={handleChange}
+							placeholder="Company Id"
+						/>
+						<InputFormControl
+							label={"First Name"}
+							name="firstName"
+							valueText={formData.firstName}
+							handleChange={handleChange}
+							placeholder="First Name"
+						/>
+						<InputFormControl
+							label={"Middle Name"}
+							name="middleName"
+							valueText={formData.middleName}
+							handleChange={handleChange}
+							placeholder="Middle Name"
+						/>
+						<InputFormControl
+							label={"Last Name"}
+							name="lastName"
+							valueText={formData.lastName}
+							handleChange={handleChange}
+							placeholder="Last Name"
+						/>
+						<InputFormControl
+							label={"Email"}
+							name="email"
+							type="email"
+							valueText={formData.email}
+							handleChange={handleChange}
+							placeholder="Enter email address"
+						/>
 						<FormControl mb={4}>
 							<FormLabel>Password</FormLabel>
 							<InputGroup>
@@ -362,16 +349,13 @@ const SignUp = ({ isModal, setRefresh, onClose }) => {
 								</Select>
 							</FormControl>
 						)}
-						<FormControl mb={4}>
-							<FormLabel>Phone Number</FormLabel>
-							<Input
-								type="text"
-								name="phoneNumber"
-								value={formData.phoneNumber}
-								onChange={handleChange}
-								placeholder="Phone Number"
-							/>
-						</FormControl>
+						<InputFormControl
+							label={"Phone Number"}
+							name="phoneNumber"
+							valueText={formData.phoneNumber}
+							handleChange={handleChange}
+							placeholder="Phone Number"
+						/>
 						<FormControl mb={4}>
 							<FormLabel>Address</FormLabel>
 							<HStack>
@@ -455,14 +439,11 @@ const SignUp = ({ isModal, setRefresh, onClose }) => {
 								/>
 							</HStack>
 						</FormControl>
-						<Flex justifyContent="flex-end">
-							<Button isLoading={isLoading} bg="brand.logo_bg" type="submit">
-								Add
-							</Button>
-							<Button colorScheme="gray" ml={2} onClick={goBack}>
-								Cancel
-							</Button>
-						</Flex>
+						<ActionButtonGroup
+							submitBtnName={"Add"}
+							isLoading={isLoading}
+							onClose={goBack}
+						/>
 					</form>
 					{error && (
 						<Alert status="error" mt={4}>

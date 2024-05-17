@@ -1,20 +1,8 @@
-import {
-	Box,
-	Button,
-	FormControl,
-	FormLabel,
-	HStack,
-	Input,
-	Modal,
-	ModalBody,
-	ModalCloseButton,
-	ModalContent,
-	ModalHeader,
-	ModalOverlay,
-	Stack,
-	Text,
-	useDisclosure,
-} from "@chakra-ui/react";
+import { Box, Stack, useDisclosure } from "@chakra-ui/react";
+import ActionButtonGroup from "components/ui/form/ActionButtonGroup";
+import InputFormControl from "components/ui/form/InputFormControl";
+import ModalLayout from "components/ui/modal/ModalLayout";
+import TextTitle from "components/ui/text/TextTitle";
 import { useEffect, useState } from "react";
 import LeadsService from "services/LeadsService";
 import LocalStorageService from "services/LocalStorageService";
@@ -67,20 +55,22 @@ const Pipeline = () => {
 
 	return (
 		<Box p={{ base: "1em", md: "2em" }}>
-			<Text fontWeight="bold" mb={"0.5em"}>
-				Target Leads
-			</Text>
+			<TextTitle title="Target Leads" mb={"0.5em"} />
 			<Box
 				width="100%"
 				borderRadius="10px"
 				border="3px solid var(--main_color)"
 				mb={3}
 			>
-				<Text p={"1em"} fontWeight="bold" color={"brand.200"} mb={"0.5em"}>
-					Pipeline
-				</Text>
+				<TextTitle
+					p={"1em"}
+					title="Pipeline"
+					color={"brand.200"}
+					mb={"0.5em"}
+				/>
+
 				{opportunityData && (
-					<GradientAreaFillColorChart opportunityData={opportunityData} />
+					<GradientAreaFillColorChart data={opportunityData} />
 				)}
 			</Box>
 			{TARGET_LEADS && (
@@ -90,75 +80,40 @@ const Pipeline = () => {
 					setIsUpdated={setIsUpdated}
 				/>
 			)}
+			<ModalLayout title={"Edit Lead"} isOpen={isOpen} onClose={onClose}>
+				<form onSubmit={handleSubmit}>
+					<Stack spacing={4}>
+						<InputFormControl
+							label={"Name of Company"}
+							name="company"
+							// valueText={formData.phoneNo}
+							// handleChange={handleChange}
+							required
+						/>
+						<InputFormControl
+							type="email"
+							label={"Email"}
+							name="email"
+							// valueText={formData.phoneNo}
+							// handleChange={handleChange}
+							required
+						/>
+						<InputFormControl
+							label={"Phone"}
+							name="phone"
+							// valueText={formData.phoneNo}
+							// handleChange={handleChange}
+							required
+						/>
 
-			<Modal isCentered isOpen={isOpen} onClose={onClose}>
-				<ModalOverlay />
-				<ModalContent>
-					<ModalHeader>Edit Lead</ModalHeader>
-					<ModalCloseButton />
-					<ModalBody>
-						<Stack spacing="5">
-							<form onSubmit={handleSubmit}>
-								<Stack spacing={4}>
-									<FormControl>
-										<FormLabel>Name of Company</FormLabel>
-										<Input
-											type="text"
-											name="company"
-											// value={formData.email}
-											// onChange={handleChange}
-											required
-										/>
-									</FormControl>
-									<FormControl>
-										<FormLabel>Email</FormLabel>
-										<Input
-											type="email"
-											name="email"
-											// value={formData.email}
-											// onChange={handleChange}
-											required
-										/>
-									</FormControl>
-									<FormControl>
-										<FormLabel>Phone</FormLabel>
-										<Input
-											type="text"
-											name="phone"
-											// value={formData.email}
-											// onChange={handleChange}
-											required
-										/>
-									</FormControl>
-									<HStack justifyContent={"end"}>
-										<Button
-											// isLoading={isLoading}
-											type="submit"
-											bg="brand.logo_bg"
-											// _hover={{ color: "brand.100" }}
-										>
-											Save
-										</Button>
-										<Button
-											// isLoading={isLoading}
-											colorScheme="gray"
-										>
-											Cancel
-										</Button>
-									</HStack>
-								</Stack>
-							</form>
-							{/* {error && (
-						<Alert status="error" mt={4}>
-							<AlertIcon />
-							{error}
-						</Alert>
-					)} */}
-						</Stack>
-					</ModalBody>
-				</ModalContent>
-			</Modal>
-			{/* )} */}
+						<ActionButtonGroup
+							submitBtnName={"Save"}
+							// isLoading={isLoading}
+							onClose={onClose}
+						/>
+					</Stack>
+				</form>
+			</ModalLayout>
 		</Box>
 	);
 };

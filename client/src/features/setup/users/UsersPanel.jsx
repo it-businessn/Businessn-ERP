@@ -1,6 +1,7 @@
 import { SmallAddIcon } from "@chakra-ui/icons";
-import { Button, HStack } from "@chakra-ui/react";
+import { HStack } from "@chakra-ui/react";
 import Loader from "components/Loader";
+import LeftIconButton from "components/ui/button/LeftIconButton";
 import { useState } from "react";
 import AddNewUser from "../AddNewUser";
 import EmpSearchMenu from "../EmpSearchMenu";
@@ -35,23 +36,12 @@ const UsersPanel = ({
 					handleInputChange={handleInputChange}
 					handleSelect={handleSelect}
 				/>
+				<LeftIconButton
+					name={"Add User"}
+					handleClick={() => setOpenAddUser(true)}
+					icon={<SmallAddIcon />}
+				/>
 
-				<Button
-					onClick={() => setOpenAddUser(true)}
-					bg={"brand.primary_button_bg"}
-					px={{ base: "2em" }}
-					color={"brand.primary_bg"}
-					_hover={{
-						color: "brand.primary_button_bg",
-						bg: "brand.700",
-						border: "1px solid var(--primary_button_bg)",
-					}}
-					leftIcon={<SmallAddIcon />}
-					type="submit"
-					borderRadius={"10px"}
-				>
-					Add User
-				</Button>
 				{openAddUser && (
 					<AddNewUser
 						isOpen={openAddUser}

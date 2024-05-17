@@ -10,9 +10,10 @@ import {
 	InputGroup,
 	InputRightElement,
 	Stack,
-	Text,
 	VStack,
 } from "@chakra-ui/react";
+import PrimaryButton from "components/ui/button/PrimaryButton";
+import TextTitle from "components/ui/text/TextTitle";
 import { useState } from "react";
 import PasswordService from "services/PasswordService";
 
@@ -74,9 +75,7 @@ const ChangePassword = ({
 			<form onSubmit={handleSubmit}>
 				<VStack align="center" justify="center" mb="4">
 					<Box textAlign="center">
-						<Text fontSize="xl" fontWeight="bold">
-							Change Password
-						</Text>
+						<TextTitle size="xl" title="Change Password" />
 					</Box>
 				</VStack>
 				<FormControl mb={4}>
@@ -143,9 +142,7 @@ const ChangePassword = ({
 						</InputRightElement>
 					</InputGroup>
 				</FormControl>
-				<Button bg="brand.logo_bg" type="submit">
-					Save
-				</Button>
+				<PrimaryButton name={"Save"} size={"sm"} />
 				{passwordError && (
 					<Alert status="error" mt={4}>
 						<AlertIcon />

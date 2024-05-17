@@ -13,7 +13,7 @@ import ActionButton from "components/ui/button/ActionButton";
 import { useEffect, useState } from "react";
 import SettingService from "services/SettingService";
 
-const CompaniesPanel = () => {
+const CompaniesPanel = ({ setOpenCompanyForm }) => {
 	const defaultFormData = {
 		name: "",
 		founding_year: "",
@@ -57,6 +57,7 @@ const CompaniesPanel = () => {
 			await SettingService.addCompany(formData);
 			setIsRefresh((prev) => !prev);
 			resetForm();
+			setOpenCompanyForm(false);
 		} catch (error) {
 			console.log("An error occurred. Please try again.");
 		} finally {

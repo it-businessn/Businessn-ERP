@@ -1,14 +1,6 @@
-import {
-	Button,
-	FormControl,
-	FormHelperText,
-	FormLabel,
-	HStack,
-	Input,
-	Select,
-	Stack,
-} from "@chakra-ui/react";
-import PrimaryButton from "components/ui/button/PrimaryButton";
+import { FormControl, FormLabel, Select, Stack } from "@chakra-ui/react";
+import ActionButtonGroup from "components/ui/form/ActionButtonGroup";
+import InputFormControl from "components/ui/form/InputFormControl";
 import ModalLayout from "components/ui/modal/ModalLayout";
 import { useState } from "react";
 import { FaCaretDown } from "react-icons/fa";
@@ -68,37 +60,31 @@ const EditLead = ({
 		>
 			<form onSubmit={handleSubmit}>
 				<Stack spacing={4}>
-					<FormControl>
-						<FormLabel>Name of Company</FormLabel>
-						<Input
-							type="text"
-							name="opportunityName"
-							value={formData.opportunityName}
-							onChange={handleChange}
-							required
-						/>
-					</FormControl>
-					<FormControl>
-						<FormLabel>Email</FormLabel>
-						<Input
-							type="email"
-							name="email"
-							value={formData.email}
-							onChange={handleChange}
-							required
-						/>
-					</FormControl>
-					<FormControl isInvalid={!!phoneNumberError}>
-						<FormLabel htmlFor="phone">Phone</FormLabel>
-						<Input
-							type="text"
-							name="phone"
-							value={formData.phone}
-							onChange={handleChange}
-							required
-						/>
-						<FormHelperText color="red.500">{phoneNumberError}</FormHelperText>
-					</FormControl>
+					<InputFormControl
+						label={"Name of Company"}
+						name="opportunityName"
+						valueText={formData.opportunityName}
+						handleChange={handleChange}
+						required
+					/>
+					<InputFormControl
+						label={"Email"}
+						type="email"
+						name="email"
+						valueText={formData.email}
+						handleChange={handleChange}
+						required
+					/>
+					<InputFormControl
+						isInvalid={!!phoneNumberError}
+						label={"Phone"}
+						name="phone"
+						valueText={formData.phone}
+						handleChange={handleChange}
+						error={phoneNumberError}
+						required
+					/>
+
 					<FormControl>
 						<FormLabel>Stage</FormLabel>
 						<Select
@@ -117,18 +103,12 @@ const EditLead = ({
 							))}
 						</Select>
 					</FormControl>
-					<HStack justifyContent={"end"}>
-						<PrimaryButton
-							isDisabled={phoneNumberError !== ""}
-							name="Save"
-							isLoading={isSubmitting}
-							px="2em"
-						/>
-
-						<Button onClick={onClose} colorScheme="gray">
-							Cancel
-						</Button>
-					</HStack>
+					<ActionButtonGroup
+						submitBtnName={"Save"}
+						isDisabled={phoneNumberError !== ""}
+						isLoading={isSubmitting}
+						onClose={onClose}
+					/>
 				</Stack>
 			</form>
 		</ModalLayout>

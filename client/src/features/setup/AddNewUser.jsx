@@ -1,28 +1,16 @@
-import {
-	Modal,
-	ModalBody,
-	ModalCloseButton,
-	ModalContent,
-	ModalHeader,
-	ModalOverlay,
-	Stack,
-} from "@chakra-ui/react";
+import ModalLayout from "components/ui/modal/ModalLayout";
 import SignUp from "features/sign-up";
 
 const AddNewUser = ({ isOpen, onClose, setRefresh }) => {
 	return (
-		<Modal isCentered size={"5xl"} isOpen={isOpen} onClose={onClose}>
-			<ModalOverlay />
-			<ModalContent>
-				<ModalHeader>Add New User</ModalHeader>
-				<ModalCloseButton />
-				<ModalBody>
-					<Stack spacing="5">
-						<SignUp isModal setRefresh={setRefresh} onClose={onClose} />
-					</Stack>
-				</ModalBody>
-			</ModalContent>
-		</Modal>
+		<ModalLayout
+			title={"Add New User"}
+			size="5xl"
+			isOpen={isOpen}
+			onClose={onClose}
+		>
+			<SignUp isModal setRefresh={setRefresh} onClose={onClose} />
+		</ModalLayout>
 	);
 };
 

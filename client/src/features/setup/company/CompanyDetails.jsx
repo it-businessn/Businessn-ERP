@@ -1,6 +1,7 @@
 import {
 	Box,
 	Card,
+	Flex,
 	HStack,
 	Icon,
 	Table,
@@ -13,17 +14,22 @@ import {
 	VStack,
 } from "@chakra-ui/react";
 import Loader from "components/Loader";
+import PrimaryButton from "components/ui/button/PrimaryButton";
+import TextTitle from "components/ui/text/TextTitle";
 import { useEffect, useState } from "react";
 import { HiOfficeBuilding } from "react-icons/hi";
 import LocalStorageService from "services/LocalStorageService";
 import SettingService from "services/SettingService";
-import { toCapitalize } from "utils";
+import { isManager, toCapitalize } from "utils";
+import CompaniesPanel from "../CompaniesPanel";
 
 const CompanyDetails = () => {
+	const [openCompanyForm, setOpenCompanyForm] = useState(false);
 	const [companyInfo, setCompanyInfo] = useState(null);
 	const [modules, setModules] = useState(null);
 	const company =
 		LocalStorageService.getItem("selectedCompany") || "BusinessN Corporate";
+	const user = LocalStorageService.getItem("user");
 
 	useEffect(() => {
 		const fetchCompanyInfo = async () => {
@@ -54,76 +60,92 @@ const CompanyDetails = () => {
 			: "";
 
 	return (
-		companyInfo && (
-			<HStack
-				flexDir={{ base: "column", md: "row" }}
-				borderRadius="10px"
-				border="3px solid var(--main_color)"
-				m="1em"
-			>
-				<Card
-					flex={1}
-					m="1em"
-					bg={"var(--lead_cards_bg)"}
-					border={"1px solid var(--lead_cards_bg)"}
-				>
-					<Box
-						fontWeight="bold"
-						p="1em"
-						bg="var(--bg_color_1)"
-						borderTopLeftRadius="10px"
-						borderTopRightRadius="10px"
-					>
-						<VStack spacing={5}>
-							<Icon as={HiOfficeBuilding} boxSize={10} />
-							<Text fontSize="xl" fontWeight="bold">
-								{companyInfo.name}
-							</Text>
-						</VStack>
-					</Box>
-					<VStack align="flex-start" color={"brand.200"} p={"1em"}>
-						<HStack>
-							<Text fontWeight="bold">Registration Number</Text>
-							<Text color={"brand.600"}>{companyInfo.registration_number}</Text>
-						</HStack>
-						<HStack>
-							<Text fontWeight="bold">Founding Year</Text>
-							<Text color={"brand.600"}>{companyInfo.founding_year}</Text>
-						</HStack>
+		<>
+			{isManager(user?.role) && (
+				<Flex justify={"end"}>
+					<PrimaryButton
+						name={"Add new company"}
+						onOpen={() => setOpenCompanyForm(true)}
+					/>
+				</Flex>
+			)}
+			{openCompanyForm && (
+				<CompaniesPanel setOpenCompanyForm={setOpenCompanyForm} />
+			)}
 
-						<HStack>
-							<Text fontWeight="bold">Industry Type</Text>
-							<Text color={"brand.600"}>{companyInfo.industry_type}</Text>
-						</HStack>
-						<HStack>
-							<Text fontWeight="bold">Address</Text>
-							<Text color={"brand.600"}>{getAddress(companyInfo.address)}</Text>
-						</HStack>
-					</VStack>
-					{!modules && <Loader autoHeight />}
-					{modules && (
-						<Table variant="simple" size={"small"}>
-							<Thead>
-								<Tr>
-									<Th px={"1em"}>Module Name</Th>
-									<Th>Admin</Th>
-								</Tr>
-							</Thead>
-							<Tbody>
-								{modules.map((module) => (
-									<Tr key={module._id}>
-										<Td w={"500px"} px={"1em"}>
-											{module.name}
-										</Td>
-										<Td>{module.admin[0]}</Td>
+			{!openCompanyForm && companyInfo && (
+				<HStack
+					flexDir={{ base: "column", md: "row" }}
+					borderRadius="10px"
+					border="3px solid var(--main_color)"
+					m="1em"
+				>
+					<Card
+						flex={1}
+						m="1em"
+						bg={"var(--lead_cards_bg)"}
+						border={"1px solid var(--lead_cards_bg)"}
+					>
+						<Box
+							fontWeight="bold"
+							p="1em"
+							bg="var(--bg_color_1)"
+							borderTopLeftRadius="10px"
+							borderTopRightRadius="10px"
+						>
+							<VStack spacing={5}>
+								<Icon as={HiOfficeBuilding} boxSize={10} />
+								<TextTitle size="xl" title={companyInfo.name} />
+							</VStack>
+						</Box>
+						<VStack align="flex-start" color={"brand.200"} p={"1em"}>
+							<HStack>
+								<TextTitle title="Registration Number" />
+								<Text color={"brand.600"}>
+									{companyInfo.registration_number}
+								</Text>
+							</HStack>
+							<HStack>
+								<TextTitle title="Founding Year" />
+								<Text color={"brand.600"}>{companyInfo.founding_year}</Text>
+							</HStack>
+
+							<HStack>
+								<TextTitle title="Industry Type" />
+								<Text color={"brand.600"}>{companyInfo.industry_type}</Text>
+							</HStack>
+							<HStack>
+								<TextTitle title="Address" />
+								<Text color={"brand.600"}>
+									{getAddress(companyInfo.address)}
+								</Text>
+							</HStack>
+						</VStack>
+						{!modules && <Loader autoHeight />}
+						{modules && (
+							<Table variant="simple" size={"small"}>
+								<Thead>
+									<Tr>
+										<Th px={"1em"}>Module Name</Th>
+										<Th>Admin</Th>
 									</Tr>
-								))}
-							</Tbody>
-						</Table>
-					)}
-				</Card>
-			</HStack>
-		)
+								</Thead>
+								<Tbody>
+									{modules.map((module) => (
+										<Tr key={module._id}>
+											<Td w={"500px"} px={"1em"}>
+												{module.name}
+											</Td>
+											<Td>{module.admin[0]}</Td>
+										</Tr>
+									))}
+								</Tbody>
+							</Table>
+						)}
+					</Card>
+				</HStack>
+			)}
+		</>
 	);
 };
 

@@ -1,14 +1,10 @@
-import {
-	Badge,
-	Box,
-	Button,
-	HStack,
-	SimpleGrid,
-	Text,
-	VStack,
-} from "@chakra-ui/react";
+import { Badge, Box, HStack, SimpleGrid, VStack } from "@chakra-ui/react";
+import LinkButton from "components/ui/button/LinkButton";
+import PrimaryButton from "components/ui/button/PrimaryButton";
+import TextTitle from "components/ui/text/TextTitle";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { ROUTE_PATH } from "routes";
 import QuestionnaireService from "services/QuestionnaireService";
 
 const ManagerViewCard = () => {
@@ -36,21 +32,15 @@ const ManagerViewCard = () => {
 			color={"brand.nav_color"}
 		>
 			<HStack>
-				<Text flex={1} mb={"0.5em"} fontWeight="bold">
-					All Assessment
-				</Text>
-
-				<Button
+				<TextTitle flex={1} mb={"0.5em"} title="All Assessment" />
+				<LinkButton
 					flex={0.4}
 					p={"5px"}
 					fontSize="sm"
-					variant={"link"}
-					_hover={{ color: "brand.600" }}
-					onClick={() => navigate("/sales/add-paper")}
 					textDecor={"underline"}
-				>
-					Add Assessment
-				</Button>
+					name="Add Assessment"
+					onClick={() => navigate(`${ROUTE_PATH.SALES}${ROUTE_PATH.ADD_PAPER}`)}
+				/>
 			</HStack>
 
 			<SimpleGrid
@@ -73,26 +63,21 @@ const ManagerViewCard = () => {
 						alignItems="flex-start"
 					>
 						<VStack align={"self-start"} spacing={2} w={"100%"}>
-							<Text color={"brand.nav_color"} fontSize="xs" fontWeight="bold">
-								Assessment
-							</Text>
+							<TextTitle
+								color={"brand.nav_color"}
+								fontSize="xs"
+								title="Assessment"
+							/>
+
 							<Badge bg="green" color="var(--main_color)">
 								{assessment.name}
 							</Badge>
-
-							<Button
-								w={"100%"}
-								p={"5px 0"}
-								bg="var(--primary_button_bg)"
+							<PrimaryButton
 								size={"xs"}
-								color={"brand.primary_bg"}
-								variant={"solid"}
-								_hover={{ color: "brand.600" }}
-								borderRadius={"10px"}
+								name={"Add / Edit"}
 								onClick={() => navigate("/sales/add-paper")}
-							>
-								Add / Edit
-							</Button>
+								minW={"100%"}
+							/>
 						</VStack>
 					</Box>
 				))}

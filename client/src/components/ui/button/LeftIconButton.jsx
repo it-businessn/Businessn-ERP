@@ -13,9 +13,11 @@ const LeftIconButton = ({
 	size = "xs",
 	borderRadius,
 	w,
+	type,
 }) => {
 	return (
 		<Button
+			type={type}
 			w={w}
 			size={size}
 			border={border}

@@ -1,13 +1,7 @@
-import {
-	Badge,
-	Box,
-	Button,
-	HStack,
-	SimpleGrid,
-	Text,
-	VStack,
-} from "@chakra-ui/react";
+import { Badge, Box, HStack, SimpleGrid, VStack } from "@chakra-ui/react";
 import Loader from "components/Loader";
+import PrimaryButton from "components/ui/button/PrimaryButton";
+import TextTitle from "components/ui/text/TextTitle";
 import { doughnutOptions } from "constant";
 import { useEffect, useState } from "react";
 import { Doughnut } from "react-chartjs-2";
@@ -71,7 +65,7 @@ const AssociateViewCard = () => {
 						fontWeight="bold"
 						color={"brand.nav_color"}
 					>
-						<Text fontWeight="bold">Training</Text>
+						<TextTitle title="Training" />
 
 						<Box
 							w={{ base: "60%", md: "40%", lg: "60%", xl: "40%" }}
@@ -101,9 +95,7 @@ const AssociateViewCard = () => {
 						color={"brand.nav_color"}
 					>
 						<HStack>
-							<Text flex={1} mb={"0.5em"} fontWeight="bold">
-								Your Overall Results
-							</Text>
+							<TextTitle flex={1} mb={"0.5em"} title="Your Overall Results" />
 						</HStack>
 
 						<SimpleGrid
@@ -141,13 +133,11 @@ const AssociateViewCard = () => {
 									>
 										<VStack align={"self-start"} spacing={2} w={"100%"}>
 											<HStack>
-												<Text
+												<TextTitle
 													color={"brand.nav_color"}
-													fontSize="xs"
-													fontWeight="bold"
-												>
-													Assessment :
-												</Text>
+													size="xs"
+													title="Assessment :"
+												/>
 												<Badge
 													bg="var(--meeting_bg_light)"
 													size={"xs"}
@@ -157,13 +147,11 @@ const AssociateViewCard = () => {
 												</Badge>
 											</HStack>
 											<HStack>
-												<Text
+												<TextTitle
 													color={"brand.nav_color"}
-													fontSize="xs"
-													fontWeight="bold"
-												>
-													Your Result :
-												</Text>
+													size="xs"
+													title="Your Result :"
+												/>
 												{assessmentResult?.category ? (
 													<Badge
 														bg={assessmentResult?.bg}
@@ -184,53 +172,46 @@ const AssociateViewCard = () => {
 
 											<HStack justify={"space-between"} w={"100%"}>
 												<VStack>
-													<Text
+													<TextTitle
 														color={"brand.nav_color"}
-														fontSize="xs"
-														fontWeight="bold"
-													>
-														Score
-													</Text>
-													<Text fontWeight="bolder">
-														{assessmentResult ? assessmentResult.result : "NA"}
-													</Text>
+														size="xs"
+														title="Score"
+													/>
+													<TextTitle
+														title={
+															assessmentResult ? assessmentResult.result : "NA"
+														}
+													/>
 												</VStack>
 												<VStack>
-													<Text
+													<TextTitle
 														color={"brand.nav_color"}
-														fontSize="xs"
-														fontWeight="bold"
-													>
-														Score(%)
-													</Text>
-													<Text fontWeight="bolder">
-														{assessmentResult
-															? (
-																	(assessmentResult.score /
-																		assessmentResult.total) *
-																	100
-															  ).toFixed(2)
-															: "NA"}
-														%
-													</Text>
+														size="xs"
+														title="Score(%)"
+													/>
+													<TextTitle
+														title={`${
+															assessmentResult
+																? (
+																		(assessmentResult.score /
+																			assessmentResult.total) *
+																		100
+																  ).toFixed(2)
+																: "NA"
+														}
+														%`}
+													/>
 												</VStack>
 											</HStack>
-
-											<Button
-												w={"100%"}
-												p={"5px 0"}
-												bg="var(--primary_button_bg)"
+											<PrimaryButton
 												size={"xs"}
-												color={"brand.primary_bg"}
-												variant={"solid"}
-												_hover={{ color: "brand.600" }}
-												borderRadius={"10px"}
+												name={assessmentResult ? "Re-Take" : "Take"}
+												Assessment
 												onClick={() =>
 													navigate(`/sales/assessment/${assessment.name}`)
 												}
-											>
-												{assessmentResult ? "Re-Take" : "Take"} Assessment
-											</Button>
+												minW={"100%"}
+											/>
 										</VStack>
 									</Box>
 								);

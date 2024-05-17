@@ -6,6 +6,7 @@ import {
 	MenuButton,
 	MenuItem,
 	MenuList,
+	Text,
 } from "@chakra-ui/react";
 import { FaSearch } from "react-icons/fa";
 
@@ -23,12 +24,14 @@ const EmpSearchMenu = ({
 					border={"1px solid var(--filter_border_color)"}
 					fontSize="xs"
 					fontWeight="bold"
+					size="xs"
 				>
 					<Input
 						_placeholder={{
 							color: "brand.nav_color",
 							fontSize: "sm",
 						}}
+						size="xs"
 						name="empName"
 						value={empName}
 						color={"brand.nav_color"}
@@ -43,6 +46,7 @@ const EmpSearchMenu = ({
 			</MenuButton>
 			<MenuList>
 				<Input
+					size="xs"
 					placeholder="Enter Manager Name"
 					value={empName}
 					onChange={(e) => handleInputChange(e.target.value)}
@@ -50,7 +54,7 @@ const EmpSearchMenu = ({
 				/>
 				{filteredEmployees?.map((emp) => (
 					<MenuItem key={emp._id} onClick={() => handleSelect(emp)}>
-						{emp.fullName}
+						<Text fontSize="xs">{emp.fullName}</Text>
 					</MenuItem>
 				))}
 			</MenuList>

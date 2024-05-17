@@ -2,16 +2,17 @@ import {
 	Alert,
 	AlertIcon,
 	Box,
-	Button,
 	FormControl,
 	FormLabel,
 	HStack,
 	Input,
 	Select,
 	Stack,
-	Text,
 	VStack,
 } from "@chakra-ui/react";
+import PrimaryButton from "components/ui/button/PrimaryButton";
+import InputFormControl from "components/ui/form/InputFormControl";
+import TextTitle from "components/ui/text/TextTitle";
 import { useEffect, useState } from "react";
 import SettingService from "services/SettingService";
 import UserService from "services/UserService";
@@ -95,64 +96,47 @@ const EditUserInfo = ({
 			<form onSubmit={handleSaveClick}>
 				<VStack align="center" justify="center" mb="4">
 					<Box textAlign="center">
-						<Text fontSize="xl" fontWeight="bold">
-							Edit Profile Information
-						</Text>
+						<TextTitle size="xl" title="Edit Profile Information" />
 					</Box>
 				</VStack>
 				<HStack>
-					<FormControl mb={4}>
-						<FormLabel>First Name</FormLabel>
-						<Input
-							type="text"
-							name="firstName"
-							value={userData?.firstName}
-							onChange={handleChange}
-							placeholder="First Name"
-						/>
-					</FormControl>
-					<FormControl mb={4}>
-						<FormLabel>Middle Name</FormLabel>
-						<Input
-							type="text"
-							name="lastName"
-							value={userData?.middleName}
-							onChange={handleChange}
-							placeholder="Last Name"
-						/>
-					</FormControl>
-					<FormControl mb={4}>
-						<FormLabel>Last Name</FormLabel>
-						<Input
-							type="text"
-							name="lastName"
-							value={userData?.lastName}
-							onChange={handleChange}
-							placeholder="Last Name"
-						/>
-					</FormControl>
+					<InputFormControl
+						label={"First Name"}
+						name="firstName"
+						valueText={userData.firstName}
+						handleChange={handleChange}
+						placeholder="First Name"
+					/>
+					<InputFormControl
+						label={"Middle Name"}
+						name="middleName"
+						valueText={userData.middleName}
+						handleChange={handleChange}
+						placeholder="Middle Name"
+					/>
+					<InputFormControl
+						label={"Last Name"}
+						name="lastName"
+						valueText={userData.lastName}
+						handleChange={handleChange}
+						placeholder="Last Name"
+					/>
 				</HStack>
-				<FormControl mb={4}>
-					<FormLabel>Email</FormLabel>
-					<Input
-						type="email"
-						name="email"
-						value={userData?.email}
-						onChange={handleChange}
-						placeholder="Email"
-					/>
-				</FormControl>
-				<FormControl mb={4}>
-					<FormLabel>Phone Number</FormLabel>
-					<Input
-						type="text"
-						name="phoneNumber"
-						value={userData?.phoneNumber}
-						onChange={handleChange}
-						placeholder="phone"
-					/>
-				</FormControl>
-
+				<InputFormControl
+					label={"Email"}
+					name="email"
+					type="email"
+					valueText={userData.email}
+					handleChange={handleChange}
+					placeholder="Email"
+				/>
+				<InputFormControl
+					label={"Phone Number"}
+					name="phoneNumber"
+					valueText={userData.phoneNumber}
+					handleChange={handleChange}
+					placeholder="Phone Number"
+				/>
 				<FormControl mb={4}>
 					<FormLabel>Address</FormLabel>
 					<HStack>
@@ -330,9 +314,7 @@ const EditUserInfo = ({
 						</FormControl>
 					)}
 				</HStack>
-				<Button bg="brand.logo_bg" type="submit">
-					Save
-				</Button>
+				<PrimaryButton name={"Save"} size={"sm"} />
 				{error && (
 					<Alert status="error" mt={4}>
 						<AlertIcon />

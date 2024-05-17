@@ -11,6 +11,7 @@ import {
 	VStack,
 	useDisclosure,
 } from "@chakra-ui/react";
+import TextTitle from "components/ui/text/TextTitle";
 import { useState } from "react";
 import { RiEditLine } from "react-icons/ri";
 import LocalStorageService from "services/LocalStorageService";
@@ -89,9 +90,7 @@ const AgentsView = ({ leads, setIsUpdated, reference }) => {
 							borderTopRightRadius="10px"
 						>
 							<Flex justify="space-between" align="center" gap={0}>
-								<Text fontSize="xs" fontWeight="bold">
-									{category.name}
-								</Text>
+								<TextTitle weight="normal" title={category.name} size="xs" />
 								<Select width="90px" border={"none"} fontSize={"xs"}>
 									<option>Weekly</option>
 									<option>Last month</option>
@@ -124,16 +123,13 @@ const AgentsView = ({ leads, setIsUpdated, reference }) => {
 										spacing={0.5}
 									>
 										<HStack justifyContent={"space-between"} w={"100%"}>
-											<Text fontSize="xs" fontWeight="bold">
-												Company
-											</Text>
-											<Text
-												fontSize="xs"
-												// fontWeight="bold"
+											<TextTitle size="xs" title="Company" />
+											<TextTitle
+												size="xs"
 												color={"brand.600"}
-											>
-												{opportunityName}
-											</Text>
+												weight="normal"
+												title={opportunityName}
+											/>
 											<RiEditLine
 												cursor={"pointer"}
 												onClick={() =>
@@ -142,16 +138,13 @@ const AgentsView = ({ leads, setIsUpdated, reference }) => {
 											/>
 										</HStack>
 										<HStack justifyContent={"space-between"} w={"100%"}>
-											<Text fontSize="xs" fontWeight="bold">
-												Email
-											</Text>
-											<Text
-												fontSize="xs"
-												// fontWeight="bold"
+											<TextTitle size="xs" title="Email" />
+											<TextTitle
+												size="xs"
 												color={"brand.600"}
-											>
-												{email}
-											</Text>
+												weight="normal"
+												title={email}
+											/>
 											<Box>
 												<CopyIcon
 													cursor={"pointer"}
@@ -168,16 +161,13 @@ const AgentsView = ({ leads, setIsUpdated, reference }) => {
 											</Box>
 										</HStack>
 										<HStack w={"100%"} justifyContent={"space-between"}>
-											<Text fontSize="xs" fontWeight="bold">
-												Phone
-											</Text>
-											<Text
-												fontSize="xs"
-												// fontWeight="bold"
+											<TextTitle size="xs" title="Phone" />
+											<TextTitle
+												size="xs"
 												color={"brand.600"}
-											>
-												{phone}
-											</Text>
+												weight="normal"
+												title={phone}
+											/>
 											<Box />
 										</HStack>
 									</VStack>

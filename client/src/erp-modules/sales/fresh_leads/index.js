@@ -1,4 +1,5 @@
-import { Box, Text } from "@chakra-ui/react";
+import { Box } from "@chakra-ui/react";
+import TextTitle from "components/ui/text/TextTitle";
 import { useEffect, useState } from "react";
 import LeadsService from "services/LeadsService";
 import { FRESH_LEADS } from "../opportunities/data";
@@ -22,9 +23,7 @@ const FreshLeads = () => {
 
 	return (
 		<Box p={{ base: "1em", md: "2em" }}>
-			<Text fontWeight="bold" mb={"0.5em"}>
-				Fresh Leads
-			</Text>
+			<TextTitle title="Fresh Leads" mb={"0.5em"} />
 			{FRESH_LEADS && (
 				<AgentsView
 					leads={leads}

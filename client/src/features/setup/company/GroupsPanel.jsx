@@ -10,7 +10,8 @@ import {
 	Text,
 } from "@chakra-ui/react";
 import Loader from "components/Loader";
-import ActionButton from "components/ui/button/ActionButton";
+import LeftIconButton from "components/ui/button/LeftIconButton";
+import PrimaryButton from "components/ui/button/PrimaryButton";
 import MultiSelectBox from "components/ui/form/select/MultiSelectBox";
 import { useEffect, useState } from "react";
 import { FaCaretDown } from "react-icons/fa";
@@ -166,10 +167,11 @@ const GroupsPanel = ({
 			fontWeight="bold"
 		>
 			<HStack>
-				<ActionButton
-					isLoading={isSubmitting}
+				<PrimaryButton
+					size="sm"
 					name={"Add Group"}
-					onClick={() => setOpenAddGroup(true)}
+					isLoading={isSubmitting}
+					onOpen={() => setOpenAddGroup(true)}
 				/>
 				{openAddGroup && (
 					<AddNewGroup
@@ -282,23 +284,13 @@ const GroupsPanel = ({
 						handleInputChange={handleInputChange}
 						handleSelect={handleSelect}
 					/>
-					<Button
-						// isDisabled={filteredEmployees?.length > 1}
-						onClick={handleConfirm}
-						bg={"brand.primary_button_bg"}
+					<LeftIconButton
+						name={"Add User"}
+						handleClick={handleConfirm}
+						icon={<SmallAddIcon />}
 						px={{ base: "2em" }}
-						color={"brand.primary_bg"}
-						_hover={{
-							color: "brand.primary_button_bg",
-							bg: "brand.700",
-							border: "1px solid var(--primary_button_bg)",
-						}}
-						leftIcon={<SmallAddIcon />}
 						type="submit"
-						borderRadius={"10px"}
-					>
-						Add User
-					</Button>
+					/>
 				</HStack>
 				{groupMembers?.length > 0 && (
 					<Box w={"100%"} p={0} overflow={"auto"} fontWeight="normal">

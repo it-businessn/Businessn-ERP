@@ -1,4 +1,6 @@
-import { Box, Button, ButtonGroup, Text } from "@chakra-ui/react";
+import { Box } from "@chakra-ui/react";
+import TabsButtonGroup from "components/ui/tab/TabsButtonGroup";
+import TextTitle from "components/ui/text/TextTitle";
 import { useEffect, useState } from "react";
 import UserService from "services/UserService";
 import CompanyPanel from "./company/CompanyPanel";
@@ -66,9 +68,8 @@ const Setup = () => {
 
 	return (
 		<Box p={{ base: "1em", md: "2em" }}>
-			<Text fontWeight="bold" mb={"1em"}>
-				Set up
-			</Text>
+			<TextTitle title="Set up" mb={"1em"} />
+
 			<Box
 				p="1em"
 				bg={"brand.primary_bg"}
@@ -77,27 +78,11 @@ const Setup = () => {
 				color={"brand.nav_color"}
 			>
 				<Box mb={4} bg={"var(--main_color)"} borderRadius={"1em"} px="5px">
-					<ButtonGroup variant="solid" p={0} m={0}>
-						{SETUP_LIST.map(({ type, id }) => (
-							<Button
-								key={id}
-								size={"lg"}
-								onClick={() => setViewMode(type)}
-								color={viewMode === type ? "brand.100" : "brand.nav_color"}
-								bg={
-									viewMode === type
-										? "var(--primary_button_bg)"
-										: "var(--main_color)"
-								}
-								borderRadius={"1em"}
-								variant={"solid"}
-								fontWeight={viewMode === type ? "bold" : "normal"}
-								_hover={{ bg: "transparent", color: "brand.600" }}
-							>
-								{type}
-							</Button>
-						))}
-					</ButtonGroup>
+					<TabsButtonGroup
+						tabs={SETUP_LIST}
+						setViewMode={setViewMode}
+						viewMode={viewMode}
+					/>
 				</Box>
 				{showComponent(viewMode)}
 			</Box>

@@ -1,21 +1,15 @@
 import {
-	Alert,
-	AlertIcon,
 	Button,
 	FormControl,
 	FormLabel,
 	HStack,
-	Input,
-	Modal,
-	ModalBody,
-	ModalCloseButton,
-	ModalContent,
-	ModalHeader,
-	ModalOverlay,
 	Stack,
 	Text,
 } from "@chakra-ui/react";
+import ActionButtonGroup from "components/ui/form/ActionButtonGroup";
+import InputFormControl from "components/ui/form/InputFormControl";
 import MultiSelectBox from "components/ui/form/select/MultiSelectBox";
+import ModalLayout from "components/ui/modal/ModalLayout";
 import { useState } from "react";
 import { FaCaretDown } from "react-icons/fa";
 import SettingService from "services/SettingService";
@@ -75,119 +69,100 @@ const AddNewGroup = ({ isOpen, onClose, setRefresh, modules, admins }) => {
 	};
 
 	return (
-		<Modal isCentered size={"2xl"} isOpen={isOpen} onClose={onClose}>
-			<ModalOverlay />
-			<ModalContent>
-				<ModalHeader>Add New Group</ModalHeader>
-				<ModalCloseButton />
-				<ModalBody>
-					<Stack spacing="5">
-						<form onSubmit={handleSubmit}>
-							<Stack>
-								<HStack>
-									<FormControl>
-										<FormLabel>Group Name</FormLabel>
-										<Input
-											type="text"
-											name="name"
-											value={formData.name}
-											onChange={(e) =>
-												setFormData((prevData) => ({
-													...prevData,
-													name: e.target.value,
-												}))
-											}
-											required
-										/>
-									</FormControl>
-								</HStack>
-								<HStack>
-									<FormControl>
-										<FormLabel visibility={openModuleMenu ? "" : "hidden"}>
-											Select Base Module(s)
-										</FormLabel>
-										<Button
-											rightIcon={<FaCaretDown />}
-											bg={"brand.primary_bg"}
-											color={"brand.primary_button_bg"}
-											_hover={{
-												bg: "brand.primary_bg",
-												color: "brand.primary_button_bg",
-											}}
-										>
-											{openModuleMenu ? (
-												<MultiSelectBox
-													data={modules}
-													openMenu={openModuleMenu}
-													handleCloseMenu={handleCloseModuleMenu}
-													selectedOptions={selectedModule}
-													setSelectedOptions={setSelectedModule}
-												/>
-											) : (
-												<Text onClick={handleModuleMenuToggle}>
-													{formData.baseModule?.length > 0
-														? `${formData.baseModule?.length} module(s)`
-														: "Select Base Module"}
-												</Text>
-											)}
-										</Button>
-									</FormControl>
-									<FormControl>
-										<FormLabel visibility={openTeamMenu ? "" : "hidden"}>
-											Select Admin(s)
-										</FormLabel>
-										<Button
-											rightIcon={<FaCaretDown />}
-											bg={"brand.primary_bg"}
-											color={"brand.primary_button_bg"}
-											_hover={{
-												bg: "brand.primary_bg",
-												color: "brand.primary_button_bg",
-											}}
-										>
-											{openTeamMenu ? (
-												<MultiSelectBox
-													data={admins}
-													openMenu={openTeamMenu}
-													handleCloseMenu={handleCloseTeamMenu}
-													selectedOptions={selectedTeams}
-													setSelectedOptions={setSelectedTeams}
-												/>
-											) : (
-												<Text onClick={handleTeamMenuToggle}>
-													{formData.admin?.length > 0
-														? `${formData.admin?.length} admin(s)`
-														: "Select Admin"}
-												</Text>
-											)}
-										</Button>
-									</FormControl>
-								</HStack>
-								<HStack justifyContent={"end"}>
-									<Button
-										isLoading={isSubmitting}
-										type="submit"
-										bg="brand.logo_bg"
-										isDisabled={formData.name === ""}
-									>
-										Add
-									</Button>
-									<Button onClick={onClose} colorScheme="gray">
-										Cancel
-									</Button>
-								</HStack>
-							</Stack>
-						</form>
-						{message && (
-							<Alert status="error" mt={4}>
-								<AlertIcon />
-								{message}
-							</Alert>
-						)}
-					</Stack>
-				</ModalBody>
-			</ModalContent>
-		</Modal>
+		<ModalLayout
+			title={"Add New Group"}
+			size="md"
+			isOpen={isOpen}
+			onClose={onClose}
+			error={message}
+		>
+			<form onSubmit={handleSubmit}>
+				<Stack>
+					<HStack>
+						<InputFormControl
+							label={"Group Name"}
+							name="name"
+							valueText={formData.name}
+							handleChange={(e) =>
+								setFormData((prevData) => ({
+									...prevData,
+									name: e.target.value,
+								}))
+							}
+							required
+						/>
+					</HStack>
+					<HStack>
+						<FormControl>
+							<FormLabel visibility={openModuleMenu ? "" : "hidden"}>
+								Select Base Module(s)
+							</FormLabel>
+							<Button
+								rightIcon={<FaCaretDown />}
+								bg={"brand.primary_bg"}
+								color={"brand.primary_button_bg"}
+								_hover={{
+									bg: "brand.primary_bg",
+									color: "brand.primary_button_bg",
+								}}
+							>
+								{openModuleMenu ? (
+									<MultiSelectBox
+										data={modules}
+										openMenu={openModuleMenu}
+										handleCloseMenu={handleCloseModuleMenu}
+										selectedOptions={selectedModule}
+										setSelectedOptions={setSelectedModule}
+									/>
+								) : (
+									<Text onClick={handleModuleMenuToggle}>
+										{formData.baseModule?.length > 0
+											? `${formData.baseModule?.length} module(s)`
+											: "Select Base Module"}
+									</Text>
+								)}
+							</Button>
+						</FormControl>
+						<FormControl>
+							<FormLabel visibility={openTeamMenu ? "" : "hidden"}>
+								Select Admin(s)
+							</FormLabel>
+							<Button
+								rightIcon={<FaCaretDown />}
+								bg={"brand.primary_bg"}
+								color={"brand.primary_button_bg"}
+								_hover={{
+									bg: "brand.primary_bg",
+									color: "brand.primary_button_bg",
+								}}
+							>
+								{openTeamMenu ? (
+									<MultiSelectBox
+										data={admins}
+										openMenu={openTeamMenu}
+										handleCloseMenu={handleCloseTeamMenu}
+										selectedOptions={selectedTeams}
+										setSelectedOptions={setSelectedTeams}
+									/>
+								) : (
+									<Text onClick={handleTeamMenuToggle}>
+										{formData.admin?.length > 0
+											? `${formData.admin?.length} admin(s)`
+											: "Select Admin"}
+									</Text>
+								)}
+							</Button>
+						</FormControl>
+					</HStack>
+					<ActionButtonGroup
+						submitBtnName={"Add"}
+						isDisabled={formData.name === ""}
+						isLoading={isSubmitting}
+						onClose={onClose}
+					/>
+				</Stack>
+			</form>
+		</ModalLayout>
 	);
 };
 

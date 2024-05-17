@@ -1,4 +1,6 @@
-import { Box, Button, Flex, Input, Select, Text } from "@chakra-ui/react";
+import { Box, Flex, Input, Select } from "@chakra-ui/react";
+import PrimaryButton from "components/ui/button/PrimaryButton";
+import TextTitle from "components/ui/text/TextTitle";
 import { useState } from "react";
 import ResourceService from "services/ResourceService";
 
@@ -30,9 +32,7 @@ const FileUploader = ({ fileTypes, userName, setNewUpload }) => {
 
 	return (
 		<Box flex={0.8}>
-			<Text mt={2} mb={5} fontWeight="bold">
-				Upload File
-			</Text>
+			<TextTitle mt={2} mb={5} title="Upload File" />
 			<Box
 				p="1em"
 				bg={"brand.primary_bg"}
@@ -54,15 +54,11 @@ const FileUploader = ({ fileTypes, userName, setNewUpload }) => {
 				</Select>
 				<Flex>
 					{/* <Spacer /> */}
-					<Button
+					<PrimaryButton
+						name="Upload"
 						isDisabled={!file}
-						bg="var(--primary_button_bg)"
-						onClick={handleUpload}
-						color={"brand.primary_bg"}
-						variant={"solid"}
-					>
-						Upload
-					</Button>
+						onOpen={handleUpload}
+					/>
 				</Flex>
 			</Box>
 		</Box>

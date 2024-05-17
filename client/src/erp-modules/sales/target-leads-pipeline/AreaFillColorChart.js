@@ -8,11 +8,11 @@ import {
 	YAxis,
 } from "recharts";
 
-const GradientAreaFillColorChart = ({ opportunityData }) => {
+const GradientAreaFillColorChart = ({ data }) => {
 	return (
 		<ResponsiveContainer width="100%" height={250}>
 			<AreaChart
-				data={opportunityData}
+				data={data}
 				margin={{ top: 0, right: 0, left: -100, bottom: -30 }}
 			>
 				<defs>

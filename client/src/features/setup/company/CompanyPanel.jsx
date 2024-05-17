@@ -1,4 +1,4 @@
-import { Tab, TabList, TabPanel, TabPanels, Tabs } from "@chakra-ui/react";
+import TabGroup from "components/ui/tab";
 import { useState } from "react";
 import CompanyDetails from "./CompanyDetails";
 import GroupsPanel from "./GroupsPanel";
@@ -32,26 +32,13 @@ const CompanyPanel = ({
 		setCurrentTab(index);
 	};
 	return (
-		<Tabs
-			variant="soft-rounded"
-			colorScheme="blue"
-			index={currentTab}
-			onChange={handleTabChange}
-		>
-			<TabList>
-				{COMPANY_SETUP_TAB.map((item) => (
-					<Tab key={item.type}>{item.type}</Tab>
-				))}
-			</TabList>
-
-			<TabPanels>
-				{COMPANY_SETUP_TAB.map((item) => (
-					<TabPanel key={item.id}>
-						{currentTab === item.id && item.name}
-					</TabPanel>
-				))}
-			</TabPanels>
-		</Tabs>
+		<TabGroup
+			currentTab={currentTab}
+			handleTabChange={handleTabChange}
+			data={COMPANY_SETUP_TAB}
+			isCompanyPanel
+			colorScheme="facebook"
+		/>
 	);
 };
 
