@@ -3,8 +3,9 @@ import Loader from "components/Loader";
 import TableLayout from "components/ui/table/TableLayout";
 import TextTitle from "components/ui/text/TextTitle";
 import React, { useState } from "react";
-import { FaChevronDown, FaChevronUp } from "react-icons/fa";
+import { FaChevronDown, FaChevronUp, FaPlus } from "react-icons/fa";
 import { getDateDiffHours, getDefaultTime } from "utils";
+import AddProject from "./AddProject";
 
 const Timesheet = ({ timesheets }) => {
 	const CollapsibleTable = ({ data }) => {
@@ -31,6 +32,7 @@ const Timesheet = ({ timesheets }) => {
 			setExpanded(isExpanded === index ? -1 : index);
 		};
 
+		const [showAddProject, setShowAddProject] = useState(false);
 		return (
 			<>
 				{!timesheets && <Loader />}
@@ -49,6 +51,7 @@ const Timesheet = ({ timesheets }) => {
 										clockOuts,
 										startBreaks,
 										endBreaks,
+										projectEntries,
 									},
 									index,
 								) => {
@@ -106,11 +109,54 @@ const Timesheet = ({ timesheets }) => {
 												</Td>
 											</Tr>
 											{isExpanded === index && (
-												<Tr>
-													<Td>{employeeId.fullName}</Td>
-													<Td>{"prokjec name"}</Td>
-												</Tr>
+												<>
+													{projectEntries.length === 0 && (
+														<Tr>
+															<Td>
+																<HStack justify={"space-around"}>
+																	<FaPlus
+																		onClick={() => setShowAddProject(true)}
+																	/>
+																	<TextTitle
+																		title={"Add Project"}
+																		weight="normal"
+																	/>
+																</HStack>
+															</Td>
+														</Tr>
+													)}
+													{projectEntries?.map((_) => (
+														<Tr key={_}>
+															<Td>
+																<HStack justify={"space-around"}>
+																	<FaPlus
+																		onClick={() => setShowAddProject(true)}
+																	/>
+																	<TextTitle title={"x.name"} weight="normal" />
+																</HStack>
+															</Td>
+														</Tr>
+													))}
+												</>
 											)}
+											{/* {isExpanded === index && (
+												<>
+													{projectEntries?.map((_) =>
+														_.map((x) => (
+															<Tr key={x.name}>
+																<Td>
+																	<HStack justify={"space-around"}>
+																		<FaPlus
+																			onClick={() => setShowAddProject(true)}
+																		/>
+																		<TextTitle title={x.name} weight="normal" />
+																	</HStack>
+																</Td>
+															</Tr>
+														)),
+													)}
+												</>
+											)} */}
 										</React.Fragment>
 									);
 								},
@@ -118,6 +164,11 @@ const Timesheet = ({ timesheets }) => {
 						</Tbody>
 					</TableLayout>
 				)}
+				<AddProject
+					showAddProject={showAddProject}
+					// setRefresh={setRefresh}
+					setShowAddProject={setShowAddProject}
+				/>
 			</>
 		);
 	};

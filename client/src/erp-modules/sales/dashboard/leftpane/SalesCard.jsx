@@ -14,6 +14,9 @@ const SalesCard = ({ headerCards, setMonth, currentMonth }) => {
 					border="3px solid var(--main_color)"
 					borderRadius="10px"
 					fontWeight="bold"
+					display={"flex"}
+					flexDir={"column"}
+					justifyContent={"space-between"}
 				>
 					<Flex
 						justify="space-between"
@@ -42,10 +45,10 @@ const SalesCard = ({ headerCards, setMonth, currentMonth }) => {
 						<Text mr="3" fontWeight="900">
 							{card.value}
 						</Text>
-						<Icon mr="1" as={card.subIcon} color="green.500" />
+						{/* <Icon mr="1" as={card.subIcon} color="green.500" />
 						<Text color="green.500" fontSize="xs">
 							{card.percent}
-						</Text>
+						</Text> */}
 					</Flex>
 				</Box>
 			))}

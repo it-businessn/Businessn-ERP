@@ -15,7 +15,7 @@ import { RiAspectRatioLine } from "react-icons/ri";
 
 const Contest = () => {
 	return (
-		<>
+		<Box>
 			{["Contests For Sales", "Contests For Activity"].map((item) => (
 				<Box
 					key={item}
@@ -160,7 +160,7 @@ const Contest = () => {
 					</Box>
 				</Box>
 			))}
-		</>
+		</Box>
 	);
 };
 

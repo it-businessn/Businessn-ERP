@@ -1,6 +1,6 @@
 import { Box } from "@chakra-ui/react";
 import TabsButtonGroup from "components/ui/tab/TabsButtonGroup";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import CalendarTable from "./CalendarTable";
 import TaskTable from "./TaskTable";
 
@@ -56,11 +56,14 @@ const UpcomingList = ({
 	];
 	const [viewMode, setViewMode] = useState(TABS[0].type);
 
-	const showComponent = (viewMode) =>
-		TABS.find(({ type }) => type === viewMode)?.name;
+	const [componentName, setComponentName] = useState(TABS[0].name);
+
+	useEffect(() => {
+		setComponentName(TABS.find(({ type }) => type === viewMode)?.name);
+	}, [viewMode]);
 
 	return (
-		<Box>
+		<>
 			<Box mb={4} bg={"var(--main_color)"} borderRadius={"1em"} px="5px">
 				<TabsButtonGroup
 					tabs={TABS}
@@ -68,8 +71,8 @@ const UpcomingList = ({
 					viewMode={viewMode}
 				/>
 			</Box>
-			{showComponent(viewMode)}
-		</Box>
+			{componentName}
+		</>
 	);
 };
 

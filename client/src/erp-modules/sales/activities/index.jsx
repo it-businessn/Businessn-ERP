@@ -133,10 +133,12 @@ const Activities = () => {
 								mx={"auto"}
 								w={{ base: "50%", md: "80%", lg: "80%", xl: "100%" }}
 							>
-								<GaugeChartComponent value={70} maxValue={100} />
+								{/* <GaugeChartComponent value={70} maxValue={100} /> */}
+								<GaugeChartComponent value={0} maxValue={100} />
 							</Box>
 						</HStack>
 					</Box>
+
 					<Contest />
 				</SimpleGrid>
 			</SimpleGrid>

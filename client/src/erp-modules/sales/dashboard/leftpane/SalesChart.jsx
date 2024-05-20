@@ -78,7 +78,8 @@ const SalesChart = () => {
 					borderRadius="10px"
 					fontWeight="bold"
 				>
-					<Flex
+					<CardTitle title={bar.title} />
+					{/* <Flex
 						justify="space-between"
 						align="center"
 						mb="1"
@@ -90,7 +91,7 @@ const SalesChart = () => {
 							<option>Last Week</option>
 							<option>Last Month</option>
 						</Select>
-					</Flex>
+					</Flex> */}
 					<Box w={{ base: "70%", md: "65%", lg: "70%", xl: "70%" }} mx={"auto"}>
 						<Bar data={bar.data} options={options} />
 					</Box>

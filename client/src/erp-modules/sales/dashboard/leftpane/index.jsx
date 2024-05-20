@@ -15,7 +15,7 @@ const LeftPane = ({ selectedUser, setStats }) => {
 	const currentMonth = currentDate.getMonth() + 1;
 	const [headerCards, setHeaderCards] = useState(HEADER_CARDS);
 	const [month, setMonth] = useState(currentMonth);
-	const [opportunities, setOpportunities] = useState(null);
+	const [opportunities, setOpportunities] = useState([]);
 	const [events, setEvents] = useState(null);
 	const [meetings, setMeetings] = useState(null);
 	const [appointments, setAppointments] = useState(null);
@@ -38,7 +38,6 @@ const LeftPane = ({ selectedUser, setStats }) => {
 					isManager(selectedUser.role),
 				);
 				setOpportunities(response.data);
-				headerCardsInfoDetails(response.data);
 			} catch (error) {
 				console.error(error);
 			}
@@ -79,9 +78,9 @@ const LeftPane = ({ selectedUser, setStats }) => {
 	}, [isRefresh, selectedUser]);
 
 	useEffect(() => {
-		headerCards[0].value = opportunities?.find(
-			(_) => _.month === parseInt(month),
-		)?.count;
+		if (opportunities.length > 0) {
+			headerCardsInfoDetails(opportunities);
+		}
 	}, [month]);
 
 	const setStatInfo = (key, count) =>

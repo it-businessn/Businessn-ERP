@@ -14,7 +14,8 @@ const GaugeChartComponent = ({ value, maxValue }) => {
 				nrOfLevels={2}
 				arcWidth={0.3}
 				arcsLength={[1.5, 1]}
-				colors={["var(--primary_button_bg)", "var(--filter_border_color)"]}
+				// colors={["var(--primary_button_bg)", "var(--filter_border_color)"]}
+				colors={["var(--filter_border_color)", "var(--filter_border_color)"]}
 				arcPadding={0}
 				cornerRadius={0}
 				needleColor="var(--gauge_needle)"
@@ -39,7 +40,7 @@ const GaugeChartComponent = ({ value, maxValue }) => {
 				transform="translateX(-50%)"
 				color="var(--main_color_black)"
 			>
-				Remaining $400
+				Remaining $2000
 			</Text>
 			<Text
 				position="absolute"
@@ -48,7 +49,7 @@ const GaugeChartComponent = ({ value, maxValue }) => {
 				transform="translate(-50%, -50%)"
 				color="var(--main_color_black)"
 			>
-				$1600
+				$0
 			</Text>
 			<Text
 				position="absolute"

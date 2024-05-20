@@ -27,7 +27,7 @@ export const HEADER_CARDS = [
 		icon: GiDiamondTrophy,
 		title: "Value of opportunities in the pipeline",
 		subIcon: ArrowUpIcon,
-		value: "$345",
+		value: "$0",
 		percent: "3.34%",
 	},
 	{
@@ -35,7 +35,7 @@ export const HEADER_CARDS = [
 		icon: HiOutlineReceiptPercent,
 		title: "Total Sales",
 		subIcon: ArrowUpIcon,
-		value: "122",
+		value: "0",
 		percent: "1.22%",
 	},
 ];

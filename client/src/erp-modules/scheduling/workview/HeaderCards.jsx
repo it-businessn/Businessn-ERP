@@ -12,7 +12,7 @@ const HeaderCards = () => {
 			icon: TfiTarget,
 			title: "Hours left to schedule",
 			subIcon: TfiTarget,
-			value: 15,
+			value: 0,
 			percent: "10%",
 		},
 		{
@@ -20,7 +20,7 @@ const HeaderCards = () => {
 			icon: FaAward,
 			title: "Current % of projected revenue",
 			subIcon: ArrowDownIcon,
-			value: "55%",
+			value: "0%",
 			percent: "2.22%",
 		},
 		{
@@ -28,7 +28,7 @@ const HeaderCards = () => {
 			icon: GiDiamondTrophy,
 			title: "Current % away from targeted % of projected revenue",
 			subIcon: ArrowUpIcon,
-			value: "78%",
+			value: "0%",
 			percent: "3.34%",
 		},
 	];

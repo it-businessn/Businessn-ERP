@@ -1,14 +1,67 @@
+const Employee = require("../models/Employee");
+const Project = require("../models/Project");
 const Timesheet = require("../models/Timesheet");
 
 const currentDate = new Date();
 
 const getTimesheet = () => async (req, res) => {
 	try {
-		const timesheets = await Timesheet.find().populate({
+		const projectsByEmployee = await Project.aggregate([
+			{
+				$group: {
+					_id: "$selectedAssignees",
+					tasks: {
+						$push: {
+							name: "$name",
+						},
+					},
+				},
+			},
+		]);
+		const users = await Employee.aggregate([
+			{
+				$group: {
+					_id: "$_id",
+					employees: {
+						$push: {
+							fullName: "$fullName",
+							id: "$_id",
+							projects: {
+								$reduce: {
+									input: projectsByEmployee,
+									initialValue: [],
+									in: {
+										$cond: {
+											if: { $in: ["$fullName", "$$this._id"] }, // if employee name is in the selectedAssignees of the task
+											then: { $concatArrays: ["$$value", "$$this.tasks"] }, // Merge projects arrays
+											else: "$$value", // default value
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		]);
+		const timesheets = await Timesheet.find({}).populate({
 			path: "employeeId",
 			model: "Employee",
 			select: ["role", "fullName"],
 		});
+
+		// for (const timesheet of timesheets) {
+		// 	// Find the corresponding employee in the users array
+		// 	const user = users.find((user) =>
+		// 		user._id.equals(timesheet.employeeId._id),
+		// 	);
+
+		// 	// If user is found, append the user object to the timesheet
+		// 	if (user) {
+		// 		timesheet.projectEntries.push(user.employees[0].projects);
+		// 	}
+		// 	await timesheet.save();
+		// }
 		res.status(200).json(timesheets);
 	} catch (error) {
 		res.status(404).json({ error: error.message });
