@@ -148,7 +148,7 @@ export const ROUTE_PATH = {
 	SHIFT_ASSIGN: "/shift-assign",
 
 	// setup
-	MODULE_SETUP: ":module/set-up",
+	SETUP: ":module/set-up",
 
 	// reports
 	REPORT: "/reports",
@@ -334,7 +334,7 @@ export const router = createBrowserRouter([
 				element: <ShiftAssignment />,
 			},
 			{
-				path: ROUTE_PATH.MODULE_SETUP,
+				path: ROUTE_PATH.SETUP,
 				element: <Setup />,
 			},
 			{

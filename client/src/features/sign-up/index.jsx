@@ -18,6 +18,7 @@ import {
 import Logo from "components/logo";
 import ActionButtonGroup from "components/ui/form/ActionButtonGroup";
 import InputFormControl from "components/ui/form/InputFormControl";
+import RequiredLabel from "components/ui/form/RequiredLabel";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import LoginService from "services/LoginService";
@@ -122,9 +123,17 @@ const SignUp = ({ isModal, setRefresh, onClose }) => {
 		navigate(-1);
 	};
 
+	const isInvalid =
+		formData.firstName === "" ||
+		formData.email === "" ||
+		formData.role === "" ||
+		formData.employmentType === "" ||
+		formData.phoneNumber === "";
+
 	const handleSubmit = async (e) => {
 		e.preventDefault();
-		// setIsLoading(true);
+
+		setIsLoading(true);
 		try {
 			await LoginService.createEmployee(formData);
 			resetForm();
@@ -215,6 +224,7 @@ const SignUp = ({ isModal, setRefresh, onClose }) => {
 							valueText={formData.firstName}
 							handleChange={handleChange}
 							placeholder="First Name"
+							required
 						/>
 						<InputFormControl
 							label={"Middle Name"}
@@ -237,6 +247,7 @@ const SignUp = ({ isModal, setRefresh, onClose }) => {
 							valueText={formData.email}
 							handleChange={handleChange}
 							placeholder="Enter email address"
+							required
 						/>
 						<FormControl mb={4}>
 							<FormLabel>Password</FormLabel>
@@ -247,6 +258,7 @@ const SignUp = ({ isModal, setRefresh, onClose }) => {
 									value={formData.password}
 									onChange={handleChange}
 									placeholder="Enter password"
+									required
 								/>
 								<InputRightElement>
 									<Button
@@ -261,7 +273,7 @@ const SignUp = ({ isModal, setRefresh, onClose }) => {
 						</FormControl>
 						{empTypes && (
 							<FormControl mb={4}>
-								<FormLabel>Type of Employment</FormLabel>
+								<RequiredLabel required label="Type of Employment" />
 								<Select
 									name="employmentType"
 									value={formData.employmentType}
@@ -279,7 +291,7 @@ const SignUp = ({ isModal, setRefresh, onClose }) => {
 						)}
 						{roles && (
 							<FormControl mb={4}>
-								<FormLabel>Type of Role</FormLabel>
+								<RequiredLabel label="Type of Role" required />
 								<Select
 									name="role"
 									value={formData.role}
@@ -355,6 +367,7 @@ const SignUp = ({ isModal, setRefresh, onClose }) => {
 							valueText={formData.phoneNumber}
 							handleChange={handleChange}
 							placeholder="Phone Number"
+							required
 						/>
 						<FormControl mb={4}>
 							<FormLabel>Address</FormLabel>
@@ -442,6 +455,7 @@ const SignUp = ({ isModal, setRefresh, onClose }) => {
 						<ActionButtonGroup
 							submitBtnName={"Add"}
 							isLoading={isLoading}
+							isDisabled={isInvalid}
 							onClose={goBack}
 						/>
 					</form>

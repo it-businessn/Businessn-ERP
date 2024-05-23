@@ -149,7 +149,11 @@ const SignInForm = ({ title }) => {
 							</Button>
 						</Stack>
 					</form>
-					<Button variant={"link"} onClick={showForgotPasswordPage}>
+					<Button
+						variant={"link"}
+						textDecor={"underline"}
+						onClick={showForgotPasswordPage}
+					>
 						Forgot Password
 					</Button>
 					{error && (

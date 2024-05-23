@@ -63,6 +63,7 @@ const Navbar = ({
 				data={companies}
 				name="name"
 				fontWeight="bold"
+				placeholder={"No companies found"}
 			/>
 		</Flex>
 	);

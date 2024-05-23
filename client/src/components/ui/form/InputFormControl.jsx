@@ -1,5 +1,6 @@
-import { FormHelperText, FormLabel, Input } from "@chakra-ui/react";
+import { FormHelperText, Input } from "@chakra-ui/react";
 import FormControlMain from ".";
+import RequiredLabel from "./RequiredLabel";
 
 const InputFormControl = ({
 	valueText,
@@ -14,7 +15,12 @@ const InputFormControl = ({
 }) => {
 	return (
 		<FormControlMain isInvalid={isInvalid}>
-			<FormLabel htmlFor={name}>{label}</FormLabel>
+			<RequiredLabel
+				name={name}
+				label={label}
+				required={required}
+				htmlFor={name}
+			/>
 			<Input
 				type={type}
 				name={name}
