@@ -175,7 +175,9 @@ const forgotPassword = () => async (req, res) => {
 	try {
 		const user = await Employee.findOne({ email });
 		if (!user) {
-			return response.status(404).json({ error: "Incorrect email" });
+			return res.status(404).json({
+				error: "Email not found! Please enter your registered email address.",
+			});
 		}
 		const token = createToken(user._id);
 
