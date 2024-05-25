@@ -9,6 +9,7 @@ router.get(
 	"/disburse/isConfirmed",
 	leadController.getConfirmedDisbursedLeads(),
 );
+router.get("/targets", leadController.getTargetLeads());
 
 router.get("/not-disbursed", leadController.getNotDisbursedLeads());
 

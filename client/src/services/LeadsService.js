@@ -4,7 +4,6 @@ const LeadsService = {
 	async getNotDisbursedLeads(data) {
 		return apiService.get("/leads/not-disbursed", data);
 	},
-
 	async getLeadCompanies(data) {
 		return apiService.get("/leads/companies", data);
 	},
@@ -13,8 +12,16 @@ const LeadsService = {
 		return apiService.get("/leads/disburse", data);
 	},
 
-	async getConfirmedDisbursedLeads(data) {
+	// async getConfirmedDisbursedLeads(data) {
+	// 	return apiService.get("/leads/disburse/isConfirmed", data);
+	// },
+
+	async getFreshLeads(data) {
 		return apiService.get("/leads/disburse/isConfirmed", data);
+	},
+
+	async getTargetLeads(data) {
+		return apiService.get("/leads/targets", data);
 	},
 
 	async deleteLead(data, id) {

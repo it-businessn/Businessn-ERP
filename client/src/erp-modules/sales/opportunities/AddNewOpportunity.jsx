@@ -1,14 +1,17 @@
 import {
+	Flex,
 	FormControl,
 	FormLabel,
 	HStack,
 	Input,
 	Select,
+	Spacer,
 	Stack,
 	Text,
 } from "@chakra-ui/react";
 import ActionButtonGroup from "components/ui/form/ActionButtonGroup";
 import InputFormControl from "components/ui/form/InputFormControl";
+import RequiredLabel from "components/ui/form/RequiredLabel";
 import ModalLayout from "components/ui/modal/ModalLayout";
 import {
 	INDUSTRIES,
@@ -119,24 +122,23 @@ const AddNewOpportunity = ({
 			companyName === "" ||
 			isDisabled;
 		if (isNotValid) return;
+		formData.productService = selectedProductService;
+		formData.primaryAssignee = selectedPrimaryAssignees;
+		formData.supervisorAssignee = selectedSupervisorAssignees;
+		setSubmitting(true);
 
-		// formData.productService = selectedProductService;
-		// formData.primaryAssignee = selectedPrimaryAssignees;
-		// formData.supervisorAssignee = selectedSupervisorAssignees;
-		// setSubmitting(true);
-
-		// try {
-		// 	await LeadsService.createOpportunity(formData);
-		// 	setIsAdded(true);
-		// 	onClose();
-		// 	setFormData(defaultOpportunity);
-		// 	setSubmitting(false);
-		// } catch (error) {
-		// 	console.log(error);
-		// 	// setError("An error occurred while creating new opportunity");
-		// } finally {
-		// 	setSubmitting(false);
-		// }
+		try {
+			await LeadsService.createOpportunity(formData);
+			setIsAdded(true);
+			onClose();
+			setFormData(defaultOpportunity);
+			setSubmitting(false);
+		} catch (error) {
+			console.log(error);
+			// setError("An error occurred while creating new opportunity");
+		} finally {
+			setSubmitting(false);
+		}
 	};
 
 	return (
@@ -184,7 +186,6 @@ const AddNewOpportunity = ({
 								<FaPlus onClick={() => setShowAddCompany(true)} />
 							</HStack>
 						</FormControl>
-						{companyError && <Text color={"red"}>{companyError}</Text>}
 
 						<AddCompany
 							showAddCompany={showAddCompany}
@@ -192,6 +193,14 @@ const AddNewOpportunity = ({
 							setShowAddCompany={setShowAddCompany}
 						/>
 					</HStack>
+					{companyError && (
+						<Flex>
+							<Spacer flex={0.5} />
+							<Text flex={0.5} color={"red"}>
+								{companyError}
+							</Text>
+						</Flex>
+					)}
 					<HStack>
 						<InputFormControl
 							label={"Phone"}
@@ -211,7 +220,7 @@ const AddNewOpportunity = ({
 					</HStack>
 
 					<FormControl>
-						<FormLabel>Address</FormLabel>
+						<RequiredLabel label="Address" required />
 						<HStack>
 							<Input
 								type="text"
@@ -370,6 +379,7 @@ const AddNewOpportunity = ({
 					{!isDocket && (
 						<>
 							<AssigneeSelector
+								required
 								assigneeError={assigneeError}
 								setAssigneeError={setAssigneeError}
 								isDisabled={isDisabled}
@@ -391,7 +401,7 @@ const AddNewOpportunity = ({
 								name="supervisorAssignee"
 							/>
 							<FormControl>
-								<FormLabel>Stage</FormLabel>
+								<RequiredLabel label={"Stage"} required />
 								<Select
 									icon={<FaCaretDown />}
 									borderRadius="10px"

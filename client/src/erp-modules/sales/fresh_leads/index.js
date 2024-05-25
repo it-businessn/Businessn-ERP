@@ -11,7 +11,7 @@ const FreshLeads = () => {
 
 	const fetchAllLeads = async () => {
 		try {
-			const response = await LeadsService.getConfirmedDisbursedLeads();
+			const response = await LeadsService.getFreshLeads();
 			setLeads(response.data);
 		} catch (error) {
 			console.error(error);

@@ -79,9 +79,26 @@ const getLeadCompanies = () => async (req, res) => {
 
 const getConfirmedDisbursedLeads = () => async (req, res) => {
 	try {
-		const leads = (await Lead.find({ isDisbursedConfirmed: true })).sort(
-			(a, b) => b.createdOn - a.createdOn,
-		);
+		// const leads = (await Lead.find({ isDisbursedConfirmed: true })).sort(
+		// 	(a, b) => b.createdOn - a.createdOn,
+		// );
+		// const leads = (await Lead.find({ isDisbursedConfirmed: true })).sort(
+		// 	(a, b) => b.createdOn - a.createdOn,
+		// );
+		const leads = await Lead.find({
+			stage: { $in: ["L1", "L2", "L3", "L4"] },
+		});
+		res.status(200).json(leads);
+	} catch (error) {
+		res.status(404).json({ error: error.message });
+	}
+};
+
+const getTargetLeads = () => async (req, res) => {
+	try {
+		const leads = await Lead.find({
+			stage: { $in: ["T1", "T2", "T3", "T4"] },
+		});
 		res.status(200).json(leads);
 	} catch (error) {
 		res.status(404).json({ error: error.message });
@@ -323,4 +340,5 @@ module.exports = {
 	getLeadCompanies,
 	createLeadCompany,
 	getGroupedOpportunities,
+	getTargetLeads,
 };

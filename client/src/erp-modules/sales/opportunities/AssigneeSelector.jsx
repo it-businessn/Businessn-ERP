@@ -6,6 +6,7 @@ import {
 	FormLabel,
 	Select,
 } from "@chakra-ui/react";
+import RequiredLabel from "components/ui/form/RequiredLabel";
 import { useState } from "react";
 import { FaCaretDown } from "react-icons/fa";
 
@@ -20,6 +21,7 @@ const AssigneeSelector = ({
 	assigneeError,
 	isDisabled,
 	setIsDisabled,
+	required,
 }) => {
 	const [selectedValue, setSelectedValue] = useState("");
 	const handleMultiAssigneesChange = (event) => {
@@ -60,7 +62,7 @@ const AssigneeSelector = ({
 
 	return (
 		<FormControl>
-			<FormLabel>{label}</FormLabel>
+			<RequiredLabel label={label} required={required} />
 			<Select
 				icon={<FaCaretDown />}
 				borderRadius="10px"

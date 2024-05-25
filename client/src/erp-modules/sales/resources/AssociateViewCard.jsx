@@ -36,13 +36,11 @@ const AssociateViewCard = () => {
 				const complete =
 					assessmentsTaken?.filter((type) => type.category === "PASS")
 						?.length || 0;
-				const not_completed = assessments?.length - complete?.length || 0;
+				const not_completed = assessments?.length - complete || 0;
 				setAssessmentsTaken(response.data);
 				setCompleted(complete);
 				setNotComplete(not_completed);
-				setTimeout(() => {
-					setDataLoaded(true);
-				}, 2000);
+				setDataLoaded(true);
 			} catch (error) {
 				console.error(error);
 			}
@@ -53,7 +51,6 @@ const AssociateViewCard = () => {
 
 	return (
 		<>
-			{!dataLoaded && <Loader />}
 			{dataLoaded && (
 				<>
 					<Box
@@ -207,7 +204,7 @@ const AssociateViewCard = () => {
 												size={"xs"}
 												name={assessmentResult ? "Re-Take" : "Take"}
 												Assessment
-												onClick={() =>
+												onOpen={() =>
 													navigate(`/sales/assessment/${assessment.name}`)
 												}
 												minW={"100%"}
@@ -220,6 +217,7 @@ const AssociateViewCard = () => {
 					</Box>
 				</>
 			)}
+			{!dataLoaded && <Loader />}
 		</>
 	);
 };

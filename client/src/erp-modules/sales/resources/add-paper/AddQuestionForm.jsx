@@ -1,6 +1,5 @@
 import {
 	Box,
-	Button,
 	FormControl,
 	FormLabel,
 	HStack,
@@ -11,17 +10,21 @@ import {
 	Text,
 	Textarea,
 } from "@chakra-ui/react";
+import PrimaryButton from "components/ui/button/PrimaryButton";
+import ActionButtonGroup from "components/ui/form/ActionButtonGroup";
+import TextTitle from "components/ui/text/TextTitle";
 import { useEffect, useState } from "react";
-import { FaPlus } from "react-icons/fa";
 import { RiEditLine } from "react-icons/ri";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import QuestionnaireService from "services/QuestionnaireService";
 import AddAssessmentType from "./AddAssessmentType";
 import EditQuestionnaire from "./EditQuestionnaire";
 
 const AddQuestionForm = () => {
+	const { type } = useParams();
+
 	const [assessmentTypes, setAssessmentTypes] = useState(null);
-	const [assessmentType, setAssessmentType] = useState("");
+	const [assessmentType, setAssessmentType] = useState(type || "");
 	const [question, setQuestion] = useState("");
 	const [options, setOptions] = useState(["", "", "", ""]);
 	const optionsFilled = options.every((_) => _ !== "");
@@ -66,7 +69,7 @@ const AddQuestionForm = () => {
 	const handleSubmit = async (e) => {
 		e.preventDefault();
 		try {
-			const response = await QuestionnaireService.addQuestionnaire({
+			await QuestionnaireService.addQuestionnaire({
 				assessmentType,
 				question,
 				options,
@@ -111,9 +114,17 @@ const AddQuestionForm = () => {
 	};
 	return (
 		<Box p={{ base: "1em", md: "2em" }} overflow={"auto"}>
-			<Text fontWeight="bold" mb={"1em"}>
-				Resources
-			</Text>
+			<HStack w={"50%"} justify={"space-between"}>
+				<TextTitle title="Resources" />
+
+				<PrimaryButton
+					size={"xs"}
+					name={"Add New Quiz"}
+					loadingText="Loading"
+					onOpen={() => setShowAddAssessmentType(true)}
+				/>
+			</HStack>
+
 			{questionnaires?.map((questionnaire, index) => (
 				<Box key={questionnaire._id}>
 					<HStack>
@@ -153,6 +164,16 @@ const AddQuestionForm = () => {
 				setShowEditQuestion={setShowEditQuestion}
 				formData={formData}
 			/>
+			<AddAssessmentType
+				showAddAssessmentType={showAddAssessmentType}
+				setRefresh={setRefresh}
+				setShowAddAssessmentType={setShowAddAssessmentType}
+			/>
+			{!assessmentTypes && (
+				<Text color={"green"}>
+					No assessments available. Please add new quiz.
+				</Text>
+			)}
 			<Box maxWidth="600px" mt={3}>
 				<form onSubmit={handleSubmit}>
 					{assessmentTypes && (
@@ -172,7 +193,7 @@ const AddQuestionForm = () => {
 										</option>
 									))}
 								</Select>
-								<FaPlus onClick={() => setShowAddAssessmentType(true)} />
+								{/* <FaPlus onClick={() => setShowAddAssessmentType(true)} /> */}
 							</HStack>
 						</FormControl>
 					)}
@@ -222,27 +243,10 @@ const AddQuestionForm = () => {
 							</FormControl>
 						</>
 					)}
-					<AddAssessmentType
-						showAddAssessmentType={showAddAssessmentType}
-						setRefresh={setRefresh}
-						setShowAddAssessmentType={setShowAddAssessmentType}
+					<ActionButtonGroup
+						submitBtnName={"Add Question"}
+						onClose={() => navigate(-1)}
 					/>
-					<Button
-						mt={3}
-						type="submit"
-						w={"30%"}
-						p={"5px 0"}
-						bg="var(--primary_button_bg)"
-						color={"brand.primary_bg"}
-						variant={"solid"}
-						_hover={{ color: "brand.600" }}
-						borderRadius={"10px"}
-					>
-						Add Question
-					</Button>
-					<Button mt={3} onClick={() => navigate(-1)} colorScheme="gray">
-						Cancel
-					</Button>
 				</form>
 			</Box>
 		</Box>

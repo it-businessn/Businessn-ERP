@@ -71,7 +71,7 @@ const Assessment = () => {
 	return (
 		<Box p={{ base: "1em", md: "2em" }} overflow={"auto"}>
 			<Text fontWeight="bold" mb={"1em"}>
-				Assessment : {category}
+				Quiz Name : {category}
 			</Text>
 			<Box maxWidth="1000px">
 				<form onSubmit={handleSubmit}>
@@ -85,7 +85,9 @@ const Assessment = () => {
 								>
 									<HStack spacing={4} justify={"space-around"}>
 										{questionnaire.options.map((item) => (
-											<Radio value={item}>{item}</Radio>
+											<Radio value={item} key={item}>
+												{item}
+											</Radio>
 										))}
 									</HStack>
 								</RadioGroup>

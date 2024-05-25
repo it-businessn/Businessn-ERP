@@ -38,6 +38,15 @@ const LeftPane = ({ selectedUser, setStats }) => {
 					isManager(selectedUser.role),
 				);
 				setOpportunities(response.data);
+				const pipelineData = response.data[0]?.pipeline;
+				const salesData = response.data[0]?.salesMade;
+
+				headerCards[0].value = response.data?.find(
+					(_) => _.month === month,
+				)?.count;
+				headerCards[1].value = pipelineData;
+				headerCards[2].value = pipelineData;
+				headerCards[3].value = salesData;
 			} catch (error) {
 				console.error(error);
 			}
@@ -78,10 +87,11 @@ const LeftPane = ({ selectedUser, setStats }) => {
 	}, [isRefresh, selectedUser]);
 
 	useEffect(() => {
+		console.log(opportunities);
 		if (opportunities.length > 0) {
 			headerCardsInfoDetails(opportunities);
 		}
-	}, [month]);
+	}, [month, opportunities]);
 
 	const setStatInfo = (key, count) =>
 		setStats((prevStats) =>

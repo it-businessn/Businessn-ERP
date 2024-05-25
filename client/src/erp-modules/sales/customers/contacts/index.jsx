@@ -64,8 +64,6 @@ const Contacts = ({ setViewProfile, selectedContact }) => {
 	return (
 		<Box px={{ base: "1em" }} py={{ base: "1.3em" }}>
 			<Flex>
-				{!contact && <Loader />}
-
 				{contact && (
 					<>
 						<IconButton
@@ -133,6 +131,7 @@ const Contacts = ({ setViewProfile, selectedContact }) => {
 					</>
 				)}
 			</Flex>
+			{!contact && <Loader />}
 		</Box>
 	);
 };

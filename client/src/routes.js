@@ -229,6 +229,10 @@ export const router = createBrowserRouter([
 				element: <AddQuestionForm />,
 			},
 			{
+				path: `${ROUTE_PATH.SALES}${ROUTE_PATH.ADD_PAPER}/:type`,
+				element: <AddQuestionForm />,
+			},
+			{
 				path: `${ROUTE_PATH.SALES}${ROUTE_PATH.ASSESSMENT}`,
 				element: <Assessment />,
 			},

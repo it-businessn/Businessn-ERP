@@ -1,10 +1,9 @@
-import { ArrowUpIcon, CopyIcon } from "@chakra-ui/icons";
+import { CopyIcon } from "@chakra-ui/icons";
 import {
 	Box,
 	Card,
 	Flex,
 	HStack,
-	Icon,
 	Select,
 	SimpleGrid,
 	Text,
@@ -22,7 +21,8 @@ export const totalLeads = (name, isManager, leads, userName) => {
 	return isManager
 		? leads?.filter((lead) => lead.stage === name).length
 		: leads?.filter(
-				(lead) => lead.stage === name && lead.primaryAssignee === userName,
+				(lead) =>
+					lead.stage === name && lead.primaryAssignee[0]?.name === userName,
 		  ).length;
 };
 
@@ -39,7 +39,7 @@ const AgentsView = ({ leads, setIsUpdated, reference }) => {
 	const isUserManager = isManager(role);
 	const leadList = isUserManager
 		? leads
-		: leads?.filter((lead) => lead.primaryAssignee === fullName);
+		: leads?.filter((lead) => lead.primaryAssignee[0]?.name === fullName);
 
 	const { isOpen, onOpen, onClose } = useDisclosure();
 	const [formData, setFormData] = useState(defaultLeadInfo);
@@ -91,19 +91,25 @@ const AgentsView = ({ leads, setIsUpdated, reference }) => {
 						>
 							<Flex justify="space-between" align="center" gap={0}>
 								<TextTitle weight="normal" title={category.name} size="xs" />
-								<Select width="90px" border={"none"} fontSize={"xs"}>
+								<Select
+									width="90px"
+									border={"none"}
+									fontSize={"xs"}
+									visibility={"hidden"}
+								>
 									<option>Weekly</option>
 									<option>Last month</option>
 								</Select>
 							</Flex>
 							<Flex align="center" color={"brand.600"} mt="-2">
 								<Text mr="3">
-									{totalLeads(category.abbr, isUserManager, leads, fullName)}
+									{leads &&
+										totalLeads(category.abbr, isUserManager, leads, fullName)}
 								</Text>
-								<Icon mr="1" as={ArrowUpIcon} color="green.500" />
+								{/* <Icon mr="1" as={ArrowUpIcon} color="green.500" />
 								<Text color="green.500" fontSize="xs">
 									10%
-								</Text>
+								</Text> */}
 							</Flex>
 						</Box>
 						{leadList

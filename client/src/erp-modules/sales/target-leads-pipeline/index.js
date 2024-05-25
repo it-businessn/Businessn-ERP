@@ -17,7 +17,7 @@ const Pipeline = () => {
 
 	const fetchAllLeads = async () => {
 		try {
-			const response = await LeadsService.getConfirmedDisbursedLeads();
+			const response = await LeadsService.getTargetLeads();
 			setLeads(response.data);
 		} catch (error) {
 			console.error(error);

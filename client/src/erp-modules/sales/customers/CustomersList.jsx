@@ -18,7 +18,6 @@ import Loader from "components/Loader";
 import SectionLayout from "components/ui/SectionLayout";
 import HighlightButton from "components/ui/button/HighlightButton";
 import LeftIconButton from "components/ui/button/LeftIconButton";
-import PrimaryButton from "components/ui/button/PrimaryButton";
 import TextTitle from "components/ui/text/TextTitle";
 import { FaSearch } from "react-icons/fa";
 import { MdOutlineFilterList } from "react-icons/md";
@@ -38,7 +37,7 @@ const CustomersList = ({ contacts, handleProfileView }) => {
 				<Flex flexDir="column">
 					<Flex justify="space-between">
 						<TextTitle title="Customers" mb={"0.5em"} />
-						<PrimaryButton name={"Add new customer"} size={"xs"} />
+						{/* <PrimaryButton name={"Add new customer"} size={"xs"} /> */}
 					</Flex>
 					<HStack spacing="1em" mt="1em">
 						<SearchFilter />
@@ -84,7 +83,7 @@ const CustomersList = ({ contacts, handleProfileView }) => {
 								py={"1.1em"}
 							/>
 						</InputGroup>
-						<PrimaryButton name={"Add new customer"} size={"xs"} />
+						{/* <PrimaryButton name={"Add new customer"} size={"xs"} /> */}
 					</HStack>
 				</Flex>
 			)}

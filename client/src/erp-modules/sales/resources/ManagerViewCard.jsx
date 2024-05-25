@@ -1,5 +1,4 @@
 import { Badge, Box, HStack, SimpleGrid, VStack } from "@chakra-ui/react";
-import LinkButton from "components/ui/button/LinkButton";
 import PrimaryButton from "components/ui/button/PrimaryButton";
 import TextTitle from "components/ui/text/TextTitle";
 import { useEffect, useState } from "react";
@@ -33,13 +32,11 @@ const ManagerViewCard = () => {
 		>
 			<HStack>
 				<TextTitle flex={1} mb={"0.5em"} title="All Assessment" />
-				<LinkButton
-					flex={0.4}
-					p={"5px"}
-					fontSize="sm"
-					textDecor={"underline"}
-					name="Add Assessment"
-					onClick={() => navigate(`${ROUTE_PATH.SALES}${ROUTE_PATH.ADD_PAPER}`)}
+				<PrimaryButton
+					size={"xs"}
+					name={"Add Assessment"}
+					loadingText="Loading"
+					onOpen={() => navigate(`${ROUTE_PATH.SALES}${ROUTE_PATH.ADD_PAPER}`)}
 				/>
 			</HStack>
 
@@ -74,8 +71,8 @@ const ManagerViewCard = () => {
 							</Badge>
 							<PrimaryButton
 								size={"xs"}
-								name={"Add / Edit"}
-								onClick={() => navigate("/sales/add-paper")}
+								name={"View / Update"}
+								onOpen={() => navigate(`/sales/add-paper/${assessment.name}`)}
 								minW={"100%"}
 							/>
 						</VStack>
