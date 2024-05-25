@@ -1,6 +1,6 @@
 import { Td, Text, VStack } from "@chakra-ui/react";
 import React from "react";
-import { formatDate, formatDateTime } from "utils";
+import { formatDate } from "utils";
 
 const DateCell = ({
 	date,
@@ -10,7 +10,7 @@ const DateCell = ({
 	isExpanded,
 	isSubExpanded,
 }) => {
-	const FormattedDate = ({ date, main, task }) => (
+	const FormattedDate = ({ date, main, task, last }) => (
 		<Text
 			marginTop={main ? "3em" : "1.75em"}
 			/* top={main ? "3em" : task ? "7em" : "8em"} pos={"relative"} */
@@ -43,9 +43,9 @@ const DateCell = ({
 											subtask?.subtasks?.length > 0 &&
 											subtask?.subtasks?.map((item) => (
 												<React.Fragment key={item}>
-													{item[date]
+													{/* {item[date]
 														? formatDateTime(item[date])
-														: formatDate(new Date())}
+														: formatDate(new Date())} */}
 												</React.Fragment>
 											))}
 									</VStack>

@@ -17,7 +17,7 @@ const AssigneeCell = ({
 			marginTop={main ? "2.5em" : task ? "0.9em" : sub ? "0.2em" : 0}
 		>
 			{assignees?.map((assignee, index) =>
-				index < 3 && !showAllAssignees ? (
+				index < 1 && !showAllAssignees ? (
 					<Avatar
 						key={assignee}
 						name={assignee}
@@ -26,13 +26,13 @@ const AssigneeCell = ({
 					/>
 				) : null,
 			)}
-			{assignees && assignees.length > 3 && !showAllAssignees && (
+			{assignees && assignees.length > 1 && !showAllAssignees && (
 				<Button
 					size={"xs"}
 					bg={"var(--primary_button_bg)"}
 					borderRadius={"50%"}
 				>
-					+{assignees.length - 3}
+					+{assignees.length - 1}
 				</Button>
 			)}
 		</HStack>
