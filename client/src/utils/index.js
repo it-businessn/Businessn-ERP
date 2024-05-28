@@ -79,10 +79,17 @@ export function getDefaultTime(date) {
 }
 
 export function getDateDiffHours(date1, date2) {
-	return `${moment(date2).diff(moment(date1), "hours")}.${moment(date2).diff(
-		moment(date1),
-		"minutes",
-	)}`;
+	const hoursDiff = moment(date2).diff(moment(date1), "hours");
+	const minutesDiff = moment(date2).diff(moment(date1), "minutes") % 60;
+
+	const formattedHours = String(hoursDiff).padStart(2, "0");
+	const formattedMinutes = String(minutesDiff).padStart(2, "0");
+
+	return `${formattedHours}:${formattedMinutes}`;
+	// return `${moment(date2).diff(moment(date1), "hours")}.${moment(date2).diff(
+	// 	moment(date1),
+	// 	"minutes",
+	// )}`;
 }
 
 export const isValidPhoneNumber = (phoneNumber) => {

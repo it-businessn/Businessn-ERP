@@ -102,7 +102,7 @@ const ChatMessages = ({ userId }) => {
 				<VStack align="stretch" spacing={2}>
 					{userConversation?.length === 0 && (
 						<>
-							<Text fontSize={"xs"}>No recent conversation found.</Text>
+							{/* <Text fontSize={"xs"}>No recent conversation found.</Text> */}
 							{groups?.map((group) => (
 								<HStack
 									key={group._id}

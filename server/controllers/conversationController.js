@@ -255,6 +255,12 @@ const createGroupMessages = (io) => async (req, res) => {
 		});
 		await message.save();
 
+		const senderIndex = conversation.participants.findIndex((id) =>
+			id.toString().includes("46436"),
+		);
+		if (senderIndex === -1) {
+			conversation.participants.push(senderId);
+		}
 		conversation.groupMessages.push(message._id);
 		await conversation.save();
 		res.status(201).json(message);
