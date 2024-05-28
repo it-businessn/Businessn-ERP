@@ -22,7 +22,7 @@ const Navbar = ({ handleClick, handleLogout, onOpen, tabs, user }) => {
 	const [companies, setCompanies] = useState(null);
 
 	const [selectedCompany, setSelectedCompany] = useState(
-		user.companyId[0].name,
+		user?.companyId[0]?.name || "",
 	);
 
 	const handleCompany = (company = "FD") => {
