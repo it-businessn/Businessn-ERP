@@ -9,6 +9,7 @@ import {
 	Select,
 	Text,
 	Textarea,
+	VStack,
 } from "@chakra-ui/react";
 import PrimaryButton from "components/ui/button/PrimaryButton";
 import ActionButtonGroup from "components/ui/form/ActionButtonGroup";
@@ -114,7 +115,7 @@ const AddQuestionForm = () => {
 	};
 	return (
 		<Box p={{ base: "1em", md: "2em" }} overflow={"auto"}>
-			<HStack w={"50%"} justify={"space-between"}>
+			<HStack justify={"space-between"}>
 				<TextTitle title="Resources" />
 
 				<PrimaryButton
@@ -126,7 +127,13 @@ const AddQuestionForm = () => {
 			</HStack>
 
 			{questionnaires?.map((questionnaire, index) => (
-				<Box key={questionnaire._id}>
+				<Box
+					key={questionnaire._id}
+					bg={"brand.primary_bg"}
+					border="3px solid var(--main_color)"
+					p={{ base: "1em" }}
+					mt={"0.5em"}
+				>
 					<HStack>
 						<FormLabel>{`${index + 1}: ${questionnaire.question}`}</FormLabel>
 						<RiEditLine
@@ -174,7 +181,7 @@ const AddQuestionForm = () => {
 					No assessments available. Please add new quiz.
 				</Text>
 			)}
-			<Box maxWidth="600px" mt={3}>
+			<Box mt={3}>
 				<form onSubmit={handleSubmit}>
 					{assessmentTypes && (
 						<FormControl>
@@ -208,17 +215,17 @@ const AddQuestionForm = () => {
 
 					<FormControl>
 						<FormLabel>Options</FormLabel>
-						<HStack>
+						<VStack w={"60%"}>
 							{options.map((option, index) => (
 								<Input
-									key={index}
+									key={option}
 									type="text"
 									value={option}
 									onChange={(e) => handleOptionChange(index, e.target.value)}
 									marginBottom="2"
 								/>
 							))}
-						</HStack>
+						</VStack>
 					</FormControl>
 					{optionsFilled && (
 						<>
@@ -233,12 +240,12 @@ const AddQuestionForm = () => {
 								</RadioGroup>
 							</FormControl>
 
-							<FormControl>
+							<FormControl mb={3}>
 								<FormLabel>Explanation</FormLabel>
 								<Textarea
 									value={explanation}
 									onChange={(e) => setExplanation(e.target.value)}
-									rows={4}
+									rows={5}
 								/>
 							</FormControl>
 						</>

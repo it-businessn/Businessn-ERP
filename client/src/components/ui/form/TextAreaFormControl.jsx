@@ -7,6 +7,7 @@ const TextAreaFormControl = ({
 	handleChange,
 	required,
 	name,
+	rows,
 }) => {
 	return (
 		<FormControlMain>
@@ -16,6 +17,7 @@ const TextAreaFormControl = ({
 				value={valueText}
 				onChange={handleChange}
 				required={required}
+				rows={rows}
 			/>
 		</FormControlMain>
 	);

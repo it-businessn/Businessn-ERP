@@ -41,7 +41,7 @@ const ManagerViewCard = () => {
 			</HStack>
 
 			<SimpleGrid
-				columns={{ base: 1, md: 1, lg: 3, xl: 3 }}
+				columns={{ base: 1, md: 1, lg: 6 }}
 				minH={{ base: "auto", md: "90%", lg: "auto" }}
 				spacing={"1em"}
 			>
@@ -61,13 +61,21 @@ const ManagerViewCard = () => {
 					>
 						<VStack align={"self-start"} spacing={2} w={"100%"}>
 							<TextTitle
-								color={"brand.nav_color"}
+								// color={"brand.nav_color"}
 								fontSize="xs"
-								title="Assessment"
+								title={assessment.name}
+								color="var(--primary_button_bg)"
 							/>
 
-							<Badge bg="green" color="var(--main_color)">
-								{assessment.name}
+							<Badge
+								bg="var(--lead_cards_bg)"
+								color="var(--primary_button_bg)"
+								whiteSpace={"pre-wrap"}
+								borderRadius={"10px"}
+								visibility={"hidden"}
+							>
+								Text
+								{/* {assessment.name} */}
 							</Badge>
 							<PrimaryButton
 								size={"xs"}

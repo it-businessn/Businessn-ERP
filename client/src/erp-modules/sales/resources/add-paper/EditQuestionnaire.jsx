@@ -16,6 +16,7 @@ import {
 	useDisclosure,
 } from "@chakra-ui/react";
 import PrimaryButton from "components/ui/button/PrimaryButton";
+import TextAreaFormControl from "components/ui/form/TextAreaFormControl";
 import { useState } from "react";
 import QuestionnaireService from "services/QuestionnaireService";
 
@@ -68,22 +69,34 @@ const EditQuestionnaire = ({
 					<Stack spacing="5">
 						<form onSubmit={handleSubmit}>
 							<Stack spacing={4}>
-								<FormControl>
-									<FormLabel>Question</FormLabel>
-									<Input
-										type="text"
-										name="question"
-										value={formData.question}
-										onChange={(e) =>
-											setFormData((prevData) => ({
-												...prevData,
-												question: e.target.value,
-											}))
-										}
-										required
-									/>
-								</FormControl>
-								<FormControl>
+								<TextAreaFormControl
+									label={"Question"}
+									name="question"
+									valueText={formData.question}
+									handleChange={(e) =>
+										setFormData((prevData) => ({
+											...prevData,
+											question: e.target.value,
+										}))
+									}
+									required
+								/>
+
+								{/* {console.log(formData.options)}{formData.options.map(option=>)} */}
+								<TextAreaFormControl
+									label={"Options"}
+									name="options"
+									rows={4}
+									valueText={formData.options}
+									handleChange={(e) =>
+										setFormData((prevData) => ({
+											...prevData,
+											options: e.target.value,
+										}))
+									}
+									required
+								/>
+								{/* <FormControl>
 									<FormLabel>Options</FormLabel>
 									<Input
 										type="text"
@@ -98,7 +111,7 @@ const EditQuestionnaire = ({
 										}
 										required
 									/>
-								</FormControl>
+								</FormControl> */}
 								<FormControl>
 									<FormLabel>Correct Answer</FormLabel>
 									<Input
@@ -115,22 +128,20 @@ const EditQuestionnaire = ({
 										required
 									/>
 								</FormControl>
-								<FormControl>
-									<FormLabel>Explanation</FormLabel>
-									<Input
-										type="text"
-										name="
-										explanation"
-										value={formData.explanation}
-										onChange={(e) =>
-											setFormData((prevData) => ({
-												...prevData,
-												explanation: e.target.value,
-											}))
-										}
-										required
-									/>
-								</FormControl>
+								<TextAreaFormControl
+									label={"Explanation"}
+									name="explanation"
+									rows={5}
+									valueText={formData.explanation}
+									handleChange={(e) =>
+										setFormData((prevData) => ({
+											...prevData,
+											explanation: e.target.value,
+										}))
+									}
+									required
+								/>
+
 								<HStack justifyContent={"end"}>
 									<PrimaryButton
 										name="Save"
