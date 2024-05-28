@@ -12,6 +12,7 @@ class User {
 		primaryAddress,
 		employmentType,
 		manager,
+		companyId,
 	) {
 		this._id = _id;
 		this.fullName = fullName;
@@ -25,6 +26,7 @@ class User {
 		this.primaryAddress = primaryAddress;
 		this.employmentType = employmentType;
 		this.manager = manager;
+		this.companyId = companyId;
 	}
 }
 

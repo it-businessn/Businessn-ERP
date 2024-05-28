@@ -36,6 +36,7 @@ const RootLayout = () => {
 								: null;
 						});
 					});
+					setActiveMenu(SIDEBAR_MENU[0]);
 				}
 			} catch (error) {
 				console.error(error);
@@ -49,7 +50,7 @@ const RootLayout = () => {
 	useEffect(() => {
 		if (user) {
 			navigate(ROUTE_PATH.SALES);
-			// navigate(`${ROUTE_PATH.PAYROLL}${ROUTE_PATH.TIMESHEETS}`);
+			// navigate(`${ROUTE_PATH.PAYROLL}${ROUTE_PATH.EMPLOYEES}`);
 		} else {
 			navigate(ROUTE_PATH.LOGIN);
 		}
@@ -67,24 +68,7 @@ const RootLayout = () => {
 
 	const handleMenuItemClick = () => onClose();
 
-	const [selectedCompany, setSelectedCompany] = useState(null);
-
 	const [refresh, setRefresh] = useState(false);
-
-	const handleCompany = (company = "FD") => {
-		// if (company === "FD") {
-		// 	setActiveMenu(FD_SIDEBAR_MENU.find((menu) => menu.id === "sales"));
-		// } else {
-		// 	setActiveMenu(BUSINESSN_SIDEBAR_MENU.find((menu) => menu.id === "sales"));
-		// }
-		LocalStorageService.setItem("selectedCompany", selectedCompany);
-
-		setActiveMenu(SIDEBAR_MENU[0]);
-		// setActiveMenu(SIDEBAR_MENU?.find((menu) => menu.id === "sales"));
-	};
-	useEffect(() => {
-		handleCompany(selectedCompany);
-	}, [selectedCompany]);
 
 	useEffect(() => {
 		if (activeMenu) {
@@ -98,12 +82,9 @@ const RootLayout = () => {
 			{user && ((activeMenu && SIDEBAR_MENU) || refresh) && (
 				<>
 					<Navbar
-						// company={selectedCompany}
 						handleClick={(menu) => setActiveMenu(menu)}
-						// handleCompany={handleCompany}
 						handleLogout={handleLogout}
 						onOpen={onOpen}
-						setSelectedCompany={setSelectedCompany}
 						tabs={SIDEBAR_MENU}
 						user={user}
 					/>

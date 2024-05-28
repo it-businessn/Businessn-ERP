@@ -24,7 +24,7 @@ const Timecard = ({ timesheets }) => {
 			"End Break",
 			"Clock In",
 			"Clock Out",
-			"Total Hours",
+			"Total Hours (HH:mm)",
 		];
 		const handleToggle = (index) => {
 			setExpanded(isExpanded === index ? -1 : index);
@@ -56,21 +56,17 @@ const Timecard = ({ timesheets }) => {
 										<React.Fragment key={_id}>
 											<Tr>
 												<Td>
-													<HStack justify={"space-around"}>
+													<HStack
+														justify={"start"}
+														onClick={(e) => {
+															e.preventDefault();
+															handleToggle(index);
+														}}
+													>
 														{isExpanded === index ? (
-															<FaChevronUp
-																onClick={(e) => {
-																	e.preventDefault();
-																	handleToggle(index);
-																}}
-															/>
+															<FaChevronUp />
 														) : (
-															<FaChevronDown
-																onClick={(e) => {
-																	e.preventDefault();
-																	handleToggle(index);
-																}}
-															/>
+															<FaChevronDown />
 														)}
 														<TextTitle
 															title={employeeId.fullName}
@@ -123,7 +119,7 @@ const Timecard = ({ timesheets }) => {
 													{projectEntries.length === 0 && (
 														<Tr>
 															<Td>
-																<HStack justify={"space-around"}>
+																<HStack justify={"start"} cursor={"pointer"}>
 																	<FaPlus
 																		onClick={() => setShowAddProject(true)}
 																	/>
@@ -138,7 +134,7 @@ const Timecard = ({ timesheets }) => {
 													{projectEntries?.map((_) => (
 														<Tr key={_}>
 															<Td>
-																<HStack justify={"space-around"}>
+																<HStack justify={"start"} cursor={"pointer"}>
 																	<FaPlus
 																		onClick={() => setShowAddProject(true)}
 																	/>

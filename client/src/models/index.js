@@ -14,6 +14,7 @@ export const buildUserInfo = (user) => {
 		primaryAddress,
 		employmentType,
 		manager,
+		companyId,
 	} = user;
 
 	return new User(
@@ -29,5 +30,6 @@ export const buildUserInfo = (user) => {
 		primaryAddress,
 		employmentType,
 		manager,
+		companyId,
 	);
 };

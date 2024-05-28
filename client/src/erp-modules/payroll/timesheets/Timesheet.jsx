@@ -26,7 +26,7 @@ const Timesheet = ({ timesheets }) => {
 			"Start Time",
 			"End Time",
 			"Break/Lunch",
-			"Total Hours",
+			"Total Hours (HH:mm)",
 		];
 		const handleToggle = (index) => {
 			setExpanded(isExpanded === index ? -1 : index);
@@ -59,21 +59,17 @@ const Timesheet = ({ timesheets }) => {
 										<React.Fragment key={_id}>
 											<Tr>
 												<Td>
-													<HStack justify={"space-around"}>
+													<HStack
+														justify={"start"}
+														onClick={(e) => {
+															e.preventDefault();
+															handleToggle(index);
+														}}
+													>
 														{isExpanded === index ? (
-															<FaChevronUp
-																onClick={(e) => {
-																	e.preventDefault();
-																	handleToggle(index);
-																}}
-															/>
+															<FaChevronUp />
 														) : (
-															<FaChevronDown
-																onClick={(e) => {
-																	e.preventDefault();
-																	handleToggle(index);
-																}}
-															/>
+															<FaChevronDown />
 														)}
 														<TextTitle
 															title={employeeId.fullName}
@@ -113,7 +109,7 @@ const Timesheet = ({ timesheets }) => {
 													{projectEntries.length === 0 && (
 														<Tr>
 															<Td>
-																<HStack justify={"space-around"}>
+																<HStack justify={"start"} cursor={"pointer"}>
 																	<FaPlus
 																		onClick={() => setShowAddProject(true)}
 																	/>
@@ -128,7 +124,7 @@ const Timesheet = ({ timesheets }) => {
 													{projectEntries?.map((_) => (
 														<Tr key={_}>
 															<Td>
-																<HStack justify={"space-around"}>
+																<HStack justify={"start"} cursor={"pointer"}>
 																	<FaPlus
 																		onClick={() => setShowAddProject(true)}
 																	/>
@@ -145,7 +141,7 @@ const Timesheet = ({ timesheets }) => {
 														_.map((x) => (
 															<Tr key={x.name}>
 																<Td>
-																	<HStack justify={"space-around"}>
+																	<HStack justify={"start"}>
 																		<FaPlus
 																			onClick={() => setShowAddProject(true)}
 																		/>

@@ -15,23 +15,35 @@ import { useEffect, useState } from "react";
 import { FaSyncAlt } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { useBreakpointValue } from "services/Breakpoint";
+import LocalStorageService from "services/LocalStorageService";
 import SettingService from "services/SettingService";
 
-const Navbar = ({
-	// company,
-	handleClick,
-	handleLogout,
-	onOpen,
-	setSelectedCompany,
-	tabs,
-	user,
-}) => {
+const Navbar = ({ handleClick, handleLogout, onOpen, tabs, user }) => {
 	const [companies, setCompanies] = useState(null);
+
+	const [selectedCompany, setSelectedCompany] = useState(
+		user.companyId[0].name,
+	);
+
+	const handleCompany = (company = "FD") => {
+		console.log(company);
+		// if (company === "FD") {
+		// 	setActiveMenu(FD_SIDEBAR_MENU.find((menu) => menu.id === "sales"));
+		// } else {
+		// 	setActiveMenu(BUSINESSN_SIDEBAR_MENU.find((menu) => menu.id === "sales"));
+		// }
+		LocalStorageService.setItem("selectedCompany", selectedCompany);
+
+		// setActiveMenu(SIDEBAR_MENU?.find((menu) => menu.id === "sales"));
+	};
+	useEffect(() => {
+		handleCompany(selectedCompany);
+	}, [selectedCompany]);
 
 	useEffect(() => {
 		const fetchCompanyInfo = async () => {
 			try {
-				const response = await SettingService.getAllCompanies();
+				const response = await SettingService.getAllCompaniesByUser(user?._id);
 				setCompanies(response.data);
 			} catch (error) {
 				console.error(error);
@@ -44,27 +56,31 @@ const Navbar = ({
 	const { isMobile } = useBreakpointValue();
 
 	const handleChange = (value) => {
+		console.log(value, user);
 		setSelectedCompany(value);
 	};
 
 	const companyList = () => (
 		<Flex flexDir={"column"} w={{ base: "60%", md: "auto" }}>
-			<SelectBox
-				icon={
-					<IconButton
-						ml={"1em"}
-						size="sm"
-						icon={<FaSyncAlt />}
-						aria-label="Refresh"
-						variant="round"
-					/>
-				}
-				handleChange={handleChange}
-				data={companies}
-				name="name"
-				fontWeight="bold"
-				placeholder={"No companies found"}
-			/>
+			{companies && (
+				<SelectBox
+					icon={
+						<IconButton
+							ml={"1em"}
+							size="sm"
+							icon={<FaSyncAlt />}
+							aria-label="Refresh"
+							variant="round"
+						/>
+					}
+					value={selectedCompany || ""}
+					handleChange={handleChange}
+					data={companies}
+					name="name"
+					fontWeight="bold"
+					// placeholder={"No companies found"}
+				/>
+			)}
 		</Flex>
 	);
 

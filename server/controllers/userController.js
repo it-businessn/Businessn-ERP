@@ -1,6 +1,7 @@
 // const User = require("../models/User");
 const bcrypt = require("bcrypt");
 const Employee = require("../models/Employee");
+const Company = require("../models/Company");
 const Group = require("../models/Group");
 const jwt = require("jsonwebtoken");
 const Lead = require("../models/Lead");
@@ -110,7 +111,15 @@ const loginUser = () => async (req, res) => {
 	const { email, password } = req.body;
 
 	try {
-		const user = await Employee.findOne({ email });
+		const user = await Employee.findOne({ email }).populate({
+			path: "companyId",
+			model: "Company",
+			select: "name",
+		});
+		// const updatedData = { companyId: "6646b03e96dcdc0583fb5dca" };
+		// const updatedLeads = await Employee.updateMany({}, { $set: updatedData });
+		// console.log(updatedLeads);
+
 		if (!user) {
 			return res.status(500).json({ error: "User does not exist" });
 		}

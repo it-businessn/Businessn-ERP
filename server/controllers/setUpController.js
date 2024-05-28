@@ -151,10 +151,28 @@ const getAllCompanies = () => async (req, res) => {
 	}
 };
 
-const getCompanyById = () => async (req, res) => {
+const getCompanyByName = () => async (req, res) => {
 	const { id } = req.params;
 	try {
 		const company = await Company.find({ name: id });
+		res.status(200).json(company);
+	} catch (error) {
+		res.status(404).json({ error: error.message });
+	}
+};
+
+const getCompanyByUserId = () => async (req, res) => {
+	const { id } = req.params;
+	try {
+		const company = await Company.find({ employees: id });
+
+		// const updatedLeads = await Company.findByIdAndUpdate(
+		// 	"6646b03e96dcdc0583fb5dca",
+		// 	{
+		// 		employees,
+		// 	},
+		// 	{ new: true },
+		// );
 		res.status(200).json(company);
 	} catch (error) {
 		res.status(404).json({ error: error.message });
@@ -282,7 +300,8 @@ module.exports = {
 	addEmpType,
 	getAllCompanies,
 	addCompany,
-	getCompanyById,
+	getCompanyByName,
+	getCompanyByUserId,
 	addModule,
 	getAllModules,
 	updateModuleActiveStatus,

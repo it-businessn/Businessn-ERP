@@ -49,6 +49,10 @@ const SettingService = {
 		return apiService.get(`/setup/companies`);
 	},
 
+	async getAllCompaniesByUser(id) {
+		return apiService.get(`/setup/companies/user/${id}`);
+	},
+
 	async getCompanyInfo(id) {
 		return apiService.get(`/setup/companies/${id}`);
 	},
