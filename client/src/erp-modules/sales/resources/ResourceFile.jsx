@@ -3,15 +3,16 @@ import {
 	Button,
 	Card,
 	Flex,
-	HStack,
 	Icon,
 	Image,
 	SimpleGrid,
 	Text,
 	VStack,
 } from "@chakra-ui/react";
+import PrimaryButton from "components/ui/button/PrimaryButton";
 import TextTitle from "components/ui/text/TextTitle";
 import { useData } from "context/DataContext";
+import { BiPencil } from "react-icons/bi";
 import { FaDownload } from "react-icons/fa";
 import { GoDownload } from "react-icons/go";
 import { MdDeleteOutline } from "react-icons/md";
@@ -40,6 +41,14 @@ const ResourceFile = ({
 		try {
 			await ResourceService.deleteResource({}, id);
 			setNewUpload((prev) => !prev);
+		} catch (error) {
+			console.error(error);
+		}
+	};
+	const handleEdit = async (id) => {
+		try {
+			// await ResourceService.updateCover("data", id);
+			// setNewUpload((prev) => !prev);
 		} catch (error) {
 			console.error(error);
 		}
@@ -92,7 +101,11 @@ const ResourceFile = ({
 					)}
 				</VStack>
 			</Flex>
-			<SimpleGrid columns={{ base: 1, md: 3, lg: 5 }} spacing="1em" my="5">
+			<SimpleGrid
+				columns={{ base: 1, md: 2, lg: 4, xl: 6 }}
+				spacing="1em"
+				my="5"
+			>
 				{resources?.map((resource) => (
 					<Box
 						key={resource._id}
@@ -106,36 +119,37 @@ const ResourceFile = ({
 								<Image src={bookCover} alt={"book.title"} />
 							</Card>
 							<Text fontSize={"sm"}>{resource.originalname}</Text>
-							<HStack w={"100%"}>
-								<Button
-									onClick={() => handleDownload(resource.originalname)}
-									w={"100%"}
-									bg="var(--primary_button_bg)"
-									color={"brand.primary_bg"}
-									variant={"solid"}
-									_hover={{ color: "brand.600" }}
-									borderRadius={"10px"}
-									size="xs"
+							<VStack w={"100%"}>
+								<PrimaryButton
+									minW={"95%"}
+									size={"xs"}
+									px={"5px"}
+									name={"Download"}
 									rightIcon={<GoDownload />}
-								>
-									Download
-								</Button>
+									onOpen={() => handleDownload(resource.originalname)}
+								/>
+
 								{hasDeleteAccess && (
-									<Button
-										onClick={() => handleDelete(resource._id)}
-										w={"100%"}
-										bg="var(--primary_button_bg)"
-										color={"brand.primary_bg"}
-										variant={"solid"}
-										_hover={{ color: "brand.600" }}
-										borderRadius={"10px"}
-										size="xs"
-										rightIcon={<MdDeleteOutline />}
-									>
-										Delete
-									</Button>
+									<>
+										<PrimaryButton
+											minW={"95%"}
+											size={"xs"}
+											px={"5px"}
+											name={"Delete"}
+											rightIcon={<MdDeleteOutline />}
+											onOpen={() => handleDelete(resource._id)}
+										/>
+										<PrimaryButton
+											minW={"95%"}
+											size={"xs"}
+											px={"5px"}
+											name={"Edit"}
+											rightIcon={<BiPencil />}
+											onOpen={() => handleEdit(resource._id)}
+										/>
+									</>
 								)}
-							</HStack>
+							</VStack>
 						</VStack>
 					</Box>
 				))}

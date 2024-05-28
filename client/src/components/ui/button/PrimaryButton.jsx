@@ -12,6 +12,7 @@ const PrimaryButton = ({
 	minW,
 	flex,
 	mt,
+	rightIcon,
 }) => {
 	return (
 		<Button
@@ -34,6 +35,7 @@ const PrimaryButton = ({
 			type="submit"
 			borderRadius={"10px"}
 			loadingText={loadingText}
+			rightIcon={rightIcon}
 		>
 			{name}
 		</Button>
