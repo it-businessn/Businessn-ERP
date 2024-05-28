@@ -1,4 +1,5 @@
 import { Box, HStack, Icon, SimpleGrid, Text, VStack } from "@chakra-ui/react";
+import SelectFormControl from "components/ui/form/SelectFormControl";
 import React, { useEffect, useState } from "react";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
@@ -141,7 +142,19 @@ const ScheduleWorkView = () => {
 						borderRadius="10px"
 						fontWeight="bold"
 					>
-						Location 1
+						<SelectFormControl
+							w="20%"
+							name="type"
+							label={""}
+							valueText={"meeting"}
+							// handleChange={handleInputChange}
+							options={[
+								{
+									name: "Location 1",
+									value: "meeting",
+								},
+							]}
+						/>
 						<SchedulingCalendar newEmployeeAdded={newEmployeeAdded} />
 					</Box>
 				</SimpleGrid>

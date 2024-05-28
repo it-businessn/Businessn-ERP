@@ -1,15 +1,15 @@
 import { ArrowDownIcon, ArrowUpIcon } from "@chakra-ui/icons";
 import { Box, Icon, Text } from "@chakra-ui/react";
 import "react-big-calendar/lib/css/react-big-calendar.css";
-import { FaAward } from "react-icons/fa";
-import { GiDiamondTrophy } from "react-icons/gi";
+import { FaRegClock } from "react-icons/fa6";
+import { MdCleanHands } from "react-icons/md";
 import { TfiTarget } from "react-icons/tfi";
 
 const HeaderCards = () => {
 	const HEADER_CARDS = [
 		{
 			color: "#a5a4e0",
-			icon: TfiTarget,
+			icon: FaRegClock,
 			title: "Hours left to schedule",
 			subIcon: TfiTarget,
 			value: 0,
@@ -17,7 +17,7 @@ const HeaderCards = () => {
 		},
 		{
 			color: "#9fd4d0",
-			icon: FaAward,
+			icon: MdCleanHands,
 			title: "Current % of projected revenue",
 			subIcon: ArrowDownIcon,
 			value: "0%",
@@ -25,7 +25,7 @@ const HeaderCards = () => {
 		},
 		{
 			color: "#cda4a8",
-			icon: GiDiamondTrophy,
+			icon: TfiTarget,
 			title: "Current % away from targeted % of projected revenue",
 			subIcon: ArrowUpIcon,
 			value: "0%",

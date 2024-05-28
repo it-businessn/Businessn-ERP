@@ -215,10 +215,10 @@ const AddQuestionForm = () => {
 
 					<FormControl>
 						<FormLabel>Options</FormLabel>
-						<VStack w={"60%"}>
+						<VStack>
 							{options.map((option, index) => (
 								<Input
-									key={option}
+									key={index}
 									type="text"
 									value={option}
 									onChange={(e) => handleOptionChange(index, e.target.value)}

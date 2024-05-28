@@ -93,11 +93,7 @@ const GroupsPanel = ({
 
 	const handleSelect = (emp) => {
 		setEmpName(emp.fullName);
-		setFilteredEmployees(
-			employees.filter((item) =>
-				item?.fullName?.toLowerCase().includes(emp.fullName.toLowerCase()),
-			),
-		);
+		setFilteredEmployees(employees.filter((item) => item?.email === emp.email));
 	};
 
 	const handleMenuToggle = () => {
@@ -124,9 +120,9 @@ const GroupsPanel = ({
 		selectedGroup.admin = selectedAdmins;
 		selectedGroup.modules = selectedModules;
 		const memberExists = selectedGroup.members.findIndex(
-			(member) => member.fullName === filteredEmployees[0].fullName,
+			(member) => member.email === filteredEmployees[0].email,
 		);
-		if (memberExists < 0) {
+		if (memberExists === -1) {
 			selectedGroup.members.push(filteredEmployees[0]);
 			try {
 				await SettingService.updateGroup(selectedGroup, selectedGroup._id);

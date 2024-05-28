@@ -11,6 +11,16 @@ const getShifts = () => async (req, res) => {
 	}
 };
 
+const getShiftByDate = () => async (req, res) => {
+	const { id } = req.params;
+	try {
+		const shifts = await EmployeeShift.find({ createdOn: id });
+		res.status(200).json(shifts);
+	} catch (error) {
+		res.status(404).json({ error: error.message });
+	}
+};
+
 const getTaskById = () => async (req, res) => {
 	const { id } = req.params;
 	try {
@@ -59,4 +69,5 @@ module.exports = {
 	addShifts,
 	getShifts,
 	updateShift,
+	getShiftByDate,
 };

@@ -34,7 +34,7 @@ const ManagerViewCard = () => {
 				<TextTitle flex={1} mb={"0.5em"} title="All Assessment" />
 				<PrimaryButton
 					size={"xs"}
-					name={"Add Assessment"}
+					name={"Add Assessments"}
 					loadingText="Loading"
 					onOpen={() => navigate(`${ROUTE_PATH.SALES}${ROUTE_PATH.ADD_PAPER}`)}
 				/>

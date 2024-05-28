@@ -18,6 +18,11 @@
 	background-color: var(--active-menu-color) !important;
 }
 
+.react-datepicker-wrapper input[type="text"] {
+	background-color: var(--primary_bg);
+	cursor: pointer;
+}
+
 .react-calendar-timeline .rct-horizontal-lines .rct-hl-even,
 .react-calendar-timeline .rct-horizontal-lines .rct-hl-odd,
 .react-calendar-timeline .rct-sidebar .rct-sidebar-row {

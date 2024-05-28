@@ -5,8 +5,8 @@ import {
 	Button,
 	Flex,
 	HStack,
+	Icon,
 	IconButton,
-	SimpleGrid,
 	Text,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
@@ -16,12 +16,18 @@ import Timeline, {
 	TimelineHeaders,
 } from "react-calendar-timeline";
 import "react-calendar-timeline/lib/Timeline.css";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 import { useDrop } from "react-dnd";
+import { CiCalendar } from "react-icons/ci";
+// import { FaChevronDown } from "react-icons/fa";
+import moment from "moment";
+import { MdOutlineChevronLeft, MdOutlineChevronRight } from "react-icons/md";
 import SchedulerService from "services/SchedulerService";
 import "./Scheduler.css";
 
 const SchedulingCalendar = ({ newEmployeeAdded }) => {
-	const currentDate = new Date();
+	const [currentDate, setCurrentDate] = useState(new Date());
 
 	currentDate.setHours(6, 0, 0, 0);
 
@@ -103,7 +109,8 @@ const SchedulingCalendar = ({ newEmployeeAdded }) => {
 	useEffect(() => {
 		const fetchShifts = async () => {
 			try {
-				const response = await SchedulerService.getShifts();
+				const response = await SchedulerService.getShiftsByDate(currentDate);
+				console.log(response.data);
 				if (response.data.length > 0) {
 					const uniqueEvents = [];
 					const titles = {};
@@ -139,7 +146,7 @@ const SchedulingCalendar = ({ newEmployeeAdded }) => {
 			}
 		};
 		fetchShifts();
-	}, []);
+	}, [currentDate]);
 
 	useEffect(() => {
 		if (newEmployeeAdded) {
@@ -256,125 +263,75 @@ const SchedulingCalendar = ({ newEmployeeAdded }) => {
 	};
 
 	const yesterdayDate = new Date(currentDate);
-	yesterdayDate.setDate(currentDate.getDate() - 1); // Get yesterday's date
+	yesterdayDate.setDate(currentDate.getDate() - 1);
 	const tomorrowDate = new Date(currentDate);
-	tomorrowDate.setDate(currentDate.getDate() + 1); // Get tomorrow's date
+	tomorrowDate.setDate(currentDate.getDate() + 1);
+	const [selectedDate, setSelectedDate] = useState(new Date());
+
+	const handleChangeDate = (action) => {
+		setCurrentDate((prevDate) => {
+			const newDate = new Date(prevDate);
+			if (action === "prev") {
+				newDate.setDate(newDate.getDate() - 1); // Previous day
+			} else if (action === "next") {
+				newDate.setDate(newDate.getDate() + 1); // Next day
+			}
+			return newDate;
+		});
+	};
+	const isToday = moment(currentDate).isSame(new Date(), "day");
 
 	return (
 		<Box overflow={"auto"} w={"100%"}>
-			<SimpleGrid
-				mb={"1em"}
-				columns={{ base: 1, md: 2, lg: 4 }}
-				spacing="1em"
+			<Box
 				color={"brand.200"}
+				px="1em"
+				mb={"1em"}
+				borderRadius="10px"
+				fontWeight="bold"
 			>
-				<Box
-					px="1em"
-					bg={"brand.primary_bg"}
-					border="3px solid var(--main_color)"
-					borderRadius="10px"
-					fontWeight="bold"
-				>
-					<Text>Scheduling</Text>
-				</Box>
-				{/* <Box
-					px="1em"
-					bg={"brand.primary_bg"}
-					border="3px solid var(--main_color)"
-					borderRadius="10px"
-					fontWeight="bold"
-				>
-					<Flex
-						justify="space-between"
-						align="center"
-						mb="1"
-						w={{ base: "auto", md: "106%" }}
-					>
-						<Icon as={card.icon} color={card.color} boxSize={5} />
-						<Select width="auto" border={"none"} fontSize={"xs"} p={0}>
-							<option>This month</option>
-							<option>Last month</option>
-						</Select>
-					</Flex>
-					<Text fontSize="xs" fontWeight="bold">
-						{card.title}
+				<HStack justifyContent={"space-between"} w={"100%"}>
+					<Text>Schedule</Text>
+					<HStack>
+						<Icon
+							as={MdOutlineChevronLeft}
+							onClick={() => handleChangeDate("prev")}
+							boxSize="5"
+							color="fg.muted"
+						/>
+						<Text>
+							{isToday
+								? "Today"
+								: moment(currentDate).format("dddd, D MMMM YYYY")}
+						</Text>
+						<Icon
+							as={MdOutlineChevronRight}
+							onClick={() => handleChangeDate("next")}
+							boxSize="5"
+							color="fg.muted"
+						/>
+					</HStack>
+					<HStack w="180px" cursor={"pointer"}>
+						<Icon as={CiCalendar} boxSize="5" color="fg.muted" />
+						<DatePicker
+							style={{ bg: "red" }}
+							selected={selectedDate}
+							onChange={(date) => setSelectedDate(date)}
+							dateFormat="dd, MMMM yyyy"
+						/>
+						{/* <Icon as={FaChevronDown} boxSize="3" color="fg.muted" /> */}
+					</HStack>
+
+					<Text fontWeight={"normal"}>
+						Default duration:{" "}
+						<Text as={"span"} fontWeight="bold">
+							60 minutes
+						</Text>
 					</Text>
-					<Flex align="center" color={"brand.600"}>
-						<Text mr="3" fontWeight="900">
-							{card.value}
-						</Text>
-						<Icon mr="1" as={card.subIcon} color="green.500" />
-						<Text color="green.500" fontSize="xs">
-							{card.percent}
-						</Text>
-					</Flex>
-				</Box> */}
-				{/*<Box
-					px="1em"
-					bg={"brand.primary_bg"}
-					border="3px solid var(--main_color)"
-					borderRadius="10px"
-					fontWeight="bold"
-				>
-					<Flex
-						justify="space-between"
-						align="center"
-						mb="1"
-						w={{ base: "auto", md: "106%" }}
-					>
-						<Icon as={card.icon} color={card.color} boxSize={5} />
-						<Select width="auto" border={"none"} fontSize={"xs"} p={0}>
-							<option>This month</option>
-							<option>Last month</option>
-						</Select>
-					</Flex>
-					<Text fontSize="xs" fontWeight="bold">
-						{card.title}
-					</Text>
-					<Flex align="center" color={"brand.600"}>
-						<Text mr="3" fontWeight="900">
-							{card.value}
-						</Text>
-						<Icon mr="1" as={card.subIcon} color="green.500" />
-						<Text color="green.500" fontSize="xs">
-							{card.percent}
-						</Text>
-					</Flex>
-				</Box>
-				<Box
-					px="1em"
-					bg={"brand.primary_bg"}
-					border="3px solid var(--main_color)"
-					borderRadius="10px"
-					fontWeight="bold"
-				>
-					<Flex
-						justify="space-between"
-						align="center"
-						mb="1"
-						w={{ base: "auto", md: "106%" }}
-					>
-						<Icon as={card.icon} color={card.color} boxSize={5} />
-						<Select width="auto" border={"none"} fontSize={"xs"} p={0}>
-							<option>This month</option>
-							<option>Last month</option>
-						</Select>
-					</Flex>
-					<Text fontSize="xs" fontWeight="bold">
-						{card.title}
-					</Text>
-					<Flex align="center" color={"brand.600"}>
-						<Text mr="3" fontWeight="900">
-							{card.value}
-						</Text>
-						<Icon mr="1" as={card.subIcon} color="green.500" />
-						<Text color="green.500" fontSize="xs">
-							{card.percent}
-						</Text>
-					</Flex>
-				</Box> */}
-			</SimpleGrid>
+				</HStack>
+			</Box>
 			<Timeline
+				style={{ zIndex: 0, position: "relative" }}
 				groups={groups}
 				items={items}
 				defaultTimeStart={currentDate}
