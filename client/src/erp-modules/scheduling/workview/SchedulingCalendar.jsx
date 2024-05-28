@@ -109,8 +109,9 @@ const SchedulingCalendar = ({ newEmployeeAdded }) => {
 	useEffect(() => {
 		const fetchShifts = async () => {
 			try {
-				const response = await SchedulerService.getShiftsByDate(currentDate);
-				console.log(response.data);
+				const response = await SchedulerService.getShiftsByDate(
+					moment(currentDate).toISOString(),
+				);
 				if (response.data.length > 0) {
 					const uniqueEvents = [];
 					const titles = {};
@@ -316,7 +317,10 @@ const SchedulingCalendar = ({ newEmployeeAdded }) => {
 						<DatePicker
 							style={{ bg: "red" }}
 							selected={selectedDate}
-							onChange={(date) => setSelectedDate(date)}
+							onChange={(date) => {
+								setSelectedDate(date);
+								setCurrentDate(date);
+							}}
 							dateFormat="dd, MMMM yyyy"
 						/>
 						{/* <Icon as={FaChevronDown} boxSize="3" color="fg.muted" /> */}
@@ -325,7 +329,7 @@ const SchedulingCalendar = ({ newEmployeeAdded }) => {
 					<Text fontWeight={"normal"}>
 						Default duration:{" "}
 						<Text as={"span"} fontWeight="bold">
-							60 minutes
+							12 hours
 						</Text>
 					</Text>
 				</HStack>

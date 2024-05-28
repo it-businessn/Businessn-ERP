@@ -10,11 +10,19 @@ const getShifts = () => async (req, res) => {
 		res.status(404).json({ error: error.message });
 	}
 };
-
 const getShiftByDate = () => async (req, res) => {
 	const { id } = req.params;
+	const today = new Date();
+	// today.setHours(0, 0, 0, 0);
+
+	const idDate = new Date(id);
 	try {
-		const shifts = await EmployeeShift.find({ createdOn: id });
+		const shifts = await EmployeeShift.find({
+			createdOn: {
+				$gte: idDate,
+				$lt: today,
+			},
+		});
 		res.status(200).json(shifts);
 	} catch (error) {
 		res.status(404).json({ error: error.message });
