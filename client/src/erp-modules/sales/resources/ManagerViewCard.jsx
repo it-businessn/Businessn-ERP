@@ -1,4 +1,4 @@
-import { Badge, Box, HStack, SimpleGrid, VStack } from "@chakra-ui/react";
+import { Box, HStack, SimpleGrid, VStack } from "@chakra-ui/react";
 import PrimaryButton from "components/ui/button/PrimaryButton";
 import TextTitle from "components/ui/text/TextTitle";
 import { useEffect, useState } from "react";
@@ -41,8 +41,8 @@ const ManagerViewCard = () => {
 			</HStack>
 
 			<SimpleGrid
-				columns={{ base: 1, md: 1, lg: 6 }}
-				minH={{ base: "auto", md: "90%", lg: "auto" }}
+				columns={{ base: 1, md: 1, lg: 4, xl: 6 }}
+				minH={{ base: "auto", md: "90%" }}
 				spacing={"1em"}
 			>
 				{assessments?.map((assessment) => (
@@ -56,27 +56,22 @@ const ManagerViewCard = () => {
 						fontWeight="bold"
 						display="flex"
 						flexDir="column"
-						justifyContent="space-evenly"
+						justifyContent="space-between"
 						alignItems="flex-start"
 					>
-						<VStack align={"self-start"} spacing={2} w={"100%"}>
+						<VStack
+							align={"self-start"}
+							justifyContent="space-between"
+							spacing={2}
+							w={"100%"}
+							minH={"8em"}
+						>
 							<TextTitle
 								// color={"brand.nav_color"}
-								fontSize="xs"
+								size="sm"
 								title={assessment.name}
 								color="var(--primary_button_bg)"
 							/>
-
-							<Badge
-								bg="var(--lead_cards_bg)"
-								color="var(--primary_button_bg)"
-								whiteSpace={"pre-wrap"}
-								borderRadius={"10px"}
-								visibility={"hidden"}
-							>
-								Text
-								{/* {assessment.name} */}
-							</Badge>
 							<PrimaryButton
 								size={"xs"}
 								name={"View / Update"}
