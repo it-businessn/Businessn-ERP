@@ -1,14 +1,4 @@
-import { SmallAddIcon } from "@chakra-ui/icons";
-import {
-	Avatar,
-	Box,
-	Button,
-	Flex,
-	HStack,
-	Icon,
-	IconButton,
-	Text,
-} from "@chakra-ui/react";
+import { Box, Flex, HStack, Icon, Text } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import Timeline, {
 	CustomHeader,
@@ -24,11 +14,12 @@ import { CiCalendar } from "react-icons/ci";
 import moment from "moment";
 import { MdOutlineChevronLeft, MdOutlineChevronRight } from "react-icons/md";
 import SchedulerService from "services/SchedulerService";
+import Group from "./Group";
+import ItemsRow from "./ItemsRow";
 import "./Scheduler.css";
 
 const SchedulingCalendar = ({ newEmployeeAdded }) => {
 	const [currentDate, setCurrentDate] = useState(new Date());
-
 	currentDate.setHours(6, 0, 0, 0);
 
 	const eventInitialStartTime = new Date(currentDate);
@@ -90,6 +81,7 @@ const SchedulingCalendar = ({ newEmployeeAdded }) => {
 					  }
 				: item,
 		);
+
 		const updatedItem = updatedItems.find((item) => item.id === itemId);
 
 		if (updatedItem) {
@@ -112,8 +104,8 @@ const SchedulingCalendar = ({ newEmployeeAdded }) => {
 				const response = await SchedulerService.getShiftsByDate(
 					moment(currentDate).toISOString(),
 				);
+				const uniqueEvents = [];
 				if (response.data.length > 0) {
-					const uniqueEvents = [];
 					const titles = {};
 
 					response.data.map((item) => {
@@ -143,10 +135,10 @@ const SchedulingCalendar = ({ newEmployeeAdded }) => {
 						if (a.title > b.title) return 1;
 						return 0;
 					});
-					setGroups(uniqueEvents);
-
-					setItems(response.data);
 				}
+				setGroups(uniqueEvents);
+
+				setItems(response.data);
 			} catch (error) {
 				console.error(error);
 			}
@@ -205,24 +197,14 @@ const SchedulingCalendar = ({ newEmployeeAdded }) => {
 		setItems([...items, newItem]);
 	};
 
-	const groupRenderer = ({ group }) => {
-		return group.id ? (
-			<Text
-				whiteSpace={"pre-wrap"}
-				className="custom-group"
-				ref={drop}
-				fontSize={"sm"}
-				fontWeight={"normal"}
-				border={isOver && "2px solid #ccc"}
-				bgColor={isOver ? "green.100" : "transparent"}
-				onDrop={handleHourDrop}
-			>
-				{group.title}
-			</Text>
-		) : (
-			<></>
-		);
-	};
+	const groupRenderer = ({ group }) => (
+		<Group
+			group={group}
+			drop={drop}
+			isOver={isOver}
+			handleHourDrop={handleHourDrop}
+		/>
+	);
 
 	const itemRenderer = ({
 		item,
@@ -230,43 +212,13 @@ const SchedulingCalendar = ({ newEmployeeAdded }) => {
 		getItemProps,
 		getResizeProps,
 	}) => {
-		const { left: leftResizeProps, right: rightResizeProps } = getResizeProps();
-		const durationText = item.duration < 2 ? "hour" : "hours";
 		return (
-			<Box {...getItemProps(item.itemProps)} w={"auto"}>
-				{itemContext.useResizeHandle ? (
-					<Box w={"auto"} {...leftResizeProps} />
-				) : (
-					""
-				)}
-				<HStack
-					maxHeight={"23px"}
-					bgColor={item.color}
-					borderRadius={"50px"}
-					px={"1"}
-					py={0}
-					spacing={0}
-					justify={"space-between"}
-				>
-					<Avatar size={"xs"} name={itemContext.title} />
-					<Button variant="ghost" size="xs" color={"var(--bg_color_1)"}>
-						{`${item.duration} ${durationText}`}
-					</Button>
-					<IconButton
-						size={"xs"}
-						icon={<SmallAddIcon />}
-						aria-label="Open Sidebar"
-						_hover={{ bg: "transparent" }}
-						// onClick={() => onOpen()}
-					/>
-				</HStack>
-
-				{itemContext.useResizeHandle ? (
-					<Box w={"auto"} {...rightResizeProps} />
-				) : (
-					""
-				)}
-			</Box>
+			<ItemsRow
+				getItemProps={getItemProps}
+				item={item}
+				itemContext={itemContext}
+				getResizeProps={getResizeProps}
+			/>
 		);
 	};
 
@@ -367,7 +319,8 @@ const SchedulingCalendar = ({ newEmployeeAdded }) => {
 								w={"148px !important"}
 								alignItems={"center"}
 								justify={"center"}
-								fontSize={"md"}
+								fontSize={"sm"}
+								h={"28px"}
 								borderLeft={"1px solid var(--calendar_border)"}
 								borderTop={"1px solid var(--calendar_border)"}
 							>
@@ -389,7 +342,7 @@ const SchedulingCalendar = ({ newEmployeeAdded }) => {
 										textAlign={"center"}
 										borderLeft={"1px solid var(--calendar_border)"}
 										borderTop={"1px solid var(--calendar_border)"}
-										fontSize={"md"}
+										fontSize={"sm"}
 										onClick={() => {
 											// showPeriod(interval.startTime, interval.endTime);
 										}}

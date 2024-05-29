@@ -14,7 +14,7 @@
 }
 
 .react-calendar-timeline .rct-header-root {
-	height: 50px !important;
+	height: 28px !important;
 	background-color: var(--active-menu-color) !important;
 }
 .react-datepicker {
