@@ -24,7 +24,7 @@ import { FaCaretRight } from "react-icons/fa";
 import { useBreakpointValue } from "services/Breakpoint";
 import LeadsService from "services/LeadsService";
 import UserService from "services/UserService";
-import { generateLighterShade } from "utils";
+import { formatDateTime, generateLighterShade } from "utils";
 import AutoAssign from "./AutoAssign";
 import Disburse from "./Disburse";
 import { caption, columns, showFilterSearchOption, showRegion } from "./data";

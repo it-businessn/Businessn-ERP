@@ -17,6 +17,12 @@
 	height: 50px !important;
 	background-color: var(--active-menu-color) !important;
 }
+.react-datepicker {
+	background-color: var(--lead_cards_bg);
+}
+.react-datepicker__day:hover {
+	background-color: var(--meeting_bg_light);
+}
 
 .react-datepicker-wrapper input[type="text"] {
 	background-color: var(--primary_bg);
@@ -26,7 +32,7 @@
 .react-calendar-timeline .rct-horizontal-lines .rct-hl-even,
 .react-calendar-timeline .rct-horizontal-lines .rct-hl-odd,
 .react-calendar-timeline .rct-sidebar .rct-sidebar-row {
-	border: 1px solid var(--lead_cards_bg) !important;
+	border-left: 1px solid var(--calendar_border) !important;
 }
 
 .react-calendar-timeline .rct-sidebar .rct-sidebar-row.rct-sidebar-row-odd,

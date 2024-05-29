@@ -127,14 +127,19 @@ const SchedulingCalendar = ({ newEmployeeAdded }) => {
 						item.end_time = new Date(
 							endDate.setUTCHours(hoursFromEndDate, 0, 0, 0),
 						);
-						if (!titles[item.title] && !item.id.endsWith("s")) {
+						if (item.id.endsWith("s")) {
 							titles[item.title] = true;
+						} else {
 							uniqueEvents.push(item);
 						}
+						// if (!titles[item.title] && !item.id.endsWith("s")) {
+						// 	titles[item.title] = true;
+						// 	uniqueEvents.push(item);
+						// }
 						return item;
 					});
 					uniqueEvents.sort((a, b) => {
-						if (a.title < b.title) return -11;
+						if (a.title < b.title) return -1;
 						if (a.title > b.title) return 1;
 						return 0;
 					});
@@ -203,9 +208,11 @@ const SchedulingCalendar = ({ newEmployeeAdded }) => {
 	const groupRenderer = ({ group }) => {
 		return group.id ? (
 			<Text
+				whiteSpace={"pre-wrap"}
 				className="custom-group"
 				ref={drop}
 				fontSize={"sm"}
+				fontWeight={"normal"}
 				border={isOver && "2px solid #ccc"}
 				bgColor={isOver ? "green.100" : "transparent"}
 				onDrop={handleHourDrop}
@@ -233,7 +240,7 @@ const SchedulingCalendar = ({ newEmployeeAdded }) => {
 					""
 				)}
 				<HStack
-					maxHeight={itemContext.dimensions.height}
+					maxHeight={"23px"}
 					bgColor={item.color}
 					borderRadius={"50px"}
 					px={"1"}
@@ -284,58 +291,60 @@ const SchedulingCalendar = ({ newEmployeeAdded }) => {
 
 	return (
 		<Box overflow={"auto"} w={"100%"}>
-			<Box
-				color={"brand.200"}
-				px="1em"
-				mb={"1em"}
-				borderRadius="10px"
+			<HStack
+				justifyContent={"space-between"}
 				fontWeight="bold"
+				fontSize={"sm"}
+				px="1em"
+				mb={"0.5em"}
 			>
-				<HStack justifyContent={"space-between"} w={"100%"}>
-					<Text>Schedule</Text>
-					<HStack>
-						<Icon
-							as={MdOutlineChevronLeft}
-							onClick={() => handleChangeDate("prev")}
-							boxSize="5"
-							color="fg.muted"
-						/>
-						<Text>
-							{isToday
-								? "Today"
-								: moment(currentDate).format("dddd, D MMMM YYYY")}
-						</Text>
-						<Icon
-							as={MdOutlineChevronRight}
-							onClick={() => handleChangeDate("next")}
-							boxSize="5"
-							color="fg.muted"
-						/>
-					</HStack>
-					<HStack w="180px" cursor={"pointer"}>
-						<Icon as={CiCalendar} boxSize="5" color="fg.muted" />
-						<DatePicker
-							style={{ bg: "red" }}
-							selected={selectedDate}
-							onChange={(date) => {
-								setSelectedDate(date);
-								setCurrentDate(date);
-							}}
-							dateFormat="dd, MMMM yyyy"
-						/>
-						{/* <Icon as={FaChevronDown} boxSize="3" color="fg.muted" /> */}
-					</HStack>
-
-					<Text fontWeight={"normal"}>
-						Default duration:{" "}
-						<Text as={"span"} fontWeight="bold">
-							12 hours
-						</Text>
+				<Text>Schedule</Text>
+				<HStack spacing={0}>
+					<Icon
+						as={MdOutlineChevronLeft}
+						onClick={() => handleChangeDate("prev")}
+						boxSize="5"
+						color="fg.muted"
+					/>
+					<Text>
+						{isToday
+							? "Today"
+							: moment(currentDate).format("dddd, D MMMM YYYY")}
 					</Text>
+					<Icon
+						as={MdOutlineChevronRight}
+						onClick={() => handleChangeDate("next")}
+						boxSize="5"
+						color="fg.muted"
+					/>
 				</HStack>
-			</Box>
+				<HStack cursor={"pointer"}>
+					<Icon as={CiCalendar} boxSize="5" color="fg.muted" />
+					<DatePicker
+						style={{ bg: "red" }}
+						selected={selectedDate}
+						onChange={(date) => {
+							setSelectedDate(date);
+							setCurrentDate(date);
+						}}
+						dateFormat="dd, MMMM yyyy"
+					/>
+					{/* <Icon as={FaChevronDown} boxSize="3" color="fg.muted" /> */}
+				</HStack>
+
+				<Text fontWeight={"normal"}>
+					Default duration:{" "}
+					<Text as={"span"} fontWeight="bold">
+						12 hours
+					</Text>
+				</Text>
+			</HStack>
 			<Timeline
-				style={{ zIndex: 0, position: "relative" }}
+				style={{
+					zIndex: 0,
+					position: "relative",
+					borderRight: "1px solid var(--calendar_border)",
+				}}
 				groups={groups}
 				items={items}
 				defaultTimeStart={currentDate}
@@ -354,12 +363,15 @@ const SchedulingCalendar = ({ newEmployeeAdded }) => {
 					<SidebarHeader>
 						{({ getRootProps }) => (
 							<Flex
-								fontSize={"sm"}
 								{...getRootProps()}
+								w={"148px !important"}
 								alignItems={"center"}
 								justify={"center"}
+								fontSize={"md"}
+								borderLeft={"1px solid var(--calendar_border)"}
+								borderTop={"1px solid var(--calendar_border)"}
 							>
-								Area 1
+								<Text>Area 1</Text>
 							</Flex>
 						)}
 					</SidebarHeader>
@@ -375,8 +387,9 @@ const SchedulingCalendar = ({ newEmployeeAdded }) => {
 									<Text
 										key={interval.startTime}
 										textAlign={"center"}
-										border={"none"}
-										fontSize={"sm"}
+										borderLeft={"1px solid var(--calendar_border)"}
+										borderTop={"1px solid var(--calendar_border)"}
+										fontSize={"md"}
 										onClick={() => {
 											// showPeriod(interval.startTime, interval.endTime);
 										}}
