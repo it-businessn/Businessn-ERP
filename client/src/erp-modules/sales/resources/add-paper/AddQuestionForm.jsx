@@ -142,23 +142,26 @@ const AddQuestionForm = () => {
 						/>
 					</HStack>
 					<FormLabel>
-						<HStack>
-							<Text>Options :</Text>
-							{questionnaire.options.map((_) => (
-								<Text key={_}>{_},</Text>
+						<HStack alignItems="start">
+							<Text ml={6}>Options:</Text>
+							{questionnaire.options.map((_, index) => (
+								<HStack key={_} spacing={1} alignItems="start">
+									<TextTitle title={`${index + 1}:`} />
+									<TextTitle title={_} weight="normal" />
+								</HStack>
 							))}
 						</HStack>
 					</FormLabel>
 					<FormLabel color={"green"}>
-						<HStack>
-							<Text>Correct answer :</Text>
+						<HStack alignItems="start">
+							<Text ml={6}>Correct answer :</Text>
 							<Text>{questionnaire.correctAnswer}</Text>
 						</HStack>
 					</FormLabel>
 
 					<FormLabel fontWeight={"bold"}>
-						<HStack>
-							<Text>Explanation:</Text>
+						<HStack alignItems="start">
+							<Text ml={6}>Explanation:</Text>
 							<Text>{questionnaire.explanation}</Text>
 						</HStack>
 					</FormLabel>

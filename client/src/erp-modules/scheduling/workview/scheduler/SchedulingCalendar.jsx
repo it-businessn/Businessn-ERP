@@ -343,7 +343,7 @@ const SchedulingCalendar = ({ newEmployeeAdded, setRefresh }) => {
 										textAlign={"center"}
 										borderLeft={"1px solid var(--calendar_border)"}
 										borderTop={"1px solid var(--calendar_border)"}
-										fontSize={"sm"}
+										fontSize={{ base: "xs", md: "10px", lg: "sm" }}
 										onClick={() => {
 											// showPeriod(interval.startTime, interval.endTime);
 										}}
