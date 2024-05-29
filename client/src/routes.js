@@ -1,6 +1,7 @@
 import { Suspense, lazy } from "react";
 import { createBrowserRouter } from "react-router-dom";
 
+import SchedulingDashboard from "erp-modules/scheduling/dashboard";
 import Loader from "./components/Loader";
 import PageNotFound from "./features/PageNotFound";
 import RootLayout from "./layouts/RootLayout";
@@ -322,8 +323,7 @@ export const router = createBrowserRouter([
 			/* Scheduling */
 			{
 				path: ROUTE_PATH.SCHEDULING,
-				// element: <SchedulingDashboard />,
-				element: <ScheduleWorkView />,
+				element: <SchedulingDashboard />,
 			},
 			{
 				path: `${ROUTE_PATH.SCHEDULING}${ROUTE_PATH.WORKVIEW}`,
