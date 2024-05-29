@@ -18,7 +18,7 @@ import Group from "./Group";
 import ItemsRow from "./ItemsRow";
 import "./Scheduler.css";
 
-const SchedulingCalendar = ({ newEmployeeAdded }) => {
+const SchedulingCalendar = ({ newEmployeeAdded, setRefresh }) => {
 	const [currentDate, setCurrentDate] = useState(new Date());
 	currentDate.setHours(6, 0, 0, 0);
 
@@ -218,6 +218,7 @@ const SchedulingCalendar = ({ newEmployeeAdded }) => {
 				item={item}
 				itemContext={itemContext}
 				getResizeProps={getResizeProps}
+				setRefresh={setRefresh}
 			/>
 		);
 	};

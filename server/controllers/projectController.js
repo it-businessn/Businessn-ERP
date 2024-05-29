@@ -338,6 +338,33 @@ const deleteProjectSubTask = async (req, res) => {
 	}
 };
 
+const createSchedulingProjectTask = () => async (req, res) => {
+	const { assignee, taskName } = req.body;
+
+	try {
+		const savedProject = await Project.findOne({ name: "Scheduling Calendar" });
+		if (!savedProject) {
+			return res.status(404).json({ message: "Project not found" });
+		}
+		const newTask = new Task({
+			projectId: savedProject._id,
+			taskName,
+			selectedAssignees: assignee,
+		});
+
+		await newTask.save();
+
+		savedProject.totalTasks = (savedProject.totalTasks || 0) + 1;
+		savedProject.tasks.push(newTask._id);
+
+		await savedProject.save();
+
+		res.status(201).json(newTask);
+	} catch (error) {
+		res.status(400).json({ message: error.message });
+	}
+};
+
 const addProjectTask = () => async (req, res) => {
 	const { id } = req.params;
 
@@ -720,4 +747,5 @@ module.exports = {
 	deleteProjectSubTask,
 	deleteProjectInnerSubTask,
 	updateInnerSubTasks,
+	createSchedulingProjectTask,
 };

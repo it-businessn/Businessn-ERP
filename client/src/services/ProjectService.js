@@ -9,6 +9,10 @@ const ProjectService = {
 		return apiService.post("/projects", data);
 	},
 
+	async addSchedulingProjectTask(data) {
+		return apiService.post("/projects/scheduling", data);
+	},
+
 	async addActivity(data) {
 		return apiService.post(`/projects/activity`, data);
 	},

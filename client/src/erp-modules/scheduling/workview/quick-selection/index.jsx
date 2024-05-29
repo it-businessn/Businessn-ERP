@@ -1,16 +1,13 @@
 import { Box, HStack, Icon, Text, VStack } from "@chakra-ui/react";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { GoDash } from "react-icons/go";
 import { RxDropdownMenu } from "react-icons/rx";
-import UserService from "services/UserService";
-import { customOrder, getRoleColor } from "utils";
 import EmployeeDragFromQuickSelection from "./EmployeeDragFromQuickSelection";
 
-const QuickSelection = ({ setNewEmployeeAdded }) => {
+const QuickSelection = ({ setNewEmployeeAdded, employees }) => {
 	const [isExpanded, setIsExpanded] = useState(false);
 	const [isExpandedIndex, setIsExpandedIndex] = useState(null);
 
-	const [employees, setEmployees] = useState(null);
 	const addEmployee = (employee, color) => {
 		setNewEmployeeAdded({
 			id: employee.id,
@@ -19,42 +16,6 @@ const QuickSelection = ({ setNewEmployeeAdded }) => {
 		});
 	};
 
-	useEffect(() => {
-		const fetchAllEmployeeByRole = async () => {
-			try {
-				const response = await UserService.getAllEmployeesByRole();
-				response.data.forEach((user) => {
-					user.color = getRoleColor(user._id);
-				});
-
-				const sortedArray = response.data.sort((a, b) => {
-					const titleA = a.title;
-					const titleB = b.title;
-					const indexA = customOrder.indexOf(titleA);
-					const indexB = customOrder.indexOf(titleB);
-					if (indexA !== -1 && indexB !== -1) {
-						return indexA - indexB;
-					}
-
-					if (indexA !== -1) {
-						return -1;
-					}
-
-					if (indexB !== -1) {
-						return 1;
-					}
-
-					return 0;
-				});
-
-				setEmployees(sortedArray);
-			} catch (error) {
-				console.error(error);
-			}
-		};
-
-		fetchAllEmployeeByRole();
-	}, []);
 	return (
 		<Box
 			p="1em"

@@ -3,10 +3,17 @@ import { Avatar, Box, Button, HStack, IconButton } from "@chakra-ui/react";
 import { useState } from "react";
 import AddTask from "./AddTask";
 
-const ItemsRow = ({ getItemProps, item, itemContext, getResizeProps }) => {
+const ItemsRow = ({
+	getItemProps,
+	item,
+	itemContext,
+	getResizeProps,
+	setRefresh,
+}) => {
 	const durationText = item.duration < 2 ? "hour" : "hours";
 
 	const [showAddTask, setShowAddTask] = useState(false);
+	const [assignee, setAssignee] = useState("");
 	const { left: leftResizeProps, right: rightResizeProps } = getResizeProps();
 	return (
 		<>
@@ -35,6 +42,7 @@ const ItemsRow = ({ getItemProps, item, itemContext, getResizeProps }) => {
 						aria-label="Open Sidebar"
 						_hover={{ bg: "transparent" }}
 						onClick={() => {
+							setAssignee(itemContext.title);
 							setShowAddTask(true);
 						}}
 					/>
@@ -47,7 +55,12 @@ const ItemsRow = ({ getItemProps, item, itemContext, getResizeProps }) => {
 				)}
 			</Box>
 			{showAddTask && (
-				<AddTask isOpen={showAddTask} onClose={() => setShowAddTask(false)} />
+				<AddTask
+					isOpen={showAddTask}
+					assignee={assignee}
+					onClose={() => setShowAddTask(false)}
+					setRefresh={setRefresh}
+				/>
 			)}
 		</>
 	);

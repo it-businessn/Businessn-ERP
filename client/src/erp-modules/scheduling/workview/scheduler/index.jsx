@@ -2,7 +2,7 @@ import { Box } from "@chakra-ui/react";
 import SelectFormControl from "components/ui/form/SelectFormControl";
 import SchedulingCalendar from "./SchedulingCalendar";
 
-const Scheduler = ({ newEmployeeAdded }) => {
+const Scheduler = ({ newEmployeeAdded, setRefresh }) => {
 	return (
 		<Box
 			p="1em"
@@ -24,7 +24,10 @@ const Scheduler = ({ newEmployeeAdded }) => {
 					},
 				]}
 			/>
-			<SchedulingCalendar newEmployeeAdded={newEmployeeAdded} />
+			<SchedulingCalendar
+				setRefresh={setRefresh}
+				newEmployeeAdded={newEmployeeAdded}
+			/>
 		</Box>
 	);
 };

@@ -2,12 +2,20 @@ import ActionButtonGroup from "components/ui/form/ActionButtonGroup";
 import InputFormControl from "components/ui/form/InputFormControl";
 import ModalLayout from "components/ui/modal/ModalLayout";
 import { useState } from "react";
+import ProjectService from "services/ProjectService";
 
-const AddTask = ({ isOpen, onClose }) => {
+const AddTask = ({ isOpen, onClose, assignee, setRefresh }) => {
 	const [taskName, setTaskName] = useState("");
-	const handleSubmit = (e) => {
+
+	const handleSubmit = async (e) => {
 		e.preventDefault();
-		// console.log("su", taskName);
+		try {
+			await ProjectService.addSchedulingProjectTask({ assignee, taskName });
+			onClose();
+			setRefresh((prev) => !prev);
+		} catch (error) {
+			console.log("An error occurred. Please try again.");
+		}
 	};
 	return (
 		<ModalLayout size="lg" title={"Add Task"} isOpen={isOpen} onClose={onClose}>

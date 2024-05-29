@@ -1,14 +1,55 @@
 import { Box, SimpleGrid, Text } from "@chakra-ui/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
+import UserService from "services/UserService";
+import { customOrder, getRoleColor } from "utils";
 import HeaderCards from "./HeaderCards";
 import QuickSelection from "./quick-selection";
 import Scheduler from "./scheduler";
 
 const ScheduleWorkView = () => {
 	const [newEmployeeAdded, setNewEmployeeAdded] = useState(null);
+	const [employees, setEmployees] = useState(null);
+	const [refresh, setRefresh] = useState(null);
 
+	useEffect(() => {
+		const fetchAllEmployeeByRole = async () => {
+			try {
+				const response = await UserService.getAllEmployeesByRole();
+				response.data.forEach((user) => {
+					user.color = getRoleColor(user._id);
+				});
+
+				// const sortedArray = response.data.sort((a, b) => {
+				// 	const titleA = a.title;
+				// 	const titleB = b.title;
+				// 	const indexA = customOrder.indexOf(titleA);
+				// 	const indexB = customOrder.indexOf(titleB);
+				// 	if (indexA !== -1 && indexB !== -1) {
+				// 		return indexA - indexB;
+				// 	}
+
+				// 	if (indexA !== -1) {
+				// 		return -1;
+				// 	}
+
+				// 	if (indexB !== -1) {
+				// 		return 1;
+				// 	}
+
+				// 	return 0;
+				// });
+
+				// setEmployees(sortedArray);
+				setEmployees(response.data);
+			} catch (error) {
+				console.error(error);
+			}
+		};
+
+		fetchAllEmployeeByRole();
+	}, [refresh]);
 	return (
 		<Box p={{ base: "1em" }} overflow={"hidden"}>
 			<Text fontWeight="bold" mb={"0.5em"}>
@@ -29,8 +70,14 @@ const ScheduleWorkView = () => {
 					mt="4"
 					templateColumns={{ lg: "30% 70%" }}
 				>
-					<QuickSelection setNewEmployeeAdded={setNewEmployeeAdded} />
-					<Scheduler newEmployeeAdded={newEmployeeAdded} />
+					<QuickSelection
+						employees={employees}
+						setNewEmployeeAdded={setNewEmployeeAdded}
+					/>
+					<Scheduler
+						newEmployeeAdded={newEmployeeAdded}
+						setRefresh={setRefresh}
+					/>
 				</SimpleGrid>
 			</DndProvider>
 		</Box>
