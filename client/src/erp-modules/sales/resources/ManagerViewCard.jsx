@@ -41,6 +41,7 @@ const ManagerViewCard = () => {
 			</HStack>
 
 			<SimpleGrid
+				mt={2}
 				columns={{ base: 1, md: 1, lg: 4, xl: 6 }}
 				minH={{ base: "auto", md: "90%" }}
 				spacing={"1em"}
@@ -64,11 +65,12 @@ const ManagerViewCard = () => {
 							justifyContent="space-between"
 							spacing={2}
 							w={"100%"}
-							minH={"8em"}
+							minH={{ base: "6em" }}
 						>
 							<TextTitle
 								// color={"brand.nav_color"}
 								size="sm"
+								whiteSpace="pre-wrap"
 								title={assessment.name}
 								color="var(--primary_button_bg)"
 							/>

@@ -6,9 +6,17 @@ import LocalStorageService from "services/LocalStorageService";
 import ResourceService from "services/ResourceService";
 import { isManager } from "utils";
 import AssociateViewCard from "./AssociateViewCard";
-import FileUploader from "./FileUploader";
 import ManagerViewCard from "./ManagerViewCard";
 import ResourceFile from "./ResourceFile";
+
+const FILE_TYPES = [
+	{ type: "Training" },
+	{ type: "Scripts" },
+	{ type: "Product Knowledge" },
+	{ type: "Employee Handbook" },
+	{ type: "Associates" },
+	{ type: "Training resources" },
+];
 
 const Resources = () => {
 	const { fullName, role } = LocalStorageService.getItem("user");
@@ -16,7 +24,7 @@ const Resources = () => {
 
 	const [resources, setResources] = useState(null);
 	const [newUpload, setNewUpload] = useState(null);
-	const [selectedFilter, setSelectedFilter] = useState(null);
+	const [selectedFilter, setSelectedFilter] = useState(FILE_TYPES[0].type);
 
 	useEffect(() => {
 		const fetchAllResources = async () => {
@@ -46,43 +54,22 @@ const Resources = () => {
 			fetchResourceByType();
 		}
 	}, [selectedFilter]);
-
-	const FILE_TYPES = [
-		{ type: "Scripts" },
-		{ type: "Product Knowledge" },
-		{ type: "Employee Handbook" },
-		{ type: "Associates" },
-		{ type: "Training resources" },
-	];
 	return (
 		<Box p={{ base: "1em", md: "2em" }} overflow={"auto"}>
 			<TextTitle title="Resources" mb={"1em"} />
-			<SimpleGrid spacing="1em" mt={"0.5em"}>
-				{isUserManager ? <ManagerViewCard /> : <AssociateViewCard />}
-			</SimpleGrid>
-			{resources && isUserManager ? (
-				<SimpleGrid columns={{ base: 1, md: 1, lg: 1 }}>
-					<FileUploader
-						setNewUpload={setNewUpload}
-						fileTypes={FILE_TYPES}
-						userName={fullName}
-					/>
-					<ResourceFile
-						fileTypes={FILE_TYPES}
-						selectedFilter={selectedFilter}
-						setSelectedFilter={setSelectedFilter}
-						resources={resources}
-						setNewUpload={setNewUpload}
-					/>
+			<ResourceFile
+				isUserManager={isUserManager}
+				fullName={fullName}
+				fileTypes={FILE_TYPES}
+				selectedFilter={selectedFilter}
+				setSelectedFilter={setSelectedFilter}
+				resources={resources}
+				setNewUpload={setNewUpload}
+			/>
+			{selectedFilter === "Training" && (
+				<SimpleGrid spacing="1em" mt={"0.5em"}>
+					{isUserManager ? <ManagerViewCard /> : <AssociateViewCard />}
 				</SimpleGrid>
-			) : (
-				<ResourceFile
-					fileTypes={FILE_TYPES}
-					selectedFilter={selectedFilter}
-					setSelectedFilter={setSelectedFilter}
-					resources={resources}
-					setNewUpload={setNewUpload}
-				/>
 			)}
 			{!resources && <Loader />}
 		</Box>

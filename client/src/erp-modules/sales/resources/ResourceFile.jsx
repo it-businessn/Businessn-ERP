@@ -6,7 +6,6 @@ import {
 	Icon,
 	Image,
 	SimpleGrid,
-	Text,
 	VStack,
 } from "@chakra-ui/react";
 import PrimaryButton from "components/ui/button/PrimaryButton";
@@ -20,6 +19,7 @@ import { BASE_URL } from "services";
 import { useBreakpointValue } from "services/Breakpoint";
 import ResourceService from "services/ResourceService";
 import bookCover from "../../../assets/logos/BusinessN_all.jpg";
+import FileUploader from "./FileUploader";
 
 const ResourceFile = ({
 	fileTypes,
@@ -27,6 +27,8 @@ const ResourceFile = ({
 	setSelectedFilter,
 	resources,
 	setNewUpload,
+	fullName,
+	isUserManager,
 }) => {
 	const { isMobile, isIpad } = useBreakpointValue();
 	const handleFilterClick = (filter) => {
@@ -59,11 +61,16 @@ const ResourceFile = ({
 		?.children?.find((item) => item.path === "resources")
 		.permissions?.canDeleteModule;
 
+	const hasEditAccess = permissionData
+		.find((record) => record.id === "sales")
+		?.children?.find((item) => item.path === "resources")
+		.permissions?.canEditModule;
+
 	return (
 		<>
 			<Flex justifyContent={"space-between"}>
 				<VStack alignItems={"self-start"}>
-					<TextTitle mt={2} mb={5} title="Browse by subject" />
+					{/* <TextTitle mt={2} mb={5} title="Browse by subject" /> */}
 					{isMobile || isIpad ? (
 						<SimpleGrid columns={{ base: 2, md: 3 }} spacing="1em" my="5">
 							{fileTypes.map(({ type }) => (
@@ -101,59 +108,73 @@ const ResourceFile = ({
 					)}
 				</VStack>
 			</Flex>
-			<SimpleGrid
-				columns={{ base: 1, md: 2, lg: 4, xl: 6 }}
-				spacing="1em"
-				my="5"
-			>
-				{resources?.map((resource) => (
-					<Box
-						key={resource._id}
-						p="1em"
-						bg={"brand.primary_bg"}
-						border="3px solid var(--main_color)"
-						borderRadius="10px"
+			{selectedFilter !== "Training" && (
+				<>
+					{isUserManager && (
+						<FileUploader
+							setNewUpload={setNewUpload}
+							fileTypes={fileTypes}
+							userName={fullName}
+						/>
+					)}
+					<SimpleGrid
+						columns={{ base: 1, md: 2, lg: 4, xl: 6 }}
+						spacing="1em"
+						my="5"
 					>
-						<VStack spacing={"1em"}>
-							<Card maxW="md" borderRadius="0" overflow="hidden">
-								<Image src={bookCover} alt={"book.title"} />
-							</Card>
-							<Text fontSize={"sm"}>{resource.originalname}</Text>
-							<VStack w={"100%"}>
-								<PrimaryButton
-									minW={"95%"}
-									size={"xs"}
-									px={"5px"}
-									name={"Download"}
-									rightIcon={<GoDownload />}
-									onOpen={() => handleDownload(resource.originalname)}
-								/>
-
-								{hasDeleteAccess && (
-									<>
+						{resources?.map((resource) => (
+							<Box
+								key={resource._id}
+								p="1em"
+								bg={"brand.primary_bg"}
+								border="3px solid var(--main_color)"
+								borderRadius="10px"
+							>
+								<VStack spacing={"1em"}>
+									<Card maxW="md" borderRadius="0" overflow="hidden">
+										<Image src={bookCover} alt={"book.title"} />
+									</Card>
+									<TextTitle
+										title={resource.originalname}
+										weight="normal"
+										size={"sm"}
+									/>
+									<VStack w={"100%"}>
 										<PrimaryButton
 											minW={"95%"}
 											size={"xs"}
 											px={"5px"}
-											name={"Delete"}
-											rightIcon={<MdDeleteOutline />}
-											onOpen={() => handleDelete(resource._id)}
+											name={"Download"}
+											rightIcon={<GoDownload />}
+											onOpen={() => handleDownload(resource.originalname)}
 										/>
-										<PrimaryButton
-											minW={"95%"}
-											size={"xs"}
-											px={"5px"}
-											name={"Edit"}
-											rightIcon={<BiPencil />}
-											onOpen={() => handleEdit(resource._id)}
-										/>
-									</>
-								)}
-							</VStack>
-						</VStack>
-					</Box>
-				))}
-			</SimpleGrid>
+										{hasDeleteAccess && (
+											<PrimaryButton
+												minW={"95%"}
+												size={"xs"}
+												px={"5px"}
+												name={"Delete"}
+												rightIcon={<MdDeleteOutline />}
+												onOpen={() => handleDelete(resource._id)}
+											/>
+										)}
+										{hasEditAccess && (
+											<PrimaryButton
+												minW={"95%"}
+												size={"xs"}
+												px={"5px"}
+												name={"Edit"}
+												rightIcon={<BiPencil />}
+												onOpen={() => handleEdit(resource._id)}
+											/>
+										)}
+									</VStack>
+								</VStack>
+							</Box>
+						))}
+					</SimpleGrid>
+				</>
+			)}
 		</>
 	);
 };

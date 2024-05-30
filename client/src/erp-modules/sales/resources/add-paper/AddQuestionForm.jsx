@@ -145,16 +145,31 @@ const AddQuestionForm = () => {
 						<HStack alignItems="start">
 							<Text ml={6}>Options:</Text>
 							{questionnaire.options.map((_, index) => (
-								<HStack key={_} spacing={1} alignItems="start">
-									<TextTitle title={`${index + 1}:`} />
-									<TextTitle title={_} weight="normal" />
+								<HStack
+									key={_}
+									spacing={1}
+									alignItems="start"
+									justifyContent={"start"}
+									w={"100%"}
+								>
+									<TextTitle
+										whiteSpace="pre-wrap"
+										flex={0.1}
+										title={`${index + 1}:`}
+									/>
+									<TextTitle
+										flex={1}
+										title={_}
+										whiteSpace="pre-wrap"
+										weight="normal"
+									/>
 								</HStack>
 							))}
 						</HStack>
 					</FormLabel>
 					<FormLabel color={"green"}>
 						<HStack alignItems="start">
-							<Text ml={6}>Correct answer :</Text>
+							<Text ml={6}>Correct answer:</Text>
 							<Text>{questionnaire.correctAnswer}</Text>
 						</HStack>
 					</FormLabel>
@@ -188,7 +203,7 @@ const AddQuestionForm = () => {
 				<form onSubmit={handleSubmit}>
 					{assessmentTypes && (
 						<FormControl>
-							<FormLabel>Assessment</FormLabel>
+							<FormLabel>Assessment:</FormLabel>
 							<HStack justify={"space-between"}>
 								<Select
 									name="assessmentType"
@@ -208,7 +223,7 @@ const AddQuestionForm = () => {
 						</FormControl>
 					)}
 					<FormControl id="question">
-						<FormLabel>Question</FormLabel>
+						<FormLabel>Question:</FormLabel>
 						<Input
 							type="text"
 							value={question}
@@ -217,7 +232,7 @@ const AddQuestionForm = () => {
 					</FormControl>
 
 					<FormControl>
-						<FormLabel>Options</FormLabel>
+						<FormLabel>Options:</FormLabel>
 						<VStack>
 							{options.map((option, index) => (
 								<Input
@@ -233,18 +248,28 @@ const AddQuestionForm = () => {
 					{optionsFilled && (
 						<>
 							<FormControl>
-								<FormLabel>Correct Answer</FormLabel>
+								<FormLabel>Correct Answer:</FormLabel>
 								<RadioGroup value={correctAnswer} onChange={setCorrectAnswer}>
-									{options.map((option, index) => (
-										<Radio key={index} value={option}>
-											{option}
-										</Radio>
-									))}
+									<VStack
+										spacing={3}
+										justifyContent={"flex-start"}
+										alignItems={"self-start"}
+									>
+										{options.map((option, index) => (
+											<Radio
+												key={index}
+												value={option}
+												border={"1px solid var(--gray2_color)"}
+											>
+												{option}
+											</Radio>
+										))}
+									</VStack>
 								</RadioGroup>
 							</FormControl>
 
 							<FormControl mb={3}>
-								<FormLabel>Explanation</FormLabel>
+								<FormLabel>Explanation:</FormLabel>
 								<Textarea
 									value={explanation}
 									onChange={(e) => setExplanation(e.target.value)}

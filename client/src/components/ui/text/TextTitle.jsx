@@ -11,6 +11,8 @@ const TextTitle = ({
 	mt,
 	p,
 	flex,
+	whiteSpace = "nowrap",
+	em,
 }) => (
 	<Text
 		flex={flex}
@@ -19,9 +21,14 @@ const TextTitle = ({
 		mt={mt}
 		mb={mb}
 		fontSize={size}
+		fontStyle={em}
 		color={color}
 		width={width}
 		align={align}
+		textOverflow={"ellipsis"}
+		whiteSpace={whiteSpace}
+		overflow={"hidden"}
+		w={"100%"}
 	>
 		{title}
 	</Text>

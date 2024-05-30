@@ -1,4 +1,14 @@
-import { Badge, Box, HStack, SimpleGrid, VStack } from "@chakra-ui/react";
+import {
+	Badge,
+	Box,
+	Flex,
+	Grid,
+	GridItem,
+	HStack,
+	Image,
+	SimpleGrid,
+	VStack,
+} from "@chakra-ui/react";
 import Loader from "components/Loader";
 import PrimaryButton from "components/ui/button/PrimaryButton";
 import TextTitle from "components/ui/text/TextTitle";
@@ -17,6 +27,7 @@ const AssociateViewCard = () => {
 	const [dataLoaded, setDataLoaded] = useState(false);
 	const [completed, setCompleted] = useState(null);
 	const [notComplete, setNotComplete] = useState(null);
+	const [certificationBadges, setCertificationBadges] = useState(null);
 
 	useEffect(() => {
 		const fetchAllAssessmentTypes = async () => {
@@ -54,32 +65,61 @@ const AssociateViewCard = () => {
 			{dataLoaded && (
 				<>
 					<Box
-						px="1em"
-						py="0.5em"
 						bg={"brand.primary_bg"}
 						border="3px solid var(--main_color)"
 						borderRadius="10px"
 						fontWeight="bold"
 						color={"brand.nav_color"}
+						px="1em"
+						py="0.5em"
 					>
-						<TextTitle title="Training" />
+						<TextTitle title="Training Progress" />
+						<SimpleGrid columns={{ base: 1, md: 2 }} spacing={"1em"}>
+							<Box
+								w={{ base: "100%", md: "80%", lg: "70%", xl: "40%" }}
+								m="auto"
+							>
+								<Doughnut
+									data={{
+										labels: ["Completed", "Not complete"],
+										datasets: [
+											{
+												data: [completed, notComplete],
+												backgroundColor: ["#49a86f", "#f62f29"],
+												hoverBackgroundColor: ["#49a86f", "#f62f29"],
+											},
+										],
+									}}
+									options={doughnutOptions("40%")}
+								/>
+							</Box>
 
-						<Box w={{ base: "20%" }} mx={"auto"}>
-							<Doughnut
-								data={{
-									labels: ["Completed", "Not complete"],
-									datasets: [
-										{
-											data: [completed, notComplete],
-											backgroundColor: ["#49a86f", "#f62f29"],
-											hoverBackgroundColor: ["#49a86f", "#f62f29"],
-										},
-									],
-								}}
-								options={doughnutOptions("40%")}
-							/>
-						</Box>
+							<Box>
+								<TextTitle mt="-1.5em" title="Product Certifications" />
+								{!certificationBadges && (
+									<TextTitle
+										mt="1em"
+										em="italic"
+										title={`Complete the assessments to earn a badge of achievement. \nScore 100% to complete any assessment!`}
+										weight="normal"
+										whiteSpace="pre-wrap"
+									/>
+								)}
+								<Grid templateColumns="repeat(auto-fill, 100px)" gap={3}>
+									{certificationBadges?.map((badge, index) => (
+										<GridItem key={index}>
+											<Image
+												src={badge}
+												alt={`Certification Badge ${index + 1}`}
+												boxSize="100px"
+											/>
+										</GridItem>
+									))}
+								</Grid>
+							</Box>
+						</SimpleGrid>
 					</Box>
+
 					<Box
 						p="1em"
 						pt={"0.5em"}
@@ -124,25 +164,39 @@ const AssociateViewCard = () => {
 										flexDir="column"
 										justifyContent="space-evenly"
 										alignItems="flex-start"
+										w={"100%"}
 									>
-										<VStack align={"self-start"} spacing={2} w={"100%"}>
-											<VStack alignItems={"start"}>
-												<TextTitle
+										<Flex
+											flexDir={"column"}
+											align={"self-start"}
+											w={"100%"}
+											gap={2}
+										>
+											{/* <TextTitle
 													color={"brand.nav_color"}
 													size="xs"
 													title="Assessment:"
+												/> */}
+											<Badge
+												bg="var(--primary_bg)"
+												size={"xs"}
+												color="var(--primary_button_bg)"
+												minH={{ base: "5em", lg: "3em" }}
+												display={"flex"}
+												// alignItems={"center"}
+												textDecor={"underline"}
+												w={"100%"}
+												cursor={"pointer"}
+												onClick={() =>
+													navigate(`/sales/assessment/${assessment.name}`)
+												}
+											>
+												<TextTitle
+													title={assessment?.name.split(" - ")[1]}
+													whiteSpace="pre-wrap"
 												/>
-												<Badge
-													bg="var(--meeting_bg_light)"
-													size={"xs"}
-													color="var(--primary_button_bg)"
-													whiteSpace={"pre-wrap"}
-													minH={{ base: "4.5em", xl: "3em" }}
-												>
-													{assessment?.name}
-												</Badge>
-											</VStack>
-											<HStack>
+											</Badge>
+											<HStack justify={"space-between"} w={"100%"}>
 												<TextTitle
 													color={"brand.nav_color"}
 													size="xs"
@@ -208,7 +262,7 @@ const AssociateViewCard = () => {
 												}
 												minW={"100%"}
 											/>
-										</VStack>
+										</Flex>
 									</Box>
 								);
 							})}

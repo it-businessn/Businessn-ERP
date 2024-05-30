@@ -48,9 +48,11 @@ const FileUploader = ({ fileTypes, userName, setNewUpload }) => {
 					alignItems={"center"}
 				/>
 				<Select value={fileType} onChange={handleFileTypeChange} mt={2} mb={4}>
-					{fileTypes.map(({ type }) => (
-						<option value={type}>{type}</option>
-					))}
+					{fileTypes
+						.filter(({ type }) => type !== "Training")
+						.map(({ type }) => (
+							<option value={type}>{type}</option>
+						))}
 				</Select>
 				<Flex>
 					{/* <Spacer /> */}
