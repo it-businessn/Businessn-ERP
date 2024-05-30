@@ -2,7 +2,7 @@ import apiService from "services";
 
 const TimesheetService = {
 	async getTimesheets() {
-		return apiService.get(`/timesheet/`);
+		return apiService.get(`/timesheet`);
 	},
 
 	async getTimesheetById(id) {

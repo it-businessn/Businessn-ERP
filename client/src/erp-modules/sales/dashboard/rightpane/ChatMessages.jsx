@@ -83,7 +83,7 @@ const ChatMessages = ({ userId }) => {
 	};
 	return (
 		<Box mt={2} fontWeight="bold">
-			{!groups || groups?.length === 0 ? (
+			{!userConversation || userConversation?.length === 0 ? (
 				<></>
 			) : (
 				<>

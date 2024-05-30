@@ -376,10 +376,11 @@ export const getRoleColor = (role) => {
 		{ title: ROLES.ASSOCIATE, color: "var(--correct_ans)" },
 		{ title: ROLES.TECH_ADMIN, color: "var(--primary_button_bg)" },
 		{ title: ROLES.ADMIN, color: "var(--event_color)" },
-		// { title: "", color: "var(--incorrect_ans)" },
+		{ title: ROLES.OTHERS, color: "var(--gray2_color)" },
 	];
-	const randomIndex = Math.floor(Math.random() * colors.length);
-	return colors.find(({ title }) => title === role).color;
+	// const randomIndex = Math.floor(Math.random() * colors.length);
+
+	return colors?.find(({ title }) => title === role)?.color;
 };
 
 export const isManager = (role) =>

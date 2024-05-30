@@ -16,6 +16,7 @@ export const ROLES = {
 	TECH_ADMIN: "Technical Administrator",
 	ADMIN: "Administrators",
 	MANAGER: "Manager",
+	OTHERS: "Tax Specialist",
 };
 
 export const TOAST = {

@@ -69,7 +69,7 @@ const Timecard = ({ timesheets }) => {
 															<FaChevronDown />
 														)}
 														<TextTitle
-															title={employeeId.fullName}
+															title={employeeId?.fullName}
 															weight="normal"
 														/>
 													</HStack>

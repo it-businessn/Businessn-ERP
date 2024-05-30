@@ -72,13 +72,13 @@ const Timesheet = ({ timesheets }) => {
 															<FaChevronDown />
 														)}
 														<TextTitle
-															title={employeeId.fullName}
+															title={employeeId?.fullName}
 															weight="normal"
 														/>
 													</HStack>
 												</Td>
 												<Td>{approveStatus}</Td>
-												<Td>{employeeId.role}</Td>
+												<Td>{employeeId?.role}</Td>
 												<Td>{payRate}</Td>
 												<Td>{payType}</Td>
 												<Td>

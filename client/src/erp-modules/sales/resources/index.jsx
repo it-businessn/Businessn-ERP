@@ -51,7 +51,7 @@ const Resources = () => {
 		{ type: "Scripts" },
 		{ type: "Product Knowledge" },
 		{ type: "Employee Handbook" },
-		{ type: "Associated" },
+		{ type: "Associates" },
 		{ type: "Training resources" },
 	];
 	return (

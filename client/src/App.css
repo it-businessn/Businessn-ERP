@@ -56,15 +56,14 @@ body {
 	margin: 0;
 	padding: 0;
 	min-height: 100%;
-	background: rgb(244, 240, 255);
 	/* background: linear-gradient(
-    103deg,
-    rgba(244, 240, 255, 1) 0%,
-    rgba(238, 239, 241, 1) 100%
-  ) !important; */
-	background: linear-gradient(
 		0deg,
 		rgb(228 235 255) 0%,
+		rgb(240 245 255) 100%
+	) !important; */
+	background: linear-gradient(
+		0deg,
+		rgb(213, 220, 236) 0%,
 		rgb(240 245 255) 100%
 	) !important;
 	overflow: hidden;

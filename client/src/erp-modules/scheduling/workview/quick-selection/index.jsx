@@ -40,14 +40,13 @@ const QuickSelection = ({ setNewEmployeeAdded, employees }) => {
 							<EmployeeDragFromQuickSelection
 								employee={emp}
 								color={employee.color}
-								index={index}
 								isExpanded={isExpanded}
 								setIsExpandedIndex={setIsExpandedIndex}
 								setIsExpanded={setIsExpanded}
 								sendEmployee={addEmployee}
 							/>
 							{isExpanded &&
-								isExpandedIndex === index &&
+								isExpandedIndex === emp.id &&
 								emp.tasks?.map((task, index) => (
 									<HStack
 										key={task.taskName + index}

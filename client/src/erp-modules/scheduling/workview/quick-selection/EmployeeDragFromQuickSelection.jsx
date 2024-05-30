@@ -5,7 +5,6 @@ import { TaskButton } from "utils";
 
 const EmployeeDragFromQuickSelection = ({
 	employee,
-	index,
 	isExpanded,
 	setIsExpandedIndex,
 	setIsExpanded,
@@ -26,7 +25,7 @@ const EmployeeDragFromQuickSelection = ({
 				isExpanded={isExpanded}
 				totalTasks={employee?.tasks?.length}
 				onClick={() => {
-					setIsExpandedIndex(index);
+					setIsExpandedIndex(employee?.id);
 					setIsExpanded((prev) => !prev);
 				}}
 			/>
