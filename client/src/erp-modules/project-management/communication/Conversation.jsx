@@ -21,6 +21,7 @@ const Conversation = ({
 	conversations,
 	setConversations,
 	isDashboard,
+	user,
 }) => {
 	const [message, setMessage] = useState("");
 	const [isRefresh, setIsRefresh] = useState(false);
@@ -113,7 +114,7 @@ const Conversation = ({
 		<Box p={isDashboard ? 0 : "1em"} w={"100%"}>
 			{!isDashboard && (
 				<HStack>
-					<Avatar name="JK" />
+					<Avatar name={user?.fullName} />
 					<VStack align={"start"} spacing={1}>
 						<TextTitle
 							title={

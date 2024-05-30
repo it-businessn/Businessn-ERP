@@ -72,7 +72,13 @@ const getTimesheetById = () => async (req, res) => {
 	const id = req.params.id;
 
 	try {
-		const timesheet = await Timesheet.findById(id);
+		const timesheet = await Timesheet.find({
+			employeeId: id,
+		}).populate({
+			path: "employeeId",
+			model: "Employee",
+			select: ["role", "fullName"],
+		});
 		res.status(200).json(timesheet);
 	} catch (error) {
 		res.status(404).json({ error: error.message });

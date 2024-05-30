@@ -12,6 +12,7 @@ const projectSchema = new mongoose.Schema({
 	notes: String,
 	selectedAssignees: { type: Array, default: [] },
 	managerName: String,
+	createdBy: { type: mongoose.Schema.Types.ObjectId, ref: "Employee" },
 	managerId: { type: mongoose.Schema.Types.ObjectId, ref: "Employee" },
 	tasks: [{ type: mongoose.Schema.Types.ObjectId, ref: "Task" }],
 	completed: { type: Boolean, default: false },

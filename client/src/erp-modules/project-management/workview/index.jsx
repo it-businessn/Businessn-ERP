@@ -20,9 +20,10 @@ import { AiOutlineUser } from "react-icons/ai";
 import { FaCaretDown, FaSearch, FaSort } from "react-icons/fa";
 import { HiOutlineUserGroup } from "react-icons/hi2";
 import { MdDateRange } from "react-icons/md";
+import LocalStorageService from "services/LocalStorageService";
 import ProjectService from "services/ProjectService";
 import UserService from "services/UserService";
-import { generateLighterShade } from "utils";
+import { generateLighterShade, isManager } from "utils";
 import ProjectTable from "./project/ProjectTable";
 import { VIEW_MODE } from "./project/data";
 import TaskTable from "./task/TaskTable";
@@ -60,10 +61,15 @@ const WorkView = () => {
 	const [refresh, setRefresh] = useState(false);
 
 	const [managers, setManagers] = useState(null);
+	const user = LocalStorageService.getItem("user");
+	const isManagerView = isManager(user?.role);
+
 	useEffect(() => {
 		const fetchAllProjectInfo = async () => {
 			try {
-				const response = await ProjectService.getAllProjects();
+				const response = isManagerView
+					? await ProjectService.getAllProjects()
+					: await ProjectService.getAllProjectsByUser(user?.fullName);
 				setProjects(response.data);
 			} catch (error) {
 				console.error(error);

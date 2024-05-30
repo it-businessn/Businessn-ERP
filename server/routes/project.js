@@ -6,6 +6,8 @@ const taskController = require("../controllers/taskController");
 
 router.get("/", projectController.getProjects());
 
+router.get("/:id", projectController.getProjectsByUser());
+
 router.post("/", projectController.createProject());
 
 router.post("/activity", projectController.createActivity());

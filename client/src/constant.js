@@ -157,7 +157,7 @@ export const doughnutOptions = (cutout) => ({
 		},
 		legend: {
 			align: "center",
-			position: "bottom",
+			position: "right",
 		},
 	},
 });

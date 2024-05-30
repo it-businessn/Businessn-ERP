@@ -76,20 +76,30 @@ const Assessment = () => {
 			<Box maxWidth="1000px">
 				<form onSubmit={handleSubmit}>
 					{questionnaires?.map((questionnaire, index) => (
-						<FormControl key={questionnaire._id}>
-							<FormLabel>{`${index + 1}: ${questionnaire.question}`}</FormLabel>
+						<FormControl key={questionnaire._id} mb={3}>
+							<FormLabel fontSize={"1em"}>{`${index + 1}: ${
+								questionnaire.question
+							}`}</FormLabel>
 							<HStack w={"100%"}>
 								<RadioGroup
 									onChange={(e) => handleAnswerChange(questionnaire._id, e)}
 									value={answers[questionnaire._id]}
 								>
-									<HStack spacing={4} justify={"space-around"}>
+									<VStack
+										spacing={3}
+										justifyContent={"flex-start"}
+										alignItems={"self-start"}
+									>
 										{questionnaire.options.map((item) => (
-											<Radio value={item} key={item}>
+											<Radio
+												value={item}
+												key={item}
+												border={"1px solid var(--gray2_color)"}
+											>
 												{item}
 											</Radio>
 										))}
-									</HStack>
+									</VStack>
 								</RadioGroup>
 							</HStack>
 
@@ -112,7 +122,7 @@ const Assessment = () => {
 												: "Incorrect!"}
 										</Text>
 									</Box>
-									<Text fontSize={"sm"} fontWeight={"bold"}>
+									<Text fontSize={"sm"} fontWeight={"bold"} color={"green"}>
 										Correct Answer: {questionnaire.correctAnswer}
 									</Text>
 									<Text fontSize={"sm"} fontWeight="bold">
@@ -140,7 +150,7 @@ const Assessment = () => {
 							onClick={() => navigate(-1)}
 							borderRadius={"10px"}
 						>
-							Cancel
+							Go back
 						</Button>
 					</HStack>
 				</form>

@@ -64,10 +64,7 @@ const AssociateViewCard = () => {
 					>
 						<TextTitle title="Training" />
 
-						<Box
-							w={{ base: "60%", md: "40%", lg: "60%", xl: "40%" }}
-							mx={"auto"}
-						>
+						<Box w={{ base: "20%" }} mx={"auto"}>
 							<Doughnut
 								data={{
 									labels: ["Completed", "Not complete"],
@@ -92,11 +89,11 @@ const AssociateViewCard = () => {
 						color={"brand.nav_color"}
 					>
 						<HStack>
-							<TextTitle flex={1} mb={"0.5em"} title="Your Overall Results" />
+							<TextTitle flex={1} mb={"0.5em"} title="Assessments overview" />
 						</HStack>
 
 						<SimpleGrid
-							columns={{ base: 1, md: 1, lg: 3, xl: 3 }}
+							columns={{ base: 1, md: 1, lg: 4, xl: 6 }}
 							minH={{ base: "auto", md: "90%", lg: "auto" }}
 							spacing={"1em"}
 						>
@@ -129,25 +126,27 @@ const AssociateViewCard = () => {
 										alignItems="flex-start"
 									>
 										<VStack align={"self-start"} spacing={2} w={"100%"}>
-											<HStack>
+											<VStack alignItems={"start"}>
 												<TextTitle
 													color={"brand.nav_color"}
 													size="xs"
-													title="Assessment :"
+													title="Assessment:"
 												/>
 												<Badge
 													bg="var(--meeting_bg_light)"
 													size={"xs"}
 													color="var(--primary_button_bg)"
+													whiteSpace={"pre-wrap"}
+													minH={{ base: "4.5em", xl: "3em" }}
 												>
 													{assessment?.name}
 												</Badge>
-											</HStack>
+											</VStack>
 											<HStack>
 												<TextTitle
 													color={"brand.nav_color"}
 													size="xs"
-													title="Your Result :"
+													title="Your Result:"
 												/>
 												{assessmentResult?.category ? (
 													<Badge

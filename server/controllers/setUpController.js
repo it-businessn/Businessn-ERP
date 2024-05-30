@@ -164,6 +164,11 @@ const getCompanyByName = () => async (req, res) => {
 const getCompanyByUserId = () => async (req, res) => {
 	const { id } = req.params;
 	try {
+		// const company = "6646b03e96dcdc0583fb5dca";
+		// const existingCompany = await Company.findById(company);
+		// existingCompany.employees.push(id);
+		// await existingCompany.save();
+
 		const company = await Company.find({ employees: id });
 
 		// const updatedLeads = await Company.findByIdAndUpdate(

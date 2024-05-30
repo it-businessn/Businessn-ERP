@@ -5,6 +5,10 @@ const ProjectService = {
 		return apiService.get("/projects");
 	},
 
+	async getAllProjectsByUser(id) {
+		return apiService.get(`/projects/${id}`);
+	},
+
 	async addProject(data) {
 		return apiService.post("/projects", data);
 	},

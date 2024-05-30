@@ -116,9 +116,6 @@ const loginUser = () => async (req, res) => {
 			model: "Company",
 			select: "name",
 		});
-		// const updatedData = { companyId: "6646b03e96dcdc0583fb5dca" };
-		// const updatedLeads = await Employee.updateMany({}, { $set: updatedData });
-		// console.log(updatedLeads);
 
 		if (!user) {
 			return res.status(500).json({ error: "User does not exist" });
@@ -154,6 +151,10 @@ const createEmployee = () => async (req, res) => {
 
 	const { streetNumber, city, state, postalCode, country } = primaryAddress;
 
+	// const updatedData = { companyId: "6646b03e96dcdc0583fb5dca" };for fd
+	// const updatedLeads = await Employee.updateMany({}, { $set: updatedData });
+	// console.log(updatedLeads);
+
 	try {
 		const hashedPassword = await bcrypt.hash(password, 10);
 		const employee = await Employee.create({
@@ -173,6 +174,11 @@ const createEmployee = () => async (req, res) => {
 			password: hashedPassword,
 			fullName: `${firstName} ${middleName} ${lastName}`,
 		});
+
+		const existingCompany = await Company.findById(company);
+		existingCompany.employees.push(employee._id);
+		await existingCompany.save();
+
 		res.status(201).json(employee);
 	} catch (error) {
 		res.status(400).json({ message: error.message });

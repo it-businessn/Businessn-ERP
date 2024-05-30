@@ -9,6 +9,7 @@ import {
 	Text,
 	VStack,
 } from "@chakra-ui/react";
+import TextTitle from "components/ui/text/TextTitle";
 import { useEffect, useState } from "react";
 import { FaUsers } from "react-icons/fa";
 import LocalStorageService from "services/LocalStorageService";
@@ -22,6 +23,7 @@ const Communications = ({ isDashboard }) => {
 	const [selectedGroup, setSelectedGroup] = useState(null);
 	const [selectedGroupMember, setSelectedGroupMember] = useState(null);
 	const userId = LocalStorageService.getItem("user")._id;
+	const user = LocalStorageService.getItem("user");
 
 	useEffect(() => {
 		const fetchAllGroups = async () => {
@@ -81,6 +83,9 @@ const Communications = ({ isDashboard }) => {
 					</Text>
 					<Stack justify="start" width="full" my={0} spacing={0}>
 						<VStack align="stretch" spacing={0}>
+							{(!groups || groups.length === 0) && (
+								<TextTitle title={"No group assigned for you."} />
+							)}
 							{groups?.map((group) => (
 								<HStack
 									key={group._id}
@@ -117,66 +122,74 @@ const Communications = ({ isDashboard }) => {
 						</VStack>
 					</Stack>
 				</Box>
-				<Box
-					display={isDashboard && "none"}
-					borderRight="2px solid #eee"
-					h={`calc(100vh - 12em)`}
-					maxW={{ md: "24vw", lg: "18vw", xl: "15vw" }}
-					minW={{ md: "24vw", lg: "18vw", xl: "15vw" }}
-				>
-					<Text fontWeight="bold" mb={"0.5em"} p={"1em"}>
-						Team members
-					</Text>
-					<VStack align="stretch" spacing={2}>
-						{groupMembers?.map((member) => (
-							<HStack
-								key={member._id}
-								spacing={"1em"}
-								bg={
-									selectedGroupMember?._id === member._id && "var(--bg_color_1)"
-								}
-								px={"1em"}
-								py={"0.5em"}
-								cursor="pointer"
-								borderLeft={
-									selectedGroupMember?._id === member._id &&
-									"3px solid var(--primary_button_bg)"
-								}
-								onClick={() => handleMemberClick(member)}
-							>
-								<Avatar src={member?.fullName} name={member?.fullName} />
+				{!groups || groups.length === 0 ? (
+					<></>
+				) : (
+					<>
+						<Box
+							display={isDashboard && "none"}
+							borderRight="2px solid #eee"
+							h={`calc(100vh - 12em)`}
+							maxW={{ md: "24vw", lg: "18vw", xl: "15vw" }}
+							minW={{ md: "24vw", lg: "18vw", xl: "15vw" }}
+						>
+							<Text fontWeight="bold" mb={"0.5em"} p={"1em"}>
+								Team members
+							</Text>
+							<VStack align="stretch" spacing={2}>
+								{groupMembers?.map((member) => (
+									<HStack
+										key={member._id}
+										spacing={"1em"}
+										bg={
+											selectedGroupMember?._id === member._id &&
+											"var(--bg_color_1)"
+										}
+										px={"1em"}
+										py={"0.5em"}
+										cursor="pointer"
+										borderLeft={
+											selectedGroupMember?._id === member._id &&
+											"3px solid var(--primary_button_bg)"
+										}
+										onClick={() => handleMemberClick(member)}
+									>
+										<Avatar src={member?.fullName} name={member?.fullName} />
 
-								<Button
-									justifyContent={"space-between"}
-									p={0}
-									variant="ghost"
-									fontSize="xs"
-								>
-									<VStack align={"self-start"}>
-										<Text fontWeight="bold">{member?.fullName}</Text>
-										<Text fontWeight="bold">
-											{
-												conversations
-													?.slice()
-													.reverse()
-													.find((id) => id.sender === member._id)?.text
-											}
-										</Text>
-									</VStack>
-								</Button>
-							</HStack>
-						))}
-					</VStack>
-				</Box>
-				<Conversation
-					isDashboard={isDashboard}
-					userId={userId}
-					conversations={conversations}
-					setConversations={setConversations}
-					groupMembers={groupMembers}
-					selectedGroup={selectedGroup}
-					selectedGroupMember={selectedGroupMember}
-				/>
+										<Button
+											justifyContent={"space-between"}
+											p={0}
+											variant="ghost"
+											fontSize="xs"
+										>
+											<VStack align={"self-start"}>
+												<Text fontWeight="bold">{member?.fullName}</Text>
+												<Text fontWeight="bold">
+													{
+														conversations
+															?.slice()
+															.reverse()
+															.find((id) => id.sender === member._id)?.text
+													}
+												</Text>
+											</VStack>
+										</Button>
+									</HStack>
+								))}
+							</VStack>
+						</Box>
+						<Conversation
+							isDashboard={isDashboard}
+							userId={userId}
+							user={user}
+							conversations={conversations}
+							setConversations={setConversations}
+							groupMembers={groupMembers}
+							selectedGroup={selectedGroup}
+							selectedGroupMember={selectedGroupMember}
+						/>
+					</>
+				)}
 			</Flex>
 		</Box>
 	);

@@ -57,11 +57,7 @@ const Resources = () => {
 	return (
 		<Box p={{ base: "1em", md: "2em" }} overflow={"auto"}>
 			<TextTitle title="Resources" mb={"1em"} />
-			<SimpleGrid
-				columns={{ base: 1, md: 1, lg: isUserManager ? 1 : 2 }}
-				spacing="1em"
-				mt={"0.5em"}
-			>
+			<SimpleGrid spacing="1em" mt={"0.5em"}>
 				{isUserManager ? <ManagerViewCard /> : <AssociateViewCard />}
 			</SimpleGrid>
 			{resources && isUserManager ? (

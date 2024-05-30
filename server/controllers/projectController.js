@@ -36,6 +36,38 @@ const getProjects = () => async (req, res) => {
 		res.status(404).json({ error: error.message });
 	}
 };
+
+const getProjectsByUser = () => async (req, res) => {
+	const { id } = req.params;
+	try {
+		const projects = (await Project.find({ selectedAssignees: id })).sort(
+			(a, b) => b.createdOn - a.createdOn,
+		);
+		if (projects.length > 0) {
+			const populatedProjects = await Promise.all(
+				projects.map(async (project) => {
+					const populatedProject = await Project.findById(project._id)
+						.populate({
+							path: "tasks",
+							populate: {
+								path: "subtasks",
+								model: "SubTask",
+							},
+						})
+						.exec();
+
+					return populatedProject;
+				}),
+			);
+
+			res.status(200).json(populatedProjects);
+		} else {
+			res.status(200).json(projects);
+		}
+	} catch (error) {
+		res.status(404).json({ error: error.message });
+	}
+};
 const addTaskSubTask = () => async (req, res) => {
 	const { id } = req.params;
 	const {
@@ -748,4 +780,5 @@ module.exports = {
 	deleteProjectInnerSubTask,
 	updateInnerSubTasks,
 	createSchedulingProjectTask,
+	getProjectsByUser,
 };

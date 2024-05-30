@@ -83,131 +83,141 @@ const ChatMessages = ({ userId }) => {
 	};
 	return (
 		<Box mt={2} fontWeight="bold">
-			<HStack>
-				{currentChat && (
-					<IoMdArrowRoundBack onClick={() => setCurrentChat(null)} />
-				)}
-				<Text p="10px">Chat History</Text>
-			</HStack>
-			{currentChat && (
-				<ChatHistory
-					userId={userId}
-					currentConversation={currentConversation}
-					isRefresh={isRefresh}
-					setIsRefresh={setIsRefresh}
-				/>
-			)}
+			{!groups || groups?.length === 0 ? (
+				<></>
+			) : (
+				<>
+					<HStack>
+						{currentChat && (
+							<IoMdArrowRoundBack onClick={() => setCurrentChat(null)} />
+						)}
+						<Text p="10px">Chat History</Text>
+					</HStack>
+					{currentChat && (
+						<ChatHistory
+							userId={userId}
+							currentConversation={currentConversation}
+							isRefresh={isRefresh}
+							setIsRefresh={setIsRefresh}
+						/>
+					)}
 
-			{!currentChat && (
-				<VStack align="stretch" spacing={2}>
-					{userConversation?.length === 0 && (
-						<>
-							{/* <Text fontSize={"xs"}>No recent conversation found.</Text> */}
-							{groups?.map((group) => (
+					{!currentChat && (
+						<VStack align="stretch" spacing={2}>
+							{userConversation?.length === 0 && (
+								<>
+									{/* <Text fontSize={"xs"}>No recent conversation found.</Text> */}
+									{groups?.map((group) => (
+										<HStack
+											key={group._id}
+											w={"100%"}
+											spacing={"1em"}
+											bg={"var(--lead_cards_bg)"}
+											cursor="pointer"
+											onClick={() => handleStartChat(group)}
+										>
+											<Box
+												borderRadius="50%"
+												bg="var(--primary_button_bg)"
+												size={"sm"}
+												display="flex"
+												alignItems="center"
+												justifyContent="center"
+											>
+												<IconButton
+													icon={<FaUsers />}
+													variant="solid"
+													color="white"
+													size="sm"
+													aria-label="Avatar Icon"
+													_hover={{ bg: "transparent" }}
+												/>
+											</Box>
+											<Button
+												justifyContent={"space-between"}
+												p={0}
+												variant="ghost"
+												fontSize="xs"
+											>
+												<VStack align={"self-start"}>
+													<Text fontWeight="bold">{group.name}</Text>
+												</VStack>
+											</Button>
+										</HStack>
+									))}
+								</>
+							)}
+							{userConversation?.map((conversation) => (
 								<HStack
-									key={group._id}
 									w={"100%"}
+									key={conversation._id}
 									spacing={"1em"}
 									bg={"var(--lead_cards_bg)"}
 									cursor="pointer"
-									onClick={() => handleStartChat(group)}
+									onClick={() =>
+										handleChat(conversation, conversation.isPersonal)
+									}
 								>
-									<Box
-										borderRadius="50%"
-										bg="var(--primary_button_bg)"
-										size={"sm"}
-										display="flex"
-										alignItems="center"
-										justifyContent="center"
-									>
-										<IconButton
-											icon={<FaUsers />}
-											variant="solid"
-											color="white"
-											size="sm"
-											aria-label="Avatar Icon"
-											_hover={{ bg: "transparent" }}
-										/>
-									</Box>
-									<Button
-										justifyContent={"space-between"}
-										p={0}
-										variant="ghost"
-										fontSize="xs"
-									>
-										<VStack align={"self-start"}>
-											<Text fontWeight="bold">{group.name}</Text>
-										</VStack>
-									</Button>
+									{conversation.isPersonal ? (
+										<>
+											<Avatar
+												size={"sm"}
+												name={conversation?.participant?.fullName}
+											/>
+											<Button
+												justifyContent={"space-between"}
+												p={0}
+												variant="ghost"
+												fontSize="xs"
+											>
+												<VStack align={"self-start"}>
+													<Text fontWeight="bold">
+														{conversation?.participant?.fullName}
+													</Text>
+													<Text>{conversation.participantMsg}</Text>
+												</VStack>
+											</Button>
+										</>
+									) : (
+										<>
+											<Box
+												borderRadius="50%"
+												bg="var(--primary_button_bg)"
+												size={"sm"}
+												display="flex"
+												alignItems="center"
+												justifyContent="center"
+											>
+												<IconButton
+													icon={<FaUsers />}
+													variant="solid"
+													color="white"
+													size="sm"
+													aria-label="Avatar Icon"
+													_hover={{ bg: "transparent" }}
+												/>
+											</Box>
+											<Button
+												justifyContent={"space-between"}
+												p={0}
+												variant="ghost"
+												fontSize="xs"
+											>
+												<VStack align={"self-start"}>
+													<Text fontWeight="bold">
+														{conversation?.groupName}
+													</Text>
+
+													<Text>{conversation.participantMsg}</Text>
+												</VStack>
+											</Button>
+										</>
+									)}
 								</HStack>
 							))}
-						</>
+						</VStack>
 					)}
-					{userConversation?.map((conversation) => (
-						<HStack
-							w={"100%"}
-							key={conversation._id}
-							spacing={"1em"}
-							bg={"var(--lead_cards_bg)"}
-							cursor="pointer"
-							onClick={() => handleChat(conversation, conversation.isPersonal)}
-						>
-							{conversation.isPersonal ? (
-								<>
-									<Avatar
-										size={"sm"}
-										name={conversation?.participant?.fullName}
-									/>
-									<Button
-										justifyContent={"space-between"}
-										p={0}
-										variant="ghost"
-										fontSize="xs"
-									>
-										<VStack align={"self-start"}>
-											<Text fontWeight="bold">
-												{conversation?.participant?.fullName}
-											</Text>
-											<Text>{conversation.participantMsg}</Text>
-										</VStack>
-									</Button>
-								</>
-							) : (
-								<>
-									<Box
-										borderRadius="50%"
-										bg="var(--primary_button_bg)"
-										size={"sm"}
-										display="flex"
-										alignItems="center"
-										justifyContent="center"
-									>
-										<IconButton
-											icon={<FaUsers />}
-											variant="solid"
-											color="white"
-											size="sm"
-											aria-label="Avatar Icon"
-											_hover={{ bg: "transparent" }}
-										/>
-									</Box>
-									<Button
-										justifyContent={"space-between"}
-										p={0}
-										variant="ghost"
-										fontSize="xs"
-									>
-										<VStack align={"self-start"}>
-											<Text fontWeight="bold">{conversation?.groupName}</Text>
-
-											<Text>{conversation.participantMsg}</Text>
-										</VStack>
-									</Button>
-								</>
-							)}
-						</HStack>
-					))}
-				</VStack>
+				</>
 			)}
 		</Box>
 	);
