@@ -1,7 +1,13 @@
+import badge1 from "../../../../assets/badge1.jpg";
+import badge2 from "../../../../assets/badge2.jpg";
+import badge3 from "../../../../assets/badge3.jpg";
+
 export const COLORS = {
 	primary: "#537eee",
 	task_status: "#76c094",
 };
+
+export const BADGES = [badge1, badge2, badge3];
 
 export const RANDOM_PEOPLE_ICON = [
 	{

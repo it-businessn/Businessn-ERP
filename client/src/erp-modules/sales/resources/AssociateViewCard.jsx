@@ -13,6 +13,7 @@ import Loader from "components/Loader";
 import PrimaryButton from "components/ui/button/PrimaryButton";
 import TextTitle from "components/ui/text/TextTitle";
 import { doughnutOptions } from "constant";
+import { BADGES } from "erp-modules/project-management/workview/project/data";
 import { useEffect, useState } from "react";
 import { Doughnut } from "react-chartjs-2";
 import { useNavigate } from "react-router-dom";
@@ -44,9 +45,12 @@ const AssociateViewCard = () => {
 				const response = await QuestionnaireService.getAssessmentByUserId(
 					user._id,
 				);
-				const complete =
-					assessmentsTaken?.filter((type) => type.category === "PASS")
-						?.length || 0;
+				const passed = assessmentsTaken?.filter(
+					(type) => type.category === "PASS",
+				);
+				passed?.map((it, index) => (it.badge = BADGES[index]));
+				setCertificationBadges(passed);
+				const complete = passed?.length || 0;
 				const not_completed = assessments?.length - complete || 0;
 				setAssessmentsTaken(response.data);
 				setCompleted(complete);
@@ -106,13 +110,26 @@ const AssociateViewCard = () => {
 									/>
 								)}
 								<Grid templateColumns="repeat(auto-fill, 100px)" gap={3}>
-									{certificationBadges?.map((badge, index) => (
+									{certificationBadges?.map((item, index) => (
 										<GridItem key={index}>
-											<Image
-												src={badge}
-												alt={`Certification Badge ${index + 1}`}
-												boxSize="100px"
-											/>
+											<VStack w="100%" justifyContent={"center"} mt="1.5em">
+												<Image
+													src={item.badge}
+													alt={`Certification Badge ${index + 1}`}
+													boxSize="100px"
+												/>
+												<Badge
+													w={"100%"}
+													bg="var(--lead_cards_bg)"
+													color="var(--primary_button_bg)"
+												>
+													<TextTitle
+														size="sm"
+														align={"center"}
+														title={item.subject.split(" - ")[0]}
+													/>
+												</Badge>
+											</VStack>
 										</GridItem>
 									))}
 								</Grid>
