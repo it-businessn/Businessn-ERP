@@ -6,6 +6,7 @@ const TabGroup = ({
 	data,
 	isCompanyPanel,
 	colorScheme,
+	id,
 }) => {
 	return (
 		<Tabs
@@ -19,7 +20,7 @@ const TabGroup = ({
 			<TabList>
 				{data.map((tab, index) => (
 					<Tab
-						key={index}
+						key={tab[id] || index}
 						bg={currentTab === index ? "brand.primary_button_bg" : undefined}
 						color={currentTab === index ? "brand.100" : undefined}
 					>
@@ -28,17 +29,15 @@ const TabGroup = ({
 				))}
 			</TabList>
 			<TabPanels>
-				{data.map((tab) => (
-					<>
-						{isCompanyPanel ? (
-							<TabPanel key={tab.id}>
-								{currentTab === tab.id && tab.name}
-							</TabPanel>
-						) : (
-							<TabPanel key={tab.name}>{tab.component}</TabPanel>
-						)}
-					</>
-				))}
+				{data.map((tab) =>
+					isCompanyPanel ? (
+						<TabPanel key={tab.id}>
+							{currentTab === tab.id && tab.name}
+						</TabPanel>
+					) : (
+						<TabPanel key={tab.name}>{tab.component}</TabPanel>
+					),
+				)}
 			</TabPanels>
 		</Tabs>
 	);

@@ -6,33 +6,36 @@ import moment from "moment";
 import { useEffect, useState } from "react";
 import NotesService from "services/NotesService";
 
-const Notes = ({ contactId }) => {
+const Notes = ({ contactId, user }) => {
 	const [notes, setNotes] = useState([]);
 	const [newNote, setNewNote] = useState({
 		description: "",
+		createdBy: user?._id,
+		contactId,
 	});
 
+	const [refresh, setRefresh] = useState(false);
+
 	useEffect(() => {
-		fetchNotesByContactId(contactId);
-	}, [contactId]);
+		const fetchNotesByContactId = async () => {
+			try {
+				const response = await NotesService.getNotesByContactId(contactId);
+				setNotes(response.data);
+			} catch (error) {
+				console.error(error);
+			}
+		};
+		fetchNotesByContactId();
+	}, [contactId, refresh]);
 
 	const saveNote = async (note) => {
 		try {
-			note.contactId = contactId;
 			await NotesService.addNote(note);
-			fetchNotesByContactId(contactId);
-			setNewNote({
+			setRefresh((prev) => !prev);
+			setNewNote((prev) => ({
+				...prev,
 				description: "",
-			});
-		} catch (error) {
-			console.error(error);
-		}
-	};
-
-	const fetchNotesByContactId = async (contactId) => {
-		try {
-			const response = await NotesService.getNotesByContactId(contactId);
-			setNotes(response.data);
+			}));
 		} catch (error) {
 			console.error(error);
 		}
@@ -45,7 +48,10 @@ const Notes = ({ contactId }) => {
 					name="description"
 					valueText={newNote.description}
 					handleChange={(e) =>
-						setNewNote({ ...newNote, description: e.target.value })
+						setNewNote((prev) => ({
+							...prev,
+							description: e.target.value,
+						}))
 					}
 					placeholder="Add a new note"
 				/>
@@ -54,25 +60,25 @@ const Notes = ({ contactId }) => {
 					size={"sm"}
 					mt={4}
 					isDisabled={newNote.description === ""}
-					onOpen={() => saveNote(newNote)}
+					onOpen={(e) => {
+						e.preventDefault();
+						saveNote(newNote);
+					}}
 				/>
 			</form>
 
 			<Box w="100%">
 				<VStack spacing={4} w="100%">
-					{notes.map((note) => (
-						<Card key={note} borderWidth="1px" borderRadius="lg" w="100%">
+					{notes?.map(({ _id, description, createdOn }) => (
+						<Card key={_id} borderWidth="1px" borderRadius="lg" w="100%">
 							<CardBody>
 								<Flex justifyContent="space-between">
-									<TextTitle
-										weight="normal"
-										width="80%"
-										title={note.description}
-									/>
+									<TextTitle weight="normal" width="80%" title={description} />
 									<TextTitle
 										weight="normal"
 										size="sm"
-										title={moment(note.date).format("MMM DD, YYYY hh:mm A Z")}
+										// title={moment(createdOn).format("MMM DD, YYYY hh:mm A Z")}
+										title={moment(createdOn).format("MMM DD, YYYY hh:mm A")}
 										color="gray.500"
 										align="end"
 									/>

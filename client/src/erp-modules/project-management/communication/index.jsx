@@ -84,7 +84,10 @@ const Communications = ({ isDashboard }) => {
 					<Stack justify="start" width="full" my={0} spacing={0}>
 						<VStack align="stretch" spacing={0}>
 							{(!groups || groups.length === 0) && (
-								<TextTitle title={"No group assigned for you."} />
+								<TextTitle
+									title={"No group assigned for you."}
+									whiteSpace="pre-wrap"
+								/>
 							)}
 							{groups?.map((group) => (
 								<HStack

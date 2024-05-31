@@ -370,6 +370,15 @@ export const customOrder = [
 	ROLES.ADMIN,
 ];
 
+export const COVER_COLORS = [
+	"var(--product1)",
+	"var(--product2)",
+	"var(--product3)",
+	"var(--product4)",
+	"var(--product5)",
+	"var(--product6)",
+];
+
 export const getRoleColor = (role) => {
 	const colors = [
 		{ title: ROLES.PM, color: "var(--stat_item_color)" },

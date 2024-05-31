@@ -44,6 +44,12 @@
 		rgb(237 243 255) 100%
 	);
 	--receiver_msg_bg: rgb(234 242 255);
+	--product1: #de9445;
+	--product2: #f192de;
+	--product3: #f6ed99;
+	--product4: #cadc52;
+	--product5: #adebc6;
+	--product6: #eea462;
 }
 
 html {

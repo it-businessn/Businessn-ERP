@@ -4,26 +4,41 @@ import ActivityService from "services/ActivityService";
 import AddLogForm from "./AddLogForm";
 import LogActivityList from "./LogActivityList";
 
-const Logs = ({ contactId }) => {
+const Logs = ({ contactId, user }) => {
 	const [activities, setActivities] = useState([]);
+	const [refresh, setRefresh] = useState(false);
+	const [logActivity, setLogActivity] = useState({
+		type: "meeting",
+		duration: 0,
+		description: "",
+		createdBy: user?._id,
+		contactId,
+	});
 
 	useEffect(() => {
-		fetchActivitiesByContactId(contactId);
-	}, [contactId]);
+		const fetchActivitiesByContactId = async () => {
+			try {
+				const response = await ActivityService.getActivitiesByContactId(
+					contactId,
+				);
+				setActivities(response.data);
+			} catch (error) {
+				console.error(error);
+			}
+		};
+		fetchActivitiesByContactId();
+	}, [contactId, refresh]);
 
 	const saveActivity = async (activity) => {
 		try {
-			activity.contactId = contactId;
 			await ActivityService.addActivity(activity);
-			fetchActivitiesByContactId(contactId);
-		} catch (error) {
-			console.error(error);
-		}
-	};
-	const fetchActivitiesByContactId = async (contact) => {
-		try {
-			const response = await ActivityService.getActivitiesByContactId(contact);
-			setActivities(response.data);
+			setRefresh((prev) => !prev);
+			setLogActivity((prev) => ({
+				...prev,
+				duration: 0,
+				type: "meeting",
+				description: "",
+			}));
 		} catch (error) {
 			console.error(error);
 		}
@@ -31,7 +46,11 @@ const Logs = ({ contactId }) => {
 
 	return (
 		<VStack spacing="4" p="4" width="100%">
-			<AddLogForm onSave={saveActivity} />
+			<AddLogForm
+				onSave={saveActivity}
+				logActivity={logActivity}
+				setLogActivity={setLogActivity}
+			/>
 			{activities.length && <LogActivityList activities={activities} />}
 		</VStack>
 	);

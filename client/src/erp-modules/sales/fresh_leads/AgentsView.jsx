@@ -128,7 +128,11 @@ const AgentsView = ({ leads, setIsUpdated, reference }) => {
 										p={"0.5em"}
 										spacing={0.5}
 									>
-										<HStack justifyContent={"space-between"} w={"100%"}>
+										<HStack
+											justifyContent={"space-between"}
+											w={"100%"}
+											spacing={0}
+										>
 											<TextTitle size="xs" title="Company" />
 											<TextTitle
 												size="xs"
@@ -136,12 +140,20 @@ const AgentsView = ({ leads, setIsUpdated, reference }) => {
 												weight="normal"
 												title={opportunityName}
 											/>
-											<RiEditLine
-												cursor={"pointer"}
-												onClick={() =>
-													handleEdit(_id, opportunityName, email, phone, stage)
-												}
-											/>
+											<Box>
+												<RiEditLine
+													cursor={"pointer"}
+													onClick={() =>
+														handleEdit(
+															_id,
+															opportunityName,
+															email,
+															phone,
+															stage,
+														)
+													}
+												/>
+											</Box>
 										</HStack>
 										<HStack justifyContent={"space-between"} w={"100%"}>
 											<TextTitle size="xs" title="Email" />

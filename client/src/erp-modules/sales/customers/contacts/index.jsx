@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { FaArrowLeft } from "react-icons/fa";
 import { useNavigate, useParams } from "react-router-dom";
 import ContactService from "services/ContactService";
+import LocalStorageService from "services/LocalStorageService";
 import ContactDetailsInfo from "./ContactDetailsInfo";
 import Logs from "./logs";
 import Meetings from "./meeting";
@@ -13,9 +14,9 @@ import Tasks from "./tasks";
 
 const Contacts = ({ setViewProfile, selectedContact }) => {
 	const { id } = useParams();
+	const user = LocalStorageService.getItem("user");
 
 	const [contact, setContact] = useState(null);
-	const [reload, setReload] = useState(false);
 	const fetchContacts = async () => {
 		const activeContact = selectedContact || id;
 		try {
@@ -31,7 +32,6 @@ const Contacts = ({ setViewProfile, selectedContact }) => {
 	useEffect(() => {
 		fetchContacts();
 	}, []);
-	useEffect(() => {}, [reload]);
 
 	const [currentTab, setCurrentTab] = useState(0);
 	const handleButtonClick = (value) => {
@@ -42,10 +42,19 @@ const Contacts = ({ setViewProfile, selectedContact }) => {
 	};
 
 	const tabList = [
-		{ name: "Notes", component: <Notes contactId={contact?._id} /> },
-		{ name: "Logs", component: <Logs contactId={contact?._id} /> },
-		{ name: "Tasks", component: <Tasks contactId={contact?._id} /> },
-		{ name: "Meetings", component: <Meetings contactId={contact?._id} /> },
+		{
+			name: "Notes",
+			component: <Notes user={user} contactId={contact?._id} />,
+		},
+		{ name: "Logs", component: <Logs user={user} contactId={contact?._id} /> },
+		{
+			name: "Tasks",
+			component: <Tasks user={user} contactId={contact?._id} />,
+		},
+		{
+			name: "Meetings",
+			component: <Meetings user={user} contactId={contact?._id} />,
+		},
 	];
 
 	const [filter, setFilter] = useState("");
@@ -126,6 +135,7 @@ const Contacts = ({ setViewProfile, selectedContact }) => {
 								currentTab={currentTab}
 								handleTabChange={handleTabChange}
 								data={tabList}
+								id={"name"}
 							/>
 						</Box>
 					</>

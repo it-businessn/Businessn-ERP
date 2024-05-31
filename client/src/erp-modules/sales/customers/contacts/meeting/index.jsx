@@ -2,58 +2,69 @@ import { Flex, VStack } from "@chakra-ui/react";
 import PrimaryButton from "components/ui/button/PrimaryButton";
 import DateTimeFormControl from "components/ui/form/DateTimeFormControl";
 import InputFormControl from "components/ui/form/InputFormControl";
+import MultiSelectFormControl from "components/ui/form/MultiSelectFormControl";
 import RadioFormControl from "components/ui/form/RadioFormControl";
 import TextAreaFormControl from "components/ui/form/TextAreaFormControl";
 import { useEffect, useState } from "react";
 import "react-datepicker/dist/react-datepicker.css";
 import CalendarService from "services/CalendarService";
+import UserService from "services/UserService";
 import MeetingList from "./MeetingList";
 
-const Meetings = ({ contactId }) => {
-	const [meetings, setMeetings] = useState([]);
+const Meetings = ({ contactId, user }) => {
+	const [openAssigneeMenu, setOpenAssigneeMenu] = useState(false);
 
-	const [formData, setFormData] = useState({
+	const [attendees, setAttendees] = useState(null);
+	const [meetings, setMeetings] = useState([]);
+	const [refresh, setRefresh] = useState(false);
+
+	useEffect(() => {
+		const fetchAllAttendees = async () => {
+			try {
+				const response = await UserService.getAllUsers();
+				setAttendees(response.data);
+			} catch (error) {
+				console.error(error);
+			}
+		};
+		fetchAllAttendees();
+	}, []);
+
+	const initialFormData = {
+		type: "virtual",
 		description: "",
-		attendees: "",
+		attendees: [],
 		location: "",
 		fromDate: "",
 		toDate: "",
 		fromTime: "",
 		toTime: "",
-		type: "virtual",
 		meetingLink: "",
-	});
+		createdBy: user?._id,
+		contactId,
+	};
+	const [formData, setFormData] = useState(initialFormData);
+	const [selectedOptions, setSelectedOptions] = useState([]);
 
 	useEffect(() => {
-		fetchMeetingsByContactId(contactId);
-	}, [contactId]);
+		const fetchMeetingsByContactId = async () => {
+			try {
+				const response = await CalendarService.getMeetingsByContactId(
+					contactId,
+				);
+				setMeetings(response.data);
+			} catch (error) {
+				console.error(error);
+			}
+		};
+		fetchMeetingsByContactId();
+	}, [contactId, refresh]);
 
-	const fetchMeetingsByContactId = async (contactId) => {
-		try {
-			const response = await CalendarService.getMeetingsByContactId(contactId);
-			setMeetings(response.data);
-		} catch (error) {
-			console.error(error);
-		}
-	};
-
-	const handleSubmit = async (e) => {
-		e.preventDefault();
-		formData.contactId = contactId;
+	const handleSubmit = async () => {
 		try {
 			await CalendarService.addMeeting(formData);
-			fetchMeetingsByContactId(contactId);
-			setFormData({
-				description: "",
-				attendees: "",
-				location: "",
-				fromDate: "",
-				toDate: "",
-				fromTime: "",
-				toTime: "",
-				type: "",
-				meetingLink: "",
-			});
+			setRefresh((prev) => !prev);
+			setFormData(initialFormData);
 		} catch (error) {
 			console.error(error);
 		}
@@ -66,6 +77,17 @@ const Meetings = ({ contactId }) => {
 
 	const handleRadioChange = (meetingType) => {
 		setFormData((prevData) => ({ ...prevData, type: meetingType }));
+	};
+
+	const handleCloseMenu = (selectedOptions) => {
+		setOpenAssigneeMenu(false);
+		setFormData((prevTask) => ({
+			...prevTask,
+			attendees: selectedOptions,
+		}));
+	};
+	const handleMenuToggle = () => {
+		setOpenAssigneeMenu((prev) => !prev);
 	};
 
 	return (
@@ -87,12 +109,16 @@ const Meetings = ({ contactId }) => {
 					handleChange={handleChange}
 					required
 				/>
-				<InputFormControl
-					label={"Required Attendees"}
-					name="attendees"
-					valueText={formData.attendees}
-					handleChange={handleChange}
-					required
+				<MultiSelectFormControl
+					label={"Select Required Attendees"}
+					tag={"attendee(s)"}
+					showMultiSelect={openAssigneeMenu}
+					data={attendees}
+					handleCloseMenu={handleCloseMenu}
+					selectedOptions={selectedOptions}
+					setSelectedOptions={setSelectedOptions}
+					handleMenuToggle={handleMenuToggle}
+					list={formData.attendees}
 				/>
 				<InputFormControl
 					label={"Location"}
@@ -135,7 +161,10 @@ const Meetings = ({ contactId }) => {
 					size={"sm"}
 					mt={4}
 					isDisabled={formData.description === ""}
-					onOpen={handleSubmit}
+					onOpen={(e) => {
+						e.preventDefault();
+						handleSubmit();
+					}}
 				/>
 			</form>
 			{meetings?.length && <MeetingList meetings={meetings} />}

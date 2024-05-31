@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 
 const assessmentTypeSchema = new mongoose.Schema({
 	name: String,
+	hasAward: Boolean,
 	createdOn: { type: Date, default: Date.now },
 	updatedOn: { type: Date, default: Date.now },
 });

@@ -1,3 +1,4 @@
+const Contact = require("../models/Contact");
 const Meeting = require("../models/Meeting");
 
 const getMeetings = () => async (req, res) => {
@@ -34,24 +35,27 @@ const addMeeting = () => async (req, res) => {
 		toDate,
 		toTime,
 		type,
+		createdBy,
 	} = req.body;
 
-	const meeting = new Meeting({
-		attendees,
-		contactId,
-		date: Date.now(),
-		description,
-		fromDate,
-		fromTime,
-		location,
-		meetingLink,
-		toDate,
-		toTime,
-		type,
-	});
-
 	try {
-		const newMeeting = await meeting.save();
+		const newMeeting = await Meeting.create({
+			attendees,
+			contactId,
+			description,
+			fromDate,
+			fromTime,
+			location,
+			meetingLink,
+			toDate,
+			toTime,
+			type,
+			createdBy,
+		});
+		const contact = await Contact.findById(contactId);
+		contact.meetings.push(newMeeting._id);
+
+		await contact.save();
 		res.status(201).json(newMeeting);
 	} catch (error) {
 		res.status(400).json({ message: error.message });

@@ -3,10 +3,11 @@ import {
 	Box,
 	Card,
 	CardBody,
-	HStack,
+	Flex,
 	Text,
 	VStack,
 } from "@chakra-ui/react";
+import TextTitle from "components/ui/text/TextTitle";
 import moment from "moment";
 import { Link } from "react-router-dom";
 
@@ -14,33 +15,64 @@ const MeetingList = ({ meetings }) => {
 	return (
 		<Box w="100%">
 			<VStack spacing={4} w="100%">
-				{meetings.map((meeting, index) => (
-					<Card key={meeting} borderWidth="1px" borderRadius="lg" w="100%">
-						<CardBody>
-							<HStack justifyContent="space-between">
-								<Badge bg="brand.logo_bg">{meeting.type}</Badge>
-								<Text fontSize="sm" color="gray.500">
-									{moment(meeting.date).format("MMM DD, YYYY hh:mm A Z")}
-								</Text>
-							</HStack>
-							<Text mt={2}>Description: {meeting.description}</Text>
-							<Text>Attendees: {meeting.attendees} </Text>
-							<Text>Location: {meeting.location} </Text>
-							<Text>
-								Meeting Date: {moment(meeting.fromDate).format("MMM DD, YYYY ")}
-								{meeting.fromTime}
-							</Text>
-							<Text>
-								Meeting Link:
-								<Link href={meeting.meetingLink} isexternal>
-									<Text as="span" color="blue.400">
-										{meeting.meetingLink}
+				{meetings?.map(
+					({
+						_id,
+						type,
+						createdOn,
+						description,
+						attendees,
+						location,
+						fromDate,
+						fromTime,
+						meetingLink,
+					}) => (
+						<Card key={_id} borderWidth="1px" borderRadius="lg" w="100%">
+							<CardBody>
+								<Flex justifyContent="space-between">
+									<Badge
+										bg="var(--primary_bg)"
+										color="var(--primary_button_bg)"
+									>
+										{type}
+									</Badge>
+									<TextTitle
+										weight="normal"
+										size="sm"
+										// title={moment(createdOn).format("MMM DD, YYYY hh:mm A Z")}
+										title={moment(createdOn).format("MMM DD, YYYY hh:mm A")}
+										color="gray.500"
+										align="end"
+									/>
+								</Flex>
+								<Text mt={2}>Description: {description}</Text>
+								<Text>
+									Attendees:{" "}
+									<Text as={"span"}>
+										{attendees?.map((_) => (
+											<Text as={"span"} key={_}>
+												{_}
+											</Text>
+										))}
 									</Text>
-								</Link>
-							</Text>
-						</CardBody>
-					</Card>
-				))}
+								</Text>
+								<Text>Location: {location} </Text>
+								<Text>
+									Meeting Date: {moment(fromDate).format("MMM DD, YYYY ")}
+									{fromTime}
+								</Text>
+								<Text>
+									Meeting Link:{" "}
+									<Link href={meetingLink} isexternal>
+										<Text as="span" color="blue.400">
+											{meetingLink}
+										</Text>
+									</Link>
+								</Text>
+							</CardBody>
+						</Card>
+					),
+				)}
 			</VStack>
 		</Box>
 	);

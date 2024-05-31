@@ -2,7 +2,7 @@ import {
 	Box,
 	Flex,
 	HStack,
-	Icon,
+	IconButton,
 	Input,
 	InputGroup,
 	InputLeftElement,
@@ -21,12 +21,11 @@ import LeftIconButton from "components/ui/button/LeftIconButton";
 import TextTitle from "components/ui/text/TextTitle";
 import { FaSearch } from "react-icons/fa";
 import { MdOutlineFilterList } from "react-icons/md";
-import { PiUserSquareBold } from "react-icons/pi";
 import { useBreakpointValue } from "services/Breakpoint";
 import { generateLighterShade } from "utils";
 import SearchFilter from "../lead docket/SearchFilter";
 
-const CustomersList = ({ contacts, handleProfileView }) => {
+const CustomersList = ({ contacts, handleProfileView, icons }) => {
 	const { isMobile } = useBreakpointValue();
 	const handleEdit = (id) => {
 		console.log(id);
@@ -114,20 +113,34 @@ const CustomersList = ({ contacts, handleProfileView }) => {
 									<Td fontSize={"xs"}>
 										<Flex align="center">
 											<HStack
-												bg={generateLighterShade("#5e51c5", 0.8)}
-												color={"#5e51c5"}
-												px={2}
-												borderRadius={"10px"}
+												// bg={generateLighterShade("#5e51c5", 0.8)}
+												// color={"#5e51c5"}
+												p={2}
+												w={"30%"}
+												onClick={() => {
+													handleProfileView(_id);
+												}}
+												justify={"space-around"}
 											>
-												<Icon as={PiUserSquareBold} />
-												<TextTitle
+												{icons.map(({ icon, label }) => (
+													<IconButton
+														key={label}
+														icon={icon}
+														bg={generateLighterShade("#537eee", 0.8)}
+														borderRadius="50%"
+														size={"xxs"}
+														color={"var(--primary_button_bg)"}
+														_hover={{ bg: "transparent", color: "brand.600" }}
+													/>
+												))}
+												{/* <TextTitle
 													weight="normal"
 													title={
 														meetings.length === 0
 															? "No history"
 															: meetings.length
 													}
-												/>
+												/> */}
 											</HStack>
 										</Flex>
 									</Td>

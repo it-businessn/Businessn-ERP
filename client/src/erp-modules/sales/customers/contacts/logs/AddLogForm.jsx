@@ -3,28 +3,14 @@ import PrimaryButton from "components/ui/button/PrimaryButton";
 import InputFormControl from "components/ui/form/InputFormControl";
 import SelectFormControl from "components/ui/form/SelectFormControl";
 import TextAreaFormControl from "components/ui/form/TextAreaFormControl";
-import { useState } from "react";
 
-const AddLogForm = ({ onSave }) => {
-	const [logActivity, setLogActivity] = useState({
-		type: "meeting",
-		phoneCalls: 0,
-		duration: 0,
-		description: "",
-	});
-
+const AddLogForm = ({ onSave, logActivity, setLogActivity }) => {
 	const handleInputChange = (e) => {
 		setLogActivity({ ...logActivity, [e.target.name]: e.target.value });
 	};
 
 	const handleSubmit = () => {
 		onSave(logActivity);
-		setLogActivity({
-			type: "",
-			phoneCalls: 0,
-			duration: 0,
-			description: "",
-		});
 	};
 	return (
 		<VStack spacing="4" p="4" width="100%">
@@ -67,7 +53,10 @@ const AddLogForm = ({ onSave }) => {
 					size={"sm"}
 					mt={4}
 					isDisabled={logActivity.description === ""}
-					onOpen={handleSubmit}
+					onOpen={(e) => {
+						e.preventDefault();
+						handleSubmit();
+					}}
 				/>
 			</form>
 		</VStack>

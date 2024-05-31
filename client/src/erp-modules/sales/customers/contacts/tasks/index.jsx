@@ -7,9 +7,6 @@ import {
 	Flex,
 	FormControl,
 	FormLabel,
-	HStack,
-	Spacer,
-	Text,
 	VStack,
 } from "@chakra-ui/react";
 import PrimaryButton from "components/ui/button/PrimaryButton";
@@ -19,70 +16,76 @@ import moment from "moment";
 import { useEffect, useState } from "react";
 import ReactDatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import TaskService from "services/TaskService";
+import LogTaskService from "services/LogTaskService";
 
-const Tasks = ({ contactId }) => {
+const Tasks = ({ contactId, user }) => {
 	const [tasks, setTasks] = useState([]);
-	const [dueDate, setDueDate] = useState(null);
-	const [taskName, setTaskName] = useState("");
+	const [refresh, setRefresh] = useState(false);
+
+	const initialFormData = {
+		dueDate: null,
+		description: "",
+		createdBy: user?._id,
+		contactId,
+	};
+	const [task, setTask] = useState(initialFormData);
 
 	useEffect(() => {
-		fetchTasksByContactId(contactId);
-	}, [contactId]);
+		const fetchTasksByContactId = async () => {
+			try {
+				const response = await LogTaskService.getTaskByContactId(contactId);
+				setTasks(response.data);
+			} catch (error) {
+				console.error(error);
+			}
+		};
+		fetchTasksByContactId();
+	}, [contactId, refresh]);
 
-	const handleAddTask = async (e) => {
-		e.preventDefault();
+	const handleAddTask = async () => {
 		try {
-			await TaskService.addTask({
-				name: taskName,
-				dueDate,
-				status: "Open",
-				contactId,
-			});
-			fetchTasksByContactId(contactId);
-			setTaskName("");
-			setDueDate(null);
+			await LogTaskService.addTask(task);
+			setRefresh((prev) => !prev);
+			setTask(initialFormData);
 		} catch (error) {
 			console.error(error);
 		}
 	};
 
-	const handleCheckboxChange = async (checked, task) => {
-		task.status = checked ? "Closed" : "Open";
+	const handleCheckboxChange = async (checked, id) => {
 		try {
-			await TaskService.updateTask(task, task._id);
-			fetchTasksByContactId(contactId);
+			await LogTaskService.updateTask({ checked }, id);
+			setRefresh((prev) => !prev);
 		} catch (error) {
 			console.error("Error adding opportunity:", error);
 		}
 	};
-	const fetchTasksByContactId = async (contact) => {
-		try {
-			const response = await TaskService.getTaskByContactId(contact);
-			setTasks(response.data);
-		} catch (error) {
-			console.error(error);
-		}
-	};
 
+	const handleInputChange = (e) => {
+		setTask({ ...task, [e.target.name]: e.target.value });
+	};
 	return (
 		<Box>
 			<VStack spacing={4}>
 				<form className="tab-form">
 					<InputFormControl
 						label={"Task Name"}
-						valueText={taskName}
+						name="description"
+						valueText={task.description}
 						placeholder="Enter task name"
-						handleChange={(e) => setTaskName(e.target.value)}
+						handleChange={handleInputChange}
 						required
 					/>
 
 					<FormControl id="dueDate" isRequired>
 						<FormLabel>Due Date</FormLabel>
 						<ReactDatePicker
+							name="dueDate"
 							className="date-picker"
-							selected={dueDate}
-							onChange={(date) => setDueDate(date)}
+							selected={task.dueDate}
+							onChange={(date) => {
+								setTask({ ...task, dueDate: date });
+							}}
 							dateFormat="yyyy-MM-dd"
 							placeholderText="Select due date"
 						/>
@@ -91,8 +94,11 @@ const Tasks = ({ contactId }) => {
 						name={"Add Task"}
 						size={"sm"}
 						mt={4}
-						isDisabled={taskName === ""}
-						onOpen={handleAddTask}
+						isDisabled={task.description === ""}
+						onOpen={(e) => {
+							e.preventDefault();
+							handleAddTask();
+						}}
 					/>
 				</form>
 				<Box w="100%">
@@ -100,40 +106,39 @@ const Tasks = ({ contactId }) => {
             Tasklist
           </Text> */}
 					<VStack spacing={4} w="100%">
-						{tasks.length > 0 &&
-							tasks.map((task) => (
-								<Card key={task} borderWidth="1px" borderRadius="lg" w="100%">
-									<CardBody>
-										<VStack alignItems="start" spacing={4}>
-											<Badge bg="brand.logo_bg">{task.status}</Badge>
-											<Flex w={"100%"}>
-												<HStack spacing={4} w="70%">
-													<Checkbox
-														colorScheme="facebook"
-														isChecked={task.status === "Closed"}
-														onChange={(e) =>
-															handleCheckboxChange(e.target.checked, task)
-														}
-														borderRadius="full"
-														borderColor="brand.logo_b"
-														iconColor="brand.logo_bg"
-														size="md"
-													/>
-													<Text>{task.name}</Text>
-												</HStack>
-												<Spacer />
-												<TextTitle
-													color="brand.400"
-													weight="normal"
-													title={`Due Date: ${moment(task?.dueDate).format(
-														"MMM DD, YYYY hh:mm A Z",
-													)}`}
-												/>
-											</Flex>
-										</VStack>
-									</CardBody>
-								</Card>
-							))}
+						{tasks?.map(({ _id, status, description, dueDate }) => (
+							<Card key={_id} borderWidth="1px" borderRadius="lg" w="100%">
+								<CardBody>
+									<Flex justifyContent="space-between">
+										<Badge
+											bg="var(--primary_bg)"
+											color="var(--primary_button_bg)"
+										>
+											{status}
+										</Badge>
+										<TextTitle
+											weight="normal"
+											size="sm"
+											// title={moment(createdOn).format("MMM DD, YYYY hh:mm A Z")}
+											title={moment(dueDate).format("MMM DD, YYYY hh:mm A")}
+											color="gray.500"
+											align="end"
+										/>
+									</Flex>
+									<Flex w={"100%"} gap={3}>
+										<Checkbox
+											colorScheme="facebook"
+											isChecked={status === "Closed"}
+											onChange={(e) =>
+												handleCheckboxChange(e.target.checked, _id)
+											}
+											size="md"
+										/>
+										<TextTitle weight="normal" title={description} />
+									</Flex>
+								</CardBody>
+							</Card>
+						))}
 					</VStack>
 				</Box>
 			</VStack>

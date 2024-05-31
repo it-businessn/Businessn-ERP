@@ -1,3 +1,4 @@
+const Contact = require("../models/Contact");
 const Note = require("../models/Note");
 const Project = require("../models/Project");
 const SubTask = require("../models/SubTask");
@@ -5,7 +6,7 @@ const Task = require("../models/Task");
 
 const getNotes = () => async (req, res) => {
 	try {
-		const notes = (await Note.find()).sort((a, b) => b.date - a.date);
+		const notes = (await Note.find()).sort((a, b) => b.createdOn - a.createdOn);
 		res.status(200).json(notes);
 	} catch (error) {
 		res.status(404).json({ error: error.message });
@@ -17,7 +18,7 @@ const getNoteById = () => async (req, res) => {
 
 	try {
 		const notes = (await Note.find({ contactId: id })).sort(
-			(a, b) => b.date - a.date,
+			(a, b) => b.createdOn - a.createdOn,
 		);
 		res.status(200).json(notes);
 	} catch (error) {
@@ -26,11 +27,15 @@ const getNoteById = () => async (req, res) => {
 };
 
 const createNote = () => async (req, res) => {
-	const { contactId, description } = req.body;
+	const { contactId, createdBy, description } = req.body;
 
-	const note = new Note({ contactId, description, date: Date.now() });
 	try {
-		const newNote = await note.save();
+		const newNote = await Note.create({ contactId, createdBy, description });
+		const contact = await Contact.findById(contactId);
+		contact.notes.push(newNote._id);
+
+		await contact.save();
+
 		res.status(201).json(newNote);
 	} catch (error) {
 		res.status(400).json({ message: error.message });

@@ -120,7 +120,7 @@ const ContactDetailsInfo = ({ contact, showLogForm }) => {
 						key={title}
 						icon={icon}
 						aria-label={title}
-						size={"sm"}
+						size={"xs"}
 						bg="brand.primary_button_bg"
 						borderRadius="full"
 						onClick={onClick}
@@ -129,11 +129,13 @@ const ContactDetailsInfo = ({ contact, showLogForm }) => {
 			</HStack>
 			<HStack spacing="6" mb="3" justifyContent="center">
 				{QUICK_LINKS.map(({ label }) => (
-					<Text key={label}> {label}</Text>
+					<Text fontSize={"sm"} key={label}>
+						{label}
+					</Text>
 				))}
 			</HStack>
-			<>
-				<Button onClick={onCompanyToggle} variant="link" fontSize="sm">
+			<Box>
+				<Button onClick={onCompanyToggle} variant="link">
 					{isCompanyOpen ? (
 						<ChevronDownIcon fontSize="md" />
 					) : (
@@ -156,9 +158,10 @@ const ContactDetailsInfo = ({ contact, showLogForm }) => {
 						<Text mb="2">{contact?.employees}</Text> */}
 					</Box>
 				</Collapse>
-			</>
-			<>
-				<Button onClick={onProfileToggle} variant="link" fontSize="sm">
+			</Box>
+
+			<Box>
+				<Button onClick={onProfileToggle} variant="link">
 					{isProfileOpen ? (
 						<ChevronDownIcon fontSize="md" />
 					) : (
@@ -181,7 +184,7 @@ const ContactDetailsInfo = ({ contact, showLogForm }) => {
 						</Box>
 					)}
 				</Collapse>
-			</>
+			</Box>
 		</>
 	);
 };
