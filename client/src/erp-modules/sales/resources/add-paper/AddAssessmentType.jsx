@@ -2,6 +2,7 @@ import {
 	Alert,
 	AlertIcon,
 	Button,
+	Flex,
 	FormControl,
 	FormLabel,
 	HStack,
@@ -12,6 +13,8 @@ import {
 	ModalContent,
 	ModalHeader,
 	ModalOverlay,
+	Radio,
+	RadioGroup,
 	Stack,
 	useDisclosure,
 } from "@chakra-ui/react";
@@ -26,6 +29,7 @@ const AddAssessmentType = ({
 }) => {
 	const [error, setError] = useState(false);
 	const [name, setName] = useState("");
+	const [hasAward, setHasAward] = useState("No");
 	const [isSubmitting, setSubmitting] = useState(false);
 	const { isOpen, onOpen, onClose } = useDisclosure();
 
@@ -34,7 +38,7 @@ const AddAssessmentType = ({
 		setSubmitting(true);
 
 		try {
-			await QuestionnaireService.addAssessmentType({ name });
+			await QuestionnaireService.addAssessmentType({ name, hasAward });
 			setRefresh((prev) => !prev);
 			setSubmitting(false);
 			onClose();
@@ -73,7 +77,22 @@ const AddAssessmentType = ({
 										required
 									/>
 								</FormControl>
-
+								<FormControl>
+									<FormLabel>Is awarded</FormLabel>
+									<RadioGroup value={hasAward} onChange={setHasAward}>
+										<Flex gap={5}>
+											{["Yes", "No"].map((option, index) => (
+												<Radio
+													key={index}
+													value={option}
+													border={"1px solid var(--gray2_color)"}
+												>
+													{option}
+												</Radio>
+											))}
+										</Flex>
+									</RadioGroup>
+								</FormControl>
 								<HStack justifyContent={"end"}>
 									<PrimaryButton
 										isDisabled={name === ""}

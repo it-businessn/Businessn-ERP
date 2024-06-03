@@ -9,6 +9,11 @@ const companyResourceSchema = new mongoose.Schema({
 	fileType: String,
 	originalname: String,
 	uploadedOn: { type: Date, default: Date.now },
+	cover: {
+		data: Buffer,
+		contentType: String,
+		name: String,
+	},
 	// uploadedBy: { type: mongoose.Schema.Types.ObjectId, ref: "Employee" },
 	uploadedBy: String,
 });

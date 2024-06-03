@@ -24,6 +24,48 @@ const getResourceByType = () => async (req, res) => {
 		res.status(404).json({ error: error.message });
 	}
 };
+const updateResourceCover = () => async (req, res) => {
+	// const { fileType, uploadedBy } = req.body;
+	// const fileData = req.file;
+	// const { mimetype, originalname, path } = fileData;
+	// try {
+	// 	const resource = await Resource.findByIdAndUpdate(id, req.body, {
+	// 		new: true,
+	// 	});
+	// 	const newResource = new Resource({
+	// 		file: {
+	// 			contentType: mimetype,
+	// 			data: fs.readFileSync(path),
+	// 			path,
+	// 		},
+	// 		fileType,
+	// 		originalname,
+	// 		uploadedBy,
+	// 	});
+	// 	const file = await newResource.save();
+	// 	res.status(201).json({ file, message: "File uploaded successfully!" });
+	// } catch (error) {
+	// 	res.status(400).json({ message: error.message });
+	// }
+};
+const updateResource = () => async (req, res) => {
+	const { fileName } = req.body;
+	const { id } = req.params;
+
+	try {
+		const resource = await Resource.findByIdAndUpdate(
+			id,
+			{ originalname: `${fileName}.pdf` },
+			{
+				new: true,
+			},
+		);
+
+		res.status(201).json(resource);
+	} catch (error) {
+		res.status(400).json({ message: error.message });
+	}
+};
 
 const createResource = () => async (req, res) => {
 	const { fileType, uploadedBy } = req.body;
@@ -114,4 +156,5 @@ module.exports = {
 	getResourceByType,
 	getResources,
 	deleteResource,
+	updateResource,
 };

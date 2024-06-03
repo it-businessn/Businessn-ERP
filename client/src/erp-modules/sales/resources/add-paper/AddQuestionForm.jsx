@@ -3,6 +3,7 @@ import {
 	FormControl,
 	FormLabel,
 	HStack,
+	Icon,
 	Input,
 	Radio,
 	RadioGroup,
@@ -15,6 +16,7 @@ import PrimaryButton from "components/ui/button/PrimaryButton";
 import ActionButtonGroup from "components/ui/form/ActionButtonGroup";
 import TextTitle from "components/ui/text/TextTitle";
 import { useEffect, useState } from "react";
+import { FaRegTrashCan } from "react-icons/fa6";
 import { RiEditLine } from "react-icons/ri";
 import { useNavigate, useParams } from "react-router-dom";
 import QuestionnaireService from "services/QuestionnaireService";
@@ -113,6 +115,16 @@ const AddQuestionForm = () => {
 		}));
 		setShowEditQuestion(true);
 	};
+
+	const handleDelete = async (id) => {
+		try {
+			await QuestionnaireService.deleteQuestion({}, id);
+			setRefresh((prev) => !prev);
+		} catch (error) {
+			console.error(error);
+		}
+	};
+
 	return (
 		<Box p={{ base: "1em", md: "2em" }} overflow={"auto"}>
 			<HStack justify={"space-between"}>
@@ -136,9 +148,19 @@ const AddQuestionForm = () => {
 				>
 					<HStack>
 						<FormLabel>{`${index + 1}: ${questionnaire.question}`}</FormLabel>
-						<RiEditLine
+						<Icon
+							as={RiEditLine}
+							boxSize={4}
 							cursor={"pointer"}
+							mb={1}
 							onClick={() => handleEdit(questionnaire)}
+						/>
+						<Icon
+							as={FaRegTrashCan}
+							boxSize={3.5}
+							cursor={"pointer"}
+							mb={1}
+							onClick={() => handleDelete(questionnaire._id)}
 						/>
 					</HStack>
 					<FormLabel>

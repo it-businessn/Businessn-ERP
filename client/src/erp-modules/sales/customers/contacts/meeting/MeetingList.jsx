@@ -63,7 +63,7 @@ const MeetingList = ({ meetings }) => {
 								</Text>
 								<Text>
 									Meeting Link:{" "}
-									<Link href={meetingLink} isexternal>
+									<Link href={meetingLink} isexternal={true}>
 										<Text as="span" color="blue.400">
 											{meetingLink}
 										</Text>

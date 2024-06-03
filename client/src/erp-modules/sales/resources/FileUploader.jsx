@@ -6,7 +6,7 @@ import ResourceService from "services/ResourceService";
 
 const FileUploader = ({ fileTypes, userName, setNewUpload }) => {
 	const [file, setFile] = useState(null);
-	const [fileType, setFileType] = useState(fileTypes[0].type);
+	const [fileType, setFileType] = useState(fileTypes[1].type);
 
 	const handleFileChange = (e) => {
 		setFile(e.target.files[0]);
@@ -51,7 +51,9 @@ const FileUploader = ({ fileTypes, userName, setNewUpload }) => {
 					{fileTypes
 						.filter(({ type }) => type !== "Training")
 						.map(({ type }) => (
-							<option value={type}>{type}</option>
+							<option value={type} key={type}>
+								{type}
+							</option>
 						))}
 				</Select>
 				<Flex>

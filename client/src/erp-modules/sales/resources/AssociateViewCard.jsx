@@ -19,6 +19,7 @@ import { Doughnut } from "react-chartjs-2";
 import { useNavigate } from "react-router-dom";
 import LocalStorageService from "services/LocalStorageService";
 import QuestionnaireService from "services/QuestionnaireService";
+import award from "../../../assets/award.jpeg";
 
 const AssociateViewCard = () => {
 	const [assessments, setAssessments] = useState(null);
@@ -48,7 +49,9 @@ const AssociateViewCard = () => {
 				const passed = assessmentsTaken?.filter(
 					(type) => type.category === "PASS",
 				);
-				passed?.map((it, index) => (it.badge = BADGES[index]));
+				passed?.map(
+					(_) => (_.badge = BADGES[Math.floor(Math.random() * BADGES.length)]),
+				);
 				setCertificationBadges(passed);
 				const complete = passed?.length || 0;
 				const not_completed = assessments?.length - complete || 0;
@@ -62,6 +65,7 @@ const AssociateViewCard = () => {
 		};
 		fetchAssessmentsTaken();
 	}, [completed, notComplete]);
+
 	const navigate = useNavigate();
 
 	return (
@@ -100,7 +104,7 @@ const AssociateViewCard = () => {
 
 							<Box>
 								<TextTitle mt="-1.5em" title="Product Certifications" />
-								{!certificationBadges && (
+								{(!certificationBadges || certificationBadges.length === 0) && (
 									<TextTitle
 										mt="1em"
 										em="italic"
@@ -127,6 +131,7 @@ const AssociateViewCard = () => {
 														size="sm"
 														align={"center"}
 														title={item.subject.split(" - ")[0]}
+														whiteSpace="pre-wrap"
 													/>
 												</Badge>
 											</VStack>
@@ -194,25 +199,37 @@ const AssociateViewCard = () => {
 													size="xs"
 													title="Assessment:"
 												/> */}
-											<Badge
-												bg="var(--primary_bg)"
-												size={"xs"}
-												color="var(--primary_button_bg)"
-												minH={{ base: "5em", lg: "3em" }}
-												display={"flex"}
-												// alignItems={"center"}
-												textDecor={"underline"}
+											<HStack
+												justify={"space-between"}
+												alignItems={"self-start"}
 												w={"100%"}
-												cursor={"pointer"}
-												onClick={() =>
-													navigate(`/sales/assessment/${assessment.name}`)
-												}
 											>
-												<TextTitle
-													title={assessment?.name.split(" - ")[1]}
-													whiteSpace="pre-wrap"
-												/>
-											</Badge>
+												<Badge
+													bg="var(--primary_bg)"
+													size={"xs"}
+													minH={{ base: "5em", lg: "3em" }}
+													display={"flex"}
+													// alignItems={"center"}
+													textDecor={"underline"}
+													w={"100%"}
+													cursor={"pointer"}
+													onClick={() =>
+														navigate(`/sales/assessment/${assessment.name}`)
+													}
+												>
+													<TextTitle
+														color="var(--primary_button_bg)"
+														title={
+															assessment?.name?.split(" - ")[1] ||
+															assessment?.name
+														}
+														whiteSpace="pre-wrap"
+													/>
+												</Badge>
+												{assessment.hasAward === "Yes" && (
+													<Image src={award} alt={"award"} />
+												)}
+											</HStack>
 											<HStack justify={"space-between"} w={"100%"}>
 												<TextTitle
 													color={"brand.nav_color"}

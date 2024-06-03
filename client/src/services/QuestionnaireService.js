@@ -37,7 +37,7 @@ const QuestionnaireService = {
 		return apiService.put(`/questionnaire/${id}`, data, id);
 	},
 
-	async deleteResource(data, id) {
+	async deleteQuestion(data, id) {
 		return apiService.delete(`/questionnaire/${id}`, data, id);
 	},
 };

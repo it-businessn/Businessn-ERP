@@ -25,7 +25,7 @@ const LeftPane = ({ selectedUser, setStats }) => {
 		const pipelineData = data[0]?.pipeline;
 		const salesData = data[0]?.salesMade;
 
-		headerCards[0].value = data?.find((_) => _.month === month)?.count;
+		headerCards[0].value = data?.find((_) => _.month === month)?.count || 0;
 		headerCards[1].value = pipelineData;
 		headerCards[2].value = pipelineData;
 		headerCards[3].value = salesData;
@@ -41,9 +41,8 @@ const LeftPane = ({ selectedUser, setStats }) => {
 				const pipelineData = response.data[0]?.pipeline;
 				const salesData = response.data[0]?.salesMade;
 
-				headerCards[0].value = response.data?.find(
-					(_) => _.month === month,
-				)?.count;
+				headerCards[0].value =
+					response.data?.find((_) => _.month === month)?.count || 0;
 				headerCards[1].value = pipelineData;
 				headerCards[2].value = pipelineData;
 				headerCards[3].value = salesData;

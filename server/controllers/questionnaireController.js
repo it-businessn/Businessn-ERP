@@ -67,11 +67,12 @@ const updateAssessment = async (req, res) => {
 };
 
 const createAssessmentType = async (req, res) => {
-	const { name } = req.body;
+	const { name, hasAward } = req.body;
 
 	try {
 		const assessment = new AssessmentType({
 			name,
+			hasAward,
 		});
 
 		const newAssessment = await assessment.save();
@@ -132,6 +133,18 @@ const updateQuestionnaireById = async (req, res) => {
 		res.status(400).json({ message: error.message });
 	}
 };
+const deleteQuestion = async (req, res) => {
+	const { id } = req.params;
+	try {
+		const updatedContact = await Questionnaire.findByIdAndDelete(id, req.body, {
+			new: true,
+		});
+
+		res.status(201).json(updatedContact);
+	} catch (error) {
+		res.status(400).json({ message: error.message });
+	}
+};
 
 module.exports = {
 	createQuestionnaire,
@@ -144,4 +157,5 @@ module.exports = {
 	getAssessmentType,
 	createAssessmentType,
 	getAssessmentQuestionsByType,
+	deleteQuestion,
 };

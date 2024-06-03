@@ -24,6 +24,7 @@ const Resources = () => {
 
 	const [resources, setResources] = useState(null);
 	const [newUpload, setNewUpload] = useState(null);
+	// const [editResource, setEditResource] = useState(false);
 	const [selectedFilter, setSelectedFilter] = useState(FILE_TYPES[0].type);
 
 	useEffect(() => {

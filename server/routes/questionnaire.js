@@ -21,4 +21,5 @@ router.put("/assessment/:id", questionnaireController.updateAssessment);
 
 router.put("/:id", questionnaireController.updateQuestionnaireById);
 
+router.delete("/:id", questionnaireController.deleteQuestion);
 module.exports = router;
