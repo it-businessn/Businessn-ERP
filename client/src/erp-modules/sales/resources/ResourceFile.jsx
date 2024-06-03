@@ -1,9 +1,16 @@
-import { Box, Button, Flex, Icon, SimpleGrid, VStack } from "@chakra-ui/react";
+import {
+	Box,
+	Button,
+	Flex,
+	Icon,
+	Input,
+	SimpleGrid,
+	VStack,
+} from "@chakra-ui/react";
 import PrimaryButton from "components/ui/button/PrimaryButton";
-import InputFormControl from "components/ui/form/InputFormControl";
 import TextTitle from "components/ui/text/TextTitle";
 import { useData } from "context/DataContext";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { BiPencil } from "react-icons/bi";
 import { FaDownload } from "react-icons/fa";
 import { GoDownload } from "react-icons/go";
@@ -27,9 +34,11 @@ const ResourceFile = ({
 	const [resourceId, setResourceId] = useState(null);
 	const [fileName, setFileName] = useState("");
 	const { isMobile, isIpad } = useBreakpointValue();
+
 	const handleFilterClick = (filter) => {
 		setSelectedFilter(filter);
 	};
+
 	const handleDownload = (fileName) => {
 		const url = BASE_URL;
 		const downloadUrl = `${url}/companyResource/download/${fileName}`;
@@ -48,22 +57,17 @@ const ResourceFile = ({
 			try {
 				await ResourceService.updateResource({ fileName }, resourceId);
 				setIsEditable(false);
-				// setNewUpload((prev) => !prev);
 			} catch (error) {
 				console.error(error);
 			}
 		}
 	};
 
-	useEffect(() => {
-		const typingTimer = setTimeout(() => {
-			saveInput();
-		}, 2500);
-
-		return () => clearTimeout(typingTimer);
-	}, [fileName]);
-
 	const handleEdit = (resource) => {
+		if (isEditable && resourceId === resource._id) {
+			saveInput();
+			return;
+		}
 		setIsEditable(true);
 		setFileName(resource.originalname);
 		setResourceId(resource._id);
@@ -166,22 +170,26 @@ const ResourceFile = ({
 											} \n${resource.fileType}`}
 										/>
 									</Box>
-									{!isEditable && (
-										<TextTitle
-											title={resource.originalname}
-											weight="normal"
-											size={"sm"}
-										/>
-									)}
-									{isEditable && (
-										<InputFormControl
-											label={"File Name"}
-											name="name"
-											valueText={fileName}
-											handleChange={(e) => {
+
+									{isEditable && resourceId === resource._id ? (
+										<Input
+											type={"text"}
+											size={"xs"}
+											m={0}
+											value={fileName}
+											onChange={(e) => {
 												setFileName(e.target.value);
 											}}
-											required
+										/>
+									) : (
+										<TextTitle
+											title={
+												resourceId === resource._id
+													? fileName
+													: resource.originalname
+											}
+											weight="normal"
+											size={"sm"}
 										/>
 									)}
 									<VStack w={"100%"}>
@@ -208,7 +216,11 @@ const ResourceFile = ({
 												minW={"95%"}
 												size={"xs"}
 												px={"5px"}
-												name={"Edit"}
+												name={
+													isEditable && resourceId === resource._id
+														? "Save"
+														: "Edit"
+												}
 												rightIcon={<BiPencil />}
 												onOpen={() => handleEdit(resource)}
 											/>

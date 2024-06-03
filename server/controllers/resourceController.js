@@ -55,7 +55,9 @@ const updateResource = () => async (req, res) => {
 	try {
 		const resource = await Resource.findByIdAndUpdate(
 			id,
-			{ originalname: `${fileName}.pdf` },
+			{
+				originalname: fileName.includes(".pdf") ? fileName : `${fileName}.pdf`,
+			},
 			{
 				new: true,
 			},
