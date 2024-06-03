@@ -30,6 +30,7 @@ const AssociateViewCard = () => {
 	const [completed, setCompleted] = useState(null);
 	const [notComplete, setNotComplete] = useState(null);
 	const [certificationBadges, setCertificationBadges] = useState(null);
+	const [totalBadges, setTotalBadges] = useState(null);
 
 	useEffect(() => {
 		const fetchAllAssessmentTypes = async () => {
@@ -52,7 +53,12 @@ const AssociateViewCard = () => {
 				passed?.map(
 					(_) => (_.badge = BADGES[Math.floor(Math.random() * BADGES.length)]),
 				);
-				setCertificationBadges(passed);
+				const counts = passed?.reduce((acc, obj) => {
+					acc[obj.subject] = (acc[obj.subject] || 0) + 1;
+					return acc;
+				}, {});
+
+				setTotalBadges(counts);
 				const complete = passed?.length || 0;
 				const not_completed = assessments?.length - complete || 0;
 				setAssessmentsTaken(response.data);
@@ -65,6 +71,18 @@ const AssociateViewCard = () => {
 		};
 		fetchAssessmentsTaken();
 	}, [completed, notComplete]);
+
+	useEffect(() => {
+		const i = [];
+		if (totalBadges) {
+			Object.keys(totalBadges).map((_) => {
+				i.push({ type: _, count: 1 });
+
+				return _;
+			});
+			setCertificationBadges(i);
+		}
+	}, totalBadges);
 
 	const navigate = useNavigate();
 
@@ -118,7 +136,9 @@ const AssociateViewCard = () => {
 										<GridItem key={index}>
 											<VStack w="100%" justifyContent={"center"} mt="1.5em">
 												<Image
-													src={item.badge}
+													src={
+														BADGES[Math.floor(Math.random() * BADGES.length)]
+													}
 													alt={`Certification Badge ${index + 1}`}
 													boxSize="100px"
 												/>
@@ -130,7 +150,7 @@ const AssociateViewCard = () => {
 													<TextTitle
 														size="sm"
 														align={"center"}
-														title={item.subject.split(" - ")[0]}
+														title={item?.type?.split(" - ")[0]}
 														whiteSpace="pre-wrap"
 													/>
 												</Badge>
