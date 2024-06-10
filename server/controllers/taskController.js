@@ -37,9 +37,7 @@ const createTask = () => async (req, res) => {
 
 const isAllSubTaskComplete = async (savedTask) => {
 	const subtasksPromises = savedTask.subtasks.map((id) =>
-		SubTask.findById(id).then((task) => {
-			task?.completed;
-		}),
+		SubTask.findById(id).then((task) => task?.completionPercent === 100),
 	);
 
 	const subtasksCompleted = await Promise.all(subtasksPromises);
@@ -49,7 +47,7 @@ const isAllSubTaskComplete = async (savedTask) => {
 
 const isAllTaskComplete = async (savedTask) => {
 	const tasksPromises = savedTask.tasks.map((id) =>
-		Task.findById(id).then((task) => task?.completed),
+		Task.findById(id).then((task) => task?.completionPercent === 100),
 	);
 
 	const tasksCompleted = await Promise.all(tasksPromises);
