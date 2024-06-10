@@ -60,18 +60,20 @@ const isAllTaskComplete = async (savedTask) => {
 const updateTask = () => async (req, res) => {
 	const taskId = req.params.id;
 	const { isOpen, actualHours } = req.body;
+
 	try {
 		const savedTask = await Task.findById(taskId);
-
-		savedTask.isOpen = isOpen;
-
-		savedTask.completed = isOpen;
-		savedTask.actualHours = parseInt(Math.ceil(actualHours));
-		savedTask.completionPercent = (await isAllSubTaskComplete(savedTask))
+		const completionPercent = (await isAllSubTaskComplete(savedTask))
 			? 100
 			: (actualHours / Math.max(savedTask.timeToComplete, actualHours)) * 100;
 
-		await savedTask.save();
+		const updatedTask = await Task.findByIdAndUpdate(
+			taskId,
+			{ isOpen, completed: isOpen, actualHours, completionPercent },
+			{
+				new: true,
+			},
+		);
 
 		const savedSubtaskProject = await Project.findById(savedTask.projectId);
 
@@ -83,21 +85,26 @@ const updateTask = () => async (req, res) => {
 				totalActualHoursTasks += savedTask?.actualHours;
 			}
 		}
-		savedSubtaskProject.actualHours = totalActualHoursTasks;
-		savedSubtaskProject.completionPercent = (await isAllTaskComplete(
-			savedSubtaskProject,
-		))
-			? 100
-			: (savedSubtaskProject.actualHours /
-					Math.max(
-						savedSubtaskProject.timeToComplete,
-						savedSubtaskProject.actualHours,
-					)) *
-			  100;
 
-		await savedSubtaskProject.save();
+		const updatedProject = await Project.findByIdAndUpdate(
+			savedTask.projectId,
+			{
+				actualHours: totalActualHoursTasks,
+				completionPercent: (await isAllTaskComplete(savedSubtaskProject))
+					? 100
+					: (savedSubtaskProject.actualHours /
+							Math.max(
+								savedSubtaskProject.timeToComplete,
+								savedSubtaskProject.actualHours,
+							)) *
+					  100,
+			},
+			{
+				new: true,
+			},
+		);
 
-		res.status(201).json(savedSubtaskProject);
+		res.status(201).json(updatedProject);
 	} catch (error) {
 		res.status(400).json({ message: error.message });
 	}
