@@ -15,6 +15,7 @@ import { useEffect, useState } from "react";
 import { RiAspectRatioLine } from "react-icons/ri";
 import { useBreakpointValue } from "services/Breakpoint";
 import ContactService from "services/ContactService";
+import LocalStorageService from "services/LocalStorageService";
 import Activity from "./Activity";
 import Contest from "./Contest";
 import GaugeChartComponent from "./GaugeChart";
@@ -26,18 +27,36 @@ const Activities = () => {
 	const [selectedFilter, setSelectedFilter] = useState("monthly");
 	const [refresh, setRefresh] = useState(false);
 	const [showSelectCustomer, setShowSelectCustomer] = useState(false);
+	const [company, setCompany] = useState(
+		LocalStorageService.getItem("selectedCompany"),
+	);
 
+	useEffect(() => {
+		const handleSelectedCompanyChange = (event) => setCompany(event.detail);
+
+		document.addEventListener(
+			"selectedCompanyChanged",
+			handleSelectedCompanyChange,
+		);
+
+		return () => {
+			document.removeEventListener(
+				"selectedCompanyChanged",
+				handleSelectedCompanyChange,
+			);
+		};
+	}, []);
 	useEffect(() => {
 		const fetchAllContacts = async () => {
 			try {
-				const response = await ContactService.getContacts();
+				const response = await ContactService.getCompContacts(company);
 				setContacts(response.data);
 			} catch (error) {
 				console.error(error);
 			}
 		};
 		fetchAllContacts();
-	}, []);
+	}, [company]);
 
 	const handleFilterClick = (filter) => {
 		setSelectedFilter(filter);

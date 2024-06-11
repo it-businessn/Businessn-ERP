@@ -5,8 +5,8 @@ const TaskService = {
 		return apiService.get(`/tasks/${id}`);
 	},
 
-	async getTaskByAssignee(name) {
-		return apiService.get(`/tasks/${name}`);
+	async getTaskByAssignee(data) {
+		return apiService.get(`/tasks/${data.name}/${data.company}`);
 	},
 
 	async addTask(data) {

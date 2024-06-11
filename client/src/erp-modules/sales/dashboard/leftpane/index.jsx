@@ -4,13 +4,12 @@ import { useEffect, useState } from "react";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import CalendarService from "services/CalendarService";
 import LeadsService from "services/LeadsService";
-import { isManager } from "utils";
 import { HEADER_CARDS } from "../data";
 import SalesCard from "./SalesCard";
 import SalesChart from "./SalesChart";
 import UpcomingList from "./Upcomings";
 
-const LeftPane = ({ selectedUser, setStats }) => {
+const LeftPane = ({ selectedUser, setStats, company }) => {
 	const currentDate = new Date();
 	const currentMonth = currentDate.getMonth() + 1;
 	const [headerCards, setHeaderCards] = useState(HEADER_CARDS);
@@ -34,12 +33,12 @@ const LeftPane = ({ selectedUser, setStats }) => {
 	useEffect(() => {
 		const fetchAllOpportunities = async () => {
 			try {
-				const response = await LeadsService.getGroupedOpportunities(
-					isManager(selectedUser.role),
+				const response = await LeadsService.getGroupedOpportunitiesByCompany(
+					company,
 				);
 				setOpportunities(response.data);
-				const pipelineData = response.data[0]?.pipeline;
-				const salesData = response.data[0]?.salesMade;
+				const pipelineData = response.data[0]?.pipeline || 0;
+				const salesData = response.data[0]?.salesMade || 0;
 
 				headerCards[0].value =
 					response.data?.find((_) => _.month === month)?.count || 0;
@@ -50,9 +49,13 @@ const LeftPane = ({ selectedUser, setStats }) => {
 				console.error(error);
 			}
 		};
+
 		const fetchAllEvents = async () => {
 			try {
-				const response = await CalendarService.getEventsByType("event");
+				const response = await CalendarService.getEventsByType({
+					type: "event",
+					name: company,
+				});
 				setEvents(response.data);
 				setStatInfo("Events", response.data.length);
 			} catch (error) {
@@ -61,7 +64,10 @@ const LeftPane = ({ selectedUser, setStats }) => {
 		};
 		const fetchAllMeetings = async () => {
 			try {
-				const response = await CalendarService.getEventsByType("meeting");
+				const response = await CalendarService.getEventsByType({
+					type: "meeting",
+					name: company,
+				});
 				setMeetings(response.data);
 				setStatInfo("Meetings", response.data.length);
 			} catch (error) {
@@ -70,7 +76,10 @@ const LeftPane = ({ selectedUser, setStats }) => {
 		};
 		const fetchAllAppointments = async () => {
 			try {
-				const response = await CalendarService.getEventsByType("phoneCall");
+				const response = await CalendarService.getEventsByType({
+					type: "phoneCall",
+					name: company,
+				});
 				setAppointments(response.data);
 				setStatInfo("Appointments", response.data.length);
 			} catch (error) {
@@ -79,14 +88,12 @@ const LeftPane = ({ selectedUser, setStats }) => {
 		};
 
 		fetchAllAppointments();
-
 		fetchAllEvents();
 		fetchAllMeetings();
 		fetchAllOpportunities();
-	}, [isRefresh, selectedUser]);
+	}, [isRefresh, selectedUser, company]);
 
 	useEffect(() => {
-		console.log(opportunities);
 		if (opportunities.length > 0) {
 			headerCardsInfoDetails(opportunities);
 		}
@@ -118,7 +125,7 @@ const LeftPane = ({ selectedUser, setStats }) => {
 				/>
 			</SimpleGrid>
 			<SimpleGrid columns={{ base: 1, md: 1, lg: 2 }} spacing="1em" mt="4">
-				<SalesChart />
+				<SalesChart company={company} />
 			</SimpleGrid>
 			<SimpleGrid columns={{ base: 1, md: 1, lg: 1 }} spacing="4" mt="4">
 				<Box
@@ -134,8 +141,9 @@ const LeftPane = ({ selectedUser, setStats }) => {
 						events={events}
 						meetings={meetings}
 						appointments={appointments}
-						user={selectedUser}
+						selectedUser={selectedUser}
 						setIsRefresh={setIsRefresh}
+						company={company}
 					/>
 				</Box>
 			</SimpleGrid>

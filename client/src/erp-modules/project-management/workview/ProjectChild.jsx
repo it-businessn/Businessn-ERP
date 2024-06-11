@@ -19,8 +19,8 @@ import {
 	calculateTaskCompletion,
 	formatDate,
 	renderPriorityBars,
+	statusColor,
 } from "utils";
-import { statusColor } from ".";
 import AddNewSubTask from "./project/AddNewSubTask";
 import EditTask from "./project/EditTask";
 import Subtask from "./project/Subtask";

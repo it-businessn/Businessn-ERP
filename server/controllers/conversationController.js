@@ -97,12 +97,15 @@ const getGroupConversation = () => async (req, res) => {
 };
 
 const getAllUserConversations = () => async (req, res) => {
-	const { id } = req.params;
-
+	const { id, name } = req.params;
 	try {
 		const userConversations = [];
 		const groupConversations = await Conversation.find({
-			$and: [{ participants: { $all: [id] } }, { conversationType: "group" }],
+			$and: [
+				{ participants: { $all: [id] } },
+				{ conversationType: "group" },
+				{ companyName: name },
+			],
 		})
 			.populate({
 				path: "groupMessages",
@@ -124,6 +127,7 @@ const getAllUserConversations = () => async (req, res) => {
 			$and: [
 				{ participants: { $all: [id] } },
 				{ conversationType: "one-on-one" },
+				{ companyName: name },
 			],
 		})
 			.populate({

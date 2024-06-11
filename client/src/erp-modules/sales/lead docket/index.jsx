@@ -30,6 +30,7 @@ import { MdOutlineFilterList } from "react-icons/md";
 import { useNavigate } from "react-router";
 import { useBreakpointValue } from "services/Breakpoint";
 import LeadsService from "services/LeadsService";
+import LocalStorageService from "services/LocalStorageService";
 import { formatDate } from "utils";
 import AddOpportunity from "./AddOpportunity";
 import Caption from "./Caption";
@@ -46,9 +47,28 @@ const LeadsDocket = () => {
 	const [data, setData] = useState([]);
 	const [isRefresh, setIsRefresh] = useState(false);
 
+	const [company, setCompany] = useState(
+		LocalStorageService.getItem("selectedCompany"),
+	);
+
+	useEffect(() => {
+		const handleSelectedCompanyChange = (event) => setCompany(event.detail);
+
+		document.addEventListener(
+			"selectedCompanyChanged",
+			handleSelectedCompanyChange,
+		);
+
+		return () => {
+			document.removeEventListener(
+				"selectedCompanyChanged",
+				handleSelectedCompanyChange,
+			);
+		};
+	}, []);
 	const fetchAllLeads = async () => {
 		try {
-			const response = await LeadsService.getNotDisbursedLeads();
+			const response = await LeadsService.getNotDisbursedLeads(company);
 			setLeads(response.data);
 			setAllLeadIDs(response.data.map((item) => item._id));
 		} catch (error) {
@@ -58,7 +78,7 @@ const LeadsDocket = () => {
 
 	useEffect(() => {
 		fetchAllLeads();
-	}, [isRefresh]);
+	}, [isRefresh, company]);
 
 	useEffect(() => {
 		const addMultipleLeads = async () => {

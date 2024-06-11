@@ -20,6 +20,7 @@ import {
 } from "@chakra-ui/react";
 import PrimaryButton from "components/ui/button/PrimaryButton";
 import { useState } from "react";
+import LocalStorageService from "services/LocalStorageService";
 import QuestionnaireService from "services/QuestionnaireService";
 
 const AddAssessmentType = ({
@@ -32,13 +33,19 @@ const AddAssessmentType = ({
 	const [hasAward, setHasAward] = useState("No");
 	const [isSubmitting, setSubmitting] = useState(false);
 	const { isOpen, onOpen, onClose } = useDisclosure();
-
+	const [companyName, setCompany] = useState(
+		LocalStorageService.getItem("selectedCompany"),
+	);
 	const handleSubmit = async (e) => {
 		e.preventDefault();
 		setSubmitting(true);
 
 		try {
-			await QuestionnaireService.addAssessmentType({ name, hasAward });
+			await QuestionnaireService.addAssessmentType({
+				name,
+				hasAward,
+				companyName,
+			});
 			setRefresh((prev) => !prev);
 			setSubmitting(false);
 			onClose();

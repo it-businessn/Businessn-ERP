@@ -19,6 +19,7 @@ import { useEffect, useState } from "react";
 import { FaRegTrashCan } from "react-icons/fa6";
 import { RiEditLine } from "react-icons/ri";
 import { useNavigate, useParams } from "react-router-dom";
+import LocalStorageService from "services/LocalStorageService";
 import QuestionnaireService from "services/QuestionnaireService";
 import AddAssessmentType from "./AddAssessmentType";
 import EditQuestionnaire from "./EditQuestionnaire";
@@ -36,11 +37,15 @@ const AddQuestionForm = () => {
 	const [showAddAssessmentType, setShowAddAssessmentType] = useState(false);
 	const [refresh, setRefresh] = useState(false);
 	const [questionnaires, setQuestionnaires] = useState(null);
-
+	const [companyName, setCompany] = useState(
+		LocalStorageService.getItem("selectedCompany"),
+	);
 	useEffect(() => {
 		const fetchAllAssessmentTypes = async () => {
 			try {
-				const response = await QuestionnaireService.getAssessmentTypes();
+				const response = await QuestionnaireService.getAssessmentTypes(
+					companyName,
+				);
 				setAssessmentTypes(response.data);
 			} catch (error) {
 				console.error(error);
@@ -211,11 +216,13 @@ const AddQuestionForm = () => {
 				setShowEditQuestion={setShowEditQuestion}
 				formData={formData}
 			/>
-			<AddAssessmentType
-				showAddAssessmentType={showAddAssessmentType}
-				setRefresh={setRefresh}
-				setShowAddAssessmentType={setShowAddAssessmentType}
-			/>
+			{showAddAssessmentType && (
+				<AddAssessmentType
+					showAddAssessmentType={showAddAssessmentType}
+					setRefresh={setRefresh}
+					setShowAddAssessmentType={setShowAddAssessmentType}
+				/>
+			)}
 			{!assessmentTypes && (
 				<Text color={"green"}>
 					No assessments available. Please add new quiz.

@@ -36,13 +36,47 @@ const getProjects = () => async (req, res) => {
 		res.status(404).json({ error: error.message });
 	}
 };
-
-const getProjectsByUser = () => async (req, res) => {
+const getAllCompanyProjects = () => async (req, res) => {
 	const { id } = req.params;
 	try {
-		const projects = (await Project.find({ selectedAssignees: id })).sort(
+		const projects = (await Project.find({ companyName: id })).sort(
 			(a, b) => b.createdOn - a.createdOn,
 		);
+		const populatedProjects = await Promise.all(
+			projects.map(async (project) => {
+				const populatedProject = await Project.findById(project._id)
+					.populate({
+						path: "tasks",
+						populate: {
+							path: "subtasks",
+							model: "SubTask",
+						},
+					})
+					// .populate({
+					// 	path: "tasks",
+					// 	populate: {
+					// 		path: "activities",
+					// 		model: "Activity",
+					// 	},
+					// })
+					.exec();
+
+				return populatedProject;
+			}),
+		);
+
+		res.status(200).json(populatedProjects);
+	} catch (error) {
+		res.status(404).json({ error: error.message });
+	}
+};
+
+const getProjectsByUser = () => async (req, res) => {
+	const { id, company } = req.params;
+	try {
+		const projects = (
+			await Project.find({ selectedAssignees: id, companyName: company })
+		).sort((a, b) => b.createdOn - a.createdOn);
 		if (projects.length > 0) {
 			const populatedProjects = await Promise.all(
 				projects.map(async (project) => {
@@ -781,4 +815,5 @@ module.exports = {
 	updateInnerSubTasks,
 	createSchedulingProjectTask,
 	getProjectsByUser,
+	getAllCompanyProjects,
 };

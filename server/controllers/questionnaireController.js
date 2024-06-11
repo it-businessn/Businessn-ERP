@@ -34,8 +34,9 @@ const getAssessmentQuestionsByType = async (req, res) => {
 	}
 };
 const getAssessmentType = async (req, res) => {
+	const { id } = req.params;
 	try {
-		const assessments = await AssessmentType.find({});
+		const assessments = await AssessmentType.find({ companyName: id });
 		res.status(200).json(assessments);
 	} catch (error) {
 		res.status(404).json({ error: error.message });
@@ -67,12 +68,13 @@ const updateAssessment = async (req, res) => {
 };
 
 const createAssessmentType = async (req, res) => {
-	const { name, hasAward } = req.body;
+	const { name, hasAward, companyName } = req.body;
 
 	try {
 		const assessment = new AssessmentType({
 			name,
 			hasAward,
+			companyName,
 		});
 
 		const newAssessment = await assessment.save();

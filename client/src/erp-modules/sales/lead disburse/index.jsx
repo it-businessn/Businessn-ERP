@@ -23,8 +23,9 @@ import { useEffect, useState } from "react";
 import { FaCaretRight } from "react-icons/fa";
 import { useBreakpointValue } from "services/Breakpoint";
 import LeadsService from "services/LeadsService";
+import LocalStorageService from "services/LocalStorageService";
 import UserService from "services/UserService";
-import { formatDateTime, generateLighterShade } from "utils";
+import { generateLighterShade } from "utils";
 import AutoAssign from "./AutoAssign";
 import Disburse from "./Disburse";
 import { caption, columns, showFilterSearchOption, showRegion } from "./data";
@@ -33,9 +34,28 @@ const LeadsDisbursed = () => {
 	const { isMobile, isIpad } = useBreakpointValue();
 	const [agents, setAgents] = useState(null);
 
+	const [company, setCompany] = useState(
+		LocalStorageService.getItem("selectedCompany"),
+	);
+
+	useEffect(() => {
+		const handleSelectedCompanyChange = (event) => setCompany(event.detail);
+
+		document.addEventListener(
+			"selectedCompanyChanged",
+			handleSelectedCompanyChange,
+		);
+
+		return () => {
+			document.removeEventListener(
+				"selectedCompanyChanged",
+				handleSelectedCompanyChange,
+			);
+		};
+	}, []);
 	const fetchAllAgents = async () => {
 		try {
-			const response = await UserService.getAllSalesAgents();
+			const response = await UserService.getAllSalesAgents(company);
 			setAgents(response.data);
 			setCheckedRows(response.data.filter((user) => user.isActive === true));
 		} catch (error) {
@@ -58,7 +78,7 @@ const LeadsDisbursed = () => {
 	useEffect(() => {
 		const fetchAllLeads = async () => {
 			try {
-				const response = await LeadsService.getDisbursedLeads();
+				const response = await LeadsService.getDisbursedLeads(company);
 				setLeads(response.data);
 			} catch (error) {
 				console.error(error);
@@ -66,7 +86,7 @@ const LeadsDisbursed = () => {
 		};
 		fetchAllLeads();
 		fetchAllAgents();
-	}, []);
+	}, [company]);
 
 	useEffect(() => {
 		const updateUserProfile = async () => {

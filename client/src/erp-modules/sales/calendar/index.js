@@ -32,12 +32,30 @@ const Calendar = () => {
 	// 		setTimeout(checkClassExists, 1000);
 	// 	}
 	// };
+	const [company, setCompany] = useState(
+		LocalStorageService.getItem("selectedCompany"),
+	);
 
+	useEffect(() => {
+		const handleSelectedCompanyChange = (event) => setCompany(event.detail);
+
+		document.addEventListener(
+			"selectedCompanyChanged",
+			handleSelectedCompanyChange,
+		);
+
+		return () => {
+			document.removeEventListener(
+				"selectedCompanyChanged",
+				handleSelectedCompanyChange,
+			);
+		};
+	}, []);
 	useEffect(() => {
 		// checkClassExists();
 		const fetchAllEvents = async () => {
 			try {
-				const response = await CalendarService.getEvents();
+				const response = await CalendarService.getCompEvents(company);
 				response.data
 					?.filter((event) => event.meetingAttendees.includes(user))
 					.map((event) => {
@@ -72,7 +90,7 @@ const Calendar = () => {
 			}
 		};
 		fetchAllEvents();
-	}, [isRefresh]);
+	}, [isRefresh, company]);
 
 	const [showModal, setShowModal] = useState(false);
 	const [showDetailsModal, setShowDetailsModal] = useState(false);

@@ -155,15 +155,17 @@ const TaskActionCell = ({
 					managers={managers}
 				/>
 			)}
-			<AddActualHours
-				isOpen={isOpen}
-				setIsOpen={setIsOpen}
-				modalPosition={modalPosition}
-				setActualHours={setActualHours}
-				actualHours={actualHours}
-				handleClose={handleClose}
-				handleConfirm={handleConfirm}
-			/>
+			{isOpen && (
+				<AddActualHours
+					isOpen={isOpen}
+					setIsOpen={setIsOpen}
+					modalPosition={modalPosition}
+					setActualHours={setActualHours}
+					actualHours={actualHours}
+					handleClose={handleClose}
+					handleConfirm={handleConfirm}
+				/>
+			)}
 		</>
 	);
 };

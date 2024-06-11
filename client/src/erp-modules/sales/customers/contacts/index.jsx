@@ -12,7 +12,7 @@ import Meetings from "./meeting";
 import Notes from "./notes/Notes";
 import Tasks from "./tasks";
 
-const Contacts = ({ setViewProfile, selectedContact }) => {
+const Contacts = ({ setViewProfile, selectedContact, company }) => {
 	const { id } = useParams();
 	const user = LocalStorageService.getItem("user");
 
@@ -20,7 +20,10 @@ const Contacts = ({ setViewProfile, selectedContact }) => {
 	const fetchContacts = async () => {
 		const activeContact = selectedContact || id;
 		try {
-			const response = await ContactService.getContactDetails(activeContact);
+			const response = await ContactService.getContactDetails({
+				id: activeContact,
+				company,
+			});
 
 			setContact(response.data);
 			// setSelectedContact(response.data);

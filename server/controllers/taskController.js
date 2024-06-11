@@ -13,9 +13,12 @@ const getTasks = () => async (req, res) => {
 };
 
 const getTaskById = () => async (req, res) => {
-	const { id } = req.params;
+	const { id, company } = req.params;
 	try {
-		const tasks = await Task.find({ selectedAssignees: id });
+		const tasks = await Task.find({
+			selectedAssignees: id,
+			companyName: company,
+		});
 		res.status(200).json(tasks);
 	} catch (error) {
 		res.status(404).json({ error: error.message });

@@ -29,17 +29,39 @@ const CRMDashboard = () => {
 	const [stats, setStats] = useState(STATS);
 
 	const role = user?.role;
+
+	const [company, setCompany] = useState(
+		LocalStorageService.getItem("selectedCompany"),
+	);
+
+	useEffect(() => {
+		const handleSelectedCompanyChange = (event) => setCompany(event.detail);
+
+		document.addEventListener(
+			"selectedCompanyChanged",
+			handleSelectedCompanyChange,
+		);
+
+		return () => {
+			document.removeEventListener(
+				"selectedCompanyChanged",
+				handleSelectedCompanyChange,
+			);
+		};
+	}, []);
+
 	useEffect(() => {
 		const fetchAllEmployees = async () => {
 			try {
-				const response = await UserService.getAllUsers();
+				const response = await UserService.getAllCompanyUsers(company);
 				setEmployees(response.data.filter(({ role }) => !isManager(role)));
 			} catch (error) {
 				console.error(error);
 			}
 		};
 		fetchAllEmployees();
-	}, [selectedUser]);
+		LocalStorageService.setItem("selectedUser", selectedUser.fullName);
+	}, [selectedUser, company]);
 
 	const handleChange = (value) => {
 		if (value === "") {
@@ -47,6 +69,12 @@ const CRMDashboard = () => {
 		} else {
 			setSelectedUser(employees.find(({ fullName }) => fullName === value));
 		}
+		LocalStorageService.setItem("selectedUser", selectedUser.fullName);
+		document.dispatchEvent(
+			new CustomEvent("selectedUserChanged", {
+				detail: selectedUser.fullName,
+			}),
+		);
 	};
 
 	return (
@@ -74,8 +102,16 @@ const CRMDashboard = () => {
 				mt="4"
 				templateColumns={{ lg: "70% 30%" }}
 			>
-				<LeftPane selectedUser={selectedUser} setStats={setStats} />
-				<RightPane stats={stats} selectedUser={selectedUser} />
+				<LeftPane
+					selectedUser={selectedUser}
+					setStats={setStats}
+					company={company}
+				/>
+				<RightPane
+					stats={stats}
+					selectedUser={selectedUser}
+					company={company}
+				/>
 			</SimpleGrid>
 		</Box>
 	);

@@ -34,10 +34,52 @@ const getGroupedOpportunities = () => async (req, res) => {
 		res.status(404).json({ error: error.message });
 	}
 };
-
-const getOpportunities = () => async (req, res) => {
+const getGroupedOpportunitiesByCompany = () => async (req, res) => {
+	const { id } = req.params;
 	try {
-		const leads = (await Lead.find()).sort((a, b) => b.createdOn - a.createdOn);
+		const leadsByMonth = await Lead.aggregate([
+			{
+				$match: { companyName: id },
+			},
+			{
+				$group: {
+					_id: { $month: "$createdOn" },
+					count: { $sum: 1 },
+				},
+			},
+			{
+				$sort: { _id: 1 },
+			},
+		]);
+		const pipelineLeads = await Lead.find({
+			stage: { $in: ["T1", "T2", "T3", "T4"] },
+			companyName: id,
+		});
+
+		const salesMade = await Lead.find({
+			stage: { $in: ["T3", "T4"] },
+			companyName: id,
+		});
+		const leadCounts = leadsByMonth.map((item) => ({
+			month: item._id,
+			count: item.count,
+			pipeline: pipelineLeads.length,
+			salesMade: salesMade.length,
+		}));
+		res.status(200).json(leadCounts);
+	} catch (error) {
+		res.status(404).json({ error: error.message });
+	}
+};
+const getOpportunities = () => async (req, res) => {
+	const { id } = req.params;
+	// const updatedData = { companyName: "Fractional Departments Inc." };
+	// const updatedLeads = await Lead.updateMany({}, { $set: updatedData });
+	// console.log(updatedLeads);
+	try {
+		const leads = (await Lead.find({ companyName: id })).sort(
+			(a, b) => b.createdOn - a.createdOn,
+		);
 		res.status(200).json(leads);
 	} catch (error) {
 		res.status(404).json({ error: error.message });
@@ -45,9 +87,14 @@ const getOpportunities = () => async (req, res) => {
 };
 
 const getDisbursedLeads = () => async (req, res) => {
+	const { id } = req.params;
 	try {
 		const leads = (
-			await Lead.find({ isDisbursed: true, isDisbursedConfirmed: false })
+			await Lead.find({
+				companyName: id,
+				isDisbursed: true,
+				isDisbursedConfirmed: false,
+			})
 		).sort((a, b) => b.createdOn - a.createdOn);
 		res.status(200).json(leads);
 	} catch (error) {
@@ -56,10 +103,11 @@ const getDisbursedLeads = () => async (req, res) => {
 };
 
 const getNotDisbursedLeads = () => async (req, res) => {
+	const { id } = req.params;
 	try {
-		const leads = (await Lead.find({ isDisbursed: false })).sort(
-			(a, b) => b.createdOn - a.createdOn,
-		);
+		const leads = (
+			await Lead.find({ isDisbursed: false, companyName: id })
+		).sort((a, b) => b.createdOn - a.createdOn);
 
 		res.status(200).json(leads);
 	} catch (error) {
@@ -78,6 +126,7 @@ const getLeadCompanies = () => async (req, res) => {
 };
 
 const getConfirmedDisbursedLeads = () => async (req, res) => {
+	const { id } = req.params;
 	try {
 		// const leads = (await Lead.find({ isDisbursedConfirmed: true })).sort(
 		// 	(a, b) => b.createdOn - a.createdOn,
@@ -86,6 +135,7 @@ const getConfirmedDisbursedLeads = () => async (req, res) => {
 		// 	(a, b) => b.createdOn - a.createdOn,
 		// );
 		const leads = await Lead.find({
+			companyName: id,
 			stage: { $in: ["L1", "L2", "L3", "L4"] },
 		});
 		res.status(200).json(leads);
@@ -95,8 +145,10 @@ const getConfirmedDisbursedLeads = () => async (req, res) => {
 };
 
 const getTargetLeads = () => async (req, res) => {
+	const { id } = req.params;
 	try {
 		const leads = await Lead.find({
+			companyName: id,
 			stage: { $in: ["T1", "T2", "T3", "T4"] },
 		});
 		res.status(200).json(leads);
@@ -341,4 +393,5 @@ module.exports = {
 	createLeadCompany,
 	getGroupedOpportunities,
 	getTargetLeads,
+	getGroupedOpportunitiesByCompany,
 };

@@ -14,10 +14,28 @@ import GradientAreaFillColorChart from "./AreaFillColorChart";
 const Pipeline = () => {
 	const [leads, setLeads] = useState(null);
 	const [isUpdated, setIsUpdated] = useState(false);
+	const [company, setCompany] = useState(
+		LocalStorageService.getItem("selectedCompany"),
+	);
 
+	useEffect(() => {
+		const handleSelectedCompanyChange = (event) => setCompany(event.detail);
+
+		document.addEventListener(
+			"selectedCompanyChanged",
+			handleSelectedCompanyChange,
+		);
+
+		return () => {
+			document.removeEventListener(
+				"selectedCompanyChanged",
+				handleSelectedCompanyChange,
+			);
+		};
+	}, []);
 	const fetchAllLeads = async () => {
 		try {
-			const response = await LeadsService.getTargetLeads();
+			const response = await LeadsService.getTargetLeads(company);
 			setLeads(response.data);
 		} catch (error) {
 			console.error(error);
@@ -26,7 +44,7 @@ const Pipeline = () => {
 
 	useEffect(() => {
 		fetchAllLeads();
-	}, [isUpdated]);
+	}, [isUpdated, company]);
 
 	const { isOpen, onOpen, onClose } = useDisclosure();
 	const handleSubmit = () => {};

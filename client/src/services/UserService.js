@@ -17,12 +17,16 @@ const UserService = {
 		return apiService.put(`/user/lead/${id}`, data, id);
 	},
 
-	async getAllMemberGroups(id) {
-		return apiService.get(`/user/groups/${id}`);
+	async getAllMemberGroups(data) {
+		return apiService.get(`/user/groups/${data.userId}/${data.company}`);
 	},
 
 	async getAllUsers() {
 		return apiService.get(`/user`);
+	},
+
+	async getAllCompanyUsers(id) {
+		return apiService.get(`/user/comp/${id}`);
 	},
 
 	async getUserInfo(id) {
@@ -33,8 +37,8 @@ const UserService = {
 		return apiService.get(`/user/managers`);
 	},
 
-	async getAllSalesAgents() {
-		return apiService.get(`/user/not-managers`);
+	async getAllSalesAgents(id) {
+		return apiService.get(`/user/not-managers/${id}`);
 	},
 
 	async signUp(data) {

@@ -1,8 +1,10 @@
 import apiService from "services";
 
 const CommunicationService = {
-	async getAllUserConversations(id) {
-		return apiService.get(`/comms/all-conversations/${id}`);
+	async getAllUserConversations(data) {
+		return apiService.get(
+			`/comms/all-conversations/${data.userId}/${data.company}`,
+		);
 	},
 
 	async getGroupConversationById(id) {

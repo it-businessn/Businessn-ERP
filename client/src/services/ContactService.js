@@ -4,9 +4,11 @@ const ContactService = {
 	async getContacts() {
 		return apiService.get("/contacts");
 	},
-
-	async getContactDetails(id) {
-		return apiService.get(`/contacts/${id}`);
+	async getCompContacts(id) {
+		return apiService.get(`/contacts/comp/${id}`);
+	},
+	async getContactDetails(data) {
+		return apiService.get(`/contacts/${data.id}//${data.company}`);
 	},
 
 	async getIndustryType() {

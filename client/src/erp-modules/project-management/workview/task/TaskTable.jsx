@@ -30,8 +30,8 @@ import {
 	calculateTaskCompletion,
 	formatDate,
 	renderPriorityBars,
+	statusColor,
 } from "utils";
-import { statusColor } from "..";
 import EditTask from "../EditTask";
 import TodoItem from "../TodoItem";
 import Subtask from "../project/Subtask";

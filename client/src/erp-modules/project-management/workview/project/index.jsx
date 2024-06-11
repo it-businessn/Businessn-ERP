@@ -19,6 +19,7 @@ import ManagerCell from "./cell/ManagerCell";
 import PriorityCell from "./cell/PriorityCell";
 import ProjectActionCell from "./cell/ProjectActionCell";
 import StatusCell from "./cell/StatusCell";
+import { PROJECT_TABLE_CELLS } from "./data";
 
 const ProjectTable = ({ data, setRefresh, managers }) => {
 	const { isOpen, onOpen, onClose } = useDisclosure();
@@ -51,17 +52,6 @@ const ProjectTable = ({ data, setRefresh, managers }) => {
 	const handleTaskToggle = (index) => {
 		setTaskExpandedIndex(isTaskExpandedIndex === index ? null : index);
 	};
-
-	const PROJECT_CELLS = [
-		{ name: "Project name", width: "400px" },
-		{ name: "Assignee(s)", width: "130px" },
-		{ name: "Priority", width: "100px" },
-		{ name: "Start Date", width: "110px" },
-		{ name: "Due Date", width: "110px" },
-		{ name: "Manager", width: "130px" },
-		{ name: "Last Updated", width: "110px" },
-		{ name: "Status", width: "120px" },
-	];
 	return (
 		<>
 			<Flex>
@@ -79,16 +69,18 @@ const ProjectTable = ({ data, setRefresh, managers }) => {
 				</Button>
 			</Flex>
 
-			<AddProject
-				managers={managers}
-				isOpen={isOpen}
-				onClose={onClose}
-				setRefresh={setRefresh}
-			/>
+			{isOpen && (
+				<AddProject
+					managers={managers}
+					isOpen={isOpen}
+					onClose={onClose}
+					setRefresh={setRefresh}
+				/>
+			)}
 			<Table color={"brand.nav_color"} bg={"brand.primary_bg"}>
 				<Thead>
 					<Tr display={"flex"} alignItems={"center"}>
-						{PROJECT_CELLS.map(({ name, width }) => (
+						{PROJECT_TABLE_CELLS.map(({ name, width }) => (
 							<Th
 								key={name}
 								w={width}

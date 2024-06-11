@@ -11,6 +11,7 @@ const eventSchema = new mongoose.Schema({
 	toDate: Date,
 	toTime: String,
 	createdOn: { type: Date, default: Date.now },
+	companyName: { type: String, ref: "Company" },
 });
 
 const Event = mongoose.model("Event", eventSchema);

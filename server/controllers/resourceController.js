@@ -11,6 +11,27 @@ const getResources = () => async (req, res) => {
 		res.status(404).json({ error: error.message });
 	}
 };
+const getResourcesByCompany = () => async (req, res) => {
+	const { id } = req.params;
+	try {
+		const resources = await Resource.find({ companyName: id });
+		res.status(200).json(resources);
+	} catch (error) {
+		res.status(404).json({ error: error.message });
+	}
+};
+const getResourceByTypes = () => async (req, res) => {
+	const { fileType, name } = req.params;
+
+	try {
+		const files = (await Resource.find({ fileType, companyName: name })).sort(
+			(a, b) => b.uploadedOn - a.uploadedOn,
+		);
+		res.status(200).json(files);
+	} catch (error) {
+		res.status(404).json({ error: error.message });
+	}
+};
 
 const getResourceByType = () => async (req, res) => {
 	const { fileType } = req.params;
@@ -159,4 +180,6 @@ module.exports = {
 	getResources,
 	deleteResource,
 	updateResource,
+	getResourcesByCompany,
+	getResourceByTypes,
 };

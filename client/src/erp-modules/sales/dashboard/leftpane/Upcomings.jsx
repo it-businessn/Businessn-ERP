@@ -1,21 +1,46 @@
 import { Box } from "@chakra-ui/react";
 import TabsButtonGroup from "components/ui/tab/TabsButtonGroup";
 import { useEffect, useState } from "react";
+import TaskService from "services/TaskService";
 import CalendarTable from "./CalendarTable";
 import TaskTable from "./TaskTable";
 
 const UpcomingList = ({
-	user,
+	selectedUser,
 	events,
 	meetings,
 	appointments,
 	setIsRefresh,
+	company,
 }) => {
+	const [tasks, setTasks] = useState([]);
+	useEffect(() => {
+		const fetchAllUserTasks = async () => {
+			try {
+				const response = await TaskService.getTaskByAssignee({
+					name: selectedUser?.fullName,
+					company,
+				});
+
+				setTasks(response.data);
+			} catch (error) {
+				console.error(error);
+			}
+		};
+		fetchAllUserTasks();
+	}, [selectedUser, company]);
+
 	const CALENDAR_COLS = ["Description", "From", "To", "Event Link", "Location"];
 	const TABS = [
 		{
 			type: "Tasks",
-			name: <TaskTable user={user} cols={["Name", "Priority", "Due date"]} />,
+			name: (
+				<TaskTable
+					tasks={tasks}
+					cols={["Name", "Priority", "Due date"]}
+					company={company}
+				/>
+			),
 		},
 		{
 			type: "Events",

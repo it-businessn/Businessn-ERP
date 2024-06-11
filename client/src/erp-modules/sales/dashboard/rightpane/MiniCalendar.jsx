@@ -8,7 +8,7 @@ import { FaCaretLeft, FaCaretRight } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import CalendarService from "services/CalendarService";
 
-const MiniCalendar = ({ user }) => {
+const MiniCalendar = ({ user, company }) => {
 	const navigate = useNavigate();
 	const eventStyleGetter = (event) => {
 		if (event.fromDate) {
@@ -61,7 +61,7 @@ const MiniCalendar = ({ user }) => {
 	useEffect(() => {
 		const fetchAllEvents = async () => {
 			try {
-				const response = await CalendarService.getEvents();
+				const response = await CalendarService.getCompEvents(company);
 				response.data
 					?.filter((event) => event.meetingAttendees.includes(user))
 					?.map((event) => {
@@ -95,7 +95,7 @@ const MiniCalendar = ({ user }) => {
 			}
 		};
 		fetchAllEvents();
-	}, [user]);
+	}, [user, company]);
 	const handleDateSelect = (event) => {
 		// setShowModal(true);
 	};

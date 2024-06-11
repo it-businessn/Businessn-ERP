@@ -4,7 +4,7 @@ const router = express.Router();
 const conversationController = require("../controllers/conversationController");
 
 router.get(
-	"/all-conversations/:id",
+	"/all-conversations/:id/:name",
 	conversationController.getAllUserConversations(),
 );
 

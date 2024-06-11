@@ -22,6 +22,18 @@ export const userCurrency = (currency) =>
 		currency,
 	});
 
+export const statusColor = (status) => {
+	if (status?.includes("Overdue")) {
+		return { color: "red", bg: generateLighterShade("#c1acac", 0.8) };
+	} else if (status?.includes("Due Today")) {
+		return { color: "green", bg: generateLighterShade("#b1c9b1", 0.8) };
+	} else if (status?.includes("Upcoming")) {
+		return { color: "blue", bg: generateLighterShade("#d1d2ef", 0.5) };
+	} else {
+		return { color: "#213622", bg: generateLighterShade("#213622", 0.8) };
+	}
+};
+
 export const generateLighterShade = (color, factor) => {
 	const hexToRgb = (hex) => {
 		const bigint = parseInt(hex.slice(1), 16);

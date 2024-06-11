@@ -22,6 +22,18 @@ const getAllUsers = () => async (req, res) => {
 		res.status(404).json({ error: error.message });
 	}
 };
+const getAllCompanyUsers = () => async (req, res) => {
+	const { id } = req.params;
+	try {
+		const company = await Company.findOne({ name: id });
+
+		const users = await Employee.find({ companyId: company._id });
+
+		res.status(200).json(users);
+	} catch (error) {
+		res.status(404).json({ error: error.message });
+	}
+};
 
 const getAllEmployeesByRole = () => async (req, res) => {
 	try {
@@ -70,11 +82,12 @@ const getAllEmployeesByRole = () => async (req, res) => {
 };
 
 const getAllMemberGroups = () => async (req, res) => {
+	const { id, name } = req.params;
 	try {
 		const group = await Group.find({
-			"members._id": req.params.id,
+			"members._id": id,
+			companyName: name,
 		});
-
 		res.status(200).json(group);
 	} catch (error) {
 		res.status(404).json({ error: error.message });
@@ -93,8 +106,12 @@ const getAllManagers = () => async (req, res) => {
 };
 
 const getAllSalesAgents = () => async (req, res) => {
+	const { id } = req.params;
 	try {
+		const comp = await Company.findOne({ name: id });
+
 		const users = await Employee.find({
+			companyId: comp._id,
 			role: {
 				$not: {
 					$regex: /manager|administrator/i,
@@ -116,7 +133,11 @@ const loginUser = () => async (req, res) => {
 			model: "Company",
 			select: "name",
 		});
-
+		// user.companyId.push("6667917cd1855c4803b54574");
+		// await user.save();
+		// const existingCompany = await Company.findById("6667917cd1855c4803b54574");
+		// existingCompany.employees.push(user._id);
+		// await existingCompany.save();
 		if (!user) {
 			return res.status(500).json({ error: "User does not exist" });
 		}
@@ -328,4 +349,5 @@ module.exports = {
 	forgotPassword,
 	resetPassword,
 	setNewPassword,
+	getAllCompanyUsers,
 };

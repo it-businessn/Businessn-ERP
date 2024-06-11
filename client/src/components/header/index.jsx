@@ -26,7 +26,6 @@ const Navbar = ({ handleClick, handleLogout, onOpen, tabs, user }) => {
 	);
 
 	const handleCompany = (company = "FD") => {
-		console.log(company);
 		// if (company === "FD") {
 		// 	setActiveMenu(FD_SIDEBAR_MENU.find((menu) => menu.id === "sales"));
 		// } else {
@@ -38,6 +37,11 @@ const Navbar = ({ handleClick, handleLogout, onOpen, tabs, user }) => {
 	};
 	useEffect(() => {
 		handleCompany(selectedCompany);
+		document.dispatchEvent(
+			new CustomEvent("selectedCompanyChanged", {
+				detail: selectedCompany,
+			}),
+		);
 	}, [selectedCompany]);
 
 	useEffect(() => {
@@ -56,7 +60,6 @@ const Navbar = ({ handleClick, handleLogout, onOpen, tabs, user }) => {
 	const { isMobile } = useBreakpointValue();
 
 	const handleChange = (value) => {
-		console.log(value, user);
 		setSelectedCompany(value);
 	};
 
@@ -73,7 +76,7 @@ const Navbar = ({ handleClick, handleLogout, onOpen, tabs, user }) => {
 							variant="round"
 						/>
 					}
-					value={selectedCompany || ""}
+					value={selectedCompany}
 					handleChange={handleChange}
 					data={companies}
 					name="name"

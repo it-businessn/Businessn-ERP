@@ -9,8 +9,8 @@ const QuestionnaireService = {
 		return apiService.get(`/questionnaire/assessment/${id}`);
 	},
 
-	async getAssessmentTypes() {
-		return apiService.get(`/questionnaire/assessment/type`);
+	async getAssessmentTypes(company) {
+		return apiService.get(`/questionnaire/assessment/type/comp/${company}`);
 	},
 
 	async getAssessmentByType(id) {

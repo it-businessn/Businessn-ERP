@@ -22,6 +22,7 @@ const taskSchema = new mongoose.Schema({
 	priority: { type: String, default: "low" },
 	totalEstimatedHours: Number,
 	completionPercent: Number,
+	companyName: { type: String, ref: "Company" },
 });
 
 const Task = mongoose.model("Task", taskSchema);

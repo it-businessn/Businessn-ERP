@@ -15,7 +15,7 @@ import CommunicationService from "services/CommsService";
 import UserService from "services/UserService";
 import ChatHistory from "./ChatHistory";
 
-const ChatMessages = ({ userId }) => {
+const ChatMessages = ({ userId, company }) => {
 	const [userConversation, setUserConversation] = useState(null);
 	const [currentChat, setCurrentChat] = useState(null);
 	const [currentConversation, setCurrentConversation] = useState(null);
@@ -25,9 +25,10 @@ const ChatMessages = ({ userId }) => {
 	useEffect(() => {
 		const fetchAllUserConversation = async () => {
 			try {
-				const response = await CommunicationService.getAllUserConversations(
+				const response = await CommunicationService.getAllUserConversations({
 					userId,
-				);
+					company,
+				});
 				response.data.forEach((conversation) => {
 					conversation.isPersonal =
 						conversation.conversationType === "one-on-one";
@@ -56,11 +57,14 @@ const ChatMessages = ({ userId }) => {
 		if (userId) {
 			fetchAllUserConversation();
 		}
-	}, [isRefresh, userId]);
+	}, [isRefresh, userId, company]);
 
 	const fetchAllGroups = async () => {
 		try {
-			const response = await UserService.getAllMemberGroups(userId);
+			const response = await UserService.getAllMemberGroups({
+				userId,
+				company,
+			});
 			setGroups(response.data);
 		} catch (error) {
 			console.error(error);

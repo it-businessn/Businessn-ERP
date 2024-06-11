@@ -3,7 +3,10 @@ const router = express.Router();
 
 const questionnaireController = require("../controllers/questionnaireController");
 
-router.get("/assessment/type", questionnaireController.getAssessmentType);
+router.get(
+	"/assessment/type/comp/:id",
+	questionnaireController.getAssessmentType,
+);
 router.get(
 	"/assessment/type/:id",
 	questionnaireController.getAssessmentQuestionsByType,

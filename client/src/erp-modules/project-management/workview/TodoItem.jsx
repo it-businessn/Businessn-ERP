@@ -10,8 +10,12 @@ import {
 } from "@chakra-ui/react";
 import React, { useState } from "react";
 import ProjectService from "services/ProjectService";
-import { formatDate, generateLighterShade, renderPriorityBars } from "utils";
-import { statusColor } from ".";
+import {
+	formatDate,
+	generateLighterShade,
+	renderPriorityBars,
+	statusColor,
+} from "utils";
 import { COLORS } from "./project/data";
 
 const TodoItem = ({ task }) => {

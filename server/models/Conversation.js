@@ -8,6 +8,7 @@ const conversationSchema = new mongoose.Schema({
 	groupMessages: [{ type: mongoose.Schema.Types.ObjectId, ref: "Message" }], // Messages in group conversations
 	createdOn: { type: Date, default: Date.now },
 	conversationType: { type: String, enum: ["one-on-one", "group"] },
+	companyName: { type: String, ref: "Company" },
 });
 
 const Conversation = mongoose.model("Conversation", conversationSchema);

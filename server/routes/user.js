@@ -16,17 +16,18 @@ const {
 	forgotPassword,
 	resetPassword,
 	setNewPassword,
+	getAllCompanyUsers,
 } = require("../controllers/userController");
 
 router.post("/signup", createEmployee());
 // router.post("/send-verification-email", sendVerificationCode);
 router.get("/", getAllUsers());
-
+router.get("/comp/:id", getAllCompanyUsers());
 router.get("/emp-roles", getAllEmployeesByRole());
 
-router.get("/groups/:id", getAllMemberGroups());
+router.get("/groups/:id/:name", getAllMemberGroups());
 router.get("/managers", getAllManagers());
-router.get("/not-managers", getAllSalesAgents());
+router.get("/not-managers/:id", getAllSalesAgents());
 router.get("/reset-password/:id/:token", resetPassword);
 router.post("/forgot-password", forgotPassword());
 router.post("/login", loginUser());

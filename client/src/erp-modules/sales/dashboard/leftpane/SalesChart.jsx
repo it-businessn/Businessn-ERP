@@ -1,4 +1,4 @@
-import { Box, Flex, Select } from "@chakra-ui/react";
+import { Box } from "@chakra-ui/react";
 import HighlightButton from "components/ui/button/HighlightButton";
 import CardTitle from "components/ui/card/CardTitle";
 import { BAR_DATA } from "constant";
@@ -8,20 +8,21 @@ import "react-big-calendar/lib/css/react-big-calendar.css";
 import { Bar } from "react-chartjs-2";
 import ContactService from "services/ContactService";
 
-const SalesChart = () => {
+const SalesChart = ({ company }) => {
 	const [contacts, setContacts] = useState(null);
 
 	useEffect(() => {
 		const fetchAllContacts = async () => {
 			try {
-				const response = await ContactService.getContacts();
+				const response = await ContactService.getCompContacts(company);
 				setContacts(response.data);
 			} catch (error) {
 				console.error(error);
 			}
 		};
 		fetchAllContacts();
-	}, []);
+	}, [company]);
+
 	const options = {
 		scales: {
 			y: {

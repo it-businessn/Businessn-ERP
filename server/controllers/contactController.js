@@ -1,4 +1,5 @@
 const Contact = require("../models/Contact");
+const Lead = require("../models/Lead");
 
 const getContacts = async (req, res) => {
 	try {
@@ -10,10 +11,28 @@ const getContacts = async (req, res) => {
 };
 
 const getContactById = async (req, res) => {
+	const { id, name } = req.params;
+
+	try {
+		const existingLead = await Lead.find({ companyName: name });
+		const contact = await Contact.find({
+			leadId: existingLead._id,
+			_id: id,
+		}).populate("leadId");
+		res.status(200).json(contact);
+	} catch (error) {
+		res.status(404).json({ error: error.message });
+	}
+};
+const getCompContactById = async (req, res) => {
 	const { id } = req.params;
 
 	try {
-		const contact = await Contact.findById(id).populate("leadId");
+		const existingLead = await Lead.find({ companyName: id });
+		const contact = await Contact.find({ leadId: existingLead._id }).populate(
+			"leadId",
+		);
+
 		res.status(200).json(contact);
 	} catch (error) {
 		res.status(404).json({ error: error.message });
@@ -77,4 +96,5 @@ module.exports = {
 	getContactById,
 	getContacts,
 	updateContact,
+	getCompContactById,
 };

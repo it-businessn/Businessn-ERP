@@ -15,7 +15,7 @@ const companyResourceSchema = new mongoose.Schema({
 		name: String,
 	},
 	// uploadedBy: { type: mongoose.Schema.Types.ObjectId, ref: "Employee" },
-	uploadedBy: String,
+	companyName: { type: String, ref: "Company" },
 });
 
 const CompanyResource = mongoose.model(

@@ -5,8 +5,9 @@ const projectController = require("../controllers/projectController");
 const taskController = require("../controllers/taskController");
 
 router.get("/", projectController.getProjects());
+router.get("/comp/:id", projectController.getAllCompanyProjects());
 
-router.get("/:id", projectController.getProjectsByUser());
+router.get("/:id/:company", projectController.getProjectsByUser());
 
 router.post("/", projectController.createProject());
 

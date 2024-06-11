@@ -4,7 +4,8 @@ const router = express.Router();
 const contactController = require("../controllers/contactController");
 const industryController = require("../controllers/industryController");
 
-router.get("/:id", contactController.getContactById);
+router.get("/:id/:name", contactController.getContactById);
+router.get("/comp/:id", contactController.getCompContactById);
 
 router.get("/", contactController.getContacts);
 

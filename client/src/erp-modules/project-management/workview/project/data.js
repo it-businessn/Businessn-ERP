@@ -140,3 +140,14 @@ export const VIEW_MODE = [
 	// { name: "Tasks", id: "Tasks" },
 	// { name: "Activities", id: "Activities" },
 ];
+
+export const PROJECT_TABLE_CELLS = [
+	{ name: "Project name", width: "400px" },
+	{ name: "Assignee(s)", width: "130px" },
+	{ name: "Priority", width: "100px" },
+	{ name: "Start Date", width: "110px" },
+	{ name: "Due Date", width: "110px" },
+	{ name: "Manager", width: "130px" },
+	{ name: "Last Updated", width: "110px" },
+	{ name: "Status", width: "120px" },
+];

@@ -1,44 +1,13 @@
-import {
-	Box,
-	Button,
-	ButtonGroup,
-	Flex,
-	HStack,
-	Icon,
-	IconButton,
-	Input,
-	InputGroup,
-	InputLeftElement,
-	Select,
-	Spacer,
-	Text,
-	Th,
-} from "@chakra-ui/react";
+import { Box, Flex, Text, Th } from "@chakra-ui/react";
 import Loader from "components/Loader";
 import { useEffect, useState } from "react";
-import { AiOutlineUser } from "react-icons/ai";
-import { FaCaretDown, FaSearch, FaSort } from "react-icons/fa";
-import { HiOutlineUserGroup } from "react-icons/hi2";
-import { MdDateRange } from "react-icons/md";
+import { FaSort } from "react-icons/fa";
 import LocalStorageService from "services/LocalStorageService";
 import ProjectService from "services/ProjectService";
 import UserService from "services/UserService";
-import { generateLighterShade, isManager } from "utils";
-import ProjectTable from "./project/ProjectTable";
-import { VIEW_MODE } from "./project/data";
-import TaskTable from "./task/TaskTable";
-
-export const statusColor = (status) => {
-	if (status?.includes("Overdue")) {
-		return { color: "red", bg: generateLighterShade("#c1acac", 0.8) };
-	} else if (status?.includes("Due Today")) {
-		return { color: "green", bg: generateLighterShade("#b1c9b1", 0.8) };
-	} else if (status?.includes("Upcoming")) {
-		return { color: "blue", bg: generateLighterShade("#d1d2ef", 0.5) };
-	} else {
-		return { color: "#213622", bg: generateLighterShade("#213622", 0.8) };
-	}
-};
+import { isManager } from "utils";
+import WorkviewToolbar from "./WorkviewToolbar";
+import ProjectTable from "./project";
 
 export const headerCell = (key, weight, w) => (
 	<Th
@@ -56,26 +25,50 @@ export const headerCell = (key, weight, w) => (
 );
 
 const WorkView = () => {
-	const [viewMode, setViewMode] = useState(VIEW_MODE[0].name);
 	const [projects, setProjects] = useState([]);
 	const [refresh, setRefresh] = useState(false);
 
 	const [managers, setManagers] = useState(null);
 	const user = LocalStorageService.getItem("user");
 	const isManagerView = isManager(user?.role);
+	const [company, setCompany] = useState(
+		LocalStorageService.getItem("selectedCompany"),
+	);
+
+	useEffect(() => {
+		const handleSelectedCompanyChange = (event) => setCompany(event.detail);
+
+		document.addEventListener(
+			"selectedCompanyChanged",
+			handleSelectedCompanyChange,
+		);
+
+		return () => {
+			document.removeEventListener(
+				"selectedCompanyChanged",
+				handleSelectedCompanyChange,
+			);
+		};
+	}, []);
 
 	useEffect(() => {
 		const fetchAllProjectInfo = async () => {
 			try {
 				const response = isManagerView
-					? await ProjectService.getAllProjects()
-					: await ProjectService.getAllProjectsByUser(user?.fullName);
+					? await ProjectService.getAllCompanyProjects(company)
+					: await ProjectService.getAllCompanyProjectsByUser(
+							user?.fullName,
+							company,
+					  );
 				setProjects(response.data);
 			} catch (error) {
 				console.error(error);
 			}
 		};
 		fetchAllProjectInfo();
+	}, [refresh, company]);
+
+	useEffect(() => {
 		const fetchAllManagers = async () => {
 			try {
 				const response = await UserService.getAllManagers();
@@ -86,8 +79,6 @@ const WorkView = () => {
 		};
 		fetchAllManagers();
 	}, [refresh]);
-
-	const switchToView = (name) => setViewMode(name);
 
 	const allProjects = projects?.map((project) => ({
 		projectName: project.name,
@@ -116,97 +107,7 @@ const WorkView = () => {
 				{/* Workview  */}
 				Projects Overview
 			</Text>
-			<Flex
-				justifyContent={"space-between"}
-				gap={{ base: 0, lg: "1.5em" }}
-				flexDir={{ base: "column", lg: "row" }}
-			>
-				<Box mb={4} bg={"var(--main_color)"} borderRadius={"1em"} px="5px">
-					<ButtonGroup variant="solid" p={0} m={0}>
-						{VIEW_MODE.map(({ name, id }) => (
-							<Button
-								key={id}
-								m={"0 !important"}
-								onClick={() => switchToView(name)}
-								color={viewMode === name ? "brand.100" : "brand.nav_color"}
-								bg={
-									viewMode === name
-										? "var(--primary_button_bg)"
-										: "var(--main_color)"
-								}
-								borderRadius={"1em"}
-								size={"sm"}
-								variant={"solid"}
-								fontWeight={viewMode === name ? "bold" : "normal"}
-								_hover={{ bg: "transparent", color: "brand.600" }}
-							>
-								{name}
-							</Button>
-						))}
-					</ButtonGroup>
-				</Box>
-				<Spacer />
-				<Box>
-					<InputGroup
-						borderRadius={"1em"}
-						border={"1px solid var(--filter_border_color)"}
-						fontWeight="bold"
-					>
-						<InputLeftElement size="xs" children={<FaSearch />} />
-						<Input
-							borderRadius={"1em"}
-							_placeholder={{
-								color: "brand.nav_color",
-								fontSize: "sm",
-								verticalAlign: "top",
-							}}
-							color={"brand.nav_color"}
-							bg={"transparent"}
-							type="text"
-							placeholder="People or owner"
-						/>
-					</InputGroup>
-				</Box>
-				<Box my={{ base: "1em", lg: "0" }}>
-					<ButtonGroup
-						variant="solid"
-						isAttached
-						p={0}
-						m={0}
-						borderRadius={"1em"}
-						border={"1px solid var(--filter_border_color)"}
-					>
-						<IconButton
-							icon={<AiOutlineUser />}
-							borderRadius={"1em"}
-							color="purple.100"
-							bg={"brand.primary_button_bg"}
-							p={"0.4em"}
-							_hover={{ bg: "transparent", color: "brand.600" }}
-						/>
-						<IconButton
-							icon={<HiOutlineUserGroup />}
-							borderRadius={"1em"}
-							color="brand.nav_color"
-							p={"0.4em"}
-							bg={"transparent"}
-							_hover={{ bg: "transparent", color: "brand.600" }}
-						/>
-					</ButtonGroup>
-				</Box>
-				<Box mb={{ base: "1em", lg: "0" }}>
-					<HStack
-						borderRadius={"1em"}
-						border={"1px solid var(--filter_border_color)"}
-						color="brand.nav_color"
-					>
-						<Icon as={MdDateRange} boxSize={4} ml={2} />
-						<Select fontSize={"sm"} icon={<Icon as={FaCaretDown} />}>
-							<option>Last Month</option>
-						</Select>
-					</HStack>
-				</Box>
-			</Flex>
+			<WorkviewToolbar />
 			<Box
 				p="1em"
 				bg={"brand.primary_bg"}
@@ -215,7 +116,14 @@ const WorkView = () => {
 				color={"brand.nav_color"}
 			>
 				{!projects && <Loader />}
-				{projects && viewMode === "Projects" ? (
+				{projects && (
+					<ProjectTable
+						setRefresh={setRefresh}
+						data={projects}
+						managers={managers}
+					/>
+				)}
+				{/* {projects && viewMode === "Projects" ? (
 					<ProjectTable
 						setRefresh={setRefresh}
 						data={projects}
@@ -242,7 +150,7 @@ const WorkView = () => {
 					// 		data={projects}
 					// 	/>
 					<></>
-				)}
+				)} */}
 			</Box>
 		</Box>
 	);

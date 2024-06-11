@@ -8,10 +8,24 @@ const getEvents = () => async (req, res) => {
 		res.status(404).json({ error: error.message });
 	}
 };
-const getEventsByType = () => async (req, res) => {
+const getCompEvents = () => async (req, res) => {
 	const { id } = req.params;
 	try {
-		const events = await Event.find({ eventType: id }).sort({ createdOn: -1 });
+		const events = await Event.find({ companyName: id }).sort({
+			createdOn: -1,
+		});
+		res.status(200).json(events);
+	} catch (error) {
+		res.status(404).json({ error: error.message });
+	}
+};
+
+const getEventsByType = () => async (req, res) => {
+	const { id, name } = req.params;
+	try {
+		const events = await Event.find({ eventType: id, companyName: name }).sort({
+			createdOn: -1,
+		});
 		res.status(200).json(events);
 	} catch (error) {
 		res.status(404).json({ error: error.message });
@@ -63,4 +77,10 @@ const updateEvent = () => async (req, res) => {
 	}
 };
 
-module.exports = { createEvent, getEvents, getEventsByType, updateEvent };
+module.exports = {
+	createEvent,
+	getEvents,
+	getEventsByType,
+	updateEvent,
+	getCompEvents,
+};

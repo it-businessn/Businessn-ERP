@@ -4,23 +4,42 @@ import TextTitle from "components/ui/text/TextTitle";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ROUTE_PATH } from "routes";
+import LocalStorageService from "services/LocalStorageService";
 import QuestionnaireService from "services/QuestionnaireService";
 
 const ManagerViewCard = () => {
 	const navigate = useNavigate();
 	const [assessments, setAssessments] = useState(null);
+	const [company, setCompany] = useState(
+		LocalStorageService.getItem("selectedCompany"),
+	);
 
+	useEffect(() => {
+		const handleSelectedCompanyChange = (event) => setCompany(event.detail);
+
+		document.addEventListener(
+			"selectedCompanyChanged",
+			handleSelectedCompanyChange,
+		);
+
+		return () => {
+			document.removeEventListener(
+				"selectedCompanyChanged",
+				handleSelectedCompanyChange,
+			);
+		};
+	}, []);
 	useEffect(() => {
 		const fetchAllAssessmentTypes = async () => {
 			try {
-				const response = await QuestionnaireService.getAssessmentTypes();
+				const response = await QuestionnaireService.getAssessmentTypes(company);
 				setAssessments(response.data);
 			} catch (error) {
 				console.error(error);
 			}
 		};
 		fetchAllAssessmentTypes();
-	}, []);
+	}, [company]);
 	return (
 		<Box
 			p="1em"

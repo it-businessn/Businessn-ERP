@@ -13,7 +13,6 @@ import ActionButton from "components/ui/button/ActionButton";
 
 const AddActualHours = ({
 	isOpen,
-	setIsOpen,
 	modalPosition,
 	setActualHours,
 	actualHours,
@@ -36,7 +35,7 @@ const AddActualHours = ({
 					<Input
 						type="number"
 						value={actualHours}
-						onChange={(e) => setActualHours(parseInt(e.target.value))}
+						onChange={(e) => setActualHours(parseFloat(e.target.value))}
 					/>
 				</ModalBody>
 				<ModalFooter>

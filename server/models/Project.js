@@ -27,6 +27,7 @@ const projectSchema = new mongoose.Schema({
 	endBreaks: [Date],
 	totalHours: Number,
 	totalTimeCardHours: Number,
+	companyName: { type: String, ref: "Company" },
 });
 
 const Project = mongoose.model("Project", projectSchema);

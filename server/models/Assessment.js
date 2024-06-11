@@ -8,6 +8,7 @@ const assessmentSchema = new mongoose.Schema({
 	subject: String,
 	createdOn: { type: Date, default: Date.now },
 	empId: { type: mongoose.Schema.Types.ObjectId, ref: "Employee" },
+	companyName: { type: String, ref: "Company" },
 });
 
 const Assessment = mongoose.model("Assessment", assessmentSchema);

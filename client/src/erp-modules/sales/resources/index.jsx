@@ -26,25 +26,44 @@ const Resources = () => {
 	const [newUpload, setNewUpload] = useState(null);
 	// const [editResource, setEditResource] = useState(false);
 	const [selectedFilter, setSelectedFilter] = useState(FILE_TYPES[0].type);
+	const [company, setCompany] = useState(
+		LocalStorageService.getItem("selectedCompany"),
+	);
 
+	useEffect(() => {
+		const handleSelectedCompanyChange = (event) => setCompany(event.detail);
+
+		document.addEventListener(
+			"selectedCompanyChanged",
+			handleSelectedCompanyChange,
+		);
+
+		return () => {
+			document.removeEventListener(
+				"selectedCompanyChanged",
+				handleSelectedCompanyChange,
+			);
+		};
+	}, []);
 	useEffect(() => {
 		const fetchAllResources = async () => {
 			try {
-				const response = await ResourceService.getResources();
+				const response = await ResourceService.getResourcesByCompany(company);
 				setResources(response.data);
 			} catch (error) {
 				console.error(error);
 			}
 		};
 		fetchAllResources();
-	}, [newUpload]);
+	}, [newUpload, company]);
 
 	useEffect(() => {
 		const fetchResourceByType = async () => {
 			try {
-				const response = await ResourceService.getResourcesByType(
-					selectedFilter,
-				);
+				const response = await ResourceService.getResourcesByType({
+					type: selectedFilter,
+					company,
+				});
 
 				setResources(response.data);
 			} catch (error) {
@@ -54,7 +73,8 @@ const Resources = () => {
 		if (selectedFilter) {
 			fetchResourceByType();
 		}
-	}, [selectedFilter]);
+	}, [selectedFilter, company]);
+
 	return (
 		<Box p={{ base: "1em", md: "2em" }} overflow={"auto"}>
 			<TextTitle title="Resources" mb={"1em"} />

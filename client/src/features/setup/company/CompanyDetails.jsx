@@ -27,8 +27,7 @@ const CompanyDetails = () => {
 	const [openCompanyForm, setOpenCompanyForm] = useState(false);
 	const [companyInfo, setCompanyInfo] = useState(null);
 	const [modules, setModules] = useState(null);
-	const company =
-		LocalStorageService.getItem("selectedCompany") || "BusinessN Corporate";
+	const company = LocalStorageService.getItem("selectedCompany");
 	const user = LocalStorageService.getItem("user");
 
 	useEffect(() => {

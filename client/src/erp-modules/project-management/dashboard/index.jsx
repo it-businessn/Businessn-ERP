@@ -1,5 +1,5 @@
 import { Box, Text } from "@chakra-ui/react";
-import ProjectTable from "../workview/project/ProjectTable";
+import ProjectTable from "../workview/project";
 
 const ProjectDashboard = () => {
 	return (

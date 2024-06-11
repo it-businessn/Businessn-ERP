@@ -37,7 +37,25 @@ const Opportunities = () => {
 	const [opportunities, setOpportunities] = useState(null);
 	const [assignees, setAssignees] = useState(null);
 	const user = LocalStorageService.getItem("user");
+	const [company, setCompany] = useState(
+		LocalStorageService.getItem("selectedCompany"),
+	);
 
+	useEffect(() => {
+		const handleSelectedCompanyChange = (event) => setCompany(event.detail);
+
+		document.addEventListener(
+			"selectedCompanyChanged",
+			handleSelectedCompanyChange,
+		);
+
+		return () => {
+			document.removeEventListener(
+				"selectedCompanyChanged",
+				handleSelectedCompanyChange,
+			);
+		};
+	}, []);
 	useEffect(() => {
 		const fetchAllSalesAgents = async () => {
 			try {
@@ -54,7 +72,7 @@ const Opportunities = () => {
 
 	const fetchAllOpportunities = async () => {
 		try {
-			const response = await LeadsService.getOpportunities();
+			const response = await LeadsService.getOpportunities(company);
 			const leadList = isManager(user?.role)
 				? response.data
 				: response.data?.filter(
@@ -72,7 +90,7 @@ const Opportunities = () => {
 
 	useEffect(() => {
 		fetchAllOpportunities();
-	}, [isAdded]);
+	}, [isAdded, company]);
 
 	const [formData, setFormData] = useState({
 		id: null,

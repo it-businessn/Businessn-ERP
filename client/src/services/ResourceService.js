@@ -4,9 +4,12 @@ const ResourceService = {
 	async getResources() {
 		return apiService.get("/companyResource");
 	},
-
-	async getResourcesByType(id) {
+	async getResourcesByCompany(id) {
 		return apiService.get(`/companyResource/${id}`);
+	},
+
+	async getResourcesByType(data) {
+		return apiService.get(`/companyResource/type/${data.type}/${data.company}`);
 	},
 
 	async upload(data) {

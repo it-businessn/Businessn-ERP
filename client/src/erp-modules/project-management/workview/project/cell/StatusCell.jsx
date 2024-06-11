@@ -1,5 +1,5 @@
 import { HStack, Td, Text, VStack } from "@chakra-ui/react";
-import { statusColor } from "../..";
+import { statusColor } from "utils";
 
 const StatusCell = ({
 	project,

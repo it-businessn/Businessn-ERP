@@ -1,27 +1,27 @@
 import apiService from "services";
 
 const LeadsService = {
-	async getNotDisbursedLeads(data) {
-		return apiService.get("/leads/not-disbursed", data);
+	async getNotDisbursedLeads(id) {
+		return apiService.get(`/leads/not-disbursed/${id}`);
 	},
 	async getLeadCompanies(data) {
 		return apiService.get("/leads/companies", data);
 	},
 
-	async getDisbursedLeads(data) {
-		return apiService.get("/leads/disburse", data);
+	async getDisbursedLeads(company) {
+		return apiService.get(`/leads/disburse/${company}`);
 	},
 
 	// async getConfirmedDisbursedLeads(data) {
 	// 	return apiService.get("/leads/disburse/isConfirmed", data);
 	// },
 
-	async getFreshLeads(data) {
-		return apiService.get("/leads/disburse/isConfirmed", data);
+	async getFreshLeads(id) {
+		return apiService.get(`/leads/disburse/isConfirmed/${id}`);
 	},
 
-	async getTargetLeads(data) {
-		return apiService.get("/leads/targets", data);
+	async getTargetLeads(id) {
+		return apiService.get(`/leads/targets/${id}`);
 	},
 
 	async deleteLead(data, id) {
@@ -32,8 +32,12 @@ const LeadsService = {
 		return apiService.get("/leads/grouped-opportunities");
 	},
 
-	async getOpportunities() {
-		return apiService.get("/leads/opportunities");
+	async getGroupedOpportunitiesByCompany(id) {
+		return apiService.get(`/leads/comp/${id}`);
+	},
+
+	async getOpportunities(id) {
+		return apiService.get(`/leads/opportunities/${id}`);
 	},
 
 	async createMultipleOpportunity(data) {
