@@ -16,9 +16,7 @@ const RootLayout = () => {
 	const [user, setUser] = useState(LocalStorageService.getItem("user"));
 
 	const navigate = useNavigate();
-	const [company, setCompany] = useState(
-		LocalStorageService.getItem("selectedCompany"),
-	);
+	const [company, setCompany] = useState("Fractional Departments Inc.");
 
 	useEffect(() => {
 		const handleSelectedCompanyChange = (event) => setCompany(event.detail);
