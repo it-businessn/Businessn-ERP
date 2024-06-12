@@ -11,13 +11,14 @@ const getShifts = () => async (req, res) => {
 	}
 };
 const getShiftByDate = () => async (req, res) => {
-	const { id } = req.params;
+	const { id, name } = req.params;
 	const today = new Date();
 	// today.setHours(0, 0, 0, 0);
 
 	const idDate = new Date(id);
 	try {
 		const shifts = await EmployeeShift.find({
+			companyName: name,
 			createdOn: {
 				$gte: idDate,
 				$lt: today,

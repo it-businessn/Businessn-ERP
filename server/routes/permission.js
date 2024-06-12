@@ -3,7 +3,7 @@ const router = express.Router();
 
 const permissionController = require("../controllers/permissionController");
 
-router.get("/:id", permissionController.getPermissionByUserId());
+router.get("/:id/:name", permissionController.getPermissionByUserId());
 
 router.post("/", permissionController.addPermission());
 

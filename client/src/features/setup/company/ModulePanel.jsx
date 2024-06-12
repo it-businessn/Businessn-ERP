@@ -3,7 +3,7 @@ import Loader from "components/Loader";
 import { useEffect, useState } from "react";
 import SettingService from "services/SettingService";
 
-const ModulePanel = () => {
+const ModulePanel = ({ company }) => {
 	const [modules, setModules] = useState(null);
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [isRefresh, setIsRefresh] = useState(false);
@@ -13,14 +13,14 @@ const ModulePanel = () => {
 	useEffect(() => {
 		const fetchAllModules = async () => {
 			try {
-				const response = await SettingService.getAllModules();
+				const response = await SettingService.getAllModules(company);
 				setModules(response.data);
 			} catch (error) {
 				console.error(error);
 			}
 		};
 		fetchAllModules();
-	}, [isRefresh]);
+	}, [isRefresh, company]);
 
 	const handleToggle = async (menu) => {
 		try {

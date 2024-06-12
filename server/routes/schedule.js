@@ -5,7 +5,7 @@ const scheduleController = require("../controllers/scheduleController");
 
 router.get("/", scheduleController.getShifts());
 
-router.get("/:id", scheduleController.getShiftByDate());
+router.get("/:id/:name", scheduleController.getShiftByDate());
 
 router.post("/", scheduleController.addShifts());
 

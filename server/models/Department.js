@@ -6,6 +6,7 @@ const departmentSchema = new mongoose.Schema({
 	createdOn: { type: Date, default: Date.now },
 	members: [{ type: mongoose.Schema.Types.ObjectId, ref: "Employee" }],
 	admin: [{ type: mongoose.Schema.Types.ObjectId, ref: "Employee" }],
+	companyName: { type: String, ref: "Company" },
 });
 
 const Department = mongoose.model("Department", departmentSchema);

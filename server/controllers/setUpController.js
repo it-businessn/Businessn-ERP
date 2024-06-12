@@ -16,8 +16,11 @@ const getIdleLeadReAssignment = () => async (req, res) => {
 };
 
 const getAllRoles = () => async (req, res) => {
+	const { id } = req.params;
 	try {
-		const roles = await EmployeeRole.find().sort({ createdOn: -1 });
+		const roles = await EmployeeRole.find({ companyName: id }).sort({
+			createdOn: -1,
+		});
 		res.status(200).json(roles);
 	} catch (error) {
 		res.status(404).json({ error: error.message });
@@ -41,8 +44,11 @@ const addRole = () => async (req, res) => {
 };
 
 const getAllDepartments = () => async (req, res) => {
+	const { id } = req.params;
 	try {
-		const department = await Department.find().sort({ createdOn: -1 });
+		const department = await Department.find({ companyName: id }).sort({
+			createdOn: -1,
+		});
 		res.status(200).json(department);
 	} catch (error) {
 		res.status(404).json({ error: error.message });
@@ -66,8 +72,11 @@ const addDepartment = () => async (req, res) => {
 };
 
 const getAllModules = () => async (req, res) => {
+	const { id } = req.params;
 	try {
-		const module = await Module.find().sort({ createdOn: -1 });
+		const module = await Module.find({ companyName: id }).sort({
+			createdOn: -1,
+		});
 		res.status(200).json(module);
 	} catch (error) {
 		res.status(404).json({ error: error.message });
@@ -104,8 +113,9 @@ const updateModuleActiveStatus = () => async (req, res) => {
 };
 
 const getAllGroups = () => async (req, res) => {
+	const { id } = req.params;
 	try {
-		const group = await Group.find();
+		const group = await Group.find({ companyName: id });
 		res.status(200).json(group);
 	} catch (error) {
 		res.status(404).json({ error: error.message });
@@ -205,8 +215,11 @@ const addCompany = () => async (req, res) => {
 };
 
 const getAllEmpTypes = () => async (req, res) => {
+	const { id } = req.params;
 	try {
-		const empTypes = await EmploymentType.find().sort({ createdOn: -1 });
+		const empTypes = await EmploymentType.find({ companyName: id }).sort({
+			createdOn: -1,
+		});
 		res.status(200).json(empTypes);
 	} catch (error) {
 		res.status(404).json({ error: error.message });

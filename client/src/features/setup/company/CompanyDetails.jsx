@@ -23,11 +23,10 @@ import SettingService from "services/SettingService";
 import { isManager, toCapitalize } from "utils";
 import CompaniesPanel from "../CompaniesPanel";
 
-const CompanyDetails = () => {
+const CompanyDetails = ({ company }) => {
 	const [openCompanyForm, setOpenCompanyForm] = useState(false);
 	const [companyInfo, setCompanyInfo] = useState(null);
 	const [modules, setModules] = useState(null);
-	const company = LocalStorageService.getItem("selectedCompany");
 	const user = LocalStorageService.getItem("user");
 
 	useEffect(() => {
@@ -41,7 +40,7 @@ const CompanyDetails = () => {
 		};
 		const fetchAllModules = async () => {
 			try {
-				const response = await SettingService.getAllModules();
+				const response = await SettingService.getAllModules(company);
 				setModules(response.data);
 			} catch (error) {
 				console.error(error);
@@ -49,7 +48,7 @@ const CompanyDetails = () => {
 		};
 		fetchAllModules();
 		fetchCompanyInfo();
-	}, []);
+	}, [company]);
 
 	const getAddress = (address) =>
 		address

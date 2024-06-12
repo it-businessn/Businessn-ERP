@@ -5,24 +5,24 @@ const SettingService = {
 		return apiService.get(`/configuration/${id}`);
 	},
 
-	async getAllRoles() {
-		return apiService.get(`/setup/roles`);
+	async getAllRoles(id) {
+		return apiService.get(`/setup/roles/${id}`);
 	},
 
 	async addRole(data) {
 		return apiService.post("/setup/roles", data);
 	},
 
-	async getAllDepartments() {
-		return apiService.get(`/setup/departments`);
+	async getAllDepartments(id) {
+		return apiService.get(`/setup/departments/${id}`);
 	},
 
 	async addDepartment(data) {
 		return apiService.post("/setup/departments", data);
 	},
 
-	async getAllModules() {
-		return apiService.get(`/setup/modules`);
+	async getAllModules(id) {
+		return apiService.get(`/setup/modules/${id}`);
 	},
 
 	async addBaseModule(data) {
@@ -33,8 +33,8 @@ const SettingService = {
 		return apiService.put(`/setup/modules-status/${id}`, data, id);
 	},
 
-	async getAllGroups() {
-		return apiService.get(`/setup/groups`);
+	async getAllGroups(id) {
+		return apiService.get(`/setup/groups/${id}`);
 	},
 
 	async addGroup(data) {
@@ -61,8 +61,8 @@ const SettingService = {
 		return apiService.post("/setup/companies", data);
 	},
 
-	async getAllEmploymentTypes() {
-		return apiService.get(`/setup/empTypes`);
+	async getAllEmploymentTypes(id) {
+		return apiService.get(`/setup/empTypes/${id}`);
 	},
 
 	async addEmploymentType(data) {

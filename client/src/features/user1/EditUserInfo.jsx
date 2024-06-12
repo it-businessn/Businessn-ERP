@@ -23,6 +23,7 @@ const EditUserInfo = ({
 	setUserData,
 	setError,
 	error,
+	company,
 }) => {
 	const [empTypes, setEmpTypes] = useState(false);
 	const [roles, setRoles] = useState(false);
@@ -32,7 +33,7 @@ const EditUserInfo = ({
 	useEffect(() => {
 		const fetchAllEmpTypes = async () => {
 			try {
-				const response = await SettingService.getAllEmploymentTypes();
+				const response = await SettingService.getAllEmploymentTypes(company);
 				setEmpTypes(response.data);
 			} catch (error) {
 				console.error(error);
@@ -40,7 +41,7 @@ const EditUserInfo = ({
 		};
 		const fetchAllRoles = async () => {
 			try {
-				const response = await SettingService.getAllRoles();
+				const response = await SettingService.getAllRoles(company);
 				setRoles(response.data);
 			} catch (error) {
 				console.error(error);
@@ -48,7 +49,7 @@ const EditUserInfo = ({
 		};
 		const fetchAllDepartments = async () => {
 			try {
-				const response = await SettingService.getAllDepartments();
+				const response = await SettingService.getAllDepartments(company);
 				setDepartments(response.data);
 			} catch (error) {
 				console.error(error);
@@ -56,7 +57,7 @@ const EditUserInfo = ({
 		};
 		const fetchAllManagers = async () => {
 			try {
-				const response = await UserService.getAllManagers();
+				const response = await UserService.getAllManagers(company);
 				setManagers(response.data);
 			} catch (error) {
 				console.error(error);

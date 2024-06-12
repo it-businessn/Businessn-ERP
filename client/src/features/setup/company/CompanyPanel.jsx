@@ -9,22 +9,24 @@ const CompanyPanel = ({
 	employees,
 	setFilteredEmployees,
 	filteredEmployees,
+	company,
 }) => {
 	const COMPANY_SETUP_TAB = [
-		{ id: 0, type: "Modules", name: <ModulePanel /> },
+		{ id: 0, type: "Modules", name: <ModulePanel company={company} /> },
 		{
 			id: 1,
 			type: "Groups",
 			name: (
 				<GroupsPanel
 					employees={employees}
+					company={company}
 					setFilteredEmployees={setFilteredEmployees}
 					filteredEmployees={filteredEmployees}
 				/>
 			),
 		},
 		{ id: 2, type: "Naming", name: <Naming /> },
-		{ id: 3, type: "Company Info", name: <CompanyDetails /> },
+		{ id: 3, type: "Company Info", name: <CompanyDetails company={company} /> },
 	];
 	const [currentTab, setCurrentTab] = useState(0);
 

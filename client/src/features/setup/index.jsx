@@ -2,6 +2,7 @@ import { Box } from "@chakra-ui/react";
 import TabsButtonGroup from "components/ui/tab/TabsButtonGroup";
 import TextTitle from "components/ui/text/TextTitle";
 import { useEffect, useState } from "react";
+import LocalStorageService from "services/LocalStorageService";
 import UserService from "services/UserService";
 import CompanyPanel from "./company/CompanyPanel";
 import PermissionsPanel from "./permisssions/PermissionsPanel";
@@ -11,11 +12,29 @@ const Setup = () => {
 	const [employees, setEmployees] = useState(null);
 	const [filteredEmployees, setFilteredEmployees] = useState(null);
 	const [isRefresh, setIsRefresh] = useState(false);
+	const [company, setCompany] = useState(
+		LocalStorageService.getItem("selectedCompany"),
+	);
 
+	useEffect(() => {
+		const handleSelectedCompanyChange = (event) => setCompany(event.detail);
+
+		document.addEventListener(
+			"selectedCompanyChanged",
+			handleSelectedCompanyChange,
+		);
+
+		return () => {
+			document.removeEventListener(
+				"selectedCompanyChanged",
+				handleSelectedCompanyChange,
+			);
+		};
+	}, []);
 	useEffect(() => {
 		const fetchAllEmployees = async () => {
 			try {
-				const response = await UserService.getAllUsers();
+				const response = await UserService.getAllCompanyUsers(company);
 				setEmployees(response.data);
 				setFilteredEmployees(response.data);
 			} catch (error) {
@@ -24,7 +43,7 @@ const Setup = () => {
 		};
 
 		fetchAllEmployees();
-	}, [isRefresh]);
+	}, [isRefresh, company]);
 
 	const SETUP_LIST = [
 		{
@@ -45,6 +64,7 @@ const Setup = () => {
 			name: (
 				<CompanyPanel
 					employees={employees}
+					company={company}
 					setFilteredEmployees={setFilteredEmployees}
 					filteredEmployees={filteredEmployees}
 				/>
@@ -56,6 +76,7 @@ const Setup = () => {
 			name: (
 				<PermissionsPanel
 					employees={employees}
+					company={company}
 					setFilteredEmployees={setFilteredEmployees}
 					filteredEmployees={filteredEmployees}
 				/>

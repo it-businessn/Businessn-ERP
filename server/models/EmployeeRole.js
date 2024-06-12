@@ -5,6 +5,7 @@ const roleSchema = new mongoose.Schema({
 	description: String,
 	createdOn: { type: Date, default: Date.now },
 	employees: [{ type: mongoose.Schema.Types.ObjectId, ref: "Employee" }],
+	companyName: { type: String, ref: "Company" },
 });
 
 const EmployeeRole = mongoose.model("EmployeeRole", roleSchema);

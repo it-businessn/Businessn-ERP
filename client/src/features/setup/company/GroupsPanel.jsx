@@ -25,6 +25,7 @@ const GroupsPanel = ({
 	employees,
 	setFilteredEmployees,
 	filteredEmployees,
+	company,
 }) => {
 	const [groups, setGroups] = useState(null);
 	const [groupMembers, setGroupMembers] = useState(null);
@@ -44,7 +45,7 @@ const GroupsPanel = ({
 	useEffect(() => {
 		const fetchAllModules = async () => {
 			try {
-				const response = await SettingService.getAllModules();
+				const response = await SettingService.getAllModules(company);
 				setModules(response.data);
 			} catch (error) {
 				console.error(error);
@@ -52,7 +53,7 @@ const GroupsPanel = ({
 		};
 		const fetchAllManagers = async () => {
 			try {
-				const response = await UserService.getAllManagers();
+				const response = await UserService.getAllManagers(company);
 				setAdmins(response.data);
 			} catch (error) {
 				console.error(error);
@@ -60,27 +61,31 @@ const GroupsPanel = ({
 		};
 		fetchAllManagers();
 		fetchAllModules();
-	}, []);
+	}, [company]);
 
 	useEffect(() => {
 		const fetchAllGroups = async () => {
 			try {
-				const response = await SettingService.getAllGroups();
+				const response = await SettingService.getAllGroups(company);
 				setGroups(response.data);
-				setSelectedModules(response.data[0].modules);
-				setSelectedAdmins(response.data[0].admin);
-				response.data[0].members.forEach((member) => {
-					member.baseModule = response.data[0].modules;
-					member.group = response.data[0].name;
-				});
-				setGroupMembers(response.data[0].members);
-				setSelectedGroup(response.data[0]);
+				if (response.data.length) {
+					setSelectedModules(response.data[0].modules);
+					setSelectedAdmins(response.data[0].admin);
+					response.data[0].members.forEach((member) => {
+						member.baseModule = response.data[0].modules;
+						member.group = response.data[0].name;
+					});
+					setGroupMembers(response.data[0].members);
+					setSelectedGroup(response.data[0]);
+				} else {
+					setGroupMembers(null);
+				}
 			} catch (error) {
 				console.error(error);
 			}
 		};
 		fetchAllGroups();
-	}, [isRefresh]);
+	}, [isRefresh, company]);
 
 	const handleInputChange = (value) => {
 		setEmpName(value);

@@ -3,27 +3,27 @@ const router = express.Router();
 
 const setUpController = require("../controllers/setUpController");
 
-router.get("/roles", setUpController.getAllRoles());
+router.get("/roles/:id", setUpController.getAllRoles());
 
 router.post("/roles", setUpController.addRole());
 
-router.get("/departments", setUpController.getAllDepartments());
+router.get("/departments/:id", setUpController.getAllDepartments());
 
 router.post("/departments", setUpController.addDepartment());
 
-router.get("/modules", setUpController.getAllModules());
+router.get("/modules/:id", setUpController.getAllModules());
 
 router.post("/modules", setUpController.addModule());
 
 router.put("/modules-status/:id", setUpController.updateModuleActiveStatus());
 
-router.get("/groups", setUpController.getAllGroups());
+router.get("/groups/:id", setUpController.getAllGroups());
 
 router.post("/groups", setUpController.addGroup());
 
 router.put("/groups/:id", setUpController.updateGroup());
 
-router.get("/empTypes", setUpController.getAllEmpTypes());
+router.get("/empTypes/:id", setUpController.getAllEmpTypes());
 
 router.post("/empTypes", setUpController.addEmpType());
 

@@ -9,6 +9,7 @@ const shiftSchema = new mongoose.Schema({
 	title: String, // employee name
 	createdOn: { type: Date, default: Date.now },
 	group: { type: mongoose.Schema.Types.ObjectId, ref: "Employee" },
+	companyName: { type: String, ref: "Company" },
 });
 
 const EmployeeShift = mongoose.model("EmployeeShift", shiftSchema);

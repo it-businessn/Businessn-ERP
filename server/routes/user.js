@@ -23,10 +23,10 @@ router.post("/signup", createEmployee());
 // router.post("/send-verification-email", sendVerificationCode);
 router.get("/", getAllUsers());
 router.get("/comp/:id", getAllCompanyUsers());
-router.get("/emp-roles", getAllEmployeesByRole());
+router.get("/emp-roles/:id", getAllEmployeesByRole());
 
 router.get("/groups/:id/:name", getAllMemberGroups());
-router.get("/managers", getAllManagers());
+router.get("/managers/:id", getAllManagers());
 router.get("/not-managers/:id", getAllSalesAgents());
 router.get("/reset-password/:id/:token", resetPassword);
 router.post("/forgot-password", forgotPassword());

@@ -55,6 +55,7 @@ const SignUp = ({ isModal, setRefresh, onClose }) => {
 	const [departments, setDepartments] = useState(false);
 	const [modules, setModules] = useState(false);
 	const [managers, setManagers] = useState(false);
+	const [formData, setFormData] = useState(defaultFormData);
 
 	useEffect(() => {
 		const fetchAllCompanies = async () => {
@@ -65,9 +66,15 @@ const SignUp = ({ isModal, setRefresh, onClose }) => {
 				console.error(error);
 			}
 		};
+		fetchAllCompanies();
+	}, []);
+
+	useEffect(() => {
 		const fetchAllEmpTypes = async () => {
 			try {
-				const response = await SettingService.getAllEmploymentTypes();
+				const response = await SettingService.getAllEmploymentTypes(
+					formData.company,
+				);
 				setEmpTypes(response.data);
 			} catch (error) {
 				console.error(error);
@@ -75,7 +82,7 @@ const SignUp = ({ isModal, setRefresh, onClose }) => {
 		};
 		const fetchAllRoles = async () => {
 			try {
-				const response = await SettingService.getAllRoles();
+				const response = await SettingService.getAllRoles(formData.company);
 				setRoles(response.data);
 			} catch (error) {
 				console.error(error);
@@ -83,7 +90,9 @@ const SignUp = ({ isModal, setRefresh, onClose }) => {
 		};
 		const fetchAllDepartments = async () => {
 			try {
-				const response = await SettingService.getAllDepartments();
+				const response = await SettingService.getAllDepartments(
+					formData.company,
+				);
 				setDepartments(response.data);
 			} catch (error) {
 				console.error(error);
@@ -91,7 +100,7 @@ const SignUp = ({ isModal, setRefresh, onClose }) => {
 		};
 		const fetchAllManagers = async () => {
 			try {
-				const response = await UserService.getAllManagers();
+				const response = await UserService.getAllManagers(formData.company);
 				setManagers(response.data);
 			} catch (error) {
 				console.error(error);
@@ -99,7 +108,7 @@ const SignUp = ({ isModal, setRefresh, onClose }) => {
 		};
 		const fetchAllModules = async () => {
 			try {
-				const response = await SettingService.getAllModules();
+				const response = await SettingService.getAllModules(formData.company);
 				setModules(response.data);
 			} catch (error) {
 				console.error(error);
@@ -110,10 +119,8 @@ const SignUp = ({ isModal, setRefresh, onClose }) => {
 		fetchAllRoles();
 		fetchAllDepartments();
 		fetchAllEmpTypes();
-		fetchAllCompanies();
-	}, []);
+	}, [formData.company]);
 
-	const [formData, setFormData] = useState(defaultFormData);
 	const [isLoading, setIsLoading] = useState(false);
 	const [showPassword, setShowPassword] = useState(false);
 	const [error, setError] = useState(null);
@@ -204,7 +211,7 @@ const SignUp = ({ isModal, setRefresh, onClose }) => {
 									placeholder="Select Company"
 								>
 									{companies?.map((company) => (
-										<option key={company._id} value={company._id}>
+										<option key={company._id} value={company.name}>
 											{company.name}
 										</option>
 									))}

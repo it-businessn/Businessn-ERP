@@ -25,6 +25,7 @@ const PermissionsPanel = ({
 	employees,
 	setFilteredEmployees,
 	filteredEmployees,
+	company,
 }) => {
 	const [isRefresh, setIsRefresh] = useState(false);
 	const [empName, setEmpName] = useState(null);
@@ -44,7 +45,10 @@ const PermissionsPanel = ({
 		const fetchUserPermissions = async () => {
 			setShowLoader(true);
 			try {
-				const response = await UserService.getUserPermission(userId);
+				const response = await UserService.getUserPermission({
+					userId,
+					company,
+				});
 				if (response.data) {
 					SIDEBAR_MENU.forEach((data, index) => {
 						const menu = response.data.permissionType.find(
@@ -74,7 +78,7 @@ const PermissionsPanel = ({
 		};
 
 		fetchUserPermissions();
-	}, [isRefresh, userId]);
+	}, [isRefresh, userId, company]);
 
 	const handleSubmit = async (emp) => {
 		setUserId(emp._id);

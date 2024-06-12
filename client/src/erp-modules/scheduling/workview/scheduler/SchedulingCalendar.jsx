@@ -18,7 +18,7 @@ import Group from "./Group";
 import ItemsRow from "./ItemsRow";
 import "./Scheduler.css";
 
-const SchedulingCalendar = ({ newEmployeeAdded, setRefresh }) => {
+const SchedulingCalendar = ({ newEmployeeAdded, setRefresh, company }) => {
 	const [currentDate, setCurrentDate] = useState(new Date());
 	currentDate.setHours(6, 0, 0, 0);
 
@@ -101,9 +101,10 @@ const SchedulingCalendar = ({ newEmployeeAdded, setRefresh }) => {
 	useEffect(() => {
 		const fetchShifts = async () => {
 			try {
-				const response = await SchedulerService.getShiftsByDate(
-					moment(currentDate).toISOString(),
-				);
+				const response = await SchedulerService.getShiftsByDate({
+					date: moment(currentDate).toISOString(),
+					company,
+				});
 				const uniqueEvents = [];
 				if (response.data.length > 0) {
 					const titles = {};
@@ -144,7 +145,7 @@ const SchedulingCalendar = ({ newEmployeeAdded, setRefresh }) => {
 			}
 		};
 		fetchShifts();
-	}, [currentDate]);
+	}, [currentDate, company]);
 
 	useEffect(() => {
 		if (newEmployeeAdded) {
@@ -185,9 +186,11 @@ const SchedulingCalendar = ({ newEmployeeAdded, setRefresh }) => {
 		};
 
 		if (newItem) {
+			const newRecord = newItem;
+			newRecord.company = company;
 			const addShifts = async () => {
 				try {
-					await SchedulerService.addShifts(newItem);
+					await SchedulerService.addShifts(newRecord);
 				} catch (error) {
 					console.error(error);
 				}

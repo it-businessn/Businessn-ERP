@@ -406,5 +406,5 @@ export const getRoleColor = (role) => {
 
 export const isManager = (role) =>
 	role?.includes(ROLES.ADMIN) ||
-	role?.includes(ROLES.MANAGER) ||
+	// role?.includes(ROLES.MANAGER) ||
 	role?.includes(ROLES.TECH_ADMIN);

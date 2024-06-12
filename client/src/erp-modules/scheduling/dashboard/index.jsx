@@ -44,20 +44,20 @@ const SchedulingDashboard = () => {
 		fetchAllAppointments();
 	}, [isRefresh]);
 
-	const STATS = [
-		{
-			name: "Events",
-			count: events?.length,
-		},
-		{
-			name: "Meetings",
-			count: meetings?.length,
-		},
-		{
-			name: "Appointments",
-			count: appointments?.length,
-		},
-	];
+	// const STATS = [
+	// 	{
+	// 		name: "Events",
+	// 		count: events?.length,
+	// 	},
+	// 	{
+	// 		name: "Meetings",
+	// 		count: meetings?.length,
+	// 	},
+	// 	{
+	// 		name: "Appointments",
+	// 		count: appointments?.length,
+	// 	},
+	// ];
 
 	return (
 		<Box p={{ base: "1em" }} overflow={"hidden"}>

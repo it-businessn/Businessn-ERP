@@ -10,10 +10,13 @@ const getUserPermissions = () => async (req, res) => {
 };
 
 const getPermissionByUserId = () => async (req, res) => {
-	const id = req.params.id;
+	const { id, name } = req.params;
 
 	try {
-		const user = await UserPermissions.findOne({ empId: id });
+		const user = await UserPermissions.findOne({
+			empId: id,
+			companyName: name,
+		});
 		res.status(200).json(user);
 	} catch (error) {
 		res.status(404).json({ error: error.message });

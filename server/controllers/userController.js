@@ -36,8 +36,12 @@ const getAllCompanyUsers = () => async (req, res) => {
 };
 
 const getAllEmployeesByRole = () => async (req, res) => {
+	const { id } = req.params;
 	try {
 		const tasksByEmployee = await Task.aggregate([
+			{
+				$match: { companyName: id },
+			},
 			{
 				$group: {
 					_id: "$selectedAssignees",
@@ -49,7 +53,13 @@ const getAllEmployeesByRole = () => async (req, res) => {
 				},
 			},
 		]);
+
+		const existingCompany = await Company.findOne({ name: id });
+
 		const users = await Employee.aggregate([
+			{
+				$match: { companyId: existingCompany._id },
+			},
 			{
 				$group: {
 					_id: "$role",
@@ -95,8 +105,11 @@ const getAllMemberGroups = () => async (req, res) => {
 };
 
 const getAllManagers = () => async (req, res) => {
+	const { id } = req.params;
 	try {
+		const comp = await Company.findOne({ name: id });
 		const users = await Employee.find({
+			companyId: comp._id,
 			role: { $regex: /manager|administrator/i },
 		});
 		res.status(200).json(users);
@@ -177,9 +190,10 @@ const createEmployee = () => async (req, res) => {
 	// console.log(updatedLeads);
 
 	try {
+		const existingCompany = await Company.findOne({ name: company });
 		const hashedPassword = await bcrypt.hash(password, 10);
 		const employee = await Employee.create({
-			companyId: company,
+			companyId: existingCompany._id,
 			employeeId: companyId,
 			firstName,
 			middleName,
@@ -196,7 +210,6 @@ const createEmployee = () => async (req, res) => {
 			fullName: `${firstName} ${middleName} ${lastName}`,
 		});
 
-		const existingCompany = await Company.findById(company);
 		existingCompany.employees.push(employee._id);
 		await existingCompany.save();
 

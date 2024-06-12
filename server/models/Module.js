@@ -7,6 +7,7 @@ const moduleSchema = new mongoose.Schema({
 	isActive: { type: Boolean, default: false },
 	members: [{ type: mongoose.Schema.Types.ObjectId, ref: "Employee" }],
 	admin: [{ type: mongoose.Schema.Types.ObjectId, ref: "Employee" }],
+	companyName: { type: String, ref: "Company" },
 });
 
 const Module = mongoose.model("Module", moduleSchema);

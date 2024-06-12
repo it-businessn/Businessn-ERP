@@ -5,8 +5,8 @@ const SchedulerService = {
 		return apiService.get(`/schedule/`);
 	},
 
-	async getShiftsByDate(date) {
-		return apiService.get(`/schedule/${date}`);
+	async getShiftsByDate(data) {
+		return apiService.get(`/schedule/${data.date}/${data.company}`);
 	},
 
 	async getTaskByAssignee(name) {

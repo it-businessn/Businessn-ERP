@@ -66,19 +66,16 @@ const WorkView = () => {
 			}
 		};
 		fetchAllProjectInfo();
-	}, [refresh, company]);
-
-	useEffect(() => {
 		const fetchAllManagers = async () => {
 			try {
-				const response = await UserService.getAllManagers();
+				const response = await UserService.getAllManagers(company);
 				setManagers(response.data);
 			} catch (error) {
 				console.error(error);
 			}
 		};
 		fetchAllManagers();
-	}, [refresh]);
+	}, [refresh, company]);
 
 	const allProjects = projects?.map((project) => ({
 		projectName: project.name,

@@ -2,8 +2,9 @@ import { Box, SimpleGrid, Text } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
+import LocalStorageService from "services/LocalStorageService";
 import UserService from "services/UserService";
-import { customOrder, getRoleColor } from "utils";
+import { getRoleColor } from "utils";
 import HeaderCards from "./HeaderCards";
 import QuickSelection from "./quick-selection";
 import Scheduler from "./scheduler";
@@ -12,11 +13,29 @@ const ScheduleWorkView = () => {
 	const [newEmployeeAdded, setNewEmployeeAdded] = useState(null);
 	const [employees, setEmployees] = useState(null);
 	const [refresh, setRefresh] = useState(null);
+	const [company, setCompany] = useState(
+		LocalStorageService.getItem("selectedCompany"),
+	);
 
+	useEffect(() => {
+		const handleSelectedCompanyChange = (event) => setCompany(event.detail);
+
+		document.addEventListener(
+			"selectedCompanyChanged",
+			handleSelectedCompanyChange,
+		);
+
+		return () => {
+			document.removeEventListener(
+				"selectedCompanyChanged",
+				handleSelectedCompanyChange,
+			);
+		};
+	}, []);
 	useEffect(() => {
 		const fetchAllEmployeeByRole = async () => {
 			try {
-				const response = await UserService.getAllEmployeesByRole();
+				const response = await UserService.getAllEmployeesByRole(company);
 				response.data.forEach((user) => {
 					user.color = getRoleColor(user._id);
 				});
@@ -49,7 +68,7 @@ const ScheduleWorkView = () => {
 		};
 
 		fetchAllEmployeeByRole();
-	}, [refresh]);
+	}, [refresh, company]);
 	return (
 		<Box p={{ base: "1em" }} overflow={"hidden"}>
 			<Text fontWeight="bold" mb={"0.5em"}>
@@ -75,6 +94,7 @@ const ScheduleWorkView = () => {
 						setNewEmployeeAdded={setNewEmployeeAdded}
 					/>
 					<Scheduler
+						company={company}
 						newEmployeeAdded={newEmployeeAdded}
 						setRefresh={setRefresh}
 					/>

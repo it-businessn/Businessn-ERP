@@ -33,8 +33,8 @@ const UserService = {
 		return apiService.get(`/user/${id}`);
 	},
 
-	async getAllManagers() {
-		return apiService.get(`/user/managers`);
+	async getAllManagers(id) {
+		return apiService.get(`/user/managers/${id}`);
 	},
 
 	async getAllSalesAgents(id) {
@@ -49,8 +49,8 @@ const UserService = {
 		return apiService.post("/user/verify-email", data);
 	},
 
-	async getUserPermission(id) {
-		return apiService.get(`/permissions/${id}`);
+	async getUserPermission(data) {
+		return apiService.get(`/permissions/${data.userId}/${data.company}`);
 	},
 
 	async addUserPermission(data) {
@@ -61,8 +61,8 @@ const UserService = {
 		return apiService.put(`/permissions/${id}`, data, id);
 	},
 
-	async getAllEmployeesByRole() {
-		return apiService.get(`/user/emp-roles`);
+	async getAllEmployeesByRole(id) {
+		return apiService.get(`/user/emp-roles/${id}`);
 	},
 };
 
