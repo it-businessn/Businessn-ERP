@@ -119,6 +119,7 @@ const PermissionsPanel = ({
 				await UserService.updateUserPermission(value, userId);
 			} else {
 				value.empId = userId;
+				value.companyName = company;
 				await UserService.addUserPermission(value);
 			}
 			setIsRefresh((prev) => !prev);

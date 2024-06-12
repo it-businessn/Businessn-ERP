@@ -1,7 +1,47 @@
 import { Box, HStack, Table, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
+import { useEffect, useState } from "react";
+import LocalStorageService from "services/LocalStorageService";
+import TaskService from "services/TaskService";
 import { formatDate, renderPriorityBars } from "utils";
 
-const TaskTable = ({ tasks, cols }) => {
+const TaskTable = ({ selectedUser, cols }) => {
+	const [tasks, setTasks] = useState([]);
+	const [company, setCompany] = useState(
+		LocalStorageService.getItem("selectedCompany"),
+	);
+
+	useEffect(() => {
+		const handleSelectedCompanyChange = (event) => setCompany(event.detail);
+
+		document.addEventListener(
+			"selectedCompanyChanged",
+			handleSelectedCompanyChange,
+		);
+
+		return () => {
+			document.removeEventListener(
+				"selectedCompanyChanged",
+				handleSelectedCompanyChange,
+			);
+		};
+	}, []);
+
+	useEffect(() => {
+		const fetchAllUserTasks = async () => {
+			try {
+				const response = await TaskService.getTaskByAssignee({
+					name: selectedUser?.fullName,
+					company,
+				});
+
+				setTasks(response.data);
+			} catch (error) {
+				console.error(error);
+			}
+		};
+		fetchAllUserTasks();
+	}, [selectedUser, company]);
+
 	return (
 		<Box overflow="auto">
 			<Table variant="simple" size={"small"}>

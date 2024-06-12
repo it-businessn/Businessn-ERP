@@ -10,6 +10,7 @@ const getEvents = () => async (req, res) => {
 };
 const getCompEvents = () => async (req, res) => {
 	const { id } = req.params;
+
 	try {
 		const events = await Event.find({ companyName: id }).sort({
 			createdOn: -1,

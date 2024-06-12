@@ -24,10 +24,11 @@ const getPermissionByUserId = () => async (req, res) => {
 };
 
 const addPermission = () => async (req, res) => {
-	let { empId, accessName, name } = req.body;
+	let { empId, accessName, name, companyName } = req.body;
 
 	const user = new UserPermissions({
 		empId,
+		companyName,
 	});
 	try {
 		const item = {

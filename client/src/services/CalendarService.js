@@ -6,7 +6,7 @@ const CalendarService = {
 	},
 
 	async getCompEvents(id) {
-		return apiService.get(`/events/comp/${id}}`);
+		return apiService.get(`/events/comp/${id}`);
 	},
 
 	async getEventsByType(data) {
