@@ -123,14 +123,14 @@ const getAllGroups = () => async (req, res) => {
 };
 
 const addGroup = () => async (req, res) => {
-	const { name, baseModule, admin } = req.body;
+	const { name, baseModule, admin, company } = req.body;
 
 	const newModule = new Group({
 		name,
 		modules: baseModule,
 		admin,
+		companyName: company,
 	});
-
 	try {
 		await newModule.save();
 		res.status(201).json(newModule);

@@ -5,7 +5,7 @@ import moment from "moment";
 import { useEffect, useState } from "react";
 import TimesheetService from "services/TimesheetService";
 
-const TimeCard = ({ selectedUser }) => {
+const TimeCard = ({ selectedUser, company }) => {
 	const [time, setTime] = useState(new Date());
 
 	const toast = useToast();
@@ -26,6 +26,7 @@ const TimeCard = ({ selectedUser }) => {
 		try {
 			await TimesheetService.addTimesheet({
 				employeeId: selectedUser?._id,
+				companyName: company,
 			});
 			toast({
 				title: "Clock In successful!",

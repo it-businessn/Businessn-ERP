@@ -14,11 +14,19 @@ import { useState } from "react";
 import { FaCaretDown } from "react-icons/fa";
 import SettingService from "services/SettingService";
 
-const AddNewGroup = ({ isOpen, onClose, setRefresh, modules, admins }) => {
+const AddNewGroup = ({
+	isOpen,
+	onClose,
+	setRefresh,
+	modules,
+	admins,
+	company,
+}) => {
 	const defaultGroup = {
 		name: "",
 		baseModule: [],
 		admin: [],
+		company,
 	};
 
 	const [isSubmitting, setSubmitting] = useState(false);

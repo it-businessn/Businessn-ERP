@@ -10,6 +10,7 @@ const messageSchema = new mongoose.Schema({
 		type: mongoose.Schema.Types.ObjectId,
 		ref: "Conversation",
 	},
+	companyName: { type: String, ref: "Company" },
 });
 
 const Message = mongoose.model("Message", messageSchema);

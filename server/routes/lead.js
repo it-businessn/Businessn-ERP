@@ -13,7 +13,7 @@ router.get("/targets/:id", leadController.getTargetLeads());
 
 router.get("/not-disbursed/:id", leadController.getNotDisbursedLeads());
 
-router.get("/companies", leadController.getLeadCompanies());
+router.get("/companies/:id", leadController.getLeadCompanies());
 
 router.get("/grouped-opportunities", leadController.getGroupedOpportunities());
 router.get("/comp/:id", leadController.getGroupedOpportunitiesByCompany());

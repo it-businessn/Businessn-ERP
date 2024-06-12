@@ -48,11 +48,12 @@ const createConversationTwoUsers = () => async (req, res) => {
 };
 
 const createConversation = (io) => async (req, res) => {
-	const { participants, conversationType, groupName } = req.body;
+	const { participants, conversationType, groupName, companyName } = req.body;
 	try {
 		const existingConversation = await Conversation.findOne({
 			conversationType,
 			groupName,
+			companyName,
 		});
 		if (existingConversation) {
 			res.status(201).json(existingConversation);
@@ -62,6 +63,7 @@ const createConversation = (io) => async (req, res) => {
 				participants,
 				conversationType,
 				groupName,
+				companyName,
 			});
 			await conversation.save();
 			res.status(201).json(conversation);
@@ -197,7 +199,7 @@ const getOneToOneConversationById = () => async (req, res) => {
 };
 
 const createMessages = () => async (req, res) => {
-	const { text, senderId, receiverId } = req.body;
+	const { text, senderId, receiverId, companyName } = req.body;
 
 	try {
 		const sender = await Employee.findById(senderId);
@@ -208,11 +210,13 @@ const createMessages = () => async (req, res) => {
 		let conversation = await Conversation.findOne({
 			participants: { $all: [senderId, receiverId], $size: 2 },
 			conversationType: "one-on-one",
+			companyName,
 		});
 		if (!conversation) {
 			conversation = new Conversation({
 				participants: [senderId, receiverId],
 				conversationType: "one-on-one",
+				companyName,
 			});
 			await conversation.save();
 		}
@@ -222,6 +226,7 @@ const createMessages = () => async (req, res) => {
 			text,
 			timestamp: new Date(),
 			conversation: conversation._id,
+			companyName,
 		});
 		await message.save();
 
@@ -236,7 +241,7 @@ const createMessages = () => async (req, res) => {
 };
 
 const createGroupMessages = (io) => async (req, res) => {
-	const { senderId, id, text } = req.body;
+	const { senderId, id, text, companyName } = req.body;
 	try {
 		const sender = await Employee.findById(senderId);
 		const conversation = await Conversation.findById(id);
@@ -256,6 +261,7 @@ const createGroupMessages = (io) => async (req, res) => {
 			sender: senderId,
 			timestamp: new Date(),
 			groupConversation: id,
+			companyName,
 		});
 		await message.save();
 

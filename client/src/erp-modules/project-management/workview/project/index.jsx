@@ -10,7 +10,8 @@ import {
 	Tr,
 	useDisclosure,
 } from "@chakra-ui/react";
-import { useEffect, useState } from "react";
+import Loader from "components/Loader";
+import { useState } from "react";
 import { FaSort } from "react-icons/fa";
 import AddProject from "./AddProject";
 import AssigneeCell from "./cell/AssigneeCell";
@@ -21,9 +22,8 @@ import ProjectActionCell from "./cell/ProjectActionCell";
 import StatusCell from "./cell/StatusCell";
 import { PROJECT_TABLE_CELLS } from "./data";
 
-const ProjectTable = ({ data, setRefresh, managers }) => {
+const ProjectTable = ({ projects, setRefresh, managers, company }) => {
 	const { isOpen, onOpen, onClose } = useDisclosure();
-	const [projects, setProjects] = useState([]);
 
 	const [openEditTask, setOpenEditTask] = useState(false);
 	const [task, setTask] = useState(null);
@@ -31,10 +31,6 @@ const ProjectTable = ({ data, setRefresh, managers }) => {
 	const [projectId, setProjectId] = useState(null);
 	const [expandedIndex, setExpandedIndex] = useState(null);
 	const [assignees, setAssignees] = useState(null);
-
-	useEffect(() => {
-		setProjects(data);
-	}, [data]);
 
 	const handleAddProject = () => {
 		onOpen();
@@ -75,6 +71,7 @@ const ProjectTable = ({ data, setRefresh, managers }) => {
 					isOpen={isOpen}
 					onClose={onClose}
 					setRefresh={setRefresh}
+					company={company}
 				/>
 			)}
 			<Table color={"brand.nav_color"} bg={"brand.primary_bg"}>
@@ -97,6 +94,8 @@ const ProjectTable = ({ data, setRefresh, managers }) => {
 						))}
 					</Tr>
 				</Thead>
+
+				{!projects && <Loader />}
 				<Tbody>
 					{projects?.map((project, index) => (
 						<Tr
@@ -119,6 +118,7 @@ const ProjectTable = ({ data, setRefresh, managers }) => {
 								setProject={setProject}
 								setProjectId={setProjectId}
 								setRefresh={setRefresh}
+								company={company}
 							/>
 							<AssigneeCell
 								expandedIndex={expandedIndex}

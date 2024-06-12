@@ -29,7 +29,7 @@ const getTaskById = () => async (req, res) => {
 };
 
 const createTask = () => async (req, res) => {
-	const { contactId, dueDate, description, createdBy } = req.body;
+	const { contactId, dueDate, description, createdBy, companyName } = req.body;
 
 	try {
 		const newContactTask = await LogTask.create({
@@ -37,6 +37,7 @@ const createTask = () => async (req, res) => {
 			dueDate,
 			description,
 			createdBy,
+			companyName,
 		});
 		const contact = await Contact.findById(contactId);
 		contact.tasks.push(newContactTask._id);

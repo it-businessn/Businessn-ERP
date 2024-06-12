@@ -11,6 +11,7 @@ const logActivitySchema = new mongoose.Schema({
 	duration: String,
 	createdOn: { type: Date, default: Date.now },
 	updatedOn: { type: Date, default: Date.now },
+	companyName: { type: String, ref: "Company" },
 });
 
 const LogActivity = mongoose.model("LogActivity", logActivitySchema);

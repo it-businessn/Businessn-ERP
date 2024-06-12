@@ -20,6 +20,7 @@ const ProjectActionCell = ({
 	projectId,
 	setRefresh,
 	managers,
+	company,
 }) => {
 	const [openEditProject, setOpenEditProject] = useState(false);
 	const [openAddTask, setOpenAddTask] = useState(false);
@@ -89,6 +90,7 @@ const ProjectActionCell = ({
 									handleSubTaskToggle={handleSubTaskToggle}
 									setRefresh={setRefresh}
 									managers={managers}
+									company={company}
 								/>
 							</VStack>
 						);
@@ -112,6 +114,7 @@ const ProjectActionCell = ({
 					projectId={projectId}
 					setRefresh={setRefresh}
 					managers={managers}
+					company={company}
 				/>
 			)}
 		</Td>

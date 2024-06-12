@@ -19,7 +19,7 @@ import { useState } from "react";
 import { FaCaretDown } from "react-icons/fa";
 import ProjectService from "services/ProjectService";
 
-const AddProject = ({ isOpen, onClose, setRefresh, managers }) => {
+const AddProject = ({ isOpen, onClose, setRefresh, managers, company }) => {
 	const defaultProject = {
 		projectName: "",
 		startDate: null,
@@ -27,6 +27,7 @@ const AddProject = ({ isOpen, onClose, setRefresh, managers }) => {
 		timeToComplete: 0,
 		managerName: "",
 		managerId: "",
+		companyName: company,
 	};
 	const [isSubmitting, setSubmitting] = useState(false);
 	const [error, setError] = useState(false);

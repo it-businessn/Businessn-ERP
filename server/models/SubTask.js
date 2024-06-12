@@ -19,6 +19,7 @@ const subTaskSchema = new mongoose.Schema({
 	totalEstimatedHours: Number,
 	completionPercent: Number,
 	priority: { type: String, default: "low" },
+	companyName: { type: String, ref: "Company" },
 });
 
 const SubTask = mongoose.model("SubTask", subTaskSchema);

@@ -37,27 +37,41 @@ const AddQuestionForm = () => {
 	const [showAddAssessmentType, setShowAddAssessmentType] = useState(false);
 	const [refresh, setRefresh] = useState(false);
 	const [questionnaires, setQuestionnaires] = useState(null);
-	const [companyName, setCompany] = useState(
+	const [company, setCompany] = useState(
 		LocalStorageService.getItem("selectedCompany"),
 	);
+
+	useEffect(() => {
+		const handleSelectedCompanyChange = (event) => setCompany(event.detail);
+
+		document.addEventListener(
+			"selectedCompanyChanged",
+			handleSelectedCompanyChange,
+		);
+
+		return () => {
+			document.removeEventListener(
+				"selectedCompanyChanged",
+				handleSelectedCompanyChange,
+			);
+		};
+	}, []);
 	useEffect(() => {
 		const fetchAllAssessmentTypes = async () => {
 			try {
-				const response = await QuestionnaireService.getAssessmentTypes(
-					companyName,
-				);
+				const response = await QuestionnaireService.getAssessmentTypes(company);
 				setAssessmentTypes(response.data);
 			} catch (error) {
 				console.error(error);
 			}
 		};
 		fetchAllAssessmentTypes();
-	}, [assessmentType, refresh]);
-
-	useEffect(() => {
 		const fetchQuestionsByType = async (type) => {
 			try {
-				const response = await QuestionnaireService.getAssessmentByType(type);
+				const response = await QuestionnaireService.getAssessmentByType({
+					type,
+					company,
+				});
 				setQuestionnaires(response.data);
 			} catch (error) {
 				console.error(error);
@@ -66,7 +80,7 @@ const AddQuestionForm = () => {
 		if (assessmentType) {
 			fetchQuestionsByType(assessmentType);
 		}
-	}, [refresh, assessmentType]);
+	}, [assessmentType, refresh, company]);
 
 	const handleOptionChange = (index, value) => {
 		const newOptions = [...options];
@@ -79,10 +93,11 @@ const AddQuestionForm = () => {
 		try {
 			await QuestionnaireService.addQuestionnaire({
 				assessmentType,
-				question,
-				options,
+				company,
 				correctAnswer,
 				explanation,
+				options,
+				question,
 			});
 			setRefresh((prev) => !prev);
 		} catch (error) {
@@ -209,18 +224,21 @@ const AddQuestionForm = () => {
 					</FormLabel>
 				</Box>
 			))}
-			<EditQuestionnaire
-				setFormData={setFormData}
-				showEditQuestion={showEditQuestion}
-				setRefresh={setRefresh}
-				setShowEditQuestion={setShowEditQuestion}
-				formData={formData}
-			/>
+			{showEditQuestion && (
+				<EditQuestionnaire
+					setFormData={setFormData}
+					showEditQuestion={showEditQuestion}
+					setRefresh={setRefresh}
+					setShowEditQuestion={setShowEditQuestion}
+					formData={formData}
+				/>
+			)}
 			{showAddAssessmentType && (
 				<AddAssessmentType
 					showAddAssessmentType={showAddAssessmentType}
 					setRefresh={setRefresh}
 					setShowAddAssessmentType={setShowAddAssessmentType}
+					company={company}
 				/>
 			)}
 			{!assessmentTypes && (

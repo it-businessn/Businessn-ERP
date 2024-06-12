@@ -4,12 +4,12 @@ const router = express.Router();
 const questionnaireController = require("../controllers/questionnaireController");
 
 router.get(
-	"/assessment/type/comp/:id",
-	questionnaireController.getAssessmentType,
+	"/assessment/type/company/:type/:company",
+	questionnaireController.getAssessmentQuestionsByType,
 );
 router.get(
-	"/assessment/type/:id",
-	questionnaireController.getAssessmentQuestionsByType,
+	"/assessment/type/comp/:id",
+	questionnaireController.getAssessmentType,
 );
 router.get("/", questionnaireController.getAllQuestions);
 

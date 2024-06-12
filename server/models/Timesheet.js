@@ -24,6 +24,7 @@ const timesheetSchema = new mongoose.Schema({
 	projectEntries: [{ type: mongoose.Schema.Types.ObjectId, ref: "Project" }],
 	updatedOn: { type: Date, default: Date.now },
 	createdOn: { type: Date, default: Date.now },
+	companyName: { type: String, ref: "Company" },
 });
 
 const Timesheet = mongoose.model("Timesheet", timesheetSchema);

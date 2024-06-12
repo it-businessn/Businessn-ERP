@@ -86,10 +86,15 @@ const Resources = () => {
 				setSelectedFilter={setSelectedFilter}
 				resources={resources}
 				setNewUpload={setNewUpload}
+				company={company}
 			/>
 			{selectedFilter === "Training" && (
 				<SimpleGrid spacing="1em" mt={"0.5em"}>
-					{isUserManager ? <ManagerViewCard /> : <AssociateViewCard />}
+					{isUserManager ? (
+						<ManagerViewCard company={company} />
+					) : (
+						<AssociateViewCard company={company} />
+					)}
 				</SimpleGrid>
 			)}
 			{!resources && <Loader />}

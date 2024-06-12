@@ -110,6 +110,7 @@ const addTaskSubTask = () => async (req, res) => {
 		subTaskTimeToComplete,
 		subTaskDueDate,
 		subTaskName,
+		companyName,
 	} = req.body;
 
 	try {
@@ -121,6 +122,7 @@ const addTaskSubTask = () => async (req, res) => {
 			dueDate: subTaskDueDate,
 			timeToComplete: subTaskTimeToComplete,
 			status: getStatus(subTaskDueDate),
+			companyName,
 		});
 		await newSubtask.save();
 
@@ -166,6 +168,7 @@ const addTaskSubTasks = () => async (req, res) => {
 		subTaskTimeToComplete,
 		subTaskDueDate,
 		subTaskName,
+		companyName,
 	} = req.body;
 
 	const status = getStatus(subTaskDueDate);
@@ -187,6 +190,7 @@ const addTaskSubTasks = () => async (req, res) => {
 			status,
 			totalTasks: 0,
 			subtasks: [],
+			companyName,
 		};
 		savedSubtask.subtasks.push(updatedData);
 		await savedSubtask.save();
@@ -434,7 +438,8 @@ const createSchedulingProjectTask = () => async (req, res) => {
 const addProjectTask = () => async (req, res) => {
 	const { id } = req.params;
 
-	const { timeToComplete, dueDate, taskName, selectedAssignees } = req.body;
+	const { timeToComplete, dueDate, taskName, selectedAssignees, companyName } =
+		req.body;
 
 	const status = getStatus(dueDate);
 
@@ -447,6 +452,7 @@ const addProjectTask = () => async (req, res) => {
 			isOpen: true,
 			selectedAssignees,
 			timeToComplete,
+			companyName,
 		});
 		await newTask.save();
 
@@ -776,6 +782,7 @@ const createProject = () => async (req, res) => {
 		dueDate,
 		managerId,
 		managerName,
+		companyName,
 	} = req.body;
 	const status = getStatus(dueDate);
 	const project = new Project({
@@ -786,6 +793,7 @@ const createProject = () => async (req, res) => {
 		managerName,
 		status,
 		managerId,
+		companyName,
 	});
 	try {
 		const savedProject = await project.save();

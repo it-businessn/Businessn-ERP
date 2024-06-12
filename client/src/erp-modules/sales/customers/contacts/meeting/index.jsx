@@ -11,7 +11,7 @@ import CalendarService from "services/CalendarService";
 import UserService from "services/UserService";
 import MeetingList from "./MeetingList";
 
-const Meetings = ({ contactId, user }) => {
+const Meetings = ({ contactId, user, company }) => {
 	const [openAssigneeMenu, setOpenAssigneeMenu] = useState(false);
 
 	const [attendees, setAttendees] = useState(null);
@@ -42,6 +42,7 @@ const Meetings = ({ contactId, user }) => {
 		meetingLink: "",
 		createdBy: user?._id,
 		contactId,
+		companyName: company,
 	};
 	const [formData, setFormData] = useState(initialFormData);
 	const [selectedOptions, setSelectedOptions] = useState([]);

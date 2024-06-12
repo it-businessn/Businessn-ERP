@@ -21,7 +21,7 @@ import LocalStorageService from "services/LocalStorageService";
 import QuestionnaireService from "services/QuestionnaireService";
 import award from "../../../assets/award.jpeg";
 
-const AssociateViewCard = () => {
+const AssociateViewCard = ({ company }) => {
 	const [assessments, setAssessments] = useState(null);
 	const [assessmentsTaken, setAssessmentsTaken] = useState(null);
 
@@ -35,7 +35,7 @@ const AssociateViewCard = () => {
 	useEffect(() => {
 		const fetchAllAssessmentTypes = async () => {
 			try {
-				const response = await QuestionnaireService.getAssessmentTypes();
+				const response = await QuestionnaireService.getAssessmentTypes(company);
 				setAssessments(response.data);
 			} catch (error) {
 				console.error(error);
@@ -70,7 +70,7 @@ const AssociateViewCard = () => {
 			}
 		};
 		fetchAssessmentsTaken();
-	}, [completed, notComplete]);
+	}, [completed, notComplete, company]);
 
 	useEffect(() => {
 		const i = [];
@@ -180,19 +180,27 @@ const AssociateViewCard = () => {
 							spacing={"1em"}
 						>
 							{assessments?.map((assessment) => {
-								const assessmentResult = assessmentsTaken?.find(
-									(type) => type.subject === assessment.name,
+								const passResult = assessmentsTaken?.find(
+									(type) =>
+										type.subject === assessment.name &&
+										type.category === "PASS",
 								);
-								if (assessmentResult) {
-									assessmentResult.color =
-										assessmentResult?.category === "PASS"
-											? "var(--correct_ans)"
-											: "var(--almost_pass)";
-									assessmentResult.bg =
-										assessmentResult?.category === "PASS"
-											? "var(--phoneCall_bg_light)"
-											: "var(--receiver_msg_bg)";
+
+								if (passResult) {
+									passResult.color = "var(--correct_ans)";
+									passResult.bg = "var(--phoneCall_bg_light)";
 								}
+
+								const failResult = assessmentsTaken?.find(
+									(type) =>
+										type.subject === assessment.name &&
+										type.category === "ALMOST!",
+								);
+								if (failResult) {
+									failResult.color = "var(--almost_pass)";
+									failResult.bg = "var(--receiver_msg_bg)";
+								}
+
 								return (
 									<Box
 										key={assessment._id}
@@ -256,12 +264,13 @@ const AssociateViewCard = () => {
 													size="xs"
 													title="Your Result:"
 												/>
-												{assessmentResult?.category ? (
-													<Badge
-														bg={assessmentResult?.bg}
-														color={assessmentResult?.color}
-													>
-														{assessmentResult?.category}
+												{passResult?.category ? (
+													<Badge bg={passResult?.bg} color={passResult?.color}>
+														{passResult?.category}
+													</Badge>
+												) : failResult?.category ? (
+													<Badge bg={failResult?.bg} color={failResult?.color}>
+														{failResult?.category}
 													</Badge>
 												) : (
 													<Badge
@@ -273,7 +282,6 @@ const AssociateViewCard = () => {
 													</Badge>
 												)}
 											</HStack>
-
 											<HStack justify={"space-between"} w={"100%"}>
 												<VStack>
 													<TextTitle
@@ -283,7 +291,11 @@ const AssociateViewCard = () => {
 													/>
 													<TextTitle
 														title={
-															assessmentResult ? assessmentResult.result : "NA"
+															passResult
+																? passResult.result
+																: failResult
+																? failResult.result
+																: "NA"
 														}
 													/>
 												</VStack>
@@ -295,10 +307,14 @@ const AssociateViewCard = () => {
 													/>
 													<TextTitle
 														title={`${
-															assessmentResult
+															passResult
 																? (
-																		(assessmentResult.score /
-																			assessmentResult.total) *
+																		(passResult.score / passResult.total) *
+																		100
+																  ).toFixed(2)
+																: failResult
+																? (
+																		(failResult.score / failResult.total) *
 																		100
 																  ).toFixed(2)
 																: "NA"
@@ -309,7 +325,7 @@ const AssociateViewCard = () => {
 											</HStack>
 											<PrimaryButton
 												size={"xs"}
-												name={assessmentResult ? "Re-Take" : "Take"}
+												name={passResult || failResult ? "Re-Take" : "Take"}
 												Assessment
 												onOpen={() =>
 													navigate(`/sales/assessment/${assessment.name}`)

@@ -52,7 +52,7 @@ const Employees = () => {
 					<Flex flexDir="column">
 						<Flex justify="space-between">
 							<TextTitle title={"Customers"} />
-							<Button
+							{/* <Button
 								bg="var(--primary_button_bg)"
 								size="xs"
 								color={"brand.primary_bg"}
@@ -61,7 +61,7 @@ const Employees = () => {
 								borderRadius={"10px"}
 							>
 								Add new employee
-							</Button>
+							</Button> */}
 						</Flex>
 						<HStack spacing="1em" mt="1em">
 							<Button
@@ -135,7 +135,7 @@ const Employees = () => {
 									py={"1.1em"}
 								/>
 							</InputGroup>
-							<Button
+							{/* <Button
 								bg="var(--primary_button_bg)"
 								size="xs"
 								color={"brand.primary_bg"}
@@ -144,7 +144,7 @@ const Employees = () => {
 								borderRadius={"10px"}
 							>
 								Add new employee
-							</Button>
+							</Button> */}
 						</HStack>
 					</Flex>
 				)}

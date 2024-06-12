@@ -22,13 +22,32 @@ const Assessment = () => {
 	const [answers, setAnswers] = useState({});
 	const [showExplanation, setShowExplanation] = useState(false);
 	const [correctCount, setCorrectCount] = useState(0);
+	const [company, setCompany] = useState(
+		LocalStorageService.getItem("selectedCompany"),
+	);
 
+	useEffect(() => {
+		const handleSelectedCompanyChange = (event) => setCompany(event.detail);
+
+		document.addEventListener(
+			"selectedCompanyChanged",
+			handleSelectedCompanyChange,
+		);
+
+		return () => {
+			document.removeEventListener(
+				"selectedCompanyChanged",
+				handleSelectedCompanyChange,
+			);
+		};
+	}, []);
 	useEffect(() => {
 		const fetchAllAssessments = async () => {
 			try {
-				const response = await QuestionnaireService.getAssessmentByType(
-					category,
-				);
+				const response = await QuestionnaireService.getAssessmentByType({
+					type: category,
+					company,
+				});
 				setQuestionnaires(response.data);
 			} catch (error) {
 				console.error(error);
@@ -48,13 +67,14 @@ const Assessment = () => {
 		setCorrectCount(count);
 		try {
 			setShowExplanation(true);
-			const response = await QuestionnaireService.addAssessmentStatus({
+			await QuestionnaireService.addAssessmentStatus({
 				subject: category,
 				score: count,
 				category: count === questionnaires.length ? "PASS" : "ALMOST!",
 				result: `${count}/${questionnaires.length}`,
 				empId: userId,
 				total: questionnaires.length,
+				companyName: company,
 			});
 		} catch (error) {
 			console.error(error);

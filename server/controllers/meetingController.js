@@ -36,6 +36,7 @@ const addMeeting = () => async (req, res) => {
 		toTime,
 		type,
 		createdBy,
+		companyName,
 	} = req.body;
 
 	try {
@@ -51,6 +52,7 @@ const addMeeting = () => async (req, res) => {
 			toTime,
 			type,
 			createdBy,
+			companyName,
 		});
 		const contact = await Contact.findById(contactId);
 		contact.meetings.push(newMeeting._id);

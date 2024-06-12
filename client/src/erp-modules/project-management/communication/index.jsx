@@ -24,11 +24,33 @@ const Communications = ({ isDashboard }) => {
 	const [selectedGroupMember, setSelectedGroupMember] = useState(null);
 	const userId = LocalStorageService.getItem("user")._id;
 	const user = LocalStorageService.getItem("user");
+	const [company, setCompany] = useState(
+		LocalStorageService.getItem("selectedCompany"),
+	);
+
+	useEffect(() => {
+		const handleSelectedCompanyChange = (event) => setCompany(event.detail);
+
+		document.addEventListener(
+			"selectedCompanyChanged",
+			handleSelectedCompanyChange,
+		);
+
+		return () => {
+			document.removeEventListener(
+				"selectedCompanyChanged",
+				handleSelectedCompanyChange,
+			);
+		};
+	}, []);
 
 	useEffect(() => {
 		const fetchAllGroups = async () => {
 			try {
-				const response = await UserService.getAllMemberGroups(userId);
+				const response = await UserService.getAllMemberGroups({
+					userId,
+					company,
+				});
 				setGroups(response.data);
 				if (response.data.length > 0) {
 					response.data[0].members.forEach((member) => {
@@ -46,7 +68,7 @@ const Communications = ({ isDashboard }) => {
 		};
 
 		fetchAllGroups();
-	}, []);
+	}, [company]);
 
 	const handleGroupClick = (group) => {
 		setSelectedGroup(group);
@@ -167,14 +189,17 @@ const Communications = ({ isDashboard }) => {
 										>
 											<VStack align={"self-start"}>
 												<Text fontWeight="bold">{member?.fullName}</Text>
-												<Text fontWeight="bold">
-													{
+												<TextTitle
+													whiteSpace="wrap"
+													align={"start"}
+													weight="normal"
+													title={
 														conversations
 															?.slice()
 															.reverse()
 															.find((id) => id.sender === member._id)?.text
 													}
-												</Text>
+												/>
 											</VStack>
 										</Button>
 									</HStack>
@@ -190,6 +215,7 @@ const Communications = ({ isDashboard }) => {
 							groupMembers={groupMembers}
 							selectedGroup={selectedGroup}
 							selectedGroupMember={selectedGroupMember}
+							company={company}
 						/>
 					</>
 				)}

@@ -1,10 +1,10 @@
 import { Box } from "@chakra-ui/react";
 import "react-big-calendar/lib/css/react-big-calendar.css";
-import ChatMessages from "./ChatMessages";
-import MiniCalendar from "./MiniCalendar";
+import ChatMessages from "erp-modules/sales/dashboard/rightpane/ChatMessages";
+import MiniCalendar from "erp-modules/sales/dashboard/rightpane/MiniCalendar";
 import UserMeetingInfo from "./UserMeetingInfo";
 
-const RightPane = ({ selectedUser, stats }) => {
+const RightPane = ({ selectedUser, stats, company }) => {
 	return (
 		<Box
 			overflow={"hidden"}
@@ -14,9 +14,13 @@ const RightPane = ({ selectedUser, stats }) => {
 			border="3px solid var(--main_color)"
 			borderRadius="10px"
 		>
-			<UserMeetingInfo stats={stats} selectedUser={selectedUser} />
-			<MiniCalendar user={selectedUser.fullName} />
-			<ChatMessages userId={selectedUser._id} />
+			<UserMeetingInfo
+				stats={stats}
+				selectedUser={selectedUser}
+				company={company}
+			/>
+			<MiniCalendar user={selectedUser.fullName} company={company} />
+			<ChatMessages userId={selectedUser._id} company={company} />
 		</Box>
 	);
 };

@@ -86,10 +86,11 @@ const getTimesheetById = () => async (req, res) => {
 };
 
 const createTimesheet = () => async (req, res) => {
-	const { employeeId } = req.body;
+	const { employeeId, companyName } = req.body;
 	try {
 		const existingTimesheet = await Timesheet.findOne({
 			employeeId,
+			companyName,
 			createdOn: {
 				$gte: new Date(
 					currentDate.getFullYear(),

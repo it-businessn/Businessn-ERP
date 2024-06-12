@@ -5,7 +5,7 @@ import { SiMicrosoftexcel } from "react-icons/si";
 import * as XLSX from "xlsx";
 import AddNewOpportunity from "../opportunities/AddNewOpportunity";
 
-const AddOpportunity = ({ data, setData }) => {
+const AddOpportunity = ({ data, setData, company }) => {
 	const fileInputRef = useRef(null);
 
 	const toast = useToast();
@@ -95,12 +95,15 @@ const AddOpportunity = ({ data, setData }) => {
 				aria-label="Attach Excel file"
 				onClick={handleIconButtonClick}
 			/>
-			<AddNewOpportunity
-				// setIsAdded={setIsAdded}
-				isDocket
-				isOpen={isOpen}
-				onClose={onClose}
-			/>
+			{isOpen && (
+				<AddNewOpportunity
+					// setIsAdded={setIsAdded}
+					isDocket
+					isOpen={isOpen}
+					onClose={onClose}
+					company={company}
+				/>
+			)}
 		</HStack>
 	);
 };

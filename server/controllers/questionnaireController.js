@@ -25,9 +25,13 @@ const getQuestionById = async (req, res) => {
 };
 
 const getAssessmentQuestionsByType = async (req, res) => {
-	const { id } = req.params;
+	const { type, company } = req.params;
+
 	try {
-		const questions = await Questionnaire.find({ subject: id });
+		const questions = await Questionnaire.find({
+			subject: type,
+			companyName: company,
+		});
 		res.status(200).json(questions);
 	} catch (error) {
 		res.status(404).json({ error: error.message });
@@ -84,7 +88,8 @@ const createAssessmentType = async (req, res) => {
 	}
 };
 const createAssessment = async (req, res) => {
-	const { subject, score, category, result, empId, total } = req.body;
+	const { subject, score, category, result, empId, total, companyName } =
+		req.body;
 
 	try {
 		const assessment = new Assessment({
@@ -94,6 +99,7 @@ const createAssessment = async (req, res) => {
 			result,
 			empId,
 			total,
+			companyName,
 		});
 
 		const newAssessment = await assessment.save();
@@ -104,8 +110,14 @@ const createAssessment = async (req, res) => {
 };
 
 const createQuestionnaire = async (req, res) => {
-	const { assessmentType, correctAnswer, explanation, options, question } =
-		req.body;
+	const {
+		assessmentType,
+		company,
+		correctAnswer,
+		explanation,
+		options,
+		question,
+	} = req.body;
 
 	try {
 		const questionnaire = new Questionnaire({
@@ -114,6 +126,7 @@ const createQuestionnaire = async (req, res) => {
 			options,
 			question,
 			subject: assessmentType,
+			companyName: company,
 		});
 
 		const newQuestionnaire = await questionnaire.save();

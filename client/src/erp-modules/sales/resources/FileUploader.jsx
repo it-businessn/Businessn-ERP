@@ -4,7 +4,7 @@ import TextTitle from "components/ui/text/TextTitle";
 import { useState } from "react";
 import ResourceService from "services/ResourceService";
 
-const FileUploader = ({ fileTypes, userName, setNewUpload }) => {
+const FileUploader = ({ fileTypes, userName, setNewUpload, company }) => {
 	const [file, setFile] = useState(null);
 	const [fileType, setFileType] = useState(fileTypes[1].type);
 
@@ -17,6 +17,7 @@ const FileUploader = ({ fileTypes, userName, setNewUpload }) => {
 		formData.append("file", file);
 		formData.append("fileType", fileType);
 		formData.append("uploadedBy", userName);
+		formData.append("company", company);
 
 		try {
 			await ResourceService.upload(formData);

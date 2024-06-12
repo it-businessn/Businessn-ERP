@@ -4,7 +4,7 @@ import ActivityService from "services/ActivityService";
 import AddLogForm from "./AddLogForm";
 import LogActivityList from "./LogActivityList";
 
-const Logs = ({ contactId, user }) => {
+const Logs = ({ contactId, user, company }) => {
 	const [activities, setActivities] = useState([]);
 	const [refresh, setRefresh] = useState(false);
 	const [logActivity, setLogActivity] = useState({
@@ -13,6 +13,7 @@ const Logs = ({ contactId, user }) => {
 		description: "",
 		createdBy: user?._id,
 		contactId,
+		companyName: company,
 	});
 
 	useEffect(() => {

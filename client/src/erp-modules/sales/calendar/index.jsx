@@ -244,6 +244,7 @@ const Calendar = () => {
 					setShowModal(false);
 					setEvent(null);
 				}}
+				company={company}
 			/>
 			{showDetailsModal && (
 				<EventDetails

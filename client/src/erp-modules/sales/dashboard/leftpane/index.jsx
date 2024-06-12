@@ -56,7 +56,10 @@ const LeftPane = ({ selectedUser, setStats, company }) => {
 					type: "event",
 					name: company,
 				});
-				setEvents(response.data);
+				const userEvents = response.data.filter((_) =>
+					_.meetingAttendees.includes(selectedUser.fullName),
+				);
+				setEvents(userEvents);
 				setStatInfo("Events", response.data.length);
 			} catch (error) {
 				console.error(error);
@@ -68,7 +71,10 @@ const LeftPane = ({ selectedUser, setStats, company }) => {
 					type: "meeting",
 					name: company,
 				});
-				setMeetings(response.data);
+				const userMeetings = response.data.filter((_) =>
+					_.meetingAttendees.includes(selectedUser.fullName),
+				);
+				setMeetings(userMeetings);
 				setStatInfo("Meetings", response.data.length);
 			} catch (error) {
 				console.error(error);
@@ -80,7 +86,10 @@ const LeftPane = ({ selectedUser, setStats, company }) => {
 					type: "phoneCall",
 					name: company,
 				});
-				setAppointments(response.data);
+				const userAppointments = response.data.filter((_) =>
+					_.meetingAttendees.includes(selectedUser.fullName),
+				);
+				setAppointments(userAppointments);
 				setStatInfo("Appointments", response.data.length);
 			} catch (error) {
 				console.error(error);

@@ -17,6 +17,7 @@ const TaskActionCell = ({
 	handleTaskToggle,
 	isExpanded,
 	isSubExpanded,
+	company,
 }) => {
 	const [isTaskCompleted, setIsTaskCompleted] = useState(task.completed);
 	const [openEditTask, setOpenEditTask] = useState(false);
@@ -133,6 +134,7 @@ const TaskActionCell = ({
 								handleSubTaskToggle={handleSubTaskToggle}
 								setRefresh={setRefresh}
 								managers={managers}
+								company={company}
 							/>
 						</VStack>
 					);
@@ -153,6 +155,7 @@ const TaskActionCell = ({
 					currentTask={currentTask}
 					setRefresh={setRefresh}
 					managers={managers}
+					company={company}
 				/>
 			)}
 			{isOpen && (

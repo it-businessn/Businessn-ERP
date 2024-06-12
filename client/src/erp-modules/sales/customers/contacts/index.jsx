@@ -34,7 +34,7 @@ const Contacts = ({ setViewProfile, selectedContact, company }) => {
 
 	useEffect(() => {
 		fetchContacts();
-	}, []);
+	}, [company]);
 
 	const [currentTab, setCurrentTab] = useState(0);
 	const handleButtonClick = (value) => {
@@ -47,16 +47,27 @@ const Contacts = ({ setViewProfile, selectedContact, company }) => {
 	const tabList = [
 		{
 			name: "Notes",
-			component: <Notes user={user} contactId={contact?._id} />,
+			component: (
+				<Notes user={user} contactId={contact?._id} company={company} />
+			),
 		},
-		{ name: "Logs", component: <Logs user={user} contactId={contact?._id} /> },
+		{
+			name: "Logs",
+			component: (
+				<Logs user={user} contactId={contact?._id} company={company} />
+			),
+		},
 		{
 			name: "Tasks",
-			component: <Tasks user={user} contactId={contact?._id} />,
+			component: (
+				<Tasks user={user} contactId={contact?._id} company={company} />
+			),
 		},
 		{
 			name: "Meetings",
-			component: <Meetings user={user} contactId={contact?._id} />,
+			component: (
+				<Meetings user={user} contactId={contact?._id} company={company} />
+			),
 		},
 	];
 

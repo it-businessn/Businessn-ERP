@@ -116,8 +116,9 @@ const getNotDisbursedLeads = () => async (req, res) => {
 };
 
 const getLeadCompanies = () => async (req, res) => {
+	const { id } = req.params;
 	try {
-		const leadCompanies = await LeadCompany.find({});
+		const leadCompanies = await LeadCompany.find({ companyName: id });
 
 		res.status(200).json(leadCompanies);
 	} catch (error) {
@@ -161,6 +162,7 @@ const createLeadOpportunity = () => async (req, res) => {
 	const {
 		abbreviation,
 		address,
+		name,
 		companyName,
 		email,
 		industry,
@@ -179,6 +181,7 @@ const createLeadOpportunity = () => async (req, res) => {
 	try {
 		const newLeadOpportunity = await Lead.create({
 			abbreviation,
+			name,
 			companyName,
 			email,
 			industry,
@@ -199,11 +202,12 @@ const createLeadOpportunity = () => async (req, res) => {
 	}
 };
 const createLeadCompany = () => async (req, res) => {
-	const { companyName } = req.body;
+	const { name, companyName } = req.body;
 
 	try {
 		const newLeadCompany = await LeadCompany.create({
-			name: companyName,
+			name,
+			companyName,
 		});
 
 		res.status(201).json(newLeadCompany);
@@ -213,7 +217,7 @@ const createLeadCompany = () => async (req, res) => {
 };
 
 const createMultipleLeadOpportunity = () => async (req, res) => {
-	const { newRecord } = req.body;
+	const { newRecord, companyName } = req.body;
 
 	let leadsCreated = 0;
 	try {
@@ -221,7 +225,7 @@ const createMultipleLeadOpportunity = () => async (req, res) => {
 			const {
 				abbreviation,
 				address,
-				companyName,
+				name,
 				email,
 				industry,
 				opportunityName,
@@ -231,6 +235,7 @@ const createMultipleLeadOpportunity = () => async (req, res) => {
 			const { streetNumber, city, state, postalCode, country } = address;
 			await Lead.create({
 				abbreviation,
+				name,
 				companyName,
 				email,
 				industry,

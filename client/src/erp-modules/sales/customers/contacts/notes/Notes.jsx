@@ -6,12 +6,13 @@ import moment from "moment";
 import { useEffect, useState } from "react";
 import NotesService from "services/NotesService";
 
-const Notes = ({ contactId, user }) => {
+const Notes = ({ contactId, user, company }) => {
 	const [notes, setNotes] = useState([]);
 	const [newNote, setNewNote] = useState({
 		description: "",
 		createdBy: user?._id,
 		contactId,
+		companyName: company,
 	});
 
 	const [refresh, setRefresh] = useState(false);

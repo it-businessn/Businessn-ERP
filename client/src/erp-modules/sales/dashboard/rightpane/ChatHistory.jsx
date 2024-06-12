@@ -10,6 +10,7 @@ const ChatHistory = ({
 	userId,
 	isRefresh,
 	setIsRefresh,
+	company,
 }) => {
 	const [messages, setMessages] = useState(null);
 	const [message, setMessage] = useState("");
@@ -43,6 +44,7 @@ const ChatHistory = ({
 				participants,
 				conversationType: currentConversation?.conversationType,
 				groupName: currentConversation.groupName,
+				companyName: company,
 			});
 			return { id: response.data._id, type: response.data.conversationType };
 		} catch (error) {
@@ -58,12 +60,14 @@ const ChatHistory = ({
 					text: message,
 					senderId: userId,
 					receiverId: currentConversation.participant._id,
+					companyName: company,
 				});
 			} else {
 				await CommunicationService.createGroupMessages({
 					id,
 					text: message,
 					senderId: userId,
+					companyName: company,
 				});
 			}
 			setIsRefresh((prev) => !prev);

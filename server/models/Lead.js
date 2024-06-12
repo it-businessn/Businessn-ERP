@@ -10,7 +10,7 @@ const leadSchema = new mongoose.Schema({
 		postalCode: String,
 		country: String,
 	},
-	companyName: String,
+	name: String,
 	createdOn: { type: Date, default: Date.now },
 	updatedOn: { type: Date, default: Date.now },
 	disbursedTo: String,

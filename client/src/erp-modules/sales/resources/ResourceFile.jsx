@@ -29,6 +29,7 @@ const ResourceFile = ({
 	setNewUpload,
 	fullName,
 	isUserManager,
+	company,
 }) => {
 	const [isEditable, setIsEditable] = useState(false);
 	const [resourceId, setResourceId] = useState(null);
@@ -133,6 +134,7 @@ const ResourceFile = ({
 							setNewUpload={setNewUpload}
 							fileTypes={fileTypes}
 							userName={fullName}
+							company={company}
 						/>
 					)}
 					<SimpleGrid columns={{ base: 1, md: 2, lg: 5 }} spacing="1em" my="5">

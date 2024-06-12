@@ -44,6 +44,7 @@ const createEvent = () => async (req, res) => {
 		toTime,
 		eventLink,
 		location,
+		companyName,
 	} = req.body;
 	try {
 		const event = new Event({
@@ -56,6 +57,7 @@ const createEvent = () => async (req, res) => {
 			toTime,
 			eventLink,
 			location,
+			companyName,
 		});
 		const newEvent = await event.save();
 		res.status(201).json(newEvent);

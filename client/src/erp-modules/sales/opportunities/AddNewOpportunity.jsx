@@ -32,6 +32,7 @@ const AddNewOpportunity = ({
 	setIsAdded,
 	isDocket,
 	assignees,
+	company,
 }) => {
 	const defaultOpportunity = {
 		abbreviation: "",
@@ -42,7 +43,8 @@ const AddNewOpportunity = ({
 			postalCode: "",
 			country: "",
 		},
-		companyName: "",
+		name: "",
+		companyName: company,
 		email: "",
 		industry: "",
 		opportunityName: "",
@@ -76,7 +78,7 @@ const AddNewOpportunity = ({
 	useEffect(() => {
 		const fetchAllCompanies = async () => {
 			try {
-				const response = await LeadsService.getLeadCompanies();
+				const response = await LeadsService.getLeadCompanies(company);
 				setCompanies(response.data);
 			} catch (error) {
 				console.error(error);
@@ -173,8 +175,8 @@ const AddNewOpportunity = ({
 									borderRadius="10px"
 									size="sm"
 									placeholder="Select Company"
-									name="companyName"
-									value={formData.companyName}
+									name="name"
+									value={formData.name}
 									onChange={handleChange}
 								>
 									{companies?.map(({ _id, name }) => (

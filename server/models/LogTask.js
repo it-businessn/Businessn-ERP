@@ -11,6 +11,7 @@ const logTaskSchema = new mongoose.Schema({
 	createdOn: { type: Date, default: Date.now },
 	updatedOn: { type: Date, default: Date.now },
 	dueDate: Date,
+	companyName: { type: String, ref: "Company" },
 });
 
 const LogTask = mongoose.model("LogTask", logTaskSchema);

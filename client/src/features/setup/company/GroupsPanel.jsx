@@ -179,6 +179,7 @@ const GroupsPanel = ({
 						modules={modules}
 						admins={admins}
 						isOpen={openAddGroup}
+						company={company}
 						onClose={() => setOpenAddGroup(false)}
 						setRefresh={setIsRefresh}
 					/>

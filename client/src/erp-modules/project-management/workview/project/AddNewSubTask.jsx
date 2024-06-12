@@ -27,6 +27,7 @@ const AddNewSubTask = ({
 	setRefresh,
 	currentTask,
 	managers,
+	company,
 }) => {
 	const defaultTask = {
 		projectId: currentTask?.projectId,
@@ -37,6 +38,7 @@ const AddNewSubTask = ({
 		subTaskDueDate: null,
 		subTaskTimeToComplete: 0,
 		subTaskName: "",
+		companyName: company,
 	};
 
 	const [selectedOptions, setSelectedOptions] = useState([]);

@@ -27,10 +27,15 @@ const getNoteById = () => async (req, res) => {
 };
 
 const createNote = () => async (req, res) => {
-	const { contactId, createdBy, description } = req.body;
+	const { contactId, createdBy, description, companyName } = req.body;
 
 	try {
-		const newNote = await Note.create({ contactId, createdBy, description });
+		const newNote = await Note.create({
+			contactId,
+			createdBy,
+			description,
+			companyName,
+		});
 		const contact = await Contact.findById(contactId);
 		contact.notes.push(newNote._id);
 

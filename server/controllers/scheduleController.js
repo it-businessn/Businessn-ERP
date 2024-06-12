@@ -41,8 +41,17 @@ const getTaskById = () => async (req, res) => {
 };
 
 const addShifts = () => async (req, res) => {
-	const { color, duration, end_time, start_time, id, title, group, startDate } =
-		req.body;
+	const {
+		color,
+		duration,
+		end_time,
+		start_time,
+		id,
+		title,
+		group,
+		startDate,
+		company,
+	} = req.body;
 
 	const newShift = new EmployeeShift({
 		color,
@@ -52,6 +61,7 @@ const addShifts = () => async (req, res) => {
 		start_time,
 		title,
 		group,
+		companyName: company,
 	});
 	try {
 		const shift = await newShift.save();

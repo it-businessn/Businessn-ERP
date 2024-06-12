@@ -18,7 +18,7 @@ import ReactDatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import LogTaskService from "services/LogTaskService";
 
-const Tasks = ({ contactId, user }) => {
+const Tasks = ({ contactId, user, company }) => {
 	const [tasks, setTasks] = useState([]);
 	const [refresh, setRefresh] = useState(false);
 
@@ -27,6 +27,7 @@ const Tasks = ({ contactId, user }) => {
 		description: "",
 		createdBy: user?._id,
 		contactId,
+		companyName: company,
 	};
 	const [task, setTask] = useState(initialFormData);
 

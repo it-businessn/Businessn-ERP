@@ -72,7 +72,7 @@ const AssigneeSelector = ({
 				onChange={handleMultiAssigneesChange}
 				placeholder={`Select ${label}`}
 			>
-				{assignees.map(({ name }) => (
+				{assignees?.map(({ name }) => (
 					<option value={name} key={name}>
 						{name}
 					</option>
@@ -82,7 +82,7 @@ const AssigneeSelector = ({
 			{selectedAssignees.length > 0 && (
 				<FormControl>
 					<FormLabel>Selected {label}</FormLabel>
-					{selectedAssignees.map((assignee) => (
+					{selectedAssignees?.map((assignee) => (
 						<Button
 							key={assignee.name}
 							ml="2"

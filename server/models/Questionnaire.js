@@ -8,6 +8,7 @@ const questionnaireSchema = new mongoose.Schema({
 	subject: { type: String, ref: "AssessmentType" },
 	createdOn: { type: Date, default: Date.now },
 	updatedOn: { type: Date, default: Date.now },
+	companyName: { type: String, ref: "Company" },
 });
 
 const Questionnaire = mongoose.model("Questionnaire", questionnaireSchema);

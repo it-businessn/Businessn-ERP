@@ -21,6 +21,7 @@ const AddEvent = ({
 	filterText = "Event",
 	filter,
 	// setShowEditDetails,
+	company,
 }) => {
 	const [eventType, setEventType] = useState(filter);
 	const [attendees, setAttendees] = useState(null);
@@ -28,7 +29,7 @@ const AddEvent = ({
 	useEffect(() => {
 		const fetchAllAttendees = async () => {
 			try {
-				const response = await UserService.getAllUsers();
+				const response = await UserService.getAllCompanyUsers(company);
 				setAttendees(response.data);
 			} catch (error) {
 				console.error(error);
@@ -47,6 +48,7 @@ const AddEvent = ({
 		meetingAttendees: [],
 		toDate: "",
 		toTime: "",
+		companyName: company,
 	};
 
 	const initialSavedData = {

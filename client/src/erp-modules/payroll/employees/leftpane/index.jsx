@@ -2,7 +2,7 @@ import { Box, SimpleGrid } from "@chakra-ui/react";
 
 import TimeCard from "./TimeCard";
 
-const LeftPane = ({ selectedUser, setStats }) => {
+const LeftPane = ({ selectedUser, setStats, company }) => {
 	return (
 		<Box>
 			<SimpleGrid
@@ -11,7 +11,7 @@ const LeftPane = ({ selectedUser, setStats }) => {
 				spacing="1em"
 				color={"brand.200"}
 			>
-				<TimeCard selectedUser={selectedUser} />
+				<TimeCard selectedUser={selectedUser} company={company} />
 			</SimpleGrid>
 		</Box>
 	);

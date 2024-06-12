@@ -59,7 +59,7 @@ const Opportunities = () => {
 	useEffect(() => {
 		const fetchAllSalesAgents = async () => {
 			try {
-				const response = await UserService.getAllSalesAgents();
+				const response = await UserService.getAllSalesAgents(company);
 				response.data.forEach((item) => (item.name = item.fullName));
 				setAssignees(response.data);
 			} catch (error) {
@@ -68,7 +68,7 @@ const Opportunities = () => {
 		};
 
 		fetchAllSalesAgents();
-	}, []);
+	}, [company]);
 
 	const fetchAllOpportunities = async () => {
 		try {
@@ -296,12 +296,15 @@ const Opportunities = () => {
 					</Tbody>
 				</TableLayout>
 			)}
-			<AddNewOpportunity
-				assignees={assignees}
-				setIsAdded={setIsAdded}
-				isOpen={isOpen}
-				onClose={onClose}
-			/>
+			{isOpen && (
+				<AddNewOpportunity
+					assignees={assignees}
+					setIsAdded={setIsAdded}
+					isOpen={isOpen}
+					onClose={onClose}
+					company={company}
+				/>
+			)}
 		</SectionLayout>
 	);
 };

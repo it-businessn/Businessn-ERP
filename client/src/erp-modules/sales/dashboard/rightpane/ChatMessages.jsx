@@ -103,6 +103,7 @@ const ChatMessages = ({ userId, company }) => {
 							currentConversation={currentConversation}
 							isRefresh={isRefresh}
 							setIsRefresh={setIsRefresh}
+							company={company}
 						/>
 					)}
 

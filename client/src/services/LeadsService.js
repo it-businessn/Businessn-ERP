@@ -4,8 +4,8 @@ const LeadsService = {
 	async getNotDisbursedLeads(id) {
 		return apiService.get(`/leads/not-disbursed/${id}`);
 	},
-	async getLeadCompanies(data) {
-		return apiService.get("/leads/companies", data);
+	async getLeadCompanies(id) {
+		return apiService.get(`/leads/companies/${id}`);
 	},
 
 	async getDisbursedLeads(company) {

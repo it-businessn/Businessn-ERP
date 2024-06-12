@@ -25,7 +25,7 @@ export const headerCell = (key, weight, w) => (
 );
 
 const WorkView = () => {
-	const [projects, setProjects] = useState([]);
+	const [projects, setProjects] = useState(null);
 	const [refresh, setRefresh] = useState(false);
 
 	const [managers, setManagers] = useState(null);
@@ -54,6 +54,7 @@ const WorkView = () => {
 	useEffect(() => {
 		const fetchAllProjectInfo = async () => {
 			try {
+				setProjects(null);
 				const response = isManagerView
 					? await ProjectService.getAllCompanyProjects(company)
 					: await ProjectService.getAllCompanyProjectsByUser(
@@ -63,6 +64,7 @@ const WorkView = () => {
 				setProjects(response.data);
 			} catch (error) {
 				console.error(error);
+				setProjects(null);
 			}
 		};
 		fetchAllProjectInfo();
@@ -77,27 +79,27 @@ const WorkView = () => {
 		fetchAllManagers();
 	}, [refresh, company]);
 
-	const allProjects = projects?.map((project) => ({
-		projectName: project.name,
-		id: project._id,
-	}));
+	// const allProjects = projects?.map((project) => ({
+	// 	projectName: project.name,
+	// 	id: project._id,
+	// }));
 
-	const allTasks = projects?.flatMap(
-		(project) =>
-			project?.tasks?.map((task) => ({
-				...task,
-				projectName: project.name,
-			})) || [],
-	);
+	// const allTasks = projects?.flatMap(
+	// 	(project) =>
+	// 		project?.tasks?.map((task) => ({
+	// 			...task,
+	// 			projectName: project.name,
+	// 		})) || [],
+	// );
 
-	const allProjectTasks = allTasks.map((task) => ({
-		taskName: task.taskName,
-		id: task._id,
-	}));
+	// const allProjectTasks = allTasks.map((task) => ({
+	// 	taskName: task.taskName,
+	// 	id: task._id,
+	// }));
 
-	const allActivities = allTasks?.filter(
-		(task) => task?.activities?.length > 0,
-	);
+	// const allActivities = allTasks?.filter(
+	// 	(task) => task?.activities?.length > 0,
+	// );
 	return (
 		<Box p={{ base: "1em", md: "2em" }} mt={{ base: "3em", md: 0 }}>
 			<Text fontWeight="bold" mb={"0.5em"}>
@@ -116,8 +118,9 @@ const WorkView = () => {
 				{projects && (
 					<ProjectTable
 						setRefresh={setRefresh}
-						data={projects}
+						projects={projects}
 						managers={managers}
+						company={company}
 					/>
 				)}
 				{/* {projects && viewMode === "Projects" ? (

@@ -16,6 +16,7 @@ const SubTaskActionCell = ({
 	isSubExpanded,
 	handleSubTaskToggle,
 	index,
+	company,
 }) => {
 	const { _id, taskName, selectedAssignees, completed } = task;
 
@@ -162,6 +163,7 @@ const SubTaskActionCell = ({
 					currentTask={currentTask}
 					setRefresh={setRefresh}
 					managers={managers}
+					company={company}
 				/>
 			)}
 		</>

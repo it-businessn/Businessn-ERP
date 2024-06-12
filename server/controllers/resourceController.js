@@ -91,7 +91,7 @@ const updateResource = () => async (req, res) => {
 };
 
 const createResource = () => async (req, res) => {
-	const { fileType, uploadedBy } = req.body;
+	const { fileType, uploadedBy, company } = req.body;
 
 	const fileData = req.file;
 
@@ -107,6 +107,7 @@ const createResource = () => async (req, res) => {
 			fileType,
 			originalname,
 			uploadedBy,
+			companyName: company,
 		});
 		const file = await newResource.save();
 		res.status(201).json({ file, message: "File uploaded successfully!" });

@@ -28,6 +28,7 @@ const AddNewProjectTask = ({
 	project,
 	projectId,
 	managers,
+	company,
 }) => {
 	const defaultTask = {
 		projectId,
@@ -36,6 +37,7 @@ const AddNewProjectTask = ({
 		selectedAssignees: [],
 		dueDate: null,
 		timeToComplete: 0,
+		companyName: company,
 	};
 
 	const [selectedOptions, setSelectedOptions] = useState([]);

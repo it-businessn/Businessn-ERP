@@ -27,7 +27,8 @@ const getActivityById = () => async (req, res) => {
 };
 
 const createActivity = () => async (req, res) => {
-	const { contactId, createdBy, description, duration, type } = req.body;
+	const { contactId, createdBy, description, duration, type, companyName } =
+		req.body;
 
 	try {
 		const newActivity = await LogActivity.create({
@@ -36,6 +37,7 @@ const createActivity = () => async (req, res) => {
 			description,
 			duration,
 			type,
+			companyName,
 		});
 		const contact = await Contact.findById(contactId);
 		contact.activities.push(newActivity._id);

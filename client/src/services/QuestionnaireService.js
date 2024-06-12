@@ -13,8 +13,10 @@ const QuestionnaireService = {
 		return apiService.get(`/questionnaire/assessment/type/comp/${company}`);
 	},
 
-	async getAssessmentByType(id) {
-		return apiService.get(`/questionnaire/assessment/type/${id}`);
+	async getAssessmentByType(data) {
+		return apiService.get(
+			`/questionnaire/assessment/type/company/${data.type}/${data.company}`,
+		);
 	},
 
 	async addAssessmentType(data) {

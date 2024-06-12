@@ -85,6 +85,7 @@ const LeadsDocket = () => {
 			try {
 				const response = await LeadsService.createMultipleOpportunity({
 					newRecord: data,
+					companyName: company,
 				});
 				setLeads(response.data);
 				setAllLeadIDs(response.data.map((item) => item._id));
@@ -95,7 +96,7 @@ const LeadsDocket = () => {
 		if (data.length > 0) {
 			addMultipleLeads();
 		}
-	}, [data]);
+	}, [data, company]);
 
 	const [checkedRows, setCheckedRows] = useState([]);
 	const [isAllChecked, setIsAllChecked] = useState(false);
@@ -156,7 +157,7 @@ const LeadsDocket = () => {
 					<HStack spacing="1em" my="1em">
 						<SearchFilter width={"200px"} />
 					</HStack>
-					<AddOpportunity data={data} setData={setData} />
+					<AddOpportunity company={company} data={data} setData={setData} />
 				</Flex>
 			) : isIpad ? (
 				<Flex flexDir="column">
@@ -167,7 +168,7 @@ const LeadsDocket = () => {
 							checkedRows={checkedRows}
 							handleDisburse={handleDisburse}
 						/>
-						<AddOpportunity data={data} setData={setData} />
+						<AddOpportunity data={data} setData={setData} company={company} />
 					</Flex>
 					<Region />
 					<HStack spacing="1em" my="1em">
@@ -222,7 +223,7 @@ const LeadsDocket = () => {
 								py={"1.1em"}
 							/>
 						</InputGroup>
-						<AddOpportunity data={data} setData={setData} />
+						<AddOpportunity data={data} setData={setData} company={company} />
 					</HStack>
 				</HStack>
 			)}

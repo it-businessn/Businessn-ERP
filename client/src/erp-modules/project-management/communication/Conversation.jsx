@@ -22,6 +22,7 @@ const Conversation = ({
 	setConversations,
 	isDashboard,
 	user,
+	company,
 }) => {
 	const [message, setMessage] = useState("");
 	const [isRefresh, setIsRefresh] = useState(false);
@@ -75,6 +76,7 @@ const Conversation = ({
 				participants,
 				conversationType: type,
 				groupName: selectedGroup.name,
+				companyName: company,
 			});
 			return { id: response.data._id, type: response.data.conversationType };
 		} catch (error) {
@@ -91,12 +93,14 @@ const Conversation = ({
 					text: message,
 					senderId: userId,
 					receiverId: selectedGroupMember._id,
+					companyName: company,
 				});
 			} else {
 				await CommunicationService.createGroupMessages({
 					id,
 					text: message,
 					senderId: userId,
+					companyName: company,
 				});
 			}
 			setIsRefresh((prev) => !prev);
