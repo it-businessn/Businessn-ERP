@@ -73,7 +73,7 @@ const SelectCustomer = ({
 					icon={<FaCaretDown />}
 					borderRadius="10px"
 					size="sm"
-					placeholder={data.length === 0 ? "No contacts found" : "Select lead"}
+					placeholder={data?.length === 0 ? "No contacts found" : "Select lead"}
 					name="name"
 					value={lead}
 					onChange={handleLead}
