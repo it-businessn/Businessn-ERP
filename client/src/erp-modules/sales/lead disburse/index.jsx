@@ -34,6 +34,7 @@ import { caption, columns, showFilterSearchOption, showRegion } from "./data";
 const LeadsDisbursed = () => {
 	const { isMobile, isIpad } = useBreakpointValue();
 	const [agents, setAgents] = useState(null);
+	const [activity, setActivity] = useState(null);
 
 	const [company, setCompany] = useState(
 		LocalStorageService.getItem("selectedCompany"),
@@ -54,34 +55,35 @@ const LeadsDisbursed = () => {
 			);
 		};
 	}, []);
+	const fetchAllUserActivity = async () => {
+		try {
+			const response = await UserService.getAllUserActivity();
+			setActivity(response.data);
+		} catch (error) {
+			console.error(error);
+		}
+	};
 	const fetchAllAgents = async () => {
 		try {
 			const response = await UserService.getAllSalesAgents(company);
+			if (activity) {
+				response.data?.map((agent) => {
+					const user = activity?.find((_) => _.userID === agent._id);
+					agent.lastLoginStatus = user
+						? user?.logoutTime
+							? null
+							: "Is logged In"
+						: "";
+					agent.lastLogin = user?.loginTime;
+					return agent;
+				});
+			}
 			setAgents(response.data);
 			setCheckedRows(response.data.filter((user) => user.isActive === true));
 		} catch (error) {
 			console.error(error);
 		}
 	};
-	useEffect(() => {
-		const fetchAllUserActivity = async () => {
-			try {
-				const response = await UserService.getAllUserActivity();
-
-				agents?.forEach((agent) => {
-					response.data?.forEach((user) => {
-						if (user.userID === agent._id) {
-							agent.lastLoginStatus = user.logoutTime ? null : "Is logged In";
-							agent.lastLogin = user.loginTime;
-						}
-					});
-				});
-			} catch (error) {
-				console.error(error);
-			}
-		};
-		fetchAllUserActivity();
-	}, [agents]);
 
 	const [leads, setLeads] = useState(null);
 	const [checkedRows, setCheckedRows] = useState([]);
@@ -105,8 +107,12 @@ const LeadsDisbursed = () => {
 			}
 		};
 		fetchAllLeads();
-		fetchAllAgents();
+		fetchAllUserActivity();
 	}, [company]);
+
+	useEffect(() => {
+		fetchAllAgents();
+	}, [activity]);
 
 	useEffect(() => {
 		const updateUserProfile = async () => {
@@ -254,7 +260,7 @@ const LeadsDisbursed = () => {
 			)}
 
 			{!agents && <Loader />}
-			{agents && (
+			{activity && (
 				<TableLayout cols={columns} isSmall>
 					<Tbody>
 						{agents?.map(
