@@ -5,9 +5,11 @@ const Company = require("../models/Company");
 const Group = require("../models/Group");
 const jwt = require("jsonwebtoken");
 const Lead = require("../models/Lead");
-const mongoose = require("mongoose");
 const sendEmail = require("../emailService/sendEmail");
 const Task = require("../models/Task");
+const UserActivity = require("../models/UserActivity");
+
+const currentDate = new Date();
 
 const createToken = (_id) => {
 	return jwt.sign({ _id }, process.env.JWT_SECRET_KEY, { expiresIn: "3d" });
@@ -17,6 +19,27 @@ const getAllUsers = () => async (req, res) => {
 	try {
 		// const users = (await User.find()).sort((a, b) => b.createdOn - a.createdOn);
 		const users = await Employee.find({});
+		res.status(200).json(users);
+	} catch (error) {
+		res.status(404).json({ error: error.message });
+	}
+};
+const getUserActivity = () => async (req, res) => {
+	try {
+		const users = await UserActivity.find({
+			loginTime: {
+				$gte: new Date(
+					currentDate.getFullYear(),
+					currentDate.getMonth(),
+					currentDate.getDate(),
+				),
+				$lt: new Date(
+					currentDate.getFullYear(),
+					currentDate.getMonth(),
+					currentDate.getDate() + 1,
+				),
+			},
+		});
 		res.status(200).json(users);
 	} catch (error) {
 		res.status(404).json({ error: error.message });
@@ -154,11 +177,40 @@ const loginUser = () => async (req, res) => {
 		if (!user) {
 			return res.status(500).json({ error: "User does not exist" });
 		}
-		// return res.json({ message: "Login successful", user });
+		const currentTime = new Date();
+		const activity = new UserActivity({
+			userID: user._id,
+			loginTime: currentTime,
+		});
+		await activity.save();
+		// return res.json({ message: "Login successful", user, activity });
 		const match = await bcrypt.compare(password, user.password);
 		return match
 			? res.json({ message: "Login successful", user })
 			: res.status(401).json({ error: "Invalid password" });
+	} catch (error) {
+		console.error("Error checking password:", error);
+		return res.status(500).json({ error: "Internal server error" });
+	}
+};
+
+const logOutUser = () => async (req, res) => {
+	const { id } = req.params;
+	try {
+		const currentTime = new Date();
+		const activity = await UserActivity.findOne({
+			userID: id,
+			logoutTime: null,
+		});
+
+		if (activity) {
+			activity.logoutTime = currentTime;
+			await activity.save();
+			console.log(`User ${id} logged out at ${currentTime}`);
+		} else {
+			console.log(`User ${id} is not logged in.`);
+		}
+		return res.json({ message: "Logout successful", activity });
 	} catch (error) {
 		console.error("Error checking password:", error);
 		return res.status(500).json({ error: "Internal server error" });
@@ -354,6 +406,7 @@ module.exports = {
 	getAllUsers,
 	getAllManagers,
 	loginUser,
+	logOutUser,
 	updateUser,
 	updateUserAssignedLeads,
 	getAllMemberGroups,
@@ -363,4 +416,5 @@ module.exports = {
 	resetPassword,
 	setNewPassword,
 	getAllCompanyUsers,
+	getUserActivity,
 };

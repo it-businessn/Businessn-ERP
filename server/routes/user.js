@@ -17,6 +17,8 @@ const {
 	resetPassword,
 	setNewPassword,
 	getAllCompanyUsers,
+	logOutUser,
+	getUserActivity,
 } = require("../controllers/userController");
 
 router.post("/signup", createEmployee());
@@ -31,6 +33,8 @@ router.get("/not-managers/:id", getAllSalesAgents());
 router.get("/reset-password/:id/:token", resetPassword);
 router.post("/forgot-password", forgotPassword());
 router.post("/login", loginUser());
+router.get("/logout/:id", logOutUser());
+router.get("/activity", getUserActivity());
 router.post("/reset-password/:id/:token", setNewPassword);
 // router.post("/verify-email", verifyUser);
 router.put("/:id", updateUser());

@@ -5,6 +5,10 @@ const LoginService = {
 		return apiService.post("/login", data);
 	},
 
+	async signOut(id) {
+		return apiService.get(`/logout/${id}`);
+	},
+
 	async createEmployee(data) {
 		return apiService.post("/signup", data);
 	},

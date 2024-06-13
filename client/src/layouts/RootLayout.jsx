@@ -9,6 +9,7 @@ import { SIDEBAR_MENU } from "components/sidebar/data";
 import { ROUTE_PATH } from "routes";
 import { useBreakpointValue } from "services/Breakpoint";
 import LocalStorageService from "services/LocalStorageService";
+import LoginService from "services/LoginService";
 import UserService from "services/UserService";
 import { isManager } from "utils";
 
@@ -85,8 +86,13 @@ const RootLayout = () => {
 		}
 	}, [user]);
 
-	const handleLogout = () => {
-		setUser(LocalStorageService.removeItem("user"));
+	const handleLogout = async () => {
+		try {
+			await LoginService.signOut(user._id);
+			setUser(LocalStorageService.removeItem("user"));
+		} catch (error) {
+			console.log(error.response.data.error);
+		}
 	};
 
 	const { isMobile } = useBreakpointValue();

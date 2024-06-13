@@ -6,6 +6,7 @@ import {
 	Spacer,
 	Tbody,
 	Td,
+	Text,
 	Tr,
 	useToast,
 } from "@chakra-ui/react";
@@ -25,7 +26,7 @@ import { useBreakpointValue } from "services/Breakpoint";
 import LeadsService from "services/LeadsService";
 import LocalStorageService from "services/LocalStorageService";
 import UserService from "services/UserService";
-import { generateLighterShade } from "utils";
+import { generateLighterShade, timeSpan } from "utils";
 import AutoAssign from "./AutoAssign";
 import Disburse from "./Disburse";
 import { caption, columns, showFilterSearchOption, showRegion } from "./data";
@@ -62,6 +63,25 @@ const LeadsDisbursed = () => {
 			console.error(error);
 		}
 	};
+	useEffect(() => {
+		const fetchAllUserActivity = async () => {
+			try {
+				const response = await UserService.getAllUserActivity();
+
+				agents?.forEach((agent) => {
+					response.data?.forEach((user) => {
+						if (user.userID === agent._id) {
+							agent.lastLoginStatus = user.logoutTime ? null : "Is logged In";
+							agent.lastLogin = user.loginTime;
+						}
+					});
+				});
+			} catch (error) {
+				console.error(error);
+			}
+		};
+		fetchAllUserActivity();
+	}, [agents]);
 
 	const [leads, setLeads] = useState(null);
 	const [checkedRows, setCheckedRows] = useState([]);
@@ -243,7 +263,7 @@ const LeadsDisbursed = () => {
 								isActive,
 								lastLogin,
 								fullName,
-								leads,
+								lastLoginStatus,
 								assignedLeads,
 								role,
 								primaryAddress,
@@ -277,8 +297,15 @@ const LeadsDisbursed = () => {
 											border={`1px solid var(--primary_button_bg)`}
 										>{`${assignedLeads} leads`}</Button>
 									</Td>
-									{/* <Td p={1}>{formatDateTime(lastLogin || new Date())}</Td> */}
-									<Td p={1}>{"1 hr ago"}</Td>
+									<Td p={1}>
+										{lastLoginStatus ? (
+											<Text color={"green"}>{lastLoginStatus}</Text>
+										) : lastLogin ? (
+											timeSpan(lastLogin)
+										) : (
+											"Not logged in"
+										)}
+									</Td>
 
 									<Td p={1}>{role}</Td>
 									<Td

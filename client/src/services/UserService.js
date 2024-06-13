@@ -25,6 +25,10 @@ const UserService = {
 		return apiService.get(`/user`);
 	},
 
+	async getAllUserActivity() {
+		return apiService.get(`/activity`);
+	},
+
 	async getAllCompanyUsers(id) {
 		return apiService.get(`/user/comp/${id}`);
 	},

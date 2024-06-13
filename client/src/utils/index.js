@@ -408,3 +408,15 @@ export const isManager = (role) =>
 	role?.includes(ROLES.ADMIN) ||
 	// role?.includes(ROLES.MANAGER) ||
 	role?.includes(ROLES.TECH_ADMIN);
+
+export const timeSpan = (time) => {
+	const givenTime = new Date(time);
+	const currentTime = new Date();
+
+	const differenceMs = currentTime - givenTime;
+	const hoursAgo = Math.floor(differenceMs / (1000 * 60 * 60));
+	const minutesAgo = Math.floor(
+		(differenceMs % (1000 * 60 * 60)) / (1000 * 60),
+	);
+	return `${hoursAgo}hr ${minutesAgo}m ago`;
+};

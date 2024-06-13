@@ -18,7 +18,7 @@ const SalesChart = ({ company }) => {
 				const response = await ContactService.getCompContacts(company);
 				response.data.map((_) => (_.stage = _.leadId?.stage));
 				const filterContacts = response.data.filter((_) => _.stage === "T4");
-				const filterLeads = response.data.filter((_) => _.stage.includes("L"));
+				const filterLeads = response.data.filter((_) => _.stage?.includes("L"));
 				setContacts(filterContacts);
 				setLeads(filterLeads);
 			} catch (error) {
