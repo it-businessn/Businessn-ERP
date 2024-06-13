@@ -131,7 +131,7 @@ const GroupsPanel = ({
 			selectedGroup.members.push(filteredEmployees[0]);
 			try {
 				await SettingService.updateGroup(selectedGroup, selectedGroup._id);
-				setIsRefresh((prev) => !prev);
+				// setIsRefresh((prev) => !prev);
 				setFilteredEmployees(employees);
 				setEmpName("");
 			} catch (error) {
