@@ -3,7 +3,11 @@ import TextTitle from "./text/TextTitle";
 
 const SectionLayout = ({ title, children, hasSubHeader }) => {
 	return (
-		<Box p={{ base: "1em", md: "2em" }} pt={{ base: "4em", md: "auto" }}>
+		<Box
+			p={{ base: "1em", md: "2em" }}
+			pt={{ base: "4em", md: "auto" }}
+			overflow={"hidden"}
+		>
 			<TextTitle title={title} mb={"0.5em"} />
 			{hasSubHeader}
 			<Box

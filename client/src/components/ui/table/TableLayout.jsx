@@ -1,4 +1,4 @@
-import { Checkbox, Table, Th, Thead, Tr } from "@chakra-ui/react";
+import { Box, Checkbox, Table, Th, Thead, Tr } from "@chakra-ui/react";
 
 const TableLayout = ({
 	hasMulti,
@@ -10,34 +10,34 @@ const TableLayout = ({
 	isTimesheet,
 }) => {
 	return (
-		// <Box overflow="auto">
-		<Table variant="simple">
-			<Thead>
-				<Tr>
-					{hasMulti && (
-						<Th>
-							<Checkbox
-								checked={isAllChecked}
-								colorScheme="facebook"
-								onChange={(e) => handleHeaderCheckboxChange(e)}
-							/>
-						</Th>
-					)}
-					{cols.map((col, index) => (
-						<Th
-							p={isSmall ? 1 : "auto"}
-							pl={isTimesheet && index === 0 && "5em !important"}
-							key={col}
-						>
-							{col}
-						</Th>
-					))}
-					{hasMulti && <Th>Action</Th>}
-				</Tr>
-			</Thead>
-			{children}
-		</Table>
-		// </Box>
+		<Box overflow="auto">
+			<Table variant="simple">
+				<Thead>
+					<Tr>
+						{hasMulti && (
+							<Th>
+								<Checkbox
+									checked={isAllChecked}
+									colorScheme="facebook"
+									onChange={(e) => handleHeaderCheckboxChange(e)}
+								/>
+							</Th>
+						)}
+						{cols.map((col, index) => (
+							<Th
+								p={isSmall ? 1 : "auto"}
+								pl={isTimesheet && index === 0 && "5em !important"}
+								key={col}
+							>
+								{col}
+							</Th>
+						))}
+						{hasMulti && <Th>Action</Th>}
+					</Tr>
+				</Thead>
+				{children}
+			</Table>
+		</Box>
 	);
 };
 
