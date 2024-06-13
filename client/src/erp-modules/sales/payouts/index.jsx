@@ -194,7 +194,7 @@ const Payouts = () => {
 							</Thead>
 							<Tbody color={"brand.nav_color"}>
 								{payouts?.map((payout) => (
-									<Tr key={payout.salesId}>
+									<Tr key={payout._id}>
 										<Td fontSize={"xs"} p={0}>
 											{payout.saleId}
 										</Td>

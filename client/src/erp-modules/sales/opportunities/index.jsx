@@ -17,8 +17,9 @@ import PrimaryButton from "components/ui/button/PrimaryButton";
 import SelectList from "components/ui/form/select/SelectList";
 import TableLayout from "components/ui/table/TableLayout";
 import { useEffect, useState } from "react";
-import { FaSearch } from "react-icons/fa";
+import { FaSearch, FaTrashAlt } from "react-icons/fa";
 import { MdOutlineFilterList } from "react-icons/md";
+import { RiEditLine } from "react-icons/ri";
 import { useBreakpointValue } from "services/Breakpoint";
 import LeadsService from "services/LeadsService";
 import LocalStorageService from "services/LocalStorageService";
@@ -175,9 +176,26 @@ const Opportunities = () => {
 	};
 	const { isOpen, onOpen, onClose } = useDisclosure();
 	const createOpportunity = () => (
-		<PrimaryButton onOpen={onOpen} name={"Add new lead"} size={"xs"} />
+		<PrimaryButton onOpen={handleOpen} name={"Add new lead"} size={"xs"} />
 	);
+	const [showEditLead, setShowEditLead] = useState(null);
 
+	const handleDelete = async (_id) => {
+		try {
+			await LeadsService.deleteLead({}, _id);
+			setIsAdded((prev) => !prev);
+		} catch (error) {
+			console.error(error);
+		}
+	};
+	const handleClose = () => {
+		onClose();
+		setShowEditLead(null);
+	};
+	const handleOpen = () => {
+		onOpen();
+		setShowEditLead(null);
+	};
 	return (
 		<SectionLayout title="Opportunities">
 			{isMobile || isIpad ? (
@@ -238,70 +256,70 @@ const Opportunities = () => {
 			{opportunities && (
 				<TableLayout cols={OPP_COLUMNS}>
 					<Tbody>
-						{opportunities?.map(
-							({
-								_id,
-								abbreviation,
-								createdOn,
-								companyName,
-								email,
-								opportunityName,
-								primaryAssignee,
-								stage,
-								supervisorAssignee,
-								isDisbursedConfirmed,
-							}) => {
-								return (
-									<Tr key={_id}>
-										<Td>{opportunityName}</Td>
-										<Td>{abbreviation}</Td>
-										<Td>{companyName}</Td>
-										<Td>{email}</Td>
-										<Td>
-											<SelectList
-												id={_id}
-												code="abbr"
-												selectedValue={stage}
-												handleSelect={handleSelect}
-												type="stage"
-												data={LEAD_STAGES}
+						{opportunities?.map((_) => {
+							return (
+								<Tr key={_._id}>
+									<Td>{_.opportunityName}</Td>
+									<Td>{_.abbreviation}</Td>
+									<Td>{_.companyName}</Td>
+									<Td>{_.email}</Td>
+									<Td>
+										<SelectList
+											id={_._id}
+											code="abbr"
+											selectedValue={_.stage}
+											handleSelect={handleSelect}
+											type="stage"
+											data={LEAD_STAGES}
+										/>
+									</Td>
+									<Td>
+										<SelectList
+											id={_._id}
+											code="fullName"
+											selectedValue={_.primaryAssignee?.[0]?.name}
+											type="primaryAssignee"
+											handleSelect={handleSelect}
+											data={assignees}
+										/>
+									</Td>
+									<Td>
+										<SelectList
+											id={_._id}
+											code="fullName"
+											selectedValue={_.supervisorAssignee?.[0]?.name}
+											type="supervisorAssignee"
+											handleSelect={handleSelect}
+											data={assignees}
+										/>
+									</Td>
+									<Td>{formatDate(_.createdOn)}</Td>
+									<Td>{_.isDisbursedConfirmed ? "Yes" : "No"}</Td>
+									<Td>
+										<HStack>
+											<RiEditLine
+												cursor={"pointer"}
+												onClick={() => setShowEditLead(_)}
 											/>
-										</Td>
-										<Td>
-											<SelectList
-												id={_id}
-												code="fullName"
-												selectedValue={primaryAssignee?.[0]?.name}
-												type="primaryAssignee"
-												handleSelect={handleSelect}
-												data={assignees}
+											<FaTrashAlt
+												cursor={"pointer"}
+												onClick={() => handleDelete(_._id)}
 											/>
-										</Td>
-										<Td>
-											<SelectList
-												id={_id}
-												code="fullName"
-												selectedValue={supervisorAssignee?.[0]?.name}
-												type="supervisorAssignee"
-												handleSelect={handleSelect}
-												data={assignees}
-											/>
-										</Td>
-										<Td>{formatDate(createdOn)}</Td>
-										<Td>{isDisbursedConfirmed ? "Yes" : "No"}</Td>
-									</Tr>
-								);
-							},
-						)}
+										</HStack>
+									</Td>
+								</Tr>
+							);
+						})}
 					</Tbody>
 				</TableLayout>
 			)}
-			{isOpen && (
+			{(isOpen || showEditLead) && (
 				<AddNewOpportunity
+					showEditLead={showEditLead}
 					assignees={assignees}
 					setIsAdded={setIsAdded}
-					isOpen={isOpen}
-					onClose={onClose}
+					isOpen={handleOpen}
+					onClose={handleClose}
 					company={company}
 				/>
 			)}

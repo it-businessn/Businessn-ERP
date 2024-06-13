@@ -20,4 +20,5 @@ export const OPP_COLUMNS = [
 	"Supervisor assignee",
 	"Created On",
 	"Disburse Status",
+	"",
 ];

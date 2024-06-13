@@ -33,6 +33,7 @@ const AddNewOpportunity = ({
 	isDocket,
 	assignees,
 	company,
+	showEditLead,
 }) => {
 	const defaultOpportunity = {
 		abbreviation: "",
@@ -57,6 +58,29 @@ const AddNewOpportunity = ({
 		supervisorAssignee: [],
 	};
 
+	const savedData = {
+		abbreviation: showEditLead?.abbreviation,
+		address: {
+			streetNumber: showEditLead?.address?.streetNumber,
+			city: showEditLead?.address?.city,
+			state: showEditLead?.address?.state,
+			postalCode: showEditLead?.address?.postalCode,
+			country: showEditLead?.address?.country,
+		},
+		name: showEditLead?.name,
+		companyName: showEditLead?.companyName,
+		email: showEditLead?.email,
+		industry: showEditLead?.industry,
+		opportunityName: showEditLead?.opportunityName,
+		phone: showEditLead?.phone,
+		primaryAssignee: showEditLead?.primaryAssignee,
+		productService: showEditLead?.productService,
+		region: showEditLead?.region,
+		source: showEditLead?.source,
+		stage: showEditLead?.stage,
+		supervisorAssignee: showEditLead?.supervisorAssignee,
+	};
+
 	const [isSubmitting, setSubmitting] = useState(false);
 	const [error, setError] = useState(false);
 	const [isDisabled, setIsDisabled] = useState(false);
@@ -67,12 +91,19 @@ const AddNewOpportunity = ({
 	const [refresh, setRefresh] = useState(false);
 	const [showAddCompany, setShowAddCompany] = useState(false);
 
-	const [formData, setFormData] = useState(defaultOpportunity);
+	const [formData, setFormData] = useState(
+		showEditLead ? savedData : defaultOpportunity,
+	);
 
-	const [selectedProductService, setSelectedProductService] = useState([]);
-	const [selectedPrimaryAssignees, setSelectedPrimaryAssignees] = useState([]);
+	const [selectedProductService, setSelectedProductService] = useState(
+		showEditLead ? savedData?.productService : [],
+	);
+	const [selectedPrimaryAssignees, setSelectedPrimaryAssignees] = useState(
+		showEditLead ? savedData?.primaryAssignee : [],
+	);
 	const [selectedSupervisorAssignees, setSelectedSupervisorAssignees] =
-		useState([]);
+		useState(showEditLead ? savedData?.supervisorAssignee : []);
+
 	const [companies, setCompanies] = useState(null);
 
 	useEffect(() => {
@@ -130,8 +161,12 @@ const AddNewOpportunity = ({
 		setSubmitting(true);
 
 		try {
-			await LeadsService.createOpportunity(formData);
-			setIsAdded(true);
+			if (showEditLead) {
+				await LeadsService.updateLeadInfo(formData, showEditLead._id);
+			} else {
+				await LeadsService.createOpportunity(formData);
+			}
+			setIsAdded((prev) => !prev);
 			onClose();
 			setFormData(defaultOpportunity);
 			setSubmitting(false);
@@ -146,7 +181,7 @@ const AddNewOpportunity = ({
 	return (
 		<ModalLayout
 			title={"Add New Opportunity"}
-			isOpen={isOpen}
+			isOpen={isOpen || showEditLead}
 			onClose={onClose}
 			error={error}
 		>
