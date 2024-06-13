@@ -159,6 +159,15 @@ const GroupsPanel = ({
 		});
 		setGroupMembers(item.members);
 	};
+	const handleDelete = async (id) => {
+		selectedGroup.members = selectedGroup.members.filter((_) => _._id !== id);
+		try {
+			await SettingService.updateGroup(selectedGroup, selectedGroup._id);
+			setIsRefresh((prev) => !prev);
+		} catch (error) {
+			console.log("An error occurred. Please try again.");
+		}
+	};
 	return (
 		<Box
 			p="1em"
@@ -296,7 +305,11 @@ const GroupsPanel = ({
 				</HStack>
 				{groupMembers?.length > 0 && (
 					<Box w={"100%"} p={0} overflow={"auto"} fontWeight="normal">
-						<UserList filteredEmployees={groupMembers} group={selectedGroup} />
+						<UserList
+							filteredEmployees={groupMembers}
+							group={selectedGroup}
+							handleDelete={handleDelete}
+						/>
 					</Box>
 				)}
 			</Box>
