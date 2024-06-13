@@ -1,4 +1,11 @@
-import { Flex, ModalBody, ModalFooter } from "@chakra-ui/react";
+import {
+	Flex,
+	FormLabel,
+	ModalBody,
+	ModalFooter,
+	Select,
+} from "@chakra-ui/react";
+import FormControlMain from "components/ui/form";
 import ActionButtonGroup from "components/ui/form/ActionButtonGroup";
 import DateTimeFormControl from "components/ui/form/DateTimeFormControl";
 import InputFormControl from "components/ui/form/InputFormControl";
@@ -8,7 +15,7 @@ import TextAreaFormControl from "components/ui/form/TextAreaFormControl";
 import ModalLayout from "components/ui/modal/ModalLayout";
 import { useEffect, useState } from "react";
 import CalendarService from "services/CalendarService";
-import UserService from "services/UserService";
+import SettingService from "services/SettingService";
 
 const AddEvent = ({
 	event,
@@ -22,20 +29,27 @@ const AddEvent = ({
 	filter,
 	// setShowEditDetails,
 	company,
+	user,
 }) => {
 	const [eventType, setEventType] = useState(filter);
-	const [attendees, setAttendees] = useState(null);
+	const [groups, setGroups] = useState(null);
+	const [groupMembers, setGroupMembers] = useState(null);
 
 	useEffect(() => {
-		const fetchAllAttendees = async () => {
+		const fetchAllGroups = async () => {
 			try {
-				const response = await UserService.getAllCompanyUsers(company);
-				setAttendees(response.data);
+				const response = await SettingService.getAllGroups(company);
+				setGroups(response.data);
+				if (response.data.length) {
+					setGroupMembers(response.data[0].members);
+				} else {
+					setGroupMembers(null);
+				}
 			} catch (error) {
 				console.error(error);
 			}
 		};
-		fetchAllAttendees();
+		fetchAllGroups();
 	}, []);
 
 	const initialFormData = {
@@ -49,6 +63,8 @@ const AddEvent = ({
 		toDate: "",
 		toTime: "",
 		companyName: company,
+		group: "",
+		createdBy: user?._id,
 	};
 
 	const initialSavedData = {
@@ -61,6 +77,7 @@ const AddEvent = ({
 		meetingAttendees: event?.meetingAttendees || [],
 		toDate: event?.toDate,
 		toTime: event?.toTime,
+		createdBy: event?.createdBy,
 	};
 	const [selectedOptions, setSelectedOptions] = useState([]);
 
@@ -107,6 +124,15 @@ const AddEvent = ({
 		// 	}));
 		// }
 		setFormData((prevData) => ({ ...prevData, [name]: value }));
+	};
+	const handleGroupChange = (e) => {
+		setFormData((prevData) => ({
+			...prevData,
+			group: e.target.value,
+		}));
+		formData.meetingAttendees = [];
+		setSelectedOptions([]);
+		setGroupMembers(groups.find(({ _id }) => _id === e.target.value).members);
 	};
 
 	const handleSubmit = async (e) => {
@@ -223,11 +249,25 @@ const AddEvent = ({
 					</Flex>
 					{eventType !== "phoneCall" && (
 						<>
+							<FormControlMain>
+								<FormLabel>Select Group</FormLabel>
+								<Select
+									name={"group"}
+									value={formData.group}
+									onChange={handleGroupChange}
+								>
+									{groups?.map(({ name, _id }) => (
+										<option key={_id} value={_id}>
+											{name}
+										</option>
+									))}
+								</Select>
+							</FormControlMain>
 							<MultiSelectFormControl
-								label={"Select Required Attendees"}
+								label={"Select Required Internal Attendees"}
 								tag={"attendee(s)"}
 								showMultiSelect={openAssigneeMenu}
-								data={attendees}
+								data={groupMembers}
 								handleCloseMenu={handleCloseMenu}
 								selectedOptions={selectedOptions}
 								setSelectedOptions={setSelectedOptions}

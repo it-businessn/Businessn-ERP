@@ -46,7 +46,7 @@ const MultiSelectBox = ({
 				</MenuItem>
 				<Stack spacing={2}>
 					{data.map((assignee) => (
-						<MenuItem key={assignee}>
+						<MenuItem key={assignee?._id || assignee}>
 							<Checkbox
 								colorScheme="facebook"
 								isChecked={selectedOptions?.includes(

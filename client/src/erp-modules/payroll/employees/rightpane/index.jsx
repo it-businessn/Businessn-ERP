@@ -1,7 +1,7 @@
 import { Box } from "@chakra-ui/react";
-import "react-big-calendar/lib/css/react-big-calendar.css";
 import ChatMessages from "erp-modules/sales/dashboard/rightpane/ChatMessages";
 import MiniCalendar from "erp-modules/sales/dashboard/rightpane/MiniCalendar";
+import "react-big-calendar/lib/css/react-big-calendar.css";
 import UserMeetingInfo from "./UserMeetingInfo";
 
 const RightPane = ({ selectedUser, stats, company }) => {
@@ -19,7 +19,7 @@ const RightPane = ({ selectedUser, stats, company }) => {
 				selectedUser={selectedUser}
 				company={company}
 			/>
-			<MiniCalendar user={selectedUser.fullName} company={company} />
+			<MiniCalendar user={selectedUser} company={company} />
 			<ChatMessages userId={selectedUser._id} company={company} />
 		</Box>
 	);

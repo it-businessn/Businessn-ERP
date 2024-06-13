@@ -22,7 +22,7 @@ const Calendar = () => {
 
 	const [isLoading, setIsLoading] = useState(false);
 	const [isRefresh, setIsRefresh] = useState(false);
-	const user = LocalStorageService.getItem("user").fullName;
+	const user = LocalStorageService.getItem("user");
 	// const checkClassExists = () => {
 	// 	const element = document.querySelector(".rbc-show-more");
 
@@ -56,34 +56,37 @@ const Calendar = () => {
 		const fetchAllEvents = async () => {
 			try {
 				const response = await CalendarService.getCompEvents(company);
-				response.data
-					?.filter((event) => event.meetingAttendees.includes(user))
-					.map((event) => {
-						const fromDateTimeString = `${event.fromDate.split("T")[0]}T${
-							event.fromTime
-						}`;
-						const toDateTimeString = `${event.toDate.split("T")[0]}T${
-							event.toTime
-						}`;
+				const filterData = response.data?.filter(
+					(event) =>
+						event.meetingAttendees.includes(user?.fullName) ||
+						event.createdBy === user?._id,
+				);
+				filterData.map((event) => {
+					const fromDateTimeString = `${event.fromDate.split("T")[0]}T${
+						event.fromTime
+					}`;
+					const toDateTimeString = `${event.toDate.split("T")[0]}T${
+						event.toTime
+					}`;
 
-						event.title = event.description;
-						event.start = fromDateTimeString;
-						event.end = toDateTimeString;
-						event.color =
-							event.eventType === "phoneCall"
-								? "var(--status_button_border)"
-								: event.eventType === "meeting"
-								? "var(--primary_button_bg)"
-								: "var(--event_color)";
-						event.bgColor =
-							event.eventType === "phoneCall"
-								? "var(--phoneCall_bg_light)"
-								: event.eventType === "meeting"
-								? "var(--meeting_bg_light)"
-								: "var(--event_bg_light)";
-						return event;
-					});
-				setEvents(response.data);
+					event.title = event.description;
+					event.start = fromDateTimeString;
+					event.end = toDateTimeString;
+					event.color =
+						event.eventType === "phoneCall"
+							? "var(--status_button_border)"
+							: event.eventType === "meeting"
+							? "var(--primary_button_bg)"
+							: "var(--event_color)";
+					event.bgColor =
+						event.eventType === "phoneCall"
+							? "var(--phoneCall_bg_light)"
+							: event.eventType === "meeting"
+							? "var(--meeting_bg_light)"
+							: "var(--event_bg_light)";
+					return event;
+				});
+				setEvents(filterData);
 				setIsLoading(false);
 			} catch (error) {
 				console.error(error);
@@ -233,6 +236,7 @@ const Calendar = () => {
 				</Box>
 			)}
 			<AddEvent
+				user={user}
 				isEdit={showEditDetails}
 				setIsRefresh={setIsRefresh}
 				isLoading={isLoading}
