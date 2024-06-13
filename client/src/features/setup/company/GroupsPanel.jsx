@@ -306,6 +306,7 @@ const GroupsPanel = ({
 				{groupMembers?.length > 0 && (
 					<Box w={"100%"} p={0} overflow={"auto"} fontWeight="normal">
 						<UserList
+							isGroup
 							filteredEmployees={groupMembers}
 							group={selectedGroup}
 							handleDelete={handleDelete}

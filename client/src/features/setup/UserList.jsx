@@ -1,7 +1,7 @@
 import { Table, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
 import { FaTrashAlt } from "react-icons/fa";
 
-const UserList = ({ filteredEmployees, handleDelete }) => {
+const UserList = ({ filteredEmployees, handleDelete, isGroup }) => {
 	return (
 		<Table variant="simple" width="100%" overflow="auto">
 			<Thead>
@@ -21,7 +21,7 @@ const UserList = ({ filteredEmployees, handleDelete }) => {
 					<Th px={1.5} w={"200px"}>
 						Role
 					</Th>
-					<Th px={1.5} w={"200px"}></Th>
+					<Th px={1.5} w={"100px"}></Th>
 				</Tr>
 			</Thead>
 			<Tbody>
@@ -74,10 +74,12 @@ const UserList = ({ filteredEmployees, handleDelete }) => {
 								{role}
 							</Td>
 							<Td>
-								<FaTrashAlt
-									cursor={"pointer"}
-									onClick={() => handleDelete(_id)}
-								/>
+								{isGroup && (
+									<FaTrashAlt
+										cursor={"pointer"}
+										onClick={() => handleDelete(_id)}
+									/>
+								)}
 							</Td>
 						</Tr>
 					),
