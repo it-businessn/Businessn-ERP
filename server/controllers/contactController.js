@@ -14,10 +14,11 @@ const getContactById = async (req, res) => {
 	const { id, name } = req.params;
 
 	try {
-		const existingLead = await Lead.find({ companyName: name });
-		const contact = await Contact.find({
-			leadId: existingLead._id,
-			_id: id,
+		const contact = await Contact.findOne({
+			$or: [
+				{ _id: id, companyName: name },
+				{ leadId: id, companyName: name },
+			],
 		}).populate("leadId");
 		res.status(200).json(contact);
 	} catch (error) {
@@ -28,10 +29,7 @@ const getCompContactById = async (req, res) => {
 	const { id } = req.params;
 
 	try {
-		const existingLead = await Lead.find({ companyName: id });
-		const contact = await Contact.find({ leadId: existingLead._id }).populate(
-			"leadId",
-		);
+		const contact = await Contact.find({ companyName: id }).populate("leadId");
 
 		res.status(200).json(contact);
 	} catch (error) {

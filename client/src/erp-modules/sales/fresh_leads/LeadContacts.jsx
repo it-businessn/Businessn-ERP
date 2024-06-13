@@ -6,15 +6,17 @@ import { FaArrowLeft } from "react-icons/fa";
 import { useNavigate, useParams } from "react-router-dom";
 import ContactService from "services/ContactService";
 import LocalStorageService from "services/LocalStorageService";
-import ContactDetailsInfo from "./ContactDetailsInfo";
-import Logs from "./logs";
-import Meetings from "./meeting";
-import Notes from "./notes/Notes";
-import Tasks from "./tasks";
+import ContactDetailsInfo from "../customers/contacts/ContactDetailsInfo";
+import Logs from "../customers/contacts/logs";
+import Meetings from "../customers/contacts/meeting";
+import Notes from "../customers/contacts/notes/Notes";
+import Tasks from "../customers/contacts/tasks";
 
-const Contacts = ({ setViewProfile, selectedContact, company }) => {
+const LeadContacts = ({ setViewProfile, selectedContact, company }) => {
 	const { id, comp } = useParams();
+
 	const user = LocalStorageService.getItem("user");
+	const companyName = comp ? comp : company;
 
 	const [contact, setContact] = useState(null);
 	const fetchContacts = async () => {
@@ -22,11 +24,9 @@ const Contacts = ({ setViewProfile, selectedContact, company }) => {
 		try {
 			const response = await ContactService.getContactDetails({
 				id: activeContact,
-				company: comp || company,
+				company: companyName,
 			});
-
 			setContact(response.data);
-			// setSelectedContact(response.data);
 		} catch (error) {
 			console.error(error);
 		}
@@ -71,18 +71,6 @@ const Contacts = ({ setViewProfile, selectedContact, company }) => {
 		},
 	];
 
-	const [filter, setFilter] = useState("");
-	// const [showList, setShowList] = useState(false);
-	// const filteredContacts = contact.filter(
-	// 	(contact) =>
-	// 		contact.companyName.toLowerCase().includes(filter.toLowerCase()) ||
-	// 		contact.firstName.toLowerCase().includes(filter.toLowerCase()),
-	// );
-	// const handleSelectedContact = (contact) => {
-	// 	// setSelectedContact((prev) => contact);
-	// 	setShowList((prev) => false);
-	// 	setReload(true);
-	// };
 	const navigate = useNavigate();
 	return (
 		<Box px={{ base: "1em" }} py={{ base: "1.3em" }}>
@@ -99,46 +87,6 @@ const Contacts = ({ setViewProfile, selectedContact, company }) => {
 							}
 						/>
 						<Box flex="1">
-							{/* <Popover zIndex={0}>
-							{/* <PopoverTrigger>
-								<Input
-									zIndex={0}
-									type="text"
-									placeholder="Search Contact..."
-									value={contact}
-									// onClick={() => setShowList(true)}
-									onChange={(e) => setFilter(e.target.value)}
-								/>
-							</PopoverTrigger> 
-							{showList && (
-								<PopoverContent zIndex={0}>
-									<PopoverArrow />
-									<PopoverBody>
-										{filteredContacts.map((contact, index) => (
-											<div
-												key={contact}
-												onClick={() => handleSelectedContact(contact)}
-											>
-												<Box
-													key={contact.companyName}
-													borderBottomWidth="1px"
-													py={2}
-												>
-													<HStack>
-														<Text>
-															{contact.firstName} {contact.lastName}
-														</Text>
-														<Text fontWeight="bold">
-															Client: {contact.companyName}
-														</Text>
-													</HStack>
-												</Box>
-											</div>
-										))}
-									</PopoverBody>
-								</PopoverContent>
-							)}
-						</Popover> */}
 							<ContactDetailsInfo
 								contact={contact.leadId}
 								showLogForm={handleButtonClick}
@@ -155,9 +103,8 @@ const Contacts = ({ setViewProfile, selectedContact, company }) => {
 					</>
 				)}
 			</Flex>
-			{!contact && <Loader />}
 		</Box>
 	);
 };
 
-export default Contacts;
+export default LeadContacts;

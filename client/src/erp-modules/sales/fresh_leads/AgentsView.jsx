@@ -26,13 +26,14 @@ export const totalLeads = (name, isManager, leads, userName) => {
 		  ).length;
 };
 
-const AgentsView = ({ leads, setIsUpdated, reference }) => {
+const AgentsView = ({ leads, setIsUpdated, reference, company }) => {
 	const defaultLeadInfo = {
 		_id: null,
 		opportunityName: "",
 		email: "",
 		stage: "",
 		phone: "",
+		companyName: company,
 	};
 	const { fullName, role } = LocalStorageService.getItem("user");
 

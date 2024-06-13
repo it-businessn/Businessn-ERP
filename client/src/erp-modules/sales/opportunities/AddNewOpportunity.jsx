@@ -68,7 +68,6 @@ const AddNewOpportunity = ({
 			country: showEditLead?.address?.country,
 		},
 		name: showEditLead?.name,
-		companyName: showEditLead?.companyName,
 		email: showEditLead?.email,
 		industry: showEditLead?.industry,
 		opportunityName: showEditLead?.opportunityName,
@@ -79,6 +78,7 @@ const AddNewOpportunity = ({
 		source: showEditLead?.source,
 		stage: showEditLead?.stage,
 		supervisorAssignee: showEditLead?.supervisorAssignee,
+		companyName: company,
 	};
 
 	const [isSubmitting, setSubmitting] = useState(false);

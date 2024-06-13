@@ -8,7 +8,7 @@ const ContactService = {
 		return apiService.get(`/contacts/comp/${id}`);
 	},
 	async getContactDetails(data) {
-		return apiService.get(`/contacts/${data.id}//${data.company}`);
+		return apiService.get(`/contacts/${data.id}/${data.company}`);
 	},
 
 	async getIndustryType() {

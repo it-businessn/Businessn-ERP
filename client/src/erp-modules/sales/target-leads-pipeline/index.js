@@ -96,6 +96,7 @@ const Pipeline = () => {
 					leads={leads}
 					reference={TARGET_LEADS}
 					setIsUpdated={setIsUpdated}
+					company={company}
 				/>
 			)}
 			<ModalLayout title={"Edit Lead"} isOpen={isOpen} onClose={onClose}>

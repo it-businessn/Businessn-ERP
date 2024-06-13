@@ -157,6 +157,18 @@ const getTargetLeads = () => async (req, res) => {
 		res.status(404).json({ error: error.message });
 	}
 };
+const getLeadInfo = () => async (req, res) => {
+	const { id, name } = req.params;
+	try {
+		const lead = await Lead.findOne({
+			_id: id,
+			companyName: name,
+		});
+		res.status(200).json(lead);
+	} catch (error) {
+		res.status(404).json({ error: error.message });
+	}
+};
 
 const createLeadOpportunity = () => async (req, res) => {
 	const {
@@ -358,10 +370,15 @@ const updateLeadInfo = () => async (req, res) => {
 			{ $set: req.body },
 			{ new: true },
 		);
-		const { stage } = req.body;
-		if (stage === "T4" && updatedLead) {
-			await Contact.create({ leadId: updatedLead._id });
+		const existingContact = await Contact.find({ leadId: updatedLead._id });
+
+		if (!existingContact.length) {
+			await Contact.create({
+				leadId: updatedLead._id,
+				companyName: req.body.companyName,
+			});
 		}
+
 		res.status(201).json(updatedLead);
 	} catch (error) {
 		res.status(400).json({ message: error.message });
@@ -399,4 +416,5 @@ module.exports = {
 	getGroupedOpportunities,
 	getTargetLeads,
 	getGroupedOpportunitiesByCompany,
+	getLeadInfo,
 };

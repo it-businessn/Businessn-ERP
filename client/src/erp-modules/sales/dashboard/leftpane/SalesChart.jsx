@@ -10,12 +10,17 @@ import ContactService from "services/ContactService";
 
 const SalesChart = ({ company }) => {
 	const [contacts, setContacts] = useState(null);
+	const [leads, setLeads] = useState(null);
 
 	useEffect(() => {
 		const fetchAllContacts = async () => {
 			try {
 				const response = await ContactService.getCompContacts(company);
-				setContacts(response.data);
+				response.data.map((_) => (_.stage = _.leadId.stage));
+				const filterContacts = response.data.filter((_) => _.stage === "T4");
+				const filterLeads = response.data.filter((_) => _.stage.includes("L"));
+				setContacts(filterContacts);
+				setLeads(filterLeads);
 			} catch (error) {
 				console.error(error);
 			}
@@ -106,6 +111,8 @@ const SalesChart = ({ company }) => {
 				showSelectCustomer={showSelectCustomer}
 				setShowSelectCustomer={setShowSelectCustomer}
 				contacts={contacts}
+				leads={leads}
+				company={company}
 			/>
 		</>
 	);

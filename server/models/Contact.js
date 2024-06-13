@@ -13,6 +13,7 @@ const contactSchema = new mongoose.Schema({
 	],
 	// forms: [{ type: mongoose.Schema.Types.ObjectId, ref: "Form", default: [] }],
 	leadId: { type: mongoose.Schema.Types.ObjectId, ref: "Lead" },
+	companyName: { type: String, ref: "Company" },
 
 	// companyAddress: String,
 	// companyName: String,

@@ -1,6 +1,7 @@
 import { Suspense, lazy } from "react";
 import { createBrowserRouter } from "react-router-dom";
 
+import LeadContacts from "erp-modules/sales/fresh_leads/LeadContacts";
 import SchedulingDashboard from "erp-modules/scheduling/dashboard";
 import Loader from "./components/Loader";
 import PageNotFound from "./features/PageNotFound";
@@ -107,7 +108,7 @@ export const ROUTE_PATH = {
 	VERIFY_EMAIL: "/verify-email",
 	FORGOT_PWD: "/forgot-password",
 
-	CUST_PROFILE: "/profile/:id",
+	CUST_PROFILE: "/profile/:id/:comp",
 	PROFILE: "/profile",
 
 	// sales
@@ -184,6 +185,10 @@ export const router = createBrowserRouter([
 			{
 				path: `${ROUTE_PATH.SALES}${ROUTE_PATH.CUSTOMERS}${ROUTE_PATH.CUST_PROFILE}`,
 				element: <Contacts />,
+			},
+			{
+				path: `${ROUTE_PATH.SALES}${ROUTE_PATH.FRESH_LEADS}${ROUTE_PATH.CUST_PROFILE}`,
+				element: <LeadContacts />,
 			},
 			{
 				path: `${ROUTE_PATH.SALES}${ROUTE_PATH.PAYOUT}`,

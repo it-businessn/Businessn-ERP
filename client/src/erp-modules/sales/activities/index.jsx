@@ -24,6 +24,7 @@ import SelectCustomer from "./SelectCustomer";
 const Activities = () => {
 	const { isMobile, isIpad } = useBreakpointValue();
 	const [contacts, setContacts] = useState(null);
+	const [leads, setLeads] = useState(null);
 	const [selectedFilter, setSelectedFilter] = useState("monthly");
 	const [refresh, setRefresh] = useState(false);
 	const [showSelectCustomer, setShowSelectCustomer] = useState(false);
@@ -50,7 +51,11 @@ const Activities = () => {
 		const fetchAllContacts = async () => {
 			try {
 				const response = await ContactService.getCompContacts(company);
-				setContacts(response.data);
+				response.data.map((_) => (_.stage = _.leadId.stage));
+				const filterContacts = response.data.filter((_) => _.stage === "T4");
+				const filterLeads = response.data.filter((_) => _.stage.includes("L"));
+				setLeads(filterLeads);
+				setContacts(filterContacts);
 			} catch (error) {
 				console.error(error);
 			}
@@ -115,6 +120,8 @@ const Activities = () => {
 					setRefresh={setRefresh}
 					setShowSelectCustomer={setShowSelectCustomer}
 					contacts={contacts}
+					leads={leads}
+					company={company}
 				/>
 
 				<SimpleGrid

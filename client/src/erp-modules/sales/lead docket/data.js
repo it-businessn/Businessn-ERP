@@ -22,3 +22,5 @@ export const OPP_COLUMNS = [
 	"Disburse Status",
 	"",
 ];
+
+export const LEADS_COLS = ["Opportunity name", "Company", "Email", ""];

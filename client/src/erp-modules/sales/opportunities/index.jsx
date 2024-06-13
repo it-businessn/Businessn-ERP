@@ -98,6 +98,7 @@ const Opportunities = () => {
 		stage: "",
 		primaryAssignee: null,
 		supervisorAssignee: null,
+		companyName: company,
 	});
 
 	useEffect(() => {

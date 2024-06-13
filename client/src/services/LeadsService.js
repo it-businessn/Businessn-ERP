@@ -12,6 +12,10 @@ const LeadsService = {
 		return apiService.get(`/leads/disburse/${company}`);
 	},
 
+	async getLeadInfo(data) {
+		return apiService.get(`/leads/info/${data.id}/${data.company}`);
+	},
+
 	// async getConfirmedDisbursedLeads(data) {
 	// 	return apiService.get("/leads/disburse/isConfirmed", data);
 	// },

@@ -1,4 +1,4 @@
-import { Button, ButtonGroup } from "@chakra-ui/react";
+import { Button, ButtonGroup, Icon } from "@chakra-ui/react";
 
 const TabsButtonGroup = ({ isOutlineTab, tabs, setViewMode, viewMode }) => {
 	const getColor = (type) =>
@@ -18,7 +18,7 @@ const TabsButtonGroup = ({ isOutlineTab, tabs, setViewMode, viewMode }) => {
 
 	return (
 		<ButtonGroup variant="solid" p={0} m={0}>
-			{tabs?.map(({ type }) => (
+			{tabs?.map(({ type, icon }) => (
 				<Button
 					key={type}
 					size={"sm"}
@@ -31,7 +31,7 @@ const TabsButtonGroup = ({ isOutlineTab, tabs, setViewMode, viewMode }) => {
 					fontWeight={isOutlineTab || viewMode === type ? "bold" : "normal"}
 					_hover={{ bg: "transparent", color: "brand.600" }}
 				>
-					{type}
+					{icon ? <Icon as={icon} boxSize="5" /> : type}
 				</Button>
 			))}
 		</ButtonGroup>

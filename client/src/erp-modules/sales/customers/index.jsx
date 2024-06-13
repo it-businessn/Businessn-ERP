@@ -31,7 +31,9 @@ const Customers = () => {
 	const fetchAllContacts = async () => {
 		try {
 			const response = await ContactService.getCompContacts(company);
-			setContacts(response.data);
+			response.data.map((_) => (_.stage = _.leadId.stage));
+			const filterContacts = response.data.filter((_) => _.stage === "T4");
+			setContacts(filterContacts);
 		} catch (error) {
 			console.error(error);
 		}
