@@ -27,6 +27,7 @@ const timesheetRoutes = require("./routes/timesheet");
 const taskRoutes = require("./routes/task");
 const logTaskRoutes = require("./routes/logTask");
 const questionnaireRoutes = require("./routes/questionnaire");
+const payoutRoutes = require("./routes/payout");
 
 const app = express();
 const expressLayouts = require("express-ejs-layouts");
@@ -72,6 +73,7 @@ app.use("/api/timesheet", timesheetRoutes);
 app.use("/api/tasks", taskRoutes);
 app.use("/api/log-tasks", logTaskRoutes);
 app.use("/api/questionnaire", questionnaireRoutes);
+app.use("/api/payouts", payoutRoutes);
 // app.use("/api/attendance", attendanceRoutes);
 // app.use("/api/benefits", benefitsRoutes);
 // app.use("/api/configuration", configurationRoutes);
