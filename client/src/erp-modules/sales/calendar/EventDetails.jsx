@@ -49,7 +49,7 @@ const EventDetails = ({
 							<TextTitle
 								weight="normal"
 								size="sm"
-								title={moment(event?.fromTime, "HH:mm").format("hh:mm A")}
+								title={moment(event?.start).format("hh:mm A")}
 							/>
 						</VStack>
 

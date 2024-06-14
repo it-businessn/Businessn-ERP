@@ -2,7 +2,7 @@ import { Box, Button, Flex, HStack, Spacer } from "@chakra-ui/react";
 import Loader from "components/Loader";
 import PrimaryButton from "components/ui/button/PrimaryButton";
 import TextTitle from "components/ui/text/TextTitle";
-import moment from "moment";
+import moment from "moment-timezone";
 import { useEffect, useState } from "react";
 import { Calendar as BigCalendar, momentLocalizer } from "react-big-calendar";
 import "react-big-calendar/lib/css/react-big-calendar.css";
@@ -10,6 +10,7 @@ import { FaCaretLeft, FaCaretRight, FaClock } from "react-icons/fa";
 import { useBreakpointValue } from "services/Breakpoint";
 import CalendarService from "services/CalendarService";
 import LocalStorageService from "services/LocalStorageService";
+import { getTimezone } from "utils";
 import AddEvent from "./AddEvent";
 import EventDetails from "./EventDetails";
 
@@ -51,6 +52,7 @@ const Calendar = () => {
 			);
 		};
 	}, []);
+
 	useEffect(() => {
 		// checkClassExists();
 		const fetchAllEvents = async () => {
@@ -62,16 +64,17 @@ const Calendar = () => {
 						event.createdBy === user?._id,
 				);
 				filterData.map((event) => {
+					event.fromDate = getTimezone(event.fromDate);
+					event.toDate = getTimezone(event.toDate);
 					const fromDateTimeString = `${event.fromDate.split("T")[0]}T${
 						event.fromTime
 					}`;
 					const toDateTimeString = `${event.toDate.split("T")[0]}T${
 						event.toTime
 					}`;
-
 					event.title = event.description;
-					event.start = fromDateTimeString;
-					event.end = toDateTimeString;
+					event.start = getTimezone(fromDateTimeString);
+					event.end = getTimezone(toDateTimeString);
 					event.color =
 						event.eventType === "phoneCall"
 							? "var(--status_button_border)"

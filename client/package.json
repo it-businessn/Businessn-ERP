@@ -20,6 +20,7 @@
 		"formik": "^2.2.9",
 		"framer-motion": "^10.12.12",
 		"moment": "^2.29.4",
+		"moment-timezone": "^0.5.45",
 		"primereact": "^9.6.0",
 		"react": "^18.2.0",
 		"react-beautiful-dnd": "^13.1.1",

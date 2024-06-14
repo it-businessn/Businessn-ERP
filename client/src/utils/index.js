@@ -420,3 +420,8 @@ export const timeSpan = (time) => {
 	);
 	return `${hoursAgo}hr ${minutesAgo}m ago`;
 };
+
+export const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+export const getTimezone = (date) =>
+	moment.tz(date, "America/Chicago").clone().tz(userTimezone).format();
