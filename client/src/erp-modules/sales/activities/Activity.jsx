@@ -26,6 +26,7 @@ const Activity = ({ activity, onClick, width }) => {
 					<HorizontalBarChart
 						label={activity.label}
 						data={activity.count}
+						target={activity.target}
 						options={barOptions}
 					/>
 				</Box>

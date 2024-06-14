@@ -1,6 +1,6 @@
 import { Bar } from "react-chartjs-2";
 
-const HorizontalBarChart = ({ data, label }) => {
+const HorizontalBarChart = ({ data, label, target }) => {
 	const chartData = {
 		labels: [label],
 		datasets: [
@@ -19,7 +19,7 @@ const HorizontalBarChart = ({ data, label }) => {
 		scales: {
 			x: {
 				beginAtZero: true,
-				max: 4000,
+				max: target * 2,
 			},
 		},
 		plugins: {

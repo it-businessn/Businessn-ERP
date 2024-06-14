@@ -134,7 +134,7 @@ const LeftPane = ({ selectedUser, setStats, company }) => {
 				/>
 			</SimpleGrid>
 			<SimpleGrid columns={{ base: 1, md: 1, lg: 2 }} spacing="1em" mt="4">
-				<SalesChart company={company} />
+				<SalesChart company={company} selectedUser={selectedUser} />
 			</SimpleGrid>
 			<SimpleGrid columns={{ base: 1, md: 1, lg: 1 }} spacing="4" mt="4">
 				<Box

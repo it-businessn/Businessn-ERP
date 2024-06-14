@@ -1,5 +1,4 @@
 import { Box, Flex, IconButton } from "@chakra-ui/react";
-import Loader from "components/Loader";
 import TabGroup from "components/ui/tab";
 import { useEffect, useState } from "react";
 import { FaArrowLeft } from "react-icons/fa";
@@ -12,9 +11,27 @@ import Meetings from "../customers/contacts/meeting";
 import Notes from "../customers/contacts/notes/Notes";
 import Tasks from "../customers/contacts/tasks";
 
-const LeadContacts = ({ setViewProfile, selectedContact, company }) => {
+const LeadContacts = ({ setViewProfile, selectedContact }) => {
 	const { id, comp } = useParams();
+	const [company, setCompany] = useState(
+		LocalStorageService.getItem("selectedCompany"),
+	);
 
+	useEffect(() => {
+		const handleSelectedCompanyChange = (event) => setCompany(event.detail);
+
+		document.addEventListener(
+			"selectedCompanyChanged",
+			handleSelectedCompanyChange,
+		);
+
+		return () => {
+			document.removeEventListener(
+				"selectedCompanyChanged",
+				handleSelectedCompanyChange,
+			);
+		};
+	}, []);
 	const user = LocalStorageService.getItem("user");
 	const companyName = comp ? comp : company;
 
@@ -46,15 +63,15 @@ const LeadContacts = ({ setViewProfile, selectedContact, company }) => {
 
 	const tabList = [
 		{
-			name: "Notes",
-			component: (
-				<Notes user={user} contactId={contact?._id} company={company} />
-			),
-		},
-		{
 			name: "Logs",
 			component: (
 				<Logs user={user} contactId={contact?._id} company={company} />
+			),
+		},
+		{
+			name: "Notes",
+			component: (
+				<Notes user={user} contactId={contact?._id} company={company} />
 			),
 		},
 		{

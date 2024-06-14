@@ -5,16 +5,24 @@ import AddLogForm from "./AddLogForm";
 import LogActivityList from "./LogActivityList";
 
 const Logs = ({ contactId, user, company }) => {
+	console.log(company);
 	const [activities, setActivities] = useState([]);
 	const [refresh, setRefresh] = useState(false);
-	const [logActivity, setLogActivity] = useState({
-		type: "meeting",
+	const initialFormData = {
+		type: "Email",
+		email: "",
+		phone: "",
 		duration: 0,
 		description: "",
+		linkedInContact: "",
 		createdBy: user?._id,
 		contactId,
 		companyName: company,
-	});
+	};
+	const [logActivity, setLogActivity] = useState(initialFormData);
+	const handleInputChange = (e) => {
+		setLogActivity({ ...logActivity, [e.target.name]: e.target.value });
+	};
 
 	useEffect(() => {
 		const fetchActivitiesByContactId = async () => {
@@ -34,12 +42,7 @@ const Logs = ({ contactId, user, company }) => {
 		try {
 			await ActivityService.addActivity(activity);
 			setRefresh((prev) => !prev);
-			setLogActivity((prev) => ({
-				...prev,
-				duration: 0,
-				type: "meeting",
-				description: "",
-			}));
+			setLogActivity(initialFormData);
 		} catch (error) {
 			console.error(error);
 		}
@@ -51,6 +54,7 @@ const Logs = ({ contactId, user, company }) => {
 				onSave={saveActivity}
 				logActivity={logActivity}
 				setLogActivity={setLogActivity}
+				handleInputChange={handleInputChange}
 			/>
 			{activities.length && <LogActivityList activities={activities} />}
 		</VStack>

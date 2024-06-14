@@ -3,12 +3,9 @@ import PrimaryButton from "components/ui/button/PrimaryButton";
 import InputFormControl from "components/ui/form/InputFormControl";
 import SelectFormControl from "components/ui/form/SelectFormControl";
 import TextAreaFormControl from "components/ui/form/TextAreaFormControl";
+import { LOG_TYPES } from "./data";
 
-const AddLogForm = ({ onSave, logActivity, setLogActivity }) => {
-	const handleInputChange = (e) => {
-		setLogActivity({ ...logActivity, [e.target.name]: e.target.value });
-	};
-
+const AddLogForm = ({ onSave, logActivity, handleInputChange }) => {
 	const handleSubmit = () => {
 		onSave(logActivity);
 	};
@@ -18,30 +15,47 @@ const AddLogForm = ({ onSave, logActivity, setLogActivity }) => {
 				<SelectFormControl
 					name="type"
 					label={"Type of Activity"}
-					valueText={logActivity.type}
+					valueText={logActivity?.type}
 					handleChange={handleInputChange}
-					options={[
-						{
-							name: "Meeting",
-							value: "meeting",
-						},
-						{
-							name: "Email",
-							value: "email",
-						},
-						{
-							name: "Phone Call",
-							value: "phoneCall",
-						},
-					]}
+					options={LOG_TYPES}
 				/>
-				<InputFormControl
-					label={"Duration (minutes)"}
-					name="duration"
-					type="number"
-					valueText={logActivity.duration}
-					handleChange={handleInputChange}
-				/>
+				{(logActivity.type === "Email" ||
+					logActivity.type === "Mailing List") && (
+					<InputFormControl
+						label={"Enter email address"}
+						name="email"
+						type="email"
+						valueText={logActivity.email}
+						handleChange={handleInputChange}
+						required
+					/>
+				)}
+				{logActivity.type === "Call" && (
+					<>
+						<InputFormControl
+							label={"Enter phone number"}
+							name="phone"
+							valueText={logActivity.phone}
+							handleChange={handleInputChange}
+						/>
+						<InputFormControl
+							label={"Duration (minutes)"}
+							name="duration"
+							type="number"
+							valueText={logActivity.duration}
+							handleChange={handleInputChange}
+						/>
+					</>
+				)}
+				{(logActivity.type === "LinkedIn Contact" ||
+					logActivity.type === "LinkedIn Message") && (
+					<InputFormControl
+						label={"Enter contact name"}
+						name="linkedInContact"
+						valueText={logActivity.linkedInContact}
+						handleChange={handleInputChange}
+					/>
+				)}
 				<TextAreaFormControl
 					label={"Description"}
 					name="description"

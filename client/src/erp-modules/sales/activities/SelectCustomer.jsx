@@ -12,7 +12,7 @@ const SelectCustomer = ({
 	contacts,
 	leads,
 }) => {
-	const [customer, setCustomer] = useState(null);
+	const [customer, setCustomer] = useState("");
 	const [data, setData] = useState(null);
 	const [lead, setLead] = useState(null);
 	const [isQuickAdd, setIsQuickAdd] = useState(null);
@@ -68,7 +68,7 @@ const SelectCustomer = ({
 					</option>
 				))}
 			</Select>
-			{customer && (
+			{customer !== "" && (
 				<Select
 					icon={<FaCaretDown />}
 					borderRadius="10px"

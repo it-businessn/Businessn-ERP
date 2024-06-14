@@ -10,12 +10,16 @@ import {
 import HighlightButton from "components/ui/button/HighlightButton";
 import RadioButtonGroup from "components/ui/tab/RadioButtonGroup";
 import TextTitle from "components/ui/text/TextTitle";
-import { ACTIVITY_CARDS, SALES_ACTIVITY_CARDS } from "constant";
 import { useEffect, useState } from "react";
 import { RiAspectRatioLine } from "react-icons/ri";
+import ActivityService from "services/ActivityService";
 import { useBreakpointValue } from "services/Breakpoint";
 import ContactService from "services/ContactService";
 import LocalStorageService from "services/LocalStorageService";
+import {
+	ACTIVITY_CARDS,
+	SALES_ACTIVITY_CARDS,
+} from "../customers/contacts/logs/data";
 import Activity from "./Activity";
 import Contest from "./Contest";
 import GaugeChartComponent from "./GaugeChart";
@@ -28,9 +32,11 @@ const Activities = () => {
 	const [selectedFilter, setSelectedFilter] = useState("monthly");
 	const [refresh, setRefresh] = useState(false);
 	const [showSelectCustomer, setShowSelectCustomer] = useState(false);
+	const [userActivities, setUserActivities] = useState(null);
 	const [company, setCompany] = useState(
 		LocalStorageService.getItem("selectedCompany"),
 	);
+	const user = LocalStorageService.getItem("user");
 
 	useEffect(() => {
 		const handleSelectedCompanyChange = (event) => setCompany(event.detail);
@@ -47,6 +53,7 @@ const Activities = () => {
 			);
 		};
 	}, []);
+
 	useEffect(() => {
 		const fetchAllContacts = async () => {
 			try {
@@ -60,7 +67,31 @@ const Activities = () => {
 				console.error(error);
 			}
 		};
+		const fetchAllUserActivities = async () => {
+			try {
+				const response = await ActivityService.getActivities({
+					id: user?._id,
+					company,
+				});
+				setUserActivities(response.data);
+				ACTIVITY_CARDS.map(
+					(activity) =>
+						(activity.count = response.data.filter(
+							(_) => _.type === activity.value,
+						).length),
+				);
+				SALES_ACTIVITY_CARDS.map(
+					(activity) =>
+						(activity.count = response.data.filter(
+							(_) => _.type === activity.value,
+						).length),
+				);
+			} catch (error) {
+				console.error(error);
+			}
+		};
 		fetchAllContacts();
+		fetchAllUserActivities();
 	}, [company]);
 
 	const handleFilterClick = (filter) => {
@@ -94,80 +125,82 @@ const Activities = () => {
 					</Flex>
 				</SimpleGrid>
 			)}
-			<SimpleGrid
-				columns={{ lg: 2 }}
-				spacing={4}
-				templateColumns={{ lg: "35% 65%" }}
-			>
+			{userActivities && (
 				<SimpleGrid
-					columns={1}
+					columns={{ lg: 2 }}
 					spacing={4}
-					templateRows={{ lg: "1% 8% 8% 8% 8% 8% 8%" }}
+					templateColumns={{ lg: "35% 65%" }}
 				>
-					<Text fontWeight="bold">Activities</Text>
-					{ACTIVITY_CARDS.map((activity) => (
-						<Activity
-							activity={activity}
-							key={activity.title}
-							width={{ base: "50%", md: "40%", lg: "40%", xl: "40%" }}
-							onClick={() => setShowSelectCustomer(true)}
-						/>
-					))}
-				</SimpleGrid>
-
-				<SelectCustomer
-					showSelectCustomer={showSelectCustomer}
-					setRefresh={setRefresh}
-					setShowSelectCustomer={setShowSelectCustomer}
-					contacts={contacts}
-					leads={leads}
-					company={company}
-				/>
-
-				<SimpleGrid
-					columns={1}
-					spacing={4}
-					templateRows={{ lg: "1% 8% 8% 12%" }}
-				>
-					<Text fontWeight="bold">Sales</Text>
-					{SALES_ACTIVITY_CARDS.map((activity) => (
-						<Activity
-							activity={activity}
-							key={activity.title}
-							onClick={() => setShowSelectCustomer(true)}
-							width={{ base: "50%", md: "40%", lg: "20%", xl: "20%" }}
-						/>
-					))}
-					<Box
-						p="0.5em 1em"
-						bg={"brand.primary_bg"}
-						border="3px solid var(--main_color)"
-						borderRadius="10px"
-						fontWeight="bold"
-						justifyContent="space-between"
-						display="flex"
-						flexDir={"column"}
+					<SimpleGrid
+						columns={1}
+						spacing={4}
+						templateRows={{ lg: "1% 8% 8% 8% 8% 8% 8%" }}
 					>
-						<HStack spacing={0}>
-							<VStack alignItems="self-start" spacing={0}>
-								<Icon as={RiAspectRatioLine} color={"grey"} boxSize={8} />
-								<TextTitle title={"Sales Target"} size={"sm"} />
-								<HighlightButton name={"Process new sale"} />
-							</VStack>
-							<Box
-								mt={3}
-								mx={"auto"}
-								w={{ base: "50%", md: "80%", lg: "80%", xl: "100%" }}
-							>
-								{/* <GaugeChartComponent value={70} maxValue={100} /> */}
-								<GaugeChartComponent value={0} maxValue={100} />
-							</Box>
-						</HStack>
-					</Box>
+						<Text fontWeight="bold">Activities</Text>
+						{ACTIVITY_CARDS.map((activity) => (
+							<Activity
+								activity={activity}
+								key={activity.title}
+								width={{ base: "50%", md: "40%", lg: "40%", xl: "40%" }}
+								onClick={() => setShowSelectCustomer(true)}
+							/>
+						))}
+					</SimpleGrid>
 
-					<Contest />
+					<SelectCustomer
+						showSelectCustomer={showSelectCustomer}
+						setRefresh={setRefresh}
+						setShowSelectCustomer={setShowSelectCustomer}
+						contacts={contacts}
+						leads={leads}
+						company={company}
+					/>
+
+					<SimpleGrid
+						columns={1}
+						spacing={4}
+						templateRows={{ lg: "1% 8% 8% 12%" }}
+					>
+						<Text fontWeight="bold">Sales</Text>
+						{SALES_ACTIVITY_CARDS.map((activity) => (
+							<Activity
+								activity={activity}
+								key={activity.title}
+								onClick={() => setShowSelectCustomer(true)}
+								width={{ base: "50%", md: "40%", lg: "20%", xl: "20%" }}
+							/>
+						))}
+						<Box
+							p="0.5em 1em"
+							bg={"brand.primary_bg"}
+							border="3px solid var(--main_color)"
+							borderRadius="10px"
+							fontWeight="bold"
+							justifyContent="space-between"
+							display="flex"
+							flexDir={"column"}
+						>
+							<HStack spacing={0}>
+								<VStack alignItems="self-start" spacing={0}>
+									<Icon as={RiAspectRatioLine} color={"grey"} boxSize={8} />
+									<TextTitle title={"Sales Target"} size={"sm"} />
+									<HighlightButton name={"Process new sale"} />
+								</VStack>
+								<Box
+									mt={3}
+									mx={"auto"}
+									w={{ base: "50%", md: "80%", lg: "80%", xl: "100%" }}
+								>
+									{/* <GaugeChartComponent value={70} maxValue={100} /> */}
+									<GaugeChartComponent value={0} maxValue={100} />
+								</Box>
+							</HStack>
+						</Box>
+
+						<Contest />
+					</SimpleGrid>
 				</SimpleGrid>
-			</SimpleGrid>
+			)}
 		</Box>
 	);
 };

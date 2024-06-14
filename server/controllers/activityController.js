@@ -3,10 +3,11 @@ const Contact = require("../models/Contact");
 const LogActivity = require("../models/LogActivity");
 
 const getActivity = () => async (req, res) => {
+	const { id, name } = req.params;
 	try {
-		const activities = (await LogActivity.find()).sort(
-			(a, b) => b.createdOn - a.createdOn,
-		);
+		const activities = (
+			await LogActivity.find({ createdBy: id, companyName: name })
+		).sort((a, b) => b.createdOn - a.createdOn);
 		res.status(200).json(activities);
 	} catch (error) {
 		res.status(404).json({ error: error.message });

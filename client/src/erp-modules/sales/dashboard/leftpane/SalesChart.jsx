@@ -1,16 +1,19 @@
 import { Box } from "@chakra-ui/react";
 import HighlightButton from "components/ui/button/HighlightButton";
 import CardTitle from "components/ui/card/CardTitle";
-import { BAR_DATA } from "constant";
+import { BAR_DATA, callsMadeBarData, emailsMadeBarData } from "constant";
 import SelectCustomer from "erp-modules/sales/activities/SelectCustomer";
+import moment from "moment";
 import { useEffect, useState } from "react";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import { Bar } from "react-chartjs-2";
+import ActivityService from "services/ActivityService";
 import ContactService from "services/ContactService";
 
-const SalesChart = ({ company }) => {
+const SalesChart = ({ company, selectedUser }) => {
 	const [contacts, setContacts] = useState(null);
 	const [leads, setLeads] = useState(null);
+	const [activity, setActivity] = useState(null);
 
 	useEffect(() => {
 		const fetchAllContacts = async () => {
@@ -25,6 +28,59 @@ const SalesChart = ({ company }) => {
 				console.error(error);
 			}
 		};
+		const fetchAllUserActivities = async () => {
+			try {
+				const response = await ActivityService.getActivities({
+					id: selectedUser?._id,
+					company,
+				});
+				setActivity(response.data);
+				callsMadeBarData.map(
+					(item) =>
+						(item.call = response.data.filter(
+							(_) =>
+								_.type === "Call" &&
+								moment(_.createdOn).format("ddd") === item.day,
+						).length),
+				);
+				emailsMadeBarData.map(
+					(item) =>
+						(item.email = response.data.filter(
+							(_) =>
+								_.type === "Email" &&
+								moment(_.createdOn).format("ddd") === item.day,
+						).length),
+				);
+
+				BAR_DATA[0].data = {
+					labels: callsMadeBarData.map((item) => item.day),
+					datasets: [
+						{
+							label: "Calls Made",
+							data: callsMadeBarData.map((item) => item.call),
+							backgroundColor: "#5580f1",
+							borderRadius: 12,
+							fill: false,
+						},
+					],
+				};
+				BAR_DATA[1].data = {
+					labels: emailsMadeBarData.map((item) => item.day),
+					datasets: [
+						{
+							label: "Emails Sent",
+							data: emailsMadeBarData.map((item) => item.email),
+							backgroundColor: "#61a9c1",
+							borderRadius: 12,
+							fill: false,
+						},
+					],
+				};
+			} catch (error) {
+				console.error(error);
+			}
+		};
+		fetchAllUserActivities();
 		fetchAllContacts();
 	}, [company]);
 
@@ -74,18 +130,19 @@ const SalesChart = ({ company }) => {
 	const [showSelectCustomer, setShowSelectCustomer] = useState(false);
 	return (
 		<>
-			{BAR_DATA.map((bar) => (
-				<Box
-					key={bar.title}
-					color={"brand.nav_color"}
-					px="1em"
-					bg={"brand.primary_bg"}
-					border="3px solid var(--main_color)"
-					borderRadius="10px"
-					fontWeight="bold"
-				>
-					<CardTitle title={bar.title} />
-					{/* <Flex
+			{activity &&
+				BAR_DATA.map((bar) => (
+					<Box
+						key={bar.title}
+						color={"brand.nav_color"}
+						px="1em"
+						bg={"brand.primary_bg"}
+						border="3px solid var(--main_color)"
+						borderRadius="10px"
+						fontWeight="bold"
+					>
+						<CardTitle title={bar.title} />
+						{/* <Flex
 						justify="space-between"
 						align="center"
 						mb="1"
@@ -98,15 +155,18 @@ const SalesChart = ({ company }) => {
 							<option>Last Month</option>
 						</Select>
 					</Flex> */}
-					<Box w={{ base: "70%", md: "65%", lg: "70%", xl: "70%" }} mx={"auto"}>
-						<Bar data={bar.data} options={options} />
+						<Box
+							w={{ base: "70%", md: "65%", lg: "70%", xl: "70%" }}
+							mx={"auto"}
+						>
+							<Bar data={bar.data} options={options} />
+						</Box>
+						<HighlightButton
+							name={`Log ${bar.link}`}
+							onClick={() => setShowSelectCustomer(true)}
+						/>
 					</Box>
-					<HighlightButton
-						name={`Log ${bar.link}`}
-						onClick={() => setShowSelectCustomer(true)}
-					/>
-				</Box>
-			))}
+				))}
 			<SelectCustomer
 				showSelectCustomer={showSelectCustomer}
 				setShowSelectCustomer={setShowSelectCustomer}

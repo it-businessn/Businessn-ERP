@@ -1,8 +1,8 @@
 import apiService from "services";
 
 const ActivityService = {
-	async getActivities() {
-		return apiService.get("/activities");
+	async getActivities(data) {
+		return apiService.get(`/activities/${data.id}/${data.company}`);
 	},
 
 	async getActivitiesByContactId(id) {
