@@ -10,10 +10,13 @@ import { Bar } from "react-chartjs-2";
 import ActivityService from "services/ActivityService";
 import ContactService from "services/ContactService";
 
-const SalesChart = ({ company, selectedUser }) => {
+const SalesChart = ({ company, selectedUser, user }) => {
 	const [contacts, setContacts] = useState(null);
 	const [leads, setLeads] = useState(null);
 	const [activity, setActivity] = useState(null);
+	const [refresh, setRefresh] = useState(null);
+	const [showSelectCustomer, setShowSelectCustomer] = useState(false);
+	const [logType, setLogType] = useState(null);
 
 	useEffect(() => {
 		const fetchAllContacts = async () => {
@@ -82,7 +85,7 @@ const SalesChart = ({ company, selectedUser }) => {
 		};
 		fetchAllUserActivities();
 		fetchAllContacts();
-	}, [company]);
+	}, [company, refresh]);
 
 	const options = {
 		scales: {
@@ -127,7 +130,6 @@ const SalesChart = ({ company, selectedUser }) => {
 			},
 		},
 	};
-	const [showSelectCustomer, setShowSelectCustomer] = useState(false);
 	return (
 		<>
 			{activity &&
@@ -163,17 +165,26 @@ const SalesChart = ({ company, selectedUser }) => {
 						</Box>
 						<HighlightButton
 							name={`Log ${bar.link}`}
-							onClick={() => setShowSelectCustomer(true)}
+							onClick={() => {
+								setLogType(bar.link.includes("call") ? "Call" : "Email");
+								setShowSelectCustomer(true);
+							}}
 						/>
 					</Box>
 				))}
-			<SelectCustomer
-				showSelectCustomer={showSelectCustomer}
-				setShowSelectCustomer={setShowSelectCustomer}
-				contacts={contacts}
-				leads={leads}
-				company={company}
-			/>
+			{showSelectCustomer && (
+				<SelectCustomer
+					logType={logType}
+					showSelectCustomer={showSelectCustomer}
+					setShowSelectCustomer={setShowSelectCustomer}
+					contacts={contacts}
+					leads={leads}
+					company={company}
+					isDashboard
+					setRefresh={setRefresh}
+					user={user}
+				/>
+			)}
 		</>
 	);
 };

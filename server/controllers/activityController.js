@@ -40,7 +40,12 @@ const createActivity = () => async (req, res) => {
 			type,
 			companyName,
 		});
-		const contact = await Contact.findById(contactId);
+		const contact = await Contact.findOne({
+			$or: [
+				{ _id: contactId, companyName },
+				{ leadId: contactId, companyName },
+			],
+		});
 		contact.activities.push(newActivity._id);
 
 		await contact.save();

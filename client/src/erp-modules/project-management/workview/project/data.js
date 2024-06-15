@@ -82,9 +82,19 @@ export const SUPERVISOR_ASSIGNEES = [
 ];
 
 export const REGIONS = [
+	{ name: "Alberta", id: "AB" },
 	{ name: "British Columbia", id: "BC" },
 	{ name: "Manitoba", id: "MB" },
-	{ name: "Alberta", id: "AB" },
+	{ name: "New Brunswick", id: "NB" },
+	{ name: "Newfoundland and Labrador", id: "NL" },
+	{ name: "Northwest Territories", id: "NT" },
+	{ name: "Nova Scotia", id: "NS" },
+	{ name: "Nunavut", id: "NU" },
+	{ name: "Ontario", id: "ON" },
+	{ name: "Prince Edward Island", id: "PE" },
+	{ name: "Quebec", id: "QC" },
+	{ name: "Saskatchewan", id: "SK" },
+	{ name: "Yukon", id: "YT" },
 ];
 
 export const DISBURSE_MODE_OPTIONS = [

@@ -188,8 +188,6 @@ const createLeadOpportunity = () => async (req, res) => {
 		supervisorAssignee,
 	} = req.body;
 
-	const { streetNumber, city, state, postalCode, country } = address;
-
 	try {
 		const newLeadOpportunity = await Lead.create({
 			abbreviation,
@@ -205,9 +203,24 @@ const createLeadOpportunity = () => async (req, res) => {
 			source,
 			stage,
 			supervisorAssignee,
-			address: { streetNumber, city, state, postalCode, country },
+			address: {
+				streetNumber: address?.streetNumber,
+				city: address?.city,
+				state: address?.state,
+				postalCode: address?.postalCode,
+				country: address?.country,
+			},
+		});
+		const existingContact = await Contact.find({
+			leadId: newLeadOpportunity._id,
 		});
 
+		if (!existingContact.length) {
+			await Contact.create({
+				leadId: newLeadOpportunity._id,
+				companyName,
+			});
+		}
 		res.status(201).json(newLeadOpportunity);
 	} catch (error) {
 		res.status(400).json({ message: error.message });

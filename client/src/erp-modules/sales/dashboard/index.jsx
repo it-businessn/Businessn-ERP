@@ -106,6 +106,7 @@ const CRMDashboard = () => {
 					selectedUser={selectedUser}
 					setStats={setStats}
 					company={company}
+					user={user}
 				/>
 				<RightPane
 					stats={stats}

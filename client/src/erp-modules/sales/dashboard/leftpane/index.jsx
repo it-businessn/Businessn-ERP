@@ -9,7 +9,7 @@ import SalesCard from "./SalesCard";
 import SalesChart from "./SalesChart";
 import UpcomingList from "./Upcomings";
 
-const LeftPane = ({ selectedUser, setStats, company }) => {
+const LeftPane = ({ selectedUser, setStats, company, user }) => {
 	const currentDate = new Date();
 	const currentMonth = currentDate.getMonth() + 1;
 	const [headerCards, setHeaderCards] = useState(HEADER_CARDS);
@@ -134,7 +134,7 @@ const LeftPane = ({ selectedUser, setStats, company }) => {
 				/>
 			</SimpleGrid>
 			<SimpleGrid columns={{ base: 1, md: 1, lg: 2 }} spacing="1em" mt="4">
-				<SalesChart company={company} selectedUser={selectedUser} />
+				<SalesChart company={company} selectedUser={selectedUser} user={user} />
 			</SimpleGrid>
 			<SimpleGrid columns={{ base: 1, md: 1, lg: 1 }} spacing="4" mt="4">
 				<Box

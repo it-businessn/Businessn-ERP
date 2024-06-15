@@ -31,7 +31,6 @@ const ContactDetailsInfo = ({ contact, showLogForm }) => {
 	});
 	const { companyName, primaryAssignee, industry, address, email, phone } =
 		contact;
-	const { streetNumber, city, country, postalCode, state } = address;
 
 	const QUICK_LINKS = [
 		{
@@ -78,7 +77,9 @@ const ContactDetailsInfo = ({ contact, showLogForm }) => {
 		},
 		{
 			title: "Address",
-			value: `${streetNumber} ${city} ${state} ${country} ${postalCode}`,
+			value: `${address?.streetNumber || ""} ${address?.city || ""} ${
+				address?.state || ""
+			} ${address?.country || ""} ${address?.postalCode || ""}`,
 		},
 	];
 	const DETAILS2 = [

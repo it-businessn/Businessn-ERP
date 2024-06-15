@@ -26,7 +26,7 @@ const TableLayout = ({
 						{cols.map((col, index) => (
 							<Th
 								p={isSmall ? 1 : "auto"}
-								pl={isTimesheet && index === 0 && "5em !important"}
+								pl={isTimesheet && index === 0 && "1em !important"}
 								key={col}
 							>
 								{col}
