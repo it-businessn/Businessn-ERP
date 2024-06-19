@@ -219,6 +219,7 @@ const AddNewOpportunity = ({
 							showAddCompany={showAddCompany}
 							setRefresh={setRefresh}
 							setShowAddCompany={setShowAddCompany}
+							company={company}
 						/>
 					</HStack>
 					{companyError && (

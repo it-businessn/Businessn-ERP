@@ -5,7 +5,12 @@ import ModalLayout from "components/ui/modal/ModalLayout";
 import { useState } from "react";
 import LeadsService from "services/LeadsService";
 
-const AddCompany = ({ showAddCompany, setShowAddCompany, setRefresh }) => {
+const AddCompany = ({
+	showAddCompany,
+	setShowAddCompany,
+	setRefresh,
+	company,
+}) => {
 	const [error, setError] = useState(false);
 	const [companyName, setCompanyName] = useState("");
 	const [isSubmitting, setSubmitting] = useState(false);
@@ -16,7 +21,10 @@ const AddCompany = ({ showAddCompany, setShowAddCompany, setRefresh }) => {
 		setSubmitting(true);
 
 		try {
-			await LeadsService.addLeadCompany({ companyName });
+			await LeadsService.addLeadCompany({
+				name: companyName,
+				companyName: company,
+			});
 			setRefresh((prev) => !prev);
 			setSubmitting(false);
 			onClose();
