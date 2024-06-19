@@ -1,5 +1,4 @@
-import { HStack, Tbody, Td, Tr, useDisclosure } from "@chakra-ui/react";
-import HighlightButton from "components/ui/button/HighlightButton";
+import { Tbody, Td, Tr, useDisclosure } from "@chakra-ui/react";
 import TableLayout from "components/ui/table/TableLayout";
 import { useState } from "react";
 import { FaRegTrashAlt } from "react-icons/fa";
@@ -89,7 +88,7 @@ const ListView = ({
 										onClick={() => handleDelete(_._id)}
 									/>
 								</Td>
-								<Td fontSize={"xs"}>
+								{/* <Td fontSize={"xs"}>
 									<HStack>
 										<HighlightButton
 											name={"See logs"}
@@ -99,7 +98,7 @@ const ListView = ({
 											}}
 										/>
 									</HStack>
-								</Td>
+								</Td> */}
 							</Tr>
 						))}
 					</Tbody>

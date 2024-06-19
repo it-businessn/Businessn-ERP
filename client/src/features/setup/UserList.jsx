@@ -1,7 +1,7 @@
 import { Table, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
 import { FaRegTrashAlt } from "react-icons/fa";
 
-const UserList = ({ filteredEmployees, handleDelete, isGroup }) => {
+const UserList = ({ filteredEmployees, handleDelete, isGroup, isUser }) => {
 	return (
 		<Table variant="simple" width="100%" overflow="auto">
 			<Thead>
@@ -15,9 +15,11 @@ const UserList = ({ filteredEmployees, handleDelete, isGroup }) => {
 					<Th px={1.5} w={"200px"}>
 						Base Module
 					</Th>
-					<Th px={1.5} w={"200px"}>
-						Team
-					</Th>
+					{!isUser && (
+						<Th px={1.5} w={"200px"}>
+							Team
+						</Th>
+					)}
 					<Th px={1.5} w={"200px"}>
 						Role
 					</Th>
@@ -55,15 +57,17 @@ const UserList = ({ filteredEmployees, handleDelete, isGroup }) => {
 							>
 								{baseModule || ""}
 							</Td>
-							<Td
-								w={"100px"}
-								whiteSpace={"pre-wrap"}
-								py={1}
-								px={1.5}
-								fontSize={"xs"}
-							>
-								{group || ""}
-							</Td>
+							{!isUser && (
+								<Td
+									w={"100px"}
+									whiteSpace={"pre-wrap"}
+									py={1}
+									px={1.5}
+									fontSize={"xs"}
+								>
+									{group || ""}
+								</Td>
+							)}
 							<Td
 								w={"100px"}
 								whiteSpace={"pre-wrap"}

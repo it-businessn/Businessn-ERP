@@ -51,10 +51,12 @@ const Setup = () => {
 			type: "Users",
 			name: (
 				<UsersPanel
+					isUser
 					employees={employees}
 					setFilteredEmployees={setFilteredEmployees}
 					filteredEmployees={filteredEmployees}
 					setIsRefresh={setIsRefresh}
+					company={company}
 				/>
 			),
 		},

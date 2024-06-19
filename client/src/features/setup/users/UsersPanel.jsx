@@ -12,6 +12,8 @@ const UsersPanel = ({
 	setFilteredEmployees,
 	filteredEmployees,
 	setIsRefresh,
+	isUser,
+	company,
 }) => {
 	const [empName, setEmpName] = useState(null);
 
@@ -51,7 +53,13 @@ const UsersPanel = ({
 				)}
 			</HStack>
 			{!employees && <Loader autoHeight />}
-			{employees && <UserList filteredEmployees={filteredEmployees} />}
+			{employees && (
+				<UserList
+					isUser={isUser}
+					filteredEmployees={filteredEmployees}
+					company={company}
+				/>
+			)}
 		</>
 	);
 };
