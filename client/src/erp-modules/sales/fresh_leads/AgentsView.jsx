@@ -12,6 +12,7 @@ import {
 } from "@chakra-ui/react";
 import TextTitle from "components/ui/text/TextTitle";
 import { useState } from "react";
+import { FaRegTrashAlt } from "react-icons/fa";
 import { RiEditLine } from "react-icons/ri";
 import LocalStorageService from "services/LocalStorageService";
 import { isManager } from "utils";
@@ -26,7 +27,13 @@ export const totalLeads = (name, isManager, leads, userName) => {
 		  ).length;
 };
 
-const AgentsView = ({ leads, setIsUpdated, reference, company }) => {
+const AgentsView = ({
+	leads,
+	setIsUpdated,
+	reference,
+	company,
+	handleDelete,
+}) => {
 	const defaultLeadInfo = {
 		_id: null,
 		opportunityName: "",
@@ -187,7 +194,12 @@ const AgentsView = ({ leads, setIsUpdated, reference, company }) => {
 												weight="normal"
 												title={phone}
 											/>
-											<Box />
+											<Box>
+												<FaRegTrashAlt
+													cursor={"pointer"}
+													onClick={() => handleDelete(_id)}
+												/>
+											</Box>
 										</HStack>
 									</VStack>
 								</Card>

@@ -70,7 +70,14 @@ const Pipeline = () => {
 			total: totalLeads("T4", isUserManager, leads, fullName),
 		},
 	];
-
+	const handleDelete = async (_id) => {
+		try {
+			await LeadsService.deleteLead({}, _id);
+			setIsUpdated((prev) => !prev);
+		} catch (error) {
+			console.error(error);
+		}
+	};
 	return (
 		<Box p={{ base: "1em", md: "2em" }}>
 			<TextTitle title="Target Leads" mb={"0.5em"} />
@@ -97,6 +104,7 @@ const Pipeline = () => {
 					reference={TARGET_LEADS}
 					setIsUpdated={setIsUpdated}
 					company={company}
+					handleDelete={handleDelete}
 				/>
 			)}
 			<ModalLayout title={"Edit Lead"} isOpen={isOpen} onClose={onClose}>

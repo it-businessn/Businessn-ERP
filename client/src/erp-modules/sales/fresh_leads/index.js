@@ -44,6 +44,14 @@ const FreshLeads = () => {
 		fetchAllLeads();
 	}, [isUpdated, company]);
 
+	const handleDelete = async (_id) => {
+		try {
+			await LeadsService.deleteLead({}, _id);
+			setIsUpdated((prev) => !prev);
+		} catch (error) {
+			console.error(error);
+		}
+	};
 	const TAB_LIST = [
 		{
 			id: 0,
@@ -55,6 +63,7 @@ const FreshLeads = () => {
 					reference={FRESH_LEADS}
 					setIsUpdated={setIsUpdated}
 					company={company}
+					handleDelete={handleDelete}
 				/>
 			),
 		},
@@ -68,6 +77,7 @@ const FreshLeads = () => {
 					reference={FRESH_LEADS}
 					setIsUpdated={setIsUpdated}
 					company={company}
+					handleDelete={handleDelete}
 				/>
 			),
 		},

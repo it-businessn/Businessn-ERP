@@ -17,7 +17,7 @@ import PrimaryButton from "components/ui/button/PrimaryButton";
 import SelectList from "components/ui/form/select/SelectList";
 import TableLayout from "components/ui/table/TableLayout";
 import { useEffect, useState } from "react";
-import { FaSearch, FaTrashAlt } from "react-icons/fa";
+import { FaRegTrashAlt, FaSearch } from "react-icons/fa";
 import { MdOutlineFilterList } from "react-icons/md";
 import { RiEditLine } from "react-icons/ri";
 import { useBreakpointValue } from "services/Breakpoint";
@@ -306,7 +306,7 @@ const Opportunities = () => {
 												cursor={"pointer"}
 												onClick={() => setShowEditLead(_)}
 											/>
-											<FaTrashAlt
+											<FaRegTrashAlt
 												cursor={"pointer"}
 												onClick={() => handleDelete(_._id)}
 											/>

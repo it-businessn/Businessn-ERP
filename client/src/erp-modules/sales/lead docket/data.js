@@ -23,4 +23,4 @@ export const OPP_COLUMNS = [
 	"",
 ];
 
-export const LEADS_COLS = ["Opportunity name", "Company", "Email", ""];
+export const LEADS_COLS = ["Opportunity name", "Company", "Email", "", ""];

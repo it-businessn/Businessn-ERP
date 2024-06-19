@@ -2,6 +2,7 @@ import { HStack, Tbody, Td, Tr, useDisclosure } from "@chakra-ui/react";
 import HighlightButton from "components/ui/button/HighlightButton";
 import TableLayout from "components/ui/table/TableLayout";
 import { useState } from "react";
+import { FaRegTrashAlt } from "react-icons/fa";
 import LocalStorageService from "services/LocalStorageService";
 import { isManager } from "utils";
 import { LEADS_COLS } from "../lead docket/data";
@@ -17,7 +18,13 @@ export const totalLeads = (name, isManager, leads, userName) => {
 		  ).length;
 };
 
-const ListView = ({ leads, setIsUpdated, reference, company }) => {
+const ListView = ({
+	leads,
+	setIsUpdated,
+	reference,
+	company,
+	handleDelete,
+}) => {
 	const defaultLeadInfo = {
 		_id: null,
 		opportunityName: "",
@@ -85,6 +92,14 @@ const ListView = ({ leads, setIsUpdated, reference, company }) => {
 												setSelectedContact(_._id);
 												setViewProfile((prev) => !prev);
 											}}
+										/>
+									</HStack>
+								</Td>
+								<Td>
+									<HStack>
+										<FaRegTrashAlt
+											cursor={"pointer"}
+											onClick={() => handleDelete(_._id)}
 										/>
 									</HStack>
 								</Td>

@@ -1,5 +1,5 @@
 import { Table, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
-import { FaTrashAlt } from "react-icons/fa";
+import { FaRegTrashAlt } from "react-icons/fa";
 
 const UserList = ({ filteredEmployees, handleDelete, isGroup }) => {
 	return (
@@ -75,7 +75,7 @@ const UserList = ({ filteredEmployees, handleDelete, isGroup }) => {
 							</Td>
 							<Td>
 								{isGroup && (
-									<FaTrashAlt
+									<FaRegTrashAlt
 										cursor={"pointer"}
 										onClick={() => handleDelete(_id)}
 									/>
