@@ -56,8 +56,10 @@ const LeftPane = ({ selectedUser, setStats, company, user }) => {
 					type: "event",
 					name: company,
 				});
-				const userEvents = response.data.filter((_) =>
-					_.meetingAttendees.includes(selectedUser.fullName),
+				const userEvents = response.data.filter(
+					(_) =>
+						_.meetingAttendees.includes(selectedUser.fullName) ||
+						_.createdBy === selectedUser._id,
 				);
 				setEvents(userEvents);
 				setStatInfo("Events", response.data.length);
@@ -71,8 +73,10 @@ const LeftPane = ({ selectedUser, setStats, company, user }) => {
 					type: "meeting",
 					name: company,
 				});
-				const userMeetings = response.data.filter((_) =>
-					_.meetingAttendees.includes(selectedUser.fullName),
+				const userMeetings = response.data.filter(
+					(_) =>
+						_.meetingAttendees.includes(selectedUser.fullName) ||
+						_.createdBy === selectedUser._id,
 				);
 				setMeetings(userMeetings);
 				setStatInfo("Meetings", response.data.length);
@@ -86,8 +90,10 @@ const LeftPane = ({ selectedUser, setStats, company, user }) => {
 					type: "phoneCall",
 					name: company,
 				});
-				const userAppointments = response.data.filter((_) =>
-					_.meetingAttendees.includes(selectedUser.fullName),
+				const userAppointments = response.data.filter(
+					(_) =>
+						_.meetingAttendees.includes(selectedUser.fullName) ||
+						_.createdBy === selectedUser._id,
 				);
 				setAppointments(userAppointments);
 				setStatInfo("Appointments", response.data.length);
