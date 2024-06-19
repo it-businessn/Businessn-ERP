@@ -30,6 +30,7 @@ const Activities = () => {
 	const [contacts, setContacts] = useState(null);
 	const [leads, setLeads] = useState(null);
 	const [selectedFilter, setSelectedFilter] = useState("Daily");
+
 	const [refresh, setRefresh] = useState(false);
 	const [showSelectCustomer, setShowSelectCustomer] = useState(false);
 	const [logType, setLogType] = useState(null);
@@ -77,18 +78,43 @@ const Activities = () => {
 					type: selectedFilter,
 				});
 				setUserActivities(response.data);
-				ACTIVITY_CARDS.map(
-					(activity) =>
-						(activity.count = response.data.filter(
-							(_) => _.type === activity.value,
-						).length),
-				);
-				SALES_ACTIVITY_CARDS.map(
-					(activity) =>
-						(activity.count = response.data.filter(
-							(_) => _.type === activity.value,
-						).length),
-				);
+
+				const isToday = selectedFilter === "Daily";
+				const isWeekly = selectedFilter === "Weekly";
+				const isMonthly = selectedFilter === "Monthly";
+				const isQuarterly = selectedFilter === "Quarterly";
+				const isAnnual = selectedFilter === "Annual";
+
+				ACTIVITY_CARDS.map((item) => {
+					item.count = response.data.filter(
+						(_) => _.type === item.value,
+					).length;
+					const target = item.target;
+					item.target1 = isWeekly
+						? target * 5
+						: isMonthly
+						? target * 20
+						: isQuarterly
+						? target * 60
+						: isAnnual
+						? target * 240
+						: target;
+					return item;
+				});
+				SALES_ACTIVITY_CARDS.map((_) => {
+					_.count = response.data.filter((_) => _.type === _.value).length;
+					const target = _.target;
+					_.target2 = isWeekly
+						? target * 5
+						: isMonthly
+						? target * 20
+						: isQuarterly
+						? target * 60
+						: isAnnual
+						? target * 240
+						: target;
+					return _;
+				});
 			} catch (error) {
 				console.error(error);
 			}
@@ -144,6 +170,7 @@ const Activities = () => {
 							<Activity
 								activity={activity}
 								key={activity.title}
+								target={activity.target1}
 								width={{ base: "50%", md: "40%", lg: "40%", xl: "40%" }}
 								onClick={() => {
 									setLogType(activity.value);
@@ -176,6 +203,7 @@ const Activities = () => {
 							<Activity
 								activity={activity}
 								key={activity.title}
+								target={activity.target2}
 								onClick={() => setShowSelectCustomer(true)}
 								width={{ base: "50%", md: "40%", lg: "20%", xl: "20%" }}
 							/>

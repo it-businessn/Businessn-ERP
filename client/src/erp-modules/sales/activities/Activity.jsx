@@ -3,7 +3,7 @@ import HighlightButton from "components/ui/button/HighlightButton";
 import { barOptions } from "constant";
 import HorizontalBarChart from "./HorizontalBarChart";
 
-const Activity = ({ activity, onClick, width }) => {
+const Activity = ({ activity, onClick, width, target }) => {
 	return (
 		<Box
 			p="0.5em 1em"
@@ -26,7 +26,7 @@ const Activity = ({ activity, onClick, width }) => {
 					<HorizontalBarChart
 						label={activity.label}
 						data={activity.count}
-						target={activity.target}
+						target={target}
 						options={barOptions}
 					/>
 				</Box>
