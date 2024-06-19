@@ -31,12 +31,15 @@ const SalesChart = ({ company, selectedUser, user }) => {
 				console.error(error);
 			}
 		};
+
 		const fetchAllUserActivities = async () => {
 			try {
-				const response = await ActivityService.getActivities({
+				const response = await ActivityService.getActivitiesByUser({
 					id: selectedUser?._id,
 					company,
+					type: "Weekly",
 				});
+
 				setActivity(response.data);
 				callsMadeBarData.map(
 					(item) =>
@@ -85,7 +88,7 @@ const SalesChart = ({ company, selectedUser, user }) => {
 		};
 		fetchAllUserActivities();
 		fetchAllContacts();
-	}, [company, refresh]);
+	}, [company, refresh, selectedUser]);
 
 	const options = {
 		scales: {
