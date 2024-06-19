@@ -113,7 +113,7 @@ const EditQuestionnaire = ({
 									/>
 								</FormControl> */}
 								<FormControl>
-									<FormLabel>Correct Answer</FormLabel>
+									<FormLabel>Best Answer</FormLabel>
 									<Input
 										type="text"
 										name="

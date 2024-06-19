@@ -211,7 +211,7 @@ const AddQuestionForm = () => {
 					</FormLabel>
 					<FormLabel color={"green"}>
 						<HStack alignItems="start">
-							<Text ml={6}>Correct answer:</Text>
+							<Text ml={6}>Best answer:</Text>
 							<Text>{questionnaire.correctAnswer}</Text>
 						</HStack>
 					</FormLabel>
@@ -295,7 +295,7 @@ const AddQuestionForm = () => {
 					{optionsFilled && (
 						<>
 							<FormControl>
-								<FormLabel>Correct Answer:</FormLabel>
+								<FormLabel>Best Answer:</FormLabel>
 								<RadioGroup value={correctAnswer} onChange={setCorrectAnswer}>
 									<VStack
 										spacing={3}

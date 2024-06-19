@@ -143,7 +143,7 @@ const Assessment = () => {
 										</Text>
 									</Box>
 									<Text fontSize={"sm"} fontWeight={"bold"} color={"green"}>
-										Correct Answer: {questionnaire.correctAnswer}
+										Best Answer: {questionnaire.correctAnswer}
 									</Text>
 									<Text fontSize={"sm"} fontWeight="bold">
 										Explanation: {questionnaire.explanation}
