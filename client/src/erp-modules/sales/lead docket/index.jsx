@@ -31,7 +31,7 @@ import { useNavigate } from "react-router";
 import { useBreakpointValue } from "services/Breakpoint";
 import LeadsService from "services/LeadsService";
 import LocalStorageService from "services/LocalStorageService";
-import { formatDate } from "utils";
+import { formatDate, toCapitalize } from "utils";
 import AddOpportunity from "./AddOpportunity";
 import Caption from "./Caption";
 import Disburse from "./Disburse";
@@ -255,6 +255,7 @@ const LeadsDocket = () => {
 								supervisorAssignee,
 								isDisbursed,
 								abbreviation,
+								name,
 							}) => (
 								<Tr key={_id}>
 									<Td>
@@ -265,8 +266,7 @@ const LeadsDocket = () => {
 										/>
 									</Td>
 									<Td p={1}>{opportunityName}</Td>
-									<Td p={1}>{abbreviation}</Td>
-									<Td p={1}>{companyName}</Td>
+									<Td p={1}>{toCapitalize(name)}</Td>
 									<Td p={1}>
 										<SelectList
 											code="name"

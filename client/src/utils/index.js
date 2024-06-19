@@ -60,7 +60,7 @@ export const generateLighterShade = (color, factor) => {
 };
 
 export const toCapitalize = (str) =>
-	str.replace(/\b\w/g, (match) => match.toUpperCase());
+	str?.replace(/\b\w/g, (match) => match.toUpperCase());
 
 export const formatDate = (date) =>
 	new Date(date).toLocaleDateString("en-US", {

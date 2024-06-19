@@ -24,7 +24,7 @@ import { useBreakpointValue } from "services/Breakpoint";
 import LeadsService from "services/LeadsService";
 import LocalStorageService from "services/LocalStorageService";
 import UserService from "services/UserService";
-import { formatDate, isManager } from "utils";
+import { formatDate, isManager, toCapitalize } from "utils";
 import Caption from "../lead docket/Caption";
 import SearchFilter from "../lead docket/SearchFilter";
 import { OPP_COLUMNS } from "../lead docket/data";
@@ -261,12 +261,7 @@ const Opportunities = () => {
 							return (
 								<Tr key={_._id}>
 									<Td>{_.opportunityName}</Td>
-									<Td p={0} pl={2}>
-										{_.abbreviation}
-									</Td>
-									<Td p={0} pl={2}>
-										{_.companyName}
-									</Td>
+									<Td>{toCapitalize(_.name)}</Td>
 									<Td>{_.email}</Td>
 									<Td p={0}>
 										<SelectList

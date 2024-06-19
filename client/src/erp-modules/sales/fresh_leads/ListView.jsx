@@ -4,7 +4,7 @@ import TableLayout from "components/ui/table/TableLayout";
 import { useState } from "react";
 import { FaRegTrashAlt } from "react-icons/fa";
 import LocalStorageService from "services/LocalStorageService";
-import { isManager } from "utils";
+import { isManager, toCapitalize } from "utils";
 import { LEADS_COLS } from "../lead docket/data";
 import EditLead from "./EditLead";
 import LeadContacts from "./LeadContacts";
@@ -82,8 +82,14 @@ const ListView = ({
 						{leadList?.map((_) => (
 							<Tr key={_._id}>
 								<Td>{_.opportunityName}</Td>
-								<Td>{_.companyName}</Td>
+								<Td>{toCapitalize(_.name)}</Td>
 								<Td>{_.email}</Td>
+								<Td>
+									<FaRegTrashAlt
+										cursor={"pointer"}
+										onClick={() => handleDelete(_._id)}
+									/>
+								</Td>
 								<Td fontSize={"xs"}>
 									<HStack>
 										<HighlightButton
@@ -92,14 +98,6 @@ const ListView = ({
 												setSelectedContact(_._id);
 												setViewProfile((prev) => !prev);
 											}}
-										/>
-									</HStack>
-								</Td>
-								<Td>
-									<HStack>
-										<FaRegTrashAlt
-											cursor={"pointer"}
-											onClick={() => handleDelete(_._id)}
 										/>
 									</HStack>
 								</Td>

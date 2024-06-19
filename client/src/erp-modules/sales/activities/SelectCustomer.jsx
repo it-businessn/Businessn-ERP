@@ -78,6 +78,7 @@ const SelectCustomer = ({
 		formData.abbreviation = `${formData.name
 			.replace(" ", "_")
 			.toUpperCase()}${today}`;
+		formData.opportunityName = formData.abbreviation;
 
 		setSubmitting(true);
 
@@ -129,13 +130,6 @@ const SelectCustomer = ({
 						label={"Name of company"}
 						name="name"
 						valueText={formData.name}
-						handleChange={handleChange}
-						required
-					/>
-					<InputFormControl
-						label={"Opportunity name"}
-						name="opportunityName"
-						valueText={formData.opportunityName}
 						handleChange={handleChange}
 						required
 					/>

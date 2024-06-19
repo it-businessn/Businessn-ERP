@@ -22,7 +22,7 @@ import TextTitle from "components/ui/text/TextTitle";
 import { FaSearch } from "react-icons/fa";
 import { MdOutlineFilterList } from "react-icons/md";
 import { useBreakpointValue } from "services/Breakpoint";
-import { generateLighterShade } from "utils";
+import { generateLighterShade, toCapitalize } from "utils";
 import SearchFilter from "../lead docket/SearchFilter";
 
 const CustomersList = ({ contacts, handleProfileView, icons }) => {
@@ -108,7 +108,7 @@ const CustomersList = ({ contacts, handleProfileView, icons }) => {
 									<Td fontSize={"xs"} p={0}>
 										{leadId.opportunityName}
 									</Td>
-									<Td fontSize={"xs"}>{leadId.companyName}</Td>
+									<Td fontSize={"xs"}>{toCapitalize(leadId.name)}</Td>
 									<Td fontSize={"xs"}>{leadId.email}</Td>
 									<Td fontSize={"xs"}>
 										<Flex align="center">

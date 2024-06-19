@@ -1,6 +1,5 @@
 export const LEAD_DOCKET_COLUMNS = [
 	"Opportunity name",
-	"Abbr",
 	"Company name",
 	"Region",
 	"Industry",
@@ -12,7 +11,6 @@ export const LEAD_DOCKET_COLUMNS = [
 
 export const OPP_COLUMNS = [
 	"Opportunity name",
-	"Abbr",
 	"Company name",
 	"Email",
 	"Stage",
@@ -23,4 +21,10 @@ export const OPP_COLUMNS = [
 	"",
 ];
 
-export const LEADS_COLS = ["Opportunity name", "Company", "Email", "", ""];
+export const LEADS_COLS = [
+	"Opportunity name",
+	"Company",
+	"Email",
+	"Action",
+	"",
+];

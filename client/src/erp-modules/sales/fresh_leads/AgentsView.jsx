@@ -122,7 +122,7 @@ const AgentsView = ({
 						</Box>
 						{leadList
 							?.filter((lead) => lead.stage === category.abbr)
-							?.map(({ _id, opportunityName, email, phone, stage }) => (
+							?.map(({ _id, name, opportunityName, email, phone, stage }) => (
 								<Card
 									key={_id}
 									m="8px"
@@ -146,7 +146,7 @@ const AgentsView = ({
 												size="xs"
 												color={"brand.600"}
 												weight="normal"
-												title={opportunityName}
+												title={name}
 											/>
 											<Box>
 												<RiEditLine
