@@ -29,9 +29,10 @@ const Activities = () => {
 	const { isMobile, isIpad } = useBreakpointValue();
 	const [contacts, setContacts] = useState(null);
 	const [leads, setLeads] = useState(null);
-	const [selectedFilter, setSelectedFilter] = useState("monthly");
+	const [selectedFilter, setSelectedFilter] = useState("Daily");
 	const [refresh, setRefresh] = useState(false);
 	const [showSelectCustomer, setShowSelectCustomer] = useState(false);
+	const [logType, setLogType] = useState(null);
 	const [userActivities, setUserActivities] = useState(null);
 	const [company, setCompany] = useState(
 		LocalStorageService.getItem("selectedCompany"),
@@ -67,11 +68,13 @@ const Activities = () => {
 				console.error(error);
 			}
 		};
+
 		const fetchAllUserActivities = async () => {
 			try {
-				const response = await ActivityService.getActivities({
+				const response = await ActivityService.getActivitiesByUser({
 					id: user?._id,
 					company,
+					type: selectedFilter,
 				});
 				setUserActivities(response.data);
 				ACTIVITY_CARDS.map(
@@ -92,7 +95,7 @@ const Activities = () => {
 		};
 		fetchAllContacts();
 		fetchAllUserActivities();
-	}, [company]);
+	}, [company, refresh, selectedFilter]);
 
 	const handleFilterClick = (filter) => {
 		setSelectedFilter(filter);
@@ -142,19 +145,26 @@ const Activities = () => {
 								activity={activity}
 								key={activity.title}
 								width={{ base: "50%", md: "40%", lg: "40%", xl: "40%" }}
-								onClick={() => setShowSelectCustomer(true)}
+								onClick={() => {
+									setLogType(activity.value);
+									setShowSelectCustomer(true);
+								}}
 							/>
 						))}
 					</SimpleGrid>
 
-					<SelectCustomer
-						showSelectCustomer={showSelectCustomer}
-						setRefresh={setRefresh}
-						setShowSelectCustomer={setShowSelectCustomer}
-						contacts={contacts}
-						leads={leads}
-						company={company}
-					/>
+					{showSelectCustomer && (
+						<SelectCustomer
+							logType={logType}
+							showSelectCustomer={showSelectCustomer}
+							setRefresh={setRefresh}
+							setShowSelectCustomer={setShowSelectCustomer}
+							contacts={contacts}
+							leads={leads}
+							company={company}
+							user={user}
+						/>
+					)}
 
 					<SimpleGrid
 						columns={1}

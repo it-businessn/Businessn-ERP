@@ -17,8 +17,9 @@ const createToken = (_id) => {
 
 const getAllUsers = () => async (req, res) => {
 	try {
-		// const users = (await User.find()).sort((a, b) => b.createdOn - a.createdOn);
-		const users = await Employee.find({});
+		const users = await Employee.find({}).sort({
+			firstName: 1,
+		});
 		res.status(200).json(users);
 	} catch (error) {
 		res.status(404).json({ error: error.message });

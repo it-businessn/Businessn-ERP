@@ -1,4 +1,4 @@
-const Activity = require("../models/Activity");
+const moment = require("moment");
 const Contact = require("../models/Contact");
 const LogActivity = require("../models/LogActivity");
 
@@ -22,6 +22,47 @@ const getActivityById = () => async (req, res) => {
 			(a, b) => b.createdOn - a.createdOn,
 		);
 		res.status(200).json(notes);
+	} catch (error) {
+		res.status(404).json({ error: error.message });
+	}
+};
+
+const getActivityByUserId = () => async (req, res) => {
+	const { id, name, filter } = req.params;
+	const isToday = filter === "Daily";
+	const isWeekly = filter === "Weekly";
+	const isMonthly = filter === "Monthly";
+	const isQuarterly = filter === "Quarterly";
+	const isAnnual = filter === "Annual";
+	const startOfDay = isToday
+		? moment().startOf("day").toDate()
+		: isWeekly
+		? moment().startOf("week").toDate()
+		: isMonthly
+		? moment().startOf("month").toDate()
+		: isAnnual
+		? moment().startOf("year").toDate()
+		: null;
+	const endOfDay = isToday
+		? moment().endOf("day").toDate()
+		: isWeekly
+		? moment().endOf("week").toDate()
+		: isMonthly
+		? moment().endOf("month").toDate()
+		: isAnnual
+		? moment().endOf("year").toDate()
+		: null;
+
+	try {
+		const logs = await LogActivity.find({
+			createdBy: id,
+			companyName: name,
+			createdOn: {
+				$gte: startOfDay,
+				$lte: endOfDay,
+			},
+		});
+		res.status(200).json(logs);
 	} catch (error) {
 		res.status(404).json({ error: error.message });
 	}
@@ -56,4 +97,9 @@ const createActivity = () => async (req, res) => {
 	}
 };
 
-module.exports = { createActivity, getActivity, getActivityById };
+module.exports = {
+	createActivity,
+	getActivity,
+	getActivityById,
+	getActivityByUserId,
+};

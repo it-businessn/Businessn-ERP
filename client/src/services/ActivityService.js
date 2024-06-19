@@ -9,6 +9,12 @@ const ActivityService = {
 		return apiService.get(`/activities/${id}`);
 	},
 
+	async getActivitiesByUser(data) {
+		return apiService.get(
+			`/activities/user/${data.id}/${data.company}/${data.type}`,
+		);
+	},
+
 	async addActivity(data) {
 		return apiService.post("/activities", data);
 	},

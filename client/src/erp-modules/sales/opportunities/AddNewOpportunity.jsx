@@ -136,7 +136,7 @@ const AddNewOpportunity = ({
 	const handleSubmit = async (e) => {
 		e.preventDefault();
 		const { stage, companyName } = formData;
-		if (selectedPrimaryAssignees.length === 0) {
+		if (selectedPrimaryAssignees?.length === 0) {
 			setAssigneeError("Please select primary assignee");
 			setIsDisabled(true);
 		}
@@ -151,7 +151,7 @@ const AddNewOpportunity = ({
 		}
 		const isNotValid =
 			stage === "" ||
-			selectedPrimaryAssignees.length === 0 ||
+			selectedPrimaryAssignees?.length === 0 ||
 			companyName === "" ||
 			isDisabled;
 		if (isNotValid) return;

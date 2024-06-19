@@ -78,9 +78,9 @@ const Opportunities = () => {
 				? response.data
 				: response.data?.filter(
 						(item) =>
-							(item.primaryAssignee.length > 0 &&
+							(item.primaryAssignee?.length > 0 &&
 								item.primaryAssignee.find((_) => _.name === user?.fullName)) ||
-							(item.supervisorAssignee.length > 0 &&
+							(item.supervisorAssignee?.length > 0 &&
 								item.supervisorAssignee.find((_) => _.name === user?.fullName)),
 				  );
 			setOpportunities(leadList);
@@ -255,16 +255,20 @@ const Opportunities = () => {
 			)}
 			{!opportunities && <Loader />}
 			{opportunities && (
-				<TableLayout cols={OPP_COLUMNS}>
+				<TableLayout isOpportunity cols={OPP_COLUMNS}>
 					<Tbody>
 						{opportunities?.map((_) => {
 							return (
 								<Tr key={_._id}>
 									<Td>{_.opportunityName}</Td>
-									<Td>{_.abbreviation}</Td>
-									<Td>{_.companyName}</Td>
+									<Td p={0} pl={2}>
+										{_.abbreviation}
+									</Td>
+									<Td p={0} pl={2}>
+										{_.companyName}
+									</Td>
 									<Td>{_.email}</Td>
-									<Td>
+									<Td p={0}>
 										<SelectList
 											id={_._id}
 											code="abbr"
@@ -274,7 +278,7 @@ const Opportunities = () => {
 											data={LEAD_STAGES}
 										/>
 									</Td>
-									<Td>
+									<Td p={0} pl={2}>
 										<SelectList
 											id={_._id}
 											code="fullName"
@@ -284,7 +288,7 @@ const Opportunities = () => {
 											data={assignees}
 										/>
 									</Td>
-									<Td>
+									<Td p={0} pl={2}>
 										<SelectList
 											id={_._id}
 											code="fullName"

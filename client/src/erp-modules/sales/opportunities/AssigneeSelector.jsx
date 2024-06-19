@@ -32,7 +32,7 @@ const AssigneeSelector = ({
 		const selectedAssignee = { name: event.target.value };
 
 		if (
-			selectedAssignees.length === 0 ||
+			selectedAssignees?.length === 0 ||
 			!selectedAssignees.some(
 				(assignee) => assignee.name === selectedAssignee.name,
 			)
@@ -56,7 +56,7 @@ const AssigneeSelector = ({
 		);
 
 		const defaultVal =
-			selectedAssignees.length > 1 ? selectedAssignees[0].name : "";
+			selectedAssignees?.length > 1 ? selectedAssignees?.[0].name : "";
 		setSelectedValue(defaultVal);
 	};
 
@@ -79,7 +79,7 @@ const AssigneeSelector = ({
 				))}
 			</Select>
 
-			{selectedAssignees.length > 0 && (
+			{selectedAssignees?.length > 0 && (
 				<FormControl>
 					<FormLabel>Selected {label}</FormLabel>
 					{selectedAssignees?.map((assignee) => (
