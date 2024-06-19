@@ -2,6 +2,7 @@ import { AddIcon, CalendarIcon, ChatIcon, TimeIcon } from "@chakra-ui/icons";
 import { useEffect, useState } from "react";
 import ContactService from "services/ContactService";
 import LocalStorageService from "services/LocalStorageService";
+import { isManager } from "utils";
 import CustomersList from "./CustomersList";
 import Contacts from "./contacts";
 
@@ -12,6 +13,9 @@ const Customers = () => {
 	const [company, setCompany] = useState(
 		LocalStorageService.getItem("selectedCompany"),
 	);
+	const user = LocalStorageService.getItem("user");
+
+	const isUserManager = isManager(user?.role);
 
 	useEffect(() => {
 		const handleSelectedCompanyChange = (event) => setCompany(event.detail);
@@ -33,7 +37,14 @@ const Customers = () => {
 			const response = await ContactService.getCompContacts(company);
 			response.data.map((_) => (_.stage = _.leadId?.stage));
 			const filterContacts = response.data.filter((_) => _.stage === "T4");
-			setContacts(filterContacts);
+
+			setContacts(
+				isUserManager
+					? filterContacts
+					: filterContacts?.filter(
+							(lead) => lead.leadId.primaryAssignee[0]?.name === user.fullName,
+					  ),
+			);
 		} catch (error) {
 			console.error(error);
 		}
@@ -87,6 +98,7 @@ const Customers = () => {
 			setViewProfile={setViewProfile}
 			selectedContact={selectedContact}
 			company={company}
+			user={user}
 		/>
 	) : (
 		<CustomersList
@@ -95,6 +107,7 @@ const Customers = () => {
 			handleProfileView={handleProfileView}
 			icons={QUICK_LINKS}
 			company={company}
+			user={user}
 		/>
 	);
 };

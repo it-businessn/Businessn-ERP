@@ -5,16 +5,14 @@ import { useEffect, useState } from "react";
 import { FaArrowLeft } from "react-icons/fa";
 import { useNavigate, useParams } from "react-router-dom";
 import ContactService from "services/ContactService";
-import LocalStorageService from "services/LocalStorageService";
 import ContactDetailsInfo from "./ContactDetailsInfo";
 import Logs from "./logs";
 import Meetings from "./meeting";
 import Notes from "./notes/Notes";
 import Tasks from "./tasks";
 
-const Contacts = ({ setViewProfile, selectedContact, company }) => {
+const Contacts = ({ setViewProfile, selectedContact, company, user }) => {
 	const { id, comp } = useParams();
-	const user = LocalStorageService.getItem("user");
 
 	const [contact, setContact] = useState(null);
 	const fetchContacts = async () => {
