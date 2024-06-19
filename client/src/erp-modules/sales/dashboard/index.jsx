@@ -49,6 +49,15 @@ const CRMDashboard = () => {
 			);
 		};
 	}, []);
+	useEffect(() => {
+		LocalStorageService.setItem("selectedUser", selectedUser);
+
+		document.dispatchEvent(
+			new CustomEvent("selectedUserChanged", {
+				detail: selectedUser,
+			}),
+		);
+	}, [selectedUser]);
 
 	useEffect(() => {
 		const fetchAllEmployees = async () => {
@@ -60,8 +69,7 @@ const CRMDashboard = () => {
 			}
 		};
 		fetchAllEmployees();
-		LocalStorageService.setItem("selectedUser", selectedUser.fullName);
-	}, [selectedUser, company]);
+	}, [company]);
 
 	const handleChange = (value) => {
 		if (value === "") {
@@ -69,12 +77,6 @@ const CRMDashboard = () => {
 		} else {
 			setSelectedUser(employees.find(({ fullName }) => fullName === value));
 		}
-		LocalStorageService.setItem("selectedUser", selectedUser.fullName);
-		document.dispatchEvent(
-			new CustomEvent("selectedUserChanged", {
-				detail: selectedUser.fullName,
-			}),
-		);
 	};
 
 	return (

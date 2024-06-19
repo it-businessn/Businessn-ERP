@@ -4,21 +4,35 @@ import LocalStorageService from "services/LocalStorageService";
 import TaskService from "services/TaskService";
 import { formatDate, renderPriorityBars } from "utils";
 
-const TaskTable = ({ selectedUser, cols }) => {
+const TaskTable = ({ cols }) => {
 	const [tasks, setTasks] = useState([]);
 	const [company, setCompany] = useState(
 		LocalStorageService.getItem("selectedCompany"),
 	);
+	const [selectedUser, setSelectedUser] = useState(
+		LocalStorageService.getItem("selectedUser"),
+	);
 
 	useEffect(() => {
-		const handleSelectedCompanyChange = (event) => setCompany(event.detail);
+		const handleSelectedUserChange = (event) => {
+			setSelectedUser(event.detail);
+		};
 
+		const handleSelectedCompanyChange = (event) => {
+			setCompany(event.detail);
+		};
+
+		document.addEventListener("selectedUserChanged", handleSelectedUserChange);
 		document.addEventListener(
 			"selectedCompanyChanged",
 			handleSelectedCompanyChange,
 		);
 
 		return () => {
+			document.removeEventListener(
+				"selectedUserChanged",
+				handleSelectedCompanyChange,
+			);
 			document.removeEventListener(
 				"selectedCompanyChanged",
 				handleSelectedCompanyChange,

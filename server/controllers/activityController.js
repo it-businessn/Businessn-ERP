@@ -27,13 +27,40 @@ const getActivityById = () => async (req, res) => {
 	}
 };
 
-const getActivityByUserId = () => async (req, res) => {
-	const { id, name, filter } = req.params;
+const getFilterRange = (filter) => {
 	const isToday = filter === "Daily";
 	const isWeekly = filter === "Weekly";
 	const isMonthly = filter === "Monthly";
 	const isQuarterly = filter === "Quarterly";
 	const isAnnual = filter === "Annual";
+
+	if (isQuarterly) {
+		const currentQuarter = moment().quarter(); //current quarter 1,2,3,4
+
+		let startOfQuarter;
+		let endOfQuarter;
+
+		switch (currentQuarter) {
+			case 1:
+				startOfQuarter = moment().startOf("year").toDate();
+				endOfQuarter = moment().month(2).endOf("month").toDate(); // March 31st
+				break;
+			case 2:
+				startOfQuarter = moment().month(3).startOf("month").toDate(); // April 1st
+				endOfQuarter = moment().month(5).endOf("month").toDate(); // June 30th
+				break;
+			case 3:
+				startOfQuarter = moment().month(6).startOf("month").toDate(); // July 1st
+				endOfQuarter = moment().month(8).endOf("month").toDate(); // September 30th
+				break;
+			case 4:
+				startOfQuarter = moment().month(9).startOf("month").toDate(); // October 1st
+				endOfQuarter = moment().month(11).endOf("month").toDate(); // December 31st
+				break;
+		}
+		return { startOfDay: startOfQuarter, endOfDay: endOfQuarter };
+	}
+
 	const startOfDay = isToday
 		? moment().startOf("day").toDate()
 		: isWeekly
@@ -43,6 +70,7 @@ const getActivityByUserId = () => async (req, res) => {
 		: isAnnual
 		? moment().startOf("year").toDate()
 		: null;
+
 	const endOfDay = isToday
 		? moment().endOf("day").toDate()
 		: isWeekly
@@ -52,6 +80,15 @@ const getActivityByUserId = () => async (req, res) => {
 		: isAnnual
 		? moment().endOf("year").toDate()
 		: null;
+	return { startOfDay, endOfDay };
+};
+
+const getActivityByUserId = () => async (req, res) => {
+	const { id, name, filter } = req.params;
+
+	const startOfDay = getFilterRange(filter).startOfDay;
+
+	const endOfDay = getFilterRange(filter).endOfDay;
 
 	try {
 		const logs = await LogActivity.find({

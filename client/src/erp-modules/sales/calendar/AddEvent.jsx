@@ -26,7 +26,7 @@ const AddEvent = ({
 	setIsLoading,
 	setIsRefresh,
 	filterText = "Event",
-	filter,
+	filter = "event",
 	// setShowEditDetails,
 	company,
 	user,
