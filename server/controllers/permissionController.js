@@ -1,5 +1,66 @@
 const UserPermissions = require("../models/permissions");
 
+const ADMIN_PERMISSION = [
+	{ name: "Sales" },
+	{ name: "Sales Dashboard" },
+	{ name: "Sales Activities" },
+	{ name: "Sales Calendar" },
+	{ name: "Sales Payouts" },
+	{ name: "Sales Customers" },
+	{ name: "Sales Opportunities" },
+	{ name: "Sales Lead Docket" },
+	{ name: "Sales Lead Disbursement" },
+	{ name: "Sales Fresh Leads" },
+	{ name: "Sales Target Leads Pipeline" },
+	{ name: "Sales Products" },
+	{ name: "Sales Orders" },
+	{ name: "Sales Resources" },
+	{ name: "Sales Sales Reports" },
+	{ name: "Sales Setup" },
+	{ name: "Project Management" },
+	{ name: "Project Management Dashboard" },
+	{ name: "Project Management Work view" },
+	{ name: "Project Management Communication" },
+	{ name: "Project Management Taskboard" },
+	{ name: "Project Management Agenda" },
+	{ name: "Project Management Gantt" },
+	{ name: "Project Management PM Reports" },
+	{ name: "Project Management Setup" },
+	{ name: "Payroll" },
+	{ name: "Payroll Dashboard" },
+	{ name: "Payroll Workview" },
+	{ name: "Payroll Process Payroll" },
+	{ name: "Payroll Approvals" },
+	{ name: "Payroll Timesheets" },
+	{ name: "Payroll Employees" },
+	{ name: "Payroll Reports" },
+	{ name: "Payroll Employee Dashboard" },
+	{ name: "Payroll Employee Records" },
+	{ name: "Scheduling" },
+	{ name: "Scheduling Dashboard" },
+	{ name: "Scheduling Workview" },
+	{ name: "Scheduling Scheduling Reports" },
+	{ name: "Scheduling Setup" },
+	{ name: "Scheduling Shift Assignment" },
+];
+
+const SALES_ASSOCIATE_PERMISSION = [
+	{ name: "Sales" },
+	{ name: "Sales Dashboard" },
+	{ name: "Sales Activities" },
+	{ name: "Sales Calendar" },
+	{ name: "Sales Payouts" },
+	{ name: "Sales Customers" },
+	{ name: "Sales Opportunities" },
+	{ name: "Sales Fresh Leads" },
+	{ name: "Sales Target Leads Pipeline" },
+	{ name: "Sales Resources" },
+	{ name: "Project Management" },
+	{ name: "Project Management Dashboard" },
+	{ name: "Project Management Work view" },
+	{ name: "Project Management Communication" },
+];
+
 const getUserPermissions = () => async (req, res) => {
 	try {
 		const allPermissions = await UserPermissions.find();
@@ -93,4 +154,6 @@ module.exports = {
 	getUserPermissions,
 	updatePermission,
 	getPermissionByUserId,
+	ADMIN_PERMISSION,
+	SALES_ASSOCIATE_PERMISSION,
 };

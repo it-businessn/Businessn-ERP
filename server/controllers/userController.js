@@ -1,6 +1,7 @@
 // const User = require("../models/User");
 const bcrypt = require("bcrypt");
 const Employee = require("../models/Employee");
+const UserPermissions = require("../models/permissions");
 const Company = require("../models/Company");
 const Group = require("../models/Group");
 const jwt = require("jsonwebtoken");
@@ -8,6 +9,10 @@ const Lead = require("../models/Lead");
 const sendEmail = require("../emailService/sendEmail");
 const Task = require("../models/Task");
 const UserActivity = require("../models/UserActivity");
+const {
+	ADMIN_PERMISSION,
+	SALES_ASSOCIATE_PERMISSION,
+} = require("./permissionController");
 
 const currentDate = new Date();
 
@@ -262,6 +267,46 @@ const createEmployee = () => async (req, res) => {
 			password: hashedPassword,
 			fullName: `${firstName} ${middleName} ${lastName}`,
 		});
+
+		const userPermission = new UserPermissions({
+			empId: employee._id,
+			companyName: company,
+		});
+		if (
+			role?.includes("Administrators") ||
+			role?.includes("Technical Administrator")
+		) {
+			ADMIN_PERMISSION.forEach((_) => {
+				const item = {
+					name: _.name,
+					canAccessModule: true,
+					canAccessUserData: true,
+					canAccessGroupData: true,
+					canAccessRegionData: true,
+					canAccessAllData: true,
+					canViewModule: true,
+					canEditModule: true,
+					canDeleteModule: true,
+				};
+				userPermission.permissionType.push(item);
+			});
+		} else {
+			SALES_ASSOCIATE_PERMISSION.forEach((_) => {
+				const item = {
+					name: _.name,
+					canAccessModule: true,
+					canAccessUserData: true,
+					canAccessGroupData: false,
+					canAccessRegionData: false,
+					canAccessAllData: false,
+					canViewModule: true,
+					canEditModule: true,
+					canDeleteModule: false,
+				};
+				userPermission.permissionType.push(item);
+			});
+		}
+		await userPermission.save();
 
 		existingCompany.employees.push(employee._id);
 		await existingCompany.save();
