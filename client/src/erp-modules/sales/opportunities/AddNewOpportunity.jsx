@@ -22,6 +22,7 @@ import {
 import { useEffect, useState } from "react";
 import { FaCaretDown, FaPlus } from "react-icons/fa";
 import LeadsService from "services/LeadsService";
+import { today } from "utils";
 import AddCompany from "./AddCompany";
 import AssigneeSelector from "./AssigneeSelector";
 import { LEAD_STAGES } from "./data";
@@ -158,8 +159,12 @@ const AddNewOpportunity = ({
 		formData.productService = selectedProductService;
 		formData.primaryAssignee = selectedPrimaryAssignees;
 		formData.supervisorAssignee = selectedSupervisorAssignees;
-		setSubmitting(true);
 
+		formData.abbreviation = `${formData.name
+			.replace(" ", "_")
+			.toUpperCase()}${today}`;
+		formData.opportunityName = formData.abbreviation;
+		setSubmitting(true);
 		try {
 			if (showEditLead) {
 				await LeadsService.updateLeadInfo(formData, showEditLead._id);
@@ -187,21 +192,7 @@ const AddNewOpportunity = ({
 		>
 			<form onSubmit={handleSubmit}>
 				<Stack spacing={4}>
-					<InputFormControl
-						label={"Opportunity name"}
-						name="opportunityName"
-						valueText={formData.opportunityName}
-						handleChange={handleChange}
-						required
-					/>
 					<HStack>
-						<InputFormControl
-							label={"Abbreviation"}
-							name="abbreviation"
-							valueText={formData.abbreviation}
-							handleChange={handleChange}
-							required
-						/>
 						<FormControl>
 							<FormLabel>Company Name</FormLabel>
 							<HStack justify={"space-between"}>

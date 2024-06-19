@@ -3,13 +3,13 @@ import ActionButtonGroup from "components/ui/form/ActionButtonGroup";
 import InputFormControl from "components/ui/form/InputFormControl";
 import RadioFormControl from "components/ui/form/RadioFormControl";
 import ModalLayout from "components/ui/modal/ModalLayout";
-import moment from "moment";
 import { useState } from "react";
 import { FaCaretDown } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { ROUTE_PATH } from "routes";
 import ActivityService from "services/ActivityService";
 import LeadsService from "services/LeadsService";
+import { today } from "utils";
 
 const SelectCustomer = ({
 	showSelectCustomer,
@@ -74,7 +74,6 @@ const SelectCustomer = ({
 	const [isSubmitting, setSubmitting] = useState(false);
 	const handleSubmit = async (e) => {
 		e.preventDefault();
-		const today = moment().format("MMDDYY");
 		formData.abbreviation = `${formData.name
 			.replace(" ", "_")
 			.toUpperCase()}${today}`;

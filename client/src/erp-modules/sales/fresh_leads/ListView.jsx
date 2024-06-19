@@ -6,7 +6,6 @@ import { FaRegTrashAlt } from "react-icons/fa";
 import LocalStorageService from "services/LocalStorageService";
 import { isManager, toCapitalize } from "utils";
 import { LEADS_COLS } from "../lead docket/data";
-import EditLead from "./EditLead";
 import LeadContacts from "./LeadContacts";
 
 export const totalLeads = (name, isManager, leads, userName) => {
@@ -106,15 +105,6 @@ const ListView = ({
 					</Tbody>
 				</TableLayout>
 			)}
-
-			<EditLead
-				defaultLeadInfo={defaultLeadInfo}
-				formData={formData}
-				isOpen={isOpen}
-				onClose={onClose}
-				setFormData={setFormData}
-				setIsUpdated={setIsUpdated}
-			/>
 		</>
 	);
 };

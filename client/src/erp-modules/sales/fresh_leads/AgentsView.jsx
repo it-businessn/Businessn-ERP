@@ -36,7 +36,7 @@ const AgentsView = ({
 }) => {
 	const defaultLeadInfo = {
 		_id: null,
-		opportunityName: "",
+		name: "",
 		email: "",
 		stage: "",
 		phone: "",
@@ -53,11 +53,11 @@ const AgentsView = ({
 	const [formData, setFormData] = useState(defaultLeadInfo);
 	const [copied, setCopied] = useState(false);
 
-	const handleEdit = (_id, opportunityName, email, phone, stage) => {
+	const handleEdit = (_id, name, email, phone, stage) => {
 		setFormData((prevData) => ({
 			...prevData,
 			_id,
-			opportunityName,
+			name,
 			email,
 			phone,
 			stage,
@@ -152,13 +152,7 @@ const AgentsView = ({
 												<RiEditLine
 													cursor={"pointer"}
 													onClick={() =>
-														handleEdit(
-															_id,
-															opportunityName,
-															email,
-															phone,
-															stage,
-														)
+														handleEdit(_id, name, email, phone, stage)
 													}
 												/>
 											</Box>

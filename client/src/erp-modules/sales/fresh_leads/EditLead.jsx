@@ -62,8 +62,8 @@ const EditLead = ({
 				<Stack spacing={4}>
 					<InputFormControl
 						label={"Name of Company"}
-						name="opportunityName"
-						valueText={formData.opportunityName}
+						name="name"
+						valueText={formData.name}
 						handleChange={handleChange}
 						required
 					/>
