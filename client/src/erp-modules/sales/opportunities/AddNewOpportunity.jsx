@@ -186,7 +186,7 @@ const AddNewOpportunity = ({
 
 	return (
 		<ModalLayout
-			title={"Add New Opportunity"}
+			title={`${showEditLead ? "Edit" : "Add New"} Opportunity`}
 			isOpen={isOpen || showEditLead}
 			onClose={onClose}
 			error={error}
@@ -452,7 +452,7 @@ const AddNewOpportunity = ({
 						</>
 					)}
 					<ActionButtonGroup
-						submitBtnName={"Add"}
+						submitBtnName={showEditLead ? "Save" : "Add"}
 						isDisabled={isDisabled}
 						isLoading={isSubmitting}
 						onClose={onClose}
