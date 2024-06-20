@@ -22,7 +22,7 @@ import {
 import { useEffect, useState } from "react";
 import { FaCaretDown, FaPlus } from "react-icons/fa";
 import LeadsService from "services/LeadsService";
-import { today } from "utils";
+import { toCapitalize, today } from "utils";
 import AddCompany from "./AddCompany";
 import AssigneeSelector from "./AssigneeSelector";
 import { LEAD_STAGES } from "./data";
@@ -69,7 +69,7 @@ const AddNewOpportunity = ({
 			postalCode: showEditLead?.address?.postalCode,
 			country: showEditLead?.address?.country,
 		},
-		name: showEditLead?.name,
+		name: toCapitalize(showEditLead?.name),
 		email: showEditLead?.email,
 		industry: showEditLead?.industry,
 		opportunityName: showEditLead?.opportunityName,
