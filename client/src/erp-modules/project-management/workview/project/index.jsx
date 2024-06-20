@@ -10,7 +10,6 @@ import {
 	Tr,
 	useDisclosure,
 } from "@chakra-ui/react";
-import Loader from "components/Loader";
 import { useState } from "react";
 import { FaSort } from "react-icons/fa";
 import AddProject from "./AddProject";
@@ -95,7 +94,6 @@ const ProjectTable = ({ projects, setRefresh, managers, company }) => {
 					</Tr>
 				</Thead>
 
-				{!projects && <Loader />}
 				<Tbody>
 					{projects?.map((project, index) => (
 						<Tr

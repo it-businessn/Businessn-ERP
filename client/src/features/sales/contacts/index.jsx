@@ -72,7 +72,6 @@ const Contacts = () => {
 
 	return (
 		<Flex>
-			{!selectedContact && <Loader />}
 			{selectedContact?.length === 0 && (
 				<Box p={4}>
 					<Text>No contacts added. Please add a contact.</Text>

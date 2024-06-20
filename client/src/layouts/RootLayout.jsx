@@ -2,7 +2,6 @@ import { Flex, useDisclosure } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 
-import Loader from "components/Loader";
 import Navbar from "components/header";
 import Sidebar from "components/sidebar";
 import { SIDEBAR_MENU } from "components/sidebar/data";
@@ -112,32 +111,30 @@ const RootLayout = () => {
 	}, [activeMenu]);
 
 	return (
-		<>
-			{!activeMenu && <Loader />}
-			{user && ((activeMenu && SIDEBAR_MENU) || refresh) && (
-				<>
-					<Navbar
-						handleClick={(menu) => setActiveMenu(menu)}
-						handleLogout={handleLogout}
-						onOpen={onOpen}
-						tabs={SIDEBAR_MENU}
-						user={user}
+		user &&
+		((activeMenu && SIDEBAR_MENU) || refresh) && (
+			<>
+				<Navbar
+					handleClick={(menu) => setActiveMenu(menu)}
+					handleLogout={handleLogout}
+					onOpen={onOpen}
+					tabs={SIDEBAR_MENU}
+					user={user}
+				/>
+				<Flex minH={"100vh"} as="section">
+					<Sidebar
+						activeMenu={activeMenu}
+						handleMenuItemClick={handleMenuItemClick}
+						isMobile={isMobile}
+						isOpen={isOpen}
+						onClose={onClose}
 					/>
-					<Flex minH={"100vh"} as="section">
-						<Sidebar
-							activeMenu={activeMenu}
-							handleMenuItemClick={handleMenuItemClick}
-							isMobile={isMobile}
-							isOpen={isOpen}
-							onClose={onClose}
-						/>
-						<main className="main_content">
-							<Outlet />
-						</main>
-					</Flex>
-				</>
-			)}
-		</>
+					<main className="main_content">
+						<Outlet />
+					</main>
+				</Flex>
+			</>
+		)
 	);
 };
 

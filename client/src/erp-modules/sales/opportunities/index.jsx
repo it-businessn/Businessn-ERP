@@ -10,7 +10,6 @@ import {
 	Tr,
 	useDisclosure,
 } from "@chakra-ui/react";
-import Loader from "components/Loader";
 import SectionLayout from "components/ui/SectionLayout";
 import LeftIconButton from "components/ui/button/LeftIconButton";
 import PrimaryButton from "components/ui/button/PrimaryButton";
@@ -264,7 +263,6 @@ const Opportunities = () => {
 					</HStack>
 				</Flex>
 			)}
-			{!opportunities && <Loader />}
 			{opportunities && (
 				<TableLayout isOpportunity cols={OPP_COLUMNS}>
 					<Tbody>

@@ -1,5 +1,4 @@
 import { Box, SimpleGrid } from "@chakra-ui/react";
-import Loader from "components/Loader";
 import TextTitle from "components/ui/text/TextTitle";
 import { useEffect, useState } from "react";
 import LocalStorageService from "services/LocalStorageService";
@@ -97,7 +96,6 @@ const Resources = () => {
 					)}
 				</SimpleGrid>
 			)}
-			{!resources && <Loader />}
 		</Box>
 	);
 };

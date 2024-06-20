@@ -10,7 +10,6 @@ import {
 	Tr,
 	useToast,
 } from "@chakra-ui/react";
-import Loader from "components/Loader";
 import SectionLayout from "components/ui/SectionLayout";
 import SelectList from "components/ui/form/select/SelectList";
 import TableLayout from "components/ui/table/TableLayout";
@@ -259,7 +258,6 @@ const LeadsDisbursed = () => {
 				</HStack>
 			)}
 
-			{!agents && <Loader />}
 			{activity && (
 				<TableLayout cols={columns} isSmall>
 					<Tbody>

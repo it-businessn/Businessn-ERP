@@ -220,7 +220,6 @@ const Calendar = () => {
 	};
 	return (
 		<Box width="100%">
-			{!events && <Loader />}
 			{events && (
 				<BigCalendar
 					localizer={localizer}

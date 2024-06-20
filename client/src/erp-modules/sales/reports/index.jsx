@@ -17,7 +17,6 @@ import {
 	Thead,
 	Tr,
 } from "@chakra-ui/react";
-import Loader from "components/Loader";
 import RightIconButton from "components/ui/button/RightIconButton";
 import { callsMadeBarData } from "constant";
 import { useEffect, useState } from "react";
@@ -326,7 +325,6 @@ const SalesReport = () => {
 						</Flex>
 					)}
 
-					{!contacts && <Loader />}
 					{contacts && (
 						<Box overflow="auto">
 							<Table color={"brand.nav_color"} bg={"brand.primary_bg"}>

@@ -13,7 +13,6 @@ import {
 	Tr,
 	useToast,
 } from "@chakra-ui/react";
-import Loader from "components/Loader";
 import SectionLayout from "components/ui/SectionLayout";
 import LeftIconButton from "components/ui/button/LeftIconButton";
 import SelectList from "components/ui/form/select/SelectList";
@@ -227,7 +226,6 @@ const LeadsDocket = () => {
 					</HStack>
 				</HStack>
 			)}
-			{!leads && <Loader />}
 			{leads && (
 				<TableLayout
 					hasMulti

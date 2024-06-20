@@ -340,7 +340,6 @@ const AssociateViewCard = ({ company }) => {
 					</Box>
 				</>
 			)}
-			{!dataLoaded && <Loader />}
 		</>
 	);
 };

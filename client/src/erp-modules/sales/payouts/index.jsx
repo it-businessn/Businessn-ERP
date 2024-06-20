@@ -16,7 +16,6 @@ import {
 	Tr,
 	useDisclosure,
 } from "@chakra-ui/react";
-import Loader from "components/Loader";
 import PrimaryButton from "components/ui/button/PrimaryButton";
 import { useEffect, useState } from "react";
 import { FaSearch } from "react-icons/fa";
@@ -177,7 +176,6 @@ const Payouts = () => {
 						company={company}
 					/>
 				)}
-				{!payouts && <Loader />}
 
 				{payouts && (
 					<Box overflow="auto" h={"50vh"}>

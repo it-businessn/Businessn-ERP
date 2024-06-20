@@ -1,5 +1,4 @@
 import { Box, Flex, IconButton } from "@chakra-ui/react";
-import Loader from "components/Loader";
 import TabGroup from "components/ui/tab";
 import { useEffect, useState } from "react";
 import { FaArrowLeft } from "react-icons/fa";
@@ -9,7 +8,7 @@ import ContactDetailsInfo from "./ContactDetailsInfo";
 import Logs from "./logs";
 import Meetings from "./meeting";
 import Notes from "./notes/Notes";
-import Tasks from "./tasks";
+// import Tasks from "./tasks";
 
 const Contacts = ({ setViewProfile, selectedContact, company, user }) => {
 	const { id, comp } = useParams();
@@ -85,19 +84,15 @@ const Contacts = ({ setViewProfile, selectedContact, company, user }) => {
 	return (
 		<Box px={{ base: "1em" }} py={{ base: "1.3em" }}>
 			<Flex>
-				{contact && (
-					<>
-						<IconButton
-							variant={"ghost"}
-							icon={<FaArrowLeft />}
-							color="brand.nav_color"
-							aria-label="Cancel"
-							onClick={() =>
-								id ? navigate(-1) : setViewProfile((prev) => !prev)
-							}
-						/>
-						<Box minW={{ base: "auto", xl: "300px" }}>
-							{/* <Popover zIndex={0}>
+				<IconButton
+					variant={"ghost"}
+					icon={<FaArrowLeft />}
+					color="brand.nav_color"
+					aria-label="Cancel"
+					onClick={() => (id ? navigate(-1) : setViewProfile((prev) => !prev))}
+				/>
+				<Box minW={{ base: "auto", xl: "300px" }}>
+					{/* <Popover zIndex={0}>
 							{/* <PopoverTrigger>
 								<Input
 									zIndex={0}
@@ -137,23 +132,22 @@ const Contacts = ({ setViewProfile, selectedContact, company, user }) => {
 								</PopoverContent>
 							)}
 						</Popover> */}
-							<ContactDetailsInfo
-								contact={contact.leadId}
-								showLogForm={handleButtonClick}
-							/>
-						</Box>
-						<Box bg="var(--lead_cards_bg)" w={"100%"}>
-							<TabGroup
-								currentTab={currentTab}
-								handleTabChange={handleTabChange}
-								data={tabList}
-								id={"name"}
-							/>
-						</Box>
-					</>
-				)}
+					{contact && (
+						<ContactDetailsInfo
+							contact={contact?.leadId}
+							showLogForm={handleButtonClick}
+						/>
+					)}
+				</Box>
+				<Box bg="var(--lead_cards_bg)" w={"100%"}>
+					<TabGroup
+						currentTab={currentTab}
+						handleTabChange={handleTabChange}
+						data={tabList}
+						id={"name"}
+					/>
+				</Box>
 			</Flex>
-			{!contact && <Loader />}
 		</Box>
 	);
 };

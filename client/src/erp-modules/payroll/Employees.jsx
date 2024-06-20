@@ -14,7 +14,6 @@ import {
 	Thead,
 	Tr,
 } from "@chakra-ui/react";
-import Loader from "components/Loader";
 import TextTitle from "components/ui/text/TextTitle";
 import { useEffect, useState } from "react";
 import { FaSearch } from "react-icons/fa";
@@ -148,7 +147,6 @@ const Employees = () => {
 						</HStack>
 					</Flex>
 				)}
-				{!employees && <Loader />}
 				{employees && (
 					<Box overflow="auto">
 						<Table

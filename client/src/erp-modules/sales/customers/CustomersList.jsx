@@ -15,7 +15,6 @@ import {
 	Tr,
 	useDisclosure,
 } from "@chakra-ui/react";
-import Loader from "components/Loader";
 import SectionLayout from "components/ui/SectionLayout";
 import HighlightButton from "components/ui/button/HighlightButton";
 import LeftIconButton from "components/ui/button/LeftIconButton";
@@ -129,7 +128,6 @@ const CustomersList = ({
 					</HStack>
 				</Flex>
 			)}
-			{!contacts && <Loader />}
 			{contacts && (
 				<Box overflow="auto">
 					<Table color={"brand.nav_color"} bg={"brand.primary_bg"}>

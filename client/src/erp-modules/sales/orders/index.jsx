@@ -18,7 +18,6 @@ import {
 	Tr,
 	VStack,
 } from "@chakra-ui/react";
-import Loader from "components/Loader";
 import { activityChartData, doughnutOptions } from "constant";
 import { useEffect, useState } from "react";
 import { Doughnut } from "react-chartjs-2";
@@ -324,7 +323,6 @@ const Orders = () => {
 						</HStack>
 					</Flex>
 				)}
-				{!contacts && <Loader />}
 				{contacts && (
 					<Box overflow="auto">
 						<Table color={"brand.nav_color"} bg={"brand.primary_bg"}>

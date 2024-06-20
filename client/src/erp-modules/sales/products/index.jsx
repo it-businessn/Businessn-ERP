@@ -368,7 +368,6 @@ const Products = () => {
 						</HStack>
 					</Flex>
 				)}
-				{/* {!contacts && <Loader />} */}
 				{/* {contacts && ( */}
 				<Box overflow="auto" h="350px">
 					<Table color={"brand.nav_color"} bg={"brand.primary_bg"}>

@@ -1,5 +1,4 @@
 import { Box, Button, Flex, HStack, Spacer } from "@chakra-ui/react";
-import Loader from "components/Loader";
 import PrimaryButton from "components/ui/button/PrimaryButton";
 import TextTitle from "components/ui/text/TextTitle";
 import moment from "moment-timezone";
@@ -204,7 +203,6 @@ const Calendar = () => {
 	return (
 		<Box p={{ base: "1em", md: "2em" }} mb={"1em"}>
 			<TextTitle title="Calendar" mb={"0.5em"} />
-			{!events && <Loader />}
 			{events && (
 				<Box
 					px={{ base: "0", md: "1em" }}

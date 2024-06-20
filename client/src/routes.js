@@ -3,7 +3,6 @@ import { createBrowserRouter } from "react-router-dom";
 
 import LeadContacts from "erp-modules/sales/fresh_leads/LeadContacts";
 import SchedulingDashboard from "erp-modules/scheduling/dashboard";
-import Loader from "./components/Loader";
 import PageNotFound from "./features/PageNotFound";
 import RootLayout from "./layouts/RootLayout";
 
@@ -160,7 +159,8 @@ export const router = createBrowserRouter([
 	{
 		path: "/",
 		element: (
-			<Suspense fallback={<Loader />}>
+			// <Suspense fallback={<Loader />}>
+			<Suspense fallback={<></>}>
 				<RootLayout />
 			</Suspense>
 		),

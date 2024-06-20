@@ -1,5 +1,4 @@
 import { HStack, Tbody, Td, Tr } from "@chakra-ui/react";
-import Loader from "components/Loader";
 import TableLayout from "components/ui/table/TableLayout";
 import TextTitle from "components/ui/text/TextTitle";
 import React, { useState } from "react";
@@ -35,7 +34,6 @@ const Timesheet = ({ timesheets }) => {
 		const [showAddProject, setShowAddProject] = useState(false);
 		return (
 			<>
-				{!timesheets && <Loader />}
 				{timesheets && (
 					<TableLayout isTimesheet cols={COLS}>
 						<Tbody>

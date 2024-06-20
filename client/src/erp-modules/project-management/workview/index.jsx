@@ -1,5 +1,4 @@
 import { Box, Flex, Text, Th } from "@chakra-ui/react";
-import Loader from "components/Loader";
 import { useEffect, useState } from "react";
 import { FaSort } from "react-icons/fa";
 import LocalStorageService from "services/LocalStorageService";
@@ -114,7 +113,6 @@ const WorkView = () => {
 				borderRadius="10px"
 				color={"brand.nav_color"}
 			>
-				{!projects && <Loader />}
 				{projects && (
 					<ProjectTable
 						setRefresh={setRefresh}
