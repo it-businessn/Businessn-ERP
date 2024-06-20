@@ -13,23 +13,62 @@ import {
 	Th,
 	Thead,
 	Tr,
+	useDisclosure,
 } from "@chakra-ui/react";
 import Loader from "components/Loader";
 import SectionLayout from "components/ui/SectionLayout";
 import HighlightButton from "components/ui/button/HighlightButton";
 import LeftIconButton from "components/ui/button/LeftIconButton";
+import PrimaryButton from "components/ui/button/PrimaryButton";
 import TextTitle from "components/ui/text/TextTitle";
+import { useEffect, useState } from "react";
 import { FaSearch } from "react-icons/fa";
 import { MdOutlineFilterList } from "react-icons/md";
 import { useBreakpointValue } from "services/Breakpoint";
+import UserService from "services/UserService";
 import { generateLighterShade, toCapitalize } from "utils";
 import SearchFilter from "../lead docket/SearchFilter";
+import AddNewOpportunity from "../opportunities/AddNewOpportunity";
 
-const CustomersList = ({ contacts, handleProfileView, icons }) => {
+const CustomersList = ({
+	contacts,
+	handleProfileView,
+	icons,
+	setIsAdded,
+	company,
+}) => {
 	const { isMobile } = useBreakpointValue();
 	const handleEdit = (id) => {
 		console.log(id);
 	};
+	const [assignees, setAssignees] = useState(null);
+	const [supervisorAssignees, setSupervisorAssignees] = useState(null);
+	const { isOpen, onOpen, onClose } = useDisclosure();
+
+	useEffect(() => {
+		const fetchAllSalesAgents = async () => {
+			try {
+				const response = await UserService.getAllSalesAgents(company);
+				response.data.forEach((item) => (item.name = item.fullName));
+				setAssignees(response.data);
+			} catch (error) {
+				console.error(error);
+			}
+		};
+		const fetchAllManagers = async () => {
+			try {
+				const response = await UserService.getAllManagers(company);
+				response.data.forEach((item) => (item.name = item.fullName));
+				setSupervisorAssignees(response.data);
+			} catch (error) {
+				console.error(error);
+			}
+		};
+		fetchAllManagers();
+
+		fetchAllSalesAgents();
+	}, [company]);
+
 	return (
 		<SectionLayout title="Customers">
 			{isMobile ? (
@@ -82,7 +121,11 @@ const CustomersList = ({ contacts, handleProfileView, icons }) => {
 								py={"1.1em"}
 							/>
 						</InputGroup>
-						{/* <PrimaryButton name={"Add new customer"} size={"xs"} /> */}
+						<PrimaryButton
+							onOpen={() => onOpen()}
+							name={"Add new customer"}
+							size={"xs"}
+						/>
 					</HStack>
 				</Flex>
 			)}
@@ -167,6 +210,16 @@ const CustomersList = ({ contacts, handleProfileView, icons }) => {
 						</Tbody>
 					</Table>
 				</Box>
+			)}
+			{isOpen && (
+				<AddNewOpportunity
+					assignees={assignees}
+					supervisorAssignees={supervisorAssignees}
+					setIsAdded={setIsAdded}
+					isOpen={isOpen}
+					onClose={() => onClose()}
+					company={company}
+				/>
 			)}
 		</SectionLayout>
 	);

@@ -27,7 +27,8 @@ const SalesCard = ({ headerCards, setMonth, currentMonth }) => {
 						<Icon as={card.icon} color={card.color} boxSize={5} />
 
 						<Select
-							visibility={index !== 0 && "hidden"}
+							// visibility={index !== 0 && "hidden"}
+							visibility={"hidden"}
 							width="auto"
 							border={"none"}
 							fontSize={"xs"}

@@ -32,6 +32,7 @@ const Customers = () => {
 			);
 		};
 	}, []);
+	const [isAdded, setIsAdded] = useState(false);
 	const fetchAllContacts = async () => {
 		try {
 			const response = await ContactService.getCompContacts(company);
@@ -52,7 +53,7 @@ const Customers = () => {
 
 	useEffect(() => {
 		fetchAllContacts();
-	}, [company]);
+	}, [company, isAdded]);
 
 	const handleProfileView = (id) => {
 		setSelectedContact(id);
@@ -107,6 +108,7 @@ const Customers = () => {
 			handleProfileView={handleProfileView}
 			icons={QUICK_LINKS}
 			company={company}
+			setIsAdded={setIsAdded}
 			user={user}
 		/>
 	);
