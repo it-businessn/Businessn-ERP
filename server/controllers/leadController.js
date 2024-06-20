@@ -211,6 +211,15 @@ const createLeadOpportunity = () => async (req, res) => {
 				country: address?.country,
 			},
 		});
+		const existingLeadCompany = await LeadCompany.find({
+			name,
+		});
+		if (!existingLeadCompany.length) {
+			await LeadCompany.create({
+				name,
+				companyName,
+			});
+		}
 		const existingContact = await Contact.find({
 			leadId: newLeadOpportunity._id,
 		});
