@@ -35,7 +35,9 @@ const TabGroup = ({
 							{currentTab === tab.id && tab.name}
 						</TabPanel>
 					) : (
-						<TabPanel key={tab.name}>{tab.component}</TabPanel>
+						<TabPanel p={0} key={tab.name}>
+							{tab.component}
+						</TabPanel>
 					),
 				)}
 			</TabPanels>

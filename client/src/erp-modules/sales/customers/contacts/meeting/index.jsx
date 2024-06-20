@@ -1,13 +1,16 @@
-import { Flex, VStack } from "@chakra-ui/react";
+import { Flex, FormLabel, Select, VStack } from "@chakra-ui/react";
 import PrimaryButton from "components/ui/button/PrimaryButton";
+import FormControlMain from "components/ui/form";
 import DateTimeFormControl from "components/ui/form/DateTimeFormControl";
 import InputFormControl from "components/ui/form/InputFormControl";
 import MultiSelectFormControl from "components/ui/form/MultiSelectFormControl";
 import RadioFormControl from "components/ui/form/RadioFormControl";
 import TextAreaFormControl from "components/ui/form/TextAreaFormControl";
+import { ROLES } from "constant";
 import { useEffect, useState } from "react";
 import "react-datepicker/dist/react-datepicker.css";
 import CalendarService from "services/CalendarService";
+import SettingService from "services/SettingService";
 import UserService from "services/UserService";
 import MeetingList from "./MeetingList";
 
@@ -40,6 +43,7 @@ const Meetings = ({ contactId, user, company }) => {
 		fromTime: "",
 		toTime: "",
 		meetingLink: "",
+		group: "",
 		createdBy: user?._id,
 		contactId,
 		companyName: company,
@@ -90,6 +94,48 @@ const Meetings = ({ contactId, user, company }) => {
 	const handleMenuToggle = () => {
 		setOpenAssigneeMenu((prev) => !prev);
 	};
+	const [groups, setGroups] = useState(null);
+	const [groupMembers, setGroupMembers] = useState(null);
+
+	useEffect(() => {
+		const fetchAllGroups = async () => {
+			try {
+				const response = await SettingService.getAllGroups(company);
+				setGroups(response.data);
+				if (response.data.length) {
+					setGroupMembers(
+						response.data[0].members.filter(
+							(_) =>
+								_.role.includes(ROLES.ADMIN) ||
+								_.role.includes(ROLES.TECH_ADMIN),
+						),
+					);
+				} else {
+					setGroupMembers(null);
+				}
+			} catch (error) {
+				console.error(error);
+			}
+		};
+		fetchAllGroups();
+	}, []);
+
+	const handleGroupChange = (e) => {
+		setFormData((prevData) => ({
+			...prevData,
+			group: e.target.value,
+		}));
+		formData.attendees = [];
+		setSelectedOptions([]);
+		setGroupMembers(
+			groups
+				.find(({ _id }) => _id === e.target.value)
+				.members.filter(
+					(_) =>
+						_.role.includes(ROLES.ADMIN) || _.role.includes(ROLES.TECH_ADMIN),
+				),
+		);
+	};
 
 	return (
 		<VStack spacing="4" p="4">
@@ -110,11 +156,25 @@ const Meetings = ({ contactId, user, company }) => {
 					handleChange={handleChange}
 					required
 				/>
+				<FormControlMain>
+					<FormLabel>Select Group</FormLabel>
+					<Select
+						name={"group"}
+						value={formData.group}
+						onChange={handleGroupChange}
+					>
+						{groups?.map(({ name, _id }) => (
+							<option key={_id} value={_id}>
+								{name}
+							</option>
+						))}
+					</Select>
+				</FormControlMain>
 				<MultiSelectFormControl
-					label={"Select Required Attendees"}
+					label={"Select Required Internal Attendees"}
 					tag={"attendee(s)"}
 					showMultiSelect={openAssigneeMenu}
-					data={attendees}
+					data={groupMembers}
 					handleCloseMenu={handleCloseMenu}
 					selectedOptions={selectedOptions}
 					setSelectedOptions={setSelectedOptions}

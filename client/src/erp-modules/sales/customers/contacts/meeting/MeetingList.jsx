@@ -28,7 +28,7 @@ const MeetingList = ({ meetings }) => {
 						meetingLink,
 					}) => (
 						<Card key={_id} borderWidth="1px" borderRadius="lg" w="100%">
-							<CardBody>
+							<CardBody fontSize={"sm"}>
 								<Flex justifyContent="space-between">
 									<Badge
 										bg="var(--primary_bg)"
@@ -52,6 +52,7 @@ const MeetingList = ({ meetings }) => {
 										{attendees?.map((_) => (
 											<Text as={"span"} key={_}>
 												{_}
+												{attendees.length > 1 && ","}
 											</Text>
 										))}
 									</Text>
@@ -61,7 +62,7 @@ const MeetingList = ({ meetings }) => {
 									Meeting Date: {moment(fromDate).format("MMM DD, YYYY ")}
 									{fromTime}
 								</Text>
-								<Text>
+								<Text fontWeight={"bold"}>
 									Meeting Link:{" "}
 									<Link href={meetingLink} isexternal={true}>
 										<Text as="span" color="blue.400">

@@ -23,7 +23,9 @@ const LogActivityList = ({ activities, showLogForm }) => {
 								/>
 							</Flex>
 							<TextTitle weight="normal" title={`${description}`} />
-							<TextTitle title={`Duration: ${duration} minutes`} />
+							{duration !== "0" && (
+								<TextTitle title={`Duration: ${duration} minutes`} />
+							)}
 						</CardBody>
 					</Card>
 				))}

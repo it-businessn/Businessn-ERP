@@ -1,4 +1,4 @@
-import { Box, Card, CardBody, Flex, VStack } from "@chakra-ui/react";
+import { Card, CardBody, Flex, VStack } from "@chakra-ui/react";
 import PrimaryButton from "components/ui/button/PrimaryButton";
 import InputFormControl from "components/ui/form/InputFormControl";
 import TextTitle from "components/ui/text/TextTitle";
@@ -68,27 +68,30 @@ const Notes = ({ contactId, user, company }) => {
 				/>
 			</form>
 
-			<Box w="100%">
-				<VStack spacing={4} w="100%">
-					{notes?.map(({ _id, description, createdOn }) => (
-						<Card key={_id} borderWidth="1px" borderRadius="lg" w="100%">
-							<CardBody>
-								<Flex justifyContent="space-between">
-									<TextTitle weight="normal" width="80%" title={description} />
-									<TextTitle
-										weight="normal"
-										size="sm"
-										// title={moment(createdOn).format("MMM DD, YYYY hh:mm A Z")}
-										title={moment(createdOn).format("MMM DD, YYYY hh:mm A")}
-										color="gray.500"
-										align="end"
-									/>
-								</Flex>
-							</CardBody>
-						</Card>
-					))}
-				</VStack>
-			</Box>
+			<VStack spacing={4} w="100%">
+				{notes?.map(({ _id, description, createdOn }) => (
+					<Card key={_id} borderWidth="1px" borderRadius="lg" w="100%">
+						<CardBody>
+							<Flex justifyContent="space-between">
+								<TextTitle
+									weight="normal"
+									whiteSpace="wrap"
+									width="80%"
+									title={description}
+								/>
+								<TextTitle
+									weight="normal"
+									size="sm"
+									// title={moment(createdOn).format("MMM DD, YYYY hh:mm A Z")}
+									title={moment(createdOn).format("MMM DD, YYYY hh:mm A")}
+									color="gray.500"
+									align="end"
+								/>
+							</Flex>
+						</CardBody>
+					</Card>
+				))}
+			</VStack>
 		</VStack>
 	);
 };

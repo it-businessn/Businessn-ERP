@@ -55,12 +55,12 @@ const Contacts = ({ setViewProfile, selectedContact, company, user }) => {
 				<Logs user={user} contactId={contact?._id} company={company} />
 			),
 		},
-		{
-			name: "Tasks",
-			component: (
-				<Tasks user={user} contactId={contact?._id} company={company} />
-			),
-		},
+		// {
+		// 	name: "Tasks",
+		// 	component: (
+		// 		<Tasks user={user} contactId={contact?._id} company={company} />
+		// 	),
+		// },
 		{
 			name: "Meetings",
 			component: (
@@ -96,7 +96,7 @@ const Contacts = ({ setViewProfile, selectedContact, company, user }) => {
 								id ? navigate(-1) : setViewProfile((prev) => !prev)
 							}
 						/>
-						<Box flex="1">
+						<Box minW={{ base: "auto", xl: "300px" }}>
 							{/* <Popover zIndex={0}>
 							{/* <PopoverTrigger>
 								<Input
@@ -142,7 +142,7 @@ const Contacts = ({ setViewProfile, selectedContact, company, user }) => {
 								showLogForm={handleButtonClick}
 							/>
 						</Box>
-						<Box flex="2" bg="var(--lead_cards_bg)">
+						<Box bg="var(--lead_cards_bg)" w={"100%"}>
 							<TabGroup
 								currentTab={currentTab}
 								handleTabChange={handleTabChange}

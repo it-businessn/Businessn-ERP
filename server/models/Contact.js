@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const contactSchema = new mongoose.Schema({
 	notes: [{ type: mongoose.Schema.Types.ObjectId, ref: "Note", default: [] }],
 	activities: [
-		{ type: mongoose.Schema.Types.ObjectId, ref: "Activity", default: [] },
+		{ type: mongoose.Schema.Types.ObjectId, ref: "LogActivity", default: [] },
 	],
 	meetings: [
 		{ type: mongoose.Schema.Types.ObjectId, ref: "Meeting", default: [] },
