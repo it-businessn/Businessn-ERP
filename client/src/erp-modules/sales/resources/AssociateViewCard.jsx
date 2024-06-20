@@ -59,7 +59,7 @@ const AssociateViewCard = ({ company }) => {
 				}, {});
 
 				setTotalBadges(counts);
-				const complete = passed?.length || 0;
+				const complete = certificationBadges?.length || 0;
 				const not_completed = assessments?.length - complete || 0;
 				setAssessmentsTaken(response.data);
 				setCompleted(complete);
@@ -70,7 +70,7 @@ const AssociateViewCard = ({ company }) => {
 			}
 		};
 		fetchAssessmentsTaken();
-	}, [completed, notComplete, company]);
+	}, [certificationBadges, notComplete, company]);
 
 	useEffect(() => {
 		const i = [];
