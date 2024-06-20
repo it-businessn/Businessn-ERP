@@ -213,7 +213,7 @@ const ResourceFile = ({
 												onOpen={() => handleDelete(resource._id)}
 											/>
 										)}
-										{hasEditAccess && (
+										{/* {isUserManager && (
 											<PrimaryButton
 												minW={"95%"}
 												size={"xs"}
@@ -226,7 +226,7 @@ const ResourceFile = ({
 												rightIcon={<BiPencil />}
 												onOpen={() => handleEdit(resource)}
 											/>
-										)}
+										)} */}
 									</VStack>
 								</VStack>
 							</Box>
