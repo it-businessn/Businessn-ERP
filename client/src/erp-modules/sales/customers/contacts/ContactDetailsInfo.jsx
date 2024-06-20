@@ -29,8 +29,7 @@ const ContactDetailsInfo = ({ contact, showLogForm }) => {
 	const { isOpen: isCompanyOpen, onToggle: onCompanyToggle } = useDisclosure({
 		defaultIsOpen: true,
 	});
-	const { companyName, primaryAssignee, industry, address, email, phone } =
-		contact;
+	const { name, primaryAssignee, industry, address, email, phone } = contact;
 
 	const QUICK_LINKS = [
 		{
@@ -69,7 +68,7 @@ const ContactDetailsInfo = ({ contact, showLogForm }) => {
 	const DETAILS = [
 		{
 			title: "Name",
-			value: companyName,
+			value: name,
 		},
 		{
 			title: "Industry Type",
@@ -108,7 +107,7 @@ const ContactDetailsInfo = ({ contact, showLogForm }) => {
 					<FaBuilding className="header-logo" />
 				</Avatar>
 				<Box textAlign="center">
-					<TextTitle size="xl" title={companyName} />
+					<TextTitle size="xl" title={name} />
 					<TextTitle
 						size="sm"
 						title={`Primary Contact: ${primaryAssignee[0].name}`}

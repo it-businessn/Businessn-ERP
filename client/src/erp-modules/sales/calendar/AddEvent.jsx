@@ -13,6 +13,7 @@ import MultiSelectFormControl from "components/ui/form/MultiSelectFormControl";
 import SelectFormControl from "components/ui/form/SelectFormControl";
 import TextAreaFormControl from "components/ui/form/TextAreaFormControl";
 import ModalLayout from "components/ui/modal/ModalLayout";
+import { ROLES } from "constant";
 import { useEffect, useState } from "react";
 import CalendarService from "services/CalendarService";
 import SettingService from "services/SettingService";
@@ -41,7 +42,13 @@ const AddEvent = ({
 				const response = await SettingService.getAllGroups(company);
 				setGroups(response.data);
 				if (response.data.length) {
-					setGroupMembers(response.data[0].members);
+					setGroupMembers(
+						response.data[0].members.filter(
+							(_) =>
+								_.role.includes(ROLES.ADMIN) ||
+								_.role.includes(ROLES.TECH_ADMIN),
+						),
+					);
 				} else {
 					setGroupMembers(null);
 				}
@@ -71,11 +78,11 @@ const AddEvent = ({
 		description: event?.description,
 		eventLink: event?.eventLink,
 		eventType: event?.eventType,
-		fromDate: event?.fromDate,
+		fromDate: event?.fromDate.split("T")[0],
 		fromTime: event?.fromTime,
 		location: event?.location,
 		meetingAttendees: event?.meetingAttendees || [],
-		toDate: event?.toDate,
+		toDate: event?.toDate.split("T")[0],
 		toTime: event?.toTime,
 		createdBy: event?.createdBy,
 	};
@@ -132,7 +139,14 @@ const AddEvent = ({
 		}));
 		formData.meetingAttendees = [];
 		setSelectedOptions([]);
-		setGroupMembers(groups.find(({ _id }) => _id === e.target.value).members);
+		setGroupMembers(
+			groups
+				.find(({ _id }) => _id === e.target.value)
+				.members.filter(
+					(_) =>
+						_.role.includes(ROLES.ADMIN) || _.role.includes(ROLES.TECH_ADMIN),
+				),
+		);
 	};
 
 	const handleSubmit = async (e) => {
@@ -178,7 +192,7 @@ const AddEvent = ({
 
 	return (
 		<ModalLayout
-			title={`Add ${filterText}`}
+			title={`${isEdit ? "Edit" : "Add"} ${filterText}`}
 			size="xl"
 			isOpen={isOpen}
 			onClose={onClose}

@@ -37,6 +37,7 @@ const Opportunities = () => {
 
 	const [opportunities, setOpportunities] = useState(null);
 	const [assignees, setAssignees] = useState(null);
+	const [supervisorAssignees, setSupervisorAssignees] = useState(null);
 	const user = LocalStorageService.getItem("user");
 	const [company, setCompany] = useState(
 		LocalStorageService.getItem("selectedCompany"),
@@ -67,6 +68,16 @@ const Opportunities = () => {
 				console.error(error);
 			}
 		};
+		const fetchAllManagers = async () => {
+			try {
+				const response = await UserService.getAllManagers(company);
+				response.data.forEach((item) => (item.name = item.fullName));
+				setSupervisorAssignees(response.data);
+			} catch (error) {
+				console.error(error);
+			}
+		};
+		fetchAllManagers();
 
 		fetchAllSalesAgents();
 	}, [company]);
@@ -317,6 +328,7 @@ const Opportunities = () => {
 				<AddNewOpportunity
 					showEditLead={showEditLead}
 					assignees={assignees}
+					supervisorAssignees={supervisorAssignees}
 					setIsAdded={setIsAdded}
 					isOpen={handleOpen}
 					onClose={handleClose}

@@ -33,6 +33,7 @@ const AddNewOpportunity = ({
 	setIsAdded,
 	isDocket,
 	assignees,
+	supervisorAssignees,
 	company,
 	showEditLead,
 }) => {
@@ -422,7 +423,7 @@ const AddNewOpportunity = ({
 							/>
 							{assigneeError && <Text color={"red"}>{assigneeError}</Text>}
 							<AssigneeSelector
-								assignees={assignees}
+								assignees={supervisorAssignees}
 								selectedAssignees={selectedSupervisorAssignees}
 								onAssigneeChange={setSelectedSupervisorAssignees}
 								onRemoveAssignee={setSelectedSupervisorAssignees}
