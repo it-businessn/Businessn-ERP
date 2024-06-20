@@ -14,11 +14,13 @@ import { faBell } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { ROUTE_PATH } from "routes";
 
 const UserProfile = ({ user, handleLogout }) => {
 	const navigate = useNavigate();
 
 	const [signUp, setSignUp] = useState(false);
+	const [isOpen, setIsOpen] = useState(false);
 
 	useEffect(() => {
 		if (signUp) {
@@ -26,8 +28,13 @@ const UserProfile = ({ user, handleLogout }) => {
 		}
 	}, [signUp]);
 
+	const handleToggle = () => {
+		setIsOpen(!isOpen);
+	};
+
 	const showProfilePage = () => {
-		navigate("/sales/profile");
+		handleToggle();
+		navigate(`${ROUTE_PATH.SALES}${ROUTE_PATH.PROFILE}`);
 	};
 
 	const showRegisterPage = () => {
@@ -35,7 +42,7 @@ const UserProfile = ({ user, handleLogout }) => {
 	};
 	return (
 		<HStack pb={2} _hover={{ cursor: "pointer" }}>
-			<Popover>
+			<Popover isOpen={isOpen} onClose={() => setIsOpen(false)}>
 				<IconButton
 					aria-label="Notification Bell"
 					icon={<FontAwesomeIcon icon={faBell} />}
@@ -46,7 +53,12 @@ const UserProfile = ({ user, handleLogout }) => {
 					_hover={{ bg: "brand.icon_hover" }}
 				/>
 				<PopoverTrigger>
-					<Avatar name={user.fullName} src="" boxSize="12" />
+					<Avatar
+						onClick={handleToggle}
+						name={user.fullName}
+						src=""
+						boxSize="12"
+					/>
 				</PopoverTrigger>
 				{/* <Box cursor="pointer">
           <Text fontWeight="medium" fontSize="sm" textTransform="capitalize">

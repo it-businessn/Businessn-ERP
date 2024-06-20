@@ -39,11 +39,11 @@ const SelectCustomer = ({
 		setLead(value);
 		if (isQuickAdd) {
 			navigate(
-				`${ROUTE_PATH.SALES}${ROUTE_PATH.FRESH_LEADS}/profile/${value}/${company}`,
+				`${ROUTE_PATH.SALES}${ROUTE_PATH.FRESH_LEADS}${ROUTE_PATH.PROFILE}/${value}/${company}`,
 			);
 		} else {
 			navigate(
-				`${ROUTE_PATH.SALES}${ROUTE_PATH.CUSTOMERS}/profile/${value}/${company}`,
+				`${ROUTE_PATH.SALES}${ROUTE_PATH.CUSTOMERS}${ROUTE_PATH.PROFILE}/${value}/${company}`,
 			);
 		}
 	};

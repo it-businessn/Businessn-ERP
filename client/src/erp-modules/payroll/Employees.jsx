@@ -151,28 +151,40 @@ const Employees = () => {
 				{!employees && <Loader />}
 				{employees && (
 					<Box overflow="auto">
-						<Table color={"brand.nav_color"} bg={"brand.primary_bg"}>
+						<Table
+							color={"brand.nav_color"}
+							bg={"brand.primary_bg"}
+							size={"small"}
+						>
 							<Thead>
 								<Tr>
-									<Th fontWeight={"bolder"} p={0}>
+									<Th fontSize={"xs"} fontWeight={"bolder"} p={0}>
 										Name
 									</Th>
-									<Th fontWeight={"bolder"}>Email</Th>
-									<Th fontWeight={"bolder"}>PhoneNumber</Th>
-									<Th fontWeight={"bolder"}>Role</Th>
-									<Th fontWeight={"bolder"}>Manager</Th>
+									<Th fontSize={"xs"} fontWeight={"bolder"}>
+										Email
+									</Th>
+									<Th fontSize={"xs"} fontWeight={"bolder"}>
+										PhoneNumber
+									</Th>
+									<Th fontSize={"xs"} fontWeight={"bolder"}>
+										Role
+									</Th>
+									<Th fontSize={"xs"} fontWeight={"bolder"}>
+										Manager
+									</Th>
 								</Tr>
 							</Thead>
 							<Tbody color={"brand.nav_color"}>
 								{employees.map((emp) => (
 									<Tr key={emp._id}>
-										<Td fontSize={"xs"} p={0}>
+										<Td fontSize={"sm"} p={0}>
 											{`${emp.fullName}`}
 										</Td>
-										<Td fontSize={"xs"}>{emp.email}</Td>
-										<Td fontSize={"xs"}>{emp.phoneNumber}</Td>
-										<Td fontSize={"xs"}>{emp.role}</Td>
-										<Td fontSize={"xs"}>{emp.manager}</Td>
+										<Td fontSize={"sm"}>{emp.email}</Td>
+										<Td fontSize={"sm"}>{emp.phoneNumber}</Td>
+										<Td fontSize={"sm"}>{emp.role}</Td>
+										<Td fontSize={"sm"}>{emp.manager}</Td>
 									</Tr>
 								))}
 							</Tbody>
