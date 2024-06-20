@@ -31,6 +31,10 @@ const QuestionnaireService = {
 		return apiService.put(`/questionnaire/assessment/${id}`, data, id);
 	},
 
+	async deleteAssessment(data, id) {
+		return apiService.delete(`/questionnaire/assessment/${id}`, data, id);
+	},
+
 	async addQuestionnaire(data) {
 		return apiService.post("/questionnaire/", data);
 	},

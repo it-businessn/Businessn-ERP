@@ -9,6 +9,7 @@ import QuestionnaireService from "services/QuestionnaireService";
 const ManagerViewCard = ({ company }) => {
 	const navigate = useNavigate();
 	const [assessments, setAssessments] = useState(null);
+	const [isDeleted, setIsDeleted] = useState(false);
 
 	useEffect(() => {
 		const fetchAllAssessmentTypes = async () => {
@@ -20,7 +21,17 @@ const ManagerViewCard = ({ company }) => {
 			}
 		};
 		fetchAllAssessmentTypes();
-	}, [company]);
+	}, [company, isDeleted]);
+
+	const handleDelete = async (id) => {
+		try {
+			await QuestionnaireService.deleteAssessment({}, id);
+			setIsDeleted((prev) => !prev);
+		} catch (error) {
+			console.error(error);
+		}
+	};
+
 	return (
 		<Box
 			p="1em"
@@ -74,12 +85,18 @@ const ManagerViewCard = ({ company }) => {
 								title={assessment.name}
 								color="var(--primary_button_bg)"
 							/>
-							<PrimaryButton
-								size={"xs"}
-								name={"View / Update"}
-								onOpen={() => navigate(`/sales/add-paper/${assessment.name}`)}
-								minW={"100%"}
-							/>
+							<HStack spacing={2}>
+								<PrimaryButton
+									size={"xs"}
+									name={"View / Update"}
+									onOpen={() => navigate(`/sales/add-paper/${assessment.name}`)}
+								/>
+								<PrimaryButton
+									size={"xs"}
+									name={"Delete"}
+									onOpen={() => handleDelete(assessment._id)}
+								/>
+							</HStack>
 						</VStack>
 					</Box>
 				))}

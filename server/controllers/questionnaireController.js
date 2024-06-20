@@ -58,6 +58,19 @@ const getAssessmentByUserId = async (req, res) => {
 	}
 };
 
+const deleteAssessment = async (req, res) => {
+	const { id } = req.params;
+
+	try {
+		const assessment = await AssessmentType.findByIdAndDelete({
+			_id: id,
+		});
+		res.status(201).json(assessment);
+	} catch (error) {
+		res.status(400).json({ message: error.message });
+	}
+};
+
 const updateAssessment = async (req, res) => {
 	const { id } = req.params;
 	try {
@@ -173,4 +186,5 @@ module.exports = {
 	createAssessmentType,
 	getAssessmentQuestionsByType,
 	deleteQuestion,
+	deleteAssessment,
 };
