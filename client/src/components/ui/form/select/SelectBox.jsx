@@ -11,9 +11,11 @@ const SelectBox = ({
 	placeholder,
 	size,
 	fontWeight,
+	width,
 }) => {
 	return (
 		<Select
+			w={width}
 			fontSize={{ base: "sm" }}
 			size={size}
 			icon={icon}

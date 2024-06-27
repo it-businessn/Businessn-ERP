@@ -8,6 +8,7 @@ import {
 	VStack,
 } from "@chakra-ui/react";
 import HighlightButton from "components/ui/button/HighlightButton";
+import SelectBox from "components/ui/form/select/SelectBox";
 import RadioButtonGroup from "components/ui/tab/RadioButtonGroup";
 import TextTitle from "components/ui/text/TextTitle";
 import { useEffect, useState } from "react";
@@ -16,6 +17,8 @@ import ActivityService from "services/ActivityService";
 import { useBreakpointValue } from "services/Breakpoint";
 import ContactService from "services/ContactService";
 import LocalStorageService from "services/LocalStorageService";
+import UserService from "services/UserService";
+import { isManager } from "utils";
 import {
 	ACTIVITY_CARDS,
 	SALES_ACTIVITY_CARDS,
@@ -38,7 +41,9 @@ const Activities = () => {
 	const [company, setCompany] = useState(
 		LocalStorageService.getItem("selectedCompany"),
 	);
+	const [employees, setEmployees] = useState(null);
 	const user = LocalStorageService.getItem("user");
+	const [selectedUser, setSelectedUser] = useState(user);
 
 	useEffect(() => {
 		const handleSelectedCompanyChange = (event) => setCompany(event.detail);
@@ -70,10 +75,23 @@ const Activities = () => {
 			}
 		};
 
+		const fetchAllEmployees = async () => {
+			try {
+				const response = await UserService.getAllSalesAgents(company);
+				setEmployees(response.data);
+			} catch (error) {
+				console.error(error);
+			}
+		};
+		fetchAllEmployees();
+		fetchAllContacts();
+	}, [company, refresh]);
+
+	useEffect(() => {
 		const fetchAllUserActivities = async () => {
 			try {
 				const response = await ActivityService.getActivitiesByUser({
-					id: user?._id,
+					id: selectedUser?._id,
 					company,
 					type: selectedFilter,
 				});
@@ -119,12 +137,19 @@ const Activities = () => {
 				console.error(error);
 			}
 		};
-		fetchAllContacts();
 		fetchAllUserActivities();
-	}, [company, refresh, selectedFilter]);
+	}, [selectedUser, selectedFilter]);
 
 	const handleFilterClick = (filter) => {
 		setSelectedFilter(filter);
+	};
+
+	const handleChange = (value) => {
+		if (value === "") {
+			setSelectedUser(user);
+		} else {
+			setSelectedUser(employees.find(({ fullName }) => fullName === value));
+		}
 	};
 	return (
 		<Box p={{ base: "1em", md: "2em" }}>
@@ -144,15 +169,30 @@ const Activities = () => {
 					/>
 				</SimpleGrid>
 			) : (
-				<SimpleGrid columns={{ base: 5, lg: 2 }} spacing="1em" my="5">
-					<Flex gap="2em" bg={"brand.100"} borderRadius={"20px"} p={"8px"}>
-						<RadioButtonGroup
-							data={["Daily", "Weekly", "Monthly", "Quarterly", "Annual"]}
-							selectedFilter={selectedFilter}
-							handleFilterClick={handleFilterClick}
+				<>
+					{isManager(user?.role) && employees && (
+						<SelectBox
+							width="50%"
+							handleChange={handleChange}
+							data={employees}
+							name="fullName"
+							border="1px solid var(--primary_button_bg)"
+							color={"brand.primary_button_bg"}
+							value={selectedUser?.fullName}
+							placeholder="Select"
+							size={"sm"}
 						/>
-					</Flex>
-				</SimpleGrid>
+					)}
+					<SimpleGrid columns={{ base: 5, lg: 2 }} spacing="1em" my="5">
+						<Flex gap="2em" bg={"brand.100"} borderRadius={"20px"} p={"8px"}>
+							<RadioButtonGroup
+								data={["Daily", "Weekly", "Monthly", "Quarterly", "Annual"]}
+								selectedFilter={selectedFilter}
+								handleFilterClick={handleFilterClick}
+							/>
+						</Flex>
+					</SimpleGrid>
+				</>
 			)}
 			{userActivities && (
 				<SimpleGrid

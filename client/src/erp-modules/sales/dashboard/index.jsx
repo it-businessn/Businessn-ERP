@@ -62,8 +62,8 @@ const CRMDashboard = () => {
 	useEffect(() => {
 		const fetchAllEmployees = async () => {
 			try {
-				const response = await UserService.getAllCompanyUsers(company);
-				setEmployees(response.data.filter(({ role }) => !isManager(role)));
+				const response = await UserService.getAllSalesAgents(company);
+				setEmployees(response.data);
 			} catch (error) {
 				console.error(error);
 			}
