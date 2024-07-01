@@ -105,18 +105,47 @@ const createAssessment = async (req, res) => {
 		req.body;
 
 	try {
-		const assessment = new Assessment({
+		const existingUserAssessment = await Assessment.findOne({
 			subject,
-			score,
-			category,
-			result,
 			empId,
-			total,
 			companyName,
 		});
 
-		const newAssessment = await assessment.save();
-		res.status(201).json(newAssessment);
+		if (existingUserAssessment) {
+			const updatedData = {
+				category,
+				result,
+				score,
+			};
+			const updatedAssessment = await Assessment.findByIdAndUpdate(
+				existingUserAssessment._id,
+				{ $set: updatedData },
+				{ new: true },
+			);
+
+			// const ids = [
+			// 	"665e405b8a8358e6c1f8f7eb",
+			// 	"666a14637e30f273b85e4cc5",
+			// ];
+			// await Assessment.deleteMany({
+			// 	_id: { $in: ids.map((id) => id) },
+			// });
+
+			res.status(201).json(updatedAssessment);
+		} else {
+			const assessment = new Assessment({
+				subject,
+				score,
+				category,
+				result,
+				empId,
+				total,
+				companyName,
+			});
+
+			const newAssessment = await assessment.save();
+			res.status(201).json(newAssessment);
+		}
 	} catch (error) {
 		res.status(400).json({ message: error.message });
 	}

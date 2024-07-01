@@ -1,6 +1,5 @@
 import {
 	Box,
-	Button,
 	FormControl,
 	FormLabel,
 	HStack,
@@ -9,6 +8,7 @@ import {
 	Text,
 	VStack,
 } from "@chakra-ui/react";
+import ActionButtonGroup from "components/ui/form/ActionButtonGroup";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import LocalStorageService from "services/LocalStorageService";
@@ -152,27 +152,12 @@ const Assessment = () => {
 							)}
 						</FormControl>
 					))}
-					<HStack mt={3}>
-						<Button
-							size={"sm"}
-							type="submit"
-							bg="var(--primary_button_bg)"
-							color={"brand.primary_bg"}
-							_hover={{ color: "brand.600" }}
-							borderRadius={"10px"}
-						>
-							Submit
-						</Button>
-						<Button
-							variant={"outline"}
-							size={"sm"}
-							colorScheme={"gray"}
-							onClick={() => navigate(-1)}
-							borderRadius={"10px"}
-						>
-							Go back
-						</Button>
-					</HStack>
+					<ActionButtonGroup
+						isDisabled={showExplanation}
+						submitBtnName={"Submit"}
+						onClose={() => navigate(-1)}
+						closeLabel="Go back"
+					/>
 				</form>
 			</Box>
 		</Box>
