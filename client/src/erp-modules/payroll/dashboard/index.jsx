@@ -1,33 +1,37 @@
-import { Box, SimpleGrid } from "@chakra-ui/react";
+import { Box, Flex, SimpleGrid } from "@chakra-ui/react";
 import TextTitle from "components/ui/text/TextTitle";
 
+import SelectBox from "components/ui/form/select/SelectBox";
 import { useEffect, useState } from "react";
 import LocalStorageService from "services/LocalStorageService";
+import PayrollService from "services/PayrollService";
+import { formatDate } from "utils";
 import LeftPane from "./leftpane";
 import RightPane from "./rightpane";
 
 const Dashboard = () => {
 	const user = LocalStorageService.getItem("user");
 
-	const [selectedUser, setSelectedUser] = useState(user);
+	const [selectedPayGroup, setSelectedPayGroup] = useState(user);
 	const STATS = [
 		{
-			name: "In Progress",
-			count: 0,
+			name: "Days till next",
+			value: 3,
 		},
 		{
-			name: "Completed",
-			count: 0,
+			name: "Approval Date",
+			value: formatDate(new Date()),
 		},
 		{
-			name: "Estimate",
-			count: 0,
+			name: "Payment Date",
+			value: formatDate(new Date()),
 		},
 	];
 	const [stats, setStats] = useState(STATS);
 	const [company, setCompany] = useState(
 		LocalStorageService.getItem("selectedCompany"),
 	);
+	const [payGroups, setPayGroups] = useState(null);
 
 	useEffect(() => {
 		const handleSelectedCompanyChange = (event) => setCompany(event.detail);
@@ -44,9 +48,42 @@ const Dashboard = () => {
 			);
 		};
 	}, []);
+	useEffect(() => {
+		const fetchAllPaygroups = async () => {
+			try {
+				const response = await PayrollService.getAllPaygroups(company);
+				setPayGroups(response.data);
+			} catch (error) {
+				console.error(error);
+			}
+		};
+		fetchAllPaygroups();
+	}, [company]);
+
+	const handleChange = (value) => {
+		if (value === "") {
+			setSelectedPayGroup(user);
+		} else {
+			setSelectedPayGroup(payGroups.find(({ fullName }) => fullName === value));
+		}
+	};
 	return (
 		<Box p={{ base: "1em" }} overflow={"hidden"}>
-			<TextTitle title={"Employee Dashboard"} mb={"0.5em"} w={"50%"} />
+			<Flex width={"40%"}>
+				<TextTitle title={"Dashboard"} mb={"0.5em"} width={"10em"} />
+				{/* {isManager(role) && employees && ( */}
+				<SelectBox
+					handleChange={handleChange}
+					data={payGroups}
+					name="fullName"
+					border="1px solid var(--primary_button_bg)"
+					color={"brand.primary_button_bg"}
+					value={selectedPayGroup?.fullName}
+					placeholder="Select Paygroup"
+					size={"sm"}
+				/>
+				{/* )} */}
+			</Flex>
 
 			<SimpleGrid
 				columns={{ base: 1, md: 1, lg: 2 }}
@@ -55,13 +92,13 @@ const Dashboard = () => {
 				templateColumns={{ lg: "70% 30%" }}
 			>
 				<LeftPane
-					selectedUser={selectedUser}
+					selectedUser={selectedPayGroup}
 					setStats={setStats}
 					company={company}
 				/>
 				<RightPane
 					stats={stats}
-					selectedUser={selectedUser}
+					selectedUser={selectedPayGroup}
 					company={company}
 				/>
 			</SimpleGrid>

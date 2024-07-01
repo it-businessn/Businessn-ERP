@@ -6,7 +6,7 @@ const TextTitle = ({
 	size,
 	weight = "bold",
 	color,
-	width,
+	width = "100%",
 	align,
 	mt,
 	p,
@@ -28,7 +28,6 @@ const TextTitle = ({
 		textOverflow={"ellipsis"}
 		whiteSpace={whiteSpace}
 		overflow={"hidden"}
-		w={"100%"}
 	>
 		{title}
 	</Text>

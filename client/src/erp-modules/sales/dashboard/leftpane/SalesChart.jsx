@@ -1,6 +1,6 @@
 import { Box } from "@chakra-ui/react";
 import HighlightButton from "components/ui/button/HighlightButton";
-import CardTitle from "components/ui/card/CardTitle";
+import TextTitle from "components/ui/text/TextTitle";
 import { BAR_DATA, callsMadeBarData, emailsMadeBarData } from "constant";
 import SelectCustomer from "erp-modules/sales/activities/SelectCustomer";
 import moment from "moment";
@@ -146,7 +146,7 @@ const SalesChart = ({ company, selectedUser, user }) => {
 						borderRadius="10px"
 						fontWeight="bold"
 					>
-						<CardTitle title={bar.title} />
+						<TextTitle title={bar.title} mt={2} mb={2} />
 						{/* <Flex
 						justify="space-between"
 						align="center"
@@ -154,7 +154,7 @@ const SalesChart = ({ company, selectedUser, user }) => {
 						color={"brand.nav_color"}
 						w={{ base: "auto", md: "103%" }}
 					>
-						<CardTitle title={bar.title} />
+					<TextTitle title={bar.title} mt={2} mb={2} />
 						<Select width="auto" border={"none"} fontSize={"xs"} ml={"1em"}>
 							<option>Last Week</option>
 							<option>Last Month</option>

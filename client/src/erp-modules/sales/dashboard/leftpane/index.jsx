@@ -1,5 +1,5 @@
 import { Box, SimpleGrid } from "@chakra-ui/react";
-import CardTitle from "components/ui/card/CardTitle";
+import TextTitle from "components/ui/text/TextTitle";
 import { useEffect, useState } from "react";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import CalendarService from "services/CalendarService";
@@ -118,7 +118,7 @@ const LeftPane = ({ selectedUser, setStats, company, user }) => {
 		setStats((prevStats) =>
 			prevStats.map((stat) => {
 				if (stat.name === key) {
-					return { ...stat, count };
+					return { ...stat, value: count };
 				}
 				return stat;
 			}),
@@ -151,7 +151,7 @@ const LeftPane = ({ selectedUser, setStats, company, user }) => {
 					borderRadius="10px"
 					fontWeight="bold"
 				>
-					<CardTitle title="Upcoming" />
+					<TextTitle title={"Upcoming"} mt={2} mb={2} />
 					<UpcomingList
 						events={events}
 						meetings={meetings}

@@ -13,15 +13,15 @@ const EmployeeDashboard = () => {
 	const STATS = [
 		{
 			name: "In Progress",
-			count: 0,
+			value: 0,
 		},
 		{
 			name: "Completed",
-			count: 0,
+			value: 0,
 		},
 		{
 			name: "Estimate",
-			count: 0,
+			value: 0,
 		},
 	];
 	const [stats, setStats] = useState(STATS);

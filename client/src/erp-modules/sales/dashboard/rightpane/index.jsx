@@ -1,8 +1,8 @@
 import { Box } from "@chakra-ui/react";
+import UserStatInfo from "components/ui/UserStatInfo";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import ChatMessages from "./ChatMessages";
 import MiniCalendar from "./MiniCalendar";
-import UserMeetingInfo from "./UserMeetingInfo";
 
 const RightPane = ({ selectedUser, stats, company }) => {
 	return (
@@ -14,10 +14,10 @@ const RightPane = ({ selectedUser, stats, company }) => {
 			border="3px solid var(--main_color)"
 			borderRadius="10px"
 		>
-			<UserMeetingInfo
+			<UserStatInfo
+				name={selectedUser?.fullName}
+				email={selectedUser?.email}
 				stats={stats}
-				selectedUser={selectedUser}
-				company={company}
 			/>
 			<MiniCalendar user={selectedUser} company={company} />
 			<ChatMessages userId={selectedUser._id} company={company} />

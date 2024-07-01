@@ -15,15 +15,15 @@ const CRMDashboard = () => {
 	const STATS = [
 		{
 			name: "Events",
-			count: 0,
+			value: 0,
 		},
 		{
 			name: "Meetings",
-			count: 0,
+			value: 0,
 		},
 		{
 			name: "Appointments",
-			count: 0,
+			value: 0,
 		},
 	];
 	const [stats, setStats] = useState(STATS);
