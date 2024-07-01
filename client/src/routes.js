@@ -1,6 +1,7 @@
 import { Suspense, lazy } from "react";
 import { createBrowserRouter } from "react-router-dom";
 
+import Dashboard from "erp-modules/payroll/dashboard";
 import LeadContacts from "erp-modules/sales/fresh_leads/LeadContacts";
 import SchedulingDashboard from "erp-modules/scheduling/dashboard";
 import PageNotFound from "./features/PageNotFound";
@@ -289,8 +290,7 @@ export const router = createBrowserRouter([
 			/* Payroll */
 			{
 				path: ROUTE_PATH.PAYROLL,
-				// element: <Dashboard />,
-				element: <EmployeeDashboard />,
+				element: <Dashboard />,
 			},
 			{
 				path: `${ROUTE_PATH.PAYROLL}${ROUTE_PATH.WORKVIEW}`,
