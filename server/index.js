@@ -28,6 +28,7 @@ const taskRoutes = require("./routes/task");
 const logTaskRoutes = require("./routes/logTask");
 const questionnaireRoutes = require("./routes/questionnaire");
 const payoutRoutes = require("./routes/payout");
+const payrollRoutes = require("./routes/payroll");
 
 const app = express();
 const expressLayouts = require("express-ejs-layouts");
@@ -80,7 +81,7 @@ app.use("/api/payouts", payoutRoutes);
 // app.use("/api/dashboard", dashboardRoutes);
 // app.use("/api/leave-balances", leaveBalanceRoutes);
 // app.use("/api/leave-requests", leaveRequestRoutes);
-// app.use("/api/payroll", payrollRoutes);
+app.use("/api/payroll", payrollRoutes);
 // app.use("/api/payslips", payslipRoutes);
 // app.use("/api/tasks", taskRoutes);
 // app.use("/api/tasks/:taskId/subtask", subTaskRoutes);

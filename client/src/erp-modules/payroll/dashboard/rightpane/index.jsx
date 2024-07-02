@@ -4,7 +4,7 @@ import ChatMessages from "erp-modules/sales/dashboard/rightpane/ChatMessages";
 import MiniCalendar from "erp-modules/sales/dashboard/rightpane/MiniCalendar";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 
-const RightPane = ({ selectedUser, stats, company }) => {
+const RightPane = ({ selectedUser, selectedPayGroup, stats, company }) => {
 	return (
 		<Box
 			overflow={"hidden"}
@@ -20,7 +20,7 @@ const RightPane = ({ selectedUser, stats, company }) => {
 				stats={stats}
 			/>
 			<MiniCalendar user={selectedUser} company={company} />
-			<ChatMessages userId={selectedUser._id} company={company} />
+			<ChatMessages userId={selectedPayGroup?._id} company={company} />
 		</Box>
 	);
 };

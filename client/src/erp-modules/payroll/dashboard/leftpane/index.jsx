@@ -1,10 +1,109 @@
-import { Box, HStack, SimpleGrid, VStack } from "@chakra-ui/react";
+import { Box, HStack, Icon, SimpleGrid, VStack } from "@chakra-ui/react";
+import PrimaryButton from "components/ui/button/PrimaryButton";
 
 import TextTitle from "components/ui/text/TextTitle";
+import { useState } from "react";
+import { MdOutlineChevronLeft, MdOutlineChevronRight } from "react-icons/md";
+import VerticalStepper from "./VerticalStepper";
 
-const LeftPane = ({ selectedUser, setStats, company }) => {
+const LeftPane = ({ selectedPayGroup, setStats, company }) => {
+	const steps = [
+		"Step 1: Start",
+		"Step 2: Process Data",
+		"Step 3: Analyze Results",
+		"Step 4: Review & Submit",
+		"Step 5: Completion",
+	];
+	const [currentStep, setCurrentStep] = useState(0);
+
+	const goToNextStep = () => {
+		setCurrentStep((prevStep) => prevStep + 1);
+	};
 	const sections = [
-		{ name: "Payroll", content: <></> },
+		{
+			name: "Payroll",
+			content: (
+				<>
+					<HStack gap={4} justifyContent={"space-around"}>
+						<VStack
+							spacing={0}
+							color={"brand.nav_color"}
+							p="1em"
+							w={"100%"}
+							bg={"brand.primary_bg"}
+							border="3px solid var(--main_color)"
+							borderRadius="10px"
+						>
+							<TextTitle title={"Feb"} align={"center"} />
+							<TextTitle title={"2024"} align={"center"} />
+						</VStack>
+						<VStack
+							spacing={0}
+							color={"var(--lead_cards_bg)"}
+							p="1em"
+							w={"100%"}
+							bg={"var(--payroll_bg)"}
+							border="3px solid var(--payroll_bg)"
+							borderRadius="10px"
+						>
+							<TextTitle title={"PP 26"} mt={2} align={"center"} />
+							<TextTitle title={"March 2024"} align={"center"} />
+							<TextTitle
+								title={"Run date: 19/03/24"}
+								align={"center"}
+								size="xs"
+								mb={"1em"}
+							/>
+						</VStack>
+						<VStack
+							spacing={0}
+							color={"brand.nav_color"}
+							p="1em"
+							w={"100%"}
+							bg={"brand.primary_bg"}
+							border="3px solid var(--main_color)"
+							borderRadius="10px"
+						>
+							<TextTitle title={"Apr"} align={"center"} />
+							<TextTitle title={"2024"} align={"center"} />
+						</VStack>
+					</HStack>
+					<HStack gap={4}>
+						<VStack
+							spacing={0}
+							color={"brand.nav_color"}
+							p="1em"
+							w={"100%"}
+							bg={"brand.primary_bg"}
+							border="3px solid var(--main_color)"
+							borderRadius="10px"
+						>
+							<TextTitle title={"Check date"} />
+							<TextTitle title={"2024"} />
+						</VStack>
+						<VStack
+							spacing={0}
+							color={"brand.nav_color"}
+							p="1em"
+							w={"100%"}
+							bg={"brand.primary_bg"}
+							border="3px solid var(--main_color)"
+							borderRadius="10px"
+						>
+							<TextTitle title={"Pay period"} />
+							<TextTitle title={"19/03 - 30/05"} />
+						</VStack>
+					</HStack>
+					<PrimaryButton
+						minW={"100%"}
+						// isDisabled={isDisabled}
+						name={"Run payroll"}
+						// isLoading={isLoading}
+						loadingText="Loading"
+					/>
+				</>
+			),
+		},
 		{
 			name: "Pay period",
 			content: (
@@ -49,7 +148,6 @@ const LeftPane = ({ selectedUser, setStats, company }) => {
 							bg={"var(--bg_color_1)"}
 							border="3px solid var(--bg_color_1)"
 							borderRadius="10px"
-							fontWeight="bold"
 						>
 							<VStack>
 								<TextTitle title={"Overview of payroll process"} />
@@ -64,8 +162,7 @@ const LeftPane = ({ selectedUser, setStats, company }) => {
 								color={"var(--primary_button_bg)"}
 							/>
 						</HStack>
-
-						<VStack spacing={1}>sad</VStack>
+						<VerticalStepper steps={steps} currentStep={currentStep} />
 					</VStack>
 				</>
 			),
@@ -102,17 +199,39 @@ const LeftPane = ({ selectedUser, setStats, company }) => {
 			>
 				{/* <TimeCard selectedUser={selectedUser} company={company} /> */}
 
-				{sections.map(({ name, content }) => (
+				{sections.map(({ name, content }, index) => (
 					<Box
 						key={name}
 						color={"brand.nav_color"}
-						px="1em"
+						p="1em"
 						bg={"brand.primary_bg"}
 						border="3px solid var(--main_color)"
 						borderRadius="10px"
-						fontWeight="bold"
 					>
-						<TextTitle title={name} mt={2} mb={"1em"} />
+						{index === 0 ? (
+							<HStack>
+								<TextTitle title={name} mt={2} mb={"1em"} />
+								<HStack spacing={0}>
+									<Icon
+										borderRadius={"50%"}
+										as={MdOutlineChevronLeft}
+										// onClick={() => handleChangeDate("prev")}
+										boxSize="5"
+										color="fg.muted"
+									/>
+
+									<Icon
+										as={MdOutlineChevronRight}
+										// onClick={() => handleChangeDate("next")}
+										boxSize="5"
+										color="fg.muted"
+									/>
+								</HStack>
+							</HStack>
+						) : (
+							<TextTitle title={name} mt={2} mb={"1em"} />
+						)}
+
 						{content}
 					</Box>
 				))}

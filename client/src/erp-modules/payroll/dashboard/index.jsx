@@ -12,7 +12,7 @@ import RightPane from "./rightpane";
 const Dashboard = () => {
 	const user = LocalStorageService.getItem("user");
 
-	const [selectedPayGroup, setSelectedPayGroup] = useState(user);
+	const [selectedPayGroup, setSelectedPayGroup] = useState(null);
 	const STATS = [
 		{
 			name: "Days till next",
@@ -61,10 +61,8 @@ const Dashboard = () => {
 	}, [company]);
 
 	const handleChange = (value) => {
-		if (value === "") {
-			setSelectedPayGroup(user);
-		} else {
-			setSelectedPayGroup(payGroups.find(({ fullName }) => fullName === value));
+		if (value !== "") {
+			setSelectedPayGroup(value);
 		}
 	};
 	return (
@@ -75,10 +73,10 @@ const Dashboard = () => {
 				<SelectBox
 					handleChange={handleChange}
 					data={payGroups}
-					name="fullName"
+					name="name"
 					border="1px solid var(--primary_button_bg)"
 					color={"brand.primary_button_bg"}
-					value={selectedPayGroup?.fullName}
+					value={selectedPayGroup}
 					placeholder="Select Paygroup"
 					size={"sm"}
 				/>
@@ -92,13 +90,14 @@ const Dashboard = () => {
 				templateColumns={{ lg: "70% 30%" }}
 			>
 				<LeftPane
-					selectedUser={selectedPayGroup}
+					selectedPayGroup={selectedPayGroup}
 					setStats={setStats}
 					company={company}
 				/>
 				<RightPane
+					selectedUser={user}
 					stats={stats}
-					selectedUser={selectedPayGroup}
+					selectedPayGroup={selectedPayGroup}
 					company={company}
 				/>
 			</SimpleGrid>
