@@ -66,7 +66,7 @@ const Login = lazy(() => import("./features/login"));
 const Opportunities = lazy(() => import("./erp-modules/sales/opportunities"));
 const Orders = lazy(() => import("./erp-modules/sales/orders"));
 const Payouts = lazy(() => import("./erp-modules/sales/payouts"));
-const PayrollWorkview = lazy(() => import("./erp-modules/payroll/Workview"));
+const PayrollWorkview = lazy(() => import("./erp-modules/payroll/workview"));
 const Pipeline = lazy(() =>
 	import("./erp-modules/sales/target-leads-pipeline"),
 );

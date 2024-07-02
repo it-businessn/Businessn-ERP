@@ -1,10 +1,19 @@
 import { EditIcon } from "@chakra-ui/icons";
 import { BiNotepad, BiTask } from "react-icons/bi";
 import { BsCalendar3 } from "react-icons/bs";
+import { CiViewTimeline } from "react-icons/ci";
 import { FaAddressBook, FaDashcube, FaRProject } from "react-icons/fa";
-import { FaCalendar, FaChartGantt, FaPeopleArrows } from "react-icons/fa6";
+import {
+	FaCalendar,
+	FaChartGantt,
+	FaPeopleArrows,
+	FaPeopleGroup,
+	FaUsersGear,
+	FaUsersRectangle,
+} from "react-icons/fa6";
+import { FiSettings } from "react-icons/fi";
 import { GoTasklist } from "react-icons/go";
-import { HiOutlineCalendar } from "react-icons/hi";
+import { HiOutlineBadgeCheck, HiOutlineCalendar } from "react-icons/hi";
 import { IoBagRemoveOutline, IoDocumentTextOutline } from "react-icons/io5";
 import { LuLayoutDashboard } from "react-icons/lu";
 import {
@@ -1065,7 +1074,7 @@ export const SIDEBAR_MENU = [
 			},
 			{
 				path: "workview",
-				name: "Work view",
+				name: "Workview",
 				children: [],
 				icon: <BiNotepad />,
 			},
@@ -1123,49 +1132,55 @@ export const SIDEBAR_MENU = [
 				path: "workview",
 				name: "Workview",
 				children: [],
-				icon: <RxDashboard />,
+				icon: <BiNotepad />,
 			},
 			{
 				path: "process",
 				name: "Process Payroll",
 				children: [],
-				icon: <RxDashboard />,
+				icon: <IoDocumentTextOutline />,
 			},
 			{
 				path: "approvals",
 				name: "Approvals",
 				children: [],
-				icon: <RxDashboard />,
+				icon: <HiOutlineBadgeCheck />,
 			},
 			{
 				path: "timesheets",
 				name: "Timesheets",
 				children: [],
-				icon: <RxDashboard />,
+				icon: <CiViewTimeline />,
 			},
 			{
 				path: "employees",
 				name: "Employees",
 				children: [],
-				icon: <RxDashboard />,
+				icon: <FaPeopleGroup />,
 			},
 			{
 				path: "reports",
 				name: "Reports",
 				children: [],
-				icon: <RxDashboard />,
+				icon: <IoDocumentTextOutline />,
+			},
+			{
+				path: "settings",
+				name: "Settings",
+				children: [],
+				icon: <FiSettings />,
 			},
 			{
 				path: "employee-details",
 				name: "Employee Dashboard",
 				children: [],
-				icon: <RxDashboard />,
+				icon: <FaUsersRectangle />,
 			},
 			{
 				path: "emp-records",
 				name: "Employee Records",
 				children: [],
-				icon: <RxDashboard />,
+				icon: <FaUsersGear />,
 			},
 		],
 	},
