@@ -158,15 +158,18 @@ const Activities = () => {
 					columns={{ base: 3, md: 5 }}
 					spacing="1em"
 					my="5"
-					bg={"brand.100"}
+					bg={"var(--primary_bg)"}
 					borderRadius={"20px"}
 					p={"8px"}
 				>
-					<RadioButtonGroup
-						data={["Daily", "Weekly", "Monthly", "Quarterly", "Annual"]}
-						selectedFilter={selectedFilter}
-						handleFilterClick={handleFilterClick}
-					/>
+					{["Daily", "Weekly", "Monthly", "Quarterly", "Annual"].map((_) => (
+						<RadioButtonGroup
+							key={_}
+							name={_}
+							selectedFilter={selectedFilter}
+							handleFilterClick={handleFilterClick}
+						/>
+					))}
 				</SimpleGrid>
 			) : (
 				<>
@@ -184,12 +187,22 @@ const Activities = () => {
 						/>
 					)}
 					<SimpleGrid columns={{ base: 5, lg: 2 }} spacing="1em" my="5">
-						<Flex gap="2em" bg={"brand.100"} borderRadius={"20px"} p={"8px"}>
-							<RadioButtonGroup
-								data={["Daily", "Weekly", "Monthly", "Quarterly", "Annual"]}
-								selectedFilter={selectedFilter}
-								handleFilterClick={handleFilterClick}
-							/>
+						<Flex
+							gap="2em"
+							bg={"var(--primary_bg)"}
+							borderRadius={"20px"}
+							p={"8px"}
+						>
+							{["Daily", "Weekly", "Monthly", "Quarterly", "Annual"].map(
+								(_) => (
+									<RadioButtonGroup
+										key={_}
+										name={_}
+										selectedFilter={selectedFilter}
+										handleFilterClick={handleFilterClick}
+									/>
+								),
+							)}
 						</Flex>
 					</SimpleGrid>
 				</>

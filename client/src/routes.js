@@ -2,6 +2,7 @@ import { Suspense, lazy } from "react";
 import { createBrowserRouter } from "react-router-dom";
 
 import Dashboard from "erp-modules/payroll/dashboard";
+import Employees from "erp-modules/payroll/employees";
 import LeadContacts from "erp-modules/sales/fresh_leads/LeadContacts";
 import SchedulingDashboard from "erp-modules/scheduling/dashboard";
 import PageNotFound from "./features/PageNotFound";
@@ -51,12 +52,12 @@ const Contacts = lazy(() => import("./erp-modules/sales/customers/contacts"));
 const CRMDashboard = lazy(() => import("./erp-modules/sales/dashboard"));
 const Customers = lazy(() => import("./erp-modules/sales/customers"));
 const EmployeeDashboard = lazy(() =>
-	import("./erp-modules/payroll/employees/EmployeeDashboard"),
+	import("./erp-modules/payroll/employees/dashboard/EmployeeDashboard"),
 );
 const EmployeeRecord = lazy(() =>
-	import("./erp-modules/payroll/employees/EmployeeRecord"),
+	import("./erp-modules/payroll/employees/dashboard/EmployeeRecord"),
 );
-const Employees = lazy(() => import("./erp-modules/payroll/Employees"));
+const EmployeesList = lazy(() => import("./erp-modules/payroll/EmployeesList"));
 const ForgotPassword = lazy(() => import("./features/login/ForgotPassword"));
 const FreshLeads = lazy(() => import("./erp-modules/sales/fresh_leads"));
 const Gantt = lazy(() => import("./erp-modules/project-management/Gantt"));
@@ -311,6 +312,10 @@ export const router = createBrowserRouter([
 			{
 				path: `${ROUTE_PATH.PAYROLL}${ROUTE_PATH.EMPLOYEES}`,
 				element: <Employees />,
+			},
+			{
+				path: `${ROUTE_PATH.PAYROLL}${ROUTE_PATH.EMPLOYEES}/list`,
+				element: <EmployeesList />,
 			},
 			{
 				path: `${ROUTE_PATH.PAYROLL}${ROUTE_PATH.REPORT}`,

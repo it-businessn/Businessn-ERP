@@ -21,7 +21,7 @@ import { MdOutlineFilterList } from "react-icons/md";
 import { useBreakpointValue } from "services/Breakpoint";
 import UserService from "services/UserService";
 
-const Employees = () => {
+const EmployeesList = () => {
 	const { isMobile } = useBreakpointValue();
 	const [employees, setEmployees] = useState(null);
 	const fetchAllEmployees = async () => {
@@ -194,4 +194,4 @@ const Employees = () => {
 	);
 };
 
-export default Employees;
+export default EmployeesList;
