@@ -8,11 +8,13 @@ import VerticalStepper from "./VerticalStepper";
 
 const LeftPane = ({ selectedPayGroup, setStats, company }) => {
 	const steps = [
-		"Step 1: Start",
-		"Step 2: Process Data",
-		"Step 3: Analyze Results",
-		"Step 4: Review & Submit",
-		"Step 5: Completion",
+		{ title: "Approvals", description: "Contact Info" },
+		{ title: "Leave Adjustment", description: "Date & Time" },
+		{ title: "New Employees", description: "Select Employees" },
+		{ title: "Termination", description: "" },
+		{ title: "Alerts and Violations", description: "" },
+		{ title: "Review Reports", description: "" },
+		{ title: "Submit", description: "" },
 	];
 	const [currentStep, setCurrentStep] = useState(0);
 

@@ -166,12 +166,16 @@ const getProgressColor = (value) =>
 		? "rgb(22 179 83)"
 		: "rgb(3 150 151)";
 
-export const CircularProgressBarCell = ({ completionPercentage, size }) => {
+export const CircularProgressBarCell = ({
+	completionPercentage,
+	size,
+	color,
+}) => {
 	return (
 		<CircularProgress
 			size={size}
 			value={completionPercentage}
-			color={getProgressColor(completionPercentage)}
+			color={color || getProgressColor(completionPercentage)}
 		>
 			<CircularProgressLabel>{`${completionPercentage}%`}</CircularProgressLabel>
 		</CircularProgress>

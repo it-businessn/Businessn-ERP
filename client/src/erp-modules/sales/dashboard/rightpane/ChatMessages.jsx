@@ -88,7 +88,7 @@ const ChatMessages = ({ userId, company }) => {
 	return (
 		<Box mt={2} fontWeight="bold">
 			{!userConversation || userConversation?.length === 0 ? (
-				<></>
+				<Text p="10px">No communications found</Text>
 			) : (
 				<>
 					<HStack>
