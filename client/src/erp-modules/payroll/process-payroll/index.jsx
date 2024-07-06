@@ -1,21 +1,43 @@
-import { Box, HStack, Icon, SimpleGrid, VStack } from "@chakra-ui/react";
+import {
+	Box,
+	FormLabel,
+	HStack,
+	Icon,
+	SimpleGrid,
+	VStack,
+} from "@chakra-ui/react";
 import PrimaryButton from "components/ui/button/PrimaryButton";
+import ActionButtonGroup from "components/ui/form/ActionButtonGroup";
+import ModalLayout from "components/ui/modal/ModalLayout";
 import TextTitle from "components/ui/text/TextTitle";
 import { useState } from "react";
 import { FaSortDown } from "react-icons/fa6";
 import { MdOutlineChevronRight } from "react-icons/md";
-import VerticalStepper from "./dashboard/leftpane/VerticalStepper";
+import VerticalStepper from "../../../components/ui/VerticalStepper";
+import AlertsViolation from "./AlertsViolation";
+import DetailsReview from "./DetailsReview";
+import Finalize from "./Finalize";
+import PayrollComplete from "./PayrollComplete";
+import PayrunSetup from "./PayrunSetup";
+import ReportsPreview from "./ReportsPreview";
 
 const ProcessPayroll = () => {
 	const steps = [
-		{ title: "Payrun Setup", content: "Payrun Setup content" },
-		{ title: "Inputs Review", content: "Inputs Review" },
-		{ title: "Alerts and Violations", content: "" },
-		{ title: "Review Reports", content: "" },
-		{ title: "Finalize", content: "" },
-		{ title: "Payroll Complete", content: "" },
+		{ title: "Payrun Setup", content: <PayrunSetup /> },
+		{ title: "Inputs Review", content: <DetailsReview /> },
+		{ title: "Alerts and Violations", content: <AlertsViolation /> },
+		{ title: "Review Reports", content: <ReportsPreview /> },
+		{ title: "Finalize", content: <Finalize /> },
+		{ title: "Payroll Complete", content: <PayrollComplete /> },
 	];
 	const [currentStep, setCurrentStep] = useState(0);
+	const goToNextStep = (index) => {
+		setCurrentStep(index);
+	};
+	const [showConfirmationPopUp, setShowConfirmationPopUp] = useState(false);
+	const handleClick = () => {
+		setShowConfirmationPopUp((prev) => !prev);
+	};
 	return (
 		<Box p={{ base: "1em" }} overflow={"hidden"}>
 			<SimpleGrid
@@ -53,12 +75,15 @@ const ProcessPayroll = () => {
 							hideProgress
 							steps={steps}
 							currentStep={currentStep}
-							height="70vh"
+							handleClick={goToNextStep}
+							height="60vh"
 						/>
+
 						<PrimaryButton
 							minW={"100%"}
-							isDisabled={currentStep !== steps.length}
+							isDisabled={currentStep !== 5}
 							name={"Submit payroll"}
+							onOpen={handleClick}
 							// isLoading={isLoading}
 							loadingText="Loading"
 						/>
@@ -88,6 +113,27 @@ const ProcessPayroll = () => {
 					{steps[currentStep]?.content}
 				</Box>
 			</SimpleGrid>
+
+			{showConfirmationPopUp && (
+				<ModalLayout
+					title={"Submit payroll"}
+					size="sm"
+					isOpen={showConfirmationPopUp}
+					onClose={handleClick}
+				>
+					<form
+					// onSubmit={handleSubmit}
+					>
+						<FormLabel>Would you like to submit final processing?</FormLabel>
+						<ActionButtonGroup
+							submitBtnName={"Yes"}
+							closeLabel="No"
+							// isLoading={isSubmitting}
+							onClose={handleClick}
+						/>
+					</form>
+				</ModalLayout>
+			)}
 		</Box>
 	);
 };

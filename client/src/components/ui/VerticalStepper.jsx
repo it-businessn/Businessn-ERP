@@ -6,28 +6,29 @@ import {
 	StepStatus,
 	StepTitle,
 	Stepper,
-	useSteps,
 } from "@chakra-ui/react";
 import { FaCheck } from "react-icons/fa6";
 import { CircularProgressBarCell } from "utils";
 
-const VerticalStepper = ({ currentStep, steps, hideProgress, height }) => {
-	const { activeStep } = useSteps({
-		index: 1,
-		count: steps.length,
-	});
-
+const VerticalStepper = ({
+	currentStep,
+	handleClick,
+	steps,
+	hideProgress,
+	height,
+}) => {
 	return (
 		<Stepper
-			index={activeStep}
+			index={currentStep}
 			orientation="vertical"
 			gap="0"
 			height={height || "350px"}
 			colorScheme="green"
 			w={"100%"}
+			cursor={"pointer"}
 		>
 			{steps.map((step, index) => (
-				<Step key={index} w={"100%"}>
+				<Step key={index} w={"100%"} onClick={() => handleClick(index)}>
 					<StepIndicator>
 						<StepStatus
 							complete={<StepIcon />}

@@ -75,7 +75,7 @@ const PMReports = lazy(() =>
 	import("./erp-modules/project-management/Reports"),
 );
 const ProcessPayroll = lazy(() =>
-	import("./erp-modules/payroll/ProcessPayroll"),
+	import("./erp-modules/payroll/process-payroll"),
 );
 const Products = lazy(() => import("./erp-modules/sales/products"));
 const Reports = lazy(() => import("./erp-modules/payroll/Reports"));

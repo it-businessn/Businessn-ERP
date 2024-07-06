@@ -4,7 +4,7 @@ import PrimaryButton from "components/ui/button/PrimaryButton";
 import TextTitle from "components/ui/text/TextTitle";
 import { useState } from "react";
 import { MdOutlineChevronLeft, MdOutlineChevronRight } from "react-icons/md";
-import VerticalStepper from "./VerticalStepper";
+import VerticalStepper from "../../../../components/ui/VerticalStepper";
 
 const LeftPane = ({ selectedPayGroup, setStats, company }) => {
 	const steps = [

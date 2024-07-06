@@ -13,6 +13,8 @@ const PrimaryButton = ({
 	flex,
 	mt,
 	rightIcon,
+	bg = "brand.primary_button_bg",
+	color = "brand.primary_bg",
 }) => {
 	return (
 		<Button
@@ -22,9 +24,9 @@ const PrimaryButton = ({
 			isDisabled={isDisabled}
 			isLoading={isLoading}
 			onClick={onOpen}
-			bg={"brand.primary_button_bg"}
+			bg={bg}
 			px={{ base: px ? px : "2em" }}
-			color={"brand.primary_bg"}
+			color={color}
 			_hover={{
 				color: "brand.600",
 				bg: "transparent",
