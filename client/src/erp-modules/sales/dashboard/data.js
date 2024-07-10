@@ -5,6 +5,21 @@ import { GiDiamondTrophy } from "react-icons/gi";
 import { HiOutlineReceiptPercent } from "react-icons/hi2";
 import { TfiTarget } from "react-icons/tfi";
 
+export const STATS = [
+	{
+		name: "Events",
+		value: 0,
+	},
+	{
+		name: "Meetings",
+		value: 0,
+	},
+	{
+		name: "Appointments",
+		value: 0,
+	},
+];
+
 export const HEADER_CARDS = [
 	{
 		color: "#cda4a8",

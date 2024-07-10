@@ -1,81 +1,29 @@
 import { Box, Flex, SimpleGrid, Text } from "@chakra-ui/react";
 import SelectBox from "components/ui/form/select/SelectBox";
-import { useEffect, useState } from "react";
+import useFetchData from "hooks/useFetchData";
+import useSelectUser from "hooks/useSelectUser";
+import { useState } from "react";
 import "react-big-calendar/lib/css/react-big-calendar.css";
-import LocalStorageService from "services/LocalStorageService";
-import UserService from "services/UserService";
 import { isManager } from "utils";
+import { STATS } from "./data";
 import LeftPane from "./leftpane";
 import RightPane from "./rightpane";
 
 const CRMDashboard = () => {
-	const user = LocalStorageService.getItem("user");
-	const [employees, setEmployees] = useState(null);
-	const [selectedUser, setSelectedUser] = useState(user);
-	const STATS = [
-		{
-			name: "Events",
-			value: 0,
-		},
-		{
-			name: "Meetings",
-			value: 0,
-		},
-		{
-			name: "Appointments",
-			value: 0,
-		},
-	];
 	const [stats, setStats] = useState(STATS);
 
+	const { user, employees, company } = useFetchData();
+
+	const [selectedUser, setSelectedUser] = useState(user);
+	useSelectUser(selectedUser);
+
 	const role = user?.role;
-
-	const [company, setCompany] = useState(
-		LocalStorageService.getItem("selectedCompany"),
-	);
-
-	useEffect(() => {
-		const handleSelectedCompanyChange = (event) => setCompany(event.detail);
-
-		document.addEventListener(
-			"selectedCompanyChanged",
-			handleSelectedCompanyChange,
-		);
-
-		return () => {
-			document.removeEventListener(
-				"selectedCompanyChanged",
-				handleSelectedCompanyChange,
-			);
-		};
-	}, []);
-	useEffect(() => {
-		LocalStorageService.setItem("selectedUser", selectedUser);
-
-		document.dispatchEvent(
-			new CustomEvent("selectedUserChanged", {
-				detail: selectedUser,
-			}),
-		);
-	}, [selectedUser]);
-
-	useEffect(() => {
-		const fetchAllEmployees = async () => {
-			try {
-				const response = await UserService.getAllSalesAgents(company);
-				setEmployees(response.data);
-			} catch (error) {
-				console.error(error);
-			}
-		};
-		fetchAllEmployees();
-	}, [company]);
 
 	const handleChange = (value) => {
 		if (value === "") {
 			setSelectedUser(user);
 		} else {
-			setSelectedUser(employees.find(({ fullName }) => fullName === value));
+			setSelectedUser(employees?.find(({ fullName }) => fullName === value));
 		}
 	};
 
@@ -85,7 +33,7 @@ const CRMDashboard = () => {
 				<Text fontWeight="bold" mb={"0.5em"} w={"50%"}>
 					CRM {isManager(role) && "Manager"} Dashboard
 				</Text>
-				{isManager(role) && employees && (
+				{isManager(role) && employees ? (
 					<SelectBox
 						handleChange={handleChange}
 						data={employees}
@@ -96,7 +44,7 @@ const CRMDashboard = () => {
 						placeholder="Select"
 						size={"sm"}
 					/>
-				)}
+				) : null}
 			</Flex>
 			<SimpleGrid
 				columns={{ base: 1, md: 1, lg: 2 }}
