@@ -11,13 +11,13 @@ import ActionButtonGroup from "components/ui/form/ActionButtonGroup";
 import ModalLayout from "components/ui/modal/ModalLayout";
 import TextTitle from "components/ui/text/TextTitle";
 import { useState } from "react";
-import { FaSortDown } from "react-icons/fa6";
 import { MdOutlineChevronRight } from "react-icons/md";
 import VerticalStepper from "../../../components/ui/VerticalStepper";
 import AlertsViolation from "./AlertsViolation";
 import DetailsReview from "./DetailsReview";
 import Finalize from "./Finalize";
 import PayrollComplete from "./PayrollComplete";
+import PayrollStageContent from "./PayrollStageContent";
 import PayrunSetup from "./PayrunSetup";
 import ReportsPreview from "./ReportsPreview";
 
@@ -89,29 +89,7 @@ const ProcessPayroll = () => {
 						/>
 					</VStack>
 				</Box>
-				<Box
-					color={"brand.nav_color"}
-					p="1em"
-					bg={"brand.primary_bg"}
-					border="3px solid var(--main_color)"
-					borderRadius="10px"
-				>
-					<HStack spacing={2} align={"center"}>
-						<Icon
-							as={FaSortDown}
-							// onClick={() => handleChangeDate("prev")}
-							boxSize="5"
-							color="fg.muted"
-						/>
-						<TextTitle
-							mt={1}
-							weight="normal"
-							title={steps[currentStep].title}
-						/>
-					</HStack>
-
-					{steps[currentStep]?.content}
-				</Box>
+				<PayrollStageContent currentStep={currentStep} steps={steps} />
 			</SimpleGrid>
 
 			{showConfirmationPopUp && (
