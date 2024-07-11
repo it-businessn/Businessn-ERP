@@ -1,15 +1,15 @@
 import { Box, SimpleGrid } from "@chakra-ui/react";
 import TextTitle from "components/ui/text/TextTitle";
-
+import useLoggedInUser from "hooks/useLoggedInUser";
 import { useEffect, useState } from "react";
 import LocalStorageService from "services/LocalStorageService";
 import LeftPane from "./leftpane";
 import RightPane from "./rightpane";
 
 const EmployeeDashboard = () => {
-	const user = LocalStorageService.getItem("user");
+	const loggedInUser = useLoggedInUser();
 
-	const [selectedUser, setSelectedUser] = useState(user);
+	const [selectedUser, setSelectedUser] = useState(loggedInUser);
 	const STATS = [
 		{
 			name: "In Progress",

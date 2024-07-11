@@ -28,14 +28,14 @@ const EmpSearchMenu = ({
 				>
 					<Input
 						_placeholder={{
-							color: "brand.nav_color",
+							color: "var(--nav_color)",
 							fontSize: "sm",
 						}}
 						size="xs"
 						name="empName"
 						value={empName}
-						color={"brand.nav_color"}
-						bg={"brand.primary_bg"}
+						color={"var(--nav_color)"}
+						bg={"var(--primary_bg)"}
 						type="text"
 						placeholder="Search employee"
 						pr="4.5rem"

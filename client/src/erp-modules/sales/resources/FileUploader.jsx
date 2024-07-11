@@ -36,7 +36,7 @@ const FileUploader = ({ fileTypes, userName, setNewUpload, company }) => {
 			<TextTitle mt={2} mb={5} title="Upload File" />
 			<Box
 				p="1em"
-				bg={"brand.primary_bg"}
+				bg={"var(--primary_bg)"}
 				border="3px solid var(--main_color)"
 				borderRadius="10px"
 				fontWeight="bold"

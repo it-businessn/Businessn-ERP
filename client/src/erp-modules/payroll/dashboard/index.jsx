@@ -2,6 +2,7 @@ import { Box, Flex, SimpleGrid } from "@chakra-ui/react";
 import TextTitle from "components/ui/text/TextTitle";
 
 import SelectBox from "components/ui/form/select/SelectBox";
+import useLoggedInUser from "hooks/useLoggedInUser";
 import { useEffect, useState } from "react";
 import LocalStorageService from "services/LocalStorageService";
 import PayrollService from "services/PayrollService";
@@ -10,7 +11,7 @@ import LeftPane from "./leftpane";
 import RightPane from "./rightpane";
 
 const Dashboard = () => {
-	const user = LocalStorageService.getItem("user");
+	const loggedInUser = useLoggedInUser();
 
 	const [selectedPayGroup, setSelectedPayGroup] = useState(null);
 	const STATS = [
@@ -75,7 +76,7 @@ const Dashboard = () => {
 					data={payGroups}
 					name="name"
 					border="1px solid var(--primary_button_bg)"
-					color={"brand.primary_button_bg"}
+					color={"var(--primary_button_bg)"}
 					value={selectedPayGroup}
 					placeholder="Select Paygroup"
 					size={"sm"}
@@ -95,7 +96,7 @@ const Dashboard = () => {
 					company={company}
 				/>
 				<RightPane
-					selectedUser={user}
+					selectedUser={loggedInUser}
 					stats={stats}
 					selectedPayGroup={selectedPayGroup}
 					company={company}

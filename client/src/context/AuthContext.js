@@ -1,45 +1,23 @@
-import { buildUserInfo } from "models";
+import useLoggedInUser from "hooks/useLoggedInUser";
 import { createContext, useEffect, useReducer } from "react";
-import LocalStorageService from "services/LocalStorageService";
+import { authReducer } from "./reducer";
 
 export const AuthContext = createContext();
-
-export const saveUser = (info) => {
-	const user = buildUserInfo(info);
-	LocalStorageService.setItem("user", user);
-};
-
-export const authReducer = (state, action) => {
-	switch (action.type) {
-		case "LOGIN":
-		case "UPDATE_USER": {
-			const user = buildUserInfo(action.payload);
-			saveUser(action.payload);
-			return { user };
-		}
-
-		case "LOGOUT":
-			LocalStorageService.removeItem("user");
-			return { user: null };
-
-		default:
-			return state;
-	}
-};
 
 export const AuthContextProvider = ({ children }) => {
 	const [state, dispatch] = useReducer(authReducer, {
 		user: null,
 	});
-	const user = LocalStorageService.getItem("user");
+
+	const loggedInUser = useLoggedInUser();
 
 	useEffect(() => {
-		if (!user) return;
-		dispatch({ type: "LOGIN", payload: user });
+		if (!loggedInUser) return;
+		dispatch({ type: "LOGIN", payload: loggedInUser });
 	}, []);
 
 	return (
-		<AuthContext.Provider value={{ ...state, dispatch, user }}>
+		<AuthContext.Provider value={{ ...state, dispatch, user: loggedInUser }}>
 			{children}
 		</AuthContext.Provider>
 	);

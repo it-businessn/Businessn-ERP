@@ -71,7 +71,7 @@ const ChangePassword = ({
 		}
 	};
 	return (
-		<Stack flex={1} p={"1em"} color="brand.logo_bg">
+		<Stack flex={1} p={"1em"} color="var(--logo_bg)">
 			<form onSubmit={handleSubmit}>
 				<VStack align="center" justify="center" mb="4">
 					<Box textAlign="center">

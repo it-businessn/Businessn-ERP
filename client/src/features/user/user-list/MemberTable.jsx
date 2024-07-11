@@ -22,16 +22,16 @@ import {
 import { PersonalInfoCard } from "components";
 import { signUpFormFields } from "config/formfields";
 import { UserSchema } from "config/schema";
+import useLoggedInUser from "hooks/useLoggedInUser";
 import { useState } from "react";
 import { FiEdit2 } from "react-icons/fi";
 import { IoArrowDown } from "react-icons/io5";
-import LocalStorageService from "services/LocalStorageService";
 import UserService from "services/UserService";
 import { userCurrency } from "utils";
 
 export const MemberTable = (props) => {
 	const [record, setRecord] = useState(null);
-	const user = LocalStorageService.getItem("user");
+	const loggedInUser = useLoggedInUser();
 	const [userFormInitialValues, setUserFormInitialValues] = useState(null);
 
 	const { isOpen, onOpen, onClose } = useDisclosure();
@@ -61,7 +61,7 @@ export const MemberTable = (props) => {
 			const updateData = await UserService.updateUserById(
 				record._id,
 				values,
-				user?.token,
+				loggedInUser?.token,
 			);
 			if (updateData) {
 				props.update(true);

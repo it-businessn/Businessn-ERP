@@ -21,8 +21,8 @@ const TabGroup = ({
 				{data.map((tab, index) => (
 					<Tab
 						key={tab[id] || index}
-						bg={currentTab === index ? "brand.primary_button_bg" : undefined}
-						color={currentTab === index ? "brand.100" : undefined}
+						bg={currentTab === index ? "var(--primary_button_bg)" : undefined}
+						color={currentTab === index ? "var(--main_color)" : undefined}
 					>
 						{isCompanyPanel ? tab.type : tab.name}
 					</Tab>

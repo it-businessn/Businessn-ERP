@@ -142,7 +142,7 @@ const Payouts = () => {
 				<SimpleGrid columns={{ base: 1, md: 2 }} spacing="5">
 					<Box
 						p="1em"
-						bg={"brand.primary_bg"}
+						bg={"var(--primary_bg)"}
 						border="3px solid var(--main_color)"
 						borderRadius="10px"
 						fontWeight="bold"
@@ -171,7 +171,7 @@ const Payouts = () => {
 					</Box>
 					<Box
 						p="1em"
-						bg={"brand.primary_bg"}
+						bg={"var(--primary_bg)"}
 						border="3px solid var(--main_color)"
 						borderRadius="10px"
 						fontWeight="bold"
@@ -201,9 +201,9 @@ const Payouts = () => {
 				</SimpleGrid>
 
 				<Box
-					color={"brand.nav_color"}
+					color={"var(--nav_color)"}
 					p="1em"
-					bg={"brand.primary_bg"}
+					bg={"var(--primary_bg)"}
 					border="3px solid var(--main_color)"
 					borderRadius="10px"
 					fontWeight="bold"
@@ -211,7 +211,7 @@ const Payouts = () => {
 					<Flex
 						justify="space-between"
 						align="center"
-						color={"brand.nav_color"}
+						color={"var(--nav_color)"}
 					>
 						<Text fontWeight="bold">Key Metrics of Sales</Text>
 						<Select width="100px" border={"none"} fontSize={"xs"}>
@@ -226,10 +226,10 @@ const Payouts = () => {
 			</SimpleGrid>
 			<Box
 				p="1em"
-				bg={"brand.primary_bg"}
+				bg={"var(--primary_bg)"}
 				border="2px solid var(--main_color)"
 				borderRadius="10px"
-				color={"brand.nav_color"}
+				color={"var(--nav_color)"}
 			>
 				{isMobile ? (
 					<Flex flexDir="column">
@@ -238,13 +238,13 @@ const Payouts = () => {
 						</Flex>
 						<HStack spacing="1em" mt="1em">
 							<Button
-								color={"brand.nav_color"}
+								color={"var(--nav_color)"}
 								leftIcon={<MdOutlineFilterList />}
 								border={"2px solid var(--filter_border_color)"}
 								borderRadius={"10px"}
 								variant={"ghost"}
 								size={"xs"}
-								_hover={{ color: "brand.600", bg: "transparent" }}
+								_hover={{ color: "var(--main_color_black)", bg: "transparent" }}
 							>
 								Filter
 							</Button>
@@ -258,11 +258,11 @@ const Payouts = () => {
 								<InputLeftElement children={<FaSearch />} />
 								<Input
 									_placeholder={{
-										color: "brand.nav_color",
+										color: "var(--nav_color)",
 										fontSize: "xs",
 									}}
-									color={"brand.nav_color"}
-									bg={"brand.primary_bg"}
+									color={"var(--nav_color)"}
+									bg={"var(--primary_bg)"}
 									type="text"
 									placeholder="Search here"
 									pr="4.5rem"
@@ -277,13 +277,13 @@ const Payouts = () => {
 						<Spacer />
 						<HStack w={{ lg: "50%" }} spacing={3} justify={"flex-end"}>
 							<Button
-								color={"brand.nav_color"}
+								color={"var(--nav_color)"}
 								leftIcon={<MdOutlineFilterList />}
 								border={"2px solid var(--filter_border_color)"}
 								borderRadius={"10px"}
 								variant={"ghost"}
 								size={"xs"}
-								_hover={{ color: "brand.600", bg: "transparent" }}
+								_hover={{ color: "var(--main_color_black)", bg: "transparent" }}
 								ml={2}
 							>
 								Filter
@@ -299,11 +299,11 @@ const Payouts = () => {
 								<InputLeftElement children={<FaSearch />} />
 								<Input
 									_placeholder={{
-										color: "brand.nav_color",
+										color: "var(--nav_color)",
 										fontSize: "xs",
 									}}
-									color={"brand.nav_color"}
-									bg={"brand.primary_bg"}
+									color={"var(--nav_color)"}
+									bg={"var(--primary_bg)"}
 									type="text"
 									placeholder="Search here"
 									pr="4.5rem"
@@ -317,7 +317,7 @@ const Payouts = () => {
 				{/* {!contacts && <Loader />} */}
 				{payouts && (
 					<Box overflow="auto" h={"50vh"}>
-						<Table color={"brand.nav_color"} bg={"brand.primary_bg"}>
+						<Table color={"var(--nav_color)"} bg={"var(--primary_bg)"}>
 							<Thead>
 								<Tr fontSize="xs">
 									<Th fontWeight={"bolder"} p={0}>
@@ -330,7 +330,7 @@ const Payouts = () => {
 									<Th p={0}></Th>
 								</Tr>
 							</Thead>
-							<Tbody color={"brand.nav_color"}>
+							<Tbody color={"var(--nav_color)"}>
 								{payouts.map((payout) => (
 									<Tr key={payout.salesId}>
 										<Td fontSize={"xs"} p={0}>

@@ -171,7 +171,7 @@ const GroupsPanel = ({
 	return (
 		<Box
 			p="1em"
-			bg={"brand.primary_bg"}
+			bg={"var(--primary_bg)"}
 			border="3px solid var(--main_color)"
 			borderRadius="10px"
 			fontWeight="bold"
@@ -221,11 +221,11 @@ const GroupsPanel = ({
 						</FormLabel>
 						<Button
 							rightIcon={<FaCaretDown />}
-							bg={"brand.primary_bg"}
-							color={"brand.primary_button_bg"}
+							bg={"var(--primary_bg)"}
+							color={"var(--primary_button_bg)"}
 							_hover={{
-								bg: "brand.primary_bg",
-								color: "brand.primary_button_bg",
+								bg: "var(--primary_bg)",
+								color: "var(--primary_button_bg)",
 							}}
 						>
 							{openModuleMenu ? (
@@ -253,11 +253,11 @@ const GroupsPanel = ({
 						</FormLabel>
 						<Button
 							rightIcon={<FaCaretDown />}
-							bg={"brand.primary_bg"}
-							color={"brand.primary_button_bg"}
+							bg={"var(--primary_bg)"}
+							color={"var(--primary_button_bg)"}
 							_hover={{
-								bg: "brand.primary_bg",
-								color: "brand.primary_button_bg",
+								bg: "var(--primary_bg)",
+								color: "var(--primary_button_bg)",
 							}}
 						>
 							{openAdminMenu ? (
@@ -281,7 +281,7 @@ const GroupsPanel = ({
 			</HStack>
 			<Box
 				p="1em"
-				bg={"brand.primary_bg"}
+				bg={"var(--primary_bg)"}
 				border="3px solid var(--main_color)"
 				borderRadius="10px"
 			>

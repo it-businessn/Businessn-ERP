@@ -139,8 +139,14 @@ const Contacts = () => {
 								{tabList.map((tab, index) => (
 									<Tab
 										key={tab.id}
-										bg={currentTab === tab.id ? "brand.600" : undefined}
-										color={currentTab === tab.id ? "brand.100" : undefined}
+										bg={
+											currentTab === tab.id
+												? "var(--main_color_black)"
+												: undefined
+										}
+										color={
+											currentTab === tab.id ? "var(--main_color)" : undefined
+										}
 									>
 										{tab.name}
 									</Tab>

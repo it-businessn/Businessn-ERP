@@ -3,7 +3,7 @@ import { Box, Container, Stack } from "@chakra-ui/react";
 const CenterBoxLayout = (props) => {
 	return (
 		<Box
-			bg={"brand.logo_bg"}
+			bg={"var(--logo_bg)"}
 			py={{
 				base: "12",
 				md: "24",
@@ -13,7 +13,7 @@ const CenterBoxLayout = (props) => {
 			alignItems="center"
 		>
 			<Container
-				bg={"brand.100"}
+				bg={"var(--main_color)"}
 				maxW="md"
 				py={{
 					base: "0",

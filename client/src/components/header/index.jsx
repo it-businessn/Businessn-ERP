@@ -108,9 +108,9 @@ const Navbar = ({ handleClick, handleLogout, onOpen, tabs, user }) => {
 			pr={3}
 			position="fixed"
 			width="100%"
-			color="brand.nav_color"
+			color="var(--nav_color)"
 			zIndex={1}
-			bg="brand.nav_gradient"
+			bg="var(--nav_gradient)"
 		>
 			{isMobile && (
 				<HStack>
@@ -123,7 +123,7 @@ const Navbar = ({ handleClick, handleLogout, onOpen, tabs, user }) => {
 					<IconButton
 						icon={<HamburgerIcon />}
 						aria-label="Open Sidebar"
-						color="brand.600"
+						color="var(--main_color_black)"
 						onClick={() => onOpen()}
 					/>
 				)}

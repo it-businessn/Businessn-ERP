@@ -71,7 +71,7 @@ const createContact = async (req, res) => {
 };
 
 const updateContact = async (req, res) => {
-	const contactId = req.params.id;
+	const { contactId } = req.params;
 
 	try {
 		const updatedContact = await Contact.findByIdAndUpdate(

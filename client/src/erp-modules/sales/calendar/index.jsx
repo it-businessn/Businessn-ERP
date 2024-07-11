@@ -1,6 +1,7 @@
 import { Box, Button, Flex, HStack, Spacer } from "@chakra-ui/react";
 import PrimaryButton from "components/ui/button/PrimaryButton";
 import TextTitle from "components/ui/text/TextTitle";
+import useLoggedInUser from "hooks/useLoggedInUser";
 import moment from "moment-timezone";
 import { useEffect, useState } from "react";
 import { Calendar as BigCalendar, momentLocalizer } from "react-big-calendar";
@@ -22,7 +23,7 @@ const Calendar = () => {
 
 	const [isLoading, setIsLoading] = useState(false);
 	const [isRefresh, setIsRefresh] = useState(false);
-	const user = LocalStorageService.getItem("user");
+	const loggedInUser = useLoggedInUser();
 	// const checkClassExists = () => {
 	// 	const element = document.querySelector(".rbc-show-more");
 
@@ -59,8 +60,8 @@ const Calendar = () => {
 				const response = await CalendarService.getCompEvents(company);
 				const filterData = response.data?.filter(
 					(event) =>
-						event.meetingAttendees.includes(user?.fullName) ||
-						event.createdBy === user?._id,
+						event.meetingAttendees.includes(loggedInUser?.fullName) ||
+						event.createdBy === loggedInUser?._id,
 				);
 				filterData.map((event) => {
 					event.fromDate = getTimezone(event.fromDate);
@@ -160,7 +161,7 @@ const Calendar = () => {
 						border={"2px solid var(--filter_border_color)"}
 						borderRadius={"10px"}
 						variant={"ghost"}
-						_hover={{ color: "brand.600", bg: "transparent" }}
+						_hover={{ color: "var(--main_color_black)", bg: "transparent" }}
 					>
 						{toolbar.label}
 					</Button>
@@ -193,7 +194,7 @@ const Calendar = () => {
 				leftIcon={<FaClock />}
 				size="xs"
 				variant={"ghost"}
-				_hover={{ color: "brand.600", bg: "transparent" }}
+				_hover={{ color: "var(--main_color_black)", bg: "transparent" }}
 			>
 				{moment(event.start).format("h:mm A")} -
 				{moment(event.end).format("h:mm A")}
@@ -206,7 +207,7 @@ const Calendar = () => {
 			{events && (
 				<Box
 					px={{ base: "0", md: "1em" }}
-					bg={"brand.primary_bg"}
+					bg={"var(--primary_bg)"}
 					border="2px solid var(--main_color)"
 					borderRadius="10px"
 				>
@@ -237,7 +238,7 @@ const Calendar = () => {
 				</Box>
 			)}
 			<AddEvent
-				user={user}
+				user={loggedInUser}
 				isEdit={showEditDetails}
 				setIsRefresh={setIsRefresh}
 				isLoading={isLoading}

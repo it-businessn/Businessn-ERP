@@ -139,9 +139,9 @@ const SalesChart = ({ company, selectedUser, user }) => {
 				BAR_DATA.map((bar) => (
 					<Box
 						key={bar.title}
-						color={"brand.nav_color"}
+						color={"var(--nav_color)"}
 						px="1em"
-						bg={"brand.primary_bg"}
+						bg={"var(--primary_bg)"}
 						border="3px solid var(--main_color)"
 						borderRadius="10px"
 						fontWeight="bold"
@@ -151,7 +151,7 @@ const SalesChart = ({ company, selectedUser, user }) => {
 						justify="space-between"
 						align="center"
 						mb="1"
-						color={"brand.nav_color"}
+						color={"var(--nav_color)"}
 						w={{ base: "auto", md: "103%" }}
 					>
 					<TextTitle title={bar.title} mt={2} mb={2} />

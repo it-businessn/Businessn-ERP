@@ -32,7 +32,7 @@ const SelectList = ({
 			icon={<Icon as={isRight ? FaCaretRight : FaCaretDown} />}
 			borderRadius={"10px"}
 			size={"sm"}
-			color={"brand.primary_button_bg"}
+			color={"var(--primary_button_bg)"}
 			bg={generateLighterShade(bg_color, 0.9)}
 			border={`1px solid var(--primary_button_bg)`}
 			value={value}

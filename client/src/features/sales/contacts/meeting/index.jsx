@@ -176,7 +176,7 @@ const Meetings = ({ contactId }) => {
 					isDisabled={formData.description === ""}
 					mt={4}
 					onClick={handleSubmit}
-					bg="brand.logo_bg"
+					bg="var(--logo_bg)"
 				>
 					Add Meeting
 				</Button>

@@ -130,7 +130,7 @@ const LeftPane = ({ selectedUser, setStats, company, user }) => {
 				mb={"1em"}
 				columns={{ base: 1, md: 2, lg: 4 }}
 				spacing="1em"
-				color={"brand.200"}
+				color={"var(--menu_item_color)"}
 			>
 				<SalesCard
 					opportunities={opportunities}
@@ -145,8 +145,8 @@ const LeftPane = ({ selectedUser, setStats, company, user }) => {
 			<SimpleGrid columns={{ base: 1, md: 1, lg: 1 }} spacing="4" mt="4">
 				<Box
 					px="1em"
-					color={"brand.nav_color"}
-					bg={"brand.primary_bg"}
+					color={"var(--nav_color)"}
+					bg={"var(--primary_bg)"}
 					border="3px solid var(--main_color)"
 					borderRadius="10px"
 					fontWeight="bold"

@@ -42,10 +42,10 @@ const EmployeesList = () => {
 			<TextTitle title={"Employees"} mb={"0.5em"} />
 			<Box
 				p="1em"
-				bg={"brand.primary_bg"}
+				bg={"var(--primary_bg)"}
 				border="2px solid var(--main_color)"
 				borderRadius="10px"
-				color={"brand.nav_color"}
+				color={"var(--nav_color)"}
 			>
 				{isMobile ? (
 					<Flex flexDir="column">
@@ -54,9 +54,9 @@ const EmployeesList = () => {
 							{/* <Button
 								bg="var(--primary_button_bg)"
 								size="xs"
-								color={"brand.primary_bg"}
+								color={"var(--primary_bg)"}
 								variant={"solid"}
-								_hover={{ color: "brand.600" }}
+								_hover={{ color: "var(--main_color_black)" }}
 								borderRadius={"10px"}
 							>
 								Add new employee
@@ -64,12 +64,12 @@ const EmployeesList = () => {
 						</Flex>
 						<HStack spacing="1em" mt="1em">
 							<Button
-								color={"brand.nav_color"}
+								color={"var(--nav_color)"}
 								leftIcon={<MdOutlineFilterList />}
 								border={"2px solid var(--filter_border_color)"}
 								borderRadius={"10px"}
 								variant={"ghost"}
-								_hover={{ color: "brand.600", bg: "transparent" }}
+								_hover={{ color: "var(--main_color_black)", bg: "transparent" }}
 							>
 								Filter
 							</Button>
@@ -82,11 +82,11 @@ const EmployeesList = () => {
 								<InputLeftElement children={<FaSearch />} />
 								<Input
 									_placeholder={{
-										color: "brand.nav_color",
+										color: "var(--nav_color)",
 										fontSize: "sm",
 									}}
-									color={"brand.nav_color"}
-									bg={"brand.primary_bg"}
+									color={"var(--nav_color)"}
+									bg={"var(--primary_bg)"}
 									type="text"
 									placeholder="Search here"
 									pr="4.5rem"
@@ -100,13 +100,13 @@ const EmployeesList = () => {
 						<Spacer />
 						<HStack w={{ lg: "50%" }} spacing={3} justify={"flex-end"}>
 							<Button
-								color={"brand.nav_color"}
+								color={"var(--nav_color)"}
 								size="xs"
 								leftIcon={<MdOutlineFilterList />}
 								border={"2px solid var(--filter_border_color)"}
 								borderRadius={"10px"}
 								variant={"ghost"}
-								_hover={{ color: "brand.600", bg: "transparent" }}
+								_hover={{ color: "var(--main_color_black)", bg: "transparent" }}
 								ml={2}
 							>
 								Filter
@@ -123,11 +123,11 @@ const EmployeesList = () => {
 								<Input
 									size="xs"
 									_placeholder={{
-										color: "brand.nav_color",
+										color: "var(--nav_color)",
 										fontSize: "sm",
 									}}
-									color={"brand.nav_color"}
-									bg={"brand.primary_bg"}
+									color={"var(--nav_color)"}
+									bg={"var(--primary_bg)"}
 									type="text"
 									placeholder="Search here"
 									pr="4.5rem"
@@ -137,9 +137,9 @@ const EmployeesList = () => {
 							{/* <Button
 								bg="var(--primary_button_bg)"
 								size="xs"
-								color={"brand.primary_bg"}
+								color={"var(--primary_bg)"}
 								variant={"solid"}
-								_hover={{ color: "brand.600" }}
+								_hover={{ color: "var(--main_color_black)" }}
 								borderRadius={"10px"}
 							>
 								Add new employee
@@ -150,8 +150,8 @@ const EmployeesList = () => {
 				{employees && (
 					<Box overflow="auto">
 						<Table
-							color={"brand.nav_color"}
-							bg={"brand.primary_bg"}
+							color={"var(--nav_color)"}
+							bg={"var(--primary_bg)"}
 							size={"small"}
 						>
 							<Thead>
@@ -173,7 +173,7 @@ const EmployeesList = () => {
 									</Th>
 								</Tr>
 							</Thead>
-							<Tbody color={"brand.nav_color"}>
+							<Tbody color={"var(--nav_color)"}>
 								{employees.map((emp) => (
 									<Tr key={emp._id}>
 										<Td fontSize={"sm"} p={0}>

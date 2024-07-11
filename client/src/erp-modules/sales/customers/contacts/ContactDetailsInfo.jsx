@@ -101,7 +101,7 @@ const ContactDetailsInfo = ({ contact, showLogForm }) => {
 				<Avatar
 					name=" "
 					size="lg"
-					bg="brand.primary_button_bg"
+					bg="var(--primary_button_bg)"
 					position="relative"
 				>
 					<FaBuilding className="header-logo" />
@@ -121,7 +121,7 @@ const ContactDetailsInfo = ({ contact, showLogForm }) => {
 						icon={icon}
 						aria-label={title}
 						size={"xs"}
-						bg="brand.primary_button_bg"
+						bg="var(--primary_button_bg)"
 						borderRadius="full"
 						onClick={onClick}
 					/>
@@ -152,9 +152,9 @@ const ContactDetailsInfo = ({ contact, showLogForm }) => {
 							</React.Fragment>
 						))}
 
-						{/* <Text color="brand.400">Website :</Text>
+						{/* <Text color="var(--gray2_color)">Website :</Text>
 						<Text mb="2">{contact?.revenue}</Text>
-						<Text color="brand.400">Employees:</Text>
+						<Text color="var(--gray2_color)">Employees:</Text>
 						<Text mb="2">{contact?.employees}</Text> */}
 					</Box>
 				</Collapse>
@@ -179,7 +179,7 @@ const ContactDetailsInfo = ({ contact, showLogForm }) => {
 								</React.Fragment>
 							))}
 
-							{/* <Text color="brand.400">Business Address:</Text>
+							{/* <Text color="var(--gray2_color)">Business Address:</Text>
 							<Text mb="2">{contact?.primaryContactAddress}</Text> */}
 						</Box>
 					)}

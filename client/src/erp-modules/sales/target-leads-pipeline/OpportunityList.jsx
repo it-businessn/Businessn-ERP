@@ -20,7 +20,7 @@ const OpportunityList = ({ opportunities, onEdit }) => {
 				<Box key={opp.opportunityName} borderWidth="1px" p={4} mb={4}>
 					<Text>{opp.opportunityName}</Text>
 					<Text>Client: {opp.clientName}</Text>
-					<Button bg="brand.logo_bg" onClick={() => onEdit(opp)}>
+					<Button bg="var(--logo_bg)" onClick={() => onEdit(opp)}>
 						Edit
 					</Button>
 				</Box>

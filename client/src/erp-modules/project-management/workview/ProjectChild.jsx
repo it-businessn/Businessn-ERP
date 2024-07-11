@@ -93,7 +93,7 @@ const ProjectChild = ({
 							<IconButton
 								variant="ghost"
 								icon={<SettingsIcon />}
-								color="brand.nav_color"
+								color="var(--nav_color)"
 								aria-label="Settings Icon"
 								onClick={() => handleEditTask(task, task._id)}
 							/>
@@ -103,7 +103,7 @@ const ProjectChild = ({
 									onClick={handleToggle}
 									variant="ghost"
 									icon={<FaChevronDown />}
-									color="brand.nav_color"
+									color="var(--nav_color)"
 									aria-label="Calendar Icon"
 								/>
 							)}

@@ -22,7 +22,7 @@ const LoginCover = () => {
 		>
 			<DarkMode>
 				<Flex
-					bg="brand.logo_bg"
+					bg="var(--logo_bg)"
 					direction="column"
 					px={{
 						base: "4",

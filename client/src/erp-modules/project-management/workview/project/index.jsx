@@ -54,8 +54,8 @@ const ProjectTable = ({ projects, setRefresh, managers, company }) => {
 				<Spacer />
 				<Button
 					onClick={handleAddProject}
-					color={"brand.100"}
-					bg={"brand.primary_button_bg"}
+					color={"var(--main_color)"}
+					bg={"var(--primary_button_bg)"}
 					borderRadius={"8px"}
 					size={"sm"}
 					px={"2em"}
@@ -73,7 +73,7 @@ const ProjectTable = ({ projects, setRefresh, managers, company }) => {
 					company={company}
 				/>
 			)}
-			<Table color={"brand.nav_color"} bg={"brand.primary_bg"}>
+			<Table color={"var(--nav_color)"} bg={"var(--primary_bg)"}>
 				<Thead>
 					<Tr display={"flex"} alignItems={"center"}>
 						{PROJECT_TABLE_CELLS.map(({ name, width }) => (

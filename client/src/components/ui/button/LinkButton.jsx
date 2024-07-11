@@ -7,7 +7,7 @@ const LinkButton = ({ name, onClick, fontSize, textDecor, flex, p }) => {
 			p={p}
 			fontSize={fontSize}
 			textDecor={textDecor}
-			color={"brand.primary_button_bg"}
+			color={"var(--primary_button_bg)"}
 			onClick={onClick}
 			variant={"link"}
 		>

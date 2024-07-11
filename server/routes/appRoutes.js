@@ -19,7 +19,7 @@ router.put("/change-password/:id", appController.changePassword);
 // router.post("/register", userController.createUser);
 // router.post("/send-verification-email", sendVerificationCode);
 // router.post("/verify-email", verifyUser);
-// router.put( "/change-password/:id", authMiddleware.authenticate,userController.changePassword);
+// router.put( "/change-password/:userId", authMiddleware.authenticate,userController.changePassword);
 // router.put("/:id", userController.updateUser);
 // router.put("/lead/:id", userController.updateUserAssignedLeads);
 

@@ -70,7 +70,7 @@ const ForgotPassword = () => {
 										required
 									/>
 								</FormControl>
-								<Button type="submit" bg="brand.logo_bg">
+								<Button type="submit" bg="var(--logo_bg)">
 									Continue with email
 								</Button>
 							</Stack>
@@ -80,7 +80,7 @@ const ForgotPassword = () => {
 						<>
 							<Text color="green">{captionTitle}</Text>
 							<Link to="/">
-								<Button width="100%" bg="brand.logo_bg">
+								<Button width="100%" bg="var(--logo_bg)">
 									Back to Login
 								</Button>
 							</Link>

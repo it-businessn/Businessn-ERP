@@ -144,7 +144,7 @@ const TaskTable = ({
 								<IconButton
 									variant="ghost"
 									icon={<FaChevronDown />}
-									color="brand.nav_color"
+									color="var(--nav_color)"
 									aria-label="Calendar Icon"
 								/>
 							</HStack>
@@ -239,8 +239,8 @@ const TaskTable = ({
 				<Spacer />
 				<Button
 					onClick={handleAddTask}
-					color={"brand.100"}
-					bg={"brand.primary_button_bg"}
+					color={"var(--main_color)"}
+					bg={"var(--primary_button_bg)"}
 					borderRadius={"8px"}
 					size={"sm"}
 					px={"2em"}
@@ -279,7 +279,11 @@ const TaskTable = ({
 				task={task}
 			/>
 			<Box overflow="auto">
-				<Table color={"brand.nav_color"} bg={"brand.primary_bg"} size={"small"}>
+				<Table
+					color={"var(--nav_color)"}
+					bg={"var(--primary_bg)"}
+					size={"small"}
+				>
 					<Thead>
 						<Tr>
 							<Th>{/* <Checkbox sx={{ verticalAlign: "middle" }} /> */}</Th>

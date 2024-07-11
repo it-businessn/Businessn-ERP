@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
 import LocalStorageService from "services/LocalStorageService";
 import UserService from "services/UserService";
+import useLoggedInUser from "./useLoggedInUser";
 
 const useFetchData = () => {
-	const user = LocalStorageService.getItem("user");
+	const user = useLoggedInUser();
 
 	const [employees, setEmployees] = useState(null);
 	const [company, setCompany] = useState(

@@ -20,7 +20,7 @@ const Contest = () => {
 				<Box
 					key={item}
 					p="0.5em 1em"
-					bg={"brand.primary_bg"}
+					bg={"var(--primary_bg)"}
 					border="3px solid var(--main_color)"
 					borderRadius="10px"
 				>
@@ -32,7 +32,7 @@ const Contest = () => {
 							<Box
 								key={item}
 								p="1em"
-								bg={"brand.primary_bg"}
+								bg={"var(--primary_bg)"}
 								border="3px solid var(--main_color)"
 								borderRadius="10px"
 								fontWeight="bold"
@@ -73,7 +73,7 @@ const Contest = () => {
 					<Box
 						mt={"1em"}
 						p="1em"
-						bg={"brand.primary_bg"}
+						bg={"var(--primary_bg)"}
 						border="3px solid var(--main_color)"
 						borderRadius="10px"
 						fontWeight="bold"
@@ -117,7 +117,7 @@ const Contest = () => {
 					<Box
 						mt={"1em"}
 						p="1em"
-						bg={"brand.primary_bg"}
+						bg={"var(--primary_bg)"}
 						border="3px solid var(--main_color)"
 						borderRadius="10px"
 						fontWeight="bold"

@@ -1,22 +1,22 @@
 import SectionLayout from "components/ui/SectionLayout";
 import TabsButtonGroup from "components/ui/tab/TabsButtonGroup";
+import useLoggedInUser from "hooks/useLoggedInUser";
 import { useEffect, useState } from "react";
-import LocalStorageService from "services/LocalStorageService";
 import TimesheetService from "services/TimesheetService";
 import { isManager } from "utils";
 import Timecard from "./Timecard";
 import Timesheet from "./Timesheet";
 
 const Timesheets = () => {
-	const user = LocalStorageService.getItem("user");
-	const isManagerView = isManager(user?.role);
+	const loggedInUser = useLoggedInUser();
+	const isManagerView = isManager(loggedInUser?.role);
 	const [timesheets, setTimesheets] = useState(null);
 
 	const fetchAllEmployeeTimesheet = async () => {
 		try {
 			const response = isManagerView
 				? await TimesheetService.getTimesheets()
-				: await TimesheetService.getTimesheetById(user?._id);
+				: await TimesheetService.getTimesheetById(loggedInUser?._id);
 			setTimesheets(response.data);
 		} catch (error) {
 			console.error(error);

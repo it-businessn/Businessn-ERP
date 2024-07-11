@@ -72,7 +72,10 @@ const EditContact = () => {
 								</Text>
 								<Text fontWeight="bold">Client: {contact.companyName}</Text>
 								<Spacer />
-								<Button bg="brand.logo_bg" onClick={() => editContact(contact)}>
+								<Button
+									bg="var(--logo_bg)"
+									onClick={() => editContact(contact)}
+								>
 									Edit
 								</Button>
 							</HStack>

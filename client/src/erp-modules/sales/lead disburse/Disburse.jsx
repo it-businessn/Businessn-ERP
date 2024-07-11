@@ -10,7 +10,7 @@ const Disburse = ({ leads, checkedRows, handleDisburse }) => {
 			bg={generateLighterShade(COLORS.primary, 0.9)}
 			color={"var(--primary_button_bg)"}
 			variant={"outlined"}
-			_hover={{ color: "brand.600" }}
+			_hover={{ color: "var(--main_color_black)" }}
 			borderRadius={"10px"}
 			border={`1px solid var(--primary_button_bg)`}
 			onClick={handleDisburse}

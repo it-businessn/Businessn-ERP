@@ -186,7 +186,7 @@ const LeadsDocket = () => {
 						/>
 						<Region />
 						<LeftIconButton
-							color={"brand.nav_color"}
+							color={"var(--nav_color)"}
 							border={"2px solid var(--filter_border_color)"}
 							name={"Filter"}
 							borderRadius={"10px"}
@@ -211,11 +211,11 @@ const LeadsDocket = () => {
 								w={{ lg: "200px" }}
 								size="xs"
 								_placeholder={{
-									color: "brand.nav_color",
+									color: "var(--nav_color)",
 									fontSize: "xs",
 								}}
-								color={"brand.nav_color"}
-								bg={"brand.primary_bg"}
+								color={"var(--nav_color)"}
+								bg={"var(--primary_bg)"}
 								type="text"
 								placeholder="Search here"
 								pr="4.5rem"
@@ -306,7 +306,7 @@ const LeadsDocket = () => {
 											display={"flex"}
 											variant="ghost"
 											fontWeight={"bold"}
-											color="brand.nav_color"
+											color="var(--nav_color)"
 										>
 											<DeleteIcon />
 										</Button>

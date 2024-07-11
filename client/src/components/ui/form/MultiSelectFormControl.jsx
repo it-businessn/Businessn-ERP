@@ -22,11 +22,11 @@ const MultiSelectFormControl = ({
 			</FormLabel>
 			<Button
 				rightIcon={<FaCaretDown />}
-				bg={"brand.primary_bg"}
-				color={"brand.primary_button_bg"}
+				bg={"var(--primary_bg)"}
+				color={"var(--primary_button_bg)"}
 				_hover={{
-					bg: "brand.primary_bg",
-					color: "brand.primary_button_bg",
+					bg: "var(--primary_bg)",
+					color: "var(--primary_button_bg)",
 				}}
 			>
 				{showMultiSelect ? (

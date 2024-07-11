@@ -47,16 +47,16 @@ const PayrollStageContent = ({ currentStep, steps }) => {
 	};
 	return (
 		<Box
-			color={"brand.nav_color"}
+			color={"var(--nav_color)"}
 			p="1em"
-			bg={"brand.primary_bg"}
+			bg={"var(--primary_bg)"}
 			border="3px solid var(--main_color)"
 			borderRadius="10px"
 		>
 			<Box
-				color={"brand.nav_color"}
+				color={"var(--nav_color)"}
 				p="1em"
-				bg={"brand.primary_bg"}
+				bg={"var(--primary_bg)"}
 				border="3px solid var(--main_color)"
 				borderRadius="10px"
 			>
@@ -85,9 +85,9 @@ const PayrollStageContent = ({ currentStep, steps }) => {
 				</Collapse>
 			</Box>
 			<Box
-				color={"brand.nav_color"}
+				color={"var(--nav_color)"}
 				p="1em"
-				bg={"brand.primary_bg"}
+				bg={"var(--primary_bg)"}
 				border="3px solid var(--main_color)"
 				borderRadius="10px"
 			>
@@ -115,9 +115,9 @@ const PayrollStageContent = ({ currentStep, steps }) => {
 				</Collapse>
 			</Box>
 			<Box
-				color={"brand.nav_color"}
+				color={"var(--nav_color)"}
 				p="1em"
-				bg={"brand.primary_bg"}
+				bg={"var(--primary_bg)"}
 				border="3px solid var(--main_color)"
 				borderRadius="10px"
 			>
@@ -145,9 +145,9 @@ const PayrollStageContent = ({ currentStep, steps }) => {
 				</Collapse>
 			</Box>
 			<Box
-				color={"brand.nav_color"}
+				color={"var(--nav_color)"}
 				p="1em"
-				bg={"brand.primary_bg"}
+				bg={"var(--primary_bg)"}
 				border="3px solid var(--main_color)"
 				borderRadius="10px"
 			>
@@ -175,9 +175,9 @@ const PayrollStageContent = ({ currentStep, steps }) => {
 				</Collapse>
 			</Box>
 			<Box
-				color={"brand.nav_color"}
+				color={"var(--nav_color)"}
 				p="1em"
-				bg={"brand.primary_bg"}
+				bg={"var(--primary_bg)"}
 				border="3px solid var(--main_color)"
 				borderRadius="10px"
 			>

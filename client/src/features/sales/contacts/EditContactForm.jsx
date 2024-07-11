@@ -185,7 +185,7 @@ const EditContactForm = ({ selectedContact, onSave, onCancel }) => {
 						</Stack>
 					</HStack>
 					<HStack>
-						<Button bg="brand.logo_bg" onClick={handleSave}>
+						<Button bg="var(--logo_bg)" onClick={handleSave}>
 							Save
 						</Button>
 						<Button colorScheme="gray" ml={2} onClick={onCancel}>

@@ -13,8 +13,8 @@ const PrimaryButton = ({
 	flex,
 	mt,
 	rightIcon,
-	bg = "brand.primary_button_bg",
-	color = "brand.primary_bg",
+	bg = "var(--primary_button_bg)",
+	color = "var(--primary_bg)",
 }) => {
 	return (
 		<Button
@@ -28,7 +28,7 @@ const PrimaryButton = ({
 			px={{ base: px ? px : "2em" }}
 			color={color}
 			_hover={{
-				color: "brand.600",
+				color: "var(--main_color_black)",
 				bg: "transparent",
 				border: "1px solid var(--primary_button_bg)",
 			}}

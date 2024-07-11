@@ -294,7 +294,7 @@ const AddNewActivity = ({
 									<Button
 										isLoading={isSubmitting}
 										type="submit"
-										bg="brand.logo_bg"
+										bg="var(--logo_bg)"
 										isDisabled={formData.taskName === ""}
 									>
 										Add

@@ -21,6 +21,7 @@ import { PersonalInfoCard } from "components";
 import { signUpFormFields } from "config/formfields";
 import { UserSchema } from "config/schema";
 import { TOAST } from "constant";
+import useLoggedInUser from "hooks/useLoggedInUser";
 import { FilterMatchMode, FilterOperator } from "primereact/api";
 import { Column } from "primereact/column";
 import { DataTable } from "primereact/datatable";
@@ -29,12 +30,11 @@ import "primereact/resources/primereact.min.css";
 import "primereact/resources/themes/lara-light-indigo/theme.css";
 import { useEffect, useState } from "react";
 import { FiEdit2 } from "react-icons/fi";
-import LocalStorageService from "services/LocalStorageService";
 import UserService from "services/UserService";
 import { userCurrency } from "utils";
 
 const UserList = ({ employees }) => {
-	const user = LocalStorageService.getItem("user");
+	const loggedInUser = useLoggedInUser();
 	const { isOpen, onOpen, onClose } = useDisclosure();
 	const [users, setMembers] = useState(employees);
 	const [record, setRecord] = useState(null);
@@ -45,7 +45,7 @@ const UserList = ({ employees }) => {
 			const updateData = await UserService.updateUserById(
 				values,
 				record._id,
-				user.token,
+				loggedInUser.token,
 			);
 			toast(TOAST.SUCCESS);
 			onClose();

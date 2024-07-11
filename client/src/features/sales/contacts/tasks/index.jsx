@@ -92,7 +92,7 @@ const Tasks = ({ contactId }) => {
 					<Button
 						mt={4}
 						isDisabled={taskName === ""}
-						bg="brand.logo_bg"
+						bg="var(--logo_bg)"
 						onClick={handleAddTask}
 					>
 						Add Task
@@ -108,7 +108,7 @@ const Tasks = ({ contactId }) => {
 								<Card key={task} borderWidth="1px" borderRadius="lg" w="100%">
 									<CardBody>
 										<VStack alignItems="start" spacing={4}>
-											<Badge bg="brand.logo_bg">{task.status}</Badge>
+											<Badge bg="var(--logo_bg)">{task.status}</Badge>
 											<Flex w={"100%"}>
 												<HStack spacing={4} w="70%">
 													<Checkbox
@@ -119,13 +119,13 @@ const Tasks = ({ contactId }) => {
 														}
 														borderRadius="full"
 														borderColor="brand.logo_b"
-														iconColor="brand.logo_bg"
+														iconColor="var(--logo_bg)"
 														size="md"
 													/>
 													<Text>{task.name}</Text>
 												</HStack>
 												<Spacer />
-												<Text color="brand.400">
+												<Text color="var(--gray2_color)">
 													Due Date:
 													{moment(task?.dueDate).format(
 														"MMM DD, YYYY hh:mm A Z",

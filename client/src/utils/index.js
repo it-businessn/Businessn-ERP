@@ -263,7 +263,7 @@ export const TaskButton = ({ totalTasks, onClick, isTask, isExpanded }) => {
 			display={"flex"}
 			p={"2px"}
 			fontSize={"12px"}
-			color={"brand.primary_button_bg"}
+			color={"var(--primary_button_bg)"}
 			border={`1px solid ${generateLighterShade(COLORS.primary, 0.5)}`}
 			bg={generateLighterShade(COLORS.primary, 0.8)}
 			leftIcon={
@@ -277,7 +277,7 @@ export const TaskButton = ({ totalTasks, onClick, isTask, isExpanded }) => {
 			}
 			_hover={{
 				bg: generateLighterShade(COLORS.primary, 0.8),
-				color: "brand.primary_button_bg",
+				color: "var(--primary_button_bg)",
 			}}
 		>
 			{`${totalTasks} T`}
@@ -312,7 +312,7 @@ export const AddTaskButton = ({
 							border={`1px solid ${generateLighterShade(COLORS.primary, 0.5)}`}
 							_hover={{
 								bg: generateLighterShade(COLORS.primary, 0.8),
-								color: "brand.nav_color",
+								color: "var(--nav_color)",
 							}}
 						>
 							<AddIcon />
@@ -323,10 +323,10 @@ export const AddTaskButton = ({
 							display={"flex"}
 							variant="ghost"
 							fontWeight={"bold"}
-							color="brand.nav_color"
+							color="var(--nav_color)"
 							_hover={{
 								bg: generateLighterShade(COLORS.primary, 0.8),
-								color: "brand.nav_color",
+								color: "var(--nav_color)",
 							}}
 						>
 							<CgNotes />
@@ -340,10 +340,10 @@ export const AddTaskButton = ({
 					display={"flex"}
 					variant="ghost"
 					fontWeight={"bold"}
-					color="brand.nav_color"
+					color="var(--nav_color)"
 					_hover={{
 						bg: generateLighterShade(COLORS.primary, 0.8),
-						color: "brand.nav_color",
+						color: "var(--nav_color)",
 					}}
 				>
 					<SettingsIcon />

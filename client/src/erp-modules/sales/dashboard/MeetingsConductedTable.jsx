@@ -13,7 +13,7 @@ import {
 
 const MeetingsConductedTable = ({ meetingsData }) => {
 	return (
-		<Table color={"brand.nav_color"} bg={"brand.primary_bg"} size={"small"}>
+		<Table color={"var(--nav_color)"} bg={"var(--primary_bg)"} size={"small"}>
 			<Thead>
 				<Tr fontSize={"xs"}>
 					<Th p={0}>Customer Name</Th>
@@ -22,7 +22,7 @@ const MeetingsConductedTable = ({ meetingsData }) => {
 					<Th>Status</Th>
 				</Tr>
 			</Thead>
-			<Tbody border={"none"} color={"brand.nav_color"}>
+			<Tbody border={"none"} color={"var(--nav_color)"}>
 				{meetingsData.map((meeting, index) => (
 					<Tr key={meeting}>
 						<Td p={0} fontSize={"xs"} py={0}>
@@ -47,7 +47,7 @@ const MeetingsConductedTable = ({ meetingsData }) => {
 								bg={"#d8dce9"}
 								color={meeting.status === "completed" ? "#8d8fb3" : "#8d8fb3"}
 								size="xs"
-								_hover={{ color: "brand.600" }}
+								_hover={{ color: "var(--main_color_black)" }}
 							>
 								{meeting.status === "completed" ? "Completed" : "Scheduled"}
 							</Button>

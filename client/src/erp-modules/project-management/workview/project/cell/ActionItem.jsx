@@ -59,10 +59,10 @@ const ActionItem = ({
 						display={"flex"}
 						variant="ghost"
 						fontWeight={"bold"}
-						color="brand.nav_color"
+						color="var(--nav_color)"
 						_hover={{
 							bg: generateLighterShade(COLORS.primary, 0.8),
-							color: "brand.nav_color",
+							color: "var(--nav_color)",
 						}}
 					>
 						<DeleteIcon />

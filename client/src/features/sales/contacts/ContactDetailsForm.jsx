@@ -48,38 +48,38 @@ const ContactDetailsForm = ({ contact, showLogForm }) => {
 				<IconButton
 					icon={<AddIcon />}
 					aria-label="Add Note"
-					bg="brand.logo_bg"
+					bg="var(--logo_bg)"
 					borderRadius="full"
 				/>
 				{/* <IconButton
           icon={<EmailIcon />}
           aria-label="Add Note"
-          bg="brand.logo_bg"
+          bg="var(--logo_bg)"
           borderRadius="full"
         />
         <IconButton
           icon={<PhoneIcon />}
           aria-label="Add Note"
-          bg="brand.logo_bg"
+          bg="var(--logo_bg)"
           borderRadius="full"
         /> */}
 				<IconButton
 					onClick={() => showLogForm(true)}
 					icon={<ChatIcon />}
 					aria-label="Add Log"
-					bg="brand.logo_bg"
+					bg="var(--logo_bg)"
 					borderRadius="full"
 				/>
 				<IconButton
 					icon={<TimeIcon />}
 					aria-label="Add Task"
-					bg="brand.logo_bg"
+					bg="var(--logo_bg)"
 					borderRadius="full"
 				/>
 				<IconButton
 					icon={<CalendarIcon />}
 					aria-label="Add Meeting"
-					bg="brand.logo_bg"
+					bg="var(--logo_bg)"
 					borderRadius="full"
 				/>
 			</HStack>
@@ -102,15 +102,15 @@ const ContactDetailsForm = ({ contact, showLogForm }) => {
 				</Button>
 				<Collapse in={isCompanyOpen}>
 					<Box p="4">
-						<Text color="brand.400"> Name: </Text>
+						<Text color="var(--gray2_color)"> Name: </Text>
 						<Text mb="2">{contact?.companyName}</Text>
-						<Text color="brand.400">Industry Type:</Text>
+						<Text color="var(--gray2_color)">Industry Type:</Text>
 						<Text mb="2">{contact?.industryType}</Text>
-						<Text color="brand.400">Address:</Text>
+						<Text color="var(--gray2_color)">Address:</Text>
 						<Text mb="2">{contact?.companyAddress}</Text>
-						<Text color="brand.400">Website :</Text>
+						<Text color="var(--gray2_color)">Website :</Text>
 						<Text mb="2">{contact?.revenue}</Text>
-						<Text color="brand.400">Employees:</Text>
+						<Text color="var(--gray2_color)">Employees:</Text>
 						<Text mb="2">{contact?.employees}</Text>
 					</Box>
 				</Collapse>
@@ -127,15 +127,15 @@ const ContactDetailsForm = ({ contact, showLogForm }) => {
 				<Collapse in={isProfileOpen}>
 					{contact && (
 						<Box p="4">
-							<Text color="brand.400">First Name: </Text>
+							<Text color="var(--gray2_color)">First Name: </Text>
 							<Text mb="2">{contact?.firstName}</Text>
-							<Text color="brand.400">Last Name:</Text>
+							<Text color="var(--gray2_color)">Last Name:</Text>
 							<Text mb="2">{contact?.lastName}</Text>
-							<Text color="brand.400">Email:</Text>
+							<Text color="var(--gray2_color)">Email:</Text>
 							<Text mb="2">{contact?.email}</Text>
-							<Text color="brand.400">Phone Number:</Text>
+							<Text color="var(--gray2_color)">Phone Number:</Text>
 							<Text mb="2">{contact?.phone}</Text>
-							<Text color="brand.400">Business Address:</Text>
+							<Text color="var(--gray2_color)">Business Address:</Text>
 							<Text mb="2">{contact?.primaryContactAddress}</Text>
 						</Box>
 					)}

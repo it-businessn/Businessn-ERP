@@ -13,13 +13,13 @@ const ActionButton = ({
 			isDisabled={isDisabled}
 			isLoading={isLoading}
 			onClick={onClick}
-			bg={"brand.primary_button_bg"}
+			bg={"var(--primary_button_bg)"}
 			mt={mt}
 			px={{ base: px ? px : "2em" }}
-			color={"brand.primary_bg"}
+			color={"var(--primary_bg)"}
 			_hover={{
-				color: "brand.primary_button_bg",
-				bg: "brand.700",
+				color: "var(--primary_button_bg)",
+				bg: "var(--lead_cards_bg)",
 				border: "1px solid var(--primary_button_bg)",
 			}}
 			type="submit"

@@ -17,7 +17,7 @@ const LogActivityList = ({ activities, showLogForm }) => {
 					<Card key={activity} borderWidth="1px" borderRadius="lg" w="100%">
 						<CardBody>
 							<HStack justifyContent="space-between">
-								<Badge bg="brand.logo_bg">{activity.type}</Badge>
+								<Badge bg="var(--logo_bg)">{activity.type}</Badge>
 								<Text fontSize="sm" color="gray.500">
 									{moment(activity.date).format("MMM DD, YYYY hh:mm A Z")}
 								</Text>

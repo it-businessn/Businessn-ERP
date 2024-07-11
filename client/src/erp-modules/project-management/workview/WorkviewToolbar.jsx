@@ -35,7 +35,9 @@ const WorkviewToolbar = () => {
 							key={id}
 							m={"0 !important"}
 							onClick={() => switchToView(name)}
-							color={viewMode === name ? "brand.100" : "brand.nav_color"}
+							color={
+								viewMode === name ? "var(--main_color)" : "var(--nav_color)"
+							}
 							bg={
 								viewMode === name
 									? "var(--primary_button_bg)"
@@ -45,7 +47,7 @@ const WorkviewToolbar = () => {
 							size={"sm"}
 							variant={"solid"}
 							fontWeight={viewMode === name ? "bold" : "normal"}
-							_hover={{ bg: "transparent", color: "brand.600" }}
+							_hover={{ bg: "transparent", color: "var(--main_color_black)" }}
 						>
 							{name}
 						</Button>
@@ -63,11 +65,11 @@ const WorkviewToolbar = () => {
 					<Input
 						borderRadius={"1em"}
 						_placeholder={{
-							color: "brand.nav_color",
+							color: "var(--nav_color)",
 							fontSize: "sm",
 							verticalAlign: "top",
 						}}
-						color={"brand.nav_color"}
+						color={"var(--nav_color)"}
 						bg={"transparent"}
 						type="text"
 						placeholder="People or owner"
@@ -87,17 +89,17 @@ const WorkviewToolbar = () => {
 						icon={<AiOutlineUser />}
 						borderRadius={"1em"}
 						color="purple.100"
-						bg={"brand.primary_button_bg"}
+						bg={"var(--primary_button_bg)"}
 						p={"0.4em"}
-						_hover={{ bg: "transparent", color: "brand.600" }}
+						_hover={{ bg: "transparent", color: "var(--main_color_black)" }}
 					/>
 					<IconButton
 						icon={<HiOutlineUserGroup />}
 						borderRadius={"1em"}
-						color="brand.nav_color"
+						color="var(--nav_color)"
 						p={"0.4em"}
 						bg={"transparent"}
-						_hover={{ bg: "transparent", color: "brand.600" }}
+						_hover={{ bg: "transparent", color: "var(--main_color_black)" }}
 					/>
 				</ButtonGroup>
 			</Box>
@@ -105,7 +107,7 @@ const WorkviewToolbar = () => {
 				<HStack
 					borderRadius={"1em"}
 					border={"1px solid var(--filter_border_color)"}
-					color="brand.nav_color"
+					color="var(--nav_color)"
 				>
 					<Icon as={MdDateRange} boxSize={4} ml={2} />
 					<Select fontSize={"sm"} icon={<Icon as={FaCaretDown} />}>

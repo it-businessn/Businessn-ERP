@@ -97,7 +97,7 @@ const Pipeline = () => {
 													<Text color="muted" fontSize="xs">
 														Probability:
 													</Text>
-													<Badge bg="brand.logo_bg" fontSize="0.8em" mr={2}>
+													<Badge bg="var(--logo_bg)" fontSize="0.8em" mr={2}>
 														{opportunity.probability} %
 													</Badge>
 												</HStack>

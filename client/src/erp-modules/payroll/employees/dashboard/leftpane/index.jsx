@@ -9,7 +9,7 @@ const LeftPane = ({ selectedUser, setStats, company }) => {
 				mb={"1em"}
 				columns={{ base: 1 }}
 				spacing="1em"
-				color={"brand.200"}
+				color={"var(--menu_item_color)"}
 			>
 				<TimeCard selectedUser={selectedUser} company={company} />
 			</SimpleGrid>

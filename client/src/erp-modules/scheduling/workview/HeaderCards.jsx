@@ -36,7 +36,7 @@ const HeaderCards = () => {
 		<Box
 			key={card.title}
 			p="1em"
-			bg={"brand.primary_bg"}
+			bg={"var(--primary_bg)"}
 			border="3px solid var(--main_color)"
 			borderRadius="10px"
 			fontWeight="bold"

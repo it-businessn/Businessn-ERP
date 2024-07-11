@@ -60,7 +60,7 @@ const TodoItem = ({ task }) => {
 							<IconButton
 								variant="ghost"
 								icon={<SettingsIcon />}
-								color="brand.nav_color"
+								color="var(--nav_color)"
 								aria-label="Settings Icon"
 								// onClick={() => handleEditProject(project, project._id)}
 							/>
@@ -70,11 +70,11 @@ const TodoItem = ({ task }) => {
 								borderRadius={"50%"}
 								size={"xxs"}
 								padding={"3px"}
-								color="brand.nav_color"
+								color="var(--nav_color)"
 								bg={generateLighterShade(COLORS.primary, 0.8)}
 								aria-label="Settings Icon"
 								_hover={{
-									color: "brand.nav_color",
+									color: "var(--nav_color)",
 									bg: generateLighterShade(COLORS.primary, 0.8),
 								}}
 								// onClick={() => handleEditProject(project, project._id)}
@@ -82,7 +82,7 @@ const TodoItem = ({ task }) => {
 							{/* <IconButton
 								variant="ghost"
 								icon={<FaChevronDown />}
-								color="brand.nav_color"
+								color="var(--nav_color)"
 								aria-label="Calendar Icon"
 							/> */}
 						</HStack>

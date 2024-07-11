@@ -12,10 +12,10 @@ const SectionLayout = ({ title, children, hasSubHeader }) => {
 			{hasSubHeader}
 			<Box
 				p="1em"
-				bg={"brand.primary_bg"}
+				bg={"var(--primary_bg)"}
 				border="2px solid var(--main_color)"
 				borderRadius="10px"
-				color={"brand.nav_color"}
+				color={"var(--nav_color)"}
 			>
 				{children}
 			</Box>

@@ -94,13 +94,13 @@ const MiniCalendar = ({ user, company }) => {
 				<Spacer />
 				<Button
 					p={0}
-					color={"brand.600"}
+					color={"var(--main_color_black)"}
 					size="sm"
 					leftIcon={<FaCaretLeft onClick={goToBack} />}
 					rightIcon={<FaCaretRight onClick={goToNext} />}
 					borderRadius={"10px"}
 					variant={"ghost"}
-					_hover={{ color: "brand.600", bg: "transparent" }}
+					_hover={{ color: "var(--main_color_black)", bg: "transparent" }}
 				/>
 			</Flex>
 		);
@@ -109,7 +109,7 @@ const MiniCalendar = ({ user, company }) => {
 		events && (
 			<Box
 				p={3}
-				bg={"brand.primary_bg"}
+				bg={"var(--primary_bg)"}
 				border="3px solid var(--main_color)"
 				borderRadius="10px"
 				fontWeight="bold"

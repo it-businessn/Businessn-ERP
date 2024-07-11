@@ -80,7 +80,7 @@ const EditOpportunityForm = ({ selectedOpportunity, onSave, onCancel }) => {
 						placeholder="Deal Amount"
 					/>
 				</FormControl>
-				<Button bg="brand.logo_bg" onClick={handleSave}>
+				<Button bg="var(--logo_bg)" onClick={handleSave}>
 					Save
 				</Button>
 				<Button colorScheme="gray" ml={2} onClick={onCancel}>

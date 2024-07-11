@@ -47,10 +47,10 @@ const UserProfile = ({ user, handleLogout }) => {
 					aria-label="Notification Bell"
 					icon={<FontAwesomeIcon icon={faBell} />}
 					borderRadius="full"
-					color="brand.600"
-					bg={"brand.100"}
+					color="var(--main_color_black)"
+					bg={"var(--main_color)"}
 					boxShadow="md"
-					_hover={{ bg: "brand.icon_hover" }}
+					_hover={{ bg: "var(--primary_bg)" }}
 				/>
 				<PopoverTrigger>
 					<Avatar

@@ -181,7 +181,7 @@ const SignUp = ({ isModal, setRefresh, onClose }) => {
 					border={isModal ? "none" : "1px solid var(--lead_cards_border)"}
 					bg={isModal ? "" : "var(--bg_color_1)"}
 					p={isModal ? 0 : "1em"}
-					color={"brand.logo_bg"}
+					color={"var(--logo_bg)"}
 				>
 					{!isModal && (
 						<Stack align="center">
@@ -206,7 +206,7 @@ const SignUp = ({ isModal, setRefresh, onClose }) => {
 								<Select
 									name="company"
 									value={formData.company}
-									bg={"brand.100"}
+									bg={"var(--main_color)"}
 									onChange={handleChange}
 									placeholder="Select Company"
 								>
@@ -284,7 +284,7 @@ const SignUp = ({ isModal, setRefresh, onClose }) => {
 								<Select
 									name="employmentType"
 									value={formData.employmentType}
-									bg={"brand.100"}
+									bg={"var(--main_color)"}
 									onChange={handleChange}
 									placeholder="Select employment type"
 								>
@@ -302,7 +302,7 @@ const SignUp = ({ isModal, setRefresh, onClose }) => {
 								<Select
 									name="role"
 									value={formData.role}
-									bg={"brand.100"}
+									bg={"var(--main_color)"}
 									onChange={handleChange}
 									placeholder="Select role"
 								>
@@ -318,7 +318,7 @@ const SignUp = ({ isModal, setRefresh, onClose }) => {
 							<FormControl mb={4}>
 								<FormLabel>Type of Department</FormLabel>
 								<Select
-									bg={"brand.100"}
+									bg={"var(--main_color)"}
 									name="department"
 									value={formData.department}
 									onChange={handleChange}
@@ -336,7 +336,7 @@ const SignUp = ({ isModal, setRefresh, onClose }) => {
 							<FormControl mb={4}>
 								<FormLabel>Type of Base module</FormLabel>
 								<Select
-									bg={"brand.100"}
+									bg={"var(--main_color)"}
 									name="baseModule"
 									value={formData.baseModule}
 									onChange={handleChange}
@@ -354,7 +354,7 @@ const SignUp = ({ isModal, setRefresh, onClose }) => {
 							<FormControl mb={4}>
 								<FormLabel>Manager</FormLabel>
 								<Select
-									bg={"brand.100"}
+									bg={"var(--main_color)"}
 									name="manager"
 									value={formData.manager}
 									onChange={handleChange}

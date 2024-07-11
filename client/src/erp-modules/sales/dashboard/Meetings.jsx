@@ -39,7 +39,7 @@ const Meetings = () => {
 		<SimpleGrid columns={{ base: 1, md: 1, lg: 3 }} spacing="1em">
 			<Box
 				px="1em"
-				bg={"brand.primary_bg"}
+				bg={"var(--primary_bg)"}
 				border="3px solid var(--main_color)"
 				borderRadius="10px"
 				fontWeight="bold"
@@ -49,7 +49,7 @@ const Meetings = () => {
 					justify="space-between"
 					align="center"
 					mb="1"
-					color={"brand.nav_color"}
+					color={"var(--nav_color)"}
 				>
 					<Text fontWeight="bold">Leaderboard</Text>
 					<Select width="auto" border={"none"} fontSize={"xs"} ml={"1em"}>
@@ -58,7 +58,7 @@ const Meetings = () => {
 					</Select>
 				</Flex>
 				<Box overflow="auto" h="85%">
-					<Table size="sm" color={"brand.nav_color"} bg={"brand.primary_bg"}>
+					<Table size="sm" color={"var(--nav_color)"} bg={"var(--primary_bg)"}>
 						<Thead>
 							<Tr>
 								<Th p={0}>Position</Th>
@@ -67,7 +67,7 @@ const Meetings = () => {
 								<Th>Value</Th>
 							</Tr>
 						</Thead>
-						<Tbody color={"brand.nav_color"}>
+						<Tbody color={"var(--nav_color)"}>
 							{leaderBoardData.map((item, index) => (
 								<Tr key={item}>
 									<Td fontSize={"xs"} p={0}>
@@ -94,11 +94,11 @@ const Meetings = () => {
 			</Box>
 			<Box
 				px="1em"
-				bg={"brand.primary_bg"}
+				bg={"var(--primary_bg)"}
 				border="3px solid var(--main_color)"
 				borderRadius="10px"
 				fontWeight="bold"
-				color={"brand.nav_color"}
+				color={"var(--nav_color)"}
 				h={{ base: "auto", md: "350px" }}
 			>
 				<Text fontWeight="bold" mt="2" mb="1">
@@ -118,9 +118,9 @@ const Meetings = () => {
 				</VStack>
 			</Box>
 			<Box
-				color={"brand.nav_color"}
+				color={"var(--nav_color)"}
 				px="1em"
-				bg={"brand.primary_bg"}
+				bg={"var(--primary_bg)"}
 				border="3px solid var(--main_color)"
 				borderRadius="10px"
 				fontWeight="bold"
@@ -130,7 +130,7 @@ const Meetings = () => {
 					Contacts Added
 				</Text>
 				<Box overflow="auto" h="85%">
-					<Table size="sm" color={"brand.nav_color"} bg={"brand.primary_bg"}>
+					<Table size="sm" color={"var(--nav_color)"} bg={"var(--primary_bg)"}>
 						<Thead>
 							<Tr>
 								<Th p={0}>#ID</Th>
@@ -139,7 +139,7 @@ const Meetings = () => {
 								<Th></Th>
 							</Tr>
 						</Thead>
-						<Tbody border={"none"} color={"brand.nav_color"}>
+						<Tbody border={"none"} color={"var(--nav_color)"}>
 							{agents?.map(({ _id, fullName, email }, index) => (
 								<Tr key={_id}>
 									<Td fontSize={"xs"} p={0}>
@@ -166,7 +166,7 @@ const Meetings = () => {
 											size={"xs"}
 											color="purple.500"
 											bg={"#dedaf4"}
-											_hover={{ bg: "#8385d5", color: "brand.100" }}
+											_hover={{ bg: "#8385d5", color: "var(--main_color)" }}
 										/>
 									</Td>
 								</Tr>

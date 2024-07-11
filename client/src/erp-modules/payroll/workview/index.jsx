@@ -55,7 +55,7 @@ const PayrollWorkview = () => {
 					// data={payGroups}
 					name="name"
 					border="1px solid var(--primary_button_bg)"
-					color={"brand.primary_button_bg"}
+					color={"var(--primary_button_bg)"}
 					value={selectedPayGroup}
 					placeholder="Select Paygroup"
 					size={"sm"}

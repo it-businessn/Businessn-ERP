@@ -58,7 +58,7 @@ const TaskByDate = () => {
 								<Card key={task} borderWidth="1px" borderRadius="lg" w="100%">
 									<CardBody>
 										<VStack alignItems="start" spacing={4}>
-											<Badge bg="brand.logo_bg">{task.status}</Badge>
+											<Badge bg="var(--logo_bg)">{task.status}</Badge>
 											<Flex w={"100%"}>
 												<HStack spacing={4} w="70%">
 													<Checkbox
@@ -68,14 +68,14 @@ const TaskByDate = () => {
 														}
 														colorScheme="facebook"
 														borderRadius="full"
-														borderColor="brand.logo_bg"
-														iconColor="brand.logo_bg"
+														borderColor="var(--logo_bg)"
+														iconColor="var(--logo_bg)"
 														size="md"
 													/>
 													<Text>{task.description}</Text>
 												</HStack>
 												<Spacer />
-												<Text color="brand.400">
+												<Text color="var(--gray2_color)">
 													Due Date:
 													{moment(task?.dueDate).format(
 														"MMM DD, YYYY hh:mm A Z",

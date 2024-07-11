@@ -93,7 +93,7 @@ const EditUserInfo = ({
 		}));
 	};
 	return (
-		<Stack flex={1} p={"1em"} color="brand.logo_bg">
+		<Stack flex={1} p={"1em"} color="var(--logo_bg)">
 			<form onSubmit={handleSaveClick}>
 				<VStack align="center" justify="center" mb="4">
 					<Box textAlign="center">
@@ -228,7 +228,7 @@ const EditUserInfo = ({
 							<Select
 								name="role"
 								value={userData?.role}
-								bg={"brand.100"}
+								bg={"var(--main_color)"}
 								onChange={handleChange}
 								placeholder="Select role"
 							>
@@ -244,7 +244,7 @@ const EditUserInfo = ({
 						<FormControl mb={4}>
 							<FormLabel>Type of Department</FormLabel>
 							<Select
-								bg={"brand.100"}
+								bg={"var(--main_color)"}
 								name="department"
 								value={userData?.department}
 								onChange={handleChange}
@@ -263,7 +263,7 @@ const EditUserInfo = ({
 					<FormControl mb={4}>
 						<FormLabel>Manager</FormLabel>
 						<Select
-							bg={"brand.100"}
+							bg={"var(--main_color)"}
 							name="manager"
 							value={userData?.manager}
 							onChange={handleChange}
@@ -282,7 +282,7 @@ const EditUserInfo = ({
 						<FormControl mb={4}>
 							<FormLabel>Link Company</FormLabel>
 							<Select
-								bg={"brand.100"}
+								bg={"var(--main_color)"}
 								name="department"
 								value={userData?.department}
 								onChange={handleChange}
@@ -302,7 +302,7 @@ const EditUserInfo = ({
 							<Select
 								name="employmentType"
 								value={userData?.employmentType}
-								bg={"brand.100"}
+								bg={"var(--main_color)"}
 								onChange={handleChange}
 								placeholder="Select employment type"
 							>

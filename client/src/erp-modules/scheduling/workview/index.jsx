@@ -78,7 +78,7 @@ const ScheduleWorkView = () => {
 				mb={"1em"}
 				columns={{ base: 1, md: 3 }}
 				spacing="1em"
-				color={"brand.200"}
+				color={"var(--menu_item_color)"}
 			>
 				<HeaderCards />
 			</SimpleGrid>

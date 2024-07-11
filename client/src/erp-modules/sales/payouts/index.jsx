@@ -17,6 +17,7 @@ import {
 	useDisclosure,
 } from "@chakra-ui/react";
 import PrimaryButton from "components/ui/button/PrimaryButton";
+import useLoggedInUser from "hooks/useLoggedInUser";
 import { useEffect, useState } from "react";
 import { FaSearch } from "react-icons/fa";
 import { MdOutlineFilterList } from "react-icons/md";
@@ -29,13 +30,13 @@ import AddNewSale from "./AddNewSale";
 const Payouts = () => {
 	const { isMobile } = useBreakpointValue();
 	const [payouts, setPayouts] = useState(null);
-	const user = LocalStorageService.getItem("user");
+	const loggedInUser = useLoggedInUser();
 	const [company, setCompany] = useState(
 		LocalStorageService.getItem("selectedCompany"),
 	);
 	const [isAdded, setIsAdded] = useState(false);
 	const { isOpen, onOpen, onClose } = useDisclosure();
-	const isManagerUser = isManager(user.role);
+	const isManagerUser = isManager(loggedInUser.role);
 	useEffect(() => {
 		const handleSelectedCompanyChange = (event) => setCompany(event.detail);
 
@@ -60,7 +61,7 @@ const Payouts = () => {
 				setPayouts(
 					isManagerUser
 						? response.data
-						: response.data.filter((_) => _.fullName === user.fullName),
+						: response.data.filter((_) => _.fullName === loggedInUser.fullName),
 				);
 			} catch (error) {
 				console.error(error);
@@ -74,10 +75,10 @@ const Payouts = () => {
 			<Text fontWeight="bold">Payouts</Text>
 			<Box
 				p="1em"
-				bg={"brand.primary_bg"}
+				bg={"var(--primary_bg)"}
 				border="2px solid var(--main_color)"
 				borderRadius="10px"
-				color={"brand.nav_color"}
+				color={"var(--nav_color)"}
 			>
 				{isMobile ? (
 					<Flex flexDir="column">
@@ -86,13 +87,13 @@ const Payouts = () => {
 						</Flex>
 						<HStack spacing="1em" mt="1em">
 							<Button
-								color={"brand.nav_color"}
+								color={"var(--nav_color)"}
 								leftIcon={<MdOutlineFilterList />}
 								border={"2px solid var(--filter_border_color)"}
 								borderRadius={"10px"}
 								variant={"ghost"}
 								size={"xs"}
-								_hover={{ color: "brand.600", bg: "transparent" }}
+								_hover={{ color: "var(--main_color_black)", bg: "transparent" }}
 							>
 								Filter
 							</Button>
@@ -106,11 +107,11 @@ const Payouts = () => {
 								<InputLeftElement children={<FaSearch />} />
 								<Input
 									_placeholder={{
-										color: "brand.nav_color",
+										color: "var(--nav_color)",
 										fontSize: "xs",
 									}}
-									color={"brand.nav_color"}
-									bg={"brand.primary_bg"}
+									color={"var(--nav_color)"}
+									bg={"var(--primary_bg)"}
 									type="text"
 									placeholder="Search here"
 									pr="4.5rem"
@@ -125,13 +126,13 @@ const Payouts = () => {
 						<Spacer />
 						<HStack w={{ lg: "50%" }} spacing={3} justify={"flex-end"}>
 							<Button
-								color={"brand.nav_color"}
+								color={"var(--nav_color)"}
 								leftIcon={<MdOutlineFilterList />}
 								border={"2px solid var(--filter_border_color)"}
 								borderRadius={"10px"}
 								variant={"ghost"}
 								size={"xs"}
-								_hover={{ color: "brand.600", bg: "transparent" }}
+								_hover={{ color: "var(--main_color_black)", bg: "transparent" }}
 								ml={2}
 							>
 								Filter
@@ -147,11 +148,11 @@ const Payouts = () => {
 								<InputLeftElement children={<FaSearch />} />
 								<Input
 									_placeholder={{
-										color: "brand.nav_color",
+										color: "var(--nav_color)",
 										fontSize: "xs",
 									}}
-									color={"brand.nav_color"}
-									bg={"brand.primary_bg"}
+									color={"var(--nav_color)"}
+									bg={"var(--primary_bg)"}
 									type="text"
 									placeholder="Search here"
 									pr="4.5rem"
@@ -179,7 +180,7 @@ const Payouts = () => {
 
 				{payouts && (
 					<Box overflow="auto" h={"50vh"}>
-						<Table color={"brand.nav_color"} bg={"brand.primary_bg"}>
+						<Table color={"var(--nav_color)"} bg={"var(--primary_bg)"}>
 							<Thead>
 								<Tr fontSize="xs">
 									<Th fontWeight={"bolder"} p={0}>
@@ -190,7 +191,7 @@ const Payouts = () => {
 									<Th fontWeight={"bolder"}>Sales Person </Th>
 								</Tr>
 							</Thead>
-							<Tbody color={"brand.nav_color"}>
+							<Tbody color={"var(--nav_color)"}>
 								{payouts?.map((payout) => (
 									<Tr key={payout._id}>
 										<Td fontSize={"xs"} p={0}>

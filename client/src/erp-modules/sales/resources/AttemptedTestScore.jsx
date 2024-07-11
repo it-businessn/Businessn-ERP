@@ -10,7 +10,7 @@ const AttemptedTestScore = ({ assessment, passResult, failResult }) => {
 		<Box
 			p={{ base: "1em", lg: "1em 5px" }}
 			my={"auto"}
-			bg={"brand.primary_bg"}
+			bg={"var(--primary_bg)"}
 			border="3px solid var(--main_color)"
 			borderRadius="10px"
 			fontWeight="bold"
@@ -41,7 +41,11 @@ const AttemptedTestScore = ({ assessment, passResult, failResult }) => {
 					{assessment.hasAward === "Yes" && <Image src={award} alt={"award"} />}
 				</HStack>
 				<HStack justify={"space-between"} w={"100%"}>
-					<TextTitle color={"brand.nav_color"} size="xs" title="Your Result:" />
+					<TextTitle
+						color={"var(--nav_color)"}
+						size="xs"
+						title="Your Result:"
+					/>
 					{passResult?.category ? (
 						<Badge bg={passResult?.bg} color={passResult?.color}>
 							{passResult?.category}
@@ -58,7 +62,7 @@ const AttemptedTestScore = ({ assessment, passResult, failResult }) => {
 				</HStack>
 				<HStack justify={"space-between"} w={"100%"}>
 					<VStack>
-						<TextTitle color={"brand.nav_color"} size="xs" title="Score" />
+						<TextTitle color={"var(--nav_color)"} size="xs" title="Score" />
 						<TextTitle
 							title={
 								passResult
@@ -70,7 +74,7 @@ const AttemptedTestScore = ({ assessment, passResult, failResult }) => {
 						/>
 					</VStack>
 					<VStack>
-						<TextTitle color={"brand.nav_color"} size="xs" title="Score(%)" />
+						<TextTitle color={"var(--nav_color)"} size="xs" title="Score(%)" />
 						<TextTitle
 							title={`${
 								passResult

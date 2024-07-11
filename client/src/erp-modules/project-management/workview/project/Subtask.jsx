@@ -106,7 +106,7 @@ const Subtask = ({
 									<IconButton
 										variant="ghost"
 										icon={<SettingsIcon />}
-										color="brand.nav_color"
+										color="var(--nav_color)"
 										aria-label="Settings Icon"
 										onClick={() => handleEditSubtask(task, task._id)}
 									/>
@@ -118,7 +118,7 @@ const Subtask = ({
 											onClick={handleToggle}
 											variant="ghost"
 											icon={<FaChevronDown />}
-											color="brand.nav_color"
+											color="var(--nav_color)"
 											aria-label="Calendar Icon"
 										/>
 									)}

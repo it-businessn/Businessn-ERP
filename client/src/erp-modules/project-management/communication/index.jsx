@@ -10,6 +10,7 @@ import {
 	VStack,
 } from "@chakra-ui/react";
 import TextTitle from "components/ui/text/TextTitle";
+import useLoggedInUser from "hooks/useLoggedInUser";
 import { useEffect, useState } from "react";
 import { FaUsers } from "react-icons/fa";
 import LocalStorageService from "services/LocalStorageService";
@@ -23,7 +24,8 @@ const Communications = ({ isDashboard }) => {
 	const [selectedGroup, setSelectedGroup] = useState(null);
 	const [selectedGroupMember, setSelectedGroupMember] = useState(null);
 	const userId = LocalStorageService.getItem("user")._id;
-	const user = LocalStorageService.getItem("user");
+	const loggedInUser = useLoggedInUser();
+
 	const [company, setCompany] = useState(
 		LocalStorageService.getItem("selectedCompany"),
 	);
@@ -87,10 +89,10 @@ const Communications = ({ isDashboard }) => {
 			</Text>
 
 			<Flex
-				bg={!isDashboard && "brand.primary_bg"}
+				bg={!isDashboard && "var(--primary_bg)"}
 				border={!isDashboard && "1px solid var(--main_color)"}
 				borderRadius="10px"
-				color={"brand.nav_color"}
+				color={"var(--nav_color)"}
 			>
 				<Box
 					display={isDashboard && "none"}
@@ -209,7 +211,7 @@ const Communications = ({ isDashboard }) => {
 						<Conversation
 							isDashboard={isDashboard}
 							userId={userId}
-							user={user}
+							user={loggedInUser}
 							conversations={conversations}
 							setConversations={setConversations}
 							groupMembers={groupMembers}

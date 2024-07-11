@@ -8,16 +8,16 @@ import {
 	Stack,
 	Text,
 } from "@chakra-ui/react";
+import useLoggedInUser from "hooks/useLoggedInUser";
 import { DashboardLayout, ProfileContainer } from "layouts";
 import { useEffect, useState } from "react";
 import { FiSearch } from "react-icons/fi";
 import * as api from "services";
 import { useBreakpointValue } from "services/Breakpoint";
-import LocalStorageService from "services/LocalStorageService";
 import { MemberTable } from "./MemberTable";
 
 export default function User() {
-	const user = LocalStorageService.getItem("user");
+	const loggedInUser = useLoggedInUser();
 	const [employees, setEmployees] = useState(null);
 	const { isMobile } = useBreakpointValue();
 	const [isUpdated, setIsUpdated] = useState(false);
@@ -26,7 +26,7 @@ export default function User() {
 	}, [isUpdated]);
 	const fetchUserData = async () => {
 		try {
-			let result = await api.getAllUsers(user.token);
+			let result = await api.getAllUsers(loggedInUser.token);
 			const response = result.data;
 			response.map((user) => {
 				let middleName = !user?.middleName ? "" : user.middleName;

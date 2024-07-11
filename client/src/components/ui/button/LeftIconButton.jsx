@@ -6,7 +6,7 @@ const LeftIconButton = ({
 	name,
 	flex,
 	colorScheme,
-	color = "brand.100",
+	color = "var(--main_color)",
 	border,
 	variant = "outline",
 	isFilter,
@@ -30,7 +30,7 @@ const LeftIconButton = ({
 			colorScheme={colorScheme}
 			variant={variant}
 			fontWeight={!isFilter && "bold"}
-			_hover={_hover || { bg: "transparent", color: "brand.600" }}
+			_hover={_hover || { bg: "transparent", color: "var(--main_color_black)" }}
 			leftIcon={icon}
 			borderRadius={borderRadius}
 		>

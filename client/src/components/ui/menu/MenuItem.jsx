@@ -26,7 +26,7 @@ const MenuItem = ({ menu, parent, textTransform, handleMenuItemClick }) => {
 							<IconButton
 								variant="ghost"
 								icon={menu.icon}
-								color="brand.nav_color"
+								color="var(--nav_color)"
 								size="xs"
 								aria-label="Calendar Icon"
 							/>
@@ -34,7 +34,7 @@ const MenuItem = ({ menu, parent, textTransform, handleMenuItemClick }) => {
 								justifyContent={"space-between"}
 								p={0}
 								variant="ghost"
-								color="brand.200"
+								color="var(--menu_item_color)"
 								fontSize="xs"
 								textTransform={textTransform}
 							>

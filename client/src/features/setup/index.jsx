@@ -95,10 +95,10 @@ const Setup = () => {
 
 			<Box
 				p="1em"
-				bg={"brand.primary_bg"}
+				bg={"var(--primary_bg)"}
 				border="2px solid var(--main_color)"
 				borderRadius="10px"
-				color={"brand.nav_color"}
+				color={"var(--nav_color)"}
 			>
 				<Box mb={4} bg={"var(--main_color)"} borderRadius={"1em"} px="5px">
 					<TabsButtonGroup

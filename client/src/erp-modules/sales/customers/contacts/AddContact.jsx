@@ -149,7 +149,7 @@ const AddContact = () => {
 									onClick={handleAddOption}
 									aria-label="Add Option"
 									icon={<SmallAddIcon />}
-									bg="brand.logo_bg"
+									bg="var(--logo_bg)"
 								/>
 							)}
 						</Flex>
@@ -165,7 +165,7 @@ const AddContact = () => {
 								<Button
 									ml={2}
 									onClick={handleIndustryTypeOption}
-									bg="brand.logo_bg"
+									bg="var(--logo_bg)"
 								>
 									Add
 								</Button>
@@ -273,7 +273,7 @@ const AddContact = () => {
 				</HStack>
 				<Button
 					type="submit"
-					bg="brand.logo_bg"
+					bg="var(--logo_bg)"
 					isDisabled={formData.companyName === ""}
 				>
 					Add Contact

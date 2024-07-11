@@ -48,9 +48,9 @@ const ProcessPayroll = () => {
 				templateColumns={{ lg: "20% 80%" }}
 			>
 				<Box
-					color={"brand.nav_color"}
+					color={"var(--nav_color)"}
 					p="1em"
-					bg={"brand.primary_bg"}
+					bg={"var(--primary_bg)"}
 					border="3px solid var(--main_color)"
 					borderRadius="10px"
 				>

@@ -86,7 +86,7 @@ const CustomersList = ({
 					<Spacer />
 					<HStack w={{ lg: "50%" }} spacing={3} justify={"flex-end"}>
 						<LeftIconButton
-							color={"brand.nav_color"}
+							color={"var(--nav_color)"}
 							border={"2px solid var(--filter_border_color)"}
 							name={"Filter"}
 							borderRadius={"10px"}
@@ -109,11 +109,11 @@ const CustomersList = ({
 							<Input
 								size="xs"
 								_placeholder={{
-									color: "brand.nav_color",
+									color: "var(--nav_color)",
 									fontSize: "xs",
 								}}
-								color={"brand.nav_color"}
-								bg={"brand.primary_bg"}
+								color={"var(--nav_color)"}
+								bg={"var(--primary_bg)"}
 								type="text"
 								placeholder="Search here"
 								pr="4.5rem"
@@ -130,7 +130,7 @@ const CustomersList = ({
 			)}
 			{contacts && (
 				<Box overflow="auto">
-					<Table color={"brand.nav_color"} bg={"brand.primary_bg"}>
+					<Table color={"var(--nav_color)"} bg={"var(--primary_bg)"}>
 						<Thead>
 							<Tr>
 								<Th fontWeight={"bolder"} p={0}>
@@ -143,7 +143,7 @@ const CustomersList = ({
 								{/* <Th></Th> */}
 							</Tr>
 						</Thead>
-						<Tbody color={"brand.nav_color"}>
+						<Tbody color={"var(--nav_color)"}>
 							{contacts.map(({ _id, leadId, meetings, notes }) => (
 								<Tr key={_id}>
 									<Td fontSize={"xs"} p={0}>
@@ -171,7 +171,10 @@ const CustomersList = ({
 														borderRadius="50%"
 														size={"xxs"}
 														color={"var(--primary_button_bg)"}
-														_hover={{ bg: "transparent", color: "brand.600" }}
+														_hover={{
+															bg: "transparent",
+															color: "var(--main_color_black)",
+														}}
 													/>
 												))}
 												{/* <TextTitle

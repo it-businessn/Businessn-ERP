@@ -1,5 +1,6 @@
 import { Box, Flex, IconButton } from "@chakra-ui/react";
 import TabGroup from "components/ui/tab";
+import useLoggedInUser from "hooks/useLoggedInUser";
 import { useEffect, useState } from "react";
 import { FaArrowLeft } from "react-icons/fa";
 import { useNavigate, useParams } from "react-router-dom";
@@ -32,7 +33,7 @@ const LeadContacts = ({ setViewProfile, selectedContact }) => {
 			);
 		};
 	}, []);
-	const user = LocalStorageService.getItem("user");
+	const loggedInUser = useLoggedInUser();
 	const companyName = comp ? comp : company;
 
 	const [contact, setContact] = useState(null);
@@ -65,25 +66,29 @@ const LeadContacts = ({ setViewProfile, selectedContact }) => {
 		{
 			name: "Logs",
 			component: (
-				<Logs user={user} contactId={contact?._id} company={company} />
+				<Logs user={loggedInUser} contactId={contact?._id} company={company} />
 			),
 		},
 		{
 			name: "Notes",
 			component: (
-				<Notes user={user} contactId={contact?._id} company={company} />
+				<Notes user={loggedInUser} contactId={contact?._id} company={company} />
 			),
 		},
 		{
 			name: "Tasks",
 			component: (
-				<Tasks user={user} contactId={contact?._id} company={company} />
+				<Tasks user={loggedInUser} contactId={contact?._id} company={company} />
 			),
 		},
 		{
 			name: "Meetings",
 			component: (
-				<Meetings user={user} contactId={contact?._id} company={company} />
+				<Meetings
+					user={loggedInUser}
+					contactId={contact?._id}
+					company={company}
+				/>
 			),
 		},
 	];
@@ -97,7 +102,7 @@ const LeadContacts = ({ setViewProfile, selectedContact }) => {
 						<IconButton
 							variant={"ghost"}
 							icon={<FaArrowLeft />}
-							color="brand.nav_color"
+							color="var(--nav_color)"
 							aria-label="Cancel"
 							onClick={() =>
 								id ? navigate(-1) : setViewProfile((prev) => !prev)

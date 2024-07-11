@@ -295,7 +295,7 @@ const LeadsDisbursed = () => {
 											px={3}
 											variant={"outline"}
 											justifyContent={"space-between"}
-											color={"brand.primary_button_bg"}
+											color={"var(--primary_button_bg)"}
 											rightIcon={<FaCaretRight />}
 											bg={generateLighterShade(COLORS.primary, 0.9)}
 											border={`1px solid var(--primary_button_bg)`}

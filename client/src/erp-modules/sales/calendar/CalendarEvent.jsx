@@ -20,7 +20,6 @@ import {
 	Stack,
 	Textarea,
 } from "@chakra-ui/react";
-import Loader from "components/Loader";
 import moment from "moment";
 import { useEffect, useState } from "react";
 import { Calendar as BigCalendar, momentLocalizer } from "react-big-calendar";
@@ -428,7 +427,7 @@ const Calendar = () => {
 							<Button
 								isDisabled={formData.description === ""}
 								onClick={handleSubmit}
-								bg="brand.logo_bg"
+								bg="var(--logo_bg)"
 								isLoading={isLoading}
 								loadingText="Loading"
 							>

@@ -13,13 +13,13 @@ const SearchFilter = ({
 			{!hideFilter && (
 				<Button
 					w={width ? width : "auto"}
-					color={"brand.nav_color"}
+					color={"var(--nav_color)"}
 					leftIcon={<MdOutlineFilterList />}
 					border={"2px solid var(--filter_border_color)"}
 					borderRadius={"10px"}
 					size="xs"
 					variant={"ghost"}
-					_hover={{ color: "brand.600", bg: "transparent" }}
+					_hover={{ color: "var(--main_color_black)", bg: "transparent" }}
 				>
 					Filter
 				</Button>
@@ -34,10 +34,10 @@ const SearchFilter = ({
 				<InputLeftElement size="xs" children={<FaSearch />} />
 				<Input
 					_placeholder={{
-						color: "brand.nav_color",
+						color: "var(--nav_color)",
 					}}
-					color={"brand.nav_color"}
-					bg={"brand.primary_bg"}
+					color={"var(--nav_color)"}
+					bg={"var(--primary_bg)"}
 					type="text"
 					placeholder={placeholder}
 					py={"1.1em"}

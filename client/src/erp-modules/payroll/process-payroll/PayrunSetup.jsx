@@ -18,7 +18,7 @@ const PayrunSetup = () => {
 							data={["Canada District 1"]}
 							name="name"
 							border="1px solid var(--primary_button_bg)"
-							color={"brand.primary_button_bg"}
+							color={"var(--primary_button_bg)"}
 							value={"Canada District 1"}
 							placeholder="Canada District 1"
 							size={"sm"}

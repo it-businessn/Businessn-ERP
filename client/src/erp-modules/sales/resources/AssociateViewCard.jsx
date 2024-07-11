@@ -11,17 +11,17 @@ import {
 import TextTitle from "components/ui/text/TextTitle";
 import { doughnutOptions } from "constant";
 import { BADGES } from "erp-modules/project-management/workview/project/data";
+import useLoggedInUser from "hooks/useLoggedInUser";
 import { useEffect, useState } from "react";
 import { Doughnut } from "react-chartjs-2";
 import AssessmentService from "services/AssessmentService";
-import LocalStorageService from "services/LocalStorageService";
 import AttemptedTestScore from "./AttemptedTestScore";
 
 const AssociateViewCard = ({ company }) => {
 	const [assessments, setAssessments] = useState(null);
 	const [assessmentsTaken, setAssessmentsTaken] = useState(null);
 
-	const user = LocalStorageService.getItem("user");
+	const loggedInUser = useLoggedInUser();
 	const [dataLoaded, setDataLoaded] = useState(false);
 	const [completed, setCompleted] = useState(null);
 	const [notComplete, setNotComplete] = useState(null);
@@ -44,7 +44,7 @@ const AssociateViewCard = ({ company }) => {
 		const fetchAssessmentsTaken = async () => {
 			try {
 				const response = await AssessmentService.getAssessmentByUserId(
-					user._id,
+					loggedInUser._id,
 				);
 				const passed = response.data?.filter(
 					(type) => type.category === "PASS",
@@ -90,11 +90,11 @@ const AssociateViewCard = ({ company }) => {
 		dataLoaded && (
 			<>
 				<Box
-					bg={"brand.primary_bg"}
+					bg={"var(--primary_bg)"}
 					border="3px solid var(--main_color)"
 					borderRadius="10px"
 					fontWeight="bold"
-					color={"brand.nav_color"}
+					color={"var(--nav_color)"}
 					px="1em"
 					py="0.5em"
 				>
@@ -162,7 +162,7 @@ const AssociateViewCard = ({ company }) => {
 					border="3px solid var(--main_color)"
 					borderRadius="10px"
 					fontWeight="bold"
-					color={"brand.nav_color"}
+					color={"var(--nav_color)"}
 				>
 					<HStack>
 						<TextTitle flex={1} mb={"0.5em"} title="Assessments overview" />

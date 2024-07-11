@@ -162,7 +162,7 @@ const AddQuestionForm = () => {
 			{questionnaires?.map((questionnaire, index) => (
 				<Box
 					key={questionnaire._id}
-					bg={"brand.primary_bg"}
+					bg={"var(--primary_bg)"}
 					border="3px solid var(--main_color)"
 					p={{ base: "1em" }}
 					mt={"0.5em"}
@@ -256,7 +256,7 @@ const AddQuestionForm = () => {
 								<Select
 									name="assessmentType"
 									value={assessmentType}
-									bg={"brand.100"}
+									bg={"var(--main_color)"}
 									onChange={(e) => setAssessmentType(e.target.value)}
 									placeholder="Select Assessment"
 								>

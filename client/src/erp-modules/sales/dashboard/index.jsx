@@ -39,7 +39,7 @@ const CRMDashboard = () => {
 						data={employees}
 						name="fullName"
 						border="1px solid var(--primary_button_bg)"
-						color={"brand.primary_button_bg"}
+						color={"var(--primary_button_bg)"}
 						value={selectedUser?.fullName}
 						placeholder="Select"
 						size={"sm"}

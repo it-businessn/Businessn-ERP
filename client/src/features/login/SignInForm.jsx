@@ -12,7 +12,7 @@ import {
 	InputRightElement,
 	Stack,
 } from "@chakra-ui/react";
-import { saveUser } from "context/AuthContext";
+import { saveUser } from "context/reducer";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useBreakpointValue } from "services/Breakpoint";
@@ -144,7 +144,7 @@ const SignInForm = ({ title }) => {
 									</InputRightElement>
 								</InputGroup>
 							</FormControl>
-							<Button isLoading={isLoading} type="submit" bg="brand.logo_bg">
+							<Button isLoading={isLoading} type="submit" bg="var(--logo_bg)">
 								Login
 							</Button>
 						</Stack>

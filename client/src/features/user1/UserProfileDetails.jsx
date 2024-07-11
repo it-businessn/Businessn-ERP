@@ -144,19 +144,19 @@ const UserProfileDetails = () => {
 						<Text mr="3">{email}</Text>
 					</VStack>
 				</Box>
-				<VStack align="flex-start" color={"brand.200"} p={"1em"}>
+				<VStack align="flex-start" color={"var(--menu_item_color)"} p={"1em"}>
 					{SECTION1.map(({ name, value }) => (
 						<React.Fragment key={name}>
 							<TextTitle title={name} />
-							<Text color={"brand.600"}>{value}</Text>
+							<Text color={"var(--main_color_black)"}>{value}</Text>
 						</React.Fragment>
 					))}
 				</VStack>
-				<VStack align="flex-start" color={"brand.200"} p={"1em"}>
+				<VStack align="flex-start" color={"var(--menu_item_color)"} p={"1em"}>
 					{SECTION2.map(({ name, value }) => (
 						<React.Fragment key={name}>
 							<TextTitle title={name} />
-							<Text color={"brand.600"}>{value}</Text>
+							<Text color={"var(--main_color_black)"}>{value}</Text>
 						</React.Fragment>
 					))}
 				</VStack>

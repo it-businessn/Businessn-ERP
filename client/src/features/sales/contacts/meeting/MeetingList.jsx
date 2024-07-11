@@ -18,7 +18,7 @@ const MeetingList = ({ meetings }) => {
 					<Card key={meeting} borderWidth="1px" borderRadius="lg" w="100%">
 						<CardBody>
 							<HStack justifyContent="space-between">
-								<Badge bg="brand.logo_bg">{meeting.type}</Badge>
+								<Badge bg="var(--logo_bg)">{meeting.type}</Badge>
 								<Text fontSize="sm" color="gray.500">
 									{moment(meeting.date).format("MMM DD, YYYY hh:mm A Z")}
 								</Text>

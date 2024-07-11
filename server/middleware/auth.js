@@ -3,7 +3,7 @@ const bcrypt = require("bcrypt");
 const User = require("../models/User");
 
 const authenticate = async (req, res, next) => {
-	const userId = req.params.id;
+	const { userId } = req.params;
 	const { currentPassword } = req.body;
 	const user = await User.find({ _id: userId });
 

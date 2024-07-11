@@ -171,8 +171,8 @@ const Conversation = ({
 						variant={"ghost"}
 						size={"sm"}
 						rightIcon={<BsFillSendFill />}
-						bg={"brand.primary_bg"}
-						color={"brand.primary_button_bg"}
+						bg={"var(--primary_bg)"}
+						color={"var(--primary_button_bg)"}
 					>
 						Send
 					</Button>

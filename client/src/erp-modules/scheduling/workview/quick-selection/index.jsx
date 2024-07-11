@@ -19,13 +19,13 @@ const QuickSelection = ({ setNewEmployeeAdded, employees }) => {
 	return (
 		<Box
 			p="1em"
-			bg={"brand.primary_bg"}
+			bg={"var(--primary_bg)"}
 			border="3px solid var(--main_color)"
 			borderRadius="10px"
 			fontWeight="bold"
 		>
 			<Text>Quick Selections</Text>
-			<Text color={"brand.600"}>Role</Text>
+			<Text color={"var(--main_color_black)"}>Role</Text>
 			{employees?.map((employee) => (
 				<VStack key={employee._id} w={"100%"} alignItems={"self-start"}>
 					<HStack>

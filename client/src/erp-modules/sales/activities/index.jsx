@@ -11,6 +11,7 @@ import HighlightButton from "components/ui/button/HighlightButton";
 import SelectBox from "components/ui/form/select/SelectBox";
 import RadioButtonGroup from "components/ui/tab/RadioButtonGroup";
 import TextTitle from "components/ui/text/TextTitle";
+import useLoggedInUser from "hooks/useLoggedInUser";
 import { useEffect, useState } from "react";
 import { RiAspectRatioLine } from "react-icons/ri";
 import ActivityService from "services/ActivityService";
@@ -42,8 +43,8 @@ const Activities = () => {
 		LocalStorageService.getItem("selectedCompany"),
 	);
 	const [employees, setEmployees] = useState(null);
-	const user = LocalStorageService.getItem("user");
-	const [selectedUser, setSelectedUser] = useState(user);
+	const loggedInUser = useLoggedInUser();
+	const [selectedUser, setSelectedUser] = useState(loggedInUser);
 
 	useEffect(() => {
 		const handleSelectedCompanyChange = (event) => setCompany(event.detail);
@@ -146,7 +147,7 @@ const Activities = () => {
 
 	const handleChange = (value) => {
 		if (value === "") {
-			setSelectedUser(user);
+			setSelectedUser(loggedInUser);
 		} else {
 			setSelectedUser(employees.find(({ fullName }) => fullName === value));
 		}
@@ -173,14 +174,14 @@ const Activities = () => {
 				</SimpleGrid>
 			) : (
 				<>
-					{isManager(user?.role) && employees && (
+					{isManager(loggedInUser?.role) && employees && (
 						<SelectBox
 							width="50%"
 							handleChange={handleChange}
 							data={employees}
 							name="fullName"
 							border="1px solid var(--primary_button_bg)"
-							color={"brand.primary_button_bg"}
+							color={"var(--primary_button_bg)"}
 							value={selectedUser?.fullName}
 							placeholder="Select"
 							size={"sm"}
@@ -242,7 +243,7 @@ const Activities = () => {
 							contacts={contacts}
 							leads={leads}
 							company={company}
-							user={user}
+							user={loggedInUser}
 						/>
 					)}
 
@@ -263,7 +264,7 @@ const Activities = () => {
 						))}
 						<Box
 							p="0.5em 1em"
-							bg={"brand.primary_bg"}
+							bg={"var(--primary_bg)"}
 							border="3px solid var(--main_color)"
 							borderRadius="10px"
 							fontWeight="bold"

@@ -47,7 +47,11 @@ const StatsCard = () => {
 					</HStack>
 					<HStack justify={"space-around"}>
 						{card.items.map((_) => (
-							<VStack align="center" key={_.title} color={"brand.600"}>
+							<VStack
+								align="center"
+								key={_.title}
+								color={"var(--main_color_black)"}
+							>
 								<TextTitle title={_.value} size={"lg"} />
 								<TextTitle title={_.title} weight="normal" align="center" />
 							</VStack>

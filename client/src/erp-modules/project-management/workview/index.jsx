@@ -1,4 +1,5 @@
 import { Box, Flex, Text, Th } from "@chakra-ui/react";
+import useLoggedInUser from "hooks/useLoggedInUser";
 import { useEffect, useState } from "react";
 import { FaSort } from "react-icons/fa";
 import LocalStorageService from "services/LocalStorageService";
@@ -28,8 +29,8 @@ const WorkView = () => {
 	const [refresh, setRefresh] = useState(false);
 
 	const [managers, setManagers] = useState(null);
-	const user = LocalStorageService.getItem("user");
-	const isManagerView = isManager(user?.role);
+	const loggedInUser = useLoggedInUser();
+	const isManagerView = isManager(loggedInUser?.role);
 	const [company, setCompany] = useState(
 		LocalStorageService.getItem("selectedCompany"),
 	);
@@ -57,7 +58,7 @@ const WorkView = () => {
 				const response = isManagerView
 					? await ProjectService.getAllCompanyProjects(company)
 					: await ProjectService.getAllCompanyProjectsByUser(
-							user?.fullName,
+							loggedInUser?.fullName,
 							company,
 					  );
 				setProjects(response.data);
@@ -108,10 +109,10 @@ const WorkView = () => {
 			<WorkviewToolbar />
 			<Box
 				p="1em"
-				bg={"brand.primary_bg"}
+				bg={"var(--primary_bg)"}
 				border="2px solid var(--main_color)"
 				borderRadius="10px"
-				color={"brand.nav_color"}
+				color={"var(--nav_color)"}
 			>
 				{projects && (
 					<ProjectTable

@@ -15,6 +15,7 @@ import LeftIconButton from "components/ui/button/LeftIconButton";
 import PrimaryButton from "components/ui/button/PrimaryButton";
 import SelectList from "components/ui/form/select/SelectList";
 import TableLayout from "components/ui/table/TableLayout";
+import useLoggedInUser from "hooks/useLoggedInUser";
 import { useEffect, useState } from "react";
 import { FaRegTrashAlt, FaSearch } from "react-icons/fa";
 import { MdOutlineFilterList } from "react-icons/md";
@@ -37,7 +38,7 @@ const Opportunities = () => {
 	const [opportunities, setOpportunities] = useState(null);
 	const [assignees, setAssignees] = useState(null);
 	const [supervisorAssignees, setSupervisorAssignees] = useState(null);
-	const user = LocalStorageService.getItem("user");
+	const loggedInUser = useLoggedInUser();
 	const [company, setCompany] = useState(
 		LocalStorageService.getItem("selectedCompany"),
 	);
@@ -84,14 +85,18 @@ const Opportunities = () => {
 	const fetchAllOpportunities = async () => {
 		try {
 			const response = await LeadsService.getOpportunities(company);
-			const leadList = isManager(user?.role)
+			const leadList = isManager(loggedInUser?.role)
 				? response.data
 				: response.data?.filter(
 						(item) =>
 							(item.primaryAssignee?.length > 0 &&
-								item.primaryAssignee.find((_) => _.name === user?.fullName)) ||
+								item.primaryAssignee.find(
+									(_) => _.name === loggedInUser?.fullName,
+								)) ||
 							(item.supervisorAssignee?.length > 0 &&
-								item.supervisorAssignee.find((_) => _.name === user?.fullName)),
+								item.supervisorAssignee.find(
+									(_) => _.name === loggedInUser?.fullName,
+								)),
 				  );
 			setOpportunities(leadList);
 		} catch (error) {
@@ -225,7 +230,7 @@ const Opportunities = () => {
 					<Spacer />
 					<HStack w={{ lg: "50%" }} spacing={3} justify={"flex-end"}>
 						<LeftIconButton
-							color={"brand.nav_color"}
+							color={"var(--nav_color)"}
 							border={"2px solid var(--filter_border_color)"}
 							name={"Filter"}
 							borderRadius={"10px"}
@@ -248,11 +253,11 @@ const Opportunities = () => {
 							<Input
 								size="xs"
 								_placeholder={{
-									color: "brand.nav_color",
+									color: "var(--nav_color)",
 									fontSize: "xs",
 								}}
-								color={"brand.nav_color"}
-								bg={"brand.primary_bg"}
+								color={"var(--nav_color)"}
+								bg={"var(--primary_bg)"}
 								type="text"
 								placeholder="Search here"
 								pr="4.5rem"

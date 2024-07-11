@@ -19,7 +19,7 @@ const ReportsPreview = () => {
 								// onClick={onOpen}
 								size={"sm"}
 								type="submit"
-								color={"brand.primary_button_bg"}
+								color={"var(--primary_button_bg)"}
 							>
 								Review payroll details
 							</Button>
@@ -36,7 +36,7 @@ const ReportsPreview = () => {
 								// onClick={onOpen}
 								size={"sm"}
 								type="submit"
-								color={"brand.primary_button_bg"}
+								color={"var(--primary_button_bg)"}
 							>
 								Review payroll details
 							</Button>

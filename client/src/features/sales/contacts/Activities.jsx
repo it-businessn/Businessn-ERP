@@ -24,7 +24,7 @@ const Activities = ({ contactId }) => {
 				onChange={(e) => setDescription(e.target.value)}
 				placeholder="Log activity..."
 			/>
-			<Button bg="brand.logo_bg" size="sm" onClick={handleLogActivity}>
+			<Button bg="var(--logo_bg)" size="sm" onClick={handleLogActivity}>
 				Log Activity
 			</Button>
 		</div>

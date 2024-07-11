@@ -29,7 +29,7 @@ const MeetingDetails = ({ event }) => {
 		},
 	];
 	return (
-		<VStack align="flex-start" color={"brand.200"} spacing={0}>
+		<VStack align="flex-start" color={"var(--menu_item_color)"} spacing={0}>
 			{DETAILS.map(({ title, value }) => (
 				<React.Fragment key={title}>
 					<TextTitle size={"sm"} title={title} />

@@ -63,7 +63,7 @@ const Notes = ({ contactId }) => {
 					mt={4}
 					isDisabled={newNote.description === ""}
 					onClick={() => saveNote(newNote)}
-					bg="brand.logo_bg"
+					bg="var(--logo_bg)"
 				>
 					Add Note
 				</Button>

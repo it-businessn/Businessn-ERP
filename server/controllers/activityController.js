@@ -15,7 +15,7 @@ const getActivity = async (req, res) => {
 };
 
 const getActivityById = async (req, res) => {
-	const { contactId } = req.params.id;
+	const { contactId } = req.params;
 
 	try {
 		const notes = (await LogActivity.find({ contactId })).sort(

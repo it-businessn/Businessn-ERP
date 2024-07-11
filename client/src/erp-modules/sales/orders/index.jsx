@@ -61,24 +61,29 @@ const Orders = () => {
 
 			<Box
 				p="1em"
-				bg={"brand.primary_bg"}
+				bg={"var(--primary_bg)"}
 				border="3px solid var(--main_color)"
 				borderRadius="10px"
 				fontWeight="bold"
 				mb="1em"
 			>
-				<Text fontWeight="bold" mb="1em" color={"brand.nav_color"}>
+				<Text fontWeight="bold" mb="1em" color={"var(--nav_color)"}>
 					Order Categories
 				</Text>
 				<SimpleGrid columns={{ base: 1, lg: 3 }} spacing="1em">
 					<Box
 						px="1em"
-						bg={"brand.primary_bg"}
+						bg={"var(--primary_bg)"}
 						border="3px solid var(--main_color)"
 						borderRadius="10px"
 						fontWeight="bold"
 					>
-						<Text fontWeight="bold" color={"brand.600"} mt="2" mb="1">
+						<Text
+							fontWeight="bold"
+							color={"var(--main_color_black)"}
+							mt="2"
+							mb="1"
+						>
 							Open stage mix
 						</Text>
 						<VStack>
@@ -96,7 +101,7 @@ const Orders = () => {
 					</Box>
 					<Box
 						p="1em"
-						bg={"brand.primary_bg"}
+						bg={"var(--primary_bg)"}
 						border="3px solid var(--main_color)"
 						borderRadius="10px"
 						fontWeight="bold"
@@ -113,7 +118,11 @@ const Orders = () => {
 								display="flex"
 								flexDir="column"
 							>
-								<Text fontSize="xs" fontWeight="bold" color={"brand.nav_color"}>
+								<Text
+									fontSize="xs"
+									fontWeight="bold"
+									color={"var(--nav_color)"}
+								>
 									Orders to be Fulfilled
 								</Text>
 								<Text mr="3" fontSize={"1.25em"}>
@@ -128,7 +137,11 @@ const Orders = () => {
 								display="flex"
 								flexDir="column"
 							>
-								<Text fontSize="xs" fontWeight="bold" color={"brand.nav_color"}>
+								<Text
+									fontSize="xs"
+									fontWeight="bold"
+									color={"var(--nav_color)"}
+								>
 									New Order
 								</Text>
 								<Text mr="3" fontSize={"1.25em"}>
@@ -143,7 +156,11 @@ const Orders = () => {
 								display="flex"
 								flexDir="column"
 							>
-								<Text fontSize="xs" fontWeight="bold" color={"brand.nav_color"}>
+								<Text
+									fontSize="xs"
+									fontWeight="bold"
+									color={"var(--nav_color)"}
+								>
 									Approved Orders
 								</Text>
 								<Text mr="3" fontSize={"1.25em"}>
@@ -154,7 +171,7 @@ const Orders = () => {
 					</Box>
 					<Box
 						p="1em"
-						bg={"brand.primary_bg"}
+						bg={"var(--primary_bg)"}
 						border="3px solid var(--main_color)"
 						borderRadius="10px"
 						fontWeight="bold"
@@ -215,10 +232,10 @@ const Orders = () => {
 			</Box>
 			<Box
 				p="1em"
-				bg={"brand.primary_bg"}
+				bg={"var(--primary_bg)"}
 				border="2px solid var(--main_color)"
 				borderRadius="10px"
-				color={"brand.nav_color"}
+				color={"var(--nav_color)"}
 			>
 				{isMobile ? (
 					<Flex flexDir="column">
@@ -226,10 +243,10 @@ const Orders = () => {
 							<Text fontWeight="bold">Orders</Text>
 							{/* <Button
 								bg="var(--primary_button_bg)"
-								color={"brand.primary_bg"}
+								color={"var(--primary_bg)"}
 								variant={"solid"}
 								size="xs"
-								_hover={{ color: "brand.600" }}
+								_hover={{ color: "var(--main_color_black)" }}
 								borderRadius={"10px"}
 							>
 								Add new sales
@@ -237,13 +254,13 @@ const Orders = () => {
 						</Flex>
 						<HStack spacing="1em" mt="1em">
 							<Button
-								color={"brand.nav_color"}
+								color={"var(--nav_color)"}
 								leftIcon={<MdOutlineFilterList />}
 								border={"2px solid var(--filter_border_color)"}
 								borderRadius={"10px"}
 								variant={"ghost"}
 								size={"xs"}
-								_hover={{ color: "brand.600", bg: "transparent" }}
+								_hover={{ color: "var(--main_color_black)", bg: "transparent" }}
 							>
 								Filter
 							</Button>
@@ -257,11 +274,11 @@ const Orders = () => {
 								<InputLeftElement children={<FaSearch />} />
 								<Input
 									_placeholder={{
-										color: "brand.nav_color",
+										color: "var(--nav_color)",
 										fontSize: "xs",
 									}}
-									color={"brand.nav_color"}
-									bg={"brand.primary_bg"}
+									color={"var(--nav_color)"}
+									bg={"var(--primary_bg)"}
 									type="text"
 									placeholder="Search here"
 									pr="4.5rem"
@@ -276,13 +293,13 @@ const Orders = () => {
 						<Spacer />
 						<HStack w={{ lg: "50%" }} spacing={3} justify={"flex-end"}>
 							<Button
-								color={"brand.nav_color"}
+								color={"var(--nav_color)"}
 								leftIcon={<MdOutlineFilterList />}
 								border={"2px solid var(--filter_border_color)"}
 								borderRadius={"10px"}
 								variant={"ghost"}
 								size={"xs"}
-								_hover={{ color: "brand.600", bg: "transparent" }}
+								_hover={{ color: "var(--main_color_black)", bg: "transparent" }}
 								ml={2}
 							>
 								Filter
@@ -298,11 +315,11 @@ const Orders = () => {
 								<InputLeftElement children={<FaSearch />} />
 								<Input
 									_placeholder={{
-										color: "brand.nav_color",
+										color: "var(--nav_color)",
 										fontSize: "xs",
 									}}
-									color={"brand.nav_color"}
-									bg={"brand.primary_bg"}
+									color={"var(--nav_color)"}
+									bg={"var(--primary_bg)"}
 									type="text"
 									placeholder="Search here"
 									pr="4.5rem"
@@ -311,11 +328,11 @@ const Orders = () => {
 							</InputGroup>
 							<Button
 								bg="var(--primary_button_bg)"
-								color={"brand.primary_bg"}
+								color={"var(--primary_bg)"}
 								variant={"solid"}
 								size={"xs"}
 								px={"1em"}
-								_hover={{ color: "brand.600" }}
+								_hover={{ color: "var(--main_color_black)" }}
 								borderRadius={"10px"}
 							>
 								Add new orders
@@ -325,7 +342,7 @@ const Orders = () => {
 				)}
 				{contacts && (
 					<Box overflow="auto">
-						<Table color={"brand.nav_color"} bg={"brand.primary_bg"}>
+						<Table color={"var(--nav_color)"} bg={"var(--primary_bg)"}>
 							<Thead>
 								<Tr fontSize="xs">
 									<Th fontWeight={"bolder"} p={0}>
@@ -338,7 +355,7 @@ const Orders = () => {
 									<Th fontWeight={"bolder"}> Paid</Th>
 								</Tr>
 							</Thead>
-							<Tbody color={"brand.nav_color"}>
+							<Tbody color={"var(--nav_color)"}>
 								{contacts.map((contact, index) => (
 									<Tr key={contact._id}>
 										<Td fontSize={"xs"} p={0}>

@@ -39,7 +39,7 @@ const ManagerViewCard = ({ company }) => {
 			border="3px solid var(--main_color)"
 			borderRadius="10px"
 			fontWeight="bold"
-			color={"brand.nav_color"}
+			color={"var(--nav_color)"}
 		>
 			<HStack>
 				<TextTitle flex={1} mb={"0.5em"} title="All Assessment" />
@@ -62,7 +62,7 @@ const ManagerViewCard = ({ company }) => {
 						key={assessment._id}
 						p={{ base: "1em", lg: "1em 5px" }}
 						my={"auto"}
-						bg={"brand.primary_bg"}
+						bg={"var(--primary_bg)"}
 						border="3px solid var(--main_color)"
 						borderRadius="10px"
 						fontWeight="bold"
@@ -79,7 +79,7 @@ const ManagerViewCard = ({ company }) => {
 							minH={{ base: "6em" }}
 						>
 							<TextTitle
-								// color={"brand.nav_color"}
+								// color={"var(--nav_color)"}
 								size="sm"
 								whiteSpace="pre-wrap"
 								title={assessment.name}

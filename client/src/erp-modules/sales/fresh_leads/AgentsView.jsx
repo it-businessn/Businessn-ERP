@@ -80,7 +80,7 @@ const AgentsView = ({
 			<SimpleGrid
 				columns={{ base: 1, md: 2, lg: 4 }}
 				spacing="1em"
-				color={"brand.200"}
+				color={"var(--menu_item_color)"}
 			>
 				{reference?.map((category) => (
 					<Box
@@ -109,7 +109,7 @@ const AgentsView = ({
 									<option>Last month</option>
 								</Select>
 							</Flex>
-							<Flex align="center" color={"brand.600"} mt="-2">
+							<Flex align="center" color={"var(--main_color_black)"} mt="-2">
 								<Text mr="3">
 									{leads &&
 										totalLeads(category.abbr, isUserManager, leads, fullName)}
@@ -131,7 +131,7 @@ const AgentsView = ({
 								>
 									<VStack
 										align="flex-start"
-										color={"brand.200"}
+										color={"var(--menu_item_color)"}
 										fontSize="xs"
 										p={"0.5em"}
 										spacing={0.5}
@@ -144,7 +144,7 @@ const AgentsView = ({
 											<TextTitle size="xs" title="Company" />
 											<TextTitle
 												size="xs"
-												color={"brand.600"}
+												color={"var(--main_color_black)"}
 												weight="normal"
 												title={name}
 											/>
@@ -161,7 +161,7 @@ const AgentsView = ({
 											<TextTitle size="xs" title="Email" />
 											<TextTitle
 												size="xs"
-												color={"brand.600"}
+												color={"var(--main_color_black)"}
 												weight="normal"
 												title={email}
 											/>
@@ -184,7 +184,7 @@ const AgentsView = ({
 											<TextTitle size="xs" title="Phone" />
 											<TextTitle
 												size="xs"
-												color={"brand.600"}
+												color={"var(--main_color_black)"}
 												weight="normal"
 												title={phone}
 											/>

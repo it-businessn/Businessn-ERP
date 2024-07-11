@@ -39,9 +39,9 @@ const PaygroupTable = () => {
 			templateColumns={{ lg: "70% 30%" }}
 		>
 			<Box
-				color={"brand.nav_color"}
+				color={"var(--nav_color)"}
 				p="1em"
-				bg={"brand.primary_bg"}
+				bg={"var(--primary_bg)"}
 				border="3px solid var(--main_color)"
 				borderRadius="10px"
 			>
@@ -69,7 +69,7 @@ const PaygroupTable = () => {
 									// onClick={onOpen}
 									size={"sm"}
 									type="submit"
-									color={"brand.primary_button_bg"}
+									color={"var(--primary_button_bg)"}
 								>
 									View
 								</Button>
@@ -103,9 +103,9 @@ const PaygroupTable = () => {
 				</TableLayout>
 			</Box>
 			<Box
-				color={"brand.nav_color"}
+				color={"var(--nav_color)"}
 				p="1em"
-				bg={"brand.primary_bg"}
+				bg={"var(--primary_bg)"}
 				border="3px solid var(--main_color)"
 				borderRadius="10px"
 			>

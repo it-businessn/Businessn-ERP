@@ -16,9 +16,9 @@ import {
 import Loader from "components/Loader";
 import PrimaryButton from "components/ui/button/PrimaryButton";
 import TextTitle from "components/ui/text/TextTitle";
+import useLoggedInUser from "hooks/useLoggedInUser";
 import { useEffect, useState } from "react";
 import { HiOfficeBuilding } from "react-icons/hi";
-import LocalStorageService from "services/LocalStorageService";
 import SettingService from "services/SettingService";
 import { isManager, toCapitalize } from "utils";
 import CompaniesPanel from "../CompaniesPanel";
@@ -27,7 +27,7 @@ const CompanyDetails = ({ company }) => {
 	const [openCompanyForm, setOpenCompanyForm] = useState(false);
 	const [companyInfo, setCompanyInfo] = useState(null);
 	const [modules, setModules] = useState(null);
-	const user = LocalStorageService.getItem("user");
+	const loggedInUser = useLoggedInUser();
 
 	useEffect(() => {
 		const fetchCompanyInfo = async () => {
@@ -59,7 +59,7 @@ const CompanyDetails = ({ company }) => {
 
 	return (
 		<>
-			{isManager(user?.role) && (
+			{isManager(loggedInUser?.role) && (
 				<Flex justify={"end"}>
 					<PrimaryButton
 						name={"Add new company"}
@@ -96,25 +96,33 @@ const CompanyDetails = ({ company }) => {
 								<TextTitle size="xl" title={companyInfo.name} />
 							</VStack>
 						</Box>
-						<VStack align="flex-start" color={"brand.200"} p={"1em"}>
+						<VStack
+							align="flex-start"
+							color={"var(--menu_item_color)"}
+							p={"1em"}
+						>
 							<HStack>
 								<TextTitle title="Registration Number" />
-								<Text color={"brand.600"}>
+								<Text color={"var(--main_color_black)"}>
 									{companyInfo.registration_number}
 								</Text>
 							</HStack>
 							<HStack>
 								<TextTitle title="Founding Year" />
-								<Text color={"brand.600"}>{companyInfo.founding_year}</Text>
+								<Text color={"var(--main_color_black)"}>
+									{companyInfo.founding_year}
+								</Text>
 							</HStack>
 
 							<HStack>
 								<TextTitle title="Industry Type" />
-								<Text color={"brand.600"}>{companyInfo.industry_type}</Text>
+								<Text color={"var(--main_color_black)"}>
+									{companyInfo.industry_type}
+								</Text>
 							</HStack>
 							<HStack>
 								<TextTitle title="Address" />
-								<Text color={"brand.600"}>
+								<Text color={"var(--main_color_black)"}>
 									{getAddress(companyInfo.address)}
 								</Text>
 							</HStack>

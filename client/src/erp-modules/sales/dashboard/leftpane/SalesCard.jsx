@@ -10,7 +10,7 @@ const SalesCard = ({ headerCards, setMonth, currentMonth }) => {
 				<Box
 					key={card.title}
 					px="1em"
-					bg={"brand.primary_bg"}
+					bg={"var(--primary_bg)"}
 					border="3px solid var(--main_color)"
 					borderRadius="10px"
 					fontWeight="bold"
@@ -42,7 +42,7 @@ const SalesCard = ({ headerCards, setMonth, currentMonth }) => {
 					<Text fontSize="xs" fontWeight="bold">
 						{card.title}
 					</Text>
-					<Flex align="center" color={"brand.600"}>
+					<Flex align="center" color={"var(--main_color_black)"}>
 						<Text mr="3" fontWeight="900">
 							{card.value}
 						</Text>

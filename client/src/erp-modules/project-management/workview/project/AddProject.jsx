@@ -157,7 +157,7 @@ const AddProject = ({ isOpen, onClose, setRefresh, managers, company }) => {
 									<Button
 										isLoading={isSubmitting}
 										type="submit"
-										bg="brand.logo_bg"
+										bg="var(--logo_bg)"
 										isDisabled={formData.projectName === ""}
 									>
 										Add

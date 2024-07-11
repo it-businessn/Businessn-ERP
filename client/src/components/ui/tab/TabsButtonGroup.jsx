@@ -5,8 +5,8 @@ const TabsButtonGroup = ({ isOutlineTab, tabs, setViewMode, viewMode }) => {
 		viewMode === type
 			? isOutlineTab
 				? "var(--primary_button_bg)"
-				: "brand.100"
-			: "brand.nav_color";
+				: "var(--main_color)"
+			: "var(--nav_color)";
 	const getBgColor = (type) =>
 		viewMode === type
 			? isOutlineTab
@@ -29,7 +29,7 @@ const TabsButtonGroup = ({ isOutlineTab, tabs, setViewMode, viewMode }) => {
 					borderRadius={!isOutlineTab && "1em"}
 					variant={isOutlineTab ? "ghost" : "solid"}
 					fontWeight={isOutlineTab || viewMode === type ? "bold" : "normal"}
-					_hover={{ bg: "transparent", color: "brand.600" }}
+					_hover={{ bg: "transparent", color: "var(--main_color_black)" }}
 				>
 					{icon ? <Icon as={icon} boxSize="5" /> : type}
 				</Button>

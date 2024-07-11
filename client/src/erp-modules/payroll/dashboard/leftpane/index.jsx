@@ -29,10 +29,10 @@ const LeftPane = ({ selectedPayGroup, setStats, company }) => {
 					<HStack gap={4} justifyContent={"space-around"}>
 						<VStack
 							spacing={0}
-							color={"brand.nav_color"}
+							color={"var(--nav_color)"}
 							p="1em"
 							w={"100%"}
-							bg={"brand.primary_bg"}
+							bg={"var(--primary_bg)"}
 							border="3px solid var(--main_color)"
 							borderRadius="10px"
 						>
@@ -59,10 +59,10 @@ const LeftPane = ({ selectedPayGroup, setStats, company }) => {
 						</VStack>
 						<VStack
 							spacing={0}
-							color={"brand.nav_color"}
+							color={"var(--nav_color)"}
 							p="1em"
 							w={"100%"}
-							bg={"brand.primary_bg"}
+							bg={"var(--primary_bg)"}
 							border="3px solid var(--main_color)"
 							borderRadius="10px"
 						>
@@ -73,10 +73,10 @@ const LeftPane = ({ selectedPayGroup, setStats, company }) => {
 					<HStack gap={4}>
 						<VStack
 							spacing={0}
-							color={"brand.nav_color"}
+							color={"var(--nav_color)"}
 							p="1em"
 							w={"100%"}
-							bg={"brand.primary_bg"}
+							bg={"var(--primary_bg)"}
 							border="3px solid var(--main_color)"
 							borderRadius="10px"
 						>
@@ -85,10 +85,10 @@ const LeftPane = ({ selectedPayGroup, setStats, company }) => {
 						</VStack>
 						<VStack
 							spacing={0}
-							color={"brand.nav_color"}
+							color={"var(--nav_color)"}
 							p="1em"
 							w={"100%"}
-							bg={"brand.primary_bg"}
+							bg={"var(--primary_bg)"}
 							border="3px solid var(--main_color)"
 							borderRadius="10px"
 						>
@@ -145,7 +145,7 @@ const LeftPane = ({ selectedPayGroup, setStats, company }) => {
 						<HStack
 							w={"100%"}
 							justifyContent={"space-between"}
-							color={"brand.nav_color"}
+							color={"var(--nav_color)"}
 							px="1em"
 							bg={"var(--bg_color_1)"}
 							border="3px solid var(--bg_color_1)"
@@ -197,16 +197,16 @@ const LeftPane = ({ selectedPayGroup, setStats, company }) => {
 				mb={"1em"}
 				columns={{ base: 2 }}
 				spacing="1em"
-				color={"brand.200"}
+				color={"var(--menu_item_color)"}
 			>
 				{/* <TimeCard selectedUser={selectedUser} company={company} /> */}
 
 				{sections.map(({ name, content }, index) => (
 					<Box
 						key={name}
-						color={"brand.nav_color"}
+						color={"var(--nav_color)"}
 						p="1em"
-						bg={"brand.primary_bg"}
+						bg={"var(--primary_bg)"}
 						border="3px solid var(--main_color)"
 						borderRadius="10px"
 					>

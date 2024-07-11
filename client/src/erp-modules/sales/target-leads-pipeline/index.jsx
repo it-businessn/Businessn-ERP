@@ -90,7 +90,7 @@ const Pipeline = () => {
 				<TextTitle
 					p={"1em"}
 					title="Pipeline"
-					color={"brand.200"}
+					color={"var(--menu_item_color)"}
 					mb={"0.5em"}
 				/>
 

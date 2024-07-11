@@ -87,7 +87,7 @@ const Contacts = ({ setViewProfile, selectedContact, company, user }) => {
 				<IconButton
 					variant={"ghost"}
 					icon={<FaArrowLeft />}
-					color="brand.nav_color"
+					color="var(--nav_color)"
 					aria-label="Cancel"
 					onClick={() => (id ? navigate(-1) : setViewProfile((prev) => !prev))}
 				/>

@@ -167,11 +167,11 @@ const EditSubTask = ({
 										</FormLabel>
 										<Button
 											rightIcon={<FaCaretDown />}
-											bg={"brand.primary_bg"}
-											color={"brand.primary_button_bg"}
+											bg={"var(--primary_bg)"}
+											color={"var(--primary_button_bg)"}
 											_hover={{
-												bg: "brand.primary_bg",
-												color: "brand.primary_button_bg",
+												bg: "var(--primary_bg)",
+												color: "var(--primary_button_bg)",
 											}}
 										>
 											{openAssigneeMenu ? (
@@ -201,7 +201,7 @@ const EditSubTask = ({
 									<Button
 										isLoading={isSubmitting}
 										type="submit"
-										bg="brand.logo_bg"
+										bg="var(--logo_bg)"
 										isDisabled={formData.taskName === ""}
 									>
 										Save

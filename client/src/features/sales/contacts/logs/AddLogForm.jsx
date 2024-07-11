@@ -68,7 +68,7 @@ const AddLogForm = ({ onSave }) => {
 				<Button
 					mt={4}
 					isDisabled={logActivity.description === ""}
-					bg="brand.logo_bg"
+					bg="var(--logo_bg)"
 					onClick={handleSubmit}
 				>
 					Save Activity

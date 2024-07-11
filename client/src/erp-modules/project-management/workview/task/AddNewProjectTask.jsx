@@ -185,11 +185,11 @@ const AddNewProjectTask = ({
 										</FormLabel>
 										<Button
 											rightIcon={<FaCaretDown />}
-											bg={"brand.primary_bg"}
-											color={"brand.primary_button_bg"}
+											bg={"var(--primary_bg)"}
+											color={"var(--primary_button_bg)"}
 											_hover={{
-												bg: "brand.primary_bg",
-												color: "brand.primary_button_bg",
+												bg: "var(--primary_bg)",
+												color: "var(--primary_button_bg)",
 											}}
 										>
 											{openAssigneeMenu ? (
@@ -352,7 +352,7 @@ const AddNewProjectTask = ({
 									<Button
 										isLoading={isSubmitting}
 										type="submit"
-										bg="brand.logo_bg"
+										bg="var(--logo_bg)"
 										isDisabled={subTasks.length === 0}
 									>
 										Add

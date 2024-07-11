@@ -93,7 +93,7 @@ const AutoAssign = () => {
 			{setUpConfigData && (
 				<>
 					<Box flex={0.8}>
-						<FormLabel color={"brand.nav_color"}>
+						<FormLabel color={"var(--nav_color)"}>
 							Idle Lead Reassignment
 						</FormLabel>
 						<HStack>
@@ -114,7 +114,7 @@ const AutoAssign = () => {
 						</HStack>
 					</Box>
 					<Box flex={1}>
-						<FormLabel color={"brand.nav_color"}>Idle Determine At:</FormLabel>
+						<FormLabel color={"var(--nav_color)"}>Idle Determine At:</FormLabel>
 						<HStack>
 							<Input
 								isDisabled={isDisabled}
@@ -150,7 +150,7 @@ const AutoAssign = () => {
 						</HStack>
 					</Box>
 					<Box flex={0.8}>
-						<FormLabel color={"brand.nav_color"}>Assign Lead to</FormLabel>
+						<FormLabel color={"var(--nav_color)"}>Assign Lead to</FormLabel>
 						<Radio
 							name="AssignLeadTo"
 							isChecked={setUpConfigData?.AssignLeadTo}

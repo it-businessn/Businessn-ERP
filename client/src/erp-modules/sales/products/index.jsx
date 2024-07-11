@@ -129,24 +129,29 @@ const Products = () => {
 			<Box
 				overflow="auto"
 				p="1em"
-				bg={"brand.primary_bg"}
+				bg={"var(--primary_bg)"}
 				border="3px solid var(--main_color)"
 				borderRadius="10px"
 				fontWeight="bold"
 				mb="1em"
 			>
-				<Text fontWeight="bold" mb="1em" color={"brand.nav_color"}>
+				<Text fontWeight="bold" mb="1em" color={"var(--nav_color)"}>
 					Product Categories
 				</Text>
 				<SimpleGrid columns={{ base: 1, md: 1, lg: 2, xl: 3 }} spacing="1em">
 					<Box
 						p="1em"
-						bg={"brand.primary_bg"}
+						bg={"var(--primary_bg)"}
 						border="3px solid var(--main_color)"
 						borderRadius="10px"
 						fontWeight="bold"
 					>
-						<Text fontWeight="bold" color={"brand.600"} mt="2" mb="1">
+						<Text
+							fontWeight="bold"
+							color={"var(--main_color_black)"}
+							mt="2"
+							mb="1"
+						>
 							All Categories
 						</Text>
 						<Box
@@ -161,7 +166,7 @@ const Products = () => {
 					</Box>
 					<Box
 						p="1em"
-						bg={"brand.primary_bg"}
+						bg={"var(--primary_bg)"}
 						border="3px solid var(--main_color)"
 						borderRadius="10px"
 						fontWeight="bold"
@@ -178,7 +183,11 @@ const Products = () => {
 								display="flex"
 								flexDir="column"
 							>
-								<Text fontSize="xs" fontWeight="bold" color={"brand.nav_color"}>
+								<Text
+									fontSize="xs"
+									fontWeight="bold"
+									color={"var(--nav_color)"}
+								>
 									Total SKUs
 								</Text>
 								<Text mr="3" fontSize={"1.25em"}>
@@ -193,7 +202,11 @@ const Products = () => {
 								display="flex"
 								flexDir="column"
 							>
-								<Text fontSize="xs" fontWeight="bold" color={"brand.nav_color"}>
+								<Text
+									fontSize="xs"
+									fontWeight="bold"
+									color={"var(--nav_color)"}
+								>
 									Total Products
 								</Text>
 								<Text mr="3" fontSize={"1.25em"}>
@@ -208,7 +221,11 @@ const Products = () => {
 								display="flex"
 								flexDir="column"
 							>
-								<Text fontSize="xs" fontWeight="bold" color={"brand.nav_color"}>
+								<Text
+									fontSize="xs"
+									fontWeight="bold"
+									color={"var(--nav_color)"}
+								>
 									$ Inventory #Skus
 								</Text>
 								<Text mr="3" fontSize={"1.25em"}>
@@ -219,7 +236,7 @@ const Products = () => {
 					</Box>
 					<Box
 						p="1em"
-						bg={"brand.primary_bg"}
+						bg={"var(--primary_bg)"}
 						border="3px solid var(--main_color)"
 						borderRadius="10px"
 						fontWeight="bold"
@@ -271,10 +288,10 @@ const Products = () => {
 			</Box>
 			<Box
 				p="1em"
-				bg={"brand.primary_bg"}
+				bg={"var(--primary_bg)"}
 				border="2px solid var(--main_color)"
 				borderRadius="10px"
-				color={"brand.nav_color"}
+				color={"var(--nav_color)"}
 			>
 				{isMobile ? (
 					<Flex flexDir="column">
@@ -282,10 +299,10 @@ const Products = () => {
 							<Text fontWeight="bold">Products</Text>
 							{/* <Button
 								bg="var(--primary_button_bg)"
-								color={"brand.primary_bg"}
+								color={"var(--primary_bg)"}
 								variant={"solid"}
 								size="xs"
-								_hover={{ color: "brand.600" }}
+								_hover={{ color: "var(--main_color_black)" }}
 								borderRadius={"10px"}
 							>
 								Add new sales
@@ -293,13 +310,13 @@ const Products = () => {
 						</Flex>
 						<HStack spacing="1em" mt="1em">
 							<Button
-								color={"brand.nav_color"}
+								color={"var(--nav_color)"}
 								leftIcon={<MdOutlineFilterList />}
 								border={"2px solid var(--filter_border_color)"}
 								borderRadius={"10px"}
 								variant={"ghost"}
 								size={"xs"}
-								_hover={{ color: "brand.600", bg: "transparent" }}
+								_hover={{ color: "var(--main_color_black)", bg: "transparent" }}
 							>
 								Filter
 							</Button>
@@ -313,11 +330,11 @@ const Products = () => {
 								<InputLeftElement children={<FaSearch />} />
 								<Input
 									_placeholder={{
-										color: "brand.nav_color",
+										color: "var(--nav_color)",
 										fontSize: "xs",
 									}}
-									color={"brand.nav_color"}
-									bg={"brand.primary_bg"}
+									color={"var(--nav_color)"}
+									bg={"var(--primary_bg)"}
 									type="text"
 									placeholder="Search here"
 									pr="4.5rem"
@@ -332,13 +349,13 @@ const Products = () => {
 						<Spacer />
 						<HStack w={{ lg: "50%" }} spacing={3} justify={"flex-end"}>
 							<Button
-								color={"brand.nav_color"}
+								color={"var(--nav_color)"}
 								leftIcon={<MdOutlineFilterList />}
 								border={"2px solid var(--filter_border_color)"}
 								borderRadius={"10px"}
 								variant={"ghost"}
 								size={"xs"}
-								_hover={{ color: "brand.600", bg: "transparent" }}
+								_hover={{ color: "var(--main_color_black)", bg: "transparent" }}
 								ml={2}
 							>
 								Filter
@@ -354,11 +371,11 @@ const Products = () => {
 								<InputLeftElement children={<FaSearch />} />
 								<Input
 									_placeholder={{
-										color: "brand.nav_color",
+										color: "var(--nav_color)",
 										fontSize: "xs",
 									}}
-									color={"brand.nav_color"}
-									bg={"brand.primary_bg"}
+									color={"var(--nav_color)"}
+									bg={"var(--primary_bg)"}
 									type="text"
 									placeholder="Search here"
 									pr="4.5rem"
@@ -370,7 +387,7 @@ const Products = () => {
 				)}
 				{/* {contacts && ( */}
 				<Box overflow="auto" h="350px">
-					<Table color={"brand.nav_color"} bg={"brand.primary_bg"}>
+					<Table color={"var(--nav_color)"} bg={"var(--primary_bg)"}>
 						<Thead>
 							<Tr fontSize="xs">
 								<Th fontWeight={"bolder"} p={0}>
@@ -391,7 +408,7 @@ const Products = () => {
 								</Th>
 							</Tr>
 						</Thead>
-						<Tbody color={"brand.nav_color"}>
+						<Tbody color={"var(--nav_color)"}>
 							{productsInfo.map(
 								(
 									{ _id, name, category, base_price, cost, quantity },

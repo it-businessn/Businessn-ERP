@@ -109,7 +109,7 @@ const AddOpportunity = () => {
         </FormControl> */}
 				<Button
 					type="submit"
-					bg="brand.logo_bg"
+					bg="var(--logo_bg)"
 					//   isLoading={isLoading}
 				>
 					Add Opportunity
