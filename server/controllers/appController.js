@@ -15,7 +15,7 @@ const {
 	SALES_ASSOCIATE_PERMISSION,
 } = require("../services/data");
 
-const signUp = () => async (req, res) => {
+const signUp = async (req, res) => {
 	const {
 		company,
 		companyId,
@@ -121,7 +121,7 @@ const setInitialPermissions = async (empId, isManager, companyName) => {
 	}
 };
 
-const login = () => async (req, res) => {
+const login = async (req, res) => {
 	const { email, password } = req.body;
 
 	try {
@@ -167,7 +167,7 @@ const logUserLoginActivity = async (userID) => {
 	}
 };
 
-const logOut = () => async (req, res) => {
+const logOut = async (req, res) => {
 	const { id } = req.params;
 	try {
 		const logoutTime = new Date();
@@ -189,7 +189,7 @@ const logOut = () => async (req, res) => {
 	}
 };
 
-const forgotPassword = () => async (req, res) => {
+const forgotPassword = async (req, res) => {
 	const { email } = req.body;
 	try {
 		const user = await Employee.findOne({ email });
@@ -249,7 +249,7 @@ const setNewPassword = async (req, res) => {
 	}
 };
 
-const changePassword = () => async (req, res) => {
+const changePassword = async (req, res) => {
 	const { newPassword } = req.body;
 	const { id } = req.params;
 	try {

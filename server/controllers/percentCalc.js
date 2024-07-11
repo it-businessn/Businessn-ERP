@@ -1,10 +1,14 @@
+const Project = require("../models/Project");
+const SubTask = require("../models/SubTask");
+const Task = require("../models/Task");
+
 const getPercent = (totalActualHours, totalEstimatedHours) =>
 	Math.min(
 		Math.max((totalActualHours / totalEstimatedHours) * 100, 0),
 		100,
 	).toFixed(2);
 
-function calculateTaskCompletionPercent(task) {
+const calculateTaskCompletionPercent = (task) => {
 	let totalEstimatedHours = parseInt(task.timeToComplete) || 0;
 	const totalActualHours = parseInt(task.actualHours) || 0;
 
@@ -20,9 +24,9 @@ function calculateTaskCompletionPercent(task) {
 	}
 
 	return getPercent(totalActualHours, totalEstimatedHours);
-}
+};
 
-function calculateSubtaskCompletionPercent(subtask) {
+const calculateSubtaskCompletionPercent = (subtask) => {
 	let totalEstimatedHours = parseInt(subtask.timeToComplete) || 0;
 	const totalActualHours = parseInt(subtask.actualHours) || 0;
 
@@ -36,16 +40,16 @@ function calculateSubtaskCompletionPercent(subtask) {
 	}
 
 	return getPercent(totalActualHours, totalEstimatedHours);
-}
+};
 
-function calculateSubSubtaskCompletionPercent(subSubtask) {
+const calculateSubSubtaskCompletionPercent = (subSubtask) => {
 	const totalEstimatedHours = parseInt(subSubtask.timeToComplete) || 0;
 	const totalActualHours = parseInt(subSubtask.actualHours) || 0;
 
 	return getPercent(totalActualHours, totalEstimatedHours);
-}
+};
 
-function calculateProjectCompletionPercent(project, childTotalActualHours) {
+const calculateProjectCompletionPercent = (project, childTotalActualHours) => {
 	let totalEstimatedHours = parseInt(project.timeToComplete) || 0;
 	const totalActualHours = parseInt(childTotalActualHours) || 0;
 
@@ -59,7 +63,7 @@ function calculateProjectCompletionPercent(project, childTotalActualHours) {
 	}
 
 	return getPercent(totalActualHours, totalEstimatedHours);
-}
+};
 
 const calculateAndSaveTotalEstimatedHours = async (projects) => {
 	try {
@@ -130,4 +134,8 @@ const calculateAndSaveTotalEstimatedHours = async (projects) => {
 		console.error("Error calculating and saving completion percentage:", error);
 		throw error;
 	}
+};
+
+module.exports = {
+	calculateAndSaveTotalEstimatedHours,
 };
