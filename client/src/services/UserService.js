@@ -5,10 +5,6 @@ const UserService = {
 		return apiService.put(`/user/${id}`, data, id);
 	},
 
-	async updateUserById(data, id, token) {
-		return apiService.put(`/employee/${id}`, data, id, token);
-	},
-
 	async updateUserInfoById(data, id, token) {
 		return apiService.put(`/user/${id}`, data, id, token);
 	},

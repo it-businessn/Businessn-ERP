@@ -3,13 +3,13 @@ const router = express.Router();
 
 const eventController = require("../controllers/eventController");
 
-router.get("/", eventController.getEvents());
-router.get("/comp/:id", eventController.getCompEvents());
+router.get("/", eventController.getEvents);
+router.get("/:companyName", eventController.getCompanyEvents);
 
-router.get("/:id/:name", eventController.getEventsByType());
+router.get("/:eventType/:companyName", eventController.getEvent);
 
-router.post("/", eventController.createEvent());
+router.post("/", eventController.createEvent);
 
-router.put("/:id", eventController.updateEvent());
+router.put("/:id", eventController.updateEvent);
 
 module.exports = router;

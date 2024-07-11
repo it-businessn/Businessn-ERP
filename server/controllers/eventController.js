@@ -1,6 +1,6 @@
 const Event = require("../models/Event");
 
-const getEvents = () => async (req, res) => {
+const getEvents = async (req, res) => {
 	try {
 		const events = await Event.find({}).sort({ createdOn: -1 });
 		res.status(200).json(events);
@@ -8,11 +8,12 @@ const getEvents = () => async (req, res) => {
 		res.status(404).json({ error: error.message });
 	}
 };
-const getCompEvents = () => async (req, res) => {
-	const { id } = req.params;
+
+const getCompanyEvents = async (req, res) => {
+	const { companyName } = req.params;
 
 	try {
-		const events = await Event.find({ companyName: id }).sort({
+		const events = await Event.find({ companyName }).sort({
 			createdOn: -1,
 		});
 		res.status(200).json(events);
@@ -21,10 +22,10 @@ const getCompEvents = () => async (req, res) => {
 	}
 };
 
-const getEventsByType = () => async (req, res) => {
-	const { id, name } = req.params;
+const getEvent = async (req, res) => {
+	const { eventType, companyName } = req.params;
 	try {
-		const events = await Event.find({ eventType: id, companyName: name }).sort({
+		const events = await Event.find({ eventType, companyName }).sort({
 			createdOn: -1,
 		});
 		res.status(200).json(events);
@@ -33,7 +34,7 @@ const getEventsByType = () => async (req, res) => {
 	}
 };
 
-const createEvent = () => async (req, res) => {
+const createEvent = async (req, res) => {
 	const {
 		description,
 		eventType,
@@ -48,7 +49,7 @@ const createEvent = () => async (req, res) => {
 		createdBy,
 	} = req.body;
 	try {
-		const event = new Event({
+		const newEvent = await Event.create({
 			description,
 			eventType,
 			meetingAttendees,
@@ -61,14 +62,13 @@ const createEvent = () => async (req, res) => {
 			companyName,
 			createdBy,
 		});
-		const newEvent = await event.save();
 		res.status(201).json(newEvent);
 	} catch (error) {
 		res.status(400).json({ message: error.message });
 	}
 };
 
-const updateEvent = () => async (req, res) => {
+const updateEvent = async (req, res) => {
 	const { id } = req.params;
 	try {
 		const event = await Event.findByIdAndUpdate(
@@ -85,7 +85,7 @@ const updateEvent = () => async (req, res) => {
 module.exports = {
 	createEvent,
 	getEvents,
-	getEventsByType,
+	getEvent,
 	updateEvent,
-	getCompEvents,
+	getCompanyEvents,
 };
