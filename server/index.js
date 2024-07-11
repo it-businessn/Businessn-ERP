@@ -7,7 +7,7 @@ const cors = require("cors");
 
 const appRoutes = require("./routes/appRoutes");
 const activityRoutes = require("./routes/activityRoutes");
-const companyResourceRoutes = require("./routes/companyResourceRoutes");
+const resourceRoutes = require("./routes/resourceRoutes");
 const companyRoutes = require("./routes/companyRoutes");
 const contactRoutes = require("./routes/contactRoutes");
 const conversationRoutes = require("./routes/conversationRoutes");
@@ -57,8 +57,7 @@ app.use("/api", appRoutes);
 app.use("/api/user", userRoutes);
 app.use("/api/activities", activityRoutes);
 app.use("/api/comms", conversationRoutes);
-app.use("/api/company", companyRoutes);
-app.use("/api/companyResource", companyResourceRoutes);
+app.use("/api/resource", resourceRoutes);
 app.use("/api/contacts", contactRoutes);
 app.use("/api/conversations", conversationRoutes);
 app.use("/api/employee", employeeRoutes);
@@ -80,6 +79,7 @@ app.use("/api/setup", setUpRoutes);
 app.use("/api/tasks", taskRoutes);
 app.use("/api/timesheet", timesheetRoutes);
 
+// app.use("/api/company", companyRoutes);
 // app.use("/api/payslips", payslipRoutes);
 // app.use("/api/tasks", taskRoutes);
 // app.use("/api/tasks/:taskId/subtask", subTaskRoutes);

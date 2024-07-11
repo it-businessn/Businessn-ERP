@@ -1,9 +1,9 @@
 const fs = require("fs");
-const path = require("path");
 
 const Resource = require("../models/CompanyResource");
+const { filePath, fileContentType } = require("../services/fileService");
 
-const getResources = () => async (req, res) => {
+const getResources = async (req, res) => {
 	try {
 		const resources = await Resource.find();
 		res.status(200).json(resources);
@@ -11,20 +11,22 @@ const getResources = () => async (req, res) => {
 		res.status(404).json({ error: error.message });
 	}
 };
+
 const getResourcesByCompany = () => async (req, res) => {
-	const { id } = req.params;
+	const { companyName } = req.params;
 	try {
-		const resources = await Resource.find({ companyName: id });
+		const resources = await Resource.find({ companyName });
 		res.status(200).json(resources);
 	} catch (error) {
 		res.status(404).json({ error: error.message });
 	}
 };
-const getResourceByTypes = () => async (req, res) => {
-	const { fileType, name } = req.params;
+
+const getCompanyResources = async (req, res) => {
+	const { fileType, companyName } = req.params;
 
 	try {
-		const files = (await Resource.find({ fileType, companyName: name })).sort(
+		const files = (await Resource.find({ fileType, companyName })).sort(
 			(a, b) => b.uploadedOn - a.uploadedOn,
 		);
 		res.status(200).json(files);
@@ -33,7 +35,7 @@ const getResourceByTypes = () => async (req, res) => {
 	}
 };
 
-const getResourceByType = () => async (req, res) => {
+const getResource = async (req, res) => {
 	const { fileType } = req.params;
 
 	try {
@@ -69,15 +71,16 @@ const updateResourceCover = () => async (req, res) => {
 	// 	res.status(400).json({ message: error.message });
 	// }
 };
-const updateResource = () => async (req, res) => {
+const updateResource = async (req, res) => {
 	const { fileName } = req.body;
 	const { id } = req.params;
 
 	try {
+		const name = fileName.includes(".pdf") ? fileName : `${fileName}.pdf`;
 		const resource = await Resource.findByIdAndUpdate(
 			id,
 			{
-				originalname: fileName.includes(".pdf") ? fileName : `${fileName}.pdf`,
+				originalname: name,
 			},
 			{
 				new: true,
@@ -90,7 +93,7 @@ const updateResource = () => async (req, res) => {
 	}
 };
 
-const createResource = () => async (req, res) => {
+const createResource = async (req, res) => {
 	const { fileType, uploadedBy, company } = req.body;
 
 	const fileData = req.file;
@@ -116,38 +119,20 @@ const createResource = () => async (req, res) => {
 	}
 };
 
-const downloadResource = () => async (req, res) => {
+const downloadResource = async (req, res) => {
 	try {
-		const filename = req.params.filename;
+		const { filename } = req.params;
 		const resource = await Resource.find({ originalname: filename });
 		if (!resource) {
 			return res.status(404).json({ error: "Resource not found" });
 		}
+		const file = filePath(filename);
+		fs.writeFileSync(file, resource[0].file.data);
 
-		const filePath = path.join(__dirname, "../", "uploads", filename);
-
-		fs.writeFileSync(filePath, resource[0].file.data);
-
-		const ext = path.extname(filePath).toLowerCase();
-
-		let contentType = "application/octet-stream";
-
-		if (ext === ".xlsx") {
-			contentType =
-				"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
-		} else if (ext === ".docx") {
-			contentType =
-				"application/vnd.openxmlformats-officedocument.wordprocessingml.document";
-		} else if (ext === ".pdf") {
-			contentType = "application/pdf";
-		} else if ([".jpg", ".jpeg", ".png", ".gif", ".bmp"].includes(ext)) {
-			contentType = `image/${ext.substr(1)}`;
-		}
-
-		res.setHeader("Content-Type", contentType);
+		res.setHeader("Content-Type", fileContentType(file));
 
 		res.download(filePath, filename, (err) => {
-			fs.unlinkSync(filePath);
+			fs.unlinkSync(file);
 			if (err) {
 				console.error("Error downloading file:", err);
 				res.status(404).json({ error: "File not found" });
@@ -177,10 +162,10 @@ const deleteResource = async (req, res) => {
 module.exports = {
 	createResource,
 	downloadResource,
-	getResourceByType,
+	getResource,
 	getResources,
 	deleteResource,
 	updateResource,
 	getResourcesByCompany,
-	getResourceByTypes,
+	getCompanyResources,
 };
