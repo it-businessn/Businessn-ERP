@@ -1,11 +1,7 @@
-const Activity = require("../models/Activity");
 const Contact = require("../models/Contact");
 const LogTask = require("../models/LogTask");
-const Project = require("../models/Project");
-const SubTask = require("../models/SubTask");
-const Task = require("../models/Task");
 
-const getTasks = () => async (req, res) => {
+const getTasks = async (req, res) => {
 	try {
 		const tasks = (await LogTask.find()).sort(
 			(a, b) => b.createdOn - a.createdOn,
@@ -16,10 +12,10 @@ const getTasks = () => async (req, res) => {
 	}
 };
 
-const getTaskById = () => async (req, res) => {
-	const { id } = req.params;
+const getTask = async (req, res) => {
+	const { contactId } = req.params;
 	try {
-		const tasks = (await LogTask.find({ contactId: id })).sort(
+		const tasks = (await LogTask.find({ contactId })).sort(
 			(a, b) => b.createdOn - a.createdOn,
 		);
 		res.status(200).json(tasks);
@@ -28,7 +24,7 @@ const getTaskById = () => async (req, res) => {
 	}
 };
 
-const createTask = () => async (req, res) => {
+const createTask = async (req, res) => {
 	const { contactId, dueDate, description, createdBy, companyName } = req.body;
 
 	try {
@@ -50,14 +46,14 @@ const createTask = () => async (req, res) => {
 	}
 };
 
-const updateTask = () => async (req, res) => {
+const updateTask = async (req, res) => {
 	const { id } = req.params;
 	const { checked } = req.body;
-	const data = { status: checked ? "Closed" : "Open" };
 	try {
+		const updatedData = { status: checked ? "Closed" : "Open" };
 		const task = await LogTask.findByIdAndUpdate(
 			id,
-			{ $set: data },
+			{ $set: updatedData },
 			{ new: true },
 		);
 		res.status(201).json(task);
@@ -68,7 +64,7 @@ const updateTask = () => async (req, res) => {
 
 module.exports = {
 	createTask,
-	getTaskById,
+	getTask,
 	getTasks,
 	updateTask,
 };
