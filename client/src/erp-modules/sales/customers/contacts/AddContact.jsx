@@ -19,6 +19,7 @@ import { useEffect, useState } from "react";
 import { FaAddressCard, FaBuilding } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import ContactService from "services/ContactService";
+import IndustryService from "services/IndustryService";
 
 const AddContact = () => {
 	const [formData, setFormData] = useState({
@@ -41,7 +42,7 @@ const AddContact = () => {
 	useEffect(() => {
 		const fetchIndustryTypes = async () => {
 			try {
-				const response = await ContactService.getIndustryType();
+				const response = await IndustryService.getIndustryType();
 				setIndustryTypeOptions(response.data);
 			} catch (error) {
 				console.error(error);
@@ -60,7 +61,7 @@ const AddContact = () => {
 			{ id: industryTypeOptions.length + 1, name: newOption },
 		]);
 		try {
-			await ContactService.addIndustryType({ name: newOption });
+			await IndustryService.addIndustryType({ name: newOption });
 			setNewOption("");
 			setShowInput(false);
 		} catch (error) {

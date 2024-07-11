@@ -14,7 +14,7 @@ import {
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { FaAddressCard, FaBuilding } from "react-icons/fa";
-import ContactService from "services/ContactService";
+import IndustryService from "services/IndustryService";
 
 const EditContactForm = ({ selectedContact, onSave, onCancel }) => {
 	const [formData, setFormData] = useState(selectedContact);
@@ -23,7 +23,7 @@ const EditContactForm = ({ selectedContact, onSave, onCancel }) => {
 	useEffect(() => {
 		const fetchIndustryTypes = async () => {
 			try {
-				const response = await ContactService.getIndustryType();
+				const response = await IndustryService.getIndustryType();
 				setIndustryTypeOptions(response.data);
 			} catch (error) {
 				console.error(error);

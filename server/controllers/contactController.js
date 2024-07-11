@@ -1,5 +1,4 @@
 const Contact = require("../models/Contact");
-const Lead = require("../models/Lead");
 
 const getContacts = async (req, res) => {
 	try {
@@ -10,14 +9,14 @@ const getContacts = async (req, res) => {
 	}
 };
 
-const getContactById = async (req, res) => {
-	const { id, name } = req.params;
+const getContact = async (req, res) => {
+	const { id, companyName } = req.params;
 
 	try {
 		const contact = await Contact.findOne({
 			$or: [
-				{ _id: id, companyName: name },
-				{ leadId: id, companyName: name },
+				{ _id: id, companyName },
+				{ leadId: id, companyName },
 			],
 		}).populate("leadId");
 		res.status(200).json(contact);
@@ -25,12 +24,12 @@ const getContactById = async (req, res) => {
 		res.status(404).json({ error: error.message });
 	}
 };
-const getCompContactById = async (req, res) => {
-	const { id } = req.params;
+
+const getCompanyContact = async (req, res) => {
+	const { companyName } = req.params;
 
 	try {
-		const contact = await Contact.find({ companyName: id }).populate("leadId");
-
+		const contact = await Contact.find({ companyName }).populate("leadId");
 		res.status(200).json(contact);
 	} catch (error) {
 		res.status(404).json({ error: error.message });
@@ -51,22 +50,20 @@ const createContact = async (req, res) => {
 		revenue,
 	} = req.body;
 
-	const contact = new Contact({
-		companyAddress,
-		companyName,
-		date: Date.now(),
-		email,
-		employees,
-		firstName,
-		industryType,
-		lastName,
-		phone,
-		primaryContactAddress,
-		revenue,
-	});
-
 	try {
-		const newContact = await contact.save();
+		const newContact = await Contact.create({
+			companyAddress,
+			companyName,
+			date: Date.now(),
+			email,
+			employees,
+			firstName,
+			industryType,
+			lastName,
+			phone,
+			primaryContactAddress,
+			revenue,
+		});
 		res.status(201).json(newContact);
 	} catch (error) {
 		res.status(400).json({ message: error.message });
@@ -91,8 +88,8 @@ const updateContact = async (req, res) => {
 
 module.exports = {
 	createContact,
-	getContactById,
+	getContact,
 	getContacts,
 	updateContact,
-	getCompContactById,
+	getCompanyContact,
 };

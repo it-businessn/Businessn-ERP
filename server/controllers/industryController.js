@@ -1,6 +1,6 @@
 const IndustryType = require("../models/IndustryType");
 
-const getIndustryType = () => async (req, res) => {
+const getIndustry = async (req, res) => {
 	try {
 		const industry = await IndustryType.find({}).sort({ date: -1 });
 		res.json(industry);
@@ -9,20 +9,18 @@ const getIndustryType = () => async (req, res) => {
 	}
 };
 
-const createIndustryType = () => async (req, res) => {
+const createIndustry = async (req, res) => {
 	const { name } = req.body;
 
-	const industryType = new IndustryType({
-		name,
-		date: Date.now(),
-	});
-
 	try {
-		const newIndustryType = await industryType.save();
+		const newIndustryType = await IndustryType.create({
+			name,
+			date: Date.now(),
+		});
 		res.status(201).json(newIndustryType);
 	} catch (error) {
 		res.status(400).json({ message: error.message });
 	}
 };
 
-module.exports = { createIndustryType, getIndustryType };
+module.exports = { createIndustry, getIndustry };
