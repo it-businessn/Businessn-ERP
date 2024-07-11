@@ -3,10 +3,13 @@ const router = express.Router();
 
 const activityController = require("../controllers/activityController");
 
-router.get("/:id", activityController.getActivityById());
-router.get("/:id/:name", activityController.getActivity());
-router.get("/user/:id/:name/:filter", activityController.getActivityByUserId());
+router.get("/:contactId", activityController.getActivityById);
+router.get("/:createdBy/:companyName", activityController.getActivity);
+router.get(
+	"/user/:createdBy/:companyName/:filter",
+	activityController.getActivityRange,
+);
 
-router.post("/", activityController.createActivity());
+router.post("/", activityController.createActivity);
 
 module.exports = router;

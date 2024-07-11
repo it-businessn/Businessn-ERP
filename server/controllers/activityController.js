@@ -2,11 +2,11 @@ const moment = require("moment");
 const Contact = require("../models/Contact");
 const LogActivity = require("../models/LogActivity");
 
-const getActivity = () => async (req, res) => {
-	const { id, name } = req.params;
+const getActivity = async (req, res) => {
+	const { createdBy, companyName } = req.params;
 	try {
 		const activities = (
-			await LogActivity.find({ createdBy: id, companyName: name })
+			await LogActivity.find({ createdBy, companyName })
 		).sort((a, b) => b.createdOn - a.createdOn);
 		res.status(200).json(activities);
 	} catch (error) {
@@ -14,11 +14,11 @@ const getActivity = () => async (req, res) => {
 	}
 };
 
-const getActivityById = () => async (req, res) => {
-	const id = req.params.id;
+const getActivityById = async (req, res) => {
+	const { contactId } = req.params.id;
 
 	try {
-		const notes = (await LogActivity.find({ contactId: id })).sort(
+		const notes = (await LogActivity.find({ contactId })).sort(
 			(a, b) => b.createdOn - a.createdOn,
 		);
 		res.status(200).json(notes);
@@ -83,29 +83,27 @@ const getFilterRange = (filter) => {
 	return { startOfDay, endOfDay };
 };
 
-const getActivityByUserId = () => async (req, res) => {
-	const { id, name, filter } = req.params;
+const getActivityRange = async (req, res) => {
+	const { createdBy, companyName, filter } = req.params;
 
-	const startOfDay = getFilterRange(filter).startOfDay;
-
-	const endOfDay = getFilterRange(filter).endOfDay;
+	const { startOfDay, endOfDay } = getFilterRange(filter);
 
 	try {
-		const logs = await LogActivity.find({
-			createdBy: id,
-			companyName: name,
+		const result = await LogActivity.find({
+			createdBy,
+			companyName,
 			createdOn: {
 				$gte: startOfDay,
 				$lte: endOfDay,
 			},
 		});
-		res.status(200).json(logs);
+		res.status(200).json(result);
 	} catch (error) {
 		res.status(404).json({ error: error.message });
 	}
 };
 
-const createActivity = () => async (req, res) => {
+const createActivity = async (req, res) => {
 	const { contactId, createdBy, description, duration, type, companyName } =
 		req.body;
 
@@ -118,15 +116,7 @@ const createActivity = () => async (req, res) => {
 			type,
 			companyName,
 		});
-		const contact = await Contact.findOne({
-			$or: [
-				{ _id: contactId, companyName },
-				{ leadId: contactId, companyName },
-			],
-		});
-		contact.activities.push(newActivity._id);
-
-		await contact.save();
+		saveContactActivities(contactId, companyName, newActivity._id);
 
 		res.status(201).json(newActivity);
 	} catch (error) {
@@ -134,9 +124,21 @@ const createActivity = () => async (req, res) => {
 	}
 };
 
+const saveContactActivities = async (contactId, companyName, activity) => {
+	const contact = await Contact.findOne({
+		$or: [
+			{ _id: contactId, companyName },
+			{ leadId: contactId, companyName },
+		],
+	});
+	contact.activities.push(activity);
+
+	await contact.save();
+};
+
 module.exports = {
 	createActivity,
 	getActivity,
 	getActivityById,
-	getActivityByUserId,
+	getActivityRange,
 };
