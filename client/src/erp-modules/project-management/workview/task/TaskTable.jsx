@@ -23,7 +23,7 @@ import {
 import Caption from "erp-modules/sales/lead docket/Caption";
 import React, { useEffect, useState } from "react";
 import { FaChevronDown, FaSort } from "react-icons/fa";
-import ProjectService from "services/ProjectService";
+import TaskService from "services/TaskService";
 import {
 	CircularProgressBarCell,
 	TaskButton,
@@ -106,7 +106,7 @@ const TaskTable = ({
 			const isOpen = e.target.checked;
 			setIsOpenTask(isOpen);
 			try {
-				await ProjectService.updateTaskStatus({ isOpen }, taskId);
+				await TaskService.updateTaskStatus({ isOpen }, taskId);
 			} catch (error) {
 				console.error("Error updating task status:", error);
 			}

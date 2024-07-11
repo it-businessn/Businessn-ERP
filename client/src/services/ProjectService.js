@@ -6,7 +6,7 @@ const ProjectService = {
 	},
 
 	async getAllCompanyProjects(id) {
-		return apiService.get(`/projects/comp/${id}`);
+		return apiService.get(`/projects/${id}`);
 	},
 
 	async getAllCompanyProjectsByUser(id, company) {
@@ -57,10 +57,6 @@ const ProjectService = {
 		return apiService.put(`/projects/task/activity/${id}`, data, id);
 	},
 
-	async updateTaskStatus(data, id) {
-		return apiService.put(`/projects/task/status/${id}`, data, id);
-	},
-
 	async deleteTask(data, id) {
 		return apiService.delete(`/projects/task/${id}`, data, id);
 	},
@@ -70,23 +66,11 @@ const ProjectService = {
 	},
 
 	async deleteInnerSubTask(data, id) {
-		return apiService.put(`/projects/delete-inner-subtask/${id}`, data, id);
+		return apiService.put(`/projects/subtask-child/${id}`, data, id);
 	},
 
 	async updateInnerSubTask(data, id) {
 		return apiService.put(`/projects/inner-subtask/${id}`, data, id);
-	},
-
-	async updateInnerSubTaskStatus(data, id) {
-		return apiService.put(`/projects/inner-subtask/status/${id}`, data, id);
-	},
-
-	async updateSubTaskStatus(data, id) {
-		return apiService.put(`/projects/subtask/status/${id}`, data, id);
-	},
-
-	async updateTaskActivityStatus(data, id) {
-		return apiService.put(`/projects/activity/status/${id}`, data, id);
 	},
 };
 

@@ -11,7 +11,7 @@ import {
 } from "@chakra-ui/react";
 import React, { useState } from "react";
 import { FaChevronDown } from "react-icons/fa";
-import ProjectService from "services/ProjectService";
+import TaskService from "services/TaskService";
 import {
 	AddTaskButton,
 	CircularProgressBarCell,
@@ -45,7 +45,7 @@ const Subtask = ({
 		const isOpen = e.target.checked;
 		setIsOpenTask(isOpen);
 		try {
-			await ProjectService.updateSubTaskStatus({ isOpen }, taskId);
+			await TaskService.updateSubTaskStatus({ isOpen }, taskId);
 		} catch (error) {
 			console.error("Error updating subtask status:", error);
 		}

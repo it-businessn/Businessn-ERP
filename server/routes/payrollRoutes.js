@@ -3,6 +3,6 @@ const router = express.Router();
 
 const payrollController = require("../controllers/payrollController");
 
-router.get("/paygroups/:id", payrollController.getAllPaygroups());
+router.get("/payGroups/:companyName", payrollController.getAllPayGroups);
 
 module.exports = router;

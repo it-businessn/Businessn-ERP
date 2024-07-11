@@ -1,6 +1,7 @@
 import { Checkbox, HStack, VStack } from "@chakra-ui/react";
 import { useState } from "react";
 import ProjectService from "services/ProjectService";
+import TaskService from "services/TaskService";
 import { CircularProgressBarCell } from "utils";
 import AddNewSubTask from "../AddNewSubTask";
 import EditTask from "../EditTask";
@@ -49,7 +50,7 @@ const TaskActionCell = ({
 	const handleConfirm = async () => {
 		setIsOpen(false);
 		try {
-			await ProjectService.updateTaskStatus(
+			await TaskService.updateTaskStatus(
 				{ isOpen: isTaskCompleted, actualHours },
 				taskId,
 			);

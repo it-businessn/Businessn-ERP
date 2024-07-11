@@ -1,11 +1,11 @@
 const Group = require("../models/Group");
 
-const getAllPaygroups = () => async (req, res) => {
-	const { id } = req.params;
+const getAllPayGroups = async (req, res) => {
+	const { companyName } = req.params;
 	try {
 		const searchString = "Paygroup";
 		const groups = await Group.find({
-			companyName: id,
+			companyName,
 			name: { $regex: searchString, $options: "i" },
 		});
 		res.status(200).json(groups);
@@ -14,6 +14,4 @@ const getAllPaygroups = () => async (req, res) => {
 	}
 };
 
-module.exports = {
-	getAllPaygroups,
-};
+module.exports = { getAllPayGroups };

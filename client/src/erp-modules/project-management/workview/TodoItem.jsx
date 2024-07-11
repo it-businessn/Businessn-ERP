@@ -9,7 +9,7 @@ import {
 	Tr,
 } from "@chakra-ui/react";
 import React, { useState } from "react";
-import ProjectService from "services/ProjectService";
+import TaskService from "services/TaskService";
 import {
 	formatDate,
 	generateLighterShade,
@@ -27,7 +27,7 @@ const TodoItem = ({ task }) => {
 		const isOpen = e.target.checked;
 		setIsOpenTask(isOpen);
 		try {
-			await ProjectService.updateTaskActivityStatus({ isOpen }, taskId);
+			await TaskService.updateTaskActivityStatus({ isOpen }, taskId);
 		} catch (error) {
 			console.error("Error updating subtask status:", error);
 		}

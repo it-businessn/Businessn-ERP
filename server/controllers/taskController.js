@@ -3,7 +3,7 @@ const Project = require("../models/Project");
 const SubTask = require("../models/SubTask");
 const Task = require("../models/Task");
 
-const getTasks = () => async (req, res) => {
+const getTasks = async (req, res) => {
 	try {
 		const tasks = (await Task.find()).sort((a, b) => b.createdOn - a.createdOn);
 		res.status(200).json(tasks);
@@ -12,7 +12,7 @@ const getTasks = () => async (req, res) => {
 	}
 };
 
-const getTaskById = () => async (req, res) => {
+const getTaskById = async (req, res) => {
 	const { id, company } = req.params;
 	try {
 		const tasks = await Task.find({
@@ -25,7 +25,7 @@ const getTaskById = () => async (req, res) => {
 	}
 };
 
-const createTask = () => async (req, res) => {
+const createTask = async (req, res) => {
 	const { contactId, dueDate, name, status } = req.body;
 
 	const task = new Task({ contactId, date: Date.now(), dueDate, name, status });
@@ -58,8 +58,8 @@ const isAllTaskComplete = async (savedTask) => {
 	return tasksCompleted.every((completed) => completed);
 };
 
-const updateTask = () => async (req, res) => {
-	const taskId = req.params.id;
+const updateTask = async (req, res) => {
+	const { taskId } = req.params;
 	const { isOpen, actualHours } = req.body;
 
 	try {
@@ -111,7 +111,7 @@ const updateTask = () => async (req, res) => {
 	}
 };
 
-const updateInnerSubTask = () => async (req, res) => {
+const updateInnerSubTask = async (req, res) => {
 	const { id } = req.params;
 	const { isOpen, actualHours, taskName } = req.body;
 	try {
@@ -212,7 +212,7 @@ const updateInnerSubTask = () => async (req, res) => {
 	}
 };
 
-const updateSubTask = () => async (req, res) => {
+const updateSubTask = async (req, res) => {
 	const { id } = req.params;
 	const { isOpen, actualHours } = req.body;
 	try {
@@ -296,7 +296,7 @@ const updateSubTask = () => async (req, res) => {
 	}
 };
 
-const updateActivity = () => async (req, res) => {
+const updateActivity = async (req, res) => {
 	const { id } = req.params;
 	const { isOpen } = req.body;
 	try {

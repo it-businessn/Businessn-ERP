@@ -3,14 +3,11 @@ const Task = require("../models/Task");
 const SubTask = require("../models/SubTask");
 const Activity = require("../models/Activity");
 
-const getProjects = () => async (req, res) => {
-	try {
-		const projects = (await Project.find()).sort(
-			(a, b) => b.createdOn - a.createdOn,
-		);
-		const populatedProjects = await Promise.all(
-			projects.map(async (project) => {
-				const populatedProject = await Project.findById(project._id)
+const findProject = async (projects) =>
+	await Promise.all(
+		projects.map(
+			async (project) =>
+				await Project.findById(project._id)
 					.populate({
 						path: "tasks",
 						populate: {
@@ -25,75 +22,43 @@ const getProjects = () => async (req, res) => {
 					// 		model: "Activity",
 					// 	},
 					// })
-					.exec();
+					.exec(),
+		),
+	);
 
-				return populatedProject;
-			}),
-		);
-
-		res.status(200).json(populatedProjects);
-	} catch (error) {
-		res.status(404).json({ error: error.message });
-	}
-};
-const getAllCompanyProjects = () => async (req, res) => {
-	const { id } = req.params;
+const getProjects = async (req, res) => {
 	try {
-		const projects = (await Project.find({ companyName: id })).sort(
+		const projects = (await Project.find({})).sort(
 			(a, b) => b.createdOn - a.createdOn,
 		);
-		const populatedProjects = await Promise.all(
-			projects.map(async (project) => {
-				const populatedProject = await Project.findById(project._id)
-					.populate({
-						path: "tasks",
-						populate: {
-							path: "subtasks",
-							model: "SubTask",
-						},
-					})
-					// .populate({
-					// 	path: "tasks",
-					// 	populate: {
-					// 		path: "activities",
-					// 		model: "Activity",
-					// 	},
-					// })
-					.exec();
-
-				return populatedProject;
-			}),
-		);
-
+		const populatedProjects = await findProject(projects);
 		res.status(200).json(populatedProjects);
 	} catch (error) {
 		res.status(404).json({ error: error.message });
 	}
 };
 
-const getProjectsByUser = () => async (req, res) => {
-	const { id, company } = req.params;
+const getCompanyProjects = async (req, res) => {
+	const { companyName } = req.params;
+	try {
+		const projects = (await Project.find({ companyName })).sort(
+			(a, b) => b.createdOn - a.createdOn,
+		);
+		const populatedProjects = await findProject(projects);
+		res.status(200).json(populatedProjects);
+	} catch (error) {
+		res.status(404).json({ error: error.message });
+	}
+};
+
+const getAssigneeProjects = async (req, res) => {
+	const { selectedAssignees, companyName } = req.params;
 	try {
 		const projects = (
-			await Project.find({ selectedAssignees: id, companyName: company })
+			await Project.find({ selectedAssignees, companyName })
 		).sort((a, b) => b.createdOn - a.createdOn);
-		if (projects.length > 0) {
-			const populatedProjects = await Promise.all(
-				projects.map(async (project) => {
-					const populatedProject = await Project.findById(project._id)
-						.populate({
-							path: "tasks",
-							populate: {
-								path: "subtasks",
-								model: "SubTask",
-							},
-						})
-						.exec();
-
-					return populatedProject;
-				}),
-			);
-
+		if (projects.length) {
+			const populatedProjects = await findProject(projects);
 			res.status(200).json(populatedProjects);
 		} else {
 			res.status(200).json(projects);
@@ -102,7 +67,8 @@ const getProjectsByUser = () => async (req, res) => {
 		res.status(404).json({ error: error.message });
 	}
 };
-const addTaskSubTask = () => async (req, res) => {
+
+const addSubTask = async (req, res) => {
 	const { id } = req.params;
 	const {
 		projectId,
@@ -114,17 +80,16 @@ const addTaskSubTask = () => async (req, res) => {
 	} = req.body;
 
 	try {
-		const newSubtask = new SubTask({
+		const newSubtask = await SubTask.create({
 			projectId,
 			taskId: id,
 			taskName: subTaskName,
 			selectedAssignees: subTaskSelectedAssignees,
 			dueDate: subTaskDueDate,
 			timeToComplete: subTaskTimeToComplete,
-			status: getStatus(subTaskDueDate),
+			status: getProjectStatus(subTaskDueDate),
 			companyName,
 		});
-		await newSubtask.save();
 
 		const savedTask = await Task.findById(id);
 
@@ -158,7 +123,7 @@ const addTaskSubTask = () => async (req, res) => {
 		res.status(400).json({ message: error.message });
 	}
 };
-const addTaskSubTasks = () => async (req, res) => {
+const addTaskSubTasks = async (req, res) => {
 	const { id } = req.params;
 	const {
 		projectId,
@@ -171,9 +136,8 @@ const addTaskSubTasks = () => async (req, res) => {
 		companyName,
 	} = req.body;
 
-	const status = getStatus(subTaskDueDate);
-
 	try {
+		const status = getProjectStatus(subTaskDueDate);
 		const savedSubtask = await SubTask.findById(id);
 		const updatedData = {
 			projectId,
@@ -200,8 +164,8 @@ const addTaskSubTasks = () => async (req, res) => {
 	}
 };
 
-const updateProjectSubTask = () => async (req, res) => {
-	const { id } = req.params;
+const updateProjectSubTask = async (req, res) => {
+	const { projectId } = req.params;
 
 	const { subtasks, activities, timeToComplete, dueDate, taskName, taskId } =
 		req.body;
@@ -209,37 +173,33 @@ const updateProjectSubTask = () => async (req, res) => {
 	try {
 		const savedSubtasks = await Promise.all(
 			subtasks?.map(
-				async ({ taskName, selectedAssignees, dueDate, timeToComplete }) => {
-					const newSubtask = new SubTask({
-						projectId: id,
+				async ({ taskName, selectedAssignees, dueDate, timeToComplete }) =>
+					await SubTask.create({
+						projectId,
 						taskId,
 						taskName,
 						selectedAssignees,
 						isOpen: true,
 						dueDate,
 						timeToComplete,
-						status: getStatus(dueDate),
-					});
-					return await newSubtask.save();
-				},
+						status: getProjectStatus(dueDate),
+					}),
 			),
 		);
 
 		const savedActivities = await Promise.all(
 			activities?.map(
-				async ({ taskName, selectedAssignee, dueDate, timeToComplete }) => {
-					const newActivity = new Activity({
-						projectId: id,
+				async ({ taskName, selectedAssignee, dueDate, timeToComplete }) =>
+					await Activity.create({
+						projectId,
 						taskId,
 						taskName,
 						selectedAssignees: selectedAssignee,
 						isOpen: true,
 						dueDate,
 						timeToComplete,
-						status: getStatus(dueDate),
-					});
-					return await newActivity.save();
-				},
+						status: getProjectStatus(dueDate),
+					}),
 			),
 		);
 
@@ -258,7 +218,7 @@ const updateProjectSubTask = () => async (req, res) => {
 
 		savedTask.taskName = taskName;
 		savedTask.dueDate = dueDate;
-		savedTask.status = getStatus(dueDate);
+		savedTask.status = getProjectStatus(dueDate);
 
 		savedTask.timeToComplete = timeToComplete;
 		savedTask.subtasks = savedTask.subtasks.concat(
@@ -276,7 +236,7 @@ const updateProjectSubTask = () => async (req, res) => {
 
 		await savedTask.save();
 
-		const savedProject = await Project.findById(id);
+		const savedProject = await Project.findById(projectId);
 
 		const concatenatedProjectArray = savedProject.selectedAssignees.concat(
 			savedTask.selectedAssignees,
@@ -294,17 +254,17 @@ const updateProjectSubTask = () => async (req, res) => {
 	}
 };
 
-const createActivity = () => async (req, res) => {
+const createActivity = async (req, res) => {
 	const { projectId, taskId, activities } = req.body;
 
 	try {
-		const savedTask = await Task.findById(taskId);
-		const savedProject = await Project.findById(projectId);
+		const task = await Task.findById(taskId);
+		const project = await Project.findById(projectId);
 
-		const savedActivities = await Promise.all(
+		const activities = await Promise.all(
 			activities.map(
-				async ({ taskName, selectedAssignee, dueDate, timeToComplete }) => {
-					const newActivity = new Activity({
+				async ({ taskName, selectedAssignee, dueDate, timeToComplete }) =>
+					await Activity.create({
 						projectId,
 						taskId,
 						taskName,
@@ -312,49 +272,47 @@ const createActivity = () => async (req, res) => {
 						isOpen: true,
 						dueDate,
 						timeToComplete,
-						status: getStatus(dueDate),
-					});
-					return await newActivity.save();
-				},
+						status: getProjectStatus(dueDate),
+					}),
 			),
 		);
 
-		savedTask.activities = savedTask.activities.concat(
-			savedActivities.map((activity) => activity._id),
+		task.activities = task.activities.concat(
+			activities.map((activity) => activity._id),
 		);
 
 		const mergedAssignees = [
-			...savedActivities.reduce(
+			...activities.reduce(
 				(assignees, action) => assignees.concat(action.selectedAssignees),
 				[],
 			),
 		];
 
 		const concatenatedTaskArray =
-			savedTask.selectedAssignees.concat(mergedAssignees);
+			task.selectedAssignees.concat(mergedAssignees);
 		const uniqueTaskSet = new Set(concatenatedTaskArray);
 		const uniqueTaskArray = Array.from(uniqueTaskSet);
-		savedTask.selectedAssignees = uniqueTaskArray;
+		task.selectedAssignees = uniqueTaskArray;
 
-		await savedTask.save();
+		await task.save();
 
-		const concatenatedProjectTaskArray = savedProject.selectedAssignees.concat(
-			savedTask.selectedAssignees,
+		const concatenatedProjectTaskArray = project.selectedAssignees.concat(
+			task.selectedAssignees,
 		);
 
 		const uniqueProjectArray = Array.from(
 			new Set(concatenatedProjectTaskArray),
 		);
-		savedProject.selectedAssignees = uniqueProjectArray;
+		project.selectedAssignees = uniqueProjectArray;
 
-		await savedProject.save();
+		await project.save();
 
-		res.status(201).json(savedProject);
+		res.status(201).json(project);
 	} catch (error) {
 		res.status(400).json({ message: error.message });
 	}
 };
-const deleteProjectTask = async (req, res) => {
+const deleteTask = async (req, res) => {
 	const { id } = req.params;
 	try {
 		const task = await Task.findByIdAndDelete({
@@ -370,7 +328,7 @@ const deleteProjectTask = async (req, res) => {
 	}
 };
 
-const deleteProjectInnerSubTask = async (req, res) => {
+const deleteSubTaskChild = async (req, res) => {
 	const { id } = req.params;
 	const { taskName } = req.body;
 	try {
@@ -392,7 +350,7 @@ const deleteProjectInnerSubTask = async (req, res) => {
 	}
 };
 
-const deleteProjectSubTask = async (req, res) => {
+const deleteSubTask = async (req, res) => {
 	const { id } = req.params;
 	try {
 		const task = await SubTask.findByIdAndDelete({
@@ -408,7 +366,7 @@ const deleteProjectSubTask = async (req, res) => {
 	}
 };
 
-const createSchedulingProjectTask = () => async (req, res) => {
+const scheduleTask = async (req, res) => {
 	const { assignee, taskName } = req.body;
 
 	try {
@@ -416,13 +374,11 @@ const createSchedulingProjectTask = () => async (req, res) => {
 		if (!savedProject) {
 			return res.status(404).json({ message: "Project not found" });
 		}
-		const newTask = new Task({
+		const newTask = await Task.create({
 			projectId: savedProject._id,
 			taskName,
 			selectedAssignees: assignee,
 		});
-
-		await newTask.save();
 
 		savedProject.totalTasks = (savedProject.totalTasks || 0) + 1;
 		savedProject.tasks.push(newTask._id);
@@ -435,17 +391,16 @@ const createSchedulingProjectTask = () => async (req, res) => {
 	}
 };
 
-const addProjectTask = () => async (req, res) => {
-	const { id } = req.params;
+const addProjectTask = async (req, res) => {
+	const { projectId } = req.params;
 
 	const { timeToComplete, dueDate, taskName, selectedAssignees, companyName } =
 		req.body;
 
-	const status = getStatus(dueDate);
-
 	try {
-		const newTask = new Task({
-			projectId: id,
+		const status = getProjectStatus(dueDate);
+		const newTask = await Task.create({
+			projectId,
 			dueDate,
 			taskName,
 			status,
@@ -454,9 +409,8 @@ const addProjectTask = () => async (req, res) => {
 			timeToComplete,
 			companyName,
 		});
-		await newTask.save();
 
-		const savedProject = await Project.findById(id);
+		const savedProject = await Project.findById(projectId);
 
 		if (savedProject?.selectedAssignees?.length === 0) {
 			savedProject.selectedAssignees = newTask.selectedAssignees;
@@ -480,7 +434,7 @@ const addProjectTask = () => async (req, res) => {
 	}
 };
 
-const updateProjectTask = () => async (req, res) => {
+const updateProjectTask = async (req, res) => {
 	const { id } = req.params;
 	const {
 		timeToComplete,
@@ -491,9 +445,8 @@ const updateProjectTask = () => async (req, res) => {
 		projectId,
 	} = req.body;
 
-	const status = getStatus(dueDate);
-
 	try {
+		const status = getProjectStatus(dueDate);
 		const updatedData = {
 			timeToComplete,
 			dueDate,
@@ -528,7 +481,7 @@ const updateProjectTask = () => async (req, res) => {
 	}
 };
 
-const updateTaskSubTask = () => async (req, res) => {
+const updateTaskSubTask = async (req, res) => {
 	const { id } = req.params;
 	const {
 		subTaskName,
@@ -540,9 +493,8 @@ const updateTaskSubTask = () => async (req, res) => {
 		projectId,
 	} = req.body;
 
-	const status = getStatus(subTaskDueDate);
-
 	try {
+		const status = getProjectStatus(subTaskDueDate);
 		const updatedData = {
 			timeToComplete: parseInt(Math.ceil(subTaskTimeToComplete)),
 			dueDate: subTaskDueDate,
@@ -590,7 +542,7 @@ const updateTaskSubTask = () => async (req, res) => {
 	}
 };
 
-const updateInnerSubTasks = () => async (req, res) => {
+const updateInnerSubTasks = async (req, res) => {
 	const { id } = req.params;
 	const {
 		selectedAssignees,
@@ -617,7 +569,7 @@ const updateInnerSubTasks = () => async (req, res) => {
 			matchingInnerSubtask.priority = priority;
 			matchingInnerSubtask.subTaskDueDate = subTaskDueDate;
 			matchingInnerSubtask.subTaskTimeToComplete = subTaskTimeToComplete;
-			matchingInnerSubtask.status = getStatus(subTaskDueDate);
+			matchingInnerSubtask.status = getProjectStatus(subTaskDueDate);
 		} else {
 			console.log("InnerSubtask not found.");
 		}
@@ -659,7 +611,7 @@ const updateInnerSubTasks = () => async (req, res) => {
 	}
 };
 
-const updateTaskActivity = () => async (req, res) => {
+const updateTaskActivity = async (req, res) => {
 	const { id } = req.params;
 
 	const {
@@ -671,42 +623,42 @@ const updateTaskActivity = () => async (req, res) => {
 		projectName,
 		timeToComplete,
 	} = req.body;
-	const status = getStatus(dueDate);
+	const status = getProjectStatus(dueDate);
 	try {
 		const savedTask = await Task.findById(id);
 		if (req.body?.subtasks?.length > 0) {
 			const savedSubTasks = await Promise.all(
-				req.body?.subtasks.map(async (subtask) => {
-					const newSubTask = new SubTask({
-						projectId,
-						taskId,
-						name: subtask.taskName || subtask.name,
-						selectedAssignees: subtask.selectedAssignees,
-						isOpen: true,
-						dueDate,
-						timeToComplete,
-						status,
-					});
-					return await newSubTask.save();
-				}),
+				req.body?.subtasks.map(
+					async (subtask) =>
+						await SubTask.create({
+							projectId,
+							taskId,
+							name: subtask.taskName || subtask.name,
+							selectedAssignees: subtask.selectedAssignees,
+							isOpen: true,
+							dueDate,
+							timeToComplete,
+							status,
+						}),
+				),
 			);
 			savedTask.subtasks = savedSubTasks.map((subtask) => subtask._id);
 		}
 		const savedActivities = await Promise.all(
-			action.map(async (activity) => {
-				const newActivity = new Activity({
-					projectId,
-					taskId,
-					name: activity.taskName || activity.name,
-					selectedAssignees:
-						activity.selectedAssignees || activity.selectedAssignee,
-					isOpen: true,
-					dueDate,
-					timeToComplete,
-					status,
-				});
-				return await newActivity.save();
-			}),
+			action.map(
+				async (activity) =>
+					await Activity.create({
+						projectId,
+						taskId,
+						name: activity.taskName || activity.name,
+						selectedAssignees:
+							activity.selectedAssignees || activity.selectedAssignee,
+						isOpen: true,
+						dueDate,
+						timeToComplete,
+						status,
+					}),
+			),
 		);
 
 		savedTask.name = taskName;
@@ -719,12 +671,11 @@ const updateTaskActivity = () => async (req, res) => {
 	}
 };
 
-const getStatus = (dueDate) => {
+const getProjectStatus = (dueDate) => {
 	const currentDate = new Date().toISOString().split("T")[0];
 	const daysOverdue = Math.floor(
 		(new Date(currentDate) - new Date(dueDate)) / (1000 * 60 * 60 * 24),
 	);
-
 	if (dueDate < currentDate) {
 		return `Overdue ${daysOverdue}`;
 	} else if (dueDate === currentDate) {
@@ -736,9 +687,8 @@ const getStatus = (dueDate) => {
 	}
 };
 
-const updateProject = () => async (req, res) => {
+const updateProject = async (req, res) => {
 	const { id } = req.params;
-
 	const {
 		projectName,
 		timeToComplete,
@@ -749,8 +699,8 @@ const updateProject = () => async (req, res) => {
 		priority,
 		selectedAssignees,
 	} = req.body;
-	const status = getStatus(dueDate);
 	try {
+		const status = getProjectStatus(dueDate);
 		const updatedData = {
 			name: projectName,
 			timeToComplete,
@@ -774,7 +724,7 @@ const updateProject = () => async (req, res) => {
 	}
 };
 
-const createProject = () => async (req, res) => {
+const createProject = async (req, res) => {
 	const {
 		projectName,
 		timeToComplete,
@@ -784,21 +734,21 @@ const createProject = () => async (req, res) => {
 		managerName,
 		companyName,
 	} = req.body;
-	const status = getStatus(dueDate);
-	const project = new Project({
-		name: projectName,
-		timeToComplete,
-		startDate,
-		dueDate,
-		managerName,
-		status,
-		managerId,
-		companyName,
-	});
-	try {
-		const savedProject = await project.save();
 
-		res.status(201).json(savedProject);
+	try {
+		const status = getProjectStatus(dueDate);
+		const newProject = await Project.create({
+			name: projectName,
+			timeToComplete,
+			startDate,
+			dueDate,
+			managerName,
+			status,
+			managerId,
+			companyName,
+		});
+
+		res.status(201).json(newProject);
 	} catch (error) {
 		res.status(400).json({ message: error.message });
 	}
@@ -813,15 +763,15 @@ module.exports = {
 	updateProjectSubTask,
 	createActivity,
 	addProjectTask,
-	addTaskSubTask,
+	addSubTask,
 	updateTaskSubTask,
 	addTaskSubTasks,
-	getStatus,
-	deleteProjectTask,
-	deleteProjectSubTask,
-	deleteProjectInnerSubTask,
+	getProjectStatus,
+	deleteTask,
+	deleteSubTask,
+	deleteSubTaskChild,
 	updateInnerSubTasks,
-	createSchedulingProjectTask,
-	getProjectsByUser,
-	getAllCompanyProjects,
+	scheduleTask,
+	getAssigneeProjects,
+	getCompanyProjects,
 };

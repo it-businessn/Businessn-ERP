@@ -16,6 +16,22 @@ const TaskService = {
 	async updateTask(data, id) {
 		return apiService.put(`/tasks/${id}`, data, id);
 	},
+
+	async updateTaskStatus(data, id) {
+		return apiService.put(`/tasks/status/${id}`, data, id);
+	},
+
+	async updateSubTaskStatus(data, id) {
+		return apiService.put(`/tasks/subtask/status/${id}`, data, id);
+	},
+
+	async updateInnerSubTaskStatus(data, id) {
+		return apiService.put(`/tasks/subtask-child/status/${id}`, data, id);
+	},
+
+	async updateTaskActivityStatus(data, id) {
+		return apiService.put(`/tasks/activity/status/${id}`, data, id);
+	},
 };
 
 export default TaskService;

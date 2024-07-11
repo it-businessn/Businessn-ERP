@@ -2,52 +2,43 @@ const express = require("express");
 const router = express.Router();
 
 const projectController = require("../controllers/projectController");
-const taskController = require("../controllers/taskController");
 
-router.get("/", projectController.getProjects());
-router.get("/comp/:id", projectController.getAllCompanyProjects());
+router.get("/", projectController.getProjects);
+router.get("/:companyName", projectController.getCompanyProjects);
 
-router.get("/:id/:company", projectController.getProjectsByUser());
-
-router.post("/", projectController.createProject());
-
-router.post("/activity", projectController.createActivity());
-
-router.put("/:id", projectController.updateProject());
-
-router.put("/task/:id", projectController.addProjectTask());
-
-router.post("/scheduling", projectController.createSchedulingProjectTask());
-
-router.delete("/task/:id", projectController.deleteProjectTask);
-
-router.delete("/subtask/:id", projectController.deleteProjectSubTask);
-
-router.put(
-	"/delete-inner-subtask/:id",
-	projectController.deleteProjectInnerSubTask,
+router.get(
+	"/:selectedAssignees/:companyName",
+	projectController.getAssigneeProjects,
 );
 
-router.put("/task-subtask/:id", projectController.addTaskSubTask());
+router.post("/", projectController.createProject);
 
-router.put("/task-add-subtask/:id", projectController.addTaskSubTasks());
+router.post("/activity", projectController.createActivity);
 
-router.put("/update-subtask/:id", projectController.updateTaskSubTask());
+router.put("/:id", projectController.updateProject);
 
-router.put("/update-task/:id", projectController.updateProjectTask());
+router.put("/task/:projectId", projectController.addProjectTask);
 
-router.put("/subtask/:id", projectController.updateProjectSubTask());
+router.post("/scheduling", projectController.scheduleTask);
 
-router.put("/task/activity/:id", projectController.updateTaskActivity());
+router.delete("/task/:id", projectController.deleteTask);
 
-router.put("/task/status/:id", taskController.updateTask());
+router.delete("/subtask/:id", projectController.deleteSubTask);
 
-router.put("/subtask/status/:id", taskController.updateSubTask());
+router.put("/subtask-child/:id", projectController.deleteSubTaskChild);
 
-router.put("/inner-subtask/:id", projectController.updateInnerSubTasks());
+router.put("/task-subtask/:id", projectController.addSubTask);
 
-router.put("/inner-subtask/status/:id", taskController.updateInnerSubTask());
+router.put("/task-add-subtask/:id", projectController.addTaskSubTasks);
 
-router.put("/activity/status/:id", taskController.updateActivity());
+router.put("/update-subtask/:id", projectController.updateTaskSubTask);
+
+router.put("/update-task/:id", projectController.updateProjectTask);
+
+router.put("/subtask/:projectId", projectController.updateProjectSubTask);
+
+router.put("/task/activity/:id", projectController.updateTaskActivity);
+
+router.put("/inner-subtask/:id", projectController.updateInnerSubTasks);
 
 module.exports = router;

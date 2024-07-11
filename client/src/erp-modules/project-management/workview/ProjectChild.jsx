@@ -11,7 +11,7 @@ import {
 } from "@chakra-ui/react";
 import React, { useState } from "react";
 import { FaChevronDown } from "react-icons/fa";
-import ProjectService from "services/ProjectService";
+import TaskService from "services/TaskService";
 import {
 	AddTaskButton,
 	CircularProgressBarCell,
@@ -47,7 +47,7 @@ const ProjectChild = ({
 		const isOpen = e.target.checked;
 		setIsTaskCompleted(isOpen);
 		try {
-			await ProjectService.updateTaskStatus({ isOpen }, taskId);
+			await TaskService.updateTaskStatus({ isOpen }, taskId);
 		} catch (error) {
 			console.error("Error updating task status:", error);
 		}
