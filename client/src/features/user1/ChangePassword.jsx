@@ -63,7 +63,7 @@ const ChangePassword = ({
 				passwordData,
 				userData._id,
 			);
-			setUserData(response.data.updatedUser);
+			setUserData(response.data.result);
 			setPasswordMode(false);
 		} catch (error) {
 			console.error("Error changing password:", error?.response?.data);

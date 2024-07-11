@@ -1,24 +1,10 @@
 // const User = require("../models/User");
-const bcrypt = require("bcrypt");
 const Employee = require("../models/Employee");
-const UserPermissions = require("../models/permissions");
 const Company = require("../models/Company");
 const Group = require("../models/Group");
-const jwt = require("jsonwebtoken");
 const Lead = require("../models/Lead");
-const sendEmail = require("../emailService/sendEmail");
 const Task = require("../models/Task");
 const UserActivity = require("../models/UserActivity");
-const {
-	ADMIN_PERMISSION,
-	SALES_ASSOCIATE_PERMISSION,
-} = require("./permissionController");
-
-const currentDate = new Date();
-
-const createToken = (_id) => {
-	return jwt.sign({ _id }, process.env.JWT_SECRET_KEY, { expiresIn: "3d" });
-};
 
 const getAllUsers = () => async (req, res) => {
 	try {
@@ -26,24 +12,25 @@ const getAllUsers = () => async (req, res) => {
 			firstName: 1,
 		});
 		res.status(200).json(users);
-	} catch (error) {
-		res.status(404).json({ error: error.message });
+	} catch (err) {
+		res.status(404).json({ error: err.message });
 	}
 };
+
 const getUserActivity = () => async (req, res) => {
+	const currentDate = new Date();
+
+	const today = new Date(
+		currentDate.getFullYear(),
+		currentDate.getMonth(),
+		currentDate.getDate() + 1,
+	);
+
 	try {
 		const users = await UserActivity.find({
 			loginTime: {
-				$gte: new Date(
-					currentDate.getFullYear(),
-					currentDate.getMonth(),
-					currentDate.getDate(),
-				),
-				$lt: new Date(
-					currentDate.getFullYear(),
-					currentDate.getMonth(),
-					currentDate.getDate() + 1,
-				),
+				$gte: today,
+				$lt: today,
 			},
 		});
 		res.status(200).json(users);
@@ -51,6 +38,7 @@ const getUserActivity = () => async (req, res) => {
 		res.status(404).json({ error: error.message });
 	}
 };
+
 const getAllCompanyUsers = () => async (req, res) => {
 	const { id } = req.params;
 	try {
@@ -166,244 +154,6 @@ const getAllSalesAgents = () => async (req, res) => {
 	}
 };
 
-const loginUser = () => async (req, res) => {
-	const { email, password } = req.body;
-
-	try {
-		const user = await Employee.findOne({ email }).populate({
-			path: "companyId",
-			model: "Company",
-			select: "name",
-		});
-		// user.companyId.push("6667917cd1855c4803b54574");
-		// await user.save();
-		// const existingCompany = await Company.findById("6667917cd1855c4803b54574");
-		// existingCompany.employees.push(user._id);
-		// await existingCompany.save();
-		if (!user) {
-			return res.status(500).json({ error: "User does not exist" });
-		}
-		const currentTime = new Date();
-		const activity = new UserActivity({
-			userID: user._id,
-			loginTime: currentTime,
-		});
-		await activity.save();
-		// return res.json({ message: "Login successful", user, activity });
-		const match = await bcrypt.compare(password, user.password);
-		return match
-			? res.json({ message: "Login successful", user })
-			: res.status(401).json({ error: "Invalid password" });
-	} catch (error) {
-		console.error("Error checking password:", error);
-		return res.status(500).json({ error: "Internal server error" });
-	}
-};
-
-const logOutUser = () => async (req, res) => {
-	const { id } = req.params;
-	try {
-		const currentTime = new Date();
-		const activity = await UserActivity.findOne({
-			userID: id,
-			logoutTime: null,
-		});
-
-		if (activity) {
-			activity.logoutTime = currentTime;
-			await activity.save();
-			console.log(`User ${id} logged out at ${currentTime}`);
-		} else {
-			console.log(`User ${id} is not logged in.`);
-		}
-		return res.json({ message: "Logout successful", activity });
-	} catch (error) {
-		console.error("Error checking password:", error);
-		return res.status(500).json({ error: "Internal server error" });
-	}
-};
-
-const createEmployee = () => async (req, res) => {
-	const {
-		company,
-		companyId,
-		firstName,
-		middleName,
-		lastName,
-		email,
-		password,
-		role,
-		department,
-		manager,
-		phoneNumber,
-		primaryAddress,
-		employmentType,
-		baseModule,
-	} = req.body;
-
-	const { streetNumber, city, state, postalCode, country } = primaryAddress;
-
-	// const updatedData = { companyId: "6646b03e96dcdc0583fb5dca" };for fd
-	// const updatedLeads = await Employee.updateMany({}, { $set: updatedData });
-	// console.log(updatedLeads);
-
-	try {
-		const existingCompany = await Company.findOne({ name: company });
-		const hashedPassword = await bcrypt.hash(password, 10);
-		const employee = await Employee.create({
-			companyId: existingCompany._id,
-			employeeId: companyId,
-			firstName,
-			middleName,
-			lastName,
-			email,
-			role,
-			department,
-			baseModule,
-			manager,
-			phoneNumber,
-			primaryAddress: { streetNumber, city, state, postalCode, country },
-			employmentType,
-			password: hashedPassword,
-			fullName: `${firstName} ${middleName} ${lastName}`,
-		});
-
-		const userPermission = new UserPermissions({
-			empId: employee._id,
-			companyName: company,
-		});
-		if (
-			role?.includes("Administrators") ||
-			role?.includes("Technical Administrator")
-		) {
-			ADMIN_PERMISSION.forEach((_) => {
-				const item = {
-					name: _.name,
-					canAccessModule: true,
-					canAccessUserData: true,
-					canAccessGroupData: true,
-					canAccessRegionData: true,
-					canAccessAllData: true,
-					canViewModule: true,
-					canEditModule: true,
-					canDeleteModule: true,
-				};
-				userPermission.permissionType.push(item);
-			});
-		} else {
-			SALES_ASSOCIATE_PERMISSION.forEach((_) => {
-				const item = {
-					name: _.name,
-					canAccessModule: true,
-					canAccessUserData: true,
-					canAccessGroupData: false,
-					canAccessRegionData: false,
-					canAccessAllData: false,
-					canViewModule: true,
-					canEditModule: true,
-					canDeleteModule: false,
-				};
-				userPermission.permissionType.push(item);
-			});
-		}
-		await userPermission.save();
-
-		existingCompany.employees.push(employee._id);
-		await existingCompany.save();
-
-		res.status(201).json(employee);
-	} catch (error) {
-		res.status(400).json({ message: error.message });
-	}
-};
-
-const forgotPassword = () => async (req, res) => {
-	const { email } = req.body;
-	try {
-		const user = await Employee.findOne({ email });
-		if (!user) {
-			return res.status(404).json({
-				error: "Email not found! Please enter your registered email address.",
-			});
-		}
-		const token = createToken(user._id);
-
-		const link = `${process.env.BASE_URL_LIVE}/api/reset-password/${user._id}/${token}`;
-
-		await sendEmail(user.email, "Reset Password", link);
-
-		return res.status(200).json({
-			message: "A password reset link has been sent to your email account",
-		});
-	} catch (error) {
-		res.status(400).json({ message: error.message });
-	}
-};
-
-const resetPassword = async (req, res) => {
-	const { id } = req.params;
-	try {
-		const user = await Employee.findById(id);
-		if (!user) {
-			return res.status(404).json({ error: "User does not exist" });
-		}
-		res.render("index", {
-			email: user.email,
-			status: "Not verified ",
-		});
-	} catch (error) {
-		res.status(500).json({ message: "User not Verified!" });
-	}
-};
-
-const setNewPassword = async (req, res) => {
-	const { id } = req.params;
-	const { password } = req.body;
-
-	const user = await Employee.findOne({ _id: id });
-	if (!user) {
-		return res.status(400).json({ status: "User Not Exist!" });
-	}
-
-	try {
-		const hash = await bcrypt.hash(password, 10);
-		await Employee.findByIdAndUpdate(
-			{ _id: id },
-			{
-				$set: { password: hash },
-			},
-		);
-		res.render("index", { email: user.email, status: "verified" });
-	} catch (error) {
-		res.status(500).json({ message: "Something Went Wrong" });
-	}
-};
-const changePassword = () => async (req, res) => {
-	const { newPassword } = req.body;
-	const { id } = req.params;
-	// const user = req.user;
-	try {
-		if (!newPassword) {
-			throw new Error("New password is required");
-		}
-		const hashedPassword = bcrypt.hashSync(newPassword, 10);
-		// user.password = hashedPassword;
-		const updatedUser = await Employee.findByIdAndUpdate(
-			// user[0]._id,
-			id,
-			{ password: hashedPassword },
-			{
-				new: true,
-			},
-		);
-		res
-			.status(201)
-			.json({ message: "Password changed successfully", updatedUser });
-	} catch (error) {
-		res.status(400).json({ message: error.message });
-	}
-};
-
 const updateUser = () => async (req, res) => {
 	const userId = req.params.id;
 
@@ -447,20 +197,13 @@ const updateUserAssignedLeads = async (req, res) => {
 };
 
 module.exports = {
-	changePassword,
-	createEmployee,
 	getAllUsers,
+	getUserActivity,
+	getAllCompanyUsers,
+	getAllEmployeesByRole,
+	getAllMemberGroups,
 	getAllManagers,
-	loginUser,
-	logOutUser,
+	getAllSalesAgents,
 	updateUser,
 	updateUserAssignedLeads,
-	getAllMemberGroups,
-	getAllEmployeesByRole,
-	getAllSalesAgents,
-	forgotPassword,
-	resetPassword,
-	setNewPassword,
-	getAllCompanyUsers,
-	getUserActivity,
 };
