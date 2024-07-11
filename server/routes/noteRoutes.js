@@ -3,12 +3,12 @@ const router = express.Router();
 
 const noteController = require("../controllers/noteController");
 
-router.get("/:id", noteController.getNoteById());
+router.get("/", noteController.getNotes);
 
-router.get("/", noteController.getNotes());
+router.get("/:contactId", noteController.getNote);
 
-router.post("/", noteController.createNote());
+router.post("/", noteController.createNote);
 
-router.put("/:id", noteController.updateNotes());
+router.put("/:id", noteController.updateNotes);
 
 module.exports = router;

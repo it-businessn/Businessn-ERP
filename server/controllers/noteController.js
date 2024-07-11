@@ -4,7 +4,7 @@ const Project = require("../models/Project");
 const SubTask = require("../models/SubTask");
 const Task = require("../models/Task");
 
-const getNotes = () => async (req, res) => {
+const getNotes = async (req, res) => {
 	try {
 		const notes = (await Note.find()).sort((a, b) => b.createdOn - a.createdOn);
 		res.status(200).json(notes);
@@ -13,11 +13,11 @@ const getNotes = () => async (req, res) => {
 	}
 };
 
-const getNoteById = () => async (req, res) => {
-	const id = req.params.id;
+const getNote = async (req, res) => {
+	const { contactId } = req.params;
 
 	try {
-		const notes = (await Note.find({ contactId: id })).sort(
+		const notes = (await Note.find({ contactId })).sort(
 			(a, b) => b.createdOn - a.createdOn,
 		);
 		res.status(200).json(notes);
@@ -26,7 +26,7 @@ const getNoteById = () => async (req, res) => {
 	}
 };
 
-const createNote = () => async (req, res) => {
+const createNote = async (req, res) => {
 	const { contactId, createdBy, description, companyName } = req.body;
 
 	try {
@@ -47,7 +47,7 @@ const createNote = () => async (req, res) => {
 	}
 };
 
-const updateNotes = () => async (req, res) => {
+const updateNotes = async (req, res) => {
 	const { id } = req.params;
 
 	const { type, notes } = req.body;
@@ -82,4 +82,4 @@ const updateNotes = () => async (req, res) => {
 	}
 };
 
-module.exports = { createNote, getNoteById, getNotes, updateNotes };
+module.exports = { createNote, getNote, getNotes, updateNotes };
