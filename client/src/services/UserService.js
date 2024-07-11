@@ -14,7 +14,7 @@ const UserService = {
 	},
 
 	async updateUserAssignedLeads(data, id) {
-		return apiService.put(`/user/lead/${id}`, data, id);
+		return apiService.put(`/user/assignLeads`, data, id);
 	},
 
 	async getAllMemberGroups(data) {
@@ -30,10 +30,6 @@ const UserService = {
 	},
 
 	async getAllCompanyUsers(id) {
-		return apiService.get(`/user/comp/${id}`);
-	},
-
-	async getUserInfo(id) {
 		return apiService.get(`/user/${id}`);
 	},
 

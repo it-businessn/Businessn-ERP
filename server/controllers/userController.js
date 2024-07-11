@@ -6,12 +6,12 @@ const Lead = require("../models/Lead");
 const Task = require("../models/Task");
 const UserActivity = require("../models/UserActivity");
 
-const getAllUsers = () => async (req, res) => {
+const getAllEmployees = () => async (req, res) => {
 	try {
-		const users = await Employee.find({}).sort({
+		const result = await Employee.find({}).sort({
 			firstName: 1,
 		});
-		res.status(200).json(users);
+		res.status(200).json(result);
 	} catch (err) {
 		res.status(404).json({ error: err.message });
 	}
@@ -27,37 +27,38 @@ const getUserActivity = () => async (req, res) => {
 	);
 
 	try {
-		const users = await UserActivity.find({
+		const result = await UserActivity.find({
 			loginTime: {
 				$gte: today,
 				$lt: today,
 			},
 		});
-		res.status(200).json(users);
+		res.status(200).json(result);
 	} catch (error) {
 		res.status(404).json({ error: error.message });
 	}
 };
 
-const getAllCompanyUsers = () => async (req, res) => {
-	const { id } = req.params;
+const findCompany = async (name) => await Company.findOne({ name });
+
+const getCompanyEmployees = () => async (req, res) => {
+	const { companyName } = req.params;
 	try {
-		const company = await Company.findOne({ name: id });
+		const existingCompany = await findCompany(companyName);
+		const result = await Employee.find({ companyId: existingCompany._id });
 
-		const users = await Employee.find({ companyId: company._id });
-
-		res.status(200).json(users);
+		res.status(200).json(result);
 	} catch (error) {
 		res.status(404).json({ error: error.message });
 	}
 };
 
-const getAllEmployeesByRole = () => async (req, res) => {
-	const { id } = req.params;
+const groupEmployeesByRole = () => async (req, res) => {
+	const { companyName } = req.params;
 	try {
 		const tasksByEmployee = await Task.aggregate([
 			{
-				$match: { companyName: id },
+				$match: { companyName },
 			},
 			{
 				$group: {
@@ -71,9 +72,9 @@ const getAllEmployeesByRole = () => async (req, res) => {
 			},
 		]);
 
-		const existingCompany = await Company.findOne({ name: id });
+		const existingCompany = await findCompany(companyName);
 
-		const users = await Employee.aggregate([
+		const result = await Employee.aggregate([
 			{
 				$match: { companyId: existingCompany._id },
 			},
@@ -102,18 +103,18 @@ const getAllEmployeesByRole = () => async (req, res) => {
 				},
 			},
 		]);
-		res.status(200).json(users);
+		res.status(200).json(result);
 	} catch (error) {
 		res.status(404).json({ error: error.message });
 	}
 };
 
-const getAllMemberGroups = () => async (req, res) => {
-	const { id, name } = req.params;
+const getAllGroupMembers = () => async (req, res) => {
+	const { memberId, companyName } = req.params;
 	try {
 		const group = await Group.find({
-			"members._id": id,
-			companyName: name,
+			"members._id": memberId,
+			companyName,
 		});
 		res.status(200).json(group);
 	} catch (error) {
@@ -122,40 +123,39 @@ const getAllMemberGroups = () => async (req, res) => {
 };
 
 const getAllManagers = () => async (req, res) => {
-	const { id } = req.params;
+	const { companyName } = req.params;
 	try {
-		const comp = await Company.findOne({ name: id });
-		const users = await Employee.find({
-			companyId: comp._id,
+		const existingCompany = await findCompany(companyName);
+		const result = await Employee.find({
+			companyId: existingCompany._id,
 			role: { $regex: /manager|administrator/i },
 		});
-		res.status(200).json(users);
+		res.status(200).json(result);
 	} catch (error) {
 		res.status(404).json({ error: error.message });
 	}
 };
 
 const getAllSalesAgents = () => async (req, res) => {
-	const { id } = req.params;
+	const { companyName } = req.params;
 	try {
-		const comp = await Company.findOne({ name: id });
-
-		const users = await Employee.find({
-			companyId: comp._id,
+		const existingCompany = await findCompany(companyName);
+		const result = await Employee.find({
+			companyId: existingCompany._id,
 			role: {
 				$not: {
 					$regex: /manager|administrator/i,
 				},
 			},
 		});
-		res.status(200).json(users);
+		res.status(200).json(result);
 	} catch (error) {
 		res.status(404).json({ error: error.message });
 	}
 };
 
 const updateUser = () => async (req, res) => {
-	const userId = req.params.id;
+	const { userId } = req.params;
 
 	try {
 		const updatedUser = await Employee.findByIdAndUpdate(userId, req.body, {
@@ -170,19 +170,18 @@ const updateUser = () => async (req, res) => {
 
 const updateUserAssignedLeads = async (req, res) => {
 	try {
-		const leads = await Lead.find({
-			isDisbursed: true,
-			isDisbursedConfirmed: false,
-		});
-		const totalRecords = leads.length;
-		const activeUsers = await Employee.find({ isActive: true });
-		const totalWeight = activeUsers.reduce(
-			(sum, item) => sum + item.assignedWeight,
-			0,
+		const { totalLeadsDisbursed, totalWeight, activeUsers } =
+			await getActiveUsers();
+		console.log(
+			"updateUserAssignedLeads",
+			req.params,
+			totalLeadsDisbursed,
+			totalWeight,
+			activeUsers,
 		);
 		for (const user of activeUsers) {
 			const assignedLeads = Math.round(
-				(user.assignedWeight / totalWeight) * totalRecords,
+				(user.assignedWeight / totalWeight) * totalLeadsDisbursed.length,
 			);
 			await Employee.findByIdAndUpdate(
 				user._id,
@@ -190,18 +189,31 @@ const updateUserAssignedLeads = async (req, res) => {
 				{ new: true },
 			);
 		}
-		res.status(200).json({ message: "Updated successfully" });
+		res.status(200).json({ message: "Leads assignee updated successfully" });
 	} catch (error) {
 		res.status(404).json({ error: error.message });
 	}
 };
 
+const getActiveUsers = async () => {
+	const totalLeadsDisbursed = await Lead.find({
+		isDisbursed: true,
+		isDisbursedConfirmed: false,
+	});
+	const activeUsers = await Employee.find({ isActive: true });
+	const totalWeight = activeUsers.reduce(
+		(sum, item) => sum + item.assignedWeight,
+		0,
+	);
+	return { totalLeadsDisbursed, totalWeight, activeUsers };
+};
+
 module.exports = {
-	getAllUsers,
+	getAllEmployees,
 	getUserActivity,
-	getAllCompanyUsers,
-	getAllEmployeesByRole,
-	getAllMemberGroups,
+	getCompanyEmployees,
+	groupEmployeesByRole,
+	getAllGroupMembers,
 	getAllManagers,
 	getAllSalesAgents,
 	updateUser,

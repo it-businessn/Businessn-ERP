@@ -3,14 +3,17 @@ const router = express.Router();
 
 const userController = require("../controllers/userController");
 
-router.get("/", userController.getAllUsers());
+router.get("/", userController.getAllEmployees());
 router.get("/activity", userController.getUserActivity());
-router.get("/comp/:id", userController.getAllCompanyUsers());
-router.get("/emp-roles/:id", userController.getAllEmployeesByRole());
-router.get("/groups/:id/:name", userController.getAllMemberGroups());
-router.get("/managers/:id", userController.getAllManagers());
-router.get("/not-managers/:id", userController.getAllSalesAgents());
-router.put("/:id", userController.updateUser());
-router.put("/lead/:id", userController.updateUserAssignedLeads);
+router.get("/:companyName", userController.getCompanyEmployees());
+router.get("/emp-roles/:companyName", userController.groupEmployeesByRole());
+router.get(
+	"/groups/:memberId/:companyName",
+	userController.getAllGroupMembers(),
+);
+router.get("/managers/:companyName", userController.getAllManagers());
+router.get("/not-managers/:companyName", userController.getAllSalesAgents());
+router.put("/:userId", userController.updateUser());
+router.put("/assignLeads", userController.updateUserAssignedLeads);
 
 module.exports = router;
