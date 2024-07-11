@@ -1,7 +1,7 @@
 const Contact = require("../models/Contact");
 const Meeting = require("../models/Meeting");
 
-const getMeetings = () => async (req, res) => {
+const getMeetings = async (req, res) => {
 	try {
 		const meetings = (await Meeting.find()).sort((a, b) => b.date - a.date);
 		res.status(200).json(meetings);
@@ -10,11 +10,11 @@ const getMeetings = () => async (req, res) => {
 	}
 };
 
-const getMeetingById = () => async (req, res) => {
-	const id = req.params.id;
+const getMeeting = async (req, res) => {
+	const { contactId } = req.params;
 
 	try {
-		const meeting = (await Meeting.find({ contactId: id })).sort(
+		const meeting = (await Meeting.find({ contactId })).sort(
 			(a, b) => b.date - a.date,
 		);
 		res.status(200).json(meeting);
@@ -23,7 +23,7 @@ const getMeetingById = () => async (req, res) => {
 	}
 };
 
-const addMeeting = () => async (req, res) => {
+const addMeeting = async (req, res) => {
 	const {
 		attendees,
 		contactId,
@@ -64,8 +64,8 @@ const addMeeting = () => async (req, res) => {
 	}
 };
 
-const updateMeeting = () => async (req, res) => {
-	const meetingId = req.params.id;
+const updateMeeting = async (req, res) => {
+	const { meetingId } = req.params;
 
 	try {
 		const updatedMeeting = await Meeting.findByIdAndUpdate(
@@ -82,4 +82,9 @@ const updateMeeting = () => async (req, res) => {
 	}
 };
 
-module.exports = { addMeeting, getMeetingById, getMeetings, updateMeeting };
+module.exports = {
+	addMeeting,
+	getMeeting,
+	getMeetings,
+	updateMeeting,
+};

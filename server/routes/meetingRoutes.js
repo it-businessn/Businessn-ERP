@@ -3,12 +3,12 @@ const router = express.Router();
 
 const meetingController = require("../controllers/meetingController");
 
-router.get("/:id", meetingController.getMeetingById());
+router.get("/", meetingController.getMeetings);
 
-router.get("/", meetingController.getMeetings());
+router.get("/:contactId", meetingController.getMeeting);
 
-router.post("/", meetingController.addMeeting());
+router.post("/", meetingController.addMeeting);
 
-router.put("/:id", meetingController.updateMeeting());
+router.put("/:meetingId", meetingController.updateMeeting);
 
 module.exports = router;
