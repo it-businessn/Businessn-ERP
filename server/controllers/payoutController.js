@@ -1,10 +1,10 @@
 const Payout = require("../models/Payout");
 
 const getAllPayouts = async (req, res) => {
-	const { id } = req.params;
+	const { companyName } = req.params;
 	try {
 		const payouts = await Payout.find({
-			companyName: id,
+			companyName,
 		}).sort({
 			createdOn: -1,
 		});
@@ -19,14 +19,12 @@ const addPayout = async (req, res) => {
 	const { amount, fullName, saleId, companyName } = req.body;
 
 	try {
-		const payout = new Payout({
+		const newPayout = await Payout.create({
 			amount,
 			fullName,
 			saleId,
 			companyName,
 		});
-
-		const newPayout = await payout.save();
 		res.status(201).json(newPayout);
 	} catch (error) {
 		res.status(400).json({ message: error.message });
@@ -36,11 +34,11 @@ const addPayout = async (req, res) => {
 const updatePayout = async (req, res) => {
 	const { id } = req.params;
 	try {
-		const assessment = await Assessment.findByIdAndUpdate(id, req.body, {
+		const payout = await Payout.findByIdAndUpdate(id, req.body, {
 			new: true,
 		});
 
-		res.status(201).json(assessment);
+		res.status(201).json(payout);
 	} catch (error) {
 		res.status(400).json({ message: error.message });
 	}

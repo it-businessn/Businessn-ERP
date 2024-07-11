@@ -4,17 +4,16 @@ const UserActivity = require("../models/UserActivity");
 const UserPermissions = require("../models/permissions");
 
 const {
-	ADMIN_PERMISSION,
-	SALES_ASSOCIATE_PERMISSION,
-} = require("./permissionController");
-
-const {
 	hashPassword,
 	comparePassword,
 	hashSyncPassword,
 } = require("../services/passwordService");
 const { getResetPasswordLink } = require("../services/tokenService");
 const { sendEmail } = require("../services/emailService");
+const {
+	ADMIN_PERMISSION,
+	SALES_ASSOCIATE_PERMISSION,
+} = require("../services/data");
 
 const signUp = () => async (req, res) => {
 	const {

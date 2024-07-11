@@ -3,7 +3,7 @@ const router = express.Router();
 
 const payoutController = require("../controllers/payoutController");
 
-router.get("/:id", payoutController.getAllPayouts);
+router.get("/:companyName", payoutController.getAllPayouts);
 
 router.post("/", payoutController.addPayout);
 
