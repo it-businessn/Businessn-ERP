@@ -57,7 +57,6 @@ app.use((request, response, next) => {
 app.use("/api", appRoutes);
 app.use("/api/user", userRoutes);
 app.use("/api/activities", activityRoutes);
-app.use("/api/comms", conversationRoutes);
 app.use("/api/resource", resourceRoutes);
 app.use("/api/contacts", contactRoutes);
 app.use("/api/industry", industryRoutes);

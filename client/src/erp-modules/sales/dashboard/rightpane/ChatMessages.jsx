@@ -25,7 +25,7 @@ const ChatMessages = ({ userId, company }) => {
 	useEffect(() => {
 		const fetchAllUserConversation = async () => {
 			try {
-				const response = await CommunicationService.getAllUserConversations({
+				const response = await CommunicationService.getUserConversations({
 					userId,
 					company,
 				});

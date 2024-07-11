@@ -17,7 +17,7 @@ const ChatHistory = ({
 	useEffect(() => {
 		const fetchConversationHistory = async () => {
 			try {
-				const response = await CommunicationService.messageHistory({
+				const response = await CommunicationService.getConversationHistory({
 					id: currentConversation._id,
 					type: currentConversation.conversationType,
 				});
@@ -56,7 +56,7 @@ const ChatHistory = ({
 		try {
 			const { id, type } = await createConversation();
 			if (type === "one-on-one") {
-				await CommunicationService.sendMessage({
+				await CommunicationService.createOneToOneMessages({
 					text: message,
 					senderId: userId,
 					receiverId: currentConversation.participant._id,

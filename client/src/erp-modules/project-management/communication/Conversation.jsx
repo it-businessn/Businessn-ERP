@@ -30,7 +30,7 @@ const Conversation = ({
 	useEffect(() => {
 		const fetchGroupConversations = async () => {
 			try {
-				const response = await CommunicationService.getGroupConversationByName(
+				const response = await CommunicationService.getGroupMessages(
 					selectedGroup?.name,
 				);
 				response?.data[0]?.groupMessages.map((msg) => {
@@ -46,7 +46,7 @@ const Conversation = ({
 		};
 		const fetchTwoUsersConversations = async () => {
 			try {
-				const response = await CommunicationService.getTwoUsersConversation({
+				const response = await CommunicationService.getOneToOneConversation({
 					userId1: selectedGroupMember._id,
 					userId2: userId,
 				});
@@ -89,7 +89,7 @@ const Conversation = ({
 			const { id, type } = await createConversation();
 
 			if (type === "one-on-one") {
-				await CommunicationService.sendMessage({
+				await CommunicationService.createOneToOneMessages({
 					text: message,
 					senderId: userId,
 					receiverId: selectedGroupMember._id,
