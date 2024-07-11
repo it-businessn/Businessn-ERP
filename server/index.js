@@ -60,7 +60,6 @@ app.use("/api/contacts", contactRoutes);
 app.use("/api/industry", industryRoutes);
 app.use("/api/conversations", conversationRoutes);
 app.use("/api/events", eventRoutes);
-app.use("/api/form", formRoutes);
 app.use("/api/leads", leadRoutes);
 app.use("/api/log-tasks", logTaskRoutes);
 app.use("/api/meetings", meetingRoutes);

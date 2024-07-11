@@ -3,7 +3,7 @@ const Employee = require("../models/Employee");
 const Lead = require("../models/Lead");
 const LeadCompany = require("../models/LeadCompany");
 
-const getGroupedOpportunities = () => async (req, res) => {
+const getGroupedOpportunities = async (req, res) => {
 	try {
 		const leadsByMonth = await Lead.aggregate([
 			{
@@ -34,12 +34,13 @@ const getGroupedOpportunities = () => async (req, res) => {
 		res.status(404).json({ error: error.message });
 	}
 };
-const getGroupedOpportunitiesByCompany = () => async (req, res) => {
-	const { id } = req.params;
+
+const getGroupedOpportunitiesByCompany = async (req, res) => {
+	const { companyName } = req.params;
 	try {
 		const leadsByMonth = await Lead.aggregate([
 			{
-				$match: { companyName: id },
+				$match: { companyName },
 			},
 			{
 				$group: {
@@ -53,13 +54,14 @@ const getGroupedOpportunitiesByCompany = () => async (req, res) => {
 		]);
 		const pipelineLeads = await Lead.find({
 			stage: { $in: ["T1", "T2", "T3", "T4"] },
-			companyName: id,
+			companyName,
 		});
 
 		const salesMade = await Lead.find({
 			stage: { $in: ["T3", "T4"] },
-			companyName: id,
+			companyName,
 		});
+
 		const leadCounts = leadsByMonth.map((item) => ({
 			month: item._id,
 			count: item.count,
@@ -71,13 +73,13 @@ const getGroupedOpportunitiesByCompany = () => async (req, res) => {
 		res.status(404).json({ error: error.message });
 	}
 };
-const getOpportunities = () => async (req, res) => {
-	const { id } = req.params;
+const getOpportunities = async (req, res) => {
+	const { companyName } = req.params;
 	// const updatedData = { companyName: "Fractional Departments Inc." };
 	// const updatedLeads = await Lead.updateMany({}, { $set: updatedData });
 	// console.log(updatedLeads);
 	try {
-		const leads = (await Lead.find({ companyName: id })).sort(
+		const leads = (await Lead.find({ companyName })).sort(
 			(a, b) => b.createdOn - a.createdOn,
 		);
 		res.status(200).json(leads);
@@ -86,12 +88,12 @@ const getOpportunities = () => async (req, res) => {
 	}
 };
 
-const getDisbursedLeads = () => async (req, res) => {
-	const { id } = req.params;
+const getDisbursedLeads = async (req, res) => {
+	const { companyName } = req.params;
 	try {
 		const leads = (
 			await Lead.find({
-				companyName: id,
+				companyName,
 				isDisbursed: true,
 				isDisbursedConfirmed: false,
 			})
@@ -102,12 +104,12 @@ const getDisbursedLeads = () => async (req, res) => {
 	}
 };
 
-const getNotDisbursedLeads = () => async (req, res) => {
-	const { id } = req.params;
+const getLeadsNotDisbursed = async (req, res) => {
+	const { companyName } = req.params;
 	try {
-		const leads = (
-			await Lead.find({ isDisbursed: false, companyName: id })
-		).sort((a, b) => b.createdOn - a.createdOn);
+		const leads = (await Lead.find({ isDisbursed: false, companyName })).sort(
+			(a, b) => b.createdOn - a.createdOn,
+		);
 
 		res.status(200).json(leads);
 	} catch (error) {
@@ -115,19 +117,18 @@ const getNotDisbursedLeads = () => async (req, res) => {
 	}
 };
 
-const getLeadCompanies = () => async (req, res) => {
-	const { id } = req.params;
+const getLeadCompanies = async (req, res) => {
+	const { companyName } = req.params;
 	try {
-		const leadCompanies = await LeadCompany.find({ companyName: id });
-
+		const leadCompanies = await LeadCompany.find({ companyName });
 		res.status(200).json(leadCompanies);
 	} catch (error) {
 		res.status(404).json({ error: error.message });
 	}
 };
 
-const getConfirmedDisbursedLeads = () => async (req, res) => {
-	const { id } = req.params;
+const getConfirmedDisbursedLeads = async (req, res) => {
+	const { companyName } = req.params;
 	try {
 		// const leads = (await Lead.find({ isDisbursedConfirmed: true })).sort(
 		// 	(a, b) => b.createdOn - a.createdOn,
@@ -136,7 +137,7 @@ const getConfirmedDisbursedLeads = () => async (req, res) => {
 		// 	(a, b) => b.createdOn - a.createdOn,
 		// );
 		const leads = await Lead.find({
-			companyName: id,
+			companyName,
 			stage: { $in: ["L1", "L2", "L3", "L4"] },
 		});
 		res.status(200).json(leads);
@@ -145,11 +146,11 @@ const getConfirmedDisbursedLeads = () => async (req, res) => {
 	}
 };
 
-const getTargetLeads = () => async (req, res) => {
-	const { id } = req.params;
+const getTargetLeads = async (req, res) => {
+	const { companyName } = req.params;
 	try {
 		const leads = await Lead.find({
-			companyName: id,
+			companyName,
 			stage: { $in: ["T1", "T2", "T3", "T4"] },
 		});
 		res.status(200).json(leads);
@@ -157,12 +158,13 @@ const getTargetLeads = () => async (req, res) => {
 		res.status(404).json({ error: error.message });
 	}
 };
-const getLeadInfo = () => async (req, res) => {
-	const { id, name } = req.params;
+
+const getLead = async (req, res) => {
+	const { id, companyName } = req.params;
 	try {
 		const lead = await Lead.findOne({
 			_id: id,
-			companyName: name,
+			companyName,
 		});
 		res.status(200).json(lead);
 	} catch (error) {
@@ -170,7 +172,7 @@ const getLeadInfo = () => async (req, res) => {
 	}
 };
 
-const createLeadOpportunity = () => async (req, res) => {
+const createLeadOpportunity = async (req, res) => {
 	const {
 		abbreviation,
 		address,
@@ -235,7 +237,7 @@ const createLeadOpportunity = () => async (req, res) => {
 		res.status(400).json({ message: error.message });
 	}
 };
-const createLeadCompany = () => async (req, res) => {
+const createLeadCompany = async (req, res) => {
 	const { name, companyName } = req.body;
 
 	try {
@@ -250,7 +252,7 @@ const createLeadCompany = () => async (req, res) => {
 	}
 };
 
-const createMultipleLeadOpportunity = () => async (req, res) => {
+const createMultipleLeadOpportunity = async (req, res) => {
 	const { newRecord, companyName } = req.body;
 
 	let leadsCreated = 0;
@@ -325,7 +327,7 @@ const distributeLeadsAmongTeamMembers = (leads) => {
 	return distributedLeads;
 };
 
-const disburseLeads = () => async (req, res) => {
+const disburseLeads = async (req, res) => {
 	const distributedLeadIDs = req.body;
 
 	try {
@@ -354,7 +356,7 @@ const disburseLeads = () => async (req, res) => {
 	// }
 };
 
-const confirmDisburseLeads = () => async (req, res) => {
+const confirmDisburseLeads = async (req, res) => {
 	const distributedLeadIDs = req.body;
 
 	try {
@@ -383,7 +385,7 @@ const confirmDisburseLeads = () => async (req, res) => {
 	}
 };
 
-const updateLeadInfo = () => async (req, res) => {
+const updateLead = async (req, res) => {
 	const { id } = req.params;
 
 	try {
@@ -429,8 +431,8 @@ module.exports = {
 	getConfirmedDisbursedLeads,
 	getDisbursedLeads,
 	getOpportunities,
-	getNotDisbursedLeads,
-	updateLeadInfo,
+	getLeadsNotDisbursed,
+	updateLead,
 	createMultipleLeadOpportunity,
 	deleteLead,
 	getLeadCompanies,
@@ -438,5 +440,5 @@ module.exports = {
 	getGroupedOpportunities,
 	getTargetLeads,
 	getGroupedOpportunitiesByCompany,
-	getLeadInfo,
+	getLead,
 };

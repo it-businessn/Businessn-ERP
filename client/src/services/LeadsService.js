@@ -13,7 +13,7 @@ const LeadsService = {
 	},
 
 	async getLeadInfo(data) {
-		return apiService.get(`/leads/info/${data.id}/${data.company}`);
+		return apiService.get(`/leads/${data.id}/${data.company}`);
 	},
 
 	// async getConfirmedDisbursedLeads(data) {
@@ -37,7 +37,7 @@ const LeadsService = {
 	},
 
 	async getGroupedOpportunitiesByCompany(id) {
-		return apiService.get(`/leads/comp/${id}`);
+		return apiService.get(`/leads/${id}`);
 	},
 
 	async getOpportunities(id) {

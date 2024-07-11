@@ -3,36 +3,36 @@ const router = express.Router();
 
 const leadController = require("../controllers/leadController");
 
-router.get("/disburse/:id", leadController.getDisbursedLeads());
+router.get("/disburse/:companyName", leadController.getDisbursedLeads);
 
 router.get(
-	"/disburse/isConfirmed/:id",
-	leadController.getConfirmedDisbursedLeads(),
+	"/disburse/isConfirmed/:companyName",
+	leadController.getConfirmedDisbursedLeads,
 );
-router.get("/info/:id/:name", leadController.getLeadInfo());
-router.get("/targets/:id", leadController.getTargetLeads());
+router.get("/:companyName", leadController.getGroupedOpportunitiesByCompany);
+router.get("/:id/:companyName", leadController.getLead);
+router.get("/targets/:companyName", leadController.getTargetLeads);
 
-router.get("/not-disbursed/:id", leadController.getNotDisbursedLeads());
+router.get("/not-disbursed/:companyName", leadController.getLeadsNotDisbursed);
 
-router.get("/companies/:id", leadController.getLeadCompanies());
+router.get("/companies/:companyName", leadController.getLeadCompanies);
 
-router.get("/grouped-opportunities", leadController.getGroupedOpportunities());
-router.get("/comp/:id", leadController.getGroupedOpportunitiesByCompany());
-router.get("/opportunities/:id", leadController.getOpportunities());
+router.get("/grouped-opportunities", leadController.getGroupedOpportunities);
+router.get("/opportunities/:companyName", leadController.getOpportunities);
 
-router.post("/companies", leadController.createLeadCompany());
+router.post("/companies", leadController.createLeadCompany);
 
 router.post(
 	"/multiple-opportunities",
-	leadController.createMultipleLeadOpportunity(),
+	leadController.createMultipleLeadOpportunity,
 );
-router.post("/confirm-disburse", leadController.confirmDisburseLeads());
+router.post("/confirm-disburse", leadController.confirmDisburseLeads);
 
-router.post("/disburse", leadController.disburseLeads());
+router.post("/disburse", leadController.disburseLeads);
 
-router.post("/opportunity", leadController.createLeadOpportunity());
+router.post("/opportunity", leadController.createLeadOpportunity);
 
-router.put("/opportunity/:id", leadController.updateLeadInfo());
+router.put("/opportunity/:id", leadController.updateLead);
 
 router.delete("/:id", leadController.deleteLead);
 
