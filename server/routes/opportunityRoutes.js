@@ -5,10 +5,10 @@ const opportunityController = require("../controllers/opportunityController");
 
 router.get("/", opportunityController.getOpportunities);
 
-router.get("/category", opportunityController.getOpportunitiesByCategory);
+router.get("/category", opportunityController.getGroupedOpportunities);
 
 router.post("/", opportunityController.createOpportunity);
 
-router.put("/:id", opportunityController.updateOpportunity);
+router.put("/:opportunityId", opportunityController.updateOpportunity);
 
 module.exports = router;

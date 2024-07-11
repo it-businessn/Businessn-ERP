@@ -2,35 +2,34 @@ const Opportunity = require("../models/Opportunity");
 
 const getOpportunities = async (req, res) => {
 	try {
-		const opportunities = (await Opportunity.find()).sort();
+		const opportunities = (await Opportunity.find({})).sort();
 		res.status(200).json(opportunities);
 	} catch (error) {
 		res.status(404).json({ error: error.message });
 	}
 };
 
-const getOpportunitiesByCategory = () => async (req, res) => {
-	const groupOpportunitiesByCategory = (categories) => {
-		const groupedOpportunities = {};
+const groupOpportunitiesByCategory = (categories) => {
+	const groupedOpportunities = {};
 
-		categories.forEach((category) => {
-			const group = category.stage;
+	categories.forEach((category) => {
+		const group = category.stage;
 
-			if (!groupedOpportunities[group]) {
-				groupedOpportunities[group] = {
-					opportunities: [],
-					categoryCount: {},
-				};
-			}
+		if (!groupedOpportunities[group]) {
+			groupedOpportunities[group] = {
+				opportunities: [],
+				categoryCount: {},
+			};
+		}
+		groupedOpportunities[group].opportunities.push(category);
+	});
 
-			groupedOpportunities[group].opportunities.push(category);
-		});
+	return groupedOpportunities;
+};
 
-		return groupedOpportunities;
-	};
-
+const getGroupedOpportunities = async (req, res) => {
 	try {
-		const opportunities = await Opportunity.find();
+		const opportunities = await Opportunity.find({});
 		const groupedOpportunities = groupOpportunitiesByCategory(opportunities);
 		res.json(groupedOpportunities);
 	} catch (error) {
@@ -41,25 +40,24 @@ const getOpportunitiesByCategory = () => async (req, res) => {
 const createOpportunity = async (req, res) => {
 	const { name, clientName, stage, probability, dealAmount } = req.body;
 
-	const opportunity = new Opportunity({
-		clientName,
-		createdOn: Date.now(),
-		dealAmount,
-		name,
-		probability,
-		stage,
-	});
-
 	try {
-		const newOpportunity = await opportunity.save();
+		const newOpportunity = await Opportunity.create({
+			clientName,
+			createdOn: Date.now(),
+			dealAmount,
+			name,
+			probability,
+			stage,
+		});
+
 		res.status(201).json(newOpportunity);
 	} catch (error) {
 		res.status(400).json({ message: error.message });
 	}
 };
 
-const updateOpportunity = () => async (req, res) => {
-	const opportunityId = req.params.id;
+const updateOpportunity = async (req, res) => {
+	const { opportunityId } = req.params;
 
 	try {
 		const updatedOpportunity = await Opportunity.findByIdAndUpdate(
@@ -77,6 +75,6 @@ const updateOpportunity = () => async (req, res) => {
 module.exports = {
 	createOpportunity,
 	getOpportunities,
-	getOpportunitiesByCategory,
+	getGroupedOpportunities,
 	updateOpportunity,
 };
