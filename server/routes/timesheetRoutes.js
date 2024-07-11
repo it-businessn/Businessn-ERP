@@ -3,12 +3,12 @@ const router = express.Router();
 
 const timesheetController = require("../controllers/timesheetContoller");
 
-router.get("/:id", timesheetController.getTimesheetById());
+router.get("/", timesheetController.getTimesheets);
 
-router.get("/", timesheetController.getTimesheet());
+router.get("/:employeeId", timesheetController.getTimesheet);
 
-router.post("/", timesheetController.createTimesheet());
+router.post("/", timesheetController.createTimesheet);
 
-router.put("/:id", timesheetController.updateTimesheet());
+router.put("/:employeeId", timesheetController.updateTimesheet);
 
 module.exports = router;

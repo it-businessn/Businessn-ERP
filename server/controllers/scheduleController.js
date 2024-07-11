@@ -1,6 +1,6 @@
 const EmployeeShift = require("../models/EmployeeShifts");
 
-const getShifts = () => async (req, res) => {
+const getShifts = async (req, res) => {
 	try {
 		const shifts = (await EmployeeShift.find()).sort(
 			(a, b) => b.createdOn - a.createdOn,
@@ -10,7 +10,8 @@ const getShifts = () => async (req, res) => {
 		res.status(404).json({ error: error.message });
 	}
 };
-const getShiftByDate = () => async (req, res) => {
+
+const getShiftByDate = async (req, res) => {
 	const { id, name } = req.params;
 	const today = new Date();
 	// today.setHours(0, 0, 0, 0);
@@ -30,17 +31,7 @@ const getShiftByDate = () => async (req, res) => {
 	}
 };
 
-const getTaskById = () => async (req, res) => {
-	const { id } = req.params;
-	try {
-		const tasks = await EmployeeShift.find({ selectedAssignees: id });
-		res.status(200).json(tasks);
-	} catch (error) {
-		res.status(404).json({ error: error.message });
-	}
-};
-
-const addShifts = () => async (req, res) => {
+const addShifts = async (req, res) => {
 	const {
 		color,
 		duration,
@@ -70,7 +61,8 @@ const addShifts = () => async (req, res) => {
 		res.status(400).json({ message: error.message });
 	}
 };
-const updateShift = () => async (req, res) => {
+
+const updateShift = async (req, res) => {
 	const { id } = req.params;
 
 	try {

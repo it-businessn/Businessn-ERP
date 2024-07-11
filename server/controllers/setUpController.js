@@ -6,19 +6,19 @@ const Group = require("../models/Group");
 const Module = require("../models/Module");
 const Setup = require("../models/Setup");
 
-const getIdleLeadReAssignment = () => async (req, res) => {
+const getAllSetup = async (req, res) => {
 	try {
-		const idleAssignmentRule = await Setup.find();
-		res.status(200).json(idleAssignmentRule);
+		const rule = await Setup.find({});
+		res.status(200).json(rule);
 	} catch (error) {
 		res.status(404).json({ error: error.message });
 	}
 };
 
-const getAllRoles = () => async (req, res) => {
-	const { id } = req.params;
+const getRoles = async (req, res) => {
+	const { companyName } = req.params;
 	try {
-		const roles = await EmployeeRole.find({ companyName: id }).sort({
+		const roles = await EmployeeRole.find({ companyName }).sort({
 			createdOn: -1,
 		});
 		res.status(200).json(roles);
@@ -27,26 +27,24 @@ const getAllRoles = () => async (req, res) => {
 	}
 };
 
-const addRole = () => async (req, res) => {
+const addRole = async (req, res) => {
 	const { name, description } = req.body;
 
-	const newRole = new EmployeeRole({
-		name,
-		description,
-	});
-
 	try {
-		await newRole.save();
+		const newRole = await EmployeeRole.create({
+			name,
+			description,
+		});
 		res.status(201).json(newRole);
 	} catch (error) {
 		res.status(400).json({ message: error.message });
 	}
 };
 
-const getAllDepartments = () => async (req, res) => {
-	const { id } = req.params;
+const getDepartments = async (req, res) => {
+	const { companyName } = req.params;
 	try {
-		const department = await Department.find({ companyName: id }).sort({
+		const department = await Department.find({ companyName }).sort({
 			createdOn: -1,
 		});
 		res.status(200).json(department);
@@ -55,26 +53,24 @@ const getAllDepartments = () => async (req, res) => {
 	}
 };
 
-const addDepartment = () => async (req, res) => {
+const addDepartment = async (req, res) => {
 	const { name, description } = req.body;
 
-	const newDepartment = new Department({
-		name,
-		description,
-	});
-
 	try {
-		await newDepartment.save();
+		const newDepartment = await Department.create({
+			name,
+			description,
+		});
 		res.status(201).json(newDepartment);
 	} catch (error) {
 		res.status(400).json({ message: error.message });
 	}
 };
 
-const getAllModules = () => async (req, res) => {
-	const { id } = req.params;
+const getModules = async (req, res) => {
+	const { companyName } = req.params;
 	try {
-		const module = await Module.find({ companyName: id }).sort({
+		const module = await Module.find({ companyName }).sort({
 			createdOn: -1,
 		});
 		res.status(200).json(module);
@@ -83,22 +79,21 @@ const getAllModules = () => async (req, res) => {
 	}
 };
 
-const addModule = () => async (req, res) => {
+const addModule = async (req, res) => {
 	const { name, description } = req.body;
 
-	const newModule = new Module({
-		name,
-		description,
-	});
-
 	try {
-		await newModule.save();
+		const newModule = await Module.create({
+			name,
+			description,
+		});
 		res.status(201).json(newModule);
 	} catch (error) {
 		res.status(400).json({ message: error.message });
 	}
 };
-const updateModuleActiveStatus = () => async (req, res) => {
+
+const updateModule = async (req, res) => {
 	const { id } = req.params;
 	try {
 		const setup = await Module.findByIdAndUpdate(
@@ -112,33 +107,32 @@ const updateModuleActiveStatus = () => async (req, res) => {
 	}
 };
 
-const getAllGroups = () => async (req, res) => {
-	const { id } = req.params;
+const getGroups = async (req, res) => {
+	const { companyName } = req.params;
 	try {
-		const group = await Group.find({ companyName: id });
+		const group = await Group.find({ companyName });
 		res.status(200).json(group);
 	} catch (error) {
 		res.status(404).json({ error: error.message });
 	}
 };
 
-const addGroup = () => async (req, res) => {
+const addGroup = async (req, res) => {
 	const { name, baseModule, admin, company } = req.body;
 
-	const newModule = new Group({
-		name,
-		modules: baseModule,
-		admin,
-		companyName: company,
-	});
 	try {
-		await newModule.save();
+		const newModule = await Group.create({
+			name,
+			modules: baseModule,
+			admin,
+			companyName: company,
+		});
 		res.status(201).json(newModule);
 	} catch (error) {
 		res.status(400).json({ message: error.message });
 	}
 };
-const updateGroup = () => async (req, res) => {
+const updateGroup = async (req, res) => {
 	const { id } = req.params;
 	try {
 		const setup = await Group.findByIdAndUpdate(
@@ -152,34 +146,34 @@ const updateGroup = () => async (req, res) => {
 	}
 };
 
-const getAllCompanies = () => async (req, res) => {
+const getCompanies = async (req, res) => {
 	try {
-		const companies = await Company.find();
+		const companies = await Company.find({});
 		res.status(200).json(companies);
 	} catch (error) {
 		res.status(404).json({ error: error.message });
 	}
 };
 
-const getCompanyByName = () => async (req, res) => {
-	const { id } = req.params;
+const getCompany = async (req, res) => {
+	const { name } = req.params;
 	try {
-		const company = await Company.find({ name: id });
+		const company = await Company.find({ name });
 		res.status(200).json(company);
 	} catch (error) {
 		res.status(404).json({ error: error.message });
 	}
 };
 
-const getCompanyByUserId = () => async (req, res) => {
-	const { id } = req.params;
+const getCompanyEmployees = async (req, res) => {
+	const { employees } = req.params;
 	try {
 		// const company = "6646b03e96dcdc0583fb5dca";
 		// const existingCompany = await Company.findById(company);
 		// existingCompany.employees.push(id);
 		// await existingCompany.save();
 
-		const company = await Company.find({ employees: id });
+		const result = await Company.find({ employees });
 
 		// const updatedLeads = await Company.findByIdAndUpdate(
 		// 	"6646b03e96dcdc0583fb5dca",
@@ -188,36 +182,36 @@ const getCompanyByUserId = () => async (req, res) => {
 		// 	},
 		// 	{ new: true },
 		// );
-		res.status(200).json(company);
+		res.status(200).json(result);
 	} catch (error) {
 		res.status(404).json({ error: error.message });
 	}
 };
 
-const addCompany = () => async (req, res) => {
+const addCompany = async (req, res) => {
 	const { name, founding_year, registration_number, address, industry_type } =
 		req.body;
 	const { streetNumber, city, state, postalCode, country } = address;
-	const company = new Company({
-		name,
-		founding_year,
-		registration_number,
-		industry_type,
-		address: { streetNumber, city, state, postalCode, country },
-	});
 
 	try {
-		await company.save();
-		res.status(201).json(company);
+		const newCompany = await Company.create({
+			name,
+			founding_year,
+			registration_number,
+			industry_type,
+			address: { streetNumber, city, state, postalCode, country },
+		});
+
+		res.status(201).json(newCompany);
 	} catch (error) {
 		res.status(400).json({ message: error.message });
 	}
 };
 
-const getAllEmpTypes = () => async (req, res) => {
-	const { id } = req.params;
+const getEmpTypes = async (req, res) => {
+	const { companyName } = req.params;
 	try {
-		const empTypes = await EmploymentType.find({ companyName: id }).sort({
+		const empTypes = await EmploymentType.find({ companyName }).sort({
 			createdOn: -1,
 		});
 		res.status(200).json(empTypes);
@@ -226,47 +220,21 @@ const getAllEmpTypes = () => async (req, res) => {
 	}
 };
 
-const addEmpType = () => async (req, res) => {
+const addEmpType = async (req, res) => {
 	const { name, description } = req.body;
 
-	const newEmpType = new EmploymentType({
-		name,
-		description,
-	});
-
 	try {
-		await newEmpType.save();
+		const newEmpType = await EmploymentType.create({
+			name,
+			description,
+		});
 		res.status(201).json(newEmpType);
 	} catch (error) {
 		res.status(400).json({ message: error.message });
 	}
 };
 
-const getAllApprovers = () => async (req, res) => {
-	try {
-		const approvers = await Department.find().sort({ createdOn: -1 });
-		res.status(200).json(approvers);
-	} catch (error) {
-		res.status(404).json({ error: error.message });
-	}
-};
-
-const addApprovers = () => async (req, res) => {
-	const { name, description } = req.body;
-
-	const approver = new Department({
-		name,
-		description,
-	});
-
-	try {
-		await approver.save();
-		res.status(201).json(approver);
-	} catch (error) {
-		res.status(400).json({ message: error.message });
-	}
-};
-const updateSetUp = () => async (req, res) => {
+const updateSetUp = async (req, res) => {
 	const { id } = req.params;
 	try {
 		const updatedData = req.body;
@@ -281,7 +249,7 @@ const updateSetUp = () => async (req, res) => {
 	}
 };
 
-const setUpIdleLeadReAssignment = () => async (req, res) => {
+const addSetUpRule = async (req, res) => {
 	const {
 		isIdleLeadReassignment,
 		idleTimeHours,
@@ -289,41 +257,37 @@ const setUpIdleLeadReAssignment = () => async (req, res) => {
 		AssignLeadTo,
 	} = req.body;
 
-	const setUpIdleLeadReAssignment = new Setup({
-		isIdleLeadReassignment,
-		idleTimeHours,
-		idleTimeMinutes,
-		AssignLeadTo,
-	});
-
 	try {
-		const newSetUpIdleLeadReAssignment = await setUpIdleLeadReAssignment.save();
-		res.status(201).json(newSetUpIdleLeadReAssignment);
+		const newSetup = await Setup.create({
+			isIdleLeadReassignment,
+			idleTimeHours,
+			idleTimeMinutes,
+			AssignLeadTo,
+		});
+		res.status(201).json(newSetup);
 	} catch (error) {
 		res.status(400).json({ message: error.message });
 	}
 };
 
 module.exports = {
-	setUpIdleLeadReAssignment,
-	getIdleLeadReAssignment,
+	addSetUpRule,
+	getAllSetup,
 	updateSetUp,
 	addRole,
-	getAllRoles,
-	getAllDepartments,
+	getRoles,
+	getDepartments,
 	addDepartment,
-	getAllApprovers,
-	addApprovers,
-	getAllEmpTypes,
+	getEmpTypes,
 	addEmpType,
-	getAllCompanies,
+	getCompanies,
 	addCompany,
-	getCompanyByName,
-	getCompanyByUserId,
+	getCompany,
+	getCompanyEmployees,
 	addModule,
-	getAllModules,
-	updateModuleActiveStatus,
+	getModules,
+	updateModule,
 	updateGroup,
-	getAllGroups,
+	getGroups,
 	addGroup,
 };

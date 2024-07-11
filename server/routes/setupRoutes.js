@@ -3,46 +3,45 @@ const router = express.Router();
 
 const setUpController = require("../controllers/setUpController");
 
-router.get("/roles/:id", setUpController.getAllRoles());
+router.get("/", setUpController.getAllSetup);
 
-router.post("/roles", setUpController.addRole());
+router.post("/", setUpController.addSetUpRule);
 
-router.get("/departments/:id", setUpController.getAllDepartments());
+router.put("/:id", setUpController.updateSetUp);
 
-router.post("/departments", setUpController.addDepartment());
+router.get("/roles/:companyName", setUpController.getRoles);
 
-router.get("/modules/:id", setUpController.getAllModules());
+router.post("/roles", setUpController.addRole);
 
-router.post("/modules", setUpController.addModule());
+router.get("/departments/:companyName", setUpController.getDepartments);
 
-router.put("/modules-status/:id", setUpController.updateModuleActiveStatus());
+router.post("/departments", setUpController.addDepartment);
 
-router.get("/groups/:id", setUpController.getAllGroups());
+router.get("/modules/:companyName", setUpController.getModules);
 
-router.post("/groups", setUpController.addGroup());
+router.post("/modules", setUpController.addModule);
 
-router.put("/groups/:id", setUpController.updateGroup());
+router.put("/modules/:id", setUpController.updateModule);
 
-router.get("/empTypes/:id", setUpController.getAllEmpTypes());
+router.get("/groups/:companyName", setUpController.getGroups);
 
-router.post("/empTypes", setUpController.addEmpType());
+router.post("/groups", setUpController.addGroup);
 
-router.get("/companies", setUpController.getAllCompanies());
+router.put("/groups/:id", setUpController.updateGroup);
 
-router.get("/companies/:id", setUpController.getCompanyByName());
+router.get("/empTypes/:companyName", setUpController.getEmpTypes);
 
-router.get("/companies/user/:id", setUpController.getCompanyByUserId());
+router.post("/empTypes", setUpController.addEmpType);
 
-router.post("/companies", setUpController.addCompany());
+router.get("/companies", setUpController.getCompanies);
 
-router.get("/approvers", setUpController.getAllApprovers());
+router.get("/companies/:name", setUpController.getCompany);
 
-router.post("/approvers", setUpController.addApprovers());
+router.get(
+	"/companies/employees/:employees",
+	setUpController.getCompanyEmployees,
+);
 
-router.get("/idle-lead-config", setUpController.getIdleLeadReAssignment());
-
-router.post("/idle-lead", setUpController.setUpIdleLeadReAssignment());
-
-router.put("/idle-lead/:id", setUpController.updateSetUp());
+router.post("/companies", setUpController.addCompany);
 
 module.exports = router;

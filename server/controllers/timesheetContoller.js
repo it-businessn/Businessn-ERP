@@ -4,7 +4,7 @@ const Timesheet = require("../models/Timesheet");
 
 const currentDate = new Date();
 
-const getTimesheet = () => async (req, res) => {
+const getTimesheets = async (req, res) => {
 	try {
 		const projectsByEmployee = await Project.aggregate([
 			{
@@ -68,12 +68,12 @@ const getTimesheet = () => async (req, res) => {
 	}
 };
 
-const getTimesheetById = () => async (req, res) => {
-	const id = req.params.id;
+const getTimesheet = async (req, res) => {
+	const { employeeId } = req.params;
 
 	try {
 		const timesheet = await Timesheet.find({
-			employeeId: id,
+			employeeId,
 		}).populate({
 			path: "employeeId",
 			model: "Employee",
@@ -85,23 +85,25 @@ const getTimesheetById = () => async (req, res) => {
 	}
 };
 
-const createTimesheet = () => async (req, res) => {
+const createTimesheet = async (req, res) => {
 	const { employeeId, companyName } = req.body;
 	try {
+		const today = new Date(
+			currentDate.getFullYear(),
+			currentDate.getMonth(),
+			currentDate.getDate(),
+		);
+		const tomorrow = new Date(
+			currentDate.getFullYear(),
+			currentDate.getMonth(),
+			currentDate.getDate() + 1,
+		);
 		const existingTimesheet = await Timesheet.findOne({
 			employeeId,
 			companyName,
 			createdOn: {
-				$gte: new Date(
-					currentDate.getFullYear(),
-					currentDate.getMonth(),
-					currentDate.getDate(),
-				),
-				$lt: new Date(
-					currentDate.getFullYear(),
-					currentDate.getMonth(),
-					currentDate.getDate() + 1,
-				),
+				$gte: today,
+				$lt: tomorrow,
 			},
 		});
 		if (existingTimesheet) {
@@ -114,13 +116,11 @@ const createTimesheet = () => async (req, res) => {
 				res.status(400).json({ message: error.message });
 			}
 		} else {
-			const timesheet = new Timesheet({
-				clockIns: Date.now(),
-				employeeId,
-			});
-
 			try {
-				const newTimesheet = await timesheet.save();
+				const newTimesheet = await Timesheet.create({
+					clockIns: Date.now(),
+					employeeId,
+				});
 				res.status(201).json(newTimesheet);
 			} catch (error) {
 				res.status(400).json({ message: error.message });
@@ -131,11 +131,11 @@ const createTimesheet = () => async (req, res) => {
 	}
 };
 
-const updateTimesheet = () => async (req, res) => {
-	const { id } = req.params;
+const updateTimesheet = async (req, res) => {
+	const { employeeId } = req.params;
 	const { key } = req.body;
 	try {
-		const timesheet = await Timesheet.findOne({ employeeId: id });
+		const timesheet = await Timesheet.findOne({ employeeId });
 
 		timesheet[key].push(Date.now());
 		await timesheet.save();
@@ -146,7 +146,7 @@ const updateTimesheet = () => async (req, res) => {
 };
 module.exports = {
 	createTimesheet,
+	getTimesheets,
 	getTimesheet,
-	getTimesheetById,
 	updateTimesheet,
 };

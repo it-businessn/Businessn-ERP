@@ -1,6 +1,18 @@
 import apiService from "services";
 
 const SettingService = {
+	async getIdleLeadReAssignment() {
+		return apiService.get("/setup");
+	},
+
+	async setUpIdleLeadReAssignment(data) {
+		return apiService.post("/setup", data);
+	},
+
+	async updateSetUpIdleLeadReAssignment(data, id) {
+		return apiService.put(`/setup/${id}`, data, id);
+	},
+
 	async getConfigurationsByName(id) {
 		return apiService.get(`/configuration/${id}`);
 	},
@@ -30,7 +42,7 @@ const SettingService = {
 	},
 
 	async updateModuleActiveStatus(data, id) {
-		return apiService.put(`/setup/modules-status/${id}`, data, id);
+		return apiService.put(`/setup/modules/${id}`, data, id);
 	},
 
 	async getAllGroups(id) {
@@ -50,7 +62,7 @@ const SettingService = {
 	},
 
 	async getAllCompaniesByUser(id) {
-		return apiService.get(`/setup/companies/user/${id}`);
+		return apiService.get(`/setup/companies/employees/${id}`);
 	},
 
 	async getCompanyInfo(id) {
@@ -67,26 +79,6 @@ const SettingService = {
 
 	async addEmploymentType(data) {
 		return apiService.post("/setup/empTypes", data);
-	},
-
-	async getAllApprovers() {
-		return apiService.get(`/setup/approvers`);
-	},
-
-	async addApprover(data) {
-		return apiService.post("/setup/approvers", data);
-	},
-
-	async getIdleLeadReAssignment() {
-		return apiService.get("/setup/idle-lead-config");
-	},
-
-	async setUpIdleLeadReAssignment(data) {
-		return apiService.post("/setup/idle-lead", data);
-	},
-
-	async updateSetUpIdleLeadReAssignment(data, id) {
-		return apiService.put(`/setup/idle-lead/${id}`, data, id);
 	},
 };
 
