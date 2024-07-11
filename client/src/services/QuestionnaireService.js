@@ -5,34 +5,10 @@ const QuestionnaireService = {
 		return apiService.get("/questionnaire");
 	},
 
-	async getAssessmentByUserId(id) {
-		return apiService.get(`/questionnaire/assessment/${id}`);
-	},
-
-	async getAssessmentTypes(company) {
-		return apiService.get(`/questionnaire/assessment/type/comp/${company}`);
-	},
-
-	async getAssessmentByType(data) {
+	async getSubjectQuestionnaire(data) {
 		return apiService.get(
-			`/questionnaire/assessment/type/company/${data.type}/${data.company}`,
+			`/questionnaire/subject/${data.type}/${data.company}`,
 		);
-	},
-
-	async addAssessmentType(data) {
-		return apiService.post(`/questionnaire/assessment/type`, data);
-	},
-
-	async addAssessmentStatus(data) {
-		return apiService.post(`/questionnaire/assessment`, data);
-	},
-
-	async updateAssessmentStatus(data, id) {
-		return apiService.put(`/questionnaire/assessment/${id}`, data, id);
-	},
-
-	async deleteAssessment(data, id) {
-		return apiService.delete(`/questionnaire/assessment/${id}`, data, id);
 	},
 
 	async addQuestionnaire(data) {

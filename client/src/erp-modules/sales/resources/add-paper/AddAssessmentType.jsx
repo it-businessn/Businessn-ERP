@@ -20,7 +20,7 @@ import {
 } from "@chakra-ui/react";
 import PrimaryButton from "components/ui/button/PrimaryButton";
 import { useState } from "react";
-import QuestionnaireService from "services/QuestionnaireService";
+import AssessmentService from "services/AssessmentService";
 
 const AddAssessmentType = ({
 	showAddAssessmentType,
@@ -39,7 +39,7 @@ const AddAssessmentType = ({
 		setSubmitting(true);
 
 		try {
-			await QuestionnaireService.addAssessmentType({
+			await AssessmentService.addAssessmentType({
 				name,
 				hasAward,
 				companyName: company,

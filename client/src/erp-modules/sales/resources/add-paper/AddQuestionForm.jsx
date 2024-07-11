@@ -19,6 +19,7 @@ import { useEffect, useState } from "react";
 import { FaRegTrashCan } from "react-icons/fa6";
 import { RiEditLine } from "react-icons/ri";
 import { useNavigate, useParams } from "react-router-dom";
+import AssessmentService from "services/AssessmentService";
 import LocalStorageService from "services/LocalStorageService";
 import QuestionnaireService from "services/QuestionnaireService";
 import AddAssessmentType from "./AddAssessmentType";
@@ -59,7 +60,7 @@ const AddQuestionForm = () => {
 	useEffect(() => {
 		const fetchAllAssessmentTypes = async () => {
 			try {
-				const response = await QuestionnaireService.getAssessmentTypes(company);
+				const response = await AssessmentService.getAssessmentTypes(company);
 				setAssessmentTypes(response.data);
 			} catch (error) {
 				console.error(error);
@@ -68,7 +69,7 @@ const AddQuestionForm = () => {
 		fetchAllAssessmentTypes();
 		const fetchQuestionsByType = async (type) => {
 			try {
-				const response = await QuestionnaireService.getAssessmentByType({
+				const response = await QuestionnaireService.getSubjectQuestionnaire({
 					type,
 					company,
 				});

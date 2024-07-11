@@ -4,7 +4,7 @@ import TextTitle from "components/ui/text/TextTitle";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ROUTE_PATH } from "routes";
-import QuestionnaireService from "services/QuestionnaireService";
+import AssessmentService from "services/AssessmentService";
 
 const ManagerViewCard = ({ company }) => {
 	const navigate = useNavigate();
@@ -14,7 +14,7 @@ const ManagerViewCard = ({ company }) => {
 	useEffect(() => {
 		const fetchAllAssessmentTypes = async () => {
 			try {
-				const response = await QuestionnaireService.getAssessmentTypes(company);
+				const response = await AssessmentService.getAssessmentTypes(company);
 				setAssessments(response.data);
 			} catch (error) {
 				console.error(error);
@@ -25,7 +25,7 @@ const ManagerViewCard = ({ company }) => {
 
 	const handleDelete = async (id) => {
 		try {
-			await QuestionnaireService.deleteAssessment({}, id);
+			await AssessmentService.deleteAssessment({}, id);
 			setIsDeleted((prev) => !prev);
 		} catch (error) {
 			console.error(error);

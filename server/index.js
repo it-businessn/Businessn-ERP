@@ -5,14 +5,13 @@ const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 
-const appRoutes = require("./routes/appRoutes");
 const activityRoutes = require("./routes/activityRoutes");
-const resourceRoutes = require("./routes/resourceRoutes");
+const appRoutes = require("./routes/appRoutes");
+const assessmentRoutes = require("./routes/assessmentRoutes");
 const contactRoutes = require("./routes/contactRoutes");
-const industryRoutes = require("./routes/industryRoutes");
 const conversationRoutes = require("./routes/conversationRoutes");
 const eventRoutes = require("./routes/eventRoutes");
-const formRoutes = require("./routes/formRoutes");
+const industryRoutes = require("./routes/industryRoutes");
 const leadRoutes = require("./routes/leadRoutes");
 const logTaskRoutes = require("./routes/logTaskRoutes");
 const meetingRoutes = require("./routes/meetingRoutes");
@@ -24,6 +23,7 @@ const payrollRoutes = require("./routes/payrollRoutes");
 const permissionsRoutes = require("./routes/permissionRoutes");
 const projectRoutes = require("./routes/projectRoutes");
 const questionnaireRoutes = require("./routes/questionnaireRoutes");
+const resourceRoutes = require("./routes/resourceRoutes");
 const scheduleRoutes = require("./routes/scheduleRoutes");
 const setUpRoutes = require("./routes/setupRoutes");
 const taskRoutes = require("./routes/taskRoutes");
@@ -53,13 +53,12 @@ app.use((request, response, next) => {
 // Routes
 
 app.use("/api", appRoutes);
-app.use("/api/user", userRoutes);
 app.use("/api/activities", activityRoutes);
-app.use("/api/resource", resourceRoutes);
+app.use("/api/assessment", assessmentRoutes);
 app.use("/api/contacts", contactRoutes);
-app.use("/api/industry", industryRoutes);
 app.use("/api/conversations", conversationRoutes);
 app.use("/api/events", eventRoutes);
+app.use("/api/industry", industryRoutes);
 app.use("/api/leads", leadRoutes);
 app.use("/api/log-tasks", logTaskRoutes);
 app.use("/api/meetings", meetingRoutes);
@@ -71,10 +70,12 @@ app.use("/api/payroll", payrollRoutes);
 app.use("/api/permissions", permissionsRoutes);
 app.use("/api/projects", projectRoutes);
 app.use("/api/questionnaire", questionnaireRoutes);
+app.use("/api/resource", resourceRoutes);
 app.use("/api/schedule", scheduleRoutes);
 app.use("/api/setup", setUpRoutes);
 app.use("/api/tasks", taskRoutes);
 app.use("/api/timesheet", timesheetRoutes);
+app.use("/api/user", userRoutes);
 
 // app.use("/api/company", companyRoutes);
 // app.use("/api/payslips", payslipRoutes);

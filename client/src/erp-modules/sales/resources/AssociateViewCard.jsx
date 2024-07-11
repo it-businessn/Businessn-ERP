@@ -13,8 +13,8 @@ import { doughnutOptions } from "constant";
 import { BADGES } from "erp-modules/project-management/workview/project/data";
 import { useEffect, useState } from "react";
 import { Doughnut } from "react-chartjs-2";
+import AssessmentService from "services/AssessmentService";
 import LocalStorageService from "services/LocalStorageService";
-import QuestionnaireService from "services/QuestionnaireService";
 import AttemptedTestScore from "./AttemptedTestScore";
 
 const AssociateViewCard = ({ company }) => {
@@ -31,7 +31,7 @@ const AssociateViewCard = ({ company }) => {
 	useEffect(() => {
 		const fetchAllAssessmentTypes = async () => {
 			try {
-				const response = await QuestionnaireService.getAssessmentTypes(company);
+				const response = await AssessmentService.getAssessmentTypes(company);
 				setAssessments(response.data);
 			} catch (error) {
 				console.error(error);
@@ -43,7 +43,7 @@ const AssociateViewCard = ({ company }) => {
 	useEffect(() => {
 		const fetchAssessmentsTaken = async () => {
 			try {
-				const response = await QuestionnaireService.getAssessmentByUserId(
+				const response = await AssessmentService.getAssessmentByUserId(
 					user._id,
 				);
 				const passed = response.data?.filter(

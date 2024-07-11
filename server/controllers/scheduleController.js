@@ -2,7 +2,7 @@ const EmployeeShift = require("../models/EmployeeShifts");
 
 const getShifts = async (req, res) => {
 	try {
-		const shifts = (await EmployeeShift.find()).sort(
+		const shifts = (await EmployeeShift.find({})).sort(
 			(a, b) => b.createdOn - a.createdOn,
 		);
 		res.status(200).json(shifts);

@@ -11,6 +11,7 @@ import {
 import ActionButtonGroup from "components/ui/form/ActionButtonGroup";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import AssessmentService from "services/AssessmentService";
 import LocalStorageService from "services/LocalStorageService";
 import QuestionnaireService from "services/QuestionnaireService";
 
@@ -44,7 +45,7 @@ const Assessment = () => {
 	useEffect(() => {
 		const fetchAllAssessments = async () => {
 			try {
-				const response = await QuestionnaireService.getAssessmentByType({
+				const response = await QuestionnaireService.getSubjectQuestionnaire({
 					type: category,
 					company,
 				});
@@ -67,7 +68,7 @@ const Assessment = () => {
 		setCorrectCount(count);
 		try {
 			setShowExplanation(true);
-			await QuestionnaireService.addAssessmentStatus({
+			await AssessmentService.addAssessmentStatus({
 				subject: category,
 				score: count,
 				category: count === questionnaires.length ? "PASS" : "ALMOST!",
