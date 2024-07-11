@@ -2,8 +2,8 @@ const Conversation = require("../models/Conversation");
 const Employee = require("../models/Employee");
 const Message = require("../models/Message");
 
-const getConversationById = () => async (req, res) => {
-	const id = req.params.id;
+const getMessage = async (req, res) => {
+	const { id } = req.params;
 
 	try {
 		const conversation = await Conversation.findById(id).populate("messages");
@@ -21,7 +21,7 @@ const getConversationById = () => async (req, res) => {
 	}
 };
 
-const createConversationTwoUsers = () => async (req, res) => {
+const createConversationTwoUsers = async (req, res) => {
 	const { userId1, userId2, text } = req.body;
 	try {
 		let existingConversation = await Conversation.findOne({
@@ -47,7 +47,7 @@ const createConversationTwoUsers = () => async (req, res) => {
 	}
 };
 
-const createConversation = (io) => async (req, res) => {
+const createConversation = async (req, res) => {
 	const { participants, conversationType, groupName, companyName } = req.body;
 	try {
 		const existingConversation = await Conversation.findOne({
@@ -74,11 +74,11 @@ const createConversation = (io) => async (req, res) => {
 	}
 };
 
-const createGroupConversation = () => async (req, res) => {
+const createGroupConversation = async (req, res) => {
 	const { participants, groupName } = req.body;
-	const conversation = new Conversation({ participants, groupName });
 
 	try {
+		const conversation = new Conversation({ participants, groupName });
 		await conversation.save();
 		res.status(201).json(conversation);
 	} catch (err) {
@@ -87,7 +87,7 @@ const createGroupConversation = () => async (req, res) => {
 	}
 };
 
-const getGroupConversation = () => async (req, res) => {
+const getAllGroupMessages = async (req, res) => {
 	try {
 		const conversations = await Conversation.find({
 			conversationType: "group",
@@ -98,60 +98,133 @@ const getGroupConversation = () => async (req, res) => {
 	}
 };
 
-const getAllUserConversations = () => async (req, res) => {
-	const { id, name } = req.params;
+const getGroupMessages = async (req, res) => {
+	const { groupName } = req.params;
+	try {
+		const conversation = await Conversation.find({
+			groupName,
+		}).populate("groupMessages");
+		if (!conversation) {
+			return res.status(404).json({ error: "Conversation not found" });
+		}
+		res.status(200).json(conversation);
+	} catch (error) {
+		res.status(404).json({ error: error.message });
+	}
+};
+
+const getConversations = async (id, path, populate) => {
+	return await Conversation.findById(id)
+		.populate({
+			path,
+			populate,
+		})
+		.populate({
+			path: "participants",
+			model: "Employee",
+			select: "fullName",
+		});
+};
+
+const getConversationHistory = async (req, res) => {
+	const { id, type } = req.body;
+	try {
+		if (type === "group") {
+			const groupConversations = await getConversations(id, "groupMessages", {
+				path: "sender",
+				model: "Employee",
+				select: "fullName",
+			});
+
+			const result = groupConversations.groupMessages.sort(
+				(a, b) => a.timestamp - b.timestamp,
+			);
+
+			return res.status(200).json(result);
+		}
+		const oneToOneConversations = await getConversations(id, "messages", [
+			{
+				path: "sender",
+				model: "Employee",
+				select: "fullName",
+			},
+			{
+				path: "receiver",
+				model: "Employee",
+				select: "fullName",
+			},
+		]);
+		const result = oneToOneConversations.messages.sort(
+			(a, b) => a.timestamp - b.timestamp,
+		);
+
+		return res.status(200).json(result);
+	} catch (error) {
+		res.status(404).json({ error: error.message });
+	}
+};
+
+const getConversationByParticipants = async (
+	participants,
+	companyName,
+	conversationType,
+	path,
+	populate,
+) => {
+	return await Conversation.find({
+		$and: [
+			{ participants: { $all: [participants] } },
+			{ conversationType },
+			{ companyName },
+		],
+	})
+		.populate({
+			path,
+			populate,
+		})
+		.populate({
+			path: "participants",
+			model: "Employee",
+			select: "fullName",
+		});
+};
+
+const getUserConversations = async (req, res) => {
+	const { participants, companyName } = req.params;
 	try {
 		const userConversations = [];
-		const groupConversations = await Conversation.find({
-			$and: [
-				{ participants: { $all: [id] } },
-				{ conversationType: "group" },
-				{ companyName: name },
-			],
-		})
-			.populate({
-				path: "groupMessages",
-				populate: {
+		const groupConversations = await getConversationByParticipants(
+			participants,
+			companyName,
+			"group",
+			"groupMessages",
+			{
+				path: "sender",
+				model: "Employee",
+				select: "fullName",
+			},
+		);
+
+		userConversations.push(...groupConversations);
+
+		const oneToOneConversations = await getConversationByParticipants(
+			participants,
+			companyName,
+			"one-on-one",
+			"messages",
+			[
+				{
 					path: "sender",
 					model: "Employee",
 					select: "fullName",
 				},
-			})
-			.populate({
-				path: "participants",
-				model: "Employee",
-				select: "fullName",
-			});
-
-		userConversations.push(...groupConversations);
-
-		const oneToOneConversations = await Conversation.find({
-			$and: [
-				{ participants: { $all: [id] } },
-				{ conversationType: "one-on-one" },
-				{ companyName: name },
+				{
+					path: "receiver",
+					model: "Employee",
+					select: "fullName",
+				},
 			],
-		})
-			.populate({
-				path: "messages",
-				populate: [
-					{
-						path: "sender",
-						model: "Employee",
-						select: "fullName",
-					},
-					{
-						path: "receiver",
-						model: "Employee",
-						select: "fullName",
-					},
-				],
-			})
-			.populate({
-				path: "participants",
-				model: "Employee",
-				select: "fullName",
-			});
+		);
 
 		userConversations.push(...oneToOneConversations);
 
@@ -163,22 +236,7 @@ const getAllUserConversations = () => async (req, res) => {
 	}
 };
 
-const getGroupConversationById = () => async (req, res) => {
-	const id = req.params.id;
-	try {
-		const conversation = await Conversation.find({
-			groupName: id,
-		}).populate("groupMessages");
-		if (!conversation) {
-			return res.status(404).json({ error: "Conversation not found" });
-		}
-		res.status(200).json(conversation);
-	} catch (error) {
-		res.status(404).json({ error: error.message });
-	}
-};
-
-const getOneToOneConversationById = () => async (req, res) => {
+const getOneToOneConversation = async (req, res) => {
 	const { userId1, userId2 } = req.body;
 
 	try {
@@ -198,7 +256,7 @@ const getOneToOneConversationById = () => async (req, res) => {
 	}
 };
 
-const createMessages = () => async (req, res) => {
+const createOneToOneMessages = async (req, res) => {
 	const { text, senderId, receiverId, companyName } = req.body;
 
 	try {
@@ -240,7 +298,7 @@ const createMessages = () => async (req, res) => {
 	}
 };
 
-const createGroupMessages = (io) => async (req, res) => {
+const createGroupMessages = async (req, res) => {
 	const { senderId, id, text, companyName } = req.body;
 	try {
 		const sender = await Employee.findById(senderId);
@@ -280,73 +338,16 @@ const createGroupMessages = (io) => async (req, res) => {
 	}
 };
 
-const getConversationMessageById = () => async (req, res) => {
-	const { id, type } = req.body;
-	try {
-		if (type === "group") {
-			const groupConversations = await Conversation.findById(id)
-				.populate({
-					path: "groupMessages",
-					populate: {
-						path: "sender",
-						model: "Employee",
-						select: "fullName",
-					},
-				})
-				.populate({
-					path: "participants",
-					model: "Employee",
-					select: "fullName",
-				});
-			const result = groupConversations.groupMessages.sort(
-				(a, b) => a.timestamp - b.timestamp,
-			);
-
-			res.status(200).json(result);
-		} else {
-			const oneToOneConversations = await Conversation.findById(id)
-				.populate({
-					path: "messages",
-					populate: [
-						{
-							path: "sender",
-							model: "Employee",
-							select: "fullName",
-						},
-						{
-							path: "receiver",
-							model: "Employee",
-							select: "fullName",
-						},
-					],
-				})
-				.populate({
-					path: "participants",
-					model: "Employee",
-					select: "fullName",
-				});
-
-			const result = oneToOneConversations.messages.sort(
-				(a, b) => a.timestamp - b.timestamp,
-			);
-
-			res.status(200).json(result);
-		}
-	} catch (error) {
-		res.status(404).json({ error: error.message });
-	}
-};
-
 module.exports = {
 	createConversation,
-	getConversationById,
-	getGroupConversationById,
-	getOneToOneConversationById,
-	createMessages,
+	getMessage,
+	getGroupMessages,
+	getOneToOneConversation,
+	createOneToOneMessages,
 	createGroupConversation,
-	getGroupConversation,
+	getAllGroupMessages,
 	createConversationTwoUsers,
 	createGroupMessages,
-	getAllUserConversations,
-	getConversationMessageById,
+	getUserConversations,
+	getConversationHistory,
 };

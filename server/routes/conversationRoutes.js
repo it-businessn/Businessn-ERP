@@ -4,35 +4,32 @@ const router = express.Router();
 const conversationController = require("../controllers/conversationController");
 
 router.get(
-	"/all-conversations/:id/:name",
-	conversationController.getAllUserConversations(),
+	"/all-conversations/:participants/:companyName",
+	conversationController.getUserConversations,
 );
 
 router.get(
-	"/group-conversations/:id/messages",
-	conversationController.getGroupConversationById(),
+	"/group-conversations/:groupName/messages",
+	conversationController.getGroupMessages,
 );
 router.post(
 	"/one-to-one-conversations/messages",
-	conversationController.getOneToOneConversationById(),
+	conversationController.getOneToOneConversation,
 );
-router.post("/", conversationController.createConversation());
+router.post("/", conversationController.createConversation);
 
-router.post("/group-messages", conversationController.createGroupMessages());
-router.post("/messages", conversationController.createMessages());
+router.post("/group-messages", conversationController.createGroupMessages);
+router.post("/messages", conversationController.createOneToOneMessages);
 
-router.get(
-	"/group-conversations",
-	conversationController.getGroupConversation(),
-);
-router.get("/:id/messages", conversationController.getConversationById());
-router.post("/history", conversationController.getConversationMessageById());
+router.get("/group-conversations", conversationController.getAllGroupMessages);
+router.get("/:id/messages", conversationController.getMessage);
+router.post("/history", conversationController.getConversationHistory);
 
 router.post(
 	"/group-conversations",
-	conversationController.createGroupConversation(),
+	conversationController.createGroupConversation,
 );
 
-router.post("/two-users", conversationController.createConversationTwoUsers());
+router.post("/two-users", conversationController.createConversationTwoUsers);
 
 module.exports = router;
