@@ -22,7 +22,7 @@ const UserService = {
 	},
 
 	async getAllUserActivity() {
-		return apiService.get(`/activity`);
+		return apiService.get(`/user/activity`);
 	},
 
 	async getAllCompanyUsers(id) {
