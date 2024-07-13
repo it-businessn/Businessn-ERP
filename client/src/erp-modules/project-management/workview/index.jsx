@@ -1,11 +1,12 @@
 import { Box, Flex, Text, Th } from "@chakra-ui/react";
-import useLoggedInUser from "hooks/useLoggedInUser";
+
 import { useEffect, useState } from "react";
 import { FaSort } from "react-icons/fa";
 import LocalStorageService from "services/LocalStorageService";
 import ProjectService from "services/ProjectService";
 import UserService from "services/UserService";
 import { isManager } from "utils";
+import { loggedInUser } from "utils/common";
 import WorkviewToolbar from "./WorkviewToolbar";
 import ProjectTable from "./project";
 
@@ -29,7 +30,7 @@ const WorkView = () => {
 	const [refresh, setRefresh] = useState(false);
 
 	const [managers, setManagers] = useState(null);
-	const loggedInUser = useLoggedInUser();
+
 	const isManagerView = isManager(loggedInUser?.role);
 	const [company, setCompany] = useState(
 		LocalStorageService.getItem("selectedCompany"),

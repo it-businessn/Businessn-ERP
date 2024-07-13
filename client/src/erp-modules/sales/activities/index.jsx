@@ -11,7 +11,7 @@ import HighlightButton from "components/ui/button/HighlightButton";
 import SelectBox from "components/ui/form/select/SelectBox";
 import RadioButtonGroup from "components/ui/tab/RadioButtonGroup";
 import TextTitle from "components/ui/text/TextTitle";
-import useLoggedInUser from "hooks/useLoggedInUser";
+
 import { useEffect, useState } from "react";
 import { RiAspectRatioLine } from "react-icons/ri";
 import ActivityService from "services/ActivityService";
@@ -20,6 +20,7 @@ import ContactService from "services/ContactService";
 import LocalStorageService from "services/LocalStorageService";
 import UserService from "services/UserService";
 import { isManager } from "utils";
+import { loggedInUser } from "utils/common";
 import {
 	ACTIVITY_CARDS,
 	SALES_ACTIVITY_CARDS,
@@ -43,7 +44,7 @@ const Activities = () => {
 		LocalStorageService.getItem("selectedCompany"),
 	);
 	const [employees, setEmployees] = useState(null);
-	const loggedInUser = useLoggedInUser();
+
 	const [selectedUser, setSelectedUser] = useState(loggedInUser);
 
 	useEffect(() => {

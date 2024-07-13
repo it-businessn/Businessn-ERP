@@ -21,7 +21,7 @@ import { PersonalInfoCard } from "components";
 import { signUpFormFields } from "config/formfields";
 import { UserSchema } from "config/schema";
 import { TOAST } from "constant";
-import useLoggedInUser from "hooks/useLoggedInUser";
+
 import { FilterMatchMode, FilterOperator } from "primereact/api";
 import { Column } from "primereact/column";
 import { DataTable } from "primereact/datatable";
@@ -32,9 +32,9 @@ import { useEffect, useState } from "react";
 import { FiEdit2 } from "react-icons/fi";
 import UserService from "services/UserService";
 import { userCurrency } from "utils";
+import { loggedInUser } from "utils/common";
 
 const UserList = ({ employees }) => {
-	const loggedInUser = useLoggedInUser();
 	const { isOpen, onOpen, onClose } = useDisclosure();
 	const [users, setMembers] = useState(employees);
 	const [record, setRecord] = useState(null);

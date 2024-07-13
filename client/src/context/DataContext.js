@@ -1,4 +1,4 @@
-import { SIDEBAR_MENU } from "components/sidebar/data";
+import { SIDEBAR_MENU } from "data";
 import { createContext, useContext, useState } from "react";
 
 const DataContext = createContext();

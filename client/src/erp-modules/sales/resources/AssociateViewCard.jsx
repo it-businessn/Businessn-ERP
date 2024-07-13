@@ -11,17 +11,17 @@ import {
 import TextTitle from "components/ui/text/TextTitle";
 import { doughnutOptions } from "constant";
 import { BADGES } from "erp-modules/project-management/workview/project/data";
-import useLoggedInUser from "hooks/useLoggedInUser";
+
 import { useEffect, useState } from "react";
 import { Doughnut } from "react-chartjs-2";
 import AssessmentService from "services/AssessmentService";
+import { loggedInUser } from "utils/common";
 import AttemptedTestScore from "./AttemptedTestScore";
 
 const AssociateViewCard = ({ company }) => {
 	const [assessments, setAssessments] = useState(null);
 	const [assessmentsTaken, setAssessmentsTaken] = useState(null);
 
-	const loggedInUser = useLoggedInUser();
 	const [dataLoaded, setDataLoaded] = useState(false);
 	const [completed, setCompleted] = useState(null);
 	const [notComplete, setNotComplete] = useState(null);

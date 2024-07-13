@@ -1,7 +1,7 @@
 import { Box, Button, Flex, HStack, Spacer } from "@chakra-ui/react";
 import PrimaryButton from "components/ui/button/PrimaryButton";
 import TextTitle from "components/ui/text/TextTitle";
-import useLoggedInUser from "hooks/useLoggedInUser";
+
 import moment from "moment-timezone";
 import { useEffect, useState } from "react";
 import { Calendar as BigCalendar, momentLocalizer } from "react-big-calendar";
@@ -11,6 +11,7 @@ import { useBreakpointValue } from "services/Breakpoint";
 import CalendarService from "services/CalendarService";
 import LocalStorageService from "services/LocalStorageService";
 import { getTimezone } from "utils";
+import { loggedInUser } from "utils/common";
 import AddEvent from "./AddEvent";
 import EventDetails from "./EventDetails";
 
@@ -23,7 +24,7 @@ const Calendar = () => {
 
 	const [isLoading, setIsLoading] = useState(false);
 	const [isRefresh, setIsRefresh] = useState(false);
-	const loggedInUser = useLoggedInUser();
+
 	// const checkClassExists = () => {
 	// 	const element = document.querySelector(".rbc-show-more");
 

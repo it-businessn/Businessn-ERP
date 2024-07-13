@@ -3,10 +3,12 @@ import ActionButtonGroup from "components/ui/form/ActionButtonGroup";
 import InputFormControl from "components/ui/form/InputFormControl";
 import ModalLayout from "components/ui/modal/ModalLayout";
 import TextTitle from "components/ui/text/TextTitle";
+
 import { useEffect, useState } from "react";
 import LeadsService from "services/LeadsService";
 import LocalStorageService from "services/LocalStorageService";
 import { isManager } from "utils";
+import { loggedInUser } from "utils/common";
 import AgentsView, { totalLeads } from "../fresh_leads/AgentsView";
 import { TARGET_LEADS } from "../opportunities/data";
 import GradientAreaFillColorChart from "./AreaFillColorChart";
@@ -49,7 +51,8 @@ const Pipeline = () => {
 	const { isOpen, onOpen, onClose } = useDisclosure();
 	const handleSubmit = () => {};
 
-	const { fullName, role } = LocalStorageService.getItem("user");
+	const { fullName, role } = loggedInUser;
+
 	const isUserManager = isManager(role);
 
 	const opportunityData = [

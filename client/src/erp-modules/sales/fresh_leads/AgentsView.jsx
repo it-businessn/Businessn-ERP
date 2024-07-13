@@ -11,11 +11,12 @@ import {
 	useDisclosure,
 } from "@chakra-ui/react";
 import TextTitle from "components/ui/text/TextTitle";
+
 import { useState } from "react";
 import { FaRegTrashAlt } from "react-icons/fa";
 import { RiEditLine } from "react-icons/ri";
-import LocalStorageService from "services/LocalStorageService";
 import { isManager } from "utils";
+import { loggedInUser } from "utils/common";
 import EditLead from "./EditLead";
 
 export const totalLeads = (name, isManager, leads, userName) => {
@@ -42,7 +43,7 @@ const AgentsView = ({
 		phone: "",
 		companyName: company,
 	};
-	const { fullName, role } = LocalStorageService.getItem("user");
+	const { fullName, role } = loggedInUser;
 
 	const isUserManager = isManager(role);
 	const leadList = isUserManager

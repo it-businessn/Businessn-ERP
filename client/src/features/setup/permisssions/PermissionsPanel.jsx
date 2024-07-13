@@ -11,7 +11,7 @@ import {
 } from "@chakra-ui/react";
 import Loader from "components/Loader";
 
-import { SIDEBAR_MENU } from "components/sidebar/data";
+import { SIDEBAR_MENU } from "data";
 import { useEffect, useState } from "react";
 import { FaChevronDown } from "react-icons/fa";
 import { GoCheckCircleFill } from "react-icons/go";

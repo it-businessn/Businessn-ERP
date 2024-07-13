@@ -5,6 +5,7 @@ import useSelectUser from "hooks/useSelectUser";
 import { useState } from "react";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import { isManager } from "utils";
+import { loggedInUser } from "utils/common";
 import { STATS } from "./data";
 import LeftPane from "./leftpane";
 import RightPane from "./rightpane";
@@ -12,16 +13,16 @@ import RightPane from "./rightpane";
 const CRMDashboard = () => {
 	const [stats, setStats] = useState(STATS);
 
-	const { user, employees, company } = useFetchData();
+	const { employees, company } = useFetchData();
 
-	const [selectedUser, setSelectedUser] = useState(user);
+	const [selectedUser, setSelectedUser] = useState(loggedInUser);
 	useSelectUser(selectedUser);
 
-	const role = user?.role;
+	const role = loggedInUser?.role;
 
 	const handleChange = (value) => {
 		if (value === "") {
-			setSelectedUser(user);
+			setSelectedUser(loggedInUser);
 		} else {
 			setSelectedUser(employees?.find(({ fullName }) => fullName === value));
 		}
@@ -56,7 +57,7 @@ const CRMDashboard = () => {
 					selectedUser={selectedUser}
 					setStats={setStats}
 					company={company}
-					user={user}
+					user={loggedInUser}
 				/>
 				<RightPane
 					stats={stats}

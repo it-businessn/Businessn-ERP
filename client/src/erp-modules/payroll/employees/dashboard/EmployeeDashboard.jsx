@@ -1,14 +1,13 @@
 import { Box, SimpleGrid } from "@chakra-ui/react";
 import TextTitle from "components/ui/text/TextTitle";
-import useLoggedInUser from "hooks/useLoggedInUser";
+
 import { useEffect, useState } from "react";
 import LocalStorageService from "services/LocalStorageService";
+import { loggedInUser } from "utils/common";
 import LeftPane from "./leftpane";
 import RightPane from "./rightpane";
 
 const EmployeeDashboard = () => {
-	const loggedInUser = useLoggedInUser();
-
 	const [selectedUser, setSelectedUser] = useState(loggedInUser);
 	const STATS = [
 		{

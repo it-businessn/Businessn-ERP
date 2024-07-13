@@ -17,7 +17,7 @@ import {
 	useDisclosure,
 } from "@chakra-ui/react";
 import PrimaryButton from "components/ui/button/PrimaryButton";
-import useLoggedInUser from "hooks/useLoggedInUser";
+
 import { useEffect, useState } from "react";
 import { FaSearch } from "react-icons/fa";
 import { MdOutlineFilterList } from "react-icons/md";
@@ -25,12 +25,12 @@ import { useBreakpointValue } from "services/Breakpoint";
 import LocalStorageService from "services/LocalStorageService";
 import PayoutService from "services/PayoutService";
 import { formatDate, isManager } from "utils";
+import { loggedInUser } from "utils/common";
 import AddNewSale from "./AddNewSale";
 
 const Payouts = () => {
 	const { isMobile } = useBreakpointValue();
 	const [payouts, setPayouts] = useState(null);
-	const loggedInUser = useLoggedInUser();
 	const [company, setCompany] = useState(
 		LocalStorageService.getItem("selectedCompany"),
 	);

@@ -1,11 +1,12 @@
 import { Box, Flex, IconButton } from "@chakra-ui/react";
 import TabGroup from "components/ui/tab";
-import useLoggedInUser from "hooks/useLoggedInUser";
+
 import { useEffect, useState } from "react";
 import { FaArrowLeft } from "react-icons/fa";
 import { useNavigate, useParams } from "react-router-dom";
 import ContactService from "services/ContactService";
 import LocalStorageService from "services/LocalStorageService";
+import { loggedInUser } from "utils/common";
 import ContactDetailsInfo from "../customers/contacts/ContactDetailsInfo";
 import Logs from "../customers/contacts/logs";
 import Meetings from "../customers/contacts/meeting";
@@ -33,7 +34,7 @@ const LeadContacts = ({ setViewProfile, selectedContact }) => {
 			);
 		};
 	}, []);
-	const loggedInUser = useLoggedInUser();
+
 	const companyName = comp ? comp : company;
 
 	const [contact, setContact] = useState(null);

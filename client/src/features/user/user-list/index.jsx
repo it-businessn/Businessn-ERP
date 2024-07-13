@@ -8,22 +8,22 @@ import {
 	Stack,
 	Text,
 } from "@chakra-ui/react";
-import useLoggedInUser from "hooks/useLoggedInUser";
 import { DashboardLayout, ProfileContainer } from "layouts";
 import { useEffect, useState } from "react";
 import { FiSearch } from "react-icons/fi";
 import * as api from "services";
 import { useBreakpointValue } from "services/Breakpoint";
+import { loggedInUser } from "utils/common";
 import { MemberTable } from "./MemberTable";
 
 export default function User() {
-	const loggedInUser = useLoggedInUser();
 	const [employees, setEmployees] = useState(null);
 	const { isMobile } = useBreakpointValue();
 	const [isUpdated, setIsUpdated] = useState(false);
 	useEffect(() => {
 		fetchUserData();
 	}, [isUpdated]);
+
 	const fetchUserData = async () => {
 		try {
 			let result = await api.getAllUsers(loggedInUser.token);

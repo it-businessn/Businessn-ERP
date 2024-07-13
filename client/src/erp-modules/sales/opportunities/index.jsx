@@ -15,7 +15,7 @@ import LeftIconButton from "components/ui/button/LeftIconButton";
 import PrimaryButton from "components/ui/button/PrimaryButton";
 import SelectList from "components/ui/form/select/SelectList";
 import TableLayout from "components/ui/table/TableLayout";
-import useLoggedInUser from "hooks/useLoggedInUser";
+
 import { useEffect, useState } from "react";
 import { FaRegTrashAlt, FaSearch } from "react-icons/fa";
 import { MdOutlineFilterList } from "react-icons/md";
@@ -25,6 +25,7 @@ import LeadsService from "services/LeadsService";
 import LocalStorageService from "services/LocalStorageService";
 import UserService from "services/UserService";
 import { formatDate, isManager, toCapitalize } from "utils";
+import { loggedInUser } from "utils/common";
 import Caption from "../lead docket/Caption";
 import SearchFilter from "../lead docket/SearchFilter";
 import { OPP_COLUMNS } from "../lead docket/data";
@@ -38,7 +39,7 @@ const Opportunities = () => {
 	const [opportunities, setOpportunities] = useState(null);
 	const [assignees, setAssignees] = useState(null);
 	const [supervisorAssignees, setSupervisorAssignees] = useState(null);
-	const loggedInUser = useLoggedInUser();
+
 	const [company, setCompany] = useState(
 		LocalStorageService.getItem("selectedCompany"),
 	);

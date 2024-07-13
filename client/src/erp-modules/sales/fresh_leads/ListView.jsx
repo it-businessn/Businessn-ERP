@@ -1,9 +1,10 @@
 import { Tbody, Td, Tr, useDisclosure } from "@chakra-ui/react";
 import TableLayout from "components/ui/table/TableLayout";
+
 import { useState } from "react";
 import { FaRegTrashAlt } from "react-icons/fa";
-import LocalStorageService from "services/LocalStorageService";
 import { isManager, toCapitalize } from "utils";
+import { loggedInUser } from "utils/common";
 import { LEADS_COLS } from "../lead docket/data";
 import LeadContacts from "./LeadContacts";
 
@@ -31,7 +32,7 @@ const ListView = ({
 		phone: "",
 		companyName: company,
 	};
-	const { fullName, role } = LocalStorageService.getItem("user");
+	const { fullName, role } = loggedInUser;
 
 	const isUserManager = isManager(role);
 	const leadList = isUserManager

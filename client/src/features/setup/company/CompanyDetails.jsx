@@ -16,18 +16,18 @@ import {
 import Loader from "components/Loader";
 import PrimaryButton from "components/ui/button/PrimaryButton";
 import TextTitle from "components/ui/text/TextTitle";
-import useLoggedInUser from "hooks/useLoggedInUser";
+
 import { useEffect, useState } from "react";
 import { HiOfficeBuilding } from "react-icons/hi";
 import SettingService from "services/SettingService";
 import { isManager, toCapitalize } from "utils";
+import { loggedInUser } from "utils/common";
 import CompaniesPanel from "../CompaniesPanel";
 
 const CompanyDetails = ({ company }) => {
 	const [openCompanyForm, setOpenCompanyForm] = useState(false);
 	const [companyInfo, setCompanyInfo] = useState(null);
 	const [modules, setModules] = useState(null);
-	const loggedInUser = useLoggedInUser();
 
 	useEffect(() => {
 		const fetchCompanyInfo = async () => {

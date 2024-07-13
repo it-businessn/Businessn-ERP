@@ -8,33 +8,6 @@ import SchedulingDashboard from "erp-modules/scheduling/dashboard";
 import PageNotFound from "./features/PageNotFound";
 import RootLayout from "./layouts/RootLayout";
 
-// import AddPayrun from "./features/payroll/AddPayRun";
-// const PayrollTable = lazy(() => import("./features/payroll"));
-// const GeneratePayRun = lazy(() => import("./features/payroll/GeneratePayRun"));
-// const AddOpportunity = lazy(() =>
-// 	import("./erp-modules/sales/target-leads-pipeline/AddOpportunity"),
-// );
-// const TaskByDate = lazy(() =>
-// 	import("./erp-modules/sales/calendar/TaskByDate"),
-// );
-// const Contacts = lazy(() => import("./features/sales/contacts"));
-// const TaskDashboard = lazy(() => import("./features/sales/tasks"));
-// const AddContact = lazy(() => import("./features/sales/contacts/AddContact"));
-// const EditContact = lazy(() => import("./features/sales/contacts/EditContact"));
-
-// const EditOpportunity = lazy(() =>
-// 	import("./erp-modules/sales/target-leads-pipeline/EditOpportunity"),
-// );
-// const OpportunitiesList = lazy(() =>
-// 	import("./erp-modules/sales/target-leads-pipeline/OpportunitiesList"),
-// );
-
-// const EditUser = lazy(() => import("./features/user/profile/EditUser"));
-// const Invoice = lazy(() => import("./erp-modules/sales/invoice"));
-// const ProjectDashboard = lazy(() =>
-// 	import("./erp-modules/project-management/dashboard"),
-// );
-
 const Activities = lazy(() => import("./erp-modules/sales/activities"));
 const AddQuestionForm = lazy(() =>
 	import("./erp-modules/sales/resources/add-paper/AddQuestionForm"),

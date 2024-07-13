@@ -2,17 +2,15 @@ import { Box, Flex, SimpleGrid } from "@chakra-ui/react";
 import TextTitle from "components/ui/text/TextTitle";
 
 import SelectBox from "components/ui/form/select/SelectBox";
-import useLoggedInUser from "hooks/useLoggedInUser";
 import { useEffect, useState } from "react";
 import LocalStorageService from "services/LocalStorageService";
 import PayrollService from "services/PayrollService";
 import { formatDate } from "utils";
+import { loggedInUser } from "utils/common";
 import LeftPane from "./leftpane";
 import RightPane from "./rightpane";
 
 const Dashboard = () => {
-	const loggedInUser = useLoggedInUser();
-
 	const [selectedPayGroup, setSelectedPayGroup] = useState(null);
 	const STATS = [
 		{

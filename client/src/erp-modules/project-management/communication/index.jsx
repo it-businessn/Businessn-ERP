@@ -10,11 +10,12 @@ import {
 	VStack,
 } from "@chakra-ui/react";
 import TextTitle from "components/ui/text/TextTitle";
-import useLoggedInUser from "hooks/useLoggedInUser";
+
 import { useEffect, useState } from "react";
 import { FaUsers } from "react-icons/fa";
 import LocalStorageService from "services/LocalStorageService";
 import UserService from "services/UserService";
+import { loggedInUser } from "utils/common";
 import Conversation from "./Conversation";
 
 const Communications = ({ isDashboard }) => {
@@ -24,7 +25,6 @@ const Communications = ({ isDashboard }) => {
 	const [selectedGroup, setSelectedGroup] = useState(null);
 	const [selectedGroupMember, setSelectedGroupMember] = useState(null);
 	const userId = LocalStorageService.getItem("user")._id;
-	const loggedInUser = useLoggedInUser();
 
 	const [company, setCompany] = useState(
 		LocalStorageService.getItem("selectedCompany"),

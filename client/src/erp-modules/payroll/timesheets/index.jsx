@@ -1,14 +1,14 @@
 import SectionLayout from "components/ui/SectionLayout";
 import TabsButtonGroup from "components/ui/tab/TabsButtonGroup";
-import useLoggedInUser from "hooks/useLoggedInUser";
+
 import { useEffect, useState } from "react";
 import TimesheetService from "services/TimesheetService";
 import { isManager } from "utils";
+import { loggedInUser } from "utils/common";
 import Timecard from "./Timecard";
 import Timesheet from "./Timesheet";
 
 const Timesheets = () => {
-	const loggedInUser = useLoggedInUser();
 	const isManagerView = isManager(loggedInUser?.role);
 	const [timesheets, setTimesheets] = useState(null);
 

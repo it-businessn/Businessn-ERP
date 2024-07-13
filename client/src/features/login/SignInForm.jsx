@@ -12,11 +12,11 @@ import {
 	InputRightElement,
 	Stack,
 } from "@chakra-ui/react";
-import { saveUser } from "context/reducer";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useBreakpointValue } from "services/Breakpoint";
 import LoginService from "services/LoginService";
+import { buildUserInfo, storeUser } from "utils/common";
 import Logo from "../../components/logo";
 
 const SignInForm = ({ title }) => {
@@ -50,8 +50,8 @@ const SignInForm = ({ title }) => {
 		setIsLoading(true);
 		try {
 			const res = await LoginService.signIn(formData);
-
-			saveUser(res.data.user);
+			const user = buildUserInfo(res.data.user);
+			storeUser(user);
 			resetForm();
 		} catch (error) {
 			setError(error.response.data.error);

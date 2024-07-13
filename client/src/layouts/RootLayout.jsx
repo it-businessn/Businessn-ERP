@@ -4,16 +4,17 @@ import { Outlet, useNavigate } from "react-router-dom";
 
 import Navbar from "components/header";
 import Sidebar from "components/sidebar";
-import { SIDEBAR_MENU } from "components/sidebar/data";
+import { SIDEBAR_MENU } from "data";
 import { ROUTE_PATH } from "routes";
 import { useBreakpointValue } from "services/Breakpoint";
 import LocalStorageService from "services/LocalStorageService";
 import LoginService from "services/LoginService";
 import UserService from "services/UserService";
 import { isManager } from "utils";
+import { loggedInUser } from "utils/common";
 
 const RootLayout = () => {
-	const [user, setUser] = useState(LocalStorageService.getItem("user"));
+	const [user, setUser] = useState(loggedInUser);
 
 	const navigate = useNavigate();
 	const [company, setCompany] = useState("Fractional Departments Inc.");
@@ -88,7 +89,8 @@ const RootLayout = () => {
 	const handleLogout = async () => {
 		try {
 			await LoginService.signOut(user._id);
-			setUser(LocalStorageService.removeItem("user"));
+			LocalStorageService.removeItem("user");
+			setUser(null);
 		} catch (error) {
 			console.log(error.response.data.error);
 		}

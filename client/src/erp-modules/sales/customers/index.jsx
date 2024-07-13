@@ -1,9 +1,10 @@
 import { AddIcon, CalendarIcon, ChatIcon, TimeIcon } from "@chakra-ui/icons";
-import useLoggedInUser from "hooks/useLoggedInUser";
+
 import { useEffect, useState } from "react";
 import ContactService from "services/ContactService";
 import LocalStorageService from "services/LocalStorageService";
 import { isManager } from "utils";
+import { loggedInUser } from "utils/common";
 import CustomersList from "./CustomersList";
 import Contacts from "./contacts";
 
@@ -14,7 +15,6 @@ const Customers = () => {
 	const [company, setCompany] = useState(
 		LocalStorageService.getItem("selectedCompany"),
 	);
-	const loggedInUser = useLoggedInUser();
 
 	const isUserManager = isManager(loggedInUser?.role);
 

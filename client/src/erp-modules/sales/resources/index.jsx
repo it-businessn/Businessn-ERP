@@ -1,9 +1,11 @@
 import { Box, SimpleGrid } from "@chakra-ui/react";
 import TextTitle from "components/ui/text/TextTitle";
+
 import { useEffect, useState } from "react";
 import LocalStorageService from "services/LocalStorageService";
 import ResourceService from "services/ResourceService";
 import { isManager } from "utils";
+import { loggedInUser } from "utils/common";
 import AssociateViewCard from "./AssociateViewCard";
 import ManagerViewCard from "./ManagerViewCard";
 import ResourceFile from "./ResourceFile";
@@ -18,7 +20,7 @@ const FILE_TYPES = [
 ];
 
 const Resources = () => {
-	const { fullName, role } = LocalStorageService.getItem("user");
+	const { fullName, role } = loggedInUser;
 	const isUserManager = isManager(role);
 
 	const [resources, setResources] = useState(null);
