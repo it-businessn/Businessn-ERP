@@ -1,6 +1,5 @@
-import { buildUserInfo } from "models";
 import LocalStorageService from "services/LocalStorageService";
-import { storeUser } from "utils/common";
+import { buildUserInfo, storeUser } from "utils/common";
 
 export const authReducer = (state, action) => {
 	switch (action.type) {

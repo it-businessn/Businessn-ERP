@@ -5,7 +5,7 @@ import Dashboard from "erp-modules/payroll/dashboard";
 import Employees from "erp-modules/payroll/employees";
 import LeadContacts from "erp-modules/sales/fresh_leads/LeadContacts";
 import SchedulingDashboard from "erp-modules/scheduling/dashboard";
-import PageNotFound from "./features/PageNotFound";
+import PageNotFound from "./components/PageNotFound";
 import RootLayout from "./layouts/RootLayout";
 
 const Activities = lazy(() => import("./erp-modules/sales/activities"));
@@ -68,7 +68,7 @@ const Taskboard = lazy(() =>
 );
 const Timesheets = lazy(() => import("./erp-modules/payroll/timesheets"));
 const UserProfileDetails = lazy(() =>
-	import("./features/user1/UserProfileDetails"),
+	import("./features/user/UserProfileDetails"),
 );
 const VerifyEmail = lazy(() => import("./features/verify-user"));
 const WorkView = lazy(() =>
