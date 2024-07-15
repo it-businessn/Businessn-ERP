@@ -6,7 +6,6 @@ import LocalStorageService from "services/LocalStorageService";
 import ProjectService from "services/ProjectService";
 import UserService from "services/UserService";
 import { isManager } from "utils";
-import { loggedInUser } from "utils/common";
 import WorkviewToolbar from "./WorkviewToolbar";
 import ProjectTable from "./project";
 
@@ -26,6 +25,7 @@ export const headerCell = (key, weight, w) => (
 );
 
 const WorkView = () => {
+	const loggedInUser = LocalStorageService.getItem("user");
 	const [projects, setProjects] = useState(null);
 	const [refresh, setRefresh] = useState(false);
 

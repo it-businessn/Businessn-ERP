@@ -1,5 +1,5 @@
 import { createContext, useEffect, useReducer } from "react";
-import { loggedInUser } from "utils/common";
+import LocalStorageService from "services/LocalStorageService";
 import { authReducer } from "./reducer";
 
 export const AuthContext = createContext();
@@ -8,6 +8,7 @@ export const AuthContextProvider = ({ children }) => {
 	const [state, dispatch] = useReducer(authReducer, {
 		user: null,
 	});
+	const loggedInUser = LocalStorageService.getItem("user");
 
 	useEffect(() => {
 		if (!loggedInUser) return;

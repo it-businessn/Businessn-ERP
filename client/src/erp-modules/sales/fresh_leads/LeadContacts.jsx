@@ -6,7 +6,6 @@ import { FaArrowLeft } from "react-icons/fa";
 import { useNavigate, useParams } from "react-router-dom";
 import ContactService from "services/ContactService";
 import LocalStorageService from "services/LocalStorageService";
-import { loggedInUser } from "utils/common";
 import ContactDetailsInfo from "../customers/contacts/ContactDetailsInfo";
 import Logs from "../customers/contacts/logs";
 import Meetings from "../customers/contacts/meeting";
@@ -14,6 +13,7 @@ import Notes from "../customers/contacts/notes/Notes";
 import Tasks from "../customers/contacts/tasks";
 
 const LeadContacts = ({ setViewProfile, selectedContact }) => {
+	const loggedInUser = LocalStorageService.getItem("user");
 	const { id, comp } = useParams();
 	const [company, setCompany] = useState(
 		LocalStorageService.getItem("selectedCompany"),

@@ -11,11 +11,11 @@ import { useBreakpointValue } from "services/Breakpoint";
 import CalendarService from "services/CalendarService";
 import LocalStorageService from "services/LocalStorageService";
 import { getTimezone } from "utils";
-import { loggedInUser } from "utils/common";
 import AddEvent from "./AddEvent";
 import EventDetails from "./EventDetails";
 
 const Calendar = () => {
+	const loggedInUser = LocalStorageService.getItem("user");
 	const { isMobile } = useBreakpointValue();
 	const localizer = momentLocalizer(moment);
 	const [events, setEvents] = useState(null);

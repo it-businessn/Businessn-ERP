@@ -6,12 +6,14 @@ import { useEffect, useState } from "react";
 import LocalStorageService from "services/LocalStorageService";
 import PayrollService from "services/PayrollService";
 import { formatDate } from "utils";
-import { loggedInUser } from "utils/common";
 import LeftPane from "./leftpane";
 import RightPane from "./rightpane";
 
 const Dashboard = () => {
 	const [selectedPayGroup, setSelectedPayGroup] = useState(null);
+
+	const loggedInUser = LocalStorageService.getItem("user");
+
 	const STATS = [
 		{
 			name: "Days till next",

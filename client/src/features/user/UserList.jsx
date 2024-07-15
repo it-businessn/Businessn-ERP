@@ -30,11 +30,12 @@ import "primereact/resources/primereact.min.css";
 import "primereact/resources/themes/lara-light-indigo/theme.css";
 import { useEffect, useState } from "react";
 import { FiEdit2 } from "react-icons/fi";
+import LocalStorageService from "services/LocalStorageService";
 import UserService from "services/UserService";
 import { userCurrency } from "utils";
-import { loggedInUser } from "utils/common";
 
 const UserList = ({ employees }) => {
+	const loggedInUser = LocalStorageService.getItem("user");
 	const { isOpen, onOpen, onClose } = useDisclosure();
 	const [users, setMembers] = useState(employees);
 	const [record, setRecord] = useState(null);

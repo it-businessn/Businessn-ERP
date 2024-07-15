@@ -15,10 +15,11 @@ import { BADGES } from "erp-modules/project-management/workview/project/data";
 import { useEffect, useState } from "react";
 import { Doughnut } from "react-chartjs-2";
 import AssessmentService from "services/AssessmentService";
-import { loggedInUser } from "utils/common";
+import LocalStorageService from "services/LocalStorageService";
 import AttemptedTestScore from "./AttemptedTestScore";
 
 const AssociateViewCard = ({ company }) => {
+	const loggedInUser = LocalStorageService.getItem("user");
 	const [assessments, setAssessments] = useState(null);
 	const [assessmentsTaken, setAssessmentsTaken] = useState(null);
 

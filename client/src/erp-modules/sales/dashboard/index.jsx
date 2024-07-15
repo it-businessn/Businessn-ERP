@@ -5,12 +5,13 @@ import useSelectUser from "hooks/useSelectUser";
 import { useState } from "react";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import { isManager } from "utils";
-import { loggedInUser } from "utils/common";
+import LocalStorageService from "services/LocalStorageService";
 import { STATS } from "./data";
 import LeftPane from "./leftpane";
 import RightPane from "./rightpane";
 
 const CRMDashboard = () => {
+	const loggedInUser = LocalStorageService.getItem("user");
 	const [stats, setStats] = useState(STATS);
 
 	const { employees, company } = useFetchData();

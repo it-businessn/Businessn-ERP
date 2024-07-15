@@ -4,11 +4,12 @@ import TabsButtonGroup from "components/ui/tab/TabsButtonGroup";
 import { useEffect, useState } from "react";
 import TimesheetService from "services/TimesheetService";
 import { isManager } from "utils";
-import { loggedInUser } from "utils/common";
+import LocalStorageService from "services/LocalStorageService";
 import Timecard from "./Timecard";
 import Timesheet from "./Timesheet";
 
 const Timesheets = () => {
+	const loggedInUser = LocalStorageService.getItem("user");
 	const isManagerView = isManager(loggedInUser?.role);
 	const [timesheets, setTimesheets] = useState(null);
 

@@ -8,12 +8,12 @@ import { useEffect, useState } from "react";
 import LeadsService from "services/LeadsService";
 import LocalStorageService from "services/LocalStorageService";
 import { isManager } from "utils";
-import { loggedInUser } from "utils/common";
 import AgentsView, { totalLeads } from "../fresh_leads/AgentsView";
 import { TARGET_LEADS } from "../opportunities/data";
 import GradientAreaFillColorChart from "./AreaFillColorChart";
 
 const Pipeline = () => {
+	const loggedInUser = LocalStorageService.getItem("user");
 	const [leads, setLeads] = useState(null);
 	const [isUpdated, setIsUpdated] = useState(false);
 	const [company, setCompany] = useState(

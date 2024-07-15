@@ -25,7 +25,6 @@ import LeadsService from "services/LeadsService";
 import LocalStorageService from "services/LocalStorageService";
 import UserService from "services/UserService";
 import { formatDate, isManager, toCapitalize } from "utils";
-import { loggedInUser } from "utils/common";
 import Caption from "../lead docket/Caption";
 import SearchFilter from "../lead docket/SearchFilter";
 import { OPP_COLUMNS } from "../lead docket/data";
@@ -33,6 +32,7 @@ import AddNewOpportunity from "./AddNewOpportunity";
 import { LEAD_STAGES } from "./data";
 
 const Opportunities = () => {
+	const loggedInUser = LocalStorageService.getItem("user");
 	const { isMobile, isIpad } = useBreakpointValue();
 	const [isAdded, setIsAdded] = useState(false);
 

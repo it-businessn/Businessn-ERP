@@ -20,7 +20,6 @@ import ContactService from "services/ContactService";
 import LocalStorageService from "services/LocalStorageService";
 import UserService from "services/UserService";
 import { isManager } from "utils";
-import { loggedInUser } from "utils/common";
 import {
 	ACTIVITY_CARDS,
 	SALES_ACTIVITY_CARDS,
@@ -31,6 +30,7 @@ import GaugeChartComponent from "./GaugeChart";
 import SelectCustomer from "./SelectCustomer";
 
 const Activities = () => {
+	const loggedInUser = LocalStorageService.getItem("user");
 	const { isMobile, isIpad } = useBreakpointValue();
 	const [contacts, setContacts] = useState(null);
 	const [leads, setLeads] = useState(null);

@@ -3,8 +3,8 @@ import TableLayout from "components/ui/table/TableLayout";
 
 import { useState } from "react";
 import { FaRegTrashAlt } from "react-icons/fa";
+import LocalStorageService from "services/LocalStorageService";
 import { isManager, toCapitalize } from "utils";
-import { loggedInUser } from "utils/common";
 import { LEADS_COLS } from "../lead docket/data";
 import LeadContacts from "./LeadContacts";
 
@@ -24,6 +24,7 @@ const ListView = ({
 	company,
 	handleDelete,
 }) => {
+	const loggedInUser = LocalStorageService.getItem("user");
 	const defaultLeadInfo = {
 		_id: null,
 		opportunityName: "",

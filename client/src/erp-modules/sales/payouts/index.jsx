@@ -25,10 +25,10 @@ import { useBreakpointValue } from "services/Breakpoint";
 import LocalStorageService from "services/LocalStorageService";
 import PayoutService from "services/PayoutService";
 import { formatDate, isManager } from "utils";
-import { loggedInUser } from "utils/common";
 import AddNewSale from "./AddNewSale";
 
 const Payouts = () => {
+	const loggedInUser = LocalStorageService.getItem("user");
 	const { isMobile } = useBreakpointValue();
 	const [payouts, setPayouts] = useState(null);
 	const [company, setCompany] = useState(

@@ -19,12 +19,13 @@ import TextTitle from "components/ui/text/TextTitle";
 
 import { useEffect, useState } from "react";
 import { HiOfficeBuilding } from "react-icons/hi";
+import LocalStorageService from "services/LocalStorageService";
 import SettingService from "services/SettingService";
 import { isManager, toCapitalize } from "utils";
-import { loggedInUser } from "utils/common";
 import CompaniesPanel from "../CompaniesPanel";
 
 const CompanyDetails = ({ company }) => {
+	const loggedInUser = LocalStorageService.getItem("user");
 	const [openCompanyForm, setOpenCompanyForm] = useState(false);
 	const [companyInfo, setCompanyInfo] = useState(null);
 	const [modules, setModules] = useState(null);

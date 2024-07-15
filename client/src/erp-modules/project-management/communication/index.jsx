@@ -15,10 +15,10 @@ import { useEffect, useState } from "react";
 import { FaUsers } from "react-icons/fa";
 import LocalStorageService from "services/LocalStorageService";
 import UserService from "services/UserService";
-import { loggedInUser } from "utils/common";
 import Conversation from "./Conversation";
 
 const Communications = ({ isDashboard }) => {
+	const loggedInUser = LocalStorageService.getItem("user");
 	const [conversations, setConversations] = useState([]);
 	const [groups, setGroups] = useState(null);
 	const [groupMembers, setGroupMembers] = useState(null);

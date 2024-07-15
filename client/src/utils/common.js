@@ -1,8 +1,6 @@
 import User from "models/User";
 import LocalStorageService from "services/LocalStorageService";
 
-export const loggedInUser = LocalStorageService.getItem("user");
-
 export const storeUser = (user) => {
 	LocalStorageService.setItem("user", user);
 };

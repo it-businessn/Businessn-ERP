@@ -3,11 +3,11 @@ import TextTitle from "components/ui/text/TextTitle";
 
 import { useEffect, useState } from "react";
 import LocalStorageService from "services/LocalStorageService";
-import { loggedInUser } from "utils/common";
 import LeftPane from "./leftpane";
 import RightPane from "./rightpane";
 
 const EmployeeDashboard = () => {
+	const loggedInUser = LocalStorageService.getItem("user");
 	const [selectedUser, setSelectedUser] = useState(loggedInUser);
 	const STATS = [
 		{
