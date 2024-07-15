@@ -1,6 +1,7 @@
 import { Box, SimpleGrid } from "@chakra-ui/react";
 import TextTitle from "components/ui/text/TextTitle";
 
+import useCompany from "hooks/useCompany";
 import { useEffect, useState } from "react";
 import LocalStorageService from "services/LocalStorageService";
 import ResourceService from "services/ResourceService";
@@ -27,25 +28,8 @@ const Resources = () => {
 	const [newUpload, setNewUpload] = useState(null);
 	// const [editResource, setEditResource] = useState(false);
 	const [selectedFilter, setSelectedFilter] = useState(FILE_TYPES[0].type);
-	const [company, setCompany] = useState(
-		LocalStorageService.getItem("selectedCompany"),
-	);
 
-	useEffect(() => {
-		const handleSelectedCompanyChange = (event) => setCompany(event.detail);
-
-		document.addEventListener(
-			"selectedCompanyChanged",
-			handleSelectedCompanyChange,
-		);
-
-		return () => {
-			document.removeEventListener(
-				"selectedCompanyChanged",
-				handleSelectedCompanyChange,
-			);
-		};
-	}, []);
+	const { company } = useCompany();
 	useEffect(() => {
 		const fetchAllResources = async () => {
 			try {

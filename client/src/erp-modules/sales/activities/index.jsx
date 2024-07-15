@@ -12,6 +12,7 @@ import SelectBox from "components/ui/form/select/SelectBox";
 import RadioButtonGroup from "components/ui/tab/RadioButtonGroup";
 import TextTitle from "components/ui/text/TextTitle";
 
+import useCompany from "hooks/useCompany";
 import { useEffect, useState } from "react";
 import { RiAspectRatioLine } from "react-icons/ri";
 import ActivityService from "services/ActivityService";
@@ -40,28 +41,12 @@ const Activities = () => {
 	const [showSelectCustomer, setShowSelectCustomer] = useState(false);
 	const [logType, setLogType] = useState(null);
 	const [userActivities, setUserActivities] = useState(null);
-	const [company, setCompany] = useState(
-		LocalStorageService.getItem("selectedCompany"),
-	);
+
 	const [employees, setEmployees] = useState(null);
 
 	const [selectedUser, setSelectedUser] = useState(loggedInUser);
 
-	useEffect(() => {
-		const handleSelectedCompanyChange = (event) => setCompany(event.detail);
-
-		document.addEventListener(
-			"selectedCompanyChanged",
-			handleSelectedCompanyChange,
-		);
-
-		return () => {
-			document.removeEventListener(
-				"selectedCompanyChanged",
-				handleSelectedCompanyChange,
-			);
-		};
-	}, []);
+	const { company } = useCompany();
 
 	useEffect(() => {
 		const fetchAllContacts = async () => {

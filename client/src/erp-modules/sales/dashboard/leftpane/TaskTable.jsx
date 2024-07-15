@@ -1,4 +1,6 @@
 import { Box, HStack, Table, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
+import useCompany from "hooks/useCompany";
+import useSelectUser from "hooks/useSelectUser";
 import { useEffect, useState } from "react";
 import LocalStorageService from "services/LocalStorageService";
 import TaskService from "services/TaskService";
@@ -6,39 +8,11 @@ import { formatDate, renderPriorityBars } from "utils";
 
 const TaskTable = ({ cols }) => {
 	const [tasks, setTasks] = useState([]);
-	const [company, setCompany] = useState(
-		LocalStorageService.getItem("selectedCompany"),
-	);
-	const [selectedUser, setSelectedUser] = useState(
+	const { selectedUser } = useSelectUser(
 		LocalStorageService.getItem("selectedUser"),
 	);
 
-	useEffect(() => {
-		const handleSelectedUserChange = (event) => {
-			setSelectedUser(event.detail);
-		};
-
-		const handleSelectedCompanyChange = (event) => {
-			setCompany(event.detail);
-		};
-
-		document.addEventListener("selectedUserChanged", handleSelectedUserChange);
-		document.addEventListener(
-			"selectedCompanyChanged",
-			handleSelectedCompanyChange,
-		);
-
-		return () => {
-			document.removeEventListener(
-				"selectedUserChanged",
-				handleSelectedCompanyChange,
-			);
-			document.removeEventListener(
-				"selectedCompanyChanged",
-				handleSelectedCompanyChange,
-			);
-		};
-	}, []);
+	const { company } = useCompany();
 
 	useEffect(() => {
 		const fetchAllUserTasks = async () => {

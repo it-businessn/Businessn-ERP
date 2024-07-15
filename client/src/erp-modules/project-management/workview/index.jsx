@@ -1,5 +1,6 @@
 import { Box, Flex, Text, Th } from "@chakra-ui/react";
 
+import useCompany from "hooks/useCompany";
 import { useEffect, useState } from "react";
 import { FaSort } from "react-icons/fa";
 import LocalStorageService from "services/LocalStorageService";
@@ -32,25 +33,8 @@ const WorkView = () => {
 	const [managers, setManagers] = useState(null);
 
 	const isManagerView = isManager(loggedInUser?.role);
-	const [company, setCompany] = useState(
-		LocalStorageService.getItem("selectedCompany"),
-	);
 
-	useEffect(() => {
-		const handleSelectedCompanyChange = (event) => setCompany(event.detail);
-
-		document.addEventListener(
-			"selectedCompanyChanged",
-			handleSelectedCompanyChange,
-		);
-
-		return () => {
-			document.removeEventListener(
-				"selectedCompanyChanged",
-				handleSelectedCompanyChange,
-			);
-		};
-	}, []);
+	const { company } = useCompany();
 
 	useEffect(() => {
 		const fetchAllProjectInfo = async () => {

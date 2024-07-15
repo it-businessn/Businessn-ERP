@@ -1,7 +1,9 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import LocalStorageService from "services/LocalStorageService";
 
-const useSelectUser = (selectedUser) => {
+const useSelectUser = (user) => {
+	const [selectedUser, setSelectedUser] = useState(user);
+
 	useEffect(() => {
 		LocalStorageService.setItem("selectedUser", selectedUser);
 
@@ -11,7 +13,22 @@ const useSelectUser = (selectedUser) => {
 			}),
 		);
 	}, [selectedUser]);
-	return null;
+
+	useEffect(() => {
+		const handleSelectedUserChange = (event) => {
+			setSelectedUser(event.detail);
+		};
+		document.addEventListener("selectedUserChanged", handleSelectedUserChange);
+
+		return () => {
+			document.removeEventListener(
+				"selectedUserChanged",
+				handleSelectedUserChange,
+			);
+		};
+	}, []);
+
+	return { selectedUser, setSelectedUser };
 };
 
 export default useSelectUser;

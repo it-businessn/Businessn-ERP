@@ -15,11 +15,10 @@ const CRMDashboard = () => {
 	const loggedInUser = LocalStorageService.getItem("user");
 	const [stats, setStats] = useState(STATS);
 
-	const company = useCompany();
+	const { company } = useCompany();
 	const employees = useEmployeeData(company);
 
-	const [selectedUser, setSelectedUser] = useState(loggedInUser);
-	useSelectUser(selectedUser);
+	const { selectedUser, setSelectedUser } = useSelectUser(loggedInUser);
 
 	const role = loggedInUser?.role;
 

@@ -16,6 +16,7 @@ import PrimaryButton from "components/ui/button/PrimaryButton";
 import SelectList from "components/ui/form/select/SelectList";
 import TableLayout from "components/ui/table/TableLayout";
 
+import useCompany from "hooks/useCompany";
 import { useEffect, useState } from "react";
 import { FaRegTrashAlt, FaSearch } from "react-icons/fa";
 import { MdOutlineFilterList } from "react-icons/md";
@@ -40,25 +41,7 @@ const Opportunities = () => {
 	const [assignees, setAssignees] = useState(null);
 	const [supervisorAssignees, setSupervisorAssignees] = useState(null);
 
-	const [company, setCompany] = useState(
-		LocalStorageService.getItem("selectedCompany"),
-	);
-
-	useEffect(() => {
-		const handleSelectedCompanyChange = (event) => setCompany(event.detail);
-
-		document.addEventListener(
-			"selectedCompanyChanged",
-			handleSelectedCompanyChange,
-		);
-
-		return () => {
-			document.removeEventListener(
-				"selectedCompanyChanged",
-				handleSelectedCompanyChange,
-			);
-		};
-	}, []);
+	const { company } = useCompany();
 	useEffect(() => {
 		const fetchAllSalesAgents = async () => {
 			try {

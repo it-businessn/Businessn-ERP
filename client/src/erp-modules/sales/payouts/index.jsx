@@ -18,6 +18,7 @@ import {
 } from "@chakra-ui/react";
 import PrimaryButton from "components/ui/button/PrimaryButton";
 
+import useCompany from "hooks/useCompany";
 import { useEffect, useState } from "react";
 import { FaSearch } from "react-icons/fa";
 import { MdOutlineFilterList } from "react-icons/md";
@@ -31,27 +32,11 @@ const Payouts = () => {
 	const loggedInUser = LocalStorageService.getItem("user");
 	const { isMobile } = useBreakpointValue();
 	const [payouts, setPayouts] = useState(null);
-	const [company, setCompany] = useState(
-		LocalStorageService.getItem("selectedCompany"),
-	);
 	const [isAdded, setIsAdded] = useState(false);
 	const { isOpen, onOpen, onClose } = useDisclosure();
 	const isManagerUser = isManager(loggedInUser.role);
-	useEffect(() => {
-		const handleSelectedCompanyChange = (event) => setCompany(event.detail);
 
-		document.addEventListener(
-			"selectedCompanyChanged",
-			handleSelectedCompanyChange,
-		);
-
-		return () => {
-			document.removeEventListener(
-				"selectedCompanyChanged",
-				handleSelectedCompanyChange,
-			);
-		};
-	}, []);
+	const { company } = useCompany();
 
 	useEffect(() => {
 		const fetchAllPayouts = async () => {

@@ -1,11 +1,11 @@
 import { Box } from "@chakra-ui/react";
 import TabsButtonGroup from "components/ui/tab/TabsButtonGroup";
 import TextTitle from "components/ui/text/TextTitle";
+import useCompany from "hooks/useCompany";
 import { useEffect, useState } from "react";
 import { FaListCheck } from "react-icons/fa6";
 import { MdSpaceDashboard } from "react-icons/md";
 import LeadsService from "services/LeadsService";
-import LocalStorageService from "services/LocalStorageService";
 import { FRESH_LEADS } from "../opportunities/data";
 import AgentsView from "./AgentsView";
 import ListView from "./ListView";
@@ -13,25 +13,7 @@ import ListView from "./ListView";
 const FreshLeads = () => {
 	const [leads, setLeads] = useState(null);
 	const [isUpdated, setIsUpdated] = useState(false);
-	const [company, setCompany] = useState(
-		LocalStorageService.getItem("selectedCompany"),
-	);
-
-	useEffect(() => {
-		const handleSelectedCompanyChange = (event) => setCompany(event.detail);
-
-		document.addEventListener(
-			"selectedCompanyChanged",
-			handleSelectedCompanyChange,
-		);
-
-		return () => {
-			document.removeEventListener(
-				"selectedCompanyChanged",
-				handleSelectedCompanyChange,
-			);
-		};
-	}, []);
+	const { company } = useCompany();
 	const fetchAllLeads = async () => {
 		try {
 			const response = await LeadsService.getFreshLeads(company);

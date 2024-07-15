@@ -9,6 +9,7 @@ import {
 	VStack,
 } from "@chakra-ui/react";
 import ActionButtonGroup from "components/ui/form/ActionButtonGroup";
+import useCompany from "hooks/useCompany";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import AssessmentService from "services/AssessmentService";
@@ -23,25 +24,8 @@ const Assessment = () => {
 	const [answers, setAnswers] = useState({});
 	const [showExplanation, setShowExplanation] = useState(false);
 	const [correctCount, setCorrectCount] = useState(0);
-	const [company, setCompany] = useState(
-		LocalStorageService.getItem("selectedCompany"),
-	);
 
-	useEffect(() => {
-		const handleSelectedCompanyChange = (event) => setCompany(event.detail);
-
-		document.addEventListener(
-			"selectedCompanyChanged",
-			handleSelectedCompanyChange,
-		);
-
-		return () => {
-			document.removeEventListener(
-				"selectedCompanyChanged",
-				handleSelectedCompanyChange,
-			);
-		};
-	}, []);
+	const { company } = useCompany();
 	useEffect(() => {
 		const fetchAllAssessments = async () => {
 			try {

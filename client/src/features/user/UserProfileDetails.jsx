@@ -10,7 +10,8 @@ import {
 } from "@chakra-ui/react";
 import PrimaryButton from "components/ui/button/PrimaryButton";
 import TextTitle from "components/ui/text/TextTitle";
-import React, { useEffect, useState } from "react";
+import useCompany from "hooks/useCompany";
+import React, { useState } from "react";
 import { FaAddressCard, FaUndoAlt } from "react-icons/fa";
 import { useBreakpointValue } from "services/Breakpoint";
 import LocalStorageService from "services/LocalStorageService";
@@ -40,25 +41,8 @@ const UserProfileDetails = () => {
 		setEditMode(false);
 		setPasswordMode(false);
 	};
-	const [company, setCompany] = useState(
-		LocalStorageService.getItem("selectedCompany"),
-	);
 
-	useEffect(() => {
-		const handleSelectedCompanyChange = (event) => setCompany(event.detail);
-
-		document.addEventListener(
-			"selectedCompanyChanged",
-			handleSelectedCompanyChange,
-		);
-
-		return () => {
-			document.removeEventListener(
-				"selectedCompanyChanged",
-				handleSelectedCompanyChange,
-			);
-		};
-	}, []);
+	const { company } = useCompany();
 
 	const {
 		fullName,

@@ -1,8 +1,8 @@
 import { Box } from "@chakra-ui/react";
 import TabsButtonGroup from "components/ui/tab/TabsButtonGroup";
 import TextTitle from "components/ui/text/TextTitle";
+import useCompany from "hooks/useCompany";
 import { useEffect, useState } from "react";
-import LocalStorageService from "services/LocalStorageService";
 import UserService from "services/UserService";
 import CompanyPanel from "./company/CompanyPanel";
 import PermissionsPanel from "./permisssions/PermissionsPanel";
@@ -12,25 +12,8 @@ const Setup = () => {
 	const [employees, setEmployees] = useState(null);
 	const [filteredEmployees, setFilteredEmployees] = useState(null);
 	const [isRefresh, setIsRefresh] = useState(false);
-	const [company, setCompany] = useState(
-		LocalStorageService.getItem("selectedCompany"),
-	);
 
-	useEffect(() => {
-		const handleSelectedCompanyChange = (event) => setCompany(event.detail);
-
-		document.addEventListener(
-			"selectedCompanyChanged",
-			handleSelectedCompanyChange,
-		);
-
-		return () => {
-			document.removeEventListener(
-				"selectedCompanyChanged",
-				handleSelectedCompanyChange,
-			);
-		};
-	}, []);
+	const { company } = useCompany();
 	useEffect(() => {
 		const fetchAllEmployees = async () => {
 			try {

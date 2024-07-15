@@ -1,7 +1,8 @@
 import { Box, SimpleGrid } from "@chakra-ui/react";
 import TextTitle from "components/ui/text/TextTitle";
 
-import { useEffect, useState } from "react";
+import useCompany from "hooks/useCompany";
+import { useState } from "react";
 import LocalStorageService from "services/LocalStorageService";
 import LeftPane from "./leftpane";
 import RightPane from "./rightpane";
@@ -24,25 +25,7 @@ const EmployeeDashboard = () => {
 		},
 	];
 	const [stats, setStats] = useState(STATS);
-	const [company, setCompany] = useState(
-		LocalStorageService.getItem("selectedCompany"),
-	);
-
-	useEffect(() => {
-		const handleSelectedCompanyChange = (event) => setCompany(event.detail);
-
-		document.addEventListener(
-			"selectedCompanyChanged",
-			handleSelectedCompanyChange,
-		);
-
-		return () => {
-			document.removeEventListener(
-				"selectedCompanyChanged",
-				handleSelectedCompanyChange,
-			);
-		};
-	}, []);
+	const { company } = useCompany();
 	return (
 		<Box p={{ base: "1em" }} overflow={"hidden"}>
 			<TextTitle title={"Employee Dashboard"} mb={"0.5em"} w={"50%"} />

@@ -140,12 +140,9 @@ export const router = createBrowserRouter([
 			</Suspense>
 		),
 		children: [
-			{
-				index: true,
-				element: <CRMDashboard />,
-			},
 			/* Sales */
 			{
+				index: true,
 				path: ROUTE_PATH.SALES,
 				element: <CRMDashboard />,
 			},

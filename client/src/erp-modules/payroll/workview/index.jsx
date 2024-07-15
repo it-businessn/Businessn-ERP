@@ -1,8 +1,8 @@
 import { Box, Flex } from "@chakra-ui/react";
 import SelectBox from "components/ui/form/select/SelectBox";
 import TextTitle from "components/ui/text/TextTitle";
+import useCompany from "hooks/useCompany";
 import { useEffect, useState } from "react";
-import LocalStorageService from "services/LocalStorageService";
 import PayrollService from "services/PayrollService";
 import PaygroupTable from "./PaygroupTable";
 import PaygroupWorkview from "./PaygroupWorkview";
@@ -10,24 +10,7 @@ import PaygroupWorkview from "./PaygroupWorkview";
 const PayrollWorkview = () => {
 	const [selectedPayGroup, setSelectedPayGroup] = useState(null);
 	const [payGroups, setPayGroups] = useState(null);
-	const [company, setCompany] = useState(
-		LocalStorageService.getItem("selectedCompany"),
-	);
-	useEffect(() => {
-		const handleSelectedCompanyChange = (event) => setCompany(event.detail);
-
-		document.addEventListener(
-			"selectedCompanyChanged",
-			handleSelectedCompanyChange,
-		);
-
-		return () => {
-			document.removeEventListener(
-				"selectedCompanyChanged",
-				handleSelectedCompanyChange,
-			);
-		};
-	}, []);
+	const { company } = useCompany();
 	useEffect(() => {
 		const fetchAllPaygroups = async () => {
 			try {

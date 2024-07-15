@@ -11,6 +11,7 @@ import {
 } from "@chakra-ui/react";
 import TextTitle from "components/ui/text/TextTitle";
 
+import useCompany from "hooks/useCompany";
 import { useEffect, useState } from "react";
 import { FaUsers } from "react-icons/fa";
 import LocalStorageService from "services/LocalStorageService";
@@ -26,25 +27,7 @@ const Communications = ({ isDashboard }) => {
 	const [selectedGroupMember, setSelectedGroupMember] = useState(null);
 	const userId = LocalStorageService.getItem("user")._id;
 
-	const [company, setCompany] = useState(
-		LocalStorageService.getItem("selectedCompany"),
-	);
-
-	useEffect(() => {
-		const handleSelectedCompanyChange = (event) => setCompany(event.detail);
-
-		document.addEventListener(
-			"selectedCompanyChanged",
-			handleSelectedCompanyChange,
-		);
-
-		return () => {
-			document.removeEventListener(
-				"selectedCompanyChanged",
-				handleSelectedCompanyChange,
-			);
-		};
-	}, []);
+	const { company } = useCompany();
 
 	useEffect(() => {
 		const fetchAllGroups = async () => {

@@ -11,6 +11,7 @@ import {
 import { Tab, UserProfile } from "components";
 import Logo from "components/logo";
 import SelectBox from "components/ui/form/select/SelectBox";
+import useCompany from "hooks/useCompany";
 import { useEffect, useState } from "react";
 import { FaSyncAlt } from "react-icons/fa";
 import { Link } from "react-router-dom";
@@ -21,9 +22,10 @@ import SettingService from "services/SettingService";
 const Navbar = ({ handleClick, handleLogout, onOpen, tabs, user }) => {
 	const [companies, setCompanies] = useState(null);
 
-	const [selectedCompany, setSelectedCompany] = useState(
+	const { company, setSelectedCompany } = useCompany(
 		user?.companyId[0]?.name || "",
 	);
+	// const [selectedCompany, setSelectedCompany] = useState(company);
 
 	const handleCompany = (company = "FD") => {
 		// if (company === "FD") {
@@ -31,18 +33,10 @@ const Navbar = ({ handleClick, handleLogout, onOpen, tabs, user }) => {
 		// } else {
 		// 	setActiveMenu(BUSINESSN_SIDEBAR_MENU.find((menu) => menu.id === "sales"));
 		// }
-		LocalStorageService.setItem("selectedCompany", selectedCompany);
+		LocalStorageService.setItem("selectedCompany", company);
 
 		// setActiveMenu(SIDEBAR_MENU?.find((menu) => menu.id === "sales"));
 	};
-	useEffect(() => {
-		handleCompany(selectedCompany);
-		document.dispatchEvent(
-			new CustomEvent("selectedCompanyChanged", {
-				detail: selectedCompany,
-			}),
-		);
-	}, [selectedCompany]);
 
 	useEffect(() => {
 		const fetchCompanyInfo = async () => {
@@ -76,7 +70,7 @@ const Navbar = ({ handleClick, handleLogout, onOpen, tabs, user }) => {
 							variant="round"
 						/>
 					}
-					value={selectedCompany}
+					value={company}
 					handleChange={handleChange}
 					data={companies}
 					name="name"

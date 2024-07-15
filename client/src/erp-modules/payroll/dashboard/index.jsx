@@ -2,6 +2,7 @@ import { Box, Flex, SimpleGrid } from "@chakra-ui/react";
 import TextTitle from "components/ui/text/TextTitle";
 
 import SelectBox from "components/ui/form/select/SelectBox";
+import useCompany from "hooks/useCompany";
 import { useEffect, useState } from "react";
 import LocalStorageService from "services/LocalStorageService";
 import PayrollService from "services/PayrollService";
@@ -29,26 +30,10 @@ const Dashboard = () => {
 		},
 	];
 	const [stats, setStats] = useState(STATS);
-	const [company, setCompany] = useState(
-		LocalStorageService.getItem("selectedCompany"),
-	);
+
+	const { company } = useCompany();
 	const [payGroups, setPayGroups] = useState(null);
 
-	useEffect(() => {
-		const handleSelectedCompanyChange = (event) => setCompany(event.detail);
-
-		document.addEventListener(
-			"selectedCompanyChanged",
-			handleSelectedCompanyChange,
-		);
-
-		return () => {
-			document.removeEventListener(
-				"selectedCompanyChanged",
-				handleSelectedCompanyChange,
-			);
-		};
-	}, []);
 	useEffect(() => {
 		const fetchAllPaygroups = async () => {
 			try {

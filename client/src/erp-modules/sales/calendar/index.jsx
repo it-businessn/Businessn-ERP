@@ -2,6 +2,7 @@ import { Box, Button, Flex, HStack, Spacer } from "@chakra-ui/react";
 import PrimaryButton from "components/ui/button/PrimaryButton";
 import TextTitle from "components/ui/text/TextTitle";
 
+import useCompany from "hooks/useCompany";
 import moment from "moment-timezone";
 import { useEffect, useState } from "react";
 import { Calendar as BigCalendar, momentLocalizer } from "react-big-calendar";
@@ -34,25 +35,7 @@ const Calendar = () => {
 	// 		setTimeout(checkClassExists, 1000);
 	// 	}
 	// };
-	const [company, setCompany] = useState(
-		LocalStorageService.getItem("selectedCompany"),
-	);
-
-	useEffect(() => {
-		const handleSelectedCompanyChange = (event) => setCompany(event.detail);
-
-		document.addEventListener(
-			"selectedCompanyChanged",
-			handleSelectedCompanyChange,
-		);
-
-		return () => {
-			document.removeEventListener(
-				"selectedCompanyChanged",
-				handleSelectedCompanyChange,
-			);
-		};
-	}, []);
+	const { company } = useCompany();
 
 	useEffect(() => {
 		// checkClassExists();

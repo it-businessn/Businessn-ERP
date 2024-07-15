@@ -19,11 +19,11 @@ import {
 	PRODUCTS_SERVICES,
 	WEIGHTING,
 } from "erp-modules/project-management/workview/project/data";
+import useCompany from "hooks/useCompany";
 import { useEffect, useState } from "react";
 import { FaCaretRight } from "react-icons/fa";
 import { useBreakpointValue } from "services/Breakpoint";
 import LeadsService from "services/LeadsService";
-import LocalStorageService from "services/LocalStorageService";
 import UserService from "services/UserService";
 import { generateLighterShade, timeSpan } from "utils";
 import AutoAssign from "./AutoAssign";
@@ -35,25 +35,7 @@ const LeadsDisbursed = () => {
 	const [agents, setAgents] = useState(null);
 	const [activity, setActivity] = useState(null);
 
-	const [company, setCompany] = useState(
-		LocalStorageService.getItem("selectedCompany"),
-	);
-
-	useEffect(() => {
-		const handleSelectedCompanyChange = (event) => setCompany(event.detail);
-
-		document.addEventListener(
-			"selectedCompanyChanged",
-			handleSelectedCompanyChange,
-		);
-
-		return () => {
-			document.removeEventListener(
-				"selectedCompanyChanged",
-				handleSelectedCompanyChange,
-			);
-		};
-	}, []);
+	const { company } = useCompany();
 	const fetchAllUserActivity = async () => {
 		try {
 			const response = await UserService.getAllUserActivity();

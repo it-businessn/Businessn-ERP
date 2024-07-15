@@ -4,6 +4,7 @@ import InputFormControl from "components/ui/form/InputFormControl";
 import ModalLayout from "components/ui/modal/ModalLayout";
 import TextTitle from "components/ui/text/TextTitle";
 
+import useCompany from "hooks/useCompany";
 import { useEffect, useState } from "react";
 import LeadsService from "services/LeadsService";
 import LocalStorageService from "services/LocalStorageService";
@@ -16,25 +17,8 @@ const Pipeline = () => {
 	const loggedInUser = LocalStorageService.getItem("user");
 	const [leads, setLeads] = useState(null);
 	const [isUpdated, setIsUpdated] = useState(false);
-	const [company, setCompany] = useState(
-		LocalStorageService.getItem("selectedCompany"),
-	);
 
-	useEffect(() => {
-		const handleSelectedCompanyChange = (event) => setCompany(event.detail);
-
-		document.addEventListener(
-			"selectedCompanyChanged",
-			handleSelectedCompanyChange,
-		);
-
-		return () => {
-			document.removeEventListener(
-				"selectedCompanyChanged",
-				handleSelectedCompanyChange,
-			);
-		};
-	}, []);
+	const { company } = useCompany();
 	const fetchAllLeads = async () => {
 		try {
 			const response = await LeadsService.getTargetLeads(company);

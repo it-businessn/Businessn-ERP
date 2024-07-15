@@ -1,5 +1,6 @@
 import { AddIcon, CalendarIcon, ChatIcon, TimeIcon } from "@chakra-ui/icons";
 
+import useCompany from "hooks/useCompany";
 import { useEffect, useState } from "react";
 import ContactService from "services/ContactService";
 import LocalStorageService from "services/LocalStorageService";
@@ -11,28 +12,11 @@ const Customers = () => {
 	const [contacts, setContacts] = useState(null);
 	const [viewProfile, setViewProfile] = useState(false);
 	const [selectedContact, setSelectedContact] = useState(null);
-	const [company, setCompany] = useState(
-		LocalStorageService.getItem("selectedCompany"),
-	);
 	const loggedInUser = LocalStorageService.getItem("user");
 
 	const isUserManager = isManager(loggedInUser?.role);
 
-	useEffect(() => {
-		const handleSelectedCompanyChange = (event) => setCompany(event.detail);
-
-		document.addEventListener(
-			"selectedCompanyChanged",
-			handleSelectedCompanyChange,
-		);
-
-		return () => {
-			document.removeEventListener(
-				"selectedCompanyChanged",
-				handleSelectedCompanyChange,
-			);
-		};
-	}, []);
+	const { company } = useCompany();
 	const [isAdded, setIsAdded] = useState(false);
 	const fetchAllContacts = async () => {
 		try {

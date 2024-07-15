@@ -1,13 +1,24 @@
 import { useEffect, useState } from "react";
 import LocalStorageService from "services/LocalStorageService";
 
-const useCompany = () => {
-	const [company, setCompany] = useState(
-		LocalStorageService.getItem("selectedCompany"),
-	);
+const comp = LocalStorageService.getItem("selectedCompany");
+
+const useCompany = (defaultCompany) => {
+	const [company, setSelectedCompany] = useState(defaultCompany || comp);
 
 	useEffect(() => {
-		const handleSelectedCompanyChange = (event) => setCompany(event.detail);
+		LocalStorageService.setItem("selectedCompany", company);
+
+		document.dispatchEvent(
+			new CustomEvent("selectedCompanyChanged", {
+				detail: company,
+			}),
+		);
+	}, [company]);
+
+	useEffect(() => {
+		const handleSelectedCompanyChange = (event) =>
+			setSelectedCompany(event.detail);
 		document.addEventListener(
 			"selectedCompanyChanged",
 			handleSelectedCompanyChange,
@@ -21,7 +32,7 @@ const useCompany = () => {
 		};
 	}, []);
 
-	return company;
+	return { company, setSelectedCompany };
 };
 
 export default useCompany;

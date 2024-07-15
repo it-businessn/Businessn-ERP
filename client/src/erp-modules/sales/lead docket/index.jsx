@@ -23,13 +23,13 @@ import {
 	PRODUCTS_SERVICES,
 	REGIONS,
 } from "erp-modules/project-management/workview/project/data";
+import useCompany from "hooks/useCompany";
 import { useEffect, useState } from "react";
 import { FaSearch } from "react-icons/fa";
 import { MdOutlineFilterList } from "react-icons/md";
 import { useNavigate } from "react-router";
 import { useBreakpointValue } from "services/Breakpoint";
 import LeadsService from "services/LeadsService";
-import LocalStorageService from "services/LocalStorageService";
 import { formatDate, toCapitalize } from "utils";
 import AddOpportunity from "./AddOpportunity";
 import Caption from "./Caption";
@@ -46,25 +46,7 @@ const LeadsDocket = () => {
 	const [data, setData] = useState([]);
 	const [isRefresh, setIsRefresh] = useState(false);
 
-	const [company, setCompany] = useState(
-		LocalStorageService.getItem("selectedCompany"),
-	);
-
-	useEffect(() => {
-		const handleSelectedCompanyChange = (event) => setCompany(event.detail);
-
-		document.addEventListener(
-			"selectedCompanyChanged",
-			handleSelectedCompanyChange,
-		);
-
-		return () => {
-			document.removeEventListener(
-				"selectedCompanyChanged",
-				handleSelectedCompanyChange,
-			);
-		};
-	}, []);
+	const { company } = useCompany();
 	const fetchAllLeads = async () => {
 		try {
 			const response = await LeadsService.getNotDisbursedLeads(company);

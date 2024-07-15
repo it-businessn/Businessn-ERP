@@ -18,7 +18,7 @@ const Home = () => {
 	const navigate = useNavigate();
 	const [user, setUser] = useState(LocalStorageService.getItem("user"));
 
-	const company = useCompany();
+	const { company } = useCompany();
 
 	const { isMobile } = useBreakpointValue();
 
@@ -34,7 +34,7 @@ const Home = () => {
 
 	useEffect(() => {
 		if (user) {
-			navigate(ROUTE_PATH.SALES);
+			navigate(ROUTE_PATH.PAYROLL);
 			// navigate(`${ROUTE_PATH.SALES}${ROUTE_PATH.CUSTOMERS}`);
 			// navigate(`${ROUTE_PATH.PROJECT}${ROUTE_PATH.WORKVIEW}`);
 		} else {
