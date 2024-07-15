@@ -1,9 +1,7 @@
 import { useEffect, useState } from "react";
 import LocalStorageService from "services/LocalStorageService";
-import UserService from "services/UserService";
 
-const useFetchData = () => {
-	const [employees, setEmployees] = useState(null);
+const useCompany = () => {
 	const [company, setCompany] = useState(
 		LocalStorageService.getItem("selectedCompany"),
 	);
@@ -23,19 +21,7 @@ const useFetchData = () => {
 		};
 	}, []);
 
-	useEffect(() => {
-		const fetchAllEmployees = async () => {
-			try {
-				const response = await UserService.getAllSalesAgents(company);
-				setEmployees(response.data);
-			} catch (error) {
-				console.error(error);
-			}
-		};
-		fetchAllEmployees();
-	}, [company]);
-
-	return { employees, company };
+	return company;
 };
 
-export default useFetchData;
+export default useCompany;

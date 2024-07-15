@@ -1,12 +1,12 @@
 import { Suspense, lazy } from "react";
 import { createBrowserRouter } from "react-router-dom";
 
+import Home from "components/Home";
 import Dashboard from "erp-modules/payroll/dashboard";
 import Employees from "erp-modules/payroll/employees";
 import LeadContacts from "erp-modules/sales/fresh_leads/LeadContacts";
 import SchedulingDashboard from "erp-modules/scheduling/dashboard";
 import PageNotFound from "./components/PageNotFound";
-import RootLayout from "./layouts/RootLayout";
 
 const Activities = lazy(() => import("./erp-modules/sales/activities"));
 const AddQuestionForm = lazy(() =>
@@ -136,7 +136,7 @@ export const router = createBrowserRouter([
 		element: (
 			// <Suspense fallback={<Loader />}>
 			<Suspense fallback={<></>}>
-				<RootLayout />
+				<Home />
 			</Suspense>
 		),
 		children: [

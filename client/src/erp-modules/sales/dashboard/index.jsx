@@ -1,11 +1,12 @@
 import { Box, Flex, SimpleGrid, Text } from "@chakra-ui/react";
 import SelectBox from "components/ui/form/select/SelectBox";
-import useFetchData from "hooks/useFetchData";
+import useCompany from "hooks/useCompany";
+import useEmployeeData from "hooks/useEmployeeData";
 import useSelectUser from "hooks/useSelectUser";
 import { useState } from "react";
 import "react-big-calendar/lib/css/react-big-calendar.css";
-import { isManager } from "utils";
 import LocalStorageService from "services/LocalStorageService";
+import { isManager } from "utils";
 import { STATS } from "./data";
 import LeftPane from "./leftpane";
 import RightPane from "./rightpane";
@@ -14,7 +15,8 @@ const CRMDashboard = () => {
 	const loggedInUser = LocalStorageService.getItem("user");
 	const [stats, setStats] = useState(STATS);
 
-	const { employees, company } = useFetchData();
+	const company = useCompany();
+	const employees = useEmployeeData(company);
 
 	const [selectedUser, setSelectedUser] = useState(loggedInUser);
 	useSelectUser(selectedUser);
