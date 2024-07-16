@@ -5,7 +5,6 @@ import AddLogForm from "./AddLogForm";
 import LogActivityList from "./LogActivityList";
 
 const Logs = ({ contactId, user, company }) => {
-	console.log(company);
 	const [activities, setActivities] = useState([]);
 	const [refresh, setRefresh] = useState(false);
 	const initialFormData = {

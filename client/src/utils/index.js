@@ -439,3 +439,9 @@ export const calcTotal = (data, param1, param2) => {
 			: acc + parseFloat(product[param1]);
 	}, 0);
 };
+
+export const styleConsole = (value) =>
+	console.log(
+		`%c ${value}`,
+		"color:red;font-weight:bold;background-color:white",
+	);

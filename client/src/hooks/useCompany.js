@@ -1,14 +1,14 @@
 import { useEffect, useState } from "react";
 import LocalStorageService from "services/LocalStorageService";
+import { styleConsole } from "utils";
 
 const comp = LocalStorageService.getItem("selectedCompany");
 
 const useCompany = (defaultCompany) => {
 	const [company, setSelectedCompany] = useState(defaultCompany || comp);
-
 	useEffect(() => {
 		LocalStorageService.setItem("selectedCompany", company);
-
+		// styleConsole(company);
 		document.dispatchEvent(
 			new CustomEvent("selectedCompanyChanged", {
 				detail: company,
