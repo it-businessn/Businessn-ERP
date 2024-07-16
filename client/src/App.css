@@ -1,4 +1,8 @@
 :root {
+	--base: 100vh - 6em;
+	--mobile_base: 100vh - 3.5em;
+	--comms: 100vh - 12em;
+	--custom_height: 100vh - 6.7em;
 	--payroll_bg: #5fa6be;
 	--pending: #eba623;
 	--filter_border_color: #d3d3d3;
@@ -177,7 +181,7 @@ button:active {
 .main_content {
 	width: 85vw;
 	margin-top: 6em;
-	max-height: calc(100vh - 6em);
+	max-height: calc(var(--base));
 	overflow: auto;
 }
 
@@ -247,7 +251,7 @@ button:active {
 	.main_content {
 		width: 100vw;
 		margin-top: 3.5em;
-		max-height: calc(100vh - 3.5em);
+		max-height: calc(var(--mobile_base));
 	}
 }
 @media only screen and (min-width: 768px) and (max-width: 991px) {
@@ -255,10 +259,3 @@ button:active {
 
 @media only screen and (min-width: 992px) {
 }
-
-/* toggle theme */
-/* @media (prefers-color-scheme: dark) {
-	:root {
-		--primary_button_bg: red;
-	}
-} */

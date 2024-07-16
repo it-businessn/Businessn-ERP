@@ -24,7 +24,7 @@ const Sidebar = ({
 			p={2}
 			minW={{ md: "24vw", lg: "18vw", xl: "15vw" }}
 			mt="6.7em"
-			maxHeight={`calc(100vh - 6.7em)`}
+			maxHeight={`calc(var(--custom_height))`}
 			overflowY="auto"
 		>
 			<Stack justify="start" width="full" my={0} spacing={0}>
