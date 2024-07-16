@@ -1,12 +1,7 @@
-import { Box } from "@chakra-ui/react";
-import TextTitle from "components/ui/text/TextTitle";
+import PageLayout from "layouts/PageLayout";
 
 const Taskboard = () => {
-	return (
-		<Box p={{ base: "1em" }} overflow={"hidden"}>
-			<TextTitle title={"Taskboard"} mb={"0.5em"} w={"50%"} />
-		</Box>
-	);
+	return <PageLayout title={"Taskboard"}></PageLayout>;
 };
 
 export default Taskboard;

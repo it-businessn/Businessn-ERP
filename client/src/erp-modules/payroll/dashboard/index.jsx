@@ -1,8 +1,7 @@
-import { Box, Flex, SimpleGrid } from "@chakra-ui/react";
-import TextTitle from "components/ui/text/TextTitle";
+import { SimpleGrid } from "@chakra-ui/react";
 
-import SelectBox from "components/ui/form/select/SelectBox";
 import useCompany from "hooks/useCompany";
+import PageLayout from "layouts/PageLayout";
 import { useEffect, useState } from "react";
 import LocalStorageService from "services/LocalStorageService";
 import PayrollService from "services/PayrollService";
@@ -52,23 +51,16 @@ const Dashboard = () => {
 		}
 	};
 	return (
-		<Box p={{ base: "1em" }} overflow={"hidden"}>
-			<Flex width={"40%"}>
-				<TextTitle title={"Dashboard"} mb={"0.5em"} width={"10em"} />
-				{/* {isManager(role) && employees && ( */}
-				<SelectBox
-					handleChange={handleChange}
-					data={payGroups}
-					name="name"
-					border="1px solid var(--primary_button_bg)"
-					color={"var(--primary_button_bg)"}
-					value={selectedPayGroup}
-					placeholder="Select Paygroup"
-					size={"sm"}
-				/>
-				{/* )} */}
-			</Flex>
-
+		<PageLayout
+			width={"35%"}
+			title={"Dashboard"}
+			showSelectBox={true}
+			data={payGroups}
+			selectAttr="name"
+			selectPlaceholder="Select Paygroup"
+			selectedValue={selectedPayGroup}
+			handleChange={handleChange}
+		>
 			<SimpleGrid
 				columns={{ base: 1, md: 1, lg: 2 }}
 				spacing="4"
@@ -87,7 +79,7 @@ const Dashboard = () => {
 					company={company}
 				/>
 			</SimpleGrid>
-		</Box>
+		</PageLayout>
 	);
 };
 export default Dashboard;

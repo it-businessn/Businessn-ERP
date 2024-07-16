@@ -10,7 +10,7 @@ const TableLayout = ({
 	isTimesheet,
 }) => {
 	return (
-		<Box overflow="auto">
+		<Box overflow="auto" height={"81vh"}>
 			<Table variant="simple">
 				<Thead>
 					<Tr>

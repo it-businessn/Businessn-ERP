@@ -19,6 +19,7 @@ import {
 } from "@chakra-ui/react";
 import RightIconButton from "components/ui/button/RightIconButton";
 import { callsMadeBarData } from "constant";
+import PageLayout from "layouts/PageLayout";
 import { useEffect, useState } from "react";
 import { Bar } from "react-chartjs-2";
 import { FaSearch } from "react-icons/fa";
@@ -99,12 +100,7 @@ const SalesReport = () => {
 	}, []);
 
 	return (
-		<Box
-			p={{ base: "1em", md: "2em" }}
-			h={{ base: "auto", md: "70vh", lg: "auto" }}
-			overflow={"auto"}
-		>
-			<Text fontWeight="bold">Sales Reports</Text>
+		<PageLayout title={"Sales Reports"}>
 			<Flex direction="column" h="100%">
 				<SimpleGrid
 					columns={{ base: 1, lg: 2 }}
@@ -390,7 +386,7 @@ const SalesReport = () => {
 					)}
 				</Box>
 			</Flex>
-		</Box>
+		</PageLayout>
 	);
 };
 

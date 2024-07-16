@@ -1,10 +1,10 @@
-import SectionLayout from "components/ui/SectionLayout";
 import TabsButtonGroup from "components/ui/tab/TabsButtonGroup";
 
+import PageLayout from "layouts/PageLayout";
 import { useEffect, useState } from "react";
+import LocalStorageService from "services/LocalStorageService";
 import TimesheetService from "services/TimesheetService";
 import { isManager } from "utils";
-import LocalStorageService from "services/LocalStorageService";
 import Timecard from "./Timecard";
 import Timesheet from "./Timesheet";
 
@@ -51,7 +51,7 @@ const Timesheets = () => {
 		TABS.find(({ type }) => type === viewMode)?.name;
 
 	return (
-		<SectionLayout title="Timesheets">
+		<PageLayout title={"Timesheets"}>
 			<TabsButtonGroup
 				isOutlineTab
 				tabs={TABS}
@@ -59,7 +59,7 @@ const Timesheets = () => {
 				viewMode={viewMode}
 			/>
 			{showComponent(viewMode)}
-		</SectionLayout>
+		</PageLayout>
 	);
 };
 

@@ -1,7 +1,7 @@
-import { Box, SimpleGrid } from "@chakra-ui/react";
-import TextTitle from "components/ui/text/TextTitle";
+import { SimpleGrid } from "@chakra-ui/react";
 
 import useCompany from "hooks/useCompany";
+import PageLayout from "layouts/PageLayout";
 import { useState } from "react";
 import LocalStorageService from "services/LocalStorageService";
 import LeftPane from "./leftpane";
@@ -27,9 +27,7 @@ const EmployeeDashboard = () => {
 	const [stats, setStats] = useState(STATS);
 	const { company } = useCompany();
 	return (
-		<Box p={{ base: "1em" }} overflow={"hidden"}>
-			<TextTitle title={"Employee Dashboard"} mb={"0.5em"} w={"50%"} />
-
+		<PageLayout title={"Employee Dashboard"}>
 			<SimpleGrid
 				columns={{ base: 1, md: 1, lg: 2 }}
 				spacing="4"
@@ -47,7 +45,7 @@ const EmployeeDashboard = () => {
 					company={company}
 				/>
 			</SimpleGrid>
-		</Box>
+		</PageLayout>
 	);
 };
 export default EmployeeDashboard;

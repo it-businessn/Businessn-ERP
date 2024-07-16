@@ -1,7 +1,7 @@
 import { Box } from "@chakra-ui/react";
 import TabsButtonGroup from "components/ui/tab/TabsButtonGroup";
-import TextTitle from "components/ui/text/TextTitle";
 import useCompany from "hooks/useCompany";
+import PageLayout from "layouts/PageLayout";
 import { useEffect, useState } from "react";
 import { FaListCheck } from "react-icons/fa6";
 import { MdSpaceDashboard } from "react-icons/md";
@@ -68,8 +68,7 @@ const FreshLeads = () => {
 	const showComponent = (viewMode) =>
 		TAB_LIST.find(({ type }) => type === viewMode)?.name;
 	return (
-		<Box p={{ base: "1em", md: "2em" }}>
-			<TextTitle title="Fresh Leads" mb={"0.5em"} />
+		<PageLayout title={"Fresh Leads"}>
 			<Box mb={4} bg={"var(--main_color)"} borderRadius={"1em"} px="5px">
 				<TabsButtonGroup
 					tabs={TAB_LIST}
@@ -78,7 +77,7 @@ const FreshLeads = () => {
 				/>
 			</Box>
 			{showComponent(viewMode)}
-		</Box>
+		</PageLayout>
 	);
 };
 

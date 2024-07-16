@@ -1,12 +1,7 @@
-import { Box } from "@chakra-ui/react";
-import TextTitle from "components/ui/text/TextTitle";
+import PageLayout from "layouts/PageLayout";
 
 const ScheduleReports = () => {
-	return (
-		<Box p={{ base: "1em" }} overflow={"hidden"}>
-			<TextTitle title={"ScheduleReports"} mb={"0.5em"} w={"50%"} />
-		</Box>
-	);
+	return <PageLayout title={"Schedule Reports"}></PageLayout>;
 };
 
 export default ScheduleReports;

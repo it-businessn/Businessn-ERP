@@ -1,30 +1,29 @@
-import { HamburgerIcon } from "@chakra-ui/icons";
-import {
-	Box,
-	Flex,
-	HStack,
-	IconButton,
-	Spacer,
-	Stack,
-	VStack,
-} from "@chakra-ui/react";
-import { Tab, UserProfile } from "components";
-import Logo from "components/logo";
-import SelectBox from "components/ui/form/select/SelectBox";
+import { Box, Flex, HStack, Spacer } from "@chakra-ui/react";
+import { Menu, UserProfile } from "components";
+import { SIDEBAR_MENU } from "data";
 import useCompany from "hooks/useCompany";
-import { useEffect, useState } from "react";
-import { FaSyncAlt } from "react-icons/fa";
-import { Link } from "react-router-dom";
-import { useBreakpointValue } from "services/Breakpoint";
+import useCompanyList from "hooks/useCompanyList";
 import LocalStorageService from "services/LocalStorageService";
-import SettingService from "services/SettingService";
+import LoginService from "services/LoginService";
+import Company from "./Company";
 
-const Navbar = ({ handleClick, handleLogout, onOpen, tabs, user }) => {
-	const [companies, setCompanies] = useState(null);
-
+const Navbar = ({ handleClick, onOpen, user, setUser, isMobile }) => {
 	const { company, setSelectedCompany } = useCompany(
 		user?.companyId[0]?.name || "",
 	);
+
+	const companies = useCompanyList(user?._id);
+
+	const handleLogout = async () => {
+		try {
+			await LoginService.signOut(user._id);
+			LocalStorageService.removeItem("user");
+			setUser(null);
+		} catch (error) {
+			console.log(error.response.data.error);
+		}
+	};
+
 	// const [selectedCompany, setSelectedCompany] = useState(company);
 
 	const handleCompany = (company = "FD") => {
@@ -38,62 +37,16 @@ const Navbar = ({ handleClick, handleLogout, onOpen, tabs, user }) => {
 		// setActiveMenu(SIDEBAR_MENU?.find((menu) => menu.id === "sales"));
 	};
 
-	useEffect(() => {
-		const fetchCompanyInfo = async () => {
-			try {
-				const response = await SettingService.getAllCompaniesByUser(user?._id);
-				setCompanies(response.data);
-			} catch (error) {
-				console.error(error);
-			}
-		};
-
-		fetchCompanyInfo();
-	}, []);
-
-	const { isMobile } = useBreakpointValue();
-
 	const handleChange = (value) => {
 		setSelectedCompany(value);
 	};
-
-	const companyList = () => (
-		<Flex flexDir={"column"} w={{ base: "60%", md: "auto" }}>
-			{companies && (
-				<SelectBox
-					icon={
-						<IconButton
-							ml={"1em"}
-							size="sm"
-							icon={<FaSyncAlt />}
-							aria-label="Refresh"
-							variant="round"
-						/>
-					}
-					value={company}
-					handleChange={handleChange}
-					data={companies}
-					name="name"
-					fontWeight="bold"
-					// placeholder={"No companies found"}
-				/>
-			)}
-		</Flex>
-	);
 
 	// const menuOptions = () => {
 	// 	// company === "FD" ? FD_SIDEBAR_MENU : BUSINESSN_SIDEBAR_MENU;
 	// 	return SIDEBAR_MENU;
 	// };
 
-	const profile = () => (
-		<>
-			<Spacer />
-			<UserProfile user={user} handleLogout={handleLogout} />
-		</>
-	);
-
-	const menuList = tabs?.filter((tab) => tab.permissions);
+	const menuList = SIDEBAR_MENU?.filter((tab) => tab.permissions);
 
 	return (
 		<Box
@@ -106,48 +59,43 @@ const Navbar = ({ handleClick, handleLogout, onOpen, tabs, user }) => {
 			zIndex={1}
 			bg="var(--nav_gradient)"
 		>
-			{isMobile && (
+			{isMobile ? (
 				<HStack>
-					{companyList()}
-					{profile()}
+					{/* {showCompanyList()} */}
+					{/* {showUserInfo()} */}
+				</HStack>
+			) : (
+				<HStack spacing={0} alignItems="center" pr={{ base: "0em", md: "1em" }}>
+					{/* {isMobile ? (
+						<IconButton
+							icon={<HamburgerIcon />}
+							aria-label="Open Sidebar"
+							color="var(--main_color_black)"
+							onClick={onOpen}
+						/>
+					) : (
+						<></>
+					)} */}
+					<Flex
+						justify="start"
+						align={{ base: "center", md: "flex-end" }}
+						w="100%"
+					>
+						<Company
+							value={company}
+							handleChange={handleChange}
+							data={companies}
+						/>
+						{menuList?.map((menu) =>
+							menu.permissions?.canAccessModule ? (
+								<Menu key={menu.name} handleClick={handleClick} menu={menu} />
+							) : null,
+						)}
+						<Spacer />
+						<UserProfile user={user} handleLogout={handleLogout} />
+					</Flex>
 				</HStack>
 			)}
-			<HStack spacing={0} alignItems="center" pr={{ base: "0em", md: "1em" }}>
-				{isMobile && (
-					<IconButton
-						icon={<HamburgerIcon />}
-						aria-label="Open Sidebar"
-						color="var(--main_color_black)"
-						onClick={() => onOpen()}
-					/>
-				)}
-				<Flex
-					justify="start"
-					align={{ base: "center", md: "flex-end" }}
-					w="100%"
-				>
-					<VStack align="start" m={0}>
-						<Logo />
-						{!isMobile && companyList()}
-					</VStack>
-					{menuList?.map(
-						(menu) =>
-							menu.permissions?.canAccessModule && (
-								<Link to={menu?.path} key={menu.name}>
-									<Stack ml={{ base: "1em", md: "2em" }} key={menu.id}>
-										<Tab
-											handleClick={handleClick}
-											color="primary"
-											menu={menu}
-											label={menu.name}
-										/>
-									</Stack>
-								</Link>
-							),
-					)}
-					{!isMobile && profile()}
-				</Flex>
-			</HStack>
 		</Box>
 	);
 };

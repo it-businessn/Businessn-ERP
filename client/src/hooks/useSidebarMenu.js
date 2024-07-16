@@ -2,7 +2,7 @@ import { SIDEBAR_MENU } from "data";
 import { useEffect, useState } from "react";
 import UserService from "services/UserService";
 
-const usePermission = (userId, company, isManager) => {
+const useSidebarMenu = (userId, company, isManager) => {
 	const [activeMenu, setActiveMenu] = useState(null);
 
 	useEffect(() => {
@@ -48,4 +48,4 @@ const usePermission = (userId, company, isManager) => {
 	return { activeMenu, setActiveMenu };
 };
 
-export default usePermission;
+export default useSidebarMenu;

@@ -15,11 +15,11 @@ import {
 	Tr,
 	useDisclosure,
 } from "@chakra-ui/react";
-import SectionLayout from "components/ui/SectionLayout";
 import HighlightButton from "components/ui/button/HighlightButton";
 import LeftIconButton from "components/ui/button/LeftIconButton";
 import PrimaryButton from "components/ui/button/PrimaryButton";
 import TextTitle from "components/ui/text/TextTitle";
+import PageLayout from "layouts/PageLayout";
 import { useEffect, useState } from "react";
 import { FaSearch } from "react-icons/fa";
 import { MdOutlineFilterList } from "react-icons/md";
@@ -69,7 +69,7 @@ const CustomersList = ({
 	}, [company]);
 
 	return (
-		<SectionLayout title="Customers">
+		<PageLayout width="full" title={"Customers"} showBgLayer>
 			{isMobile ? (
 				<Flex flexDir="column">
 					<Flex justify="space-between">
@@ -222,7 +222,7 @@ const CustomersList = ({
 					company={company}
 				/>
 			)}
-		</SectionLayout>
+		</PageLayout>
 	);
 };
 

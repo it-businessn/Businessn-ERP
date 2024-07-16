@@ -15,6 +15,7 @@ import {
 	Tr,
 } from "@chakra-ui/react";
 import TextTitle from "components/ui/text/TextTitle";
+import PageLayout from "layouts/PageLayout";
 import { useEffect, useState } from "react";
 import { FaSearch } from "react-icons/fa";
 import { MdOutlineFilterList } from "react-icons/md";
@@ -38,20 +39,12 @@ const EmployeesList = () => {
 	}, []);
 
 	return (
-		<Box p={{ base: "1em", md: "2em" }}>
-			<TextTitle title={"Employees"} mb={"0.5em"} />
-			<Box
-				p="1em"
-				bg={"var(--primary_bg)"}
-				border="2px solid var(--main_color)"
-				borderRadius="10px"
-				color={"var(--nav_color)"}
-			>
-				{isMobile ? (
-					<Flex flexDir="column">
-						<Flex justify="space-between">
-							<TextTitle title={"Customers"} />
-							{/* <Button
+		<PageLayout width="full" title={"Employees"} showBgLayer>
+			{isMobile ? (
+				<Flex flexDir="column">
+					<Flex justify="space-between">
+						<TextTitle title={"Customers"} />
+						{/* <Button
 								bg="var(--primary_button_bg)"
 								size="xs"
 								color={"var(--primary_bg)"}
@@ -61,136 +54,135 @@ const EmployeesList = () => {
 							>
 								Add new employee
 							</Button> */}
-						</Flex>
-						<HStack spacing="1em" mt="1em">
-							<Button
-								color={"var(--nav_color)"}
-								leftIcon={<MdOutlineFilterList />}
-								border={"2px solid var(--filter_border_color)"}
-								borderRadius={"10px"}
-								variant={"ghost"}
-								_hover={{ color: "var(--main_color_black)", bg: "transparent" }}
-							>
-								Filter
-							</Button>
-							<InputGroup
-								borderRadius={"10px"}
-								border={"1px solid var(--filter_border_color)"}
-								fontSize="sm"
-								fontWeight="bold"
-							>
-								<InputLeftElement children={<FaSearch />} />
-								<Input
-									_placeholder={{
-										color: "var(--nav_color)",
-										fontSize: "sm",
-									}}
-									color={"var(--nav_color)"}
-									bg={"var(--primary_bg)"}
-									type="text"
-									placeholder="Search here"
-									pr="4.5rem"
-								/>
-							</InputGroup>
-						</HStack>
 					</Flex>
-				) : (
-					<Flex>
-						<TextTitle title={"Employees"} />
-						<Spacer />
-						<HStack w={{ lg: "50%" }} spacing={3} justify={"flex-end"}>
-							<Button
-								color={"var(--nav_color)"}
-								size="xs"
-								leftIcon={<MdOutlineFilterList />}
-								border={"2px solid var(--filter_border_color)"}
-								borderRadius={"10px"}
-								variant={"ghost"}
-								_hover={{ color: "var(--main_color_black)", bg: "transparent" }}
-								ml={2}
-							>
-								Filter
-							</Button>
-							<InputGroup
-								size="xs"
-								w={"40%"}
-								borderRadius={"10px"}
-								border={"1px solid var(--filter_border_color)"}
-								fontSize="xs"
-								fontWeight="bold"
-							>
-								<InputLeftElement size="xs" children={<FaSearch />} />
-								<Input
-									size="xs"
-									_placeholder={{
-										color: "var(--nav_color)",
-										fontSize: "sm",
-									}}
-									color={"var(--nav_color)"}
-									bg={"var(--primary_bg)"}
-									type="text"
-									placeholder="Search here"
-									pr="4.5rem"
-									py={"1.1em"}
-								/>
-							</InputGroup>
-							{/* <Button
-								bg="var(--primary_button_bg)"
-								size="xs"
-								color={"var(--primary_bg)"}
-								variant={"solid"}
-								_hover={{ color: "var(--main_color_black)" }}
-								borderRadius={"10px"}
-							>
-								Add new employee
-							</Button> */}
-						</HStack>
-					</Flex>
-				)}
-				{employees && (
-					<Box overflow="auto">
-						<Table
+					<HStack spacing="1em" mt="1em">
+						<Button
 							color={"var(--nav_color)"}
-							bg={"var(--primary_bg)"}
-							size={"small"}
+							leftIcon={<MdOutlineFilterList />}
+							border={"2px solid var(--filter_border_color)"}
+							borderRadius={"10px"}
+							variant={"ghost"}
+							_hover={{ color: "var(--main_color_black)", bg: "transparent" }}
 						>
-							<Thead>
-								<Tr>
-									<Th fontSize={"xs"} fontWeight={"bolder"} p={0}>
-										Name
-									</Th>
-									<Th fontSize={"xs"} fontWeight={"bolder"}>
-										Email
-									</Th>
-									<Th fontSize={"xs"} fontWeight={"bolder"}>
-										PhoneNumber
-									</Th>
-									<Th fontSize={"xs"} fontWeight={"bolder"}>
-										Role
-									</Th>
-									<Th fontSize={"xs"} fontWeight={"bolder"}>
-										Manager
-									</Th>
+							Filter
+						</Button>
+						<InputGroup
+							borderRadius={"10px"}
+							border={"1px solid var(--filter_border_color)"}
+							fontSize="sm"
+							fontWeight="bold"
+						>
+							<InputLeftElement children={<FaSearch />} />
+							<Input
+								_placeholder={{
+									color: "var(--nav_color)",
+									fontSize: "sm",
+								}}
+								color={"var(--nav_color)"}
+								bg={"var(--primary_bg)"}
+								type="text"
+								placeholder="Search here"
+								pr="4.5rem"
+							/>
+						</InputGroup>
+					</HStack>
+				</Flex>
+			) : (
+				<Flex>
+					<TextTitle title={"Employees"} />
+					<Spacer />
+					<HStack w={{ lg: "50%" }} spacing={3} justify={"flex-end"}>
+						<Button
+							color={"var(--nav_color)"}
+							size="xs"
+							leftIcon={<MdOutlineFilterList />}
+							border={"2px solid var(--filter_border_color)"}
+							borderRadius={"10px"}
+							variant={"ghost"}
+							_hover={{ color: "var(--main_color_black)", bg: "transparent" }}
+							ml={2}
+						>
+							Filter
+						</Button>
+						<InputGroup
+							size="xs"
+							w={"40%"}
+							borderRadius={"10px"}
+							border={"1px solid var(--filter_border_color)"}
+							fontSize="xs"
+							fontWeight="bold"
+						>
+							<InputLeftElement size="xs" children={<FaSearch />} />
+							<Input
+								size="xs"
+								_placeholder={{
+									color: "var(--nav_color)",
+									fontSize: "sm",
+								}}
+								color={"var(--nav_color)"}
+								bg={"var(--primary_bg)"}
+								type="text"
+								placeholder="Search here"
+								pr="4.5rem"
+								py={"1.1em"}
+							/>
+						</InputGroup>
+						{/* <Button
+								bg="var(--primary_button_bg)"
+								size="xs"
+								color={"var(--primary_bg)"}
+								variant={"solid"}
+								_hover={{ color: "var(--main_color_black)" }}
+								borderRadius={"10px"}
+							>
+								Add new employee
+							</Button> */}
+					</HStack>
+				</Flex>
+			)}
+			{employees && (
+				<Box overflow="auto">
+					<Table
+						color={"var(--nav_color)"}
+						bg={"var(--primary_bg)"}
+						size={"small"}
+					>
+						<Thead>
+							<Tr>
+								<Th fontSize={"xs"} fontWeight={"bolder"} p={0}>
+									Name
+								</Th>
+								<Th fontSize={"xs"} fontWeight={"bolder"}>
+									Email
+								</Th>
+								<Th fontSize={"xs"} fontWeight={"bolder"}>
+									PhoneNumber
+								</Th>
+								<Th fontSize={"xs"} fontWeight={"bolder"}>
+									Role
+								</Th>
+								<Th fontSize={"xs"} fontWeight={"bolder"}>
+									Manager
+								</Th>
+							</Tr>
+						</Thead>
+						<Tbody color={"var(--nav_color)"}>
+							{employees.map((emp) => (
+								<Tr key={emp._id}>
+									<Td fontSize={"sm"} p={0}>
+										{`${emp.fullName}`}
+									</Td>
+									<Td fontSize={"sm"}>{emp.email}</Td>
+									<Td fontSize={"sm"}>{emp.phoneNumber}</Td>
+									<Td fontSize={"sm"}>{emp.role}</Td>
+									<Td fontSize={"sm"}>{emp.manager}</Td>
 								</Tr>
-							</Thead>
-							<Tbody color={"var(--nav_color)"}>
-								{employees.map((emp) => (
-									<Tr key={emp._id}>
-										<Td fontSize={"sm"} p={0}>
-											{`${emp.fullName}`}
-										</Td>
-										<Td fontSize={"sm"}>{emp.email}</Td>
-										<Td fontSize={"sm"}>{emp.phoneNumber}</Td>
-										<Td fontSize={"sm"}>{emp.role}</Td>
-										<Td fontSize={"sm"}>{emp.manager}</Td>
-									</Tr>
-								))}
-							</Tbody>
-						</Table>
-					</Box>
-				)}
-			</Box>
-		</Box>
+							))}
+						</Tbody>
+					</Table>
+				</Box>
+			)}
+		</PageLayout>
 	);
 };
 

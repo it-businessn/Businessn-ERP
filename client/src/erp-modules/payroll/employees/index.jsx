@@ -1,7 +1,6 @@
 import {
 	Avatar,
 	Badge,
-	Box,
 	Button,
 	Checkbox,
 	HStack,
@@ -12,6 +11,7 @@ import {
 import RadioButtonGroup from "components/ui/tab/RadioButtonGroup";
 import TextTitle from "components/ui/text/TextTitle";
 import SearchFilter from "erp-modules/sales/lead docket/SearchFilter";
+import PageLayout from "layouts/PageLayout";
 import { useState } from "react";
 import { FaSearch } from "react-icons/fa";
 import { generateLighterShade } from "utils";
@@ -67,8 +67,7 @@ const Employees = () => {
 		SETUP_LIST.find(({ type }) => type === viewMode)?.name;
 
 	return (
-		<Box p={{ base: "1em", md: "2em" }}>
-			<TextTitle title={"Employees"} mb={"0.5em"} />
+		<PageLayout title={"Employees"}>
 			<HStack spacing="1em" mt="1em" justifyContent={"space-between"}>
 				<HStack spacing="1em" mt="1em" justifyContent={"space-between"}>
 					<Avatar
@@ -136,7 +135,7 @@ const Employees = () => {
 				</Button>
 			</HStack>
 			{showComponent(viewMode)}
-		</Box>
+		</PageLayout>
 	);
 };
 

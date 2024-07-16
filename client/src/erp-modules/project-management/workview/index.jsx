@@ -1,6 +1,7 @@
-import { Box, Flex, Text, Th } from "@chakra-ui/react";
+import { Box, Flex, Th } from "@chakra-ui/react";
 
 import useCompany from "hooks/useCompany";
+import PageLayout from "layouts/PageLayout";
 import { useEffect, useState } from "react";
 import { FaSort } from "react-icons/fa";
 import LocalStorageService from "services/LocalStorageService";
@@ -86,11 +87,7 @@ const WorkView = () => {
 	// 	(task) => task?.activities?.length > 0,
 	// );
 	return (
-		<Box p={{ base: "1em", md: "2em" }} mt={{ base: "3em", md: 0 }}>
-			<Text fontWeight="bold" mb={"0.5em"}>
-				{/* Workview  */}
-				Projects Overview
-			</Text>
+		<PageLayout title={"Projects Overview"} showBgLayer>
 			<WorkviewToolbar />
 			<Box
 				p="1em"
@@ -136,7 +133,7 @@ const WorkView = () => {
 					<></>
 				)} */}
 			</Box>
-		</Box>
+		</PageLayout>
 	);
 };
 

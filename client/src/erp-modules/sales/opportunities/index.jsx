@@ -10,13 +10,13 @@ import {
 	Tr,
 	useDisclosure,
 } from "@chakra-ui/react";
-import SectionLayout from "components/ui/SectionLayout";
 import LeftIconButton from "components/ui/button/LeftIconButton";
 import PrimaryButton from "components/ui/button/PrimaryButton";
 import SelectList from "components/ui/form/select/SelectList";
 import TableLayout from "components/ui/table/TableLayout";
 
 import useCompany from "hooks/useCompany";
+import PageLayout from "layouts/PageLayout";
 import { useEffect, useState } from "react";
 import { FaRegTrashAlt, FaSearch } from "react-icons/fa";
 import { MdOutlineFilterList } from "react-icons/md";
@@ -197,7 +197,7 @@ const Opportunities = () => {
 		setShowEditLead(null);
 	};
 	return (
-		<SectionLayout title="Opportunities">
+		<PageLayout width="full" title={"Opportunities"} showBgLayer>
 			{isMobile || isIpad ? (
 				<Flex flexDir="column">
 					<Flex justify="space-between">
@@ -322,7 +322,7 @@ const Opportunities = () => {
 					company={company}
 				/>
 			)}
-		</SectionLayout>
+		</PageLayout>
 	);
 };
 

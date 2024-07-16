@@ -1,7 +1,7 @@
-import React from "react";
+import PageLayout from "layouts/PageLayout";
 
 const Reports = () => {
-	return <div>Reports</div>;
+	return <PageLayout title={"Reports"}></PageLayout>;
 };
 
 export default Reports;

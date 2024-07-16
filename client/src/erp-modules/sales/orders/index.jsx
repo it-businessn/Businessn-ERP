@@ -19,6 +19,7 @@ import {
 	VStack,
 } from "@chakra-ui/react";
 import { activityChartData, doughnutOptions } from "constant";
+import PageLayout from "layouts/PageLayout";
 import { useEffect, useState } from "react";
 import { Doughnut } from "react-chartjs-2";
 import { FaSearch } from "react-icons/fa";
@@ -50,14 +51,12 @@ const Orders = () => {
 		fetchAllContacts();
 	}, []);
 	return (
-		<Box
+		<PageLayout title={"Orders"}>
+			{/* <Box
 			p={{ base: "1em", md: "2em" }}
 			h={{ base: "auto", md: "70vh", lg: "auto" }}
 			overflow="auto"
-		>
-			<Text fontWeight="bold" mb={"1em"}>
-				Orders
-			</Text>
+		> */}
 
 			<Box
 				p="1em"
@@ -381,7 +380,7 @@ const Orders = () => {
 					</Box>
 				)}
 			</Box>
-		</Box>
+		</PageLayout>
 	);
 };
 

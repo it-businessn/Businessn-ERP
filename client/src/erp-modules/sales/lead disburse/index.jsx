@@ -10,7 +10,6 @@ import {
 	Tr,
 	useToast,
 } from "@chakra-ui/react";
-import SectionLayout from "components/ui/SectionLayout";
 import SelectList from "components/ui/form/select/SelectList";
 import TableLayout from "components/ui/table/TableLayout";
 import {
@@ -20,6 +19,7 @@ import {
 	WEIGHTING,
 } from "erp-modules/project-management/workview/project/data";
 import useCompany from "hooks/useCompany";
+import PageLayout from "layouts/PageLayout";
 import { useEffect, useState } from "react";
 import { FaCaretRight } from "react-icons/fa";
 import { useBreakpointValue } from "services/Breakpoint";
@@ -204,7 +204,8 @@ const LeadsDisbursed = () => {
 	};
 
 	return (
-		<SectionLayout title="Lead Disbursement" hasSubHeader={<AutoAssign />}>
+		<PageLayout width="full" title={"Lead Disbursement"} showBgLayer>
+			<AutoAssign />
 			{isMobile || isIpad ? (
 				<Flex flexDir="column" gap={{ base: 0, md: 3 }}>
 					<Flex justify="space-between">
@@ -333,7 +334,7 @@ const LeadsDisbursed = () => {
 					</Tbody>
 				</TableLayout>
 			)}
-		</SectionLayout>
+		</PageLayout>
 	);
 };
 

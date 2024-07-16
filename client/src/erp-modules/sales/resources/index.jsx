@@ -1,7 +1,7 @@
-import { Box, SimpleGrid } from "@chakra-ui/react";
-import TextTitle from "components/ui/text/TextTitle";
+import { SimpleGrid } from "@chakra-ui/react";
 
 import useCompany from "hooks/useCompany";
+import PageLayout from "layouts/PageLayout";
 import { useEffect, useState } from "react";
 import LocalStorageService from "services/LocalStorageService";
 import ResourceService from "services/ResourceService";
@@ -61,8 +61,7 @@ const Resources = () => {
 	}, [selectedFilter, company]);
 
 	return (
-		<Box p={{ base: "1em", md: "2em" }} overflow={"auto"}>
-			<TextTitle title="Resources" mb={"1em"} />
+		<PageLayout title={"Resources"}>
 			<ResourceFile
 				isUserManager={isUserManager}
 				fullName={fullName}
@@ -82,7 +81,7 @@ const Resources = () => {
 					)}
 				</SimpleGrid>
 			)}
-		</Box>
+		</PageLayout>
 	);
 };
 

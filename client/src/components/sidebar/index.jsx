@@ -28,9 +28,12 @@ const Sidebar = ({
 			overflowY="auto"
 		>
 			<Stack justify="start" width="full" my={0} spacing={0}>
-				{menuList?.map((menu) => (
-					<MenuItem key={menu.path} menu={menu} parent={activeMenu.id} />
-				))}
+				{menuList?.map(
+					(menu) =>
+						menu?.permissions?.canAccessModule && (
+							<MenuItem key={menu.path} menu={menu} parent={activeMenu.id} />
+						),
+				)}
 			</Stack>
 		</Flex>
 	);

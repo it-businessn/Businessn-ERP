@@ -17,6 +17,7 @@ import {
 	Tr,
 } from "@chakra-ui/react";
 import { doughnutOptions } from "constant";
+import PageLayout from "layouts/PageLayout";
 import { useEffect, useState } from "react";
 import { Doughnut } from "react-chartjs-2";
 import { FaSearch } from "react-icons/fa";
@@ -117,14 +118,12 @@ const Products = () => {
 	};
 
 	return (
-		<Box
-			p={{ base: "1em", md: "2em" }}
+		<PageLayout title={"Products"}>
+			{/* <Box
+	 	p={{ base: "1em", md: "2em" }}
 			overflowY={{ base: "hidden", md: "auto" }}
 			h={{ base: "auto", md: "70vh", lg: "auto" }}
-		>
-			<Text fontWeight="bold" mb={"1em"}>
-				Products
-			</Text>
+		 > */}
 
 			<Box
 				overflow="auto"
@@ -441,7 +440,7 @@ const Products = () => {
 				</Box>
 				{/* )} */}
 			</Box>
-		</Box>
+		</PageLayout>
 	);
 };
 

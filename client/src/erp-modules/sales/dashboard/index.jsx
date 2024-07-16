@@ -1,8 +1,8 @@
-import { Box, Flex, SimpleGrid, Text } from "@chakra-ui/react";
-import SelectBox from "components/ui/form/select/SelectBox";
+import { SimpleGrid } from "@chakra-ui/react";
 import useCompany from "hooks/useCompany";
 import useEmployeeData from "hooks/useEmployeeData";
 import useSelectUser from "hooks/useSelectUser";
+import PageLayout from "layouts/PageLayout";
 import { useState } from "react";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import LocalStorageService from "services/LocalStorageService";
@@ -16,11 +16,11 @@ const CRMDashboard = () => {
 	const [stats, setStats] = useState(STATS);
 
 	const { company } = useCompany();
-	const employees = useEmployeeData(company);
 
 	const { selectedUser, setSelectedUser } = useSelectUser(loggedInUser);
 
-	const role = loggedInUser?.role;
+	const employees = useEmployeeData(company);
+	const isManagerRole = isManager(loggedInUser?.role);
 
 	const handleChange = (value) => {
 		if (value === "") {
@@ -31,24 +31,13 @@ const CRMDashboard = () => {
 	};
 
 	return (
-		<Box p={{ base: "1em" }} overflow={"hidden"}>
-			<Flex w={"50%"}>
-				<Text fontWeight="bold" mb={"0.5em"} w={"50%"}>
-					CRM {isManager(role) && "Manager"} Dashboard
-				</Text>
-				{isManager(role) && employees ? (
-					<SelectBox
-						handleChange={handleChange}
-						data={employees}
-						name="fullName"
-						border="1px solid var(--primary_button_bg)"
-						color={"var(--primary_button_bg)"}
-						value={selectedUser?.fullName}
-						placeholder="Select"
-						size={"sm"}
-					/>
-				) : null}
-			</Flex>
+		<PageLayout
+			showSelectBox={isManagerRole && employees}
+			handleChange={handleChange}
+			title={`CRM ${isManagerRole ? "Manager " : ""}Dashboard`}
+			data={employees}
+			selectedValue={selectedUser?.fullName}
+		>
 			<SimpleGrid
 				columns={{ base: 1, md: 1, lg: 2 }}
 				spacing="4"
@@ -67,7 +56,7 @@ const CRMDashboard = () => {
 					company={company}
 				/>
 			</SimpleGrid>
-		</Box>
+		</PageLayout>
 	);
 };
 

@@ -1,7 +1,7 @@
 import { Box } from "@chakra-ui/react";
 import TabsButtonGroup from "components/ui/tab/TabsButtonGroup";
-import TextTitle from "components/ui/text/TextTitle";
 import useCompany from "hooks/useCompany";
+import PageLayout from "layouts/PageLayout";
 import { useEffect, useState } from "react";
 import UserService from "services/UserService";
 import CompanyPanel from "./company/CompanyPanel";
@@ -73,9 +73,7 @@ const Setup = () => {
 		SETUP_LIST.find(({ type }) => type === viewMode)?.name;
 
 	return (
-		<Box p={{ base: "1em", md: "2em" }}>
-			<TextTitle title="Set up" mb={"1em"} />
-
+		<PageLayout title={"Set up"}>
 			<Box
 				p="1em"
 				bg={"var(--primary_bg)"}
@@ -92,7 +90,7 @@ const Setup = () => {
 				</Box>
 				{showComponent(viewMode)}
 			</Box>
-		</Box>
+		</PageLayout>
 	);
 };
 

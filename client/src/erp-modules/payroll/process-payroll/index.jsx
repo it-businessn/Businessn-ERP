@@ -10,6 +10,7 @@ import PrimaryButton from "components/ui/button/PrimaryButton";
 import ActionButtonGroup from "components/ui/form/ActionButtonGroup";
 import ModalLayout from "components/ui/modal/ModalLayout";
 import TextTitle from "components/ui/text/TextTitle";
+import PageLayout from "layouts/PageLayout";
 import { useState } from "react";
 import { MdOutlineChevronRight } from "react-icons/md";
 import VerticalStepper from "../../../components/ui/VerticalStepper";
@@ -39,7 +40,7 @@ const ProcessPayroll = () => {
 		setShowConfirmationPopUp((prev) => !prev);
 	};
 	return (
-		<Box p={{ base: "1em" }} overflow={"hidden"}>
+		<PageLayout>
 			<SimpleGrid
 				columns={{ base: 1, md: 1, lg: 2 }}
 				spacing="4"
@@ -112,7 +113,7 @@ const ProcessPayroll = () => {
 					</form>
 				</ModalLayout>
 			)}
-		</Box>
+		</PageLayout>
 	);
 };
 

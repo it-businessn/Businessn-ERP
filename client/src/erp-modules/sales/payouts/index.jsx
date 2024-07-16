@@ -19,6 +19,7 @@ import {
 import PrimaryButton from "components/ui/button/PrimaryButton";
 
 import useCompany from "hooks/useCompany";
+import PageLayout from "layouts/PageLayout";
 import { useEffect, useState } from "react";
 import { FaSearch } from "react-icons/fa";
 import { MdOutlineFilterList } from "react-icons/md";
@@ -56,8 +57,7 @@ const Payouts = () => {
 	}, [company, isAdded]);
 
 	return (
-		<Box p={{ base: "1em", md: "2em" }}>
-			<Text fontWeight="bold">Payouts</Text>
+		<PageLayout title={"Payouts"}>
 			<Box
 				p="1em"
 				bg={"var(--primary_bg)"}
@@ -192,7 +192,7 @@ const Payouts = () => {
 					</Box>
 				)}
 			</Box>
-		</Box>
+		</PageLayout>
 	);
 };
 

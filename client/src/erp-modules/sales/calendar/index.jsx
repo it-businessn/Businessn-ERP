@@ -3,6 +3,7 @@ import PrimaryButton from "components/ui/button/PrimaryButton";
 import TextTitle from "components/ui/text/TextTitle";
 
 import useCompany from "hooks/useCompany";
+import PageLayout from "layouts/PageLayout";
 import moment from "moment-timezone";
 import { useEffect, useState } from "react";
 import { Calendar as BigCalendar, momentLocalizer } from "react-big-calendar";
@@ -186,8 +187,7 @@ const Calendar = () => {
 		</Box>
 	);
 	return (
-		<Box p={{ base: "1em", md: "2em" }} mb={"1em"}>
-			<TextTitle title="Calendar" mb={"0.5em"} />
+		<PageLayout title={"Calendar"}>
 			{events && (
 				<Box
 					px={{ base: "0", md: "1em" }}
@@ -245,7 +245,7 @@ const Calendar = () => {
 					event={event}
 				/>
 			)}
-		</Box>
+		</PageLayout>
 	);
 };
 

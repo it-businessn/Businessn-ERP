@@ -1,5 +1,6 @@
-import { Box, SimpleGrid, Text } from "@chakra-ui/react";
+import { SimpleGrid } from "@chakra-ui/react";
 import useCompany from "hooks/useCompany";
+import PageLayout from "layouts/PageLayout";
 import { useEffect, useState } from "react";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
@@ -53,10 +54,7 @@ const ScheduleWorkView = () => {
 		fetchAllEmployeeByRole();
 	}, [refresh, company]);
 	return (
-		<Box p={{ base: "1em" }} overflow={"hidden"}>
-			<Text fontWeight="bold" mb={"0.5em"}>
-				WorkView
-			</Text>
+		<PageLayout title={"WorkView"}>
 			<SimpleGrid
 				mb={"1em"}
 				columns={{ base: 1, md: 3 }}
@@ -83,7 +81,7 @@ const ScheduleWorkView = () => {
 					/>
 				</SimpleGrid>
 			</DndProvider>
-		</Box>
+		</PageLayout>
 	);
 };
 

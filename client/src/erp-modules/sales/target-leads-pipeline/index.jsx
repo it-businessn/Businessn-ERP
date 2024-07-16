@@ -5,6 +5,7 @@ import ModalLayout from "components/ui/modal/ModalLayout";
 import TextTitle from "components/ui/text/TextTitle";
 
 import useCompany from "hooks/useCompany";
+import PageLayout from "layouts/PageLayout";
 import { useEffect, useState } from "react";
 import LeadsService from "services/LeadsService";
 import LocalStorageService from "services/LocalStorageService";
@@ -66,8 +67,7 @@ const Pipeline = () => {
 		}
 	};
 	return (
-		<Box p={{ base: "1em", md: "2em" }}>
-			<TextTitle title="Target Leads" mb={"0.5em"} />
+		<PageLayout title={"Target Leads"}>
 			<Box
 				width="100%"
 				borderRadius="10px"
@@ -128,7 +128,7 @@ const Pipeline = () => {
 					</Stack>
 				</form>
 			</ModalLayout>
-		</Box>
+		</PageLayout>
 	);
 };
 

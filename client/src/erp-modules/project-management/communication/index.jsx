@@ -12,6 +12,7 @@ import {
 import TextTitle from "components/ui/text/TextTitle";
 
 import useCompany from "hooks/useCompany";
+import PageLayout from "layouts/PageLayout";
 import { useEffect, useState } from "react";
 import { FaUsers } from "react-icons/fa";
 import LocalStorageService from "services/LocalStorageService";
@@ -63,13 +64,14 @@ const Communications = ({ isDashboard }) => {
 	const handleMemberClick = (member) => setSelectedGroupMember(member);
 
 	return (
-		<Box
+		<PageLayout title={"Communication"}>
+			{/* <Box
 			p={{ base: isDashboard ? 0 : "1em", md: isDashboard ? 0 : "2em" }}
 			mt={{ base: isDashboard ? 0 : "3em", md: 0 }}
-		>
-			<Text fontWeight="bold" mb={"0.5em"} display={isDashboard && "none"}>
+		> */}
+			{/* <Text fontWeight="bold" mb={"0.5em"} display={isDashboard && "none"}>
 				Communication
-			</Text>
+			</Text> */}
 
 			<Flex
 				bg={!isDashboard && "var(--primary_bg)"}
@@ -205,7 +207,7 @@ const Communications = ({ isDashboard }) => {
 					</>
 				)}
 			</Flex>
-		</Box>
+		</PageLayout>
 	);
 };
 

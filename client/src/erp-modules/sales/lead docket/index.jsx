@@ -13,7 +13,6 @@ import {
 	Tr,
 	useToast,
 } from "@chakra-ui/react";
-import SectionLayout from "components/ui/SectionLayout";
 import LeftIconButton from "components/ui/button/LeftIconButton";
 import SelectList from "components/ui/form/select/SelectList";
 import TableLayout from "components/ui/table/TableLayout";
@@ -24,6 +23,7 @@ import {
 	REGIONS,
 } from "erp-modules/project-management/workview/project/data";
 import useCompany from "hooks/useCompany";
+import PageLayout from "layouts/PageLayout";
 import { useEffect, useState } from "react";
 import { FaSearch } from "react-icons/fa";
 import { MdOutlineFilterList } from "react-icons/md";
@@ -124,7 +124,7 @@ const LeadsDocket = () => {
 	};
 
 	return (
-		<SectionLayout title="Lead Docket">
+		<PageLayout width="full" title={"Lead Docket"} showBgLayer>
 			{isMobile ? (
 				<Flex flexDir="column">
 					<Flex justify="space-between">
@@ -299,7 +299,7 @@ const LeadsDocket = () => {
 					</Tbody>
 				</TableLayout>
 			)}
-		</SectionLayout>
+		</PageLayout>
 	);
 };
 
