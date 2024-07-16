@@ -431,3 +431,11 @@ export const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
 export const getTimezone = (date) =>
 	moment.tz(date, "America/Chicago").clone().tz(userTimezone).format();
+
+export const calcTotal = (data, param1, param2) => {
+	return data.reduce((acc, product) => {
+		return param2
+			? acc + parseFloat(product[param1] * product[param2])
+			: acc + parseFloat(product[param1]);
+	}, 0);
+};

@@ -14,6 +14,7 @@ const calculateTaskCompletionPercent = (task) => {
 
 	let totalEstimatedHoursGGC = 0;
 	for (const subtask of task.subtasks) {
+		// totalEstimatedHoursGGC=calcTotal(subtask.subtasks, "timeToComplete")
 		for (const grandchildTask of subtask.subtasks) {
 			totalEstimatedHoursGGC += parseInt(grandchildTask.timeToComplete) || 0;
 		}

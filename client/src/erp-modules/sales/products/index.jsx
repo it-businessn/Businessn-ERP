@@ -24,6 +24,7 @@ import { FaSearch } from "react-icons/fa";
 import { MdOutlineFilterList } from "react-icons/md";
 import { useBreakpointValue } from "services/Breakpoint";
 import ContactService from "services/ContactService";
+import { calcTotal } from "utils";
 import { productsInfo } from "../../../data";
 import "./products.css";
 
@@ -50,12 +51,8 @@ const Products = () => {
 	const [totalQuantity, setTotalQuantity] = useState(0);
 
 	useEffect(() => {
-		productsInfo.forEach((product) => {
-			setTotalCost(
-				(prev) => (prev += parseFloat(product.cost) * product.quantity),
-			);
-			setTotalQuantity((prev) => (prev += parseFloat(product.quantity)));
-		});
+		setTotalCost(calcTotal(productsInfo, "cost", "quantity"));
+		setTotalQuantity(calcTotal(productsInfo, "quantity"));
 		fetchAllContacts();
 	}, []);
 
@@ -65,10 +62,7 @@ const Products = () => {
 		return acc;
 	}, {});
 
-	const sumQuantity = productsInfo.reduce(
-		(sum, product) => sum + product.quantity,
-		0,
-	);
+	const sumQuantity = calcTotal(productsInfo, "quantity");
 
 	const percentages = {};
 	for (const category in groupedData) {
