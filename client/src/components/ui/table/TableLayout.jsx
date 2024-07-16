@@ -8,9 +8,10 @@ const TableLayout = ({
 	isAllChecked,
 	handleHeaderCheckboxChange,
 	isTimesheet,
+	height,
 }) => {
 	return (
-		<Box overflow="auto" height={"81vh"}>
+		<Box overflow="auto" height={height}>
 			<Table variant="simple">
 				<Thead>
 					<Tr>
