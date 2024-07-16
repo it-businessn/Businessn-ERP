@@ -1,4 +1,4 @@
-import { ChakraProvider } from "@chakra-ui/react";
+import { ChakraProvider, ColorModeScript } from "@chakra-ui/react";
 import App from "App";
 import proTheme from "config/themeConfig";
 import { AuthContextProvider } from "context/AuthContext";
@@ -9,10 +9,11 @@ import "./App.css";
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
 root.render(
-  <ChakraProvider theme={proTheme}>
-    <AuthContextProvider>
-      <App />
-    </AuthContextProvider>
-  </ChakraProvider>
+	<ChakraProvider theme={proTheme}>
+		<AuthContextProvider>
+			<ColorModeScript initialColorMode={proTheme.config.initialColorMode} />
+			<App />
+		</AuthContextProvider>
+	</ChakraProvider>,
 );
 registerServiceWorker();

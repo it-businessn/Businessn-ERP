@@ -3,6 +3,8 @@ import { extendTheme } from "@chakra-ui/react";
 
 const theme = extendTheme(
 	{
+		initialColorMode: "light",
+		useSystemColorMode: false,
 		colors: {
 			brand: {
 				// priority_medium: "#e9a923",

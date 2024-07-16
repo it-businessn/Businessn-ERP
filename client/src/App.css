@@ -12,6 +12,8 @@
 	--logo_bg: #01193d;
 	--main_color_black: #000000;
 	--primary_button_bg: #537eee;
+	--primary_button_bg_dark: red;
+
 	--status_button_border: #76c094;
 	--gauge_needle: #345243;
 	--stat_item_color: #41306e;
@@ -253,3 +255,10 @@ button:active {
 
 @media only screen and (min-width: 992px) {
 }
+
+/* toggle theme */
+/* @media (prefers-color-scheme: dark) {
+	:root {
+		--primary_button_bg: red;
+	}
+} */

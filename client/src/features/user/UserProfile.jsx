@@ -1,3 +1,4 @@
+// import { MoonIcon } from "@chakra-ui/icons";
 import {
 	Avatar,
 	Button,
@@ -8,6 +9,7 @@ import {
 	PopoverBody,
 	PopoverContent,
 	PopoverTrigger,
+	useColorMode,
 	VStack,
 } from "@chakra-ui/react";
 import { faBell } from "@fortawesome/free-regular-svg-icons";
@@ -15,12 +17,19 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ROUTE_PATH } from "routes";
+// import { styleConsole } from "utils";
 
 const UserProfile = ({ user, handleLogout }) => {
 	const navigate = useNavigate();
 
 	const [signUp, setSignUp] = useState(false);
 	const [isOpen, setIsOpen] = useState(false);
+	const { colorMode, toggleColorMode } = useColorMode();
+
+	// const toggleTheme = () => {
+	// 	toggleColorMode();
+	// 	styleConsole(colorMode === "light" ? "Dark" : "Light");
+	// };
 
 	useEffect(() => {
 		if (signUp) {
@@ -40,6 +49,7 @@ const UserProfile = ({ user, handleLogout }) => {
 	const showRegisterPage = () => {
 		setSignUp(true);
 	};
+
 	return (
 		<HStack pb={2} _hover={{ cursor: "pointer" }}>
 			<Popover isOpen={isOpen} onClose={() => setIsOpen(false)}>
@@ -52,6 +62,17 @@ const UserProfile = ({ user, handleLogout }) => {
 					boxShadow="md"
 					_hover={{ bg: "var(--primary_bg)" }}
 				/>
+
+				{/* <IconButton
+					onClick={toggleTheme}
+					aria-label="theme"
+					icon={<MoonIcon />}
+					borderRadius="full"
+					color="var(--main_color_black)"
+					bg={"var(--main_color)"}
+					boxShadow="md"
+					_hover={{ bg: "var(--primary_bg)" }}
+				/> */}
 				<PopoverTrigger>
 					<Avatar
 						onClick={handleToggle}
