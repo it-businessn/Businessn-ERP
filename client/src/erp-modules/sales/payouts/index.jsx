@@ -57,141 +57,133 @@ const Payouts = () => {
 	}, [company, isAdded]);
 
 	return (
-		<PageLayout title={"Payouts"}>
-			<Box
-				p="1em"
-				bg={"var(--primary_bg)"}
-				border="2px solid var(--main_color)"
-				borderRadius="10px"
-				color={"var(--nav_color)"}
-			>
-				{isMobile ? (
-					<Flex flexDir="column">
-						<Flex justify="space-between">
-							<Text fontWeight="bold">All Sales</Text>
-						</Flex>
-						<HStack spacing="1em" mt="1em">
-							<Button
-								color={"var(--nav_color)"}
-								leftIcon={<MdOutlineFilterList />}
-								border={"2px solid var(--filter_border_color)"}
-								borderRadius={"10px"}
-								variant={"ghost"}
-								size={"xs"}
-								_hover={{ color: "var(--main_color_black)", bg: "transparent" }}
-							>
-								Filter
-							</Button>
-							<InputGroup
-								borderRadius={"10px"}
-								border={"1px solid var(--filter_border_color)"}
-								fontSize="xs"
-								size={"xs"}
-								fontWeight="bold"
-							>
-								<InputLeftElement children={<FaSearch />} />
-								<Input
-									_placeholder={{
-										color: "var(--nav_color)",
-										fontSize: "xs",
-									}}
-									color={"var(--nav_color)"}
-									bg={"var(--primary_bg)"}
-									type="text"
-									placeholder="Search here"
-									pr="4.5rem"
-									py={"1.2em"}
-								/>
-							</InputGroup>
-						</HStack>
-					</Flex>
-				) : (
-					<Flex>
+		<PageLayout title={"Payouts"} showBgLayer>
+			{isMobile ? (
+				<Flex flexDir="column">
+					<Flex justify="space-between">
 						<Text fontWeight="bold">All Sales</Text>
-						<Spacer />
-						<HStack w={{ lg: "50%" }} spacing={3} justify={"flex-end"}>
-							<Button
-								color={"var(--nav_color)"}
-								leftIcon={<MdOutlineFilterList />}
-								border={"2px solid var(--filter_border_color)"}
-								borderRadius={"10px"}
-								variant={"ghost"}
-								size={"xs"}
-								_hover={{ color: "var(--main_color_black)", bg: "transparent" }}
-								ml={2}
-							>
-								Filter
-							</Button>
-							<InputGroup
-								w={"40%"}
-								borderRadius={"10px"}
-								border={"1px solid var(--filter_border_color)"}
-								fontSize="xs"
-								fontWeight="bold"
-								size={"xs"}
-							>
-								<InputLeftElement children={<FaSearch />} />
-								<Input
-									_placeholder={{
-										color: "var(--nav_color)",
-										fontSize: "xs",
-									}}
-									color={"var(--nav_color)"}
-									bg={"var(--primary_bg)"}
-									type="text"
-									placeholder="Search here"
-									pr="4.5rem"
-									py={"1.2em"}
-								/>
-							</InputGroup>
-							{isManagerUser && (
-								<PrimaryButton
-									onOpen={onOpen}
-									name={"Add new sale"}
-									size={"xs"}
-								/>
-							)}
-						</HStack>
 					</Flex>
-				)}
-				{isOpen && (
-					<AddNewSale
-						setIsAdded={setIsAdded}
-						isOpen={isOpen}
-						onClose={onClose}
-						company={company}
-					/>
-				)}
+					<HStack spacing="1em" mt="1em">
+						<Button
+							color={"var(--nav_color)"}
+							leftIcon={<MdOutlineFilterList />}
+							border={"2px solid var(--filter_border_color)"}
+							borderRadius={"10px"}
+							variant={"ghost"}
+							size={"xs"}
+							_hover={{ color: "var(--main_color_black)", bg: "transparent" }}
+						>
+							Filter
+						</Button>
+						<InputGroup
+							borderRadius={"10px"}
+							border={"1px solid var(--filter_border_color)"}
+							fontSize="xs"
+							size={"xs"}
+							fontWeight="bold"
+						>
+							<InputLeftElement children={<FaSearch />} />
+							<Input
+								_placeholder={{
+									color: "var(--nav_color)",
+									fontSize: "xs",
+								}}
+								color={"var(--nav_color)"}
+								bg={"var(--primary_bg)"}
+								type="text"
+								placeholder="Search here"
+								pr="4.5rem"
+								py={"1.2em"}
+							/>
+						</InputGroup>
+					</HStack>
+				</Flex>
+			) : (
+				<Flex>
+					<Text fontWeight="bold">All Sales</Text>
+					<Spacer />
+					<HStack w={{ lg: "50%" }} spacing={3} justify={"flex-end"}>
+						<Button
+							color={"var(--nav_color)"}
+							leftIcon={<MdOutlineFilterList />}
+							border={"2px solid var(--filter_border_color)"}
+							borderRadius={"10px"}
+							variant={"ghost"}
+							size={"xs"}
+							_hover={{ color: "var(--main_color_black)", bg: "transparent" }}
+							ml={2}
+						>
+							Filter
+						</Button>
+						<InputGroup
+							w={"40%"}
+							borderRadius={"10px"}
+							border={"1px solid var(--filter_border_color)"}
+							fontSize="xs"
+							fontWeight="bold"
+							size={"xs"}
+						>
+							<InputLeftElement children={<FaSearch />} />
+							<Input
+								_placeholder={{
+									color: "var(--nav_color)",
+									fontSize: "xs",
+								}}
+								color={"var(--nav_color)"}
+								bg={"var(--primary_bg)"}
+								type="text"
+								placeholder="Search here"
+								pr="4.5rem"
+								py={"1.2em"}
+							/>
+						</InputGroup>
+						{isManagerUser && (
+							<PrimaryButton
+								onOpen={onOpen}
+								name={"Add new sale"}
+								size={"xs"}
+							/>
+						)}
+					</HStack>
+				</Flex>
+			)}
+			{isOpen && (
+				<AddNewSale
+					setIsAdded={setIsAdded}
+					isOpen={isOpen}
+					onClose={onClose}
+					company={company}
+				/>
+			)}
 
-				{payouts && (
-					<Box overflow="auto" h={"50vh"}>
-						<Table color={"var(--nav_color)"} bg={"var(--primary_bg)"}>
-							<Thead>
-								<Tr fontSize="xs">
-									<Th fontWeight={"bolder"} p={0}>
-										Sales ID
-									</Th>
-									<Th fontWeight={"bolder"}>Date </Th>
-									<Th fontWeight={"bolder"}>Amount</Th>
-									<Th fontWeight={"bolder"}>Sales Person </Th>
+			{payouts && (
+				<Box overflow="auto" h={"50vh"}>
+					<Table color={"var(--nav_color)"} bg={"var(--primary_bg)"}>
+						<Thead>
+							<Tr fontSize="xs">
+								<Th fontWeight={"bolder"} p={0}>
+									Sales ID
+								</Th>
+								<Th fontWeight={"bolder"}>Date </Th>
+								<Th fontWeight={"bolder"}>Amount</Th>
+								<Th fontWeight={"bolder"}>Sales Person </Th>
+							</Tr>
+						</Thead>
+						<Tbody color={"var(--nav_color)"}>
+							{payouts?.map((payout) => (
+								<Tr key={payout._id}>
+									<Td fontSize={"xs"} p={0}>
+										{payout.saleId}
+									</Td>
+									<Td fontSize={"xs"}>{formatDate(payout.createdOn)}</Td>
+									<Td fontSize={"xs"}>{payout.amount}</Td>
+									<Td fontSize={"xs"}>{payout.fullName}</Td>
 								</Tr>
-							</Thead>
-							<Tbody color={"var(--nav_color)"}>
-								{payouts?.map((payout) => (
-									<Tr key={payout._id}>
-										<Td fontSize={"xs"} p={0}>
-											{payout.saleId}
-										</Td>
-										<Td fontSize={"xs"}>{formatDate(payout.createdOn)}</Td>
-										<Td fontSize={"xs"}>{payout.amount}</Td>
-										<Td fontSize={"xs"}>{payout.fullName}</Td>
-									</Tr>
-								))}
-							</Tbody>
-						</Table>
-					</Box>
-				)}
-			</Box>
+							))}
+						</Tbody>
+					</Table>
+				</Box>
+			)}
 		</PageLayout>
 	);
 };

@@ -1,6 +1,4 @@
 import {
-	Box,
-	Button,
 	HStack,
 	Icon,
 	SimpleGrid,
@@ -9,27 +7,15 @@ import {
 	Tr,
 	VStack,
 } from "@chakra-ui/react";
+import OutlineButton from "components/ui/button/OutlineButton";
 import PrimaryButton from "components/ui/button/PrimaryButton";
+import BoxCard from "components/ui/card";
 import TableLayout from "components/ui/table/TableLayout";
 import TextTitle from "components/ui/text/TextTitle";
 import { MdOutlineChevronRight } from "react-icons/md";
+import { PAYGROUP_ACTIONS, PAYGROUP_COLS } from "./data";
 
 const PaygroupTable = () => {
-	const PAYGROUP_COLS = [
-		"Pay number",
-		"Submit by",
-		"Pay date",
-		"Pay period",
-		"Status",
-		"Action",
-	];
-	const PAYGROUP_ACTIONS = [
-		"Issue Roes",
-		"Issue Forms",
-		"Extra Pay Run",
-		"Terminate",
-		"Update Employees",
-	];
 	return (
 		<SimpleGrid
 			columns={{ base: 1, md: 1, lg: 2 }}
@@ -38,13 +24,7 @@ const PaygroupTable = () => {
 			mr="4"
 			templateColumns={{ lg: "70% 30%" }}
 		>
-			<Box
-				color={"var(--nav_color)"}
-				p="1em"
-				bg={"var(--primary_bg)"}
-				border="3px solid var(--main_color)"
-				borderRadius="10px"
-			>
+			<BoxCard>
 				<TableLayout cols={PAYGROUP_COLS}>
 					<Tbody>
 						<Tr>
@@ -53,26 +33,17 @@ const PaygroupTable = () => {
 							<Td>19/03/2024</Td>
 							<Td>19/02-19/03</Td>
 							<Td>
-								<Button
-									// onClick={onOpen}
-									size={"xs"}
-									borderRadius={"12px"}
+								<PrimaryButton
 									color={"var(--primary_bg)"}
 									bg={"var(--correct_ans)"}
-								>
-									Paid
-								</Button>
+									name={"Paid"}
+									size="xs"
+									px={0}
+									hover={"transparent"}
+								/>
 							</Td>
 							<Td>
-								<Button
-									variant={"outline"}
-									// onClick={onOpen}
-									size={"sm"}
-									type="submit"
-									color={"var(--primary_button_bg)"}
-								>
-									View
-								</Button>
+								<OutlineButton label={"View"} size="xs" />
 							</Td>
 						</Tr>
 						<Tr>
@@ -81,34 +52,27 @@ const PaygroupTable = () => {
 							<Td>19/03/2024</Td>
 							<Td>19/02-19/03</Td>
 							<Td>
-								<Button
-									// onClick={onOpen}
-									size={"xs"}
-									borderRadius={"12px"}
+								<PrimaryButton
 									color={"var(--primary_bg)"}
 									bg={"var(--pending)"}
-								>
-									Pending
-								</Button>
+									name={"Pending"}
+									size="xs"
+									px={0}
+									hover={"transparent"}
+								/>
 							</Td>
 							<Td>
 								<PrimaryButton
 									// isDisabled={isDisabled}
 									name={"Pay now"}
-									size="sm"
+									size="xs"
 								/>
 							</Td>
 						</Tr>
 					</Tbody>
 				</TableLayout>
-			</Box>
-			<Box
-				color={"var(--nav_color)"}
-				p="1em"
-				bg={"var(--primary_bg)"}
-				border="3px solid var(--main_color)"
-				borderRadius="10px"
-			>
+			</BoxCard>
+			<BoxCard>
 				<TextTitle title={"Payroll actions"} mt={2} mb={"1em"} />
 				<VStack spacing={3} align={"start"}>
 					{PAYGROUP_ACTIONS.map((action) => (
@@ -124,7 +88,7 @@ const PaygroupTable = () => {
 						</HStack>
 					))}
 				</VStack>
-			</Box>
+			</BoxCard>
 		</SimpleGrid>
 	);
 };

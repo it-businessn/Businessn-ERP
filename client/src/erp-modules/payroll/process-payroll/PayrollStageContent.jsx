@@ -1,4 +1,4 @@
-import { Box, Collapse, HStack, Icon, useDisclosure } from "@chakra-ui/react";
+import { Collapse, HStack, Icon, useDisclosure } from "@chakra-ui/react";
 import TextTitle from "components/ui/text/TextTitle";
 import { useEffect } from "react";
 import { FaSortDown, FaSortUp } from "react-icons/fa6";
@@ -6,6 +6,7 @@ import AlertsViolation from "./AlertsViolation";
 import DetailsReview from "./DetailsReview";
 import Finalize from "./Finalize";
 // import PayrollComplete from "./PayrollComplete";
+import BoxCard from "components/ui/card";
 import PayrunSetup from "./PayrunSetup";
 import ReportsPreview from "./ReportsPreview";
 
@@ -46,20 +47,8 @@ const PayrollStageContent = ({ currentStep, steps }) => {
 		}
 	};
 	return (
-		<Box
-			color={"var(--nav_color)"}
-			p="1em"
-			bg={"var(--primary_bg)"}
-			border="3px solid var(--main_color)"
-			borderRadius="10px"
-		>
-			<Box
-				color={"var(--nav_color)"}
-				p="1em"
-				bg={"var(--primary_bg)"}
-				border="3px solid var(--main_color)"
-				borderRadius="10px"
-			>
+		<BoxCard>
+			<BoxCard>
 				<HStack spacing={2} align={"center"} onClick={onPayrollStepupToggle}>
 					{isPayrollStepupOpen ? (
 						<Icon
@@ -79,18 +68,12 @@ const PayrollStageContent = ({ currentStep, steps }) => {
 
 					<TextTitle mt={1} weight="normal" title={"Payrun Setup"} />
 				</HStack>
-
 				<Collapse in={isPayrollStepupOpen}>
 					<PayrunSetup />
 				</Collapse>
-			</Box>
-			<Box
-				color={"var(--nav_color)"}
-				p="1em"
-				bg={"var(--primary_bg)"}
-				border="3px solid var(--main_color)"
-				borderRadius="10px"
-			>
+			</BoxCard>
+
+			<BoxCard>
 				<HStack spacing={2} align={"center"} onClick={onInputsReviewToggle}>
 					{isInputsReviewOpen ? (
 						<Icon
@@ -113,14 +96,8 @@ const PayrollStageContent = ({ currentStep, steps }) => {
 				<Collapse in={isInputsReviewOpen}>
 					<DetailsReview />
 				</Collapse>
-			</Box>
-			<Box
-				color={"var(--nav_color)"}
-				p="1em"
-				bg={"var(--primary_bg)"}
-				border="3px solid var(--main_color)"
-				borderRadius="10px"
-			>
+			</BoxCard>
+			<BoxCard>
 				<HStack spacing={2} align={"center"} onClick={onAlertsOpenToggle}>
 					{isAlertsOpen ? (
 						<Icon
@@ -143,14 +120,8 @@ const PayrollStageContent = ({ currentStep, steps }) => {
 				<Collapse in={isAlertsOpen}>
 					<AlertsViolation />
 				</Collapse>
-			</Box>
-			<Box
-				color={"var(--nav_color)"}
-				p="1em"
-				bg={"var(--primary_bg)"}
-				border="3px solid var(--main_color)"
-				borderRadius="10px"
-			>
+			</BoxCard>
+			<BoxCard>
 				<HStack spacing={2} align={"center"} onClick={onReportsToggle}>
 					{isReportsOpen ? (
 						<Icon
@@ -173,14 +144,8 @@ const PayrollStageContent = ({ currentStep, steps }) => {
 				<Collapse in={isReportsOpen}>
 					<ReportsPreview />
 				</Collapse>
-			</Box>
-			<Box
-				color={"var(--nav_color)"}
-				p="1em"
-				bg={"var(--primary_bg)"}
-				border="3px solid var(--main_color)"
-				borderRadius="10px"
-			>
+			</BoxCard>
+			<BoxCard>
 				<HStack spacing={2} align={"center"} onClick={onFinalizeToggle}>
 					{isFinalizeOpen ? (
 						<Icon
@@ -206,8 +171,8 @@ const PayrollStageContent = ({ currentStep, steps }) => {
 						{/* <PayrollComplete /> */}
 					</>
 				</Collapse>
-			</Box>
-		</Box>
+			</BoxCard>
+		</BoxCard>
 	);
 };
 

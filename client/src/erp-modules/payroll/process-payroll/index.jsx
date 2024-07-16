@@ -1,12 +1,6 @@
-import {
-	Box,
-	FormLabel,
-	HStack,
-	Icon,
-	SimpleGrid,
-	VStack,
-} from "@chakra-ui/react";
+import { FormLabel, HStack, Icon, SimpleGrid, VStack } from "@chakra-ui/react";
 import PrimaryButton from "components/ui/button/PrimaryButton";
+import BoxCard from "components/ui/card";
 import ActionButtonGroup from "components/ui/form/ActionButtonGroup";
 import ModalLayout from "components/ui/modal/ModalLayout";
 import TextTitle from "components/ui/text/TextTitle";
@@ -48,13 +42,7 @@ const ProcessPayroll = () => {
 				mr="4"
 				templateColumns={{ lg: "20% 80%" }}
 			>
-				<Box
-					color={"var(--nav_color)"}
-					p="1em"
-					bg={"var(--primary_bg)"}
-					border="3px solid var(--main_color)"
-					borderRadius="10px"
-				>
+				<BoxCard>
 					<TextTitle title={"Process payroll"} mt={2} mb={"1em"} />
 					<VStack spacing={3} align={"start"}>
 						<HStack spacing={2}>
@@ -89,7 +77,7 @@ const ProcessPayroll = () => {
 							loadingText="Loading"
 						/>
 					</VStack>
-				</Box>
+				</BoxCard>
 				<PayrollStageContent currentStep={currentStep} steps={steps} />
 			</SimpleGrid>
 

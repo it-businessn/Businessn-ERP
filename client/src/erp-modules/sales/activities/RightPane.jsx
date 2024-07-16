@@ -1,5 +1,6 @@
 import { Box, HStack, Icon, SimpleGrid, VStack } from "@chakra-ui/react";
 import HighlightButton from "components/ui/button/HighlightButton";
+import BoxCard from "components/ui/card";
 import TextTitle from "components/ui/text/TextTitle";
 import { RiAspectRatioLine } from "react-icons/ri";
 import { SALES_ACTIVITY_CARDS } from "../customers/contacts/logs/data";
@@ -19,11 +20,8 @@ const RightPane = ({ setShowSelectCustomer }) => (
 				width={{ base: "50%", md: "40%", lg: "20%", xl: "20%" }}
 			/>
 		))}
-		<Box
+		<BoxCard
 			p="0.5em 1em"
-			bg={"var(--primary_bg)"}
-			border="3px solid var(--main_color)"
-			borderRadius="10px"
 			fontWeight="bold"
 			justifyContent="space-between"
 			display="flex"
@@ -40,7 +38,7 @@ const RightPane = ({ setShowSelectCustomer }) => (
 					<GaugeChartComponent value={0} maxValue={100} />
 				</Box>
 			</HStack>
-		</Box>
+		</BoxCard>
 
 		<Contest />
 	</SimpleGrid>

@@ -1,4 +1,4 @@
-import { Box } from "@chakra-ui/react";
+import BoxCard from "components/ui/card";
 import UserStatInfo from "components/ui/UserStatInfo";
 import ChatMessages from "erp-modules/sales/dashboard/rightpane/ChatMessages";
 import MiniCalendar from "erp-modules/sales/dashboard/rightpane/MiniCalendar";
@@ -6,14 +6,7 @@ import "react-big-calendar/lib/css/react-big-calendar.css";
 
 const RightPane = ({ selectedUser, selectedPayGroup, stats, company }) => {
 	return (
-		<Box
-			overflow={"hidden"}
-			overflowY={"auto"}
-			p="1em"
-			bg={"var(--primary_bg)"}
-			border="3px solid var(--main_color)"
-			borderRadius="10px"
-		>
+		<BoxCard>
 			<UserStatInfo
 				name={selectedUser?.fullName}
 				email={selectedUser?.email}
@@ -21,7 +14,7 @@ const RightPane = ({ selectedUser, selectedPayGroup, stats, company }) => {
 			/>
 			<MiniCalendar user={selectedUser} company={company} />
 			<ChatMessages userId={selectedPayGroup?._id} company={company} />
-		</Box>
+		</BoxCard>
 	);
 };
 

@@ -12,6 +12,7 @@ import {
 import Loader from "components/Loader";
 import LeftIconButton from "components/ui/button/LeftIconButton";
 import PrimaryButton from "components/ui/button/PrimaryButton";
+import BoxCard from "components/ui/card";
 import MultiSelectBox from "components/ui/form/select/MultiSelectBox";
 import { useEffect, useState } from "react";
 import { FaCaretDown } from "react-icons/fa";
@@ -169,13 +170,7 @@ const GroupsPanel = ({
 		}
 	};
 	return (
-		<Box
-			p="1em"
-			bg={"var(--primary_bg)"}
-			border="3px solid var(--main_color)"
-			borderRadius="10px"
-			fontWeight="bold"
-		>
+		<BoxCard fontWeight="bold">
 			<HStack>
 				<PrimaryButton
 					size="sm"
@@ -279,12 +274,7 @@ const GroupsPanel = ({
 					</FormControl>
 				)}
 			</HStack>
-			<Box
-				p="1em"
-				bg={"var(--primary_bg)"}
-				border="3px solid var(--main_color)"
-				borderRadius="10px"
-			>
+			<BoxCard>
 				<HStack justify={"space-between"}>
 					<Text fontWeight="bold">{groupMembers?.length} User(s)</Text>
 
@@ -313,8 +303,8 @@ const GroupsPanel = ({
 						/>
 					</Box>
 				)}
-			</Box>
-		</Box>
+			</BoxCard>
+		</BoxCard>
 	);
 };
 

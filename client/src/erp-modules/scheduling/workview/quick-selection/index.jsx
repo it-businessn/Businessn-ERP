@@ -1,4 +1,5 @@
-import { Box, HStack, Icon, Text, VStack } from "@chakra-ui/react";
+import { HStack, Icon, Text, VStack } from "@chakra-ui/react";
+import BoxCard from "components/ui/card";
 import React, { useState } from "react";
 import { GoDash } from "react-icons/go";
 import { RxDropdownMenu } from "react-icons/rx";
@@ -17,13 +18,7 @@ const QuickSelection = ({ setNewEmployeeAdded, employees }) => {
 	};
 
 	return (
-		<Box
-			p="1em"
-			bg={"var(--primary_bg)"}
-			border="3px solid var(--main_color)"
-			borderRadius="10px"
-			fontWeight="bold"
-		>
+		<BoxCard fontWeight="bold">
 			<Text>Quick Selections</Text>
 			<Text color={"var(--main_color_black)"}>Role</Text>
 			{employees?.map((employee) => (
@@ -70,7 +65,7 @@ const QuickSelection = ({ setNewEmployeeAdded, employees }) => {
 					))}
 				</VStack>
 			))}
-		</Box>
+		</BoxCard>
 	);
 };
 

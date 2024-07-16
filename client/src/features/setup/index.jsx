@@ -1,4 +1,3 @@
-import { Box } from "@chakra-ui/react";
 import TabsButtonGroup from "components/ui/tab/TabsButtonGroup";
 import useCompany from "hooks/useCompany";
 import PageLayout from "layouts/PageLayout";
@@ -73,23 +72,13 @@ const Setup = () => {
 		SETUP_LIST.find(({ type }) => type === viewMode)?.name;
 
 	return (
-		<PageLayout title={"Set up"}>
-			<Box
-				p="1em"
-				bg={"var(--primary_bg)"}
-				border="2px solid var(--main_color)"
-				borderRadius="10px"
-				color={"var(--nav_color)"}
-			>
-				<Box mb={4} bg={"var(--main_color)"} borderRadius={"1em"} px="5px">
-					<TabsButtonGroup
-						tabs={SETUP_LIST}
-						setViewMode={setViewMode}
-						viewMode={viewMode}
-					/>
-				</Box>
-				{showComponent(viewMode)}
-			</Box>
+		<PageLayout title={"Set up"} showBgLayer>
+			<TabsButtonGroup
+				tabs={SETUP_LIST}
+				setViewMode={setViewMode}
+				viewMode={viewMode}
+			/>
+			{showComponent(viewMode)}
 		</PageLayout>
 	);
 };

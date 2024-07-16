@@ -1,5 +1,6 @@
 import { Box } from "@chakra-ui/react";
 import PageHeader from "components/PageHeader";
+import BoxCard from "components/ui/card";
 
 const PageLayout = ({
 	children,
@@ -24,15 +25,7 @@ const PageLayout = ({
 			selectAttr={selectAttr}
 			selectPlaceholder={selectPlaceholder}
 		/>
-		<Box
-			p={showBgLayer && "1em"}
-			bg={showBgLayer && "var(--primary_bg)"}
-			border={showBgLayer && "2px solid var(--main_color)"}
-			borderRadius="10px"
-			color={showBgLayer && "var(--nav_color)"}
-		>
-			{children}
-		</Box>
+		{showBgLayer ? <BoxCard borderWidth={"2px"}>{children}</BoxCard> : children}
 	</Box>
 );
 

@@ -11,32 +11,20 @@ import {
 } from "@chakra-ui/react";
 import HighlightButton from "components/ui/button/HighlightButton";
 import RightIconButton from "components/ui/button/RightIconButton";
+import BoxCard from "components/ui/card";
 import { RiAspectRatioLine } from "react-icons/ri";
 
 const Contest = () => {
 	return (
 		<Box>
 			{["Contests For Sales", "Contests For Activity"].map((item) => (
-				<Box
-					key={item}
-					p="0.5em 1em"
-					bg={"var(--primary_bg)"}
-					border="3px solid var(--main_color)"
-					borderRadius="10px"
-				>
+				<BoxCard key={item} p="0.5em 1em">
 					<Text fontWeight="bold" fontSize={"sm"}>
 						{item}
 					</Text>
 					<SimpleGrid columns={{ md: 3 }} spacing={4}>
 						{["Sale 1", "Sale 2", "Sale 3"].map((item) => (
-							<Box
-								key={item}
-								p="1em"
-								bg={"var(--primary_bg)"}
-								border="3px solid var(--main_color)"
-								borderRadius="10px"
-								fontWeight="bold"
-							>
+							<BoxCard key={item}>
 								<HStack alignItems="self-start" spacing={2}>
 									<Icon as={RiAspectRatioLine} color="orange" boxSize={8} />
 									<VStack spacing={0} alignItems={"start"}>
@@ -67,17 +55,10 @@ const Contest = () => {
 										<HighlightButton name={"More details"} />
 									</Flex>
 								</Box>
-							</Box>
+							</BoxCard>
 						))}
 					</SimpleGrid>
-					<Box
-						mt={"1em"}
-						p="1em"
-						bg={"var(--primary_bg)"}
-						border="3px solid var(--main_color)"
-						borderRadius="10px"
-						fontWeight="bold"
-					>
+					<BoxCard mt={"1em"}>
 						<HStack alignItems="self-start" spacing={2}>
 							<Icon as={RiAspectRatioLine} color="orange" boxSize={8} />
 							<VStack spacing={0} alignItems={"start"}>
@@ -113,15 +94,8 @@ const Contest = () => {
 								</Button>
 							</Flex>
 						</Box>
-					</Box>
-					<Box
-						mt={"1em"}
-						p="1em"
-						bg={"var(--primary_bg)"}
-						border="3px solid var(--main_color)"
-						borderRadius="10px"
-						fontWeight="bold"
-					>
+					</BoxCard>
+					<BoxCard mt={"1em"}>
 						<HStack alignItems="self-start" spacing={2}>
 							<Icon as={RiAspectRatioLine} color="orange" boxSize={8} />
 							<VStack spacing={0} alignItems={"start"}>
@@ -157,8 +131,8 @@ const Contest = () => {
 								</Button>
 							</Flex>
 						</Box>
-					</Box>
-				</Box>
+					</BoxCard>
+				</BoxCard>
 			))}
 		</Box>
 	);

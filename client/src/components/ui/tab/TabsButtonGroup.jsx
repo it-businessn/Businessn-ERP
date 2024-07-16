@@ -1,4 +1,4 @@
-import { Button, ButtonGroup, Icon } from "@chakra-ui/react";
+import { Box, Button, ButtonGroup, Icon } from "@chakra-ui/react";
 
 const TabsButtonGroup = ({ isOutlineTab, tabs, setViewMode, viewMode }) => {
 	const getColor = (type) =>
@@ -17,24 +17,26 @@ const TabsButtonGroup = ({ isOutlineTab, tabs, setViewMode, viewMode }) => {
 		isOutlineTab && viewMode === type && "2px solid var(--primary_button_bg)";
 
 	return (
-		<ButtonGroup variant="solid" p={0} m={0}>
-			{tabs?.map(({ type, icon }) => (
-				<Button
-					key={type}
-					size={"sm"}
-					onClick={() => setViewMode(type)}
-					color={() => getColor(type)}
-					bg={() => getBgColor(type)}
-					borderBottom={() => border(type)}
-					borderRadius={!isOutlineTab && "1em"}
-					variant={isOutlineTab ? "ghost" : "solid"}
-					fontWeight={isOutlineTab || viewMode === type ? "bold" : "normal"}
-					_hover={{ bg: "transparent", color: "var(--main_color_black)" }}
-				>
-					{icon ? <Icon as={icon} boxSize="5" /> : type}
-				</Button>
-			))}
-		</ButtonGroup>
+		<Box mb={4} bg={"var(--main_color)"} borderRadius={"1em"} px="5px">
+			<ButtonGroup variant="solid" p={0} m={0}>
+				{tabs?.map(({ type, icon }) => (
+					<Button
+						key={type}
+						size={"sm"}
+						onClick={() => setViewMode(type)}
+						color={() => getColor(type)}
+						bg={() => getBgColor(type)}
+						borderBottom={() => border(type)}
+						borderRadius={!isOutlineTab && "1em"}
+						variant={isOutlineTab ? "ghost" : "solid"}
+						fontWeight={isOutlineTab || viewMode === type ? "bold" : "normal"}
+						_hover={{ bg: "transparent", color: "var(--main_color_black)" }}
+					>
+						{icon ? <Icon as={icon} boxSize="5" /> : type}
+					</Button>
+				))}
+			</ButtonGroup>
+		</Box>
 	);
 };
 

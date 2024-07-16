@@ -1,4 +1,3 @@
-import { Box } from "@chakra-ui/react";
 import TabsButtonGroup from "components/ui/tab/TabsButtonGroup";
 import useCompany from "hooks/useCompany";
 import PageLayout from "layouts/PageLayout";
@@ -69,13 +68,11 @@ const FreshLeads = () => {
 		TAB_LIST.find(({ type }) => type === viewMode)?.name;
 	return (
 		<PageLayout title={"Fresh Leads"}>
-			<Box mb={4} bg={"var(--main_color)"} borderRadius={"1em"} px="5px">
-				<TabsButtonGroup
-					tabs={TAB_LIST}
-					setViewMode={setViewMode}
-					viewMode={viewMode}
-				/>
-			</Box>
+			<TabsButtonGroup
+				tabs={TAB_LIST}
+				setViewMode={setViewMode}
+				viewMode={viewMode}
+			/>
 			{showComponent(viewMode)}
 		</PageLayout>
 	);

@@ -15,6 +15,11 @@ const PrimaryButton = ({
 	rightIcon,
 	bg = "var(--primary_button_bg)",
 	color = "var(--primary_bg)",
+	hover = {
+		color: "var(--main_color_black)",
+		bg: "transparent",
+		border: "1px solid var(--primary_button_bg)",
+	},
 }) => {
 	return (
 		<Button
@@ -27,11 +32,7 @@ const PrimaryButton = ({
 			bg={bg}
 			px={{ base: px ? px : "2em" }}
 			color={color}
-			_hover={{
-				color: "var(--main_color_black)",
-				bg: "transparent",
-				border: "1px solid var(--primary_button_bg)",
-			}}
+			_hover={hover}
 			ml={ml}
 			size={size}
 			type="submit"

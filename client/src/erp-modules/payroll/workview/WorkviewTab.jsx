@@ -1,33 +1,22 @@
-import { Box, Button, Tbody, Td, Tr } from "@chakra-ui/react";
-import PrimaryButton from "components/ui/button/PrimaryButton";
+import { Tbody, Td, Tr } from "@chakra-ui/react";
+import BoxCard from "components/ui/card";
 import TableLayout from "components/ui/table/TableLayout";
 
-const PaygroupWorkview = () => {
-	const PAYGROUP_COLS = [
-		"Employee ID",
-		"Name",
-		"Department",
-		"Rate",
-		"Reg. Hrs",
-		"Retro Pay",
-		"Overtime",
-		"Stat Pay",
-		"Commission",
-		"Vacation Hours",
-		"BC Sick Pay",
-		"Reimbursement",
-	];
+const WorkviewTab = ({ label, cols, data }) => {
 	return (
-		<Box
-			color={"var(--nav_color)"}
-			p="1em"
-			bg={"var(--primary_bg)"}
-			border="3px solid var(--main_color)"
-			borderRadius="10px"
-		>
-			<TableLayout cols={PAYGROUP_COLS}>
+		<BoxCard>
+			<TableLayout cols={cols.map((_) => _.key)}>
 				<Tbody>
-					<Tr>
+					{data?.map((_) => (
+						<Tr key={_.id}>
+							{cols.map((item, index) => (
+								<Td key={item.key}>
+									{index === cols.length - 1 ? item.pair : data[0][item.pair]}
+								</Td>
+							))}
+						</Tr>
+					))}
+					{/* <Tr>
 						<Td>45453</Td>
 						<Td>{}</Td>
 						<Td>19/03/2024</Td>
@@ -86,11 +75,11 @@ const PaygroupWorkview = () => {
 								size="sm"
 							/>
 						</Td>
-					</Tr>
+					</Tr> */}
 				</Tbody>
 			</TableLayout>
-		</Box>
+		</BoxCard>
 	);
 };
 
-export default PaygroupWorkview;
+export default WorkviewTab;

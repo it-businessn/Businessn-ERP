@@ -1,5 +1,6 @@
-import { Box, HStack, VStack, useToast } from "@chakra-ui/react";
+import { HStack, VStack, useToast } from "@chakra-ui/react";
 import LeftIconButton from "components/ui/button/LeftIconButton";
+import BoxCard from "components/ui/card";
 import TextTitle from "components/ui/text/TextTitle";
 import moment from "moment";
 import { useEffect, useState } from "react";
@@ -70,14 +71,7 @@ const TimeCard = ({ selectedUser, company }) => {
 	};
 
 	return (
-		<Box
-			p="1em"
-			bg={"var(--primary_bg)"}
-			border="3px solid var(--main_color)"
-			borderRadius="10px"
-			fontWeight="bold"
-			gap={"1em"}
-		>
+		<BoxCard gap={"1em"}>
 			<VStack w={"100%"} spacing={3}>
 				<LeftIconButton
 					size="3em"
@@ -133,7 +127,7 @@ const TimeCard = ({ selectedUser, company }) => {
 					/>
 				</HStack>
 			</VStack>
-		</Box>
+		</BoxCard>
 	);
 };
 

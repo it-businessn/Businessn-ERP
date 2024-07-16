@@ -1,6 +1,6 @@
 import { Box, HStack, Icon, SimpleGrid, VStack } from "@chakra-ui/react";
 import PrimaryButton from "components/ui/button/PrimaryButton";
-
+import BoxCard from "components/ui/card";
 import TextTitle from "components/ui/text/TextTitle";
 import { useState } from "react";
 import { MdOutlineChevronLeft, MdOutlineChevronRight } from "react-icons/md";
@@ -202,14 +202,7 @@ const LeftPane = ({ selectedPayGroup, setStats, company }) => {
 				{/* <TimeCard selectedUser={selectedUser} company={company} /> */}
 
 				{sections.map(({ name, content }, index) => (
-					<Box
-						key={name}
-						color={"var(--nav_color)"}
-						p="1em"
-						bg={"var(--primary_bg)"}
-						border="3px solid var(--main_color)"
-						borderRadius="10px"
-					>
+					<BoxCard key={name}>
 						{index === 0 ? (
 							<HStack>
 								<TextTitle title={name} mt={2} mb={"1em"} />
@@ -235,7 +228,7 @@ const LeftPane = ({ selectedPayGroup, setStats, company }) => {
 						)}
 
 						{content}
-					</Box>
+					</BoxCard>
 				))}
 			</SimpleGrid>
 		</Box>

@@ -1,4 +1,5 @@
 import { Box, SimpleGrid } from "@chakra-ui/react";
+import BoxCard from "components/ui/card";
 import TextTitle from "components/ui/text/TextTitle";
 import { useEffect, useState } from "react";
 import "react-big-calendar/lib/css/react-big-calendar.css";
@@ -143,14 +144,7 @@ const LeftPane = ({ selectedUser, setStats, company, user }) => {
 				<SalesChart company={company} selectedUser={selectedUser} user={user} />
 			</SimpleGrid>
 			<SimpleGrid columns={{ base: 1, md: 1, lg: 1 }} spacing="4" mt="4">
-				<Box
-					px="1em"
-					color={"var(--nav_color)"}
-					bg={"var(--primary_bg)"}
-					border="3px solid var(--main_color)"
-					borderRadius="10px"
-					fontWeight="bold"
-				>
+				<BoxCard px="1em" fontWeight="bold">
 					<TextTitle title={"Upcoming"} mt={2} mb={2} />
 					<UpcomingList
 						events={events}
@@ -160,7 +154,7 @@ const LeftPane = ({ selectedUser, setStats, company, user }) => {
 						setIsRefresh={setIsRefresh}
 						company={company}
 					/>
-				</Box>
+				</BoxCard>
 			</SimpleGrid>
 		</Box>
 	);

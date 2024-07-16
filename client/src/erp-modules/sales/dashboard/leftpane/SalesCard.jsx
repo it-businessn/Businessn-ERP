@@ -1,4 +1,5 @@
-import { Box, Flex, Icon, Select, Text } from "@chakra-ui/react";
+import { Flex, Icon, Select, Text } from "@chakra-ui/react";
+import BoxCard from "components/ui/card";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 
 const SalesCard = ({ headerCards, setMonth, currentMonth }) => {
@@ -7,12 +8,9 @@ const SalesCard = ({ headerCards, setMonth, currentMonth }) => {
 	return (
 		<>
 			{headerCards.map((card, index) => (
-				<Box
+				<BoxCard
 					key={card.title}
 					px="1em"
-					bg={"var(--primary_bg)"}
-					border="3px solid var(--main_color)"
-					borderRadius="10px"
 					fontWeight="bold"
 					display={"flex"}
 					flexDir={"column"}
@@ -51,7 +49,7 @@ const SalesCard = ({ headerCards, setMonth, currentMonth }) => {
 							{card.percent}
 						</Text> */}
 					</Flex>
-				</Box>
+				</BoxCard>
 			))}
 		</>
 	);

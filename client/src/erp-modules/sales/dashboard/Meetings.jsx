@@ -16,6 +16,7 @@ import {
 	Tr,
 	VStack,
 } from "@chakra-ui/react";
+import BoxCard from "components/ui/card";
 import { activityChartData, doughnutOptions, leaderBoardData } from "constant";
 import { useEffect, useState } from "react";
 import { Doughnut } from "react-chartjs-2";
@@ -37,14 +38,7 @@ const Meetings = () => {
 	}, []);
 	return (
 		<SimpleGrid columns={{ base: 1, md: 1, lg: 3 }} spacing="1em">
-			<Box
-				px="1em"
-				bg={"var(--primary_bg)"}
-				border="3px solid var(--main_color)"
-				borderRadius="10px"
-				fontWeight="bold"
-				h="350px"
-			>
+			<BoxCard px="1em" fontWeight="bold" h="350px">
 				<Flex
 					justify="space-between"
 					align="center"
@@ -91,16 +85,8 @@ const Meetings = () => {
 						</Tbody>
 					</Table>
 				</Box>
-			</Box>
-			<Box
-				px="1em"
-				bg={"var(--primary_bg)"}
-				border="3px solid var(--main_color)"
-				borderRadius="10px"
-				fontWeight="bold"
-				color={"var(--nav_color)"}
-				h={{ base: "auto", md: "350px" }}
-			>
+			</BoxCard>
+			<BoxCard px="1em" fontWeight="bold" h={{ base: "auto", md: "350px" }}>
 				<Text fontWeight="bold" mt="2" mb="1">
 					Activity Tracking
 				</Text>
@@ -116,16 +102,8 @@ const Meetings = () => {
 						/>
 					</Box>
 				</VStack>
-			</Box>
-			<Box
-				color={"var(--nav_color)"}
-				px="1em"
-				bg={"var(--primary_bg)"}
-				border="3px solid var(--main_color)"
-				borderRadius="10px"
-				fontWeight="bold"
-				h="350px"
-			>
+			</BoxCard>
+			<BoxCard fontWeight="bold" h="350px" px="1em">
 				<Text mt={2} mb={3} fontWeight="bold">
 					Contacts Added
 				</Text>
@@ -174,7 +152,7 @@ const Meetings = () => {
 						</Tbody>
 					</Table>
 				</Box>
-			</Box>
+			</BoxCard>
 		</SimpleGrid>
 	);
 };
