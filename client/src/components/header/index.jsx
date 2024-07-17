@@ -17,7 +17,7 @@ const Navbar = ({ handleClick, onOpen, user, setUser, isMobile }) => {
 	const handleLogout = async () => {
 		try {
 			await LoginService.signOut(user._id);
-			LocalStorageService.removeItem("user");
+			LocalStorageService.clear();
 			setUser(null);
 		} catch (error) {
 			console.log(error.response.data.error);

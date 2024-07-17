@@ -26,6 +26,8 @@ const LocalStorageService = {
 			return null;
 		}
 	},
+
+	clear: () => localStorage.clear(),
 };
 
 export default LocalStorageService;
