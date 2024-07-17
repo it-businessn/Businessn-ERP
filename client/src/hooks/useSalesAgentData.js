@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import UserService from "services/UserService";
 
-const useEmployeeData = (company) => {
+const useSalesAgentData = (company) => {
 	const [employees, setEmployees] = useState(null);
 
 	useEffect(() => {
-		const fetchAllEmployees = async () => {
+		const fetchAllSalesAgents = async () => {
 			try {
 				const response = await UserService.getAllSalesAgents(company);
 				setEmployees(response.data);
@@ -13,10 +13,10 @@ const useEmployeeData = (company) => {
 				console.error(error);
 			}
 		};
-		fetchAllEmployees();
+		fetchAllSalesAgents();
 	}, [company]);
 
 	return employees;
 };
 
-export default useEmployeeData;
+export default useSalesAgentData;

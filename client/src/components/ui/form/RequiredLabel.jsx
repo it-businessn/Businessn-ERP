@@ -1,8 +1,8 @@
 import { FormLabel, Text } from "@chakra-ui/react";
 
-const RequiredLabel = ({ label, required, name }) => {
+const RequiredLabel = ({ label, required, name, fontWeight, visibility }) => {
 	return (
-		<FormLabel htmlFor={name}>
+		<FormLabel fontWeight={fontWeight} htmlFor={name} visibility={visibility}>
 			{label}
 			{required && (
 				<Text as={"span"} color="red">

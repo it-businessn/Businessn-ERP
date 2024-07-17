@@ -15,10 +15,11 @@ const EmpSearchMenu = ({
 	empName,
 	handleInputChange,
 	handleSelect,
+	width,
 }) => {
 	return (
 		<Menu>
-			<MenuButton>
+			<MenuButton w={width}>
 				<InputGroup
 					borderRadius={"10px"}
 					border={"1px solid var(--filter_border_color)"}

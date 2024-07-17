@@ -1,7 +1,6 @@
 import {
 	Avatar,
 	Badge,
-	Button,
 	Checkbox,
 	HStack,
 	SimpleGrid,
@@ -10,20 +9,42 @@ import {
 } from "@chakra-ui/react";
 import RadioButtonGroup from "components/ui/tab/RadioButtonGroup";
 import TextTitle from "components/ui/text/TextTitle";
-import SearchFilter from "erp-modules/sales/lead docket/SearchFilter";
+import EmpSearchMenu from "features/setup/EmpSearchMenu";
+import useCompany from "hooks/useCompany";
+import useEmployees from "hooks/useEmployees";
 import PageLayout from "layouts/PageLayout";
 import { useState } from "react";
-import { FaSearch } from "react-icons/fa";
-import { generateLighterShade } from "utils";
+import LocalStorageService from "services/LocalStorageService";
 import BalanceInfo from "./info/BalanceInfo";
 import BankingInfo from "./info/BankingInfo";
 import EmploymentInfo from "./info/EmploymentInfo";
 import GovernmentInfo from "./info/GovernmentInfo";
-import PayInfo from "./info/PayInfo";
 import ProfileInfo from "./info/ProfileInfo";
+import PayInfo from "./pay/PayInfo";
 
 const Employees = () => {
-	const [employee, setEmployee] = useState(null || "jk");
+	const loggedInUser = LocalStorageService.getItem("user");
+	const [employee, setEmployee] = useState(loggedInUser?.fullName);
+	const [isRefresh, setIsRefresh] = useState(false);
+	const { company } = useCompany();
+	const { employees, filteredEmployees, setFilteredEmployees } = useEmployees(
+		isRefresh,
+		company,
+	);
+	const [empName, setEmpName] = useState(null);
+
+	const handleInputChange = (value) => {
+		setEmpName(value);
+		setFilteredEmployees(
+			employees.filter((emp) =>
+				emp?.fullName?.toLowerCase().includes(value.toLowerCase()),
+			),
+		);
+	};
+
+	const handleSelect = (emp) => {
+		setEmpName(emp.fullName);
+	};
 
 	const SETUP_LIST = [
 		{
@@ -77,16 +98,26 @@ const Employees = () => {
 						boxSize="15"
 					/>
 					<VStack spacing={0} align={"start"}>
-						<TextTitle size="sm" title={"User name"} />
-						<TextTitle size="xs" weight="normal" title={"45677"} />
+						<TextTitle size="sm" title={loggedInUser?.fullName} />
+						<TextTitle
+							size="xs"
+							weight="normal"
+							title={loggedInUser?.employeeId}
+						/>
 						<Badge bg="var(--correct_ans)" color="var(--primary_bg)">
 							Active
 						</Badge>
 					</VStack>
 				</HStack>
 				<Spacer />
-				<VStack spacing={0} w={"30%"} align={"start"}>
-					<SearchFilter hideFilter placeholder="Search Employee" />
+				<VStack spacing={1} w={"30%"} align={"start"}>
+					<EmpSearchMenu
+						width={"full"}
+						filteredEmployees={filteredEmployees}
+						empName={empName}
+						handleInputChange={handleInputChange}
+						handleSelect={handleSelect}
+					/>
 					<Checkbox
 						colorScheme={"facebook"}
 						// isChecked={hasChecklist}
@@ -121,7 +152,7 @@ const Employees = () => {
 					))}
 				</SimpleGrid>
 
-				<Button
+				{/* <Button
 					borderRadius={"50px"}
 					border={"1px"}
 					w={"17%"}
@@ -132,7 +163,7 @@ const Employees = () => {
 					leftIcon={<FaSearch />}
 				>
 					Search here
-				</Button>
+				</Button> */}
 			</HStack>
 			{showComponent(viewMode)}
 		</PageLayout>

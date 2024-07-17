@@ -20,6 +20,7 @@ export const buildUserInfo = (user) => {
 		employmentType,
 		manager,
 		companyId,
+		employeeId,
 	} = user;
 
 	return new User(
@@ -36,5 +37,6 @@ export const buildUserInfo = (user) => {
 		employmentType,
 		manager,
 		companyId,
+		employeeId,
 	);
 };

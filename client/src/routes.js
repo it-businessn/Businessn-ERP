@@ -299,6 +299,10 @@ export const router = createBrowserRouter([
 				path: `${ROUTE_PATH.PAYROLL}${ROUTE_PATH.EMP_RECORD}`,
 				element: <EmployeeRecord />,
 			},
+			{
+				path: ROUTE_PATH.SETUP,
+				element: <Setup />,
+			},
 
 			/* Scheduling */
 			{

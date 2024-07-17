@@ -12,6 +12,9 @@ const InputFormControl = ({
 	type = "text",
 	isInvalid,
 	error,
+	display,
+	fontWeight,
+	visibility,
 }) => {
 	return (
 		<FormControlMain isInvalid={isInvalid}>
@@ -20,14 +23,18 @@ const InputFormControl = ({
 				label={label}
 				required={required}
 				htmlFor={name}
+				fontWeight={fontWeight}
+				visibility={visibility}
 			/>
 			<Input
+				display={display}
 				type={type}
 				name={name}
 				value={valueText}
 				onChange={handleChange}
 				required={required}
 				placeholder={placeholder}
+				visibility={visibility}
 			/>
 			{error && <FormHelperText color="red.500">{error}</FormHelperText>}
 		</FormControlMain>

@@ -35,6 +35,7 @@ const ADMIN_PERMISSION = [
 	{ name: "Payroll Settings" },
 	{ name: "Payroll Employee Dashboard" },
 	{ name: "Payroll Employee Records" },
+	{ name: "Payroll Setup" },
 	{ name: "Scheduling" },
 	{ name: "Scheduling Dashboard" },
 	{ name: "Scheduling Workview" },

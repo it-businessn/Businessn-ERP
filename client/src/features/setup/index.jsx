@@ -1,31 +1,19 @@
 import TabsButtonGroup from "components/ui/tab/TabsButtonGroup";
 import useCompany from "hooks/useCompany";
+import useEmployees from "hooks/useEmployees";
 import PageLayout from "layouts/PageLayout";
-import { useEffect, useState } from "react";
-import UserService from "services/UserService";
+import { useState } from "react";
 import CompanyPanel from "./company/CompanyPanel";
 import PermissionsPanel from "./permisssions/PermissionsPanel";
 import UsersPanel from "./users/UsersPanel";
 
 const Setup = () => {
-	const [employees, setEmployees] = useState(null);
-	const [filteredEmployees, setFilteredEmployees] = useState(null);
 	const [isRefresh, setIsRefresh] = useState(false);
-
 	const { company } = useCompany();
-	useEffect(() => {
-		const fetchAllEmployees = async () => {
-			try {
-				const response = await UserService.getAllCompanyUsers(company);
-				setEmployees(response.data);
-				setFilteredEmployees(response.data);
-			} catch (error) {
-				console.error(error);
-			}
-		};
-
-		fetchAllEmployees();
-	}, [isRefresh, company]);
+	const { employees, filteredEmployees, setFilteredEmployees } = useEmployees(
+		isRefresh,
+		company,
+	);
 
 	const SETUP_LIST = [
 		{
