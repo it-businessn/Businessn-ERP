@@ -60,4 +60,11 @@ const SALES_ASSOCIATE_PERMISSION = [
 	{ name: "Project Management Communication" },
 ];
 
-module.exports = { ADMIN_PERMISSION, SALES_ASSOCIATE_PERMISSION };
+const isRoleManager = (role) =>
+	role?.includes("Administrators") || role?.includes("Technical Administrator");
+
+module.exports = {
+	ADMIN_PERMISSION,
+	SALES_ASSOCIATE_PERMISSION,
+	isRoleManager,
+};

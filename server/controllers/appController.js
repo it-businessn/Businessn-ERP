@@ -13,6 +13,7 @@ const { sendEmail } = require("../services/emailService");
 const {
 	ADMIN_PERMISSION,
 	SALES_ASSOCIATE_PERMISSION,
+	isRoleManager,
 } = require("../services/data");
 
 const signUp = async (req, res) => {
@@ -33,9 +34,7 @@ const signUp = async (req, res) => {
 		employmentType,
 	} = req.body;
 	const { streetNumber, city, state, postalCode, country } = primaryAddress;
-	const isManager =
-		role?.includes("Administrators") ||
-		role?.includes("Technical Administrator");
+	const isManager = isRoleManager(role);
 
 	// const updatedData = { companyId: "6646b03e96dcdc0583fb5dca" };for fd
 	// const updatedLeads = await Employee.updateMany({}, { $set: updatedData });
@@ -278,4 +277,5 @@ module.exports = {
 	forgotPassword,
 	setNewPassword,
 	changePassword,
+	setInitialPermissions,
 };

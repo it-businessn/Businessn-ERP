@@ -5,6 +5,8 @@ const Group = require("../models/Group");
 const Lead = require("../models/Lead");
 const Task = require("../models/Task");
 const UserActivity = require("../models/UserActivity");
+const { isRoleManager } = require("../services/data");
+const { setInitialPermissions } = require("./appController");
 
 const getAllEmployees = () => async (req, res) => {
 	try {
@@ -156,8 +158,16 @@ const getAllSalesAgents = () => async (req, res) => {
 
 const updateUser = () => async (req, res) => {
 	const { userId } = req.params;
+	const { role, companyId } = req.body;
+	const isManager = isRoleManager(role);
 
 	try {
+		if (isManager) {
+			const company = await Company.findOne({ _id: companyId });
+			if (company) {
+				setInitialPermissions(userId, isManager, company.name);
+			}
+		}
 		const updatedUser = await Employee.findByIdAndUpdate(userId, req.body, {
 			new: true,
 		});

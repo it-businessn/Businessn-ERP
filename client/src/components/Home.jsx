@@ -16,7 +16,7 @@ const Home = () => {
 	const navigate = useNavigate();
 	const [user, setUser] = useState(LocalStorageService.getItem("user"));
 
-	const { company } = useCompany("Fractional Departments Inc.");
+	const { company } = useCompany(user?.companyId[0]?.name);
 
 	const { isMobile } = useBreakpointValue();
 
