@@ -16,6 +16,7 @@ const VerticalStepper = ({
 	steps,
 	hideProgress,
 	height,
+	hideLine,
 }) => {
 	return (
 		<Stepper
@@ -44,7 +45,8 @@ const VerticalStepper = ({
 						/>
 					)}
 
-					<StepSeparator />
+					{/* {!hideLine && <StepSeparator />} */}
+					{<StepSeparator />}
 				</Step>
 			))}
 		</Stepper>

@@ -15,12 +15,12 @@ import useEmployees from "hooks/useEmployees";
 import PageLayout from "layouts/PageLayout";
 import { useState } from "react";
 import LocalStorageService from "services/LocalStorageService";
-import BalanceInfo from "./info/BalanceInfo";
-import BankingInfo from "./info/BankingInfo";
-import EmploymentInfo from "./info/EmploymentInfo";
-import GovernmentInfo from "./info/GovernmentInfo";
-import ProfileInfo from "./info/ProfileInfo";
-import PayInfo from "./pay/PayInfo";
+import BalanceInfo from "./employee-tabs/BalancesInfo";
+import BankingInfo from "./employee-tabs/BankingInfo";
+import CorporateInfo from "./employee-tabs/CorporateInfo";
+import GovernmentInfo from "./employee-tabs/GovernmentContribution";
+import PayInfo from "./employee-tabs/PayInfo";
+import PersonalInfo from "./employee-tabs/PersonalInfo";
 
 const Employees = () => {
 	const loggedInUser = LocalStorageService.getItem("user");
@@ -56,13 +56,13 @@ const Employees = () => {
 			id: 1,
 			type: "Info",
 
-			name: <ProfileInfo />,
+			name: <PersonalInfo />,
 		},
 		{
 			id: 2,
 			type: "Employment",
 
-			name: <EmploymentInfo />,
+			name: <CorporateInfo />,
 		},
 		{
 			id: 3,

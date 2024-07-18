@@ -5,7 +5,7 @@ import { useState } from "react";
 import Record from "../Record";
 import StepContent from "../StepContent";
 
-const ProfileInfo = () => {
+const PersonalInfo = () => {
 	const steps = [
 		{
 			title: "Identification and Status",
@@ -138,4 +138,4 @@ const ProfileInfo = () => {
 	);
 };
 
-export default ProfileInfo;
+export default PersonalInfo;

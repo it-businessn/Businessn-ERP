@@ -94,6 +94,7 @@ const PayInfo = () => {
 					steps={steps}
 					currentStep={currentStep}
 					handleClick={goToNextStep}
+					hideLine
 				/>
 			</BoxCard>
 			<StepContent currentStep={currentStep} steps={steps} />
