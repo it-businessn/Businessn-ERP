@@ -80,7 +80,7 @@ const BalancesInfo = () => {
 					title="YTD Deductions"
 					data={[
 						{
-							type: "Hours",
+							type: "Dollars",
 							params: [
 								{ name: "Long Term Disability - EE", param_key: "" },
 								{ name: "Dental - EE", param_key: "" },

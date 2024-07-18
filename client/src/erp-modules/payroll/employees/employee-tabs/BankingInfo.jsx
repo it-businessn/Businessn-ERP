@@ -14,23 +14,27 @@ const BankingInfo = () => {
 					title="Banking Info"
 					data={[
 						{
-							type: "Deposit paycheque via direct deposit ",
+							type: "",
 							params: [
-								{ name: "", param_key: "", control: "radio" }, //Yes and No
+								{
+									name: "Deposit paycheque via direct deposit ",
+									param_key: "",
+									control: "radio",
+								}, //Yes and No
 								{ name: "Bank", param_key: "" },
 							],
 						},
 						{
 							type: "",
 							params: [
-								{ name: "ss", param_key: "" },
+								{ name: "ss", param_key: "", control: "radio" },
 								{ name: "Transit Number", param_key: "" },
 							],
 						},
 						{
 							type: "",
 							params: [
-								{ name: "ss", param_key: "" },
+								{ name: "ss", param_key: "", control: "radio" },
 								{ name: "Account Number", param_key: "" },
 							],
 						},
@@ -45,11 +49,15 @@ const BankingInfo = () => {
 					title="Payment Notification "
 					data={[
 						{
-							type: "Send Paystub by email on pay day ",
+							type: "",
 							params: [
-								{ name: "", param_key: "", control: "radio" },
-								{ name: "Email ", param_key: "" },
-							], //Yes and No
+								{
+									name: "Send Paystub by email on pay day",
+									param_key: "",
+									control: "radio",
+								}, //Yes and No
+								{ name: "Email", param_key: "" },
+							],
 						},
 					]}
 				/>
