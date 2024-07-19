@@ -12,7 +12,7 @@ import InputFormControl from "components/ui/form/InputFormControl";
 import TextTitle from "components/ui/text/TextTitle";
 import { FaCaretDown } from "react-icons/fa";
 
-const Record = ({ data, title }) => {
+const Record = ({ data, title, formData }) => {
 	return (
 		<>
 			<TextTitle title={title} />
@@ -22,7 +22,7 @@ const Record = ({ data, title }) => {
 						<FormLabel>{tab.type}</FormLabel>
 						{tab.params.map((param) => {
 							return param?.control === "select" ? (
-								<FormControl>
+								<FormControl key={param.name}>
 									<FormLabel>{param.name}</FormLabel>
 									<Select
 										icon={<FaCaretDown />}
@@ -30,7 +30,7 @@ const Record = ({ data, title }) => {
 										size="sm"
 										placeholder={`Select ${param.name}`}
 										name="name"
-										value={"formData.name"}
+										value={formData?.name}
 										// onChange={handleChange}
 									>
 										{param.options?.map(({ type }) => (
@@ -41,7 +41,10 @@ const Record = ({ data, title }) => {
 									</Select>
 								</FormControl>
 							) : param?.control === "radio" ? (
-								<HStack visibility={param.name === "ss" && "hidden"}>
+								<HStack
+									key={param.name}
+									visibility={param.name === "ss" && "hidden"}
+								>
 									<FormLabel>{param.name}</FormLabel>
 									<RadioGroup
 										value={"hasAward"}
@@ -64,8 +67,8 @@ const Record = ({ data, title }) => {
 								<InputFormControl
 									key={param.name}
 									label={param.name}
-									name="regPay"
-									valueText={"20"}
+									name={param.param_key}
+									valueText={param.param_key}
 									fontWeight={param.name === "Address" && "bold"}
 									display={param.name === "Address" && "none"}
 									visibility={param.name === "ss" && "hidden"}

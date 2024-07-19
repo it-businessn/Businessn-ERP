@@ -1,34 +1,38 @@
 import { SimpleGrid } from "@chakra-ui/react";
 import BoxCard from "components/ui/card";
 import VerticalStepper from "components/ui/VerticalStepper";
+import useEmployeePayInfo from "hooks/useEmployeePayInfo";
 import { useState } from "react";
 import Record from "../Record";
 import StepContent from "../StepContent";
 
-const PayInfo = () => {
+const PayInfo = ({ company, empId }) => {
+	const payInfo = useEmployeePayInfo(company, empId);
+	console.log(payInfo);
 	const steps = [
 		{
 			title: "Earnings",
 			content: (
 				<Record
+					formData={payInfo}
 					title="Earnings"
 					data={[
 						{
 							type: "Hourly",
 							params: [
-								{ name: "Regular Pay", param_key: "" },
-								{ name: "Overtime Pay ", param_key: "" },
-								{ name: "Double Overtime Pay ", param_key: "" },
-								{ name: "Statutory Worked Pay ", param_key: "" },
-								{ name: "Statutory Pay", param_key: "" },
-								{ name: "Sick Pay  ", param_key: "" },
+								{ name: "Regular Pay", param_key: "regPay" },
+								{ name: "Overtime Pay ", param_key: "overTimePay" },
+								{ name: "Double Overtime Pay ", param_key: "dblOverTimePay" },
+								{ name: "Statutory Worked Pay ", param_key: "statWorkPay" },
+								{ name: "Statutory Pay", param_key: "statPay" },
+								{ name: "Sick Pay  ", param_key: "sickPay" },
 							],
 						},
 						{
 							type: "Salary",
 							params: [
-								{ name: "Salary Rate", param_key: "" },
-								{ name: "Hours per Pay", param_key: "" },
+								{ name: "Salary Rate", param_key: "salaryRate" },
+								{ name: "Hours per Pay", param_key: "dailyHours" },
 							],
 						},
 					]}
@@ -44,18 +48,27 @@ const PayInfo = () => {
 						{
 							type: "",
 							params: [
-								{ name: "Long Term Disability - EE", param_key: "" },
-								{ name: "Dental - EE", param_key: "" },
-								{ name: "Extended Health - EE ", param_key: "" },
-								{ name: "Union Dues", param_key: "" },
+								{
+									name: "Long Term Disability - EE",
+									param_key: "longTermDisabilityEE",
+								},
+								{ name: "Dental - EE", param_key: "dentalEE" },
+								{
+									name: "Extended Health - EE ",
+									param_key: "extendedHealthEE",
+								},
+								{ name: "Union Dues", param_key: "unionDues" },
 							],
 						},
 						{
 							type: "",
 							params: [
-								{ name: "Long Term Disability - ER", param_key: "" },
-								{ name: "Dental - Er", param_key: "" },
-								{ name: "Extended Health - ER", param_key: "" },
+								{
+									name: "Long Term Disability - ER",
+									param_key: "longTermDisabilityER",
+								},
+								{ name: "Dental - ER", param_key: "dentalER" },
+								{ name: "Extended Health - ER", param_key: "extendedHealthER" },
 							],
 						},
 					]}
@@ -70,7 +83,7 @@ const PayInfo = () => {
 					data={[
 						{
 							type: "",
-							params: [{ name: "Vacation ", param_key: "" }],
+							params: [{ name: "Vacation ", param_key: "vacationPay" }],
 						},
 					]}
 				/>

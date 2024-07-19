@@ -24,7 +24,7 @@ import PersonalInfo from "./employee-tabs/PersonalInfo";
 
 const Employees = () => {
 	const loggedInUser = LocalStorageService.getItem("user");
-	const [employee, setEmployee] = useState(loggedInUser?.fullName);
+	const [employee, setEmployee] = useState(loggedInUser);
 	const [isRefresh, setIsRefresh] = useState(false);
 	const { company } = useCompany();
 	const { employees, filteredEmployees, setFilteredEmployees } = useEmployees(
@@ -44,43 +44,44 @@ const Employees = () => {
 
 	const handleSelect = (emp) => {
 		setEmpName(emp.fullName);
+		setEmployee(emp);
 	};
 
 	const SETUP_LIST = [
 		{
 			id: 0,
 			type: "Pay",
-			name: <PayInfo />,
+			name: <PayInfo company={company} empId={employee._id} />,
 		},
 		{
 			id: 1,
 			type: "Info",
 
-			name: <PersonalInfo />,
+			name: <PersonalInfo company={company} empId={employee._id} />,
 		},
 		{
 			id: 2,
 			type: "Employment",
 
-			name: <CorporateInfo />,
+			name: <CorporateInfo company={company} empId={employee._id} />,
 		},
 		{
 			id: 3,
 			type: "Government",
 
-			name: <GovernmentInfo />,
+			name: <GovernmentInfo company={company} empId={employee._id} />,
 		},
 		{
 			id: 4,
 			type: "Banking",
 
-			name: <BankingInfo />,
+			name: <BankingInfo company={company} empId={employee._id} />,
 		},
 		{
 			id: 5,
 			type: "Balances",
 
-			name: <BalanceInfo />,
+			name: <BalanceInfo company={company} empId={employee._id} />,
 		},
 	];
 	const [viewMode, setViewMode] = useState(SETUP_LIST[0].type);
@@ -93,17 +94,13 @@ const Employees = () => {
 				<HStack spacing="1em" mt="1em" justifyContent={"space-between"}>
 					<Avatar
 						// onClick={handleToggle}
-						name={employee}
+						name={employee?.fullName}
 						src=""
 						boxSize="15"
 					/>
 					<VStack spacing={0} align={"start"}>
-						<TextTitle size="sm" title={loggedInUser?.fullName} />
-						<TextTitle
-							size="xs"
-							weight="normal"
-							title={loggedInUser?.employeeId}
-						/>
+						<TextTitle size="sm" title={employee?.fullName} />
+						<TextTitle size="xs" weight="normal" title={employee?.employeeId} />
 						<Badge bg="var(--correct_ans)" color="var(--primary_bg)">
 							Active
 						</Badge>
