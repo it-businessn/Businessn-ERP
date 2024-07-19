@@ -1,11 +1,14 @@
 import { SimpleGrid } from "@chakra-ui/react";
 import BoxCard from "components/ui/card";
 import VerticalStepper from "components/ui/VerticalStepper";
+import useEmployeeGovernment from "hooks/useEmployeeGovernment";
 import { useState } from "react";
 import Record from "../Record";
 import StepContent from "../StepContent";
 
-const GovernmentContribution = () => {
+const GovernmentContribution = ({ company, empId }) => {
+	const governmentInfo = useEmployeeGovernment(company, empId);
+	console.log(governmentInfo);
 	const steps = [
 		{
 			title: "Income Tax",

@@ -1,11 +1,14 @@
 import { SimpleGrid } from "@chakra-ui/react";
 import BoxCard from "components/ui/card";
 import VerticalStepper from "components/ui/VerticalStepper";
+import useEmployeeEmploymentInfo from "hooks/useEmployeeEmploymentInfo";
 import { useState } from "react";
 import Record from "../Record";
 import StepContent from "../StepContent";
 
-const CorporateInfo = () => {
+const CorporateInfo = ({ company, empId }) => {
+	const employmentInfo = useEmployeeEmploymentInfo(company, empId);
+	console.log(employmentInfo);
 	const ROLE_OPTIONS = [
 		{
 			type: "Employee",

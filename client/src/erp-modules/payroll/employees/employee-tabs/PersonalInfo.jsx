@@ -1,11 +1,14 @@
 import { SimpleGrid } from "@chakra-ui/react";
 import BoxCard from "components/ui/card";
 import VerticalStepper from "components/ui/VerticalStepper";
+import useEmployeeProfileInfo from "hooks/useEmployeeProfileInfo";
 import { useState } from "react";
 import Record from "../Record";
 import StepContent from "../StepContent";
 
-const PersonalInfo = () => {
+const PersonalInfo = ({ company, empId }) => {
+	const profileInfo = useEmployeeProfileInfo(company, empId);
+	console.log(profileInfo);
 	const steps = [
 		{
 			title: "Identification and Status",

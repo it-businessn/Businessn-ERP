@@ -1,11 +1,14 @@
 import { SimpleGrid } from "@chakra-ui/react";
 import BoxCard from "components/ui/card";
 import VerticalStepper from "components/ui/VerticalStepper";
+import useEmployeeBalanceInfo from "hooks/useEmployeeBalanceInfo";
 import { useState } from "react";
 import Record from "../Record";
 import StepContent from "../StepContent";
 
-const BalancesInfo = () => {
+const BalancesInfo = ({ company, empId }) => {
+	const balanceInfo = useEmployeeBalanceInfo(company, empId);
+	console.log(balanceInfo);
 	const steps = [
 		{
 			title: "Vacation ",

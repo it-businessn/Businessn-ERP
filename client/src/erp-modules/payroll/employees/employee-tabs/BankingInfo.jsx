@@ -1,11 +1,14 @@
 import { SimpleGrid } from "@chakra-ui/react";
 import BoxCard from "components/ui/card";
 import VerticalStepper from "components/ui/VerticalStepper";
+import useEmployeeBankingInfo from "hooks/useEmployeeBankingInfo";
 import { useState } from "react";
 import Record from "../Record";
 import StepContent from "../StepContent";
 
-const BankingInfo = () => {
+const BankingInfo = ({ company, empId }) => {
+	const bankingInfo = useEmployeeBankingInfo(company, empId);
+	console.log(bankingInfo);
 	const steps = [
 		{
 			title: "Banking Info",
