@@ -23,8 +23,10 @@ const PersonalInfo = ({ company, empId }) => {
 	useEffect(() => {
 		if (profileInfo) {
 			setFormData(profileInfo);
+		} else {
+			setFormData(setProfileInfo);
 		}
-	}, [profileInfo]);
+	}, [profileInfo, empId]);
 
 	const handleConfirm = async (e) => {
 		const { name } = e.target;

@@ -23,8 +23,10 @@ const PayInfo = ({ company, empId }) => {
 	useEffect(() => {
 		if (payInfo) {
 			setFormData(payInfo);
+		} else {
+			setFormData(setPayInfo);
 		}
-	}, [payInfo]);
+	}, [payInfo, empId]);
 
 	const handleConfirm = async (e) => {
 		const { name } = e.target;

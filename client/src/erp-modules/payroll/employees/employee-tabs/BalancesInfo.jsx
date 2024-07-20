@@ -21,8 +21,10 @@ const BalancesInfo = ({ company, empId }) => {
 	useEffect(() => {
 		if (balanceInfo) {
 			setFormData(balanceInfo);
+		} else {
+			setFormData(setBalanceInfo);
 		}
-	}, [balanceInfo]);
+	}, [balanceInfo, empId]);
 
 	const handleConfirm = async (e) => {
 		const { name } = e.target;

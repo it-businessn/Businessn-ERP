@@ -21,8 +21,10 @@ const GovernmentContribution = ({ company, empId }) => {
 	useEffect(() => {
 		if (governmentInfo) {
 			setFormData(governmentInfo);
+		} else {
+			setFormData(setGovernmentInfo);
 		}
-	}, [governmentInfo]);
+	}, [governmentInfo, empId]);
 
 	const handleConfirm = async (e) => {
 		const { name } = e.target;

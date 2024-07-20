@@ -20,8 +20,10 @@ const CorporateInfo = ({ company, empId }) => {
 	useEffect(() => {
 		if (employmentInfo) {
 			setFormData(employmentInfo);
+		} else {
+			setFormData(setCorporateInfo);
 		}
-	}, [employmentInfo]);
+	}, [employmentInfo, empId]);
 
 	const handleConfirm = async (e) => {
 		const { name } = e.target;

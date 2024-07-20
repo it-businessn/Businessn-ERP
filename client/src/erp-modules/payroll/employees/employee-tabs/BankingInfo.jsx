@@ -20,8 +20,10 @@ const BankingInfo = ({ company, empId }) => {
 	useEffect(() => {
 		if (bankingInfo) {
 			setFormData(bankingInfo);
+		} else {
+			setFormData(setBankingInfo);
 		}
-	}, [bankingInfo]);
+	}, [bankingInfo, empId]);
 
 	const handleConfirm = async (e) => {
 		const { name } = e.target;
