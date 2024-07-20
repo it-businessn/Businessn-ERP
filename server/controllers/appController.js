@@ -255,7 +255,7 @@ const changePassword = async (req, res) => {
 		if (!newPassword) {
 			throw new Error("New password is required");
 		}
-		const hashedPassword = hashSyncPassword(newPassword);
+		const hashedPassword = await hashSyncPassword(newPassword);
 		const result = await Employee.findByIdAndUpdate(
 			id,
 			{ password: hashedPassword },
