@@ -3,74 +3,73 @@ const EmployeeBankingInfo = require("../models/EmployeeBankingInfo");
 const getAllBankingInfo = async (req, res) => {
 	const { companyName } = req.params;
 	try {
-		const pay = await EmployeeBankingInfo.find({
+		const result = await EmployeeBankingInfo.find({
 			companyName,
 		}).sort({
 			createdOn: -1,
 		});
 
-		res.status(200).json(pay);
+		res.status(200).json(result);
 	} catch (error) {
 		res.status(500).json({ message: error.message });
 	}
 };
 
 const getEmployeeBankingInfo = async (req, res) => {
-	const { company, empId } = req.params;
+	const { companyName, empId } = req.params;
 	try {
-		const pay = await EmployeeBankingInfo.find({
-			empId,
-			companyName: company,
-		});
-		res.status(200).json(pay);
+		const result = await findEmployeeBankingInfo(empId, companyName);
+		res.status(200).json(result);
 	} catch (error) {
 		res.status(404).json({ error: error.message });
 	}
 };
 
+const findEmployeeBankingInfo = async (empId, companyName) =>
+	await EmployeeBankingInfo.findOne({
+		empId,
+		companyName,
+	});
+
+const updateBankingInfo = async (id, data) =>
+	await EmployeeBankingInfo.findByIdAndUpdate(id, data, {
+		new: true,
+	});
+
 const addEmployeeBankingInfo = async (req, res) => {
 	const {
 		empId,
 		companyName,
-		regPay,
-		overTimePay,
-		dblOverTimePay,
-		statWorkPay,
-		statPay,
-		sickPay,
-		salaryRate,
-		dailyHours,
-		longTermDisabilityEE,
-		longTermDisabilityER,
-		dentalEE,
-		dentalER,
-		extendedHealthEE,
-		extendedHealthER,
-		unionDues,
-		vacationPay,
+		directDeposit,
+		bankNum,
+		transitNum,
+		accountNum,
+		payStubSendByEmail,
+		paymentEmail,
 	} = req.body;
 	try {
+		const existingBankingInfo = await findEmployeeBankingInfo(
+			empId,
+			companyName,
+		);
+		if (existingBankingInfo) {
+			const updatedBankingInfo = await updateBankingInfo(
+				existingBankingInfo._id,
+				req.body,
+			);
+			return res.status(201).json(updatedBankingInfo);
+		}
 		const newBankingInfo = await EmployeeBankingInfo.create({
 			empId,
 			companyName,
-			regPay,
-			overTimePay,
-			dblOverTimePay,
-			statWorkPay,
-			statPay,
-			sickPay,
-			salaryRate,
-			dailyHours,
-			longTermDisabilityEE,
-			longTermDisabilityER,
-			dentalEE,
-			dentalER,
-			extendedHealthEE,
-			extendedHealthER,
-			unionDues,
-			vacationPay,
+			directDeposit,
+			bankNum,
+			transitNum,
+			accountNum,
+			payStubSendByEmail,
+			paymentEmail,
 		});
-		res.status(201).json(newBankingInfo);
+		return res.status(201).json(newBankingInfo);
 	} catch (error) {
 		res.status(400).json({ message: error.message });
 	}
@@ -79,11 +78,8 @@ const addEmployeeBankingInfo = async (req, res) => {
 const updateEmployeeBankingInfo = async (req, res) => {
 	const { id } = req.params;
 	try {
-		const pay = await EmployeeBankingInfo.findByIdAndUpdate(id, req.body, {
-			new: true,
-		});
-
-		res.status(201).json(pay);
+		const updatedInfo = await updateBankingInfo(id, req.body);
+		res.status(201).json(updatedInfo);
 	} catch (error) {
 		res.status(400).json({ message: error.message });
 	}

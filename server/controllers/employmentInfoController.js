@@ -3,74 +3,73 @@ const EmployeeEmploymentInfo = require("../models/EmployeeEmploymentInfo");
 const getAllEmploymentInfo = async (req, res) => {
 	const { companyName } = req.params;
 	try {
-		const pay = await EmployeeEmploymentInfo.find({
+		const result = await EmployeeEmploymentInfo.find({
 			companyName,
 		}).sort({
 			createdOn: -1,
 		});
 
-		res.status(200).json(pay);
+		res.status(200).json(result);
 	} catch (error) {
 		res.status(500).json({ message: error.message });
 	}
 };
 
 const getEmployeeEmploymentInfo = async (req, res) => {
-	const { company, empId } = req.params;
+	const { companyName, empId } = req.params;
 	try {
-		const pay = await EmployeeEmploymentInfo.find({
-			empId,
-			companyName: company,
-		});
-		res.status(200).json(pay);
+		const result = await findEmployeeEmploymentInfo(empId, companyName);
+		res.status(200).json(result);
 	} catch (error) {
 		res.status(404).json({ error: error.message });
 	}
 };
 
+const findEmployeeEmploymentInfo = async (empId, companyName) =>
+	await EmployeeEmploymentInfo.findOne({
+		empId,
+		companyName,
+	});
+
+const updateEmploymentInfo = async (id, data) =>
+	await EmployeeEmploymentInfo.findByIdAndUpdate(id, data, {
+		new: true,
+	});
+
 const addEmployeeEmploymentInfo = async (req, res) => {
 	const {
 		empId,
 		companyName,
-		regPay,
-		overTimePay,
-		dblOverTimePay,
-		statWorkPay,
-		statPay,
-		sickPay,
-		salaryRate,
-		dailyHours,
-		longTermDisabilityEE,
-		longTermDisabilityER,
-		dentalEE,
-		dentalER,
-		extendedHealthEE,
-		extendedHealthER,
-		unionDues,
-		vacationPay,
+		employmentStartDate,
+		employmentLeaveDate,
+		employmentRole,
+		employmentPayGroup,
+		employmentCostCenter,
+		employmentDepartment,
 	} = req.body;
 	try {
+		const existingEmploymentInfo = await findEmployeeEmploymentInfo(
+			empId,
+			companyName,
+		);
+		if (existingEmploymentInfo) {
+			const updatedEmploymentInfo = await updateEmploymentInfo(
+				existingEmploymentInfo._id,
+				req.body,
+			);
+			return res.status(201).json(updatedEmploymentInfo);
+		}
 		const newEmploymentInfo = await EmployeeEmploymentInfo.create({
 			empId,
 			companyName,
-			regPay,
-			overTimePay,
-			dblOverTimePay,
-			statWorkPay,
-			statPay,
-			sickPay,
-			salaryRate,
-			dailyHours,
-			longTermDisabilityEE,
-			longTermDisabilityER,
-			dentalEE,
-			dentalER,
-			extendedHealthEE,
-			extendedHealthER,
-			unionDues,
-			vacationPay,
+			employmentStartDate,
+			employmentLeaveDate,
+			employmentRole,
+			employmentPayGroup,
+			employmentCostCenter,
+			employmentDepartment,
 		});
-		res.status(201).json(newEmploymentInfo);
+		return res.status(201).json(newEmploymentInfo);
 	} catch (error) {
 		res.status(400).json({ message: error.message });
 	}
@@ -79,11 +78,8 @@ const addEmployeeEmploymentInfo = async (req, res) => {
 const updateEmployeeEmploymentInfo = async (req, res) => {
 	const { id } = req.params;
 	try {
-		const pay = await EmployeeEmploymentInfo.findByIdAndUpdate(id, req.body, {
-			new: true,
-		});
-
-		res.status(201).json(pay);
+		const updatedInfo = await updateEmploymentInfo(id, req.body);
+		res.status(201).json(updatedInfo);
 	} catch (error) {
 		res.status(400).json({ message: error.message });
 	}

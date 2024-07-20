@@ -3,30 +3,38 @@ const EmployeePayInfo = require("../models/EmployeePayInfo");
 const getAllPayInfo = async (req, res) => {
 	const { companyName } = req.params;
 	try {
-		const pay = await EmployeePayInfo.find({
+		const result = await EmployeePayInfo.find({
 			companyName,
 		}).sort({
 			createdOn: -1,
 		});
 
-		res.status(200).json(pay);
+		res.status(200).json(result);
 	} catch (error) {
 		res.status(500).json({ message: error.message });
 	}
 };
 
 const getEmployeePayInfo = async (req, res) => {
-	const { company, empId } = req.params;
+	const { companyName, empId } = req.params;
 	try {
-		const pay = await EmployeePayInfo.find({
-			empId,
-			companyName: company,
-		});
-		res.status(200).json(pay);
+		const result = await findEmployeePayInfo(empId, companyName);
+		res.status(200).json(result);
 	} catch (error) {
 		res.status(404).json({ error: error.message });
 	}
 };
+
+const findEmployeePayInfo = async (empId, companyName) =>
+	await EmployeePayInfo.findOne({
+		empId,
+		companyName,
+	});
+
+const updatePayInfo = async (id, data) =>
+	await EmployeePayInfo.findByIdAndUpdate(id, data, {
+		new: true,
+	});
 
 const addEmployeePayInfo = async (req, res) => {
 	const {
@@ -50,6 +58,11 @@ const addEmployeePayInfo = async (req, res) => {
 		vacationPay,
 	} = req.body;
 	try {
+		const existingPayInfo = await findEmployeePayInfo(empId, companyName);
+		if (existingPayInfo) {
+			const updatedPayInfo = await updatePayInfo(existingPayInfo._id, req.body);
+			return res.status(201).json(updatedPayInfo);
+		}
 		const newPayInfo = await EmployeePayInfo.create({
 			empId,
 			companyName,
@@ -70,7 +83,7 @@ const addEmployeePayInfo = async (req, res) => {
 			unionDues,
 			vacationPay,
 		});
-		res.status(201).json(newPayInfo);
+		return res.status(201).json(newPayInfo);
 	} catch (error) {
 		res.status(400).json({ message: error.message });
 	}
@@ -79,11 +92,9 @@ const addEmployeePayInfo = async (req, res) => {
 const updateEmployeePayInfo = async (req, res) => {
 	const { id } = req.params;
 	try {
-		const pay = await EmployeePayInfo.findByIdAndUpdate(id, req.body, {
-			new: true,
-		});
+		const updatedPayInfo = await updatePayInfo(id, req.body);
 
-		res.status(201).json(pay);
+		res.status(201).json(updatedPayInfo);
 	} catch (error) {
 		res.status(400).json({ message: error.message });
 	}
