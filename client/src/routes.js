@@ -2,6 +2,7 @@ import { Suspense, lazy } from "react";
 import { createBrowserRouter } from "react-router-dom";
 
 import Home from "components/Home";
+import Loader from "components/Loader";
 import Dashboard from "erp-modules/payroll/dashboard";
 import Employees from "erp-modules/payroll/employees";
 import LeadContacts from "erp-modules/sales/fresh_leads/LeadContacts";
@@ -134,8 +135,8 @@ export const router = createBrowserRouter([
 	{
 		path: "/",
 		element: (
-			// <Suspense fallback={<Loader />}>
-			<Suspense fallback={<></>}>
+			<Suspense fallback={<Loader />}>
+				{/* <Suspense fallback={<></>}> */}
 				<Home />
 			</Suspense>
 		),

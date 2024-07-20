@@ -108,7 +108,7 @@ const ChangePassword = ({
 							name="newPassword"
 							value={passwordData.newPassword}
 							onChange={handlePasswordChange}
-							onBlur={validatePasswordMatch}
+							// onBlur={validatePasswordMatch}
 						/>
 						<InputRightElement>
 							<Button
