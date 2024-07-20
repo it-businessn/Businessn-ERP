@@ -8,9 +8,11 @@ import {
 	Select,
 	VStack,
 } from "@chakra-ui/react";
+import DateTimeFormControl from "components/ui/form/DateTimeFormControl";
 import InputFormControl from "components/ui/form/InputFormControl";
 import TextTitle from "components/ui/text/TextTitle";
 import { FaCaretDown } from "react-icons/fa";
+import { getDefaultDate } from "utils";
 
 const Record = ({ config, title, formData, setFormData, handleConfirm }) => {
 	return (
@@ -65,6 +67,19 @@ const Record = ({ config, title, formData, setFormData, handleConfirm }) => {
 										</Flex>
 									</RadioGroup>
 								</HStack>
+							) : param?.control === "date" ? (
+								<DateTimeFormControl
+									label={param.name}
+									valueText1={getDefaultDate(formData[param.param_key])}
+									name1={param.param_key}
+									handleChange={(e) =>
+										setFormData((prev) => ({
+											...prev,
+											[param.param_key]: e.target.value,
+										}))
+									}
+									required
+								/>
 							) : (
 								<InputFormControl
 									key={param.name}

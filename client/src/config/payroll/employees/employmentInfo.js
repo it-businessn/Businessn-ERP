@@ -1,3 +1,5 @@
+import { getDefaultDate } from "utils";
+
 export const ROLE_OPTIONS = [
 	{
 		type: "Employee",
@@ -94,8 +96,8 @@ export const EMP_ROLE_CONFIG = [
 	{
 		type: "ss11",
 		params: [
-			{ name: "Start Date", param_key: "employmentStartDate" },
-			{ name: "Leave Date", param_key: "employmentLeaveDate" },
+			{ name: "Start Date", param_key: "employmentStartDate", control: "date" },
+			{ name: "Leave Date", param_key: "employmentLeaveDate", control: "date" },
 		],
 	},
 	{
@@ -115,8 +117,8 @@ export const getInitialCorporateInfo = (empId, companyName) => {
 	return {
 		empId,
 		companyName,
-		employmentStartDate: new Date(),
-		employmentLeaveDate: new Date(),
+		employmentStartDate: getDefaultDate(),
+		employmentLeaveDate: getDefaultDate(),
 		employmentRole: "",
 		employmentPayGroup: "",
 		employmentCostCenter: "",

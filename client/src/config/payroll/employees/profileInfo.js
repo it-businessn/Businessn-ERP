@@ -1,3 +1,5 @@
+import { getDefaultDate } from "utils";
+
 export const EMP_EMERGENCY_CONTACT_CONFIG = [
 	{
 		type: "ss30",
@@ -47,7 +49,7 @@ export const EMP_PERSONAL_INFO_CONFIG = [
 		type: "ss26",
 		params: [
 			{ name: "First Name", param_key: "firstName" },
-			{ name: "Birthday", param_key: "birthDate" },
+			{ name: "Birthday", param_key: "birthDate", control: "date" },
 			{ name: "Social Insurance Number", param_key: "SIN" },
 			{ name: "Marital Status", param_key: "maritalStatus" },
 			{ name: "Citizenship", param_key: "citizenship" },
@@ -98,7 +100,7 @@ export const getInitialProfileInfo = (empId, companyName) => {
 		lastName: "",
 		emergencyFirstName: "",
 		emergencyLastName: "",
-		birthDate: new Date(),
+		birthDate: getDefaultDate(),
 		SIN: "",
 		maritalStatus: "",
 		citizenship: "",

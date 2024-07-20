@@ -83,8 +83,8 @@ export const generateRandomData = (name, count) => {
 	return data;
 };
 
-export function getDefaultDate(isoDate) {
-	const dateObject = new Date(isoDate);
+export function getDefaultDate(isoDate = null) {
+	const dateObject = isoDate ? new Date(isoDate) : new Date();
 	return dateObject.toISOString().split("T")[0];
 }
 

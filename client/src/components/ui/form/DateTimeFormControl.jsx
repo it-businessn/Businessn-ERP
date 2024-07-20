@@ -22,16 +22,18 @@ const DateTimeFormControl = ({
 					required={required}
 				/>
 			</FormControlMain>
-			<FormControlMain flex="1">
-				<FormLabel>Time</FormLabel>
-				<Input
-					type="time"
-					name={name2}
-					value={valueText2}
-					onChange={handleChange}
-					required={required}
-				/>
-			</FormControlMain>
+			{name2 && (
+				<FormControlMain flex="1">
+					<FormLabel>Time</FormLabel>
+					<Input
+						type="time"
+						name={name2}
+						value={valueText2}
+						onChange={handleChange}
+						required={required}
+					/>
+				</FormControlMain>
+			)}
 		</>
 	);
 };
