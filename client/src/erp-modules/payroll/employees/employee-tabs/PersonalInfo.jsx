@@ -1,34 +1,51 @@
 import { SimpleGrid } from "@chakra-ui/react";
 import BoxCard from "components/ui/card";
 import VerticalStepper from "components/ui/VerticalStepper";
+import {
+	EMP_CONTACT_CONFIG,
+	EMP_EMERGENCY_CONTACT_CONFIG,
+	EMP_IDENTIFICATION_STATUS_CONFIG,
+	EMP_PERSONAL_INFO_CONFIG,
+	getInitialProfileInfo,
+} from "config/payroll/employees/profileInfo";
 import useEmployeeProfileInfo from "hooks/useEmployeeProfileInfo";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import PayrollService from "services/PayrollService";
 import Record from "../Record";
 import StepContent from "../StepContent";
 
 const PersonalInfo = ({ company, empId }) => {
 	const profileInfo = useEmployeeProfileInfo(company, empId);
-	console.log(profileInfo);
+
+	const setProfileInfo = () => getInitialProfileInfo(empId, company);
+	const [formData, setFormData] = useState(setProfileInfo);
+
+	useEffect(() => {
+		if (profileInfo) {
+			setFormData(profileInfo);
+		}
+	}, [profileInfo]);
+
+	const handleConfirm = async (e) => {
+		const { name } = e.target;
+		try {
+			if (formData[name]) {
+				await PayrollService.addEmployeeProfileInfo(formData);
+			}
+		} catch (error) {}
+	};
+
 	const steps = [
 		{
 			title: "Identification and Status",
 			content: (
 				<Record
+					handleConfirm={handleConfirm}
+					formData={formData}
+					setFormData={setFormData}
+					data={profileInfo}
 					title="Identification and Status"
-					data={[
-						{
-							type: "",
-							params: [{ name: "Status", param_key: "" }],
-						},
-						{
-							type: "",
-							params: [{ name: "Employee Number", param_key: "" }],
-						},
-						{
-							type: "",
-							params: [{ name: "Time Management Badge ID", param_key: "" }],
-						},
-					]}
+					config={EMP_IDENTIFICATION_STATUS_CONFIG}
 				/>
 			),
 		},
@@ -36,31 +53,12 @@ const PersonalInfo = ({ company, empId }) => {
 			title: "Personal Information",
 			content: (
 				<Record
+					handleConfirm={handleConfirm}
+					formData={formData}
+					setFormData={setFormData}
+					data={profileInfo}
 					title="Personal Information"
-					data={[
-						{
-							type: "",
-							params: [
-								{ name: "First Name", param_key: "" },
-								{ name: "Birthday", param_key: "" },
-								{ name: "Social Insurance Number", param_key: "" },
-								{ name: "Marital Status", param_key: "" },
-								{ name: "Citizenship", param_key: "" },
-								{ name: "Work Permit Number", param_key: "" },
-							],
-						},
-						{
-							type: "",
-							params: [
-								{ name: "Last Name", param_key: "" },
-								{ name: "ss", param_key: "" },
-								{ name: "ss", param_key: "" },
-								{ name: "ss", param_key: "" },
-								{ name: "ss", param_key: "" },
-								{ name: "Work Permit Expiry", param_key: "" },
-							],
-						},
-					]}
+					config={EMP_PERSONAL_INFO_CONFIG}
 				/>
 			),
 		},
@@ -68,29 +66,12 @@ const PersonalInfo = ({ company, empId }) => {
 			title: "Contact",
 			content: (
 				<Record
+					handleConfirm={handleConfirm}
+					formData={formData}
+					setFormData={setFormData}
+					data={profileInfo}
 					title="Contact"
-					data={[
-						{
-							type: "",
-							params: [
-								{ name: "Personal Email ", param_key: "" },
-								{ name: "Personal Phone", param_key: "" },
-								{ name: "Address", param_key: "" },
-								{ name: "Street Address", param_key: "" },
-								{ name: "City ", param_key: "" },
-								{ name: "Province/State", param_key: "" },
-								{ name: "Country ", param_key: "" },
-								{ name: "Postal Code ", param_key: "" },
-							],
-						},
-						{
-							type: "",
-							params: [
-								{ name: "Work Email", param_key: "" },
-								{ name: "Work Phone", param_key: "" },
-							],
-						},
-					]}
+					config={EMP_CONTACT_CONFIG}
 				/>
 			),
 		},
@@ -98,21 +79,12 @@ const PersonalInfo = ({ company, empId }) => {
 			title: "Emergency Contact",
 			content: (
 				<Record
+					handleConfirm={handleConfirm}
+					formData={formData}
+					setFormData={setFormData}
+					data={profileInfo}
 					title="Emergency Contact"
-					data={[
-						{
-							type: "",
-							params: [
-								{ name: "First Name ", param_key: "" },
-								{ name: "Personal Email ", param_key: "" },
-								{ name: "Personal Phone", param_key: "" },
-							],
-						},
-						{
-							type: "",
-							params: [{ name: "Last Name", param_key: "" }],
-						},
-					]}
+					config={EMP_EMERGENCY_CONTACT_CONFIG}
 				/>
 			),
 		},

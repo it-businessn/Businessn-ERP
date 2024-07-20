@@ -1,0 +1,79 @@
+export const EMP_PAY_INFO_EARNINGS_CONFIG = [
+	{
+		type: "Hourly",
+		params: [
+			{ name: "Regular Pay", param_key: "regPay" },
+			{ name: "Overtime Pay ", param_key: "overTimePay" },
+			{ name: "Double Overtime Pay ", param_key: "dblOverTimePay" },
+			{ name: "Statutory Worked Pay ", param_key: "statWorkPay" },
+			{ name: "Statutory Pay", param_key: "statPay" },
+			{ name: "Sick Pay  ", param_key: "sickPay" },
+		],
+	},
+	{
+		type: "Salary",
+		params: [
+			{ name: "Salary Rate", param_key: "salaryRate" },
+			{ name: "Hours per Pay", param_key: "dailyHours" },
+		],
+	},
+];
+
+export const EMP_PAY_INFO_DEDUCTION_CONFIG = [
+	{
+		type: "ss20",
+		params: [
+			{
+				name: "Long Term Disability - EE",
+				param_key: "longTermDisabilityEE",
+			},
+			{ name: "Dental - EE", param_key: "dentalEE" },
+			{
+				name: "Extended Health - EE ",
+				param_key: "extendedHealthEE",
+			},
+			{ name: "Union Dues", param_key: "unionDues" },
+		],
+	},
+	{
+		type: "ss21",
+		params: [
+			{
+				name: "Long Term Disability - ER",
+				param_key: "longTermDisabilityER",
+			},
+			{ name: "Dental - ER", param_key: "dentalER" },
+			{ name: "Extended Health - ER", param_key: "extendedHealthER" },
+		],
+	},
+];
+
+export const EMP_PAY_INFO_ACCRUALS_CONFIG = [
+	{
+		type: "ss22",
+		params: [{ name: "Vacation (%) ", param_key: "vacationPay" }],
+	},
+];
+
+export const getInitialPayInfo = (empId, companyName) => {
+	return {
+		empId,
+		companyName,
+		regPay: 0,
+		overTimePay: 0,
+		dblOverTimePay: 0,
+		statWorkPay: 0,
+		statPay: 0,
+		sickPay: 0,
+		salaryRate: 0,
+		dailyHours: 0,
+		longTermDisabilityEE: 0,
+		longTermDisabilityER: 0,
+		dentalEE: 0,
+		dentalER: 0,
+		extendedHealthEE: 0,
+		extendedHealthER: 0,
+		unionDues: 0,
+		vacationPay: 0,
+	};
+};

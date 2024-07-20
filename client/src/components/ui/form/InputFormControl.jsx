@@ -15,6 +15,7 @@ const InputFormControl = ({
 	display,
 	fontWeight,
 	visibility,
+	handleConfirm,
 }) => {
 	return (
 		<FormControlMain isInvalid={isInvalid}>
@@ -22,11 +23,12 @@ const InputFormControl = ({
 				name={name}
 				label={label}
 				required={required}
-				htmlFor={name}
+				// htmlFor={name}
 				fontWeight={fontWeight}
 				visibility={visibility}
 			/>
 			<Input
+				onFocus={handleConfirm}
 				display={display}
 				type={type}
 				name={name}
@@ -35,6 +37,7 @@ const InputFormControl = ({
 				required={required}
 				placeholder={placeholder}
 				visibility={visibility}
+				border={"none"}
 			/>
 			{error && <FormHelperText color="red.500">{error}</FormHelperText>}
 		</FormControlMain>

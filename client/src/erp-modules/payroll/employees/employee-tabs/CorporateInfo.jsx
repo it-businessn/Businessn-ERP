@@ -1,138 +1,60 @@
 import { SimpleGrid } from "@chakra-ui/react";
 import BoxCard from "components/ui/card";
 import VerticalStepper from "components/ui/VerticalStepper";
+import {
+	EMP_COMPANY_CONFIG,
+	EMP_ROLE_CONFIG,
+	getInitialCorporateInfo,
+} from "config/payroll/employees/employmentInfo";
 import useEmployeeEmploymentInfo from "hooks/useEmployeeEmploymentInfo";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import PayrollService from "services/PayrollService";
 import Record from "../Record";
 import StepContent from "../StepContent";
 
 const CorporateInfo = ({ company, empId }) => {
 	const employmentInfo = useEmployeeEmploymentInfo(company, empId);
-	console.log(employmentInfo);
-	const ROLE_OPTIONS = [
-		{
-			type: "Employee",
-			dependent: false,
-		},
-		{
-			type: "Manager",
-			dependent: true,
-		},
-		{
-			type: "Enroller",
-			dependent: true,
-		},
-		{
-			type: "Administrator",
-			dependent: true,
-		},
-	];
+	const setCorporateInfo = () => getInitialCorporateInfo(empId, company);
+	const [formData, setFormData] = useState(setCorporateInfo);
 
-	const COST_CENTER_OPTIONS = [
-		{
-			type: "Golf Operations",
-			dependent: false,
-		},
-		{
-			type: "Restaurant",
-			dependent: false,
-		},
-		{
-			type: "Strata",
-			dependent: false,
-		},
-		{
-			type: "Management",
-			dependent: false,
-		},
-	];
+	useEffect(() => {
+		if (employmentInfo) {
+			setFormData(employmentInfo);
+		}
+	}, [employmentInfo]);
 
-	const DEPARTMENT_OPTIONS = [
-		{
-			type: "Golf Maintenance",
-			dependent: false,
-			id: "0001-",
-		},
-		{
-			type: "Golf Other",
-			dependent: false,
-			id: "0002-",
-		},
-		{
-			type: "Restaurant Kitchen",
-			dependent: false,
-			id: "0003-",
-		},
-		{
-			type: "Restaurant Front of House",
-			dependent: false,
-			id: "0004-",
-		},
-		{
-			type: "Strata Maintenance",
-			dependent: false,
-			id: "0005-",
-		},
-		{
-			type: "All Operations Management",
-			dependent: false,
-			id: "0006-",
-		},
-	];
+	const handleConfirm = async (e) => {
+		const { name } = e.target;
+		try {
+			if (formData[name]) {
+				await PayrollService.addEmployeeEmploymentInfo(formData);
+			}
+		} catch (error) {}
+	};
 	const steps = [
 		{
-			title: "Role ",
+			title: "Role",
 			content: (
 				<Record
-					title="Role "
-					data={[
-						{
-							type: "",
-							params: [
-								{ name: "Start Date", param_key: "" },
-								{ name: "Leave Date", param_key: "" },
-							],
-						},
-						{
-							type: "",
-							params: [
-								{
-									name: "Role ",
-									param_key: "",
-									control: "select",
-									options: ROLE_OPTIONS,
-								},
-							],
-						},
-					]}
+					title="Role"
+					handleConfirm={handleConfirm}
+					formData={formData}
+					setFormData={setFormData}
+					data={employmentInfo}
+					config={EMP_ROLE_CONFIG}
 				/>
 			),
 		},
 		{
-			title: "Company ",
+			title: "Company",
 			content: (
 				<Record
-					title="Company "
-					data={[
-						{
-							type: "",
-							params: [
-								{ name: "Pay Group ", param_key: "" },
-								{
-									name: "Cost Center",
-									param_key: "",
-									control: "select",
-									options: COST_CENTER_OPTIONS,
-								},
-								{
-									name: "Department",
-									param_key: "",
-									control: "select",
-									options: DEPARTMENT_OPTIONS,
-								},
-							],
-						},
-					]}
+					handleConfirm={handleConfirm}
+					formData={formData}
+					setFormData={setFormData}
+					data={employmentInfo}
+					title="Company"
+					config={EMP_COMPANY_CONFIG}
 				/>
 			),
 		},

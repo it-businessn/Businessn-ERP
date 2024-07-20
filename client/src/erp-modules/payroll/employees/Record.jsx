@@ -12,14 +12,16 @@ import InputFormControl from "components/ui/form/InputFormControl";
 import TextTitle from "components/ui/text/TextTitle";
 import { FaCaretDown } from "react-icons/fa";
 
-const Record = ({ data, title, formData }) => {
+const Record = ({ config, title, formData, setFormData, handleConfirm }) => {
 	return (
 		<>
 			<TextTitle title={title} />
 			<HStack align={"start"} justify={"start"}>
-				{data.map((tab) => (
+				{config.map((tab) => (
 					<VStack align={"start"} key={tab.type}>
-						<FormLabel>{tab.type}</FormLabel>
+						<FormLabel visibility={tab.type.includes("ss") && "hidden"}>
+							{tab.type}
+						</FormLabel>
 						{tab.params.map((param) => {
 							return param?.control === "select" ? (
 								<FormControl key={param.name}>
@@ -29,8 +31,8 @@ const Record = ({ data, title, formData }) => {
 										borderRadius="10px"
 										size="sm"
 										placeholder={`Select ${param.name}`}
-										name="name"
-										value={formData?.name}
+										name={param.param_key}
+										value={formData[param.param_key]}
 										// onChange={handleChange}
 									>
 										{param.options?.map(({ type }) => (
@@ -47,7 +49,7 @@ const Record = ({ data, title, formData }) => {
 								>
 									<FormLabel>{param.name}</FormLabel>
 									<RadioGroup
-										value={"hasAward"}
+										value={formData[param.param_key]}
 										onChange={(e) => console.log(e)}
 									>
 										<Flex gap={5} align={"center"}>
@@ -68,11 +70,18 @@ const Record = ({ data, title, formData }) => {
 									key={param.name}
 									label={param.name}
 									name={param.param_key}
-									valueText={param.param_key}
+									// type={param.param_type}// text or number
+									valueText={formData[param.param_key]}
 									fontWeight={param.name === "Address" && "bold"}
 									display={param.name === "Address" && "none"}
 									visibility={param.name === "ss" && "hidden"}
-									// handleChange={handleChange}
+									handleChange={(e) =>
+										setFormData((prev) => ({
+											...prev,
+											[param.param_key]: e.target.value,
+										}))
+									}
+									handleConfirm={handleConfirm}
 								/>
 							);
 						})}

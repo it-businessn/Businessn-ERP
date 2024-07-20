@@ -1,47 +1,47 @@
 import { SimpleGrid } from "@chakra-ui/react";
 import BoxCard from "components/ui/card";
 import VerticalStepper from "components/ui/VerticalStepper";
+import {
+	EMP_BANKING_CONFIG,
+	EMP_PAYMENT_NOTIFICATION_CONFIG,
+	getInitialBankingInfo,
+} from "config/payroll/employees/bankingInfo";
 import useEmployeeBankingInfo from "hooks/useEmployeeBankingInfo";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import PayrollService from "services/PayrollService";
 import Record from "../Record";
 import StepContent from "../StepContent";
 
 const BankingInfo = ({ company, empId }) => {
 	const bankingInfo = useEmployeeBankingInfo(company, empId);
-	console.log(bankingInfo);
+	const setBankingInfo = () => getInitialBankingInfo(empId, company);
+	const [formData, setFormData] = useState(setBankingInfo);
+
+	useEffect(() => {
+		if (bankingInfo) {
+			setFormData(bankingInfo);
+		}
+	}, [bankingInfo]);
+
+	const handleConfirm = async (e) => {
+		const { name } = e.target;
+		try {
+			if (formData[name]) {
+				await PayrollService.addEmployeeBankingInfo(formData);
+			}
+		} catch (error) {}
+	};
 	const steps = [
 		{
 			title: "Banking Info",
 			content: (
 				<Record
+					handleConfirm={handleConfirm}
+					formData={formData}
+					setFormData={setFormData}
+					data={bankingInfo}
 					title="Banking Info"
-					data={[
-						{
-							type: "",
-							params: [
-								{
-									name: "Deposit paycheque via direct deposit ",
-									param_key: "",
-									control: "radio",
-								}, //Yes and No
-								{ name: "Bank", param_key: "" },
-							],
-						},
-						{
-							type: "",
-							params: [
-								{ name: "ss", param_key: "", control: "radio" },
-								{ name: "Transit Number", param_key: "" },
-							],
-						},
-						{
-							type: "",
-							params: [
-								{ name: "ss", param_key: "", control: "radio" },
-								{ name: "Account Number", param_key: "" },
-							],
-						},
-					]}
+					config={EMP_BANKING_CONFIG}
 				/>
 			),
 		},
@@ -49,20 +49,12 @@ const BankingInfo = ({ company, empId }) => {
 			title: "Payment Notification ",
 			content: (
 				<Record
+					handleConfirm={handleConfirm}
+					formData={formData}
+					setFormData={setFormData}
+					data={bankingInfo}
 					title="Payment Notification "
-					data={[
-						{
-							type: "",
-							params: [
-								{
-									name: "Send Paystub by email on pay day",
-									param_key: "",
-									control: "radio",
-								}, //Yes and No
-								{ name: "Email", param_key: "" },
-							],
-						},
-					]}
+					config={EMP_PAYMENT_NOTIFICATION_CONFIG}
 				/>
 			),
 		},

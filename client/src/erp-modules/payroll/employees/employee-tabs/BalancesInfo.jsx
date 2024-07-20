@@ -1,44 +1,48 @@
 import { SimpleGrid } from "@chakra-ui/react";
 import BoxCard from "components/ui/card";
 import VerticalStepper from "components/ui/VerticalStepper";
+import {
+	EMP_VACATION_BALANCE_CONFIG,
+	EMP_YTD_DEDUCTIONS_CONFIG,
+	EMP_YTD_EARNINGS_CONFIG,
+	getInitialBalanceInfo,
+} from "config/payroll/employees/balanceInfo";
 import useEmployeeBalanceInfo from "hooks/useEmployeeBalanceInfo";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import PayrollService from "services/PayrollService";
 import Record from "../Record";
 import StepContent from "../StepContent";
 
 const BalancesInfo = ({ company, empId }) => {
 	const balanceInfo = useEmployeeBalanceInfo(company, empId);
-	console.log(balanceInfo);
+	const setBalanceInfo = () => getInitialBalanceInfo(empId, company);
+	const [formData, setFormData] = useState(setBalanceInfo);
+
+	useEffect(() => {
+		if (balanceInfo) {
+			setFormData(balanceInfo);
+		}
+	}, [balanceInfo]);
+
+	const handleConfirm = async (e) => {
+		const { name } = e.target;
+		try {
+			if (formData[name]) {
+				await PayrollService.addEmployeeBalanceInfo(formData);
+			}
+		} catch (error) {}
+	};
 	const steps = [
 		{
 			title: "Vacation ",
 			content: (
 				<Record
+					handleConfirm={handleConfirm}
+					formData={formData}
+					setFormData={setFormData}
+					data={balanceInfo}
 					title="Vacation "
-					data={[
-						{
-							type: "",
-							params: [
-								{ name: "Available Balance", param_key: "" },
-								{ name: "Available at the Start of the Year", param_key: "" },
-							],
-						},
-						{
-							type: "",
-							params: [
-								{ name: "ss", param_key: "" },
-								{ name: "Accrued This Year", param_key: "" },
-							],
-						},
-
-						{
-							type: "",
-							params: [
-								{ name: "ss", param_key: "" },
-								{ name: "Used this year", param_key: "" },
-							],
-						},
-					]}
+					config={EMP_VACATION_BALANCE_CONFIG}
 				/>
 			),
 		},
@@ -46,33 +50,12 @@ const BalancesInfo = ({ company, empId }) => {
 			title: "YTD Earnings",
 			content: (
 				<Record
+					handleConfirm={handleConfirm}
+					formData={formData}
+					setFormData={setFormData}
+					data={balanceInfo}
 					title="YTD Earnings"
-					data={[
-						{
-							type: "Hours",
-							params: [
-								{ name: "Regular Pay ", param_key: "" },
-								{ name: "Overtime Pay ", param_key: "" },
-								{ name: "Double Overtime Pay ", param_key: "" },
-								{ name: "Statutory Worked Pay", param_key: "" },
-								{ name: "Statutory Pay", param_key: "" },
-								{ name: "Sick Pay ", param_key: "" },
-								{ name: "Vacation Pay", param_key: "" },
-							],
-						},
-						{
-							type: "Dollars",
-							params: [
-								{ name: "Regular Pay ", param_key: "" },
-								{ name: "Overtime Pay ", param_key: "" },
-								{ name: "Double Overtime Pay ", param_key: "" },
-								{ name: "Statutory Worked Pay", param_key: "" },
-								{ name: "Statutory Pay", param_key: "" },
-								{ name: "Sick Pay ", param_key: "" },
-								{ name: "Vacation Pay", param_key: "" },
-							],
-						},
-					]}
+					config={EMP_YTD_EARNINGS_CONFIG}
 				/>
 			),
 		},
@@ -80,26 +63,12 @@ const BalancesInfo = ({ company, empId }) => {
 			title: "YTD Deductions",
 			content: (
 				<Record
+					handleConfirm={handleConfirm}
+					formData={formData}
+					setFormData={setFormData}
+					data={balanceInfo}
 					title="YTD Deductions"
-					data={[
-						{
-							type: "Dollars",
-							params: [
-								{ name: "Long Term Disability - EE", param_key: "" },
-								{ name: "Dental - EE", param_key: "" },
-								{ name: "Extended Health - EE ", param_key: "" },
-								{ name: "Union Dues", param_key: "" },
-							],
-						},
-						{
-							type: "Dollars",
-							params: [
-								{ name: "Long Term Disability - ER", param_key: "" },
-								{ name: "Dental - ER", param_key: "" },
-								{ name: "Extended Health - ER", param_key: "" },
-							],
-						},
-					]}
+					config={EMP_YTD_DEDUCTIONS_CONFIG}
 				/>
 			),
 		},

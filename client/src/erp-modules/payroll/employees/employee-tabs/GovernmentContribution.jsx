@@ -1,36 +1,48 @@
 import { SimpleGrid } from "@chakra-ui/react";
 import BoxCard from "components/ui/card";
 import VerticalStepper from "components/ui/VerticalStepper";
+import {
+	EMP_FED_GOVT_CONFIG,
+	EMP_INCOME_TAX_CONFIG,
+	EMP_REGN_GOVT_CONFIG,
+	getInitialGovernmentInfo,
+} from "config/payroll/employees/governmentInfo";
 import useEmployeeGovernment from "hooks/useEmployeeGovernment";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import PayrollService from "services/PayrollService";
 import Record from "../Record";
 import StepContent from "../StepContent";
 
 const GovernmentContribution = ({ company, empId }) => {
 	const governmentInfo = useEmployeeGovernment(company, empId);
-	console.log(governmentInfo);
+	const setGovernmentInfo = () => getInitialGovernmentInfo(empId, company);
+	const [formData, setFormData] = useState(setGovernmentInfo);
+
+	useEffect(() => {
+		if (governmentInfo) {
+			setFormData(governmentInfo);
+		}
+	}, [governmentInfo]);
+
+	const handleConfirm = async (e) => {
+		const { name } = e.target;
+		try {
+			if (formData[name]) {
+				await PayrollService.addEmployeeGovernmentInfo(formData);
+			}
+		} catch (error) {}
+	};
 	const steps = [
 		{
 			title: "Income Tax",
 			content: (
 				<Record
+					handleConfirm={handleConfirm}
+					formData={formData}
+					setFormData={setFormData}
+					data={governmentInfo}
 					title="Income Tax"
-					data={[
-						{
-							type: "",
-							params: [
-								{ name: "Federal Tax ", param_key: "" },
-								{ name: "Regional Tax ", param_key: "" },
-							],
-						},
-						{
-							type: "",
-							params: [
-								{ name: "Personal Federal Tax  Credit", param_key: "" },
-								{ name: "Personal Regional Tax Credit", param_key: "" },
-							],
-						},
-					]}
+					config={EMP_INCOME_TAX_CONFIG}
 				/>
 			),
 		},
@@ -38,23 +50,12 @@ const GovernmentContribution = ({ company, empId }) => {
 			title: "Federal Government Contributions",
 			content: (
 				<Record
+					handleConfirm={handleConfirm}
+					formData={formData}
+					setFormData={setFormData}
+					data={governmentInfo}
 					title="Federal Government Contributions"
-					data={[
-						{
-							type: "",
-							params: [
-								{ name: "Pension (EE) ", param_key: "" },
-								{ name: "Employment Insurance (EE)", param_key: "" },
-							],
-						},
-						{
-							type: "",
-							params: [
-								{ name: "Pension (ER)", param_key: "" },
-								{ name: "Employment Insurance (ER)", param_key: "" },
-							],
-						},
-					]}
+					config={EMP_FED_GOVT_CONFIG}
 				/>
 			),
 		},
@@ -63,23 +64,12 @@ const GovernmentContribution = ({ company, empId }) => {
 			title: "Regional Government Deductions",
 			content: (
 				<Record
+					handleConfirm={handleConfirm}
+					formData={formData}
+					setFormData={setFormData}
+					data={governmentInfo}
 					title="Regional Government Deductions"
-					data={[
-						{
-							type: "",
-							params: [
-								{ name: "Employee Injury", param_key: "" },
-								{ name: "Employee Health ", param_key: "" },
-							],
-						},
-						{
-							type: "",
-							params: [
-								{ name: "Employer Injury", param_key: "" },
-								{ name: "Employer Health", param_key: "" },
-							],
-						},
-					]}
+					config={EMP_REGN_GOVT_CONFIG}
 				/>
 			),
 		},

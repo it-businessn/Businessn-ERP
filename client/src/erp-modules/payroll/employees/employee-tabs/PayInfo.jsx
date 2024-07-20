@@ -1,41 +1,50 @@
 import { SimpleGrid } from "@chakra-ui/react";
 import BoxCard from "components/ui/card";
 import VerticalStepper from "components/ui/VerticalStepper";
+import {
+	EMP_PAY_INFO_ACCRUALS_CONFIG,
+	EMP_PAY_INFO_DEDUCTION_CONFIG,
+	EMP_PAY_INFO_EARNINGS_CONFIG,
+	getInitialPayInfo,
+} from "config/payroll/employees/payInfo";
 import useEmployeePayInfo from "hooks/useEmployeePayInfo";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import PayrollService from "services/PayrollService";
 import Record from "../Record";
 import StepContent from "../StepContent";
 
 const PayInfo = ({ company, empId }) => {
 	const payInfo = useEmployeePayInfo(company, empId);
-	console.log(payInfo);
+
+	const setPayInfo = () => getInitialPayInfo(empId, company);
+
+	const [formData, setFormData] = useState(setPayInfo);
+
+	useEffect(() => {
+		if (payInfo) {
+			setFormData(payInfo);
+		}
+	}, [payInfo]);
+
+	const handleConfirm = async (e) => {
+		const { name } = e.target;
+		try {
+			if (formData[name]) {
+				await PayrollService.addEmployeePayInfo(formData);
+			}
+		} catch (error) {}
+	};
 	const steps = [
 		{
 			title: "Earnings",
 			content: (
 				<Record
-					formData={payInfo}
+					handleConfirm={handleConfirm}
+					formData={formData}
+					setFormData={setFormData}
+					data={payInfo}
 					title="Earnings"
-					data={[
-						{
-							type: "Hourly",
-							params: [
-								{ name: "Regular Pay", param_key: "regPay" },
-								{ name: "Overtime Pay ", param_key: "overTimePay" },
-								{ name: "Double Overtime Pay ", param_key: "dblOverTimePay" },
-								{ name: "Statutory Worked Pay ", param_key: "statWorkPay" },
-								{ name: "Statutory Pay", param_key: "statPay" },
-								{ name: "Sick Pay  ", param_key: "sickPay" },
-							],
-						},
-						{
-							type: "Salary",
-							params: [
-								{ name: "Salary Rate", param_key: "salaryRate" },
-								{ name: "Hours per Pay", param_key: "dailyHours" },
-							],
-						},
-					]}
+					config={EMP_PAY_INFO_EARNINGS_CONFIG}
 				/>
 			),
 		},
@@ -43,35 +52,12 @@ const PayInfo = ({ company, empId }) => {
 			title: "Deductions",
 			content: (
 				<Record
+					handleConfirm={handleConfirm}
+					formData={formData}
+					setFormData={setFormData}
+					data={payInfo}
 					title="Deductions"
-					data={[
-						{
-							type: "",
-							params: [
-								{
-									name: "Long Term Disability - EE",
-									param_key: "longTermDisabilityEE",
-								},
-								{ name: "Dental - EE", param_key: "dentalEE" },
-								{
-									name: "Extended Health - EE ",
-									param_key: "extendedHealthEE",
-								},
-								{ name: "Union Dues", param_key: "unionDues" },
-							],
-						},
-						{
-							type: "",
-							params: [
-								{
-									name: "Long Term Disability - ER",
-									param_key: "longTermDisabilityER",
-								},
-								{ name: "Dental - ER", param_key: "dentalER" },
-								{ name: "Extended Health - ER", param_key: "extendedHealthER" },
-							],
-						},
-					]}
+					config={EMP_PAY_INFO_DEDUCTION_CONFIG}
 				/>
 			),
 		},
@@ -79,13 +65,12 @@ const PayInfo = ({ company, empId }) => {
 			title: "Accruals",
 			content: (
 				<Record
+					handleConfirm={handleConfirm}
+					formData={formData}
+					setFormData={setFormData}
+					data={payInfo}
 					title="Accruals"
-					data={[
-						{
-							type: "",
-							params: [{ name: "Vacation ", param_key: "vacationPay" }],
-						},
-					]}
+					config={EMP_PAY_INFO_ACCRUALS_CONFIG}
 				/>
 			),
 		},
