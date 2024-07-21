@@ -28,7 +28,7 @@ const TableLayout = ({
 							<Th
 								p={isSmall ? 1 : "auto"}
 								pl={isTimesheet && index === 0 && "1em !important"}
-								key={col}
+								key={`${col}_${index}`}
 							>
 								{col}
 							</Th>

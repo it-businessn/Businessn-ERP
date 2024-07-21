@@ -2,7 +2,7 @@ import { getDefaultDate } from "utils";
 
 export const EMP_EMERGENCY_CONTACT_CONFIG = [
 	{
-		type: "ss30",
+		type: "sfsgdsgdsgdsg30",
 		params: [
 			{ name: "First Name ", param_key: "emergencyFirstName" },
 			{
@@ -16,14 +16,14 @@ export const EMP_EMERGENCY_CONTACT_CONFIG = [
 		],
 	},
 	{
-		type: "ss31",
+		type: "sfsgdsgdsgdsg31",
 		params: [{ name: "Last Name", param_key: "emergencyLastName" }],
 	},
 ];
 
 export const EMP_CONTACT_CONFIG = [
 	{
-		type: "ss28",
+		type: "sfsgdsgdsgdsg28",
 		params: [
 			{ name: "Personal Email ", param_key: "personalEmail" },
 			{ name: "Personal Phone", param_key: "personalPhoneNum" },
@@ -36,7 +36,7 @@ export const EMP_CONTACT_CONFIG = [
 		],
 	},
 	{
-		type: "ss29",
+		type: "sfsgdsgdsgdsg29",
 		params: [
 			{ name: "Work Email", param_key: "businessEmail" },
 			{ name: "Work Phone", param_key: "businessPhoneNum" },
@@ -46,7 +46,7 @@ export const EMP_CONTACT_CONFIG = [
 
 export const EMP_PERSONAL_INFO_CONFIG = [
 	{
-		type: "ss26",
+		type: "sfsgdsgdsgdsg26",
 		params: [
 			{ name: "First Name", param_key: "firstName" },
 			{ name: "Birthday", param_key: "birthDate", control: "date" },
@@ -57,13 +57,13 @@ export const EMP_PERSONAL_INFO_CONFIG = [
 		],
 	},
 	{
-		type: "ss27",
+		type: "sfsgdsgdsgdsg27",
 		params: [
 			{ name: "Last Name", param_key: "lastName" },
-			{ name: "ss", param_key: "ss5" },
-			{ name: "ss", param_key: "ss6" },
-			{ name: "ss", param_key: "ss7" },
-			{ name: "ss", param_key: "ss8" },
+			{ name: "sfsgdsgdsgdsg1", param_key: "sfsgdsgdsgdsg5" },
+			{ name: "sfsgdsgdsgdsg2", param_key: "sfsgdsgdsgdsg6" },
+			{ name: "sfsgdsgdsgdsg3", param_key: "sfsgdsgdsgdsg7" },
+			{ name: "sfsgdsgdsgdsg4", param_key: "sfsgdsgdsgdsg8" },
 			{ name: "Work Permit Expiry", param_key: "workPermitExpiryNo" },
 		],
 	},
@@ -71,15 +71,15 @@ export const EMP_PERSONAL_INFO_CONFIG = [
 
 export const EMP_IDENTIFICATION_STATUS_CONFIG = [
 	{
-		type: "ss23",
+		type: "sfsgdsgdsgdsg23",
 		params: [{ name: "Status", param_key: "payrollStatus" }],
 	},
 	{
-		type: "ss24",
+		type: "sfsgdsgdsgdsg24",
 		params: [{ name: "Employee Number", param_key: "employeeNo" }],
 	},
 	{
-		type: "ss25",
+		type: "sfsgdsgdsgdsg25",
 		params: [
 			{
 				name: "Time Management Badge ID",

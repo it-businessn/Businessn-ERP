@@ -1,5 +1,4 @@
 import { SimpleGrid } from "@chakra-ui/react";
-import useCompany from "hooks/useCompany";
 import useSalesAgentData from "hooks/useSalesAgentData";
 import useSelectUser from "hooks/useSelectUser";
 import PageLayout from "layouts/PageLayout";
@@ -15,8 +14,7 @@ const CRMDashboard = () => {
 	const loggedInUser = LocalStorageService.getItem("user");
 	const [stats, setStats] = useState(STATS);
 
-	const { company } = useCompany();
-
+	const company = LocalStorageService.getItem("selectedCompany");
 	const { selectedUser, setSelectedUser } = useSelectUser(loggedInUser);
 
 	const employees = useSalesAgentData(company);

@@ -46,7 +46,7 @@ const Home = () => {
 		}
 	}, [activeMenu]);
 
-	return user && (activeMenu || refresh) ? (
+	return (
 		<>
 			<Navbar
 				handleClick={(menu) => setActiveMenu(menu)}
@@ -55,17 +55,19 @@ const Home = () => {
 				setUser={setUser}
 				isMobile={isMobile}
 			/>
-			<RootLayout>
-				<Sidebar
-					activeMenu={activeMenu}
-					handleMenuItemClick={onClose}
-					isOpen={isOpen}
-					onClose={onClose}
-					isMobile={isMobile}
-				/>
-			</RootLayout>
+			{user && (activeMenu || refresh) ? (
+				<RootLayout>
+					<Sidebar
+						activeMenu={activeMenu}
+						handleMenuItemClick={onClose}
+						isOpen={isOpen}
+						onClose={onClose}
+						isMobile={isMobile}
+					/>
+				</RootLayout>
+			) : null}
 		</>
-	) : null;
+	);
 };
 
 export default Home;

@@ -15,13 +15,14 @@ import { FaCaretDown } from "react-icons/fa";
 import { getDefaultDate } from "utils";
 
 const Record = ({ config, title, formData, setFormData, handleConfirm }) => {
+	const shouldHide = (name) => name.includes("sfsgdsgdsgdsg");
 	return (
 		<>
 			<TextTitle title={title} />
 			<HStack align={"start"} justify={"start"}>
-				{config.map((tab) => (
-					<VStack align={"start"} key={tab.type}>
-						<FormLabel visibility={tab.type.includes("ss") && "hidden"}>
+				{config.map((tab, index) => (
+					<VStack align={"start"} key={`${tab.type}**${index * 2}`}>
+						<FormLabel visibility={shouldHide(tab.type) && "hidden"}>
 							{tab.type}
 						</FormLabel>
 						{tab.params.map((param) => {
@@ -35,7 +36,7 @@ const Record = ({ config, title, formData, setFormData, handleConfirm }) => {
 										placeholder={`Select ${param.name}`}
 										name={param.param_key}
 										value={formData[param.param_key]}
-										// onChange={handleChange}
+										onChange={() => {}}
 									>
 										{param.options?.map(({ type }) => (
 											<option value={type} key={type}>
@@ -47,7 +48,7 @@ const Record = ({ config, title, formData, setFormData, handleConfirm }) => {
 							) : param?.control === "radio" ? (
 								<HStack
 									key={param.name}
-									visibility={param.name === "ss" && "hidden"}
+									visibility={shouldHide(param.name) && "hidden"}
 								>
 									<FormLabel>{param.name}</FormLabel>
 									<RadioGroup
@@ -69,6 +70,7 @@ const Record = ({ config, title, formData, setFormData, handleConfirm }) => {
 								</HStack>
 							) : param?.control === "date" ? (
 								<DateTimeFormControl
+									key={param.name}
 									label={param.name}
 									valueText1={getDefaultDate(formData[param.param_key])}
 									name1={param.param_key}
@@ -89,7 +91,7 @@ const Record = ({ config, title, formData, setFormData, handleConfirm }) => {
 									valueText={formData[param.param_key]}
 									fontWeight={param.name === "Address" && "bold"}
 									display={param.name === "Address" && "none"}
-									visibility={param.name === "ss" && "hidden"}
+									visibility={shouldHide(param.name) && "hidden"}
 									handleChange={(e) =>
 										setFormData((prev) => ({
 											...prev,

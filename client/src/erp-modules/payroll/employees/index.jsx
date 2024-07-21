@@ -10,7 +10,6 @@ import {
 import RadioButtonGroup from "components/ui/tab/RadioButtonGroup";
 import TextTitle from "components/ui/text/TextTitle";
 import EmpSearchMenu from "features/setup/EmpSearchMenu";
-import useCompany from "hooks/useCompany";
 import useEmployees from "hooks/useEmployees";
 import PageLayout from "layouts/PageLayout";
 import { useState } from "react";
@@ -26,12 +25,12 @@ const Employees = () => {
 	const loggedInUser = LocalStorageService.getItem("user");
 	const [employee, setEmployee] = useState(loggedInUser);
 	const [isRefresh, setIsRefresh] = useState(false);
-	const { company } = useCompany();
+	const company = LocalStorageService.getItem("selectedCompany");
 	const { employees, filteredEmployees, setFilteredEmployees } = useEmployees(
 		isRefresh,
 		company,
 	);
-	const [empName, setEmpName] = useState(null);
+	const [empName, setEmpName] = useState("");
 
 	const handleInputChange = (value) => {
 		setEmpName(value);

@@ -28,7 +28,7 @@ const PageHeader = ({
 					name={selectAttr || "fullName"}
 					border="1px solid var(--primary_button_bg)"
 					color={themeMode}
-					value={value}
+					value={value || ""}
 					placeholder={selectPlaceholder || "Select"}
 					size={"sm"}
 				/>

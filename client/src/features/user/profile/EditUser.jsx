@@ -23,9 +23,8 @@ import { UserSchema } from "config/schema";
 import { TOAST } from "constant";
 import { Field, Form, FormikProvider, useFormik } from "formik";
 import { useAuthContext } from "hooks/useAuthContext";
-import { useEffect, useState } from "react";
+import useSettings from "hooks/useSettings";
 import { useNavigate, useParams } from "react-router-dom";
-import SettingService from "services/SettingService";
 import UserService from "services/UserService";
 
 export default function EditUser() {
@@ -62,8 +61,8 @@ export default function EditUser() {
 			}
 		},
 	});
-	const [userRole, setUserRole] = useState([]);
-	const [departments, setDepartment] = useState([]);
+	const userRole = useSettings("role");
+	const departments = useSettings("department");
 	const toast = useToast();
 	const handleSubmit = async (values) => {
 		try {
@@ -87,24 +86,7 @@ export default function EditUser() {
 			console.log(error);
 		}
 	};
-	useEffect(() => {
-		const fetchConfigurationOptionsByDepartment = async (key) => {
-			const configuration = await SettingService.getConfigurationsByName(key);
 
-			configuration.data.items.forEach((department) =>
-				setDepartment((prev) => [...prev, department.name]),
-			);
-		};
-		const fetchConfigurationOptionsByRole = async (key) => {
-			const configuration = await SettingService.getConfigurationsByName(key);
-
-			configuration.data.items.forEach((role) =>
-				setUserRole((prev) => [...prev, role.name]),
-			);
-		};
-		fetchConfigurationOptionsByDepartment("department");
-		fetchConfigurationOptionsByRole("role");
-	}, []);
 	return (
 		<>
 			<ProfileContainer>

@@ -9,7 +9,7 @@ const Scheduler = ({ newEmployeeAdded, setRefresh, company }) => (
 			name="type"
 			label={""}
 			valueText={"meeting"}
-			// handleChange={handleInputChange}
+			handleChange={() => {}}
 			options={[
 				{
 					name: "Location 1",

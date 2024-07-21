@@ -1,6 +1,5 @@
 import { SimpleGrid } from "@chakra-ui/react";
 
-import useCompany from "hooks/useCompany";
 import PageLayout from "layouts/PageLayout";
 import { useEffect, useState } from "react";
 import LocalStorageService from "services/LocalStorageService";
@@ -29,7 +28,7 @@ const Resources = () => {
 	// const [editResource, setEditResource] = useState(false);
 	const [selectedFilter, setSelectedFilter] = useState(FILE_TYPES[0].type);
 
-	const { company } = useCompany();
+	const company = LocalStorageService.getItem("selectedCompany");
 	useEffect(() => {
 		const fetchAllResources = async () => {
 			try {

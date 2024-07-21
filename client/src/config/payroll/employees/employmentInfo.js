@@ -73,7 +73,7 @@ export const DEPARTMENT_OPTIONS = [
 
 export const EMP_COMPANY_CONFIG = [
 	{
-		type: "ss13",
+		type: "sfsgdsgdsgdsg13",
 		params: [
 			{ name: "Pay Group ", param_key: "employmentPayGroup" },
 			{
@@ -94,14 +94,14 @@ export const EMP_COMPANY_CONFIG = [
 
 export const EMP_ROLE_CONFIG = [
 	{
-		type: "ss11",
+		type: "sfsgdsgdsgdsg11",
 		params: [
 			{ name: "Start Date", param_key: "employmentStartDate", control: "date" },
 			{ name: "Leave Date", param_key: "employmentLeaveDate", control: "date" },
 		],
 	},
 	{
-		type: "ss12",
+		type: "sfsgdsgdsgdsg12",
 		params: [
 			{
 				name: "Role ",

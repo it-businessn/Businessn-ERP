@@ -2,7 +2,6 @@ import { Box, Button, Flex, HStack, Spacer } from "@chakra-ui/react";
 import PrimaryButton from "components/ui/button/PrimaryButton";
 import TextTitle from "components/ui/text/TextTitle";
 
-import useCompany from "hooks/useCompany";
 import PageLayout from "layouts/PageLayout";
 import moment from "moment-timezone";
 import { useEffect, useState } from "react";
@@ -36,7 +35,7 @@ const Calendar = () => {
 	// 		setTimeout(checkClassExists, 1000);
 	// 	}
 	// };
-	const { company } = useCompany();
+	const company = LocalStorageService.getItem("selectedCompany");
 
 	useEffect(() => {
 		// checkClassExists();

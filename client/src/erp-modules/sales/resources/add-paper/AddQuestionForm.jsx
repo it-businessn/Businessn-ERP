@@ -15,12 +15,12 @@ import {
 import PrimaryButton from "components/ui/button/PrimaryButton";
 import ActionButtonGroup from "components/ui/form/ActionButtonGroup";
 import TextTitle from "components/ui/text/TextTitle";
-import useCompany from "hooks/useCompany";
 import { useEffect, useState } from "react";
 import { FaRegTrashCan } from "react-icons/fa6";
 import { RiEditLine } from "react-icons/ri";
 import { useNavigate, useParams } from "react-router-dom";
 import AssessmentService from "services/AssessmentService";
+import LocalStorageService from "services/LocalStorageService";
 import QuestionnaireService from "services/QuestionnaireService";
 import AddAssessmentType from "./AddAssessmentType";
 import EditQuestionnaire from "./EditQuestionnaire";
@@ -39,7 +39,7 @@ const AddQuestionForm = () => {
 	const [refresh, setRefresh] = useState(false);
 	const [questionnaires, setQuestionnaires] = useState(null);
 
-	const { company } = useCompany();
+	const company = LocalStorageService.getItem("selectedCompany");
 	useEffect(() => {
 		const fetchAllAssessmentTypes = async () => {
 			try {

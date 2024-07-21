@@ -18,7 +18,6 @@ import {
 } from "@chakra-ui/react";
 import PrimaryButton from "components/ui/button/PrimaryButton";
 
-import useCompany from "hooks/useCompany";
 import PageLayout from "layouts/PageLayout";
 import { useEffect, useState } from "react";
 import { FaSearch } from "react-icons/fa";
@@ -37,8 +36,7 @@ const Payouts = () => {
 	const { isOpen, onOpen, onClose } = useDisclosure();
 	const isManagerUser = isManager(loggedInUser.role);
 
-	const { company } = useCompany();
-
+	const company = LocalStorageService.getItem("selectedCompany");
 	useEffect(() => {
 		const fetchAllPayouts = async () => {
 			try {

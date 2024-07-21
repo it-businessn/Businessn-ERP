@@ -1,6 +1,6 @@
 export const EMP_VACATION_BALANCE_CONFIG = [
 	{
-		type: "ss3",
+		type: "sfsgdsgdsgdsg3",
 		params: [
 			{
 				name: "Available Balance",
@@ -13,17 +13,17 @@ export const EMP_VACATION_BALANCE_CONFIG = [
 		],
 	},
 	{
-		type: "ss1",
+		type: "sfsgdsgdsgdsg1",
 		params: [
-			{ name: "ss", param_key: "ss1" },
+			{ name: "sfsgdsgdsgdsg", param_key: "sfsgdsgdsgdsg1" },
 			{ name: "Accrued This Year", param_key: "accruedBalance" },
 		],
 	},
 
 	{
-		type: "ss2",
+		type: "sfsgdsgdsgdsg2",
 		params: [
-			{ name: "ss", param_key: "ss2" },
+			{ name: "sfsgdsgdsgdsg", param_key: "sfsgdsgdsgdsg2" },
 			{ name: "Used this year", param_key: "usedBalance" },
 		],
 	},

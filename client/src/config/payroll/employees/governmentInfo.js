@@ -1,13 +1,13 @@
 export const EMP_INCOME_TAX_CONFIG = [
 	{
-		type: "ss14",
+		type: "sfsgdsgdsgdsg14",
 		params: [
 			{ name: "Federal Tax ", param_key: "federalTax" },
 			{ name: "Regional Tax ", param_key: "regionalTax" },
 		],
 	},
 	{
-		type: "ss15",
+		type: "sfsgdsgdsgdsg15",
 		params: [
 			{
 				name: "Personal Federal Tax  Credit",
@@ -23,7 +23,7 @@ export const EMP_INCOME_TAX_CONFIG = [
 
 export const EMP_FED_GOVT_CONFIG = [
 	{
-		type: "ss16",
+		type: "sfsgdsgdsgdsg16",
 		params: [
 			{ name: "Pension (EE) ", param_key: "federalPensionEE" },
 			{
@@ -33,7 +33,7 @@ export const EMP_FED_GOVT_CONFIG = [
 		],
 	},
 	{
-		type: "ss17",
+		type: "sfsgdsgdsgdsg17",
 		params: [
 			{ name: "Pension (ER)", param_key: "federalPensionER" },
 			{
@@ -45,7 +45,7 @@ export const EMP_FED_GOVT_CONFIG = [
 ];
 export const EMP_REGN_GOVT_CONFIG = [
 	{
-		type: "ss18",
+		type: "sfsgdsgdsgdsg18",
 		params: [
 			{
 				name: "Employee Injury",
@@ -58,7 +58,7 @@ export const EMP_REGN_GOVT_CONFIG = [
 		],
 	},
 	{
-		type: "ss19",
+		type: "sfsgdsgdsgdsg19",
 		params: [
 			{
 				name: "Employer Injury",

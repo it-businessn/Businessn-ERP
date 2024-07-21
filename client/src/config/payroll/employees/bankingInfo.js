@@ -1,6 +1,6 @@
 export const EMP_BANKING_CONFIG = [
 	{
-		type: "ss40",
+		type: "sfsgdsgdsgdsg40",
 		params: [
 			{
 				name: "Deposit paycheque via direct deposit ",
@@ -11,16 +11,16 @@ export const EMP_BANKING_CONFIG = [
 		],
 	},
 	{
-		type: "ss3",
+		type: "sfsgdsgdsgdsg3",
 		params: [
-			{ name: "ss", param_key: "ss3", control: "radio" },
+			{ name: "sfsgdsgdsgdsg", param_key: "sfsgdsgdsgdsg3", control: "radio" },
 			{ name: "Transit Number", param_key: "transitNum" },
 		],
 	},
 	{
-		type: "ss4",
+		type: "sfsgdsgdsgdsg4",
 		params: [
-			{ name: "ss", param_key: "ss4", control: "radio" },
+			{ name: "sfsgdsgdsgdsg", param_key: "sfsgdsgdsgdsg4", control: "radio" },
 			{ name: "Account Number", param_key: "accountNum" },
 		],
 	},
@@ -28,7 +28,7 @@ export const EMP_BANKING_CONFIG = [
 
 export const EMP_PAYMENT_NOTIFICATION_CONFIG = [
 	{
-		type: "ss10",
+		type: "sfsgdsgdsgdsg10",
 		params: [
 			{
 				name: "Send Paystub by email on pay day",

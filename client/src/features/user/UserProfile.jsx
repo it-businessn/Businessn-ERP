@@ -76,7 +76,7 @@ const UserProfile = ({ user, handleLogout }) => {
 				<PopoverTrigger>
 					<Avatar
 						onClick={handleToggle}
-						name={user.fullName}
+						name={user?.fullName}
 						src=""
 						boxSize="12"
 					/>

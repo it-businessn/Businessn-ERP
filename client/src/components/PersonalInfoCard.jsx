@@ -12,9 +12,8 @@ import {
 } from "@chakra-ui/react";
 
 import { Field, Form, FormikProvider, useFormik } from "formik";
-import { useEffect, useState } from "react";
+import useSettings from "hooks/useSettings";
 import { useNavigate } from "react-router-dom";
-import SettingService from "services/SettingService";
 
 function PersonalInfoCard({ initialValues, schema, formSubmit, formFields }) {
 	const navigate = useNavigate();
@@ -29,26 +28,8 @@ function PersonalInfoCard({ initialValues, schema, formSubmit, formFields }) {
 			}
 		},
 	});
-	useEffect(() => {
-		const fetchConfigurationOptionsByDepartment = async (key) => {
-			let configuration = await SettingService.getConfigurationsByName(key);
-
-			configuration.data.items.forEach((department) =>
-				setDepartment([...departments, department.name]),
-			);
-		};
-		const fetchConfigurationOptionsByRole = async (key) => {
-			let configuration = await SettingService.getConfigurationsByName(key);
-
-			configuration.data.items.forEach((role) =>
-				setUserRole([...userRole, role.name]),
-			);
-		};
-		fetchConfigurationOptionsByDepartment("department");
-		fetchConfigurationOptionsByRole("role");
-	}, []);
-	const [userRole, setUserRole] = useState([]);
-	const [departments, setDepartment] = useState([]);
+	const userRole = useSettings("role");
+	const departments = useSettings("department");
 
 	return (
 		<FormikProvider value={formik}>

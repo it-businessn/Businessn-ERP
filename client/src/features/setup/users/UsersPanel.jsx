@@ -15,7 +15,7 @@ const UsersPanel = ({
 	isUser,
 	company,
 }) => {
-	const [empName, setEmpName] = useState(null);
+	const [empName, setEmpName] = useState("");
 
 	const handleInputChange = (value) => {
 		setEmpName(value);

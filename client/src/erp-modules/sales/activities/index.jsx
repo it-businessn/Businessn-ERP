@@ -1,6 +1,5 @@
 import { SimpleGrid } from "@chakra-ui/react";
 
-import useCompany from "hooks/useCompany";
 import PageLayout from "layouts/PageLayout";
 import { useEffect, useState } from "react";
 import ActivityService from "services/ActivityService";
@@ -32,8 +31,7 @@ const Activities = () => {
 	const [employees, setEmployees] = useState(null);
 
 	const [selectedUser, setSelectedUser] = useState(loggedInUser);
-
-	const { company } = useCompany();
+	const company = LocalStorageService.getItem("selectedCompany");
 
 	useEffect(() => {
 		const fetchAllContacts = async () => {

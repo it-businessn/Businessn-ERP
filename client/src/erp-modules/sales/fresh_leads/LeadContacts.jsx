@@ -1,7 +1,6 @@
 import { Box, Flex, IconButton } from "@chakra-ui/react";
 import TabGroup from "components/ui/tab";
 
-import useCompany from "hooks/useCompany";
 import { useEffect, useState } from "react";
 import { FaArrowLeft } from "react-icons/fa";
 import { useNavigate, useParams } from "react-router-dom";
@@ -16,7 +15,7 @@ import Tasks from "../customers/contacts/tasks";
 const LeadContacts = ({ setViewProfile, selectedContact }) => {
 	const loggedInUser = LocalStorageService.getItem("user");
 	const { id, comp } = useParams();
-	const { company } = useCompany();
+	const company = LocalStorageService.getItem("selectedCompany");
 	const companyName = comp ? comp : company;
 
 	const [contact, setContact] = useState(null);

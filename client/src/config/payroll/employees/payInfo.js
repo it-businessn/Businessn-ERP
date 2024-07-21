@@ -21,7 +21,7 @@ export const EMP_PAY_INFO_EARNINGS_CONFIG = [
 
 export const EMP_PAY_INFO_DEDUCTION_CONFIG = [
 	{
-		type: "ss20",
+		type: "sfsgdsgdsgdsg20",
 		params: [
 			{
 				name: "Long Term Disability - EE",
@@ -36,7 +36,7 @@ export const EMP_PAY_INFO_DEDUCTION_CONFIG = [
 		],
 	},
 	{
-		type: "ss21",
+		type: "sfsgdsgdsgdsg21",
 		params: [
 			{
 				name: "Long Term Disability - ER",
@@ -50,7 +50,7 @@ export const EMP_PAY_INFO_DEDUCTION_CONFIG = [
 
 export const EMP_PAY_INFO_ACCRUALS_CONFIG = [
 	{
-		type: "ss22",
+		type: "sfsgdsgdsgdsg22",
 		params: [{ name: "Vacation (%) ", param_key: "vacationPay" }],
 	},
 ];

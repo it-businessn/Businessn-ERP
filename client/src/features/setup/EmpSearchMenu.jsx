@@ -41,6 +41,7 @@ const EmpSearchMenu = ({
 						placeholder="Search employee"
 						pr="4.5rem"
 						py={"1.1em"}
+						readOnly
 					/>
 					<InputRightElement size="xs" children={<FaSearch />} />
 				</InputGroup>

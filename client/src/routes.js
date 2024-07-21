@@ -31,7 +31,6 @@ const EmployeeDashboard = lazy(() =>
 const EmployeeRecord = lazy(() =>
 	import("./erp-modules/payroll/employees/dashboard/EmployeeRecord"),
 );
-const EmployeesList = lazy(() => import("./erp-modules/payroll/EmployeesList"));
 const ForgotPassword = lazy(() => import("./features/login/ForgotPassword"));
 const FreshLeads = lazy(() => import("./erp-modules/sales/fresh_leads"));
 const Gantt = lazy(() => import("./erp-modules/project-management/Gantt"));
@@ -283,10 +282,6 @@ export const router = createBrowserRouter([
 			{
 				path: `${ROUTE_PATH.PAYROLL}${ROUTE_PATH.EMPLOYEES}`,
 				element: <Employees />,
-			},
-			{
-				path: `${ROUTE_PATH.PAYROLL}${ROUTE_PATH.EMPLOYEES}/list`,
-				element: <EmployeesList />,
 			},
 			{
 				path: `${ROUTE_PATH.PAYROLL}${ROUTE_PATH.REPORT}`,

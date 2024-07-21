@@ -10,7 +10,6 @@ import {
 } from "@chakra-ui/react";
 import PrimaryButton from "components/ui/button/PrimaryButton";
 import TextTitle from "components/ui/text/TextTitle";
-import useCompany from "hooks/useCompany";
 import PageLayout from "layouts/PageLayout";
 import React, { useState } from "react";
 import { FaAddressCard, FaUndoAlt } from "react-icons/fa";
@@ -43,8 +42,7 @@ const UserProfileDetails = () => {
 		setPasswordMode(false);
 	};
 
-	const { company } = useCompany();
-
+	const company = LocalStorageService.getItem("selectedCompany");
 	const {
 		fullName,
 		email,

@@ -15,7 +15,6 @@ import PrimaryButton from "components/ui/button/PrimaryButton";
 import SelectList from "components/ui/form/select/SelectList";
 import TableLayout from "components/ui/table/TableLayout";
 
-import useCompany from "hooks/useCompany";
 import PageLayout from "layouts/PageLayout";
 import { useEffect, useState } from "react";
 import { FaRegTrashAlt, FaSearch } from "react-icons/fa";
@@ -41,7 +40,7 @@ const Opportunities = () => {
 	const [assignees, setAssignees] = useState(null);
 	const [supervisorAssignees, setSupervisorAssignees] = useState(null);
 
-	const { company } = useCompany();
+	const company = LocalStorageService.getItem("selectedCompany");
 	useEffect(() => {
 		const fetchAllSalesAgents = async () => {
 			try {

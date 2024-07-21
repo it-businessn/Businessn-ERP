@@ -1,10 +1,10 @@
 import TabsButtonGroup from "components/ui/tab/TabsButtonGroup";
-import useCompany from "hooks/useCompany";
 import PageLayout from "layouts/PageLayout";
 import { useEffect, useState } from "react";
 import { FaListCheck } from "react-icons/fa6";
 import { MdSpaceDashboard } from "react-icons/md";
 import LeadsService from "services/LeadsService";
+import LocalStorageService from "services/LocalStorageService";
 import { FRESH_LEADS } from "../opportunities/data";
 import AgentsView from "./AgentsView";
 import ListView from "./ListView";
@@ -12,7 +12,7 @@ import ListView from "./ListView";
 const FreshLeads = () => {
 	const [leads, setLeads] = useState(null);
 	const [isUpdated, setIsUpdated] = useState(false);
-	const { company } = useCompany();
+	const company = LocalStorageService.getItem("selectedCompany");
 	const fetchAllLeads = async () => {
 		try {
 			const response = await LeadsService.getFreshLeads(company);

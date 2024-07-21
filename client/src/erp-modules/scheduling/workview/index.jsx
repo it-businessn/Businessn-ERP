@@ -1,9 +1,9 @@
 import { SimpleGrid } from "@chakra-ui/react";
-import useCompany from "hooks/useCompany";
 import PageLayout from "layouts/PageLayout";
 import { useEffect, useState } from "react";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
+import LocalStorageService from "services/LocalStorageService";
 import UserService from "services/UserService";
 import { getRoleColor } from "utils";
 import HeaderCards from "./HeaderCards";
@@ -15,7 +15,7 @@ const ScheduleWorkView = () => {
 	const [employees, setEmployees] = useState(null);
 	const [refresh, setRefresh] = useState(null);
 
-	const { company } = useCompany();
+	const company = LocalStorageService.getItem("selectedCompany");
 	useEffect(() => {
 		const fetchAllEmployeeByRole = async () => {
 			try {
