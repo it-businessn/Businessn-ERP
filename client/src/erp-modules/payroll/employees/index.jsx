@@ -137,6 +137,7 @@ const Employees = () => {
 					bg={"var(--primary_bg)"}
 					borderRadius={"20px"}
 					p={"8px"}
+					w={"100%"}
 				>
 					{SETUP_LIST.map((_) => (
 						<RadioButtonGroup
@@ -144,6 +145,7 @@ const Employees = () => {
 							name={_.type}
 							selectedFilter={viewMode}
 							handleFilterClick={(name) => setViewMode(name)}
+							fontSize={"1em"}
 						/>
 					))}
 				</SimpleGrid>

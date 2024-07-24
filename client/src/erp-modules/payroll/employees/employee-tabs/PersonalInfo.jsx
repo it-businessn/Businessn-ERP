@@ -11,8 +11,8 @@ import {
 import useEmployeeProfileInfo from "hooks/useEmployeeProfileInfo";
 import { useEffect, useState } from "react";
 import PayrollService from "services/PayrollService";
-import Record from "../Record";
-import StepContent from "../StepContent";
+import StepContent from "../step-content";
+import Record from "../step-content/Record";
 
 const PersonalInfo = ({ company, empId }) => {
 	const profileInfo = useEmployeeProfileInfo(company, empId);
@@ -29,7 +29,7 @@ const PersonalInfo = ({ company, empId }) => {
 	}, [profileInfo, empId]);
 
 	const handleConfirm = async (e) => {
-		const { name } = e.target;
+		const { name } = e?.target;
 		try {
 			if (formData[name]) {
 				await PayrollService.addEmployeeProfileInfo(formData);

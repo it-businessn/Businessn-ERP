@@ -1,5 +1,3 @@
-import { getDefaultDate } from "utils";
-
 export const EMP_EMERGENCY_CONTACT_CONFIG = [
 	{
 		type: "sfsgdsgdsgdsg30",
@@ -69,10 +67,28 @@ export const EMP_PERSONAL_INFO_CONFIG = [
 	},
 ];
 
+export const PAYROLL_STATUS = [
+	{
+		type: "Payroll Active",
+		dependent: false,
+	},
+	{
+		type: "Payroll Terminated",
+		dependent: false,
+	},
+];
+
 export const EMP_IDENTIFICATION_STATUS_CONFIG = [
 	{
 		type: "sfsgdsgdsgdsg23",
-		params: [{ name: "Status", param_key: "payrollStatus" }],
+		params: [
+			{
+				name: "Status",
+				param_key: "payrollStatus",
+				control: "select",
+				options: PAYROLL_STATUS,
+			},
+		],
 	},
 	{
 		type: "sfsgdsgdsgdsg24",
@@ -100,7 +116,7 @@ export const getInitialProfileInfo = (empId, companyName) => {
 		lastName: "",
 		emergencyFirstName: "",
 		emergencyLastName: "",
-		birthDate: getDefaultDate(),
+		birthDate: null,
 		SIN: "",
 		maritalStatus: "",
 		citizenship: "",

@@ -1,34 +1,26 @@
-import {
-	HStack,
-	Input,
-	Table,
-	Tbody,
-	Td,
-	Th,
-	Thead,
-	Tr,
-} from "@chakra-ui/react";
-import ActionButton from "components/ui/button/ActionButton";
-import { useEffect, useState } from "react";
+import { Stack, useDisclosure } from "@chakra-ui/react";
+import ActionButtonGroup from "components/ui/form/ActionButtonGroup";
+import InputFormControl from "components/ui/form/InputFormControl";
+import ModalLayout from "components/ui/modal/ModalLayout";
+import { useState } from "react";
 import SettingService from "services/SettingService";
 
-const RolesPanel = () => {
-	const [roles, setRoles] = useState(null);
+const RolesPanel = ({
+	showAddRoles,
+	setShowAddRoles,
+	setOptionDataRefresh,
+	companyName,
+}) => {
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [roleName, setRoleName] = useState("");
 	const [roleDescription, setRoleDescription] = useState("");
 
-	useEffect(() => {
-		const fetchAllRoles = async () => {
-			try {
-				const response = await SettingService.getAllRoles();
-				setRoles(response.data);
-			} catch (error) {
-				console.error(error);
-			}
-		};
-		fetchAllRoles();
-	}, [isSubmitting]);
+	const { onClose } = useDisclosure();
+
+	const handleClose = () => {
+		onClose();
+		setShowAddRoles(false);
+	};
 
 	const handleRoleSubmit = async () => {
 		setIsSubmitting(true);
@@ -36,9 +28,12 @@ const RolesPanel = () => {
 			await SettingService.addRole({
 				name: roleName,
 				description: roleDescription,
+				companyName,
 			});
+			setOptionDataRefresh((prev) => !prev);
 			setRoleName("");
 			setRoleDescription("");
+			handleClose();
 		} catch (error) {
 			console.log("An error occurred. Please try again.");
 		} finally {
@@ -47,51 +42,38 @@ const RolesPanel = () => {
 	};
 
 	return (
-		<>
-			<HStack>
-				<Input
+		<ModalLayout
+			title={"Add new role"}
+			size="md"
+			isOpen={showAddRoles}
+			onClose={handleClose}
+		>
+			<Stack spacing={4}>
+				<InputFormControl
+					label={"Name"}
+					name="roleName"
+					valueText={roleName}
+					handleChange={(e) => setRoleName(e.target.value)}
+					required
 					placeholder="Enter Role Name"
-					value={roleName}
-					onChange={(e) => setRoleName(e.target.value)}
 				/>
-				<Input
+				<InputFormControl
+					label={"Description"}
+					name="roleDescription"
+					valueText={roleDescription}
+					handleChange={(e) => setRoleDescription(e.target.value)}
+					required
 					placeholder="Enter Role Description"
-					value={roleDescription}
-					onChange={(e) => setRoleDescription(e.target.value)}
 				/>
-			</HStack>
-			<ActionButton mt={2} name={"Add Role"} onClick={handleRoleSubmit} />
-			{roles && (
-				<Table variant="simple">
-					<Thead>
-						<Tr>
-							<Th>Name</Th>
-							<Th>Description</Th>
-							{/* <Th>Action</Th> */}
-						</Tr>
-					</Thead>
-					<Tbody>
-						{roles.map((role) => (
-							<Tr key={role._id}>
-								<Td>{role.name}</Td>
-								<Td>{role.description}</Td>
-								{/* <Td>
-									<HStack>
-										<Button
-											size="sm"
-											colorScheme="green"
-											onClick={() => editRole(role._id)}
-										>
-											Edit
-										</Button>
-									</HStack>
-								</Td> */}
-							</Tr>
-						))}
-					</Tbody>
-				</Table>
-			)}
-		</>
+				<ActionButtonGroup
+					submitBtnName={"Add Role"}
+					isDisabled={roleName === "" || roleDescription === ""}
+					isLoading={isSubmitting}
+					onClose={handleClose}
+					onOpen={handleRoleSubmit}
+				/>
+			</Stack>
+		</ModalLayout>
 	);
 };
 

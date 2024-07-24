@@ -216,12 +216,14 @@ const AddNewOpportunity = ({
 							</HStack>
 						</FormControl>
 
-						<AddCompany
-							showAddCompany={showAddCompany}
-							setRefresh={setRefresh}
-							setShowAddCompany={setShowAddCompany}
-							company={company}
-						/>
+						{showAddCompany && (
+							<AddCompany
+								showAddCompany={showAddCompany}
+								setRefresh={setRefresh}
+								setShowAddCompany={setShowAddCompany}
+								company={company}
+							/>
+						)}
 					</HStack>
 					{companyError && (
 						<Flex>

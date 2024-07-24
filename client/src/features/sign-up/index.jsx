@@ -18,117 +18,44 @@ import {
 import Logo from "components/logo";
 import ActionButtonGroup from "components/ui/form/ActionButtonGroup";
 import InputFormControl from "components/ui/form/InputFormControl";
-import RequiredLabel from "components/ui/form/RequiredLabel";
-import { useEffect, useState } from "react";
+import BaseModulePanel from "features/setup/BaseModulePanel";
+import DepartmentsPanel from "features/setup/DepartmentsPanel";
+import EmploymentPanel from "features/setup/EmploymentPanel";
+import RolesPanel from "features/setup/RolesPanel";
+import { useSignup } from "hooks/useSignup";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import LoginService from "services/LoginService";
-import SettingService from "services/SettingService";
-import UserService from "services/UserService";
+import MultiSelectControl from "./MultiSelectControl";
 // import signUpImg from "../../assets/logos/BusinessN_dark.jpg";
 
 const SignUp = ({ isModal, setRefresh, onClose }) => {
-	const defaultFormData = {
-		company: "",
-		companyId: "",
-		firstName: "",
-		middleName: "",
-		lastName: "",
-		email: "",
-		password: "",
-		role: "",
-		department: "",
-		baseModule: "",
-		manager: "",
-		phoneNumber: "",
-		primaryAddress: {
-			streetNumber: "",
-			city: "",
-			state: "",
-			postalCode: "",
-			country: "",
-		},
-		employmentType: "",
-	};
-	const [companies, setCompanies] = useState(null);
-	const [empTypes, setEmpTypes] = useState(false);
-	const [roles, setRoles] = useState(false);
-	const [departments, setDepartments] = useState(false);
-	const [modules, setModules] = useState(false);
-	const [managers, setManagers] = useState(false);
-	const [formData, setFormData] = useState(defaultFormData);
-
-	useEffect(() => {
-		const fetchAllCompanies = async () => {
-			try {
-				const response = await SettingService.getAllCompanies();
-				setCompanies(response.data);
-			} catch (error) {
-				console.error(error);
-			}
-		};
-		fetchAllCompanies();
-	}, []);
-
-	useEffect(() => {
-		const fetchAllEmpTypes = async () => {
-			try {
-				const response = await SettingService.getAllEmploymentTypes(
-					formData.company,
-				);
-				setEmpTypes(response.data);
-			} catch (error) {
-				console.error(error);
-			}
-		};
-		const fetchAllRoles = async () => {
-			try {
-				const response = await SettingService.getAllRoles(formData.company);
-				setRoles(response.data);
-			} catch (error) {
-				console.error(error);
-			}
-		};
-		const fetchAllDepartments = async () => {
-			try {
-				const response = await SettingService.getAllDepartments(
-					formData.company,
-				);
-				setDepartments(response.data);
-			} catch (error) {
-				console.error(error);
-			}
-		};
-		const fetchAllManagers = async () => {
-			try {
-				const response = await UserService.getAllManagers(formData.company);
-				setManagers(response.data);
-			} catch (error) {
-				console.error(error);
-			}
-		};
-		const fetchAllModules = async () => {
-			try {
-				const response = await SettingService.getAllModules(formData.company);
-				setModules(response.data);
-			} catch (error) {
-				console.error(error);
-			}
-		};
-		fetchAllModules();
-		fetchAllManagers();
-		fetchAllRoles();
-		fetchAllDepartments();
-		fetchAllEmpTypes();
-	}, [formData.company]);
-
 	const [isLoading, setIsLoading] = useState(false);
 	const [showPassword, setShowPassword] = useState(false);
 	const [error, setError] = useState(null);
 	const navigate = useNavigate();
+	const [optionDataRefresh, setOptionDataRefresh] = useState(false);
 
 	const goBack = () => {
 		navigate(-1);
 	};
+	const {
+		formData,
+		resetForm,
+		setFormData,
+		companies,
+		empTypes,
+		roles,
+		departments,
+		modules,
+		managers,
+	} = useSignup(optionDataRefresh);
+
+	const [showAddEmpTypes, setShowAddEmpTypes] = useState(false);
+	const [showAddRoles, setShowAddRoles] = useState(false);
+	const [showAddDepartments, setShowAddDepartments] = useState(false);
+	const [showAddModules, setShowAddModules] = useState(false);
+	const [showAddManagers, setShowAddManagers] = useState(false);
 
 	const isInvalid =
 		formData.firstName === "" ||
@@ -157,7 +84,6 @@ const SignUp = ({ isModal, setRefresh, onClose }) => {
 			setError(error?.response?.data?.error);
 		}
 	};
-	const resetForm = () => setFormData(defaultFormData);
 
 	const handleChange = (e) => {
 		const { name, value } = e.target;
@@ -167,6 +93,91 @@ const SignUp = ({ isModal, setRefresh, onClose }) => {
 	const handleTogglePassword = () => {
 		setShowPassword((prevShowPassword) => !prevShowPassword);
 	};
+	const SELECT_OPTIONS = [
+		{
+			name: "Type of Employment",
+			data: empTypes,
+			param_key: "employmentType",
+			param_value: formData.employmentType,
+			handleChange,
+			setShowAdd: setShowAddEmpTypes,
+			showAdd: showAddEmpTypes,
+			placeholder: "Select employment type",
+			content: (
+				<EmploymentPanel
+					showAddEmpTypes={showAddEmpTypes}
+					setOptionDataRefresh={setOptionDataRefresh}
+					setShowAddEmpTypes={setShowAddEmpTypes}
+					companyName={formData.company}
+				/>
+			),
+		},
+		{
+			name: "Type of Role",
+			data: roles,
+			param_key: "role",
+			param_value: formData.role,
+			handleChange,
+			setShowAdd: setShowAddRoles,
+			showAdd: showAddRoles,
+			placeholder: "Select role",
+			content: (
+				<RolesPanel
+					showAddRoles={showAddRoles}
+					setOptionDataRefresh={setOptionDataRefresh}
+					setShowAddRoles={setShowAddRoles}
+					companyName={formData.company}
+				/>
+			),
+		},
+		{
+			name: "Type of Department",
+			data: departments,
+			param_key: "department",
+			param_value: formData.department,
+			handleChange,
+			setShowAdd: setShowAddDepartments,
+			showAdd: showAddDepartments,
+			placeholder: "Select department",
+			content: (
+				<DepartmentsPanel
+					showAddDepartments={showAddDepartments}
+					setOptionDataRefresh={setOptionDataRefresh}
+					setShowAddDepartments={setShowAddDepartments}
+					companyName={formData.company}
+				/>
+			),
+		},
+		{
+			name: "Type of Base module",
+			data: modules,
+			param_key: "baseModule",
+			param_value: formData.baseModule,
+			handleChange,
+			setShowAdd: setShowAddModules,
+			showAdd: showAddModules,
+			placeholder: "Select base module",
+			content: (
+				<BaseModulePanel
+					showAddModules={showAddModules}
+					setOptionDataRefresh={setOptionDataRefresh}
+					setShowAddModules={setShowAddModules}
+					companyName={formData.company}
+				/>
+			),
+		},
+		{
+			name: "Manager",
+			data: managers,
+			param_key: "manager",
+			param_value: formData.manager,
+			handleChange,
+			setShowAdd: setShowAddManagers,
+			showAdd: showAddManagers,
+			placeholder: "Select manager",
+			optionKey: "fullName",
+		},
+	];
 	return (
 		<Box overflow="auto" height={isModal ? "70vh" : "100vh"}>
 			<Container
@@ -278,96 +289,7 @@ const SignUp = ({ isModal, setRefresh, onClose }) => {
 								</InputRightElement>
 							</InputGroup>
 						</FormControl>
-						{empTypes && (
-							<FormControl mb={4}>
-								<RequiredLabel required label="Type of Employment" />
-								<Select
-									name="employmentType"
-									value={formData.employmentType}
-									bg={"var(--main_color)"}
-									onChange={handleChange}
-									placeholder="Select employment type"
-								>
-									{empTypes?.map((empType) => (
-										<option key={empType._id} value={empType.name}>
-											{empType.name}
-										</option>
-									))}
-								</Select>
-							</FormControl>
-						)}
-						{roles && (
-							<FormControl mb={4}>
-								<RequiredLabel label="Type of Role" required />
-								<Select
-									name="role"
-									value={formData.role}
-									bg={"var(--main_color)"}
-									onChange={handleChange}
-									placeholder="Select role"
-								>
-									{roles?.map((role) => (
-										<option key={role._id} value={role.name}>
-											{role.name}
-										</option>
-									))}
-								</Select>
-							</FormControl>
-						)}
-						{departments && (
-							<FormControl mb={4}>
-								<FormLabel>Type of Department</FormLabel>
-								<Select
-									bg={"var(--main_color)"}
-									name="department"
-									value={formData.department}
-									onChange={handleChange}
-									placeholder="Select department"
-								>
-									{departments?.map((dept) => (
-										<option key={dept._id} value={dept.name}>
-											{dept.name}
-										</option>
-									))}
-								</Select>
-							</FormControl>
-						)}
-						{modules && (
-							<FormControl mb={4}>
-								<FormLabel>Type of Base module</FormLabel>
-								<Select
-									bg={"var(--main_color)"}
-									name="baseModule"
-									value={formData.baseModule}
-									onChange={handleChange}
-									placeholder="Select base module"
-								>
-									{modules?.map((module) => (
-										<option key={module._id} value={module.name}>
-											{module.name}
-										</option>
-									))}
-								</Select>
-							</FormControl>
-						)}
-						{managers && (
-							<FormControl mb={4}>
-								<FormLabel>Manager</FormLabel>
-								<Select
-									bg={"var(--main_color)"}
-									name="manager"
-									value={formData.manager}
-									onChange={handleChange}
-									placeholder="Select manager"
-								>
-									{managers?.map((manager) => (
-										<option key={manager._id} value={manager.fullName}>
-											{manager.fullName}
-										</option>
-									))}
-								</Select>
-							</FormControl>
-						)}
+						<MultiSelectControl options={SELECT_OPTIONS} />
 						<InputFormControl
 							label={"Phone Number"}
 							name="phoneNumber"

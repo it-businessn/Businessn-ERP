@@ -278,7 +278,7 @@ const EditUserInfo = ({
 					</FormControl>
 				)}
 				<HStack>
-					{departments && (
+					{/* {departments && (
 						<FormControl mb={4}>
 							<FormLabel>Link Company</FormLabel>
 							<Select
@@ -295,7 +295,7 @@ const EditUserInfo = ({
 								))}
 							</Select>
 						</FormControl>
-					)}
+					)} */}
 					{empTypes && (
 						<FormControl mb={4}>
 							<FormLabel>Type of Employment</FormLabel>

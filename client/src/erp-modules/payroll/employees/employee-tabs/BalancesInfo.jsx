@@ -10,8 +10,8 @@ import {
 import useEmployeeBalanceInfo from "hooks/useEmployeeBalanceInfo";
 import { useEffect, useState } from "react";
 import PayrollService from "services/PayrollService";
-import Record from "../Record";
-import StepContent from "../StepContent";
+import StepContent from "../step-content";
+import Record from "../step-content/Record";
 
 const BalancesInfo = ({ company, empId }) => {
 	const balanceInfo = useEmployeeBalanceInfo(company, empId);

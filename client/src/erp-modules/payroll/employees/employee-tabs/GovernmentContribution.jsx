@@ -10,8 +10,8 @@ import {
 import useEmployeeGovernment from "hooks/useEmployeeGovernment";
 import { useEffect, useState } from "react";
 import PayrollService from "services/PayrollService";
-import Record from "../Record";
-import StepContent from "../StepContent";
+import StepContent from "../step-content";
+import Record from "../step-content/Record";
 
 const GovernmentContribution = ({ company, empId }) => {
 	const governmentInfo = useEmployeeGovernment(company, empId);

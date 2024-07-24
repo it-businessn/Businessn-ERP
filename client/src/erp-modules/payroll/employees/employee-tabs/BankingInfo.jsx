@@ -9,8 +9,8 @@ import {
 import useEmployeeBankingInfo from "hooks/useEmployeeBankingInfo";
 import { useEffect, useState } from "react";
 import PayrollService from "services/PayrollService";
-import Record from "../Record";
-import StepContent from "../StepContent";
+import StepContent from "../step-content";
+import Record from "../step-content/Record";
 
 const BankingInfo = ({ company, empId }) => {
 	const bankingInfo = useEmployeeBankingInfo(company, empId);

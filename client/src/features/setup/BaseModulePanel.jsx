@@ -5,34 +5,34 @@ import ModalLayout from "components/ui/modal/ModalLayout";
 import { useState } from "react";
 import SettingService from "services/SettingService";
 
-const EmploymentPanel = ({
-	showAddEmpTypes,
-	setShowAddEmpTypes,
+const BaseModulePanel = ({
+	showAddModules,
+	setShowAddModules,
 	setOptionDataRefresh,
 	companyName,
 }) => {
 	const [isSubmitting, setIsSubmitting] = useState(false);
-	const [empType, setEmpType] = useState("");
-	const [empTypeDesc, setEmpTypeDesc] = useState("");
+	const [moduleName, setModuleName] = useState("");
+	const [moduleDesc, setModuleDesc] = useState("");
 
 	const { onClose } = useDisclosure();
 
 	const handleClose = () => {
 		onClose();
-		setShowAddEmpTypes(false);
+		setShowAddModules(false);
 	};
 
-	const handleSubmit = async () => {
+	const handleModuleSubmit = async () => {
 		setIsSubmitting(true);
 		try {
-			await SettingService.addEmploymentType({
-				name: empType,
-				description: empTypeDesc,
+			await SettingService.addBaseModule({
+				name: moduleName,
+				description: moduleDesc,
 				companyName,
 			});
 			setOptionDataRefresh((prev) => !prev);
-			setEmpType("");
-			setEmpTypeDesc("");
+			setModuleName("");
+			setModuleDesc("");
 			handleClose();
 		} catch (error) {
 			console.log("An error occurred. Please try again.");
@@ -42,38 +42,38 @@ const EmploymentPanel = ({
 	};
 	return (
 		<ModalLayout
-			title={"Add new employment type"}
+			title={"Add new base module"}
 			size="md"
-			isOpen={showAddEmpTypes}
+			isOpen={showAddModules}
 			onClose={handleClose}
 		>
 			<Stack spacing={4}>
 				<InputFormControl
 					label={"Name"}
-					name="empType"
-					valueText={empType}
-					handleChange={(e) => setEmpType(e.target.value)}
+					name="moduleName"
+					valueText={moduleName}
+					handleChange={(e) => setModuleName(e.target.value)}
 					required
-					placeholder="Enter Employment Type Name"
+					placeholder="Enter Module Name"
 				/>
 				<InputFormControl
 					label={"Description"}
-					name="empTypeDesc"
-					valueText={empTypeDesc}
-					handleChange={(e) => setEmpTypeDesc(e.target.value)}
+					name="moduleDesc"
+					valueText={moduleDesc}
+					handleChange={(e) => setModuleDesc(e.target.value)}
 					required
-					placeholder="Enter Employment Type Description"
+					placeholder="Enter Module Description"
 				/>
 				<ActionButtonGroup
-					submitBtnName={"Add Employment Type"}
-					isDisabled={empType === "" || empTypeDesc === ""}
+					submitBtnName={"Add Module"}
+					isDisabled={moduleName === "" || moduleDesc === ""}
 					isLoading={isSubmitting}
 					onClose={handleClose}
-					onOpen={handleSubmit}
+					onOpen={handleModuleSubmit}
 				/>
 			</Stack>
 		</ModalLayout>
 	);
 };
 
-export default EmploymentPanel;
+export default BaseModulePanel;

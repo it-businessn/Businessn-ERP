@@ -1,7 +1,12 @@
 import { Button } from "@chakra-ui/react";
 import { generateLighterShade } from "utils";
 
-const RadioButtonGroup = ({ name, selectedFilter, handleFilterClick }) => {
+const RadioButtonGroup = ({
+	name,
+	selectedFilter,
+	handleFilterClick,
+	fontSize,
+}) => {
 	return (
 		<Button
 			borderRadius={selectedFilter === name ? "50px" : 0}
@@ -16,6 +21,7 @@ const RadioButtonGroup = ({ name, selectedFilter, handleFilterClick }) => {
 			onClick={() => handleFilterClick(name)}
 			variant={"outline"}
 			size="xs"
+			fontSize={fontSize}
 		>
 			{name}
 		</Button>

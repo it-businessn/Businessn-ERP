@@ -28,12 +28,13 @@ const getRoles = async (req, res) => {
 };
 
 const addRole = async (req, res) => {
-	const { name, description } = req.body;
+	const { name, description, companyName } = req.body;
 
 	try {
 		const newRole = await EmployeeRole.create({
 			name,
 			description,
+			companyName,
 		});
 		res.status(201).json(newRole);
 	} catch (error) {
@@ -54,12 +55,13 @@ const getDepartments = async (req, res) => {
 };
 
 const addDepartment = async (req, res) => {
-	const { name, description } = req.body;
+	const { name, description, companyName } = req.body;
 
 	try {
 		const newDepartment = await Department.create({
 			name,
 			description,
+			companyName,
 		});
 		res.status(201).json(newDepartment);
 	} catch (error) {
@@ -80,12 +82,13 @@ const getModules = async (req, res) => {
 };
 
 const addModule = async (req, res) => {
-	const { name, description } = req.body;
+	const { name, description, companyName } = req.body;
 
 	try {
 		const newModule = await Module.create({
 			name,
 			description,
+			companyName,
 		});
 		res.status(201).json(newModule);
 	} catch (error) {
@@ -221,12 +224,13 @@ const getEmpTypes = async (req, res) => {
 };
 
 const addEmpType = async (req, res) => {
-	const { name, description } = req.body;
+	const { name, description, companyName } = req.body;
 
 	try {
 		const newEmpType = await EmploymentType.create({
 			name,
 			description,
+			companyName,
 		});
 		res.status(201).json(newEmpType);
 	} catch (error) {

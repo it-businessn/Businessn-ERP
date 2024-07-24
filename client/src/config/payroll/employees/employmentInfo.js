@@ -1,5 +1,3 @@
-import { getDefaultDate } from "utils";
-
 export const ROLE_OPTIONS = [
 	{
 		type: "Employee",
@@ -117,8 +115,8 @@ export const getInitialCorporateInfo = (empId, companyName) => {
 	return {
 		empId,
 		companyName,
-		employmentStartDate: getDefaultDate(),
-		employmentLeaveDate: getDefaultDate(),
+		employmentStartDate: null,
+		employmentLeaveDate: null,
 		employmentRole: "",
 		employmentPayGroup: "",
 		employmentCostCenter: "",

@@ -81,7 +81,7 @@ export const EMP_YTD_DEDUCTIONS_CONFIG = [
 				name: "Extended Health - EE ",
 				param_key: "extendedHealthEE_YTD",
 			},
-			{ name: "Union Dues", param_key: "unionDuesYTD" },
+			{ name: "Union Dues (%)", param_key: "unionDuesYTD" },
 		],
 	},
 	{

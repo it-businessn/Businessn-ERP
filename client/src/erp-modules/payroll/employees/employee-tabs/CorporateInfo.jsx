@@ -9,8 +9,8 @@ import {
 import useEmployeeEmploymentInfo from "hooks/useEmployeeEmploymentInfo";
 import { useEffect, useState } from "react";
 import PayrollService from "services/PayrollService";
-import Record from "../Record";
-import StepContent from "../StepContent";
+import StepContent from "../step-content";
+import Record from "../step-content/Record";
 
 const CorporateInfo = ({ company, empId }) => {
 	const employmentInfo = useEmployeeEmploymentInfo(company, empId);

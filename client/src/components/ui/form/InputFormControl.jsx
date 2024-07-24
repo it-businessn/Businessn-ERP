@@ -16,6 +16,7 @@ const InputFormControl = ({
 	fontWeight,
 	visibility,
 	handleConfirm,
+	border,
 }) => {
 	return (
 		<FormControlMain isInvalid={isInvalid}>
@@ -37,7 +38,7 @@ const InputFormControl = ({
 				required={required}
 				placeholder={placeholder}
 				visibility={visibility}
-				border={"none"}
+				border={border}
 			/>
 			{error && <FormHelperText color="red.500">{error}</FormHelperText>}
 		</FormControlMain>

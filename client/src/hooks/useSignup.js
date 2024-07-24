@@ -1,31 +1,115 @@
-import { buildUserInfo } from "models";
-import { useState } from "react";
-import * as api from "services";
-import LocalStorageService from "services/LocalStorageService";
-import { useAuthContext } from "./useAuthContext";
+import { useEffect, useState } from "react";
+import SettingService from "services/SettingService";
+import UserService from "services/UserService";
 
-export const useSignup = () => {
-	const [error, setError] = useState(null);
-	const [isLoading, setIsLoading] = useState(null);
-	const { dispatch } = useAuthContext();
-
-	const signup = async (values) => {
-		setIsLoading(true);
-		setError(null);
-		try {
-			const response = await api.signUp(values);
-
-			if (response.status === 200) {
-				dispatch({ type: "LOGIN", payload: response.data });
-				LocalStorageService.setItem("user", buildUserInfo(response.data));
-				setIsLoading(false);
-			}
-		} catch (error) {
-			console.log(error);
-			setIsLoading(false);
-			setError(error.response.data.error);
-		}
+export const useSignup = (optionDataRefresh) => {
+	const defaultFormData = {
+		company: "",
+		companyId: "",
+		firstName: "",
+		middleName: "",
+		lastName: "",
+		email: "",
+		password: "",
+		role: "",
+		department: "",
+		baseModule: "",
+		manager: "",
+		phoneNumber: "",
+		primaryAddress: {
+			streetNumber: "",
+			city: "",
+			state: "",
+			postalCode: "",
+			country: "",
+		},
+		employmentType: "",
 	};
+	const [companies, setCompanies] = useState(null);
+	const [empTypes, setEmpTypes] = useState(false);
+	const [roles, setRoles] = useState(false);
+	const [departments, setDepartments] = useState(false);
+	const [modules, setModules] = useState(false);
+	const [managers, setManagers] = useState(false);
+	const [formData, setFormData] = useState(defaultFormData);
 
-	return { signup, isLoading, error };
+	const resetForm = () => setFormData(defaultFormData);
+	useEffect(() => {
+		const fetchAllCompanies = async () => {
+			try {
+				const response = await SettingService.getAllCompanies();
+				setCompanies(response.data);
+			} catch (error) {
+				console.error(error);
+			}
+		};
+		fetchAllCompanies();
+	}, []);
+
+	useEffect(() => {
+		const fetchAllEmpTypes = async () => {
+			try {
+				const response = await SettingService.getAllEmploymentTypes(
+					formData.company,
+				);
+				setEmpTypes(response.data);
+			} catch (error) {
+				console.error(error);
+			}
+		};
+		const fetchAllRoles = async () => {
+			try {
+				const response = await SettingService.getAllRoles(formData.company);
+				setRoles(response.data);
+			} catch (error) {
+				console.error(error);
+			}
+		};
+		const fetchAllDepartments = async () => {
+			try {
+				const response = await SettingService.getAllDepartments(
+					formData.company,
+				);
+				setDepartments(response.data);
+			} catch (error) {
+				console.error(error);
+			}
+		};
+		const fetchAllManagers = async () => {
+			try {
+				const response = await UserService.getAllManagers(formData.company);
+				setManagers(response.data);
+			} catch (error) {
+				console.error(error);
+			}
+		};
+		const fetchAllModules = async () => {
+			try {
+				const response = await SettingService.getAllModules(formData.company);
+				setModules(response.data);
+			} catch (error) {
+				console.error(error);
+			}
+		};
+		if (formData.company === "") {
+			return;
+		}
+		fetchAllModules();
+		fetchAllManagers();
+		fetchAllRoles();
+		fetchAllDepartments();
+		fetchAllEmpTypes();
+	}, [formData.company, optionDataRefresh]);
+
+	return {
+		formData,
+		resetForm,
+		setFormData,
+		companies,
+		empTypes,
+		roles,
+		departments,
+		modules,
+		managers,
+	};
 };
