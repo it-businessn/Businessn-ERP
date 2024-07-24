@@ -16,6 +16,8 @@ const BankingInfo = ({ company, empId }) => {
 	const bankingInfo = useEmployeeBankingInfo(company, empId);
 	const setBankingInfo = () => getInitialBankingInfo(empId, company);
 	const [formData, setFormData] = useState(setBankingInfo);
+	const [isDisabled, setIsDisabled] = useState(true);
+	const [isLoading, setIsLoading] = useState(false);
 
 	useEffect(() => {
 		if (bankingInfo) {
@@ -25,14 +27,19 @@ const BankingInfo = ({ company, empId }) => {
 		}
 	}, [bankingInfo, empId]);
 
-	const handleConfirm = async (e) => {
-		const { name } = e.target;
+	const handleConfirm = () => {
+		setIsDisabled(false);
+	};
+
+	const handleSubmit = async () => {
+		setIsLoading(true);
 		try {
-			if (formData[name]) {
-				await PayrollService.addEmployeeBankingInfo(formData);
-			}
+			await PayrollService.addEmployeeBankingInfo(formData);
+			setIsLoading(false);
+			setIsDisabled(true);
 		} catch (error) {}
 	};
+
 	const steps = [
 		{
 			title: "Banking Info",
@@ -41,22 +48,26 @@ const BankingInfo = ({ company, empId }) => {
 					handleConfirm={handleConfirm}
 					formData={formData}
 					setFormData={setFormData}
-					data={bankingInfo}
 					title="Banking Info"
 					config={EMP_BANKING_CONFIG}
+					isLoading={isLoading}
+					isDisabled={isDisabled}
+					handleSubmit={handleSubmit}
 				/>
 			),
 		},
 		{
-			title: "Payment Notification ",
+			title: "Payment Notification",
 			content: (
 				<Record
 					handleConfirm={handleConfirm}
 					formData={formData}
 					setFormData={setFormData}
-					data={bankingInfo}
-					title="Payment Notification "
+					title="Payment Notification"
 					config={EMP_PAYMENT_NOTIFICATION_CONFIG}
+					isLoading={isLoading}
+					isDisabled={isDisabled}
+					handleSubmit={handleSubmit}
 				/>
 			),
 		},

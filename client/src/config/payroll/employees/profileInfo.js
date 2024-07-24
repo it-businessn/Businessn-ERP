@@ -2,9 +2,9 @@ export const EMP_EMERGENCY_CONTACT_CONFIG = [
 	{
 		type: "sfsgdsgdsgdsg30",
 		params: [
-			{ name: "First Name ", param_key: "emergencyFirstName" },
+			{ name: "First Name", param_key: "emergencyFirstName" },
 			{
-				name: "Personal Email ",
+				name: "Personal Email",
 				param_key: "emergencyPersonalEmail",
 			},
 			{
@@ -23,14 +23,14 @@ export const EMP_CONTACT_CONFIG = [
 	{
 		type: "sfsgdsgdsgdsg28",
 		params: [
-			{ name: "Personal Email ", param_key: "personalEmail" },
+			{ name: "Personal Email", param_key: "personalEmail" },
 			{ name: "Personal Phone", param_key: "personalPhoneNum" },
 			{ name: "Address", param_key: "address" },
 			{ name: "Street Address", param_key: "streetAddress" },
-			{ name: "City ", param_key: "city" },
+			{ name: "City", param_key: "city" },
 			{ name: "Province/State", param_key: "province" },
-			{ name: "Country ", param_key: "country" },
-			{ name: "Postal Code ", param_key: "postalCode" },
+			{ name: "Country", param_key: "country" },
+			{ name: "Postal Code", param_key: "postalCode" },
 		],
 	},
 	{

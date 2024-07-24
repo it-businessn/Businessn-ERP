@@ -33,10 +33,10 @@ export const EMP_YTD_EARNINGS_CONFIG = [
 	{
 		type: "Hours",
 		params: [
-			{ name: "Regular Pay ", param_key: "regPayHoursYTD" },
-			{ name: "Overtime Pay ", param_key: "overTimePayHoursYTD" },
+			{ name: "Regular Pay", param_key: "regPayHoursYTD" },
+			{ name: "Overtime Pay", param_key: "overTimePayHoursYTD" },
 			{
-				name: "Double Overtime Pay ",
+				name: "Double Overtime Pay",
 				param_key: "dblOverTimePayHoursYTD",
 			},
 			{
@@ -44,17 +44,17 @@ export const EMP_YTD_EARNINGS_CONFIG = [
 				param_key: "statWorkPayHoursYTD",
 			},
 			{ name: "Statutory Pay", param_key: "statPayHoursYTD" },
-			{ name: "Sick Pay ", param_key: "sickPayHoursYTD" },
+			{ name: "Sick Pay", param_key: "sickPayHoursYTD" },
 			{ name: "Vacation Pay", param_key: "vacationPayHoursYTD" },
 		],
 	},
 	{
 		type: "Dollars",
 		params: [
-			{ name: "Regular Pay ", param_key: "regPayDollarsYTD" },
-			{ name: "Overtime Pay ", param_key: "overTimePayDollarsYTD" },
+			{ name: "Regular Pay", param_key: "regPayDollarsYTD" },
+			{ name: "Overtime Pay", param_key: "overTimePayDollarsYTD" },
 			{
-				name: "Double Overtime Pay ",
+				name: "Double Overtime Pay",
 				param_key: "dblOverTimePayDollarsYTD",
 			},
 			{
@@ -62,7 +62,7 @@ export const EMP_YTD_EARNINGS_CONFIG = [
 				param_key: "statWorkPayDollarsYTD",
 			},
 			{ name: "Statutory Pay", param_key: "statPayDollarsYTD" },
-			{ name: "Sick Pay ", param_key: "sickPayDollarsYTD" },
+			{ name: "Sick Pay", param_key: "sickPayDollarsYTD" },
 			{ name: "Vacation Pay", param_key: "vacationDollarsYTD" },
 		],
 	},
@@ -78,7 +78,7 @@ export const EMP_YTD_DEDUCTIONS_CONFIG = [
 			},
 			{ name: "Dental - EE", param_key: "dentalEE_YTD" },
 			{
-				name: "Extended Health - EE ",
+				name: "Extended Health - EE",
 				param_key: "extendedHealthEE_YTD",
 			},
 			{ name: "Union Dues (%)", param_key: "unionDuesYTD" },

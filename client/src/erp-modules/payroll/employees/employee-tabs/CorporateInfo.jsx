@@ -16,6 +16,8 @@ const CorporateInfo = ({ company, empId }) => {
 	const employmentInfo = useEmployeeEmploymentInfo(company, empId);
 	const setCorporateInfo = () => getInitialCorporateInfo(empId, company);
 	const [formData, setFormData] = useState(setCorporateInfo);
+	const [isDisabled, setIsDisabled] = useState(true);
+	const [isLoading, setIsLoading] = useState(false);
 
 	useEffect(() => {
 		if (employmentInfo) {
@@ -25,25 +27,32 @@ const CorporateInfo = ({ company, empId }) => {
 		}
 	}, [employmentInfo, empId]);
 
-	const handleConfirm = async (e) => {
-		const { name } = e.target;
+	const handleConfirm = () => {
+		setIsDisabled(false);
+	};
+
+	const handleSubmit = async () => {
+		setIsLoading(true);
 		try {
-			if (formData[name]) {
-				await PayrollService.addEmployeeEmploymentInfo(formData);
-			}
+			await PayrollService.addEmployeeEmploymentInfo(formData);
+			setIsLoading(false);
+			setIsDisabled(true);
 		} catch (error) {}
 	};
+
 	const steps = [
 		{
 			title: "Role",
 			content: (
 				<Record
-					title="Role"
 					handleConfirm={handleConfirm}
 					formData={formData}
 					setFormData={setFormData}
-					data={employmentInfo}
+					title="Role"
 					config={EMP_ROLE_CONFIG}
+					isLoading={isLoading}
+					isDisabled={isDisabled}
+					handleSubmit={handleSubmit}
 				/>
 			),
 		},
@@ -54,9 +63,11 @@ const CorporateInfo = ({ company, empId }) => {
 					handleConfirm={handleConfirm}
 					formData={formData}
 					setFormData={setFormData}
-					data={employmentInfo}
 					title="Company"
 					config={EMP_COMPANY_CONFIG}
+					isLoading={isLoading}
+					isDisabled={isDisabled}
+					handleSubmit={handleSubmit}
 				/>
 			),
 		},

@@ -19,6 +19,8 @@ const PayInfo = ({ company, empId }) => {
 	const setPayInfo = () => getInitialPayInfo(empId, company);
 
 	const [formData, setFormData] = useState(setPayInfo);
+	const [isDisabled, setIsDisabled] = useState(true);
+	const [isLoading, setIsLoading] = useState(false);
 
 	useEffect(() => {
 		if (payInfo) {
@@ -28,14 +30,19 @@ const PayInfo = ({ company, empId }) => {
 		}
 	}, [payInfo, empId]);
 
-	const handleConfirm = async (e) => {
-		const { name } = e.target;
+	const handleConfirm = () => {
+		setIsDisabled(false);
+	};
+
+	const handleSubmit = async () => {
+		setIsLoading(true);
 		try {
-			if (formData[name]) {
-				await PayrollService.addEmployeePayInfo(formData);
-			}
+			await PayrollService.addEmployeePayInfo(formData);
+			setIsLoading(false);
+			setIsDisabled(true);
 		} catch (error) {}
 	};
+
 	const steps = [
 		{
 			title: "Earnings",
@@ -44,9 +51,11 @@ const PayInfo = ({ company, empId }) => {
 					handleConfirm={handleConfirm}
 					formData={formData}
 					setFormData={setFormData}
-					data={payInfo}
 					title="Earnings"
 					config={EMP_PAY_INFO_EARNINGS_CONFIG}
+					isLoading={isLoading}
+					isDisabled={isDisabled}
+					handleSubmit={handleSubmit}
 				/>
 			),
 		},
@@ -57,9 +66,11 @@ const PayInfo = ({ company, empId }) => {
 					handleConfirm={handleConfirm}
 					formData={formData}
 					setFormData={setFormData}
-					data={payInfo}
 					title="Deductions"
 					config={EMP_PAY_INFO_DEDUCTION_CONFIG}
+					isLoading={isLoading}
+					isDisabled={isDisabled}
+					handleSubmit={handleSubmit}
 				/>
 			),
 		},
@@ -70,9 +81,11 @@ const PayInfo = ({ company, empId }) => {
 					handleConfirm={handleConfirm}
 					formData={formData}
 					setFormData={setFormData}
-					data={payInfo}
 					title="Accruals"
 					config={EMP_PAY_INFO_ACCRUALS_CONFIG}
+					isLoading={isLoading}
+					isDisabled={isDisabled}
+					handleSubmit={handleSubmit}
 				/>
 			),
 		},

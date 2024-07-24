@@ -46,6 +46,7 @@ const addEmployeeEmploymentInfo = async (req, res) => {
 		employmentPayGroup,
 		employmentCostCenter,
 		employmentDepartment,
+		companyDepartment,
 	} = req.body;
 	try {
 		const existingEmploymentInfo = await findEmployeeEmploymentInfo(
@@ -68,6 +69,7 @@ const addEmployeeEmploymentInfo = async (req, res) => {
 			employmentPayGroup,
 			employmentCostCenter,
 			employmentDepartment,
+			companyDepartment,
 		});
 		return res.status(201).json(newEmploymentInfo);
 	} catch (error) {

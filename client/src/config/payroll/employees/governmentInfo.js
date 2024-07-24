@@ -2,8 +2,8 @@ export const EMP_INCOME_TAX_CONFIG = [
 	{
 		type: "sfsgdsgdsgdsg14",
 		params: [
-			{ name: "Federal Tax ", param_key: "federalTax" },
-			{ name: "Regional Tax ", param_key: "regionalTax" },
+			{ name: "Federal Tax", param_key: "federalTax" },
+			{ name: "Regional Tax", param_key: "regionalTax" },
 		],
 	},
 	{
@@ -25,7 +25,7 @@ export const EMP_FED_GOVT_CONFIG = [
 	{
 		type: "sfsgdsgdsgdsg16",
 		params: [
-			{ name: "Pension (EE) ", param_key: "federalPensionEE" },
+			{ name: "Pension (EE)", param_key: "federalPensionEE" },
 			{
 				name: "Employment Insurance (EE)",
 				param_key: "federalEmploymentInsuranceEE",
@@ -52,7 +52,7 @@ export const EMP_REGN_GOVT_CONFIG = [
 				param_key: "regionalEmployeeInjury",
 			},
 			{
-				name: "Employee Health ",
+				name: "Employee Health",
 				param_key: "regionalEmployeeHealth",
 			},
 		],

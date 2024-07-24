@@ -2,18 +2,19 @@ import { Flex, FormLabel, HStack, Radio, RadioGroup } from "@chakra-ui/react";
 import TextTitle from "components/ui/text/TextTitle";
 import { hideLabel } from "../Record";
 
-const RadioTypeRecord = ({ param, formData, setFormData }) => {
+const RadioTypeRecord = ({ param, formData, setFormData, handleConfirm }) => {
 	return (
 		<HStack visibility={hideLabel(param.name) && "hidden"}>
 			<FormLabel>{param.name}</FormLabel>
 			<RadioGroup
 				value={formData[param.param_key]}
-				onChange={(value) =>
+				onChange={(value) => {
 					setFormData((prev) => ({
 						...prev,
 						[param.param_key]: value,
-					}))
-				}
+					}));
+					handleConfirm();
+				}}
 			>
 				<Flex gap={5} align={"center"}>
 					{["Yes", "No"].map((option, index) => (

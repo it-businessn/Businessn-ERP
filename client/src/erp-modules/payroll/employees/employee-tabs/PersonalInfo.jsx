@@ -19,6 +19,8 @@ const PersonalInfo = ({ company, empId }) => {
 
 	const setProfileInfo = () => getInitialProfileInfo(empId, company);
 	const [formData, setFormData] = useState(setProfileInfo);
+	const [isDisabled, setIsDisabled] = useState(true);
+	const [isLoading, setIsLoading] = useState(false);
 
 	useEffect(() => {
 		if (profileInfo) {
@@ -28,12 +30,16 @@ const PersonalInfo = ({ company, empId }) => {
 		}
 	}, [profileInfo, empId]);
 
-	const handleConfirm = async (e) => {
-		const { name } = e?.target;
+	const handleConfirm = () => {
+		setIsDisabled(false);
+	};
+
+	const handleSubmit = async () => {
+		setIsLoading(true);
 		try {
-			if (formData[name]) {
-				await PayrollService.addEmployeeProfileInfo(formData);
-			}
+			await PayrollService.addEmployeeProfileInfo(formData);
+			setIsLoading(false);
+			setIsDisabled(true);
 		} catch (error) {}
 	};
 
@@ -45,9 +51,11 @@ const PersonalInfo = ({ company, empId }) => {
 					handleConfirm={handleConfirm}
 					formData={formData}
 					setFormData={setFormData}
-					data={profileInfo}
 					title="Identification and Status"
 					config={EMP_IDENTIFICATION_STATUS_CONFIG}
+					isLoading={isLoading}
+					isDisabled={isDisabled}
+					handleSubmit={handleSubmit}
 				/>
 			),
 		},
@@ -58,9 +66,11 @@ const PersonalInfo = ({ company, empId }) => {
 					handleConfirm={handleConfirm}
 					formData={formData}
 					setFormData={setFormData}
-					data={profileInfo}
 					title="Personal Information"
 					config={EMP_PERSONAL_INFO_CONFIG}
+					isLoading={isLoading}
+					isDisabled={isDisabled}
+					handleSubmit={handleSubmit}
 				/>
 			),
 		},
@@ -71,9 +81,11 @@ const PersonalInfo = ({ company, empId }) => {
 					handleConfirm={handleConfirm}
 					formData={formData}
 					setFormData={setFormData}
-					data={profileInfo}
 					title="Contact"
 					config={EMP_CONTACT_CONFIG}
+					isLoading={isLoading}
+					isDisabled={isDisabled}
+					handleSubmit={handleSubmit}
 				/>
 			),
 		},
@@ -84,9 +96,11 @@ const PersonalInfo = ({ company, empId }) => {
 					handleConfirm={handleConfirm}
 					formData={formData}
 					setFormData={setFormData}
-					data={profileInfo}
 					title="Emergency Contact"
 					config={EMP_EMERGENCY_CONTACT_CONFIG}
+					isLoading={isLoading}
+					isDisabled={isDisabled}
+					handleSubmit={handleSubmit}
 				/>
 			),
 		},

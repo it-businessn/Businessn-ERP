@@ -3,11 +3,11 @@ export const EMP_PAY_INFO_EARNINGS_CONFIG = [
 		type: "Hourly",
 		params: [
 			{ name: "Regular Pay", param_key: "regPay" },
-			{ name: "Overtime Pay ", param_key: "overTimePay" },
-			{ name: "Double Overtime Pay ", param_key: "dblOverTimePay" },
-			{ name: "Statutory Worked Pay ", param_key: "statWorkPay" },
+			{ name: "Overtime Pay", param_key: "overTimePay" },
+			{ name: "Double Overtime Pay", param_key: "dblOverTimePay" },
+			{ name: "Statutory Worked Pay", param_key: "statWorkPay" },
 			{ name: "Statutory Pay", param_key: "statPay" },
-			{ name: "Sick Pay  ", param_key: "sickPay" },
+			{ name: "Sick Pay", param_key: "sickPay" },
 		],
 	},
 	{
@@ -29,7 +29,7 @@ export const EMP_PAY_INFO_DEDUCTION_CONFIG = [
 			},
 			{ name: "Dental - EE", param_key: "dentalEE" },
 			{
-				name: "Extended Health - EE ",
+				name: "Extended Health - EE",
 				param_key: "extendedHealthEE",
 			},
 			{ name: "Union Dues", param_key: "unionDues" },
@@ -51,7 +51,7 @@ export const EMP_PAY_INFO_DEDUCTION_CONFIG = [
 export const EMP_PAY_INFO_ACCRUALS_CONFIG = [
 	{
 		type: "sfsgdsgdsgdsg22",
-		params: [{ name: "Vacation (%) ", param_key: "vacationPay" }],
+		params: [{ name: "Vacation (%)", param_key: "vacationPay" }],
 	},
 ];
 

@@ -8,7 +8,8 @@ const employeeEmploymentInfoSchema = new mongoose.Schema({
 	employmentRole: String,
 	employmentPayGroup: String,
 	employmentCostCenter: String,
-	employmentDepartment: String,
+	employmentDepartment: { type: Array, default: [] },
+	companyDepartment: String,
 	createdOn: { type: Date, default: Date.now },
 	updatedOn: { type: Date, default: Date.now },
 });

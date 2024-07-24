@@ -14,6 +14,7 @@ const MultiSelectFormControl = ({
 	label,
 	tag,
 	size = "sm",
+	hideAvatar,
 }) => {
 	return (
 		<FormControlMain>
@@ -43,7 +44,8 @@ const MultiSelectFormControl = ({
 					</Text>
 				)}
 			</Button>
-			{list?.length > 0 &&
+			{!hideAvatar &&
+				list?.length > 0 &&
 				list.map((name) => (
 					<Avatar size={size} name={name} src={name} key={name} />
 				))}

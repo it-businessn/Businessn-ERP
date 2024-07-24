@@ -36,6 +36,33 @@ export const COST_CENTER_OPTIONS = [
 	},
 ];
 
+export const DEPARTMENT_MULTI_OPTIONS = [
+	{
+		name: "Golf Maintenance",
+		_id: "0001-",
+	},
+	{
+		name: "Golf Other",
+		_id: "0002-",
+	},
+	{
+		name: "Restaurant Kitchen",
+		_id: "0003-",
+	},
+	{
+		name: "Restaurant Front of House",
+		_id: "0004-",
+	},
+	{
+		name: "Strata Maintenance",
+		_id: "0005-",
+	},
+	{
+		name: "All Operations Management",
+		_id: "0006-",
+	},
+];
+
 export const DEPARTMENT_OPTIONS = [
 	{
 		type: "Golf Maintenance",
@@ -73,7 +100,7 @@ export const EMP_COMPANY_CONFIG = [
 	{
 		type: "sfsgdsgdsgdsg13",
 		params: [
-			{ name: "Pay Group ", param_key: "employmentPayGroup" },
+			{ name: "Pay Group", param_key: "employmentPayGroup" },
 			{
 				name: "Cost Center",
 				param_key: "employmentCostCenter",
@@ -82,7 +109,7 @@ export const EMP_COMPANY_CONFIG = [
 			},
 			{
 				name: "Department",
-				param_key: "employmentDepartment",
+				param_key: "companyDepartment",
 				control: "select",
 				options: DEPARTMENT_OPTIONS,
 			},
@@ -102,10 +129,16 @@ export const EMP_ROLE_CONFIG = [
 		type: "sfsgdsgdsgdsg12",
 		params: [
 			{
-				name: "Role ",
+				name: "Role",
 				param_key: "employmentRole",
 				control: "select",
 				options: ROLE_OPTIONS,
+			},
+			{
+				name: "Department",
+				param_key: "employmentDepartment",
+				control: "multiselect",
+				options: DEPARTMENT_MULTI_OPTIONS,
 			},
 		],
 	},
@@ -121,5 +154,6 @@ export const getInitialCorporateInfo = (empId, companyName) => {
 		employmentPayGroup: "",
 		employmentCostCenter: "",
 		employmentDepartment: "",
+		companyDepartment: "",
 	};
 };

@@ -10,6 +10,7 @@ import {
 import useEmployeeBalanceInfo from "hooks/useEmployeeBalanceInfo";
 import { useEffect, useState } from "react";
 import PayrollService from "services/PayrollService";
+// import { convertToNum } from"utils";
 import StepContent from "../step-content";
 import Record from "../step-content/Record";
 
@@ -17,6 +18,8 @@ const BalancesInfo = ({ company, empId }) => {
 	const balanceInfo = useEmployeeBalanceInfo(company, empId);
 	const setBalanceInfo = () => getInitialBalanceInfo(empId, company);
 	const [formData, setFormData] = useState(setBalanceInfo);
+	const [isDisabled, setIsDisabled] = useState(true);
+	const [isLoading, setIsLoading] = useState(false);
 
 	useEffect(() => {
 		if (balanceInfo) {
@@ -26,25 +29,35 @@ const BalancesInfo = ({ company, empId }) => {
 		}
 	}, [balanceInfo, empId]);
 
-	const handleConfirm = async (e) => {
-		const { name } = e.target;
+	const handleConfirm = () => {
+		setIsDisabled(false);
+	};
+
+	const handleSubmit = async () => {
+		setIsLoading(true);
 		try {
-			if (formData[name]) {
-				await PayrollService.addEmployeeBalanceInfo(formData);
-			}
+			// formData.vacationAvailableBalance =
+			// 	formData.vacationAvailableBalance &&
+			// 	convertToNum(formData.vacationAvailableBalance);
+			await PayrollService.addEmployeeBalanceInfo(formData);
+			setIsLoading(false);
+			setIsDisabled(true);
 		} catch (error) {}
 	};
+
 	const steps = [
 		{
-			title: "Vacation ",
+			title: "Vacation",
 			content: (
 				<Record
 					handleConfirm={handleConfirm}
 					formData={formData}
 					setFormData={setFormData}
-					data={balanceInfo}
-					title="Vacation "
+					title="Vacation"
 					config={EMP_VACATION_BALANCE_CONFIG}
+					isLoading={isLoading}
+					isDisabled={isDisabled}
+					handleSubmit={handleSubmit}
 				/>
 			),
 		},
@@ -55,9 +68,11 @@ const BalancesInfo = ({ company, empId }) => {
 					handleConfirm={handleConfirm}
 					formData={formData}
 					setFormData={setFormData}
-					data={balanceInfo}
 					title="YTD Earnings"
 					config={EMP_YTD_EARNINGS_CONFIG}
+					isLoading={isLoading}
+					isDisabled={isDisabled}
+					handleSubmit={handleSubmit}
 				/>
 			),
 		},
@@ -68,9 +83,11 @@ const BalancesInfo = ({ company, empId }) => {
 					handleConfirm={handleConfirm}
 					formData={formData}
 					setFormData={setFormData}
-					data={balanceInfo}
 					title="YTD Deductions"
 					config={EMP_YTD_DEDUCTIONS_CONFIG}
+					isLoading={isLoading}
+					isDisabled={isDisabled}
+					handleSubmit={handleSubmit}
 				/>
 			),
 		},

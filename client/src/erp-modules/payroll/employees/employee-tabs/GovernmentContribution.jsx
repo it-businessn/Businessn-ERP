@@ -17,6 +17,8 @@ const GovernmentContribution = ({ company, empId }) => {
 	const governmentInfo = useEmployeeGovernment(company, empId);
 	const setGovernmentInfo = () => getInitialGovernmentInfo(empId, company);
 	const [formData, setFormData] = useState(setGovernmentInfo);
+	const [isDisabled, setIsDisabled] = useState(true);
+	const [isLoading, setIsLoading] = useState(false);
 
 	useEffect(() => {
 		if (governmentInfo) {
@@ -26,14 +28,19 @@ const GovernmentContribution = ({ company, empId }) => {
 		}
 	}, [governmentInfo, empId]);
 
-	const handleConfirm = async (e) => {
-		const { name } = e.target;
+	const handleConfirm = () => {
+		setIsDisabled(false);
+	};
+
+	const handleSubmit = async () => {
+		setIsLoading(true);
 		try {
-			if (formData[name]) {
-				await PayrollService.addEmployeeGovernmentInfo(formData);
-			}
+			await PayrollService.addEmployeeGovernmentInfo(formData);
+			setIsLoading(false);
+			setIsDisabled(true);
 		} catch (error) {}
 	};
+
 	const steps = [
 		{
 			title: "Income Tax",
@@ -42,9 +49,11 @@ const GovernmentContribution = ({ company, empId }) => {
 					handleConfirm={handleConfirm}
 					formData={formData}
 					setFormData={setFormData}
-					data={governmentInfo}
 					title="Income Tax"
 					config={EMP_INCOME_TAX_CONFIG}
+					isLoading={isLoading}
+					isDisabled={isDisabled}
+					handleSubmit={handleSubmit}
 				/>
 			),
 		},
@@ -55,9 +64,11 @@ const GovernmentContribution = ({ company, empId }) => {
 					handleConfirm={handleConfirm}
 					formData={formData}
 					setFormData={setFormData}
-					data={governmentInfo}
 					title="Federal Government Contributions"
 					config={EMP_FED_GOVT_CONFIG}
+					isLoading={isLoading}
+					isDisabled={isDisabled}
+					handleSubmit={handleSubmit}
 				/>
 			),
 		},
@@ -69,9 +80,11 @@ const GovernmentContribution = ({ company, empId }) => {
 					handleConfirm={handleConfirm}
 					formData={formData}
 					setFormData={setFormData}
-					data={governmentInfo}
 					title="Regional Government Deductions"
 					config={EMP_REGN_GOVT_CONFIG}
+					isLoading={isLoading}
+					isDisabled={isDisabled}
+					handleSubmit={handleSubmit}
 				/>
 			),
 		},

@@ -1,7 +1,7 @@
 import DateTimeFormControl from "components/ui/form/DateTimeFormControl";
 import { getDefaultDate } from "utils";
 
-const DateTypeRecord = ({ param, setFormData, formData }) => {
+const DateTypeRecord = ({ param, setFormData, formData, handleConfirm }) => {
 	return (
 		<DateTimeFormControl
 			label={param.name}
@@ -16,6 +16,7 @@ const DateTypeRecord = ({ param, setFormData, formData }) => {
 					...prev,
 					[param.param_key]: e.target.value,
 				}));
+				handleConfirm();
 			}}
 			required
 		/>

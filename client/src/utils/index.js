@@ -445,3 +445,5 @@ export const styleConsole = (value) =>
 		`%c ${value}`,
 		"color:red;font-weight:bold;background-color:white",
 	);
+// "34,456" to 34456
+export const convertToNum = (str) => parseFloat(str.replace(/,/g, ""));
