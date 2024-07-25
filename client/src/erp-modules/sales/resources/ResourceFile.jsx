@@ -8,10 +8,10 @@ import {
 	VStack,
 } from "@chakra-ui/react";
 import PrimaryButton from "components/ui/button/PrimaryButton";
+import DeletePopUp from "components/ui/modal/DeletePopUp";
 import TextTitle from "components/ui/text/TextTitle";
 import { useData } from "context/DataContext";
 import { useState } from "react";
-import { BiPencil } from "react-icons/bi";
 import { FaDownload } from "react-icons/fa";
 import { GoDownload } from "react-icons/go";
 import { MdDeleteOutline } from "react-icons/md";
@@ -35,6 +35,8 @@ const ResourceFile = ({
 	const [resourceId, setResourceId] = useState(null);
 	const [fileName, setFileName] = useState("");
 	const { isMobile, isIpad } = useBreakpointValue();
+	const [deleteRecord, setDeleteRecord] = useState(false);
+	const [showConfirmationPopUp, setShowConfirmationPopUp] = useState(false);
 
 	const handleFilterClick = (filter) => {
 		setSelectedFilter(filter);
@@ -45,14 +47,20 @@ const ResourceFile = ({
 		const downloadUrl = `${url}/resource/download/${fileName}`;
 		window.location.href = downloadUrl;
 	};
-	const handleDelete = async (id) => {
+
+	const handleDelete = async () => {
 		try {
-			await ResourceService.deleteResource({}, id);
+			await ResourceService.deleteResource({}, deleteRecord);
 			setNewUpload((prev) => !prev);
+			setShowConfirmationPopUp((prev) => !prev);
 		} catch (error) {
 			console.error(error);
 		}
 	};
+	const handleClose = () => {
+		setShowConfirmationPopUp((prev) => !prev);
+	};
+
 	const saveInput = async () => {
 		if (fileName !== "") {
 			try {
@@ -210,7 +218,10 @@ const ResourceFile = ({
 												px={"5px"}
 												name={"Delete"}
 												rightIcon={<MdDeleteOutline />}
-												onOpen={() => handleDelete(resource._id)}
+												onOpen={() => {
+													setShowConfirmationPopUp(true);
+													setDeleteRecord(resource._id);
+												}}
 											/>
 										)}
 										{/* {isUserManager && (
@@ -233,6 +244,15 @@ const ResourceFile = ({
 						))}
 					</SimpleGrid>
 				</>
+			)}
+			{showConfirmationPopUp && (
+				<DeletePopUp
+					headerTitle={"Delete Resource"}
+					textTitle={"Are you sure you want to delete the file?"}
+					isOpen={showConfirmationPopUp}
+					onClose={handleClose}
+					onOpen={handleDelete}
+				/>
 			)}
 		</>
 	);

@@ -22,7 +22,8 @@ const ListView = ({
 	setIsUpdated,
 	reference,
 	company,
-	handleDelete,
+	setShowConfirmationPopUp,
+	setDeleteRecord,
 }) => {
 	const loggedInUser = LocalStorageService.getItem("user");
 	const defaultLeadInfo = {
@@ -77,7 +78,7 @@ const ListView = ({
 					company={company}
 				/>
 			) : (
-				<TableLayout cols={LEADS_COLS}>
+				<TableLayout cols={LEADS_COLS} height={"73vh"}>
 					<Tbody>
 						{leadList?.map((_) => (
 							<Tr key={_._id}>
@@ -87,7 +88,10 @@ const ListView = ({
 								<Td>
 									<FaRegTrashAlt
 										cursor={"pointer"}
-										onClick={() => handleDelete(_._id)}
+										onClick={() => {
+											setShowConfirmationPopUp(true);
+											setDeleteRecord(_._id);
+										}}
 									/>
 								</Td>
 								{/* <Td fontSize={"xs"}>

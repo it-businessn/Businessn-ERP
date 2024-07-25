@@ -344,7 +344,7 @@ const SalesReport = () => {
 					)}
 
 					{contacts && (
-						<Box overflow="auto">
+						<Box overflow="auto" height={"40vh"}>
 							<Table color={"var(--nav_color)"} bg={"var(--primary_bg)"}>
 								<Thead>
 									<Tr fontSize="xs">

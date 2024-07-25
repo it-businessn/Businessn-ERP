@@ -15,7 +15,7 @@ import { MdCheckCircle } from "react-icons/md";
 const AlertsViolation = () => {
 	return (
 		<HStack alignItems={"end"}>
-			<Table w={"60%"}>
+			<Table w={"100%"}>
 				<Thead>
 					<Th>
 						<TextTitle size={"md"} title={"Alerts"} />

@@ -280,7 +280,15 @@ export const router = createBrowserRouter([
 				element: <Timesheets />,
 			},
 			{
+				path: `${ROUTE_PATH.PAYROLL}${ROUTE_PATH.TIMESHEETS}/:id`,
+				element: <Timesheets />,
+			},
+			{
 				path: `${ROUTE_PATH.PAYROLL}${ROUTE_PATH.EMPLOYEES}`,
+				element: <Employees />,
+			},
+			{
+				path: `${ROUTE_PATH.PAYROLL}${ROUTE_PATH.EMPLOYEES}/:id`,
 				element: <Employees />,
 			},
 			{

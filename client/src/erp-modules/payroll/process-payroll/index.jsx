@@ -9,8 +9,8 @@ import { useState } from "react";
 import { MdOutlineChevronRight } from "react-icons/md";
 import VerticalStepper from "../../../components/ui/VerticalStepper";
 import AlertsViolation from "./AlertsViolation";
-import InputsReview from "./InputsReview";
 import Finalize from "./Finalize";
+import InputsReview from "./InputsReview";
 import PayrollComplete from "./PayrollComplete";
 import PayrollStageContent from "./PayrollStageContent";
 import PayrunSetup from "./PayrunSetup";
@@ -88,17 +88,14 @@ const ProcessPayroll = () => {
 					isOpen={showConfirmationPopUp}
 					onClose={handleClick}
 				>
-					<form
-					// onSubmit={handleSubmit}
-					>
-						<FormLabel>Would you like to submit final processing?</FormLabel>
-						<ActionButtonGroup
-							submitBtnName={"Yes"}
-							closeLabel="No"
-							// isLoading={isSubmitting}
-							onClose={handleClick}
-						/>
-					</form>
+					<FormLabel>Would you like to submit final processing?</FormLabel>
+					<ActionButtonGroup
+						submitBtnName={"Yes"}
+						closeLabel="No"
+						// isLoading={isSubmitting}
+						onClose={handleClick}
+						// onOpen={""}
+					/>
 				</ModalLayout>
 			)}
 		</PageLayout>

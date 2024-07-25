@@ -1,3 +1,4 @@
+import DeletePopUp from "components/ui/modal/DeletePopUp";
 import TabsButtonGroup from "components/ui/tab/TabsButtonGroup";
 import PageLayout from "layouts/PageLayout";
 import { useEffect, useState } from "react";
@@ -25,14 +26,22 @@ const FreshLeads = () => {
 		fetchAllLeads();
 	}, [isUpdated, company]);
 
-	const handleDelete = async (_id) => {
+	const [deleteRecord, setDeleteRecord] = useState(false);
+	const [showConfirmationPopUp, setShowConfirmationPopUp] = useState(false);
+
+	const handleDelete = async () => {
 		try {
-			await LeadsService.deleteLead({}, _id);
+			await LeadsService.deleteLead({}, deleteRecord);
 			setIsUpdated((prev) => !prev);
+			setShowConfirmationPopUp((prev) => !prev);
 		} catch (error) {
 			console.error(error);
 		}
 	};
+	const handleClose = () => {
+		setShowConfirmationPopUp((prev) => !prev);
+	};
+
 	const TAB_LIST = [
 		{
 			id: 0,
@@ -44,7 +53,8 @@ const FreshLeads = () => {
 					reference={FRESH_LEADS}
 					setIsUpdated={setIsUpdated}
 					company={company}
-					handleDelete={handleDelete}
+					setShowConfirmationPopUp={setShowConfirmationPopUp}
+					setDeleteRecord={setDeleteRecord}
 				/>
 			),
 		},
@@ -58,7 +68,8 @@ const FreshLeads = () => {
 					reference={FRESH_LEADS}
 					setIsUpdated={setIsUpdated}
 					company={company}
-					handleDelete={handleDelete}
+					setShowConfirmationPopUp={setShowConfirmationPopUp}
+					setDeleteRecord={setDeleteRecord}
 				/>
 			),
 		},
@@ -73,6 +84,15 @@ const FreshLeads = () => {
 				setViewMode={setViewMode}
 				viewMode={viewMode}
 			/>
+			{showConfirmationPopUp && (
+				<DeletePopUp
+					headerTitle={"Delete Fresh Lead"}
+					textTitle={"Are you sure you want to delete the lead?"}
+					isOpen={showConfirmationPopUp}
+					onClose={handleClose}
+					onOpen={handleDelete}
+				/>
+			)}
 			{showComponent(viewMode)}
 		</PageLayout>
 	);

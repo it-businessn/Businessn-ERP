@@ -9,17 +9,19 @@ const ActionButtonGroup = ({
 	onClose,
 	closeLabel,
 	onOpen,
+	size,
 }) => {
 	return (
 		<HStack justifyContent={!closeLabel && "end"}>
 			<PrimaryButton
+				size={size}
 				isDisabled={isDisabled}
 				name={submitBtnName}
 				isLoading={isLoading}
 				loadingText="Loading"
 				onOpen={onOpen}
 			/>
-			<CancelButton name={closeLabel} onClick={onClose} />
+			<CancelButton name={closeLabel} onClick={onClose} size={size} />
 		</HStack>
 	);
 };

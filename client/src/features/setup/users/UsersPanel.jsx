@@ -58,6 +58,7 @@ const UsersPanel = ({
 					isUser={isUser}
 					filteredEmployees={filteredEmployees}
 					company={company}
+					height={"70vh"}
 				/>
 			)}
 		</>

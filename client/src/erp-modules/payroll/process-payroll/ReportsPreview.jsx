@@ -6,7 +6,7 @@ import { MdCheckCircle } from "react-icons/md";
 const ReportsPreview = () => {
 	return (
 		<HStack alignItems={"end"}>
-			<Table w={"50%"}>
+			<Table w={"100%"}>
 				<Tbody>
 					<Tr>
 						<Td>

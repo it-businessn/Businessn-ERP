@@ -33,7 +33,8 @@ const AgentsView = ({
 	setIsUpdated,
 	reference,
 	company,
-	handleDelete,
+	setShowConfirmationPopUp,
+	setDeleteRecord,
 }) => {
 	const defaultLeadInfo = {
 		_id: null,
@@ -193,7 +194,10 @@ const AgentsView = ({
 											<Box>
 												<FaRegTrashAlt
 													cursor={"pointer"}
-													onClick={() => handleDelete(_id)}
+													onClick={() => {
+														setShowConfirmationPopUp(true);
+														setDeleteRecord(_id);
+													}}
 												/>
 											</Box>
 										</HStack>
@@ -203,7 +207,6 @@ const AgentsView = ({
 					</Box>
 				))}
 			</SimpleGrid>
-
 			<EditLead
 				defaultLeadInfo={defaultLeadInfo}
 				formData={formData}

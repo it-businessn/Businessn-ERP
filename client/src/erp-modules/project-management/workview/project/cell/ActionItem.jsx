@@ -1,7 +1,6 @@
-import { DeleteIcon } from "@chakra-ui/icons";
-import { Button, HStack, Text, Tooltip } from "@chakra-ui/react";
-import { AddTaskButton, TaskButton, generateLighterShade } from "utils";
-import { COLORS } from "../data";
+import { HStack, Text, Tooltip } from "@chakra-ui/react";
+import { FaRegTrashAlt } from "react-icons/fa";
+import { AddTaskButton, TaskButton } from "utils";
 
 const ActionItem = ({
 	name,
@@ -53,20 +52,7 @@ const ActionItem = ({
 					setRefresh={setRefresh}
 				/>
 				{!isProject && (
-					<Button
-						onClick={handleDelete}
-						size="xxs"
-						display={"flex"}
-						variant="ghost"
-						fontWeight={"bold"}
-						color="var(--nav_color)"
-						_hover={{
-							bg: generateLighterShade(COLORS.primary, 0.8),
-							color: "var(--nav_color)",
-						}}
-					>
-						<DeleteIcon />
-					</Button>
+					<FaRegTrashAlt cursor={"pointer"} onClick={handleDelete} />
 				)}
 			</HStack>
 		</>

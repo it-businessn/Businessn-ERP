@@ -62,6 +62,8 @@ export const generateLighterShade = (color, factor) => {
 export const toCapitalize = (str) =>
 	str?.replace(/\b\w/g, (match) => match.toUpperCase());
 
+export const dayMonthYear = (date) => moment(date).format("ddd MMM DD, YYYY");
+
 export const today = moment().format("MMDDYY");
 
 export const formatDate = (date) =>
@@ -73,6 +75,14 @@ export const formatDate = (date) =>
 
 export const formatDateTime = (date) =>
 	`${formatDate(date)} ${new Date(date).toLocaleTimeString()}`;
+
+export const formatDateBar = (date) => moment(date).format("DD/MM/YYYY");
+
+export const formatDateRange = (startDate, endDate) => {
+	const start = moment(startDate).format("DD/MM");
+	const end = moment(endDate).format("DD/MM");
+	return `${start}-${end}`;
+};
 
 export const generateRandomData = (name, count) => {
 	const data = [];

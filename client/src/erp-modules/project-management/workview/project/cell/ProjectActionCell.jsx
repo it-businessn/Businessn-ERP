@@ -37,7 +37,7 @@ const ProjectActionCell = ({
 		setProjectId(projectId);
 	};
 
-	const handleDelete = (index) => {};
+	// const handleDelete = (index) => {};
 	return (
 		<Td p={"0.5em"} fontSize={"xs"} w={"400px"} py={0}>
 			<VStack alignItems={"start"} spacing={0} w={"100%"} ml={"-1.5em"}>
@@ -65,7 +65,7 @@ const ProjectActionCell = ({
 						index={index}
 						expandedIndex={expandedIndex}
 						isExpanded={expandedIndex === index}
-						handleDelete={() => handleDelete(project, project._id)}
+						// handleDelete={() => handleDelete(project, project._id)}
 						isProject
 						type={"project"}
 						setRefresh={setRefresh}

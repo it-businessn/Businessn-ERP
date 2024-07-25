@@ -4,6 +4,7 @@ import InputFormControl from "components/ui/form/InputFormControl";
 import ModalLayout from "components/ui/modal/ModalLayout";
 import TextTitle from "components/ui/text/TextTitle";
 
+import DeletePopUp from "components/ui/modal/DeletePopUp";
 import PageLayout from "layouts/PageLayout";
 import { useEffect, useState } from "react";
 import LeadsService from "services/LeadsService";
@@ -17,6 +18,8 @@ const Pipeline = () => {
 	const loggedInUser = LocalStorageService.getItem("user");
 	const [leads, setLeads] = useState(null);
 	const [isUpdated, setIsUpdated] = useState(false);
+	const [deleteRecord, setDeleteRecord] = useState(false);
+	const [showConfirmationPopUp, setShowConfirmationPopUp] = useState(false);
 
 	const company = LocalStorageService.getItem("selectedCompany");
 	const fetchAllLeads = async () => {
@@ -57,14 +60,20 @@ const Pipeline = () => {
 			total: totalLeads("T4", isUserManager, leads, fullName),
 		},
 	];
-	const handleDelete = async (_id) => {
+
+	const handleDelete = async () => {
 		try {
-			await LeadsService.deleteLead({}, _id);
+			await LeadsService.deleteLead({}, deleteRecord);
 			setIsUpdated((prev) => !prev);
 		} catch (error) {
 			console.error(error);
 		}
 	};
+
+	const handleClose = () => {
+		setShowConfirmationPopUp((prev) => !prev);
+	};
+
 	return (
 		<PageLayout title={"Target Leads"}>
 			<Box
@@ -90,7 +99,17 @@ const Pipeline = () => {
 					reference={TARGET_LEADS}
 					setIsUpdated={setIsUpdated}
 					company={company}
-					handleDelete={handleDelete}
+					setShowConfirmationPopUp={setShowConfirmationPopUp}
+					setDeleteRecord={setDeleteRecord}
+				/>
+			)}
+			{showConfirmationPopUp && (
+				<DeletePopUp
+					headerTitle={"Delete Target Lead"}
+					textTitle={"Are you sure you want to delete the lead?"}
+					isOpen={showConfirmationPopUp}
+					onClose={handleClose}
+					onOpen={handleDelete}
 				/>
 			)}
 			<ModalLayout title={"Edit Lead"} isOpen={isOpen} onClose={onClose}>

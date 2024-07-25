@@ -1,6 +1,4 @@
-import { DeleteIcon } from "@chakra-ui/icons";
 import {
-	Button,
 	Checkbox,
 	Flex,
 	HStack,
@@ -15,6 +13,7 @@ import {
 } from "@chakra-ui/react";
 import LeftIconButton from "components/ui/button/LeftIconButton";
 import SelectList from "components/ui/form/select/SelectList";
+import DeletePopUp from "components/ui/modal/DeletePopUp";
 import TableLayout from "components/ui/table/TableLayout";
 import {
 	INDUSTRIES,
@@ -24,7 +23,7 @@ import {
 } from "erp-modules/project-management/workview/project/data";
 import PageLayout from "layouts/PageLayout";
 import { useEffect, useState } from "react";
-import { FaSearch } from "react-icons/fa";
+import { FaRegTrashAlt, FaSearch } from "react-icons/fa";
 import { MdOutlineFilterList } from "react-icons/md";
 import { useNavigate } from "react-router";
 import { useBreakpointValue } from "services/Breakpoint";
@@ -45,6 +44,8 @@ const LeadsDocket = () => {
 	const toast = useToast();
 	const [data, setData] = useState([]);
 	const [isRefresh, setIsRefresh] = useState(false);
+	const [deleteRecord, setDeleteRecord] = useState(false);
+	const [showConfirmationPopUp, setShowConfirmationPopUp] = useState(false);
 
 	const company = LocalStorageService.getItem("selectedCompany");
 	const fetchAllLeads = async () => {
@@ -97,14 +98,17 @@ const LeadsDocket = () => {
 	};
 
 	const navigate = useNavigate();
-	const handleDelete = async (_id) => {
+
+	const handleDelete = async () => {
 		try {
-			await LeadsService.deleteLead({}, _id);
+			await LeadsService.deleteLead({}, deleteRecord);
 			setIsRefresh((prev) => !prev);
+			setShowConfirmationPopUp((prev) => !prev);
 		} catch (error) {
 			console.error(error);
 		}
 	};
+
 	const handleDisburse = async (e) => {
 		e.preventDefault();
 		try {
@@ -121,6 +125,10 @@ const LeadsDocket = () => {
 				position: "top-right",
 			});
 		}
+	};
+
+	const handleClose = () => {
+		setShowConfirmationPopUp((prev) => !prev);
 	};
 
 	return (
@@ -215,6 +223,7 @@ const LeadsDocket = () => {
 					isSmall
 					isAllChecked={isAllChecked}
 					handleHeaderCheckboxChange={handleHeaderCheckboxChange}
+					height={"73vh"}
 				>
 					<Tbody>
 						{leads?.map(
@@ -281,23 +290,29 @@ const LeadsDocket = () => {
 										address?.postalCode || ""
 									}`}</Td>
 									<Td p={1}>{formatDate(createdOn)}</Td>
-									<Td>
-										<Button
-											onClick={() => handleDelete(_id)}
-											size="xxs"
-											display={"flex"}
-											variant="ghost"
-											fontWeight={"bold"}
-											color="var(--nav_color)"
-										>
-											<DeleteIcon />
-										</Button>
+									<Td textAlign={"center"}>
+										<FaRegTrashAlt
+											cursor={"pointer"}
+											onClick={() => {
+												setShowConfirmationPopUp(true);
+												setDeleteRecord(_id);
+											}}
+										/>
 									</Td>
 								</Tr>
 							),
 						)}
 					</Tbody>
 				</TableLayout>
+			)}
+			{showConfirmationPopUp && (
+				<DeletePopUp
+					headerTitle={"Delete Lead"}
+					textTitle={"Are you sure you want to delete the lead record?"}
+					isOpen={showConfirmationPopUp}
+					onClose={handleClose}
+					onOpen={handleDelete}
+				/>
 			)}
 		</PageLayout>
 	);

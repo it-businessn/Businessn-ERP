@@ -5,9 +5,15 @@ const getAllEmploymentInfo = async (req, res) => {
 	try {
 		const result = await EmployeeEmploymentInfo.find({
 			companyName,
-		}).sort({
-			createdOn: -1,
-		});
+		})
+			.populate({
+				path: "empId",
+				model: "Employee",
+				select: ["employeeId", "fullName"],
+			})
+			.sort({
+				createdOn: -1,
+			});
 
 		res.status(200).json(result);
 	} catch (error) {

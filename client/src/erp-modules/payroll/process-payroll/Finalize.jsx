@@ -6,7 +6,7 @@ import { MdCheckCircle } from "react-icons/md";
 const Finalize = () => {
 	return (
 		<HStack alignItems={"end"}>
-			<Table w={"40%"}>
+			<Table w={"100%"}>
 				<Tbody>
 					<Tr>
 						<Td>

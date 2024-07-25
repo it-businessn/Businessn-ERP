@@ -1,6 +1,5 @@
 import { SmallAddIcon } from "@chakra-ui/icons";
 import {
-	Box,
 	Button,
 	FormControl,
 	FormLabel,
@@ -14,6 +13,7 @@ import LeftIconButton from "components/ui/button/LeftIconButton";
 import PrimaryButton from "components/ui/button/PrimaryButton";
 import BoxCard from "components/ui/card";
 import MultiSelectBox from "components/ui/form/select/MultiSelectBox";
+import DeletePopUp from "components/ui/modal/DeletePopUp";
 import { useEffect, useState } from "react";
 import { FaCaretDown } from "react-icons/fa";
 import { MdSettingsSuggest } from "react-icons/md";
@@ -46,6 +46,8 @@ const GroupsPanel = ({
 	const [empName, setEmpName] = useState(null);
 	const [openAddGroup, setOpenAddGroup] = useState(false);
 	const [showEditDetails, setShowEditDetails] = useState(false);
+	const [deleteRecord, setDeleteRecord] = useState(false);
+	const [showConfirmationPopUp, setShowConfirmationPopUp] = useState(false);
 
 	useEffect(() => {
 		const fetchAllModules = async () => {
@@ -165,15 +167,23 @@ const GroupsPanel = ({
 		});
 		setGroupMembers(item.members);
 	};
-	const handleDelete = async (id) => {
-		selectedGroup.members = selectedGroup.members.filter((_) => _._id !== id);
+	const handleDelete = async () => {
+		selectedGroup.members = selectedGroup.members.filter(
+			(_) => _._id !== deleteRecord,
+		);
 		try {
 			await SettingService.updateGroup(selectedGroup, selectedGroup._id);
 			setIsRefresh((prev) => !prev);
+			setShowConfirmationPopUp((prev) => !prev);
 		} catch (error) {
 			console.log("An error occurred. Please try again.");
 		}
 	};
+
+	const handleClose = () => {
+		setShowConfirmationPopUp((prev) => !prev);
+	};
+
 	return (
 		<BoxCard fontWeight="bold">
 			<HStack>
@@ -321,16 +331,25 @@ const GroupsPanel = ({
 					/>
 				</HStack>
 				{groupMembers?.length > 0 && (
-					<Box w={"100%"} p={0} overflow={"auto"} fontWeight="normal">
-						<UserList
-							isGroup
-							filteredEmployees={groupMembers}
-							group={selectedGroup}
-							handleDelete={handleDelete}
-						/>
-					</Box>
+					<UserList
+						isGroup
+						filteredEmployees={groupMembers}
+						group={selectedGroup}
+						setShowConfirmationPopUp={setShowConfirmationPopUp}
+						setDeleteRecord={setDeleteRecord}
+						height="40vh"
+					/>
 				)}
 			</BoxCard>
+			{showConfirmationPopUp && (
+				<DeletePopUp
+					headerTitle={"Remove User"}
+					textTitle={"Are you sure you want to remove the user from the group?"}
+					isOpen={showConfirmationPopUp}
+					onClose={handleClose}
+					onOpen={handleDelete}
+				/>
+			)}
 		</BoxCard>
 	);
 };

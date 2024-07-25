@@ -15,6 +15,7 @@ import PrimaryButton from "components/ui/button/PrimaryButton";
 import SelectList from "components/ui/form/select/SelectList";
 import TableLayout from "components/ui/table/TableLayout";
 
+import DeletePopUp from "components/ui/modal/DeletePopUp";
 import PageLayout from "layouts/PageLayout";
 import { useEffect, useState } from "react";
 import { FaRegTrashAlt, FaSearch } from "react-icons/fa";
@@ -27,7 +28,7 @@ import UserService from "services/UserService";
 import { formatDate, isManager, toCapitalize } from "utils";
 import Caption from "../lead docket/Caption";
 import SearchFilter from "../lead docket/SearchFilter";
-import { OPP_COLUMNS } from "../lead docket/data";
+import { OPPORTUNITY_COLUMNS } from "../lead docket/data";
 import AddNewOpportunity from "./AddNewOpportunity";
 import { LEAD_STAGES } from "./data";
 
@@ -178,11 +179,14 @@ const Opportunities = () => {
 		<PrimaryButton onOpen={handleOpen} name={"Add new lead"} size={"xs"} />
 	);
 	const [showEditLead, setShowEditLead] = useState(null);
+	const [deleteRecord, setDeleteRecord] = useState(false);
+	const [showConfirmationPopUp, setShowConfirmationPopUp] = useState(false);
 
-	const handleDelete = async (_id) => {
+	const handleDelete = async () => {
 		try {
-			await LeadsService.deleteLead({}, _id);
+			await LeadsService.deleteLead({}, deleteRecord);
 			setIsAdded((prev) => !prev);
+			setShowConfirmationPopUp((prev) => !prev);
 		} catch (error) {
 			console.error(error);
 		}
@@ -190,6 +194,7 @@ const Opportunities = () => {
 	const handleClose = () => {
 		onClose();
 		setShowEditLead(null);
+		setShowConfirmationPopUp((prev) => !prev);
 	};
 	const handleOpen = () => {
 		onOpen();
@@ -252,7 +257,7 @@ const Opportunities = () => {
 				</Flex>
 			)}
 			{opportunities && (
-				<TableLayout isOpportunity cols={OPP_COLUMNS}>
+				<TableLayout isOpportunity cols={OPPORTUNITY_COLUMNS} height={"73vh"}>
 					<Tbody>
 						{opportunities?.map((_) => {
 							return (
@@ -300,7 +305,10 @@ const Opportunities = () => {
 											/>
 											<FaRegTrashAlt
 												cursor={"pointer"}
-												onClick={() => handleDelete(_._id)}
+												onClick={() => {
+													setShowConfirmationPopUp(true);
+													setDeleteRecord(_._id);
+												}}
 											/>
 										</HStack>
 									</Td>
@@ -319,6 +327,15 @@ const Opportunities = () => {
 					isOpen={handleOpen}
 					onClose={handleClose}
 					company={company}
+				/>
+			)}
+			{showConfirmationPopUp && (
+				<DeletePopUp
+					headerTitle={"Delete Opportunity"}
+					textTitle={"Are you sure you want to delete the opportunity?"}
+					isOpen={showConfirmationPopUp}
+					onClose={handleClose}
+					onOpen={handleDelete}
 				/>
 			)}
 		</PageLayout>

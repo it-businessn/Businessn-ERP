@@ -1,4 +1,5 @@
 import { Checkbox, HStack, VStack } from "@chakra-ui/react";
+import DeletePopUp from "components/ui/modal/DeletePopUp";
 import { useState } from "react";
 import ProjectService from "services/ProjectService";
 import TaskService from "services/TaskService";
@@ -30,6 +31,9 @@ const TaskActionCell = ({
 	const [isChecked, setIsChecked] = useState(false);
 	const [modalPosition, setModalPosition] = useState({ top: 0, left: 0 });
 	const [actualHours, setActualHours] = useState(0);
+	const [deleteRecord, setDeleteRecord] = useState(false);
+	const [deleteRecordTask, setDeleteRecordTask] = useState(false);
+	const [showConfirmationPopUp, setShowConfirmationPopUp] = useState(false);
 
 	const handleTaskStatus = (e, taskId) => {
 		setTaskId(taskId);
@@ -45,6 +49,7 @@ const TaskActionCell = ({
 	const handleClose = () => {
 		setIsOpen(false);
 		setActualHours(0);
+		setShowConfirmationPopUp((prev) => !prev);
 	};
 
 	const handleConfirm = async () => {
@@ -72,10 +77,11 @@ const TaskActionCell = ({
 		setTaskId(taskId);
 	};
 
-	const handleDelete = async (task, taskId) => {
+	const handleDelete = async () => {
 		try {
-			await ProjectService.deleteTask(task, taskId);
+			await ProjectService.deleteTask(deleteRecordTask, deleteRecord);
 			setRefresh((prev) => !prev);
+			setShowConfirmationPopUp((prev) => !prev);
 		} catch (error) {
 			console.error("Error updating task status:", error);
 		}
@@ -111,12 +117,17 @@ const TaskActionCell = ({
 					handleAddTask={() => handleAddTask(task, task._id)}
 					handleToggle={() => handleTaskToggle(taskIndex)}
 					isExpanded={isExpanded === taskIndex}
-					handleDelete={() => handleDelete(task, task._id)}
+					handleDelete={() => {
+						setShowConfirmationPopUp(true);
+						setDeleteRecordTask(task);
+						setDeleteRecord(task._id);
+					}}
 					type={"task"}
 					data={task}
 					setRefresh={setRefresh}
 				/>
 			</HStack>
+
 			{isExpanded === taskIndex &&
 				task?.subtasks?.length > 0 &&
 				task?.subtasks?.map((subtask, subtask_index) => {
@@ -168,6 +179,15 @@ const TaskActionCell = ({
 					actualHours={actualHours}
 					handleClose={handleClose}
 					handleConfirm={handleConfirm}
+				/>
+			)}
+			{showConfirmationPopUp && (
+				<DeletePopUp
+					headerTitle={"Delete Task"}
+					textTitle={"Are you sure you want to delete the task?"}
+					isOpen={showConfirmationPopUp}
+					onClose={handleClose}
+					onOpen={handleDelete}
 				/>
 			)}
 		</>

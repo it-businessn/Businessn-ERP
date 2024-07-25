@@ -9,7 +9,7 @@ export const LEAD_DOCKET_COLUMNS = [
 	"Created On",
 ];
 
-export const OPP_COLUMNS = [
+export const OPPORTUNITY_COLUMNS = [
 	"Opportunity name",
 	"Company name",
 	"Email",
@@ -18,7 +18,7 @@ export const OPP_COLUMNS = [
 	"Supervisor assignee",
 	"Created On",
 	"Disburse Status",
-	"",
+	"Action",
 ];
 
 export const LEADS_COLS = ["Opportunity name", "Company", "Email", "Action"];

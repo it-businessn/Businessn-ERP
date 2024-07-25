@@ -13,9 +13,13 @@ const PageLayout = ({
 	showBgLayer,
 	selectAttr,
 	selectPlaceholder,
+	showDate,
+	valueText1,
 }) => (
 	<Box p={{ base: "1em" }} overflow={"hidden"}>
 		<PageHeader
+			showDate={showDate}
+			valueText1={valueText1}
 			showSelectBox={showSelectBox}
 			title={title}
 			handleChange={handleChange}

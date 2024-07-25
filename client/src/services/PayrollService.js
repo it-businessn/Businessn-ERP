@@ -5,6 +5,10 @@ const PayrollService = {
 		return apiService.get(`/payroll/paygroups/${id}`);
 	},
 
+	async getAllEmployeePayInfo(company) {
+		return apiService.get(`/payroll/payInfo/${company}`);
+	},
+
 	async getEmployeePayInfo(company, empId) {
 		return apiService.get(`/payroll/payInfo/${company}/${empId}`);
 	},
@@ -19,6 +23,10 @@ const PayrollService = {
 
 	async addEmployeeProfileInfo(data) {
 		return apiService.post("/payroll/profileInfo", data);
+	},
+
+	async getAllEmployeeEmploymentInfo(company) {
+		return apiService.get(`/payroll/employmentInfo/${company}`);
 	},
 
 	async getEmployeeEmploymentInfo(company, empId) {

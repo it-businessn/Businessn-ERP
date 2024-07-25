@@ -14,6 +14,7 @@ import {
 } from "@chakra-ui/react";
 import PrimaryButton from "components/ui/button/PrimaryButton";
 import ActionButtonGroup from "components/ui/form/ActionButtonGroup";
+import DeletePopUp from "components/ui/modal/DeletePopUp";
 import TextTitle from "components/ui/text/TextTitle";
 import { useEffect, useState } from "react";
 import { FaRegTrashCan } from "react-icons/fa6";
@@ -103,6 +104,9 @@ const AddQuestionForm = () => {
 	};
 	const [formData, setFormData] = useState(initialInfo);
 	const [showEditQuestion, setShowEditQuestion] = useState("");
+	const [deleteRecord, setDeleteRecord] = useState(false);
+	const [showConfirmationPopUp, setShowConfirmationPopUp] = useState(false);
+
 	const navigate = useNavigate();
 
 	const handleEdit = (questionnaire) => {
@@ -120,13 +124,18 @@ const AddQuestionForm = () => {
 		setShowEditQuestion(true);
 	};
 
-	const handleDelete = async (id) => {
+	const handleDelete = async () => {
 		try {
-			await QuestionnaireService.deleteQuestion({}, id);
+			await QuestionnaireService.deleteQuestion({}, deleteRecord);
 			setRefresh((prev) => !prev);
+			setShowConfirmationPopUp((prev) => !prev);
 		} catch (error) {
 			console.error(error);
 		}
+	};
+
+	const handleClose = () => {
+		setShowConfirmationPopUp((prev) => !prev);
 	};
 
 	return (
@@ -164,7 +173,10 @@ const AddQuestionForm = () => {
 							boxSize={3.5}
 							cursor={"pointer"}
 							mb={1}
-							onClick={() => handleDelete(questionnaire._id)}
+							onClick={() => {
+								setShowConfirmationPopUp(true);
+								setDeleteRecord(questionnaire._id);
+							}}
 						/>
 					</HStack>
 					<FormLabel>
@@ -208,6 +220,15 @@ const AddQuestionForm = () => {
 					</FormLabel>
 				</Box>
 			))}
+			{showConfirmationPopUp && (
+				<DeletePopUp
+					headerTitle={"Delete Question"}
+					textTitle={"Are you sure you want to delete the question?"}
+					isOpen={showConfirmationPopUp}
+					onClose={handleClose}
+					onOpen={handleDelete}
+				/>
+			)}
 			{showEditQuestion && (
 				<EditQuestionnaire
 					setFormData={setFormData}
