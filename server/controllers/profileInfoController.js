@@ -1,3 +1,4 @@
+const Employee = require("../models/Employee");
 const EmployeeProfileInfo = require("../models/EmployeeProfileInfo");
 
 const getAllProfileInfo = async (req, res) => {
@@ -75,6 +76,9 @@ const addEmployeeProfileInfo = async (req, res) => {
 				existingProfileInfo._id,
 				req.body,
 			);
+			const employee = await Employee.findById(empId);
+			employee.payrollStatus = payrollStatus;
+			await employee.save();
 			return res.status(201).json(updatedProfileInfo);
 		}
 		const newProfileInfo = await EmployeeProfileInfo.create({

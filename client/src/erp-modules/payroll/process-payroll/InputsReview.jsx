@@ -13,7 +13,7 @@ import PrimaryButton from "components/ui/button/PrimaryButton";
 import TextTitle from "components/ui/text/TextTitle";
 import { MdCheckCircle, MdSettingsSuggest } from "react-icons/md";
 
-const DetailsReview = () => {
+const InputsReview = () => {
 	return (
 		<HStack alignItems={"end"}>
 			<Table w={"60%"}>
@@ -95,4 +95,4 @@ const DetailsReview = () => {
 	);
 };
 
-export default DetailsReview;
+export default InputsReview;

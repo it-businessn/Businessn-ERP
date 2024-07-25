@@ -14,6 +14,7 @@ class User {
 		manager,
 		companyId,
 		employeeId,
+		payrollStatus,
 	) {
 		this._id = _id;
 		this.fullName = fullName;
@@ -29,6 +30,7 @@ class User {
 		this.manager = manager;
 		this.companyId = companyId;
 		this.employeeId = employeeId;
+		this.payrollStatus = payrollStatus;
 	}
 }
 

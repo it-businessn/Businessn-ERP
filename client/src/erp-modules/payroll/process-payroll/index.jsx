@@ -9,7 +9,7 @@ import { useState } from "react";
 import { MdOutlineChevronRight } from "react-icons/md";
 import VerticalStepper from "../../../components/ui/VerticalStepper";
 import AlertsViolation from "./AlertsViolation";
-import DetailsReview from "./DetailsReview";
+import InputsReview from "./InputsReview";
 import Finalize from "./Finalize";
 import PayrollComplete from "./PayrollComplete";
 import PayrollStageContent from "./PayrollStageContent";
@@ -19,7 +19,7 @@ import ReportsPreview from "./ReportsPreview";
 const ProcessPayroll = () => {
 	const steps = [
 		{ title: "Payrun Setup", content: <PayrunSetup /> },
-		{ title: "Inputs Review", content: <DetailsReview /> },
+		{ title: "Inputs Review", content: <InputsReview /> },
 		{ title: "Alerts and Violations", content: <AlertsViolation /> },
 		{ title: "Review Reports", content: <ReportsPreview /> },
 		{ title: "Finalize", content: <Finalize /> },

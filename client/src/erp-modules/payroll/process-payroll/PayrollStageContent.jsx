@@ -3,7 +3,7 @@ import TextTitle from "components/ui/text/TextTitle";
 import { useEffect } from "react";
 import { FaSortDown, FaSortUp } from "react-icons/fa6";
 import AlertsViolation from "./AlertsViolation";
-import DetailsReview from "./DetailsReview";
+import InputsReview from "./InputsReview";
 import Finalize from "./Finalize";
 // import PayrollComplete from "./PayrollComplete";
 import BoxCard from "components/ui/card";
@@ -94,7 +94,7 @@ const PayrollStageContent = ({ currentStep, steps }) => {
 					<TextTitle mt={1} weight="normal" title={"Inputs Review"} />
 				</HStack>
 				<Collapse in={isInputsReviewOpen}>
-					<DetailsReview />
+					<InputsReview />
 				</Collapse>
 			</BoxCard>
 			<BoxCard>

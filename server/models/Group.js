@@ -8,6 +8,7 @@ const groupSchema = new mongoose.Schema({
 	admin: [{ type: String, ref: "Employee" }],
 	modules: [{ type: String, ref: "Module" }],
 	companyName: { type: String, ref: "Company" },
+	scheduleSettings: Object,
 });
 
 const Group = mongoose.model("Group", groupSchema);

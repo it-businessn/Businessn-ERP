@@ -9,7 +9,7 @@ const AddNewUser = ({ isOpen, onClose, setRefresh }) => {
 			isOpen={isOpen}
 			onClose={onClose}
 		>
-			<SignUp isModal setRefresh={setRefresh} onClose={onClose} />
+			<SignUp isModal setRefresh={setRefresh} onClose={onClose} hideCompany />
 		</ModalLayout>
 	);
 };

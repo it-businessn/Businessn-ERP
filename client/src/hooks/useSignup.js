@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
+import LocalStorageService from "services/LocalStorageService";
 import SettingService from "services/SettingService";
 import UserService from "services/UserService";
 
 export const useSignup = (optionDataRefresh) => {
+	const company = LocalStorageService.getItem("selectedCompany");
 	const defaultFormData = {
-		company: "",
+		company: company ?? "",
 		companyId: "",
 		firstName: "",
 		middleName: "",

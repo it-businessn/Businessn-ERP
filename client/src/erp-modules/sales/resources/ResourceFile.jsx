@@ -42,7 +42,7 @@ const ResourceFile = ({
 
 	const handleDownload = (fileName) => {
 		const url = BASE_URL;
-		const downloadUrl = `${url}/companyResource/download/${fileName}`;
+		const downloadUrl = `${url}/resource/download/${fileName}`;
 		window.location.href = downloadUrl;
 	};
 	const handleDelete = async (id) => {

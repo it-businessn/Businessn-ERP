@@ -31,7 +31,7 @@ const Dashboard = () => {
 
 	const company = LocalStorageService.getItem("selectedCompany");
 
-	const payGroups = usePaygroup(company);
+	const { payGroups } = usePaygroup(company);
 
 	const handleChange = (value) => {
 		if (value !== "") {

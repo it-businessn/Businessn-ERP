@@ -16,11 +16,14 @@ import BoxCard from "components/ui/card";
 import MultiSelectBox from "components/ui/form/select/MultiSelectBox";
 import { useEffect, useState } from "react";
 import { FaCaretDown } from "react-icons/fa";
+import { MdSettingsSuggest } from "react-icons/md";
 import SettingService from "services/SettingService";
 import UserService from "services/UserService";
+import { isPaygroup } from "utils";
 import AddNewGroup from "../AddNewGroup";
 import EmpSearchMenu from "../EmpSearchMenu";
 import UserList from "../UserList";
+import EditGroup from "./EditGroup";
 
 const GroupsPanel = ({
 	employees,
@@ -42,6 +45,7 @@ const GroupsPanel = ({
 	const [selectedAdmins, setSelectedAdmins] = useState(null);
 	const [empName, setEmpName] = useState(null);
 	const [openAddGroup, setOpenAddGroup] = useState(false);
+	const [showEditDetails, setShowEditDetails] = useState(false);
 
 	useEffect(() => {
 		const fetchAllModules = async () => {
@@ -146,6 +150,7 @@ const GroupsPanel = ({
 		setEmpName("");
 		setIsSubmitting(false);
 	};
+
 	const handleGroup = (e) => {
 		const item = groups.find((name) => name.name === e.target.value);
 		if (!item) {
@@ -178,6 +183,28 @@ const GroupsPanel = ({
 					isLoading={isSubmitting}
 					onOpen={() => setOpenAddGroup(true)}
 				/>
+				{isPaygroup(selectedGroup?.name) && (
+					<LeftIconButton
+						color={"var(--nav_color)"}
+						border={"2px solid var(--filter_border_color)"}
+						name={"Update"}
+						borderRadius={"10px"}
+						variant={"ghost"}
+						isFilter
+						size="sm"
+						ml={2}
+						handleClick={() => setShowEditDetails(true)}
+						icon={<MdSettingsSuggest />}
+					/>
+				)}
+				{showEditDetails && (
+					<EditGroup
+						selectedGroup={selectedGroup}
+						isOpen={showEditDetails}
+						company={company}
+						onClose={() => setShowEditDetails(false)}
+					/>
+				)}
 				{openAddGroup && (
 					<AddNewGroup
 						modules={modules}
@@ -190,7 +217,7 @@ const GroupsPanel = ({
 				)}
 			</HStack>
 			{(!modules || !groups || !admins) && <Loader autoHeight />}
-			<HStack>
+			<HStack justifyContent={"start"} align={"self-start"}>
 				{groups && (
 					<FormControl>
 						<FormLabel> Group </FormLabel>

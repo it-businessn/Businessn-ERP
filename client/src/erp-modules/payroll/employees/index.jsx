@@ -87,6 +87,8 @@ const Employees = () => {
 	const showComponent = (viewMode) =>
 		SETUP_LIST.find(({ type }) => type === viewMode)?.name;
 
+	const isActivePayroll = employee?.payrollStatus?.includes("Active");
+
 	return (
 		<PageLayout title={"Employees"}>
 			<HStack spacing="1em" mt="1em" justifyContent={"space-between"}>
@@ -100,9 +102,11 @@ const Employees = () => {
 					<VStack spacing={0} align={"start"}>
 						<TextTitle size="sm" title={employee?.fullName} />
 						<TextTitle size="xs" weight="normal" title={employee?.employeeId} />
-						<Badge bg="var(--correct_ans)" color="var(--primary_bg)">
-							Active
-						</Badge>
+						{isActivePayroll && (
+							<Badge bg="var(--correct_ans)" color="var(--primary_bg)">
+								Active
+							</Badge>
+						)}
 					</VStack>
 				</HStack>
 				<Spacer />

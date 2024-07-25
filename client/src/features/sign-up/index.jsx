@@ -29,7 +29,7 @@ import LoginService from "services/LoginService";
 import MultiSelectControl from "./MultiSelectControl";
 // import signUpImg from "../../assets/logos/BusinessN_dark.jpg";
 
-const SignUp = ({ isModal, setRefresh, onClose }) => {
+const SignUp = ({ isModal, setRefresh, onClose, hideCompany }) => {
 	const [isLoading, setIsLoading] = useState(false);
 	const [showPassword, setShowPassword] = useState(false);
 	const [error, setError] = useState(null);
@@ -93,6 +93,7 @@ const SignUp = ({ isModal, setRefresh, onClose }) => {
 	const handleTogglePassword = () => {
 		setShowPassword((prevShowPassword) => !prevShowPassword);
 	};
+
 	const SELECT_OPTIONS = [
 		{
 			name: "Type of Employment",
@@ -211,7 +212,7 @@ const SignUp = ({ isModal, setRefresh, onClose }) => {
 					)}
 
 					<form onSubmit={handleSubmit}>
-						{companies && (
+						{!hideCompany && companies && (
 							<FormControl>
 								<FormLabel>Select Company</FormLabel>
 								<Select
