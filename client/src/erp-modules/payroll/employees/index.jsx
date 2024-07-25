@@ -13,6 +13,7 @@ import EmpSearchMenu from "features/setup/EmpSearchMenu";
 import useEmployees from "hooks/useEmployees";
 import PageLayout from "layouts/PageLayout";
 import { useState } from "react";
+import { useParams } from "react-router-dom";
 import LocalStorageService from "services/LocalStorageService";
 import BalanceInfo from "./employee-tabs/BalancesInfo";
 import BankingInfo from "./employee-tabs/BankingInfo";
@@ -22,7 +23,9 @@ import PayInfo from "./employee-tabs/PayInfo";
 import PersonalInfo from "./employee-tabs/PersonalInfo";
 
 const Employees = () => {
+	const { id } = useParams();
 	const loggedInUser = LocalStorageService.getItem("user");
+	const userId = id ?? LocalStorageService.getItem("user")._id;
 	const [employee, setEmployee] = useState(loggedInUser);
 	const [isRefresh, setIsRefresh] = useState(false);
 	const company = LocalStorageService.getItem("selectedCompany");
@@ -50,37 +53,37 @@ const Employees = () => {
 		{
 			id: 0,
 			type: "Pay",
-			name: <PayInfo company={company} empId={employee._id} />,
+			name: <PayInfo company={company} empId={userId} />,
 		},
 		{
 			id: 1,
 			type: "Info",
 
-			name: <PersonalInfo company={company} empId={employee._id} />,
+			name: <PersonalInfo company={company} empId={userId} />,
 		},
 		{
 			id: 2,
 			type: "Employment",
 
-			name: <CorporateInfo company={company} empId={employee._id} />,
+			name: <CorporateInfo company={company} empId={userId} />,
 		},
 		{
 			id: 3,
 			type: "Government",
 
-			name: <GovernmentInfo company={company} empId={employee._id} />,
+			name: <GovernmentInfo company={company} empId={userId} />,
 		},
 		{
 			id: 4,
 			type: "Banking",
 
-			name: <BankingInfo company={company} empId={employee._id} />,
+			name: <BankingInfo company={company} empId={userId} />,
 		},
 		{
 			id: 5,
 			type: "Balances",
 
-			name: <BalanceInfo company={company} empId={employee._id} />,
+			name: <BalanceInfo company={company} empId={userId} />,
 		},
 	];
 	const [viewMode, setViewMode] = useState(SETUP_LIST[0].type);

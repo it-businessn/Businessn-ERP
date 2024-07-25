@@ -4,19 +4,20 @@ import PageLayout from "layouts/PageLayout";
 import { useState } from "react";
 import LocalStorageService from "services/LocalStorageService";
 import { isManager } from "utils";
-// import Timecard from "./Timecard";
-// import Timesheet from "./Timesheet";
 import { Td, Tr } from "@chakra-ui/react";
 import TextTitle from "components/ui/text/TextTitle";
 import React from "react";
+import { useParams } from "react-router-dom";
 import { getDateDiffHours, getDefaultTime } from "utils";
 import Timecard from "./Timecard";
 import Timesheet from "./Timesheet";
 
 const Timesheets = () => {
+	const { id } = useParams();
 	const loggedInUser = LocalStorageService.getItem("user");
+	const userId = id ?? loggedInUser._id;
 	const isManagerView = isManager(loggedInUser?.role);
-	const timesheets = useTimesheet(isManagerView, loggedInUser?._id);
+	const timesheets = useTimesheet(isManagerView, userId);
 
 	const TABS = [
 		{
@@ -169,8 +170,14 @@ const Timesheets = () => {
 		TABS.find(({ type }) => type === viewMode)?.name;
 
 	return (
-		<PageLayout title={"Timesheets"}>
+		<PageLayout
+			title={"Timesheets"}
+			showDate
+			valueText1={new Date()}
+			handleChange={(v) => console.log(v)}
+		>
 			<TabsButtonGroup
+				mt={4}
 				isOutlineTab
 				tabs={TABS}
 				setViewMode={setViewMode}

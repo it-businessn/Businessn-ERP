@@ -4,6 +4,7 @@ import PayrollService from "services/PayrollService";
 const usePaygroup = (company) => {
 	const [payGroups, setPayGroups] = useState(null);
 	const [selectedPayGroup, setSelectedPayGroup] = useState(null);
+	const [payGroupSchedule, setPayGroupSchedule] = useState(null);
 
 	useEffect(() => {
 		const fetchAllPaygroups = async () => {
@@ -11,7 +12,8 @@ const usePaygroup = (company) => {
 				const response = await PayrollService.getAllPaygroups(company);
 				setPayGroups(response.data);
 				if (response.data.length) {
-					setSelectedPayGroup(response.data[0].name);
+					setSelectedPayGroup(response.data[0]);
+					setPayGroupSchedule(response.data[0]?.scheduleSettings);
 				}
 			} catch (error) {
 				console.error(error);
@@ -19,7 +21,7 @@ const usePaygroup = (company) => {
 		};
 		fetchAllPaygroups();
 	}, [company]);
-	return { payGroups, selectedPayGroup, setSelectedPayGroup };
+	return { payGroups, selectedPayGroup, setSelectedPayGroup, payGroupSchedule };
 };
 
 export default usePaygroup;

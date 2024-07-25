@@ -6,7 +6,7 @@ import PaygroupTable from "./PaygroupTable";
 
 const PayrollWorkview = () => {
 	const { company } = useCompany();
-	const { payGroups, selectedPayGroup, setSelectedPayGroup } =
+	const { payGroups, selectedPayGroup, setSelectedPayGroup, payGroupSchedule } =
 		usePaygroup(company);
 
 	const handleChange = (value) => {
@@ -14,7 +14,6 @@ const PayrollWorkview = () => {
 			setSelectedPayGroup(value);
 		}
 	};
-	console.log(payGroups, selectedPayGroup);
 
 	return (
 		<PageLayout
@@ -23,11 +22,11 @@ const PayrollWorkview = () => {
 			showSelectBox={true}
 			handleChange={handleChange}
 			data={payGroups}
-			selectedValue={selectedPayGroup}
+			selectedValue={selectedPayGroup?.name}
 			selectPlaceholder="Select Paygroup"
 			selectAttr="name"
 		>
-			<PaygroupTable />
+			<PaygroupTable selectedPayGroup={selectedPayGroup} />
 			<PaygroupDetailTable />
 		</PageLayout>
 	);

@@ -6,9 +6,12 @@ const useTimesheet = (isManagerView, userId) => {
 
 	const fetchAllEmployeeTimesheet = async () => {
 		try {
-			const response = isManagerView
-				? await TimesheetService.getTimesheets()
-				: await TimesheetService.getTimesheetById(userId);
+			// const response = isManagerView
+			// 	? await TimesheetService.getTimesheets()
+			// 	: await TimesheetService.getTimesheetById(userId);
+			const response = userId
+				? await TimesheetService.getTimesheetById(userId)
+				: await TimesheetService.getTimesheets();
 			setTimesheets(response.data);
 		} catch (error) {
 			console.error(error);

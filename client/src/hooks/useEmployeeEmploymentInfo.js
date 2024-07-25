@@ -3,13 +3,13 @@ import PayrollService from "services/PayrollService";
 
 const useEmployeeEmploymentInfo = (company, empId) => {
 	const [employmentInfo, setEmploymentInfo] = useState(null);
+
 	useEffect(() => {
 		const fetchEmployeeEmploymentInfo = async () => {
 			try {
-				const response = await PayrollService.getEmployeeEmploymentInfo(
-					company,
-					empId,
-				);
+				const response = empId
+					? await PayrollService.getEmployeeEmploymentInfo(company, empId)
+					: await PayrollService.getAllEmployeeEmploymentInfo(company);
 				setEmploymentInfo(response.data);
 			} catch (error) {
 				console.error(error);
