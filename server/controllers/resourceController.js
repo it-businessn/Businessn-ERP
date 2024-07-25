@@ -131,7 +131,7 @@ const downloadResource = async (req, res) => {
 
 		res.setHeader("Content-Type", fileContentType(file));
 
-		res.download(filePath, filename, (err) => {
+		res.download(file, filename, (err) => {
 			fs.unlinkSync(file);
 			if (err) {
 				console.error("Error downloading file:", err);
