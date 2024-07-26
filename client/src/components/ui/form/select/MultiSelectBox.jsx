@@ -42,9 +42,9 @@ const MultiSelectBox = ({
 					color={"var(--main_color_black)"}
 					_hover={{ cursor: "default" }}
 				>
-					<CloseButton onClick={handleClose} />
+					<CloseButton onClick={handleClose} position={"sticky"} top={0} />
 				</MenuItem>
-				<Stack spacing={2}>
+				<Stack spacing={1} overflow={"auto"} maxHeight={"33vh"}>
 					{data?.map((assignee) => (
 						<MenuItem key={assignee?._id || assignee}>
 							<Checkbox

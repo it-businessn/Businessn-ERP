@@ -74,6 +74,9 @@ export const formatDate = (date) =>
 		day: "2-digit",
 	});
 
+export const sortRecordsByDate = (records, key) =>
+	records?.sort((a, b) => new Date(a[key]) - new Date(b[key]));
+
 export const formatDateTime = (date) =>
 	`${formatDate(date)} ${new Date(date).toLocaleTimeString()}`;
 
@@ -460,3 +463,59 @@ export const styleConsole = (value) =>
 export const convertToNum = (str) => parseFloat(str.replace(/,/g, ""));
 
 export const isPaygroup = (name) => name?.payrollActivated;
+
+export const getPayrollStatus = (data) => {
+	const defaultStatus = {
+		name: "Pending",
+		color: "var(--primary_bg)",
+		bg: "var(--pending)",
+		isDisabledStatus: false,
+		isViewAction: true,
+	};
+	const targetEndDate = moment(data.payPeriodEndDate);
+	const targetPayDate = moment(data.payPeriodPayDate);
+	const targetProcessingDate = moment(data.payPeriodProcessingDate);
+	const today = moment();
+
+	if (!data.isProcessed && targetProcessingDate.isBefore(today)) {
+		return {
+			name: "Overdue",
+			color: "var(--primary_bg)",
+			bg: "var(--incorrect_ans)",
+			isViewAction: false,
+			isDisabledStatus: false,
+		};
+	} else if (data.isProcessed && targetPayDate.isBefore(today)) {
+		return {
+			name: "In progress",
+			color: "var(--primary_bg)",
+			bg: "var(--correct_ans)",
+			isDisabledStatus: true,
+			isViewAction: false,
+		};
+	} else if (
+		data.isProcessed &&
+		targetPayDate.isSame(today.startOf("day"), "day")
+	) {
+		return {
+			name: "Paid",
+			color: "var(--primary_bg)",
+			bg: "var(--correct_ans)",
+			isDisabledStatus: false,
+			isViewAction: true,
+		};
+	} else if (
+		data.isProcessed &&
+		targetEndDate.isSame(today.startOf("day"), "day")
+	) {
+		return {
+			name: "Pending",
+			color: "var(--primary_bg)",
+			bg: "var(--pending)",
+			isDisabledStatus: true,
+			isViewAction: false,
+		};
+	} else {
+		return defaultStatus;
+	}
+};

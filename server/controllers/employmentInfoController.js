@@ -1,21 +1,40 @@
 const EmployeeEmploymentInfo = require("../models/EmployeeEmploymentInfo");
+const EmployeePayInfo = require("../models/EmployeePayInfo");
 
 const getAllEmploymentInfo = async (req, res) => {
 	const { companyName } = req.params;
 	try {
-		const result = await EmployeeEmploymentInfo.find({
+		const empInfoResult = await EmployeeEmploymentInfo.find({
 			companyName,
-		})
-			.populate({
-				path: "empId",
-				model: "Employee",
-				select: ["employeeId", "fullName"],
-			})
-			.sort({
-				createdOn: -1,
-			});
+		}).populate({
+			path: "empId",
+			model: "Employee",
+			select: ["employeeId", "fullName"],
+		});
+		const payInfoResult = await EmployeePayInfo.find({
+			companyName,
+		}).select("empId regPay");
 
-		res.status(200).json(result);
+		const payInfoMap = new Map(
+			payInfoResult.map((payInfo) => [payInfo.empId, payInfo.regPay]),
+		);
+
+		empInfoResult.forEach((empInfo) => {
+			const empIdStr = empInfo.empId._id.toString();
+			if (payInfoMap.has(empIdStr)) {
+				empInfo.regPay = payInfoMap.get(empIdStr);
+			}
+		});
+		//   empInfoResult?.map((empInfo) => {
+		// 	payInfoResult?.map((payInfo) => {
+		// 		if (empInfo.empId._id.toString() === payInfo.empId) {
+		// 			empInfo.regPay = payInfo.regPay;
+		// 		}
+		// 		return empInfo;
+		// 	});
+		// });
+
+		res.status(200).json(empInfoResult);
 	} catch (error) {
 		res.status(500).json({ message: error.message });
 	}

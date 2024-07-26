@@ -10,11 +10,19 @@ const TableLayout = ({
 	isTimesheet,
 	height,
 	w,
+	position,
+	top,
+	zIndex,
 }) => {
 	return (
 		<Box overflow="auto" height={height} w={w}>
 			<Table variant="simple">
-				<Thead>
+				<Thead
+					// position={position} top={top} zIndex={zIndex}
+					position="sticky"
+					top={-1}
+					zIndex="docked"
+				>
 					<Tr>
 						{hasMulti && (
 							<Th>

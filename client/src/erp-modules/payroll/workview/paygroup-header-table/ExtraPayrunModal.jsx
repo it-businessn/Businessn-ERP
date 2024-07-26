@@ -1,0 +1,162 @@
+import { HStack, Stack, useDisclosure } from "@chakra-ui/react";
+import ActionButtonGroup from "components/ui/form/ActionButtonGroup";
+import DateTimeFormControl from "components/ui/form/DateTimeFormControl";
+import MultiSelectFormControl from "components/ui/form/MultiSelectFormControl";
+import ModalLayout from "components/ui/modal/ModalLayout";
+import useEmployees from "hooks/useEmployees";
+import moment from "moment";
+import { useState } from "react";
+import SettingService from "services/SettingService";
+import { getDefaultDate } from "utils";
+
+const ExtraPayrunModal = ({
+	showExtraPayrun,
+	setShowExtraPayrun,
+	setRefresh,
+	company,
+	selectedPayGroupId,
+	selectedPayGroup,
+	payGroupSchedule,
+}) => {
+	const [isSubmitting, setIsSubmitting] = useState(false);
+	const today = getDefaultDate(new Date());
+
+	const closestRecord = payGroupSchedule?.reduce((closest, record) => {
+		const recordEndDate = moment(record.payPeriodEndDate);
+		const closestEndDate = moment(closest.payPeriodEndDate);
+		return Math.abs(recordEndDate.diff(today)) <
+			Math.abs(closestEndDate.diff(today))
+			? record
+			: closest;
+	}, payGroupSchedule[0]);
+
+	const [payPeriodPayDate, setPayPeriodPayDate] = useState(
+		getDefaultDate(closestRecord?.payPeriodPayDate),
+	);
+	const [payPeriodProcessingDate, setPayPeriodProcessingDate] = useState(
+		getDefaultDate(closestRecord?.payPeriodProcessingDate),
+	);
+	const [payPeriodStartDate, setPayPeriodStartDate] = useState(
+		getDefaultDate(closestRecord?.payPeriodStartDate),
+	);
+	const [payPeriodEndDate, setPayPeriodEndDate] = useState(
+		getDefaultDate(closestRecord?.payPeriodEndDate),
+	);
+
+	const [selectedEmp, setSelectedEmp] = useState([]);
+	const { employees } = useEmployees(false, company);
+	const [openMenu, setOpenMenu] = useState(false);
+	const [selectedOptions, setSelectedOptions] = useState([]);
+
+	const { onClose } = useDisclosure();
+
+	const handleClose = () => {
+		onClose();
+		setShowExtraPayrun(false);
+		reset();
+	};
+
+	const reset = () => {
+		setSelectedEmp([]);
+		setPayPeriodPayDate(today);
+		setPayPeriodProcessingDate(today);
+		setPayPeriodStartDate(today);
+		setPayPeriodEndDate(today);
+	};
+
+	const handleCloseMenu = (selectedOptions) => {
+		setOpenMenu(false);
+		setSelectedEmp(selectedOptions);
+	};
+
+	const handleMenuToggle = () => {
+		setOpenMenu((prev) => !prev);
+	};
+
+	const handleSubmit = async () => {
+		setIsSubmitting(true);
+		try {
+			selectedPayGroup.scheduleSettings.push({
+				payPeriod: `${closestRecord.payPeriod}E`,
+				selectedEmp,
+				payPeriodPayDate,
+				payPeriodProcessingDate,
+				payPeriodStartDate,
+				payPeriodEndDate,
+			});
+			await SettingService.updateGroup(
+				{ scheduleSettings: selectedPayGroup.scheduleSettings },
+				selectedPayGroupId,
+			);
+			setRefresh((prev) => !prev);
+			handleClose();
+		} catch (error) {
+			console.log("An error occurred. Please try again.");
+		} finally {
+			setIsSubmitting(false);
+		}
+	};
+
+	return (
+		<ModalLayout
+			title={"Add extra payrun"}
+			size="lg"
+			isOpen={showExtraPayrun}
+			onClose={handleClose}
+		>
+			<Stack spacing={3} mt={"-1em"}>
+				<MultiSelectFormControl
+					label={"Select Employees"}
+					tag={"employee(s) selected"}
+					showMultiSelect={openMenu}
+					data={employees}
+					handleCloseMenu={handleCloseMenu}
+					selectedOptions={selectedOptions}
+					setSelectedOptions={setSelectedOptions}
+					handleMenuToggle={handleMenuToggle}
+					list={selectedEmp}
+					hideAvatar
+				/>
+				<DateTimeFormControl
+					label={"Select pay date"}
+					valueText1={payPeriodPayDate}
+					name1="payPeriodPayDate"
+					handleChange={(e) => setPayPeriodPayDate(e.target.value)}
+					required
+				/>
+				<DateTimeFormControl
+					label={"Select processing date"}
+					valueText1={payPeriodProcessingDate}
+					name1="payPeriodProcessingDate"
+					handleChange={(e) => setPayPeriodProcessingDate(e.target.value)}
+					required
+				/>
+				<HStack spacing={4}>
+					<DateTimeFormControl
+						label={"Pay period start date"}
+						valueText1={payPeriodStartDate}
+						name1="payPeriodStartDate"
+						handleChange={(e) => setPayPeriodStartDate(e.target.value)}
+						required
+					/>
+					<DateTimeFormControl
+						label={"Pay period end date"}
+						valueText1={payPeriodEndDate}
+						name1="payPeriodEndDate"
+						handleChange={(e) => setPayPeriodEndDate(e.target.value)}
+						required
+					/>
+				</HStack>
+				<ActionButtonGroup
+					submitBtnName={"Add Payrun"}
+					isDisabled={!selectedEmp.length}
+					isLoading={isSubmitting}
+					onClose={handleClose}
+					onOpen={handleSubmit}
+				/>
+			</Stack>
+		</ModalLayout>
+	);
+};
+
+export default ExtraPayrunModal;

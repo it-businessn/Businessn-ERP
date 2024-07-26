@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import PayrollService from "services/PayrollService";
 
-const usePaygroup = (company) => {
+const usePaygroup = (company, refresh) => {
 	const [payGroups, setPayGroups] = useState(null);
 	const [selectedPayGroup, setSelectedPayGroup] = useState(null);
 	const [payGroupSchedule, setPayGroupSchedule] = useState(null);
@@ -20,7 +20,7 @@ const usePaygroup = (company) => {
 			}
 		};
 		fetchAllPaygroups();
-	}, [company]);
+	}, [company, refresh]);
 	return { payGroups, selectedPayGroup, setSelectedPayGroup, payGroupSchedule };
 };
 

@@ -9,7 +9,9 @@ import LeftPane from "./leftpane";
 import RightPane from "./rightpane";
 
 const Dashboard = () => {
-	const [selectedPayGroup, setSelectedPayGroup] = useState("null");
+	const company = LocalStorageService.getItem("selectedCompany");
+	const { payGroups, selectedPayGroup, setSelectedPayGroup } =
+		usePaygroup(company);
 
 	const loggedInUser = LocalStorageService.getItem("user");
 
@@ -29,10 +31,6 @@ const Dashboard = () => {
 	];
 	const [stats, setStats] = useState(STATS);
 
-	const company = LocalStorageService.getItem("selectedCompany");
-
-	const { payGroups } = usePaygroup(company);
-
 	const handleChange = (value) => {
 		if (value !== "") {
 			setSelectedPayGroup(value);
@@ -46,7 +44,7 @@ const Dashboard = () => {
 			data={payGroups}
 			selectAttr="name"
 			selectPlaceholder="Select Paygroup"
-			selectedValue={selectedPayGroup}
+			selectedValue={selectedPayGroup?.name}
 			handleChange={handleChange}
 		>
 			<SimpleGrid

@@ -1,7 +1,7 @@
 import OutlineButton from "components/ui/button/OutlineButton";
 import useEmployeeEmploymentInfo from "hooks/useEmployeeEmploymentInfo";
 import { ROUTE_PATH } from "routes";
-import WorkviewTab from "../WorkviewTab";
+import WorkviewTab from "./WorkviewTab";
 
 const EmployeeDetails = ({ company }) => {
 	const data = useEmployeeEmploymentInfo(company);
@@ -11,7 +11,7 @@ const EmployeeDetails = ({ company }) => {
 			cols={[
 				{ key: "Employee Name", pair: "obj", pair_key: "fullName" },
 				{ key: "Employee Number", pair: "obj", pair_key: "employeeId" },
-				{ key: "Payrate", pair: "rate" },
+				{ key: "Payrate", pair: "regPay" },
 				{ key: "Employee Department", pair: "companyDepartment" },
 				{ key: "Employee Cost Center", pair: "employmentCostCenter" },
 				{ key: "", pair: <OutlineButton label="View Setup" /> },

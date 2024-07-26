@@ -2,9 +2,9 @@ import TabsButtonGroup from "components/ui/tab/TabsButtonGroup";
 import { useState } from "react";
 import LocalStorageService from "services/LocalStorageService";
 import { styleConsole } from "utils";
-import AmountAllocation from "./workview-tabs/AmountAllocation";
-import EmployeeDetails from "./workview-tabs/EmployeeDetails";
-import HourlyAllocation from "./workview-tabs/HourlyAllocation";
+import AmountAllocation from "./AmountAllocation";
+import EmployeeDetails from "./EmployeeDetails";
+import HourlyAllocation from "./HourlyAllocation";
 
 const PaygroupDetailTable = () => {
 	const company = LocalStorageService.getItem("selectedCompany");

@@ -1,7 +1,7 @@
 import OutlineButton from "components/ui/button/OutlineButton";
 import useEmployeePayInfo from "hooks/useEmployeePayInfo";
 import { ROUTE_PATH } from "routes";
-import WorkviewTab from "../WorkviewTab";
+import WorkviewTab from "./WorkviewTab";
 
 const HourlyAllocation = ({ company }) => {
 	const data = useEmployeePayInfo(company);
