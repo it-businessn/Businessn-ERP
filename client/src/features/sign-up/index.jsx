@@ -18,15 +18,15 @@ import {
 import Logo from "components/logo";
 import ActionButtonGroup from "components/ui/form/ActionButtonGroup";
 import InputFormControl from "components/ui/form/InputFormControl";
-import BaseModulePanel from "features/setup/BaseModulePanel";
-import DepartmentsPanel from "features/setup/DepartmentsPanel";
-import EmploymentPanel from "features/setup/EmploymentPanel";
-import RolesPanel from "features/setup/RolesPanel";
 import { useSignup } from "hooks/useSignup";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import LoginService from "services/LoginService";
+import BaseModulePanel from "./BaseModulePanel";
+import DepartmentsPanel from "./DepartmentsPanel";
+import EmploymentPanel from "./EmploymentPanel";
 import MultiSelectControl from "./MultiSelectControl";
+import RolesPanel from "./RolesPanel";
 // import signUpImg from "../../assets/logos/BusinessN_dark.jpg";
 
 const SignUp = ({ isModal, setRefresh, onClose, hideCompany }) => {

@@ -19,7 +19,7 @@ import { IoMdCloseCircle } from "react-icons/io";
 import { useLocation } from "react-router-dom";
 import LocalStorageService from "services/LocalStorageService";
 import UserService from "services/UserService";
-import EmpSearchMenu from "../EmpSearchMenu";
+import EmpSearchMenu from "../company/group-tab/EmpSearchMenu";
 
 const PermissionsPanel = ({
 	employees,

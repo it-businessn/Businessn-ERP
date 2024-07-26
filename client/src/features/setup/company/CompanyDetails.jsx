@@ -22,7 +22,7 @@ import { HiOfficeBuilding } from "react-icons/hi";
 import LocalStorageService from "services/LocalStorageService";
 import SettingService from "services/SettingService";
 import { isManager, toCapitalize } from "utils";
-import CompaniesPanel from "../CompaniesPanel";
+import CompaniesPanel from "./CompaniesPanel";
 
 const CompanyDetails = ({ company }) => {
 	const loggedInUser = LocalStorageService.getItem("user");

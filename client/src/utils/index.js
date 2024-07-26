@@ -458,4 +458,4 @@ export const styleConsole = (value) =>
 // "34,456" to 34456
 export const convertToNum = (str) => parseFloat(str.replace(/,/g, ""));
 
-export const isPaygroup = (name) => name?.includes("Paygroup");
+export const isPaygroup = (name) => name?.payrollActivated;

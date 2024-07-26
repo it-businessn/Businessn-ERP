@@ -13,7 +13,7 @@ const MultiSelectControl = ({ options }) =>
 							required={menu.param_key !== "manager"}
 							label={menu.name}
 						/>
-						<HStack justify={"space-between"}>
+						<HStack justify={"space-between"} cursor={"pointer"}>
 							<Select
 								name={menu.param_key}
 								value={menu.param_value}

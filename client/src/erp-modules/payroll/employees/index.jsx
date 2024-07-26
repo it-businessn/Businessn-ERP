@@ -9,7 +9,7 @@ import {
 } from "@chakra-ui/react";
 import RadioButtonGroup from "components/ui/tab/RadioButtonGroup";
 import TextTitle from "components/ui/text/TextTitle";
-import EmpSearchMenu from "features/setup/EmpSearchMenu";
+import EmpSearchMenu from "features/setup/company/group-tab/EmpSearchMenu";
 import useEmployees from "hooks/useEmployees";
 import PageLayout from "layouts/PageLayout";
 import { useState } from "react";

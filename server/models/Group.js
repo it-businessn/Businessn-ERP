@@ -9,6 +9,7 @@ const groupSchema = new mongoose.Schema({
 	modules: [{ type: String, ref: "Module" }],
 	companyName: { type: String, ref: "Company" },
 	scheduleSettings: Object,
+	payrollActivated: { type: Boolean, default: false },
 });
 
 const Group = mongoose.model("Group", groupSchema);

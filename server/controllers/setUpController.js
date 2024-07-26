@@ -121,7 +121,7 @@ const getGroups = async (req, res) => {
 };
 
 const addGroup = async (req, res) => {
-	const { name, baseModule, admin, company } = req.body;
+	const { name, baseModule, admin, company, payrollActivated } = req.body;
 
 	try {
 		const newModule = await Group.create({
@@ -129,6 +129,7 @@ const addGroup = async (req, res) => {
 			modules: baseModule,
 			admin,
 			companyName: company,
+			payrollActivated,
 		});
 		res.status(201).json(newModule);
 	} catch (error) {

@@ -3,9 +3,9 @@ import { HStack } from "@chakra-ui/react";
 import Loader from "components/Loader";
 import LeftIconButton from "components/ui/button/LeftIconButton";
 import { useState } from "react";
-import AddNewUser from "../AddNewUser";
-import EmpSearchMenu from "../EmpSearchMenu";
-import UserList from "../UserList";
+import EmpSearchMenu from "../company/group-tab/EmpSearchMenu";
+import AddNewUser from "./AddNewUser";
+import UserList from "./UserList";
 
 const UsersPanel = ({
 	employees,
