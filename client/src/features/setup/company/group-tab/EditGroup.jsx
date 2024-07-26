@@ -7,15 +7,7 @@ import { useState } from "react";
 import SettingService from "services/SettingService";
 import { dayMonthYear, getDefaultDate } from "utils";
 
-const EditGroup = ({
-	isOpen,
-	onClose,
-	selectedGroup,
-	startDate,
-	endDate,
-	processingDate,
-	payDate,
-}) => {
+const EditGroup = ({ isOpen, onClose, selectedGroup }) => {
 	const schedules = selectedGroup?.scheduleSettings;
 	const [isSubmitting, setIsSubmitting] = useState(false);
 

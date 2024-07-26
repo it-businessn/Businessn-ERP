@@ -55,12 +55,7 @@ const GroupsPanel = ({
 					<EditGroup
 						selectedGroup={selectedGroup}
 						isOpen={showEditDetails}
-						company={company}
 						onClose={() => setShowEditDetails(false)}
-						startDate={selectedGroup?.scheduleSettings?.startDate}
-						endDate={selectedGroup?.scheduleSettings?.endDate}
-						processingDate={selectedGroup?.scheduleSettings?.processingDate}
-						payDate={selectedGroup?.scheduleSettings?.payDate}
 					/>
 				)}
 				{openAddGroup && (

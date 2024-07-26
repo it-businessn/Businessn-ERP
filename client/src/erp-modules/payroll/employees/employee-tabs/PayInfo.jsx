@@ -14,7 +14,7 @@ import StepContent from "../step-content";
 import Record from "../step-content/Record";
 
 const PayInfo = ({ company, empId }) => {
-	const payInfo = useEmployeePayInfo(company, empId);
+	const payInfo = useEmployeePayInfo(company, false, empId);
 
 	const setPayInfo = () => getInitialPayInfo(empId, company);
 
