@@ -45,7 +45,7 @@ const MultiSelectBox = ({
 					<CloseButton onClick={handleClose} />
 				</MenuItem>
 				<Stack spacing={2}>
-					{data.map((assignee) => (
+					{data?.map((assignee) => (
 						<MenuItem key={assignee?._id || assignee}>
 							<Checkbox
 								colorScheme="facebook"

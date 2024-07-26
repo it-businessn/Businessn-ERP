@@ -9,12 +9,15 @@ const DateTimeFormControl = ({
 	label,
 	name1,
 	name2,
+	hideLabel,
+	size,
 }) => {
 	return (
 		<>
 			<FormControlMain flex="1">
-				<FormLabel>{label}</FormLabel>
+				<FormLabel display={hideLabel && "none"}>{label}</FormLabel>
 				<Input
+					size={size}
 					type="date"
 					name={name1}
 					value={valueText1}

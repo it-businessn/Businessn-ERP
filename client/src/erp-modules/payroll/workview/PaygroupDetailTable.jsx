@@ -2,7 +2,7 @@ import TabsButtonGroup from "components/ui/tab/TabsButtonGroup";
 import { useState } from "react";
 import LocalStorageService from "services/LocalStorageService";
 import { styleConsole } from "utils";
-import AuxillaryPay from "./workview-tabs/AuxillaryPay";
+import AmountAllocation from "./workview-tabs/AmountAllocation";
 import EmployeeDetails from "./workview-tabs/EmployeeDetails";
 import HourlyAllocation from "./workview-tabs/HourlyAllocation";
 
@@ -22,8 +22,8 @@ const PaygroupDetailTable = () => {
 		},
 		{
 			id: 2,
-			type: "Auxillary Pay",
-			name: <AuxillaryPay company={company} />,
+			type: "Amount Allocation",
+			name: <AmountAllocation company={company} />,
 		},
 	];
 

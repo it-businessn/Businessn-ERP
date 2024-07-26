@@ -3,7 +3,7 @@ import useEmployeePayInfo from "hooks/useEmployeePayInfo";
 import { ROUTE_PATH } from "routes";
 import WorkviewTab from "../WorkviewTab";
 
-const AuxillaryPay = ({ company }) => {
+const AmountAllocation = ({ company }) => {
 	const data = useEmployeePayInfo(company);
 
 	return (
@@ -25,4 +25,4 @@ const AuxillaryPay = ({ company }) => {
 	);
 };
 
-export default AuxillaryPay;
+export default AmountAllocation;

@@ -72,17 +72,18 @@ const FilterMenu = ({
 			<HStack justifyContent={"start"} align={"self-start"}>
 				{groups && (
 					<FormControl>
-						<FormLabel> Group </FormLabel>
+						<FormLabel> Groups </FormLabel>
 						<Select
 							icon={<FaCaretDown />}
 							borderRadius="10px"
-							value={selectedGroup?.name}
+							value={selectedGroup.name}
 							placeholder="Select Group"
 							onChange={handleGroup}
 						>
 							{groups?.map((group) => (
 								<option value={group.name} key={group._id}>
 									{group.name}
+									{group?.payrollActivated && <>&#x1F7E2;</>}
 								</option>
 							))}
 						</Select>

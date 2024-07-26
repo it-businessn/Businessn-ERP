@@ -20,7 +20,7 @@ const AddNewGroup = ({
 	onClose,
 	setRefresh,
 	modules,
-	admins,
+	managers,
 	company,
 }) => {
 	const defaultGroup = {
@@ -145,7 +145,7 @@ const AddNewGroup = ({
 						>
 							{openTeamMenu ? (
 								<MultiSelectBox
-									data={admins}
+									data={managers}
 									openMenu={openTeamMenu}
 									handleCloseMenu={handleCloseTeamMenu}
 									selectedOptions={selectedTeams}

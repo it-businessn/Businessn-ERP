@@ -62,7 +62,8 @@ export const generateLighterShade = (color, factor) => {
 export const toCapitalize = (str) =>
 	str?.replace(/\b\w/g, (match) => match.toUpperCase());
 
-export const dayMonthYear = (date) => moment(date).format("ddd MMM DD, YYYY");
+export const dayMonthYear = (date) =>
+	moment.utc(date).format("ddd MMM DD, YYYY");
 
 export const today = moment().format("MMDDYY");
 

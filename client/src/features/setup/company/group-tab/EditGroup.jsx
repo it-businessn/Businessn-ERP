@@ -1,9 +1,11 @@
-import { HStack, Stack } from "@chakra-ui/react";
+import { Tbody, Td, Tr } from "@chakra-ui/react";
 import ActionButtonGroup from "components/ui/form/ActionButtonGroup";
 import DateTimeFormControl from "components/ui/form/DateTimeFormControl";
 import ModalLayout from "components/ui/modal/ModalLayout";
+import TableLayout from "components/ui/table/TableLayout";
 import { useState } from "react";
 import SettingService from "services/SettingService";
+import { dayMonthYear, getDefaultDate } from "utils";
 
 const EditGroup = ({
 	isOpen,
@@ -14,18 +16,12 @@ const EditGroup = ({
 	processingDate,
 	payDate,
 }) => {
-	const defaultSchedule = {
-		startDate,
-		endDate,
-		processingDate,
-		payDate,
-	};
-	const [formData, setFormData] = useState(defaultSchedule);
+	const schedules = selectedGroup?.scheduleSettings;
 	const [isSubmitting, setIsSubmitting] = useState(false);
 
 	const handleSubmit = async (e) => {
 		e.preventDefault();
-		selectedGroup.scheduleSettings = formData;
+		selectedGroup.scheduleSettings = schedules;
 		setIsSubmitting(true);
 		try {
 			await SettingService.updateGroup(selectedGroup, selectedGroup._id);
@@ -36,74 +32,133 @@ const EditGroup = ({
 		}
 	};
 
+	const COLS = [
+		"Pay period",
+		"Pay period start date",
+		"Pay period end date",
+		"Payroll Processing date",
+		"Pay Date",
+	];
+
+	const [edit, setEdit] = useState(false);
+	const [record, setRecord] = useState(null);
+	const [recordKey, setRecordKey] = useState(null);
+
+	const EditDate = ({ date, index, _key }) => (
+		<DateTimeFormControl
+			size={"sm"}
+			hideLabel
+			valueText1={getDefaultDate(date)}
+			name1={_key}
+			handleChange={(e) => {
+				schedules[index][_key] = e.target.value;
+				setEdit(false);
+			}}
+			required
+		/>
+	);
 	return (
 		<ModalLayout
-			title={`Edit ${selectedGroup.name}`}
-			size="lg"
+			title={`Set ${selectedGroup.name} Schedule`}
+			size="7xl"
 			isOpen={isOpen}
 			onClose={onClose}
 		>
-			<Stack spacing={4}>
-				<HStack spacing={4}>
-					<DateTimeFormControl
-						label={"Pay period start date"}
-						valueText1={formData.startDate}
-						name1="startDate"
-						handleChange={(e) =>
-							setFormData((prev) => ({
-								...prev,
-								startDate: e.target.value,
-							}))
-						}
-						required
-					/>
-					<DateTimeFormControl
-						label={"Pay period end date"}
-						valueText1={formData.endDate}
-						name1="endDate"
-						handleChange={(e) =>
-							setFormData((prev) => ({
-								...prev,
-								endDate: e.target.value,
-							}))
-						}
-						required
-					/>
-				</HStack>
-				<HStack spacing={4}>
-					<DateTimeFormControl
-						label={"Payroll Processing date"}
-						valueText1={formData.processingDate}
-						name1="processingDate"
-						handleChange={(e) =>
-							setFormData((prev) => ({
-								...prev,
-								processingDate: e.target.value,
-							}))
-						}
-						required
-					/>
-					<DateTimeFormControl
-						label={"Pay date"}
-						valueText1={formData.payDate}
-						name1="payDate"
-						handleChange={(e) =>
-							setFormData((prev) => ({
-								...prev,
-								payDate: e.target.value,
-							}))
-						}
-						required
-					/>
-				</HStack>
-				<ActionButtonGroup
-					submitBtnName={"Save"}
-					isDisabled={formData.name === ""}
-					isLoading={isSubmitting}
-					onClose={onClose}
-					onOpen={handleSubmit}
-				/>
-			</Stack>
+			<TableLayout cols={COLS} height="83vh" isSmall>
+				<Tbody>
+					{schedules?.map((item, index) => (
+						<Tr key={item.payPeriod}>
+							<Td p={1}>{item.payPeriod}</Td>
+							<Td
+								p={1}
+								onClick={() => {
+									setEdit(true);
+									setRecord(item);
+									setRecordKey("payPeriodStartDate");
+								}}
+							>
+								{edit &&
+								record.payPeriod === item.payPeriod &&
+								recordKey === "payPeriodStartDate" ? (
+									<EditDate
+										date={item.payPeriodStartDate}
+										index={index}
+										_key="payPeriodStartDate"
+									/>
+								) : (
+									dayMonthYear(item.payPeriodStartDate)
+								)}
+							</Td>
+							<Td
+								p={1}
+								onClick={() => {
+									setEdit(true);
+									setRecord(item);
+									setRecordKey("payPeriodEndDate");
+								}}
+							>
+								{edit &&
+								record.payPeriod === item.payPeriod &&
+								recordKey === "payPeriodEndDate" ? (
+									<EditDate
+										date={item.payPeriodEndDate}
+										index={index}
+										_key="payPeriodEndDate"
+									/>
+								) : (
+									dayMonthYear(item.payPeriodEndDate)
+								)}
+							</Td>
+							<Td
+								p={1}
+								onClick={() => {
+									setEdit(true);
+									setRecord(item);
+									setRecordKey("payPeriodProcessingDate");
+								}}
+							>
+								{edit &&
+								record.payPeriod === item.payPeriod &&
+								recordKey === "payPeriodProcessingDate" ? (
+									<EditDate
+										date={item.payPeriodProcessingDate}
+										index={index}
+										_key="payPeriodProcessingDate"
+									/>
+								) : (
+									dayMonthYear(item.payPeriodProcessingDate)
+								)}
+							</Td>
+							<Td
+								onClick={() => {
+									setEdit(true);
+									setRecord(item);
+									setRecordKey("payPeriodPayDate");
+								}}
+								p={1}
+							>
+								{edit &&
+								record.payPeriod === item.payPeriod &&
+								recordKey === "payPeriodPayDate" ? (
+									<EditDate
+										date={item.payPeriodPayDate}
+										index={index}
+										_key="payPeriodPayDate"
+									/>
+								) : (
+									dayMonthYear(item.payPeriodPayDate)
+								)}
+							</Td>
+						</Tr>
+					))}
+				</Tbody>
+			</TableLayout>
+			<ActionButtonGroup
+				submitBtnName={"Save"}
+				isLoading={isSubmitting}
+				onClose={onClose}
+				onOpen={handleSubmit}
+			/>
 		</ModalLayout>
 	);
 };

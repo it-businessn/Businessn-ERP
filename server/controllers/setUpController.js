@@ -131,19 +131,60 @@ const addGroup = async (req, res) => {
 			companyName: company,
 			payrollActivated,
 		});
+		if (payrollActivated) {
+			await schedulePaygroup(newModule._id);
+		}
+		schedulePaygroup(newModule._id);
 		res.status(201).json(newModule);
 	} catch (error) {
 		res.status(400).json({ message: error.message });
 	}
 };
+
+const schedulePaygroup = async (groupID) => {
+	try {
+		const startDate = new Date("2023-12-18");
+		const numberOfPayPeriods = 26;
+		const payPeriods = [];
+		for (let i = 0; i < numberOfPayPeriods; i++) {
+			const payPeriodStartDate = new Date(startDate);
+			payPeriodStartDate.setDate(startDate.getDate() + i * 14);
+
+			const payPeriodEndDate = new Date(payPeriodStartDate);
+			payPeriodEndDate.setDate(payPeriodStartDate.getDate() + 13);
+
+			const payPeriodProcessingDate = new Date(payPeriodEndDate);
+			payPeriodProcessingDate.setDate(payPeriodEndDate.getDate() + 2);
+
+			const payPeriodPayDate = new Date(payPeriodProcessingDate);
+			payPeriodPayDate.setDate(payPeriodProcessingDate.getDate() + 3);
+
+			payPeriods.push({
+				payPeriod: i + 1,
+				payPeriodStartDate,
+				payPeriodEndDate,
+				payPeriodProcessingDate,
+				payPeriodPayDate,
+			});
+		}
+
+		await updatePayGroup(groupID, {
+			scheduleSettings: payPeriods,
+		});
+	} catch (error) {
+		console.log(error);
+	}
+};
+
+const updatePayGroup = async (id, data) =>
+	await Group.findByIdAndUpdate(id, data, {
+		new: true,
+	});
+
 const updateGroup = async (req, res) => {
 	const { id } = req.params;
 	try {
-		const setup = await Group.findByIdAndUpdate(
-			id,
-			{ $set: req.body },
-			{ new: true },
-		);
+		const setup = await updatePayGroup(id, req.body);
 		res.status(200).json(setup);
 	} catch (error) {
 		console.log(error, "Error in updating");
