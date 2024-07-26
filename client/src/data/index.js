@@ -1182,6 +1182,12 @@ export const SIDEBAR_MENU = [
 				children: [],
 				icon: <FaUsersGear />,
 			},
+			{
+				path: "set-up",
+				name: "Setup",
+				children: [],
+				icon: <MdOutlineSettingsApplications />,
+			},
 		],
 	},
 	{

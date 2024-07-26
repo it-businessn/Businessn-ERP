@@ -5,9 +5,15 @@ import ModalLayout from "components/ui/modal/ModalLayout";
 import { useState } from "react";
 import SettingService from "services/SettingService";
 
-const EditGroup = ({ isOpen, onClose, selectedGroup }) => {
-	const { startDate, endDate, processingDate, payDate } =
-		selectedGroup?.scheduleSettings;
+const EditGroup = ({
+	isOpen,
+	onClose,
+	selectedGroup,
+	startDate,
+	endDate,
+	processingDate,
+	payDate,
+}) => {
 	const defaultSchedule = {
 		startDate,
 		endDate,

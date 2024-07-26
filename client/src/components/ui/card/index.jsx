@@ -13,6 +13,7 @@ const BoxCard = ({
 	p = "1em",
 	px,
 	borderWidth = "3px",
+	minH,
 }) => (
 	<Box
 		bg={"var(--primary_bg)"}
@@ -30,6 +31,7 @@ const BoxCard = ({
 		overflowY={overflowY}
 		p={p}
 		px={px}
+		minH={minH}
 	>
 		{children}
 	</Box>

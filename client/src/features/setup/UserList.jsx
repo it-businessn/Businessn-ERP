@@ -11,7 +11,7 @@ const UserList = ({
 }) => {
 	return (
 		<Box overflow="auto" height={height} fontWeight={"normal"}>
-			<Table variant="simple" width="100%">
+			<Table variant={"simple"} width="100%">
 				<Thead>
 					<Tr>
 						<Th px={1.5} w={"200px"}>

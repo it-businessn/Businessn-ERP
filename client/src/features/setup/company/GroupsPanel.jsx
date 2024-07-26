@@ -185,7 +185,7 @@ const GroupsPanel = ({
 	};
 
 	return (
-		<BoxCard fontWeight="bold">
+		<BoxCard fontWeight="bold" minH="50vh">
 			<HStack>
 				<PrimaryButton
 					size="sm"
@@ -213,6 +213,10 @@ const GroupsPanel = ({
 						isOpen={showEditDetails}
 						company={company}
 						onClose={() => setShowEditDetails(false)}
+						startDate={selectedGroup?.scheduleSettings?.startDate}
+						endDate={selectedGroup?.scheduleSettings?.endDate}
+						processingDate={selectedGroup?.scheduleSettings?.processingDate}
+						payDate={selectedGroup?.scheduleSettings?.payDate}
 					/>
 				)}
 				{openAddGroup && (
@@ -337,7 +341,6 @@ const GroupsPanel = ({
 						group={selectedGroup}
 						setShowConfirmationPopUp={setShowConfirmationPopUp}
 						setDeleteRecord={setDeleteRecord}
-						height="40vh"
 					/>
 				)}
 			</BoxCard>
