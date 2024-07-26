@@ -3,76 +3,93 @@ import { createBrowserRouter } from "react-router-dom";
 
 import Home from "components/Home";
 import Loader from "components/Loader";
-import Dashboard from "erp-modules/payroll/dashboard";
-import Employees from "erp-modules/payroll/employees";
-import LeadContacts from "erp-modules/sales/fresh_leads/LeadContacts";
-import SchedulingDashboard from "erp-modules/scheduling/dashboard";
 import PageNotFound from "./components/PageNotFound";
 
+// login
+const ForgotPassword = lazy(() => import("./features/login/ForgotPassword"));
+const Login = lazy(() => import("./features/login"));
+const Setup = lazy(() => import("./features/setup"));
+
+const SignUp = lazy(() => import("./features/sign-up"));
+
+const UserProfileDetails = lazy(() =>
+	import("./features/user/UserProfileDetails"),
+);
+const VerifyEmail = lazy(() => import("./features/verify-user"));
+
+// sales
 const Activities = lazy(() => import("./erp-modules/sales/activities"));
 const AddQuestionForm = lazy(() =>
 	import("./erp-modules/sales/resources/add-paper/AddQuestionForm"),
 );
-const Agenda = lazy(() => import("./erp-modules/project-management/Agenda"));
-const Approvals = lazy(() => import("./erp-modules/payroll/Approvals"));
 const Assessment = lazy(() =>
 	import("./erp-modules/sales/resources/attempt-test/Assessment"),
 );
 const Calendar = lazy(() => import("./erp-modules/sales/calendar"));
-const Communications = lazy(() =>
-	import("./erp-modules/project-management/communication"),
-);
 const Contacts = lazy(() => import("./erp-modules/sales/customers/contacts"));
 const CRMDashboard = lazy(() => import("./erp-modules/sales/dashboard"));
 const Customers = lazy(() => import("./erp-modules/sales/customers"));
+const LeadContacts = lazy(() =>
+	import("erp-modules/sales/fresh_leads/LeadContacts"),
+);
+const FreshLeads = lazy(() => import("./erp-modules/sales/fresh_leads"));
+const LeadsDisburse = lazy(() => import("./erp-modules/sales/lead disburse"));
+const LeadsDocket = lazy(() => import("./erp-modules/sales/lead docket"));
+const Opportunities = lazy(() => import("./erp-modules/sales/opportunities"));
+const Orders = lazy(() => import("./erp-modules/sales/orders"));
+const Payouts = lazy(() => import("./erp-modules/sales/payouts"));
+const Pipeline = lazy(() =>
+	import("./erp-modules/sales/target-leads-pipeline"),
+);
+const Products = lazy(() => import("./erp-modules/sales/products"));
+const Resources = lazy(() => import("./erp-modules/sales/resources"));
+const SalesReport = lazy(() => import("./erp-modules/sales/reports"));
+
+// payroll
+const Approvals = lazy(() => import("./erp-modules/payroll/Approvals"));
+
 const EmployeeDashboard = lazy(() =>
 	import("./erp-modules/payroll/employees/dashboard/EmployeeDashboard"),
 );
 const EmployeeRecord = lazy(() =>
 	import("./erp-modules/payroll/employees/dashboard/EmployeeRecord"),
 );
-const ForgotPassword = lazy(() => import("./features/login/ForgotPassword"));
-const FreshLeads = lazy(() => import("./erp-modules/sales/fresh_leads"));
-const Gantt = lazy(() => import("./erp-modules/project-management/Gantt"));
-const LeadsDisburse = lazy(() => import("./erp-modules/sales/lead disburse"));
-const LeadsDocket = lazy(() => import("./erp-modules/sales/lead docket"));
-const Login = lazy(() => import("./features/login"));
-const Opportunities = lazy(() => import("./erp-modules/sales/opportunities"));
-const Orders = lazy(() => import("./erp-modules/sales/orders"));
-const Payouts = lazy(() => import("./erp-modules/sales/payouts"));
 const PayrollWorkview = lazy(() => import("./erp-modules/payroll/workview"));
-const Pipeline = lazy(() =>
-	import("./erp-modules/sales/target-leads-pipeline"),
-);
-const PMReports = lazy(() =>
-	import("./erp-modules/project-management/Reports"),
-);
 const ProcessPayroll = lazy(() =>
 	import("./erp-modules/payroll/process-payroll"),
 );
-const Products = lazy(() => import("./erp-modules/sales/products"));
 const Reports = lazy(() => import("./erp-modules/payroll/Reports"));
-const Resources = lazy(() => import("./erp-modules/sales/resources"));
-const SalesReport = lazy(() => import("./erp-modules/sales/reports"));
+const Timesheets = lazy(() => import("./erp-modules/payroll/timesheets"));
+const Dashboard = lazy(() => import("erp-modules/payroll/dashboard"));
+const Employees = lazy(() => import("erp-modules/payroll/employees"));
+const Settings = lazy(() => import("erp-modules/payroll/Settings"));
+
+// scheduling
+const SchedulingDashboard = lazy(() =>
+	import("erp-modules/scheduling/dashboard"),
+);
 const ScheduleReports = lazy(() => import("./erp-modules/scheduling/Reports"));
 const ScheduleWorkView = lazy(() =>
 	import("./erp-modules/scheduling/workview"),
 );
-const Setup = lazy(() => import("./features/setup"));
 const ShiftAssignment = lazy(() =>
 	import("./erp-modules/scheduling/ShiftAssignment"),
 );
-const SignUp = lazy(() => import("./features/sign-up"));
-const Taskboard = lazy(() =>
-	import("./erp-modules/project-management/Taskboard"),
+
+// projectmanagement
+const Communications = lazy(() =>
+	import("./erp-modules/project-management/communication"),
 );
-const Timesheets = lazy(() => import("./erp-modules/payroll/timesheets"));
-const UserProfileDetails = lazy(() =>
-	import("./features/user/UserProfileDetails"),
+const Agenda = lazy(() => import("./erp-modules/project-management/Agenda"));
+const PMReports = lazy(() =>
+	import("./erp-modules/project-management/Reports"),
 );
-const VerifyEmail = lazy(() => import("./features/verify-user"));
+const Gantt = lazy(() => import("./erp-modules/project-management/Gantt"));
 const WorkView = lazy(() =>
 	import("./erp-modules/project-management/workview"),
+);
+const Taskboard = lazy(() =>
+	import("./erp-modules/project-management/Taskboard"),
 );
 
 export const ROUTE_PATH = {
@@ -118,6 +135,7 @@ export const ROUTE_PATH = {
 	EMPLOYEES: "/employees",
 	EMP_DASHBOARD: "/employee-details",
 	EMP_RECORD: "/emp-records",
+	SETTINGS: "/settings",
 
 	// scheduling
 	SCHEDULING: "/scheduling",
@@ -294,6 +312,10 @@ export const router = createBrowserRouter([
 			{
 				path: `${ROUTE_PATH.PAYROLL}${ROUTE_PATH.REPORT}`,
 				element: <Reports />,
+			},
+			{
+				path: `${ROUTE_PATH.PAYROLL}${ROUTE_PATH.SETTINGS}`,
+				element: <Settings />,
 			},
 			{
 				path: `${ROUTE_PATH.PAYROLL}${ROUTE_PATH.EMP_DASHBOARD}`,
