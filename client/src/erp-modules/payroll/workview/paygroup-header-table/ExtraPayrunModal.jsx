@@ -4,7 +4,6 @@ import DateTimeFormControl from "components/ui/form/DateTimeFormControl";
 import MultiSelectFormControl from "components/ui/form/MultiSelectFormControl";
 import ModalLayout from "components/ui/modal/ModalLayout";
 import useEmployees from "hooks/useEmployees";
-import moment from "moment";
 import { useState } from "react";
 import SettingService from "services/SettingService";
 import { getDefaultDate } from "utils";
@@ -16,19 +15,10 @@ const ExtraPayrunModal = ({
 	company,
 	selectedPayGroupId,
 	selectedPayGroup,
-	payGroupSchedule,
+	closestRecord,
 }) => {
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const today = getDefaultDate(new Date());
-
-	const closestRecord = payGroupSchedule?.reduce((closest, record) => {
-		const recordEndDate = moment(record.payPeriodEndDate);
-		const closestEndDate = moment(closest.payPeriodEndDate);
-		return Math.abs(recordEndDate.diff(today)) <
-			Math.abs(closestEndDate.diff(today))
-			? record
-			: closest;
-	}, payGroupSchedule[0]);
 
 	const [payPeriodPayDate, setPayPeriodPayDate] = useState(
 		getDefaultDate(closestRecord?.payPeriodPayDate),

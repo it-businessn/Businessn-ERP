@@ -3,9 +3,9 @@ const router = express.Router();
 
 const timesheetController = require("../controllers/timesheetContoller");
 
-router.get("/", timesheetController.getTimesheets);
+router.get("/:companyName", timesheetController.getTimesheets);
 
-router.get("/:employeeId", timesheetController.getTimesheet);
+router.get("/:companyName/:employeeId", timesheetController.getTimesheet);
 
 router.post("/", timesheetController.createTimesheet);
 

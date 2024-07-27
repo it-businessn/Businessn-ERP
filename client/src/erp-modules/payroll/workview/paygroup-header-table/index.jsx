@@ -14,6 +14,7 @@ const PaygroupTable = ({
 	company,
 	payGroupSchedule,
 	setRefresh,
+	closestRecord,
 }) => {
 	const [showExtraPayrun, setShowExtraPayrun] = useState(false);
 
@@ -42,7 +43,7 @@ const PaygroupTable = ({
 							setRefresh={setRefresh}
 							setShowExtraPayrun={setShowExtraPayrun}
 							selectedPayGroup={selectedPayGroup}
-							payGroupSchedule={payGroupSchedule}
+							closestRecord={closestRecord}
 						/>
 					)}
 

@@ -1,13 +1,14 @@
-import useCompany from "hooks/useCompany";
 import usePaygroup from "hooks/usePaygroup";
 import PageLayout from "layouts/PageLayout";
+import moment from "moment";
 import { useState } from "react";
-import { getPayrollStatus } from "utils";
+import LocalStorageService from "services/LocalStorageService";
+import { getDefaultDate, getPayrollStatus } from "utils";
 import PaygroupDetailTable from "./paygroup-detail-table/workview-tabs";
 import PaygroupTable from "./paygroup-header-table";
 
 const PayrollWorkview = () => {
-	const { company } = useCompany();
+	const company = LocalStorageService.getItem("selectedCompany");
 	const [refresh, setRefresh] = useState(false);
 
 	const { payGroups, selectedPayGroup, setSelectedPayGroup, payGroupSchedule } =
@@ -29,7 +30,16 @@ const PayrollWorkview = () => {
 		record.isViewAction = isViewAction;
 		return record;
 	});
+	const today = getDefaultDate(new Date());
 
+	const closestRecord = payGroupSchedule?.reduce((closest, record) => {
+		const recordEndDate = moment(record.payPeriodEndDate);
+		const closestEndDate = moment(closest.payPeriodEndDate);
+		return Math.abs(recordEndDate.diff(today)) <
+			Math.abs(closestEndDate.diff(today))
+			? record
+			: closest;
+	}, payGroupSchedule[0]);
 	return (
 		<PageLayout
 			width={"35%"}
@@ -47,8 +57,9 @@ const PayrollWorkview = () => {
 				company={company}
 				refresh={refresh}
 				setRefresh={setRefresh}
+				closestRecord={closestRecord}
 			/>
-			<PaygroupDetailTable />
+			<PaygroupDetailTable closestRecord={closestRecord} />
 		</PageLayout>
 	);
 };

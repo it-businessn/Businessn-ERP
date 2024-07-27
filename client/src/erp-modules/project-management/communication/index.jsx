@@ -11,7 +11,6 @@ import {
 } from "@chakra-ui/react";
 import TextTitle from "components/ui/text/TextTitle";
 
-import useCompany from "hooks/useCompany";
 import PageLayout from "layouts/PageLayout";
 import { useEffect, useState } from "react";
 import { FaUsers } from "react-icons/fa";
@@ -27,8 +26,7 @@ const Communications = ({ isDashboard }) => {
 	const [selectedGroup, setSelectedGroup] = useState(null);
 	const [selectedGroupMember, setSelectedGroupMember] = useState(null);
 	const userId = LocalStorageService.getItem("user")._id;
-
-	const { company } = useCompany();
+	const company = LocalStorageService.getItem("selectedCompany");
 
 	useEffect(() => {
 		const fetchAllGroups = async () => {

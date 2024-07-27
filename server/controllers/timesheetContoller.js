@@ -1,53 +1,89 @@
 const Employee = require("../models/Employee");
+const EmployeePayInfo = require("../models/EmployeePayInfo");
 const Project = require("../models/Project");
 const Timesheet = require("../models/Timesheet");
 
 const currentDate = new Date();
 
 const getTimesheets = async (req, res) => {
+	const { companyName } = req.params;
 	try {
-		const projectsByEmployee = await Project.aggregate([
-			{
-				$group: {
-					_id: "$selectedAssignees",
-					tasks: {
-						$push: {
-							name: "$name",
-						},
-					},
-				},
-			},
-		]);
-		const users = await Employee.aggregate([
-			{
-				$group: {
-					_id: "$_id",
-					employees: {
-						$push: {
-							fullName: "$fullName",
-							id: "$_id",
-							projects: {
-								$reduce: {
-									input: projectsByEmployee,
-									initialValue: [],
-									in: {
-										$cond: {
-											if: { $in: ["$fullName", "$$this._id"] }, // if employee name is in the selectedAssignees of the task
-											then: { $concatArrays: ["$$value", "$$this.tasks"] }, // Merge projects arrays
-											else: "$$value", // default value
-										},
-									},
-								},
-							},
-						},
-					},
-				},
-			},
-		]);
-		const timesheets = await Timesheet.find({}).populate({
+		// const projectsByEmployee = await Project.aggregate([
+		// 	{
+		// 		$group: {
+		// 			_id: "$selectedAssignees",
+		// 			tasks: {
+		// 				$push: {
+		// 					name: "$name",
+		// 				},
+		// 			},
+		// 		},
+		// 	},
+		// ]);
+		// const users = await Employee.aggregate([
+		// 	{
+		// 		$group: {
+		// 			_id: "$_id",
+		// 			employees: {
+		// 				$push: {
+		// 					fullName: "$fullName",
+		// 					id: "$_id",
+		// 					projects: {
+		// 						$reduce: {
+		// 							input: projectsByEmployee,
+		// 							initialValue: [],
+		// 							in: {
+		// 								$cond: {
+		// 									if: { $in: ["$fullName", "$$this._id"] }, // if employee name is in the selectedAssignees of the task
+		// 									then: { $concatArrays: ["$$value", "$$this.tasks"] }, // Merge projects arrays
+		// 									else: "$$value", // default value
+		// 								},
+		// 							},
+		// 						},
+		// 					},
+		// 				},
+		// 			},
+		// 		},
+		// 	},
+		// ]);
+		const timesheets = await Timesheet.find({ companyName }).populate({
 			path: "employeeId",
 			model: "Employee",
 			select: ["role", "fullName"],
+		});
+
+		const payInfoResult = await EmployeePayInfo.find({
+			companyName,
+		}).select(
+			"empId regPay overTimePay dblOverTimePay statWorkPay statPay sickPay",
+		);
+
+		const payInfoMap = new Map(
+			payInfoResult.map((payInfo) => [
+				payInfo.empId.toString(),
+				{
+					regPay: payInfo.regPay,
+					overTimePay: payInfo.overTimePay,
+					dblOverTimePay: payInfo.dblOverTimePay,
+					statWorkPay: payInfo.statWorkPay,
+					statPay: payInfo.statPay,
+					sickPay: payInfo.sickPay,
+				},
+			]),
+		);
+
+		timesheets.forEach((timesheet) => {
+			const empIdStr = timesheet.employeeId._id.toString();
+			if (!payInfoMap.has(empIdStr)) {
+				return;
+			}
+			const payInfo = payInfoMap.get(empIdStr);
+			timesheet.regPay = payInfo.regPay;
+			timesheet.overTimePay = payInfo.overTimePay;
+			timesheet.dblOverTimePay = payInfo.dblOverTimePay;
+			timesheet.statWorkPay = payInfo.statWorkPay;
+			timesheet.statPay = payInfo.statPay;
+			timesheet.sickPay = payInfo.sickPay;
 		});
 
 		// for (const timesheet of timesheets) {
@@ -69,12 +105,10 @@ const getTimesheets = async (req, res) => {
 };
 
 const getTimesheet = async (req, res) => {
-	const { employeeId } = req.params;
+	const { companyName, empId } = req.params;
 
 	try {
-		const timesheet = await Timesheet.find({
-			employeeId,
-		}).populate({
+		const timesheet = await Timesheet.find({ companyName, empId }).populate({
 			path: "employeeId",
 			model: "Employee",
 			select: ["role", "fullName"],
@@ -120,6 +154,7 @@ const createTimesheet = async (req, res) => {
 				const newTimesheet = await Timesheet.create({
 					clockIns: Date.now(),
 					employeeId,
+					companyName,
 				});
 				res.status(201).json(newTimesheet);
 			} catch (error) {
@@ -144,6 +179,7 @@ const updateTimesheet = async (req, res) => {
 		res.status(400).json({ message: error.message });
 	}
 };
+
 module.exports = {
 	createTimesheet,
 	getTimesheets,

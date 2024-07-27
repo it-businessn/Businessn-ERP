@@ -1,8 +1,8 @@
 import apiService from "services";
 
 const TimesheetService = {
-	async getTimesheets() {
-		return apiService.get(`/timesheet`);
+	async getTimesheets(company) {
+		return apiService.get(`/timesheet/${company}`);
 	},
 
 	async getTimesheetById(id) {

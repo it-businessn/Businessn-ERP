@@ -10,6 +10,7 @@ const TimeCard = ({ selectedUser, company }) => {
 	const [time, setTime] = useState(new Date());
 
 	const toast = useToast();
+
 	useEffect(() => {
 		const timer = setInterval(() => {
 			setTime(new Date());
@@ -17,12 +18,15 @@ const TimeCard = ({ selectedUser, company }) => {
 
 		return () => clearInterval(timer);
 	}, []);
+
 	const formattedTime = time.toLocaleTimeString([], {
 		hour: "2-digit",
 		minute: "2-digit",
 		second: "2-digit",
 	});
+
 	const formattedDate = moment(new Date()).format("MMM DD, YYYY");
+
 	const handleSubmit = async () => {
 		try {
 			await TimesheetService.addTimesheet({

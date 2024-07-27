@@ -6,7 +6,7 @@ import AmountAllocation from "./AmountAllocation";
 import EmployeeDetails from "./EmployeeDetails";
 import HourlyAllocation from "./HourlyAllocation";
 
-const PaygroupDetailTable = () => {
+const PaygroupDetailTable = ({ closestRecord }) => {
 	const company = LocalStorageService.getItem("selectedCompany");
 
 	const TABS = [
@@ -18,7 +18,9 @@ const PaygroupDetailTable = () => {
 		{
 			id: 1,
 			type: "Hourly Allocation",
-			name: <HourlyAllocation company={company} />,
+			name: (
+				<HourlyAllocation company={company} closestRecord={closestRecord} />
+			),
 		},
 		{
 			id: 2,

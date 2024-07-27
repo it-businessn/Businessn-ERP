@@ -25,6 +25,18 @@ const timesheetSchema = new mongoose.Schema({
 	updatedOn: { type: Date, default: Date.now },
 	createdOn: { type: Date, default: Date.now },
 	companyName: { type: String, ref: "Company" },
+	regPay: String,
+	overTimePay: String,
+	dblOverTimePay: String,
+	statWorkPay: String,
+	statPay: String,
+	sickPay: String,
+	regHoursWorked: { type: Number, default: 40 },
+	overtimeHoursWorked: { type: Number, default: 20 },
+	dblOvertimeHoursWorked: { type: Number, default: 10 },
+	statDayHoursWorked: { type: Number, default: 10 },
+	sickHoursWorked: { type: Number, default: 0 },
+	statHoursWorked: { type: Number, default: 0 },
 });
 
 const Timesheet = mongoose.model("Timesheet", timesheetSchema);

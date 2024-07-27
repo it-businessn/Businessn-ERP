@@ -64,6 +64,12 @@ const PayrollService = {
 	async addEmployeeBalanceInfo(data) {
 		return apiService.post("/payroll/balanceInfo", data);
 	},
+
+	async getHoursWorkedAllocation(company, startDate, endDate) {
+		return apiService.get(
+			`/payroll/hours-timesheets/${company}/${startDate}/${endDate}`,
+		);
+	},
 };
 
 export default PayrollService;
