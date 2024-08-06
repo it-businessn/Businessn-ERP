@@ -8,6 +8,7 @@ export const EMP_PAY_INFO_EARNINGS_CONFIG = [
 			{ name: "Statutory Worked Pay", param_key: "statWorkPay" },
 			{ name: "Statutory Pay", param_key: "statPay" },
 			{ name: "Sick Pay", param_key: "sickPay" },
+			{ name: "Vacation Pay", param_key: "vacationPay" },
 		],
 	},
 	{

@@ -4,6 +4,8 @@ import PrimaryButton from "components/ui/button/PrimaryButton";
 import BoxCard from "components/ui/card";
 import TableLayout from "components/ui/table/TableLayout";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { ROUTE_PATH } from "routes";
 import { formatDateBar, formatDateRange, sortRecordsByDate } from "utils";
 import { PAYGROUP_COLS } from "../data";
 import ExtraPayrunModal from "./ExtraPayrunModal";
@@ -17,6 +19,11 @@ const PaygroupTable = ({
 	closestRecord,
 }) => {
 	const [showExtraPayrun, setShowExtraPayrun] = useState(false);
+
+	const navigate = useNavigate();
+
+	const handlePay = (payPeriod) =>
+		navigate(`${ROUTE_PATH.PAYROLL}${ROUTE_PATH.PROCESS}/${payPeriod}`);
 
 	return (
 		<SimpleGrid
@@ -70,6 +77,7 @@ const PaygroupTable = ({
 									bg,
 									isViewAction,
 									isDisabledStatus,
+									isDisabledAction,
 								}) => (
 									<Tr key={payPeriod}>
 										<Td p={1}>{payPeriod}</Td>
@@ -94,9 +102,10 @@ const PaygroupTable = ({
 												<OutlineButton label={"View"} size="xs" />
 											) : (
 												<PrimaryButton
-													// isDisabled={isDisabled}
+													isDisabled={isDisabledAction}
 													name={"Pay now"}
 													size="xs"
+													onOpen={() => handlePay(payPeriod)}
 												/>
 											)}
 										</Td>

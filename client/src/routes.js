@@ -290,6 +290,10 @@ export const router = createBrowserRouter([
 				element: <ProcessPayroll />,
 			},
 			{
+				path: `${ROUTE_PATH.PAYROLL}${ROUTE_PATH.PROCESS}/:payNo`,
+				element: <ProcessPayroll />,
+			},
+			{
 				path: `${ROUTE_PATH.PAYROLL}${ROUTE_PATH.APPROVALS}`,
 				element: <Approvals />,
 			},

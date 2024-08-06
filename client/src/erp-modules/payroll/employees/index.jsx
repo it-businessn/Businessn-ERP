@@ -107,7 +107,7 @@ const Employees = () => {
 						<TextTitle size="xs" weight="normal" title={employee?.employeeId} />
 						{isActivePayroll && (
 							<Badge bg="var(--correct_ans)" color="var(--primary_bg)">
-								Active
+								<TextTitle title={"Payroll Activated"} />
 							</Badge>
 						)}
 					</VStack>

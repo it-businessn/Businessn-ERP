@@ -3,7 +3,7 @@ import PrimaryButton from "components/ui/button/PrimaryButton";
 import TextTitle from "components/ui/text/TextTitle";
 import { MdCheckCircle } from "react-icons/md";
 
-const Finalize = () => {
+const Finalize = ({ handleClick }) => {
 	return (
 		<HStack alignItems={"end"}>
 			<Table w={"100%"}>
@@ -37,11 +37,11 @@ const Finalize = () => {
 			</Table>
 			<PrimaryButton
 				bg="var(--correct_ans)"
-				isDisabled={true}
 				name={"CONFIRM"}
 				rightIcon={<MdCheckCircle />}
 				// isLoading={isLoading}
 				loadingText="Loading"
+				onOpen={handleClick}
 			/>
 		</HStack>
 	);

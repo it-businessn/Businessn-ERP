@@ -3,14 +3,14 @@ import TextTitle from "components/ui/text/TextTitle";
 import { useEffect } from "react";
 import { FaSortDown, FaSortUp } from "react-icons/fa6";
 import AlertsViolation from "./AlertsViolation";
-import InputsReview from "./InputsReview";
 import Finalize from "./Finalize";
+import InputsReview from "./InputsReview";
 // import PayrollComplete from "./PayrollComplete";
 import BoxCard from "components/ui/card";
 import PayrunSetup from "./PayrunSetup";
 import ReportsPreview from "./ReportsPreview";
 
-const PayrollStageContent = ({ currentStep, steps }) => {
+const PayrollStageContent = ({ currentStep, steps, handleConfirm }) => {
 	const { isOpen: isPayrollStepupOpen, onToggle: onPayrollStepupToggle } =
 		useDisclosure({
 			defaultIsOpen: false,
@@ -69,7 +69,12 @@ const PayrollStageContent = ({ currentStep, steps }) => {
 					<TextTitle mt={1} weight="normal" title={"Payrun Setup"} />
 				</HStack>
 				<Collapse in={isPayrollStepupOpen}>
-					<PayrunSetup />
+					<PayrunSetup
+						handleClick={() => {
+							handleConfirm(currentStep + 1);
+							onPayrollStepupToggle();
+						}}
+					/>
 				</Collapse>
 			</BoxCard>
 
@@ -94,7 +99,12 @@ const PayrollStageContent = ({ currentStep, steps }) => {
 					<TextTitle mt={1} weight="normal" title={"Inputs Review"} />
 				</HStack>
 				<Collapse in={isInputsReviewOpen}>
-					<InputsReview />
+					<InputsReview
+						handleClick={() => {
+							handleConfirm(currentStep + 1);
+							onInputsReviewToggle();
+						}}
+					/>
 				</Collapse>
 			</BoxCard>
 			<BoxCard>
@@ -118,7 +128,12 @@ const PayrollStageContent = ({ currentStep, steps }) => {
 					<TextTitle mt={1} weight="normal" title={"Alerts and Violations"} />
 				</HStack>
 				<Collapse in={isAlertsOpen}>
-					<AlertsViolation />
+					<AlertsViolation
+						handleClick={() => {
+							handleConfirm(currentStep + 1);
+							onAlertsOpenToggle();
+						}}
+					/>
 				</Collapse>
 			</BoxCard>
 			<BoxCard>
@@ -142,7 +157,12 @@ const PayrollStageContent = ({ currentStep, steps }) => {
 					<TextTitle mt={1} weight="normal" title={"Review Reports"} />
 				</HStack>
 				<Collapse in={isReportsOpen}>
-					<ReportsPreview />
+					<ReportsPreview
+						handleClick={() => {
+							handleConfirm(currentStep + 1);
+							onReportsToggle();
+						}}
+					/>
 				</Collapse>
 			</BoxCard>
 			<BoxCard>
@@ -167,7 +187,12 @@ const PayrollStageContent = ({ currentStep, steps }) => {
 				</HStack>
 				<Collapse in={isFinalizeOpen}>
 					<>
-						<Finalize />
+						<Finalize
+							handleClick={() => {
+								handleConfirm(currentStep + 1);
+								onFinalizeToggle();
+							}}
+						/>
 						{/* <PayrollComplete /> */}
 					</>
 				</Collapse>

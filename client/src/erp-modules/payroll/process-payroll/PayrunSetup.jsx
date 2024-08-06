@@ -4,13 +4,21 @@ import SelectBox from "components/ui/form/select/SelectBox";
 import TextTitle from "components/ui/text/TextTitle";
 import usePaygroup from "hooks/usePaygroup";
 import { MdCheckCircle } from "react-icons/md";
+import { useParams } from "react-router-dom";
 import LocalStorageService from "services/LocalStorageService";
 import { dayMonthYear } from "utils";
 
-const PayrunSetup = () => {
+const PayrunSetup = ({ handleClick }) => {
+	const { payNo } = useParams();
 	const company = LocalStorageService.getItem("selectedCompany");
-	const { payGroups, selectedPayGroup, payGroupSchedule } =
+	const { payGroups, selectedPayGroup, payGroupSchedule, closestRecord } =
 		usePaygroup(company);
+
+	const selectedPayPeriod = payNo
+		? payGroupSchedule?.find(({ payPeriod }) => payPeriod.toString() === payNo)
+		: closestRecord;
+
+	const runType = payNo?.includes("E") ? "Extra" : "Regular";
 
 	return (
 		<HStack alignItems={"end"}>
@@ -38,31 +46,33 @@ const PayrunSetup = () => {
 							<Td>
 								<TextTitle title={"Pay Period Number"} />
 							</Td>
-							<Td>12</Td>
+							<Td>{selectedPayPeriod?.payPeriod}</Td>
 						</Tr>
 						<Tr>
 							<Td>
 								<TextTitle title="Run Type" />
 							</Td>
-							<Td>{"Regular".toLocaleUpperCase()}</Td>
+							<Td>{runType.toLocaleUpperCase()}</Td>
 						</Tr>
 						<Tr>
 							<Td>
 								<TextTitle title="Payment Date" />
 							</Td>
-							<Td>{dayMonthYear(payGroupSchedule?.payDate)}</Td>
+							<Td>{dayMonthYear(selectedPayPeriod?.payPeriodPayDate)}</Td>
 						</Tr>
 						<Tr>
 							<Td>
 								<TextTitle title="Pay Period Ending Date" />
 							</Td>
-							<Td>{dayMonthYear(payGroupSchedule?.endDate)}</Td>
+							<Td>{dayMonthYear(selectedPayPeriod?.payPeriodEndDate)}</Td>
 						</Tr>
 						<Tr>
 							<Td>
 								<TextTitle title="Pay Processing Date" />
 							</Td>
-							<Td>{dayMonthYear(payGroupSchedule?.processingDate)}</Td>
+							<Td>
+								{dayMonthYear(selectedPayPeriod?.payPeriodProcessingDate)}
+							</Td>
 						</Tr>
 						<Tr>
 							<Td>
@@ -75,11 +85,11 @@ const PayrunSetup = () => {
 			</Table>
 			<PrimaryButton
 				bg="var(--correct_ans)"
-				isDisabled={true}
 				name={"CONFIRM"}
 				rightIcon={<MdCheckCircle />}
 				// isLoading={isLoading}
 				loadingText="Loading"
+				onOpen={handleClick}
 			/>
 		</HStack>
 	);

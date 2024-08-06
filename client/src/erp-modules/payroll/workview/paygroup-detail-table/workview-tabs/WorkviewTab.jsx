@@ -1,6 +1,7 @@
 import { Tbody, Td, Tr } from "@chakra-ui/react";
 import BoxCard from "components/ui/card";
 import TableLayout from "components/ui/table/TableLayout";
+import TextTitle from "components/ui/text/TextTitle";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import EditPayDetail from "./EditPayDetail";
@@ -27,11 +28,17 @@ const WorkviewTab = ({ cols, data, path, setRefresh, isEditable }) => {
 						<Tr key={row._id}>
 							{cols.map((col, index) => {
 								const fieldValue =
-									index === cols.length - 1
-										? col.pair
-										: col.pair === "obj"
-										? row.empId[col.pair_key]
-										: row[col.pair];
+									index === cols.length - 1 ? (
+										col.pair
+									) : col.pair === "obj" ? (
+										col.pair_key === "fullName" ? (
+											<TextTitle title={row.empId[col.pair_key]} />
+										) : (
+											row.empId[col.pair_key]
+										)
+									) : (
+										row[col.pair]
+									);
 								return (
 									<Td
 										p={1}

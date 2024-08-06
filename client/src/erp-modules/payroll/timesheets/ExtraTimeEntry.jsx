@@ -1,5 +1,4 @@
 import { Td, Tr } from "@chakra-ui/react";
-import PrimaryButton from "components/ui/button/PrimaryButton";
 import TextTitle from "components/ui/text/TextTitle";
 import { getDefaultDate } from "utils";
 
@@ -14,14 +13,15 @@ const ExtraTimeEntry = ({
 	totalBreaks,
 	totalHours,
 	createdOn,
-	handleAdd,
 }) => {
 	return (
 		<Tr>
 			<Td>
-				<TextTitle title={name} weight="normal" />
+				<TextTitle title={name} />
 			</Td>
-			<Td>{getDefaultDate(createdOn)}</Td>
+			<Td>
+				<TextTitle title={getDefaultDate(createdOn)} />
+			</Td>
 			<Td>{approveStatus}</Td>
 			<Td>{dept}</Td>
 			<Td>{param_key}</Td>
@@ -30,13 +30,7 @@ const ExtraTimeEntry = ({
 			<Td>{endTime}</Td>
 			<Td>{totalBreaks}</Td>
 			<Td>{totalHours}</Td>
-			<Td>
-				<PrimaryButton
-					size={"sm"}
-					name={"Add request"}
-					onOpen={() => handleAdd({ name, totalHours })}
-				/>
-			</Td>
+			<Td />
 		</Tr>
 	);
 };

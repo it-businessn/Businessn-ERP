@@ -13,13 +13,16 @@ import PrimaryButton from "components/ui/button/PrimaryButton";
 import TextTitle from "components/ui/text/TextTitle";
 import { MdCheckCircle, MdSettingsSuggest } from "react-icons/md";
 
-const InputsReview = () => {
+const InputsReview = ({ handleClick }) => {
 	return (
 		<HStack alignItems={"end"}>
 			<Table w={"100%"}>
 				<Thead>
 					<Th>
 						<TextTitle size={"md"} title={"Employee name"} />
+					</Th>
+					<Th>
+						<TextTitle size={"md"} title={"Regular Hours"} />
 					</Th>
 					<Th>
 						<TextTitle size={"md"} title={"Net Pay"} />
@@ -40,6 +43,7 @@ const InputsReview = () => {
 						<Td>
 							<TextTitle title={"John Smith"} />
 						</Td>
+						<Td />
 						<Td>
 							<TextTitle title={"$1,345.00"} />
 						</Td>
@@ -59,7 +63,7 @@ const InputsReview = () => {
 						</Td>
 					</Tr>
 
-					<Tr>
+					{/* <Tr>
 						<Td>
 							<TextTitle title={"John Smith"} />
 						</Td>
@@ -80,16 +84,16 @@ const InputsReview = () => {
 								Review payroll details
 							</Button>
 						</Td>
-					</Tr>
+					</Tr> */}
 				</Tbody>
 			</Table>
 			<PrimaryButton
 				bg="var(--correct_ans)"
-				isDisabled={true}
 				name={"CONFIRM"}
 				rightIcon={<MdCheckCircle />}
 				// isLoading={isLoading}
 				loadingText="Loading"
+				onOpen={handleClick}
 			/>
 		</HStack>
 	);

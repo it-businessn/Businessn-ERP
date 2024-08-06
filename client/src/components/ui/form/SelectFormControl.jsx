@@ -20,9 +20,9 @@ const SelectFormControl = ({
 				icon={icon}
 				onChange={handleChange}
 			>
-				{options.map(({ name, value }) => (
-					<option key={value} value={value}>
-						{name}
+				{options?.map((_) => (
+					<option key={_?.value || _[name]} value={_?.value}>
+						{_?.name || _[name]}
 					</option>
 				))}
 			</Select>

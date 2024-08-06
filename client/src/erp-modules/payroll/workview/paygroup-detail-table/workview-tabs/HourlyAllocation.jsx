@@ -13,8 +13,9 @@ const HourlyAllocation = ({ company, closestRecord }) => {
 				{ key: "Regular Hours", pair: "totalRegHoursWorked" },
 				{ key: "Overtime Hours", pair: "totalOvertimeHoursWorked" },
 				{ key: "Double Overtime Hours", pair: "totalDblOvertimeHoursWorked" },
-				{ key: "Stat. Pay Hours", pair: "totalStatDayHoursWorked" },
-				{ key: "Vacation Hours", pair: "totalStatHoursWorked" },
+				{ key: "Stat. Pay Hours", pair: "totalStatHours" },
+				{ key: "Stat. Worked Hours", pair: "totalStatDayHoursWorked" },
+				{ key: "Vacation Hours", pair: "totalVacationHoursWorked" },
 				{ key: "Sick Pay Hours", pair: "totalSickHoursWorked" },
 				{ key: "", pair: <OutlineButton label="View Timesheets" /> },
 			]}

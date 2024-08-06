@@ -35,8 +35,9 @@ const timesheetSchema = new mongoose.Schema({
 	overtimeHoursWorked: { type: Number, default: 20 },
 	dblOvertimeHoursWorked: { type: Number, default: 10 },
 	statDayHoursWorked: { type: Number, default: 10 },
+	statPayHours: { type: Number, default: 0 },
 	sickHoursWorked: { type: Number, default: 0 },
-	statHoursWorked: { type: Number, default: 0 },
+	vacationHoursWorked: { type: Number, default: 0 },
 });
 
 const Timesheet = mongoose.model("Timesheet", timesheetSchema);

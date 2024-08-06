@@ -1,4 +1,5 @@
-import { Td, Tr } from "@chakra-ui/react";
+import { Stack, Td, Tr } from "@chakra-ui/react";
+import PrimaryButton from "components/ui/button/PrimaryButton";
 import TabsButtonGroup from "components/ui/tab/TabsButtonGroup";
 import TextTitle from "components/ui/text/TextTitle";
 import PageLayout from "layouts/PageLayout";
@@ -6,10 +7,11 @@ import React, { useState } from "react";
 import { useParams } from "react-router-dom";
 import LocalStorageService from "services/LocalStorageService";
 import { getDateDiffHours, getDefaultTime, isManager } from "utils";
+import { TIMESHEET_DATA } from "./data";
 import ExtraTimeEntry from "./ExtraTimeEntry";
+import ExtraTimeEntryModal from "./ExtraTimeEntryModal";
 import Timecard from "./Timecard";
 import Timesheet from "./Timesheet";
-import { TIMESHEET_DATA } from "./data";
 
 const Timesheets = () => {
 	const company = LocalStorageService.getItem("selectedCompany");
@@ -21,11 +23,7 @@ const Timesheets = () => {
 	const timesheets = TIMESHEET_DATA;
 
 	const [refresh, setRefresh] = useState(false);
-	const [showAdd, setShowAdd] = useState(false);
-
-	const handleAdd = (data) => {
-		console.log(data);
-	};
+	const [showAddEntry, setShowAddEntry] = useState(false);
 
 	const TABS = [
 		{
@@ -35,7 +33,7 @@ const Timesheets = () => {
 				<Timesheet
 					cols={[
 						"Employee Name",
-						"Date",
+						"Worked Date",
 						"Status",
 						"Department",
 						"Pay Rate",
@@ -43,7 +41,7 @@ const Timesheets = () => {
 						"Start Time",
 						"End Time",
 						"Break/Lunch",
-						"Total Hours (HH:mm)",
+						"Total Worked Hours (HH:mm)",
 						"",
 					]}
 					content={timesheets?.map(
@@ -98,7 +96,6 @@ const Timesheets = () => {
 										endTime={endTime}
 										totalBreaks={totalBreaks}
 										totalHours={regHoursWorked}
-										handleAdd={handleAdd}
 									/>
 									{/* {showAdd && (
 										<AddTimesheet
@@ -118,7 +115,6 @@ const Timesheets = () => {
 											endTime={endTime}
 											totalBreaks={totalBreaks}
 											totalHours={overtimeHoursWorked}
-											handleAdd={handleAdd}
 										/>
 									)}
 									{dblOverTimePay && (
@@ -132,7 +128,6 @@ const Timesheets = () => {
 											endTime={endTime}
 											totalBreaks={totalBreaks}
 											totalHours={dblOvertimeHoursWorked}
-											handleAdd={handleAdd}
 										/>
 									)}
 									{statWorkPay && (
@@ -146,7 +141,6 @@ const Timesheets = () => {
 											endTime={endTime}
 											totalBreaks={totalBreaks}
 											totalHours={statDayHoursWorked}
-											handleAdd={handleAdd}
 										/>
 									)}
 									{statPay && (
@@ -160,7 +154,6 @@ const Timesheets = () => {
 											endTime={endTime}
 											totalBreaks={totalBreaks}
 											totalHours={0}
-											handleAdd={handleAdd}
 										/>
 									)}
 									{sickPay && (
@@ -174,7 +167,6 @@ const Timesheets = () => {
 											endTime={endTime}
 											totalBreaks={totalBreaks}
 											totalHours={0}
-											handleAdd={handleAdd}
 										/>
 									)}
 								</React.Fragment>
@@ -219,7 +211,7 @@ const Timesheets = () => {
 							<React.Fragment key={_id}>
 								<Tr>
 									<Td>
-										<TextTitle title={employeeId?.fullName} weight="normal" />
+										<TextTitle title={employeeId?.fullName} />
 									</Td>
 									<Td>{approveStatus}</Td>
 									<Td>
@@ -275,6 +267,21 @@ const Timesheets = () => {
 			valueText1={new Date()}
 			handleChange={(v) => console.log(v)}
 		>
+			<Stack spacing={0} align={"end"} mt={-10}>
+				<PrimaryButton
+					size={"sm"}
+					name={"Add request"}
+					onOpen={() => setShowAddEntry(true)}
+				/>
+				{showAddEntry && (
+					<ExtraTimeEntryModal
+						company={company}
+						showAddEntry={showAddEntry}
+						setRefresh={setRefresh}
+						setShowAddEntry={setShowAddEntry}
+					/>
+				)}
+			</Stack>
 			<TabsButtonGroup
 				mt={4}
 				isOutlineTab

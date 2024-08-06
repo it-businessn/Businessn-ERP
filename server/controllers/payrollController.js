@@ -33,9 +33,10 @@ const getGroupedTimesheet = async (req, res) => {
 		// 		acc.totalOvertimeHoursWorked += timesheet.overtimeHoursWorked || 0;
 		// 		acc.totalDblOvertimeHoursWorked +=
 		// 			timesheet.dblOvertimeHoursWorked || 0;
+		// 		acc.totalStatHours += timesheet.statPayHours || 0;
 		// 		acc.totalStatDayHoursWorked += timesheet.statDayHoursWorked || 0;
 		// 		acc.totalSickHoursWorked += timesheet.sickHoursWorked || 0;
-		// 		acc.totalStatHoursWorked += timesheet.statHoursWorked || 0;
+		// 		acc.totalVacationHoursWorked += timesheet.totalVacationHoursWorked || 0;
 		// 		return acc;
 		// 	},
 		// 	{
@@ -44,7 +45,8 @@ const getGroupedTimesheet = async (req, res) => {
 		// 		totalDblOvertimeHoursWorked: 0,
 		// 		totalStatDayHoursWorked: 0,
 		// 		totalSickHoursWorked: 0,
-		// 		totalStatHoursWorked: 0,
+		// 		totalVacationHoursWorked: 0,
+		// 		totalStatHours: 0,
 		// 	},
 		// );
 
@@ -66,14 +68,17 @@ const getGroupedTimesheet = async (req, res) => {
 		// 	},
 		// 	0,
 		// );
+		// const totalStatHours = aggregationResult.reduce((acc, product) => {
+		// 	return acc + product.statPayHours;
+		// }, 0);
 		// const totalStatDayHoursWorked = aggregationResult.reduce((acc, product) => {
 		// 	return acc + product.statDayHoursWorked;
 		// }, 0);
 		// const totalSickHoursWorked = aggregationResult.reduce((acc, product) => {
 		// 	return acc + product.sickHoursWorked;
 		// }, 0);
-		// const totalStatHoursWorked = aggregationResult.reduce((acc, product) => {
-		// 	return acc + product.statHoursWorked;
+		// const totalVacationHoursWorked = aggregationResult.reduce((acc, product) => {
+		// 	return acc + product.vacationHoursWorked;
 		// }, 0);
 
 		// console.log("aggregationResult=", aggregatedHours);
@@ -87,8 +92,9 @@ const getGroupedTimesheet = async (req, res) => {
 					totalOvertimeHoursWorked: 0,
 					totalDblOvertimeHoursWorked: 0,
 					totalStatDayHoursWorked: 0,
+					totalStatHours: 0,
 					totalSickHoursWorked: 0,
-					totalStatHoursWorked: 0,
+					totalVacationHoursWorked: 0,
 				};
 			}
 			acc[timesheet.employeeId].totalRegHoursWorked +=
@@ -97,11 +103,12 @@ const getGroupedTimesheet = async (req, res) => {
 				timesheet.overtimeHoursWorked || 0;
 			acc[timesheet.employeeId].totalDblOvertimeHoursWorked +=
 				timesheet.dblOvertimeHoursWorked || 0;
+			acc[timesheet.employeeId].totalStatHours += timesheet.statPayHours || 0;
 			acc[timesheet.employeeId].totalStatDayHoursWorked +=
 				timesheet.statDayHoursWorked || 0;
 			acc[timesheet.employeeId].totalSickHoursWorked +=
 				timesheet.sickHoursWorked || 0;
-			acc[timesheet.employeeId].totalStatHoursWorked +=
+			acc[timesheet.employeeId].totalVacationHoursWorked +=
 				timesheet.statHoursWorked || 0;
 			return acc;
 		}, {});

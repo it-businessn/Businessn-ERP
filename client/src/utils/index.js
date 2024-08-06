@@ -469,29 +469,36 @@ export const getPayrollStatus = (data) => {
 		name: "Pending",
 		color: "var(--primary_bg)",
 		bg: "var(--pending)",
-		isDisabledStatus: false,
-		isViewAction: true,
+		isDisabledStatus: true,
+		isViewAction: false,
+		isDisabledAction: true,
 	};
 	const targetEndDate = moment(data.payPeriodEndDate);
 	const targetPayDate = moment(data.payPeriodPayDate);
 	const targetProcessingDate = moment(data.payPeriodProcessingDate);
 	const today = moment();
 
-	if (!data.isProcessed && targetProcessingDate.isBefore(today)) {
+	const isEndDatePassed = targetEndDate.isSame(
+		// today.clone().add(5, "day"),
+		today.clone().subtract(1, "day"),
+		"day",
+	);
+	if (isEndDatePassed) {
 		return {
-			name: "Overdue",
+			name: "Pending",
 			color: "var(--primary_bg)",
-			bg: "var(--incorrect_ans)",
-			isViewAction: false,
+			bg: "var(--pending)",
 			isDisabledStatus: false,
+			isViewAction: false,
+			isDisabledAction: false,
 		};
 	} else if (data.isProcessed && targetPayDate.isBefore(today)) {
 		return {
-			name: "In progress",
+			name: "Submitted",
 			color: "var(--primary_bg)",
 			bg: "var(--correct_ans)",
-			isDisabledStatus: true,
-			isViewAction: false,
+			isDisabledStatus: false,
+			isViewAction: true,
 		};
 	} else if (
 		data.isProcessed &&
@@ -504,18 +511,28 @@ export const getPayrollStatus = (data) => {
 			isDisabledStatus: false,
 			isViewAction: true,
 		};
-	} else if (
-		data.isProcessed &&
-		targetEndDate.isSame(today.startOf("day"), "day")
-	) {
+	} else if (!data.isProcessed && targetProcessingDate.isBefore(today)) {
 		return {
-			name: "Pending",
+			name: "Overdue",
 			color: "var(--primary_bg)",
-			bg: "var(--pending)",
-			isDisabledStatus: true,
+			bg: "var(--incorrect_ans)",
 			isViewAction: false,
+			isDisabledStatus: false,
 		};
-	} else {
+	}
+	// else if (
+	// 	data.isProcessed &&
+	// 	targetEndDate.isSame(today.startOf("day"), "day")
+	// ) {
+	// 	return {
+	// 		name: "Pending",
+	// 		color: "var(--primary_bg)",
+	// 		bg: "var(--pending)",
+	// 		isDisabledStatus: true,
+	// 		isViewAction: false,
+	// 	};
+	// }
+	else {
 		return defaultStatus;
 	}
 };
