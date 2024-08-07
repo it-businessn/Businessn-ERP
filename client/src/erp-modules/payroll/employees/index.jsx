@@ -25,8 +25,8 @@ import PersonalInfo from "./employee-tabs/PersonalInfo";
 const Employees = () => {
 	const { id } = useParams();
 	const loggedInUser = LocalStorageService.getItem("user");
-	const userId = id ?? LocalStorageService.getItem("user")._id;
 	const [employee, setEmployee] = useState(loggedInUser);
+	const [userId, setUserId] = useState(id ?? loggedInUser._id);
 	const [isRefresh, setIsRefresh] = useState(false);
 	const company = LocalStorageService.getItem("selectedCompany");
 	const { employees, filteredEmployees, setFilteredEmployees } = useEmployees(
@@ -47,6 +47,7 @@ const Employees = () => {
 	const handleSelect = (emp) => {
 		setEmpName(emp.fullName);
 		setEmployee(emp);
+		setUserId(emp._id);
 	};
 
 	const SETUP_LIST = [
