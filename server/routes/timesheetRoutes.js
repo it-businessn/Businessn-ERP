@@ -9,6 +9,6 @@ router.get("/:companyName/:employeeId", timesheetController.getTimesheet);
 
 router.post("/", timesheetController.createTimesheet);
 
-router.put("/:employeeId", timesheetController.updateTimesheet);
+router.put("/:id", timesheetController.updateTimesheet);
 
 module.exports = router;

@@ -5,7 +5,9 @@ import SelectFormControl from "components/ui/form/SelectFormControl";
 import ModalLayout from "components/ui/modal/ModalLayout";
 import useEmployees from "hooks/useEmployees";
 import { useState } from "react";
+import TimesheetService from "services/TimesheetService";
 import { getDefaultDate } from "utils";
+import { PAY_TYPES } from "./data";
 
 const ExtraTimeEntryModal = ({
 	showAddEntry,
@@ -15,100 +17,43 @@ const ExtraTimeEntryModal = ({
 	closestRecord,
 }) => {
 	const [isSubmitting, setIsSubmitting] = useState(false);
-	const today = getDefaultDate(new Date());
-
-	const [payPeriodPayDate, setPayPeriodPayDate] = useState(
-		getDefaultDate(closestRecord?.payPeriodPayDate),
-	);
-	const [payPeriodProcessingDate, setPayPeriodProcessingDate] = useState(
-		getDefaultDate(closestRecord?.payPeriodProcessingDate),
-	);
-	const [payPeriodStartDate, setPayPeriodStartDate] = useState(
-		getDefaultDate(closestRecord?.payPeriodStartDate),
-	);
-	const [payPeriodEndDate, setPayPeriodEndDate] = useState(
-		getDefaultDate(closestRecord?.payPeriodEndDate),
-	);
-
-	const [selectedEmp, setSelectedEmp] = useState("");
+	const initialFormData = {
+		type: "",
+		createdOn: new Date(),
+		company,
+		employeeId: "",
+	};
+	const [formData, setFormData] = useState(initialFormData);
 	const { employees } = useEmployees(false, company);
-	const [openMenu, setOpenMenu] = useState(false);
-	const [selectedOptions, setSelectedOptions] = useState([]);
 
+	const handleChange = (e) => {
+		const { name, value } = e.target;
+		setFormData((prevData) => ({ ...prevData, [name]: value }));
+	};
 	const { onClose } = useDisclosure();
 
 	const handleClose = () => {
 		onClose();
-		setShowAddEntry(false);
 		reset();
 	};
 
 	const reset = () => {
-		setSelectedEmp([]);
-		setPayPeriodPayDate(today);
-		setPayPeriodProcessingDate(today);
-		setPayPeriodStartDate(today);
-		setPayPeriodEndDate(today);
-	};
-
-	const handleCloseMenu = (selectedOptions) => {
-		setOpenMenu(false);
-		setSelectedEmp(selectedOptions);
-	};
-
-	const handleMenuToggle = () => {
-		setOpenMenu((prev) => !prev);
+		setShowAddEntry(false);
+		setFormData(initialFormData);
 	};
 
 	const handleSubmit = async () => {
 		setIsSubmitting(true);
-		// try {
-		// 	selectedPayGroup.scheduleSettings.push({
-		// 		payPeriod: `${closestRecord.payPeriod}E`,
-		// 		selectedEmp,
-		// 		payPeriodPayDate,
-		// 		payPeriodProcessingDate,
-		// 		payPeriodStartDate,
-		// 		payPeriodEndDate,
-		// 	});
-		// 	await SettingService.updateGroup(
-		// 		{ scheduleSettings: selectedPayGroup.scheduleSettings },
-		// 		selectedPayGroupId,
-		// 	);
-		// 	setRefresh((prev) => !prev);
-		// 	handleClose();
-		// } catch (error) {
-		// 	console.log("An error occurred. Please try again.");
-		// } finally {
-		// 	setIsSubmitting(false);
-		// }
+		try {
+			await TimesheetService.addTimesheet(formData);
+			setRefresh((prev) => !prev);
+			handleClose();
+		} catch (error) {
+			console.log("An error occurred. Please try again.");
+		} finally {
+			setIsSubmitting(false);
+		}
 	};
-	const PAY_TYPES = [
-		{
-			name: "Regular Pay",
-			value: "Regular Pay",
-		},
-		{
-			name: "Overtime Pay",
-			value: "Overtime Pay",
-		},
-		{
-			name: "Double Overtime Pay",
-			value: "Mailing List",
-		},
-		{
-			name: "Statutory Worked Pay",
-			value: "Meeting",
-		},
-		{
-			name: "Statutory Pay",
-			value: "LinkedIn Contact",
-		},
-		{
-			name: "Sick Pay",
-			value: "LinkedIn Message",
-		},
-	];
 	return (
 		<ModalLayout
 			title={"Add timesheet record"}
@@ -118,29 +63,37 @@ const ExtraTimeEntryModal = ({
 		>
 			<Stack spacing={3} mt={"-1em"}>
 				<SelectFormControl
+					valueParam="_id"
 					name="fullName"
 					label={"Select employee"}
-					valueText={selectedEmp}
-					handleChange={() => {}}
+					valueText={formData.employeeId}
+					handleChange={(e) =>
+						setFormData((prevData) => ({
+							...prevData,
+							employeeId: e.target.value,
+						}))
+					}
 					options={employees}
+					placeholder="Select employee"
 				/>
 				<SelectFormControl
 					name="type"
 					label={"Type of Pay"}
-					valueText={""}
-					handleChange={() => {}}
+					valueText={formData.type}
+					handleChange={handleChange}
 					options={PAY_TYPES}
+					placeholder="Select pay type"
 				/>
 				<DateTimeFormControl
 					label={"Select worked date"}
-					valueText1={payPeriodPayDate}
-					name1="payPeriodPayDate"
-					handleChange={(e) => setPayPeriodPayDate(e.target.value)}
+					valueText={getDefaultDate(formData.createdOn)}
+					name1="createdOn"
+					handleChange={handleChange}
 					required
 				/>
 				<ActionButtonGroup
 					submitBtnName={"Add"}
-					isDisabled={!selectedEmp.length}
+					isDisabled={formData.fullName === ""}
 					isLoading={isSubmitting}
 					onClose={handleClose}
 					onOpen={handleSubmit}

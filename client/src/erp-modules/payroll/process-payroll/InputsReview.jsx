@@ -13,7 +13,7 @@ import PrimaryButton from "components/ui/button/PrimaryButton";
 import TextTitle from "components/ui/text/TextTitle";
 import { MdCheckCircle, MdSettingsSuggest } from "react-icons/md";
 
-const InputsReview = ({ handleClick }) => {
+const InputsReview = ({ handleClick, handleReview }) => {
 	return (
 		<HStack alignItems={"end"}>
 			<Table w={"100%"}>
@@ -53,7 +53,7 @@ const InputsReview = ({ handleClick }) => {
 						<Td>
 							<Button
 								variant={"outline"}
-								// onClick={onOpen}
+								onClick={() => handleReview("John Smith")}
 								size={"sm"}
 								type="submit"
 								color={"var(--primary_button_bg)"}

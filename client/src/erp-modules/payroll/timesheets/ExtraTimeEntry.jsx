@@ -1,5 +1,7 @@
 import { Td, Tr } from "@chakra-ui/react";
+import DateTimeFormControl from "components/ui/form/DateTimeFormControl";
 import TextTitle from "components/ui/text/TextTitle";
+import { useState } from "react";
 import { getDefaultDate } from "utils";
 
 const ExtraTimeEntry = ({
@@ -14,6 +16,15 @@ const ExtraTimeEntry = ({
 	totalHours,
 	createdOn,
 }) => {
+	const initialFormData = { startTime, endTime };
+	const [formData, setFormData] = useState(initialFormData);
+
+	const handleChange = (e) => {
+		const { name, value } = e.target;
+		setFormData((prevData) => ({ ...prevData, [name]: value }));
+	};
+
+	const handleConfirm = () => console.log(param_key, formData);
 	return (
 		<Tr>
 			<Td>
@@ -26,8 +37,28 @@ const ExtraTimeEntry = ({
 			<Td>{dept}</Td>
 			<Td>{param_key}</Td>
 			<Td>{type}</Td>
-			<Td>{startTime}</Td>
-			<Td>{endTime}</Td>
+			<Td>
+				<DateTimeFormControl
+					label={""}
+					hideTimeLabel
+					valueText2={startTime}
+					name2="startTime"
+					handleChange={handleChange}
+					required
+					handleConfirm={handleConfirm}
+				/>
+			</Td>
+			<Td>
+				<DateTimeFormControl
+					label={""}
+					hideTimeLabel
+					valueText2={endTime}
+					name2="endTime"
+					handleChange={handleChange}
+					required
+					handleConfirm={handleConfirm}
+				/>
+			</Td>
 			<Td>{totalBreaks}</Td>
 			<Td>{totalHours}</Td>
 			<Td />

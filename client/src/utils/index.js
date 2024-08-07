@@ -106,18 +106,18 @@ export function getDefaultTime(date) {
 	return moment(date, "HH:mm").format("hh:mm A");
 }
 
-export function getDateDiffHours(date1, date2) {
-	const hoursDiff = moment(date2).diff(moment(date1), "hours");
-	const minutesDiff = moment(date2).diff(moment(date1), "minutes") % 60;
+export function getDateDiffHours(date1, date2, totalBreaks) {
+	const startTime = moment(date1, "HH:mm");
+	const endTime = moment(date2, "HH:mm");
+	const breakTime = totalBreaks === "" ? 0 : parseInt(totalBreaks) / 60;
+	const totalMinutes = moment.duration(endTime.diff(startTime)).asMinutes();
+	const netMinutes = totalMinutes - breakTime;
+	const hoursDiff = Math.floor(netMinutes / 60);
+	const minutesDiff = (netMinutes % 60).toFixed(2);
 
 	const formattedHours = String(hoursDiff).padStart(2, "0");
 	const formattedMinutes = String(minutesDiff).padStart(2, "0");
-
 	return `${formattedHours}:${formattedMinutes}`;
-	// return `${moment(date2).diff(moment(date1), "hours")}.${moment(date2).diff(
-	// 	moment(date1),
-	// 	"minutes",
-	// )}`;
 }
 
 export const isValidPhoneNumber = (phoneNumber) => {

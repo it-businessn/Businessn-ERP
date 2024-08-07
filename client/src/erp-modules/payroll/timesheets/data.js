@@ -1,83 +1,67 @@
-export const TIMESHEET_DATA = [
+export const PAY_TYPES = [
 	{
-		_id: "65fa3a0816d575deb5512958",
-		approveStatus: "Pending",
-		clockIns: ["2024-07-26T23:37:05.034Z"],
-		clockOuts: ["2024-07-27T00:10:15.255Z"],
-		companyName: "Fractional Departments Inc.",
-		createdOn: "2024-07-26T23:37:05.042Z",
-		dblOverTimePay: "40",
-		employeeId: {
-			_id: "65fa3a0816d575deb5512958",
-			fullName: "Juli Khosla",
-			role: "Technical Administrator",
-		},
-		endBreaks: [],
-		overTimePay: "30",
-		projectEntries: [],
-		regPay: "152011",
-		sickPay: "20",
-		startBreaks: [],
-		statPay: "20",
-		statWorkPay: "30",
-		regHoursWorked: 40,
-		overtimeHoursWorked: 10,
-		dblOvertimeHoursWorked: 10,
-		statDayHoursWorked: 5,
-		totalRegularHours: 55, // regHoursWorked + overtimeHoursWorked
+		type: "Regular Pay",
+		value: "Regular Pay",
+		param_key: "regPay",
+		param_hours: "regHoursWorked",
 	},
 	{
-		_id: "65fa3a0816d575deb5512959",
-		approveStatus: "Pending",
-		clockIns: ["2024-07-25T08:00:00.000Z"],
-		clockOuts: ["2024-07-25T17:00:00.000Z"],
-		companyName: "Fractional Departments Inc.",
-		createdOn: "2024-07-25T08:00:00.000Z",
-		dblOverTimePay: "45",
-		employeeId: {
-			_id: "65fa3a0816d575deb5512959",
-			fullName: "Alex Morgan",
-			role: "Project Manager",
-		},
-		endBreaks: [],
-		overTimePay: "35",
-		projectEntries: [],
-		regPay: "120000",
-		sickPay: "25",
-		startBreaks: [],
-		statPay: "25",
-		statWorkPay: "35",
-		regHoursWorked: 35,
-		overtimeHoursWorked: 5,
-		dblOvertimeHoursWorked: 10,
-		statDayHoursWorked: 4,
-		totalRegularHours: 40, // regHoursWorked + overtimeHoursWorked
+		type: "Overtime Pay",
+		value: "Overtime Pay",
+		param_key: "overTimePay",
+		param_hours: "overtimeHoursWorked",
 	},
 	{
-		_id: "65fa3a0816d575deb5512960",
-		approveStatus: "Pending",
-		clockIns: ["2024-07-24T09:00:00.000Z"],
-		clockOuts: ["2024-07-24T18:00:00.000Z"],
-		companyName: "Fractional Departments Inc.",
-		createdOn: "2024-07-24T09:00:00.000Z",
-		dblOverTimePay: "50",
-		employeeId: {
-			_id: "65fa3a0816d575deb5512960",
-			fullName: "Robin Hood",
-			role: "Software Engineer",
-		},
-		endBreaks: [],
-		overTimePay: "40",
-		projectEntries: [],
-		regPay: "130000",
-		sickPay: "30",
-		startBreaks: [],
-		statPay: "30",
-		statWorkPay: "40",
-		regHoursWorked: 45,
-		overtimeHoursWorked: 15,
-		dblOvertimeHoursWorked: 10,
-		statDayHoursWorked: 6,
-		totalRegularHours: 60, // regHoursWorked + overtimeHoursWorked
+		type: "Double Overtime Pay",
+		value: "Double Overtime Pay",
+		param_key: "dblOverTimePay",
+		param_hours: "dblOvertimeHoursWorked",
+	},
+	{
+		type: "Statutory Worked Pay",
+		value: "Statutory Worked Pay",
+		param_key: "statWorkPay",
+		param_hours: "statDayHoursWorked",
+	},
+	{
+		type: "Statutory Pay",
+		value: "Statutory Pay",
+		param_key: "statPay",
+		param_hours: "statDayHours",
+	},
+	{
+		type: "Sick Pay",
+		value: "Sick Pay",
+		param_key: "sickPay",
+		param_hours: "sickPayHours",
+	},
+	{
+		type: "Vacation Pay",
+		value: "Vacation Pay",
+		param_key: "vacationPay",
+		param_hours: "vacationPayHours",
 	},
 ];
+
+export const TIMESHEET_STATUS = [
+	{
+		value: "Approved",
+		color: "var(--primary_bg)",
+		bg: "var(--correct_ans)",
+	},
+	{
+		value: "Rejected",
+		color: "var(--primary_bg)",
+		bg: "var(--incorrect_ans)",
+	},
+	{
+		value: "Pending",
+		color: "var(--primary_bg)",
+		bg: "var(--pending)",
+	},
+];
+
+export const getParamKey = (type) => PAY_TYPES.find((_) => _.type === type);
+
+export const getStatusStyle = (approvedStatusName) =>
+	TIMESHEET_STATUS.find((_) => _.value === approvedStatusName);

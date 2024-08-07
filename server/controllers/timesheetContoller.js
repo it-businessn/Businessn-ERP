@@ -1,10 +1,8 @@
-const Employee = require("../models/Employee");
 const EmployeePayInfo = require("../models/EmployeePayInfo");
-const Project = require("../models/Project");
 const Timesheet = require("../models/Timesheet");
+const moment = require("moment");
 
 const currentDate = new Date();
-
 const getTimesheets = async (req, res) => {
 	const { companyName } = req.params;
 	try {
@@ -49,13 +47,13 @@ const getTimesheets = async (req, res) => {
 		const timesheets = await Timesheet.find({ companyName }).populate({
 			path: "employeeId",
 			model: "Employee",
-			select: ["role", "fullName"],
+			select: ["department", "fullName"],
 		});
 
 		const payInfoResult = await EmployeePayInfo.find({
 			companyName,
 		}).select(
-			"empId regPay overTimePay dblOverTimePay statWorkPay statPay sickPay",
+			"empId regPay overTimePay dblOverTimePay statWorkPay statPay sickPay vacationPay",
 		);
 
 		const payInfoMap = new Map(
@@ -68,23 +66,27 @@ const getTimesheets = async (req, res) => {
 					statWorkPay: payInfo.statWorkPay,
 					statPay: payInfo.statPay,
 					sickPay: payInfo.sickPay,
+					vacationPay: payInfo.vacationPay,
 				},
 			]),
 		);
 
-		timesheets.forEach((timesheet) => {
-			const empIdStr = timesheet.employeeId._id.toString();
-			if (!payInfoMap.has(empIdStr)) {
-				return;
-			}
-			const payInfo = payInfoMap.get(empIdStr);
-			timesheet.regPay = payInfo.regPay;
-			timesheet.overTimePay = payInfo.overTimePay;
-			timesheet.dblOverTimePay = payInfo.dblOverTimePay;
-			timesheet.statWorkPay = payInfo.statWorkPay;
-			timesheet.statPay = payInfo.statPay;
-			timesheet.sickPay = payInfo.sickPay;
-		});
+		timesheets
+			.sort((a, b) => b.createdOn - a.createdOn)
+			.forEach((timesheet) => {
+				const empIdStr = timesheet.employeeId._id.toString();
+				if (!payInfoMap.has(empIdStr)) {
+					return;
+				}
+				const payInfo = payInfoMap.get(empIdStr);
+				timesheet.regPay = payInfo.regPay;
+				timesheet.overTimePay = payInfo.overTimePay;
+				timesheet.dblOverTimePay = payInfo.dblOverTimePay;
+				timesheet.statWorkPay = payInfo.statWorkPay;
+				timesheet.statPay = payInfo.statPay;
+				timesheet.sickPay = payInfo.sickPay;
+				timesheet.vacationPay = payInfo.vacationPay;
+			});
 
 		// for (const timesheet of timesheets) {
 		// 	// Find the corresponding employee in the users array
@@ -120,7 +122,7 @@ const getTimesheet = async (req, res) => {
 };
 
 const createTimesheet = async (req, res) => {
-	const { employeeId, companyName } = req.body;
+	const { company, type, createdOn, employeeId } = req.body;
 	try {
 		const today = new Date(
 			currentDate.getFullYear(),
@@ -132,47 +134,64 @@ const createTimesheet = async (req, res) => {
 			currentDate.getMonth(),
 			currentDate.getDate() + 1,
 		);
-		const existingTimesheet = await Timesheet.findOne({
+		const newTimesheet = await Timesheet.create({
 			employeeId,
-			companyName,
-			createdOn: {
-				$gte: today,
-				$lt: tomorrow,
-			},
+			companyName: company,
+			payType: type,
+			createdOn,
 		});
-		if (existingTimesheet) {
-			existingTimesheet.clockIns.push(Date.now());
-
-			try {
-				await existingTimesheet.save();
-				res.status(201).json(existingTimesheet);
-			} catch (error) {
-				res.status(400).json({ message: error.message });
-			}
-		} else {
-			try {
-				const newTimesheet = await Timesheet.create({
-					clockIns: Date.now(),
-					employeeId,
-					companyName,
-				});
-				res.status(201).json(newTimesheet);
-			} catch (error) {
-				res.status(400).json({ message: error.message });
-			}
-		}
+		res.status(201).json(newTimesheet);
 	} catch (error) {
 		res.status(400).json({ message: error.message });
 	}
 };
 
-const updateTimesheet = async (req, res) => {
-	const { employeeId } = req.params;
-	const { key } = req.body;
-	try {
-		const timesheet = await Timesheet.findOne({ employeeId });
+const getDateDiffHours = (date1, date2, totalBreaks) => {
+	const startTime = moment(date1, "HH:mm");
+	const endTime = moment(date2, "HH:mm");
+	const breakTime = totalBreaks === "" ? 0 : parseInt(totalBreaks) / 60;
+	const totalMinutes = moment.duration(endTime.diff(startTime)).asMinutes();
+	const netMinutes = totalMinutes - breakTime;
+	const hoursDiff = Math.floor(netMinutes / 60);
+	const minutesDiff = Math.floor(netMinutes % 60);
 
-		timesheet[key].push(Date.now());
+	const formattedHours = String(hoursDiff);
+	const formattedMinutes = String(minutesDiff);
+	return `${formattedHours}:${formattedMinutes}`;
+};
+
+const updateTimesheet = async (req, res) => {
+	const { id } = req.params;
+	let { startTime, endTime, totalBreaks, approve, param_hours, company } =
+		req.body;
+	try {
+		const timesheet = await Timesheet.findById(id);
+		if (param_hours === "statDayHours") {
+			startTime = "09:00";
+			endTime = "17:00";
+		}
+		timesheet.clockIns[0] = startTime;
+		timesheet.clockOuts.push(endTime);
+		timesheet.totalBreaks = totalBreaks;
+		timesheet[param_hours] = getDateDiffHours(startTime, endTime, totalBreaks);
+
+		//create auto or manually create
+		// if (parseInt(timesheet[param_hours]) > 8) {
+		// 	timesheet.overtimeHoursWorked = parseInt(timesheet[param_hours]) - 8;
+		// 	timesheet.regHoursWorked = 8;
+		// 	await Timesheet.create({
+		// 		employeeId: timesheet.employeeId,
+		// 		companyName: company,
+		// 		payType: "Overtime Pay",
+		// 		overtimeHoursWorked: timesheet.overtimeHoursWorked,
+		// 	});
+		// }
+
+		timesheet.approveStatus = approve
+			? "Approved"
+			: approve === false
+			? "Rejected"
+			: "Pending";
 		await timesheet.save();
 		res.status(201).json(timesheet);
 	} catch (error) {

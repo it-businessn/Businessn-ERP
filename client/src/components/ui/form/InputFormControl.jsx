@@ -33,7 +33,7 @@ const InputFormControl = ({
 				visibility={visibility}
 			/>
 			<Input
-				onFocus={handleConfirm}
+				onBlur={handleConfirm}
 				display={display}
 				type={type}
 				name={name}

@@ -12,7 +12,7 @@ import PrimaryButton from "components/ui/button/PrimaryButton";
 import TextTitle from "components/ui/text/TextTitle";
 import { MdCheckCircle } from "react-icons/md";
 
-const AlertsViolation = ({ handleClick }) => {
+const AlertsViolation = ({ handleClick, handleReview }) => {
 	return (
 		<HStack alignItems={"end"}>
 			<Table w={"100%"}>
@@ -52,7 +52,7 @@ const AlertsViolation = ({ handleClick }) => {
 						<Td>
 							<Button
 								variant={"outline"}
-								// onClick={onOpen}
+								onClick={handleReview}
 								size={"sm"}
 								type="submit"
 								color={"var(--primary_button_bg)"}

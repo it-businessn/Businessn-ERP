@@ -11,29 +11,38 @@ const DateTimeFormControl = ({
 	name2,
 	hideLabel,
 	size,
+	timeLabel = "Time",
+	hideTimeLabel,
+	border,
+	handleConfirm,
 }) => {
 	return (
 		<>
-			<FormControlMain flex="1">
-				<FormLabel display={hideLabel && "none"}>{label}</FormLabel>
-				<Input
-					size={size}
-					type="date"
-					name={name1}
-					value={valueText1}
-					onChange={handleChange}
-					required={required}
-				/>
-			</FormControlMain>
+			{name1 && (
+				<FormControlMain flex="1">
+					<FormLabel display={hideLabel && "none"}>{label}</FormLabel>
+					<Input
+						size={size}
+						type="date"
+						name={name1}
+						value={valueText1}
+						onChange={handleChange}
+						required={required}
+						border={border}
+					/>
+				</FormControlMain>
+			)}
 			{name2 && (
 				<FormControlMain flex="1">
-					<FormLabel>Time</FormLabel>
+					<FormLabel display={hideTimeLabel && "none"}>{timeLabel}</FormLabel>
 					<Input
+						onBlur={handleConfirm}
 						type="time"
 						name={name2}
 						value={valueText2}
 						onChange={handleChange}
 						required={required}
+						border={border}
 					/>
 				</FormControlMain>
 			)}

@@ -9,6 +9,8 @@ const SelectFormControl = ({
 	options,
 	icon,
 	w,
+	placeholder,
+	valueParam = "value",
 }) => {
 	return (
 		<FormControlMain>
@@ -19,9 +21,10 @@ const SelectFormControl = ({
 				value={valueText}
 				icon={icon}
 				onChange={handleChange}
+				placeholder={placeholder}
 			>
 				{options?.map((_) => (
-					<option key={_?.value || _[name]} value={_?.value}>
+					<option key={_?.value ?? _[name]} value={_[valueParam]}>
 						{_?.name || _[name]}
 					</option>
 				))}

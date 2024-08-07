@@ -1,14 +1,24 @@
-import { Stack, Td, Tr } from "@chakra-ui/react";
+import { HStack, IconButton, Stack, Td, Tr } from "@chakra-ui/react";
 import PrimaryButton from "components/ui/button/PrimaryButton";
+import DateTimeFormControl from "components/ui/form/DateTimeFormControl";
+import InputFormControl from "components/ui/form/InputFormControl";
 import TabsButtonGroup from "components/ui/tab/TabsButtonGroup";
 import TextTitle from "components/ui/text/TextTitle";
+import useTimesheet from "hooks/useTimesheet";
 import PageLayout from "layouts/PageLayout";
 import React, { useState } from "react";
+import { FaCheck } from "react-icons/fa";
+import { IoClose } from "react-icons/io5";
 import { useParams } from "react-router-dom";
 import LocalStorageService from "services/LocalStorageService";
-import { getDateDiffHours, getDefaultTime, isManager } from "utils";
-import { TIMESHEET_DATA } from "./data";
-import ExtraTimeEntry from "./ExtraTimeEntry";
+import TimesheetService from "services/TimesheetService";
+import {
+	getDateDiffHours,
+	getDefaultDate,
+	getDefaultTime,
+	isManager,
+} from "utils";
+import { getParamKey, getStatusStyle } from "./data";
 import ExtraTimeEntryModal from "./ExtraTimeEntryModal";
 import Timecard from "./Timecard";
 import Timesheet from "./Timesheet";
@@ -19,11 +29,41 @@ const Timesheets = () => {
 	const loggedInUser = LocalStorageService.getItem("user");
 	const userId = id ?? loggedInUser._id;
 	const isManagerView = isManager(loggedInUser?.role);
-	// const timesheets = useTimesheet(company, isManagerView, loggedInUser._id);
-	const timesheets = TIMESHEET_DATA;
 
 	const [refresh, setRefresh] = useState(false);
+	const timesheets = useTimesheet(
+		company,
+		isManagerView,
+		loggedInUser._id,
+		refresh,
+	);
+	const initialFormData = {
+		startTime: "",
+		endTime: "",
+		totalBreaks: "",
+		approve: undefined,
+		company,
+	};
+	const [formData, setFormData] = useState(initialFormData);
+	const [recordId, setRecordId] = useState("");
 	const [showAddEntry, setShowAddEntry] = useState(false);
+
+	const handleSave = async (data) => {
+		try {
+			if (recordId) {
+				if (data === undefined) {
+					await TimesheetService.updateTimesheet(formData, recordId);
+				} else {
+					await TimesheetService.updateTimesheet(data, recordId);
+				}
+				setRefresh((prev) => !prev);
+			} else {
+				setTimeout(() => {
+					handleSave(data);
+				}, 2000);
+			}
+		} catch (error) {}
+	};
 
 	const TABS = [
 		{
@@ -42,7 +82,7 @@ const Timesheets = () => {
 						"End Time",
 						"Break/Lunch",
 						"Total Worked Hours (HH:mm)",
-						"",
+						"Action",
 					]}
 					content={timesheets?.map(
 						({
@@ -50,126 +90,186 @@ const Timesheets = () => {
 							employeeId,
 							approveStatus,
 							payType,
-							payRate,
 							clockIns,
 							clockOuts,
-							startBreaks,
-							endBreaks,
-							projectEntries,
 							regPay,
-							sickPay,
-							statPay,
 							statWorkPay,
 							dblOverTimePay,
 							overTimePay,
 							createdOn,
 							regHoursWorked,
 							overtimeHoursWorked,
-							statDayHoursWorked,
 							dblOvertimeHoursWorked,
+							statDayHoursWorked,
+							statDayHours,
+							sickPayHours,
+							vacationPayHours,
+							statPay,
+							sickPay,
+							vacationPay,
+							totalBreaks,
 						}) => {
-							const totalBreaks = getDateDiffHours(
-								startBreaks[startBreaks.length - 1],
-								endBreaks[endBreaks.length - 1],
-							);
+							const startTime = clockIns.length ? clockIns[0] : "";
+							const endTime = clockOuts.length
+								? clockOuts[clockOuts.length - 1]
+								: "";
 
-							const endTime =
-								clockOuts.length > 0
-									? getDefaultTime(clockOuts[clockOuts.length - 1])
-									: "";
-							const startTime =
-								clockIns.length > 0 ? getDefaultTime(clockIns[0]) : "";
-							const totalHours = getDateDiffHours(
-								clockIns[0],
-								clockOuts[clockOuts.length - 1],
-							);
+							const approveStatusBtnCss = getStatusStyle(approveStatus);
+
+							const { param_key, param_hours } = getParamKey(payType);
+
+							const param_pay_type =
+								param_key === "regPay"
+									? regPay
+									: param_key === "overTimePay"
+									? overTimePay
+									: param_key === "dblOverTimePay"
+									? dblOverTimePay
+									: param_key === "statWorkPay"
+									? statWorkPay
+									: param_key === "statPay"
+									? statPay
+									: param_key === "sickPay"
+									? sickPay
+									: vacationPay;
+
+							const param_hours_worked =
+								param_hours === "regHoursWorked"
+									? regHoursWorked
+									: param_hours === "overtimeHoursWorked"
+									? overtimeHoursWorked
+									: param_hours === "dblOvertimeHoursWorked"
+									? dblOvertimeHoursWorked
+									: param_hours === "statDayHoursWorked"
+									? statDayHoursWorked
+									: param_hours === "statDayHours"
+									? statDayHours
+									: param_hours === "sickPayHours"
+									? sickPayHours
+									: vacationPayHours;
 							return (
-								<React.Fragment key={_id}>
-									<ExtraTimeEntry
-										createdOn={createdOn}
-										name={employeeId?.fullName}
-										approveStatus={approveStatus}
-										dept={"dept"}
-										param_key={regPay}
-										type={"Regular Pay"}
-										startTime={startTime}
-										endTime={endTime}
-										totalBreaks={totalBreaks}
-										totalHours={regHoursWorked}
-									/>
-									{/* {showAdd && (
-										<AddTimesheet
-											isOpen={showAdd}
-											onClose={() => setShowAdd(false)}
-											setRefresh={setRefresh}
+								<Tr key={_id}>
+									<Td py={0}>
+										<TextTitle title={employeeId?.fullName} />
+									</Td>
+									<Td py={0}>
+										<TextTitle title={getDefaultDate(createdOn)} />
+									</Td>
+									<Td py={0}>
+										<PrimaryButton
+											color={approveStatusBtnCss.color}
+											bg={approveStatusBtnCss.bg}
+											name={approveStatus}
+											size="xs"
+											px={0}
+											hover={"transparent"}
 										/>
-									)} */}
-									{overTimePay && (
-										<ExtraTimeEntry
-											name={employeeId?.fullName}
-											approveStatus={approveStatus}
-											dept={"dept"}
-											param_key={overTimePay}
-											type={"Overtime Pay"}
-											startTime={startTime}
-											endTime={endTime}
-											totalBreaks={totalBreaks}
-											totalHours={overtimeHoursWorked}
+									</Td>
+									<Td py={0}>
+										<TextTitle
+											size={"xs"}
+											weight="normal"
+											title={employeeId?.department?.[0]}
 										/>
-									)}
-									{dblOverTimePay && (
-										<ExtraTimeEntry
-											name={employeeId?.fullName}
-											approveStatus={approveStatus}
-											dept={"dept"}
-											param_key={dblOverTimePay}
-											type={"Double Overtime Pay"}
-											startTime={startTime}
-											endTime={endTime}
-											totalBreaks={totalBreaks}
-											totalHours={dblOvertimeHoursWorked}
+									</Td>
+									<Td py={0}>{param_pay_type}</Td>
+									<Td py={0}>{payType}</Td>
+									<Td px={0}>
+										<DateTimeFormControl
+											label={""}
+											hideTimeLabel
+											valueText2={startTime}
+											name2="startTime"
+											handleChange={(e) => {
+												setFormData((prevData) => ({
+													...prevData,
+													startTime: e.target.value,
+													endTime,
+													totalBreaks,
+													param_hours,
+												}));
+												setRecordId(_id);
+											}}
+											handleConfirm={() => handleSave()}
+											required
 										/>
-									)}
-									{statWorkPay && (
-										<ExtraTimeEntry
-											name={employeeId?.fullName}
-											approveStatus={approveStatus}
-											dept={"dept"}
-											param_key={statWorkPay}
-											type={"Statutory Worked Pay"}
-											startTime={startTime}
-											endTime={endTime}
-											totalBreaks={totalBreaks}
-											totalHours={statDayHoursWorked}
+									</Td>
+									<Td py={0}>
+										<DateTimeFormControl
+											label={""}
+											hideTimeLabel
+											valueText2={endTime}
+											name2="endTime"
+											handleChange={(e) => {
+												setFormData((prevData) => ({
+													...prevData,
+													startTime,
+													endTime: e.target.value,
+													totalBreaks,
+													param_hours,
+												}));
+												setRecordId(_id);
+											}}
+											handleConfirm={() => handleSave()}
+											required
 										/>
-									)}
-									{statPay && (
-										<ExtraTimeEntry
-											name={employeeId?.fullName}
-											approveStatus={approveStatus}
-											dept={"dept"}
-											param_key={statPay}
-											type={"Statutory Pay"}
-											startTime={startTime}
-											endTime={endTime}
-											totalBreaks={totalBreaks}
-											totalHours={0}
+									</Td>
+									<Td py={0}>
+										<InputFormControl
+											label={""}
+											name="totalBreaks"
+											valueText={totalBreaks}
+											handleChange={(e) => {
+												setFormData((prevData) => ({
+													...prevData,
+													startTime,
+													endTime,
+													totalBreaks: e.target.value,
+													param_hours,
+												}));
+												setRecordId(_id);
+											}}
+											handleConfirm={() => handleSave()}
 										/>
-									)}
-									{sickPay && (
-										<ExtraTimeEntry
-											name={employeeId?.fullName}
-											approveStatus={approveStatus}
-											dept={"dept"}
-											param_key={sickPay}
-											type={"Sick Pay"}
-											startTime={startTime}
-											endTime={endTime}
-											totalBreaks={totalBreaks}
-											totalHours={0}
-										/>
-									)}
-								</React.Fragment>
+									</Td>
+									<Td py={0}> {param_hours_worked}</Td>
+									<Td py={0}>
+										<HStack spacing={0}>
+											<IconButton
+												size={"xs"}
+												icon={<FaCheck />}
+												variant={"solid"}
+												color={"var(--status_button_border)"}
+												onClick={() => {
+													setRecordId(_id);
+													handleSave({
+														startTime,
+														endTime,
+														totalBreaks,
+														param_hours,
+														approve: true,
+													});
+												}}
+											/>
+											<IconButton
+												size={"xs"}
+												color={"var(--incorrect_ans)"}
+												icon={<IoClose />}
+												variant={"solid"}
+												onClick={() => {
+													setRecordId(_id);
+													handleSave({
+														startTime,
+														endTime,
+														totalBreaks,
+														param_hours,
+														approve: false,
+													});
+												}}
+											/>
+										</HStack>
+									</Td>
+								</Tr>
 							);
 						},
 					)}
