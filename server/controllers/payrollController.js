@@ -103,13 +103,13 @@ const getGroupedTimesheet = async (req, res) => {
 				timesheet.overtimeHoursWorked || 0;
 			acc[timesheet.employeeId].totalDblOvertimeHoursWorked +=
 				timesheet.dblOvertimeHoursWorked || 0;
-			acc[timesheet.employeeId].totalStatHours += timesheet.statPayHours || 0;
+			acc[timesheet.employeeId].totalStatHours += timesheet.statDayHours || 0;
 			acc[timesheet.employeeId].totalStatDayHoursWorked +=
 				timesheet.statDayHoursWorked || 0;
 			acc[timesheet.employeeId].totalSickHoursWorked +=
-				timesheet.sickHoursWorked || 0;
+				timesheet.sickPayHours || 0;
 			acc[timesheet.employeeId].totalVacationHoursWorked +=
-				timesheet.statHoursWorked || 0;
+				timesheet.vacationPayHours || 0;
 			return acc;
 		}, {});
 

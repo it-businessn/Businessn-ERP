@@ -81,7 +81,7 @@ const Timesheets = () => {
 						"Start Time",
 						"End Time",
 						"Break/Lunch",
-						"Total Worked Hours (HH:mm)",
+						"Total Worked Hours",
 						"Action",
 					]}
 					content={timesheets?.map(
@@ -232,7 +232,9 @@ const Timesheets = () => {
 											handleConfirm={() => handleSave()}
 										/>
 									</Td>
-									<Td py={0}> {param_hours_worked}</Td>
+									<Td py={0}>
+										{`${param_hours_worked / 60}.${param_hours_worked % 60}`}
+									</Td>
 									<Td py={0}>
 										<HStack spacing={0}>
 											<IconButton

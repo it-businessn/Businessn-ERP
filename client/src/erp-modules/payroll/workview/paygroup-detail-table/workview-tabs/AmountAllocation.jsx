@@ -4,9 +4,9 @@ import { useState } from "react";
 import { ROUTE_PATH } from "routes";
 import WorkviewTab from "./WorkviewTab";
 
-const AmountAllocation = ({ company }) => {
+const AmountAllocation = ({ company, closestRecord }) => {
 	const [refresh, setRefresh] = useState(false);
-	const data = useEmployeePayInfo(company, refresh, null);
+	const data = useEmployeePayInfo(company, refresh, null, closestRecord);
 
 	return (
 		<WorkviewTab

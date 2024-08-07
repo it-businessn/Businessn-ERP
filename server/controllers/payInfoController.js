@@ -1,19 +1,38 @@
 const EmployeePayInfo = require("../models/EmployeePayInfo");
+const Timesheet = require("../models/Timesheet");
 
 const getAllPayInfo = async (req, res) => {
-	const { companyName } = req.params;
+	const { companyName, startDate, endDate } = req.params;
 	try {
-		const result = await EmployeePayInfo.find({
+		const currentPeriodEmployees = await Timesheet.find({
 			companyName,
-		})
-			.populate({
+			createdOn: { $gte: startDate, $lte: endDate },
+		}).select("employeeId");
+
+		const uniqueEmployeeIds = new Set();
+
+		const filteredArray = currentPeriodEmployees.filter((item) => {
+			const employeeIdStr = item.employeeId.toString();
+			if (uniqueEmployeeIds.has(employeeIdStr)) {
+				return false;
+			} else {
+				uniqueEmployeeIds.add(employeeIdStr);
+				return true;
+			}
+		});
+		const result = [];
+		for (emp of filteredArray) {
+			const empResult = await EmployeePayInfo.findOne({
+				empId: emp.employeeId,
+			}).populate({
 				path: "empId",
 				model: "Employee",
 				select: "fullName",
-			})
-			.sort({
-				createdOn: -1,
 			});
+			if (empResult) {
+				result.push(empResult);
+			}
+		}
 
 		res.status(200).json(result);
 	} catch (error) {

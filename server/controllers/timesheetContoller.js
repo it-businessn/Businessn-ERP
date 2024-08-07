@@ -147,17 +147,18 @@ const createTimesheet = async (req, res) => {
 };
 
 const getDateDiffHours = (date1, date2, totalBreaks) => {
-	const startTime = moment(date1, "HH:mm");
-	const endTime = moment(date2, "HH:mm");
+	const startTime = moment(date1 === "" ? "09:00" : date1, "HH:mm");
+	const endTime = moment(date2 === "" ? "17:00" : date2, "HH:mm");
 	const breakTime = totalBreaks === "" ? 0 : parseInt(totalBreaks) / 60;
 	const totalMinutes = moment.duration(endTime.diff(startTime)).asMinutes();
 	const netMinutes = totalMinutes - breakTime;
-	const hoursDiff = Math.floor(netMinutes / 60);
-	const minutesDiff = Math.floor(netMinutes % 60);
+	// const hoursDiff = Math.floor(netMinutes / 60);
+	// const minutesDiff = Math.floor(netMinutes % 60);
 
-	const formattedHours = String(hoursDiff);
-	const formattedMinutes = String(minutesDiff);
-	return `${formattedHours}:${formattedMinutes}`;
+	// const formattedHours = String(hoursDiff);
+	// const formattedMinutes = String(minutesDiff);
+	// return `${formattedHours}:${formattedMinutes}`;
+	return netMinutes;
 };
 
 const updateTimesheet = async (req, res) => {

@@ -6,7 +6,14 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import EditPayDetail from "./EditPayDetail";
 
-const WorkviewTab = ({ cols, data, path, setRefresh, isEditable }) => {
+const WorkviewTab = ({
+	cols,
+	data,
+	path,
+	setRefresh,
+	isEditable,
+	isHourly,
+}) => {
 	const navigate = useNavigate();
 
 	const [edit, setEdit] = useState(false);
@@ -36,6 +43,8 @@ const WorkviewTab = ({ cols, data, path, setRefresh, isEditable }) => {
 										) : (
 											row.empId[col.pair_key]
 										)
+									) : isHourly ? (
+										(row[col.pair] / 60).toFixed(2)
 									) : (
 										row[col.pair]
 									);

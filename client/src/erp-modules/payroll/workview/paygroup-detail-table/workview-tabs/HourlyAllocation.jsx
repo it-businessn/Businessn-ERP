@@ -8,6 +8,7 @@ const HourlyAllocation = ({ company, closestRecord }) => {
 
 	return (
 		<WorkviewTab
+			isHourly
 			cols={[
 				{ key: "Employee Name", pair: "obj", pair_key: "fullName" },
 				{ key: "Regular Hours", pair: "totalRegHoursWorked" },

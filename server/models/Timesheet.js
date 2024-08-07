@@ -31,13 +31,13 @@ const timesheetSchema = new mongoose.Schema({
 	vacationPay: String,
 	statPayHours: Number,
 	sickHoursWorked: Number,
-	regHoursWorked: { type: String, default: "00:00" },
-	overtimeHoursWorked: { type: String, default: "00:00" },
-	dblOvertimeHoursWorked: { type: String, default: "00:00" },
-	statDayHoursWorked: { type: String, default: "00:00" },
-	statDayHours: { type: String, default: "8.0" },
-	sickPayHours: { type: String, default: "00:00" },
-	vacationPayHours: { type: String, default: "00:00" },
+	regHoursWorked: { type: Number, default: 0 },
+	overtimeHoursWorked: { type: Number, default: 0 },
+	dblOvertimeHoursWorked: { type: Number, default: 0 },
+	statDayHoursWorked: { type: Number, default: 0 },
+	statDayHours: { type: Number, default: 8 },
+	sickPayHours: { type: Number, default: 0 },
+	vacationPayHours: { type: Number, default: 0 },
 });
 
 const Timesheet = mongoose.model("Timesheet", timesheetSchema);
