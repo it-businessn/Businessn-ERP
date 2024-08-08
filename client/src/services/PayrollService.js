@@ -71,7 +71,13 @@ const PayrollService = {
 
 	async getHoursWorkedAllocation(company, startDate, endDate) {
 		return apiService.get(
-			`/payroll/hours-timesheets/${company}/${startDate}/${endDate}`,
+			`/payroll/hoursTimesheet/${company}/${startDate}/${endDate}`,
+		);
+	},
+
+	async getPayReportDetails(company, startDate, endDate) {
+		return apiService.get(
+			`/payroll/payDetailsReport/${company}/${startDate}/${endDate}`,
 		);
 	},
 };

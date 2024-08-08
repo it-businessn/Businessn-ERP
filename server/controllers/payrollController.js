@@ -1,3 +1,5 @@
+const EmployeeBalanceInfo = require("../models/EmployeeBalanceInfo");
+const EmployeePayInfo = require("../models/EmployeePayInfo");
 const Group = require("../models/Group");
 const Timesheet = require("../models/Timesheet");
 
@@ -114,12 +116,83 @@ const getGroupedTimesheet = async (req, res) => {
 		}, {});
 
 		const result = Object.values(aggregatedHours);
-		console.log(result);
 		res.status(200).json(result);
 	} catch (error) {
 		res.status(404).json({ error: error.message });
 	}
 };
+
+const getPayDetailsReportInfo = async (req, res) => {
+	const { companyName, startDate, endDate } = req.params;
+
+	try {
+		const timesheets = await Timesheet.find({
+			companyName,
+			createdOn: { $gte: startDate, $lte: endDate },
+		}).populate({
+			path: "employeeId",
+			model: "Employee",
+			select: ["companyId", "employeeId", "fullName"],
+		});
+
+		const aggregatedHours = timesheets.reduce((acc, timesheet) => {
+			if (!acc[timesheet.employeeId]) {
+				acc[timesheet.employeeId] = {
+					_id: timesheet._id,
+					empId: timesheet.employeeId,
+					totalRegHoursWorked: 0,
+					totalOvertimeHoursWorked: 0,
+					totalDblOvertimeHoursWorked: 0,
+					totalStatDayHoursWorked: 0,
+					totalStatHours: 0,
+					totalSickHoursWorked: 0,
+					totalVacationHoursWorked: 0,
+				};
+			}
+			acc[timesheet.employeeId].totalRegHoursWorked +=
+				timesheet.regHoursWorked || 0;
+			acc[timesheet.employeeId].totalOvertimeHoursWorked +=
+				timesheet.overtimeHoursWorked || 0;
+			acc[timesheet.employeeId].totalDblOvertimeHoursWorked +=
+				timesheet.dblOvertimeHoursWorked || 0;
+			acc[timesheet.employeeId].totalStatHours += timesheet.statDayHours || 0;
+			acc[timesheet.employeeId].totalStatDayHoursWorked +=
+				timesheet.statDayHoursWorked || 0;
+			acc[timesheet.employeeId].totalSickHoursWorked +=
+				timesheet.sickPayHours || 0;
+			acc[timesheet.employeeId].totalVacationHoursWorked +=
+				timesheet.vacationPayHours || 0;
+			return acc;
+		}, {});
+
+		const result = Object.values(aggregatedHours);
+		for (emp of result) {
+			const empResult = await EmployeePayInfo.findOne({
+				empId: emp.empId._id,
+			});
+			const ytdResult = await EmployeeBalanceInfo.findOne({
+				empId: emp.empId._id,
+			});
+			if (empResult) {
+				emp.currentPayDetails = empResult;
+				const regRate = empResult.regPay;
+				const regHours = (emp.totalRegHoursWorked / 60).toFixed(2);
+				const currentTotal = regHours * regRate;
+				const gross = currentTotal;
+				const totalDeductions = 12 + 10 + 40 + 15 + 12;
+				const currentNetPay = currentTotal - totalDeductions;
+				emp.inputsTotal = { totalDeductions, gross, currentNetPay };
+			}
+			if (ytdResult) {
+				emp.YTDPayDetails = ytdResult;
+			}
+		}
+		res.status(200).json(result);
+	} catch (error) {
+		res.status(404).json({ error: error.message });
+	}
+};
+
 // const findEmployeePayInfo = async (empId, companyName) =>
 // 	await EmployeePayInfo.findOne({
 // 		empId,
@@ -185,10 +258,12 @@ const getGroupedTimesheet = async (req, res) => {
 const getPayGroup = () => {};
 const addPayGroup = () => {};
 const updatePayGroup = () => {};
+
 module.exports = {
 	getAllPayGroups,
 	getPayGroup,
 	addPayGroup,
 	updatePayGroup,
 	getGroupedTimesheet,
+	getPayDetailsReportInfo,
 };

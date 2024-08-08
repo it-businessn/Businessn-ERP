@@ -11,7 +11,7 @@ import {
 } from "@chakra-ui/react";
 import PrimaryButton from "components/ui/button/PrimaryButton";
 import TextTitle from "components/ui/text/TextTitle";
-import useEmployeeHoursWorked from "hooks/useEmployeeHoursWorked";
+import useEmployeePayReport from "hooks/useEmployeePayReport";
 import usePaygroup from "hooks/usePaygroup";
 import { MdCheckCircle, MdSettingsSuggest } from "react-icons/md";
 import LocalStorageService from "services/LocalStorageService";
@@ -19,7 +19,7 @@ import LocalStorageService from "services/LocalStorageService";
 const InputsReview = ({ handleClick, handleReview }) => {
 	const company = LocalStorageService.getItem("selectedCompany");
 	const { closestRecord } = usePaygroup(company);
-	const inputsReviewData = useEmployeeHoursWorked(company, closestRecord);
+	const inputsReviewData = useEmployeePayReport(company, closestRecord);
 
 	const COLS = [
 		"Employee name",
@@ -50,16 +50,16 @@ const InputsReview = ({ handleClick, handleReview }) => {
 								<TextTitle title={data.empId.fullName} />
 							</Td>
 							<Td>
-								<TextTitle title={data.totalRegHoursWorked} />
+								<TextTitle title={(data.totalRegHoursWorked / 60).toFixed(2)} />
 							</Td>
 							<Td>
-								<TextTitle title={data.totalRegHoursWorked} />
+								<TextTitle title={data.inputsTotal.currentNetPay} />
 							</Td>
 							<Td>
-								<TextTitle title={data.totalRegHoursWorked} />
+								<TextTitle title={data.inputsTotal.totalDeductions} />
 							</Td>
 							<Td>
-								<TextTitle title={data.totalRegHoursWorked} />
+								<TextTitle title={data.inputsTotal.gross} />
 							</Td>
 							<Td>
 								<Button
