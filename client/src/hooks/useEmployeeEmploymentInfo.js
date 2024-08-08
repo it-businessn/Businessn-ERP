@@ -22,7 +22,7 @@ const useEmployeeEmploymentInfo = (company, empId, payPeriod) => {
 		if (payPeriod) {
 			fetchEmployeeEmploymentInfo();
 		}
-	}, [company, empId]);
+	}, [company, empId, payPeriod]);
 	return employmentInfo;
 };
 

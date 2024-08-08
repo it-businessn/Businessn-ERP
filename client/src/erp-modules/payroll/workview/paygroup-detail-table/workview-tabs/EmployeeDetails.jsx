@@ -1,8 +1,11 @@
 import OutlineButton from "components/ui/button/OutlineButton";
+import useEmployeeEmploymentInfo from "hooks/useEmployeeEmploymentInfo";
 import { ROUTE_PATH } from "routes";
 import WorkviewTab from "./WorkviewTab";
 
-const EmployeeDetails = ({ empData }) => {
+const EmployeeDetails = ({ company, closestRecord }) => {
+	const empData = useEmployeeEmploymentInfo(company, null, closestRecord);
+
 	return (
 		<WorkviewTab
 			cols={[

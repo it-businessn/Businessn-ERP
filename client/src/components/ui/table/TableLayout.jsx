@@ -33,7 +33,7 @@ const TableLayout = ({
 								/>
 							</Th>
 						)}
-						{cols.map((col, index) => (
+						{cols?.map((col, index) => (
 							<Th
 								p={isSmall ? 1 : "auto"}
 								pl={isTimesheet && index === 0 && "1em !important"}

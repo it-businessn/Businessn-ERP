@@ -5,7 +5,6 @@ import WorkviewTab from "./WorkviewTab";
 
 const HourlyAllocation = ({ company, closestRecord }) => {
 	const data = useEmployeeHoursWorked(company, closestRecord);
-
 	return (
 		<WorkviewTab
 			isHourly

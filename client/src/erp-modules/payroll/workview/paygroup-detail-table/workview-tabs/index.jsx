@@ -1,5 +1,4 @@
 import TabsButtonGroup from "components/ui/tab/TabsButtonGroup";
-import useEmployeeEmploymentInfo from "hooks/useEmployeeEmploymentInfo";
 import usePaygroup from "hooks/usePaygroup";
 import { useState } from "react";
 import LocalStorageService from "services/LocalStorageService";
@@ -11,13 +10,12 @@ import HourlyAllocation from "./HourlyAllocation";
 const PaygroupDetailTable = () => {
 	const company = LocalStorageService.getItem("selectedCompany");
 	const { closestRecord } = usePaygroup(company);
-	const empData = useEmployeeEmploymentInfo(company, null, closestRecord);
 
 	const TABS = [
 		{
 			id: 0,
 			type: "Employee Details",
-			name: <EmployeeDetails company={company} empData={empData} />,
+			name: <EmployeeDetails company={company} closestRecord={closestRecord} />,
 		},
 		{
 			id: 1,

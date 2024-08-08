@@ -1,9 +1,13 @@
 import { Button, HStack, Table, Tbody, Td, Tr } from "@chakra-ui/react";
 import PrimaryButton from "components/ui/button/PrimaryButton";
 import TextTitle from "components/ui/text/TextTitle";
+import { useState } from "react";
 import { MdCheckCircle } from "react-icons/md";
+import PreviewReportsModal from "./preview-reports/PreviewReportsModal";
 
 const ReportsPreview = ({ handleClick, handleReview }) => {
+	const [showReport, setShowReport] = useState(false);
+
 	return (
 		<HStack alignItems={"end"}>
 			<Table w={"100%"}>
@@ -16,7 +20,7 @@ const ReportsPreview = ({ handleClick, handleReview }) => {
 						<Td>
 							<Button
 								variant={"outline"}
-								// onClick={onOpen}
+								onClick={() => setShowReport(true)}
 								size={"sm"}
 								type="submit"
 								color={"var(--primary_button_bg)"}
@@ -27,6 +31,12 @@ const ReportsPreview = ({ handleClick, handleReview }) => {
 					</Tr>
 				</Tbody>
 			</Table>
+			{showReport && (
+				<PreviewReportsModal
+					isOpen={showReport}
+					onClose={() => setShowReport(false)}
+				/>
+			)}
 			<PrimaryButton
 				bg="var(--correct_ans)"
 				name={"CONFIRM"}

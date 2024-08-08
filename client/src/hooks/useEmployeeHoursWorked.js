@@ -17,8 +17,10 @@ const useEmployeeHoursWorked = (company, payPeriod) => {
 				console.error(error);
 			}
 		};
-		fetchHoursWorkedInfo();
-	}, [company]);
+		if (payPeriod) {
+			fetchHoursWorkedInfo();
+		}
+	}, [company, payPeriod]);
 	return hours;
 };
 
