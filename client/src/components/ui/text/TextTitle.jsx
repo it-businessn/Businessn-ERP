@@ -13,6 +13,7 @@ const TextTitle = ({
 	flex,
 	whiteSpace = "nowrap",
 	em,
+	visibility,
 }) => (
 	<Text
 		flex={flex}
@@ -28,6 +29,7 @@ const TextTitle = ({
 		textOverflow={"ellipsis"}
 		whiteSpace={whiteSpace}
 		overflow={"hidden"}
+		visibility={visibility}
 	>
 		{title}
 	</Text>

@@ -1,15 +1,23 @@
 import { HStack } from "@chakra-ui/react";
 import ModalLayout from "components/ui/modal/ModalLayout";
+import TextTitle from "components/ui/text/TextTitle";
 import useEmployeePayReport from "hooks/useEmployeePayReport";
 import usePaygroup from "hooks/usePaygroup";
+import { useParams } from "react-router-dom";
 import LocalStorageService from "services/LocalStorageService";
 import EmployeeInfo from "./EmployeeInfo";
 import EmployeePayDetails from "./EmployeePayDetails";
 
 const PreviewReportsModal = ({ isOpen, onClose }) => {
+	const { payNo } = useParams();
+
 	const company = LocalStorageService.getItem("selectedCompany");
-	const { closestRecord } = usePaygroup(company);
-	const reportData = useEmployeePayReport(company, closestRecord);
+
+	const { payGroupSchedule, closestRecord } = usePaygroup(company);
+	const selectedPayPeriod = payNo
+		? payGroupSchedule?.find(({ payPeriod }) => payPeriod.toString() === payNo)
+		: closestRecord;
+	const reportData = useEmployeePayReport(company, selectedPayPeriod);
 
 	return (
 		<ModalLayout
@@ -18,27 +26,22 @@ const PreviewReportsModal = ({ isOpen, onClose }) => {
 			isOpen={isOpen}
 			onClose={onClose}
 		>
+			{!reportData?.length && (
+				<TextTitle weight="normal" title={"No records found"} />
+			)}
 			{reportData?.map((data) => {
-				const regRate = data.currentPayDetails.regPay;
-				const regHours = (data.totalRegHoursWorked / 60).toFixed(2);
-				const currentTotal = regHours * regRate;
-
 				return (
 					<HStack
-						border={"1px solid #eee"}
+						border={"1px solid var(--lead_cards_border)"}
 						alignItems={"start"}
 						spacing={3}
-						mx={"12em"}
 						py={5}
 						key={data._id}
 						justifyContent={"space-around"}
+						w={"60%"}
 					>
-						<EmployeeInfo employee={data} closestRecord={closestRecord} />
-						<EmployeePayDetails
-							employee={data}
-							currentTotal={currentTotal}
-							regHours={regHours}
-						/>
+						<EmployeeInfo data={data} />
+						<EmployeePayDetails data={data} />
 					</HStack>
 				);
 			})}

@@ -3,9 +3,7 @@ import Logo from "components/logo";
 import TextTitle from "components/ui/text/TextTitle";
 import { formatDateBar } from "utils";
 
-const EmployeeInfo = ({ employee: data, closestRecord }) => {
-	const { payPeriodPayDate, payPeriod, payPeriodStartDate, payPeriodEndDate } =
-		closestRecord;
+const EmployeeInfo = ({ data }) => {
 	return (
 		<VStack
 			spacing={1}
@@ -13,7 +11,7 @@ const EmployeeInfo = ({ employee: data, closestRecord }) => {
 			alignItems="center"
 			bg={"var(--primary_bg)"}
 			py={5}
-			h={"76vh"}
+			minH={"70vh"}
 			w={"30%"}
 		>
 			<Logo isCover isForgotPassword />
@@ -22,7 +20,7 @@ const EmployeeInfo = ({ employee: data, closestRecord }) => {
 				<TextTitle align="left" title={"Net Pay:"} size={"lg"} />
 				<TextTitle
 					align="right"
-					title={`$${data.inputsTotal.currentNetPay.toFixed(2)}`}
+					title={`$${data.currentNetPay.toFixed(2)}`}
 					size={"lg"}
 				/>
 			</HStack>
@@ -30,7 +28,7 @@ const EmployeeInfo = ({ employee: data, closestRecord }) => {
 				<TextTitle align="left" title={"Pay Date:"} size={"lg"} />
 				<TextTitle
 					align="right"
-					title={formatDateBar(payPeriodPayDate)}
+					title={formatDateBar(data.payPeriodPayDate)}
 					size={"lg"}
 				/>
 			</HStack>
@@ -52,7 +50,7 @@ const EmployeeInfo = ({ employee: data, closestRecord }) => {
 				<TextTitle
 					align="right"
 					weight="normal"
-					title={payPeriod}
+					title={data.payPeriodNum}
 					size={"lg"}
 				/>
 			</HStack>
@@ -60,8 +58,8 @@ const EmployeeInfo = ({ employee: data, closestRecord }) => {
 				<TextTitle
 					weight="normal"
 					align="center"
-					title={`${formatDateBar(payPeriodStartDate)} - ${formatDateBar(
-						payPeriodEndDate,
+					title={`${formatDateBar(data.payPeriodStartDate)} - ${formatDateBar(
+						data.payPeriodEndDate,
 					)}`}
 					size={"lg"}
 				/>

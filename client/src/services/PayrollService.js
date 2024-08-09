@@ -75,10 +75,12 @@ const PayrollService = {
 		);
 	},
 
-	async getPayReportDetails(company, startDate, endDate) {
-		return apiService.get(
-			`/payroll/payDetailsReport/${company}/${startDate}/${endDate}`,
-		);
+	async getPayReportDetails(company, payNum) {
+		return apiService.get(`/payroll/payDetailsReport/${company}/${payNum}`);
+	},
+
+	async addPayPeriodPayStub(data) {
+		return apiService.post("/payroll/generate-payStub", data);
 	},
 };
 

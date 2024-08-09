@@ -13,10 +13,11 @@ const TableLayout = ({
 	position,
 	top,
 	zIndex,
+	variant = "simple",
 }) => {
 	return (
 		<Box overflow="auto" height={height} w={w}>
-			<Table variant="simple" bg={"var(--lead_cards_bg"}>
+			<Table variant={variant} bg={"var(--lead_cards_bg"}>
 				<Thead
 					// position={position} top={top} zIndex={zIndex}
 					position="sticky"

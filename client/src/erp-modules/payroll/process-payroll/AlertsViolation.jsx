@@ -13,14 +13,21 @@ import TextTitle from "components/ui/text/TextTitle";
 import useEmployeeHoursWorked from "hooks/useEmployeeHoursWorked";
 import usePaygroup from "hooks/usePaygroup";
 import { MdCheckCircle } from "react-icons/md";
+import { useParams } from "react-router-dom";
 import LocalStorageService from "services/LocalStorageService";
 
 const AlertsViolation = ({ handleClick, handleReview }) => {
+	const { payNo } = useParams();
 	const company = LocalStorageService.getItem("selectedCompany");
-	const { closestRecord } = usePaygroup(company);
-	const alertsReviewData = useEmployeeHoursWorked(company, closestRecord);
+
+	const { payGroupSchedule, closestRecord } = usePaygroup(company);
+	const selectedPayPeriod = payNo
+		? payGroupSchedule?.find(({ payPeriod }) => payPeriod.toString() === payNo)
+		: closestRecord;
+	const alertsReviewData = useEmployeeHoursWorked(company, selectedPayPeriod);
 
 	const COLS = ["Description", "Employee name", "Status", "Action"];
+
 	return (
 		<HStack alignItems={"end"}>
 			<Table w={"100%"}>
@@ -32,10 +39,20 @@ const AlertsViolation = ({ handleClick, handleReview }) => {
 					))}
 				</Thead>
 				<Tbody>
+					{!alertsReviewData?.length && (
+						<Tr>
+							<Td>
+								<TextTitle weight="normal" title={"No record found"} />
+							</Td>
+						</Tr>
+					)}
 					{alertsReviewData?.map((data) => (
 						<Tr key={data._id}>
 							<Td>
-								<TextTitle title={data._id} />
+								<TextTitle
+									weight="normal"
+									title={"Banking information missing"}
+								/>
 							</Td>
 							<Td>
 								<TextTitle title={data.empId.fullName} />
@@ -46,10 +63,19 @@ const AlertsViolation = ({ handleClick, handleReview }) => {
 									size={"xs"}
 									borderRadius={"12px"}
 									color={"var(--primary_bg)"}
+									bg={"var(--stat_item_color)"}
+								>
+									Action required
+								</Button>
+								{/* <Button
+									// onClick={onOpen}
+									size={"xs"}
+									borderRadius={"12px"}
+									color={"var(--primary_bg)"}
 									bg={"var(--pending)"}
 								>
 									Pending
-								</Button>
+								</Button> */}
 							</Td>
 							<Td>
 								<Button

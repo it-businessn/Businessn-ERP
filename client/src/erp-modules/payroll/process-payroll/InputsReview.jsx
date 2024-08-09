@@ -14,13 +14,19 @@ import TextTitle from "components/ui/text/TextTitle";
 import useEmployeePayReport from "hooks/useEmployeePayReport";
 import usePaygroup from "hooks/usePaygroup";
 import { MdCheckCircle, MdSettingsSuggest } from "react-icons/md";
+import { useParams } from "react-router-dom";
 import LocalStorageService from "services/LocalStorageService";
 
 const InputsReview = ({ handleClick, handleReview }) => {
-	const company = LocalStorageService.getItem("selectedCompany");
-	const { closestRecord } = usePaygroup(company);
-	const inputsReviewData = useEmployeePayReport(company, closestRecord);
+	const { payNo } = useParams();
 
+	const company = LocalStorageService.getItem("selectedCompany");
+
+	const { payGroupSchedule, closestRecord } = usePaygroup(company);
+	const selectedPayPeriod = payNo
+		? payGroupSchedule?.find(({ payPeriod }) => payPeriod.toString() === payNo)
+		: closestRecord;
+	const inputsReviewData = useEmployeePayReport(company, selectedPayPeriod);
 	const COLS = [
 		"Employee name",
 		"Regular Hours",
@@ -44,22 +50,29 @@ const InputsReview = ({ handleClick, handleReview }) => {
 					<Th />
 				</Thead>
 				<Tbody>
+					{!inputsReviewData?.length && (
+						<Tr>
+							<Td>
+								<TextTitle weight="normal" title={"No record found"} />
+							</Td>
+						</Tr>
+					)}
 					{inputsReviewData?.map((data) => (
 						<Tr key={data._id}>
 							<Td>
 								<TextTitle title={data.empId.fullName} />
 							</Td>
 							<Td>
-								<TextTitle title={(data.totalRegHoursWorked / 60).toFixed(2)} />
+								<TextTitle title={data.totalRegHoursWorked} />
 							</Td>
 							<Td>
-								<TextTitle title={data.inputsTotal.currentNetPay} />
+								<TextTitle title={data.currentNetPay.toFixed(2)} />
 							</Td>
 							<Td>
-								<TextTitle title={data.inputsTotal.totalDeductions} />
+								<TextTitle title={data.currentDeductionsTotal.toFixed(2)} />
 							</Td>
 							<Td>
-								<TextTitle title={data.inputsTotal.gross} />
+								<TextTitle title={data.currentGrossPay.toFixed(2)} />
 							</Td>
 							<Td>
 								<Button

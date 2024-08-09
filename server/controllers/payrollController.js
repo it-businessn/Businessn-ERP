@@ -1,7 +1,12 @@
-const EmployeeBalanceInfo = require("../models/EmployeeBalanceInfo");
 const EmployeePayInfo = require("../models/EmployeePayInfo");
+const EmployeePayStub = require("../models/EmployeePayStub");
 const Group = require("../models/Group");
 const Timesheet = require("../models/Timesheet");
+const {
+	getCalcAmount,
+	getTaxDetails,
+	getHrs,
+} = require("../services/payrollService");
 
 const getAllPayGroups = async (req, res) => {
 	const { companyName } = req.params;
@@ -21,101 +26,11 @@ const getGroupedTimesheet = async (req, res) => {
 	const { companyName, startDate, endDate } = req.params;
 
 	try {
-		const timesheets = await Timesheet.find({
+		const result = await calculateTotalAggregatedHours(
+			startDate,
+			endDate,
 			companyName,
-			createdOn: { $gte: startDate, $lte: endDate },
-		}).populate({
-			path: "employeeId",
-			model: "Employee",
-			select: ["role", "fullName"],
-		});
-		// const aggregatedHours = timesheets.reduce(
-		// 	(acc, timesheet) => {
-		// 		acc.totalRegHoursWorked += timesheet.regHoursWorked || 0;
-		// 		acc.totalOvertimeHoursWorked += timesheet.overtimeHoursWorked || 0;
-		// 		acc.totalDblOvertimeHoursWorked +=
-		// 			timesheet.dblOvertimeHoursWorked || 0;
-		// 		acc.totalStatHours += timesheet.statPayHours || 0;
-		// 		acc.totalStatDayHoursWorked += timesheet.statDayHoursWorked || 0;
-		// 		acc.totalSickHoursWorked += timesheet.sickHoursWorked || 0;
-		// 		acc.totalVacationHoursWorked += timesheet.totalVacationHoursWorked || 0;
-		// 		return acc;
-		// 	},
-		// 	{
-		// 		totalRegHoursWorked: 0,
-		// 		totalOvertimeHoursWorked: 0,
-		// 		totalDblOvertimeHoursWorked: 0,
-		// 		totalStatDayHoursWorked: 0,
-		// 		totalSickHoursWorked: 0,
-		// 		totalVacationHoursWorked: 0,
-		// 		totalStatHours: 0,
-		// 	},
-		// );
-
-		// console.log("aggregationResult=", aggregatedHours);
-
-		// res.status(200).json(aggregatedHours);
-		// const totalRegHoursWorked = aggregationResult.reduce((acc, product) => {
-		// 	return acc + product.regHoursWorked;
-		// }, 0);
-		// const totalOvertimeHoursWorked = aggregationResult.reduce(
-		// 	(acc, product) => {
-		// 		return acc + product.overtimeHoursWorked;
-		// 	},
-		// 	0,
-		// );
-		// const totalDblOvertimeHoursWorked = aggregationResult.reduce(
-		// 	(acc, product) => {
-		// 		return acc + product.dblOvertimeHoursWorked;
-		// 	},
-		// 	0,
-		// );
-		// const totalStatHours = aggregationResult.reduce((acc, product) => {
-		// 	return acc + product.statPayHours;
-		// }, 0);
-		// const totalStatDayHoursWorked = aggregationResult.reduce((acc, product) => {
-		// 	return acc + product.statDayHoursWorked;
-		// }, 0);
-		// const totalSickHoursWorked = aggregationResult.reduce((acc, product) => {
-		// 	return acc + product.sickHoursWorked;
-		// }, 0);
-		// const totalVacationHoursWorked = aggregationResult.reduce((acc, product) => {
-		// 	return acc + product.vacationHoursWorked;
-		// }, 0);
-
-		// console.log("aggregationResult=", aggregatedHours);
-
-		const aggregatedHours = timesheets.reduce((acc, timesheet) => {
-			if (!acc[timesheet.employeeId]) {
-				acc[timesheet.employeeId] = {
-					_id: timesheet._id,
-					empId: timesheet.employeeId,
-					totalRegHoursWorked: 0,
-					totalOvertimeHoursWorked: 0,
-					totalDblOvertimeHoursWorked: 0,
-					totalStatDayHoursWorked: 0,
-					totalStatHours: 0,
-					totalSickHoursWorked: 0,
-					totalVacationHoursWorked: 0,
-				};
-			}
-			acc[timesheet.employeeId].totalRegHoursWorked +=
-				timesheet.regHoursWorked || 0;
-			acc[timesheet.employeeId].totalOvertimeHoursWorked +=
-				timesheet.overtimeHoursWorked || 0;
-			acc[timesheet.employeeId].totalDblOvertimeHoursWorked +=
-				timesheet.dblOvertimeHoursWorked || 0;
-			acc[timesheet.employeeId].totalStatHours += timesheet.statDayHours || 0;
-			acc[timesheet.employeeId].totalStatDayHoursWorked +=
-				timesheet.statDayHoursWorked || 0;
-			acc[timesheet.employeeId].totalSickHoursWorked +=
-				timesheet.sickPayHours || 0;
-			acc[timesheet.employeeId].totalVacationHoursWorked +=
-				timesheet.vacationPayHours || 0;
-			return acc;
-		}, {});
-
-		const result = Object.values(aggregatedHours);
+		);
 		res.status(200).json(result);
 	} catch (error) {
 		res.status(404).json({ error: error.message });
@@ -123,71 +38,22 @@ const getGroupedTimesheet = async (req, res) => {
 };
 
 const getPayDetailsReportInfo = async (req, res) => {
-	const { companyName, startDate, endDate } = req.params;
+	const { companyName, payPeriodNum } = req.params;
 
 	try {
-		const timesheets = await Timesheet.find({
+		const payStubs = await EmployeePayStub.find({
 			companyName,
-			createdOn: { $gte: startDate, $lte: endDate },
-		}).populate({
-			path: "employeeId",
-			model: "Employee",
-			select: ["companyId", "employeeId", "fullName"],
-		});
-
-		const aggregatedHours = timesheets.reduce((acc, timesheet) => {
-			if (!acc[timesheet.employeeId]) {
-				acc[timesheet.employeeId] = {
-					_id: timesheet._id,
-					empId: timesheet.employeeId,
-					totalRegHoursWorked: 0,
-					totalOvertimeHoursWorked: 0,
-					totalDblOvertimeHoursWorked: 0,
-					totalStatDayHoursWorked: 0,
-					totalStatHours: 0,
-					totalSickHoursWorked: 0,
-					totalVacationHoursWorked: 0,
-				};
-			}
-			acc[timesheet.employeeId].totalRegHoursWorked +=
-				timesheet.regHoursWorked || 0;
-			acc[timesheet.employeeId].totalOvertimeHoursWorked +=
-				timesheet.overtimeHoursWorked || 0;
-			acc[timesheet.employeeId].totalDblOvertimeHoursWorked +=
-				timesheet.dblOvertimeHoursWorked || 0;
-			acc[timesheet.employeeId].totalStatHours += timesheet.statDayHours || 0;
-			acc[timesheet.employeeId].totalStatDayHoursWorked +=
-				timesheet.statDayHoursWorked || 0;
-			acc[timesheet.employeeId].totalSickHoursWorked +=
-				timesheet.sickPayHours || 0;
-			acc[timesheet.employeeId].totalVacationHoursWorked +=
-				timesheet.vacationPayHours || 0;
-			return acc;
-		}, {});
-
-		const result = Object.values(aggregatedHours);
-		for (emp of result) {
-			const empResult = await EmployeePayInfo.findOne({
-				empId: emp.empId._id,
+			payPeriodNum,
+		})
+			.populate({
+				path: "empId",
+				model: "Employee",
+				select: ["companyId", "employeeId", "fullName"],
+			})
+			.sort({
+				createdOn: -1,
 			});
-			const ytdResult = await EmployeeBalanceInfo.findOne({
-				empId: emp.empId._id,
-			});
-			if (empResult) {
-				emp.currentPayDetails = empResult;
-				const regRate = empResult.regPay;
-				const regHours = (emp.totalRegHoursWorked / 60).toFixed(2);
-				const currentTotal = regHours * regRate;
-				const gross = currentTotal;
-				const totalDeductions = 12 + 10 + 40 + 15 + 12;
-				const currentNetPay = currentTotal - totalDeductions;
-				emp.inputsTotal = { totalDeductions, gross, currentNetPay };
-			}
-			if (ytdResult) {
-				emp.YTDPayDetails = ytdResult;
-			}
-		}
-		res.status(200).json(result);
+		res.status(200).json(payStubs);
 	} catch (error) {
 		res.status(404).json({ error: error.message });
 	}
@@ -259,6 +125,251 @@ const getPayGroup = () => {};
 const addPayGroup = () => {};
 const updatePayGroup = () => {};
 
+const findCurrentPayStub = async (payPeriodNum, companyName, empId) =>
+	await EmployeePayStub.findOne({
+		payPeriodNum,
+		companyName,
+		empId,
+	});
+
+const updatePayStub = async (id, data) =>
+	await EmployeePayStub.findByIdAndUpdate(id, data, {
+		new: true,
+	});
+
+const calculateTotalAggregatedHours = async (
+	startDate,
+	endDate,
+	companyName,
+) => {
+	const timesheets = await Timesheet.find({
+		companyName,
+		createdOn: { $gte: startDate, $lte: endDate },
+	}).populate({
+		path: "employeeId",
+		model: "Employee",
+		select: ["companyId", "employeeId", "fullName"],
+	});
+
+	const aggregatedHours = timesheets.reduce((acc, timesheet) => {
+		if (!acc[timesheet.employeeId]) {
+			acc[timesheet.employeeId] = {
+				_id: timesheet._id,
+				empId: timesheet.employeeId,
+				totalRegHoursWorked: 0,
+				totalOvertimeHoursWorked: 0,
+				totalDblOvertimeHoursWorked: 0,
+				totalStatDayHoursWorked: 0,
+				totalStatHours: 0,
+				totalSickHoursWorked: 0,
+				totalVacationHoursWorked: 0,
+			};
+		}
+		acc[timesheet.employeeId].totalRegHoursWorked +=
+			timesheet.regHoursWorked || 0;
+		acc[timesheet.employeeId].totalOvertimeHoursWorked +=
+			timesheet.overtimeHoursWorked || 0;
+		acc[timesheet.employeeId].totalDblOvertimeHoursWorked +=
+			timesheet.dblOvertimeHoursWorked || 0;
+		acc[timesheet.employeeId].totalStatHours += timesheet.statDayHours || 0;
+		acc[timesheet.employeeId].totalStatDayHoursWorked +=
+			timesheet.statDayHoursWorked || 0;
+		acc[timesheet.employeeId].totalSickHoursWorked +=
+			timesheet.sickPayHours || 0;
+		acc[timesheet.employeeId].totalVacationHoursWorked +=
+			timesheet.vacationPayHours || 0;
+		return acc;
+	}, {});
+
+	const result = Object.values(aggregatedHours);
+	return result;
+};
+
+const addEmployeePayStubInfo = async (req, res) => {
+	const { companyName, currentPayPeriod } = req.body;
+	try {
+		const {
+			payPeriodStartDate,
+			payPeriodEndDate,
+			payPeriodPayDate,
+			payPeriodProcessingDate,
+			payPeriod,
+		} = currentPayPeriod;
+
+		const result = await calculateTotalAggregatedHours(
+			payPeriodStartDate,
+			payPeriodEndDate,
+			companyName,
+		);
+		for (const data of result) {
+			const empResult = await EmployeePayInfo.findOne({
+				empId: data.empId._id,
+			}).select(
+				"empId regPay overTimePay dblOverTimePay statWorkPay statPay sickPay vacationPay",
+			);
+			if (empResult) {
+				data.regPay = empResult.regPay;
+				data.overTimePay = empResult.overTimePay;
+				data.dblOverTimePay = empResult.dblOverTimePay;
+				data.statWorkPay = empResult.statWorkPay;
+				data.statPay = empResult.statPay;
+				data.sickPay = empResult.sickPay;
+				data.vacationPay = empResult.vacationPay;
+				data.empId = data.empId._id;
+				data.currentPayDetails = empResult;
+				data.currentRegPayTotal = getCalcAmount(
+					data.totalRegHoursWorked,
+					empResult.regPay,
+				);
+				data.currentOverTimePayTotal = getCalcAmount(
+					data.totalOvertimeHoursWorked,
+					empResult.overTimePay,
+				);
+				data.currentDblOverTimePayTotal = getCalcAmount(
+					data.totalDblOvertimeHoursWorked,
+					empResult.dblOverTimePay,
+				);
+				data.currentStatWorkPayTotal = getCalcAmount(
+					data.totalStatDayHoursWorked,
+					empResult.statWorkPay,
+				);
+				data.currentStatPayTotal = getCalcAmount(
+					data.totalStatHours,
+					empResult.statPay,
+				);
+				data.currentSickPayTotal = getCalcAmount(
+					data.totalSickHoursWorked,
+					empResult.sickPay,
+				);
+				data.currentVacationPayTotal = getCalcAmount(
+					data.totalVacationHoursWorked,
+					empResult.vacationPay,
+				);
+				data.currentGrossPay =
+					data.currentRegPayTotal +
+					data.currentOverTimePayTotal +
+					data.currentDblOverTimePayTotal +
+					data.currentStatWorkPayTotal +
+					data.currentStatPayTotal +
+					data.currentSickPayTotal +
+					data.currentVacationPayTotal;
+
+				const {
+					grossSalaryByPayPeriod,
+					CPPContribution,
+					totalProvincialTaxDeduction,
+					federalTaxDeductionByPayPeriod,
+					EIContribution,
+				} = getTaxDetails(data.currentGrossPay);
+
+				data.currentFDTaxDeductions = federalTaxDeductionByPayPeriod;
+				data.currentStateTaxDeductions = totalProvincialTaxDeduction;
+				data.currentCPPDeductions = CPPContribution;
+				data.currentEIDeductions = EIContribution;
+				data.currentOtherDeductions = 0;
+
+				data.currentDeductionsTotal =
+					data.currentFDTaxDeductions +
+					data.currentStateTaxDeductions +
+					data.currentCPPDeductions +
+					data.currentEIDeductions +
+					data.currentOtherDeductions;
+
+				data.currentNetPay =
+					grossSalaryByPayPeriod - data.currentDeductionsTotal;
+
+				const existingPayInfo = await findCurrentPayStub(
+					payPeriod,
+					companyName,
+					data.empId,
+				);
+
+				if (existingPayInfo) {
+					existingPayInfo.YTDRegPayTotal += data.currentRegPayTotal;
+
+					existingPayInfo.YTDOverTimePayTotal += data.currentOverTimePayTotal;
+
+					existingPayInfo.YTDDblOverTimePayTotal +=
+						data.currentDblOverTimePayTotal;
+
+					existingPayInfo.YTDStatWorkPayTotal += data.currentStatWorkPayTotal;
+
+					existingPayInfo.YTDStatPayTotal += data.currentStatPayTotal;
+
+					existingPayInfo.YTDSickPayTotal += data.currentSickPayTotal;
+
+					existingPayInfo.YTDVacationPayTotal += data.currentVacationPayTotal;
+
+					existingPayInfo.YTDGrossPay += data.currentGrossPay;
+
+					existingPayInfo.YTD_FDTaxDeductions += data.currentFDTaxDeductions;
+
+					existingPayInfo.YTDStateTaxDeductions +=
+						data.currentStateTaxDeductions;
+
+					existingPayInfo.YTD_CPPDeductions += data.currentCPPDeductions;
+
+					existingPayInfo.YTD_EIDeductions += data.currentEIDeductions;
+
+					existingPayInfo.YTDOtherDeductions += data.currentOtherDeductions;
+
+					existingPayInfo.YTDDeductionsTotal += data.currentDeductionsTotal;
+
+					existingPayInfo.YTDNetPay += data.currentNetPay;
+					await existingPayInfo.save();
+					// const updatedPayInfo = await updatePayStub(existingPayInfo._id, req.body);
+				} else {
+					await EmployeePayStub.create({
+						empId: data.empId,
+						companyName,
+						payPeriodStartDate,
+						payPeriodEndDate,
+						payPeriodPayDate,
+						payPeriodProcessingDate,
+						payPeriodNum: payPeriod,
+						currentNetPay: data.currentNetPay,
+						regPay: data.regPay,
+						overTimePay: data.overTimePay,
+						dblOverTimePay: data.dblOverTimePay,
+						statWorkPay: data.statWorkPay,
+						statPay: data.statPay,
+						sickPay: data.sickPay,
+						vacationPay: data.vacationPay,
+						totalRegHoursWorked: getHrs(data.totalRegHoursWorked),
+						totalOvertimeHoursWorked: getHrs(data.totalOvertimeHoursWorked),
+						totalDblOvertimeHoursWorked: getHrs(
+							data.totalDblOvertimeHoursWorked,
+						),
+						totalStatDayHoursWorked: getHrs(data.totalStatDayHoursWorked),
+						totalStatHours: getHrs(data.totalStatHours),
+						totalSickHoursWorked: getHrs(data.totalSickHoursWorked),
+						totalVacationHoursWorked: getHrs(data.totalVacationHoursWorked),
+
+						currentRegPayTotal: data.currentRegPayTotal,
+						currentOverTimePayTotal: data.currentOverTimePayTotal,
+						currentDblOverTimePayTotal: data.currentDblOverTimePayTotal,
+						currentStatWorkPayTotal: data.currentStatWorkPayTotal,
+						currentStatPayTotal: data.currentStatPayTotal,
+						currentSickPayTotal: data.currentSickPayTotal,
+						currentVacationPayTotal: data.currentVacationPayTotal,
+						currentGrossPay: data.currentGrossPay,
+						currentFDTaxDeductions: data.currentFDTaxDeductions,
+						currentStateTaxDeductions: data.currentStateTaxDeductions,
+						currentCPPDeductions: data.currentCPPDeductions,
+						currentEIDeductions: data.currentEIDeductions,
+						currentOtherDeductions: data.currentOtherDeductions,
+						currentDeductionsTotal: data.currentDeductionsTotal,
+						currentNetPay: data.currentNetPay,
+					});
+				}
+			}
+		}
+		res.status(200).json({ message: "Paystub created successfully" });
+	} catch (error) {
+		res.status(400).json({ message: error.message });
+	}
+};
+
 module.exports = {
 	getAllPayGroups,
 	getPayGroup,
@@ -266,4 +377,5 @@ module.exports = {
 	updatePayGroup,
 	getGroupedTimesheet,
 	getPayDetailsReportInfo,
+	addEmployeePayStubInfo,
 };

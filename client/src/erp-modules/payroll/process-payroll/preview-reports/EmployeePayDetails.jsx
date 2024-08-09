@@ -2,7 +2,7 @@ import { Stack, Tbody, Td, Tr } from "@chakra-ui/react";
 import TableLayout from "components/ui/table/TableLayout";
 import TextTitle from "components/ui/text/TextTitle";
 
-const EmployeePayDetails = ({ employee: data, currentTotal, regHours }) => {
+const EmployeePayDetails = ({ data }) => {
 	const EARNINGS_COLS = [
 		"",
 		"Rate",
@@ -10,32 +10,35 @@ const EmployeePayDetails = ({ employee: data, currentTotal, regHours }) => {
 		"Current Total",
 		"YTD (Year to Date)",
 	];
-	const NET_PAY_COLS = ["", "Current Total", "YTD (Year to Date)"];
-	const YTDTotal = data.YTDPayDetails.regPayDollarsYTD;
-	const YTDNetPay = YTDTotal - (12 + 10 + 40 + 15 + 12 + 89);
+
+	const NET_PAY_COLS = ["", "", "", "Current Total", "YTD (Year to Date)"];
+
 	return (
 		<Stack w={"60%"} spacing={0}>
 			<TextTitle title={"Earnings"} size={"xl"} />
-			<TableLayout cols={EARNINGS_COLS} isSmall>
+			<TableLayout variant="striped" cols={EARNINGS_COLS} isSmall>
 				<Tbody>
 					<Tr>
-						<Td>
+						<Td w={"10em"}>
 							<TextTitle title={"Regular"} />
 						</Td>
-						<Td>
+						<Td w={"3em"}>
+							<TextTitle title={`$${data.regPay}`} weight="normal" />
+						</Td>
+						<Td w={"3em"}>
+							<TextTitle title={data.totalRegHoursWorked} weight="normal" />
+						</Td>
+						<Td w={"10em"}>
 							<TextTitle
-								title={`$${data.currentPayDetails.regPay}`}
+								title={`$${data.currentRegPayTotal.toFixed(2)}`}
 								weight="normal"
 							/>
 						</Td>
-						<Td>
-							<TextTitle title={regHours} weight="normal" />
-						</Td>
-						<Td>
-							<TextTitle title={`$${currentTotal}`} weight="normal" />
-						</Td>
-						<Td>
-							<TextTitle title={`$${YTDTotal}`} weight="normal" />
+						<Td w={"10em"}>
+							<TextTitle
+								title={`$${data.YTDRegPayTotal.toFixed(2)}`}
+								weight="normal"
+							/>
 						</Td>
 					</Tr>
 					{/* <Tr>
@@ -58,110 +61,203 @@ const EmployeePayDetails = ({ employee: data, currentTotal, regHours }) => {
 				</Tbody>
 			</TableLayout>
 			<TextTitle title={"Gross Pay"} size={"xl"} />
-			<TableLayout cols={null} isSmall>
+			<TableLayout variant="striped" cols={null} isSmall>
 				<Tbody>
 					<Tr>
-						<Td w={"52%"}>
+						<Td w={"10em"}>
 							<TextTitle title={"Gross"} />
 						</Td>
-						<Td>
-							<TextTitle title={`$${data.inputsTotal.gross}`} weight="normal" />
+						<Td w={"3em"}>
+							<TextTitle
+								visibility="hidden"
+								title={`$${data.regPay}`}
+								weight="normal"
+							/>
 						</Td>
-						<Td>
-							<TextTitle title={`$${YTDTotal}`} weight="normal" />
+						<Td w={"3em"}>
+							<TextTitle
+								visibility="hidden"
+								title={data.totalRegHoursWorked}
+								weight="normal"
+							/>
+						</Td>
+						<Td w={"10em"}>
+							<TextTitle
+								title={`$${data.currentGrossPay.toFixed(2)}`}
+								weight="normal"
+							/>
+						</Td>
+						<Td w={"10em"}>
+							<TextTitle
+								title={`$${data.YTDGrossPay.toFixed(2)}`}
+								weight="normal"
+							/>
 						</Td>
 					</Tr>
 				</Tbody>
 			</TableLayout>
 			<TextTitle title={"Deductions"} size={"xl"} />
-			<TableLayout cols={null} isSmall>
+			<TableLayout variant="striped" cols={null} isSmall>
 				<Tbody>
 					<Tr>
-						<Td>
+						<Td w={"10em"}>
 							<TextTitle title={"Federal Tax"} />
 						</Td>
-						<Td>
-							<TextTitle title={"$12"} weight="normal" />
+						<Td w={"3em"}>
+							<TextTitle visibility="hidden" />
 						</Td>
-						<Td>
-							<TextTitle title={"$96"} weight="normal" />
+						<Td w={"3em"}>
+							<TextTitle visibility="hidden" />
 						</Td>
-					</Tr>
-					<Tr>
-						<Td>
-							<TextTitle title={"State Tax"} />
-						</Td>
-						<Td>
-							<TextTitle title={"$10"} weight="normal" />
-						</Td>
-						<Td>
-							<TextTitle title={"$80"} weight="normal" />
-						</Td>
-					</Tr>
-					<Tr>
-						<Td>
-							<TextTitle title={"CPP"} />
-						</Td>
-						<Td>
-							<TextTitle title={"$40"} weight="normal" />
-						</Td>
-						<Td>
-							<TextTitle title={"$320"} weight="normal" />
-						</Td>
-					</Tr>
-					<Tr>
-						<Td>
-							<TextTitle title={"EI"} />
-						</Td>
-						<Td>
-							<TextTitle title={"$15"} weight="normal" />
-						</Td>
-						<Td>
-							<TextTitle title={"$120"} weight="normal" />
-						</Td>
-					</Tr>
-					<Tr>
-						<Td>
-							<TextTitle title={"Other"} />
-						</Td>
-						<Td>
-							<TextTitle title={"$12"} weight="normal" />
-						</Td>
-						<Td>
-							<TextTitle title={"$96"} weight="normal" />
-						</Td>
-					</Tr>
-					<Tr>
-						<Td>
-							<TextTitle title={"Total Deductions"} />
-						</Td>
-						<Td>
+						<Td w={"10em"}>
 							<TextTitle
-								title={`$${data.inputsTotal.totalDeductions}`}
+								title={`$${data.currentFDTaxDeductions.toFixed(2)}`}
 								weight="normal"
 							/>
 						</Td>
-						<Td>
-							<TextTitle title={"$712"} weight="normal" />
+						<Td w={"10em"}>
+							<TextTitle
+								title={`$${data.YTD_FDTaxDeductions.toFixed(2)}`}
+								weight="normal"
+							/>
+						</Td>
+					</Tr>
+					<Tr>
+						<Td w={"10em"}>
+							<TextTitle title={"State Tax"} />
+						</Td>
+						<Td w={"3em"}>
+							<TextTitle visibility="hidden" />
+						</Td>
+						<Td w={"3em"}>
+							<TextTitle visibility="hidden" />
+						</Td>
+						<Td w={"10em"}>
+							<TextTitle
+								title={`$${data.currentStateTaxDeductions.toFixed(2)}`}
+								weight="normal"
+							/>
+						</Td>
+						<Td w={"10em"}>
+							<TextTitle
+								title={`$${data.YTDStateTaxDeductions.toFixed(2)}`}
+								weight="normal"
+							/>
+						</Td>
+					</Tr>
+					<Tr>
+						<Td w={"10em"}>
+							<TextTitle title={"CPP"} />
+						</Td>
+						<Td w={"3em"}>
+							<TextTitle visibility="hidden" />
+						</Td>
+						<Td w={"3em"}>
+							<TextTitle visibility="hidden" />
+						</Td>
+						<Td w={"10em"}>
+							<TextTitle
+								title={`$${data.currentCPPDeductions.toFixed(2)}`}
+								weight="normal"
+							/>
+						</Td>
+						<Td w={"10em"}>
+							<TextTitle
+								title={`$${data.YTD_CPPDeductions.toFixed(2)}`}
+								weight="normal"
+							/>
+						</Td>
+					</Tr>
+					<Tr>
+						<Td w={"10em"}>
+							<TextTitle title={"EI"} />
+						</Td>
+						<Td w={"3em"}>
+							<TextTitle visibility="hidden" />
+						</Td>
+						<Td w={"3em"}>
+							<TextTitle visibility="hidden" />
+						</Td>
+						<Td w={"10em"}>
+							<TextTitle
+								title={`$${data.currentEIDeductions.toFixed(2)}`}
+								weight="normal"
+							/>
+						</Td>
+						<Td w={"10em"}>
+							<TextTitle
+								title={`$${data.YTD_EIDeductions.toFixed(2)}`}
+								weight="normal"
+							/>
+						</Td>
+					</Tr>
+
+					<Tr>
+						<Td w={"10em"}>
+							<TextTitle title={"Other"} />
+						</Td>
+						<Td w={"3em"}>
+							<TextTitle visibility="hidden" />
+						</Td>
+						<Td w={"3em"}>
+							<TextTitle visibility="hidden" />
+						</Td>
+						<Td w={"10em"}>
+							<TextTitle title={`$0.00`} weight="normal" />
+						</Td>
+						<Td w={"10em"}>
+							<TextTitle title={`$0.00`} weight="normal" />
+						</Td>
+					</Tr>
+					<Tr>
+						<Td w={"10em"}>
+							<TextTitle title={"Total Deductions"} />
+						</Td>
+						<Td w={"3em"}>
+							<TextTitle visibility="hidden" />
+						</Td>
+						<Td w={"3em"}>
+							<TextTitle visibility="hidden" />
+						</Td>
+						<Td w={"10em"}>
+							<TextTitle
+								title={`$${data.currentDeductionsTotal.toFixed(2)}`}
+								weight="normal"
+							/>
+						</Td>
+						<Td w={"10em"}>
+							<TextTitle
+								title={`$${data.YTDDeductionsTotal.toFixed(2)}`}
+								weight="normal"
+							/>
 						</Td>
 					</Tr>
 				</Tbody>
 			</TableLayout>
 			<TextTitle title={"Net Pay"} size={"xl"} />
-			<TableLayout cols={NET_PAY_COLS} isSmall>
+			<TableLayout variant="striped" cols={NET_PAY_COLS} isSmall>
 				<Tbody>
 					<Tr>
-						<Td w={"53%"}>
+						<Td w={"10em"}>
 							<TextTitle title={"Net Pay"} />
 						</Td>
-						<Td>
+						<Td w={"3em"}>
+							<TextTitle visibility="hidden" />
+						</Td>
+						<Td w={"3em"}>
+							<TextTitle visibility="hidden" />
+						</Td>
+						<Td w={"10em"}>
 							<TextTitle
-								title={`$${data.inputsTotal.currentNetPay}`}
+								title={`$${data.currentNetPay.toFixed(2)}`}
 								weight="normal"
 							/>
 						</Td>
-						<Td>
-							<TextTitle title={`$${YTDNetPay}`} weight="normal" />
+						<Td w={"10em"}>
+							<TextTitle
+								title={`$${data.YTDNetPay.toFixed(2)}`}
+								weight="normal"
+							/>
 						</Td>
 					</Tr>
 				</Tbody>

@@ -11,7 +11,7 @@ router.get(
 );
 
 router.get(
-	"/payDetailsReport/:companyName/:startDate/:endDate",
+	"/payDetailsReport/:companyName/:payPeriodNum",
 	payrollController.getPayDetailsReportInfo,
 );
 
@@ -20,5 +20,7 @@ router.get("/payGroups/:companyName/:id", payrollController.getPayGroup);
 router.post("/payGroups", payrollController.addPayGroup);
 
 router.put("/payGroups/:id", payrollController.updatePayGroup);
+
+router.post("/generate-payStub", payrollController.addEmployeePayStubInfo);
 
 module.exports = router;
