@@ -20,6 +20,7 @@ const InputFormControl = ({
 	hideLabel,
 	w,
 	size,
+	readOnly,
 }) => {
 	return (
 		<FormControlMain isInvalid={isInvalid}>
@@ -45,6 +46,7 @@ const InputFormControl = ({
 				border={border}
 				w={w}
 				size={size}
+				readOnly={readOnly}
 			/>
 			{error && <FormHelperText color="red.500">{error}</FormHelperText>}
 		</FormControlMain>

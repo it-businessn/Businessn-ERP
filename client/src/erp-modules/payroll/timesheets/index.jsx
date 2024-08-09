@@ -6,7 +6,7 @@ import TabsButtonGroup from "components/ui/tab/TabsButtonGroup";
 import TextTitle from "components/ui/text/TextTitle";
 import useTimesheet from "hooks/useTimesheet";
 import PageLayout from "layouts/PageLayout";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FaCheck } from "react-icons/fa";
 import { IoClose } from "react-icons/io5";
 import { useParams } from "react-router-dom";
@@ -37,33 +37,32 @@ const Timesheets = () => {
 		loggedInUser._id,
 		refresh,
 	);
+
 	const initialFormData = {
 		startTime: "",
 		endTime: "",
 		totalBreaks: "",
 		approve: undefined,
 		company,
+		recordId: null,
 	};
 	const [formData, setFormData] = useState(initialFormData);
-	const [recordId, setRecordId] = useState("");
 	const [showAddEntry, setShowAddEntry] = useState(false);
 
-	const handleSave = async (data) => {
+	const handleSave = async () => {
 		try {
-			if (recordId) {
-				if (data === undefined) {
-					await TimesheetService.updateTimesheet(formData, recordId);
-				} else {
-					await TimesheetService.updateTimesheet(data, recordId);
-				}
+			if (formData.recordId) {
+				await TimesheetService.updateTimesheet(formData, formData.recordId);
 				setRefresh((prev) => !prev);
-			} else {
-				setTimeout(() => {
-					handleSave(data);
-				}, 2000);
 			}
 		} catch (error) {}
 	};
+
+	useEffect(() => {
+		if (formData.approve !== undefined) {
+			handleSave();
+		}
+	}, [formData]);
 
 	const TABS = [
 		{
@@ -147,6 +146,12 @@ const Timesheets = () => {
 									: param_hours === "sickPayHours"
 									? sickPayHours
 									: vacationPayHours;
+							const isStatPay = payType === "Statutory Pay";
+
+							const hhMMFormattedTime = `${(param_hours_worked / 60).toFixed(
+								0,
+							)}:${param_hours_worked % 60}`;
+
 							return (
 								<Tr key={_id}>
 									<Td py={0}>
@@ -187,10 +192,10 @@ const Timesheets = () => {
 													endTime,
 													totalBreaks,
 													param_hours,
+													recordId: _id,
 												}));
-												setRecordId(_id);
 											}}
-											handleConfirm={() => handleSave()}
+											handleConfirm={handleSave}
 											required
 										/>
 									</Td>
@@ -207,8 +212,8 @@ const Timesheets = () => {
 													endTime: e.target.value,
 													totalBreaks,
 													param_hours,
+													recordId: _id,
 												}));
-												setRecordId(_id);
 											}}
 											handleConfirm={() => handleSave()}
 											required
@@ -216,6 +221,7 @@ const Timesheets = () => {
 									</Td>
 									<Td py={0}>
 										<InputFormControl
+											readOnly={isStatPay}
 											label={""}
 											name="totalBreaks"
 											valueText={totalBreaks}
@@ -226,15 +232,13 @@ const Timesheets = () => {
 													endTime,
 													totalBreaks: e.target.value,
 													param_hours,
+													recordId: _id,
 												}));
-												setRecordId(_id);
 											}}
 											handleConfirm={() => handleSave()}
 										/>
 									</Td>
-									<Td py={0}>
-										{`${param_hours_worked / 60}.${param_hours_worked % 60}`}
-									</Td>
+									<Td py={0}>{hhMMFormattedTime}</Td>
 									<Td py={0}>
 										<HStack spacing={0}>
 											<IconButton
@@ -243,14 +247,15 @@ const Timesheets = () => {
 												variant={"solid"}
 												color={"var(--status_button_border)"}
 												onClick={() => {
-													setRecordId(_id);
-													handleSave({
+													setFormData((prevData) => ({
+														...prevData,
 														startTime,
 														endTime,
 														totalBreaks,
 														param_hours,
+														recordId: _id,
 														approve: true,
-													});
+													}));
 												}}
 											/>
 											<IconButton
@@ -259,14 +264,15 @@ const Timesheets = () => {
 												icon={<IoClose />}
 												variant={"solid"}
 												onClick={() => {
-													setRecordId(_id);
-													handleSave({
+													setFormData((prevData) => ({
+														...prevData,
 														startTime,
 														endTime,
 														totalBreaks,
 														param_hours,
+														recordId: _id,
 														approve: false,
-													});
+													}));
 												}}
 											/>
 										</HStack>

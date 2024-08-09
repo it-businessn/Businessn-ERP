@@ -8,6 +8,7 @@ const getAllEmploymentInfo = async (req, res) => {
 		const currentPeriodEmployees = await Timesheet.find({
 			companyName,
 			createdOn: { $gte: startDate, $lte: endDate },
+			approveStatus: "Approved",
 		}).select("employeeId");
 
 		const uniqueEmployeeIds = new Set();
