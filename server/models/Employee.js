@@ -38,7 +38,7 @@ const employeeSchema = new mongoose.Schema({
 
 	isActive: Boolean,
 	lastLogin: String,
-	employmentType: { type: String, required: true, ref: "EmploymentType" },
+	employmentType: { type: String, ref: "EmploymentType" },
 	dateOfJoining: Date,
 	emailVerified: Boolean,
 	phoneNumber: {

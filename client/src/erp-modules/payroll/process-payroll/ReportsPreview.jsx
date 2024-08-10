@@ -1,29 +1,13 @@
 import { Button, HStack, Table, Tbody, Td, Tr } from "@chakra-ui/react";
 import PrimaryButton from "components/ui/button/PrimaryButton";
 import TextTitle from "components/ui/text/TextTitle";
-import usePaygroup from "hooks/usePaygroup";
 import { useState } from "react";
 import { MdCheckCircle } from "react-icons/md";
-import LocalStorageService from "services/LocalStorageService";
-import PayrollService from "services/PayrollService";
 import PreviewReportsModal from "./preview-reports/PreviewReportsModal";
 
 const ReportsPreview = ({ handleClick, handleReview }) => {
 	const [showReport, setShowReport] = useState(undefined);
-	const company = LocalStorageService.getItem("selectedCompany");
-	const { closestRecord } = usePaygroup(company);
 
-	//addpaystubs on payrol period activation
-	const handleAdd = async () => {
-		try {
-			await PayrollService.addPayPeriodPayStub({
-				companyName: company,
-				currentPayPeriod: closestRecord,
-			});
-		} catch (error) {
-			console.error(error);
-		}
-	};
 	return (
 		<HStack alignItems={"end"}>
 			<Table w={"100%"}>

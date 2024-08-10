@@ -132,11 +132,6 @@ const findCurrentPayStub = async (payPeriodNum, companyName, empId) =>
 		empId,
 	});
 
-const updatePayStub = async (id, data) =>
-	await EmployeePayStub.findByIdAndUpdate(id, data, {
-		new: true,
-	});
-
 const calculateTotalAggregatedHours = async (
 	startDate,
 	endDate,
@@ -186,6 +181,11 @@ const calculateTotalAggregatedHours = async (
 	return result;
 };
 
+const updatePayStub = async (id, data) =>
+	await EmployeePayStub.findByIdAndUpdate(id, data, {
+		new: true,
+	});
+
 const addEmployeePayStubInfo = async (req, res) => {
 	const { companyName, currentPayPeriod } = req.body;
 	try {
@@ -209,13 +209,6 @@ const addEmployeePayStubInfo = async (req, res) => {
 				"empId regPay overTimePay dblOverTimePay statWorkPay statPay sickPay vacationPay",
 			);
 			if (empResult) {
-				data.regPay = empResult.regPay;
-				data.overTimePay = empResult.overTimePay;
-				data.dblOverTimePay = empResult.dblOverTimePay;
-				data.statWorkPay = empResult.statWorkPay;
-				data.statPay = empResult.statPay;
-				data.sickPay = empResult.sickPay;
-				data.vacationPay = empResult.vacationPay;
 				data.empId = data.empId._id;
 				data.currentPayDetails = empResult;
 				data.currentRegPayTotal = getCalcAmount(
@@ -279,89 +272,98 @@ const addEmployeePayStubInfo = async (req, res) => {
 				data.currentNetPay =
 					grossSalaryByPayPeriod - data.currentDeductionsTotal;
 
-				const existingPayInfo = await findCurrentPayStub(
+				const prevPayPayInfo = await findCurrentPayStub(
+					payPeriod - 1,
+					companyName,
+					data.empId,
+				);
+
+				const currentPayInfo = await findCurrentPayStub(
 					payPeriod,
 					companyName,
 					data.empId,
 				);
 
-				if (existingPayInfo) {
-					existingPayInfo.YTDRegPayTotal += data.currentRegPayTotal;
+				const currentPayStub = {
+					empId: data.empId,
+					companyName,
+					payPeriodStartDate,
+					payPeriodEndDate,
+					payPeriodPayDate,
+					payPeriodProcessingDate,
+					payPeriodNum: payPeriod,
+					currentNetPay: data.currentNetPay,
+					regPay: empResult.regPay,
+					overTimePay: empResult.overTimePay,
+					dblOverTimePay: empResult.dblOverTimePay,
+					statWorkPay: empResult.statWorkPay,
+					statPay: empResult.statPay,
+					sickPay: empResult.sickPay,
+					vacationPay: data.vacationPay,
+					totalRegHoursWorked: getHrs(data.totalRegHoursWorked),
+					totalOvertimeHoursWorked: getHrs(data.totalOvertimeHoursWorked),
+					totalDblOvertimeHoursWorked: getHrs(data.totalDblOvertimeHoursWorked),
+					totalStatDayHoursWorked: getHrs(data.totalStatDayHoursWorked),
+					totalStatHours: getHrs(data.totalStatHours),
+					totalSickHoursWorked: getHrs(data.totalSickHoursWorked),
+					totalVacationHoursWorked: getHrs(data.totalVacationHoursWorked),
 
-					existingPayInfo.YTDOverTimePayTotal += data.currentOverTimePayTotal;
-
-					existingPayInfo.YTDDblOverTimePayTotal +=
-						data.currentDblOverTimePayTotal;
-
-					existingPayInfo.YTDStatWorkPayTotal += data.currentStatWorkPayTotal;
-
-					existingPayInfo.YTDStatPayTotal += data.currentStatPayTotal;
-
-					existingPayInfo.YTDSickPayTotal += data.currentSickPayTotal;
-
-					existingPayInfo.YTDVacationPayTotal += data.currentVacationPayTotal;
-
-					existingPayInfo.YTDGrossPay += data.currentGrossPay;
-
-					existingPayInfo.YTD_FDTaxDeductions += data.currentFDTaxDeductions;
-
-					existingPayInfo.YTDStateTaxDeductions +=
-						data.currentStateTaxDeductions;
-
-					existingPayInfo.YTD_CPPDeductions += data.currentCPPDeductions;
-
-					existingPayInfo.YTD_EIDeductions += data.currentEIDeductions;
-
-					existingPayInfo.YTDOtherDeductions += data.currentOtherDeductions;
-
-					existingPayInfo.YTDDeductionsTotal += data.currentDeductionsTotal;
-
-					existingPayInfo.YTDNetPay += data.currentNetPay;
-					await existingPayInfo.save();
-					// const updatedPayInfo = await updatePayStub(existingPayInfo._id, req.body);
+					currentRegPayTotal: data.currentRegPayTotal,
+					currentOverTimePayTotal: data.currentOverTimePayTotal,
+					currentDblOverTimePayTotal: data.currentDblOverTimePayTotal,
+					currentStatWorkPayTotal: data.currentStatWorkPayTotal,
+					currentStatPayTotal: data.currentStatPayTotal,
+					currentSickPayTotal: data.currentSickPayTotal,
+					currentVacationPayTotal: data.currentVacationPayTotal,
+					currentGrossPay: data.currentGrossPay,
+					currentFDTaxDeductions: data.currentFDTaxDeductions,
+					currentStateTaxDeductions: data.currentStateTaxDeductions,
+					currentCPPDeductions: data.currentCPPDeductions,
+					currentEIDeductions: data.currentEIDeductions,
+					currentOtherDeductions: data.currentOtherDeductions,
+					currentDeductionsTotal: data.currentDeductionsTotal,
+					currentNetPay: data.currentNetPay,
+					YTDRegPayTotal:
+						prevPayPayInfo?.YTDRegPayTotal || 0 + data.currentRegPayTotal,
+					YTDOverTimePayTotal:
+						prevPayPayInfo?.YTDOverTimePayTotal ||
+						0 + data.currentOverTimePayTotal,
+					YTDDblOverTimePayTotal:
+						prevPayPayInfo?.YTDDblOverTimePayTotal ||
+						0 + data.currentDblOverTimePayTotal,
+					YTDStatWorkPayTotal:
+						prevPayPayInfo?.YTDStatWorkPayTotal ||
+						0 + data.currentStatWorkPayTotal,
+					YTDStatPayTotal:
+						prevPayPayInfo?.YTDStatPayTotal || 0 + data.currentStatPayTotal,
+					YTDSickPayTotal:
+						prevPayPayInfo?.YTDSickPayTotal || 0 + data.currentSickPayTotal,
+					YTDVacationPayTotal:
+						prevPayPayInfo?.YTDVacationPayTotal ||
+						0 + data.currentVacationPayTotal,
+					YTDGrossPay: prevPayPayInfo?.YTDGrossPay || 0 + data.currentGrossPay,
+					YTD_FDTaxDeductions:
+						prevPayPayInfo?.YTD_FDTaxDeductions ||
+						0 + data.currentFDTaxDeductions,
+					YTDStateTaxDeductions:
+						prevPayPayInfo?.YTDStateTaxDeductions ||
+						0 + data.currentStateTaxDeductions,
+					YTD_CPPDeductions:
+						prevPayPayInfo?.YTD_CPPDeductions || 0 + data.currentCPPDeductions,
+					YTD_EIDeductions:
+						prevPayPayInfo?.YTD_EIDeductions || 0 + data.currentEIDeductions,
+					YTDOtherDeductions:
+						prevPayPayInfo?.YTDOtherDeductions ||
+						0 + data.currentOtherDeductions,
+					YTDDeductionsTotal:
+						prevPayPayInfo?.YTDDeductionsTotal ||
+						0 + data.currentDeductionsTotal,
+					YTDNetPay: prevPayPayInfo?.YTDNetPay || 0 + data.currentNetPay,
+				};
+				if (currentPayInfo) {
+					await updatePayStub(currentPayInfo._id, currentPayStub);
 				} else {
-					await EmployeePayStub.create({
-						empId: data.empId,
-						companyName,
-						payPeriodStartDate,
-						payPeriodEndDate,
-						payPeriodPayDate,
-						payPeriodProcessingDate,
-						payPeriodNum: payPeriod,
-						currentNetPay: data.currentNetPay,
-						regPay: data.regPay,
-						overTimePay: data.overTimePay,
-						dblOverTimePay: data.dblOverTimePay,
-						statWorkPay: data.statWorkPay,
-						statPay: data.statPay,
-						sickPay: data.sickPay,
-						vacationPay: data.vacationPay,
-						totalRegHoursWorked: getHrs(data.totalRegHoursWorked),
-						totalOvertimeHoursWorked: getHrs(data.totalOvertimeHoursWorked),
-						totalDblOvertimeHoursWorked: getHrs(
-							data.totalDblOvertimeHoursWorked,
-						),
-						totalStatDayHoursWorked: getHrs(data.totalStatDayHoursWorked),
-						totalStatHours: getHrs(data.totalStatHours),
-						totalSickHoursWorked: getHrs(data.totalSickHoursWorked),
-						totalVacationHoursWorked: getHrs(data.totalVacationHoursWorked),
-
-						currentRegPayTotal: data.currentRegPayTotal,
-						currentOverTimePayTotal: data.currentOverTimePayTotal,
-						currentDblOverTimePayTotal: data.currentDblOverTimePayTotal,
-						currentStatWorkPayTotal: data.currentStatWorkPayTotal,
-						currentStatPayTotal: data.currentStatPayTotal,
-						currentSickPayTotal: data.currentSickPayTotal,
-						currentVacationPayTotal: data.currentVacationPayTotal,
-						currentGrossPay: data.currentGrossPay,
-						currentFDTaxDeductions: data.currentFDTaxDeductions,
-						currentStateTaxDeductions: data.currentStateTaxDeductions,
-						currentCPPDeductions: data.currentCPPDeductions,
-						currentEIDeductions: data.currentEIDeductions,
-						currentOtherDeductions: data.currentOtherDeductions,
-						currentDeductionsTotal: data.currentDeductionsTotal,
-						currentNetPay: data.currentNetPay,
-					});
+					await EmployeePayStub.create(currentPayStub);
 				}
 			}
 		}

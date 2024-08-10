@@ -6,6 +6,7 @@ import usePaygroup from "hooks/usePaygroup";
 import { MdCheckCircle } from "react-icons/md";
 import { useParams } from "react-router-dom";
 import LocalStorageService from "services/LocalStorageService";
+import PayrollService from "services/PayrollService";
 import { dayMonthYear } from "utils";
 
 const PayrunSetup = ({ handleClick }) => {
@@ -20,6 +21,17 @@ const PayrunSetup = ({ handleClick }) => {
 
 	const runType = payNo?.includes("E") ? "Extra" : "Regular";
 
+	const handleConfirm = async () => {
+		try {
+			await PayrollService.addPayPeriodPayStub({
+				companyName: company,
+				currentPayPeriod: closestRecord,
+			});
+			handleClick();
+		} catch (error) {
+			console.error(error);
+		}
+	};
 	return (
 		<HStack alignItems={"end"}>
 			<Table w={"100%"}>
@@ -89,7 +101,7 @@ const PayrunSetup = ({ handleClick }) => {
 				rightIcon={<MdCheckCircle />}
 				// isLoading={isLoading}
 				loadingText="Loading"
-				onOpen={handleClick}
+				onOpen={handleConfirm}
 			/>
 		</HStack>
 	);

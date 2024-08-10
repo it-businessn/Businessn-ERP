@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 
 import Navbar from "components/header";
 import Sidebar from "components/sidebar";
-import useCompany from "hooks/useCompany";
 import useSidebarMenu from "hooks/useSidebarMenu";
 import RootLayout from "layouts/RootLayout";
 import { useNavigate } from "react-router-dom";
@@ -16,7 +15,7 @@ const Home = () => {
 	const navigate = useNavigate();
 	const [user, setUser] = useState(LocalStorageService.getItem("user"));
 
-	const { company } = useCompany(user?.companyId[0]?.name);
+	const company = LocalStorageService.getItem("selectedCompany");
 
 	const { isMobile } = useBreakpointValue();
 
@@ -25,7 +24,7 @@ const Home = () => {
 	const [refresh, setRefresh] = useState(false);
 
 	useEffect(() => {
-		if (user) {
+		if (user && Object.keys(user).length > 0) {
 			navigate(ROUTE_PATH.SALES);
 			// navigate(`${ROUTE_PATH.SALES}${ROUTE_PATH.CUSTOMERS}`);
 			// navigate(`${ROUTE_PATH.PROJECT}${ROUTE_PATH.WORKVIEW}`);
@@ -48,13 +47,15 @@ const Home = () => {
 
 	return (
 		<>
-			<Navbar
-				handleClick={(menu) => setActiveMenu(menu)}
-				onOpen={onOpen}
-				user={user}
-				setUser={setUser}
-				isMobile={isMobile}
-			/>
+			{user && Object.keys(user).length && (
+				<Navbar
+					handleClick={(menu) => setActiveMenu(menu)}
+					onOpen={onOpen}
+					user={user}
+					setUser={setUser}
+					isMobile={isMobile}
+				/>
+			)}
 			{user && (activeMenu || refresh) ? (
 				<RootLayout>
 					<Sidebar

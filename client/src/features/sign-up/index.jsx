@@ -24,7 +24,7 @@ import { useNavigate } from "react-router-dom";
 import LoginService from "services/LoginService";
 import BaseModulePanel from "./BaseModulePanel";
 import DepartmentsPanel from "./DepartmentsPanel";
-import EmploymentPanel from "./EmploymentPanel";
+// import EmploymentPanel from "./EmploymentPanel";
 import MultiSelectControl from "./MultiSelectControl";
 import RolesPanel from "./RolesPanel";
 // import signUpImg from "../../assets/logos/BusinessN_dark.jpg";
@@ -51,7 +51,7 @@ const SignUp = ({ isModal, setRefresh, onClose, hideCompany }) => {
 		managers,
 	} = useSignup(optionDataRefresh);
 
-	const [showAddEmpTypes, setShowAddEmpTypes] = useState(false);
+	// const [showAddEmpTypes, setShowAddEmpTypes] = useState(false);
 	const [showAddRoles, setShowAddRoles] = useState(false);
 	const [showAddDepartments, setShowAddDepartments] = useState(false);
 	const [showAddModules, setShowAddModules] = useState(false);
@@ -61,7 +61,7 @@ const SignUp = ({ isModal, setRefresh, onClose, hideCompany }) => {
 		formData.firstName === "" ||
 		formData.email === "" ||
 		formData.role === "" ||
-		formData.employmentType === "" ||
+		// formData.employmentType === "" ||
 		formData.phoneNumber === "";
 
 	const handleSubmit = async (e) => {
@@ -95,24 +95,24 @@ const SignUp = ({ isModal, setRefresh, onClose, hideCompany }) => {
 	};
 
 	const SELECT_OPTIONS = [
-		{
-			name: "Type of Employment",
-			data: empTypes,
-			param_key: "employmentType",
-			param_value: formData.employmentType,
-			handleChange,
-			setShowAdd: setShowAddEmpTypes,
-			showAdd: showAddEmpTypes,
-			placeholder: "Select employment type",
-			content: (
-				<EmploymentPanel
-					showAddEmpTypes={showAddEmpTypes}
-					setOptionDataRefresh={setOptionDataRefresh}
-					setShowAddEmpTypes={setShowAddEmpTypes}
-					companyName={formData.company}
-				/>
-			),
-		},
+		// {
+		// 	name: "Type of Employment",
+		// 	data: empTypes,
+		// 	param_key: "employmentType",
+		// 	param_value: formData.employmentType,
+		// 	handleChange,
+		// 	setShowAdd: setShowAddEmpTypes,
+		// 	showAdd: showAddEmpTypes,
+		// 	placeholder: "Select employment type",
+		// 	content: (
+		// 		<EmploymentPanel
+		// 			showAddEmpTypes={showAddEmpTypes}
+		// 			setOptionDataRefresh={setOptionDataRefresh}
+		// 			setShowAddEmpTypes={setShowAddEmpTypes}
+		// 			companyName={formData.company}
+		// 		/>
+		// 	),
+		// },
 		{
 			name: "Type of Role",
 			data: roles,

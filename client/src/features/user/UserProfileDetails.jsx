@@ -70,7 +70,7 @@ const UserProfileDetails = () => {
 		{ name: "Manager", value: manager },
 		{ name: "Role", value: role },
 		{ name: "Department", value: department[0] },
-		{ name: "Employment Type", value: employmentType },
+		// { name: "Employment Type", value: employmentType },
 	];
 	const showActionButton = () => (
 		<HStack p={"1em"}>
