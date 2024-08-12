@@ -15,6 +15,7 @@ const MultiSelectBox = ({
 	selectedOptions,
 	setSelectedOptions,
 	data,
+	height,
 }) => {
 	const { isOpen, onOpen, onClose } = useDisclosure();
 
@@ -44,19 +45,19 @@ const MultiSelectBox = ({
 				>
 					<CloseButton onClick={handleClose} position={"sticky"} top={0} />
 				</MenuItem>
-				<Stack spacing={1} overflow={"auto"} maxHeight={"33vh"}>
+				<Stack spacing={1} overflow={"auto"} height={height} maxHeight={"33vh"}>
 					{data?.map((assignee) => (
-						<MenuItem key={assignee?._id || assignee}>
+						<MenuItem key={assignee?._id ?? assignee}>
 							<Checkbox
 								colorScheme="facebook"
 								isChecked={selectedOptions?.includes(
-									assignee.fullName || assignee.name,
+									assignee.fullName ?? assignee.name,
 								)}
 								onChange={() =>
-									handleCheckboxChange(assignee.fullName || assignee.name)
+									handleCheckboxChange(assignee.fullName ?? assignee.name)
 								}
 							>
-								{assignee.fullName || assignee.name}
+								{assignee.fullName ?? assignee.name}
 							</Checkbox>
 						</MenuItem>
 					))}

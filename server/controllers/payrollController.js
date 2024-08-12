@@ -161,6 +161,7 @@ const calculateTotalAggregatedHours = async (
 				totalVacationHoursWorked: 0,
 			};
 		}
+
 		acc[timesheet.employeeId].totalRegHoursWorked +=
 			timesheet.regHoursWorked || 0;
 		acc[timesheet.employeeId].totalOvertimeHoursWorked +=
@@ -300,13 +301,21 @@ const addEmployeePayStubInfo = async (req, res) => {
 					statPay: empResult.statPay,
 					sickPay: empResult.sickPay,
 					vacationPay: data.vacationPay,
-					totalRegHoursWorked: getHrs(data.totalRegHoursWorked),
-					totalOvertimeHoursWorked: getHrs(data.totalOvertimeHoursWorked),
-					totalDblOvertimeHoursWorked: getHrs(data.totalDblOvertimeHoursWorked),
-					totalStatDayHoursWorked: getHrs(data.totalStatDayHoursWorked),
-					totalStatHours: getHrs(data.totalStatHours),
-					totalSickHoursWorked: getHrs(data.totalSickHoursWorked),
-					totalVacationHoursWorked: getHrs(data.totalVacationHoursWorked),
+					totalRegHoursWorked: parseFloat(getHrs(data.totalRegHoursWorked)),
+					totalOvertimeHoursWorked: parseFloat(
+						getHrs(data.totalOvertimeHoursWorked),
+					),
+					totalDblOvertimeHoursWorked: parseFloat(
+						getHrs(data.totalDblOvertimeHoursWorked),
+					),
+					totalStatDayHoursWorked: parseFloat(
+						getHrs(data.totalStatDayHoursWorked),
+					),
+					totalStatHours: parseFloat(getHrs(data.totalStatHours)),
+					totalSickHoursWorked: parseFloat(getHrs(data.totalSickHoursWorked)),
+					totalVacationHoursWorked: parseFloat(
+						getHrs(data.totalVacationHoursWorked),
+					),
 
 					currentRegPayTotal: data.currentRegPayTotal,
 					currentOverTimePayTotal: data.currentOverTimePayTotal,

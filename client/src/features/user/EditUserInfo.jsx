@@ -12,10 +12,12 @@ import {
 } from "@chakra-ui/react";
 import PrimaryButton from "components/ui/button/PrimaryButton";
 import InputFormControl from "components/ui/form/InputFormControl";
+// import MultiSelectFormControl from "components/ui/form/MultiSelectFormControl";
 import TextTitle from "components/ui/text/TextTitle";
-import { useEffect, useState } from "react";
-import SettingService from "services/SettingService";
+import { useSignup } from "hooks/useSignup";
+import { useState } from "react";
 import UserService from "services/UserService";
+// import { isManager } from "utils";
 
 const EditUserInfo = ({
 	setEditMode,
@@ -25,53 +27,19 @@ const EditUserInfo = ({
 	error,
 	company,
 }) => {
-	const [empTypes, setEmpTypes] = useState(false);
-	const [roles, setRoles] = useState(false);
-	const [departments, setDepartments] = useState(false);
-	const [managers, setManagers] = useState(false);
+	const { companies, roles, departments, managers } = useSignup();
+	const [openAssigneeMenu, setOpenAssigneeMenu] = useState(false);
+	const assignedCompanies = userData?.companyId.map(({ name }) => name);
+	const [selectedOptions, setSelectedOptions] = useState(assignedCompanies);
 
-	useEffect(() => {
-		const fetchAllEmpTypes = async () => {
-			try {
-				const response = await SettingService.getAllEmploymentTypes(company);
-				setEmpTypes(response.data);
-			} catch (error) {
-				console.error(error);
-			}
-		};
-		const fetchAllRoles = async () => {
-			try {
-				const response = await SettingService.getAllRoles(company);
-				setRoles(response.data);
-			} catch (error) {
-				console.error(error);
-			}
-		};
-		const fetchAllDepartments = async () => {
-			try {
-				const response = await SettingService.getAllDepartments(company);
-				setDepartments(response.data);
-			} catch (error) {
-				console.error(error);
-			}
-		};
-		const fetchAllManagers = async () => {
-			try {
-				const response = await UserService.getAllManagers(company);
-				setManagers(response.data);
-			} catch (error) {
-				console.error(error);
-			}
-		};
-		fetchAllManagers();
-		fetchAllRoles();
-		fetchAllDepartments();
-		fetchAllEmpTypes();
-	}, []);
+	const handleMenuToggle = () => {
+		setOpenAssigneeMenu((prev) => !prev);
+	};
 
 	const handleSaveClick = async (e) => {
 		e.preventDefault();
 		try {
+			userData.companies = userData.companyId;
 			const response = await UserService.updateUserProfile(
 				userData,
 				userData._id,
@@ -92,6 +60,15 @@ const EditUserInfo = ({
 			[name]: value,
 		}));
 	};
+
+	const handleCloseMenu = (selectedOptions) => {
+		setOpenAssigneeMenu(false);
+		setUserData((prevTask) => ({
+			...prevTask,
+			companyId: selectedOptions,
+		}));
+	};
+
 	return (
 		<Stack flex={1} p={"1em"} color="var(--logo_bg)">
 			<form onSubmit={handleSaveClick}>
@@ -278,6 +255,22 @@ const EditUserInfo = ({
 					</FormControl>
 				)}
 				<HStack>
+					{/* {isManager(userData.role) && (
+						<MultiSelectFormControl
+							hideAvatar
+							label={"Assign Companies"}
+							tag={"companie(s)"}
+							showMultiSelect={openAssigneeMenu}
+							height="10vh"
+							data={companies}
+							handleCloseMenu={handleCloseMenu}
+							selectedOptions={selectedOptions}
+							setSelectedOptions={setSelectedOptions}
+							handleMenuToggle={handleMenuToggle}
+							list={userData?.companyId}
+						/>
+					)} */}
+
 					{/* {departments && (
 						<FormControl mb={4}>
 							<FormLabel>Link Company</FormLabel>
@@ -296,7 +289,7 @@ const EditUserInfo = ({
 							</Select>
 						</FormControl>
 					)} */}
-					{empTypes && (
+					{/* {empTypes && (
 						<FormControl mb={4}>
 							<FormLabel>Type of Employment</FormLabel>
 							<Select
@@ -313,7 +306,7 @@ const EditUserInfo = ({
 								))}
 							</Select>
 						</FormControl>
-					)}
+					)} */}
 				</HStack>
 				<PrimaryButton name={"Save"} size={"sm"} />
 				{error && (

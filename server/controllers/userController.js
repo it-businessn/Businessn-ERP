@@ -41,12 +41,10 @@ const getUserActivity = () => async (req, res) => {
 	}
 };
 
-const findCompany = async (name) => await Company.findOne({ name });
-
 const getCompanyEmployees = () => async (req, res) => {
 	const { companyName } = req.params;
 	try {
-		const existingCompany = await findCompany(companyName);
+		const existingCompany = await findCompany("name", companyName);
 		const result = await Employee.find({ companyId: existingCompany._id });
 
 		res.status(200).json(result);
@@ -74,7 +72,7 @@ const groupEmployeesByRole = () => async (req, res) => {
 			},
 		]);
 
-		const existingCompany = await findCompany(companyName);
+		const existingCompany = await findCompany("name", companyName);
 
 		const result = await Employee.aggregate([
 			{
@@ -127,7 +125,7 @@ const getAllGroupMembers = () => async (req, res) => {
 const getAllManagers = () => async (req, res) => {
 	const { companyName } = req.params;
 	try {
-		const existingCompany = await findCompany(companyName);
+		const existingCompany = await findCompany("name", companyName);
 		const result = await Employee.find({
 			companyId: existingCompany._id,
 			role: { $regex: /manager|administrator/i },
@@ -141,7 +139,7 @@ const getAllManagers = () => async (req, res) => {
 const getAllSalesAgents = () => async (req, res) => {
 	const { companyName } = req.params;
 	try {
-		const existingCompany = await findCompany(companyName);
+		const existingCompany = await findCompany("name", companyName);
 		const result = await Employee.find({
 			companyId: existingCompany._id,
 			role: {
@@ -155,17 +153,33 @@ const getAllSalesAgents = () => async (req, res) => {
 		res.status(404).json({ error: error.message });
 	}
 };
+const findCompany = async (key, value) =>
+	await Company.findOne({ [key]: value });
 
 const updateUser = () => async (req, res) => {
 	const { userId } = req.params;
-	const { role, companyId } = req.body;
+	const { role, companyId, companies } = req.body;
 	const isManager = isRoleManager(role);
 
 	try {
-		if (isManager) {
-			const company = await Company.findOne({ _id: companyId });
-			if (company) {
-				setInitialPermissions(userId, isManager, company.name);
+		const compArr = [];
+		if (companies?.length) {
+			for (const name of companies) {
+				if (isManager) {
+					const existingCompany = await findCompany("name", name);
+					if (existingCompany) {
+						setInitialPermissions(userId, isManager, name);
+						compArr.push(existingCompany._id);
+						existingCompany.employees.push(userId);
+						await existingCompany.save();
+					}
+				}
+			}
+			req.body.companyId = compArr;
+		} else if (isManager) {
+			const existingCompany = await findCompany("_id", companyId);
+			if (existingCompany) {
+				setInitialPermissions(userId, isManager, existingCompany.name);
 			}
 		}
 		const updatedUser = await Employee.findByIdAndUpdate(userId, req.body, {

@@ -15,6 +15,7 @@ const MultiSelectFormControl = ({
 	tag,
 	size = "sm",
 	hideAvatar,
+	height,
 }) => {
 	return (
 		<FormControlMain>
@@ -32,6 +33,7 @@ const MultiSelectFormControl = ({
 			>
 				{showMultiSelect ? (
 					<MultiSelectBox
+						height={height}
 						data={data}
 						openMenu={showMultiSelect}
 						handleCloseMenu={handleCloseMenu}
