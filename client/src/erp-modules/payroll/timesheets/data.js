@@ -65,3 +65,18 @@ export const getParamKey = (type) => PAY_TYPES.find((_) => _.type === type);
 
 export const getStatusStyle = (approvedStatusName) =>
 	TIMESHEET_STATUS.find((_) => _.value === approvedStatusName);
+
+export const validateHours = (value) => {
+	const hours = parseInt(value, 10);
+	return Number.isInteger(hours) && hours >= 1 && hours <= 24;
+};
+
+export const validateMinutes = (value) => {
+	const minutes = parseInt(value, 10);
+	return Number.isInteger(minutes) && minutes >= 0 && minutes <= 60;
+};
+
+export const validateTime = (value) => {
+	const [hours, minutes] = value.split(":");
+	return validateHours(hours) && validateMinutes(minutes);
+};

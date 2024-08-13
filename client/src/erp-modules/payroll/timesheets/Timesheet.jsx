@@ -1,13 +1,12 @@
-import { HStack, IconButton, Tbody, Td, Tr } from "@chakra-ui/react";
+import { HStack, IconButton, Input, Tbody, Td, Tr } from "@chakra-ui/react";
 import PrimaryButton from "components/ui/button/PrimaryButton";
-import DateTimeFormControl from "components/ui/form/DateTimeFormControl";
 import InputFormControl from "components/ui/form/InputFormControl";
 import TableLayout from "components/ui/table/TableLayout";
 import TextTitle from "components/ui/text/TextTitle";
 import { useEffect, useState } from "react";
 import { FaCheck } from "react-icons/fa";
 import { IoClose } from "react-icons/io5";
-import TimesheetService from "services/TimesheetService";
+// import TimesheetService from "services/TimesheetService";
 import { getDefaultDate } from "utils";
 import { getParamKey, getStatusStyle } from "./data";
 
@@ -21,14 +20,37 @@ const Timesheet = ({ cols, data, company, setRefresh }) => {
 		recordId: null,
 	};
 	const [formData, setFormData] = useState(initialFormData);
+	const [timesheetData, setTimesheetData] = useState(null);
 
 	const handleSave = async () => {
 		try {
-			if (formData.recordId) {
-				await TimesheetService.updateTimesheet(formData, formData.recordId);
-				setRefresh((prev) => !prev);
-			}
+			const updatedRec = timesheetData.find(
+				(record) => record._id === formData.recordId,
+			);
+
+			formData.startTime = updatedRec.startTime;
+			formData.totalBreaks = updatedRec.totalBreaks;
+			formData.endTime = updatedRec.endTime;
+			formData.company = updatedRec.companyName;
+
+			// if (formData.recordId) {
+			// 	await TimesheetService.updateTimesheet(formData, formData.recordId);
+			// 	setRefresh((prev) => !prev);
+			// }
 		} catch (error) {}
+	};
+
+	useEffect(() => {
+		if (data) {
+			setTimesheetData(data);
+		}
+	}, [data]);
+
+	const handleTimeChange = (id, field, value) => {
+		const updatedData = timesheetData.map((record) =>
+			record._id === id ? { ...record, [field]: value } : record,
+		);
+		setTimesheetData(updatedData);
 	};
 
 	useEffect(() => {
@@ -37,10 +59,35 @@ const Timesheet = ({ cols, data, company, setRefresh }) => {
 		}
 	}, [formData]);
 
+	const renderEditableInput = (id, field, value, param_hours, isStatPay) => (
+		<>
+			<Input
+				readOnly={isStatPay}
+				onBlur={() => handleSave(param_hours)}
+				value={value}
+				onChange={(e) => {
+					setFormData({
+						param_hours,
+						recordId: id,
+					});
+					handleTimeChange(id, field, e.target.value);
+				}}
+				placeholder="HH:mm"
+				size="sm"
+				// isInvalid={!!errors[`${id}-${field}`]}
+			/>
+			{/* {errors[`${id}-${field}`] && (
+				<Text color="red.500" fontSize="sm">
+					{errors[`${id}-${field}`]}
+				</Text>
+			)} */}
+		</>
+	);
+
 	return (
 		<TableLayout isTimesheet cols={cols} height="75vh">
 			<Tbody>
-				{data?.map(
+				{timesheetData?.map(
 					({
 						_id,
 						employeeId,
@@ -64,12 +111,9 @@ const Timesheet = ({ cols, data, company, setRefresh }) => {
 						sickPay,
 						vacationPay,
 						totalBreaks,
+						startTime,
+						endTime,
 					}) => {
-						const startTime = clockIns.length ? clockIns[0] : "";
-						const endTime = clockOuts.length
-							? clockOuts[clockOuts.length - 1]
-							: "";
-
 						const approveStatusBtnCss = getStatusStyle(approveStatus);
 
 						const { param_key, param_hours } = getParamKey(payType);
@@ -138,44 +182,23 @@ const Timesheet = ({ cols, data, company, setRefresh }) => {
 								<Td py={0}>{param_pay_type}</Td>
 								<Td py={0}>{payType}</Td>
 								<Td px={0}>
-									<DateTimeFormControl
-										label={""}
-										hideTimeLabel
-										valueText2={startTime}
-										name2="startTime"
-										handleChange={(e) => {
-											setFormData({
-												startTime: e.target.value,
-												endTime,
-												totalBreaks,
-												param_hours,
-												recordId: _id,
-												approve: undefined,
-											});
-										}}
-										handleConfirm={handleSave}
-										required
-									/>
+									{renderEditableInput(
+										_id,
+										"startTime",
+										startTime,
+										param_hours,
+										isStatPay,
+									)}
 								</Td>
 								<Td py={0}>
-									<DateTimeFormControl
-										label={""}
-										hideTimeLabel
-										valueText2={endTime}
-										name2="endTime"
-										handleChange={(e) => {
-											setFormData({
-												startTime,
-												endTime: e.target.value,
-												totalBreaks,
-												param_hours,
-												recordId: _id,
-												approve: undefined,
-											});
-										}}
-										handleConfirm={() => handleSave()}
-										required
-									/>
+									{renderEditableInput(
+										_id,
+										"endTime",
+										endTime,
+
+										param_hours,
+										isStatPay,
+									)}
 								</Td>
 								<Td py={0}>
 									<InputFormControl

@@ -6,7 +6,7 @@ import PageLayout from "layouts/PageLayout";
 import { useState } from "react";
 import { useParams } from "react-router-dom";
 import LocalStorageService from "services/LocalStorageService";
-import { isManager } from "utils";
+import { getDefaultDate, isManager } from "utils";
 import ExtraTimeEntryModal from "./ExtraTimeEntryModal";
 import Timecard from "./Timecard";
 import Timesheet from "./Timesheet";
@@ -76,6 +76,7 @@ const Timesheets = () => {
 	];
 
 	const [viewMode, setViewMode] = useState(TABS[0].type);
+	const [date, setDate] = useState(getDefaultDate);
 
 	const showComponent = (viewMode) =>
 		TABS.find(({ type }) => type === viewMode)?.name;
@@ -84,8 +85,8 @@ const Timesheets = () => {
 		<PageLayout
 			title={"Timesheets"}
 			showDate
-			valueText1={new Date()}
-			handleChange={(v) => console.log(v)}
+			valueText1={date}
+			handleChange={(value) => setDate(value)}
 		>
 			<Stack spacing={0} align={"end"} mt={-10}>
 				<PrimaryButton

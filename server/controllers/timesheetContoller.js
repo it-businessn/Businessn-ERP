@@ -37,6 +37,7 @@ const getTimesheets = async (req, res) => {
 		timesheets
 			.sort((a, b) => b.createdOn - a.createdOn)
 			.forEach((timesheet) => {
+				const { clockIns, clockOuts } = timesheet;
 				const empIdStr = timesheet.employeeId._id.toString();
 				if (!payInfoMap.has(empIdStr)) {
 					return;
@@ -49,6 +50,12 @@ const getTimesheets = async (req, res) => {
 				timesheet.statPay = payInfo.statPay;
 				timesheet.sickPay = payInfo.sickPay;
 				timesheet.vacationPay = payInfo.vacationPay;
+				if (clockIns.length) {
+					timesheet.startTime = clockIns[0];
+				}
+				if (clockOuts.length) {
+					timesheet.endTime = clockOuts[clockOuts.length - 1];
+				}
 			});
 
 		res.status(200).json(timesheets);
@@ -167,6 +174,7 @@ const updateTimesheet = async (req, res) => {
 	const { id } = req.params;
 	let { startTime, endTime, totalBreaks, approve, param_hours, company } =
 		req.body;
+
 	try {
 		const timesheet = await Timesheet.findById(id);
 		const totalWorkedHours = getDateDiffHours(startTime, endTime, totalBreaks);
@@ -196,6 +204,7 @@ const updateTimesheet = async (req, res) => {
 			: approve === false
 			? "Rejected"
 			: "Pending";
+		console.log(timesheet);
 		await timesheet.save();
 		res.status(201).json(timesheet);
 	} catch (error) {

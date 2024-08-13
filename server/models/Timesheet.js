@@ -13,6 +13,8 @@ const timesheetSchema = new mongoose.Schema({
 	employeeName: String,
 	clockIns: [],
 	clockOuts: [],
+	startTime: { type: String, default: "00:00" },
+	endTime: { type: String, default: "00:00" },
 	startBreaks: [Date],
 	endBreaks: [Date],
 	totalHours: Number,
