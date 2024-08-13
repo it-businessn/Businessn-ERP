@@ -1,4 +1,5 @@
 import { Box, Checkbox, Table, Th, Thead, Tr } from "@chakra-ui/react";
+import TextTitle from "../text/TextTitle";
 
 const TableLayout = ({
 	hasMulti,
@@ -14,17 +15,20 @@ const TableLayout = ({
 	top,
 	zIndex,
 	variant = "simple",
+	bg = "var(--lead_cards_bg)",
+	inVisible,
+	size = "xs",
 }) => {
 	return (
 		<Box overflow="auto" height={height} w={w}>
-			<Table variant={variant} bg={"var(--lead_cards_bg"}>
+			<Table variant={variant} bg={bg}>
 				<Thead
 					// position={position} top={top} zIndex={zIndex}
 					position="sticky"
 					top={-1}
 					zIndex="docked"
 				>
-					<Tr>
+					<Tr display={inVisible && "none"}>
 						{hasMulti && (
 							<Th>
 								<Checkbox
@@ -40,7 +44,7 @@ const TableLayout = ({
 								pl={isTimesheet && index === 0 && "1em !important"}
 								key={`${col}_${index}`}
 							>
-								{col}
+								<TextTitle size={size} title={col} />
 							</Th>
 						))}
 						{hasMulti && <Th>Action</Th>}

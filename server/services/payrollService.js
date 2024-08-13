@@ -62,6 +62,8 @@ const getCalcAmount = (hrs, rate) => (hrs / 60).toFixed(2) * rate;
 
 const getHrs = (num) => `${(num / 60).toFixed(0)}.${num % 60}`;
 
+const getSumTotal = (data1, data2) => (data1 ?? 0) + data2;
+
 const getTaxDetails = (grossSalary) => {
 	const annualSalaryByPayPeriod = grossSalary * TAX_CONFIG.ANNUAL_PAY_PERIODS;
 
@@ -188,4 +190,5 @@ module.exports = {
 	getTaxDetails,
 	getHrs,
 	getCalcAmount,
+	getSumTotal,
 };

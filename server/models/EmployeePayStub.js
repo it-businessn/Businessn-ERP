@@ -11,6 +11,12 @@ const employeePayStubSchema = new mongoose.Schema({
 	statPay: String,
 	sickPay: String,
 	vacationPay: String,
+	commission: { type: Number, default: 0 },
+	retroactive: { type: Number, default: 0 },
+	// reimbursement: { type: Number, default: 0 },
+	vacationPayout: { type: Number, default: 0 },
+	bonus: { type: Number, default: 0 },
+	terminationPayout: { type: Number, default: 0 },
 
 	payPeriodStartDate: Date,
 	payPeriodEndDate: Date,
@@ -41,6 +47,13 @@ const employeePayStubSchema = new mongoose.Schema({
 	YTDStatPayTotal: { type: Number, default: 0 },
 	YTDSickPayTotal: { type: Number, default: 0 },
 	YTDVacationPayTotal: { type: Number, default: 0 },
+
+	YTDCommission: { type: Number, default: 0 },
+	YTDRetroactive: { type: Number, default: 0 },
+	// reimbursement: { type: Number, default: 0 },
+	YTDVacationPayout: { type: Number, default: 0 },
+	YTDBonus: { type: Number, default: 0 },
+	YTDTerminationPayout: { type: Number, default: 0 },
 
 	currentGrossPay: Number,
 	YTDGrossPay: { type: Number, default: 0 },

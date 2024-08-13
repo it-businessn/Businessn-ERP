@@ -6,6 +6,7 @@ const {
 	getCalcAmount,
 	getTaxDetails,
 	getHrs,
+	getSumTotal,
 } = require("../services/payrollService");
 
 const getAllPayGroups = async (req, res) => {
@@ -207,7 +208,7 @@ const addEmployeePayStubInfo = async (req, res) => {
 			const empResult = await EmployeePayInfo.findOne({
 				empId: data.empId._id,
 			}).select(
-				"empId regPay overTimePay dblOverTimePay statWorkPay statPay sickPay vacationPay",
+				"empId regPay overTimePay dblOverTimePay statWorkPay statPay sickPay vacationPay commission retroactive vacationPayout bonus terminationPayout",
 			);
 			if (empResult) {
 				data.empId = data.empId._id;
@@ -247,7 +248,12 @@ const addEmployeePayStubInfo = async (req, res) => {
 					data.currentStatWorkPayTotal +
 					data.currentStatPayTotal +
 					data.currentSickPayTotal +
-					data.currentVacationPayTotal;
+					data.currentVacationPayTotal +
+					empResult.commission +
+					empResult.retroactive +
+					empResult.vacationPayout +
+					empResult.bonus +
+					empResult.terminationPayout;
 
 				const {
 					grossSalaryByPayPeriod,
@@ -294,6 +300,11 @@ const addEmployeePayStubInfo = async (req, res) => {
 					payPeriodProcessingDate,
 					payPeriodNum: payPeriod,
 					currentNetPay: data.currentNetPay,
+					commission: empResult.commission,
+					retroactive: empResult.retroactive,
+					vacationPayout: empResult.vacationPayout,
+					bonus: empResult.bonus,
+					terminationPayout: empResult.terminationPayout,
 					regPay: empResult.regPay,
 					overTimePay: empResult.overTimePay,
 					dblOverTimePay: empResult.dblOverTimePay,
@@ -332,24 +343,52 @@ const addEmployeePayStubInfo = async (req, res) => {
 					currentOtherDeductions: data.currentOtherDeductions,
 					currentDeductionsTotal: data.currentDeductionsTotal,
 					currentNetPay: data.currentNetPay,
-					YTDRegPayTotal:
-						prevPayPayInfo?.YTDRegPayTotal || 0 + data.currentRegPayTotal,
-					YTDOverTimePayTotal:
-						prevPayPayInfo?.YTDOverTimePayTotal ||
-						0 + data.currentOverTimePayTotal,
-					YTDDblOverTimePayTotal:
-						prevPayPayInfo?.YTDDblOverTimePayTotal ||
-						0 + data.currentDblOverTimePayTotal,
-					YTDStatWorkPayTotal:
-						prevPayPayInfo?.YTDStatWorkPayTotal ||
-						0 + data.currentStatWorkPayTotal,
-					YTDStatPayTotal:
-						prevPayPayInfo?.YTDStatPayTotal || 0 + data.currentStatPayTotal,
-					YTDSickPayTotal:
-						prevPayPayInfo?.YTDSickPayTotal || 0 + data.currentSickPayTotal,
-					YTDVacationPayTotal:
-						prevPayPayInfo?.YTDVacationPayTotal ||
-						0 + data.currentVacationPayTotal,
+					YTDRegPayTotal: getSumTotal(
+						prevPayPayInfo?.YTDRegPayTotal,
+						data.currentRegPayTotal,
+					),
+					YTDOverTimePayTotal: getSumTotal(
+						prevPayPayInfo?.YTDOverTimePayTotal,
+						data.currentOverTimePayTotal,
+					),
+					YTDDblOverTimePayTotal: getSumTotal(
+						prevPayPayInfo?.YTDDblOverTimePayTotal,
+						data.currentDblOverTimePayTotal,
+					),
+					YTDStatWorkPayTotal: getSumTotal(
+						prevPayPayInfo?.YTDStatWorkPayTotal,
+						data.currentStatWorkPayTotal,
+					),
+					YTDStatPayTotal: getSumTotal(
+						prevPayPayInfo?.YTDStatPayTotal,
+						data.currentStatPayTotal,
+					),
+					YTDSickPayTotal: getSumTotal(
+						prevPayPayInfo?.YTDSickPayTotal,
+						data.currentSickPayTotal,
+					),
+					YTDVacationPayTotal: getSumTotal(
+						prevPayPayInfo?.YTDVacationPayTotal,
+						data.currentVacationPayTotal,
+					),
+
+					YTDCommission: getSumTotal(
+						prevPayPayInfo?.YTDCommission,
+						empResult.commission,
+					),
+					YTDRetroactive: getSumTotal(
+						prevPayPayInfo?.YTDRetroactive,
+						empResult.retroactive,
+					),
+					YTDVacationPayout: getSumTotal(
+						prevPayPayInfo?.YTDVacationPayout,
+						empResult.vacationPayout,
+					),
+					YTDBonus: getSumTotal(prevPayPayInfo?.YTDBonus, empResult.bonus),
+					YTDTerminationPayout: getSumTotal(
+						prevPayPayInfo?.YTDTerminationPayout,
+						empResult.terminationPayout,
+					),
 					YTDGrossPay: prevPayPayInfo?.YTDGrossPay || 0 + data.currentGrossPay,
 					YTD_FDTaxDeductions:
 						prevPayPayInfo?.YTD_FDTaxDeductions ||
