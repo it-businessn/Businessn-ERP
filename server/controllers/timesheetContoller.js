@@ -137,8 +137,8 @@ const calculateEndTime = (startTime, durationMinutes) => {
 };
 
 const getDateDiffHours = (date1, date2, totalBreaks) => {
-	const startTime = moment(date1 === "" ? "09:00" : date1, "HH:mm");
-	const endTime = moment(date2 === "" ? "17:00" : date2, "HH:mm");
+	const startTime = moment(date1 === "00:00" ? "09:00" : date1, "HH:mm");
+	const endTime = moment(date2 === "00:00" ? date1 : date2, "HH:mm");
 	const breakTime = totalBreaks === "" ? 0 : parseInt(totalBreaks) / 60;
 	const totalMinutes = moment.duration(endTime.diff(startTime)).asMinutes();
 	const netMinutes = totalMinutes - breakTime;
@@ -192,11 +192,16 @@ const updateTimesheet = async (req, res) => {
 			);
 			timesheet[param_hours] = 480;
 			timesheet.clockOuts.push(newStartTime);
+			timesheet.endTime = newStartTime;
 		} else {
 			timesheet[param_hours] = totalWorkedHours;
-			timesheet.clockOuts.push(endTime);
+			if (endTime !== "00:00") {
+				timesheet.clockOuts.push(endTime);
+				timesheet.endTime = endTime;
+			}
 		}
 
+		timesheet.startTime = startTime;
 		timesheet.clockIns[0] = startTime;
 		timesheet.totalBreaks = totalBreaks;
 		timesheet.approveStatus = approve
@@ -204,7 +209,6 @@ const updateTimesheet = async (req, res) => {
 			: approve === false
 			? "Rejected"
 			: "Pending";
-		console.log(timesheet);
 		await timesheet.save();
 		res.status(201).json(timesheet);
 	} catch (error) {

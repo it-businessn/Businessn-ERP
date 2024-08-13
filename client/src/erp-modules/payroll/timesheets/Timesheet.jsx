@@ -6,7 +6,7 @@ import TextTitle from "components/ui/text/TextTitle";
 import { useEffect, useState } from "react";
 import { FaCheck } from "react-icons/fa";
 import { IoClose } from "react-icons/io5";
-// import TimesheetService from "services/TimesheetService";
+import TimesheetService from "services/TimesheetService";
 import { getDefaultDate } from "utils";
 import { getParamKey, getStatusStyle } from "./data";
 
@@ -33,10 +33,10 @@ const Timesheet = ({ cols, data, company, setRefresh }) => {
 			formData.endTime = updatedRec.endTime;
 			formData.company = updatedRec.companyName;
 
-			// if (formData.recordId) {
-			// 	await TimesheetService.updateTimesheet(formData, formData.recordId);
-			// 	setRefresh((prev) => !prev);
-			// }
+			if (formData.recordId) {
+				await TimesheetService.updateTimesheet(formData, formData.recordId);
+				setRefresh((prev) => !prev);
+			}
 		} catch (error) {}
 	};
 
