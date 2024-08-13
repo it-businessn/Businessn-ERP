@@ -17,7 +17,12 @@ import { MdCheckCircle, MdSettingsSuggest } from "react-icons/md";
 import { useParams } from "react-router-dom";
 import LocalStorageService from "services/LocalStorageService";
 
-const InputsReview = ({ handleClick, handleReview }) => {
+const InputsReview = ({
+	handleClick,
+	handleReview,
+	isInputsReviewOpen,
+	currentStep,
+}) => {
 	const { payNo } = useParams();
 
 	const company = LocalStorageService.getItem("selectedCompany");
@@ -26,7 +31,13 @@ const InputsReview = ({ handleClick, handleReview }) => {
 	const selectedPayPeriod = payNo
 		? payGroupSchedule?.find(({ payPeriod }) => payPeriod.toString() === payNo)
 		: closestRecord;
-	const inputsReviewData = useEmployeePayReport(company, selectedPayPeriod);
+
+	const inputsReviewData = useEmployeePayReport(
+		company,
+		selectedPayPeriod,
+		isInputsReviewOpen,
+		currentStep,
+	);
 	const COLS = [
 		"Employee name",
 		"Regular Hours",
@@ -95,7 +106,7 @@ const InputsReview = ({ handleClick, handleReview }) => {
 				rightIcon={<MdCheckCircle />}
 				// isLoading={isLoading}
 				loadingText="Loading"
-				onOpen={handleClick}
+				onOpen={() => handleClick(inputsReviewData)}
 			/>
 		</HStack>
 	);

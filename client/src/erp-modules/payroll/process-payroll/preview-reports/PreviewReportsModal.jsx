@@ -1,24 +1,10 @@
 import { HStack } from "@chakra-ui/react";
 import ModalLayout from "components/ui/modal/ModalLayout";
 import TextTitle from "components/ui/text/TextTitle";
-import useEmployeePayReport from "hooks/useEmployeePayReport";
-import usePaygroup from "hooks/usePaygroup";
-import { useParams } from "react-router-dom";
-import LocalStorageService from "services/LocalStorageService";
 import EmployeeInfo from "./EmployeeInfo";
 import EmployeePayDetails from "./EmployeePayDetails";
 
-const PreviewReportsModal = ({ isOpen, onClose }) => {
-	const { payNo } = useParams();
-
-	const company = LocalStorageService.getItem("selectedCompany");
-
-	const { payGroupSchedule, closestRecord } = usePaygroup(company);
-	const selectedPayPeriod = payNo
-		? payGroupSchedule?.find(({ payPeriod }) => payPeriod.toString() === payNo)
-		: closestRecord;
-	const reportData = useEmployeePayReport(company, selectedPayPeriod);
-
+const PreviewReportsModal = ({ isOpen, onClose, reportData }) => {
 	return (
 		<ModalLayout
 			title={`Preview Report`}

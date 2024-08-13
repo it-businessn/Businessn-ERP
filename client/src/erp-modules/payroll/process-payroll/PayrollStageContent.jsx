@@ -1,6 +1,6 @@
 import { Collapse, HStack, Icon, useDisclosure } from "@chakra-ui/react";
 import TextTitle from "components/ui/text/TextTitle";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { FaSortDown, FaSortUp } from "react-icons/fa6";
 import AlertsViolation from "./AlertsViolation";
 import Finalize from "./Finalize";
@@ -30,6 +30,8 @@ const PayrollStageContent = ({ currentStep, steps, handleConfirm }) => {
 	const { isOpen: isFinalizeOpen, onToggle: onFinalizeToggle } = useDisclosure({
 		defaultIsOpen: false,
 	});
+
+	const [reportData, setReportData] = useState(null);
 
 	useEffect(() => {
 		handleStepChange();
@@ -76,7 +78,7 @@ const PayrollStageContent = ({ currentStep, steps, handleConfirm }) => {
 				<Collapse in={isPayrollStepupOpen}>
 					<PayrunSetup
 						handleClick={() => {
-							handleConfirm(currentStep + 1);
+							handleConfirm(1);
 							onPayrollStepupToggle();
 						}}
 					/>
@@ -105,9 +107,14 @@ const PayrollStageContent = ({ currentStep, steps, handleConfirm }) => {
 				</HStack>
 				<Collapse in={isInputsReviewOpen}>
 					<InputsReview
+						currentStep={currentStep}
+						isInputsReviewOpen={isInputsReviewOpen}
 						handleReview={handleReview}
-						handleClick={() => {
-							handleConfirm(currentStep + 1);
+						handleClick={(data) => {
+							if (data) {
+								setReportData(data);
+							}
+							handleConfirm(2);
 							onInputsReviewToggle();
 						}}
 					/>
@@ -137,7 +144,7 @@ const PayrollStageContent = ({ currentStep, steps, handleConfirm }) => {
 					<AlertsViolation
 						handleReview={handleReview}
 						handleClick={() => {
-							handleConfirm(currentStep + 1);
+							handleConfirm(3);
 							onAlertsOpenToggle();
 						}}
 					/>
@@ -166,8 +173,9 @@ const PayrollStageContent = ({ currentStep, steps, handleConfirm }) => {
 				<Collapse in={isReportsOpen}>
 					<ReportsPreview
 						handleReview={handleReview}
+						reportData={reportData}
 						handleClick={() => {
-							handleConfirm(currentStep + 1);
+							handleConfirm(4);
 							onReportsToggle();
 						}}
 					/>
@@ -197,7 +205,7 @@ const PayrollStageContent = ({ currentStep, steps, handleConfirm }) => {
 					<>
 						<Finalize
 							handleClick={() => {
-								handleConfirm(currentStep + 1);
+								handleConfirm(5);
 								onFinalizeToggle();
 							}}
 						/>

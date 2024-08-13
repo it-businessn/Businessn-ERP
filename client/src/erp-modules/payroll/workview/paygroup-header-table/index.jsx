@@ -102,6 +102,14 @@ const PaygroupTable = ({
 												<OutlineButton label={"View"} size="xs" />
 											) : (
 												<PrimaryButton
+													bg={
+														isDisabledAction
+															? "var(--calendar_border)"
+															: "var(--primary_button_bg)"
+													}
+													hover={{
+														bg: isDisabledAction && "",
+													}}
 													isDisabled={isDisabledAction}
 													name={"Pay now"}
 													size="xs"

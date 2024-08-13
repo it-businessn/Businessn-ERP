@@ -464,11 +464,11 @@ export const convertToNum = (str) => parseFloat(str.replace(/,/g, ""));
 
 export const isPaygroup = (name) => name?.payrollActivated;
 
-export const getPayrollStatus = (data) => {
+export const getPayrollStatus = (data, prevRecordEndDate) => {
 	const defaultStatus = {
 		name: "Pending",
 		color: "var(--primary_bg)",
-		bg: "var(--pending)",
+		bg: "var(--calendar_border)",
 		isDisabledStatus: true,
 		isViewAction: false,
 		isDisabledAction: true,
@@ -478,12 +478,17 @@ export const getPayrollStatus = (data) => {
 	const targetProcessingDate = moment(data.payPeriodProcessingDate);
 	const today = moment();
 
-	const isEndDatePassed = targetEndDate.isSame(
-		// today.clone().add(5, "day"),
-		today.clone().subtract(1, "day"),
+	const isEndDatePassed = targetEndDate.isBefore(today, "day");
+
+	const isProcessingDateTomorrow = targetProcessingDate.isBefore(
+		today.clone().add(1, "day"),
 		"day",
 	);
-	if (isEndDatePassed) {
+	const isOverdue =
+		isEndDatePassed &&
+		targetProcessingDate.isAfter(today.clone().subtract(2, "day"), "day");
+
+	if (!data.isProcessed && isEndDatePassed && isProcessingDateTomorrow) {
 		return {
 			name: "Pending",
 			color: "var(--primary_bg)",
@@ -491,6 +496,14 @@ export const getPayrollStatus = (data) => {
 			isDisabledStatus: false,
 			isViewAction: false,
 			isDisabledAction: false,
+		};
+	} else if (!data.isProcessed && isOverdue) {
+		return {
+			name: "Overdue",
+			color: "var(--primary_bg)",
+			bg: "var(--incorrect_ans)",
+			isViewAction: false,
+			isDisabledStatus: false,
 		};
 	} else if (data.isProcessed && targetPayDate.isBefore(today)) {
 		return {
@@ -510,14 +523,6 @@ export const getPayrollStatus = (data) => {
 			bg: "var(--correct_ans)",
 			isDisabledStatus: false,
 			isViewAction: true,
-		};
-	} else if (!data.isProcessed && targetProcessingDate.isBefore(today)) {
-		return {
-			name: "Overdue",
-			color: "var(--primary_bg)",
-			bg: "var(--incorrect_ans)",
-			isViewAction: false,
-			isDisabledStatus: false,
 		};
 	}
 	// else if (

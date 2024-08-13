@@ -24,7 +24,7 @@ const PayrollWorkview = () => {
 		}
 	};
 
-	payGroupSchedule?.map((record) => {
+	payGroupSchedule?.map((record, index) => {
 		const {
 			color,
 			bg,
@@ -32,6 +32,7 @@ const PayrollWorkview = () => {
 			isDisabledStatus,
 			isViewAction,
 			isDisabledAction,
+			// } = getPayrollStatus(record, payGroupSchedule[index - 1]?.payPeriodEndDate);
 		} = getPayrollStatus(record);
 		record.color = color;
 		record.bg = bg;
