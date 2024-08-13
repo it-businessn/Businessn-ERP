@@ -121,20 +121,20 @@ const createTimesheet = async (req, res) => {
 	}
 };
 
-const calculateEndTime = (startTime, durationMinutes) => {
-	let [hours, minutes] = startTime.split(":").map(Number);
+// const calculateEndTime = (startTime, durationMinutes) => {
+// 	let [hours, minutes] = startTime.split(":").map(Number);
 
-	minutes += durationMinutes;
+// 	minutes += durationMinutes;
 
-	hours += Math.floor(minutes / 60);
-	minutes = minutes % 60;
+// 	hours += Math.floor(minutes / 60);
+// 	minutes = minutes % 60;
 
-	hours = hours % 24;
-	let endTime = `${hours.toString().padStart(2, "0")}:${minutes
-		.toString()
-		.padStart(2, "0")}`;
-	return endTime;
-};
+// 	hours = hours % 24;
+// 	let endTime = `${hours.toString().padStart(2, "0")}:${minutes
+// 		.toString()
+// 		.padStart(2, "0")}`;
+// 	return endTime;
+// };
 
 const getDateDiffHours = (date1, date2, totalBreaks) => {
 	const startTime = moment(date1 === "00:00" ? "09:00" : date1, "HH:mm");
@@ -151,12 +151,20 @@ const getDateDiffHours = (date1, date2, totalBreaks) => {
 	return netMinutes;
 };
 
+const addHours = (time, hoursToAdd) => {
+	let [hour, minute] = time.split(":").map(Number);
+	hour += hoursToAdd;
+	if (hour >= 24) hour -= 24;
+	return `${String(hour).padStart(2, "0")}:${String(minute).padStart(2, "0")}`;
+};
+
 const addOvertimeTimesheet = async (
 	employeeId,
 	companyName,
 	overtimeHrs,
 	newStartTime,
 	newEndTime,
+	createdOn,
 ) => {
 	const newStatTimeSheetRecord = {
 		employeeId,
@@ -165,6 +173,7 @@ const addOvertimeTimesheet = async (
 		clockIns: [newStartTime],
 		clockOuts: [newEndTime],
 		overtimeHoursWorked: overtimeHrs,
+		createdOn,
 	};
 	const newTimesheet = await Timesheet.create(newStatTimeSheetRecord);
 	return newTimesheet;
@@ -178,17 +187,20 @@ const updateTimesheet = async (req, res) => {
 	try {
 		const timesheet = await Timesheet.findById(id);
 		const totalWorkedHours = getDateDiffHours(startTime, endTime, totalBreaks);
-
 		if (totalWorkedHours > 480) {
-			const newStartTime = calculateEndTime(startTime, totalWorkedHours - 480);
-			const newEndTime = endTime;
+			const hoursToAdd = 8;
+			const newStartTime = addHours(startTime, hoursToAdd);
+			const overtimeMinutes = totalWorkedHours - 480;
+			const remainingHours = Math.floor(overtimeMinutes / 60);
+			const newEndTime = addHours(newStartTime, remainingHours);
 
 			await addOvertimeTimesheet(
 				timesheet.employeeId,
 				company,
-				totalWorkedHours - 480,
+				overtimeMinutes,
 				newStartTime,
 				newEndTime,
+				timesheet.createdOn,
 			);
 			timesheet[param_hours] = 480;
 			timesheet.clockOuts.push(newStartTime);

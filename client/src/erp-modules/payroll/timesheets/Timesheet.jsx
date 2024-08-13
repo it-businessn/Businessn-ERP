@@ -153,6 +153,7 @@ const Timesheet = ({ cols, data, company, setRefresh }) => {
 						const hhMMFormattedTime = `${(param_hours_worked / 60).toFixed(
 							0,
 						)}:${param_hours_worked % 60}`;
+						const isDisabled = startTime === "00:00" || endTime === "00:00";
 
 						return (
 							<Tr key={_id}>
@@ -223,6 +224,7 @@ const Timesheet = ({ cols, data, company, setRefresh }) => {
 								<Td py={0}>
 									<HStack spacing={0}>
 										<IconButton
+											isDisabled={isDisabled}
 											size={"xs"}
 											icon={<FaCheck />}
 											variant={"solid"}
@@ -239,6 +241,7 @@ const Timesheet = ({ cols, data, company, setRefresh }) => {
 											}}
 										/>
 										<IconButton
+											isDisabled={isDisabled}
 											size={"xs"}
 											color={"var(--incorrect_ans)"}
 											icon={<IoClose />}
