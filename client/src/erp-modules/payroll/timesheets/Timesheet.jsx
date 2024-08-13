@@ -59,6 +59,30 @@ const Timesheet = ({ cols, data, company, setRefresh }) => {
 		}
 	}, [formData]);
 
+	const handleClick = (e) => {
+		const cursorPos = e.target.selectionStart;
+		if (cursorPos === 3) {
+			e.target.setSelectionRange(3, 3);
+		}
+	};
+
+	const handleKeyDown = (e) => {
+		const cursorPos = e.target.selectionStart;
+		const disabledClick = cursorPos === 2 || cursorPos === 3;
+		if (disabledClick && (e.key === "Backspace" || e.key === "Delete")) {
+			e.preventDefault();
+		}
+
+		if (disabledClick && (e.key === "ArrowLeft" || e.key === "ArrowRight")) {
+			e.preventDefault();
+			if (e.key === "ArrowLeft") {
+				e.target.setSelectionRange(1, 1);
+			} else if (e.key === "ArrowRight") {
+				e.target.setSelectionRange(3, 3);
+			}
+		}
+	};
+
 	const renderEditableInput = (id, field, value, param_hours, isStatPay) => (
 		<>
 			<Input
@@ -72,8 +96,11 @@ const Timesheet = ({ cols, data, company, setRefresh }) => {
 					});
 					handleTimeChange(id, field, e.target.value);
 				}}
+				onKeyDown={handleKeyDown}
+				onClick={handleClick}
 				placeholder="HH:mm"
 				size="sm"
+				maxLength={5}
 				// isInvalid={!!errors[`${id}-${field}`]}
 			/>
 			{/* {errors[`${id}-${field}`] && (
