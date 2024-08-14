@@ -1,6 +1,5 @@
 import { HStack, IconButton, Input, Tbody, Td, Tr } from "@chakra-ui/react";
 import PrimaryButton from "components/ui/button/PrimaryButton";
-import InputFormControl from "components/ui/form/InputFormControl";
 import TableLayout from "components/ui/table/TableLayout";
 import TextTitle from "components/ui/text/TextTitle";
 import { useEffect, useState } from "react";
@@ -112,7 +111,7 @@ const Timesheet = ({ cols, data, company, setRefresh }) => {
 	);
 
 	return (
-		<TableLayout isTimesheet cols={cols} height="75vh">
+		<TableLayout isTimesheet cols={cols} height="71vh">
 			<Tbody>
 				{timesheetData?.map(
 					({
@@ -223,29 +222,18 @@ const Timesheet = ({ cols, data, company, setRefresh }) => {
 										_id,
 										"endTime",
 										endTime,
-
 										param_hours,
 										isStatPay,
 									)}
 								</Td>
 								<Td p={0} pl={3}>
-									<InputFormControl
-										readOnly={isStatPay}
-										label={""}
-										name="totalBreaks"
-										valueText={totalBreaks}
-										handleChange={(e) => {
-											setFormData({
-												startTime,
-												endTime,
-												totalBreaks: e.target.value,
-												param_hours,
-												recordId: _id,
-												approve: undefined,
-											});
-										}}
-										handleConfirm={() => handleSave()}
-									/>
+									{renderEditableInput(
+										_id,
+										"totalBreaks",
+										totalBreaks,
+										param_hours,
+										isStatPay,
+									)}
 								</Td>
 								<Td py={0}>{hhMMFormattedTime}</Td>
 								<Td py={0}>

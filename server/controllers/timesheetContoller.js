@@ -183,7 +183,8 @@ const createTimesheet = async (req, res) => {
 const getDateDiffHours = (date1, date2, totalBreaks) => {
 	const startTime = moment(date1 === "00:00" ? "09:00" : date1, "HH:mm");
 	const endTime = moment(date2 === "00:00" ? date1 : date2, "HH:mm");
-	const breakTime = totalBreaks === "" ? 0 : parseInt(totalBreaks) / 60;
+	const breakTime =
+		totalBreaks === "" ? 0 : (parseFloat(totalBreaks) * 60).toFixed(0);
 	const totalMinutes = moment.duration(endTime.diff(startTime)).asMinutes();
 	const netMinutes = totalMinutes - breakTime;
 	// const hoursDiff = Math.floor(netMinutes / 60);
