@@ -15,8 +15,10 @@ import usePaygroup from "hooks/usePaygroup";
 import PageLayout from "layouts/PageLayout";
 import { useState } from "react";
 import { MdOutlineChevronRight } from "react-icons/md";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { ROUTE_PATH } from "routes";
 import LocalStorageService from "services/LocalStorageService";
+import SettingService from "services/SettingService";
 import VerticalStepper from "../../../components/ui/VerticalStepper";
 import AlertsViolation from "./AlertsViolation";
 import Finalize from "./Finalize";
@@ -49,22 +51,41 @@ const ProcessPayroll = () => {
 		{ title: "Payroll Complete", content: <PayrollComplete /> },
 	];
 	const [showConfirmationPopUp, setShowConfirmationPopUp] = useState(false);
+	const [isSubmitting, setIsSubmitting] = useState(false);
 
 	const handleClick = () => {
 		setShowConfirmationPopUp((prev) => !prev);
 	};
 
 	const toast = useToast();
+	const navigate = useNavigate();
 
-	const handleSubmit = () => {
+	const handleSubmit = async () => {
 		selectedPayPeriod.isProcessed = true;
-		handleClick();
-		toast({
-			title: "Payroll is processed for payrun.",
-			status: "success",
-			duration: 1500,
-			isClosable: true,
-		});
+		setIsSubmitting(true);
+		try {
+			const payrollProcessed = await SettingService.updateGroup(
+				{
+					scheduleSettings: selectedPayGroup.scheduleSettings,
+				},
+				selectedPayGroup._id,
+			);
+			if (payrollProcessed) {
+				handleClick();
+				toast({
+					title: "Payroll is processed for payrun.",
+					status: "success",
+					duration: 1500,
+					isClosable: true,
+				});
+				setTimeout(() => {
+					navigate(`${ROUTE_PATH.PAYROLL}${ROUTE_PATH.WORKVIEW}`);
+				}, 1500);
+			}
+		} catch (error) {
+		} finally {
+			setIsSubmitting(false);
+		}
 	};
 
 	return (
@@ -134,7 +155,7 @@ const ProcessPayroll = () => {
 					<ActionButtonGroup
 						submitBtnName={"Yes"}
 						closeLabel="No"
-						// isLoading={isSubmitting}
+						isLoading={isSubmitting}
 						onClose={handleClick}
 						onOpen={handleSubmit}
 					/>

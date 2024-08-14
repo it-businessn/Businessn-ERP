@@ -81,6 +81,7 @@ const getTimesheet = async (req, res) => {
 		const timesheets = await findByRecordTimesheets({
 			companyName,
 			employeeId,
+			createdOn: { $lte: currentDate },
 		});
 		res.status(200).json(timesheets);
 	} catch (error) {

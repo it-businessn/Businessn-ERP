@@ -15,10 +15,9 @@ const {
 const getAllPayGroups = async (req, res) => {
 	const { companyName } = req.params;
 	try {
-		const searchString = "Paygroup";
 		const groups = await Group.find({
 			companyName,
-			name: { $regex: searchString, $options: "i" },
+			payrollActivated: true,
 		});
 		res.status(200).json(groups);
 	} catch (error) {
