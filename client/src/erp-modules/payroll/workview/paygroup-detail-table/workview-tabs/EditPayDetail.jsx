@@ -2,6 +2,7 @@ import { HStack, Stack } from "@chakra-ui/react";
 import ActionButtonGroup from "components/ui/form/ActionButtonGroup";
 import InputFormControl from "components/ui/form/InputFormControl";
 import ModalLayout from "components/ui/modal/ModalLayout";
+import TextTitle from "components/ui/text/TextTitle";
 import { useState } from "react";
 import PayrollService from "services/PayrollService";
 
@@ -28,12 +29,17 @@ const EditPayDetail = ({ isOpen, onClose, editFormData, setRefresh }) => {
 
 	return (
 		<ModalLayout
-			title={`Update record for: ${fullName}`}
+			title={`Update amount allocation`}
 			size="xl"
 			isOpen={isOpen}
 			onClose={onClose}
 		>
-			<Stack spacing={2}>
+			<Stack spacing={3}>
+				<TextTitle
+					weight="600"
+					size={"lg"}
+					title={`Employee Name: ${fullName}`}
+				/>
 				<HStack spacing={2}>
 					<InputFormControl
 						type="number"

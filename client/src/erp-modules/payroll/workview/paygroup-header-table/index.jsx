@@ -3,7 +3,7 @@ import OutlineButton from "components/ui/button/OutlineButton";
 import PrimaryButton from "components/ui/button/PrimaryButton";
 import BoxCard from "components/ui/card";
 import TableLayout from "components/ui/table/TableLayout";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ROUTE_PATH } from "routes";
 import { formatDateBar, formatDateRange, sortRecordsByDate } from "utils";
@@ -17,6 +17,7 @@ const PaygroupTable = ({
 	payGroupSchedule,
 	setRefresh,
 	closestRecord,
+	closestRecordIndex,
 }) => {
 	const [showExtraPayrun, setShowExtraPayrun] = useState(false);
 
@@ -24,6 +25,22 @@ const PaygroupTable = ({
 
 	const handlePay = (payPeriod) =>
 		navigate(`${ROUTE_PATH.PAYROLL}${ROUTE_PATH.PROCESS}/${payPeriod}`);
+
+	const rowRefs = useRef([]);
+	const scrollToRow = (index) => {
+		if (rowRefs.current[index]) {
+			rowRefs.current[index].scrollIntoView({
+				behavior: "smooth",
+				block: "center",
+			});
+		}
+	};
+
+	useEffect(() => {
+		if (payGroupSchedule) {
+			scrollToRow(closestRecordIndex);
+		}
+	}, [payGroupSchedule]);
 
 	return (
 		<SimpleGrid
@@ -65,21 +82,27 @@ const PaygroupTable = ({
 					>
 						<Tbody>
 							{sortRecordsByDate(payGroupSchedule, "payPeriodPayDate")?.map(
-								({
-									payPeriod,
-									payPeriodProcessingDate,
-									payPeriodStartDate,
-									payPeriodEndDate,
-									payPeriodPayDate,
-									isProcessed,
-									color,
-									name,
-									bg,
-									isViewAction,
-									isDisabledStatus,
-									isDisabledAction,
-								}) => (
-									<Tr key={payPeriod}>
+								(
+									{
+										payPeriod,
+										payPeriodProcessingDate,
+										payPeriodStartDate,
+										payPeriodEndDate,
+										payPeriodPayDate,
+										isProcessed,
+										color,
+										name,
+										bg,
+										isViewAction,
+										isDisabledStatus,
+										isDisabledAction,
+									},
+									index,
+								) => (
+									<Tr
+										key={payPeriod}
+										ref={(el) => (rowRefs.current[index] = el)}
+									>
 										<Td p={1}>{payPeriod}</Td>
 										<Td p={1}>{formatDateBar(payPeriodProcessingDate)}</Td>
 										<Td p={1}>{formatDateBar(payPeriodPayDate)}</Td>
@@ -128,7 +151,7 @@ const PaygroupTable = ({
 					</TableLayout>
 				</VStack>
 			</BoxCard>
-			<PayrollActions />
+			<PayrollActions handleClick={() => setShowExtraPayrun(true)} />
 		</SimpleGrid>
 	);
 };

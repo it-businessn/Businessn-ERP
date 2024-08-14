@@ -15,6 +15,7 @@ const PayrollWorkview = () => {
 		setSelectedPayGroup,
 		payGroupSchedule,
 		closestRecord,
+		closestRecordIndex,
 	} = usePaygroup(company, refresh);
 
 	const handleChange = (value) => {
@@ -42,6 +43,7 @@ const PayrollWorkview = () => {
 					refresh={refresh}
 					setRefresh={setRefresh}
 					closestRecord={closestRecord}
+					closestRecordIndex={closestRecordIndex}
 				/>
 			)}
 			<PaygroupDetailTable closestRecord={closestRecord} />

@@ -8,9 +8,9 @@ export const PAYGROUP_COLS = [
 ];
 
 export const PAYGROUP_ACTIONS = [
-	"Issue Roes",
-	"Issue Forms",
-	"Extra Pay Run",
-	"Terminate",
-	"Update Employees",
+	{ key: "roe", name: "Issue Roes" },
+	{ key: "form", name: "Issue Forms" },
+	{ key: "extra", name: "Extra Pay Run" },
+	{ key: "terminate", name: "Terminate" },
+	{ key: "empUpdate", name: "Update Employees" },
 ];

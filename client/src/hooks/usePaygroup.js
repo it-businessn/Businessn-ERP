@@ -8,10 +8,11 @@ const usePaygroup = (company, refresh) => {
 	const [selectedPayGroup, setSelectedPayGroup] = useState(null);
 	const [payGroupSchedule, setPayGroupSchedule] = useState(null);
 	const [closestRecord, setClosestRecord] = useState(null);
+	const [closestRecordIndex, setClosestRecordIndex] = useState(0);
 
 	const today = getDefaultDate(new Date());
 
-	const getClosedSchedule = (schedules) => {
+	const getClosestScheduleItem = (schedules) => {
 		const closestPayPeriod = schedules?.reduce((closest, record) => {
 			const recordEndDate = moment(record.payPeriodEndDate);
 			const closestEndDate = moment(closest.payPeriodEndDate);
@@ -21,6 +22,11 @@ const usePaygroup = (company, refresh) => {
 				: closest;
 		}, schedules[0]);
 		setClosestRecord(closestPayPeriod);
+
+		const index = schedules.findIndex(
+			({ payPeriod }) => payPeriod === closestPayPeriod.payPeriod,
+		);
+		setClosestRecordIndex(index);
 	};
 
 	useEffect(() => {
@@ -31,7 +37,7 @@ const usePaygroup = (company, refresh) => {
 				if (response.data.length) {
 					setSelectedPayGroup(response.data[0]);
 					setPayGroupSchedule(response.data[0]?.scheduleSettings);
-					getClosedSchedule(response.data[0]?.scheduleSettings);
+					getClosestScheduleItem(response.data[0]?.scheduleSettings);
 				}
 			} catch (error) {
 				console.error(error);
@@ -49,6 +55,7 @@ const usePaygroup = (company, refresh) => {
 		setSelectedPayGroup,
 		payGroupSchedule,
 		closestRecord,
+		closestRecordIndex,
 	};
 };
 
