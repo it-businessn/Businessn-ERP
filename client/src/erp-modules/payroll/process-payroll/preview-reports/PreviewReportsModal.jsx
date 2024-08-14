@@ -4,12 +4,10 @@ import TextTitle from "components/ui/text/TextTitle";
 import EmployeeInfo from "./EmployeeInfo";
 import EmployeePayDetails from "./EmployeePayDetails";
 
-const PreviewReportsModal = ({ isOpen, onClose, reportData }) => {
+const PreviewReportsModal = ({ isOpen, onClose, reportData, payPeriodNum }) => {
 	return (
 		<ModalLayout
-			title={`Current Payperiod#${
-				reportData ? reportData?.[0]?.payPeriodNum : ""
-			} `}
+			title={`Current Payperiod#${payPeriodNum}`}
 			size="7xl"
 			isOpen={isOpen}
 			onClose={onClose}

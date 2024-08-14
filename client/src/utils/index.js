@@ -501,7 +501,7 @@ export const getPayrollStatus = (data, prevRecordEndDate) => {
 
 	const isEndDatePassed = targetEndDate.isBefore(today, "day");
 	const isPayDateInFuture = targetPayDate.isAfter(today, "day");
-	const isPayDateToday = targetPayDate.isSame(today, "day");
+	const isPayDateToday = targetPayDate.isSameOrBefore(today, "day");
 
 	// const isProcessingDateTomorrow = targetProcessingDate.isBefore(
 	// 	today.clone().add(1, "day"),

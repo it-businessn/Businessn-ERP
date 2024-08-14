@@ -125,7 +125,7 @@ const ProcessPayroll = () => {
 
 						<PrimaryButton
 							minW={"100%"}
-							isDisabled={currentStep !== 5}
+							isDisabled={currentStep !== 5 || selectedPayPeriod.isProcessed}
 							name={"Submit payroll"}
 							onOpen={handleClick}
 							// isLoading={isLoading}
@@ -138,7 +138,7 @@ const ProcessPayroll = () => {
 					steps={steps}
 					handleConfirm={goToNextStep}
 					payGroupSchedule={payGroupSchedule}
-					closestRecord={closestRecord}
+					closestRecord={selectedPayPeriod}
 					selectedPayGroup={selectedPayGroup}
 					payGroups={payGroups}
 				/>

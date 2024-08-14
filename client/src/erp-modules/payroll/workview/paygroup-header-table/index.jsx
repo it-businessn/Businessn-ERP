@@ -99,7 +99,11 @@ const PaygroupTable = ({
 										</Td>
 										<Td p={1}>
 											{isViewAction ? (
-												<OutlineButton label={"View"} size="xs" />
+												<OutlineButton
+													label={"View"}
+													size="xs"
+													onClick={() => handlePay(payPeriod)}
+												/>
 											) : (
 												<PrimaryButton
 													bg={

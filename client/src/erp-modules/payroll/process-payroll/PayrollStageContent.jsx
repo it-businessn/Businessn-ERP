@@ -138,6 +138,7 @@ const PayrollStageContent = ({
 							handleConfirm(4);
 							onReportsToggle();
 						}}
+						payPeriodNum={closestRecord?.payPeriod}
 					/>
 				}
 			/>

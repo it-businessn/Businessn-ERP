@@ -6,7 +6,7 @@ import { useState } from "react";
 import { MdCheckCircle } from "react-icons/md";
 import PreviewReportsModal from "./preview-reports/PreviewReportsModal";
 
-const ReportsPreview = ({ handleClick, reportData }) => {
+const ReportsPreview = ({ handleClick, reportData, payPeriodNum }) => {
 	const [showReport, setShowReport] = useState(undefined);
 
 	return (
@@ -33,6 +33,7 @@ const ReportsPreview = ({ handleClick, reportData }) => {
 					isOpen={showReport}
 					onClose={() => setShowReport(false)}
 					reportData={reportData}
+					payPeriodNum={payPeriodNum}
 				/>
 			)}
 

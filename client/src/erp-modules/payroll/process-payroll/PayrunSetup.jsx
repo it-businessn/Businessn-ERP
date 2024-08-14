@@ -26,10 +26,12 @@ const PayrunSetup = ({
 
 	const handleConfirm = async () => {
 		try {
-			await PayrollService.addPayPeriodPayStub({
-				companyName: company,
-				currentPayPeriod: closestRecord,
-			});
+			if (!selectedPayPeriod.isProcessed) {
+				await PayrollService.addPayPeriodPayStub({
+					companyName: company,
+					currentPayPeriod: closestRecord,
+				});
+			}
 			handleClick();
 		} catch (error) {
 			console.error(error);

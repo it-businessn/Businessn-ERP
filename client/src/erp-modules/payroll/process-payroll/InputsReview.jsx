@@ -49,7 +49,7 @@ const InputsReview = ({
 
 	const handleConfirmInputsReview = async () => {
 		try {
-			if (inputsReviewData) {
+			if (inputsReviewData && !selectedPayPeriod.isProcessed) {
 				await PayrollService.addAlertsAndViolations({
 					companyName: company,
 					inputsReviewData,
