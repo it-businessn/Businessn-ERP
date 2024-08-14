@@ -11,6 +11,11 @@ router.get(
 );
 
 router.get(
+	"/alertsReport/:companyName/:payPeriodNum",
+	payrollController.getAlertsAndViolationsInfo,
+);
+
+router.get(
 	"/payDetailsReport/:companyName/:payPeriodNum",
 	payrollController.getPayDetailsReportInfo,
 );
@@ -22,5 +27,7 @@ router.post("/payGroups", payrollController.addPayGroup);
 router.put("/payGroups/:id", payrollController.updatePayGroup);
 
 router.post("/generate-payStub", payrollController.addEmployeePayStubInfo);
+
+router.post("/generate-alerts", payrollController.addAlertsAndViolations);
 
 module.exports = router;

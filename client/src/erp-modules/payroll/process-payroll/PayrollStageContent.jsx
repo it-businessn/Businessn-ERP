@@ -7,8 +7,6 @@ import Finalize from "./Finalize";
 import InputsReview from "./InputsReview";
 // import PayrollComplete from "./PayrollComplete";
 import BoxCard from "components/ui/card";
-import { useNavigate } from "react-router-dom";
-import { ROUTE_PATH } from "routes";
 import PayrunSetup from "./PayrunSetup";
 import ReportsPreview from "./ReportsPreview";
 
@@ -50,9 +48,7 @@ const PayrollStageContent = ({ currentStep, steps, handleConfirm }) => {
 			onFinalizeToggle();
 		}
 	};
-	const navigate = useNavigate();
-	const handleReview = () =>
-		navigate(`${ROUTE_PATH.PAYROLL}${ROUTE_PATH.WORKVIEW}`);
+
 	return (
 		<BoxCard>
 			<BoxCard>
@@ -109,7 +105,6 @@ const PayrollStageContent = ({ currentStep, steps, handleConfirm }) => {
 					<InputsReview
 						currentStep={currentStep}
 						isInputsReviewOpen={isInputsReviewOpen}
-						handleReview={handleReview}
 						handleClick={(data) => {
 							if (data) {
 								setReportData(data);
@@ -142,7 +137,8 @@ const PayrollStageContent = ({ currentStep, steps, handleConfirm }) => {
 				</HStack>
 				<Collapse in={isAlertsOpen}>
 					<AlertsViolation
-						handleReview={handleReview}
+						currentStep={currentStep}
+						isAlertsOpen={isAlertsOpen}
 						handleClick={() => {
 							handleConfirm(3);
 							onAlertsOpenToggle();
@@ -172,7 +168,6 @@ const PayrollStageContent = ({ currentStep, steps, handleConfirm }) => {
 				</HStack>
 				<Collapse in={isReportsOpen}>
 					<ReportsPreview
-						handleReview={handleReview}
 						reportData={reportData}
 						handleClick={() => {
 							handleConfirm(4);

@@ -8,15 +8,18 @@ import {
 	Thead,
 	Tr,
 } from "@chakra-ui/react";
+
+import OutlineButton from "components/ui/button/OutlineButton";
 import PrimaryButton from "components/ui/button/PrimaryButton";
 import TextTitle from "components/ui/text/TextTitle";
-import useEmployeeHoursWorked from "hooks/useEmployeeHoursWorked";
+import useEmployeeAlertsInfo from "hooks/useEmployeeAlertsInfo";
 import usePaygroup from "hooks/usePaygroup";
 import { MdCheckCircle } from "react-icons/md";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { ROUTE_PATH } from "routes";
 import LocalStorageService from "services/LocalStorageService";
 
-const AlertsViolation = ({ handleClick, handleReview }) => {
+const AlertsViolation = ({ handleClick, isAlertsOpen, currentStep }) => {
 	const { payNo } = useParams();
 	const company = LocalStorageService.getItem("selectedCompany");
 
@@ -24,9 +27,26 @@ const AlertsViolation = ({ handleClick, handleReview }) => {
 	const selectedPayPeriod = payNo
 		? payGroupSchedule?.find(({ payPeriod }) => payPeriod.toString() === payNo)
 		: closestRecord;
-	const alertsReviewData = useEmployeeHoursWorked(company, selectedPayPeriod);
+
+	const alertsReviewData = useEmployeeAlertsInfo(
+		company,
+		selectedPayPeriod,
+		isAlertsOpen,
+		currentStep,
+	);
+	const isDisabled = alertsReviewData.find((_) => _.actionRequired);
 
 	const COLS = ["Description", "Employee name", "Status", "Action"];
+
+	const navigate = useNavigate();
+
+	const handleReview = (data) => {
+		const empId = data.empId._id;
+		const stepNum = data.actionRequired ? 4 : 1;
+		navigate(
+			`${ROUTE_PATH.PAYROLL}${ROUTE_PATH.EMPLOYEES}/${empId}/${stepNum}`,
+		);
+	};
 
 	return (
 		<HStack alignItems={"end"}>
@@ -49,87 +69,48 @@ const AlertsViolation = ({ handleClick, handleReview }) => {
 					{alertsReviewData?.map((data) => (
 						<Tr key={data._id}>
 							<Td>
-								<TextTitle
-									weight="normal"
-									title={"Banking information missing"}
-								/>
+								<TextTitle weight="normal" title={data.description} />
 							</Td>
 							<Td>
 								<TextTitle title={data.empId.fullName} />
 							</Td>
 							<Td>
-								<Button
-									// onClick={onOpen}
-									size={"xs"}
-									borderRadius={"12px"}
-									color={"var(--primary_bg)"}
-									bg={"var(--stat_item_color)"}
-								>
-									Action required
-								</Button>
-								{/* <Button
-									// onClick={onOpen}
-									size={"xs"}
-									borderRadius={"12px"}
-									color={"var(--primary_bg)"}
-									bg={"var(--pending)"}
-								>
-									Pending
-								</Button> */}
+								{data.actionRequired ? (
+									<Button
+										size={"sm"}
+										borderRadius={"10px"}
+										color={"var(--primary_bg)"}
+										bg={"var(--incorrect_ans)"}
+									>
+										Action required
+									</Button>
+								) : (
+									<Button
+										size={"sm"}
+										borderRadius={"10px"}
+										color={"var(--primary_bg)"}
+										bg={"var(--pending)"}
+									>
+										Attention Needed
+									</Button>
+								)}
 							</Td>
 							<Td>
-								<Button
-									variant={"outline"}
-									onClick={handleReview}
+								<OutlineButton
+									label={"Review payroll details"}
 									size={"sm"}
-									type="submit"
-									color={"var(--primary_button_bg)"}
-								>
-									Review payroll details
-								</Button>
+									onClick={() => handleReview(data)}
+								/>
 							</Td>
 						</Tr>
 					))}
-
-					{/* <Tr>
-						<Td>
-							<TextTitle title={"John Smith"} />
-						</Td>
-						<Td>
-							<TextTitle title={"$1,345.00"} />
-						</Td>
-
-						<Td>
-							<Button
-								// onClick={onOpen}
-								size={"xs"}
-								borderRadius={"12px"}
-								color={"var(--primary_bg)"}
-								bg={"var(--stat_item_color)"}
-							>
-								Action required
-							</Button>
-						</Td>
-
-						<Td>
-							<Button
-								variant={"outline"}
-								// onClick={onOpen}
-								size={"sm"}
-								type="submit"
-								color={"var(--primary_button_bg)"}
-							>
-								Review payroll details
-							</Button>
-						</Td>
-					</Tr> */}
 				</Tbody>
 			</Table>
 			<PrimaryButton
 				bg="var(--correct_ans)"
 				name={"CONFIRM"}
 				rightIcon={<MdCheckCircle />}
-				// isLoading={isLoading}
+				isDisabled={isDisabled}
 				loadingText="Loading"
 				onOpen={handleClick}
 			/>

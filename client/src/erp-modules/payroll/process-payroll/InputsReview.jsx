@@ -1,5 +1,4 @@
 import {
-	Button,
 	HStack,
 	Icon,
 	Table,
@@ -9,20 +8,18 @@ import {
 	Thead,
 	Tr,
 } from "@chakra-ui/react";
+import OutlineButton from "components/ui/button/OutlineButton";
 import PrimaryButton from "components/ui/button/PrimaryButton";
 import TextTitle from "components/ui/text/TextTitle";
 import useEmployeePayReport from "hooks/useEmployeePayReport";
 import usePaygroup from "hooks/usePaygroup";
 import { MdCheckCircle, MdSettingsSuggest } from "react-icons/md";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { ROUTE_PATH } from "routes";
 import LocalStorageService from "services/LocalStorageService";
+import PayrollService from "services/PayrollService";
 
-const InputsReview = ({
-	handleClick,
-	handleReview,
-	isInputsReviewOpen,
-	currentStep,
-}) => {
+const InputsReview = ({ handleClick, isInputsReviewOpen, currentStep }) => {
 	const { payNo } = useParams();
 
 	const company = LocalStorageService.getItem("selectedCompany");
@@ -45,6 +42,25 @@ const InputsReview = ({
 		"Deductions",
 		"Gross Pay",
 	];
+
+	const handleConfirmInputsReview = async () => {
+		try {
+			if (inputsReviewData) {
+				await PayrollService.addAlertsAndViolations({
+					companyName: company,
+					inputsReviewData,
+				});
+			}
+		} catch (error) {
+			console.error(error);
+		}
+		handleClick(inputsReviewData);
+	};
+	const navigate = useNavigate();
+
+	const handleReview = () =>
+		navigate(`${ROUTE_PATH.PAYROLL}${ROUTE_PATH.WORKVIEW}`);
+
 	return (
 		<HStack alignItems={"end"}>
 			<Table w={"100%"}>
@@ -86,15 +102,11 @@ const InputsReview = ({
 								<TextTitle title={data.currentGrossPay.toFixed(2)} />
 							</Td>
 							<Td>
-								<Button
-									variant={"outline"}
-									onClick={() => handleReview("John Smith")}
+								<OutlineButton
+									label={"Review payroll details"}
 									size={"sm"}
-									type="submit"
-									color={"var(--primary_button_bg)"}
-								>
-									Review payroll details
-								</Button>
+									onClick={handleReview}
+								/>
 							</Td>
 						</Tr>
 					))}
@@ -106,7 +118,7 @@ const InputsReview = ({
 				rightIcon={<MdCheckCircle />}
 				// isLoading={isLoading}
 				loadingText="Loading"
-				onOpen={() => handleClick(inputsReviewData)}
+				onOpen={handleConfirmInputsReview}
 			/>
 		</HStack>
 	);

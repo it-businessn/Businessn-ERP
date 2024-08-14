@@ -7,10 +7,12 @@ import EmployeePayDetails from "./EmployeePayDetails";
 const PreviewReportsModal = ({ isOpen, onClose, reportData }) => {
 	return (
 		<ModalLayout
-			title={`Preview Report`}
+			title={`Current Payperiod#${reportData[0].payPeriodNum} `}
 			size="7xl"
 			isOpen={isOpen}
 			onClose={onClose}
+			textAlign={"center"}
+			fontSize="3xl"
 		>
 			{!reportData?.length && (
 				<TextTitle weight="normal" title={"No records found"} />

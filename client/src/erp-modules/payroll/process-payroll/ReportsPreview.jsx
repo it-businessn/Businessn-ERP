@@ -1,11 +1,12 @@
-import { Button, HStack, Table, Tbody, Td, Tr } from "@chakra-ui/react";
+import { HStack, Table, Tbody, Td, Tr } from "@chakra-ui/react";
+import OutlineButton from "components/ui/button/OutlineButton";
 import PrimaryButton from "components/ui/button/PrimaryButton";
 import TextTitle from "components/ui/text/TextTitle";
 import { useState } from "react";
 import { MdCheckCircle } from "react-icons/md";
 import PreviewReportsModal from "./preview-reports/PreviewReportsModal";
 
-const ReportsPreview = ({ handleClick, handleReview, reportData }) => {
+const ReportsPreview = ({ handleClick, reportData }) => {
 	const [showReport, setShowReport] = useState(undefined);
 
 	return (
@@ -18,15 +19,11 @@ const ReportsPreview = ({ handleClick, handleReview, reportData }) => {
 						</Td>
 
 						<Td>
-							<Button
-								variant={"outline"}
-								onClick={() => setShowReport(true)}
+							<OutlineButton
+								label={"Preview report"}
 								size={"sm"}
-								type="submit"
-								color={"var(--primary_button_bg)"}
-							>
-								Preview report
-							</Button>
+								onClick={() => setShowReport(true)}
+							/>
 						</Td>
 					</Tr>
 				</Tbody>

@@ -1,4 +1,5 @@
 const EmployeeBankingInfo = require("../models/EmployeeBankingInfo");
+const { deleteAlerts } = require("./payrollController");
 
 const getAllBankingInfo = async (req, res) => {
 	const { companyName } = req.params;
@@ -52,6 +53,9 @@ const addEmployeeBankingInfo = async (req, res) => {
 			empId,
 			companyName,
 		);
+		if (bankNum !== "" || transitNum !== "" || accountNum !== "") {
+			await deleteAlerts(empId);
+		}
 		if (existingBankingInfo) {
 			const updatedBankingInfo = await updateBankingInfo(
 				existingBankingInfo._id,

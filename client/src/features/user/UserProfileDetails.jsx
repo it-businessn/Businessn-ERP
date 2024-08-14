@@ -1,6 +1,5 @@
 import {
 	Box,
-	Button,
 	Card,
 	Divider,
 	HStack,
@@ -8,6 +7,7 @@ import {
 	Text,
 	VStack,
 } from "@chakra-ui/react";
+import OutlineButton from "components/ui/button/OutlineButton";
 import PrimaryButton from "components/ui/button/PrimaryButton";
 import TextTitle from "components/ui/text/TextTitle";
 import PageLayout from "layouts/PageLayout";
@@ -88,14 +88,13 @@ const UserProfileDetails = () => {
 				// isLoading={isLoading}
 				onOpen={handlePasswordClick}
 			/>
-			<Button
-				variant={"outline"}
-				ml={2}
+			<OutlineButton
+				label={<FaUndoAlt />}
+				size={"sm"}
 				onClick={handleReset}
 				colorScheme="gray"
-			>
-				<FaUndoAlt />
-			</Button>
+				ml={2}
+			/>
 		</HStack>
 	);
 

@@ -183,14 +183,14 @@ const Timesheet = ({ cols, data, company, setRefresh }) => {
 						const isDisabled = startTime === "00:00" || endTime === "00:00";
 
 						return (
-							<Tr key={_id}>
+							<Tr key={_id} _hover={{ bg: "var(--primary_bg)" }}>
 								<Td py={0}>
 									<TextTitle title={employeeId?.fullName} />
 								</Td>
 								<Td py={0}>
 									<TextTitle title={getDefaultDate(createdOn)} />
 								</Td>
-								<Td py={0}>
+								<Td p={0}>
 									<PrimaryButton
 										color={approveStatusBtnCss.color}
 										bg={approveStatusBtnCss.bg}
@@ -209,7 +209,7 @@ const Timesheet = ({ cols, data, company, setRefresh }) => {
 								</Td>
 								<Td py={0}>{param_pay_type}</Td>
 								<Td py={0}>{payType}</Td>
-								<Td px={0}>
+								<Td p={0}>
 									{renderEditableInput(
 										_id,
 										"startTime",
@@ -218,7 +218,7 @@ const Timesheet = ({ cols, data, company, setRefresh }) => {
 										isStatPay,
 									)}
 								</Td>
-								<Td py={0}>
+								<Td p={0} pl={3}>
 									{renderEditableInput(
 										_id,
 										"endTime",
@@ -228,7 +228,7 @@ const Timesheet = ({ cols, data, company, setRefresh }) => {
 										isStatPay,
 									)}
 								</Td>
-								<Td py={0}>
+								<Td p={0} pl={3}>
 									<InputFormControl
 										readOnly={isStatPay}
 										label={""}

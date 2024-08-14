@@ -2,16 +2,24 @@ const EmployeePayInfo = require("../models/EmployeePayInfo");
 const Timesheet = require("../models/Timesheet");
 const moment = require("moment");
 
-const currentDate = new Date();
+const currentDate = moment().subtract(1, "days");
 
 const getTimesheets = async (req, res) => {
 	const { companyName } = req.params;
 	try {
-		const timesheets = await Timesheet.find({ companyName }).populate({
-			path: "employeeId",
-			model: "Employee",
-			select: ["department", "fullName"],
-		});
+		const timesheets = await Timesheet.find({
+			companyName,
+			createdOn: { $lte: currentDate },
+		})
+			.populate({
+				path: "employeeId",
+				model: "Employee",
+				select: ["department", "fullName"],
+			})
+			.sort({
+				createdOn: -1,
+				"employeeId.fullName": 1,
+			});
 
 		const payInfoResult = await EmployeePayInfo.find({
 			companyName,
@@ -34,29 +42,27 @@ const getTimesheets = async (req, res) => {
 			]),
 		);
 
-		timesheets
-			.sort((a, b) => b.createdOn - a.createdOn)
-			.forEach((timesheet) => {
-				const { clockIns, clockOuts } = timesheet;
-				const empIdStr = timesheet.employeeId._id.toString();
-				if (!payInfoMap.has(empIdStr)) {
-					return;
-				}
-				const payInfo = payInfoMap.get(empIdStr);
-				timesheet.regPay = payInfo.regPay;
-				timesheet.overTimePay = payInfo.overTimePay;
-				timesheet.dblOverTimePay = payInfo.dblOverTimePay;
-				timesheet.statWorkPay = payInfo.statWorkPay;
-				timesheet.statPay = payInfo.statPay;
-				timesheet.sickPay = payInfo.sickPay;
-				timesheet.vacationPay = payInfo.vacationPay;
-				if (clockIns.length) {
-					timesheet.startTime = clockIns[0];
-				}
-				if (clockOuts.length) {
-					timesheet.endTime = clockOuts[clockOuts.length - 1];
-				}
-			});
+		timesheets.forEach((timesheet) => {
+			const { clockIns, clockOuts } = timesheet;
+			const empIdStr = timesheet.employeeId._id.toString();
+			if (!payInfoMap.has(empIdStr)) {
+				return;
+			}
+			const payInfo = payInfoMap.get(empIdStr);
+			timesheet.regPay = payInfo.regPay;
+			timesheet.overTimePay = payInfo.overTimePay;
+			timesheet.dblOverTimePay = payInfo.dblOverTimePay;
+			timesheet.statWorkPay = payInfo.statWorkPay;
+			timesheet.statPay = payInfo.statPay;
+			timesheet.sickPay = payInfo.sickPay;
+			timesheet.vacationPay = payInfo.vacationPay;
+			if (clockIns.length) {
+				timesheet.startTime = clockIns[0];
+			}
+			if (clockOuts.length) {
+				timesheet.endTime = clockOuts[clockOuts.length - 1];
+			}
+		});
 
 		res.status(200).json(timesheets);
 	} catch (error) {
@@ -78,36 +84,69 @@ const getTimesheet = async (req, res) => {
 		res.status(404).json({ error: error.message });
 	}
 };
+const findEmployeeStatTimesheetExists = async (record) =>
+	await Timesheet.findOne(record);
+
+const addStatHolidayDefaultTimesheet = async (
+	employeeId,
+	companyName,
+	createdOn,
+) => {
+	const STAT_HOLIDAYS = [
+		{ name: "New Year's Day", date: "2024-01-01" },
+		{ name: "Family Day", date: "2024-02-19" },
+		{ name: "Good Friday", date: "2024-03-29" },
+		{ name: "Victoria Day", date: "2024-05-20" },
+		{ name: "Canada Day", date: "2024-07-01" },
+		{ name: "B.C. Day", date: "2024-08-05" },
+		{ name: "Labour Day", date: "2024-09-02" },
+		{ name: "National Day for Truth and Reconciliation", date: "2024-09-30" },
+		{ name: "Thanksgiving Day", date: "2024-10-14" },
+		{ name: "Remembrance Day", date: "2024-11-11" },
+		{ name: "Christmas Day", date: "2024-12-25" },
+	];
+	const startTime = "09:00";
+	const endTime = "17:00";
+	const existingStatTimesheetInfo = await findEmployeeStatTimesheetExists({
+		employeeId,
+		companyName,
+		payType: "Statutory Pay",
+		createdOn: moment(createdOn),
+	});
+	if (existingStatTimesheetInfo) {
+		return existingStatTimesheetInfo;
+	}
+	STAT_HOLIDAYS.forEach(async ({ date }) => {
+		const newStatTimeSheetRecord = {
+			employeeId,
+			companyName,
+			payType: "Statutory Pay",
+			createdOn: moment(date),
+			clockIns: [startTime],
+			clockOuts: [endTime],
+			statDayHours: getDateDiffHours(startTime, endTime, "0"),
+		};
+		await Timesheet.create(newStatTimeSheetRecord);
+	});
+	return "New record";
+};
 
 const createTimesheet = async (req, res) => {
 	const { company, type, createdOn, employeeId } = req.body;
 	const isStatPay = type === "Statutory Pay";
 
 	try {
-		// const today = new Date(
-		// 	currentDate.getFullYear(),
-		// 	currentDate.getMonth(),
-		// 	currentDate.getDate(),
-		// );
-		// const tomorrow = new Date(
-		// 	currentDate.getFullYear(),
-		// 	currentDate.getMonth(),
-		// 	currentDate.getDate() + 1,
-		// );
 		if (isStatPay) {
-			const startTime = "09:00";
-			const endTime = "17:00";
-			const newStatTimeSheetRecord = {
+			const statEntryExists = await addStatHolidayDefaultTimesheet(
 				employeeId,
-				companyName: company,
-				payType: type,
+				company,
 				createdOn,
-				clockIns: [startTime],
-				clockOuts: [endTime],
-				statDayHours: getDateDiffHours(startTime, endTime, "0"),
-			};
-			const newTimesheet = await Timesheet.create(newStatTimeSheetRecord);
-			return res.status(201).json(newTimesheet);
+			);
+			if (statEntryExists !== "New record") {
+				return res.status(201).json("Stat Holiday Default Timesheet exists.");
+			} else if (statEntryExists === "New record") {
+				return res.status(201).json("Stat Holiday Default Timesheet added.");
+			}
 		}
 		const newTimesheet = await Timesheet.create({
 			employeeId,

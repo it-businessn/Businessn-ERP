@@ -1,5 +1,8 @@
+const EmployeeAlertsViolationInfo = require("../models/EmployeeAlertsViolationInfo");
+const EmployeeBankingInfo = require("../models/EmployeeBankingInfo");
 const EmployeePayInfo = require("../models/EmployeePayInfo");
 const EmployeePayStub = require("../models/EmployeePayStub");
+const EmployeeProfileInfo = require("../models/EmployeeProfileInfo");
 const Group = require("../models/Group");
 const Timesheet = require("../models/Timesheet");
 const {
@@ -38,6 +41,12 @@ const getGroupedTimesheet = async (req, res) => {
 	}
 };
 
+const EMP_INFO = {
+	path: "empId",
+	model: "Employee",
+	select: ["companyId", "employeeId", "fullName"],
+};
+
 const getPayDetailsReportInfo = async (req, res) => {
 	const { companyName, payPeriodNum } = req.params;
 
@@ -46,11 +55,25 @@ const getPayDetailsReportInfo = async (req, res) => {
 			companyName,
 			payPeriodNum,
 		})
-			.populate({
-				path: "empId",
-				model: "Employee",
-				select: ["companyId", "employeeId", "fullName"],
-			})
+			.populate(EMP_INFO)
+			.sort({
+				"empId.fullName": 1,
+			});
+		res.status(200).json(payStubs);
+	} catch (error) {
+		res.status(404).json({ error: error.message });
+	}
+};
+
+const getAlertsAndViolationsInfo = async (req, res) => {
+	const { companyName, payPeriodNum } = req.params;
+
+	try {
+		const payStubs = await EmployeeAlertsViolationInfo.find({
+			companyName,
+			payPeriodNum,
+		})
+			.populate(EMP_INFO)
 			.sort({
 				createdOn: -1,
 			});
@@ -421,6 +444,81 @@ const addEmployeePayStubInfo = async (req, res) => {
 	}
 };
 
+const findAlertInfo = async (record) =>
+	await EmployeeAlertsViolationInfo.findOne(record);
+
+const addAlertsAndViolations = async (req, res) => {
+	const { companyName, inputsReviewData } = req.body;
+
+	try {
+		for (const data of inputsReviewData) {
+			const empResult = await EmployeeBankingInfo.findOne({
+				empId: data.empId._id,
+			}).select("empId bankNum transitNum accountNum");
+
+			const empSINResult = await EmployeeProfileInfo.findOne({
+				empId: data.empId._id,
+			}).select("empId SIN");
+			if (
+				!empResult ||
+				empResult.bankNum === "" ||
+				empResult.transitNum === "" ||
+				empResult.accountNum === ""
+			) {
+				const alertsExists = await findAlertInfo({
+					empId: data.empId._id,
+					companyName,
+					actionRequired: true,
+				});
+				if (alertsExists) {
+				} else {
+					await EmployeeAlertsViolationInfo.create({
+						empId: data.empId._id,
+						companyName,
+						description: "Banking information missing",
+						actionRequired: true,
+						payPeriodNum: data.payPeriodNum,
+					});
+				}
+			}
+			if (empSINResult.SIN === "") {
+				const alertsExists = await findAlertInfo({
+					empId: data.empId._id,
+					companyName,
+					actionRequired: false,
+				});
+				if (alertsExists) {
+				} else {
+					await EmployeeAlertsViolationInfo.create({
+						empId: data.empId._id,
+						companyName,
+						description: "SIN missing",
+						actionRequired: false,
+						payPeriodNum: data.payPeriodNum,
+					});
+				}
+			}
+		}
+		res.status(200).json({ message: "Alerts processed successfully" });
+	} catch (error) {
+		res.status(400).json({ message: error.message });
+	}
+};
+
+const deleteAlerts = async (empId) => {
+	const existingAlert = await EmployeeAlertsViolationInfo.findOne({
+		empId,
+	});
+	const deleted = await EmployeeAlertsViolationInfo.findByIdAndDelete({
+		_id: existingAlert._id,
+	});
+	if (deleted) {
+		console.log(`Alert  with id ${existingAlert._id} deleted successfully.`);
+	} else {
+		console.log("Alert Details not found.");
+	}
+};
+
 module.exports = {
 	getAllPayGroups,
 	getPayGroup,
@@ -429,4 +527,7 @@ module.exports = {
 	getGroupedTimesheet,
 	getPayDetailsReportInfo,
 	addEmployeePayStubInfo,
+	addAlertsAndViolations,
+	getAlertsAndViolationsInfo,
+	deleteAlerts,
 };

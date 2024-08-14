@@ -18,12 +18,18 @@ const ModalLayout = ({
 	error,
 	size = "4xl",
 	hideOverlay,
+	textAlign,
+	fontSize,
 }) => {
 	return (
 		<Modal isCentered size={size} isOpen={isOpen} onClose={onClose}>
 			{!hideOverlay && <ModalOverlay />}
 			<ModalContent>
-				{!hideOverlay && <ModalHeader>{title}</ModalHeader>}
+				{!hideOverlay && (
+					<ModalHeader textAlign={textAlign} fontSize={fontSize}>
+						{title}
+					</ModalHeader>
+				)}
 				{!hideOverlay && <ModalCloseButton />}
 				<ModalBody p={hideOverlay && 0}>
 					<Stack spacing="5">

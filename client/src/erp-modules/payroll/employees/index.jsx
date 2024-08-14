@@ -12,7 +12,7 @@ import TextTitle from "components/ui/text/TextTitle";
 import EmpSearchMenu from "features/setup/company/group-tab/EmpSearchMenu";
 import useEmployees from "hooks/useEmployees";
 import PageLayout from "layouts/PageLayout";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import LocalStorageService from "services/LocalStorageService";
 import BalanceInfo from "./employee-tabs/BalancesInfo";
@@ -23,7 +23,7 @@ import PayInfo from "./employee-tabs/PayInfo";
 import PersonalInfo from "./employee-tabs/PersonalInfo";
 
 const Employees = () => {
-	const { id } = useParams();
+	const { id, stepNo } = useParams();
 	const loggedInUser = LocalStorageService.getItem("user");
 	const [employee, setEmployee] = useState(loggedInUser);
 	const [userId, setUserId] = useState(id ?? loggedInUser._id);
@@ -33,6 +33,13 @@ const Employees = () => {
 		isRefresh,
 		company,
 	);
+
+	useEffect(() => {
+		if (id && employees) {
+			setEmployee(employees?.find(({ _id }) => _id === id));
+		}
+	}, [id, employees]);
+
 	const [empName, setEmpName] = useState("");
 
 	const handleInputChange = (value) => {
@@ -87,7 +94,8 @@ const Employees = () => {
 			name: <BalanceInfo company={company} empId={userId} />,
 		},
 	];
-	const [viewMode, setViewMode] = useState(SETUP_LIST[0].type);
+	const tabContent = id ? SETUP_LIST[stepNo].type : SETUP_LIST[0].type;
+	const [viewMode, setViewMode] = useState(tabContent);
 	const showComponent = (viewMode) =>
 		SETUP_LIST.find(({ type }) => type === viewMode)?.name;
 

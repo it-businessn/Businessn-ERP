@@ -14,7 +14,7 @@ import Record from "../step-content/Record";
 
 const CorporateInfo = ({ company, empId }) => {
 	const employmentInfo = useEmployeeEmploymentInfo(company, empId);
-	const setCorporateInfo = () => getInitialCorporateInfo(empId, company);
+	const setCorporateInfo = getInitialCorporateInfo(empId, company);
 	const [formData, setFormData] = useState(setCorporateInfo);
 	const [isDisabled, setIsDisabled] = useState(true);
 	const [isLoading, setIsLoading] = useState(false);

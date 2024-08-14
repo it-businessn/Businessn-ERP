@@ -1,13 +1,15 @@
 import { Button } from "@chakra-ui/react";
 
-const OutlineButton = ({ label, size = "sm" }) => (
+const OutlineButton = ({ label, size = "sm", onClick, colorScheme, ml }) => (
 	<Button
 		variant={"outline"}
-		// onClick={onOpen}
+		onClick={onClick}
 		size={size}
 		px={"1em"}
 		type="submit"
-		color={"var(--primary_button_bg)"}
+		color={!colorScheme && "var(--primary_button_bg)"}
+		colorScheme={colorScheme}
+		ml={ml}
 	>
 		{label}
 	</Button>
