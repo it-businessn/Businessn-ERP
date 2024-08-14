@@ -38,6 +38,7 @@ const ProcessPayroll = () => {
 	const selectedPayPeriod = payNo
 		? payGroupSchedule?.find(({ payPeriod }) => payPeriod.toString() === payNo)
 		: closestRecord;
+
 	const steps = [
 		{ title: "Payrun Setup", content: <PayrunSetup /> },
 		{ title: "Inputs Review", content: <InputsReview /> },
@@ -56,7 +57,6 @@ const ProcessPayroll = () => {
 
 	const handleSubmit = () => {
 		selectedPayPeriod.isProcessed = true;
-		console.log(selectedPayPeriod);
 		handleClick();
 		toast({
 			title: "Payroll is processed for payrun.",

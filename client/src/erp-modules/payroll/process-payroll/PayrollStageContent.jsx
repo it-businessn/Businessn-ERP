@@ -1,16 +1,15 @@
-import { Collapse, HStack, Icon, useDisclosure } from "@chakra-ui/react";
-import TextTitle from "components/ui/text/TextTitle";
+import { useDisclosure } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
-import { FaSortDown, FaSortUp } from "react-icons/fa6";
 import AlertsViolation from "./AlertsViolation";
 import Finalize from "./Finalize";
 import InputsReview from "./InputsReview";
 // import PayrollComplete from "./PayrollComplete";
 import BoxCard from "components/ui/card";
+import PayrollStageStep from "./PayrollStageStep";
 import PayrunSetup from "./PayrunSetup";
 import ReportsPreview from "./ReportsPreview";
 
-const PayrollStageContent = ({ currentStep, steps, handleConfirm }) => {
+const PayrollStageContent = ({ currentStep, handleConfirm }) => {
 	const { isOpen: isPayrollStepupOpen, onToggle: onPayrollStepupToggle } =
 		useDisclosure({
 			defaultIsOpen: false,
@@ -51,57 +50,32 @@ const PayrollStageContent = ({ currentStep, steps, handleConfirm }) => {
 
 	return (
 		<BoxCard>
-			<BoxCard>
-				<HStack spacing={2} align={"center"} onClick={onPayrollStepupToggle}>
-					{isPayrollStepupOpen ? (
-						<Icon
-							as={FaSortDown}
-							// onClick={() => handleChangeDate("prev")}
-							boxSize="5"
-							color="fg.muted"
-						/>
-					) : (
-						<Icon
-							as={FaSortUp}
-							// onClick={() => handleChangeDate("prev")}
-							boxSize="5"
-							color="fg.muted"
-						/>
-					)}
-
-					<TextTitle mt={1} weight="normal" title={"Payrun Setup"} />
-				</HStack>
-				<Collapse in={isPayrollStepupOpen}>
+			<PayrollStageStep
+				onClick={() => {
+					if (currentStep === 0) {
+						onPayrollStepupToggle();
+					}
+				}}
+				isOpen={isPayrollStepupOpen}
+				title={"Payrun Setup"}
+				content={
 					<PayrunSetup
 						handleClick={() => {
 							handleConfirm(1);
 							onPayrollStepupToggle();
 						}}
 					/>
-				</Collapse>
-			</BoxCard>
-
-			<BoxCard>
-				<HStack spacing={2} align={"center"} onClick={onInputsReviewToggle}>
-					{isInputsReviewOpen ? (
-						<Icon
-							as={FaSortDown}
-							// onClick={() => handleChangeDate("prev")}
-							boxSize="5"
-							color="fg.muted"
-						/>
-					) : (
-						<Icon
-							as={FaSortUp}
-							// onClick={() => handleChangeDate("prev")}
-							boxSize="5"
-							color="fg.muted"
-						/>
-					)}
-
-					<TextTitle mt={1} weight="normal" title={"Inputs Review"} />
-				</HStack>
-				<Collapse in={isInputsReviewOpen}>
+				}
+			/>
+			<PayrollStageStep
+				onClick={() => {
+					if (currentStep === 1) {
+						onInputsReviewToggle();
+					}
+				}}
+				isOpen={isInputsReviewOpen}
+				title={"Inputs Review"}
+				content={
 					<InputsReview
 						currentStep={currentStep}
 						isInputsReviewOpen={isInputsReviewOpen}
@@ -113,29 +87,17 @@ const PayrollStageContent = ({ currentStep, steps, handleConfirm }) => {
 							onInputsReviewToggle();
 						}}
 					/>
-				</Collapse>
-			</BoxCard>
-			<BoxCard>
-				<HStack spacing={2} align={"center"} onClick={onAlertsOpenToggle}>
-					{isAlertsOpen ? (
-						<Icon
-							as={FaSortDown}
-							// onClick={() => handleChangeDate("prev")}
-							boxSize="5"
-							color="fg.muted"
-						/>
-					) : (
-						<Icon
-							as={FaSortUp}
-							// onClick={() => handleChangeDate("prev")}
-							boxSize="5"
-							color="fg.muted"
-						/>
-					)}
-
-					<TextTitle mt={1} weight="normal" title={"Alerts and Violations"} />
-				</HStack>
-				<Collapse in={isAlertsOpen}>
+				}
+			/>
+			<PayrollStageStep
+				onClick={() => {
+					if (currentStep === 2) {
+						onAlertsOpenToggle();
+					}
+				}}
+				isOpen={isAlertsOpen}
+				title={"Alerts and Violations"}
+				content={
 					<AlertsViolation
 						currentStep={currentStep}
 						isAlertsOpen={isAlertsOpen}
@@ -144,29 +106,17 @@ const PayrollStageContent = ({ currentStep, steps, handleConfirm }) => {
 							onAlertsOpenToggle();
 						}}
 					/>
-				</Collapse>
-			</BoxCard>
-			<BoxCard>
-				<HStack spacing={2} align={"center"} onClick={onReportsToggle}>
-					{isReportsOpen ? (
-						<Icon
-							as={FaSortDown}
-							// onClick={() => handleChangeDate("prev")}
-							boxSize="5"
-							color="fg.muted"
-						/>
-					) : (
-						<Icon
-							as={FaSortUp}
-							// onClick={() => handleChangeDate("prev")}
-							boxSize="5"
-							color="fg.muted"
-						/>
-					)}
-
-					<TextTitle mt={1} weight="normal" title={"Review Reports"} />
-				</HStack>
-				<Collapse in={isReportsOpen}>
+				}
+			/>
+			<PayrollStageStep
+				onClick={() => {
+					if (currentStep === 3) {
+						onReportsToggle();
+					}
+				}}
+				isOpen={isReportsOpen}
+				title={"Review Reports"}
+				content={
 					<ReportsPreview
 						reportData={reportData}
 						handleClick={() => {
@@ -174,40 +124,25 @@ const PayrollStageContent = ({ currentStep, steps, handleConfirm }) => {
 							onReportsToggle();
 						}}
 					/>
-				</Collapse>
-			</BoxCard>
-			<BoxCard>
-				<HStack spacing={2} align={"center"} onClick={onFinalizeToggle}>
-					{isFinalizeOpen ? (
-						<Icon
-							as={FaSortDown}
-							// onClick={() => handleChangeDate("prev")}
-							boxSize="5"
-							color="fg.muted"
-						/>
-					) : (
-						<Icon
-							as={FaSortUp}
-							// onClick={() => handleChangeDate("prev")}
-							boxSize="5"
-							color="fg.muted"
-						/>
-					)}
-
-					<TextTitle mt={1} weight="normal" title={"Finalize"} />
-				</HStack>
-				<Collapse in={isFinalizeOpen}>
-					<>
-						<Finalize
-							handleClick={() => {
-								handleConfirm(5);
-								onFinalizeToggle();
-							}}
-						/>
-						{/* <PayrollComplete /> */}
-					</>
-				</Collapse>
-			</BoxCard>
+				}
+			/>
+			<PayrollStageStep
+				onClick={() => {
+					if (currentStep === 4) {
+						onFinalizeToggle();
+					}
+				}}
+				isOpen={isFinalizeOpen}
+				title={"Finalize"}
+				content={
+					<Finalize
+						handleClick={() => {
+							handleConfirm(5);
+							onFinalizeToggle();
+						}}
+					/>
+				}
+			/>
 		</BoxCard>
 	);
 };
