@@ -34,7 +34,7 @@ const AlertsViolation = ({ handleClick, isAlertsOpen, currentStep }) => {
 		isAlertsOpen,
 		currentStep,
 	);
-	const isDisabled = alertsReviewData.find((_) => _.actionRequired);
+	const isDisabled = alertsReviewData?.find((_) => _.actionRequired);
 
 	const COLS = ["Description", "Employee name", "Status", "Action"];
 
