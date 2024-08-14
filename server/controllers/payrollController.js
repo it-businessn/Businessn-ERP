@@ -1,8 +1,10 @@
+// const Employee = require("../models/Employee");
 const EmployeeAlertsViolationInfo = require("../models/EmployeeAlertsViolationInfo");
 const EmployeeBankingInfo = require("../models/EmployeeBankingInfo");
 const EmployeePayInfo = require("../models/EmployeePayInfo");
 const EmployeePayStub = require("../models/EmployeePayStub");
 const EmployeeProfileInfo = require("../models/EmployeeProfileInfo");
+// const EmployeeRole = require("../models/EmployeeRole");
 const Group = require("../models/Group");
 const Timesheet = require("../models/Timesheet");
 const {
@@ -11,6 +13,22 @@ const {
 	getHrs,
 	getSumTotal,
 } = require("../services/payrollService");
+
+//update roles-
+
+// const groups1 = await Employee.find({}).select("role");
+
+// console.log(groups1);
+// const updatedData = { name: "Employee" };
+// const updatedRoles = await EmployeeRole.updateMany(
+// 	{
+// 		name: {
+// 			$in: ["Sales Associate"],
+// 		},
+// 	},
+// 	{ $set: updatedData },
+// );
+// console.log(updatedRoles);
 
 const getAllPayGroups = async (req, res) => {
 	const { companyName } = req.params;
@@ -508,13 +526,15 @@ const deleteAlerts = async (empId) => {
 	const existingAlert = await EmployeeAlertsViolationInfo.findOne({
 		empId,
 	});
-	const deleted = await EmployeeAlertsViolationInfo.findByIdAndDelete({
-		_id: existingAlert._id,
-	});
-	if (deleted) {
-		console.log(`Alert  with id ${existingAlert._id} deleted successfully.`);
-	} else {
-		console.log("Alert Details not found.");
+	if (existingAlert) {
+		const deleted = await EmployeeAlertsViolationInfo.findByIdAndDelete({
+			_id: existingAlert._id,
+		});
+		if (deleted) {
+			console.log(`Alert  with id ${existingAlert._id} deleted successfully.`);
+		} else {
+			console.log("Alert Details not found.");
+		}
 	}
 };
 

@@ -18,7 +18,7 @@ import AssessmentService from "services/AssessmentService";
 import LocalStorageService from "services/LocalStorageService";
 import AttemptedTestScore from "./AttemptedTestScore";
 
-const AssociateViewCard = ({ company }) => {
+const EmployeeViewCard = ({ company }) => {
 	const loggedInUser = LocalStorageService.getItem("user");
 	const [assessments, setAssessments] = useState(null);
 	const [assessmentsTaken, setAssessmentsTaken] = useState(null);
@@ -209,4 +209,4 @@ const AssociateViewCard = ({ company }) => {
 	);
 };
 
-export default AssociateViewCard;
+export default EmployeeViewCard;

@@ -44,9 +44,7 @@ const AddEvent = ({
 				if (response.data.length) {
 					setGroupMembers(
 						response.data[0].members.filter(
-							(_) =>
-								_.role.includes(ROLES.ADMIN) ||
-								_.role.includes(ROLES.TECH_ADMIN),
+							({ role }) => role === ROLES.ADMINISTRATOR,
 						),
 					);
 				} else {
@@ -142,10 +140,7 @@ const AddEvent = ({
 		setGroupMembers(
 			groups
 				.find(({ _id }) => _id === e.target.value)
-				.members.filter(
-					(_) =>
-						_.role.includes(ROLES.ADMIN) || _.role.includes(ROLES.TECH_ADMIN),
-				),
+				.members.filter(({ role }) => role === ROLES.ADMINISTRATOR),
 		);
 	};
 

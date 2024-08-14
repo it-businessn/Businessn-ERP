@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import LocalStorageService from "services/LocalStorageService";
 import ResourceService from "services/ResourceService";
 import { isManager } from "utils";
-import AssociateViewCard from "./AssociateViewCard";
+import EmployeeViewCard from "./EmployeeViewCard";
 import ManagerViewCard from "./ManagerViewCard";
 import ResourceFile from "./ResourceFile";
 
@@ -76,7 +76,7 @@ const Resources = () => {
 					{isUserManager ? (
 						<ManagerViewCard company={company} />
 					) : (
-						<AssociateViewCard company={company} />
+						<EmployeeViewCard company={company} />
 					)}
 				</SimpleGrid>
 			)}

@@ -12,7 +12,7 @@ const { getResetPasswordLink } = require("../services/tokenService");
 const { sendEmail } = require("../services/emailService");
 const {
 	ADMIN_PERMISSION,
-	SALES_ASSOCIATE_PERMISSION,
+	EMPLOYEE_PERMISSION,
 	isRoleManager,
 } = require("../services/data");
 
@@ -100,7 +100,7 @@ const setInitialPermissions = async (empId, isManager, companyName) => {
 				});
 			});
 		} else {
-			SALES_ASSOCIATE_PERMISSION.forEach((_) => {
+			EMPLOYEE_PERMISSION.forEach((_) => {
 				userPermission.permissionType.push({
 					name: _.name,
 					canAccessModule: true,

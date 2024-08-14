@@ -18,9 +18,12 @@ const getAllSetup = async (req, res) => {
 const getRoles = async (req, res) => {
 	const { companyName } = req.params;
 	try {
-		const roles = await EmployeeRole.find({ companyName }).sort({
+		const roles = await EmployeeRole.find({ inactive: false }).sort({
 			createdOn: -1,
 		});
+		// const roles = await EmployeeRole.find({ companyName }).sort({
+		// 	createdOn: -1,
+		// });
 		res.status(200).json(roles);
 	} catch (error) {
 		res.status(404).json({ error: error.message });
@@ -48,7 +51,13 @@ const getDepartments = async (req, res) => {
 		const department = await Department.find({ companyName }).sort({
 			createdOn: -1,
 		});
-		res.status(200).json(department);
+		if (!department.length) {
+			const department = await Department.find({ companyName: null }).sort({
+				createdOn: -1,
+			});
+			return res.status(200).json(department);
+		}
+		return res.status(200).json(department);
 	} catch (error) {
 		res.status(404).json({ error: error.message });
 	}

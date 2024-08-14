@@ -44,7 +44,7 @@ const ADMIN_PERMISSION = [
 	{ name: "Scheduling Shift Assignment" },
 ];
 
-const SALES_ASSOCIATE_PERMISSION = [
+const EMPLOYEE_PERMISSION = [
 	{ name: "Sales" },
 	{ name: "Sales Dashboard" },
 	{ name: "Sales Activities" },
@@ -61,11 +61,18 @@ const SALES_ASSOCIATE_PERMISSION = [
 	{ name: "Project Management Communication" },
 ];
 
+const ROLES = {
+	EMPLOYEE: "Employee",
+	ADMINISTRATOR: "Administrator",
+	MANAGER: "Manager",
+	ENROLLER: "Enroller",
+};
+
 const isRoleManager = (role) =>
-	role?.includes("Administrators") || role?.includes("Technical Administrator");
+	role?.includes(ROLES.ADMINISTRATOR) || role?.includes(ROLES.MANAGER);
 
 module.exports = {
 	ADMIN_PERMISSION,
-	SALES_ASSOCIATE_PERMISSION,
+	EMPLOYEE_PERMISSION,
 	isRoleManager,
 };

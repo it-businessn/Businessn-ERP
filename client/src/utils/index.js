@@ -414,11 +414,11 @@ export const renderPriorityBars = (priority) => {
 	return bars;
 };
 
-export const customOrder = [
-	ROLES.PM,
-	ROLES.ASSOCIATE,
-	ROLES.TECH_ADMIN,
-	ROLES.ADMIN,
+export const ALL_ROLES = [
+	ROLES.MANAGER,
+	ROLES.EMPLOYEE,
+	ROLES.ADMINISTRATOR,
+	ROLES.ENROLLER,
 ];
 
 export const COVER_COLORS = [
@@ -432,11 +432,10 @@ export const COVER_COLORS = [
 
 export const getRoleColor = (role) => {
 	const colors = [
-		{ title: ROLES.PM, color: "var(--stat_item_color)" },
-		{ title: ROLES.ASSOCIATE, color: "var(--correct_ans)" },
-		{ title: ROLES.TECH_ADMIN, color: "var(--primary_button_bg)" },
-		{ title: ROLES.ADMIN, color: "var(--event_color)" },
-		{ title: ROLES.OTHERS, color: "var(--gray2_color)" },
+		{ title: ROLES.MANAGER, color: "var(--stat_item_color)" },
+		{ title: ROLES.EMPLOYEE, color: "var(--correct_ans)" },
+		{ title: ROLES.ADMINISTRATOR, color: "var(--primary_button_bg)" },
+		{ title: ROLES.ENROLLER, color: "var(--gray2_color)" },
 	];
 	// const randomIndex = Math.floor(Math.random() * colors.length);
 
@@ -444,9 +443,7 @@ export const getRoleColor = (role) => {
 };
 
 export const isManager = (role) =>
-	role?.includes(ROLES.ADMIN) ||
-	// role?.includes(ROLES.MANAGER) ||
-	role?.includes(ROLES.TECH_ADMIN);
+	role?.includes(ROLES.ADMINISTRATOR) || role?.includes(ROLES.MANAGER);
 
 export const timeSpan = (time) => {
 	const givenTime = new Date(time);

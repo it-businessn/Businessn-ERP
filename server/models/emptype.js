@@ -467,7 +467,7 @@
 		updatedby: "",
 		item: [
 			{
-				name: "Administrators",
+				name: "Administrator",
 				description:
 					"This role has full access to all features and settings within the payroll software. They can manage employee profiles, process payroll, set up deductions and benefits, generate reports, and configure system settings",
 				aprrover: "admin@team.com",

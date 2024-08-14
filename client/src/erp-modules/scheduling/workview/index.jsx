@@ -27,8 +27,8 @@ const ScheduleWorkView = () => {
 				// const sortedArray = response.data.sort((a, b) => {
 				// 	const titleA = a.title;
 				// 	const titleB = b.title;
-				// 	const indexA = customOrder.indexOf(titleA);
-				// 	const indexB = customOrder.indexOf(titleB);
+				// 	const indexA = ALL_ROLES.indexOf(titleA);
+				// 	const indexB = ALL_ROLES.indexOf(titleB);
 				// 	if (indexA !== -1 && indexB !== -1) {
 				// 		return indexA - indexB;
 				// 	}

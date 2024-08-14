@@ -6,12 +6,10 @@ import { IoMdCall } from "react-icons/io";
 import { MdCall, MdOutlineEventNote } from "react-icons/md";
 
 export const ROLES = {
-	PM: "Project Manager",
-	ASSOCIATE: "Sales Associate",
-	TECH_ADMIN: "Technical Administrator",
-	ADMIN: "Administrators",
+	EMPLOYEE: "Employee",
+	ADMINISTRATOR: "Administrator",
 	MANAGER: "Manager",
-	OTHERS: "Tax Specialist",
+	ENROLLER: "Enroller",
 };
 
 export const TOAST = {

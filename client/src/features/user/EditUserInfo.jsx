@@ -12,12 +12,12 @@ import {
 } from "@chakra-ui/react";
 import PrimaryButton from "components/ui/button/PrimaryButton";
 import InputFormControl from "components/ui/form/InputFormControl";
-// import MultiSelectFormControl from "components/ui/form/MultiSelectFormControl";
+import MultiSelectFormControl from "components/ui/form/MultiSelectFormControl";
 import TextTitle from "components/ui/text/TextTitle";
 import { useSignup } from "hooks/useSignup";
 import { useState } from "react";
 import UserService from "services/UserService";
-// import { isManager } from "utils";
+import { isManager } from "utils";
 
 const EditUserInfo = ({
 	setEditMode,
