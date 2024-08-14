@@ -7,7 +7,9 @@ import EmployeePayDetails from "./EmployeePayDetails";
 const PreviewReportsModal = ({ isOpen, onClose, reportData }) => {
 	return (
 		<ModalLayout
-			title={`Current Payperiod#${reportData[0].payPeriodNum} `}
+			title={`Current Payperiod#${
+				reportData ? reportData?.[0]?.payPeriodNum : ""
+			} `}
 			size="7xl"
 			isOpen={isOpen}
 			onClose={onClose}

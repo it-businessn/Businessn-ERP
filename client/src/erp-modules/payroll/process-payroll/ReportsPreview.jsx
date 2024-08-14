@@ -28,11 +28,13 @@ const ReportsPreview = ({ handleClick, reportData }) => {
 					</Tr>
 				</Tbody>
 			</Table>
-			<PreviewReportsModal
-				isOpen={showReport}
-				onClose={() => setShowReport(false)}
-				reportData={reportData}
-			/>
+			{showReport && (
+				<PreviewReportsModal
+					isOpen={showReport}
+					onClose={() => setShowReport(false)}
+					reportData={reportData}
+				/>
+			)}
 
 			<PrimaryButton
 				bg="var(--correct_ans)"
