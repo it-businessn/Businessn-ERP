@@ -13,17 +13,21 @@ import OutlineButton from "components/ui/button/OutlineButton";
 import PrimaryButton from "components/ui/button/PrimaryButton";
 import TextTitle from "components/ui/text/TextTitle";
 import useEmployeeAlertsInfo from "hooks/useEmployeeAlertsInfo";
-import usePaygroup from "hooks/usePaygroup";
 import { MdCheckCircle } from "react-icons/md";
 import { useNavigate, useParams } from "react-router-dom";
 import { ROUTE_PATH } from "routes";
 import LocalStorageService from "services/LocalStorageService";
 
-const AlertsViolation = ({ handleClick, isAlertsOpen, currentStep }) => {
+const AlertsViolation = ({
+	handleClick,
+	isAlertsOpen,
+	currentStep,
+	payGroupSchedule,
+	closestRecord,
+}) => {
 	const { payNo } = useParams();
 	const company = LocalStorageService.getItem("selectedCompany");
 
-	const { payGroupSchedule, closestRecord } = usePaygroup(company);
 	const selectedPayPeriod = payNo
 		? payGroupSchedule?.find(({ payPeriod }) => payPeriod.toString() === payNo)
 		: closestRecord;
@@ -52,11 +56,13 @@ const AlertsViolation = ({ handleClick, isAlertsOpen, currentStep }) => {
 		<HStack alignItems={"end"}>
 			<Table w={"100%"}>
 				<Thead>
-					{COLS.map((_) => (
-						<Th key={_}>
-							<TextTitle size={"md"} title={_} />
-						</Th>
-					))}
+					<Tr>
+						{COLS.map((_) => (
+							<Th key={_}>
+								<TextTitle size={"md"} title={_} />
+							</Th>
+						))}
+					</Tr>
 				</Thead>
 				<Tbody>
 					{!alertsReviewData?.length && (

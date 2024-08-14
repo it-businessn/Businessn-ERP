@@ -33,7 +33,8 @@ const ProcessPayroll = () => {
 	};
 	const { payNo } = useParams();
 	const company = LocalStorageService.getItem("selectedCompany");
-	const { payGroupSchedule, closestRecord } = usePaygroup(company);
+	const { payGroupSchedule, closestRecord, payGroups, selectedPayGroup } =
+		usePaygroup(company, false);
 
 	const selectedPayPeriod = payNo
 		? payGroupSchedule?.find(({ payPeriod }) => payPeriod.toString() === payNo)
@@ -115,6 +116,10 @@ const ProcessPayroll = () => {
 					currentStep={currentStep}
 					steps={steps}
 					handleConfirm={goToNextStep}
+					payGroupSchedule={payGroupSchedule}
+					closestRecord={closestRecord}
+					selectedPayGroup={selectedPayGroup}
+					payGroups={payGroups}
 				/>
 			</SimpleGrid>
 

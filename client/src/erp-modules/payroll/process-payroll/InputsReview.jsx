@@ -12,19 +12,23 @@ import OutlineButton from "components/ui/button/OutlineButton";
 import PrimaryButton from "components/ui/button/PrimaryButton";
 import TextTitle from "components/ui/text/TextTitle";
 import useEmployeePayReport from "hooks/useEmployeePayReport";
-import usePaygroup from "hooks/usePaygroup";
 import { MdCheckCircle, MdSettingsSuggest } from "react-icons/md";
 import { useNavigate, useParams } from "react-router-dom";
 import { ROUTE_PATH } from "routes";
 import LocalStorageService from "services/LocalStorageService";
 import PayrollService from "services/PayrollService";
 
-const InputsReview = ({ handleClick, isInputsReviewOpen, currentStep }) => {
+const InputsReview = ({
+	handleClick,
+	isInputsReviewOpen,
+	currentStep,
+	payGroupSchedule,
+	closestRecord,
+}) => {
 	const { payNo } = useParams();
 
 	const company = LocalStorageService.getItem("selectedCompany");
 
-	const { payGroupSchedule, closestRecord } = usePaygroup(company);
 	const selectedPayPeriod = payNo
 		? payGroupSchedule?.find(({ payPeriod }) => payPeriod.toString() === payNo)
 		: closestRecord;
@@ -65,16 +69,18 @@ const InputsReview = ({ handleClick, isInputsReviewOpen, currentStep }) => {
 		<HStack alignItems={"end"}>
 			<Table w={"100%"}>
 				<Thead>
-					{COLS.map((_) => (
-						<Th key={_}>
-							<TextTitle size={"md"} title={_} />
-						</Th>
-					))}
+					<Tr>
+						{COLS.map((_) => (
+							<Th key={_}>
+								<TextTitle size={"md"} title={_} />
+							</Th>
+						))}
 
-					<Th>
-						<Icon as={MdSettingsSuggest} boxSize="5" color="fg.muted" />
-					</Th>
-					<Th />
+						<Th>
+							<Icon as={MdSettingsSuggest} boxSize="5" color="fg.muted" />
+						</Th>
+						<Th />
+					</Tr>
 				</Thead>
 				<Tbody>
 					{!inputsReviewData?.length && (

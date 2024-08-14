@@ -37,7 +37,10 @@ const usePaygroup = (company, refresh) => {
 				console.error(error);
 			}
 		};
-		fetchAllPaygroups();
+
+		if (refresh !== undefined) {
+			fetchAllPaygroups();
+		}
 	}, [company, refresh]);
 
 	return {

@@ -9,7 +9,14 @@ import PayrollStageStep from "./PayrollStageStep";
 import PayrunSetup from "./PayrunSetup";
 import ReportsPreview from "./ReportsPreview";
 
-const PayrollStageContent = ({ currentStep, handleConfirm }) => {
+const PayrollStageContent = ({
+	currentStep,
+	handleConfirm,
+	payGroupSchedule,
+	closestRecord,
+	selectedPayGroup,
+	payGroups,
+}) => {
 	const { isOpen: isPayrollStepupOpen, onToggle: onPayrollStepupToggle } =
 		useDisclosure({
 			defaultIsOpen: false,
@@ -64,6 +71,10 @@ const PayrollStageContent = ({ currentStep, handleConfirm }) => {
 							handleConfirm(1);
 							onPayrollStepupToggle();
 						}}
+						payGroups={payGroups}
+						selectedPayGroup={selectedPayGroup}
+						payGroupSchedule={payGroupSchedule}
+						closestRecord={closestRecord}
 					/>
 				}
 			/>
@@ -86,6 +97,8 @@ const PayrollStageContent = ({ currentStep, handleConfirm }) => {
 							handleConfirm(2);
 							onInputsReviewToggle();
 						}}
+						payGroupSchedule={payGroupSchedule}
+						closestRecord={closestRecord}
 					/>
 				}
 			/>
@@ -105,6 +118,8 @@ const PayrollStageContent = ({ currentStep, handleConfirm }) => {
 							handleConfirm(3);
 							onAlertsOpenToggle();
 						}}
+						payGroupSchedule={payGroupSchedule}
+						closestRecord={closestRecord}
 					/>
 				}
 			/>
@@ -138,7 +153,7 @@ const PayrollStageContent = ({ currentStep, handleConfirm }) => {
 					<Finalize
 						handleClick={() => {
 							handleConfirm(5);
-							onFinalizeToggle();
+							// onFinalizeToggle();
 						}}
 					/>
 				}

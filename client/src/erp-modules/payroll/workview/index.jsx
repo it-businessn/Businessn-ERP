@@ -62,7 +62,7 @@ const PayrollWorkview = () => {
 				setRefresh={setRefresh}
 				closestRecord={closestRecord}
 			/>
-			<PaygroupDetailTable />
+			<PaygroupDetailTable closestRecord={closestRecord} />
 		</PageLayout>
 	);
 };

@@ -2,7 +2,7 @@ import apiService from "services";
 
 const PayrollService = {
 	async getAllPaygroups(id) {
-		return apiService.get(`/payroll/paygroups/${id}`);
+		return apiService.get(`/payroll/payGroups/${id}`);
 	},
 
 	async getAllEmployeePayInfo(company, startDate, endDate) {

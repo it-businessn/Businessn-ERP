@@ -1,9 +1,11 @@
 import { Checkbox, HStack, Table, Tbody, Td, Tr } from "@chakra-ui/react";
 import PrimaryButton from "components/ui/button/PrimaryButton";
 import TextTitle from "components/ui/text/TextTitle";
+import { useState } from "react";
 import { MdCheckCircle } from "react-icons/md";
 
 const Finalize = ({ handleClick }) => {
+	const [hasChecklist, setHasChecklist] = useState(false);
 	return (
 		<HStack alignItems={"end"}>
 			<Table w={"100%"}>
@@ -15,8 +17,8 @@ const Finalize = ({ handleClick }) => {
 						<Td>
 							<Checkbox
 								colorScheme={"facebook"}
-								// isChecked={hasChecklist}
-								// onChange={() => setHasChecklist(!hasChecklist)}
+								isChecked={hasChecklist}
+								onChange={() => setHasChecklist(!hasChecklist)}
 							/>
 						</Td>
 					</Tr>
@@ -28,8 +30,8 @@ const Finalize = ({ handleClick }) => {
 							<Checkbox
 								border={"1px solid red"}
 								colorScheme={"facebook"}
-								// isChecked={hasChecklist}
-								// onChange={() => setHasChecklist(!hasChecklist)}
+								isChecked={!hasChecklist}
+								onChange={() => setHasChecklist(!hasChecklist)}
 							/>
 						</Td>
 					</Tr>
@@ -39,7 +41,6 @@ const Finalize = ({ handleClick }) => {
 				bg="var(--correct_ans)"
 				name={"CONFIRM"}
 				rightIcon={<MdCheckCircle />}
-				// isLoading={isLoading}
 				loadingText="Loading"
 				onOpen={handleClick}
 			/>

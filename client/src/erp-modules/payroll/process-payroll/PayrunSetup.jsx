@@ -2,18 +2,21 @@ import { HStack, Table, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
 import PrimaryButton from "components/ui/button/PrimaryButton";
 import SelectBox from "components/ui/form/select/SelectBox";
 import TextTitle from "components/ui/text/TextTitle";
-import usePaygroup from "hooks/usePaygroup";
 import { MdCheckCircle } from "react-icons/md";
 import { useParams } from "react-router-dom";
 import LocalStorageService from "services/LocalStorageService";
 import PayrollService from "services/PayrollService";
 import { dayMonthYear } from "utils";
 
-const PayrunSetup = ({ handleClick }) => {
+const PayrunSetup = ({
+	handleClick,
+	payGroups,
+	selectedPayGroup,
+	payGroupSchedule,
+	closestRecord,
+}) => {
 	const { payNo } = useParams();
 	const company = LocalStorageService.getItem("selectedCompany");
-	const { payGroups, selectedPayGroup, payGroupSchedule, closestRecord } =
-		usePaygroup(company);
 
 	const selectedPayPeriod = payNo
 		? payGroupSchedule?.find(({ payPeriod }) => payPeriod.toString() === payNo)
@@ -36,21 +39,23 @@ const PayrunSetup = ({ handleClick }) => {
 		<HStack alignItems={"end"}>
 			<Table w={"100%"}>
 				<Thead>
-					<Th>
-						<TextTitle size={"md"} title={"Payroll group"} />
-					</Th>
-					<Th>
-						<SelectBox
-							// handleChange={handleChange}
-							data={payGroups}
-							name="name"
-							border="1px solid var(--primary_button_bg)"
-							color={"var(--primary_button_bg)"}
-							value={selectedPayGroup?.name}
-							placeholder="Select Paygroup"
-							size={"sm"}
-						/>
-					</Th>
+					<Tr>
+						<Th>
+							<TextTitle size={"md"} title={"Payroll group"} />
+						</Th>
+						<Th>
+							<SelectBox
+								// handleChange={handleChange}
+								data={payGroups}
+								name="name"
+								border="1px solid var(--primary_button_bg)"
+								color={"var(--primary_button_bg)"}
+								value={selectedPayGroup?.name}
+								placeholder="Select Paygroup"
+								size={"sm"}
+							/>
+						</Th>
+					</Tr>
 				</Thead>
 				{selectedPayGroup && (
 					<Tbody>
