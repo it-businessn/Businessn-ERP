@@ -19,6 +19,7 @@ const EmployeeDetails = ({ company, closestRecord }) => {
 			data={empData}
 			label="Setup"
 			path={`${ROUTE_PATH.PAYROLL}${ROUTE_PATH.EMPLOYEES}`}
+			stepNum={0}
 		/>
 	);
 };

@@ -15,16 +15,11 @@ const Timesheets = () => {
 	const company = LocalStorageService.getItem("selectedCompany");
 	const { id } = useParams();
 	const loggedInUser = LocalStorageService.getItem("user");
-	const userId = id ?? loggedInUser._id;
 	const isManagerView = isManager(loggedInUser?.role);
+	const userId = id ? id : isManagerView ? null : loggedInUser._id;
 
 	const [refresh, setRefresh] = useState(false);
-	const timesheets = useTimesheet(
-		company,
-		isManagerView,
-		loggedInUser._id,
-		refresh,
-	);
+	const timesheets = useTimesheet(company, userId, refresh);
 
 	const [showAddEntry, setShowAddEntry] = useState(false);
 

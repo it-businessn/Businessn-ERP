@@ -1,17 +1,14 @@
 import { useEffect, useState } from "react";
 import TimesheetService from "services/TimesheetService";
 
-const useTimesheet = (company, isManagerView, userId, refresh) => {
+const useTimesheet = (company, userId, refresh) => {
 	const [timesheets, setTimesheets] = useState(null);
 
 	const fetchAllEmployeeTimesheet = async () => {
 		try {
-			const response = isManagerView
-				? await TimesheetService.getTimesheets(company)
-				: await TimesheetService.getTimesheetById(userId);
-			// const response = userId
-			// 	? await TimesheetService.getTimesheetById(userId)
-			// 	: await TimesheetService.getTimesheets();
+			const response = userId
+				? await TimesheetService.getTimesheetById(company, userId)
+				: await TimesheetService.getTimesheets(company);
 			setTimesheets(response.data);
 		} catch (error) {
 			console.error(error);

@@ -5,8 +5,8 @@ const TimesheetService = {
 		return apiService.get(`/timesheet/${company}`);
 	},
 
-	async getTimesheetById(id) {
-		return apiService.get(`/timesheet/${id}`);
+	async getTimesheetById(company, id) {
+		return apiService.get(`/timesheet/${company}/${id}`);
 	},
 
 	async addTimesheet(data) {

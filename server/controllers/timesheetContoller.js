@@ -4,23 +4,27 @@ const moment = require("moment");
 
 const currentDate = moment().subtract(1, "days");
 
+const findByRecordTimesheets = async (record) => {
+	const result = await Timesheet.find(record)
+		.populate({
+			path: "employeeId",
+			model: "Employee",
+			select: ["department", "fullName"],
+		})
+		.sort({
+			createdOn: -1,
+			"employeeId.fullName": 1,
+		});
+	return result;
+};
+
 const getTimesheets = async (req, res) => {
 	const { companyName } = req.params;
 	try {
-		const timesheets = await Timesheet.find({
+		const timesheets = await findByRecordTimesheets({
 			companyName,
 			createdOn: { $lte: currentDate },
-		})
-			.populate({
-				path: "employeeId",
-				model: "Employee",
-				select: ["department", "fullName"],
-			})
-			.sort({
-				createdOn: -1,
-				"employeeId.fullName": 1,
-			});
-
+		});
 		const payInfoResult = await EmployeePayInfo.find({
 			companyName,
 		}).select(
@@ -71,19 +75,19 @@ const getTimesheets = async (req, res) => {
 };
 
 const getTimesheet = async (req, res) => {
-	const { companyName, empId } = req.params;
+	const { companyName, employeeId } = req.params;
 
 	try {
-		const timesheet = await Timesheet.find({ companyName, empId }).populate({
-			path: "employeeId",
-			model: "Employee",
-			select: ["role", "fullName"],
+		const timesheets = await findByRecordTimesheets({
+			companyName,
+			employeeId,
 		});
-		res.status(200).json(timesheet);
+		res.status(200).json(timesheets);
 	} catch (error) {
 		res.status(404).json({ error: error.message });
 	}
 };
+
 const findEmployeeStatTimesheetExists = async (record) =>
 	await Timesheet.findOne(record);
 

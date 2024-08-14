@@ -25,6 +25,7 @@ const AmountAllocation = ({ company, closestRecord }) => {
 			data={data}
 			label="Setup"
 			path={`${ROUTE_PATH.PAYROLL}${ROUTE_PATH.EMPLOYEES}`}
+			stepNum={5}
 		/>
 	);
 };

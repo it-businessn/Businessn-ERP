@@ -13,11 +13,25 @@ const WorkviewTab = ({
 	setRefresh,
 	isEditable,
 	isHourly,
+	stepNum,
 }) => {
 	const navigate = useNavigate();
 
 	const [edit, setEdit] = useState(false);
 	const [editFormData, setEditFormData] = useState({});
+
+	const handleClick = (key, row) => {
+		if (key === "") {
+			navigate(
+				stepNum !== undefined
+					? `${path}/${row.empId._id}/${stepNum}`
+					: `${path}/${row.empId._id}`,
+			);
+			return;
+		}
+		setEdit(true);
+		setEditFormData(data?.find((rec) => rec._id === row._id));
+	};
 
 	return (
 		<BoxCard>
@@ -53,12 +67,7 @@ const WorkviewTab = ({
 										p={1}
 										key={col.key}
 										onClick={() => {
-											if (col.key === "") {
-												navigate(`${path}/${row.empId._id}`);
-												return;
-											}
-											setEdit(true);
-											setEditFormData(data?.find((rec) => rec._id === row._id));
+											handleClick(col.key, row);
 										}}
 									>
 										{fieldValue}
