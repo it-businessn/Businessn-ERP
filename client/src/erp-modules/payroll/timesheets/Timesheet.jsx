@@ -196,7 +196,10 @@ const Timesheet = ({ cols, data, company, setRefresh }) => {
 										name={approveStatus}
 										size="xs"
 										px={0}
-										hover={"transparent"}
+										hover={{
+											bg: approveStatusBtnCss.bg,
+											color: approveStatusBtnCss.color,
+										}}
 									/>
 								</Td>
 								<Td py={0}>

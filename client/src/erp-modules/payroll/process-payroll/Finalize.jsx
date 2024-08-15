@@ -4,7 +4,7 @@ import TextTitle from "components/ui/text/TextTitle";
 import { useState } from "react";
 import { MdCheckCircle } from "react-icons/md";
 
-const Finalize = ({ handleClick }) => {
+const Finalize = ({ handleClick, isPayPeriodInactive }) => {
 	const [hasChecklist, setHasChecklist] = useState(false);
 	return (
 		<HStack alignItems={"end"}>
@@ -43,6 +43,7 @@ const Finalize = ({ handleClick }) => {
 				rightIcon={<MdCheckCircle />}
 				loadingText="Loading"
 				onOpen={handleClick}
+				isDisabled={isPayPeriodInactive}
 			/>
 		</HStack>
 	);

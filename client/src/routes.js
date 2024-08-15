@@ -58,7 +58,7 @@ const PayrollWorkview = lazy(() => import("./erp-modules/payroll/workview"));
 const ProcessPayroll = lazy(() =>
 	import("./erp-modules/payroll/process-payroll"),
 );
-const Reports = lazy(() => import("./erp-modules/payroll/Reports"));
+const Reports = lazy(() => import("./erp-modules/payroll/reports"));
 const Timesheets = lazy(() => import("./erp-modules/payroll/timesheets"));
 const Dashboard = lazy(() => import("erp-modules/payroll/dashboard"));
 const Employees = lazy(() => import("erp-modules/payroll/employees"));

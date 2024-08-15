@@ -16,6 +16,7 @@ const PayrollStageContent = ({
 	closestRecord,
 	selectedPayGroup,
 	payGroups,
+	isPayPeriodInactive,
 }) => {
 	const { isOpen: isPayrollStepupOpen, onToggle: onPayrollStepupToggle } =
 		useDisclosure({
@@ -75,6 +76,7 @@ const PayrollStageContent = ({
 						selectedPayGroup={selectedPayGroup}
 						payGroupSchedule={payGroupSchedule}
 						closestRecord={closestRecord}
+						isPayPeriodInactive={isPayPeriodInactive}
 					/>
 				}
 			/>
@@ -99,6 +101,7 @@ const PayrollStageContent = ({
 						}}
 						payGroupSchedule={payGroupSchedule}
 						closestRecord={closestRecord}
+						isPayPeriodInactive={isPayPeriodInactive}
 					/>
 				}
 			/>
@@ -120,6 +123,7 @@ const PayrollStageContent = ({
 						}}
 						payGroupSchedule={payGroupSchedule}
 						closestRecord={closestRecord}
+						isPayPeriodInactive={isPayPeriodInactive}
 					/>
 				}
 			/>
@@ -139,6 +143,7 @@ const PayrollStageContent = ({
 							onReportsToggle();
 						}}
 						payPeriodNum={closestRecord?.payPeriod}
+						isPayPeriodInactive={isPayPeriodInactive}
 					/>
 				}
 			/>
@@ -156,6 +161,7 @@ const PayrollStageContent = ({
 							handleConfirm(5);
 							// onFinalizeToggle();
 						}}
+						isPayPeriodInactive={isPayPeriodInactive}
 					/>
 				}
 			/>

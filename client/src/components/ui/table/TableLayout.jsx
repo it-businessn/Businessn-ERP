@@ -18,6 +18,7 @@ const TableLayout = ({
 	bg = "var(--lead_cards_bg)",
 	inVisible,
 	size = "xs",
+	textAlign,
 }) => {
 	return (
 		<Box overflow="auto" height={height} w={w}>
@@ -40,6 +41,7 @@ const TableLayout = ({
 						)}
 						{cols?.map((col, index) => (
 							<Th
+								textAlign={index < 2 ? "left" : textAlign}
 								p={isSmall ? 1 : "auto"}
 								pl={isTimesheet && index === 0 && "1em !important"}
 								key={`${col}_${index}`}

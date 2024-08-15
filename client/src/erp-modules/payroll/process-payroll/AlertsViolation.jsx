@@ -24,6 +24,7 @@ const AlertsViolation = ({
 	currentStep,
 	payGroupSchedule,
 	closestRecord,
+	isPayPeriodInactive,
 }) => {
 	const { payNo } = useParams();
 	const company = LocalStorageService.getItem("selectedCompany");
@@ -38,7 +39,8 @@ const AlertsViolation = ({
 		isAlertsOpen,
 		currentStep,
 	);
-	const isDisabled = alertsReviewData?.find((_) => _.actionRequired);
+	const isDisabled =
+		alertsReviewData?.find((_) => _.actionRequired) || isPayPeriodInactive;
 
 	const COLS = ["Description", "Employee name", "Status", "Action"];
 

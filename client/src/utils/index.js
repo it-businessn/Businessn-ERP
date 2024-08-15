@@ -75,7 +75,11 @@ export const formatDate = (date) =>
 	});
 
 export const sortRecordsByDate = (records, key) => {
-	records?.map((record, index) => {
+	const sortedList = records?.sort(
+		(a, b) => new Date(a[key]) - new Date(b[key]),
+	);
+
+	sortedList?.map((record, index) => {
 		const {
 			color,
 			bg,
@@ -93,7 +97,7 @@ export const sortRecordsByDate = (records, key) => {
 		record.isDisabledAction = isDisabledAction;
 		return record;
 	});
-	return records?.sort((a, b) => new Date(a[key]) - new Date(b[key]));
+	return sortedList;
 };
 
 export const formatDateTime = (date) =>
@@ -481,7 +485,6 @@ export const convertToNum = (str) => parseFloat(str.replace(/,/g, ""));
 export const isPaygroup = (name) => name?.payrollActivated;
 
 export const getPayrollStatus = (data, prevRecordEndDate) => {
-	console.log(data);
 	const defaultStatus = {
 		name: "Pending",
 		color: "var(--primary_bg)",
@@ -557,3 +560,6 @@ export const getPayrollStatus = (data, prevRecordEndDate) => {
 		return defaultStatus;
 	}
 };
+
+export const isExtraPay = (payPeriodNum, isExtra) =>
+	isExtra ? `${payPeriodNum}E` : payPeriodNum;

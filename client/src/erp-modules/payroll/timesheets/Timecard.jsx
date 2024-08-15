@@ -48,36 +48,39 @@ const Timecard = ({ cols, data }) => (
 					}`;
 					return (
 						<Tr key={_id}>
-							<Td>
+							<Td py={0}>
 								<TextTitle title={employeeId?.fullName} />
 							</Td>
-							<Td>
+							<Td p={0.5}>
 								<PrimaryButton
 									color={approveStatusBtnCss.color}
 									bg={approveStatusBtnCss.bg}
 									name={approveStatus}
 									size="xs"
 									px={0}
-									hover={"transparent"}
+									hover={{
+										bg: approveStatusBtnCss.bg,
+										color: approveStatusBtnCss.color,
+									}}
 								/>
 							</Td>
-							<Td>{clockIns.length > 0 ? clockIns[0] : ""}</Td>
-							<Td>{clockOuts.length > 0 ? clockOuts[0] : ""}</Td>
-							<Td>
+							<Td py={0}>{clockIns.length > 0 ? clockIns[0] : ""}</Td>
+							<Td py={0}>{clockOuts.length > 0 ? clockOuts[0] : ""}</Td>
+							<Td py={0}>
 								{startBreaks.length > 0
 									? startBreaks[startBreaks.length - 1]
 									: ""}
 							</Td>
-							<Td>
+							<Td py={0}>
 								{endBreaks.length > 0 ? endBreaks[endBreaks.length - 1] : ""}
 							</Td>
-							<Td>
+							<Td py={0}>
 								{clockIns.length > 1 ? clockIns[clockIns.length - 1] : ""}
 							</Td>
-							<Td>
+							<Td py={0}>
 								{clockOuts.length > 1 ? clockIns[clockOuts.length - 1] : ""}
 							</Td>
-							<Td>{hhMMFormattedTime}</Td>
+							<Td py={0}>{hhMMFormattedTime}</Td>
 						</Tr>
 					);
 				},

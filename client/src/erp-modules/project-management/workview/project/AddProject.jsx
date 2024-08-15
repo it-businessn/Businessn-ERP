@@ -5,7 +5,6 @@ import {
 	FormControl,
 	FormLabel,
 	HStack,
-	Input,
 	Modal,
 	ModalBody,
 	ModalCloseButton,
@@ -15,15 +14,18 @@ import {
 	Select,
 	Stack,
 } from "@chakra-ui/react";
+import DateTimeFormControl from "components/ui/form/DateTimeFormControl";
+import InputFormControl from "components/ui/form/InputFormControl";
 import { useState } from "react";
 import { FaCaretDown } from "react-icons/fa";
 import ProjectService from "services/ProjectService";
+import { getDefaultDate } from "utils";
 
 const AddProject = ({ isOpen, onClose, setRefresh, managers, company }) => {
 	const defaultProject = {
 		projectName: "",
-		startDate: null,
-		dueDate: null,
+		startDate: getDefaultDate(),
+		dueDate: getDefaultDate(),
 		timeToComplete: 0,
 		managerName: "",
 		managerId: "",
@@ -58,21 +60,18 @@ const AddProject = ({ isOpen, onClose, setRefresh, managers, company }) => {
 					<Stack spacing="5">
 						<form onSubmit={handleSubmit}>
 							<Stack spacing={4}>
-								<FormControl>
-									<FormLabel>Project name</FormLabel>
-									<Input
-										type="text"
-										name="projectName"
-										value={formData?.projectName || ""}
-										onChange={(e) =>
-											setFormData((prevData) => ({
-												...prevData,
-												projectName: e.target.value,
-											}))
-										}
-										required
-									/>
-								</FormControl>
+								<InputFormControl
+									label={"Project name"}
+									name="projectName"
+									valueText={formData.projectName}
+									handleChange={(e) =>
+										setFormData((prevData) => ({
+											...prevData,
+											projectName: e.target.value,
+										}))
+									}
+									required
+								/>
 								<FormControl>
 									<FormLabel> Project Manager</FormLabel>
 									<Select
@@ -102,55 +101,44 @@ const AddProject = ({ isOpen, onClose, setRefresh, managers, company }) => {
 									</Select>
 								</FormControl>
 								<HStack>
-									<FormControl>
-										<FormLabel>Start date</FormLabel>
-										<input
-											className="date_picker"
-											type="date"
-											id="startDate"
-											name="startDate"
-											value={formData.startDate}
-											onChange={(e) =>
-												setFormData((prevData) => ({
-													...prevData,
-													startDate: e.target.value,
-												}))
-											}
-											required
-										/>
-									</FormControl>
-									<FormControl>
-										<FormLabel>Due date</FormLabel>
-										<input
-											className="date_picker"
-											type="date"
-											id="dueDate"
-											name="dueDate"
-											value={formData.dueDate}
-											onChange={(e) =>
-												setFormData((prevData) => ({
-													...prevData,
-													dueDate: e.target.value,
-												}))
-											}
-											required
-										/>
-									</FormControl>
-									<FormControl>
-										<FormLabel>Time to complete (in hours)</FormLabel>
-										<Input
-											type="text"
-											name="timeToComplete"
-											value={formData.timeToComplete}
-											onChange={(e) =>
-												setFormData((prevData) => ({
-													...prevData,
-													timeToComplete: e.target.value,
-												}))
-											}
-											required
-										/>
-									</FormControl>
+									<DateTimeFormControl
+										label={"Start date"}
+										className="date_picker"
+										valueText1={formData.startDate}
+										name1="startDate"
+										handleChange={(e) =>
+											setFormData((prevData) => ({
+												...prevData,
+												startDate: e.target.value,
+											}))
+										}
+										required
+									/>
+									<DateTimeFormControl
+										label={"Due date"}
+										className="date_picker"
+										valueText1={formData.dueDate}
+										name1="dueDate"
+										handleChange={(e) =>
+											setFormData((prevData) => ({
+												...prevData,
+												dueDate: e.target.value,
+											}))
+										}
+										required
+									/>
+									<InputFormControl
+										label={"Time to complete (in hours)"}
+										name="timeToComplete"
+										valueText={formData.timeToComplete}
+										handleChange={(e) =>
+											setFormData((prevData) => ({
+												...prevData,
+												timeToComplete: e.target.value,
+											}))
+										}
+										required
+									/>
 								</HStack>
 
 								<HStack justifyContent={"end"}>

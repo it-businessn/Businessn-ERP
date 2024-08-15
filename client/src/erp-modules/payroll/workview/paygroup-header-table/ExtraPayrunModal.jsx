@@ -67,12 +67,13 @@ const ExtraPayrunModal = ({
 		setIsSubmitting(true);
 		try {
 			selectedPayGroup.scheduleSettings.push({
-				payPeriod: `${closestRecord.payPeriod}E`,
+				payPeriod: closestRecord.payPeriod,
 				selectedEmp,
 				payPeriodPayDate,
 				payPeriodProcessingDate,
 				payPeriodStartDate,
 				payPeriodEndDate,
+				isExtraRun: true,
 			});
 			await SettingService.updateGroup(
 				{ scheduleSettings: selectedPayGroup.scheduleSettings },

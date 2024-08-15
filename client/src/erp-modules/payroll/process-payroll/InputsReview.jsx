@@ -24,6 +24,7 @@ const InputsReview = ({
 	currentStep,
 	payGroupSchedule,
 	closestRecord,
+	isPayPeriodInactive,
 }) => {
 	const { payNo } = useParams();
 
@@ -125,6 +126,7 @@ const InputsReview = ({
 				// isLoading={isLoading}
 				loadingText="Loading"
 				onOpen={handleConfirmInputsReview}
+				isDisabled={isPayPeriodInactive}
 			/>
 		</HStack>
 	);

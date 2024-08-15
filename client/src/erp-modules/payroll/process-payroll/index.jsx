@@ -39,8 +39,15 @@ const ProcessPayroll = () => {
 		usePaygroup(company, false);
 
 	const selectedPayPeriod = payNo
-		? payGroupSchedule?.find(({ payPeriod }) => payPeriod.toString() === payNo)
+		? payGroupSchedule?.find(
+				({ payPeriod, isProcessed }) =>
+					payPeriod.toString() === payNo && !isProcessed,
+		  )
 		: closestRecord;
+
+	const isPayPeriodInactive = selectedPayPeriod?.isDisabledAction;
+	const isPayrollSubmitDisabled =
+		currentStep !== 5 || selectedPayPeriod?.isProcessed || isPayPeriodInactive;
 
 	const steps = [
 		{ title: "Payrun Setup", content: <PayrunSetup /> },
@@ -125,7 +132,7 @@ const ProcessPayroll = () => {
 
 						<PrimaryButton
 							minW={"100%"}
-							isDisabled={currentStep !== 5 || selectedPayPeriod.isProcessed}
+							isDisabled={isPayrollSubmitDisabled}
 							name={"Submit payroll"}
 							onOpen={handleClick}
 							// isLoading={isLoading}
@@ -141,6 +148,7 @@ const ProcessPayroll = () => {
 					closestRecord={selectedPayPeriod}
 					selectedPayGroup={selectedPayGroup}
 					payGroups={payGroups}
+					isPayPeriodInactive={isPayPeriodInactive}
 				/>
 			</SimpleGrid>
 

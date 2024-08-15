@@ -1,7 +1,6 @@
 import TabsButtonGroup from "components/ui/tab/TabsButtonGroup";
 import { useState } from "react";
 import LocalStorageService from "services/LocalStorageService";
-import { styleConsole } from "utils";
 import AmountAllocation from "./AmountAllocation";
 import EmployeeDetails from "./EmployeeDetails";
 import HourlyAllocation from "./HourlyAllocation";
@@ -33,10 +32,8 @@ const PaygroupDetailTable = ({ closestRecord }) => {
 
 	const [viewMode, setViewMode] = useState(TABS[0].type);
 
-	const showComponent = (viewMode) => {
-		styleConsole(viewMode);
-		return TABS.find(({ type }) => type === viewMode)?.name;
-	};
+	const showComponent = (viewMode) =>
+		TABS.find(({ type }) => type === viewMode)?.name;
 
 	return (
 		company && (
