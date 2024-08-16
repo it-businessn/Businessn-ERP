@@ -15,6 +15,7 @@ const DateTimeFormControl = ({
 	hideTimeLabel,
 	border,
 	handleConfirm,
+	minDate,
 }) => {
 	return (
 		<>
@@ -22,6 +23,7 @@ const DateTimeFormControl = ({
 				<FormControlMain flex="1">
 					<FormLabel display={hideLabel && "none"}>{label}</FormLabel>
 					<Input
+						min={minDate}
 						size={size}
 						type="date"
 						name={name1}

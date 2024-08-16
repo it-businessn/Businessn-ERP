@@ -4,8 +4,7 @@ import DateTimeFormControl from "components/ui/form/DateTimeFormControl";
 import MultiSelectFormControl from "components/ui/form/MultiSelectFormControl";
 import ModalLayout from "components/ui/modal/ModalLayout";
 import useEmployees from "hooks/useEmployees";
-import moment from "moment";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import SettingService from "services/SettingService";
 import { addBusinessDays, getDefaultDate } from "utils";
 
@@ -19,14 +18,20 @@ const ExtraPayrunModal = ({
 	closestRecord,
 }) => {
 	const [isSubmitting, setIsSubmitting] = useState(false);
-	const today = getDefaultDate(new Date());
+	const today = getDefaultDate();
+
+	const [payPeriodProcessingDate, setPayPeriodProcessingDate] = useState(today);
+	const isProcessingDateTomorrow = addBusinessDays(today, 3);
 
 	const [payPeriodPayDate, setPayPeriodPayDate] = useState(
-		getDefaultDate(closestRecord?.payPeriodPayDate),
+		getDefaultDate(isProcessingDateTomorrow),
 	);
-	const [payPeriodProcessingDate, setPayPeriodProcessingDate] = useState(
-		getDefaultDate(closestRecord?.payPeriodProcessingDate),
-	);
+
+	useEffect(() => {
+		const newPayDate = addBusinessDays(payPeriodProcessingDate, 3);
+		setPayPeriodPayDate(getDefaultDate(newPayDate));
+	}, [payPeriodProcessingDate]);
+
 	const [payPeriodStartDate, setPayPeriodStartDate] = useState(
 		getDefaultDate(closestRecord?.payPeriodStartDate),
 	);
@@ -88,7 +93,6 @@ const ExtraPayrunModal = ({
 			setIsSubmitting(false);
 		}
 	};
-	const isProcessingDateTomorrow = addBusinessDays(moment(), 2);
 
 	return (
 		<ModalLayout
@@ -111,15 +115,17 @@ const ExtraPayrunModal = ({
 					hideAvatar
 				/>
 				<DateTimeFormControl
+					minDate={payPeriodPayDate}
 					label={"Select pay date"}
-					valueText1={getDefaultDate(isProcessingDateTomorrow)}
+					valueText1={payPeriodPayDate}
 					name1="payPeriodPayDate"
 					handleChange={(e) => setPayPeriodPayDate(e.target.value)}
 					required
 				/>
 				<DateTimeFormControl
+					minDate={today}
 					label={"Select processing date"}
-					valueText1={getDefaultDate()}
+					valueText1={payPeriodProcessingDate}
 					name1="payPeriodProcessingDate"
 					handleChange={(e) => setPayPeriodProcessingDate(e.target.value)}
 					required

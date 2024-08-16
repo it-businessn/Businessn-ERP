@@ -1,11 +1,13 @@
 import usePaygroup from "hooks/usePaygroup";
 import PageLayout from "layouts/PageLayout";
 import { useState } from "react";
+import { ROUTE_PATH } from "routes";
 import LocalStorageService from "services/LocalStorageService";
 import PaygroupDetailTable from "./paygroup-detail-table/workview-tabs";
 import PaygroupTable from "./paygroup-header-table";
 
 const PayrollWorkview = () => {
+	const empPath = `${ROUTE_PATH.PAYROLL}${ROUTE_PATH.EMPLOYEES}`;
 	const company = LocalStorageService.getItem("selectedCompany");
 	const [refresh, setRefresh] = useState(false);
 
@@ -37,6 +39,7 @@ const PayrollWorkview = () => {
 		>
 			{payGroupSchedule && (
 				<PaygroupTable
+					empPath={empPath}
 					selectedPayGroup={selectedPayGroup}
 					payGroupSchedule={payGroupSchedule}
 					company={company}
@@ -46,7 +49,7 @@ const PayrollWorkview = () => {
 					closestRecordIndex={closestRecordIndex}
 				/>
 			)}
-			<PaygroupDetailTable closestRecord={closestRecord} />
+			<PaygroupDetailTable closestRecord={closestRecord} empPath={empPath} />
 		</PageLayout>
 	);
 };

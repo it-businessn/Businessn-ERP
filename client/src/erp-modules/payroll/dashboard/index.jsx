@@ -10,10 +10,14 @@ import RightPane from "./rightpane";
 
 const Dashboard = () => {
 	const company = LocalStorageService.getItem("selectedCompany");
-	const { payGroups, selectedPayGroup, setSelectedPayGroup } = usePaygroup(
-		company,
-		false,
-	);
+	const {
+		payGroups,
+		selectedPayGroup,
+		setSelectedPayGroup,
+		closestRecord,
+		payGroupSchedule,
+		closestRecordIndex,
+	} = usePaygroup(company, false);
 
 	const loggedInUser = LocalStorageService.getItem("user");
 
@@ -59,6 +63,9 @@ const Dashboard = () => {
 					selectedPayGroup={selectedPayGroup}
 					setStats={setStats}
 					company={company}
+					closestRecord={closestRecord}
+					payGroupSchedule={payGroupSchedule}
+					closestRecordIndex={closestRecordIndex}
 				/>
 				<RightPane
 					selectedUser={loggedInUser}

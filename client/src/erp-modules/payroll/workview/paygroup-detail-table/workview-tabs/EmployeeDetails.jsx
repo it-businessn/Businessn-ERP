@@ -1,10 +1,23 @@
 import OutlineButton from "components/ui/button/OutlineButton";
 import useEmployeeEmploymentInfo from "hooks/useEmployeeEmploymentInfo";
-import { ROUTE_PATH } from "routes";
 import WorkviewTab from "./WorkviewTab";
 
-const EmployeeDetails = ({ company, closestRecord }) => {
+const EmployeeDetails = ({ company, closestRecord, path }) => {
 	const empData = useEmployeeEmploymentInfo(company, null, closestRecord);
+
+	const filteredEmp = [];
+	const isExtraRun = closestRecord?.isExtraRun;
+
+	if (isExtraRun && empData) {
+		const selectedEmp = closestRecord.selectedEmp;
+		selectedEmp.forEach((emp) => {
+			const empExists = empData?.find((_) => _.empId.fullName === emp);
+			if (empExists) {
+				filteredEmp.push(empExists);
+			}
+		});
+	}
+	const data = isExtraRun ? filteredEmp : empData;
 
 	return (
 		<WorkviewTab
@@ -16,9 +29,9 @@ const EmployeeDetails = ({ company, closestRecord }) => {
 				{ key: "Employee Cost Center", pair: "employmentCostCenter" },
 				{ key: "", pair: <OutlineButton label="View Setup" /> },
 			]}
-			data={empData}
+			data={data}
 			label="Setup"
-			path={`${ROUTE_PATH.PAYROLL}${ROUTE_PATH.EMPLOYEES}`}
+			path={path}
 			stepNum={0}
 		/>
 	);

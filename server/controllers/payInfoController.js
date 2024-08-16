@@ -3,16 +3,16 @@ const EmployeePayStub = require("../models/EmployeePayStub");
 const { getPayrollActiveEmployees } = require("./payrollController");
 
 const getAllPayInfo = async (req, res) => {
-	const { companyName, startDate, endDate } = req.params;
+	const { companyName, payDate } = req.params;
 	try {
 		const payrollActiveEmployees = await getPayrollActiveEmployees();
 
 		const aggregatedResult = [];
 		for (const employee of payrollActiveEmployees) {
 			const result = await buildAmountAllocationEmpDetails(
-				startDate,
-				endDate,
+				payDate,
 				employee,
+				companyName,
 			);
 			aggregatedResult.push(result);
 		}
@@ -23,11 +23,11 @@ const getAllPayInfo = async (req, res) => {
 	}
 };
 
-const findEmpPayStub = async (empId, payPeriodStartDate, payPeriodEndDate) =>
+const findEmpPayStub = async (empId, payPeriodPayDate, companyName) =>
 	await EmployeePayStub.findOne({
 		empId,
-		payPeriodStartDate,
-		payPeriodEndDate,
+		payPeriodPayDate,
+		companyName,
 	})
 		.populate({
 			path: "empId",
@@ -39,14 +39,18 @@ const findEmpPayStub = async (empId, payPeriodStartDate, payPeriodEndDate) =>
 		);
 
 const buildAmountAllocationEmpDetails = async (
-	startDate,
-	endDate,
+	payDate,
 	employee,
+	companyName,
 ) => {
 	const employeeId = employee._id;
 	const fullName = employee.fullName;
 
-	const empPayStubResult = await findEmpPayStub(employeeId, startDate, endDate);
+	const empPayStubResult = await findEmpPayStub(
+		employeeId,
+		payDate,
+		companyName,
+	);
 
 	const result = {
 		empId: { _id: employeeId, fullName },

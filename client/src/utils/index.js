@@ -108,7 +108,7 @@ export const formatDateBar = (date) => moment(date).format("DD/MM/YYYY");
 export const formatDateRange = (startDate, endDate) => {
 	const start = moment(startDate).format("DD/MM");
 	const end = moment(endDate).format("DD/MM");
-	return `${start}-${end}`;
+	return `${start} - ${end}`;
 };
 
 export const generateRandomData = (name, count) => {

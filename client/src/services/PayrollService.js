@@ -5,10 +5,8 @@ const PayrollService = {
 		return apiService.get(`/payroll/payGroups/${id}`);
 	},
 
-	async getAllEmployeePayInfo(company, startDate, endDate) {
-		return apiService.get(
-			`/payroll/payInfo/${company}/${startDate}/${endDate}`,
-		);
+	async getAllEmployeePayInfo(company, payDate) {
+		return apiService.get(`/payroll/payInfo/${company}/${payDate}`);
 	},
 
 	async updateEmployeePayInfo(data, id) {
@@ -16,7 +14,7 @@ const PayrollService = {
 	},
 
 	async getEmployeePayInfo(company, empId) {
-		return apiService.get(`/payroll/payInfo/${company}/${empId}`);
+		return apiService.get(`/payroll/payInfo/detail/${company}/${empId}`);
 	},
 
 	async addEmployeePayInfo(data) {

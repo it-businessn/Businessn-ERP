@@ -2,6 +2,7 @@ import { SimpleGrid, VStack } from "@chakra-ui/react";
 import PrimaryButton from "components/ui/button/PrimaryButton";
 import BoxCard from "components/ui/card";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import ExtraPayrunModal from "./ExtraPayrunModal";
 import PayrollActions from "./PayrollActions";
 import WorkviewTable from "./WorkviewTable";
@@ -13,9 +14,20 @@ const PaygroupTable = ({
 	setRefresh,
 	closestRecord,
 	closestRecordIndex,
+	empPath,
 }) => {
 	const [showExtraPayrun, setShowExtraPayrun] = useState(false);
 
+	const navigate = useNavigate();
+
+	const handleClick = (val) => {
+		if (val === "extra") {
+			setShowExtraPayrun(true);
+		}
+		if (val === "empUpdate") {
+			navigate(empPath);
+		}
+	};
 	return (
 		<SimpleGrid
 			columns={{ base: 1, md: 1, lg: 2 }}
@@ -51,7 +63,7 @@ const PaygroupTable = ({
 					/>
 				</VStack>
 			</BoxCard>
-			<PayrollActions handleClick={() => setShowExtraPayrun(true)} />
+			<PayrollActions handleClick={handleClick} />
 		</SimpleGrid>
 	);
 };

@@ -24,6 +24,7 @@ const employeePayStubSchema = new mongoose.Schema({
 	payPeriodProcessingDate: Date,
 	payPeriodNum: String,
 	isProcessed: Boolean,
+	isExtraRun: Boolean,
 
 	totalRegHoursWorked: Number,
 	totalOvertimeHoursWorked: Number,

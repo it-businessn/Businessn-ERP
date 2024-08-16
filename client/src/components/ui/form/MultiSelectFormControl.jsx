@@ -1,6 +1,7 @@
-import { Avatar, Button, FormLabel, Text } from "@chakra-ui/react";
+import { Avatar, Button, FormLabel } from "@chakra-ui/react";
 import { FaCaretDown } from "react-icons/fa";
 import FormControlMain from ".";
+import TextTitle from "../text/TextTitle";
 import MultiSelectBox from "./select/MultiSelectBox";
 
 const MultiSelectFormControl = ({
@@ -30,22 +31,23 @@ const MultiSelectFormControl = ({
 					bg: "var(--primary_bg)",
 					color: "var(--primary_button_bg)",
 				}}
+				onClick={handleMenuToggle}
 			>
-				{showMultiSelect ? (
-					<MultiSelectBox
-						height={height}
-						data={data}
-						openMenu={showMultiSelect}
-						handleCloseMenu={handleCloseMenu}
-						selectedOptions={selectedOptions}
-						setSelectedOptions={setSelectedOptions}
-					/>
-				) : (
-					<Text onClick={handleMenuToggle}>
-						{list?.length > 0 ? `${list?.length} ${tag}` : label}
-					</Text>
-				)}
+				<TextTitle
+					weight="500"
+					title={list?.length > 0 ? `${list?.length} ${tag}` : label}
+				/>
 			</Button>
+			{showMultiSelect && (
+				<MultiSelectBox
+					height={height}
+					data={data}
+					openMenu={showMultiSelect}
+					handleCloseMenu={handleCloseMenu}
+					selectedOptions={selectedOptions}
+					setSelectedOptions={setSelectedOptions}
+				/>
+			)}
 			{!hideAvatar &&
 				list?.length > 0 &&
 				list.map((name) => (

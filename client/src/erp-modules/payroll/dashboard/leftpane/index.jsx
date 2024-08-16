@@ -4,9 +4,20 @@ import BoxCard from "components/ui/card";
 import TextTitle from "components/ui/text/TextTitle";
 import { useState } from "react";
 import { MdOutlineChevronLeft, MdOutlineChevronRight } from "react-icons/md";
+import { useNavigate } from "react-router-dom";
+import { ROUTE_PATH } from "routes";
+import { formatDateRange, isExtraPay } from "utils";
 import VerticalStepper from "../../../../components/ui/VerticalStepper";
+import PayPeriodCard from "./PayPeriodCard";
 
-const LeftPane = ({ selectedPayGroup, setStats, company }) => {
+const LeftPane = ({
+	selectedPayGroup,
+	setStats,
+	company,
+	closestRecord,
+	payGroupSchedule,
+	closestRecordIndex,
+}) => {
 	const steps = [
 		{ title: "Approvals", description: "Contact Info" },
 		{ title: "Leave Adjustment", description: "Date & Time" },
@@ -17,91 +28,75 @@ const LeftPane = ({ selectedPayGroup, setStats, company }) => {
 		{ title: "Submit", description: "" },
 	];
 	const [currentStep, setCurrentStep] = useState(0);
-
 	const goToNextStep = () => {
 		setCurrentStep((prevStep) => prevStep + 1);
 	};
+
+	const navigate = useNavigate();
+	const workviewPath = `${ROUTE_PATH.PAYROLL}${ROUTE_PATH.WORKVIEW}`;
+	const handleClick = () => navigate(workviewPath);
+
+	const prevSchedule =
+		payGroupSchedule && payGroupSchedule[closestRecordIndex - 1];
+	const nextSchedule =
+		payGroupSchedule && payGroupSchedule[closestRecordIndex + 1];
+
+	const runType = closestRecord?.isExtraRun ? "Extra" : "Regular";
 	const sections = [
 		{
 			name: "Payroll",
 			content: (
 				<>
 					<HStack gap={4} justifyContent={"space-around"}>
-						<VStack
-							spacing={0}
-							color={"var(--nav_color)"}
-							p="1em"
-							w={"100%"}
-							bg={"var(--primary_bg)"}
-							border="3px solid var(--main_color)"
-							borderRadius="10px"
-						>
-							<TextTitle title={"Feb"} align={"center"} />
-							<TextTitle title={"2024"} align={"center"} />
-						</VStack>
-						<VStack
-							spacing={0}
+						<PayPeriodCard
+							schedule={prevSchedule}
+							title1={`PP ${isExtraPay(
+								prevSchedule?.payPeriod,
+								prevSchedule?.isExtraRun,
+							)}`}
+							title2={prevSchedule?.payPeriodProcessingDate}
+						/>
+						<PayPeriodCard
+							schedule={closestRecord}
 							color={"var(--lead_cards_bg)"}
-							p="1em"
-							w={"100%"}
 							bg={"var(--payroll_bg)"}
 							border="3px solid var(--payroll_bg)"
-							borderRadius="10px"
-						>
-							<TextTitle title={"PP 26"} mt={2} align={"center"} />
-							<TextTitle title={"March 2024"} align={"center"} />
-							<TextTitle
-								title={"Run date: 19/03/24"}
-								align={"center"}
-								size="xs"
-								mb={"1em"}
-							/>
-						</VStack>
-						<VStack
-							spacing={0}
-							color={"var(--nav_color)"}
-							p="1em"
-							w={"100%"}
-							bg={"var(--primary_bg)"}
-							border="3px solid var(--main_color)"
-							borderRadius="10px"
-						>
-							<TextTitle title={"Apr"} align={"center"} />
-							<TextTitle title={"2024"} align={"center"} />
-						</VStack>
+							title1={`PP ${isExtraPay(
+								closestRecord?.payPeriod,
+								closestRecord?.isExtraRun,
+							)}`}
+							title2={runType.toUpperCase()}
+							title3={`Processing date: ${closestRecord?.payPeriodProcessingDate}`}
+						/>
+						<PayPeriodCard
+							schedule={nextSchedule}
+							title1={`PP ${isExtraPay(
+								nextSchedule?.payPeriod,
+								nextSchedule?.isExtraRun,
+							)}`}
+							title2={nextSchedule?.payPeriodProcessingDate}
+						/>
 					</HStack>
 					<HStack gap={4}>
-						<VStack
-							spacing={0}
-							color={"var(--nav_color)"}
-							p="1em"
-							w={"100%"}
-							bg={"var(--primary_bg)"}
-							border="3px solid var(--main_color)"
-							borderRadius="10px"
-						>
-							<TextTitle title={"Check date"} />
-							<TextTitle title={"2024"} />
-						</VStack>
-						<VStack
-							spacing={0}
-							color={"var(--nav_color)"}
-							p="1em"
-							w={"100%"}
-							bg={"var(--primary_bg)"}
-							border="3px solid var(--main_color)"
-							borderRadius="10px"
-						>
-							<TextTitle title={"Pay period"} />
-							<TextTitle title={"19/03 - 30/05"} />
-						</VStack>
+						<PayPeriodCard
+							schedule={closestRecord}
+							title1="Pay date"
+							title2={closestRecord?.payPeriodPayDate}
+						/>
+						<PayPeriodCard
+							schedule={closestRecord}
+							title1="Pay period"
+							title2={`${formatDateRange(
+								closestRecord?.payPeriodStartDate,
+								closestRecord?.payPeriodEndDate,
+							)}`}
+						/>
 					</HStack>
 					<PrimaryButton
 						minW={"100%"}
-						// isDisabled={isDisabled}
-						name={"Run payroll"}
-						// isLoading={isLoading}
+						name={"Manage payroll"}
 						loadingText="Loading"
+						onOpen={handleClick}
 					/>
 				</>
 			),
@@ -109,85 +104,79 @@ const LeftPane = ({ selectedPayGroup, setStats, company }) => {
 		{
 			name: "Pay period",
 			content: (
-				<>
-					<VStack spacing={3} alignItems={"start"}>
-						<HStack
-							w={"100%"}
-							justifyContent={"space-between"}
-							alignItems={"start"}
-						>
-							<TextTitle title={"Employees"} />
-							<VStack>
-								<TextTitle align="end" title={"March 2024 (03/2024)"} />
-								<TextTitle align="end" weight="normal" title={"0 Payslips"} />
-							</VStack>
-						</HStack>
-						<HStack
-							w={"100%"}
-							justifyContent={"space-between"}
-							alignItems={"start"}
-						>
-							<TextTitle title={"Vacations"} />
-							<VStack>
-								<TextTitle align="end" title={"March 2024 (03/2024)"} />
-								<TextTitle align="end" weight="normal" title={"0 Payslips"} />
-							</VStack>
-						</HStack>
-					</VStack>
-				</>
+				<VStack spacing={3} alignItems={"start"}>
+					<HStack
+						w={"100%"}
+						justifyContent={"space-between"}
+						alignItems={"start"}
+					>
+						<TextTitle title={"Employees"} />
+						<VStack>
+							<TextTitle align="end" title={"March 2024 (03/2024)"} />
+							<TextTitle align="end" weight="normal" title={"0 Payslips"} />
+						</VStack>
+					</HStack>
+					<HStack
+						w={"100%"}
+						justifyContent={"space-between"}
+						alignItems={"start"}
+					>
+						<TextTitle title={"Vacations"} />
+						<VStack>
+							<TextTitle align="end" title={"March 2024 (03/2024)"} />
+							<TextTitle align="end" weight="normal" title={"0 Payslips"} />
+						</VStack>
+					</HStack>
+				</VStack>
 			),
 		},
 		{
 			name: "Payroll actions",
 			content: (
-				<>
-					<VStack spacing={3} alignItems={"start"}>
-						<HStack
-							w={"100%"}
-							justifyContent={"space-between"}
-							color={"var(--nav_color)"}
-							px="1em"
-							bg={"var(--bg_color_1)"}
-							border="3px solid var(--bg_color_1)"
-							borderRadius="10px"
-						>
-							<VStack>
-								<TextTitle title={"Overview of payroll process"} />
-								<TextTitle
-									weight="normal"
-									title={"Task progress of 200 employees"}
-								/>
-							</VStack>
+				<VStack spacing={3} alignItems={"start"}>
+					<HStack
+						w={"100%"}
+						justifyContent={"space-between"}
+						color={"var(--nav_color)"}
+						px="1em"
+						bg={"var(--bg_color_1)"}
+						border="3px solid var(--bg_color_1)"
+						borderRadius="10px"
+					>
+						<VStack>
+							<TextTitle title={"Overview of payroll process"} />
 							<TextTitle
-								title={"45%"}
-								align="end"
-								color={"var(--primary_button_bg)"}
+								weight="normal"
+								title={"Task progress of 200 employees"}
 							/>
-						</HStack>
-						<VerticalStepper steps={steps} currentStep={currentStep} />
-					</VStack>
-				</>
+						</VStack>
+						<TextTitle
+							title={"45%"}
+							align="end"
+							color={"var(--primary_button_bg)"}
+						/>
+					</HStack>
+					<VerticalStepper steps={steps} currentStep={currentStep} />
+				</VStack>
 			),
 		},
 		{
 			name: "Notifications",
 			content: (
-				<>
-					<VStack spacing={3} alignItems={"start"}>
-						<VStack spacing={1}>
-							<TextTitle title={"Next public holiday"} />
-							<TextTitle weight="normal" title={"Sunday - Jul 4, 2024"} />
-						</VStack>
-						<VStack spacing={1}>
-							<TextTitle title={"Next public holiday"} />
-							<TextTitle weight="normal" title={"Sunday - Jul 4, 2024"} />
-						</VStack>
-						<VStack spacing={1}>
-							<TextTitle title={"Next public holiday"} />
-							<TextTitle weight="normal" title={"Sunday - Jul 4, 2024"} />
-						</VStack>
+				<VStack spacing={3} alignItems={"start"}>
+					<VStack spacing={1}>
+						<TextTitle title={"Next public holiday"} />
+						<TextTitle weight="normal" title={"Sunday - Jul 4, 2024"} />
 					</VStack>
-				</>
+					<VStack spacing={1}>
+						<TextTitle title={"Next public holiday"} />
+						<TextTitle weight="normal" title={"Sunday - Jul 4, 2024"} />
+					</VStack>
+					<VStack spacing={1}>
+						<TextTitle title={"Next public holiday"} />
+						<TextTitle weight="normal" title={"Sunday - Jul 4, 2024"} />
+					</VStack>
+				</VStack>
 			),
 		},
 	];

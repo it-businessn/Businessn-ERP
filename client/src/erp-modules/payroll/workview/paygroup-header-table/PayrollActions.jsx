@@ -9,17 +9,14 @@ const PayrollActions = ({ handleClick }) => {
 		<BoxCard>
 			<TextTitle title={"Payroll actions"} mt={2} mb={"1em"} />
 			<VStack spacing={3} align={"start"}>
-				{PAYGROUP_ACTIONS.map((action) => (
+				{PAYGROUP_ACTIONS.map(({ key, name }) => (
 					<HStack
+						cursor={"pointer"}
 						spacing={2}
-						key={action.key}
-						onClick={() => {
-							if (action.key === "extra") {
-								handleClick();
-							}
-						}}
+						key={key}
+						onClick={() => handleClick(key)}
 					>
-						<TextTitle title={action.name} width="auto" />
+						<TextTitle title={name} width="auto" />
 						<Icon
 							borderRadius={"50%"}
 							as={MdOutlineChevronRight}

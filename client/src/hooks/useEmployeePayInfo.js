@@ -9,18 +9,18 @@ const useEmployeePayInfo = (company, refresh, empId, payPeriod) => {
 			try {
 				const response = empId
 					? await PayrollService.getEmployeePayInfo(company, empId)
-					: await PayrollService.getAllEmployeePayInfo(
+					: payPeriod &&
+					  (await PayrollService.getAllEmployeePayInfo(
 							company,
-							payPeriod.payPeriodStartDate,
-							payPeriod.payPeriodEndDate,
-					  );
+							payPeriod.payPeriodPayDate,
+					  ));
 				setPayInfo(response.data);
 			} catch (error) {
 				console.error(error);
 			}
 		};
 		fetchEmployeePayInfo();
-	}, [company, empId, refresh]);
+	}, [company, empId, refresh, payPeriod]);
 	return payInfo;
 };
 
