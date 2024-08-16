@@ -49,30 +49,72 @@ const getGroupedTimesheet = async (req, res) => {
 
 	try {
 		const payrollActiveEmployees = await getPayrollActiveEmployees();
-		const result = await calculateTotalAggregatedHours(
+		const currentPeriodEmployees = await calculateTotalAggregatedHours(
 			startDate,
 			endDate,
 			companyName,
 		);
-		if (!result.length) {
-			for (const data of payrollActiveEmployees) {
-				result.push({
-					_id: data._id,
-					empId: { fullName: data.fullName, _id: data._id },
-					totalRegHoursWorked: 0,
-					totalOvertimeHoursWorked: 0,
-					totalDblOvertimeHoursWorked: 0,
-					totalStatDayHoursWorked: 0,
-					totalStatHours: 0,
-					totalSickHoursWorked: 0,
-					totalVacationHoursWorked: 0,
-				});
+
+		const aggregatedResult = [];
+
+		for (const employee of payrollActiveEmployees) {
+			const empTimesheetData = currentPeriodEmployees.find(
+				(el) => el.empId._id.toString() === employee._id.toString(),
+			);
+			if (empTimesheetData) {
+				const result = buildEmpHourlyDetails(empTimesheetData, employee);
+				aggregatedResult.push(result);
+			} else {
+				const result = buildEmpHourlyDetails(null, employee);
+				aggregatedResult.push(result);
 			}
 		}
-		res.status(200).json(result);
+		res.status(200).json(aggregatedResult);
 	} catch (error) {
 		res.status(404).json({ error: error.message });
 	}
+};
+
+const buildEmpHourlyDetails = (empTimesheetData, employee) => {
+	const employeeId = empTimesheetData
+		? empTimesheetData.empId.employeeId
+		: employee.employeeId;
+
+	const recordId = empTimesheetData ? empTimesheetData.empId._id : employee._id;
+	const fullName = empTimesheetData
+		? empTimesheetData.empId.fullName
+		: employee.fullName;
+
+	const totalRegHoursWorked = empTimesheetData
+		? empTimesheetData.totalRegHoursWorked
+		: 0;
+	const totalOvertimeHoursWorked = empTimesheetData
+		? empTimesheetData.totalOvertimeHoursWorked
+		: 0;
+	const totalDblOvertimeHoursWorked = empTimesheetData
+		? empTimesheetData.totalDblOvertimeHoursWorked
+		: 0;
+	const totalStatDayHoursWorked = empTimesheetData
+		? empTimesheetData.totalStatDayHoursWorked
+		: 0;
+	const totalStatHours = empTimesheetData ? empTimesheetData.totalStatHours : 0;
+	const totalSickHoursWorked = empTimesheetData
+		? empTimesheetData.totalSickHoursWorked
+		: 0;
+	const totalVacationHoursWorked = empTimesheetData
+		? empTimesheetData.totalVacationHoursWorked
+		: 0;
+	return {
+		_id: employeeId,
+		empId: { fullName, _id: recordId },
+		totalRegHoursWorked,
+		totalOvertimeHoursWorked,
+		totalDblOvertimeHoursWorked,
+		totalStatDayHoursWorked,
+		totalStatHours,
+		totalSickHoursWorked,
+		totalVacationHoursWorked,
+	};
 };
 
 const EMP_INFO = {

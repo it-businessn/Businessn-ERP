@@ -19,14 +19,14 @@ const getAllEmploymentInfo = async (req, res) => {
 				(el) => el.employeeId.toString() === employee._id.toString(),
 			);
 			if (empTimesheetData) {
-				const result = await buildPayPeriodEmpDetailsDetails(
+				const result = await buildPayPeriodEmpDetails(
 					companyName,
 					empTimesheetData,
 					employee._id,
 				);
 				aggregatedResult.push(result);
 			} else {
-				const result = await buildPayPeriodEmpDetailsDetails(
+				const result = await buildPayPeriodEmpDetails(
 					companyName,
 					null,
 					employee._id,
@@ -66,7 +66,7 @@ const findEmpPayInfo = async (companyName) =>
 		companyName,
 	}).select("empId regPay");
 
-const buildPayPeriodEmpDetailsDetails = async (
+const buildPayPeriodEmpDetails = async (
 	companyName,
 	empTimesheetData,
 	empId,
