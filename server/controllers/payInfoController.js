@@ -1,67 +1,63 @@
 const EmployeePayInfo = require("../models/EmployeePayInfo");
 const EmployeePayStub = require("../models/EmployeePayStub");
-const Timesheet = require("../models/Timesheet");
 const { getPayrollActiveEmployees } = require("./payrollController");
 
 const getAllPayInfo = async (req, res) => {
 	const { companyName, startDate, endDate } = req.params;
 	try {
 		const payrollActiveEmployees = await getPayrollActiveEmployees();
-		const currentPeriodEmployees = await Timesheet.find({
-			companyName,
-			createdOn: { $gte: startDate, $lte: endDate },
-			approveStatus: "Approved",
-		}).select("employeeId");
 
-		const uniqueEmployeeIds = new Set();
-
-		const currentEmployees = currentPeriodEmployees.length
-			? currentPeriodEmployees
-			: payrollActiveEmployees;
-
-		const filteredArray = currentEmployees.filter((item) => {
-			const employeeIdStr = item.employeeId.toString();
-			if (uniqueEmployeeIds.has(employeeIdStr)) {
-				return false;
-			} else {
-				uniqueEmployeeIds.add(employeeIdStr);
-				return true;
-			}
-		});
-		const result = [];
-		for (emp of filteredArray) {
-			const payStubExists = await EmployeePayStub.findOne({
-				empId: emp._id,
-				payPeriodStartDate: startDate,
-				payPeriodEndDate: endDate,
-			})
-				.populate({
-					path: "empId",
-					model: "Employee",
-					select: "fullName",
-				})
-				.select(
-					"commission retroactive reimbursement vacationPayout bonus terminationPayout",
-				);
-			if (payStubExists) {
-				result.push(payStubExists);
-			} else {
-				result.push({
-					empId: { _id: emp._id, fullName: emp.fullName },
-					commission: 0,
-					bonus: 0,
-					reimbursement: 0,
-					retroactive: 0,
-					terminationPayout: 0,
-					vacationPayout: 0,
-				});
-			}
+		const aggregatedResult = [];
+		for (const employee of payrollActiveEmployees) {
+			const result = await buildAmountAllocationEmpDetails(
+				startDate,
+				endDate,
+				employee,
+			);
+			aggregatedResult.push(result);
 		}
 
-		res.status(200).json(result);
+		res.status(200).json(aggregatedResult);
 	} catch (error) {
 		res.status(500).json({ message: error.message });
 	}
+};
+
+const findEmpPayStub = async (empId, payPeriodStartDate, payPeriodEndDate) =>
+	await EmployeePayStub.findOne({
+		empId,
+		payPeriodStartDate,
+		payPeriodEndDate,
+	})
+		.populate({
+			path: "empId",
+			model: "Employee",
+			select: "fullName",
+		})
+		.select(
+			"commission retroactive reimbursement vacationPayout bonus terminationPayout",
+		);
+
+const buildAmountAllocationEmpDetails = async (
+	startDate,
+	endDate,
+	employee,
+) => {
+	const employeeId = employee._id;
+	const fullName = employee.fullName;
+
+	const empPayStubResult = await findEmpPayStub(employeeId, startDate, endDate);
+
+	const result = {
+		empId: { _id: employeeId, fullName },
+		commission: empPayStubResult?.commission ?? 0,
+		bonus: empPayStubResult?.bonus ?? 0,
+		reimbursement: empPayStubResult?.reimbursement ?? 0,
+		retroactive: empPayStubResult?.retroactive ?? 0,
+		terminationPayout: empPayStubResult?.terminationPayout ?? 0,
+		vacationPayout: empPayStubResult?.vacationPayout ?? 0,
+	};
+	return result;
 };
 
 const getEmployeePayInfo = async (req, res) => {
