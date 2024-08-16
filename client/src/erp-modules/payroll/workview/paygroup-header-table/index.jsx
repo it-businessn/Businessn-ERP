@@ -47,7 +47,6 @@ const PaygroupTable = ({
 					<WorkviewTable
 						payGroupSchedule={payGroupSchedule}
 						closestRecordIndex={closestRecordIndex}
-						top={-1}
 						autoScroll
 					/>
 				</VStack>

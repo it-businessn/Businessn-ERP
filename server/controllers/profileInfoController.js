@@ -1,6 +1,7 @@
 const Employee = require("../models/Employee");
 const EmployeeProfileInfo = require("../models/EmployeeProfileInfo");
 const { deleteAlerts } = require("./payrollController");
+const { addStatHolidayDefaultTimesheet } = require("./timesheetContoller");
 
 const getAllProfileInfo = async (req, res) => {
 	const { companyName } = req.params;
@@ -72,9 +73,15 @@ const addEmployeeProfileInfo = async (req, res) => {
 			empId,
 			companyName,
 		);
+
 		if (SIN !== "") {
 			await deleteAlerts(empId);
 		}
+
+		if (payrollStatus === "Payroll Active") {
+			addStatHolidayDefaultTimesheet(empId, companyName);
+		}
+
 		if (existingProfileInfo) {
 			const updatedProfileInfo = await updateProfileInfo(
 				existingProfileInfo._id,
@@ -85,6 +92,7 @@ const addEmployeeProfileInfo = async (req, res) => {
 			await employee.save();
 			return res.status(201).json(updatedProfileInfo);
 		}
+
 		const newProfileInfo = await EmployeeProfileInfo.create({
 			empId,
 			companyName,

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import PayrollService from "services/PayrollService";
 
-const useEmployeePayReport = (company, payPeriodNum, isOpen, currentStep) => {
+const useEmployeePayReport = (company, payPeriodNum, isOpen) => {
 	const [hours, setHours] = useState(null);
 
 	useEffect(() => {
@@ -9,14 +9,14 @@ const useEmployeePayReport = (company, payPeriodNum, isOpen, currentStep) => {
 			try {
 				const response = await PayrollService.getPayReportDetails(
 					company,
-					payPeriodNum.payPeriod,
+					payPeriodNum?.payPeriod ?? payPeriodNum,
 				);
 				setHours(response.data);
 			} catch (error) {
 				console.error(error);
 			}
 		};
-		if (payPeriodNum && isOpen && currentStep === 1) {
+		if (payPeriodNum && isOpen) {
 			fetchHoursWorkedInfo();
 		}
 	}, [company, payPeriodNum, isOpen]);

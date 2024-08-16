@@ -1,5 +1,5 @@
 import { useDisclosure } from "@chakra-ui/react";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import AlertsViolation from "./AlertsViolation";
 import Finalize from "./Finalize";
 import InputsReview from "./InputsReview";
@@ -17,6 +17,8 @@ const PayrollStageContent = ({
 	selectedPayGroup,
 	payGroups,
 	isPayPeriodInactive,
+	setReportData,
+	reportData,
 }) => {
 	const { isOpen: isPayrollStepupOpen, onToggle: onPayrollStepupToggle } =
 		useDisclosure({
@@ -35,8 +37,6 @@ const PayrollStageContent = ({
 	const { isOpen: isFinalizeOpen, onToggle: onFinalizeToggle } = useDisclosure({
 		defaultIsOpen: false,
 	});
-
-	const [reportData, setReportData] = useState(null);
 
 	useEffect(() => {
 		handleStepChange();

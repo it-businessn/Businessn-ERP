@@ -12,12 +12,12 @@ const usePaygroup = (company, refresh) => {
 
 	const today = getDefaultDate(new Date());
 
-	const getClosestScheduleItem = (schedules) => {
+	const getClosestScheduleByProcessingDate = (schedules) => {
 		const closestPayPeriod = schedules
 			?.filter(({ isProcessed }) => !isProcessed)
 			?.reduce((closest, record) => {
-				const recordEndDate = moment(record.payPeriodEndDate);
-				const closestEndDate = moment(closest.payPeriodEndDate);
+				const recordEndDate = moment(record.payPeriodProcessingDate);
+				const closestEndDate = moment(closest.payPeriodProcessingDate);
 				return Math.abs(recordEndDate.diff(today)) <
 					Math.abs(closestEndDate.diff(today))
 					? record
@@ -44,7 +44,9 @@ const usePaygroup = (company, refresh) => {
 						"payPeriodPayDate",
 					);
 					setPayGroupSchedule(sortedResult);
-					getClosestScheduleItem(response.data[0]?.scheduleSettings);
+					getClosestScheduleByProcessingDate(
+						response.data[0]?.scheduleSettings,
+					);
 				}
 			} catch (error) {
 				console.error(error);

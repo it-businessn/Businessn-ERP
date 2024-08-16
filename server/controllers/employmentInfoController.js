@@ -1,10 +1,12 @@
 const EmployeeEmploymentInfo = require("../models/EmployeeEmploymentInfo");
 const EmployeePayInfo = require("../models/EmployeePayInfo");
 const Timesheet = require("../models/Timesheet");
+const { getPayrollActiveEmployees } = require("./payrollController");
 
 const getAllEmploymentInfo = async (req, res) => {
 	const { companyName, startDate, endDate } = req.params;
 	try {
+		const payrollActiveEmployees = await getPayrollActiveEmployees();
 		const currentPeriodEmployees = await Timesheet.find({
 			companyName,
 			createdOn: { $gte: startDate, $lte: endDate },
@@ -12,8 +14,11 @@ const getAllEmploymentInfo = async (req, res) => {
 		}).select("employeeId");
 
 		const uniqueEmployeeIds = new Set();
+		const currentEmployees = currentPeriodEmployees.length
+			? currentPeriodEmployees
+			: payrollActiveEmployees;
 
-		const filteredArray = currentPeriodEmployees.filter((item) => {
+		const filteredArray = currentEmployees.filter((item) => {
 			const employeeIdStr = item.employeeId.toString();
 			if (uniqueEmployeeIds.has(employeeIdStr)) {
 				return false;
@@ -26,7 +31,7 @@ const getAllEmploymentInfo = async (req, res) => {
 		const result = [];
 		for (emp of filteredArray) {
 			const empInfoResult = await EmployeeEmploymentInfo.findOne({
-				empId: emp.employeeId,
+				empId: emp._id,
 			}).populate({
 				path: "empId",
 				model: "Employee",

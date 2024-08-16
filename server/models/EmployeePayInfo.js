@@ -19,12 +19,6 @@ const employeePayInfoSchema = new mongoose.Schema({
 	extendedHealthEE: String,
 	extendedHealthER: String,
 	unionDues: String,
-	commission: { type: Number, default: 0 },
-	retroactive: { type: Number, default: 0 },
-	reimbursement: { type: Number, default: 0 },
-	vacationPayout: { type: Number, default: 0 },
-	bonus: { type: Number, default: 0 },
-	terminationPayout: { type: Number, default: 0 },
 	createdOn: { type: Date, default: Date.now },
 	updatedOn: { type: Date, default: Date.now },
 });

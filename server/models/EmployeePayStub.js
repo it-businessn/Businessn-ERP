@@ -13,7 +13,7 @@ const employeePayStubSchema = new mongoose.Schema({
 	vacationPay: String,
 	commission: { type: Number, default: 0 },
 	retroactive: { type: Number, default: 0 },
-	// reimbursement: { type: Number, default: 0 },
+	reimbursement: { type: Number, default: 0 },
 	vacationPayout: { type: Number, default: 0 },
 	bonus: { type: Number, default: 0 },
 	terminationPayout: { type: Number, default: 0 },
@@ -23,6 +23,7 @@ const employeePayStubSchema = new mongoose.Schema({
 	payPeriodPayDate: Date,
 	payPeriodProcessingDate: Date,
 	payPeriodNum: String,
+	isProcessed: Boolean,
 
 	totalRegHoursWorked: Number,
 	totalOvertimeHoursWorked: Number,

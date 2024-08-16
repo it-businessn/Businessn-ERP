@@ -8,6 +8,7 @@ const ItemRow = ({
 	currentTotal,
 	YTDTotal,
 	w = "3em",
+	isRegular,
 }) => (
 	<Tr>
 		<Td w={"10em"}>
@@ -24,7 +25,7 @@ const ItemRow = ({
 		<Td w={w}>
 			<TextTitle
 				size={"md"}
-				visibility={totalHours === 0 && "hidden"}
+				visibility={!isRegular && totalHours === 0 && "hidden"}
 				title={totalHours}
 				weight="normal"
 			/>

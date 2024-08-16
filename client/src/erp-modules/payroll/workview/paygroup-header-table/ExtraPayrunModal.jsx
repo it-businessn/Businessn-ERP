@@ -4,9 +4,10 @@ import DateTimeFormControl from "components/ui/form/DateTimeFormControl";
 import MultiSelectFormControl from "components/ui/form/MultiSelectFormControl";
 import ModalLayout from "components/ui/modal/ModalLayout";
 import useEmployees from "hooks/useEmployees";
+import moment from "moment";
 import { useState } from "react";
 import SettingService from "services/SettingService";
-import { getDefaultDate } from "utils";
+import { addBusinessDays, getDefaultDate } from "utils";
 
 const ExtraPayrunModal = ({
 	showExtraPayrun,
@@ -87,6 +88,7 @@ const ExtraPayrunModal = ({
 			setIsSubmitting(false);
 		}
 	};
+	const isProcessingDateTomorrow = addBusinessDays(moment(), 2);
 
 	return (
 		<ModalLayout
@@ -110,14 +112,14 @@ const ExtraPayrunModal = ({
 				/>
 				<DateTimeFormControl
 					label={"Select pay date"}
-					valueText1={payPeriodPayDate}
+					valueText1={getDefaultDate(isProcessingDateTomorrow)}
 					name1="payPeriodPayDate"
 					handleChange={(e) => setPayPeriodPayDate(e.target.value)}
 					required
 				/>
 				<DateTimeFormControl
 					label={"Select processing date"}
-					valueText1={payPeriodProcessingDate}
+					valueText1={getDefaultDate()}
 					name1="payPeriodProcessingDate"
 					handleChange={(e) => setPayPeriodProcessingDate(e.target.value)}
 					required

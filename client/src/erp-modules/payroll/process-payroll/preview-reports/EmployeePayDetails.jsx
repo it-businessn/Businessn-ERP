@@ -22,6 +22,7 @@ const EmployeePayDetails = ({ data }) => {
 				<Tbody>
 					<ItemRow
 						title={"Regular"}
+						isRegular
 						rate={data.regPay}
 						totalHours={data.totalRegHoursWorked}
 						currentTotal={data.currentRegPayTotal}

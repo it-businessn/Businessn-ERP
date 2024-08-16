@@ -12,9 +12,9 @@ import { PAYGROUP_COLS } from "../data";
 const WorkviewTable = ({
 	payGroupSchedule,
 	closestRecordIndex,
-	height = "17vh",
-	top,
+	height = "26vh",
 	autoScroll,
+	handleRegister,
 }) => {
 	const rowRefs = useRef([]);
 	const scrollToRow = (index) => {
@@ -46,7 +46,6 @@ const WorkviewTable = ({
 			w={"100%"}
 			height={height}
 			position="sticky"
-			top={top}
 			zIndex="docked"
 			textAlign="center"
 		>
@@ -95,7 +94,8 @@ const WorkviewTable = ({
 									px={0}
 									isDisabled={isDisabledStatus}
 									hover={{
-										bg: "transparent",
+										bg,
+										color,
 									}}
 								/>
 							</Td>
@@ -115,7 +115,7 @@ const WorkviewTable = ({
 													: "var(--primary_button_bg)"
 											}
 											hover={{
-												bg: isDisabledAction && "",
+												bg: isDisabledAction && "var(--calendar_border)",
 											}}
 											isDisabled={isDisabledAction}
 											name={"Pay now"}
@@ -129,7 +129,7 @@ const WorkviewTable = ({
 											<OutlineButton
 												label={"View Register"}
 												size="xs"
-												// onClick={handleClick}
+												onClick={() => handleRegister(payPeriod)}
 											/>
 										) : (
 											<PrimaryButton

@@ -1,9 +1,12 @@
 const EmployeePayInfo = require("../models/EmployeePayInfo");
+const EmployeePayStub = require("../models/EmployeePayStub");
 const Timesheet = require("../models/Timesheet");
+const { getPayrollActiveEmployees } = require("./payrollController");
 
 const getAllPayInfo = async (req, res) => {
 	const { companyName, startDate, endDate } = req.params;
 	try {
+		const payrollActiveEmployees = await getPayrollActiveEmployees();
 		const currentPeriodEmployees = await Timesheet.find({
 			companyName,
 			createdOn: { $gte: startDate, $lte: endDate },
@@ -12,7 +15,11 @@ const getAllPayInfo = async (req, res) => {
 
 		const uniqueEmployeeIds = new Set();
 
-		const filteredArray = currentPeriodEmployees.filter((item) => {
+		const currentEmployees = currentPeriodEmployees.length
+			? currentPeriodEmployees
+			: payrollActiveEmployees;
+
+		const filteredArray = currentEmployees.filter((item) => {
 			const employeeIdStr = item.employeeId.toString();
 			if (uniqueEmployeeIds.has(employeeIdStr)) {
 				return false;
@@ -23,15 +30,31 @@ const getAllPayInfo = async (req, res) => {
 		});
 		const result = [];
 		for (emp of filteredArray) {
-			const empResult = await EmployeePayInfo.findOne({
-				empId: emp.employeeId,
-			}).populate({
-				path: "empId",
-				model: "Employee",
-				select: "fullName",
-			});
-			if (empResult) {
-				result.push(empResult);
+			const payStubExists = await EmployeePayStub.findOne({
+				empId: emp._id,
+				payPeriodStartDate: startDate,
+				payPeriodEndDate: endDate,
+			})
+				.populate({
+					path: "empId",
+					model: "Employee",
+					select: "fullName",
+				})
+				.select(
+					"commission retroactive reimbursement vacationPayout bonus terminationPayout",
+				);
+			if (payStubExists) {
+				result.push(payStubExists);
+			} else {
+				result.push({
+					empId: { _id: emp._id, fullName: emp.fullName },
+					commission: 0,
+					bonus: 0,
+					reimbursement: 0,
+					retroactive: 0,
+					terminationPayout: 0,
+					vacationPayout: 0,
+				});
 			}
 		}
 

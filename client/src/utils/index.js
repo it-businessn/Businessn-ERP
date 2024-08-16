@@ -143,6 +143,19 @@ export function getDateDiffHours(date1, date2, totalBreaks) {
 	return `${formattedHours}:${formattedMinutes}`;
 }
 
+export const addBusinessDays = (date, days) => {
+	let result = moment(date);
+	let count = 0;
+	while (count < days) {
+		result = result.add(1, "days");
+
+		if (result.isoWeekday() !== 6 && result.isoWeekday() !== 7) {
+			count++;
+		}
+	}
+	return result;
+};
+
 export const isValidPhoneNumber = (phoneNumber) => {
 	const phoneRegex = /^[0-9]{10}$/;
 	return phoneRegex.test(phoneNumber);

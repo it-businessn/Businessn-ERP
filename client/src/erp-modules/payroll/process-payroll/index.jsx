@@ -59,6 +59,7 @@ const ProcessPayroll = () => {
 	];
 	const [showConfirmationPopUp, setShowConfirmationPopUp] = useState(false);
 	const [isSubmitting, setIsSubmitting] = useState(false);
+	const [reportData, setReportData] = useState(null);
 
 	const handleClick = () => {
 		setShowConfirmationPopUp((prev) => !prev);
@@ -70,6 +71,8 @@ const ProcessPayroll = () => {
 	const handleSubmit = async () => {
 		selectedPayPeriod.isProcessed = true;
 		setIsSubmitting(true);
+		// selectedPayGroup.scheduleSettings.map((_) => (_.isProcessed = false));
+		// console.log(selectedPayGroup.scheduleSettings);
 		try {
 			const payrollProcessed = await SettingService.updateGroup(
 				{
@@ -82,12 +85,12 @@ const ProcessPayroll = () => {
 				toast({
 					title: "Payroll is processed for payrun.",
 					status: "success",
-					duration: 1500,
+					duration: 1000,
 					isClosable: true,
 				});
 				setTimeout(() => {
 					navigate(`${ROUTE_PATH.PAYROLL}${ROUTE_PATH.WORKVIEW}`);
-				}, 1500);
+				}, 1000);
 			}
 		} catch (error) {
 		} finally {
@@ -149,6 +152,8 @@ const ProcessPayroll = () => {
 					selectedPayGroup={selectedPayGroup}
 					payGroups={payGroups}
 					isPayPeriodInactive={isPayPeriodInactive}
+					setReportData={setReportData}
+					reportData={reportData}
 				/>
 			</SimpleGrid>
 

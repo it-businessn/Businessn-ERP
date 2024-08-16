@@ -92,11 +92,7 @@ const getTimesheet = async (req, res) => {
 const findEmployeeStatTimesheetExists = async (record) =>
 	await Timesheet.findOne(record);
 
-const addStatHolidayDefaultTimesheet = async (
-	employeeId,
-	companyName,
-	createdOn,
-) => {
+const addStatHolidayDefaultTimesheet = async (employeeId, companyName) => {
 	const STAT_HOLIDAYS = [
 		{ name: "New Year's Day", date: "2024-01-01" },
 		{ name: "Family Day", date: "2024-02-19" },
@@ -116,7 +112,7 @@ const addStatHolidayDefaultTimesheet = async (
 		employeeId,
 		companyName,
 		payType: "Statutory Pay",
-		createdOn: moment(createdOn),
+		// createdOn: moment(createdOn),
 	});
 	if (existingStatTimesheetInfo) {
 		return existingStatTimesheetInfo;
@@ -142,16 +138,17 @@ const createTimesheet = async (req, res) => {
 
 	try {
 		if (isStatPay) {
-			const statEntryExists = await addStatHolidayDefaultTimesheet(
-				employeeId,
-				company,
-				createdOn,
-			);
-			if (statEntryExists !== "New record") {
-				return res.status(201).json("Stat Holiday Default Timesheet exists.");
-			} else if (statEntryExists === "New record") {
-				return res.status(201).json("Stat Holiday Default Timesheet added.");
-			}
+			// const statEntryExists = await addStatHolidayDefaultTimesheet(
+			// 	employeeId,
+			// 	company,
+			// 	createdOn,
+			// );
+			// if (statEntryExists !== "New record") {
+			// 	return res.status(201).json("Stat Holiday Default Timesheet exists.");
+			// } else if (statEntryExists === "New record") {
+			// 	return res.status(201).json("Stat Holiday Default Timesheet added.");
+			// }
+			return res.status(201).json("Stat Holiday Default Timesheet exists.");
 		}
 		const newTimesheet = await Timesheet.create({
 			employeeId,
@@ -278,4 +275,5 @@ module.exports = {
 	getTimesheets,
 	getTimesheet,
 	updateTimesheet,
+	addStatHolidayDefaultTimesheet,
 };

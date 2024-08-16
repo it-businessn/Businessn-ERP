@@ -7,7 +7,7 @@ import EmployeePayDetails from "./EmployeePayDetails";
 const PreviewReportsModal = ({ isOpen, onClose, reportData, payPeriodNum }) => {
 	return (
 		<ModalLayout
-			title={`Current Payperiod#${payPeriodNum}`}
+			title={`Payroll register`}
 			size="7xl"
 			isOpen={isOpen}
 			onClose={onClose}
@@ -15,7 +15,12 @@ const PreviewReportsModal = ({ isOpen, onClose, reportData, payPeriodNum }) => {
 			fontSize="3xl"
 		>
 			{!reportData?.length && (
-				<TextTitle weight="normal" title={"No records found"} />
+				<TextTitle
+					weight="normal"
+					align={"center"}
+					size={"lg"}
+					title={"No records found"}
+				/>
 			)}
 			{reportData?.map((data) => {
 				return (
@@ -25,8 +30,9 @@ const PreviewReportsModal = ({ isOpen, onClose, reportData, payPeriodNum }) => {
 						spacing={3}
 						py={5}
 						key={data._id}
-						justifyContent={"space-around"}
-						w={"60%"}
+						justifyContent={"center"}
+						w={"100%"}
+						mx={"auto"}
 					>
 						<EmployeeInfo data={data} />
 						<EmployeePayDetails data={data} />

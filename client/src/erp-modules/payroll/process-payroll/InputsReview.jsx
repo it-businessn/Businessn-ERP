@@ -37,8 +37,7 @@ const InputsReview = ({
 	const inputsReviewData = useEmployeePayReport(
 		company,
 		selectedPayPeriod,
-		isInputsReviewOpen,
-		currentStep,
+		isInputsReviewOpen && currentStep === 1,
 	);
 	const COLS = [
 		"Employee name",
