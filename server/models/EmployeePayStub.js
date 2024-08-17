@@ -23,8 +23,8 @@ const employeePayStubSchema = new mongoose.Schema({
 	payPeriodPayDate: Date,
 	payPeriodProcessingDate: Date,
 	payPeriodNum: String,
-	isProcessed: Boolean,
-	isExtraRun: Boolean,
+	isProcessed: { type: Boolean, default: false },
+	isExtraRun: { type: Boolean, default: false },
 
 	totalRegHoursWorked: Number,
 	totalOvertimeHoursWorked: Number,

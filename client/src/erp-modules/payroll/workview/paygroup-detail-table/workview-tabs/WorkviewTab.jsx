@@ -2,9 +2,7 @@ import { Tbody, Td, Tr } from "@chakra-ui/react";
 import BoxCard from "components/ui/card";
 import TableLayout from "components/ui/table/TableLayout";
 import TextTitle from "components/ui/text/TextTitle";
-import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import EditPayDetail from "./EditPayDetail";
 
 const WorkviewTab = ({
 	cols,
@@ -14,14 +12,13 @@ const WorkviewTab = ({
 	isEditable,
 	isHourly,
 	stepNum,
+	renderEditableInput,
+	cellClick,
 }) => {
 	const navigate = useNavigate();
 
-	const [edit, setEdit] = useState(false);
-	const [editFormData, setEditFormData] = useState({});
-
-	const handleClick = (key, row) => {
-		if (key === "") {
+	const handleClick = (col, row) => {
+		if (col.key === "") {
 			navigate(
 				stepNum !== undefined
 					? `${path}/${row.empId._id}/${stepNum}`
@@ -29,20 +26,11 @@ const WorkviewTab = ({
 			);
 			return;
 		}
-		setEdit(true);
-		setEditFormData(data?.find((rec) => rec._id === row._id));
+		cellClick(row);
 	};
 
 	return (
 		<BoxCard>
-			{isEditable && edit && (
-				<EditPayDetail
-					editFormData={editFormData}
-					isOpen={edit}
-					onClose={() => setEdit(false)}
-					setRefresh={setRefresh}
-				/>
-			)}
 			<TableLayout cols={cols.map((_) => _.key)} isSmall height={"40vh"}>
 				<Tbody>
 					{data?.map((row) => (
@@ -67,10 +55,12 @@ const WorkviewTab = ({
 										p={1}
 										key={col.key}
 										onClick={() => {
-											handleClick(col.key, row);
+											handleClick(col, row);
 										}}
 									>
-										{fieldValue}
+										{col.isEditable
+											? renderEditableInput(row._id, col.pair, fieldValue)
+											: fieldValue}
 									</Td>
 								);
 							})}

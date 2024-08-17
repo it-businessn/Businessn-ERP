@@ -9,6 +9,10 @@ const PayrollService = {
 		return apiService.get(`/payroll/payInfo/${company}/${payDate}`);
 	},
 
+	async updateEmployeeAmountAllocation(data, id) {
+		return apiService.put(`/payroll/amountAllocation/${id}`, data, id);
+	},
+
 	async updateEmployeePayInfo(data, id) {
 		return apiService.put(`/payroll/payInfo/${id}`, data, id);
 	},

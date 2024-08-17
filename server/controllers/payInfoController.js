@@ -51,8 +51,10 @@ const buildAmountAllocationEmpDetails = async (
 		payDate,
 		companyName,
 	);
+	const recordId = empPayStubResult ? empPayStubResult._id : employee._id;
 
 	const result = {
+		_id: recordId,
 		empId: { _id: employeeId, fullName },
 		commission: empPayStubResult?.commission ?? 0,
 		bonus: empPayStubResult?.bonus ?? 0,

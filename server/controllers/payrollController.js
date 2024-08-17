@@ -224,6 +224,16 @@ const getPayGroup = () => {};
 const addPayGroup = () => {};
 const updatePayGroup = () => {};
 
+const updateAmountAllocation = async (req, res) => {
+	const { id } = req.params;
+	try {
+		const newRecord = await updatePayStub(id, req.body);
+		res.status(201).json(newRecord);
+	} catch (error) {
+		res.status(400).json({ message: error.message });
+	}
+};
+
 const findCurrentPayStub = async (payPeriodNum, companyName, empId) =>
 	await EmployeePayStub.findOne({
 		payPeriodNum,
@@ -355,6 +365,7 @@ const buildPayStubDetails = async (
 		payPeriodPayDate,
 		payPeriodProcessingDate,
 		payPeriod,
+		isExtraRun,
 	} = currentPayPeriod;
 
 	const employeeId = empTimesheetData ? empTimesheetData.empId._id : empId;
@@ -446,6 +457,7 @@ const buildPayStubDetails = async (
 
 	const currentPayStub = {
 		isProcessed: true,
+		isExtraRun,
 		empId: employeeId,
 		companyName,
 		payPeriodStartDate,
@@ -671,4 +683,5 @@ module.exports = {
 	getAlertsAndViolationsInfo,
 	deleteAlerts,
 	getPayrollActiveEmployees,
+	updateAmountAllocation,
 };
