@@ -14,6 +14,8 @@ const TextTitle = ({
 	whiteSpace = "nowrap",
 	em,
 	visibility,
+	border,
+	borderLeftWidth,
 }) => (
 	<Text
 		flex={flex}
@@ -30,6 +32,8 @@ const TextTitle = ({
 		whiteSpace={whiteSpace}
 		overflow={"hidden"}
 		visibility={visibility}
+		border={border}
+		borderLeftWidth={borderLeftWidth}
 	>
 		{title}
 	</Text>

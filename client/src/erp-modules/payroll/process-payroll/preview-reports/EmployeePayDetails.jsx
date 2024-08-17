@@ -16,7 +16,7 @@ const EmployeePayDetails = ({ data }) => {
 	const BLANK_COLS = ["", "", "", "", ""];
 
 	return (
-		<Stack w={"60%"} spacing={0}>
+		<Stack w={"60%"} spacing={0} mt={3}>
 			<TextTitle title={"Earnings"} size={"xl"} />
 			<TableLayout cols={EARNINGS_COLS} size="md">
 				<Tbody>
