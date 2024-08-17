@@ -11,7 +11,7 @@ const Reports = () => {
 
 	const { payGroupSchedule, closestRecordIndex } = usePaygroup(company, false);
 	const filteredPayPeriods = payGroupSchedule?.filter(
-		(_, index) => index < closestRecordIndex,
+		(_, index) => index <= closestRecordIndex,
 	);
 
 	const [showReport, setShowReport] = useState(undefined);
