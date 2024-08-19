@@ -9,10 +9,11 @@ const { findGroupEmployees } = require("./setUpController");
 const getAllPayInfo = async (req, res) => {
 	const { companyName, payDate, isExtraRun, groupId } = req.params;
 	try {
+		const isExtraPayRun = isExtraRun === "true";
 		const employees =
-			isExtraRun && (await findGroupEmployees(groupId, payDate));
+			isExtraPayRun && (await findGroupEmployees(groupId, payDate));
 
-		const activeEmployees = isExtraRun
+		const activeEmployees = isExtraPayRun
 			? await getEmployeeId(employees)
 			: await getPayrollActiveEmployees();
 

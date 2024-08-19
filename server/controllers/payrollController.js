@@ -49,14 +49,15 @@ const getGroupedTimesheet = async (req, res) => {
 		req.params;
 
 	try {
+		const isExtraPayRun = isExtraRun === "true";
 		const employees =
-			isExtraRun && (await findGroupEmployees(groupId, payDate));
+			isExtraPayRun && (await findGroupEmployees(groupId, payDate));
 
-		const activeEmployees = isExtraRun
+		const activeEmployees = isExtraPayRun
 			? await getEmployeeId(employees)
 			: await getPayrollActiveEmployees();
 
-		const currentPeriodEmployees = isExtraRun
+		const currentPeriodEmployees = isExtraPayRun
 			? null
 			: await calculateTotalAggregatedHours(startDate, endDate, companyName);
 
@@ -132,10 +133,11 @@ const getPayDetailsReportInfo = async (req, res) => {
 	const { companyName, payPeriodNum, isExtraRun } = req.params;
 
 	try {
+		const isExtraPayRun = isExtraRun === "true";
 		const payStubs = await EmployeePayStub.find({
 			companyName,
 			payPeriodNum,
-			isExtraRun,
+			isExtraRun: isExtraPayRun,
 		})
 			.populate(EMP_INFO)
 			.sort({

@@ -16,7 +16,7 @@ const Reports = () => {
 	);
 
 	const [showReport, setShowReport] = useState(undefined);
-	const [selectedPayPeriod, setSelectedPayPeriod] = useState(undefined);
+	const [selectedPayPeriod, setSelectedPayPeriod] = useState(null);
 
 	const handleRegister = (payNo, isExtra) => {
 		const payNum = isExtra

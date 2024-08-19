@@ -3,6 +3,7 @@ import ModalLayout from "components/ui/modal/ModalLayout";
 import TextTitle from "components/ui/text/TextTitle";
 import EmployeeInfo from "./EmployeeInfo";
 import EmployeePayDetails from "./EmployeePayDetails";
+import Loader from "components/Loader";
 
 const PreviewReportsModal = ({ isOpen, onClose, reportData, payPeriodNum }) => {
 	return (
@@ -14,6 +15,7 @@ const PreviewReportsModal = ({ isOpen, onClose, reportData, payPeriodNum }) => {
 			textAlign={"center"}
 			fontSize="3xl"
 		>
+			{!reportData && <Loader />}
 			{!reportData?.length && (
 				<TextTitle
 					weight="normal"

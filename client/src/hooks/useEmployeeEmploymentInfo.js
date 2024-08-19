@@ -5,6 +5,7 @@ const useEmployeeEmploymentInfo = (company, empId, payPeriod, groupId) => {
 	const [employmentInfo, setEmploymentInfo] = useState(null);
 
 	useEffect(() => {
+		const extraRun = payPeriod?.isExtraRun ?? false;
 		const fetchEmployeeEmploymentInfo = async () => {
 			try {
 				const response = empId
@@ -14,7 +15,7 @@ const useEmployeeEmploymentInfo = (company, empId, payPeriod, groupId) => {
 							payPeriod?.payPeriodStartDate,
 							payPeriod?.payPeriodEndDate,
 							payPeriod?.payPeriodPayDate,
-							payPeriod?.isExtraRun,
+							extraRun,
 							groupId,
 					  );
 				setEmploymentInfo(response.data);
