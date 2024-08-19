@@ -1,21 +1,34 @@
 const EmployeeEmploymentInfo = require("../models/EmployeeEmploymentInfo");
 const EmployeePayInfo = require("../models/EmployeePayInfo");
 const Timesheet = require("../models/Timesheet");
-const { getPayrollActiveEmployees } = require("./payrollController");
+const {
+	getPayrollActiveEmployees,
+	getEmployeeId,
+} = require("./payrollController");
+const { findGroupEmployees } = require("./setUpController");
 
 const getAllEmploymentInfo = async (req, res) => {
-	const { companyName, startDate, endDate } = req.params;
+	const { companyName, startDate, endDate, payDate, isExtraRun, groupId } =
+		req.params;
 	try {
-		const payrollActiveEmployees = await getPayrollActiveEmployees();
-		const currentPeriodEmployees = await Timesheet.find({
-			companyName,
-			createdOn: { $gte: startDate, $lte: endDate },
-			approveStatus: "Approved",
-		}).select("employeeId");
+		const employees =
+			isExtraRun && (await findGroupEmployees(groupId, payDate));
+
+		const activeEmployees = isExtraRun
+			? await getEmployeeId(employees)
+			: await getPayrollActiveEmployees();
+
+		const currentPeriodEmployees = isExtraRun
+			? null
+			: await Timesheet.find({
+					companyName,
+					createdOn: { $gte: startDate, $lte: endDate },
+					approveStatus: "Approved",
+			  }).select("employeeId");
 
 		const aggregatedResult = [];
-		for (const employee of payrollActiveEmployees) {
-			const empTimesheetData = currentPeriodEmployees.find(
+		for (const employee of activeEmployees) {
+			const empTimesheetData = currentPeriodEmployees?.find(
 				(el) => el.employeeId.toString() === employee._id.toString(),
 			);
 			if (empTimesheetData) {

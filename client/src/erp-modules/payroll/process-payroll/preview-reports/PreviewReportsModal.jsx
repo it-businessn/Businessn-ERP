@@ -22,23 +22,21 @@ const PreviewReportsModal = ({ isOpen, onClose, reportData, payPeriodNum }) => {
 					title={"No records found"}
 				/>
 			)}
-			{reportData?.map((data) => {
-				return (
-					<HStack
-						border={"1px solid var(--lead_cards_border)"}
-						alignItems={"start"}
-						spacing={3}
-						py={5}
-						key={data._id}
-						justifyContent={"center"}
-						w={"100%"}
-						mx={"auto"}
-					>
-						<EmployeeInfo data={data} />
-						<EmployeePayDetails data={data} />
-					</HStack>
-				);
-			})}
+			{reportData?.map((data) => (
+				<HStack
+					border={"1px solid var(--lead_cards_border)"}
+					alignItems={"start"}
+					spacing={3}
+					py={5}
+					key={data._id}
+					justifyContent={"center"}
+					w={"100%"}
+					mx={"auto"}
+				>
+					<EmployeeInfo data={data} />
+					<EmployeePayDetails data={data} />
+				</HStack>
+			))}
 		</ModalLayout>
 	);
 };

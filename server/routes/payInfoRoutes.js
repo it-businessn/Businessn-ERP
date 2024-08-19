@@ -3,7 +3,10 @@ const router = express.Router();
 
 const payInfoController = require("../controllers/payInfoController");
 
-router.get("/:companyName/:payDate", payInfoController.getAllPayInfo);
+router.get(
+	"/:companyName/:payDate/:isExtraRun/:groupId",
+	payInfoController.getAllPayInfo,
+);
 
 router.get("/detail/:companyName/:empId", payInfoController.getEmployeePayInfo);
 

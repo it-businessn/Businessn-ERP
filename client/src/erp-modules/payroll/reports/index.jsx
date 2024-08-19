@@ -10,6 +10,7 @@ const Reports = () => {
 	const company = LocalStorageService.getItem("selectedCompany");
 
 	const { payGroupSchedule, closestRecordIndex } = usePaygroup(company, false);
+
 	const filteredPayPeriods = payGroupSchedule?.filter(
 		(_, index) => index <= closestRecordIndex,
 	);
@@ -17,12 +18,19 @@ const Reports = () => {
 	const [showReport, setShowReport] = useState(undefined);
 	const [selectedPayPeriod, setSelectedPayPeriod] = useState(undefined);
 
-	const handleRegister = (payPeriod) => {
-		setSelectedPayPeriod(payPeriod);
+	const handleRegister = (payNo, isExtra) => {
+		const payNum = isExtra
+			? payGroupSchedule?.find(
+					({ payPeriod, isExtraRun }) =>
+						payPeriod === parseInt(payNo) && isExtraRun === isExtra,
+			  )
+			: payNo;
+
+		setSelectedPayPeriod(payNum);
 		setShowReport(true);
 	};
 
-	const inputsReviewData = useEmployeePayReport(
+	const registerData = useEmployeePayReport(
 		company,
 		selectedPayPeriod,
 		showReport,
@@ -34,7 +42,7 @@ const Reports = () => {
 				<WorkviewTable
 					payGroupSchedule={filteredPayPeriods}
 					closestRecordIndex={closestRecordIndex}
-					height="82vh"
+					height="80vh"
 					handleRegister={handleRegister}
 				/>
 			)}
@@ -42,7 +50,7 @@ const Reports = () => {
 				<PreviewReportsModal
 					isOpen={showReport}
 					onClose={() => setShowReport(false)}
-					reportData={inputsReviewData}
+					reportData={registerData}
 					payPeriodNum={selectedPayPeriod}
 				/>
 			)}

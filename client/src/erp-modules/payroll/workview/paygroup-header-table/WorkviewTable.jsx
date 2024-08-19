@@ -120,7 +120,9 @@ const WorkviewTable = ({
 											isDisabled={isDisabledAction}
 											name={"Pay now"}
 											size="xs"
-											onOpen={() => handlePay(payPeriod)}
+											onOpen={() =>
+												handlePay(isExtraPay(payPeriod, isExtraRun))
+											}
 										/>
 									)
 								) : (
@@ -129,7 +131,12 @@ const WorkviewTable = ({
 											<OutlineButton
 												label={"View Register"}
 												size="xs"
-												onClick={() => handleRegister(payPeriod)}
+												onClick={() =>
+													handleRegister(
+														isExtraPay(payPeriod, isExtraRun),
+														isExtraRun,
+													)
+												}
 											/>
 										) : (
 											<PrimaryButton

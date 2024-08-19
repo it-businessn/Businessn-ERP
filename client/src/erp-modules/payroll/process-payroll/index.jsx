@@ -20,6 +20,7 @@ import { ROUTE_PATH } from "routes";
 import LocalStorageService from "services/LocalStorageService";
 import SettingService from "services/SettingService";
 import VerticalStepper from "../../../components/ui/VerticalStepper";
+import { getClosestRecord } from "../workview/data";
 import AlertsViolation from "./AlertsViolation";
 import Finalize from "./Finalize";
 import InputsReview from "./InputsReview";
@@ -34,16 +35,18 @@ const ProcessPayroll = () => {
 		setCurrentStep(index);
 	};
 	const { payNo } = useParams();
+	const isExtra = payNo?.includes("E");
+
 	const company = LocalStorageService.getItem("selectedCompany");
 	const { payGroupSchedule, closestRecord, payGroups, selectedPayGroup } =
 		usePaygroup(company, false);
 
-	const selectedPayPeriod = payNo
-		? payGroupSchedule?.find(
-				({ payPeriod, isProcessed }) =>
-					payPeriod.toString() === payNo && !isProcessed,
-		  )
-		: closestRecord;
+	const selectedPayPeriod = getClosestRecord(
+		payNo,
+		isExtra,
+		payGroupSchedule,
+		closestRecord,
+	);
 
 	const isPayPeriodInactive = selectedPayPeriod?.isDisabledAction;
 	const isPayrollSubmitDisabled =

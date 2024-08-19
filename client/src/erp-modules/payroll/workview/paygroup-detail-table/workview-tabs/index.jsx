@@ -8,7 +8,12 @@ import AmountAllocation from "./AmountAllocation";
 import EmployeeDetails from "./EmployeeDetails";
 import HourlyAllocation from "./HourlyAllocation";
 
-const PaygroupDetailTable = ({ closestRecord, payGroupSchedule, empPath }) => {
+const PaygroupDetailTable = ({
+	closestRecord,
+	payGroupSchedule,
+	empPath,
+	groupId,
+}) => {
 	const company = LocalStorageService.getItem("selectedCompany");
 
 	const TABS = [
@@ -21,6 +26,7 @@ const PaygroupDetailTable = ({ closestRecord, payGroupSchedule, empPath }) => {
 					payGroupSchedule={payGroupSchedule}
 					company={company}
 					closestRecord={closestRecord}
+					groupId={groupId}
 				/>
 			),
 		},
@@ -28,14 +34,22 @@ const PaygroupDetailTable = ({ closestRecord, payGroupSchedule, empPath }) => {
 			id: 1,
 			type: "Hourly Allocation",
 			name: (
-				<HourlyAllocation company={company} closestRecord={closestRecord} />
+				<HourlyAllocation
+					company={company}
+					closestRecord={closestRecord}
+					groupId={groupId}
+				/>
 			),
 		},
 		{
 			id: 2,
 			type: "Amount Allocation",
 			name: (
-				<AmountAllocation company={company} closestRecord={closestRecord} />
+				<AmountAllocation
+					company={company}
+					closestRecord={closestRecord}
+					groupId={groupId}
+				/>
 			),
 		},
 	];

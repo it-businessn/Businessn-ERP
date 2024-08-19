@@ -5,7 +5,6 @@ const EmployeeBankingInfo = require("../models/EmployeeBankingInfo");
 const EmployeePayInfo = require("../models/EmployeePayInfo");
 const EmployeePayStub = require("../models/EmployeePayStub");
 const EmployeeProfileInfo = require("../models/EmployeeProfileInfo");
-// const EmployeeRole = require("../models/EmployeeRole");
 const Group = require("../models/Group");
 const Timesheet = require("../models/Timesheet");
 const {
@@ -14,6 +13,7 @@ const {
 	getHrs,
 	getSumTotal,
 } = require("../services/payrollService");
+const { findGroupEmployees } = require("./setUpController");
 
 //update roles-
 
@@ -45,20 +45,25 @@ const getAllPayGroups = async (req, res) => {
 };
 
 const getGroupedTimesheet = async (req, res) => {
-	const { companyName, startDate, endDate } = req.params;
+	const { companyName, startDate, endDate, payDate, isExtraRun, groupId } =
+		req.params;
 
 	try {
-		const payrollActiveEmployees = await getPayrollActiveEmployees();
-		const currentPeriodEmployees = await calculateTotalAggregatedHours(
-			startDate,
-			endDate,
-			companyName,
-		);
+		const employees =
+			isExtraRun && (await findGroupEmployees(groupId, payDate));
+
+		const activeEmployees = isExtraRun
+			? await getEmployeeId(employees)
+			: await getPayrollActiveEmployees();
+
+		const currentPeriodEmployees = isExtraRun
+			? null
+			: await calculateTotalAggregatedHours(startDate, endDate, companyName);
 
 		const aggregatedResult = [];
 
-		for (const employee of payrollActiveEmployees) {
-			const empTimesheetData = currentPeriodEmployees.find(
+		for (const employee of activeEmployees) {
+			const empTimesheetData = currentPeriodEmployees?.find(
 				(el) => el.empId._id.toString() === employee._id.toString(),
 			);
 			if (empTimesheetData) {
@@ -124,12 +129,13 @@ const EMP_INFO = {
 };
 
 const getPayDetailsReportInfo = async (req, res) => {
-	const { companyName, payPeriodNum } = req.params;
+	const { companyName, payPeriodNum, isExtraRun } = req.params;
 
 	try {
 		const payStubs = await EmployeePayStub.find({
 			companyName,
 			payPeriodNum,
+			isExtraRun,
 		})
 			.populate(EMP_INFO)
 			.sort({
@@ -234,12 +240,13 @@ const updateAmountAllocation = async (req, res) => {
 	}
 };
 
-const findCurrentPayStub = async (payPeriodNum, companyName, empId) =>
+const findCurrentPayStub = async (payPeriodNum, companyName, empId, isExtra) =>
 	await EmployeePayStub.findOne({
 		payPeriodNum,
 		companyName,
 		empId,
 		isProcessed: true,
+		isExtraRun: isExtra,
 	});
 
 const calculateTotalAggregatedHours = async (
@@ -297,6 +304,15 @@ const updatePayStub = async (id, data) =>
 		new: true,
 	});
 
+const getEmployeeId = async (empList) => {
+	const list = [];
+	for (const fullName of empList) {
+		const employee = await Employee.findOne({ fullName });
+		list.push(employee);
+	}
+	return list;
+};
+
 const getPayrollActiveEmployees = async () =>
 	await Employee.find({ payrollStatus: "Payroll Active" });
 
@@ -318,17 +334,23 @@ const findEmployeePayInfo = async (empId) =>
 const addEmployeePayStubInfo = async (req, res) => {
 	const { companyName, currentPayPeriod } = req.body;
 	try {
-		const { payPeriodStartDate, payPeriodEndDate } = currentPayPeriod;
+		const { payPeriodStartDate, payPeriodEndDate, isExtraRun, selectedEmp } =
+			currentPayPeriod;
 
-		const result = await calculateTotalAggregatedHours(
-			payPeriodStartDate,
-			payPeriodEndDate,
-			companyName,
-		);
+		const activeEmployees = isExtraRun
+			? await getEmployeeId(selectedEmp)
+			: await getPayrollActiveEmployees();
 
-		const payrollActiveEmployees = await getPayrollActiveEmployees();
-		for (const employee of payrollActiveEmployees) {
-			const empTimesheetData = result.find(
+		const result = isExtraRun
+			? null
+			: await calculateTotalAggregatedHours(
+					payPeriodStartDate,
+					payPeriodEndDate,
+					companyName,
+			  );
+
+		for (const employee of activeEmployees) {
+			const empTimesheetData = result?.find(
 				(el) => el.empId._id.toString() === employee._id.toString(),
 			);
 			if (empTimesheetData) {
@@ -448,11 +470,13 @@ const buildPayStubDetails = async (
 
 	newEmpData.currentNetPay =
 		grossSalaryByPayPeriod - newEmpData.currentDeductionsTotal;
+	const prevPayPeriodNum = isExtraRun ? payPeriod : payPeriod - 1;
 
 	const prevPayPayInfo = await findCurrentPayStub(
-		payPeriod - 1,
+		prevPayPeriodNum,
 		companyName,
 		employeeId,
+		false,
 	);
 
 	const currentPayStub = {
@@ -585,8 +609,8 @@ const buildPayStubDetails = async (
 		payPeriod,
 		companyName,
 		employeeId,
+		isExtraRun ? isExtraRun : false,
 	);
-
 	if (currentPayInfo) {
 		await updatePayStub(currentPayInfo._id, currentPayStub);
 	} else {
@@ -684,4 +708,5 @@ module.exports = {
 	deleteAlerts,
 	getPayrollActiveEmployees,
 	updateAmountAllocation,
+	getEmployeeId,
 };

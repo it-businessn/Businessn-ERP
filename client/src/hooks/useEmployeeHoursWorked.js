@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import PayrollService from "services/PayrollService";
 
-const useEmployeeHoursWorked = (company, payPeriod) => {
+const useEmployeeHoursWorked = (company, payPeriod, groupId) => {
 	const [hours, setHours] = useState(null);
 
 	useEffect(() => {
@@ -11,6 +11,9 @@ const useEmployeeHoursWorked = (company, payPeriod) => {
 					company,
 					payPeriod.payPeriodStartDate,
 					payPeriod.payPeriodEndDate,
+					payPeriod?.payPeriodPayDate,
+					payPeriod?.isExtraRun,
+					groupId,
 				);
 				setHours(response.data);
 			} catch (error) {

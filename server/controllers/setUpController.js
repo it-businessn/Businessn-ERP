@@ -185,6 +185,14 @@ const schedulePaygroup = async (groupID) => {
 	}
 };
 
+const findGroupEmployees = async (groupId, payDate) => {
+	const groupName = await Group.findById(groupId).select("scheduleSettings");
+	const schedule = groupName.scheduleSettings.find(
+		(schedule) => schedule.payPeriodPayDate === payDate,
+	);
+	return schedule?.selectedEmp;
+};
+
 const updatePayGroup = async (id, data) =>
 	await Group.findByIdAndUpdate(id, data, {
 		new: true,
@@ -345,4 +353,5 @@ module.exports = {
 	updateGroup,
 	getGroups,
 	addGroup,
+	findGroupEmployees,
 };

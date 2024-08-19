@@ -17,6 +17,7 @@ import { MdCheckCircle } from "react-icons/md";
 import { useNavigate, useParams } from "react-router-dom";
 import { ROUTE_PATH } from "routes";
 import LocalStorageService from "services/LocalStorageService";
+import { getClosestRecord } from "../workview/data";
 
 const AlertsViolation = ({
 	handleClick,
@@ -27,11 +28,16 @@ const AlertsViolation = ({
 	isPayPeriodInactive,
 }) => {
 	const { payNo } = useParams();
+	const isExtra = payNo?.includes("E");
+
 	const company = LocalStorageService.getItem("selectedCompany");
 
-	const selectedPayPeriod = payNo
-		? payGroupSchedule?.find(({ payPeriod }) => payPeriod.toString() === payNo)
-		: closestRecord;
+	const selectedPayPeriod = getClosestRecord(
+		payNo,
+		isExtra,
+		payGroupSchedule,
+		closestRecord,
+	);
 
 	const alertsReviewData = useEmployeeAlertsInfo(
 		company,
@@ -53,6 +59,19 @@ const AlertsViolation = ({
 			`${ROUTE_PATH.PAYROLL}${ROUTE_PATH.EMPLOYEES}/${empId}/${stepNum}`,
 		);
 	};
+	const filteredEmp = [];
+	const isExtraRun = closestRecord?.isExtraRun;
+
+	if (isExtraRun && alertsReviewData) {
+		const selectedEmp = closestRecord.selectedEmp;
+		selectedEmp.forEach((emp) => {
+			const empExists = alertsReviewData?.find((_) => _.empId.fullName === emp);
+			if (empExists) {
+				filteredEmp.push(empExists);
+			}
+		});
+	}
+	const data = isExtraRun ? filteredEmp : alertsReviewData;
 
 	return (
 		<HStack alignItems={"end"}>
@@ -67,14 +86,14 @@ const AlertsViolation = ({
 					</Tr>
 				</Thead>
 				<Tbody>
-					{!alertsReviewData?.length && (
+					{!data?.length && (
 						<Tr>
 							<Td>
 								<TextTitle weight="normal" title={"No record found"} />
 							</Td>
 						</Tr>
 					)}
-					{alertsReviewData?.map((data) => (
+					{data?.map((data) => (
 						<Tr key={data._id}>
 							<Td>
 								<TextTitle weight="normal" title={data.description} />

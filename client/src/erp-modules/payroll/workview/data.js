@@ -14,3 +14,23 @@ export const PAYGROUP_ACTIONS = [
 	{ key: "terminate", name: "Terminate" },
 	{ key: "empUpdate", name: "Update Employees" },
 ];
+
+export const getClosestRecord = (
+	payNo,
+	isExtra,
+	payGroupSchedule,
+	closestRecord,
+) =>
+	payNo
+		? isExtra
+			? payGroupSchedule?.find(
+					({ payPeriod, isExtraRun, isProcessed }) =>
+						payPeriod === parseInt(payNo) &&
+						isExtraRun === isExtra &&
+						!isProcessed,
+			  )
+			: payGroupSchedule?.find(
+					({ payPeriod, isProcessed }) =>
+						payPeriod === parseInt(payNo) && !isProcessed,
+			  )
+		: closestRecord;

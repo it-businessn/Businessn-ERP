@@ -49,7 +49,11 @@ const PayrollWorkview = () => {
 					closestRecordIndex={closestRecordIndex}
 				/>
 			)}
-			<PaygroupDetailTable closestRecord={closestRecord} empPath={empPath} />
+			<PaygroupDetailTable
+				closestRecord={closestRecord}
+				empPath={empPath}
+				groupId={selectedPayGroup?._id}
+			/>
 		</PageLayout>
 	);
 };

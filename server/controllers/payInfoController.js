@@ -1,14 +1,23 @@
 const EmployeePayInfo = require("../models/EmployeePayInfo");
 const EmployeePayStub = require("../models/EmployeePayStub");
-const { getPayrollActiveEmployees } = require("./payrollController");
+const {
+	getPayrollActiveEmployees,
+	getEmployeeId,
+} = require("./payrollController");
+const { findGroupEmployees } = require("./setUpController");
 
 const getAllPayInfo = async (req, res) => {
-	const { companyName, payDate } = req.params;
+	const { companyName, payDate, isExtraRun, groupId } = req.params;
 	try {
-		const payrollActiveEmployees = await getPayrollActiveEmployees();
+		const employees =
+			isExtraRun && (await findGroupEmployees(groupId, payDate));
+
+		const activeEmployees = isExtraRun
+			? await getEmployeeId(employees)
+			: await getPayrollActiveEmployees();
 
 		const aggregatedResult = [];
-		for (const employee of payrollActiveEmployees) {
+		for (const employee of activeEmployees) {
 			const result = await buildAmountAllocationEmpDetails(
 				payDate,
 				employee,

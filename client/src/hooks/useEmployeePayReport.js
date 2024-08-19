@@ -5,11 +5,15 @@ const useEmployeePayReport = (company, payPeriodNum, isOpen) => {
 	const [hours, setHours] = useState(null);
 
 	useEffect(() => {
+		const payNum = payPeriodNum?.payPeriod ?? payPeriodNum;
+		const extraRun = payPeriodNum?.isExtraRun ?? false;
+
 		const fetchHoursWorkedInfo = async () => {
 			try {
 				const response = await PayrollService.getPayReportDetails(
 					company,
-					payPeriodNum?.payPeriod ?? payPeriodNum,
+					payNum,
+					extraRun,
 				);
 				setHours(response.data);
 			} catch (error) {

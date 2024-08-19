@@ -1,7 +1,7 @@
 import { Box, HStack, Stack, VStack } from "@chakra-ui/react";
 import Logo from "components/logo";
 import TextTitle from "components/ui/text/TextTitle";
-import { formatDateBar } from "utils";
+import { formatDateBar, isExtraPay } from "utils";
 import logoImg from "../../../../assets/coverImgPaystub.png";
 
 const EmployeeInfo = ({ data }) => {
@@ -95,7 +95,7 @@ const EmployeeInfo = ({ data }) => {
 						border={"1px solid black"}
 						align="center"
 						weight="normal"
-						title={data.payPeriodNum}
+						title={isExtraPay(data.payPeriodNum, data.isExtraRun)}
 						size={"lg"}
 						borderLeftWidth={0}
 					/>

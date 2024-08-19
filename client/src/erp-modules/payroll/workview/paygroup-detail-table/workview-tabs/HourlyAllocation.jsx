@@ -3,32 +3,8 @@ import useEmployeeHoursWorked from "hooks/useEmployeeHoursWorked";
 import { ROUTE_PATH } from "routes";
 import WorkviewTab from "./WorkviewTab";
 
-const HourlyAllocation = ({ company, closestRecord }) => {
-	const data = useEmployeeHoursWorked(company, closestRecord);
-	const filteredEmp = [];
-	const isExtraRun = closestRecord?.isExtraRun;
-
-	if (isExtraRun && data) {
-		const selectedEmp = closestRecord.selectedEmp;
-		selectedEmp.forEach((emp) => {
-			const empExists = data?.find((_) => _.empId.fullName === emp);
-			if (empExists) {
-				filteredEmp.push(empExists);
-			}
-		});
-	}
-
-	filteredEmp.map((_) => {
-		_.totalDblOvertimeHoursWorked = 0;
-		_.totalOvertimeHoursWorked = 0;
-		_.totalRegHoursWorked = 0;
-		_.totalSickHoursWorked = 0;
-		_.totalStatDayHoursWorked = 0;
-		_.totalStatHours = 0;
-		_.totalVacationHoursWorked = 0;
-		return _;
-	});
-	const hourlyData = isExtraRun ? filteredEmp : data;
+const HourlyAllocation = ({ company, closestRecord, groupId }) => {
+	const data = useEmployeeHoursWorked(company, closestRecord, groupId);
 
 	return (
 		<WorkviewTab
@@ -44,7 +20,7 @@ const HourlyAllocation = ({ company, closestRecord }) => {
 				{ key: "Sick Pay Hours", pair: "totalSickHoursWorked" },
 				{ key: "", pair: <OutlineButton label="View Timesheets" /> },
 			]}
-			data={hourlyData}
+			data={data}
 			label="Setup"
 			path={`${ROUTE_PATH.PAYROLL}${ROUTE_PATH.TIMESHEETS}`}
 		/>

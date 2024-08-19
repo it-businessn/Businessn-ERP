@@ -6,7 +6,7 @@ const payrollController = require("../controllers/payrollController");
 router.get("/payGroups/:companyName", payrollController.getAllPayGroups);
 
 router.get(
-	"/hoursTimesheet/:companyName/:startDate/:endDate",
+	"/hoursTimesheet/:companyName/:startDate/:endDate/:payDate/:isExtraRun/:groupId",
 	payrollController.getGroupedTimesheet,
 );
 
@@ -16,7 +16,7 @@ router.get(
 );
 
 router.get(
-	"/payDetailsReport/:companyName/:payPeriodNum",
+	"/payDetailsReport/:companyName/:payPeriodNum/:isExtraRun",
 	payrollController.getPayDetailsReportInfo,
 );
 

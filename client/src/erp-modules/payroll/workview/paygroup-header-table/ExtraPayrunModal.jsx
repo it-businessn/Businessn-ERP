@@ -71,9 +71,12 @@ const ExtraPayrunModal = ({
 
 	const handleSubmit = async () => {
 		setIsSubmitting(true);
+		const payPeriodNum = closestRecord.isProcessed
+			? closestRecord.payPeriod
+			: closestRecord.payPeriod - 1;
 		try {
 			selectedPayGroup.scheduleSettings.push({
-				payPeriod: closestRecord.payPeriod,
+				payPeriod: payPeriodNum,
 				selectedEmp,
 				payPeriodPayDate,
 				payPeriodProcessingDate,

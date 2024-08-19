@@ -17,6 +17,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { ROUTE_PATH } from "routes";
 import LocalStorageService from "services/LocalStorageService";
 import PayrollService from "services/PayrollService";
+import { getClosestRecord } from "../workview/data";
 
 const InputsReview = ({
 	handleClick,
@@ -27,12 +28,16 @@ const InputsReview = ({
 	isPayPeriodInactive,
 }) => {
 	const { payNo } = useParams();
+	const isExtra = payNo?.includes("E");
 
 	const company = LocalStorageService.getItem("selectedCompany");
 
-	const selectedPayPeriod = payNo
-		? payGroupSchedule?.find(({ payPeriod }) => payPeriod.toString() === payNo)
-		: closestRecord;
+	const selectedPayPeriod = getClosestRecord(
+		payNo,
+		isExtra,
+		payGroupSchedule,
+		closestRecord,
+	);
 
 	const inputsReviewData = useEmployeePayReport(
 		company,

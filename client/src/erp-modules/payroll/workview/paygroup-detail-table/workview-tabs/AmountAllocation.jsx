@@ -6,29 +6,27 @@ import { ROUTE_PATH } from "routes";
 import PayrollService from "services/PayrollService";
 import WorkviewTab from "./WorkviewTab";
 
-const AmountAllocation = ({ company, closestRecord }) => {
+const AmountAllocation = ({ company, closestRecord, groupId }) => {
 	const [refresh, setRefresh] = useState(false);
-	const data = useEmployeePayInfo(company, refresh, null, closestRecord);
-	const filteredEmp = [];
-	const isExtraRun = closestRecord?.isExtraRun;
+	const data = useEmployeePayInfo(
+		company,
+		refresh,
+		null,
+		closestRecord,
+		groupId,
+	);
 
 	const [amountAllocateData, setAmountAllocateData] = useState([]);
 	const [formData, setFormData] = useState(null);
 
-	if (isExtraRun && data) {
-		const selectedEmp = closestRecord.selectedEmp;
-		selectedEmp.forEach((emp) => {
-			const empExists = data?.find((_) => _.empId.fullName === emp);
-			if (empExists) {
-				filteredEmp.push(empExists);
-			}
-		});
-	}
+	useEffect(() => {
+		if (formData) {
+			console.log(formData, amountAllocateData);
+		}
+	}, [formData]);
 
 	useEffect(() => {
-		if (isExtraRun) {
-			setAmountAllocateData(filteredEmp);
-		} else {
+		if (data) {
 			setAmountAllocateData(data);
 		}
 	}, [data]);
@@ -50,12 +48,12 @@ const AmountAllocation = ({ company, closestRecord }) => {
 			const updatedRec = amountAllocateData.find(
 				(record) => record._id === formData._id,
 			);
-			if (updatedRec._id) {
-				await PayrollService.updateEmployeeAmountAllocation(
-					updatedRec,
-					updatedRec._id,
-				);
-				setRefresh((prev) => !prev);
+			if (formData) {
+				// await PayrollService.updateEmployeeAmountAllocation(
+				// 	updatedRec,
+				// 	updatedRec._id,
+				// );
+				// setRefresh((prev) => !prev);
 				setFormData(null);
 			} else return;
 		} catch (error) {}
