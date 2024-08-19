@@ -242,14 +242,28 @@ const updateAmountAllocation = async (req, res) => {
 	}
 };
 
-const findCurrentPayStub = async (payPeriodNum, companyName, empId, isExtra) =>
-	await EmployeePayStub.findOne({
-		payPeriodNum,
-		companyName,
-		empId,
-		isProcessed: true,
-		isExtraRun: isExtra,
-	});
+const findCurrentPayStub = async (
+	payPeriodNum,
+	companyName,
+	empId,
+	isExtra,
+) => {
+	const searchObj = isExtra
+		? {
+				payPeriodNum,
+				companyName,
+				empId,
+				isProcessed: true,
+				isExtraRun: isExtra,
+		  }
+		: {
+				payPeriodNum,
+				companyName,
+				empId,
+				isProcessed: true,
+		  };
+	return await EmployeePayStub.findOne(searchObj).sort({ createdOn: -1 });
+};
 
 const calculateTotalAggregatedHours = async (
 	startDate,
