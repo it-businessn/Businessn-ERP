@@ -18,7 +18,7 @@ const EmployeePayDetails = ({ data }) => {
 	return (
 		<Stack w={"60%"} spacing={0} mt={3}>
 			<TextTitle title={"Earnings"} size={"xl"} />
-			<TableLayout cols={EARNINGS_COLS} size="md">
+			<TableLayout cols={EARNINGS_COLS} size="md" bg="var(--primary_bg_1)">
 				<Tbody>
 					<ItemRow
 						title={"Regular"}
@@ -147,7 +147,12 @@ const EmployeePayDetails = ({ data }) => {
 				</Tbody>
 			</TableLayout>
 			<TextTitle title={"Gross Pay"} size={"xl"} />
-			<TableLayout cols={BLANK_COLS} size="md" inVisible>
+			<TableLayout
+				cols={BLANK_COLS}
+				size="md"
+				inVisible
+				bg="var(--primary_bg_1)"
+			>
 				<Tbody>
 					<ItemRow
 						title={"Gross"}
@@ -159,7 +164,12 @@ const EmployeePayDetails = ({ data }) => {
 				</Tbody>
 			</TableLayout>
 			<TextTitle title={"Deductions"} size={"xl"} />
-			<TableLayout cols={BLANK_COLS} size="md" inVisible>
+			<TableLayout
+				cols={BLANK_COLS}
+				size="md"
+				inVisible
+				bg="var(--primary_bg_1)"
+			>
 				<Tbody>
 					<ItemRow
 						w="0"
@@ -222,7 +232,7 @@ const EmployeePayDetails = ({ data }) => {
 				</Tbody>
 			</TableLayout>
 			<TextTitle title={"Net Pay"} size={"xl"} />
-			<TableLayout cols={NET_PAY_COLS} size="md">
+			<TableLayout cols={NET_PAY_COLS} size="md" bg="var(--primary_bg_1)">
 				<Tbody>
 					<ItemRow
 						w="7em"

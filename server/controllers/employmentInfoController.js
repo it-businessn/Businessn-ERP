@@ -14,10 +14,9 @@ const getAllEmploymentInfo = async (req, res) => {
 		const isExtraPayRun = isExtraRun === "true";
 		const employees =
 			isExtraPayRun && (await findGroupEmployees(groupId, payDate));
-		const activeEmployees =
-			isExtraPayRun === "true"
-				? await getEmployeeId(employees)
-				: await getPayrollActiveEmployees();
+		const activeEmployees = isExtraPayRun
+			? await getEmployeeId(employees)
+			: await getPayrollActiveEmployees();
 
 		const currentPeriodEmployees = isExtraPayRun
 			? null
