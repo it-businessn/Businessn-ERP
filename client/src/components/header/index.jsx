@@ -8,9 +8,7 @@ import LoginService from "services/LoginService";
 import Company from "./Company";
 
 const Navbar = ({ handleClick, onOpen, user, setUser, isMobile }) => {
-	const { company, setSelectedCompany } = useCompany(
-		user?.companyId ? user?.companyId[0]?.name : "",
-	);
+	const { company, setSelectedCompany } = useCompany(user?.companyId?.[0].name);
 
 	const companies = useCompanyList(user?._id);
 

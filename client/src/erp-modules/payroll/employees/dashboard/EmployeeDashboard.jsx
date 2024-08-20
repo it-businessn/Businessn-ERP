@@ -1,5 +1,6 @@
 import { SimpleGrid } from "@chakra-ui/react";
 
+import useCompany from "hooks/useCompany";
 import PageLayout from "layouts/PageLayout";
 import { useState } from "react";
 import LocalStorageService from "services/LocalStorageService";
@@ -7,6 +8,9 @@ import LeftPane from "./leftpane";
 import RightPane from "./rightpane";
 
 const EmployeeDashboard = () => {
+	const { company } = useCompany(
+		LocalStorageService.getItem("selectedCompany"),
+	);
 	const loggedInUser = LocalStorageService.getItem("user");
 	const [selectedUser, setSelectedUser] = useState(loggedInUser);
 	const STATS = [
@@ -24,7 +28,6 @@ const EmployeeDashboard = () => {
 		},
 	];
 	const [stats, setStats] = useState(STATS);
-	const company = LocalStorageService.getItem("selectedCompany");
 
 	return (
 		<PageLayout title={"Employee Dashboard"}>

@@ -11,6 +11,7 @@ import BoxCard from "components/ui/card";
 import ActionButtonGroup from "components/ui/form/ActionButtonGroup";
 import ModalLayout from "components/ui/modal/ModalLayout";
 import TextTitle from "components/ui/text/TextTitle";
+import useCompany from "hooks/useCompany";
 import usePaygroup from "hooks/usePaygroup";
 import PageLayout from "layouts/PageLayout";
 import { useState } from "react";
@@ -37,7 +38,9 @@ const ProcessPayroll = () => {
 	const { payNo } = useParams();
 	const isExtra = payNo?.includes("E");
 
-	const company = LocalStorageService.getItem("selectedCompany");
+	const { company } = useCompany(
+		LocalStorageService.getItem("selectedCompany"),
+	);
 	const { payGroupSchedule, closestRecord, payGroups, selectedPayGroup } =
 		usePaygroup(company, false);
 

@@ -2,6 +2,7 @@ import { Box, Button, Flex, HStack, Spacer } from "@chakra-ui/react";
 import PrimaryButton from "components/ui/button/PrimaryButton";
 import TextTitle from "components/ui/text/TextTitle";
 
+import useCompany from "hooks/useCompany";
 import PageLayout from "layouts/PageLayout";
 import moment from "moment-timezone";
 import { useEffect, useState } from "react";
@@ -16,6 +17,9 @@ import AddEvent from "./AddEvent";
 import EventDetails from "./EventDetails";
 
 const Calendar = () => {
+	const { company } = useCompany(
+		LocalStorageService.getItem("selectedCompany"),
+	);
 	const loggedInUser = LocalStorageService.getItem("user");
 	const { isMobile } = useBreakpointValue();
 	const localizer = momentLocalizer(moment);
@@ -35,7 +39,6 @@ const Calendar = () => {
 	// 		setTimeout(checkClassExists, 1000);
 	// 	}
 	// };
-	const company = LocalStorageService.getItem("selectedCompany");
 
 	useEffect(() => {
 		// checkClassExists();

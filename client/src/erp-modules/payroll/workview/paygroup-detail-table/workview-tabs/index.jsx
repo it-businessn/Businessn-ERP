@@ -2,7 +2,6 @@ import BoxCard from "components/ui/card";
 import TabsButtonGroup from "components/ui/tab/TabsButtonGroup";
 import TextTitle from "components/ui/text/TextTitle";
 import { useState } from "react";
-import LocalStorageService from "services/LocalStorageService";
 import { isExtraPay } from "utils";
 import AmountAllocation from "./AmountAllocation";
 import EmployeeDetails from "./EmployeeDetails";
@@ -14,9 +13,8 @@ const PaygroupDetailTable = ({
 	empPath,
 	groupId,
 	selectedPayGroup,
+	company,
 }) => {
-	const company = LocalStorageService.getItem("selectedCompany");
-
 	const TABS = [
 		{
 			id: 0,

@@ -18,6 +18,7 @@ import {
 	PRODUCTS_SERVICES,
 	WEIGHTING,
 } from "erp-modules/project-management/workview/project/data";
+import useCompany from "hooks/useCompany";
 import PageLayout from "layouts/PageLayout";
 import { useEffect, useState } from "react";
 import { FaCaretRight } from "react-icons/fa";
@@ -31,11 +32,13 @@ import Disburse from "./Disburse";
 import { caption, columns, showFilterSearchOption, showRegion } from "./data";
 
 const LeadsDisbursed = () => {
+	const { company } = useCompany(
+		LocalStorageService.getItem("selectedCompany"),
+	);
 	const { isMobile, isIpad } = useBreakpointValue();
 	const [agents, setAgents] = useState(null);
 	const [activity, setActivity] = useState(null);
 
-	const company = LocalStorageService.getItem("selectedCompany");
 	const fetchAllUserActivity = async () => {
 		try {
 			const response = await UserService.getAllUserActivity();

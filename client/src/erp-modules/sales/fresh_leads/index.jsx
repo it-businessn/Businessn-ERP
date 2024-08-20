@@ -1,5 +1,6 @@
 import DeletePopUp from "components/ui/modal/DeletePopUp";
 import TabsButtonGroup from "components/ui/tab/TabsButtonGroup";
+import useCompany from "hooks/useCompany";
 import PageLayout from "layouts/PageLayout";
 import { useEffect, useState } from "react";
 import { FaListCheck } from "react-icons/fa6";
@@ -11,9 +12,12 @@ import AgentsView from "./AgentsView";
 import ListView from "./ListView";
 
 const FreshLeads = () => {
+	const { company } = useCompany(
+		LocalStorageService.getItem("selectedCompany"),
+	);
 	const [leads, setLeads] = useState(null);
 	const [isUpdated, setIsUpdated] = useState(false);
-	const company = LocalStorageService.getItem("selectedCompany");
+
 	const fetchAllLeads = async () => {
 		try {
 			const response = await LeadsService.getFreshLeads(company);

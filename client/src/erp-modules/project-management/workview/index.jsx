@@ -1,5 +1,6 @@
 import { Box, Flex, Th } from "@chakra-ui/react";
 
+import useCompany from "hooks/useCompany";
 import PageLayout from "layouts/PageLayout";
 import { useEffect, useState } from "react";
 import { FaSort } from "react-icons/fa";
@@ -26,6 +27,9 @@ export const headerCell = (key, weight, w) => (
 );
 
 const WorkView = () => {
+	const { company } = useCompany(
+		LocalStorageService.getItem("selectedCompany"),
+	);
 	const loggedInUser = LocalStorageService.getItem("user");
 	const [projects, setProjects] = useState(null);
 	const [refresh, setRefresh] = useState(false);
@@ -33,7 +37,6 @@ const WorkView = () => {
 	const [managers, setManagers] = useState(null);
 
 	const isManagerView = isManager(loggedInUser?.role);
-	const company = LocalStorageService.getItem("selectedCompany");
 
 	useEffect(() => {
 		const fetchAllProjectInfo = async () => {

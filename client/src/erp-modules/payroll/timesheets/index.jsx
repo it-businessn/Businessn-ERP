@@ -1,6 +1,7 @@
 import { Stack } from "@chakra-ui/react";
 import PrimaryButton from "components/ui/button/PrimaryButton";
 import TabsButtonGroup from "components/ui/tab/TabsButtonGroup";
+import useCompany from "hooks/useCompany";
 import useTimesheet from "hooks/useTimesheet";
 import PageLayout from "layouts/PageLayout";
 import { useState } from "react";
@@ -12,8 +13,10 @@ import Timecard from "./Timecard";
 import Timesheet from "./Timesheet";
 
 const Timesheets = () => {
-	const company = LocalStorageService.getItem("selectedCompany");
 	const { id } = useParams();
+	const { company } = useCompany(
+		LocalStorageService.getItem("selectedCompany"),
+	);
 	const loggedInUser = LocalStorageService.getItem("user");
 	const isManagerView = isManager(loggedInUser?.role);
 	const userId = id ? id : isManagerView ? null : loggedInUser._id;

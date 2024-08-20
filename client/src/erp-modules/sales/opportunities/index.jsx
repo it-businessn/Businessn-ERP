@@ -16,6 +16,7 @@ import SelectList from "components/ui/form/select/SelectList";
 import TableLayout from "components/ui/table/TableLayout";
 
 import DeletePopUp from "components/ui/modal/DeletePopUp";
+import useCompany from "hooks/useCompany";
 import PageLayout from "layouts/PageLayout";
 import { useEffect, useState } from "react";
 import { FaRegTrashAlt, FaSearch } from "react-icons/fa";
@@ -33,6 +34,9 @@ import AddNewOpportunity from "./AddNewOpportunity";
 import { LEAD_STAGES } from "./data";
 
 const Opportunities = () => {
+	const { company } = useCompany(
+		LocalStorageService.getItem("selectedCompany"),
+	);
 	const loggedInUser = LocalStorageService.getItem("user");
 	const { isMobile, isIpad } = useBreakpointValue();
 	const [isAdded, setIsAdded] = useState(false);
@@ -41,7 +45,6 @@ const Opportunities = () => {
 	const [assignees, setAssignees] = useState(null);
 	const [supervisorAssignees, setSupervisorAssignees] = useState(null);
 
-	const company = LocalStorageService.getItem("selectedCompany");
 	useEffect(() => {
 		const fetchAllSalesAgents = async () => {
 			try {

@@ -2,6 +2,7 @@ import { HStack, Table, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
 import PrimaryButton from "components/ui/button/PrimaryButton";
 import SelectBox from "components/ui/form/select/SelectBox";
 import TextTitle from "components/ui/text/TextTitle";
+import useCompany from "hooks/useCompany";
 import { MdCheckCircle } from "react-icons/md";
 import LocalStorageService from "services/LocalStorageService";
 import PayrollService from "services/PayrollService";
@@ -14,7 +15,9 @@ const PayrunSetup = ({
 	closestRecord,
 	isPayPeriodInactive,
 }) => {
-	const company = LocalStorageService.getItem("selectedCompany");
+	const { company } = useCompany(
+		LocalStorageService.getItem("selectedCompany"),
+	);
 	const runType = closestRecord?.isExtraRun ? "Extra" : "Regular";
 
 	const handleConfirm = async () => {

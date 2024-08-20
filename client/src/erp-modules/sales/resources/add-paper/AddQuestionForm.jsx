@@ -16,6 +16,7 @@ import PrimaryButton from "components/ui/button/PrimaryButton";
 import ActionButtonGroup from "components/ui/form/ActionButtonGroup";
 import DeletePopUp from "components/ui/modal/DeletePopUp";
 import TextTitle from "components/ui/text/TextTitle";
+import useCompany from "hooks/useCompany";
 import { useEffect, useState } from "react";
 import { FaRegTrashCan } from "react-icons/fa6";
 import { RiEditLine } from "react-icons/ri";
@@ -28,6 +29,9 @@ import EditQuestionnaire from "./EditQuestionnaire";
 
 const AddQuestionForm = () => {
 	const { type } = useParams();
+	const { company } = useCompany(
+		LocalStorageService.getItem("selectedCompany"),
+	);
 
 	const [assessmentTypes, setAssessmentTypes] = useState(null);
 	const [assessmentType, setAssessmentType] = useState(type || "");
@@ -40,7 +44,6 @@ const AddQuestionForm = () => {
 	const [refresh, setRefresh] = useState(false);
 	const [questionnaires, setQuestionnaires] = useState(null);
 
-	const company = LocalStorageService.getItem("selectedCompany");
 	useEffect(() => {
 		const fetchAllAssessmentTypes = async () => {
 			try {

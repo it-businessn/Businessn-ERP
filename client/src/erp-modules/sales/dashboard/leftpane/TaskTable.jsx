@@ -1,4 +1,5 @@
 import { Box, HStack, Table, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
+import useCompany from "hooks/useCompany";
 import useSelectUser from "hooks/useSelectUser";
 import { useEffect, useState } from "react";
 import LocalStorageService from "services/LocalStorageService";
@@ -6,12 +7,14 @@ import TaskService from "services/TaskService";
 import { formatDate, renderPriorityBars } from "utils";
 
 const TaskTable = ({ cols }) => {
+	const { company } = useCompany(
+		LocalStorageService.getItem("selectedCompany"),
+	);
 	const [tasks, setTasks] = useState([]);
 	const { selectedUser } = useSelectUser(
 		LocalStorageService.getItem("selectedUser"),
 	);
 
-	const company = LocalStorageService.getItem("selectedCompany");
 	useEffect(() => {
 		const fetchAllUserTasks = async () => {
 			try {

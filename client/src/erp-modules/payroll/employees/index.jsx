@@ -10,6 +10,7 @@ import {
 import RadioButtonGroup from "components/ui/tab/RadioButtonGroup";
 import TextTitle from "components/ui/text/TextTitle";
 import EmpSearchMenu from "features/setup/company/group-tab/EmpSearchMenu";
+import useCompany from "hooks/useCompany";
 import useEmployees from "hooks/useEmployees";
 import PageLayout from "layouts/PageLayout";
 import { useEffect, useState } from "react";
@@ -24,11 +25,14 @@ import PersonalInfo from "./employee-tabs/PersonalInfo";
 
 const Employees = () => {
 	const { id, stepNo } = useParams();
+	const { company } = useCompany(
+		LocalStorageService.getItem("selectedCompany"),
+	);
 	const loggedInUser = LocalStorageService.getItem("user");
 	const [employee, setEmployee] = useState(loggedInUser);
 	const [userId, setUserId] = useState(id ?? loggedInUser._id);
 	const [isRefresh, setIsRefresh] = useState(false);
-	const company = LocalStorageService.getItem("selectedCompany");
+
 	const { employees, filteredEmployees, setFilteredEmployees } = useEmployees(
 		isRefresh,
 		company,

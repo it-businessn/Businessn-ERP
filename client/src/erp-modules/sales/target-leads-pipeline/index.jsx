@@ -5,6 +5,7 @@ import ModalLayout from "components/ui/modal/ModalLayout";
 import TextTitle from "components/ui/text/TextTitle";
 
 import DeletePopUp from "components/ui/modal/DeletePopUp";
+import useCompany from "hooks/useCompany";
 import PageLayout from "layouts/PageLayout";
 import { useEffect, useState } from "react";
 import LeadsService from "services/LeadsService";
@@ -15,13 +16,15 @@ import { TARGET_LEADS } from "../opportunities/data";
 import GradientAreaFillColorChart from "./AreaFillColorChart";
 
 const Pipeline = () => {
+	const { company } = useCompany(
+		LocalStorageService.getItem("selectedCompany"),
+	);
 	const loggedInUser = LocalStorageService.getItem("user");
 	const [leads, setLeads] = useState(null);
 	const [isUpdated, setIsUpdated] = useState(false);
 	const [deleteRecord, setDeleteRecord] = useState(false);
 	const [showConfirmationPopUp, setShowConfirmationPopUp] = useState(false);
 
-	const company = LocalStorageService.getItem("selectedCompany");
 	const fetchAllLeads = async () => {
 		try {
 			const response = await LeadsService.getTargetLeads(company);

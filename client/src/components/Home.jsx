@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 
 import Navbar from "components/header";
 import Sidebar from "components/sidebar";
+import useCompany from "hooks/useCompany";
 import useSidebarMenu from "hooks/useSidebarMenu";
 import RootLayout from "layouts/RootLayout";
 import { useNavigate } from "react-router-dom";
@@ -13,9 +14,10 @@ import { isManager } from "utils";
 
 const Home = () => {
 	const navigate = useNavigate();
+	const { company } = useCompany(
+		LocalStorageService.getItem("selectedCompany"),
+	);
 	const [user, setUser] = useState(LocalStorageService.getItem("user"));
-
-	const company = LocalStorageService.getItem("selectedCompany");
 
 	const { isMobile } = useBreakpointValue();
 

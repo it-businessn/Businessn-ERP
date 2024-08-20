@@ -18,6 +18,7 @@ import {
 } from "@chakra-ui/react";
 import PrimaryButton from "components/ui/button/PrimaryButton";
 
+import useCompany from "hooks/useCompany";
 import PageLayout from "layouts/PageLayout";
 import { useEffect, useState } from "react";
 import { FaSearch } from "react-icons/fa";
@@ -29,6 +30,9 @@ import { formatDate, isManager } from "utils";
 import AddNewSale from "./AddNewSale";
 
 const Payouts = () => {
+	const { company } = useCompany(
+		LocalStorageService.getItem("selectedCompany"),
+	);
 	const loggedInUser = LocalStorageService.getItem("user");
 	const { isMobile } = useBreakpointValue();
 	const [payouts, setPayouts] = useState(null);
@@ -36,7 +40,6 @@ const Payouts = () => {
 	const { isOpen, onOpen, onClose } = useDisclosure();
 	const isManagerUser = isManager(loggedInUser.role);
 
-	const company = LocalStorageService.getItem("selectedCompany");
 	useEffect(() => {
 		const fetchAllPayouts = async () => {
 			try {

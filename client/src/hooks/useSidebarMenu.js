@@ -43,7 +43,8 @@ const useSidebarMenu = (userId, company, isManager) => {
 		if (userId) {
 			fetchUserPermissions();
 		}
-	}, [company]);
+		// }, [company]);
+	}, []);
 
 	return { activeMenu, setActiveMenu };
 };

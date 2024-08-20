@@ -10,6 +10,7 @@ import {
 import OutlineButton from "components/ui/button/OutlineButton";
 import PrimaryButton from "components/ui/button/PrimaryButton";
 import TextTitle from "components/ui/text/TextTitle";
+import useCompany from "hooks/useCompany";
 import PageLayout from "layouts/PageLayout";
 import React, { useState } from "react";
 import { FaAddressCard, FaUndoAlt } from "react-icons/fa";
@@ -20,6 +21,9 @@ import ChangePassword from "./ChangePassword";
 import EditUserInfo from "./EditUserInfo";
 
 const UserProfileDetails = () => {
+	const { company } = useCompany(
+		LocalStorageService.getItem("selectedCompany"),
+	);
 	const [userData, setUserData] = useState(LocalStorageService.getItem("user"));
 	const { isMobile } = useBreakpointValue();
 	const [editMode, setEditMode] = useState(false);
@@ -41,8 +45,6 @@ const UserProfileDetails = () => {
 		setEditMode(false);
 		setPasswordMode(false);
 	};
-
-	const company = LocalStorageService.getItem("selectedCompany");
 	const {
 		fullName,
 		email,

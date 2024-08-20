@@ -1,3 +1,4 @@
+import useCompany from "hooks/useCompany";
 import useEmployeePayReport from "hooks/useEmployeePayReport";
 import usePaygroup from "hooks/usePaygroup";
 import PageLayout from "layouts/PageLayout";
@@ -7,7 +8,9 @@ import PreviewReportsModal from "../process-payroll/preview-reports/PreviewRepor
 import WorkviewTable from "../workview/paygroup-header-table/WorkviewTable";
 
 const Reports = () => {
-	const company = LocalStorageService.getItem("selectedCompany");
+	const { company } = useCompany(
+		LocalStorageService.getItem("selectedCompany"),
+	);
 
 	const { payGroupSchedule, closestRecordIndex } = usePaygroup(company, false);
 

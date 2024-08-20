@@ -1,3 +1,4 @@
+import useCompany from "hooks/useCompany";
 import usePaygroup from "hooks/usePaygroup";
 import PageLayout from "layouts/PageLayout";
 import { useState } from "react";
@@ -8,7 +9,9 @@ import PaygroupTable from "./paygroup-header-table";
 
 const PayrollWorkview = () => {
 	const empPath = `${ROUTE_PATH.PAYROLL}${ROUTE_PATH.EMPLOYEES}`;
-	const company = LocalStorageService.getItem("selectedCompany");
+	const { company } = useCompany(
+		LocalStorageService.getItem("selectedCompany"),
+	);
 	const [refresh, setRefresh] = useState(false);
 
 	const {
@@ -50,6 +53,7 @@ const PayrollWorkview = () => {
 				/>
 			)}
 			<PaygroupDetailTable
+				company={company}
 				closestRecord={closestRecord}
 				empPath={empPath}
 				selectedPayGroup={selectedPayGroup}

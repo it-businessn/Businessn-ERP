@@ -1,4 +1,5 @@
 import TabsButtonGroup from "components/ui/tab/TabsButtonGroup";
+import useCompany from "hooks/useCompany";
 import useEmployees from "hooks/useEmployees";
 import PageLayout from "layouts/PageLayout";
 import { useState } from "react";
@@ -9,7 +10,9 @@ import UsersPanel from "./users/UsersPanel";
 
 const Setup = () => {
 	const [isRefresh, setIsRefresh] = useState(false);
-	const company = LocalStorageService.getItem("selectedCompany");
+	const { company } = useCompany(
+		LocalStorageService.getItem("selectedCompany"),
+	);
 	const { employees, filteredEmployees, setFilteredEmployees } = useEmployees(
 		isRefresh,
 		company,
