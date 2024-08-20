@@ -51,7 +51,7 @@ const MultiSelectBox = ({
 							<Checkbox
 								colorScheme="facebook"
 								isChecked={selectedOptions?.includes(
-									assignee.fullName ?? assignee.name,
+									assignee.fullName ?? (assignee.name || assignee),
 								)}
 								onChange={() =>
 									handleCheckboxChange(assignee.fullName ?? assignee.name)

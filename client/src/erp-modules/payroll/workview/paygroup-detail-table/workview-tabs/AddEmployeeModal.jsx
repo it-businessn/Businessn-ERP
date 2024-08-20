@@ -21,7 +21,7 @@ const AddEmployeeModal = ({
 	const [selectedEmp, setSelectedEmp] = useState(selectedEmployee);
 	const { employees } = useEmployees(false, company);
 	const [openMenu, setOpenMenu] = useState(false);
-	const [selectedOptions, setSelectedOptions] = useState([]);
+	const [selectedOptions, setSelectedOptions] = useState(selectedEmp ?? []);
 
 	const { onClose } = useDisclosure();
 
