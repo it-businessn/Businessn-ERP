@@ -61,10 +61,12 @@ const Timesheets = () => {
 						"Status",
 						"Clock In",
 						"Clock Out",
-						"Start Break",
-						"End Break",
-						"Clock In",
-						"Clock Out",
+						"Start Break1",
+						"End Break1",
+						"Start Break2",
+						"End Break2",
+						"Start Break3",
+						"End Break3",
 						"Total Hours (HH:mm)",
 					]}
 					data={timesheets}

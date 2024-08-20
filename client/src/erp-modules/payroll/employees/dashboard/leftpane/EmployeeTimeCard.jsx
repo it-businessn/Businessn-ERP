@@ -6,7 +6,7 @@ import moment from "moment";
 import { useEffect, useState } from "react";
 import TimesheetService from "services/TimesheetService";
 
-const TimeCard = ({ selectedUser, company }) => {
+const EmployeeTimeCard = ({ selectedUser, company }) => {
 	const [time, setTime] = useState(new Date());
 
 	const toast = useToast();
@@ -137,4 +137,4 @@ const TimeCard = ({ selectedUser, company }) => {
 	);
 };
 
-export default TimeCard;
+export default EmployeeTimeCard;

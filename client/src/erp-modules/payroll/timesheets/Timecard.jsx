@@ -66,7 +66,15 @@ const Timecard = ({ cols, data }) => (
 							</Td>
 							<Td py={0}>{clockIns.length > 0 ? clockIns[0] : ""}</Td>
 							<Td py={0}>{clockOuts.length > 0 ? clockOuts[0] : ""}</Td>
-							<Td py={0}>
+							<Td py={0}>{startBreaks?.[0] ?? ""}</Td>
+							<Td py={0}>{endBreaks?.[0] ?? ""}</Td>
+							<Td py={0}>{startBreaks?.[1] ?? ""}</Td>
+							<Td py={0}>{endBreaks?.[1] ?? ""}</Td>
+							<Td py={0}>{startBreaks?.[2] ?? ""}</Td>
+							<Td py={0}>{endBreaks?.[2] ?? ""}</Td>
+							<Td py={0}>{hhMMFormattedTime}</Td>
+
+							{/* <Td py={0}>
 								{startBreaks.length > 0
 									? startBreaks[startBreaks.length - 1]
 									: ""}
@@ -79,8 +87,7 @@ const Timecard = ({ cols, data }) => (
 							</Td>
 							<Td py={0}>
 								{clockOuts.length > 1 ? clockIns[clockOuts.length - 1] : ""}
-							</Td>
-							<Td py={0}>{hhMMFormattedTime}</Td>
+							</Td> */}
 						</Tr>
 					);
 				},

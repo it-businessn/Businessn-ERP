@@ -2,8 +2,9 @@ const EmployeePayInfo = require("../models/EmployeePayInfo");
 const Timesheet = require("../models/Timesheet");
 const moment = require("moment");
 
-// const currentDate = moment().subtract(1, "days");
-const currentDate = moment();
+// const currentTime = currentDate.format("HH:mm:ss");
+const currentDate = moment().add(1, "days");
+const currentTime = currentDate.format("HH:mm");
 
 const findByRecordTimesheets = async (record) => {
 	const result = await Timesheet.find(record)
@@ -26,6 +27,7 @@ const getTimesheets = async (req, res) => {
 			companyName,
 			createdOn: { $lte: currentDate },
 		});
+
 		const payInfoResult = await EmployeePayInfo.find({
 			companyName,
 		}).select(
@@ -124,8 +126,10 @@ const addStatHolidayDefaultTimesheet = async (employeeId, companyName) => {
 			companyName,
 			payType: "Statutory Pay",
 			createdOn: moment(date),
-			clockIns: [startTime],
-			clockOuts: [endTime],
+			startTime,
+			endTime,
+			// clockIns: [startTime],
+			// clockOuts: [endTime],
 			statDayHours: getDateDiffHours(startTime, endTime, "0"),
 		};
 		await Timesheet.create(newStatTimeSheetRecord);
@@ -156,6 +160,8 @@ const createTimesheet = async (req, res) => {
 			companyName: company,
 			payType: type,
 			createdOn,
+			clockIns: [currentTime],
+			startTime: currentTime,
 		});
 		res.status(201).json(newTimesheet);
 	} catch (error) {
@@ -213,8 +219,10 @@ const addOvertimeTimesheet = async (
 		employeeId,
 		companyName,
 		payType: "Overtime Pay",
-		clockIns: [newStartTime],
-		clockOuts: [newEndTime],
+		startTime: newStartTime,
+		endTime: newEndTime,
+		// clockIns: [newStartTime],
+		// clockOuts: [newEndTime],
 		overtimeHoursWorked: overtimeHrs,
 		createdOn,
 	};
@@ -246,18 +254,18 @@ const updateTimesheet = async (req, res) => {
 				timesheet.createdOn,
 			);
 			timesheet[param_hours] = 480;
-			timesheet.clockOuts.push(newStartTime);
+			// timesheet.clockOuts.push(newStartTime);
 			timesheet.endTime = newStartTime;
 		} else {
 			timesheet[param_hours] = totalWorkedHours;
 			if (endTime !== "00:00") {
-				timesheet.clockOuts.push(endTime);
+				// timesheet.clockOuts.push(endTime);
 				timesheet.endTime = endTime;
 			}
 		}
 
 		timesheet.startTime = startTime;
-		timesheet.clockIns[0] = startTime;
+		// timesheet.clockIns[0] = startTime;
 		timesheet.totalBreaks = totalBreaks;
 		timesheet.approveStatus = approve
 			? "Approved"
