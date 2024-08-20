@@ -1,4 +1,5 @@
 import { Tbody, Td, Tr } from "@chakra-ui/react";
+import PrimaryButton from "components/ui/button/PrimaryButton";
 import BoxCard from "components/ui/card";
 import TableLayout from "components/ui/table/TableLayout";
 import TextTitle from "components/ui/text/TextTitle";
@@ -14,16 +15,25 @@ const WorkviewTab = ({
 	stepNum,
 	renderEditableInput,
 	cellClick,
+	handleAddEmp,
+	isExtraRun,
+	handleDelete,
+	setShowConfirmationPopUp,
 }) => {
 	const navigate = useNavigate();
 
-	const handleClick = (col, row) => {
-		if (col.key === "") {
+	const handleClick = (col, row, name) => {
+		const navigatePage = col.key === "" && name === "setup";
+		if (navigatePage) {
 			navigate(
 				stepNum !== undefined
 					? `${path}/${row.empId._id}/${stepNum}`
 					: `${path}/${row.empId._id}`,
 			);
+			return;
+		} else if (col.key === "") {
+			setShowConfirmationPopUp(true);
+			handleDelete(row.empId.fullName);
 			return;
 		}
 		cellClick(row);
@@ -54,9 +64,7 @@ const WorkviewTab = ({
 									<Td
 										p={1}
 										key={col.key}
-										onClick={() => {
-											handleClick(col, row);
-										}}
+										onClick={(el) => handleClick(col, row, el.target.name)}
 									>
 										{col.isEditable
 											? renderEditableInput(row._id, col.pair, fieldValue)
@@ -66,6 +74,18 @@ const WorkviewTab = ({
 							})}
 						</Tr>
 					))}
+					{isExtraRun && (
+						<Tr>
+							<Td p={0}>
+								<PrimaryButton
+									name={"Add employee"}
+									size="xs"
+									px={0}
+									onOpen={handleAddEmp}
+								/>
+							</Td>
+						</Tr>
+					)}
 				</Tbody>
 			</TableLayout>
 		</BoxCard>

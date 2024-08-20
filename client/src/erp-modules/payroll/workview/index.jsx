@@ -52,6 +52,7 @@ const PayrollWorkview = () => {
 			<PaygroupDetailTable
 				closestRecord={closestRecord}
 				empPath={empPath}
+				selectedPayGroup={selectedPayGroup}
 				groupId={selectedPayGroup?._id}
 			/>
 		</PageLayout>

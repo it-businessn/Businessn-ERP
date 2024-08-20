@@ -13,6 +13,7 @@ const PaygroupDetailTable = ({
 	payGroupSchedule,
 	empPath,
 	groupId,
+	selectedPayGroup,
 }) => {
 	const company = LocalStorageService.getItem("selectedCompany");
 
@@ -27,6 +28,7 @@ const PaygroupDetailTable = ({
 					company={company}
 					closestRecord={closestRecord}
 					groupId={groupId}
+					selectedPayGroup={selectedPayGroup}
 				/>
 			),
 		},

@@ -1,7 +1,13 @@
 import { useEffect, useState } from "react";
 import PayrollService from "services/PayrollService";
 
-const useEmployeeEmploymentInfo = (company, empId, payPeriod, groupId) => {
+const useEmployeeEmploymentInfo = (
+	company,
+	empId,
+	payPeriod,
+	groupId,
+	refresh,
+) => {
 	const [employmentInfo, setEmploymentInfo] = useState(null);
 
 	useEffect(() => {
@@ -26,7 +32,7 @@ const useEmployeeEmploymentInfo = (company, empId, payPeriod, groupId) => {
 		if (payPeriod) {
 			fetchEmployeeEmploymentInfo();
 		}
-	}, [company, empId, payPeriod]);
+	}, [company, empId, payPeriod, refresh]);
 	return employmentInfo;
 };
 
