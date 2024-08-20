@@ -143,7 +143,7 @@ const addGroup = async (req, res) => {
 		if (payrollActivated) {
 			await schedulePaygroup(newModule._id);
 		}
-		schedulePaygroup(newModule._id);
+
 		res.status(201).json(newModule);
 	} catch (error) {
 		res.status(400).json({ message: error.message });
@@ -200,7 +200,12 @@ const updatePayGroup = async (id, data) =>
 
 const updateGroup = async (req, res) => {
 	const { id } = req.params;
+	const { scheduleSettings, payrollActivated } = req.body;
 	try {
+		if (scheduleSettings && !scheduleSettings.length && payrollActivated) {
+			await schedulePaygroup(id);
+			return res.status(200).json("Added schedules");
+		}
 		const setup = await updatePayGroup(id, req.body);
 		res.status(200).json(setup);
 	} catch (error) {

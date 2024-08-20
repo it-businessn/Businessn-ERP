@@ -33,7 +33,7 @@ const EmployeeDetails = ({
 	);
 
 	const selectedEmployee =
-		selectedPayGroup?.scheduleSettings[selectedEmployeeIndex].selectedEmp;
+		selectedPayGroup?.scheduleSettings[selectedEmployeeIndex]?.selectedEmp;
 
 	const handleDelete = (emp) => {
 		setShowConfirmationPopUp(true);

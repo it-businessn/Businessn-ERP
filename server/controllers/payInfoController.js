@@ -15,7 +15,7 @@ const getAllPayInfo = async (req, res) => {
 
 		const activeEmployees = isExtraPayRun
 			? await getEmployeeId(employees)
-			: await getPayrollActiveEmployees();
+			: await getPayrollActiveEmployees(companyName);
 
 		const aggregatedResult = [];
 		for (const employee of activeEmployees) {

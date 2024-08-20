@@ -242,4 +242,5 @@ module.exports = {
 	getAllSalesAgents,
 	updateUser,
 	updateUserAssignedLeads,
+	findCompany,
 };

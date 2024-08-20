@@ -14,6 +14,7 @@ const {
 	getSumTotal,
 } = require("../services/payrollService");
 const { findGroupEmployees } = require("./setUpController");
+const { findCompany } = require("./userController");
 
 //update roles-
 
@@ -55,7 +56,7 @@ const getGroupedTimesheet = async (req, res) => {
 
 		const activeEmployees = isExtraPayRun
 			? await getEmployeeId(employees)
-			: await getPayrollActiveEmployees();
+			: await getPayrollActiveEmployees(companyName);
 
 		const currentPeriodEmployees = isExtraPayRun
 			? null
@@ -329,8 +330,13 @@ const getEmployeeId = async (empList) => {
 	return list;
 };
 
-const getPayrollActiveEmployees = async () =>
-	await Employee.find({ payrollStatus: "Payroll Active" });
+const getPayrollActiveEmployees = async (companyName) => {
+	const existingCompany = await findCompany("name", companyName);
+	return await Employee.find({
+		payrollStatus: "Payroll Active",
+		companyId: existingCompany._id,
+	});
+};
 
 const findEmployeePayStub = async (empId, payPeriodNum) =>
 	await EmployeePayStub.findOne({
@@ -355,7 +361,7 @@ const addEmployeePayStubInfo = async (req, res) => {
 
 		const activeEmployees = isExtraRun
 			? await getEmployeeId(selectedEmp)
-			: await getPayrollActiveEmployees();
+			: await getPayrollActiveEmployees(companyName);
 
 		const result = isExtraRun
 			? null

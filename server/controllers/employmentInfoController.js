@@ -16,7 +16,7 @@ const getAllEmploymentInfo = async (req, res) => {
 			isExtraPayRun && (await findGroupEmployees(groupId, payDate));
 		const activeEmployees = isExtraPayRun
 			? await getEmployeeId(employees)
-			: await getPayrollActiveEmployees();
+			: await getPayrollActiveEmployees(companyName);
 
 		const currentPeriodEmployees = isExtraPayRun
 			? null

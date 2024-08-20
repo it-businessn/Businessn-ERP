@@ -3,13 +3,27 @@ import ActionButtonGroup from "components/ui/form/ActionButtonGroup";
 import DateTimeFormControl from "components/ui/form/DateTimeFormControl";
 import ModalLayout from "components/ui/modal/ModalLayout";
 import TableLayout from "components/ui/table/TableLayout";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import SettingService from "services/SettingService";
 import { dayMonthYear, getDefaultDate } from "utils";
 
 const EditGroup = ({ isOpen, onClose, selectedGroup }) => {
 	const schedules = selectedGroup?.scheduleSettings;
 	const [isSubmitting, setIsSubmitting] = useState(false);
+
+	useEffect(() => {
+		if (!selectedGroup?.scheduleSettings?.length) {
+			const setUpSchedules = async () => {
+				try {
+					await SettingService.updateGroup(selectedGroup, selectedGroup._id);
+				} catch (error) {
+				} finally {
+					setIsSubmitting(false);
+				}
+			};
+			setUpSchedules();
+		}
+	}, [selectedGroup?.scheduleSettings]);
 
 	const handleSubmit = async (e) => {
 		e.preventDefault();
