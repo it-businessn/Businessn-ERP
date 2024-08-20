@@ -92,7 +92,10 @@ const AmountAllocation = ({ company, closestRecord, groupId }) => {
 					pair: "terminationPayout",
 					isEditable: true,
 				},
-				{ key: "", pair: <OutlineButton label="View Balances" size="sm" /> },
+				{
+					key: "",
+					pair: <OutlineButton name="setup" label="View Balances" size="sm" />,
+				},
 			]}
 			data={amountAllocateData}
 			label="Setup"

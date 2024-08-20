@@ -2,7 +2,8 @@ const EmployeePayInfo = require("../models/EmployeePayInfo");
 const Timesheet = require("../models/Timesheet");
 const moment = require("moment");
 
-const currentDate = moment().subtract(1, "days");
+// const currentDate = moment().subtract(1, "days");
+const currentDate = moment();
 
 const findByRecordTimesheets = async (record) => {
 	const result = await Timesheet.find(record)

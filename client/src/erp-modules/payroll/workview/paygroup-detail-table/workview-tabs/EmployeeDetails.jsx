@@ -91,7 +91,9 @@ const EmployeeDetails = ({
 						pair: (
 							<HStack w={"100%"} justifyContent={"center"}>
 								<OutlineButton name="setup" label="View Setup" />
-								<PrimaryButton name={"Delete"} size="sm" px={0} />
+								{closestRecord?.isExtraRun && (
+									<PrimaryButton name={"Delete"} size="sm" px={0} />
+								)}
 							</HStack>
 						),
 					},

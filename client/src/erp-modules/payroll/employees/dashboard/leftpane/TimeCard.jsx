@@ -28,11 +28,13 @@ const TimeCard = ({ selectedUser, company }) => {
 	const formattedDate = moment(new Date()).format("MMM DD, YYYY");
 
 	const handleSubmit = async () => {
+		const newEntry = {
+			employeeId: selectedUser?._id,
+			company,
+			type: "Regular Pay",
+		};
 		try {
-			await TimesheetService.addTimesheet({
-				employeeId: selectedUser?._id,
-				companyName: company,
-			});
+			await TimesheetService.addTimesheet(newEntry);
 			toast({
 				title: "Clock In successful!",
 				status: "success",

@@ -35,8 +35,9 @@ const WorkviewTab = ({
 			setShowConfirmationPopUp(true);
 			handleDelete(row.empId.fullName);
 			return;
+		} else if (isEditable) {
+			cellClick(row);
 		}
-		cellClick(row);
 	};
 
 	return (
