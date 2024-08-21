@@ -65,7 +65,7 @@ const WorkviewTab = ({
 									<Td
 										p={1}
 										key={col.key}
-										onClick={(el) => handleClick(col, row, el.target.name)}
+										onFocus={(el) => handleClick(col, row, el.target.name)}
 									>
 										{col.isEditable
 											? renderEditableInput(row._id, col.pair, fieldValue)

@@ -20,12 +20,6 @@ const AmountAllocation = ({ company, closestRecord, groupId }) => {
 	const [formData, setFormData] = useState(null);
 
 	useEffect(() => {
-		if (formData) {
-			console.log(formData, amountAllocateData);
-		}
-	}, [formData]);
-
-	useEffect(() => {
 		if (data) {
 			setAmountAllocateData(data);
 		}
@@ -48,14 +42,14 @@ const AmountAllocation = ({ company, closestRecord, groupId }) => {
 			const updatedRec = amountAllocateData.find(
 				(record) => record._id === formData._id,
 			);
-			if (formData) {
-				// await PayrollService.updateEmployeeAmountAllocation(
-				// 	updatedRec,
-				// 	updatedRec._id,
-				// );
-				// setRefresh((prev) => !prev);
+			if (updatedRec) {
+				await PayrollService.updateEmployeeAmountAllocation(
+					updatedRec,
+					updatedRec._id,
+				);
+				setRefresh((prev) => !prev);
 				setFormData(null);
-			} else return;
+			}
 		} catch (error) {}
 	};
 

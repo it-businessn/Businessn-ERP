@@ -321,6 +321,8 @@ const updatePayStub = async (id, data) =>
 		new: true,
 	});
 
+const addPayStub = async (data) => await EmployeePayStub.create(data);
+
 const getEmployeeId = async (empList) => {
 	const list = [];
 	for (const fullName of empList) {
@@ -337,6 +339,21 @@ const getPayrollActiveEmployees = async (companyName) => {
 		companyId: existingCompany._id,
 	});
 };
+
+const findEmpPayStubDetail = async (empId, payPeriodPayDate, companyName) =>
+	await EmployeePayStub.findOne({
+		empId,
+		payPeriodPayDate,
+		companyName,
+	})
+		.populate({
+			path: "empId",
+			model: "Employee",
+			select: "fullName",
+		})
+		.select(
+			"commission retroactive reimbursement vacationPayout bonus terminationPayout",
+		);
 
 const findEmployeePayStub = async (empId, payPeriodNum) =>
 	await EmployeePayStub.findOne({
@@ -636,7 +653,7 @@ const buildPayStubDetails = async (
 	if (currentPayInfo) {
 		await updatePayStub(currentPayInfo._id, currentPayStub);
 	} else {
-		await EmployeePayStub.create(currentPayStub);
+		await addPayStub(currentPayStub);
 	}
 };
 
@@ -731,4 +748,6 @@ module.exports = {
 	getPayrollActiveEmployees,
 	updateAmountAllocation,
 	getEmployeeId,
+	addPayStub,
+	findEmpPayStubDetail,
 };
