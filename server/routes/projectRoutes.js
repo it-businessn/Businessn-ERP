@@ -4,6 +4,7 @@ const router = express.Router();
 const projectController = require("../controllers/projectController");
 
 router.get("/", projectController.getProjects);
+
 router.get("/:companyName", projectController.getCompanyProjects);
 
 router.get(

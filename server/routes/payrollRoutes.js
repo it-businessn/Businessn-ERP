@@ -5,10 +5,7 @@ const payrollController = require("../controllers/payrollController");
 
 router.get("/payGroups/:companyName", payrollController.getAllPayGroups);
 
-router.get(
-	"/hoursTimesheet/:companyName/:startDate/:endDate/:payDate/:isExtraRun/:groupId",
-	payrollController.getGroupedTimesheet,
-);
+router.get("/payGroups/:companyName/:id", payrollController.getPayGroup);
 
 router.get(
 	"/alertsReport/:companyName/:payPeriodNum",
@@ -20,7 +17,10 @@ router.get(
 	payrollController.getPayDetailsReportInfo,
 );
 
-router.get("/payGroups/:companyName/:id", payrollController.getPayGroup);
+router.get(
+	"/hoursTimesheet/:companyName/:startDate/:endDate/:payDate/:isExtraRun/:groupId",
+	payrollController.getGroupedTimesheet,
+);
 
 router.post("/payGroups", payrollController.addPayGroup);
 

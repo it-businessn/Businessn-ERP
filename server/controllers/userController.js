@@ -8,9 +8,11 @@ const UserActivity = require("../models/UserActivity");
 const { isRoleManager } = require("../services/data");
 const { setInitialPermissions } = require("./appController");
 
+const findEmployee = async (data) => await Employee.find(data);
+
 const getAllEmployees = () => async (req, res) => {
 	try {
-		const result = await Employee.find({}).sort({
+		const result = await findEmployee({}).sort({
 			firstName: 1,
 		});
 		res.status(200).json(result);
@@ -45,7 +47,9 @@ const getCompanyEmployees = () => async (req, res) => {
 	const { companyName } = req.params;
 	try {
 		const existingCompany = await findCompany("name", companyName);
-		const result = await Employee.find({ companyId: existingCompany._id });
+		const result = await findEmployee({
+			companyId: existingCompany._id,
+		});
 
 		res.status(200).json(result);
 	} catch (error) {
@@ -126,7 +130,7 @@ const getAllManagers = () => async (req, res) => {
 	const { companyName } = req.params;
 	try {
 		const existingCompany = await findCompany("name", companyName);
-		const result = await Employee.find({
+		const result = await findEmployee({
 			companyId: existingCompany._id,
 			role: { $regex: /manager|administrator/i },
 		});
@@ -140,7 +144,7 @@ const getAllSalesAgents = () => async (req, res) => {
 	const { companyName } = req.params;
 	try {
 		const existingCompany = await findCompany("name", companyName);
-		const result = await Employee.find({
+		const result = await findEmployee({
 			companyId: existingCompany._id,
 			role: {
 				$not: {
@@ -224,7 +228,7 @@ const getActiveUsers = async () => {
 		isDisbursed: true,
 		isDisbursedConfirmed: false,
 	});
-	const activeUsers = await Employee.find({ isActive: true });
+	const activeUsers = await findEmployee({ isActive: true });
 	const totalWeight = activeUsers.reduce(
 		(sum, item) => sum + item.assignedWeight,
 		0,
@@ -243,4 +247,5 @@ module.exports = {
 	updateUser,
 	updateUserAssignedLeads,
 	findCompany,
+	findEmployee,
 };

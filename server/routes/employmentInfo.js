@@ -4,13 +4,13 @@ const router = express.Router();
 const employmentInfoController = require("../controllers/employmentInfoController");
 
 router.get(
-	"/:companyName/:startDate/:endDate/:payDate/:isExtraRun/:groupId",
-	employmentInfoController.getAllEmploymentInfo,
+	"/:companyName/:empId",
+	employmentInfoController.getEmployeeEmploymentInfo,
 );
 
 router.get(
-	"/:companyName/:empId",
-	employmentInfoController.getEmployeeEmploymentInfo,
+	"/:companyName/:startDate/:endDate/:payDate/:isExtraRun/:groupId",
+	employmentInfoController.getAllEmploymentInfo,
 );
 
 router.post("/", employmentInfoController.addEmployeeEmploymentInfo);

@@ -3,25 +3,26 @@ const router = express.Router();
 
 const leadController = require("../controllers/leadController");
 
-router.get("/opportunities/:companyName", leadController.getOpportunities);
-
-router.get("/not-disbursed/:companyName", leadController.getLeadsNotDisbursed);
+router.get("/grouped-opportunities", leadController.getGroupedOpportunities);
 
 router.get("/disburse/:companyName", leadController.getDisbursedLeads);
-
-router.get("/targets/:companyName", leadController.getTargetLeads);
 
 router.get(
 	"/disburse/isConfirmed/:companyName",
 	leadController.getConfirmedDisbursedLeads,
 );
-router.get("/:companyName", leadController.getGroupedOpportunitiesByCompany);
 
-router.get("/:id/:companyName", leadController.getLead);
+router.get("/not-disbursed/:companyName", leadController.getLeadsNotDisbursed);
+
+router.get("/opportunities/:companyName", leadController.getOpportunities);
+
+router.get("/targets/:companyName", leadController.getTargetLeads);
 
 router.get("/companies/:companyName", leadController.getLeadCompanies);
 
-router.get("/grouped-opportunities", leadController.getGroupedOpportunities);
+router.get("/:companyName", leadController.getGroupedOpportunitiesByCompany);
+
+router.get("/:id/:companyName", leadController.getLead);
 
 router.post("/companies", leadController.createLeadCompany);
 

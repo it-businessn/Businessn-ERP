@@ -6,14 +6,14 @@ const resourceController = require("../controllers/resourceController");
 
 router.get("/", resourceController.getResources);
 
-router.get("/:fileType", resourceController.getResource);
-
 router.get("/download/:filename", resourceController.downloadResource);
 
 router.get(
 	"/type/:fileType/:companyName",
 	resourceController.getCompanyResources,
 );
+
+router.get("/:fileType", resourceController.getResource);
 
 router.get("/:companyName", resourceController.getResourcesByCompany);
 
