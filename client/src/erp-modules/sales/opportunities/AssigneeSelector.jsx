@@ -72,9 +72,12 @@ const AssigneeSelector = ({
 				onChange={handleMultiAssigneesChange}
 				placeholder={`Select ${label}`}
 			>
-				{assignees?.map(({ name }) => (
-					<option value={name} key={name}>
-						{name}
+				{assignees?.map((assignee) => (
+					<option
+						value={assignee?.fullName ?? assignee?.name}
+						key={assignee?._id ?? assignee?.name}
+					>
+						{assignee?.fullName ?? assignee?.name}
 					</option>
 				))}
 			</Select>

@@ -9,7 +9,7 @@ import {
 import Loader from "components/Loader";
 import MultiSelectBox from "components/ui/form/select/MultiSelectBox";
 import useGroup from "hooks/useGroup";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FaCaretDown } from "react-icons/fa";
 
 const FilterMenu = ({
@@ -26,14 +26,17 @@ const FilterMenu = ({
 	setSelectedModules,
 }) => {
 	const [openAdminMenu, setOpenAdminMenu] = useState(null);
-	const groups = useGroup(
-		company,
-		setSelectedModules,
-		setSelectedAdmins,
-		setGroupMembers,
-		setSelectedGroup,
-		isRefresh,
-	);
+	const groups = useGroup(company, isRefresh);
+
+	useEffect(() => {
+		if (!groups) {
+			return;
+		}
+		setSelectedModules(groups[0].modules);
+		setSelectedAdmins(groups[0].admin);
+		setGroupMembers(groups[0].members);
+	}, [groups]);
+
 	const [openModuleMenu, setOpenModuleMenu] = useState(null);
 	const handleMenuToggle = () => {
 		setOpenModuleMenu((prev) => !prev);

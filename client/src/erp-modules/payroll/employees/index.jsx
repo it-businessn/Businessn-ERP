@@ -32,6 +32,9 @@ const Employees = () => {
 	const [employee, setEmployee] = useState(loggedInUser);
 	const [userId, setUserId] = useState(id ?? loggedInUser._id);
 	const [isRefresh, setIsRefresh] = useState(false);
+	const [empName, setEmpName] = useState("");
+
+	const isActivePayroll = employee?.payrollStatus?.includes("Active");
 
 	const { employees, filteredEmployees, setFilteredEmployees } = useEmployees(
 		isRefresh,
@@ -43,8 +46,6 @@ const Employees = () => {
 			setEmployee(employees?.find(({ _id }) => _id === id));
 		}
 	}, [id, employees]);
-
-	const [empName, setEmpName] = useState("");
 
 	const handleInputChange = (value) => {
 		setEmpName(value);
@@ -98,12 +99,11 @@ const Employees = () => {
 			name: <BalanceInfo company={company} empId={userId} />,
 		},
 	];
+
 	const tabContent = id ? SETUP_LIST[stepNo].type : SETUP_LIST[0].type;
 	const [viewMode, setViewMode] = useState(tabContent);
 	const showComponent = (viewMode) =>
 		SETUP_LIST.find(({ type }) => type === viewMode)?.name;
-
-	const isActivePayroll = employee?.payrollStatus?.includes("Active");
 
 	return (
 		<PageLayout title={"Employees"}>

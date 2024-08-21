@@ -3,7 +3,7 @@ import LocalStorageService from "services/LocalStorageService";
 import SettingService from "services/SettingService";
 import UserService from "services/UserService";
 
-export const useSignup = (optionDataRefresh) => {
+export const useSignup = (refresh) => {
 	const company = LocalStorageService.getItem("selectedCompany");
 	const defaultFormData = {
 		company: company ?? "",
@@ -101,7 +101,7 @@ export const useSignup = (optionDataRefresh) => {
 		fetchAllRoles();
 		fetchAllDepartments();
 		fetchAllEmpTypes();
-	}, [formData.company, optionDataRefresh]);
+	}, [formData.company, refresh]);
 
 	return {
 		formData,

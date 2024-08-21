@@ -1,60 +1,55 @@
 import { Box, Button, Flex, Spacer, Text } from "@chakra-ui/react";
 import LinkButton from "components/ui/button/LinkButton";
+import useCompanyEvents from "hooks/useCompanyEvents";
 import moment from "moment";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { Calendar, momentLocalizer } from "react-big-calendar";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import { FaCaretLeft, FaCaretRight } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
-import CalendarService from "services/CalendarService";
+import { getDefaultDateTime } from "utils";
 
 const MiniCalendar = ({ user, company }) => {
 	const localizer = momentLocalizer(moment);
-	const [events, setEvents] = useState(null);
+	const events = useCompanyEvents(user, company);
 
 	useEffect(() => {
-		const fetchAllEvents = async () => {
-			try {
-				const response = await CalendarService.getCompEvents(company);
-				response.data = response.data
-					?.filter(
-						(event) =>
-							event.meetingAttendees.includes(user.fullName) ||
-							event.createdBy === user?._id,
-					)
-					?.map((event) => {
-						const fromDateTimeString = `${event.fromDate.split("T")[0]}T${
-							event.fromTime
-						}`;
-						const toDateTimeString = `${event.toDate.split("T")[0]}T${
-							event.toTime
-						}`;
+		if (events) {
+			events
+				?.filter(
+					(event) =>
+						event.meetingAttendees.includes(user.fullName) ||
+						event.createdBy === user?._id,
+				)
+				?.map((event) => {
+					const fromDateTimeString = getDefaultDateTime(
+						event.fromDate,
+						event.fromTime,
+					);
+					const toDateTimeString = getDefaultDateTime(
+						event.toDate,
+						event.toTime,
+					);
 
-						event.title = event.description;
-						event.start = fromDateTimeString;
-						event.end = toDateTimeString;
-						event.color =
-							event.eventType === "phoneCall"
-								? "var(--status_button_border)"
-								: event.eventType === "meeting"
-								? "var(--primary_button_bg)"
-								: "var(--event_color)";
-						event.bgColor =
-							event.eventType === "phoneCall"
-								? "var(--phoneCall_bg_light)"
-								: event.eventType === "meeting"
-								? "var(--meeting_bg_light)"
-								: "var(--event_bg_light)";
-						return event;
-					});
-
-				setEvents(response.data);
-			} catch (error) {
-				console.error(error);
-			}
-		};
-		fetchAllEvents();
-	}, [user, company]);
+					event.title = event.description;
+					event.start = fromDateTimeString;
+					event.end = toDateTimeString;
+					event.color =
+						event.eventType === "phoneCall"
+							? "var(--status_button_border)"
+							: event.eventType === "meeting"
+							? "var(--primary_button_bg)"
+							: "var(--event_color)";
+					event.bgColor =
+						event.eventType === "phoneCall"
+							? "var(--phoneCall_bg_light)"
+							: event.eventType === "meeting"
+							? "var(--meeting_bg_light)"
+							: "var(--event_bg_light)";
+					return event;
+				});
+		}
+	}, [events]);
 
 	const handleDateSelect = (event) => {
 		// setShowModal(true);

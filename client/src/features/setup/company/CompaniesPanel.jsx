@@ -11,7 +11,8 @@ import {
 } from "@chakra-ui/react";
 import ActionButton from "components/ui/button/ActionButton";
 import EmptyRowRecord from "components/ui/EmptyRowRecord";
-import { useEffect, useState } from "react";
+import { useSignup } from "hooks/useSignup";
+import { useState } from "react";
 import SettingService from "services/SettingService";
 
 const CompaniesPanel = ({ setOpenCompanyForm }) => {
@@ -29,21 +30,10 @@ const CompaniesPanel = ({ setOpenCompanyForm }) => {
 		industry_type: "",
 	};
 	const [formData, setFormData] = useState(defaultFormData);
-	const [companies, setCompanies] = useState(null);
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [isRefresh, setIsRefresh] = useState(false);
 
-	useEffect(() => {
-		const fetchAllCompanies = async () => {
-			try {
-				const response = await SettingService.getAllCompanies();
-				setCompanies(response.data);
-			} catch (error) {
-				console.error(error);
-			}
-		};
-		fetchAllCompanies();
-	}, [isRefresh]);
+	const { companies } = useSignup(isRefresh);
 
 	const resetForm = () => setFormData(defaultFormData);
 

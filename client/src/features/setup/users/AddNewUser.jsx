@@ -5,7 +5,7 @@ const AddNewUser = ({ isOpen, onClose, setRefresh }) => {
 	return (
 		<ModalLayout
 			title={"Add New User"}
-			size="5xl"
+			size="7xl"
 			isOpen={isOpen}
 			onClose={onClose}
 		>

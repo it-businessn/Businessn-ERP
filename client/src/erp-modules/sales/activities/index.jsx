@@ -1,12 +1,12 @@
 import { SimpleGrid } from "@chakra-ui/react";
 
 import useCompany from "hooks/useCompany";
+import useSalesAgentData from "hooks/useSalesAgentData";
 import PageLayout from "layouts/PageLayout";
 import { useEffect, useState } from "react";
 import ActivityService from "services/ActivityService";
 import ContactService from "services/ContactService";
 import LocalStorageService from "services/LocalStorageService";
-import UserService from "services/UserService";
 import { isManager } from "utils";
 import {
 	ACTIVITY_CARDS,
@@ -32,7 +32,7 @@ const Activities = () => {
 	const [logType, setLogType] = useState(null);
 	const [userActivities, setUserActivities] = useState(null);
 
-	const [employees, setEmployees] = useState(null);
+	const employees = useSalesAgentData(company);
 
 	const [selectedUser, setSelectedUser] = useState(loggedInUser);
 
@@ -50,15 +50,6 @@ const Activities = () => {
 			}
 		};
 
-		const fetchAllEmployees = async () => {
-			try {
-				const response = await UserService.getAllSalesAgents(company);
-				setEmployees(response.data);
-			} catch (error) {
-				console.error(error);
-			}
-		};
-		fetchAllEmployees();
 		fetchAllContacts();
 	}, [company, refresh]);
 
@@ -131,7 +122,7 @@ const Activities = () => {
 			showSelectBox={isManagerRole && employees}
 			handleChange={handleChange}
 			data={employees}
-			selectedValue={selectedUser?.fullName}
+			selectedValue={selectedUser?.fullName ?? ""}
 		>
 			<FilterActivityTab
 				selectedFilter={selectedFilter}

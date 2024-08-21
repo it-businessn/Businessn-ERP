@@ -20,6 +20,7 @@ import {
 	WEIGHTING,
 } from "erp-modules/project-management/workview/project/data";
 import useCompany from "hooks/useCompany";
+import useSalesAgentData from "hooks/useSalesAgentData";
 import PageLayout from "layouts/PageLayout";
 import { useEffect, useState } from "react";
 import { FaCaretRight } from "react-icons/fa";
@@ -37,34 +38,15 @@ const LeadsDisbursed = () => {
 		LocalStorageService.getItem("selectedCompany"),
 	);
 	const { isMobile, isIpad } = useBreakpointValue();
-	const [agents, setAgents] = useState(null);
+
 	const [activity, setActivity] = useState(null);
+	const [refresh, setRefresh] = useState(false);
+	const agents = useSalesAgentData(company, refresh);
 
 	const fetchAllUserActivity = async () => {
 		try {
 			const response = await UserService.getAllUserActivity();
 			setActivity(response.data);
-		} catch (error) {
-			console.error(error);
-		}
-	};
-	const fetchAllAgents = async () => {
-		try {
-			const response = await UserService.getAllSalesAgents(company);
-			if (activity) {
-				response.data?.map((agent) => {
-					const user = activity?.find((_) => _.userID === agent._id);
-					agent.lastLoginStatus = user
-						? user?.logoutTime
-							? null
-							: "Is logged In"
-						: "";
-					agent.lastLogin = user?.loginTime;
-					return agent;
-				});
-			}
-			setAgents(response.data);
-			setCheckedRows(response.data.filter((user) => user.isActive === true));
 		} catch (error) {
 			console.error(error);
 		}
@@ -96,14 +78,26 @@ const LeadsDisbursed = () => {
 	}, [company]);
 
 	useEffect(() => {
-		fetchAllAgents();
-	}, [activity]);
+		if (activity && agents) {
+			agents?.map((agent) => {
+				const user = activity?.find((_) => _.userID === agent._id);
+				agent.lastLoginStatus = user
+					? user?.logoutTime
+						? null
+						: "Is logged In"
+					: "";
+				agent.lastLogin = user?.loginTime;
+				return agent;
+			});
+		}
+		setCheckedRows(agents?.filter((user) => user.isActive === true));
+	}, [activity, agents]);
 
 	useEffect(() => {
 		const updateUserProfile = async () => {
 			try {
 				await UserService.updateUserProfile(formData, formData._id);
-				fetchAllAgents();
+				setRefresh((prev) => !prev);
 			} catch (error) {}
 		};
 		if (formData._id) {
@@ -115,7 +109,7 @@ const LeadsDisbursed = () => {
 		const updateUserAssignedLeads = async () => {
 			try {
 				await UserService.updateUserAssignedLeads(formData, formData._id);
-				fetchAllAgents();
+				setRefresh((prev) => !prev);
 			} catch (error) {}
 		};
 		if (formData._id && formData.assignedWeight) {
@@ -135,7 +129,7 @@ const LeadsDisbursed = () => {
 
 		if (type === "areas") {
 			setFormData((prev) => {
-				if (!prev.assignedAreas.includes(value)) {
+				if (!prev.assignedAreas?.includes(value)) {
 					return {
 						...prev,
 						_id: rowId,
@@ -147,7 +141,7 @@ const LeadsDisbursed = () => {
 		}
 		if (type === "product_service") {
 			setFormData((prev) => {
-				if (!prev.assignedProducts.includes(value)) {
+				if (!prev.assignedProducts?.includes(value)) {
 					return {
 						...prev,
 						_id: rowId,
@@ -174,8 +168,8 @@ const LeadsDisbursed = () => {
 	const handleCheckboxChange = (rowId, checked) => {
 		setFormData({ _id: rowId, isActive: checked });
 		try {
-			if (checkedRows.includes(rowId)) {
-				setCheckedRows(checkedRows.filter((id) => id !== rowId));
+			if (checkedRows?.includes(rowId)) {
+				setCheckedRows(checkedRows?.filter((id) => id !== rowId));
 			} else {
 				setCheckedRows([...checkedRows, rowId]);
 			}
@@ -267,7 +261,7 @@ const LeadsDisbursed = () => {
 									<Td p={1}>
 										<Checkbox
 											colorScheme="facebook"
-											isChecked={isActive || checkedRows.includes(_id)}
+											isChecked={isActive || checkedRows?.includes(_id)}
 											onChange={(e) =>
 												handleCheckboxChange(_id, e.target.checked)
 											}

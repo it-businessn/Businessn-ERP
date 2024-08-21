@@ -34,7 +34,7 @@ const SignUp = ({ isModal, setRefresh, onClose, hideCompany }) => {
 	const [showPassword, setShowPassword] = useState(false);
 	const [error, setError] = useState(null);
 	const navigate = useNavigate();
-	const [optionDataRefresh, setOptionDataRefresh] = useState(false);
+	const [dataRefresh, setDataRefresh] = useState(false);
 
 	const goBack = () => {
 		navigate(-1);
@@ -49,7 +49,7 @@ const SignUp = ({ isModal, setRefresh, onClose, hideCompany }) => {
 		departments,
 		modules,
 		managers,
-	} = useSignup(optionDataRefresh);
+	} = useSignup(dataRefresh);
 
 	// const [showAddEmpTypes, setShowAddEmpTypes] = useState(false);
 	const [showAddRoles, setShowAddRoles] = useState(false);
@@ -125,7 +125,7 @@ const SignUp = ({ isModal, setRefresh, onClose, hideCompany }) => {
 			content: (
 				<RolesPanel
 					showAddRoles={showAddRoles}
-					setOptionDataRefresh={setOptionDataRefresh}
+					setOptionDataRefresh={setDataRefresh}
 					setShowAddRoles={setShowAddRoles}
 					companyName={formData.company}
 				/>
@@ -143,7 +143,7 @@ const SignUp = ({ isModal, setRefresh, onClose, hideCompany }) => {
 			content: (
 				<DepartmentsPanel
 					showAddDepartments={showAddDepartments}
-					setOptionDataRefresh={setOptionDataRefresh}
+					setOptionDataRefresh={setDataRefresh}
 					setShowAddDepartments={setShowAddDepartments}
 					companyName={formData.company}
 				/>
@@ -161,7 +161,7 @@ const SignUp = ({ isModal, setRefresh, onClose, hideCompany }) => {
 			content: (
 				<BaseModulePanel
 					showAddModules={showAddModules}
-					setOptionDataRefresh={setOptionDataRefresh}
+					setOptionDataRefresh={setDataRefresh}
 					setShowAddModules={setShowAddModules}
 					companyName={formData.company}
 				/>
@@ -180,7 +180,7 @@ const SignUp = ({ isModal, setRefresh, onClose, hideCompany }) => {
 		},
 	];
 	return (
-		<Box overflow="auto" height={isModal ? "70vh" : "100vh"}>
+		<Box overflow="auto" height={isModal ? "90vh" : "100vh"}>
 			<Container
 				py={{
 					base: "3",

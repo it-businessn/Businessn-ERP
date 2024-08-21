@@ -1,12 +1,12 @@
 import { Box, Flex, Th } from "@chakra-ui/react";
 
 import useCompany from "hooks/useCompany";
+import { useSignup } from "hooks/useSignup";
 import PageLayout from "layouts/PageLayout";
 import { useEffect, useState } from "react";
 import { FaSort } from "react-icons/fa";
 import LocalStorageService from "services/LocalStorageService";
 import ProjectService from "services/ProjectService";
-import UserService from "services/UserService";
 import { isManager } from "utils";
 import WorkviewToolbar from "./WorkviewToolbar";
 import ProjectTable from "./project";
@@ -34,7 +34,7 @@ const WorkView = () => {
 	const [projects, setProjects] = useState(null);
 	const [refresh, setRefresh] = useState(false);
 
-	const [managers, setManagers] = useState(null);
+	const { managers } = useSignup(refresh);
 
 	const isManagerView = isManager(loggedInUser?.role);
 
@@ -55,15 +55,6 @@ const WorkView = () => {
 			}
 		};
 		fetchAllProjectInfo();
-		const fetchAllManagers = async () => {
-			try {
-				const response = await UserService.getAllManagers(company);
-				setManagers(response.data);
-			} catch (error) {
-				console.error(error);
-			}
-		};
-		fetchAllManagers();
 	}, [refresh, company]);
 
 	// const allProjects = projects?.map((project) => ({

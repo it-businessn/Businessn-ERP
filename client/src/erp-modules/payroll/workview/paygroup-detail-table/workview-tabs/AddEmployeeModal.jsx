@@ -64,7 +64,7 @@ const AddEmployeeModal = ({
 	};
 	return (
 		<ModalLayout
-			title={"Add new employee for extra payrun"}
+			title={"Employees(s) for Extra Payrun-"}
 			size="lg"
 			isOpen={showAddEmp}
 			onClose={handleClose}
@@ -84,8 +84,8 @@ const AddEmployeeModal = ({
 				/>
 
 				<ActionButtonGroup
-					submitBtnName={"Add Employee"}
-					isDisabled={!selectedEmp.length}
+					submitBtnName={"Add"}
+					isDisabled={!selectedEmp?.length}
 					isLoading={isSubmitting}
 					onClose={handleClose}
 					onOpen={handleSubmit}

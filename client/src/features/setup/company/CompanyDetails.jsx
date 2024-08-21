@@ -18,6 +18,7 @@ import PrimaryButton from "components/ui/button/PrimaryButton";
 import TextTitle from "components/ui/text/TextTitle";
 
 import EmptyRowRecord from "components/ui/EmptyRowRecord";
+import { useSignup } from "hooks/useSignup";
 import { useEffect, useState } from "react";
 import { HiOfficeBuilding } from "react-icons/hi";
 import LocalStorageService from "services/LocalStorageService";
@@ -29,7 +30,7 @@ const CompanyDetails = ({ company }) => {
 	const loggedInUser = LocalStorageService.getItem("user");
 	const [openCompanyForm, setOpenCompanyForm] = useState(false);
 	const [companyInfo, setCompanyInfo] = useState(null);
-	const [modules, setModules] = useState(null);
+	const { modules } = useSignup(company);
 
 	useEffect(() => {
 		const fetchCompanyInfo = async () => {
@@ -40,15 +41,6 @@ const CompanyDetails = ({ company }) => {
 				console.error(error);
 			}
 		};
-		const fetchAllModules = async () => {
-			try {
-				const response = await SettingService.getAllModules(company);
-				setModules(response.data);
-			} catch (error) {
-				console.error(error);
-			}
-		};
-		fetchAllModules();
 		fetchCompanyInfo();
 	}, [company]);
 

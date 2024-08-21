@@ -1,27 +1,16 @@
 import { Switch, Table, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
 import Loader from "components/Loader";
 import EmptyRowRecord from "components/ui/EmptyRowRecord";
-import { useEffect, useState } from "react";
+import { useSignup } from "hooks/useSignup";
+import { useState } from "react";
 import SettingService from "services/SettingService";
 
 const ModulePanel = ({ company }) => {
-	const [modules, setModules] = useState(null);
+	const { modules } = useSignup(company);
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [isRefresh, setIsRefresh] = useState(false);
 	const [moduleName, setModuleName] = useState("");
 	const [isModuleActive, setIsModuleActive] = useState(false);
-
-	useEffect(() => {
-		const fetchAllModules = async () => {
-			try {
-				const response = await SettingService.getAllModules(company);
-				setModules(response.data);
-			} catch (error) {
-				console.error(error);
-			}
-		};
-		fetchAllModules();
-	}, [isRefresh, company]);
 
 	const handleToggle = async (menu) => {
 		try {

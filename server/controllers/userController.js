@@ -8,7 +8,16 @@ const UserActivity = require("../models/UserActivity");
 const { isRoleManager } = require("../services/data");
 const { setInitialPermissions } = require("./appController");
 
-const findEmployee = async (data) => await Employee.find(data);
+const findEmployee = async (data) =>
+	await Employee.find(data).select([
+		"fullName",
+		"_id",
+		"email",
+		"baseModule",
+		"group",
+		"role",
+		"payrollStatus",
+	]);
 
 const getAllEmployees = () => async (req, res) => {
 	try {
@@ -144,7 +153,7 @@ const getAllSalesAgents = () => async (req, res) => {
 	const { companyName } = req.params;
 	try {
 		const existingCompany = await findCompany("name", companyName);
-		const result = await findEmployee({
+		const result = await Employee.find({
 			companyId: existingCompany._id,
 			role: {
 				$not: {

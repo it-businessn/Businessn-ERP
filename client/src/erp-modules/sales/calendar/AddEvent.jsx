@@ -14,9 +14,10 @@ import SelectFormControl from "components/ui/form/SelectFormControl";
 import TextAreaFormControl from "components/ui/form/TextAreaFormControl";
 import ModalLayout from "components/ui/modal/ModalLayout";
 import { ROLES } from "constant";
+import useGroup from "hooks/useGroup";
 import { useEffect, useState } from "react";
 import CalendarService from "services/CalendarService";
-import SettingService from "services/SettingService";
+import { getDefaultDate } from "utils";
 
 const AddEvent = ({
 	event,
@@ -33,29 +34,18 @@ const AddEvent = ({
 	user,
 }) => {
 	const [eventType, setEventType] = useState(filter);
-	const [groups, setGroups] = useState(null);
+	const groups = useGroup(company);
 	const [groupMembers, setGroupMembers] = useState(null);
 
 	useEffect(() => {
-		const fetchAllGroups = async () => {
-			try {
-				const response = await SettingService.getAllGroups(company);
-				setGroups(response.data);
-				if (response.data.length) {
-					setGroupMembers(
-						response.data[0].members.filter(
-							({ role }) => role === ROLES.ADMINISTRATOR,
-						),
-					);
-				} else {
-					setGroupMembers(null);
-				}
-			} catch (error) {
-				console.error(error);
-			}
-		};
-		fetchAllGroups();
-	}, []);
+		if (groups) {
+			setGroupMembers(
+				groups[0].members.filter(({ role }) =>
+					role.includes(ROLES.ADMINISTRATOR),
+				),
+			);
+		}
+	}, [groups]);
 
 	const initialFormData = {
 		description: "",
@@ -76,11 +66,11 @@ const AddEvent = ({
 		description: event?.description,
 		eventLink: event?.eventLink,
 		eventType: event?.eventType,
-		fromDate: event?.fromDate.split("T")[0],
+		fromDate: getDefaultDate(event?.fromDate),
 		fromTime: event?.fromTime,
 		location: event?.location,
 		meetingAttendees: event?.meetingAttendees || [],
-		toDate: event?.toDate.split("T")[0],
+		toDate: getDefaultDate(event?.toDate),
 		toTime: event?.toTime,
 		createdBy: event?.createdBy,
 	};
@@ -130,6 +120,7 @@ const AddEvent = ({
 		// }
 		setFormData((prevData) => ({ ...prevData, [name]: value }));
 	};
+
 	const handleGroupChange = (e) => {
 		setFormData((prevData) => ({
 			...prevData,
@@ -140,7 +131,7 @@ const AddEvent = ({
 		setGroupMembers(
 			groups
 				.find(({ _id }) => _id === e.target.value)
-				.members.filter(({ role }) => role === ROLES.ADMINISTRATOR),
+				.members.filter(({ role }) => role.includes(ROLES.ADMINISTRATOR)),
 		);
 	};
 

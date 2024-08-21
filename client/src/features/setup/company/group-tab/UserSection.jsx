@@ -1,8 +1,9 @@
 import { SmallAddIcon } from "@chakra-ui/icons";
-import { HStack, Spacer, Text } from "@chakra-ui/react";
+import { HStack, Spacer } from "@chakra-ui/react";
 import LeftIconButton from "components/ui/button/LeftIconButton";
 import BoxCard from "components/ui/card";
 import DeletePopUp from "components/ui/modal/DeletePopUp";
+import TextTitle from "components/ui/text/TextTitle";
 import UserList from "features/setup/users/UserList";
 import { useState } from "react";
 import SettingService from "services/SettingService";
@@ -82,12 +83,12 @@ const UserSection = ({
 		<>
 			<BoxCard>
 				<HStack justify={"space-between"}>
-					<Text fontWeight="bold">{groupMembers?.length} User(s)</Text>
+					<TextTitle title={`${groupMembers?.length} User(s)` ?? ""} />
 
 					<Spacer />
 					<EmpSearchMenu
 						filteredEmployees={filteredEmployees}
-						empName={empName}
+						empName={empName ?? ""}
 						handleInputChange={handleInputChange}
 						handleSelect={handleSelect}
 					/>

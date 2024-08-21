@@ -12,7 +12,7 @@ import { FaCaretLeft, FaCaretRight, FaClock } from "react-icons/fa";
 import { useBreakpointValue } from "services/Breakpoint";
 import CalendarService from "services/CalendarService";
 import LocalStorageService from "services/LocalStorageService";
-import { getTimezone } from "utils";
+import { getDefaultDateTime, getTimezone } from "utils";
 import AddEvent from "./AddEvent";
 import EventDetails from "./EventDetails";
 
@@ -53,12 +53,14 @@ const Calendar = () => {
 				filterData.map((event) => {
 					event.fromDate = getTimezone(event.fromDate);
 					event.toDate = getTimezone(event.toDate);
-					const fromDateTimeString = `${event.fromDate.split("T")[0]}T${
-						event.fromTime
-					}`;
-					const toDateTimeString = `${event.toDate.split("T")[0]}T${
-						event.toTime
-					}`;
+					const fromDateTimeString = getDefaultDateTime(
+						event.fromDate,
+						event.fromTime,
+					);
+					const toDateTimeString = getDefaultDateTime(
+						event.toDate,
+						event.toTime,
+					);
 					event.title = event.description;
 					event.start = getTimezone(fromDateTimeString);
 					event.end = getTimezone(toDateTimeString);

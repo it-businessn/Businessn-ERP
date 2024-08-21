@@ -15,9 +15,12 @@ import PrimaryButton from "components/ui/button/PrimaryButton";
 import SelectList from "components/ui/form/select/SelectList";
 import TableLayout from "components/ui/table/TableLayout";
 
+import Loader from "components/Loader";
 import EmptyRowRecord from "components/ui/EmptyRowRecord";
 import DeletePopUp from "components/ui/modal/DeletePopUp";
 import useCompany from "hooks/useCompany";
+import useSalesAgentData from "hooks/useSalesAgentData";
+import { useSignup } from "hooks/useSignup";
 import PageLayout from "layouts/PageLayout";
 import { useEffect, useState } from "react";
 import { FaRegTrashAlt, FaSearch } from "react-icons/fa";
@@ -43,32 +46,8 @@ const Opportunities = () => {
 	const [isAdded, setIsAdded] = useState(false);
 
 	const [opportunities, setOpportunities] = useState(null);
-	const [assignees, setAssignees] = useState(null);
-	const [supervisorAssignees, setSupervisorAssignees] = useState(null);
-
-	useEffect(() => {
-		const fetchAllSalesAgents = async () => {
-			try {
-				const response = await UserService.getAllSalesAgents(company);
-				response.data.forEach((item) => (item.name = item.fullName));
-				setAssignees(response.data);
-			} catch (error) {
-				console.error(error);
-			}
-		};
-		const fetchAllManagers = async () => {
-			try {
-				const response = await UserService.getAllManagers(company);
-				response.data.forEach((item) => (item.name = item.fullName));
-				setSupervisorAssignees(response.data);
-			} catch (error) {
-				console.error(error);
-			}
-		};
-		fetchAllManagers();
-
-		fetchAllSalesAgents();
-	}, [company]);
+	const assignees = useSalesAgentData(company);
+	const { managers } = useSignup(company);
 
 	const fetchAllOpportunities = async () => {
 		try {
@@ -79,11 +58,11 @@ const Opportunities = () => {
 						(item) =>
 							(item.primaryAssignee?.length > 0 &&
 								item.primaryAssignee.find(
-									(_) => _.name === loggedInUser?.fullName,
+									(_) => _.fullName === loggedInUser?.fullName,
 								)) ||
 							(item.supervisorAssignee?.length > 0 &&
 								item.supervisorAssignee.find(
-									(_) => _.name === loggedInUser?.fullName,
+									(_) => _.fullName === loggedInUser?.fullName,
 								)),
 				  );
 			setOpportunities(leadList);
@@ -190,16 +169,18 @@ const Opportunities = () => {
 		try {
 			await LeadsService.deleteLead({}, deleteRecord);
 			setIsAdded((prev) => !prev);
-			setShowConfirmationPopUp((prev) => !prev);
+			setShowConfirmationPopUp(true);
 		} catch (error) {
 			console.error(error);
 		}
 	};
+
 	const handleClose = () => {
 		onClose();
 		setShowEditLead(null);
-		setShowConfirmationPopUp((prev) => !prev);
+		setShowConfirmationPopUp(false);
 	};
+
 	const handleOpen = () => {
 		onOpen();
 		setShowEditLead(null);
@@ -260,6 +241,8 @@ const Opportunities = () => {
 					</HStack>
 				</Flex>
 			)}
+
+			{!opportunities && <Loader autoHeight />}
 			{opportunities && (
 				<TableLayout isOpportunity cols={OPPORTUNITY_COLUMNS} height={"73vh"}>
 					<Tbody>
@@ -327,7 +310,7 @@ const Opportunities = () => {
 				<AddNewOpportunity
 					showEditLead={showEditLead}
 					assignees={assignees}
-					supervisorAssignees={supervisorAssignees}
+					supervisorAssignees={managers}
 					setIsAdded={setIsAdded}
 					isOpen={handleOpen}
 					onClose={handleClose}

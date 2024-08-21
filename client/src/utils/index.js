@@ -120,16 +120,17 @@ export const generateRandomData = (name, count) => {
 	return data;
 };
 
-export function getDefaultDate(isoDate = null) {
+export const getDefaultDateTime = (date, time) =>
+	`${date.split("T")[0]}T${time}`;
+
+export const getDefaultDate = (isoDate = null) => {
 	const dateObject = isoDate ? new Date(isoDate) : new Date();
 	return dateObject.toISOString().split("T")[0];
-}
+};
 
-export function getDefaultTime(date) {
-	return moment(date, "HH:mm").format("hh:mm A");
-}
+export const getDefaultTime = (date) => moment(date, "HH:mm").format("hh:mm A");
 
-export function getDateDiffHours(date1, date2, totalBreaks) {
+export const getDateDiffHours = (date1, date2, totalBreaks) => {
 	const startTime = moment(date1, "HH:mm");
 	const endTime = moment(date2, "HH:mm");
 	const breakTime = totalBreaks === "" ? 0 : parseInt(totalBreaks) / 60;
@@ -141,7 +142,7 @@ export function getDateDiffHours(date1, date2, totalBreaks) {
 	const formattedHours = String(hoursDiff).padStart(2, "0");
 	const formattedMinutes = String(minutesDiff).padStart(2, "0");
 	return `${formattedHours}:${formattedMinutes}`;
-}
+};
 
 export const addBusinessDays = (date, days) => {
 	let result = moment(date);

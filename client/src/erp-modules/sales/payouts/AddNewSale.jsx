@@ -8,11 +8,11 @@ import {
 import ActionButtonGroup from "components/ui/form/ActionButtonGroup";
 import InputFormControl from "components/ui/form/InputFormControl";
 import ModalLayout from "components/ui/modal/ModalLayout";
+import useSalesAgentData from "hooks/useSalesAgentData";
 import { useEffect, useState } from "react";
 import { FaCaretDown } from "react-icons/fa";
 import LeadsService from "services/LeadsService";
 import PayoutService from "services/PayoutService";
-import UserService from "services/UserService";
 
 const AddNewSale = ({ isOpen, onClose, setIsAdded, company }) => {
 	const defaultPayout = {
@@ -25,7 +25,7 @@ const AddNewSale = ({ isOpen, onClose, setIsAdded, company }) => {
 	const [formData, setFormData] = useState(defaultPayout);
 
 	const [leads, setLeads] = useState(null);
-	const [reps, setReps] = useState(null);
+	const reps = useSalesAgentData(company);
 
 	useEffect(() => {
 		const fetchAllLeads = async () => {
@@ -37,17 +37,7 @@ const AddNewSale = ({ isOpen, onClose, setIsAdded, company }) => {
 			}
 		};
 
-		const fetchAllAgents = async () => {
-			try {
-				const response = await UserService.getAllSalesAgents(company);
-				setReps(response.data);
-			} catch (error) {
-				console.error(error);
-			}
-		};
-
 		fetchAllLeads();
-		fetchAllAgents();
 	}, [company]);
 
 	const handleChange = (e) => {

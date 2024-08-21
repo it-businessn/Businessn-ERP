@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import UserService from "services/UserService";
 
-const useSalesAgentData = (company) => {
+const useSalesAgentData = (company, refresh) => {
 	const [employees, setEmployees] = useState(null);
 
 	useEffect(() => {
@@ -14,7 +14,7 @@ const useSalesAgentData = (company) => {
 			}
 		};
 		fetchAllSalesAgents();
-	}, [company]);
+	}, [company, refresh]);
 
 	return employees;
 };

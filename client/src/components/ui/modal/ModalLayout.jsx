@@ -20,31 +20,36 @@ const ModalLayout = ({
 	hideOverlay,
 	textAlign,
 	fontSize,
-}) => {
-	return (
-		<Modal isCentered size={size} isOpen={isOpen} onClose={onClose}>
-			{!hideOverlay && <ModalOverlay />}
-			<ModalContent>
-				{!hideOverlay && (
-					<ModalHeader textAlign={textAlign} fontSize={fontSize}>
-						{title}
-					</ModalHeader>
-				)}
-				{!hideOverlay && <ModalCloseButton />}
-				<ModalBody p={hideOverlay && 0}>
-					<Stack spacing="5">
-						{children}
-						{error && (
-							<Alert status="error" mt={4}>
-								<AlertIcon />
-								{error}
-							</Alert>
-						)}
-					</Stack>
-				</ModalBody>
-			</ModalContent>
-		</Modal>
-	);
-};
+}) => (
+	<Modal isCentered size={size} isOpen={isOpen} onClose={onClose}>
+		{!hideOverlay && <ModalOverlay />}
+		<ModalContent>
+			{!hideOverlay && (
+				<ModalHeader
+					position="sticky"
+					zIndex="1"
+					top={0}
+					bg={"var(--main_color)"}
+					textAlign={textAlign}
+					fontSize={fontSize}
+				>
+					{title}
+					<ModalCloseButton />
+				</ModalHeader>
+			)}
+			<ModalBody p={hideOverlay && 0} zIndex="0">
+				<Stack spacing="5" mt={0.5}>
+					{children}
+					{error && (
+						<Alert status="error" mt={4}>
+							<AlertIcon />
+							{error}
+						</Alert>
+					)}
+				</Stack>
+			</ModalBody>
+		</ModalContent>
+	</Modal>
+);
 
 export default ModalLayout;

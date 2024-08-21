@@ -7,6 +7,7 @@ import {
 	Text,
 	VStack,
 } from "@chakra-ui/react";
+import TextTitle from "components/ui/text/TextTitle";
 import { useEffect, useState } from "react";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import { FaUsers } from "react-icons/fa";
@@ -85,19 +86,20 @@ const ChatMessages = ({ userId, company }) => {
 			isPersonal ? conversation.messages : conversation.groupMessages,
 		);
 	};
+
+	const NoMessage = ({ title }) => <TextTitle p="10px" title={title} />;
+
 	return (
 		<Box mt={2} fontWeight="bold">
-			{!userConversation || userConversation?.length === 0 ? (
-				<Text p="10px">No communications found</Text>
-			) : (
+			{userConversation ? (
 				<>
 					<HStack>
 						{currentChat && (
 							<IoMdArrowRoundBack onClick={() => setCurrentChat(null)} />
 						)}
-						<Text p="10px">Chat History</Text>
+						<NoMessage title={"Chat History"} />
 					</HStack>
-					{currentChat && (
+					{currentChat ? (
 						<ChatHistory
 							userId={userId}
 							currentConversation={currentConversation}
@@ -105,13 +107,13 @@ const ChatMessages = ({ userId, company }) => {
 							setIsRefresh={setIsRefresh}
 							company={company}
 						/>
-					)}
-
-					{!currentChat && (
+					) : (
 						<VStack align="stretch" spacing={2}>
 							{userConversation?.length === 0 && (
 								<>
-									{/* <Text fontSize={"xs"}>No recent conversation found.</Text> */}
+									{!groups?.length && (
+										<NoMessage title={"No recent conversation found."} />
+									)}
 									{groups?.map((group) => (
 										<HStack
 											key={group._id}
@@ -145,7 +147,7 @@ const ChatMessages = ({ userId, company }) => {
 												fontSize="xs"
 											>
 												<VStack align={"self-start"}>
-													<Text fontWeight="bold">{group.name}</Text>
+													<TextTitle title={group.name} />
 												</VStack>
 											</Button>
 										</HStack>
@@ -223,6 +225,8 @@ const ChatMessages = ({ userId, company }) => {
 						</VStack>
 					)}
 				</>
+			) : (
+				<NoMessage title="No communications found" />
 			)}
 		</Box>
 	);
