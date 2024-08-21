@@ -10,6 +10,7 @@ import {
 	Tr,
 	useToast,
 } from "@chakra-ui/react";
+import EmptyRowRecord from "components/ui/EmptyRowRecord";
 import SelectList from "components/ui/form/select/SelectList";
 import TableLayout from "components/ui/table/TableLayout";
 import {
@@ -247,6 +248,7 @@ const LeadsDisbursed = () => {
 			{activity && (
 				<TableLayout cols={columns} isSmall>
 					<Tbody>
+						{!agents?.length && <EmptyRowRecord />}
 						{agents?.map(
 							({
 								_id,

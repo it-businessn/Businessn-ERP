@@ -14,7 +14,7 @@ const {
 	getSumTotal,
 } = require("../services/payrollService");
 const { findGroupEmployees } = require("./setUpController");
-const { findCompany } = require("./userController");
+const { findCompany, findEmployee } = require("./userController");
 
 //update roles-
 
@@ -334,7 +334,7 @@ const getEmployeeId = async (empList) => {
 
 const getPayrollActiveEmployees = async (companyName) => {
 	const existingCompany = await findCompany("name", companyName);
-	return await Employee.find({
+	return await findEmployee({
 		payrollStatus: "Payroll Active",
 		companyId: existingCompany._id,
 	});

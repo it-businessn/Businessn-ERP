@@ -10,6 +10,7 @@ import {
 	Tr,
 } from "@chakra-ui/react";
 import ActionButton from "components/ui/button/ActionButton";
+import EmptyRowRecord from "components/ui/EmptyRowRecord";
 import { useEffect, useState } from "react";
 import SettingService from "services/SettingService";
 
@@ -191,6 +192,7 @@ const CompaniesPanel = ({ setOpenCompanyForm }) => {
 						</Tr>
 					</Thead>
 					<Tbody>
+						{!companies?.length && <EmptyRowRecord />}
 						{companies.map((empType) => (
 							<Tr key={empType._id}>
 								<Td>{empType.name}</Td>

@@ -20,6 +20,7 @@ import {
 	VStack,
 	useDisclosure,
 } from "@chakra-ui/react";
+import EmptyRowRecord from "components/ui/EmptyRowRecord";
 import Caption from "erp-modules/sales/lead docket/Caption";
 import React, { useEffect, useState } from "react";
 import { FaChevronDown, FaSort } from "react-icons/fa";
@@ -294,6 +295,7 @@ const TaskTable = ({
 						</Tr>
 					</Thead>
 					<Tbody>
+						{!filteredData?.length && <EmptyRowRecord />}
 						{filteredData?.map((task, index) => {
 							return <Task key={task._id} task={task} index={index} />;
 						})}

@@ -15,6 +15,7 @@ import PrimaryButton from "components/ui/button/PrimaryButton";
 import SelectList from "components/ui/form/select/SelectList";
 import TableLayout from "components/ui/table/TableLayout";
 
+import EmptyRowRecord from "components/ui/EmptyRowRecord";
 import DeletePopUp from "components/ui/modal/DeletePopUp";
 import useCompany from "hooks/useCompany";
 import PageLayout from "layouts/PageLayout";
@@ -262,6 +263,7 @@ const Opportunities = () => {
 			{opportunities && (
 				<TableLayout isOpportunity cols={OPPORTUNITY_COLUMNS} height={"73vh"}>
 					<Tbody>
+						{!opportunities?.length && <EmptyRowRecord />}
 						{opportunities?.map((_) => {
 							return (
 								<Tr key={_._id}>

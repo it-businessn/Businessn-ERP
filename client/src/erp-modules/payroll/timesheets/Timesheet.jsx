@@ -1,5 +1,6 @@
 import { HStack, IconButton, Input, Tbody, Td, Tr } from "@chakra-ui/react";
 import PrimaryButton from "components/ui/button/PrimaryButton";
+import EmptyRowRecord from "components/ui/EmptyRowRecord";
 import TableLayout from "components/ui/table/TableLayout";
 import TextTitle from "components/ui/text/TextTitle";
 import { useEffect, useState } from "react";
@@ -113,6 +114,7 @@ const Timesheet = ({ cols, data, company, setRefresh }) => {
 	return (
 		<TableLayout isTimesheet cols={cols} height="71vh">
 			<Tbody>
+				{!timesheetData?.length && <EmptyRowRecord />}
 				{timesheetData?.map(
 					({
 						_id,

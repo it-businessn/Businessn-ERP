@@ -1,5 +1,6 @@
 import { Switch, Table, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
 import Loader from "components/Loader";
+import EmptyRowRecord from "components/ui/EmptyRowRecord";
 import { useEffect, useState } from "react";
 import SettingService from "services/SettingService";
 
@@ -56,6 +57,7 @@ const ModulePanel = ({ company }) => {
 						</Tr>
 					</Thead>
 					<Tbody>
+						{!modules?.length && <EmptyRowRecord />}
 						{modules.map((module) => (
 							<Tr key={module._id}>
 								<Td>{module.name}</Td>

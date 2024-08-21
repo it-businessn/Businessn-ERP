@@ -63,10 +63,11 @@ const PaygroupDetailTable = ({
 		<BoxCard>
 			<TextTitle
 				mb={2}
-				title={`Pay Number: ${isExtraPay(
-					closestRecord?.payPeriod,
-					closestRecord?.isExtraRun,
-				)}`}
+				title={`Pay Number: ${
+					closestRecord
+						? isExtraPay(closestRecord?.payPeriod, closestRecord?.isExtraRun)
+						: ""
+				}`}
 			/>
 			{company && (
 				<>

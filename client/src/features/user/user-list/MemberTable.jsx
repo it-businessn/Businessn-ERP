@@ -20,6 +20,7 @@ import {
 	useDisclosure,
 } from "@chakra-ui/react";
 import { PersonalInfoCard } from "components";
+import EmptyRowRecord from "components/ui/EmptyRowRecord";
 import { signUpFormFields } from "config/formfields";
 import { UserSchema } from "config/schema";
 import { useState } from "react";
@@ -97,6 +98,7 @@ export const MemberTable = (props) => {
 					</Tr>
 				</Thead>
 				<Tbody>
+					{!props.employees?.length && <EmptyRowRecord />}
 					{props.employees.map((member) => (
 						<Tr key={member._id}>
 							<Td>

@@ -1,6 +1,7 @@
 import { HStack, Tbody, Td, Tr } from "@chakra-ui/react";
 import OutlineButton from "components/ui/button/OutlineButton";
 import PrimaryButton from "components/ui/button/PrimaryButton";
+import EmptyRowRecord from "components/ui/EmptyRowRecord";
 import TableLayout from "components/ui/table/TableLayout";
 import TextTitle from "components/ui/text/TextTitle";
 import { useEffect, useRef } from "react";
@@ -50,6 +51,7 @@ const WorkviewTable = ({
 			textAlign="center"
 		>
 			<Tbody>
+				{!payGroupSchedule?.length && <EmptyRowRecord />}
 				{payGroupSchedule?.map(
 					(
 						{

@@ -1,6 +1,7 @@
 import { Tbody, Td, Tr, useDisclosure } from "@chakra-ui/react";
 import TableLayout from "components/ui/table/TableLayout";
 
+import EmptyRowRecord from "components/ui/EmptyRowRecord";
 import { useState } from "react";
 import { FaRegTrashAlt } from "react-icons/fa";
 import LocalStorageService from "services/LocalStorageService";
@@ -80,6 +81,7 @@ const ListView = ({
 			) : (
 				<TableLayout cols={LEADS_COLS} height={"73vh"}>
 					<Tbody>
+						{!leadList?.length && <EmptyRowRecord />}
 						{leadList?.map((_) => (
 							<Tr key={_._id}>
 								<Td>{_.opportunityName}</Td>

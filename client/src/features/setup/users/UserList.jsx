@@ -1,4 +1,5 @@
 import { Box, Table, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
+import EmptyRowRecord from "components/ui/EmptyRowRecord";
 import { FaRegTrashAlt } from "react-icons/fa";
 
 const UserList = ({
@@ -35,6 +36,7 @@ const UserList = ({
 					</Tr>
 				</Thead>
 				<Tbody>
+					{!filteredEmployees?.length && <EmptyRowRecord />}
 					{filteredEmployees.map(
 						({ fullName, _id, email, baseModule, group, role }) => (
 							<Tr key={_id}>

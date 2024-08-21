@@ -1,4 +1,5 @@
 import { Tbody, Td, Tr } from "@chakra-ui/react";
+import EmptyRowRecord from "components/ui/EmptyRowRecord";
 import ActionButtonGroup from "components/ui/form/ActionButtonGroup";
 import DateTimeFormControl from "components/ui/form/DateTimeFormControl";
 import ModalLayout from "components/ui/modal/ModalLayout";
@@ -72,6 +73,7 @@ const EditGroup = ({ isOpen, onClose, selectedGroup }) => {
 		>
 			<TableLayout cols={COLS} height="83vh" isSmall>
 				<Tbody>
+					{!schedules?.length && <EmptyRowRecord />}
 					{schedules?.map((item, index) => (
 						<Tr key={item.payPeriod}>
 							<Td p={1}>{item.payPeriod}</Td>

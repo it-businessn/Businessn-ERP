@@ -17,6 +17,7 @@ import Loader from "components/Loader";
 import PrimaryButton from "components/ui/button/PrimaryButton";
 import TextTitle from "components/ui/text/TextTitle";
 
+import EmptyRowRecord from "components/ui/EmptyRowRecord";
 import { useEffect, useState } from "react";
 import { HiOfficeBuilding } from "react-icons/hi";
 import LocalStorageService from "services/LocalStorageService";
@@ -138,6 +139,7 @@ const CompanyDetails = ({ company }) => {
 									</Tr>
 								</Thead>
 								<Tbody>
+									{!modules?.length && <EmptyRowRecord />}
 									{modules.map((module) => (
 										<Tr key={module._id}>
 											<Td w={"500px"} px={"1em"}>

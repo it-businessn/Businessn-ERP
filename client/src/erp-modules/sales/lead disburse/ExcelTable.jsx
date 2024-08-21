@@ -13,6 +13,7 @@ import {
 	Tr,
 	useToast,
 } from "@chakra-ui/react";
+import EmptyRowRecord from "components/ui/EmptyRowRecord";
 import { COLORS } from "erp-modules/project-management/workview/project/data";
 import { useState } from "react";
 import { FaCaretDown } from "react-icons/fa";
@@ -107,6 +108,7 @@ const LeadsDocket = () => {
 					</Tr>
 				</Thead>
 				<Tbody>
+					{!data?.length && <EmptyRowRecord />}
 					{data.map((row, rowIndex) => (
 						<Tr key={rowIndex}>
 							<Td>

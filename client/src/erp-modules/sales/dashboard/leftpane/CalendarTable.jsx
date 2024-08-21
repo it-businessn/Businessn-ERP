@@ -1,5 +1,6 @@
 import { Box, Table, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
 import LeftIconButton from "components/ui/button/LeftIconButton";
+import EmptyRowRecord from "components/ui/EmptyRowRecord";
 import { useState } from "react";
 import { BsPlus } from "react-icons/bs";
 import { formatDate } from "utils";
@@ -44,6 +45,7 @@ const CalendarTable = ({ cols, data, setIsRefresh, filterText, filter }) => {
 					</Tr>
 				</Thead>
 				<Tbody>
+					{!data?.length && <EmptyRowRecord />}
 					{data?.map((item) => (
 						<Tr key={item._id}>
 							<Td fontSize={"xs"}>{item.description}</Td>

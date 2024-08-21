@@ -18,34 +18,10 @@ const getAllEmploymentInfo = async (req, res) => {
 			? await getEmployeeId(employees)
 			: await getPayrollActiveEmployees(companyName);
 
-		const currentPeriodEmployees = isExtraPayRun
-			? null
-			: await Timesheet.find({
-					companyName,
-					createdOn: { $gte: startDate, $lte: endDate },
-					approveStatus: "Approved",
-			  }).select("employeeId");
-
 		const aggregatedResult = [];
 		for (const employee of activeEmployees) {
-			const empTimesheetData = currentPeriodEmployees?.find(
-				(el) => el.employeeId.toString() === employee._id.toString(),
-			);
-			if (empTimesheetData) {
-				const result = await buildPayPeriodEmpDetails(
-					companyName,
-					empTimesheetData,
-					employee._id,
-				);
-				aggregatedResult.push(result);
-			} else {
-				const result = await buildPayPeriodEmpDetails(
-					companyName,
-					null,
-					employee._id,
-				);
-				aggregatedResult.push(result);
-			}
+			const result = await buildPayPeriodEmpDetails(companyName, employee._id);
+			aggregatedResult.push(result);
 		}
 		aggregatedResult.map((empInfo) => {
 			const empIdStr = empInfo.empPayStubResult.empId._id.toString();
@@ -79,13 +55,7 @@ const findEmpPayInfo = async (companyName) =>
 		companyName,
 	}).select("empId regPay");
 
-const buildPayPeriodEmpDetails = async (
-	companyName,
-	empTimesheetData,
-	empId,
-) => {
-	const employeeId = empTimesheetData ? empTimesheetData.employeeId : empId;
-
+const buildPayPeriodEmpDetails = async (companyName, employeeId) => {
 	const empPayStubResult = await findEmpEmploymentInfo(employeeId);
 
 	const payInfoResult = await findEmpPayInfo(companyName);

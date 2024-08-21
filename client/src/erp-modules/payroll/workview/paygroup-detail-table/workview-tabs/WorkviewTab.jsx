@@ -1,6 +1,7 @@
 import { Tbody, Td, Tr } from "@chakra-ui/react";
 import PrimaryButton from "components/ui/button/PrimaryButton";
 import BoxCard from "components/ui/card";
+import EmptyRowRecord from "components/ui/EmptyRowRecord";
 import TableLayout from "components/ui/table/TableLayout";
 import TextTitle from "components/ui/text/TextTitle";
 import { useNavigate } from "react-router-dom";
@@ -44,6 +45,7 @@ const WorkviewTab = ({
 		<BoxCard>
 			<TableLayout cols={cols.map((_) => _.key)} isSmall height={"40vh"}>
 				<Tbody>
+					{!data?.length && <EmptyRowRecord />}
 					{data?.map((row) => (
 						<Tr key={row._id}>
 							{cols.map((col, index) => {

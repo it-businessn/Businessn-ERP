@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Box, Table, Thead, Tbody, Tr, Th, Td, Input } from "@chakra-ui/react";
+import { Box, Input, Table, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
+import EmptyRowRecord from "components/ui/EmptyRowRecord";
 
 function Budget({ expenseData, onExpenseChange }) {
 	const startDate = new Date();
@@ -27,7 +27,8 @@ function Budget({ expenseData, onExpenseChange }) {
 					</Tr>
 				</Thead>
 				<Tbody>
-					{days.map((day, index) => (
+					{!days?.length && <EmptyRowRecord />}
+					{days?.map((day, index) => (
 						<Tr key={index}>
 							<Td>{day.toDateString()}</Td>
 							<Td>

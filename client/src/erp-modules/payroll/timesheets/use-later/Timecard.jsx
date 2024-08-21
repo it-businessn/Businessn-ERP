@@ -1,8 +1,8 @@
 import { HStack, Tbody, Td, Tr } from "@chakra-ui/react";
+import EmptyRowRecord from "components/ui/EmptyRowRecord";
 import TableLayout from "components/ui/table/TableLayout";
 import TextTitle from "components/ui/text/TextTitle";
 import React, { useState } from "react";
-import { FaChevronDown, FaChevronUp, FaPlus } from "react-icons/fa";
 import { getDateDiffHours, getDefaultTime } from "utils";
 import AddProject from "./AddProject";
 
@@ -34,6 +34,7 @@ const Timecard = ({ timesheets }) => {
 				{timesheets && (
 					<TableLayout isTimesheet cols={COLS}>
 						<Tbody>
+							{!data?.length && <EmptyRowRecord />}
 							{data.map(
 								(
 									{

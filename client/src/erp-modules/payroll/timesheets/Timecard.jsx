@@ -1,5 +1,6 @@
 import { Tbody, Td, Tr } from "@chakra-ui/react";
 import PrimaryButton from "components/ui/button/PrimaryButton";
+import EmptyRowRecord from "components/ui/EmptyRowRecord";
 import TableLayout from "components/ui/table/TableLayout";
 import TextTitle from "components/ui/text/TextTitle";
 import { getParamKey, getStatusStyle } from "./data";
@@ -7,6 +8,7 @@ import { getParamKey, getStatusStyle } from "./data";
 const Timecard = ({ cols, data }) => (
 	<TableLayout isTimesheet cols={cols}>
 		<Tbody>
+			{!data?.length && <EmptyRowRecord />}
 			{data?.map(
 				({
 					_id,

@@ -10,6 +10,7 @@ import {
 	Tr,
 	useDisclosure,
 } from "@chakra-ui/react";
+import EmptyRowRecord from "components/ui/EmptyRowRecord";
 import { useState } from "react";
 import { FaSort } from "react-icons/fa";
 import AddProject from "./AddProject";
@@ -95,6 +96,7 @@ const ProjectTable = ({ projects, setRefresh, managers, company }) => {
 				</Thead>
 
 				<Tbody>
+					{!projects?.length && <EmptyRowRecord />}
 					{projects?.map((project, index) => (
 						<Tr
 							key={project._id}

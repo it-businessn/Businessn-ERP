@@ -10,6 +10,7 @@ import {
 } from "@chakra-ui/react";
 import OutlineButton from "components/ui/button/OutlineButton";
 import PrimaryButton from "components/ui/button/PrimaryButton";
+import EmptyRowRecord from "components/ui/EmptyRowRecord";
 import TextTitle from "components/ui/text/TextTitle";
 import useCompany from "hooks/useCompany";
 import useEmployeePayReport from "hooks/useEmployeePayReport";
@@ -90,13 +91,7 @@ const InputsReview = ({
 					</Tr>
 				</Thead>
 				<Tbody>
-					{!inputsReviewData?.length && (
-						<Tr>
-							<Td>
-								<TextTitle weight="normal" title={"No record found"} />
-							</Td>
-						</Tr>
-					)}
+					{!inputsReviewData?.length && <EmptyRowRecord />}
 					{inputsReviewData?.map((data) => (
 						<Tr key={data._id}>
 							<Td>

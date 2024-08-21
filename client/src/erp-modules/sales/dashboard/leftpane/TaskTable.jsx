@@ -1,4 +1,5 @@
 import { Box, HStack, Table, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
+import EmptyRowRecord from "components/ui/EmptyRowRecord";
 import useCompany from "hooks/useCompany";
 import useSelectUser from "hooks/useSelectUser";
 import { useEffect, useState } from "react";
@@ -44,6 +45,7 @@ const TaskTable = ({ cols }) => {
 					</Tr>
 				</Thead>
 				<Tbody>
+					{!tasks?.length && <EmptyRowRecord />}
 					{tasks?.map(({ _id, taskName, priority, dueDate }) => (
 						<Tr key={_id}>
 							<Td fontSize={"xs"}>{taskName}</Td>

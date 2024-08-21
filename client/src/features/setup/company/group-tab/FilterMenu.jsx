@@ -76,7 +76,7 @@ const FilterMenu = ({
 						<Select
 							icon={<FaCaretDown />}
 							borderRadius="10px"
-							value={selectedGroup.name}
+							value={selectedGroup?.name ?? ""}
 							placeholder="Select Group"
 							onChange={handleGroup}
 						>

@@ -82,14 +82,18 @@ const addEmployeeProfileInfo = async (req, res) => {
 			addStatHolidayDefaultTimesheet(empId, companyName);
 		}
 
+		const employee = await Employee.findById(empId);
+
+		if (employee && employee.payrollStatus !== payrollStatus) {
+			employee.payrollStatus = payrollStatus;
+			await employee.save();
+		}
+
 		if (existingProfileInfo) {
 			const updatedProfileInfo = await updateProfileInfo(
 				existingProfileInfo._id,
 				req.body,
 			);
-			const employee = await Employee.findById(empId);
-			employee.payrollStatus = payrollStatus;
-			await employee.save();
 			return res.status(201).json(updatedProfileInfo);
 		}
 

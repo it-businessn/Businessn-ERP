@@ -11,6 +11,7 @@ import {
 	Tr,
 	useToast,
 } from "@chakra-ui/react";
+import EmptyRowRecord from "components/ui/EmptyRowRecord";
 import LeftIconButton from "components/ui/button/LeftIconButton";
 import SelectList from "components/ui/form/select/SelectList";
 import DeletePopUp from "components/ui/modal/DeletePopUp";
@@ -229,6 +230,7 @@ const LeadsDocket = () => {
 					height={"73vh"}
 				>
 					<Tbody>
+						{!leads?.length && <EmptyRowRecord />}
 						{leads?.map(
 							({
 								_id,

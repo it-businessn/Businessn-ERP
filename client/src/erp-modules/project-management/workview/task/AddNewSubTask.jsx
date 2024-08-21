@@ -25,6 +25,7 @@ import {
 	Thead,
 	Tr,
 } from "@chakra-ui/react";
+import EmptyRowRecord from "components/ui/EmptyRowRecord";
 import Caption from "erp-modules/sales/lead docket/Caption";
 import { useEffect, useState } from "react";
 import { FaCaretDown } from "react-icons/fa";
@@ -337,6 +338,7 @@ const AddNewSubTask = ({
 												<Th>Time to complete</Th>
 											</Thead>
 											<Tbody>
+												{!subTasks?.length && <EmptyRowRecord />}
 												{subTasks?.map((task) => (
 													<Tr key={task}>
 														<Td>{task.taskName}</Td>
