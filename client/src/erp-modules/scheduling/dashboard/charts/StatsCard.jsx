@@ -1,4 +1,5 @@
 import { HStack, Spacer, Stack, VStack } from "@chakra-ui/react";
+import NormalTextTitle from "components/ui/NormalTextTitle";
 import TextTitle from "components/ui/text/TextTitle";
 
 const StatsCard = () => {
@@ -53,7 +54,7 @@ const StatsCard = () => {
 								color={"var(--main_color_black)"}
 							>
 								<TextTitle title={_.value} size={"lg"} />
-								<TextTitle title={_.title} weight="normal" align="center" />
+								<NormalTextTitle title={_.title} align="center" />
 							</VStack>
 						))}
 					</HStack>

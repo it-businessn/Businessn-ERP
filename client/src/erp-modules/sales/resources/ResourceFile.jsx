@@ -9,6 +9,7 @@ import {
 } from "@chakra-ui/react";
 import PrimaryButton from "components/ui/button/PrimaryButton";
 import DeletePopUp from "components/ui/modal/DeletePopUp";
+import NormalTextTitle from "components/ui/NormalTextTitle";
 import TextTitle from "components/ui/text/TextTitle";
 import { useData } from "context/DataContext";
 import { useState } from "react";
@@ -192,13 +193,12 @@ const ResourceFile = ({
 											}}
 										/>
 									) : (
-										<TextTitle
+										<NormalTextTitle
 											title={
 												resourceId === resource._id
 													? fileName
 													: resource.originalname
 											}
-											weight="normal"
 											size={"sm"}
 										/>
 									)}

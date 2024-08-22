@@ -51,6 +51,7 @@ const Reports = () => {
 			)}
 			{showReport && (
 				<PreviewReportsModal
+					isReport
 					isOpen={showReport}
 					onClose={() => setShowReport(false)}
 					reportData={registerData}

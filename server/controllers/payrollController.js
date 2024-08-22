@@ -10,8 +10,8 @@ const Timesheet = require("../models/Timesheet");
 const {
 	getCalcAmount,
 	getTaxDetails,
-	getHrs,
 	getSumTotal,
+	getSumHours,
 } = require("../services/payrollService");
 const { findGroupEmployees } = require("./setUpController");
 const { findCompany, findEmployee } = require("./userController");
@@ -438,6 +438,25 @@ const buildPayStubDetails = async (
 
 	newEmpData.empId = employeeId;
 	newEmpData.currentPayDetails = empResult;
+	newEmpData.totalRegHoursWorked = getSumHours(
+		empTimesheetData?.totalRegHoursWorked,
+	);
+	newEmpData.totalOvertimeHoursWorked = getSumHours(
+		empTimesheetData?.totalOvertimeHoursWorked,
+	);
+	newEmpData.totalDblOvertimeHoursWorked = getSumHours(
+		empTimesheetData?.totalDblOvertimeHoursWorked,
+	);
+	newEmpData.totalStatDayHoursWorked = getSumHours(
+		empTimesheetData?.totalStatDayHoursWorked,
+	);
+	newEmpData.totalStatHours = getSumHours(empTimesheetData?.totalStatHours);
+	newEmpData.totalSickHoursWorked = getSumHours(
+		empTimesheetData?.totalSickHoursWorked,
+	);
+	newEmpData.totalVacationHoursWorked = getSumHours(
+		empTimesheetData?.totalVacationHoursWorked,
+	);
 	newEmpData.currentRegPayTotal = getCalcAmount(
 		empTimesheetData?.totalRegHoursWorked || 0,
 		empResult.regPay,
@@ -541,27 +560,43 @@ const buildPayStubDetails = async (
 		statPay: empResult.statPay,
 		sickPay: empResult.sickPay,
 		vacationPay: empResult.vacationPay,
-		totalRegHoursWorked: empTimesheetData?.totalRegHoursWorked
-			? parseFloat(getHrs(empTimesheetData.totalRegHoursWorked))
-			: 0,
-		totalOvertimeHoursWorked: empTimesheetData?.totalOvertimeHoursWorked
-			? parseFloat(getHrs(empTimesheetData.totalOvertimeHoursWorked))
-			: 0,
-		totalDblOvertimeHoursWorked: empTimesheetData?.totalDblOvertimeHoursWorked
-			? parseFloat(getHrs(empTimesheetData.totalDblOvertimeHoursWorked))
-			: 0,
-		totalStatDayHoursWorked: empTimesheetData?.totalStatDayHoursWorked
-			? parseFloat(getHrs(empTimesheetData.totalStatDayHoursWorked))
-			: 0,
-		totalStatHours: empTimesheetData?.totalStatHours
-			? parseFloat(getHrs(empTimesheetData.totalStatHours))
-			: 0,
-		totalSickHoursWorked: empTimesheetData?.totalSickHoursWorked
-			? parseFloat(getHrs(empTimesheetData.totalSickHoursWorked))
-			: 0,
-		totalVacationHoursWorked: empTimesheetData?.totalVacationHoursWorked
-			? parseFloat(getHrs(empTimesheetData.totalVacationHoursWorked))
-			: 0,
+
+		totalRegHoursWorked: newEmpData.totalRegHoursWorked,
+		totalOvertimeHoursWorked: newEmpData?.totalOvertimeHoursWorked,
+		totalDblOvertimeHoursWorked: newEmpData?.totalDblOvertimeHoursWorked,
+		totalStatDayHoursWorked: newEmpData?.totalStatDayHoursWorked,
+		totalStatHours: newEmpData?.totalStatHours,
+		totalSickHoursWorked: newEmpData?.totalSickHoursWorked,
+		totalVacationHoursWorked: newEmpData?.totalVacationHoursWorked,
+
+		YTDRegHoursWorked: getSumTotal(
+			prevPayPayInfo?.YTDRegHoursWorked,
+			newEmpData.totalRegHoursWorked,
+		),
+		YTDOvertimeHoursWorked: getSumTotal(
+			prevPayPayInfo?.YTDOvertimeHoursWorked,
+			newEmpData.totalOvertimeHoursWorked,
+		),
+		YTDDblOvertimeHoursWorked: getSumTotal(
+			prevPayPayInfo?.YTDDblOvertimeHoursWorked,
+			newEmpData.totalDblOvertimeHoursWorked,
+		),
+		YTDStatDayHoursWorked: getSumTotal(
+			prevPayPayInfo?.YTDStatDayHoursWorked,
+			newEmpData.totalStatDayHoursWorked,
+		),
+		YTDStatHoursWorked: getSumTotal(
+			prevPayPayInfo?.YTDStatHoursWorked,
+			newEmpData.totalStatHours,
+		),
+		YTDSickHoursWorked: getSumTotal(
+			prevPayPayInfo?.YTDSickHoursWorked,
+			newEmpData.totalSickHoursWorked,
+		),
+		YTDVacationHoursWorked: getSumTotal(
+			prevPayPayInfo?.YTDVacationHoursWorked,
+			newEmpData.totalVacationHoursWorked,
+		),
 
 		currentRegPayTotal: newEmpData.currentRegPayTotal,
 		currentOverTimePayTotal: newEmpData.currentOverTimePayTotal,
@@ -578,6 +613,7 @@ const buildPayStubDetails = async (
 		currentOtherDeductions: newEmpData.currentOtherDeductions,
 		currentDeductionsTotal: newEmpData.currentDeductionsTotal,
 		currentNetPay: newEmpData.currentNetPay,
+
 		YTDRegPayTotal: getSumTotal(
 			prevPayPayInfo?.YTDRegPayTotal,
 			newEmpData.currentRegPayTotal,
@@ -624,24 +660,36 @@ const buildPayStubDetails = async (
 			prevPayPayInfo?.YTDTerminationPayout,
 			newEmpData.terminationPayout,
 		),
-		YTDGrossPay: prevPayPayInfo?.YTDGrossPay || 0 + newEmpData.currentGrossPay,
-		YTD_FDTaxDeductions:
-			prevPayPayInfo?.YTD_FDTaxDeductions ||
-			0 + newEmpData.currentFDTaxDeductions,
-		YTDStateTaxDeductions:
-			prevPayPayInfo?.YTDStateTaxDeductions ||
-			0 + newEmpData.currentStateTaxDeductions,
-		YTD_CPPDeductions:
-			prevPayPayInfo?.YTD_CPPDeductions || 0 + newEmpData.currentCPPDeductions,
-		YTD_EIDeductions:
-			prevPayPayInfo?.YTD_EIDeductions || 0 + newEmpData.currentEIDeductions,
-		YTDOtherDeductions:
-			prevPayPayInfo?.YTDOtherDeductions ||
-			0 + newEmpData.currentOtherDeductions,
-		YTDDeductionsTotal:
-			prevPayPayInfo?.YTDDeductionsTotal ||
-			0 + newEmpData.currentDeductionsTotal,
-		YTDNetPay: (prevPayPayInfo?.YTDNetPay || 0) + newEmpData.currentNetPay,
+		YTDGrossPay: getSumTotal(
+			prevPayPayInfo?.YTDGrossPay,
+			newEmpData.currentGrossPay,
+		),
+		YTD_FDTaxDeductions: getSumTotal(
+			prevPayPayInfo?.YTD_FDTaxDeductions,
+			newEmpData.currentFDTaxDeductions,
+		),
+		YTDStateTaxDeductions: getSumTotal(
+			prevPayPayInfo?.YTDStateTaxDeductions,
+			newEmpData.currentStateTaxDeductions,
+		),
+		YTD_CPPDeductions: getSumTotal(
+			prevPayPayInfo?.YTD_CPPDeductions,
+			newEmpData.currentCPPDeductions,
+		),
+		YTD_EIDeductions: getSumTotal(
+			prevPayPayInfo?.YTD_EIDeductions,
+			newEmpData.currentEIDeductions,
+		),
+		YTDOtherDeductions: getSumTotal(
+			prevPayPayInfo?.YTDOtherDeductions,
+			newEmpData.currentOtherDeductions,
+		),
+		YTDDeductionsTotal: getSumTotal(
+			prevPayPayInfo?.YTDDeductionsTotal,
+			newEmpData.currentDeductionsTotal,
+		),
+
+		YTDNetPay: getSumTotal(prevPayPayInfo?.YTDNetPay, newEmpData.currentNetPay),
 	};
 
 	const currentPayInfo = await findCurrentPayStub(

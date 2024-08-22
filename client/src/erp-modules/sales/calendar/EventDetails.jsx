@@ -9,6 +9,7 @@ import {
 import LeftIconButton from "components/ui/button/LeftIconButton";
 import PrimaryButton from "components/ui/button/PrimaryButton";
 import ModalLayout from "components/ui/modal/ModalLayout";
+import NormalTextTitle from "components/ui/NormalTextTitle";
 import TextTitle from "components/ui/text/TextTitle";
 import moment from "moment";
 import { useState } from "react";
@@ -41,13 +42,11 @@ const EventDetails = ({
 								title={moment(event?.fromDate).format("ddd")}
 								size="2xl"
 							/>
-							<TextTitle
-								weight="normal"
+							<NormalTextTitle
 								title={moment(event?.fromDate).format("DD MMM YYYY")}
 								size="sm"
 							/>
-							<TextTitle
-								weight="normal"
+							<NormalTextTitle
 								size="sm"
 								title={moment(event?.start).format("hh:mm A")}
 							/>
@@ -55,16 +54,12 @@ const EventDetails = ({
 
 						<VStack spacing="0" flex={1} align={"flex-start"}>
 							<TextTitle size="2xl" title={event?.title} />
-							<TextTitle size="sm" weight="normal" title={event?.description} />
+							<NormalTextTitle size="sm" title={event?.description} />
 							<HStack fontSize="xs">
 								<Avatar size={"sm"} name={event?.meetingAttendees[0]} />
 								<VStack spacing="0" align={"flex-start"}>
 									<TextTitle title={event?.meetingAttendees[0]} />
-									<TextTitle
-										size={"sm"}
-										weight="normal"
-										title={event?.description}
-									/>
+									<NormalTextTitle size={"sm"} title={event?.description} />
 								</VStack>
 							</HStack>
 						</VStack>

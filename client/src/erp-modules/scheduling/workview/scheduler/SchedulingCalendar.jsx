@@ -11,9 +11,10 @@ import "react-datepicker/dist/react-datepicker.css";
 import { useDrop } from "react-dnd";
 import { CiCalendar } from "react-icons/ci";
 // import { FaChevronDown } from "react-icons/fa";
-import moment from "moment";
+import NormalTextTitle from "components/ui/NormalTextTitle";
 import { MdOutlineChevronLeft, MdOutlineChevronRight } from "react-icons/md";
 import SchedulerService from "services/SchedulerService";
+import { getMomentDateISO, isSameAsToday, longFormat } from "utils";
 import Group from "./Group";
 import ItemsRow from "./ItemsRow";
 import "./Scheduler.css";
@@ -102,7 +103,7 @@ const SchedulingCalendar = ({ newEmployeeAdded, setRefresh, company }) => {
 		const fetchShifts = async () => {
 			try {
 				const response = await SchedulerService.getShiftsByDate({
-					date: moment(currentDate).toISOString(),
+					date: getMomentDateISO(currentDate),
 					company,
 				});
 				const uniqueEvents = [];
@@ -243,7 +244,7 @@ const SchedulingCalendar = ({ newEmployeeAdded, setRefresh, company }) => {
 			return newDate;
 		});
 	};
-	const isToday = moment(currentDate).isSame(new Date(), "day");
+	const isToday = isSameAsToday(currentDate);
 
 	return (
 		<Box overflow={"auto"} w={"100%"}>
@@ -262,11 +263,9 @@ const SchedulingCalendar = ({ newEmployeeAdded, setRefresh, company }) => {
 						boxSize="5"
 						color="fg.muted"
 					/>
-					<Text>
-						{isToday
-							? "Today"
-							: moment(currentDate).format("dddd, D MMMM YYYY")}
-					</Text>
+					<NormalTextTitle
+						title={isToday ? "Today" : longFormat(currentDate)}
+					/>
 					<Icon
 						as={MdOutlineChevronRight}
 						onClick={() => handleChangeDate("next")}

@@ -10,8 +10,9 @@ import {
 	VStack,
 	useDisclosure,
 } from "@chakra-ui/react";
-import TextTitle from "components/ui/text/TextTitle";
 
+import NormalTextTitle from "components/ui/NormalTextTitle";
+import TextTitle from "components/ui/text/TextTitle";
 import { useState } from "react";
 import { FaRegTrashAlt } from "react-icons/fa";
 import { RiEditLine } from "react-icons/ri";
@@ -101,7 +102,7 @@ const AgentsView = ({
 							borderTopRightRadius="10px"
 						>
 							<Flex justify="space-between" align="center" gap={0}>
-								<TextTitle weight="normal" title={category.name} size="xs" />
+								<NormalTextTitle title={category.name} size="xs" />
 								<Select
 									width="90px"
 									border={"none"}
@@ -145,10 +146,9 @@ const AgentsView = ({
 											spacing={0}
 										>
 											<TextTitle size="xs" title="Company" />
-											<TextTitle
+											<NormalTextTitle
 												size="xs"
 												color={"var(--main_color_black)"}
-												weight="normal"
 												title={name}
 											/>
 											<Box>
@@ -162,10 +162,9 @@ const AgentsView = ({
 										</HStack>
 										<HStack justifyContent={"space-between"} w={"100%"}>
 											<TextTitle size="xs" title="Email" />
-											<TextTitle
+											<NormalTextTitle
 												size="xs"
 												color={"var(--main_color_black)"}
-												weight="normal"
 												title={email}
 											/>
 											<Box>
@@ -185,10 +184,9 @@ const AgentsView = ({
 										</HStack>
 										<HStack w={"100%"} justifyContent={"space-between"}>
 											<TextTitle size="xs" title="Phone" />
-											<TextTitle
+											<NormalTextTitle
 												size="xs"
 												color={"var(--main_color_black)"}
-												weight="normal"
 												title={phone}
 											/>
 											<Box>

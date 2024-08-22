@@ -7,6 +7,7 @@ import {
 	Spacer,
 	VStack,
 } from "@chakra-ui/react";
+import NormalTextTitle from "components/ui/NormalTextTitle";
 import RadioButtonGroup from "components/ui/tab/RadioButtonGroup";
 import TextTitle from "components/ui/text/TextTitle";
 import EmpSearchMenu from "features/setup/company/group-tab/EmpSearchMenu";
@@ -117,7 +118,7 @@ const Employees = () => {
 					/>
 					<VStack spacing={0} align={"start"}>
 						<TextTitle size="sm" title={employee?.fullName} />
-						<TextTitle size="xs" weight="normal" title={employee?.employeeId} />
+						<NormalTextTitle size="xs" title={employee?.employeeId} />
 						{isActivePayroll && (
 							<Badge bg="var(--correct_ans)" color="var(--primary_bg)">
 								<TextTitle title={"Payroll Activated"} />

@@ -1,7 +1,6 @@
-import moment from "moment";
 import { useEffect, useState } from "react";
 import PayrollService from "services/PayrollService";
-import { getDefaultDate, sortRecordsByDate } from "utils";
+import { getDefaultDate, getMomentDate, sortRecordsByDate } from "utils";
 
 const usePaygroup = (company, refresh) => {
 	const [payGroups, setPayGroups] = useState(null);
@@ -16,8 +15,8 @@ const usePaygroup = (company, refresh) => {
 		const closestPayPeriod = schedules
 			?.filter(({ isProcessed }) => !isProcessed)
 			?.reduce((closest, record) => {
-				const recordEndDate = moment(record.payPeriodProcessingDate);
-				const closestEndDate = moment(closest.payPeriodProcessingDate);
+				const recordEndDate = getMomentDate(record.payPeriodProcessingDate);
+				const closestEndDate = getMomentDate(closest.payPeriodProcessingDate);
 				return Math.abs(recordEndDate.diff(today)) <
 					Math.abs(closestEndDate.diff(today))
 					? record

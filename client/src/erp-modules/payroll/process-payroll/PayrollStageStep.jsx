@@ -1,6 +1,6 @@
 import { Collapse, HStack, Icon } from "@chakra-ui/react";
 import BoxCard from "components/ui/card";
-import TextTitle from "components/ui/text/TextTitle";
+import NormalTextTitle from "components/ui/NormalTextTitle";
 import { FaSortDown, FaSortUp } from "react-icons/fa6";
 
 const PayrollStageStep = ({ onClick, isOpen, title, content }) => (
@@ -12,7 +12,7 @@ const PayrollStageStep = ({ onClick, isOpen, title, content }) => (
 				<Icon as={FaSortUp} boxSize="5" color="fg.muted" />
 			)}
 
-			<TextTitle mt={1} weight="normal" title={title} />
+			<NormalTextTitle mt={1} title={title} />
 		</HStack>
 		<Collapse in={isOpen}>{content}</Collapse>
 	</BoxCard>

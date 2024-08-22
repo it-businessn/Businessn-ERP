@@ -1,4 +1,6 @@
-import { Avatar, HStack, Text, VStack } from "@chakra-ui/react";
+import { Avatar, HStack, VStack } from "@chakra-ui/react";
+import NormalTextTitle from "./NormalTextTitle";
+import TextTitle from "./text/TextTitle";
 
 const UserStatInfo = ({ name, email, stats }) => {
 	return (
@@ -11,14 +13,14 @@ const UserStatInfo = ({ name, email, stats }) => {
 				spacing={0}
 			>
 				<Avatar name={name} src={name} />
-				<Text fontWeight="bold">{name}</Text>
-				<Text fontSize={"xs"}>{email}</Text>
+				<TextTitle title={name} />
+				<NormalTextTitle size="xs" title={email} />
 			</VStack>
 			<HStack my={"3"} spacing={2} justify={"space-between"}>
 				{stats.map(({ name, value }) => (
 					<VStack spacing={0} key={name}>
-						<Text fontSize="sm">{name}</Text>
-						<Text fontWeight="bold">{value}</Text>
+						<NormalTextTitle size="sm" title={name} />
+						<TextTitle title={value} />
 					</VStack>
 				))}
 			</HStack>

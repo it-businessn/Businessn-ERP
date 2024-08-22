@@ -1,5 +1,6 @@
 import { Td, Tr } from "@chakra-ui/react";
-import TextTitle from "components/ui/text/TextTitle";
+import NormalTextTitle from "components/ui/NormalTextTitle";
+import { getAmount } from "utils";
 
 const ItemRow = ({
 	title,
@@ -8,41 +9,31 @@ const ItemRow = ({
 	currentTotal,
 	YTDTotal,
 	w = "3em",
-	isRegular,
+	isEarning,
+	YTDHoursTotal,
 }) => (
 	<Tr>
 		<Td w={"10em"}>
-			<TextTitle size={"md"} title={title} />
+			<NormalTextTitle title={title} />
 		</Td>
 		<Td w={"3em"}>
-			<TextTitle
-				size={"md"}
-				visibility={rate === 0 && "hidden"}
-				title={`$${rate}`}
-				weight="normal"
-			/>
+			<NormalTextTitle visibility={rate === 0 && "hidden"} title={`$${rate}`} />
 		</Td>
 		<Td w={w}>
-			<TextTitle
-				size={"md"}
-				visibility={!isRegular && totalHours === 0 && "hidden"}
+			<NormalTextTitle
+				visibility={!isEarning && totalHours === 0 && "hidden"}
 				title={totalHours}
-				weight="normal"
 			/>
 		</Td>
 		<Td w={"10em"}>
-			<TextTitle
-				size={"md"}
-				title={`$${currentTotal.toFixed(2)}`}
-				weight="normal"
-			/>
+			<NormalTextTitle title={getAmount(currentTotal)} />
+		</Td>
+
+		<Td w={"10em"}>
+			<NormalTextTitle title={YTDHoursTotal} />
 		</Td>
 		<Td w={"10em"}>
-			<TextTitle
-				size={"md"}
-				title={`$${YTDTotal.toFixed(2)}`}
-				weight="normal"
-			/>
+			<NormalTextTitle title={getAmount(YTDTotal)} />
 		</Td>
 	</Tr>
 );

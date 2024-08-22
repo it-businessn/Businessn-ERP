@@ -11,12 +11,12 @@ import {
 } from "@chakra-ui/react";
 import PrimaryButton from "components/ui/button/PrimaryButton";
 import InputFormControl from "components/ui/form/InputFormControl";
-import TextTitle from "components/ui/text/TextTitle";
-import moment from "moment";
+import NormalTextTitle from "components/ui/NormalTextTitle";
 import { useEffect, useState } from "react";
 import ReactDatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import LogTaskService from "services/LogTaskService";
+import { longTimeFormat } from "utils";
 
 const Tasks = ({ contactId, user, company }) => {
 	const [tasks, setTasks] = useState([]);
@@ -117,11 +117,10 @@ const Tasks = ({ contactId, user, company }) => {
 										>
 											{status}
 										</Badge>
-										<TextTitle
-											weight="normal"
+										<NormalTextTitle
 											size="sm"
 											// title={moment(createdOn).format("MMM DD, YYYY hh:mm A Z")}
-											title={moment(dueDate).format("MMM DD, YYYY hh:mm A")}
+											title={longTimeFormat(dueDate)}
 											color="gray.500"
 											align="end"
 										/>
@@ -135,7 +134,7 @@ const Tasks = ({ contactId, user, company }) => {
 											}
 											size="md"
 										/>
-										<TextTitle weight="normal" title={description} />
+										<NormalTextTitle title={description} />
 									</Flex>
 								</CardBody>
 							</Card>

@@ -17,6 +17,7 @@ import {
 	VStack,
 } from "@chakra-ui/react";
 import BoxCard from "components/ui/card";
+import TextTitle from "components/ui/text/TextTitle";
 import { activityChartData, doughnutOptions, leaderBoardData } from "constant";
 import { useEffect, useState } from "react";
 import { Doughnut } from "react-chartjs-2";
@@ -87,9 +88,7 @@ const Meetings = () => {
 				</Box>
 			</BoxCard>
 			<BoxCard px="1em" fontWeight="bold" h={{ base: "auto", md: "350px" }}>
-				<Text fontWeight="bold" mt="2" mb="1">
-					Activity Tracking
-				</Text>
+				<TextTitle title={"Activity Tracking"} mt="2" mb="1" />
 				<VStack spacing={0}>
 					<Box h={"30px"} />
 					<Box

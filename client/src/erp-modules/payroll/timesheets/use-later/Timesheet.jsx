@@ -1,9 +1,9 @@
 import { HStack, Tbody, Td, Tr } from "@chakra-ui/react";
 import TableLayout from "components/ui/table/TableLayout";
-import TextTitle from "components/ui/text/TextTitle";
 import React, { useState } from "react";
 // import { FaChevronDown, FaChevronUp, FaPlus } from "react-icons/fa";
 import EmptyRowRecord from "components/ui/EmptyRowRecord";
+import NormalTextTitle from "components/ui/NormalTextTitle";
 import { getDateDiffHours, getDefaultTime } from "utils";
 import AddProject from "./AddProject";
 
@@ -71,10 +71,7 @@ const Timesheet = ({ timesheets }) => {
 														) : (
 															<FaChevronDown />
 														)} */}
-														<TextTitle
-															title={employeeId?.fullName}
-															weight="normal"
-														/>
+														<NormalTextTitle title={employeeId?.fullName} />
 													</HStack>
 												</Td>
 												<Td>{approveStatus}</Td>
@@ -113,9 +110,9 @@ const Timesheet = ({ timesheets }) => {
 																	<FaPlus
 																		onClick={() => setShowAddProject(true)}
 																	/>
-																	<TextTitle
+																	<NormalTextTitle
 																		title={"Add Project"}
-																		weight="normal"
+																	
 																	/>
 																</HStack>
 															</Td>
@@ -128,7 +125,7 @@ const Timesheet = ({ timesheets }) => {
 																	<FaPlus
 																		onClick={() => setShowAddProject(true)}
 																	/>
-																	<TextTitle title={"x.name"} weight="normal" />
+																	<NormalTextTitle title={"x.name"}  />
 																</HStack>
 															</Td>
 														</Tr>
@@ -145,7 +142,7 @@ const Timesheet = ({ timesheets }) => {
 																		<FaPlus
 																			onClick={() => setShowAddProject(true)}
 																		/>
-																		<TextTitle title={x.name} weight="normal" />
+																		<NormalTextTitle title={x.name}  />
 																	</HStack>
 																</Td>
 															</Tr>

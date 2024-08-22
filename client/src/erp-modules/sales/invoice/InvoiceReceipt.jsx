@@ -64,7 +64,7 @@ const InvoiceReceipt = ({ invoice, isOpen, onClose, isMobileView }) => {
 						</SimpleGrid>
 
 						{/* <Box mt={4}>
-							<Heading size="md">Total: ${invoice?.total.toFixed(2)}</Heading>
+							<Heading size="md">Total: ${getAmount(invoice?.total)}</Heading>
 						</Box> */}
 					</Box>
 					<Table size={isMobileView ? "sm" : "md"}>

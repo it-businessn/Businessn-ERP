@@ -12,6 +12,7 @@ import {
 import OutlineButton from "components/ui/button/OutlineButton";
 import PrimaryButton from "components/ui/button/PrimaryButton";
 import EmptyRowRecord from "components/ui/EmptyRowRecord";
+import NormalTextTitle from "components/ui/NormalTextTitle";
 import TextTitle from "components/ui/text/TextTitle";
 import useCompany from "hooks/useCompany";
 import useEmployeeAlertsInfo from "hooks/useEmployeeAlertsInfo";
@@ -94,7 +95,7 @@ const AlertsViolation = ({
 					{data?.map((data) => (
 						<Tr key={data._id}>
 							<Td>
-								<TextTitle weight="normal" title={data.description} />
+								<NormalTextTitle title={data.description} />
 							</Td>
 							<Td>
 								<TextTitle title={data.empId.fullName} />

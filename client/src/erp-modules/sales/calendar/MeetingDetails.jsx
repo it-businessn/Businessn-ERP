@@ -1,5 +1,6 @@
 import { VStack } from "@chakra-ui/react";
 import LinkButton from "components/ui/button/LinkButton";
+import NormalTextTitle from "components/ui/NormalTextTitle";
 import TextTitle from "components/ui/text/TextTitle";
 import moment from "moment";
 import React from "react";
@@ -33,7 +34,7 @@ const MeetingDetails = ({ event }) => {
 			{DETAILS.map(({ title, value }) => (
 				<React.Fragment key={title}>
 					<TextTitle size={"sm"} title={title} />
-					<TextTitle size={"xs"} weight="normal" title={value} />
+					<NormalTextTitle size={"xs"} title={value} />
 				</React.Fragment>
 			))}
 
@@ -46,7 +47,7 @@ const MeetingDetails = ({ event }) => {
 			{event?.location && (
 				<>
 					<TextTitle title="Location" size={"sm"} />
-					<TextTitle size={"xs"} weight="normal" title={event?.location} />
+					<NormalTextTitle size={"xs"} title={event?.location} />
 				</>
 			)}
 		</VStack>

@@ -1,6 +1,7 @@
 import { HStack, IconButton, Input, Tbody, Td, Tr } from "@chakra-ui/react";
 import PrimaryButton from "components/ui/button/PrimaryButton";
 import EmptyRowRecord from "components/ui/EmptyRowRecord";
+import NormalTextTitle from "components/ui/NormalTextTitle";
 import TableLayout from "components/ui/table/TableLayout";
 import TextTitle from "components/ui/text/TextTitle";
 import { useEffect, useState } from "react";
@@ -205,9 +206,8 @@ const Timesheet = ({ cols, data, company, setRefresh }) => {
 									/>
 								</Td>
 								<Td py={0}>
-									<TextTitle
+									<NormalTextTitle
 										size={"xs"}
-										weight="normal"
 										title={employeeId?.department?.[0]}
 									/>
 								</Td>

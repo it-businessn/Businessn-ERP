@@ -1,24 +1,30 @@
 import { HStack } from "@chakra-ui/react";
+import Loader from "components/Loader";
 import ModalLayout from "components/ui/modal/ModalLayout";
-import TextTitle from "components/ui/text/TextTitle";
+import NormalTextTitle from "components/ui/NormalTextTitle";
 import EmployeeInfo from "./EmployeeInfo";
 import EmployeePayDetails from "./EmployeePayDetails";
-import Loader from "components/Loader";
 
-const PreviewReportsModal = ({ isOpen, onClose, reportData, payPeriodNum }) => {
+const PreviewReportsModal = ({
+	isOpen,
+	onClose,
+	reportData,
+	payPeriodNum,
+	isReport,
+}) => {
 	return (
 		<ModalLayout
-			title={`Payroll register`}
+			title={`Payroll Register`}
 			size="7xl"
 			isOpen={isOpen}
 			onClose={onClose}
 			textAlign={"center"}
 			fontSize="3xl"
 		>
-			{!reportData && <Loader />}
-			{!reportData?.length && (
-				<TextTitle
-					weight="normal"
+			{!reportData && isReport ? (
+				<Loader />
+			) : (
+				<NormalTextTitle
 					align={"center"}
 					size={"lg"}
 					title={"No records found"}

@@ -11,6 +11,7 @@ import {
 } from "@chakra-ui/react";
 import TextTitle from "components/ui/text/TextTitle";
 
+import NormalTextTitle from "components/ui/NormalTextTitle";
 import useCompany from "hooks/useCompany";
 import PageLayout from "layouts/PageLayout";
 import { useEffect, useState } from "react";
@@ -177,10 +178,9 @@ const Communications = ({ isDashboard }) => {
 										>
 											<VStack align={"self-start"}>
 												<Text fontWeight="bold">{member?.fullName}</Text>
-												<TextTitle
+												<NormalTextTitle
 													whiteSpace="wrap"
 													align={"start"}
-													weight="normal"
 													title={
 														conversations
 															?.slice()

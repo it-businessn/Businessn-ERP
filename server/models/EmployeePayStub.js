@@ -34,6 +34,14 @@ const employeePayStubSchema = new mongoose.Schema({
 	totalSickHoursWorked: Number,
 	totalVacationHoursWorked: Number,
 
+	YTDRegHoursWorked: { type: Number, default: 0 },
+	YTDOvertimeHoursWorked: { type: Number, default: 0 },
+	YTDDblOvertimeHoursWorked: { type: Number, default: 0 },
+	YTDStatDayHoursWorked: { type: Number, default: 0 },
+	YTDStatHoursWorked: { type: Number, default: 0 },
+	YTDSickHoursWorked: { type: Number, default: 0 },
+	YTDVacationHoursWorked: { type: Number, default: 0 },
+
 	currentRegPayTotal: Number,
 	currentOverTimePayTotal: Number,
 	currentDblOverTimePayTotal: Number,
@@ -68,6 +76,9 @@ const employeePayStubSchema = new mongoose.Schema({
 
 	currentCPPDeductions: Number,
 	YTD_CPPDeductions: { type: Number, default: 0 },
+
+	currentUnionDuesDeductions: Number,
+	YTD_UnionDuesDeductions: { type: Number, default: 0 },
 
 	currentEIDeductions: Number,
 	YTD_EIDeductions: { type: Number, default: 0 },

@@ -1,6 +1,7 @@
 import { Box, HStack, Icon, SimpleGrid, VStack } from "@chakra-ui/react";
 import PrimaryButton from "components/ui/button/PrimaryButton";
 import BoxCard from "components/ui/card";
+import NormalTextTitle from "components/ui/NormalTextTitle";
 import TextTitle from "components/ui/text/TextTitle";
 import { useState } from "react";
 import { MdOutlineChevronLeft, MdOutlineChevronRight } from "react-icons/md";
@@ -113,7 +114,7 @@ const LeftPane = ({
 						<TextTitle title={"Employees"} />
 						<VStack>
 							<TextTitle align="end" title={"March 2024 (03/2024)"} />
-							<TextTitle align="end" weight="normal" title={"0 Payslips"} />
+							<NormalTextTitle align="end" title={"0 Payslips"} />
 						</VStack>
 					</HStack>
 					<HStack
@@ -124,7 +125,7 @@ const LeftPane = ({
 						<TextTitle title={"Vacations"} />
 						<VStack>
 							<TextTitle align="end" title={"March 2024 (03/2024)"} />
-							<TextTitle align="end" weight="normal" title={"0 Payslips"} />
+							<NormalTextTitle align="end" title={"0 Payslips"} />
 						</VStack>
 					</HStack>
 				</VStack>
@@ -145,10 +146,7 @@ const LeftPane = ({
 					>
 						<VStack>
 							<TextTitle title={"Overview of payroll process"} />
-							<TextTitle
-								weight="normal"
-								title={"Task progress of 200 employees"}
-							/>
+							<NormalTextTitle title={"Task progress of 200 employees"} />
 						</VStack>
 						<TextTitle
 							title={"45%"}
@@ -166,15 +164,15 @@ const LeftPane = ({
 				<VStack spacing={3} alignItems={"start"}>
 					<VStack spacing={1}>
 						<TextTitle title={"Next public holiday"} />
-						<TextTitle weight="normal" title={"Sunday - Jul 4, 2024"} />
+						<NormalTextTitle title={"Sunday - Jul 4, 2024"} />
 					</VStack>
 					<VStack spacing={1}>
 						<TextTitle title={"Next public holiday"} />
-						<TextTitle weight="normal" title={"Sunday - Jul 4, 2024"} />
+						<NormalTextTitle title={"Sunday - Jul 4, 2024"} />
 					</VStack>
 					<VStack spacing={1}>
 						<TextTitle title={"Next public holiday"} />
-						<TextTitle weight="normal" title={"Sunday - Jul 4, 2024"} />
+						<NormalTextTitle title={"Sunday - Jul 4, 2024"} />
 					</VStack>
 				</VStack>
 			),

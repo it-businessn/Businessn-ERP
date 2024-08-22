@@ -1,7 +1,8 @@
 import { Box, HStack, Stack, VStack } from "@chakra-ui/react";
 import Logo from "components/logo";
+import NormalTextTitle from "components/ui/NormalTextTitle";
 import TextTitle from "components/ui/text/TextTitle";
-import { formatDateBar, isExtraPay } from "utils";
+import { formatDateBar, getAmount, isExtraPay } from "utils";
 import logoImg from "../../../../assets/coverImgPaystub.png";
 
 const EmployeeInfo = ({ data }) => {
@@ -39,20 +40,16 @@ const EmployeeInfo = ({ data }) => {
 					mx={"auto"}
 					w={"70%"}
 					mt={5}
-					backgroundColor="var(--filter_border_color)"
+					backgroundColor="var(--payStub_bg)"
 				>
 					<TextTitle align="left" title={"Net Pay:"} size={"lg"} />
 					<TextTitle
 						align="center"
-						title={`$${data.currentNetPay.toFixed(2)}`}
+						title={getAmount(data.currentNetPay)}
 						size={"lg"}
 					/>
 				</HStack>
-				<HStack
-					mx={"auto"}
-					w={"70%"}
-					backgroundColor="var(--filter_border_color)"
-				>
+				<HStack mx={"auto"} w={"70%"} backgroundColor="var(--payStub_bg)">
 					<TextTitle align="left" title={"Pay Date:"} size={"lg"} />
 					<TextTitle
 						align="center"
@@ -64,16 +61,12 @@ const EmployeeInfo = ({ data }) => {
 					w={"70%"}
 					mt={12}
 					mx={"auto"}
-					backgroundColor="var(--filter_border_color)"
+					backgroundColor="var(--payStub_bg)"
 				>
 					<TextTitle align="left" title={"Employee#:"} size={"lg"} />
 					<TextTitle align="center" title={data.empId.employeeId} size={"lg"} />
 				</HStack>
-				<HStack
-					w={"70%"}
-					mx={"auto"}
-					backgroundColor="var(--filter_border_color)"
-				>
+				<HStack w={"70%"} mx={"auto"} backgroundColor="var(--payStub_bg)">
 					<TextTitle align="left" title={"Company#:"} size={"lg"} />
 					<TextTitle align="center" title={"NA"} size={"lg"} />
 				</HStack>
@@ -82,19 +75,17 @@ const EmployeeInfo = ({ data }) => {
 					mt={8}
 					mx={"auto"}
 					spacing={0}
-					backgroundColor="var(--filter_border_color)"
+					backgroundColor="var(--payStub_bg)"
 				>
 					<TextTitle
 						border={"1px solid black"}
 						align="left"
 						title={"Pay Period #:"}
 						size={"lg"}
-						weight="normal"
 					/>
 					<TextTitle
 						border={"1px solid black"}
 						align="center"
-						weight="normal"
 						title={isExtraPay(data.payPeriodNum, data.isExtraRun)}
 						size={"lg"}
 						borderLeftWidth={0}
@@ -105,10 +96,9 @@ const EmployeeInfo = ({ data }) => {
 					borderTopWidth={0}
 					w={"70%"}
 					mx={"auto"}
-					backgroundColor="var(--filter_border_color)"
+					backgroundColor="var(--main_color)"
 				>
-					<TextTitle
-						weight="normal"
+					<NormalTextTitle
 						align="center"
 						title={`${formatDateBar(data.payPeriodStartDate)} - ${formatDateBar(
 							data.payPeriodEndDate,

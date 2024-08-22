@@ -1,4 +1,5 @@
 import { Badge, Box, Card, CardBody, Flex, VStack } from "@chakra-ui/react";
+import NormalTextTitle from "components/ui/NormalTextTitle";
 import TextTitle from "components/ui/text/TextTitle";
 import moment from "moment";
 
@@ -13,8 +14,7 @@ const LogActivityList = ({ activities, showLogForm }) => {
 								<Badge bg="var(--primary_bg)" color="var(--primary_button_bg)">
 									{type}
 								</Badge>
-								<TextTitle
-									weight="normal"
+								<NormalTextTitle
 									size="sm"
 									// title={moment(createdOn).format("MMM DD, YYYY hh:mm A Z")}
 									title={moment(createdOn).format("MMM DD, YYYY hh:mm A")}
@@ -22,7 +22,7 @@ const LogActivityList = ({ activities, showLogForm }) => {
 									align="end"
 								/>
 							</Flex>
-							<TextTitle weight="normal" title={`${description}`} />
+							<NormalTextTitle title={`${description}`} />
 							{duration !== "0" && (
 								<TextTitle title={`Duration: ${duration} minutes`} />
 							)}

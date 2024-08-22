@@ -154,8 +154,7 @@ const CustomersList = ({
 														}}
 													/>
 												))}
-												{/* <TextTitle
-													weight="normal"
+												{/* <NormalTextTitle
 													title={
 														meetings.length === 0
 															? "No history"

@@ -2,9 +2,9 @@ import { HStack, VStack, useToast } from "@chakra-ui/react";
 import LeftIconButton from "components/ui/button/LeftIconButton";
 import BoxCard from "components/ui/card";
 import TextTitle from "components/ui/text/TextTitle";
-import moment from "moment";
 import { useEffect, useState } from "react";
 import TimesheetService from "services/TimesheetService";
+import { monthDayYear } from "utils";
 
 const TimeCard = ({ selectedUser, company }) => {
 	const [time, setTime] = useState(new Date());
@@ -22,7 +22,7 @@ const TimeCard = ({ selectedUser, company }) => {
 		minute: "2-digit",
 		second: "2-digit",
 	});
-	const formattedDate = moment(new Date()).format("MMM DD, YYYY");
+
 	const handleSubmit = async () => {
 		try {
 			await TimesheetService.addTimesheet({
@@ -78,7 +78,7 @@ const TimeCard = ({ selectedUser, company }) => {
 					name={
 						<VStack p={3}>
 							<TextTitle size="2xl" title={formattedTime} />
-							<TextTitle title={formattedDate} />
+							<TextTitle title={monthDayYear} />
 						</VStack>
 					}
 					variant="outline"

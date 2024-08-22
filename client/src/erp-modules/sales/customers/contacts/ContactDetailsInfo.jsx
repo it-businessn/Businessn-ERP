@@ -17,6 +17,7 @@ import {
 	VStack,
 	useDisclosure,
 } from "@chakra-ui/react";
+import NormalTextTitle from "components/ui/NormalTextTitle";
 import TextTitle from "components/ui/text/TextTitle";
 import React from "react";
 import { FaBuilding } from "react-icons/fa";
@@ -148,7 +149,7 @@ const ContactDetailsInfo = ({ contact, showLogForm }) => {
 						{DETAILS.map(({ title, value }) => (
 							<React.Fragment key={title}>
 								<TextTitle size={"sm"} title={title} />
-								<TextTitle size={"sm"} mb="2" weight="normal" title={value} />
+								<NormalTextTitle size={"sm"} mb="2" title={value} />
 							</React.Fragment>
 						))}
 
@@ -175,7 +176,7 @@ const ContactDetailsInfo = ({ contact, showLogForm }) => {
 							{DETAILS2.map(({ title, value }) => (
 								<React.Fragment key={title}>
 									<TextTitle size={"sm"} title={title} />
-									<TextTitle size={"sm"} mb="2" weight="normal" title={value} />
+									<NormalTextTitle size={"sm"} mb="2" title={value} />
 								</React.Fragment>
 							))}
 

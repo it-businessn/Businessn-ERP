@@ -19,6 +19,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { ROUTE_PATH } from "routes";
 import LocalStorageService from "services/LocalStorageService";
 import PayrollService from "services/PayrollService";
+import { getAmount } from "utils";
 import { getClosestRecord } from "../workview/data";
 
 const InputsReview = ({
@@ -101,13 +102,13 @@ const InputsReview = ({
 								<TextTitle title={data.totalRegHoursWorked} />
 							</Td>
 							<Td>
-								<TextTitle title={data.currentNetPay.toFixed(2)} />
+								<TextTitle title={getAmount(data.currentNetPay)} />
 							</Td>
 							<Td>
-								<TextTitle title={data.currentDeductionsTotal.toFixed(2)} />
+								<TextTitle title={getAmount(data.currentDeductionsTotal)} />
 							</Td>
 							<Td>
-								<TextTitle title={data.currentGrossPay.toFixed(2)} />
+								<TextTitle title={getAmount(data.currentGrossPay)} />
 							</Td>
 							<Td>
 								<OutlineButton

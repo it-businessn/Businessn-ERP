@@ -10,6 +10,7 @@ import PrimaryButton from "components/ui/button/PrimaryButton";
 import BoxCard from "components/ui/card";
 import ActionButtonGroup from "components/ui/form/ActionButtonGroup";
 import ModalLayout from "components/ui/modal/ModalLayout";
+import NormalTextTitle from "components/ui/NormalTextTitle";
 import TextTitle from "components/ui/text/TextTitle";
 import useCompany from "hooks/useCompany";
 import usePaygroup from "hooks/usePaygroup";
@@ -117,8 +118,7 @@ const ProcessPayroll = () => {
 					<TextTitle title={"Process payroll"} mt={2} mb={"1em"} />
 					<VStack spacing={3} align={"start"}>
 						<HStack spacing={2}>
-							<TextTitle
-								weight="normal"
+							<NormalTextTitle
 								color={"var(--primary_button_bg)"}
 								title={"Manage all payrolls"}
 								width="auto"

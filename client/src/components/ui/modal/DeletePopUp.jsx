@@ -1,5 +1,5 @@
 import ActionButtonGroup from "../form/ActionButtonGroup";
-import TextTitle from "../text/TextTitle";
+import NormalTextTitle from "../NormalTextTitle";
 import ModalLayout from "./ModalLayout";
 
 const DeletePopUp = ({ headerTitle, textTitle, isOpen, onClose, onOpen }) => {
@@ -10,7 +10,7 @@ const DeletePopUp = ({ headerTitle, textTitle, isOpen, onClose, onOpen }) => {
 			isOpen={isOpen}
 			onClose={onClose}
 		>
-			<TextTitle weight="normal" whiteSpace="wrap" title={textTitle} />
+			<NormalTextTitle whiteSpace="wrap" title={textTitle} />
 			<ActionButtonGroup
 				submitBtnName={"Yes"}
 				closeLabel="No"

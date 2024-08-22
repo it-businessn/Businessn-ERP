@@ -7,7 +7,7 @@ import {
 	Text,
 	VStack,
 } from "@chakra-ui/react";
-import TextTitle from "components/ui/text/TextTitle";
+import NormalTextTitle from "components/ui/NormalTextTitle";
 import moment from "moment";
 import { Link } from "react-router-dom";
 
@@ -36,8 +36,7 @@ const MeetingList = ({ meetings }) => {
 									>
 										{type}
 									</Badge>
-									<TextTitle
-										weight="normal"
+									<NormalTextTitle
 										size="sm"
 										// title={moment(createdOn).format("MMM DD, YYYY hh:mm A Z")}
 										title={moment(createdOn).format("MMM DD, YYYY hh:mm A")}

@@ -62,10 +62,63 @@ export const generateLighterShade = (color, factor) => {
 export const toCapitalize = (str) =>
 	str?.replace(/\b\w/g, (match) => match.toUpperCase());
 
+export const getMomentDate = (date) => moment(date);
+
+export const getMomentDateISO = (date) => moment(date).toISOString();
+
+export const isSameAsToday = (date) => moment(date).isSame(new Date(), "day");
+
 export const dayMonthYear = (date) =>
 	moment.utc(date).format("ddd MMM DD, YYYY");
 
+export const longTimeFormat = (date) =>
+	moment(date).format("MMM DD, YYYY hh:mm A");
+
+export const longFormat = (date) => moment(date).format("dddd, D MMMM YYYY");
+
+export const monthDayYear = moment().format("MMM DD, YYYY");
+
 export const today = moment().format("MMDDYY");
+
+export const formatDateBar = (date) => moment(date).format("DD/MM/YYYY");
+
+export const formatDateRange = (startDate, endDate) => {
+	const start = moment(startDate).format("DD/MM");
+	const end = moment(endDate).format("DD/MM");
+	return `${start} - ${end}`;
+};
+
+export const getDefaultTime = (date) => moment(date, "HH:mm").format("hh:mm A");
+
+export const getDateDiffHours = (date1, date2, totalBreaks) => {
+	const startTime = moment(date1, "HH:mm");
+	const endTime = moment(date2, "HH:mm");
+	const breakTime = totalBreaks === "" ? 0 : parseInt(totalBreaks) / 60;
+	const totalMinutes = moment.duration(endTime.diff(startTime)).asMinutes();
+	const netMinutes = totalMinutes - breakTime;
+	const hoursDiff = Math.floor(netMinutes / 60);
+	const minutesDiff = (netMinutes % 60).toFixed(2);
+
+	const formattedHours = String(hoursDiff).padStart(2, "0");
+	const formattedMinutes = String(minutesDiff).padStart(2, "0");
+	return `${formattedHours}:${formattedMinutes}`;
+};
+
+export const addBusinessDays = (date, days) => {
+	let result = moment(date);
+	let count = 0;
+	while (count < days) {
+		result = result.add(1, "days");
+
+		if (result.isoWeekday() !== 6 && result.isoWeekday() !== 7) {
+			count++;
+		}
+	}
+	return result;
+};
+
+export const getTimezone = (date) =>
+	moment.tz(date, "America/Chicago").clone().tz(userTimezone).format();
 
 export const formatDate = (date) =>
 	new Date(date).toLocaleDateString("en-US", {
@@ -103,14 +156,6 @@ export const sortRecordsByDate = (records, key) => {
 export const formatDateTime = (date) =>
 	`${formatDate(date)} ${new Date(date).toLocaleTimeString()}`;
 
-export const formatDateBar = (date) => moment(date).format("DD/MM/YYYY");
-
-export const formatDateRange = (startDate, endDate) => {
-	const start = moment(startDate).format("DD/MM");
-	const end = moment(endDate).format("DD/MM");
-	return `${start} - ${end}`;
-};
-
 export const generateRandomData = (name, count) => {
 	const data = [];
 	for (let i = 0; i < count; i++) {
@@ -128,34 +173,7 @@ export const getDefaultDate = (isoDate = null) => {
 	return dateObject.toISOString().split("T")[0];
 };
 
-export const getDefaultTime = (date) => moment(date, "HH:mm").format("hh:mm A");
-
-export const getDateDiffHours = (date1, date2, totalBreaks) => {
-	const startTime = moment(date1, "HH:mm");
-	const endTime = moment(date2, "HH:mm");
-	const breakTime = totalBreaks === "" ? 0 : parseInt(totalBreaks) / 60;
-	const totalMinutes = moment.duration(endTime.diff(startTime)).asMinutes();
-	const netMinutes = totalMinutes - breakTime;
-	const hoursDiff = Math.floor(netMinutes / 60);
-	const minutesDiff = (netMinutes % 60).toFixed(2);
-
-	const formattedHours = String(hoursDiff).padStart(2, "0");
-	const formattedMinutes = String(minutesDiff).padStart(2, "0");
-	return `${formattedHours}:${formattedMinutes}`;
-};
-
-export const addBusinessDays = (date, days) => {
-	let result = moment(date);
-	let count = 0;
-	while (count < days) {
-		result = result.add(1, "days");
-
-		if (result.isoWeekday() !== 6 && result.isoWeekday() !== 7) {
-			count++;
-		}
-	}
-	return result;
-};
+export const getAmount = (data) => `$${Math.abs(data.toFixed(2))}`;
 
 export const isValidPhoneNumber = (phoneNumber) => {
 	const phoneRegex = /^[0-9]{10}$/;
@@ -198,6 +216,7 @@ export const CircularFillProgress = ({ completionPercentage }) => {
 		</Box>
 	);
 };
+
 const getProgressColor = (value) =>
 	value <= 0
 		? "#edebe9"
@@ -476,9 +495,6 @@ export const timeSpan = (time) => {
 };
 
 export const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-
-export const getTimezone = (date) =>
-	moment.tz(date, "America/Chicago").clone().tz(userTimezone).format();
 
 export const calcTotal = (data, param1, param2) => {
 	return data.reduce((acc, product) => {
