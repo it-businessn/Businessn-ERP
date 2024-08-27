@@ -14,9 +14,11 @@ const BoxCard = ({
 	px,
 	borderWidth = "3px",
 	minH,
+	bg = "var(--primary_bg)",
+	width,
 }) => (
 	<Box
-		bg={"var(--primary_bg)"}
+		bg={bg}
 		border={`${borderWidth} solid var(--main_color)`}
 		borderRadius="10px"
 		color={"var(--nav_color)"}
@@ -32,6 +34,7 @@ const BoxCard = ({
 		p={p}
 		px={px}
 		minH={minH}
+		w={width}
 	>
 		{children}
 	</Box>

@@ -17,12 +17,14 @@ const TableLayout = ({
 	variant = "simple",
 	bg = "var(--lead_cards_bg)",
 	inVisible,
-	size = "xs",
+	textSize = "xs",
 	textAlign,
+	tableSize,
+	whiteSpace,
 }) => {
 	return (
 		<Box overflow="auto" height={height} w={w}>
-			<Table variant={variant} bg={bg}>
+			<Table variant={variant} bg={bg} size={tableSize}>
 				<Thead
 					// position={position} top={top} zIndex={zIndex}
 					position="sticky"
@@ -46,7 +48,11 @@ const TableLayout = ({
 								pl={isTimesheet && index === 0 && "1em !important"}
 								key={`${col}_${index}`}
 							>
-								<TextTitle size={size} title={col} />
+								<TextTitle
+									whiteSpace={whiteSpace}
+									size={textSize}
+									title={col}
+								/>
 							</Th>
 						))}
 						{hasMulti && <Th>Action</Th>}

@@ -10,9 +10,10 @@ const NormalTextTitle = ({
 	color,
 	width,
 	mb,
+	weight = "normal",
 }) => (
 	<TextTitle
-		weight="normal"
+		weight={weight}
 		size={size}
 		title={title}
 		visibility={visibility}

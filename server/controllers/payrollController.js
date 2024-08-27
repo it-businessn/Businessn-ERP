@@ -414,30 +414,19 @@ const addEmployeePayStubInfo = async (req, res) => {
 	}
 };
 
-const buildPayStubDetails = async (
-	currentPayPeriod,
-	companyName,
-	empTimesheetData,
-	empId,
-) => {
-	const {
-		payPeriodStartDate,
-		payPeriodEndDate,
-		payPeriodPayDate,
-		payPeriodProcessingDate,
-		payPeriod,
-		isExtraRun,
-	} = currentPayPeriod;
-
-	const employeeId = empTimesheetData ? empTimesheetData.empId._id : empId;
-
-	const empPayStubResult = await findEmployeePayStub(employeeId, payPeriod);
-
-	const empResult = await findEmployeePayInfo(employeeId);
+const getCurrentTotals = (empTimesheetData, empPayInfoResult) => {
 	const newEmpData = empTimesheetData ? empTimesheetData : {};
 
-	newEmpData.empId = employeeId;
-	newEmpData.currentPayDetails = empResult;
+	newEmpData.regPay = empPayInfoResult.regPay;
+	newEmpData.overTimePay = 1.5 * empPayInfoResult.regPay;
+	newEmpData.dblOverTimePay = 2 * empPayInfoResult.regPay;
+	newEmpData.statPay = empPayInfoResult.regPay;
+	newEmpData.statWorkPay = 1.5 * empPayInfoResult.regPay;
+	newEmpData.sickPay = empPayInfoResult.regPay;
+	newEmpData.vacationPay = empPayInfoResult.regPay;
+	newEmpData.sprayPay = 1;
+	newEmpData.firstAidPay = 0.5;
+
 	newEmpData.totalRegHoursWorked = getSumHours(
 		empTimesheetData?.totalRegHoursWorked,
 	);
@@ -457,55 +446,123 @@ const buildPayStubDetails = async (
 	newEmpData.totalVacationHoursWorked = getSumHours(
 		empTimesheetData?.totalVacationHoursWorked,
 	);
+	newEmpData.totalSprayHoursWorked = getSumHours(
+		empTimesheetData?.totalSprayHoursWorked,
+	);
+	newEmpData.totalFirstAidHoursWorked = getSumHours(
+		empTimesheetData?.totalFirstAidHoursWorked,
+	);
 	newEmpData.currentRegPayTotal = getCalcAmount(
 		empTimesheetData?.totalRegHoursWorked || 0,
-		empResult.regPay,
+		newEmpData.regPay,
 	);
 	newEmpData.currentOverTimePayTotal = getCalcAmount(
 		empTimesheetData?.totalOvertimeHoursWorked || 0,
-		empResult.overTimePay,
+		newEmpData.overTimePay,
 	);
 	newEmpData.currentDblOverTimePayTotal = getCalcAmount(
 		empTimesheetData?.totalDblOvertimeHoursWorked || 0,
-		empResult.dblOverTimePay,
+		newEmpData.dblOverTimePay,
 	);
 	newEmpData.currentStatWorkPayTotal = getCalcAmount(
 		empTimesheetData?.totalStatDayHoursWorked || 0,
-		empResult.statWorkPay,
+		newEmpData.statWorkPay,
 	);
 	newEmpData.currentStatPayTotal = getCalcAmount(
 		empTimesheetData?.totalStatHours || 0,
-		empResult.statPay,
+		newEmpData.statPay,
 	);
 	newEmpData.currentSickPayTotal = getCalcAmount(
 		empTimesheetData?.totalSickHoursWorked || 0,
-		empResult.sickPay,
+		newEmpData.sickPay,
 	);
 	newEmpData.currentVacationPayTotal = getCalcAmount(
 		empTimesheetData?.totalVacationHoursWorked || 0,
-		empResult.vacationPay,
+		newEmpData.vacationPay,
 	);
+	newEmpData.currentSprayPayTotal = getCalcAmount(
+		empTimesheetData?.totalSprayHoursWorked || 0,
+		newEmpData.sprayPay,
+	);
+	newEmpData.currentFirstAidPayTotal = getCalcAmount(
+		empTimesheetData?.totalFirstAidHoursWorked || 0,
+		newEmpData.firstAidPay,
+	);
+	return newEmpData;
+};
+
+const calcCurrentGrossPay = (newEmpData) =>
+	newEmpData.currentRegPayTotal +
+	newEmpData.currentOverTimePayTotal +
+	newEmpData.currentDblOverTimePayTotal +
+	newEmpData.currentStatWorkPayTotal +
+	newEmpData.currentStatPayTotal +
+	newEmpData.currentSickPayTotal +
+	newEmpData.currentVacationPayTotal +
+	newEmpData.currentSprayPayTotal +
+	newEmpData.currentFirstAidPayTotal +
+	newEmpData.payInLieuPay +
+	newEmpData.pILBenefitPay +
+	newEmpData.bankedTimePay +
+	newEmpData.regularByAmount +
+	newEmpData.commission +
+	newEmpData.retroactive +
+	newEmpData.vacationPayout +
+	newEmpData.bonus +
+	newEmpData.terminationPayout;
+
+const calcCurrentDeductionsTotal = (newEmpData) =>
+	newEmpData.currentFDTaxDeductions +
+	newEmpData.currentStateTaxDeductions +
+	newEmpData.currentCPPDeductions +
+	newEmpData.currentEIDeductions +
+	newEmpData.currentUnionDuesDeductions +
+	newEmpData.currentEmployeeHealthContributions +
+	newEmpData.currentPrimaryDeposit +
+	newEmpData.currentEmployeePensionContributions +
+	newEmpData.currentOtherDeductions;
+
+const calcEmployeeContribution = (grossPay, newEmpData) =>
+	grossPay -
+	(newEmpData.retroactive +
+		newEmpData.currentOverTimePayTotal +
+		newEmpData.currentDblOverTimePayTotal);
+
+const buildPayStubDetails = async (
+	currentPayPeriod,
+	companyName,
+	empTimesheetData,
+	empId,
+) => {
+	const {
+		payPeriodStartDate,
+		payPeriodEndDate,
+		payPeriodPayDate,
+		payPeriodProcessingDate,
+		payPeriod,
+		isExtraRun,
+	} = currentPayPeriod;
+
+	const empPayStubResult = await findEmployeePayStub(empId, payPeriod);
+
+	const empPayInfoResult = await findEmployeePayInfo(empId);
+
+	const newEmpData = getCurrentTotals(empTimesheetData, empPayInfoResult);
+
+	newEmpData.payInLieuPay = empPayStubResult?.payInLieuPay ?? 0;
+	newEmpData.pILBenefitPay = empPayStubResult?.pILBenefitPay ?? 0;
+	newEmpData.bankedTimePay = empPayStubResult?.bankedTimePay ?? 0;
+	newEmpData.regularByAmount = empPayStubResult?.regularByAmount ?? 0;
 	newEmpData.commission = empPayStubResult?.commission ?? 0;
 	newEmpData.retroactive = empPayStubResult?.retroactive ?? 0;
 	newEmpData.vacationPayout = empPayStubResult?.vacationPayout ?? 0;
-	newEmpData.bonus = empPayStubResult?.bonus ?? 0;
 	newEmpData.terminationPayout = empPayStubResult?.terminationPayout ?? 0;
+	newEmpData.bonus = empPayStubResult?.bonus ?? 0;
 
-	newEmpData.currentGrossPay =
-		newEmpData.currentRegPayTotal +
-		newEmpData.currentOverTimePayTotal +
-		newEmpData.currentDblOverTimePayTotal +
-		newEmpData.currentStatWorkPayTotal +
-		newEmpData.currentStatPayTotal +
-		newEmpData.currentSickPayTotal +
-		newEmpData.currentVacationPayTotal +
-		newEmpData.commission +
-		newEmpData.retroactive +
-		newEmpData.vacationPayout +
-		newEmpData.bonus +
-		newEmpData.terminationPayout;
+	newEmpData.currentGrossPay = calcCurrentGrossPay(newEmpData);
 
 	const {
+		currentUnionDuesDeductions,
 		grossSalaryByPayPeriod,
 		CPPContribution,
 		totalProvincialTaxDeduction,
@@ -513,189 +570,69 @@ const buildPayStubDetails = async (
 		EIContribution,
 	} = getTaxDetails(newEmpData.currentGrossPay);
 
+	const employeeContribution = calcEmployeeContribution(
+		newEmpData.currentGrossPay,
+		newEmpData,
+	);
+
+	const pensionContribution = 0.4 * employeeContribution;
+	const employerContribution =
+		pensionContribution + 2.05 * newEmpData.totalRegHoursWorked;
+
 	newEmpData.currentFDTaxDeductions = federalTaxDeductionByPayPeriod;
 	newEmpData.currentStateTaxDeductions = totalProvincialTaxDeduction;
 	newEmpData.currentCPPDeductions = CPPContribution;
 	newEmpData.currentEIDeductions = EIContribution;
+	newEmpData.currentUnionDuesDeductions = currentUnionDuesDeductions;
+	newEmpData.currentEmployeeHealthContributions =
+		0.42 * newEmpData.totalRegHoursWorked;
+	newEmpData.currentPrimaryDeposit = 0;
+	newEmpData.currentEmployeePensionContributions = pensionContribution;
 	newEmpData.currentOtherDeductions = 0;
 
-	newEmpData.currentDeductionsTotal =
-		newEmpData.currentFDTaxDeductions +
-		newEmpData.currentStateTaxDeductions +
-		newEmpData.currentCPPDeductions +
-		newEmpData.currentEIDeductions +
-		newEmpData.currentOtherDeductions;
+	newEmpData.currentEmployerPensionContributions = pensionContribution;
+	newEmpData.currentEmployerHealthContributions =
+		2.05 * newEmpData.totalRegHoursWorked;
+
+	newEmpData.currentEmployerContributions = employerContribution;
+
+	newEmpData.currentVacationAccrued = 0;
+	newEmpData.currentVacationUsed = 0;
+	newEmpData.vacationBalance = 0;
+	newEmpData.currentSickAccrued = 0;
+	newEmpData.currentSickUsed = 0;
+	newEmpData.sickBalance = 0;
+
+	newEmpData.currentDeductionsTotal = calcCurrentDeductionsTotal(newEmpData);
 
 	newEmpData.currentNetPay =
 		grossSalaryByPayPeriod - newEmpData.currentDeductionsTotal;
+
 	const prevPayPeriodNum = isExtraRun ? payPeriod : payPeriod - 1;
 
 	const prevPayPayInfo = await findCurrentPayStub(
 		prevPayPeriodNum,
 		companyName,
-		employeeId,
+		empId,
 		false,
 	);
 
-	const currentPayStub = {
-		isProcessed: true,
-		isExtraRun,
-		empId: employeeId,
+	const currentPayStub = buildPayStub(
+		empId,
 		companyName,
 		payPeriodStartDate,
 		payPeriodEndDate,
 		payPeriodPayDate,
 		payPeriodProcessingDate,
-		payPeriodNum: payPeriod,
-		currentNetPay: newEmpData.currentNetPay,
-		commission: newEmpData.commission,
-		retroactive: newEmpData.retroactive,
-		vacationPayout: newEmpData.vacationPayout,
-		bonus: newEmpData.bonus,
-		terminationPayout: newEmpData.terminationPayout,
-		regPay: empResult.regPay,
-		overTimePay: empResult.overTimePay,
-		dblOverTimePay: empResult.dblOverTimePay,
-		statWorkPay: empResult.statWorkPay,
-		statPay: empResult.statPay,
-		sickPay: empResult.sickPay,
-		vacationPay: empResult.vacationPay,
-
-		totalRegHoursWorked: newEmpData.totalRegHoursWorked,
-		totalOvertimeHoursWorked: newEmpData?.totalOvertimeHoursWorked,
-		totalDblOvertimeHoursWorked: newEmpData?.totalDblOvertimeHoursWorked,
-		totalStatDayHoursWorked: newEmpData?.totalStatDayHoursWorked,
-		totalStatHours: newEmpData?.totalStatHours,
-		totalSickHoursWorked: newEmpData?.totalSickHoursWorked,
-		totalVacationHoursWorked: newEmpData?.totalVacationHoursWorked,
-
-		YTDRegHoursWorked: getSumTotal(
-			prevPayPayInfo?.YTDRegHoursWorked,
-			newEmpData.totalRegHoursWorked,
-		),
-		YTDOvertimeHoursWorked: getSumTotal(
-			prevPayPayInfo?.YTDOvertimeHoursWorked,
-			newEmpData.totalOvertimeHoursWorked,
-		),
-		YTDDblOvertimeHoursWorked: getSumTotal(
-			prevPayPayInfo?.YTDDblOvertimeHoursWorked,
-			newEmpData.totalDblOvertimeHoursWorked,
-		),
-		YTDStatDayHoursWorked: getSumTotal(
-			prevPayPayInfo?.YTDStatDayHoursWorked,
-			newEmpData.totalStatDayHoursWorked,
-		),
-		YTDStatHoursWorked: getSumTotal(
-			prevPayPayInfo?.YTDStatHoursWorked,
-			newEmpData.totalStatHours,
-		),
-		YTDSickHoursWorked: getSumTotal(
-			prevPayPayInfo?.YTDSickHoursWorked,
-			newEmpData.totalSickHoursWorked,
-		),
-		YTDVacationHoursWorked: getSumTotal(
-			prevPayPayInfo?.YTDVacationHoursWorked,
-			newEmpData.totalVacationHoursWorked,
-		),
-
-		currentRegPayTotal: newEmpData.currentRegPayTotal,
-		currentOverTimePayTotal: newEmpData.currentOverTimePayTotal,
-		currentDblOverTimePayTotal: newEmpData.currentDblOverTimePayTotal,
-		currentStatWorkPayTotal: newEmpData.currentStatWorkPayTotal,
-		currentStatPayTotal: newEmpData.currentStatPayTotal,
-		currentSickPayTotal: newEmpData.currentSickPayTotal,
-		currentVacationPayTotal: newEmpData.currentVacationPayTotal,
-		currentGrossPay: newEmpData.currentGrossPay,
-		currentFDTaxDeductions: newEmpData.currentFDTaxDeductions,
-		currentStateTaxDeductions: newEmpData.currentStateTaxDeductions,
-		currentCPPDeductions: newEmpData.currentCPPDeductions,
-		currentEIDeductions: newEmpData.currentEIDeductions,
-		currentOtherDeductions: newEmpData.currentOtherDeductions,
-		currentDeductionsTotal: newEmpData.currentDeductionsTotal,
-		currentNetPay: newEmpData.currentNetPay,
-
-		YTDRegPayTotal: getSumTotal(
-			prevPayPayInfo?.YTDRegPayTotal,
-			newEmpData.currentRegPayTotal,
-		),
-		YTDOverTimePayTotal: getSumTotal(
-			prevPayPayInfo?.YTDOverTimePayTotal,
-			newEmpData.currentOverTimePayTotal,
-		),
-		YTDDblOverTimePayTotal: getSumTotal(
-			prevPayPayInfo?.YTDDblOverTimePayTotal,
-			newEmpData.currentDblOverTimePayTotal,
-		),
-		YTDStatWorkPayTotal: getSumTotal(
-			prevPayPayInfo?.YTDStatWorkPayTotal,
-			newEmpData.currentStatWorkPayTotal,
-		),
-		YTDStatPayTotal: getSumTotal(
-			prevPayPayInfo?.YTDStatPayTotal,
-			newEmpData.currentStatPayTotal,
-		),
-		YTDSickPayTotal: getSumTotal(
-			prevPayPayInfo?.YTDSickPayTotal,
-			newEmpData.currentSickPayTotal,
-		),
-		YTDVacationPayTotal: getSumTotal(
-			prevPayPayInfo?.YTDVacationPayTotal,
-			newEmpData.currentVacationPayTotal,
-		),
-
-		YTDCommission: getSumTotal(
-			prevPayPayInfo?.YTDCommission,
-			newEmpData.commission,
-		),
-		YTDRetroactive: getSumTotal(
-			prevPayPayInfo?.YTDRetroactive,
-			newEmpData.retroactive,
-		),
-		YTDVacationPayout: getSumTotal(
-			prevPayPayInfo?.YTDVacationPayout,
-			newEmpData.vacationPayout,
-		),
-		YTDBonus: getSumTotal(prevPayPayInfo?.YTDBonus, newEmpData.bonus),
-		YTDTerminationPayout: getSumTotal(
-			prevPayPayInfo?.YTDTerminationPayout,
-			newEmpData.terminationPayout,
-		),
-		YTDGrossPay: getSumTotal(
-			prevPayPayInfo?.YTDGrossPay,
-			newEmpData.currentGrossPay,
-		),
-		YTD_FDTaxDeductions: getSumTotal(
-			prevPayPayInfo?.YTD_FDTaxDeductions,
-			newEmpData.currentFDTaxDeductions,
-		),
-		YTDStateTaxDeductions: getSumTotal(
-			prevPayPayInfo?.YTDStateTaxDeductions,
-			newEmpData.currentStateTaxDeductions,
-		),
-		YTD_CPPDeductions: getSumTotal(
-			prevPayPayInfo?.YTD_CPPDeductions,
-			newEmpData.currentCPPDeductions,
-		),
-		YTD_EIDeductions: getSumTotal(
-			prevPayPayInfo?.YTD_EIDeductions,
-			newEmpData.currentEIDeductions,
-		),
-		YTDOtherDeductions: getSumTotal(
-			prevPayPayInfo?.YTDOtherDeductions,
-			newEmpData.currentOtherDeductions,
-		),
-		YTDDeductionsTotal: getSumTotal(
-			prevPayPayInfo?.YTDDeductionsTotal,
-			newEmpData.currentDeductionsTotal,
-		),
-
-		YTDNetPay: getSumTotal(prevPayPayInfo?.YTDNetPay, newEmpData.currentNetPay),
-	};
-
+		payPeriod,
+		isExtraRun,
+		newEmpData,
+		prevPayPayInfo,
+	);
 	const currentPayInfo = await findCurrentPayStub(
 		payPeriod,
 		companyName,
-		employeeId,
+		empId,
 		isExtraRun ? isExtraRun : false,
 	);
 	if (currentPayInfo) {
@@ -703,6 +640,325 @@ const buildPayStubDetails = async (
 	} else {
 		await addPayStub(currentPayStub);
 	}
+};
+
+const buildPayStub = (
+	empId,
+	companyName,
+	payPeriodStartDate,
+	payPeriodEndDate,
+	payPeriodPayDate,
+	payPeriodProcessingDate,
+	payPeriod,
+	isExtraRun,
+	newEmpData,
+	prevPayPayInfo,
+) => {
+	const {
+		regPay,
+		overTimePay,
+		dblOverTimePay,
+		statPay,
+		statWorkPay,
+		sickPay,
+		vacationPay,
+		sprayPay,
+		firstAidPay,
+
+		payInLieuPay,
+		pILBenefitPay,
+		bankedTimePay,
+		regularByAmount,
+		commission,
+		retroactive,
+		vacationPayout,
+		bonus,
+		terminationPayout,
+
+		totalRegHoursWorked,
+		totalOvertimeHoursWorked,
+		totalDblOvertimeHoursWorked,
+		totalStatDayHoursWorked,
+		totalStatHours,
+		totalSickHoursWorked,
+		totalVacationHoursWorked,
+		totalSprayHoursWorked,
+		totalFirstAidHoursWorked,
+		currentRegPayTotal,
+		currentOverTimePayTotal,
+		currentDblOverTimePayTotal,
+		currentStatWorkPayTotal,
+		currentStatPayTotal,
+		currentSickPayTotal,
+		currentVacationPayTotal,
+		currentSprayPayTotal,
+		currentFirstAidPayTotal,
+		currentGrossPay,
+		currentFDTaxDeductions,
+		currentStateTaxDeductions,
+		currentCPPDeductions,
+		currentUnionDuesDeductions,
+		currentEIDeductions,
+		currentEmployeeHealthContributions,
+		currentPrimaryDeposit,
+		currentEmployeePensionContributions,
+		currentOtherDeductions,
+		currentDeductionsTotal,
+		currentNetPay,
+		currentEmployerPensionContributions,
+		currentEmployerHealthContributions,
+		currentEmployerContributions,
+		currentVacationAccrued,
+		currentVacationUsed,
+		vacationBalance,
+		currentSickAccrued,
+		currentSickUsed,
+		sickBalance,
+	} = newEmpData;
+
+	const newPayStub = {
+		empId,
+		companyName,
+		payPeriodStartDate,
+		payPeriodEndDate,
+		payPeriodPayDate,
+		payPeriodProcessingDate,
+		payPeriodNum: payPeriod,
+		isProcessed: true,
+		isExtraRun,
+		regPay,
+		overTimePay,
+		dblOverTimePay,
+		statPay,
+		statWorkPay,
+		sickPay,
+		vacationPay,
+		sprayPay,
+		firstAidPay,
+
+		payInLieuPay,
+		pILBenefitPay,
+		bankedTimePay,
+		regularByAmount,
+		commission,
+		retroactive,
+		vacationPayout,
+		bonus,
+		terminationPayout,
+
+		totalRegHoursWorked,
+		totalOvertimeHoursWorked,
+		totalDblOvertimeHoursWorked,
+		totalStatDayHoursWorked,
+		totalStatHours,
+		totalSickHoursWorked,
+		totalVacationHoursWorked,
+		totalSprayHoursWorked,
+		totalFirstAidHoursWorked,
+
+		YTDRegHoursWorked: getSumTotal(
+			prevPayPayInfo?.YTDRegHoursWorked,
+			totalRegHoursWorked,
+		),
+		YTDOvertimeHoursWorked: getSumTotal(
+			prevPayPayInfo?.YTDOvertimeHoursWorked,
+			totalOvertimeHoursWorked,
+		),
+		YTDDblOvertimeHoursWorked: getSumTotal(
+			prevPayPayInfo?.YTDDblOvertimeHoursWorked,
+			totalDblOvertimeHoursWorked,
+		),
+		YTDStatDayHoursWorked: getSumTotal(
+			prevPayPayInfo?.YTDStatDayHoursWorked,
+			totalStatDayHoursWorked,
+		),
+		YTDStatHoursWorked: getSumTotal(
+			prevPayPayInfo?.YTDStatHoursWorked,
+			totalStatHours,
+		),
+		YTDSickHoursWorked: getSumTotal(
+			prevPayPayInfo?.YTDSickHoursWorked,
+			totalSickHoursWorked,
+		),
+		YTDVacationHoursWorked: getSumTotal(
+			prevPayPayInfo?.YTDVacationHoursWorked,
+			totalVacationHoursWorked,
+		),
+		YTDSprayHoursWorked: getSumTotal(
+			prevPayPayInfo?.YTDSprayHoursWorked,
+			totalSprayHoursWorked,
+		),
+		YTDFirstAidHoursWorked: getSumTotal(
+			prevPayPayInfo?.YTDFirstAidHoursWorked,
+			totalFirstAidHoursWorked,
+		),
+
+		currentRegPayTotal,
+		currentOverTimePayTotal,
+		currentDblOverTimePayTotal,
+		currentStatWorkPayTotal,
+		currentStatPayTotal,
+		currentSickPayTotal,
+		currentVacationPayTotal,
+		currentSprayPayTotal,
+		currentFirstAidPayTotal,
+		currentGrossPay,
+		currentFDTaxDeductions,
+		currentStateTaxDeductions,
+		currentCPPDeductions,
+		currentUnionDuesDeductions,
+		currentEIDeductions,
+		currentEmployeeHealthContributions,
+		currentPrimaryDeposit,
+		currentEmployeePensionContributions,
+		currentOtherDeductions,
+		currentDeductionsTotal,
+		currentNetPay,
+		currentEmployerPensionContributions,
+		currentEmployerHealthContributions,
+		currentEmployerContributions,
+		currentVacationAccrued,
+		currentVacationUsed,
+		vacationBalance,
+		currentSickAccrued,
+		currentSickUsed,
+		sickBalance,
+
+		YTDRegPayTotal: getSumTotal(
+			prevPayPayInfo?.YTDRegPayTotal,
+			currentRegPayTotal,
+		),
+		YTDOverTimePayTotal: getSumTotal(
+			prevPayPayInfo?.YTDOverTimePayTotal,
+			currentOverTimePayTotal,
+		),
+		YTDDblOverTimePayTotal: getSumTotal(
+			prevPayPayInfo?.YTDDblOverTimePayTotal,
+			currentDblOverTimePayTotal,
+		),
+		YTDStatWorkPayTotal: getSumTotal(
+			prevPayPayInfo?.YTDStatWorkPayTotal,
+			currentStatWorkPayTotal,
+		),
+		YTDStatPayTotal: getSumTotal(
+			prevPayPayInfo?.YTDStatPayTotal,
+			currentStatPayTotal,
+		),
+		YTDSickPayTotal: getSumTotal(
+			prevPayPayInfo?.YTDSickPayTotal,
+			currentSickPayTotal,
+		),
+		YTDVacationPayTotal: getSumTotal(
+			prevPayPayInfo?.YTDVacationPayTotal,
+			currentVacationPayTotal,
+		),
+		YTDSprayPayTotal: getSumTotal(
+			prevPayPayInfo?.YTDSprayPayTotal,
+			currentSprayPayTotal,
+		),
+		YTDFirstAidPayTotal: getSumTotal(
+			prevPayPayInfo?.YTDFirstAidPayTotal,
+			currentFirstAidPayTotal,
+		),
+		YTDPayInLieuPay: getSumTotal(prevPayPayInfo?.YTDPayInLieuPay, payInLieuPay),
+		YTDBenefitPay: getSumTotal(prevPayPayInfo?.YTDBenefitPay, pILBenefitPay),
+		YTDBankedTimePay: getSumTotal(
+			prevPayPayInfo?.YTDBankedTimePay,
+			bankedTimePay,
+		),
+		YTDRegularByAmount: getSumTotal(
+			prevPayPayInfo?.YTDRegularByAmount,
+			regularByAmount,
+		),
+		YTDCommission: getSumTotal(prevPayPayInfo?.YTDCommission, commission),
+		YTDRetroactive: getSumTotal(prevPayPayInfo?.YTDRetroactive, retroactive),
+		YTDVacationPayout: getSumTotal(
+			prevPayPayInfo?.YTDVacationPayout,
+			vacationPayout,
+		),
+		YTDBonus: getSumTotal(prevPayPayInfo?.YTDBonus, bonus),
+		YTDTerminationPayout: getSumTotal(
+			prevPayPayInfo?.YTDTerminationPayout,
+			terminationPayout,
+		),
+		YTD_FDTaxDeductions: getSumTotal(
+			prevPayPayInfo?.YTD_FDTaxDeductions,
+			currentFDTaxDeductions,
+		),
+		YTDStateTaxDeductions: getSumTotal(
+			prevPayPayInfo?.YTDStateTaxDeductions,
+			currentStateTaxDeductions,
+		),
+		YTD_EIDeductions: getSumTotal(
+			prevPayPayInfo?.YTD_EIDeductions,
+			currentEIDeductions,
+		),
+		YTD_CPPDeductions: getSumTotal(
+			prevPayPayInfo?.YTD_CPPDeductions,
+			currentCPPDeductions,
+		),
+		YTDUnionDuesDeductions: getSumTotal(
+			prevPayPayInfo?.YTDUnionDuesDeductions,
+			currentUnionDuesDeductions,
+		),
+		YTDEmployeeHealthContributions: getSumTotal(
+			prevPayPayInfo?.YTDEmployeeHealthContributions,
+			currentEmployeeHealthContributions,
+		),
+		YTDPrimaryDeposit: getSumTotal(
+			prevPayPayInfo?.YTDPrimaryDeposit,
+			currentPrimaryDeposit,
+		),
+		YTDEmployeePensionContributions: getSumTotal(
+			prevPayPayInfo?.YTDEmployeePensionContributions,
+			currentEmployeePensionContributions,
+		),
+		YTDOtherDeductions: getSumTotal(
+			prevPayPayInfo?.YTDOtherDeductions,
+			currentOtherDeductions,
+		),
+
+		YTDGrossPay: getSumTotal(prevPayPayInfo?.YTDGrossPay, currentGrossPay),
+
+		YTDDeductionsTotal: getSumTotal(
+			prevPayPayInfo?.YTDDeductionsTotal,
+			currentDeductionsTotal,
+		),
+
+		YTDNetPay: getSumTotal(prevPayPayInfo?.YTDNetPay, currentNetPay),
+
+		YTDEmployerPensionContributions: getSumTotal(
+			prevPayPayInfo?.YTDEmployerPensionContributions,
+			currentEmployerPensionContributions,
+		),
+		YTDEmployerHealthContributions: getSumTotal(
+			prevPayPayInfo?.YTDEmployerHealthContributions,
+			currentEmployerHealthContributions,
+		),
+		YTDEmployerContributions: getSumTotal(
+			prevPayPayInfo?.YTDEmployerContributions,
+			currentEmployerContributions,
+		),
+		YTDVacationAccrued: getSumTotal(
+			prevPayPayInfo?.YTDVacationAccrued,
+			currentVacationAccrued,
+		),
+		YTDVacationUsed: getSumTotal(
+			prevPayPayInfo?.YTDVacationUsed,
+			currentVacationUsed,
+		),
+		YTDVacationBalance: getSumTotal(
+			prevPayPayInfo?.YTDVacationBalance,
+			vacationBalance,
+		),
+		YTDSickAccrued: getSumTotal(
+			prevPayPayInfo?.YTDSickAccrued,
+			currentSickAccrued,
+		),
+		YTDSickUsed: getSumTotal(prevPayPayInfo?.YTDSickUsed, currentSickUsed),
+		YTDSickBalance: getSumTotal(prevPayPayInfo?.YTDSickBalance, sickBalance),
+	};
+	return newPayStub;
 };
 
 const findAlertInfo = async (record) =>

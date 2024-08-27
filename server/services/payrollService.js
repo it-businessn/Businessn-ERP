@@ -14,6 +14,7 @@ const TAX_CONFIG = {
 	MAX_CANADA_EMP_CREDIT: 1368,
 	MIN_FEDERAL_TAX_RATE: 0.15,
 	MIN_PROVINCIAL_TAX_RATE: 0.0506,
+	UNION_DUES_RATE: 0.2,
 };
 
 const applyFederalTaxRate = (annualIncome) => {
@@ -58,7 +59,8 @@ const applyBCTaxRate = (annualIncome) => {
 	return BCtaxReductionAmount;
 };
 
-const getCalcAmount = (hrs, rate) => (hrs / 60).toFixed(2) * rate;
+// const getCalcAmount = (hrs, rate) => (hrs / 60).toFixed(2) * rate;
+const getCalcAmount = (hrs, rate) => hrs * rate;
 
 const getHrs = (num) => `${(num / 60).toFixed(0)}.${num % 60}`;
 
@@ -68,7 +70,7 @@ const getSumTotal = (data1, data2) => (data1 ?? 0) + data2;
 
 const getTaxDetails = (grossSalary) => {
 	const annualSalaryByPayPeriod = grossSalary * TAX_CONFIG.ANNUAL_PAY_PERIODS;
-
+	const currentUnionDuesDeductions = grossSalary * TAX_CONFIG.UNION_DUES_RATE;
 	const grossSalaryByPayPeriod = grossSalary;
 
 	const CPPContribution =
@@ -148,6 +150,7 @@ const getTaxDetails = (grossSalary) => {
 	const federalTaxDeductionByPayPeriod =
 		totalProvincialTaxDeduction / TAX_CONFIG.ANNUAL_PAY_PERIODS;
 	return {
+		currentUnionDuesDeductions,
 		grossSalaryByPayPeriod,
 		totalProvincialTaxDeduction,
 		federalTaxDeductionByPayPeriod,
