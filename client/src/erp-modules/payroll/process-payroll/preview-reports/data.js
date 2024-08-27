@@ -11,38 +11,15 @@ export const EARNINGS_COLS = [
 	"YTD Totals",
 ];
 
-export const HiddenCol = () => (
-	<TextTitle title="" visibility={"hidden"} size="xs" />
-);
-
-export const HeaderTable = ({
-	title1,
-	title2,
-	title3,
-	addHiddenCols,
-	addVacCols,
-}) => (
+export const HeaderTable = ({ title1, title2, title3 }) => (
 	<HStack
 		justifyContent={"space-between"}
 		w={"100%"}
-		mt={(addHiddenCols || addVacCols) && 3}
+		bg={"var(--lead_cards_bg)"}
 	>
 		<TextTitle whiteSpace="wrap" title={title1} size={"xs"} />
-		{addHiddenCols && <HiddenCol />}
-		<TextTitle
-			align={addVacCols && "right"}
-			title={title2}
-			size="xs"
-			whiteSpace="wrap"
-		/>
-		{addHiddenCols && <HiddenCol />}
-		<TextTitle
-			align={addVacCols && "right"}
-			// p={addHiddenCols && "0 1.2em"}
-			title={title3}
-			size="xs"
-			whiteSpace="wrap"
-		/>
+		<TextTitle title={title2} size="xs" whiteSpace="wrap" align={"center"} />
+		<TextTitle align={"center"} title={title3} size="xs" whiteSpace="wrap" />
 	</HStack>
 );
 

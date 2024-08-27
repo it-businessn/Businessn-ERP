@@ -15,6 +15,7 @@ import { useState } from "react";
 import { CgNotes } from "react-icons/cg";
 import { FaChevronDown, FaChevronUp } from "react-icons/fa";
 import { GoTasklist } from "react-icons/go";
+import { ToWords } from "to-words";
 
 export const userCurrency = (currency) =>
 	new Intl.NumberFormat("en-US", {
@@ -75,6 +76,9 @@ export const longTimeFormat = (date) =>
 	moment(date).format("MMM DD, YYYY hh:mm A");
 
 export const longFormat = (date) => moment(date).format("dddd, D MMMM YYYY");
+
+export const monthDayYearFormat = (date) =>
+	moment(date).format("MMMM, DD, YYYY");
 
 export const monthDayYear = moment().format("MMM DD, YYYY");
 
@@ -593,3 +597,24 @@ export const getPayrollStatus = (data, prevRecordEndDate) => {
 
 export const isExtraPay = (payPeriodNum, isExtra) =>
 	isExtra ? `${payPeriodNum}E` : payPeriodNum;
+
+export const toWords = new ToWords({
+	localeCode: "en-US",
+	converterOptions: {
+		currency: true, // Enable currency conversion
+		ignoreZeroCurrency: false, // Do not ignore zero currency
+		ignoreDecimal: false, // Do not ignore decimal part
+		ignorePlural: false, // Do not ignore plural currency
+		ordinal: false, // Do not convert to ordinal words
+		currencyOptions: {
+			name: "Dollar", // Name of the currency
+			plural: "Dollars", // Plural form of the currency
+			symbol: "$", // Symbol of the currency
+			fractionalUnit: {
+				name: "Cent", // Name of the fractional unit
+				plural: "Cents", // Plural form of the fractional unit
+				symbol: "", // Symbol of the fractional unit (empty for cents)
+			},
+		},
+	},
+});

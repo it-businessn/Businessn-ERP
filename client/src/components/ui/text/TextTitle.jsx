@@ -16,8 +16,10 @@ const TextTitle = ({
 	visibility,
 	border,
 	borderLeftWidth,
+	bg,
 }) => (
 	<Text
+		bg={bg}
 		flex={flex}
 		p={p}
 		fontWeight={weight}

@@ -12,55 +12,67 @@ const ItemRow = ({
 	w = "3em",
 	isEarning,
 	YTDHoursTotal,
+	isInfo,
 }) => {
 	const isTotals = SUM_TOTALS.find((_) => title.includes(_));
 
 	return (
 		<Tr bg={isTotals && "var(--main_color)"}>
-			<Td w={"15em"}>
+			<Td w={"15em"} p={0}>
 				<NormalTextTitle
-					whiteSpace="wrap"
-					weight={isTotals && 600}
+					whiteSpace={!isEarning && "wrap"}
+					weight={isTotals && 700}
 					title={title}
 					size={"xs"}
 				/>
 			</Td>
-			<Td w={"3em"}>
+			{!isInfo && (
+				<Td p={0}>
+					<NormalTextTitle
+						size={"xs"}
+						align="center"
+						visibility={rate === 0 && "hidden"}
+						title={`$${rate}`}
+					/>
+				</Td>
+			)}
+			{!isInfo && (
+				<Td p={0}>
+					<NormalTextTitle
+						size={"xs"}
+						align="center"
+						visibility={!isEarning && totalHours === 0 && "hidden"}
+						title={totalHours}
+					/>
+				</Td>
+			)}
+			<Td w={"5em"} p={0}>
 				<NormalTextTitle
-					align="center"
-					visibility={rate === 0 && "hidden"}
-					title={`$${rate}`}
-				/>
-			</Td>
-			<Td w={w}>
-				<NormalTextTitle
-					align="center"
-					visibility={!isEarning && totalHours === 0 && "hidden"}
-					title={totalHours}
-				/>
-			</Td>
-			<Td w={"10em"}>
-				<NormalTextTitle
-					align="center"
-					weight={isTotals && 600}
+					weight={isTotals && 700}
 					title={getAmount(currentTotal)}
+					size={"xs"}
+					align={"center"}
 				/>
 			</Td>
 
-			<Td w={"10em"}>
+			{!isInfo && (
+				<Td p={0}>
+					<NormalTextTitle
+						size={"xs"}
+						align="center"
+						visibility={
+							(isTotals || (!isEarning && totalHours === 0)) && "hidden"
+						}
+						title={YTDHoursTotal}
+					/>
+				</Td>
+			)}
+			<Td w={"5em"} p={0}>
 				<NormalTextTitle
-					align="center"
-					visibility={
-						(isTotals || (!isEarning && totalHours === 0)) && "hidden"
-					}
-					title={YTDHoursTotal}
-				/>
-			</Td>
-			<Td w={"10em"}>
-				<NormalTextTitle
-					align="center"
-					weight={isTotals && 600}
+					weight={isTotals && 700}
 					title={getAmount(YTDTotal)}
+					size={"xs"}
+					align={"center"}
 				/>
 			</Td>
 		</Tr>

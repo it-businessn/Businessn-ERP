@@ -7,6 +7,7 @@ import {
 	Th,
 	Thead,
 	Tr,
+	useDisclosure,
 } from "@chakra-ui/react";
 import OutlineButton from "components/ui/button/OutlineButton";
 import PrimaryButton from "components/ui/button/PrimaryButton";
@@ -14,13 +15,14 @@ import EmptyRowRecord from "components/ui/EmptyRowRecord";
 import TextTitle from "components/ui/text/TextTitle";
 import useCompany from "hooks/useCompany";
 import useEmployeePayReport from "hooks/useEmployeePayReport";
+import { useState } from "react";
 import { MdCheckCircle, MdSettingsSuggest } from "react-icons/md";
 import { useNavigate, useParams } from "react-router-dom";
-import { ROUTE_PATH } from "routes";
 import LocalStorageService from "services/LocalStorageService";
 import PayrollService from "services/PayrollService";
 import { getAmount } from "utils";
 import { getClosestRecord } from "../workview/data";
+import EmpPayStatement from "./EmpPayStatement";
 
 const InputsReview = ({
 	handleClick,
@@ -56,6 +58,13 @@ const InputsReview = ({
 		"Gross Pay",
 	];
 
+	const { isOpen, onOpen, onClose } = useDisclosure();
+	const [record, setRecord] = useState(null);
+	const openDrawer = (payslip) => {
+		setRecord(payslip);
+		onOpen();
+	};
+
 	const handleConfirmInputsReview = async () => {
 		try {
 			if (inputsReviewData && !selectedPayPeriod.isProcessed) {
@@ -71,8 +80,10 @@ const InputsReview = ({
 	};
 	const navigate = useNavigate();
 
-	const handleReview = () =>
-		navigate(`${ROUTE_PATH.PAYROLL}${ROUTE_PATH.WORKVIEW}`);
+	const handleReview = (empPayStub) => {
+		openDrawer(empPayStub);
+		// navigate(`${ROUTE_PATH.PAYROLL}${ROUTE_PATH.WORKVIEW}`);
+	};
 
 	return (
 		<HStack alignItems={"end"}>
@@ -114,7 +125,7 @@ const InputsReview = ({
 								<OutlineButton
 									label={"Review payroll details"}
 									size={"sm"}
-									onClick={handleReview}
+									onClick={() => handleReview(data)}
 								/>
 							</Td>
 						</Tr>
@@ -130,6 +141,9 @@ const InputsReview = ({
 				onOpen={handleConfirmInputsReview}
 				isDisabled={isPayPeriodInactive}
 			/>
+			{isOpen && (
+				<EmpPayStatement record={record} isOpen={isOpen} onClose={onClose} />
+			)}
 		</HStack>
 	);
 };

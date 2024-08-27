@@ -21,6 +21,11 @@ const TableLayout = ({
 	textAlign,
 	tableSize,
 	whiteSpace,
+	colBg,
+	width1,
+	width2,
+	width3,
+	isEarning,
 }) => {
 	return (
 		<Box overflow="auto" height={height} w={w}>
@@ -43,15 +48,26 @@ const TableLayout = ({
 						)}
 						{cols?.map((col, index) => (
 							<Th
+								bg={colBg}
 								textAlign={index < 2 ? "left" : textAlign}
 								p={isSmall ? 1 : "auto"}
 								pl={isTimesheet && index === 0 && "1em !important"}
 								key={`${col}_${index}`}
 							>
 								<TextTitle
+									width={
+										isEarning
+											? width1
+											: !isEarning && index === 0
+											? width1
+											: !isEarning && index === 1
+											? width2
+											: width3
+									}
 									whiteSpace={whiteSpace}
 									size={textSize}
 									title={col}
+									align={isEarning && "center"}
 								/>
 							</Th>
 						))}
