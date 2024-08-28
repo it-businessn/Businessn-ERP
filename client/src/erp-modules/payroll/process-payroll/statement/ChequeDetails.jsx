@@ -42,7 +42,7 @@ const ChequeDetails = ({ data }) => {
 			mt={3}
 		>
 			<PayStubHeader />
-			<Box w={"100%"} pt={3}>
+			<Box w={"100%"}>
 				<PaymentDateTitle payDate={payDate} />
 				<InfoText title1="Account holder:" title2={name} />
 				<InfoText
@@ -54,7 +54,7 @@ const ChequeDetails = ({ data }) => {
 				<InfoText title1="Payment method:" title2={"DIRECT DEPOSIT"} />
 			</Box>
 			<TextTitle
-				mt={10}
+				mt={4}
 				align={"center"}
 				color={"var(--filter_border_color)"}
 				title={"THIS IS NOT A CHEQUE. DO NOT DEPOSIT."}

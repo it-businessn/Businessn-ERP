@@ -18,9 +18,9 @@ const ItemRow = ({
 
 	return (
 		<Tr bg={isTotals && "var(--main_color)"}>
-			<Td w={"15em"} p={0}>
+			<Td w={"10em"} p={0}>
 				<NormalTextTitle
-					whiteSpace={!isEarning && "wrap"}
+					whiteSpace={"wrap"}
 					weight={isTotals && 700}
 					title={title}
 					size={"xs"}

@@ -3,7 +3,7 @@ import TableLayout from "components/ui/table/TableLayout";
 import ItemRow from "../preview-reports/ItemRow";
 
 const InformationSection = ({ type, items, data }) => (
-	<Stack w={"100%"} mt={3}>
+	<Stack w={"100%"} mt={2}>
 		<TableLayout
 			textSize="xs"
 			bg="var(--main_color)"

@@ -5,6 +5,7 @@ import payStubLogo from "../../../../assets/logos/BusinessN_light.jpg";
 const PayStubHeader = () => (
 	<HStack justifyContent={"start"} w={"100%"}>
 		<Image
+			mt={1}
 			height={"80px"}
 			w={"250px"}
 			objectFit="cover"

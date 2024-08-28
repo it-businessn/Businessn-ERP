@@ -7,7 +7,7 @@ import ChequeDetails from "./ChequeDetails";
 import PayStubHeader from "./PayStubHeader";
 
 const PayStubStatement = ({ data }) => (
-	<Box w={"100%"}>
+	<Box w={"100%"} overflow={"hidden"}>
 		<PayStubHeader />
 		<Box position="relative" padding={0}>
 			<Box

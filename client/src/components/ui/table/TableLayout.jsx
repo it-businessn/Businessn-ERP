@@ -56,9 +56,9 @@ const TableLayout = ({
 							>
 								<TextTitle
 									width={
-										isEarning && index === 1
+										isEarning && index === 0
 											? width1
-											: isEarning && index !== 1
+											: isEarning && index > 2
 											? width2
 											: !isEarning && index === 0
 											? width1

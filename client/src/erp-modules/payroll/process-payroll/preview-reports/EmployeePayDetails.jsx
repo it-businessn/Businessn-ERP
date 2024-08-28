@@ -1,4 +1,4 @@
-import { Stack } from "@chakra-ui/react";
+import { Box, Stack } from "@chakra-ui/react";
 import BoxCard from "components/ui/card";
 import TextTitle from "components/ui/text/TextTitle";
 import EarningsTable from "../statement/EarningsTable";
@@ -24,11 +24,13 @@ const EmployeePayDetails = ({ data }) => (
 				isEarning
 				colBg="var(--main_color)"
 			/>
+			<Box mt={2} />
 			<EarningsTable
 				cols={DEDUCTIONS_COLS}
 				rows={DEDUCTION_TYPES}
 				data={data}
 			/>
+			<Box mt={2} />
 			<EarningsTable cols={NET_SUMMARY_COLS} rows={NET_SUMMARY} data={data} />
 		</BoxCard>
 	</Stack>
