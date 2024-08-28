@@ -14,8 +14,9 @@ const PaymentDateTitle = ({ payDate }) => (
 
 const InfoText = ({ title1, title2, title3, hasBg }) => (
 	<HStack w={"100%"}>
-		<NormalTextTitle width="30%" whiteSpace="wrap" title={title1} size={"xs"} />
+		<NormalTextTitle width={"200px"} title={title1} size={"xs"} />
 		<TextTitle
+			width={"100%"}
 			bg={hasBg && "var(--calendar_border)"}
 			p={hasBg && 1}
 			border={hasBg && "1px solid var(--main_color_black)"}
@@ -24,7 +25,7 @@ const InfoText = ({ title1, title2, title3, hasBg }) => (
 			size={"xs"}
 			align={"left"}
 		/>
-		<TextTitle align={"left"} whiteSpace="wrap" title={title3} size={"xs"} />
+		<TextTitle align={"left"} width={"300px"} title={title3} size={"xs"} />
 	</HStack>
 );
 
@@ -35,12 +36,7 @@ const ChequeDetails = ({ data }) => {
 	const amountInWords = toWords.convert(data.currentNetPay);
 
 	return (
-		<Stack
-			w={"100%"}
-			spacing={1}
-			borderTop={"1px dashed var(--calendar_border)"}
-			mt={3}
-		>
+		<Stack w={"100%"} spacing={0} h={"12em"}>
 			<PayStubHeader />
 			<Box w={"100%"}>
 				<PaymentDateTitle payDate={payDate} />
@@ -54,7 +50,7 @@ const ChequeDetails = ({ data }) => {
 				<InfoText title1="Payment method:" title2={"DIRECT DEPOSIT"} />
 			</Box>
 			<TextTitle
-				mt={4}
+				mt={3}
 				align={"center"}
 				color={"var(--filter_border_color)"}
 				title={"THIS IS NOT A CHEQUE. DO NOT DEPOSIT."}

@@ -11,9 +11,9 @@ const EarningsTable = ({ cols, rows, data, colBg }) => {
 			cols={cols}
 			textSize="xs"
 			bg={"var(--main_color)"}
-			width1="10em"
+			width1="9em"
 			width2="80px"
-			width3="40px"
+			width3="35px"
 			isEarning
 			whiteSpace="wrap"
 		>

@@ -9,7 +9,7 @@ import PayStubHeader from "./PayStubHeader";
 const PayStubStatement = ({ data }) => (
 	<Box w={"100%"} overflow={"hidden"}>
 		<PayStubHeader />
-		<Box position="relative" padding={0}>
+		<Box position="relative" padding={0} h={"calc(90vh - 12em)"}>
 			<Box
 				w={"100%"}
 				h={"100%"}
@@ -23,7 +23,7 @@ const PayStubStatement = ({ data }) => (
 				backgroundBlendMode="overlay"
 				filter={"opacity(0.2)"}
 			/>
-			<HStack alignItems={"start"} spacing={5} p={6}>
+			<HStack alignItems={"start"} spacing={5} py={6} px={3}>
 				<EmployeeInfo data={data} />
 				<EmployeePayDetails data={data} />
 			</HStack>
