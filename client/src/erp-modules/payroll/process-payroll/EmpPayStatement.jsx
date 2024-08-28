@@ -3,13 +3,15 @@ import {
 	DrawerBody,
 	DrawerCloseButton,
 	DrawerContent,
-	DrawerFooter,
+	DrawerHeader,
 	DrawerOverlay,
+	Flex,
+	IconButton,
 } from "@chakra-ui/react";
-import PrimaryButton from "components/ui/button/PrimaryButton";
 import { useRef, useState } from "react";
+import { FaPrint } from "react-icons/fa";
 import { useReactToPrint } from "react-to-print";
-import PayStubStatement from "./preview-reports/PayStubStatement";
+import PayStubStatement from "./statement/PayStubStatement";
 
 const EmpPayStatement = ({ record, isOpen, onClose }) => {
 	const componentRef = useRef();
@@ -27,22 +29,23 @@ const EmpPayStatement = ({ record, isOpen, onClose }) => {
 		<Drawer isOpen={isOpen} onClose={onClose} size="xl">
 			<DrawerOverlay />
 			<DrawerContent>
-				<DrawerCloseButton />
-				<DrawerBody
-					h={"100vh"}
-					ref={componentRef}
-					bg={"var(--main_color)"}
-					overflowX={"hidden"}
-				>
+				<DrawerHeader p={0}>
+					<DrawerCloseButton />
+					<Flex w={"95%"} justify={"end"} alignItems={"center"}>
+						<IconButton
+							size={"lg"}
+							icon={<FaPrint />}
+							aria-label="Print"
+							variant="round"
+							onClick={handleClick}
+							isDisabled={!isPrintDisabled}
+						/>
+					</Flex>
+				</DrawerHeader>
+
+				<DrawerBody ref={componentRef} bg={"var(--main_color)"} minH={"100vh"}>
 					{record && <PayStubStatement data={record} />}
 				</DrawerBody>
-				<DrawerFooter>
-					<PrimaryButton
-						name={"Print"}
-						onOpen={handleClick}
-						isDisabled={!isPrintDisabled}
-					/>
-				</DrawerFooter>
 			</DrawerContent>
 		</Drawer>
 	);

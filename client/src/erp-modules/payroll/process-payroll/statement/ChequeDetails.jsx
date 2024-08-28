@@ -1,4 +1,4 @@
-import { Box, HStack, VStack } from "@chakra-ui/react";
+import { Box, HStack, Stack } from "@chakra-ui/react";
 import NormalTextTitle from "components/ui/NormalTextTitle";
 import TextTitle from "components/ui/text/TextTitle";
 import { getAmount, monthDayYearFormat, toWords } from "utils";
@@ -35,9 +35,14 @@ const ChequeDetails = ({ data }) => {
 	const amountInWords = toWords.convert(data.currentNetPay);
 
 	return (
-		<VStack spacing={5} w={"100%"}>
+		<Stack
+			w={"100%"}
+			spacing={1}
+			borderTop={"1px dashed var(--calendar_border)"}
+			mt={3}
+		>
 			<PayStubHeader />
-			<Box w={"100%"}>
+			<Box w={"100%"} pt={3}>
 				<PaymentDateTitle payDate={payDate} />
 				<InfoText title1="Account holder:" title2={name} />
 				<InfoText
@@ -49,11 +54,12 @@ const ChequeDetails = ({ data }) => {
 				<InfoText title1="Payment method:" title2={"DIRECT DEPOSIT"} />
 			</Box>
 			<TextTitle
+				mt={10}
 				align={"center"}
 				color={"var(--filter_border_color)"}
-				title={" THIS IS NOT A CHEQUE. DO NOT DEPOSIT."}
+				title={"THIS IS NOT A CHEQUE. DO NOT DEPOSIT."}
 			/>
-		</VStack>
+		</Stack>
 	);
 };
 

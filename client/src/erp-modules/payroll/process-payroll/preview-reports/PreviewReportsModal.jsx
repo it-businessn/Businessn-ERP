@@ -3,7 +3,7 @@ import Loader from "components/Loader";
 import ModalLayout from "components/ui/modal/ModalLayout";
 import NormalTextTitle from "components/ui/NormalTextTitle";
 import TextTitle from "components/ui/text/TextTitle";
-import PayStubStatement from "./PayStubStatement";
+import PayStubStatement from "../statement/PayStubStatement";
 
 const PreviewReportsModal = ({
 	isOpen,
@@ -15,7 +15,7 @@ const PreviewReportsModal = ({
 	return (
 		<ModalLayout
 			title={<TextTitle title={"Payroll Register"} />}
-			size="3xl"
+			size="7xl"
 			isOpen={isOpen}
 			onClose={onClose}
 			textAlign={"center"}
@@ -31,7 +31,13 @@ const PreviewReportsModal = ({
 				/>
 			)}
 			{reportData?.map((data) => (
-				<Box key={data._id}>
+				<Box
+					key={data._id}
+					borderBottom={"1px solid var(--calendar_border)"}
+					w={"60%"}
+					mx={"auto"}
+					pb={5}
+				>
 					<PayStubStatement data={data} />
 				</Box>
 			))}

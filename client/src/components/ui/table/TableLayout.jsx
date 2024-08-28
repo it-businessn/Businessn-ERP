@@ -56,8 +56,10 @@ const TableLayout = ({
 							>
 								<TextTitle
 									width={
-										isEarning
+										isEarning && index === 1
 											? width1
+											: isEarning && index !== 1
+											? width2
 											: !isEarning && index === 0
 											? width1
 											: !isEarning && index === 1
@@ -67,7 +69,7 @@ const TableLayout = ({
 									whiteSpace={whiteSpace}
 									size={textSize}
 									title={col}
-									align={isEarning && "center"}
+									align={index !== 0 && isEarning && "center"}
 								/>
 							</Th>
 						))}

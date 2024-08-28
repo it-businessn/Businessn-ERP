@@ -11,11 +11,29 @@ export const EARNINGS_COLS = [
 	"YTD Totals",
 ];
 
+export const DEDUCTIONS_COLS = [
+	"Deductions",
+	"",
+	"",
+	"Current Total",
+	"",
+	"YTD Totals",
+];
+
+export const NET_SUMMARY_COLS = [
+	"Net Pay",
+	"",
+	"",
+	"Current Total",
+	"",
+	"YTD Totals",
+];
+
 export const HeaderTable = ({ title1, title2, title3 }) => (
 	<HStack
 		justifyContent={"space-between"}
 		w={"100%"}
-		bg={"var(--lead_cards_bg)"}
+		bg={"var(--primary_bg_1)"}
 	>
 		<TextTitle whiteSpace="wrap" title={title1} size={"xs"} />
 		<TextTitle title={title2} size="xs" whiteSpace="wrap" align={"center"} />

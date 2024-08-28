@@ -1,6 +1,6 @@
 import { Stack, Tbody } from "@chakra-ui/react";
 import TableLayout from "components/ui/table/TableLayout";
-import ItemRow from "./ItemRow";
+import ItemRow from "../preview-reports/ItemRow";
 
 const InformationSection = ({ type, items, data }) => (
 	<Stack w={"100%"} mt={3}>

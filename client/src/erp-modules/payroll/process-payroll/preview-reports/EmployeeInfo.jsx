@@ -3,9 +3,9 @@ import BoxCard from "components/ui/card";
 import TextTitle from "components/ui/text/TextTitle";
 import React from "react";
 import { formatDateBar, getAmount, isExtraPay } from "utils";
-import BasicInfo from "./BasicInfo";
+import BasicInfo from "../statement/BasicInfo";
+import InformationSection from "../statement/InformationSection";
 import { ACCRUAL_TYPES } from "./data";
-import InformationSection from "./InformationSection";
 
 const EmployeeInfo = ({ data }) => (
 	<Stack position="relative" flex={0.1} spacing={0}>
