@@ -1,4 +1,4 @@
-import { Box, HStack } from "@chakra-ui/react";
+import { Box, HStack, Stack } from "@chakra-ui/react";
 
 import payStubImg from "../../../../assets/coverImgPaystub.png";
 import EmployeeInfo from "../preview-reports/EmployeeInfo";
@@ -9,7 +9,13 @@ import PayStubHeader from "./PayStubHeader";
 const PayStubStatement = ({ data }) => (
 	<Box w={"100%"} overflow={"hidden"}>
 		<PayStubHeader />
-		<Box position="relative" padding={0} h={"calc(90vh - 12em)"}>
+		<Stack
+			position="relative"
+			padding={0}
+			h={"calc(90vh - 13em)"}
+			alignItems={"center"}
+			spacing={2}
+		>
 			<Box
 				w={"100%"}
 				h={"100%"}
@@ -23,11 +29,11 @@ const PayStubStatement = ({ data }) => (
 				backgroundBlendMode="overlay"
 				filter={"opacity(0.2)"}
 			/>
-			<HStack alignItems={"start"} spacing={5} py={6} px={3}>
+			<HStack alignItems={"start"} spacing={5} py={4} px={5}>
 				<EmployeeInfo data={data} />
 				<EmployeePayDetails data={data} />
 			</HStack>
-		</Box>
+		</Stack>
 		<ChequeDetails data={data} />
 	</Box>
 );

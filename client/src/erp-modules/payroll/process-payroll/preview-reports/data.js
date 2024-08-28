@@ -21,7 +21,7 @@ export const DEDUCTIONS_COLS = [
 ];
 
 export const NET_SUMMARY_COLS = [
-	"Net Pay",
+	"Net Pay Summary",
 	"",
 	"",
 	"Current Total",

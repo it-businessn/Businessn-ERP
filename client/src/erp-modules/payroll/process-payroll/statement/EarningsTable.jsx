@@ -3,7 +3,7 @@ import TableLayout from "components/ui/table/TableLayout";
 import React from "react";
 import ItemRow from "../preview-reports/ItemRow";
 
-const EarningsTable = ({ cols, rows, data, colBg }) => {
+const EarningsTable = ({ cols, rows, data, colBg, isNetSummary }) => {
 	return (
 		<TableLayout
 			colBg={colBg}
@@ -33,6 +33,7 @@ const EarningsTable = ({ cols, rows, data, colBg }) => {
 								data[YTDTotal] > 0 ||
 								name.includes("Gross ")) && (
 								<ItemRow
+									isNetSummary={isNetSummary}
 									title={name}
 									isEarning={isEarning}
 									rate={data[rate] ?? 0}

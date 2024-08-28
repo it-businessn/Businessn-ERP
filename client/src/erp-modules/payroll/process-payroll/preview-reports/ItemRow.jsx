@@ -13,8 +13,11 @@ const ItemRow = ({
 	isEarning,
 	YTDHoursTotal,
 	isInfo,
+	isNetSummary,
 }) => {
-	const isTotals = SUM_TOTALS.find((_) => title.includes(_));
+	const isTotals =
+		(!isNetSummary && SUM_TOTALS.find((_) => title.includes(_))) ||
+		(isNetSummary && SUM_TOTALS.find((_) => title.includes("Net Pay")));
 
 	return (
 		<Tr bg={isTotals && "var(--main_color)"}>
@@ -56,7 +59,7 @@ const ItemRow = ({
 			</Td>
 
 			{!isInfo && (
-				<Td p={0}>
+				<Td p={0} pl={"1em"}>
 					<NormalTextTitle
 						size={"xs"}
 						align="center"

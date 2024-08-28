@@ -36,7 +36,7 @@ const ChequeDetails = ({ data }) => {
 	const amountInWords = toWords.convert(data.currentNetPay);
 
 	return (
-		<Stack w={"100%"} spacing={0} h={"12em"}>
+		<Stack w={"100%"} spacing={3} h={"13em"}>
 			<PayStubHeader />
 			<Box w={"100%"}>
 				<PaymentDateTitle payDate={payDate} />
@@ -50,7 +50,6 @@ const ChequeDetails = ({ data }) => {
 				<InfoText title1="Payment method:" title2={"DIRECT DEPOSIT"} />
 			</Box>
 			<TextTitle
-				mt={3}
 				align={"center"}
 				color={"var(--filter_border_color)"}
 				title={"THIS IS NOT A CHEQUE. DO NOT DEPOSIT."}

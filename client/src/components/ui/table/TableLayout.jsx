@@ -51,7 +51,11 @@ const TableLayout = ({
 								bg={colBg}
 								textAlign={index < 2 ? "left" : textAlign}
 								p={isSmall ? 1 : "auto"}
-								pl={isTimesheet && index === 0 && "1em !important"}
+								pl={
+									isTimesheet && index === 0
+										? "1em !important"
+										: isEarning && index === 4 && "0.5em !important"
+								}
 								key={`${col}_${index}`}
 							>
 								<TextTitle
@@ -69,7 +73,13 @@ const TableLayout = ({
 									whiteSpace={whiteSpace}
 									size={textSize}
 									title={col}
-									align={index !== 0 && isEarning && "center"}
+									align={
+										isEarning && index === 4
+											? "right"
+											: index === 0
+											? "left"
+											: "center"
+									}
 								/>
 							</Th>
 						))}

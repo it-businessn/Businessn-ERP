@@ -34,7 +34,6 @@ const PreviewReportsModal = ({
 				<Box
 					key={data._id}
 					borderBottom={"1px solid var(--calendar_border)"}
-					w={"60%"}
 					mx={"auto"}
 					pb={5}
 				>

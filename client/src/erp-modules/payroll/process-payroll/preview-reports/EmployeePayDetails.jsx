@@ -33,7 +33,12 @@ const EmployeePayDetails = ({ data }) => (
 				data={data}
 			/>
 			<Box mt={2} />
-			<EarningsTable cols={NET_SUMMARY_COLS} rows={NET_SUMMARY} data={data} />
+			<EarningsTable
+				isNetSummary
+				cols={NET_SUMMARY_COLS}
+				rows={NET_SUMMARY}
+				data={data}
+			/>
 		</BoxCard>
 	</Stack>
 );
