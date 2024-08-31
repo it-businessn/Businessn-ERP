@@ -1,17 +1,17 @@
 import { HStack, Image, VStack } from "@chakra-ui/react";
 import TextTitle from "components/ui/text/TextTitle";
-import payStubLogo from "../../../../assets/logos/BusinessN_light.jpg";
+import payStubLogo from "../../../../assets/logos/BusinessN_lightLogo.jpg";
 
 const PayStubHeader = () => (
 	<HStack justifyContent={"start"} w={"100%"}>
 		<Image
-			height={"70px"}
-			w={"250px"}
+			height={"50px"}
+			w={"220px"}
 			objectFit="cover"
 			src={payStubLogo}
 			alt="Company logo"
 		/>
-		<VStack spacing={0}>
+		<VStack spacing={0} ml={-8}>
 			<TextTitle
 				color={"var(--main_color_black)"}
 				size={"xs"}

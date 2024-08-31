@@ -12,7 +12,7 @@ const PayStubStatement = ({ data }) => (
 		<Stack
 			position="relative"
 			padding={0}
-			h={"calc(90vh - 13em)"}
+			h={"calc(92vh - 13em)"}
 			alignItems={"center"}
 			spacing={2}
 		>

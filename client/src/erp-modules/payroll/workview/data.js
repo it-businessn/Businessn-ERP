@@ -13,6 +13,7 @@ export const PAYGROUP_ACTIONS = [
 	{ key: "extra", name: "Extra Pay Run" },
 	{ key: "terminate", name: "Terminate" },
 	{ key: "empUpdate", name: "Update Employees" },
+	{ key: "onboard", name: "Onboard Employee" },
 ];
 
 export const getClosestRecord = (
