@@ -185,7 +185,7 @@ const Timesheet = ({ cols, data, company, setRefresh }) => {
 						const isDisabled = startTime === "00:00" || endTime === "00:00";
 
 						return (
-							<Tr key={_id} _hover={{ bg: "var(--primary_bg)" }}>
+							<Tr key={_id} _hover={{ bg: "var(--phoneCall_bg_light)" }}>
 								<Td py={0}>
 									<TextTitle title={employeeId?.fullName} />
 								</Td>

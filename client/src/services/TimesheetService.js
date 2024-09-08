@@ -5,6 +5,11 @@ const TimesheetService = {
 		return apiService.get(`/timesheet/${company}`);
 	},
 
+	async getFilteredTimesheets(company, filter) {
+		return apiService.get(
+			`/timesheet/filtered/${company}/startDate=${filter?.startDate}/endDate=${filter?.endDate}`,
+		);
+	},
 	async getTimesheetById(company, id) {
 		return apiService.get(`/timesheet/${company}/${id}`);
 	},

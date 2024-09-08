@@ -17,7 +17,7 @@ const RadioTypeRecord = ({ param, formData, setFormData, handleConfirm }) => {
 				}}
 			>
 				<Flex gap={5} align={"center"}>
-					{["Yes", "No"].map((option, index) => (
+					{param?.options?.map((option, index) => (
 						<Radio
 							key={index}
 							value={option}

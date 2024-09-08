@@ -13,12 +13,11 @@ const PageLayout = ({
 	showBgLayer,
 	selectAttr,
 	selectPlaceholder,
-	showDate,
 	valueText1,
+	isTimesheet,
 }) => (
 	<Box p={{ base: "1em" }} overflow={"hidden"}>
 		<PageHeader
-			showDate={showDate}
 			valueText1={valueText1}
 			showSelectBox={showSelectBox}
 			title={title}
@@ -28,6 +27,7 @@ const PageLayout = ({
 			width={width}
 			selectAttr={selectAttr}
 			selectPlaceholder={selectPlaceholder}
+			isTimesheet={isTimesheet}
 		/>
 		{showBgLayer ? <BoxCard borderWidth={"2px"}>{children}</BoxCard> : children}
 	</Box>

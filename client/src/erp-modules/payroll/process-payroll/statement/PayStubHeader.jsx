@@ -3,15 +3,15 @@ import TextTitle from "components/ui/text/TextTitle";
 import payStubLogo from "../../../../assets/logos/BusinessN_lightLogo.jpg";
 
 const PayStubHeader = () => (
-	<HStack justifyContent={"start"} w={"100%"}>
+	<HStack justifyContent={"space-between"}>
 		<Image
-			height={"50px"}
-			w={"220px"}
 			objectFit="cover"
+			height={"50px"}
+			w={"280px"}
 			src={payStubLogo}
 			alt="Company logo"
 		/>
-		<VStack spacing={0} ml={-8}>
+		<VStack spacing={0} align={"end"}>
 			<TextTitle
 				color={"var(--main_color_black)"}
 				size={"xs"}
@@ -23,6 +23,13 @@ const PayStubHeader = () => (
 				title={"3601 NICO WYND DRIVE SURREY BC V4P 1J1"}
 			/>
 		</VStack>
+		<TextTitle
+			width="50%"
+			align={"center"}
+			color={"var(--nav_color)"}
+			size={"lg"}
+			title={"EARNINGS STATEMENT"}
+		/>
 	</HStack>
 );
 

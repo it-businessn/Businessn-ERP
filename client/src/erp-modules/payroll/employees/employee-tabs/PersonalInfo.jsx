@@ -45,21 +45,6 @@ const PersonalInfo = ({ company, empId }) => {
 
 	const steps = [
 		{
-			title: "Identification and Status",
-			content: (
-				<Record
-					handleConfirm={handleConfirm}
-					formData={formData}
-					setFormData={setFormData}
-					title="Identification and Status"
-					config={EMP_IDENTIFICATION_STATUS_CONFIG}
-					isLoading={isLoading}
-					isDisabled={isDisabled}
-					handleSubmit={handleSubmit}
-				/>
-			),
-		},
-		{
 			title: "Personal Information",
 			content: (
 				<Record
@@ -68,6 +53,21 @@ const PersonalInfo = ({ company, empId }) => {
 					setFormData={setFormData}
 					title="Personal Information"
 					config={EMP_PERSONAL_INFO_CONFIG}
+					isLoading={isLoading}
+					isDisabled={isDisabled}
+					handleSubmit={handleSubmit}
+				/>
+			),
+		},
+		{
+			title: "Identification and Status",
+			content: (
+				<Record
+					handleConfirm={handleConfirm}
+					formData={formData}
+					setFormData={setFormData}
+					title="Identification and Status"
+					config={EMP_IDENTIFICATION_STATUS_CONFIG}
 					isLoading={isLoading}
 					isDisabled={isDisabled}
 					handleSubmit={handleSubmit}

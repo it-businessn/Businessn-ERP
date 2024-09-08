@@ -16,6 +16,7 @@
 		"@testing-library/user-event": "^13.5.0",
 		"axios": "^1.4.0",
 		"country-state-city": "^3.1.4",
+		"date-fns": "^3.6.0",
 		"env-cmd": "^10.1.0",
 		"formik": "^2.2.9",
 		"framer-motion": "^10.12.12",

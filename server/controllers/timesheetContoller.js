@@ -20,6 +20,55 @@ const findByRecordTimesheets = async (record) => {
 	return result;
 };
 
+const getTimesheetResult = async (companyName) => {
+	const payInfoResult = await EmployeePayInfo.find({
+		companyName,
+	}).select(
+		"empId regPay overTimePay dblOverTimePay statWorkPay statPay sickPay vacationPay",
+	);
+
+	const payInfoMap = new Map(
+		payInfoResult.map((payInfo) => [
+			payInfo.empId.toString(),
+			{
+				regPay: payInfo.regPay,
+				overTimePay: payInfo.overTimePay,
+				dblOverTimePay: payInfo.dblOverTimePay,
+				statWorkPay: payInfo.statWorkPay,
+				statPay: payInfo.statPay,
+				sickPay: payInfo.sickPay,
+				vacationPay: payInfo.vacationPay,
+			},
+		]),
+	);
+	return payInfoMap;
+};
+
+const mapTimesheet = (payInfos, timesheets) => {
+	timesheets.forEach((timesheet) => {
+		const { clockIns, clockOuts } = timesheet;
+		const empIdStr = timesheet.employeeId._id.toString();
+		if (!payInfos.has(empIdStr)) {
+			return;
+		}
+		const payInfo = payInfos.get(empIdStr);
+		timesheet.regPay = payInfo.regPay;
+		timesheet.overTimePay = payInfo.overTimePay;
+		timesheet.dblOverTimePay = payInfo.dblOverTimePay;
+		timesheet.statWorkPay = payInfo.statWorkPay;
+		timesheet.statPay = payInfo.statPay;
+		timesheet.sickPay = payInfo.sickPay;
+		timesheet.vacationPay = payInfo.vacationPay;
+		if (clockIns.length) {
+			timesheet.startTime = clockIns[0];
+		}
+		if (clockOuts.length) {
+			timesheet.endTime = clockOuts[clockOuts.length - 1];
+		}
+	});
+	return timesheets;
+};
+
 const getTimesheets = async (req, res) => {
 	const { companyName } = req.params;
 	try {
@@ -27,51 +76,24 @@ const getTimesheets = async (req, res) => {
 			companyName,
 			createdOn: { $lte: currentDate },
 		});
+		const payInfo = await getTimesheetResult(companyName);
+		const result = mapTimesheet(payInfo, timesheets);
+		res.status(200).json(result);
+	} catch (error) {
+		res.status(404).json({ error: error.message });
+	}
+};
 
-		const payInfoResult = await EmployeePayInfo.find({
+const getFilteredTimesheets = async (req, res) => {
+	const { companyName, startDate, endDate } = req.params;
+	try {
+		const timesheets = await findByRecordTimesheets({
 			companyName,
-		}).select(
-			"empId regPay overTimePay dblOverTimePay statWorkPay statPay sickPay vacationPay",
-		);
-
-		const payInfoMap = new Map(
-			payInfoResult.map((payInfo) => [
-				payInfo.empId.toString(),
-				{
-					regPay: payInfo.regPay,
-					overTimePay: payInfo.overTimePay,
-					dblOverTimePay: payInfo.dblOverTimePay,
-					statWorkPay: payInfo.statWorkPay,
-					statPay: payInfo.statPay,
-					sickPay: payInfo.sickPay,
-					vacationPay: payInfo.vacationPay,
-				},
-			]),
-		);
-
-		timesheets.forEach((timesheet) => {
-			const { clockIns, clockOuts } = timesheet;
-			const empIdStr = timesheet.employeeId._id.toString();
-			if (!payInfoMap.has(empIdStr)) {
-				return;
-			}
-			const payInfo = payInfoMap.get(empIdStr);
-			timesheet.regPay = payInfo.regPay;
-			timesheet.overTimePay = payInfo.overTimePay;
-			timesheet.dblOverTimePay = payInfo.dblOverTimePay;
-			timesheet.statWorkPay = payInfo.statWorkPay;
-			timesheet.statPay = payInfo.statPay;
-			timesheet.sickPay = payInfo.sickPay;
-			timesheet.vacationPay = payInfo.vacationPay;
-			if (clockIns.length) {
-				timesheet.startTime = clockIns[0];
-			}
-			if (clockOuts.length) {
-				timesheet.endTime = clockOuts[clockOuts.length - 1];
-			}
+			createdOn: { $lte: endDate, $gte: startDate },
 		});
-
-		res.status(200).json(timesheets);
+		const payInfo = await getTimesheetResult(companyName);
+		const result = mapTimesheet(payInfo, timesheets);
+		return res.status(200).json(result);
 	} catch (error) {
 		res.status(404).json({ error: error.message });
 	}
@@ -285,4 +307,5 @@ module.exports = {
 	getTimesheet,
 	updateTimesheet,
 	addStatHolidayDefaultTimesheet,
+	getFilteredTimesheets,
 };

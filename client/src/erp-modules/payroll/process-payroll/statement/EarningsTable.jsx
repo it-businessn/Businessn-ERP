@@ -13,7 +13,7 @@ const EarningsTable = ({ cols, rows, data, colBg, isNetSummary }) => {
 			bg={"var(--main_color)"}
 			width1="9em"
 			width2="80px"
-			width3="35px"
+			width3="46px"
 			isEarning
 			whiteSpace="wrap"
 		>

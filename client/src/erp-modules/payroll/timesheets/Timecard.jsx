@@ -53,18 +53,8 @@ const Timecard = ({ cols, data }) => (
 							<Td py={0}>
 								<TextTitle title={employeeId?.fullName} />
 							</Td>
-							<Td p={0.5}>
-								<PrimaryButton
-									color={approveStatusBtnCss.color}
-									bg={approveStatusBtnCss.bg}
-									name={approveStatus}
-									size="xs"
-									px={0}
-									hover={{
-										bg: approveStatusBtnCss.bg,
-										color: approveStatusBtnCss.color,
-									}}
-								/>
+							<Td>
+								<TextTitle title={employeeId?.timeManagementBadgeID} />
 							</Td>
 							<Td py={0}>{clockIns.length > 0 ? clockIns[0] : ""}</Td>
 							<Td py={0}>{clockOuts.length > 0 ? clockOuts[0] : ""}</Td>

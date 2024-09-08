@@ -20,8 +20,9 @@ const ModalLayout = ({
 	hideOverlay,
 	textAlign,
 	fontSize,
+	isCentered = true,
 }) => (
-	<Modal isCentered size={size} isOpen={isOpen} onClose={onClose}>
+	<Modal isCentered={isCentered} size={size} isOpen={isOpen} onClose={onClose}>
 		{!hideOverlay && <ModalOverlay />}
 		<ModalContent>
 			{!hideOverlay && (

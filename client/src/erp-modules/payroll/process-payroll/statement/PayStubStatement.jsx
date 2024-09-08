@@ -12,7 +12,7 @@ const PayStubStatement = ({ data }) => (
 		<Stack
 			position="relative"
 			padding={0}
-			h={"calc(92vh - 13em)"}
+			h={"calc(92vh - 17em)"}
 			alignItems={"center"}
 			spacing={2}
 		>
@@ -29,7 +29,7 @@ const PayStubStatement = ({ data }) => (
 				backgroundBlendMode="overlay"
 				filter={"opacity(0.2)"}
 			/>
-			<HStack alignItems={"start"} spacing={5} py={4} px={5}>
+			<HStack alignItems={"start"} spacing={5} p={5}>
 				<EmployeeInfo data={data} />
 				<EmployeePayDetails data={data} />
 			</HStack>

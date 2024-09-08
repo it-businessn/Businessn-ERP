@@ -1,13 +1,15 @@
 import { useEffect, useState } from "react";
 import TimesheetService from "services/TimesheetService";
 
-const useTimesheet = (company, userId, refresh) => {
+const useTimesheet = (company, userId, refresh, filter) => {
 	const [timesheets, setTimesheets] = useState(null);
 
 	const fetchAllEmployeeTimesheet = async () => {
 		try {
 			const response = userId
 				? await TimesheetService.getTimesheetById(company, userId)
+				: filter
+				? await TimesheetService.getFilteredTimesheets(company, filter)
 				: await TimesheetService.getTimesheets(company);
 			setTimesheets(response.data);
 		} catch (error) {
@@ -17,7 +19,7 @@ const useTimesheet = (company, userId, refresh) => {
 
 	useEffect(() => {
 		fetchAllEmployeeTimesheet();
-	}, [company, refresh]);
+	}, [company, refresh, filter]);
 
 	return timesheets;
 };

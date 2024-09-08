@@ -7,6 +7,7 @@ const employeeProfileInfoSchema = new mongoose.Schema({
 	employeeNo: String,
 	timeManagementBadgeID: String,
 	firstName: String,
+	middleName: String,
 	lastName: String,
 	emergencyFirstName: String,
 	emergencyLastName: String,

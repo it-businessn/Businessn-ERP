@@ -23,6 +23,7 @@ const ItemRow = ({
 		<Tr bg={isTotals && "var(--main_color)"}>
 			<Td w={"9em"} p={0}>
 				<NormalTextTitle
+					color="var(--main_color_black)"
 					whiteSpace={"wrap"}
 					weight={isTotals && 700}
 					title={title}
@@ -33,7 +34,8 @@ const ItemRow = ({
 				<Td p={0}>
 					<NormalTextTitle
 						size={"xs"}
-						align="center"
+						color="var(--main_color_black)"
+						align={"right"}
 						visibility={rate === 0 && "hidden"}
 						title={`$${rate}`}
 					/>
@@ -43,7 +45,8 @@ const ItemRow = ({
 				<Td p={0}>
 					<NormalTextTitle
 						size={"xs"}
-						align="center"
+						color="var(--main_color_black)"
+						align={"right"}
 						visibility={!isEarning && totalHours === 0 && "hidden"}
 						title={totalHours}
 					/>
@@ -51,18 +54,20 @@ const ItemRow = ({
 			)}
 			<Td w={"5em"} p={0}>
 				<NormalTextTitle
+					color="var(--main_color_black)"
 					weight={isTotals && 700}
 					title={getAmount(currentTotal)}
 					size={"xs"}
-					align={"center"}
+					align={"right"}
 				/>
 			</Td>
 
 			{!isInfo && (
 				<Td p={0} pl={"1em"}>
 					<NormalTextTitle
+						color="var(--main_color_black)"
 						size={"xs"}
-						align="center"
+						align={"right"}
 						visibility={
 							(isTotals || (!isEarning && totalHours === 0)) && "hidden"
 						}
@@ -72,10 +77,11 @@ const ItemRow = ({
 			)}
 			<Td w={"5em"} p={0}>
 				<NormalTextTitle
+					color="var(--main_color_black)"
 					weight={isTotals && 700}
 					title={getAmount(YTDTotal)}
 					size={"xs"}
-					align={"center"}
+					align={"right"}
 				/>
 			</Td>
 		</Tr>

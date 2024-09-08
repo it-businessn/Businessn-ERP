@@ -1,23 +1,36 @@
 export const EMP_PAY_INFO_EARNINGS_CONFIG = [
 	{
-		type: "Hourly",
+		type: "",
 		params: [
+			{
+				name: "Select earning type",
+				param_key: "typeOfEarning",
+				control: "radio",
+				options: ["Hourly", "Salary"],
+			},
 			{ name: "Regular Pay", param_key: "regPay" },
-			{ name: "Overtime Pay", param_key: "overTimePay" },
-			{ name: "Double Overtime Pay", param_key: "dblOverTimePay" },
-			{ name: "Statutory Worked Pay", param_key: "statWorkPay" },
-			{ name: "Statutory Pay", param_key: "statPay" },
-			{ name: "Sick Pay", param_key: "sickPay" },
-			{ name: "Vacation Pay", param_key: "vacationPay" },
-		],
-	},
-	{
-		type: "Salary",
-		params: [
 			{ name: "Salary Rate", param_key: "salaryRate" },
-			{ name: "Hours per Pay", param_key: "dailyHours" },
 		],
 	},
+	// {
+	// 	type: "Hourly",
+	// 	params: [
+	// 		{ name: "Regular Pay", param_key: "regPay" },
+	// 		// { name: "Overtime Pay", param_key: "overTimePay" },
+	// 		// { name: "Double Overtime Pay", param_key: "dblOverTimePay" },
+	// 		// { name: "Statutory Worked Pay", param_key: "statWorkPay" },
+	// 		// { name: "Statutory Pay", param_key: "statPay" },
+	// 		// { name: "Sick Pay", param_key: "sickPay" },
+	// 		// { name: "Vacation Pay", param_key: "vacationPay" },
+	// 	],
+	// },
+	// {
+	// 	type: "Salary",
+	// 	params: [
+	// 		{ name: "Salary Rate", param_key: "salaryRate" },
+	// 		// { name: "Hours per Pay", param_key: "dailyHours" },
+	// 	],
+	// },
 ];
 
 export const EMP_PAY_INFO_DEDUCTION_CONFIG = [

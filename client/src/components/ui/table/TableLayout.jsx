@@ -26,16 +26,12 @@ const TableLayout = ({
 	width2,
 	width3,
 	isEarning,
+	isInfo,
 }) => {
 	return (
 		<Box overflow="auto" height={height} w={w}>
 			<Table variant={variant} bg={bg} size={tableSize}>
-				<Thead
-					// position={position} top={top} zIndex={zIndex}
-					position="sticky"
-					top={-1}
-					zIndex="docked"
-				>
+				<Thead position={position} top={top} zIndex={zIndex}>
 					<Tr display={inVisible && "none"}>
 						{hasMulti && (
 							<Th>
@@ -51,11 +47,7 @@ const TableLayout = ({
 								bg={colBg}
 								textAlign={index < 2 ? "left" : textAlign}
 								p={isSmall ? 1 : "auto"}
-								pl={
-									isTimesheet && index === 0
-										? "1em !important"
-										: isEarning && index === 4 && "0.5em !important"
-								}
+								pl={isTimesheet && index === 0 && "1em !important"}
 								key={`${col}_${index}`}
 							>
 								<TextTitle
@@ -74,11 +66,13 @@ const TableLayout = ({
 									size={textSize}
 									title={col}
 									align={
-										isEarning && index === 4
-											? "right"
-											: index === 0
-											? "left"
-											: "center"
+										isEarning || isInfo
+											? index === 4
+												? "right"
+												: index === 0
+												? "left"
+												: "right"
+											: "left"
 									}
 								/>
 							</Th>

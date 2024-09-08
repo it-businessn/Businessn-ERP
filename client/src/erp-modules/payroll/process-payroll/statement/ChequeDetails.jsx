@@ -36,7 +36,7 @@ const ChequeDetails = ({ data }) => {
 	const amountInWords = toWords.convert(data.currentNetPay);
 
 	return (
-		<Stack w={"100%"} mt={3} h={"13em"} justifyContent={"space-between"}>
+		<Stack w={"100%"} mt={3} h={"17em"} justifyContent={"space-between"}>
 			<PayStubHeader />
 			<Box w={"100%"}>
 				<PaymentDateTitle payDate={payDate} />

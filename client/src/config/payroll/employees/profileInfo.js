@@ -57,12 +57,23 @@ export const EMP_PERSONAL_INFO_CONFIG = [
 	{
 		type: "sfsgdsgdsgdsg27",
 		params: [
-			{ name: "Last Name", param_key: "lastName" },
+			{ name: "Middle Name", param_key: "middleName" },
 			{ name: "sfsgdsgdsgdsg1", param_key: "sfsgdsgdsgdsg5" },
 			{ name: "sfsgdsgdsgdsg2", param_key: "sfsgdsgdsgdsg6" },
 			{ name: "sfsgdsgdsgdsg3", param_key: "sfsgdsgdsgdsg7" },
 			{ name: "sfsgdsgdsgdsg4", param_key: "sfsgdsgdsgdsg8" },
 			{ name: "Work Permit Expiry", param_key: "workPermitExpiryNo" },
+		],
+	},
+	{
+		type: "sfsgdsgdsgdsg27",
+		params: [
+			{ name: "Last Name", param_key: "lastName" },
+			{ name: "sfsgdsgdsgdsg1", param_key: "sfsgdsgdsgdsg5" },
+			{ name: "sfsgdsgdsgdsg2", param_key: "sfsgdsgdsgdsg6" },
+			{ name: "sfsgdsgdsgdsg3", param_key: "sfsgdsgdsgdsg7" },
+			{ name: "sfsgdsgdsgdsg4", param_key: "sfsgdsgdsgdsg8" },
+			{ name: "sfsgdsgdsgdsg4", param_key: "sfsgdsgdsgdsg8" },
 		],
 	},
 ];
@@ -113,6 +124,7 @@ export const getInitialProfileInfo = (empId, companyName) => {
 		employeeNo: "",
 		timeManagementBadgeID: "",
 		firstName: "",
+		middleName: "",
 		lastName: "",
 		emergencyFirstName: "",
 		emergencyLastName: "",

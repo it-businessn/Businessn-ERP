@@ -6,8 +6,8 @@ export const EARNINGS_COLS = [
 	"",
 	"Rate",
 	"Hours",
-	"Current Total",
-	"YTD Hours",
+	"Curr. Total",
+	"YTD Hrs.",
 	"YTD Totals",
 ];
 
@@ -15,7 +15,7 @@ export const DEDUCTIONS_COLS = [
 	"Deductions",
 	"",
 	"",
-	"Current Total",
+	"Curr. Total",
 	"",
 	"YTD Totals",
 ];
@@ -24,7 +24,7 @@ export const NET_SUMMARY_COLS = [
 	"Net Pay Summary",
 	"",
 	"",
-	"Current Total",
+	"Curr. Total",
 	"",
 	"YTD Totals",
 ];
@@ -36,7 +36,13 @@ export const HeaderTable = ({ title1, title2, title3 }) => (
 		bg={"var(--primary_bg_1)"}
 	>
 		<TextTitle whiteSpace="wrap" title={title1} size={"xs"} />
-		<TextTitle title={title2} size="xs" whiteSpace="wrap" align={"center"} />
+		<TextTitle
+			title={title2}
+			size="xs"
+			whiteSpace="wrap"
+			align={"center"}
+			p={0}
+		/>
 		<TextTitle align={"center"} title={title3} size="xs" whiteSpace="wrap" />
 	</HStack>
 );
@@ -356,6 +362,13 @@ const SICK_TYPES = [
 
 const VACATION_BENEFIT = [
 	{
+		name: "Balance Fwd",
+		rate: 0,
+		totalHours: 0,
+		currentTotal: "currentVacationAccrued",
+		YTDTotal: "YTDVacationAccrued",
+	},
+	{
 		name: "Vacation Accrual",
 		rate: 0,
 		totalHours: 0,
@@ -370,7 +383,7 @@ const VACATION_BENEFIT = [
 		YTDTotal: "YTDVacationUsed",
 	},
 	{
-		name: "Available Vacation Balance",
+		name: "Available Balance",
 		rate: 0,
 		totalHours: 0,
 		currentTotal: "vacationBalance",
@@ -383,10 +396,10 @@ export const ACCRUAL_TYPES = [
 		type: "Vacation",
 		items: VACATION_BENEFIT,
 	},
-	{
-		type: "Sick",
-		items: SICK_TYPES,
-	},
+	// {
+	// 	type: "Sick",
+	// 	items: SICK_TYPES,
+	// },
 	{
 		type: "Employer Paid Benefits",
 		items: EMPLOYER_BENEFIT_TYPES,

@@ -6,7 +6,8 @@ export const EMP_BANKING_CONFIG = [
 				name: "Deposit paycheque via direct deposit",
 				param_key: "directDeposit",
 				control: "radio",
-			}, //Yes and No
+				options: ["Yes", "No"],
+			},
 			{ name: "Bank", param_key: "bankNum" },
 		],
 	},

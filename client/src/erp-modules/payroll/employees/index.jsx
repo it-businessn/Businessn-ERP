@@ -66,14 +66,14 @@ const Employees = () => {
 	const SETUP_LIST = [
 		{
 			id: 0,
-			type: "Pay",
-			name: <PayInfo company={company} empId={userId} />,
-		},
-		{
-			id: 1,
 			type: "Info",
 
 			name: <PersonalInfo company={company} empId={userId} />,
+		},
+		{
+			id: 1,
+			type: "Pay",
+			name: <PayInfo company={company} empId={userId} />,
 		},
 		{
 			id: 2,
