@@ -1,6 +1,6 @@
 import { Box, HStack, List, ListItem } from "@chakra-ui/react";
 import { endOfDay, startOfDay, subDays } from "date-fns";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { MdOutlineChevronRight } from "react-icons/md";
 import DateRange from "./ui/datepicker/DateRange";
 import ActionButtonGroup from "./ui/form/ActionButtonGroup";
@@ -11,44 +11,50 @@ const FilterDatePicker = ({
 	handleClose,
 	thisPayPeriod,
 	lastPayPeriod,
+	selectedFilter,
+	setSelectedFilter,
+	startDate,
+	setStartDate,
+	endDate,
+	setEndDate,
 }) => {
-	const [startDate, setStartDate] = useState(null);
-	const [endDate, setEndDate] = useState(null);
-
-	const [selected, setSelected] = useState("Today");
-
 	const handleFilter = () => {
 		setFilter({ startDate, endDate });
 		handleClose();
 	};
+	const handleDate = (start, end) => {
+		setStartDate(start);
+		setEndDate(end);
+	};
 	const setToday = () => {
 		const today = new Date();
-		setStartDate(startOfDay(today));
-		setEndDate(endOfDay(today));
+		handleDate(startOfDay(today), endOfDay(today));
 	};
 
 	const setYesterday = () => {
 		const yesterday = subDays(new Date(), 1);
-		setStartDate(startOfDay(yesterday));
-		setEndDate(endOfDay(yesterday));
+		handleDate(startOfDay(yesterday), endOfDay(yesterday));
 	};
 	const setLast7Days = () => {
 		const today = new Date();
-		setStartDate(subDays(today, 7));
-		setEndDate(endOfDay(today));
+		handleDate(subDays(today, 7), endOfDay(today));
 	};
 	const setLast30Days = () => {
 		const today = new Date();
-		setStartDate(subDays(today, 30));
-		setEndDate(endOfDay(today));
+		handleDate(subDays(today, 30), endOfDay(today));
 	};
 	const setThisPayPeriod = () => {
-		setStartDate(startOfDay(thisPayPeriod?.payPeriodStartDate));
-		setEndDate(endOfDay(thisPayPeriod?.payPeriodEndDate));
+		handleDate(
+			startOfDay(thisPayPeriod?.payPeriodStartDate),
+			endOfDay(thisPayPeriod?.payPeriodEndDate),
+		);
 	};
+
 	const setLastPayPeriod = () => {
-		setStartDate(startOfDay(lastPayPeriod?.payPeriodStartDate));
-		setEndDate(endOfDay(lastPayPeriod?.payPeriodEndDate));
+		handleDate(
+			startOfDay(lastPayPeriod?.payPeriodStartDate),
+			endOfDay(lastPayPeriod?.payPeriodEndDate),
+		);
 	};
 
 	const FILTER_GROUP = [
@@ -61,8 +67,8 @@ const FilterDatePicker = ({
 	];
 
 	useEffect(() => {
-		FILTER_GROUP.find(({ name }) => name === selected).call();
-	}, [selected]);
+		FILTER_GROUP.find(({ name }) => name === selectedFilter)?.call();
+	}, [selectedFilter]);
 
 	return (
 		<Box h={"300px"} overflowY={"auto"}>
@@ -72,10 +78,14 @@ const FilterDatePicker = ({
 						<ListItem
 							size={"sm"}
 							key={name}
-							onClick={() => setSelected(name)}
+							onClick={() => setSelectedFilter(name)}
 							cursor="pointer"
-							bg={selected === name ? "var(--primary_button_bg)" : "gray.100"}
-							color={selected === name ? "var(--primary_bg)" : "black"}
+							bg={
+								selectedFilter === name
+									? "var(--primary_button_bg)"
+									: "gray.100"
+							}
+							color={selectedFilter === name ? "var(--primary_bg)" : "black"}
 							p={1}
 							borderRadius="md"
 							_hover={{ bg: "blue.100" }}
@@ -88,14 +98,20 @@ const FilterDatePicker = ({
 					<DateRange
 						selected={startDate}
 						startDate={startDate}
-						onChange={(date) => setStartDate(date)}
+						onChange={(date) => {
+							setStartDate(date);
+							setSelectedFilter("Custom");
+						}}
 						selectsStart
 					/>
 					<MdOutlineChevronRight />
 					<DateRange
 						selected={endDate}
 						endDate={endDate}
-						onChange={(date) => setEndDate(date)}
+						onChange={(date) => {
+							setEndDate(date);
+							setSelectedFilter("Custom");
+						}}
 						selectsEnd
 						minDate={startDate}
 					/>

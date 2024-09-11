@@ -13,6 +13,7 @@ const DateRange = ({ selected, startDate, onChange, minDate, endDate }) => (
 		minDate={minDate}
 		customInput={<Input />}
 		open={true}
+		dateFormat="yyyy-MM-dd"
 	/>
 );
 

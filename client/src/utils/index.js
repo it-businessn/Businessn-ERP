@@ -177,6 +177,13 @@ export const getDefaultDate = (isoDate = null) => {
 	return dateObject.toISOString().split("T")[0];
 };
 
+export const getDefaultDateFormat = (date = null) => {
+	const dateObject = date ? new Date(date) : new Date();
+	return `${
+		dateObject.getMonth() + 1
+	}/${dateObject.getDate()}/${dateObject.getFullYear()}`;
+};
+
 export const getAmount = (data) => `$${Math.abs(data.toFixed(2))}`;
 
 export const isValidPhoneNumber = (phoneNumber) => {

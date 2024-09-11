@@ -7,6 +7,8 @@ const OutlineButton = ({
 	colorScheme,
 	ml,
 	name,
+	color = "var(--primary_button_bg)",
+	borderColor,
 }) => (
 	<Button
 		variant={"outline"}
@@ -14,10 +16,11 @@ const OutlineButton = ({
 		size={size}
 		px={"1em"}
 		type="submit"
-		color={!colorScheme && "var(--primary_button_bg)"}
+		color={!colorScheme && color}
 		colorScheme={colorScheme}
 		ml={ml}
 		name={name}
+		borderColor={borderColor}
 	>
 		{label}
 	</Button>

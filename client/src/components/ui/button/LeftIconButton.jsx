@@ -16,9 +16,11 @@ const LeftIconButton = ({
 	type,
 	bg,
 	_hover,
+	px,
 }) => {
 	return (
 		<Button
+			px={px}
 			type={type}
 			w={w}
 			size={size}
