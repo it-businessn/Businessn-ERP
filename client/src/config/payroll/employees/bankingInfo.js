@@ -8,21 +8,21 @@ export const EMP_BANKING_CONFIG = [
 				control: "radio",
 				options: ["Yes", "No"],
 			},
-			{ name: "Bank", param_key: "bankNum" },
+			{ name: "Bank", param_key: "bankNum", mandatory: true },
 		],
 	},
 	{
 		type: "sfsgdsgdsgdsg3",
 		params: [
 			{ name: "sfsgdsgdsgdsg", param_key: "sfsgdsgdsgdsg3", control: "radio" },
-			{ name: "Transit Number", param_key: "transitNum" },
+			{ name: "Transit Number", param_key: "transitNum", mandatory: true },
 		],
 	},
 	{
 		type: "sfsgdsgdsgdsg4",
 		params: [
 			{ name: "sfsgdsgdsgdsg", param_key: "sfsgdsgdsgdsg4", control: "radio" },
-			{ name: "Account Number", param_key: "accountNum" },
+			{ name: "Account Number", param_key: "accountNum", mandatory: true },
 		],
 	},
 ];
@@ -36,7 +36,7 @@ export const EMP_PAYMENT_NOTIFICATION_CONFIG = [
 				param_key: "payStubSendByEmail",
 				control: "radio",
 			}, //Yes and No
-			{ name: "Email", param_key: "paymentEmail" },
+			{ name: "Email", param_key: "paymentEmail", mandatory: true },
 		],
 	},
 ];

@@ -13,8 +13,22 @@ import PayrollService from "services/PayrollService";
 import StepContent from "../step-content";
 import Record from "../step-content/Record";
 
-const PayInfo = ({ company, empId }) => {
-	const payInfo = useEmployeePayInfo(company, false, empId);
+const PayInfo = ({
+	company,
+	empId,
+	isOnboarding,
+	id,
+	handleNext,
+	handlePrev,
+}) => {
+	const payInfo = useEmployeePayInfo(
+		company,
+		false,
+		empId,
+		null,
+		null,
+		isOnboarding,
+	);
 
 	const setPayInfo = () => getInitialPayInfo(empId, company);
 
@@ -108,9 +122,17 @@ const PayInfo = ({ company, empId }) => {
 					currentStep={currentStep}
 					handleClick={goToNextStep}
 					hideLine
+					isOnboarding={isOnboarding}
+					id={id}
+					handleNext={handleNext}
+					handlePrev={handlePrev}
 				/>
 			</BoxCard>
-			<StepContent currentStep={currentStep} steps={steps} />
+			<StepContent
+				currentStep={currentStep}
+				steps={steps}
+				isOnboarding={isOnboarding}
+			/>
 		</SimpleGrid>
 	);
 };

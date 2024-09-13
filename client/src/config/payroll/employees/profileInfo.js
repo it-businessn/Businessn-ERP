@@ -23,10 +23,11 @@ export const EMP_CONTACT_CONFIG = [
 	{
 		type: "sfsgdsgdsgdsg28",
 		params: [
-			{ name: "Personal Email", param_key: "personalEmail" },
+			{ name: "Personal Email", param_key: "personalEmail", mandatory: true },
 			{ name: "Personal Phone", param_key: "personalPhoneNum" },
-			{ name: "Address", param_key: "address" },
+			{ name: "Address", param_key: "address", mandatory: true },
 			{ name: "Street Address", param_key: "streetAddress" },
+			{ name: "Suite", param_key: "streetAddressSuite" },
 			{ name: "City", param_key: "city" },
 			{ name: "Province/State", param_key: "province" },
 			{ name: "Country", param_key: "country" },
@@ -46,12 +47,28 @@ export const EMP_PERSONAL_INFO_CONFIG = [
 	{
 		type: "sfsgdsgdsgdsg26",
 		params: [
-			{ name: "First Name", param_key: "firstName" },
-			{ name: "Birthday", param_key: "birthDate", control: "date" },
-			{ name: "Social Insurance Number", param_key: "SIN" },
-			{ name: "Marital Status", param_key: "maritalStatus" },
-			{ name: "Citizenship", param_key: "citizenship" },
+			{ name: "First Name", param_key: "firstName", mandatory: true },
+			{
+				name: "Birthday",
+				param_key: "birthDate",
+				control: "date",
+				mandatory: true,
+			},
+			{ name: "Social Insurance Number", param_key: "SIN", submandatory: true },
+
 			{ name: "Work Permit Number", param_key: "workPermitNo" },
+			{
+				name: "Citizenship",
+				param_key: "citizenship",
+				control: "radio",
+				options: ["Yes", "No"],
+			},
+			{
+				name: "Marital Status",
+				param_key: "maritalStatus",
+				control: "radio",
+				options: ["Single", "Married"],
+			},
 		],
 	},
 	{
@@ -60,8 +77,6 @@ export const EMP_PERSONAL_INFO_CONFIG = [
 			{ name: "Middle Name", param_key: "middleName" },
 			{ name: "sfsgdsgdsgdsg1", param_key: "sfsgdsgdsgdsg5" },
 			{ name: "sfsgdsgdsgdsg2", param_key: "sfsgdsgdsgdsg6" },
-			{ name: "sfsgdsgdsgdsg3", param_key: "sfsgdsgdsgdsg7" },
-			{ name: "sfsgdsgdsgdsg4", param_key: "sfsgdsgdsgdsg8" },
 			{ name: "Work Permit Expiry", param_key: "workPermitExpiryNo" },
 		],
 	},
@@ -73,7 +88,6 @@ export const EMP_PERSONAL_INFO_CONFIG = [
 			{ name: "sfsgdsgdsgdsg2", param_key: "sfsgdsgdsgdsg6" },
 			{ name: "sfsgdsgdsgdsg3", param_key: "sfsgdsgdsgdsg7" },
 			{ name: "sfsgdsgdsgdsg5", param_key: "sfsgdsgdsgdsg8" },
-			{ name: "sfsgdsgdsgdsg6", param_key: "sfsgdsgdsgdsg8" },
 		],
 	},
 ];
@@ -103,7 +117,9 @@ export const EMP_IDENTIFICATION_STATUS_CONFIG = [
 	},
 	{
 		type: "sfsgdsgdsgdsg24",
-		params: [{ name: "Employee Number", param_key: "employeeNo" }],
+		params: [
+			{ name: "Employee Number", param_key: "employeeNo", mandatory: true },
+		],
 	},
 	{
 		type: "sfsgdsgdsgdsg25",

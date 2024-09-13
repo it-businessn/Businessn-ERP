@@ -24,7 +24,7 @@ import GovernmentInfo from "./employee-tabs/GovernmentContribution";
 import PayInfo from "./employee-tabs/PayInfo";
 import PersonalInfo from "./employee-tabs/PersonalInfo";
 
-const Employees = ({ isOnboarding }) => {
+const Employees = ({ isOnboarding, selectedPayGroupName }) => {
 	const { id, stepNo } = useParams();
 	const { company } = useCompany(
 		LocalStorageService.getItem("selectedCompany"),
@@ -40,6 +40,7 @@ const Employees = ({ isOnboarding }) => {
 	const { employees, filteredEmployees, setFilteredEmployees } = useEmployees(
 		isRefresh,
 		company,
+		isOnboarding,
 	);
 
 	useEffect(() => {
@@ -57,12 +58,22 @@ const Employees = ({ isOnboarding }) => {
 		);
 	};
 
+	useEffect(() => {
+		if (isOnboarding) {
+			setTabs((prev) => prev.filter((item, index) => index < 5));
+			setEmployee(null);
+			setUserId(null);
+		}
+	}, [isOnboarding]);
+
 	const handleSelect = (emp) => {
 		setEmpName(emp.fullName);
 		setEmployee(emp);
 		setUserId(emp._id);
 	};
 
+	const handleNext = (id) => setViewMode(SETUP_LIST[id]?.type);
+	const handlePrev = (id) => setViewMode(SETUP_LIST[id - 2]?.type);
 	const SETUP_LIST = [
 		{
 			id: 0,
@@ -70,16 +81,27 @@ const Employees = ({ isOnboarding }) => {
 
 			name: (
 				<PersonalInfo
+					id={1}
 					company={company}
 					empId={userId}
 					isOnboarding={isOnboarding}
+					handleNext={handleNext}
 				/>
 			),
 		},
 		{
 			id: 1,
 			type: "Pay",
-			name: <PayInfo company={company} empId={userId} />,
+			name: (
+				<PayInfo
+					id={2}
+					company={company}
+					empId={userId}
+					isOnboarding={isOnboarding}
+					handleNext={handleNext}
+					handlePrev={handlePrev}
+				/>
+			),
 		},
 		{
 			id: 2,
@@ -87,9 +109,13 @@ const Employees = ({ isOnboarding }) => {
 
 			name: (
 				<CorporateInfo
+					id={3}
 					company={company}
 					empId={userId}
 					isOnboarding={isOnboarding}
+					selectedPayGroupName={selectedPayGroupName}
+					handleNext={handleNext}
+					handlePrev={handlePrev}
 				/>
 			),
 		},
@@ -99,22 +125,31 @@ const Employees = ({ isOnboarding }) => {
 
 			name: (
 				<GovernmentInfo
+					id={4}
 					company={company}
 					empId={userId}
 					isOnboarding={isOnboarding}
+					handleNext={handleNext}
+					handlePrev={handlePrev}
 				/>
 			),
 		},
 		{
 			id: 4,
 			type: "Banking",
-
-			name: <BankingInfo company={company} empId={userId} />,
+			name: (
+				<BankingInfo
+					id={5}
+					company={company}
+					empId={userId}
+					handlePrev={handlePrev}
+					isOnboarding={isOnboarding}
+				/>
+			),
 		},
 		{
 			id: 5,
 			type: "Balances",
-
 			name: <BalanceInfo company={company} empId={userId} />,
 		},
 	];
@@ -124,12 +159,6 @@ const Employees = ({ isOnboarding }) => {
 	const [viewMode, setViewMode] = useState(tabContent);
 	const showComponent = (viewMode) =>
 		tabs.find(({ type }) => type === viewMode)?.name;
-
-	useEffect(() => {
-		if (isOnboarding) {
-			setTabs((prev) => prev.filter((item, index) => index < 5));
-		}
-	}, [isOnboarding]);
 
 	return (
 		<PageLayout title={isOnboarding ? "" : "Employees"}>

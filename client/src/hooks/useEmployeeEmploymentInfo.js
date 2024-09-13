@@ -7,6 +7,7 @@ const useEmployeeEmploymentInfo = (
 	payPeriod,
 	groupId,
 	refresh,
+	isOnboarding,
 ) => {
 	const [employmentInfo, setEmploymentInfo] = useState(null);
 
@@ -29,10 +30,10 @@ const useEmployeeEmploymentInfo = (
 				console.error(error);
 			}
 		};
-		if (payPeriod) {
+		if (!isOnboarding && payPeriod) {
 			fetchEmployeeEmploymentInfo();
 		}
-	}, [company, empId, payPeriod, refresh]);
+	}, [company, empId, payPeriod, refresh, isOnboarding]);
 	return employmentInfo;
 };
 

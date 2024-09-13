@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import UserService from "services/UserService";
 
-const useEmployees = (isRefresh, company) => {
+const useEmployees = (isRefresh, company, isOnboarding) => {
 	const [employees, setEmployees] = useState(null);
 	const [filteredEmployees, setFilteredEmployees] = useState(null);
 
@@ -15,9 +15,10 @@ const useEmployees = (isRefresh, company) => {
 				console.error(error);
 			}
 		};
-
-		fetchAllEmployees();
-	}, [isRefresh, company]);
+		if (!isOnboarding) {
+			fetchAllEmployees();
+		}
+	}, [isRefresh, company, isOnboarding]);
 
 	return { employees, filteredEmployees, setFilteredEmployees };
 };

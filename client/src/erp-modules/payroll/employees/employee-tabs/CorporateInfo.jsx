@@ -3,6 +3,7 @@ import BoxCard from "components/ui/card";
 import VerticalStepper from "components/ui/VerticalStepper";
 import {
 	EMP_COMPANY_CONFIG,
+	EMP_REGION_CONFIG,
 	EMP_ROLE_CONFIG,
 	getInitialCorporateInfo,
 } from "config/payroll/employees/employmentInfo";
@@ -12,9 +13,28 @@ import PayrollService from "services/PayrollService";
 import StepContent from "../step-content";
 import Record from "../step-content/Record";
 
-const CorporateInfo = ({ company, empId, isOnboarding }) => {
-	const employmentInfo = useEmployeeEmploymentInfo(company, empId, true);
-	const setCorporateInfo = getInitialCorporateInfo(empId, company);
+const CorporateInfo = ({
+	company,
+	empId,
+	isOnboarding,
+	selectedPayGroupName,
+	id,
+	handleNext,
+	handlePrev,
+}) => {
+	const employmentInfo = useEmployeeEmploymentInfo(
+		company,
+		empId,
+		true,
+		false,
+		false,
+		isOnboarding,
+	);
+	const setCorporateInfo = getInitialCorporateInfo(
+		empId,
+		company,
+		selectedPayGroupName,
+	);
 	const [formData, setFormData] = useState(setCorporateInfo);
 	const [isDisabled, setIsDisabled] = useState(true);
 	const [isLoading, setIsLoading] = useState(false);
@@ -72,6 +92,21 @@ const CorporateInfo = ({ company, empId, isOnboarding }) => {
 				/>
 			),
 		},
+		{
+			title: "Region",
+			content: (
+				<Record
+					handleConfirm={handleConfirm}
+					formData={formData}
+					setFormData={setFormData}
+					title="Region"
+					config={EMP_REGION_CONFIG}
+					isLoading={isLoading}
+					isDisabled={isDisabled}
+					handleSubmit={handleSubmit}
+				/>
+			),
+		},
 	];
 	const [currentStep, setCurrentStep] = useState(0);
 	const goToNextStep = (index) => {
@@ -90,6 +125,10 @@ const CorporateInfo = ({ company, empId, isOnboarding }) => {
 					steps={steps}
 					currentStep={currentStep}
 					handleClick={goToNextStep}
+					isOnboarding={isOnboarding}
+					id={id}
+					handleNext={handleNext}
+					handlePrev={handlePrev}
 				/>
 			</BoxCard>
 			<StepContent currentStep={currentStep} steps={steps} />

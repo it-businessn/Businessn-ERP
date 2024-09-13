@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import PayrollService from "services/PayrollService";
 
-const useEmployeeBankingInfo = (company, empId) => {
+const useEmployeeBankingInfo = (company, empId, isOnboarding) => {
 	const [bankingInfo, setBankingInfo] = useState(null);
 	useEffect(() => {
 		const fetchEmployeeBankingInfo = async () => {
@@ -15,8 +15,10 @@ const useEmployeeBankingInfo = (company, empId) => {
 				console.error(error);
 			}
 		};
-		fetchEmployeeBankingInfo();
-	}, [company, empId]);
+		if (!isOnboarding) {
+			fetchEmployeeBankingInfo();
+		}
+	}, [company, empId, isOnboarding]);
 	return bankingInfo;
 };
 

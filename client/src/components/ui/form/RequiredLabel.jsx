@@ -7,7 +7,14 @@ const RequiredLabel = ({
 	fontWeight,
 	visibility,
 	hideLabel,
+	subRequired,
 }) => {
+	const SpanText = ({ color }) => (
+		<Text as={"span"} color={color}>
+			{" "}
+			*
+		</Text>
+	);
 	return (
 		<FormLabel
 			fontWeight={fontWeight}
@@ -16,12 +23,8 @@ const RequiredLabel = ({
 			visibility={visibility}
 		>
 			{label}
-			{required && (
-				<Text as={"span"} color="red">
-					{" "}
-					*
-				</Text>
-			)}
+			{required && <SpanText color={"red"} />}
+			{subRequired && <SpanText color={"orange"} />}
 		</FormLabel>
 	);
 };

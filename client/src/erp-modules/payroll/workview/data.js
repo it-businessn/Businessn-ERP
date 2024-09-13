@@ -35,3 +35,12 @@ export const getClosestRecord = (
 						payPeriod === parseInt(payNo) && !isProcessed,
 			  )
 		: closestRecord;
+
+export const HIDE_ONBOARDING_SECTION = [
+	"Regional Government Deductions",
+	"Federal Government Contributions",
+	"Deductions",
+	"Emergency Contact",
+	"Leave Date",
+	"Marital Status",
+];

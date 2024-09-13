@@ -3,29 +3,25 @@ import ModalLayout from "components/ui/modal/ModalLayout";
 import Employees from "erp-modules/payroll/employees";
 
 const OnboardEmpModal = ({
-	showExtraPayrun,
-	setShowExtraPayrun,
-	setRefresh,
-	company,
-	selectedPayGroupId,
-	selectedPayGroup,
-	closestRecord,
+	showOnboard,
+	setShowOnboard,
+	selectedPayGroupName,
 }) => {
 	const { onClose } = useDisclosure();
 
 	const handleClose = () => {
 		onClose();
-		setShowExtraPayrun(false);
+		setShowOnboard(false);
 	};
 
 	return (
 		<ModalLayout
 			title={"Onboard employee"}
 			size="7xl"
-			isOpen={showExtraPayrun}
+			isOpen={showOnboard}
 			onClose={handleClose}
 		>
-			<Employees isOnboarding />
+			<Employees isOnboarding selectedPayGroupName={selectedPayGroupName} />
 		</ModalLayout>
 	);
 };

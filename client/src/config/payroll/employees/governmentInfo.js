@@ -1,9 +1,26 @@
+import { REGIONS } from "erp-modules/project-management/workview/project/data";
+
 export const EMP_INCOME_TAX_CONFIG = [
 	{
 		type: "sfsgdsgdsgdsg14",
 		params: [
-			{ name: "Federal Tax", param_key: "federalTax" },
-			{ name: "Regional Tax", param_key: "regionalTax" },
+			{
+				name: "Federal Tax",
+				param_key: "federalTax",
+				control: "select",
+				options: [
+					{
+						type: "Canada",
+						dependent: false,
+					},
+				],
+			},
+			{
+				name: "Regional Tax",
+				param_key: "regionalTax",
+				control: "select",
+				options: REGIONS,
+			},
 		],
 	},
 	{
@@ -76,8 +93,8 @@ export const getInitialGovernmentInfo = (empId, companyName) => {
 	return {
 		empId,
 		companyName,
-		federalTax: "",
-		regionalTax: "",
+		federalTax: "Canada",
+		regionalTax: "British Columbia",
 		federalTaxCredit: 0,
 		regionalTaxCredit: 0,
 		federalPensionEE: "",

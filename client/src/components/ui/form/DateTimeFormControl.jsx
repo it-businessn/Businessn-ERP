@@ -1,5 +1,6 @@
 import { FormLabel, Input } from "@chakra-ui/react";
 import FormControlMain from ".";
+import RequiredLabel from "./RequiredLabel";
 
 const DateTimeFormControl = ({
 	valueText1,
@@ -21,7 +22,15 @@ const DateTimeFormControl = ({
 		<>
 			{name1 && (
 				<FormControlMain flex="1">
-					<FormLabel display={hideLabel && "none"}>{label}</FormLabel>
+					{required ? (
+						<RequiredLabel
+							hideLabel={hideLabel}
+							label={label}
+							required={required}
+						/>
+					) : (
+						<FormLabel display={hideLabel && "none"}>{label}</FormLabel>
+					)}
 					<Input
 						min={minDate}
 						size={size}

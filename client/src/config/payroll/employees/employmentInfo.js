@@ -1,3 +1,5 @@
+import { REGIONS } from "erp-modules/project-management/workview/project/data";
+
 export const ROLE_OPTIONS = [
 	{
 		type: "Employee",
@@ -94,13 +96,28 @@ export const DEPARTMENT_OPTIONS = [
 		dependent: false,
 		id: "0006-",
 	},
+	{
+		type: "No Department",
+		dependent: false,
+		id: "0007-",
+	},
 ];
 
 export const EMP_COMPANY_CONFIG = [
 	{
 		type: "sfsgdsgdsgdsg13",
 		params: [
-			{ name: "Pay Group", param_key: "employmentPayGroup" },
+			{
+				name: "Pay Group",
+				param_key: "employmentPayGroup",
+				control: "select",
+				options: [
+					{
+						type: "Paygroup: Test1",
+						dependent: false,
+					},
+				],
+			},
 			{
 				name: "Cost Center",
 				param_key: "employmentCostCenter",
@@ -109,9 +126,39 @@ export const EMP_COMPANY_CONFIG = [
 			},
 			{
 				name: "Department",
-				param_key: "companyDepartment",
+				param_key: "employmentDepartment",
 				control: "select",
 				options: DEPARTMENT_OPTIONS,
+			},
+		],
+	},
+];
+
+export const EMP_REGION_CONFIG = [
+	{
+		type: "sfsgdsgdsgdsg12",
+		params: [
+			{
+				name: "Region",
+				param_key: "employmentRegion",
+				control: "select",
+				options: REGIONS,
+			},
+		],
+	},
+	{
+		type: "sfsgdsgdsgdsg12",
+		params: [
+			{
+				name: "Country",
+				param_key: "employmentCountry",
+				control: "select",
+				options: [
+					{
+						type: "Canada",
+						dependent: false,
+					},
+				],
 			},
 		],
 	},
@@ -144,16 +191,22 @@ export const EMP_ROLE_CONFIG = [
 	},
 ];
 
-export const getInitialCorporateInfo = (empId, companyName) => {
+export const getInitialCorporateInfo = (
+	empId,
+	companyName,
+	selectedPayGroupName,
+) => {
 	return {
 		empId,
 		companyName,
 		employmentStartDate: null,
 		employmentLeaveDate: null,
-		employmentRole: "",
-		employmentPayGroup: "",
+		employmentRole: "Employee",
+		employmentPayGroup: selectedPayGroupName,
 		employmentCostCenter: "",
-		employmentDepartment: "",
-		companyDepartment: "",
+		employmentDepartment: "No Department",
+		companyDepartment: "No Department",
+		employmentCountry: "Canada",
+		employmentRegion: "British Columbia",
 	};
 };

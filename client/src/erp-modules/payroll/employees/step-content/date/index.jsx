@@ -1,4 +1,5 @@
 import DateTimeFormControl from "components/ui/form/DateTimeFormControl";
+import { HIDE_ONBOARDING_SECTION } from "erp-modules/payroll/workview/data";
 import { getDefaultDate } from "utils";
 
 const DateTypeRecord = ({
@@ -7,9 +8,11 @@ const DateTypeRecord = ({
 	formData,
 	handleConfirm,
 	isOnboarding,
+	required,
 }) => {
 	return (
-		(!isOnboarding || (isOnboarding && param.name !== "Leave Date")) && (
+		(!isOnboarding ||
+			(isOnboarding && !HIDE_ONBOARDING_SECTION.includes(param.name))) && (
 			<DateTimeFormControl
 				label={param.name}
 				valueText1={
@@ -25,7 +28,7 @@ const DateTypeRecord = ({
 					}));
 					handleConfirm();
 				}}
-				required
+				required={required}
 			/>
 		)
 	);

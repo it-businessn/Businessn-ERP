@@ -62,13 +62,9 @@ const PaygroupTable = ({
 					)}
 					{showOnboard && (
 						<OnboardEmpModal
-							selectedPayGroupId={selectedPayGroup._id}
-							company={company}
-							showExtraPayrun={showOnboard}
-							setRefresh={setRefresh}
-							setShowExtraPayrun={setShowOnboard}
-							selectedPayGroup={selectedPayGroup}
-							closestRecord={closestRecord}
+							showOnboard={showOnboard}
+							setShowOnboard={setShowOnboard}
+							selectedPayGroupName={selectedPayGroup?.name}
 						/>
 					)}
 

@@ -1,8 +1,13 @@
 import { Button } from "@chakra-ui/react";
 
-const CancelButton = ({ onClick, name, size }) => {
+const CancelButton = ({ onClick, name, size, isDisabled }) => {
 	return (
-		<Button onClick={onClick} colorScheme="gray" size={size}>
+		<Button
+			onClick={onClick}
+			colorScheme="gray"
+			size={size}
+			isDisabled={isDisabled}
+		>
 			{name || "Cancel"}
 		</Button>
 	);

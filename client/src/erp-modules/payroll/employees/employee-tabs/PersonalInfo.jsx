@@ -14,8 +14,8 @@ import PayrollService from "services/PayrollService";
 import StepContent from "../step-content";
 import Record from "../step-content/Record";
 
-const PersonalInfo = ({ company, empId, isOnboarding }) => {
-	const profileInfo = useEmployeeProfileInfo(company, empId);
+const PersonalInfo = ({ company, empId, isOnboarding, id, handleNext }) => {
+	const profileInfo = useEmployeeProfileInfo(company, empId, isOnboarding);
 
 	const setProfileInfo = () => getInitialProfileInfo(empId, company);
 	const [formData, setFormData] = useState(setProfileInfo);
@@ -56,6 +56,7 @@ const PersonalInfo = ({ company, empId, isOnboarding }) => {
 					isLoading={isLoading}
 					isDisabled={isDisabled}
 					handleSubmit={handleSubmit}
+					isOnboarding={isOnboarding}
 				/>
 			),
 		},
@@ -91,7 +92,7 @@ const PersonalInfo = ({ company, empId, isOnboarding }) => {
 		},
 		{
 			title: "Emergency Contact",
-			content: !isOnboarding && (
+			content: (
 				<Record
 					handleConfirm={handleConfirm}
 					formData={formData}
@@ -122,9 +123,16 @@ const PersonalInfo = ({ company, empId, isOnboarding }) => {
 					steps={steps}
 					currentStep={currentStep}
 					handleClick={goToNextStep}
+					isOnboarding={isOnboarding}
+					id={id}
+					handleNext={handleNext}
 				/>
 			</BoxCard>
-			<StepContent currentStep={currentStep} steps={steps} />
+			<StepContent
+				currentStep={currentStep}
+				steps={steps}
+				isOnboarding={isOnboarding}
+			/>
 		</SimpleGrid>
 	);
 };

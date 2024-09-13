@@ -1,7 +1,13 @@
 import { FormControl, FormLabel, Select } from "@chakra-ui/react";
 import { FaCaretDown } from "react-icons/fa";
 
-const SelectTypeRecord = ({ param, formData, setFormData, handleConfirm }) => {
+const SelectTypeRecord = ({
+	param,
+	formData,
+	setFormData,
+	handleConfirm,
+	size = "sm",
+}) => {
 	const newCostCenter =
 		formData.employmentCostCenter === "Golf Operations"
 			? "Golf"
@@ -13,7 +19,7 @@ const SelectTypeRecord = ({ param, formData, setFormData, handleConfirm }) => {
 			<Select
 				icon={<FaCaretDown />}
 				borderRadius="10px"
-				size="sm"
+				size={size}
 				placeholder={`Select ${param.name}`}
 				name={param.param_key}
 				value={formData[param.param_key]}
@@ -27,15 +33,18 @@ const SelectTypeRecord = ({ param, formData, setFormData, handleConfirm }) => {
 			>
 				{param.name === "Department" && formData.employmentCostCenter !== ""
 					? param.options
-							.filter(({ type }) => type.includes(newCostCenter))
+							?.filter(({ type }) => type.includes(newCostCenter))
 							?.map(({ type }) => (
 								<option value={type} key={type}>
 									{type}
 								</option>
 							))
-					: param.options?.map(({ type }) => (
-							<option value={type} key={type}>
-								{type}
+					: param.options?.map((item) => (
+							<option
+								value={item?.type ?? item?.name}
+								key={item?.type ?? item?.name}
+							>
+								{item?.type ?? item?.name}
 							</option>
 					  ))}
 			</Select>

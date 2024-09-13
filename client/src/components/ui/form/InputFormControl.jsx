@@ -21,10 +21,12 @@ const InputFormControl = ({
 	w,
 	size,
 	readOnly,
+	subRequired,
 }) => {
 	return (
 		<FormControlMain isInvalid={isInvalid}>
 			<RequiredLabel
+				subRequired={subRequired}
 				hideLabel={hideLabel}
 				name={name}
 				label={label}

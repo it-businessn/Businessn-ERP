@@ -12,8 +12,8 @@ import PayrollService from "services/PayrollService";
 import StepContent from "../step-content";
 import Record from "../step-content/Record";
 
-const BankingInfo = ({ company, empId }) => {
-	const bankingInfo = useEmployeeBankingInfo(company, empId);
+const BankingInfo = ({ company, empId, isOnboarding, handlePrev, id }) => {
+	const bankingInfo = useEmployeeBankingInfo(company, empId, isOnboarding);
 	const setBankingInfo = () => getInitialBankingInfo(empId, company);
 	const [formData, setFormData] = useState(setBankingInfo);
 	const [isDisabled, setIsDisabled] = useState(true);
@@ -89,6 +89,9 @@ const BankingInfo = ({ company, empId }) => {
 					steps={steps}
 					currentStep={currentStep}
 					handleClick={goToNextStep}
+					isOnboarding={isOnboarding}
+					handlePrev={handlePrev}
+					id={id}
 				/>
 			</BoxCard>
 			<StepContent currentStep={currentStep} steps={steps} />

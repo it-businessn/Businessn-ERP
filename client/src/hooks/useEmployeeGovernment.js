@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import PayrollService from "services/PayrollService";
 
-const useEmployeeGovernment = (company, empId) => {
+const useEmployeeGovernment = (company, empId, isOnboarding) => {
 	const [governmentInfo, setGovernmentInfo] = useState(null);
 	useEffect(() => {
 		const fetchEmployeeGovernmentInfo = async () => {
@@ -15,8 +15,10 @@ const useEmployeeGovernment = (company, empId) => {
 				console.error(error);
 			}
 		};
-		fetchEmployeeGovernmentInfo();
-	}, [company, empId]);
+		if (!isOnboarding) {
+			fetchEmployeeGovernmentInfo();
+		}
+	}, [company, empId, isOnboarding]);
 	return governmentInfo;
 };
 

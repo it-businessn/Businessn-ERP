@@ -32,6 +32,7 @@ const Record = ({
 						{tab.params.map((param) => {
 							return param?.control === "select" ? (
 								<SelectTypeRecord
+									size={"md"}
 									key={param.name}
 									formData={formData}
 									param={param}
@@ -45,9 +46,11 @@ const Record = ({
 									param={param}
 									setFormData={setFormData}
 									handleConfirm={handleConfirm}
+									isOnboarding={isOnboarding}
 								/>
 							) : param?.control === "date" ? (
 								<DateTypeRecord
+									required={param?.mandatory}
 									isOnboarding={isOnboarding}
 									key={param.name}
 									formData={formData}
@@ -70,6 +73,7 @@ const Record = ({
 									param={param}
 									setFormData={setFormData}
 									handleConfirm={handleConfirm}
+									isOnboarding={isOnboarding}
 								/>
 							);
 						})}

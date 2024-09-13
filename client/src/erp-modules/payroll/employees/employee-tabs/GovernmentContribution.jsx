@@ -13,8 +13,15 @@ import PayrollService from "services/PayrollService";
 import StepContent from "../step-content";
 import Record from "../step-content/Record";
 
-const GovernmentContribution = ({ company, empId, isOnboarding }) => {
-	const governmentInfo = useEmployeeGovernment(company, empId);
+const GovernmentContribution = ({
+	company,
+	empId,
+	isOnboarding,
+	handleNext,
+	handlePrev,
+	id,
+}) => {
+	const governmentInfo = useEmployeeGovernment(company, empId, isOnboarding);
 	const setGovernmentInfo = () => getInitialGovernmentInfo(empId, company);
 	const [formData, setFormData] = useState(setGovernmentInfo);
 	const [isDisabled, setIsDisabled] = useState(true);
@@ -59,7 +66,7 @@ const GovernmentContribution = ({ company, empId, isOnboarding }) => {
 		},
 		{
 			title: "Federal Government Contributions",
-			content: !isOnboarding && (
+			content: (
 				<Record
 					handleConfirm={handleConfirm}
 					formData={formData}
@@ -75,7 +82,7 @@ const GovernmentContribution = ({ company, empId, isOnboarding }) => {
 
 		{
 			title: "Regional Government Deductions",
-			content: !isOnboarding && (
+			content: (
 				<Record
 					handleConfirm={handleConfirm}
 					formData={formData}
@@ -106,9 +113,17 @@ const GovernmentContribution = ({ company, empId, isOnboarding }) => {
 					steps={steps}
 					currentStep={currentStep}
 					handleClick={goToNextStep}
+					isOnboarding={isOnboarding}
+					handleNext={handleNext}
+					handlePrev={handlePrev}
+					id={id}
 				/>
 			</BoxCard>
-			<StepContent currentStep={currentStep} steps={steps} />
+			<StepContent
+				currentStep={currentStep}
+				steps={steps}
+				isOnboarding={isOnboarding}
+			/>
 		</SimpleGrid>
 	);
 };
