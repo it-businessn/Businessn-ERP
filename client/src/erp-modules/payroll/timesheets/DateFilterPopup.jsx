@@ -1,77 +1,94 @@
-import {
-	Box,
-	HStack,
-	Popover,
-	PopoverBody,
-	PopoverContent,
-	PopoverTrigger,
-} from "@chakra-ui/react";
-import FilterDatePicker from "components/FilterDateRangePicker";
-import OutlineButton from "components/ui/button/OutlineButton";
-import { getDefaultDateFormat } from "utils";
+import { Box, HStack, Input } from "@chakra-ui/react";
+import "daterangepicker";
+import $ from "jquery";
+import moment from "moment";
+import { useEffect, useRef, useState } from "react";
+import { getDefaultDate } from "utils";
 
 const DateFilterPopup = ({
 	toggleDateFilter,
-	showDateFilter,
 	selectedFilter,
 	setSelectedFilter,
-	endDate,
 	setEndDate,
-	startDate,
 	setStartDate,
-	setFilter,
 	closestRecord,
 	lastRecord,
 }) => {
-	return (
-		<Popover isOpen={showDateFilter} onClose={toggleDateFilter}>
-			<PopoverTrigger>
-				<HStack
-					w={"30%"}
-					bg={"var(--main_color)"}
-					justifyContent={"space-between"}
-					onClick={toggleDateFilter}
-				>
-					<Box
-						cursor="pointer"
-						w={"50%"}
-						p={1.5}
-						bg={"var(--primary_button_bg)"}
-						color="var(--main_color)"
-						borderRadius="md"
-					>
-						{selectedFilter}
-					</Box>
+	const inputRef = useRef(null);
+	const [selectedDateRange, setSelectedDateRange] = useState(null);
 
-					<OutlineButton
-						label={getDefaultDateFormat(startDate)}
-						color="var(--main_color_black)"
-						borderColor={"var(--filter_border_color)"}
-					/>
-					<OutlineButton
-						label={getDefaultDateFormat(endDate)}
-						color="var(--main_color_black)"
-						borderColor={"var(--filter_border_color)"}
-					/>
-				</HStack>
-			</PopoverTrigger>
-			<PopoverContent w="800px">
-				<PopoverBody>
-					<FilterDatePicker
-						selectedFilter={selectedFilter}
-						setSelectedFilter={setSelectedFilter}
-						setFilter={setFilter}
-						handleClose={toggleDateFilter}
-						thisPayPeriod={closestRecord}
-						lastPayPeriod={lastRecord}
-						startDate={startDate}
-						setStartDate={setStartDate}
-						endDate={endDate}
-						setEndDate={setEndDate}
-					/>
-				</PopoverBody>
-			</PopoverContent>
-		</Popover>
+	const handleDateRangeChange = (range) => setSelectedDateRange(range);
+
+	useEffect(() => {
+		$(inputRef.current).daterangepicker(
+			{
+				alwaysShowCalendars: true,
+				startDate: moment(),
+				endDate: moment(),
+				locale: {
+					format: "YYYY/MM/DD",
+				},
+				ranges: {
+					Today: [moment(), moment()],
+					Yesterday: [
+						moment().subtract(1, "days"),
+						moment().subtract(1, "days"),
+					],
+					"Last pay period": [
+						moment(lastRecord?.payPeriodStartDate),
+						moment(lastRecord?.payPeriodEndDate),
+					],
+					"This pay period": [
+						moment(closestRecord?.payPeriodStartDate),
+						moment(closestRecord?.payPeriodEndDate),
+					],
+					"Last 7 Days": [moment().subtract(6, "days"), moment()],
+					"Last 30 Days": [moment().subtract(29, "days"), moment()],
+					"This Year": [moment().startOf("year"), moment().endOf("year")],
+					"Last Year": [
+						moment().subtract(1, "year").startOf("year"),
+						moment().subtract(1, "year").endOf("year"),
+					],
+				},
+			},
+			(start, end, label) => {
+				setStartDate(getDefaultDate(start));
+				setEndDate(getDefaultDate(end));
+				setSelectedFilter(label);
+			},
+		);
+		return () => {
+			$(inputRef?.current).data("daterangepicker")?.remove();
+		};
+	}, [selectedDateRange]);
+
+	return (
+		<HStack
+			w={"30%"}
+			justifyContent={"space-between"}
+			onClick={() => {
+				handleDateRangeChange();
+				toggleDateFilter();
+			}}
+		>
+			<Box
+				cursor="default"
+				w={"50%"}
+				p={1.5}
+				bg={"var(--primary_button_bg)"}
+				color="var(--main_color)"
+				borderRadius="md"
+			>
+				{selectedFilter}
+			</Box>
+			<Input
+				cursor="pointer"
+				id="date-range"
+				type="text"
+				ref={inputRef}
+				className="form-control"
+			/>
+		</HStack>
 	);
 };
 

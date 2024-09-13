@@ -7,9 +7,10 @@ const TimesheetService = {
 
 	async getFilteredTimesheets(company, filter) {
 		return apiService.get(
-			`/timesheet/filtered/${company}/startDate=${filter?.startDate}/endDate=${filter?.endDate}`,
+			`/timesheet/filtered/${company}/filter=${JSON.stringify(filter)}`,
 		);
 	},
+
 	async getTimesheetById(company, id) {
 		return apiService.get(`/timesheet/${company}/${id}`);
 	},

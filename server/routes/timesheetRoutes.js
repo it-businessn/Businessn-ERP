@@ -6,7 +6,7 @@ const timesheetController = require("../controllers/timesheetContoller");
 router.get("/:companyName", timesheetController.getTimesheets);
 
 router.get(
-	"/filtered/:companyName/:startDate/:endDate",
+	"/filtered/:companyName/:filter",
 	timesheetController.getFilteredTimesheets,
 );
 

@@ -2,16 +2,18 @@ import { HStack } from "@chakra-ui/react";
 import PrimaryButton from "components/ui/button/PrimaryButton";
 import TabsButtonGroup from "components/ui/tab/TabsButtonGroup";
 import useCompany from "hooks/useCompany";
+import useEmployees from "hooks/useEmployees";
 import usePaygroup from "hooks/usePaygroup";
+import { useSignup } from "hooks/useSignup";
 import useTimesheet from "hooks/useTimesheet";
 import PageLayout from "layouts/PageLayout";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import LocalStorageService from "services/LocalStorageService";
 import { getDefaultDate, isManager } from "utils";
 import DateFilterPopup from "./DateFilterPopup";
 import ExtraTimeEntryModal from "./ExtraTimeEntryModal";
-import SearchFilter from "./SearchFilter";
+import OtherFilter from "./OtherFilter";
 import Timecard from "./Timecard";
 import Timesheet from "./Timesheet";
 
@@ -33,6 +35,8 @@ const Timesheets = () => {
 	const [refresh, setRefresh] = useState(false);
 	const [filter, setFilter] = useState(null);
 	const timesheets = useTimesheet(company, userId, refresh, filter);
+	const { employees } = useEmployees(false, company);
+	const { departments, roles } = useSignup(false, company);
 
 	const [date, setDate] = useState(getDefaultDate);
 
@@ -40,11 +44,38 @@ const Timesheets = () => {
 	const [startDate, setStartDate] = useState(null);
 	const [endDate, setEndDate] = useState(null);
 	const [showDateFilter, setShowDateFilter] = useState(false);
-	const [showOtherFilter, setShowOtherFilter] = useState(false);
-	const toggleDateFilter = () => setShowDateFilter(!showDateFilter);
-	const toggleOtherFilter = () => setShowOtherFilter(!showOtherFilter);
-
+	const [showEmpFilter, setShowEmpFilter] = useState(false);
+	const [showDeptFilter, setShowDeptFilter] = useState(false);
+	const [showCCFilter, setShowCCFilter] = useState(false);
 	const [showAddEntry, setShowAddEntry] = useState(false);
+
+	const [filteredEmployees, setFilteredEmployees] = useState([]);
+	const [filteredDept, setFilteredDept] = useState([]);
+	const [filteredCC, setFilteredCC] = useState([]);
+
+	const toggleDateFilter = () => setShowDateFilter(!showDateFilter);
+	const toggleEmpFilter = () => setShowEmpFilter((prev) => !prev);
+	const toggleDeptFilter = () => setShowDeptFilter((prev) => !prev);
+	const toggleCCFilter = () => setShowCCFilter((prev) => !prev);
+	const handleFilter = () => console.log(filteredEmployees);
+
+	useEffect(() => {
+		if (startDate && endDate) {
+			setFilter((prev) => ({ ...prev, startDate, endDate }));
+		}
+		if (filteredEmployees?.length) {
+			setFilter((prev) => ({ ...prev, filteredEmployees }));
+			setShowEmpFilter(false);
+		}
+		if (filteredDept?.length) {
+			setFilter((prev) => ({ ...prev, filteredDept }));
+			setShowDeptFilter(false);
+		}
+		if (filteredCC?.length) {
+			setFilter((prev) => ({ ...prev, filteredCC }));
+			setShowCCFilter(false);
+		}
+	}, [startDate, endDate, filteredEmployees, filteredDept, filteredCC]);
 
 	const TABS = [
 		{
@@ -98,7 +129,6 @@ const Timesheets = () => {
 	const [viewMode, setViewMode] = useState(TABS[0].type);
 	const showComponent = (viewMode) =>
 		TABS.find(({ type }) => type === viewMode)?.name;
-
 	return (
 		<PageLayout
 			width="full"
@@ -109,7 +139,6 @@ const Timesheets = () => {
 			isTimesheet
 		>
 			<HStack spacing={3} justify={"flex-end"} mt={-8}>
-				<SearchFilter />
 				<PrimaryButton
 					size={"sm"}
 					name={"Add request"}
@@ -127,7 +156,7 @@ const Timesheets = () => {
 			)}
 			<HStack w={"100%"} justifyContent={"start"} gap={5}>
 				<TabsButtonGroup
-					w={"30%"}
+					w={"20%"}
 					mt={4}
 					isOutlineTab
 					tabs={TABS}
@@ -136,21 +165,40 @@ const Timesheets = () => {
 				/>
 				<DateFilterPopup
 					toggleDateFilter={toggleDateFilter}
-					showDateFilter={showDateFilter}
 					selectedFilter={selectedFilter}
 					setSelectedFilter={setSelectedFilter}
-					endDate={endDate}
 					setEndDate={setEndDate}
-					startDate={startDate}
 					setStartDate={setStartDate}
-					setFilter={setFilter}
 					closestRecord={closestRecord}
 					lastRecord={lastRecord}
 				/>
-				{/* <OtherFilter
-					showOtherFilter={showOtherFilter}
-					toggleOtherFilter={toggleOtherFilter}
-				/> */}
+				<OtherFilter
+					showOtherFilter={showEmpFilter}
+					toggleOtherFilter={toggleEmpFilter}
+					handleFilter={handleFilter}
+					data={employees}
+					filteredData={filteredEmployees}
+					setFilteredData={setFilteredEmployees}
+					helperText="employee"
+				/>
+				<OtherFilter
+					showOtherFilter={showDeptFilter}
+					toggleOtherFilter={toggleDeptFilter}
+					handleFilter={handleFilter}
+					data={departments}
+					filteredData={filteredDept}
+					setFilteredData={setFilteredDept}
+					helperText="department"
+				/>
+				<OtherFilter
+					showOtherFilter={showCCFilter}
+					toggleOtherFilter={toggleCCFilter}
+					handleFilter={handleFilter}
+					data={roles}
+					filteredData={filteredCC}
+					setFilteredData={setFilteredCC}
+					helperText="role"
+				/>
 			</HStack>
 
 			{showComponent(viewMode)}

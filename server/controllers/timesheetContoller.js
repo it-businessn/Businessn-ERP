@@ -11,7 +11,7 @@ const findByRecordTimesheets = async (record) => {
 		.populate({
 			path: "employeeId",
 			model: "Employee",
-			select: ["department", "fullName"],
+			select: ["department", "fullName", "role"],
 		})
 		.sort({
 			createdOn: -1,
@@ -85,15 +85,31 @@ const getTimesheets = async (req, res) => {
 };
 
 const getFilteredTimesheets = async (req, res) => {
-	const { companyName, startDate, endDate } = req.params;
+	const { companyName, filter } = req.params;
+	const filteredData = JSON.parse(filter.split("=")[1]);
 	try {
-		const timesheets = await findByRecordTimesheets({
+		let timesheets = await findByRecordTimesheets({
 			companyName,
-			createdOn: { $lte: endDate, $gte: startDate },
+			createdOn: { $lte: filteredData?.endDate, $gte: filteredData?.startDate },
 		});
 		const payInfo = await getTimesheetResult(companyName);
+		if (filteredData?.filteredEmployees?.length) {
+			timesheets = timesheets.filter((item) =>
+				filteredData?.filteredEmployees?.includes(item.employeeId.fullName),
+			);
+		}
+		if (filteredData?.filteredDept?.length) {
+			timesheets = timesheets.filter((item) =>
+				filteredData?.filteredDept?.includes(item.employeeId.department[0]),
+			);
+		}
+		if (filteredData?.filteredCC?.length) {
+			timesheets = timesheets.filter((item) =>
+				filteredData?.filteredCC?.includes(item.employeeId.role),
+			);
+		}
 		const result = mapTimesheet(payInfo, timesheets);
-		return res.status(200).json(result);
+		res.status(200).json(result);
 	} catch (error) {
 		res.status(404).json({ error: error.message });
 	}
