@@ -66,7 +66,7 @@ const Employees = ({ isOnboarding }) => {
 	const SETUP_LIST = [
 		{
 			id: 0,
-			type: "Info",
+			type: "Personal Info",
 
 			name: (
 				<PersonalInfo

@@ -1,15 +1,14 @@
-import { Box, HStack, Input } from "@chakra-ui/react";
+import { HStack, Input } from "@chakra-ui/react";
 import "daterangepicker/daterangepicker";
 import "daterangepicker/daterangepicker.css";
 import $ from "jquery";
 import moment from "moment";
 import { useEffect, useRef, useState } from "react";
-import { getDefaultDate } from "utils";
+import { getDefaultDate, getMomentDate } from "utils";
 
 const DateFilterPopup = ({
 	toggleDateFilter,
-	selectedFilter,
-	setSelectedFilter,
+	// setSelectedFilter,
 	setEndDate,
 	setStartDate,
 	closestRecord,
@@ -24,8 +23,8 @@ const DateFilterPopup = ({
 		$(inputRef.current).daterangepicker(
 			{
 				alwaysShowCalendars: true,
-				startDate: moment(),
-				endDate: moment(),
+				startDate: getMomentDate(closestRecord?.payPeriodStartDate),
+				endDate: getMomentDate(closestRecord?.payPeriodEndDate),
 				locale: {
 					format: "YYYY/MM/DD",
 				},
@@ -55,13 +54,13 @@ const DateFilterPopup = ({
 			(start, end, label) => {
 				setStartDate(getDefaultDate(start));
 				setEndDate(getDefaultDate(end));
-				setSelectedFilter(label);
+				// setSelectedFilter(label);
 			},
 		);
 		return () => {
 			$(inputRef?.current).data("daterangepicker")?.remove();
 		};
-	}, [selectedDateRange]);
+	}, [selectedDateRange, closestRecord]);
 
 	return (
 		<HStack
@@ -72,16 +71,6 @@ const DateFilterPopup = ({
 				toggleDateFilter();
 			}}
 		>
-			<Box
-				cursor="default"
-				w={"50%"}
-				p={1.5}
-				bg={"var(--primary_button_bg)"}
-				color="var(--main_color)"
-				borderRadius="md"
-			>
-				{selectedFilter}
-			</Box>
 			<Input
 				cursor="pointer"
 				id="date-range"

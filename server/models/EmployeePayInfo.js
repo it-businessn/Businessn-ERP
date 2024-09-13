@@ -19,6 +19,7 @@ const employeePayInfoSchema = new mongoose.Schema({
 	extendedHealthEE: String,
 	extendedHealthER: String,
 	unionDues: String,
+	typeOfEarning: { type: String, default: "Hourly" },
 	createdOn: { type: Date, default: Date.now },
 	updatedOn: { type: Date, default: Date.now },
 });

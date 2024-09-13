@@ -89,5 +89,6 @@ export const getInitialPayInfo = (empId, companyName) => {
 		extendedHealthER: 0,
 		unionDues: 0,
 		vacationPay: 0,
+		typeOfEarning: "",
 	};
 };

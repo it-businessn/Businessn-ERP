@@ -16,6 +16,7 @@ const MultiSelectBox = ({
 	setSelectedOptions,
 	data,
 	height,
+	w,
 }) => {
 	const { isOpen, onOpen, onClose } = useDisclosure();
 
@@ -45,7 +46,13 @@ const MultiSelectBox = ({
 				>
 					<CloseButton onClick={handleClose} position={"sticky"} top={0} />
 				</MenuItem>
-				<Stack spacing={1} overflow={"auto"} height={height} maxHeight={"33vh"}>
+				<Stack
+					spacing={1}
+					overflow={"auto"}
+					height={height}
+					maxHeight={"33vh"}
+					w={w}
+				>
 					{data?.map((assignee) => (
 						<MenuItem key={assignee?._id ?? assignee}>
 							<Checkbox

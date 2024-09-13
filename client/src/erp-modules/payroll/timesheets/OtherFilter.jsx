@@ -53,13 +53,14 @@ const OtherFilter = ({
 				>
 					<MdOutlineFilterList />
 					<OutlineButton
+						borderColor={!filteredData?.length && "var(--filter_border_color)"}
 						label={
 							<>
 								{filteredData?.length ?? 0} {helperText}(s) selected
 								<FaCaretDown />
 							</>
 						}
-						size="xs"
+						size="sm"
 					/>
 				</HStack>
 			</PopoverTrigger>
@@ -68,6 +69,7 @@ const OtherFilter = ({
 					{showOtherFilter && (
 						<Stack spacing={3} justifyContent={"end"}>
 							<MultiSelectFormControl
+								w={"15vw"}
 								label={`Select ${helperText}`}
 								tag={"employee(s)"}
 								showMultiSelect={openAssigneeMenu}

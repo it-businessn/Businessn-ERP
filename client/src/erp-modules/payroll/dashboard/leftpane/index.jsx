@@ -20,13 +20,10 @@ const LeftPane = ({
 	closestRecordIndex,
 }) => {
 	const steps = [
-		{ title: "Approvals", description: "Contact Info" },
-		{ title: "Leave Adjustment", description: "Date & Time" },
-		{ title: "New Employees", description: "Select Employees" },
-		{ title: "Termination", description: "" },
-		{ title: "Alerts and Violations", description: "" },
-		{ title: "Review Reports", description: "" },
-		{ title: "Submit", description: "" },
+		{ title: "Approvals", description: "" }, //all (approved+rejected)/total timesheets
+		{ title: "Outstanding Violations", description: "" }, //number of violation - 0%(with violation even 1) or 100% (complete)
+		{ title: "Review Reports", description: "" }, //0
+		{ title: "Submit", description: "" }, //0
 	];
 	const [currentStep, setCurrentStep] = useState(0);
 	const goToNextStep = () => {

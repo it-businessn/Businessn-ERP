@@ -72,8 +72,8 @@ export const EMP_PERSONAL_INFO_CONFIG = [
 			{ name: "sfsgdsgdsgdsg1", param_key: "sfsgdsgdsgdsg5" },
 			{ name: "sfsgdsgdsgdsg2", param_key: "sfsgdsgdsgdsg6" },
 			{ name: "sfsgdsgdsgdsg3", param_key: "sfsgdsgdsgdsg7" },
-			{ name: "sfsgdsgdsgdsg4", param_key: "sfsgdsgdsgdsg8" },
-			{ name: "sfsgdsgdsgdsg4", param_key: "sfsgdsgdsgdsg8" },
+			{ name: "sfsgdsgdsgdsg5", param_key: "sfsgdsgdsgdsg8" },
+			{ name: "sfsgdsgdsgdsg6", param_key: "sfsgdsgdsgdsg8" },
 		],
 	},
 ];

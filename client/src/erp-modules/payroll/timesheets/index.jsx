@@ -10,7 +10,7 @@ import PageLayout from "layouts/PageLayout";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import LocalStorageService from "services/LocalStorageService";
-import { getDefaultDate, isManager } from "utils";
+import { getDefaultDate, getMomentDate, isManager } from "utils";
 import DateFilterPopup from "./DateFilterPopup";
 import ExtraTimeEntryModal from "./ExtraTimeEntryModal";
 import OtherFilter from "./OtherFilter";
@@ -40,9 +40,10 @@ const Timesheets = () => {
 
 	const [date, setDate] = useState(getDefaultDate);
 
-	const [selectedFilter, setSelectedFilter] = useState("Today");
+	// const [selectedFilter, setSelectedFilter] = useState("This pay period");
 	const [startDate, setStartDate] = useState(null);
 	const [endDate, setEndDate] = useState(null);
+
 	const [showDateFilter, setShowDateFilter] = useState(false);
 	const [showEmpFilter, setShowEmpFilter] = useState(false);
 	const [showDeptFilter, setShowDeptFilter] = useState(false);
@@ -60,21 +61,24 @@ const Timesheets = () => {
 	const handleFilter = () => console.log(filteredEmployees);
 
 	useEffect(() => {
-		if (startDate && endDate) {
-			setFilter((prev) => ({ ...prev, startDate, endDate }));
+		if (closestRecord && !startDate && !endDate) {
+			setStartDate(getMomentDate(closestRecord?.payPeriodStartDate));
+			setEndDate(getMomentDate(closestRecord?.payPeriodEndDate));
 		}
-		if (filteredEmployees?.length) {
-			setFilter((prev) => ({ ...prev, filteredEmployees }));
-			setShowEmpFilter(false);
-		}
-		if (filteredDept?.length) {
-			setFilter((prev) => ({ ...prev, filteredDept }));
-			setShowDeptFilter(false);
-		}
-		if (filteredCC?.length) {
-			setFilter((prev) => ({ ...prev, filteredCC }));
-			setShowCCFilter(false);
-		}
+	}, [closestRecord]);
+
+	useEffect(() => {
+		setFilter((prev) => ({
+			...prev,
+			startDate,
+			endDate,
+			filteredEmployees,
+			filteredDept,
+			filteredCC,
+		}));
+		setShowEmpFilter(false);
+		setShowDeptFilter(false);
+		setShowCCFilter(false);
 	}, [startDate, endDate, filteredEmployees, filteredDept, filteredCC]);
 
 	const TABS = [
@@ -165,12 +169,12 @@ const Timesheets = () => {
 				/>
 				<DateFilterPopup
 					toggleDateFilter={toggleDateFilter}
-					selectedFilter={selectedFilter}
-					setSelectedFilter={setSelectedFilter}
 					setEndDate={setEndDate}
 					setStartDate={setStartDate}
 					closestRecord={closestRecord}
 					lastRecord={lastRecord}
+					startDate={startDate}
+					endDate={endDate}
 				/>
 				<OtherFilter
 					showOtherFilter={showEmpFilter}
@@ -197,7 +201,7 @@ const Timesheets = () => {
 					data={roles}
 					filteredData={filteredCC}
 					setFilteredData={setFilteredCC}
-					helperText="role"
+					helperText="cost center"
 				/>
 			</HStack>
 
