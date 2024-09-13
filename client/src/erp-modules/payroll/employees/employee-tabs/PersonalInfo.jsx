@@ -17,7 +17,8 @@ import Record from "../step-content/Record";
 const PersonalInfo = ({ company, empId, isOnboarding, id, handleNext }) => {
 	const profileInfo = useEmployeeProfileInfo(company, empId, isOnboarding);
 
-	const setProfileInfo = () => getInitialProfileInfo(empId, company);
+	const setProfileInfo = () =>
+		getInitialProfileInfo(isOnboarding ? null : empId, company);
 	const [formData, setFormData] = useState(setProfileInfo);
 	const [isDisabled, setIsDisabled] = useState(true);
 	const [isLoading, setIsLoading] = useState(false);
@@ -31,7 +32,19 @@ const PersonalInfo = ({ company, empId, isOnboarding, id, handleNext }) => {
 	}, [profileInfo, empId]);
 
 	const handleConfirm = () => {
-		setIsDisabled(false);
+		if (
+			formData.firstName &&
+			formData.birthDate &&
+			formData.employeeNo &&
+			formData.personalEmail &&
+			formData.streetAddress &&
+			formData.city &&
+			formData.province &&
+			formData.country &&
+			formData.postalCode
+		) {
+			setIsDisabled(false);
+		}
 	};
 
 	const handleSubmit = async () => {

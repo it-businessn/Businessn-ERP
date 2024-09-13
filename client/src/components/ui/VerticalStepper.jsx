@@ -76,7 +76,7 @@ const VerticalStepper = ({
 					/>
 					<PrimaryButton
 						size={"sm"}
-						name={handleNext ? "Next" : "Add employee"}
+						name={handleNext ? "Next" : "Submit"}
 						onOpen={() => handleNext(id)}
 					/>
 				</HStack>

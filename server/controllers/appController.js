@@ -16,6 +16,11 @@ const {
 	isRoleManager,
 } = require("../services/data");
 
+const addEmployee = async (name, data) => {
+	const existingCompany = await Company.findOne({ name });
+	data.companyId = existingCompany._id;
+	return await Employee.create(data);
+};
 const signUp = async (req, res) => {
 	const {
 		company,
@@ -44,8 +49,7 @@ const signUp = async (req, res) => {
 		const hashedPassword = await hashPassword(password);
 
 		const existingCompany = await Company.findOne({ name: company });
-		const employee = await Employee.create({
-			companyId: existingCompany._id,
+		const employee = await addEmployee(company, {
 			employeeId: companyId,
 			firstName,
 			middleName,
@@ -278,4 +282,5 @@ module.exports = {
 	setNewPassword,
 	changePassword,
 	setInitialPermissions,
+	addEmployee,
 };

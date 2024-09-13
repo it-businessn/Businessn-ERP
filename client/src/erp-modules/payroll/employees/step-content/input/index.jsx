@@ -23,7 +23,7 @@ const InputRecord = ({
 				subRequired={param?.submandatory}
 				label={param.name}
 				name={param.param_key}
-				type={param.name === "Email" ? "email" : "text"} // text or number
+				type={param.name.includes("Email") ? "email" : "text"} // text or number
 				valueText={formData[param.param_key]?.toLocaleString()}
 				fontWeight={param.name === "Address" && "bold"}
 				display={param.name === "Address" && "none"}

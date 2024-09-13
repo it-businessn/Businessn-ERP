@@ -6,6 +6,7 @@ const OnboardEmpModal = ({
 	showOnboard,
 	setShowOnboard,
 	selectedPayGroupName,
+	title,
 }) => {
 	const { onClose } = useDisclosure();
 
@@ -16,7 +17,7 @@ const OnboardEmpModal = ({
 
 	return (
 		<ModalLayout
-			title={"Onboard employee"}
+			title={title}
 			size="7xl"
 			isOpen={showOnboard}
 			onClose={handleClose}

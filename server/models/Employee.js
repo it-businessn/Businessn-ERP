@@ -29,12 +29,11 @@ const employeeSchema = new mongoose.Schema({
 	middleName: String,
 	lastName: String,
 	fullName: String,
-	email: { type: String, unique: true, required: true },
+	email: { type: String, unique: true },
 	password: {
 		type: String,
-		required: true,
 	},
-	role: { type: String, required: true, ref: "EmployeeRole" },
+	role: { type: String, ref: "EmployeeRole" },
 
 	isActive: Boolean,
 	lastLogin: String,
@@ -43,7 +42,6 @@ const employeeSchema = new mongoose.Schema({
 	emailVerified: Boolean,
 	phoneNumber: {
 		type: String,
-		required: true,
 	},
 	emergencyContact: {
 		firstName: String,

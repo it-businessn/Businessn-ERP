@@ -1,5 +1,6 @@
 const Employee = require("../models/Employee");
 const EmployeeProfileInfo = require("../models/EmployeeProfileInfo");
+const { addEmployee } = require("./appController");
 const { deleteAlerts } = require("./payrollController");
 const { addStatHolidayDefaultTimesheet } = require("./timesheetContoller");
 
@@ -64,6 +65,7 @@ const addEmployeeProfileInfo = async (req, res) => {
 		emergencyPersonalEmail,
 		emergencyPersonalPhoneNum,
 		streetAddress,
+		streetAddressSuite,
 		city,
 		province,
 		country,
@@ -90,6 +92,26 @@ const addEmployeeProfileInfo = async (req, res) => {
 			await employee.save();
 		}
 
+		if (!empId) {
+			const newEmployee = await addEmployee(companyName, {
+				employeeId: employeeNo,
+				firstName,
+				middleName,
+				lastName,
+				email: personalEmail,
+				role: "Employee",
+				phoneNumber: personalPhoneNum,
+				primaryAddress: {
+					streetAddress: `${streetAddressSuite} ${streetAddress}`,
+					city,
+					state: province,
+					postalCode,
+					country,
+				},
+				fullName: `${firstName} ${middleName} ${lastName}`,
+			});
+			return res.status(201).json(newEmployee);
+		}
 		if (existingProfileInfo) {
 			const updatedProfileInfo = await updateProfileInfo(
 				existingProfileInfo._id,
@@ -97,7 +119,6 @@ const addEmployeeProfileInfo = async (req, res) => {
 			);
 			return res.status(201).json(updatedProfileInfo);
 		}
-
 		const newProfileInfo = await EmployeeProfileInfo.create({
 			empId,
 			companyName,

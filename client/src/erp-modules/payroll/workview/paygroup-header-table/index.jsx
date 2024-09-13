@@ -19,6 +19,7 @@ const PaygroupTable = ({
 }) => {
 	const [showExtraPayrun, setShowExtraPayrun] = useState(false);
 	const [showOnboard, setShowOnboard] = useState(false);
+	const [showTerminate, setShowTerminate] = useState(false);
 
 	const navigate = useNavigate();
 
@@ -31,6 +32,9 @@ const PaygroupTable = ({
 		}
 		if (val === "onboard") {
 			setShowOnboard(true);
+		}
+		if (val === "terminate") {
+			setShowTerminate(true);
 		}
 	};
 	return (
@@ -62,8 +66,17 @@ const PaygroupTable = ({
 					)}
 					{showOnboard && (
 						<OnboardEmpModal
+							title={"Onboard employee"}
 							showOnboard={showOnboard}
 							setShowOnboard={setShowOnboard}
+							selectedPayGroupName={selectedPayGroup?.name}
+						/>
+					)}
+					{showTerminate && (
+						<OnboardEmpModal
+							title={"Terminate employee"}
+							showOnboard={showTerminate}
+							setShowOnboard={setShowTerminate}
 							selectedPayGroupName={selectedPayGroup?.name}
 						/>
 					)}
