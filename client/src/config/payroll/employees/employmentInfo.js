@@ -134,12 +134,12 @@ export const EMP_ROLE_CONFIG = [
 				control: "select",
 				options: ROLE_OPTIONS,
 			},
-			{
-				name: "Department",
-				param_key: "employmentDepartment",
-				control: "multiselect",
-				options: DEPARTMENT_MULTI_OPTIONS,
-			},
+			// {
+			// 	name: "Department",
+			// 	param_key: "employmentDepartment",
+			// 	control: "multiselect",
+			// 	options: DEPARTMENT_MULTI_OPTIONS,
+			// },
 		],
 	},
 ];

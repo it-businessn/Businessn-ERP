@@ -18,6 +18,7 @@ const Record = ({
 	isDisabled,
 	isLoading,
 	handleSubmit,
+	isOnboarding,
 }) => {
 	return (
 		<>
@@ -47,6 +48,7 @@ const Record = ({
 								/>
 							) : param?.control === "date" ? (
 								<DateTypeRecord
+									isOnboarding={isOnboarding}
 									key={param.name}
 									formData={formData}
 									param={param}

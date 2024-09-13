@@ -13,7 +13,7 @@ import PayrollService from "services/PayrollService";
 import StepContent from "../step-content";
 import Record from "../step-content/Record";
 
-const GovernmentContribution = ({ company, empId }) => {
+const GovernmentContribution = ({ company, empId, isOnboarding }) => {
 	const governmentInfo = useEmployeeGovernment(company, empId);
 	const setGovernmentInfo = () => getInitialGovernmentInfo(empId, company);
 	const [formData, setFormData] = useState(setGovernmentInfo);
@@ -59,7 +59,7 @@ const GovernmentContribution = ({ company, empId }) => {
 		},
 		{
 			title: "Federal Government Contributions",
-			content: (
+			content: !isOnboarding && (
 				<Record
 					handleConfirm={handleConfirm}
 					formData={formData}
@@ -75,7 +75,7 @@ const GovernmentContribution = ({ company, empId }) => {
 
 		{
 			title: "Regional Government Deductions",
-			content: (
+			content: !isOnboarding && (
 				<Record
 					handleConfirm={handleConfirm}
 					formData={formData}

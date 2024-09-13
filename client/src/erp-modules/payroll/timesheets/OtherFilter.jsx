@@ -1,5 +1,4 @@
 import {
-	FormLabel,
 	HStack,
 	Popover,
 	PopoverBody,
@@ -12,6 +11,7 @@ import ActionButtonGroup from "components/ui/form/ActionButtonGroup";
 import MultiSelectFormControl from "components/ui/form/MultiSelectFormControl";
 import { useState } from "react";
 import { FaCaretDown } from "react-icons/fa";
+import { MdOutlineFilterList } from "react-icons/md";
 
 const OtherFilter = ({
 	showOtherFilter,
@@ -49,8 +49,9 @@ const OtherFilter = ({
 					borderRadius="md"
 					onClick={toggleOtherFilter}
 					p={0}
+					spacing={1}
 				>
-					<FormLabel>{"Filter by"}</FormLabel>
+					<MdOutlineFilterList />
 					<OutlineButton
 						label={
 							<>

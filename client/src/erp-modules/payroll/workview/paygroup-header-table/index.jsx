@@ -4,6 +4,7 @@ import BoxCard from "components/ui/card";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import ExtraPayrunModal from "./ExtraPayrunModal";
+import OnboardEmpModal from "./OnboardEmpModal";
 import PayrollActions from "./PayrollActions";
 import WorkviewTable from "./WorkviewTable";
 
@@ -17,6 +18,7 @@ const PaygroupTable = ({
 	empPath,
 }) => {
 	const [showExtraPayrun, setShowExtraPayrun] = useState(false);
+	const [showOnboard, setShowOnboard] = useState(false);
 
 	const navigate = useNavigate();
 
@@ -26,6 +28,9 @@ const PaygroupTable = ({
 		}
 		if (val === "empUpdate") {
 			navigate(empPath);
+		}
+		if (val === "onboard") {
+			setShowOnboard(true);
 		}
 	};
 	return (
@@ -51,6 +56,17 @@ const PaygroupTable = ({
 							showExtraPayrun={showExtraPayrun}
 							setRefresh={setRefresh}
 							setShowExtraPayrun={setShowExtraPayrun}
+							selectedPayGroup={selectedPayGroup}
+							closestRecord={closestRecord}
+						/>
+					)}
+					{showOnboard && (
+						<OnboardEmpModal
+							selectedPayGroupId={selectedPayGroup._id}
+							company={company}
+							showExtraPayrun={showOnboard}
+							setRefresh={setRefresh}
+							setShowExtraPayrun={setShowOnboard}
 							selectedPayGroup={selectedPayGroup}
 							closestRecord={closestRecord}
 						/>

@@ -14,7 +14,7 @@ import PayrollService from "services/PayrollService";
 import StepContent from "../step-content";
 import Record from "../step-content/Record";
 
-const PersonalInfo = ({ company, empId }) => {
+const PersonalInfo = ({ company, empId, isOnboarding }) => {
 	const profileInfo = useEmployeeProfileInfo(company, empId);
 
 	const setProfileInfo = () => getInitialProfileInfo(empId, company);
@@ -91,7 +91,7 @@ const PersonalInfo = ({ company, empId }) => {
 		},
 		{
 			title: "Emergency Contact",
-			content: (
+			content: !isOnboarding && (
 				<Record
 					handleConfirm={handleConfirm}
 					formData={formData}

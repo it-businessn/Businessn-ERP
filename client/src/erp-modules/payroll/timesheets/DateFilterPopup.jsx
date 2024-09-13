@@ -1,5 +1,6 @@
 import { Box, HStack, Input } from "@chakra-ui/react";
-import "daterangepicker";
+import "daterangepicker/daterangepicker";
+import "daterangepicker/daterangepicker.css";
 import $ from "jquery";
 import moment from "moment";
 import { useEffect, useRef, useState } from "react";

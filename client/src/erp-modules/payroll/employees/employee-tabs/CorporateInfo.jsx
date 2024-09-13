@@ -12,7 +12,7 @@ import PayrollService from "services/PayrollService";
 import StepContent from "../step-content";
 import Record from "../step-content/Record";
 
-const CorporateInfo = ({ company, empId }) => {
+const CorporateInfo = ({ company, empId, isOnboarding }) => {
 	const employmentInfo = useEmployeeEmploymentInfo(company, empId, true);
 	const setCorporateInfo = getInitialCorporateInfo(empId, company);
 	const [formData, setFormData] = useState(setCorporateInfo);
@@ -45,6 +45,7 @@ const CorporateInfo = ({ company, empId }) => {
 			title: "Role",
 			content: (
 				<Record
+					isOnboarding={isOnboarding}
 					handleConfirm={handleConfirm}
 					formData={formData}
 					setFormData={setFormData}

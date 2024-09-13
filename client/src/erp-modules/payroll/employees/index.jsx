@@ -24,7 +24,7 @@ import GovernmentInfo from "./employee-tabs/GovernmentContribution";
 import PayInfo from "./employee-tabs/PayInfo";
 import PersonalInfo from "./employee-tabs/PersonalInfo";
 
-const Employees = () => {
+const Employees = ({ isOnboarding }) => {
 	const { id, stepNo } = useParams();
 	const { company } = useCompany(
 		LocalStorageService.getItem("selectedCompany"),
@@ -68,7 +68,13 @@ const Employees = () => {
 			id: 0,
 			type: "Info",
 
-			name: <PersonalInfo company={company} empId={userId} />,
+			name: (
+				<PersonalInfo
+					company={company}
+					empId={userId}
+					isOnboarding={isOnboarding}
+				/>
+			),
 		},
 		{
 			id: 1,
@@ -79,13 +85,25 @@ const Employees = () => {
 			id: 2,
 			type: "Employment",
 
-			name: <CorporateInfo company={company} empId={userId} />,
+			name: (
+				<CorporateInfo
+					company={company}
+					empId={userId}
+					isOnboarding={isOnboarding}
+				/>
+			),
 		},
 		{
 			id: 3,
 			type: "Government",
 
-			name: <GovernmentInfo company={company} empId={userId} />,
+			name: (
+				<GovernmentInfo
+					company={company}
+					empId={userId}
+					isOnboarding={isOnboarding}
+				/>
+			),
 		},
 		{
 			id: 4,
@@ -101,58 +119,67 @@ const Employees = () => {
 		},
 	];
 
-	const tabContent = id ? SETUP_LIST[stepNo].type : SETUP_LIST[0].type;
+	const [tabs, setTabs] = useState(SETUP_LIST);
+	const tabContent = id ? SETUP_LIST[stepNo]?.type : SETUP_LIST[0]?.type;
 	const [viewMode, setViewMode] = useState(tabContent);
 	const showComponent = (viewMode) =>
-		SETUP_LIST.find(({ type }) => type === viewMode)?.name;
+		tabs.find(({ type }) => type === viewMode)?.name;
+
+	useEffect(() => {
+		if (isOnboarding) {
+			setTabs((prev) => prev.filter((item, index) => index < 5));
+		}
+	}, [isOnboarding]);
 
 	return (
-		<PageLayout title={"Employees"}>
-			<HStack spacing="1em" mt="1em" justifyContent={"space-between"}>
+		<PageLayout title={isOnboarding ? "" : "Employees"}>
+			{!isOnboarding && (
 				<HStack spacing="1em" mt="1em" justifyContent={"space-between"}>
-					<Avatar
-						// onClick={handleToggle}
-						name={employee?.fullName}
-						src=""
-						boxSize="15"
-					/>
-					<VStack spacing={0} align={"start"}>
-						<TextTitle size="sm" title={employee?.fullName} />
-						<NormalTextTitle size="xs" title={employee?.employeeId} />
-						{isActivePayroll && (
-							<Badge bg="var(--correct_ans)" color="var(--primary_bg)">
-								<TextTitle title={"Payroll Activated"} />
-							</Badge>
-						)}
+					<HStack spacing="1em" mt="1em" justifyContent={"space-between"}>
+						<Avatar
+							// onClick={handleToggle}
+							name={employee?.fullName}
+							src=""
+							boxSize="15"
+						/>
+						<VStack spacing={0} align={"start"}>
+							<TextTitle size="sm" title={employee?.fullName} />
+							<NormalTextTitle size="xs" title={employee?.employeeId} />
+							{isActivePayroll && (
+								<Badge bg="var(--correct_ans)" color="var(--primary_bg)">
+									<TextTitle title={"Payroll Activated"} />
+								</Badge>
+							)}
+						</VStack>
+					</HStack>
+					<Spacer />
+					<VStack spacing={1} w={"30%"} align={"start"}>
+						<EmpSearchMenu
+							width={"full"}
+							filteredEmployees={filteredEmployees}
+							empName={empName}
+							handleInputChange={handleInputChange}
+							handleSelect={handleSelect}
+						/>
+						<Checkbox
+							colorScheme={"facebook"}
+							// isChecked={hasChecklist}
+							// onChange={() => setHasChecklist(!hasChecklist)}
+						>
+							Terminated
+						</Checkbox>
 					</VStack>
 				</HStack>
-				<Spacer />
-				<VStack spacing={1} w={"30%"} align={"start"}>
-					<EmpSearchMenu
-						width={"full"}
-						filteredEmployees={filteredEmployees}
-						empName={empName}
-						handleInputChange={handleInputChange}
-						handleSelect={handleSelect}
-					/>
-					<Checkbox
-						colorScheme={"facebook"}
-						// isChecked={hasChecklist}
-						// onChange={() => setHasChecklist(!hasChecklist)}
-					>
-						Terminated
-					</Checkbox>
-				</VStack>
-			</HStack>
+			)}
 
 			<HStack
 				spacing="1em"
-				mt="1em"
+				mt={isOnboarding ? 0 : "1em"}
 				justifyContent={"space-between"}
 				w={"100%"}
 			>
 				<SimpleGrid
-					columns={{ base: 4, lg: 6 }}
+					columns={{ base: 4, lg: isOnboarding ? 5 : 6 }}
 					spacing="1em"
 					my="5"
 					bg={"var(--primary_bg)"}
@@ -160,10 +187,10 @@ const Employees = () => {
 					p={"8px"}
 					w={"100%"}
 				>
-					{SETUP_LIST.map((_) => (
+					{tabs?.map((_) => (
 						<RadioButtonGroup
-							key={_.id}
-							name={_.type}
+							key={_?.id}
+							name={_?.type}
 							selectedFilter={viewMode}
 							handleFilterClick={(name) => setViewMode(name)}
 							fontSize={"1em"}
