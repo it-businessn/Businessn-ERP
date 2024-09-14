@@ -35,7 +35,8 @@ export const EMP_PAYMENT_NOTIFICATION_CONFIG = [
 				name: "Send Paystub by email on pay day",
 				param_key: "payStubSendByEmail",
 				control: "radio",
-			}, //Yes and No
+				options: ["Yes", "No"],
+			},
 			{ name: "Email", param_key: "paymentEmail", mandatory: true },
 		],
 	},
@@ -45,11 +46,11 @@ export const getInitialBankingInfo = (empId, companyName) => {
 	return {
 		empId,
 		companyName,
-		directDeposit: "",
-		bankNum: "",
-		transitNum: "",
-		accountNum: "",
-		payStubSendByEmail: "",
-		paymentEmail: "",
+		directDeposit: "Yes",
+		bankNum: null,
+		transitNum: null,
+		accountNum: null,
+		payStubSendByEmail: "Yes",
+		paymentEmail: null,
 	};
 };

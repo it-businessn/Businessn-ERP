@@ -1,4 +1,7 @@
-import { REGIONS } from "erp-modules/project-management/workview/project/data";
+import {
+	COUNTRIES,
+	REGIONS,
+} from "erp-modules/project-management/workview/project/data";
 
 export const EMP_INCOME_TAX_CONFIG = [
 	{
@@ -8,12 +11,7 @@ export const EMP_INCOME_TAX_CONFIG = [
 				name: "Federal Tax",
 				param_key: "federalTax",
 				control: "select",
-				options: [
-					{
-						type: "Canada",
-						dependent: false,
-					},
-				],
+				options: COUNTRIES,
 			},
 			{
 				name: "Regional Tax",

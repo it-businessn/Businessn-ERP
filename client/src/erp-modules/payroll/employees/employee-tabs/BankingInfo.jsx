@@ -1,4 +1,4 @@
-import { SimpleGrid } from "@chakra-ui/react";
+import { SimpleGrid, useToast } from "@chakra-ui/react";
 import BoxCard from "components/ui/card";
 import VerticalStepper from "components/ui/VerticalStepper";
 import {
@@ -8,13 +8,16 @@ import {
 } from "config/payroll/employees/bankingInfo";
 import useEmployeeBankingInfo from "hooks/useEmployeeBankingInfo";
 import { useEffect, useState } from "react";
+import LocalStorageService from "services/LocalStorageService";
 import PayrollService from "services/PayrollService";
 import StepContent from "../step-content";
 import Record from "../step-content/Record";
 
 const BankingInfo = ({ company, empId, isOnboarding, handlePrev, id }) => {
+	const onboardingEmpId = LocalStorageService.getItem("onboardingEmpId");
 	const bankingInfo = useEmployeeBankingInfo(company, empId, isOnboarding);
-	const setBankingInfo = () => getInitialBankingInfo(empId, company);
+	const setBankingInfo = () =>
+		getInitialBankingInfo(onboardingEmpId ?? empId, company);
 	const [formData, setFormData] = useState(setBankingInfo);
 	const [isDisabled, setIsDisabled] = useState(true);
 	const [isLoading, setIsLoading] = useState(false);
@@ -28,15 +31,29 @@ const BankingInfo = ({ company, empId, isOnboarding, handlePrev, id }) => {
 	}, [bankingInfo, empId]);
 
 	const handleConfirm = () => {
-		setIsDisabled(false);
+		if (
+			formData.bankNum &&
+			formData.transitNum &&
+			formData.accountNum &&
+			formData.paymentEmail
+		) {
+			setIsDisabled(false);
+		}
 	};
 
+	const toast = useToast();
 	const handleSubmit = async () => {
 		setIsLoading(true);
 		try {
 			await PayrollService.addEmployeeBankingInfo(formData);
 			setIsLoading(false);
 			setIsDisabled(true);
+			toast({
+				title: "Banking info updated successfully.",
+				status: "success",
+				duration: 1000,
+				isClosable: true,
+			});
 		} catch (error) {}
 	};
 

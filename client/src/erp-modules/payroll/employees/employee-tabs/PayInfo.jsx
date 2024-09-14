@@ -1,4 +1,4 @@
-import { SimpleGrid } from "@chakra-ui/react";
+import { SimpleGrid, useToast } from "@chakra-ui/react";
 import BoxCard from "components/ui/card";
 import VerticalStepper from "components/ui/VerticalStepper";
 import {
@@ -9,6 +9,7 @@ import {
 } from "config/payroll/employees/payInfo";
 import useEmployeePayInfo from "hooks/useEmployeePayInfo";
 import { useEffect, useState } from "react";
+import LocalStorageService from "services/LocalStorageService";
 import PayrollService from "services/PayrollService";
 import StepContent from "../step-content";
 import Record from "../step-content/Record";
@@ -29,8 +30,8 @@ const PayInfo = ({
 		null,
 		isOnboarding,
 	);
-
-	const setPayInfo = () => getInitialPayInfo(empId, company);
+	const onboardingEmpId = LocalStorageService.getItem("onboardingEmpId");
+	const setPayInfo = () => getInitialPayInfo(onboardingEmpId ?? empId, company);
 
 	const [formData, setFormData] = useState(setPayInfo);
 	const [isDisabled, setIsDisabled] = useState(true);
@@ -48,12 +49,19 @@ const PayInfo = ({
 		setIsDisabled(false);
 	};
 
+	const toast = useToast();
 	const handleSubmit = async () => {
 		setIsLoading(true);
 		try {
 			await PayrollService.addEmployeePayInfo(formData);
 			setIsLoading(false);
 			setIsDisabled(true);
+			toast({
+				title: "Payment info updated successfully.",
+				status: "success",
+				duration: 1000,
+				isClosable: true,
+			});
 		} catch (error) {}
 	};
 

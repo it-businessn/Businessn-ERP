@@ -81,6 +81,13 @@ export const SUPERVISOR_ASSIGNEES = [
 	{ name: "Supervisor 2", id: "Supervisor2" },
 ];
 
+export const COUNTRIES = [
+	{
+		type: "Canada",
+		dependent: false,
+	},
+];
+
 export const REGIONS = [
 	{ name: "Alberta", id: "AB" },
 	{ name: "British Columbia", id: "BC" },

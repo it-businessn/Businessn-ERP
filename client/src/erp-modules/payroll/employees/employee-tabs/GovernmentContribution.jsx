@@ -1,4 +1,4 @@
-import { SimpleGrid } from "@chakra-ui/react";
+import { SimpleGrid, useToast } from "@chakra-ui/react";
 import BoxCard from "components/ui/card";
 import VerticalStepper from "components/ui/VerticalStepper";
 import {
@@ -9,6 +9,7 @@ import {
 } from "config/payroll/employees/governmentInfo";
 import useEmployeeGovernment from "hooks/useEmployeeGovernment";
 import { useEffect, useState } from "react";
+import LocalStorageService from "services/LocalStorageService";
 import PayrollService from "services/PayrollService";
 import StepContent from "../step-content";
 import Record from "../step-content/Record";
@@ -21,8 +22,10 @@ const GovernmentContribution = ({
 	handlePrev,
 	id,
 }) => {
+	const onboardingEmpId = LocalStorageService.getItem("onboardingEmpId");
 	const governmentInfo = useEmployeeGovernment(company, empId, isOnboarding);
-	const setGovernmentInfo = () => getInitialGovernmentInfo(empId, company);
+	const setGovernmentInfo = () =>
+		getInitialGovernmentInfo(onboardingEmpId ?? empId, company);
 	const [formData, setFormData] = useState(setGovernmentInfo);
 	const [isDisabled, setIsDisabled] = useState(true);
 	const [isLoading, setIsLoading] = useState(false);
@@ -39,12 +42,19 @@ const GovernmentContribution = ({
 		setIsDisabled(false);
 	};
 
+	const toast = useToast();
 	const handleSubmit = async () => {
 		setIsLoading(true);
 		try {
 			await PayrollService.addEmployeeGovernmentInfo(formData);
 			setIsLoading(false);
 			setIsDisabled(true);
+			toast({
+				title: "Government info updated successfully.",
+				status: "success",
+				duration: 1000,
+				isClosable: true,
+			});
 		} catch (error) {}
 	};
 

@@ -1,4 +1,7 @@
-import { REGIONS } from "erp-modules/project-management/workview/project/data";
+import {
+	COUNTRIES,
+	REGIONS,
+} from "erp-modules/project-management/workview/project/data";
 
 export const ROLE_OPTIONS = [
 	{
@@ -153,12 +156,7 @@ export const EMP_REGION_CONFIG = [
 				name: "Country",
 				param_key: "employmentCountry",
 				control: "select",
-				options: [
-					{
-						type: "Canada",
-						dependent: false,
-					},
-				],
+				options: COUNTRIES,
 			},
 		],
 	},

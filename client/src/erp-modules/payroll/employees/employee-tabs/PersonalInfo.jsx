@@ -1,4 +1,4 @@
-import { SimpleGrid } from "@chakra-ui/react";
+import { SimpleGrid, useToast } from "@chakra-ui/react";
 import BoxCard from "components/ui/card";
 import VerticalStepper from "components/ui/VerticalStepper";
 import {
@@ -10,6 +10,7 @@ import {
 } from "config/payroll/employees/profileInfo";
 import useEmployeeProfileInfo from "hooks/useEmployeeProfileInfo";
 import { useEffect, useState } from "react";
+import LocalStorageService from "services/LocalStorageService";
 import PayrollService from "services/PayrollService";
 import StepContent from "../step-content";
 import Record from "../step-content/Record";
@@ -26,6 +27,7 @@ const PersonalInfo = ({ company, empId, isOnboarding, id, handleNext }) => {
 	useEffect(() => {
 		if (profileInfo) {
 			setFormData(profileInfo);
+			LocalStorageService.removeItem("onboardingEmpId");
 		} else {
 			setFormData(setProfileInfo);
 		}
@@ -46,13 +48,21 @@ const PersonalInfo = ({ company, empId, isOnboarding, id, handleNext }) => {
 			setIsDisabled(false);
 		}
 	};
+	const toast = useToast();
 
 	const handleSubmit = async () => {
 		setIsLoading(true);
 		try {
-			await PayrollService.addEmployeeProfileInfo(formData);
+			const result = await PayrollService.addEmployeeProfileInfo(formData);
 			setIsLoading(false);
 			setIsDisabled(true);
+			LocalStorageService.setItem("onboardingEmpId", result.data._id);
+			toast({
+				title: "Personal info added successfully.",
+				status: "success",
+				duration: 1000,
+				isClosable: true,
+			});
 		} catch (error) {}
 	};
 

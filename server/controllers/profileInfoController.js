@@ -72,26 +72,6 @@ const addEmployeeProfileInfo = async (req, res) => {
 		postalCode,
 	} = req.body;
 	try {
-		const existingProfileInfo = await findEmployeeProfileInfo(
-			empId,
-			companyName,
-		);
-
-		if (SIN !== "") {
-			await deleteAlerts(empId);
-		}
-
-		if (payrollStatus === "Payroll Active") {
-			addStatHolidayDefaultTimesheet(empId, companyName);
-		}
-
-		const employee = await Employee.findById(empId);
-
-		if (employee && employee.payrollStatus !== payrollStatus) {
-			employee.payrollStatus = payrollStatus;
-			await employee.save();
-		}
-
 		if (!empId) {
 			const newEmployee = await addEmployee(companyName, {
 				employeeId: employeeNo,
@@ -112,6 +92,26 @@ const addEmployeeProfileInfo = async (req, res) => {
 			});
 			return res.status(201).json(newEmployee);
 		}
+		const existingProfileInfo = await findEmployeeProfileInfo(
+			empId,
+			companyName,
+		);
+
+		if (SIN !== "") {
+			await deleteAlerts(empId);
+		}
+
+		if (payrollStatus === "Payroll Active") {
+			addStatHolidayDefaultTimesheet(empId, companyName);
+		}
+
+		const employee = await Employee.findById(empId);
+
+		if (employee && employee.payrollStatus !== payrollStatus) {
+			employee.payrollStatus = payrollStatus;
+			await employee.save();
+		}
+
 		if (existingProfileInfo) {
 			const updatedProfileInfo = await updateProfileInfo(
 				existingProfileInfo._id,

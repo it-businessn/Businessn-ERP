@@ -1,3 +1,8 @@
+import {
+	COUNTRIES,
+	REGIONS,
+} from "erp-modules/project-management/workview/project/data";
+
 export const EMP_EMERGENCY_CONTACT_CONFIG = [
 	{
 		type: "sfsgdsgdsgdsg30",
@@ -29,8 +34,19 @@ export const EMP_CONTACT_CONFIG = [
 			{ name: "Street Address", param_key: "streetAddress" },
 			{ name: "Suite", param_key: "streetAddressSuite" },
 			{ name: "City", param_key: "city" },
-			{ name: "Province/State", param_key: "province" },
-			{ name: "Country", param_key: "country" },
+			{
+				name: "Province/State",
+				param_key: "province",
+				control: "select",
+				options: REGIONS,
+			},
+
+			{
+				name: "Country",
+				param_key: "country",
+				control: "select",
+				options: COUNTRIES,
+			},
 			{ name: "Postal Code", param_key: "postalCode" },
 		],
 	},
@@ -158,8 +174,8 @@ export const getInitialProfileInfo = (empId, companyName) => {
 		emergencyPersonalPhoneNum: "",
 		streetAddress: "",
 		city: "",
-		province: "",
-		country: "",
+		province: "British Columbia",
+		country: "Canada",
 		postalCode: "",
 		streetAddressSuite: "",
 	};
