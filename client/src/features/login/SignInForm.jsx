@@ -3,7 +3,7 @@ import {
 	Alert,
 	AlertIcon,
 	Button,
-	Center,
+	Flex,
 	FormControl,
 	FormLabel,
 	Heading,
@@ -75,96 +75,99 @@ const SignInForm = ({ title }) => {
 	};
 
 	return (
-		<Center flex="1">
-			<Stack
-				spacing="8"
-				px={{
-					base: "4",
-					md: "8",
-				}}
-				py={{
-					base: "12",
-					md: "48",
-				}}
-				width="full"
-				maxW="sm"
-			>
-				<Stack spacing="6">
-					{isMobile && <Logo />}
-					<Stack
-						spacing={{
-							base: "2",
-							md: "3",
+		<Stack
+			m={"auto"}
+			position="relative"
+			spacing="8"
+			p={"1em 2em"}
+			mt={"20vh"}
+			width="lg"
+			bg="whiteAlpha.900"
+			boxShadow="xl"
+			justifyContent={"center"}
+			borderRadius={"20px"}
+		>
+			<Stack spacing={0}>
+				{isMobile ? (
+					<Logo />
+				) : (
+					<Flex h="24" m={"0 auto"}>
+						<Logo isCover isForgotPassword />
+					</Flex>
+				)}
+				<Stack
+					spacing={{
+						base: "2",
+						md: "3",
+					}}
+					textAlign="center"
+				>
+					<Heading
+						size={{
+							base: "xs",
+							md: "sm",
 						}}
-						textAlign="center"
 					>
-						<Heading
-							size={{
-								base: "xs",
-								md: "sm",
-							}}
-						>
-							{title}
-						</Heading>
-					</Stack>
+						{title}
+					</Heading>
 				</Stack>
-				<Stack spacing="5">
-					<form onSubmit={handleLogin}>
-						<Stack spacing={4}>
-							<FormControl>
-								<FormLabel>Email</FormLabel>
+			</Stack>
+			<Stack spacing="5">
+				<form onSubmit={handleLogin}>
+					<Stack spacing={4}>
+						<FormControl>
+							<FormLabel>Email</FormLabel>
+							<Input
+								type="email"
+								name="email"
+								value={formData.email}
+								onChange={handleChange}
+								required
+							/>
+						</FormControl>
+
+						<FormControl>
+							<FormLabel>Password</FormLabel>
+							<InputGroup>
 								<Input
-									type="email"
-									name="email"
-									value={formData.email}
+									type={showPassword ? "text" : "password"}
+									name="password"
+									value={formData.password}
 									onChange={handleChange}
 									required
 								/>
-							</FormControl>
-
-							<FormControl>
-								<FormLabel>Password</FormLabel>
-								<InputGroup>
-									<Input
-										type={showPassword ? "text" : "password"}
-										name="password"
-										value={formData.password}
-										onChange={handleChange}
-										required
-									/>
-									<InputRightElement>
-										<Button
-											size="sm"
-											variant="unstyled"
-											onClick={handleTogglePassword}
-											aria-label="Toggle Password Visibility"
-										>
-											{showPassword ? <ViewOffIcon /> : <ViewIcon />}
-										</Button>
-									</InputRightElement>
-								</InputGroup>
-							</FormControl>
-							<Button isLoading={isLoading} type="submit" bg="var(--logo_bg)">
-								Login
-							</Button>
-						</Stack>
-					</form>
-					<Button
-						variant={"link"}
-						textDecor={"underline"}
-						onClick={showForgotPasswordPage}
-					>
-						Forgot Password
-					</Button>
-					{error && (
-						<Alert status="error" mt={4}>
-							<AlertIcon />
-							{error}
-						</Alert>
-					)}
-				</Stack>
+								<InputRightElement>
+									<Button
+										size="sm"
+										variant="unstyled"
+										onClick={handleTogglePassword}
+										aria-label="Toggle Password Visibility"
+									>
+										{showPassword ? <ViewOffIcon /> : <ViewIcon />}
+									</Button>
+								</InputRightElement>
+							</InputGroup>
+						</FormControl>
+						<Button isLoading={isLoading} type="submit" bg="var(--logo_bg)">
+							Login
+						</Button>
+					</Stack>
+				</form>
+				<Button
+					variant={"link"}
+					textDecor={"underline"}
+					onClick={showForgotPasswordPage}
+				>
+					Forgot Password
+				</Button>
+				{error && (
+					<Alert status="error" mt={4}>
+						<AlertIcon />
+						{error}
+					</Alert>
+				)}
 			</Stack>
-		</Center>
+		</Stack>
 	);
 };
 export default SignInForm;
