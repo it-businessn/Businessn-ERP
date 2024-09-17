@@ -7,16 +7,18 @@ import {
 	FormControl,
 	FormLabel,
 	Heading,
+	Image,
 	Input,
 	InputGroup,
 	InputRightElement,
 	Stack,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useBreakpointValue } from "services/Breakpoint";
 import LoginService from "services/LoginService";
 import { buildUserInfo, storeUser } from "utils/common";
+import logoImg from "../../assets/logos/BusinessN_lightLogo.jpg";
 import Logo from "../../components/logo";
 
 const SignInForm = ({ title }) => {
@@ -82,7 +84,7 @@ const SignInForm = ({ title }) => {
 			p={"1em 2em"}
 			mt={"20vh"}
 			width="lg"
-			bg="whiteAlpha.900"
+			bg="var(--main_color)"
 			boxShadow="xl"
 			justifyContent={"center"}
 			borderRadius={"20px"}
@@ -92,7 +94,18 @@ const SignInForm = ({ title }) => {
 					<Logo />
 				) : (
 					<Flex h="24" m={"0 auto"}>
-						<Logo isCover isForgotPassword />
+						<Link to="/">
+							<Image
+								// height={imageHeight}
+								// width={isCover ? "50%" : imageWidth}
+								// ml={isCover || src ? "0%" : imageMarginLeft}
+								mt={"-1em"}
+								// m={isForgotPassword && "0 auto"}
+								objectFit="contain"
+								src={logoImg}
+								alt="Company logo"
+							/>
+						</Link>
 					</Flex>
 				)}
 				<Stack

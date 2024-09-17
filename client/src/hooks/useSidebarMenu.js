@@ -1,5 +1,6 @@
 import { SIDEBAR_MENU } from "data";
 import { useEffect, useState } from "react";
+import LocalStorageService from "services/LocalStorageService";
 import UserService from "services/UserService";
 
 const useSidebarMenu = (userId, company, isManager) => {
@@ -8,9 +9,12 @@ const useSidebarMenu = (userId, company, isManager) => {
 	useEffect(() => {
 		const fetchUserPermissions = async () => {
 			try {
+				const companyName =
+					company ?? LocalStorageService.getItem("selectedCompany");
+
 				const response = await UserService.getUserPermission({
 					userId,
-					company,
+					company: companyName,
 				});
 
 				if (response.data) {
