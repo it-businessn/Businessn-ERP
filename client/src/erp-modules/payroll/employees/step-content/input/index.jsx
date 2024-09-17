@@ -9,22 +9,26 @@ const InputRecord = ({
 	handleConfirm,
 	isOnboarding,
 }) => {
-	const isHourlyEarning = formData.typeOfEarning === "Hourly";
-	const isSalaryEarning = formData.typeOfEarning === "Salary";
-	return isHourlyEarning && param.name === "Salary Rate" ? (
-		<></>
-	) : isSalaryEarning && param.name === "Regular Pay" ? (
+	const hideSalary =
+		formData.typeOfEarning === "Hourly" && param.name === "Salary Rate";
+	const hideRegular =
+		formData.typeOfEarning === "Salary" && param.name === "Regular Pay";
+	const showField =
+		!isOnboarding ||
+		(isOnboarding && !HIDE_ONBOARDING_SECTION.includes(param.name));
+	const controlType = param.name.includes("Email") ? "email" : "text"; // text or number
+
+	return hideSalary || hideRegular ? (
 		<></>
 	) : (
-		(!isOnboarding ||
-			(isOnboarding && !HIDE_ONBOARDING_SECTION.includes(param.name))) && (
+		showField && (
 			<InputFormControl
 				required={param?.mandatory}
 				subRequired={param?.submandatory}
 				label={param.name}
 				name={param.param_key}
-				type={param.name.includes("Email") ? "email" : "text"} // text or number
-				valueText={formData[param.param_key]?.toLocaleString()}
+				type={controlType}
+				valueText={formData[param.param_key]?.toLocaleString() ?? ""}
 				fontWeight={param.name === "Address" && "bold"}
 				display={param.name === "Address" && "none"}
 				visibility={hideLabel(param.name) && "hidden"}

@@ -31,7 +31,7 @@ const InputFormControl = ({
 				name={name}
 				label={label}
 				required={required}
-				// htmlFor={name}
+				htmlFor={name}
 				fontWeight={fontWeight}
 				visibility={visibility}
 			/>

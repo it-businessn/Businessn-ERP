@@ -19,7 +19,7 @@ const RequiredLabel = ({
 		<FormLabel
 			fontWeight={fontWeight}
 			display={hideLabel && "none"}
-			// htmlFor={name}
+			htmlFor={name}
 			visibility={visibility}
 		>
 			{label}
