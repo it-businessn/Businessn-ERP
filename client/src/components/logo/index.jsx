@@ -4,7 +4,14 @@ import { useBreakpointValue } from "services/Breakpoint";
 import logoImg from "../../assets/logos/logo.png";
 import signInLogoImg from "../../assets/logos/logoCover.jpg";
 
-const Logo = ({ src, isCover, isForgotPassword }) => {
+const Logo = ({
+	src,
+	isCover,
+	isForgotPassword,
+	isFullLogo,
+	logoImgSrc = logoImg,
+	width,
+}) => {
 	const { isMobile } = useBreakpointValue();
 
 	const linkStyle = isMobile ? { display: "inline-flex", width: "25px" } : {};
@@ -13,7 +20,16 @@ const Logo = ({ src, isCover, isForgotPassword }) => {
 	const imageMarginLeft = src ? (isMobile ? "3em" : "6.5em") : "auto";
 	const imageMarginTop = src ? (isMobile ? "-2em" : "-4.5em") : "auto";
 
-	return (
+	return isFullLogo ? (
+		<Link to="/">
+			<Image
+				objectFit="cover"
+				src={logoImgSrc}
+				alt="Company logo"
+				width={width}
+			/>
+		</Link>
+	) : (
 		<Link to="/" style={linkStyle}>
 			<Image
 				height={imageHeight}
@@ -22,7 +38,7 @@ const Logo = ({ src, isCover, isForgotPassword }) => {
 				mt={src ? 0 : imageMarginTop}
 				m={isForgotPassword && "0 auto"}
 				objectFit="contain"
-				src={isCover ? signInLogoImg : src ? src : logoImg}
+				src={isCover ? signInLogoImg : src ? src : logoImgSrc}
 				alt="Company logo"
 			/>
 		</Link>

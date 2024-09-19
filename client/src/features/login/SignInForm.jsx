@@ -7,18 +7,17 @@ import {
 	FormControl,
 	FormLabel,
 	Heading,
-	Image,
 	Input,
 	InputGroup,
 	InputRightElement,
 	Stack,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useBreakpointValue } from "services/Breakpoint";
 import LoginService from "services/LoginService";
 import { buildUserInfo, storeUser } from "utils/common";
-import logoImg from "../../assets/logos/BusinessN_lightLogo.jpg";
+import logoImg from "../../assets/logos/BusinessN_lightLogo1.png";
 import Logo from "../../components/logo";
 
 const SignInForm = ({ title }) => {
@@ -30,6 +29,7 @@ const SignInForm = ({ title }) => {
 	const defaultFormData = {
 		email: "",
 		password: "",
+		companyId: "",
 	};
 	const [formData, setFormData] = useState(defaultFormData);
 
@@ -83,7 +83,7 @@ const SignInForm = ({ title }) => {
 			spacing="8"
 			p={"1em 2em"}
 			mt={"20vh"}
-			width="lg"
+			width="md"
 			bg="var(--main_color)"
 			boxShadow="xl"
 			justifyContent={"center"}
@@ -93,19 +93,8 @@ const SignInForm = ({ title }) => {
 				{isMobile ? (
 					<Logo />
 				) : (
-					<Flex h="24" m={"0 auto"}>
-						<Link to="/">
-							<Image
-								// height={imageHeight}
-								// width={isCover ? "50%" : imageWidth}
-								// ml={isCover || src ? "0%" : imageMarginLeft}
-								mt={"-1em"}
-								// m={isForgotPassword && "0 auto"}
-								objectFit="contain"
-								src={logoImg}
-								alt="Company logo"
-							/>
-						</Link>
+					<Flex h="20" m={"0 auto"}>
+						<Logo isFullLogo logoImgSrc={logoImg} />
 					</Flex>
 				)}
 				<Stack
@@ -128,6 +117,15 @@ const SignInForm = ({ title }) => {
 			<Stack spacing="5">
 				<form onSubmit={handleLogin}>
 					<Stack spacing={4}>
+						<FormControl>
+							<FormLabel>Company ID</FormLabel>
+							<Input
+								name="companyId"
+								value={formData.companyId}
+								onChange={handleChange}
+								required
+							/>
+						</FormControl>
 						<FormControl>
 							<FormLabel>Email</FormLabel>
 							<Input
