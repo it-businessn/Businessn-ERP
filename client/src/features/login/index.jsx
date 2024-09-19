@@ -24,7 +24,7 @@ const Login = () => {
 				width="100%"
 				zIndex="5"
 			>
-				<Flex h="auto" m={"0 auto"}>
+				<Flex h="10" align={"center"}>
 					<Logo isFullLogo logoImgSrc={logoImg} width="150px" />
 				</Flex>
 			</Box>

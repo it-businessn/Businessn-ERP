@@ -3,7 +3,6 @@ import {
 	Avatar,
 	Button,
 	HStack,
-	IconButton,
 	Popover,
 	PopoverArrow,
 	PopoverBody,
@@ -12,8 +11,6 @@ import {
 	useColorMode,
 	VStack,
 } from "@chakra-ui/react";
-import { faBell } from "@fortawesome/free-regular-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ROUTE_PATH } from "routes";
@@ -53,26 +50,6 @@ const UserProfile = ({ user, handleLogout }) => {
 	return (
 		<HStack pb={2} _hover={{ cursor: "pointer" }}>
 			<Popover isOpen={isOpen} onClose={() => setIsOpen(false)}>
-				<IconButton
-					aria-label="Notification Bell"
-					icon={<FontAwesomeIcon icon={faBell} />}
-					borderRadius="full"
-					color="var(--main_color_black)"
-					bg={"var(--main_color)"}
-					boxShadow="md"
-					_hover={{ bg: "var(--primary_bg)" }}
-				/>
-
-				{/* <IconButton
-					onClick={toggleTheme}
-					aria-label="theme"
-					icon={<MoonIcon />}
-					borderRadius="full"
-					color="var(--main_color_black)"
-					bg={"var(--main_color)"}
-					boxShadow="md"
-					_hover={{ bg: "var(--primary_bg)" }}
-				/> */}
 				<PopoverTrigger>
 					<Avatar
 						onClick={handleToggle}
@@ -81,19 +58,11 @@ const UserProfile = ({ user, handleLogout }) => {
 						boxSize="12"
 					/>
 				</PopoverTrigger>
-				{/* <Box cursor="pointer">
-          <Text fontWeight="medium" fontSize="sm" textTransform="capitalize">
-            {user.fullName}
-          </Text>
-          <Text color="muted" fontSize="sm">
-            {user.email}
-          </Text>
-        </Box> */}
 				<PopoverContent maxW="xs" w="12rem" border="none">
 					<PopoverArrow />
 
 					<PopoverBody>
-						<VStack w="100%" alignItems="start">
+						<VStack w="100%" alignItems="start" color="var(--logo_bg)">
 							<Button variant="ghost" onClick={showProfilePage}>
 								Profile
 							</Button>
