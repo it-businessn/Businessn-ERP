@@ -11,10 +11,12 @@ import useEmployeeBalanceInfo from "hooks/useEmployeeBalanceInfo";
 import { useEffect, useState } from "react";
 import PayrollService from "services/PayrollService";
 // import { convertToNum } from"utils";
+import useSelectedEmp from "hooks/useSelectedEmp";
 import StepContent from "../step-content";
 import Record from "../step-content/Record";
 
-const BalancesInfo = ({ company, empId }) => {
+const BalancesInfo = ({ company }) => {
+	const { empId } = useSelectedEmp();
 	const balanceInfo = useEmployeeBalanceInfo(company, empId);
 	const setBalanceInfo = () => getInitialBalanceInfo(empId, company);
 	const [formData, setFormData] = useState(setBalanceInfo);

@@ -13,6 +13,7 @@ import TextTitle from "components/ui/text/TextTitle";
 import EmpSearchMenu from "features/setup/company/group-tab/EmpSearchMenu";
 import useCompany from "hooks/useCompany";
 import useEmployees from "hooks/useEmployees";
+import useSelectedEmp from "hooks/useSelectedEmp";
 import PageLayout from "layouts/PageLayout";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
@@ -32,6 +33,7 @@ const Employees = ({ isOnboarding, selectedPayGroupName }) => {
 	const loggedInUser = LocalStorageService.getItem("user");
 	const [employee, setEmployee] = useState(loggedInUser);
 	const [userId, setUserId] = useState(id ?? loggedInUser._id);
+	const { setEmpId } = useSelectedEmp(userId);
 	const [isRefresh, setIsRefresh] = useState(false);
 	const [empName, setEmpName] = useState("");
 
@@ -72,6 +74,10 @@ const Employees = ({ isOnboarding, selectedPayGroupName }) => {
 		setUserId(emp._id);
 	};
 
+	useEffect(() => {
+		setEmpId(userId);
+	}, [userId]);
+
 	const handleNext = (id) => setViewMode(SETUP_LIST[id]?.type);
 	const handlePrev = (id) => setViewMode(SETUP_LIST[id - 2]?.type);
 	const SETUP_LIST = [
@@ -83,7 +89,6 @@ const Employees = ({ isOnboarding, selectedPayGroupName }) => {
 				<PersonalInfo
 					id={1}
 					company={company}
-					empId={userId}
 					isOnboarding={isOnboarding}
 					handleNext={handleNext}
 				/>
@@ -96,7 +101,6 @@ const Employees = ({ isOnboarding, selectedPayGroupName }) => {
 				<PayInfo
 					id={2}
 					company={company}
-					empId={userId}
 					isOnboarding={isOnboarding}
 					handleNext={handleNext}
 					handlePrev={handlePrev}
@@ -111,7 +115,6 @@ const Employees = ({ isOnboarding, selectedPayGroupName }) => {
 				<CorporateInfo
 					id={3}
 					company={company}
-					empId={userId}
 					isOnboarding={isOnboarding}
 					selectedPayGroupName={selectedPayGroupName}
 					handleNext={handleNext}
@@ -127,7 +130,6 @@ const Employees = ({ isOnboarding, selectedPayGroupName }) => {
 				<GovernmentInfo
 					id={4}
 					company={company}
-					empId={userId}
 					isOnboarding={isOnboarding}
 					handleNext={handleNext}
 					handlePrev={handlePrev}
@@ -141,7 +143,6 @@ const Employees = ({ isOnboarding, selectedPayGroupName }) => {
 				<BankingInfo
 					id={5}
 					company={company}
-					empId={userId}
 					handlePrev={handlePrev}
 					isOnboarding={isOnboarding}
 				/>
@@ -150,7 +151,7 @@ const Employees = ({ isOnboarding, selectedPayGroupName }) => {
 		{
 			id: 5,
 			type: "Balances",
-			name: <BalanceInfo company={company} empId={userId} />,
+			name: <BalanceInfo company={company} />,
 		},
 	];
 

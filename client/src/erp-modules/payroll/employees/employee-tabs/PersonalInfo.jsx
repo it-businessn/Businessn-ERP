@@ -9,13 +9,15 @@ import {
 	getInitialProfileInfo,
 } from "config/payroll/employees/profileInfo";
 import useEmployeeProfileInfo from "hooks/useEmployeeProfileInfo";
+import useSelectedEmp from "hooks/useSelectedEmp";
 import { useEffect, useState } from "react";
 import LocalStorageService from "services/LocalStorageService";
 import PayrollService from "services/PayrollService";
 import StepContent from "../step-content";
 import Record from "../step-content/Record";
 
-const PersonalInfo = ({ company, empId, isOnboarding, id, handleNext }) => {
+const PersonalInfo = ({ company, isOnboarding, id, handleNext }) => {
+	const { empId } = useSelectedEmp();
 	const profileInfo = useEmployeeProfileInfo(company, empId, isOnboarding);
 
 	const setProfileInfo = () =>

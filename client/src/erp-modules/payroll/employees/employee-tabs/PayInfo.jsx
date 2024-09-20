@@ -8,20 +8,15 @@ import {
 	getInitialPayInfo,
 } from "config/payroll/employees/payInfo";
 import useEmployeePayInfo from "hooks/useEmployeePayInfo";
+import useSelectedEmp from "hooks/useSelectedEmp";
 import { useEffect, useState } from "react";
 import LocalStorageService from "services/LocalStorageService";
 import PayrollService from "services/PayrollService";
 import StepContent from "../step-content";
 import Record from "../step-content/Record";
 
-const PayInfo = ({
-	company,
-	empId,
-	isOnboarding,
-	id,
-	handleNext,
-	handlePrev,
-}) => {
+const PayInfo = ({ company, isOnboarding, id, handleNext, handlePrev }) => {
+	const { empId } = useSelectedEmp();
 	const payInfo = useEmployeePayInfo(
 		company,
 		false,

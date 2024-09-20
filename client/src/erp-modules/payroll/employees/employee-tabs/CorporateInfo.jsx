@@ -8,6 +8,7 @@ import {
 	getInitialCorporateInfo,
 } from "config/payroll/employees/employmentInfo";
 import useEmployeeEmploymentInfo from "hooks/useEmployeeEmploymentInfo";
+import useSelectedEmp from "hooks/useSelectedEmp";
 import { useEffect, useState } from "react";
 import LocalStorageService from "services/LocalStorageService";
 import PayrollService from "services/PayrollService";
@@ -16,13 +17,13 @@ import Record from "../step-content/Record";
 
 const CorporateInfo = ({
 	company,
-	empId,
 	isOnboarding,
 	selectedPayGroupName,
 	id,
 	handleNext,
 	handlePrev,
 }) => {
+	const { empId } = useSelectedEmp();
 	const employmentInfo = useEmployeeEmploymentInfo(
 		company,
 		empId,

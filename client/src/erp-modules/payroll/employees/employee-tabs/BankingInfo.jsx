@@ -7,13 +7,15 @@ import {
 	getInitialBankingInfo,
 } from "config/payroll/employees/bankingInfo";
 import useEmployeeBankingInfo from "hooks/useEmployeeBankingInfo";
+import useSelectedEmp from "hooks/useSelectedEmp";
 import { useEffect, useState } from "react";
 import LocalStorageService from "services/LocalStorageService";
 import PayrollService from "services/PayrollService";
 import StepContent from "../step-content";
 import Record from "../step-content/Record";
 
-const BankingInfo = ({ company, empId, isOnboarding, handlePrev, id }) => {
+const BankingInfo = ({ company, isOnboarding, handlePrev, id }) => {
+	const { empId } = useSelectedEmp();
 	const onboardingEmpId = LocalStorageService.getItem("onboardingEmpId");
 	const bankingInfo = useEmployeeBankingInfo(company, empId, isOnboarding);
 	const setBankingInfo = () =>

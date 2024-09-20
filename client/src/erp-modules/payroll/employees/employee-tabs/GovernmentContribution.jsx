@@ -8,6 +8,7 @@ import {
 	getInitialGovernmentInfo,
 } from "config/payroll/employees/governmentInfo";
 import useEmployeeGovernment from "hooks/useEmployeeGovernment";
+import useSelectedEmp from "hooks/useSelectedEmp";
 import { useEffect, useState } from "react";
 import LocalStorageService from "services/LocalStorageService";
 import PayrollService from "services/PayrollService";
@@ -16,12 +17,12 @@ import Record from "../step-content/Record";
 
 const GovernmentContribution = ({
 	company,
-	empId,
 	isOnboarding,
 	handleNext,
 	handlePrev,
 	id,
 }) => {
+	const { empId } = useSelectedEmp();
 	const onboardingEmpId = LocalStorageService.getItem("onboardingEmpId");
 	const governmentInfo = useEmployeeGovernment(company, empId, isOnboarding);
 	const setGovernmentInfo = () =>
