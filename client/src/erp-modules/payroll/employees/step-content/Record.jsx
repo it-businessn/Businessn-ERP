@@ -1,4 +1,4 @@
-import { FormLabel, HStack, VStack } from "@chakra-ui/react";
+import { Checkbox, FormLabel, HStack, VStack } from "@chakra-ui/react";
 import PrimaryButton from "components/ui/button/PrimaryButton";
 import TextTitle from "components/ui/text/TextTitle";
 import DateTypeRecord from "./date";
@@ -19,6 +19,7 @@ const Record = ({
 	isLoading,
 	handleSubmit,
 	isOnboarding,
+	readOnly,
 }) => {
 	return (
 		<>
@@ -26,9 +27,24 @@ const Record = ({
 			<HStack align={"start"} justify={"start"} mb={2}>
 				{config.map((tab, index) => (
 					<VStack align={"start"} key={`${tab.type}**${index * 2}`}>
-						<FormLabel visibility={hideLabel(tab.type) && "hidden"}>
-							{tab.type}
-						</FormLabel>
+						{tab?.control === "checkbox" ? (
+							<Checkbox
+								colorScheme={"facebook"}
+								isChecked={formData?.carryFwd}
+								onChange={(e) =>
+									setFormData((prev) => ({
+										...prev,
+										[tab.param_key]: e.target.checked,
+									}))
+								}
+							>
+								<FormLabel mt={2}>{tab.type}</FormLabel>
+							</Checkbox>
+						) : (
+							<FormLabel visibility={hideLabel(tab.type) && "hidden"}>
+								{tab.type}
+							</FormLabel>
+						)}
 						{tab.params.map((param) => {
 							return param?.control === "select" ? (
 								<SelectTypeRecord
@@ -74,6 +90,7 @@ const Record = ({
 									setFormData={setFormData}
 									handleConfirm={handleConfirm}
 									isOnboarding={isOnboarding}
+									readOnly={readOnly}
 								/>
 							);
 						})}

@@ -28,6 +28,7 @@ const employeeBalanceInfoSchema = new mongoose.Schema({
 	longTermDisabilityER_YTD: String,
 	dentalER_YTD: String,
 	extendedHealthER_YTD: String,
+	carryFwd: Boolean,
 	createdOn: { type: Date, default: Date.now },
 	updatedOn: { type: Date, default: Date.now },
 });

@@ -558,6 +558,7 @@ const buildPayStubDetails = async (
 	newEmpData.vacationPayout = empPayStubResult?.vacationPayout ?? 0;
 	newEmpData.terminationPayout = empPayStubResult?.terminationPayout ?? 0;
 	newEmpData.bonus = empPayStubResult?.bonus ?? 0;
+	newEmpData.currentVacationBalanceFwd = 0;
 
 	newEmpData.currentGrossPay = calcCurrentGrossPay(newEmpData);
 
@@ -597,8 +598,11 @@ const buildPayStubDetails = async (
 	newEmpData.currentEmployerContributions = employerContribution;
 
 	newEmpData.currentVacationAccrued = 0;
-	newEmpData.currentVacationUsed = 0;
-	newEmpData.vacationBalance = 0;
+	newEmpData.currentVacationUsed = newEmpData.currentVacationPayTotal;
+	newEmpData.vacationBalance =
+		newEmpData.currentVacationBalanceFwd +
+		newEmpData.currentVacationAccrued +
+		newEmpData.currentVacationUsed;
 	newEmpData.currentSickAccrued = 0;
 	newEmpData.currentSickUsed = 0;
 	newEmpData.sickBalance = 0;
@@ -711,6 +715,7 @@ const buildPayStub = (
 		currentVacationAccrued,
 		currentVacationUsed,
 		vacationBalance,
+		currentVacationBalanceFwd,
 		currentSickAccrued,
 		currentSickUsed,
 		sickBalance,
@@ -818,6 +823,7 @@ const buildPayStub = (
 		currentEmployerHealthContributions,
 		currentEmployerContributions,
 		currentVacationAccrued,
+		currentVacationBalanceFwd,
 		currentVacationUsed,
 		vacationBalance,
 		currentSickAccrued,
@@ -947,6 +953,7 @@ const buildPayStub = (
 			prevPayPayInfo?.YTDVacationUsed,
 			currentVacationUsed,
 		),
+		YTDVacationBalanceFwd: currentVacationBalanceFwd,
 		YTDVacationBalance: getSumTotal(
 			prevPayPayInfo?.YTDVacationBalance,
 			vacationBalance,

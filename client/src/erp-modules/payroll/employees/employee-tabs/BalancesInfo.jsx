@@ -60,6 +60,7 @@ const BalancesInfo = ({ company }) => {
 					isLoading={isLoading}
 					isDisabled={isDisabled}
 					handleSubmit={handleSubmit}
+					readOnly={true}
 				/>
 			),
 		},

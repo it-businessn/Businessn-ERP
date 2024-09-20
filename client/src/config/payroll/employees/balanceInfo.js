@@ -1,6 +1,8 @@
 export const EMP_VACATION_BALANCE_CONFIG = [
 	{
-		type: "sfsgdsgdsgdsg3",
+		type: "Carry forward adjustment",
+		control: "checkbox",
+		param_key: "carryFwd",
 		params: [
 			{
 				name: "Available Balance",
@@ -104,6 +106,7 @@ export const getInitialBalanceInfo = (empId, companyName) => {
 	return {
 		empId,
 		companyName,
+		carryFwd: false,
 		vacationAvailableBalance: 0,
 		availableStartOFYear: 0,
 		accruedBalance: 0,

@@ -141,6 +141,9 @@ const employeePayStubSchema = new mongoose.Schema({
 	currentEmployerContributions: Number,
 	YTDEmployerContributions: { type: Number, default: 0 },
 
+	currentVacationBalanceFwd: Number,
+	YTDVacationBalanceFwd: { type: Number, default: 0 },
+
 	currentVacationAccrued: Number,
 	YTDVacationAccrued: { type: Number, default: 0 },
 

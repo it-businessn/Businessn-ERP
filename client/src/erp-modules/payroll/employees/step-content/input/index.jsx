@@ -8,6 +8,7 @@ const InputRecord = ({
 	setFormData,
 	handleConfirm,
 	isOnboarding,
+	readOnly,
 }) => {
 	const hideSalary =
 		formData.typeOfEarning === "Hourly" && param.name === "Salary Rate";
@@ -25,6 +26,7 @@ const InputRecord = ({
 			<InputFormControl
 				required={param?.mandatory}
 				subRequired={param?.submandatory}
+				readOnly={readOnly}
 				label={param.name}
 				name={param.param_key}
 				type={controlType}

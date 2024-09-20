@@ -59,6 +59,7 @@ const ItemRow = ({
 					title={getAmount(currentTotal)}
 					size={"xs"}
 					align={"right"}
+					visibility={title === "Available Balance" && "hidden"}
 				/>
 			</Td>
 

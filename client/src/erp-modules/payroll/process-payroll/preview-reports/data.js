@@ -365,8 +365,8 @@ const VACATION_BENEFIT = [
 		name: "Balance Fwd",
 		rate: 0,
 		totalHours: 0,
-		currentTotal: "currentVacationAccrued",
-		YTDTotal: "YTDVacationAccrued",
+		currentTotal: "currentVacationBalanceFwd",
+		YTDTotal: "YTDVacationBalanceFwd",
 	},
 	{
 		name: "Vacation Accrual",

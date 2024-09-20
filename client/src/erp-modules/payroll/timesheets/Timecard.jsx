@@ -186,12 +186,12 @@ const Timecard = ({ cols, data }) => {
 					const breakOut = punches.find(({ punch }) => punch === 3);
 					return (
 						<Tr key={crypto.randomUUID()}>
-							<Td py={0}>{"empname"}</Td>
-							<Td py={0}>{user_id}</Td>
-							<Td py={0}>{clockIn?.timestamp}</Td>
-							<Td py={0}>{clockOut?.timestamp}</Td>
-							<Td py={0}>{breakIn?.timestamp}</Td>
-							<Td py={0}>{breakOut?.timestamp}</Td>
+							<Td py={1}>{"empname"}</Td>
+							<Td py={1}>{user_id}</Td>
+							<Td py={1}>{clockIn?.timestamp}</Td>
+							<Td py={1}>{clockOut?.timestamp}</Td>
+							<Td py={1}>{breakIn?.timestamp}</Td>
+							<Td py={1}>{breakOut?.timestamp}</Td>
 						</Tr>
 					);
 				})}

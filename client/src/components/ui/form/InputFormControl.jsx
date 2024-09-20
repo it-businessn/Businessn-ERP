@@ -20,7 +20,7 @@ const InputFormControl = ({
 	hideLabel,
 	w,
 	size,
-	readOnly,
+	readOnly = false,
 	subRequired,
 }) => {
 	return (
