@@ -1,4 +1,4 @@
-import { Box, Flex } from "@chakra-ui/react";
+import { Box, Button, Flex, HStack } from "@chakra-ui/react";
 import Logo from "components/logo";
 import { useEffect, useRef } from "react";
 import coverVideo from "../../assets/cover.mp4";
@@ -18,14 +18,20 @@ const Login = () => {
 			<Box
 				as="nav"
 				bg="var(--logo_bg)"
-				p={3}
 				position="absolute"
-				top={0}
-				width="100%"
-				zIndex="5"
+				top={3}
+				left={5}
+				p={3}
+				width="98%"
+				zIndex="1"
+				borderRadius="10px"
 			>
-				<Flex h="10" align={"center"}>
-					<Logo isFullLogo logoImgSrc={logoImg} width="150px" />
+				<Flex h="50" align={"center"} justify={"space-between"} ml={3} px={8}>
+					<Logo isFullLogo logoImgSrc={logoImg} width="180px" />
+					<HStack spacing={0} justifyContent={"start"}>
+						<Button alignItems={"end"}>Contact us</Button>
+						<Button alignItems={"end"}>English</Button>
+					</HStack>
 				</Flex>
 			</Box>
 			<Box

@@ -82,9 +82,9 @@ const Navbar = ({ handleClick, onOpen, user, setUser, isMobile }) => {
 							justifyContent={"start"}
 							color="var(--main_color)"
 						>
-							<TextTitle title={company} />
-							<HStack w="100%" align={"flex-end"} h={"30px"}>
-								<TextTitle title={"BE6741"} width="150px" />
+							<TextTitle size={"lg"} title={company} />
+							<HStack w="100%" align={"flex-end"} h={"30"}>
+								<TextTitle size={"lg"} title={"BE6741"} width="150px" />
 								{menuList?.map((menu) =>
 									menu.permissions?.canAccessModule ? (
 										<Menu
