@@ -1,6 +1,5 @@
 import {
 	Box,
-	Button,
 	Flex,
 	HStack,
 	Icon,
@@ -10,20 +9,26 @@ import {
 	VStack,
 } from "@chakra-ui/react";
 import HighlightButton from "components/ui/button/HighlightButton";
-import RightIconButton from "components/ui/button/RightIconButton";
+// import RightIconButton from "components/ui/button/RightIconButton";
 import BoxCard from "components/ui/card";
+import ModalLayout from "components/ui/modal/ModalLayout";
+import NormalTextTitle from "components/ui/NormalTextTitle";
+import { useState } from "react";
 import { RiAspectRatioLine } from "react-icons/ri";
 
 const Contest = () => {
+	const [showDetails, setShowDetails] = useState(false);
 	return (
 		<Box>
-			{["Contests For Sales", "Contests For Activity"].map((item) => (
+			{/* {["Contests For Sales", "Contests For Activity"].map((item) => ( */}
+			{["Contests For Sales"].map((item) => (
 				<BoxCard key={item} p="0.5em 1em">
 					<Text fontWeight="bold" fontSize={"sm"}>
 						{item}
 					</Text>
 					<SimpleGrid columns={{ md: 3 }} spacing={4}>
-						{["Sale 1", "Sale 2", "Sale 3"].map((item) => (
+						{/* {["Monthly Top Performer", "Sale 2", "Sale 3"].map((item) => ( */}
+						{["Monthly Top Performer"].map((item) => (
 							<BoxCard key={item}>
 								<HStack alignItems="self-start" spacing={2}>
 									<Icon as={RiAspectRatioLine} color="orange" boxSize={8} />
@@ -32,7 +37,7 @@ const Contest = () => {
 											{item}
 										</Text>
 										<Text fontSize="xs" p={0}>
-											1st place
+											$500 Cash Bonus
 										</Text>
 									</VStack>
 								</HStack>
@@ -43,22 +48,40 @@ const Contest = () => {
 										display={"flex"}
 										justifyContent={"end"}
 									>
-										$5460
+										$500
 									</Text>
 									<Progress
 										colorScheme="green"
 										size="sm"
 										bg={"var(--main_color)"}
-										value={50}
+										value={2}
 									/>
 									<Flex mt={"2em"} borderTop="2px solid #e8ebf4">
-										<HighlightButton name={"More details"} />
+										<HighlightButton
+											name={"More details"}
+											onClick={() => setShowDetails(true)}
+										/>
 									</Flex>
 								</Box>
 							</BoxCard>
 						))}
 					</SimpleGrid>
-					<BoxCard mt={"1em"}>
+					{showDetails && (
+						<ModalLayout
+							title={"More Info-"}
+							size="md"
+							isOpen={showDetails}
+							onClose={() => setShowDetails(false)}
+						>
+							<NormalTextTitle
+								whiteSpace={"wrap"}
+								title={
+									"This sales bonus will be awarded to the sales agent with the highest dollar value in sales in each month. Sales for all contracts are calculated based on the annualized projected total sales of all sales contracts completed in the month.  For more information, please contact your manager."
+								}
+							/>
+						</ModalLayout>
+					)}
+					{/* <BoxCard mt={"1em"}>
 						<HStack alignItems="self-start" spacing={2}>
 							<Icon as={RiAspectRatioLine} color="orange" boxSize={8} />
 							<VStack spacing={0} alignItems={"start"}>
@@ -94,8 +117,8 @@ const Contest = () => {
 								</Button>
 							</Flex>
 						</Box>
-					</BoxCard>
-					<BoxCard mt={"1em"}>
+					</BoxCard> */}
+					{/* <BoxCard mt={"1em"}>
 						<HStack alignItems="self-start" spacing={2}>
 							<Icon as={RiAspectRatioLine} color="orange" boxSize={8} />
 							<VStack spacing={0} alignItems={"start"}>
@@ -131,7 +154,7 @@ const Contest = () => {
 								</Button>
 							</Flex>
 						</Box>
-					</BoxCard>
+					</BoxCard> */}
 				</BoxCard>
 			))}
 		</Box>

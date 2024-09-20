@@ -7,7 +7,7 @@ const LeftPane = ({ setShowSelectCustomer, setLogType }) => (
 	<SimpleGrid
 		columns={1}
 		spacing={4}
-		templateRows={{ lg: "1% 8% 8% 8% 8% 8% 8%" }}
+		templateRows={{ lg: "2% 14% 14% 14% 14% 14% 14%" }}
 	>
 		<TextTitle title={"Activities"} />
 		{ACTIVITY_CARDS.map((activity) => (
