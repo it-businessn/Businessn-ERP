@@ -1,9 +1,9 @@
 import { Button, HStack, Icon, Stack } from "@chakra-ui/react";
-import { Link } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import TextTitle from "../text/TextTitle";
 
 const Menu = ({ icon, textTransform, handleClick, variant, menu }) => (
-	<Link to={menu?.path}>
+	<NavLink to={menu?.path} activeclassname="active" className="navbarMenu">
 		<Stack ml={{ base: "1em", md: "2em" }}>
 			<Button
 				variant={variant ? variant : "ghost"}
@@ -22,6 +22,6 @@ const Menu = ({ icon, textTransform, handleClick, variant, menu }) => (
 				</HStack>
 			</Button>
 		</Stack>
-	</Link>
+	</NavLink>
 );
 export default Menu;

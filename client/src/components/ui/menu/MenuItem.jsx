@@ -20,6 +20,7 @@ const MenuItem = ({ menu, parent, textTransform, handleMenuItemClick }) => {
 					<NavLink
 						to={path}
 						onClick={handleMenuItemClick}
+						className="sidebarMenu"
 						activeclassname="active"
 					>
 						<IconButton

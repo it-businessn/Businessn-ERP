@@ -155,7 +155,7 @@ body {
 	color: var(--main_color_black);
 }
 
-.active {
+.sidebarMenu.active {
 	background: linear-gradient(
 		103deg,
 		rgba(84, 61, 210, 1) 0%,
@@ -165,8 +165,12 @@ body {
 	width: 100%;
 	border-radius: 10px;
 }
+
 .active button {
 	color: var(--main_color);
+}
+.navbarMenu.active button {
+	font-size: large;
 }
 button:active {
 	background: transparent !important;
