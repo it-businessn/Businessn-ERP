@@ -39,7 +39,7 @@ const Record = ({
 									handleSubmit();
 								}}
 							>
-								<FormLabel mt={2}>{tab.type}</FormLabel>
+								<FormLabel>{tab.type}</FormLabel>
 							</Checkbox>
 						) : (
 							<FormLabel visibility={hideLabel(tab.type) && "hidden"}>
