@@ -6,11 +6,11 @@ export const EMP_VACATION_BALANCE_CONFIG = [
 		params: [
 			{
 				name: "Available Balance",
-				param_key: "vacationAvailableBalance",
+				param_key: "YTDVacationBalance",
 			},
 			{
 				name: "Available at the Start of the Year",
-				param_key: "availableStartOFYear",
+				param_key: "YTDVacationBalanceFwd",
 			},
 		],
 	},
@@ -18,7 +18,7 @@ export const EMP_VACATION_BALANCE_CONFIG = [
 		type: "sfsgdsgdsgdsg1",
 		params: [
 			{ name: "sfsgdsgdsgdsg", param_key: "sfsgdsgdsgdsg1" },
-			{ name: "Accrued This Year", param_key: "accruedBalance" },
+			{ name: "Accrued This Year", param_key: "YTDVacationAccrued" },
 		],
 	},
 
@@ -26,7 +26,7 @@ export const EMP_VACATION_BALANCE_CONFIG = [
 		type: "sfsgdsgdsgdsg2",
 		params: [
 			{ name: "sfsgdsgdsgdsg", param_key: "sfsgdsgdsgdsg2" },
-			{ name: "Used this year", param_key: "usedBalance" },
+			{ name: "Used this year", param_key: "YTDVacationUsed" },
 		],
 	},
 ];
@@ -35,37 +35,37 @@ export const EMP_YTD_EARNINGS_CONFIG = [
 	{
 		type: "Hours",
 		params: [
-			{ name: "Regular Pay", param_key: "regPayHoursYTD" },
-			{ name: "Overtime Pay", param_key: "overTimePayHoursYTD" },
+			{ name: "Regular Pay", param_key: "YTDRegHoursWorked" },
+			{ name: "Overtime Pay", param_key: "YTDOvertimeHoursWorked" },
 			{
 				name: "Double Overtime Pay",
-				param_key: "dblOverTimePayHoursYTD",
+				param_key: "YTDDblOvertimeHoursWorked",
 			},
 			{
 				name: "Statutory Worked Pay",
-				param_key: "statWorkPayHoursYTD",
+				param_key: "YTDStatDayHoursWorked",
 			},
-			{ name: "Statutory Pay", param_key: "statPayHoursYTD" },
-			{ name: "Sick Pay", param_key: "sickPayHoursYTD" },
-			{ name: "Vacation Pay", param_key: "vacationPayHoursYTD" },
+			{ name: "Statutory Pay", param_key: "YTDStatHoursWorked" },
+			{ name: "Sick Pay", param_key: "YTDSickHoursWorked" },
+			{ name: "Vacation Pay", param_key: "YTDVacationHoursWorked" },
 		],
 	},
 	{
 		type: "Dollars",
 		params: [
-			{ name: "Regular Pay", param_key: "regPayDollarsYTD" },
-			{ name: "Overtime Pay", param_key: "overTimePayDollarsYTD" },
+			{ name: "Regular Pay", param_key: "YTDRegPayTotal" },
+			{ name: "Overtime Pay", param_key: "YTDOverTimePayTotal" },
 			{
 				name: "Double Overtime Pay",
-				param_key: "dblOverTimePayDollarsYTD",
+				param_key: "YTDDblOverTimePayTotal",
 			},
 			{
 				name: "Statutory Worked Pay",
-				param_key: "statWorkPayDollarsYTD",
+				param_key: "YTDStatWorkPayTotal",
 			},
-			{ name: "Statutory Pay", param_key: "statPayDollarsYTD" },
-			{ name: "Sick Pay", param_key: "sickPayDollarsYTD" },
-			{ name: "Vacation Pay", param_key: "vacationDollarsYTD" },
+			{ name: "Statutory Pay", param_key: "YTDStatPayTotal" },
+			{ name: "Sick Pay", param_key: "YTDSickPayTotal" },
+			{ name: "Vacation Pay", param_key: "YTDVacationPayTotal" },
 		],
 	},
 ];

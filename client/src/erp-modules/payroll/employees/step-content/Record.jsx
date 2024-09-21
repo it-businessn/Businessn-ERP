@@ -20,6 +20,9 @@ const Record = ({
 	handleSubmit,
 	isOnboarding,
 	readOnly,
+	isBalanceInfo,
+	carryFwd,
+	setCarryFwd,
 }) => {
 	return (
 		<>
@@ -30,13 +33,11 @@ const Record = ({
 						{tab?.control === "checkbox" ? (
 							<Checkbox
 								colorScheme={"facebook"}
-								isChecked={formData?.carryFwd}
-								onChange={(e) =>
-									setFormData((prev) => ({
-										...prev,
-										[tab.param_key]: e.target.checked,
-									}))
-								}
+								isChecked={carryFwd}
+								onChange={() => {
+									setCarryFwd(!carryFwd);
+									handleSubmit();
+								}}
 							>
 								<FormLabel mt={2}>{tab.type}</FormLabel>
 							</Checkbox>
@@ -91,20 +92,23 @@ const Record = ({
 									handleConfirm={handleConfirm}
 									isOnboarding={isOnboarding}
 									readOnly={readOnly}
+									isBalanceInfo={isBalanceInfo}
 								/>
 							);
 						})}
 					</VStack>
 				))}
 			</HStack>
-			<PrimaryButton
-				size="xs"
-				isDisabled={isDisabled}
-				name={"Save"}
-				isLoading={isLoading}
-				loadingText="Loading"
-				onOpen={handleSubmit}
-			/>
+			{!readOnly && (
+				<PrimaryButton
+					size="xs"
+					isDisabled={isDisabled}
+					name={"Save"}
+					isLoading={isLoading}
+					loadingText="Loading"
+					onOpen={handleSubmit}
+				/>
+			)}
 		</>
 	);
 };

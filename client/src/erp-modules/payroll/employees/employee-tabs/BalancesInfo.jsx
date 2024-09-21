@@ -22,10 +22,12 @@ const BalancesInfo = ({ company }) => {
 	const [formData, setFormData] = useState(setBalanceInfo);
 	const [isDisabled, setIsDisabled] = useState(true);
 	const [isLoading, setIsLoading] = useState(false);
+	const [carryFwd, setCarryFwd] = useState(false);
 
 	useEffect(() => {
 		if (balanceInfo) {
 			setFormData(balanceInfo);
+			setCarryFwd(balanceInfo?.empBalanceInfo?.carryFwd);
 		} else {
 			setFormData(setBalanceInfo);
 		}
@@ -38,10 +40,11 @@ const BalancesInfo = ({ company }) => {
 	const handleSubmit = async () => {
 		setIsLoading(true);
 		try {
-			// formData.vacationAvailableBalance =
-			// 	formData.vacationAvailableBalance &&
-			// 	convertToNum(formData.vacationAvailableBalance);
-			await PayrollService.addEmployeeBalanceInfo(formData);
+			await PayrollService.addEmployeeBalanceInfo({
+				carryFwd: !carryFwd,
+				empId,
+				companyName: company,
+			});
 			setIsLoading(false);
 			setIsDisabled(true);
 		} catch (error) {}
@@ -52,6 +55,8 @@ const BalancesInfo = ({ company }) => {
 			title: "Vacation",
 			content: (
 				<Record
+					carryFwd={carryFwd}
+					setCarryFwd={setCarryFwd}
 					handleConfirm={handleConfirm}
 					formData={formData}
 					setFormData={setFormData}
@@ -61,6 +66,7 @@ const BalancesInfo = ({ company }) => {
 					isDisabled={isDisabled}
 					handleSubmit={handleSubmit}
 					readOnly={true}
+					isBalanceInfo
 				/>
 			),
 		},
@@ -76,6 +82,8 @@ const BalancesInfo = ({ company }) => {
 					isLoading={isLoading}
 					isDisabled={isDisabled}
 					handleSubmit={handleSubmit}
+					readOnly={true}
+					isBalanceInfo
 				/>
 			),
 		},
@@ -91,6 +99,8 @@ const BalancesInfo = ({ company }) => {
 					isLoading={isLoading}
 					isDisabled={isDisabled}
 					handleSubmit={handleSubmit}
+					readOnly={true}
+					isBalanceInfo
 				/>
 			),
 		},

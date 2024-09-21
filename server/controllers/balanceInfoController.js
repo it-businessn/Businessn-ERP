@@ -1,4 +1,5 @@
 const EmployeeBalanceInfo = require("../models/EmployeeBalanceInfo");
+const EmployeePayStub = require("../models/EmployeePayStub");
 
 const getAllBalanceInfo = async (req, res) => {
 	const { companyName } = req.params;
@@ -25,11 +26,26 @@ const getEmployeeBalanceInfo = async (req, res) => {
 	}
 };
 
-const findEmployeeBalanceInfo = async (empId, companyName) =>
-	await EmployeeBalanceInfo.findOne({
+const findEmployeeBalanceInfo = async (empId, companyName, isUpdate) => {
+	const empBalanceInfo = await EmployeeBalanceInfo.findOne({
 		empId,
 		companyName,
 	});
+	if (isUpdate) {
+		return empBalanceInfo;
+	}
+	const empPayStub = await findEmployeePayStub(empId, companyName);
+	return { empBalanceInfo, empPayStub: empPayStub[0] };
+};
+
+const findEmployeePayStub = async (empId, companyName) =>
+	await EmployeePayStub.aggregate([
+		{
+			$match: { empId, companyName },
+		},
+		{ $sort: { _id: -1 } },
+		{ $limit: 1 },
+	]);
 
 const updateBalanceInfo = async (id, data) =>
 	await EmployeeBalanceInfo.findByIdAndUpdate(id, data, {
@@ -37,39 +53,12 @@ const updateBalanceInfo = async (id, data) =>
 	});
 
 const addEmployeeBalanceInfo = async (req, res) => {
-	const {
-		empId,
-		companyName,
-		vacationAvailableBalance,
-		availableStartOFYear,
-		accruedBalance,
-		usedBalance,
-		regPayHoursYTD,
-		overTimePayHoursYTD,
-		dblOverTimePayHoursYTD,
-		statWorkPayHoursYTD,
-		statPayHoursYTD,
-		sickPayHoursYTD,
-		vacationPayHoursYTD,
-		regPayDollarsYTD,
-		overTimePayDollarsYTD,
-		dblOverTimePayDollarsYTD,
-		statWorkPayDollarsYTD,
-		statPayDollarsYTD,
-		sickPayDollarsYTD,
-		vacationDollarsYTD,
-		longTermDisabilityEE_YTD,
-		dentalEE_YTD,
-		extendedHealthEE_YTD,
-		unionDuesYTD,
-		longTermDisabilityER_YTD,
-		dentalER_YTD,
-		extendedHealthER_YTD,
-	} = req.body;
+	const { empId, companyName, carryFwd } = req.body;
 	try {
 		const existingBalanceInfo = await findEmployeeBalanceInfo(
 			empId,
 			companyName,
+			true,
 		);
 		if (existingBalanceInfo) {
 			const updatedBalanceInfo = await updateBalanceInfo(
@@ -81,31 +70,7 @@ const addEmployeeBalanceInfo = async (req, res) => {
 		const newBalanceInfo = await EmployeeBalanceInfo.create({
 			empId,
 			companyName,
-			vacationAvailableBalance,
-			availableStartOFYear,
-			accruedBalance,
-			usedBalance,
-			regPayHoursYTD,
-			overTimePayHoursYTD,
-			dblOverTimePayHoursYTD,
-			statWorkPayHoursYTD,
-			statPayHoursYTD,
-			sickPayHoursYTD,
-			vacationPayHoursYTD,
-			regPayDollarsYTD,
-			overTimePayDollarsYTD,
-			dblOverTimePayDollarsYTD,
-			statWorkPayDollarsYTD,
-			statPayDollarsYTD,
-			sickPayDollarsYTD,
-			vacationDollarsYTD,
-			longTermDisabilityEE_YTD,
-			dentalEE_YTD,
-			extendedHealthEE_YTD,
-			unionDuesYTD,
-			longTermDisabilityER_YTD,
-			dentalER_YTD,
-			extendedHealthER_YTD,
+			carryFwd,
 		});
 		return res.status(201).json(newBalanceInfo);
 	} catch (error) {

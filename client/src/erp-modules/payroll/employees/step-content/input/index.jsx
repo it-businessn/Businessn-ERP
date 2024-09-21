@@ -9,6 +9,7 @@ const InputRecord = ({
 	handleConfirm,
 	isOnboarding,
 	readOnly,
+	isBalanceInfo,
 }) => {
 	const hideSalary =
 		formData.typeOfEarning === "Hourly" && param.name === "Salary Rate";
@@ -18,6 +19,10 @@ const InputRecord = ({
 		!isOnboarding ||
 		(isOnboarding && !HIDE_ONBOARDING_SECTION.includes(param.name));
 	const controlType = param.name.includes("Email") ? "email" : "text"; // text or number
+
+	const valueText = isBalanceInfo
+		? formData?.empPayStub?.[param.param_key] ?? ""
+		: formData[param.param_key]?.toLocaleString() ?? "";
 
 	return hideSalary || hideRegular ? (
 		<></>
@@ -30,7 +35,7 @@ const InputRecord = ({
 				label={param.name}
 				name={param.param_key}
 				type={controlType}
-				valueText={formData[param.param_key]?.toLocaleString() ?? ""}
+				valueText={valueText}
 				fontWeight={param.name === "Address" && "bold"}
 				display={param.name === "Address" && "none"}
 				visibility={hideLabel(param.name) && "hidden"}
