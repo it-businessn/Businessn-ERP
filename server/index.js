@@ -34,6 +34,7 @@ const scheduleRoutes = require("./routes/scheduleRoutes");
 const setUpRoutes = require("./routes/setupRoutes");
 const taskRoutes = require("./routes/taskRoutes");
 const timesheetRoutes = require("./routes/timesheetRoutes");
+const timecardRoutes = require("./routes/timecardRoutes");
 const userRoutes = require("./routes/userRoutes");
 
 const app = express();
@@ -87,6 +88,7 @@ app.use("/api/schedule", scheduleRoutes);
 app.use("/api/setup", setUpRoutes);
 app.use("/api/tasks", taskRoutes);
 app.use("/api/timesheet", timesheetRoutes);
+app.use("/api/timecard", timecardRoutes);
 app.use("/api/user", userRoutes);
 
 // app.use("/api/company", companyRoutes);

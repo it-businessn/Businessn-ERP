@@ -5,6 +5,10 @@ const TimesheetService = {
 		return apiService.get(`/timesheet/${company}`);
 	},
 
+	async getTimecards() {
+		return apiService.get(`/timecard`);
+	},
+
 	async getFilteredTimesheets(company, filter) {
 		return apiService.get(
 			`/timesheet/filtered/${company}/filter=${JSON.stringify(filter)}`,
@@ -17,6 +21,10 @@ const TimesheetService = {
 
 	async addTimesheet(data) {
 		return apiService.post("/timesheet", data);
+	},
+
+	async addTimecard(data) {
+		return apiService.post("/timecard", data);
 	},
 
 	async updateTimesheet(data, id) {
