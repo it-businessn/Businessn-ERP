@@ -135,7 +135,7 @@ const getTimesheet = async (req, res) => {
 const getTimecard = async (req, res) => {
 	try {
 		const result = await Timecard.find({}).sort({
-			createdOn: -1,
+			timestamp: -1,
 		});
 
 		res.status(200).json(result);
@@ -201,13 +201,27 @@ const findEmployee = async (timeManagementBadgeID) =>
 const addTimecard = async (req, res) => {
 	try {
 		const data = req.body;
-		data?.map(async (_) => {
-			const empRec = await findEmployee({
-				timeManagementBadgeID: _.user_id,
+		data?.map(async (entry) => {
+			entry.timestamp = moment.utc(entry.timestamp).toISOString();
+			const { user_id, timestamp, punch } = entry;
+			const finds = await Timecard.find({
+				user_id,
+				timestamp,
+				punch,
 			});
-			_.employeeId = empRec?.empId?._id;
-			_.employeeName = empRec?.empId?.fullName;
-			await Timecard.create(_);
+			if (finds.length) {
+				return;
+			}
+			// const del = await Timecard.deleteMany({
+			// 	_id: { $in: finds.map((id) => id) },
+			// });
+			// console.log("deleted", del, finds);
+			const empRec = await findEmployee({
+				timeManagementBadgeID: entry.user_id,
+			});
+			entry.employeeId = empRec?.empId?._id;
+			entry.employeeName = empRec?.empId?.fullName;
+			await Timecard.create(entry);
 		});
 		res.status(201).json("Timecard entries added successfully");
 	} catch (error) {

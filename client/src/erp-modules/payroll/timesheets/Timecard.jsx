@@ -3,66 +3,20 @@ import EmptyRowRecord from "components/ui/EmptyRowRecord";
 import TableLayout from "components/ui/table/TableLayout";
 import { useEffect, useState } from "react";
 import TimesheetService from "services/TimesheetService";
+import { getTimeCardFormat } from "utils";
+
 const sample = [
 	{
-		user_id: 6891115,
-		timestamp: "2024-09-18 13:39:34",
+		user_id: "7746",
+		timestamp: "2024-09-23 23:59:10",
 		status: 4,
-		punch: 0,
+		punch: "0",
 	},
 	{
-		user_id: 1,
-		timestamp: "2024-09-18 13:43:02",
+		user_id: "7746",
+		timestamp: "2024-09-23 23:59:10",
 		status: 4,
-		punch: 2,
-	},
-	{
-		user_id: 1,
-		timestamp: "2024-09-18 13:43:11",
-		status: 4,
-		punch: 3,
-	},
-	{
-		user_id: 1,
-		timestamp: "2024-09-18 13:43:27",
-		status: 4,
-		punch: 1,
-	},
-	{
-		user_id: 1,
-		timestamp: "2024-09-18 13:45:05",
-		status: 3,
-		punch: 0,
-	},
-	{
-		user_id: 1,
-		timestamp: "2024-09-18 13:46:22",
-		status: 4,
-		punch: 1,
-	},
-	{
-		user_id: 2,
-		timestamp: "2024-09-18 14:05:33",
-		status: 3,
-		punch: 0,
-	},
-	{
-		user_id: 2,
-		timestamp: "2024-09-18 14:06:06",
-		status: 3,
-		punch: 2,
-	},
-	{
-		user_id: 2,
-		timestamp: "2024-09-18 14:07:21",
-		status: 3,
-		punch: 3,
-	},
-	{
-		user_id: 2,
-		timestamp: "2024-09-18 14:07:44",
-		status: 3,
-		punch: 1,
+		punch: "0",
 	},
 ];
 
@@ -78,15 +32,7 @@ const Timecard = ({ cols, data }) => {
 			} catch (error) {
 				console.error(error);
 			}
-			// const response = await TimesheetService.addTimecard([
-			// 	{
-			// 		user_id: "6891115",
-			// 		timestamp: "2024-09-19 12:41:44",
-			// 		status: "4",
-			// 		punch: "0",
-			// 	},
-			// ]);
-			// console.log(response);
+			await TimesheetService.addTimecard(sample);
 		};
 		fetchAllTimecards();
 	}, []);
@@ -94,22 +40,23 @@ const Timecard = ({ cols, data }) => {
 	useEffect(() => {
 		const groupedData = [];
 		timeRecords?.forEach((record) => {
-			let userGroup = groupedData.find(
-				(group) => group.user_id === record.user_id,
-			);
+			let sameUser = groupedData
+				.slice()
+				.reverse()
+				.find((user) => user.user_id === record.user_id);
 			if (
-				!userGroup ||
-				(record.punch === 1 &&
-					userGroup.punches.find((punch) => punch.punch === 1))
+				!sameUser ||
+				(record.punch === "0" &&
+					sameUser.punches.find((punch) => punch.punch === "0"))
 			) {
-				userGroup = {
+				sameUser = {
 					user_id: record.user_id,
 					punches: [],
 					employeeName: record?.employeeName ?? "",
 				};
-				groupedData.push(userGroup);
+				groupedData.push(sameUser);
 			}
-			userGroup.punches.push({
+			sameUser.punches.push({
 				timestamp: record.timestamp,
 				status: record.status,
 				punch: record.punch,
@@ -125,6 +72,15 @@ const Timecard = ({ cols, data }) => {
 				});
 			}
 		});
+		groupedData?.map((record) => {
+			const { punches } = record;
+			record.clockIn = punches.find(({ punch }) => punch === "0")?.timestamp;
+			record.clockOut = punches.find(({ punch }) => punch === "1")?.timestamp;
+			record.breakIn = punches.find(({ punch }) => punch === "2")?.timestamp;
+			record.breakOut = punches.find(({ punch }) => punch === "3")?.timestamp;
+			return record;
+		});
+		// console.log(groupedData);
 		setTimecardEntries(groupedData);
 	}, [timeRecords]);
 	return (
@@ -207,23 +163,24 @@ const Timecard = ({ cols, data }) => {
 					},
 				)} */}
 
-				{timecardEntries?.map((record) => {
-					const { user_id, punches } = record;
-					const clockIn = punches.find(({ punch }) => punch === 0);
-					const clockOut = punches.find(({ punch }) => punch === 1);
-					const breakIn = punches.find(({ punch }) => punch === 2);
-					const breakOut = punches.find(({ punch }) => punch === 3);
-					return (
-						<Tr key={crypto.randomUUID()}>
-							<Td py={1}>{record?.employeeName}</Td>
-							<Td py={1}>{user_id}</Td>
-							<Td py={1}>{clockIn?.timestamp}</Td>
-							<Td py={1}>{clockOut?.timestamp}</Td>
-							<Td py={1}>{breakIn?.timestamp}</Td>
-							<Td py={1}>{breakOut?.timestamp}</Td>
-						</Tr>
-					);
-				})}
+				{timecardEntries?.map((record, index) => (
+					<Tr key={`timecard_row_${index}`}>
+						<Td py={1}>{record?.employeeName}</Td>
+						<Td py={1}>{record?.user_id}</Td>
+						<Td py={1}>
+							{record.clockIn && getTimeCardFormat(record.clockIn)}
+						</Td>
+						<Td py={1}>
+							{record.clockOut && getTimeCardFormat(record.clockOut)}
+						</Td>
+						<Td py={1}>
+							{record.breakIn && getTimeCardFormat(record.breakIn)}
+						</Td>
+						<Td py={1}>
+							{record.breakOut && getTimeCardFormat(record.breakOut)}
+						</Td>
+					</Tr>
+				))}
 			</Tbody>
 		</TableLayout>
 	);
