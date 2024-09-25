@@ -129,7 +129,7 @@ const login = async (req, res) => {
 
 	try {
 		const user = await Employee.findOne({ email }).select(
-			"firstName lastName middleName fullName email role department phoneNumber primaryAddress employmentType manager employeeId payrollStatus",
+			"firstName lastName middleName fullName email password role department phoneNumber primaryAddress employmentType manager employeeId payrollStatus",
 		);
 		// if (!user.companyId) {
 		// 	user.companyId = [];
