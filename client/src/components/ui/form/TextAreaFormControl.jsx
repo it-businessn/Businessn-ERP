@@ -1,5 +1,6 @@
-import { FormLabel, Textarea } from "@chakra-ui/react";
+import { Textarea } from "@chakra-ui/react";
 import FormControlMain from ".";
+import RequiredLabel from "./RequiredLabel";
 
 const TextAreaFormControl = ({
 	valueText,
@@ -11,7 +12,7 @@ const TextAreaFormControl = ({
 }) => {
 	return (
 		<FormControlMain>
-			<FormLabel>{label}</FormLabel>
+			<RequiredLabel label={label} required={required} htmlFor={name} />
 			<Textarea
 				name={name}
 				value={valueText}

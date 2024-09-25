@@ -20,6 +20,10 @@ const ContactService = {
 	async updateContact(data, id) {
 		return apiService.put(`/contacts/${id}`, data, id);
 	},
+
+	async contactCustomer(data) {
+		return apiService.post(`/contacts/followup`, data);
+	},
 };
 
 export default ContactService;

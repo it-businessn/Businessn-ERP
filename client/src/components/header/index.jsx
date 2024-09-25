@@ -74,6 +74,7 @@ const Navbar = ({ handleClick, onOpen, user, setUser, isMobile }) => {
 						p={3}
 						borderRadius="10px"
 						ml={3}
+						backgroundSize={"cover"}
 					>
 						<VStack
 							align="center"

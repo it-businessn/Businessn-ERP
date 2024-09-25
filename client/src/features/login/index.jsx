@@ -1,12 +1,14 @@
 import { Box, Button, Flex, HStack } from "@chakra-ui/react";
 import Logo from "components/logo";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import coverVideo from "../../assets/cover.mp4";
 import logoImg from "../../assets/logos/logoCover.jpg";
+import ContactForm from "./ContactForm";
 import SignInForm from "./SignInForm";
 
 const Login = () => {
 	const videoRef = useRef(null);
+	const [showContactForm, setShowContactForm] = useState(false);
 
 	useEffect(() => {
 		if (videoRef.current) {
@@ -29,7 +31,9 @@ const Login = () => {
 				<Flex h="50" align={"center"} justify={"space-between"} ml={3} px={8}>
 					<Logo isFullLogo logoImgSrc={logoImg} width="180px" />
 					<HStack spacing={0} justifyContent={"start"}>
-						<Button alignItems={"end"}>Contact us</Button>
+						<Button alignItems={"end"} onClick={() => setShowContactForm(true)}>
+							Contact us
+						</Button>
 						<Button alignItems={"end"}>English</Button>
 					</HStack>
 				</Flex>
@@ -52,7 +56,13 @@ const Login = () => {
 				<source src={coverVideo} type="video/mp4" />
 				Your browser does not support the video tag.
 			</Box>
-
+			{showContactForm && (
+				<ContactForm
+					showContactForm={showContactForm}
+					setShowContactForm={setShowContactForm}
+					handleClose={() => setShowContactForm(false)}
+				/>
+			)}
 			<SignInForm title="Login to your account" logoImgSrc={logoImg} />
 		</Box>
 	);

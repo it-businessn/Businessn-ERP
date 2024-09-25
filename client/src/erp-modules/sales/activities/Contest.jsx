@@ -18,6 +18,7 @@ import { RiAspectRatioLine } from "react-icons/ri";
 
 const Contest = () => {
 	const [showDetails, setShowDetails] = useState(false);
+
 	return (
 		<Box>
 			{/* {["Contests For Sales", "Contests For Activity"].map((item) => ( */}
@@ -28,7 +29,7 @@ const Contest = () => {
 					</Text>
 					<SimpleGrid columns={{ md: 3 }} spacing={4}>
 						{/* {["Monthly Top Performer", "Sale 2", "Sale 3"].map((item) => ( */}
-						{["Monthly Top Performer"].map((item) => (
+						{["Bi-weekly Top Performer"].map((item) => (
 							<BoxCard key={item}>
 								<HStack alignItems="self-start" spacing={2}>
 									<Icon as={RiAspectRatioLine} color="orange" boxSize={8} />
@@ -66,21 +67,7 @@ const Contest = () => {
 							</BoxCard>
 						))}
 					</SimpleGrid>
-					{showDetails && (
-						<ModalLayout
-							title={"More Info-"}
-							size="md"
-							isOpen={showDetails}
-							onClose={() => setShowDetails(false)}
-						>
-							<NormalTextTitle
-								whiteSpace={"wrap"}
-								title={
-									"This sales bonus will be awarded to the sales agent with the highest dollar value in sales in each month. Sales for all contracts are calculated based on the annualized projected total sales of all sales contracts completed in the month.  For more information, please contact your manager."
-								}
-							/>
-						</ModalLayout>
-					)}
+
 					{/* <BoxCard mt={"1em"}>
 						<HStack alignItems="self-start" spacing={2}>
 							<Icon as={RiAspectRatioLine} color="orange" boxSize={8} />
@@ -157,6 +144,21 @@ const Contest = () => {
 					</BoxCard> */}
 				</BoxCard>
 			))}
+			{showDetails && (
+				<ModalLayout
+					title={"More Information"}
+					size="md"
+					isOpen={showDetails}
+					onClose={() => setShowDetails(false)}
+				>
+					<NormalTextTitle
+						whiteSpace={"wrap"}
+						title={
+							"This sales bonus will be awarded to the sales agent with the highest dollar value in sales in each bi-weekly period. Sales for all contracts are calculated based on the annualized projected total sales of all sales contracts completed in the period.  For more information, please contact your manager."
+						}
+					/>
+				</ModalLayout>
+			)}
 		</Box>
 	);
 };

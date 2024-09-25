@@ -8,6 +8,7 @@ router.get("/:companyName", contactController.getCompanyContact);
 router.get("/:id/:companyName", contactController.getContact);
 
 router.post("/", contactController.createContact);
+router.post("/followup", contactController.followUpContact);
 
 router.put("/:id", contactController.updateContact);
 

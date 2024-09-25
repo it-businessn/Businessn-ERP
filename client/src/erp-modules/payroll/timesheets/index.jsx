@@ -124,7 +124,6 @@ const Timesheets = () => {
 						"End Break3",
 						"Total Hours (HH:mm)",
 					]}
-					data={timesheets}
 				/>
 			),
 		},

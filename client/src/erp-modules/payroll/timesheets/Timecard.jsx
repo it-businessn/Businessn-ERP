@@ -32,7 +32,7 @@ const Timecard = ({ cols, data }) => {
 			} catch (error) {
 				console.error(error);
 			}
-			await TimesheetService.addTimecard(sample);
+			// await TimesheetService.addTimecard(sample);
 		};
 		fetchAllTimecards();
 	}, []);

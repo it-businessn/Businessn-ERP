@@ -1,4 +1,5 @@
 const Contact = require("../models/Contact");
+const { sendEmail } = require("../services/emailService");
 
 const getContacts = async (req, res) => {
 	try {
@@ -86,10 +87,28 @@ const updateContact = async (req, res) => {
 	}
 };
 
+const followUpContact = async (req, res) => {
+	const { contactEmail } = req.body;
+	try {
+		await sendEmail(
+			contactEmail,
+			"Thank you for contacting us",
+			"We have received your inquiry. An agent will get in touch with you shortly to discuss your interests and provide more information.",
+		);
+
+		return res.status(200).json({
+			message: "A followup email has been sent to your email address!",
+		});
+	} catch (error) {
+		res.status(400).json({ message: error.message });
+	}
+};
+
 module.exports = {
 	createContact,
 	getContact,
 	getContacts,
 	updateContact,
 	getCompanyContact,
+	followUpContact,
 };
