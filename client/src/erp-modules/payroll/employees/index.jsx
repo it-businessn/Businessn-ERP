@@ -16,6 +16,7 @@ import useEmployees from "hooks/useEmployees";
 import useSelectedEmp from "hooks/useSelectedEmp";
 import PageLayout from "layouts/PageLayout";
 import { useEffect, useState } from "react";
+import { FaCheckCircle } from "react-icons/fa";
 import { useParams } from "react-router-dom";
 import LocalStorageService from "services/LocalStorageService";
 import BalanceInfo from "./employee-tabs/BalancesInfo";
@@ -158,6 +159,9 @@ const Employees = ({ isOnboarding, selectedPayGroupName }) => {
 	const [tabs, setTabs] = useState(SETUP_LIST);
 	const tabContent = id ? SETUP_LIST[stepNo]?.type : SETUP_LIST[0]?.type;
 	const [viewMode, setViewMode] = useState(tabContent);
+
+	const currentTab = tabs.find(({ type }) => type === viewMode)?.id;
+
 	const showComponent = (viewMode) =>
 		tabs.find(({ type }) => type === viewMode)?.name;
 
@@ -224,6 +228,9 @@ const Employees = ({ isOnboarding, selectedPayGroupName }) => {
 							selectedFilter={viewMode}
 							handleFilterClick={(name) => setViewMode(name)}
 							fontSize={"1em"}
+							rightIcon={
+								<FaCheckCircle color={_?.id <= currentTab && "green"} />
+							}
 						/>
 					))}
 				</SimpleGrid>

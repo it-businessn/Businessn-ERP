@@ -6,6 +6,7 @@ const RadioButtonGroup = ({
 	selectedFilter,
 	handleFilterClick,
 	fontSize,
+	rightIcon,
 }) => {
 	return (
 		<Button
@@ -22,6 +23,7 @@ const RadioButtonGroup = ({
 			variant={"outline"}
 			size="xs"
 			fontSize={fontSize}
+			rightIcon={rightIcon}
 		>
 			{name}
 		</Button>
