@@ -9,10 +9,16 @@ import LocalStorageService from "services/LocalStorageService";
 import LoginService from "services/LoginService";
 import navBarImg from "../../assets/navbar_bg.png";
 
-const Navbar = ({ handleClick, onOpen, user, setUser, isMobile }) => {
-	const { company, setSelectedCompany } = useCompany(
-		user?.companyId?.[0]?.name,
-	);
+const Navbar = ({
+	handleClick,
+	companyName,
+	companyId,
+	onOpen,
+	user,
+	setUser,
+	isMobile,
+}) => {
+	const { company } = useCompany(companyName);
 
 	const companies = useCompanyList(user?._id);
 
@@ -39,9 +45,9 @@ const Navbar = ({ handleClick, onOpen, user, setUser, isMobile }) => {
 		// setActiveMenu(SIDEBAR_MENU?.find((menu) => menu.id === "sales"));
 	};
 
-	const handleChange = (value) => {
-		setSelectedCompany(value);
-	};
+	// const handleChange = (value) => {
+	// 	setSelectedCompany(value);
+	// };
 
 	// const menuOptions = () => {
 	// 	// company === "FD" ? FD_SIDEBAR_MENU : BUSINESSN_SIDEBAR_MENU;
@@ -85,7 +91,7 @@ const Navbar = ({ handleClick, onOpen, user, setUser, isMobile }) => {
 						>
 							<TextTitle size={"lg"} title={company} />
 							<HStack w="100%" align={"flex-end"} h={"30"}>
-								<TextTitle size={"lg"} title={"BE6741"} width="150px" />
+								<TextTitle size={"lg"} title={companyId} width="150px" />
 								{menuList?.map((menu) =>
 									menu.permissions?.canAccessModule ? (
 										<Menu

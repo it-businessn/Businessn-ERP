@@ -52,8 +52,13 @@ const SignInForm = ({ title }) => {
 		setIsLoading(true);
 		try {
 			const res = await LoginService.signIn(formData);
-			const user = buildUserInfo(res.data.user);
-			storeUser(user);
+			const { user, existingCompanyUser } = res.data;
+
+			user.companyId = existingCompanyUser;
+
+			const userInfo = buildUserInfo(user);
+			storeUser(userInfo);
+
 			resetForm();
 		} catch (error) {
 			setError(error.response.data.error);
@@ -69,7 +74,7 @@ const SignInForm = ({ title }) => {
 
 	const handleChange = (e) => {
 		const { name, value } = e.target;
-		setFormData((prevData) => ({ ...prevData, [name]: value }));
+		setFormData((prevData) => ({ ...prevData, [name]: value.trim() }));
 	};
 
 	const handleTogglePassword = () => {

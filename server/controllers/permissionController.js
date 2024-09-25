@@ -54,10 +54,10 @@ const addPermission = async (req, res) => {
 
 const updatePermission = async (req, res) => {
 	const { empId } = req.params;
-	let { name, accessName } = req.body;
+	let { name, accessName, companyName } = req.body;
 
 	try {
-		const user = await UserPermissions.findOne({ empId });
+		const user = await UserPermissions.findOne({ empId, companyName });
 
 		const permissionIndex = user.permissionType.findIndex(
 			(item) => item.name === name,

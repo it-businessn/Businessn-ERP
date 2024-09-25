@@ -116,6 +116,7 @@ const PermissionsPanel = ({
 		const isUserPermissionExists = userPermission?.empId === userId;
 		try {
 			if (isUserPermissionExists) {
+				value.companyName = company;
 				await UserService.updateUserPermission(value, userId);
 			} else {
 				value.empId = userId;

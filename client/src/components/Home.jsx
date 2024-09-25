@@ -14,9 +14,10 @@ import { isManager } from "utils";
 
 const Home = () => {
 	const navigate = useNavigate();
-	const { company } = useCompany(
+	const { company, setSelectedCompany } = useCompany(
 		LocalStorageService.getItem("selectedCompany"),
 	);
+
 	const [user, setUser] = useState(LocalStorageService.getItem("user"));
 
 	const { isMobile } = useBreakpointValue();
@@ -26,6 +27,7 @@ const Home = () => {
 	const [refresh, setRefresh] = useState(false);
 
 	useEffect(() => {
+		setSelectedCompany(user?.companyId.name);
 		if (user && Object.keys(user).length > 0) {
 			navigate(ROUTE_PATH.SALES);
 			// navigate(`${ROUTE_PATH.SALES}${ROUTE_PATH.CUSTOMERS}`);
@@ -56,6 +58,8 @@ const Home = () => {
 					user={user}
 					setUser={setUser}
 					isMobile={isMobile}
+					companyName={company}
+					companyId={user?.companyId?.registration_number}
 				/>
 			)}
 			{user && (activeMenu || refresh) ? (
