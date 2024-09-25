@@ -125,31 +125,42 @@ const setInitialPermissions = async (empId, isManager, companyName) => {
 };
 
 const login = async (req, res) => {
-	const { email, password } = req.body;
+	const { email, password, companyId } = req.body;
 
 	try {
-		const user = await Employee.findOne({ email }).populate({
-			path: "companyId",
-			model: "Company",
-			select: "name",
-		});
-
-		// user.companyId.push("6667917cd1855c4803b54574");
+		const user = await Employee.findOne({ email }).select(
+			"firstName lastName middleName fullName email role department phoneNumber primaryAddress employmentType manager employeeId payrollStatus",
+		);
+		// if (!user.companyId) {
+		// 	user.companyId = [];
+		// user.companyId.push("669c3a69b52384bab5035425");
 		// await user.save();
-		// const existingCompany = await Company.findById("6667917cd1855c4803b54574");
+		// const existingCompany = await Company.findById("669c3a69b52384bab5035425");
 		// existingCompany.employees.push(user._id);
 		// await existingCompany.save();
+		// }
 
+		// console.log(user);
 		if (!user) {
 			return res.status(500).json({ error: "User does not exist" });
 		}
+		const existingCompanyUser = await Company.findOne({
+			registration_number: companyId,
+			employees: user._id,
+		}).select("name registration_number");
+
+		if (!existingCompanyUser) {
+			return res
+				.status(500)
+				.json({ error: "User does not exist for the company" });
+		}
 		logUserLoginActivity(user._id);
 
-		// return res.json({ message: "Login successful", user });
+		// return res.json({ message: "Login successful", user, existingCompanyUser });
 
 		const match = await comparePassword(password, user.password);
 		return match
-			? res.json({ message: "Login successful", user })
+			? res.json({ message: "Login successful", user, existingCompanyUser })
 			: res.status(401).json({ error: "Invalid password" });
 	} catch (error) {
 		console.error("Error checking password:", error);

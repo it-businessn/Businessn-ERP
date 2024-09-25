@@ -8,6 +8,7 @@ import {
 	getInitialCorporateInfo,
 } from "config/payroll/employees/employmentInfo";
 import useEmployeeEmploymentInfo from "hooks/useEmployeeEmploymentInfo";
+import usePaygroup from "hooks/usePaygroup";
 import useSelectedEmp from "hooks/useSelectedEmp";
 import { useEffect, useState } from "react";
 import LocalStorageService from "services/LocalStorageService";
@@ -41,6 +42,17 @@ const CorporateInfo = ({
 	const [formData, setFormData] = useState(setCorporateInfo);
 	const [isDisabled, setIsDisabled] = useState(true);
 	const [isLoading, setIsLoading] = useState(false);
+	const { payGroups } = usePaygroup(company, false);
+
+	useEffect(() => {
+		if (payGroups) {
+			EMP_COMPANY_CONFIG.find(
+				(_) =>
+					(_.params.find((param) => param.name === "Pay Group").options =
+						payGroups),
+			);
+		}
+	}, [payGroups]);
 
 	useEffect(() => {
 		if (employmentInfo) {

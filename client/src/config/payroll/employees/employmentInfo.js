@@ -114,12 +114,7 @@ export const EMP_COMPANY_CONFIG = [
 				name: "Pay Group",
 				param_key: "employmentPayGroup",
 				control: "select",
-				options: [
-					{
-						type: "Paygroup: Test1",
-						dependent: false,
-					},
-				],
+				options: [],
 			},
 			{
 				name: "Cost Center",
