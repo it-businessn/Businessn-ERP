@@ -1,10 +1,10 @@
 const express = require("express");
 const router = express.Router();
 
-const timesheetController = require("../controllers/timesheetContoller");
+const timecardController = require("../controllers/timecardController");
 
-router.get("/", timesheetController.getTimecard);
+router.get("/", timecardController.getTimecard);
 
-router.post("/", timesheetController.addTimecard);
+router.post("/", timecardController.addTimecardFromDevice);
 
 module.exports = router;

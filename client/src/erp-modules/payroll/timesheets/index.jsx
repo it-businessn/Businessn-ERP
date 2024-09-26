@@ -1,13 +1,13 @@
-import { HStack } from "@chakra-ui/react";
+import { HStack, IconButton } from "@chakra-ui/react";
 import PrimaryButton from "components/ui/button/PrimaryButton";
 import TabsButtonGroup from "components/ui/tab/TabsButtonGroup";
 import useCompany from "hooks/useCompany";
 import useEmployees from "hooks/useEmployees";
 import usePaygroup from "hooks/usePaygroup";
 import { useSignup } from "hooks/useSignup";
-import useTimesheet from "hooks/useTimesheet";
 import PageLayout from "layouts/PageLayout";
 import { useEffect, useState } from "react";
+import { IoRefresh } from "react-icons/io5";
 import { useParams } from "react-router-dom";
 import LocalStorageService from "services/LocalStorageService";
 import { getDefaultDate, getMomentDate, isManager } from "utils";
@@ -34,7 +34,6 @@ const Timesheets = () => {
 		payGroupSchedule?.length > 0 && payGroupSchedule[closestRecordIndex - 1];
 	const [refresh, setRefresh] = useState(false);
 	const [filter, setFilter] = useState(null);
-	const timesheets = useTimesheet(company, userId, refresh, filter);
 	const { employees } = useEmployees(false, company);
 	const { departments, roles } = useSignup(false, company);
 
@@ -81,6 +80,8 @@ const Timesheets = () => {
 		setShowCCFilter(false);
 	}, [startDate, endDate, filteredEmployees, filteredDept, filteredCC]);
 
+	const handleRefresh = () => setRefresh(!refresh);
+
 	const TABS = [
 		{
 			id: 0,
@@ -101,8 +102,10 @@ const Timesheets = () => {
 						"Action",
 					]}
 					setRefresh={setRefresh}
-					data={timesheets}
 					company={company}
+					userId={userId}
+					refresh={refresh}
+					filter={filter}
 				/>
 			),
 		},
@@ -124,6 +127,10 @@ const Timesheets = () => {
 						"End Break3",
 						"Total Hours (HH:mm)",
 					]}
+					setRefresh={setRefresh}
+					company={company}
+					userId={userId}
+					refresh={refresh}
 				/>
 			),
 		},
@@ -142,6 +149,14 @@ const Timesheets = () => {
 			isTimesheet
 		>
 			<HStack spacing={3} justify={"flex-end"} mt={-8}>
+				<IconButton
+					size={"sm"}
+					bg={"var(--primary_button_bg)"}
+					color={"var(--main_color)"}
+					icon={<IoRefresh style={{ fontSize: "20px" }} />}
+					variant={"solid"}
+					onClick={handleRefresh}
+				/>
 				<PrimaryButton
 					size={"sm"}
 					name={"Add request"}

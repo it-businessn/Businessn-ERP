@@ -1,6 +1,4 @@
 const EmployeePayInfo = require("../models/EmployeePayInfo");
-const EmployeeProfileInfo = require("../models/EmployeeProfileInfo");
-const Timecard = require("../models/Timecard");
 const Timesheet = require("../models/Timesheet");
 const moment = require("moment");
 
@@ -132,18 +130,6 @@ const getTimesheet = async (req, res) => {
 	}
 };
 
-const getTimecard = async (req, res) => {
-	try {
-		const result = await Timecard.find({}).sort({
-			timestamp: -1,
-		});
-
-		res.status(200).json(result);
-	} catch (error) {
-		res.status(404).json({ error: error.message });
-	}
-};
-
 const findEmployeeStatTimesheetExists = async (record) =>
 	await Timesheet.findOne(record);
 
@@ -187,46 +173,6 @@ const addStatHolidayDefaultTimesheet = async (employeeId, companyName) => {
 		await Timesheet.create(newStatTimeSheetRecord);
 	});
 	return "New record";
-};
-
-const findEmployee = async (timeManagementBadgeID) =>
-	await EmployeeProfileInfo.findOne(timeManagementBadgeID)
-		.populate({
-			path: "empId",
-			model: "Employee",
-			select: "fullName",
-		})
-		.select("empId");
-
-const addTimecard = async (req, res) => {
-	try {
-		const data = req.body;
-		data?.map(async (entry) => {
-			entry.timestamp = moment.utc(entry.timestamp).toISOString();
-			const { user_id, timestamp, punch } = entry;
-			const finds = await Timecard.find({
-				user_id,
-				timestamp,
-				punch,
-			});
-			if (finds.length) {
-				return;
-			}
-			// const del = await Timecard.deleteMany({
-			// 	_id: { $in: finds.map((id) => id) },
-			// });
-			// console.log("deleted", del, finds);
-			const empRec = await findEmployee({
-				timeManagementBadgeID: entry.user_id,
-			});
-			entry.employeeId = empRec?.empId?._id;
-			entry.employeeName = empRec?.empId?.fullName;
-			await Timecard.create(entry);
-		});
-		res.status(201).json("Timecard entries added successfully");
-	} catch (error) {
-		res.status(400).json({ message: error.message });
-	}
 };
 
 const createTimesheet = async (req, res) => {
@@ -378,6 +324,4 @@ module.exports = {
 	updateTimesheet,
 	addStatHolidayDefaultTimesheet,
 	getFilteredTimesheets,
-	getTimecard,
-	addTimecard,
 };

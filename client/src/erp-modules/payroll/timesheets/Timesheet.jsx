@@ -4,6 +4,7 @@ import EmptyRowRecord from "components/ui/EmptyRowRecord";
 import NormalTextTitle from "components/ui/NormalTextTitle";
 import TableLayout from "components/ui/table/TableLayout";
 import TextTitle from "components/ui/text/TextTitle";
+import useTimesheet from "hooks/useTimesheet";
 import { useEffect, useState } from "react";
 import { FaCheck } from "react-icons/fa";
 import { IoClose } from "react-icons/io5";
@@ -11,7 +12,8 @@ import TimesheetService from "services/TimesheetService";
 import { getDefaultDate } from "utils";
 import { getParamKey, getStatusStyle } from "./data";
 
-const Timesheet = ({ cols, data, company, setRefresh }) => {
+const Timesheet = ({ cols, company, userId, refresh, filter, setRefresh }) => {
+	const timesheets = useTimesheet(company, userId, refresh, filter);
 	const initialFormData = {
 		startTime: "",
 		endTime: "",
@@ -21,7 +23,7 @@ const Timesheet = ({ cols, data, company, setRefresh }) => {
 		recordId: null,
 	};
 	const [formData, setFormData] = useState(initialFormData);
-	const [timesheetData, setTimesheetData] = useState(null);
+	const [timesheetData, setTimesheetData] = useState(timesheets);
 
 	const handleSave = async () => {
 		try {
@@ -42,10 +44,10 @@ const Timesheet = ({ cols, data, company, setRefresh }) => {
 	};
 
 	useEffect(() => {
-		if (data) {
-			setTimesheetData(data);
+		if (timesheets) {
+			setTimesheetData(timesheets);
 		}
-	}, [data]);
+	}, [timesheets]);
 
 	const handleTimeChange = (id, field, value) => {
 		const updatedData = timesheetData.map((record) =>
