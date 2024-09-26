@@ -14,7 +14,13 @@ import PayrollService from "services/PayrollService";
 import StepContent from "../step-content";
 import Record from "../step-content/Record";
 
-const BankingInfo = ({ company, isOnboarding, handlePrev, id }) => {
+const BankingInfo = ({
+	company,
+	isOnboarding,
+	handlePrev,
+	id,
+	handleClose,
+}) => {
 	const { empId } = useSelectedEmp();
 	const onboardingEmpId = LocalStorageService.getItem("onboardingEmpId");
 	const bankingInfo = useEmployeeBankingInfo(company, empId, isOnboarding);
@@ -110,6 +116,7 @@ const BankingInfo = ({ company, isOnboarding, handlePrev, id }) => {
 					handleClick={goToNextStep}
 					isOnboarding={isOnboarding}
 					handlePrev={handlePrev}
+					handleClose={handleClose}
 					id={id}
 				/>
 			</BoxCard>

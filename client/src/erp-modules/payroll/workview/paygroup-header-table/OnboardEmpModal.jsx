@@ -22,7 +22,11 @@ const OnboardEmpModal = ({
 			isOpen={showOnboard}
 			onClose={handleClose}
 		>
-			<Employees isOnboarding selectedPayGroupName={selectedPayGroupName} />
+			<Employees
+				isOnboarding
+				selectedPayGroupName={selectedPayGroupName}
+				handleClose={handleClose}
+			/>
 		</ModalLayout>
 	);
 };

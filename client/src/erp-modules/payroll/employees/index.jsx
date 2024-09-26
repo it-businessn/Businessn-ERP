@@ -26,7 +26,7 @@ import GovernmentInfo from "./employee-tabs/GovernmentContribution";
 import PayInfo from "./employee-tabs/PayInfo";
 import PersonalInfo from "./employee-tabs/PersonalInfo";
 
-const Employees = ({ isOnboarding, selectedPayGroupName }) => {
+const Employees = ({ isOnboarding, selectedPayGroupName, handleClose }) => {
 	const { id, stepNo } = useParams();
 	const { company } = useCompany(
 		LocalStorageService.getItem("selectedCompany"),
@@ -146,6 +146,7 @@ const Employees = ({ isOnboarding, selectedPayGroupName }) => {
 					company={company}
 					handlePrev={handlePrev}
 					isOnboarding={isOnboarding}
+					handleClose={handleClose}
 				/>
 			),
 		},
@@ -229,7 +230,7 @@ const Employees = ({ isOnboarding, selectedPayGroupName }) => {
 							handleFilterClick={(name) => setViewMode(name)}
 							fontSize={"1em"}
 							rightIcon={
-								<FaCheckCircle color={_?.id <= currentTab && "green"} />
+								<FaCheckCircle color={_?.id <= currentTab ? "green" : "grey"} />
 							}
 						/>
 					))}

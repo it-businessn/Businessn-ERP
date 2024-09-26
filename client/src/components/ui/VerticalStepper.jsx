@@ -26,8 +26,16 @@ const VerticalStepper = ({
 	isOnboarding,
 	handlePrev,
 	handleNext,
+	handleClose,
 	id,
 }) => {
+	const handleSubmitClick = () => {
+		if (handleNext) {
+			handleNext(id);
+		} else {
+			handleClose();
+		}
+	};
 	return (
 		<VStack alignItems={"start"} justifyContent={"space-between"} h={"100%"}>
 			<Stepper
@@ -77,7 +85,7 @@ const VerticalStepper = ({
 					<PrimaryButton
 						size={"sm"}
 						name={handleNext ? "Next" : "Submit"}
-						onOpen={() => handleNext(id)}
+						onOpen={handleSubmitClick}
 					/>
 				</HStack>
 			)}

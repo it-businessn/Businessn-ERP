@@ -44,11 +44,11 @@ const useSidebarMenu = (userId, company, isManager) => {
 				console.error(error);
 			}
 		};
-		if (userId) {
+		if (userId && company) {
 			fetchUserPermissions();
 		}
-		// }, [company]);
-	}, []);
+	}, [company]);
+	// }, []);
 
 	return { activeMenu, setActiveMenu };
 };
