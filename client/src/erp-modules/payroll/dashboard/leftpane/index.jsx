@@ -7,7 +7,7 @@ import { useState } from "react";
 import { MdOutlineChevronLeft, MdOutlineChevronRight } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 import { ROUTE_PATH } from "routes";
-import { formatDateRange, isExtraPay } from "utils";
+import { daysAgo, formatDateRange, isExtraPay } from "utils";
 import VerticalStepper from "../../../../components/ui/VerticalStepper";
 import PayPeriodCard from "./PayPeriodCard";
 
@@ -40,6 +40,7 @@ const LeftPane = ({
 		payGroupSchedule && payGroupSchedule[closestRecordIndex + 1];
 
 	const runType = closestRecord?.isExtraRun ? "Extra" : "Regular";
+
 	const sections = [
 		{
 			name: "Payroll",
@@ -52,7 +53,9 @@ const LeftPane = ({
 								prevSchedule?.payPeriod,
 								prevSchedule?.isExtraRun,
 							)}`}
-							title2={prevSchedule?.payPeriodProcessingDate}
+							title2={`${daysAgo(
+								prevSchedule?.payPeriodProcessingDate,
+							)} days ago`}
 						/>
 						<PayPeriodCard
 							schedule={closestRecord}
@@ -64,7 +67,9 @@ const LeftPane = ({
 								closestRecord?.isExtraRun,
 							)}`}
 							title2={runType.toUpperCase()}
-							title3={`Processing date: ${closestRecord?.payPeriodProcessingDate}`}
+							title3={`In ${daysAgo(
+								closestRecord?.payPeriodProcessingDate,
+							)} days `}
 						/>
 						<PayPeriodCard
 							schedule={nextSchedule}
@@ -72,7 +77,10 @@ const LeftPane = ({
 								nextSchedule?.payPeriod,
 								nextSchedule?.isExtraRun,
 							)}`}
-							title2={nextSchedule?.payPeriodProcessingDate}
+							title2={`In ${daysAgo(
+								nextSchedule?.payPeriodProcessingDate,
+								true,
+							)} days `}
 						/>
 					</HStack>
 					<HStack gap={4}>

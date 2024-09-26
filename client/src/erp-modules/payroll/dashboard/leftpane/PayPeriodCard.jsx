@@ -1,6 +1,5 @@
 import { VStack } from "@chakra-ui/react";
 import TextTitle from "components/ui/text/TextTitle";
-import React from "react";
 
 const PayPeriodCard = ({
 	color = "var(--nav_color)",
@@ -23,7 +22,7 @@ const PayPeriodCard = ({
 			<TextTitle title={title1} align={"center"} />
 			<TextTitle title={title2} align={"center"} />
 			{title3 && (
-				<TextTitle title={title3} align={"center"} size="xs" mb={"1em"} />
+				<TextTitle title={title3} align={"center"} size="lg" mb={"1em"} />
 			)}
 		</VStack>
 	);

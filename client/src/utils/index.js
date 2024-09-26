@@ -63,7 +63,14 @@ export const generateLighterShade = (color, factor) => {
 export const toCapitalize = (str) =>
 	str?.replace(/\b\w/g, (match) => match.toUpperCase());
 
+const todayDate = moment();
+
 export const getMomentDate = (date) => moment(date);
+
+export const daysAgo = (date1, isFuture) =>
+	isFuture
+		? moment(date1).diff(todayDate, "days")
+		: todayDate.diff(date1, "days");
 
 export const getMomentDateISO = (date) => moment(date).toISOString();
 
@@ -80,9 +87,9 @@ export const longFormat = (date) => moment(date).format("dddd, D MMMM YYYY");
 export const monthDayYearFormat = (date) =>
 	moment(date).format("MMMM, DD, YYYY");
 
-export const monthDayYear = moment().format("MMM DD, YYYY");
+export const monthDayYear = todayDate.format("MMM DD, YYYY");
 
-export const today = moment().format("MMDDYY");
+export const today = todayDate.format("MMDDYY");
 
 export const formatDateBar = (date) => moment(date).format("DD/MM/YYYY");
 
@@ -527,7 +534,6 @@ export const styleConsole = (value) =>
 export const convertToNum = (str) => parseFloat(str.replace(/,/g, ""));
 
 export const isPaygroup = (name) => name?.payrollActivated;
-
 export const getPayrollStatus = (data, prevRecordEndDate) => {
 	const defaultStatus = {
 		name: "Pending",
@@ -541,18 +547,17 @@ export const getPayrollStatus = (data, prevRecordEndDate) => {
 	const targetEndDate = moment(data.payPeriodEndDate);
 	const targetPayDate = moment(data.payPeriodPayDate);
 	const targetProcessingDate = moment(data.payPeriodProcessingDate);
-	const today = moment();
 
-	const isEndDatePassed = targetEndDate.isBefore(today, "day");
-	const isPayDateInFuture = targetPayDate.isAfter(today, "day");
-	const isPayDateToday = targetPayDate.isSameOrBefore(today, "day");
+	const isEndDatePassed = targetEndDate.isBefore(todayDate, "day");
+	const isPayDateInFuture = targetPayDate.isAfter(todayDate, "day");
+	const isPayDateToday = targetPayDate.isSameOrBefore(todayDate, "day");
 
 	// const isProcessingDateTomorrow = targetProcessingDate.isBefore(
 	// 	today.clone().add(1, "day"),
 	// 	"day",
 	// );
 
-	const isOverdue = today.isAfter(targetProcessingDate, "day");
+	const isOverdue = todayDate.isAfter(targetProcessingDate, "day");
 
 	if (!data.isProcessed && isOverdue) {
 		return {

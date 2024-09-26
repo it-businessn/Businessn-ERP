@@ -46,7 +46,7 @@ const PaygroupTable = ({
 			templateColumns={{ lg: "70% 30%" }}
 		>
 			<BoxCard>
-				<VStack w={"100%"} alignItems={"end"} spacing={0}>
+				<VStack w={"100%"} alignItems={"end"} spacing={2}>
 					<PrimaryButton
 						name={"Add extra payrun"}
 						size="xs"
