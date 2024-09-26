@@ -7,7 +7,7 @@ import { useState } from "react";
 import { MdOutlineChevronLeft, MdOutlineChevronRight } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 import { ROUTE_PATH } from "routes";
-import { daysAgo, formatDateRange, isExtraPay } from "utils";
+import { daysAgo, formatDateBar, formatDateRange, isExtraPay } from "utils";
 import VerticalStepper from "../../../../components/ui/VerticalStepper";
 import PayPeriodCard from "./PayPeriodCard";
 
@@ -87,7 +87,7 @@ const LeftPane = ({
 						<PayPeriodCard
 							schedule={closestRecord}
 							title1="Pay date"
-							title2={closestRecord?.payPeriodPayDate}
+							title2={formatDateBar(closestRecord?.payPeriodPayDate)}
 						/>
 						<PayPeriodCard
 							schedule={closestRecord}
