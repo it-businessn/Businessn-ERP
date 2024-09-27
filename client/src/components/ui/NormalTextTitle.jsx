@@ -12,6 +12,7 @@ const NormalTextTitle = ({
 	mb,
 	weight = "normal",
 	bg,
+	textDecoration,
 }) => (
 	<TextTitle
 		weight={weight}
@@ -25,6 +26,7 @@ const NormalTextTitle = ({
 		mb={mb}
 		color={color}
 		width={width}
+		textDecoration={textDecoration}
 	/>
 );
 

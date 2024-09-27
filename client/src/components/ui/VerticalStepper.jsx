@@ -28,6 +28,7 @@ const VerticalStepper = ({
 	handleNext,
 	handleClose,
 	id,
+	handleLinkClick,
 }) => {
 	const handleSubmitClick = () => {
 		if (handleNext) {
@@ -36,8 +37,22 @@ const VerticalStepper = ({
 			handleClose();
 		}
 	};
+
+	const handleStepClick = (step, index) => {
+		if (handleClick) {
+			handleClick(index);
+		} else {
+			handleLinkClick(step?.linkTo?.path);
+		}
+	};
+
 	return (
-		<VStack alignItems={"start"} justifyContent={"space-between"} h={"100%"}>
+		<VStack
+			alignItems={"start"}
+			justifyContent={"space-between"}
+			h={"100%"}
+			w={"100%"}
+		>
 			<Stepper
 				index={currentStep}
 				orientation="vertical"
@@ -48,7 +63,11 @@ const VerticalStepper = ({
 				cursor={"pointer"}
 			>
 				{steps.map((step, index) => (
-					<Step key={index} w={"100%"} onClick={() => handleClick(index)}>
+					<Step
+						key={index}
+						w={"100%"}
+						onClick={() => handleStepClick(step, index)}
+					>
 						<StepIndicator>
 							<StepStatus
 								complete={<StepIcon />}
@@ -59,13 +78,22 @@ const VerticalStepper = ({
 						<StepTitle w={"100%"}>{step.title}</StepTitle>
 						{!hideProgress && (
 							<CircularProgressBarCell
-								completionPercentage={45}
+								completionPercentage={step.description ?? 0}
 								color="var(--primary_button_bg)"
+								top={"25%"}
 							/>
 						)}
 
-						{/* {!hideLine && <StepSeparator />} */}
-						{<StepSeparator />}
+						{!hideLine && <StepSeparator />}
+						{step?.linkTo && (
+							<NormalTextTitle
+								color="var(--primary_button_bg)"
+								title={step?.linkTo?.title}
+								size="sm"
+								align="right"
+								textDecoration="underline"
+							/>
+						)}
 					</Step>
 				))}
 			</Stepper>

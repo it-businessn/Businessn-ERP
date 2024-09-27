@@ -17,6 +17,7 @@ const TextTitle = ({
 	border,
 	borderLeftWidth,
 	bg,
+	textDecoration,
 }) => (
 	<Text
 		bg={bg}
@@ -36,6 +37,7 @@ const TextTitle = ({
 		visibility={visibility}
 		border={border}
 		borderLeftWidth={borderLeftWidth}
+		textDecoration={textDecoration}
 	>
 		{title}
 	</Text>
