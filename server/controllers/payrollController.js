@@ -150,6 +150,25 @@ const getPayDetailsReportInfo = async (req, res) => {
 	}
 };
 
+const getEmployeePayDetailsReportInfo = async (req, res) => {
+	const { companyName, empId } = req.params;
+
+	try {
+		const payStubs = await EmployeePayStub.find({
+			companyName,
+			empId,
+			isProcessed: true,
+		})
+			.populate(EMP_INFO)
+			.sort({
+				payPeriodPayDate: -1,
+			});
+		res.status(200).json(payStubs);
+	} catch (error) {
+		res.status(404).json({ error: error.message });
+	}
+};
+
 const getAlertsAndViolationsInfo = async (req, res) => {
 	const { companyName, payPeriodNum } = req.params;
 
@@ -1061,4 +1080,5 @@ module.exports = {
 	getEmployeeId,
 	addPayStub,
 	findEmpPayStubDetail,
+	getEmployeePayDetailsReportInfo,
 };

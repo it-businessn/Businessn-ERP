@@ -93,6 +93,10 @@ const PayrollService = {
 		);
 	},
 
+	async getEmpPayReportDetails(company, empId) {
+		return apiService.get(`/payroll/payDetailsReport/${company}/${empId}`);
+	},
+
 	async getPayReportDetails(company, payNum, isExtraRun) {
 		return apiService.get(
 			`/payroll/payDetailsReport/${company}/${payNum}/${isExtraRun}`,

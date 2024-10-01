@@ -2,20 +2,37 @@ import { Box, SimpleGrid } from "@chakra-ui/react";
 
 import BoxCard from "components/ui/card";
 import TextTitle from "components/ui/text/TextTitle";
+import PreviewReportsModal from "erp-modules/payroll/process-payroll/preview-reports/PreviewReportsModal";
 import { EARNING_TABLE_COLS } from "erp-modules/payroll/workview/data";
 import WorkviewTable from "erp-modules/payroll/workview/paygroup-header-table/WorkviewTable";
-import usePaygroup from "hooks/usePaygroup";
+import { useEffect, useState } from "react";
+import PayrollService from "services/PayrollService";
 import EmployeeTimeCard from "./EmployeeTimeCard";
 
-const LeftPane = ({ selectedUser, setStats, company }) => {
-	const { payGroupSchedule } = usePaygroup(company, false);
-	const filteredPayPeriods = payGroupSchedule
-		?.filter((_) => _.isProcessed)
-		.sort(
-			(a, b) => new Date(b.payPeriodPayDate) - new Date(a.payPeriodPayDate),
-		);
+const LeftPane = ({ selectedUser, company }) => {
+	const [empPayStub, setEmpPayStub] = useState(null);
+	const [showReport, setShowReport] = useState(false);
+	const [payStub, setPayStub] = useState(null);
 
-	const handleClick = () => console.log("handleRegister");
+	useEffect(() => {
+		const fetchEmpPayStubs = async () => {
+			try {
+				const response = await PayrollService.getEmpPayReportDetails(
+					company,
+					selectedUser._id,
+				);
+				setEmpPayStub(response.data);
+			} catch (error) {
+				console.error(error);
+			}
+		};
+		fetchEmpPayStubs();
+	}, []);
+
+	const handleClick = (num) => {
+		setShowReport(true);
+		setPayStub(empPayStub.find((_) => _.payPeriodNum === num));
+	};
 
 	return (
 		<Box>
@@ -38,7 +55,7 @@ const LeftPane = ({ selectedUser, setStats, company }) => {
 					<WorkviewTable
 						isEarningTable
 						cols={EARNING_TABLE_COLS}
-						payGroupSchedule={filteredPayPeriods}
+						payGroupSchedule={empPayStub}
 						height="30vh"
 						viewLabel="View Paystub"
 						handleRegister={handleClick}
@@ -48,6 +65,17 @@ const LeftPane = ({ selectedUser, setStats, company }) => {
 					<TextTitle title="Year End Forms" />
 				</BoxCard>
 			</SimpleGrid>
+			{showReport && (
+				<PreviewReportsModal
+					isReport
+					size="4xl"
+					isOpen={showReport}
+					onClose={() => setShowReport(false)}
+					reportData={payStub}
+					isEarningTable
+					title={""}
+				/>
+			)}
 		</Box>
 	);
 };

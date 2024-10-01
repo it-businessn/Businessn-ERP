@@ -11,11 +11,14 @@ const PreviewReportsModal = ({
 	reportData,
 	payPeriodNum,
 	isReport,
+	isEarningTable,
+	size = "7xl",
+	title = "Payroll Register",
 }) => {
 	return (
 		<ModalLayout
-			title={<TextTitle title={"Payroll Register"} />}
-			size="7xl"
+			title={<TextTitle title={title} />}
+			size={size}
 			isOpen={isOpen}
 			onClose={onClose}
 			textAlign={"center"}
@@ -23,23 +26,33 @@ const PreviewReportsModal = ({
 			overflow={"hidden"}
 		>
 			{isReport && !reportData && <Loader />}
-			{!reportData?.length && (
+			{!isEarningTable && !reportData?.length && (
 				<NormalTextTitle
 					align={"center"}
 					size={"lg"}
 					title={"No records found"}
 				/>
 			)}
-			{reportData?.map((data) => (
+			{isEarningTable ? (
 				<Box
-					key={data._id}
 					borderBottom={"1px solid var(--calendar_border)"}
 					mx={"auto"}
 					pb={5}
 				>
-					<PayStubStatement data={data} />
+					<PayStubStatement data={reportData} isEarningTable={isEarningTable} />
 				</Box>
-			))}
+			) : (
+				reportData?.map((data) => (
+					<Box
+						key={data._id}
+						borderBottom={"1px solid var(--calendar_border)"}
+						mx={"auto"}
+						pb={5}
+					>
+						<PayStubStatement data={data} />
+					</Box>
+				))
+			)}
 		</ModalLayout>
 	);
 };

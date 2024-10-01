@@ -13,6 +13,11 @@ router.get(
 );
 
 router.get(
+	"/payDetailsReport/:companyName/:empId",
+	payrollController.getEmployeePayDetailsReportInfo,
+);
+
+router.get(
 	"/payDetailsReport/:companyName/:payPeriodNum/:isExtraRun",
 	payrollController.getPayDetailsReportInfo,
 );
