@@ -124,7 +124,6 @@ const PayInfo = ({ company, isOnboarding, id, handleNext, handlePrev }) => {
 					steps={steps}
 					currentStep={currentStep}
 					handleClick={goToNextStep}
-					hideLine
 					isOnboarding={isOnboarding}
 					id={id}
 					handleNext={handleNext}

@@ -22,7 +22,6 @@ const VerticalStepper = ({
 	steps,
 	hideProgress,
 	height,
-	hideLine,
 	isOnboarding,
 	handlePrev,
 	handleNext,
@@ -84,7 +83,7 @@ const VerticalStepper = ({
 							/>
 						)}
 
-						{!hideLine && <StepSeparator />}
+						{isOnboarding && <StepSeparator />}
 						{step?.linkTo && (
 							<NormalTextTitle
 								color="var(--primary_button_bg)"

@@ -7,6 +7,13 @@ export const PAYGROUP_COLS = [
 	"Action",
 ];
 
+export const EARNING_TABLE_COLS = [
+	"Pay number",
+	"Pay date",
+	"Pay period",
+	"Action",
+];
+
 export const PAYGROUP_ACTIONS = [
 	{ key: "roe", name: "Issue Roes" },
 	{ key: "form", name: "Issue Forms" },

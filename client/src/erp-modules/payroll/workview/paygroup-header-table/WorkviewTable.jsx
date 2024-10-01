@@ -16,6 +16,9 @@ const WorkviewTable = ({
 	height = "26vh",
 	autoScroll,
 	handleRegister,
+	isEarningTable,
+	cols = PAYGROUP_COLS,
+	viewLabel = "View Register",
 }) => {
 	const rowRefs = useRef([]);
 	const scrollToRow = (index) => {
@@ -43,7 +46,7 @@ const WorkviewTable = ({
 
 	return (
 		<TableLayout
-			cols={PAYGROUP_COLS}
+			cols={cols}
 			w={"100%"}
 			height={height}
 			// position="sticky"
@@ -78,29 +81,33 @@ const WorkviewTable = ({
 							<Td p={1} pl={8}>
 								{isExtraPay(payPeriod, isExtraRun)}
 							</Td>
-							<Td p={1} pl={5}>
-								<TextTitle title={formatDateBar(payPeriodProcessingDate)} />
-							</Td>
+							{!isEarningTable && (
+								<Td p={1} pl={5}>
+									<TextTitle title={formatDateBar(payPeriodProcessingDate)} />
+								</Td>
+							)}
 							<Td p={1} textAlign={"center"}>
 								{formatDateBar(payPeriodPayDate)}
 							</Td>
 							<Td p={1} textAlign={"center"}>
 								{formatDateRange(payPeriodStartDate, payPeriodEndDate)}
 							</Td>
-							<Td p={1} textAlign={"center"}>
-								<PrimaryButton
-									color={color}
-									bg={bg}
-									name={name}
-									size="xs"
-									px={0}
-									isDisabled={isDisabledStatus}
-									hover={{
-										bg,
-										color,
-									}}
-								/>
-							</Td>
+							{!isEarningTable && (
+								<Td p={1} textAlign={"center"}>
+									<PrimaryButton
+										color={color}
+										bg={bg}
+										name={name}
+										size="xs"
+										px={0}
+										isDisabled={isDisabledStatus}
+										hover={{
+											bg,
+											color,
+										}}
+									/>
+								</Td>
+							)}
 							<Td p={1} textAlign={"center"}>
 								{autoScroll ? (
 									isViewAction ? (
@@ -131,7 +138,7 @@ const WorkviewTable = ({
 									<HStack spacing={8} justifyContent={"center"}>
 										{isViewAction ? (
 											<OutlineButton
-												label={"View Register"}
+												label={viewLabel}
 												size="xs"
 												onClick={() =>
 													handleRegister(
@@ -158,11 +165,13 @@ const WorkviewTable = ({
 												onOpen={() => handlePay(payPeriod)}
 											/>
 										)}
-										<OutlineButton
-											label={"View Journal"}
-											size="xs"
-											// onClick={handleClick}
-										/>
+										{!isEarningTable && (
+											<OutlineButton
+												label={"View Journal"}
+												size="xs"
+												// onClick={handleClick}
+											/>
+										)}
 									</HStack>
 								)}
 							</Td>

@@ -14,9 +14,11 @@ const Reports = () => {
 
 	const { payGroupSchedule, closestRecordIndex } = usePaygroup(company, false);
 
-	const filteredPayPeriods = payGroupSchedule?.filter(
-		(_, index) => index <= closestRecordIndex,
-	);
+	const filteredPayPeriods = payGroupSchedule
+		?.filter((_, index) => index <= closestRecordIndex)
+		.sort(
+			(a, b) => new Date(b.payPeriodPayDate) - new Date(a.payPeriodPayDate),
+		);
 
 	const [showReport, setShowReport] = useState(undefined);
 	const [selectedPayPeriod, setSelectedPayPeriod] = useState(null);

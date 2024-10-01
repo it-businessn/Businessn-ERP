@@ -230,7 +230,11 @@ const Employees = ({ isOnboarding, selectedPayGroupName, handleClose }) => {
 							handleFilterClick={(name) => setViewMode(name)}
 							fontSize={"1em"}
 							rightIcon={
-								<FaCheckCircle color={_?.id <= currentTab ? "green" : "grey"} />
+								isOnboarding && (
+									<FaCheckCircle
+										color={_?.id <= currentTab ? "green" : "grey"}
+									/>
+								)
 							}
 						/>
 					))}
