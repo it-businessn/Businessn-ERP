@@ -9,88 +9,42 @@ import { getTimeCardFormat } from "utils";
 const sample = [
 	{
 		user_id: "7745",
-		timestamp: "2024-09-23 16:06:25",
+		timestamp: "2024-09-28 16:21:25",
 		status: "4",
-		punch: "0",
-	},
-	{
-		user_id: "7745",
-		timestamp: "2024-09-23 16:08:32",
-		status: "4",
-		punch: "2",
-	},
-	{
-		user_id: "7745",
-		timestamp: " 2024-09-23 16:09:58",
-		status: "4",
-		punch: "3",
-	},
-	{
-		user_id: "7745",
-		timestamp: "2024-09-23 16:10:35",
-		status: "4",
-		punch: "1",
-	},
-	{
-		user_id: "7746",
-		timestamp: "2024-09-23 16:14:18",
-		status: "3",
-		punch: "0",
-	},
-	{
-		user_id: "7746",
-		timestamp: "2024-09-23 16:15:23",
-		status: "3",
-		punch: "2",
-	},
-	{
-		user_id: "7746",
-		timestamp: "2024-09-23 16:17:24",
-		status: "3",
-		punch: "3",
-	},
-	{
-		user_id: "7746",
-		timestamp: "2024-09-23 16:17:51",
-		status: "3",
-		punch: "1",
-	},
-	{
-		user_id: "7745",
-		timestamp: "2024-09-23 16:19:11",
-		status: "4",
-		punch: "0",
-	},
-	{
-		user_id: "7745",
-		timestamp: "2024-09-23 16:20:14",
-		status: "4",
-		punch: "0",
-	},
-	{
-		user_id: "7746",
-		timestamp: "2024-09-23 16:20:38",
-		status: "3",
 		punch: "0",
 	},
 ];
 
-const Timecard = ({ cols, company, userId, refresh, filter, setRefresh }) => {
+const Timecard = ({ cols, company, userId, timecardRefresh, filter }) => {
 	const [timeRecords, setTimeRecords] = useState(null);
 	// const [timecardEntries, setTimecardEntries] = useState([]);
+	const fetchAllTimecards = async () => {
+		try {
+			const response = await TimesheetService.getTimecards();
+			setTimeRecords(response.data);
+		} catch (error) {
+			console.error(error);
+		}
+	};
+	useEffect(() => {
+		fetchAllTimecards();
+	}, []);
 
 	useEffect(() => {
-		const fetchAllTimecards = async () => {
+		const postAllTimecards = async (type) => {
 			try {
-				const response = await TimesheetService.getTimecards();
-				setTimeRecords(response.data);
+				const response = await TimesheetService.addTimecard(sample);
+				if (response) {
+					fetchAllTimecards();
+				}
 			} catch (error) {
 				console.error(error);
 			}
-			// await TimesheetService.addTimecard(sample);
 		};
-		fetchAllTimecards();
-	}, [refresh]);
+		if (timecardRefresh) {
+			postAllTimecards();
+		}
+	}, [timecardRefresh]);
 
 	// useEffect(() => {
 	// 	const groupedData = [];

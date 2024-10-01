@@ -33,6 +33,7 @@ const Timesheets = () => {
 	const lastRecord =
 		payGroupSchedule?.length > 0 && payGroupSchedule[closestRecordIndex - 1];
 	const [refresh, setRefresh] = useState(false);
+	const [timecardRefresh, setTimecardRefresh] = useState(false);
 	const [filter, setFilter] = useState(null);
 	const { employees } = useEmployees(false, company);
 	const { departments, roles } = useSignup(false, company);
@@ -80,7 +81,7 @@ const Timesheets = () => {
 		setShowCCFilter(false);
 	}, [startDate, endDate, filteredEmployees, filteredDept, filteredCC]);
 
-	const handleRefresh = () => setRefresh(!refresh);
+	const handleRefresh = () => setTimecardRefresh(true);
 
 	const TABS = [
 		{
@@ -102,6 +103,7 @@ const Timesheets = () => {
 						"Action",
 					]}
 					setRefresh={setRefresh}
+					setTimecardRefresh={setTimecardRefresh}
 					company={company}
 					userId={userId}
 					refresh={refresh}
@@ -127,10 +129,10 @@ const Timesheets = () => {
 						"End Break3",
 						"Total Hours (HH:mm)",
 					]}
-					setRefresh={setRefresh}
+					setTimecardRefresh={setTimecardRefresh}
 					company={company}
 					userId={userId}
-					refresh={refresh}
+					timecardRefresh={timecardRefresh}
 				/>
 			),
 		},

@@ -39,7 +39,19 @@ const addTimecardFromDevice = async (req, res) => {
 			if (!entryExists) {
 				await TimecardRaw.create(entry);
 			}
+			await buildTimeCardDB();
+		});
+		res.status(201).json("Timecard entries added successfully");
+	} catch (error) {
+		res.status(400).json({ message: error.message });
+	}
+};
 
+const buildTimeCardDB = async () => {
+	try {
+		const result = await TimecardRaw.find({});
+		result.forEach(async (entry) => {
+			const { user_id, timestamp, punch } = entry;
 			// clockin
 			if (punch === "0") {
 				const clockInTimeEntryExists = await findTimecard({
@@ -104,10 +116,7 @@ const addTimecardFromDevice = async (req, res) => {
 			// });
 			// console.log("deleted", del, finds);
 		});
-		res.status(201).json("Timecard entries added successfully");
-	} catch (error) {
-		res.status(400).json({ message: error.message });
-	}
+	} catch (error) {}
 };
 
 const addTimecard = async (entry) => {

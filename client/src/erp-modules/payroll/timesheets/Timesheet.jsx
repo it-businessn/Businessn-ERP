@@ -12,7 +12,15 @@ import TimesheetService from "services/TimesheetService";
 import { getDefaultDate } from "utils";
 import { getParamKey, getStatusStyle } from "./data";
 
-const Timesheet = ({ cols, company, userId, refresh, filter, setRefresh }) => {
+const Timesheet = ({
+	cols,
+	company,
+	userId,
+	refresh,
+	filter,
+	setRefresh,
+	setTimecardRefresh,
+}) => {
 	const timesheets = useTimesheet(company, userId, refresh, filter);
 	const initialFormData = {
 		startTime: "",
@@ -46,6 +54,7 @@ const Timesheet = ({ cols, company, userId, refresh, filter, setRefresh }) => {
 	useEffect(() => {
 		if (timesheets) {
 			setTimesheetData(timesheets);
+			setTimecardRefresh(false);
 		}
 	}, [timesheets]);
 
