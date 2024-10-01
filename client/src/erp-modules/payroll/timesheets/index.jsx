@@ -81,7 +81,7 @@ const Timesheets = () => {
 		setShowCCFilter(false);
 	}, [startDate, endDate, filteredEmployees, filteredDept, filteredCC]);
 
-	const handleRefresh = () => setTimecardRefresh(true);
+	const handleRefresh = () => setTimecardRefresh(!timecardRefresh);
 
 	const TABS = [
 		{

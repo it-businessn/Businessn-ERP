@@ -1,25 +1,18 @@
 import { Tbody, Td, Tr } from "@chakra-ui/react";
 import EmptyRowRecord from "components/ui/EmptyRowRecord";
+import NormalTextTitle from "components/ui/NormalTextTitle";
 import TableLayout from "components/ui/table/TableLayout";
 import TextTitle from "components/ui/text/TextTitle";
 import { useEffect, useState } from "react";
 import TimesheetService from "services/TimesheetService";
 import { getTimeCardFormat } from "utils";
 
-const sample = [
-	{
-		user_id: "7745",
-		timestamp: "2024-09-28 16:21:25",
-		status: "4",
-		punch: "0",
-	},
-];
-
 const Timecard = ({ cols, company, userId, timecardRefresh, filter }) => {
 	const [timeRecords, setTimeRecords] = useState(null);
 	// const [timecardEntries, setTimecardEntries] = useState([]);
 	const fetchAllTimecards = async () => {
 		try {
+			await TimesheetService.addTimecard([]);
 			const response = await TimesheetService.getTimecards();
 			setTimeRecords(response.data);
 		} catch (error) {
@@ -28,23 +21,23 @@ const Timecard = ({ cols, company, userId, timecardRefresh, filter }) => {
 	};
 	useEffect(() => {
 		fetchAllTimecards();
-	}, []);
-
-	useEffect(() => {
-		const postAllTimecards = async (type) => {
-			try {
-				const response = await TimesheetService.addTimecard(sample);
-				if (response) {
-					fetchAllTimecards();
-				}
-			} catch (error) {
-				console.error(error);
-			}
-		};
-		if (timecardRefresh) {
-			postAllTimecards();
-		}
 	}, [timecardRefresh]);
+
+	// useEffect(() => {
+	// 	const postAllTimecards = async (type) => {
+	// 		try {
+	// 			const response = await TimesheetService.addTimecard(sample);
+	// 			if (response) {
+	// 				fetchAllTimecards();
+	// 			}
+	// 		} catch (error) {
+	// 			console.error(error);
+	// 		}
+	// 	};
+	// 	if (timecardRefresh) {
+	// 		postAllTimecards();
+	// 	}
+	// }, [timecardRefresh]);
 
 	// useEffect(() => {
 	// 	const groupedData = [];
@@ -93,7 +86,7 @@ const Timecard = ({ cols, company, userId, timecardRefresh, filter }) => {
 	// 	setTimecardEntries(groupedData);
 	// }, [timeRecords]);
 	return (
-		<TableLayout isTimesheet cols={cols}>
+		<TableLayout cols={cols} height="75vh">
 			<Tbody>
 				{!timeRecords?.length && <EmptyRowRecord />}
 				{timeRecords?.map(
@@ -108,40 +101,86 @@ const Timecard = ({ cols, company, userId, timecardRefresh, filter }) => {
 						totalBreakHours,
 					}) => {
 						return (
-							<Tr key={_id}>
-								<Td py={0}>
-									<TextTitle title={employeeName} />
+							<Tr key={_id} h={"20px"}>
+								<Td p={0.5} pl={6}>
+									<TextTitle size={"sm"} width="150px" title={employeeName} />
 								</Td>
-								<Td>
-									<TextTitle title={badge_id} />
+								<Td p={0.5} pl={6}>
+									<TextTitle width="60px" size={"sm"} title={badge_id} />
 								</Td>
-								<Td py={1}>{clockIn && getTimeCardFormat(clockIn)}</Td>
-								<Td py={1}>{clockOut && getTimeCardFormat(clockOut)}</Td>
-								<Td py={1}>
-									{startBreaks.length > 0
-										? getTimeCardFormat(startBreaks[0])
-										: ""}
+								<Td p={0.5} pl={6}>
+									<NormalTextTitle
+										size={"sm"}
+										title={clockIn && getTimeCardFormat(clockIn)}
+									/>
 								</Td>
-								<Td py={1}>
-									{endBreaks.length > 0 ? getTimeCardFormat(endBreaks[0]) : ""}
+								<Td p={0.5} pl={6}>
+									<NormalTextTitle
+										size={"sm"}
+										title={clockOut && getTimeCardFormat(clockOut)}
+									/>
 								</Td>
-								<Td py={1}>
-									{startBreaks.length > 1
-										? getTimeCardFormat(startBreaks[1])
-										: ""}
+								<Td p={0.5} pl={6}>
+									<NormalTextTitle
+										size={"sm"}
+										title={
+											startBreaks?.length
+												? getTimeCardFormat(startBreaks[0])
+												: ""
+										}
+									/>
 								</Td>
-								<Td py={1}>
-									{endBreaks.length > 1 ? getTimeCardFormat(endBreaks[1]) : ""}
+								<Td p={0.5} pl={6}>
+									<NormalTextTitle
+										size={"sm"}
+										title={
+											endBreaks?.length ? getTimeCardFormat(endBreaks[0]) : ""
+										}
+									/>
 								</Td>
-								<Td py={1}>
-									{startBreaks.length > 2
-										? getTimeCardFormat(startBreaks[2])
-										: ""}
+								<Td p={0.5} pl={6}>
+									<NormalTextTitle
+										size={"sm"}
+										title={
+											startBreaks?.length > 1
+												? getTimeCardFormat(startBreaks[1])
+												: ""
+										}
+									/>
 								</Td>
-								<Td py={1}>
-									{endBreaks.length > 2 ? getTimeCardFormat(endBreaks[2]) : ""}
+								<Td p={0.5} pl={6}>
+									<NormalTextTitle
+										size={"sm"}
+										title={
+											endBreaks?.length > 1
+												? getTimeCardFormat(endBreaks[1])
+												: ""
+										}
+									/>
 								</Td>
-								<Td py={0}>{totalBreakHours}</Td>
+								<Td p={0.5} pl={6}>
+									<NormalTextTitle
+										size={"sm"}
+										title={
+											startBreaks?.length > 2
+												? getTimeCardFormat(startBreaks[2])
+												: ""
+										}
+									/>
+								</Td>
+								<Td p={0.5} pl={6}>
+									<NormalTextTitle
+										size={"sm"}
+										title={
+											endBreaks?.length > 2
+												? getTimeCardFormat(endBreaks[2])
+												: ""
+										}
+									/>
+								</Td>
+								<Td p={0.5} pl={6}>
+									{totalBreakHours}
+								</Td>
 							</Tr>
 						);
 					},
