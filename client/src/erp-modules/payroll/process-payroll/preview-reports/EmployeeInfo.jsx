@@ -28,8 +28,18 @@ const EmployeeInfo = ({ data }) => (
 						title2={formatDateBar(data.payPeriodEndDate)}
 					/>
 					<BasicInfo mt={4} title1={"Name:"} title2={data.empId.fullName} />
-					<BasicInfo title1={"Address:"} title2={"18685 60 Ave "} />
-					<BasicInfo title1={""} title2={"Surrey, BC V3S 8K8"} />
+					<BasicInfo
+						title1={"Address:"}
+						title2={
+							data.empId?.primaryAddress?.streetNumber === ""
+								? "NA"
+								: data.empId?.primaryAddress?.streetNumber
+						}
+					/>
+					<BasicInfo
+						title1={""}
+						title2={`${data.empId?.primaryAddress?.city}, ${data.empId?.primaryAddress?.state} ${data.empId?.primaryAddress?.postalCode}`}
+					/>
 					<BasicInfo
 						mt={4}
 						title1={"Employee#:"}

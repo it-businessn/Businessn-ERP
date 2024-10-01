@@ -127,7 +127,7 @@ const buildEmpHourlyDetails = (empTimesheetData, employee) => {
 const EMP_INFO = {
 	path: "empId",
 	model: "Employee",
-	select: ["companyId", "employeeId", "fullName"],
+	select: ["companyId", "employeeId", "fullName", "primaryAddress"],
 };
 
 const getPayDetailsReportInfo = async (req, res) => {

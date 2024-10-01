@@ -17,6 +17,7 @@ import TableLayout from "components/ui/table/TableLayout";
 
 import Loader from "components/Loader";
 import EmptyRowRecord from "components/ui/EmptyRowRecord";
+import NormalTextTitle from "components/ui/NormalTextTitle";
 import DeletePopUp from "components/ui/modal/DeletePopUp";
 import useCompany from "hooks/useCompany";
 import useSalesAgentData from "hooks/useSalesAgentData";
@@ -250,9 +251,30 @@ const Opportunities = () => {
 						{opportunities?.map((_) => {
 							return (
 								<Tr key={_._id}>
-									<Td>{_.opportunityName}</Td>
-									<Td>{toCapitalize(_.name)}</Td>
-									<Td>{_.email}</Td>
+									<Td py={"0.5em"}>
+										<NormalTextTitle
+											width="200px"
+											size="sm"
+											whiteSpace="wrap"
+											title={_.opportunityName}
+										/>
+									</Td>
+									<Td py={"0.5em"}>
+										<NormalTextTitle
+											width="200px"
+											size="sm"
+											whiteSpace="wrap"
+											title={toCapitalize(_.name)}
+										/>
+									</Td>
+									<Td py={"0.5em"}>
+										<NormalTextTitle
+											width="200px"
+											whiteSpace="wrap"
+											size="sm"
+											title={_.email}
+										/>
+									</Td>
 									<Td p={0}>
 										<SelectList
 											id={_._id}
@@ -283,9 +305,15 @@ const Opportunities = () => {
 											data={assignees}
 										/>
 									</Td>
-									<Td>{formatDate(_.createdOn)}</Td>
-									<Td>{_.isDisbursedConfirmed ? "Yes" : "No"}</Td>
-									<Td>
+									<Td py={"0.5em"}>
+										<NormalTextTitle
+											width="120px"
+											size="sm"
+											title={formatDate(_.createdOn)}
+										/>
+									</Td>
+									<Td py={"0.5em"}>{_.isDisbursedConfirmed ? "Yes" : "No"}</Td>
+									<Td py={"0.5em"}>
 										<HStack>
 											<RiEditLine
 												cursor={"pointer"}

@@ -11,7 +11,9 @@ import {
 	Tr,
 	useToast,
 } from "@chakra-ui/react";
+import Loader from "components/Loader";
 import EmptyRowRecord from "components/ui/EmptyRowRecord";
+import NormalTextTitle from "components/ui/NormalTextTitle";
 import LeftIconButton from "components/ui/button/LeftIconButton";
 import SelectList from "components/ui/form/select/SelectList";
 import DeletePopUp from "components/ui/modal/DeletePopUp";
@@ -220,6 +222,7 @@ const LeadsDocket = () => {
 					</HStack>
 				</HStack>
 			)}
+			{!leads && <Loader autoHeight />}
 			{leads && (
 				<TableLayout
 					hasMulti
@@ -259,42 +262,56 @@ const LeadsDocket = () => {
 											onChange={() => handleCheckboxChange(_id)}
 										/>
 									</Td>
-									<Td p={1}>{opportunityName}</Td>
-									<Td p={1}>{toCapitalize(name)}</Td>
-									<Td p={1}>
+									<Td p={0.5}>
+										<NormalTextTitle
+											width="250px"
+											size="sm"
+											whiteSpace="wrap"
+											title={opportunityName}
+										/>
+									</Td>
+									<Td p={0.5}>
+										<NormalTextTitle
+											width="200px"
+											size="sm"
+											whiteSpace="wrap"
+											title={toCapitalize(name)}
+										/>
+									</Td>
+									<Td p={0.5}>
 										<SelectList
 											code="name"
 											selectedValue={region}
 											data={REGIONS}
 										/>
 									</Td>
-									<Td p={1}>
+									<Td p={0.5}>
 										<SelectList
 											code="name"
 											selectedValue={industry}
 											data={INDUSTRIES}
 										/>
 									</Td>
-									<Td p={1}>
+									<Td p={0.5}>
 										<SelectList
 											code="name"
 											selectedValue={productService}
 											data={PRODUCTS_SERVICES}
 										/>
 									</Td>
-									<Td p={1}>
+									<Td p={0.5}>
 										<SelectList
 											code="name"
 											selectedValue={source}
 											data={LEAD_SOURCES}
 										/>
 									</Td>
-									<Td p={1}>{`${address?.streetNumber || ""} ${
+									<Td p={0.5}>{`${address?.streetNumber || ""} ${
 										address?.city || ""
 									} ${address?.state || ""} ${address?.country || ""} ${
 										address?.postalCode || ""
 									}`}</Td>
-									<Td p={1}>{formatDate(createdOn)}</Td>
+									<Td p={0.5}>{formatDate(createdOn)}</Td>
 									<Td textAlign={"center"}>
 										<FaRegTrashAlt
 											cursor={"pointer"}

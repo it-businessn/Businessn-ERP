@@ -2,6 +2,7 @@ import { Tbody, Td, Tr, useDisclosure } from "@chakra-ui/react";
 import TableLayout from "components/ui/table/TableLayout";
 
 import EmptyRowRecord from "components/ui/EmptyRowRecord";
+import NormalTextTitle from "components/ui/NormalTextTitle";
 import { useState } from "react";
 import { FaRegTrashAlt } from "react-icons/fa";
 import LocalStorageService from "services/LocalStorageService";
@@ -84,10 +85,24 @@ const ListView = ({
 						{!leadList?.length && <EmptyRowRecord />}
 						{leadList?.map((_) => (
 							<Tr key={_._id}>
-								<Td>{_.opportunityName}</Td>
-								<Td>{toCapitalize(_.name)}</Td>
-								<Td>{_.email}</Td>
-								<Td>
+								<Td py={0.5}>
+									<NormalTextTitle
+										width="250px"
+										size="sm"
+										whiteSpace="wrap"
+										title={_.opportunityName}
+									/>
+								</Td>
+								<Td py={0.5}>
+									<NormalTextTitle
+										width="200px"
+										size="sm"
+										whiteSpace="wrap"
+										title={toCapitalize(_.name)}
+									/>
+								</Td>
+								<Td py={0.5}>{_.email}</Td>
+								<Td py={0.5}>
 									<FaRegTrashAlt
 										cursor={"pointer"}
 										onClick={() => {
