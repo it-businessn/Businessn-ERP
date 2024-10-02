@@ -72,7 +72,7 @@ const CorporateInfo = ({
 		try {
 			await PayrollService.addEmployeeEmploymentInfo(formData);
 			setIsLoading(false);
-			setIsDisabled(true);
+			// setIsDisabled(true);
 			toast({
 				title: "Employment info updated successfully.",
 				status: "success",
@@ -151,6 +151,7 @@ const CorporateInfo = ({
 					id={id}
 					handleNext={handleNext}
 					handlePrev={handlePrev}
+					handleNextEnabled={!isDisabled}
 				/>
 			</BoxCard>
 			<StepContent currentStep={currentStep} steps={steps} />

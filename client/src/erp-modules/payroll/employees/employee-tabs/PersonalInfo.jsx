@@ -27,6 +27,7 @@ const PersonalInfo = ({ company, isOnboarding, id, handleNext }) => {
 	const [isSave2Disabled, setIsSave2Disabled] = useState(true);
 	const [isSave3Disabled, setIsSave3Disabled] = useState(true);
 	const [isLoading, setIsLoading] = useState(false);
+	const [sectionNum, setSectionNum] = useState(null);
 
 	useEffect(() => {
 		if (profileInfo) {
@@ -37,20 +38,26 @@ const PersonalInfo = ({ company, isOnboarding, id, handleNext }) => {
 		}
 	}, [profileInfo, empId]);
 
-	const handleConfirm = (num) => {
+	useEffect(() => {
 		if (
-			num === 1 &&
+			sectionNum === 1 &&
 			formData.firstName &&
 			formData.lastName &&
 			formData.birthDate
 		) {
 			setIsSave1Disabled(false);
 		}
-		if (num === 2 && formData.employeeNo) {
+	}, [sectionNum, formData.firstName, formData.lastName, formData.birthDate]);
+
+	useEffect(() => {
+		if (sectionNum === 2 && formData.employeeNo) {
 			setIsSave2Disabled(false);
 		}
+	}, [sectionNum, formData.employeeNo]);
+
+	useEffect(() => {
 		if (
-			num === 3 &&
+			sectionNum === 3 &&
 			formData.personalEmail &&
 			formData.streetAddress &&
 			formData.city &&
@@ -60,7 +67,16 @@ const PersonalInfo = ({ company, isOnboarding, id, handleNext }) => {
 		) {
 			setIsSave3Disabled(false);
 		}
-	};
+	}, [
+		sectionNum,
+		formData.personalEmail,
+		formData.streetAddress,
+		formData.city,
+		formData.province,
+		formData.country,
+		formData.postalCode,
+	]);
+
 	const toast = useToast();
 
 	const handleSubmit = async () => {
@@ -68,10 +84,10 @@ const PersonalInfo = ({ company, isOnboarding, id, handleNext }) => {
 		try {
 			const result = await PayrollService.addEmployeeProfileInfo(formData);
 			setIsLoading(false);
-			setIsSave1Disabled(true);
-			setIsSave2Disabled(true);
-			setIsSave3Disabled(true);
-			LocalStorageService.setItem("onboardingEmpId", result.data._id);
+			// setIsSave1Disabled(true);
+			// setIsSave2Disabled(true);
+			// setIsSave3Disabled(true);
+			LocalStorageService.setItem("onboardingEmpId", result.data.empId);
 			toast({
 				title: "Personal info added successfully.",
 				status: "success",
@@ -86,7 +102,7 @@ const PersonalInfo = ({ company, isOnboarding, id, handleNext }) => {
 			title: "Personal Information",
 			content: (
 				<Record
-					handleConfirm={() => handleConfirm(1)}
+					handleConfirm={() => setSectionNum(1)}
 					formData={formData}
 					setFormData={setFormData}
 					title="Personal Information"
@@ -102,7 +118,7 @@ const PersonalInfo = ({ company, isOnboarding, id, handleNext }) => {
 			title: "Identification and Status",
 			content: (
 				<Record
-					handleConfirm={() => handleConfirm(2)}
+					handleConfirm={() => setSectionNum(2)}
 					formData={formData}
 					setFormData={setFormData}
 					title="Identification and Status"
@@ -117,7 +133,7 @@ const PersonalInfo = ({ company, isOnboarding, id, handleNext }) => {
 			title: "Contact",
 			content: (
 				<Record
-					handleConfirm={() => handleConfirm(3)}
+					handleConfirm={() => setSectionNum(3)}
 					formData={formData}
 					setFormData={setFormData}
 					title="Contact"
@@ -162,6 +178,9 @@ const PersonalInfo = ({ company, isOnboarding, id, handleNext }) => {
 					isOnboarding={isOnboarding}
 					id={id}
 					handleNext={handleNext}
+					handleNextEnabled={
+						!isSave1Disabled && !isSave2Disabled && !isSave3Disabled
+					}
 				/>
 			</BoxCard>
 			<StepContent

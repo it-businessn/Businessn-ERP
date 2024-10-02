@@ -59,8 +59,8 @@ const BankingInfo = ({
 		try {
 			await PayrollService.addEmployeeBankingInfo(formData);
 			setIsLoading(false);
-			setIsDisabled(true);
-			setIsSave1Disabled(true);
+			// setIsDisabled(true);
+			// setIsSave1Disabled(true);
 			toast({
 				title: "Banking info updated successfully.",
 				status: "success",
@@ -123,6 +123,7 @@ const BankingInfo = ({
 					handlePrev={handlePrev}
 					handleClose={handleClose}
 					id={id}
+					handleNextEnabled={!isSave1Disabled && !isDisabled}
 				/>
 			</BoxCard>
 			<StepContent currentStep={currentStep} steps={steps} />

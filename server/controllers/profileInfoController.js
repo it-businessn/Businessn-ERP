@@ -72,25 +72,63 @@ const addEmployeeProfileInfo = async (req, res) => {
 		postalCode,
 	} = req.body;
 	try {
-		if (!empId) {
+		if (!empId && (firstName, companyName, lastName, birthDate)) {
+			const existingProfileInfo = await EmployeeProfileInfo.findOne({
+				firstName,
+				companyName,
+				lastName,
+				birthDate,
+			});
+
+			if (existingProfileInfo) {
+				const updatedProfileInfo = await updateProfileInfo(
+					existingProfileInfo._id,
+					{
+						streetAddress: `${streetAddressSuite} ${streetAddress}`,
+						city,
+						province,
+						postalCode,
+						country,
+						payrollStatus,
+						personalEmail,
+						personalPhoneNum,
+						employeeNo,
+						timeManagementBadgeID,
+						emergencyFirstName,
+						emergencyLastName,
+						birthDate,
+						SIN,
+						maritalStatus,
+						citizenship,
+						workPermitNo,
+						workPermitExpiryNo,
+						personalEmail,
+						personalPhoneNum,
+						businessEmail,
+						businessPhoneNum,
+						emergencyPersonalEmail,
+						emergencyPersonalPhoneNum,
+					},
+				);
+				return res.status(201).json(updatedProfileInfo);
+			}
 			const newEmployee = await addEmployee(companyName, {
-				employeeId: employeeNo,
 				firstName,
 				middleName,
 				lastName,
-				email: personalEmail,
 				role: "Employee",
-				phoneNumber: personalPhoneNum,
-				primaryAddress: {
-					streetAddress: `${streetAddressSuite} ${streetAddress}`,
-					city,
-					state: province,
-					postalCode,
-					country,
-				},
 				fullName: `${firstName} ${middleName} ${lastName}`,
 			});
-			return res.status(201).json(newEmployee);
+			if (newEmployee) {
+				const newProfileInfo = await EmployeeProfileInfo.create({
+					companyName,
+					firstName,
+					middleName,
+					lastName,
+					birthDate,
+				});
+				return res.status(201).json(newProfileInfo);
+			}
 		}
 		const existingProfileInfo = await findEmployeeProfileInfo(
 			empId,

@@ -50,7 +50,7 @@ const PayInfo = ({ company, isOnboarding, id, handleNext, handlePrev }) => {
 		try {
 			await PayrollService.addEmployeePayInfo(formData);
 			setIsLoading(false);
-			setIsDisabled(true);
+			// setIsDisabled(true);
 			toast({
 				title: "Payment info updated successfully.",
 				status: "success",
@@ -128,6 +128,7 @@ const PayInfo = ({ company, isOnboarding, id, handleNext, handlePrev }) => {
 					id={id}
 					handleNext={handleNext}
 					handlePrev={handlePrev}
+					handleNextEnabled={!isDisabled}
 				/>
 			</BoxCard>
 			<StepContent

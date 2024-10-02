@@ -49,7 +49,7 @@ const GovernmentContribution = ({
 		try {
 			await PayrollService.addEmployeeGovernmentInfo(formData);
 			setIsLoading(false);
-			setIsDisabled(true);
+			// setIsDisabled(true);
 			toast({
 				title: "Government info updated successfully.",
 				status: "success",
@@ -128,6 +128,7 @@ const GovernmentContribution = ({
 					handleNext={handleNext}
 					handlePrev={handlePrev}
 					id={id}
+					handleNextEnabled={!isDisabled}
 				/>
 			</BoxCard>
 			<StepContent
