@@ -14,7 +14,7 @@ const timecardSchema = new mongoose.Schema({
 	updatedOn: { type: Date, default: Date.now },
 	createdOn: { type: Date, default: Date.now },
 	companyName: { type: String, ref: "Company" },
-	totalBreakHours: { type: Number, default: "0" },
+	totalBreakHours: { type: String, default: "" },
 	notDevice: Boolean,
 });
 

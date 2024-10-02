@@ -31,12 +31,13 @@ export const EMP_CONTACT_CONFIG = [
 			{ name: "Personal Email", param_key: "personalEmail", mandatory: true },
 			{ name: "Personal Phone", param_key: "personalPhoneNum" },
 			{ name: "Address", param_key: "address", mandatory: true },
-			{ name: "Street Address", param_key: "streetAddress" },
+			{ name: "Street Address", param_key: "streetAddress", mandatory: true },
 			{ name: "Suite", param_key: "streetAddressSuite" },
-			{ name: "City", param_key: "city" },
+			{ name: "City", param_key: "city", mandatory: true },
 			{
 				name: "Province/State",
 				param_key: "province",
+				mandatory: true,
 				control: "select",
 				options: REGIONS,
 			},
@@ -44,10 +45,11 @@ export const EMP_CONTACT_CONFIG = [
 			{
 				name: "Country",
 				param_key: "country",
+				mandatory: true,
 				control: "select",
 				options: COUNTRIES,
 			},
-			{ name: "Postal Code", param_key: "postalCode" },
+			{ name: "Postal Code", mandatory: true, param_key: "postalCode" },
 		],
 	},
 	{
@@ -99,7 +101,7 @@ export const EMP_PERSONAL_INFO_CONFIG = [
 	{
 		type: "sfsgdsgdsgdsg27",
 		params: [
-			{ name: "Last Name", param_key: "lastName" },
+			{ name: "Last Name", param_key: "lastName", mandatory: true },
 			{ name: "sfsgdsgdsgdsg1", param_key: "sfsgdsgdsgdsg5" },
 			{ name: "sfsgdsgdsgdsg2", param_key: "sfsgdsgdsgdsg6" },
 			{ name: "sfsgdsgdsgdsg3", param_key: "sfsgdsgdsgdsg7" },

@@ -28,6 +28,7 @@ const BankingInfo = ({
 		getInitialBankingInfo(onboardingEmpId ?? empId, company);
 	const [formData, setFormData] = useState(setBankingInfo);
 	const [isDisabled, setIsDisabled] = useState(true);
+	const [isSave1Disabled, setIsSave1Disabled] = useState(true);
 	const [isLoading, setIsLoading] = useState(false);
 
 	useEffect(() => {
@@ -38,14 +39,17 @@ const BankingInfo = ({
 		}
 	}, [bankingInfo, empId]);
 
-	const handleConfirm = () => {
+	const handleConfirm = (num) => {
 		if (
+			num === 1 &&
 			formData.bankNum &&
 			formData.transitNum &&
-			formData.accountNum &&
-			formData.paymentEmail
+			formData.accountNum
 		) {
 			setIsDisabled(false);
+		}
+		if (num === 2 && formData.paymentEmail) {
+			setIsSave1Disabled(false);
 		}
 	};
 
@@ -56,6 +60,7 @@ const BankingInfo = ({
 			await PayrollService.addEmployeeBankingInfo(formData);
 			setIsLoading(false);
 			setIsDisabled(true);
+			setIsSave1Disabled(true);
 			toast({
 				title: "Banking info updated successfully.",
 				status: "success",
@@ -70,7 +75,7 @@ const BankingInfo = ({
 			title: "Banking Info",
 			content: (
 				<Record
-					handleConfirm={handleConfirm}
+					handleConfirm={() => handleConfirm(1)}
 					formData={formData}
 					setFormData={setFormData}
 					title="Banking Info"
@@ -85,13 +90,13 @@ const BankingInfo = ({
 			title: "Payment Notification",
 			content: (
 				<Record
-					handleConfirm={handleConfirm}
+					handleConfirm={() => handleConfirm(2)}
 					formData={formData}
 					setFormData={setFormData}
 					title="Payment Notification"
 					config={EMP_PAYMENT_NOTIFICATION_CONFIG}
 					isLoading={isLoading}
-					isDisabled={isDisabled}
+					isDisabled={isSave1Disabled}
 					handleSubmit={handleSubmit}
 				/>
 			),

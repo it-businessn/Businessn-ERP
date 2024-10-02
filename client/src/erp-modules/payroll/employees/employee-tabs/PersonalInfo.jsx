@@ -23,7 +23,9 @@ const PersonalInfo = ({ company, isOnboarding, id, handleNext }) => {
 	const setProfileInfo = () =>
 		getInitialProfileInfo(isOnboarding ? null : empId, company);
 	const [formData, setFormData] = useState(setProfileInfo);
-	const [isDisabled, setIsDisabled] = useState(true);
+	const [isSave1Disabled, setIsSave1Disabled] = useState(true);
+	const [isSave2Disabled, setIsSave2Disabled] = useState(true);
+	const [isSave3Disabled, setIsSave3Disabled] = useState(true);
 	const [isLoading, setIsLoading] = useState(false);
 
 	useEffect(() => {
@@ -35,11 +37,20 @@ const PersonalInfo = ({ company, isOnboarding, id, handleNext }) => {
 		}
 	}, [profileInfo, empId]);
 
-	const handleConfirm = () => {
+	const handleConfirm = (num) => {
 		if (
+			num === 1 &&
 			formData.firstName &&
-			formData.birthDate &&
-			formData.employeeNo &&
+			formData.lastName &&
+			formData.birthDate
+		) {
+			setIsSave1Disabled(false);
+		}
+		if (num === 2 && formData.employeeNo) {
+			setIsSave2Disabled(false);
+		}
+		if (
+			num === 3 &&
 			formData.personalEmail &&
 			formData.streetAddress &&
 			formData.city &&
@@ -47,7 +58,7 @@ const PersonalInfo = ({ company, isOnboarding, id, handleNext }) => {
 			formData.country &&
 			formData.postalCode
 		) {
-			setIsDisabled(false);
+			setIsSave3Disabled(false);
 		}
 	};
 	const toast = useToast();
@@ -57,7 +68,9 @@ const PersonalInfo = ({ company, isOnboarding, id, handleNext }) => {
 		try {
 			const result = await PayrollService.addEmployeeProfileInfo(formData);
 			setIsLoading(false);
-			setIsDisabled(true);
+			setIsSave1Disabled(true);
+			setIsSave2Disabled(true);
+			setIsSave3Disabled(true);
 			LocalStorageService.setItem("onboardingEmpId", result.data._id);
 			toast({
 				title: "Personal info added successfully.",
@@ -73,13 +86,13 @@ const PersonalInfo = ({ company, isOnboarding, id, handleNext }) => {
 			title: "Personal Information",
 			content: (
 				<Record
-					handleConfirm={handleConfirm}
+					handleConfirm={() => handleConfirm(1)}
 					formData={formData}
 					setFormData={setFormData}
 					title="Personal Information"
 					config={EMP_PERSONAL_INFO_CONFIG}
 					isLoading={isLoading}
-					isDisabled={isDisabled}
+					isDisabled={isSave1Disabled}
 					handleSubmit={handleSubmit}
 					isOnboarding={isOnboarding}
 				/>
@@ -89,13 +102,13 @@ const PersonalInfo = ({ company, isOnboarding, id, handleNext }) => {
 			title: "Identification and Status",
 			content: (
 				<Record
-					handleConfirm={handleConfirm}
+					handleConfirm={() => handleConfirm(2)}
 					formData={formData}
 					setFormData={setFormData}
 					title="Identification and Status"
 					config={EMP_IDENTIFICATION_STATUS_CONFIG}
 					isLoading={isLoading}
-					isDisabled={isDisabled}
+					isDisabled={isSave2Disabled}
 					handleSubmit={handleSubmit}
 				/>
 			),
@@ -104,13 +117,13 @@ const PersonalInfo = ({ company, isOnboarding, id, handleNext }) => {
 			title: "Contact",
 			content: (
 				<Record
-					handleConfirm={handleConfirm}
+					handleConfirm={() => handleConfirm(3)}
 					formData={formData}
 					setFormData={setFormData}
 					title="Contact"
 					config={EMP_CONTACT_CONFIG}
 					isLoading={isLoading}
-					isDisabled={isDisabled}
+					isDisabled={isSave3Disabled}
 					handleSubmit={handleSubmit}
 				/>
 			),
@@ -119,13 +132,11 @@ const PersonalInfo = ({ company, isOnboarding, id, handleNext }) => {
 			title: "Emergency Contact",
 			content: (
 				<Record
-					handleConfirm={handleConfirm}
 					formData={formData}
 					setFormData={setFormData}
 					title="Emergency Contact"
 					config={EMP_EMERGENCY_CONTACT_CONFIG}
 					isLoading={isLoading}
-					isDisabled={isDisabled}
 					handleSubmit={handleSubmit}
 				/>
 			),
