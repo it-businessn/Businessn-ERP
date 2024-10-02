@@ -112,7 +112,7 @@ const Timecard = ({ cols, company, userId, timecardRefresh, filter }) => {
 								<Td p={0.5} pl={6}>
 									<NormalTextTitle
 										size={"sm"}
-										title={clockIn && getTimeCardFormat(clockOut, notDevice)}
+										title={clockIn && getTimeCardFormat(clockIn, notDevice)}
 									/>
 								</Td>
 								<Td p={0.5} pl={6}>
