@@ -8,10 +8,33 @@ const getTimecard = async (req, res) => {
 		const result = await Timecard.find({}).sort({
 			clockIn: -1,
 		});
+		result.map((_) => (_.totalBreakHours = calcTotalBreakHours(_)));
 		res.status(200).json(result);
 	} catch (error) {
 		res.status(404).json({ error: error.message });
 	}
+};
+
+const calcTotalBreakHours = (data) => {
+	if (!(data?.clockIn && data?.clockOut)) {
+		return;
+	}
+	const clockIn = moment(data?.clockIn, "YYYY-MM-DD hh:mm A");
+	const clockOut =
+		data?.clockOut && moment(data?.clockOut, "YYYY-MM-DD hh:mm A");
+	const break1Start =
+		data?.startBreaks[0] && moment(data?.startBreaks[0], "YYYY-MM-DD hh:mm A");
+	const break1End = moment(data?.endBreaks[0], "YYYY-MM-DD hh:mm A");
+	const break2Start = moment(data?.startBreaks[1], "YYYY-MM-DD hh:mm A");
+	const break2End = moment(data?.startBreaks[1], "YYYY-MM-DD hh:mm A");
+	const break1Duration = moment.duration(break1End.diff(break1Start));
+	const break2Duration = moment.duration(break2End.diff(break2Start));
+	const totalBreakTime = break1Duration.add(break2Duration);
+	const totalClockInToOut = moment.duration(clockOut.diff(clockIn));
+	const totalWorkingTime = totalClockInToOut.subtract(totalBreakTime);
+	const hours = Math.floor(totalWorkingTime.asHours());
+	const minutes = totalWorkingTime.minutes();
+	return `${hours}:${minutes}`;
 };
 
 const findEmployee = async (timeManagementBadgeID) =>
