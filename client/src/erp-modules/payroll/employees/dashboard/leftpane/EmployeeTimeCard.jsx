@@ -25,38 +25,17 @@ const EmployeeTimeCard = ({ selectedUser, company }) => {
 		second: "2-digit",
 	});
 
-	const handleSubmit = async () => {
-		const newEntry = {
-			employeeId: selectedUser?._id,
-			company,
-			type: "Regular Pay",
-		};
+	const updateSubmit = async (punch, message) => {
 		try {
-			await TimesheetService.addTimesheet(newEntry);
-			toast({
-				title: "Clock In successful!",
-				status: "success",
-				duration: 1500,
-				isClosable: true,
-			});
-		} catch (error) {
-			console.error(error);
-			toast({
-				title: "Please try again.",
-				status: "error",
-				duration: 1500,
-				isClosable: true,
-			});
-		}
-	};
-	const updateSubmit = async (key, message) => {
-		try {
-			await TimesheetService.updateTimesheet(
+			const newEntry = [
 				{
-					key,
+					empId: selectedUser?._id,
+					status: "4",
+					punch,
+					isNotDevice: true,
 				},
-				selectedUser?._id,
-			);
+			];
+			await TimesheetService.addTimecard(newEntry);
 			toast({
 				title: message,
 				status: "success",
@@ -97,7 +76,7 @@ const EmployeeTimeCard = ({ selectedUser, company }) => {
 						w={"50%"}
 						bg={"var(--correct_ans)"}
 						_hover={{ color: "var(--main_color)" }}
-						handleClick={handleSubmit}
+						handleClick={() => updateSubmit("0", `Clock In successful!`)}
 					/>
 					<LeftIconButton
 						size="xl"
@@ -105,7 +84,7 @@ const EmployeeTimeCard = ({ selectedUser, company }) => {
 						variant="solid"
 						w={"50%"}
 						_hover={{ color: "var(--main_color)" }}
-						handleClick={() => updateSubmit("startBreaks", `Break Started!`)}
+						handleClick={() => updateSubmit("3", `Break Started!`)}
 					/>
 				</HStack>
 				<HStack justify={"space-between"} w={"100%"}>
@@ -116,9 +95,7 @@ const EmployeeTimeCard = ({ selectedUser, company }) => {
 						w={"50%"}
 						bg={"var(--incorrect_ans)"}
 						_hover={{ color: "var(--main_color)" }}
-						handleClick={() =>
-							updateSubmit("clockOuts", `Clock Out Successful!`)
-						}
+						handleClick={() => updateSubmit("1", `Clock Out Successful!`)}
 					/>
 					<LeftIconButton
 						size="xl"
@@ -127,7 +104,7 @@ const EmployeeTimeCard = ({ selectedUser, company }) => {
 						w={"50%"}
 						bg={"var(--event_color)"}
 						_hover={{ color: "var(--main_color)" }}
-						handleClick={() => updateSubmit("endBreaks", `Break Ended!`)}
+						handleClick={() => updateSubmit("2", `Break Ended!`)}
 					/>
 				</HStack>
 			</VStack>

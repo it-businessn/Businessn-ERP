@@ -15,6 +15,7 @@ const timecardSchema = new mongoose.Schema({
 	createdOn: { type: Date, default: Date.now },
 	companyName: { type: String, ref: "Company" },
 	totalBreakHours: { type: Number, default: "0" },
+	notDevice: Boolean,
 });
 
 const Timecard = mongoose.model("Timecard", timecardSchema);

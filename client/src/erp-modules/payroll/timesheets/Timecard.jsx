@@ -99,6 +99,7 @@ const Timecard = ({ cols, company, userId, timecardRefresh, filter }) => {
 						startBreaks,
 						endBreaks,
 						totalBreakHours,
+						notDevice,
 					}) => {
 						return (
 							<Tr key={_id} h={"20px"}>
@@ -111,13 +112,13 @@ const Timecard = ({ cols, company, userId, timecardRefresh, filter }) => {
 								<Td p={0.5} pl={6}>
 									<NormalTextTitle
 										size={"sm"}
-										title={clockIn && getTimeCardFormat(clockIn)}
+										title={clockIn && getTimeCardFormat(clockOut, notDevice)}
 									/>
 								</Td>
 								<Td p={0.5} pl={6}>
 									<NormalTextTitle
 										size={"sm"}
-										title={clockOut && getTimeCardFormat(clockOut)}
+										title={clockOut && getTimeCardFormat(clockOut, notDevice)}
 									/>
 								</Td>
 								<Td p={0.5} pl={6}>
@@ -125,7 +126,7 @@ const Timecard = ({ cols, company, userId, timecardRefresh, filter }) => {
 										size={"sm"}
 										title={
 											startBreaks?.length
-												? getTimeCardFormat(startBreaks[0])
+												? getTimeCardFormat(startBreaks[0], notDevice)
 												: ""
 										}
 									/>
@@ -134,7 +135,9 @@ const Timecard = ({ cols, company, userId, timecardRefresh, filter }) => {
 									<NormalTextTitle
 										size={"sm"}
 										title={
-											endBreaks?.length ? getTimeCardFormat(endBreaks[0]) : ""
+											endBreaks?.length
+												? getTimeCardFormat(endBreaks[0], notDevice)
+												: ""
 										}
 									/>
 								</Td>
@@ -143,7 +146,7 @@ const Timecard = ({ cols, company, userId, timecardRefresh, filter }) => {
 										size={"sm"}
 										title={
 											startBreaks?.length > 1
-												? getTimeCardFormat(startBreaks[1])
+												? getTimeCardFormat(startBreaks[1], notDevice)
 												: ""
 										}
 									/>
@@ -153,7 +156,7 @@ const Timecard = ({ cols, company, userId, timecardRefresh, filter }) => {
 										size={"sm"}
 										title={
 											endBreaks?.length > 1
-												? getTimeCardFormat(endBreaks[1])
+												? getTimeCardFormat(endBreaks[1], notDevice)
 												: ""
 										}
 									/>
@@ -163,7 +166,7 @@ const Timecard = ({ cols, company, userId, timecardRefresh, filter }) => {
 										size={"sm"}
 										title={
 											startBreaks?.length > 2
-												? getTimeCardFormat(startBreaks[2])
+												? getTimeCardFormat(startBreaks[2], notDevice)
 												: ""
 										}
 									/>
@@ -173,7 +176,7 @@ const Timecard = ({ cols, company, userId, timecardRefresh, filter }) => {
 										size={"sm"}
 										title={
 											endBreaks?.length > 2
-												? getTimeCardFormat(endBreaks[2])
+												? getTimeCardFormat(endBreaks[2], notDevice)
 												: ""
 										}
 									/>

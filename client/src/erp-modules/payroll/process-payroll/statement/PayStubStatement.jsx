@@ -6,7 +6,7 @@ import EmployeePayDetails from "../preview-reports/EmployeePayDetails";
 import ChequeDetails from "./ChequeDetails";
 import PayStubHeader from "./PayStubHeader";
 
-const PayStubStatement = ({ data, isEarningTable }) => (
+const PayStubStatement = ({ data }) => (
 	<Box w={"100%"} overflow={"hidden"}>
 		<PayStubHeader />
 		<Stack
@@ -34,7 +34,7 @@ const PayStubStatement = ({ data, isEarningTable }) => (
 				<EmployeePayDetails data={data} />
 			</HStack>
 		</Stack>
-		{!isEarningTable && <ChequeDetails data={data} />}
+		<ChequeDetails data={data} />
 	</Box>
 );
 export default PayStubStatement;

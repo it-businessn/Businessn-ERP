@@ -101,8 +101,10 @@ export const formatDateRange = (startDate, endDate) => {
 
 export const getDefaultTime = (date) => moment(date, "HH:mm").format("hh:mm A");
 
-export const getTimeCardFormat = (timestamp) =>
-	moment.utc(timestamp).format("YYYY-MM-DD  hh:mm A");
+export const getTimeCardFormat = (timestamp, notDevice) =>
+	notDevice
+		? moment(timestamp).format("YYYY-MM-DD  hh:mm A")
+		: moment.utc(timestamp).format("YYYY-MM-DD  hh:mm A");
 
 export const getDateDiffHours = (date1, date2, totalBreaks) => {
 	const startTime = moment(date1, "HH:mm");

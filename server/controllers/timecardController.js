@@ -48,9 +48,23 @@ const addTimecardFromDevice = async (req, res) => {
 		// 		punch: "1",
 		// 	},
 		// ];
+
 		data?.map(async (entry) => {
-			entry.timestamp = moment.utc(entry.timestamp).toISOString();
+			entry.timestamp = entry?.isNotDevice
+				? moment()
+				: moment.utc(entry.timestamp).toISOString();
+
+			const emp_user_id =
+				entry?.empId &&
+				(await EmployeeProfileInfo.findOne({ empId: entry?.empId }).select(
+					"timeManagementBadgeID",
+				));
+
+			entry.user_id = emp_user_id?.timeManagementBadgeID ?? entry?.user_id;
+
 			const { user_id, timestamp, punch } = entry;
+			entry.notDevice = entry?.isNotDevice;
+
 			const entryExists = await TimecardRaw.findOne({
 				user_id,
 				timestamp,
@@ -141,6 +155,7 @@ const addTimecard = async (entry) => {
 		companyName: empRec.companyName,
 		employeeName: empRec.empId.fullName,
 		clockIn: timestamp,
+		notDevice: entry?.notDevice,
 	});
 	return newTimecard;
 };

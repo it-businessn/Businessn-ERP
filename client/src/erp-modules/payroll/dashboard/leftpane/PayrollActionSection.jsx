@@ -23,17 +23,21 @@ const PayrollActionSection = ({
 	const timesheets = useTimesheet(company, null, null, filter);
 
 	useEffect(() => {
-		if (timesheets) {
-			const approvedTimesheet = timesheets.filter(
-				(_) => _.approveStatus === "Approved",
-			).length;
-			const rejectedTimesheet = timesheets.filter(
-				(_) => _.approveStatus === "Rejected",
-			).length;
-			const approvedPercent =
-				((approvedTimesheet + rejectedTimesheet) / timesheets.length) * 100;
-			setApprovalPercent(approvedPercent);
+		if (!timesheets?.length) {
+			return;
 		}
+		const approvedTimesheet = timesheets.filter(
+			(_) => _.approveStatus === "Approved",
+		).length;
+		const rejectedTimesheet = timesheets.filter(
+			(_) => _.approveStatus === "Rejected",
+		).length;
+		const approvedPercent = (
+			((approvedTimesheet + rejectedTimesheet) / timesheets.length) *
+			100
+		).toFixed(0);
+
+		setApprovalPercent(approvedPercent);
 	}, [timesheets]);
 
 	const alertsReviewData = useEmployeeAlertsInfo(
