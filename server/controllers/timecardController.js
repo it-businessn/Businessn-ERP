@@ -111,9 +111,9 @@ const buildTimeCardDB = async () => {
 			const { user_id, timestamp, punch } = entry;
 
 			const record = await Timecard.find({ badge_id: user_id });
-			const sameDateClockIn = record.find((_) =>
-				moment(timestamp).isSame(new Date(_.clockIn), "day"),
-			);
+			// const sameDateClockIn = record?.find((_) =>
+			// 	moment(timestamp).isSame(new Date(_.clockIn), "day"),
+			// );
 
 			// clockin
 			if (punch === "0") {
@@ -126,44 +126,62 @@ const buildTimeCardDB = async () => {
 				}
 			}
 
-			//breakin
-			else if (sameDateClockIn && punch === "3") {
-				const breaks = sameDateClockIn.startBreaks;
-				const breakEntryExists = breaks.find((_) =>
-					moment(timestamp).isSame(_),
+			//breakout
+			else if (punch === "2") {
+				const notBreakOut = record?.find(
+					(_) =>
+						moment(timestamp).isSame(new Date(_.clockIn), "day") &&
+						!_.startBreaks.length,
 				);
-				if (!breakEntryExists) {
-					breaks.push(timestamp);
-					await updateTimecard(sameDateClockIn, {
-						startBreaks: breaks,
-					});
+				if (notBreakOut) {
+					const breaks = notBreakOut?.startBreaks;
+					const breakEntryExists = breaks?.find((_) =>
+						moment(timestamp).isSame(_),
+					);
+
+					if (!breakEntryExists) {
+						breaks.push(timestamp);
+						await updateTimecard(notBreakOut, {
+							startBreaks: breaks,
+						});
+					}
 				}
 			}
 
-			//breakout
-			else if (sameDateClockIn && punch === "2") {
-				const breaks = sameDateClockIn.endBreaks;
-				const breakEntryExists = breaks.find((_) =>
-					moment(timestamp).isSame(_),
+			//breakin
+			else if (punch === "3") {
+				const notBreakIn = record?.find(
+					(_) =>
+						moment(timestamp).isSame(new Date(_.clockIn), "day") &&
+						!_.endBreaks.length,
 				);
-				if (!breakEntryExists) {
-					breaks.push(timestamp);
-					await updateTimecard(sameDateClockIn, {
-						endBreaks: breaks,
-					});
+
+				if (notBreakIn) {
+					const breaks = notBreakIn?.endBreaks;
+					const breakEntryExists = breaks?.find((_) =>
+						moment(timestamp).isSame(_),
+					);
+					if (!breakEntryExists) {
+						breaks.push(timestamp);
+						await updateTimecard(notBreakIn, {
+							endBreaks: breaks,
+						});
+					}
 				}
 			}
 
 			//clockout
-			else if (sameDateClockIn && punch === "1") {
-				await updateTimecard(sameDateClockIn, {
-					clockOut: timestamp,
-				});
+			else if (punch === "1") {
+				const notClockout = record?.find(
+					(_) =>
+						moment(timestamp).isSame(new Date(_.clockIn), "day") && !_.clockOut,
+				);
+				if (notClockout) {
+					await updateTimecard(notClockout, {
+						clockOut: timestamp,
+					});
+				}
 			}
-			// const del = await Timecard.deleteMany({
-			// 	_id: { $in: finds.map((id) => id) },
-			// });
-			// console.log("deleted", del, finds);
 		});
 	} catch (error) {}
 };
@@ -173,10 +191,11 @@ const addTimecard = async (entry) => {
 	const empRec = await findEmployee({
 		timeManagementBadgeID: user_id,
 	});
+
 	const newTimecard = await Timecard.create({
 		badge_id: user_id,
-		companyName: empRec.companyName,
-		employeeName: empRec.empId.fullName,
+		companyName: empRec?.companyName,
+		employeeName: empRec?.empId?.fullName,
 		clockIn: timestamp,
 		notDevice: entry?.notDevice,
 	});
@@ -184,11 +203,13 @@ const addTimecard = async (entry) => {
 };
 
 const updateTimecard = async (record, updatedData) => {
-	const updatedTimecard = await Timecard.findByIdAndUpdate(
-		record._id,
-		updatedData,
-	);
-	return updatedTimecard;
+	if (record) {
+		const updatedTimecard = await Timecard.findByIdAndUpdate(
+			record._id,
+			updatedData,
+		);
+		return updatedTimecard;
+	}
 };
 
 module.exports = {

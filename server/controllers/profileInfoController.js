@@ -146,8 +146,19 @@ const addEmployeeProfileInfo = async (req, res) => {
 
 		const employee = await Employee.findById(empId);
 
-		if (employee && employee.payrollStatus !== payrollStatus) {
-			employee.payrollStatus = payrollStatus;
+		if (employee) {
+			employee.email = personalEmail;
+			employee.primaryAddress = {
+				streetNumber: `${streetAddressSuite} ${streetAddress}`,
+				city,
+				state: province,
+				postalCode,
+				country,
+			};
+			if (employee.payrollStatus !== payrollStatus) {
+				employee.payrollStatus = payrollStatus;
+			}
+
 			await employee.save();
 		}
 
