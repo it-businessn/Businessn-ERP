@@ -29,7 +29,6 @@ const PayInfo = ({ company, isOnboarding, id, handleNext, handlePrev }) => {
 	const setPayInfo = () => getInitialPayInfo(onboardingEmpId ?? empId, company);
 
 	const [formData, setFormData] = useState(setPayInfo);
-	const [isDisabled, setIsDisabled] = useState(true);
 	const [isLoading, setIsLoading] = useState(false);
 
 	useEffect(() => {
@@ -39,10 +38,6 @@ const PayInfo = ({ company, isOnboarding, id, handleNext, handlePrev }) => {
 			setFormData(setPayInfo);
 		}
 	}, [payInfo, empId]);
-
-	const handleConfirm = () => {
-		setIsDisabled(false);
-	};
 
 	const toast = useToast();
 	const handleSubmit = async () => {
@@ -65,13 +60,12 @@ const PayInfo = ({ company, isOnboarding, id, handleNext, handlePrev }) => {
 			title: "Earnings",
 			content: (
 				<Record
-					handleConfirm={handleConfirm}
+					handleConfirm={() => ""}
 					formData={formData}
 					setFormData={setFormData}
 					title="Earnings"
 					config={EMP_PAY_INFO_EARNINGS_CONFIG}
 					isLoading={isLoading}
-					isDisabled={isDisabled}
 					handleSubmit={handleSubmit}
 				/>
 			),
@@ -80,13 +74,12 @@ const PayInfo = ({ company, isOnboarding, id, handleNext, handlePrev }) => {
 			title: "Deductions",
 			content: (
 				<Record
-					handleConfirm={handleConfirm}
+					handleConfirm={() => ""}
 					formData={formData}
 					setFormData={setFormData}
 					title="Deductions"
 					config={EMP_PAY_INFO_DEDUCTION_CONFIG}
 					isLoading={isLoading}
-					isDisabled={isDisabled}
 					handleSubmit={handleSubmit}
 				/>
 			),
@@ -95,13 +88,12 @@ const PayInfo = ({ company, isOnboarding, id, handleNext, handlePrev }) => {
 			title: "Accruals",
 			content: (
 				<Record
-					handleConfirm={handleConfirm}
+					handleConfirm={() => ""}
 					formData={formData}
 					setFormData={setFormData}
 					title="Accruals"
 					config={EMP_PAY_INFO_ACCRUALS_CONFIG}
 					isLoading={isLoading}
-					isDisabled={isDisabled}
 					handleSubmit={handleSubmit}
 				/>
 			),
@@ -128,7 +120,7 @@ const PayInfo = ({ company, isOnboarding, id, handleNext, handlePrev }) => {
 					id={id}
 					handleNext={handleNext}
 					handlePrev={handlePrev}
-					handleNextEnabled={!isDisabled}
+					handleNextEnabled={true}
 				/>
 			</BoxCard>
 			<StepContent

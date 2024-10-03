@@ -88,13 +88,12 @@ const CorporateInfo = ({
 			content: (
 				<Record
 					isOnboarding={isOnboarding}
-					handleConfirm={handleConfirm}
+					handleConfirm={() => ""}
 					formData={formData}
 					setFormData={setFormData}
 					title="Role"
 					config={EMP_ROLE_CONFIG}
 					isLoading={isLoading}
-					isDisabled={isDisabled}
 					handleSubmit={handleSubmit}
 				/>
 			),
@@ -103,13 +102,12 @@ const CorporateInfo = ({
 			title: "Company",
 			content: (
 				<Record
-					handleConfirm={handleConfirm}
+					handleConfirm={() => ""}
 					formData={formData}
 					setFormData={setFormData}
 					title="Company"
 					config={EMP_COMPANY_CONFIG}
 					isLoading={isLoading}
-					isDisabled={isDisabled}
 					handleSubmit={handleSubmit}
 				/>
 			),
@@ -118,13 +116,12 @@ const CorporateInfo = ({
 			title: "Region",
 			content: (
 				<Record
-					handleConfirm={handleConfirm}
+					handleConfirm={() => ""}
 					formData={formData}
 					setFormData={setFormData}
 					title="Region"
 					config={EMP_REGION_CONFIG}
 					isLoading={isLoading}
-					isDisabled={isDisabled}
 					handleSubmit={handleSubmit}
 				/>
 			),
@@ -151,7 +148,7 @@ const CorporateInfo = ({
 					id={id}
 					handleNext={handleNext}
 					handlePrev={handlePrev}
-					handleNextEnabled={!isDisabled}
+					handleNextEnabled={true}
 				/>
 			</BoxCard>
 			<StepContent currentStep={currentStep} steps={steps} />

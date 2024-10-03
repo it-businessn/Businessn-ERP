@@ -64,13 +64,12 @@ const GovernmentContribution = ({
 			title: "Income Tax",
 			content: (
 				<Record
-					handleConfirm={handleConfirm}
+					handleConfirm={() => ""}
 					formData={formData}
 					setFormData={setFormData}
 					title="Income Tax"
 					config={EMP_INCOME_TAX_CONFIG}
 					isLoading={isLoading}
-					isDisabled={isDisabled}
 					handleSubmit={handleSubmit}
 				/>
 			),
@@ -79,13 +78,12 @@ const GovernmentContribution = ({
 			title: "Federal Government Contributions",
 			content: (
 				<Record
-					handleConfirm={handleConfirm}
+					handleConfirm={() => ""}
 					formData={formData}
 					setFormData={setFormData}
 					title="Federal Government Contributions"
 					config={EMP_FED_GOVT_CONFIG}
 					isLoading={isLoading}
-					isDisabled={isDisabled}
 					handleSubmit={handleSubmit}
 				/>
 			),
@@ -95,13 +93,12 @@ const GovernmentContribution = ({
 			title: "Regional Government Deductions",
 			content: (
 				<Record
-					handleConfirm={handleConfirm}
+					handleConfirm={() => ""}
 					formData={formData}
 					setFormData={setFormData}
 					title="Regional Government Deductions"
 					config={EMP_REGN_GOVT_CONFIG}
 					isLoading={isLoading}
-					isDisabled={isDisabled}
 					handleSubmit={handleSubmit}
 				/>
 			),
@@ -128,7 +125,7 @@ const GovernmentContribution = ({
 					handleNext={handleNext}
 					handlePrev={handlePrev}
 					id={id}
-					handleNextEnabled={!isDisabled}
+					handleNextEnabled={true}
 				/>
 			</BoxCard>
 			<StepContent

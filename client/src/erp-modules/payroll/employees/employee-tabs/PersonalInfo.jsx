@@ -27,7 +27,6 @@ const PersonalInfo = ({ company, isOnboarding, id, handleNext }) => {
 	const [isSave2Disabled, setIsSave2Disabled] = useState(true);
 	const [isSave3Disabled, setIsSave3Disabled] = useState(true);
 	const [isLoading, setIsLoading] = useState(false);
-	const [sectionNum, setSectionNum] = useState(null);
 
 	useEffect(() => {
 		if (profileInfo) {
@@ -39,25 +38,19 @@ const PersonalInfo = ({ company, isOnboarding, id, handleNext }) => {
 	}, [profileInfo, empId]);
 
 	useEffect(() => {
-		if (
-			sectionNum === 1 &&
-			formData.firstName &&
-			formData.lastName &&
-			formData.birthDate
-		) {
+		if (formData.firstName && formData.lastName && formData.birthDate) {
 			setIsSave1Disabled(false);
 		}
-	}, [sectionNum, formData.firstName, formData.lastName, formData.birthDate]);
+	}, [formData.firstName, formData.lastName, formData.birthDate]);
 
 	useEffect(() => {
-		if (sectionNum === 2 && formData.employeeNo) {
+		if (formData.employeeNo) {
 			setIsSave2Disabled(false);
 		}
-	}, [sectionNum, formData.employeeNo]);
+	}, [formData.employeeNo]);
 
 	useEffect(() => {
 		if (
-			sectionNum === 3 &&
 			formData.personalEmail &&
 			formData.streetAddress &&
 			formData.city &&
@@ -68,7 +61,6 @@ const PersonalInfo = ({ company, isOnboarding, id, handleNext }) => {
 			setIsSave3Disabled(false);
 		}
 	}, [
-		sectionNum,
 		formData.personalEmail,
 		formData.streetAddress,
 		formData.city,
@@ -87,7 +79,7 @@ const PersonalInfo = ({ company, isOnboarding, id, handleNext }) => {
 			// setIsSave1Disabled(true);
 			// setIsSave2Disabled(true);
 			// setIsSave3Disabled(true);
-			LocalStorageService.setItem("onboardingEmpId", result.data.empId);
+			LocalStorageService.setItem("onboardingEmpId", result.data._id);
 			toast({
 				title: "Personal info added successfully.",
 				status: "success",
@@ -102,7 +94,7 @@ const PersonalInfo = ({ company, isOnboarding, id, handleNext }) => {
 			title: "Personal Information",
 			content: (
 				<Record
-					handleConfirm={() => setSectionNum(1)}
+					handleConfirm={() => ""}
 					formData={formData}
 					setFormData={setFormData}
 					title="Personal Information"
@@ -118,7 +110,7 @@ const PersonalInfo = ({ company, isOnboarding, id, handleNext }) => {
 			title: "Identification and Status",
 			content: (
 				<Record
-					handleConfirm={() => setSectionNum(2)}
+					handleConfirm={() => ""}
 					formData={formData}
 					setFormData={setFormData}
 					title="Identification and Status"
@@ -133,7 +125,7 @@ const PersonalInfo = ({ company, isOnboarding, id, handleNext }) => {
 			title: "Contact",
 			content: (
 				<Record
-					handleConfirm={() => setSectionNum(3)}
+					handleConfirm={() => ""}
 					formData={formData}
 					setFormData={setFormData}
 					title="Contact"

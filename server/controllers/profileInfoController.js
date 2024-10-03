@@ -117,7 +117,7 @@ const addEmployeeProfileInfo = async (req, res) => {
 				middleName,
 				lastName,
 				role: "Employee",
-				email: "",
+				email: Math.random(),
 				fullName: `${firstName} ${middleName} ${lastName}`,
 			});
 			if (newEmployee) {

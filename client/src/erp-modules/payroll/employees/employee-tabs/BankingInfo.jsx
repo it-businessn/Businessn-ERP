@@ -39,19 +39,17 @@ const BankingInfo = ({
 		}
 	}, [bankingInfo, empId]);
 
-	const handleConfirm = (num) => {
-		if (
-			num === 1 &&
-			formData.bankNum &&
-			formData.transitNum &&
-			formData.accountNum
-		) {
+	useEffect(() => {
+		if (formData.bankNum && formData.transitNum && formData.accountNum) {
 			setIsDisabled(false);
 		}
-		if (num === 2 && formData.paymentEmail) {
+	}, [formData.bankNum, formData.transitNum, formData.accountNum]);
+
+	useEffect(() => {
+		if (formData.paymentEmail) {
 			setIsSave1Disabled(false);
 		}
-	};
+	}, [formData.paymentEmail]);
 
 	const toast = useToast();
 	const handleSubmit = async () => {
@@ -75,7 +73,7 @@ const BankingInfo = ({
 			title: "Banking Info",
 			content: (
 				<Record
-					handleConfirm={() => handleConfirm(1)}
+					handleConfirm={() => ""}
 					formData={formData}
 					setFormData={setFormData}
 					title="Banking Info"
@@ -90,7 +88,7 @@ const BankingInfo = ({
 			title: "Payment Notification",
 			content: (
 				<Record
-					handleConfirm={() => handleConfirm(2)}
+					handleConfirm={() => ""}
 					formData={formData}
 					setFormData={setFormData}
 					title="Payment Notification"
