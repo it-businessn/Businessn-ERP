@@ -1,7 +1,20 @@
-import { Button, Flex, HStack, IconButton, VStack } from "@chakra-ui/react";
+import {
+	Button,
+	Flex,
+	HStack,
+	IconButton,
+	Stack,
+	VStack,
+} from "@chakra-ui/react";
 import { NavLink } from "react-router-dom";
 
-const MenuItem = ({ menu, parent, textTransform, handleMenuItemClick }) => {
+const MenuItem = ({
+	menu,
+	parent,
+	textTransform,
+	handleMenuItemClick,
+	isSubChild,
+}) => {
 	// const [isOpen, setIsOpen] = useState(true);
 
 	// const handleToggle = () => {
@@ -19,16 +32,21 @@ const MenuItem = ({ menu, parent, textTransform, handleMenuItemClick }) => {
 				<Flex align="center" w={"100%"}>
 					<NavLink
 						to={path}
-						onClick={handleMenuItemClick}
-						className="sidebarMenu"
-						activeclassname="active"
+						onClick={() => {
+							if (handleMenuItemClick) {
+								handleMenuItemClick();
+							}
+						}}
+						className={isSubChild ? "isSubChild" : "sidebarMenu"}
+						activeclassname={"active"}
 					>
 						<IconButton
 							variant="ghost"
-							icon={menu.icon}
+							icon={menu?.icon ?? ""}
 							color="var(--nav_color)"
 							size="xs"
 						/>
+
 						<Button
 							justifyContent={"space-between"}
 							p={0}
@@ -42,6 +60,13 @@ const MenuItem = ({ menu, parent, textTransform, handleMenuItemClick }) => {
 					</NavLink>
 				</Flex>
 			</HStack>
+			{menu?.children?.length && (
+				<Stack justify="start" width="full" my={0} spacing={0}>
+					{menu?.children?.map((menu) => (
+						<MenuItem key={menu.path} menu={menu} parent={parent} isSubChild />
+					))}
+				</Stack>
+			)}
 		</VStack>
 	);
 };

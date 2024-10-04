@@ -936,11 +936,11 @@ export const SIDEBAR_MENU = [
 				name: "Calendar",
 				icon: <HiOutlineCalendar />,
 				children: [
-					{
-						path: "/view-tasks",
-						name: "Tasks By Date",
-						icon: <LuLayoutDashboard />,
-					},
+					// {
+					// 	path: "/view-tasks",
+					// 	name: "Tasks By Date",
+					// 	icon: <LuLayoutDashboard />,
+					// },
 				],
 			},
 			{
@@ -954,21 +954,21 @@ export const SIDEBAR_MENU = [
 				name: "Customers",
 				icon: <FaAddressBook />,
 				children: [
-					{
-						path: "view-contacts",
-						name: "View Contact",
-						icon: EditIcon,
-					},
-					{
-						path: "add-contact",
-						name: "Add a Contact",
-						icon: EditIcon,
-					},
-					{
-						path: "edit-contact",
-						name: "Edit a Contact",
-						icon: EditIcon,
-					},
+					// {
+					// 	path: "view-contacts",
+					// 	name: "View Contact",
+					// 	icon: EditIcon,
+					// },
+					// {
+					// 	path: "add-contact",
+					// 	name: "Add a Contact",
+					// 	icon: EditIcon,
+					// },
+					// {
+					// 	path: "edit-contact",
+					// 	name: "Edit a Contact",
+					// 	icon: EditIcon,
+					// },
 				],
 			},
 			{
@@ -1018,31 +1018,31 @@ export const SIDEBAR_MENU = [
 				name: "Resources",
 				icon: <PiBooks />,
 				children: [
-					{
-						path: "access-learning",
-						name: "Access Learning Materials",
-						icon: <LuLayoutDashboard />,
-					},
-					{
-						path: "access-forms",
-						name: "Access Company Forms",
-						icon: <LuLayoutDashboard />,
-					},
-					{
-						path: "access-scripts",
-						name: "Access Scripts",
-						icon: <LuLayoutDashboard />,
-					},
-					{
-						path: "assess",
-						name: "Take Assessment",
-						icon: <LuLayoutDashboard />,
-					},
-					{
-						path: "internal-contact",
-						name: "Internal Contacts",
-						icon: <BsCalendar3 />,
-					},
+					// {
+					// 	path: "access-learning",
+					// 	name: "Access Learning Materials",
+					// 	icon: <LuLayoutDashboard />,
+					// },
+					// {
+					// 	path: "access-forms",
+					// 	name: "Access Company Forms",
+					// 	icon: <LuLayoutDashboard />,
+					// },
+					// {
+					// 	path: "access-scripts",
+					// 	name: "Access Scripts",
+					// 	icon: <LuLayoutDashboard />,
+					// },
+					// {
+					// 	path: "assess",
+					// 	name: "Take Assessment",
+					// 	icon: <LuLayoutDashboard />,
+					// },
+					// {
+					// 	path: "internal-contact",
+					// 	name: "Internal Contacts",
+					// 	icon: <BsCalendar3 />,
+					// },
 				],
 			},
 			{
@@ -1155,8 +1155,17 @@ export const SIDEBAR_MENU = [
 			{
 				path: "employees",
 				name: "Employees",
-				children: [],
 				icon: <FaPeopleGroup />,
+				children: [
+					{
+						path: "employees",
+						name: "Page View",
+					},
+					{
+						path: "employees/list",
+						name: "List View",
+					},
+				],
 			},
 			{
 				path: "reports",

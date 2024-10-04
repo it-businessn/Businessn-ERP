@@ -72,13 +72,13 @@ const Timecard = ({ cols, company, userId, timecardRefresh, filter }) => {
 									/> */}
 									<NormalTextTitle
 										size={"sm"}
-										title={breakIn && getTimeCardFormat(breakOut, notDevice)}
+										title={breakOut && getTimeCardFormat(breakOut, notDevice)}
 									/>
 								</Td>
 								<Td p={0.5} pl={6}>
 									<NormalTextTitle
 										size={"sm"}
-										title={breakOut && getTimeCardFormat(breakIn, notDevice)}
+										title={breakIn && getTimeCardFormat(breakIn, notDevice)}
 									/>
 									{/* <NormalTextTitle
 										size={"sm"}

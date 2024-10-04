@@ -17,6 +17,7 @@ const findEmployee = async (data) =>
 		"group",
 		"role",
 		"payrollStatus",
+		"employeeNo",
 	]);
 
 const getAllEmployees = () => async (req, res) => {

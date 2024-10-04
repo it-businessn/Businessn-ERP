@@ -61,7 +61,10 @@ const ProcessPayroll = lazy(() =>
 const Reports = lazy(() => import("./erp-modules/payroll/reports"));
 const Timesheets = lazy(() => import("./erp-modules/payroll/timesheets"));
 const Dashboard = lazy(() => import("erp-modules/payroll/dashboard"));
-const Employees = lazy(() => import("erp-modules/payroll/employees"));
+const Employees = lazy(() => import("erp-modules/payroll/employees/pageview"));
+const EmployeeListView = lazy(() =>
+	import("erp-modules/payroll/employees/listview"),
+);
 const Settings = lazy(() => import("erp-modules/payroll/Settings"));
 
 // scheduling
@@ -308,6 +311,10 @@ export const router = createBrowserRouter([
 			{
 				path: `${ROUTE_PATH.PAYROLL}${ROUTE_PATH.EMPLOYEES}`,
 				element: <Employees />,
+			},
+			{
+				path: `${ROUTE_PATH.PAYROLL}${ROUTE_PATH.EMPLOYEES}/list`,
+				element: <EmployeeListView />,
 			},
 			{
 				path: `${ROUTE_PATH.PAYROLL}${ROUTE_PATH.EMPLOYEES}/:id/:stepNo`,

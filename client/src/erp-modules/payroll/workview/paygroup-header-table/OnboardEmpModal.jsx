@@ -1,6 +1,6 @@
 import { useDisclosure } from "@chakra-ui/react";
 import ModalLayout from "components/ui/modal/ModalLayout";
-import Employees from "erp-modules/payroll/employees";
+import Employees from "erp-modules/payroll/employees/pageview";
 
 const OnboardEmpModal = ({
 	showOnboard,

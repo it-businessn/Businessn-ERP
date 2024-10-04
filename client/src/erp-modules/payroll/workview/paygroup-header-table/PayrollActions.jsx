@@ -4,12 +4,12 @@ import TextTitle from "components/ui/text/TextTitle";
 import { MdOutlineChevronRight } from "react-icons/md";
 import { PAYGROUP_ACTIONS } from "../data";
 
-const PayrollActions = ({ handleClick }) => {
+const PayrollActions = ({ handleClick, actions = PAYGROUP_ACTIONS }) => {
 	return (
 		<BoxCard>
 			<TextTitle title={"Payroll actions"} mt={2} mb={"1em"} />
 			<VStack spacing={3} align={"start"}>
-				{PAYGROUP_ACTIONS.map(({ key, name }) => (
+				{actions?.map(({ key, name }) => (
 					<HStack
 						cursor={"pointer"}
 						spacing={2}

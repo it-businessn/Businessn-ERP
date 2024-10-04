@@ -6,6 +6,7 @@ const employeeSchema = new mongoose.Schema({
 		default: "20240001",
 		ref: "Company",
 	},
+	employeeNo: String,
 	primaryAddress: {
 		type: Object,
 		streetNumber: String,

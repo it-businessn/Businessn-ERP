@@ -49,9 +49,10 @@ const WorkviewTable = ({
 			cols={cols}
 			w={"100%"}
 			height={height}
-			// position="sticky"
-			// zIndex="docked"
-			// textAlign="center"
+			position="sticky"
+			zIndex="docked"
+			top={-1}
+			textAlign="center"
 		>
 			<Tbody>
 				{!payGroupSchedule?.length && <EmptyRowRecord />}

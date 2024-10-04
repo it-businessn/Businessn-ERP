@@ -1,16 +1,8 @@
-import {
-	Avatar,
-	Badge,
-	Checkbox,
-	HStack,
-	SimpleGrid,
-	Spacer,
-	VStack,
-} from "@chakra-ui/react";
+import { Avatar, HStack, SimpleGrid, Spacer, VStack } from "@chakra-ui/react";
+import ActiveBadge from "components/ActiveBadge";
 import NormalTextTitle from "components/ui/NormalTextTitle";
 import RadioButtonGroup from "components/ui/tab/RadioButtonGroup";
 import TextTitle from "components/ui/text/TextTitle";
-import EmpSearchMenu from "features/setup/company/group-tab/EmpSearchMenu";
 import useCompany from "hooks/useCompany";
 import useEmployees from "hooks/useEmployees";
 import useSelectedEmp from "hooks/useSelectedEmp";
@@ -19,6 +11,7 @@ import { useEffect, useState } from "react";
 import { FaCheckCircle } from "react-icons/fa";
 import { useParams } from "react-router-dom";
 import LocalStorageService from "services/LocalStorageService";
+import EmpProfileSearch from "../EmpProfileSearch";
 import BalanceInfo from "./employee-tabs/BalancesInfo";
 import BankingInfo from "./employee-tabs/BankingInfo";
 import CorporateInfo from "./employee-tabs/CorporateInfo";
@@ -36,7 +29,6 @@ const Employees = ({ isOnboarding, selectedPayGroupName, handleClose }) => {
 	const [userId, setUserId] = useState(id ?? loggedInUser._id);
 	const { setEmpId } = useSelectedEmp(userId);
 	const [isRefresh, setIsRefresh] = useState(false);
-	const [empName, setEmpName] = useState("");
 
 	const isActivePayroll = employee?.payrollStatus?.includes("Active");
 
@@ -52,15 +44,6 @@ const Employees = ({ isOnboarding, selectedPayGroupName, handleClose }) => {
 		}
 	}, [id, employees]);
 
-	const handleInputChange = (value) => {
-		setEmpName(value);
-		setFilteredEmployees(
-			employees.filter((emp) =>
-				emp?.fullName?.toLowerCase().includes(value.toLowerCase()),
-			),
-		);
-	};
-
 	useEffect(() => {
 		if (isOnboarding) {
 			setTabs((prev) => prev.filter((item, index) => index < 5));
@@ -68,12 +51,6 @@ const Employees = ({ isOnboarding, selectedPayGroupName, handleClose }) => {
 			setUserId(null);
 		}
 	}, [isOnboarding]);
-
-	const handleSelect = (emp) => {
-		setEmpName(emp.fullName);
-		setEmployee(emp);
-		setUserId(emp._id);
-	};
 
 	useEffect(() => {
 		setEmpId(userId);
@@ -180,30 +157,17 @@ const Employees = ({ isOnboarding, selectedPayGroupName, handleClose }) => {
 						<VStack spacing={0} align={"start"}>
 							<TextTitle size="sm" title={employee?.fullName} />
 							<NormalTextTitle size="xs" title={employee?.employeeId} />
-							{isActivePayroll && (
-								<Badge bg="var(--correct_ans)" color="var(--primary_bg)">
-									<TextTitle title={"Payroll Activated"} />
-								</Badge>
-							)}
+							{isActivePayroll && <ActiveBadge title={"Payroll Activated"} />}
 						</VStack>
 					</HStack>
 					<Spacer />
-					<VStack spacing={1} w={"30%"} align={"start"}>
-						<EmpSearchMenu
-							width={"full"}
-							filteredEmployees={filteredEmployees}
-							empName={empName}
-							handleInputChange={handleInputChange}
-							handleSelect={handleSelect}
-						/>
-						<Checkbox
-							colorScheme={"facebook"}
-							// isChecked={hasChecklist}
-							// onChange={() => setHasChecklist(!hasChecklist)}
-						>
-							Terminated
-						</Checkbox>
-					</VStack>
+					<EmpProfileSearch
+						filteredEmployees={filteredEmployees}
+						setFilteredEmployees={setFilteredEmployees}
+						setUserId={setUserId}
+						setEmployee={setEmployee}
+						employees={employees}
+					/>
 				</HStack>
 			)}
 
