@@ -73,20 +73,20 @@ const addTimecardFromDevice = async (req, res) => {
 		// ];
 
 		data?.map(async (entry) => {
-			entry.timestamp = entry?.isNotDevice
-				? moment()
-				: moment.utc(entry.timestamp).toISOString();
+			if (entry?.isNotDevice && entry?.empId) {
+				entry.timestamp = moment();
+				entry.notDevice = entry?.isNotDevice;
 
-			const emp_user_id =
-				entry?.empId &&
-				(await EmployeeProfileInfo.findOne({ empId: entry?.empId }).select(
-					"timeManagementBadgeID",
-				));
+				const emp_user_id = await EmployeeProfileInfo.findOne({
+					empId: entry?.empId,
+				}).select("timeManagementBadgeID");
 
-			entry.user_id = emp_user_id?.timeManagementBadgeID ?? entry?.user_id;
+				entry.user_id = emp_user_id?.timeManagementBadgeID;
+			}
+
+			entry.timestamp = moment.utc(entry.timestamp).toISOString();
 
 			const { user_id, timestamp, punch } = entry;
-			entry.notDevice = entry?.isNotDevice;
 
 			const entryExists = await TimecardRaw.findOne({
 				user_id,
@@ -107,13 +107,26 @@ const addTimecardFromDevice = async (req, res) => {
 const buildTimeCardDB = async () => {
 	try {
 		const result = await TimecardRaw.find({});
-		result?.forEach(async (entry) => {
+		result?.map(async (entry) => {
 			const { user_id, timestamp, punch } = entry;
 
 			const record = await Timecard.find({ badge_id: user_id });
-			// const sameDateClockIn = record?.find((_) =>
-			// 	moment(timestamp).isSame(new Date(_.clockIn), "day"),
-			// );
+
+			const closestClockInRecord = record?.reduce((closest, current) => {
+				const currentClockIn = moment(current.clockIn);
+				const providedTime = moment(timestamp);
+
+				if (
+					providedTime.isSameOrAfter(currentClockIn, "day") &&
+					!current.startBreaks.length &&
+					(!closest ||
+						Math.abs(providedTime.diff(currentClockIn)) <
+							Math.abs(providedTime.diff(moment(closest.clockIn))))
+				) {
+					return current;
+				}
+				return closest;
+			}, null);
 
 			// clockin
 			if (punch === "0") {
@@ -127,60 +140,24 @@ const buildTimeCardDB = async () => {
 			}
 
 			//breakout
-			else if (punch === "2") {
-				const notBreakOut = record?.find(
-					(_) =>
-						moment(timestamp).isSame(new Date(_.clockIn), "day") &&
-						!_.startBreaks.length,
-				);
-				if (notBreakOut) {
-					const breaks = notBreakOut?.startBreaks;
-					const breakEntryExists = breaks?.find((_) =>
-						moment(timestamp).isSame(_),
-					);
-
-					if (!breakEntryExists) {
-						breaks.push(timestamp);
-						await updateTimecard(notBreakOut, {
-							startBreaks: breaks,
-						});
-					}
-				}
+			else if (punch === "2" && closestClockInRecord) {
+				await updateTimecard(closestClockInRecord, {
+					breakOut: timestamp,
+				});
 			}
 
 			//breakin
-			else if (punch === "3") {
-				const notBreakIn = record?.find(
-					(_) =>
-						moment(timestamp).isSame(new Date(_.clockIn), "day") &&
-						!_.endBreaks.length,
-				);
-
-				if (notBreakIn) {
-					const breaks = notBreakIn?.endBreaks;
-					const breakEntryExists = breaks?.find((_) =>
-						moment(timestamp).isSame(_),
-					);
-					if (!breakEntryExists) {
-						breaks.push(timestamp);
-						await updateTimecard(notBreakIn, {
-							endBreaks: breaks,
-						});
-					}
-				}
+			else if (punch === "3" && closestClockInRecord) {
+				await updateTimecard(closestClockInRecord, {
+					breakIn: timestamp,
+				});
 			}
 
 			//clockout
-			else if (punch === "1") {
-				const notClockout = record?.find(
-					(_) =>
-						moment(timestamp).isSame(new Date(_.clockIn), "day") && !_.clockOut,
-				);
-				if (notClockout) {
-					await updateTimecard(notClockout, {
-						clockOut: timestamp,
-					});
-				}
+			else if (punch === "1" && closestClockInRecord) {
+				await updateTimecard(closestClockInRecord, {
+					clockOut: timestamp,
+				});
 			}
 		});
 	} catch (error) {}

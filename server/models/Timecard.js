@@ -8,6 +8,8 @@ const timecardSchema = new mongoose.Schema({
 	employeeName: String,
 	clockIn: Date,
 	clockOut: Date,
+	breakOut: Date,
+	breakIn: Date,
 	startBreaks: { type: [Date], default: [] },
 	endBreaks: { type: [Date], default: [] },
 	totalTimeCardHours: Number,
