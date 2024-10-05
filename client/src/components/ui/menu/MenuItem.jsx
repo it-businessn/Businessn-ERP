@@ -1,4 +1,5 @@
 import {
+	Box,
 	Button,
 	Flex,
 	HStack,
@@ -6,7 +7,8 @@ import {
 	Stack,
 	VStack,
 } from "@chakra-ui/react";
-import { NavLink } from "react-router-dom";
+import { useState } from "react";
+import { NavLink, useNavigate } from "react-router-dom";
 
 const MenuItem = ({
 	menu,
@@ -15,6 +17,8 @@ const MenuItem = ({
 	handleMenuItemClick,
 	isSubChild,
 }) => {
+	const navigate = useNavigate();
+	const [view, setView] = useState(null);
 	// const [isOpen, setIsOpen] = useState(true);
 
 	// const handleToggle = () => {
@@ -63,7 +67,33 @@ const MenuItem = ({
 			{menu?.children?.length && (
 				<Stack justify="start" width="full" my={0} spacing={0}>
 					{menu?.children?.map((menu) => (
-						<MenuItem key={menu.path} menu={menu} parent={parent} isSubChild />
+						<Box
+							key={menu.path}
+							onClick={() => {
+								setView(menu.path);
+								navigate(`/${parent}/${menu.path}`);
+							}}
+							className={view === menu.path ? "isSubChild active" : ""}
+						>
+							<IconButton
+								variant="ghost"
+								icon={menu?.icon ?? ""}
+								color="var(--nav_color)"
+								size="xs"
+							/>
+
+							<Button
+								className={path.includes(menu?.name) ? "isActive" : "notActive"}
+								justifyContent={"space-between"}
+								p={0}
+								variant="ghost"
+								color="var(--menu_item_color)"
+								fontSize="xs"
+								textTransform={textTransform}
+							>
+								{menu?.name}
+							</Button>
+						</Box>
 					))}
 				</Stack>
 			)}

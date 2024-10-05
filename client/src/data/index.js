@@ -1,6 +1,4 @@
-import { EditIcon } from "@chakra-ui/icons";
 import { BiNotepad, BiTask } from "react-icons/bi";
-import { BsCalendar3 } from "react-icons/bs";
 import { CiViewTimeline } from "react-icons/ci";
 import { FaAddressBook, FaDashcube, FaRProject } from "react-icons/fa";
 import {
@@ -1159,11 +1157,11 @@ export const SIDEBAR_MENU = [
 				children: [
 					{
 						path: "employees",
-						name: "Page View",
+						name: "List View",
 					},
 					{
-						path: "employees/list",
-						name: "List View",
+						path: "employees/info",
+						name: "Individual View",
 					},
 				],
 			},

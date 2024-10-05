@@ -310,11 +310,11 @@ export const router = createBrowserRouter([
 			},
 			{
 				path: `${ROUTE_PATH.PAYROLL}${ROUTE_PATH.EMPLOYEES}`,
-				element: <Employees />,
+				element: <EmployeeListView />,
 			},
 			{
-				path: `${ROUTE_PATH.PAYROLL}${ROUTE_PATH.EMPLOYEES}/list`,
-				element: <EmployeeListView />,
+				path: `${ROUTE_PATH.PAYROLL}${ROUTE_PATH.EMPLOYEES}/info`,
+				element: <Employees />,
 			},
 			{
 				path: `${ROUTE_PATH.PAYROLL}${ROUTE_PATH.EMPLOYEES}/:id/:stepNo`,

@@ -26,7 +26,15 @@ const EmployeeList = () => {
 	};
 	return (
 		<TableLayout
-			cols={["Employee Name", "Status", "Role", "Employee No", ""]}
+			cols={[
+				"Employee Name",
+				"Status",
+				"Department",
+				"Role",
+				"Employee No",
+				"Badge Id",
+				"Action",
+			]}
 			height="60vh"
 			position="sticky"
 			top={-1}
@@ -40,9 +48,14 @@ const EmployeeList = () => {
 						return (
 							<Tr key={_id} _hover={{ bg: "var(--phoneCall_bg_light)" }}>
 								<Td py={0} borderBottomColor={"var(--filter_border_color)"}>
-									<HStack>
-										<Avatar name={fullName} size={"sm"} src="" boxSize="8" />
-										<TextTitle size="sm" title={fullName} />
+									<HStack spacing={8} cursor={"pointer"}>
+										<Avatar name={fullName} size={"xs"} src="" boxSize="6" />
+										<TextTitle
+											color={"var(--primary_button_bg)"}
+											size="md"
+											onClick={() => handleClick(_id)}
+											title={fullName}
+										/>
 									</HStack>
 								</Td>
 								<Td py={0} borderBottomColor={"var(--filter_border_color)"}>
@@ -54,9 +67,14 @@ const EmployeeList = () => {
 									<NormalTextTitle size="sm" title={role} />
 								</Td>
 								<Td py={0} borderBottomColor={"var(--filter_border_color)"}>
+									<NormalTextTitle size="sm" title={role} />
+								</Td>
+								<Td py={0} borderBottomColor={"var(--filter_border_color)"}>
 									<NormalTextTitle size="sm" title={employeeNo} />
 								</Td>
-
+								<Td py={0} borderBottomColor={"var(--filter_border_color)"}>
+									<NormalTextTitle size="sm" title={employeeNo} />
+								</Td>
 								<Td py={0} borderBottomColor={"var(--filter_border_color)"}>
 									<IconButton
 										size={"xs"}

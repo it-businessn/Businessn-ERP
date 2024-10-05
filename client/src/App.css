@@ -157,7 +157,7 @@ body {
 
 .isSubChild.active,
 .isSubChild.active button {
-	font-weight: 600;
+	font-weight: 700;
 	color: var(--main_color_black);
 }
 

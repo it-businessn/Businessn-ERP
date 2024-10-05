@@ -18,8 +18,10 @@ const TextTitle = ({
 	borderLeftWidth,
 	bg,
 	textDecoration,
+	onClick,
 }) => (
 	<Text
+		onClick={onClick}
 		bg={bg}
 		flex={flex}
 		p={p}

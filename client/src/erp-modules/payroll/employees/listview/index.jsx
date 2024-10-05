@@ -78,50 +78,57 @@ const EmployeeListView = () => {
 							onOpen={() => setShowOnboard(true)}
 						/>
 					</HStack>
-					<HStack w={"100%"}>
-						<OtherFilter
-							showOtherFilter={showEmpFilter}
-							toggleOtherFilter={toggleEmpFilter}
-							handleFilter={handleFilter}
-							data={employees}
-							filteredData={filteredEmployees}
-							setFilteredData={setFilteredEmployees}
-							helperText="employee"
-						/>
-						<OtherFilter
-							showOtherFilter={showDeptFilter}
-							toggleOtherFilter={toggleDeptFilter}
-							handleFilter={handleFilter}
-							data={departments}
-							filteredData={filteredDept}
-							setFilteredData={setFilteredDept}
-							helperText="department"
-						/>
-						<OtherFilter
-							showOtherFilter={showCCFilter}
-							toggleOtherFilter={toggleCCFilter}
-							handleFilter={handleFilter}
-							data={roles}
-							filteredData={filteredCC}
-							setFilteredData={setFilteredCC}
-							helperText="cost center"
-						/>
-					</HStack>
-					<HStack w={"100%"}>
-						<Checkbox
-							colorScheme={"facebook"}
-							// isChecked={hasChecklist}
-							// onChange={() => setHasChecklist(!hasChecklist)}
-						>
-							Active
-						</Checkbox>
-						<Checkbox
-							colorScheme={"facebook"}
-							// isChecked={hasChecklist}
-							// onChange={() => setHasChecklist(!hasChecklist)}
-						>
-							Terminated
-						</Checkbox>
+					<HStack
+						w={"100%"}
+						pt={"5em"}
+						spacing={"3em"}
+						justifyContent={"start"}
+					>
+						<HStack spacing={2}>
+							<Checkbox
+								colorScheme={"facebook"}
+								// isChecked={hasChecklist}
+								// onChange={() => setHasChecklist(!hasChecklist)}
+							>
+								Active
+							</Checkbox>
+							<Checkbox
+								colorScheme={"facebook"}
+								// isChecked={hasChecklist}
+								// onChange={() => setHasChecklist(!hasChecklist)}
+							>
+								Terminated
+							</Checkbox>
+						</HStack>
+						<HStack>
+							<OtherFilter
+								showOtherFilter={showEmpFilter}
+								toggleOtherFilter={toggleEmpFilter}
+								handleFilter={handleFilter}
+								data={employees}
+								filteredData={filteredEmployees}
+								setFilteredData={setFilteredEmployees}
+								helperText="employee"
+							/>
+							<OtherFilter
+								showOtherFilter={showDeptFilter}
+								toggleOtherFilter={toggleDeptFilter}
+								handleFilter={handleFilter}
+								data={departments}
+								filteredData={filteredDept}
+								setFilteredData={setFilteredDept}
+								helperText="department"
+							/>
+							<OtherFilter
+								showOtherFilter={showCCFilter}
+								toggleOtherFilter={toggleCCFilter}
+								handleFilter={handleFilter}
+								data={roles}
+								filteredData={filteredCC}
+								setFilteredData={setFilteredCC}
+								helperText="cost center"
+							/>
+						</HStack>
 					</HStack>
 				</VStack>
 
