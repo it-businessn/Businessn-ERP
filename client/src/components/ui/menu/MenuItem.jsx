@@ -8,15 +8,11 @@ import {
 	VStack,
 } from "@chakra-ui/react";
 import { useState } from "react";
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink, useLocation, useNavigate } from "react-router-dom";
+import { ROUTE_PATH } from "routes";
 
-const MenuItem = ({
-	menu,
-	parent,
-	textTransform,
-	handleMenuItemClick,
-	isSubChild,
-}) => {
+const MenuItem = ({ menu, parent, textTransform, handleMenuItemClick }) => {
+	const location = useLocation();
 	const navigate = useNavigate();
 	const [view, setView] = useState(null);
 	// const [isOpen, setIsOpen] = useState(true);
@@ -41,7 +37,7 @@ const MenuItem = ({
 								handleMenuItemClick();
 							}
 						}}
-						className={isSubChild ? "isSubChild" : "sidebarMenu"}
+						className="sidebarMenu"
 						activeclassname={"active"}
 					>
 						<IconButton
@@ -64,7 +60,7 @@ const MenuItem = ({
 					</NavLink>
 				</Flex>
 			</HStack>
-			{menu?.children?.length && (
+			{location.pathname.includes(ROUTE_PATH.EMPLOYEES) && (
 				<Stack justify="start" width="full" my={0} spacing={0}>
 					{menu?.children?.map((menu) => (
 						<Box
