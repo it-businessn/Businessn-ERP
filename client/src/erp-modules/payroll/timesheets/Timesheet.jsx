@@ -9,7 +9,7 @@ import { useEffect, useState } from "react";
 import { FaCheck } from "react-icons/fa";
 import { IoClose } from "react-icons/io5";
 import TimesheetService from "services/TimesheetService";
-import { getDefaultDate } from "utils";
+import { getDefaultDate, getTimeFormat } from "utils";
 import { getParamKey, getStatusStyle } from "./data";
 
 const Timesheet = ({
@@ -133,8 +133,6 @@ const Timesheet = ({
 						employeeId,
 						approveStatus,
 						payType,
-						clockIns,
-						clockOuts,
 						regPay,
 						statWorkPay,
 						dblOverTimePay,
@@ -151,8 +149,8 @@ const Timesheet = ({
 						sickPay,
 						vacationPay,
 						totalBreaks,
-						startTime,
-						endTime,
+						clockIn,
+						clockOut,
 					}) => {
 						const approveStatusBtnCss = getStatusStyle(approveStatus);
 
@@ -193,7 +191,8 @@ const Timesheet = ({
 						const hhMMFormattedTime = `${(param_hours_worked / 60).toFixed(
 							0,
 						)}:${param_hours_worked % 60}`;
-						const isDisabled = startTime === "00:00" || endTime === "00:00";
+
+						const isDisabled = !clockIn || !clockOut;
 
 						return (
 							<Tr key={_id} _hover={{ bg: "var(--phoneCall_bg_light)" }}>
@@ -228,7 +227,7 @@ const Timesheet = ({
 									{renderEditableInput(
 										_id,
 										"startTime",
-										startTime,
+										clockIn ? getTimeFormat(clockIn) : "",
 										param_hours,
 										isStatPay,
 									)}
@@ -237,7 +236,7 @@ const Timesheet = ({
 									{renderEditableInput(
 										_id,
 										"endTime",
-										endTime,
+										clockOut ? getTimeFormat(clockOut) : "",
 										param_hours,
 										isStatPay,
 									)}
@@ -262,8 +261,8 @@ const Timesheet = ({
 											color={"var(--status_button_border)"}
 											onClick={() => {
 												setFormData({
-													startTime,
-													endTime,
+													startTime: clockIn,
+													endTime: clockOut,
 													totalBreaks,
 													param_hours,
 													recordId: _id,
@@ -279,8 +278,8 @@ const Timesheet = ({
 											variant={"solid"}
 											onClick={() => {
 												setFormData({
-													startTime,
-													endTime,
+													startTime: clockIn,
+													endTime: clockOut,
 													totalBreaks,
 													param_hours,
 													recordId: _id,

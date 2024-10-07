@@ -147,8 +147,6 @@ const addStatHolidayDefaultTimesheet = async (employeeId, companyName) => {
 		{ name: "Remembrance Day", date: "2024-11-11" },
 		{ name: "Christmas Day", date: "2024-12-25" },
 	];
-	const startTime = "09:00";
-	const endTime = "17:00";
 	const existingStatTimesheetInfo = await findEmployeeStatTimesheetExists({
 		employeeId,
 		companyName,
@@ -159,17 +157,28 @@ const addStatHolidayDefaultTimesheet = async (employeeId, companyName) => {
 		return existingStatTimesheetInfo;
 	}
 	STAT_HOLIDAYS.forEach(async ({ date }) => {
+		const startTime = moment(date).set({
+			hour: 9,
+			minute: 0,
+			second: 0,
+			millisecond: 0,
+		});
+		const endTime = moment(date).set({
+			hour: 17,
+			minute: 0,
+			second: 0,
+			millisecond: 0,
+		});
 		const newStatTimeSheetRecord = {
 			employeeId,
 			companyName,
 			payType: "Statutory Pay",
 			createdOn: moment(date),
-			startTime,
-			endTime,
-			// clockIns: [startTime],
-			// clockOuts: [endTime],
+			clockIn: startTime,
+			clockOut: endTime,
 			statDayHours: getDateDiffHours(startTime, endTime, "0"),
 		};
+
 		await Timesheet.create(newStatTimeSheetRecord);
 	});
 	return "New record";
