@@ -108,7 +108,7 @@ export const getTimeCardFormat = (timestamp, notDevice, timeSheet) => {
 		: date.format("YYYY-MM-DD  hh:mm A");
 };
 
-export const getTimeFormat = (date) => moment(date).format("hh:mm A");
+export const getTimeFormat = (date) => moment.utc(date).format("hh:mm A");
 
 export const getDateDiffHours = (date1, date2, totalBreaks) => {
 	const startTime = moment(date1, "HH:mm");

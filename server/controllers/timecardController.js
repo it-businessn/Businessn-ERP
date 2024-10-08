@@ -2,6 +2,10 @@ const EmployeeProfileInfo = require("../models/EmployeeProfileInfo");
 const TimecardRaw = require("../models/TimecardRaw");
 const Timecard = require("../models/Timecard");
 const moment = require("moment");
+const {
+	addTimesheet,
+	findEmployeeTimesheetExists,
+} = require("./timesheetContoller");
 
 const getTimecard = async (req, res) => {
 	try {
@@ -176,6 +180,22 @@ const addTimecard = async (entry) => {
 		clockIn: timestamp,
 		notDevice: entry?.notDevice,
 	});
+
+	const newTimesheetRecord = {
+		employeeId: empRec.empId._id,
+		companyName: empRec?.companyName,
+		payType: "Regular Pay",
+		clockIn: timestamp,
+	};
+
+	const existingStatTimesheetInfo = await findEmployeeTimesheetExists(
+		newTimesheetRecord,
+	);
+
+	if (!existingStatTimesheetInfo) {
+		await addTimesheet(newTimesheetRecord);
+	}
+
 	return newTimecard;
 };
 

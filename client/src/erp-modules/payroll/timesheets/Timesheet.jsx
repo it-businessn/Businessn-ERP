@@ -13,13 +13,12 @@ import { getDefaultDate, getTimeFormat } from "utils";
 import { getParamKey, getStatusStyle } from "./data";
 
 const Timesheet = ({
-	cols,
 	company,
 	userId,
 	refresh,
 	filter,
 	setRefresh,
-	setTimecardRefresh,
+	setTimesheetRefresh,
 }) => {
 	const timesheets = useTimesheet(company, userId, refresh, filter);
 	const initialFormData = {
@@ -54,15 +53,24 @@ const Timesheet = ({
 	useEffect(() => {
 		if (timesheets) {
 			setTimesheetData(timesheets);
-			setTimecardRefresh(false);
+			setTimesheetRefresh(false);
 		}
 	}, [timesheets]);
 
 	const handleTimeChange = (id, field, value) => {
-		const updatedData = timesheetData.map((record) =>
-			record._id === id ? { ...record, [field]: value } : record,
-		);
-		setTimesheetData(updatedData);
+		// const updatedData1 = timesheetData.find((record) => record._id === id);
+		// updatedData1[field] = moment().set({
+		// 	hour: parseInt(value),
+		// 	minute: 0,
+		// 	second: 0,
+		// 	millisecond: 0,
+		// });
+		// console.log(id, field, value, updatedData1, value);
+		// const updatedData = timesheetData.map((record) =>
+		// 	record._id === id ? { ...record, [field]: value } : record,
+		// );
+		// console.log(id, field, value, updatedData1, updatedData);
+		// setTimesheetData(updatedData);
 	};
 
 	useEffect(() => {
@@ -124,7 +132,23 @@ const Timesheet = ({
 	);
 
 	return (
-		<TableLayout isTimesheet cols={cols} height="71vh">
+		<TableLayout
+			isTimesheet
+			cols={[
+				"Employee Name",
+				"Worked Date",
+				"Status",
+				"Department",
+				"Pay Rate",
+				"Pay Type",
+				"Start Time",
+				"End Time",
+				"Break/Lunch",
+				"Total Worked Hours",
+				"Action",
+			]}
+			height="71vh"
+		>
 			<Tbody>
 				{!timesheetData?.length && <EmptyRowRecord />}
 				{timesheetData?.map(
@@ -200,7 +224,7 @@ const Timesheet = ({
 									<TextTitle title={employeeId?.fullName} />
 								</Td>
 								<Td py={0}>
-									<TextTitle title={getDefaultDate(createdOn)} />
+									<TextTitle title={getDefaultDate(clockIn)} />
 								</Td>
 								<Td p={0}>
 									<PrimaryButton
@@ -226,7 +250,7 @@ const Timesheet = ({
 								<Td p={0}>
 									{renderEditableInput(
 										_id,
-										"startTime",
+										"clockIn",
 										clockIn ? getTimeFormat(clockIn) : "",
 										param_hours,
 										isStatPay,
@@ -235,7 +259,7 @@ const Timesheet = ({
 								<Td p={0} pl={3}>
 									{renderEditableInput(
 										_id,
-										"endTime",
+										"clockOut",
 										clockOut ? getTimeFormat(clockOut) : "",
 										param_hours,
 										isStatPay,

@@ -32,8 +32,9 @@ const Timesheets = () => {
 	);
 	const lastRecord =
 		payGroupSchedule?.length > 0 && payGroupSchedule[closestRecordIndex - 1];
+
 	const [refresh, setRefresh] = useState(false);
-	const [timecardRefresh, setTimecardRefresh] = useState(false);
+	const [dataRefresh, setDataRefresh] = useState(false);
 	const [filter, setFilter] = useState(null);
 	const { employees } = useEmployees(false, company);
 	const { departments, roles } = useSignup(false, company);
@@ -81,7 +82,7 @@ const Timesheets = () => {
 		setShowCCFilter(false);
 	}, [startDate, endDate, filteredEmployees, filteredDept, filteredCC]);
 
-	const handleRefresh = () => setTimecardRefresh(!timecardRefresh);
+	const handleRefresh = () => setDataRefresh(!dataRefresh);
 
 	const TABS = [
 		{
@@ -89,21 +90,8 @@ const Timesheets = () => {
 			type: "Timesheet",
 			name: (
 				<Timesheet
-					cols={[
-						"Employee Name",
-						"Worked Date",
-						"Status",
-						"Department",
-						"Pay Rate",
-						"Pay Type",
-						"Start Time",
-						"End Time",
-						"Break/Lunch",
-						"Total Worked Hours",
-						"Action",
-					]}
 					setRefresh={setRefresh}
-					setTimecardRefresh={setTimecardRefresh}
+					setTimesheetRefresh={setDataRefresh}
 					company={company}
 					userId={userId}
 					refresh={refresh}
@@ -116,23 +104,10 @@ const Timesheets = () => {
 			type: "Timecards",
 			name: (
 				<Timecard
-					cols={[
-						"Employees",
-						"TM Badge ID",
-						"Clock In",
-						"Clock Out",
-						"Start Break1",
-						"End Break1",
-						"Start Break2",
-						"End Break2",
-						"Start Break3",
-						"End Break3",
-						"Total Hours (HH:mm)",
-					]}
-					setTimecardRefresh={setTimecardRefresh}
+					setTimecardRefresh={setDataRefresh}
 					company={company}
 					userId={userId}
-					timecardRefresh={timecardRefresh}
+					timecardRefresh={dataRefresh}
 				/>
 			),
 		},

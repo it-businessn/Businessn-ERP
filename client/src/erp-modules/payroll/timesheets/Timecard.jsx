@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 import TimesheetService from "services/TimesheetService";
 import { getTimeCardFormat } from "utils";
 
-const Timecard = ({ cols, company, userId, timecardRefresh, filter }) => {
+const Timecard = ({ company, userId, timecardRefresh, filter }) => {
 	const [timeRecords, setTimeRecords] = useState(null);
 
 	const fetchAllTimecards = async () => {
@@ -24,7 +24,22 @@ const Timecard = ({ cols, company, userId, timecardRefresh, filter }) => {
 	}, [timecardRefresh]);
 
 	return (
-		<TableLayout cols={cols} height="75vh">
+		<TableLayout
+			cols={[
+				"Employee Name",
+				"TM Badge ID",
+				"Clock In",
+				"Clock Out",
+				"Start Break1",
+				"End Break1",
+				"Start Break2",
+				"End Break2",
+				"Start Break3",
+				"End Break3",
+				"Total Hours (HH:mm)",
+			]}
+			height="75vh"
+		>
 			<Tbody>
 				{!timeRecords?.length && <EmptyRowRecord />}
 				{timeRecords?.map(
