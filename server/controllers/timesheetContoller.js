@@ -1,6 +1,7 @@
 const EmployeePayInfo = require("../models/EmployeePayInfo");
 const Timesheet = require("../models/Timesheet");
 const moment = require("moment");
+const { calcTotalBreakHours } = require("./timecardController");
 
 // const currentTime = currentDate.format("HH:mm:ss");
 const currentDate = moment().add(1, "days");
@@ -46,7 +47,6 @@ const getTimesheetResult = async (companyName) => {
 
 const mapTimesheet = (payInfos, timesheets) => {
 	timesheets.forEach((timesheet) => {
-		const { clockIns, clockOuts } = timesheet;
 		const empIdStr = timesheet.employeeId._id.toString();
 		if (!payInfos.has(empIdStr)) {
 			return;
@@ -59,12 +59,6 @@ const mapTimesheet = (payInfos, timesheets) => {
 		timesheet.statPay = payInfo.statPay;
 		timesheet.sickPay = payInfo.sickPay;
 		timesheet.vacationPay = payInfo.vacationPay;
-		if (clockIns.length) {
-			timesheet.startTime = clockIns[0];
-		}
-		if (clockOuts.length) {
-			timesheet.endTime = clockOuts[clockOuts.length - 1];
-		}
 	});
 	return timesheets;
 };
@@ -77,7 +71,9 @@ const getTimesheets = async (req, res) => {
 			createdOn: { $lte: currentDate },
 		});
 		const payInfo = await getTimesheetResult(companyName);
+
 		const result = mapTimesheet(payInfo, timesheets);
+		result.map((_) => (_.totalBreakHours = calcTotalBreakHours(_)));
 		res.status(200).json(result);
 	} catch (error) {
 		res.status(404).json({ error: error.message });
@@ -180,12 +176,12 @@ const addStatHolidayDefaultTimesheet = async (employeeId, companyName) => {
 			statDayHours: getDateDiffHours(startTime, endTime, "0"),
 		};
 
-		await addTimesheet(newStatTimeSheetRecord);
+		await addTimesheetEntry(newStatTimeSheetRecord);
 	});
 	return "New record";
 };
 
-const addTimesheet = async (record) => await Timesheet.create(record);
+const addTimesheetEntry = async (record) => await Timesheet.create(record);
 
 const createTimesheet = async (req, res) => {
 	const { company, type, createdOn, employeeId } = req.body;
@@ -206,7 +202,7 @@ const createTimesheet = async (req, res) => {
 			return res.status(201).json("Stat Holiday Default Timesheet exists.");
 		}
 
-		const newTimesheet = await addTimesheet({
+		const newTimesheet = await addTimesheetEntry({
 			employeeId,
 			companyName: company,
 			payType: type,
@@ -274,7 +270,7 @@ const addOvertimeTimesheet = async (
 		overtimeHoursWorked: overtimeHrs,
 		createdOn,
 	};
-	const newTimesheet = await addTimesheet(newStatTimeSheetRecord);
+	const newTimesheet = await addTimesheetEntry(newStatTimeSheetRecord);
 	return newTimesheet;
 };
 
@@ -334,6 +330,6 @@ module.exports = {
 	updateTimesheet,
 	addStatHolidayDefaultTimesheet,
 	getFilteredTimesheets,
-	addTimesheet,
+	addTimesheetEntry,
 	findEmployeeTimesheetExists,
 };

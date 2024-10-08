@@ -20,7 +20,8 @@ const Timesheet = ({
 	setRefresh,
 	setTimesheetRefresh,
 }) => {
-	const timesheets = useTimesheet(company, userId, refresh, filter);
+	// const timesheets = useTimesheet(company, userId, refresh, filter);
+	const timesheets = useTimesheet(company, userId, refresh);
 	const initialFormData = {
 		startTime: "",
 		endTime: "",
@@ -175,6 +176,7 @@ const Timesheet = ({
 						totalBreaks,
 						clockIn,
 						clockOut,
+						totalBreakHours,
 					}) => {
 						const approveStatusBtnCss = getStatusStyle(approveStatus);
 
@@ -274,7 +276,7 @@ const Timesheet = ({
 										isStatPay,
 									)}
 								</Td>
-								<Td py={0}>{hhMMFormattedTime}</Td>
+								<Td py={0}>{totalBreakHours}</Td>
 								<Td py={0}>
 									<HStack spacing={0}>
 										<IconButton

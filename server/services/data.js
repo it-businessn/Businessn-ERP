@@ -1,3 +1,5 @@
+const moment = require("moment");
+
 const ADMIN_PERMISSION = [
 	{ name: "Sales" },
 	{ name: "Sales Dashboard" },
@@ -71,8 +73,23 @@ const ROLES = {
 const isRoleManager = (role) =>
 	role?.includes(ROLES.ADMINISTRATOR) || role?.includes(ROLES.MANAGER);
 
+const getUTCTime = (time) => moment.utc(time).toISOString();
+
+const startOfDay = (timestamp) => moment(timestamp).startOf("day").toDate();
+const endOfDay = (timestamp) => moment(timestamp).endOf("day").toDate();
+
+const momentTime = (time) => moment(time, "YYYY-MM-DD hh:mm A");
+
+const momentDuration = (time1, time2) =>
+	time1 && time2 ? moment.duration(time2.diff(time1)) : 0;
+
 module.exports = {
 	ADMIN_PERMISSION,
 	EMPLOYEE_PERMISSION,
 	isRoleManager,
+	getUTCTime,
+	startOfDay,
+	endOfDay,
+	momentTime,
+	momentDuration,
 };

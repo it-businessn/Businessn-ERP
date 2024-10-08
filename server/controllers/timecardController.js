@@ -1,11 +1,15 @@
 const EmployeeProfileInfo = require("../models/EmployeeProfileInfo");
-const TimecardRaw = require("../models/TimecardRaw");
 const Timecard = require("../models/Timecard");
-const moment = require("moment");
+const TimecardRaw = require("../models/TimecardRaw");
+const Timesheet = require("../models/Timesheet");
 const {
-	addTimesheet,
-	findEmployeeTimesheetExists,
-} = require("./timesheetContoller");
+	getUTCTime,
+	startOfDay,
+	endOfDay,
+	momentTime,
+	momentDuration,
+} = require("../services/data");
+const { addTimesheetEntry } = require("./timesheetContoller");
 
 const getTimecard = async (req, res) => {
 	try {
@@ -19,26 +23,258 @@ const getTimecard = async (req, res) => {
 	}
 };
 
-const calcTotalBreakHours = (data) => {
-	if (!(data?.clockIn && data?.clockOut)) {
-		return;
+const createTimecard = async (req, res) => {
+	try {
+		const data = req.body;
+		// const data = [
+		// 	{
+		// 		user_id: "7746",
+		// 		timestamp: "2024-09-29 13:21:25",
+		// 		status: "4",
+		// 		punch: "0",
+		// 	},
+		// 	{
+		// 		user_id: "7746",
+		// 		timestamp: "2024-09-29 15:00:00",
+		// 		status: "4",
+		// 		punch: "2",
+		// 	},
+		// 	{
+		// 		user_id: "7746",
+		// 		timestamp: "2024-09-29 15:21:25",
+		// 		status: "4",
+		// 		punch: "3",
+		// 	},
+		// 	{
+		// 		user_id: "7746",
+		// 		timestamp: "2024-09-29 23:00:12",
+		// 		status: "4",
+		// 		punch: "1",
+		// 	},
+		// 	{
+		// 		user_id: "7746",
+		// 		timestamp: "2024-09-30 13:00:00",
+		// 		status: "4",
+		// 		punch: "0",
+		// 	},
+		// 	{
+		// 		user_id: "7746",
+		// 		timestamp: "2024-09-30 14:00:00",
+		// 		status: "4",
+		// 		punch: "2",
+		// 	},
+		// 	{
+		// 		user_id: "7746",
+		// 		timestamp: "2024-09-30 15:00:00",
+		// 		status: "4",
+		// 		punch: "3",
+		// 	},
+		// 	{
+		// 		user_id: "7746",
+		// 		timestamp: "2024-09-30 21:00:00",
+		// 		status: "4",
+		// 		punch: "1",
+		// 	},
+		// 	{
+		// 		user_id: "7746",
+		// 		timestamp: "2024-10-01 09:00:00",
+		// 		status: "4",
+		// 		punch: "0",
+		// 	},
+		// 	{
+		// 		user_id: "7746",
+		// 		timestamp: "2024-10-02 09:00:00",
+		// 		status: "4",
+		// 		punch: "0",
+		// 	},
+		// 	{
+		// 		user_id: "7746",
+		// 		timestamp: "2024-10-01 15:23:00",
+		// 		status: "4",
+		// 		punch: "2",
+		// 	},
+		// 	{
+		// 		user_id: "7746",
+		// 		timestamp: "2024-10-02 13:13:00",
+		// 		status: "4",
+		// 		punch: "2",
+		// 	},
+		// 	{
+		// 		user_id: "7746",
+		// 		timestamp: "2024-10-02 15:00:00",
+		// 		status: "4",
+		// 		punch: "1",
+		// 	},
+		// 	{
+		// 		user_id: "7746",
+		// 		timestamp: "2024-10-02 14:00:00",
+		// 		status: "4",
+		// 		punch: "1",
+		// 	},
+		// ];
+
+		data?.map(async (entry) => {
+			// if (entry?.isNotDevice && entry?.empId) {
+			// 	entry.timestamp = moment();
+			// 	entry.notDevice = entry?.isNotDevice;
+
+			// 	const emp_user_id = await EmployeeProfileInfo.findOne({
+			// 		empId: entry?.empId,
+			// 	}).select("timeManagementBadgeID");
+
+			// 	entry.user_id = emp_user_id?.timeManagementBadgeID;
+			// }
+
+			entry.timestamp = getUTCTime(entry.timestamp);
+
+			const { user_id, timestamp, punch } = entry;
+
+			const punchRecordExists = await findPunchEntry({
+				user_id,
+				timestamp,
+				punch,
+			});
+			if (!punchRecordExists) {
+				await addPunchEntry(entry);
+			}
+		});
+		await mapTimecardRawToTimecard();
+		res.status(201).json("Timecard entries added successfully");
+	} catch (error) {
+		res.status(400).json({ message: error.message });
 	}
-	const clockIn = moment(data?.clockIn, "YYYY-MM-DD hh:mm A");
-	const clockOut =
-		data?.clockOut && moment(data?.clockOut, "YYYY-MM-DD hh:mm A");
-	const break1Start =
-		data?.startBreaks[0] && moment(data?.startBreaks[0], "YYYY-MM-DD hh:mm A");
-	const break1End = moment(data?.endBreaks[0], "YYYY-MM-DD hh:mm A");
-	const break2Start = moment(data?.startBreaks[1], "YYYY-MM-DD hh:mm A");
-	const break2End = moment(data?.startBreaks[1], "YYYY-MM-DD hh:mm A");
-	const break1Duration = moment.duration(break1End.diff(break1Start));
-	const break2Duration = moment.duration(break2End.diff(break2Start));
-	const totalBreakTime = break1Duration.add(break2Duration);
-	const totalClockInToOut = moment.duration(clockOut.diff(clockIn));
-	const totalWorkingTime = totalClockInToOut.subtract(totalBreakTime);
-	const hours = Math.floor(totalWorkingTime.asHours());
-	const minutes = totalWorkingTime.minutes();
-	return `${hours}:${minutes}`;
+};
+
+const mapTimecardRawToTimecard = async () => {
+	try {
+		const punches = await TimecardRaw.find({});
+		punches?.map(async (entry) => {
+			const { user_id, timestamp, punch } = entry;
+
+			// clockin
+			if (punch === "0") {
+				const clockInTimeEntryExists = await findTimecardEntry({
+					badge_id: user_id,
+					clockIn: timestamp,
+				});
+				if (!clockInTimeEntryExists) {
+					const record = {
+						badge_id: user_id,
+						clockIn: timestamp,
+					};
+					await addTimecardEntry(record);
+				}
+			}
+
+			//breakout
+			if (punch === "2") {
+				const recentClockInEntry = await findRecentClockInRecord(
+					user_id,
+					timestamp,
+				);
+				if (recentClockInEntry) {
+					await updateTimecardEntry(recentClockInEntry._id, {
+						breakOut: timestamp,
+					});
+				} else {
+					const record = {
+						badge_id: user_id,
+						breakOut: timestamp,
+					};
+					// await addTimecardEntry(record);
+				}
+			}
+
+			//breakin
+			if (punch === "3") {
+				const recentClockInEntry = await findRecentClockInRecord(
+					user_id,
+					timestamp,
+				);
+				if (recentClockInEntry) {
+					await updateTimecardEntry(recentClockInEntry._id, {
+						breakIn: timestamp,
+					});
+				} else {
+					const record = {
+						badge_id: user_id,
+						breakIn: timestamp,
+					};
+					// await addTimecardEntry(record);
+				}
+			}
+
+			//clockout
+			if (punch === "1") {
+				const recentClockInEntry = await findRecentClockInRecord(
+					user_id,
+					timestamp,
+				);
+
+				if (recentClockInEntry) {
+					await updateTimecardEntry(recentClockInEntry._id, {
+						clockOut: timestamp,
+					});
+				} else {
+					const record = {
+						badge_id: user_id,
+						clockOut: timestamp,
+					};
+					// await addTimecardEntry(record);
+				}
+			}
+		});
+	} catch (error) {}
+};
+
+const findTimecardEntry = async (entry) => await Timecard.findOne(entry);
+
+const findRecentClockInRecord = async (badge_id, timestamp) => {
+	const recentClockInEntry = await Timecard.findOne({
+		badge_id,
+		clockOut: null,
+		clockIn: { $gte: startOfDay(timestamp), $lte: endOfDay(timestamp) },
+	});
+	return recentClockInEntry;
+};
+
+const addTimecardEntry = async (entry) => {
+	const { badge_id, clockIn, notDevice } = entry;
+	const empRec = await findEmployee({
+		timeManagementBadgeID: badge_id,
+	});
+	// entry.notDevice= notDevice,
+
+	entry.companyName = empRec?.companyName;
+	entry.employeeName = empRec?.empId?.fullName;
+	entry.employeeId = empRec?.empId?._id;
+	const newTimecard = await Timecard.create(entry);
+	if (newTimecard) {
+		const newTimesheetRecord = {
+			employeeId: entry.employeeId,
+			companyName: entry.companyName,
+			payType: "Regular Pay", //findpaytype
+			clockIn,
+		};
+		await addTimesheetEntry(newTimesheetRecord);
+	}
+};
+
+const updateTimecardEntry = async (id, updatedData) => {
+	const updatedTimecard = await Timecard.findByIdAndUpdate(id, updatedData);
+	if (updatedTimecard) {
+		const empRec = await findEmployee({
+			timeManagementBadgeID: updatedTimecard.badge_id,
+		});
+		const timesheetRecord = await Timesheet.findOne({
+			employeeId: empRec.empId._id,
+			companyName: empRec?.companyName,
+			clockIn: updatedTimecard.clockIn,
+		});
+		if (timesheetRecord) {
+			await Timesheet.findByIdAndUpdate(timesheetRecord._id, updatedData);
+		}
+	}
 };
 
 const findEmployee = async (timeManagementBadgeID) =>
@@ -50,166 +286,37 @@ const findEmployee = async (timeManagementBadgeID) =>
 		})
 		.select("empId companyName");
 
-const findTimecard = async (record) => await Timecard.findOne(record);
+const findPunchEntry = async (entry) => await TimecardRaw.findOne(entry);
 
-const addTimecardFromDevice = async (req, res) => {
-	try {
-		const data = req.body;
-		// const data = [
-		// 	{
-		// 		user_id: "7745",
-		// 		timestamp: "2024-09-30 14:21:25",
-		// 		status: "4",
-		// 		punch: "3",
-		// 	},
-		// 	{
-		// 		user_id: "7745",
-		// 		timestamp: "2024-09-30 15:00:00",
-		// 		status: "4",
-		// 		punch: "2",
-		// 	},
-		// 	{
-		// 		user_id: "7745",
-		// 		timestamp: "2024-09-30 23:00:12",
-		// 		status: "4",
-		// 		punch: "1",
-		// 	},
-		// ];
+const addPunchEntry = async (entry) => await TimecardRaw.create(entry);
 
-		data?.map(async (entry) => {
-			if (entry?.isNotDevice && entry?.empId) {
-				entry.timestamp = moment();
-				entry.notDevice = entry?.isNotDevice;
-
-				const emp_user_id = await EmployeeProfileInfo.findOne({
-					empId: entry?.empId,
-				}).select("timeManagementBadgeID");
-
-				entry.user_id = emp_user_id?.timeManagementBadgeID;
-			}
-
-			entry.timestamp = moment.utc(entry.timestamp).toISOString();
-
-			const { user_id, timestamp, punch } = entry;
-
-			const entryExists = await TimecardRaw.findOne({
-				user_id,
-				timestamp,
-				punch,
-			});
-			if (!entryExists) {
-				await TimecardRaw.create(entry);
-			}
-		});
-		await buildTimeCardDB();
-		res.status(201).json("Timecard entries added successfully");
-	} catch (error) {
-		res.status(400).json({ message: error.message });
+const calcTotalBreakHours = (data) => {
+	if (!(data?.clockIn && data?.clockOut)) {
+		return;
 	}
-};
-
-const buildTimeCardDB = async () => {
-	try {
-		const result = await TimecardRaw.find({});
-		result?.map(async (entry) => {
-			const { user_id, timestamp, punch } = entry;
-
-			const record = await Timecard.find({ badge_id: user_id });
-
-			const closestClockInRecord = record?.reduce((closest, current) => {
-				const currentClockIn = moment(current.clockIn);
-				const providedTime = moment(timestamp);
-
-				if (
-					providedTime.isSameOrAfter(currentClockIn, "day") &&
-					!current.startBreaks.length &&
-					(!closest ||
-						Math.abs(providedTime.diff(currentClockIn)) <
-							Math.abs(providedTime.diff(moment(closest.clockIn))))
-				) {
-					return current;
-				}
-				return closest;
-			}, null);
-
-			// clockin
-			if (punch === "0") {
-				const clockInTimeEntryExists = await findTimecard({
-					badge_id: user_id,
-					clockIn: timestamp,
-				});
-				if (!clockInTimeEntryExists) {
-					await addTimecard(entry);
-				}
-			}
-
-			//breakout
-			else if (punch === "2" && closestClockInRecord) {
-				await updateTimecard(closestClockInRecord, {
-					breakOut: timestamp,
-				});
-			}
-
-			//breakin
-			else if (punch === "3" && closestClockInRecord) {
-				await updateTimecard(closestClockInRecord, {
-					breakIn: timestamp,
-				});
-			}
-
-			//clockout
-			else if (punch === "1" && closestClockInRecord) {
-				await updateTimecard(closestClockInRecord, {
-					clockOut: timestamp,
-				});
-			}
-		});
-	} catch (error) {}
-};
-
-const addTimecard = async (entry) => {
-	const { user_id, timestamp } = entry;
-	const empRec = await findEmployee({
-		timeManagementBadgeID: user_id,
-	});
-
-	const newTimecard = await Timecard.create({
-		badge_id: user_id,
-		companyName: empRec?.companyName,
-		employeeName: empRec?.empId?.fullName,
-		clockIn: timestamp,
-		notDevice: entry?.notDevice,
-	});
-
-	const newTimesheetRecord = {
-		employeeId: empRec.empId._id,
-		companyName: empRec?.companyName,
-		payType: "Regular Pay",
-		clockIn: timestamp,
-	};
-
-	const existingStatTimesheetInfo = await findEmployeeTimesheetExists(
-		newTimesheetRecord,
-	);
-
-	if (!existingStatTimesheetInfo) {
-		await addTimesheet(newTimesheetRecord);
-	}
-
-	return newTimecard;
-};
-
-const updateTimecard = async (record, updatedData) => {
-	if (record) {
-		const updatedTimecard = await Timecard.findByIdAndUpdate(
-			record._id,
-			updatedData,
-		);
-		return updatedTimecard;
-	}
+	const clockIn = momentTime(data?.clockIn);
+	const clockOut = momentTime(data?.clockOut);
+	const break1Start = data?.breakOut && momentTime(data?.breakOut);
+	const break1End = data?.breakIn && momentTime(data?.breakIn);
+	const break1Duration = momentDuration(break1Start, break1End);
+	const totalBreakTime = break1Duration;
+	// const break1Start =
+	// 	data?.startBreaks[0] && moment(data?.startBreaks[0], "YYYY-MM-DD hh:mm A");
+	// const break1End = moment(data?.endBreaks[0], "YYYY-MM-DD hh:mm A");
+	// const break2Start = moment(data?.startBreaks[1], "YYYY-MM-DD hh:mm A");
+	// const break2End = moment(data?.startBreaks[1], "YYYY-MM-DD hh:mm A");
+	// const break1Duration = moment.duration(break1End.diff(break1Start));
+	// const break2Duration = moment.duration(break2End.diff(break2Start));
+	// const totalBreakTime = break1Duration.add(break2Duration);
+	const totalClockInToOut = momentDuration(clockIn, clockOut);
+	const totalWorkingTime = totalClockInToOut.subtract(totalBreakTime);
+	const hours = Math.floor(totalWorkingTime.asHours());
+	const minutes = totalWorkingTime.minutes();
+	return `${hours}:${minutes}`;
 };
 
 module.exports = {
 	getTimecard,
-	addTimecardFromDevice,
+	createTimecard,
+	calcTotalBreakHours,
 };
