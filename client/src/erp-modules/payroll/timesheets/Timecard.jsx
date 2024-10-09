@@ -10,16 +10,17 @@ import { getTimeCardFormat } from "utils";
 const Timecard = ({ company, userId, timecardRefresh, filter }) => {
 	const [timeRecords, setTimeRecords] = useState(null);
 
-	const fetchAllTimecards = async () => {
-		try {
-			await TimesheetService.addTimecard([]);
-			const response = await TimesheetService.getTimecards();
-			setTimeRecords(response.data);
-		} catch (error) {
-			console.error(error);
-		}
-	};
 	useEffect(() => {
+		const fetchAllTimecards = async () => {
+			try {
+				// const post = await TimesheetService.addTimecard([]);
+				const response = await TimesheetService.getTimecards();
+
+				setTimeRecords(response.data);
+			} catch (error) {
+				console.error(error);
+			}
+		};
 		fetchAllTimecards();
 	}, [timecardRefresh]);
 

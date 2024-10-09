@@ -15,14 +15,14 @@ const {
 
 const getTimecard = async (req, res) => {
 	try {
-		const result = await Timecard.find({}).sort({
-			clockIn: -1,
-		});
+		const result = await Timecard.find({}).sort({ clockIn: -1 });
+
 		result.map((_) => {
 			_.totalBreakHours = calcTotalBreakHours(_)?.totalBreakHours;
 			_.totalWorkedHours = calcTotalBreakHours(_)?.totalWorkedHours;
 			return _;
 		});
+
 		res.status(200).json(result);
 	} catch (error) {
 		res.status(404).json({ error: error.message });
@@ -35,15 +35,81 @@ const createTimecard = async (req, res) => {
 		// const data = [
 		// 	{
 		// 		user_id: "7746",
-		// 		timestamp: "2024-09-29 07:00:25",
+		// 		timestamp: "2024-10-08 17:44:56",
 		// 		status: "4",
 		// 		punch: "0",
 		// 	},
 		// 	{
 		// 		user_id: "7746",
-		// 		timestamp: "2024-09-29 09:00:25",
+		// 		timestamp: "2024-10-08 17:46:40",
 		// 		status: "4",
 		// 		punch: "2",
+		// 	},
+		// 	{
+		// 		user_id: "7746",
+		// 		timestamp: "2024-10-08 17:48:28",
+		// 		status: "4",
+		// 		punch: "3",
+		// 	},
+		// 	{
+		// 		user_id: "7746",
+		// 		timestamp: "2024-10-08 17:59:24",
+		// 		status: "4",
+		// 		punch: "0",
+		// 	},
+		// 	{
+		// 		user_id: "7746",
+		// 		timestamp: "2024-10-08 18:00:38",
+		// 		status: "4",
+		// 		punch: "2",
+		// 	},
+		// 	{
+		// 		user_id: "7746",
+		// 		timestamp: "2024-10-08 18:02:29",
+		// 		status: "4",
+		// 		punch: "3",
+		// 	},
+		// 	{
+		// 		user_id: "7746",
+		// 		timestamp: "2024-10-08 18:04:09",
+		// 		status: "4",
+		// 		punch: "1",
+		// 	},
+		// 	{
+		// 		user_id: "7746",
+		// 		timestamp: "2024-10-08 18:06:35",
+		// 		status: "4",
+		// 		punch: "0",
+		// 	},
+		// 	{
+		// 		user_id: "7746",
+		// 		timestamp: "2024-10-08 18:08:09",
+		// 		status: "4",
+		// 		punch: "2",
+		// 	},
+		// 	{
+		// 		user_id: "7746",
+		// 		timestamp: "2024-10-08 18:11:01",
+		// 		status: "4",
+		// 		punch: "3",
+		// 	},
+		// 	{
+		// 		user_id: "7746",
+		// 		timestamp: "2024-10-08 18:12:56",
+		// 		status: "4",
+		// 		punch: "1",
+		// 	},
+		// 	{
+		// 		user_id: "7746",
+		// 		timestamp: "2024-10-09 12:12:56",
+		// 		status: "4",
+		// 		punch: "0",
+		// 	},
+		// 	{
+		// 		user_id: "7746",
+		// 		timestamp: "2024-10-09 13:00:56",
+		// 		status: "4",
+		// 		punch: "1",
 		// 	},
 		// ];
 
@@ -72,6 +138,7 @@ const createTimecard = async (req, res) => {
 				await addPunchEntry(entry);
 			}
 		});
+
 		await mapTimecardRawToTimecard();
 		res.status(201).json("Timecard entries added successfully");
 	} catch (error) {
@@ -81,94 +148,47 @@ const createTimecard = async (req, res) => {
 
 const mapTimecardRawToTimecard = async () => {
 	try {
-		const punches = await TimecardRaw.find({});
-		punches?.map(async (entry) => {
-			const { user_id, timestamp, punch } = entry;
+		const punches = await TimecardRaw.find({}).sort({ timestamp: 1 });
 
-			// clockin
-			if (punch === "0") {
-				const clockInTimeEntryExists = await findTimecardEntry({
-					badge_id: user_id,
-					clockIn: timestamp,
-				});
-				if (!clockInTimeEntryExists) {
-					const record = {
-						badge_id: user_id,
-						clockIn: timestamp,
-					};
-					await addTimecardEntry(record);
-				}
-			}
+		let groupedPunches = groupPunches(punches);
 
-			const recentClockInEntry = await findRecentClockInRecord(
-				user_id,
-				timestamp,
-			);
-
-			//breakout
-			if (punch === "2") {
-				let startBreakEntries = [];
-				if (recentClockInEntry) {
-					startBreakEntries = recentClockInEntry.startBreaks;
-					if (
-						!startBreakEntries.length ||
-						!startBreakEntries.find((_) => isSameDate(_, timestamp))
-					) {
-						startBreakEntries.push(timestamp);
-					}
-					await updateTimecardEntry(recentClockInEntry._id, {
-						startBreaks: startBreakEntries,
-					});
-				} else {
-					// const record = {
-					// 	badge_id: user_id,
-					// 	breakOut: timestamp,
-					// };
-					// await addTimecardEntry(record);
-				}
-			}
-
-			//breakin
-			if (punch === "3") {
-				let endBreakEntries = [];
-				if (recentClockInEntry) {
-					endBreakEntries = recentClockInEntry.endBreaks;
-					if (
-						!endBreakEntries.length ||
-						!endBreakEntries.find((_) => isSameDate(_, timestamp))
-					) {
-						endBreakEntries.push(timestamp);
-					}
-					await updateTimecardEntry(recentClockInEntry._id, {
-						endBreaks: endBreakEntries,
-					});
-				} else {
-					// const record = {
-					// 	badge_id: user_id,
-					// 	breakIn: timestamp,
-					// };
-					// await addTimecardEntry(record);
-				}
-			}
-
-			//clockout
-			if (punch === "1") {
-				if (recentClockInEntry) {
-					await updateTimecardEntry(recentClockInEntry._id, {
-						clockOut: timestamp,
-					});
-				} else {
-					// const record = {
-					// 	badge_id: user_id,
-					// 	clockOut: timestamp,
-					// };
-					// await addTimecardEntry(record);
-				}
+		groupedPunches.map(async (entry) => {
+			const clockInTimeEntryExists = await findTimecardEntry({
+				badge_id: entry.badge_id,
+				clockIn: entry.clockIn,
+			});
+			if (!clockInTimeEntryExists) {
+				addTimecardEntry(entry);
 			}
 		});
 	} catch (error) {}
 };
 
+const groupPunches = (punches) => {
+	let clockIns = [];
+
+	let lastClockIn = null;
+
+	punches.forEach((punch) => {
+		if (punch.punch === "0") {
+			lastClockIn = {
+				badge_id: punch.user_id,
+				clockIn: punch.timestamp,
+				startBreaks: [],
+				endBreaks: [],
+				clockOut: null,
+			};
+			clockIns.push(lastClockIn);
+		} else if (punch.punch === "2" && lastClockIn) {
+			lastClockIn.startBreaks.push(punch.timestamp);
+		} else if (punch.punch === "3" && lastClockIn) {
+			lastClockIn.endBreaks.push(punch.timestamp);
+		} else if (punch.punch === "1" && lastClockIn) {
+			lastClockIn.clockOut = punch.timestamp;
+		}
+	});
+	return clockIns;
+};
 const findTimecardEntry = async (entry) => await Timecard.findOne(entry);
 
 const findRecentClockInRecord = async (badge_id, timestamp) => {
@@ -176,6 +196,8 @@ const findRecentClockInRecord = async (badge_id, timestamp) => {
 		badge_id,
 		clockOut: null,
 		clockIn: { $gte: startOfDay(timestamp), $lte: endOfDay(timestamp) },
+	}).sort({
+		clockIn: -1,
 	});
 	return recentClockInEntry;
 };
@@ -198,9 +220,15 @@ const addTimecardEntry = async (entry) => {
 			payType: getPayType(clockIn),
 			clockIn,
 		};
-		await Timesheet.create(newTimesheetRecord);
+		const timesheetRecord = await findTimesheet(newTimesheetRecord);
+
+		if (!timesheetRecord) {
+			await Timesheet.create(newTimesheetRecord);
+		}
 	}
 };
+
+const findTimesheet = async (record) => Timesheet.findOne(record);
 
 const updateTimecardEntry = async (id, updatedData) => {
 	const updatedTimecard = await Timecard.findByIdAndUpdate(id, updatedData);
@@ -208,7 +236,7 @@ const updateTimecardEntry = async (id, updatedData) => {
 		const empRec = await findEmployee({
 			timeManagementBadgeID: updatedTimecard.badge_id,
 		});
-		const timesheetRecord = await Timesheet.findOne({
+		const timesheetRecord = await findTimesheet({
 			employeeId: empRec.empId._id,
 			companyName: empRec?.companyName,
 			clockIn: updatedTimecard.clockIn,

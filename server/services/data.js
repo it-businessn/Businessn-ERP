@@ -83,7 +83,9 @@ const momentTime = (time) => moment(time, "YYYY-MM-DD hh:mm A");
 const momentDuration = (time1, time2) =>
 	time1 && time2 ? moment.duration(time2.diff(time1)) : 0;
 
-const isSameDate = (date1, date2) => moment(date1).isSame(date2, "day");
+const isSameDate = (date1, date2) => moment(date1).isSame(date2, "second");
+
+const isSameDay = (date1, date2) => moment(date1).isSame(date2, "day");
 
 const STAT_HOLIDAYS = [
 	{ name: "New Year's Day", date: "2024-01-01" },
@@ -101,7 +103,7 @@ const STAT_HOLIDAYS = [
 
 const getPayType = (workedDate) => {
 	const isStatHoliday = STAT_HOLIDAYS.find(({ date }) =>
-		isSameDate(date, workedDate),
+		isSameDay(date, workedDate),
 	);
 	if (isStatHoliday) {
 		return "Statutory Worked Pay";

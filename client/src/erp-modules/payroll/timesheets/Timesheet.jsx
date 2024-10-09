@@ -70,6 +70,7 @@ const Timesheet = ({
 
 			if (formData.recordId) {
 				await TimesheetService.updateTimesheet(formData, formData.recordId);
+				setFormData(initialFormData);
 				setRefresh((prev) => !prev);
 			}
 		} catch (error) {}
