@@ -2,6 +2,7 @@ const EmployeePayInfo = require("../models/EmployeePayInfo");
 const Timesheet = require("../models/Timesheet");
 const moment = require("moment");
 const { calcTotalBreakHours } = require("./timecardController");
+const { STAT_HOLIDAYS } = require("../services/data");
 
 // const currentTime = currentDate.format("HH:mm:ss");
 const currentDate = moment().add(1, "days");
@@ -75,9 +76,8 @@ const getTimesheets = async (req, res) => {
 		const result = mapTimesheet(payInfo, timesheets);
 
 		result.map((_) => {
-			const { totalBreakHours, totalWorkedHours } = calcTotalBreakHours(_);
-			_.totalBreakHours = totalBreakHours;
-			_.totalWorkedHours = totalWorkedHours;
+			_.totalBreakHours = calcTotalBreakHours(_)?.totalBreakHours;
+			_.totalWorkedHours = calcTotalBreakHours(_)?.totalWorkedHours;
 			return _;
 		});
 
@@ -138,19 +138,6 @@ const findEmployeeTimesheetExists = async (record) =>
 	await Timesheet.findOne(record);
 
 const addStatHolidayDefaultTimesheet = async (employeeId, companyName) => {
-	const STAT_HOLIDAYS = [
-		{ name: "New Year's Day", date: "2024-01-01" },
-		{ name: "Family Day", date: "2024-02-19" },
-		{ name: "Good Friday", date: "2024-03-29" },
-		{ name: "Victoria Day", date: "2024-05-20" },
-		{ name: "Canada Day", date: "2024-07-01" },
-		{ name: "B.C. Day", date: "2024-08-05" },
-		{ name: "Labour Day", date: "2024-09-02" },
-		{ name: "National Day for Truth and Reconciliation", date: "2024-09-30" },
-		{ name: "Thanksgiving Day", date: "2024-10-14" },
-		{ name: "Remembrance Day", date: "2024-11-11" },
-		{ name: "Christmas Day", date: "2024-12-25" },
-	];
 	const existingStatTimesheetInfo = await findEmployeeTimesheetExists({
 		employeeId,
 		companyName,
@@ -161,13 +148,13 @@ const addStatHolidayDefaultTimesheet = async (employeeId, companyName) => {
 		return existingStatTimesheetInfo;
 	}
 	STAT_HOLIDAYS.forEach(async ({ date }) => {
-		const startTime = moment(date).set({
+		const startTime = moment.utc(date).set({
 			hour: 9,
 			minute: 0,
 			second: 0,
 			millisecond: 0,
 		});
-		const endTime = moment(date).set({
+		const endTime = moment.utc(date).set({
 			hour: 17,
 			minute: 0,
 			second: 0,

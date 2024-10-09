@@ -10,6 +10,7 @@ const {
 	momentTime,
 	momentDuration,
 	isSameDate,
+	getPayType,
 } = require("../services/data");
 
 const getTimecard = async (req, res) => {
@@ -18,9 +19,8 @@ const getTimecard = async (req, res) => {
 			clockIn: -1,
 		});
 		result.map((_) => {
-			const { totalBreakHours, totalWorkedHours } = calcTotalBreakHours(_);
-			_.totalBreakHours = totalBreakHours;
-			_.totalWorkedHours = totalWorkedHours;
+			_.totalBreakHours = calcTotalBreakHours(_)?.totalBreakHours;
+			_.totalWorkedHours = calcTotalBreakHours(_)?.totalWorkedHours;
 			return _;
 		});
 		res.status(200).json(result);
@@ -35,9 +35,15 @@ const createTimecard = async (req, res) => {
 		// const data = [
 		// 	{
 		// 		user_id: "7746",
-		// 		timestamp: "2024-09-30 13:21:25",
+		// 		timestamp: "2024-09-29 07:00:25",
 		// 		status: "4",
 		// 		punch: "0",
+		// 	},
+		// 	{
+		// 		user_id: "7746",
+		// 		timestamp: "2024-09-29 09:00:25",
+		// 		status: "4",
+		// 		punch: "2",
 		// 	},
 		// ];
 
@@ -189,7 +195,7 @@ const addTimecardEntry = async (entry) => {
 		const newTimesheetRecord = {
 			employeeId: entry.employeeId,
 			companyName: entry.companyName,
-			payType: "Regular Pay", //findpaytype
+			payType: getPayType(clockIn),
 			clockIn,
 		};
 		await Timesheet.create(newTimesheetRecord);
@@ -251,16 +257,19 @@ const calcTotalBreakHours = (data) => {
 	const break2Duration = momentDuration(break2Start, break2End);
 	const break3Duration = momentDuration(break3Start, break3End);
 
-	const totalBreakHours = break1Duration
-		.add(break2Duration)
-		.add(break3Duration);
+	const totalBreakHours =
+		data?.startBreaks.length && data?.endBreaks.length
+			? break1Duration.add(break2Duration).add(break3Duration)
+			: 0;
 
 	const totalClockInToOut = momentDuration(clockIn, clockOut);
 	const totalWorkingTime = totalClockInToOut.subtract(totalBreakHours);
 	const hours = Math.floor(totalWorkingTime.asHours());
 	const minutes = totalWorkingTime.minutes();
 	return {
-		totalBreakHours: Math.floor(totalBreakHours.asHours()),
+		totalBreakHours: totalBreakHours
+			? Math.floor(totalBreakHours.asHours())
+			: 0,
 		totalWorkedHours: `${hours}:${minutes}`,
 	};
 };

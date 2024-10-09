@@ -83,7 +83,31 @@ const momentTime = (time) => moment(time, "YYYY-MM-DD hh:mm A");
 const momentDuration = (time1, time2) =>
 	time1 && time2 ? moment.duration(time2.diff(time1)) : 0;
 
-const isSameDate = (date1, date2) => moment(date1).isSame(date2);
+const isSameDate = (date1, date2) => moment(date1).isSame(date2, "day");
+
+const STAT_HOLIDAYS = [
+	{ name: "New Year's Day", date: "2024-01-01" },
+	{ name: "Family Day", date: "2024-02-19" },
+	{ name: "Good Friday", date: "2024-03-29" },
+	{ name: "Victoria Day", date: "2024-05-20" },
+	{ name: "Canada Day", date: "2024-07-01" },
+	{ name: "B.C. Day", date: "2024-08-05" },
+	{ name: "Labour Day", date: "2024-09-02" },
+	{ name: "National Day for Truth and Reconciliation", date: "2024-09-30" },
+	{ name: "Thanksgiving Day", date: "2024-10-14" },
+	{ name: "Remembrance Day", date: "2024-11-11" },
+	{ name: "Christmas Day", date: "2024-12-25" },
+];
+
+const getPayType = (workedDate) => {
+	const isStatHoliday = STAT_HOLIDAYS.find(({ date }) =>
+		isSameDate(date, workedDate),
+	);
+	if (isStatHoliday) {
+		return "Statutory Worked Pay";
+	}
+	return "Regular Pay";
+};
 
 module.exports = {
 	ADMIN_PERMISSION,
@@ -95,4 +119,6 @@ module.exports = {
 	momentTime,
 	momentDuration,
 	isSameDate,
+	STAT_HOLIDAYS,
+	getPayType,
 };
