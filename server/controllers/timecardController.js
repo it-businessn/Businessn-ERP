@@ -157,7 +157,9 @@ const mapTimecardRawToTimecard = async () => {
 				badge_id: entry.badge_id,
 				clockIn: entry.clockIn,
 			});
-			if (!clockInTimeEntryExists) {
+			if (clockInTimeEntryExists) {
+				updateTimecardEntry(entry);
+			} else {
 				addTimecardEntry(entry);
 			}
 		});
@@ -231,20 +233,25 @@ const addTimecardEntry = async (entry) => {
 
 const findTimesheet = async (record) => Timesheet.findOne(record);
 
-const updateTimecardEntry = async (id, updatedData) => {
-	const updatedTimecard = await Timecard.findByIdAndUpdate(id, updatedData);
-	if (updatedTimecard) {
-		const empRec = await findEmployee({
-			timeManagementBadgeID: updatedTimecard.badge_id,
-		});
-		const timesheetRecord = await findTimesheet({
-			employeeId: empRec.empId._id,
-			companyName: empRec?.companyName,
-			clockIn: updatedTimecard.clockIn,
-		});
-		if (timesheetRecord) {
-			await Timesheet.findByIdAndUpdate(timesheetRecord._id, updatedData);
-		}
+const updateTimecardEntry = async (entry) => {
+	const empRec = await findEmployee({
+		timeManagementBadgeID: entry.badge_id,
+	});
+
+	const timesheetRecord = await findTimesheet({
+		employeeId: empRec.empId._id,
+		companyName: empRec?.companyName,
+		clockIn: entry.clockIn,
+	});
+
+	const updatedData = {
+		startBreaks: entry.clockIn,
+		endBreaks: entry.endBreaks,
+		clockOut: entry.clockOut,
+	};
+
+	if (timesheetRecord) {
+		await Timesheet.findByIdAndUpdate(timesheetRecord._id, updatedData);
 	}
 };
 
