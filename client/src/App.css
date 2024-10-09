@@ -146,6 +146,12 @@ body {
 	border-radius: 50%; */
 }
 
+.timeClockOutInput::-webkit-calendar-picker-indicator,
+.timeClockInInput::-webkit-calendar-picker-indicator {
+	display: none;
+	-webkit-appearance: none;
+}
+
 .label {
 	position: absolute;
 	top: 50%;

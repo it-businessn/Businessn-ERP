@@ -270,41 +270,41 @@ const addOvertimeTimesheet = async (
 
 const updateTimesheet = async (req, res) => {
 	const { id } = req.params;
-	let { startTime, endTime, totalBreaks, approve, param_hours, company } =
+	let { clockIn, clockOut, totalBreakHours, approve, param_hours, company } =
 		req.body;
 
 	try {
 		const timesheet = await Timesheet.findById(id);
-		const totalWorkedHours = getDateDiffHours(startTime, endTime, totalBreaks);
-		if (totalWorkedHours > 480) {
-			const hoursToAdd = 8;
-			const newStartTime = addHours(startTime, hoursToAdd);
-			const overtimeMinutes = totalWorkedHours - 480;
-			const remainingHours = Math.floor(overtimeMinutes / 60);
-			const newEndTime = addHours(newStartTime, remainingHours);
+		// const totalWorkedHours = getDateDiffHours(startTime, endTime, totalBreaks);
+		// if (totalWorkedHours > 480) {
+		// 	const hoursToAdd = 8;
+		// 	const newStartTime = addHours(startTime, hoursToAdd);
+		// 	const overtimeMinutes = totalWorkedHours - 480;
+		// 	const remainingHours = Math.floor(overtimeMinutes / 60);
+		// 	const newEndTime = addHours(newStartTime, remainingHours);
 
-			await addOvertimeTimesheet(
-				timesheet.employeeId,
-				company,
-				overtimeMinutes,
-				newStartTime,
-				newEndTime,
-				timesheet.createdOn,
-			);
-			timesheet[param_hours] = 480;
-			// timesheet.clockOuts.push(newStartTime);
-			timesheet.endTime = newStartTime;
-		} else {
-			timesheet[param_hours] = totalWorkedHours;
-			if (endTime !== "00:00") {
-				// timesheet.clockOuts.push(endTime);
-				timesheet.endTime = endTime;
-			}
-		}
+		// 	await addOvertimeTimesheet(
+		// 		timesheet.employeeId,
+		// 		company,
+		// 		overtimeMinutes,
+		// 		newStartTime,
+		// 		newEndTime,
+		// 		timesheet.createdOn,
+		// 	);
+		// 	timesheet[param_hours] = 480;
+		// 	// timesheet.clockOuts.push(newStartTime);
+		// 	timesheet.endTime = newStartTime;
+		// } else {
+		// 	timesheet[param_hours] = totalWorkedHours;
+		// 	if (endTime !== "00:00") {
+		// 		// timesheet.clockOuts.push(endTime);
+		// 		timesheet.endTime = endTime;
+		// 	}
+		// }
 
-		timesheet.startTime = startTime;
-		// timesheet.clockIns[0] = startTime;
-		timesheet.totalBreaks = totalBreaks;
+		timesheet.clockIn = clockIn;
+		timesheet.clockOut = clockOut;
+		// timesheet.totalBreaks = totalBreaks;
 		timesheet.approveStatus = approve
 			? "Approved"
 			: approve === false

@@ -5,6 +5,7 @@ import NormalTextTitle from "components/ui/NormalTextTitle";
 import TableLayout from "components/ui/table/TableLayout";
 import TextTitle from "components/ui/text/TextTitle";
 import useTimesheet from "hooks/useTimesheet";
+import moment from "moment";
 import { useEffect, useState } from "react";
 import { FaCheck } from "react-icons/fa";
 import { IoClose } from "react-icons/io5";
@@ -20,36 +21,24 @@ const Timesheet = ({
 	setRefresh,
 	setTimesheetRefresh,
 }) => {
+	const showPicker = (className) => {
+		const timeInput = document.getElementsByClassName(className);
+		if (timeInput) {
+			timeInput[0].showPicker();
+		}
+	};
 	// const timesheets = useTimesheet(company, userId, refresh, filter);
 	const timesheets = useTimesheet(company, userId, refresh);
 	const initialFormData = {
-		startTime: "",
-		endTime: "",
-		totalBreaks: "",
+		clockIn: null,
+		clockOut: null,
+		totalBreakHours: "",
 		approve: undefined,
 		company,
 		recordId: null,
 	};
 	const [formData, setFormData] = useState(initialFormData);
 	const [timesheetData, setTimesheetData] = useState(timesheets);
-
-	const handleSave = async () => {
-		try {
-			const updatedRec = timesheetData.find(
-				(record) => record._id === formData.recordId,
-			);
-
-			formData.startTime = updatedRec.startTime;
-			formData.totalBreaks = updatedRec.totalBreaks;
-			formData.endTime = updatedRec.endTime;
-			formData.company = updatedRec.companyName;
-
-			if (formData.recordId) {
-				await TimesheetService.updateTimesheet(formData, formData.recordId);
-				setRefresh((prev) => !prev);
-			}
-		} catch (error) {}
-	};
 
 	useEffect(() => {
 		if (timesheets) {
@@ -58,27 +47,38 @@ const Timesheet = ({
 		}
 	}, [timesheets]);
 
-	const handleTimeChange = (id, field, value) => {
-		// const updatedData1 = timesheetData.find((record) => record._id === id);
-		// updatedData1[field] = moment().set({
-		// 	hour: parseInt(value),
-		// 	minute: 0,
-		// 	second: 0,
-		// 	millisecond: 0,
-		// });
-		// console.log(id, field, value, updatedData1, value);
-		// const updatedData = timesheetData.map((record) =>
-		// 	record._id === id ? { ...record, [field]: value } : record,
-		// );
-		// console.log(id, field, value, updatedData1, updatedData);
-		// setTimesheetData(updatedData);
+	const handleTimeChange = (key, value) => {
+		const updatedData = timesheetData?.map((record) =>
+			record._id === formData.recordId
+				? {
+						...record,
+						[key]: value,
+				  }
+				: record,
+		);
+		setTimesheetData(updatedData);
 	};
 
+	const handleSubmit = async () => {
+		try {
+			const updatedRec = timesheetData.find(
+				(record) => record._id === formData.recordId,
+			);
+			formData.clockIn = updatedRec.clockIn;
+			formData.clockOut = updatedRec.clockOut;
+			formData.company = updatedRec.companyName;
+
+			if (formData.recordId) {
+				await TimesheetService.updateTimesheet(formData, formData.recordId);
+				setRefresh((prev) => !prev);
+			}
+		} catch (error) {}
+	};
 	useEffect(() => {
 		if (formData.approve !== undefined) {
-			handleSave();
+			handleSubmit();
 		}
-	}, [formData]);
+	}, [formData.approve]);
 
 	const handleClick = (e) => {
 		const cursorPos = e.target.selectionStart;
@@ -107,18 +107,18 @@ const Timesheet = ({
 	const renderEditableInput = (id, field, value, param_hours, isStatPay) => (
 		<>
 			<Input
-				readOnly={isStatPay}
-				onBlur={() => handleSave(param_hours)}
+				readOnly={true}
+				// onBlur={() => handleSubmit(param_hours)}
 				value={value}
-				onChange={(e) => {
-					setFormData({
-						param_hours,
-						recordId: id,
-					});
-					handleTimeChange(id, field, e.target.value);
-				}}
-				onKeyDown={handleKeyDown}
-				onClick={handleClick}
+				// onChange={(e) => {
+				// 	setFormData({
+				// 		param_hours,
+				// 		recordId: id,
+				// 	});
+				// 	handleTimeChange(id, field, e.target.value);
+				// }}
+				// onKeyDown={handleKeyDown}
+				// onClick={handleClick}
 				placeholder="HH:mm"
 				size="sm"
 				maxLength={5}
@@ -251,27 +251,53 @@ const Timesheet = ({
 								<Td py={0}>{param_pay_type}</Td>
 								<Td py={0}>{payType}</Td>
 								<Td p={0}>
-									{renderEditableInput(
-										_id,
-										"clockIn",
-										clockIn ? getTimeFormat(clockIn) : "",
-										param_hours,
-										isStatPay,
-									)}
+									<Input
+										onBlur={() => handleSubmit(param_hours)}
+										className={`timeClockInInput ${_id}`}
+										type="time"
+										name="clockIn"
+										value={clockIn ? getTimeFormat(clockIn) : ""}
+										onClick={() => showPicker(`timeClockInInput ${_id}`)}
+										onChange={(e) => {
+											setFormData({
+												param_hours,
+												recordId: _id,
+												clockIn: e.target.value,
+											});
+											handleTimeChange(
+												"clockIn",
+												moment.utc(formData.clockIn, "HH:mm"),
+											);
+										}}
+										required
+									/>
+								</Td>
+								<Td p={0} pl={3}>
+									<Input
+										onBlur={() => handleSubmit(param_hours)}
+										className={`timeClockOutInput ${_id}`}
+										type="time"
+										name="clockOut"
+										value={clockOut ? getTimeFormat(clockOut) : ""}
+										onClick={() => showPicker(`timeClockOutInput ${_id}`)}
+										onChange={(e) => {
+											setFormData({
+												param_hours,
+												recordId: _id,
+												clockOut: e.target.value,
+											});
+											handleTimeChange(
+												"clockOut",
+												moment.utc(formData.clockOut, "HH:mm"),
+											);
+										}}
+										required
+									/>
 								</Td>
 								<Td p={0} pl={3}>
 									{renderEditableInput(
 										_id,
-										"clockOut",
-										clockOut ? getTimeFormat(clockOut) : "",
-										param_hours,
-										isStatPay,
-									)}
-								</Td>
-								<Td p={0} pl={3}>
-									{renderEditableInput(
-										_id,
-										"totalBreaks",
+										"totalBreakHours",
 										totalBreakHours,
 										param_hours,
 										isStatPay,
@@ -288,9 +314,9 @@ const Timesheet = ({
 											color={"var(--status_button_border)"}
 											onClick={() => {
 												setFormData({
-													startTime: clockIn,
-													endTime: clockOut,
-													totalBreaks,
+													clockIn,
+													clockOut,
+													totalBreakHours,
 													param_hours,
 													recordId: _id,
 													approve: true,
@@ -305,9 +331,9 @@ const Timesheet = ({
 											variant={"solid"}
 											onClick={() => {
 												setFormData({
-													startTime: clockIn,
-													endTime: clockOut,
-													totalBreaks,
+													clockIn,
+													clockOut,
+													totalBreakHours,
 													param_hours,
 													recordId: _id,
 													approve: false,
