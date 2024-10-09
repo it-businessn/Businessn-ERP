@@ -27,7 +27,7 @@ const Home = () => {
 	const [refresh, setRefresh] = useState(false);
 
 	useEffect(() => {
-		setSelectedCompany(user?.companyId.name);
+		setSelectedCompany(user?.companyId?.name);
 		if (user && Object.keys(user).length > 0) {
 			navigate(ROUTE_PATH.SALES);
 			// navigate(`${ROUTE_PATH.SALES}${ROUTE_PATH.CUSTOMERS}`);

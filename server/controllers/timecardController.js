@@ -148,9 +148,9 @@ const createTimecard = async (req, res) => {
 
 const mapTimecardRawToTimecard = async () => {
 	try {
-		const punches = await TimecardRaw.find({}).sort({ timestamp: 1 });
+		const entries = await TimecardRaw.find({}).sort({ timestamp: 1 });
 
-		let groupedPunches = groupPunches(punches);
+		let groupedPunches = groupPunches(entries);
 
 		groupedPunches.map(async (entry) => {
 			const clockInTimeEntryExists = await findTimecardEntry({
@@ -167,28 +167,29 @@ const mapTimecardRawToTimecard = async () => {
 const groupPunches = (punches) => {
 	let clockIns = [];
 
-	let lastClockIn = null;
+	let timeCardRow = null;
 
 	punches.forEach((punch) => {
 		if (punch.punch === "0") {
-			lastClockIn = {
+			timeCardRow = {
 				badge_id: punch.user_id,
 				clockIn: punch.timestamp,
 				startBreaks: [],
 				endBreaks: [],
 				clockOut: null,
 			};
-			clockIns.push(lastClockIn);
-		} else if (punch.punch === "2" && lastClockIn) {
-			lastClockIn.startBreaks.push(punch.timestamp);
-		} else if (punch.punch === "3" && lastClockIn) {
-			lastClockIn.endBreaks.push(punch.timestamp);
-		} else if (punch.punch === "1" && lastClockIn) {
-			lastClockIn.clockOut = punch.timestamp;
+			clockIns.push(timeCardRow);
+		} else if (punch.punch === "2" && timeCardRow) {
+			timeCardRow.startBreaks.push(punch.timestamp);
+		} else if (punch.punch === "3" && timeCardRow) {
+			timeCardRow.endBreaks.push(punch.timestamp);
+		} else if (punch.punch === "1" && timeCardRow) {
+			timeCardRow.clockOut = punch.timestamp;
 		}
 	});
 	return clockIns;
 };
+
 const findTimecardEntry = async (entry) => await Timecard.findOne(entry);
 
 const findRecentClockInRecord = async (badge_id, timestamp) => {

@@ -75,11 +75,24 @@ const Timesheet = ({
 			}
 		} catch (error) {}
 	};
+
 	useEffect(() => {
 		if (formData.approve !== undefined) {
 			handleSubmit();
 		}
 	}, [formData.approve]);
+
+	useEffect(() => {
+		if (formData.clockIn) {
+			handleTimeChange("clockIn", moment.utc(formData.clockIn, "HH:mm"));
+		}
+	}, [formData.clockIn]);
+
+	useEffect(() => {
+		if (formData.clockOut) {
+			handleTimeChange("clockOut", moment.utc(formData.clockOut, "HH:mm"));
+		}
+	}, [formData.clockOut]);
 
 	const handleClick = (e) => {
 		const cursorPos = e.target.selectionStart;
@@ -255,6 +268,7 @@ const Timesheet = ({
 								<Td py={0}>{payType}</Td>
 								<Td p={0}>
 									<Input
+										size={"sm"}
 										onBlur={() => handleSubmit(param_hours)}
 										className={`timeClockInInput ${_id}`}
 										type="time"
@@ -267,16 +281,13 @@ const Timesheet = ({
 												recordId: _id,
 												clockIn: e.target.value,
 											});
-											handleTimeChange(
-												"clockIn",
-												moment.utc(formData.clockIn, "HH:mm"),
-											);
 										}}
 										required
 									/>
 								</Td>
 								<Td p={0} pl={3}>
 									<Input
+										size={"sm"}
 										onBlur={() => handleSubmit(param_hours)}
 										className={`timeClockOutInput ${_id}`}
 										type="time"
@@ -289,10 +300,6 @@ const Timesheet = ({
 												recordId: _id,
 												clockOut: e.target.value,
 											});
-											handleTimeChange(
-												"clockOut",
-												moment.utc(formData.clockOut, "HH:mm"),
-											);
 										}}
 										required
 									/>

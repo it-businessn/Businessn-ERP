@@ -13,10 +13,11 @@ const Timecard = ({ company, userId, timecardRefresh, filter }) => {
 	useEffect(() => {
 		const fetchAllTimecards = async () => {
 			try {
-				// const post = await TimesheetService.addTimecard([]);
-				const response = await TimesheetService.getTimecards();
-
-				setTimeRecords(response.data);
+				const post = await TimesheetService.addTimecard([]);
+				if (post.data) {
+					const response = await TimesheetService.getTimecards();
+					setTimeRecords(response.data);
+				}
 			} catch (error) {
 				console.error(error);
 			}
