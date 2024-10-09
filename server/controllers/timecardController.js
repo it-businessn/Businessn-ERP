@@ -2,21 +2,27 @@ const EmployeeProfileInfo = require("../models/EmployeeProfileInfo");
 const Timecard = require("../models/Timecard");
 const TimecardRaw = require("../models/TimecardRaw");
 const Timesheet = require("../models/Timesheet");
+
 const {
 	getUTCTime,
 	startOfDay,
 	endOfDay,
 	momentTime,
 	momentDuration,
+	isSameDate,
 } = require("../services/data");
-const { addTimesheetEntry } = require("./timesheetContoller");
 
 const getTimecard = async (req, res) => {
 	try {
 		const result = await Timecard.find({}).sort({
 			clockIn: -1,
 		});
-		result.map((_) => (_.totalBreakHours = calcTotalBreakHours(_)));
+		result.map((_) => {
+			const { totalBreakHours, totalWorkedHours } = calcTotalBreakHours(_);
+			_.totalBreakHours = totalBreakHours;
+			_.totalWorkedHours = totalWorkedHours;
+			return _;
+		});
 		res.status(200).json(result);
 	} catch (error) {
 		res.status(404).json({ error: error.message });
@@ -29,87 +35,9 @@ const createTimecard = async (req, res) => {
 		// const data = [
 		// 	{
 		// 		user_id: "7746",
-		// 		timestamp: "2024-09-29 13:21:25",
+		// 		timestamp: "2024-09-30 13:21:25",
 		// 		status: "4",
 		// 		punch: "0",
-		// 	},
-		// 	{
-		// 		user_id: "7746",
-		// 		timestamp: "2024-09-29 15:00:00",
-		// 		status: "4",
-		// 		punch: "2",
-		// 	},
-		// 	{
-		// 		user_id: "7746",
-		// 		timestamp: "2024-09-29 15:21:25",
-		// 		status: "4",
-		// 		punch: "3",
-		// 	},
-		// 	{
-		// 		user_id: "7746",
-		// 		timestamp: "2024-09-29 23:00:12",
-		// 		status: "4",
-		// 		punch: "1",
-		// 	},
-		// 	{
-		// 		user_id: "7746",
-		// 		timestamp: "2024-09-30 13:00:00",
-		// 		status: "4",
-		// 		punch: "0",
-		// 	},
-		// 	{
-		// 		user_id: "7746",
-		// 		timestamp: "2024-09-30 14:00:00",
-		// 		status: "4",
-		// 		punch: "2",
-		// 	},
-		// 	{
-		// 		user_id: "7746",
-		// 		timestamp: "2024-09-30 15:00:00",
-		// 		status: "4",
-		// 		punch: "3",
-		// 	},
-		// 	{
-		// 		user_id: "7746",
-		// 		timestamp: "2024-09-30 21:00:00",
-		// 		status: "4",
-		// 		punch: "1",
-		// 	},
-		// 	{
-		// 		user_id: "7746",
-		// 		timestamp: "2024-10-01 09:00:00",
-		// 		status: "4",
-		// 		punch: "0",
-		// 	},
-		// 	{
-		// 		user_id: "7746",
-		// 		timestamp: "2024-10-02 09:00:00",
-		// 		status: "4",
-		// 		punch: "0",
-		// 	},
-		// 	{
-		// 		user_id: "7746",
-		// 		timestamp: "2024-10-01 15:23:00",
-		// 		status: "4",
-		// 		punch: "2",
-		// 	},
-		// 	{
-		// 		user_id: "7746",
-		// 		timestamp: "2024-10-02 13:13:00",
-		// 		status: "4",
-		// 		punch: "2",
-		// 	},
-		// 	{
-		// 		user_id: "7746",
-		// 		timestamp: "2024-10-02 15:00:00",
-		// 		status: "4",
-		// 		punch: "1",
-		// 	},
-		// 	{
-		// 		user_id: "7746",
-		// 		timestamp: "2024-10-02 14:00:00",
-		// 		status: "4",
-		// 		punch: "1",
 		// 	},
 		// ];
 
@@ -166,60 +94,68 @@ const mapTimecardRawToTimecard = async () => {
 				}
 			}
 
+			const recentClockInEntry = await findRecentClockInRecord(
+				user_id,
+				timestamp,
+			);
+
 			//breakout
 			if (punch === "2") {
-				const recentClockInEntry = await findRecentClockInRecord(
-					user_id,
-					timestamp,
-				);
+				let startBreakEntries = [];
 				if (recentClockInEntry) {
+					startBreakEntries = recentClockInEntry.startBreaks;
+					if (
+						!startBreakEntries.length ||
+						!startBreakEntries.find((_) => isSameDate(_, timestamp))
+					) {
+						startBreakEntries.push(timestamp);
+					}
 					await updateTimecardEntry(recentClockInEntry._id, {
-						breakOut: timestamp,
+						startBreaks: startBreakEntries,
 					});
 				} else {
-					const record = {
-						badge_id: user_id,
-						breakOut: timestamp,
-					};
+					// const record = {
+					// 	badge_id: user_id,
+					// 	breakOut: timestamp,
+					// };
 					// await addTimecardEntry(record);
 				}
 			}
 
 			//breakin
 			if (punch === "3") {
-				const recentClockInEntry = await findRecentClockInRecord(
-					user_id,
-					timestamp,
-				);
+				let endBreakEntries = [];
 				if (recentClockInEntry) {
+					endBreakEntries = recentClockInEntry.endBreaks;
+					if (
+						!endBreakEntries.length ||
+						!endBreakEntries.find((_) => isSameDate(_, timestamp))
+					) {
+						endBreakEntries.push(timestamp);
+					}
 					await updateTimecardEntry(recentClockInEntry._id, {
-						breakIn: timestamp,
+						endBreaks: endBreakEntries,
 					});
 				} else {
-					const record = {
-						badge_id: user_id,
-						breakIn: timestamp,
-					};
+					// const record = {
+					// 	badge_id: user_id,
+					// 	breakIn: timestamp,
+					// };
 					// await addTimecardEntry(record);
 				}
 			}
 
 			//clockout
 			if (punch === "1") {
-				const recentClockInEntry = await findRecentClockInRecord(
-					user_id,
-					timestamp,
-				);
-
 				if (recentClockInEntry) {
 					await updateTimecardEntry(recentClockInEntry._id, {
 						clockOut: timestamp,
 					});
 				} else {
-					const record = {
-						badge_id: user_id,
-						clockOut: timestamp,
-					};
+					// const record = {
+					// 	badge_id: user_id,
+					// 	clockOut: timestamp,
+					// };
 					// await addTimecardEntry(record);
 				}
 			}
@@ -256,7 +192,7 @@ const addTimecardEntry = async (entry) => {
 			payType: "Regular Pay", //findpaytype
 			clockIn,
 		};
-		await addTimesheetEntry(newTimesheetRecord);
+		await Timesheet.create(newTimesheetRecord);
 	}
 };
 
@@ -296,23 +232,37 @@ const calcTotalBreakHours = (data) => {
 	}
 	const clockIn = momentTime(data?.clockIn);
 	const clockOut = momentTime(data?.clockOut);
-	const break1Start = data?.breakOut && momentTime(data?.breakOut);
-	const break1End = data?.breakIn && momentTime(data?.breakIn);
+
+	const break1Start =
+		data?.startBreaks.length && momentTime(data?.startBreaks[0]);
+	const break1End = data?.endBreaks.length && momentTime(data?.endBreaks[0]);
+
+	const break2Start =
+		data?.startBreaks.length > 1 && momentTime(data?.startBreaks[1]);
+	const break2End =
+		data?.endBreaks.length > 1 && momentTime(data?.startBreaks[1]);
+
+	const break3Start =
+		data?.startBreaks.length > 2 && momentTime(data?.startBreaks[2]);
+	const break3End =
+		data?.endBreaks.length > 2 && momentTime(data?.startBreaks[2]);
+
 	const break1Duration = momentDuration(break1Start, break1End);
-	const totalBreakTime = break1Duration;
-	// const break1Start =
-	// 	data?.startBreaks[0] && moment(data?.startBreaks[0], "YYYY-MM-DD hh:mm A");
-	// const break1End = moment(data?.endBreaks[0], "YYYY-MM-DD hh:mm A");
-	// const break2Start = moment(data?.startBreaks[1], "YYYY-MM-DD hh:mm A");
-	// const break2End = moment(data?.startBreaks[1], "YYYY-MM-DD hh:mm A");
-	// const break1Duration = moment.duration(break1End.diff(break1Start));
-	// const break2Duration = moment.duration(break2End.diff(break2Start));
-	// const totalBreakTime = break1Duration.add(break2Duration);
+	const break2Duration = momentDuration(break2Start, break2End);
+	const break3Duration = momentDuration(break3Start, break3End);
+
+	const totalBreakHours = break1Duration
+		.add(break2Duration)
+		.add(break3Duration);
+
 	const totalClockInToOut = momentDuration(clockIn, clockOut);
-	const totalWorkingTime = totalClockInToOut.subtract(totalBreakTime);
+	const totalWorkingTime = totalClockInToOut.subtract(totalBreakHours);
 	const hours = Math.floor(totalWorkingTime.asHours());
 	const minutes = totalWorkingTime.minutes();
-	return `${hours}:${minutes}`;
+	return {
+		totalBreakHours: Math.floor(totalBreakHours.asHours()),
+		totalWorkedHours: `${hours}:${minutes}`,
+	};
 };
 
 module.exports = {

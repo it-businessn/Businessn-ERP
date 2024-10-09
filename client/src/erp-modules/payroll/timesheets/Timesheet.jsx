@@ -177,6 +177,7 @@ const Timesheet = ({
 						clockIn,
 						clockOut,
 						totalBreakHours,
+						totalWorkedHours,
 					}) => {
 						const approveStatusBtnCss = getStatusStyle(approveStatus);
 
@@ -271,12 +272,12 @@ const Timesheet = ({
 									{renderEditableInput(
 										_id,
 										"totalBreaks",
-										totalBreaks,
+										totalBreakHours,
 										param_hours,
 										isStatPay,
 									)}
 								</Td>
-								<Td py={0}>{totalBreakHours}</Td>
+								<Td py={0}>{totalWorkedHours}</Td>
 								<Td py={0}>
 									<HStack spacing={0}>
 										<IconButton

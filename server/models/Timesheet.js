@@ -19,7 +19,7 @@ const timesheetSchema = new mongoose.Schema({
 	startBreaks: [Date],
 	endBreaks: [Date],
 	totalHours: Number,
-	totalTimeCardHours: Number,
+	totalWorkedHours: String,
 	projectEntries: [{ type: mongoose.Schema.Types.ObjectId, ref: "Project" }],
 	updatedOn: { type: Date, default: Date.now },
 	createdOn: { type: Date, default: Date.now },

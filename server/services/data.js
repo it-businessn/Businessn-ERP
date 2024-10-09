@@ -83,6 +83,8 @@ const momentTime = (time) => moment(time, "YYYY-MM-DD hh:mm A");
 const momentDuration = (time1, time2) =>
 	time1 && time2 ? moment.duration(time2.diff(time1)) : 0;
 
+const isSameDate = (date1, date2) => moment(date1).isSame(date2);
+
 module.exports = {
 	ADMIN_PERMISSION,
 	EMPLOYEE_PERMISSION,
@@ -92,4 +94,5 @@ module.exports = {
 	endOfDay,
 	momentTime,
 	momentDuration,
+	isSameDate,
 };

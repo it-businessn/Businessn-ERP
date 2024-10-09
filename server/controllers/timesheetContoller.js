@@ -73,7 +73,14 @@ const getTimesheets = async (req, res) => {
 		const payInfo = await getTimesheetResult(companyName);
 
 		const result = mapTimesheet(payInfo, timesheets);
-		result.map((_) => (_.totalBreakHours = calcTotalBreakHours(_)));
+
+		result.map((_) => {
+			const { totalBreakHours, totalWorkedHours } = calcTotalBreakHours(_);
+			_.totalBreakHours = totalBreakHours;
+			_.totalWorkedHours = totalWorkedHours;
+			return _;
+		});
+
 		res.status(200).json(result);
 	} catch (error) {
 		res.status(404).json({ error: error.message });

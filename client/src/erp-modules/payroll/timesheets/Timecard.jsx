@@ -55,6 +55,7 @@ const Timecard = ({ company, userId, timecardRefresh, filter }) => {
 						notDevice,
 						breakIn,
 						breakOut,
+						totalWorkedHours,
 					}) => {
 						return (
 							<Tr key={_id} h={"20px"}>
@@ -77,32 +78,24 @@ const Timecard = ({ company, userId, timecardRefresh, filter }) => {
 									/>
 								</Td>
 								<Td p={0.5} pl={6}>
-									{/* <NormalTextTitle
+									<NormalTextTitle
 										size={"sm"}
 										title={
 											startBreaks?.length
 												? getTimeCardFormat(startBreaks[0], notDevice)
 												: ""
 										}
-									/> */}
-									<NormalTextTitle
-										size={"sm"}
-										title={breakOut && getTimeCardFormat(breakOut, notDevice)}
 									/>
 								</Td>
 								<Td p={0.5} pl={6}>
 									<NormalTextTitle
-										size={"sm"}
-										title={breakIn && getTimeCardFormat(breakIn, notDevice)}
-									/>
-									{/* <NormalTextTitle
 										size={"sm"}
 										title={
 											endBreaks?.length
 												? getTimeCardFormat(endBreaks[0], notDevice)
 												: ""
 										}
-									/> */}
+									/>
 								</Td>
 								<Td p={0.5} pl={6}>
 									<NormalTextTitle
@@ -145,7 +138,7 @@ const Timecard = ({ company, userId, timecardRefresh, filter }) => {
 									/>
 								</Td>
 								<Td p={0.5} pl={6}>
-									{totalBreakHours}
+									{totalWorkedHours}
 								</Td>
 							</Tr>
 						);
