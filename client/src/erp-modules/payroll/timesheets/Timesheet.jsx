@@ -135,7 +135,6 @@ const Timesheet = ({
 
 	return (
 		<TableLayout
-			isTimesheet
 			cols={[
 				"Employee Name",
 				"Worked Date",
@@ -149,7 +148,10 @@ const Timesheet = ({
 				"Total Worked Hours",
 				"Action",
 			]}
-			height="71vh"
+			position="sticky"
+			zIndex="docked"
+			top={-1}
+			height="73vh"
 		>
 			<Tbody>
 				{!timesheetData?.length && <EmptyRowRecord />}

@@ -16,11 +16,10 @@ const Approvals = () => {
 		<PageLayout title={"Approvals"}>
 			<TableLayout
 				cols={["fullName", "email", "role"]}
-				isSmall
-				height={"80vh"}
+				height="75vh"
 				position="sticky"
+				zIndex="docked"
 				top={-1}
-				zIndex={"docked"}
 			>
 				<Tbody>
 					{!employees?.length && <EmptyRowRecord />}

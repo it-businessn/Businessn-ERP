@@ -40,6 +40,9 @@ const Timecard = ({ company, userId, timecardRefresh, filter }) => {
 				"Total Hours (HH:mm)",
 			]}
 			height="75vh"
+			position="sticky"
+			zIndex="docked"
+			top={-1}
 		>
 			<Tbody>
 				{!timeRecords?.length && <EmptyRowRecord />}
