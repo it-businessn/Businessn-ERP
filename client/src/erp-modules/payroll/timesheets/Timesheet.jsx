@@ -5,12 +5,11 @@ import NormalTextTitle from "components/ui/NormalTextTitle";
 import TableLayout from "components/ui/table/TableLayout";
 import TextTitle from "components/ui/text/TextTitle";
 import useTimesheet from "hooks/useTimesheet";
-import moment from "moment";
 import { useEffect, useState } from "react";
 import { FaCheck } from "react-icons/fa";
 import { IoClose } from "react-icons/io5";
 import TimesheetService from "services/TimesheetService";
-import { getDefaultDate, getTimeFormat } from "utils";
+import { getDefaultDate, getTimeFormat, setUTCDate } from "utils";
 import { getParamKey, getStatusStyle } from "./data";
 
 const Timesheet = ({
@@ -84,13 +83,13 @@ const Timesheet = ({
 
 	useEffect(() => {
 		if (formData.clockIn) {
-			handleTimeChange("clockIn", moment.utc(formData.clockIn, "HH:mm"));
+			handleTimeChange("clockIn", formData.clockIn);
 		}
 	}, [formData.clockIn]);
 
 	useEffect(() => {
 		if (formData.clockOut) {
-			handleTimeChange("clockOut", moment.utc(formData.clockOut, "HH:mm"));
+			handleTimeChange("clockOut", formData.clockOut);
 		}
 	}, [formData.clockOut]);
 
@@ -279,7 +278,7 @@ const Timesheet = ({
 											setFormData({
 												param_hours,
 												recordId: _id,
-												clockIn: e.target.value,
+												clockIn: setUTCDate(clockIn, e.target.value),
 											});
 										}}
 										required
@@ -298,7 +297,7 @@ const Timesheet = ({
 											setFormData({
 												param_hours,
 												recordId: _id,
-												clockOut: e.target.value,
+												clockOut: setUTCDate(clockOut, e.target.value),
 											});
 										}}
 										required

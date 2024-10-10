@@ -6,7 +6,7 @@ import BasicInfo from "../statement/BasicInfo";
 import InformationSection from "../statement/InformationSection";
 import { ACCRUAL_TYPES } from "./data";
 
-const EmployeeInfo = ({ data }) => (
+const EmployeeInfo = ({ data, companyNum }) => (
 	<Stack position="relative" flex={0.1} spacing={0}>
 		<BoxCard p={0}>
 			<Box w={"100%"} bg={"var(--primary_bg_1)"} p={2}>
@@ -38,6 +38,7 @@ const EmployeeInfo = ({ data }) => (
 					/>
 					<BasicInfo
 						title1={""}
+						whiteSpace="wrap"
 						title2={`${data.empId?.primaryAddress?.city}, ${data.empId?.primaryAddress?.state} ${data.empId?.primaryAddress?.postalCode}`}
 					/>
 					<BasicInfo
@@ -45,7 +46,7 @@ const EmployeeInfo = ({ data }) => (
 						title1={"Employee#:"}
 						title2={data.empId.employeeId}
 					/>
-					<BasicInfo title1={"Company#:"} title2={"NA"} />
+					<BasicInfo title1={"Company#:"} title2={companyNum} />
 				</VStack>
 			</Box>
 			<Box w={"100%"} bg={"var(--main_color)"} p={1}>

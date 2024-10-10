@@ -2,7 +2,7 @@ const EmployeePayInfo = require("../models/EmployeePayInfo");
 const Timesheet = require("../models/Timesheet");
 const moment = require("moment");
 const { calcTotalBreakHours } = require("./timecardController");
-const { STAT_HOLIDAYS } = require("../services/data");
+const { STAT_HOLIDAYS, getUTCTime } = require("../services/data");
 
 // const currentTime = currentDate.format("HH:mm:ss");
 const currentDate = moment().add(1, "days");
@@ -195,14 +195,14 @@ const createTimesheet = async (req, res) => {
 			// }
 			return res.status(201).json("Stat Holiday Default Timesheet exists.");
 		}
-
-		const newTimesheet = await addTimesheetEntry({
+		const newEntry = {
 			employeeId,
 			companyName: company,
 			payType: type,
-			createdOn,
-			clockIn: moment(),
-		});
+			clockIn: getUTCTime(createdOn),
+		};
+
+		const newTimesheet = await addTimesheetEntry(newEntry);
 		res.status(201).json(newTimesheet);
 	} catch (error) {
 		res.status(400).json({ message: error.message });

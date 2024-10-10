@@ -12,8 +12,10 @@ const getAllEmploymentInfo = async (req, res) => {
 		req.params;
 	try {
 		const isExtraPayRun = isExtraRun === "true";
-		const employees =
-			isExtraPayRun && (await findGroupEmployees(groupId, payDate));
+		const employees = isExtraPayRun
+			? await findGroupEmployees(groupId, payDate)
+			: null;
+
 		const activeEmployees = isExtraPayRun
 			? await getEmployeeId(employees)
 			: await getPayrollActiveEmployees(companyName);
@@ -24,8 +26,8 @@ const getAllEmploymentInfo = async (req, res) => {
 			aggregatedResult.push(result);
 		}
 		aggregatedResult.map((empInfo) => {
-			const empIdStr = empInfo.empPayStubResult.empId._id.toString();
-			if (empInfo.payInfoMapResult.has(empIdStr)) {
+			const empIdStr = empInfo.empPayStubResult?.empId?._id.toString();
+			if (empInfo?.payInfoMapResult.has(empIdStr)) {
 				empInfo.regPay = empInfo.payInfoMapResult.get(empIdStr);
 			}
 			empInfo._id = empInfo.empPayStubResult._id;
