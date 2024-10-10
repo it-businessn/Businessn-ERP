@@ -158,6 +158,7 @@ const mapTimecardRawToTimecard = async () => {
 				clockIn: entry.clockIn,
 			});
 			if (clockInTimeEntryExists) {
+				await Timecard.findByIdAndUpdate(clockInTimeEntryExists._id, entry);
 				updateTimecardEntry(entry);
 			} else {
 				addTimecardEntry(entry);
