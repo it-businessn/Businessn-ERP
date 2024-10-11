@@ -49,6 +49,9 @@ const TableLayout = ({
 								p={isSmall ? 1 : "auto"}
 								pl={isTimesheet && index === 0 && "1em !important"}
 								key={`${col}_${index}`}
+								// width={
+								// 	isEarning && index === 1 ? width2 : index === 2 && width2
+								// }
 							>
 								<TextTitle
 									width={

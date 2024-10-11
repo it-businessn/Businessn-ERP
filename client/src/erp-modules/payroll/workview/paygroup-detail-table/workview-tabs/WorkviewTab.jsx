@@ -58,9 +58,9 @@ const WorkviewTab = ({
 										) : (
 											row.empId[col.pair_key]
 										)
-									) : isHourly ? (
-										`${(row[col.pair] / 60).toFixed(0)}:${row[col.pair] % 60}`
 									) : (
+										// ) : isHourly ? (
+										// 	`${(row[col.pair] / 60).toFixed(0)}:${row[col.pair] % 60}`
 										row[col.pair]
 									);
 								return (

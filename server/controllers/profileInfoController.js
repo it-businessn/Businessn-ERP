@@ -127,6 +127,7 @@ const addEmployeeProfileInfo = async (req, res) => {
 					middleName,
 					lastName,
 					birthDate,
+					empId: newEmployee._id,
 				});
 				return res.status(201).json(newProfileInfo);
 			}

@@ -22,6 +22,8 @@ const usePaygroup = (company, refresh) => {
 					? record
 					: closest;
 			}, schedules[0]);
+		// const closestPayPeriod = schedules[3];
+
 		setClosestRecord(closestPayPeriod);
 
 		const closestPayPeriodIndex = schedules.findIndex(

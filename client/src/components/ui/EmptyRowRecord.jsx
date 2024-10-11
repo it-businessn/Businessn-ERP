@@ -1,10 +1,10 @@
 import { Td, Tr } from "@chakra-ui/react";
 import NormalTextTitle from "./NormalTextTitle";
 
-const EmptyRowRecord = () => (
+const EmptyRowRecord = ({ title = "No record found" }) => (
 	<Tr>
 		<Td>
-			<NormalTextTitle title="No record found" />
+			<NormalTextTitle title={title} />
 		</Td>
 	</Tr>
 );

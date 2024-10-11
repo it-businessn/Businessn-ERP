@@ -292,7 +292,7 @@ const calculateTotalAggregatedHours = async (
 ) => {
 	const timesheets = await Timesheet.find({
 		companyName,
-		createdOn: { $gte: startDate, $lte: endDate },
+		clockIn: { $gte: startDate, $lte: endDate },
 		approveStatus: "Approved",
 	}).populate({
 		path: "employeeId",
