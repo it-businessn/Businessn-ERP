@@ -17,7 +17,7 @@ import StepContent from "../step-content";
 import Record from "../step-content/Record";
 
 const PersonalInfo = ({ company, isOnboarding, id, handleNext }) => {
-	const { empId } = useSelectedEmp();
+	const { empId } = useSelectedEmp(LocalStorageService.getItem("empId"));
 	const profileInfo = useEmployeeProfileInfo(company, empId, isOnboarding);
 
 	const setProfileInfo = () =>

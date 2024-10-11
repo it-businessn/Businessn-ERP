@@ -21,7 +21,7 @@ const BankingInfo = ({
 	id,
 	handleClose,
 }) => {
-	const { empId } = useSelectedEmp();
+	const { empId } = useSelectedEmp(LocalStorageService.getItem("empId"));
 	const onboardingEmpId = LocalStorageService.getItem("onboardingEmpId");
 	const bankingInfo = useEmployeeBankingInfo(company, empId, isOnboarding);
 	const setBankingInfo = () =>

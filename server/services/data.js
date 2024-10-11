@@ -111,6 +111,46 @@ const getPayType = (workedDate) => {
 	return "Regular Pay";
 };
 
+const calcTotalHours = (data) => {
+	if (!(data?.clockIn && data?.clockOut)) {
+		return;
+	}
+	const clockIn = momentTime(data?.clockIn);
+	const clockOut = momentTime(data?.clockOut);
+	const hasStartBreak = data?.startBreaks?.length;
+	const hasEndBreak = data?.endBreaks?.length;
+
+	const break1Start = hasStartBreak && momentTime(data?.startBreaks[0]);
+	const break1End = hasEndBreak && momentTime(data?.endBreaks[0]);
+
+	const break2Start = hasStartBreak > 1 && momentTime(data?.startBreaks[1]);
+	const break2End = hasEndBreak > 1 && momentTime(data?.startBreaks[1]);
+
+	const break3Start = hasStartBreak > 2 && momentTime(data?.startBreaks[2]);
+	const break3End = hasEndBreak > 2 && momentTime(data?.startBreaks[2]);
+
+	const break1Duration = momentDuration(break1Start, break1End);
+	const break2Duration = momentDuration(break2Start, break2End);
+	const break3Duration = momentDuration(break3Start, break3End);
+
+	const totalBreakHours =
+		hasStartBreak && hasEndBreak
+			? break1Duration.add(break2Duration).add(break3Duration)
+			: 0;
+
+	const totalClockInToOut = momentDuration(clockIn, clockOut);
+	const totalWorkingTime = totalClockInToOut.subtract(totalBreakHours);
+	const hours = Math.floor(totalWorkingTime.asHours());
+	const minutes = Math.floor(totalWorkingTime.minutes());
+
+	return {
+		totalBreakHours: totalBreakHours
+			? Math.floor(totalBreakHours.asHours())
+			: 0,
+		totalWorkedHours: `${hours}:${minutes}`,
+	};
+};
+
 module.exports = {
 	ADMIN_PERMISSION,
 	EMPLOYEE_PERMISSION,
@@ -123,4 +163,5 @@ module.exports = {
 	isSameDate,
 	STAT_HOLIDAYS,
 	getPayType,
+	calcTotalHours,
 };

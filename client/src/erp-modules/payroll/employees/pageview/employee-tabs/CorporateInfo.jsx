@@ -24,7 +24,7 @@ const CorporateInfo = ({
 	handleNext,
 	handlePrev,
 }) => {
-	const { empId } = useSelectedEmp();
+	const { empId } = useSelectedEmp(LocalStorageService.getItem("empId"));
 	const employmentInfo = useEmployeeEmploymentInfo(
 		company,
 		empId,

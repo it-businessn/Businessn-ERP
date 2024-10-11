@@ -69,7 +69,10 @@ const Timesheet = ({
 
 			if (formData.recordId) {
 				await TimesheetService.updateTimesheet(formData, formData.recordId);
-				setFormData(initialFormData);
+				setFormData((prev) => ({
+					...prev,
+					approve: undefined,
+				}));
 				setRefresh((prev) => !prev);
 			}
 		} catch (error) {}
@@ -230,10 +233,6 @@ const Timesheet = ({
 
 						const isStatPay = payType === "Statutory Pay";
 
-						const hhMMFormattedTime = `${(param_hours_worked / 60).toFixed(
-							0,
-						)}:${param_hours_worked % 60}`;
-
 						const isDisabled = !clockIn || !clockOut;
 
 						return (
@@ -297,7 +296,7 @@ const Timesheet = ({
 											setFormData({
 												param_hours,
 												recordId: _id,
-												clockOut: setUTCDate(clockOut, e.target.value),
+												clockOut: setUTCDate(clockIn, e.target.value),
 											});
 										}}
 										required
@@ -312,7 +311,7 @@ const Timesheet = ({
 										isStatPay,
 									)}
 								</Td>
-								<Td py={0}>{totalWorkedHours}</Td>
+								<Td py={0}>{param_hours_worked ?? 0}</Td>
 								<Td py={0}>
 									<HStack spacing={0}>
 										<IconButton
@@ -322,14 +321,11 @@ const Timesheet = ({
 											variant={"solid"}
 											color={"var(--status_button_border)"}
 											onClick={() => {
-												setFormData({
-													clockIn,
-													clockOut,
-													totalBreakHours,
-													param_hours,
+												setFormData((prev) => ({
+													...prev,
 													recordId: _id,
 													approve: true,
-												});
+												}));
 											}}
 										/>
 										<IconButton
@@ -339,14 +335,11 @@ const Timesheet = ({
 											icon={<IoClose />}
 											variant={"solid"}
 											onClick={() => {
-												setFormData({
-													clockIn,
-													clockOut,
-													totalBreakHours,
-													param_hours,
+												setFormData((prev) => ({
+													...prev,
 													recordId: _id,
 													approve: false,
-												});
+												}));
 											}}
 										/>
 									</HStack>

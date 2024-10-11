@@ -1,8 +1,11 @@
 const EmployeePayInfo = require("../models/EmployeePayInfo");
 const Timesheet = require("../models/Timesheet");
 const moment = require("moment");
-const { calcTotalBreakHours } = require("./timecardController");
-const { STAT_HOLIDAYS, getUTCTime } = require("../services/data");
+const {
+	STAT_HOLIDAYS,
+	getUTCTime,
+	calcTotalHours,
+} = require("../services/data");
 
 // const currentTime = currentDate.format("HH:mm:ss");
 const currentDate = moment().add(1, "days");
@@ -19,6 +22,7 @@ const findByRecordTimesheets = async (record) => {
 			clockIn: -1,
 			// "employeeId.fullName": 1,
 		});
+
 	return result;
 };
 
@@ -74,12 +78,6 @@ const getTimesheets = async (req, res) => {
 		const payInfo = await getTimesheetResult(companyName);
 
 		const result = mapTimesheet(payInfo, timesheets);
-
-		result.map((_) => {
-			_.totalBreakHours = calcTotalBreakHours(_)?.totalBreakHours;
-			_.totalWorkedHours = calcTotalBreakHours(_)?.totalWorkedHours;
-			return _;
-		});
 
 		res.status(200).json(result);
 	} catch (error) {
@@ -274,7 +272,20 @@ const updateTimesheet = async (req, res) => {
 		req.body;
 
 	try {
-		const timesheet = await Timesheet.findById(id);
+		const updatedData = {
+			clockIn,
+			clockOut,
+			[param_hours]: Math.floor(
+				moment.duration(calcTotalHours(req.body)?.totalWorkedHours).asHours(),
+			),
+			approveStatus: approve
+				? "Approved"
+				: approve === false
+				? "Rejected"
+				: "Pending",
+		};
+
+		const timesheet = await Timesheet.findByIdAndUpdate(id, updatedData);
 		// const totalWorkedHours = getDateDiffHours(startTime, endTime, totalBreaks);
 		// if (totalWorkedHours > 480) {
 		// 	const hoursToAdd = 8;
@@ -302,15 +313,6 @@ const updateTimesheet = async (req, res) => {
 		// 	}
 		// }
 
-		timesheet.clockIn = clockIn;
-		timesheet.clockOut = clockOut;
-		// timesheet.totalBreaks = totalBreaks;
-		timesheet.approveStatus = approve
-			? "Approved"
-			: approve === false
-			? "Rejected"
-			: "Pending";
-		await timesheet.save();
 		res.status(201).json(timesheet);
 	} catch (error) {
 		res.status(400).json({ message: error.message });

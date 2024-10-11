@@ -22,7 +22,7 @@ const GovernmentContribution = ({
 	handlePrev,
 	id,
 }) => {
-	const { empId } = useSelectedEmp();
+	const { empId } = useSelectedEmp(LocalStorageService.getItem("empId"));
 	const onboardingEmpId = LocalStorageService.getItem("onboardingEmpId");
 	const governmentInfo = useEmployeeGovernment(company, empId, isOnboarding);
 	const setGovernmentInfo = () =>

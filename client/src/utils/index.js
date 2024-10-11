@@ -109,7 +109,7 @@ export const getTimeCardFormat = (timestamp, notDevice, timeSheet) => {
 };
 
 export const setUTCDate = (date, newDate) => {
-	const utcDate = moment.utc(date);
+	const utcDate = date ? moment.utc(date) : moment.utc();
 	let [hours, minutes] = newDate.split(":");
 	utcDate.set({
 		hour: parseInt(hours),

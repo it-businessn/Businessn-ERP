@@ -16,7 +16,7 @@ import StepContent from "../step-content";
 import Record from "../step-content/Record";
 
 const PayInfo = ({ company, isOnboarding, id, handleNext, handlePrev }) => {
-	const { empId } = useSelectedEmp();
+	const { empId } = useSelectedEmp(LocalStorageService.getItem("empId"));
 	const payInfo = useEmployeePayInfo(
 		company,
 		false,

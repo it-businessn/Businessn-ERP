@@ -7,10 +7,8 @@ const {
 	getUTCTime,
 	startOfDay,
 	endOfDay,
-	momentTime,
-	momentDuration,
-	isSameDate,
 	getPayType,
+	calcTotalHours,
 } = require("../services/data");
 
 const getTimecard = async (req, res) => {
@@ -18,8 +16,8 @@ const getTimecard = async (req, res) => {
 		const result = await Timecard.find({}).sort({ clockIn: -1 });
 
 		result.map((_) => {
-			_.totalBreakHours = calcTotalBreakHours(_)?.totalBreakHours;
-			_.totalWorkedHours = calcTotalBreakHours(_)?.totalWorkedHours;
+			_.totalBreakHours = calcTotalHours(_)?.totalBreakHours;
+			_.totalWorkedHours = calcTotalHours(_)?.totalWorkedHours;
 			return _;
 		});
 
@@ -38,78 +36,6 @@ const createTimecard = async (req, res) => {
 		// 		timestamp: "2024-10-08 17:44:56",
 		// 		status: "4",
 		// 		punch: "0",
-		// 	},
-		// 	{
-		// 		user_id: "7746",
-		// 		timestamp: "2024-10-08 17:46:40",
-		// 		status: "4",
-		// 		punch: "2",
-		// 	},
-		// 	{
-		// 		user_id: "7746",
-		// 		timestamp: "2024-10-08 17:48:28",
-		// 		status: "4",
-		// 		punch: "3",
-		// 	},
-		// 	{
-		// 		user_id: "7746",
-		// 		timestamp: "2024-10-08 17:59:24",
-		// 		status: "4",
-		// 		punch: "0",
-		// 	},
-		// 	{
-		// 		user_id: "7746",
-		// 		timestamp: "2024-10-08 18:00:38",
-		// 		status: "4",
-		// 		punch: "2",
-		// 	},
-		// 	{
-		// 		user_id: "7746",
-		// 		timestamp: "2024-10-08 18:02:29",
-		// 		status: "4",
-		// 		punch: "3",
-		// 	},
-		// 	{
-		// 		user_id: "7746",
-		// 		timestamp: "2024-10-08 18:04:09",
-		// 		status: "4",
-		// 		punch: "1",
-		// 	},
-		// 	{
-		// 		user_id: "7746",
-		// 		timestamp: "2024-10-08 18:06:35",
-		// 		status: "4",
-		// 		punch: "0",
-		// 	},
-		// 	{
-		// 		user_id: "7746",
-		// 		timestamp: "2024-10-08 18:08:09",
-		// 		status: "4",
-		// 		punch: "2",
-		// 	},
-		// 	{
-		// 		user_id: "7746",
-		// 		timestamp: "2024-10-08 18:11:01",
-		// 		status: "4",
-		// 		punch: "3",
-		// 	},
-		// 	{
-		// 		user_id: "7746",
-		// 		timestamp: "2024-10-08 18:12:56",
-		// 		status: "4",
-		// 		punch: "1",
-		// 	},
-		// 	{
-		// 		user_id: "7746",
-		// 		timestamp: "2024-10-09 12:12:56",
-		// 		status: "4",
-		// 		punch: "0",
-		// 	},
-		// 	{
-		// 		user_id: "7746",
-		// 		timestamp: "2024-10-09 13:00:56",
-		// 		status: "4",
-		// 		punch: "1",
 		// 	},
 		// ];
 
@@ -245,15 +171,19 @@ const updateTimecardEntry = async (entry) => {
 		clockIn: entry.clockIn,
 	});
 
-	const updatedData = {
-		startBreaks: entry.clockIn,
-		endBreaks: entry.endBreaks,
-		clockOut: entry.clockOut,
-	};
-
-	if (timesheetRecord) {
-		await Timesheet.findByIdAndUpdate(timesheetRecord._id, updatedData);
+	if (!timesheetRecord) {
+		return;
 	}
+	if (!timesheetRecord?.startBreaks?.length) {
+		timesheetRecord.startBreaks = entry.startBreaks;
+	}
+	if (!timesheetRecord?.endBreaks?.length) {
+		timesheetRecord.endBreaks = entry.endBreaks;
+	}
+	if (!timesheetRecord?.clockOut) {
+		timesheetRecord.clockOut = entry.clockOut;
+	}
+	await timesheetRecord.save();
 };
 
 const findEmployee = async (timeManagementBadgeID) =>
@@ -269,50 +199,7 @@ const findPunchEntry = async (entry) => await TimecardRaw.findOne(entry);
 
 const addPunchEntry = async (entry) => await TimecardRaw.create(entry);
 
-const calcTotalBreakHours = (data) => {
-	if (!(data?.clockIn && data?.clockOut)) {
-		return;
-	}
-	const clockIn = momentTime(data?.clockIn);
-	const clockOut = momentTime(data?.clockOut);
-
-	const break1Start =
-		data?.startBreaks.length && momentTime(data?.startBreaks[0]);
-	const break1End = data?.endBreaks.length && momentTime(data?.endBreaks[0]);
-
-	const break2Start =
-		data?.startBreaks.length > 1 && momentTime(data?.startBreaks[1]);
-	const break2End =
-		data?.endBreaks.length > 1 && momentTime(data?.startBreaks[1]);
-
-	const break3Start =
-		data?.startBreaks.length > 2 && momentTime(data?.startBreaks[2]);
-	const break3End =
-		data?.endBreaks.length > 2 && momentTime(data?.startBreaks[2]);
-
-	const break1Duration = momentDuration(break1Start, break1End);
-	const break2Duration = momentDuration(break2Start, break2End);
-	const break3Duration = momentDuration(break3Start, break3End);
-
-	const totalBreakHours =
-		data?.startBreaks.length && data?.endBreaks.length
-			? break1Duration.add(break2Duration).add(break3Duration)
-			: 0;
-
-	const totalClockInToOut = momentDuration(clockIn, clockOut);
-	const totalWorkingTime = totalClockInToOut.subtract(totalBreakHours);
-	const hours = Math.floor(totalWorkingTime.asHours());
-	const minutes = totalWorkingTime.minutes();
-	return {
-		totalBreakHours: totalBreakHours
-			? Math.floor(totalBreakHours.asHours())
-			: 0,
-		totalWorkedHours: `${hours}:${minutes}`,
-	};
-};
-
 module.exports = {
 	getTimecard,
 	createTimecard,
-	calcTotalBreakHours,
 };
