@@ -73,7 +73,7 @@ const getTimesheets = async (req, res) => {
 	try {
 		const timesheets = await findByRecordTimesheets({
 			companyName,
-			createdOn: { $lte: currentDate },
+			clockIn: { $lte: currentDate },
 		});
 		const payInfo = await getTimesheetResult(companyName);
 
@@ -91,7 +91,7 @@ const getFilteredTimesheets = async (req, res) => {
 	try {
 		let timesheets = await findByRecordTimesheets({
 			companyName,
-			createdOn: { $lte: filteredData?.endDate, $gte: filteredData?.startDate },
+			clockIn: { $lte: filteredData?.endDate, $gte: filteredData?.startDate },
 		});
 
 		const payInfo = await getTimesheetResult(companyName);
@@ -124,7 +124,7 @@ const getTimesheet = async (req, res) => {
 		const timesheets = await findByRecordTimesheets({
 			companyName,
 			employeeId,
-			createdOn: { $lte: currentDate },
+			clockIn: { $lte: currentDate },
 		});
 		res.status(200).json(timesheets);
 	} catch (error) {
@@ -165,7 +165,14 @@ const addStatHolidayDefaultTimesheet = async (employeeId, companyName) => {
 			createdOn: moment(date),
 			clockIn: startTime,
 			clockOut: endTime,
-			statDayHours: getDateDiffHours(startTime, endTime, "0"),
+			statDayHours: Math.floor(
+				moment
+					.duration(
+						calcTotalHours({ clockIn: startTime, clockOut: endTime })
+							?.totalWorkedHours,
+					)
+					.asHours(),
+			),
 		};
 
 		await addTimesheetEntry(newStatTimeSheetRecord);
@@ -176,7 +183,8 @@ const addStatHolidayDefaultTimesheet = async (employeeId, companyName) => {
 const addTimesheetEntry = async (record) => await Timesheet.create(record);
 
 const createTimesheet = async (req, res) => {
-	const { company, type, createdOn, employeeId } = req.body;
+	const { company, type, clockIn, clockOut, employeeId, param_hours } =
+		req.body;
 	const isStatPay = type === "Statutory Pay";
 
 	try {
@@ -195,9 +203,16 @@ const createTimesheet = async (req, res) => {
 		}
 		const newEntry = {
 			employeeId,
+			clockIn,
+			clockOut,
+			// clockOut: getUTCTime(clockOut),
+			[param_hours]: Math.floor(
+				moment
+					.duration(calcTotalHours({ clockIn, clockOut })?.totalWorkedHours)
+					.asHours(),
+			),
 			companyName: company,
 			payType: type,
-			clockIn: getUTCTime(createdOn),
 		};
 
 		const newTimesheet = await addTimesheetEntry(newEntry);

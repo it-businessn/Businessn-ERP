@@ -54,7 +54,7 @@ const PayrollActionSection = ({
 
 	const steps = [
 		{
-			title: "Approvals",
+			title: "Timesheet Approvals",
 			description: approvalPercent,
 			linkTo: {
 				title: "Go to timesheet",
