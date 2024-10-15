@@ -85,13 +85,13 @@ const PayInfo = ({ company, isOnboarding, id, handleNext, handlePrev }) => {
 			),
 		},
 		{
-			title: "Accruals",
+			title: "Vacation",
 			content: (
 				<Record
 					handleConfirm={() => ""}
 					formData={formData}
 					setFormData={setFormData}
-					title="Accruals"
+					title="Vacation"
 					config={EMP_PAY_INFO_ACCRUALS_CONFIG}
 					isLoading={isLoading}
 					handleSubmit={handleSubmit}

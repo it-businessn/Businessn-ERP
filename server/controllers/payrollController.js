@@ -14,7 +14,7 @@ const {
 	getSumHours,
 } = require("../services/payrollService");
 const { findGroupEmployees } = require("./setUpController");
-const { findCompany, findEmployee } = require("./userController");
+const { getPayrollActiveEmployees } = require("./userController");
 
 //update roles-
 
@@ -349,14 +349,6 @@ const getEmployeeId = async (empList) => {
 		list.push(employee);
 	}
 	return list;
-};
-
-const getPayrollActiveEmployees = async (companyName) => {
-	const existingCompany = await findCompany("name", companyName);
-	return await findEmployee({
-		payrollStatus: "Payroll Active",
-		companyId: existingCompany._id,
-	});
 };
 
 const findEmpPayStubDetail = async (empId, payPeriodPayDate, companyName) =>
@@ -1075,7 +1067,6 @@ module.exports = {
 	addAlertsAndViolations,
 	getAlertsAndViolationsInfo,
 	deleteAlerts,
-	getPayrollActiveEmployees,
 	updateAmountAllocation,
 	getEmployeeId,
 	addPayStub,

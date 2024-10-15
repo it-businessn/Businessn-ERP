@@ -20,6 +20,7 @@ const employeePayInfoSchema = new mongoose.Schema({
 	extendedHealthER: String,
 	unionDues: String,
 	typeOfEarning: { type: String, default: "Hourly" },
+	typeOfVacationTreatment: { type: String, default: "Accrued" },
 	createdOn: { type: Date, default: Date.now },
 	updatedOn: { type: Date, default: Date.now },
 });

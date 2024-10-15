@@ -24,7 +24,7 @@ const SelectFormControl = ({
 				placeholder={placeholder}
 			>
 				{options?.map((_) => (
-					<option key={_?.value ?? _[name]} value={_[valueParam]}>
+					<option key={_?.value ?? _[valueParam]} value={_[valueParam]}>
 						{_?.name || _[name]}
 					</option>
 				))}

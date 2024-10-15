@@ -19,7 +19,7 @@ const AddEmployeeModal = ({
 	const [isSubmitting, setIsSubmitting] = useState(false);
 
 	const [selectedEmp, setSelectedEmp] = useState(selectedEmployee);
-	const { employees } = useEmployees(false, company);
+	const { employees } = useEmployees(false, company, false, true);
 	const [openMenu, setOpenMenu] = useState(false);
 	const [selectedOptions, setSelectedOptions] = useState(selectedEmp ?? []);
 

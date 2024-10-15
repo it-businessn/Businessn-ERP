@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import PayrollService from "services/PayrollService";
-import { getDefaultDate, getMomentDate, sortRecordsByDate } from "utils";
+import { sortRecordsByDate } from "utils";
 
 const usePaygroup = (company, refresh) => {
 	const [payGroups, setPayGroups] = useState(null);
@@ -9,20 +9,22 @@ const usePaygroup = (company, refresh) => {
 	const [closestRecord, setClosestRecord] = useState(null);
 	const [closestRecordIndex, setClosestRecordIndex] = useState(0);
 
-	const today = getDefaultDate(new Date());
+	// const today = getDefaultDate(new Date());
 
 	const getClosestScheduleByProcessingDate = (schedules) => {
-		const closestPayPeriod = schedules
-			?.filter(({ isProcessed }) => !isProcessed)
-			?.reduce((closest, record) => {
-				const recordEndDate = getMomentDate(record.payPeriodProcessingDate);
-				const closestEndDate = getMomentDate(closest.payPeriodProcessingDate);
-				return Math.abs(recordEndDate.diff(today)) <
-					Math.abs(closestEndDate.diff(today))
-					? record
-					: closest;
-			}, schedules[0]);
-		// const closestPayPeriod = schedules[3];
+		// const closestPayPeriod = schedules
+		// 	?.filter(({ isProcessed }) => !isProcessed)
+		// 	?.reduce((closest, record) => {
+		// 		const recordEndDate = getMomentDate(record.payPeriodProcessingDate);
+		// 		const closestEndDate = getMomentDate(closest.payPeriodProcessingDate);
+		// 		return Math.abs(recordEndDate.diff(today)) <
+		// 			Math.abs(closestEndDate.diff(today))
+		// 			? record
+		// 			: closest;
+		// 	}, schedules[0]);
+		const closestPayPeriod = schedules?.filter(
+			({ isProcessed }) => !isProcessed,
+		)[0];
 
 		setClosestRecord(closestPayPeriod);
 

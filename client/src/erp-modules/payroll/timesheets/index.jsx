@@ -36,7 +36,7 @@ const Timesheets = () => {
 	const [refresh, setRefresh] = useState(false);
 	const [dataRefresh, setDataRefresh] = useState(false);
 	const [filter, setFilter] = useState(null);
-	const { employees } = useEmployees(false, company);
+	const { employees } = useEmployees(false, company, false, true);
 	const { departments, roles } = useSignup(false, company);
 
 	const [date, setDate] = useState(getDefaultDate);

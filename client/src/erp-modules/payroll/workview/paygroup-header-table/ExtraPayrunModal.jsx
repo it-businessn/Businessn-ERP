@@ -40,7 +40,7 @@ const ExtraPayrunModal = ({
 	);
 
 	const [selectedEmp, setSelectedEmp] = useState([]);
-	const { employees } = useEmployees(false, company);
+	const { employees } = useEmployees(false, company, false, true);
 	const [openMenu, setOpenMenu] = useState(false);
 	const [selectedOptions, setSelectedOptions] = useState([]);
 

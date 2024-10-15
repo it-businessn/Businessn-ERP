@@ -1,13 +1,13 @@
-import { Stack, useDisclosure } from "@chakra-ui/react";
+import { HStack, Stack, useDisclosure } from "@chakra-ui/react";
 import ActionButtonGroup from "components/ui/form/ActionButtonGroup";
 import DateTimeFormControl from "components/ui/form/DateTimeFormControl";
 import SelectFormControl from "components/ui/form/SelectFormControl";
 import ModalLayout from "components/ui/modal/ModalLayout";
 import useEmployees from "hooks/useEmployees";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import TimesheetService from "services/TimesheetService";
-import { getDefaultDate } from "utils";
-import { PAY_TYPES } from "./data";
+import { getDefaultDate, getTimeFormat, setUTCDate } from "utils";
+import { getParamKey, PAY_TYPES } from "./data";
 
 const ExtraTimeEntryModal = ({
 	showAddEntry,
@@ -22,15 +22,25 @@ const ExtraTimeEntryModal = ({
 		createdOn: new Date(),
 		company,
 		employeeId: "",
+		clockIn: null,
+		clockOut: null,
+		param_hours: "",
 	};
 	const [formData, setFormData] = useState(initialFormData);
-	const { employees } = useEmployees(false, company);
+	const { employees } = useEmployees(false, company, false, true);
 
 	const handleChange = (e) => {
 		const { name, value } = e.target;
 		setFormData((prevData) => ({ ...prevData, [name]: value }));
 	};
 	const { onClose } = useDisclosure();
+
+	useEffect(() => {
+		if (formData.type !== "") {
+			const { param_hours } = getParamKey(formData.type);
+			setFormData((prevData) => ({ ...prevData, param_hours: param_hours }));
+		}
+	}, [formData.type]);
 
 	const handleClose = () => {
 		onClose();
@@ -91,6 +101,34 @@ const ExtraTimeEntryModal = ({
 					handleChange={handleChange}
 					required
 				/>
+				<HStack>
+					<DateTimeFormControl
+						timeLabel="Start Time"
+						valueText2={formData.clockIn ? getTimeFormat(formData.clockIn) : ""}
+						name2="clockIn"
+						handleChange={(e) => {
+							setFormData((prevData) => ({
+								...prevData,
+								clockIn: setUTCDate(formData.createdOn, e.target.value),
+							}));
+						}}
+						required
+					/>
+					<DateTimeFormControl
+						timeLabel="End Time"
+						valueText2={
+							formData.clockOut ? getTimeFormat(formData.clockOut) : ""
+						}
+						name2="clockOut"
+						required
+						handleChange={(e) => {
+							setFormData((prevData) => ({
+								...prevData,
+								clockOut: setUTCDate(formData.createdOn, e.target.value),
+							}));
+						}}
+					/>
+				</HStack>
 				<ActionButtonGroup
 					submitBtnName={"Add"}
 					isDisabled={formData.fullName === ""}

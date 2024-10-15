@@ -8,7 +8,7 @@ import useEmployees from "hooks/useEmployees";
 import usePaygroup from "hooks/usePaygroup";
 import { useSignup } from "hooks/useSignup";
 import PageLayout from "layouts/PageLayout";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import LocalStorageService from "services/LocalStorageService";
 import EmpProfileSearch from "../EmpProfileSearch";
@@ -22,10 +22,23 @@ const EmployeeListView = () => {
 	const loggedInUser = LocalStorageService.getItem("user");
 	const [employee, setEmployee] = useState(loggedInUser);
 	const [userId, setUserId] = useState(id ?? loggedInUser._id);
+
+	const [formData, setFormData] = useState({
+		isPayrollActive: true,
+		isPayrollInactive: false,
+	});
+
 	const [isRefresh, setIsRefresh] = useState(false);
+
+	const [isPayrollActive, setIsPayrollActive] = useState(
+		formData.isPayrollActive && !formData.isPayrollInactive,
+	);
+
 	const { employees, filteredEmployees, setFilteredEmployees } = useEmployees(
 		isRefresh,
 		company,
+		false,
+		isPayrollActive,
 	);
 	const [showEmpFilter, setShowEmpFilter] = useState(false);
 	const [showDeptFilter, setShowDeptFilter] = useState(false);
@@ -48,6 +61,11 @@ const EmployeeListView = () => {
 			setShowTerminate(true);
 		}
 	};
+
+	useEffect(() => {
+		setIsPayrollActive(!formData.isPayrollInactive);
+	}, [formData.isPayrollInactive]);
+
 	return (
 		<PageLayout
 			width={"35%"}
@@ -87,17 +105,27 @@ const EmployeeListView = () => {
 						<HStack spacing={2}>
 							<Checkbox
 								colorScheme={"facebook"}
-								// isChecked={hasChecklist}
-								// onChange={() => setHasChecklist(!hasChecklist)}
+								isChecked={formData.isPayrollActive}
+								onChange={(e) =>
+									setFormData((prevData) => ({
+										...prevData,
+										isPayrollActive: e.target.checked,
+									}))
+								}
 							>
 								Active
 							</Checkbox>
 							<Checkbox
 								colorScheme={"facebook"}
-								// isChecked={hasChecklist}
-								// onChange={() => setHasChecklist(!hasChecklist)}
+								isChecked={formData.isPayrollInactive}
+								onChange={(e) =>
+									setFormData((prevData) => ({
+										...prevData,
+										isPayrollInactive: e.target.checked,
+									}))
+								}
 							>
-								Terminated
+								Inactive
 							</Checkbox>
 						</HStack>
 						<HStack>
@@ -141,7 +169,7 @@ const EmployeeListView = () => {
 					]}
 				/>
 			</SimpleGrid>
-			<EmployeeList />
+			<EmployeeList employees={employees} />
 			{showOnboard && (
 				<OnboardEmpModal
 					title={"Onboard employee"}

@@ -64,8 +64,16 @@ export const EMP_PAY_INFO_DEDUCTION_CONFIG = [
 
 export const EMP_PAY_INFO_ACCRUALS_CONFIG = [
 	{
-		type: "sfsgdsgdsgdsg22",
-		params: [{ name: "Vacation (%)", param_key: "vacationPay" }],
+		type: "",
+		params: [
+			{
+				name: "Vacation treatment",
+				param_key: "typeOfVacationTreatment",
+				control: "radio",
+				options: ["Payout", "Accrued"],
+			},
+			{ name: "Vacation (%)", param_key: "vacationPay" },
+		],
 	},
 ];
 
@@ -90,5 +98,6 @@ export const getInitialPayInfo = (empId, companyName) => {
 		unionDues: 0,
 		vacationPay: 0,
 		typeOfEarning: "Hourly",
+		typeOfVacationTreatment: "Accrued",
 	};
 };

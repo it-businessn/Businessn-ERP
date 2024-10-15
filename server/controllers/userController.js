@@ -8,6 +8,14 @@ const UserActivity = require("../models/UserActivity");
 const { isRoleManager } = require("../services/data");
 const { setInitialPermissions } = require("./appController");
 
+const getPayrollActiveEmployees = async (companyName) => {
+	const existingCompany = await findCompany("name", companyName);
+	return await findEmployee({
+		payrollStatus: "Payroll Active",
+		companyId: existingCompany._id,
+	});
+};
+
 const findEmployee = async (data) =>
 	await Employee.find(data).select([
 		"fullName",
@@ -47,6 +55,16 @@ const getUserActivity = () => async (req, res) => {
 				$lt: today,
 			},
 		});
+		res.status(200).json(result);
+	} catch (error) {
+		res.status(404).json({ error: error.message });
+	}
+};
+
+const getPayrollActiveCompanyEmployees = () => async (req, res) => {
+	const { companyName } = req.params;
+	try {
+		const result = await getPayrollActiveEmployees(companyName);
 		res.status(200).json(result);
 	} catch (error) {
 		res.status(404).json({ error: error.message });
@@ -258,4 +276,6 @@ module.exports = {
 	updateUserAssignedLeads,
 	findCompany,
 	findEmployee,
+	getPayrollActiveCompanyEmployees,
+	getPayrollActiveEmployees,
 };
