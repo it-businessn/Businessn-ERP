@@ -4,7 +4,9 @@ import TextTitle from "components/ui/text/TextTitle";
 import { useState } from "react";
 import { isExtraPay } from "utils";
 import AmountAllocation from "./AmountAllocation";
+import EmployeeContribution from "./EmployeeContribution";
 import EmployeeDetails from "./EmployeeDetails";
+import EmployerContribution from "./EmployerContribution";
 import HourlyAllocation from "./HourlyAllocation";
 
 const PaygroupDetailTable = ({
@@ -46,6 +48,28 @@ const PaygroupDetailTable = ({
 			type: "Amount Allocation",
 			name: (
 				<AmountAllocation
+					company={company}
+					closestRecord={closestRecord}
+					groupId={groupId}
+				/>
+			),
+		},
+		{
+			id: 3,
+			type: "Employee Contribution",
+			name: (
+				<EmployeeContribution
+					company={company}
+					closestRecord={closestRecord}
+					groupId={groupId}
+				/>
+			),
+		},
+		{
+			id: 4,
+			type: "Employer Contribution",
+			name: (
+				<EmployerContribution
 					company={company}
 					closestRecord={closestRecord}
 					groupId={groupId}
