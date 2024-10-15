@@ -4,20 +4,11 @@ import EmptyRowRecord from "components/ui/EmptyRowRecord";
 import NormalTextTitle from "components/ui/NormalTextTitle";
 import TableLayout from "components/ui/table/TableLayout";
 import TextTitle from "components/ui/text/TextTitle";
-import useCompany from "hooks/useCompany";
-import useEmployees from "hooks/useEmployees";
-import { useState } from "react";
 import { HiOutlineDotsHorizontal } from "react-icons/hi";
 import { useNavigate } from "react-router-dom";
 import { ROUTE_PATH } from "routes";
 
-const EmployeeList = () => {
-	const [isRefresh, setIsRefresh] = useState(false);
-	const { company } = useCompany();
-	const { employees, filteredEmployees, setFilteredEmployees } = useEmployees(
-		isRefresh,
-		company,
-	);
+const EmployeeList = ({ employees }) => {
 	const empPath = `${ROUTE_PATH.PAYROLL}${ROUTE_PATH.EMPLOYEES}`;
 	const navigate = useNavigate();
 
@@ -51,6 +42,8 @@ const EmployeeList = () => {
 									<HStack spacing={8} cursor={"pointer"}>
 										<Avatar name={fullName} size={"xs"} src="" boxSize="6" />
 										<TextTitle
+											mt={2}
+											mb={2}
 											color={"var(--primary_button_bg)"}
 											size="md"
 											onClick={() => handleClick(_id)}

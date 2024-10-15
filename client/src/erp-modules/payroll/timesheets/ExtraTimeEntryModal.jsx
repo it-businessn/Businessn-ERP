@@ -27,7 +27,7 @@ const ExtraTimeEntryModal = ({
 		param_hours: "",
 	};
 	const [formData, setFormData] = useState(initialFormData);
-	const { employees } = useEmployees(false, company);
+	const { employees } = useEmployees(false, company, false, true);
 
 	const handleChange = (e) => {
 		const { name, value } = e.target;

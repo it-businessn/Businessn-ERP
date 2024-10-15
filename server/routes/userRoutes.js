@@ -18,6 +18,11 @@ router.get(
 	userController.getAllGroupMembers(),
 );
 
+router.get(
+	"/payroll-active/:companyName",
+	userController.getPayrollActiveCompanyEmployees(),
+);
+
 router.get("/:companyName", userController.getCompanyEmployees());
 
 router.put("/:userId", userController.updateUser());
