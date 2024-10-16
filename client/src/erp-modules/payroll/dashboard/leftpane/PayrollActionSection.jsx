@@ -3,6 +3,7 @@ import NormalTextTitle from "components/ui/NormalTextTitle";
 import TextTitle from "components/ui/text/TextTitle";
 import VerticalStepper from "components/ui/VerticalStepper";
 import useEmployeeAlertsInfo from "hooks/useEmployeeAlertsInfo";
+import useEmployees from "hooks/useEmployees";
 import useTimesheet from "hooks/useTimesheet";
 import { useEffect, useState } from "react";
 import { ROUTE_PATH } from "routes";
@@ -13,12 +14,14 @@ const PayrollActionSection = ({
 	selectedPayPeriod,
 	handleClick,
 }) => {
+	const { employees } = useEmployees(false, company, false, true);
 	const [approvalPercent, setApprovalPercent] = useState(0);
 	const [violationPercent, setViolationPercent] = useState(100);
 	const [reviewPercent, setReviewPercent] = useState(null);
 	const [submitPercent, setSubmitPercent] = useState(null);
 
 	const [currentStep, setCurrentStep] = useState(0);
+	const [progressPercent, setProgressPercent] = useState(0);
 
 	const timesheets = useTimesheet(company, null, null, filter);
 
@@ -32,12 +35,11 @@ const PayrollActionSection = ({
 		const rejectedTimesheet = timesheets.filter(
 			(_) => _.approveStatus === "Rejected",
 		).length;
-		const approvedPercent = (
-			((approvedTimesheet + rejectedTimesheet) / timesheets.length) *
-			100
-		).toFixed(0);
 
-		setApprovalPercent(approvedPercent);
+		const calcApprovedPercent =
+			((approvedTimesheet + rejectedTimesheet) / timesheets.length) * 100;
+
+		setApprovalPercent(calcApprovedPercent);
 	}, [timesheets]);
 
 	const alertsReviewData = useEmployeeAlertsInfo(
@@ -52,6 +54,11 @@ const PayrollActionSection = ({
 		}
 	}, [alertsReviewData]);
 
+	useEffect(() => {
+		const avgPercent = (approvalPercent + violationPercent) / 2;
+		setProgressPercent(avgPercent);
+	}, [approvalPercent, violationPercent]);
+
 	const steps = [
 		{
 			title: "Timesheet Approvals",
@@ -63,7 +70,7 @@ const PayrollActionSection = ({
 		},
 		{
 			title: "Outstanding Violations",
-			description: 0,
+			description: violationPercent,
 			linkTo: {
 				title: "Address violation",
 				path: `${ROUTE_PATH.PAYROLL}${ROUTE_PATH.PROCESS}`,
@@ -99,10 +106,12 @@ const PayrollActionSection = ({
 			>
 				<VStack>
 					<TextTitle title={"Overview of payroll process"} />
-					<NormalTextTitle title={"Task progress of 200 employees"} />
+					<NormalTextTitle
+						title={`Task progress of ${employees?.length} employees`}
+					/>
 				</VStack>
 				<TextTitle
-					title={"45%"}
+					title={`${progressPercent}%`}
 					align="end"
 					color={"var(--primary_button_bg)"}
 				/>

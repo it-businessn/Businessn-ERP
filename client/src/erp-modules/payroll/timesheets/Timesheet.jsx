@@ -26,8 +26,7 @@ const Timesheet = ({
 			timeInput[0].showPicker();
 		}
 	};
-	// const timesheets = useTimesheet(company, userId, refresh, filter);
-	const timesheets = useTimesheet(company, userId, refresh);
+	const timesheets = useTimesheet(company, userId, refresh, filter);
 	const initialFormData = {
 		clockIn: null,
 		clockOut: null,
