@@ -27,6 +27,16 @@ router.get(
 	payrollController.getGroupedTimesheet,
 );
 
+router.get(
+	"/EEContribution/:companyName/:startDate/:endDate/:payDate/:isExtraRun/:groupId",
+	payrollController.getEEContribution,
+);
+
+router.get(
+	"/ERContribution/:companyName/:startDate/:endDate/:payDate/:isExtraRun/:groupId",
+	payrollController.getERContribution,
+);
+
 router.post("/payGroups", payrollController.addPayGroup);
 
 router.put("/payGroups/:id", payrollController.updatePayGroup);

@@ -48,9 +48,9 @@ const WorkviewTab = ({
 					{!data?.length && <EmptyRowRecord />}
 					{data?.map((row) => (
 						<Tr key={row._id}>
-							{cols.map((col, index) => {
+							{cols.map((col) => {
 								const fieldValue =
-									index === cols.length - 1 ? (
+									col.key === "" ? (
 										col.pair
 									) : col.pair === "obj" ? (
 										col.pair_key === "fullName" ? (
@@ -58,11 +58,14 @@ const WorkviewTab = ({
 										) : (
 											row.empId[col.pair_key]
 										)
+									) : // ) : isHourly ? (
+									// 	`${(row[col.pair] / 60).toFixed(0)}:${row[col.pair] % 60}`
+									col.round ? (
+										row[col.pair]?.toFixed(2)
 									) : (
-										// ) : isHourly ? (
-										// 	`${(row[col.pair] / 60).toFixed(0)}:${row[col.pair] % 60}`
 										row[col.pair]
 									);
+
 								return (
 									<Td
 										p={1}
