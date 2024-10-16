@@ -156,12 +156,12 @@ const login = async (req, res) => {
 		}
 		logUserLoginActivity(user._id);
 
-		// return res.json({ message: "Login successful", user, existingCompanyUser });
+		return res.json({ message: "Login successful", user, existingCompanyUser });
 
-		const match = await comparePassword(password, user.password);
-		return match
-			? res.json({ message: "Login successful", user, existingCompanyUser })
-			: res.status(401).json({ error: "Invalid password" });
+		// const match = await comparePassword(password, user.password);
+		// return match
+		// 	? res.json({ message: "Login successful", user, existingCompanyUser })
+		// 	: res.status(401).json({ error: "Invalid password" });
 	} catch (error) {
 		console.error("Error checking password:", error);
 		return res.status(500).json({ error: "Internal server error" });

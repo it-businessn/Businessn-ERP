@@ -93,6 +93,32 @@ const PayrollService = {
 		);
 	},
 
+	async getEEContribution(
+		company,
+		startDate,
+		endDate,
+		payDate,
+		isExtraRun,
+		groupId,
+	) {
+		return apiService.get(
+			`/payroll/EEContribution/${company}/${startDate}/${endDate}/${payDate}/${isExtraRun}/${groupId}`,
+		);
+	},
+
+	async getERContribution(
+		company,
+		startDate,
+		endDate,
+		payDate,
+		isExtraRun,
+		groupId,
+	) {
+		return apiService.get(
+			`/payroll/ERContribution/${company}/${startDate}/${endDate}/${payDate}/${isExtraRun}/${groupId}`,
+		);
+	},
+
 	async getEmpPayReportDetails(company, empId) {
 		return apiService.get(`/payroll/payDetailsReport/${company}/${empId}`);
 	},

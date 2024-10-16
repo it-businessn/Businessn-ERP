@@ -2,6 +2,7 @@
 const Employee = require("../models/Employee");
 const EmployeeAlertsViolationInfo = require("../models/EmployeeAlertsViolationInfo");
 const EmployeeBankingInfo = require("../models/EmployeeBankingInfo");
+const EmployeeGovernmentInfo = require("../models/EmployeeGovernmentInfo");
 const EmployeePayInfo = require("../models/EmployeePayInfo");
 const EmployeePayStub = require("../models/EmployeePayStub");
 const EmployeeProfileInfo = require("../models/EmployeeProfileInfo");
@@ -13,6 +14,7 @@ const {
 	getSumTotal,
 	getSumHours,
 } = require("../services/payrollService");
+
 const { findGroupEmployees } = require("./setUpController");
 const { getPayrollActiveEmployees } = require("./userController");
 
@@ -82,7 +84,174 @@ const getGroupedTimesheet = async (req, res) => {
 	}
 };
 
-const buildEmpHourlyDetails = (empTimesheetData, employee) => {
+const getEEContribution = async (req, res) => {
+	const { companyName, startDate, endDate, payDate, isExtraRun, groupId } =
+		req.params;
+
+	try {
+		const isExtraPayRun = isExtraRun === "true";
+		const employees =
+			isExtraPayRun && (await findGroupEmployees(groupId, payDate));
+
+		const activeEmployees = isExtraPayRun
+			? await getEmployeeId(employees)
+			: await getPayrollActiveEmployees(companyName);
+
+		const currentPeriodEmployees = isExtraPayRun
+			? null
+			: await calculateTotalAggregatedHours(startDate, endDate, companyName);
+
+		const aggregatedResult = [];
+
+		for (const employee of activeEmployees) {
+			const empPayInfoResult = await findEmployeePayInfo(employee._id);
+			const empGovernmentInfoResult = await findEmployeeGovernmentInfo(
+				employee._id,
+				companyName,
+			);
+			const empTimesheetData = currentPeriodEmployees?.find(
+				(el) => el.empId._id.toString() === employee._id.toString(),
+			);
+			if (empTimesheetData) {
+				const result = buildEmpEEDetails(
+					empTimesheetData,
+					employee,
+					empPayInfoResult,
+					empGovernmentInfoResult,
+				);
+				aggregatedResult.push(result);
+			} else {
+				const result = buildEmpEEDetails(
+					null,
+					employee,
+					empPayInfoResult,
+					empGovernmentInfoResult,
+				);
+				aggregatedResult.push(result);
+			}
+		}
+		res.status(200).json(aggregatedResult);
+	} catch (error) {
+		res.status(404).json({ error: error.message });
+	}
+};
+
+const getERContribution = async (req, res) => {
+	const { companyName, startDate, endDate, payDate, isExtraRun, groupId } =
+		req.params;
+
+	try {
+		const isExtraPayRun = isExtraRun === "true";
+		const employees =
+			isExtraPayRun && (await findGroupEmployees(groupId, payDate));
+
+		const activeEmployees = isExtraPayRun
+			? await getEmployeeId(employees)
+			: await getPayrollActiveEmployees(companyName);
+
+		const currentPeriodEmployees = isExtraPayRun
+			? null
+			: await calculateTotalAggregatedHours(startDate, endDate, companyName);
+
+		const aggregatedResult = [];
+
+		for (const employee of activeEmployees) {
+			const empPayInfoResult = await findEmployeePayInfo(employee._id);
+
+			const empGovernmentInfoResult = await findEmployeeGovernmentInfo(
+				employee._id,
+				companyName,
+			);
+
+			const empTimesheetData = currentPeriodEmployees?.find(
+				(el) => el.empId._id.toString() === employee._id.toString(),
+			);
+			if (empTimesheetData) {
+				const result = buildEmpERDetails(
+					empTimesheetData,
+					employee,
+					empPayInfoResult,
+					empGovernmentInfoResult,
+				);
+				aggregatedResult.push(result);
+			} else {
+				const result = buildEmpERDetails(
+					null,
+					employee,
+					empPayInfoResult,
+					empGovernmentInfoResult,
+				);
+				aggregatedResult.push(result);
+			}
+		}
+		res.status(200).json(aggregatedResult);
+	} catch (error) {
+		res.status(404).json({ error: error.message });
+	}
+};
+
+const buildEmpERDetails = (
+	empTimesheetData,
+	employee,
+	empPayInfoResult,
+	empGovtInfoResult,
+) => {
+	const {
+		employeeId,
+		recordId,
+		fullName,
+		totalRegHoursWorked,
+		totalOvertimeHoursWorked,
+		totalDblOvertimeHoursWorked,
+		totalStatDayHoursWorked,
+		totalStatHours,
+		totalSickHoursWorked,
+		totalVacationHoursWorked,
+	} = getGroupedData(empTimesheetData, employee);
+
+	const {
+		regPay,
+		overTimePay,
+		dblOverTimePay,
+		sickPay,
+		statPay,
+		statWorkPay,
+		vacationPay,
+	} = empPayInfoResult;
+
+	const { federalPensionER, federalEmploymentInsuranceER } = empGovtInfoResult;
+
+	const sumTotalWithoutVacation =
+		getCalcAmount(totalSickHoursWorked, sickPay) +
+		getCalcAmount(totalStatHours, statPay) +
+		getCalcAmount(totalStatDayHoursWorked, statWorkPay) +
+		getCalcAmount(totalRegHoursWorked, regPay);
+
+	const sumTotalOvertime =
+		getCalcAmount(totalOvertimeHoursWorked, overTimePay) +
+		getCalcAmount(totalDblOvertimeHoursWorked, dblOverTimePay);
+
+	const sumTotalWithVacation =
+		getCalcAmount(totalSickHoursWorked, sickPay) +
+		getCalcAmount(totalStatHours, statPay) +
+		getCalcAmount(totalStatDayHoursWorked, statWorkPay) +
+		getCalcAmount(totalRegHoursWorked, regPay) +
+		getCalcAmount(totalVacationHoursWorked, vacationPay);
+
+	const EPP = sumTotalWithVacation * 0.04;
+	const EHP = (sumTotalWithoutVacation + sumTotalOvertime) * 2.05;
+
+	return {
+		_id: employeeId,
+		empId: { fullName, _id: recordId },
+		CPP: federalPensionER === "" ? 0 : federalPensionER,
+		EI: federalEmploymentInsuranceER === "" ? 0 : federalEmploymentInsuranceER,
+		EPP,
+		EHP,
+	};
+};
+
+const getGroupedData = (empTimesheetData, employee) => {
 	const employeeId = empTimesheetData
 		? empTimesheetData.empId.employeeId
 		: employee.employeeId;
@@ -111,6 +280,94 @@ const buildEmpHourlyDetails = (empTimesheetData, employee) => {
 	const totalVacationHoursWorked = empTimesheetData
 		? empTimesheetData.totalVacationHoursWorked
 		: 0;
+	return {
+		employeeId,
+		recordId,
+		fullName,
+		totalRegHoursWorked,
+		totalOvertimeHoursWorked,
+		totalDblOvertimeHoursWorked,
+		totalStatDayHoursWorked,
+		totalStatHours,
+		totalSickHoursWorked,
+		totalVacationHoursWorked,
+	};
+};
+const buildEmpEEDetails = (
+	empTimesheetData,
+	employee,
+	empPayInfoResult,
+	empGovtInfoResult,
+) => {
+	const {
+		employeeId,
+		recordId,
+		fullName,
+		totalRegHoursWorked,
+		totalOvertimeHoursWorked,
+		totalDblOvertimeHoursWorked,
+		totalStatDayHoursWorked,
+		totalStatHours,
+		totalSickHoursWorked,
+		totalVacationHoursWorked,
+	} = getGroupedData(empTimesheetData, employee);
+
+	const {
+		regPay,
+		overTimePay,
+		dblOverTimePay,
+		sickPay,
+		statPay,
+		statWorkPay,
+		vacationPay,
+	} = empPayInfoResult;
+
+	const { federalPensionEE, federalEmploymentInsuranceEE } = empGovtInfoResult;
+
+	const sumTotalWithoutVacation =
+		getCalcAmount(totalSickHoursWorked, sickPay) +
+		getCalcAmount(totalStatHours, statPay) +
+		getCalcAmount(totalStatDayHoursWorked, statWorkPay) +
+		getCalcAmount(totalRegHoursWorked, regPay);
+
+	const sumTotalOvertime =
+		getCalcAmount(totalOvertimeHoursWorked, overTimePay) +
+		getCalcAmount(totalDblOvertimeHoursWorked, dblOverTimePay);
+
+	const sumTotalWithVacation =
+		getCalcAmount(totalSickHoursWorked, sickPay) +
+		getCalcAmount(totalStatHours, statPay) +
+		getCalcAmount(totalStatDayHoursWorked, statWorkPay) +
+		getCalcAmount(totalRegHoursWorked, regPay) +
+		getCalcAmount(totalVacationHoursWorked, vacationPay);
+
+	const unionDues = (sumTotalWithVacation + sumTotalOvertime) * 0.02;
+	const EPP = sumTotalWithVacation * 0.04;
+	const EHP = sumTotalWithoutVacation * 0.42;
+	return {
+		_id: employeeId,
+		empId: { fullName, _id: recordId },
+		unionDues,
+		CPP: federalPensionEE === "" ? 0 : federalPensionEE,
+		EI: federalEmploymentInsuranceEE === "" ? 0 : federalEmploymentInsuranceEE,
+		EPP,
+		EHP,
+	};
+};
+
+const buildEmpHourlyDetails = (empTimesheetData, employee) => {
+	const {
+		employeeId,
+		recordId,
+		fullName,
+		totalRegHoursWorked,
+		totalOvertimeHoursWorked,
+		totalDblOvertimeHoursWorked,
+		totalStatDayHoursWorked,
+		totalStatHours,
+		totalSickHoursWorked,
+		totalVacationHoursWorked,
+	} = getGroupedData(empTimesheetData, employee);
 	return {
 		_id: employeeId,
 		empId: { fullName, _id: recordId },
@@ -292,7 +549,7 @@ const calculateTotalAggregatedHours = async (
 ) => {
 	const timesheets = await Timesheet.find({
 		companyName,
-		createdOn: { $gte: startDate, $lte: endDate },
+		clockIn: { $gte: startDate, $lte: endDate },
 		approveStatus: "Approved",
 	}).populate({
 		path: "employeeId",
@@ -379,6 +636,13 @@ const findEmployeePayInfo = async (empId) =>
 		empId,
 	}).select(
 		"empId regPay overTimePay dblOverTimePay statWorkPay statPay sickPay vacationPay",
+	);
+
+const findEmployeeGovernmentInfo = async (empId) =>
+	await EmployeeGovernmentInfo.findOne({
+		empId,
+	}).select(
+		"empId federalPensionEE federalPensionER federalEmploymentInsuranceEE federalEmploymentInsuranceER",
 	);
 
 const addEmployeePayStubInfo = async (req, res) => {
@@ -1072,4 +1336,6 @@ module.exports = {
 	addPayStub,
 	findEmpPayStubDetail,
 	getEmployeePayDetailsReportInfo,
+	getEEContribution,
+	getERContribution,
 };

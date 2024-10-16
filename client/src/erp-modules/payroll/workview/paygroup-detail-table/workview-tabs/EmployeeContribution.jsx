@@ -1,25 +1,40 @@
-import useEmployeeHoursWorked from "hooks/useEmployeeHoursWorked";
+import useEmployeeEEContribution from "hooks/useEmployeeEEContribution";
 import { ROUTE_PATH } from "routes";
 import WorkviewTab from "./WorkviewTab";
 
 const EmployeeContribution = ({ company, closestRecord, groupId }) => {
-	const data = useEmployeeHoursWorked(company, closestRecord, groupId);
+	const data = useEmployeeEEContribution(company, closestRecord, groupId);
 
 	return (
 		<WorkviewTab
 			cols={[
-				{ key: "Employee Name", pair: "obj", pair_key: "fullName" },
+				{
+					key: "Employee Name",
+					pair: "obj",
+					pair_key: "fullName",
+					round: true,
+				},
 				{
 					key: "Employment Insurance (EE)",
-					pair: "federalEmploymentInsuranceEE",
+					pair: "EI",
+					round: true,
 				},
-				{ key: "Canada Pension Plan (EE)", pair: "federalPensionEE" },
-				{ key: "Union Dues", pair: "unionDues" },
+				{
+					key: "Canada Pension Plan (EE)",
+					pair: "CPP",
+					round: true,
+				},
+				{ key: "Union Dues", pair: "unionDues", round: true },
 				{
 					key: "Employer Pension Plan (EE)",
-					pair: "currentEmployeePensionContributions",
+					pair: "EPP",
+					round: true,
 				},
-				{ key: "Employer Health Plan (EE)", pair: "regionalEmployeeHealth" },
+				{
+					key: "Employer Health Plan (EE)",
+					pair: "EHP",
+					round: true,
+				},
 			]}
 			data={data}
 			label="Setup"
