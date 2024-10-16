@@ -22,14 +22,14 @@ const OtherFilter = ({
 	setFilteredData,
 	helperText,
 }) => {
-	const [openAssigneeMenu, setOpenAssigneeMenu] = useState(false);
+	const [openAssigneeMenu, setOpenAssigneeMenu] = useState(true);
 	const [selectedOptions, setSelectedOptions] = useState([]);
 	const handleMenuToggle = () => {
-		setOpenAssigneeMenu((prev) => !prev);
+		// setOpenAssigneeMenu((prev) => !prev);
 	};
 
 	const handleCloseMenu = (selectedOptions) => {
-		setOpenAssigneeMenu(false);
+		// setOpenAssigneeMenu(false);
 		setFilteredData(selectedOptions);
 	};
 	const handleClose = () => {

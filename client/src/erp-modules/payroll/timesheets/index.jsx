@@ -149,7 +149,13 @@ const Timesheets = () => {
 					setShowAddEntry={setShowAddEntry}
 				/>
 			)}
-			<HStack w={"100%"} justifyContent={"start"} gap={5}>
+			<HStack
+				w={"100%"}
+				justifyContent={"start"}
+				gap={5}
+				position="sticky"
+				zIndex={12}
+			>
 				<TabsButtonGroup
 					w={"20%"}
 					mt={4}

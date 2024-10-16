@@ -56,7 +56,7 @@ const PaygroupDetailTable = ({
 		},
 		{
 			id: 3,
-			type: "Employee Contribution",
+			type: "EE Contribution",
 			name: (
 				<EmployeeContribution
 					company={company}
@@ -67,7 +67,7 @@ const PaygroupDetailTable = ({
 		},
 		{
 			id: 4,
-			type: "Employer Contribution",
+			type: "ER Contribution",
 			name: (
 				<EmployerContribution
 					company={company}

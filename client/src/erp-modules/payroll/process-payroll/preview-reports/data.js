@@ -314,14 +314,28 @@ export const NET_SUMMARY = [
 
 const EMPLOYER_BENEFIT_TYPES = [
 	{
-		name: "Employer Pension Contribution",
+		name: "EI",
+		rate: 0,
+		totalHours: 0,
+		currentTotal: "currentEIDeductions",
+		YTDTotal: "YTD_EIDeductions",
+	},
+	{
+		name: "CPP",
+		rate: 0,
+		totalHours: 0,
+		currentTotal: "currentCPPDeductions",
+		YTDTotal: "YTD_CPPDeductions",
+	},
+	{
+		name: "Pension Contribution",
 		rate: 0,
 		totalHours: 0,
 		currentTotal: "currentEmployerPensionContributions",
 		YTDTotal: "YTDEmployerPensionContributions",
 	},
 	{
-		name: "Employer Health Contribution",
+		name: "Health Contribution",
 		rate: 0,
 		totalHours: 0,
 		currentTotal: "currentEmployerHealthContributions",
