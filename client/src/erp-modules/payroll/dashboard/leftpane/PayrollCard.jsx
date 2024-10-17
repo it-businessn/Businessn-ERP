@@ -14,14 +14,18 @@ const PayrollCard = ({
 	return (
 		<>
 			<HStack gap={4} justifyContent={"space-around"}>
-				<PayPeriodCard
-					schedule={prevSchedule}
-					title1={`PP ${isExtraPay(
-						prevSchedule?.payPeriod,
-						prevSchedule?.isExtraRun,
-					)}`}
-					title2={`${daysAgo(prevSchedule?.payPeriodProcessingDate)} days ago`}
-				/>
+				{prevSchedule && (
+					<PayPeriodCard
+						schedule={prevSchedule}
+						title1={`PP ${isExtraPay(
+							prevSchedule?.payPeriod,
+							prevSchedule?.isExtraRun,
+						)}`}
+						title2={`${daysAgo(
+							prevSchedule?.payPeriodProcessingDate,
+						)} days ago`}
+					/>
+				)}
 				<PayPeriodCard
 					schedule={closestRecord}
 					color={"var(--lead_cards_bg)"}

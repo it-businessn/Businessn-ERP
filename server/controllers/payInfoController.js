@@ -144,11 +144,11 @@ const addEmployeePayInfo = async (req, res) => {
 			empId,
 			companyName,
 			regPay,
-			overTimePay,
-			dblOverTimePay,
-			statWorkPay,
-			statPay,
-			sickPay,
+			overTimePay: 1.5 * regPay,
+			dblOverTimePay: 2 * regPay,
+			statWorkPay: 1.5 * regPay,
+			statPay: regPay,
+			sickPay: regPay,
 			salaryRate,
 			dailyHours,
 			longTermDisabilityEE,
@@ -158,7 +158,7 @@ const addEmployeePayInfo = async (req, res) => {
 			extendedHealthEE,
 			extendedHealthER,
 			unionDues,
-			vacationPay,
+			vacationPay: regPay,
 		});
 		return res.status(201).json(newPayInfo);
 	} catch (error) {

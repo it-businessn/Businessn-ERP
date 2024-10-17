@@ -1,3 +1,4 @@
+const Employee = require("../models/Employee");
 const EmployeeEmploymentInfo = require("../models/EmployeeEmploymentInfo");
 const EmployeePayInfo = require("../models/EmployeePayInfo");
 const { getEmployeeId } = require("./payrollController");
@@ -85,6 +86,20 @@ const updateEmploymentInfo = async (id, data) =>
 		new: true,
 	});
 
+const updateEmployee = async (empId, data) => {
+	const { employmentRole, employmentCostCenter, employmentDepartment } = data;
+	const employee = await Employee.findById(empId);
+
+	if (employmentRole) {
+		employee.role = employmentRole;
+	}
+	if (employmentDepartment) {
+		employee.department = employmentDepartment;
+	}
+
+	await employee.save();
+};
+
 const addEmployeeEmploymentInfo = async (req, res) => {
 	const {
 		empId,
@@ -98,6 +113,7 @@ const addEmployeeEmploymentInfo = async (req, res) => {
 		companyDepartment,
 	} = req.body;
 	try {
+		const data = { employmentRole, employmentCostCenter, employmentDepartment };
 		const existingEmploymentInfo = await findEmployeeEmploymentInfo(
 			empId,
 			companyName,
@@ -107,6 +123,7 @@ const addEmployeeEmploymentInfo = async (req, res) => {
 				existingEmploymentInfo._id,
 				req.body,
 			);
+			await updateEmployee(existingEmploymentInfo.empId, data);
 			return res.status(201).json(updatedEmploymentInfo);
 		}
 		const newEmploymentInfo = await EmployeeEmploymentInfo.create({
@@ -120,6 +137,7 @@ const addEmployeeEmploymentInfo = async (req, res) => {
 			employmentDepartment,
 			companyDepartment,
 		});
+		await updateEmployee(empId, data);
 		return res.status(201).json(newEmploymentInfo);
 	} catch (error) {
 		res.status(400).json({ message: error.message });

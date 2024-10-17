@@ -157,6 +157,12 @@ const addEmployeeProfileInfo = async (req, res) => {
 						emergencyPersonalPhoneNum,
 					},
 				);
+				if (payrollStatus === "Payroll Active") {
+					addStatHolidayDefaultTimesheet(
+						existingProfileInfo?.empId,
+						companyName,
+					);
+				}
 				await updateEmployee(existingProfileInfo?.empId, data);
 				return res.status(201).json(updatedProfileInfo);
 			}

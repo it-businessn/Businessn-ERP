@@ -212,7 +212,8 @@ export const getDefaultDateFormat = (date = null) => {
 	}/${dateObject.getDate()}/${dateObject.getFullYear()}`;
 };
 
-export const getAmount = (data) => `$${Math.abs(data.toFixed(2))}`;
+export const getAmount = (data) =>
+	`$${data ? Math.abs(data)?.toFixed(2) : 0.0}`;
 
 export const isValidPhoneNumber = (phoneNumber) => {
 	const phoneRegex = /^[0-9]{10}$/;
