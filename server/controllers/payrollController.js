@@ -105,10 +105,11 @@ const getEEContribution = async (req, res) => {
 
 		for (const employee of activeEmployees) {
 			const empPayInfoResult = await findEmployeePayInfo(employee._id);
-			const empGovernmentInfoResult = await findEmployeeGovernmentInfo(
-				employee._id,
-				companyName,
-			);
+			const empGrossPay = await EmployeePayStub.findOne({
+				empId: employee._id,
+				payPeriodStartDate: startDate,
+				payPeriodEndDate: endDate,
+			}).select("empId currentGrossPay");
 			const empTimesheetData = currentPeriodEmployees?.find(
 				(el) => el.empId._id.toString() === employee._id.toString(),
 			);
@@ -117,7 +118,7 @@ const getEEContribution = async (req, res) => {
 					empTimesheetData,
 					employee,
 					empPayInfoResult,
-					empGovernmentInfoResult,
+					empGrossPay,
 				);
 				aggregatedResult.push(result);
 			} else {
@@ -125,7 +126,7 @@ const getEEContribution = async (req, res) => {
 					null,
 					employee,
 					empPayInfoResult,
-					empGovernmentInfoResult,
+					empGrossPay,
 				);
 				aggregatedResult.push(result);
 			}
@@ -158,10 +159,11 @@ const getERContribution = async (req, res) => {
 		for (const employee of activeEmployees) {
 			const empPayInfoResult = await findEmployeePayInfo(employee._id);
 
-			const empGovernmentInfoResult = await findEmployeeGovernmentInfo(
-				employee._id,
-				companyName,
-			);
+			const empGrossPay = await EmployeePayStub.findOne({
+				empId: employee._id,
+				payPeriodStartDate: startDate,
+				payPeriodEndDate: endDate,
+			}).select("empId currentGrossPay");
 
 			const empTimesheetData = currentPeriodEmployees?.find(
 				(el) => el.empId._id.toString() === employee._id.toString(),
@@ -171,7 +173,7 @@ const getERContribution = async (req, res) => {
 					empTimesheetData,
 					employee,
 					empPayInfoResult,
-					empGovernmentInfoResult,
+					empGrossPay,
 				);
 				aggregatedResult.push(result);
 			} else {
@@ -179,7 +181,7 @@ const getERContribution = async (req, res) => {
 					null,
 					employee,
 					empPayInfoResult,
-					empGovernmentInfoResult,
+					empGrossPay,
 				);
 				aggregatedResult.push(result);
 			}
@@ -188,6 +190,70 @@ const getERContribution = async (req, res) => {
 	} catch (error) {
 		res.status(404).json({ error: error.message });
 	}
+};
+
+const buildEmpEEDetails = (
+	empTimesheetData,
+	employee,
+	empPayInfoResult,
+	empGovtInfoResult,
+) => {
+	const {
+		employeeId,
+		recordId,
+		fullName,
+		totalRegHoursWorked,
+		totalOvertimeHoursWorked,
+		totalDblOvertimeHoursWorked,
+		totalStatDayHoursWorked,
+		totalStatHours,
+		totalSickHoursWorked,
+		totalVacationHoursWorked,
+	} = getGroupedData(empTimesheetData, employee);
+
+	const {
+		regPay,
+		overTimePay,
+		dblOverTimePay,
+		sickPay,
+		statPay,
+		statWorkPay,
+		vacationPay,
+	} = empPayInfoResult;
+
+	// const { federalPensionEE, federalEmploymentInsuranceEE } = empGovtInfoResult;
+	const { CPPContribution, EIContribution } = getTaxDetails(
+		empGovtInfoResult?.currentGrossPay,
+	);
+
+	const data = {
+		regPay,
+		overTimePay,
+		dblOverTimePay,
+		statPay,
+		statWorkPay,
+		sickPay,
+		vacationPay,
+		totalRegHoursWorked,
+		totalOvertimeHoursWorked,
+		totalDblOvertimeHoursWorked,
+		totalStatDayHoursWorked,
+		totalStatHours,
+		totalSickHoursWorked,
+		totalVacationHoursWorked,
+	};
+
+	const { unionDues, EE_EPP, EE_EHP } = getContributionsDeductions(data);
+
+	return {
+		_id: employeeId,
+		empId: { fullName, _id: recordId },
+		unionDues,
+		CPP: CPPContribution,
+		EI: EIContribution,
+		EPP: EE_EPP,
+		EHP: EE_EHP,
+	};
 };
 
 const buildEmpERDetails = (
@@ -219,35 +285,36 @@ const buildEmpERDetails = (
 		vacationPay,
 	} = empPayInfoResult;
 
-	const { federalPensionER, federalEmploymentInsuranceER } = empGovtInfoResult;
+	// const { federalPensionER, federalEmploymentInsuranceER } = empGovtInfoResult;
+	const { CPPContribution, EIContribution } = getTaxDetails(
+		empGovtInfoResult?.currentGrossPay,
+	);
 
-	const sumTotalWithoutVacation =
-		getCalcAmount(totalSickHoursWorked, sickPay) +
-		getCalcAmount(totalStatHours, statPay) +
-		getCalcAmount(totalStatDayHoursWorked, statWorkPay) +
-		getCalcAmount(totalRegHoursWorked, regPay);
-
-	const sumTotalOvertime =
-		getCalcAmount(totalOvertimeHoursWorked, overTimePay) +
-		getCalcAmount(totalDblOvertimeHoursWorked, dblOverTimePay);
-
-	const sumTotalWithVacation =
-		getCalcAmount(totalSickHoursWorked, sickPay) +
-		getCalcAmount(totalStatHours, statPay) +
-		getCalcAmount(totalStatDayHoursWorked, statWorkPay) +
-		getCalcAmount(totalRegHoursWorked, regPay) +
-		getCalcAmount(totalVacationHoursWorked, vacationPay);
-
-	const EPP = sumTotalWithVacation * 0.04;
-	const EHP = (sumTotalWithoutVacation + sumTotalOvertime) * 2.05;
+	const data = {
+		regPay,
+		overTimePay,
+		dblOverTimePay,
+		statPay,
+		statWorkPay,
+		sickPay,
+		vacationPay,
+		totalRegHoursWorked,
+		totalOvertimeHoursWorked,
+		totalDblOvertimeHoursWorked,
+		totalStatDayHoursWorked,
+		totalStatHours,
+		totalSickHoursWorked,
+		totalVacationHoursWorked,
+	};
+	const { ER_EPP, ER_EHP } = getContributionsDeductions(data);
 
 	return {
 		_id: employeeId,
 		empId: { fullName, _id: recordId },
-		CPP: federalPensionER === "" ? 0 : federalPensionER,
-		EI: federalEmploymentInsuranceER === "" ? 0 : federalEmploymentInsuranceER,
-		EPP,
-		EHP,
+		CPP: CPPContribution,
+		EI: EIContribution,
+		EPP: ER_EPP,
+		EHP: ER_EHP,
 	};
 };
 
@@ -291,67 +358,6 @@ const getGroupedData = (empTimesheetData, employee) => {
 		totalStatHours,
 		totalSickHoursWorked,
 		totalVacationHoursWorked,
-	};
-};
-const buildEmpEEDetails = (
-	empTimesheetData,
-	employee,
-	empPayInfoResult,
-	empGovtInfoResult,
-) => {
-	const {
-		employeeId,
-		recordId,
-		fullName,
-		totalRegHoursWorked,
-		totalOvertimeHoursWorked,
-		totalDblOvertimeHoursWorked,
-		totalStatDayHoursWorked,
-		totalStatHours,
-		totalSickHoursWorked,
-		totalVacationHoursWorked,
-	} = getGroupedData(empTimesheetData, employee);
-
-	const {
-		regPay,
-		overTimePay,
-		dblOverTimePay,
-		sickPay,
-		statPay,
-		statWorkPay,
-		vacationPay,
-	} = empPayInfoResult;
-
-	const { federalPensionEE, federalEmploymentInsuranceEE } = empGovtInfoResult;
-
-	const sumTotalWithoutVacation =
-		getCalcAmount(totalSickHoursWorked, sickPay) +
-		getCalcAmount(totalStatHours, statPay) +
-		getCalcAmount(totalStatDayHoursWorked, statWorkPay) +
-		getCalcAmount(totalRegHoursWorked, regPay);
-
-	const sumTotalOvertime =
-		getCalcAmount(totalOvertimeHoursWorked, overTimePay) +
-		getCalcAmount(totalDblOvertimeHoursWorked, dblOverTimePay);
-
-	const sumTotalWithVacation =
-		getCalcAmount(totalSickHoursWorked, sickPay) +
-		getCalcAmount(totalStatHours, statPay) +
-		getCalcAmount(totalStatDayHoursWorked, statWorkPay) +
-		getCalcAmount(totalRegHoursWorked, regPay) +
-		getCalcAmount(totalVacationHoursWorked, vacationPay);
-
-	const unionDues = (sumTotalWithVacation + sumTotalOvertime) * 0.02;
-	const EPP = sumTotalWithVacation * 0.04;
-	const EHP = sumTotalWithoutVacation * 0.42;
-	return {
-		_id: employeeId,
-		empId: { fullName, _id: recordId },
-		unionDues,
-		CPP: federalPensionEE === "" ? 0 : federalPensionEE,
-		EI: federalEmploymentInsuranceEE === "" ? 0 : federalEmploymentInsuranceEE,
-		EPP,
-		EHP,
 	};
 };
 
@@ -803,6 +809,58 @@ const calcEmployeeContribution = (grossPay, newEmpData) =>
 		newEmpData.currentOverTimePayTotal +
 		newEmpData.currentDblOverTimePayTotal);
 
+const getContributionsDeductions = (data) => {
+	const {
+		regPay,
+		overTimePay,
+		dblOverTimePay,
+		statPay,
+		statWorkPay,
+		sickPay,
+		vacationPay,
+		totalRegHoursWorked,
+		totalOvertimeHoursWorked,
+		totalDblOvertimeHoursWorked,
+		totalStatDayHoursWorked,
+		totalStatHours,
+		totalSickHoursWorked,
+		totalVacationHoursWorked,
+	} = data;
+
+	const sumTotalWithoutVacation =
+		getCalcAmount(totalSickHoursWorked, sickPay) +
+		getCalcAmount(totalStatHours, statPay) +
+		getCalcAmount(totalStatDayHoursWorked, statWorkPay) +
+		getCalcAmount(totalRegHoursWorked, regPay);
+
+	const sumTotalOvertime =
+		getCalcAmount(totalOvertimeHoursWorked, overTimePay) +
+		getCalcAmount(totalDblOvertimeHoursWorked, dblOverTimePay);
+
+	const sumTotalWithVacation =
+		getCalcAmount(totalSickHoursWorked, sickPay) +
+		getCalcAmount(totalStatHours, statPay) +
+		getCalcAmount(totalStatDayHoursWorked, statWorkPay) +
+		getCalcAmount(totalRegHoursWorked, regPay) +
+		getCalcAmount(totalVacationHoursWorked, vacationPay);
+
+	const unionDues = (sumTotalWithVacation + sumTotalOvertime) * 0.02;
+
+	const EE_EPP = sumTotalWithVacation * 0.04;
+	const EE_EHP = sumTotalWithoutVacation * 0.42;
+
+	const ER_EPP = EE_EPP;
+	const ER_EHP = (sumTotalWithoutVacation + sumTotalOvertime) * 2.05;
+
+	return {
+		unionDues,
+		EE_EPP,
+		EE_EHP,
+		ER_EPP,
+		ER_EHP,
+	};
+};
+
 const buildPayStubDetails = async (
 	currentPayPeriod,
 	companyName,
@@ -838,7 +896,6 @@ const buildPayStubDetails = async (
 	newEmpData.currentGrossPay = calcCurrentGrossPay(newEmpData);
 
 	const {
-		currentUnionDuesDeductions,
 		grossSalaryByPayPeriod,
 		CPPContribution,
 		totalProvincialTaxDeduction,
@@ -846,31 +903,32 @@ const buildPayStubDetails = async (
 		EIContribution,
 	} = getTaxDetails(newEmpData.currentGrossPay);
 
-	const employeeContribution = calcEmployeeContribution(
-		newEmpData.currentGrossPay,
-		newEmpData,
-	);
+	const { unionDues, EE_EPP, EE_EHP, ER_EPP, ER_EHP } =
+		getContributionsDeductions(newEmpData);
 
-	const pensionContribution = 0.4 * employeeContribution;
-	const employerContribution =
-		pensionContribution + 2.05 * newEmpData.totalRegHoursWorked;
+	// const employeeContribution = calcEmployeeContribution(
+	// 	newEmpData.currentGrossPay,
+	// 	newEmpData,
+	// );
+
+	// const pensionContribution = 0.4 * employeeContribution;
+	// const employerContribution =
+	// 	pensionContribution + 2.05 * newEmpData.totalRegHoursWorked;
 
 	newEmpData.currentFDTaxDeductions = federalTaxDeductionByPayPeriod;
 	newEmpData.currentStateTaxDeductions = totalProvincialTaxDeduction;
 	newEmpData.currentCPPDeductions = CPPContribution;
 	newEmpData.currentEIDeductions = EIContribution;
-	newEmpData.currentUnionDuesDeductions = currentUnionDuesDeductions;
-	newEmpData.currentEmployeeHealthContributions =
-		0.42 * newEmpData.totalRegHoursWorked;
+	newEmpData.currentUnionDuesDeductions = unionDues;
+	newEmpData.currentEmployeeHealthContributions = EE_EHP;
 	newEmpData.currentPrimaryDeposit = 0;
-	newEmpData.currentEmployeePensionContributions = pensionContribution;
+	newEmpData.currentEmployeePensionContributions = EE_EPP;
 	newEmpData.currentOtherDeductions = 0;
 
-	newEmpData.currentEmployerPensionContributions = pensionContribution;
-	newEmpData.currentEmployerHealthContributions =
-		2.05 * newEmpData.totalRegHoursWorked;
+	newEmpData.currentEmployerPensionContributions = ER_EPP;
+	newEmpData.currentEmployerHealthContributions = ER_EHP;
 
-	newEmpData.currentEmployerContributions = employerContribution;
+	newEmpData.currentEmployerContributions = ER_EPP + ER_EHP;
 
 	newEmpData.currentVacationAccrued = 0;
 	newEmpData.currentVacationUsed = newEmpData.currentVacationPayTotal;

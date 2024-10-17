@@ -64,7 +64,8 @@ const getCalcAmount = (hrs, rate) => hrs * rate;
 
 const getHrs = (num) => `${(num / 60).toFixed(0)}.${num % 60}`;
 
-const getSumHours = (hrs) => (hrs ? parseFloat(getHrs(hrs)) : 0);
+// const getSumHours = (hrs) => (hrs ? parseFloat(getHrs(hrs)) : 0);
+const getSumHours = (hrs) => hrs ?? 0;
 
 const getSumTotal = (data1, data2) => (data1 ?? 0) + data2;
 
@@ -109,11 +110,17 @@ const getTaxDetails = (grossSalary) => {
 		CPPByPayPeriod > TAX_CONFIG.MAX_CPP_CONTRIBUTION
 			? TAX_CONFIG.MAX_CPP_CONTRIBUTION
 			: CPPByPayPeriod;
+
 	// const EIByPayPeriod =
 	// EIContribution *
 	//   (CPP_BASE_EMP_COMP_RATE / TOTAL_CONTRIBUTION_RATE) *
 	//   NUMBER_OF_MONTHS;
-	const EIByPayPeriodMax = TAX_CONFIG.MAX_EI_CONTRIBUTION;
+
+	const EIByPayPeriodMax =
+		EIContribution > TAX_CONFIG.MAX_EI_CONTRIBUTION
+			? TAX_CONFIG.MAX_EI_CONTRIBUTION
+			: EIContribution;
+
 	const totalFederalTaxCredits =
 		federalClaim +
 		CPPByPayPeriodMax +
@@ -154,8 +161,8 @@ const getTaxDetails = (grossSalary) => {
 		grossSalaryByPayPeriod,
 		totalProvincialTaxDeduction,
 		federalTaxDeductionByPayPeriod,
-		CPPContribution,
-		EIContribution,
+		CPPContribution: CPPByPayPeriodMax,
+		EIContribution: EIByPayPeriodMax,
 		CPPAdditionalContribution,
 		netRemuneration,
 		annualNetIncome,
