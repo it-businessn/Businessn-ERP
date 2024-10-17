@@ -40,6 +40,42 @@ const updateProfileInfo = async (id, data) =>
 		new: true,
 	});
 
+const updateEmployee = async (empId, data) => {
+	const {
+		payrollStatus,
+		personalEmail,
+		employeeNo,
+		streetAddressSuite,
+		streetAddress,
+		city,
+		province,
+		postalCode,
+		country,
+	} = data;
+	const employee = await Employee.findById(empId);
+
+	if (employee?.payrollStatus !== payrollStatus) {
+		employee.payrollStatus = payrollStatus;
+	}
+	if (personalEmail) {
+		employee.email = personalEmail;
+	}
+	if (employeeNo) {
+		employee.employeeNo = employeeNo;
+	}
+	if (streetAddressSuite || streetAddress) {
+		employee.primaryAddress = {
+			streetNumber: `${streetAddressSuite} ${streetAddress}`,
+			city,
+			state: province,
+			postalCode,
+			country,
+		};
+	}
+
+	await employee.save();
+};
+
 const addEmployeeProfileInfo = async (req, res) => {
 	const {
 		empId,
@@ -72,6 +108,17 @@ const addEmployeeProfileInfo = async (req, res) => {
 		postalCode,
 	} = req.body;
 	try {
+		const data = {
+			payrollStatus,
+			personalEmail,
+			employeeNo,
+			streetAddressSuite,
+			streetAddress,
+			city,
+			province,
+			postalCode,
+			country,
+		};
 		if (!empId && (firstName, companyName, lastName, birthDate)) {
 			const existingProfileInfo = await EmployeeProfileInfo.findOne({
 				firstName,
@@ -110,6 +157,7 @@ const addEmployeeProfileInfo = async (req, res) => {
 						emergencyPersonalPhoneNum,
 					},
 				);
+				await updateEmployee(existingProfileInfo?.empId, data);
 				return res.status(201).json(updatedProfileInfo);
 			}
 			const newEmployee = await addEmployee(companyName, {
@@ -145,28 +193,7 @@ const addEmployeeProfileInfo = async (req, res) => {
 			addStatHolidayDefaultTimesheet(empId, companyName);
 		}
 
-		const employee = await Employee.findById(empId);
-
-		if (employee?.payrollStatus !== payrollStatus) {
-			employee.payrollStatus = payrollStatus;
-		}
-		if (personalEmail) {
-			employee.email = personalEmail;
-		}
-		if (employeeNo) {
-			employee.employeeNo = employeeNo;
-		}
-		if (streetAddressSuite || streetAddress) {
-			employee.primaryAddress = {
-				streetNumber: `${streetAddressSuite} ${streetAddress}`,
-				city,
-				state: province,
-				postalCode,
-				country,
-			};
-		}
-
-		await employee.save();
+		await updateEmployee(empId, data);
 
 		if (existingProfileInfo) {
 			const updatedProfileInfo = await updateProfileInfo(

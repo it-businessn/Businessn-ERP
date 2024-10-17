@@ -79,7 +79,7 @@ const PersonalInfo = ({ company, isOnboarding, id, handleNext }) => {
 			// setIsSave1Disabled(true);
 			// setIsSave2Disabled(true);
 			// setIsSave3Disabled(true);
-			LocalStorageService.setItem("onboardingEmpId", result.data._id);
+			LocalStorageService.setItem("onboardingEmpId", result.data.empId);
 			toast({
 				title: "Personal info added successfully.",
 				status: "success",
