@@ -11,6 +11,7 @@ import { ROUTE_PATH } from "routes";
 import { useBreakpointValue } from "services/Breakpoint";
 import LocalStorageService from "services/LocalStorageService";
 import { isManager } from "utils";
+import Loader from "./Loader";
 
 const Home = () => {
 	const navigate = useNavigate();
@@ -25,23 +26,22 @@ const Home = () => {
 	const { isOpen, onOpen, onClose } = useDisclosure();
 
 	const [refresh, setRefresh] = useState(false);
-
-	useEffect(() => {
-		setSelectedCompany(user?.companyId?.name);
-		if (user && Object.keys(user).length > 0) {
-			navigate(ROUTE_PATH.SALES);
-			// navigate(`${ROUTE_PATH.SALES}${ROUTE_PATH.CUSTOMERS}`);
-			// navigate(`${ROUTE_PATH.PROJECT}${ROUTE_PATH.WORKVIEW}`);
-		} else {
-			navigate(ROUTE_PATH.LOGIN);
-		}
-	}, [user]);
-
 	const { activeMenu, setActiveMenu } = useSidebarMenu(
 		user?._id,
 		company,
 		isManager(user?.role),
 	);
+
+	useEffect(() => {
+		setSelectedCompany(user?.companyId?.name);
+		if (user && Object.keys(user).length > 0) {
+			navigate(`/${activeMenu?.path}`);
+			// navigate(`${ROUTE_PATH.SALES}${ROUTE_PATH.CUSTOMERS}`);
+			// navigate(`${ROUTE_PATH.PROJECT}${ROUTE_PATH.WORKVIEW}`);
+		} else {
+			navigate(ROUTE_PATH.LOGIN);
+		}
+	}, [user, activeMenu]);
 
 	useEffect(() => {
 		if (activeMenu) {
@@ -62,6 +62,7 @@ const Home = () => {
 					companyId={user?.companyId?.registration_number}
 				/>
 			)}
+			{!activeMenu && <Loader />}
 			{user && (activeMenu || refresh) ? (
 				<RootLayout>
 					<Sidebar
