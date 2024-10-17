@@ -35,7 +35,10 @@ const Home = () => {
 	useEffect(() => {
 		setSelectedCompany(user?.companyId?.name);
 		if (user && Object.keys(user).length > 0) {
-			navigate(`/${activeMenu?.path}`);
+			const dashboard = activeMenu?.children.find(
+				(_) => _.permissions?.canAccessModule,
+			);
+			navigate(`/${activeMenu?.path}/${dashboard?.path}`);
 			// navigate(`${ROUTE_PATH.SALES}${ROUTE_PATH.CUSTOMERS}`);
 			// navigate(`${ROUTE_PATH.PROJECT}${ROUTE_PATH.WORKVIEW}`);
 		} else {
