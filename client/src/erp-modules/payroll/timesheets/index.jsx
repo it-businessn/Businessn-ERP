@@ -150,11 +150,11 @@ const Timesheets = () => {
 				/>
 			)}
 			<HStack
-				w={"100%"}
+				w={"90%"}
 				justifyContent={"start"}
 				gap={5}
 				position="sticky"
-				zIndex={12}
+				zIndex={4}
 			>
 				<TabsButtonGroup
 					w={"20%"}

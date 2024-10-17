@@ -107,7 +107,7 @@ const InputsReview = ({
 					{inputsReviewData?.map((data) => (
 						<Tr key={data._id}>
 							<Td>
-								<TextTitle title={data.empId.fullName} />
+								<TextTitle title={data?.empId?.fullName} />
 							</Td>
 							<Td>
 								<TextTitle title={data.totalRegHoursWorked} />

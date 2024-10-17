@@ -58,7 +58,13 @@ const UserProfile = ({ user, handleLogout }) => {
 						boxSize="12"
 					/>
 				</PopoverTrigger>
-				<PopoverContent maxW="xs" w="12rem" border="none">
+				<PopoverContent
+					maxW="xs"
+					w="12rem"
+					border="none"
+					position="sticky"
+					zIndex={5}
+				>
 					<PopoverArrow />
 
 					<PopoverBody>

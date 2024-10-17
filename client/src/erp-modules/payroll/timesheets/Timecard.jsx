@@ -42,7 +42,7 @@ const Timecard = ({ company, userId, timecardRefresh, filter }) => {
 			]}
 			height="75vh"
 			position="sticky"
-			zIndex="docked"
+			zIndex={3}
 			top={-1}
 		>
 			<Tbody>

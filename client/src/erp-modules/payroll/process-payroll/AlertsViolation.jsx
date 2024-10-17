@@ -58,8 +58,8 @@ const AlertsViolation = ({
 	const navigate = useNavigate();
 
 	const handleReview = (data) => {
-		const empId = data.empId._id;
-		const stepNum = data.actionRequired ? 4 : 1;
+		const empId = data?.empId?._id;
+		const stepNum = data?.actionRequired ? 4 : 1;
 		navigate(
 			`${ROUTE_PATH.PAYROLL}${ROUTE_PATH.EMPLOYEES}/${empId}/${stepNum}`,
 		);
@@ -95,10 +95,10 @@ const AlertsViolation = ({
 					{data?.map((data) => (
 						<Tr key={data._id}>
 							<Td>
-								<NormalTextTitle title={data.description} />
+								<NormalTextTitle title={data?.description} />
 							</Td>
 							<Td>
-								<TextTitle title={data.empId.fullName} />
+								<TextTitle title={data?.empId?.fullName} />
 							</Td>
 							<Td>
 								{data.actionRequired ? (

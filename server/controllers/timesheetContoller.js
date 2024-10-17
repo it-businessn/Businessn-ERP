@@ -52,7 +52,7 @@ const getTimesheetResult = async (companyName) => {
 
 const mapTimesheet = (payInfos, timesheets) => {
 	timesheets.forEach((timesheet) => {
-		const empIdStr = timesheet.employeeId._id.toString();
+		const empIdStr = timesheet?.employeeId?._id.toString();
 		if (!payInfos.has(empIdStr)) {
 			return;
 		}
@@ -110,6 +110,7 @@ const getFilteredTimesheets = async (req, res) => {
 				filteredData?.filteredCC?.includes(item.employeeId.role),
 			);
 		}
+
 		const result = mapTimesheet(payInfo, timesheets);
 		res.status(200).json(result);
 	} catch (error) {

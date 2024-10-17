@@ -163,7 +163,7 @@ const Timesheet = ({
 				"Action",
 			]}
 			position="sticky"
-			zIndex="docked"
+			zIndex={3}
 			top={-1}
 			height="73vh"
 		>

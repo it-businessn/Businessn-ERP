@@ -1310,11 +1310,11 @@ const addAlertsAndViolations = async (req, res) => {
 	try {
 		for (const data of inputsReviewData) {
 			const empResult = await EmployeeBankingInfo.findOne({
-				empId: data.empId._id,
+				empId: data?.empId?._id,
 			}).select("empId bankNum transitNum accountNum");
 
 			const empSINResult = await EmployeeProfileInfo.findOne({
-				empId: data.empId._id,
+				empId: data?.empId?._id,
 			}).select("empId SIN");
 			if (
 				!empResult ||
@@ -1323,14 +1323,14 @@ const addAlertsAndViolations = async (req, res) => {
 				empResult.accountNum === ""
 			) {
 				const alertsExists = await findAlertInfo({
-					empId: data.empId._id,
+					empId: data?.empId?._id,
 					companyName,
 					actionRequired: true,
 				});
 				if (alertsExists) {
 				} else {
 					await EmployeeAlertsViolationInfo.create({
-						empId: data.empId._id,
+						empId: data?.empId?._id,
 						companyName,
 						description: "Banking information missing",
 						actionRequired: true,
@@ -1340,14 +1340,14 @@ const addAlertsAndViolations = async (req, res) => {
 			}
 			if (!empSINResult || empSINResult.SIN === "") {
 				const alertsExists = await findAlertInfo({
-					empId: data.empId._id,
+					empId: data?.empId?._id,
 					companyName,
 					actionRequired: false,
 				});
 				if (alertsExists) {
 				} else {
 					await EmployeeAlertsViolationInfo.create({
-						empId: data.empId._id,
+						empId: data?.empId?._id,
 						companyName,
 						description: "SIN missing",
 						actionRequired: false,

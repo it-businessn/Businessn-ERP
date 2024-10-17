@@ -30,7 +30,7 @@ const InfoText = ({ title1, title2, title3, hasBg }) => (
 );
 
 const ChequeDetails = ({ data }) => {
-	const name = data.empId.fullName;
+	const name = data?.empId?.fullName;
 	const payDate = data.payPeriodPayDate;
 	const netPay = getAmount(data.currentNetPay);
 	const amountInWords = toWords.convert(data.currentNetPay);
