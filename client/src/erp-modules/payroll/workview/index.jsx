@@ -8,7 +8,7 @@ import PaygroupDetailTable from "./paygroup-detail-table/workview-tabs";
 import PaygroupTable from "./paygroup-header-table";
 
 const PayrollWorkview = () => {
-	const empPath = `${ROUTE_PATH.PAYROLL}${ROUTE_PATH.EMPLOYEES}`;
+	const empPath = `${ROUTE_PATH.PAYROLL}${ROUTE_PATH.EMPLOYEES}/info`;
 	const { company } = useCompany(
 		LocalStorageService.getItem("selectedCompany"),
 	);

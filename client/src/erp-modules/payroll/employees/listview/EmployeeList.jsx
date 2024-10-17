@@ -9,7 +9,7 @@ import { useNavigate } from "react-router-dom";
 import { ROUTE_PATH } from "routes";
 
 const EmployeeList = ({ employees }) => {
-	const empPath = `${ROUTE_PATH.PAYROLL}${ROUTE_PATH.EMPLOYEES}`;
+	const empPath = `${ROUTE_PATH.PAYROLL}${ROUTE_PATH.EMPLOYEES}/info`;
 	const navigate = useNavigate();
 
 	const handleClick = (id) => {

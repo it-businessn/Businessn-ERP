@@ -317,7 +317,7 @@ export const router = createBrowserRouter([
 				element: <Employees />,
 			},
 			{
-				path: `${ROUTE_PATH.PAYROLL}${ROUTE_PATH.EMPLOYEES}/:id/:stepNo`,
+				path: `${ROUTE_PATH.PAYROLL}${ROUTE_PATH.EMPLOYEES}/info/:id/:stepNo`,
 				element: <Employees />,
 			},
 			{

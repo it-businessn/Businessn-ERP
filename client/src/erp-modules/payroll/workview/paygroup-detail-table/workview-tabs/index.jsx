@@ -48,6 +48,7 @@ const PaygroupDetailTable = ({
 			type: "Amount Allocation",
 			name: (
 				<AmountAllocation
+					path={empPath}
 					company={company}
 					closestRecord={closestRecord}
 					groupId={groupId}

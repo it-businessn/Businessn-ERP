@@ -136,7 +136,7 @@ const Timesheets = () => {
 				/>
 				<PrimaryButton
 					size={"sm"}
-					name={"Add request"}
+					name={"Add record"}
 					onOpen={() => setShowAddEntry(true)}
 				/>
 			</HStack>

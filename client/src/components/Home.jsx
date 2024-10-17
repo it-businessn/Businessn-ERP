@@ -38,7 +38,9 @@ const Home = () => {
 			const dashboard = activeMenu?.children.find(
 				(_) => _.permissions?.canAccessModule,
 			);
-			navigate(`/${activeMenu?.path}/${dashboard?.path}`);
+			if (activeMenu?.path) {
+				navigate(`/${activeMenu?.path}/${dashboard?.path}`);
+			}
 			// navigate(`${ROUTE_PATH.SALES}${ROUTE_PATH.CUSTOMERS}`);
 			// navigate(`${ROUTE_PATH.PROJECT}${ROUTE_PATH.WORKVIEW}`);
 		} else {

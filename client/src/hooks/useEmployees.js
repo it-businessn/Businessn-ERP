@@ -1,12 +1,7 @@
 import { useEffect, useState } from "react";
 import UserService from "services/UserService";
 
-const useEmployees = (
-	isRefresh,
-	company,
-	isOnboarding,
-	isPayrollState = true,
-) => {
+const useEmployees = (isRefresh, company, isOnboarding, isPayrollState) => {
 	const [employees, setEmployees] = useState(null);
 	const [filteredEmployees, setFilteredEmployees] = useState(null);
 

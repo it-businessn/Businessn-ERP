@@ -61,7 +61,7 @@ const AlertsViolation = ({
 		const empId = data?.empId?._id;
 		const stepNum = data?.actionRequired ? 4 : 1;
 		navigate(
-			`${ROUTE_PATH.PAYROLL}${ROUTE_PATH.EMPLOYEES}/${empId}/${stepNum}`,
+			`${ROUTE_PATH.PAYROLL}${ROUTE_PATH.EMPLOYEES}/info/${empId}/${stepNum}`,
 		);
 	};
 	const filteredEmp = [];

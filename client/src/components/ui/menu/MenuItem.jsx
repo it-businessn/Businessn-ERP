@@ -7,20 +7,22 @@ import {
 	Stack,
 	VStack,
 } from "@chakra-ui/react";
-import { useState } from "react";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import { ROUTE_PATH } from "routes";
 
 const MenuItem = ({ menu, parent, textTransform, handleMenuItemClick }) => {
 	const location = useLocation();
 	const navigate = useNavigate();
-	const [view, setView] = useState(null);
+
+	const empPath = location.pathname.includes(
+		`${ROUTE_PATH.PAYROLL}${ROUTE_PATH.EMPLOYEES}`,
+	);
 	// const [isOpen, setIsOpen] = useState(true);
 
 	// const handleToggle = () => {
 	// 	setIsOpen(!isOpen);
 	// };
-	const path = `/${parent}/${menu.path}`;
+	const navigatePath = `/${parent}/${menu.path}`;
 
 	return (
 		<VStack align="stretch" spacing={0}>
@@ -31,7 +33,7 @@ const MenuItem = ({ menu, parent, textTransform, handleMenuItemClick }) => {
 			>
 				<Flex align="center" w={"100%"}>
 					<NavLink
-						to={path}
+						to={navigatePath}
 						onClick={() => {
 							if (handleMenuItemClick) {
 								handleMenuItemClick();
@@ -60,16 +62,20 @@ const MenuItem = ({ menu, parent, textTransform, handleMenuItemClick }) => {
 					</NavLink>
 				</Flex>
 			</HStack>
-			{location.pathname.includes(ROUTE_PATH.EMPLOYEES) && (
+			{empPath && (
 				<Stack justify="start" width="full" my={0} spacing={0}>
-					{menu?.children?.map((menu) => (
+					{menu?.children?.map((menu, index) => (
 						<Box
 							key={menu.path}
 							onClick={() => {
-								setView(menu.path);
 								navigate(`/${parent}/${menu.path}`);
 							}}
-							className={view === menu.path ? "isSubChild active" : ""}
+							className={
+								(index === 0 && location.pathname.endsWith(menu.path)) ||
+								(index === 1 && location.pathname.includes("info"))
+									? "isSubChild active"
+									: ""
+							}
 						>
 							<IconButton
 								variant="ghost"
@@ -79,7 +85,9 @@ const MenuItem = ({ menu, parent, textTransform, handleMenuItemClick }) => {
 							/>
 
 							<Button
-								className={path.includes(menu?.name) ? "isActive" : "notActive"}
+								className={
+									navigatePath.includes(menu?.name) ? "isActive" : "notActive"
+								}
 								justifyContent={"space-between"}
 								p={0}
 								variant="ghost"

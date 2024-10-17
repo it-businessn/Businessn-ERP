@@ -2,11 +2,10 @@ import { Input } from "@chakra-ui/react";
 import OutlineButton from "components/ui/button/OutlineButton";
 import useEmployeePayInfo from "hooks/useEmployeePayInfo";
 import { useEffect, useState } from "react";
-import { ROUTE_PATH } from "routes";
 import PayrollService from "services/PayrollService";
 import WorkviewTab from "./WorkviewTab";
 
-const AmountAllocation = ({ company, closestRecord, groupId }) => {
+const AmountAllocation = ({ company, closestRecord, groupId, path }) => {
 	const [refresh, setRefresh] = useState(false);
 	const data = useEmployeePayInfo(
 		company,
@@ -93,7 +92,7 @@ const AmountAllocation = ({ company, closestRecord, groupId }) => {
 			]}
 			data={amountAllocateData}
 			label="Setup"
-			path={`${ROUTE_PATH.PAYROLL}${ROUTE_PATH.EMPLOYEES}`}
+			path={path}
 			stepNum={5}
 		/>
 	);

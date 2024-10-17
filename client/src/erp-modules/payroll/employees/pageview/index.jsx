@@ -36,7 +36,6 @@ const Employees = ({ isOnboarding, selectedPayGroupName, handleClose }) => {
 		isRefresh,
 		company,
 		isOnboarding,
-		true,
 	);
 
 	useEffect(() => {
