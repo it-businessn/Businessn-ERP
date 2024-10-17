@@ -51,6 +51,7 @@ const updateEmployee = async (empId, data) => {
 		province,
 		postalCode,
 		country,
+		timeManagementBadgeID,
 	} = data;
 	const employee = await Employee.findById(empId);
 
@@ -62,6 +63,9 @@ const updateEmployee = async (empId, data) => {
 	}
 	if (employeeNo && employeeNo !== "") {
 		employee.employeeNo = employeeNo;
+	}
+	if (timeManagementBadgeID && timeManagementBadgeID !== "") {
+		employee.timeManagementBadgeID = timeManagementBadgeID;
 	}
 	if (
 		(streetAddressSuite && streetAddressSuite !== "") ||
@@ -121,6 +125,7 @@ const addEmployeeProfileInfo = async (req, res) => {
 			province,
 			postalCode,
 			country,
+			timeManagementBadgeID,
 		};
 		if (!empId && (firstName, companyName, lastName, birthDate)) {
 			const existingProfileInfo = await EmployeeProfileInfo.findOne({

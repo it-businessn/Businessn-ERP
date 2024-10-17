@@ -16,6 +16,7 @@ const EmpSearchMenu = ({
 	handleInputChange,
 	handleSelect,
 	width,
+	hideMenu,
 }) => {
 	return (
 		<Menu>
@@ -46,20 +47,22 @@ const EmpSearchMenu = ({
 					<InputRightElement size="xs" children={<FaSearch />} />
 				</InputGroup>
 			</MenuButton>
-			<MenuList height="45vh" overflowY={"auto"}>
-				<Input
-					size="xs"
-					placeholder="Enter Manager Name"
-					value={empName}
-					onChange={(e) => handleInputChange(e.target.value)}
-					mb={2}
-				/>
-				{filteredEmployees?.map((emp) => (
-					<MenuItem key={emp._id} onClick={() => handleSelect(emp)}>
-						<Text fontSize="xs">{emp.fullName}</Text>
-					</MenuItem>
-				))}
-			</MenuList>
+			{!hideMenu && (
+				<MenuList height="45vh" overflowY={"auto"}>
+					<Input
+						size="xs"
+						placeholder="Enter Manager Name"
+						value={empName}
+						onChange={(e) => handleInputChange(e.target.value)}
+						mb={2}
+					/>
+					{filteredEmployees?.map((emp) => (
+						<MenuItem key={emp._id} onClick={() => handleSelect(emp)}>
+							<Text fontSize="xs">{emp.fullName}</Text>
+						</MenuItem>
+					))}
+				</MenuList>
+			)}
 		</Menu>
 	);
 };

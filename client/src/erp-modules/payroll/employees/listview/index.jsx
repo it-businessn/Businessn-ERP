@@ -75,6 +75,7 @@ const EmployeeListView = () => {
 				<VStack>
 					<HStack w={"100%"} spacing={2} justifyContent={"space-between"}>
 						<EmpProfileSearch
+							hideMenu
 							filteredEmployees={filteredEmployees}
 							setFilteredEmployees={setFilteredEmployees}
 							setUserId={setUserId}

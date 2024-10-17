@@ -35,7 +35,15 @@ const EmployeeList = ({ employees }) => {
 			<Tbody>
 				{!employees?.length && <EmptyRowRecord />}
 				{employees?.map(
-					({ _id, fullName, payrollStatus, role, employeeNo }) => {
+					({
+						_id,
+						fullName,
+						payrollStatus,
+						role,
+						employeeNo,
+						timeManagementBadgeID,
+						department,
+					}) => {
 						return (
 							<Tr key={_id} _hover={{ bg: "var(--phoneCall_bg_light)" }}>
 								<Td py={0} borderBottomColor={"var(--filter_border_color)"}>
@@ -57,7 +65,7 @@ const EmployeeList = ({ employees }) => {
 									)}
 								</Td>
 								<Td p={0} borderBottomColor={"var(--filter_border_color)"}>
-									<NormalTextTitle size="sm" title={role} />
+									<NormalTextTitle size="sm" title={department[0]} />
 								</Td>
 								<Td py={0} borderBottomColor={"var(--filter_border_color)"}>
 									<NormalTextTitle size="sm" title={role} />
@@ -66,7 +74,10 @@ const EmployeeList = ({ employees }) => {
 									<NormalTextTitle size="sm" title={employeeNo} />
 								</Td>
 								<Td py={0} borderBottomColor={"var(--filter_border_color)"}>
-									<NormalTextTitle size="sm" title={employeeNo} />
+									<NormalTextTitle
+										size="sm"
+										title={timeManagementBadgeID ?? ""}
+									/>
 								</Td>
 								<Td py={0} borderBottomColor={"var(--filter_border_color)"}>
 									<IconButton

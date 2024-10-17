@@ -8,6 +8,7 @@ const EmpProfileSearch = ({
 	setUserId,
 	setEmployee,
 	employees,
+	hideMenu,
 }) => {
 	const [empName, setEmpName] = useState("");
 	const handleInputChange = (value) => {
@@ -33,6 +34,7 @@ const EmpProfileSearch = ({
 				empName={empName}
 				handleInputChange={handleInputChange}
 				handleSelect={handleSelect}
+				hideMenu={hideMenu}
 			/>
 			<Checkbox
 				colorScheme={"facebook"}

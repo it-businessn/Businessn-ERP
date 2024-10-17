@@ -65,6 +65,7 @@ const employeeSchema = new mongoose.Schema({
 	baseModule: [{ type: String, ref: "Module" }],
 	department: [{ type: String, ref: "Department" }],
 	payrollStatus: { type: String, ref: "EmployeeProfileInfo" },
+	timeManagementBadgeID: String,
 });
 
 const Employee = mongoose.model("Employee", employeeSchema);
