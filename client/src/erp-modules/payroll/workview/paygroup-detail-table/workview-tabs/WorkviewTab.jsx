@@ -5,6 +5,7 @@ import EmptyRowRecord from "components/ui/EmptyRowRecord";
 import TableLayout from "components/ui/table/TableLayout";
 import TextTitle from "components/ui/text/TextTitle";
 import { useNavigate } from "react-router-dom";
+import { getAmount } from "utils";
 
 const WorkviewTab = ({
 	cols,
@@ -61,7 +62,7 @@ const WorkviewTab = ({
 									) : // ) : isHourly ? (
 									// 	`${(row[col.pair] / 60).toFixed(0)}:${row[col.pair] % 60}`
 									col.round ? (
-										row[col.pair]?.toFixed(2)
+										getAmount(row[col.pair])
 									) : (
 										row[col.pair]
 									);
