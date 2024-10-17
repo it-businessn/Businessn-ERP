@@ -6,7 +6,7 @@ const Lead = require("../models/Lead");
 const Task = require("../models/Task");
 const UserActivity = require("../models/UserActivity");
 const { isRoleManager } = require("../services/data");
-const { setInitialPermissions } = require("./appController");
+const { setInitialPermissions, findCompany } = require("./appController");
 
 const getPayrollActiveEmployees = async (companyName) => {
 	const existingCompany = await findCompany("name", companyName);
@@ -185,8 +185,6 @@ const getAllSalesAgents = () => async (req, res) => {
 		res.status(404).json({ error: error.message });
 	}
 };
-const findCompany = async (key, value) =>
-	await Company.findOne({ [key]: value });
 
 const updateUser = () => async (req, res) => {
 	const { userId } = req.params;

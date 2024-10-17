@@ -16,11 +16,21 @@ const {
 	isRoleManager,
 } = require("../services/data");
 
+const findCompany = async (key, value) =>
+	await Company.findOne({ [key]: value });
+
 const addEmployee = async (name, data) => {
-	const existingCompany = await Company.findOne({ name });
+	const existingCompany = await findCompany("name", name);
 	data.companyId = existingCompany._id;
-	return await Employee.create(data);
+	const newEmployee = await Employee.create(data);
+
+	if (newEmployee && existingCompany) {
+		existingCompany.employees.push(newEmployee._id);
+		await existingCompany.save();
+	}
+	return newEmployee;
 };
+
 const signUp = async (req, res) => {
 	const {
 		company,
@@ -48,7 +58,6 @@ const signUp = async (req, res) => {
 	try {
 		const hashedPassword = await hashPassword(password);
 
-		const existingCompany = await Company.findOne({ name: company });
 		const employee = await addEmployee(company, {
 			employeeId: companyId,
 			firstName,
@@ -67,21 +76,12 @@ const signUp = async (req, res) => {
 		});
 
 		setInitialPermissions(employee._id, isManager, company);
-		// setCompanyEmployee(employee._id, existingCompany);
-
-		existingCompany.employees.push(employee._id);
-		await existingCompany.save();
 
 		res.status(201).json(employee);
 	} catch (error) {
 		res.status(400).json({ message: error.message });
 	}
 };
-
-// const setCompanyEmployee = async (empId, existingCompany) => {
-// 	existingCompany.employees.push(empId);
-// 	await existingCompany.save();
-// };
 
 const setInitialPermissions = async (empId, isManager, companyName) => {
 	try {
@@ -294,4 +294,5 @@ module.exports = {
 	changePassword,
 	setInitialPermissions,
 	addEmployee,
+	findCompany,
 };
