@@ -8,7 +8,7 @@ import useEmployees from "hooks/useEmployees";
 import usePaygroup from "hooks/usePaygroup";
 import { useSignup } from "hooks/useSignup";
 import PageLayout from "layouts/PageLayout";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useParams } from "react-router-dom";
 import LocalStorageService from "services/LocalStorageService";
 import EmpProfileSearch from "../EmpProfileSearch";
@@ -30,15 +30,11 @@ const EmployeeListView = () => {
 
 	const [isRefresh, setIsRefresh] = useState(false);
 
-	const [isPayrollActive, setIsPayrollActive] = useState(
-		formData.isPayrollActive && !formData.isPayrollInactive,
-	);
-
 	const { employees, filteredEmployees, setFilteredEmployees } = useEmployees(
 		isRefresh,
 		company,
 		false,
-		isPayrollActive,
+		formData,
 	);
 	const [showEmpFilter, setShowEmpFilter] = useState(false);
 	const [showDeptFilter, setShowDeptFilter] = useState(false);
@@ -61,10 +57,6 @@ const EmployeeListView = () => {
 			setShowTerminate(true);
 		}
 	};
-
-	useEffect(() => {
-		setIsPayrollActive(!formData.isPayrollInactive);
-	}, [formData.isPayrollInactive]);
 
 	return (
 		<PageLayout

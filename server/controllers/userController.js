@@ -16,6 +16,14 @@ const getPayrollActiveEmployees = async (companyName) => {
 	});
 };
 
+const getPayrollInActiveEmployees = async (companyName) => {
+	const existingCompany = await findCompany("name", companyName);
+	return await findEmployee({
+		payrollStatus: "Payroll Terminated",
+		companyId: existingCompany._id,
+	});
+};
+
 const findEmployee = async (data) =>
 	await Employee.find(data).select([
 		"fullName",
@@ -65,6 +73,15 @@ const getPayrollActiveCompanyEmployees = () => async (req, res) => {
 	const { companyName } = req.params;
 	try {
 		const result = await getPayrollActiveEmployees(companyName);
+		res.status(200).json(result);
+	} catch (error) {
+		res.status(404).json({ error: error.message });
+	}
+};
+const getPayrollInActiveCompanyEmployees = () => async (req, res) => {
+	const { companyName } = req.params;
+	try {
+		const result = await getPayrollInActiveEmployees(companyName);
 		res.status(200).json(result);
 	} catch (error) {
 		res.status(404).json({ error: error.message });
@@ -276,4 +293,5 @@ module.exports = {
 	findEmployee,
 	getPayrollActiveCompanyEmployees,
 	getPayrollActiveEmployees,
+	getPayrollInActiveCompanyEmployees,
 };

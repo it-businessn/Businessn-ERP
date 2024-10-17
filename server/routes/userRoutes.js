@@ -23,6 +23,11 @@ router.get(
 	userController.getPayrollActiveCompanyEmployees(),
 );
 
+router.get(
+	"/payroll-inactive/:companyName",
+	userController.getPayrollInActiveCompanyEmployees(),
+);
+
 router.get("/:companyName", userController.getCompanyEmployees());
 
 router.put("/:userId", userController.updateUser());

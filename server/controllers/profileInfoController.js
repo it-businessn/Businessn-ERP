@@ -57,13 +57,16 @@ const updateEmployee = async (empId, data) => {
 	if (employee?.payrollStatus !== payrollStatus) {
 		employee.payrollStatus = payrollStatus;
 	}
-	if (personalEmail) {
+	if (personalEmail && personalEmail !== "") {
 		employee.email = personalEmail;
 	}
-	if (employeeNo) {
+	if (employeeNo && employeeNo !== "") {
 		employee.employeeNo = employeeNo;
 	}
-	if (streetAddressSuite || streetAddress) {
+	if (
+		(streetAddressSuite && streetAddressSuite !== "") ||
+		(streetAddress && streetAddress !== "")
+	) {
 		employee.primaryAddress = {
 			streetNumber: `${streetAddressSuite} ${streetAddress}`,
 			city,
