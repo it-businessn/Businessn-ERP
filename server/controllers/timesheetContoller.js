@@ -91,7 +91,10 @@ const getFilteredTimesheets = async (req, res) => {
 	try {
 		let timesheets = await findByRecordTimesheets({
 			companyName,
-			clockIn: { $lte: filteredData?.endDate, $gte: filteredData?.startDate },
+			clockIn: {
+				$lte: moment(filteredData?.endDate),
+				$gte: moment(filteredData?.startDate),
+			},
 		});
 
 		const payInfo = await getTimesheetResult(companyName);

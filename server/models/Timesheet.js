@@ -40,6 +40,7 @@ const timesheetSchema = new mongoose.Schema({
 	statDayHours: { type: Number, default: 0 },
 	sickPayHours: { type: Number, default: 0 },
 	vacationPayHours: { type: Number, default: 0 },
+	notDevice: Boolean,
 });
 
 const Timesheet = mongoose.model("Timesheet", timesheetSchema);

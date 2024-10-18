@@ -10,6 +10,7 @@ const {
 	getPayType,
 	calcTotalHours,
 } = require("../services/data");
+const moment = require("moment");
 
 const getTimecard = async (req, res) => {
 	try {
@@ -40,28 +41,29 @@ const createTimecard = async (req, res) => {
 		// ];
 
 		data?.map(async (entry) => {
-			// if (entry?.isNotDevice && entry?.empId) {
-			// 	entry.timestamp = moment();
-			// 	entry.notDevice = entry?.isNotDevice;
+			if (entry?.isNotDevice && entry?.empId) {
+				entry.timestamp = moment();
+				entry.notDevice = entry?.isNotDevice;
 
-			// 	const emp_user_id = await EmployeeProfileInfo.findOne({
-			// 		empId: entry?.empId,
-			// 	}).select("timeManagementBadgeID");
+				const emp_user_id = await EmployeeProfileInfo.findOne({
+					empId: entry?.empId,
+				}).select("timeManagementBadgeID");
 
-			// 	entry.user_id = emp_user_id?.timeManagementBadgeID;
-			// }
-
-			entry.timestamp = getUTCTime(entry.timestamp);
+				entry.user_id = emp_user_id?.timeManagementBadgeID;
+			}
+			entry.timestamp = getUTCTime(entry.timestamp, entry?.isNotDevice);
 
 			const { user_id, timestamp, punch } = entry;
 
-			const punchRecordExists = await findPunchEntry({
-				user_id,
-				timestamp,
-				punch,
-			});
-			if (!punchRecordExists) {
-				await addPunchEntry(entry);
+			if (user_id) {
+				const punchRecordExists = await findPunchEntry({
+					user_id,
+					timestamp,
+					punch,
+				});
+				if (!punchRecordExists) {
+					await addPunchEntry(entry);
+				}
 			}
 		});
 
@@ -106,6 +108,7 @@ const groupPunches = (punches) => {
 				startBreaks: [],
 				endBreaks: [],
 				clockOut: null,
+				notDevice: punch?.notDevice,
 			};
 			clockIns.push(timeCardRow);
 		} else if (punch.punch === "2" && timeCardRow) {
@@ -137,18 +140,19 @@ const addTimecardEntry = async (entry) => {
 	const empRec = await findEmployee({
 		timeManagementBadgeID: badge_id,
 	});
-	// entry.notDevice= notDevice,
-
+	entry.notDevice = notDevice;
 	entry.companyName = empRec?.companyName;
 	entry.employeeName = empRec?.empId?.fullName;
 	entry.employeeId = empRec?.empId?._id;
 	const newTimecard = await Timecard.create(entry);
+
 	if (newTimecard) {
 		const newTimesheetRecord = {
 			employeeId: entry.employeeId,
 			companyName: entry.companyName,
 			payType: getPayType(clockIn),
 			clockIn,
+			notDevice,
 		};
 		const timesheetRecord = await findTimesheet(newTimesheetRecord);
 

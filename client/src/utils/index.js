@@ -108,8 +108,19 @@ export const getTimeCardFormat = (timestamp, notDevice, timeSheet) => {
 		: date.format("YYYY-MM-DD  hh:mm A");
 };
 
-export const setUTCDate = (date, newDate) => {
-	const utcDate = date ? moment.utc(date) : moment.utc();
+// export const getTimeFormat = (date) => moment.utc(date).format("hh:mm A");
+export const getTimeFormat = (timestamp, notDevice) => {
+	const date = notDevice ? moment(timestamp) : moment.utc(timestamp);
+	return date.format("HH:mm");
+};
+
+export const setUTCDate = (date, newDate, notDevice) => {
+	const utcDate = date
+		? notDevice
+			? moment(date)
+			: moment.utc(date)
+		: moment.utc();
+
 	let [hours, minutes] = newDate.split(":");
 	utcDate.set({
 		hour: parseInt(hours),
@@ -118,9 +129,6 @@ export const setUTCDate = (date, newDate) => {
 	});
 	return utcDate.toISOString();
 };
-
-// export const getTimeFormat = (date) => moment.utc(date).format("hh:mm A");
-export const getTimeFormat = (date) => moment.utc(date).format("HH:mm");
 
 export const getDateDiffHours = (date1, date2, totalBreaks) => {
 	const startTime = moment(date1, "HH:mm");

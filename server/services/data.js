@@ -73,7 +73,8 @@ const ROLES = {
 const isRoleManager = (role) =>
 	role?.includes(ROLES.ADMINISTRATOR) || role?.includes(ROLES.MANAGER);
 
-const getUTCTime = (time) => moment.utc(time).toISOString();
+const getUTCTime = (time, notDevice) =>
+	notDevice ? moment() : moment.utc(time).toISOString();
 
 const startOfDay = (timestamp) => moment(timestamp).startOf("day").toDate();
 const endOfDay = (timestamp) => moment(timestamp).endOf("day").toDate();

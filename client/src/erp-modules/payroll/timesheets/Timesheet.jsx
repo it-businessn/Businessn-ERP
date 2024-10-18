@@ -9,7 +9,7 @@ import { useEffect, useState } from "react";
 import { FaCheck } from "react-icons/fa";
 import { IoClose } from "react-icons/io5";
 import TimesheetService from "services/TimesheetService";
-import { getDefaultDate, getTimeFormat, setUTCDate } from "utils";
+import { getTimeCardFormat, getTimeFormat, setUTCDate } from "utils";
 import { getParamKey, getStatusStyle } from "./data";
 
 const Timesheet = ({
@@ -195,6 +195,7 @@ const Timesheet = ({
 						clockOut,
 						totalBreakHours,
 						totalWorkedHours,
+						notDevice,
 					}) => {
 						const approveStatusBtnCss = getStatusStyle(approveStatus);
 
@@ -240,7 +241,11 @@ const Timesheet = ({
 									<TextTitle title={employeeId?.fullName} />
 								</Td>
 								<Td py={0}>
-									<TextTitle title={getDefaultDate(clockIn)} />
+									<TextTitle
+										title={
+											clockIn && getTimeCardFormat(clockIn, notDevice, true)
+										}
+									/>
 								</Td>
 								<Td p={0}>
 									<PrimaryButton
@@ -270,13 +275,13 @@ const Timesheet = ({
 										className={`timeClockInInput ${_id}`}
 										type="time"
 										name="clockIn"
-										value={clockIn ? getTimeFormat(clockIn) : ""}
+										value={clockIn ? getTimeFormat(clockIn, notDevice) : ""}
 										onClick={() => showPicker(`timeClockInInput ${_id}`)}
 										onChange={(e) => {
 											setFormData({
 												param_hours,
 												recordId: _id,
-												clockIn: setUTCDate(clockIn, e.target.value),
+												clockIn: setUTCDate(clockIn, e.target.value, notDevice),
 											});
 										}}
 										required
@@ -289,13 +294,17 @@ const Timesheet = ({
 										className={`timeClockOutInput ${_id}`}
 										type="time"
 										name="clockOut"
-										value={clockOut ? getTimeFormat(clockOut) : ""}
+										value={clockOut ? getTimeFormat(clockOut, notDevice) : ""}
 										onClick={() => showPicker(`timeClockOutInput ${_id}`)}
 										onChange={(e) => {
 											setFormData({
 												param_hours,
 												recordId: _id,
-												clockOut: setUTCDate(clockIn, e.target.value),
+												clockOut: setUTCDate(
+													clockIn,
+													e.target.value,
+													notDevice,
+												),
 											});
 										}}
 										required
