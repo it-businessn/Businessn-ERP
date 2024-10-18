@@ -67,12 +67,13 @@ const updateEmployee = async (empId, data) => {
 	if (timeManagementBadgeID && timeManagementBadgeID !== "") {
 		employee.timeManagementBadgeID = timeManagementBadgeID;
 	}
-	if (
-		(streetAddressSuite && streetAddressSuite !== "") ||
-		(streetAddress && streetAddress !== "")
-	) {
+
+	const streetNumber = `${
+		streetAddressSuite && streetAddressSuite !== "" ? streetAddressSuite : ""
+	} ${streetAddress && streetAddress !== "" ? streetAddress : ""}`;
+	if (streetNumber && streetNumber !== "") {
 		employee.primaryAddress = {
-			streetNumber: `${streetAddressSuite} ${streetAddress}`,
+			streetNumber,
 			city,
 			state: province,
 			postalCode,
