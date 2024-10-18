@@ -5,7 +5,6 @@ const userPermissionsSchema = new Schema({
 	empId: {
 		type: mongoose.Schema.Types.ObjectId,
 		ref: "Employee",
-		required: true,
 	},
 	canViewPayroll: Boolean,
 	canEditPayroll: Boolean,

@@ -25,7 +25,6 @@ const employeeSchema = new mongoose.Schema({
 	},
 	firstName: {
 		type: String,
-		required: true,
 	},
 	middleName: String,
 	lastName: String,
