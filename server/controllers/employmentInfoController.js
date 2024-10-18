@@ -1,6 +1,8 @@
 const Employee = require("../models/Employee");
 const EmployeeEmploymentInfo = require("../models/EmployeeEmploymentInfo");
 const EmployeePayInfo = require("../models/EmployeePayInfo");
+const { isRoleManager } = require("../services/data");
+const { setInitialPermissions } = require("./appController");
 const { getEmployeeId } = require("./payrollController");
 const { findGroupEmployees } = require("./setUpController");
 const { getPayrollActiveEmployees } = require("./userController");
@@ -124,6 +126,11 @@ const addEmployeeEmploymentInfo = async (req, res) => {
 				req.body,
 			);
 			await updateEmployee(existingEmploymentInfo.empId, data);
+			await setInitialPermissions(
+				existingEmploymentInfo.empId,
+				isRoleManager(employmentRole),
+				companyName,
+			);
 			return res.status(201).json(updatedEmploymentInfo);
 		}
 		const newEmploymentInfo = await EmployeeEmploymentInfo.create({
@@ -138,6 +145,11 @@ const addEmployeeEmploymentInfo = async (req, res) => {
 			companyDepartment,
 		});
 		await updateEmployee(empId, data);
+		await setInitialPermissions(
+			empId,
+			isRoleManager(employmentRole),
+			companyName,
+		);
 		return res.status(201).json(newEmploymentInfo);
 	} catch (error) {
 		res.status(400).json({ message: error.message });

@@ -217,7 +217,7 @@ const updateUser = () => async (req, res) => {
 				if (isManager) {
 					const existingCompany = await findCompany("name", name);
 					if (existingCompany) {
-						setInitialPermissions(userId, isManager, name);
+						await setInitialPermissions(userId, isManager, name);
 						compArr.push(existingCompany._id);
 						existingCompany.employees.push(userId);
 						await existingCompany.save();
@@ -228,7 +228,7 @@ const updateUser = () => async (req, res) => {
 		} else if (isManager) {
 			const existingCompany = await findCompany("_id", companyId);
 			if (existingCompany) {
-				setInitialPermissions(userId, isManager, existingCompany.name);
+				await setInitialPermissions(userId, isManager, existingCompany.name);
 			}
 		}
 		const updatedUser = await Employee.findByIdAndUpdate(userId, req.body, {

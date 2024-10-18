@@ -75,7 +75,7 @@ const signUp = async (req, res) => {
 			fullName: `${firstName} ${middleName} ${lastName}`,
 		});
 
-		setInitialPermissions(employee._id, isManager, company);
+		await setInitialPermissions(employee._id, isManager, company);
 
 		res.status(201).json(employee);
 	} catch (error) {
