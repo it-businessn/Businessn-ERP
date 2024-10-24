@@ -133,6 +133,7 @@ const addEmployeePayInfo = async (req, res) => {
 		extendedHealthER,
 		unionDues,
 		vacationPay,
+		standardHours,
 	} = req.body;
 	try {
 		const existingPayInfo = await findEmployeePayInfo(empId, companyName);
@@ -159,6 +160,7 @@ const addEmployeePayInfo = async (req, res) => {
 			extendedHealthER,
 			unionDues,
 			vacationPay: regPay,
+			standardHours,
 		});
 		return res.status(201).json(newPayInfo);
 	} catch (error) {

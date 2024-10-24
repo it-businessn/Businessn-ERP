@@ -6,10 +6,10 @@ export const EMP_PAY_INFO_EARNINGS_CONFIG = [
 				name: "Select earning type",
 				param_key: "typeOfEarning",
 				control: "radio",
-				options: ["Hourly", "Salary"],
+				options: ["Hourly", "Full Time Salaried", "Part Time Salaried"],
 			},
 			{ name: "Regular Pay", param_key: "regPay" },
-			{ name: "Salary Rate", param_key: "salaryRate" },
+			{ name: "Standard Hours", param_key: "standardHours" },
 		],
 	},
 	// {
@@ -99,5 +99,6 @@ export const getInitialPayInfo = (empId, companyName) => {
 		vacationPay: 0,
 		typeOfEarning: "Hourly",
 		typeOfVacationTreatment: "Accrued",
+		standardHours: "80",
 	};
 };

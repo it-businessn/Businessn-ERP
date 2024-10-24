@@ -13,8 +13,13 @@ const InputRecord = ({
 }) => {
 	const hideSalary =
 		formData.typeOfEarning === "Hourly" && param.name === "Salary Rate";
-	const hideRegular =
-		formData.typeOfEarning === "Salary" && param.name === "Regular Pay";
+	const hideSalaried =
+		formData.typeOfEarning === "Hourly" && param.name === "Standard Hours";
+
+	const fullTimeSalaried =
+		formData.typeOfEarning === "Full Time Salaried" &&
+		param.name === "Standard Hours";
+
 	const showField =
 		!isOnboarding ||
 		(isOnboarding && !HIDE_ONBOARDING_SECTION.includes(param.name));
@@ -24,14 +29,14 @@ const InputRecord = ({
 		? formData?.empPayStub?.[param.param_key] ?? ""
 		: formData[param.param_key]?.toLocaleString() ?? "";
 
-	return hideSalary || hideRegular ? (
+	return hideSalary || hideSalaried ? (
 		<></>
 	) : (
 		showField && (
 			<InputFormControl
 				required={param?.mandatory}
 				subRequired={param?.submandatory}
-				readOnly={readOnly}
+				readOnly={readOnly || fullTimeSalaried}
 				label={param.name}
 				name={param.param_key}
 				type={controlType}
