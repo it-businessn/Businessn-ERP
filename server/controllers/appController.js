@@ -14,6 +14,8 @@ const {
 	ADMIN_PERMISSION,
 	EMPLOYEE_PERMISSION,
 	isRoleManager,
+	NW_ADMIN_PERMISSION,
+	NW_EMPLOYEE_PERMISSION,
 } = require("../services/data");
 
 const findCompany = async (key, value) =>
@@ -84,13 +86,25 @@ const signUp = async (req, res) => {
 };
 
 const setInitialPermissions = async (empId, isManager, companyName) => {
+	const IS_NICO_WYND_ORG = companyName.includes("NW1378");
+	const adminPermissionName = IS_NICO_WYND_ORG
+		? NW_ADMIN_PERMISSION
+		: ADMIN_PERMISSION;
+
+	const empPermissionName = IS_NICO_WYND_ORG
+		? NW_EMPLOYEE_PERMISSION
+		: EMPLOYEE_PERMISSION;
+
+	const permissionName = isManager ? adminPermissionName : empPermissionName;
 	try {
 		const userPermission = new UserPermissions({
 			empId,
 			companyName,
 		});
+		userPermission.permissionType = [];
+
 		if (isManager) {
-			ADMIN_PERMISSION.forEach((_) => {
+			permissionName.forEach((_) => {
 				userPermission.permissionType.push({
 					name: _.name,
 					canAccessModule: true,
@@ -104,7 +118,7 @@ const setInitialPermissions = async (empId, isManager, companyName) => {
 				});
 			});
 		} else {
-			EMPLOYEE_PERMISSION.forEach((_) => {
+			permissionName.forEach((_) => {
 				userPermission.permissionType.push({
 					name: _.name,
 					canAccessModule: true,

@@ -225,8 +225,8 @@ const updateUser = () => async (req, res) => {
 				}
 			}
 			req.body.companyId = compArr;
-		} else if (isManager) {
-			const existingCompany = await findCompany("_id", companyId);
+		} else {
+			const existingCompany = await findCompany("name", companyId?.name);
 			if (existingCompany) {
 				await setInitialPermissions(userId, isManager, existingCompany.name);
 			}
