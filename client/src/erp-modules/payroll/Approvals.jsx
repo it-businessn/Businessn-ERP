@@ -17,17 +17,17 @@ const Approvals = () => {
 			<TableLayout
 				cols={["fullName", "email", "role"]}
 				height="75vh"
-				position="sticky"
-				zIndex="docked"
-				top={-1}
+				// position="sticky"
+				// zIndex="docked"
+				// top={-1}
 			>
 				<Tbody>
 					{!employees?.length && <EmptyRowRecord />}
 					{employees?.map(({ fullName, email, _id, role }) => (
 						<Tr key={_id}>
-							<Td>{fullName}</Td>
-							<Td>{email}</Td>
-							<Td>{role}</Td>
+							<Td p={0}>{fullName}</Td>
+							<Td p={0}>{email}</Td>
+							<Td p={0}>{role}</Td>
 						</Tr>
 					))}
 				</Tbody>

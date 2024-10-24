@@ -171,14 +171,14 @@ const EmployeeListView = () => {
 					selectedPayGroupName={selectedPayGroup?.name}
 				/>
 			)}
-			{showTerminate && (
+			{/* {showTerminate && (
 				<OnboardEmpModal
 					title={"Terminate employee"}
 					showOnboard={showTerminate}
 					setShowOnboard={setShowTerminate}
 					selectedPayGroupName={selectedPayGroup?.name}
 				/>
-			)}
+			)} */}
 		</PageLayout>
 	);
 };

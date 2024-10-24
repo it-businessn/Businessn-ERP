@@ -69,14 +69,14 @@ const UserProfile = ({ user, handleLogout }) => {
 
 					<PopoverBody>
 						<VStack w="100%" alignItems="start" color="var(--logo_bg)">
-							<Button variant="ghost" onClick={showProfilePage}>
+							{/* <Button variant="ghost" onClick={showProfilePage}>
 								Profile
-							</Button>
-							{user?.role === "Administrator" && (
+							</Button> */}
+							{/* {user?.role === "Administrator" && (
 								<Button variant="ghost" onClick={showRegisterPage}>
 									Create Account
 								</Button>
-							)}
+							)} */}
 							<Button variant="ghost" onClick={handleLogout}>
 								Logout
 							</Button>

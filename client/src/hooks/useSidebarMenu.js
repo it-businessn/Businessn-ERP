@@ -18,7 +18,7 @@ const useSidebarMenu = (userId, company, isManager) => {
 				});
 
 				if (response.data) {
-					SIDEBAR_MENU.forEach((data, index) => {
+					SIDEBAR_MENU.map((data, index) => {
 						const menu = response.data.permissionType.find(
 							(item) => item.name === data.name,
 						);
@@ -37,9 +37,10 @@ const useSidebarMenu = (userId, company, isManager) => {
 									: null;
 							}
 						});
+						return data;
 					});
 					setActiveMenu(
-						SIDEBAR_MENU.find((_) => _.permissions.canAccessModule),
+						SIDEBAR_MENU.find((_) => _.permissions?.canAccessModule),
 					);
 				}
 			} catch (error) {

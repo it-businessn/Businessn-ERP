@@ -44,11 +44,16 @@ const WorkviewTab = ({
 
 	return (
 		<BoxCard>
-			<TableLayout cols={cols.map((_) => _.key)} isSmall height={"40vh"}>
+			<TableLayout
+				cols={cols.map((_) => _.key)}
+				isSmall
+				height={"40vh"}
+				whiteSpace="wrap"
+			>
 				<Tbody>
 					{!data?.length && <EmptyRowRecord />}
 					{data?.map((row) => (
-						<Tr key={row._id}>
+						<Tr key={row?.empId?._id}>
 							{cols.map((col) => {
 								const fieldValue =
 									col.key === "" ? (
@@ -74,7 +79,11 @@ const WorkviewTab = ({
 										onFocus={(el) => handleClick(col, row, el.target.name)}
 									>
 										{col.isEditable
-											? renderEditableInput(row._id, col.pair, fieldValue)
+											? renderEditableInput(
+													row?.empId?._id,
+													col.pair,
+													fieldValue,
+											  )
 											: fieldValue}
 									</Td>
 								);

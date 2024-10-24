@@ -75,7 +75,7 @@ const NW_ADMIN_PERMISSION = [
 	// { name: "Payroll Settings" },
 	{ name: "Payroll Employee Dashboard" },
 	// { name: "Payroll Employee Records" },
-	{ name: "Payroll Setup" },
+	// { name: "Payroll Setup" },
 ];
 
 const NW_EMPLOYEE_PERMISSION = [

@@ -12,7 +12,7 @@ const RightPane = ({ selectedUser, stats, company }) => {
 				email={selectedUser?.email}
 				stats={stats}
 			/>
-			<MiniCalendar user={selectedUser} company={company} />
+			<MiniCalendar user={selectedUser} company={company} isPayrollDashboard />
 			<ChatMessages userId={selectedUser._id} company={company} />
 		</BoxCard>
 	);

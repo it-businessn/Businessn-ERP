@@ -9,7 +9,7 @@ import { FaCaretLeft, FaCaretRight } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { getDefaultDateTime } from "utils";
 
-const MiniCalendar = ({ user, company }) => {
+const MiniCalendar = ({ user, company, isPayrollDashboard }) => {
 	const localizer = momentLocalizer(moment);
 	const events = useCompanyEvents(user, company);
 
@@ -127,11 +127,12 @@ const MiniCalendar = ({ user, company }) => {
 					defaultDate={moment().toDate()}
 					value={["3", "10", "20"]}
 				/>
-
-				<LinkButton
-					name="Go to calendar"
-					onClick={() => navigate("/sales/calendar")}
-				/>
+				{!isPayrollDashboard && (
+					<LinkButton
+						name="Go to calendar"
+						onClick={() => navigate("/sales/calendar")}
+					/>
+				)}
 			</Box>
 		)
 	);

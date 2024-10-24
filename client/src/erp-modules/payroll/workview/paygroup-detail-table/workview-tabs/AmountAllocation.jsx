@@ -25,13 +25,15 @@ const AmountAllocation = ({ company, closestRecord, groupId, path }) => {
 	}, [data]);
 
 	const cellClick = (row) => {
-		const item = amountAllocateData?.find((record) => record._id === row._id);
+		const item = amountAllocateData?.find(
+			(record) => record?.empId?._id === row?.empId?._id,
+		);
 		setFormData(item);
 	};
 
 	const handleUpdateData = (id, field, value) => {
 		const updatedData = amountAllocateData.map((record) =>
-			record._id === id ? { ...record, [field]: value } : record,
+			record?.empId?._id === id ? { ...record, [field]: value } : record,
 		);
 		setAmountAllocateData(updatedData);
 	};
@@ -39,12 +41,30 @@ const AmountAllocation = ({ company, closestRecord, groupId, path }) => {
 	const handleSave = async () => {
 		try {
 			const updatedRec = amountAllocateData.find(
-				(record) => record._id === formData._id,
+				(record) => record?.empId?._id === formData?.empId?._id,
 			);
+			const {
+				commission,
+				bonus,
+				retroactive,
+				reimbursement,
+				terminationPayout,
+				vacationPayout,
+				empId,
+			} = updatedRec;
+
 			if (updatedRec) {
 				await PayrollService.updateEmployeeAmountAllocation(
-					updatedRec,
-					updatedRec._id,
+					{
+						commission,
+						bonus,
+						retroactive,
+						reimbursement,
+						terminationPayout,
+						vacationPayout,
+						empId,
+					},
+					updatedRec?.empId?._id,
 				);
 				setRefresh((prev) => !prev);
 				setFormData(null);
