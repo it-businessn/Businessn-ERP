@@ -63,6 +63,26 @@ const EMPLOYEE_PERMISSION = [
 	{ name: "Project Management Communication" },
 ];
 
+const NW_ADMIN_PERMISSION = [
+	{ name: "Payroll" },
+	{ name: "Payroll Dashboard" },
+	{ name: "Payroll Workview" },
+	{ name: "Payroll Process Payroll" },
+	// { name: "Payroll Approvals" },
+	{ name: "Payroll Timesheets" },
+	{ name: "Payroll Employees" },
+	{ name: "Payroll Reports" },
+	// { name: "Payroll Settings" },
+	{ name: "Payroll Employee Dashboard" },
+	// { name: "Payroll Employee Records" },
+	{ name: "Payroll Setup" },
+];
+
+const NW_EMPLOYEE_PERMISSION = [
+	{ name: "Payroll" },
+	{ name: "Payroll Employee Dashboard" },
+];
+
 const ROLES = {
 	EMPLOYEE: "Employee",
 	ADMINISTRATOR: "Administrator",
@@ -154,6 +174,8 @@ const calcTotalHours = (data) => {
 
 module.exports = {
 	ADMIN_PERMISSION,
+	NW_ADMIN_PERMISSION,
+	NW_EMPLOYEE_PERMISSION,
 	EMPLOYEE_PERMISSION,
 	isRoleManager,
 	getUTCTime,
