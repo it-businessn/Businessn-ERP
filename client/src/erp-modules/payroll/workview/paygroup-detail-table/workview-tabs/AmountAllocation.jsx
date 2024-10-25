@@ -1,16 +1,15 @@
 import { Input } from "@chakra-ui/react";
 import OutlineButton from "components/ui/button/OutlineButton";
-import useEmployeePayInfo from "hooks/useEmployeePayInfo";
+import useEmployeeAmountAllocation from "hooks/useEmployeeAmountAllocation";
 import { useEffect, useState } from "react";
 import PayrollService from "services/PayrollService";
 import WorkviewTab from "./WorkviewTab";
 
 const AmountAllocation = ({ company, closestRecord, groupId, path }) => {
 	const [refresh, setRefresh] = useState(false);
-	const data = useEmployeePayInfo(
+	const data = useEmployeeAmountAllocation(
 		company,
 		refresh,
-		null,
 		closestRecord,
 		groupId,
 	);
@@ -54,18 +53,18 @@ const AmountAllocation = ({ company, closestRecord, groupId, path }) => {
 			} = updatedRec;
 
 			if (updatedRec) {
-				await PayrollService.updateEmployeeAmountAllocation(
-					{
-						commission,
-						bonus,
-						retroactive,
-						reimbursement,
-						terminationPayout,
-						vacationPayout,
-						empId,
-					},
-					updatedRec?.empId?._id,
-				);
+				updatedRec.companyName = company;
+				await PayrollService.addEmployeeExtraAmount({
+					payPeriodPayDate: closestRecord?.payPeriodPayDate,
+					companyName: company,
+					commission,
+					bonus,
+					retroactive,
+					reimbursement,
+					terminationPayout,
+					vacationPayout,
+					empId,
+				});
 				setRefresh((prev) => !prev);
 				setFormData(null);
 			}

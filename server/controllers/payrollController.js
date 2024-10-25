@@ -16,7 +16,7 @@ const {
 } = require("../services/payrollService");
 const {
 	findAdditionalHoursAllocatedInfo,
-} = require("./additionalHoursAllocationInfoController");
+} = require("./additionalAllocationInfoController");
 
 const { findGroupEmployees } = require("./setUpController");
 const { getPayrollActiveEmployees } = require("./userController");
@@ -105,6 +105,7 @@ const getGroupedTimesheet = async (req, res) => {
 					await findAdditionalHoursAllocatedInfo({
 						empId: employee._id,
 						companyName,
+						payPeriodPayDate: payDate,
 					});
 				if (additionalHoursAllocatedInfo) {
 					const {
@@ -563,23 +564,6 @@ const getAlertsAndViolationsInfo = async (req, res) => {
 const getPayGroup = () => {};
 const addPayGroup = () => {};
 const updatePayGroup = () => {};
-
-const updateAmountAllocation = async (req, res) => {
-	const { id } = req.params;
-	try {
-		const payStubExists = await EmployeePayStub.findOne({
-			empId: id,
-		});
-		if (payStubExists) {
-			const newRecord = await updatePayStub(payStubExists._id, req.body);
-			res.status(201).json(newRecord);
-		} else {
-			res.status(201).json("No record found");
-		}
-	} catch (error) {
-		res.status(400).json({ message: error.message });
-	}
-};
 
 const findCurrentPayStub = async (
 	payPeriodNum,
@@ -1445,7 +1429,6 @@ module.exports = {
 	addAlertsAndViolations,
 	getAlertsAndViolationsInfo,
 	deleteAlerts,
-	updateAmountAllocation,
 	getEmployeeId,
 	addPayStub,
 	findEmpPayStubDetail,

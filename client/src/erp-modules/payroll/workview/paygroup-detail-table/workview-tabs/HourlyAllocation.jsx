@@ -83,6 +83,7 @@ const HourlyAllocation = ({ company, closestRecord, groupId }) => {
 			);
 			if (updatedRec) {
 				updatedRec.companyName = company;
+				updatedRec.payPeriodPayDate = closestRecord?.payPeriodPayDate;
 				await PayrollService.addAdditionalHoursAllocation(updatedRec);
 				setFormData(null);
 			}

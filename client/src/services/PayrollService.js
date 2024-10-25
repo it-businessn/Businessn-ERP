@@ -11,12 +11,18 @@ const PayrollService = {
 		);
 	},
 
-	async addAdditionalHoursAllocation(data) {
-		return apiService.post("/payroll/additionalHoursAllocation", data);
+	async getAllEmployeeAmountInfo(company, payDate, extraRun, groupId) {
+		return apiService.get(
+			`/payroll/additionalAllocation/${company}/${payDate}/${extraRun}/${groupId}`,
+		);
 	},
 
-	async updateEmployeeAmountAllocation(data, id) {
-		return apiService.put(`/payroll/amountAllocation/${id}`, data, id);
+	async addAdditionalHoursAllocation(data) {
+		return apiService.post("/payroll/additionalAllocation/hours", data);
+	},
+
+	async addEmployeeExtraAmount(data) {
+		return apiService.post(`/payroll/additionalAllocation/amount`, data);
 	},
 
 	async updateEmployeePayInfo(data, id) {

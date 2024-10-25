@@ -41,8 +41,6 @@ router.post("/payGroups", payrollController.addPayGroup);
 
 router.put("/payGroups/:id", payrollController.updatePayGroup);
 
-router.put("/amountAllocation/:id", payrollController.updateAmountAllocation);
-
 router.post("/generate-payStub", payrollController.addEmployeePayStubInfo);
 
 router.post("/generate-alerts", payrollController.addAlertsAndViolations);
