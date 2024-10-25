@@ -15,7 +15,7 @@ const AmountAllocation = ({ company, closestRecord, groupId, path }) => {
 		groupId,
 	);
 
-	const [amountAllocateData, setAmountAllocateData] = useState([]);
+	const [amountAllocateData, setAmountAllocateData] = useState(null);
 	const [formData, setFormData] = useState(null);
 
 	useEffect(() => {
@@ -32,7 +32,7 @@ const AmountAllocation = ({ company, closestRecord, groupId, path }) => {
 	};
 
 	const handleUpdateData = (id, field, value) => {
-		const updatedData = amountAllocateData.map((record) =>
+		const updatedData = amountAllocateData?.map((record) =>
 			record?.empId?._id === id ? { ...record, [field]: value } : record,
 		);
 		setAmountAllocateData(updatedData);
@@ -40,7 +40,7 @@ const AmountAllocation = ({ company, closestRecord, groupId, path }) => {
 
 	const handleSave = async () => {
 		try {
-			const updatedRec = amountAllocateData.find(
+			const updatedRec = amountAllocateData?.find(
 				(record) => record?.empId?._id === formData?.empId?._id,
 			);
 			const {
@@ -107,7 +107,7 @@ const AmountAllocation = ({ company, closestRecord, groupId, path }) => {
 				},
 				{
 					key: "",
-					pair: <OutlineButton name="setup" label="View Balances" size="sm" />,
+					pair: <OutlineButton size="xs" name="setup" label="View Balances" />,
 				},
 			]}
 			data={amountAllocateData}

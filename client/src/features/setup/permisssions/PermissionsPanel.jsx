@@ -28,7 +28,7 @@ const PermissionsPanel = ({
 	company,
 }) => {
 	const [isRefresh, setIsRefresh] = useState(false);
-	const [empName, setEmpName] = useState(null);
+	const [empName, setEmpName] = useState("");
 	const [userPermission, setUserPermission] = useState(null);
 	const [showLoader, setShowLoader] = useState(false);
 	const location = useLocation();

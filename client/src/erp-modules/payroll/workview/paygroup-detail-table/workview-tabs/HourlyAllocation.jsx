@@ -9,7 +9,7 @@ import WorkviewTab from "./WorkviewTab";
 const HourlyAllocation = ({ company, closestRecord, groupId }) => {
 	const data = useEmployeeHoursWorked(company, closestRecord, groupId);
 
-	const [hourlyAllocatedHours, setHourlyAllocatedHours] = useState([]);
+	const [hourlyAllocatedHours, setHourlyAllocatedHours] = useState(null);
 	const [refresh, setRefresh] = useState(false);
 	const [formData, setFormData] = useState(null);
 
@@ -25,7 +25,7 @@ const HourlyAllocation = ({ company, closestRecord, groupId }) => {
 	};
 
 	const handleUpdateData = (id, field, value) => {
-		const updatedData = hourlyAllocatedHours.map((record) =>
+		const updatedData = hourlyAllocatedHours?.map((record) =>
 			record.empId._id === id ? { ...record, [field]: value } : record,
 		);
 		setHourlyAllocatedHours(updatedData);
@@ -33,7 +33,7 @@ const HourlyAllocation = ({ company, closestRecord, groupId }) => {
 
 	const handleSave = async () => {
 		try {
-			const updatedRec = hourlyAllocatedHours.find(
+			const updatedRec = hourlyAllocatedHours?.find(
 				(record) => record.empId._id === formData.empId._id,
 			);
 			if (updatedRec) {
@@ -106,7 +106,9 @@ const HourlyAllocation = ({ company, closestRecord, groupId }) => {
 				},
 				{
 					key: "",
-					pair: <OutlineButton name="setup" label="View Timesheets" />,
+					pair: (
+						<OutlineButton size="xs" name="setup" label="View Timesheets" />
+					),
 				},
 			]}
 			data={hourlyAllocatedHours}

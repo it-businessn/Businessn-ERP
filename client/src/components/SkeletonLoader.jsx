@@ -3,7 +3,7 @@ import NormalTextTitle from "./ui/NormalTextTitle";
 
 const SkeletonLoader = () => (
 	<>
-		<NormalTextTitle title="Loading in progress... Almost there!" />
+		<NormalTextTitle size="sm" title="Loading in progress... Almost there!" />
 		<SkeletonText noOfLines={3} />
 	</>
 );
