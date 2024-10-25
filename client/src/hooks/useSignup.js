@@ -28,11 +28,11 @@ export const useSignup = (refresh) => {
 		employmentType: "",
 	};
 	const [companies, setCompanies] = useState(null);
-	const [empTypes, setEmpTypes] = useState(false);
-	const [roles, setRoles] = useState(false);
-	const [departments, setDepartments] = useState(false);
-	const [modules, setModules] = useState(false);
-	const [managers, setManagers] = useState(false);
+	const [empTypes, setEmpTypes] = useState(null);
+	const [roles, setRoles] = useState(null);
+	const [departments, setDepartments] = useState(null);
+	const [modules, setModules] = useState(null);
+	const [managers, setManagers] = useState(null);
 	const [formData, setFormData] = useState(defaultFormData);
 
 	const resetForm = () => setFormData(defaultFormData);
