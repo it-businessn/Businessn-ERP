@@ -16,6 +16,7 @@ const {
 } = require("../services/payrollService");
 const {
 	findAdditionalHoursAllocatedInfo,
+	findAdditionalAmountAllocatedInfo,
 } = require("./additionalAllocationInfoController");
 
 const { findGroupEmployees } = require("./setUpController");
@@ -735,7 +736,11 @@ const addEmployeePayStubInfo = async (req, res) => {
 	}
 };
 
-const getCurrentTotals = (empTimesheetData, empPayInfoResult) => {
+const getCurrentTotals = (
+	empTimesheetData,
+	empPayInfoResult,
+	empAdditionalHoursAllocated,
+) => {
 	const newEmpData = empTimesheetData ? empTimesheetData : {};
 
 	newEmpData.regPay = empPayInfoResult.regPay;
@@ -748,25 +753,25 @@ const getCurrentTotals = (empTimesheetData, empPayInfoResult) => {
 	newEmpData.sprayPay = 1;
 	newEmpData.firstAidPay = 0.5;
 
-	newEmpData.totalRegHoursWorked = getSumHours(
-		empTimesheetData?.totalRegHoursWorked,
-	);
-	newEmpData.totalOvertimeHoursWorked = getSumHours(
-		empTimesheetData?.totalOvertimeHoursWorked,
-	);
-	newEmpData.totalDblOvertimeHoursWorked = getSumHours(
-		empTimesheetData?.totalDblOvertimeHoursWorked,
-	);
-	newEmpData.totalStatDayHoursWorked = getSumHours(
-		empTimesheetData?.totalStatDayHoursWorked,
-	);
+	newEmpData.totalRegHoursWorked =
+		getSumHours(empTimesheetData?.totalRegHoursWorked) +
+		getSumHours(empAdditionalHoursAllocated?.additionalRegHoursWorked);
+	newEmpData.totalOvertimeHoursWorked =
+		getSumHours(empTimesheetData?.totalOvertimeHoursWorked) +
+		getSumHours(empAdditionalHoursAllocated?.additionalOvertimeHoursWorked);
+	newEmpData.totalDblOvertimeHoursWorked =
+		getSumHours(empTimesheetData?.totalDblOvertimeHoursWorked) +
+		getSumHours(empAdditionalHoursAllocated?.additionalDblOvertimeHoursWorked);
+	newEmpData.totalStatDayHoursWorked =
+		getSumHours(empTimesheetData?.totalStatDayHoursWorked) +
+		getSumHours(empAdditionalHoursAllocated?.additionalStatDayHoursWorked);
 	newEmpData.totalStatHours = getSumHours(empTimesheetData?.totalStatHours);
-	newEmpData.totalSickHoursWorked = getSumHours(
-		empTimesheetData?.totalSickHoursWorked,
-	);
-	newEmpData.totalVacationHoursWorked = getSumHours(
-		empTimesheetData?.totalVacationHoursWorked,
-	);
+	newEmpData.totalSickHoursWorked =
+		getSumHours(empTimesheetData?.totalSickHoursWorked) +
+		getSumHours(empAdditionalHoursAllocated?.additionalSickHoursWorked);
+	newEmpData.totalVacationHoursWorked =
+		getSumHours(empTimesheetData?.totalVacationHoursWorked) +
+		getSumHours(empAdditionalHoursAllocated?.additionalVacationHoursWorked);
 	newEmpData.totalSprayHoursWorked = getSumHours(
 		empTimesheetData?.totalSprayHoursWorked,
 	);
@@ -774,39 +779,39 @@ const getCurrentTotals = (empTimesheetData, empPayInfoResult) => {
 		empTimesheetData?.totalFirstAidHoursWorked,
 	);
 	newEmpData.currentRegPayTotal = getCalcAmount(
-		empTimesheetData?.totalRegHoursWorked || 0,
+		newEmpData?.totalRegHoursWorked || 0,
 		newEmpData.regPay,
 	);
 	newEmpData.currentOverTimePayTotal = getCalcAmount(
-		empTimesheetData?.totalOvertimeHoursWorked || 0,
+		newEmpData?.totalOvertimeHoursWorked || 0,
 		newEmpData.overTimePay,
 	);
 	newEmpData.currentDblOverTimePayTotal = getCalcAmount(
-		empTimesheetData?.totalDblOvertimeHoursWorked || 0,
+		newEmpData?.totalDblOvertimeHoursWorked || 0,
 		newEmpData.dblOverTimePay,
 	);
 	newEmpData.currentStatWorkPayTotal = getCalcAmount(
-		empTimesheetData?.totalStatDayHoursWorked || 0,
+		newEmpData?.totalStatDayHoursWorked || 0,
 		newEmpData.statWorkPay,
 	);
 	newEmpData.currentStatPayTotal = getCalcAmount(
-		empTimesheetData?.totalStatHours || 0,
+		newEmpData?.totalStatHours || 0,
 		newEmpData.statPay,
 	);
 	newEmpData.currentSickPayTotal = getCalcAmount(
-		empTimesheetData?.totalSickHoursWorked || 0,
+		newEmpData?.totalSickHoursWorked || 0,
 		newEmpData.sickPay,
 	);
 	newEmpData.currentVacationPayTotal = getCalcAmount(
-		empTimesheetData?.totalVacationHoursWorked || 0,
+		newEmpData?.totalVacationHoursWorked || 0,
 		newEmpData.vacationPay,
 	);
 	newEmpData.currentSprayPayTotal = getCalcAmount(
-		empTimesheetData?.totalSprayHoursWorked || 0,
+		newEmpData?.totalSprayHoursWorked || 0,
 		newEmpData.sprayPay,
 	);
 	newEmpData.currentFirstAidPayTotal = getCalcAmount(
-		empTimesheetData?.totalFirstAidHoursWorked || 0,
+		newEmpData?.totalFirstAidHoursWorked || 0,
 		newEmpData.firstAidPay,
 	);
 	return newEmpData;
@@ -918,19 +923,34 @@ const buildPayStubDetails = async (
 
 	const empPayStubResult = await findEmployeePayStub(empId, payPeriod);
 
+	const empAdditionalHoursAllocated = await findAdditionalHoursAllocatedInfo({
+		empId,
+		payPeriodPayDate,
+	});
+	const empAdditionalAmountAllocated = await findAdditionalAmountAllocatedInfo({
+		empId,
+		payPeriodPayDate,
+	});
+
 	const empPayInfoResult = await findEmployeePayInfo(empId);
 
-	const newEmpData = getCurrentTotals(empTimesheetData, empPayInfoResult);
+	const newEmpData = getCurrentTotals(
+		empTimesheetData,
+		empPayInfoResult,
+		empAdditionalHoursAllocated,
+	);
 
 	newEmpData.payInLieuPay = empPayStubResult?.payInLieuPay ?? 0;
 	newEmpData.pILBenefitPay = empPayStubResult?.pILBenefitPay ?? 0;
 	newEmpData.bankedTimePay = empPayStubResult?.bankedTimePay ?? 0;
 	newEmpData.regularByAmount = empPayStubResult?.regularByAmount ?? 0;
-	newEmpData.commission = empPayStubResult?.commission ?? 0;
-	newEmpData.retroactive = empPayStubResult?.retroactive ?? 0;
-	newEmpData.vacationPayout = empPayStubResult?.vacationPayout ?? 0;
-	newEmpData.terminationPayout = empPayStubResult?.terminationPayout ?? 0;
-	newEmpData.bonus = empPayStubResult?.bonus ?? 0;
+
+	newEmpData.commission = empAdditionalAmountAllocated?.commission ?? 0;
+	newEmpData.retroactive = empAdditionalAmountAllocated?.retroactive ?? 0;
+	newEmpData.vacationPayout = empAdditionalAmountAllocated?.vacationPayout ?? 0;
+	newEmpData.terminationPayout =
+		empAdditionalAmountAllocated?.terminationPayout ?? 0;
+	newEmpData.bonus = empAdditionalAmountAllocated?.bonus ?? 0;
 	newEmpData.currentVacationBalanceFwd = 0;
 
 	newEmpData.currentGrossPay = calcCurrentGrossPay(newEmpData);

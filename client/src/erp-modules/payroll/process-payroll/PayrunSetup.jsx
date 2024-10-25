@@ -3,6 +3,7 @@ import PrimaryButton from "components/ui/button/PrimaryButton";
 import SelectBox from "components/ui/form/select/SelectBox";
 import TextTitle from "components/ui/text/TextTitle";
 import useCompany from "hooks/useCompany";
+import { useState } from "react";
 import { MdCheckCircle } from "react-icons/md";
 import LocalStorageService from "services/LocalStorageService";
 import PayrollService from "services/PayrollService";
@@ -15,20 +16,25 @@ const PayrunSetup = ({
 	closestRecord,
 	isPayPeriodInactive,
 }) => {
+	const [isLoading, setIsLoading] = useState(false);
 	const { company } = useCompany(
 		LocalStorageService.getItem("selectedCompany"),
 	);
 	const runType = closestRecord?.isExtraRun ? "Extra" : "Regular";
 
 	const handleConfirm = async () => {
+		setIsLoading(true);
 		try {
 			if (!closestRecord.isProcessed) {
-				await PayrollService.addPayPeriodPayStub({
+				const response = await PayrollService.addPayPeriodPayStub({
 					companyName: company,
 					currentPayPeriod: closestRecord,
 				});
+				if (response) {
+					handleClick();
+					setIsLoading(false);
+				}
 			}
-			handleClick();
 		} catch (error) {
 			console.error(error);
 		}
@@ -105,9 +111,9 @@ const PayrunSetup = ({
 				bg="var(--correct_ans)"
 				name={"CONFIRM"}
 				rightIcon={<MdCheckCircle />}
-				// isLoading={isLoading}
+				isLoading={isLoading}
 				isDisabled={isPayPeriodInactive}
-				loadingText="Loading"
+				loadingText="Processing..."
 				onOpen={handleConfirm}
 			/>
 		</HStack>

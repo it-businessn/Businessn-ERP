@@ -1,4 +1,5 @@
 import {
+	Box,
 	HStack,
 	Icon,
 	Table,
@@ -87,53 +88,55 @@ const InputsReview = ({
 
 	return (
 		<HStack alignItems={"end"}>
-			<Table w={"100%"}>
-				<Thead>
-					<Tr>
-						{COLS.map((_) => (
-							<Th key={_}>
-								<TextTitle size={"md"} title={_} />
-							</Th>
-						))}
+			<Box overflow="auto" height={"50vh"} w={"100%"}>
+				<Table>
+					<Thead position="sticky" top={-1} zIndex="docked">
+						<Tr>
+							{COLS.map((_) => (
+								<Th key={_}>
+									<TextTitle size={"md"} title={_} />
+								</Th>
+							))}
 
-						<Th>
-							<Icon as={MdSettingsSuggest} boxSize="5" color="fg.muted" />
-						</Th>
-						<Th />
-					</Tr>
-				</Thead>
-				<Tbody>
-					{(!inputsReviewData || inputsReviewData?.length === 0) && (
-						<EmptyRowRecord data={inputsReviewData} colSpan={COLS.length} />
-					)}
-					{inputsReviewData?.map((data) => (
-						<Tr key={data._id}>
-							<Td>
-								<TextTitle title={data?.empId?.fullName} />
-							</Td>
-							<Td>
-								<TextTitle title={data.totalRegHoursWorked} />
-							</Td>
-							<Td>
-								<TextTitle title={getAmount(data.currentNetPay)} />
-							</Td>
-							<Td>
-								<TextTitle title={getAmount(data.currentDeductionsTotal)} />
-							</Td>
-							<Td>
-								<TextTitle title={getAmount(data.currentGrossPay)} />
-							</Td>
-							<Td>
-								<OutlineButton
-									label={"Review payroll details"}
-									size={"sm"}
-									onClick={() => handleReview(data)}
-								/>
-							</Td>
+							<Th>
+								<Icon as={MdSettingsSuggest} boxSize="5" color="fg.muted" />
+							</Th>
+							<Th />
 						</Tr>
-					))}
-				</Tbody>
-			</Table>
+					</Thead>
+					<Tbody>
+						{(!inputsReviewData || inputsReviewData?.length === 0) && (
+							<EmptyRowRecord data={inputsReviewData} colSpan={COLS.length} />
+						)}
+						{inputsReviewData?.map((data) => (
+							<Tr key={data._id}>
+								<Td p>
+									<TextTitle title={data?.empId?.fullName} />
+								</Td>
+								<Td>
+									<TextTitle title={data.totalRegHoursWorked} />
+								</Td>
+								<Td>
+									<TextTitle title={getAmount(data.currentNetPay)} />
+								</Td>
+								<Td>
+									<TextTitle title={getAmount(data.currentDeductionsTotal)} />
+								</Td>
+								<Td>
+									<TextTitle title={getAmount(data.currentGrossPay)} />
+								</Td>
+								<Td>
+									<OutlineButton
+										label={"Review payroll details"}
+										size={"sm"}
+										onClick={() => handleReview(data)}
+									/>
+								</Td>
+							</Tr>
+						))}
+					</Tbody>
+				</Table>
+			</Box>
 			<PrimaryButton
 				bg="var(--correct_ans)"
 				name={"CONFIRM"}

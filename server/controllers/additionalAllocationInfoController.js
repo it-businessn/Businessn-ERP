@@ -151,6 +151,7 @@ const findAdditionalAmountAllocatedInfo = async (record) =>
 module.exports = {
 	addAdditionalHoursAllocationInfo,
 	findAdditionalHoursAllocatedInfo,
+	findAdditionalAmountAllocatedInfo,
 	addAmountAllocation,
 	getAmountAllocation,
 };

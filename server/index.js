@@ -49,6 +49,8 @@ app.use("/assets", express.static(path.join(__dirname, "assets")));
 app.set("views", __dirname + "/views");
 app.set("view engine", "ejs");
 app.use(expressLayouts);
+app.use(express.json({ limit: "50mb" }));
+app.use(express.urlencoded({ limit: "50mb" }));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ limit: "10mb", extended: false }));
 app.use(cors());
