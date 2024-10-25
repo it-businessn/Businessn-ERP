@@ -10,7 +10,52 @@ const HourlyAllocation = ({ company, closestRecord, groupId }) => {
 	const data = useEmployeeHoursWorked(company, closestRecord, groupId);
 
 	const [hourlyAllocatedHours, setHourlyAllocatedHours] = useState(null);
-	const [refresh, setRefresh] = useState(false);
+	const HOURLY_ALLOCATE_COLS = [
+		{ key: "Employee Name", pair: "obj", pair_key: "fullName" },
+		{ key: "Regular Hrs", pair: "totalRegHoursWorked" },
+		{
+			key: "Add Regular",
+			pair: "additionalRegHoursWorked",
+			isEditable: true,
+		},
+		{ key: "Overtime Hrs", pair: "totalOvertimeHoursWorked" },
+		{
+			key: "Add Overtime",
+			pair: "additionalOvertimeHoursWorked",
+			isEditable: true,
+		},
+		{ key: "Double Overtime Hrs", pair: "totalDblOvertimeHoursWorked" },
+		{
+			key: "Add Dbl Overtime",
+			pair: "additionalDblOvertimeHoursWorked",
+			isEditable: true,
+		},
+		{ key: "Stat. Pay Hrs", pair: "totalStatHours" },
+		// { key: "Additional", pair: "totalRegHoursWorked", isEditable: true },
+		{ key: "Stat. Worked Hrs", pair: "totalStatDayHoursWorked" },
+		{
+			key: "Add Stat. Worked",
+			pair: "additionalStatDayHoursWorked",
+			isEditable: true,
+		},
+		{ key: "Vacation Hrs", pair: "totalVacationHoursWorked" },
+		{
+			key: "Add Vacation",
+			pair: "additionalVacationHoursWorked",
+			isEditable: true,
+		},
+		{ key: "Sick Pay Hrs", pair: "totalSickHoursWorked" },
+		{
+			key: "Add Sick",
+			pair: "additionalSickHoursWorked",
+			isEditable: true,
+		},
+		{
+			key: "",
+			pair: <OutlineButton size="xs" name="setup" label="View Timesheets" />,
+		},
+	];
+
 	const [formData, setFormData] = useState(null);
 
 	useEffect(() => {
@@ -37,80 +82,31 @@ const HourlyAllocation = ({ company, closestRecord, groupId }) => {
 				(record) => record.empId._id === formData.empId._id,
 			);
 			if (updatedRec) {
-				await PayrollService.updateEmployeeHourlyAllocation(
-					updatedRec,
-					updatedRec._id,
-				);
-				setRefresh((prev) => !prev);
+				updatedRec.companyName = company;
+				await PayrollService.addAdditionalHoursAllocation(updatedRec);
 				setFormData(null);
 			}
 		} catch (error) {}
 	};
 
-	const renderEditableInput = (id, field, value) => (
-		<Input
-			type="number"
-			onBlur={() => handleSave()}
-			value={value}
-			onChange={(e) => handleUpdateData(id, field, e.target.value)}
-			width={"80px"}
-			size="sm"
-		/>
-	);
+	const renderEditableInput = (id, field, value) => {
+		return (
+			<Input
+				type="number"
+				onBlur={() => handleSave()}
+				value={value}
+				onChange={(e) => handleUpdateData(id, field, e.target.value)}
+				width={"80px"}
+				size="sm"
+			/>
+		);
+	};
 	return (
 		<WorkviewTab
 			cellClick={cellClick}
 			renderEditableInput={renderEditableInput}
 			isEditable
-			setRefresh={setRefresh}
-			isHourly
-			cols={[
-				{ key: "Employee Name", pair: "obj", pair_key: "fullName" },
-				{ key: "Regular Hrs", pair: "totalRegHoursWorked" },
-				{
-					key: "Add Regular",
-					pair: "additionalRegHoursWorked",
-					isEditable: true,
-				},
-				{ key: "Overtime Hrs", pair: "totalOvertimeHoursWorked" },
-				{
-					key: "Add Overtime",
-					pair: "additionalOvertimeHoursWorked",
-					isEditable: true,
-				},
-				{ key: "Double Overtime Hrs", pair: "totalDblOvertimeHoursWorked" },
-				{
-					key: "Add Dbl Overtime",
-					pair: "additionalDblOvertimeHoursWorked",
-					isEditable: true,
-				},
-				{ key: "Stat. Pay Hrs", pair: "totalStatHours" },
-				// { key: "Additional", pair: "totalRegHoursWorked", isEditable: true },
-				{ key: "Stat. Worked Hrs", pair: "totalStatDayHoursWorked" },
-				{
-					key: "Add Stat. Worked",
-					pair: "additionalStatDayHoursWorked",
-					isEditable: true,
-				},
-				{ key: "Vacation Hrs", pair: "totalVacationHoursWorked" },
-				{
-					key: "Add Vacation",
-					pair: "additionalVacationHoursWorked",
-					isEditable: true,
-				},
-				{ key: "Sick Pay Hrs", pair: "totalSickHoursWorked" },
-				{
-					key: "Add Sick",
-					pair: "additionalSickHoursWorked",
-					isEditable: true,
-				},
-				{
-					key: "",
-					pair: (
-						<OutlineButton size="xs" name="setup" label="View Timesheets" />
-					),
-				},
-			]}
+			cols={HOURLY_ALLOCATE_COLS}
 			data={hourlyAllocatedHours}
 			label="Setup"
 			path={`${ROUTE_PATH.PAYROLL}${ROUTE_PATH.TIMESHEETS}`}

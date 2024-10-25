@@ -25,6 +25,7 @@ const profileInfoRoutes = require("./routes/profileInfoRoutes");
 const employmentInfo = require("./routes/employmentInfo");
 const governmentInfo = require("./routes/governmentInfo");
 const bankingInfo = require("./routes/bankingInfo");
+const additionalHoursAllocationInfo = require("./routes/additionalHoursAllocationInfo");
 const balanceInfo = require("./routes/balanceInfo");
 const permissionsRoutes = require("./routes/permissionRoutes");
 const projectRoutes = require("./routes/projectRoutes");
@@ -80,6 +81,10 @@ app.use("/api/payroll/employmentInfo", employmentInfo);
 app.use("/api/payroll/governmentInfo", governmentInfo);
 app.use("/api/payroll/bankingInfo", bankingInfo);
 app.use("/api/payroll/balanceInfo", balanceInfo);
+app.use(
+	"/api/payroll/additionalHoursAllocation",
+	additionalHoursAllocationInfo,
+);
 app.use("/api/permissions", permissionsRoutes);
 app.use("/api/projects", projectRoutes);
 app.use("/api/questionnaire", questionnaireRoutes);

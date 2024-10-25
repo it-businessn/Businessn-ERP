@@ -14,6 +14,9 @@ const {
 	getSumTotal,
 	getSumHours,
 } = require("../services/payrollService");
+const {
+	findAdditionalHoursAllocatedInfo,
+} = require("./additionalHoursAllocationInfoController");
 
 const { findGroupEmployees } = require("./setUpController");
 const { getPayrollActiveEmployees } = require("./userController");
@@ -72,9 +75,55 @@ const getGroupedTimesheet = async (req, res) => {
 			);
 			if (empTimesheetData) {
 				const result = buildEmpHourlyDetails(empTimesheetData, employee);
+				const additionalHoursAllocatedInfo =
+					await findAdditionalHoursAllocatedInfo({
+						empId: employee._id,
+						companyName,
+					});
+				if (additionalHoursAllocatedInfo) {
+					const {
+						additionalRegHoursWorked,
+						additionalOvertimeHoursWorked,
+						additionalDblOvertimeHoursWorked,
+						additionalStatDayHoursWorked,
+						additionalVacationHoursWorked,
+						additionalSickHoursWorked,
+					} = additionalHoursAllocatedInfo;
+
+					result.additionalRegHoursWorked = additionalRegHoursWorked;
+					result.additionalOvertimeHoursWorked = additionalOvertimeHoursWorked;
+					result.additionalDblOvertimeHoursWorked =
+						additionalDblOvertimeHoursWorked;
+					result.additionalStatDayHoursWorked = additionalStatDayHoursWorked;
+					result.additionalSickHoursWorked = additionalSickHoursWorked;
+					result.additionalVacationHoursWorked = additionalVacationHoursWorked;
+				}
 				aggregatedResult.push(result);
 			} else {
 				const result = buildEmpHourlyDetails(null, employee);
+				const additionalHoursAllocatedInfo =
+					await findAdditionalHoursAllocatedInfo({
+						empId: employee._id,
+						companyName,
+					});
+				if (additionalHoursAllocatedInfo) {
+					const {
+						additionalRegHoursWorked,
+						additionalOvertimeHoursWorked,
+						additionalDblOvertimeHoursWorked,
+						additionalStatDayHoursWorked,
+						additionalVacationHoursWorked,
+						additionalSickHoursWorked,
+					} = additionalHoursAllocatedInfo;
+
+					result.additionalRegHoursWorked = additionalRegHoursWorked;
+					result.additionalOvertimeHoursWorked = additionalOvertimeHoursWorked;
+					result.additionalDblOvertimeHoursWorked =
+						additionalDblOvertimeHoursWorked;
+					result.additionalStatDayHoursWorked = additionalStatDayHoursWorked;
+					result.additionalSickHoursWorked = additionalSickHoursWorked;
+					result.additionalVacationHoursWorked = additionalVacationHoursWorked;
+				}
 				aggregatedResult.push(result);
 			}
 		}
@@ -518,8 +567,15 @@ const updatePayGroup = () => {};
 const updateAmountAllocation = async (req, res) => {
 	const { id } = req.params;
 	try {
-		const newRecord = await updatePayStub(id, req.body);
-		res.status(201).json(newRecord);
+		const payStubExists = await EmployeePayStub.findOne({
+			empId: id,
+		});
+		if (payStubExists) {
+			const newRecord = await updatePayStub(payStubExists._id, req.body);
+			res.status(201).json(newRecord);
+		} else {
+			res.status(201).json("No record found");
+		}
 	} catch (error) {
 		res.status(400).json({ message: error.message });
 	}

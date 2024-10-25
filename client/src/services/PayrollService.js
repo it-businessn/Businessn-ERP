@@ -11,6 +11,10 @@ const PayrollService = {
 		);
 	},
 
+	async addAdditionalHoursAllocation(data) {
+		return apiService.post("/payroll/additionalHoursAllocation", data);
+	},
+
 	async updateEmployeeAmountAllocation(data, id) {
 		return apiService.put(`/payroll/amountAllocation/${id}`, data, id);
 	},
