@@ -1,6 +1,5 @@
 import { SmallAddIcon } from "@chakra-ui/icons";
 import { HStack } from "@chakra-ui/react";
-import Loader from "components/Loader";
 import LeftIconButton from "components/ui/button/LeftIconButton";
 import { useState } from "react";
 import EmpSearchMenu from "../company/group-tab/EmpSearchMenu";
@@ -52,15 +51,12 @@ const UsersPanel = ({
 					/>
 				)}
 			</HStack>
-			{!employees && <Loader autoHeight />}
-			{employees && (
-				<UserList
-					isUser={isUser}
-					filteredEmployees={filteredEmployees}
-					company={company}
-					height={"70vh"}
-				/>
-			)}
+			<UserList
+				isUser={isUser}
+				filteredEmployees={filteredEmployees}
+				company={company}
+				height={"70vh"}
+			/>
 		</>
 	);
 };

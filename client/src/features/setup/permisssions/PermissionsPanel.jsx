@@ -9,8 +9,8 @@ import {
 	Thead,
 	Tr,
 } from "@chakra-ui/react";
-import Loader from "components/Loader";
 
+import EmptyRowRecord from "components/ui/EmptyRowRecord";
 import { SIDEBAR_MENU } from "data";
 import { useEffect, useState } from "react";
 import { FaChevronDown } from "react-icons/fa";
@@ -181,210 +181,201 @@ const PermissionsPanel = ({
 					handleSelect={handleSelect}
 				/>
 			</HStack>
-			{!employees && <Loader autoHeight />}
-			{employees && (
-				<Table variant="simple">
-					<Thead>
-						<Tr>
-							<Th>Section</Th>
-							<Th>Section Access</Th>
-							<Th>User Data</Th>
-							<Th>Group Data</Th>
-							<Th>Region Data</Th>
-							<Th>All Data</Th>
-							<Th>View</Th>
-							<Th>Edit</Th>
-							<Th>Delete</Th>
-						</Tr>
-					</Thead>
-					<Tbody>
-						{showLoader && (
-							<Tr>
-								<Td colSpan={10}>
-									<Loader autoHeight />
+			<Table variant="simple">
+				<Thead>
+					<Tr>
+						<Th>Section</Th>
+						<Th>Section Access</Th>
+						<Th>User Data</Th>
+						<Th>Group Data</Th>
+						<Th>Region Data</Th>
+						<Th>All Data</Th>
+						<Th>View</Th>
+						<Th>Edit</Th>
+						<Th>Delete</Th>
+					</Tr>
+				</Thead>
+				<Tbody>
+					{showLoader && <EmptyRowRecord data={showLoader} colSpan={10} />}
+					{!showLoader &&
+						SIDEBAR_MENU?.map((menu, index) => (
+							<Tr key={menu.id}>
+								<Td w={"550px"} key={menu.name} py={1}>
+									<HStack spacing={2}>
+										{menu.children.length > 0 && (
+											<FaChevronDown
+												onClick={(e) => {
+													e.preventDefault();
+													handleToggle(index, menu.children);
+												}}
+											/>
+										)}
+										<Text>{menu.name}</Text>
+									</HStack>
+									{isExpanded === index &&
+										menu.children?.length > 0 &&
+										menu.children.map((child) => (
+											<Box mt={1.5} key={child.name}>
+												<Text>{child.name}</Text>
+											</Box>
+										))}
+								</Td>
+								<Td w={"50px"} py={1}>
+									<AccessBox
+										permissions={menu?.permissions?.canAccessModule}
+										menu={menu.name}
+										isParent
+										accessName="canAccessModule"
+									/>
+									{isExpanded === index &&
+										menu.children?.length > 0 &&
+										menu.children.map((child) => (
+											<AccessBox
+												key={`${child.name}module`}
+												menu={menu.name}
+												permissions={child?.permissions?.canAccessModule}
+												child={child.name}
+												accessName="canAccessModule"
+											/>
+										))}
+								</Td>
+								<Td w={"50px"} py={1}>
+									<AccessBox
+										menu={menu.name}
+										isParent
+										accessName="canAccessUserData"
+										permissions={menu?.permissions?.canAccessUserData}
+									/>
+									{isExpanded === index &&
+										menu.children?.length > 0 &&
+										menu.children.map((child) => (
+											<AccessBox
+												key={`${child.name}user`}
+												menu={menu.name}
+												child={child.name}
+												permissions={child?.permissions?.canAccessUserData}
+												accessName="canAccessUserData"
+											/>
+										))}
+								</Td>
+								<Td w={"50px"} py={1}>
+									<AccessBox
+										menu={menu.name}
+										isParent
+										accessName="canAccessGroupData"
+										permissions={menu?.permissions?.canAccessGroupData}
+									/>
+									{isExpanded === index &&
+										menu.children?.length > 0 &&
+										menu.children.map((child) => (
+											<AccessBox
+												key={`${child.name}group`}
+												menu={menu.name}
+												child={child.name}
+												permissions={child?.permissions?.canAccessGroupData}
+												accessName="canAccessGroupData"
+											/>
+										))}
+								</Td>
+								<Td w={"50px"} py={1}>
+									<AccessBox
+										menu={menu.name}
+										isParent
+										accessName="canAccessRegionData"
+										permissions={menu?.permissions?.canAccessRegionData}
+									/>
+									{isExpanded === index &&
+										menu.children?.length > 0 &&
+										menu.children.map((child) => (
+											<AccessBox
+												key={`${child.name}reg`}
+												menu={menu.name}
+												child={child.name}
+												permissions={child?.permissions?.canAccessRegionData}
+												accessName="canAccessRegionData"
+											/>
+										))}
+								</Td>
+								<Td w={"50px"} py={1}>
+									<AccessBox
+										menu={menu.name}
+										isParent
+										accessName="canAccessAllData"
+										permissions={menu?.permissions?.canAccessAllData}
+									/>
+									{isExpanded === index &&
+										menu.children?.length > 0 &&
+										menu.children.map((child) => (
+											<AccessBox
+												key={`${child.name}all`}
+												menu={menu.name}
+												child={child.name}
+												permissions={child?.permissions?.canAccessAllData}
+												accessName="canAccessAllData"
+											/>
+										))}
+								</Td>
+								<Td w={"50px"} py={1}>
+									<AccessBox
+										menu={menu.name}
+										isParent
+										accessName="canViewModule"
+										permissions={menu?.permissions?.canViewModule}
+									/>
+									{isExpanded === index &&
+										menu.children?.length > 0 &&
+										menu.children.map((child) => (
+											<AccessBox
+												key={`${child.name}view`}
+												menu={menu.name}
+												child={child.name}
+												permissions={child?.permissions?.canViewModule}
+												accessName="canViewModule"
+											/>
+										))}
+								</Td>
+								<Td w={"50px"} py={1}>
+									<AccessBox
+										menu={menu.name}
+										isParent
+										accessName="canEditModule"
+										permissions={menu?.permissions?.canEditModule}
+									/>
+									{isExpanded === index &&
+										menu.children?.length > 0 &&
+										menu.children.map((child) => (
+											<AccessBox
+												key={`${child.name}edit`}
+												menu={menu.name}
+												child={child.name}
+												permissions={child?.permissions?.canEditModule}
+												accessName="canEditModule"
+											/>
+										))}
+								</Td>
+								<Td w={"50px"} py={1}>
+									<AccessBox
+										menu={menu.name}
+										isParent
+										accessName="canDeleteModule"
+										permissions={menu?.permissions?.canDeleteModule}
+									/>
+									{isExpanded === index &&
+										menu.children?.length > 0 &&
+										menu.children.map((child) => (
+											<AccessBox
+												key={`${child.name}del`}
+												menu={menu.name}
+												child={child.name}
+												permissions={child?.permissions?.canDeleteModule}
+												accessName="canDeleteModule"
+											/>
+										))}
 								</Td>
 							</Tr>
-						)}
-						{!showLoader &&
-							SIDEBAR_MENU?.map((menu, index) => (
-								<Tr key={menu.id}>
-									<Td w={"550px"} key={menu.name} py={1}>
-										<HStack spacing={2}>
-											{menu.children.length > 0 && (
-												<FaChevronDown
-													onClick={(e) => {
-														e.preventDefault();
-														handleToggle(index, menu.children);
-													}}
-												/>
-											)}
-											<Text>{menu.name}</Text>
-										</HStack>
-										{isExpanded === index &&
-											menu.children?.length > 0 &&
-											menu.children.map((child) => (
-												<Box mt={1.5} key={child.name}>
-													<Text>{child.name}</Text>
-												</Box>
-											))}
-									</Td>
-									<Td w={"50px"} py={1}>
-										<AccessBox
-											permissions={menu?.permissions?.canAccessModule}
-											menu={menu.name}
-											isParent
-											accessName="canAccessModule"
-										/>
-										{isExpanded === index &&
-											menu.children?.length > 0 &&
-											menu.children.map((child) => (
-												<AccessBox
-													key={`${child.name}module`}
-													menu={menu.name}
-													permissions={child?.permissions?.canAccessModule}
-													child={child.name}
-													accessName="canAccessModule"
-												/>
-											))}
-									</Td>
-									<Td w={"50px"} py={1}>
-										<AccessBox
-											menu={menu.name}
-											isParent
-											accessName="canAccessUserData"
-											permissions={menu?.permissions?.canAccessUserData}
-										/>
-										{isExpanded === index &&
-											menu.children?.length > 0 &&
-											menu.children.map((child) => (
-												<AccessBox
-													key={`${child.name}user`}
-													menu={menu.name}
-													child={child.name}
-													permissions={child?.permissions?.canAccessUserData}
-													accessName="canAccessUserData"
-												/>
-											))}
-									</Td>
-									<Td w={"50px"} py={1}>
-										<AccessBox
-											menu={menu.name}
-											isParent
-											accessName="canAccessGroupData"
-											permissions={menu?.permissions?.canAccessGroupData}
-										/>
-										{isExpanded === index &&
-											menu.children?.length > 0 &&
-											menu.children.map((child) => (
-												<AccessBox
-													key={`${child.name}group`}
-													menu={menu.name}
-													child={child.name}
-													permissions={child?.permissions?.canAccessGroupData}
-													accessName="canAccessGroupData"
-												/>
-											))}
-									</Td>
-									<Td w={"50px"} py={1}>
-										<AccessBox
-											menu={menu.name}
-											isParent
-											accessName="canAccessRegionData"
-											permissions={menu?.permissions?.canAccessRegionData}
-										/>
-										{isExpanded === index &&
-											menu.children?.length > 0 &&
-											menu.children.map((child) => (
-												<AccessBox
-													key={`${child.name}reg`}
-													menu={menu.name}
-													child={child.name}
-													permissions={child?.permissions?.canAccessRegionData}
-													accessName="canAccessRegionData"
-												/>
-											))}
-									</Td>
-									<Td w={"50px"} py={1}>
-										<AccessBox
-											menu={menu.name}
-											isParent
-											accessName="canAccessAllData"
-											permissions={menu?.permissions?.canAccessAllData}
-										/>
-										{isExpanded === index &&
-											menu.children?.length > 0 &&
-											menu.children.map((child) => (
-												<AccessBox
-													key={`${child.name}all`}
-													menu={menu.name}
-													child={child.name}
-													permissions={child?.permissions?.canAccessAllData}
-													accessName="canAccessAllData"
-												/>
-											))}
-									</Td>
-									<Td w={"50px"} py={1}>
-										<AccessBox
-											menu={menu.name}
-											isParent
-											accessName="canViewModule"
-											permissions={menu?.permissions?.canViewModule}
-										/>
-										{isExpanded === index &&
-											menu.children?.length > 0 &&
-											menu.children.map((child) => (
-												<AccessBox
-													key={`${child.name}view`}
-													menu={menu.name}
-													child={child.name}
-													permissions={child?.permissions?.canViewModule}
-													accessName="canViewModule"
-												/>
-											))}
-									</Td>
-									<Td w={"50px"} py={1}>
-										<AccessBox
-											menu={menu.name}
-											isParent
-											accessName="canEditModule"
-											permissions={menu?.permissions?.canEditModule}
-										/>
-										{isExpanded === index &&
-											menu.children?.length > 0 &&
-											menu.children.map((child) => (
-												<AccessBox
-													key={`${child.name}edit`}
-													menu={menu.name}
-													child={child.name}
-													permissions={child?.permissions?.canEditModule}
-													accessName="canEditModule"
-												/>
-											))}
-									</Td>
-									<Td w={"50px"} py={1}>
-										<AccessBox
-											menu={menu.name}
-											isParent
-											accessName="canDeleteModule"
-											permissions={menu?.permissions?.canDeleteModule}
-										/>
-										{isExpanded === index &&
-											menu.children?.length > 0 &&
-											menu.children.map((child) => (
-												<AccessBox
-													key={`${child.name}del`}
-													menu={menu.name}
-													child={child.name}
-													permissions={child?.permissions?.canDeleteModule}
-													accessName="canDeleteModule"
-												/>
-											))}
-									</Td>
-								</Tr>
-							))}
-					</Tbody>
-				</Table>
-			)}
+						))}
+				</Tbody>
+			</Table>
 		</>
 	);
 };

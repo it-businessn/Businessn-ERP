@@ -22,7 +22,9 @@ const Approvals = () => {
 				// top={-1}
 			>
 				<Tbody>
-					{!employees?.length && <EmptyRowRecord />}
+					{(!employees || employees?.length === 0) && (
+						<EmptyRowRecord data={employees} colSpan={3} />
+					)}
 					{employees?.map(({ fullName, email, _id, role }) => (
 						<Tr key={_id}>
 							<Td p={0}>{fullName}</Td>

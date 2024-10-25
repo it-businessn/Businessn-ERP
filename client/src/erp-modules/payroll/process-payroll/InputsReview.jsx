@@ -103,7 +103,9 @@ const InputsReview = ({
 					</Tr>
 				</Thead>
 				<Tbody>
-					{!inputsReviewData?.length && <EmptyRowRecord />}
+					{(!inputsReviewData || inputsReviewData?.length === 0) && (
+						<EmptyRowRecord data={inputsReviewData} colSpan={COLS.length} />
+					)}
 					{inputsReviewData?.map((data) => (
 						<Tr key={data._id}>
 							<Td>

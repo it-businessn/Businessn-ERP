@@ -108,8 +108,8 @@ const LeadsDocket = () => {
 					</Tr>
 				</Thead>
 				<Tbody>
-					{!data?.length && <EmptyRowRecord />}
-					{data.map((row, rowIndex) => (
+					{(!data || data?.length === 0) && <EmptyRowRecord data={data} />}
+					{data?.map((row, rowIndex) => (
 						<Tr key={rowIndex}>
 							<Td>
 								<Checkbox

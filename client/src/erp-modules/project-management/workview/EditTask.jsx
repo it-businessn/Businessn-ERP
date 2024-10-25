@@ -303,7 +303,9 @@ const EditTask = ({ isOpen, onClose, setRefresh, isFiltered, task }) => {
 												<Th>Assignees</Th>
 											</Thead>
 											<Tbody>
-												{!subTasks?.length && <EmptyRowRecord />}
+												{(!subTasks || subTasks?.length === 0) && (
+													<EmptyRowRecord data={subTasks} colSpan={2} />
+												)}
 												{subTasks?.map((task) => (
 													<Tr key={task}>
 														<Td>{task.taskName}</Td>
@@ -334,7 +336,9 @@ const EditTask = ({ isOpen, onClose, setRefresh, isFiltered, task }) => {
 												<Th>Assignee</Th>
 											</Thead>
 											<Tbody>
-												{!todoItems?.length && <EmptyRowRecord />}
+												{(!todoItems || todoItems?.length === 0) && (
+													<EmptyRowRecord data={todoItems} colSpan={2} />
+												)}
 												{todoItems?.map((todo) => (
 													<Tr key={todo}>
 														<Td>

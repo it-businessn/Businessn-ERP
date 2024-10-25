@@ -73,7 +73,9 @@ const EditGroup = ({ isOpen, onClose, selectedGroup }) => {
 		>
 			<TableLayout cols={COLS} height="83vh" isSmall>
 				<Tbody>
-					{!schedules?.length && <EmptyRowRecord />}
+					{(!schedules || schedules?.length === 0) && (
+						<EmptyRowRecord data={schedules} colSpan={COLS.length} />
+					)}
 					{schedules?.map((item, index) => (
 						<Tr key={item.payPeriod}>
 							<Td p={1}>{item.payPeriod}</Td>

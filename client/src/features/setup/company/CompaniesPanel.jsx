@@ -182,8 +182,10 @@ const CompaniesPanel = ({ setOpenCompanyForm }) => {
 						</Tr>
 					</Thead>
 					<Tbody>
-						{!companies?.length && <EmptyRowRecord />}
-						{companies.map((empType) => (
+						{(!companies || companies?.length === 0) && (
+							<EmptyRowRecord data={companies} colSpan={2} />
+						)}
+						{companies?.map((empType) => (
 							<Tr key={empType._id}>
 								<Td>{empType.name}</Td>
 								<Td>{empType.description}</Td>

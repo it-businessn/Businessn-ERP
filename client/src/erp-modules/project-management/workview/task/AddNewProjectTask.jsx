@@ -293,7 +293,9 @@ const AddNewProjectTask = ({
 												<Th>Assignees</Th>
 											</Thead>
 											<Tbody>
-												{!subTasks?.length && <EmptyRowRecord />}
+												{(!subTasks || subTasks?.length === 0) && (
+													<EmptyRowRecord data={subTasks} colSpan={2} />
+												)}
 												{subTasks?.map((task) => (
 													<Tr key={task}>
 														<Td>{task.taskName}</Td>

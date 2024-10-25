@@ -82,7 +82,9 @@ const ListView = ({
 			) : (
 				<TableLayout cols={LEADS_COLS} height={"73vh"}>
 					<Tbody>
-						{!leadList?.length && <EmptyRowRecord />}
+						{(!leadList || leadList?.length === 0) && (
+							<EmptyRowRecord data={leadList} colSpan={LEADS_COLS?.length} />
+						)}
 						{leadList?.map((_) => (
 							<Tr key={_._id}>
 								<Td py={0.5}>

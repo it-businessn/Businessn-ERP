@@ -96,7 +96,12 @@ const ProjectTable = ({ projects, setRefresh, managers, company }) => {
 				</Thead>
 
 				<Tbody>
-					{!projects?.length && <EmptyRowRecord />}
+					{(!projects || projects?.length === 0) && (
+						<EmptyRowRecord
+							data={projects}
+							colSpan={PROJECT_TABLE_CELLS.length}
+						/>
+					)}
 					{projects?.map((project, index) => (
 						<Tr
 							key={project._id}

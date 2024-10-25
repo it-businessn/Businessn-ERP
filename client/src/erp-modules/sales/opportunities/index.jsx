@@ -15,7 +15,6 @@ import PrimaryButton from "components/ui/button/PrimaryButton";
 import SelectList from "components/ui/form/select/SelectList";
 import TableLayout from "components/ui/table/TableLayout";
 
-import Loader from "components/Loader";
 import EmptyRowRecord from "components/ui/EmptyRowRecord";
 import NormalTextTitle from "components/ui/NormalTextTitle";
 import DeletePopUp from "components/ui/modal/DeletePopUp";
@@ -243,97 +242,100 @@ const Opportunities = () => {
 				</Flex>
 			)}
 
-			{!opportunities && <Loader autoHeight />}
-			{opportunities && (
-				<TableLayout isOpportunity cols={OPPORTUNITY_COLUMNS} height={"73vh"}>
-					<Tbody>
-						{!opportunities?.length && <EmptyRowRecord />}
-						{opportunities?.map((_) => {
-							return (
-								<Tr key={_._id}>
-									<Td py={"0.5em"}>
-										<NormalTextTitle
-											width="200px"
-											size="sm"
-											whiteSpace="wrap"
-											title={_.opportunityName}
+			<TableLayout isOpportunity cols={OPPORTUNITY_COLUMNS} height={"73vh"}>
+				<Tbody>
+					{(!opportunities || opportunities?.length === 0) && (
+						<EmptyRowRecord
+							data={opportunities}
+							colSpan={OPPORTUNITY_COLUMNS?.length}
+						/>
+					)}
+					{opportunities?.map((_) => {
+						return (
+							<Tr key={_._id}>
+								<Td py={"0.5em"}>
+									<NormalTextTitle
+										width="200px"
+										size="sm"
+										whiteSpace="wrap"
+										title={_.opportunityName}
+									/>
+								</Td>
+								<Td py={"0.5em"}>
+									<NormalTextTitle
+										width="200px"
+										size="sm"
+										whiteSpace="wrap"
+										title={toCapitalize(_.name)}
+									/>
+								</Td>
+								<Td py={"0.5em"}>
+									<NormalTextTitle
+										width="200px"
+										whiteSpace="wrap"
+										size="sm"
+										title={_.email}
+									/>
+								</Td>
+								<Td p={0}>
+									<SelectList
+										id={_._id}
+										code="abbr"
+										selectedValue={_.stage}
+										handleSelect={handleSelect}
+										type="stage"
+										data={LEAD_STAGES}
+									/>
+								</Td>
+								<Td p={0} pl={2}>
+									<SelectList
+										id={_._id}
+										code="fullName"
+										selectedValue={_.primaryAssignee?.[0]?.name}
+										type="primaryAssignee"
+										handleSelect={handleSelect}
+										data={assignees}
+									/>
+								</Td>
+								<Td p={0} pl={2}>
+									<SelectList
+										id={_._id}
+										code="fullName"
+										selectedValue={_.supervisorAssignee?.[0]?.name}
+										type="supervisorAssignee"
+										handleSelect={handleSelect}
+										data={assignees}
+									/>
+								</Td>
+								<Td py={"0.5em"}>
+									<NormalTextTitle
+										width="120px"
+										size="sm"
+										title={formatDate(_.createdOn)}
+									/>
+								</Td>
+								<Td py={"0.5em"}>{_.isDisbursedConfirmed ? "Yes" : "No"}</Td>
+								<Td py={"0.5em"}>
+									<HStack>
+										<RiEditLine
+											cursor={"pointer"}
+											onClick={() => setShowEditLead(_)}
 										/>
-									</Td>
-									<Td py={"0.5em"}>
-										<NormalTextTitle
-											width="200px"
-											size="sm"
-											whiteSpace="wrap"
-											title={toCapitalize(_.name)}
+										<FaRegTrashAlt
+											cursor={"pointer"}
+											onClick={() => {
+												setShowConfirmationPopUp(true);
+												setDeleteRecord(_._id);
+											}}
 										/>
-									</Td>
-									<Td py={"0.5em"}>
-										<NormalTextTitle
-											width="200px"
-											whiteSpace="wrap"
-											size="sm"
-											title={_.email}
-										/>
-									</Td>
-									<Td p={0}>
-										<SelectList
-											id={_._id}
-											code="abbr"
-											selectedValue={_.stage}
-											handleSelect={handleSelect}
-											type="stage"
-											data={LEAD_STAGES}
-										/>
-									</Td>
-									<Td p={0} pl={2}>
-										<SelectList
-											id={_._id}
-											code="fullName"
-											selectedValue={_.primaryAssignee?.[0]?.name}
-											type="primaryAssignee"
-											handleSelect={handleSelect}
-											data={assignees}
-										/>
-									</Td>
-									<Td p={0} pl={2}>
-										<SelectList
-											id={_._id}
-											code="fullName"
-											selectedValue={_.supervisorAssignee?.[0]?.name}
-											type="supervisorAssignee"
-											handleSelect={handleSelect}
-											data={assignees}
-										/>
-									</Td>
-									<Td py={"0.5em"}>
-										<NormalTextTitle
-											width="120px"
-											size="sm"
-											title={formatDate(_.createdOn)}
-										/>
-									</Td>
-									<Td py={"0.5em"}>{_.isDisbursedConfirmed ? "Yes" : "No"}</Td>
-									<Td py={"0.5em"}>
-										<HStack>
-											<RiEditLine
-												cursor={"pointer"}
-												onClick={() => setShowEditLead(_)}
-											/>
-											<FaRegTrashAlt
-												cursor={"pointer"}
-												onClick={() => {
-													setShowConfirmationPopUp(true);
-													setDeleteRecord(_._id);
-												}}
-											/>
-										</HStack>
-									</Td>
-								</Tr>
-							);
-						})}
-					</Tbody>
-				</TableLayout>
-			)}
+									</HStack>
+								</Td>
+							</Tr>
+						);
+					})}
+				</Tbody>
+			</TableLayout>
+
 			{(isOpen || showEditLead) && (
 				<AddNewOpportunity
 					showEditLead={showEditLead}

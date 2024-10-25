@@ -55,7 +55,9 @@ const WorkviewTable = ({
 			textAlign="center"
 		>
 			<Tbody>
-				{!payGroupSchedule?.length && <EmptyRowRecord />}
+				{(!payGroupSchedule || payGroupSchedule?.length === 0) && (
+					<EmptyRowRecord data={payGroupSchedule} colSpan={cols.length} />
+				)}
 				{payGroupSchedule?.map(
 					(
 						{

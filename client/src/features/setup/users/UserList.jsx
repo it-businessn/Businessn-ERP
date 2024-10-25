@@ -36,8 +36,10 @@ const UserList = ({
 					</Tr>
 				</Thead>
 				<Tbody>
-					{!filteredEmployees?.length && <EmptyRowRecord />}
-					{filteredEmployees.map(
+					{(!filteredEmployees || filteredEmployees?.length === 0) && (
+						<EmptyRowRecord data={filteredEmployees} colSpan={5} />
+					)}
+					{filteredEmployees?.map(
 						({ fullName, _id, email, baseModule, group, role }) => (
 							<Tr key={_id}>
 								<Td

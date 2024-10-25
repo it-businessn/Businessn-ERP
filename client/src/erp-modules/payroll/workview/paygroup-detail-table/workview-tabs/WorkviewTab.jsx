@@ -51,7 +51,9 @@ const WorkviewTab = ({
 				whiteSpace="wrap"
 			>
 				<Tbody>
-					{!data?.length && <EmptyRowRecord />}
+					{(!data || data?.length === 0) && (
+						<EmptyRowRecord data={data} colSpan={cols.length} />
+					)}
 					{data?.map((row) => (
 						<Tr key={row?.empId?._id}>
 							{cols.map((col) => {

@@ -15,17 +15,19 @@ const EmployeeList = ({ employees }) => {
 	const handleClick = (id) => {
 		navigate(`${empPath}/${id}/0`);
 	};
+	const cols = [
+		"Employee Name",
+		"Status",
+		"Department",
+		"Role",
+		"Employee No",
+		"Badge Id",
+		"Action",
+	];
+
 	return (
 		<TableLayout
-			cols={[
-				"Employee Name",
-				"Status",
-				"Department",
-				"Role",
-				"Employee No",
-				"Badge Id",
-				"Action",
-			]}
+			cols={cols}
 			height="60vh"
 			position="sticky"
 			top={-1}
@@ -33,7 +35,9 @@ const EmployeeList = ({ employees }) => {
 			textAlign="center"
 		>
 			<Tbody>
-				{!employees?.length && <EmptyRowRecord />}
+				{(!employees || employees?.length === 0) && (
+					<EmptyRowRecord data={employees} colSpan={cols.length} />
+				)}
 				{employees?.map(
 					({
 						_id,

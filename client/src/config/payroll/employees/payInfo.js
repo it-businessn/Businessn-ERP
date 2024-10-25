@@ -9,7 +9,8 @@ export const EMP_PAY_INFO_EARNINGS_CONFIG = [
 				options: ["Hourly", "Full Time Salaried", "Part Time Salaried"],
 			},
 			{ name: "Regular Pay", param_key: "regPay" },
-			{ name: "Standard Hours", param_key: "standardHours" },
+			{ name: "Standard Hours (FT)", param_key: "fullTimeStandardHours" },
+			{ name: "Standard Hours (PT)", param_key: "partTimeStandardHours" },
 		],
 	},
 	// {
@@ -99,6 +100,7 @@ export const getInitialPayInfo = (empId, companyName) => {
 		vacationPay: 0,
 		typeOfEarning: "Hourly",
 		typeOfVacationTreatment: "Accrued",
-		standardHours: "80",
+		fullTimeStandardHours: "80",
+		partTimeStandardHours: "",
 	};
 };

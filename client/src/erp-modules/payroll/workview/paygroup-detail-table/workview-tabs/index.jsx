@@ -4,9 +4,9 @@ import TextTitle from "components/ui/text/TextTitle";
 import { useState } from "react";
 import { isExtraPay } from "utils";
 import AmountAllocation from "./AmountAllocation";
-import EmployeeContribution from "./EmployeeContribution";
+// import EmployeeContribution fr om "./EmployeeContribution";
 import EmployeeDetails from "./EmployeeDetails";
-import EmployerContribution from "./EmployerContribution";
+// import EmployerContribution from "./EmployerContribution";
 import HourlyAllocation from "./HourlyAllocation";
 
 const PaygroupDetailTable = ({

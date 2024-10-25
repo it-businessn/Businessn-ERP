@@ -45,7 +45,9 @@ const CalendarTable = ({ cols, data, setIsRefresh, filterText, filter }) => {
 					</Tr>
 				</Thead>
 				<Tbody>
-					{!data?.length && <EmptyRowRecord />}
+					{(!data || data?.length === 0) && (
+						<EmptyRowRecord data={data} colSpan={cols?.length} />
+					)}
 					{data?.map((item) => (
 						<Tr key={item._id}>
 							<Td fontSize={"xs"}>{item.description}</Td>

@@ -11,7 +11,6 @@ import {
 	Tr,
 	useToast,
 } from "@chakra-ui/react";
-import Loader from "components/Loader";
 import EmptyRowRecord from "components/ui/EmptyRowRecord";
 import NormalTextTitle from "components/ui/NormalTextTitle";
 import LeftIconButton from "components/ui/button/LeftIconButton";
@@ -222,111 +221,114 @@ const LeadsDocket = () => {
 					</HStack>
 				</HStack>
 			)}
-			{!leads && <Loader autoHeight />}
-			{leads && (
-				<TableLayout
-					hasMulti
-					cols={LEAD_DOCKET_COLUMNS}
-					isSmall
-					isAllChecked={isAllChecked}
-					handleHeaderCheckboxChange={handleHeaderCheckboxChange}
-					height={"73vh"}
-				>
-					<Tbody>
-						{!leads?.length && <EmptyRowRecord />}
-						{leads?.map(
-							({
-								_id,
-								address,
-								createdOn,
-								companyName,
-								email,
-								industry,
-								opportunityName,
-								phone,
-								primaryAssignee,
-								productService,
-								region,
-								source,
-								stage,
-								supervisorAssignee,
-								isDisbursed,
-								abbreviation,
-								name,
-							}) => (
-								<Tr key={_id}>
-									<Td>
-										<Checkbox
-											colorScheme="facebook"
-											isChecked={checkedRows.includes(_id)}
-											onChange={() => handleCheckboxChange(_id)}
-										/>
-									</Td>
-									<Td p={0.5}>
-										<NormalTextTitle
-											width="250px"
-											size="sm"
-											whiteSpace="wrap"
-											title={opportunityName}
-										/>
-									</Td>
-									<Td p={0.5}>
-										<NormalTextTitle
-											width="200px"
-											size="sm"
-											whiteSpace="wrap"
-											title={toCapitalize(name)}
-										/>
-									</Td>
-									<Td p={0.5}>
-										<SelectList
-											code="name"
-											selectedValue={region}
-											data={REGIONS}
-										/>
-									</Td>
-									<Td p={0.5}>
-										<SelectList
-											code="name"
-											selectedValue={industry}
-											data={INDUSTRIES}
-										/>
-									</Td>
-									<Td p={0.5}>
-										<SelectList
-											code="name"
-											selectedValue={productService}
-											data={PRODUCTS_SERVICES}
-										/>
-									</Td>
-									<Td p={0.5}>
-										<SelectList
-											code="name"
-											selectedValue={source}
-											data={LEAD_SOURCES}
-										/>
-									</Td>
-									<Td p={0.5}>{`${address?.streetNumber || ""} ${
-										address?.city || ""
-									} ${address?.state || ""} ${address?.country || ""} ${
-										address?.postalCode || ""
-									}`}</Td>
-									<Td p={0.5}>{formatDate(createdOn)}</Td>
-									<Td textAlign={"center"}>
-										<FaRegTrashAlt
-											cursor={"pointer"}
-											onClick={() => {
-												setShowConfirmationPopUp(true);
-												setDeleteRecord(_id);
-											}}
-										/>
-									</Td>
-								</Tr>
-							),
-						)}
-					</Tbody>
-				</TableLayout>
-			)}
+			<TableLayout
+				hasMulti
+				cols={LEAD_DOCKET_COLUMNS}
+				isSmall
+				isAllChecked={isAllChecked}
+				handleHeaderCheckboxChange={handleHeaderCheckboxChange}
+				height={"73vh"}
+			>
+				<Tbody>
+					{(!leads || leads?.length === 0) && (
+						<EmptyRowRecord
+							data={leads}
+							colSpan={LEAD_DOCKET_COLUMNS?.length}
+						/>
+					)}
+					{leads?.map(
+						({
+							_id,
+							address,
+							createdOn,
+							companyName,
+							email,
+							industry,
+							opportunityName,
+							phone,
+							primaryAssignee,
+							productService,
+							region,
+							source,
+							stage,
+							supervisorAssignee,
+							isDisbursed,
+							abbreviation,
+							name,
+						}) => (
+							<Tr key={_id}>
+								<Td>
+									<Checkbox
+										colorScheme="facebook"
+										isChecked={checkedRows.includes(_id)}
+										onChange={() => handleCheckboxChange(_id)}
+									/>
+								</Td>
+								<Td p={0.5}>
+									<NormalTextTitle
+										width="250px"
+										size="sm"
+										whiteSpace="wrap"
+										title={opportunityName}
+									/>
+								</Td>
+								<Td p={0.5}>
+									<NormalTextTitle
+										width="200px"
+										size="sm"
+										whiteSpace="wrap"
+										title={toCapitalize(name)}
+									/>
+								</Td>
+								<Td p={0.5}>
+									<SelectList
+										code="name"
+										selectedValue={region}
+										data={REGIONS}
+									/>
+								</Td>
+								<Td p={0.5}>
+									<SelectList
+										code="name"
+										selectedValue={industry}
+										data={INDUSTRIES}
+									/>
+								</Td>
+								<Td p={0.5}>
+									<SelectList
+										code="name"
+										selectedValue={productService}
+										data={PRODUCTS_SERVICES}
+									/>
+								</Td>
+								<Td p={0.5}>
+									<SelectList
+										code="name"
+										selectedValue={source}
+										data={LEAD_SOURCES}
+									/>
+								</Td>
+								<Td p={0.5}>{`${address?.streetNumber || ""} ${
+									address?.city || ""
+								} ${address?.state || ""} ${address?.country || ""} ${
+									address?.postalCode || ""
+								}`}</Td>
+								<Td p={0.5}>{formatDate(createdOn)}</Td>
+								<Td textAlign={"center"}>
+									<FaRegTrashAlt
+										cursor={"pointer"}
+										onClick={() => {
+											setShowConfirmationPopUp(true);
+											setDeleteRecord(_id);
+										}}
+									/>
+								</Td>
+							</Tr>
+						),
+					)}
+				</Tbody>
+			</TableLayout>
+
 			{showConfirmationPopUp && (
 				<DeletePopUp
 					headerTitle={"Delete Lead"}

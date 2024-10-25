@@ -98,8 +98,10 @@ export const MemberTable = (props) => {
 					</Tr>
 				</Thead>
 				<Tbody>
-					{!props.employees?.length && <EmptyRowRecord />}
-					{props.employees.map((member) => (
+					{(!props?.employees || props?.employees?.length === 0) && (
+						<EmptyRowRecord data={props?.employees} colSpan={6} />
+					)}
+					{props?.employees?.map((member) => (
 						<Tr key={member._id}>
 							<Td>
 								<HStack spacing="3">

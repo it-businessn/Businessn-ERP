@@ -10,7 +10,6 @@ import {
 	Tr,
 	useToast,
 } from "@chakra-ui/react";
-import Loader from "components/Loader";
 import EmptyRowRecord from "components/ui/EmptyRowRecord";
 import SelectList from "components/ui/form/select/SelectList";
 import TableLayout from "components/ui/table/TableLayout";
@@ -240,12 +239,13 @@ const LeadsDisbursed = () => {
 				</HStack>
 			)}
 
-			{!activity && <Loader autoHeight />}
-			{activity && (
-				<TableLayout cols={columns} isSmall height={"73vh"}>
-					<Tbody>
-						{!agents?.length && <EmptyRowRecord />}
-						{agents?.map(
+			<TableLayout cols={columns} isSmall height={"73vh"}>
+				<Tbody>
+					{(!activity || activity?.length === 0) && (
+						<EmptyRowRecord data={activity} colSpan={columns?.length} />
+					)}
+					{activity &&
+						agents?.map(
 							({
 								_id,
 								isActive,
@@ -332,9 +332,8 @@ const LeadsDisbursed = () => {
 								</Tr>
 							),
 						)}
-					</Tbody>
-				</TableLayout>
-			)}
+				</Tbody>
+			</TableLayout>
 		</PageLayout>
 	);
 };

@@ -1,5 +1,4 @@
 import { Switch, Table, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
-import Loader from "components/Loader";
 import EmptyRowRecord from "components/ui/EmptyRowRecord";
 import { useSignup } from "hooks/useSignup";
 import { useState } from "react";
@@ -36,35 +35,34 @@ const ModulePanel = ({ company }) => {
 				name={"Add Module"}
 				onClick={handleModuleSubmit}
 			/> */}
-			{!modules && <Loader autoHeight />}
-			{modules && (
-				<Table variant="simple">
-					<Thead>
-						<Tr>
-							<Th>Name</Th>
-							<Th>Active</Th>
+			<Table variant="simple">
+				<Thead>
+					<Tr>
+						<Th>Name</Th>
+						<Th>Active</Th>
+					</Tr>
+				</Thead>
+				<Tbody>
+					{(!modules || modules?.length === 0) && (
+						<EmptyRowRecord data={modules} colSpan={2} />
+					)}
+					{modules?.map((module) => (
+						<Tr key={module._id}>
+							<Td>{module.name}</Td>
+							<Td>
+								<Switch
+									onChange={(e) => {
+										e.preventDefault();
+										handleToggle(module);
+									}}
+									isChecked={module.isActive}
+									colorScheme="facebook"
+								/>
+							</Td>
 						</Tr>
-					</Thead>
-					<Tbody>
-						{!modules?.length && <EmptyRowRecord />}
-						{modules.map((module) => (
-							<Tr key={module._id}>
-								<Td>{module.name}</Td>
-								<Td>
-									<Switch
-										onChange={(e) => {
-											e.preventDefault();
-											handleToggle(module);
-										}}
-										isChecked={module.isActive}
-										colorScheme="facebook"
-									/>
-								</Td>
-							</Tr>
-						))}
-					</Tbody>
-				</Table>
-			)}
+					))}
+				</Tbody>
+			</Table>
 		</>
 	);
 };

@@ -147,28 +147,31 @@ const Timesheet = ({
 		</>
 	);
 
+	const cols = [
+		"Employee Name",
+		"Worked Date",
+		"Status",
+		"Department",
+		"Pay Rate",
+		"Pay Type",
+		"Start Time",
+		"End Time",
+		"Break/Lunch",
+		"Total Worked Hours",
+		"Action",
+	];
 	return (
 		<TableLayout
-			cols={[
-				"Employee Name",
-				"Worked Date",
-				"Status",
-				"Department",
-				"Pay Rate",
-				"Pay Type",
-				"Start Time",
-				"End Time",
-				"Break/Lunch",
-				"Total Worked Hours",
-				"Action",
-			]}
+			cols={cols}
 			position="sticky"
 			zIndex={3}
 			top={-1}
 			height="73vh"
 		>
 			<Tbody>
-				{!timesheetData?.length && <EmptyRowRecord />}
+				{(!timesheetData || timesheetData?.length === 0) && (
+					<EmptyRowRecord data={timesheetData} colSpan={cols.length} />
+				)}
 				{timesheetData?.map(
 					({
 						_id,

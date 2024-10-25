@@ -11,14 +11,18 @@ const InputRecord = ({
 	readOnly,
 	isBalanceInfo,
 }) => {
-	const hideSalary =
-		formData.typeOfEarning === "Hourly" && param.name === "Salary Rate";
-	const hideSalaried =
-		formData.typeOfEarning === "Hourly" && param.name === "Standard Hours";
+	const isHourlyEarning = formData.typeOfEarning === "Hourly";
+	const isFTSalaried = formData.typeOfEarning === "Full Time Salaried";
+	const isPTSalaried = formData.typeOfEarning === "Part Time Salaried";
 
-	const fullTimeSalaried =
-		formData.typeOfEarning === "Full Time Salaried" &&
-		param.name === "Standard Hours";
+	const standardHrsHidden =
+		isHourlyEarning && param.name.includes("Standard Hours");
+
+	const PTSalariedHidden = isFTSalaried && param.name.includes("(PT)");
+
+	const FTSalariedHidden = isPTSalaried && param.name.includes("(FT)");
+
+	const fullTimeSalariedReadonly = isFTSalaried && param.name.includes("(FT)");
 
 	const showField =
 		!isOnboarding ||
@@ -29,14 +33,14 @@ const InputRecord = ({
 		? formData?.empPayStub?.[param.param_key] ?? ""
 		: formData[param.param_key]?.toLocaleString() ?? "";
 
-	return hideSalary || hideSalaried ? (
+	return standardHrsHidden || PTSalariedHidden || FTSalariedHidden ? (
 		<></>
 	) : (
 		showField && (
 			<InputFormControl
 				required={param?.mandatory}
 				subRequired={param?.submandatory}
-				readOnly={readOnly || fullTimeSalaried}
+				readOnly={readOnly || fullTimeSalariedReadonly}
 				label={param.name}
 				name={param.param_key}
 				type={controlType}

@@ -25,28 +25,32 @@ const Timecard = ({ company, userId, timecardRefresh, filter }) => {
 		fetchAllTimecards();
 	}, [timecardRefresh]);
 
+	const cols = [
+		"Employee Name",
+		"TM Badge ID",
+		"Clock In",
+		"Clock Out",
+		"Start Break1",
+		"End Break1",
+		"Start Break2",
+		"End Break2",
+		"Start Break3",
+		"End Break3",
+		"Total Hours (HH:mm)",
+	];
+
 	return (
 		<TableLayout
-			cols={[
-				"Employee Name",
-				"TM Badge ID",
-				"Clock In",
-				"Clock Out",
-				"Start Break1",
-				"End Break1",
-				"Start Break2",
-				"End Break2",
-				"Start Break3",
-				"End Break3",
-				"Total Hours (HH:mm)",
-			]}
+			cols={cols}
 			height="75vh"
 			position="sticky"
 			zIndex={3}
 			top={-1}
 		>
 			<Tbody>
-				{!timeRecords?.length && <EmptyRowRecord />}
+				{(!timeRecords || timeRecords?.length === 0) && (
+					<EmptyRowRecord data={timeRecords} colSpan={cols.length} />
+				)}
 				{timeRecords?.map(
 					({
 						_id,

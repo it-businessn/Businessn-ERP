@@ -13,7 +13,6 @@ import {
 	Tr,
 	VStack,
 } from "@chakra-ui/react";
-import Loader from "components/Loader";
 import PrimaryButton from "components/ui/button/PrimaryButton";
 import TextTitle from "components/ui/text/TextTitle";
 
@@ -121,28 +120,27 @@ const CompanyDetails = ({ company }) => {
 								</Text>
 							</HStack>
 						</VStack>
-						{!modules && <Loader autoHeight />}
-						{modules && (
-							<Table variant="simple" size={"small"}>
-								<Thead>
-									<Tr>
-										<Th px={"1em"}>Module Name</Th>
-										<Th>Admin</Th>
+						<Table variant="simple" size={"small"}>
+							<Thead>
+								<Tr>
+									<Th px={"1em"}>Module Name</Th>
+									<Th>Admin</Th>
+								</Tr>
+							</Thead>
+							<Tbody>
+								{(!modules || modules?.length === 0) && (
+									<EmptyRowRecord data={modules} colSpan={2} />
+								)}
+								{modules?.map((module) => (
+									<Tr key={module._id}>
+										<Td w={"500px"} px={"1em"}>
+											{module.name}
+										</Td>
+										<Td>{module.admin[0]}</Td>
 									</Tr>
-								</Thead>
-								<Tbody>
-									{!modules?.length && <EmptyRowRecord />}
-									{modules.map((module) => (
-										<Tr key={module._id}>
-											<Td w={"500px"} px={"1em"}>
-												{module.name}
-											</Td>
-											<Td>{module.admin[0]}</Td>
-										</Tr>
-									))}
-								</Tbody>
-							</Table>
-						)}
+								))}
+							</Tbody>
+						</Table>
 					</Card>
 				</HStack>
 			)}

@@ -45,7 +45,9 @@ const TaskTable = ({ cols }) => {
 					</Tr>
 				</Thead>
 				<Tbody>
-					{!tasks?.length && <EmptyRowRecord />}
+					{(!tasks || tasks?.length === 0) && (
+						<EmptyRowRecord data={tasks} colSpan={cols?.length} />
+					)}
 					{tasks?.map(({ _id, taskName, priority, dueDate }) => (
 						<Tr key={_id}>
 							<Td fontSize={"xs"}>{taskName}</Td>

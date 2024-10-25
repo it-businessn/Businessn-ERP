@@ -295,7 +295,12 @@ const TaskTable = ({
 						</Tr>
 					</Thead>
 					<Tbody>
-						{!filteredData?.length && <EmptyRowRecord />}
+						{(!filteredData || filteredData?.length === 0) && (
+							<EmptyRowRecord
+								data={filteredData}
+								colSpan={workView_Table?.task_view_cols?.length}
+							/>
+						)}
 						{filteredData?.map((task, index) => {
 							return <Task key={task._id} task={task} index={index} />;
 						})}

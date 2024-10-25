@@ -27,7 +27,9 @@ function Budget({ expenseData, onExpenseChange }) {
 					</Tr>
 				</Thead>
 				<Tbody>
-					{!days?.length && <EmptyRowRecord />}
+					{(!days || days?.length === 0) && (
+						<EmptyRowRecord data={days} colSpan={2} />
+					)}
 					{days?.map((day, index) => (
 						<Tr key={index}>
 							<Td>{day.toDateString()}</Td>
