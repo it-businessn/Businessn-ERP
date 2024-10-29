@@ -40,6 +40,11 @@ const createTimecard = async (req, res) => {
 		// 	},
 		// ];
 
+		// const y = await TimecardRaw.deleteMany({
+		// 	timestamp: { $lt: moment("2024-10-20").toDate() },
+		// });
+		// console.log("del", y);
+
 		data?.map(async (entry) => {
 			if (entry?.isNotDevice && entry?.empId) {
 				entry.timestamp = moment();
@@ -55,13 +60,19 @@ const createTimecard = async (req, res) => {
 
 			const { user_id, timestamp, punch } = entry;
 
+			const dateThreshold = moment("2024-10-20").toDate();
+
+			const timestampCondition = timestamp
+				? { $gt: dateThreshold, $eq: timestamp }
+				: { $gt: dateThreshold };
+
 			if (user_id) {
 				const punchRecordExists = await findPunchEntry({
 					user_id,
-					timestamp,
+					timestamp: timestampCondition,
 					punch,
 				});
-				if (!punchRecordExists) {
+				if (!punchRecordExists && entry.timestamp > dateThreshold) {
 					await addPunchEntry(entry);
 				}
 			}
