@@ -72,7 +72,15 @@ const createTimecard = async (req, res) => {
 					timestamp: timestampCondition,
 					punch,
 				});
-				if (!punchRecordExists && entry.timestamp > dateThreshold) {
+				console.log(
+					"timestampCondition",
+					timestampCondition,
+					"entry.timestamp",
+					entry.timestamp,
+					dateThreshold,
+					entry.timestamp > dateThreshold,
+				);
+				if (!punchRecordExists) {
 					await addPunchEntry(entry);
 				}
 			}
