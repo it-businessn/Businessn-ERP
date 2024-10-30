@@ -74,6 +74,7 @@ const WorkviewTab = ({
 
 								return (
 									<Td
+										textAlign={col?.align}
 										p={0.5}
 										key={col.key}
 										onFocus={(el) => handleClick(col, row, el.target.name)}

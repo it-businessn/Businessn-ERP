@@ -252,7 +252,7 @@ const Timesheet = ({
 								</Td>
 								<Td py={0}>
 									<NormalTextTitle
-										size={"xs"}
+										size="sm"
 										title={employeeId?.department?.[0]}
 									/>
 								</Td>
@@ -309,7 +309,13 @@ const Timesheet = ({
 										isStatPay,
 									)}
 								</Td> */}
-								<Td py={0}>{param_hours_worked ?? 1.5}</Td>
+								<Td py={0}>
+									<NormalTextTitle
+										align={"center"}
+										size="sm"
+										title={param_hours_worked ?? 1.5}
+									/>
+								</Td>
 								<Td p={0}>
 									<PrimaryButton
 										color={approveStatusBtnCss.color}

@@ -83,7 +83,7 @@ const EmployeeDetails = ({
 				cols={[
 					{ key: "Employee Name", pair: "obj", pair_key: "fullName" },
 					{ key: "Employee Number", pair: "obj", pair_key: "employeeId" },
-					{ key: "Payrate", pair: "regPay" },
+					{ key: "Payrate", pair: "regPay", round: true },
 					{ key: "Employee Department", pair: "companyDepartment" },
 					{ key: "Employee Cost Center", pair: "employmentCostCenter" },
 					{
