@@ -60,30 +60,17 @@ const createTimecard = async (req, res) => {
 
 			const { user_id, timestamp, punch } = entry;
 
-			const dateThreshold = moment("2024-10-20").toDate();
-
-			const timestampCondition = timestamp
-				? { $gt: dateThreshold, $eq: timestamp }
-				: { $gt: dateThreshold };
+			const dateThreshold = moment("2024-10-20");
 
 			if (user_id) {
 				const punchRecordExists = await findPunchEntry({
 					user_id,
-					timestamp: timestampCondition,
+					timestamp,
 					punch,
 				});
-				console.log(
-					"timestampCondition",
-					timestampCondition,
-					"entry.timestamp",
-					entry.timestamp,
-					dateThreshold,
-					entry.timestamp > dateThreshold,
-					moment(entry.timestamp).isAfter(moment("2024-10-20")),
-				);
 				if (
 					!punchRecordExists &&
-					moment(entry.timestamp).isAfter(moment("2024-10-20"))
+					moment(entry.timestamp).isAfter(dateThreshold)
 				) {
 					await addPunchEntry(entry);
 				}
