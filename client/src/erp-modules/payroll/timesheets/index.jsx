@@ -191,7 +191,7 @@ const Timesheets = () => {
 					setFilteredData={setFilteredDept}
 					helperText="department"
 				/>
-				<OtherFilter
+				{/* <OtherFilter
 					showOtherFilter={showCCFilter}
 					toggleOtherFilter={toggleCCFilter}
 					handleFilter={handleFilter}
@@ -199,7 +199,7 @@ const Timesheets = () => {
 					filteredData={filteredCC}
 					setFilteredData={setFilteredCC}
 					helperText="cost center"
-				/>
+				/> */}
 			</HStack>
 
 			{showComponent(viewMode)}

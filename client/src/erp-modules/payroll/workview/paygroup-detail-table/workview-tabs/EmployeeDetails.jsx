@@ -97,6 +97,30 @@ const EmployeeDetails = ({
 							</HStack>
 						),
 					},
+					{
+						key: "detail1",
+					},
+					{
+						key: "detail2",
+					},
+					{
+						key: "detail3",
+					},
+					{
+						key: "detail4",
+					},
+					{
+						key: "detail5",
+					},
+					{
+						key: "detail6",
+					},
+					{
+						key: "detail7",
+					},
+					{
+						key: "detail8",
+					},
 				]}
 				data={empData}
 				label="Setup"

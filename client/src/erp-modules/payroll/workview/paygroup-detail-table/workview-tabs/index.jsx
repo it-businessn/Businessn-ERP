@@ -7,6 +7,8 @@ import AmountAllocation from "./AmountAllocation";
 // import EmployeeContribution fr om "./EmployeeContribution";
 import EmployeeDetails from "./EmployeeDetails";
 // import EmployerContribution from "./EmployerContribution";
+import EmployeeContribution from "./EmployeeContribution";
+import EmployerContribution from "./EmployerContribution";
 import HourlyAllocation from "./HourlyAllocation";
 
 const PaygroupDetailTable = ({
@@ -55,28 +57,28 @@ const PaygroupDetailTable = ({
 				/>
 			),
 		},
-		// {
-		// 	id: 3,
-		// 	type: "EE Contribution",
-		// 	name: (
-		// 		<EmployeeContribution
-		// 			company={company}
-		// 			closestRecord={closestRecord}
-		// 			groupId={groupId}
-		// 		/>
-		// 	),
-		// },
-		// {
-		// 	id: 4,
-		// 	type: "ER Contribution",
-		// 	name: (
-		// 		<EmployerContribution
-		// 			company={company}
-		// 			closestRecord={closestRecord}
-		// 			groupId={groupId}
-		// 		/>
-		// 	),
-		// },
+		{
+			id: 3,
+			type: "EE Contribution",
+			name: (
+				<EmployeeContribution
+					company={company}
+					closestRecord={closestRecord}
+					groupId={groupId}
+				/>
+			),
+		},
+		{
+			id: 4,
+			type: "ER Contribution",
+			name: (
+				<EmployerContribution
+					company={company}
+					closestRecord={closestRecord}
+					groupId={groupId}
+				/>
+			),
+		},
 	];
 
 	const [viewMode, setViewMode] = useState(TABS[0].type);

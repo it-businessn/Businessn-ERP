@@ -12,6 +12,10 @@ const currentDate = moment().add(1, "days");
 const currentTime = currentDate.format("HH:mm");
 
 const findByRecordTimesheets = async (record) => {
+	// const y = await Timesheet.deleteMany({
+	// 	employeeId: null,
+	// });
+	// console.log("del", y);
 	const result = await Timesheet.find(record)
 		.populate({
 			path: "employeeId",

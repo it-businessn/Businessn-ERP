@@ -2,7 +2,7 @@ import { Tbody, Td, Tr } from "@chakra-ui/react";
 import PrimaryButton from "components/ui/button/PrimaryButton";
 import BoxCard from "components/ui/card";
 import EmptyRowRecord from "components/ui/EmptyRowRecord";
-import TableLayout from "components/ui/table/TableLayout";
+import WorkviewTable from "components/ui/table/WorkviewTable";
 import TextTitle from "components/ui/text/TextTitle";
 import { useNavigate } from "react-router-dom";
 import { getAmount } from "utils";
@@ -42,7 +42,7 @@ const WorkviewTab = ({
 
 	return (
 		<BoxCard>
-			<TableLayout
+			<WorkviewTable
 				cols={cols.map((_) => _.key)}
 				isSmall
 				height={"32vh"}
@@ -103,7 +103,7 @@ const WorkviewTab = ({
 						</Tr>
 					)}
 				</Tbody>
-			</TableLayout>
+			</WorkviewTable>
 		</BoxCard>
 	);
 };

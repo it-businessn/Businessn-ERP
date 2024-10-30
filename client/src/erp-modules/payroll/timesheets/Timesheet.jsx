@@ -150,14 +150,14 @@ const Timesheet = ({
 	const cols = [
 		"Employee Name",
 		"Worked Date",
-		"Status",
 		"Department",
 		"Pay Rate",
 		"Pay Type",
 		"Start Time",
 		"End Time",
-		"Break/Lunch",
-		"Total Worked Hours",
+		// "Break/Lunch",
+		"Total Hours",
+		"Status",
 		"Action",
 	];
 	return (
@@ -250,19 +250,6 @@ const Timesheet = ({
 										}
 									/>
 								</Td>
-								<Td p={0}>
-									<PrimaryButton
-										color={approveStatusBtnCss.color}
-										bg={approveStatusBtnCss.bg}
-										name={approveStatus}
-										size="xs"
-										px={0}
-										hover={{
-											bg: approveStatusBtnCss.bg,
-											color: approveStatusBtnCss.color,
-										}}
-									/>
-								</Td>
 								<Td py={0}>
 									<NormalTextTitle
 										size={"xs"}
@@ -313,7 +300,7 @@ const Timesheet = ({
 										required
 									/>
 								</Td>
-								<Td p={0} pl={3}>
+								{/* <Td p={0} pl={3}>
 									{renderEditableInput(
 										_id,
 										"totalBreakHours",
@@ -321,8 +308,21 @@ const Timesheet = ({
 										param_hours,
 										isStatPay,
 									)}
+								</Td> */}
+								<Td py={0}>{param_hours_worked ?? 1.5}</Td>
+								<Td p={0}>
+									<PrimaryButton
+										color={approveStatusBtnCss.color}
+										bg={approveStatusBtnCss.bg}
+										name={approveStatus}
+										size="xs"
+										px={0}
+										hover={{
+											bg: approveStatusBtnCss.bg,
+											color: approveStatusBtnCss.color,
+										}}
+									/>
 								</Td>
-								<Td py={0}>{param_hours_worked ?? 0}</Td>
 								<Td py={0}>
 									<HStack spacing={0}>
 										<IconButton
