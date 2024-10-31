@@ -87,49 +87,80 @@ const createTimecard = async (req, res) => {
 const mapTimecardRawToTimecard = async () => {
 	try {
 		const entries = await TimecardRaw.find({}).sort({ timestamp: 1 });
+		entries?.forEach(async (record) => {
+			const { user_id, timestamp, punch } = record;
+			const targetDate = moment(timestamp).format("YYYY-MM-DD");
 
-		let groupedPunches = groupPunches(entries);
-
-		groupedPunches.map(async (entry) => {
-			const clockInTimeEntryExists = await findTimecardEntry({
-				badge_id: entry.badge_id,
-				clockIn: entry.clockIn,
+			const sameClockInTimeEntryExists = await findTimecardEntry({
+				badge_id: user_id,
+				clockIn: {
+					$ne: null,
+				},
+				$expr: {
+					$eq: [
+						{ $dateToString: { format: "%Y-%m-%d", date: "$clockIn" } },
+						targetDate,
+					],
+				},
 			});
-			if (clockInTimeEntryExists) {
-				await Timecard.findByIdAndUpdate(clockInTimeEntryExists._id, entry);
-				updateTimecardEntry(entry);
-			} else {
-				addTimecardEntry(entry);
+
+			if (punch == "0" && !sameClockInTimeEntryExists) {
+				addTimecardEntry({
+					badge_id: user_id,
+					clockIn: timestamp,
+					startBreaks: [],
+					endBreaks: [],
+					clockOut: null,
+					notDevice: record?.notDevice,
+				});
+			}
+			if (punch === "2" && sameClockInTimeEntryExists) {
+				await Timecard.findByIdAndUpdate(sameClockInTimeEntryExists._id, {
+					startBreaks: sameClockInTimeEntryExists.startBreaks.push(timestamp),
+					notDevice: record?.notDevice,
+				});
+				const updatedEntry = {
+					badge_id: user_id,
+					clockIn: sameClockInTimeEntryExists.clockIn,
+					startBreaks: sameClockInTimeEntryExists.startBreaks.push(timestamp),
+					endBreaks: sameClockInTimeEntryExists.endBreaks,
+					clockOut: sameClockInTimeEntryExists.clockOut,
+					notDevice: record?.notDevice,
+				};
+				updateTimecardEntry(updatedEntry);
+			}
+			if (punch === "3" && sameClockInTimeEntryExists) {
+				await Timecard.findByIdAndUpdate(sameClockInTimeEntryExists._id, {
+					endBreaks: sameClockInTimeEntryExists.endBreaks.push(timestamp),
+					notDevice: record?.notDevice,
+				});
+				const updatedEntry = {
+					badge_id: user_id,
+					clockIn: sameClockInTimeEntryExists.clockIn,
+					startBreaks: sameClockInTimeEntryExists.startBreaks,
+					endBreaks: sameClockInTimeEntryExists.endBreaks.push(timestamp),
+					clockOut: sameClockInTimeEntryExists.clockOut,
+					notDevice: record?.notDevice,
+				};
+				updateTimecardEntry(updatedEntry);
+			}
+			if (punch === "1" && sameClockInTimeEntryExists) {
+				await Timecard.findByIdAndUpdate(sameClockInTimeEntryExists._id, {
+					clockOut: timestamp,
+					notDevice: record?.notDevice,
+				});
+				const updatedEntry = {
+					badge_id: user_id,
+					clockIn: sameClockInTimeEntryExists.clockIn,
+					startBreaks: sameClockInTimeEntryExists.startBreaks,
+					endBreaks: sameClockInTimeEntryExists.endBreaks,
+					clockOut: timestamp,
+					notDevice: record?.notDevice,
+				};
+				updateTimecardEntry(updatedEntry);
 			}
 		});
 	} catch (error) {}
-};
-
-const groupPunches = (punches) => {
-	let clockIns = [];
-
-	let timeCardRow = null;
-
-	punches.forEach((punch) => {
-		if (punch.punch === "0") {
-			timeCardRow = {
-				badge_id: punch.user_id,
-				clockIn: punch.timestamp,
-				startBreaks: [],
-				endBreaks: [],
-				clockOut: null,
-				notDevice: punch?.notDevice,
-			};
-			clockIns.push(timeCardRow);
-		} else if (punch.punch === "2" && timeCardRow) {
-			timeCardRow.startBreaks.push(punch.timestamp);
-		} else if (punch.punch === "3" && timeCardRow) {
-			timeCardRow.endBreaks.push(punch.timestamp);
-		} else if (punch.punch === "1" && timeCardRow) {
-			timeCardRow.clockOut = punch.timestamp;
-		}
-	});
-	return clockIns;
 };
 
 const findTimecardEntry = async (entry) => await Timecard.findOne(entry);
