@@ -31,7 +31,7 @@ const EmployeeList = ({ employees }) => {
 			height="60vh"
 			position="sticky"
 			top={-1}
-			zIndex="docked"
+			zIndex={1}
 			textAlign="center"
 		>
 			<Tbody>

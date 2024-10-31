@@ -121,7 +121,7 @@ const EmployeeListView = () => {
 								Inactive
 							</Checkbox>
 						</HStack>
-						<HStack>
+						{/* <HStack>
 							<OtherFilter
 								showOtherFilter={showEmpFilter}
 								toggleOtherFilter={toggleEmpFilter}
@@ -149,7 +149,7 @@ const EmployeeListView = () => {
 								setFilteredData={setFilteredCC}
 								helperText="cost center"
 							/>
-						</HStack>
+						</HStack> */}
 					</HStack>
 				</VStack>
 
