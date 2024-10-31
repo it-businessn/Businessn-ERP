@@ -19,6 +19,7 @@ const WorkviewTable = ({
 	isEarningTable,
 	cols = PAYGROUP_COLS,
 	viewLabel = "View Register",
+	textAlign,
 }) => {
 	const rowRefs = useRef([]);
 	const scrollToRow = (index) => {
@@ -92,14 +93,14 @@ const WorkviewTable = ({
 									<TextTitle title={formatDateBar(payPeriodProcessingDate)} />
 								</Td>
 							)}
-							<Td p={1} textAlign={"center"}>
+							<Td p={1} textAlign={textAlign}>
 								{formatDateBar(payPeriodPayDate)}
 							</Td>
-							<Td p={1} textAlign={"center"}>
+							<Td p={1} textAlign={textAlign}>
 								{formatDateRange(payPeriodStartDate, payPeriodEndDate)}
 							</Td>
 							{!isEarningTable && (
-								<Td p={1} textAlign={"center"}>
+								<Td p={1} textAlign={textAlign}>
 									<PrimaryButton
 										color={color}
 										bg={bg}
@@ -114,7 +115,7 @@ const WorkviewTable = ({
 									/>
 								</Td>
 							)}
-							<Td p={1} textAlign={"center"}>
+							<Td p={1} textAlign={textAlign}>
 								{autoScroll ? (
 									isViewAction ? (
 										<OutlineButton
@@ -141,7 +142,7 @@ const WorkviewTable = ({
 										/>
 									)
 								) : (
-									<HStack spacing={8} justifyContent={"center"}>
+									<HStack justifyContent={"left"}>
 										{isViewAction || isEarningTable ? (
 											<OutlineButton
 												label={viewLabel}

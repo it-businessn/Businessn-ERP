@@ -47,6 +47,7 @@ const WorkviewTab = ({
 				isSmall
 				height={"32vh"}
 				whiteSpace="wrap"
+				textAlign={"center"}
 			>
 				<Tbody>
 					{(!data || data?.length === 0) && (

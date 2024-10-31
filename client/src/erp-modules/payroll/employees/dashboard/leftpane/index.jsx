@@ -59,6 +59,7 @@ const LeftPane = ({ selectedUser, company }) => {
 						height="30vh"
 						viewLabel="View Paystub"
 						handleRegister={handleClick}
+						textAlign={"center"}
 					/>
 				</BoxCard>
 				<BoxCard>
