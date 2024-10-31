@@ -7,8 +7,7 @@ import {
 	Stack,
 } from "@chakra-ui/react";
 import OutlineButton from "components/ui/button/OutlineButton";
-import ActionButtonGroup from "components/ui/form/ActionButtonGroup";
-import MultiSelectFormControl from "components/ui/form/MultiSelectFormControl";
+import PayrollMultiSelectBox from "components/ui/form/select/PayrollMultiSelectBox";
 import { useState } from "react";
 import { FaCaretDown } from "react-icons/fa";
 import { MdOutlineFilterList } from "react-icons/md";
@@ -22,27 +21,19 @@ const OtherFilter = ({
 	setFilteredData,
 	helperText,
 }) => {
-	const [openAssigneeMenu, setOpenAssigneeMenu] = useState(true);
+	const [openMenu, setOpenMenu] = useState(true);
 	const [selectedOptions, setSelectedOptions] = useState([]);
-	const handleMenuToggle = () => {
-		// setOpenAssigneeMenu((prev) => !prev);
+
+	const handleApply = (options) => {
+		setFilteredData(options);
 	};
 
-	const handleCloseMenu = (selectedOptions) => {
-		// setOpenAssigneeMenu(false);
-		setFilteredData(selectedOptions);
+	const handleCloseMenu = () => {
+		setFilteredData(null);
 	};
-	const handleClose = () => {
-		toggleOtherFilter("false");
-		setSelectedOptions([]);
-		setFilteredData([]);
-	};
+
 	return (
-		<Popover
-			isOpen={showOtherFilter}
-			onClose={toggleOtherFilter}
-			overflow="auto"
-		>
+		<Popover isOpen={showOtherFilter} overflow="auto">
 			<PopoverTrigger>
 				<HStack
 					cursor="pointer"
@@ -68,26 +59,14 @@ const OtherFilter = ({
 				<PopoverBody>
 					{showOtherFilter && (
 						<Stack spacing={3} justifyContent={"end"}>
-							<MultiSelectFormControl
+							<PayrollMultiSelectBox
 								w={"15vw"}
-								label={`Select ${helperText}`}
-								tag={"employee(s)"}
-								showMultiSelect={openAssigneeMenu}
-								visibility="visible"
 								data={data}
+								openMenu={openMenu}
 								handleCloseMenu={handleCloseMenu}
+								handleApply={handleApply}
 								selectedOptions={selectedOptions}
 								setSelectedOptions={setSelectedOptions}
-								handleMenuToggle={handleMenuToggle}
-								list={filteredData}
-								hideAvatar
-							/>
-							<ActionButtonGroup
-								size="xs"
-								submitBtnName={"Apply"}
-								closeLabel={"Clear"}
-								onClose={handleClose}
-								onOpen={handleFilter}
 							/>
 						</Stack>
 					)}

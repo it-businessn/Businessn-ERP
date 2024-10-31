@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import TimesheetService from "services/TimesheetService";
 
 const useTimesheet = (company, userId, refresh, filter) => {
+	console.log(refresh, filter);
 	const [timesheets, setTimesheets] = useState(null);
 
 	const fetchAllEmployeeTimesheet = async () => {
@@ -18,8 +19,22 @@ const useTimesheet = (company, userId, refresh, filter) => {
 	};
 
 	useEffect(() => {
-		fetchAllEmployeeTimesheet();
-	}, [company, refresh, filter]);
+		if (
+			refresh ||
+			filter?.startDate ||
+			filter?.filteredEmployees.length ||
+			filter?.filteredDept.length
+		) {
+			fetchAllEmployeeTimesheet();
+		}
+	}, [
+		company,
+		refresh,
+		filter?.startDate,
+		filter?.filteredEmployees,
+		filter?.filteredDept,
+		filter?.filteredCC,
+	]);
 
 	return timesheets;
 };

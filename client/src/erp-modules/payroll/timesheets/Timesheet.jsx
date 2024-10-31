@@ -27,6 +27,7 @@ const Timesheet = ({
 		}
 	};
 	const timesheets = useTimesheet(company, userId, refresh, filter);
+
 	const initialFormData = {
 		clockIn: null,
 		clockOut: null,

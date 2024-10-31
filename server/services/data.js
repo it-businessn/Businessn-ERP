@@ -187,4 +187,5 @@ module.exports = {
 	STAT_HOLIDAYS,
 	getPayType,
 	calcTotalHours,
+	isSameDay,
 };
