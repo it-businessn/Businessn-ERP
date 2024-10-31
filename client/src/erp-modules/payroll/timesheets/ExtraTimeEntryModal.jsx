@@ -92,6 +92,7 @@ const ExtraTimeEntryModal = ({
 					valueText={formData.type}
 					handleChange={handleChange}
 					options={PAY_TYPES}
+					isPayType
 					placeholder="Select pay type"
 				/>
 				<DateTimeFormControl

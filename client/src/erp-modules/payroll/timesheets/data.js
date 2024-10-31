@@ -4,42 +4,49 @@ export const PAY_TYPES = [
 		value: "Regular Pay",
 		param_key: "regPay",
 		param_hours: "regHoursWorked",
+		color: "var(--main_color_black)",
 	},
 	{
 		type: "Overtime Pay",
 		value: "Overtime Pay",
 		param_key: "overTimePay",
 		param_hours: "overtimeHoursWorked",
+		color: "var(--pending)",
 	},
 	{
 		type: "Double Overtime Pay",
 		value: "Double Overtime Pay",
 		param_key: "dblOverTimePay",
 		param_hours: "dblOvertimeHoursWorked",
+		color: "var(--almost_pass)",
 	},
 	{
 		type: "Statutory Worked Pay",
 		value: "Statutory Worked Pay",
 		param_key: "statWorkPay",
 		param_hours: "statDayHoursWorked",
+		color: "var(--stat_item_color)",
 	},
 	{
 		type: "Statutory Pay",
 		value: "Statutory Pay",
 		param_key: "statPay",
 		param_hours: "statDayHours",
+		color: "var(--incorrect_ans)",
 	},
 	{
 		type: "Sick Pay",
 		value: "Sick Pay",
 		param_key: "sickPay",
 		param_hours: "sickPayHours",
+		color: "var(--correct_ans)",
 	},
 	{
 		type: "Vacation Pay",
 		value: "Vacation Pay",
 		param_key: "vacationPay",
 		param_hours: "vacationPayHours",
+		color: "var(--event_color1)",
 	},
 ];
 
@@ -65,6 +72,9 @@ export const getParamKey = (type) => PAY_TYPES.find((_) => _.type === type);
 
 export const getStatusStyle = (approvedStatusName) =>
 	TIMESHEET_STATUS.find((_) => _.value === approvedStatusName);
+
+export const getPayTypeStyle = (payType) =>
+	PAY_TYPES.find((_) => _.value === payType);
 
 export const validateHours = (value) => {
 	const hours = parseInt(value, 10);

@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import TimesheetService from "services/TimesheetService";
 
 const useTimesheet = (company, userId, refresh, filter) => {
-	console.log(refresh, filter);
 	const [timesheets, setTimesheets] = useState(null);
 
 	const fetchAllEmployeeTimesheet = async () => {

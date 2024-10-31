@@ -1,4 +1,5 @@
 import { FormLabel, Select } from "@chakra-ui/react";
+import { getPayTypeStyle } from "erp-modules/payroll/timesheets/data";
 import FormControlMain from ".";
 
 const SelectFormControl = ({
@@ -11,6 +12,7 @@ const SelectFormControl = ({
 	w,
 	placeholder,
 	valueParam = "value",
+	isPayType,
 }) => {
 	return (
 		<FormControlMain>
@@ -24,7 +26,11 @@ const SelectFormControl = ({
 				placeholder={placeholder}
 			>
 				{options?.map((_) => (
-					<option key={_?.value ?? _[valueParam]} value={_[valueParam]}>
+					<option
+						key={_?.value ?? _[valueParam]}
+						value={_[valueParam]}
+						style={{ color: isPayType && getPayTypeStyle(_[name]).color }}
+					>
 						{_?.name || _[name]}
 					</option>
 				))}

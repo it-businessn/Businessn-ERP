@@ -10,12 +10,13 @@ import { FaCheck } from "react-icons/fa";
 import { IoClose } from "react-icons/io5";
 import TimesheetService from "services/TimesheetService";
 import {
+	getAmount,
 	getTimeCardFormat,
 	getTimeFormat,
 	setUTCDate,
 	timeToDecimal,
 } from "utils";
-import { getParamKey, getStatusStyle } from "./data";
+import { getParamKey, getPayTypeStyle, getStatusStyle } from "./data";
 
 const Timesheet = ({
 	company,
@@ -207,6 +208,7 @@ const Timesheet = ({
 						notDevice,
 					}) => {
 						const approveStatusBtnCss = getStatusStyle(approveStatus);
+						const { type, color } = getPayTypeStyle(payType);
 
 						const { param_key, param_hours } = getParamKey(payType);
 
@@ -264,8 +266,12 @@ const Timesheet = ({
 										title={employeeId?.department?.[0]}
 									/>
 								</Td>
-								<Td py={0}>{param_pay_type}</Td>
-								<Td py={0}>{payType}</Td>
+								<Td textAlign={"right"} py={0} w={"90px"}>
+									{getAmount(param_pay_type)}
+								</Td>
+								<Td py={0}>
+									<NormalTextTitle color={color} size="sm" title={type} />
+								</Td>
 								<Td p={0}>
 									<Input
 										size={"sm"}

@@ -36,7 +36,7 @@ const Timecard = ({ company, userId, timecardRefresh, filter }) => {
 		"End Break2",
 		"Start Break3",
 		"End Break3",
-		"Total Hours (HH:mm)",
+		"Total Hours",
 	];
 
 	return (
