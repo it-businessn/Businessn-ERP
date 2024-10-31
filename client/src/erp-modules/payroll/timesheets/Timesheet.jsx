@@ -9,7 +9,12 @@ import { useEffect, useState } from "react";
 import { FaCheck } from "react-icons/fa";
 import { IoClose } from "react-icons/io5";
 import TimesheetService from "services/TimesheetService";
-import { getTimeCardFormat, getTimeFormat, setUTCDate } from "utils";
+import {
+	getTimeCardFormat,
+	getTimeFormat,
+	setUTCDate,
+	timeToDecimal,
+} from "utils";
 import { getParamKey, getStatusStyle } from "./data";
 
 const Timesheet = ({
@@ -233,7 +238,9 @@ const Timesheet = ({
 								? statDayHours
 								: param_hours === "sickPayHours"
 								? sickPayHours
-								: vacationPayHours;
+								: param_hours === "vacationPayHours"
+								? vacationPayHours
+								: 0;
 
 						const isStatPay = payType === "Statutory Pay";
 
@@ -310,11 +317,12 @@ const Timesheet = ({
 										isStatPay,
 									)}
 								</Td> */}
+
 								<Td py={0}>
 									<NormalTextTitle
 										align={"center"}
 										size="sm"
-										title={param_hours_worked ?? 1.5}
+										title={timeToDecimal(param_hours_worked)}
 									/>
 								</Td>
 								<Td p={0}>

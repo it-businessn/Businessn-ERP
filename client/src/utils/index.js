@@ -223,6 +223,9 @@ export const getDefaultDateFormat = (date = null) => {
 export const getAmount = (data) =>
 	`$${data ? Math.abs(data)?.toFixed(2) : 0.0}`;
 
+export const timeToDecimal = (hours, minutes = 0) =>
+	(hours + minutes / 60).toFixed(1);
+
 export const isValidPhoneNumber = (phoneNumber) => {
 	const phoneRegex = /^[0-9]{10}$/;
 	return phoneRegex.test(phoneNumber);
