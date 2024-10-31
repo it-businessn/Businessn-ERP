@@ -44,6 +44,7 @@ const addAdditionalHoursAllocationInfo = async (req, res) => {
 		additionalRegHoursWorked,
 		additionalOvertimeHoursWorked,
 		additionalDblOvertimeHoursWorked,
+		additionalStatHoursWorked,
 		additionalStatDayHoursWorked,
 		additionalVacationHoursWorked,
 		additionalSickHoursWorked,
@@ -70,6 +71,7 @@ const addAdditionalHoursAllocationInfo = async (req, res) => {
 			additionalOvertimeHoursWorked,
 			additionalDblOvertimeHoursWorked,
 			additionalStatDayHoursWorked,
+			additionalStatHoursWorked,
 			additionalVacationHoursWorked,
 			additionalSickHoursWorked,
 			payPeriodPayDate,
@@ -134,7 +136,7 @@ const updateAdditionalHoursAllocatedInfo = async (id, data) =>
 
 const findAdditionalHoursAllocatedInfo = async (record) =>
 	await EmployeeExtraAllocation.findOne(record).select(
-		"empId additionalRegHoursWorked additionalOvertimeHoursWorked additionalDblOvertimeHoursWorked additionalStatDayHoursWorked additionalVacationHoursWorked additionalSickHoursWorked",
+		"empId additionalRegHoursWorked additionalOvertimeHoursWorked additionalDblOvertimeHoursWorked additionalStatDayHoursWorked additionalVacationHoursWorked additionalStatHoursWorked additionalSickHoursWorked",
 	);
 
 const findAdditionalAmountAllocatedInfo = async (record) =>

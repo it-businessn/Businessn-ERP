@@ -35,7 +35,11 @@ const HourlyAllocation = ({ company, closestRecord, groupId }) => {
 			isEditable: true,
 		},
 		{ key: "Stat. Pay Hrs", pair: "totalStatHours", align: "center" },
-		{ key: "Additional", pair: "additionalStatHoursWorked", isEditable: true },
+		{
+			key: "Add Stat. Pay",
+			pair: "additionalStatHoursWorked",
+			isEditable: true,
+		},
 		{
 			key: "Stat. Worked Hrs",
 			pair: "totalStatDayHoursWorked",

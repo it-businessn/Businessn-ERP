@@ -7,6 +7,7 @@ const employeeExtraAllocationSchema = new mongoose.Schema({
 	additionalOvertimeHoursWorked: { type: Number, default: 0 },
 	additionalDblOvertimeHoursWorked: { type: Number, default: 0 },
 	additionalStatDayHoursWorked: { type: Number, default: 0 },
+	additionalStatHoursWorked: { type: Number, default: 0 },
 	additionalVacationHoursWorked: { type: Number, default: 0 },
 	additionalSickHoursWorked: { type: Number, default: 0 },
 	payPeriodStartDate: Date,

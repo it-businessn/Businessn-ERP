@@ -87,6 +87,7 @@ const getGroupedTimesheet = async (req, res) => {
 						additionalOvertimeHoursWorked,
 						additionalDblOvertimeHoursWorked,
 						additionalStatDayHoursWorked,
+						additionalStatHoursWorked,
 						additionalVacationHoursWorked,
 						additionalSickHoursWorked,
 					} = additionalHoursAllocatedInfo;
@@ -95,6 +96,7 @@ const getGroupedTimesheet = async (req, res) => {
 					result.additionalOvertimeHoursWorked = additionalOvertimeHoursWorked;
 					result.additionalDblOvertimeHoursWorked =
 						additionalDblOvertimeHoursWorked;
+					result.additionalStatHoursWorked = additionalStatHoursWorked;
 					result.additionalStatDayHoursWorked = additionalStatDayHoursWorked;
 					result.additionalSickHoursWorked = additionalSickHoursWorked;
 					result.additionalVacationHoursWorked = additionalVacationHoursWorked;
@@ -114,6 +116,7 @@ const getGroupedTimesheet = async (req, res) => {
 						additionalOvertimeHoursWorked,
 						additionalDblOvertimeHoursWorked,
 						additionalStatDayHoursWorked,
+						additionalStatHoursWorked,
 						additionalVacationHoursWorked,
 						additionalSickHoursWorked,
 					} = additionalHoursAllocatedInfo;
@@ -122,6 +125,7 @@ const getGroupedTimesheet = async (req, res) => {
 					result.additionalOvertimeHoursWorked = additionalOvertimeHoursWorked;
 					result.additionalDblOvertimeHoursWorked =
 						additionalDblOvertimeHoursWorked;
+					result.additionalStatHoursWorked = additionalStatHoursWorked;
 					result.additionalStatDayHoursWorked = additionalStatDayHoursWorked;
 					result.additionalSickHoursWorked = additionalSickHoursWorked;
 					result.additionalVacationHoursWorked = additionalVacationHoursWorked;
@@ -762,10 +766,12 @@ const getCurrentTotals = (
 	newEmpData.totalDblOvertimeHoursWorked =
 		getSumHours(empTimesheetData?.totalDblOvertimeHoursWorked) +
 		getSumHours(empAdditionalHoursAllocated?.additionalDblOvertimeHoursWorked);
+	newEmpData.totalStatHours =
+		getSumHours(empTimesheetData?.totalStatHours) +
+		getSumHours(empAdditionalHoursAllocated?.additionalStatHoursWorked);
 	newEmpData.totalStatDayHoursWorked =
 		getSumHours(empTimesheetData?.totalStatDayHoursWorked) +
 		getSumHours(empAdditionalHoursAllocated?.additionalStatDayHoursWorked);
-	newEmpData.totalStatHours = getSumHours(empTimesheetData?.totalStatHours);
 	newEmpData.totalSickHoursWorked =
 		getSumHours(empTimesheetData?.totalSickHoursWorked) +
 		getSumHours(empAdditionalHoursAllocated?.additionalSickHoursWorked);
