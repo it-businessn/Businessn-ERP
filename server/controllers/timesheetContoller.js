@@ -216,10 +216,12 @@ const createTimesheet = async (req, res) => {
 			clockIn,
 			clockOut,
 			// clockOut: getUTCTime(clockOut),
-			[param_hours]: moment
-				.duration(moment(clockOut).diff(moment(clockIn)))
-				.asHours()
-				.toFixed(2),
+			[param_hours]: clockOut
+				? moment
+						.duration(moment(clockOut).diff(moment(clockIn)))
+						.asHours()
+						.toFixed(2)
+				: null,
 			companyName: company,
 			payType: type,
 		};
@@ -299,10 +301,12 @@ const updateTimesheet = async (req, res) => {
 		const updatedData = {
 			clockIn,
 			clockOut,
-			[param_hours]: moment
-				.duration(moment(clockOut).diff(moment(clockIn)))
-				.asHours()
-				.toFixed(2),
+			[param_hours]: clockOut
+				? moment
+						.duration(moment(clockOut).diff(moment(clockIn)))
+						.asHours()
+						.toFixed(2)
+				: null,
 			approveStatus: approve
 				? "Approved"
 				: approve === false
