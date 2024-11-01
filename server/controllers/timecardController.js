@@ -13,8 +13,11 @@ const {
 const moment = require("moment");
 
 const getTimecard = async (req, res) => {
+	const { companyName } = req.params;
 	try {
-		const result = await Timecard.find({}).sort({ clockIn: -1 });
+		const result = await Timecard.find({ companyName }).sort({
+			clockIn: -1,
+		});
 
 		result.map((_) => {
 			_.totalBreakHours = calcTotalHours(_)?.totalBreakHours;

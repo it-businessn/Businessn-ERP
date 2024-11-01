@@ -15,7 +15,7 @@ const Timecard = ({ company, userId, timecardRefresh, filter }) => {
 			try {
 				const post = await TimesheetService.addTimecard([]);
 				if (post.data) {
-					const response = await TimesheetService.getTimecards();
+					const response = await TimesheetService.getTimecards(company);
 					setTimeRecords(response.data);
 				}
 			} catch (error) {

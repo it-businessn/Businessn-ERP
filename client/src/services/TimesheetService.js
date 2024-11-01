@@ -5,8 +5,8 @@ const TimesheetService = {
 		return apiService.get(`/timesheet/${company}`);
 	},
 
-	async getTimecards() {
-		return apiService.get(`/timecard`);
+	async getTimecards(companyName) {
+		return apiService.get(`/timecard/${companyName}`);
 	},
 
 	async getFilteredTimesheets(company, filter) {

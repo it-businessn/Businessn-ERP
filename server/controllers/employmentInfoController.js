@@ -30,11 +30,11 @@ const getAllEmploymentInfo = async (req, res) => {
 			if (empInfo?.payInfoMapResult.has(empIdStr)) {
 				empInfo.regPay = empInfo.payInfoMapResult.get(empIdStr);
 			}
-			empInfo._id = empInfo.empPayStubResult._id;
-			empInfo.empId = empInfo.empPayStubResult.empId;
-			empInfo.companyDepartment = empInfo.empPayStubResult.companyDepartment;
+			empInfo._id = empInfo?.empPayStubResult?._id;
+			empInfo.empId = empInfo?.empPayStubResult?.empId;
+			empInfo.companyDepartment = empInfo?.empPayStubResult?.companyDepartment;
 			empInfo.employmentCostCenter =
-				empInfo.empPayStubResult.employmentCostCenter;
+				empInfo?.empPayStubResult?.employmentCostCenter;
 		});
 
 		res.status(200).json(aggregatedResult);
