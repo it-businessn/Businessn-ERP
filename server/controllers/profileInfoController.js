@@ -72,9 +72,7 @@ const updateEmployee = async (empId, data) => {
 		employee.timeManagementBadgeID = timeManagementBadgeID;
 	}
 
-	const streetNumber = `${
-		streetAddressSuite && streetAddressSuite !== "" ? streetAddressSuite : ""
-	} ${streetAddress && streetAddress !== "" ? streetAddress : ""}`;
+	const streetNumber = `${streetAddressSuite ?? ""} ${streetAddress ?? ""}`;
 	if (streetNumber && streetNumber !== "") {
 		employee.primaryAddress = {
 			streetNumber,
@@ -146,7 +144,7 @@ const addEmployeeProfileInfo = async (req, res) => {
 				const updatedProfileInfo = await updateProfileInfo(
 					existingProfileInfo._id,
 					{
-						streetAddress: `${streetAddressSuite} ${streetAddress}`,
+						streetAddress: `${streetAddressSuite ?? ""} ${streetAddress}`,
 						city,
 						province,
 						postalCode,
