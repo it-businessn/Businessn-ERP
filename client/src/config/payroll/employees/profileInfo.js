@@ -96,6 +96,10 @@ export const EMP_PERSONAL_INFO_CONFIG = [
 			{ name: "sfsgdsgdsgdsg1", param_key: "sfsgdsgdsgdsg5" },
 			{ name: "sfsgdsgdsgdsg2", param_key: "sfsgdsgdsgdsg6" },
 			{ name: "Work Permit Expiry", param_key: "workPermitExpiryNo" },
+			// {
+			// 	name: "Password",
+			// 	param_key: "password",
+			// },
 		],
 	},
 	{
@@ -160,6 +164,7 @@ export const getInitialProfileInfo = (empId, companyName) => {
 		firstName: null,
 		middleName: "",
 		lastName: "",
+		password: "",
 		emergencyFirstName: "",
 		emergencyLastName: "",
 		birthDate: null,

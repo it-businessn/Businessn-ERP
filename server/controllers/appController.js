@@ -33,6 +33,8 @@ const addEmployee = async (name, data) => {
 	return newEmployee;
 };
 
+const hashedPassword = async (pwd) => await hashPassword(pwd);
+
 const signUp = async (req, res) => {
 	const {
 		company,
@@ -58,8 +60,6 @@ const signUp = async (req, res) => {
 	// console.log(updatedLeads);
 
 	try {
-		const hashedPassword = await hashPassword(password);
-
 		const employee = await addEmployee(company, {
 			employeeId: companyId,
 			firstName,
@@ -73,7 +73,7 @@ const signUp = async (req, res) => {
 			phoneNumber,
 			primaryAddress: { streetNumber, city, state, postalCode, country },
 			employmentType,
-			password: hashedPassword,
+			password: await hashedPassword(password),
 			fullName: `${firstName} ${middleName} ${lastName}`,
 		});
 
@@ -170,12 +170,12 @@ const login = async (req, res) => {
 		}
 		logUserLoginActivity(user._id);
 
-		return res.json({ message: "Login successful", user, existingCompanyUser });
+		// return res.json({ message: "Login successful", user, existingCompanyUser });
 
-		// const match = await comparePassword(password, user.password);
-		// return match
-		// 	? res.json({ message: "Login successful", user, existingCompanyUser })
-		// 	: res.status(401).json({ error: "Invalid password" });
+		const match = await comparePassword(password, user.password);
+		return match
+			? res.json({ message: "Login successful", user, existingCompanyUser })
+			: res.status(401).json({ error: "Invalid password" });
 	} catch (error) {
 		console.error("Error checking password:", error);
 		return res.status(500).json({ error: "Internal server error" });
@@ -309,4 +309,5 @@ module.exports = {
 	setInitialPermissions,
 	addEmployee,
 	findCompany,
+	hashedPassword,
 };

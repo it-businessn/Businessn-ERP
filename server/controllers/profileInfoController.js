@@ -1,8 +1,8 @@
 const Employee = require("../models/Employee");
 const EmployeeProfileInfo = require("../models/EmployeeProfileInfo");
-const { addEmployee } = require("./appController");
+const { addEmployee, hashedPassword } = require("./appController");
 const { deleteAlerts } = require("./payrollController");
-const { addStatHolidayDefaultTimesheet } = require("./timesheetContoller");
+// const { addStatHolidayDefaultTimesheet } = require("./timesheetContoller");
 
 const getAllProfileInfo = async (req, res) => {
 	const { companyName } = req.params;
@@ -52,11 +52,15 @@ const updateEmployee = async (empId, data) => {
 		postalCode,
 		country,
 		timeManagementBadgeID,
+		password,
 	} = data;
 	const employee = await Employee.findById(empId);
 
 	if (employee?.payrollStatus !== payrollStatus) {
 		employee.payrollStatus = payrollStatus;
+	}
+	if (password && password !== "") {
+		employee.password = await hashedPassword(password);
 	}
 	if (personalEmail && personalEmail !== "") {
 		employee.email = personalEmail;
@@ -114,6 +118,7 @@ const addEmployeeProfileInfo = async (req, res) => {
 		province,
 		country,
 		postalCode,
+		password,
 	} = req.body;
 	try {
 		const data = {
@@ -127,6 +132,7 @@ const addEmployeeProfileInfo = async (req, res) => {
 			postalCode,
 			country,
 			timeManagementBadgeID,
+			password,
 		};
 		if (!empId && (firstName, companyName, lastName, birthDate)) {
 			const existingProfileInfo = await EmployeeProfileInfo.findOne({
@@ -175,14 +181,18 @@ const addEmployeeProfileInfo = async (req, res) => {
 				await updateEmployee(existingProfileInfo?.empId, data);
 				return res.status(201).json(updatedProfileInfo);
 			}
-			const newEmployee = await addEmployee(companyName, {
+			const newRecord = {
 				firstName,
 				middleName,
 				lastName,
 				role: "Employee",
 				email: `${firstName}${Math.random().toFixed(2)}@mail.com`,
 				fullName: `${firstName} ${middleName} ${lastName}`,
-			});
+			};
+			if (password) {
+				newRecord.password = await hashedPassword(password);
+			}
+			const newEmployee = await addEmployee(companyName, newRecord);
 			if (newEmployee) {
 				const newProfileInfo = await EmployeeProfileInfo.create({
 					companyName,

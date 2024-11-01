@@ -67,6 +67,7 @@ const PersonalInfo = ({ company, isOnboarding, id, handleNext }) => {
 		formData.province,
 		formData.country,
 		formData.postalCode,
+		formData?.password,
 	]);
 
 	const toast = useToast();

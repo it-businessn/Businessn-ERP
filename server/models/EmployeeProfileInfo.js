@@ -28,6 +28,7 @@ const employeeProfileInfoSchema = new mongoose.Schema({
 	province: String,
 	country: String,
 	postalCode: String,
+	password: String,
 	createdOn: { type: Date, default: Date.now },
 	updatedOn: { type: Date, default: Date.now },
 });
