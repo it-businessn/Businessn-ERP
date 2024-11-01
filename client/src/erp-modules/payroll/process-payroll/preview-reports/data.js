@@ -241,8 +241,8 @@ export const DEDUCTION_TYPES = [
 		name: "EI",
 		rate: 0,
 		totalHours: 0,
-		currentTotal: "currentEIDeductions",
-		YTDTotal: "YTD_EIDeductions",
+		currentTotal: "currentEmployeeEIDeductions",
+		YTDTotal: "YTD_EmployeeEIDeductions",
 	},
 	{
 		name: "CPP",
@@ -317,8 +317,8 @@ const EMPLOYER_BENEFIT_TYPES = [
 		name: "EI",
 		rate: 0,
 		totalHours: 0,
-		currentTotal: "currentEIDeductions",
-		YTDTotal: "YTD_EIDeductions",
+		currentTotal: "currentEmployerEIDeductions",
+		YTDTotal: "YTD_EmployerEIDeductions",
 	},
 	{
 		name: "CPP",

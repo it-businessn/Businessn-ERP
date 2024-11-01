@@ -686,21 +686,13 @@ const addEmployeePayStubInfo = async (req, res) => {
 			const empTimesheetData = result?.find(
 				(el) => el.empId._id.toString() === employee._id.toString(),
 			);
-			if (empTimesheetData) {
-				await buildPayStubDetails(
-					currentPayPeriod,
-					companyName,
-					empTimesheetData,
-					employee._id,
-				);
-			} else {
-				await buildPayStubDetails(
-					currentPayPeriod,
-					companyName,
-					null,
-					employee._id,
-				);
-			}
+
+			await buildPayStubDetails(
+				currentPayPeriod,
+				companyName,
+				empTimesheetData ?? null,
+				employee._id,
+			);
 		}
 		res.status(200).json({ message: "Paystub created successfully" });
 	} catch (error) {
@@ -815,7 +807,7 @@ const calcCurrentDeductionsTotal = (newEmpData) =>
 	newEmpData.currentFDTaxDeductions +
 	newEmpData.currentStateTaxDeductions +
 	newEmpData.currentCPPDeductions +
-	newEmpData.currentEIDeductions +
+	newEmpData.currentEmployeeEIDeductions +
 	newEmpData.currentUnionDuesDeductions +
 	newEmpData.currentEmployeeHealthContributions +
 	newEmpData.currentPrimaryDeposit +
@@ -855,11 +847,11 @@ const getContributionsDeductions = (data) => {
 	const sumTotalOvertimeHours =
 		totalOvertimeHoursWorked + totalDblOvertimeHoursWorked;
 
-	const sumTotalWithoutVacation =
-		getCalcAmount(totalSickHoursWorked, sickPay) +
-		getCalcAmount(totalStatHours, statPay) +
-		getCalcAmount(totalStatDayHoursWorked, statWorkPay) +
-		getCalcAmount(totalRegHoursWorked, regPay);
+	// const sumTotalWithoutVacation =
+	// 	getCalcAmount(totalSickHoursWorked, sickPay) +
+	// 	getCalcAmount(totalStatHours, statPay) +
+	// 	getCalcAmount(totalStatDayHoursWorked, statWorkPay) +
+	// 	getCalcAmount(totalRegHoursWorked, regPay);
 
 	const sumTotalOvertime =
 		getCalcAmount(totalOvertimeHoursWorked, overTimePay) +
@@ -943,8 +935,9 @@ const buildPayStubDetails = async (
 		CPPContribution,
 		totalProvincialTaxDeduction,
 		federalTaxDeductionByPayPeriod,
-		EIContribution,
-	} = getTaxDetails(newEmpData.currentGrossPay);
+		EmployeeEIContribution,
+		EmployerEIContribution,
+	} = getTaxDetails(newEmpData?.regPay, newEmpData?.currentGrossPay);
 
 	const { unionDues, EE_EPP, EE_EHP, ER_EPP, ER_EHP } =
 		getContributionsDeductions(newEmpData);
@@ -961,7 +954,8 @@ const buildPayStubDetails = async (
 	newEmpData.currentFDTaxDeductions = federalTaxDeductionByPayPeriod;
 	newEmpData.currentStateTaxDeductions = totalProvincialTaxDeduction;
 	newEmpData.currentCPPDeductions = CPPContribution;
-	newEmpData.currentEIDeductions = EIContribution;
+	newEmpData.currentEmployeeEIDeductions = EmployeeEIContribution;
+	newEmpData.currentEmployerEIDeductions = EmployerEIContribution;
 	newEmpData.currentUnionDuesDeductions = unionDues;
 	newEmpData.currentEmployeeHealthContributions = EE_EHP;
 	newEmpData.currentPrimaryDeposit = 0;
@@ -1078,7 +1072,8 @@ const buildPayStub = (
 		currentStateTaxDeductions,
 		currentCPPDeductions,
 		currentUnionDuesDeductions,
-		currentEIDeductions,
+		currentEmployeeEIDeductions,
+		currentEmployerEIDeductions,
 		currentEmployeeHealthContributions,
 		currentPrimaryDeposit,
 		currentEmployeePensionContributions,
@@ -1188,7 +1183,8 @@ const buildPayStub = (
 		currentStateTaxDeductions,
 		currentCPPDeductions,
 		currentUnionDuesDeductions,
-		currentEIDeductions,
+		currentEmployeeEIDeductions,
+		currentEmployerEIDeductions,
 		currentEmployeeHealthContributions,
 		currentPrimaryDeposit,
 		currentEmployeePensionContributions,
@@ -1271,9 +1267,13 @@ const buildPayStub = (
 			prevPayPayInfo?.YTDStateTaxDeductions,
 			currentStateTaxDeductions,
 		),
-		YTD_EIDeductions: getSumTotal(
-			prevPayPayInfo?.YTD_EIDeductions,
-			currentEIDeductions,
+		YTD_EmployeeEIDeductions: getSumTotal(
+			prevPayPayInfo?.YTD_EmployeeEIDeductions,
+			currentEmployeeEIDeductions,
+		),
+		YTD_EmployerEIDeductions: getSumTotal(
+			prevPayPayInfo?.YTD_EmployerEIDeductions,
+			currentEmployerEIDeductions,
 		),
 		YTD_CPPDeductions: getSumTotal(
 			prevPayPayInfo?.YTD_CPPDeductions,

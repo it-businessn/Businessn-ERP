@@ -103,9 +103,9 @@ const employeePayStubSchema = new mongoose.Schema({
 	YTDStateTaxDeductions: { type: Number, default: 0 },
 
 	currentEmployeeEIDeductions: Number,
-	YTD_EIDeductions: { type: Number, default: 0 },
+	YTD_EmployeeEIDeductions: { type: Number, default: 0 },
 
-	currentEmployerEIDeductions: Number, //1.64*1.4*gross
+	currentEmployerEIDeductions: Number,
 	YTD_EmployerEIDeductions: { type: Number, default: 0 },
 
 	currentCPPDeductions: Number,

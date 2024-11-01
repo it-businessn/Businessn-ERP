@@ -1,4 +1,5 @@
 const TAX_CONFIG = {
+	HOURS_PER_WEEK: 40,
 	ANNUAL_PAY_PERIODS: 26,
 	TOTAL_WEEKS: 52,
 	TOTAL_CONTRIBUTION_RATE: 0.0595,
@@ -160,18 +161,37 @@ const getTotalProvincialTaxDeduction = (grossSalaryByPayPeriod) => {
 	};
 };
 
-const getTaxDetails = (grossSalaryByPayPeriod) => {
-	const {
-		CPPContribution,
-		totalProvincialTaxDeduction,
-		federalTaxDeductionByPayPeriod,
-		EIContribution,
-	} = getTotalProvincialTaxDeduction(grossSalaryByPayPeriod);
+const getTaxDetails = (payRate, grossSalary) => {
+	const projectedIncome =
+		payRate * TAX_CONFIG.HOURS_PER_WEEK * TAX_CONFIG.ANNUAL_PAY_PERIODS;
+	const adjustedProjectedIncome =
+		projectedIncome - TAX_CONFIG.CPP_BASIC_EXEMPTION;
+	const adjustedGrossEarning =
+		adjustedProjectedIncome / TAX_CONFIG.ANNUAL_PAY_PERIODS;
+	const CPPContribution =
+		adjustedGrossEarning * TAX_CONFIG.TOTAL_CONTRIBUTION_RATE;
+
+	const EmployeeEIContribution = TAX_CONFIG.EMP_CONTRIBUTION_RATE * grossSalary;
+
+	const EmployeeEIByPayPeriodMax =
+		EmployeeEIContribution > TAX_CONFIG.MAX_EMPLOYEE_EI_CONTRIBUTION
+			? TAX_CONFIG.MAX_EMPLOYEE_EI_CONTRIBUTION
+			: EmployeeEIContribution;
+
+	const EmployerEIContribution =
+		TAX_CONFIG.EMP_CONTRIBUTION_RATE * 1.4 * grossSalary;
+
+	const EmployerEIByPayPeriodMax =
+		EmployerEIContribution > TAX_CONFIG.MAX_EMPLOYER_EI_CONTRIBUTION
+			? TAX_CONFIG.MAX_EMPLOYER_EI_CONTRIBUTION
+			: EmployerEIContribution;
+
 	return {
 		CPPContribution,
-		totalProvincialTaxDeduction,
-		federalTaxDeductionByPayPeriod,
-		EIContribution,
+		totalProvincialTaxDeduction: 0,
+		federalTaxDeductionByPayPeriod: 0,
+		EmployeeEIContribution: EmployeeEIByPayPeriodMax,
+		EmployerEIContribution: EmployerEIByPayPeriodMax,
 	};
 };
 
