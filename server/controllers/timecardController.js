@@ -227,16 +227,18 @@ const updateTimecardEntry = async (entry) => {
 	}
 	if (!timesheetRecord?.clockOut) {
 		timesheetRecord.clockOut = entry.clockOut;
-		const durationHrs = moment
-			.duration(moment(entry.clockOut).diff(moment(entry.clockIn)))
-			.asHours()
-			.toFixed(2);
+		if (entry?.clockOut) {
+			const durationHrs = moment
+				.duration(moment(entry.clockOut).diff(moment(entry.clockIn)))
+				.asHours()
+				.toFixed(2);
 
-		if (timesheetRecord.payType.includes("Regular")) {
-			timesheetRecord.regHoursWorked = durationHrs;
-		}
-		if (timesheetRecord.payType === "Statutory Worked Pay") {
-			timesheetRecord.statDayHoursWorked = durationHrs;
+			if (timesheetRecord.payType.includes("Regular")) {
+				timesheetRecord.regHoursWorked = durationHrs;
+			}
+			if (timesheetRecord.payType === "Statutory Worked Pay") {
+				timesheetRecord.statDayHoursWorked = durationHrs;
+			}
 		}
 	}
 

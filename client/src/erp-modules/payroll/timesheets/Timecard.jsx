@@ -67,7 +67,11 @@ const Timecard = ({ company, userId, timecardRefresh, filter }) => {
 						totalWorkedHours,
 					}) => {
 						return (
-							<Tr key={_id} h={"20px"}>
+							<Tr
+								key={_id}
+								h={"20px"}
+								_hover={{ bg: "var(--phoneCall_bg_light)" }}
+							>
 								<Td p={0.5} pl={6}>
 									<TextTitle size={"sm"} width="150px" title={employeeName} />
 								</Td>
