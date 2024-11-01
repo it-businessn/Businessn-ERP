@@ -67,10 +67,11 @@ const todayDate = moment();
 
 export const getMomentDate = (date) => moment(date);
 
-export const daysAgo = (date1, isFuture) =>
-	isFuture
-		? moment(date1).diff(todayDate, "days")
-		: todayDate.diff(date1, "days");
+export const daysAgo = (date) => {
+	const numDays = todayDate?.diff(date, "days");
+	const days = numDays < 0 ? Math.abs(numDays) : numDays;
+	return days;
+};
 
 export const getMomentDateISO = (date) => moment(date).toISOString();
 
@@ -91,7 +92,7 @@ export const monthDayYear = todayDate.format("MMM DD, YYYY");
 
 export const today = todayDate.format("MMDDYY");
 
-export const formatDateBar = (date) => moment(date).format("DD/MM/YYYY");
+export const formatDateBar = (date) => moment.utc(date).format("DD/MM/YYYY");
 
 export const formatDateRange = (startDate, endDate) => {
 	const start = moment(startDate).format("DD/MM");
@@ -567,6 +568,9 @@ export const styleConsole = (value) =>
 export const convertToNum = (str) => parseFloat(str.replace(/,/g, ""));
 
 export const isPaygroup = (name) => name?.payrollActivated;
+
+export const isFutureDate = (date) => todayDate.isAfter(date, "day");
+
 export const getPayrollStatus = (data, prevRecordEndDate) => {
 	const defaultStatus = {
 		name: "Pending",
@@ -590,7 +594,7 @@ export const getPayrollStatus = (data, prevRecordEndDate) => {
 	// 	"day",
 	// );
 
-	const isOverdue = todayDate.isAfter(targetProcessingDate, "day");
+	const isOverdue = isFutureDate(targetProcessingDate);
 
 	if (!data.isProcessed && isOverdue) {
 		return {

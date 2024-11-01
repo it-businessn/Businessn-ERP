@@ -26,6 +26,7 @@ const PayrollCard = ({
 						)} days ago`}
 					/>
 				)}
+
 				<PayPeriodCard
 					schedule={closestRecord}
 					color={"var(--lead_cards_bg)"}
@@ -44,10 +45,7 @@ const PayrollCard = ({
 						nextSchedule?.payPeriod,
 						nextSchedule?.isExtraRun,
 					)}`}
-					title2={`In ${daysAgo(
-						nextSchedule?.payPeriodProcessingDate,
-						true,
-					)} days `}
+					title2={`In ${daysAgo(nextSchedule?.payPeriodProcessingDate)} days `}
 				/>
 			</HStack>
 			<HStack gap={4}>

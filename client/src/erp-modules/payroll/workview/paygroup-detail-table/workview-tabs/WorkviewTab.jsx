@@ -61,7 +61,14 @@ const WorkviewTab = ({
 										col.pair
 									) : col.pair === "obj" ? (
 										col.pair_key === "fullName" ? (
-											<TextTitle title={row.empId[col.pair_key]} />
+											<TextTitle
+												bg={"var(--filter_border_color)"}
+												borderRadius="6px"
+												p="7px"
+												title={row.empId[col.pair_key]}
+												whiteSpace="wrap"
+												width="150px"
+											/>
 										) : (
 											row.empId[col.pair_key]
 										)

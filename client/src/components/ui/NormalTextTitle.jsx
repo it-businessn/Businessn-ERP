@@ -13,8 +13,10 @@ const NormalTextTitle = ({
 	weight = "normal",
 	bg,
 	textDecoration,
+	onClick,
 }) => (
 	<TextTitle
+		onClick={onClick}
 		weight={weight}
 		bg={bg}
 		size={size}

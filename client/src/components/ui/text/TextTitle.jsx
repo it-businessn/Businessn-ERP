@@ -19,9 +19,11 @@ const TextTitle = ({
 	bg,
 	textDecoration,
 	onClick,
+	borderRadius,
 }) => (
 	<Text
 		onClick={onClick}
+		borderRadius={borderRadius}
 		bg={bg}
 		flex={flex}
 		p={p}

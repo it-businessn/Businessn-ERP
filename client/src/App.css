@@ -6,6 +6,7 @@
 	--payroll_bg: #5fa6be;
 	--pending: #eba623;
 	--filter_border_color: #d3d3d3;
+	--input_bg: #eee;
 	--payStub_bg: #efefef;
 	--calendar_border: #bbbbbb;
 	--bg_color_1: #dbe5ff;
@@ -76,7 +77,10 @@ html {
 	padding: 8px 12px !important;
 	border-radius: 10px;
 }
-
+input {
+	background: var(--input_bg) !important;
+	border-color: var(--filter_border_color) !important;
+}
 body {
 	margin: 0;
 	padding: 0;

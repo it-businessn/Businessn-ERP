@@ -41,8 +41,6 @@ const VerticalStepper = ({
 	const handleStepClick = (step, index) => {
 		if (handleClick) {
 			handleClick(index);
-		} else {
-			handleLinkClick(step?.linkTo?.path);
 		}
 	};
 
@@ -87,6 +85,7 @@ const VerticalStepper = ({
 						{isOnboarding && <StepSeparator />}
 						{step?.linkTo && (
 							<NormalTextTitle
+								onClick={() => handleLinkClick(step?.linkTo?.path)}
 								color="var(--primary_button_bg)"
 								title={step?.linkTo?.title}
 								size="sm"

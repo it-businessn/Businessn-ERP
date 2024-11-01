@@ -272,7 +272,7 @@ const Timesheet = ({
 								<Td py={0}>
 									<NormalTextTitle color={color} size="sm" title={type} />
 								</Td>
-								<Td p={0}>
+								<Td p={0.5}>
 									<Input
 										size={"sm"}
 										onBlur={() => handleSubmit(param_hours)}
@@ -291,7 +291,7 @@ const Timesheet = ({
 										required
 									/>
 								</Td>
-								<Td p={0} pl={3}>
+								<Td p={0.5} pl={3}>
 									<Input
 										size={"sm"}
 										onBlur={() => handleSubmit(param_hours)}

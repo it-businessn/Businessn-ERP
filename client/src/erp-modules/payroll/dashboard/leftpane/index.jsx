@@ -17,10 +17,8 @@ const LeftPane = ({
 	payGroupSchedule,
 	closestRecordIndex,
 }) => {
-	const prevSchedule =
-		payGroupSchedule && payGroupSchedule[closestRecordIndex - 1];
-	const nextSchedule =
-		payGroupSchedule && payGroupSchedule[closestRecordIndex + 1];
+	const prevSchedule = payGroupSchedule?.[closestRecordIndex - 1];
+	const nextSchedule = payGroupSchedule?.[closestRecordIndex + 1];
 
 	const [filter, setFilter] = useState(null);
 
