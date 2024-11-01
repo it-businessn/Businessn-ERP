@@ -1,11 +1,7 @@
 const EmployeePayInfo = require("../models/EmployeePayInfo");
 const Timesheet = require("../models/Timesheet");
 const moment = require("moment");
-const {
-	STAT_HOLIDAYS,
-	getUTCTime,
-	calcTotalHours,
-} = require("../services/data");
+const { STAT_HOLIDAYS, calcTotalHours } = require("../services/data");
 
 // const currentTime = currentDate.format("HH:mm:ss");
 const currentDate = moment().add(1, "days");
@@ -220,11 +216,10 @@ const createTimesheet = async (req, res) => {
 			clockIn,
 			clockOut,
 			// clockOut: getUTCTime(clockOut),
-			[param_hours]: Math.floor(
-				moment
-					.duration(calcTotalHours({ clockIn, clockOut })?.totalWorkedHours)
-					.asHours(),
-			),
+			[param_hours]: moment
+				.duration(moment(clockOut).diff(moment(clockIn)))
+				.asHours()
+				.toFixed(2),
 			companyName: company,
 			payType: type,
 		};
@@ -304,9 +299,10 @@ const updateTimesheet = async (req, res) => {
 		const updatedData = {
 			clockIn,
 			clockOut,
-			[param_hours]: Math.floor(
-				moment.duration(calcTotalHours(req.body)?.totalWorkedHours).asHours(),
-			),
+			[param_hours]: moment
+				.duration(moment(clockOut).diff(moment(clockIn)))
+				.asHours()
+				.toFixed(2),
 			approveStatus: approve
 				? "Approved"
 				: approve === false

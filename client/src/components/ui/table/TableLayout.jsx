@@ -56,7 +56,9 @@ const TableLayout = ({
 							>
 								<TextTitle
 									width={
-										isEarning && index === 0
+										col.includes("Hours")
+											? "100px"
+											: isEarning && index === 0
 											? width1
 											: isEarning && index > 2
 											? width2
@@ -66,7 +68,7 @@ const TableLayout = ({
 											? width2
 											: width3
 									}
-									whiteSpace={whiteSpace}
+									whiteSpace={col.includes("Hours") ? "wrap" : whiteSpace}
 									size={textSize}
 									title={col}
 									align={

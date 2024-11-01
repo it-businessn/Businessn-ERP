@@ -168,7 +168,9 @@ const calcTotalHours = (data) => {
 		totalBreakHours: totalBreakHours
 			? Math.floor(totalBreakHours.asHours())
 			: 0,
-		totalWorkedHours: `${hours}.${minutes}`,
+		totalWorkedHours: `${hours < 10 ? `0${hours}` : hours}:${
+			minutes < 10 ? `0${minutes}` : minutes
+		}`,
 	};
 };
 

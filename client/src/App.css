@@ -70,6 +70,13 @@ html {
 	background: var(--lead_cards_bg);
 }
 
+.applyBtn {
+	background: var(--correct_ans);
+	color: var(--main_color);
+	padding: 8px 12px !important;
+	border-radius: 10px;
+}
+
 body {
 	margin: 0;
 	padding: 0;
