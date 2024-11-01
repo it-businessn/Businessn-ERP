@@ -14,7 +14,7 @@ const WorkviewTable = ({
 	payGroupSchedule,
 	closestRecordIndex,
 	height = "26vh",
-	autoScroll,
+	autoScroll = false,
 	handleRegister,
 	isEarningTable,
 	cols = PAYGROUP_COLS,
@@ -54,6 +54,7 @@ const WorkviewTable = ({
 			zIndex="docked"
 			top={-1}
 			textAlign="center"
+			autoScroll={autoScroll}
 		>
 			<Tbody>
 				{(!payGroupSchedule || payGroupSchedule?.length === 0) && (
@@ -100,7 +101,11 @@ const WorkviewTable = ({
 								{formatDateRange(payPeriodStartDate, payPeriodEndDate)}
 							</Td>
 							{!isEarningTable && (
-								<Td p={1} textAlign={textAlign}>
+								<Td
+									p={1}
+									w={autoScroll && "120px"}
+									textAlign={autoScroll ? "center" : textAlign}
+								>
 									<PrimaryButton
 										color={color}
 										bg={bg}
@@ -115,7 +120,11 @@ const WorkviewTable = ({
 									/>
 								</Td>
 							)}
-							<Td p={1} textAlign={textAlign}>
+							<Td
+								p={1}
+								w={autoScroll && "150px"}
+								textAlign={autoScroll ? "center" : textAlign}
+							>
 								{autoScroll ? (
 									isViewAction ? (
 										<OutlineButton

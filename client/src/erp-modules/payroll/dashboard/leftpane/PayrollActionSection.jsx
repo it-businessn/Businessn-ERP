@@ -57,12 +57,14 @@ const PayrollActionSection = ({
 	useEffect(() => {
 		const avgPercent = ((approvalPercent + violationPercent) / 2).toFixed(2);
 		setProgressPercent(avgPercent);
+		// setCurrentStep(2);
 	}, [approvalPercent, violationPercent]);
 
 	const steps = [
 		{
 			title: "Timesheet Approvals",
-			description: approvalPercent.toFixed(2),
+			description:
+				approvalPercent < 100 ? approvalPercent.toFixed(2) : approvalPercent,
 			linkTo: {
 				title: "Go to timesheet",
 				path: `${ROUTE_PATH.PAYROLL}${ROUTE_PATH.TIMESHEETS}`,

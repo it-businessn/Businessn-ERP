@@ -13,7 +13,9 @@ const currentTime = currentDate.format("HH:mm");
 
 const findByRecordTimesheets = async (record) => {
 	// const y = await Timesheet.deleteMany({
-	// 	employeeId: null,
+	// 	clockIn: {
+	// 		$lte: moment("2024-10-22"),
+	// 	},
 	// });
 	// console.log("del", y);
 	const result = await Timesheet.find(record)
@@ -187,7 +189,7 @@ const addStatHolidayDefaultTimesheet = async (employeeId, companyName) => {
 			),
 		};
 
-		await addTimesheetEntry(newStatTimeSheetRecord);
+		// await addTimesheetEntry(newStatTimeSheetRecord);
 	});
 	return "New record";
 };

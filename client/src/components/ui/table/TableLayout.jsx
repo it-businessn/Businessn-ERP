@@ -27,6 +27,7 @@ const TableLayout = ({
 	width3,
 	isEarning,
 	isInfo,
+	autoScroll,
 }) => {
 	return (
 		<Box overflow="auto" height={height} w={w}>
@@ -69,7 +70,9 @@ const TableLayout = ({
 									size={textSize}
 									title={col}
 									align={
-										isEarning || isInfo
+										autoScroll && (col === "Action" || col === "Status")
+											? "center"
+											: isEarning || isInfo
 											? index === 4
 												? "right"
 												: index === 0

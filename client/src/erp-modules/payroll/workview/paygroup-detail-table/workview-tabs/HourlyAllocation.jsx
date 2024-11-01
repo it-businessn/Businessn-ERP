@@ -25,12 +25,12 @@ const HourlyAllocation = ({ company, closestRecord, groupId }) => {
 			isEditable: true,
 		},
 		{
-			key: "Double Overtime Hrs",
+			key: "Double OT Hrs",
 			pair: "totalDblOvertimeHoursWorked",
 			align: "center",
 		},
 		{
-			key: "Add Dbl Overtime",
+			key: "Add Double OT",
 			pair: "additionalDblOvertimeHoursWorked",
 			isEditable: true,
 		},
@@ -46,7 +46,7 @@ const HourlyAllocation = ({ company, closestRecord, groupId }) => {
 			align: "center",
 		},
 		{
-			key: "Add Stat. Worked",
+			key: "Add Stat. Wrked",
 			pair: "additionalStatDayHoursWorked",
 			isEditable: true,
 		},

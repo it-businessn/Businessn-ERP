@@ -846,6 +846,15 @@ const getContributionsDeductions = (data) => {
 		totalVacationHoursWorked,
 	} = data;
 
+	const sumTotalHoursWithoutVacation =
+		totalSickHoursWorked +
+		totalStatHours +
+		totalStatDayHoursWorked +
+		totalRegHoursWorked;
+
+	const sumTotalOvertimeHours =
+		totalOvertimeHoursWorked + totalDblOvertimeHoursWorked;
+
 	const sumTotalWithoutVacation =
 		getCalcAmount(totalSickHoursWorked, sickPay) +
 		getCalcAmount(totalStatHours, statPay) +
@@ -866,10 +875,10 @@ const getContributionsDeductions = (data) => {
 	const unionDues = (sumTotalWithVacation + sumTotalOvertime) * 0.02;
 
 	const EE_EPP = sumTotalWithVacation * 0.04;
-	const EE_EHP = sumTotalWithoutVacation * 0.42;
+	const EE_EHP = sumTotalHoursWithoutVacation * 0.42;
 
 	const ER_EPP = EE_EPP;
-	const ER_EHP = (sumTotalWithoutVacation + sumTotalOvertime) * 2.05;
+	const ER_EHP = (sumTotalHoursWithoutVacation + sumTotalOvertimeHours) * 2.05;
 
 	return {
 		unionDues,
@@ -901,6 +910,7 @@ const buildPayStubDetails = async (
 		empId,
 		payPeriodPayDate,
 	});
+
 	const empAdditionalAmountAllocated = await findAdditionalAmountAllocatedInfo({
 		empId,
 		payPeriodPayDate,
@@ -930,7 +940,6 @@ const buildPayStubDetails = async (
 	newEmpData.currentGrossPay = calcCurrentGrossPay(newEmpData);
 
 	const {
-		grossSalaryByPayPeriod,
 		CPPContribution,
 		totalProvincialTaxDeduction,
 		federalTaxDeductionByPayPeriod,
@@ -977,7 +986,7 @@ const buildPayStubDetails = async (
 	newEmpData.currentDeductionsTotal = calcCurrentDeductionsTotal(newEmpData);
 
 	newEmpData.currentNetPay =
-		grossSalaryByPayPeriod - newEmpData.currentDeductionsTotal;
+		newEmpData.currentGrossPay - newEmpData.currentDeductionsTotal;
 
 	const prevPayPeriodNum = isExtraRun ? payPeriod : payPeriod - 1;
 

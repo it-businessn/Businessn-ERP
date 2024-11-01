@@ -167,10 +167,10 @@ const addEmployeeProfileInfo = async (req, res) => {
 					},
 				);
 				if (payrollStatus === "Payroll Active") {
-					addStatHolidayDefaultTimesheet(
-						existingProfileInfo?.empId,
-						companyName,
-					);
+					// addStatHolidayDefaultTimesheet(
+					// 	existingProfileInfo?.empId,
+					// 	companyName,
+					// );
 				}
 				await updateEmployee(existingProfileInfo?.empId, data);
 				return res.status(201).json(updatedProfileInfo);
@@ -205,7 +205,7 @@ const addEmployeeProfileInfo = async (req, res) => {
 		}
 
 		if (payrollStatus === "Payroll Active") {
-			addStatHolidayDefaultTimesheet(empId, companyName);
+			// addStatHolidayDefaultTimesheet(empId, companyName);
 		}
 
 		await updateEmployee(empId, data);
