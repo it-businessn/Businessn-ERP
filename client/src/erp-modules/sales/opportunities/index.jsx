@@ -58,11 +58,11 @@ const Opportunities = () => {
 						(item) =>
 							(item.primaryAssignee?.length > 0 &&
 								item.primaryAssignee.find(
-									(_) => _.fullName === loggedInUser?.fullName,
+									(_) => _.name === loggedInUser?.fullName,
 								)) ||
 							(item.supervisorAssignee?.length > 0 &&
 								item.supervisorAssignee.find(
-									(_) => _.fullName === loggedInUser?.fullName,
+									(_) => _.name === loggedInUser?.fullName,
 								)),
 				  );
 			setOpportunities(leadList);

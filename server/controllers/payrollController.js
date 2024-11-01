@@ -715,13 +715,13 @@ const getCurrentTotals = (
 ) => {
 	const newEmpData = empTimesheetData ? empTimesheetData : {};
 
-	newEmpData.regPay = empPayInfoResult.regPay;
-	newEmpData.overTimePay = 1.5 * empPayInfoResult.regPay;
-	newEmpData.dblOverTimePay = 2 * empPayInfoResult.regPay;
-	newEmpData.statPay = empPayInfoResult.regPay;
-	newEmpData.statWorkPay = 1.5 * empPayInfoResult.regPay;
-	newEmpData.sickPay = empPayInfoResult.regPay;
-	newEmpData.vacationPay = empPayInfoResult.regPay;
+	newEmpData.regPay = empPayInfoResult?.regPay;
+	newEmpData.overTimePay = 1.5 * empPayInfoResult?.regPay;
+	newEmpData.dblOverTimePay = 2 * empPayInfoResult?.regPay;
+	newEmpData.statPay = empPayInfoResult?.regPay;
+	newEmpData.statWorkPay = 1.5 * empPayInfoResult?.regPay;
+	newEmpData.sickPay = empPayInfoResult?.regPay;
+	newEmpData.vacationPay = empPayInfoResult?.regPay;
 	newEmpData.sprayPay = 1;
 	newEmpData.firstAidPay = 0.5;
 
