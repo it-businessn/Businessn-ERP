@@ -1,5 +1,6 @@
 import { Stack, Tbody } from "@chakra-ui/react";
 import TableLayout from "components/ui/table/TableLayout";
+import React from "react";
 import ItemRow from "../preview-reports/ItemRow";
 
 const InformationSection = ({ type, items, data }) => (
@@ -18,16 +19,22 @@ const InformationSection = ({ type, items, data }) => (
 		>
 			<Tbody>
 				{items?.map(({ name, rate, totalHours, currentTotal, YTDTotal }) => (
-					<ItemRow
-						key={name}
-						title={name}
-						isInfo
-						isEarning={false}
-						rate={data[rate] ?? 0}
-						totalHours={data[totalHours] ?? 0}
-						currentTotal={data[currentTotal] ?? 0}
-						YTDTotal={data[YTDTotal] ?? 0}
-					/>
+					<React.Fragment key={name}>
+						{(data[YTDTotal] > 0 ||
+							name.includes("Vacation") ||
+							name.includes("Balance") ||
+							name.includes("Benefits")) && (
+							<ItemRow
+								title={name}
+								isInfo
+								isEarning={false}
+								rate={data[rate] ?? 0}
+								totalHours={data[totalHours] ?? 0}
+								currentTotal={data[currentTotal] ?? 0}
+								YTDTotal={data[YTDTotal] ?? 0}
+							/>
+						)}
+					</React.Fragment>
 				))}
 			</Tbody>
 		</TableLayout>
