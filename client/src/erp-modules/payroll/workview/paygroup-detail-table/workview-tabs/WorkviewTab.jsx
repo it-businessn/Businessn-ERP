@@ -19,6 +19,7 @@ const WorkviewTab = ({
 	isExtraRun,
 	handleDelete,
 	setShowConfirmationPopUp,
+	overflowX,
 }) => {
 	const navigate = useNavigate();
 
@@ -48,6 +49,7 @@ const WorkviewTab = ({
 				height={"32vh"}
 				whiteSpace="wrap"
 				textAlign={"center"}
+				overflowX={overflowX}
 			>
 				<Tbody>
 					{(!data || data?.length === 0) && (
@@ -62,7 +64,8 @@ const WorkviewTab = ({
 									) : col.pair === "obj" ? (
 										col.pair_key === "fullName" ? (
 											<TextTitle
-												bg={"var(--filter_border_color)"}
+												bg="var(--empName_bg)"
+												color="var(--main_color)"
 												borderRadius="6px"
 												p="7px"
 												title={row.empId[col.pair_key]}

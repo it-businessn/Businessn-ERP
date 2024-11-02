@@ -7,6 +7,7 @@ const EmployeeContribution = ({ company, closestRecord, groupId }) => {
 
 	return (
 		<WorkviewTab
+			overflowX="hidden"
 			cols={[
 				{
 					key: "Employee Name",
@@ -24,15 +25,17 @@ const EmployeeContribution = ({ company, closestRecord, groupId }) => {
 				// 	pair: "CPP",
 				// 	round: true,
 				// },
-				{ key: "Union Dues", pair: "unionDues", round: true },
+				{ key: "Union Dues", pair: "unionDues", align: "center", round: true },
 				{
 					key: "Employer Pension Plan (EE)",
 					pair: "EPP",
+					align: "center",
 					round: true,
 				},
 				{
 					key: "Employer Health Plan (EE)",
 					pair: "EHP",
+					align: "center",
 					round: true,
 				},
 				{

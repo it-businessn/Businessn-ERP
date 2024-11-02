@@ -84,13 +84,18 @@ const AmountAllocation = ({ company, closestRecord, groupId, path }) => {
 
 	return (
 		<WorkviewTab
+			overflowX="hidden"
 			cellClick={cellClick}
 			renderEditableInput={renderEditableInput}
 			isEditable
 			setRefresh={setRefresh}
 			cols={[
 				{ key: "Employee Name", pair: "obj", pair_key: "fullName" },
-				{ key: "Commission $", pair: "commission", isEditable: true },
+				{
+					key: "Commission $",
+					pair: "commission",
+					isEditable: true,
+				},
 				{ key: "Retroactive $", pair: "retroactive", isEditable: true },
 				{ key: "Reimbursement $", pair: "reimbursement", isEditable: true },
 				{

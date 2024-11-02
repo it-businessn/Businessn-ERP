@@ -80,12 +80,13 @@ const EmployeeDetails = ({
 				/>
 			)}
 			<WorkviewTab
+				overflowX="hidden"
 				cols={[
 					{ key: "Employee Name", pair: "obj", pair_key: "fullName" },
 					{ key: "Employee Number", pair: "obj", pair_key: "employeeId" },
 					{ key: "Payrate", pair: "regPay", round: true },
-					{ key: "Employee Department", pair: "companyDepartment" },
-					{ key: "Employee Cost Center", pair: "employmentCostCenter" },
+					// { key: "Employee Department", pair: "companyDepartment" },
+					{ key: "Department", pair: "employmentCostCenter" },
 					{
 						key: "",
 						pair: (
@@ -96,6 +97,9 @@ const EmployeeDetails = ({
 								)}
 							</HStack>
 						),
+					},
+					{
+						key: "detail1",
 					},
 					{
 						key: "detail1",
