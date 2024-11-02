@@ -1,4 +1,4 @@
-import { VStack } from "@chakra-ui/react";
+import { HStack, VStack } from "@chakra-ui/react";
 import TextTitle from "components/ui/text/TextTitle";
 
 const PayPeriodCard = ({
@@ -8,6 +8,7 @@ const PayPeriodCard = ({
 	title1,
 	title2,
 	title3,
+	isPeriod,
 }) => {
 	return (
 		<VStack
@@ -19,10 +20,14 @@ const PayPeriodCard = ({
 			border={border}
 			borderRadius="10px"
 		>
-			<TextTitle title={title1} align={"center"} />
-			<TextTitle title={title2} align={"center"} />
+			<TextTitle title={title1} size={isPeriod && "1.25em"} align={"center"} />
+			<TextTitle title={title2} weight={isPeriod && "500"} align={"center"} />
 			{title3 && (
-				<TextTitle title={title3} align={"center"} size="lg" mb={"1em"} />
+				<HStack w={"100%"} spacing={0}>
+					<TextTitle title={"In"} size="lg" />
+					<TextTitle size="6xl" title={title3} />
+					<TextTitle title={"days"} size="lg" />
+				</HStack>
 			)}
 		</VStack>
 	);

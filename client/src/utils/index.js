@@ -83,10 +83,13 @@ export const dayMonthYear = (date) =>
 export const longTimeFormat = (date) =>
 	moment(date).format("MMM DD, YYYY hh:mm A");
 
-export const longFormat = (date) => moment(date).format("dddd, D MMMM YYYY");
+export const longFormat = (date) =>
+	moment.utc(date).format("dddd, D MMMM YYYY");
 
 export const monthDayYearFormat = (date) =>
 	moment(date).format("MMMM, DD, YYYY");
+
+export const mmmDayYearFormat = (date) => moment(date).format("MMM, DD, YYYY");
 
 export const monthDayYear = todayDate.format("MMM DD, YYYY");
 
