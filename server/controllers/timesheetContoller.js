@@ -264,7 +264,6 @@ const updateTimesheet = async (req, res) => {
 			const adjustedClockOut = moment(clockIn).add(8, "hours");
 			const overtimeClockIn = moment(adjustedClockOut);
 			const overtimeClockOut = moment(clockOut);
-			const param_hours = 8;
 			const overtimeHoursWorked = moment
 				.duration(overtimeClockOut.diff(overtimeClockIn))
 				.asHours()
