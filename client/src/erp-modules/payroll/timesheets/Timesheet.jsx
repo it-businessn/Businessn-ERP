@@ -9,13 +9,7 @@ import { useEffect, useState } from "react";
 import { FaCheck } from "react-icons/fa";
 import { IoClose } from "react-icons/io5";
 import TimesheetService from "services/TimesheetService";
-import {
-	getAmount,
-	getTimeCardFormat,
-	getTimeFormat,
-	setUTCDate,
-	timeToDecimal,
-} from "utils";
+import { getAmount, getTimeCardFormat, getTimeFormat, setUTCDate } from "utils";
 import { getParamKey, getPayTypeStyle, getStatusStyle } from "./data";
 
 const Timesheet = ({
@@ -41,6 +35,7 @@ const Timesheet = ({
 		approve: undefined,
 		company,
 		recordId: null,
+		empId: null,
 	};
 	const [formData, setFormData] = useState(initialFormData);
 	const [timesheetData, setTimesheetData] = useState(timesheets);
@@ -72,6 +67,7 @@ const Timesheet = ({
 			formData.clockIn = updatedRec.clockIn;
 			formData.clockOut = updatedRec.clockOut;
 			formData.company = updatedRec.companyName;
+			formData.empId = updatedRec.employeeId._id;
 
 			if (formData.recordId) {
 				await TimesheetService.updateTimesheet(formData, formData.recordId);
@@ -324,11 +320,11 @@ const Timesheet = ({
 									)}
 								</Td> */}
 
-								<Td py={0}>
+								<Td py={0} w={"80px"}>
 									<NormalTextTitle
-										align={"center"}
+										// align={"center"}
 										size="sm"
-										title={timeToDecimal(param_hours_worked)}
+										title={param_hours_worked}
 									/>
 								</Td>
 								<Td p={0}>

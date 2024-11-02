@@ -233,80 +233,67 @@ const createTimesheet = async (req, res) => {
 	}
 };
 
-// const calculateEndTime = (startTime, durationMinutes) => {
-// 	let [hours, minutes] = startTime.split(":").map(Number);
+const addOvertimeTimesheet = async (record) => {
+	const { employeeId, companyName, clockIn, clockOut, overtimeHoursWorked } =
+		record;
 
-// 	minutes += durationMinutes;
-
-// 	hours += Math.floor(minutes / 60);
-// 	minutes = minutes % 60;
-
-// 	hours = hours % 24;
-// 	let endTime = `${hours.toString().padStart(2, "0")}:${minutes
-// 		.toString()
-// 		.padStart(2, "0")}`;
-// 	return endTime;
-// };
-
-const getDateDiffHours = (date1, date2, totalBreaks) => {
-	const startTime = moment(date1 === "00:00" ? "09:00" : date1, "HH:mm");
-	const endTime = moment(date2 === "00:00" ? date1 : date2, "HH:mm");
-	const breakTime =
-		totalBreaks === "" ? 0 : (parseFloat(totalBreaks) * 60).toFixed(0);
-	const totalMinutes = moment.duration(endTime.diff(startTime)).asMinutes();
-	const netMinutes = totalMinutes - breakTime;
-	// const hoursDiff = Math.floor(netMinutes / 60);
-	// const minutesDiff = Math.floor(netMinutes % 60);
-
-	// const formattedHours = String(hoursDiff);
-	// const formattedMinutes = String(minutesDiff);
-	// return `${formattedHours}:${formattedMinutes}`;
-	return netMinutes;
-};
-
-const addHours = (time, hoursToAdd) => {
-	let [hour, minute] = time.split(":").map(Number);
-	hour += hoursToAdd;
-	if (hour >= 24) hour -= 24;
-	return `${String(hour).padStart(2, "0")}:${String(minute).padStart(2, "0")}`;
-};
-
-const addOvertimeTimesheet = async (
-	employeeId,
-	companyName,
-	overtimeHrs,
-	newStartTime,
-	newEndTime,
-	createdOn,
-) => {
-	const newStatTimeSheetRecord = {
+	const newEntry = {
 		employeeId,
 		companyName,
+		clockIn,
+		clockOut,
 		payType: "Overtime Pay",
-		clockIn: moment(newStartTime, "hh:mm"),
-		clockOut: moment(newEndTime, "hh:mm"),
-		overtimeHoursWorked: overtimeHrs,
-		createdOn,
+		overtimeHoursWorked,
 	};
-	const newTimesheet = await addTimesheetEntry(newStatTimeSheetRecord);
-	return newTimesheet;
+	await addTimesheetEntry(newEntry);
 };
 
 const updateTimesheet = async (req, res) => {
 	const { id } = req.params;
-	let { clockIn, clockOut, totalBreakHours, approve, param_hours, company } =
-		req.body;
+	let { clockIn, clockOut, empId, approve, param_hours, company } = req.body;
 
 	try {
+		const totalWorkedHours = clockOut
+			? moment
+					.duration(moment(clockOut).diff(moment(clockIn)))
+					.asHours()
+					.toFixed(2)
+			: null;
+
+		if (totalWorkedHours > 8) {
+			const adjustedClockOut = moment(clockIn).add(8, "hours");
+			const overtimeClockIn = moment(adjustedClockOut);
+			const overtimeClockOut = moment(clockOut);
+			const param_hours = 8;
+			const overtimeHoursWorked = moment
+				.duration(overtimeClockOut.diff(overtimeClockIn))
+				.asHours()
+				.toFixed(2);
+
+			await addOvertimeTimesheet({
+				employeeId: empId,
+				clockIn: overtimeClockIn,
+				clockOut: overtimeClockOut,
+				overtimeHoursWorked,
+				companyName: company,
+			});
+			const updatedData = {
+				clockIn,
+				clockOut: adjustedClockOut,
+				[param_hours]: 8,
+				approveStatus: approve
+					? "Approved"
+					: approve === false
+					? "Rejected"
+					: "Pending",
+			};
+			const timesheet = await Timesheet.findByIdAndUpdate(id, updatedData);
+			return res.status(201).json(timesheet);
+		}
 		const updatedData = {
 			clockIn,
 			clockOut,
-			[param_hours]: clockOut
-				? moment
-						.duration(moment(clockOut).diff(moment(clockIn)))
-						.asHours()
-						.toFixed(2)
-				: null,
+			[param_hours]: totalWorkedHours,
 			approveStatus: approve
 				? "Approved"
 				: approve === false
@@ -315,34 +302,7 @@ const updateTimesheet = async (req, res) => {
 		};
 
 		const timesheet = await Timesheet.findByIdAndUpdate(id, updatedData);
-		// const totalWorkedHours = getDateDiffHours(startTime, endTime, totalBreaks);
-		// if (totalWorkedHours > 480) {
-		// 	const hoursToAdd = 8;
-		// 	const newStartTime = addHours(startTime, hoursToAdd);
-		// 	const overtimeMinutes = totalWorkedHours - 480;
-		// 	const remainingHours = Math.floor(overtimeMinutes / 60);
-		// 	const newEndTime = addHours(newStartTime, remainingHours);
-
-		// 	await addOvertimeTimesheet(
-		// 		timesheet.employeeId,
-		// 		company,
-		// 		overtimeMinutes,
-		// 		newStartTime,
-		// 		newEndTime,
-		// 		timesheet.createdOn,
-		// 	);
-		// 	timesheet[param_hours] = 480;
-		// 	// timesheet.clockOuts.push(newStartTime);
-		// 	timesheet.endTime = newStartTime;
-		// } else {
-		// 	timesheet[param_hours] = totalWorkedHours;
-		// 	if (endTime !== "00:00") {
-		// 		// timesheet.clockOuts.push(endTime);
-		// 		timesheet.endTime = endTime;
-		// 	}
-		// }
-
-		res.status(201).json(timesheet);
+		return res.status(201).json(timesheet);
 	} catch (error) {
 		res.status(400).json({ message: error.message });
 	}
