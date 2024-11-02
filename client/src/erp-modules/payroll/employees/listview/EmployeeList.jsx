@@ -17,11 +17,11 @@ const EmployeeList = ({ employees }) => {
 	};
 	const cols = [
 		"Employee Name",
-		"Status",
 		"Department",
-		"Role",
+		// "Role",
 		"Employee No",
-		"Badge Id",
+		"Badge ID",
+		"Status",
 		"Action",
 	];
 
@@ -50,30 +50,35 @@ const EmployeeList = ({ employees }) => {
 					}) => {
 						return (
 							<Tr key={_id} _hover={{ bg: "var(--phoneCall_bg_light)" }}>
-								<Td py={0} borderBottomColor={"var(--filter_border_color)"}>
-									<HStack spacing={8} cursor={"pointer"}>
+								<Td
+									p={0}
+									px={"2em"}
+									borderBottomColor={"var(--filter_border_color)"}
+								>
+									<HStack spacing={4} cursor={"pointer"}>
 										<Avatar name={fullName} size={"xs"} src="" boxSize="6" />
 										<TextTitle
-											mt={2}
-											mb={2}
-											color={"var(--primary_button_bg)"}
-											size="md"
+											mt={1}
+											bg="var(--empName_bg)"
+											color="var(--main_color)"
+											borderRadius="6px"
+											p="6px"
+											size="sm"
 											onClick={() => handleClick(_id)}
 											title={fullName}
 										/>
 									</HStack>
 								</Td>
-								<Td py={0} borderBottomColor={"var(--filter_border_color)"}>
-									{payrollStatus?.includes("Active") && (
-										<ActiveBadge title={"Payroll Activated"} />
-									)}
-								</Td>
-								<Td p={0} borderBottomColor={"var(--filter_border_color)"}>
+								<Td
+									p={0}
+									px={"0.5em"}
+									borderBottomColor={"var(--filter_border_color)"}
+								>
 									<NormalTextTitle size="sm" title={department[0]} />
 								</Td>
-								<Td py={0} borderBottomColor={"var(--filter_border_color)"}>
+								{/* <Td py={0} borderBottomColor={"var(--filter_border_color)"}>
 									<NormalTextTitle size="sm" title={role} />
-								</Td>
+								</Td> */}
 								<Td py={0} borderBottomColor={"var(--filter_border_color)"}>
 									<NormalTextTitle size="sm" title={employeeNo} />
 								</Td>
@@ -82,6 +87,11 @@ const EmployeeList = ({ employees }) => {
 										size="sm"
 										title={timeManagementBadgeID ?? ""}
 									/>
+								</Td>
+								<Td py={0} borderBottomColor={"var(--filter_border_color)"}>
+									{payrollStatus?.includes("Active") && (
+										<ActiveBadge title={"Payroll Activated"} />
+									)}
 								</Td>
 								<Td py={0} borderBottomColor={"var(--filter_border_color)"}>
 									<IconButton
