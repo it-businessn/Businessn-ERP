@@ -22,8 +22,8 @@ const findByRecordTimesheets = async (record) => {
 	const empData = result?.sort((a, b) => {
 		if (a.employeeId.fullName < b.employeeId.fullName) return -1;
 		if (a.employeeId.fullName > b.employeeId.fullName) return 1;
-		// If names are equal, sort by clockIn descending
-		return b.clockIn - a.clockIn;
+		// If names are equal, sort by clockIn asc
+		return a.clockIn - b.clockIn;
 	});
 	return empData;
 };
