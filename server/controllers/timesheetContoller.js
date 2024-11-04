@@ -14,18 +14,18 @@ const findByRecordTimesheets = async (record) => {
 	// 	},
 	// });
 	// console.log("del", y);
-	const result = await Timesheet.find(record)
-		.populate({
-			path: "employeeId",
-			model: "Employee",
-			select: ["department", "fullName", "role"],
-		})
-		.sort({
-			clockIn: -1,
-			// "employeeId.fullName": 1,
-		});
-
-	return result;
+	const result = await Timesheet.find(record).populate({
+		path: "employeeId",
+		model: "Employee",
+		select: ["department", "fullName", "role"],
+	});
+	const empData = result?.sort((a, b) => {
+		if (a.employeeId.fullName < b.employeeId.fullName) return -1;
+		if (a.employeeId.fullName > b.employeeId.fullName) return 1;
+		// If names are equal, sort by clockIn descending
+		return b.clockIn - a.clockIn;
+	});
+	return empData;
 };
 
 const getTimesheetResult = async (companyName) => {
