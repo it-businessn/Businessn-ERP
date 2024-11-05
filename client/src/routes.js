@@ -47,7 +47,9 @@ const SalesReport = lazy(() => import("./erp-modules/sales/reports"));
 
 // payroll
 const Approvals = lazy(() => import("./erp-modules/payroll/Approvals"));
-
+const LeaveApprovals = lazy(() =>
+	import("./erp-modules/payroll/LeaveApprovals"),
+);
 const EmployeeDashboard = lazy(() =>
 	import("./erp-modules/payroll/employees/dashboard/EmployeeDashboard"),
 );
@@ -310,6 +312,10 @@ export const router = createBrowserRouter([
 			{
 				path: `${ROUTE_PATH.PAYROLL}${ROUTE_PATH.APPROVALS}`,
 				element: <Approvals />,
+			},
+			{
+				path: leaveApprovalPath,
+				element: <LeaveApprovals />,
 			},
 			{
 				path: timesheetPath,
