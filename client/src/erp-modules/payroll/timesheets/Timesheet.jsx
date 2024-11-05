@@ -1,6 +1,7 @@
 import { HStack, IconButton, Input, Tbody, Td, Tr } from "@chakra-ui/react";
 import PrimaryButton from "components/ui/button/PrimaryButton";
 import EmptyRowRecord from "components/ui/EmptyRowRecord";
+import DeletePopUp from "components/ui/modal/DeletePopUp";
 import NormalTextTitle from "components/ui/NormalTextTitle";
 import TableLayout from "components/ui/table/TableLayout";
 import TextTitle from "components/ui/text/TextTitle";
@@ -20,6 +21,9 @@ const Timesheet = ({
 	setRefresh,
 	setTimesheetRefresh,
 }) => {
+	const [deleteRecordId, setDeleteRecordId] = useState(false);
+	const [showDeletePopUp, setShowDeletePopUp] = useState(false);
+
 	const showPicker = (className) => {
 		const timeInput = document.getElementsByClassName(className);
 		if (timeInput) {
@@ -75,12 +79,18 @@ const Timesheet = ({
 
 	const handleDelete = async (id) => {
 		try {
-			await TimesheetService.deleteEntry({}, id);
-			setRefresh((prev) => !prev);
+			const record = await TimesheetService.deleteEntry({}, deleteRecordId);
+			if (record) {
+				setRefresh((prev) => !prev);
+				handleClose();
+			}
 		} catch (error) {
 			console.error("Error deleting time entry:", error);
+			handleClose();
 		}
 	};
+
+	const handleClose = () => setShowDeletePopUp(false);
 
 	const handleSubmit = async () => {
 		try {
@@ -400,7 +410,8 @@ const Timesheet = ({
 											icon={<FaRegTrashAlt />}
 											variant={"solid"}
 											onClick={() => {
-												handleDelete(_id);
+												setShowDeletePopUp(true);
+												setDeleteRecordId(_id);
 											}}
 										/>
 									</HStack>
@@ -410,6 +421,15 @@ const Timesheet = ({
 					},
 				)}
 			</Tbody>
+			{showDeletePopUp && (
+				<DeletePopUp
+					headerTitle={"Delete Timesheet Entry"}
+					textTitle={"Are you sure you want to delete the time entry?"}
+					isOpen={showDeletePopUp}
+					onClose={handleClose}
+					onOpen={handleDelete}
+				/>
+			)}
 		</TableLayout>
 	);
 };
