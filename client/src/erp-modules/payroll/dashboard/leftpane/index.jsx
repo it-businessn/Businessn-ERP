@@ -50,10 +50,6 @@ const LeftPane = ({
 			),
 		},
 		{
-			name: "Pay period",
-			content: <PayPeriodDetails />,
-		},
-		{
 			name: "Payroll actions",
 			content: (
 				<PayrollActionSection
@@ -63,6 +59,10 @@ const LeftPane = ({
 					handleClick={handleClick}
 				/>
 			),
+		},
+		{
+			name: "",
+			content: <PayPeriodDetails />,
 		},
 		{
 			name: "Notifications",

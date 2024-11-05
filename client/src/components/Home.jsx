@@ -41,8 +41,6 @@ const Home = () => {
 			if (activeMenu?.path) {
 				navigate(`/${activeMenu?.path}/${dashboard?.path}`);
 			}
-			// navigate(`${ROUTE_PATH.SALES}${ROUTE_PATH.CUSTOMERS}`);
-			// navigate(`${ROUTE_PATH.PROJECT}${ROUTE_PATH.WORKVIEW}`);
 		} else {
 			navigate(ROUTE_PATH.LOGIN);
 		}

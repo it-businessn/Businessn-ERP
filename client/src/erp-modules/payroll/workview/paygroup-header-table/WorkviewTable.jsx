@@ -6,7 +6,7 @@ import TableLayout from "components/ui/table/TableLayout";
 import TextTitle from "components/ui/text/TextTitle";
 import { useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { ROUTE_PATH } from "routes";
+import { payrollReportPath, ROUTE_PATH } from "routes";
 import { formatDateBar, formatDateRange, isExtraPay } from "utils";
 import { PAYGROUP_COLS } from "../data";
 
@@ -39,8 +39,7 @@ const WorkviewTable = ({
 
 	const navigate = useNavigate();
 
-	const handleView = () =>
-		navigate(`${ROUTE_PATH.PAYROLL}${ROUTE_PATH.REPORT}`);
+	const handleView = () => navigate(payrollReportPath);
 
 	const handlePay = (payPeriod) =>
 		navigate(`${ROUTE_PATH.PAYROLL}${ROUTE_PATH.PROCESS}/${payPeriod}`);

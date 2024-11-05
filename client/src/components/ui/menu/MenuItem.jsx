@@ -8,15 +8,14 @@ import {
 	VStack,
 } from "@chakra-ui/react";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
-import { ROUTE_PATH } from "routes";
+import { payrollEmployeePath } from "routes";
 
 const MenuItem = ({ menu, parent, textTransform, handleMenuItemClick }) => {
 	const location = useLocation();
 	const navigate = useNavigate();
 
-	const empPath = location.pathname.includes(
-		`${ROUTE_PATH.PAYROLL}${ROUTE_PATH.EMPLOYEES}`,
-	);
+	const empPath = location.pathname.includes(payrollEmployeePath);
+
 	// const [isOpen, setIsOpen] = useState(true);
 
 	// const handleToggle = () => {

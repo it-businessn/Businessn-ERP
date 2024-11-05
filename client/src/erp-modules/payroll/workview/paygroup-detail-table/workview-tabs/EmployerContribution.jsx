@@ -1,5 +1,4 @@
 import useEmployeeERContribution from "hooks/useEmployeeERContribution";
-import { ROUTE_PATH } from "routes";
 import WorkviewTab from "./WorkviewTab";
 
 const EmployerContribution = ({ company, closestRecord, groupId }) => {
@@ -68,7 +67,6 @@ const EmployerContribution = ({ company, closestRecord, groupId }) => {
 			]}
 			data={data}
 			label="Setup"
-			path={`${ROUTE_PATH.PAYROLL}${ROUTE_PATH.TIMESHEETS}`}
 		/>
 	);
 };

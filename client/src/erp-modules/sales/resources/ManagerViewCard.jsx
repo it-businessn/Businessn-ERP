@@ -4,7 +4,7 @@ import DeletePopUp from "components/ui/modal/DeletePopUp";
 import TextTitle from "components/ui/text/TextTitle";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ROUTE_PATH } from "routes";
+import { questionnairePath } from "routes";
 import AssessmentService from "services/AssessmentService";
 
 const ManagerViewCard = ({ company }) => {
@@ -54,7 +54,7 @@ const ManagerViewCard = ({ company }) => {
 					size={"xs"}
 					name={"Add Assessments"}
 					loadingText="Loading"
-					onOpen={() => navigate(`${ROUTE_PATH.SALES}${ROUTE_PATH.ADD_PAPER}`)}
+					onOpen={() => navigate(questionnairePath)}
 				/>
 			</HStack>
 

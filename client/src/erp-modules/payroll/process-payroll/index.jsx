@@ -18,7 +18,7 @@ import PageLayout from "layouts/PageLayout";
 import { useState } from "react";
 import { MdOutlineChevronRight } from "react-icons/md";
 import { useNavigate, useParams } from "react-router-dom";
-import { ROUTE_PATH } from "routes";
+import { workViewPath } from "routes";
 import LocalStorageService from "services/LocalStorageService";
 import SettingService from "services/SettingService";
 import VerticalStepper from "../../../components/ui/VerticalStepper";
@@ -96,7 +96,7 @@ const ProcessPayroll = () => {
 					isClosable: true,
 				});
 				setTimeout(() => {
-					navigate(`${ROUTE_PATH.PAYROLL}${ROUTE_PATH.WORKVIEW}`);
+					navigate(workViewPath);
 				}, 1000);
 			}
 		} catch (error) {

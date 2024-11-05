@@ -22,6 +22,9 @@
 		rgba(95, 166, 190, 1) 0%,
 		rgba(19, 170, 178, 1) 100%
 	);
+	--overtime: #326274;
+	--dbl_overtime: #b47318;
+	--stat_worked: #a9201b;
 	--pending: #eba623;
 	--filter_border_color: #d3d3d3;
 	--input_bg: #eee;

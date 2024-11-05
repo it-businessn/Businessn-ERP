@@ -71,6 +71,7 @@ const WorkviewTab = ({
 												title={row.empId[col.pair_key]}
 												whiteSpace="wrap"
 												width="150px"
+												mr={"0.5em"}
 											/>
 										) : (
 											row.empId[col.pair_key]
@@ -85,6 +86,7 @@ const WorkviewTab = ({
 
 								return (
 									<Td
+										color="var(--main_color_black)"
 										textAlign={col?.align}
 										p={0.5}
 										key={col.key}

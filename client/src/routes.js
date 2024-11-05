@@ -151,6 +151,15 @@ export const ROUTE_PATH = {
 	REPORT: "/reports",
 };
 
+export const workViewPath = `${ROUTE_PATH.PAYROLL}${ROUTE_PATH.WORKVIEW}`;
+export const userProfilePath = `${ROUTE_PATH.SALES}${ROUTE_PATH.PROFILE}`;
+export const customerPath = `${ROUTE_PATH.SALES}${ROUTE_PATH.CUSTOMERS}`;
+export const questionnairePath = `${ROUTE_PATH.SALES}${ROUTE_PATH.ADD_PAPER}`;
+export const processPayrollPath = `${ROUTE_PATH.PAYROLL}${ROUTE_PATH.PROCESS}`;
+export const timesheetPath = `${ROUTE_PATH.PAYROLL}${ROUTE_PATH.TIMESHEETS}`;
+export const payrollEmployeePath = `${ROUTE_PATH.PAYROLL}${ROUTE_PATH.EMPLOYEES}`;
+export const payrollReportPath = `${ROUTE_PATH.PAYROLL}${ROUTE_PATH.REPORT}`;
+
 export const router = createBrowserRouter([
 	{
 		path: "/",
@@ -188,7 +197,7 @@ export const router = createBrowserRouter([
 				element: <Payouts />,
 			},
 			{
-				path: `${ROUTE_PATH.SALES}${ROUTE_PATH.CUSTOMERS}`,
+				path: customerPath,
 				element: <Customers />,
 			},
 			{
@@ -224,11 +233,11 @@ export const router = createBrowserRouter([
 				element: <Resources />,
 			},
 			{
-				path: `${ROUTE_PATH.SALES}${ROUTE_PATH.ADD_PAPER}`,
+				path: questionnairePath,
 				element: <AddQuestionForm />,
 			},
 			{
-				path: `${ROUTE_PATH.SALES}${ROUTE_PATH.ADD_PAPER}/:type`,
+				path: `${questionnairePath}/:type`,
 				element: <AddQuestionForm />,
 			},
 			{
@@ -240,7 +249,7 @@ export const router = createBrowserRouter([
 				element: <SalesReport />,
 			},
 			{
-				path: `${ROUTE_PATH.SALES}${ROUTE_PATH.PROFILE}`,
+				path: userProfilePath,
 				element: <UserProfileDetails />,
 			},
 			// {
@@ -285,15 +294,15 @@ export const router = createBrowserRouter([
 				element: <Dashboard />,
 			},
 			{
-				path: `${ROUTE_PATH.PAYROLL}${ROUTE_PATH.WORKVIEW}`,
+				path: workViewPath,
 				element: <PayrollWorkview />,
 			},
 			{
-				path: `${ROUTE_PATH.PAYROLL}${ROUTE_PATH.PROCESS}`,
+				path: processPayrollPath,
 				element: <ProcessPayroll />,
 			},
 			{
-				path: `${ROUTE_PATH.PAYROLL}${ROUTE_PATH.PROCESS}/:payNo`,
+				path: `${processPayrollPath}/:payNo`,
 				element: <ProcessPayroll />,
 			},
 			{
@@ -301,27 +310,27 @@ export const router = createBrowserRouter([
 				element: <Approvals />,
 			},
 			{
-				path: `${ROUTE_PATH.PAYROLL}${ROUTE_PATH.TIMESHEETS}`,
+				path: timesheetPath,
 				element: <Timesheets />,
 			},
 			{
-				path: `${ROUTE_PATH.PAYROLL}${ROUTE_PATH.TIMESHEETS}/:id`,
+				path: `${timesheetPath}/:id`,
 				element: <Timesheets />,
 			},
 			{
-				path: `${ROUTE_PATH.PAYROLL}${ROUTE_PATH.EMPLOYEES}`,
+				path: payrollEmployeePath,
 				element: <EmployeeListView />,
 			},
 			{
-				path: `${ROUTE_PATH.PAYROLL}${ROUTE_PATH.EMPLOYEES}/info`,
+				path: `${payrollEmployeePath}/info`,
 				element: <Employees />,
 			},
 			{
-				path: `${ROUTE_PATH.PAYROLL}${ROUTE_PATH.EMPLOYEES}/info/:id/:stepNo`,
+				path: `${payrollEmployeePath}/info/:id/:stepNo`,
 				element: <Employees />,
 			},
 			{
-				path: `${ROUTE_PATH.PAYROLL}${ROUTE_PATH.REPORT}`,
+				path: payrollReportPath,
 				element: <Reports />,
 			},
 			{
@@ -335,10 +344,6 @@ export const router = createBrowserRouter([
 			{
 				path: `${ROUTE_PATH.PAYROLL}${ROUTE_PATH.EMP_RECORD}`,
 				element: <EmployeeRecord />,
-			},
-			{
-				path: ROUTE_PATH.SETUP,
-				element: <Setup />,
 			},
 
 			/* Scheduling */

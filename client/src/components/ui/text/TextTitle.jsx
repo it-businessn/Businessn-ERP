@@ -20,8 +20,10 @@ const TextTitle = ({
 	textDecoration,
 	onClick,
 	borderRadius,
+	mr,
 }) => (
 	<Text
+		mr={mr}
 		onClick={onClick}
 		borderRadius={borderRadius}
 		bg={bg}

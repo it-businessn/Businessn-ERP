@@ -13,7 +13,7 @@ import {
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ROUTE_PATH } from "routes";
+import { userProfilePath } from "routes";
 // import { styleConsole } from "utils";
 
 const UserProfile = ({ user, handleLogout }) => {
@@ -40,7 +40,7 @@ const UserProfile = ({ user, handleLogout }) => {
 
 	const showProfilePage = () => {
 		handleToggle();
-		navigate(`${ROUTE_PATH.SALES}${ROUTE_PATH.PROFILE}`);
+		navigate(userProfilePath);
 	};
 
 	const showRegisterPage = () => {

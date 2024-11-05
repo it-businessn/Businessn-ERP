@@ -6,7 +6,7 @@ import useEmployeeAlertsInfo from "hooks/useEmployeeAlertsInfo";
 import useEmployees from "hooks/useEmployees";
 import useTimesheet from "hooks/useTimesheet";
 import { useEffect, useState } from "react";
-import { ROUTE_PATH } from "routes";
+import { processPayrollPath, timesheetPath } from "routes";
 
 const PayrollActionSection = ({
 	company,
@@ -67,7 +67,7 @@ const PayrollActionSection = ({
 				approvalPercent < 100 ? approvalPercent.toFixed(2) : approvalPercent,
 			linkTo: {
 				title: "Go to timesheet",
-				path: `${ROUTE_PATH.PAYROLL}${ROUTE_PATH.TIMESHEETS}`,
+				path: timesheetPath,
 			},
 		},
 		{
@@ -75,7 +75,7 @@ const PayrollActionSection = ({
 			description: violationPercent,
 			linkTo: {
 				title: "Address violation",
-				path: `${ROUTE_PATH.PAYROLL}${ROUTE_PATH.PROCESS}`,
+				path: processPayrollPath,
 			},
 		},
 		{
@@ -83,7 +83,7 @@ const PayrollActionSection = ({
 			description: 0,
 			linkTo: {
 				title: "Process Payroll",
-				path: `${ROUTE_PATH.PAYROLL}${ROUTE_PATH.PROCESS}`,
+				path: processPayrollPath,
 			},
 		},
 		{
@@ -91,7 +91,7 @@ const PayrollActionSection = ({
 			description: 0,
 			linkTo: {
 				title: "Process Payroll",
-				path: `${ROUTE_PATH.PAYROLL}${ROUTE_PATH.PROCESS}`,
+				path: processPayrollPath,
 			},
 		},
 	];

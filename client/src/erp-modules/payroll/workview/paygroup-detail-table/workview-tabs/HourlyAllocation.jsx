@@ -2,7 +2,7 @@ import { Input } from "@chakra-ui/react";
 import OutlineButton from "components/ui/button/OutlineButton";
 import useEmployeeHoursWorked from "hooks/useEmployeeHoursWorked";
 import { useEffect, useState } from "react";
-import { ROUTE_PATH } from "routes";
+import { timesheetPath } from "routes";
 import PayrollService from "services/PayrollService";
 import WorkviewTab from "./WorkviewTab";
 
@@ -126,7 +126,7 @@ const HourlyAllocation = ({ company, closestRecord, groupId }) => {
 			cols={HOURLY_ALLOCATE_COLS}
 			data={hourlyAllocatedHours}
 			label="Setup"
-			path={`${ROUTE_PATH.PAYROLL}${ROUTE_PATH.TIMESHEETS}`}
+			path={timesheetPath}
 		/>
 	);
 };
