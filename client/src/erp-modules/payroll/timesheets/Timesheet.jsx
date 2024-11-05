@@ -6,7 +6,7 @@ import TableLayout from "components/ui/table/TableLayout";
 import TextTitle from "components/ui/text/TextTitle";
 import useTimesheet from "hooks/useTimesheet";
 import { useEffect, useState } from "react";
-import { FaCheck } from "react-icons/fa";
+import { FaCheck, FaRegTrashAlt } from "react-icons/fa";
 import { IoClose } from "react-icons/io5";
 import TimesheetService from "services/TimesheetService";
 import { getAmount, getTimeCardFormat, getTimeFormat, setUTCDate } from "utils";
@@ -26,6 +26,20 @@ const Timesheet = ({
 			timeInput[0].showPicker();
 		}
 	};
+
+	useEffect(() => {
+		const fetchAllTimecards = async () => {
+			try {
+				const post = await TimesheetService.addTimecard([]);
+				if (post.data) {
+					setRefresh(true);
+				}
+			} catch (error) {
+				console.error(error);
+			}
+		};
+		fetchAllTimecards();
+	}, []);
 	const timesheets = useTimesheet(company, userId, refresh, filter);
 
 	const initialFormData = {
@@ -57,6 +71,15 @@ const Timesheet = ({
 				: record,
 		);
 		setTimesheetData(updatedData);
+	};
+
+	const handleDelete = async (id) => {
+		try {
+			await TimesheetService.deleteEntry({}, id);
+			setRefresh((prev) => !prev);
+		} catch (error) {
+			console.error("Error deleting time entry:", error);
+		}
 	};
 
 	const handleSubmit = async () => {
@@ -368,6 +391,16 @@ const Timesheet = ({
 													recordId: _id,
 													approve: false,
 												}));
+											}}
+										/>
+										<IconButton
+											isDisabled={isDisabled}
+											size={"xs"}
+											color={"var(--main_color_black)"}
+											icon={<FaRegTrashAlt />}
+											variant={"solid"}
+											onClick={() => {
+												handleDelete(_id);
 											}}
 										/>
 									</HStack>

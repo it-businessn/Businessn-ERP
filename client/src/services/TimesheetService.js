@@ -30,6 +30,10 @@ const TimesheetService = {
 	async updateTimesheet(data, id) {
 		return apiService.put(`/timesheet/${id}`, data, id);
 	},
+
+	async deleteEntry(data, id) {
+		return apiService.delete(`/timesheet/${id}`, data, id);
+	},
 };
 
 export default TimesheetService;

@@ -307,6 +307,22 @@ const updateTimesheet = async (req, res) => {
 	}
 };
 
+const deleteTimesheet = async (req, res) => {
+	const { id } = req.params;
+	try {
+		const resource = await Timesheet.findByIdAndDelete({
+			_id: id,
+		});
+		if (resource) {
+			res.status(200).json(`Timesheet with id ${id} deleted successfully.`);
+		} else {
+			res.status(200).json("Timesheet Details not found.");
+		}
+	} catch (error) {
+		res.status(404).json({ error: "Error deleting Timesheet:", error });
+	}
+};
+
 module.exports = {
 	createTimesheet,
 	getTimesheets,
@@ -316,4 +332,5 @@ module.exports = {
 	getFilteredTimesheets,
 	addTimesheetEntry,
 	findEmployeeTimesheetExists,
+	deleteTimesheet,
 };

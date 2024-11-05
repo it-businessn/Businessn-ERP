@@ -16,4 +16,6 @@ router.post("/", timesheetController.createTimesheet);
 
 router.put("/:id", timesheetController.updateTimesheet);
 
+router.delete("/:id", timesheetController.deleteTimesheet);
+
 module.exports = router;
