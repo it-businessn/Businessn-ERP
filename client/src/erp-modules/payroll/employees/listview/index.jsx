@@ -9,19 +9,14 @@ import usePaygroup from "hooks/usePaygroup";
 import { useSignup } from "hooks/useSignup";
 import PageLayout from "layouts/PageLayout";
 import { useState } from "react";
-import { useParams } from "react-router-dom";
 import LocalStorageService from "services/LocalStorageService";
 import EmpProfileSearch from "../EmpProfileSearch";
 import EmployeeList from "./EmployeeList";
 
 const EmployeeListView = () => {
-	const { id } = useParams();
 	const { company } = useCompany(
 		LocalStorageService.getItem("selectedCompany"),
 	);
-	const loggedInUser = LocalStorageService.getItem("user");
-	const [employee, setEmployee] = useState(loggedInUser);
-	const [userId, setUserId] = useState(id ?? loggedInUser._id);
 
 	const [formData, setFormData] = useState({
 		isPayrollActive: true,
@@ -35,6 +30,7 @@ const EmployeeListView = () => {
 		company,
 		false,
 		formData,
+		// userId,
 	);
 	const [showEmpFilter, setShowEmpFilter] = useState(false);
 	const [showDeptFilter, setShowDeptFilter] = useState(false);
@@ -78,8 +74,8 @@ const EmployeeListView = () => {
 							hideMenu
 							filteredEmployees={filteredEmployees}
 							setFilteredEmployees={setFilteredEmployees}
-							setUserId={setUserId}
-							setEmployee={setEmployee}
+							// setUserId={setUserId}
+							// setEmployee={setEmployee}
 							employees={employees}
 						/>
 						<PrimaryButton

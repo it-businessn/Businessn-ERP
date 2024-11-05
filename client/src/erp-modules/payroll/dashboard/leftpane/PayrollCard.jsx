@@ -90,14 +90,7 @@ const PayrollCard = ({
 					bg="var(--main_color)"
 					schedule={closestRecord}
 					title1="Pay Day"
-					title2={
-						<NormalTextTitle
-							width={"100%"}
-							size="lg"
-							title={longFormat(closestRecord?.payPeriodPayDate)}
-							weight={"500"}
-						/>
-					}
+					title2={longFormat(closestRecord?.payPeriodPayDate)}
 				/>
 			</HStack>
 			<PrimaryButton

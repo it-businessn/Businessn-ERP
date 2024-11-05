@@ -25,18 +25,22 @@ const getPayrollInActiveEmployees = async (companyName) => {
 };
 
 const findEmployee = async (data) =>
-	await Employee.find(data).select([
-		"fullName",
-		"_id",
-		"email",
-		"baseModule",
-		"group",
-		"role",
-		"payrollStatus",
-		"employeeNo",
-		"timeManagementBadgeID",
-		"department",
-	]);
+	await Employee.find(data)
+		.select([
+			"fullName",
+			"_id",
+			"email",
+			"baseModule",
+			"group",
+			"role",
+			"payrollStatus",
+			"employeeNo",
+			"timeManagementBadgeID",
+			"department",
+		])
+		.sort({
+			fullName: 1,
+		});
 
 const getAllEmployees = () => async (req, res) => {
 	try {

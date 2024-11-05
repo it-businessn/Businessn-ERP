@@ -118,11 +118,7 @@ const addEmployeePayInfo = async (req, res) => {
 		empId,
 		companyName,
 		regPay,
-		overTimePay,
-		dblOverTimePay,
-		statWorkPay,
-		statPay,
-		sickPay,
+
 		salaryRate,
 		dailyHours,
 		longTermDisabilityEE,
@@ -132,13 +128,20 @@ const addEmployeePayInfo = async (req, res) => {
 		extendedHealthEE,
 		extendedHealthER,
 		unionDues,
-		vacationPay,
 		fullTimeStandardHours,
 		partTimeStandardHours,
 	} = req.body;
 	try {
 		const existingPayInfo = await findEmployeePayInfo(empId, companyName);
 		if (existingPayInfo) {
+			if (regPay) {
+				req.body.overTimePay = 1.5 * regPay;
+				req.body.dblOverTimePay = 2 * regPay;
+				req.body.statWorkPay = 1.5 * regPay;
+				req.body.statPay = regPay;
+				req.body.sickPay = regPay;
+				req.body.vacationPay = regPay;
+			}
 			const updatedPayInfo = await updatePayInfo(existingPayInfo._id, req.body);
 			return res.status(201).json(updatedPayInfo);
 		}
