@@ -9,8 +9,12 @@ const OutlineButton = ({
 	name,
 	color = "var(--primary_button_bg)",
 	borderColor,
+	minW,
+	bg,
 }) => (
 	<Button
+		bg={bg}
+		minW={minW}
 		variant={"outline"}
 		onClick={onClick}
 		size={size}

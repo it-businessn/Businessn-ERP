@@ -584,9 +584,9 @@ export const getPayrollStatus = (data, prevRecordEndDate) => {
 		isDisabledAction: true,
 	};
 	// const targetStartDate = moment(data.payPeriodStartDate);
-	const targetEndDate = moment(data.payPeriodEndDate);
-	const targetPayDate = moment(data.payPeriodPayDate);
-	const targetProcessingDate = moment(data.payPeriodProcessingDate);
+	const targetEndDate = moment(data?.payPeriodEndDate);
+	const targetPayDate = moment(data?.payPeriodPayDate);
+	const targetProcessingDate = moment(data?.payPeriodProcessingDate);
 
 	const isEndDatePassed = targetEndDate.isBefore(todayDate, "day");
 	const isPayDateInFuture = targetPayDate.isAfter(todayDate, "day");
@@ -599,7 +599,7 @@ export const getPayrollStatus = (data, prevRecordEndDate) => {
 
 	const isOverdue = isFutureDate(targetProcessingDate);
 
-	if (!data.isProcessed && isOverdue) {
+	if (!data?.isProcessed && isOverdue) {
 		return {
 			name: "Overdue",
 			color: "var(--primary_bg)",
@@ -607,7 +607,7 @@ export const getPayrollStatus = (data, prevRecordEndDate) => {
 			isViewAction: false,
 			isDisabledStatus: false,
 		};
-	} else if (!data.isProcessed && isEndDatePassed) {
+	} else if (!data?.isProcessed && isEndDatePassed) {
 		return {
 			name: "Pending",
 			color: "var(--primary_bg)",
@@ -616,7 +616,7 @@ export const getPayrollStatus = (data, prevRecordEndDate) => {
 			isViewAction: false,
 			isDisabledAction: false,
 		};
-	} else if (data.isProcessed && isPayDateToday) {
+	} else if (data?.isProcessed && isPayDateToday) {
 		return {
 			name: "Paid",
 			color: "var(--primary_bg)",
@@ -624,7 +624,7 @@ export const getPayrollStatus = (data, prevRecordEndDate) => {
 			isDisabledStatus: false,
 			isViewAction: true,
 		};
-	} else if (data.isProcessed && isPayDateInFuture) {
+	} else if (data?.isProcessed && isPayDateInFuture) {
 		return {
 			name: "Submitted",
 			color: "var(--primary_bg)",

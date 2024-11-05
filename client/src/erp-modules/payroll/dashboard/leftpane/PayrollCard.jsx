@@ -1,5 +1,8 @@
 import { HStack } from "@chakra-ui/react";
-import { daysAgo, isExtraPay, longFormat } from "utils";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { workViewPath } from "routes";
+import { daysAgo, getPayrollStatus, isExtraPay, longFormat } from "utils";
 import PayPeriodCard from "./PayPeriodCard";
 import PayPeriodDetailCard from "./PayPeriodDetailCard";
 
@@ -8,8 +11,35 @@ const PayrollCard = ({
 	closestRecord,
 	runType,
 	nextSchedule,
-	handleClick,
+	company,
 }) => {
+	const [status, setStatus] = useState({
+		color: "",
+		bg: "",
+		name: "",
+		isDisabledStatus: "",
+	});
+	const [refresh, setRefresh] = useState(false);
+	useEffect(() => {
+		if (closestRecord) {
+			const { color, bg, name, isDisabledStatus } =
+				getPayrollStatus(closestRecord);
+			setStatus({ color, bg, name, isDisabledStatus });
+			setRefresh((prev) => !prev);
+		}
+	}, [closestRecord]);
+
+	const navigate = useNavigate();
+
+	const [showReport, setShowReport] = useState(undefined);
+
+	// const registerData = useEmployeePayReport(
+	// 	company,
+	// 	prevSchedule,
+	// 	showReport,
+	// 	refresh,
+	// );
+
 	return (
 		<>
 			<HStack gap={4} justifyContent={"space-around"}>
@@ -46,69 +76,40 @@ const PayrollCard = ({
 					title2={`In ${daysAgo(nextSchedule?.payPeriodProcessingDate)} days `}
 				/>
 			</HStack>
-
 			<PayPeriodDetailCard
 				header={"Pay Period"}
 				text1={`${longFormat(closestRecord?.payPeriodStartDate)} - `}
 				text2={longFormat(closestRecord?.payPeriodEndDate)}
 				actionText="Manage Payroll"
-				handleClick={() => console.log("handleClick")}
+				handleClick={() => navigate(workViewPath)}
 			/>
-			<PayPeriodDetailCard
-				header={"Processing Date"}
-				text1={longFormat(closestRecord?.payPeriodProcessingDate)}
-				actionText="Pending"
-				handleClick={() => console.log("handleClick")}
-			/>
+			{closestRecord && (
+				<PayPeriodDetailCard
+					header={"Processing Date"}
+					text1={longFormat(closestRecord?.payPeriodProcessingDate)}
+					actionText={status?.name}
+					bg={status?.bg}
+					color={status?.color}
+					handleClick={() => navigate(workViewPath)}
+				/>
+			)}
+
 			<PayPeriodDetailCard
 				header={"Pay Date"}
 				text1={longFormat(closestRecord?.payPeriodPayDate)}
-				actionText="View Register"
-				handleClick={() => console.log("handleClick")}
+				isOutlineButton
+				handleClick={() => setShowReport(true)}
 			/>
-			{/* <HStack gap={3}>
-				<VStack
-					spacing={0}
-					color="var(--nav_color)"
-					py="1em"
-					px={1}
-					w={"100%"}
-					bg="var(--main_color)"
-					borderRadius="10px"
-				>
-					<TextTitle title="Pay Period" size={"1.25em"} align={"center"} />
-					<HStack w={"100%"} spacing={0} justifyContent={"space-between"}>
-						<NormalTextTitle
-							weight="500"
-							align={"center"}
-							size="lg"
-							title={mmmDayYearFormat(closestRecord?.payPeriodStartDate)}
-						/>
-						<TextTitle title={"to"} width="60px" align={"center"} />
-						<NormalTextTitle
-							weight="500"
-							size="lg"
-							align={"center"}
-							title={mmmDayYearFormat(closestRecord?.payPeriodEndDate)}
-						/>
-					</HStack>
-				</VStack>
 
-				<PayPeriodCard
-					isPeriod
-					bg="var(--main_color)"
-					schedule={closestRecord}
-					title1="Pay Day"
-					title2={
-						<NormalTextTitle
-							width={"100%"}
-							size="lg"
-							title={longFormat(closestRecord?.payPeriodPayDate)}
-							weight={"500"}
-						/>
-					}
-				/>
-			</HStack> */}
+			{/* {showReport && (
+				<PreviewReportsModal
+					isReport
+					isOpen={showReport}
+					onClose={() => setShowReport(false)}
+					isEarningTable
+					reportData={registerData}
+				/> */}
+			{/* )} */}
 		</>
 	);
 };

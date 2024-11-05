@@ -46,6 +46,7 @@ const LeftPane = ({
 					runType={runType}
 					nextSchedule={nextSchedule}
 					handleClick={handleClick}
+					company={company}
 				/>
 			),
 		},

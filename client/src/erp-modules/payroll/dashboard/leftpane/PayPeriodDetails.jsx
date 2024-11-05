@@ -106,9 +106,7 @@ const PayPeriodDetails = ({
 		>
 			<VStack>
 				<TextTitle title={"Total Active Workforce"} />
-				<NormalTextTitle
-					title={`Task progress of ${employees?.length} employees`}
-				/>
+				<NormalTextTitle title={`Task progress of all employees`} />
 			</VStack>
 			<TextTitle
 				title={`${progressPercent}%`}
