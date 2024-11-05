@@ -21,8 +21,10 @@ const TextTitle = ({
 	onClick,
 	borderRadius,
 	mr,
+	cursor,
 }) => (
 	<Text
+		cursor={cursor}
 		mr={mr}
 		onClick={onClick}
 		borderRadius={borderRadius}

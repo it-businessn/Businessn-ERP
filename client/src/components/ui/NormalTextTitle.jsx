@@ -14,6 +14,7 @@ const NormalTextTitle = ({
 	bg,
 	textDecoration,
 	onClick,
+	cursor,
 }) => (
 	<TextTitle
 		onClick={onClick}
@@ -29,6 +30,7 @@ const NormalTextTitle = ({
 		color={color}
 		width={width}
 		textDecoration={textDecoration}
+		cursor={cursor}
 	/>
 );
 

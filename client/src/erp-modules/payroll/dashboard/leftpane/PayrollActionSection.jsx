@@ -3,7 +3,6 @@ import NormalTextTitle from "components/ui/NormalTextTitle";
 import TextTitle from "components/ui/text/TextTitle";
 import VerticalStepper from "components/ui/VerticalStepper";
 import useEmployeeAlertsInfo from "hooks/useEmployeeAlertsInfo";
-import useEmployees from "hooks/useEmployees";
 import useTimesheet from "hooks/useTimesheet";
 import { useEffect, useState } from "react";
 import { processPayrollPath, timesheetPath } from "routes";
@@ -13,8 +12,8 @@ const PayrollActionSection = ({
 	filter,
 	selectedPayPeriod,
 	handleClick,
+	activeUsers,
 }) => {
-	const { employees } = useEmployees(false, company, false, true);
 	const [approvalPercent, setApprovalPercent] = useState(0);
 	const [violationPercent, setViolationPercent] = useState(100);
 	const [reviewPercent, setReviewPercent] = useState(null);
@@ -109,7 +108,7 @@ const PayrollActionSection = ({
 				<VStack>
 					<TextTitle title={"Overview of payroll process"} />
 					<NormalTextTitle
-						title={`Task progress of ${employees?.length} employees`}
+						title={`Task progress of ${activeUsers?.length} employees`}
 					/>
 				</VStack>
 				<TextTitle

@@ -1,6 +1,8 @@
 import { Box, HStack, Icon, SimpleGrid } from "@chakra-ui/react";
 import BoxCard from "components/ui/card";
 import TextTitle from "components/ui/text/TextTitle";
+import useActiveEmployees from "hooks/useActiveEmployees";
+import useEmployees from "hooks/useEmployees";
 import { useEffect, useState } from "react";
 import { MdOutlineChevronLeft, MdOutlineChevronRight } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
@@ -19,6 +21,8 @@ const LeftPane = ({
 }) => {
 	const prevSchedule = payGroupSchedule?.[closestRecordIndex - 1];
 	const nextSchedule = payGroupSchedule?.[closestRecordIndex + 1];
+	const { employees } = useEmployees(false, company, false, false, false);
+	const activeUsers = useActiveEmployees(company);
 
 	const [filter, setFilter] = useState(null);
 
@@ -58,12 +62,20 @@ const LeftPane = ({
 					filter={filter}
 					selectedPayPeriod={closestRecord}
 					handleClick={handleClick}
+					activeUsers={activeUsers}
 				/>
 			),
 		},
 		{
 			name: "",
-			content: <PayPeriodDetails />,
+			content: (
+				<PayPeriodDetails
+					handleClick={handleClick}
+					company={company}
+					employees={employees}
+					activeUsers={activeUsers}
+				/>
+			),
 		},
 		{
 			name: "Notifications",

@@ -134,6 +134,7 @@ export const ROUTE_PATH = {
 	PAYROLL: "/payroll",
 	PROCESS: "/process",
 	APPROVALS: "/approvals",
+	LEAVE_APPROVALS: "/leave-approvals",
 	TIMESHEETS: "/timesheets",
 	EMPLOYEES: "/employees",
 	EMP_DASHBOARD: "/employee-details",
@@ -157,6 +158,7 @@ export const customerPath = `${ROUTE_PATH.SALES}${ROUTE_PATH.CUSTOMERS}`;
 export const questionnairePath = `${ROUTE_PATH.SALES}${ROUTE_PATH.ADD_PAPER}`;
 export const processPayrollPath = `${ROUTE_PATH.PAYROLL}${ROUTE_PATH.PROCESS}`;
 export const timesheetPath = `${ROUTE_PATH.PAYROLL}${ROUTE_PATH.TIMESHEETS}`;
+export const leaveApprovalPath = `${ROUTE_PATH.PAYROLL}${ROUTE_PATH.LEAVE_APPROVALS}`;
 export const payrollEmployeePath = `${ROUTE_PATH.PAYROLL}${ROUTE_PATH.EMPLOYEES}`;
 export const payrollReportPath = `${ROUTE_PATH.PAYROLL}${ROUTE_PATH.REPORT}`;
 
