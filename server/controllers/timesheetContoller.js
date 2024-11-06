@@ -1,7 +1,8 @@
 const EmployeePayInfo = require("../models/EmployeePayInfo");
 const Timesheet = require("../models/Timesheet");
 const moment = require("moment");
-const { STAT_HOLIDAYS, calcTotalHours } = require("../services/data");
+const { getPayrollActiveEmployees } = require("./userController");
+const { findEmployeePayInfo } = require("./payInfoController");
 
 // const currentTime = currentDate.format("HH:mm:ss");
 const currentDate = moment().add(1, "days");
@@ -145,49 +146,86 @@ const getTimesheet = async (req, res) => {
 const findEmployeeTimesheetExists = async (record) =>
 	await Timesheet.findOne(record);
 
+const findMonthlyEarning = async (employeeId, companyName) => {
+	const currentDate = moment.utc();
+	const past30Days = moment.utc().subtract(30, "days");
+
+	const timesheets = await Timesheet.find({
+		employeeId,
+		companyName,
+		clockIn: {
+			$gte: past30Days.toDate(), // 30 days ago
+			$lte: currentDate.toDate(), // Up to the current date
+		},
+	});
+
+	const empPayInfoResult = await findEmployeePayInfo(employeeId, companyName);
+
+	const statPayRate = empPayInfoResult?.sickPay || 0;
+	const employeeEarnings = timesheets?.reduce((acc, item) => {
+		return (
+			acc +
+			(item?.regHoursWorked * empPayInfoResult?.regPay +
+				item?.overtimeHoursWorked * empPayInfoResult?.overTimePay +
+				item?.dblOvertimeHoursWorked * empPayInfoResult?.dblOverTimePay +
+				item?.statDayHoursWorked * empPayInfoResult?.statWorkPay +
+				item?.statDayHours * empPayInfoResult?.statPay +
+				item?.sickPayHours * empPayInfoResult?.sickPay +
+				item?.vacationPayHours * empPayInfoResult?.vacationPay)
+		);
+	}, 0);
+
+	return {
+		employeeEarnings,
+		numberOfDaysWorked: timesheets?.length || 0,
+		statPayRate,
+	};
+};
+
 const addStatHolidayDefaultTimesheet = async (employeeId, companyName) => {
+	// const y = await Timesheet.deleteMany({
+	// 	payType: "Statutory Pay",
+	// 	companyName,
+	// });
+	// console.log("del", y);
 	const existingStatTimesheetInfo = await findEmployeeTimesheetExists({
 		employeeId,
 		companyName,
 		payType: "Statutory Pay",
-		// createdOn: moment(createdOn),
 	});
 	if (existingStatTimesheetInfo) {
 		return existingStatTimesheetInfo;
 	}
-	STAT_HOLIDAYS.forEach(async ({ date }) => {
-		const startTime = moment.utc(date).set({
-			hour: 9,
-			minute: 0,
-			second: 0,
-			millisecond: 0,
-		});
-		const endTime = moment.utc(date).set({
-			hour: 17,
-			minute: 0,
-			second: 0,
-			millisecond: 0,
-		});
-		const newStatTimeSheetRecord = {
-			employeeId,
-			companyName,
-			payType: "Statutory Pay",
-			createdOn: moment(date),
-			clockIn: startTime,
-			clockOut: endTime,
-			statDayHours: Math.floor(
-				moment
-					.duration(
-						calcTotalHours({ clockIn: startTime, clockOut: endTime })
-							?.totalWorkedHours,
-					)
-					.asHours(),
-			),
-		};
+	const { employeeEarnings, numberOfDaysWorked, statPayRate } =
+		await findMonthlyEarning(employeeId, companyName);
 
-		// await addTimesheetEntry(newStatTimeSheetRecord);
+	const statPayAmount = numberOfDaysWorked
+		? employeeEarnings / numberOfDaysWorked
+		: 0;
+	const statHours = statPayAmount / statPayRate;
+
+	const startTime = moment().set({
+		hour: 9,
+		minute: 0,
+		second: 0,
+		millisecond: 0,
 	});
-	return "New record";
+
+	const endTime = startTime.clone().add(statHours, "hours");
+
+	const newStatTimeSheetRecord = {
+		employeeId,
+		companyName,
+		payType: "Statutory Pay",
+		createdOn: moment(),
+		clockIn: startTime,
+		clockOut: endTime,
+		statDayHours: statHours.toFixed(2),
+	};
+
+	const newRecord = await addTimesheetEntry(newStatTimeSheetRecord);
+
+	return newRecord;
 };
 
 const addTimesheetEntry = async (record) => await Timesheet.create(record);
@@ -195,22 +233,8 @@ const addTimesheetEntry = async (record) => await Timesheet.create(record);
 const createTimesheet = async (req, res) => {
 	const { company, type, clockIn, clockOut, employeeId, param_hours } =
 		req.body;
-	const isStatPay = type === "Statutory Pay";
 
 	try {
-		if (isStatPay) {
-			// const statEntryExists = await addStatHolidayDefaultTimesheet(
-			// 	employeeId,
-			// 	company,
-			// 	createdOn,
-			// );
-			// if (statEntryExists !== "New record") {
-			// 	return res.status(201).json("Stat Holiday Default Timesheet exists.");
-			// } else if (statEntryExists === "New record") {
-			// 	return res.status(201).json("Stat Holiday Default Timesheet added.");
-			// }
-			return res.status(201).json("Stat Holiday Default Timesheet exists.");
-		}
 		const newEntry = {
 			employeeId,
 			clockIn,
@@ -233,6 +257,17 @@ const createTimesheet = async (req, res) => {
 	}
 };
 
+const addStatHolidayTimesheet = async (companyName) => {
+	try {
+		const payrollActiveEmployees = await getPayrollActiveEmployees(companyName);
+		payrollActiveEmployees.map(async (emp) => {
+			await addStatHolidayDefaultTimesheet(emp._id, companyName);
+		});
+		console.log("StatHolidayDefaultTimesheet added");
+	} catch (error) {
+		console.error("Error adding record:", error);
+	}
+};
 const addOvertimeTimesheet = async (record) => {
 	const { employeeId, companyName, clockIn, clockOut, overtimeHoursWorked } =
 		record;
@@ -333,4 +368,5 @@ module.exports = {
 	addTimesheetEntry,
 	findEmployeeTimesheetExists,
 	deleteTimesheet,
+	addStatHolidayTimesheet,
 };

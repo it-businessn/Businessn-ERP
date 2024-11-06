@@ -160,7 +160,7 @@ const basicInfo = async (currentPeriodEmployees, empId, payPeriodPayDate) => {
 		payPeriodPayDate,
 	});
 
-	const empPayInfoResult = await findEmployeePayInfo(empId);
+	const empPayInfoResult = await findEmployeePayInfo(empId, companyName);
 	const empTimesheetData = currentPeriodEmployees?.find(
 		(el) => el.empId._id.toString() === empId.toString(),
 	);
@@ -650,9 +650,10 @@ const findEmployeePayStub = async (empId, payPeriodNum) =>
 		"empId commission retroactive vacationPayout bonus terminationPayout",
 	);
 
-const findEmployeePayInfo = async (empId) =>
+const findEmployeePayInfo = async (empId, companyName) =>
 	await EmployeePayInfo.findOne({
 		empId,
+		companyName,
 	}).select(
 		"empId regPay overTimePay dblOverTimePay statWorkPay statPay sickPay vacationPay",
 	);
@@ -908,7 +909,7 @@ const buildPayStubDetails = async (
 		payPeriodPayDate,
 	});
 
-	const empPayInfoResult = await findEmployeePayInfo(empId);
+	const empPayInfoResult = await findEmployeePayInfo(empId, companyName);
 
 	const newEmpData = getCurrentTotals(
 		empTimesheetData,

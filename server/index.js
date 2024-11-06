@@ -4,7 +4,11 @@ const express = require("express");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const cors = require("cors");
+const cron = require("node-cron");
+const moment = require("moment");
 
+const { addStatHolidayTimesheet } = require("./controllers/timesheetContoller");
+const { STAT_HOLIDAYS } = require("./services/data");
 const activityRoutes = require("./routes/activityRoutes");
 const appRoutes = require("./routes/appRoutes");
 const assessmentRoutes = require("./routes/assessmentRoutes");
@@ -115,6 +119,18 @@ mongoose.connect(MONGO_URI, {
 });
 
 const db = mongoose.connection;
+
+// Scheduling to add timecard entry to run every day at midnight
+cron.schedule("0 0 * * *", () => {
+	// cron.schedule("*/15 * * * * *", () => { //every 15sec
+	const isStatDay = STAT_HOLIDAYS.find(
+		({ date }) => date === moment().format("YYYY-MM-DD"),
+	);
+	if (isStatDay) {
+		console.log("Running daily task at midnight");
+		addStatHolidayTimesheet("The Owners Of Strata Plan NW1378");
+	} else return;
+});
 
 db.once("open", () => {
 	console.log("Connected to MongoDB");

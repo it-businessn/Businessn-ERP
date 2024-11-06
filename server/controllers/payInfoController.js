@@ -189,4 +189,5 @@ module.exports = {
 	getEmployeePayInfo,
 	addEmployeePayInfo,
 	updateEmployeePayInfo,
+	findEmployeePayInfo,
 };
