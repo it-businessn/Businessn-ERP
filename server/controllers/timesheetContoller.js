@@ -263,6 +263,7 @@ const addOvertimeRecord = async (clockIn, clockOut, employeeId, company) => {
 		overtimeHoursWorked,
 		companyName: company,
 	});
+	return adjustedClockOut;
 };
 
 const createTimesheet = async (req, res) => {
@@ -273,7 +274,12 @@ const createTimesheet = async (req, res) => {
 		const totalWorkedHours = calcTotalWorkedHours(clockIn, clockOut);
 
 		if (type === "Regular Pay" && totalWorkedHours > 8) {
-			await addOvertimeRecord(clockIn, clockOut, employeeId, company);
+			const adjustedClockOut = await addOvertimeRecord(
+				clockIn,
+				clockOut,
+				employeeId,
+				company,
+			);
 			const newEntry = {
 				employeeId,
 				clockIn,
@@ -336,7 +342,12 @@ const updateTimesheet = async (req, res) => {
 		const totalWorkedHours = calcTotalWorkedHours(clockIn, clockOut);
 
 		if (param_hours === "regHoursWorked" && totalWorkedHours > 8) {
-			await addOvertimeRecord(clockIn, clockOut, empId, company);
+			const adjustedClockOut = await addOvertimeRecord(
+				clockIn,
+				clockOut,
+				empId,
+				company,
+			);
 			const updatedData = {
 				clockIn,
 				clockOut: adjustedClockOut,
