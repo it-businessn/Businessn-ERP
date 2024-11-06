@@ -11,7 +11,7 @@ const WorkviewTable = ({
 }) => {
 	const hideLabel = (text, label) => text.startsWith(label);
 	return (
-		<Box overflow="auto" height={height} overflowX={overflowX}>
+		<Box overflow="auto" height={height} overflowX={overflowX} width={"80vw"}>
 			<Table variant={"simple"}>
 				<Thead position="sticky" zIndex="docked" top={-1} textAlign="center">
 					<Tr>

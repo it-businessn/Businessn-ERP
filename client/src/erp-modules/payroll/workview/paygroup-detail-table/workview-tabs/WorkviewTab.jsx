@@ -91,6 +91,9 @@ const WorkviewTab = ({
 										p={0.5}
 										key={col.key}
 										onFocus={(el) => handleClick(col, row, el.target.name)}
+										// position={col.key === "" && "sticky"}
+										// right={col.key === "" && "0"}
+										// zIndex="1"
 									>
 										{col.isEditable
 											? renderEditableInput(

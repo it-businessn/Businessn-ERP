@@ -362,7 +362,7 @@ const Timesheet = ({
 										title={param_hours_worked}
 									/>
 								</Td>
-								<Td p={0}>
+								<Td p={0} position={"sticky"} right={"0"} zIndex="1">
 									<PrimaryButton
 										cursor="text"
 										color={approveStatusBtnCss.color}

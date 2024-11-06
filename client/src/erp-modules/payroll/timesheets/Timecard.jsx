@@ -150,7 +150,7 @@ const Timecard = ({ company, userId, timecardRefresh, filter }) => {
 										}
 									/>
 								</Td>
-								<Td p={0.5} pl={6}>
+								<Td p={0.5} pl={6} position={"sticky"} right={"0"} zIndex="1">
 									{totalWorkedHours}
 								</Td>
 							</Tr>
