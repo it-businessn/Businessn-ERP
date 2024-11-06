@@ -75,64 +75,38 @@ const getGroupedTimesheet = async (req, res) => {
 			const empTimesheetData = currentPeriodEmployees?.find(
 				(el) => el.empId._id.toString() === employee._id.toString(),
 			);
-			if (empTimesheetData) {
-				const result = buildEmpHourlyDetails(empTimesheetData, employee);
-				const additionalHoursAllocatedInfo =
-					await findAdditionalHoursAllocatedInfo({
-						empId: employee._id,
-						companyName,
-					});
-				if (additionalHoursAllocatedInfo) {
-					const {
-						additionalRegHoursWorked,
-						additionalOvertimeHoursWorked,
-						additionalDblOvertimeHoursWorked,
-						additionalStatDayHoursWorked,
-						additionalStatHoursWorked,
-						additionalVacationHoursWorked,
-						additionalSickHoursWorked,
-					} = additionalHoursAllocatedInfo;
+			const result = await buildEmpHourlyDetails(
+				empTimesheetData ?? null,
+				employee,
+				companyName,
+			);
+			const additionalHoursAllocatedInfo =
+				await findAdditionalHoursAllocatedInfo({
+					empId: employee._id,
+					companyName,
+					payPeriodPayDate: payDate,
+				});
+			if (additionalHoursAllocatedInfo) {
+				const {
+					additionalRegHoursWorked,
+					additionalOvertimeHoursWorked,
+					additionalDblOvertimeHoursWorked,
+					additionalStatDayHoursWorked,
+					additionalStatHoursWorked,
+					additionalVacationHoursWorked,
+					additionalSickHoursWorked,
+				} = additionalHoursAllocatedInfo;
 
-					result.additionalRegHoursWorked = additionalRegHoursWorked;
-					result.additionalOvertimeHoursWorked = additionalOvertimeHoursWorked;
-					result.additionalDblOvertimeHoursWorked =
-						additionalDblOvertimeHoursWorked;
-					result.additionalStatHoursWorked = additionalStatHoursWorked;
-					result.additionalStatDayHoursWorked = additionalStatDayHoursWorked;
-					result.additionalSickHoursWorked = additionalSickHoursWorked;
-					result.additionalVacationHoursWorked = additionalVacationHoursWorked;
-				}
-				aggregatedResult.push(result);
-			} else {
-				const result = buildEmpHourlyDetails(null, employee);
-				const additionalHoursAllocatedInfo =
-					await findAdditionalHoursAllocatedInfo({
-						empId: employee._id,
-						companyName,
-						payPeriodPayDate: payDate,
-					});
-				if (additionalHoursAllocatedInfo) {
-					const {
-						additionalRegHoursWorked,
-						additionalOvertimeHoursWorked,
-						additionalDblOvertimeHoursWorked,
-						additionalStatDayHoursWorked,
-						additionalStatHoursWorked,
-						additionalVacationHoursWorked,
-						additionalSickHoursWorked,
-					} = additionalHoursAllocatedInfo;
-
-					result.additionalRegHoursWorked = additionalRegHoursWorked;
-					result.additionalOvertimeHoursWorked = additionalOvertimeHoursWorked;
-					result.additionalDblOvertimeHoursWorked =
-						additionalDblOvertimeHoursWorked;
-					result.additionalStatHoursWorked = additionalStatHoursWorked;
-					result.additionalStatDayHoursWorked = additionalStatDayHoursWorked;
-					result.additionalSickHoursWorked = additionalSickHoursWorked;
-					result.additionalVacationHoursWorked = additionalVacationHoursWorked;
-				}
-				aggregatedResult.push(result);
+				result.additionalRegHoursWorked = additionalRegHoursWorked;
+				result.additionalOvertimeHoursWorked = additionalOvertimeHoursWorked;
+				result.additionalDblOvertimeHoursWorked =
+					additionalDblOvertimeHoursWorked;
+				result.additionalStatHoursWorked = additionalStatHoursWorked;
+				result.additionalStatDayHoursWorked = additionalStatDayHoursWorked;
+				result.additionalSickHoursWorked = additionalSickHoursWorked;
+				result.additionalVacationHoursWorked = additionalVacationHoursWorked;
 			}
+			aggregatedResult.push(result);
 		}
 		res.status(200).json(aggregatedResult);
 	} catch (error) {
@@ -356,7 +330,15 @@ const buildEmpERDetails = (
 	};
 };
 
-const getGroupedData = (empTimesheetData, employee) => {
+const getGroupedData = async (empTimesheetData, employee, companyName) => {
+	const empPayInfoResult = await EmployeePayInfo.findOne({
+		empId: employee._id,
+		companyName,
+	}).select("empId typeOfEarning fullTimeStandardHours partTimeStandardHours");
+
+	const isFT = empPayInfoResult?.typeOfEarning === "Full Time Salaried";
+	const isPT = empPayInfoResult?.typeOfEarning === "Part Time Salaried";
+
 	const employeeId = empTimesheetData
 		? empTimesheetData.empId.employeeId
 		: employee.employeeId;
@@ -366,7 +348,11 @@ const getGroupedData = (empTimesheetData, employee) => {
 		? empTimesheetData.empId.fullName
 		: employee.fullName;
 
-	const totalRegHoursWorked = empTimesheetData
+	const totalRegHoursWorked = isFT
+		? empPayInfoResult?.fullTimeStandardHours
+		: isPT
+		? empPayInfoResult?.partTimeStandardHours
+		: empTimesheetData
 		? empTimesheetData.totalRegHoursWorked
 		: 0;
 	const totalOvertimeHoursWorked = empTimesheetData
@@ -399,7 +385,11 @@ const getGroupedData = (empTimesheetData, employee) => {
 	};
 };
 
-const buildEmpHourlyDetails = (empTimesheetData, employee) => {
+const buildEmpHourlyDetails = async (
+	empTimesheetData,
+	employee,
+	companyName,
+) => {
 	const {
 		employeeId,
 		recordId,
@@ -411,7 +401,7 @@ const buildEmpHourlyDetails = (empTimesheetData, employee) => {
 		totalStatHours,
 		totalSickHoursWorked,
 		totalVacationHoursWorked,
-	} = getGroupedData(empTimesheetData, employee);
+	} = await getGroupedData(empTimesheetData, employee, companyName);
 	return {
 		_id: employeeId,
 		empId: { fullName, _id: recordId },
