@@ -154,7 +154,12 @@ const fetchActiveEmployees = async (
 		: await getPayrollActiveEmployees(companyName);
 };
 
-const basicInfo = async (currentPeriodEmployees, empId, payPeriodPayDate) => {
+const basicInfo = async (
+	currentPeriodEmployees,
+	empId,
+	payPeriodPayDate,
+	companyName,
+) => {
 	const empAdditionalHoursAllocated = await findAdditionalHoursAllocatedInfo({
 		empId,
 		payPeriodPayDate,
@@ -192,7 +197,12 @@ const getEEContribution = async (req, res) => {
 				empTimesheetData,
 				empPayInfoResult,
 				empAdditionalHoursAllocated,
-			} = await basicInfo(currentPeriodEmployees, employee._id, payDate);
+			} = await basicInfo(
+				currentPeriodEmployees,
+				employee._id,
+				payDate,
+				companyName,
+			);
 
 			const result = buildEmpEEDetails(
 				empTimesheetData ?? null,
@@ -231,7 +241,12 @@ const getERContribution = async (req, res) => {
 				empTimesheetData,
 				empPayInfoResult,
 				empAdditionalHoursAllocated,
-			} = await basicInfo(currentPeriodEmployees, employee._id, payDate);
+			} = await basicInfo(
+				currentPeriodEmployees,
+				employee._id,
+				payDate,
+				companyName,
+			);
 
 			const result = buildEmpERDetails(
 				empTimesheetData ?? null,
