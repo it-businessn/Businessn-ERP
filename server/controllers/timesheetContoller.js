@@ -188,11 +188,20 @@ const addStatHolidayDefaultTimesheet = async (employeeId, companyName) => {
 	// 	companyName,
 	// });
 	// console.log("del", y);
+
+	const startOfToday = moment().startOf("day");
+	const endOfToday = moment().endOf("day");
+
 	const existingStatTimesheetInfo = await findEmployeeTimesheetExists({
 		employeeId,
 		companyName,
 		payType: "Statutory Pay",
+		clockIn: {
+			$gte: startOfToday.toDate(),
+			$lt: endOfToday.toDate(),
+		},
 	});
+
 	if (existingStatTimesheetInfo) {
 		return existingStatTimesheetInfo;
 	}

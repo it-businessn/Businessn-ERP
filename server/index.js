@@ -120,15 +120,23 @@ mongoose.connect(MONGO_URI, {
 
 const db = mongoose.connection;
 
-// Scheduling to add timecard entry to run every day at midnight
+const COMPANIES = {
+	FD: "Fractional Departments Inc.",
+	NW: "The Owners Of Strata Plan NW1378",
+};
+
+// Scheduler
 cron.schedule("0 0 * * *", () => {
-	// cron.schedule("*/15 * * * * *", () => { //every 15sec
+	//every 15sec cron.schedule("*/15 * * * * *", () => {
+
 	const isStatDay = STAT_HOLIDAYS.find(
 		({ date }) => date === moment().format("YYYY-MM-DD"),
 	);
 	if (isStatDay) {
-		console.log("Running daily task at midnight");
-		addStatHolidayTimesheet("The Owners Of Strata Plan NW1378");
+		console.log(
+			"Scheduling to add timecard entry to run every day at midnight",
+		);
+		addStatHolidayTimesheet(COMPANIES.NW);
 	} else return;
 });
 
