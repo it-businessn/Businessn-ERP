@@ -5,10 +5,10 @@
 	--custom_height: 100vh - 6.7em;
 	--payroll_bg: #5fa6be;
 	--payroll_card1: linear-gradient(
-		77deg,
-		rgba(29, 103, 148, 1) 64%,
-		rgba(95, 166, 190, 1) 100%,
-		rgba(64, 168, 185, 1) 100%
+		67deg,
+		rgb(29 80 136) 64%,
+		rgb(24, 57, 92) 80%,
+		rgb(29 80 136) 100%
 	);
 	--payroll_card2: linear-gradient(
 		77deg,

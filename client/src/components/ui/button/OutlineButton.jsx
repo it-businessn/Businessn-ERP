@@ -11,6 +11,7 @@ const OutlineButton = ({
 	borderColor,
 	minW,
 	bg,
+	w,
 }) => (
 	<Button
 		bg={bg}
@@ -24,6 +25,7 @@ const OutlineButton = ({
 		colorScheme={colorScheme}
 		ml={ml}
 		name={name}
+		w={w}
 		borderColor={borderColor}
 	>
 		{label}

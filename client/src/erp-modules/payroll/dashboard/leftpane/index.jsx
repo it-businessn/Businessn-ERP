@@ -45,8 +45,10 @@ const LeftPane = ({
 			name: "Payroll",
 			content: (
 				<PayrollCard
+					payGroupSchedule={payGroupSchedule}
 					prevSchedule={prevSchedule}
 					closestRecord={closestRecord}
+					closestRecordIndex={closestRecordIndex}
 					runType={runType}
 					nextSchedule={nextSchedule}
 					handleClick={handleClick}
@@ -96,7 +98,7 @@ const LeftPane = ({
 					<BoxCard key={name}>
 						{index === 0 ? (
 							<HStack>
-								<TextTitle title={name} mt={2} mb={"1em"} />
+								{/* <TextTitle title={name} mt={2} mb={"1em"} />
 								<HStack spacing={0}>
 									<Icon
 										borderRadius={"50%"}
@@ -112,7 +114,7 @@ const LeftPane = ({
 										boxSize="5"
 										color="fg.muted"
 									/>
-								</HStack>
+								</HStack> */}
 							</HStack>
 						) : (
 							<TextTitle title={name} mt={2} mb={"1em"} />
