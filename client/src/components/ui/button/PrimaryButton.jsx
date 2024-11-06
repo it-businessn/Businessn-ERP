@@ -20,6 +20,7 @@ const PrimaryButton = ({
 		bg: "transparent",
 		border: "1px solid var(--primary_button_bg)",
 	},
+	cursor,
 }) => {
 	return (
 		<Button
@@ -39,6 +40,7 @@ const PrimaryButton = ({
 			borderRadius={"10px"}
 			loadingText={loadingText}
 			rightIcon={rightIcon}
+			cursor={cursor}
 		>
 			{name}
 		</Button>

@@ -303,6 +303,7 @@ const Timesheet = ({
 								</Td>
 								<Td p={0.5}>
 									<Input
+										cursor={"pointer"}
 										size={"sm"}
 										onBlur={() => handleSubmit(param_hours)}
 										className={`timeClockInInput ${_id}`}
@@ -322,6 +323,7 @@ const Timesheet = ({
 								</Td>
 								<Td p={0.5} pl={3}>
 									<Input
+										cursor={"pointer"}
 										size={"sm"}
 										onBlur={() => handleSubmit(param_hours)}
 										className={`timeClockOutInput ${_id}`}
@@ -362,6 +364,7 @@ const Timesheet = ({
 								</Td>
 								<Td p={0}>
 									<PrimaryButton
+										cursor="text"
 										color={approveStatusBtnCss.color}
 										bg={approveStatusBtnCss.bg}
 										name={approveStatus}
@@ -379,6 +382,7 @@ const Timesheet = ({
 											isDisabled={isDisabled}
 											size={"xs"}
 											icon={<FaCheck />}
+											ml={-5}
 											variant={"solid"}
 											color={"var(--status_button_border)"}
 											onClick={() => {
