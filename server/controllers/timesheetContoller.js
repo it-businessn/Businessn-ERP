@@ -239,22 +239,58 @@ const addStatHolidayDefaultTimesheet = async (employeeId, companyName) => {
 
 const addTimesheetEntry = async (record) => await Timesheet.create(record);
 
+const calcTotalWorkedHours = (clockIn, clockOut) =>
+	clockOut
+		? moment
+				.duration(moment(clockOut).diff(moment(clockIn)))
+				.asHours()
+				.toFixed(2)
+		: null;
+
+const addOvertimeRecord = async (clockIn, clockOut, employeeId, company) => {
+	const adjustedClockOut = moment(clockIn).add(8, "hours");
+	const overtimeClockIn = moment(adjustedClockOut);
+	const overtimeClockOut = moment(clockOut);
+	const overtimeHoursWorked = moment
+		.duration(overtimeClockOut.diff(overtimeClockIn))
+		.asHours()
+		.toFixed(2);
+
+	await addOvertimeTimesheet({
+		employeeId,
+		clockIn: overtimeClockIn,
+		clockOut: overtimeClockOut,
+		overtimeHoursWorked,
+		companyName: company,
+	});
+};
+
 const createTimesheet = async (req, res) => {
 	const { company, type, clockIn, clockOut, employeeId, param_hours } =
 		req.body;
 
 	try {
+		const totalWorkedHours = calcTotalWorkedHours(clockIn, clockOut);
+
+		if (type === "Regular Pay" && totalWorkedHours > 8) {
+			await addOvertimeRecord(clockIn, clockOut, employeeId, company);
+			const newEntry = {
+				employeeId,
+				clockIn,
+				clockOut: adjustedClockOut,
+				[param_hours]: 8,
+				companyName: company,
+				payType: type,
+			};
+			const newTimesheet = await addTimesheetEntry(newEntry);
+			return res.status(201).json(newTimesheet);
+		}
+
 		const newEntry = {
 			employeeId,
 			clockIn,
 			clockOut,
-			// clockOut: getUTCTime(clockOut),
-			[param_hours]: clockOut
-				? moment
-						.duration(moment(clockOut).diff(moment(clockIn)))
-						.asHours()
-						.toFixed(2)
-				: null,
+			[param_hours]: totalWorkedHours,
 			companyName: company,
 			payType: type,
 		};
@@ -297,29 +333,10 @@ const updateTimesheet = async (req, res) => {
 	let { clockIn, clockOut, empId, approve, param_hours, company } = req.body;
 
 	try {
-		const totalWorkedHours = clockOut
-			? moment
-					.duration(moment(clockOut).diff(moment(clockIn)))
-					.asHours()
-					.toFixed(2)
-			: null;
+		const totalWorkedHours = calcTotalWorkedHours(clockIn, clockOut);
 
-		if (totalWorkedHours > 8) {
-			const adjustedClockOut = moment(clockIn).add(8, "hours");
-			const overtimeClockIn = moment(adjustedClockOut);
-			const overtimeClockOut = moment(clockOut);
-			const overtimeHoursWorked = moment
-				.duration(overtimeClockOut.diff(overtimeClockIn))
-				.asHours()
-				.toFixed(2);
-
-			await addOvertimeTimesheet({
-				employeeId: empId,
-				clockIn: overtimeClockIn,
-				clockOut: overtimeClockOut,
-				overtimeHoursWorked,
-				companyName: company,
-			});
+		if (param_hours === "regHoursWorked" && totalWorkedHours > 8) {
+			await addOvertimeRecord(clockIn, clockOut, empId, company);
 			const updatedData = {
 				clockIn,
 				clockOut: adjustedClockOut,
