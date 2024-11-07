@@ -10,7 +10,7 @@ const PayPeriodDetails = ({ employees, activeUsers, handleClick }) => {
 			title: "Total Active Workforce",
 			description: employees?.length,
 			linkTo: {
-				title: "Go to Employees",
+				title: "Employees",
 				path: payrollEmployeePath,
 			},
 			isHeader: true,
@@ -19,7 +19,7 @@ const PayPeriodDetails = ({ employees, activeUsers, handleClick }) => {
 			title: "Currently Active",
 			description: activeUsers?.length,
 			linkTo: {
-				title: "Go to Timesheets",
+				title: "Timesheets",
 				path: timesheetPath,
 			},
 		},
@@ -27,7 +27,7 @@ const PayPeriodDetails = ({ employees, activeUsers, handleClick }) => {
 			title: "Currently On leave",
 			description: "NA",
 			linkTo: {
-				title: "Go to Leave Approvals",
+				title: "Leave Approvals",
 				path: leaveApprovalPath,
 			},
 		},
@@ -35,7 +35,7 @@ const PayPeriodDetails = ({ employees, activeUsers, handleClick }) => {
 			title: "Leave Requests Pending",
 			description: "NA",
 			linkTo: {
-				title: "Go to Leave Approvals",
+				title: "Leave Approvals",
 				path: leaveApprovalPath,
 			},
 		},
@@ -56,22 +56,16 @@ const PayPeriodDetails = ({ employees, activeUsers, handleClick }) => {
 					mb={3}
 				>
 					{item?.isHeader ? (
-						<TextTitle w={"70%"} title={item.title} />
+						<TextTitle whiteSpace="wrap" title={item.title} />
 					) : (
-						<NormalTextTitle w={"70%"} title={item.title} />
+						<NormalTextTitle title={item.title} whiteSpace="wrap" />
 					)}
-					<TextTitle
-						align={"center"}
-						flex={"20%"}
-						size={"2xl"}
-						title={item.description}
-					/>
+					<TextTitle align="center" size={"2xl"} title={item.description} />
 					<NormalTextTitle
-						flex={"10%"}
 						onClick={() => handleClick(item?.linkTo?.path)}
 						color="var(--primary_button_bg)"
 						title={item.linkTo.title}
-						size="sm"
+						whiteSpace="wrap"
 						align="right"
 						textDecoration="underline"
 						cursor="pointer"

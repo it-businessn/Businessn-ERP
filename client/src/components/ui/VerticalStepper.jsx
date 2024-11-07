@@ -88,7 +88,6 @@ const VerticalStepper = ({
 								onClick={() => handleLinkClick(step?.linkTo?.path)}
 								color="var(--primary_button_bg)"
 								title={step?.linkTo?.title}
-								size="sm"
 								align="right"
 								textDecoration="underline"
 							/>
