@@ -4,7 +4,6 @@ import Logo from "components/logo";
 import TextTitle from "components/ui/text/TextTitle";
 import { SIDEBAR_MENU } from "data";
 import useCompany from "hooks/useCompany";
-import useCompanyList from "hooks/useCompanyList";
 import LocalStorageService from "services/LocalStorageService";
 import LoginService from "services/LoginService";
 import navBarImg from "../../assets/navbar_bg.png";
@@ -20,8 +19,6 @@ const Navbar = ({
 }) => {
 	const { company } = useCompany(companyName);
 
-	const companies = useCompanyList(user?._id);
-
 	const handleLogout = async () => {
 		try {
 			await LoginService.signOut(user._id);
@@ -31,28 +28,6 @@ const Navbar = ({
 			console.log(error.response.data.error);
 		}
 	};
-
-	// const [selectedCompany, setSelectedCompany] = useState(company);
-
-	const handleCompany = (company = "FD") => {
-		// if (company === "FD") {
-		// 	setActiveMenu(FD_SIDEBAR_MENU.find((menu) => menu.id === "sales"));
-		// } else {
-		// 	setActiveMenu(BUSINESSN_SIDEBAR_MENU.find((menu) => menu.id === "sales"));
-		// }
-		LocalStorageService.setItem("selectedCompany", company);
-
-		// setActiveMenu(SIDEBAR_MENU?.find((menu) => menu.id === "sales"));
-	};
-
-	// const handleChange = (value) => {
-	// 	setSelectedCompany(value);
-	// };
-
-	// const menuOptions = () => {
-	// 	// company === "FD" ? FD_SIDEBAR_MENU : BUSINESSN_SIDEBAR_MENU;
-	// 	return SIDEBAR_MENU;
-	// };
 
 	const menuList = SIDEBAR_MENU?.filter((tab) => tab.permissions);
 

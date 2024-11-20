@@ -8,30 +8,14 @@ import { useEffect, useState } from "react";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import { Bar } from "react-chartjs-2";
 import ActivityService from "services/ActivityService";
-import ContactService from "services/ContactService";
 
 const SalesChart = ({ company, selectedUser, user }) => {
-	const [contacts, setContacts] = useState(null);
-	const [leads, setLeads] = useState(null);
 	const [activity, setActivity] = useState(null);
 	const [refresh, setRefresh] = useState(null);
 	const [showSelectCustomer, setShowSelectCustomer] = useState(false);
 	const [logType, setLogType] = useState(null);
 
 	useEffect(() => {
-		const fetchAllContacts = async () => {
-			try {
-				const response = await ContactService.getCompContacts(company);
-				response.data.map((_) => (_.stage = _.leadId?.stage));
-				const filterContacts = response.data.filter((_) => _.stage === "T4");
-				const filterLeads = response.data.filter((_) => _.stage?.includes("L"));
-				setContacts(filterContacts);
-				setLeads(filterLeads);
-			} catch (error) {
-				console.error(error);
-			}
-		};
-
 		const fetchAllUserActivities = async () => {
 			try {
 				const response = await ActivityService.getActivitiesByUser({
@@ -87,7 +71,6 @@ const SalesChart = ({ company, selectedUser, user }) => {
 			}
 		};
 		fetchAllUserActivities();
-		fetchAllContacts();
 	}, [company, refresh, selectedUser]);
 
 	const options = {
@@ -180,8 +163,6 @@ const SalesChart = ({ company, selectedUser, user }) => {
 					logType={logType}
 					showSelectCustomer={showSelectCustomer}
 					setShowSelectCustomer={setShowSelectCustomer}
-					contacts={contacts}
-					leads={leads}
 					company={company}
 					isDashboard
 					setRefresh={setRefresh}

@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import CalendarService from "services/CalendarService";
 import LeadsService from "services/LeadsService";
+import TaskService from "services/TaskService";
 import { HEADER_CARDS } from "../data";
 import SalesCard from "./SalesCard";
 import SalesChart from "./SalesChart";
@@ -16,6 +17,7 @@ const LeftPane = ({ selectedUser, setStats, company, user }) => {
 	const [headerCards, setHeaderCards] = useState(HEADER_CARDS);
 	const [month, setMonth] = useState(currentMonth);
 	const [opportunities, setOpportunities] = useState([]);
+	const [tasks, setTasks] = useState(null);
 	const [events, setEvents] = useState(null);
 	const [meetings, setMeetings] = useState(null);
 	const [appointments, setAppointments] = useState(null);
@@ -103,6 +105,19 @@ const LeftPane = ({ selectedUser, setStats, company, user }) => {
 			}
 		};
 
+		const fetchAllUserTasks = async () => {
+			try {
+				const response = await TaskService.getTaskByAssignee({
+					name: selectedUser?.fullName,
+					company,
+				});
+				setTasks(response.data);
+			} catch (error) {
+				console.error(error);
+			}
+		};
+
+		fetchAllUserTasks();
 		fetchAllAppointments();
 		fetchAllEvents();
 		fetchAllMeetings();
@@ -146,14 +161,17 @@ const LeftPane = ({ selectedUser, setStats, company, user }) => {
 			<SimpleGrid columns={{ base: 1, md: 1, lg: 1 }} spacing="4" mt="4">
 				<BoxCard px="1em" fontWeight="bold">
 					<TextTitle title={"Upcoming"} mt={2} mb={2} />
-					<UpcomingList
-						events={events}
-						meetings={meetings}
-						appointments={appointments}
-						selectedUser={selectedUser}
-						setIsRefresh={setIsRefresh}
-						company={company}
-					/>
+					{tasks && (
+						<UpcomingList
+							tasks={tasks}
+							events={events}
+							meetings={meetings}
+							appointments={appointments}
+							selectedUser={selectedUser}
+							setIsRefresh={setIsRefresh}
+							company={company}
+						/>
+					)}
 				</BoxCard>
 			</SimpleGrid>
 		</Box>

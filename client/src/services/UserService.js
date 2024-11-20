@@ -45,6 +45,10 @@ const UserService = {
 		return apiService.get(`/user/not-managers/${id}`);
 	},
 
+	async getAllSalesAgentsDashboard(id) {
+		return apiService.get(`/user/not-managers-list/${id}`);
+	},
+
 	async signUp(data) {
 		return apiService.post("/user/register", data);
 	},

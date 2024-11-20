@@ -5,6 +5,7 @@ import TaskTable from "./TaskTable";
 
 const UpcomingList = ({
 	selectedUser,
+	tasks,
 	events,
 	meetings,
 	appointments,
@@ -16,6 +17,7 @@ const UpcomingList = ({
 			type: "Tasks",
 			name: (
 				<TaskTable
+					tasks={tasks}
 					cols={["Name", "Priority", "Due date"]}
 					selectedUser={selectedUser}
 				/>

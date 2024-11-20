@@ -1,6 +1,5 @@
 import { Box, Button, Flex, Spacer, Text } from "@chakra-ui/react";
 import LinkButton from "components/ui/button/LinkButton";
-import useCompanyEvents from "hooks/useCompanyEvents";
 import moment from "moment";
 import { useEffect } from "react";
 import { Calendar, momentLocalizer } from "react-big-calendar";
@@ -11,7 +10,8 @@ import { getDefaultDateTime } from "utils";
 
 const MiniCalendar = ({ user, company, isPayrollDashboard }) => {
 	const localizer = momentLocalizer(moment);
-	const events = useCompanyEvents(user, company);
+	// const events = useCompanyEvents(user, company);
+	const events = [];
 
 	useEffect(() => {
 		if (events) {

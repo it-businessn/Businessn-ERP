@@ -18,23 +18,23 @@ const useSidebarMenu = (userId, company, isManager) => {
 				});
 
 				if (response.data) {
-					SIDEBAR_MENU.map((data, index) => {
+					SIDEBAR_MENU.map((data) => {
 						const menu = response.data.permissionType.find(
 							(item) => item.name === data.name,
 						);
-						SIDEBAR_MENU[index].permissions = menu ? menu : null;
+						if (menu) {
+							data.permissions = menu;
+						}
 						data?.children?.forEach((child, cIndex) => {
 							const childMenu = response.data.permissionType.find(
 								(item) => item.name === `${data.name} ${child.name}`,
 							);
 							if (childMenu?.name?.includes("Setup")) {
-								SIDEBAR_MENU[index].children[cIndex].permissions = isManager
+								data.children[cIndex].permissions = isManager
 									? childMenu
 									: null;
 							} else {
-								SIDEBAR_MENU[index].children[cIndex].permissions = childMenu
-									? childMenu
-									: null;
+								data.children[cIndex].permissions = childMenu ?? null;
 							}
 						});
 						return data;

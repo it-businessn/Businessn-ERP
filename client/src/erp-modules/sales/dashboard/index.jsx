@@ -20,7 +20,7 @@ const CRMDashboard = () => {
 
 	const { selectedUser, setSelectedUser } = useSelectUser(loggedInUser);
 
-	const employees = useSalesAgentData(company);
+	const employees = useSalesAgentData(company, false, true);
 	const isManagerRole = isManager(loggedInUser?.role);
 
 	const handleChange = (value) => {

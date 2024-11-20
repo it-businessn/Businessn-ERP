@@ -1,13 +1,15 @@
 import { useEffect, useState } from "react";
 import UserService from "services/UserService";
 
-const useSalesAgentData = (company, refresh) => {
+const useSalesAgentData = (company, refresh, isDashboard) => {
 	const [employees, setEmployees] = useState(null);
 
 	useEffect(() => {
 		const fetchAllSalesAgents = async () => {
 			try {
-				const response = await UserService.getAllSalesAgents(company);
+				const response = isDashboard
+					? await UserService.getAllSalesAgentsDashboard(company)
+					: await UserService.getAllSalesAgents(company);
 				setEmployees(response.data);
 			} catch (error) {
 				console.error(error);

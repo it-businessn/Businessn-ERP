@@ -191,6 +191,24 @@ const getAllManagers = () => async (req, res) => {
 	}
 };
 
+const getAllSalesAgentsList = () => async (req, res) => {
+	const { companyName } = req.params;
+	try {
+		const existingCompany = await findCompany("name", companyName);
+		const result = await Employee.find({
+			companyId: existingCompany._id,
+			role: {
+				$not: {
+					$regex: /manager|administrator/i,
+				},
+			},
+		}).select("_id fullName");
+		res.status(200).json(result);
+	} catch (error) {
+		res.status(404).json({ error: error.message });
+	}
+};
+
 const getAllSalesAgents = () => async (req, res) => {
 	const { companyName } = req.params;
 	try {
@@ -300,4 +318,5 @@ module.exports = {
 	getPayrollActiveCompanyEmployees,
 	getPayrollActiveEmployees,
 	getPayrollInActiveCompanyEmployees,
+	getAllSalesAgentsList,
 };

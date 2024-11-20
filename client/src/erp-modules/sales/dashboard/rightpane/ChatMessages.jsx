@@ -8,12 +8,10 @@ import {
 	VStack,
 } from "@chakra-ui/react";
 import TextTitle from "components/ui/text/TextTitle";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import { FaUsers } from "react-icons/fa";
 import { IoMdArrowRoundBack } from "react-icons/io";
-import CommunicationService from "services/CommsService";
-import UserService from "services/UserService";
 import ChatHistory from "./ChatHistory";
 
 const ChatMessages = ({ userId, company }) => {
@@ -23,54 +21,54 @@ const ChatMessages = ({ userId, company }) => {
 	const [isRefresh, setIsRefresh] = useState(false);
 
 	const [groups, setGroups] = useState(null);
-	useEffect(() => {
-		const fetchAllUserConversation = async () => {
-			try {
-				const response = await CommunicationService.getUserConversations({
-					userId,
-					company,
-				});
-				response.data.forEach((conversation) => {
-					conversation.isPersonal =
-						conversation.conversationType === "one-on-one";
-					conversation.participant = conversation.isPersonal
-						? conversation.participants.find(({ _id }) => _id !== userId)
-						: null;
+	// useEffect(() => {
+	// 	const fetchAllUserConversation = async () => {
+	// 		try {
+	// 			const response = await CommunicationService.getUserConversations({
+	// 				userId,
+	// 				company,
+	// 			});
+	// 			response.data.forEach((conversation) => {
+	// 				conversation.isPersonal =
+	// 					conversation.conversationType === "one-on-one";
+	// 				conversation.participant = conversation.isPersonal
+	// 					? conversation.participants.find(({ _id }) => _id !== userId)
+	// 					: null;
 
-					conversation.participantMsg = conversation.isPersonal
-						? conversation.messages.length > 0
-							? conversation.messages[conversation.messages.length - 1]?.text
-							: ""
-						: conversation.groupMessages.length > 0
-						? conversation.groupMessages[
-								conversation.groupMessages.length - 1
-						  ]?.text.slice(0, 50)
-						: "";
-				});
-				setUserConversation(response.data);
-				if (response.data.length === 0) {
-					fetchAllGroups();
-				}
-			} catch (error) {
-				console.error(error);
-			}
-		};
-		if (userId) {
-			fetchAllUserConversation();
-		}
-	}, [isRefresh, userId, company]);
+	// 				conversation.participantMsg = conversation.isPersonal
+	// 					? conversation.messages.length > 0
+	// 						? conversation.messages[conversation.messages.length - 1]?.text
+	// 						: ""
+	// 					: conversation.groupMessages.length > 0
+	// 					? conversation.groupMessages[
+	// 							conversation.groupMessages.length - 1
+	// 					  ]?.text.slice(0, 50)
+	// 					: "";
+	// 			});
+	// 			setUserConversation(response.data);
+	// 			if (response.data.length === 0) {
+	// 				fetchAllGroups();
+	// 			}
+	// 		} catch (error) {
+	// 			console.error(error);
+	// 		}
+	// 	};
+	// 	if (userId) {
+	// 		fetchAllUserConversation();
+	// 	}
+	// }, [isRefresh, userId, company]);
 
-	const fetchAllGroups = async () => {
-		try {
-			const response = await UserService.getAllMemberGroups({
-				userId,
-				company,
-			});
-			setGroups(response.data);
-		} catch (error) {
-			console.error(error);
-		}
-	};
+	// const fetchAllGroups = async () => {
+	// 	try {
+	// 		const response = await UserService.getAllMemberGroups({
+	// 			userId,
+	// 			company,
+	// 		});
+	// 		setGroups(response.data);
+	// 	} catch (error) {
+	// 		console.error(error);
+	// 	}
+	// };
 
 	const handleStartChat = (group) => {
 		group.conversationType = "group";

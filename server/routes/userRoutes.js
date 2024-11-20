@@ -11,6 +11,11 @@ router.get("/emp-roles/:companyName", userController.groupEmployeesByRole());
 
 router.get("/not-managers/:companyName", userController.getAllSalesAgents());
 
+router.get(
+	"/not-managers-list/:companyName",
+	userController.getAllSalesAgentsList(),
+);
+
 router.get("/managers/:companyName", userController.getAllManagers());
 
 router.get(
