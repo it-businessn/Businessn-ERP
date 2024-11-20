@@ -48,7 +48,9 @@ const Payouts = () => {
 				setPayouts(
 					isManagerUser
 						? response.data
-						: response.data.filter((_) => _.fullName === loggedInUser.fullName),
+						: response.data.filter(
+								({ fullName }) => fullName === loggedInUser.fullName,
+						  ),
 				);
 			} catch (error) {
 				console.error(error);

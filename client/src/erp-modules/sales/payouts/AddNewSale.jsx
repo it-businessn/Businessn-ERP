@@ -25,12 +25,12 @@ const AddNewSale = ({ isOpen, onClose, setIsAdded, company }) => {
 	const [formData, setFormData] = useState(defaultPayout);
 
 	const [leads, setLeads] = useState(null);
-	const reps = useSalesAgentData(company);
+	const reps = useSalesAgentData(company, false, true);
 
 	useEffect(() => {
 		const fetchAllLeads = async () => {
 			try {
-				const response = await LeadsService.getOpportunities(company);
+				const response = await LeadsService.getOpportunityNames(company);
 				setLeads(response.data);
 			} catch (error) {
 				console.error(error);

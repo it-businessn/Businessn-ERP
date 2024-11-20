@@ -16,6 +16,11 @@ router.get("/not-disbursed/:companyName", leadController.getLeadsNotDisbursed);
 
 router.get("/opportunities/:companyName", leadController.getOpportunities);
 
+router.get(
+	"/opportunity-names/:companyName",
+	leadController.getOpportunityNames,
+);
+
 router.get("/targets/:companyName", leadController.getTargetLeads);
 
 router.get("/companies/:companyName", leadController.getLeadCompanies);

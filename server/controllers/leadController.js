@@ -73,6 +73,19 @@ const getGroupedOpportunitiesByCompany = async (req, res) => {
 		res.status(404).json({ error: error.message });
 	}
 };
+
+const getOpportunityNames = async (req, res) => {
+	const { companyName } = req.params;
+	try {
+		const leads = await Lead.find({ companyName })
+			.select("_id opportunityName")
+			.sort({ createdOn: -1 });
+		res.status(200).json(leads);
+	} catch (error) {
+		res.status(404).json({ error: error.message });
+	}
+};
+
 const getOpportunities = async (req, res) => {
 	const { companyName } = req.params;
 	// const updatedData = { companyName: "Fractional Departments Inc." };
@@ -441,4 +454,5 @@ module.exports = {
 	getTargetLeads,
 	getGroupedOpportunitiesByCompany,
 	getLead,
+	getOpportunityNames,
 };

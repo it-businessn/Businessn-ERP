@@ -3,6 +3,7 @@ import PrimaryButton from "components/ui/button/PrimaryButton";
 import TextTitle from "components/ui/text/TextTitle";
 
 import useCompany from "hooks/useCompany";
+import useGroup from "hooks/useGroup";
 import PageLayout from "layouts/PageLayout";
 import moment from "moment-timezone";
 import { useEffect, useState } from "react";
@@ -25,10 +26,15 @@ const Calendar = () => {
 	const localizer = momentLocalizer(moment);
 	const [events, setEvents] = useState(null);
 	const [event, setEvent] = useState(null);
+
 	const [showEditDetails, setShowEditDetails] = useState(false);
+	const [showModal, setShowModal] = useState(false);
+	const groups = useGroup(company, false, showModal || showEditDetails);
 
 	const [isLoading, setIsLoading] = useState(false);
 	const [isRefresh, setIsRefresh] = useState(false);
+	const [showDetailsModal, setShowDetailsModal] = useState(false);
+	const [position, setPosition] = useState({ top: 0, left: 0 });
 
 	// const checkClassExists = () => {
 	// 	const element = document.querySelector(".rbc-show-more");
@@ -44,13 +50,11 @@ const Calendar = () => {
 		// checkClassExists();
 		const fetchAllEvents = async () => {
 			try {
-				const response = await CalendarService.getCompEvents(company);
-				const filterData = response.data?.filter(
-					(event) =>
-						event.meetingAttendees.includes(loggedInUser?.fullName) ||
-						event.createdBy === loggedInUser?._id,
-				);
-				filterData.map((event) => {
+				const response = await CalendarService.getCompEvents({
+					name: loggedInUser?.fullName,
+					company,
+				});
+				response.data.map((event) => {
 					event.fromDate = getTimezone(event.fromDate);
 					event.toDate = getTimezone(event.toDate);
 					const fromDateTimeString = getDefaultDateTime(
@@ -78,7 +82,7 @@ const Calendar = () => {
 							: "var(--event_bg_light)";
 					return event;
 				});
-				setEvents(filterData);
+				setEvents(response.data);
 				setIsLoading(false);
 			} catch (error) {
 				console.error(error);
@@ -86,10 +90,6 @@ const Calendar = () => {
 		};
 		fetchAllEvents();
 	}, [isRefresh, company]);
-
-	const [showModal, setShowModal] = useState(false);
-	const [showDetailsModal, setShowDetailsModal] = useState(false);
-	const [position, setPosition] = useState({ top: 0, left: 0 });
 
 	const handleDateSelect = (event) => {
 		// setShowModal(true);
@@ -239,6 +239,7 @@ const Calendar = () => {
 					setEvent(null);
 				}}
 				company={company}
+				groups={groups}
 			/>
 			{showDetailsModal && (
 				<EventDetails

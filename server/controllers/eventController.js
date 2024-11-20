@@ -23,15 +23,33 @@ const getCompanyEvents = async (req, res) => {
 	}
 };
 
+const getUser = async (fullName) =>
+	await Employee.findOne({ fullName }).select("_id");
+
+const getUserCalendarEvent = async (req, res) => {
+	const { userName, companyName } = req.params;
+	try {
+		const user = await getUser(userName);
+		const events = await Event.find({
+			companyName,
+			$or: [{ meetingAttendees: userName }, { createdBy: user._id }],
+		}).sort({
+			createdOn: -1,
+		});
+		res.status(200).json(events);
+	} catch (error) {
+		res.status(404).json({ error: error.message });
+	}
+};
+
 const getUserEvent = async (req, res) => {
 	const { eventType, userName, companyName } = req.params;
 	try {
-		const user = await Employee.findOne({ fullName: userName }).select("_id");
+		const user = await getUser(userName);
 		const events = await Event.find({
 			eventType,
 			companyName,
-			meetingAttendees: userName,
-			createdBy: user._id,
+			$or: [{ meetingAttendees: userName }, { createdBy: user._id }],
 		}).sort({
 			createdOn: -1,
 		});
@@ -108,4 +126,5 @@ module.exports = {
 	updateEvent,
 	getCompanyEvents,
 	getUserEvent,
+	getUserCalendarEvent,
 };

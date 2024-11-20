@@ -13,8 +13,6 @@ import MultiSelectFormControl from "components/ui/form/MultiSelectFormControl";
 import SelectFormControl from "components/ui/form/SelectFormControl";
 import TextAreaFormControl from "components/ui/form/TextAreaFormControl";
 import ModalLayout from "components/ui/modal/ModalLayout";
-import { ROLES } from "constant";
-import useGroup from "hooks/useGroup";
 import { useEffect, useState } from "react";
 import CalendarService from "services/CalendarService";
 import { getDefaultDate } from "utils";
@@ -32,18 +30,14 @@ const AddEvent = ({
 	// setShowEditDetails,
 	company,
 	user,
+	groups,
 }) => {
 	const [eventType, setEventType] = useState(filter);
-	const groups = useGroup(company);
 	const [groupMembers, setGroupMembers] = useState(null);
 
 	useEffect(() => {
 		if (groups) {
-			setGroupMembers(
-				groups[0].members.filter(({ role }) =>
-					role.includes(ROLES.ADMINISTRATOR),
-				),
-			);
+			setGroupMembers(groups[0].members);
 		}
 	}, [groups]);
 
@@ -126,13 +120,10 @@ const AddEvent = ({
 			...prevData,
 			group: e.target.value,
 		}));
+
 		formData.meetingAttendees = [];
 		setSelectedOptions([]);
-		setGroupMembers(
-			groups
-				.find(({ _id }) => _id === e.target.value)
-				.members.filter(({ role }) => role.includes(ROLES.ADMINISTRATOR)),
-		);
+		setGroupMembers(groups.find(({ _id }) => _id === e.target.value).members);
 	};
 
 	const handleSubmit = async (e) => {
