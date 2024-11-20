@@ -55,10 +55,7 @@ const TaskActionCell = ({
 	const handleConfirm = async () => {
 		setIsOpen(false);
 		try {
-			await TaskService.updateTaskStatus(
-				{ isOpen: isTaskCompleted, actualHours },
-				taskId,
-			);
+			await TaskService.updateTaskStatus({ isOpen: isTaskCompleted, actualHours }, taskId);
 			setRefresh((prev) => !prev);
 		} catch (error) {
 			console.error("Error updating task status:", error);

@@ -1,28 +1,12 @@
-import {
-	Button,
-	Checkbox,
-	FormControl,
-	FormLabel,
-	HStack,
-	Stack,
-	Text,
-} from "@chakra-ui/react";
+import { Checkbox, FormControl, FormLabel, HStack, Stack } from "@chakra-ui/react";
 import ActionButtonGroup from "components/ui/form/ActionButtonGroup";
 import InputFormControl from "components/ui/form/InputFormControl";
-import MultiSelectBox from "components/ui/form/select/MultiSelectBox";
+import MultiSelectButton from "components/ui/form/MultiSelectButton";
 import ModalLayout from "components/ui/modal/ModalLayout";
 import { useState } from "react";
-import { FaCaretDown } from "react-icons/fa";
 import SettingService from "services/SettingService";
 
-const AddNewGroup = ({
-	isOpen,
-	onClose,
-	setRefresh,
-	modules,
-	managers,
-	company,
-}) => {
+const AddNewGroup = ({ isOpen, onClose, setRefresh, modules, managers, company }) => {
 	const defaultGroup = {
 		name: "",
 		baseModule: [],
@@ -101,64 +85,33 @@ const AddNewGroup = ({
 				/>
 				<HStack spacing={2}>
 					<FormControl>
-						<FormLabel visibility={openModuleMenu ? "" : "hidden"}>
-							Select Base Module(s)
-						</FormLabel>
-						<Button
-							rightIcon={<FaCaretDown />}
-							bg={"var(--primary_bg)"}
-							color={"var(--primary_button_bg)"}
-							_hover={{
-								bg: "var(--primary_bg)",
-								color: "var(--primary_button_bg)",
-							}}
-						>
-							{openModuleMenu ? (
-								<MultiSelectBox
-									data={modules}
-									openMenu={openModuleMenu}
-									handleCloseMenu={handleCloseModuleMenu}
-									selectedOptions={selectedModule}
-									setSelectedOptions={setSelectedModule}
-								/>
-							) : (
-								<Text onClick={handleModuleMenuToggle}>
-									{formData.baseModule?.length > 0
-										? `${formData.baseModule?.length} module(s)`
-										: "Select Base Module"}
-								</Text>
-							)}
-						</Button>
+						<FormLabel visibility={openModuleMenu ? "" : "hidden"}>Select Base Module(s)</FormLabel>
+
+						<MultiSelectButton
+							handleMenuToggle={handleModuleMenuToggle}
+							assignees={formData.baseModule}
+							data={modules}
+							openAssigneeMenu={openModuleMenu}
+							handleCloseMenu={handleCloseModuleMenu}
+							selectedOptions={selectedModule}
+							setSelectedOptions={setSelectedModule}
+							tag="module(s)"
+							label="Select Base Module"
+						/>
 					</FormControl>
 					<FormControl>
-						<FormLabel visibility={openTeamMenu ? "" : "hidden"}>
-							Select Admin(s)
-						</FormLabel>
-						<Button
-							rightIcon={<FaCaretDown />}
-							bg={"var(--primary_bg)"}
-							color={"var(--primary_button_bg)"}
-							_hover={{
-								bg: "var(--primary_bg)",
-								color: "var(--primary_button_bg)",
-							}}
-						>
-							{openTeamMenu ? (
-								<MultiSelectBox
-									data={managers}
-									openMenu={openTeamMenu}
-									handleCloseMenu={handleCloseTeamMenu}
-									selectedOptions={selectedTeams}
-									setSelectedOptions={setSelectedTeams}
-								/>
-							) : (
-								<Text onClick={handleTeamMenuToggle}>
-									{formData.admin?.length > 0
-										? `${formData.admin?.length} admin(s)`
-										: "Select Admin"}
-								</Text>
-							)}
-						</Button>
+						<FormLabel visibility={openTeamMenu ? "" : "hidden"}>Select Admin(s)</FormLabel>
+						<MultiSelectButton
+							handleMenuToggle={handleTeamMenuToggle}
+							assignees={formData.admin}
+							data={managers}
+							openAssigneeMenu={openTeamMenu}
+							handleCloseMenu={handleCloseTeamMenu}
+							selectedOptions={selectedTeams}
+							setSelectedOptions={setSelectedTeams}
+							tag="admin(s)"
+							label="Select Admin"
+						/>
 					</FormControl>
 				</HStack>
 				<Checkbox

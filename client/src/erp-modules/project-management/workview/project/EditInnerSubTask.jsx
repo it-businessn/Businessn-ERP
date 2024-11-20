@@ -15,28 +15,20 @@ import {
 	ModalOverlay,
 	Select,
 	Stack,
-	Text,
 } from "@chakra-ui/react";
+import MultiSelectButton from "components/ui/form/MultiSelectButton";
 import { useEffect, useState } from "react";
 import { FaCaretDown } from "react-icons/fa";
 import ProjectService from "services/ProjectService";
 import { getDefaultDate } from "utils";
-import MultiSelectBox from "../../../../components/ui/form/select/MultiSelectBox";
 import { PRIORITY } from "./data";
 
-const EditInnerSubTask = ({
-	isOpen,
-	onClose,
-	setRefresh,
-	currentTask,
-	managers,
-}) => {
+const EditInnerSubTask = ({ isOpen, onClose, setRefresh, currentTask, managers }) => {
 	const defaultTask = {
 		subTaskName: currentTask?.taskName,
 		subTaskId: currentTask?.subTaskId,
 		selectedAssignees: currentTask?.selectedAssignees || [],
-		subTaskDueDate:
-			currentTask?.dueDate && getDefaultDate(currentTask?.dueDate),
+		subTaskDueDate: currentTask?.dueDate && getDefaultDate(currentTask?.dueDate),
 		subTaskTimeToComplete: currentTask?.timeToComplete || 0,
 		priority: currentTask?.priority,
 		projectId: currentTask?.projectId,
@@ -165,31 +157,17 @@ const EditInnerSubTask = ({
 										<FormLabel visibility={openAssigneeMenu ? "" : "hidden"}>
 											Select Assignee
 										</FormLabel>
-										<Button
-											rightIcon={<FaCaretDown />}
-											bg={"var(--primary_bg)"}
-											color={"var(--primary_button_bg)"}
-											_hover={{
-												bg: "var(--primary_bg)",
-												color: "var(--primary_button_bg)",
-											}}
-										>
-											{openAssigneeMenu ? (
-												<MultiSelectBox
-													data={managers}
-													openMenu={openAssigneeMenu}
-													handleCloseMenu={handleCloseMenu}
-													selectedOptions={selectedOptions}
-													setSelectedOptions={setSelectedOptions}
-												/>
-											) : (
-												<Text onClick={handleMenuToggle}>
-													{formData.selectedAssignees?.length > 0
-														? `${formData.selectedAssignees?.length} assignee(s)`
-														: "Select Assignee"}
-												</Text>
-											)}
-										</Button>
+
+										<MultiSelectButton
+											handleMenuToggle={handleMenuToggle}
+											assignees={formData.selectedAssignees}
+											openAssigneeMenu={openAssigneeMenu}
+											handleCloseMenu={handleCloseMenu}
+											selectedOptions={selectedOptions}
+											setSelectedOptions={setSelectedOptions}
+											data={managers}
+										/>
+
 										{formData?.selectedAssignees?.length > 0 &&
 											formData.selectedAssignees.map((name) => (
 												<Avatar size={"sm"} name={name} src={name} key={name} />

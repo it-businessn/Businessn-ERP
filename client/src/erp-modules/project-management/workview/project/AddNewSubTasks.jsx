@@ -14,21 +14,12 @@ import {
 	ModalHeader,
 	ModalOverlay,
 	Stack,
-	Text,
 } from "@chakra-ui/react";
+import MultiSelectButton from "components/ui/form/MultiSelectButton";
 import { useState } from "react";
-import { FaCaretDown } from "react-icons/fa";
 import ProjectService from "services/ProjectService";
-import MultiSelectBox from "../../../../components/ui/form/select/MultiSelectBox";
 
-const AddNewSubTasks = ({
-	isOpen,
-	onClose,
-	setRefresh,
-	currentTask,
-	managers,
-	company,
-}) => {
+const AddNewSubTasks = ({ isOpen, onClose, setRefresh, currentTask, managers, company }) => {
 	const defaultTask = {
 		projectId: currentTask?.projectId,
 		taskId: currentTask?.taskId,
@@ -92,7 +83,7 @@ const AddNewSubTasks = ({
 										<Input
 											type="text"
 											name="subTaskName"
-											value={formData.subTaskName}
+											value={formData.subTaskName ?? ""}
 											onChange={(e) =>
 												setFormData((prevData) => ({
 													...prevData,
@@ -106,31 +97,17 @@ const AddNewSubTasks = ({
 										<FormLabel visibility={openAssigneeMenu ? "" : "hidden"}>
 											Select Assignee
 										</FormLabel>
-										<Button
-											rightIcon={<FaCaretDown />}
-											bg={"var(--primary_bg)"}
-											color={"var(--primary_button_bg)"}
-											_hover={{
-												bg: "var(--primary_bg)",
-												color: "var(--primary_button_bg)",
-											}}
-										>
-											{openAssigneeMenu ? (
-												<MultiSelectBox
-													data={managers}
-													openMenu={openAssigneeMenu}
-													handleCloseMenu={handleCloseMenu}
-													selectedOptions={selectedOptions}
-													setSelectedOptions={setSelectedOptions}
-												/>
-											) : (
-												<Text onClick={handleMenuToggle}>
-													{formData.subTaskSelectedAssignees?.length > 0
-														? `${formData.subTaskSelectedAssignees?.length} assignee(s)`
-														: "Select Assignee"}
-												</Text>
-											)}
-										</Button>
+
+										<MultiSelectButton
+											handleMenuToggle={handleMenuToggle}
+											assignees={formData.subTaskSelectedAssignees}
+											openAssigneeMenu={openAssigneeMenu}
+											handleCloseMenu={handleCloseMenu}
+											selectedOptions={selectedOptions}
+											setSelectedOptions={setSelectedOptions}
+											data={managers}
+										/>
+
 										{formData?.subTaskSelectedAssignees?.length > 0 &&
 											formData.subTaskSelectedAssignees.map((name) => (
 												<Avatar size={"sm"} name={name} src={name} key={name} />
@@ -145,7 +122,7 @@ const AddNewSubTasks = ({
 											type="date"
 											id="subTaskDueDate"
 											name="subTaskDueDate"
-											value={formData.subTaskDueDate}
+											value={formData.subTaskDueDate ?? ""}
 											onChange={(e) =>
 												setFormData((prevData) => ({
 													...prevData,
@@ -160,7 +137,7 @@ const AddNewSubTasks = ({
 										<Input
 											type="text"
 											name="subTaskTimeToComplete"
-											value={formData.subTaskTimeToComplete}
+											value={formData.subTaskTimeToComplete ?? ""}
 											onChange={(e) =>
 												setFormData((prevData) => ({
 													...prevData,

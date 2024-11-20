@@ -27,12 +27,12 @@ import {
 	Tr,
 } from "@chakra-ui/react";
 import EmptyRowRecord from "components/ui/EmptyRowRecord";
+import MultiSelectButton from "components/ui/form/MultiSelectButton";
 import Caption from "erp-modules/sales/lead docket/Caption";
 import { useEffect, useState } from "react";
 import { FaCaretDown } from "react-icons/fa";
 import ProjectService from "services/ProjectService";
 import { getDefaultDate } from "utils";
-import MultiSelectBox from "../../../components/ui/form/select/MultiSelectBox";
 import { PROJECT_ASSIGNEES } from "./project/data";
 
 const EditTask = ({ isOpen, onClose, setRefresh, isFiltered, task }) => {
@@ -196,28 +196,12 @@ const EditTask = ({ isOpen, onClose, setRefresh, isFiltered, task }) => {
 											<FormLabel visibility={openAssigneeMenu ? "" : "hidden"}>
 												Select Assignee
 											</FormLabel>
-											<Button
-												rightIcon={<FaCaretDown />}
-												bg={"var(--primary_bg)"}
-												color={"var(--primary_button_bg)"}
-												_hover={{
-													bg: "var(--primary_bg)",
-													color: "var(--primary_button_bg)",
-												}}
-											>
-												{openAssigneeMenu ? (
-													<MultiSelectBox
-														openMenu={openAssigneeMenu}
-														handleCloseMenu={handleCloseMenu}
-													/>
-												) : (
-													<Text onClick={handleMenuToggle}>
-														{subtask.selectedAssignees?.length > 0
-															? `${subtask.selectedAssignees?.length} assignees`
-															: "Select Assignee"}
-													</Text>
-												)}
-											</Button>
+											<MultiSelectButton
+												handleMenuToggle={handleMenuToggle}
+												assignees={subtask.selectedAssignees}
+												openAssigneeMenu={openAssigneeMenu}
+												handleCloseMenu={handleCloseMenu}
+											/>
 										</FormControl>
 
 										<IconButton
@@ -343,11 +327,7 @@ const EditTask = ({ isOpen, onClose, setRefresh, isFiltered, task }) => {
 													<Tr key={todo}>
 														<Td>
 															<HStack>
-																<Checkbox
-																	isChecked={true}
-																	isDisabled
-																	colorScheme="facebook"
-																/>
+																<Checkbox isChecked={true} isDisabled colorScheme="facebook" />
 																<Text fontSize={"xs"}>{todo.taskName}</Text>
 															</HStack>
 														</Td>

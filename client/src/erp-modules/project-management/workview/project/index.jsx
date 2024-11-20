@@ -78,14 +78,7 @@ const ProjectTable = ({ projects, setRefresh, managers, company }) => {
 				<Thead>
 					<Tr display={"flex"} alignItems={"center"}>
 						{PROJECT_TABLE_CELLS.map(({ name, width }) => (
-							<Th
-								key={name}
-								w={width}
-								fontWeight={"bolder"}
-								fontSize={"xs"}
-								p={"10px"}
-								pl={"1em"}
-							>
+							<Th key={name} w={width} fontWeight={"bolder"} fontSize={"xs"} p={"10px"} pl={"1em"}>
 								<Flex alignItems={"center"} gap={0.5}>
 									{name}
 									<FaSort sx={{ width: "5px" }} />
@@ -97,10 +90,7 @@ const ProjectTable = ({ projects, setRefresh, managers, company }) => {
 
 				<Tbody>
 					{(!projects || projects?.length === 0) && (
-						<EmptyRowRecord
-							data={projects}
-							colSpan={PROJECT_TABLE_CELLS.length}
-						/>
+						<EmptyRowRecord data={projects} colSpan={PROJECT_TABLE_CELLS.length} />
 					)}
 					{projects?.map((project, index) => (
 						<Tr

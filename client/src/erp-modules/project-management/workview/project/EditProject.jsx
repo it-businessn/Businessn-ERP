@@ -15,23 +15,15 @@ import {
 	ModalOverlay,
 	Select,
 	Stack,
-	Text,
 } from "@chakra-ui/react";
+import MultiSelectButton from "components/ui/form/MultiSelectButton";
 import { useState } from "react";
 import { FaCaretDown } from "react-icons/fa";
 import ProjectService from "services/ProjectService";
 import { getDefaultDate } from "utils";
-import MultiSelectBox from "../../../../components/ui/form/select/MultiSelectBox";
 import { PRIORITY } from "./data";
 
-const EditProject = ({
-	isOpen,
-	onClose,
-	project,
-	projectId,
-	setRefresh,
-	managers,
-}) => {
+const EditProject = ({ isOpen, onClose, project, projectId, setRefresh, managers }) => {
 	const defaultProject = {
 		projectName: project.name,
 		startDate: project?.startDate && getDefaultDate(project.startDate),
@@ -206,31 +198,17 @@ const EditProject = ({
 										<FormLabel visibility={openAssigneeMenu ? "" : "hidden"}>
 											Select Assignee
 										</FormLabel>
-										<Button
-											rightIcon={<FaCaretDown />}
-											bg={"var(--primary_bg)"}
-											color={"var(--primary_button_bg)"}
-											_hover={{
-												bg: "var(--primary_bg)",
-												color: "var(--primary_button_bg)",
-											}}
-										>
-											{openAssigneeMenu ? (
-												<MultiSelectBox
-													data={managers}
-													openMenu={openAssigneeMenu}
-													handleCloseMenu={handleCloseMenu}
-													selectedOptions={selectedOptions}
-													setSelectedOptions={setSelectedOptions}
-												/>
-											) : (
-												<Text onClick={handleMenuToggle}>
-													{formData.selectedAssignees?.length > 0
-														? `${formData.selectedAssignees?.length} assignee(s)`
-														: "Select Assignee"}
-												</Text>
-											)}
-										</Button>
+
+										<MultiSelectButton
+											handleMenuToggle={handleMenuToggle}
+											assignees={formData.selectedAssignees}
+											openAssigneeMenu={openAssigneeMenu}
+											handleCloseMenu={handleCloseMenu}
+											selectedOptions={selectedOptions}
+											setSelectedOptions={setSelectedOptions}
+											data={managers}
+										/>
+
 										{formData?.selectedAssignees?.length > 0 &&
 											formData.selectedAssignees.map((name) => (
 												<Avatar size={"sm"} name={name} src={name} key={name} />
@@ -238,11 +216,7 @@ const EditProject = ({
 									</FormControl>
 								</HStack>
 								<HStack justifyContent={"end"}>
-									<Button
-										isLoading={isSubmitting}
-										type="submit"
-										bg="var(--logo_bg)"
-									>
+									<Button isLoading={isSubmitting} type="submit" bg="var(--logo_bg)">
 										Save
 									</Button>
 									<Button onClick={onClose} colorScheme="gray">

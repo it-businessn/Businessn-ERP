@@ -1,13 +1,6 @@
-import {
-	Button,
-	FormControl,
-	FormLabel,
-	HStack,
-	Select,
-	Text,
-} from "@chakra-ui/react";
+import { FormControl, FormLabel, HStack, Select } from "@chakra-ui/react";
 import Loader from "components/Loader";
-import MultiSelectBox from "components/ui/form/select/MultiSelectBox";
+import MultiSelectButton from "components/ui/form/MultiSelectButton";
 import useGroup from "hooks/useGroup";
 import { useEffect, useState } from "react";
 import { FaCaretDown } from "react-icons/fa";
@@ -94,66 +87,34 @@ const FilterMenu = ({
 				)}
 				{modules && (
 					<FormControl>
-						<FormLabel visibility={openModuleMenu ? "" : "hidden"}>
-							Select Base Module
-						</FormLabel>
-						<Button
-							rightIcon={<FaCaretDown />}
-							bg={"var(--primary_bg)"}
-							color={"var(--primary_button_bg)"}
-							_hover={{
-								bg: "var(--primary_bg)",
-								color: "var(--primary_button_bg)",
-							}}
-						>
-							{openModuleMenu ? (
-								<MultiSelectBox
-									data={modules}
-									openMenu={openModuleMenu}
-									selectedOptions={selectedModules}
-									handleCloseMenu={handleCloseMenu}
-									setSelectedOptions={setSelectedModules}
-								/>
-							) : (
-								<Text onClick={handleMenuToggle}>
-									{selectedModules?.length > 0
-										? `${selectedModules?.length} modules`
-										: "Select Base Module"}
-								</Text>
-							)}
-						</Button>
+						<FormLabel visibility={openModuleMenu ? "" : "hidden"}>Select Base Module</FormLabel>
+						<MultiSelectButton
+							handleMenuToggle={handleMenuToggle}
+							assignees={selectedModules}
+							data={modules}
+							openAssigneeMenu={openModuleMenu}
+							handleCloseMenu={handleCloseMenu}
+							selectedOptions={selectedModules}
+							setSelectedOptions={setSelectedModules}
+							tag="modules(s)"
+							label="Select Base Module"
+						/>
 					</FormControl>
 				)}
 				{managers && (
 					<FormControl>
-						<FormLabel visibility={openAdminMenu ? "" : "hidden"}>
-							Group Admin
-						</FormLabel>
-						<Button
-							rightIcon={<FaCaretDown />}
-							bg={"var(--primary_bg)"}
-							color={"var(--primary_button_bg)"}
-							_hover={{
-								bg: "var(--primary_bg)",
-								color: "var(--primary_button_bg)",
-							}}
-						>
-							{openAdminMenu ? (
-								<MultiSelectBox
-									data={managers}
-									openMenu={openAdminMenu}
-									selectedOptions={selectedAdmins}
-									handleCloseMenu={handleAdminCloseMenu}
-									setSelectedOptions={setSelectedAdmins}
-								/>
-							) : (
-								<Text onClick={handleAdminMenuToggle}>
-									{selectedAdmins?.length > 0
-										? `${selectedAdmins?.length} modules`
-										: "Select Group Admin"}
-								</Text>
-							)}
-						</Button>
+						<FormLabel visibility={openAdminMenu ? "" : "hidden"}>Group Admin</FormLabel>
+						<MultiSelectButton
+							handleMenuToggle={handleAdminMenuToggle}
+							assignees={selectedAdmins}
+							data={managers}
+							openAssigneeMenu={openAdminMenu}
+							handleCloseMenu={handleAdminCloseMenu}
+							selectedOptions={selectedAdmins}
+							setSelectedOptions={setSelectedAdmins}
+							tag="modules(s)"
+							label="Select Group Admin"
+						/>
 					</FormControl>
 				)}
 			</HStack>

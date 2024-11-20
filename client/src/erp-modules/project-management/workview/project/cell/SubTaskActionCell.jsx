@@ -59,10 +59,7 @@ const SubTaskActionCell = ({
 	const handleConfirm = async () => {
 		setIsOpen(false);
 		try {
-			await TaskService.updateSubTaskStatus(
-				{ isOpen: isTaskCompleted, actualHours },
-				taskId,
-			);
+			await TaskService.updateSubTaskStatus({ isOpen: isTaskCompleted, actualHours }, taskId);
 		} catch (error) {
 			console.error("Error updating task status:", error);
 		}
@@ -99,12 +96,7 @@ const SubTaskActionCell = ({
 				handleClose={handleClose}
 				handleConfirm={handleConfirm}
 			/>
-			<HStack
-				spacing={3}
-				mt={"-0.5em"}
-				className={`subtask_div_${index}`}
-				whiteSpace={"pre-wrap"}
-			>
+			<HStack spacing={3} mt={"-0.5em"} className={`subtask_div_${index}`} whiteSpace={"pre-wrap"}>
 				<Checkbox
 					sx={{ verticalAlign: "middle" }}
 					colorScheme="facebook"
@@ -145,7 +137,7 @@ const SubTaskActionCell = ({
 				task?.subtasks?.map((rec, index) => {
 					return (
 						<VStack
-							key={rec._id}
+							key={`subtasks_action_${rec._id}*78${index}`}
 							w={"100%"}
 							alignItems={"flex-start"}
 							ml={"2em"}

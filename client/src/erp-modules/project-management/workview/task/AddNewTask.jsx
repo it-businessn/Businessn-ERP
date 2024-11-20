@@ -15,21 +15,13 @@ import {
 	ModalOverlay,
 	Select,
 	Stack,
-	Text,
 } from "@chakra-ui/react";
+import MultiSelectButton from "components/ui/form/MultiSelectButton";
 import { useState } from "react";
 import { FaCaretDown } from "react-icons/fa";
 import ProjectService from "services/ProjectService";
-import MultiSelectBox from "../../../../components/ui/form/select/MultiSelectBox";
 
-const AddNewTask = ({
-	isOpen,
-	onClose,
-	setRefresh,
-	allProjects,
-	isFiltered,
-	allProjectTasks,
-}) => {
+const AddNewTask = ({ isOpen, onClose, setRefresh, allProjects, isFiltered, allProjectTasks }) => {
 	const defaultTask = {
 		projectId: "",
 		projectName: "",
@@ -162,38 +154,19 @@ const AddNewTask = ({
 											<FormLabel visibility={openAssigneeMenu ? "" : "hidden"}>
 												Select Assignee
 											</FormLabel>
-											<Button
-												rightIcon={<FaCaretDown />}
-												bg={"var(--primary_bg)"}
-												color={"var(--primary_button_bg)"}
-												_hover={{
-													bg: "var(--primary_bg)",
-													color: "var(--primary_button_bg)",
-												}}
-											>
-												{openAssigneeMenu ? (
-													<MultiSelectBox
-														openMenu={openAssigneeMenu}
-														handleCloseMenu={handleCloseMenu}
-														selectedOptions={selectedOptions}
-														setSelectedOptions={setSelectedOptions}
-													/>
-												) : (
-													<Text onClick={handleMenuToggle}>
-														{formData.selectedAssignees?.length > 0
-															? `${formData.selectedAssignees?.length} assignee(s)`
-															: "Select Assignee"}
-													</Text>
-												)}
-											</Button>
+
+											<MultiSelectButton
+												handleMenuToggle={handleMenuToggle}
+												assignees={formData.selectedAssignees}
+												openAssigneeMenu={openAssigneeMenu}
+												handleCloseMenu={handleCloseMenu}
+												selectedOptions={selectedOptions}
+												setSelectedOptions={setSelectedOptions}
+											/>
+
 											{formData?.selectedAssignees?.length > 0 &&
 												formData.selectedAssignees.map((name) => (
-													<Avatar
-														size={"sm"}
-														name={name}
-														src={name}
-														key={name}
-													/>
+													<Avatar size={"sm"} name={name} src={name} key={name} />
 												))}
 										</FormControl>
 									</HStack>

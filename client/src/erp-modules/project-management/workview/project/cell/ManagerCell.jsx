@@ -1,12 +1,6 @@
 import { HStack, Td, Text, VStack } from "@chakra-ui/react";
 
-const ManagerCell = ({
-	project,
-	index,
-	expandedIndex,
-	isExpanded,
-	isSubExpanded,
-}) => {
+const ManagerCell = ({ project, index, expandedIndex, isExpanded, isSubExpanded }) => {
 	const Manager = ({ main, task }) => (
 		<HStack
 			spacing="1"
@@ -23,16 +17,18 @@ const ManagerCell = ({
 				<Manager main />
 				{expandedIndex === index &&
 					project?.tasks?.map((task, task_index) => (
-						<VStack alignItems={"start"} w={"100%"} key={task}>
+						<VStack alignItems={"start"} w={"100%"} key={task._id}>
 							<Manager task />
 							{isExpanded === task_index &&
 								task?.subtasks?.length > 0 &&
 								task?.subtasks?.map((subtask, subtask_index) => (
-									<VStack alignItems={"start"} w={"100%"} key={subtask}>
+									<VStack alignItems={"start"} w={"100%"} key={subtask._id}>
 										<Manager sub />
 										{isSubExpanded === subtask_index &&
 											subtask?.subtasks?.length > 0 &&
-											subtask?.subtasks?.map((item) => <Manager key={item} />)}
+											subtask?.subtasks?.map((item, index) => (
+												<Manager key={`manager_item_${item}**${index}`} />
+											))}
 									</VStack>
 								))}
 						</VStack>

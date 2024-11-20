@@ -2,14 +2,7 @@ import { Td, Text, VStack } from "@chakra-ui/react";
 import React from "react";
 import { formatDate } from "utils";
 
-const DateCell = ({
-	date,
-	project,
-	index,
-	expandedIndex,
-	isExpanded,
-	isSubExpanded,
-}) => {
+const DateCell = ({ date, project, index, expandedIndex, isExpanded, isSubExpanded }) => {
 	const FormattedDate = ({ date, main, task, last }) => (
 		<Text
 			marginTop={main ? "3em" : "1.75em"}
@@ -24,16 +17,12 @@ const DateCell = ({
 				{project[date] && <FormattedDate date={project[date]} main />}
 				{expandedIndex === index &&
 					project?.tasks?.map((task, task_index) => (
-						<VStack alignItems="start" w={"100%"} key={task}>
-							{task[date] ? (
-								<FormattedDate date={task[date]} task />
-							) : (
-								formatDate(new Date())
-							)}
+						<VStack alignItems="start" w={"100%"} key={task._id}>
+							{task[date] ? <FormattedDate date={task[date]} task /> : formatDate(new Date())}
 							{isExpanded === task_index &&
 								task?.subtasks?.length > 0 &&
 								task?.subtasks?.map((subtask, subtask_index) => (
-									<VStack alignItems="start" w={"100%"} key={subtask}>
+									<VStack alignItems="start" w={"100%"} key={subtask._id}>
 										{subtask[date] ? (
 											<FormattedDate date={subtask[date]} sub />
 										) : (
@@ -41,8 +30,8 @@ const DateCell = ({
 										)}
 										{isSubExpanded === subtask_index &&
 											subtask?.subtasks?.length > 0 &&
-											subtask?.subtasks?.map((item) => (
-												<React.Fragment key={item}>
+											subtask?.subtasks?.map((item, index) => (
+												<React.Fragment key={`start_date_subtask_${item}**${index}`}>
 													{/* {item[date]
 														? formatDateTime(item[date])
 														: formatDate(new Date())} */}

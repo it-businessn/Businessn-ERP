@@ -77,7 +77,7 @@ const AddProject = ({ isOpen, onClose, setRefresh, managers, company }) => {
 									<Select
 										icon={<FaCaretDown />}
 										borderRadius="10px"
-										value={formData?.managerId || ""}
+										value={formData?.managerId ?? ""}
 										placeholder="Select Project Manager"
 										onChange={(e) => {
 											const selectedValue = e.target.value;

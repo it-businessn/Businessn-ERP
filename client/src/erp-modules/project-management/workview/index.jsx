@@ -1,7 +1,7 @@
 import { Box, Flex, Th } from "@chakra-ui/react";
 
 import useCompany from "hooks/useCompany";
-import { useSignup } from "hooks/useSignup";
+import useManager from "hooks/useManager";
 import PageLayout from "layouts/PageLayout";
 import { useEffect, useState } from "react";
 import { FaSort } from "react-icons/fa";
@@ -12,13 +12,7 @@ import WorkviewToolbar from "./WorkviewToolbar";
 import ProjectTable from "./project";
 
 export const headerCell = (key, weight, w) => (
-	<Th
-		w={w}
-		fontWeight={weight ? weight : "bolder"}
-		key={key}
-		fontSize={"xs"}
-		p={"0.5em 1em"}
-	>
+	<Th w={w} fontWeight={weight ? weight : "bolder"} key={key} fontSize={"xs"} p={"0.5em 1em"}>
 		<Flex alignItems={"center"} gap={0.5}>
 			{key}
 			<FaSort sx={{ width: "5px" }} />
@@ -27,15 +21,12 @@ export const headerCell = (key, weight, w) => (
 );
 
 const WorkView = () => {
-	const { company } = useCompany(
-		LocalStorageService.getItem("selectedCompany"),
-	);
+	const { company } = useCompany(LocalStorageService.getItem("selectedCompany"));
 	const loggedInUser = LocalStorageService.getItem("user");
 	const [projects, setProjects] = useState(null);
 	const [refresh, setRefresh] = useState(false);
 
-	const { managers } = useSignup(refresh);
-
+	const managers = useManager(company, refresh, true);
 	const isManagerView = isManager(loggedInUser?.role);
 
 	useEffect(() => {
@@ -44,10 +35,7 @@ const WorkView = () => {
 				setProjects(null);
 				const response = isManagerView
 					? await ProjectService.getAllCompanyProjects(company)
-					: await ProjectService.getAllCompanyProjectsByUser(
-							loggedInUser?.fullName,
-							company,
-					  );
+					: await ProjectService.getAllCompanyProjectsByUser(loggedInUser?.fullName, company);
 				setProjects(response.data);
 			} catch (error) {
 				console.error(error);

@@ -1,13 +1,7 @@
 import { Avatar, Button, HStack, Td, VStack } from "@chakra-ui/react";
 import { useState } from "react";
 
-const AssigneeCell = ({
-	project,
-	index,
-	expandedIndex,
-	isExpanded,
-	isSubExpanded,
-}) => {
+const AssigneeCell = ({ project, index, expandedIndex, isExpanded, isSubExpanded }) => {
 	const [showAllAssignees, setShowAllAssignees] = useState(false);
 	const AssigneeList = ({ assignees, main, task, sub }) => (
 		<HStack
@@ -19,7 +13,7 @@ const AssigneeCell = ({
 			{assignees?.map((assignee, index) =>
 				index < 1 && !showAllAssignees ? (
 					<Avatar
-						key={assignee}
+						key={`${assignee}_io${index}`}
 						name={assignee}
 						size={{ base: "xs", md: "sm" }}
 						src={assignee}
@@ -27,11 +21,7 @@ const AssigneeCell = ({
 				) : null,
 			)}
 			{assignees && assignees.length > 1 && !showAllAssignees && (
-				<Button
-					size={"xs"}
-					bg={"var(--primary_button_bg)"}
-					borderRadius={"50%"}
-				>
+				<Button size={"xs"} bg={"var(--primary_button_bg)"} borderRadius={"50%"}>
 					+{assignees.length - 1}
 				</Button>
 			)}
@@ -44,22 +34,18 @@ const AssigneeCell = ({
 				<AssigneeList assignees={project?.selectedAssignees} main />
 				{expandedIndex === index &&
 					project?.tasks?.map((task, index) => (
-						<VStack w={"100%"} key={task}>
+						<VStack w={"100%"} key={task._id}>
 							<AssigneeList assignees={task.selectedAssignees} task />
 							{isExpanded === index &&
 								task?.subtasks?.length > 0 &&
 								task?.subtasks?.map((subtask, index) => (
-									<VStack w={"100%"} key={subtask}>
+									<VStack w={"100%"} key={subtask._id}>
 										<AssigneeList assignees={subtask.selectedAssignees} sub />
 
 										{isSubExpanded === index &&
 											subtask?.subtasks?.length > 0 &&
 											subtask?.subtasks?.map((item) => (
-												<AssigneeList
-													sub
-													key={item.taskName}
-													assignees={item.selectedAssignees}
-												/>
+												<AssigneeList sub key={item.taskName} assignees={item.selectedAssignees} />
 											))}
 									</VStack>
 								))}

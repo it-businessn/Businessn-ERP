@@ -14,12 +14,10 @@ import {
 	ModalHeader,
 	ModalOverlay,
 	Stack,
-	Text,
 } from "@chakra-ui/react";
+import MultiSelectButton from "components/ui/form/MultiSelectButton";
 import { useState } from "react";
-import { FaCaretDown } from "react-icons/fa";
 import ProjectService from "services/ProjectService";
-import MultiSelectBox from "../../../../components/ui/form/select/MultiSelectBox";
 
 const AddNewProjectTask = ({
 	isOpen,
@@ -79,9 +77,7 @@ const AddNewProjectTask = ({
 		<Modal isCentered size={"4xl"} isOpen={isOpen} onClose={onClose}>
 			<ModalOverlay />
 			<ModalContent>
-				<ModalHeader>
-					Add New Task for Project - {formData.projectName}
-				</ModalHeader>
+				<ModalHeader>Add New Task for Project - {formData.projectName}</ModalHeader>
 				<ModalCloseButton />
 				<ModalBody>
 					<Stack spacing="5">
@@ -93,7 +89,7 @@ const AddNewProjectTask = ({
 										<Input
 											type="text"
 											name="taskName"
-											value={formData.taskName}
+											value={formData.taskName ?? ""}
 											onChange={(e) =>
 												setFormData((prevData) => ({
 													...prevData,
@@ -107,31 +103,17 @@ const AddNewProjectTask = ({
 										<FormLabel visibility={openAssigneeMenu ? "" : "hidden"}>
 											Select Assignee
 										</FormLabel>
-										<Button
-											rightIcon={<FaCaretDown />}
-											bg={"var(--primary_bg)"}
-											color={"var(--primary_button_bg)"}
-											_hover={{
-												bg: "var(--primary_bg)",
-												color: "var(--primary_button_bg)",
-											}}
-										>
-											{openAssigneeMenu ? (
-												<MultiSelectBox
-													data={managers}
-													openMenu={openAssigneeMenu}
-													handleCloseMenu={handleCloseMenu}
-													selectedOptions={selectedOptions}
-													setSelectedOptions={setSelectedOptions}
-												/>
-											) : (
-												<Text onClick={handleMenuToggle}>
-													{formData.selectedAssignees?.length > 0
-														? `${formData.selectedAssignees?.length} assignee(s)`
-														: "Select Assignee"}
-												</Text>
-											)}
-										</Button>
+
+										<MultiSelectButton
+											handleMenuToggle={handleMenuToggle}
+											assignees={formData.selectedAssignees}
+											openAssigneeMenu={openAssigneeMenu}
+											data={managers}
+											handleCloseMenu={handleCloseMenu}
+											selectedOptions={selectedOptions}
+											setSelectedOptions={setSelectedOptions}
+										/>
+
 										{formData?.selectedAssignees?.length > 0 &&
 											formData.selectedAssignees.map((name) => (
 												<Avatar size={"sm"} name={name} src={name} key={name} />
@@ -146,7 +128,7 @@ const AddNewProjectTask = ({
 											type="date"
 											id="dueDate"
 											name="dueDate"
-											value={formData.dueDate}
+											value={formData.dueDate ?? ""}
 											onChange={(e) =>
 												setFormData((prevData) => ({
 													...prevData,
@@ -161,7 +143,7 @@ const AddNewProjectTask = ({
 										<Input
 											type="text"
 											name="timeToComplete"
-											value={formData.timeToComplete}
+											value={formData.timeToComplete ?? ""}
 											onChange={(e) =>
 												setFormData((prevData) => ({
 													...prevData,
