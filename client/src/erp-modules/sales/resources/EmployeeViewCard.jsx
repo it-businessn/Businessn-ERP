@@ -1,13 +1,4 @@
-import {
-	Badge,
-	Box,
-	Grid,
-	GridItem,
-	HStack,
-	Image,
-	SimpleGrid,
-	VStack,
-} from "@chakra-ui/react";
+import { Badge, Box, Grid, GridItem, HStack, Image, SimpleGrid, VStack } from "@chakra-ui/react";
 import TextTitle from "components/ui/text/TextTitle";
 import { doughnutOptions } from "constant";
 import { BADGES } from "erp-modules/project-management/workview/project/data";
@@ -44,12 +35,8 @@ const EmployeeViewCard = ({ company }) => {
 	useEffect(() => {
 		const fetchAssessmentsTaken = async () => {
 			try {
-				const response = await AssessmentService.getAssessmentByUserId(
-					loggedInUser._id,
-				);
-				const passed = response.data?.filter(
-					(type) => type.category === "PASS",
-				);
+				const response = await AssessmentService.getAssessmentByUserId(loggedInUser._id);
+				const passed = response.data?.filter((type) => type.category === "PASS");
 
 				const complete = passed.length;
 				const not_completed = assessments?.length - complete || 0;
@@ -58,9 +45,7 @@ const EmployeeViewCard = ({ company }) => {
 				setCompleted(complete);
 				setNotComplete(not_completed);
 
-				passed?.map(
-					(_) => (_.badge = BADGES[Math.floor(Math.random() * BADGES.length)]),
-				);
+				passed?.map((_) => (_.badge = BADGES[Math.floor(Math.random() * BADGES.length)]));
 				const counts = passed?.reduce((acc, obj) => {
 					acc[obj.subject] = (acc[obj.subject] || 0) + 1;
 					return acc;
@@ -72,7 +57,9 @@ const EmployeeViewCard = ({ company }) => {
 				console.error(error);
 			}
 		};
-		fetchAssessmentsTaken();
+		if (assessments) {
+			fetchAssessmentsTaken();
+		}
 	}, [assessments]);
 
 	useEffect(() => {
@@ -137,11 +124,7 @@ const EmployeeViewCard = ({ company }) => {
 												alt={`Certification Badge ${index + 1}`}
 												boxSize="100px"
 											/>
-											<Badge
-												w={"100%"}
-												bg="var(--lead_cards_bg)"
-												color="var(--primary_button_bg)"
-											>
+											<Badge w={"100%"} bg="var(--lead_cards_bg)" color="var(--primary_button_bg)">
 												<TextTitle
 													size="sm"
 													align={"center"}
@@ -175,8 +158,7 @@ const EmployeeViewCard = ({ company }) => {
 					>
 						{assessments?.map((item) => {
 							const passResult = assessmentsTaken?.find(
-								(type) =>
-									item.name.includes(type.subject) && type.category === "PASS",
+								(type) => item.name.includes(type.subject) && type.category === "PASS",
 							);
 
 							if (passResult) {
@@ -185,9 +167,7 @@ const EmployeeViewCard = ({ company }) => {
 							}
 
 							const failResult = assessmentsTaken?.find(
-								(type) =>
-									item.name.includes(type.subject) &&
-									type.category === "ALMOST!",
+								(type) => item.name.includes(type.subject) && type.category === "ALMOST!",
 							);
 							if (failResult) {
 								failResult.color = "var(--almost_pass)";

@@ -11,11 +11,7 @@ const CalendarTable = ({ cols, data, setIsRefresh, filterText, filter }) => {
 	const [isLoading, setIsLoading] = useState(false);
 	return (
 		<Box overflow="auto" fontWeight={"normal"}>
-			<LeftIconButton
-				name={"New"}
-				handleClick={() => setShowEventForm(true)}
-				icon={<BsPlus />}
-			/>
+			<LeftIconButton name={"New"} handleClick={() => setShowEventForm(true)} icon={<BsPlus />} />
 
 			{showEventForm && (
 				<AddEvent
@@ -30,14 +26,20 @@ const CalendarTable = ({ cols, data, setIsRefresh, filterText, filter }) => {
 					}}
 				/>
 			)}
-			<Table variant="simple" size={"small"}>
+			<Table variant={"simple"} size={"small"}>
 				<Thead>
 					<Tr>
 						{cols?.map((col) =>
 							col === "hideCol1" || col === "hideCol2" ? (
-								<Th fontSize={"12px"} key={col} />
+								<Th fontSize={"xs"} key={col} />
 							) : (
-								<Th fontSize={"12px"} key={col}>
+								<Th
+									fontSize={"xs"}
+									key={col}
+									textAlign={
+										col.includes("Link") || col.includes("Description") ? "left" : "center"
+									}
+								>
 									{col}
 								</Th>
 							),
@@ -45,22 +47,24 @@ const CalendarTable = ({ cols, data, setIsRefresh, filterText, filter }) => {
 					</Tr>
 				</Thead>
 				<Tbody>
-					{(!data || data?.length === 0) && (
-						<EmptyRowRecord data={data} colSpan={cols?.length} />
-					)}
+					{(!data || data?.length === 0) && <EmptyRowRecord data={data} colSpan={cols?.length} />}
 					{data?.map((item) => (
 						<Tr key={item._id}>
-							<Td fontSize={"xs"}>{item.description}</Td>
-							<Td fontSize={"xs"}>{`${formatDate(item.fromDate)} ${
-								item.fromTime
-							}`}</Td>
-							<Td fontSize={"xs"}>
-								<Td fontSize={"xs"}>{`${formatDate(item.toDate)} ${
-									item.toTime
-								}`}</Td>
+							<Td pl={5} fontSize={"xs"} whiteSpace={"wrap"} width={"100px"}>
+								{item.description}
 							</Td>
-							<Td fontSize={"xs"}>{item.eventLink}</Td>
-							<Td fontSize={"xs"}>{item.location}</Td>
+							<Td textAlign={"center"} fontSize={"xs"} width={"50px"}>{`${formatDate(
+								item.fromDate,
+							)} ${item.fromTime}`}</Td>
+							<Td textAlign={"center"} width={"50px"} fontSize={"xs"}>{`${formatDate(
+								item.toDate,
+							)} ${item.toTime}`}</Td>
+							<Td fontSize={"xs"} whiteSpace={"wrap"} width={"100px"}>
+								{item.eventLink}
+							</Td>
+							<Td fontSize={"xs"} width={"80px"} textAlign={"center"}>
+								{item.location}
+							</Td>
 						</Tr>
 					))}
 				</Tbody>
