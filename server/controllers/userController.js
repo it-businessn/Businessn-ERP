@@ -177,6 +177,25 @@ const getAllGroupMembers = () => async (req, res) => {
 	}
 };
 
+const getAllCompManagers = async (req, res) => {
+	const { companyName } = req.params;
+	try {
+		const existingCompany = await findCompany("name", companyName);
+		const result = await Employee.find({
+			companyId: existingCompany._id,
+			role: { $regex: /manager|administrator/i },
+		})
+			.select(["fullName"])
+			.sort({
+				fullName: 1,
+			});
+
+		res.status(200).json(result);
+	} catch (error) {
+		res.status(404).json({ error: error.message });
+	}
+};
+
 const getAllManagers = () => async (req, res) => {
 	const { companyName } = req.params;
 	try {
@@ -265,8 +284,7 @@ const updateUser = () => async (req, res) => {
 
 const updateUserAssignedLeads = async (req, res) => {
 	try {
-		const { totalLeadsDisbursed, totalWeight, activeUsers } =
-			await getActiveUsers();
+		const { totalLeadsDisbursed, totalWeight, activeUsers } = await getActiveUsers();
 		console.log(
 			"updateUserAssignedLeads",
 			req.params,
@@ -278,11 +296,7 @@ const updateUserAssignedLeads = async (req, res) => {
 			const assignedLeads = Math.round(
 				(user.assignedWeight / totalWeight) * totalLeadsDisbursed.length,
 			);
-			await Employee.findByIdAndUpdate(
-				user._id,
-				{ $set: { assignedLeads } },
-				{ new: true },
-			);
+			await Employee.findByIdAndUpdate(user._id, { $set: { assignedLeads } }, { new: true });
 		}
 		res.status(200).json({ message: "Leads assignee updated successfully" });
 	} catch (error) {
@@ -296,10 +310,7 @@ const getActiveUsers = async () => {
 		isDisbursedConfirmed: false,
 	});
 	const activeUsers = await findEmployee({ isActive: true });
-	const totalWeight = activeUsers.reduce(
-		(sum, item) => sum + item.assignedWeight,
-		0,
-	);
+	const totalWeight = activeUsers.reduce((sum, item) => sum + item.assignedWeight, 0);
 	return { totalLeadsDisbursed, totalWeight, activeUsers };
 };
 
@@ -319,4 +330,5 @@ module.exports = {
 	getPayrollActiveEmployees,
 	getPayrollInActiveCompanyEmployees,
 	getAllSalesAgentsList,
+	getAllCompManagers,
 };

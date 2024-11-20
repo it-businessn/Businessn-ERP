@@ -19,8 +19,6 @@ import HighlightButton from "components/ui/button/HighlightButton";
 import LeftIconButton from "components/ui/button/LeftIconButton";
 import PrimaryButton from "components/ui/button/PrimaryButton";
 import TextTitle from "components/ui/text/TextTitle";
-import useSalesAgentData from "hooks/useSalesAgentData";
-import { useSignup } from "hooks/useSignup";
 import PageLayout from "layouts/PageLayout";
 import { FaSearch } from "react-icons/fa";
 import { MdOutlineFilterList } from "react-icons/md";
@@ -29,19 +27,11 @@ import { generateLighterShade, toCapitalize } from "utils";
 import SearchFilter from "../lead docket/SearchFilter";
 import AddNewOpportunity from "../opportunities/AddNewOpportunity";
 
-const CustomersList = ({
-	contacts,
-	handleProfileView,
-	icons,
-	setIsAdded,
-	company,
-}) => {
+const CustomersList = ({ contacts, handleProfileView, icons, setIsAdded, company }) => {
 	const { isMobile } = useBreakpointValue();
 	const handleEdit = (id) => {
 		console.log(id);
 	};
-	const assignees = useSalesAgentData(company);
-	const { managers } = useSignup(company);
 
 	const { isOpen, onOpen, onClose } = useDisclosure();
 
@@ -97,11 +87,7 @@ const CustomersList = ({
 								py={"1.1em"}
 							/>
 						</InputGroup>
-						<PrimaryButton
-							onOpen={() => onOpen()}
-							name={"Add new customer"}
-							size={"xs"}
-						/>
+						<PrimaryButton onOpen={() => onOpen()} name={"Add new customer"} size={"xs"} />
 					</HStack>
 				</Flex>
 			)}
@@ -190,8 +176,6 @@ const CustomersList = ({
 			)}
 			{isOpen && (
 				<AddNewOpportunity
-					assignees={assignees}
-					supervisorAssignees={managers}
 					setIsAdded={setIsAdded}
 					isOpen={isOpen}
 					onClose={() => onClose()}

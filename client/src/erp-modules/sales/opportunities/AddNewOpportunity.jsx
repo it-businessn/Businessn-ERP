@@ -19,24 +19,18 @@ import {
 	PRODUCTS_SERVICES,
 	REGIONS,
 } from "erp-modules/project-management/workview/project/data";
+import useSalesAgentData from "hooks/useSalesAgentData";
 import { useEffect, useState } from "react";
 import { FaCaretDown, FaPlus } from "react-icons/fa";
 import LeadsService from "services/LeadsService";
+import UserService from "services/UserService";
 import { toCapitalize, today } from "utils";
 import AddCompany from "./AddCompany";
 import AssigneeSelector from "./AssigneeSelector";
 import { LEAD_STAGES } from "./data";
 
-const AddNewOpportunity = ({
-	isOpen,
-	onClose,
-	setIsAdded,
-	isDocket,
-	assignees,
-	supervisorAssignees,
-	company,
-	showEditLead,
-}) => {
+const AddNewOpportunity = ({ isOpen, onClose, setIsAdded, isDocket, company, showEditLead }) => {
+	const assignees = useSalesAgentData(company, false, true);
 	const defaultOpportunity = {
 		abbreviation: "",
 		address: {
@@ -83,6 +77,7 @@ const AddNewOpportunity = ({
 		companyName: company,
 	};
 
+	const [managers, setManagers] = useState(null);
 	const [isSubmitting, setSubmitting] = useState(false);
 	const [error, setError] = useState(false);
 	const [isDisabled, setIsDisabled] = useState(false);
@@ -93,9 +88,7 @@ const AddNewOpportunity = ({
 	const [refresh, setRefresh] = useState(false);
 	const [showAddCompany, setShowAddCompany] = useState(false);
 
-	const [formData, setFormData] = useState(
-		showEditLead ? savedData : defaultOpportunity,
-	);
+	const [formData, setFormData] = useState(showEditLead ? savedData : defaultOpportunity);
 
 	const [selectedProductService, setSelectedProductService] = useState(
 		showEditLead ? savedData?.productService : [],
@@ -103,8 +96,9 @@ const AddNewOpportunity = ({
 	const [selectedPrimaryAssignees, setSelectedPrimaryAssignees] = useState(
 		showEditLead ? savedData?.primaryAssignee : [],
 	);
-	const [selectedSupervisorAssignees, setSelectedSupervisorAssignees] =
-		useState(showEditLead ? savedData?.supervisorAssignee : []);
+	const [selectedSupervisorAssignees, setSelectedSupervisorAssignees] = useState(
+		showEditLead ? savedData?.supervisorAssignee : [],
+	);
 
 	const [companies, setCompanies] = useState(null);
 
@@ -118,7 +112,17 @@ const AddNewOpportunity = ({
 			}
 		};
 
+		const fetchAllManagers = async () => {
+			try {
+				const response = await UserService.getAllCompManagers(company);
+				setManagers(response.data);
+			} catch (error) {
+				console.error(error);
+			}
+		};
+
 		fetchAllCompanies();
+		fetchAllManagers();
 	}, [refresh]);
 
 	const handleChange = (e) => {
@@ -152,18 +156,13 @@ const AddNewOpportunity = ({
 			setIsDisabled(true);
 		}
 		const isNotValid =
-			stage === "" ||
-			selectedPrimaryAssignees?.length === 0 ||
-			companyName === "" ||
-			isDisabled;
+			stage === "" || selectedPrimaryAssignees?.length === 0 || companyName === "" || isDisabled;
 		if (isNotValid) return;
 		formData.productService = selectedProductService;
 		formData.primaryAssignee = selectedPrimaryAssignees;
 		formData.supervisorAssignee = selectedSupervisorAssignees;
 
-		formData.abbreviation = `${formData.name
-			.replace(" ", "_")
-			.toUpperCase()}${today}`;
+		formData.abbreviation = `${formData.name.replace(" ", "_").toUpperCase()}${today}`;
 		formData.opportunityName = formData.abbreviation;
 		setSubmitting(true);
 		try {
@@ -425,7 +424,7 @@ const AddNewOpportunity = ({
 							/>
 							{assigneeError && <Text color={"red"}>{assigneeError}</Text>}
 							<AssigneeSelector
-								assignees={supervisorAssignees}
+								assignees={managers}
 								selectedAssignees={selectedSupervisorAssignees}
 								onAssigneeChange={setSelectedSupervisorAssignees}
 								onRemoveAssignee={setSelectedSupervisorAssignees}

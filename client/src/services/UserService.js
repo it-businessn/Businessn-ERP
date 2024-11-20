@@ -37,6 +37,10 @@ const UserService = {
 		return apiService.get(`/user/${id}`);
 	},
 
+	async getAllCompManagers(id) {
+		return apiService.get(`/user/comp-managers/${id}`);
+	},
+
 	async getAllManagers(id) {
 		return apiService.get(`/user/managers/${id}`);
 	},

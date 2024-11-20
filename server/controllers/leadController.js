@@ -92,9 +92,7 @@ const getOpportunities = async (req, res) => {
 	// const updatedLeads = await Lead.updateMany({}, { $set: updatedData });
 	// console.log(updatedLeads);
 	try {
-		const leads = (await Lead.find({ companyName })).sort(
-			(a, b) => b.createdOn - a.createdOn,
-		);
+		const leads = (await Lead.find({ companyName })).sort((a, b) => b.createdOn - a.createdOn);
 		res.status(200).json(leads);
 	} catch (error) {
 		res.status(404).json({ error: error.message });
@@ -133,7 +131,7 @@ const getLeadsNotDisbursed = async (req, res) => {
 const getLeadCompanies = async (req, res) => {
 	const { companyName } = req.params;
 	try {
-		const leadCompanies = await LeadCompany.find({ companyName });
+		const leadCompanies = await LeadCompany.find({ companyName }).select("name");
 		res.status(200).json(leadCompanies);
 	} catch (error) {
 		res.status(404).json({ error: error.message });
@@ -271,15 +269,7 @@ const createMultipleLeadOpportunity = async (req, res) => {
 	let leadsCreated = 0;
 	try {
 		for (const rowData of newRecord) {
-			const {
-				abbreviation,
-				address,
-				name,
-				email,
-				industry,
-				opportunityName,
-				phone,
-			} = rowData;
+			const { abbreviation, address, name, email, industry, opportunityName, phone } = rowData;
 
 			const { streetNumber, city, state, postalCode, country } = address;
 			await Lead.create({
@@ -312,11 +302,7 @@ const createMultipleLeadOpportunity = async (req, res) => {
 const updateLeadDisburseStatus = async (id, salesperson) => {
 	try {
 		const updatedData = { isDisbursed: true, disbursedTo: salesperson };
-		return await Lead.findByIdAndUpdate(
-			id,
-			{ $set: updatedData },
-			{ new: true },
-		);
+		return await Lead.findByIdAndUpdate(id, { $set: updatedData }, { new: true });
 	} catch (error) {
 		console.log(error, "Error in updating");
 	}
@@ -402,11 +388,7 @@ const updateLead = async (req, res) => {
 	const { id } = req.params;
 
 	try {
-		const updatedLead = await Lead.findByIdAndUpdate(
-			id,
-			{ $set: req.body },
-			{ new: true },
-		);
+		const updatedLead = await Lead.findByIdAndUpdate(id, { $set: req.body }, { new: true });
 		const existingContact = await Contact.find({ leadId: updatedLead._id });
 
 		if (!existingContact.length) {

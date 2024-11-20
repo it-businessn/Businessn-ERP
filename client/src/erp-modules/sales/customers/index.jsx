@@ -9,9 +9,7 @@ import CustomersList from "./CustomersList";
 import Contacts from "./contacts";
 
 const Customers = () => {
-	const { company } = useCompany(
-		LocalStorageService.getItem("selectedCompany"),
-	);
+	const { company } = useCompany(LocalStorageService.getItem("selectedCompany"));
 	const [contacts, setContacts] = useState(null);
 	const [viewProfile, setViewProfile] = useState(false);
 	const [selectedContact, setSelectedContact] = useState(null);
@@ -20,6 +18,7 @@ const Customers = () => {
 	const isUserManager = isManager(loggedInUser?.role);
 
 	const [isAdded, setIsAdded] = useState(false);
+
 	const fetchAllContacts = async () => {
 		try {
 			const response = await ContactService.getCompContacts(company);
@@ -30,8 +29,7 @@ const Customers = () => {
 				isUserManager
 					? filterContacts
 					: filterContacts?.filter(
-							(lead) =>
-								lead.leadId.primaryAssignee[0]?.name === loggedInUser.fullName,
+							(lead) => lead.leadId.primaryAssignee[0]?.name === loggedInUser.fullName,
 					  ),
 			);
 		} catch (error) {

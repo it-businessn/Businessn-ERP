@@ -11,27 +11,17 @@ router.get("/emp-roles/:companyName", userController.groupEmployeesByRole());
 
 router.get("/not-managers/:companyName", userController.getAllSalesAgents());
 
-router.get(
-	"/not-managers-list/:companyName",
-	userController.getAllSalesAgentsList(),
-);
+router.get("/not-managers-list/:companyName", userController.getAllSalesAgentsList());
+
+router.get("/comp-managers/:companyName", userController.getAllCompManagers);
 
 router.get("/managers/:companyName", userController.getAllManagers());
 
-router.get(
-	"/groups/:memberId/:companyName",
-	userController.getAllGroupMembers(),
-);
+router.get("/groups/:memberId/:companyName", userController.getAllGroupMembers());
 
-router.get(
-	"/payroll-active/:companyName",
-	userController.getPayrollActiveCompanyEmployees(),
-);
+router.get("/payroll-active/:companyName", userController.getPayrollActiveCompanyEmployees());
 
-router.get(
-	"/payroll-inactive/:companyName",
-	userController.getPayrollInActiveCompanyEmployees(),
-);
+router.get("/payroll-inactive/:companyName", userController.getPayrollInActiveCompanyEmployees());
 
 router.get("/:companyName", userController.getCompanyEmployees());
 
