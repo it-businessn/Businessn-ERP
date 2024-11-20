@@ -12,7 +12,7 @@ const UserList = ({
 }) => {
 	return (
 		<Box overflow="auto" height={height} fontWeight={"normal"}>
-			<Table variant={"simple"} width="100%">
+			<Table variant={"simple"} width="100%" position="sticky" top={-1} zIndex={0}>
 				<Thead>
 					<Tr>
 						<Th px={1.5} w={"200px"}>
@@ -39,70 +39,38 @@ const UserList = ({
 					{(!filteredEmployees || filteredEmployees?.length === 0) && (
 						<EmptyRowRecord data={filteredEmployees} colSpan={5} />
 					)}
-					{filteredEmployees?.map(
-						({ fullName, _id, email, baseModule, group, role }) => (
-							<Tr key={_id}>
-								<Td
-									w={"200px"}
-									whiteSpace={"pre-wrap"}
-									py={1}
-									px={1.5}
-									fontSize={"xs"}
-								>
-									{fullName}
+					{filteredEmployees?.map(({ fullName, _id, email, baseModule, group, role }) => (
+						<Tr key={_id}>
+							<Td w={"200px"} whiteSpace={"pre-wrap"} py={1} px={1.5} fontSize={"xs"}>
+								{fullName}
+							</Td>
+							<Td w={"200px"} whiteSpace={"pre-wrap"} py={1} px={1.5} fontSize={"xs"}>
+								{email}
+							</Td>
+							<Td w={"100px"} whiteSpace={"pre-wrap"} py={1} px={1.5} fontSize={"xs"}>
+								{baseModule || ""}
+							</Td>
+							{!isUser && (
+								<Td w={"100px"} whiteSpace={"pre-wrap"} py={1} px={1.5} fontSize={"xs"}>
+									{group || ""}
 								</Td>
-								<Td
-									w={"200px"}
-									whiteSpace={"pre-wrap"}
-									py={1}
-									px={1.5}
-									fontSize={"xs"}
-								>
-									{email}
-								</Td>
-								<Td
-									w={"100px"}
-									whiteSpace={"pre-wrap"}
-									py={1}
-									px={1.5}
-									fontSize={"xs"}
-								>
-									{baseModule || ""}
-								</Td>
-								{!isUser && (
-									<Td
-										w={"100px"}
-										whiteSpace={"pre-wrap"}
-										py={1}
-										px={1.5}
-										fontSize={"xs"}
-									>
-										{group || ""}
-									</Td>
+							)}
+							<Td w={"100px"} whiteSpace={"pre-wrap"} py={1} px={1.5} fontSize={"xs"}>
+								{role}
+							</Td>
+							<Td>
+								{isGroup && (
+									<FaRegTrashAlt
+										cursor={"pointer"}
+										onClick={() => {
+											setShowConfirmationPopUp(true);
+											setDeleteRecord(_id);
+										}}
+									/>
 								)}
-								<Td
-									w={"100px"}
-									whiteSpace={"pre-wrap"}
-									py={1}
-									px={1.5}
-									fontSize={"xs"}
-								>
-									{role}
-								</Td>
-								<Td>
-									{isGroup && (
-										<FaRegTrashAlt
-											cursor={"pointer"}
-											onClick={() => {
-												setShowConfirmationPopUp(true);
-												setDeleteRecord(_id);
-											}}
-										/>
-									)}
-								</Td>
-							</Tr>
-						),
-					)}
+							</Td>
+						</Tr>
+					))}
 				</Tbody>
 			</Table>
 		</Box>

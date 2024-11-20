@@ -1,11 +1,9 @@
 import { Switch, Table, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
 import EmptyRowRecord from "components/ui/EmptyRowRecord";
-import { useSignup } from "hooks/useSignup";
 import { useState } from "react";
 import SettingService from "services/SettingService";
 
-const ModulePanel = ({ company }) => {
-	const { modules } = useSignup(company);
+const ModulePanel = ({ modules }) => {
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [isRefresh, setIsRefresh] = useState(false);
 	const [moduleName, setModuleName] = useState("");
@@ -43,9 +41,7 @@ const ModulePanel = ({ company }) => {
 					</Tr>
 				</Thead>
 				<Tbody>
-					{(!modules || modules?.length === 0) && (
-						<EmptyRowRecord data={modules} colSpan={2} />
-					)}
+					{(!modules || modules?.length === 0) && <EmptyRowRecord data={modules} colSpan={2} />}
 					{modules?.map((module) => (
 						<Tr key={module._id}>
 							<Td>{module.name}</Td>

@@ -108,11 +108,7 @@ const addModule = async (req, res) => {
 const updateModule = async (req, res) => {
 	const { id } = req.params;
 	try {
-		const setup = await Module.findByIdAndUpdate(
-			id,
-			{ $set: req.body },
-			{ new: true },
-		);
+		const setup = await Module.findByIdAndUpdate(id, { $set: req.body }, { new: true });
 		res.status(200).json(setup);
 	} catch (error) {
 		console.log(error, "Error in updating");
@@ -225,7 +221,9 @@ const getCompanies = async (req, res) => {
 const getCompany = async (req, res) => {
 	const { name } = req.params;
 	try {
-		const company = await Company.find({ name });
+		const company = await Company.find({ name }).select(
+			"address industry_type founding_year registration_number name",
+		);
 		res.status(200).json(company);
 	} catch (error) {
 		res.status(404).json({ error: error.message });
@@ -256,8 +254,7 @@ const getCompanyEmployees = async (req, res) => {
 };
 
 const addCompany = async (req, res) => {
-	const { name, founding_year, registration_number, address, industry_type } =
-		req.body;
+	const { name, founding_year, registration_number, address, industry_type } = req.body;
 	const { streetNumber, city, state, postalCode, country } = address;
 
 	try {
@@ -306,11 +303,7 @@ const updateSetUp = async (req, res) => {
 	const { id } = req.params;
 	try {
 		const updatedData = req.body;
-		const setup = await Setup.findByIdAndUpdate(
-			id,
-			{ $set: updatedData },
-			{ new: true },
-		);
+		const setup = await Setup.findByIdAndUpdate(id, { $set: updatedData }, { new: true });
 		res.status(200).json(setup);
 	} catch (error) {
 		console.log(error, "Error in updating");
@@ -318,12 +311,7 @@ const updateSetUp = async (req, res) => {
 };
 
 const addSetUpRule = async (req, res) => {
-	const {
-		isIdleLeadReassignment,
-		idleTimeHours,
-		idleTimeMinutes,
-		AssignLeadTo,
-	} = req.body;
+	const { isIdleLeadReassignment, idleTimeHours, idleTimeMinutes, AssignLeadTo } = req.body;
 
 	try {
 		const newSetup = await Setup.create({

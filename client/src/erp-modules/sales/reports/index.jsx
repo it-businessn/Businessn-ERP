@@ -102,12 +102,7 @@ const SalesReport = () => {
 	return (
 		<PageLayout title={"Sales Reports"}>
 			<Flex direction="column" h="100%">
-				<SimpleGrid
-					columns={{ base: 1, lg: 2 }}
-					spacing="5"
-					my="5"
-					h={{ xl: "50%" }}
-				>
+				<SimpleGrid columns={{ base: 1, lg: 2 }} spacing="5" my="5" h={{ xl: "50%" }}>
 					<Box
 						color={"var(--nav_color)"}
 						p="1em"
@@ -116,11 +111,7 @@ const SalesReport = () => {
 						borderRadius="10px"
 						fontWeight="bold"
 					>
-						<Flex
-							justify="space-between"
-							align="center"
-							color={"var(--nav_color)"}
-						>
+						<Flex justify="space-between" align="center" color={"var(--nav_color)"}>
 							<Text fontWeight="bold">Sales Overview</Text>
 							<Select width="90px" border={"none"} fontSize={"xs"}>
 								<option>Weekly </option>
@@ -139,12 +130,7 @@ const SalesReport = () => {
 						borderRadius="10px"
 						fontWeight="bold"
 					>
-						<Flex
-							justify="space-between"
-							align="center"
-							mb="2"
-							color={"var(--nav_color)"}
-						>
+						<Flex justify="space-between" align="center" mb="2" color={"var(--nav_color)"}>
 							<Text fontWeight="bold">Sales Metrics Summary</Text>
 						</Flex>
 						<SimpleGrid columns={2} gap={4} h={"85%"}>
@@ -156,11 +142,7 @@ const SalesReport = () => {
 								display="flex"
 								flexDir="column"
 							>
-								<Text
-									fontSize="xs"
-									fontWeight="bold"
-									color={"var(--nav_color)"}
-								>
+								<Text fontSize="xs" fontWeight="bold" color={"var(--nav_color)"}>
 									Total sales
 								</Text>
 								<Text mr="3" fontSize={"1.25em"}>
@@ -175,11 +157,7 @@ const SalesReport = () => {
 								display="flex"
 								flexDir="column"
 							>
-								<Text
-									fontSize="xs"
-									fontWeight="bold"
-									color={"var(--nav_color)"}
-								>
+								<Text fontSize="xs" fontWeight="bold" color={"var(--nav_color)"}>
 									Total leads
 								</Text>
 								<Text mr="3" fontSize={"1.25em"}>
@@ -194,11 +172,7 @@ const SalesReport = () => {
 								display="flex"
 								flexDir="column"
 							>
-								<Text
-									fontSize="xs"
-									fontWeight="bold"
-									color={"var(--nav_color)"}
-								>
+								<Text fontSize="xs" fontWeight="bold" color={"var(--nav_color)"}>
 									Conversion rate
 								</Text>
 								<Text mr="3" fontSize={"1.25em"}>
@@ -213,11 +187,7 @@ const SalesReport = () => {
 								display="flex"
 								flexDir="column"
 							>
-								<Text
-									fontSize="xs"
-									fontWeight="bold"
-									color={"var(--nav_color)"}
-								>
+								<Text fontSize="xs" fontWeight="bold" color={"var(--nav_color)"}>
 									Top selling product
 								</Text>
 								<Text mr="3" fontSize={"1.25em"}>
@@ -343,47 +313,45 @@ const SalesReport = () => {
 						</Flex>
 					)}
 
-					{contacts && (
-						<Box overflow="auto" height={"40vh"}>
-							<Table color={"var(--nav_color)"} bg={"var(--primary_bg)"}>
-								<Thead>
-									<Tr fontSize="xs">
-										<Th fontWeight={"bolder"} p={0}>
-											Date
-										</Th>
-										<Th fontWeight={"bolder"}>Deals </Th>
-										<Th fontWeight={"bolder"}>Amount</Th>
-										<Th fontWeight={"bolder"}>Top Product</Th>
-										<Th p={0}></Th>
+					<Box overflow="auto" height={"40vh"}>
+						<Table color={"var(--nav_color)"} bg={"var(--primary_bg)"}>
+							<Thead>
+								<Tr fontSize="xs">
+									<Th fontWeight={"bolder"} p={0}>
+										Date
+									</Th>
+									<Th fontWeight={"bolder"}>Deals </Th>
+									<Th fontWeight={"bolder"}>Amount</Th>
+									<Th fontWeight={"bolder"}>Top Product</Th>
+									<Th p={0}></Th>
+								</Tr>
+							</Thead>
+							<Tbody color={"var(--nav_color)"}>
+								{contacts?.slice(0, 20)?.map((contact) => (
+									<Tr key={contact._id}>
+										<Td fontSize={"xs"} p={0}>
+											04/02/2024
+										</Td>
+										<Td fontSize={"xs"}>{contact.companyName}</Td>
+										<Td fontSize={"xs"}>$345</Td>
+										<Td fontSize={"xs"}>Product1</Td>
+										<Td fontSize={"xs"} p={0}>
+											<HStack>
+												<Button
+													bgGradient="linear-gradient(58deg, rgb(115 70 236) 0%, rgb(136 107 217) 43%, rgb(50 240 218) 100%)"
+													bgClip="text"
+													size={"xxs"}
+												>
+													See details
+													<RightIconButton />
+												</Button>
+											</HStack>
+										</Td>
 									</Tr>
-								</Thead>
-								<Tbody color={"var(--nav_color)"}>
-									{contacts.map((contact, index) => (
-										<Tr key={contact._id}>
-											<Td fontSize={"xs"} p={0}>
-												04/02/2024
-											</Td>
-											<Td fontSize={"xs"}>{contact.companyName}</Td>
-											<Td fontSize={"xs"}>$345</Td>
-											<Td fontSize={"xs"}>Product1</Td>
-											<Td fontSize={"xs"} p={0}>
-												<HStack>
-													<Button
-														bgGradient="linear-gradient(58deg, rgb(115 70 236) 0%, rgb(136 107 217) 43%, rgb(50 240 218) 100%)"
-														bgClip="text"
-														size={"xxs"}
-													>
-														See details
-														<RightIconButton />
-													</Button>
-												</HStack>
-											</Td>
-										</Tr>
-									))}
-								</Tbody>
-							</Table>
-						</Box>
-					)}
+								))}
+							</Tbody>
+						</Table>
+					</Box>
 				</Box>
 			</Flex>
 		</PageLayout>
