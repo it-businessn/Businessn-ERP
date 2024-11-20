@@ -32,7 +32,7 @@ const Activities = () => {
 	const [logType, setLogType] = useState(null);
 	const [userActivities, setUserActivities] = useState(null);
 
-	const employees = useSalesAgentData(company);
+	const employees = useSalesAgentData(company, false, true);
 
 	const [selectedUser, setSelectedUser] = useState(loggedInUser);
 
@@ -49,9 +49,10 @@ const Activities = () => {
 				console.error(error);
 			}
 		};
-
-		fetchAllContacts();
-	}, [company, refresh]);
+		if (showSelectCustomer) {
+			fetchAllContacts();
+		}
+	}, [showSelectCustomer, refresh]);
 
 	useEffect(() => {
 		const fetchAllUserActivities = async () => {
