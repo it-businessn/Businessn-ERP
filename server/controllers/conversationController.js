@@ -25,10 +25,7 @@ const createConversationTwoUsers = async (req, res) => {
 	const { userId1, userId2, text } = req.body;
 	try {
 		let existingConversation = await Conversation.findOne({
-			$or: [
-				{ participants: [userId1, userId2] },
-				{ participants: [userId2, userId1] },
-			],
+			$or: [{ participants: [userId1, userId2] }, { participants: [userId2, userId1] }],
 			conversationType: "one-on-one",
 		});
 		if (!existingConversation) {
@@ -103,7 +100,9 @@ const getGroupMessages = async (req, res) => {
 	try {
 		const conversation = await Conversation.find({
 			groupName,
-		}).populate("groupMessages");
+		})
+			.populate("groupMessages")
+			.select("groupMessages");
 		if (!conversation) {
 			return res.status(404).json({ error: "Conversation not found" });
 		}
@@ -136,9 +135,7 @@ const getConversationHistory = async (req, res) => {
 				select: "fullName",
 			});
 
-			const result = groupConversations.groupMessages.sort(
-				(a, b) => a.timestamp - b.timestamp,
-			);
+			const result = groupConversations.groupMessages.sort((a, b) => a.timestamp - b.timestamp);
 
 			return res.status(200).json(result);
 		}
@@ -154,9 +151,7 @@ const getConversationHistory = async (req, res) => {
 				select: "fullName",
 			},
 		]);
-		const result = oneToOneConversations.messages.sort(
-			(a, b) => a.timestamp - b.timestamp,
-		);
+		const result = oneToOneConversations.messages.sort((a, b) => a.timestamp - b.timestamp);
 
 		return res.status(200).json(result);
 	} catch (error) {
@@ -172,11 +167,7 @@ const getConversationByParticipants = async (
 	populate,
 ) => {
 	return await Conversation.find({
-		$and: [
-			{ participants: { $all: [participants] } },
-			{ conversationType },
-			{ companyName },
-		],
+		$and: [{ participants: { $all: [participants] } }, { conversationType }, { companyName }],
 	})
 		.populate({
 			path,
@@ -245,11 +236,10 @@ const getOneToOneConversation = async (req, res) => {
 		// 	"groupName",
 		// );
 		const oneToOneConversations = await Conversation.find({
-			$and: [
-				{ participants: { $all: [userId1, userId2] } },
-				{ conversationType: "one-on-one" },
-			],
-		}).populate("messages");
+			$and: [{ participants: { $all: [userId1, userId2] } }, { conversationType: "one-on-one" }],
+		})
+			.populate("messages")
+			.select("messages");
 		res.status(200).json(oneToOneConversations);
 	} catch (error) {
 		res.status(404).json({ error: error.message });
@@ -305,9 +295,7 @@ const createGroupMessages = async (req, res) => {
 		const conversation = await Conversation.findById(id);
 
 		if (!sender || !conversation) {
-			return res
-				.status(404)
-				.json({ error: "Sender or conversation group not found" });
+			return res.status(404).json({ error: "Sender or conversation group not found" });
 		}
 
 		if (conversation.conversationType !== "group") {

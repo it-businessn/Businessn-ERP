@@ -21,9 +21,7 @@ import UserService from "services/UserService";
 import Conversation from "./Conversation";
 
 const Communications = ({ isDashboard }) => {
-	const { company } = useCompany(
-		LocalStorageService.getItem("selectedCompany"),
-	);
+	const { company } = useCompany(LocalStorageService.getItem("selectedCompany"));
 	const loggedInUser = LocalStorageService.getItem("user");
 	const [conversations, setConversations] = useState([]);
 	const [groups, setGroups] = useState(null);
@@ -45,9 +43,7 @@ const Communications = ({ isDashboard }) => {
 						member.baseModule = response.data[0].modules;
 						member.group = response.data[0].name;
 					});
-					setGroupMembers(
-						response.data[0].members.filter((member) => member._id !== userId),
-					);
+					setGroupMembers(response.data[0].members.filter((member) => member._id !== userId));
 					setSelectedGroup(response.data[0]);
 				}
 			} catch (error) {
@@ -95,10 +91,7 @@ const Communications = ({ isDashboard }) => {
 					<Stack justify="start" width="full" my={0} spacing={0}>
 						<VStack align="stretch" spacing={0}>
 							{(!groups || groups.length === 0) && (
-								<TextTitle
-									title={"No group assigned for you."}
-									whiteSpace="pre-wrap"
-								/>
+								<TextTitle title={"No group assigned for you."} whiteSpace="pre-wrap" />
 							)}
 							{groups?.map((group) => (
 								<HStack
@@ -129,7 +122,7 @@ const Communications = ({ isDashboard }) => {
 										}
 										fontSize="xs"
 									>
-										<Text fontWeight="bold">{group?.name}</Text>
+										<TextTitle title={group?.name} />
 									</Button>
 								</HStack>
 							))}
@@ -155,10 +148,7 @@ const Communications = ({ isDashboard }) => {
 									<HStack
 										key={member._id}
 										spacing={"1em"}
-										bg={
-											selectedGroupMember?._id === member._id &&
-											"var(--bg_color_1)"
-										}
+										bg={selectedGroupMember?._id === member._id && "var(--bg_color_1)"}
 										px={"1em"}
 										py={"0.5em"}
 										cursor="pointer"
@@ -170,12 +160,7 @@ const Communications = ({ isDashboard }) => {
 									>
 										<Avatar src={member?.fullName} name={member?.fullName} />
 
-										<Button
-											justifyContent={"space-between"}
-											p={0}
-											variant="ghost"
-											fontSize="xs"
-										>
+										<Button justifyContent={"space-between"} p={0} variant="ghost" fontSize="xs">
 											<VStack align={"self-start"}>
 												<Text fontWeight="bold">{member?.fullName}</Text>
 												<NormalTextTitle

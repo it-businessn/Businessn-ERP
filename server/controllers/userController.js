@@ -170,7 +170,7 @@ const getAllGroupMembers = () => async (req, res) => {
 		const group = await Group.find({
 			"members._id": memberId,
 			companyName,
-		});
+		}).select("name modules members");
 		res.status(200).json(group);
 	} catch (error) {
 		res.status(404).json({ error: error.message });
