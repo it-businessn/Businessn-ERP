@@ -78,7 +78,7 @@ const getOpportunityNames = async (req, res) => {
 	const { companyName } = req.params;
 	try {
 		const leads = await Lead.find({ companyName })
-			.select("_id opportunityName")
+			.select("opportunityName")
 			.sort({ createdOn: -1 });
 		res.status(200).json(leads);
 	} catch (error) {
