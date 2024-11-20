@@ -1,48 +1,57 @@
 import { SimpleGrid } from "@chakra-ui/react";
 import PageLayout from "layouts/PageLayout";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import "react-big-calendar/lib/css/react-big-calendar.css";
-import CalendarService from "services/CalendarService";
 import LocationGraph from "./charts/LocationGraph";
 import ProjectOverview from "./charts/ProjectOverview";
 import StaffOverview from "./charts/StaffOverview";
 import StatsCard from "./charts/StatsCard";
 
 const SchedulingDashboard = () => {
-	const [events, setEvents] = useState(null);
-	const [meetings, setMeetings] = useState(null);
-	const [appointments, setAppointments] = useState(null);
+	// const { company } = useCompany();
+	// const [events, setEvents] = useState(null);
+	// const [meetings, setMeetings] = useState(null);
+	// const [appointments, setAppointments] = useState(null);
 	const [isRefresh, setIsRefresh] = useState(false);
 
-	useEffect(() => {
-		const fetchAllEvents = async () => {
-			try {
-				const response = await CalendarService.getEventsByType("event");
-				setEvents(response.data);
-			} catch (error) {
-				console.error(error);
-			}
-		};
-		const fetchAllMeetings = async () => {
-			try {
-				const response = await CalendarService.getEventsByType("meeting");
-				setMeetings(response.data);
-			} catch (error) {
-				console.error(error);
-			}
-		};
-		const fetchAllAppointments = async () => {
-			try {
-				const response = await CalendarService.getEventsByType("phoneCall");
-				setAppointments(response.data);
-			} catch (error) {
-				console.error(error);
-			}
-		};
-		fetchAllEvents();
-		fetchAllMeetings();
-		fetchAllAppointments();
-	}, [isRefresh]);
+	// useEffect(() => {
+	// 	const fetchAllEvents = async () => {
+	// 		try {
+	// 			const response = await CalendarService.getEventsByType({
+	// 				type: "event",
+	// 				company,
+	// 			});
+	// 			setEvents(response.data);
+	// 		} catch (error) {
+	// 			console.error(error);
+	// 		}
+	// 	};
+	// 	const fetchAllMeetings = async () => {
+	// 		try {
+	// 			const response = await CalendarService.getEventsByType({
+	// 				type: "meeting",
+	// 				company,
+	// 			});
+	// 			setMeetings(response.data);
+	// 		} catch (error) {
+	// 			console.error(error);
+	// 		}
+	// 	};
+	// 	const fetchAllAppointments = async () => {
+	// 		try {
+	// 			const response = await CalendarService.getEventsByType({
+	// 				type: "phoneCall",
+	// 				company,
+	// 			});
+	// 			setAppointments(response.data);
+	// 		} catch (error) {
+	// 			console.error(error);
+	// 		}
+	// 	};
+	// 	fetchAllEvents();
+	// 	fetchAllMeetings();
+	// 	fetchAllAppointments();
+	// }, [isRefresh]);
 
 	// const STATS = [
 	// 	{

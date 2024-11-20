@@ -1,3 +1,4 @@
+const Employee = require("../models/Employee");
 const Event = require("../models/Event");
 
 const getEvents = async (req, res) => {
@@ -14,6 +15,24 @@ const getCompanyEvents = async (req, res) => {
 
 	try {
 		const events = await Event.find({ companyName }).sort({
+			createdOn: -1,
+		});
+		res.status(200).json(events);
+	} catch (error) {
+		res.status(404).json({ error: error.message });
+	}
+};
+
+const getUserEvent = async (req, res) => {
+	const { eventType, userName, companyName } = req.params;
+	try {
+		const user = await Employee.findOne({ fullName: userName }).select("_id");
+		const events = await Event.find({
+			eventType,
+			companyName,
+			meetingAttendees: userName,
+			createdBy: user._id,
+		}).sort({
 			createdOn: -1,
 		});
 		res.status(200).json(events);
@@ -88,4 +107,5 @@ module.exports = {
 	getEvent,
 	updateEvent,
 	getCompanyEvents,
+	getUserEvent,
 };

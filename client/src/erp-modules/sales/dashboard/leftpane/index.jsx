@@ -53,58 +53,49 @@ const LeftPane = ({ selectedUser, setStats, company, user }) => {
 			}
 		};
 
-		const fetchAllEvents = async () => {
+		fetchAllOpportunities();
+	}, []);
+
+	useEffect(() => {
+		const fetchAllUserEvents = async () => {
 			try {
-				const response = await CalendarService.getEventsByType({
+				const response = await CalendarService.getUserEventsByType({
 					type: "event",
-					name: company,
+					name: selectedUser?.fullName,
+					company,
 				});
-				const userEvents = response.data.filter(
-					(_) =>
-						_.meetingAttendees.includes(selectedUser.fullName) ||
-						_.createdBy === selectedUser._id,
-				);
-				setEvents(userEvents);
+				setEvents(response.data);
 				setStatInfo("Events", response.data.length);
 			} catch (error) {
 				console.error(error);
 			}
 		};
-		const fetchAllMeetings = async () => {
+		const fetchAllUserMeetings = async () => {
 			try {
-				const response = await CalendarService.getEventsByType({
+				const response = await CalendarService.getUserEventsByType({
 					type: "meeting",
-					name: company,
+					name: selectedUser?.fullName,
+					company,
 				});
-				const userMeetings = response.data.filter(
-					(_) =>
-						_.meetingAttendees.includes(selectedUser.fullName) ||
-						_.createdBy === selectedUser._id,
-				);
-				setMeetings(userMeetings);
+				setMeetings(response.data);
 				setStatInfo("Meetings", response.data.length);
 			} catch (error) {
 				console.error(error);
 			}
 		};
-		const fetchAllAppointments = async () => {
+		const fetchAllUserAppointments = async () => {
 			try {
-				const response = await CalendarService.getEventsByType({
+				const response = await CalendarService.getUserEventsByType({
 					type: "phoneCall",
-					name: company,
+					name: selectedUser?.fullName,
+					company,
 				});
-				const userAppointments = response.data.filter(
-					(_) =>
-						_.meetingAttendees.includes(selectedUser.fullName) ||
-						_.createdBy === selectedUser._id,
-				);
-				setAppointments(userAppointments);
+				setAppointments(response.data);
 				setStatInfo("Appointments", response.data.length);
 			} catch (error) {
 				console.error(error);
 			}
 		};
-
 		const fetchAllUserTasks = async () => {
 			try {
 				const response = await TaskService.getTaskByAssignee({
@@ -118,10 +109,9 @@ const LeftPane = ({ selectedUser, setStats, company, user }) => {
 		};
 
 		fetchAllUserTasks();
-		fetchAllAppointments();
-		fetchAllEvents();
-		fetchAllMeetings();
-		fetchAllOpportunities();
+		fetchAllUserAppointments();
+		fetchAllUserEvents();
+		fetchAllUserMeetings();
 	}, [isRefresh, selectedUser, company]);
 
 	useEffect(() => {

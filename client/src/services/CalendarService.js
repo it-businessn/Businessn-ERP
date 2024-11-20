@@ -10,7 +10,11 @@ const CalendarService = {
 	},
 
 	async getEventsByType(data) {
-		return apiService.get(`/events/${data.type}/${data.name}`);
+		return apiService.get(`/events/${data.type}/${data.company}`);
+	},
+
+	async getUserEventsByType(data) {
+		return apiService.get(`/events/${data.type}/${data.name}/${data.company}`);
 	},
 
 	async addEvent(data) {

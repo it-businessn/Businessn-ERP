@@ -9,6 +9,8 @@ router.get("/:companyName", eventController.getCompanyEvents);
 
 router.get("/:eventType/:companyName", eventController.getEvent);
 
+router.get("/:eventType/:userName/:companyName", eventController.getUserEvent);
+
 router.post("/", eventController.createEvent);
 
 router.put("/:id", eventController.updateEvent);
