@@ -20,20 +20,48 @@ import LeftIconButton from "components/ui/button/LeftIconButton";
 import PrimaryButton from "components/ui/button/PrimaryButton";
 import TextTitle from "components/ui/text/TextTitle";
 import PageLayout from "layouts/PageLayout";
+import { useEffect, useState } from "react";
 import { FaSearch } from "react-icons/fa";
 import { MdOutlineFilterList } from "react-icons/md";
 import { useBreakpointValue } from "services/Breakpoint";
-import { generateLighterShade, toCapitalize } from "utils";
+import ContactService from "services/ContactService";
+import { generateLighterShade, isManager, toCapitalize } from "utils";
 import SearchFilter from "../lead docket/SearchFilter";
 import AddNewOpportunity from "../opportunities/AddNewOpportunity";
 
-const CustomersList = ({ contacts, handleProfileView, icons, setIsAdded, company }) => {
+const CustomersList = ({ user, handleProfileView, icons, company }) => {
+	const [contacts, setContacts] = useState(false);
 	const { isMobile } = useBreakpointValue();
+	const [isAdded, setIsAdded] = useState(false);
+
 	const handleEdit = (id) => {
 		console.log(id);
 	};
 
 	const { isOpen, onOpen, onClose } = useDisclosure();
+	const isUserManager = isManager(user?.role);
+
+	const fetchAllContacts = async () => {
+		try {
+			const response = await ContactService.getCompContacts(company);
+			response.data.map((_) => (_.stage = _.leadId?.stage));
+			const filterContacts = response.data.filter((_) => _.stage === "T4");
+
+			setContacts(
+				isUserManager
+					? filterContacts
+					: filterContacts?.filter(
+							(lead) => lead.leadId.primaryAssignee[0]?.name === user.fullName,
+					  ),
+			);
+		} catch (error) {
+			console.error(error);
+		}
+	};
+
+	useEffect(() => {
+		fetchAllContacts();
+	}, [isAdded]);
 
 	return (
 		<PageLayout width="full" title={"Customers"} showBgLayer>

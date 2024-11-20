@@ -4,7 +4,7 @@ import ActivityService from "services/ActivityService";
 import AddLogForm from "./AddLogForm";
 import LogActivityList from "./LogActivityList";
 
-const Logs = ({ contactId, user, company }) => {
+const Logs = ({ contactId, user, company, currentTab }) => {
 	const [activities, setActivities] = useState([]);
 	const [refresh, setRefresh] = useState(false);
 	const initialFormData = {
@@ -26,16 +26,16 @@ const Logs = ({ contactId, user, company }) => {
 	useEffect(() => {
 		const fetchActivitiesByContactId = async () => {
 			try {
-				const response = await ActivityService.getActivitiesByContactId(
-					contactId,
-				);
+				const response = await ActivityService.getActivitiesByContactId(contactId);
 				setActivities(response.data);
 			} catch (error) {
 				console.error(error);
 			}
 		};
-		fetchActivitiesByContactId();
-	}, [contactId, refresh]);
+		if (currentTab === 1) {
+			fetchActivitiesByContactId();
+		}
+	}, [contactId, refresh, currentTab]);
 
 	const saveActivity = async (activity) => {
 		try {

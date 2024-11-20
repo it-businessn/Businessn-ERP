@@ -6,32 +6,16 @@ import InputFormControl from "components/ui/form/InputFormControl";
 import MultiSelectFormControl from "components/ui/form/MultiSelectFormControl";
 import RadioFormControl from "components/ui/form/RadioFormControl";
 import TextAreaFormControl from "components/ui/form/TextAreaFormControl";
-import { ROLES } from "constant";
+import useGroup from "hooks/useGroup";
 import { useEffect, useState } from "react";
 import "react-datepicker/dist/react-datepicker.css";
 import CalendarService from "services/CalendarService";
-import SettingService from "services/SettingService";
-import UserService from "services/UserService";
 import MeetingList from "./MeetingList";
 
-const Meetings = ({ contactId, user, company }) => {
+const Meetings = ({ contactId, user, company, currentTab }) => {
 	const [openAssigneeMenu, setOpenAssigneeMenu] = useState(false);
-
-	const [attendees, setAttendees] = useState(null);
 	const [meetings, setMeetings] = useState([]);
 	const [refresh, setRefresh] = useState(false);
-
-	useEffect(() => {
-		const fetchAllAttendees = async () => {
-			try {
-				const response = await UserService.getAllUsers();
-				setAttendees(response.data);
-			} catch (error) {
-				console.error(error);
-			}
-		};
-		fetchAllAttendees();
-	}, []);
 
 	const initialFormData = {
 		type: "virtual",
@@ -54,16 +38,16 @@ const Meetings = ({ contactId, user, company }) => {
 	useEffect(() => {
 		const fetchMeetingsByContactId = async () => {
 			try {
-				const response = await CalendarService.getMeetingsByContactId(
-					contactId,
-				);
+				const response = await CalendarService.getMeetingsByContactId(contactId);
 				setMeetings(response.data);
 			} catch (error) {
 				console.error(error);
 			}
 		};
-		fetchMeetingsByContactId();
-	}, [contactId, refresh]);
+		if (currentTab === 2) {
+			fetchMeetingsByContactId();
+		}
+	}, [contactId, refresh, currentTab]);
 
 	const handleSubmit = async () => {
 		try {
@@ -94,29 +78,15 @@ const Meetings = ({ contactId, user, company }) => {
 	const handleMenuToggle = () => {
 		setOpenAssigneeMenu((prev) => !prev);
 	};
-	const [groups, setGroups] = useState(null);
 	const [groupMembers, setGroupMembers] = useState(null);
 
+	const groups = useGroup(company, false, currentTab === 2);
+
 	useEffect(() => {
-		const fetchAllGroups = async () => {
-			try {
-				const response = await SettingService.getAllGroups(company);
-				setGroups(response.data);
-				if (response.data.length) {
-					setGroupMembers(
-						response.data[0].members.filter(
-							({ role }) => role === ROLES.ADMINISTRATOR,
-						),
-					);
-				} else {
-					setGroupMembers(null);
-				}
-			} catch (error) {
-				console.error(error);
-			}
-		};
-		fetchAllGroups();
-	}, []);
+		if (groups) {
+			setGroupMembers(groups[0].members);
+		}
+	}, [groups]);
 
 	const handleGroupChange = (e) => {
 		setFormData((prevData) => ({
@@ -125,11 +95,7 @@ const Meetings = ({ contactId, user, company }) => {
 		}));
 		formData.attendees = [];
 		setSelectedOptions([]);
-		setGroupMembers(
-			groups
-				.find(({ _id }) => _id === e.target.value)
-				.members.filter(({ role }) => role === ROLES.ADMINISTRATOR),
-		);
+		setGroupMembers(groups.find(({ _id }) => _id === e.target.value).members);
 	};
 
 	return (
@@ -153,11 +119,7 @@ const Meetings = ({ contactId, user, company }) => {
 				/>
 				<FormControlMain>
 					<FormLabel>Select Group</FormLabel>
-					<Select
-						name={"group"}
-						value={formData.group}
-						onChange={handleGroupChange}
-					>
+					<Select name={"group"} value={formData.group} onChange={handleGroupChange}>
 						{groups?.map(({ name, _id }) => (
 							<option key={_id} value={_id}>
 								{name}

@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import NotesService from "services/NotesService";
 import { longTimeFormat } from "utils";
 
-const Notes = ({ contactId, user, company }) => {
+const Notes = ({ contactId, user, company, currentTab }) => {
 	const [notes, setNotes] = useState([]);
 	const [newNote, setNewNote] = useState({
 		description: "",
@@ -26,8 +26,10 @@ const Notes = ({ contactId, user, company }) => {
 				console.error(error);
 			}
 		};
-		fetchNotesByContactId();
-	}, [contactId, refresh]);
+		if (currentTab === 0) {
+			fetchNotesByContactId();
+		}
+	}, [contactId, refresh, currentTab]);
 
 	const saveNote = async (note) => {
 		try {
@@ -73,11 +75,7 @@ const Notes = ({ contactId, user, company }) => {
 					<Card key={_id} borderWidth="1px" borderRadius="lg" w="100%">
 						<CardBody>
 							<Flex justifyContent="space-between">
-								<NormalTextTitle
-									whiteSpace="wrap"
-									width="80%"
-									title={description}
-								/>
+								<NormalTextTitle whiteSpace="wrap" width="80%" title={description} />
 								<NormalTextTitle
 									size="sm"
 									// title={moment(createdOn).format("MMM DD, YYYY hh:mm A Z")}

@@ -12,8 +12,8 @@ import Notes from "./notes/Notes";
 
 const Contacts = ({ setViewProfile, selectedContact, company, user }) => {
 	const { id, comp } = useParams();
-
 	const [contact, setContact] = useState(null);
+
 	const fetchContacts = async () => {
 		const activeContact = selectedContact || id;
 		try {
@@ -45,13 +45,23 @@ const Contacts = ({ setViewProfile, selectedContact, company, user }) => {
 		{
 			name: "Notes",
 			component: (
-				<Notes user={user} contactId={contact?._id} company={company} />
+				<Notes
+					currentTab={currentTab}
+					user={user}
+					contactId={selectedContact || id}
+					company={comp || company}
+				/>
 			),
 		},
 		{
 			name: "Logs",
 			component: (
-				<Logs user={user} contactId={contact?._id} company={company} />
+				<Logs
+					currentTab={currentTab}
+					user={user}
+					contactId={selectedContact || id}
+					company={comp || company}
+				/>
 			),
 		},
 		// {
@@ -63,7 +73,12 @@ const Contacts = ({ setViewProfile, selectedContact, company, user }) => {
 		{
 			name: "Meetings",
 			component: (
-				<Meetings user={user} contactId={contact?._id} company={company} />
+				<Meetings
+					currentTab={currentTab}
+					user={user}
+					contactId={selectedContact || id}
+					company={comp || company}
+				/>
 			),
 		},
 	];
@@ -133,10 +148,7 @@ const Contacts = ({ setViewProfile, selectedContact, company, user }) => {
 							)}
 						</Popover> */}
 					{contact && (
-						<ContactDetailsInfo
-							contact={contact?.leadId}
-							showLogForm={handleButtonClick}
-						/>
+						<ContactDetailsInfo contact={contact?.leadId} showLogForm={handleButtonClick} />
 					)}
 				</Box>
 				<Box bg="var(--lead_cards_bg)" w={"100%"}>

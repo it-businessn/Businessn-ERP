@@ -74,9 +74,7 @@ const SelectCustomer = ({
 	const [isSubmitting, setSubmitting] = useState(false);
 	const handleSubmit = async (e) => {
 		e.preventDefault();
-		formData.abbreviation = `${formData.name
-			.replace(" ", "_")
-			.toUpperCase()}${today}`;
+		formData.abbreviation = `${formData.name.replace(" ", "_").toUpperCase()}${today}`;
 		formData.opportunityName = formData.abbreviation;
 
 		setSubmitting(true);
@@ -106,12 +104,7 @@ const SelectCustomer = ({
 	};
 
 	return (
-		<ModalLayout
-			title={"Log activity"}
-			size="sm"
-			isOpen={showSelectCustomer}
-			onClose={handleClose}
-		>
+		<ModalLayout title={"Log activity"} size="sm" isOpen={showSelectCustomer} onClose={handleClose}>
 			{!isDashboard && (
 				<RadioFormControl
 					label={"Select Contact Type"}
@@ -147,11 +140,7 @@ const SelectCustomer = ({
 						handleChange={handleChange}
 						required
 					/>
-					<ActionButtonGroup
-						submitBtnName={"Add"}
-						isLoading={isSubmitting}
-						onClose={handleClose}
-					/>
+					<ActionButtonGroup submitBtnName={"Add"} isLoading={isSubmitting} onClose={handleClose} />
 				</form>
 			) : (
 				customer && (
@@ -159,13 +148,9 @@ const SelectCustomer = ({
 						icon={<FaCaretDown />}
 						borderRadius="10px"
 						size="sm"
-						placeholder={
-							data?.length === 0
-								? "No contacts found"
-								: "Select existing contact"
-						}
+						placeholder={data?.length === 0 ? "No contacts found" : "Select existing contact"}
 						name="name"
-						value={lead}
+						value={lead || ""}
 						onChange={handleLead}
 					>
 						{data?.map((item) => (
