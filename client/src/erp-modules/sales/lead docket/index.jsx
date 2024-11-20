@@ -32,7 +32,7 @@ import { useNavigate } from "react-router";
 import { useBreakpointValue } from "services/Breakpoint";
 import LeadsService from "services/LeadsService";
 import LocalStorageService from "services/LocalStorageService";
-import { formatDate, toCapitalize } from "utils";
+import { formatDate } from "utils";
 import AddOpportunity from "./AddOpportunity";
 import Caption from "./Caption";
 import Disburse from "./Disburse";
@@ -41,9 +41,7 @@ import SearchFilter from "./SearchFilter";
 import { LEAD_DOCKET_COLUMNS } from "./data";
 
 const LeadsDocket = () => {
-	const { company } = useCompany(
-		LocalStorageService.getItem("selectedCompany"),
-	);
+	const { company } = useCompany(LocalStorageService.getItem("selectedCompany"));
 	const { isMobile, isIpad } = useBreakpointValue();
 	const [leads, setLeads] = useState(null);
 	const [allLeadIDs, setAllLeadIDs] = useState([]);
@@ -52,6 +50,21 @@ const LeadsDocket = () => {
 	const [isRefresh, setIsRefresh] = useState(false);
 	const [deleteRecord, setDeleteRecord] = useState(false);
 	const [showConfirmationPopUp, setShowConfirmationPopUp] = useState(false);
+	const [refresh, setRefresh] = useState(false);
+	const [companies, setCompanies] = useState(null);
+
+	useEffect(() => {
+		const fetchAllCompanies = async () => {
+			try {
+				const response = await LeadsService.getLeadCompanies(company);
+				setCompanies(response.data);
+			} catch (error) {
+				console.error(error);
+			}
+		};
+
+		fetchAllCompanies();
+	}, [refresh]);
 
 	const fetchAllLeads = async () => {
 		try {
@@ -135,6 +148,15 @@ const LeadsDocket = () => {
 	const handleClose = () => {
 		setShowConfirmationPopUp((prev) => !prev);
 	};
+	const AddOpportunityForm = () => (
+		<AddOpportunity
+			data={data}
+			setData={setData}
+			company={company}
+			companies={companies}
+			setRefresh={setRefresh}
+		/>
+	);
 
 	return (
 		<PageLayout width="full" title={"Lead Docket"} showBgLayer>
@@ -142,27 +164,21 @@ const LeadsDocket = () => {
 				<Flex flexDir="column">
 					<Flex justify="space-between">
 						<Caption title={"Lead Docket"} />
-						<Disburse
-							checkedRows={checkedRows}
-							handleDisburse={handleDisburse}
-						/>
+						<Disburse checkedRows={checkedRows} handleDisburse={handleDisburse} />
 					</Flex>
 					<Region />
 					<HStack spacing="1em" my="1em">
 						<SearchFilter width={"200px"} />
 					</HStack>
-					<AddOpportunity company={company} data={data} setData={setData} />
+					<AddOpportunityForm />
 				</Flex>
 			) : isIpad ? (
 				<Flex flexDir="column">
 					<Flex gap={3} mb={"1em"}>
 						<Caption title={"Lead Docket"} />
 						<Spacer />
-						<Disburse
-							checkedRows={checkedRows}
-							handleDisburse={handleDisburse}
-						/>
-						<AddOpportunity data={data} setData={setData} company={company} />
+						<Disburse checkedRows={checkedRows} handleDisburse={handleDisburse} />
+						<AddOpportunityForm />
 					</Flex>
 					<Region />
 					<HStack spacing="1em" my="1em">
@@ -175,10 +191,7 @@ const LeadsDocket = () => {
 					<Spacer />
 					<HStack spacing={2}>
 						<Spacer />
-						<Disburse
-							checkedRows={checkedRows}
-							handleDisburse={handleDisburse}
-						/>
+						<Disburse checkedRows={checkedRows} handleDisburse={handleDisburse} />
 						<Region />
 						<LeftIconButton
 							color={"var(--nav_color)"}
@@ -217,7 +230,7 @@ const LeadsDocket = () => {
 								py={"1.1em"}
 							/>
 						</InputGroup>
-						<AddOpportunity data={data} setData={setData} company={company} />
+						<AddOpportunityForm />
 					</HStack>
 				</HStack>
 			)}
@@ -231,10 +244,7 @@ const LeadsDocket = () => {
 			>
 				<Tbody>
 					{(!leads || leads?.length === 0) && (
-						<EmptyRowRecord
-							data={leads}
-							colSpan={LEAD_DOCKET_COLUMNS?.length}
-						/>
+						<EmptyRowRecord data={leads} colSpan={LEAD_DOCKET_COLUMNS?.length} />
 					)}
 					{leads?.map(
 						({
@@ -269,6 +279,7 @@ const LeadsDocket = () => {
 										width="250px"
 										size="sm"
 										whiteSpace="wrap"
+										textTransform={"capitalize"}
 										title={opportunityName}
 									/>
 								</Td>
@@ -277,42 +288,25 @@ const LeadsDocket = () => {
 										width="200px"
 										size="sm"
 										whiteSpace="wrap"
-										title={toCapitalize(name)}
+										textTransform={"capitalize"}
+										title={name}
 									/>
 								</Td>
 								<Td p={0.5}>
-									<SelectList
-										code="name"
-										selectedValue={region}
-										data={REGIONS}
-									/>
+									<SelectList code="name" selectedValue={region} data={REGIONS} />
 								</Td>
 								<Td p={0.5}>
-									<SelectList
-										code="name"
-										selectedValue={industry}
-										data={INDUSTRIES}
-									/>
+									<SelectList code="name" selectedValue={industry} data={INDUSTRIES} />
 								</Td>
 								<Td p={0.5}>
-									<SelectList
-										code="name"
-										selectedValue={productService}
-										data={PRODUCTS_SERVICES}
-									/>
+									<SelectList code="name" selectedValue={productService} data={PRODUCTS_SERVICES} />
 								</Td>
 								<Td p={0.5}>
-									<SelectList
-										code="name"
-										selectedValue={source}
-										data={LEAD_SOURCES}
-									/>
+									<SelectList code="name" selectedValue={source} data={LEAD_SOURCES} />
 								</Td>
-								<Td p={0.5}>{`${address?.streetNumber || ""} ${
-									address?.city || ""
-								} ${address?.state || ""} ${address?.country || ""} ${
-									address?.postalCode || ""
-								}`}</Td>
+								<Td p={0.5}>{`${address?.streetNumber || ""} ${address?.city || ""} ${
+									address?.state || ""
+								} ${address?.country || ""} ${address?.postalCode || ""}`}</Td>
 								<Td p={0.5}>{formatDate(createdOn)}</Td>
 								<Td textAlign={"center"}>
 									<FaRegTrashAlt

@@ -2,11 +2,11 @@ import { Button } from "@chakra-ui/react";
 import { COLORS } from "erp-modules/project-management/workview/project/data";
 import { generateLighterShade } from "utils";
 
-const Disburse = ({ leads, checkedRows, handleDisburse }) => {
+const Disburse = ({ isDisabled, handleDisburse }) => {
 	return (
 		<Button
 			w={{ lg: "200px" }}
-			isDisabled={leads?.length === 0 || checkedRows?.length === 0}
+			isDisabled={isDisabled}
 			bg={generateLighterShade(COLORS.primary, 0.9)}
 			color={"var(--primary_button_bg)"}
 			variant={"outlined"}

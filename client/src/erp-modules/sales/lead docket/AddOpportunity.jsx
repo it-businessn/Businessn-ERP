@@ -5,7 +5,7 @@ import { SiMicrosoftexcel } from "react-icons/si";
 import * as XLSX from "xlsx";
 import AddNewOpportunity from "../opportunities/AddNewOpportunity";
 
-const AddOpportunity = ({ data, setData, company }) => {
+const AddOpportunity = ({ data, setData, company, companies, setRefresh }) => {
 	const fileInputRef = useRef(null);
 
 	const toast = useToast();
@@ -31,9 +31,7 @@ const AddOpportunity = ({ data, setData, company }) => {
 				try {
 					const workbook = XLSX.read(e.target.result, { type: "binary" });
 					const sheetName = workbook.SheetNames[0];
-					const excelData = XLSX.utils.sheet_to_json(
-						workbook.Sheets[sheetName],
-					);
+					const excelData = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName]);
 					const formattedData = excelData.map((row) => ({
 						...row,
 						selected: false,
@@ -102,6 +100,8 @@ const AddOpportunity = ({ data, setData, company }) => {
 					isOpen={isOpen}
 					onClose={onClose}
 					company={company}
+					companies={companies}
+					setRefresh={setRefresh}
 				/>
 			)}
 		</HStack>

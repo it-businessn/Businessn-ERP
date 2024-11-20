@@ -22,8 +22,10 @@ const TextTitle = ({
 	borderRadius,
 	mr,
 	cursor,
+	textTransform,
 }) => (
 	<Text
+		textTransform={textTransform}
 		cursor={cursor}
 		mr={mr}
 		onClick={onClick}

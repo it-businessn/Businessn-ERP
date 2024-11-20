@@ -107,7 +107,7 @@ const getDisbursedLeads = async (req, res) => {
 				companyName,
 				isDisbursed: true,
 				isDisbursedConfirmed: false,
-			})
+			}).select("_id")
 		).sort((a, b) => b.createdOn - a.createdOn);
 		res.status(200).json(leads);
 	} catch (error) {

@@ -19,13 +19,16 @@ import HighlightButton from "components/ui/button/HighlightButton";
 import LeftIconButton from "components/ui/button/LeftIconButton";
 import PrimaryButton from "components/ui/button/PrimaryButton";
 import TextTitle from "components/ui/text/TextTitle";
+import useManager from "hooks/useManager";
+import useSalesAgentData from "hooks/useSalesAgentData";
 import PageLayout from "layouts/PageLayout";
 import { useEffect, useState } from "react";
 import { FaSearch } from "react-icons/fa";
 import { MdOutlineFilterList } from "react-icons/md";
 import { useBreakpointValue } from "services/Breakpoint";
 import ContactService from "services/ContactService";
-import { generateLighterShade, isManager, toCapitalize } from "utils";
+import LeadsService from "services/LeadsService";
+import { generateLighterShade, isManager } from "utils";
 import SearchFilter from "../lead docket/SearchFilter";
 import AddNewOpportunity from "../opportunities/AddNewOpportunity";
 
@@ -33,6 +36,24 @@ const CustomersList = ({ user, handleProfileView, icons, company }) => {
 	const [contacts, setContacts] = useState(false);
 	const { isMobile } = useBreakpointValue();
 	const [isAdded, setIsAdded] = useState(false);
+
+	const [refresh, setRefresh] = useState(false);
+	const assignees = useSalesAgentData(company, false, true);
+	const managers = useManager(company);
+	const [companies, setCompanies] = useState(null);
+
+	useEffect(() => {
+		const fetchAllCompanies = async () => {
+			try {
+				const response = await LeadsService.getLeadCompanies(company);
+				setCompanies(response.data);
+			} catch (error) {
+				console.error(error);
+			}
+		};
+
+		fetchAllCompanies();
+	}, [refresh]);
 
 	const handleEdit = (id) => {
 		console.log(id);
@@ -137,10 +158,12 @@ const CustomersList = ({ user, handleProfileView, icons, company }) => {
 						<Tbody color={"var(--nav_color)"}>
 							{contacts.map(({ _id, leadId, meetings, notes }) => (
 								<Tr key={_id}>
-									<Td fontSize={"xs"} p={0}>
+									<Td fontSize={"xs"} p={0} textTransform={"capitalize"}>
 										{leadId.opportunityName}
 									</Td>
-									<Td fontSize={"xs"}>{toCapitalize(leadId.name)}</Td>
+									<Td fontSize={"xs"} textTransform={"capitalize"}>
+										{leadId.name}
+									</Td>
 									<Td fontSize={"xs"}>{leadId.email}</Td>
 									<Td fontSize={"xs"}>
 										<Flex align="center">
@@ -208,6 +231,10 @@ const CustomersList = ({ user, handleProfileView, icons, company }) => {
 					isOpen={isOpen}
 					onClose={() => onClose()}
 					company={company}
+					assignees={assignees}
+					managers={managers}
+					companies={companies}
+					setRefresh={setRefresh}
 				/>
 			)}
 		</PageLayout>

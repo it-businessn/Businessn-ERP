@@ -1,12 +1,4 @@
-import {
-	Box,
-	Card,
-	Divider,
-	HStack,
-	Icon,
-	Text,
-	VStack,
-} from "@chakra-ui/react";
+import { Box, Card, Divider, HStack, Icon, Text, VStack } from "@chakra-ui/react";
 import OutlineButton from "components/ui/button/OutlineButton";
 import PrimaryButton from "components/ui/button/PrimaryButton";
 import TextTitle from "components/ui/text/TextTitle";
@@ -21,9 +13,7 @@ import ChangePassword from "./ChangePassword";
 import EditUserInfo from "./EditUserInfo";
 
 const UserProfileDetails = () => {
-	const { company } = useCompany(
-		LocalStorageService.getItem("selectedCompany"),
-	);
+	const { company } = useCompany(LocalStorageService.getItem("selectedCompany"));
 	const [userData, setUserData] = useState(LocalStorageService.getItem("user"));
 	const { isMobile } = useBreakpointValue();
 	const [editMode, setEditMode] = useState(false);
@@ -56,8 +46,7 @@ const UserProfileDetails = () => {
 		manager,
 	} = userData || {};
 
-	const { streetNumber, city, state, country, postalCode } =
-		(userData && primaryAddress) || {};
+	const { streetNumber, city, state, country, postalCode } = (userData && primaryAddress) || {};
 
 	const getAddress = primaryAddress
 		? toCapitalize(`${streetNumber} ${city} ${state} ${country} ${postalCode}`)

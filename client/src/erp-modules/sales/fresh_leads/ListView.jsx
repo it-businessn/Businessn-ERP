@@ -6,17 +6,15 @@ import NormalTextTitle from "components/ui/NormalTextTitle";
 import { useState } from "react";
 import { FaRegTrashAlt } from "react-icons/fa";
 import LocalStorageService from "services/LocalStorageService";
-import { isManager, toCapitalize } from "utils";
+import { isManager } from "utils";
 import { LEADS_COLS } from "../lead docket/data";
 import LeadContacts from "./LeadContacts";
 
 export const totalLeads = (name, isManager, leads, userName) => {
 	return isManager
 		? leads?.filter((lead) => lead.stage === name).length
-		: leads?.filter(
-				(lead) =>
-					lead.stage === name && lead.primaryAssignee[0]?.name === userName,
-		  ).length;
+		: leads?.filter((lead) => lead.stage === name && lead.primaryAssignee[0]?.name === userName)
+				.length;
 };
 
 const ListView = ({
@@ -92,6 +90,7 @@ const ListView = ({
 										width="250px"
 										size="sm"
 										whiteSpace="wrap"
+										textTransform={"capitalize"}
 										title={_.opportunityName}
 									/>
 								</Td>
@@ -100,7 +99,8 @@ const ListView = ({
 										width="200px"
 										size="sm"
 										whiteSpace="wrap"
-										title={toCapitalize(_.name)}
+										textTransform={"capitalize"}
+										title={_.name}
 									/>
 								</Td>
 								<Td py={0.5}>{_.email}</Td>

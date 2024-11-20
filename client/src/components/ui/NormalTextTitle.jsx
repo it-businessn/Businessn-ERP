@@ -15,8 +15,10 @@ const NormalTextTitle = ({
 	textDecoration,
 	onClick,
 	cursor,
+	textTransform,
 }) => (
 	<TextTitle
+		textTransform={textTransform}
 		onClick={onClick}
 		weight={weight}
 		bg={bg}

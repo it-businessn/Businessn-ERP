@@ -42,9 +42,7 @@ export const generateLighterShade = (color, factor) => {
 	};
 
 	const rgbToHex = (rgb) => {
-		return `#${rgb
-			.map((value) => `0${value.toString(16)}`.slice(-2))
-			.join("")}`;
+		return `#${rgb.map((value) => `0${value.toString(16)}`.slice(-2)).join("")}`;
 	};
 
 	const lightenColor = (color, factor) => {
@@ -60,8 +58,7 @@ export const generateLighterShade = (color, factor) => {
 	return lightenColor(color, factor);
 };
 
-export const toCapitalize = (str) =>
-	str?.replace(/\b\w/g, (match) => match.toUpperCase());
+export const toCapitalize = (str) => str?.replace(/\b\w/g, (match) => match.toUpperCase());
 
 const todayDate = moment();
 
@@ -77,17 +74,13 @@ export const getMomentDateISO = (date) => moment(date).toISOString();
 
 export const isSameAsToday = (date) => moment(date).isSame(new Date(), "day");
 
-export const dayMonthYear = (date) =>
-	moment.utc(date).format("ddd MMM DD, YYYY");
+export const dayMonthYear = (date) => moment.utc(date).format("ddd MMM DD, YYYY");
 
-export const longTimeFormat = (date) =>
-	moment(date).format("MMM DD, YYYY hh:mm A");
+export const longTimeFormat = (date) => moment(date).format("MMM DD, YYYY hh:mm A");
 
-export const longFormat = (date) =>
-	moment.utc(date).format("dddd, D MMMM YYYY");
+export const longFormat = (date) => moment.utc(date).format("dddd, D MMMM YYYY");
 
-export const monthDayYearFormat = (date) =>
-	moment(date).format("MMMM, DD, YYYY");
+export const monthDayYearFormat = (date) => moment(date).format("MMMM, DD, YYYY");
 
 export const mmmDayYearFormat = (date) => moment(date).format("MMM, DD, YYYY");
 
@@ -107,9 +100,7 @@ export const getDefaultTime = (date) => moment(date, "HH:mm").format("hh:mm A");
 
 export const getTimeCardFormat = (timestamp, notDevice, timeSheet) => {
 	const date = notDevice ? moment(timestamp) : moment.utc(timestamp);
-	return timeSheet
-		? date.format("YYYY-MM-DD")
-		: date.format("YYYY-MM-DD  hh:mm A");
+	return timeSheet ? date.format("YYYY-MM-DD") : date.format("YYYY-MM-DD  hh:mm A");
 };
 
 // export const getTimeFormat = (date) => moment.utc(date).format("hh:mm A");
@@ -119,11 +110,7 @@ export const getTimeFormat = (timestamp, notDevice) => {
 };
 
 export const setUTCDate = (date, newDate, notDevice) => {
-	const utcDate = date
-		? notDevice
-			? moment(date)
-			: moment.utc(date)
-		: moment.utc();
+	const utcDate = date ? (notDevice ? moment(date) : moment.utc(date)) : moment.utc();
 
 	let [hours, minutes] = newDate.split(":");
 	utcDate.set({
@@ -172,9 +159,7 @@ export const formatDate = (date) =>
 	});
 
 export const sortRecordsByDate = (records, key) => {
-	const sortedList = records?.sort(
-		(a, b) => new Date(a[key]) - new Date(b[key]),
-	);
+	const sortedList = records?.sort((a, b) => new Date(a[key]) - new Date(b[key]));
 
 	sortedList?.map((record, index) => {
 		const {
@@ -209,8 +194,7 @@ export const generateRandomData = (name, count) => {
 	return data;
 };
 
-export const getDefaultDateTime = (date, time) =>
-	`${date.split("T")[0]}T${time}`;
+export const getDefaultDateTime = (date, time) => `${date.split("T")[0]}T${time}`;
 
 export const getDefaultDate = (isoDate = null) => {
 	const dateObject = isoDate ? new Date(isoDate) : new Date();
@@ -219,16 +203,12 @@ export const getDefaultDate = (isoDate = null) => {
 
 export const getDefaultDateFormat = (date = null) => {
 	const dateObject = date ? new Date(date) : new Date();
-	return `${
-		dateObject.getMonth() + 1
-	}/${dateObject.getDate()}/${dateObject.getFullYear()}`;
+	return `${dateObject.getMonth() + 1}/${dateObject.getDate()}/${dateObject.getFullYear()}`;
 };
 
-export const getAmount = (data) =>
-	`$${data ? Math.abs(data)?.toFixed(2) : 0.0}`;
+export const getAmount = (data) => `$${data ? Math.abs(data)?.toFixed(2) : 0.0}`;
 
-export const timeToDecimal = (hours, minutes = 0) =>
-	(hours + minutes / 60).toFixed(1);
+export const timeToDecimal = (hours, minutes = 0) => (hours + minutes / 60).toFixed(1);
 
 export const isValidPhoneNumber = (phoneNumber) => {
 	const phoneRegex = /^[0-9]{10}$/;
@@ -238,16 +218,11 @@ export const isValidPhoneNumber = (phoneNumber) => {
 export const CircularFillProgress = ({ completionPercentage }) => {
 	completionPercentage = 95;
 	const rotation = completionPercentage * 3.6;
-	const fillColorClass =
-		completionPercentage === 100 ? "fill-complete" : "fill";
-	const clipLeft =
-		completionPercentage <= 50 ? 0 : 100 - completionPercentage * 2;
+	const fillColorClass = completionPercentage === 100 ? "fill-complete" : "fill";
+	const clipLeft = completionPercentage <= 50 ? 0 : 100 - completionPercentage * 2;
 	const clipRight = completionPercentage >= 50 ? 100 : 100 - clipLeft;
 
-	const color =
-		completionPercentage >= 95
-			? "var(--lead_cards_bg)"
-			: "var(--main_color_black)";
+	const color = completionPercentage >= 95 ? "var(--lead_cards_bg)" : "var(--main_color_black)";
 	return (
 		<Box position="relative" width="100px" height="100px">
 			<div className="radial-progress">
@@ -291,21 +266,14 @@ const getProgressColor = (value) =>
 		? "rgb(22 179 83)"
 		: "rgb(3 150 151)";
 
-export const CircularProgressBarCell = ({
-	completionPercentage,
-	size,
-	color,
-	top,
-}) => {
+export const CircularProgressBarCell = ({ completionPercentage, size, color, top }) => {
 	return (
 		<CircularProgress
 			size={size}
 			value={completionPercentage}
 			color={color || getProgressColor(completionPercentage)}
 		>
-			<CircularProgressLabel
-				top={top}
-			>{`${completionPercentage}%`}</CircularProgressLabel>
+			<CircularProgressLabel top={top}>{`${completionPercentage}%`}</CircularProgressLabel>
 		</CircularProgress>
 	);
 };
@@ -339,8 +307,7 @@ export const calculateTaskCompletion = (task) => {
 			}
 		}
 	}
-	const completionPercentage =
-		Math.floor(completedTaskHours / totalTaskHours) * 100 || 0;
+	const completionPercentage = Math.floor(completedTaskHours / totalTaskHours) * 100 || 0;
 	return { totalTaskHours, completedTaskHours, completionPercentage };
 	// const totalSubTasks =
 	// 	task?.subtasks?.length > 0 ? Object.keys(task?.subtasks)?.length : 0;
@@ -360,8 +327,7 @@ export const calculateProjectCompletion = (project) => {
 	let totalHours = 0;
 	let completedHours = 0;
 	for (const task of project.tasks) {
-		const { totalTaskHours, completedTaskHours } =
-			calculateTaskCompletion(task);
+		const { totalTaskHours, completedTaskHours } = calculateTaskCompletion(task);
 
 		totalHours += totalTaskHours;
 		completedHours += completedTaskHours;
@@ -394,9 +360,7 @@ export const TaskButton = ({ totalTasks, onClick, isTask, isExpanded }) => {
 			color={"var(--primary_button_bg)"}
 			border={`1px solid ${generateLighterShade(COLORS.primary, 0.5)}`}
 			bg={generateLighterShade(COLORS.primary, 0.8)}
-			leftIcon={
-				<Icon as={GoTasklist} sx={{ marginRight: "-4px", fontsize: "10px" }} />
-			}
+			leftIcon={<Icon as={GoTasklist} sx={{ marginRight: "-4px", fontsize: "10px" }} />}
 			rightIcon={
 				<Icon
 					as={isExpanded ? FaChevronUp : FaChevronDown}
@@ -501,20 +465,13 @@ export const renderPriorityBars = (priority) => {
 				: priority.toLowerCase() === "medium"
 				? "orange.400"
 				: "rgb(222 222 222)";
-		bars.push(
-			<Box key={i} h="2em" w="10px" bgColor={barColor} borderRadius="2px" />,
-		);
+		bars.push(<Box key={i} h="2em" w="10px" bgColor={barColor} borderRadius="2px" />);
 	}
 
 	return bars;
 };
 
-export const ALL_ROLES = [
-	ROLES.MANAGER,
-	ROLES.EMPLOYEE,
-	ROLES.ADMINISTRATOR,
-	ROLES.ENROLLER,
-];
+export const ALL_ROLES = [ROLES.MANAGER, ROLES.EMPLOYEE, ROLES.ADMINISTRATOR, ROLES.ENROLLER];
 
 export const COVER_COLORS = [
 	"var(--product1)",
@@ -546,9 +503,7 @@ export const timeSpan = (time) => {
 
 	const differenceMs = currentTime - givenTime;
 	const hoursAgo = Math.floor(differenceMs / (1000 * 60 * 60));
-	const minutesAgo = Math.floor(
-		(differenceMs % (1000 * 60 * 60)) / (1000 * 60),
-	);
+	const minutesAgo = Math.floor((differenceMs % (1000 * 60 * 60)) / (1000 * 60));
 	return `${hoursAgo}hr ${minutesAgo}m ago`;
 };
 
@@ -563,10 +518,7 @@ export const calcTotal = (data, param1, param2) => {
 };
 
 export const styleConsole = (value) =>
-	console.log(
-		`%c ${value}`,
-		"color:red;font-weight:bold;background-color:white",
-	);
+	console.log(`%c ${value}`, "color:red;font-weight:bold;background-color:white");
 // "34,456" to 34456
 export const convertToNum = (str) => parseFloat(str.replace(/,/g, ""));
 
@@ -650,8 +602,7 @@ export const getPayrollStatus = (data, prevRecordEndDate) => {
 	}
 };
 
-export const isExtraPay = (payPeriodNum, isExtra) =>
-	isExtra ? `${payPeriodNum}E` : payPeriodNum;
+export const isExtraPay = (payPeriodNum, isExtra) => (isExtra ? `${payPeriodNum}E` : payPeriodNum);
 
 export const toWords = new ToWords({
 	localeCode: "en-US",

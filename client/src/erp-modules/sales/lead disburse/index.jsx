@@ -34,23 +34,12 @@ import Disburse from "./Disburse";
 import { caption, columns, showFilterSearchOption, showRegion } from "./data";
 
 const LeadsDisbursed = () => {
-	const { company } = useCompany(
-		LocalStorageService.getItem("selectedCompany"),
-	);
+	const { company } = useCompany(LocalStorageService.getItem("selectedCompany"));
 	const { isMobile, isIpad } = useBreakpointValue();
 
 	const [activity, setActivity] = useState(null);
 	const [refresh, setRefresh] = useState(false);
 	const agents = useSalesAgentData(company, refresh);
-
-	const fetchAllUserActivity = async () => {
-		try {
-			const response = await UserService.getAllUserActivity();
-			setActivity(response.data);
-		} catch (error) {
-			console.error(error);
-		}
-	};
 
 	const [leads, setLeads] = useState(null);
 	const [checkedRows, setCheckedRows] = useState([]);
@@ -73,6 +62,15 @@ const LeadsDisbursed = () => {
 				console.error(error);
 			}
 		};
+		const fetchAllUserActivity = async () => {
+			try {
+				const response = await UserService.getAllUserActivity();
+				setActivity(response.data);
+			} catch (error) {
+				console.error(error);
+			}
+		};
+
 		fetchAllLeads();
 		fetchAllUserActivity();
 	}, [company]);
@@ -81,11 +79,7 @@ const LeadsDisbursed = () => {
 		if (activity && agents) {
 			agents?.map((agent) => {
 				const user = activity?.find((_) => _.userID === agent._id);
-				agent.lastLoginStatus = user
-					? user?.logoutTime
-						? null
-						: "Is logged In"
-					: "";
+				agent.lastLoginStatus = user ? (user?.logoutTime ? null : "Is logged In") : "";
 				agent.lastLogin = user?.loginTime;
 				return agent;
 			});
@@ -182,8 +176,7 @@ const LeadsDisbursed = () => {
 			await LeadsService.confirmDisburseLeads(checkedRows);
 			toast({
 				title: "Leads disbursed",
-				description:
-					"Leads has been successfully distributed among team members",
+				description: "Leads has been successfully distributed among team members",
 				status: "success",
 				duration: 3000,
 				isClosable: true,
@@ -201,6 +194,13 @@ const LeadsDisbursed = () => {
 		}
 	};
 
+	const DisburseForm = () => (
+		<Disburse
+			isDisabled={leads?.length === 0 || checkedRows?.length === 0}
+			handleDisburse={handleDisburse}
+		/>
+	);
+
 	return (
 		<PageLayout width="full" title={"Lead Disbursement"} showBgLayer>
 			<AutoAssign />
@@ -208,18 +208,10 @@ const LeadsDisbursed = () => {
 				<Flex flexDir="column" gap={{ base: 0, md: 3 }}>
 					<Flex justify="space-between">
 						{caption()}
-						<Disburse
-							leads={leads}
-							checkedRows={checkedRows}
-							handleDisburse={handleDisburse}
-						/>
+						<DisburseForm />
 					</Flex>
 					{showRegion()}
-					<HStack
-						justify={{ md: "flex-end" }}
-						spacing="1em"
-						mt={{ base: "1em", md: 0 }}
-					>
+					<HStack justify={{ md: "flex-end" }} spacing="1em" mt={{ base: "1em", md: 0 }}>
 						{showFilterSearchOption()}
 					</HStack>
 				</Flex>
@@ -228,11 +220,7 @@ const LeadsDisbursed = () => {
 					{caption()}
 					<Spacer />
 					<HStack spacing={2}>
-						<Disburse
-							leads={leads}
-							checkedRows={checkedRows}
-							handleDisburse={handleDisburse}
-						/>
+						<DisburseForm />
 						{showRegion()}
 						{showFilterSearchOption()}
 					</HStack>
@@ -264,9 +252,7 @@ const LeadsDisbursed = () => {
 										<Checkbox
 											colorScheme="facebook"
 											isChecked={isActive || checkedRows?.includes(_id)}
-											onChange={(e) =>
-												handleCheckboxChange(_id, e.target.checked)
-											}
+											onChange={(e) => handleCheckboxChange(_id, e.target.checked)}
 										/>
 									</Td>
 									<Td p={1}>{fullName}</Td>

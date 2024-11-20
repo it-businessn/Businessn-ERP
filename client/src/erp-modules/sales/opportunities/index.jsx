@@ -19,8 +19,8 @@ import EmptyRowRecord from "components/ui/EmptyRowRecord";
 import NormalTextTitle from "components/ui/NormalTextTitle";
 import DeletePopUp from "components/ui/modal/DeletePopUp";
 import useCompany from "hooks/useCompany";
+import useManager from "hooks/useManager";
 import useSalesAgentData from "hooks/useSalesAgentData";
-import { useSignup } from "hooks/useSignup";
 import PageLayout from "layouts/PageLayout";
 import { useEffect, useState } from "react";
 import { FaRegTrashAlt, FaSearch } from "react-icons/fa";
@@ -30,7 +30,7 @@ import { useBreakpointValue } from "services/Breakpoint";
 import LeadsService from "services/LeadsService";
 import LocalStorageService from "services/LocalStorageService";
 import UserService from "services/UserService";
-import { formatDate, isManager, toCapitalize } from "utils";
+import { formatDate, isManager } from "utils";
 import Caption from "../lead docket/Caption";
 import SearchFilter from "../lead docket/SearchFilter";
 import { OPPORTUNITY_COLUMNS } from "../lead docket/data";
@@ -38,16 +38,29 @@ import AddNewOpportunity from "./AddNewOpportunity";
 import { LEAD_STAGES } from "./data";
 
 const Opportunities = () => {
-	const { company } = useCompany(
-		LocalStorageService.getItem("selectedCompany"),
-	);
+	const { company } = useCompany(LocalStorageService.getItem("selectedCompany"));
 	const loggedInUser = LocalStorageService.getItem("user");
 	const { isMobile, isIpad } = useBreakpointValue();
 	const [isAdded, setIsAdded] = useState(false);
 
 	const [opportunities, setOpportunities] = useState(null);
-	const assignees = useSalesAgentData(company);
-	const { managers } = useSignup(company);
+	const assignees = useSalesAgentData(company, false, true);
+	const [refresh, setRefresh] = useState(false);
+	const managers = useManager(company);
+	const [companies, setCompanies] = useState(null);
+
+	useEffect(() => {
+		const fetchAllCompanies = async () => {
+			try {
+				const response = await LeadsService.getLeadCompanies(company);
+				setCompanies(response.data);
+			} catch (error) {
+				console.error(error);
+			}
+		};
+
+		fetchAllCompanies();
+	}, [refresh]);
 
 	const fetchAllOpportunities = async () => {
 		try {
@@ -57,13 +70,9 @@ const Opportunities = () => {
 				: response.data?.filter(
 						(item) =>
 							(item.primaryAssignee?.length > 0 &&
-								item.primaryAssignee.find(
-									(_) => _.name === loggedInUser?.fullName,
-								)) ||
+								item.primaryAssignee.find(({ name }) => name === loggedInUser?.fullName)) ||
 							(item.supervisorAssignee?.length > 0 &&
-								item.supervisorAssignee.find(
-									(_) => _.name === loggedInUser?.fullName,
-								)),
+								item.supervisorAssignee.find(({ name }) => name === loggedInUser?.fullName)),
 				  );
 			setOpportunities(leadList);
 		} catch (error) {
@@ -96,20 +105,14 @@ const Opportunities = () => {
 					const agent = assignees.find(
 						(agent) => agent.fullName === formData.primaryAssignee[0].name,
 					);
-					await UserService.updateUserInfoById(
-						{ leads: [formData.id] },
-						agent._id,
-					);
+					await UserService.updateUserInfoById({ leads: [formData.id] }, agent._id);
 					return;
 				}
 				if (formData.supervisorAssignee) {
 					const agent = assignees.find(
 						(agent) => agent.fullName === formData.supervisorAssignee[0].name,
 					);
-					await UserService.updateUserInfoById(
-						{ leads: [formData.id] },
-						agent._id,
-					);
+					await UserService.updateUserInfoById({ leads: [formData.id] }, agent._id);
 					return;
 				}
 			} catch (error) {}
@@ -245,10 +248,7 @@ const Opportunities = () => {
 			<TableLayout isOpportunity cols={OPPORTUNITY_COLUMNS} height={"73vh"}>
 				<Tbody>
 					{(!opportunities || opportunities?.length === 0) && (
-						<EmptyRowRecord
-							data={opportunities}
-							colSpan={OPPORTUNITY_COLUMNS?.length}
-						/>
+						<EmptyRowRecord data={opportunities} colSpan={OPPORTUNITY_COLUMNS?.length} />
 					)}
 					{opportunities?.map((_) => {
 						return (
@@ -258,6 +258,7 @@ const Opportunities = () => {
 										width="200px"
 										size="sm"
 										whiteSpace="wrap"
+										textTransform={"capitalize"}
 										title={_.opportunityName}
 									/>
 								</Td>
@@ -266,16 +267,12 @@ const Opportunities = () => {
 										width="200px"
 										size="sm"
 										whiteSpace="wrap"
-										title={toCapitalize(_.name)}
+										textTransform={"capitalize"}
+										title={_.name}
 									/>
 								</Td>
 								<Td py={"0.5em"}>
-									<NormalTextTitle
-										width="200px"
-										whiteSpace="wrap"
-										size="sm"
-										title={_.email}
-									/>
+									<NormalTextTitle width="200px" whiteSpace="wrap" size="sm" title={_.email} />
 								</Td>
 								<Td p={0}>
 									<SelectList
@@ -308,19 +305,12 @@ const Opportunities = () => {
 									/>
 								</Td>
 								<Td py={"0.5em"}>
-									<NormalTextTitle
-										width="120px"
-										size="sm"
-										title={formatDate(_.createdOn)}
-									/>
+									<NormalTextTitle width="120px" size="sm" title={formatDate(_.createdOn)} />
 								</Td>
 								<Td py={"0.5em"}>{_.isDisbursedConfirmed ? "Yes" : "No"}</Td>
 								<Td py={"0.5em"}>
 									<HStack>
-										<RiEditLine
-											cursor={"pointer"}
-											onClick={() => setShowEditLead(_)}
-										/>
+										<RiEditLine cursor={"pointer"} onClick={() => setShowEditLead(_)} />
 										<FaRegTrashAlt
 											cursor={"pointer"}
 											onClick={() => {
@@ -339,12 +329,14 @@ const Opportunities = () => {
 			{(isOpen || showEditLead) && (
 				<AddNewOpportunity
 					showEditLead={showEditLead}
-					assignees={assignees}
-					supervisorAssignees={managers}
 					setIsAdded={setIsAdded}
 					isOpen={handleOpen}
 					onClose={handleClose}
 					company={company}
+					assignees={assignees}
+					managers={managers}
+					companies={companies}
+					setRefresh={setRefresh}
 				/>
 			)}
 			{showConfirmationPopUp && (

@@ -54,15 +54,10 @@ const CompanyDetails = ({ company }) => {
 		<>
 			{isManager(loggedInUser?.role) && (
 				<Flex justify={"end"}>
-					<PrimaryButton
-						name={"Add new company"}
-						onOpen={() => setOpenCompanyForm(true)}
-					/>
+					<PrimaryButton name={"Add new company"} onOpen={() => setOpenCompanyForm(true)} />
 				</Flex>
 			)}
-			{openCompanyForm && (
-				<CompaniesPanel setOpenCompanyForm={setOpenCompanyForm} />
-			)}
+			{openCompanyForm && <CompaniesPanel setOpenCompanyForm={setOpenCompanyForm} />}
 
 			{!openCompanyForm && companyInfo && (
 				<HStack
@@ -89,35 +84,23 @@ const CompanyDetails = ({ company }) => {
 								<TextTitle size="xl" title={companyInfo.name} />
 							</VStack>
 						</Box>
-						<VStack
-							align="flex-start"
-							color={"var(--menu_item_color)"}
-							p={"1em"}
-						>
+						<VStack align="flex-start" color={"var(--menu_item_color)"} p={"1em"}>
 							<HStack>
 								<TextTitle title="Registration Number" />
-								<Text color={"var(--main_color_black)"}>
-									{companyInfo.registration_number}
-								</Text>
+								<Text color={"var(--main_color_black)"}>{companyInfo.registration_number}</Text>
 							</HStack>
 							<HStack>
 								<TextTitle title="Founding Year" />
-								<Text color={"var(--main_color_black)"}>
-									{companyInfo.founding_year}
-								</Text>
+								<Text color={"var(--main_color_black)"}>{companyInfo.founding_year}</Text>
 							</HStack>
 
 							<HStack>
 								<TextTitle title="Industry Type" />
-								<Text color={"var(--main_color_black)"}>
-									{companyInfo.industry_type}
-								</Text>
+								<Text color={"var(--main_color_black)"}>{companyInfo.industry_type}</Text>
 							</HStack>
 							<HStack>
 								<TextTitle title="Address" />
-								<Text color={"var(--main_color_black)"}>
-									{getAddress(companyInfo.address)}
-								</Text>
+								<Text color={"var(--main_color_black)"}>{getAddress(companyInfo.address)}</Text>
 							</HStack>
 						</VStack>
 						<Table variant="simple" size={"small"}>

@@ -19,18 +19,26 @@ import {
 	PRODUCTS_SERVICES,
 	REGIONS,
 } from "erp-modules/project-management/workview/project/data";
-import useSalesAgentData from "hooks/useSalesAgentData";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { FaCaretDown, FaPlus } from "react-icons/fa";
 import LeadsService from "services/LeadsService";
-import UserService from "services/UserService";
 import { toCapitalize, today } from "utils";
 import AddCompany from "./AddCompany";
 import AssigneeSelector from "./AssigneeSelector";
 import { LEAD_STAGES } from "./data";
 
-const AddNewOpportunity = ({ isOpen, onClose, setIsAdded, isDocket, company, showEditLead }) => {
-	const assignees = useSalesAgentData(company, false, true);
+const AddNewOpportunity = ({
+	isOpen,
+	onClose,
+	setIsAdded,
+	isDocket,
+	company,
+	showEditLead,
+	assignees,
+	managers,
+	companies,
+	setRefresh,
+}) => {
 	const defaultOpportunity = {
 		abbreviation: "",
 		address: {
@@ -77,7 +85,6 @@ const AddNewOpportunity = ({ isOpen, onClose, setIsAdded, isDocket, company, sho
 		companyName: company,
 	};
 
-	const [managers, setManagers] = useState(null);
 	const [isSubmitting, setSubmitting] = useState(false);
 	const [error, setError] = useState(false);
 	const [isDisabled, setIsDisabled] = useState(false);
@@ -85,7 +92,6 @@ const AddNewOpportunity = ({ isOpen, onClose, setIsAdded, isDocket, company, sho
 	const [stageError, setStageError] = useState(null);
 	const [companyError, setCompanyError] = useState(null);
 
-	const [refresh, setRefresh] = useState(false);
 	const [showAddCompany, setShowAddCompany] = useState(false);
 
 	const [formData, setFormData] = useState(showEditLead ? savedData : defaultOpportunity);
@@ -99,31 +105,6 @@ const AddNewOpportunity = ({ isOpen, onClose, setIsAdded, isDocket, company, sho
 	const [selectedSupervisorAssignees, setSelectedSupervisorAssignees] = useState(
 		showEditLead ? savedData?.supervisorAssignee : [],
 	);
-
-	const [companies, setCompanies] = useState(null);
-
-	useEffect(() => {
-		const fetchAllCompanies = async () => {
-			try {
-				const response = await LeadsService.getLeadCompanies(company);
-				setCompanies(response.data);
-			} catch (error) {
-				console.error(error);
-			}
-		};
-
-		const fetchAllManagers = async () => {
-			try {
-				const response = await UserService.getAllCompManagers(company);
-				setManagers(response.data);
-			} catch (error) {
-				console.error(error);
-			}
-		};
-
-		fetchAllCompanies();
-		fetchAllManagers();
-	}, [refresh]);
 
 	const handleChange = (e) => {
 		const { name, value } = e.target;

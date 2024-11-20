@@ -18,15 +18,11 @@ const MeetingDetails = ({ event }) => {
 		},
 		{
 			title: "Start",
-			value: `${formatDate(event?.fromDate)} ${moment(event?.start).format(
-				"hh:mm A",
-			)}`,
+			value: `${formatDate(event?.fromDate)} ${moment(event?.start).format("hh:mm A")}`,
 		},
 		{
 			title: "End",
-			value: `${formatDate(event?.toDate)} ${moment(event?.end).format(
-				"hh:mm A",
-			)}`,
+			value: `${formatDate(event?.toDate)} ${moment(event?.end).format("hh:mm A")}`,
 		},
 	];
 	return (
