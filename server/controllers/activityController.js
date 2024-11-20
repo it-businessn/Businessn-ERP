@@ -5,9 +5,9 @@ const LogActivity = require("../models/LogActivity");
 const getActivity = async (req, res) => {
 	const { createdBy, companyName } = req.params;
 	try {
-		const activities = (
-			await LogActivity.find({ createdBy, companyName })
-		).sort((a, b) => b.createdOn - a.createdOn);
+		const activities = (await LogActivity.find({ createdBy, companyName })).sort(
+			(a, b) => b.createdOn - a.createdOn,
+		);
 		res.status(200).json(activities);
 	} catch (error) {
 		res.status(404).json({ error: error.message });
@@ -18,9 +18,7 @@ const getActivityById = async (req, res) => {
 	const { contactId } = req.params;
 
 	try {
-		const notes = (await LogActivity.find({ contactId })).sort(
-			(a, b) => b.createdOn - a.createdOn,
-		);
+		const notes = (await LogActivity.find({ contactId })).sort((a, b) => b.createdOn - a.createdOn);
 		res.status(200).json(notes);
 	} catch (error) {
 		res.status(404).json({ error: error.message });
@@ -96,7 +94,7 @@ const getActivityRange = async (req, res) => {
 				$gte: startOfDay,
 				$lte: endOfDay,
 			},
-		});
+		}).select("type");
 		res.status(200).json(result);
 	} catch (error) {
 		res.status(404).json({ error: error.message });
@@ -104,8 +102,7 @@ const getActivityRange = async (req, res) => {
 };
 
 const createActivity = async (req, res) => {
-	const { contactId, createdBy, description, duration, type, companyName } =
-		req.body;
+	const { contactId, createdBy, description, duration, type, companyName } = req.body;
 
 	try {
 		const newActivity = await LogActivity.create({

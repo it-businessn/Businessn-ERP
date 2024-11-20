@@ -11,6 +11,7 @@ import {
 	useDisclosure,
 } from "@chakra-ui/react";
 
+import SkeletonLoader from "components/SkeletonLoader";
 import NormalTextTitle from "components/ui/NormalTextTitle";
 import TextTitle from "components/ui/text/TextTitle";
 import { useState } from "react";
@@ -23,10 +24,8 @@ import EditLead from "./EditLead";
 export const totalLeads = (name, isManager, leads, userName) => {
 	return isManager
 		? leads?.filter((lead) => lead.stage === name).length
-		: leads?.filter(
-				(lead) =>
-					lead.stage === name && lead.primaryAssignee[0]?.name === userName,
-		  ).length;
+		: leads?.filter((lead) => lead.stage === name && lead.primaryAssignee[0]?.name === userName)
+				.length;
 };
 
 const AgentsView = ({
@@ -87,12 +86,7 @@ const AgentsView = ({
 				color={"var(--menu_item_color)"}
 			>
 				{reference?.map((category) => (
-					<Box
-						borderRadius="10px"
-						border="3px solid var(--main_color)"
-						key={category.id}
-						p={0}
-					>
+					<Box borderRadius="10px" border="3px solid var(--main_color)" key={category.id} p={0}>
 						<Box
 							fontWeight="bold"
 							px="1em"
@@ -103,20 +97,14 @@ const AgentsView = ({
 						>
 							<Flex justify="space-between" align="center" gap={0}>
 								<NormalTextTitle title={category.name} size="xs" />
-								<Select
-									width="90px"
-									border={"none"}
-									fontSize={"xs"}
-									visibility={"hidden"}
-								>
+								<Select width="90px" border={"none"} fontSize={"xs"} visibility={"hidden"}>
 									<option>Weekly</option>
 									<option>Last month</option>
 								</Select>
 							</Flex>
 							<Flex align="center" color={"var(--main_color_black)"} mt="-2">
 								<Text mr="3">
-									{leads &&
-										totalLeads(category.abbr, isUserManager, leads, fullName)}
+									{leads && totalLeads(category.abbr, isUserManager, leads, fullName)}
 								</Text>
 								{/* <Icon mr="1" as={ArrowUpIcon} color="green.500" />
 								<Text color="green.500" fontSize="xs">
@@ -124,6 +112,7 @@ const AgentsView = ({
 								</Text> */}
 							</Flex>
 						</Box>
+						{!leadList && <SkeletonLoader />}
 						{leadList
 							?.filter((lead) => lead.stage === category.abbr)
 							?.map(({ _id, name, opportunityName, email, phone, stage }) => (
@@ -140,55 +129,29 @@ const AgentsView = ({
 										p={"0.5em"}
 										spacing={0.5}
 									>
-										<HStack
-											justifyContent={"space-between"}
-											w={"100%"}
-											spacing={0}
-										>
+										<HStack justifyContent={"space-between"} w={"100%"} spacing={0}>
 											<TextTitle size="xs" title="Company" />
-											<NormalTextTitle
-												size="xs"
-												color={"var(--main_color_black)"}
-												title={name}
-											/>
+											<NormalTextTitle size="xs" color={"var(--main_color_black)"} title={name} />
 											<Box>
 												<RiEditLine
 													cursor={"pointer"}
-													onClick={() =>
-														handleEdit(_id, name, email, phone, stage)
-													}
+													onClick={() => handleEdit(_id, name, email, phone, stage)}
 												/>
 											</Box>
 										</HStack>
 										<HStack justifyContent={"space-between"} w={"100%"}>
 											<TextTitle size="xs" title="Email" />
-											<NormalTextTitle
-												size="xs"
-												color={"var(--main_color_black)"}
-												title={email}
-											/>
+											<NormalTextTitle size="xs" color={"var(--main_color_black)"} title={email} />
 											<Box>
 												<CopyIcon
 													cursor={"pointer"}
-													onClick={() =>
-														handleCopy(
-															_id,
-															opportunityName,
-															email,
-															phone,
-															stage,
-														)
-													}
+													onClick={() => handleCopy(_id, opportunityName, email, phone, stage)}
 												/>
 											</Box>
 										</HStack>
 										<HStack w={"100%"} justifyContent={"space-between"}>
 											<TextTitle size="xs" title="Phone" />
-											<NormalTextTitle
-												size="xs"
-												color={"var(--main_color_black)"}
-												title={phone}
-											/>
+											<NormalTextTitle size="xs" color={"var(--main_color_black)"} title={phone} />
 											<Box>
 												<FaRegTrashAlt
 													cursor={"pointer"}
