@@ -1,18 +1,10 @@
-import {
-	Box,
-	Button,
-	Flex,
-	Icon,
-	Input,
-	SimpleGrid,
-	VStack,
-} from "@chakra-ui/react";
+import { Box, Button, Flex, Icon, Input, SimpleGrid, VStack } from "@chakra-ui/react";
 import PrimaryButton from "components/ui/button/PrimaryButton";
 import DeletePopUp from "components/ui/modal/DeletePopUp";
 import NormalTextTitle from "components/ui/NormalTextTitle";
 import TextTitle from "components/ui/text/TextTitle";
 import { useData } from "context/DataContext";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FaDownload } from "react-icons/fa";
 import { GoDownload } from "react-icons/go";
 import { MdDeleteOutline } from "react-icons/md";
@@ -24,14 +16,48 @@ import FileUploader from "./FileUploader";
 
 const ResourceFile = ({
 	fileTypes,
-	selectedFilter,
-	setSelectedFilter,
-	resources,
-	setNewUpload,
 	fullName,
 	isUserManager,
 	company,
+	selectedFilter,
+	setSelectedFilter,
 }) => {
+	const [resources, setResources] = useState(null);
+	// const [editResource, setEditResource] = useState(false);
+	const [newUpload, setNewUpload] = useState(null);
+
+	useEffect(() => {
+		const fetchResourceByType = async () => {
+			try {
+				const response = await ResourceService.getResourcesByType({
+					type: selectedFilter,
+					company,
+				});
+
+				setResources(response.data);
+			} catch (error) {
+				console.error(error);
+			}
+		};
+		if (selectedFilter) {
+			fetchResourceByType();
+		}
+	}, [selectedFilter, company]);
+
+	useEffect(() => {
+		const fetchAllResources = async () => {
+			try {
+				const response = await ResourceService.getResourcesByCompany(company);
+				setResources(response.data);
+			} catch (error) {
+				console.error(error);
+			}
+		};
+		if (!selectedFilter) {
+			fetchAllResources();
+		}
+	}, [newUpload, company]);
+
 	const [isEditable, setIsEditable] = useState(false);
 	const [resourceId, setResourceId] = useState(null);
 	const [fileName, setFileName] = useState("");
@@ -86,13 +112,11 @@ const ResourceFile = ({
 	const { permissionData } = useData();
 	const hasDeleteAccess = permissionData
 		.find((record) => record.id === "sales")
-		?.children?.find((item) => item.path === "resources")
-		.permissions?.canDeleteModule;
+		?.children?.find((item) => item.path === "resources").permissions?.canDeleteModule;
 
 	const hasEditAccess = permissionData
 		.find((record) => record.id === "sales")
-		?.children?.find((item) => item.path === "resources")
-		.permissions?.canEditModule;
+		?.children?.find((item) => item.path === "resources").permissions?.canEditModule;
 
 	return (
 		<>
@@ -101,7 +125,7 @@ const ResourceFile = ({
 					{/* <TextTitle mt={2} mb={5} title="Browse by subject" /> */}
 					{isMobile || isIpad ? (
 						<SimpleGrid columns={{ base: 2, md: 3 }} spacing="1em" my="5">
-							{fileTypes.map(({ type }) => (
+							{fileTypes?.map(({ type }) => (
 								<Button
 									key={type}
 									borderRadius={"50px"}
@@ -162,23 +186,16 @@ const ResourceFile = ({
 										overflow="hidden"
 										p={4}
 										// color={"var(--primary_bg)"}
-										bg={
-											COVER_COLORS[
-												Math.floor(Math.random() * COVER_COLORS.length)
-											]
-										}
+										bg={COVER_COLORS[Math.floor(Math.random() * COVER_COLORS.length)]}
 									>
 										<TextTitle
 											p={"0 1em"}
 											size={"xl"}
 											weight="normal"
 											whiteSpace="pre-wrap"
-											title={`${
-												resource.originalname
-													.trim()
-													.replace(".pdf", "")
-													.split("(")[0]
-											} \n${resource.fileType}`}
+											title={`${resource.originalname.trim().replace(".pdf", "").split("(")[0]} \n${
+												resource.fileType
+											}`}
 										/>
 									</Box>
 
@@ -194,11 +211,7 @@ const ResourceFile = ({
 										/>
 									) : (
 										<NormalTextTitle
-											title={
-												resourceId === resource._id
-													? fileName
-													: resource.originalname
-											}
+											title={resourceId === resource._id ? fileName : resource.originalname}
 											size={"sm"}
 										/>
 									)}

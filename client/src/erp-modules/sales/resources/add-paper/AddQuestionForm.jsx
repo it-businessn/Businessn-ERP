@@ -29,9 +29,7 @@ import EditQuestionnaire from "./EditQuestionnaire";
 
 const AddQuestionForm = () => {
 	const { type } = useParams();
-	const { company } = useCompany(
-		LocalStorageService.getItem("selectedCompany"),
-	);
+	const { company } = useCompany(LocalStorageService.getItem("selectedCompany"));
 
 	const [assessmentTypes, setAssessmentTypes] = useState(null);
 	const [assessmentType, setAssessmentType] = useState(type || "");
@@ -113,8 +111,7 @@ const AddQuestionForm = () => {
 	const navigate = useNavigate();
 
 	const handleEdit = (questionnaire) => {
-		const { _id, correctAnswer, options, question, explanation, subject } =
-			questionnaire;
+		const { _id, correctAnswer, options, question, explanation, subject } = questionnaire;
 		setFormData((prevData) => ({
 			...prevData,
 			_id,
@@ -186,24 +183,9 @@ const AddQuestionForm = () => {
 						<HStack alignItems="start">
 							<Text ml={6}>Options:</Text>
 							{questionnaire.options.map((_, index) => (
-								<HStack
-									key={_}
-									spacing={1}
-									alignItems="start"
-									justifyContent={"start"}
-									w={"100%"}
-								>
-									<TextTitle
-										whiteSpace="pre-wrap"
-										flex={0.1}
-										title={`${index + 1}:`}
-									/>
-									<TextTitle
-										flex={1}
-										title={_}
-										whiteSpace="pre-wrap"
-										weight="normal"
-									/>
+								<HStack key={_} spacing={1} alignItems="start" justifyContent={"start"} w={"100%"}>
+									<TextTitle whiteSpace="pre-wrap" flex={0.1} title={`${index + 1}:`} />
+									<TextTitle flex={1} title={_} whiteSpace="pre-wrap" weight="normal" />
 								</HStack>
 							))}
 						</HStack>
@@ -250,9 +232,7 @@ const AddQuestionForm = () => {
 				/>
 			)}
 			{!assessmentTypes && (
-				<Text color={"green"}>
-					No assessments available. Please add new quiz.
-				</Text>
+				<Text color={"green"}>No assessments available. Please add new quiz.</Text>
 			)}
 			<Box mt={3}>
 				<form onSubmit={handleSubmit}>
@@ -279,11 +259,7 @@ const AddQuestionForm = () => {
 					)}
 					<FormControl id="question">
 						<FormLabel>Question:</FormLabel>
-						<Input
-							type="text"
-							value={question}
-							onChange={(e) => setQuestion(e.target.value)}
-						/>
+						<Input type="text" value={question} onChange={(e) => setQuestion(e.target.value)} />
 					</FormControl>
 
 					<FormControl>
@@ -305,17 +281,9 @@ const AddQuestionForm = () => {
 							<FormControl>
 								<FormLabel>Best Answer:</FormLabel>
 								<RadioGroup value={correctAnswer} onChange={setCorrectAnswer}>
-									<VStack
-										spacing={3}
-										justifyContent={"flex-start"}
-										alignItems={"self-start"}
-									>
+									<VStack spacing={3} justifyContent={"flex-start"} alignItems={"self-start"}>
 										{options.map((option, index) => (
-											<Radio
-												key={index}
-												value={option}
-												border={"1px solid var(--gray2_color)"}
-											>
+											<Radio key={index} value={option} border={"1px solid var(--gray2_color)"}>
 												{option}
 											</Radio>
 										))}
@@ -333,10 +301,7 @@ const AddQuestionForm = () => {
 							</FormControl>
 						</>
 					)}
-					<ActionButtonGroup
-						submitBtnName={"Add Question"}
-						onClose={() => navigate(-1)}
-					/>
+					<ActionButtonGroup submitBtnName={"Add Question"} onClose={() => navigate(-1)} />
 				</form>
 			</Box>
 		</Box>
