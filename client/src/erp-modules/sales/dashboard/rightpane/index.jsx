@@ -14,11 +14,7 @@ const RightPane = ({ selectedUser, stats, company }) => {
 			border="3px solid var(--main_color)"
 			borderRadius="10px"
 		>
-			<UserStatInfo
-				name={selectedUser?.fullName}
-				email={selectedUser?.email}
-				stats={stats}
-			/>
+			<UserStatInfo name={selectedUser?.fullName} email={selectedUser?.email} stats={stats} />
 			<MiniCalendar user={selectedUser} company={company} />
 			<ChatMessages userId={selectedUser._id} company={company} />
 		</Box>

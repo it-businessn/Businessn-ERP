@@ -3,9 +3,7 @@ import BoxCard from "components/ui/card";
 import TextTitle from "components/ui/text/TextTitle";
 import { useEffect, useState } from "react";
 import "react-big-calendar/lib/css/react-big-calendar.css";
-import CalendarService from "services/CalendarService";
 import LeadsService from "services/LeadsService";
-import TaskService from "services/TaskService";
 import { HEADER_CARDS } from "../data";
 import SalesCard from "./SalesCard";
 import SalesChart from "./SalesChart";
@@ -17,10 +15,6 @@ const LeftPane = ({ selectedUser, setStats, company, user }) => {
 	const [headerCards, setHeaderCards] = useState(HEADER_CARDS);
 	const [month, setMonth] = useState(currentMonth);
 	const [opportunities, setOpportunities] = useState([]);
-	const [tasks, setTasks] = useState(null);
-	const [events, setEvents] = useState(null);
-	const [meetings, setMeetings] = useState(null);
-	const [appointments, setAppointments] = useState(null);
 	const [isRefresh, setIsRefresh] = useState(false);
 
 	const headerCardsInfoDetails = (data) => {
@@ -36,15 +30,12 @@ const LeftPane = ({ selectedUser, setStats, company, user }) => {
 	useEffect(() => {
 		const fetchAllOpportunities = async () => {
 			try {
-				const response = await LeadsService.getGroupedOpportunitiesByCompany(
-					company,
-				);
+				const response = await LeadsService.getGroupedOpportunitiesByCompany(company);
 				setOpportunities(response.data);
 				const pipelineData = response.data[0]?.pipeline || 0;
 				const salesData = response.data[0]?.salesMade || 0;
 
-				headerCards[0].value =
-					response.data?.find((_) => _.month === month)?.count || 0;
+				headerCards[0].value = response.data?.find((_) => _.month === month)?.count || 0;
 				headerCards[1].value = pipelineData;
 				headerCards[2].value = pipelineData;
 				headerCards[3].value = salesData;
@@ -57,78 +48,10 @@ const LeftPane = ({ selectedUser, setStats, company, user }) => {
 	}, []);
 
 	useEffect(() => {
-		const fetchAllUserEvents = async () => {
-			try {
-				const response = await CalendarService.getUserEventsByType({
-					type: "event",
-					name: selectedUser?.fullName,
-					company,
-				});
-				setEvents(response.data);
-				setStatInfo("Events", response.data.length);
-			} catch (error) {
-				console.error(error);
-			}
-		};
-		const fetchAllUserMeetings = async () => {
-			try {
-				const response = await CalendarService.getUserEventsByType({
-					type: "meeting",
-					name: selectedUser?.fullName,
-					company,
-				});
-				setMeetings(response.data);
-				setStatInfo("Meetings", response.data.length);
-			} catch (error) {
-				console.error(error);
-			}
-		};
-		const fetchAllUserAppointments = async () => {
-			try {
-				const response = await CalendarService.getUserEventsByType({
-					type: "phoneCall",
-					name: selectedUser?.fullName,
-					company,
-				});
-				setAppointments(response.data);
-				setStatInfo("Appointments", response.data.length);
-			} catch (error) {
-				console.error(error);
-			}
-		};
-		const fetchAllUserTasks = async () => {
-			try {
-				const response = await TaskService.getTaskByAssignee({
-					name: selectedUser?.fullName,
-					company,
-				});
-				setTasks(response.data);
-			} catch (error) {
-				console.error(error);
-			}
-		};
-
-		fetchAllUserTasks();
-		fetchAllUserAppointments();
-		fetchAllUserEvents();
-		fetchAllUserMeetings();
-	}, [isRefresh, selectedUser, company]);
-
-	useEffect(() => {
 		if (opportunities.length > 0) {
 			headerCardsInfoDetails(opportunities);
 		}
 	}, [month, opportunities]);
-
-	const setStatInfo = (key, count) =>
-		setStats((prevStats) =>
-			prevStats.map((stat) => {
-				if (stat.name === key) {
-					return { ...stat, value: count };
-				}
-				return stat;
-			}),
-		);
 
 	return (
 		<Box>
@@ -151,17 +74,13 @@ const LeftPane = ({ selectedUser, setStats, company, user }) => {
 			<SimpleGrid columns={{ base: 1, md: 1, lg: 1 }} spacing="4" mt="4">
 				<BoxCard px="1em" fontWeight="bold">
 					<TextTitle title={"Upcoming"} mt={2} mb={2} />
-					{tasks && (
-						<UpcomingList
-							tasks={tasks}
-							events={events}
-							meetings={meetings}
-							appointments={appointments}
-							selectedUser={selectedUser}
-							setIsRefresh={setIsRefresh}
-							company={company}
-						/>
-					)}
+					<UpcomingList
+						selectedUser={selectedUser}
+						setIsRefresh={setIsRefresh}
+						company={company}
+						isRefresh={isRefresh}
+						setStats={setStats}
+					/>
 				</BoxCard>
 			</SimpleGrid>
 		</Box>

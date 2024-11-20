@@ -1,8 +1,30 @@
 import { Box, HStack, Table, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
 import EmptyRowRecord from "components/ui/EmptyRowRecord";
+import useSelectUser from "hooks/useSelectUser";
+import { useEffect, useState } from "react";
+import TaskService from "services/TaskService";
 import { formatDate, renderPriorityBars } from "utils";
 
-const TaskTable = ({ cols, tasks }) => {
+const TaskTable = ({ cols, user, company }) => {
+	const [tasks, setTasks] = useState(null);
+	const { selectedUser } = useSelectUser(user);
+
+	useEffect(() => {
+		const fetchAllUserTasks = async () => {
+			try {
+				const response = await TaskService.getTaskByAssignee({
+					name: selectedUser?.fullName,
+					company,
+				});
+				setTasks(response.data);
+			} catch (error) {
+				console.error(error);
+			}
+		};
+
+		fetchAllUserTasks();
+	}, [selectedUser]);
+
 	return (
 		<Box overflow="auto">
 			<Table variant="simple" size={"small"}>

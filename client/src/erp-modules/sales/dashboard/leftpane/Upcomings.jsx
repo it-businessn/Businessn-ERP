@@ -3,24 +3,13 @@ import { useEffect, useState } from "react";
 import CalendarTable from "./CalendarTable";
 import TaskTable from "./TaskTable";
 
-const UpcomingList = ({
-	selectedUser,
-	tasks,
-	events,
-	meetings,
-	appointments,
-	setIsRefresh,
-}) => {
+const UpcomingList = ({ selectedUser, company, setIsRefresh, setStats }) => {
 	const CALENDAR_COLS = ["Description", "From", "To", "Event Link", "Location"];
 	const TABS = [
 		{
 			type: "Tasks",
 			name: (
-				<TaskTable
-					tasks={tasks}
-					cols={["Name", "Priority", "Due date"]}
-					selectedUser={selectedUser}
-				/>
+				<TaskTable cols={["Name", "Priority", "Due date"]} user={selectedUser} company={company} />
 			),
 		},
 		{
@@ -28,10 +17,12 @@ const UpcomingList = ({
 			name: (
 				<CalendarTable
 					setIsRefresh={setIsRefresh}
-					data={events}
 					filter="event"
 					cols={CALENDAR_COLS}
 					filterText="Event"
+					setStats={setStats}
+					user={selectedUser}
+					company={company}
 				/>
 			),
 		},
@@ -40,10 +31,12 @@ const UpcomingList = ({
 			name: (
 				<CalendarTable
 					setIsRefresh={setIsRefresh}
-					data={meetings}
 					filter="meeting"
 					cols={CALENDAR_COLS}
 					filterText="Meeting"
+					setStats={setStats}
+					user={selectedUser}
+					company={company}
 				/>
 			),
 		},
@@ -52,10 +45,12 @@ const UpcomingList = ({
 			name: (
 				<CalendarTable
 					setIsRefresh={setIsRefresh}
-					data={appointments}
 					filter="phoneCall"
 					cols={["Description", "From", "To", "hideCol1", "hideCol2"]}
 					filterText="Appointment"
+					setStats={setStats}
+					user={selectedUser}
+					company={company}
 				/>
 			),
 		},
@@ -70,11 +65,7 @@ const UpcomingList = ({
 
 	return (
 		<>
-			<TabsButtonGroup
-				tabs={TABS}
-				setViewMode={setViewMode}
-				viewMode={viewMode}
-			/>
+			<TabsButtonGroup tabs={TABS} setViewMode={setViewMode} viewMode={viewMode} />
 			{componentName}
 		</>
 	);

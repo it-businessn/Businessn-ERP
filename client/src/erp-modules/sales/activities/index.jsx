@@ -8,19 +8,14 @@ import ActivityService from "services/ActivityService";
 import ContactService from "services/ContactService";
 import LocalStorageService from "services/LocalStorageService";
 import { isManager } from "utils";
-import {
-	ACTIVITY_CARDS,
-	SALES_ACTIVITY_CARDS,
-} from "../customers/contacts/logs/data";
+import { ACTIVITY_CARDS, SALES_ACTIVITY_CARDS } from "../customers/contacts/logs/data";
 import FilterActivityTab from "./FilterActivityTab";
 import LeftPane from "./LeftPane";
 import RightPane from "./RightPane";
 import SelectCustomer from "./SelectCustomer";
 
 const Activities = () => {
-	const { company } = useCompany(
-		LocalStorageService.getItem("selectedCompany"),
-	);
+	const { company } = useCompany(LocalStorageService.getItem("selectedCompany"));
 	const loggedInUser = LocalStorageService.getItem("user");
 	const isManagerRole = isManager(loggedInUser?.role);
 	const [contacts, setContacts] = useState(null);
@@ -71,9 +66,7 @@ const Activities = () => {
 				const isAnnual = selectedFilter === "Annual";
 
 				ACTIVITY_CARDS.map((item) => {
-					item.count = response.data.filter(
-						(_) => _.type === item.value,
-					).length;
+					item.count = response.data.filter(({ type }) => type === item.value).length;
 					const target = item.target;
 					item.target1 = isWeekly
 						? target * 5
@@ -125,20 +118,10 @@ const Activities = () => {
 			data={employees}
 			selectedValue={selectedUser?.fullName ?? ""}
 		>
-			<FilterActivityTab
-				selectedFilter={selectedFilter}
-				handleFilterClick={handleFilterClick}
-			/>
+			<FilterActivityTab selectedFilter={selectedFilter} handleFilterClick={handleFilterClick} />
 			{userActivities && (
-				<SimpleGrid
-					columns={{ lg: 2 }}
-					spacing={4}
-					templateColumns={{ lg: "35% 65%" }}
-				>
-					<LeftPane
-						setShowSelectCustomer={setShowSelectCustomer}
-						setLogType={setLogType}
-					/>
+				<SimpleGrid columns={{ lg: 2 }} spacing={4} templateColumns={{ lg: "35% 65%" }}>
+					<LeftPane setShowSelectCustomer={setShowSelectCustomer} setLogType={setLogType} />
 					<RightPane setShowSelectCustomer={setShowSelectCustomer} />
 				</SimpleGrid>
 			)}

@@ -1,14 +1,60 @@
 import { Box, Table, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
 import LeftIconButton from "components/ui/button/LeftIconButton";
 import EmptyRowRecord from "components/ui/EmptyRowRecord";
-import { useState } from "react";
+import useSelectUser from "hooks/useSelectUser";
+import { useEffect, useState } from "react";
 import { BsPlus } from "react-icons/bs";
+import CalendarService from "services/CalendarService";
 import { formatDate } from "utils";
 import AddEvent from "../../calendar/AddEvent";
 
-const CalendarTable = ({ cols, data, setIsRefresh, filterText, filter }) => {
+const CalendarTable = ({ cols, setIsRefresh, filterText, filter, setStats, user, company }) => {
 	const [showEventForm, setShowEventForm] = useState(false);
 	const [isLoading, setIsLoading] = useState(false);
+	const [data, setData] = useState(null);
+	const { selectedUser } = useSelectUser(user);
+
+	useEffect(() => {
+		const fetchAllUserEvents = async () => {
+			try {
+				const response =
+					filter === "event"
+						? await CalendarService.getUserEventsByType({
+								type: "event",
+								name: selectedUser?.fullName,
+								company,
+						  })
+						: filter === "meeting"
+						? await CalendarService.getUserEventsByType({
+								type: "meeting",
+								name: selectedUser?.fullName,
+								company,
+						  })
+						: await CalendarService.getUserEventsByType({
+								type: "phoneCall",
+								name: selectedUser?.fullName,
+								company,
+						  });
+				setData(response.data);
+				setStatInfo(filterText, response.data.length);
+			} catch (error) {
+				console.error(error);
+			}
+		};
+
+		fetchAllUserEvents();
+	}, [selectedUser]);
+
+	const setStatInfo = (key, count) =>
+		setStats((prevStats) =>
+			prevStats.map((stat) => {
+				if (stat.name === `${key}s`) {
+					return { ...stat, value: count };
+				}
+				return stat;
+			}),
+		);
+
 	return (
 		<Box overflow="auto" fontWeight={"normal"}>
 			<LeftIconButton name={"New"} handleClick={() => setShowEventForm(true)} icon={<BsPlus />} />
