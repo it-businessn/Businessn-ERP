@@ -27,9 +27,7 @@ const WorkviewTab = ({
 		const navigatePage = col.key === "" && name === "setup";
 		if (navigatePage) {
 			navigate(
-				stepNum !== undefined
-					? `${path}/${row.empId._id}/${stepNum}`
-					: `${path}/${row.empId._id}`,
+				stepNum !== undefined ? `${path}/${row.empId._id}/${stepNum}` : `${path}/${row.empId._id}`,
 			);
 			return;
 		} else if (col.key === "") {
@@ -52,9 +50,7 @@ const WorkviewTab = ({
 				overflowX={overflowX}
 			>
 				<Tbody>
-					{(!data || data?.length === 0) && (
-						<EmptyRowRecord data={data} colSpan={cols.length} />
-					)}
+					{(!data || data?.length === 0) && <EmptyRowRecord data={data} colSpan={cols.length} />}
 					{data?.map((row) => (
 						<Tr key={row?.empId?._id}>
 							{cols.map((col) => {
@@ -76,10 +72,10 @@ const WorkviewTab = ({
 										) : (
 											row.empId[col.pair_key]
 										)
-									) : // ) : isHourly ? (
-									// 	`${(row[col.pair] / 60).toFixed(0)}:${row[col.pair] % 60}`
-									col.round ? (
+									) : col.round ? (
 										getAmount(row[col.pair])
+									) : col.main_key ? (
+										row[col.main_key][col.pair]
 									) : (
 										row[col.pair]
 									);
@@ -96,11 +92,7 @@ const WorkviewTab = ({
 										// zIndex="1"
 									>
 										{col.isEditable
-											? renderEditableInput(
-													row?.empId?._id,
-													col.pair,
-													fieldValue,
-											  )
+											? renderEditableInput(row?.empId?._id, col.pair, fieldValue)
 											: fieldValue}
 									</Td>
 								);
@@ -110,12 +102,7 @@ const WorkviewTab = ({
 					{isExtraRun && (
 						<Tr>
 							<Td p={0}>
-								<PrimaryButton
-									name={"Add employee"}
-									size="xs"
-									px={0}
-									onOpen={handleAddEmp}
-								/>
+								<PrimaryButton name={"Add employee"} size="xs" px={0} onOpen={handleAddEmp} />
 							</Td>
 						</Tr>
 					)}

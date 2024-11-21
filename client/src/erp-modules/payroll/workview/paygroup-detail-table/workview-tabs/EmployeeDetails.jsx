@@ -8,22 +8,10 @@ import SettingService from "services/SettingService";
 import AddEmployeeModal from "./AddEmployeeModal";
 import WorkviewTab from "./WorkviewTab";
 
-const EmployeeDetails = ({
-	company,
-	closestRecord,
-	path,
-	groupId,
-	selectedPayGroup,
-}) => {
+const EmployeeDetails = ({ company, closestRecord, path, groupId, selectedPayGroup }) => {
 	const [showConfirmationPopUp, setShowConfirmationPopUp] = useState(false);
 	const [refresh, setRefresh] = useState(false);
-	const empData = useEmployeeEmploymentInfo(
-		company,
-		null,
-		closestRecord,
-		groupId,
-		refresh,
-	);
+	const empData = useEmployeeEmploymentInfo(company, null, closestRecord, groupId, refresh);
 
 	const handleClose = () => setShowConfirmationPopUp(false);
 
@@ -32,13 +20,13 @@ const EmployeeDetails = ({
 		(_) => _.payPeriod === closestRecord.payPeriod && _.isExtraRun === true,
 	);
 
-	const selectedEmployee =
-		selectedPayGroup?.scheduleSettings[selectedEmployeeIndex]?.selectedEmp;
+	const selectedEmployee = selectedPayGroup?.scheduleSettings[selectedEmployeeIndex]?.selectedEmp;
 
 	const handleDelete = (emp) => {
 		setShowConfirmationPopUp(true);
-		selectedPayGroup.scheduleSettings[selectedEmployeeIndex].selectedEmp =
-			selectedEmployee?.filter((_) => _ !== emp);
+		selectedPayGroup.scheduleSettings[selectedEmployeeIndex].selectedEmp = selectedEmployee?.filter(
+			(_) => _ !== emp,
+		);
 	};
 
 	const handleSubmit = async () => {
@@ -59,9 +47,7 @@ const EmployeeDetails = ({
 			{showConfirmationPopUp && (
 				<DeletePopUp
 					headerTitle={"Delete User"}
-					textTitle={
-						"Are you sure you want to remove the user from the extra payrun?"
-					}
+					textTitle={"Are you sure you want to remove the user from the extra payrun?"}
 					isOpen={showConfirmationPopUp}
 					onClose={handleClose}
 					onOpen={handleSubmit}
@@ -86,15 +72,13 @@ const EmployeeDetails = ({
 					{ key: "Employee Number", pair: "obj", pair_key: "employeeId" },
 					{ key: "Payrate", pair: "regPay", round: true },
 					// { key: "Employee Department", pair: "companyDepartment" },
-					{ key: "Department", pair: "employmentCostCenter" },
+					{ key: "Department", pair: "employmentCostCenter", main_key: "empPayStubResult" },
 					{
 						key: "",
 						pair: (
 							<HStack w={"100%"} justifyContent={"center"}>
 								<OutlineButton size="xs" name="setup" label="View Setup" />
-								{closestRecord?.isExtraRun && (
-									<PrimaryButton name={"Delete"} size="xs" px={0} />
-								)}
+								{closestRecord?.isExtraRun && <PrimaryButton name={"Delete"} size="xs" px={0} />}
 							</HStack>
 						),
 					},
@@ -102,7 +86,7 @@ const EmployeeDetails = ({
 						key: "detail1",
 					},
 					{
-						key: "detail1",
+						key: "detail1s",
 					},
 					{
 						key: "detail2",

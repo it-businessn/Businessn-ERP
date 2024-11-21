@@ -8,13 +8,10 @@ const { findGroupEmployees } = require("./setUpController");
 const { getPayrollActiveEmployees } = require("./userController");
 
 const getAllEmploymentInfo = async (req, res) => {
-	const { companyName, startDate, endDate, payDate, isExtraRun, groupId } =
-		req.params;
+	const { companyName, startDate, endDate, payDate, isExtraRun, groupId } = req.params;
 	try {
 		const isExtraPayRun = isExtraRun === "true";
-		const employees = isExtraPayRun
-			? await findGroupEmployees(groupId, payDate)
-			: null;
+		const employees = isExtraPayRun ? await findGroupEmployees(groupId, payDate) : null;
 
 		const activeEmployees = isExtraPayRun
 			? await getEmployeeId(employees)
@@ -22,7 +19,7 @@ const getAllEmploymentInfo = async (req, res) => {
 
 		const aggregatedResult = [];
 		for (const employee of activeEmployees) {
-			const result = await buildPayPeriodEmpDetails(companyName, employee._id);
+			const result = await buildPayPeriodEmpDetails(companyName, employee._id, true);
 			aggregatedResult.push(result);
 		}
 		aggregatedResult.map((empInfo) => {
@@ -32,9 +29,6 @@ const getAllEmploymentInfo = async (req, res) => {
 			}
 			empInfo._id = empInfo?.empPayStubResult?._id;
 			empInfo.empId = empInfo?.empPayStubResult?.empId;
-			empInfo.companyDepartment = empInfo?.empPayStubResult?.companyDepartment;
-			empInfo.employmentCostCenter =
-				empInfo?.empPayStubResult?.employmentCostCenter;
 		});
 
 		res.status(200).json(aggregatedResult);
@@ -57,13 +51,21 @@ const findEmpPayInfo = async (companyName) =>
 		companyName,
 	}).select("empId regPay");
 
-const buildPayPeriodEmpDetails = async (companyName, employeeId) => {
-	const empPayStubResult = await findEmpEmploymentInfo(employeeId);
+const buildPayPeriodEmpDetails = async (companyName, employeeId, hideDetails) => {
+	const empPayStubResult = hideDetails
+		? await EmployeeEmploymentInfo.findOne({
+				empId: employeeId,
+		  })
+				.populate({
+					path: "empId",
+					model: "Employee",
+					select: ["employeeId", "fullName"],
+				})
+				.select("empId companyDepartment employmentCostCenter")
+		: await findEmpEmploymentInfo(employeeId);
 
 	const payInfoResult = await findEmpPayInfo(companyName);
-	const payInfoMapResult = new Map(
-		payInfoResult.map((payInfo) => [payInfo.empId, payInfo.regPay]),
-	);
+	const payInfoMapResult = new Map(payInfoResult.map((payInfo) => [payInfo.empId, payInfo.regPay]));
 	return { empPayStubResult, payInfoMapResult };
 };
 
@@ -116,10 +118,7 @@ const addEmployeeEmploymentInfo = async (req, res) => {
 	} = req.body;
 	try {
 		const data = { employmentRole, employmentCostCenter, employmentDepartment };
-		const existingEmploymentInfo = await findEmployeeEmploymentInfo(
-			empId,
-			companyName,
-		);
+		const existingEmploymentInfo = await findEmployeeEmploymentInfo(empId, companyName);
 		if (existingEmploymentInfo) {
 			const updatedEmploymentInfo = await updateEmploymentInfo(
 				existingEmploymentInfo._id,
@@ -145,11 +144,7 @@ const addEmployeeEmploymentInfo = async (req, res) => {
 			companyDepartment,
 		});
 		await updateEmployee(empId, data);
-		await setInitialPermissions(
-			empId,
-			isRoleManager(employmentRole),
-			companyName,
-		);
+		await setInitialPermissions(empId, isRoleManager(employmentRole), companyName);
 		return res.status(201).json(newEmploymentInfo);
 	} catch (error) {
 		res.status(400).json({ message: error.message });
