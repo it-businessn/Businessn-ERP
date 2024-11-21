@@ -14,20 +14,15 @@ import PrimaryButton from "components/ui/button/PrimaryButton";
 import InputFormControl from "components/ui/form/InputFormControl";
 // import MultiSelectFormControl from "components/ui/form/MultiSelectFormControl";
 import TextTitle from "components/ui/text/TextTitle";
+import useDepartment from "hooks/useDepartment";
 import { useSignup } from "hooks/useSignup";
 import { useState } from "react";
 import UserService from "services/UserService";
 // import { isManager } from "utils";
 
-const EditUserInfo = ({
-	setEditMode,
-	userData,
-	setUserData,
-	setError,
-	error,
-	company,
-}) => {
-	const { companies, roles, departments, managers } = useSignup();
+const EditUserInfo = ({ setEditMode, userData, setUserData, setError, error, company }) => {
+	const departments = useDepartment(company);
+	const { roles, managers } = useSignup();
 	const [openAssigneeMenu, setOpenAssigneeMenu] = useState(false);
 	// const assignedCompanies = userData?.companyId?.map(({ name }) => name);
 	// const [selectedOptions, setSelectedOptions] = useState(assignedCompanies);
@@ -40,10 +35,7 @@ const EditUserInfo = ({
 		e.preventDefault();
 		try {
 			userData.companies = userData.companyId;
-			const response = await UserService.updateUserProfile(
-				userData,
-				userData._id,
-			);
+			const response = await UserService.updateUserProfile(userData, userData._id);
 			setEditMode(false);
 			setUserData(response.data);
 			setError(null);

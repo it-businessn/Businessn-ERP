@@ -2,9 +2,9 @@ import { HStack, IconButton } from "@chakra-ui/react";
 import PrimaryButton from "components/ui/button/PrimaryButton";
 import TabsButtonGroup from "components/ui/tab/TabsButtonGroup";
 import useCompany from "hooks/useCompany";
+import useDepartment from "hooks/useDepartment";
 import useEmployees from "hooks/useEmployees";
 import usePaygroup from "hooks/usePaygroup";
-import { useSignup } from "hooks/useSignup";
 import PageLayout from "layouts/PageLayout";
 import { useEffect, useState } from "react";
 import { IoRefresh } from "react-icons/io5";
@@ -19,25 +19,19 @@ import Timesheet from "./Timesheet";
 
 const Timesheets = () => {
 	const { id } = useParams();
-	const { company } = useCompany(
-		LocalStorageService.getItem("selectedCompany"),
-	);
+	const { company } = useCompany(LocalStorageService.getItem("selectedCompany"));
 	const loggedInUser = LocalStorageService.getItem("user");
 	const isManagerView = isManager(loggedInUser?.role);
 	const userId = id ? id : isManagerView ? null : loggedInUser._id;
 
-	const { payGroupSchedule, closestRecord, closestRecordIndex } = usePaygroup(
-		company,
-		false,
-	);
-	const lastRecord =
-		payGroupSchedule?.length > 0 && payGroupSchedule[closestRecordIndex - 1];
+	const { payGroupSchedule, closestRecord, closestRecordIndex } = usePaygroup(company, false);
+	const lastRecord = payGroupSchedule?.length > 0 && payGroupSchedule[closestRecordIndex - 1];
 
 	const [refresh, setRefresh] = useState(false);
 	const [dataRefresh, setDataRefresh] = useState(false);
 	const [filter, setFilter] = useState(null);
 	const { employees } = useEmployees(false, company, false, true);
-	const { departments, roles } = useSignup(false, company);
+	const departments = useDepartment(company);
 
 	const [date, setDate] = useState(getDefaultDate);
 
@@ -137,8 +131,7 @@ const Timesheets = () => {
 	];
 
 	const [viewMode, setViewMode] = useState(TABS[0].type);
-	const showComponent = (viewMode) =>
-		TABS.find(({ type }) => type === viewMode)?.name;
+	const showComponent = (viewMode) => TABS.find(({ type }) => type === viewMode)?.name;
 	return (
 		<PageLayout
 			width="full"
@@ -157,11 +150,7 @@ const Timesheets = () => {
 					variant={"solid"}
 					onClick={handleRefresh}
 				/>
-				<PrimaryButton
-					size={"sm"}
-					name={"Add record"}
-					onOpen={() => setShowAddEntry(true)}
-				/>
+				<PrimaryButton size={"sm"} name={"Add record"} onOpen={() => setShowAddEntry(true)} />
 			</HStack>
 
 			{showAddEntry && (
@@ -172,13 +161,7 @@ const Timesheets = () => {
 					setShowAddEntry={setShowAddEntry}
 				/>
 			)}
-			<HStack
-				w={"90%"}
-				justifyContent={"start"}
-				gap={5}
-				position="sticky"
-				zIndex={4}
-			>
+			<HStack w={"90%"} justifyContent={"start"} gap={5} position="sticky" zIndex={4}>
 				<TabsButtonGroup
 					w={"20%"}
 					mt={4}

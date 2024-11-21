@@ -1,13 +1,7 @@
 import { useEffect, useState } from "react";
 import UserService from "services/UserService";
 
-const useEmployees = (
-	isRefresh,
-	company,
-	isOnboarding,
-	isPayrollState,
-	userId,
-) => {
+const useEmployees = (isRefresh, company, isOnboarding, isPayrollState, userId) => {
 	const [employees, setEmployees] = useState(null);
 	const [filteredEmployees, setFilteredEmployees] = useState(null);
 
@@ -24,9 +18,7 @@ const useEmployees = (
 			try {
 				const response = isPayrollActiveState
 					? await UserService.getPayrollActiveCompanyUsers(company)
-					: isPayrollInActiveState
-					? await UserService.getPayrollInActiveCompanyUsers(company)
-					: await UserService.getAllCompanyUsers(company);
+					: await UserService.getPayrollInActiveCompanyUsers(company);
 
 				setEmployees(response.data);
 				setFilteredEmployees(response.data);

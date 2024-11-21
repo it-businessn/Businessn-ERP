@@ -1,41 +1,57 @@
-import { Box, HStack, Icon, SimpleGrid } from "@chakra-ui/react";
+import { Box, HStack, SimpleGrid } from "@chakra-ui/react";
 import BoxCard from "components/ui/card";
 import TextTitle from "components/ui/text/TextTitle";
 import useActiveEmployees from "hooks/useActiveEmployees";
-import useEmployees from "hooks/useEmployees";
 import { useEffect, useState } from "react";
-import { MdOutlineChevronLeft, MdOutlineChevronRight } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
+import PayrollService from "services/PayrollService";
+import UserService from "services/UserService";
 import NotificationCard from "./NotificationCard";
 import PayPeriodDetails from "./PayPeriodDetails";
 import PayrollActionSection from "./PayrollActionSection";
 import PayrollCard from "./PayrollCard";
 
-const LeftPane = ({
-	selectedPayGroup,
-	setStats,
-	company,
-	closestRecord,
-	payGroupSchedule,
-	closestRecordIndex,
-}) => {
+const LeftPane = ({ setStats, company, closestRecord, payGroupSchedule, closestRecordIndex }) => {
 	const prevSchedule = payGroupSchedule?.[closestRecordIndex - 1];
 	const nextSchedule = payGroupSchedule?.[closestRecordIndex + 1];
-	const { employees } = useEmployees(false, company, false, false, false);
 	const activeUsers = useActiveEmployees(company);
 
+	const [totalEmployees, setTotalEmployees] = useState(null);
 	const [filter, setFilter] = useState(null);
+	const [totalAlerts, setTotalAlerts] = useState(null);
 
 	const navigate = useNavigate();
 
 	const handleClick = (path) => navigate(path);
 
 	useEffect(() => {
+		const fetchAllEmployees = async () => {
+			try {
+				const response = await UserService.getAllCompanyUsers(company);
+				setTotalEmployees(response.data);
+			} catch (error) {
+				console.error(error);
+			}
+		};
+		fetchAllEmployees();
+	}, []);
+
+	useEffect(() => {
 		if (closestRecord) {
+			const { payPeriodStartDate, payPeriodEndDate, payPeriod } = closestRecord;
 			setFilter({
-				startDate: closestRecord?.payPeriodStartDate,
-				endDate: closestRecord?.payPeriodEndDate,
+				startDate: payPeriodStartDate,
+				endDate: payPeriodEndDate,
 			});
+			const fetchAlerts = async () => {
+				try {
+					const response = await PayrollService.getTotalAlerts(company, payPeriod);
+					setTotalAlerts(response.data);
+				} catch (error) {
+					console.error(error);
+				}
+			};
+			fetchAlerts();
 		}
 	}, [closestRecord]);
 
@@ -65,6 +81,7 @@ const LeftPane = ({
 					selectedPayPeriod={closestRecord}
 					handleClick={handleClick}
 					activeUsers={activeUsers}
+					totalAlerts={totalAlerts}
 				/>
 			),
 		},
@@ -74,8 +91,8 @@ const LeftPane = ({
 				<PayPeriodDetails
 					handleClick={handleClick}
 					company={company}
-					employees={employees}
 					activeUsers={activeUsers}
+					employees={totalEmployees}
 				/>
 			),
 		},
@@ -86,12 +103,7 @@ const LeftPane = ({
 	];
 	return (
 		<Box>
-			<SimpleGrid
-				mb={"1em"}
-				columns={{ base: 2 }}
-				spacing="1em"
-				color={"var(--menu_item_color)"}
-			>
+			<SimpleGrid mb={"1em"} columns={{ base: 2 }} spacing="1em" color={"var(--menu_item_color)"}>
 				{/* <TimeCard selectedUser={selectedUser} company={company} /> */}
 
 				{sections.map(({ name, content }, index) => (

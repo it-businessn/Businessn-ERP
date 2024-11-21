@@ -2,18 +2,11 @@ import { HStack, VStack } from "@chakra-ui/react";
 import NormalTextTitle from "components/ui/NormalTextTitle";
 import TextTitle from "components/ui/text/TextTitle";
 import VerticalStepper from "components/ui/VerticalStepper";
-import useEmployeeAlertsInfo from "hooks/useEmployeeAlertsInfo";
-import useTimesheet from "hooks/useTimesheet";
 import { useEffect, useState } from "react";
 import { processPayrollPath, timesheetPath } from "routes";
+import TimesheetService from "services/TimesheetService";
 
-const PayrollActionSection = ({
-	company,
-	filter,
-	selectedPayPeriod,
-	handleClick,
-	activeUsers,
-}) => {
+const PayrollActionSection = ({ company, filter, handleClick, activeUsers, totalAlerts }) => {
 	const [approvalPercent, setApprovalPercent] = useState(0);
 	const [violationPercent, setViolationPercent] = useState(100);
 	const [reviewPercent, setReviewPercent] = useState(null);
@@ -22,36 +15,43 @@ const PayrollActionSection = ({
 	const [currentStep, setCurrentStep] = useState(0);
 	const [progressPercent, setProgressPercent] = useState(0);
 
-	const timesheets = useTimesheet(company, null, null, filter);
+	const [timesheets, setTimesheets] = useState(null);
+
+	useEffect(() => {
+		const fetchAllEmployeeTimesheet = async () => {
+			try {
+				const response = await TimesheetService.getFilteredTimesheetsByStatus(company, filter);
+				setTimesheets(response.data);
+			} catch (error) {
+				console.error(error);
+			}
+		};
+		if (filter) {
+			fetchAllEmployeeTimesheet();
+		}
+	}, [filter]);
 
 	useEffect(() => {
 		if (!timesheets?.length) {
 			return;
 		}
 		const approvedTimesheet = timesheets.filter(
-			(_) => _.approveStatus === "Approved",
+			({ approveStatus }) => approveStatus === "Approved",
 		).length;
 		const rejectedTimesheet = timesheets.filter(
-			(_) => _.approveStatus === "Rejected",
+			({ approveStatus }) => approveStatus === "Rejected",
 		).length;
 
-		const calcApprovedPercent =
-			((approvedTimesheet + rejectedTimesheet) / timesheets.length) * 100;
+		const calcApprovedPercent = ((approvedTimesheet + rejectedTimesheet) / timesheets.length) * 100;
 
 		setApprovalPercent(calcApprovedPercent);
 	}, [timesheets]);
 
-	const alertsReviewData = useEmployeeAlertsInfo(
-		company,
-		selectedPayPeriod,
-		true,
-		2,
-	);
 	useEffect(() => {
-		if (alertsReviewData?.length) {
+		if (totalAlerts) {
 			setViolationPercent(0);
 		}
-	}, [alertsReviewData]);
+	}, [totalAlerts]);
 
 	useEffect(() => {
 		const avgPercent = ((approvalPercent + violationPercent) / 2).toFixed(2);
@@ -62,8 +62,7 @@ const PayrollActionSection = ({
 	const steps = [
 		{
 			title: "Timesheet Approvals",
-			description:
-				approvalPercent < 100 ? approvalPercent.toFixed(2) : approvalPercent,
+			description: approvalPercent < 100 ? approvalPercent.toFixed(2) : approvalPercent,
 			linkTo: {
 				title: "Go to timesheet",
 				path: timesheetPath,
@@ -107,21 +106,11 @@ const PayrollActionSection = ({
 			>
 				<VStack>
 					<TextTitle title={"Overview of payroll process"} />
-					<NormalTextTitle
-						title={`Task progress of ${activeUsers?.length} employees`}
-					/>
+					<NormalTextTitle title={`Task progress of ${activeUsers} employees`} />
 				</VStack>
-				<TextTitle
-					title={`${progressPercent}%`}
-					align="end"
-					color={"var(--primary_button_bg)"}
-				/>
+				<TextTitle title={`${progressPercent}%`} align="end" color={"var(--primary_button_bg)"} />
 			</HStack>
-			<VerticalStepper
-				steps={steps}
-				currentStep={currentStep}
-				handleLinkClick={handleClick}
-			/>
+			<VerticalStepper steps={steps} currentStep={currentStep} handleLinkClick={handleClick} />
 		</VStack>
 	);
 };

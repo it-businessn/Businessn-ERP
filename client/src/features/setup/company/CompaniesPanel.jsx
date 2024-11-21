@@ -1,17 +1,7 @@
-import {
-	FormLabel,
-	HStack,
-	Input,
-	Table,
-	Tbody,
-	Td,
-	Th,
-	Thead,
-	Tr,
-} from "@chakra-ui/react";
+import { FormLabel, HStack, Input, Table, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
 import ActionButton from "components/ui/button/ActionButton";
 import EmptyRowRecord from "components/ui/EmptyRowRecord";
-import { useSignup } from "hooks/useSignup";
+import useCompanies from "hooks/useCompanies";
 import { useState } from "react";
 import SettingService from "services/SettingService";
 
@@ -33,7 +23,7 @@ const CompaniesPanel = ({ setOpenCompanyForm }) => {
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [isRefresh, setIsRefresh] = useState(false);
 
-	const { companies } = useSignup(isRefresh);
+	const companies = useCompanies();
 
 	const resetForm = () => setFormData(defaultFormData);
 

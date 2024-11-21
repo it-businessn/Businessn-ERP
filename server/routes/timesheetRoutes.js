@@ -5,9 +5,11 @@ const timesheetController = require("../controllers/timesheetContoller");
 
 router.get("/:companyName", timesheetController.getTimesheets);
 
+router.get("/filtered/:companyName/:filter", timesheetController.getFilteredTimesheets);
+
 router.get(
-	"/filtered/:companyName/:filter",
-	timesheetController.getFilteredTimesheets,
+	"/filtered-status/:companyName/:filter",
+	timesheetController.getFilteredTimesheetsByStatus,
 );
 
 router.get("/:companyName/:employeeId", timesheetController.getTimesheet);

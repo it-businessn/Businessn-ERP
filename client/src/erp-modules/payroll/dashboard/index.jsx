@@ -10,9 +10,7 @@ import LeftPane from "./leftpane";
 import RightPane from "./rightpane";
 
 const Dashboard = () => {
-	const { company } = useCompany(
-		LocalStorageService.getItem("selectedCompany"),
-	);
+	const { company } = useCompany(LocalStorageService.getItem("selectedCompany"));
 	const {
 		payGroups,
 		selectedPayGroup,
@@ -63,7 +61,6 @@ const Dashboard = () => {
 				templateColumns={{ lg: "70% 30%" }}
 			>
 				<LeftPane
-					selectedPayGroup={selectedPayGroup}
 					setStats={setStats}
 					company={company}
 					closestRecord={closestRecord}

@@ -1,12 +1,10 @@
 import { Checkbox, HStack, SimpleGrid, VStack } from "@chakra-ui/react";
 import PrimaryButton from "components/ui/button/PrimaryButton";
-import OtherFilter from "erp-modules/payroll/timesheets/OtherFilter";
 import OnboardEmpModal from "erp-modules/payroll/workview/paygroup-header-table/OnboardEmpModal";
 import PayrollActions from "erp-modules/payroll/workview/paygroup-header-table/PayrollActions";
 import useCompany from "hooks/useCompany";
 import useEmployees from "hooks/useEmployees";
 import usePaygroup from "hooks/usePaygroup";
-import { useSignup } from "hooks/useSignup";
 import PageLayout from "layouts/PageLayout";
 import { useState } from "react";
 import LocalStorageService from "services/LocalStorageService";
@@ -14,9 +12,7 @@ import EmpProfileSearch from "../EmpProfileSearch";
 import EmployeeList from "./EmployeeList";
 
 const EmployeeListView = () => {
-	const { company } = useCompany(
-		LocalStorageService.getItem("selectedCompany"),
-	);
+	const { company } = useCompany(LocalStorageService.getItem("selectedCompany"));
 
 	const [formData, setFormData] = useState({
 		isPayrollActive: true,
@@ -40,7 +36,7 @@ const EmployeeListView = () => {
 	const toggleDeptFilter = () => setShowDeptFilter((prev) => !prev);
 	const toggleCCFilter = () => setShowCCFilter((prev) => !prev);
 	const handleFilter = () => console.log(filteredEmployees);
-	const { departments, roles } = useSignup(false, company);
+	// const { departments, roles } = useSignup(false, company);
 	const [filteredDept, setFilteredDept] = useState([]);
 	const [filteredCC, setFilteredCC] = useState([]);
 
@@ -85,12 +81,7 @@ const EmployeeListView = () => {
 							onOpen={() => setShowOnboard(true)}
 						/>
 					</HStack>
-					<HStack
-						w={"100%"}
-						pt={"5em"}
-						spacing={"3em"}
-						justifyContent={"start"}
-					>
+					<HStack w={"100%"} pt={"5em"} spacing={"3em"} justifyContent={"start"}>
 						<HStack spacing={2}>
 							<Checkbox
 								colorScheme={"facebook"}

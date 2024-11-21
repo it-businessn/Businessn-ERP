@@ -78,7 +78,12 @@ const getUserActivity = () => async (req, res) => {
 const getPayrollActiveCompanyEmployees = () => async (req, res) => {
 	const { companyName } = req.params;
 	try {
-		const result = await getPayrollActiveEmployees(companyName);
+		const existingCompany = await findCompany("name", companyName);
+		const result = await Employee.countDocuments({
+			payrollStatus: "Payroll Active",
+			companyId: existingCompany._id,
+		});
+
 		res.status(200).json(result);
 	} catch (error) {
 		res.status(404).json({ error: error.message });
@@ -98,7 +103,7 @@ const getCompanyEmployees = () => async (req, res) => {
 	const { companyName } = req.params;
 	try {
 		const existingCompany = await findCompany("name", companyName);
-		const result = await findEmployee({
+		const result = await Employee.countDocuments({
 			companyId: existingCompany._id,
 		});
 

@@ -25,6 +25,9 @@ import LoginService from "services/LoginService";
 import BaseModulePanel from "./BaseModulePanel";
 import DepartmentsPanel from "./DepartmentsPanel";
 // import EmploymentPanel from "./EmploymentPanel";
+import useCompanies from "hooks/useCompanies";
+import useDepartment from "hooks/useDepartment";
+import LocalStorageService from "services/LocalStorageService";
 import MultiSelectControl from "./MultiSelectControl";
 import RolesPanel from "./RolesPanel";
 // import signUpImg from "../../assets/logos/BusinessN_dark.jpg";
@@ -39,18 +42,10 @@ const SignUp = ({ isModal, setRefresh, onClose, hideCompany }) => {
 	const goBack = () => {
 		navigate(-1);
 	};
-	const {
-		formData,
-		resetForm,
-		setFormData,
-		companies,
-		empTypes,
-		roles,
-		departments,
-		modules,
-		managers,
-	} = useSignup(dataRefresh);
+	const { formData, resetForm, setFormData, roles, modules, managers } = useSignup(dataRefresh);
 
+	const companies = useCompanies();
+	const departments = useDepartment(LocalStorageService.getItem("selectedCompany"));
 	// const [showAddEmpTypes, setShowAddEmpTypes] = useState(false);
 	const [showAddRoles, setShowAddRoles] = useState(false);
 	const [showAddDepartments, setShowAddDepartments] = useState(false);
@@ -280,11 +275,7 @@ const SignUp = ({ isModal, setRefresh, onClose, hideCompany }) => {
 									required
 								/>
 								<InputRightElement>
-									<Button
-										size="sm"
-										variant="unstyled"
-										onClick={handleTogglePassword}
-									>
+									<Button size="sm" variant="unstyled" onClick={handleTogglePassword}>
 										{showPassword ? <ViewOffIcon /> : <ViewIcon />}
 									</Button>
 								</InputRightElement>

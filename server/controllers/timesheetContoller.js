@@ -32,9 +32,7 @@ const findByRecordTimesheets = async (record) => {
 const getTimesheetResult = async (companyName) => {
 	const payInfoResult = await EmployeePayInfo.find({
 		companyName,
-	}).select(
-		"empId regPay overTimePay dblOverTimePay statWorkPay statPay sickPay vacationPay",
-	);
+	}).select("empId regPay overTimePay dblOverTimePay statWorkPay statPay sickPay vacationPay");
 
 	const payInfoMap = new Map(
 		payInfoResult.map((payInfo) => [
@@ -88,6 +86,24 @@ const getTimesheets = async (req, res) => {
 	}
 };
 
+const getFilteredTimesheetsByStatus = async (req, res) => {
+	const { companyName, filter } = req.params;
+	const filteredData = JSON.parse(filter.split("=")[1]);
+	try {
+		const timesheets = await Timesheet.find({
+			companyName,
+			clockIn: {
+				$lte: filteredData?.endDate ? moment(filteredData?.endDate) : currentDate,
+				$gte: filteredData?.startDate ? moment(filteredData?.startDate) : currentDate,
+			},
+		}).select("approveStatus");
+
+		res.status(200).json(timesheets);
+	} catch (error) {
+		res.status(404).json({ error: error.message });
+	}
+};
+
 const getFilteredTimesheets = async (req, res) => {
 	const { companyName, filter } = req.params;
 	const filteredData = JSON.parse(filter.split("=")[1]);
@@ -95,12 +111,8 @@ const getFilteredTimesheets = async (req, res) => {
 		let timesheets = await findByRecordTimesheets({
 			companyName,
 			clockIn: {
-				$lte: filteredData?.endDate
-					? moment(filteredData?.endDate)
-					: currentDate,
-				$gte: filteredData?.startDate
-					? moment(filteredData?.startDate)
-					: currentDate,
+				$lte: filteredData?.endDate ? moment(filteredData?.endDate) : currentDate,
+				$gte: filteredData?.startDate ? moment(filteredData?.startDate) : currentDate,
 			},
 		});
 
@@ -143,8 +155,7 @@ const getTimesheet = async (req, res) => {
 	}
 };
 
-const findEmployeeTimesheetExists = async (record) =>
-	await Timesheet.findOne(record);
+const findEmployeeTimesheetExists = async (record) => await Timesheet.findOne(record);
 
 const findMonthlyEarning = async (employeeId, companyName) => {
 	const currentDate = moment.utc();
@@ -205,12 +216,12 @@ const addStatHolidayDefaultTimesheet = async (employeeId, companyName) => {
 	if (existingStatTimesheetInfo) {
 		return existingStatTimesheetInfo;
 	}
-	const { employeeEarnings, numberOfDaysWorked, statPayRate } =
-		await findMonthlyEarning(employeeId, companyName);
+	const { employeeEarnings, numberOfDaysWorked, statPayRate } = await findMonthlyEarning(
+		employeeId,
+		companyName,
+	);
 
-	const statPayAmount = numberOfDaysWorked
-		? employeeEarnings / numberOfDaysWorked
-		: 0;
+	const statPayAmount = numberOfDaysWorked ? employeeEarnings / numberOfDaysWorked : 0;
 	const statHours = statPayAmount / statPayRate;
 
 	const startTime = moment().set({
@@ -267,19 +278,13 @@ const addOvertimeRecord = async (clockIn, clockOut, employeeId, company) => {
 };
 
 const createTimesheet = async (req, res) => {
-	const { company, type, clockIn, clockOut, employeeId, param_hours } =
-		req.body;
+	const { company, type, clockIn, clockOut, employeeId, param_hours } = req.body;
 
 	try {
 		const totalWorkedHours = calcTotalWorkedHours(clockIn, clockOut);
 
 		if (type === "Regular Pay" && totalWorkedHours > 8) {
-			const adjustedClockOut = await addOvertimeRecord(
-				clockIn,
-				clockOut,
-				employeeId,
-				company,
-			);
+			const adjustedClockOut = await addOvertimeRecord(clockIn, clockOut, employeeId, company);
 			const newEntry = {
 				employeeId,
 				clockIn,
@@ -320,8 +325,7 @@ const addStatHolidayTimesheet = async (companyName) => {
 	}
 };
 const addOvertimeTimesheet = async (record) => {
-	const { employeeId, companyName, clockIn, clockOut, overtimeHoursWorked } =
-		record;
+	const { employeeId, companyName, clockIn, clockOut, overtimeHoursWorked } = record;
 
 	const newEntry = {
 		employeeId,
@@ -342,21 +346,12 @@ const updateTimesheet = async (req, res) => {
 		const totalWorkedHours = calcTotalWorkedHours(clockIn, clockOut);
 
 		if (param_hours === "regHoursWorked" && totalWorkedHours > 8) {
-			const adjustedClockOut = await addOvertimeRecord(
-				clockIn,
-				clockOut,
-				empId,
-				company,
-			);
+			const adjustedClockOut = await addOvertimeRecord(clockIn, clockOut, empId, company);
 			const updatedData = {
 				clockIn,
 				clockOut: adjustedClockOut,
 				[param_hours]: 8,
-				approveStatus: approve
-					? "Approved"
-					: approve === false
-					? "Rejected"
-					: "Pending",
+				approveStatus: approve ? "Approved" : approve === false ? "Rejected" : "Pending",
 			};
 			const timesheet = await Timesheet.findByIdAndUpdate(id, updatedData);
 			return res.status(201).json(timesheet);
@@ -365,11 +360,7 @@ const updateTimesheet = async (req, res) => {
 			clockIn,
 			clockOut,
 			[param_hours]: totalWorkedHours,
-			approveStatus: approve
-				? "Approved"
-				: approve === false
-				? "Rejected"
-				: "Pending",
+			approveStatus: approve ? "Approved" : approve === false ? "Rejected" : "Pending",
 		};
 
 		const timesheet = await Timesheet.findByIdAndUpdate(id, updatedData);
@@ -406,4 +397,5 @@ module.exports = {
 	findEmployeeTimesheetExists,
 	deleteTimesheet,
 	addStatHolidayTimesheet,
+	getFilteredTimesheetsByStatus,
 };

@@ -44,7 +44,7 @@ const getAllPayGroups = async (req, res) => {
 		const groups = await Group.find({
 			companyName,
 			payrollActivated: true,
-		});
+		}).select("scheduleSettings name");
 		res.status(200).json(groups);
 	} catch (error) {
 		res.status(404).json({ error: error.message });
@@ -52,8 +52,7 @@ const getAllPayGroups = async (req, res) => {
 };
 
 const getGroupedTimesheet = async (req, res) => {
-	const { companyName, startDate, endDate, payDate, isExtraRun, groupId } =
-		req.params;
+	const { companyName, startDate, endDate, payDate, isExtraRun, groupId } = req.params;
 
 	try {
 		const isExtraPayRun = isExtraRun === "true";
@@ -75,17 +74,12 @@ const getGroupedTimesheet = async (req, res) => {
 			const empTimesheetData = currentPeriodEmployees?.find(
 				(el) => el.empId._id.toString() === employee._id.toString(),
 			);
-			const result = await buildEmpHourlyDetails(
-				empTimesheetData ?? null,
-				employee,
+			const result = await buildEmpHourlyDetails(empTimesheetData ?? null, employee, companyName);
+			const additionalHoursAllocatedInfo = await findAdditionalHoursAllocatedInfo({
+				empId: employee._id,
 				companyName,
-			);
-			const additionalHoursAllocatedInfo =
-				await findAdditionalHoursAllocatedInfo({
-					empId: employee._id,
-					companyName,
-					payPeriodPayDate: payDate,
-				});
+				payPeriodPayDate: payDate,
+			});
 			if (additionalHoursAllocatedInfo) {
 				const {
 					additionalRegHoursWorked,
@@ -99,8 +93,7 @@ const getGroupedTimesheet = async (req, res) => {
 
 				result.additionalRegHoursWorked = additionalRegHoursWorked;
 				result.additionalOvertimeHoursWorked = additionalOvertimeHoursWorked;
-				result.additionalDblOvertimeHoursWorked =
-					additionalDblOvertimeHoursWorked;
+				result.additionalDblOvertimeHoursWorked = additionalDblOvertimeHoursWorked;
 				result.additionalStatHoursWorked = additionalStatHoursWorked;
 				result.additionalStatDayHoursWorked = additionalStatDayHoursWorked;
 				result.additionalSickHoursWorked = additionalSickHoursWorked;
@@ -114,26 +107,15 @@ const getGroupedTimesheet = async (req, res) => {
 	}
 };
 
-const fetchActiveEmployees = async (
-	isExtraPayRun,
-	groupId,
-	payDate,
-	companyName,
-) => {
-	const employees =
-		isExtraPayRun && (await findGroupEmployees(groupId, payDate));
+const fetchActiveEmployees = async (isExtraPayRun, groupId, payDate, companyName) => {
+	const employees = isExtraPayRun && (await findGroupEmployees(groupId, payDate));
 
 	return isExtraPayRun
 		? await getEmployeeId(employees)
 		: await getPayrollActiveEmployees(companyName);
 };
 
-const basicInfo = async (
-	currentPeriodEmployees,
-	empId,
-	payPeriodPayDate,
-	companyName,
-) => {
+const basicInfo = async (currentPeriodEmployees, empId, payPeriodPayDate, companyName) => {
 	const empAdditionalHoursAllocated = await findAdditionalHoursAllocatedInfo({
 		empId,
 		payPeriodPayDate,
@@ -147,8 +129,7 @@ const basicInfo = async (
 };
 
 const getEEContribution = async (req, res) => {
-	const { companyName, startDate, endDate, payDate, isExtraRun, groupId } =
-		req.params;
+	const { companyName, startDate, endDate, payDate, isExtraRun, groupId } = req.params;
 
 	try {
 		const isExtraPayRun = isExtraRun === "true";
@@ -167,11 +148,7 @@ const getEEContribution = async (req, res) => {
 		const aggregatedResult = [];
 
 		for (const employee of activeEmployees) {
-			const {
-				empTimesheetData,
-				empPayInfoResult,
-				empAdditionalHoursAllocated,
-			} = await basicInfo(
+			const { empTimesheetData, empPayInfoResult, empAdditionalHoursAllocated } = await basicInfo(
 				currentPeriodEmployees,
 				employee._id,
 				payDate,
@@ -193,8 +170,7 @@ const getEEContribution = async (req, res) => {
 };
 
 const getERContribution = async (req, res) => {
-	const { companyName, startDate, endDate, payDate, isExtraRun, groupId } =
-		req.params;
+	const { companyName, startDate, endDate, payDate, isExtraRun, groupId } = req.params;
 
 	try {
 		const isExtraPayRun = isExtraRun === "true";
@@ -211,11 +187,7 @@ const getERContribution = async (req, res) => {
 		const aggregatedResult = [];
 
 		for (const employee of activeEmployees) {
-			const {
-				empTimesheetData,
-				empPayInfoResult,
-				empAdditionalHoursAllocated,
-			} = await basicInfo(
+			const { empTimesheetData, empPayInfoResult, empAdditionalHoursAllocated } = await basicInfo(
 				currentPeriodEmployees,
 				employee._id,
 				payDate,
@@ -242,11 +214,7 @@ const buildEmpEEDetails = (
 	empAdditionalHoursAllocated,
 	employee,
 ) => {
-	const data = ERData(
-		empTimesheetData,
-		empPayInfoResult,
-		empAdditionalHoursAllocated,
-	);
+	const data = ERData(empTimesheetData, empPayInfoResult, empAdditionalHoursAllocated);
 
 	const { unionDues, EE_EPP, EE_EHP } = getContributionsDeductions(data);
 	const { _id, fullName } = employee;
@@ -261,11 +229,7 @@ const buildEmpEEDetails = (
 	};
 };
 
-const ERData = (
-	empTimesheetData,
-	empPayInfoResult,
-	empAdditionalHoursAllocated,
-) => {
+const ERData = (empTimesheetData, empPayInfoResult, empAdditionalHoursAllocated) => {
 	const newEmpData = getCurrentTotals(
 		empTimesheetData,
 		empPayInfoResult,
@@ -314,11 +278,7 @@ const buildEmpERDetails = (
 	empAdditionalHoursAllocated,
 	employee,
 ) => {
-	const data = ERData(
-		empTimesheetData,
-		empPayInfoResult,
-		empAdditionalHoursAllocated,
-	);
+	const data = ERData(empTimesheetData, empPayInfoResult, empAdditionalHoursAllocated);
 	const { ER_EPP, ER_EHP } = getContributionsDeductions(data);
 	const { _id, fullName } = employee;
 
@@ -339,14 +299,10 @@ const getGroupedData = async (empTimesheetData, employee, companyName) => {
 	const isFT = empPayInfoResult?.typeOfEarning === "Full Time Salaried";
 	const isPT = empPayInfoResult?.typeOfEarning === "Part Time Salaried";
 
-	const employeeId = empTimesheetData
-		? empTimesheetData.empId.employeeId
-		: employee.employeeId;
+	const employeeId = empTimesheetData ? empTimesheetData.empId.employeeId : employee.employeeId;
 
 	const recordId = empTimesheetData ? empTimesheetData.empId._id : employee._id;
-	const fullName = empTimesheetData
-		? empTimesheetData.empId.fullName
-		: employee.fullName;
+	const fullName = empTimesheetData ? empTimesheetData.empId.fullName : employee.fullName;
 
 	const totalRegHoursWorked = isFT
 		? empPayInfoResult?.fullTimeStandardHours
@@ -355,22 +311,14 @@ const getGroupedData = async (empTimesheetData, employee, companyName) => {
 		: empTimesheetData
 		? empTimesheetData.totalRegHoursWorked
 		: 0;
-	const totalOvertimeHoursWorked = empTimesheetData
-		? empTimesheetData.totalOvertimeHoursWorked
-		: 0;
+	const totalOvertimeHoursWorked = empTimesheetData ? empTimesheetData.totalOvertimeHoursWorked : 0;
 	const totalDblOvertimeHoursWorked = empTimesheetData
 		? empTimesheetData.totalDblOvertimeHoursWorked
 		: 0;
-	const totalStatDayHoursWorked = empTimesheetData
-		? empTimesheetData.totalStatDayHoursWorked
-		: 0;
+	const totalStatDayHoursWorked = empTimesheetData ? empTimesheetData.totalStatDayHoursWorked : 0;
 	const totalStatHours = empTimesheetData ? empTimesheetData.totalStatHours : 0;
-	const totalSickHoursWorked = empTimesheetData
-		? empTimesheetData.totalSickHoursWorked
-		: 0;
-	const totalVacationHoursWorked = empTimesheetData
-		? empTimesheetData.totalVacationHoursWorked
-		: 0;
+	const totalSickHoursWorked = empTimesheetData ? empTimesheetData.totalSickHoursWorked : 0;
+	const totalVacationHoursWorked = empTimesheetData ? empTimesheetData.totalVacationHoursWorked : 0;
 	return {
 		employeeId,
 		recordId,
@@ -385,11 +333,7 @@ const getGroupedData = async (empTimesheetData, employee, companyName) => {
 	};
 };
 
-const buildEmpHourlyDetails = async (
-	empTimesheetData,
-	employee,
-	companyName,
-) => {
+const buildEmpHourlyDetails = async (empTimesheetData, employee, companyName) => {
 	const {
 		employeeId,
 		recordId,
@@ -460,12 +404,27 @@ const getEmployeePayDetailsReportInfo = async (req, res) => {
 	}
 };
 
+const getTotalAlertsAndViolationsInfo = async (req, res) => {
+	const { companyName, payPeriodNum } = req.params;
+
+	try {
+		const payStubs = await EmployeeAlertsViolationInfo.countDocuments({
+			companyName,
+			payPeriodNum,
+		});
+		res.status(200).json(payStubs);
+	} catch (error) {
+		res.status(404).json({ error: error.message });
+	}
+};
+
 const getAlertsAndViolationsInfo = async (req, res) => {
 	const { companyName, payPeriodNum } = req.params;
 
 	try {
 		const payStubs = await EmployeeAlertsViolationInfo.find({
 			companyName,
+			payPeriodNum,
 		})
 			.populate(EMP_INFO)
 			.sort({
@@ -543,12 +502,7 @@ const getPayGroup = () => {};
 const addPayGroup = () => {};
 const updatePayGroup = () => {};
 
-const findCurrentPayStub = async (
-	payPeriodNum,
-	companyName,
-	empId,
-	isExtra,
-) => {
+const findCurrentPayStub = async (payPeriodNum, companyName, empId, isExtra) => {
 	const searchObj = isExtra
 		? {
 				payPeriodNum,
@@ -566,11 +520,7 @@ const findCurrentPayStub = async (
 	return await EmployeePayStub.findOne(searchObj).sort({ createdOn: -1 });
 };
 
-const calculateTotalAggregatedHours = async (
-	startDate,
-	endDate,
-	companyName,
-) => {
+const calculateTotalAggregatedHours = async (startDate, endDate, companyName) => {
 	const timesheets = await Timesheet.find({
 		companyName,
 		clockIn: { $gte: startDate, $lte: endDate },
@@ -596,19 +546,13 @@ const calculateTotalAggregatedHours = async (
 			};
 		}
 
-		acc[timesheet.employeeId].totalRegHoursWorked +=
-			timesheet.regHoursWorked || 0;
-		acc[timesheet.employeeId].totalOvertimeHoursWorked +=
-			timesheet.overtimeHoursWorked || 0;
-		acc[timesheet.employeeId].totalDblOvertimeHoursWorked +=
-			timesheet.dblOvertimeHoursWorked || 0;
+		acc[timesheet.employeeId].totalRegHoursWorked += timesheet.regHoursWorked || 0;
+		acc[timesheet.employeeId].totalOvertimeHoursWorked += timesheet.overtimeHoursWorked || 0;
+		acc[timesheet.employeeId].totalDblOvertimeHoursWorked += timesheet.dblOvertimeHoursWorked || 0;
 		acc[timesheet.employeeId].totalStatHours += timesheet.statDayHours || 0;
-		acc[timesheet.employeeId].totalStatDayHoursWorked +=
-			timesheet.statDayHoursWorked || 0;
-		acc[timesheet.employeeId].totalSickHoursWorked +=
-			timesheet.sickPayHours || 0;
-		acc[timesheet.employeeId].totalVacationHoursWorked +=
-			timesheet.vacationPayHours || 0;
+		acc[timesheet.employeeId].totalStatDayHoursWorked += timesheet.statDayHoursWorked || 0;
+		acc[timesheet.employeeId].totalSickHoursWorked += timesheet.sickPayHours || 0;
+		acc[timesheet.employeeId].totalVacationHoursWorked += timesheet.vacationPayHours || 0;
 		return acc;
 	}, {});
 
@@ -643,25 +587,19 @@ const findEmpPayStubDetail = async (empId, payPeriodPayDate, companyName) =>
 			model: "Employee",
 			select: "fullName",
 		})
-		.select(
-			"commission retroactive reimbursement vacationPayout bonus terminationPayout",
-		);
+		.select("commission retroactive reimbursement vacationPayout bonus terminationPayout");
 
 const findEmployeePayStub = async (empId, payPeriodNum) =>
 	await EmployeePayStub.findOne({
 		empId,
 		payPeriodNum,
-	}).select(
-		"empId commission retroactive vacationPayout bonus terminationPayout",
-	);
+	}).select("empId commission retroactive vacationPayout bonus terminationPayout");
 
 const findEmployeePayInfo = async (empId, companyName) =>
 	await EmployeePayInfo.findOne({
 		empId,
 		companyName,
-	}).select(
-		"empId regPay overTimePay dblOverTimePay statWorkPay statPay sickPay vacationPay",
-	);
+	}).select("empId regPay overTimePay dblOverTimePay statWorkPay statPay sickPay vacationPay");
 
 const findEmployeeGovernmentInfo = async (empId) =>
 	await EmployeeGovernmentInfo.findOne({
@@ -673,8 +611,7 @@ const findEmployeeGovernmentInfo = async (empId) =>
 const addEmployeePayStubInfo = async (req, res) => {
 	const { companyName, currentPayPeriod } = req.body;
 	try {
-		const { payPeriodStartDate, payPeriodEndDate, isExtraRun, selectedEmp } =
-			currentPayPeriod;
+		const { payPeriodStartDate, payPeriodEndDate, isExtraRun, selectedEmp } = currentPayPeriod;
 
 		const activeEmployees = isExtraRun
 			? await getEmployeeId(selectedEmp)
@@ -682,11 +619,7 @@ const addEmployeePayStubInfo = async (req, res) => {
 
 		const result = isExtraRun
 			? null
-			: await calculateTotalAggregatedHours(
-					payPeriodStartDate,
-					payPeriodEndDate,
-					companyName,
-			  );
+			: await calculateTotalAggregatedHours(payPeriodStartDate, payPeriodEndDate, companyName);
 
 		for (const employee of activeEmployees) {
 			const empTimesheetData = result?.find(
@@ -706,11 +639,7 @@ const addEmployeePayStubInfo = async (req, res) => {
 	}
 };
 
-const getCurrentTotals = (
-	empTimesheetData,
-	empPayInfoResult,
-	empAdditionalHoursAllocated,
-) => {
+const getCurrentTotals = (empTimesheetData, empPayInfoResult, empAdditionalHoursAllocated) => {
 	const newEmpData = empTimesheetData ? empTimesheetData : {};
 
 	newEmpData.regPay = empPayInfoResult?.regPay;
@@ -744,12 +673,8 @@ const getCurrentTotals = (
 	newEmpData.totalVacationHoursWorked =
 		getSumHours(empTimesheetData?.totalVacationHoursWorked) +
 		getSumHours(empAdditionalHoursAllocated?.additionalVacationHoursWorked);
-	newEmpData.totalSprayHoursWorked = getSumHours(
-		empTimesheetData?.totalSprayHoursWorked,
-	);
-	newEmpData.totalFirstAidHoursWorked = getSumHours(
-		empTimesheetData?.totalFirstAidHoursWorked,
-	);
+	newEmpData.totalSprayHoursWorked = getSumHours(empTimesheetData?.totalSprayHoursWorked);
+	newEmpData.totalFirstAidHoursWorked = getSumHours(empTimesheetData?.totalFirstAidHoursWorked);
 	newEmpData.currentRegPayTotal = getCalcAmount(
 		newEmpData?.totalRegHoursWorked || 0,
 		newEmpData.regPay,
@@ -845,13 +770,9 @@ const getContributionsDeductions = (data) => {
 	} = data;
 
 	const sumTotalHoursWithoutVacation =
-		totalSickHoursWorked +
-		totalStatHours +
-		totalStatDayHoursWorked +
-		totalRegHoursWorked;
+		totalSickHoursWorked + totalStatHours + totalStatDayHoursWorked + totalRegHoursWorked;
 
-	const sumTotalOvertimeHours =
-		totalOvertimeHoursWorked + totalDblOvertimeHoursWorked;
+	const sumTotalOvertimeHours = totalOvertimeHoursWorked + totalDblOvertimeHoursWorked;
 
 	// const sumTotalWithoutVacation =
 	// 	getCalcAmount(totalSickHoursWorked, sickPay) +
@@ -887,12 +808,7 @@ const getContributionsDeductions = (data) => {
 	};
 };
 
-const buildPayStubDetails = async (
-	currentPayPeriod,
-	companyName,
-	empTimesheetData,
-	empId,
-) => {
+const buildPayStubDetails = async (currentPayPeriod, companyName, empTimesheetData, empId) => {
 	const {
 		payPeriodStartDate,
 		payPeriodEndDate,
@@ -930,8 +846,7 @@ const buildPayStubDetails = async (
 	newEmpData.commission = empAdditionalAmountAllocated?.commission ?? 0;
 	newEmpData.retroactive = empAdditionalAmountAllocated?.retroactive ?? 0;
 	newEmpData.vacationPayout = empAdditionalAmountAllocated?.vacationPayout ?? 0;
-	newEmpData.terminationPayout =
-		empAdditionalAmountAllocated?.terminationPayout ?? 0;
+	newEmpData.terminationPayout = empAdditionalAmountAllocated?.terminationPayout ?? 0;
 	newEmpData.bonus = empAdditionalAmountAllocated?.bonus ?? 0;
 	newEmpData.currentVacationBalanceFwd = 0;
 
@@ -945,8 +860,7 @@ const buildPayStubDetails = async (
 		EmployerEIContribution,
 	} = getTaxDetails(newEmpData?.regPay, newEmpData?.currentGrossPay);
 
-	const { unionDues, EE_EPP, EE_EHP, ER_EPP, ER_EHP } =
-		getContributionsDeductions(newEmpData);
+	const { unionDues, EE_EPP, EE_EHP, ER_EPP, ER_EHP } = getContributionsDeductions(newEmpData);
 
 	// const employeeContribution = calcEmployeeContribution(
 	// 	newEmpData.currentGrossPay,
@@ -985,17 +899,11 @@ const buildPayStubDetails = async (
 
 	newEmpData.currentDeductionsTotal = calcCurrentDeductionsTotal(newEmpData);
 
-	newEmpData.currentNetPay =
-		newEmpData.currentGrossPay - newEmpData.currentDeductionsTotal;
+	newEmpData.currentNetPay = newEmpData.currentGrossPay - newEmpData.currentDeductionsTotal;
 
 	const prevPayPeriodNum = isExtraRun ? payPeriod : payPeriod - 1;
 
-	const prevPayPayInfo = await findCurrentPayStub(
-		prevPayPeriodNum,
-		companyName,
-		empId,
-		false,
-	);
+	const prevPayPayInfo = await findCurrentPayStub(prevPayPeriodNum, companyName, empId, false);
 
 	const currentPayStub = buildPayStub(
 		empId,
@@ -1138,10 +1046,7 @@ const buildPayStub = (
 		totalSprayHoursWorked,
 		totalFirstAidHoursWorked,
 
-		YTDRegHoursWorked: getSumTotal(
-			prevPayPayInfo?.YTDRegHoursWorked,
-			totalRegHoursWorked,
-		),
+		YTDRegHoursWorked: getSumTotal(prevPayPayInfo?.YTDRegHoursWorked, totalRegHoursWorked),
 		YTDOvertimeHoursWorked: getSumTotal(
 			prevPayPayInfo?.YTDOvertimeHoursWorked,
 			totalOvertimeHoursWorked,
@@ -1154,22 +1059,13 @@ const buildPayStub = (
 			prevPayPayInfo?.YTDStatDayHoursWorked,
 			totalStatDayHoursWorked,
 		),
-		YTDStatHoursWorked: getSumTotal(
-			prevPayPayInfo?.YTDStatHoursWorked,
-			totalStatHours,
-		),
-		YTDSickHoursWorked: getSumTotal(
-			prevPayPayInfo?.YTDSickHoursWorked,
-			totalSickHoursWorked,
-		),
+		YTDStatHoursWorked: getSumTotal(prevPayPayInfo?.YTDStatHoursWorked, totalStatHours),
+		YTDSickHoursWorked: getSumTotal(prevPayPayInfo?.YTDSickHoursWorked, totalSickHoursWorked),
 		YTDVacationHoursWorked: getSumTotal(
 			prevPayPayInfo?.YTDVacationHoursWorked,
 			totalVacationHoursWorked,
 		),
-		YTDSprayHoursWorked: getSumTotal(
-			prevPayPayInfo?.YTDSprayHoursWorked,
-			totalSprayHoursWorked,
-		),
+		YTDSprayHoursWorked: getSumTotal(prevPayPayInfo?.YTDSprayHoursWorked, totalSprayHoursWorked),
 		YTDFirstAidHoursWorked: getSumTotal(
 			prevPayPayInfo?.YTDFirstAidHoursWorked,
 			totalFirstAidHoursWorked,
@@ -1208,67 +1104,28 @@ const buildPayStub = (
 		currentSickUsed,
 		sickBalance,
 
-		YTDRegPayTotal: getSumTotal(
-			prevPayPayInfo?.YTDRegPayTotal,
-			currentRegPayTotal,
-		),
-		YTDOverTimePayTotal: getSumTotal(
-			prevPayPayInfo?.YTDOverTimePayTotal,
-			currentOverTimePayTotal,
-		),
+		YTDRegPayTotal: getSumTotal(prevPayPayInfo?.YTDRegPayTotal, currentRegPayTotal),
+		YTDOverTimePayTotal: getSumTotal(prevPayPayInfo?.YTDOverTimePayTotal, currentOverTimePayTotal),
 		YTDDblOverTimePayTotal: getSumTotal(
 			prevPayPayInfo?.YTDDblOverTimePayTotal,
 			currentDblOverTimePayTotal,
 		),
-		YTDStatWorkPayTotal: getSumTotal(
-			prevPayPayInfo?.YTDStatWorkPayTotal,
-			currentStatWorkPayTotal,
-		),
-		YTDStatPayTotal: getSumTotal(
-			prevPayPayInfo?.YTDStatPayTotal,
-			currentStatPayTotal,
-		),
-		YTDSickPayTotal: getSumTotal(
-			prevPayPayInfo?.YTDSickPayTotal,
-			currentSickPayTotal,
-		),
-		YTDVacationPayTotal: getSumTotal(
-			prevPayPayInfo?.YTDVacationPayTotal,
-			currentVacationPayTotal,
-		),
-		YTDSprayPayTotal: getSumTotal(
-			prevPayPayInfo?.YTDSprayPayTotal,
-			currentSprayPayTotal,
-		),
-		YTDFirstAidPayTotal: getSumTotal(
-			prevPayPayInfo?.YTDFirstAidPayTotal,
-			currentFirstAidPayTotal,
-		),
+		YTDStatWorkPayTotal: getSumTotal(prevPayPayInfo?.YTDStatWorkPayTotal, currentStatWorkPayTotal),
+		YTDStatPayTotal: getSumTotal(prevPayPayInfo?.YTDStatPayTotal, currentStatPayTotal),
+		YTDSickPayTotal: getSumTotal(prevPayPayInfo?.YTDSickPayTotal, currentSickPayTotal),
+		YTDVacationPayTotal: getSumTotal(prevPayPayInfo?.YTDVacationPayTotal, currentVacationPayTotal),
+		YTDSprayPayTotal: getSumTotal(prevPayPayInfo?.YTDSprayPayTotal, currentSprayPayTotal),
+		YTDFirstAidPayTotal: getSumTotal(prevPayPayInfo?.YTDFirstAidPayTotal, currentFirstAidPayTotal),
 		YTDPayInLieuPay: getSumTotal(prevPayPayInfo?.YTDPayInLieuPay, payInLieuPay),
 		YTDBenefitPay: getSumTotal(prevPayPayInfo?.YTDBenefitPay, pILBenefitPay),
-		YTDBankedTimePay: getSumTotal(
-			prevPayPayInfo?.YTDBankedTimePay,
-			bankedTimePay,
-		),
-		YTDRegularByAmount: getSumTotal(
-			prevPayPayInfo?.YTDRegularByAmount,
-			regularByAmount,
-		),
+		YTDBankedTimePay: getSumTotal(prevPayPayInfo?.YTDBankedTimePay, bankedTimePay),
+		YTDRegularByAmount: getSumTotal(prevPayPayInfo?.YTDRegularByAmount, regularByAmount),
 		YTDCommission: getSumTotal(prevPayPayInfo?.YTDCommission, commission),
 		YTDRetroactive: getSumTotal(prevPayPayInfo?.YTDRetroactive, retroactive),
-		YTDVacationPayout: getSumTotal(
-			prevPayPayInfo?.YTDVacationPayout,
-			vacationPayout,
-		),
+		YTDVacationPayout: getSumTotal(prevPayPayInfo?.YTDVacationPayout, vacationPayout),
 		YTDBonus: getSumTotal(prevPayPayInfo?.YTDBonus, bonus),
-		YTDTerminationPayout: getSumTotal(
-			prevPayPayInfo?.YTDTerminationPayout,
-			terminationPayout,
-		),
-		YTD_FDTaxDeductions: getSumTotal(
-			prevPayPayInfo?.YTD_FDTaxDeductions,
-			currentFDTaxDeductions,
-		),
+		YTDTerminationPayout: getSumTotal(prevPayPayInfo?.YTDTerminationPayout, terminationPayout),
+		YTD_FDTaxDeductions: getSumTotal(prevPayPayInfo?.YTD_FDTaxDeductions, currentFDTaxDeductions),
 		YTDStateTaxDeductions: getSumTotal(
 			prevPayPayInfo?.YTDStateTaxDeductions,
 			currentStateTaxDeductions,
@@ -1281,10 +1138,7 @@ const buildPayStub = (
 			prevPayPayInfo?.YTD_EmployerEIDeductions,
 			currentEmployerEIDeductions,
 		),
-		YTD_CPPDeductions: getSumTotal(
-			prevPayPayInfo?.YTD_CPPDeductions,
-			currentCPPDeductions,
-		),
+		YTD_CPPDeductions: getSumTotal(prevPayPayInfo?.YTD_CPPDeductions, currentCPPDeductions),
 		YTDUnionDuesDeductions: getSumTotal(
 			prevPayPayInfo?.YTDUnionDuesDeductions,
 			currentUnionDuesDeductions,
@@ -1293,25 +1147,16 @@ const buildPayStub = (
 			prevPayPayInfo?.YTDEmployeeHealthContributions,
 			currentEmployeeHealthContributions,
 		),
-		YTDPrimaryDeposit: getSumTotal(
-			prevPayPayInfo?.YTDPrimaryDeposit,
-			currentPrimaryDeposit,
-		),
+		YTDPrimaryDeposit: getSumTotal(prevPayPayInfo?.YTDPrimaryDeposit, currentPrimaryDeposit),
 		YTDEmployeePensionContributions: getSumTotal(
 			prevPayPayInfo?.YTDEmployeePensionContributions,
 			currentEmployeePensionContributions,
 		),
-		YTDOtherDeductions: getSumTotal(
-			prevPayPayInfo?.YTDOtherDeductions,
-			currentOtherDeductions,
-		),
+		YTDOtherDeductions: getSumTotal(prevPayPayInfo?.YTDOtherDeductions, currentOtherDeductions),
 
 		YTDGrossPay: getSumTotal(prevPayPayInfo?.YTDGrossPay, currentGrossPay),
 
-		YTDDeductionsTotal: getSumTotal(
-			prevPayPayInfo?.YTDDeductionsTotal,
-			currentDeductionsTotal,
-		),
+		YTDDeductionsTotal: getSumTotal(prevPayPayInfo?.YTDDeductionsTotal, currentDeductionsTotal),
 
 		YTDNetPay: getSumTotal(prevPayPayInfo?.YTDNetPay, currentNetPay),
 
@@ -1327,31 +1172,18 @@ const buildPayStub = (
 			prevPayPayInfo?.YTDEmployerContributions,
 			currentEmployerContributions,
 		),
-		YTDVacationAccrued: getSumTotal(
-			prevPayPayInfo?.YTDVacationAccrued,
-			currentVacationAccrued,
-		),
-		YTDVacationUsed: getSumTotal(
-			prevPayPayInfo?.YTDVacationUsed,
-			currentVacationUsed,
-		),
+		YTDVacationAccrued: getSumTotal(prevPayPayInfo?.YTDVacationAccrued, currentVacationAccrued),
+		YTDVacationUsed: getSumTotal(prevPayPayInfo?.YTDVacationUsed, currentVacationUsed),
 		YTDVacationBalanceFwd: currentVacationBalanceFwd,
-		YTDVacationBalance: getSumTotal(
-			prevPayPayInfo?.YTDVacationBalance,
-			vacationBalance,
-		),
-		YTDSickAccrued: getSumTotal(
-			prevPayPayInfo?.YTDSickAccrued,
-			currentSickAccrued,
-		),
+		YTDVacationBalance: getSumTotal(prevPayPayInfo?.YTDVacationBalance, vacationBalance),
+		YTDSickAccrued: getSumTotal(prevPayPayInfo?.YTDSickAccrued, currentSickAccrued),
 		YTDSickUsed: getSumTotal(prevPayPayInfo?.YTDSickUsed, currentSickUsed),
 		YTDSickBalance: getSumTotal(prevPayPayInfo?.YTDSickBalance, sickBalance),
 	};
 	return newPayStub;
 };
 
-const findAlertInfo = async (record) =>
-	await EmployeeAlertsViolationInfo.findOne(record);
+const findAlertInfo = async (record) => await EmployeeAlertsViolationInfo.findOne(record);
 
 const addAlertsAndViolations = async (req, res) => {
 	const { companyName, inputsReviewData } = req.body;
@@ -1444,4 +1276,5 @@ module.exports = {
 	getEmployeePayDetailsReportInfo,
 	getEEContribution,
 	getERContribution,
+	getTotalAlertsAndViolationsInfo,
 };

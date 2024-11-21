@@ -8,7 +8,7 @@ const PayPeriodDetails = ({ employees, activeUsers, handleClick }) => {
 	const items = [
 		{
 			title: "Total Active Workforce",
-			description: employees?.length,
+			description: employees,
 			linkTo: {
 				title: "Employees",
 				path: payrollEmployeePath,
@@ -17,7 +17,7 @@ const PayPeriodDetails = ({ employees, activeUsers, handleClick }) => {
 		},
 		{
 			title: "Currently Active",
-			description: activeUsers?.length,
+			description: activeUsers,
 			linkTo: {
 				title: "Timesheets",
 				path: timesheetPath,

@@ -27,33 +27,19 @@ export const useSignup = (refresh) => {
 		},
 		employmentType: "",
 	};
-	const [companies, setCompanies] = useState(null);
+
 	const [empTypes, setEmpTypes] = useState(null);
 	const [roles, setRoles] = useState(null);
-	const [departments, setDepartments] = useState(null);
 	const [modules, setModules] = useState(null);
 	const [managers, setManagers] = useState(null);
 	const [formData, setFormData] = useState(defaultFormData);
 
 	const resetForm = () => setFormData(defaultFormData);
-	useEffect(() => {
-		const fetchAllCompanies = async () => {
-			try {
-				const response = await SettingService.getAllCompanies();
-				setCompanies(response.data);
-			} catch (error) {
-				console.error(error);
-			}
-		};
-		fetchAllCompanies();
-	}, []);
 
 	useEffect(() => {
 		const fetchAllEmpTypes = async () => {
 			try {
-				const response = await SettingService.getAllEmploymentTypes(
-					formData.company,
-				);
+				const response = await SettingService.getAllEmploymentTypes(formData.company);
 				setEmpTypes(response.data);
 			} catch (error) {
 				console.error(error);
@@ -63,16 +49,6 @@ export const useSignup = (refresh) => {
 			try {
 				const response = await SettingService.getAllRoles(formData.company);
 				setRoles(response.data);
-			} catch (error) {
-				console.error(error);
-			}
-		};
-		const fetchAllDepartments = async () => {
-			try {
-				const response = await SettingService.getAllDepartments(
-					formData.company,
-				);
-				setDepartments(response.data);
 			} catch (error) {
 				console.error(error);
 			}
@@ -99,7 +75,6 @@ export const useSignup = (refresh) => {
 		fetchAllModules();
 		fetchAllManagers();
 		fetchAllRoles();
-		fetchAllDepartments();
 		fetchAllEmpTypes();
 	}, [formData.company, refresh]);
 
@@ -107,10 +82,8 @@ export const useSignup = (refresh) => {
 		formData,
 		resetForm,
 		setFormData,
-		companies,
 		empTypes,
 		roles,
-		departments,
 		modules,
 		managers,
 	};

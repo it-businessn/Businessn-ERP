@@ -6,9 +6,7 @@ const PayrollService = {
 	},
 
 	async getAllEmployeePayInfo(company, payDate, isExtraRun, groupId) {
-		return apiService.get(
-			`/payroll/payInfo/${company}/${payDate}/${isExtraRun}/${groupId}`,
-		);
+		return apiService.get(`/payroll/payInfo/${company}/${payDate}/${isExtraRun}/${groupId}`);
 	},
 
 	async getAllEmployeeAmountInfo(company, payDate, extraRun, groupId) {
@@ -45,14 +43,7 @@ const PayrollService = {
 		return apiService.post("/payroll/profileInfo", data);
 	},
 
-	async getAllEmployeeEmploymentInfo(
-		company,
-		startDate,
-		endDate,
-		payDate,
-		isExtraRun,
-		groupId,
-	) {
+	async getAllEmployeeEmploymentInfo(company, startDate, endDate, payDate, isExtraRun, groupId) {
 		return apiService.get(
 			`/payroll/employmentInfo/${company}/${startDate}/${endDate}/${payDate}/${isExtraRun}/${groupId}`,
 		);
@@ -90,40 +81,19 @@ const PayrollService = {
 		return apiService.post("/payroll/balanceInfo", data);
 	},
 
-	async getHoursWorkedAllocation(
-		company,
-		startDate,
-		endDate,
-		payDate,
-		isExtraRun,
-		groupId,
-	) {
+	async getHoursWorkedAllocation(company, startDate, endDate, payDate, isExtraRun, groupId) {
 		return apiService.get(
 			`/payroll/hoursTimesheet/${company}/${startDate}/${endDate}/${payDate}/${isExtraRun}/${groupId}`,
 		);
 	},
 
-	async getEEContribution(
-		company,
-		startDate,
-		endDate,
-		payDate,
-		isExtraRun,
-		groupId,
-	) {
+	async getEEContribution(company, startDate, endDate, payDate, isExtraRun, groupId) {
 		return apiService.get(
 			`/payroll/EEContribution/${company}/${startDate}/${endDate}/${payDate}/${isExtraRun}/${groupId}`,
 		);
 	},
 
-	async getERContribution(
-		company,
-		startDate,
-		endDate,
-		payDate,
-		isExtraRun,
-		groupId,
-	) {
+	async getERContribution(company, startDate, endDate, payDate, isExtraRun, groupId) {
 		return apiService.get(
 			`/payroll/ERContribution/${company}/${startDate}/${endDate}/${payDate}/${isExtraRun}/${groupId}`,
 		);
@@ -134,9 +104,11 @@ const PayrollService = {
 	},
 
 	async getPayReportDetails(company, payNum, isExtraRun) {
-		return apiService.get(
-			`/payroll/payDetailsReport/${company}/${payNum}/${isExtraRun}`,
-		);
+		return apiService.get(`/payroll/payDetailsReport/${company}/${payNum}/${isExtraRun}`);
+	},
+
+	async getTotalAlerts(company, payNum) {
+		return apiService.get(`/payroll/total-alerts/${company}/${payNum}`);
 	},
 
 	async getAlertsDetails(company, payNum) {
