@@ -10,14 +10,15 @@ const { setInitialPermissions, findCompany } = require("./appController");
 
 const getPayrollActiveEmployees = async (companyName) => {
 	const existingCompany = await findCompany("name", companyName);
-	return await Employee.find({
+	const result = await Employee.find({
 		payrollStatus: "Payroll Active",
 		companyId: existingCompany._id,
 	})
-		.select(["fullName"])
+		.select(["fullName", "payrollStatus", "employeeNo", "timeManagementBadgeID", "department"])
 		.sort({
 			fullName: 1,
 		});
+	return result;
 };
 
 const getPayrollInActiveEmployees = async (companyName) => {
@@ -46,7 +47,7 @@ const findEmployee = async (data) =>
 			fullName: 1,
 		});
 
-const getAllEmployees = () => async (req, res) => {
+const getAllEmployees = async (req, res) => {
 	try {
 		const result = await findEmployee({}).sort({
 			firstName: 1,
@@ -57,7 +58,7 @@ const getAllEmployees = () => async (req, res) => {
 	}
 };
 
-const getUserActivity = () => async (req, res) => {
+const getUserActivity = async (req, res) => {
 	const currentDate = new Date();
 
 	const today = new Date(
@@ -94,7 +95,7 @@ const getPayrollActiveCompanyEmployeesCount = async (req, res) => {
 	}
 };
 
-const getPayrollActiveCompanyEmployees = () => async (req, res) => {
+const getPayrollActiveCompanyEmployees = async (req, res) => {
 	const { companyName } = req.params;
 	try {
 		const result = await getPayrollActiveEmployees(companyName);
@@ -104,7 +105,7 @@ const getPayrollActiveCompanyEmployees = () => async (req, res) => {
 	}
 };
 
-const getPayrollInActiveCompanyEmployees = () => async (req, res) => {
+const getPayrollInActiveCompanyEmployees = async (req, res) => {
 	const { companyName } = req.params;
 	try {
 		const result = await getPayrollInActiveEmployees(companyName);
@@ -114,7 +115,21 @@ const getPayrollInActiveCompanyEmployees = () => async (req, res) => {
 	}
 };
 
-const getCompanyEmployees = () => async (req, res) => {
+const getCompanyEmployees = async (req, res) => {
+	const { companyName } = req.params;
+	try {
+		const existingCompany = await findCompany("name", companyName);
+		const result = await Employee.find({
+			companyId: existingCompany._id,
+		}).select("fullName employeeId payrollStatus");
+
+		res.status(200).json(result);
+	} catch (error) {
+		res.status(404).json({ error: error.message });
+	}
+};
+
+const getCompanyEmployeesCount = async (req, res) => {
 	const { companyName } = req.params;
 	try {
 		const existingCompany = await findCompany("name", companyName);
@@ -128,7 +143,7 @@ const getCompanyEmployees = () => async (req, res) => {
 	}
 };
 
-const groupEmployeesByRole = () => async (req, res) => {
+const groupEmployeesByRole = async (req, res) => {
 	const { companyName } = req.params;
 	try {
 		const tasksByEmployee = await Task.aggregate([
@@ -184,7 +199,7 @@ const groupEmployeesByRole = () => async (req, res) => {
 	}
 };
 
-const getAllGroupMembers = () => async (req, res) => {
+const getAllGroupMembers = async (req, res) => {
 	const { memberId, companyName } = req.params;
 	try {
 		const group = await Group.find({
@@ -216,7 +231,7 @@ const getAllCompManagers = async (req, res) => {
 	}
 };
 
-const getAllManagers = () => async (req, res) => {
+const getAllManagers = async (req, res) => {
 	const { companyName } = req.params;
 	try {
 		const existingCompany = await findCompany("name", companyName);
@@ -230,7 +245,7 @@ const getAllManagers = () => async (req, res) => {
 	}
 };
 
-const getAllSalesAgentsList = () => async (req, res) => {
+const getAllSalesAgentsList = async (req, res) => {
 	const { companyName } = req.params;
 	try {
 		const existingCompany = await findCompany("name", companyName);
@@ -248,7 +263,7 @@ const getAllSalesAgentsList = () => async (req, res) => {
 	}
 };
 
-const getAllSalesAgents = () => async (req, res) => {
+const getAllSalesAgents = async (req, res) => {
 	const { companyName } = req.params;
 	try {
 		const existingCompany = await findCompany("name", companyName);
@@ -266,7 +281,7 @@ const getAllSalesAgents = () => async (req, res) => {
 	}
 };
 
-const updateUser = () => async (req, res) => {
+const updateUser = async (req, res) => {
 	const { userId } = req.params;
 	const { role, companyId, companies } = req.body;
 	const isManager = isRoleManager(role);
@@ -338,6 +353,7 @@ module.exports = {
 	getAllEmployees,
 	getUserActivity,
 	getCompanyEmployees,
+	getCompanyEmployeesCount,
 	groupEmployeesByRole,
 	getAllGroupMembers,
 	getAllManagers,

@@ -27,7 +27,7 @@ const LeftPane = ({ setStats, company, closestRecord, payGroupSchedule, closestR
 	useEffect(() => {
 		const fetchAllEmployees = async () => {
 			try {
-				const response = await UserService.getAllCompanyUsers(company);
+				const response = await UserService.getAllCompanyUsersCount(company);
 				setTotalEmployees(response.data);
 			} catch (error) {
 				console.error(error);

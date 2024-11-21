@@ -4,13 +4,13 @@ import NormalTextTitle from "components/ui/NormalTextTitle";
 import RadioButtonGroup from "components/ui/tab/RadioButtonGroup";
 import TextTitle from "components/ui/text/TextTitle";
 import useCompany from "hooks/useCompany";
-import useEmployees from "hooks/useEmployees";
 import useSelectedEmp from "hooks/useSelectedEmp";
 import PageLayout from "layouts/PageLayout";
 import { useEffect, useState } from "react";
 import { FaCheckCircle } from "react-icons/fa";
 import { useParams } from "react-router-dom";
 import LocalStorageService from "services/LocalStorageService";
+import UserService from "services/UserService";
 import EmpProfileSearch from "../EmpProfileSearch";
 import BalanceInfo from "./employee-tabs/BalancesInfo";
 import BankingInfo from "./employee-tabs/BankingInfo";
@@ -21,28 +21,30 @@ import PersonalInfo from "./employee-tabs/PersonalInfo";
 
 const Employees = ({ isOnboarding, selectedPayGroupName, handleClose }) => {
 	const { id, stepNo } = useParams();
-	const { company } = useCompany(
-		LocalStorageService.getItem("selectedCompany"),
-	);
+	const { company } = useCompany(LocalStorageService.getItem("selectedCompany"));
 	const loggedInUser = LocalStorageService.getItem("user");
 	const [employee, setEmployee] = useState(loggedInUser);
-	const [userId, setUserId] = useState(id ?? loggedInUser._id);
+	const [userId, setUserId] = useState(id ? id : loggedInUser._id);
 	const { setEmpId } = useSelectedEmp(userId);
 	const [isRefresh, setIsRefresh] = useState(false);
 
 	const isActivePayroll = employee?.payrollStatus?.includes("Active");
 
-	const { employees, filteredEmployees, setFilteredEmployees } = useEmployees(
-		isRefresh,
-		company,
-		isOnboarding,
-	);
+	const [employees, setEmployees] = useState(null);
+	const [filteredEmployees, setFilteredEmployees] = useState(null);
 
 	useEffect(() => {
-		if (id && employees) {
-			setEmployee(employees?.find(({ _id }) => _id === id));
-		}
-	}, [id, employees]);
+		const fetchAllEmployees = async () => {
+			try {
+				const response = await UserService.getAllCompanyUsers(company);
+				setEmployees(response.data);
+				setFilteredEmployees(response.data);
+			} catch (error) {
+				console.error(error);
+			}
+		};
+		fetchAllEmployees();
+	}, []);
 
 	useEffect(() => {
 		if (isOnboarding) {
@@ -51,6 +53,13 @@ const Employees = ({ isOnboarding, selectedPayGroupName, handleClose }) => {
 			setUserId(null);
 		}
 	}, [isOnboarding]);
+
+	useEffect(() => {
+		if (id && employees) {
+			const user = employees?.find(({ _id }) => _id === id);
+			setEmployee(user);
+		}
+	}, [id, employees]);
 
 	useEffect(() => {
 		setEmpId(userId);
@@ -140,8 +149,7 @@ const Employees = ({ isOnboarding, selectedPayGroupName, handleClose }) => {
 
 	const currentTab = tabs.find(({ type }) => type === viewMode)?.id;
 
-	const showComponent = (viewMode) =>
-		tabs.find(({ type }) => type === viewMode)?.name;
+	const showComponent = (viewMode) => tabs.find(({ type }) => type === viewMode)?.name;
 
 	return (
 		<PageLayout title={isOnboarding ? "" : "Employees"}>
@@ -194,11 +202,7 @@ const Employees = ({ isOnboarding, selectedPayGroupName, handleClose }) => {
 							handleFilterClick={(name) => setViewMode(name)}
 							fontSize={"1em"}
 							rightIcon={
-								isOnboarding && (
-									<FaCheckCircle
-										color={_?.id <= currentTab ? "green" : "grey"}
-									/>
-								)
+								isOnboarding && <FaCheckCircle color={_?.id <= currentTab ? "green" : "grey"} />
 							}
 						/>
 					))}

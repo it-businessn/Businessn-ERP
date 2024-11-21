@@ -37,6 +37,10 @@ const UserService = {
 		return apiService.get(`/user/payroll-inactive/${id}`);
 	},
 
+	async getAllCompanyUsersCount(id) {
+		return apiService.get(`/user/count/${id}`);
+	},
+
 	async getAllCompanyUsers(id) {
 		return apiService.get(`/user/${id}`);
 	},
