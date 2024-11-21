@@ -48,7 +48,7 @@ const addRole = async (req, res) => {
 const getDepartments = async (req, res) => {
 	const { companyName } = req.params;
 	try {
-		const department = await Department.find({ companyName }).sort({
+		const department = await Department.find({ companyName }).select("name").sort({
 			createdOn: -1,
 		});
 		if (!department.length) {

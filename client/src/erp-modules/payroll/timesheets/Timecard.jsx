@@ -13,11 +13,8 @@ const Timecard = ({ company, userId, timecardRefresh, filter }) => {
 	useEffect(() => {
 		const fetchAllTimecards = async () => {
 			try {
-				const post = await TimesheetService.addTimecard([]);
-				if (post.data) {
-					const response = await TimesheetService.getTimecards(company);
-					setTimeRecords(response.data);
-				}
+				const response = await TimesheetService.getTimecards(company);
+				setTimeRecords(response.data);
 			} catch (error) {
 				console.error(error);
 			}
@@ -40,13 +37,7 @@ const Timecard = ({ company, userId, timecardRefresh, filter }) => {
 	];
 
 	return (
-		<TableLayout
-			cols={cols}
-			height="75vh"
-			position="sticky"
-			zIndex={3}
-			top={-1}
-		>
+		<TableLayout cols={cols} height="75vh" position="sticky" zIndex={3} top={-1}>
 			<Tbody>
 				{(!timeRecords || timeRecords?.length === 0) && (
 					<EmptyRowRecord data={timeRecords} colSpan={cols.length} />
@@ -67,11 +58,7 @@ const Timecard = ({ company, userId, timecardRefresh, filter }) => {
 						totalWorkedHours,
 					}) => {
 						return (
-							<Tr
-								key={_id}
-								h={"20px"}
-								_hover={{ bg: "var(--phoneCall_bg_light)" }}
-							>
+							<Tr key={_id} h={"20px"} _hover={{ bg: "var(--phoneCall_bg_light)" }}>
 								<Td p={0.5} pl={6}>
 									<TextTitle size={"sm"} width="150px" title={employeeName} />
 								</Td>
@@ -93,61 +80,41 @@ const Timecard = ({ company, userId, timecardRefresh, filter }) => {
 								<Td p={0.5} pl={6}>
 									<NormalTextTitle
 										size={"sm"}
-										title={
-											startBreaks?.length
-												? getTimeCardFormat(startBreaks[0], notDevice)
-												: ""
-										}
+										title={startBreaks?.length ? getTimeCardFormat(startBreaks[0], notDevice) : ""}
+									/>
+								</Td>
+								<Td p={0.5} pl={6}>
+									<NormalTextTitle
+										size={"sm"}
+										title={endBreaks?.length ? getTimeCardFormat(endBreaks[0], notDevice) : ""}
 									/>
 								</Td>
 								<Td p={0.5} pl={6}>
 									<NormalTextTitle
 										size={"sm"}
 										title={
-											endBreaks?.length
-												? getTimeCardFormat(endBreaks[0], notDevice)
-												: ""
+											startBreaks?.length > 1 ? getTimeCardFormat(startBreaks[1], notDevice) : ""
 										}
 									/>
 								</Td>
 								<Td p={0.5} pl={6}>
 									<NormalTextTitle
 										size={"sm"}
-										title={
-											startBreaks?.length > 1
-												? getTimeCardFormat(startBreaks[1], notDevice)
-												: ""
-										}
+										title={endBreaks?.length > 1 ? getTimeCardFormat(endBreaks[1], notDevice) : ""}
 									/>
 								</Td>
 								<Td p={0.5} pl={6}>
 									<NormalTextTitle
 										size={"sm"}
 										title={
-											endBreaks?.length > 1
-												? getTimeCardFormat(endBreaks[1], notDevice)
-												: ""
+											startBreaks?.length > 2 ? getTimeCardFormat(startBreaks[2], notDevice) : ""
 										}
 									/>
 								</Td>
 								<Td p={0.5} pl={6}>
 									<NormalTextTitle
 										size={"sm"}
-										title={
-											startBreaks?.length > 2
-												? getTimeCardFormat(startBreaks[2], notDevice)
-												: ""
-										}
-									/>
-								</Td>
-								<Td p={0.5} pl={6}>
-									<NormalTextTitle
-										size={"sm"}
-										title={
-											endBreaks?.length > 2
-												? getTimeCardFormat(endBreaks[2], notDevice)
-												: ""
-										}
+										title={endBreaks?.length > 2 ? getTimeCardFormat(endBreaks[2], notDevice) : ""}
 									/>
 								</Td>
 								<Td p={0.5} pl={6} position={"sticky"} right={"0"} zIndex="1">

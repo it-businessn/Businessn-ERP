@@ -19,6 +19,11 @@ router.get("/managers/:companyName", userController.getAllManagers());
 
 router.get("/groups/:memberId/:companyName", userController.getAllGroupMembers());
 
+router.get(
+	"/payroll-active-count/:companyName",
+	userController.getPayrollActiveCompanyEmployeesCount,
+);
+
 router.get("/payroll-active/:companyName", userController.getPayrollActiveCompanyEmployees());
 
 router.get("/payroll-inactive/:companyName", userController.getPayrollInActiveCompanyEmployees());

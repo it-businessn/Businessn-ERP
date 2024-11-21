@@ -25,6 +25,10 @@ const UserService = {
 		return apiService.get(`/user/activity`);
 	},
 
+	async getPayrollActiveCompanyUserCount(id) {
+		return apiService.get(`/user/payroll-active-count/${id}`);
+	},
+
 	async getPayrollActiveCompanyUsers(id) {
 		return apiService.get(`/user/payroll-active/${id}`);
 	},

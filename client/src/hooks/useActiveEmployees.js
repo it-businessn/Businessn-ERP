@@ -7,9 +7,7 @@ const useActiveEmployees = (company) => {
 	useEffect(() => {
 		const fetchAllActiveEmployees = async () => {
 			try {
-				const response = await UserService.getPayrollActiveCompanyUsers(
-					company,
-				);
+				const response = await UserService.getPayrollActiveCompanyUserCount(company);
 				setActiveUsers(response.data);
 			} catch (error) {
 				console.error(error);

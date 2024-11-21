@@ -10,10 +10,14 @@ const { setInitialPermissions, findCompany } = require("./appController");
 
 const getPayrollActiveEmployees = async (companyName) => {
 	const existingCompany = await findCompany("name", companyName);
-	return await findEmployee({
+	return await Employee.find({
 		payrollStatus: "Payroll Active",
 		companyId: existingCompany._id,
-	});
+	})
+		.select(["fullName"])
+		.sort({
+			fullName: 1,
+		});
 };
 
 const getPayrollInActiveEmployees = async (companyName) => {
@@ -75,7 +79,7 @@ const getUserActivity = () => async (req, res) => {
 	}
 };
 
-const getPayrollActiveCompanyEmployees = () => async (req, res) => {
+const getPayrollActiveCompanyEmployeesCount = async (req, res) => {
 	const { companyName } = req.params;
 	try {
 		const existingCompany = await findCompany("name", companyName);
@@ -89,6 +93,17 @@ const getPayrollActiveCompanyEmployees = () => async (req, res) => {
 		res.status(404).json({ error: error.message });
 	}
 };
+
+const getPayrollActiveCompanyEmployees = () => async (req, res) => {
+	const { companyName } = req.params;
+	try {
+		const result = await getPayrollActiveEmployees(companyName);
+		res.status(200).json(result);
+	} catch (error) {
+		res.status(404).json({ error: error.message });
+	}
+};
+
 const getPayrollInActiveCompanyEmployees = () => async (req, res) => {
 	const { companyName } = req.params;
 	try {
@@ -332,6 +347,7 @@ module.exports = {
 	findCompany,
 	findEmployee,
 	getPayrollActiveCompanyEmployees,
+	getPayrollActiveCompanyEmployeesCount,
 	getPayrollActiveEmployees,
 	getPayrollInActiveCompanyEmployees,
 	getAllSalesAgentsList,

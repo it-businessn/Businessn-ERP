@@ -5,7 +5,6 @@ import DeletePopUp from "components/ui/modal/DeletePopUp";
 import NormalTextTitle from "components/ui/NormalTextTitle";
 import TableLayout from "components/ui/table/TableLayout";
 import TextTitle from "components/ui/text/TextTitle";
-import useTimesheet from "hooks/useTimesheet";
 import { useEffect, useState } from "react";
 import { FaCheck, FaRegTrashAlt } from "react-icons/fa";
 import { IoClose } from "react-icons/io5";
@@ -13,14 +12,23 @@ import TimesheetService from "services/TimesheetService";
 import { getAmount, getTimeCardFormat, getTimeFormat, setUTCDate } from "utils";
 import { getParamKey, getPayTypeStyle, getStatusStyle } from "./data";
 
-const Timesheet = ({
-	company,
-	userId,
-	refresh,
-	filter,
-	setRefresh,
-	setTimesheetRefresh,
-}) => {
+const Timesheet = ({ company, userId, refresh, filter, setRefresh, setTimesheetRefresh }) => {
+	const [timesheets, setTimesheets] = useState(null);
+
+	useEffect(() => {
+		const fetchAllEmployeeTimesheet = async () => {
+			try {
+				const response = await TimesheetService.getFilteredTimesheets(company, filter);
+				setTimesheets(response.data);
+			} catch (error) {
+				console.error(error);
+			}
+		};
+		if (filter?.startDate) {
+			fetchAllEmployeeTimesheet();
+		}
+	}, [filter?.startDate, filter?.endDate, filter?.filteredEmployees, filter?.filteredDept]);
+
 	const [deleteRecordId, setDeleteRecordId] = useState(false);
 	const [showDeletePopUp, setShowDeletePopUp] = useState(false);
 
@@ -44,7 +52,6 @@ const Timesheet = ({
 		};
 		fetchAllTimecards();
 	}, []);
-	const timesheets = useTimesheet(company, userId, refresh, filter);
 
 	const initialFormData = {
 		clockIn: null,
@@ -94,9 +101,7 @@ const Timesheet = ({
 
 	const handleSubmit = async () => {
 		try {
-			const updatedRec = timesheetData.find(
-				(record) => record._id === formData.recordId,
-			);
+			const updatedRec = timesheetData.find((record) => record._id === formData.recordId);
 			formData.clockIn = updatedRec.clockIn;
 			formData.clockOut = updatedRec.clockOut;
 			formData.company = updatedRec.companyName;
@@ -197,13 +202,7 @@ const Timesheet = ({
 		"Action",
 	];
 	return (
-		<TableLayout
-			cols={cols}
-			position="sticky"
-			zIndex={3}
-			top={-1}
-			height="73vh"
-		>
+		<TableLayout cols={cols} position="sticky" zIndex={3} top={-1} height="73vh">
 			<Tbody>
 				{(!timesheetData || timesheetData?.length === 0) && (
 					<EmptyRowRecord data={timesheetData} colSpan={cols.length} />
@@ -283,17 +282,10 @@ const Timesheet = ({
 									<TextTitle title={employeeId?.fullName} />
 								</Td>
 								<Td py={0}>
-									<TextTitle
-										title={
-											clockIn && getTimeCardFormat(clockIn, notDevice, true)
-										}
-									/>
+									<TextTitle title={clockIn && getTimeCardFormat(clockIn, notDevice, true)} />
 								</Td>
 								<Td py={0}>
-									<NormalTextTitle
-										size="sm"
-										title={employeeId?.department?.[0]}
-									/>
+									<NormalTextTitle size="sm" title={employeeId?.department?.[0]} />
 								</Td>
 								<Td textAlign={"right"} py={0} w={"90px"}>
 									{getAmount(param_pay_type)}
@@ -335,11 +327,7 @@ const Timesheet = ({
 											setFormData({
 												param_hours,
 												recordId: _id,
-												clockOut: setUTCDate(
-													clockIn,
-													e.target.value,
-													notDevice,
-												),
+												clockOut: setUTCDate(clockIn, e.target.value, notDevice),
 											});
 										}}
 										required
