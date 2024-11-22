@@ -91,8 +91,8 @@ export const today = todayDate.format("MMDDYY");
 export const formatDateBar = (date) => moment.utc(date).format("DD/MM/YYYY");
 
 export const formatDateRange = (startDate, endDate) => {
-	const start = moment(startDate).format("DD/MM");
-	const end = moment(endDate).format("DD/MM");
+	const start = moment.utc(startDate).format("DD/MM");
+	const end = moment.utc(endDate).format("DD/MM");
 	return `${start} - ${end}`;
 };
 
