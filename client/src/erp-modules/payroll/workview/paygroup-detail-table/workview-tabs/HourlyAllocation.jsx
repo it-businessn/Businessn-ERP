@@ -12,59 +12,69 @@ const HourlyAllocation = ({ company, closestRecord, groupId }) => {
 	const [hourlyAllocatedHours, setHourlyAllocatedHours] = useState(null);
 	const HOURLY_ALLOCATE_COLS = [
 		{ key: "Employee Name", pair: "obj", pair_key: "fullName" },
-		{ key: "Regular Hrs", pair: "totalRegHoursWorked", align: "center" },
+		{ key: "Regular Hrs", pair: "totalRegHoursWorked", align: "center", nearest: true },
 		{
 			key: "Add Regular",
 			pair: "additionalRegHoursWorked",
 			isEditable: true,
+			nearest: true,
 		},
-		{ key: "Overtime Hrs", pair: "totalOvertimeHoursWorked", align: "center" },
+		{ key: "Overtime Hrs", pair: "totalOvertimeHoursWorked", align: "center", nearest: true },
 		{
 			key: "Add Overtime",
 			pair: "additionalOvertimeHoursWorked",
 			isEditable: true,
+			nearest: true,
 		},
 		{
 			key: "Double OT Hrs",
 			pair: "totalDblOvertimeHoursWorked",
 			align: "center",
+			nearest: true,
 		},
 		{
 			key: "Add Double OT",
 			pair: "additionalDblOvertimeHoursWorked",
 			isEditable: true,
+			nearest: true,
 		},
-		{ key: "Stat. Pay Hrs", pair: "totalStatHours", align: "center" },
+		{ key: "Stat. Pay Hrs", pair: "totalStatHours", align: "center", nearest: true },
 		{
 			key: "Add Stat. Pay",
 			pair: "additionalStatHoursWorked",
 			isEditable: true,
+			nearest: true,
 		},
 		{
 			key: "Stat. Worked Hrs",
 			pair: "totalStatDayHoursWorked",
 			align: "center",
+			nearest: true,
 		},
 		{
 			key: "Add Stat. Wrked",
 			pair: "additionalStatDayHoursWorked",
 			isEditable: true,
+			nearest: true,
 		},
-		{ key: "Vacation Hrs", pair: "totalVacationHoursWorked", align: "center" },
+		{ key: "Vacation Hrs", pair: "totalVacationHoursWorked", align: "center", nearest: true },
 		{
 			key: "Add Vacation",
 			pair: "additionalVacationHoursWorked",
 			isEditable: true,
+			nearest: true,
 		},
 		{
 			key: "Sick Pay Hrs",
 			pair: "totalSickHoursWorked",
 			align: "center",
+			nearest: true,
 		},
 		{
 			key: "Add Sick",
 			pair: "additionalSickHoursWorked",
 			isEditable: true,
+			nearest: true,
 		},
 		{
 			key: "",

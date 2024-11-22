@@ -9,8 +9,6 @@ const usePaygroup = (company, refresh) => {
 	const [closestRecord, setClosestRecord] = useState(null);
 	const [closestRecordIndex, setClosestRecordIndex] = useState(0);
 
-	// const today = getDefaultDate(new Date());
-
 	const getClosestScheduleByProcessingDate = (schedules) => {
 		// const closestPayPeriod = schedules
 		// 	?.filter(({ isProcessed }) => !isProcessed)
@@ -22,10 +20,7 @@ const usePaygroup = (company, refresh) => {
 		// 			? record
 		// 			: closest;
 		// 	}, schedules[0]);
-		const closestPayPeriod = schedules?.filter(
-			({ isProcessed }) => !isProcessed,
-		)[0];
-
+		const closestPayPeriod = schedules?.filter(({ isProcessed }) => !isProcessed)[0];
 		setClosestRecord(closestPayPeriod);
 
 		const closestPayPeriodIndex = schedules.findIndex(
@@ -47,9 +42,7 @@ const usePaygroup = (company, refresh) => {
 						"payPeriodPayDate",
 					);
 					setPayGroupSchedule(sortedResult);
-					getClosestScheduleByProcessingDate(
-						response.data[0]?.scheduleSettings,
-					);
+					getClosestScheduleByProcessingDate(response.data[0]?.scheduleSettings);
 				}
 			} catch (error) {
 				console.error(error);

@@ -53,7 +53,7 @@ const WorkviewTab = ({
 					{(!data || data?.length === 0) && <EmptyRowRecord data={data} colSpan={cols.length} />}
 					{data?.map((row) => (
 						<Tr key={row?.empId?._id}>
-							{cols.map((col) => {
+							{cols.map((col, colindex) => {
 								const fieldValue =
 									col.key === "" ? (
 										col.pair
@@ -76,12 +76,17 @@ const WorkviewTab = ({
 										getAmount(row[col.pair])
 									) : col.main_key ? (
 										row[col.main_key][col.pair]
+									) : col.nearest && row[col.pair] ? (
+										parseFloat(row[col.pair]).toFixed(2)
 									) : (
 										row[col.pair]
 									);
 
 								return (
 									<Td
+										position={colindex === 0 && "sticky"}
+										left={colindex === 0 && "0"}
+										zIndex={colindex === 0 && 1}
 										color="var(--main_color_black)"
 										textAlign={col?.align}
 										p={0.5}
