@@ -535,7 +535,7 @@ export const getPayrollStatus = (data, prevRecordEndDate) => {
 		isViewAction: false,
 		isDisabledAction: true,
 	};
-	// const targetStartDate = moment(data.payPeriodStartDate);
+	const targetStartDate = moment(data.payPeriodStartDate);
 	const targetEndDate = moment(data?.payPeriodEndDate);
 	const targetPayDate = moment(data?.payPeriodPayDate);
 	const targetProcessingDate = moment(data?.payPeriodProcessingDate);
@@ -559,14 +559,17 @@ export const getPayrollStatus = (data, prevRecordEndDate) => {
 			isViewAction: false,
 			isDisabledStatus: false,
 		};
-	} else if (!data?.isProcessed && isEndDatePassed) {
+	} else if (
+		!data?.isProcessed &&
+		(isEndDatePassed || todayDate.isBetween(targetStartDate, targetEndDate, "day", "[]"))
+	) {
 		return {
 			name: "Pending",
 			color: "var(--primary_bg)",
 			bg: "var(--pending)",
 			isDisabledStatus: false,
 			isViewAction: false,
-			isDisabledAction: false,
+			isDisabledAction: !isEndDatePassed,
 		};
 	} else if (data?.isProcessed && isPayDateToday) {
 		return {

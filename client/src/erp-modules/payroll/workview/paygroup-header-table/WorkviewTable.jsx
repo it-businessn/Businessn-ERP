@@ -7,7 +7,7 @@ import TextTitle from "components/ui/text/TextTitle";
 import { useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { payrollReportPath, ROUTE_PATH } from "routes";
-import { formatDateBar, formatDateRange, isExtraPay } from "utils";
+import { dayMonthYear, formatDateRange, isExtraPay } from "utils";
 import { PAYGROUP_COLS } from "../data";
 
 const WorkviewTable = ({
@@ -79,32 +79,23 @@ const WorkviewTable = ({
 						},
 						index,
 					) => (
-						<Tr
-							key={`${payPeriod}_${index}`}
-							ref={(el) => (rowRefs.current[index] = el)}
-						>
+						<Tr key={`${payPeriod}_${index}`} ref={(el) => (rowRefs.current[index] = el)}>
 							<Td p={1} pl={8}>
-								{isEarningTable
-									? payPeriodNum
-									: isExtraPay(payPeriod, isExtraRun)}
+								{isEarningTable ? payPeriodNum : isExtraPay(payPeriod, isExtraRun)}
 							</Td>
 							{!isEarningTable && (
 								<Td p={1} pl={5}>
-									<TextTitle title={formatDateBar(payPeriodProcessingDate)} />
+									<TextTitle title={dayMonthYear(payPeriodProcessingDate)} />
 								</Td>
 							)}
 							<Td p={1} textAlign={textAlign}>
-								{formatDateBar(payPeriodPayDate)}
+								{dayMonthYear(payPeriodPayDate)}
 							</Td>
 							<Td p={1} textAlign={textAlign}>
 								{formatDateRange(payPeriodStartDate, payPeriodEndDate)}
 							</Td>
 							{!isEarningTable && (
-								<Td
-									p={1}
-									w={autoScroll && "120px"}
-									textAlign={autoScroll ? "center" : textAlign}
-								>
+								<Td p={1} w={autoScroll && "120px"} textAlign={autoScroll ? "center" : textAlign}>
 									<PrimaryButton
 										color={color}
 										bg={bg}
@@ -119,34 +110,20 @@ const WorkviewTable = ({
 									/>
 								</Td>
 							)}
-							<Td
-								p={1}
-								w={autoScroll && "150px"}
-								textAlign={autoScroll ? "center" : textAlign}
-							>
+							<Td p={1} w={autoScroll && "150px"} textAlign={autoScroll ? "center" : textAlign}>
 								{autoScroll ? (
 									isViewAction ? (
-										<OutlineButton
-											label={"View"}
-											size="xs"
-											onClick={handleView}
-										/>
+										<OutlineButton label={"View"} size="xs" onClick={handleView} />
 									) : (
 										<PrimaryButton
-											bg={
-												isDisabledAction
-													? "var(--calendar_border)"
-													: "var(--primary_button_bg)"
-											}
+											bg={isDisabledAction ? "var(--calendar_border)" : "var(--primary_button_bg)"}
 											hover={{
 												bg: isDisabledAction && "var(--calendar_border)",
 											}}
 											isDisabled={isDisabledAction}
 											name={"Pay now"}
 											size="xs"
-											onOpen={() =>
-												handlePay(isExtraPay(payPeriod, isExtraRun))
-											}
+											onOpen={() => handlePay(isExtraPay(payPeriod, isExtraRun))}
 										/>
 									)
 								) : (
@@ -159,18 +136,13 @@ const WorkviewTable = ({
 													if (isEarningTable) {
 														return handleRegister(payPeriodNum);
 													}
-													handleRegister(
-														isExtraPay(payPeriod, isExtraRun),
-														isExtraRun,
-													);
+													handleRegister(isExtraPay(payPeriod, isExtraRun), isExtraRun);
 												}}
 											/>
 										) : (
 											<PrimaryButton
 												bg={
-													isDisabledAction
-														? "var(--calendar_border)"
-														: "var(--primary_button_bg)"
+													isDisabledAction ? "var(--calendar_border)" : "var(--primary_button_bg)"
 												}
 												hover={{
 													bg: isDisabledAction
