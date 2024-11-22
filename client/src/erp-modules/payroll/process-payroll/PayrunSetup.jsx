@@ -17,9 +17,7 @@ const PayrunSetup = ({
 	isPayPeriodInactive,
 }) => {
 	const [isLoading, setIsLoading] = useState(false);
-	const { company } = useCompany(
-		LocalStorageService.getItem("selectedCompany"),
-	);
+	const { company } = useCompany(LocalStorageService.getItem("selectedCompany"));
 	const runType = closestRecord?.isExtraRun ? "Extra" : "Regular";
 
 	const handleConfirm = async () => {
@@ -39,6 +37,37 @@ const PayrunSetup = ({
 			console.error(error);
 		}
 	};
+	const PAY_DETAILS = [
+		{
+			detail1: "Pay Period Number",
+			detail2: isExtraPay(closestRecord?.payPeriod, closestRecord?.isExtraRun),
+		},
+		{
+			detail1: "Run Type",
+			detail2: runType?.toLocaleUpperCase(),
+		},
+		{
+			detail1: "Payment Date",
+			detail2: dayMonthYear(closestRecord?.payPeriodPayDate),
+		},
+		{
+			detail1: "Pay Period Start Date",
+			detail2: dayMonthYear(closestRecord?.payPeriodStartDate),
+		},
+		{
+			detail1: "Pay Period Ending Date",
+			detail2: dayMonthYear(closestRecord?.payPeriodEndDate),
+		},
+		{
+			detail1: "Pay Processing Date",
+			detail2: dayMonthYear(closestRecord?.payPeriodProcessingDate),
+		},
+		{
+			detail1: "Email Pay Statement Notifications",
+			detail2: "On payday",
+		},
+	];
+
 	return (
 		<HStack alignItems={"end"}>
 			<Table w={"100%"}>
@@ -63,47 +92,14 @@ const PayrunSetup = ({
 				</Thead>
 				{selectedPayGroup && (
 					<Tbody bg={isPayPeriodInactive && "var(--calendar_border)"}>
-						<Tr>
-							<Td>
-								<TextTitle title={"Pay Period Number"} />
-							</Td>
-							<Td>
-								{isExtraPay(
-									closestRecord?.payPeriod,
-									closestRecord?.isExtraRun,
-								)}
-							</Td>
-						</Tr>
-						<Tr>
-							<Td>
-								<TextTitle title="Run Type" />
-							</Td>
-							<Td>{runType?.toLocaleUpperCase()}</Td>
-						</Tr>
-						<Tr>
-							<Td>
-								<TextTitle title="Payment Date" />
-							</Td>
-							<Td>{dayMonthYear(closestRecord?.payPeriodPayDate)}</Td>
-						</Tr>
-						<Tr>
-							<Td>
-								<TextTitle title="Pay Period Ending Date" />
-							</Td>
-							<Td>{dayMonthYear(closestRecord?.payPeriodEndDate)}</Td>
-						</Tr>
-						<Tr>
-							<Td>
-								<TextTitle title="Pay Processing Date" />
-							</Td>
-							<Td>{dayMonthYear(closestRecord?.payPeriodProcessingDate)}</Td>
-						</Tr>
-						<Tr>
-							<Td>
-								<TextTitle title="Email Pay Statement Notifications" />
-							</Td>
-							<Td>On payday</Td>
-						</Tr>
+						{PAY_DETAILS.map(({ detail1, detail2 }, index) => (
+							<Tr key={`payDetails_${index}`}>
+								<Td>
+									<TextTitle title={detail1} />
+								</Td>
+								<Td>{detail2}</Td>
+							</Tr>
+						))}
 					</Tbody>
 				)}
 			</Table>
