@@ -701,6 +701,16 @@ const getCurrentTotals = (empTimesheetData, empPayInfoResult, empAdditionalHours
 	newEmpData.totalVacationHoursWorked =
 		getSumHours(empTimesheetData?.totalVacationHoursWorked) +
 		getSumHours(empAdditionalHoursAllocated?.additionalVacationHoursWorked);
+
+	newEmpData.totalHoursWorked =
+		newEmpData.totalRegHoursWorked +
+		newEmpData.totalOvertimeHoursWorked +
+		newEmpData.totalDblOvertimeHoursWorked +
+		newEmpData.totalStatHours +
+		newEmpData.totalStatDayHoursWorked +
+		newEmpData.totalSickHoursWorked +
+		newEmpData.totalVacationHoursWorked;
+
 	newEmpData.totalSprayHoursWorked = getSumHours(empTimesheetData?.totalSprayHoursWorked);
 	newEmpData.totalFirstAidHoursWorked = getSumHours(empTimesheetData?.totalFirstAidHoursWorked);
 	newEmpData.currentRegPayTotal = getCalcAmount(
@@ -876,6 +886,8 @@ const buildPayStubDetails = async (currentPayPeriod, companyName, empTimesheetDa
 	newEmpData.vacationPayout = empAdditionalAmountAllocated?.vacationPayout ?? 0;
 	newEmpData.terminationPayout = empAdditionalAmountAllocated?.terminationPayout ?? 0;
 	newEmpData.bonus = empAdditionalAmountAllocated?.bonus ?? 0;
+	newEmpData.reimbursement = empAdditionalAmountAllocated?.reimbursement ?? 0;
+
 	newEmpData.currentVacationBalanceFwd = 0;
 
 	newEmpData.currentGrossPay = calcCurrentGrossPay(newEmpData);
@@ -928,6 +940,14 @@ const buildPayStubDetails = async (currentPayPeriod, companyName, empTimesheetDa
 	newEmpData.currentDeductionsTotal = calcCurrentDeductionsTotal(newEmpData);
 
 	newEmpData.currentNetPay = newEmpData.currentGrossPay - newEmpData.currentDeductionsTotal;
+
+	newEmpData.totalAmountAllocated =
+		newEmpData.commission +
+		newEmpData.bonus +
+		newEmpData.retroactive +
+		newEmpData.reimbursement +
+		newEmpData.terminationPayout +
+		newEmpData.vacationPayout;
 
 	const prevPayPeriodNum = isExtraRun ? payPeriod : payPeriod - 1;
 
@@ -990,6 +1010,7 @@ const buildPayStub = (
 		vacationPayout,
 		bonus,
 		terminationPayout,
+		totalAmountAllocated,
 
 		totalRegHoursWorked,
 		totalOvertimeHoursWorked,
@@ -1000,6 +1021,7 @@ const buildPayStub = (
 		totalVacationHoursWorked,
 		totalSprayHoursWorked,
 		totalFirstAidHoursWorked,
+		totalHoursWorked,
 		currentRegPayTotal,
 		currentOverTimePayTotal,
 		currentDblOverTimePayTotal,
@@ -1063,6 +1085,7 @@ const buildPayStub = (
 		vacationPayout,
 		bonus,
 		terminationPayout,
+		totalAmountAllocated,
 
 		totalRegHoursWorked,
 		totalOvertimeHoursWorked,
@@ -1073,6 +1096,7 @@ const buildPayStub = (
 		totalVacationHoursWorked,
 		totalSprayHoursWorked,
 		totalFirstAidHoursWorked,
+		totalHoursWorked,
 
 		YTDRegHoursWorked: getSumTotal(prevPayPayInfo?.YTDRegHoursWorked, totalRegHoursWorked),
 		YTDOvertimeHoursWorked: getSumTotal(
