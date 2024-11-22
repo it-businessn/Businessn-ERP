@@ -12,7 +12,7 @@ const HourlyAllocation = ({ company, closestRecord, groupId }) => {
 	const [hourlyAllocatedHours, setHourlyAllocatedHours] = useState(null);
 	const HOURLY_ALLOCATE_COLS = [
 		{ key: "Employee Name", pair: "obj", pair_key: "fullName" },
-		{ key: "Total Hours", pair: "totalRegHoursWorked", align: "center", nearest: true },
+		{ key: "Total Hours", pair: "totalHoursWorked", align: "center", nearest: true },
 		{ key: "Regular Hrs", pair: "totalRegHoursWorked", align: "center", nearest: true },
 		{
 			key: "Add Regular",

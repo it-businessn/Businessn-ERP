@@ -35,28 +35,22 @@ const InputsReview = ({
 }) => {
 	const { payNo } = useParams();
 	const isExtra = payNo?.includes("E");
-	const { company } = useCompany(
-		LocalStorageService.getItem("selectedCompany"),
-	);
+	const { company } = useCompany(LocalStorageService.getItem("selectedCompany"));
 
-	const selectedPayPeriod = getClosestRecord(
-		payNo,
-		isExtra,
-		payGroupSchedule,
-		closestRecord,
-	);
+	const selectedPayPeriod = getClosestRecord(payNo, isExtra, payGroupSchedule, closestRecord);
 
 	const inputsReviewData = useEmployeePayReport(
 		company,
 		selectedPayPeriod,
 		isInputsReviewOpen && currentStep === 1,
 	);
+
 	const COLS = [
-		"Employee name",
-		"Regular Hours",
-		"Net Pay",
-		"Deductions",
-		"Gross Pay",
+		{ title: "Employee name", value: "fullName" },
+		{ title: "Net Income", value: "currentNetPay", round: true },
+		{ title: "Gross Income", value: "currentGrossPay", round: true },
+		{ title: "Total Hours", value: "totalHoursWorked" },
+		{ title: "Total Amount", value: "totalAmountAllocated", round: true },
 	];
 
 	const { isOpen, onOpen, onClose } = useDisclosure();
@@ -92,9 +86,9 @@ const InputsReview = ({
 				<Table>
 					<Thead position="sticky" top={-1} zIndex="docked">
 						<Tr>
-							{COLS.map((_) => (
-								<Th key={_}>
-									<TextTitle size={"md"} title={_} />
+							{COLS.map(({ title }) => (
+								<Th key={title}>
+									<TextTitle size={"md"} title={title} />
 								</Th>
 							))}
 
@@ -110,21 +104,19 @@ const InputsReview = ({
 						)}
 						{inputsReviewData?.map((data) => (
 							<Tr key={data._id}>
-								<Td p>
-									<TextTitle title={data?.empId?.fullName} />
-								</Td>
-								<Td>
-									<TextTitle title={data.totalRegHoursWorked} />
-								</Td>
-								<Td>
-									<TextTitle title={getAmount(data.currentNetPay)} />
-								</Td>
-								<Td>
-									<TextTitle title={getAmount(data.currentDeductionsTotal)} />
-								</Td>
-								<Td>
-									<TextTitle title={getAmount(data.currentGrossPay)} />
-								</Td>
+								{COLS.map(({ title, value, round }) => (
+									<Td key={title}>
+										<TextTitle
+											title={
+												title.includes("Employee")
+													? data?.empId[value]
+													: round
+													? getAmount(data[value])
+													: data[value]
+											}
+										/>
+									</Td>
+								))}
 								<Td>
 									<OutlineButton
 										label={"Review payroll details"}
@@ -146,9 +138,7 @@ const InputsReview = ({
 				onOpen={handleConfirmInputsReview}
 				isDisabled={isPayPeriodInactive}
 			/>
-			{isOpen && (
-				<EmpPayStatement record={record} isOpen={isOpen} onClose={onClose} />
-			)}
+			{isOpen && <EmpPayStatement record={record} isOpen={isOpen} onClose={onClose} />}
 		</HStack>
 	);
 };

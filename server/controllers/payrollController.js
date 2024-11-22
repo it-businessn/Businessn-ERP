@@ -80,25 +80,53 @@ const getGroupedTimesheet = async (req, res) => {
 				companyName,
 				payPeriodPayDate: payDate,
 			});
-			if (additionalHoursAllocatedInfo) {
-				const {
-					additionalRegHoursWorked,
-					additionalOvertimeHoursWorked,
-					additionalDblOvertimeHoursWorked,
-					additionalStatDayHoursWorked,
-					additionalStatHoursWorked,
-					additionalVacationHoursWorked,
-					additionalSickHoursWorked,
-				} = additionalHoursAllocatedInfo;
 
-				result.additionalRegHoursWorked = additionalRegHoursWorked;
-				result.additionalOvertimeHoursWorked = additionalOvertimeHoursWorked;
-				result.additionalDblOvertimeHoursWorked = additionalDblOvertimeHoursWorked;
-				result.additionalStatHoursWorked = additionalStatHoursWorked;
-				result.additionalStatDayHoursWorked = additionalStatDayHoursWorked;
-				result.additionalSickHoursWorked = additionalSickHoursWorked;
-				result.additionalVacationHoursWorked = additionalVacationHoursWorked;
-			}
+			result.additionalRegHoursWorked = additionalHoursAllocatedInfo?.additionalRegHoursWorked ?? 0;
+			result.additionalOvertimeHoursWorked =
+				additionalHoursAllocatedInfo?.additionalOvertimeHoursWorked || 0;
+			result.additionalDblOvertimeHoursWorked =
+				additionalHoursAllocatedInfo?.additionalDblOvertimeHoursWorked || 0;
+			result.additionalStatHoursWorked =
+				additionalHoursAllocatedInfo?.additionalStatHoursWorked || 0;
+			result.additionalStatDayHoursWorked =
+				additionalHoursAllocatedInfo?.additionalStatDayHoursWorked || 0;
+			result.additionalSickHoursWorked =
+				additionalHoursAllocatedInfo?.additionalSickHoursWorked || 0;
+			result.additionalVacationHoursWorked =
+				additionalHoursAllocatedInfo?.additionalVacationHoursWorked || 0;
+
+			const {
+				totalDblOvertimeHoursWorked,
+				totalOvertimeHoursWorked,
+				totalRegHoursWorked,
+				totalSickHoursWorked,
+				totalStatDayHoursWorked,
+				totalStatHours,
+				totalVacationHoursWorked,
+				additionalRegHoursWorked,
+				additionalOvertimeHoursWorked,
+				additionalDblOvertimeHoursWorked,
+				additionalStatHoursWorked,
+				additionalStatDayHoursWorked,
+				additionalSickHoursWorked,
+				additionalVacationHoursWorked,
+			} = result;
+
+			result.totalHoursWorked =
+				totalDblOvertimeHoursWorked +
+				totalOvertimeHoursWorked +
+				totalRegHoursWorked +
+				totalSickHoursWorked +
+				totalStatDayHoursWorked +
+				totalStatHours +
+				totalVacationHoursWorked +
+				additionalRegHoursWorked +
+				additionalOvertimeHoursWorked +
+				additionalDblOvertimeHoursWorked +
+				additionalStatHoursWorked +
+				additionalStatDayHoursWorked +
+				additionalSickHoursWorked +
+				additionalVacationHoursWorked;
 			aggregatedResult.push(result);
 		}
 		res.status(200).json(aggregatedResult);
@@ -323,13 +351,13 @@ const getGroupedData = async (empTimesheetData, employee, companyName) => {
 		employeeId,
 		recordId,
 		fullName,
-		totalRegHoursWorked,
-		totalOvertimeHoursWorked,
-		totalDblOvertimeHoursWorked,
-		totalStatDayHoursWorked,
-		totalStatHours,
-		totalSickHoursWorked,
-		totalVacationHoursWorked,
+		totalRegHoursWorked: parseFloat(totalRegHoursWorked || 0),
+		totalOvertimeHoursWorked: parseFloat(totalOvertimeHoursWorked || 0),
+		totalDblOvertimeHoursWorked: parseFloat(totalDblOvertimeHoursWorked || 0),
+		totalStatDayHoursWorked: parseFloat(totalStatDayHoursWorked || 0),
+		totalStatHours: parseFloat(totalStatHours || 0),
+		totalSickHoursWorked: parseFloat(totalSickHoursWorked || 0),
+		totalVacationHoursWorked: parseFloat(totalVacationHoursWorked || 0),
 	};
 };
 
@@ -372,7 +400,7 @@ const getPayDetailsReportInfo = async (req, res) => {
 		const isExtraPayRun = isExtraRun === "true";
 		const payStubs = await EmployeePayStub.find({
 			companyName,
-			payPeriodNum,
+			payPeriodNum: 24,
 			isExtraRun: isExtraPayRun,
 		})
 			.populate(EMP_INFO)

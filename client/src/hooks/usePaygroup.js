@@ -21,11 +21,11 @@ const usePaygroup = (company, refresh) => {
 		// 			: closest;
 		// 	}, schedules[0]);
 		const closestPayPeriod = schedules?.filter(({ isProcessed }) => !isProcessed)[0];
-		setClosestRecord(closestPayPeriod);
 
 		const closestPayPeriodIndex = schedules.findIndex(
 			({ payPeriod }) => payPeriod === closestPayPeriod.payPeriod,
 		);
+		// setClosestRecord(schedules[22]);
 		setClosestRecord(closestPayPeriod);
 		setClosestRecordIndex(closestPayPeriodIndex);
 	};

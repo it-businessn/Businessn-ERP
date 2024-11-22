@@ -164,11 +164,11 @@ const employeePayStubSchema = new mongoose.Schema({
 
 	sickBalance: Number,
 	YTDSickBalance: { type: Number, default: 0 },
+
+	totalHoursWorked: { type: Number, default: 0 },
+	totalAmountAllocated: { type: Number, default: 0 },
 });
 
-const EmployeePayStub = mongoose.model(
-	"EmployeePayStub",
-	employeePayStubSchema,
-);
+const EmployeePayStub = mongoose.model("EmployeePayStub", employeePayStubSchema);
 
 module.exports = EmployeePayStub;
