@@ -26,14 +26,7 @@ const EmployeeList = ({ employees }) => {
 	];
 
 	return (
-		<TableLayout
-			cols={cols}
-			height="60vh"
-			position="sticky"
-			top={-1}
-			zIndex={1}
-			textAlign="center"
-		>
+		<TableLayout cols={cols} height="60vh" position="sticky" top={-1} zIndex={1} textAlign="center">
 			<Tbody>
 				{(!employees || employees?.length === 0) && (
 					<EmptyRowRecord data={employees} colSpan={cols.length} />
@@ -50,11 +43,7 @@ const EmployeeList = ({ employees }) => {
 					}) => {
 						return (
 							<Tr key={_id} _hover={{ bg: "var(--phoneCall_bg_light)" }}>
-								<Td
-									p={0}
-									px={"2em"}
-									borderBottomColor={"var(--filter_border_color)"}
-								>
+								<Td p={0} px={"2em"} borderBottomColor={"var(--filter_border_color)"}>
 									<HStack spacing={4} cursor={"pointer"}>
 										<Avatar name={fullName} size={"xs"} src="" boxSize="6" />
 										<TextTitle
@@ -69,11 +58,7 @@ const EmployeeList = ({ employees }) => {
 										/>
 									</HStack>
 								</Td>
-								<Td
-									p={0}
-									px={"0.5em"}
-									borderBottomColor={"var(--filter_border_color)"}
-								>
+								<Td p={0} px={"0.5em"} borderBottomColor={"var(--filter_border_color)"}>
 									<NormalTextTitle size="sm" title={department[0]} />
 								</Td>
 								{/* <Td py={0} borderBottomColor={"var(--filter_border_color)"}>
@@ -83,14 +68,13 @@ const EmployeeList = ({ employees }) => {
 									<NormalTextTitle size="sm" title={employeeNo} />
 								</Td>
 								<Td py={0} borderBottomColor={"var(--filter_border_color)"}>
-									<NormalTextTitle
-										size="sm"
-										title={timeManagementBadgeID ?? ""}
-									/>
+									<NormalTextTitle size="sm" title={timeManagementBadgeID ?? ""} />
 								</Td>
 								<Td py={0} borderBottomColor={"var(--filter_border_color)"}>
-									{payrollStatus?.includes("Active") && (
+									{payrollStatus?.includes("Active") ? (
 										<ActiveBadge title={"Payroll Activated"} />
+									) : (
+										payrollStatus
 									)}
 								</Td>
 								<Td py={0} borderBottomColor={"var(--filter_border_color)"}>

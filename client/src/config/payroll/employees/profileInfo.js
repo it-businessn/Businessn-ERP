@@ -1,7 +1,4 @@
-import {
-	COUNTRIES,
-	REGIONS,
-} from "erp-modules/project-management/workview/project/data";
+import { COUNTRIES, REGIONS } from "erp-modules/project-management/workview/project/data";
 
 export const EMP_EMERGENCY_CONTACT_CONFIG = [
 	{
@@ -114,53 +111,10 @@ export const EMP_PERSONAL_INFO_CONFIG = [
 	},
 ];
 
-export const PAYROLL_STATUS = [
-	{
-		type: "Payroll Active",
-		dependent: false,
-	},
-	{
-		type: "Payroll Terminated",
-		dependent: false,
-	},
-];
-
-export const EMP_IDENTIFICATION_STATUS_CONFIG = [
-	{
-		type: "sfsgdsgdsgdsg23",
-		params: [
-			{
-				name: "Status",
-				param_key: "payrollStatus",
-				control: "select",
-				options: PAYROLL_STATUS,
-			},
-		],
-	},
-	{
-		type: "sfsgdsgdsgdsg24",
-		params: [
-			{ name: "Employee Number", param_key: "employeeNo", mandatory: true },
-		],
-	},
-	{
-		type: "sfsgdsgdsgdsg25",
-		params: [
-			{
-				name: "Time Management Badge ID",
-				param_key: "timeManagementBadgeID",
-			},
-		],
-	},
-];
-
 export const getInitialProfileInfo = (empId, companyName) => {
 	return {
 		empId,
 		companyName,
-		payrollStatus: "",
-		employeeNo: null,
-		timeManagementBadgeID: "",
 		firstName: null,
 		middleName: "",
 		lastName: "",

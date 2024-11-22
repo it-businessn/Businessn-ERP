@@ -3,6 +3,7 @@ import BoxCard from "components/ui/card";
 import VerticalStepper from "components/ui/VerticalStepper";
 import {
 	EMP_COMPANY_CONFIG,
+	EMP_IDENTIFICATION_STATUS_CONFIG,
 	EMP_REGION_CONFIG,
 	EMP_ROLE_CONFIG,
 	getInitialCorporateInfo,
@@ -47,9 +48,7 @@ const CorporateInfo = ({
 	useEffect(() => {
 		if (payGroups) {
 			EMP_COMPANY_CONFIG.find(
-				(_) =>
-					(_.params.find((param) => param.name === "Pay Group").options =
-						payGroups),
+				({ params }) => (params.find((param) => param.name === "Pay Group").options = payGroups),
 			);
 		}
 	}, [payGroups]);
@@ -83,6 +82,20 @@ const CorporateInfo = ({
 	};
 
 	const steps = [
+		{
+			title: "Identification and Status",
+			content: (
+				<Record
+					handleConfirm={() => ""}
+					formData={formData}
+					setFormData={setFormData}
+					title="Identification and Status"
+					config={EMP_IDENTIFICATION_STATUS_CONFIG}
+					isLoading={isLoading}
+					handleSubmit={handleSubmit}
+				/>
+			),
+		},
 		{
 			title: "Role",
 			content: (

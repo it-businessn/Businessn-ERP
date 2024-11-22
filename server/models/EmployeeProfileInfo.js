@@ -3,9 +3,6 @@ const mongoose = require("mongoose");
 const employeeProfileInfoSchema = new mongoose.Schema({
 	empId: { type: String, ref: "Employee" },
 	companyName: { type: String, ref: "Company" },
-	payrollStatus: String,
-	employeeNo: String,
-	timeManagementBadgeID: String,
 	firstName: String,
 	middleName: String,
 	lastName: String,
@@ -33,9 +30,6 @@ const employeeProfileInfoSchema = new mongoose.Schema({
 	updatedOn: { type: Date, default: Date.now },
 });
 
-const EmployeeProfileInfo = mongoose.model(
-	"EmployeeProfileInfo",
-	employeeProfileInfoSchema,
-);
+const EmployeeProfileInfo = mongoose.model("EmployeeProfileInfo", employeeProfileInfoSchema);
 
 module.exports = EmployeeProfileInfo;

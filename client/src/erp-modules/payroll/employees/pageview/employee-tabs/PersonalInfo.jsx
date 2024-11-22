@@ -4,7 +4,6 @@ import VerticalStepper from "components/ui/VerticalStepper";
 import {
 	EMP_CONTACT_CONFIG,
 	EMP_EMERGENCY_CONTACT_CONFIG,
-	EMP_IDENTIFICATION_STATUS_CONFIG,
 	EMP_PERSONAL_INFO_CONFIG,
 	getInitialProfileInfo,
 } from "config/payroll/employees/profileInfo";
@@ -20,8 +19,7 @@ const PersonalInfo = ({ company, isOnboarding, id, handleNext }) => {
 	const { empId } = useSelectedEmp(LocalStorageService.getItem("empId"));
 	const profileInfo = useEmployeeProfileInfo(company, empId, isOnboarding);
 
-	const setProfileInfo = () =>
-		getInitialProfileInfo(isOnboarding ? null : empId, company);
+	const setProfileInfo = () => getInitialProfileInfo(isOnboarding ? null : empId, company);
 	const [formData, setFormData] = useState(setProfileInfo);
 	const [isSave1Disabled, setIsSave1Disabled] = useState(true);
 	const [isSave2Disabled, setIsSave2Disabled] = useState(true);
@@ -108,21 +106,6 @@ const PersonalInfo = ({ company, isOnboarding, id, handleNext }) => {
 			),
 		},
 		{
-			title: "Identification and Status",
-			content: (
-				<Record
-					handleConfirm={() => ""}
-					formData={formData}
-					setFormData={setFormData}
-					title="Identification and Status"
-					config={EMP_IDENTIFICATION_STATUS_CONFIG}
-					isLoading={isLoading}
-					isDisabled={isSave2Disabled}
-					handleSubmit={handleSubmit}
-				/>
-			),
-		},
-		{
 			title: "Contact",
 			content: (
 				<Record
@@ -171,16 +154,10 @@ const PersonalInfo = ({ company, isOnboarding, id, handleNext }) => {
 					isOnboarding={isOnboarding}
 					id={id}
 					handleNext={handleNext}
-					handleNextEnabled={
-						!isSave1Disabled && !isSave2Disabled && !isSave3Disabled
-					}
+					handleNextEnabled={!isSave1Disabled && !isSave2Disabled && !isSave3Disabled}
 				/>
 			</BoxCard>
-			<StepContent
-				currentStep={currentStep}
-				steps={steps}
-				isOnboarding={isOnboarding}
-			/>
+			<StepContent currentStep={currentStep} steps={steps} isOnboarding={isOnboarding} />
 		</SimpleGrid>
 	);
 };

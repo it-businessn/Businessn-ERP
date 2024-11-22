@@ -42,34 +42,22 @@ const updateProfileInfo = async (id, data) =>
 
 const updateEmployee = async (empId, data) => {
 	const {
-		payrollStatus,
 		personalEmail,
-		employeeNo,
 		streetAddressSuite,
 		streetAddress,
 		city,
 		province,
 		postalCode,
 		country,
-		timeManagementBadgeID,
 		password,
 	} = data;
 	const employee = await Employee.findById(empId);
 
-	if (employee?.payrollStatus !== payrollStatus) {
-		employee.payrollStatus = payrollStatus;
-	}
 	if (password && password !== "") {
 		employee.password = await hashedPassword(password);
 	}
 	if (personalEmail && personalEmail !== "") {
 		employee.email = personalEmail;
-	}
-	if (employeeNo && employeeNo !== "") {
-		employee.employeeNo = employeeNo;
-	}
-	if (timeManagementBadgeID && timeManagementBadgeID !== "") {
-		employee.timeManagementBadgeID = timeManagementBadgeID;
 	}
 
 	const streetNumber = `${streetAddressSuite ?? ""} ${streetAddress ?? ""}`;
@@ -90,9 +78,6 @@ const addEmployeeProfileInfo = async (req, res) => {
 	const {
 		empId,
 		companyName,
-		payrollStatus,
-		employeeNo,
-		timeManagementBadgeID,
 		firstName,
 		middleName,
 		lastName,
@@ -120,16 +105,13 @@ const addEmployeeProfileInfo = async (req, res) => {
 	} = req.body;
 	try {
 		const data = {
-			payrollStatus,
 			personalEmail,
-			employeeNo,
 			streetAddressSuite,
 			streetAddress,
 			city,
 			province,
 			postalCode,
 			country,
-			timeManagementBadgeID,
 			password,
 		};
 		if (!empId && (firstName, companyName, lastName, birthDate)) {
@@ -141,41 +123,29 @@ const addEmployeeProfileInfo = async (req, res) => {
 			});
 
 			if (existingProfileInfo) {
-				const updatedProfileInfo = await updateProfileInfo(
-					existingProfileInfo._id,
-					{
-						streetAddress: `${streetAddressSuite ?? ""} ${streetAddress}`,
-						city,
-						province,
-						postalCode,
-						country,
-						payrollStatus,
-						personalEmail,
-						personalPhoneNum,
-						employeeNo,
-						timeManagementBadgeID,
-						emergencyFirstName,
-						emergencyLastName,
-						birthDate,
-						SIN,
-						maritalStatus,
-						citizenship,
-						workPermitNo,
-						workPermitExpiryNo,
-						personalEmail,
-						personalPhoneNum,
-						businessEmail,
-						businessPhoneNum,
-						emergencyPersonalEmail,
-						emergencyPersonalPhoneNum,
-					},
-				);
-				if (payrollStatus === "Payroll Active") {
-					// addStatHolidayDefaultTimesheet(
-					// 	existingProfileInfo?.empId,
-					// 	companyName,
-					// );
-				}
+				const updatedProfileInfo = await updateProfileInfo(existingProfileInfo._id, {
+					streetAddress: `${streetAddressSuite ?? ""} ${streetAddress}`,
+					city,
+					province,
+					postalCode,
+					country,
+					personalEmail,
+					personalPhoneNum,
+					emergencyFirstName,
+					emergencyLastName,
+					birthDate,
+					SIN,
+					maritalStatus,
+					citizenship,
+					workPermitNo,
+					workPermitExpiryNo,
+					personalEmail,
+					personalPhoneNum,
+					businessEmail,
+					businessPhoneNum,
+					emergencyPersonalEmail,
+					emergencyPersonalPhoneNum,
+				});
 				await updateEmployee(existingProfileInfo?.empId, data);
 				return res.status(201).json(updatedProfileInfo);
 			}
@@ -203,34 +173,21 @@ const addEmployeeProfileInfo = async (req, res) => {
 				return res.status(201).json(newProfileInfo);
 			}
 		}
-		const existingProfileInfo = await findEmployeeProfileInfo(
-			empId,
-			companyName,
-		);
+		const existingProfileInfo = await findEmployeeProfileInfo(empId, companyName);
 
 		if (SIN !== "") {
 			await deleteAlerts(empId);
 		}
 
-		if (payrollStatus === "Payroll Active") {
-			// addStatHolidayDefaultTimesheet(empId, companyName);
-		}
-
 		await updateEmployee(empId, data);
 
 		if (existingProfileInfo) {
-			const updatedProfileInfo = await updateProfileInfo(
-				existingProfileInfo._id,
-				req.body,
-			);
+			const updatedProfileInfo = await updateProfileInfo(existingProfileInfo._id, req.body);
 			return res.status(201).json(updatedProfileInfo);
 		}
 		const newProfileInfo = await EmployeeProfileInfo.create({
 			empId,
 			companyName,
-			payrollStatus,
-			employeeNo,
-			timeManagementBadgeID,
 			firstName,
 			middleName,
 			lastName,

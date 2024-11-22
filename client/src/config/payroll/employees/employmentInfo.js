@@ -1,7 +1,4 @@
-import {
-	COUNTRIES,
-	REGIONS,
-} from "erp-modules/project-management/workview/project/data";
+import { COUNTRIES, REGIONS } from "erp-modules/project-management/workview/project/data";
 
 export const ROLE_OPTIONS = [
 	{
@@ -184,14 +181,55 @@ export const EMP_ROLE_CONFIG = [
 	},
 ];
 
-export const getInitialCorporateInfo = (
-	empId,
-	companyName,
-	selectedPayGroupName,
-) => {
+export const PAYROLL_STATUS = [
+	{
+		type: "Payroll Active",
+		dependent: false,
+	},
+	{
+		type: "Terminated- Final Pay Pending",
+		dependent: false,
+	},
+	{
+		type: "Payroll Terminated",
+		dependent: false,
+	},
+];
+
+export const EMP_IDENTIFICATION_STATUS_CONFIG = [
+	{
+		type: "sfsgdsgdsgdsg23",
+		params: [
+			{
+				name: "Status",
+				param_key: "payrollStatus",
+				control: "select",
+				options: PAYROLL_STATUS,
+			},
+		],
+	},
+	{
+		type: "sfsgdsgdsgdsg24",
+		params: [{ name: "Employee Number", param_key: "employeeNo", mandatory: true }],
+	},
+	{
+		type: "sfsgdsgdsgdsg25",
+		params: [
+			{
+				name: "Time Management Badge ID",
+				param_key: "timeManagementBadgeID",
+			},
+		],
+	},
+];
+
+export const getInitialCorporateInfo = (empId, companyName, selectedPayGroupName) => {
 	return {
 		empId,
 		companyName,
+		payrollStatus: "",
+		employeeNo: null,
+		timeManagementBadgeID: "",
 		employmentStartDate: null,
 		employmentLeaveDate: null,
 		employmentRole: "Employee",

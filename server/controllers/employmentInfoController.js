@@ -91,7 +91,14 @@ const updateEmploymentInfo = async (id, data) =>
 	});
 
 const updateEmployee = async (empId, data) => {
-	const { employmentRole, employmentCostCenter, employmentDepartment } = data;
+	const {
+		employmentRole,
+		employmentCostCenter,
+		employmentDepartment,
+		payrollStatus,
+		employeeNo,
+		timeManagementBadgeID,
+	} = data;
 	const employee = await Employee.findById(empId);
 
 	if (employmentRole) {
@@ -99,6 +106,15 @@ const updateEmployee = async (empId, data) => {
 	}
 	if (employmentDepartment) {
 		employee.department = employmentDepartment;
+	}
+	if (employee?.payrollStatus !== payrollStatus) {
+		employee.payrollStatus = payrollStatus;
+	}
+	if (employeeNo && employeeNo !== "") {
+		employee.employeeNo = employeeNo;
+	}
+	if (timeManagementBadgeID && timeManagementBadgeID !== "") {
+		employee.timeManagementBadgeID = timeManagementBadgeID;
 	}
 
 	await employee.save();
@@ -108,6 +124,9 @@ const addEmployeeEmploymentInfo = async (req, res) => {
 	const {
 		empId,
 		companyName,
+		payrollStatus,
+		employeeNo,
+		timeManagementBadgeID,
 		employmentStartDate,
 		employmentLeaveDate,
 		employmentRole,
@@ -117,7 +136,14 @@ const addEmployeeEmploymentInfo = async (req, res) => {
 		companyDepartment,
 	} = req.body;
 	try {
-		const data = { employmentRole, employmentCostCenter, employmentDepartment };
+		const data = {
+			payrollStatus,
+			employeeNo,
+			timeManagementBadgeID,
+			employmentRole,
+			employmentCostCenter,
+			employmentDepartment,
+		};
 		const existingEmploymentInfo = await findEmployeeEmploymentInfo(empId, companyName);
 		if (existingEmploymentInfo) {
 			const updatedEmploymentInfo = await updateEmploymentInfo(
@@ -134,6 +160,9 @@ const addEmployeeEmploymentInfo = async (req, res) => {
 		}
 		const newEmploymentInfo = await EmployeeEmploymentInfo.create({
 			empId,
+			payrollStatus,
+			employeeNo,
+			timeManagementBadgeID,
 			companyName,
 			employmentStartDate,
 			employmentLeaveDate,

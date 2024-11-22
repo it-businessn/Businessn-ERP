@@ -3,6 +3,9 @@ const mongoose = require("mongoose");
 const employeeEmploymentInfoSchema = new mongoose.Schema({
 	empId: { type: String, ref: "Employee" },
 	companyName: { type: String, ref: "Company" },
+	payrollStatus: String,
+	employeeNo: String,
+	timeManagementBadgeID: String,
 	employmentStartDate: Date,
 	employmentLeaveDate: Date,
 	employmentRole: String,

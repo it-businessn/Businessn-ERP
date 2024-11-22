@@ -18,7 +18,9 @@ const useEmployees = (isRefresh, company, isOnboarding, isPayrollState, userId) 
 			try {
 				const response = isPayrollActiveState
 					? await UserService.getPayrollActiveCompanyUsers(company)
-					: await UserService.getPayrollInActiveCompanyUsers(company);
+					: isPayrollInActiveState
+					? await UserService.getPayrollInActiveCompanyUsers(company)
+					: await UserService.getAllCompanyUsers(company);
 
 				setEmployees(response.data);
 				setFilteredEmployees(response.data);
