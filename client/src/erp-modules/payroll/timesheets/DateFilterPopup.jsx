@@ -30,17 +30,14 @@ const DateFilterPopup = ({
 				},
 				ranges: {
 					Today: [moment(), moment()],
-					Yesterday: [
-						moment().subtract(1, "days"),
-						moment().subtract(1, "days"),
-					],
+					Yesterday: [moment().subtract(1, "days"), moment().subtract(1, "days")],
 					"Last pay period": [
-						moment(lastRecord?.payPeriodStartDate),
-						moment(lastRecord?.payPeriodEndDate),
+						getMomentDate(lastRecord?.payPeriodStartDate),
+						getMomentDate(lastRecord?.payPeriodEndDate),
 					],
 					"This pay period": [
-						moment(closestRecord?.payPeriodStartDate),
-						moment(closestRecord?.payPeriodEndDate),
+						getMomentDate(closestRecord?.payPeriodStartDate),
+						getMomentDate(closestRecord?.payPeriodEndDate),
 					],
 					"Last 7 Days": [moment().subtract(6, "days"), moment()],
 					"Last 30 Days": [moment().subtract(29, "days"), moment()],
@@ -71,13 +68,7 @@ const DateFilterPopup = ({
 				toggleDateFilter();
 			}}
 		>
-			<Input
-				cursor="pointer"
-				id="date-range"
-				type="text"
-				ref={inputRef}
-				className="form-control"
-			/>
+			<Input cursor="pointer" id="date-range" type="text" ref={inputRef} className="form-control" />
 		</HStack>
 	);
 };

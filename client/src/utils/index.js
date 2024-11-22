@@ -62,7 +62,7 @@ export const toCapitalize = (str) => str?.replace(/\b\w/g, (match) => match.toUp
 
 const todayDate = moment();
 
-export const getMomentDate = (date) => moment(date);
+export const getMomentDate = (date) => moment.utc(date);
 
 export const daysAgo = (date) => {
 	const numDays = todayDate?.diff(date, "days");
