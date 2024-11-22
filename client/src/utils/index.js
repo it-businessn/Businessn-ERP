@@ -206,7 +206,7 @@ export const getDefaultDateFormat = (date = null) => {
 	return `${dateObject.getMonth() + 1}/${dateObject.getDate()}/${dateObject.getFullYear()}`;
 };
 
-export const getAmount = (data) => `$${data ? Math.abs(data)?.toFixed(2) : 0.0}`;
+export const getAmount = (data) => `$${data ? Math.abs(data)?.toFixed(2) : `0.00`}`;
 
 export const timeToDecimal = (hours, minutes = 0) => (hours + minutes / 60).toFixed(1);
 

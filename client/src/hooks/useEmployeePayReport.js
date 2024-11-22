@@ -10,11 +10,7 @@ const useEmployeePayReport = (company, payPeriodNum, isOpen) => {
 
 		const fetchHoursWorkedInfo = async () => {
 			try {
-				const response = await PayrollService.getPayReportDetails(
-					company,
-					payNum,
-					extraRun,
-				);
+				const response = await PayrollService.getPayReportDetails(company, payNum, extraRun);
 				setHours(response.data);
 			} catch (error) {
 				console.error(error);

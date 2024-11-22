@@ -7,12 +7,7 @@ import WorkviewTab from "./WorkviewTab";
 
 const AmountAllocation = ({ company, closestRecord, groupId, path }) => {
 	const [refresh, setRefresh] = useState(false);
-	const data = useEmployeeAmountAllocation(
-		company,
-		refresh,
-		closestRecord,
-		groupId,
-	);
+	const data = useEmployeeAmountAllocation(company, refresh, closestRecord, groupId);
 
 	const [amountAllocateData, setAmountAllocateData] = useState(null);
 	const [formData, setFormData] = useState(null);
@@ -24,9 +19,7 @@ const AmountAllocation = ({ company, closestRecord, groupId, path }) => {
 	}, [data]);
 
 	const cellClick = (row) => {
-		const item = amountAllocateData?.find(
-			(record) => record?.empId?._id === row?.empId?._id,
-		);
+		const item = amountAllocateData?.find((record) => record?.empId?._id === row?.empId?._id);
 		setFormData(item);
 	};
 
@@ -92,6 +85,12 @@ const AmountAllocation = ({ company, closestRecord, groupId, path }) => {
 			cols={[
 				{ key: "Employee Name", pair: "obj", pair_key: "fullName" },
 				{
+					key: "Total Amount",
+					pair: "totalAmountAllocated",
+					align: "center",
+					round: true,
+				},
+				{
 					key: "Commission $",
 					pair: "commission",
 					isEditable: true,
@@ -112,9 +111,6 @@ const AmountAllocation = ({ company, closestRecord, groupId, path }) => {
 				{
 					key: "",
 					pair: <OutlineButton size="xs" name="setup" label="View Balances" />,
-				},
-				{
-					key: "amount1",
 				},
 				{
 					key: "amount2",

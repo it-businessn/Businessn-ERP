@@ -8,9 +8,7 @@ const getAmountAllocation = async (req, res) => {
 
 	try {
 		const isExtraPayRun = isExtraRun === "true";
-		const employees = isExtraPayRun
-			? await findGroupEmployees(groupId, payDate)
-			: null;
+		const employees = isExtraPayRun ? await findGroupEmployees(groupId, payDate) : null;
 
 		const activeEmployees = isExtraPayRun
 			? await getEmployeeId(employees)
@@ -24,11 +22,22 @@ const getAmountAllocation = async (req, res) => {
 				payPeriodPayDate: payDate,
 			});
 			if (result) {
+				const { commission, bonus, retroactive, reimbursement, terminationPayout, vacationPayout } =
+					result;
+				result.totalAmountAllocated =
+					(commission || 0) +
+					(bonus || 0) +
+					(retroactive || 0) +
+					(reimbursement || 0) +
+					(terminationPayout || 0) +
+					(vacationPayout || 0);
 				aggregatedResult.push(result);
 			} else {
-				aggregatedResult.push({
+				const result = {
 					empId: { _id: employee._id, fullName: employee.fullName },
-				});
+					totalAmountAllocated: 0,
+				};
+				aggregatedResult.push(result);
 			}
 		}
 		res.status(200).json(aggregatedResult);
@@ -58,10 +67,7 @@ const addAdditionalHoursAllocationInfo = async (req, res) => {
 		});
 
 		if (existingInfo) {
-			const updatedInfo = await updateAdditionalHoursAllocatedInfo(
-				existingInfo._id,
-				req.body,
-			);
+			const updatedInfo = await updateAdditionalHoursAllocatedInfo(existingInfo._id, req.body);
 			return res.status(201).json(updatedInfo);
 		}
 		const newInfo = await addNewAllocationRecord({
@@ -82,8 +88,7 @@ const addAdditionalHoursAllocationInfo = async (req, res) => {
 	}
 };
 
-const addNewAllocationRecord = async (data) =>
-	await EmployeeExtraAllocation.create(data);
+const addNewAllocationRecord = async (data) => await EmployeeExtraAllocation.create(data);
 
 const addAmountAllocation = async (req, res) => {
 	const {
@@ -105,10 +110,7 @@ const addAmountAllocation = async (req, res) => {
 		});
 
 		if (existingInfo) {
-			const updatedInfo = await updateAdditionalHoursAllocatedInfo(
-				existingInfo._id,
-				req.body,
-			);
+			const updatedInfo = await updateAdditionalHoursAllocatedInfo(existingInfo._id, req.body);
 			return res.status(201).json(updatedInfo);
 		}
 		const newInfo = await addNewAllocationRecord({
@@ -146,9 +148,7 @@ const findAdditionalAmountAllocatedInfo = async (record) =>
 			model: "Employee",
 			select: ["fullName"],
 		})
-		.select(
-			"empId commission bonus retroactive reimbursement terminationPayout vacationPayout",
-		);
+		.select("empId commission bonus retroactive reimbursement terminationPayout vacationPayout");
 
 module.exports = {
 	addAdditionalHoursAllocationInfo,

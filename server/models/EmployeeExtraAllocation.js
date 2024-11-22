@@ -100,6 +100,8 @@ const employeeExtraAllocationSchema = new mongoose.Schema({
 
 	bonus: { type: Number, default: 0 },
 	YTDBonus: { type: Number, default: 0 },
+
+	totalAmountAllocated: { type: Number, default: 0 },
 });
 
 const EmployeeExtraAllocation = mongoose.model(
