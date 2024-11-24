@@ -49,7 +49,6 @@ const PayPeriodDetails = ({ employees, activeUsers, handleClick }) => {
 					w={"100%"}
 					justifyContent={"space-between"}
 					color={"var(--nav_color)"}
-					px="2px"
 					bg={item?.isHeader && "var(--bg_color_1)"}
 					border={item?.isHeader && "3px solid var(--bg_color_1)"}
 					borderRadius="10px"
@@ -60,7 +59,7 @@ const PayPeriodDetails = ({ employees, activeUsers, handleClick }) => {
 					) : (
 						<NormalTextTitle title={item.title} whiteSpace="wrap" />
 					)}
-					<TextTitle align="center" size={"2xl"} title={item.description} />
+					<TextTitle align="center" size={"xl"} title={item.description} />
 					<NormalTextTitle
 						onClick={() => handleClick(item?.linkTo?.path)}
 						color="var(--primary_button_bg)"

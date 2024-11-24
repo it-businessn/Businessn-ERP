@@ -1,15 +1,8 @@
+import SkeletonLoader from "components/SkeletonLoader";
 import { config } from "react-spring";
 import VerticalCarousel from "./VerticalCarousel";
 
-const PayrollCard = ({
-	prevSchedule,
-	closestRecord,
-	runType,
-	nextSchedule,
-	company,
-	payGroupSchedule,
-	closestRecordIndex,
-}) => {
+const PayrollCard = ({ payGroupSchedule, closestRecordIndex }) => {
 	const state = {
 		goToSlide: 0,
 		offsetRadius: 4,
@@ -18,15 +11,18 @@ const PayrollCard = ({
 	};
 
 	return (
-		payGroupSchedule && (
-			<VerticalCarousel
-				slides={payGroupSchedule}
-				offsetRadius={state.offsetRadius}
-				showNavigation={state.showNavigation}
-				animationConfig={state.config}
-				closestRecordIndex={closestRecordIndex}
-			/>
-		)
+		<>
+			{!payGroupSchedule && <SkeletonLoader />}
+			{payGroupSchedule && (
+				<VerticalCarousel
+					slides={payGroupSchedule}
+					offsetRadius={state.offsetRadius}
+					showNavigation={state.showNavigation}
+					animationConfig={state.config}
+					closestRecordIndex={closestRecordIndex}
+				/>
+			)}
+		</>
 	);
 };
 

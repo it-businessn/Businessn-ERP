@@ -105,12 +105,19 @@ const PayrollActionSection = ({ company, filter, handleClick, activeUsers, total
 				borderRadius="10px"
 			>
 				<VStack>
-					<TextTitle title={"Overview of payroll process"} />
-					<NormalTextTitle title={`Task progress of ${activeUsers} employees`} />
+					<TextTitle size={"sm"} title={"Overview of payroll process"} />
+					<NormalTextTitle size={"sm"} title={`Task progress of ${activeUsers} employees`} />
 				</VStack>
 				<TextTitle title={`${progressPercent}%`} align="end" color={"var(--primary_button_bg)"} />
 			</HStack>
-			<VerticalStepper steps={steps} currentStep={currentStep} handleLinkClick={handleClick} />
+			<VerticalStepper
+				steps={steps}
+				currentStep={currentStep}
+				handleLinkClick={handleClick}
+				indicatorStyle={{ fontSize: "14px" }}
+				height="130px"
+				top="50%"
+			/>
 		</VStack>
 	);
 };

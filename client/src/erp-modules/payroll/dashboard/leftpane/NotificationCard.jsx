@@ -9,12 +9,7 @@ const NotificationCard = () => {
 	return (
 		<BoxCard>
 			<VStack spacing={3} alignItems={"start"} w={"100%"}>
-				<HStack
-					spacing={4}
-					justifyContent={"space-between"}
-					w={"100%"}
-					zIndex={2}
-				>
+				<HStack spacing={4} justifyContent={"space-between"} w={"100%"} zIndex={2}>
 					<PrimaryButton
 						minW={"20%"}
 						name={"New Feature"}
@@ -23,33 +18,25 @@ const NotificationCard = () => {
 					/>
 					<TextTitle
 						size={"lg"}
-						color={
-							"linear-gradient(58deg, rgb(60 91 122)  0%,  transparent 100%)"
-						}
+						color={"linear-gradient(58deg, rgb(60 91 122)  0%,  transparent 100%)"}
 						title={"AI Scheduler"}
 					/>
 				</HStack>
 				<NormalTextTitle
-					title={
-						"Automate manual scheduling processes with AI powered scheduling tools."
-					}
+					title={"Automate manual scheduling processes with AI powered scheduling tools."}
+					size="sm"
 					whiteSpace={"wrap"}
 					zIndex={2}
 				/>
 				<Image
 					objectFit="contain"
 					// position={"relative"}
-					height={"100%"}
-					w={"100%"}
+					height={"40%"}
+					w={"40%"}
 					src={scheduler}
 					alt="Company logo"
 				/>
-				<TextTitle
-					zIndex={2}
-					align="end"
-					color={"var(--primary_button_bg)"}
-					title={"Learn more"}
-				/>
+				<TextTitle zIndex={2} align="end" color={"var(--primary_button_bg)"} title={"Learn more"} />
 			</VStack>
 		</BoxCard>
 	);

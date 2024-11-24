@@ -14,10 +14,7 @@ const VerticalCarousel = ({
 	const [index, setIndex] = useState(closestRecordIndex);
 
 	// index wraps around slide length
-	const modBySlidesLength = useCallback(
-		(i) => mod(i, slides.length),
-		[slides.length],
-	);
+	const modBySlidesLength = useCallback((i) => mod(i, slides.length), [slides.length]);
 
 	// Moves the slide by a certain direction (up/down)
 	const moveSlide = useCallback(
@@ -72,22 +69,10 @@ const VerticalCarousel = ({
 			justify="space-between"
 			zIndex="1000"
 		>
-			<Button
-				bg="white"
-				p="15px"
-				mb="10px"
-				borderRadius="3px"
-				onClick={() => moveSlide(1)}
-			>
+			<Button bg="white" p="15px" mb="10px" borderRadius="3px" onClick={() => moveSlide(1)}>
 				&#8593;
 			</Button>
-			<Button
-				bg="white"
-				p="15px"
-				mb="10px"
-				borderRadius="3px"
-				onClick={() => moveSlide(-1)}
-			>
+			<Button bg="white" p="15px" mb="10px" borderRadius="3px" onClick={() => moveSlide(-1)}>
 				&#8595;
 			</Button>
 		</Flex>
@@ -95,12 +80,7 @@ const VerticalCarousel = ({
 
 	return (
 		<React.Fragment>
-			<Box
-				position="relative"
-				display="flex"
-				justifyContent="center"
-				height="500px"
-			>
+			<Box position="relative" display="flex" justifyContent="center" height="300px">
 				{getPresentableSlides().map((slide, presentableIndex) => (
 					<Slide
 						key={`${slide.payPeriod}_${presentableIndex}`}

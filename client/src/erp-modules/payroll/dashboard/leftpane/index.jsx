@@ -103,11 +103,17 @@ const LeftPane = ({ setStats, company, closestRecord, payGroupSchedule, closestR
 	];
 	return (
 		<Box>
-			<SimpleGrid mb={"1em"} columns={{ base: 2 }} spacing="1em" color={"var(--menu_item_color)"}>
+			<SimpleGrid
+				mb={"1em"}
+				columns={{ base: 2 }}
+				spacing="1em"
+				color={"var(--menu_item_color)"}
+				templateRows={{ lg: "50% 50%" }}
+			>
 				{/* <TimeCard selectedUser={selectedUser} company={company} /> */}
 
 				{sections.map(({ name, content }, index) => (
-					<BoxCard key={name}>
+					<BoxCard key={name} overflowY={index === 3 && "hidden"}>
 						{index === 0 ? (
 							<HStack>
 								{/* <TextTitle title={name} mt={2} mb={"1em"} />

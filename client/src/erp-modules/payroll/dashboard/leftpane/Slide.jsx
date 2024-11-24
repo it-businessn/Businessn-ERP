@@ -6,16 +6,7 @@ import { workViewPath } from "routes";
 import { longFormat } from "utils";
 import PayPeriodDetailCard from "./PayPeriodDetailCard";
 
-function Slide({
-	content,
-	offsetRadius,
-	index,
-	animationConfig,
-	moveSlide,
-	delta,
-	down,
-	up,
-}) {
+function Slide({ content, offsetRadius, index, animationConfig, moveSlide, delta, down, up }) {
 	const styles = {
 		0: {
 			transform: "translateX(0%) translateY(-41.7%) scale(0.8)",
@@ -71,8 +62,7 @@ function Slide({
 	const offsetFromMiddle = index - offsetRadius;
 	const totalPresentables = 2 * offsetRadius + 1;
 
-	const translateYoffset =
-		50 * (Math.abs(offsetFromMiddle) / (offsetRadius + 1));
+	const translateYoffset = 50 * (Math.abs(offsetFromMiddle) / (offsetRadius + 1));
 	let translateY = -50;
 
 	if (offsetRadius !== 0) {
@@ -108,6 +98,7 @@ function Slide({
 				justifyContent: "center",
 				width: "100%",
 				zIndex: Math.abs(Math.abs(offsetFromMiddle) - 10),
+				height: "70%",
 			}}
 		>
 			<VStack
@@ -115,8 +106,7 @@ function Slide({
 				spacing={0}
 				borderRadius="10px"
 				width="100%"
-				p="1em"
-				pt={"0.5em"}
+				p="0.5em 0.8em"
 				bg={"var(--empName_bg)"}
 				color="var(--main_color)"
 			>

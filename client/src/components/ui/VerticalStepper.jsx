@@ -29,6 +29,9 @@ const VerticalStepper = ({
 	id,
 	handleLinkClick,
 	handleNextEnabled,
+	indicatorStyle,
+	circleSize,
+	top = "25%",
 }) => {
 	const handleSubmitClick = () => {
 		if (handleNext) {
@@ -45,12 +48,7 @@ const VerticalStepper = ({
 	};
 
 	return (
-		<VStack
-			alignItems={"start"}
-			justifyContent={"space-between"}
-			h={"100%"}
-			w={"100%"}
-		>
+		<VStack alignItems={"start"} justifyContent={"space-between"} h={"100%"} w={"100%"}>
 			<Stepper
 				index={currentStep}
 				orientation="vertical"
@@ -61,30 +59,26 @@ const VerticalStepper = ({
 				cursor={"pointer"}
 			>
 				{steps.map((step, index) => (
-					<Step
-						key={index}
-						w={"100%"}
-						onClick={() => handleStepClick(step, index)}
-					>
-						<StepIndicator>
-							<StepStatus
-								complete={<StepIcon />}
-								incomplete={<FaCheck />}
-								active={<FaCheck />}
-							/>
+					<Step key={index} w={"100%"} onClick={() => handleStepClick(step, index)}>
+						<StepIndicator sx={indicatorStyle}>
+							<StepStatus complete={<StepIcon />} incomplete={<FaCheck />} active={<FaCheck />} />
 						</StepIndicator>
-						<StepTitle w={"100%"}>{step.title}</StepTitle>
+						<StepTitle w={"100%"} sx={indicatorStyle}>
+							{step.title}
+						</StepTitle>
 						{!hideProgress && (
 							<CircularProgressBarCell
 								completionPercentage={step.description ?? 0}
 								color="var(--primary_button_bg)"
-								top={"25%"}
+								top={top}
+								size={circleSize}
 							/>
 						)}
 
 						{isOnboarding && <StepSeparator />}
 						{step?.linkTo && (
 							<NormalTextTitle
+								size="sm"
 								onClick={() => handleLinkClick(step?.linkTo?.path)}
 								color="var(--primary_button_bg)"
 								title={step?.linkTo?.title}

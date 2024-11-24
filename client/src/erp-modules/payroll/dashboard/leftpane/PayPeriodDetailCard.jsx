@@ -21,31 +21,27 @@ const PayPeriodDetailCard = ({
 }) => (
 	<Box
 		w={"100%"}
-		ml={"1.5em"}
+		ml={"0.5em"}
 		borderTopLeftRadius={borderTopLeftRadius}
 		borderTopRightRadius={borderTopRightRadius}
 		borderBottomLeftRadius={borderBottomLeftRadius}
 		borderBottomRightRadius={borderBottomRightRadius}
 	>
 		{payNum && (
-			<TextTitle
-				align={"right"}
-				p={"0 2em 0 0 "}
-				title={`Pay Period ${payNum}`}
-			/>
+			<TextTitle size="sm" align={"right"} p={"0 2em 0 0 "} title={`Pay Period ${payNum}`} />
 		)}
-		<HStack justifyContent={"space-between"} p="1em" pb={pb} bg={"#1c6b96"}>
+		<HStack justifyContent={"space-between"} p="0.8em" pb={pb} bg={"#1c6b96"}>
 			<VStack spacing={0} alignItems={"start"} justifyContent={"center"}>
-				<TextTitle color={"var(--filter_border_color)"} title={header} />
-				<TextTitle title={text1} />
-				{text2 && <TextTitle title={text2} />}
+				<TextTitle size="sm" color={"var(--filter_border_color)"} title={header} />
+				<TextTitle size="sm" title={text1} />
+				{text2 && <TextTitle size="sm" title={text2} />}
 			</VStack>
 			{isOutlineButton ? (
 				<OutlineButton
-					w={"130px"}
 					label={"View Register"}
 					onClick={handleClick}
 					bg={"var(--primary_bg)"}
+					size="sm"
 				/>
 			) : (
 				<PrimaryButton
@@ -54,8 +50,9 @@ const PayPeriodDetailCard = ({
 						bg,
 					}}
 					bg={bg}
+					size="sm"
 					color={color}
-					w={"130px"}
+					w={"120px"}
 					name={actionText}
 					loadingText="Loading"
 					onOpen={handleClick}
