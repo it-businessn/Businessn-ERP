@@ -1,15 +1,12 @@
 import { Box, HStack, Stack } from "@chakra-ui/react";
 import NormalTextTitle from "components/ui/NormalTextTitle";
 import TextTitle from "components/ui/text/TextTitle";
-import { getAmount, monthDayYearFormat, toWords } from "utils";
+import { monthDayYearFormat, toWords } from "utils";
+import { getAmount } from "utils/convertAmt";
 import PayStubHeader from "./PayStubHeader";
 
 const PaymentDateTitle = ({ payDate }) => (
-	<TextTitle
-		align={"right"}
-		title={`Payment Date: ${monthDayYearFormat(payDate)}`}
-		size={"xs"}
-	/>
+	<TextTitle align={"right"} title={`Payment Date: ${monthDayYearFormat(payDate)}`} size={"xs"} />
 );
 
 const InfoText = ({ title1, title2, title3, hasBg }) => (
@@ -41,12 +38,7 @@ const ChequeDetails = ({ data }) => {
 			<Box w={"100%"}>
 				<PaymentDateTitle payDate={payDate} />
 				<InfoText title1="Account holder:" title2={name} />
-				<InfoText
-					title1="The amount:"
-					title2={amountInWords}
-					title3={netPay}
-					hasBg
-				/>
+				<InfoText title1="The amount:" title2={amountInWords} title3={netPay} hasBg />
 				<InfoText title1="Payment method:" title2={"DIRECT DEPOSIT"} />
 			</Box>
 			<TextTitle

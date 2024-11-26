@@ -400,13 +400,15 @@ const getPayDetailsReportInfo = async (req, res) => {
 		const isExtraPayRun = isExtraRun === "true";
 		const payStubs = await EmployeePayStub.find({
 			companyName,
-			payPeriodNum: 24,
+			payPeriodNum,
 			isExtraRun: isExtraPayRun,
-		})
-			.populate(EMP_INFO)
-			.sort({
-				"empId.fullName": 1,
-			});
+		}).populate(EMP_INFO);
+
+		payStubs.sort((a, b) => {
+			const nameA = a.empId.fullName.toLowerCase();
+			const nameB = b.empId.fullName.toLowerCase();
+			return nameA < nameB ? -1 : nameA > nameB ? 1 : 0;
+		});
 		res.status(200).json(payStubs);
 	} catch (error) {
 		res.status(404).json({ error: error.message });

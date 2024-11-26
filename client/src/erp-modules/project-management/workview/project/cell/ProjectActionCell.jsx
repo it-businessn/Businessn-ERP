@@ -1,6 +1,7 @@
 import { Box, HStack, Td, VStack } from "@chakra-ui/react";
 import { useState } from "react";
 import { CircularProgressBarCell } from "utils";
+import { convertDecimal } from "utils/convertAmt";
 import AddNewProjectTask from "../AddNewProjectTask";
 import EditProject from "../EditProject";
 import ActionItem from "./ActionItem";
@@ -49,7 +50,7 @@ const ProjectActionCell = ({
 								project.completionPercent
 									? Number.isInteger(project.completionPercent)
 										? project.completionPercent
-										: parseFloat(project.completionPercent).toFixed(2)
+										: convertDecimal(project.completionPercent)
 									: 0
 							}
 						/>

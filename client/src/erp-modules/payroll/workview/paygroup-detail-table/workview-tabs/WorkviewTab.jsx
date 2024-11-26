@@ -5,7 +5,7 @@ import EmptyRowRecord from "components/ui/EmptyRowRecord";
 import WorkviewTable from "components/ui/table/WorkviewTable";
 import TextTitle from "components/ui/text/TextTitle";
 import { useNavigate } from "react-router-dom";
-import { getAmount } from "utils";
+import { convertDecimal, getAmount } from "utils/convertAmt";
 
 const WorkviewTab = ({
 	cols,
@@ -76,8 +76,8 @@ const WorkviewTab = ({
 										getAmount(row[col.pair])
 									) : col.main_key ? (
 										row[col.main_key][col.pair]
-									) : col.nearest && row[col.pair] ? (
-										parseFloat(row[col.pair]).toFixed(2)
+									) : col.nearest ? (
+										convertDecimal(row[col.pair])
 									) : (
 										row[col.pair]
 									);

@@ -1,5 +1,6 @@
 import { Box, Input, Table, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
 import EmptyRowRecord from "components/ui/EmptyRowRecord";
+import { convertDecimal } from "utils/convertAmt";
 
 function Budget({ expenseData, onExpenseChange }) {
 	const startDate = new Date();
@@ -11,7 +12,7 @@ function Budget({ expenseData, onExpenseChange }) {
 	});
 
 	const handleExpenseChange = (date, event) => {
-		const newExpense = parseFloat(event.target.value);
+		const newExpense = convertDecimal(event.target.value);
 		if (!isNaN(newExpense)) {
 			onExpenseChange(date, newExpense);
 		}
@@ -27,9 +28,7 @@ function Budget({ expenseData, onExpenseChange }) {
 					</Tr>
 				</Thead>
 				<Tbody>
-					{(!days || days?.length === 0) && (
-						<EmptyRowRecord data={days} colSpan={2} />
-					)}
+					{(!days || days?.length === 0) && <EmptyRowRecord data={days} colSpan={2} />}
 					{days?.map((day, index) => (
 						<Tr key={index}>
 							<Td>{day.toDateString()}</Td>

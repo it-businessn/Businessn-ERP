@@ -1,7 +1,8 @@
 import { Box, Stack, VStack } from "@chakra-ui/react";
 import BoxCard from "components/ui/card";
 import React from "react";
-import { formatDateBar, getAmount } from "utils";
+import { formatDateBar } from "utils";
+import { getAmount } from "utils/convertAmt";
 import BasicInfo from "../statement/BasicInfo";
 import InformationSection from "../statement/InformationSection";
 import { ACCRUAL_TYPES } from "./data";
@@ -11,22 +12,10 @@ const EmployeeInfo = ({ data, companyNum }) => (
 		<BoxCard p={0}>
 			<Box w={"100%"} bg={"var(--primary_bg_1)"} p={2}>
 				<VStack mt={1} spacing={0}>
-					<BasicInfo
-						title1={"Net Pay:"}
-						title2={getAmount(data.currentNetPay)}
-					/>
-					<BasicInfo
-						title1={"Pay Date:"}
-						title2={formatDateBar(data.payPeriodPayDate)}
-					/>
-					<BasicInfo
-						title1={"Pay Start Date:"}
-						title2={formatDateBar(data.payPeriodStartDate)}
-					/>
-					<BasicInfo
-						title1={"Pay End Date:"}
-						title2={formatDateBar(data.payPeriodEndDate)}
-					/>
+					<BasicInfo title1={"Net Pay:"} title2={getAmount(data.currentNetPay)} />
+					<BasicInfo title1={"Pay Date:"} title2={formatDateBar(data.payPeriodPayDate)} />
+					<BasicInfo title1={"Pay Start Date:"} title2={formatDateBar(data.payPeriodStartDate)} />
+					<BasicInfo title1={"Pay End Date:"} title2={formatDateBar(data.payPeriodEndDate)} />
 					<BasicInfo mt={4} title1={"Name:"} title2={data?.empId?.fullName} />
 					<BasicInfo
 						title1={"Address:"}
@@ -41,11 +30,7 @@ const EmployeeInfo = ({ data, companyNum }) => (
 						whiteSpace="wrap"
 						title2={`${data.empId?.primaryAddress?.city}, ${data.empId?.primaryAddress?.state} ${data.empId?.primaryAddress?.postalCode}`}
 					/>
-					<BasicInfo
-						mt={4}
-						title1={"Employee#:"}
-						title2={data.empId.employeeId}
-					/>
+					<BasicInfo mt={4} title1={"Employee#:"} title2={data.empId.employeeId} />
 					<BasicInfo title1={"Company#:"} title2={companyNum} />
 				</VStack>
 			</Box>

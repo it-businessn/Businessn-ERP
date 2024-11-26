@@ -4,6 +4,7 @@ import { useState } from "react";
 import ProjectService from "services/ProjectService";
 import TaskService from "services/TaskService";
 import { CircularProgressBarCell } from "utils";
+import { convertDecimal } from "utils/convertAmt";
 import AddNewSubTasks from "../AddNewSubTasks";
 import EditSubTask from "../EditSubTask";
 import ActionItem from "./ActionItem";
@@ -108,7 +109,7 @@ const SubTaskActionCell = ({
 						task.completionPercent
 							? Number.isInteger(task.completionPercent)
 								? task.completionPercent
-								: parseFloat(task.completionPercent).toFixed(2)
+								: convertDecimal(task.completionPercent)
 							: 0
 					}
 				/>

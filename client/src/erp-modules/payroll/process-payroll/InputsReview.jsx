@@ -21,7 +21,7 @@ import { MdCheckCircle, MdSettingsSuggest } from "react-icons/md";
 import { useNavigate, useParams } from "react-router-dom";
 import LocalStorageService from "services/LocalStorageService";
 import PayrollService from "services/PayrollService";
-import { getAmount } from "utils";
+import { convertDecimal, getAmount } from "utils/convertAmt";
 import { getClosestRecord } from "../workview/data";
 import EmpPayStatement from "./EmpPayStatement";
 
@@ -49,7 +49,7 @@ const InputsReview = ({
 		{ title: "Employee name", value: "fullName" },
 		{ title: "Net Income", value: "currentNetPay", round: true },
 		{ title: "Gross Income", value: "currentGrossPay", round: true },
-		{ title: "Total Hours", value: "totalHoursWorked" },
+		{ title: "Total Hours", value: "totalHoursWorked", nearest: true },
 		{ title: "Total Amount", value: "totalAmountAllocated", round: true },
 	];
 
@@ -104,7 +104,7 @@ const InputsReview = ({
 						)}
 						{inputsReviewData?.map((data) => (
 							<Tr key={data._id}>
-								{COLS.map(({ title, value, round }) => (
+								{COLS.map(({ title, value, round, nearest }) => (
 									<Td key={title}>
 										<TextTitle
 											title={
@@ -112,6 +112,8 @@ const InputsReview = ({
 													? data?.empId[value]
 													: round
 													? getAmount(data[value])
+													: nearest
+													? convertDecimal(data[value])
 													: data[value]
 											}
 										/>

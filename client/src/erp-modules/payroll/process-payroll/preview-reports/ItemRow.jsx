@@ -1,6 +1,6 @@
 import { Td, Tr } from "@chakra-ui/react";
 import NormalTextTitle from "components/ui/NormalTextTitle";
-import { getAmount } from "utils";
+import { getAmount } from "utils/convertAmt";
 import { SUM_TOTALS } from "./data";
 
 const ItemRow = ({
@@ -69,9 +69,7 @@ const ItemRow = ({
 						color="var(--main_color_black)"
 						size={"xs"}
 						align={"right"}
-						visibility={
-							(isTotals || (!isEarning && totalHours === 0)) && "hidden"
-						}
+						visibility={(isTotals || (!isEarning && totalHours === 0)) && "hidden"}
 						title={YTDHoursTotal}
 					/>
 				</Td>

@@ -21,7 +21,7 @@ const usePaygroup = (company, refresh) => {
 		// 			: closest;
 		// 	}, schedules[0]);
 
-		// const closestPayPeriod =schedules[8]
+		// const closestPayPeriod = schedules[22];
 		const closestPayPeriod = schedules?.find(({ isProcessed }) => !isProcessed);
 
 		const closestPayPeriodIndex = schedules.findIndex(
