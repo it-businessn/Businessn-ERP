@@ -1,5 +1,6 @@
 import { HStack, Table, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
 import PrimaryButton from "components/ui/button/PrimaryButton";
+import EmptyRowRecord from "components/ui/EmptyRowRecord";
 import SelectBox from "components/ui/form/select/SelectBox";
 import TextTitle from "components/ui/text/TextTitle";
 import useCompany from "hooks/useCompany";
@@ -21,9 +22,9 @@ const PayrunSetup = ({
 	const runType = closestRecord?.isExtraRun ? "Extra" : "Regular";
 
 	const handleConfirm = async () => {
-		setIsLoading(true);
 		try {
 			if (!closestRecord.isProcessed) {
+				setIsLoading(true);
 				const response = await PayrollService.addPayPeriodPayStub({
 					companyName: company,
 					currentPayPeriod: closestRecord,
@@ -89,6 +90,7 @@ const PayrunSetup = ({
 							/>
 						</Th>
 					</Tr>
+					{(!payGroups || !payGroups?.length) && <EmptyRowRecord data={payGroups} colSpan={2} />}
 				</Thead>
 				{selectedPayGroup && (
 					<Tbody bg={isPayPeriodInactive && "var(--calendar_border)"}>
@@ -103,15 +105,17 @@ const PayrunSetup = ({
 					</Tbody>
 				)}
 			</Table>
-			<PrimaryButton
-				bg="var(--correct_ans)"
-				name={"CONFIRM"}
-				rightIcon={<MdCheckCircle />}
-				isLoading={isLoading}
-				isDisabled={isPayPeriodInactive}
-				loadingText="Processing..."
-				onOpen={handleConfirm}
-			/>
+			{payGroups && (
+				<PrimaryButton
+					bg="var(--correct_ans)"
+					name={"CONFIRM"}
+					rightIcon={<MdCheckCircle />}
+					isLoading={isLoading}
+					isDisabled={isPayPeriodInactive}
+					loadingText="Processing..."
+					onOpen={handleConfirm}
+				/>
+			)}
 		</HStack>
 	);
 };

@@ -73,11 +73,19 @@ const WorkviewTab = ({
 											row.empId[col.pair_key]
 										)
 									) : col.round ? (
-										getAmount(row[col.pair])
+										col.pair === "totalAmountAllocated" ? (
+											<TextTitle title={getAmount(row[col.pair])} />
+										) : (
+											getAmount(row[col.pair])
+										)
 									) : col.main_key ? (
 										row[col.main_key][col.pair]
 									) : col.nearest ? (
-										convertDecimal(row[col.pair])
+										col.pair === "totalHoursWorked" ? (
+											<TextTitle title={convertDecimal(row[col.pair])} />
+										) : (
+											convertDecimal(row[col.pair])
+										)
 									) : (
 										row[col.pair]
 									);
