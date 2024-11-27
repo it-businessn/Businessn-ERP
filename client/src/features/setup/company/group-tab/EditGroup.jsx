@@ -6,7 +6,7 @@ import ModalLayout from "components/ui/modal/ModalLayout";
 import TableLayout from "components/ui/table/TableLayout";
 import { useEffect, useState } from "react";
 import SettingService from "services/SettingService";
-import { dayMonthYear, getDefaultDate } from "utils";
+import { dayMonthYear, getDefaultDate } from "utils/convertDate";
 
 const EditGroup = ({ isOpen, onClose, selectedGroup }) => {
 	const schedules = selectedGroup?.scheduleSettings;
@@ -107,14 +107,8 @@ const EditGroup = ({ isOpen, onClose, selectedGroup }) => {
 									setRecordKey("payPeriodEndDate");
 								}}
 							>
-								{edit &&
-								record.payPeriod === item.payPeriod &&
-								recordKey === "payPeriodEndDate" ? (
-									<EditDate
-										date={item.payPeriodEndDate}
-										index={index}
-										_key="payPeriodEndDate"
-									/>
+								{edit && record.payPeriod === item.payPeriod && recordKey === "payPeriodEndDate" ? (
+									<EditDate date={item.payPeriodEndDate} index={index} _key="payPeriodEndDate" />
 								) : (
 									dayMonthYear(item.payPeriodEndDate)
 								)}
@@ -147,14 +141,8 @@ const EditGroup = ({ isOpen, onClose, selectedGroup }) => {
 								}}
 								p={1}
 							>
-								{edit &&
-								record.payPeriod === item.payPeriod &&
-								recordKey === "payPeriodPayDate" ? (
-									<EditDate
-										date={item.payPeriodPayDate}
-										index={index}
-										_key="payPeriodPayDate"
-									/>
+								{edit && record.payPeriod === item.payPeriod && recordKey === "payPeriodPayDate" ? (
+									<EditDate date={item.payPeriodPayDate} index={index} _key="payPeriodPayDate" />
 								) : (
 									dayMonthYear(item.payPeriodPayDate)
 								)}

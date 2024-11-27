@@ -1,8 +1,9 @@
 import { Box, HStack, Stack } from "@chakra-ui/react";
 import NormalTextTitle from "components/ui/NormalTextTitle";
 import TextTitle from "components/ui/text/TextTitle";
-import { monthDayYearFormat, toWords } from "utils";
+import { toWords } from "utils";
 import { getAmount } from "utils/convertAmt";
+import { monthDayYearFormat } from "utils/convertDate";
 import PayStubHeader from "./PayStubHeader";
 
 const PaymentDateTitle = ({ payDate }) => (

@@ -1,14 +1,5 @@
 import { SettingsIcon } from "@chakra-ui/icons";
-import {
-	Avatar,
-	Checkbox,
-	Collapse,
-	HStack,
-	IconButton,
-	Td,
-	Text,
-	Tr,
-} from "@chakra-ui/react";
+import { Avatar, Checkbox, Collapse, HStack, IconButton, Td, Text, Tr } from "@chakra-ui/react";
 import React, { useState } from "react";
 import { FaChevronDown } from "react-icons/fa";
 import TaskService from "services/TaskService";
@@ -17,21 +8,15 @@ import {
 	CircularProgressBarCell,
 	TaskButton,
 	calculateTaskCompletion,
-	formatDate,
 	renderPriorityBars,
 	statusColor,
 } from "utils";
 import AddNewSubTask from "./project/AddNewSubTask";
 import EditTask from "./project/EditTask";
 import Subtask from "./project/Subtask";
+import { formatDate } from "utils/convertDate";
 
-const ProjectChild = ({
-	task,
-	projectId,
-	setRefresh,
-	managers,
-	managerName,
-}) => {
+const ProjectChild = ({ task, projectId, setRefresh, managers, managerName }) => {
 	const [isExpanded, setExpanded] = useState(null);
 	const handleToggle = () => {
 		setExpanded((prev) => !prev);
@@ -77,18 +62,14 @@ const ProjectChild = ({
 							onChange={(e) => handleTaskStatus(e, task._id)}
 						/>
 						<CircularProgressBarCell
-							completionPercentage={
-								calculateTaskCompletion(task).completionPercentage
-							}
+							completionPercentage={calculateTaskCompletion(task).completionPercentage}
 						/>
 						<Text>{task.taskName}</Text>
 						<HStack
 							spacing={0}
 							// cursor={project?.tasks?.length > 0 ? "pointer" : "default"}
 						>
-							{task?.subtasks?.length > 0 && (
-								<TaskButton totalTasks={task?.totalTasks} />
-							)}
+							{task?.subtasks?.length > 0 && <TaskButton totalTasks={task?.totalTasks} />}
 
 							<IconButton
 								variant="ghost"

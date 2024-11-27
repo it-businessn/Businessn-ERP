@@ -6,7 +6,7 @@ import { Calendar, momentLocalizer } from "react-big-calendar";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import { FaCaretLeft, FaCaretRight } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
-import { getDefaultDateTime } from "utils";
+import { getDefaultDateTime } from "utils/convertDate";
 
 const MiniCalendar = ({ user, company, isPayrollDashboard }) => {
 	const localizer = momentLocalizer(moment);
@@ -18,18 +18,11 @@ const MiniCalendar = ({ user, company, isPayrollDashboard }) => {
 			events
 				?.filter(
 					(event) =>
-						event.meetingAttendees.includes(user.fullName) ||
-						event.createdBy === user?._id,
+						event.meetingAttendees.includes(user.fullName) || event.createdBy === user?._id,
 				)
 				?.map((event) => {
-					const fromDateTimeString = getDefaultDateTime(
-						event.fromDate,
-						event.fromTime,
-					);
-					const toDateTimeString = getDefaultDateTime(
-						event.toDate,
-						event.toTime,
-					);
+					const fromDateTimeString = getDefaultDateTime(event.fromDate, event.fromTime);
+					const toDateTimeString = getDefaultDateTime(event.toDate, event.toTime);
 
 					event.title = event.description;
 					event.start = fromDateTimeString;
@@ -128,10 +121,7 @@ const MiniCalendar = ({ user, company, isPayrollDashboard }) => {
 					value={["3", "10", "20"]}
 				/>
 				{!isPayrollDashboard && (
-					<LinkButton
-						name="Go to calendar"
-						onClick={() => navigate("/sales/calendar")}
-					/>
+					<LinkButton name="Go to calendar" onClick={() => navigate("/sales/calendar")} />
 				)}
 			</Box>
 		)

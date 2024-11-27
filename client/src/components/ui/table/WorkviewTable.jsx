@@ -18,8 +18,8 @@ const WorkviewTable = ({ cols, isSmall, height, whiteSpace, children, overflowX 
 								width={"98px"}
 							>
 								<TextTitle
-									weight={index < 2 && 800}
-									width={"98px"}
+									weight={["Employee Name", "Total Hours", "Total Amount"].includes(col) && 800}
+									width={col === "Employee Name" ? "150px" : "98px"}
 									visibility={
 										(hideLabel(col, "detail") ||
 											hideLabel(col, "amount") ||

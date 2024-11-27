@@ -32,7 +32,7 @@ import Caption from "erp-modules/sales/lead docket/Caption";
 import { useState } from "react";
 import { FaCaretDown } from "react-icons/fa";
 import ProjectService from "services/ProjectService";
-import { getDefaultDate } from "utils";
+import { getDefaultDate } from "utils/convertDate";
 import { PROJECT_ASSIGNEES } from "../project/data";
 
 const AddNewProjectTask = ({ isOpen, onClose, task, projectId, setRefresh }) => {

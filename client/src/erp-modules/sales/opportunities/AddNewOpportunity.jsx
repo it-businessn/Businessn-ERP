@@ -22,7 +22,8 @@ import {
 import { useState } from "react";
 import { FaCaretDown, FaPlus } from "react-icons/fa";
 import LeadsService from "services/LeadsService";
-import { toCapitalize, today } from "utils";
+import { toCapitalize } from "utils";
+import { today } from "utils/convertDate";
 import AddCompany from "./AddCompany";
 import AssigneeSelector from "./AssigneeSelector";
 import { LEAD_STAGES } from "./data";

@@ -4,7 +4,7 @@ import BoxCard from "components/ui/card";
 import TextTitle from "components/ui/text/TextTitle";
 import { useEffect, useState } from "react";
 import TimesheetService from "services/TimesheetService";
-import { monthDayYear } from "utils";
+import { monthDayYear } from "utils/convertDate";
 
 const EmployeeTimeCard = ({ selectedUser, company }) => {
 	const [time, setTime] = useState(new Date());

@@ -3,7 +3,8 @@ import EmptyRowRecord from "components/ui/EmptyRowRecord";
 import useSelectUser from "hooks/useSelectUser";
 import { useEffect, useState } from "react";
 import TaskService from "services/TaskService";
-import { formatDate, renderPriorityBars } from "utils";
+import { renderPriorityBars } from "utils";
+import { formatDate } from "utils/convertDate";
 
 const TaskTable = ({ cols, user, company }) => {
 	const [tasks, setTasks] = useState(null);

@@ -1,10 +1,4 @@
-import {
-	Flex,
-	FormLabel,
-	ModalBody,
-	ModalFooter,
-	Select,
-} from "@chakra-ui/react";
+import { Flex, FormLabel, ModalBody, ModalFooter, Select } from "@chakra-ui/react";
 import FormControlMain from "components/ui/form";
 import ActionButtonGroup from "components/ui/form/ActionButtonGroup";
 import DateTimeFormControl from "components/ui/form/DateTimeFormControl";
@@ -15,7 +9,7 @@ import TextAreaFormControl from "components/ui/form/TextAreaFormControl";
 import ModalLayout from "components/ui/modal/ModalLayout";
 import { useEffect, useState } from "react";
 import CalendarService from "services/CalendarService";
-import { getDefaultDate } from "utils";
+import { getDefaultDate } from "utils/convertDate";
 
 const AddEvent = ({
 	event,
@@ -242,11 +236,7 @@ const AddEvent = ({
 						<>
 							<FormControlMain>
 								<FormLabel>Select Group</FormLabel>
-								<Select
-									name={"group"}
-									value={formData.group}
-									onChange={handleGroupChange}
-								>
+								<Select name={"group"} value={formData.group} onChange={handleGroupChange}>
 									{groups?.map(({ name, _id }) => (
 										<option key={_id} value={_id}>
 											{name}

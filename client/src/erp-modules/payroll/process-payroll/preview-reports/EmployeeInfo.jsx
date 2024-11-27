@@ -1,8 +1,8 @@
 import { Box, Stack, VStack } from "@chakra-ui/react";
 import BoxCard from "components/ui/card";
 import React from "react";
-import { formatDateBar } from "utils";
 import { getAmount } from "utils/convertAmt";
+import { formatDateBar } from "utils/convertDate";
 import BasicInfo from "../statement/BasicInfo";
 import InformationSection from "../statement/InformationSection";
 import { ACCRUAL_TYPES } from "./data";

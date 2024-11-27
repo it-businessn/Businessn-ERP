@@ -6,7 +6,7 @@ import ModalLayout from "components/ui/modal/ModalLayout";
 import useEmployees from "hooks/useEmployees";
 import { useEffect, useState } from "react";
 import TimesheetService from "services/TimesheetService";
-import { getDefaultDate, getTimeFormat, setUTCDate } from "utils";
+import { getDefaultDate, getTimeFormat, setUTCDate } from "utils/convertDate";
 import { getParamKey, PAY_TYPES } from "./data";
 
 const ExtraTimeEntryModal = ({
@@ -117,9 +117,7 @@ const ExtraTimeEntryModal = ({
 					/>
 					<DateTimeFormControl
 						timeLabel="End Time"
-						valueText2={
-							formData.clockOut ? getTimeFormat(formData.clockOut) : ""
-						}
+						valueText2={formData.clockOut ? getTimeFormat(formData.clockOut) : ""}
 						name2="clockOut"
 						required
 						handleChange={(e) => {

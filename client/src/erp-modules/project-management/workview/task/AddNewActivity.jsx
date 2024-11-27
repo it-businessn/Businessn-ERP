@@ -29,16 +29,10 @@ import Caption from "erp-modules/sales/lead docket/Caption";
 import { useState } from "react";
 import { FaCaretDown } from "react-icons/fa";
 import ProjectService from "services/ProjectService";
-import { getDefaultDate } from "utils";
+import { getDefaultDate } from "utils/convertDate";
 import { PROJECT_ASSIGNEES } from "../project/data";
 
-const AddNewActivity = ({
-	isOpen,
-	onClose,
-	setRefresh,
-	allProjects,
-	allProjectTasks,
-}) => {
+const AddNewActivity = ({ isOpen, onClose, setRefresh, allProjects, allProjectTasks }) => {
 	const defaultTask = {
 		projectId: "",
 		projectName: "",
@@ -179,9 +173,7 @@ const AddNewActivity = ({
 												/>
 											</FormControl>
 											<FormControl>
-												<FormLabel visibility={"hidden"}>
-													Select Assignee
-												</FormLabel>
+												<FormLabel visibility={"hidden"}>Select Assignee</FormLabel>
 												<Select
 													icon={<FaCaretDown />}
 													borderRadius="10px"
@@ -223,9 +215,7 @@ const AddNewActivity = ({
 												/>
 											</FormControl>
 											<FormControl>
-												<FormLabel>
-													Time to complete activity (in hours)
-												</FormLabel>
+												<FormLabel>Time to complete activity (in hours)</FormLabel>
 												<Input
 													type="text"
 													name="timeToComplete"

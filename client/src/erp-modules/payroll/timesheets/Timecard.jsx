@@ -5,7 +5,7 @@ import TableLayout from "components/ui/table/TableLayout";
 import TextTitle from "components/ui/text/TextTitle";
 import { useEffect, useState } from "react";
 import TimesheetService from "services/TimesheetService";
-import { getTimeCardFormat } from "utils";
+import { getTimeCardFormat } from "utils/convertDate";
 
 const Timecard = ({ company, userId, timecardRefresh, filter }) => {
 	const [timeRecords, setTimeRecords] = useState(null);

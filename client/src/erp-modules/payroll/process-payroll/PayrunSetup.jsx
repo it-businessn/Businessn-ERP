@@ -8,7 +8,8 @@ import { useState } from "react";
 import { MdCheckCircle } from "react-icons/md";
 import LocalStorageService from "services/LocalStorageService";
 import PayrollService from "services/PayrollService";
-import { dayMonthYear, isExtraPay } from "utils";
+import { isExtraPay } from "utils";
+import { dayMonthYear } from "utils/convertDate";
 
 const PayrunSetup = ({
 	handleClick,

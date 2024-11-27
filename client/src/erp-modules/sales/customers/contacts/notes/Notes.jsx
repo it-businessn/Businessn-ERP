@@ -4,7 +4,7 @@ import InputFormControl from "components/ui/form/InputFormControl";
 import NormalTextTitle from "components/ui/NormalTextTitle";
 import { useEffect, useState } from "react";
 import NotesService from "services/NotesService";
-import { longTimeFormat } from "utils";
+import { longTimeFormat } from "utils/convertDate";
 
 const Notes = ({ contactId, user, company, currentTab }) => {
 	const [notes, setNotes] = useState([]);

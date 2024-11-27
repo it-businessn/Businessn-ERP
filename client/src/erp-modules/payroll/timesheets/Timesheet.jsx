@@ -9,8 +9,8 @@ import { useEffect, useState } from "react";
 import { FaCheck, FaRegTrashAlt } from "react-icons/fa";
 import { IoClose } from "react-icons/io5";
 import TimesheetService from "services/TimesheetService";
-import { getTimeCardFormat, getTimeFormat, setUTCDate } from "utils";
 import { getAmount } from "utils/convertAmt";
+import { getTimeCardFormat, getTimeFormat, setUTCDate } from "utils/convertDate";
 import { getParamKey, getPayTypeStyle, getStatusStyle } from "./data";
 
 const Timesheet = ({ company, userId, refresh, filter, setRefresh, setTimesheetRefresh }) => {

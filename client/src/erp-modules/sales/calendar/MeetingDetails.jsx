@@ -4,7 +4,8 @@ import NormalTextTitle from "components/ui/NormalTextTitle";
 import TextTitle from "components/ui/text/TextTitle";
 import moment from "moment";
 import React from "react";
-import { formatDate, toCapitalize } from "utils";
+import { toCapitalize } from "utils";
+import { formatDate } from "utils/convertDate";
 
 const MeetingDetails = ({ event }) => {
 	const DETAILS = [

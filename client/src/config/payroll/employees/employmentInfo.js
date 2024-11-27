@@ -187,7 +187,11 @@ export const PAYROLL_STATUS = [
 		dependent: false,
 	},
 	{
-		type: "Terminated- Final Pay Pending",
+		type: "Include final pay in next pay period",
+		dependent: false,
+	},
+	{
+		type: "Do not include final pay in next pay period",
 		dependent: false,
 	},
 	{

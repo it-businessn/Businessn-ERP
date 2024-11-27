@@ -2,17 +2,12 @@ import { HStack } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { workViewPath } from "routes";
-import { daysAgo, getPayrollStatus, isExtraPay, longFormat } from "utils";
+import { daysAgo, getPayrollStatus, isExtraPay } from "utils";
 import PayPeriodCard from "./PayPeriodCard";
 import PayPeriodDetailCard from "./PayPeriodDetailCard";
+import { longFormat } from "utils/convertDate";
 
-const PayrollCard = ({
-	prevSchedule,
-	closestRecord,
-	runType,
-	nextSchedule,
-	company,
-}) => {
+const PayrollCard = ({ prevSchedule, closestRecord, runType, nextSchedule, company }) => {
 	const [status, setStatus] = useState({
 		color: "",
 		bg: "",
@@ -22,8 +17,7 @@ const PayrollCard = ({
 	const [refresh, setRefresh] = useState(false);
 	useEffect(() => {
 		if (closestRecord) {
-			const { color, bg, name, isDisabledStatus } =
-				getPayrollStatus(closestRecord);
+			const { color, bg, name, isDisabledStatus } = getPayrollStatus(closestRecord);
 			setStatus({ color, bg, name, isDisabledStatus });
 			setRefresh((prev) => !prev);
 		}
@@ -47,32 +41,21 @@ const PayrollCard = ({
 					<PayPeriodCard
 						isPeriod
 						schedule={prevSchedule}
-						title1={`Pay Period ${isExtraPay(
-							prevSchedule?.payPeriod,
-							prevSchedule?.isExtraRun,
-						)}`}
-						title2={`${daysAgo(
-							prevSchedule?.payPeriodProcessingDate,
-						)} days ago`}
+						title1={`Pay Period ${isExtraPay(prevSchedule?.payPeriod, prevSchedule?.isExtraRun)}`}
+						title2={`${daysAgo(prevSchedule?.payPeriodProcessingDate)} days ago`}
 					/>
 				)}
 
 				<PayPeriodCard
 					isPeriod
 					schedule={closestRecord}
-					title1={`Pay Period ${isExtraPay(
-						closestRecord?.payPeriod,
-						closestRecord?.isExtraRun,
-					)}`}
+					title1={`Pay Period ${isExtraPay(closestRecord?.payPeriod, closestRecord?.isExtraRun)}`}
 					title3={`${daysAgo(closestRecord?.payPeriodProcessingDate)}`}
 				/>
 				<PayPeriodCard
 					isPeriod
 					schedule={nextSchedule}
-					title1={`Pay Period ${isExtraPay(
-						nextSchedule?.payPeriod,
-						nextSchedule?.isExtraRun,
-					)}`}
+					title1={`Pay Period ${isExtraPay(nextSchedule?.payPeriod, nextSchedule?.isExtraRun)}`}
 					title2={`In ${daysAgo(nextSchedule?.payPeriodProcessingDate)} days `}
 				/>
 			</HStack>

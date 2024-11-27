@@ -1,14 +1,5 @@
 import { SettingsIcon } from "@chakra-ui/icons";
-import {
-	Avatar,
-	Checkbox,
-	Collapse,
-	HStack,
-	IconButton,
-	Td,
-	Text,
-	Tr,
-} from "@chakra-ui/react";
+import { Avatar, Checkbox, Collapse, HStack, IconButton, Td, Text, Tr } from "@chakra-ui/react";
 import React, { useState } from "react";
 import { FaChevronDown } from "react-icons/fa";
 import TaskService from "services/TaskService";
@@ -17,22 +8,14 @@ import {
 	CircularProgressBarCell,
 	TaskButton,
 	calculateTaskCompletion,
-	formatDate,
 	renderPriorityBars,
 	statusColor,
 } from "utils";
+import { formatDate } from "utils/convertDate";
 import AddNewSubTasks from "./AddNewSubTasks";
 import EditSubTask from "./EditSubTask";
 
-const Subtask = ({
-	id,
-	task,
-	subtask,
-	managerName,
-	setRefresh,
-	managers,
-	isInner,
-}) => {
+const Subtask = ({ id, task, subtask, managerName, setRefresh, managers, isInner }) => {
 	const { _id, taskName, selectedAssignees, completed } = task;
 
 	const [isOpenTask, setIsOpenTask] = useState(completed);
@@ -84,9 +67,7 @@ const Subtask = ({
 
 						<CircularProgressBarCell
 							// completionPercentage={task.completionPercent}
-							completionPercentage={
-								calculateTaskCompletion(task).completionPercentage
-							}
+							completionPercentage={calculateTaskCompletion(task).completionPercentage}
 						/>
 						<Text>{taskName}</Text>
 						<HStack
@@ -97,10 +78,7 @@ const Subtask = ({
 							{!isInner && (
 								<>
 									{task?.subtasks?.length > 0 && (
-										<TaskButton
-											isTask
-											totalTasks={task?.totalTasks || task?.subtasks?.length}
-										/>
+										<TaskButton isTask totalTasks={task?.totalTasks || task?.subtasks?.length} />
 									)}
 
 									<IconButton
@@ -110,9 +88,7 @@ const Subtask = ({
 										aria-label="Settings Icon"
 										onClick={() => handleEditSubtask(task, task._id)}
 									/>
-									<AddTaskButton
-										onClick={() => handleAddSubTask(task, task._id)}
-									/>
+									<AddTaskButton onClick={() => handleAddSubTask(task, task._id)} />
 									{task?.subtasks?.length > 0 && (
 										<IconButton
 											onClick={handleToggle}

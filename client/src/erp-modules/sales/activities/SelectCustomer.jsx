@@ -9,7 +9,7 @@ import { useNavigate } from "react-router-dom";
 import { ROUTE_PATH } from "routes";
 import ActivityService from "services/ActivityService";
 import LeadsService from "services/LeadsService";
-import { today } from "utils";
+import { today } from "utils/convertDate";
 
 const SelectCustomer = ({
 	showSelectCustomer,

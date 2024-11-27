@@ -20,7 +20,7 @@ import MultiSelectButton from "components/ui/form/MultiSelectButton";
 import { useState } from "react";
 import { FaCaretDown } from "react-icons/fa";
 import ProjectService from "services/ProjectService";
-import { getDefaultDate } from "utils";
+import { getDefaultDate } from "utils/convertDate";
 import { PRIORITY } from "./data";
 
 const EditProject = ({ isOpen, onClose, project, projectId, setRefresh, managers }) => {

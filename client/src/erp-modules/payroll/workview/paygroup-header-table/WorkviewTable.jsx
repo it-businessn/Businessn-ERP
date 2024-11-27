@@ -7,7 +7,8 @@ import TextTitle from "components/ui/text/TextTitle";
 import { useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { payrollReportPath, ROUTE_PATH } from "routes";
-import { dayMonthYear, formatDateRange, isExtraPay } from "utils";
+import { isExtraPay } from "utils";
+import { dayMonthYear, formatDateRange } from "utils/convertDate";
 import { PAYGROUP_COLS } from "../data";
 
 const WorkviewTable = ({

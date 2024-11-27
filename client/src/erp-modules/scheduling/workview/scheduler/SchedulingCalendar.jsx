@@ -1,10 +1,6 @@
 import { Box, Flex, HStack, Icon, Text } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
-import Timeline, {
-	CustomHeader,
-	SidebarHeader,
-	TimelineHeaders,
-} from "react-calendar-timeline";
+import Timeline, { CustomHeader, SidebarHeader, TimelineHeaders } from "react-calendar-timeline";
 import "react-calendar-timeline/lib/Timeline.css";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -14,7 +10,7 @@ import { CiCalendar } from "react-icons/ci";
 import NormalTextTitle from "components/ui/NormalTextTitle";
 import { MdOutlineChevronLeft, MdOutlineChevronRight } from "react-icons/md";
 import SchedulerService from "services/SchedulerService";
-import { getMomentDateISO, isSameAsToday, longFormat } from "utils";
+import { getMomentDateISO, isSameAsToday, longFormat } from "utils/convertDate";
 import Group from "./Group";
 import ItemsRow from "./ItemsRow";
 import "./Scheduler.css";
@@ -41,9 +37,7 @@ const SchedulingCalendar = ({ newEmployeeAdded, setRefresh, company }) => {
 		}),
 	});
 
-	const [groups, setGroups] = useState([
-		{ id: 1, title: "Drop here", color: "transparent" },
-	]);
+	const [groups, setGroups] = useState([{ id: 1, title: "Drop here", color: "transparent" }]);
 
 	const [items, setItems] = useState([]);
 	// const onItemMove = (itemId, dragTime, newGroupOrder) => {
@@ -69,16 +63,12 @@ const SchedulingCalendar = ({ newEmployeeAdded, setRefresh, company }) => {
 					? {
 							...item,
 							start_time: new Date(time),
-							duration:
-								(item.end_time.getTime() - new Date(time).getTime()) /
-								(1000 * 60 * 60),
+							duration: (item.end_time.getTime() - new Date(time).getTime()) / (1000 * 60 * 60),
 					  }
 					: {
 							...item,
 							end_time: new Date(time),
-							duration:
-								(new Date(time).getTime() - item.start_time.getTime()) /
-								(1000 * 60 * 60),
+							duration: (new Date(time).getTime() - item.start_time.getTime()) / (1000 * 60 * 60),
 					  }
 				: item,
 		);
@@ -115,12 +105,8 @@ const SchedulingCalendar = ({ newEmployeeAdded, setRefresh, company }) => {
 						const hoursFromStartDate = startDate.getUTCHours();
 						const endDate = new Date(item.end_time);
 						const hoursFromEndDate = endDate.getUTCHours();
-						item.start_time = new Date(
-							startDate.setUTCHours(hoursFromStartDate, 0, 0, 0),
-						);
-						item.end_time = new Date(
-							endDate.setUTCHours(hoursFromEndDate, 0, 0, 0),
-						);
+						item.start_time = new Date(startDate.setUTCHours(hoursFromStartDate, 0, 0, 0));
+						item.end_time = new Date(endDate.setUTCHours(hoursFromEndDate, 0, 0, 0));
 						if (item.id.endsWith("s")) {
 							titles[item.title] = true;
 						} else {
@@ -171,9 +157,7 @@ const SchedulingCalendar = ({ newEmployeeAdded, setRefresh, company }) => {
 		}
 
 		const existingItem = items.find((item) => item.group === id);
-		const start_time = existingItem
-			? eventPrevStartTime
-			: eventInitialStartTime;
+		const start_time = existingItem ? eventPrevStartTime : eventInitialStartTime;
 		const end_time = existingItem ? eventPrevEndTime : eventInitialEndTime;
 
 		const newItem = {
@@ -202,20 +186,10 @@ const SchedulingCalendar = ({ newEmployeeAdded, setRefresh, company }) => {
 	};
 
 	const groupRenderer = ({ group }) => (
-		<Group
-			group={group}
-			drop={drop}
-			isOver={isOver}
-			handleHourDrop={handleHourDrop}
-		/>
+		<Group group={group} drop={drop} isOver={isOver} handleHourDrop={handleHourDrop} />
 	);
 
-	const itemRenderer = ({
-		item,
-		itemContext,
-		getItemProps,
-		getResizeProps,
-	}) => {
+	const itemRenderer = ({ item, itemContext, getItemProps, getResizeProps }) => {
 		return (
 			<ItemsRow
 				getItemProps={getItemProps}
@@ -263,9 +237,7 @@ const SchedulingCalendar = ({ newEmployeeAdded, setRefresh, company }) => {
 						boxSize="5"
 						color="fg.muted"
 					/>
-					<NormalTextTitle
-						title={isToday ? "Today" : longFormat(currentDate)}
-					/>
+					<NormalTextTitle title={isToday ? "Today" : longFormat(currentDate)} />
 					<Icon
 						as={MdOutlineChevronRight}
 						onClick={() => handleChangeDate("next")}
@@ -332,12 +304,7 @@ const SchedulingCalendar = ({ newEmployeeAdded, setRefresh, company }) => {
 						)}
 					</SidebarHeader>
 					<CustomHeader unit="hour">
-						{({
-							headerContext: { intervals },
-							getRootProps,
-							getIntervalProps,
-							showPeriod,
-						}) => (
+						{({ headerContext: { intervals }, getRootProps, getIntervalProps, showPeriod }) => (
 							<Box {...getRootProps()}>
 								{intervals.map((interval) => (
 									<Text

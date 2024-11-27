@@ -4,7 +4,7 @@ import BoxCard from "components/ui/card";
 import TextTitle from "components/ui/text/TextTitle";
 import { useEffect, useState } from "react";
 import TimesheetService from "services/TimesheetService";
-import { monthDayYear } from "utils";
+import { monthDayYear } from "utils/convertDate";
 
 const TimeCard = ({ selectedUser, company }) => {
 	const [time, setTime] = useState(new Date());
@@ -112,9 +112,7 @@ const TimeCard = ({ selectedUser, company }) => {
 						w={"50%"}
 						bg={"var(--incorrect_ans)"}
 						_hover={{ color: "var(--main_color)" }}
-						handleClick={() =>
-							updateSubmit("clockOuts", `Clock Out Successful!`)
-						}
+						handleClick={() => updateSubmit("clockOuts", `Clock Out Successful!`)}
 					/>
 					<LeftIconButton
 						size="xl"

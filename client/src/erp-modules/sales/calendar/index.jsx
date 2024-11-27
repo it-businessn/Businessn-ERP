@@ -13,14 +13,12 @@ import { FaCaretLeft, FaCaretRight, FaClock } from "react-icons/fa";
 import { useBreakpointValue } from "services/Breakpoint";
 import CalendarService from "services/CalendarService";
 import LocalStorageService from "services/LocalStorageService";
-import { getDefaultDateTime, getTimezone } from "utils";
+import { getDefaultDateTime, getTimezone } from "utils/convertDate";
 import AddEvent from "./AddEvent";
 import EventDetails from "./EventDetails";
 
 const Calendar = () => {
-	const { company } = useCompany(
-		LocalStorageService.getItem("selectedCompany"),
-	);
+	const { company } = useCompany(LocalStorageService.getItem("selectedCompany"));
 	const loggedInUser = LocalStorageService.getItem("user");
 	const { isMobile } = useBreakpointValue();
 	const localizer = momentLocalizer(moment);
@@ -57,14 +55,8 @@ const Calendar = () => {
 				response.data.map((event) => {
 					event.fromDate = getTimezone(event.fromDate);
 					event.toDate = getTimezone(event.toDate);
-					const fromDateTimeString = getDefaultDateTime(
-						event.fromDate,
-						event.fromTime,
-					);
-					const toDateTimeString = getDefaultDateTime(
-						event.toDate,
-						event.toTime,
-					);
+					const fromDateTimeString = getDefaultDateTime(event.fromDate, event.fromTime);
+					const toDateTimeString = getDefaultDateTime(event.toDate, event.toTime);
 					event.title = event.description;
 					event.start = getTimezone(fromDateTimeString);
 					event.end = getTimezone(toDateTimeString);
@@ -134,11 +126,7 @@ const Calendar = () => {
 		};
 
 		return (
-			<Flex
-				justifyContent="space-between"
-				py={isMobile ? 1 : 4}
-				flexDir={isMobile && "column"}
-			>
+			<Flex justifyContent="space-between" py={isMobile ? 1 : 4} flexDir={isMobile && "column"}>
 				<TextTitle title={"All Events"} mb={isMobile && "0.5em"} />
 				<Spacer />
 				<HStack justifyContent={isMobile && "space-between"} spacing={"1em"}>
@@ -170,12 +158,7 @@ const Calendar = () => {
 		monthHeaderFormat: (date) => moment(date).format("MMM YYYY"),
 	};
 	const CustomEvent = ({ event }) => (
-		<Box
-			color={event.color}
-			bg={event.bgColor}
-			pl={"10px"}
-			borderLeft={`4px solid ${event.color}`}
-		>
+		<Box color={event.color} bg={event.bgColor} pl={"10px"} borderLeft={`4px solid ${event.color}`}>
 			<TextTitle title={event.title} size="xs" />
 			<Button
 				p={0}
@@ -185,8 +168,7 @@ const Calendar = () => {
 				variant={"ghost"}
 				_hover={{ color: "var(--main_color_black)", bg: "transparent" }}
 			>
-				{moment(event.start).format("h:mm A")} -
-				{moment(event.end).format("h:mm A")}
+				{moment(event.start).format("h:mm A")} -{moment(event.end).format("h:mm A")}
 			</Button>
 		</Box>
 	);
@@ -213,12 +195,8 @@ const Calendar = () => {
 							event: CustomEvent,
 							toolbar: ScrollToolbar,
 						}}
-						dayFormat={(date, culture, localizer) =>
-							moment(date).format("D dd")
-						}
-						dayHeaderFormat={(date, culture, localizer) =>
-							moment(date).format("D dddd")
-						}
+						dayFormat={(date, culture, localizer) => moment(date).format("D dd")}
+						dayHeaderFormat={(date, culture, localizer) => moment(date).format("D dddd")}
 						views={["month"]}
 						// views={["day", "week", "month", "agenda"]}
 						style={{ minHeight: 750 }}

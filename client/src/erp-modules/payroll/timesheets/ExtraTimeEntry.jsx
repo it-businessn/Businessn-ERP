@@ -2,7 +2,7 @@ import { Td, Tr } from "@chakra-ui/react";
 import DateTimeFormControl from "components/ui/form/DateTimeFormControl";
 import TextTitle from "components/ui/text/TextTitle";
 import { useState } from "react";
-import { getDefaultDate } from "utils";
+import { getDefaultDate } from "utils/convertDate";
 
 const ExtraTimeEntry = ({
 	name,

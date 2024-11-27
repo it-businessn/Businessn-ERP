@@ -29,10 +29,10 @@ import {
 	CircularProgressBarCell,
 	TaskButton,
 	calculateTaskCompletion,
-	formatDate,
 	renderPriorityBars,
 	statusColor,
 } from "utils";
+import { formatDate } from "utils/convertDate";
 import EditTask from "../EditTask";
 import TodoItem from "../TodoItem";
 import Subtask from "../project/Subtask";
@@ -123,16 +123,11 @@ const TaskTable = ({
 							onChange={(e) => handleTaskStatus(e, task._id)}
 						/>
 					</Td>
-					<Td
-						fontSize={"xs"}
-						cursor={task?.subtasks?.length > 0 ? "pointer" : "default"}
-					>
+					<Td fontSize={"xs"} cursor={task?.subtasks?.length > 0 ? "pointer" : "default"}>
 						<HStack spacing={3}>
 							<CircularProgressBarCell
 								// completionPercentage={task.completionPercent}
-								completionPercentage={
-									calculateTaskCompletion(task).completionPercentage
-								}
+								completionPercentage={calculateTaskCompletion(task).completionPercentage}
 							/>
 							<Text>{task.taskName}</Text>
 							<HStack
@@ -167,9 +162,7 @@ const TaskTable = ({
 						<HStack spacing="1">{renderPriorityBars(task.priority)}</HStack>
 					</Td>
 					<Td fontSize={"xs"}>{task.projectName}</Td>
-					<Td fontSize={"xs"}>
-						{task?.updatedOn && formatDate(task.updatedOn)}
-					</Td>
+					<Td fontSize={"xs"}>{task?.updatedOn && formatDate(task.updatedOn)}</Td>
 					<Td fontSize={"xs"}>{task.dueDate && formatDate(task.dueDate)}</Td>
 					<Td fontSize={"12px"}>
 						<HStack
@@ -280,11 +273,7 @@ const TaskTable = ({
 				task={task}
 			/>
 			<Box overflow="auto">
-				<Table
-					color={"var(--nav_color)"}
-					bg={"var(--primary_bg)"}
-					size={"small"}
-				>
+				<Table color={"var(--nav_color)"} bg={"var(--primary_bg)"} size={"small"}>
 					<Thead>
 						<Tr>
 							<Th>{/* <Checkbox sx={{ verticalAlign: "middle" }} /> */}</Th>

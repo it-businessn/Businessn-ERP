@@ -5,7 +5,7 @@ import useSelectUser from "hooks/useSelectUser";
 import { useEffect, useState } from "react";
 import { BsPlus } from "react-icons/bs";
 import CalendarService from "services/CalendarService";
-import { formatDate } from "utils";
+import { formatDate } from "utils/convertDate";
 import AddEvent from "../../calendar/AddEvent";
 
 const CalendarTable = ({ cols, setIsRefresh, filterText, filter, setStats, user, company }) => {

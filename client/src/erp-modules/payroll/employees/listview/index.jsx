@@ -7,6 +7,8 @@ import useEmployees from "hooks/useEmployees";
 import usePaygroup from "hooks/usePaygroup";
 import PageLayout from "layouts/PageLayout";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { payrollEmployeePath } from "routes";
 import LocalStorageService from "services/LocalStorageService";
 import EmpProfileSearch from "../EmpProfileSearch";
 import EmployeeList from "./EmployeeList";
@@ -41,12 +43,16 @@ const EmployeeListView = () => {
 	const [filteredCC, setFilteredCC] = useState([]);
 
 	const [showOnboard, setShowOnboard] = useState(false);
-	const [showTerminate, setShowTerminate] = useState(false);
+
+	const navigate = useNavigate();
+	const loggedInUser = LocalStorageService.getItem("user");
 
 	const { selectedPayGroup } = usePaygroup(company, false);
+
 	const handleClick = (val) => {
 		if (val === "terminate") {
-			setShowTerminate(true);
+			const empPath = `${payrollEmployeePath}/info/${loggedInUser._id}/3`;
+			navigate(empPath);
 		}
 	};
 
@@ -158,14 +164,6 @@ const EmployeeListView = () => {
 					selectedPayGroupName={selectedPayGroup?.name}
 				/>
 			)}
-			{/* {showTerminate && (
-				<OnboardEmpModal
-					title={"Terminate employee"}
-					showOnboard={showTerminate}
-					setShowOnboard={setShowTerminate}
-					selectedPayGroupName={selectedPayGroup?.name}
-				/>
-			)} */}
 		</PageLayout>
 	);
 };

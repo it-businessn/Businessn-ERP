@@ -12,8 +12,8 @@ import { useParams } from "react-router-dom";
 import LocalStorageService from "services/LocalStorageService";
 import UserService from "services/UserService";
 import EmpProfileSearch from "../EmpProfileSearch";
-import BalanceInfo from "./employee-tabs/BalancesInfo";
 import BankingInfo from "./employee-tabs/BankingInfo";
+import BenefitsInfo from "./employee-tabs/BenefitsInfo";
 import CorporateInfo from "./employee-tabs/CorporateInfo";
 import GovernmentInfo from "./employee-tabs/GovernmentContribution";
 import PayInfo from "./employee-tabs/PayInfo";
@@ -26,7 +26,6 @@ const Employees = ({ isOnboarding, selectedPayGroupName, handleClose }) => {
 	const [employee, setEmployee] = useState(loggedInUser);
 	const [userId, setUserId] = useState(id ? id : loggedInUser._id);
 	const { setEmpId } = useSelectedEmp(userId);
-	const [isRefresh, setIsRefresh] = useState(false);
 
 	const isActivePayroll = employee?.payrollStatus?.includes("Active");
 
@@ -96,11 +95,24 @@ const Employees = ({ isOnboarding, selectedPayGroupName, handleClose }) => {
 		},
 		{
 			id: 2,
+			type: "Benefits",
+			name: (
+				<BenefitsInfo
+					id={3}
+					company={company}
+					isOnboarding={isOnboarding}
+					handleNext={handleNext}
+					handlePrev={handlePrev}
+				/>
+			),
+		},
+		{
+			id: 3,
 			type: "Employment",
 
 			name: (
 				<CorporateInfo
-					id={3}
+					id={4}
 					company={company}
 					isOnboarding={isOnboarding}
 					selectedPayGroupName={selectedPayGroupName}
@@ -110,12 +122,12 @@ const Employees = ({ isOnboarding, selectedPayGroupName, handleClose }) => {
 			),
 		},
 		{
-			id: 3,
+			id: 4,
 			type: "Government",
 
 			name: (
 				<GovernmentInfo
-					id={4}
+					id={5}
 					company={company}
 					isOnboarding={isOnboarding}
 					handleNext={handleNext}
@@ -124,22 +136,17 @@ const Employees = ({ isOnboarding, selectedPayGroupName, handleClose }) => {
 			),
 		},
 		{
-			id: 4,
+			id: 5,
 			type: "Banking",
 			name: (
 				<BankingInfo
-					id={5}
+					id={6}
 					company={company}
 					handlePrev={handlePrev}
 					isOnboarding={isOnboarding}
 					handleClose={handleClose}
 				/>
 			),
-		},
-		{
-			id: 5,
-			type: "Balances",
-			name: <BalanceInfo company={company} />,
 		},
 	];
 

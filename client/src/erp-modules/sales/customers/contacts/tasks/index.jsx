@@ -16,7 +16,7 @@ import { useEffect, useState } from "react";
 import ReactDatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import LogTaskService from "services/LogTaskService";
-import { longTimeFormat } from "utils";
+import { longTimeFormat } from "utils/convertDate";
 
 const Tasks = ({ contactId, user, company }) => {
 	const [tasks, setTasks] = useState([]);
@@ -111,10 +111,7 @@ const Tasks = ({ contactId, user, company }) => {
 							<Card key={_id} borderWidth="1px" borderRadius="lg" w="100%">
 								<CardBody>
 									<Flex justifyContent="space-between">
-										<Badge
-											bg="var(--primary_bg)"
-											color="var(--primary_button_bg)"
-										>
+										<Badge bg="var(--primary_bg)" color="var(--primary_button_bg)">
 											{status}
 										</Badge>
 										<NormalTextTitle
@@ -129,9 +126,7 @@ const Tasks = ({ contactId, user, company }) => {
 										<Checkbox
 											colorScheme="facebook"
 											isChecked={status === "Closed"}
-											onChange={(e) =>
-												handleCheckboxChange(e.target.checked, _id)
-											}
+											onChange={(e) => handleCheckboxChange(e.target.checked, _id)}
 											size="md"
 										/>
 										<NormalTextTitle title={description} />

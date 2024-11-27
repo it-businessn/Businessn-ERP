@@ -19,7 +19,7 @@ import InputFormControl from "components/ui/form/InputFormControl";
 import { useState } from "react";
 import { FaCaretDown } from "react-icons/fa";
 import ProjectService from "services/ProjectService";
-import { getDefaultDate } from "utils";
+import { getDefaultDate } from "utils/convertDate";
 
 const AddProject = ({ isOpen, onClose, setRefresh, managers, company }) => {
 	const defaultProject = {

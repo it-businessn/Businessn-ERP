@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { animated, useSpring } from "react-spring";
 import { withGesture } from "react-with-gesture";
 import { workViewPath } from "routes";
-import { longFormat } from "utils";
+import { longFormat } from "utils/convertDate";
 import PayPeriodDetailCard from "./PayPeriodDetailCard";
 
 function Slide({ content, offsetRadius, index, animationConfig, moveSlide, delta, down, up }) {

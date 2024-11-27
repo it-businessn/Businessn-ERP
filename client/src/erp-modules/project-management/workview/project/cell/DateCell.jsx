@@ -1,6 +1,6 @@
 import { Td, Text, VStack } from "@chakra-ui/react";
 import React from "react";
-import { formatDate } from "utils";
+import { formatDate } from "utils/convertDate";
 
 const DateCell = ({ date, project, index, expandedIndex, isExpanded, isSubExpanded }) => {
 	const FormattedDate = ({ date, main, task, last }) => (

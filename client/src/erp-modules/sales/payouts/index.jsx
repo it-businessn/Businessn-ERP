@@ -26,13 +26,12 @@ import { MdOutlineFilterList } from "react-icons/md";
 import { useBreakpointValue } from "services/Breakpoint";
 import LocalStorageService from "services/LocalStorageService";
 import PayoutService from "services/PayoutService";
-import { formatDate, isManager } from "utils";
+import { isManager } from "utils";
+import { formatDate } from "utils/convertDate";
 import AddNewSale from "./AddNewSale";
 
 const Payouts = () => {
-	const { company } = useCompany(
-		LocalStorageService.getItem("selectedCompany"),
-	);
+	const { company } = useCompany(LocalStorageService.getItem("selectedCompany"));
 	const loggedInUser = LocalStorageService.getItem("user");
 	const { isMobile } = useBreakpointValue();
 	const [payouts, setPayouts] = useState(null);
@@ -48,9 +47,7 @@ const Payouts = () => {
 				setPayouts(
 					isManagerUser
 						? response.data
-						: response.data.filter(
-								({ fullName }) => fullName === loggedInUser.fullName,
-						  ),
+						: response.data.filter(({ fullName }) => fullName === loggedInUser.fullName),
 				);
 			} catch (error) {
 				console.error(error);
@@ -140,23 +137,12 @@ const Payouts = () => {
 								py={"1.2em"}
 							/>
 						</InputGroup>
-						{isManagerUser && (
-							<PrimaryButton
-								onOpen={onOpen}
-								name={"Add new sale"}
-								size={"xs"}
-							/>
-						)}
+						{isManagerUser && <PrimaryButton onOpen={onOpen} name={"Add new sale"} size={"xs"} />}
 					</HStack>
 				</Flex>
 			)}
 			{isOpen && (
-				<AddNewSale
-					setIsAdded={setIsAdded}
-					isOpen={isOpen}
-					onClose={onClose}
-					company={company}
-				/>
+				<AddNewSale setIsAdded={setIsAdded} isOpen={isOpen} onClose={onClose} company={company} />
 			)}
 
 			{payouts && (

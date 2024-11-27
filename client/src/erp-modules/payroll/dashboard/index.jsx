@@ -3,9 +3,7 @@ import { SimpleGrid } from "@chakra-ui/react";
 import useCompany from "hooks/useCompany";
 import usePaygroup from "hooks/usePaygroup";
 import PageLayout from "layouts/PageLayout";
-import { useState } from "react";
 import LocalStorageService from "services/LocalStorageService";
-import { formatDate } from "utils";
 import LeftPane from "./leftpane";
 import RightPane from "./rightpane";
 
@@ -21,22 +19,6 @@ const Dashboard = () => {
 	} = usePaygroup(company, false);
 
 	const loggedInUser = LocalStorageService.getItem("user");
-
-	const STATS = [
-		{
-			name: "Days till next",
-			value: 3,
-		},
-		{
-			name: "Approval Date",
-			value: formatDate(new Date()),
-		},
-		{
-			name: "Payment Date",
-			value: formatDate(new Date()),
-		},
-	];
-	const [stats, setStats] = useState(STATS);
 
 	const handleChange = (value) => {
 		if (value !== "") {
@@ -61,7 +43,6 @@ const Dashboard = () => {
 				templateColumns={{ lg: "70% 30%" }}
 			>
 				<LeftPane
-					setStats={setStats}
 					company={company}
 					closestRecord={closestRecord}
 					payGroupSchedule={payGroupSchedule}
@@ -69,8 +50,10 @@ const Dashboard = () => {
 				/>
 				<RightPane
 					selectedUser={loggedInUser}
-					stats={stats}
 					selectedPayGroup={selectedPayGroup}
+					payGroupSchedule={payGroupSchedule}
+					closestRecord={closestRecord}
+					closestRecordIndex={closestRecordIndex}
 					company={company}
 				/>
 			</SimpleGrid>

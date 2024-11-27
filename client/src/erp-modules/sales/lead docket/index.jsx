@@ -32,7 +32,7 @@ import { useNavigate } from "react-router";
 import { useBreakpointValue } from "services/Breakpoint";
 import LeadsService from "services/LeadsService";
 import LocalStorageService from "services/LocalStorageService";
-import { formatDate } from "utils";
+import { formatDate } from "utils/convertDate";
 import AddOpportunity from "./AddOpportunity";
 import Caption from "./Caption";
 import Disburse from "./Disburse";
