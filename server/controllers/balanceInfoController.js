@@ -20,6 +20,7 @@ const getEmployeeBalanceInfo = async (req, res) => {
 	const { companyName, empId } = req.params;
 	try {
 		const result = await findEmployeeBalanceInfo(empId, companyName);
+
 		res.status(200).json(result);
 	} catch (error) {
 		res.status(404).json({ error: error.message });
@@ -31,11 +32,18 @@ const findEmployeeBalanceInfo = async (empId, companyName, isUpdate) => {
 		empId,
 		companyName,
 	});
+
 	if (isUpdate) {
 		return empBalanceInfo;
 	}
 	const empPayStub = await findEmployeePayStub(empId, companyName);
-	return { empBalanceInfo, empPayStub: empPayStub[0] };
+
+	return {
+		typeOfVacationTreatment: empBalanceInfo?.typeOfVacationTreatment || null,
+		vacationPayPercent: empBalanceInfo?.vacationPayPercent || null,
+		carryFwd: empBalanceInfo?.carryFwd || false,
+		empPayStub: empPayStub[0],
+	};
 };
 
 const findEmployeePayStub = async (empId, companyName) =>
@@ -53,24 +61,19 @@ const updateBalanceInfo = async (id, data) =>
 	});
 
 const addEmployeeBalanceInfo = async (req, res) => {
-	const { empId, companyName, carryFwd } = req.body;
+	const { empId, companyName, carryFwd, typeOfVacationTreatment, vacationPayPercent } = req.body;
 	try {
-		const existingBalanceInfo = await findEmployeeBalanceInfo(
-			empId,
-			companyName,
-			true,
-		);
+		const existingBalanceInfo = await findEmployeeBalanceInfo(empId, companyName, true);
 		if (existingBalanceInfo) {
-			const updatedBalanceInfo = await updateBalanceInfo(
-				existingBalanceInfo._id,
-				req.body,
-			);
+			const updatedBalanceInfo = await updateBalanceInfo(existingBalanceInfo._id, req.body);
 			return res.status(201).json(updatedBalanceInfo);
 		}
 		const newBalanceInfo = await EmployeeBalanceInfo.create({
 			empId,
 			companyName,
 			carryFwd,
+			typeOfVacationTreatment,
+			vacationPayPercent,
 		});
 		return res.status(201).json(newBalanceInfo);
 	} catch (error) {

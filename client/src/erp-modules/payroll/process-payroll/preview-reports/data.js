@@ -2,47 +2,16 @@ import { HStack } from "@chakra-ui/react";
 import TextTitle from "components/ui/text/TextTitle";
 
 export const SUM_TOTALS = ["Gross ", "Total ", "Available ", "Net Pay"];
-export const EARNINGS_COLS = [
-	"",
-	"Rate",
-	"Hours",
-	"Curr. Total",
-	"YTD Hrs.",
-	"YTD Totals",
-];
+export const EARNINGS_COLS = ["", "Rate", "Hours", "Curr. Total", "YTD Hrs.", "YTD Totals"];
 
-export const DEDUCTIONS_COLS = [
-	"Deductions",
-	"",
-	"",
-	"Curr. Total",
-	"",
-	"YTD Totals",
-];
+export const DEDUCTIONS_COLS = ["Deductions", "", "", "Curr. Total", "", "YTD Totals"];
 
-export const NET_SUMMARY_COLS = [
-	"Net Pay Summary",
-	"",
-	"",
-	"Curr. Total",
-	"",
-	"YTD Totals",
-];
+export const NET_SUMMARY_COLS = ["Net Pay Summary", "", "", "Curr. Total", "", "YTD Totals"];
 
 export const HeaderTable = ({ title1, title2, title3 }) => (
-	<HStack
-		justifyContent={"space-between"}
-		w={"100%"}
-		bg={"var(--primary_bg_1)"}
-	>
+	<HStack justifyContent={"space-between"} w={"100%"} bg={"var(--primary_bg_1)"}>
 		<TextTitle whiteSpace="wrap" title={title1} size={"xs"} />
-		<TextTitle
-			title={title2}
-			size="xs"
-			whiteSpace="wrap"
-			align={"center"}
-			p={0}
-		/>
+		<TextTitle title={title2} size="xs" whiteSpace="wrap" align={"center"} p={0} />
 		<TextTitle align={"center"} title={title3} size="xs" whiteSpace="wrap" />
 	</HStack>
 );

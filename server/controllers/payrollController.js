@@ -1,6 +1,7 @@
 // const Employee = require("../models/Employee");
 const Employee = require("../models/Employee");
 const EmployeeAlertsViolationInfo = require("../models/EmployeeAlertsViolationInfo");
+const EmployeeBalanceInfo = require("../models/EmployeeBalanceInfo");
 const EmployeeBankingInfo = require("../models/EmployeeBankingInfo");
 const EmployeeGovernmentInfo = require("../models/EmployeeGovernmentInfo");
 const EmployeePayInfo = require("../models/EmployeePayInfo");
@@ -631,6 +632,12 @@ const findEmployeePayInfo = async (empId, companyName) =>
 		companyName,
 	}).select("empId regPay overTimePay dblOverTimePay statWorkPay statPay sickPay vacationPay");
 
+const findEmployeeBenefitInfo = async (empId, companyName) =>
+	await EmployeeBalanceInfo.findOne({
+		empId,
+		companyName,
+	}).select("empId typeOfVacationTreatment vacationPayPercent");
+
 const findEmployeeGovernmentInfo = async (empId) =>
 	await EmployeeGovernmentInfo.findOne({
 		empId,
@@ -774,16 +781,34 @@ const calcCurrentGrossPay = (newEmpData) =>
 	newEmpData.bonus +
 	newEmpData.terminationPayout;
 
-const calcCurrentDeductionsTotal = (newEmpData) =>
-	newEmpData.currentFDTaxDeductions +
-	newEmpData.currentStateTaxDeductions +
-	newEmpData.currentCPPDeductions +
-	newEmpData.currentEmployeeEIDeductions +
-	newEmpData.currentUnionDuesDeductions +
-	newEmpData.currentEmployeeHealthContributions +
-	newEmpData.currentPrimaryDeposit +
-	newEmpData.currentEmployeePensionContributions +
-	newEmpData.currentOtherDeductions;
+const calcCurrentDeductionsTotal = (newEmpData) => {
+	const sum =
+		newEmpData.currentFDTaxDeductions +
+		newEmpData.currentStateTaxDeductions +
+		newEmpData.currentCPPDeductions +
+		newEmpData.currentEmployeeEIDeductions +
+		newEmpData.currentUnionDuesDeductions +
+		newEmpData.currentEmployeeHealthContributions +
+		newEmpData.currentPrimaryDeposit +
+		newEmpData.currentEmployeePensionContributions +
+		newEmpData.currentOtherDeductions;
+	// if (!newEmpData.currentGrossPay) {
+	// 	console.log(
+	// 		newEmpData.currentGrossPay,
+	// 		newEmpData.currentFDTaxDeductions,
+	// 		newEmpData.currentStateTaxDeductions,
+	// 		newEmpData.currentCPPDeductions,
+	// 		newEmpData.currentEmployeeEIDeductions,
+	// 		newEmpData.currentUnionDuesDeductions,
+	// 		newEmpData.currentEmployeeHealthContributions,
+	// 		newEmpData.currentPrimaryDeposit,
+	// 		newEmpData.currentEmployeePensionContributions,
+	// 		newEmpData.currentOtherDeductions,
+	// 		sum,
+	// 	);
+	// }
+	return sum;
+};
 
 const calcEmployeeContribution = (grossPay, newEmpData) =>
 	grossPay -
@@ -871,6 +896,7 @@ const buildPayStubDetails = async (currentPayPeriod, companyName, empTimesheetDa
 	});
 
 	const empPayInfoResult = await findEmployeePayInfo(empId, companyName);
+	const empBenefitInfoResult = await findEmployeeBenefitInfo(empId, companyName);
 
 	const newEmpData = getCurrentTotals(
 		empTimesheetData,
@@ -929,12 +955,18 @@ const buildPayStubDetails = async (currentPayPeriod, companyName, empTimesheetDa
 
 	newEmpData.currentEmployerContributions = ER_EPP + ER_EHP;
 
-	newEmpData.currentVacationAccrued = 0;
-	newEmpData.currentVacationUsed = newEmpData.currentVacationPayTotal;
+	newEmpData.currentVacationAccrued = empBenefitInfoResult
+		? (parseFloat(empBenefitInfoResult.vacationPayPercent) / 100) * newEmpData.currentGrossPay
+		: 0;
+
+	newEmpData.currentVacationUsed =
+		empBenefitInfoResult?.typeOfVacationTreatment === "Payout"
+			? newEmpData.currentVacationAccrued
+			: newEmpData.currentVacationPayTotal;
+
 	newEmpData.vacationBalance =
 		newEmpData.currentVacationBalanceFwd +
-		newEmpData.currentVacationAccrued +
-		newEmpData.currentVacationUsed;
+		(newEmpData.currentVacationAccrued - newEmpData.currentVacationUsed);
 	newEmpData.currentSickAccrued = 0;
 	newEmpData.currentSickUsed = 0;
 	newEmpData.sickBalance = 0;

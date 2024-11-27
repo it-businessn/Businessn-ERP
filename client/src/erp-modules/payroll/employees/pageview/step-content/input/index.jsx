@@ -1,5 +1,6 @@
 import InputFormControl from "components/ui/form/InputFormControl";
 import { HIDE_ONBOARDING_SECTION } from "erp-modules/payroll/workview/data";
+import { convertDecimal } from "utils/convertAmt";
 import { hideLabel } from "../Record";
 
 const InputRecord = ({
@@ -15,8 +16,7 @@ const InputRecord = ({
 	const isFTSalaried = formData.typeOfEarning === "Full Time Salaried";
 	const isPTSalaried = formData.typeOfEarning === "Part Time Salaried";
 
-	const standardHrsHidden =
-		isHourlyEarning && param.name.includes("Standard Hours");
+	const standardHrsHidden = isHourlyEarning && param.name.includes("Standard Hours");
 
 	const PTSalariedHidden = isFTSalaried && param.name.includes("(PT)");
 
@@ -25,12 +25,11 @@ const InputRecord = ({
 	const fullTimeSalariedReadonly = isFTSalaried && param.name.includes("(FT)");
 
 	const showField =
-		!isOnboarding ||
-		(isOnboarding && !HIDE_ONBOARDING_SECTION.includes(param.name));
+		!isOnboarding || (isOnboarding && !HIDE_ONBOARDING_SECTION.includes(param.name));
 	const controlType = param.name.includes("Email") ? "email" : "text"; // text or number
 
 	const valueText = isBalanceInfo
-		? formData?.empPayStub?.[param.param_key] ?? ""
+		? convertDecimal(formData?.empPayStub?.[param.param_key]) ?? ""
 		: formData[param.param_key]?.toLocaleString() ?? "";
 
 	return standardHrsHidden || PTSalariedHidden || FTSalariedHidden ? (
