@@ -1,12 +1,7 @@
 import { SimpleGrid, useToast } from "@chakra-ui/react";
 import BoxCard from "components/ui/card";
 import VerticalStepper from "components/ui/VerticalStepper";
-import {
-	EMP_PAY_INFO_ACCRUALS_CONFIG,
-	EMP_PAY_INFO_DEDUCTION_CONFIG,
-	EMP_PAY_INFO_EARNINGS_CONFIG,
-	getInitialPayInfo,
-} from "config/payroll/employees/payInfo";
+import { EMP_PAY_INFO_EARNINGS_CONFIG, getInitialPayInfo } from "config/payroll/employees/payInfo";
 import useEmployeePayInfo from "hooks/useEmployeePayInfo";
 import useSelectedEmp from "hooks/useSelectedEmp";
 import { useEffect, useState } from "react";
@@ -17,14 +12,7 @@ import Record from "../step-content/Record";
 
 const PayInfo = ({ company, isOnboarding, id, handleNext, handlePrev }) => {
 	const { empId } = useSelectedEmp(LocalStorageService.getItem("empId"));
-	const payInfo = useEmployeePayInfo(
-		company,
-		false,
-		empId,
-		null,
-		null,
-		isOnboarding,
-	);
+	const payInfo = useEmployeePayInfo(company, false, empId, null, null, isOnboarding);
 	const onboardingEmpId = LocalStorageService.getItem("onboardingEmpId");
 	const setPayInfo = () => getInitialPayInfo(onboardingEmpId ?? empId, company);
 
@@ -70,34 +58,6 @@ const PayInfo = ({ company, isOnboarding, id, handleNext, handlePrev }) => {
 				/>
 			),
 		},
-		{
-			title: "Deductions",
-			content: (
-				<Record
-					handleConfirm={() => ""}
-					formData={formData}
-					setFormData={setFormData}
-					title="Deductions"
-					config={EMP_PAY_INFO_DEDUCTION_CONFIG}
-					isLoading={isLoading}
-					handleSubmit={handleSubmit}
-				/>
-			),
-		},
-		{
-			title: "Vacation",
-			content: (
-				<Record
-					handleConfirm={() => ""}
-					formData={formData}
-					setFormData={setFormData}
-					title="Vacation"
-					config={EMP_PAY_INFO_ACCRUALS_CONFIG}
-					isLoading={isLoading}
-					handleSubmit={handleSubmit}
-				/>
-			),
-		},
 	];
 	const [currentStep, setCurrentStep] = useState(0);
 	const goToNextStep = (index) => {
@@ -123,11 +83,7 @@ const PayInfo = ({ company, isOnboarding, id, handleNext, handlePrev }) => {
 					handleNextEnabled={true}
 				/>
 			</BoxCard>
-			<StepContent
-				currentStep={currentStep}
-				steps={steps}
-				isOnboarding={isOnboarding}
-			/>
+			<StepContent currentStep={currentStep} steps={steps} isOnboarding={isOnboarding} />
 		</SimpleGrid>
 	);
 };

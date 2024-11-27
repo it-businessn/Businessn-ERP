@@ -1,9 +1,5 @@
 const EmployeePayInfo = require("../models/EmployeePayInfo");
-const {
-	getEmployeeId,
-	addPayStub,
-	findEmpPayStubDetail,
-} = require("./payrollController");
+const { getEmployeeId, addPayStub, findEmpPayStubDetail } = require("./payrollController");
 const { findGroupEmployees } = require("./setUpController");
 const { getPayrollActiveEmployees } = require("./userController");
 
@@ -11,8 +7,7 @@ const getAllPayInfo = async (req, res) => {
 	const { companyName, payDate, isExtraRun, groupId } = req.params;
 	try {
 		const isExtraPayRun = isExtraRun === "true";
-		const employees =
-			isExtraPayRun && (await findGroupEmployees(groupId, payDate));
+		const employees = isExtraPayRun && (await findGroupEmployees(groupId, payDate));
 
 		const activeEmployees = isExtraPayRun
 			? await getEmployeeId(employees)
@@ -20,11 +15,7 @@ const getAllPayInfo = async (req, res) => {
 
 		const aggregatedResult = [];
 		for (const employee of activeEmployees) {
-			const result = await buildAmountAllocationEmpDetails(
-				payDate,
-				employee,
-				companyName,
-			);
+			const result = await buildAmountAllocationEmpDetails(payDate, employee, companyName);
 			aggregatedResult.push(result);
 		}
 
@@ -34,12 +25,7 @@ const getAllPayInfo = async (req, res) => {
 	}
 };
 
-const getRecordId = async (
-	empPayStubResult,
-	empId,
-	companyName,
-	payPeriodPayDate,
-) => {
+const getRecordId = async (empPayStubResult, empId, companyName, payPeriodPayDate) => {
 	if (empPayStubResult) {
 		return empPayStubResult._id;
 	}
@@ -58,26 +44,13 @@ const getRecordId = async (
 	return newPayStub._id;
 };
 
-const buildAmountAllocationEmpDetails = async (
-	payDate,
-	employee,
-	companyName,
-) => {
+const buildAmountAllocationEmpDetails = async (payDate, employee, companyName) => {
 	const employeeId = employee._id;
 	const fullName = employee.fullName;
 
-	const empPayStubResult = await findEmpPayStubDetail(
-		employeeId,
-		payDate,
-		companyName,
-	);
+	const empPayStubResult = await findEmpPayStubDetail(employeeId, payDate, companyName);
 
-	const recordId = await getRecordId(
-		empPayStubResult,
-		employeeId,
-		companyName,
-		payDate,
-	);
+	const recordId = await getRecordId(empPayStubResult, employeeId, companyName, payDate);
 
 	const result = {
 		_id: recordId,
@@ -118,16 +91,8 @@ const addEmployeePayInfo = async (req, res) => {
 		empId,
 		companyName,
 		regPay,
-
 		salaryRate,
 		dailyHours,
-		longTermDisabilityEE,
-		longTermDisabilityER,
-		dentalEE,
-		dentalER,
-		extendedHealthEE,
-		extendedHealthER,
-		unionDues,
 		fullTimeStandardHours,
 		partTimeStandardHours,
 	} = req.body;
@@ -156,13 +121,6 @@ const addEmployeePayInfo = async (req, res) => {
 			sickPay: regPay,
 			salaryRate,
 			dailyHours,
-			longTermDisabilityEE,
-			longTermDisabilityER,
-			dentalEE,
-			dentalER,
-			extendedHealthEE,
-			extendedHealthER,
-			unionDues,
 			vacationPay: regPay,
 			fullTimeStandardHours,
 			partTimeStandardHours,
