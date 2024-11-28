@@ -1,5 +1,6 @@
 import User from "models/User";
 import LocalStorageService from "services/LocalStorageService";
+import { toCapitalize } from "utils";
 
 export const storeUser = (user) => {
 	LocalStorageService.setItem("user", user);
@@ -42,3 +43,9 @@ export const buildUserInfo = (user) => {
 		payrollStatus,
 	);
 };
+export const getAddress = (address) =>
+	address
+		? toCapitalize(
+				`${address.streetNumber} ${address.city} ${address.state} ${address.country} ${address.postalCode}`,
+		  )
+		: "";

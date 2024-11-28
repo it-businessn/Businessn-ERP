@@ -7,10 +7,7 @@ router.get("/", setUpController.getAllSetup);
 
 router.get("/companies", setUpController.getCompanies);
 
-router.get(
-	"/companies/employees/:employees",
-	setUpController.getCompanyEmployees,
-);
+router.get("/companies/employees/:employees", setUpController.getCompanyEmployees);
 
 router.get("/companies/:name", setUpController.getCompany);
 
@@ -43,5 +40,7 @@ router.put("/groups/:id", setUpController.updateGroup);
 router.post("/empTypes", setUpController.addEmpType);
 
 router.post("/companies", setUpController.addCompany);
+
+router.put("/companies/:id", setUpController.updateCompany);
 
 module.exports = router;

@@ -1,7 +1,7 @@
 import TabGroup from "components/ui/tab";
 import { useEffect, useState } from "react";
 import SettingService from "services/SettingService";
-import CompanyDetails from "./CompanyDetails";
+import CompanyDetails from "./company-info/CompanyDetails";
 import GroupsPanel from "./GroupsPanel";
 import ModulePanel from "./ModulePanel";
 import Naming from "./Naming";

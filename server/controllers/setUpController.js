@@ -221,8 +221,8 @@ const getCompanies = async (req, res) => {
 const getCompany = async (req, res) => {
 	const { name } = req.params;
 	try {
-		const company = await Company.find({ name }).select(
-			"address industry_type founding_year registration_number name",
+		const company = await Company.findOne({ name }).select(
+			"address industry_type founding_year registration_number name cra_business_number",
 		);
 		res.status(200).json(company);
 	} catch (error) {
@@ -250,6 +250,21 @@ const getCompanyEmployees = async (req, res) => {
 		res.status(200).json(result);
 	} catch (error) {
 		res.status(404).json({ error: error.message });
+	}
+};
+
+const updateCompany = async (req, res) => {
+	const { id } = req.params;
+	try {
+		const { CRABusinessNo } = req.body;
+		const updatedCompany = await Company.findByIdAndUpdate(
+			id,
+			{ $set: { cra_business_number: CRABusinessNo } },
+			{ new: true },
+		);
+		res.status(200).json(updatedCompany);
+	} catch (error) {
+		console.log(error, "Error in updating");
 	}
 };
 
@@ -338,6 +353,7 @@ module.exports = {
 	addEmpType,
 	getCompanies,
 	addCompany,
+	updateCompany,
 	getCompany,
 	getCompanyEmployees,
 	addModule,

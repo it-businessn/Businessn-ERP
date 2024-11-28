@@ -4,6 +4,7 @@ const companySchema = new mongoose.Schema({
 	name: String,
 	founding_year: String,
 	registration_number: String,
+	cra_business_number: String,
 	address: {
 		type: Object,
 		streetNumber: String,
@@ -45,9 +46,7 @@ const companySchema = new mongoose.Schema({
 		},
 	],
 	projects: [{ type: mongoose.Schema.Types.ObjectId, ref: "Project" }],
-	company_resources: [
-		{ type: mongoose.Schema.Types.ObjectId, ref: "CompanyResource" },
-	],
+	company_resources: [{ type: mongoose.Schema.Types.ObjectId, ref: "CompanyResource" }],
 	config_rules: {
 		types: [String],
 	},

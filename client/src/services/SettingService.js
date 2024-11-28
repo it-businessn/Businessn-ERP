@@ -73,6 +73,10 @@ const SettingService = {
 		return apiService.post("/setup/companies", data);
 	},
 
+	async updateCompany(data, id) {
+		return apiService.put(`/setup/companies/${id}`, data, id);
+	},
+
 	async getAllEmploymentTypes(id) {
 		return apiService.get(`/setup/empTypes/${id}`);
 	},
