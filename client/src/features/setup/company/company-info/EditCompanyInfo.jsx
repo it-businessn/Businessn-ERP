@@ -21,7 +21,7 @@ const EditCompanyInfo = ({ isOpen, companyInfo, onClose }) => {
 			<form onSubmit={handleSubmit}>
 				<Stack spacing={4}>
 					<InputFormControl
-						label={"CRA business number"}
+						label={"CRA Business Number"}
 						name="name"
 						valueText={CRABusinessNo}
 						handleChange={(e) => {

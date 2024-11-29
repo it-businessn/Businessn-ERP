@@ -78,10 +78,7 @@ const NW_ADMIN_PERMISSION = [
 	// { name: "Payroll Setup" },
 ];
 
-const NW_EMPLOYEE_PERMISSION = [
-	{ name: "Payroll" },
-	{ name: "Payroll Employee Dashboard" },
-];
+const NW_EMPLOYEE_PERMISSION = [{ name: "Payroll" }, { name: "Payroll Employee Dashboard" }];
 
 const ROLES = {
 	EMPLOYEE: "Employee",
@@ -93,16 +90,16 @@ const ROLES = {
 const isRoleManager = (role) =>
 	role?.includes(ROLES.ADMINISTRATOR) || role?.includes(ROLES.MANAGER);
 
-const getUTCTime = (time, notDevice) =>
-	notDevice ? moment() : moment.utc(time).toISOString();
+const getUTCTime = (time, notDevice) => (notDevice ? moment() : moment.utc(time).toISOString());
+
+const calculateAge = (dob) => moment().diff(moment(dob, "YYYY-MM-DD"), "years");
 
 const startOfDay = (timestamp) => moment(timestamp).startOf("day").toDate();
 const endOfDay = (timestamp) => moment(timestamp).endOf("day").toDate();
 
 const momentTime = (time) => moment(time, "YYYY-MM-DD hh:mm A");
 
-const momentDuration = (time1, time2) =>
-	time1 && time2 ? moment.duration(time2.diff(time1)) : 0;
+const momentDuration = (time1, time2) => (time1 && time2 ? moment.duration(time2.diff(time1)) : 0);
 
 const isSameDate = (date1, date2) => moment(date1).isSame(date2, "second");
 
@@ -123,9 +120,7 @@ const STAT_HOLIDAYS = [
 ];
 
 const getPayType = (workedDate) => {
-	const isStatHoliday = STAT_HOLIDAYS.find(({ date }) =>
-		isSameDay(date, workedDate),
-	);
+	const isStatHoliday = STAT_HOLIDAYS.find(({ date }) => isSameDay(date, workedDate));
 	if (isStatHoliday) {
 		return "Statutory Worked Pay";
 	}
@@ -155,9 +150,7 @@ const calcTotalHours = (data) => {
 	const break3Duration = momentDuration(break3Start, break3End);
 
 	const totalBreakHours =
-		hasStartBreak && hasEndBreak
-			? break1Duration.add(break2Duration).add(break3Duration)
-			: 0;
+		hasStartBreak && hasEndBreak ? break1Duration.add(break2Duration).add(break3Duration) : 0;
 
 	const totalClockInToOut = momentDuration(clockIn, clockOut);
 	const totalWorkingTime = totalClockInToOut.subtract(totalBreakHours);
@@ -165,9 +158,7 @@ const calcTotalHours = (data) => {
 	const minutes = Math.floor(totalWorkingTime.minutes());
 
 	return {
-		totalBreakHours: totalBreakHours
-			? Math.floor(totalBreakHours.asHours())
-			: 0,
+		totalBreakHours: totalBreakHours ? Math.floor(totalBreakHours.asHours()) : 0,
 		totalWorkedHours: `${hours < 10 ? `0${hours < 0 ? 0 : hours}` : hours}:${
 			minutes < 10 ? `0${minutes < 0 ? 0 : minutes}` : minutes
 		}`,
@@ -190,4 +181,5 @@ module.exports = {
 	getPayType,
 	calcTotalHours,
 	isSameDay,
+	calculateAge,
 };

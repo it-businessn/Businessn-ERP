@@ -17,6 +17,9 @@ const employeeGovernmentInfoSchema = new mongoose.Schema({
 	regionalEmployerHealth: String,
 	createdOn: { type: Date, default: Date.now },
 	updatedOn: { type: Date, default: Date.now },
+	isCPPExempt: Boolean,
+	isEIExempt: Boolean,
+	employmentCode: String,
 });
 
 const EmployeeGovernmentInfo = mongoose.model(

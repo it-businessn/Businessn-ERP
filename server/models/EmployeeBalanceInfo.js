@@ -8,6 +8,7 @@ const employeeBalanceInfoSchema = new mongoose.Schema({
 	vacationPayPercent: String,
 	createdOn: { type: Date, default: Date.now },
 	updatedOn: { type: Date, default: Date.now },
+	employerDentalBenefitReportCode: String,
 });
 
 const EmployeeBalanceInfo = mongoose.model("EmployeeBalanceInfo", employeeBalanceInfoSchema);

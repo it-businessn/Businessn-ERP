@@ -2,6 +2,7 @@ import { SimpleGrid, useToast } from "@chakra-ui/react";
 import BoxCard from "components/ui/card";
 import VerticalStepper from "components/ui/VerticalStepper";
 import {
+	EMP_CPP_EXEMPT,
 	EMP_FED_GOVT_CONFIG,
 	EMP_INCOME_TAX_CONFIG,
 	EMP_REGN_GOVT_CONFIG,
@@ -15,25 +16,25 @@ import PayrollService from "services/PayrollService";
 import StepContent from "../step-content";
 import Record from "../step-content/Record";
 
-const GovernmentContribution = ({
-	company,
-	isOnboarding,
-	handleNext,
-	handlePrev,
-	id,
-}) => {
+const GovernmentContribution = ({ company, isOnboarding, handleNext, handlePrev, id }) => {
 	const { empId } = useSelectedEmp(LocalStorageService.getItem("empId"));
 	const onboardingEmpId = LocalStorageService.getItem("onboardingEmpId");
-	const governmentInfo = useEmployeeGovernment(company, empId, isOnboarding);
-	const setGovernmentInfo = () =>
-		getInitialGovernmentInfo(onboardingEmpId ?? empId, company);
+	const [refresh, setIsRefresh] = useState(true);
+	const governmentInfo = useEmployeeGovernment(company, empId, isOnboarding, refresh);
+	const setGovernmentInfo = () => getInitialGovernmentInfo(onboardingEmpId ?? empId, company);
 	const [formData, setFormData] = useState(setGovernmentInfo);
 	const [isDisabled, setIsDisabled] = useState(true);
 	const [isLoading, setIsLoading] = useState(false);
+	const [isCPPExempt, setIsCPPExempt] = useState(false);
+	const [isEIExempt, setIsEIExempt] = useState(false);
+
+	const toast = useToast();
 
 	useEffect(() => {
 		if (governmentInfo) {
 			setFormData(governmentInfo);
+			setIsCPPExempt(governmentInfo?.isCPPExempt);
+			setIsEIExempt(governmentInfo?.isEIExempt);
 		} else {
 			setFormData(setGovernmentInfo);
 		}
@@ -43,8 +44,8 @@ const GovernmentContribution = ({
 		setIsDisabled(false);
 	};
 
-	const toast = useToast();
 	const handleSubmit = async () => {
+		formData.isCPPExempt = isCPPExempt !== undefined ? !isCPPExempt : false;
 		setIsLoading(true);
 		try {
 			await PayrollService.addEmployeeGovernmentInfo(formData);
@@ -56,10 +57,29 @@ const GovernmentContribution = ({
 				duration: 1000,
 				isClosable: true,
 			});
+			setIsRefresh((prev) => !prev);
 		} catch (error) {}
 	};
 
 	const steps = [
+		{
+			title: "CPP Exemption",
+			content: (
+				<Record
+					handleConfirm={() => ""}
+					formData={formData}
+					setFormData={setFormData}
+					title="CPP Exemption"
+					config={EMP_CPP_EXEMPT}
+					handleSubmit={handleSubmit}
+					isCPPExempt={isCPPExempt}
+					setIsCPPExempt={setIsCPPExempt}
+					isEIExempt={isEIExempt}
+					setIsEIExempt={setIsEIExempt}
+					readOnly
+				/>
+			),
+		},
 		{
 			title: "Income Tax",
 			content: (
@@ -128,11 +148,7 @@ const GovernmentContribution = ({
 					handleNextEnabled={true}
 				/>
 			</BoxCard>
-			<StepContent
-				currentStep={currentStep}
-				steps={steps}
-				isOnboarding={isOnboarding}
-			/>
+			<StepContent currentStep={currentStep} steps={steps} isOnboarding={isOnboarding} />
 		</SimpleGrid>
 	);
 };

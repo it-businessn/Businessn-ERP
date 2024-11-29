@@ -23,6 +23,10 @@ const Record = ({
 	isBalanceInfo,
 	carryFwd,
 	setCarryFwd,
+	isCPPExempt,
+	isEIExempt,
+	setIsCPPExempt,
+	setIsEIExempt,
 }) => {
 	return (
 		<>
@@ -33,21 +37,31 @@ const Record = ({
 						{tab?.control === "checkbox" ? (
 							<Checkbox
 								colorScheme={"facebook"}
-								isChecked={carryFwd}
+								isChecked={carryFwd || isEIExempt || isCPPExempt}
 								onChange={() => {
-									setCarryFwd(!carryFwd);
+									if (carryFwd !== undefined) {
+										setCarryFwd(!carryFwd);
+									}
+									if (isEIExempt !== undefined) {
+										setIsEIExempt(!isEIExempt);
+									}
+									if (isCPPExempt !== undefined) {
+										setIsCPPExempt(!isCPPExempt);
+									}
 									handleSubmit();
 								}}
 							>
 								<FormLabel>{tab.type}</FormLabel>
 							</Checkbox>
 						) : (
-							<FormLabel visibility={hideLabel(tab.type) && "hidden"}>
-								{tab.type}
-							</FormLabel>
+							<FormLabel visibility={hideLabel(tab.type) && "hidden"}>{tab.type}</FormLabel>
 						)}
 						{tab.params.map((param) => {
-							return param?.control === "select" ? (
+							return param?.control === "label" ? (
+								<FormLabel color={"var(--status_button_border)"} key={param.name}>
+									{param.name}
+								</FormLabel>
+							) : param?.control === "select" ? (
 								<SelectTypeRecord
 									size={"md"}
 									key={param.name}

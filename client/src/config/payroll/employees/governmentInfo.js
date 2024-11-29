@@ -1,7 +1,4 @@
-import {
-	COUNTRIES,
-	REGIONS,
-} from "erp-modules/project-management/workview/project/data";
+import { COUNTRIES, REGIONS } from "erp-modules/project-management/workview/project/data";
 
 export const EMP_INCOME_TAX_CONFIG = [
 	{
@@ -87,6 +84,38 @@ export const EMP_REGN_GOVT_CONFIG = [
 	},
 ];
 
+export const EMP_CPP_EXEMPT = [
+	{
+		type: "Eligible to Contribute CPP/QPP",
+		control: "checkbox",
+		param_key: "isCPPExempt",
+		params: [
+			{
+				name: "Employees aged 18 or older are not exempt from CPP.",
+				param_key: "",
+				control: "label",
+			},
+			{
+				name: "Employees aged 18 or older are not exempt from CPP.",
+				param_key: "",
+				control: "select",
+			},
+		],
+	},
+	{
+		type: "Eligible to Contribute EI",
+		control: "checkbox",
+		param_key: "isEIExempt",
+		params: [
+			{
+				name: "Employees aged 18 or older are not exempt from EI.",
+				param_key: "",
+				control: "label",
+			},
+		],
+	},
+];
+
 export const getInitialGovernmentInfo = (empId, companyName) => {
 	return {
 		empId,
@@ -103,5 +132,7 @@ export const getInitialGovernmentInfo = (empId, companyName) => {
 		regionalEmployeeHealth: "",
 		regionalEmployerInjury: "",
 		regionalEmployerHealth: "",
+		isCPPExempt: false,
+		isEIExempt: false,
 	};
 };

@@ -16,6 +16,8 @@ const employeeEmploymentInfoSchema = new mongoose.Schema({
 	createdOn: { type: Date, default: Date.now },
 	updatedOn: { type: Date, default: Date.now },
 	regPay: String,
+	employmentRegion: String,
+	employmentCountry: String,
 });
 
 const EmployeeEmploymentInfo = mongoose.model(

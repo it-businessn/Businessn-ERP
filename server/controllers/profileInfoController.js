@@ -232,4 +232,5 @@ module.exports = {
 	getEmployeeProfileInfo,
 	addEmployeeProfileInfo,
 	updateEmployeeProfileInfo,
+	findEmployeeProfileInfo,
 };
