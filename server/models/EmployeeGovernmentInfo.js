@@ -7,6 +7,7 @@ const employeeGovernmentInfoSchema = new mongoose.Schema({
 	regionalTax: String,
 	federalTaxCredit: String,
 	regionalTaxCredit: String,
+	pensionPlanNumber: String,
 	federalPensionEE: String,
 	federalPensionER: String,
 	federalEmploymentInsuranceEE: String,
@@ -19,6 +20,7 @@ const employeeGovernmentInfoSchema = new mongoose.Schema({
 	updatedOn: { type: Date, default: Date.now },
 	isCPPExempt: Boolean,
 	isEIExempt: Boolean,
+	isPIPExempt: Boolean,
 	employmentCode: String,
 });
 

@@ -41,6 +41,7 @@ const taskRoutes = require("./routes/taskRoutes");
 const timesheetRoutes = require("./routes/timesheetRoutes");
 const timecardRoutes = require("./routes/timecardRoutes");
 const userRoutes = require("./routes/userRoutes");
+const t4SlipRoutes = require("./routes/t4SlipRoutes");
 
 const app = express();
 const expressLayouts = require("express-ejs-layouts");
@@ -98,6 +99,7 @@ app.use("/api/tasks", taskRoutes);
 app.use("/api/timesheet", timesheetRoutes);
 app.use("/api/timecard", timecardRoutes);
 app.use("/api/user", userRoutes);
+app.use("/api/generate-t4", t4SlipRoutes);
 
 // app.use("/api/company", companyRoutes);
 // app.use("/api/payslips", payslipRoutes);
@@ -129,13 +131,9 @@ const COMPANIES = {
 cron.schedule("0 0 * * *", () => {
 	//every 15sec cron.schedule("*/15 * * * * *", () => {
 
-	const isStatDay = STAT_HOLIDAYS.find(
-		({ date }) => date === moment().format("YYYY-MM-DD"),
-	);
+	const isStatDay = STAT_HOLIDAYS.find(({ date }) => date === moment().format("YYYY-MM-DD"));
 	if (isStatDay) {
-		console.log(
-			"Scheduling to add timecard entry to run every day at midnight",
-		);
+		console.log("Scheduling to add timecard entry to run every day at midnight");
 		addStatHolidayTimesheet(COMPANIES.NW);
 	} else return;
 });

@@ -21,6 +21,7 @@ const {
 } = require("./additionalAllocationInfoController");
 
 const { findGroupEmployees } = require("./setUpController");
+const { generateT4Slip } = require("./t4SlipController");
 const { getPayrollActiveEmployees } = require("./userController");
 
 //update roles-
@@ -648,7 +649,8 @@ const findEmployeeGovernmentInfo = async (empId) =>
 const addEmployeePayStubInfo = async (req, res) => {
 	const { companyName, currentPayPeriod } = req.body;
 	try {
-		const { payPeriodStartDate, payPeriodEndDate, isExtraRun, selectedEmp } = currentPayPeriod;
+		const { payPeriodStartDate, payPeriodEndDate, isExtraRun, selectedEmp, payPeriod } =
+			currentPayPeriod;
 
 		const activeEmployees = isExtraRun
 			? await getEmployeeId(selectedEmp)
@@ -670,6 +672,7 @@ const addEmployeePayStubInfo = async (req, res) => {
 				employee._id,
 			);
 		}
+		generateT4Slip(companyName, payPeriod);
 		res.status(200).json({ message: "Paystub created successfully" });
 	} catch (error) {
 		res.status(400).json({ message: error.message });
