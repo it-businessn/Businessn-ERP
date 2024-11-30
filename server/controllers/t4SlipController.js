@@ -16,33 +16,6 @@ const getEmployeeT4Slip = async (req, res) => {
 	const { companyName } = req.params;
 };
 
-const buildPayrollData = async (companyName, payPeriodNum) => {
-	const payrollData = await EmployeePayStub.find({
-		companyName,
-		payPeriodNum,
-	}).populate({
-		path: "empId",
-		model: "Employee",
-		select: ["fullName"],
-	});
-	let aggregatedResult = [];
-	for (const record of payrollData) {
-		const { empProfileInfo, empEmploymentInfo, companyInfo, empGovtInfo, empT4Info } =
-			await buildRecord(record);
-
-		aggregatedResult.push({
-			empProfileInfo,
-			empEmploymentInfo,
-			companyInfo,
-			empGovtInfo,
-			empT4Info,
-			name: record?.empId?.fullName,
-		});
-	}
-
-	return aggregatedResult;
-};
-
 const buildRecord = async (record) => {
 	const empProfileInfo = await EmployeeProfileInfo.findOne({
 		empId: record?.empId._id,
@@ -64,6 +37,64 @@ const buildRecord = async (record) => {
 	return { empProfileInfo, empEmploymentInfo, companyInfo, empGovtInfo, empT4Info };
 };
 
+const buildT4PayrollData = async (companyName, payPeriodNum) => {
+	const payrollData = await EmployeePayStub.find({
+		companyName,
+		payPeriodNum,
+	}).populate({
+		path: "empId",
+		model: "Employee",
+		select: ["fullName"],
+	});
+	const t4Data = [];
+	for (const record of payrollData) {
+		const {
+			empId,
+			currentGrossPay,
+			currentCPPDeductions,
+			currentStateTaxDeductions,
+			currentFDTaxDeductions,
+			currentEmployeeEIDeductions,
+			currentUnionDuesDeductions,
+			currentEmployeeHealthContributions,
+			currentEmployeePensionContributions,
+			currentEmployerEIDeductions,
+			currentEmployerHealthContributions,
+			currentEmployerPensionContributions,
+		} = record;
+
+		const { empProfileInfo, empEmploymentInfo, companyInfo, empGovtInfo, empT4Info } =
+			await buildRecord(record);
+
+		const newT4Data = {
+			companyInfo,
+			employeeInfo: {
+				empProfileInfo,
+				empEmploymentInfo,
+				empGovtInfo,
+				empT4Info,
+				name: empId?.fullName,
+				currentGrossPay,
+				currentCPPDeductions,
+				totalTaxDeductions: currentFDTaxDeductions + currentStateTaxDeductions,
+				currentEmployeeEIDeductions,
+				currentUnionDuesDeductions,
+				currentEmployeeHealthContributions,
+				currentEmployeePensionContributions,
+			},
+			employerInfo: {
+				currentEmployerEIDeductions,
+				currentEmployerHealthContributions,
+				currentEmployerPensionContributions,
+			},
+		};
+
+		t4Data.push(newT4Data);
+	}
+
+	return t4Data;
+};
+
 const generateT4Slip = async (companyName, payPeriodNum) => {
 	// Directory to save XML files
 	const outputDir = path.join(__dirname, "../", "generated-T4-xml");
@@ -79,11 +110,12 @@ const generateT4Slip = async (companyName, payPeriodNum) => {
 	// 	}
 	// );
 
-	const payrollData = await buildPayrollData(companyName, payPeriodNum);
+	const payrollData = await buildT4PayrollData(companyName, payPeriodNum);
 	const companyFileName = payrollData[0]?.companyInfo?.registration_number;
-	payrollData.map((employee) => {
-		const { empProfileInfo, empEmploymentInfo, companyInfo, empGovtInfo, empT4Info, name } =
-			employee;
+	payrollData.map((paystubRecord) => {
+		const { companyInfo, employeeInfo, employerInfo } = paystubRecord;
+		const { empProfileInfo, empEmploymentInfo, empGovtInfo, empT4Info, name } = employeeInfo;
+
 		const employeeNode = root.ele("EMPE_NM", name).up();
 
 		const addressNode = employeeNode.ele("EMPE_ADDR");
@@ -106,30 +138,30 @@ const generateT4Slip = async (companyName, payPeriodNum) => {
 		employeeNode.ele("empt_prov_cd", empEmploymentInfo?.employmentRegion).up();
 		employeeNode.ele("empr_dntl_ben_rpt_cd").up();
 
-		// const t4AmtNode = employeeNode.ele("T4_AMT");
-		// t4AmtNode.ele("empt_incamt", employee.name).up();
-		// t4AmtNode.ele("cpp_cntrb_amt", employee.name).up();
-		// t4AmtNode.ele("cppe_cntrb_amt", employee.name).up();
-		// t4AmtNode.ele("qpp_cntrb_amt", employee.name).up();
-		// t4AmtNode.ele("qppe_cntrb_amt", employee.name).up();
-		// t4AmtNode.ele("empe_eip_amt", employee.name).up();
-		// t4AmtNode.ele("rpp_cntrb_amt", employee.name).up();
-		// t4AmtNode.ele("itx_ddct_amt", employee.name).up();
-		// t4AmtNode.ele("ei_insu_ern_amt", employee.name).up();
-		// t4AmtNode.ele("cpp_qpp_ern_amt", employee.name).up();
-		// t4AmtNode.ele("unn_dues_amt", employee.name).up();
-		// t4AmtNode.ele("chrty_dons_amt", employee.name).up();
-		// t4AmtNode.ele("padj_amt", employee.name).up();
-		// t4AmtNode.ele("prov_pip_amt", employee.name).up();
-		// t4AmtNode.ele("prov_insu_ern_amt", employee.name).up();
-		// t4AmtNode.up();
+		const t4AmtNode = employeeNode.ele("T4_AMT");
+		t4AmtNode.ele("empt_incamt", employeeInfo?.currentGrossPay).up();
+		t4AmtNode.ele("cpp_cntrb_amt", employeeInfo?.currentCPPDeductions).up();
+		t4AmtNode.ele("cppe_cntrb_amt").up();
+		t4AmtNode.ele("qpp_cntrb_amt").up();
+		t4AmtNode.ele("qppe_cntrb_amt").up();
+		t4AmtNode.ele("empe_eip_amt").up();
+		t4AmtNode.ele("rpp_cntrb_amt").up();
+		t4AmtNode.ele("itx_ddct_amt", employeeInfo?.totalTaxDeductions).up();
+		t4AmtNode.ele("ei_insu_ern_amt", employeeInfo?.currentEmployeeEIDeductions).up();
+		t4AmtNode.ele("cpp_qpp_ern_amt").up();
+		t4AmtNode.ele("unn_dues_amt", employeeInfo?.currentUnionDuesDeductions).up();
+		t4AmtNode.ele("chrty_dons_amt").up();
+		t4AmtNode.ele("padj_amt").up();
+		t4AmtNode.ele("prov_pip_amt", employeeInfo?.currentEmployeeHealthContributions).up();
+		t4AmtNode.ele("prov_insu_ern_amt", employeeInfo?.currentEmployeePensionContributions).up();
+		t4AmtNode.up();
 
-		// const otherInfoNode = employeeNode.ele("OTH_INFO");
-		// otherInfoNode.ele("hm_brd_lodg_amt", employee.name).up();
-		// otherInfoNode.ele("spcl_wrk_site_amt", employee.name).up();
-		// otherInfoNode.ele("med_trvl_amt", employee.name).up();
-		// otherInfoNode.ele("stok_opt_ben_amt", employee.name).up();
-		// otherInfoNode.up();
+		const otherInfoNode = employeeNode.ele("OTH_INFO");
+		otherInfoNode.ele("hm_brd_lodg_amt").up();
+		otherInfoNode.ele("spcl_wrk_site_amt").up();
+		otherInfoNode.ele("med_trvl_amt").up();
+		otherInfoNode.ele("stok_opt_ben_amt").up();
+		otherInfoNode.up();
 	});
 
 	let xmlT4Data = root.end({ pretty: true });
