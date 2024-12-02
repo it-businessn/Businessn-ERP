@@ -4,6 +4,7 @@ import useEmployeeHoursWorked from "hooks/useEmployeeHoursWorked";
 import { useEffect, useState } from "react";
 import { timesheetPath } from "routes";
 import PayrollService from "services/PayrollService";
+import { convertDecimal } from "utils/convertAmt";
 import WorkviewTab from "./WorkviewTab";
 
 const HourlyAllocation = ({ company, closestRecord, groupId }) => {
@@ -98,7 +99,7 @@ const HourlyAllocation = ({ company, closestRecord, groupId }) => {
 
 	const handleUpdateData = (id, field, value) => {
 		const updatedData = hourlyAllocatedHours?.map((record) =>
-			record.empId._id === id ? { ...record, [field]: value } : record,
+			record.empId._id === id ? { ...record, [field]: convertDecimal(value) } : record,
 		);
 		setHourlyAllocatedHours(updatedData);
 	};

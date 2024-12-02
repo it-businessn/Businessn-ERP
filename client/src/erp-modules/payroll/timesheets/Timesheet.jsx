@@ -28,7 +28,13 @@ const Timesheet = ({ company, userId, refresh, filter, setRefresh, setTimesheetR
 		if (filter?.startDate) {
 			fetchAllEmployeeTimesheet();
 		}
-	}, [filter?.startDate, filter?.endDate, filter?.filteredEmployees, filter?.filteredDept]);
+	}, [
+		filter?.startDate,
+		filter?.endDate,
+		filter?.filteredEmployees,
+		filter?.filteredDept,
+		refresh,
+	]);
 
 	const [deleteRecordId, setDeleteRecordId] = useState(false);
 	const [showDeletePopUp, setShowDeletePopUp] = useState(false);
@@ -110,10 +116,10 @@ const Timesheet = ({ company, userId, refresh, filter, setRefresh, setTimesheetR
 
 			if (formData.recordId) {
 				await TimesheetService.updateTimesheet(formData, formData.recordId);
-				setFormData((prev) => ({
-					...prev,
-					approve: undefined,
-				}));
+				// setFormData((prev) => ({
+				// 	...prev,
+				// 	approve: undefined,
+				// }));
 				setRefresh((prev) => !prev);
 			}
 		} catch (error) {}

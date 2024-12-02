@@ -53,7 +53,7 @@ export const getDefaultTime = (date) => moment(date, "HH:mm").format("hh:mm A");
 
 export const getTimeCardFormat = (timestamp, notDevice, timeSheet) => {
 	const date = notDevice ? moment(timestamp) : moment.utc(timestamp);
-	return timeSheet ? date.format("YYYY-MM-DD") : date.format("YYYY-MM-DD  hh:mm A");
+	return timeSheet ? date.format("ddd, YYYY-MM-DD") : date.format("YYYY-MM-DD  hh:mm A");
 };
 
 // export const getTimeFormat = (date) => moment.utc(date).format("hh:mm A");

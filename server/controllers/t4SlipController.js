@@ -111,9 +111,12 @@ const generateT4Slip = async (companyName, payPeriodNum) => {
 	// );
 
 	const payrollData = await buildT4PayrollData(companyName, payPeriodNum);
+
 	const companyFileName = payrollData[0]?.companyInfo?.registration_number;
+
 	payrollData.map((paystubRecord) => {
 		const { companyInfo, employeeInfo, employerInfo } = paystubRecord;
+
 		const { empProfileInfo, empEmploymentInfo, empGovtInfo, empT4Info, name } = employeeInfo;
 
 		const employeeNode = root.ele("EMPE_NM", name).up();

@@ -38,7 +38,7 @@ const ExtraTimeEntryModal = ({
 	useEffect(() => {
 		if (formData.type !== "") {
 			const { param_hours } = getParamKey(formData.type);
-			setFormData((prevData) => ({ ...prevData, param_hours: param_hours }));
+			setFormData((prevData) => ({ ...prevData, param_hours }));
 		}
 	}, [formData.type]);
 

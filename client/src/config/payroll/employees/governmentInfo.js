@@ -86,7 +86,7 @@ export const EMP_REGN_GOVT_CONFIG = [
 
 export const EMP_CPP_EXEMPT = [
 	{
-		type: "Eligible to Contribute CPP/QPP",
+		type: "Is CPP/QPP exempt",
 		control: "checkbox",
 		param_key: "isCPPExempt",
 		params: [
@@ -95,24 +95,13 @@ export const EMP_CPP_EXEMPT = [
 				param_key: "",
 				control: "label",
 			},
-			{
-				name: "Employees aged 18 or older are not exempt from CPP.",
-				param_key: "",
-				control: "select",
-			},
 		],
 	},
 	{
-		type: "Eligible to Contribute EI",
+		type: "Is EI exempt",
 		control: "checkbox",
 		param_key: "isEIExempt",
-		params: [
-			{
-				name: "Employees aged 18 or older are not exempt from EI.",
-				param_key: "",
-				control: "label",
-			},
-		],
+		params: [],
 	},
 ];
 

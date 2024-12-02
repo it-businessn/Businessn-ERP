@@ -114,6 +114,8 @@ const getFilteredTimesheets = async (req, res) => {
 				$lte: filteredData?.endDate ? moment(filteredData?.endDate) : currentDate,
 				$gte: filteredData?.startDate ? moment(filteredData?.startDate) : currentDate,
 			},
+			// payType: { $ne: "Regular Pay" },
+			// regHoursWorked: { $ne: 0 },
 		});
 
 		const payInfo = await getTimesheetResult(companyName);
