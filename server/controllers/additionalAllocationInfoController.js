@@ -67,7 +67,15 @@ const addAdditionalHoursAllocationInfo = async (req, res) => {
 		});
 
 		if (existingInfo) {
-			const updatedInfo = await updateAdditionalHoursAllocatedInfo(existingInfo._id, req.body);
+			const updatedInfo = await updateAdditionalHoursAllocatedInfo(existingInfo._id, {
+				additionalRegHoursWorked,
+				additionalOvertimeHoursWorked,
+				additionalDblOvertimeHoursWorked,
+				additionalStatHoursWorked,
+				additionalStatDayHoursWorked,
+				additionalVacationHoursWorked,
+				additionalSickHoursWorked,
+			});
 			return res.status(201).json(updatedInfo);
 		}
 		const newInfo = await addNewAllocationRecord({
@@ -110,7 +118,14 @@ const addAmountAllocation = async (req, res) => {
 		});
 
 		if (existingInfo) {
-			const updatedInfo = await updateAdditionalHoursAllocatedInfo(existingInfo._id, req.body);
+			const updatedInfo = await updateAdditionalHoursAllocatedInfo(existingInfo._id, {
+				commission,
+				bonus,
+				retroactive,
+				reimbursement,
+				terminationPayout,
+				vacationPayout,
+			});
 			return res.status(201).json(updatedInfo);
 		}
 		const newInfo = await addNewAllocationRecord({
