@@ -184,12 +184,14 @@ const getEEContribution = async (req, res) => {
 				payDate,
 				companyName,
 			);
+			const empBenefitInfoResult = await findEmployeeBenefitInfo(employee._id, companyName);
 
 			const result = buildEmpEEDetails(
 				empTimesheetData ?? null,
 				empPayInfoResult,
 				empAdditionalHoursAllocated,
 				employee,
+				empBenefitInfoResult,
 			);
 			aggregatedResult.push(result);
 		}
@@ -223,12 +225,14 @@ const getERContribution = async (req, res) => {
 				payDate,
 				companyName,
 			);
+			const empBenefitInfoResult = await findEmployeeBenefitInfo(employee._id, companyName);
 
 			const result = buildEmpERDetails(
 				empTimesheetData ?? null,
 				empPayInfoResult,
 				empAdditionalHoursAllocated,
 				employee,
+				empBenefitInfoResult,
 			);
 			aggregatedResult.push(result);
 		}
@@ -243,8 +247,10 @@ const buildEmpEEDetails = (
 	empPayInfoResult,
 	empAdditionalHoursAllocated,
 	employee,
+	empBenefitInfoResult,
 ) => {
 	const data = ERData(empTimesheetData, empPayInfoResult, empAdditionalHoursAllocated);
+	data.vacationPayPercent = parseFloat(empBenefitInfoResult?.vacationPayPercent) || 0;
 
 	const { unionDues, EE_EPP, EE_EHP } = getContributionsDeductions(data);
 	const { _id, fullName } = employee;
@@ -307,8 +313,11 @@ const buildEmpERDetails = (
 	empPayInfoResult,
 	empAdditionalHoursAllocated,
 	employee,
+	empBenefitInfoResult,
 ) => {
 	const data = ERData(empTimesheetData, empPayInfoResult, empAdditionalHoursAllocated);
+	data.vacationPayPercent = parseFloat(empBenefitInfoResult?.vacationPayPercent) || 0;
+
 	const { ER_EPP, ER_EHP } = getContributionsDeductions(data);
 	const { _id, fullName } = employee;
 
@@ -665,14 +674,16 @@ const addEmployeePayStubInfo = async (req, res) => {
 				(el) => el.empId._id.toString() === employee._id.toString(),
 			);
 
-			await buildPayStubDetails(
+			const payStubResult = await buildPayStubDetails(
 				currentPayPeriod,
 				companyName,
 				empTimesheetData ?? null,
 				employee._id,
 			);
 		}
-		generateT4Slip(companyName, payPeriod);
+		// generateT4Slip(companyName, payPeriod);
+		//if payroll processed successful
+		//alerts violation generate independently based on emp data, on process payroll will run again to check alerts or violations.
 		res.status(200).json({ message: "Paystub created successfully" });
 	} catch (error) {
 		res.status(400).json({ message: error.message });
@@ -827,14 +838,13 @@ const getContributionsDeductions = (data) => {
 		statPay,
 		statWorkPay,
 		sickPay,
-		vacationPay,
 		totalRegHoursWorked,
 		totalOvertimeHoursWorked,
 		totalDblOvertimeHoursWorked,
 		totalStatDayHoursWorked,
 		totalStatHours,
 		totalSickHoursWorked,
-		totalVacationHoursWorked,
+		vacationPayPercent,
 	} = data;
 
 	const sumTotalHoursWithoutVacation =
@@ -842,26 +852,28 @@ const getContributionsDeductions = (data) => {
 
 	const sumTotalOvertimeHours = totalOvertimeHoursWorked + totalDblOvertimeHoursWorked;
 
-	// const sumTotalWithoutVacation =
-	// 	getCalcAmount(totalSickHoursWorked, sickPay) +
-	// 	getCalcAmount(totalStatHours, statPay) +
-	// 	getCalcAmount(totalStatDayHoursWorked, statWorkPay) +
-	// 	getCalcAmount(totalRegHoursWorked, regPay);
+	const sumTotalWithoutVacation =
+		getCalcAmount(totalSickHoursWorked, sickPay) +
+		getCalcAmount(totalStatHours, statPay) +
+		getCalcAmount(totalStatDayHoursWorked, statWorkPay) +
+		getCalcAmount(totalRegHoursWorked, regPay);
 
 	const sumTotalOvertime =
 		getCalcAmount(totalOvertimeHoursWorked, overTimePay) +
 		getCalcAmount(totalDblOvertimeHoursWorked, dblOverTimePay);
 
-	const sumTotalWithVacation =
-		getCalcAmount(totalSickHoursWorked, sickPay) +
-		getCalcAmount(totalStatHours, statPay) +
-		getCalcAmount(totalStatDayHoursWorked, statWorkPay) +
-		getCalcAmount(totalRegHoursWorked, regPay) +
-		getCalcAmount(totalVacationHoursWorked, vacationPay);
+	// const sumTotalWithVacation =
+	// 	getCalcAmount(totalSickHoursWorked, sickPay) +
+	// 	getCalcAmount(totalStatHours, statPay) +
+	// 	getCalcAmount(totalStatDayHoursWorked, statWorkPay) +
+	// 	getCalcAmount(totalRegHoursWorked, regPay) +
+	// 	getCalcAmount(totalVacationHoursWorked, vacationPay);
 
-	const unionDues = (sumTotalWithVacation + sumTotalOvertime) * 0.02;
+	const vacationAccruedAmount = (sumTotalWithoutVacation + sumTotalOvertime) * vacationPayPercent;
 
-	const EE_EPP = sumTotalWithVacation * 0.04;
+	const unionDues = (sumTotalWithoutVacation + sumTotalOvertime + vacationAccruedAmount) * 0.02;
+
+	const EE_EPP = (sumTotalWithoutVacation + sumTotalOvertime + vacationAccruedAmount) * 0.04;
 	const EE_EHP = sumTotalHoursWithoutVacation * 0.42;
 
 	const ER_EPP = EE_EPP;
@@ -906,6 +918,7 @@ const buildPayStubDetails = async (currentPayPeriod, companyName, empTimesheetDa
 		empPayInfoResult,
 		empAdditionalHoursAllocated,
 	);
+	newEmpData.vacationPayPercent = parseFloat(empBenefitInfoResult?.vacationPayPercent) || 0;
 
 	newEmpData.payInLieuPay = empPayStubResult?.payInLieuPay ?? 0;
 	newEmpData.pILBenefitPay = empPayStubResult?.pILBenefitPay ?? 0;
