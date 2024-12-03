@@ -84,17 +84,17 @@ const WorkviewTable = ({
 							<Td p={1} pl={8}>
 								{isEarningTable ? payPeriodNum : isExtraPay(payPeriod, isExtraRun)}
 							</Td>
-							{!isEarningTable && (
-								<Td p={1} pl={5}>
-									<TextTitle title={dayMonthYear(payPeriodProcessingDate)} />
-								</Td>
-							)}
 							<Td p={1} textAlign={textAlign}>
 								{dayMonthYear(payPeriodPayDate)}
 							</Td>
 							<Td p={1} textAlign={textAlign}>
 								{formatDateRange(payPeriodStartDate, payPeriodEndDate)}
 							</Td>
+							{!isEarningTable && (
+								<Td p={1} pl={5}>
+									<TextTitle title={dayMonthYear(payPeriodProcessingDate)} />
+								</Td>
+							)}
 							{!isEarningTable && (
 								<Td p={1} w={autoScroll && "120px"} textAlign={autoScroll ? "center" : textAlign}>
 									<PrimaryButton

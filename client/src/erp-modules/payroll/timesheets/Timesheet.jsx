@@ -12,9 +12,11 @@ import TimesheetService from "services/TimesheetService";
 import { getAmount } from "utils/convertAmt";
 import { getTimeCardFormat, getTimeFormat, setUTCDate } from "utils/convertDate";
 import { getParamKey, getPayTypeStyle, getStatusStyle } from "./data";
+import ExtraTimeEntryModal from "./ExtraTimeEntryModal";
 
-const Timesheet = ({ company, userId, refresh, filter, setRefresh, setTimesheetRefresh }) => {
+const Timesheet = ({ company, setShowAddEntry, showAddEntry, filter, setTimesheetRefresh }) => {
 	const [timesheets, setTimesheets] = useState(null);
+	const [refresh, setRefresh] = useState(false);
 
 	useEffect(() => {
 		const fetchAllEmployeeTimesheet = async () => {
@@ -116,10 +118,6 @@ const Timesheet = ({ company, userId, refresh, filter, setRefresh, setTimesheetR
 
 			if (formData.recordId) {
 				await TimesheetService.updateTimesheet(formData, formData.recordId);
-				// setFormData((prev) => ({
-				// 	...prev,
-				// 	approve: undefined,
-				// }));
 				setRefresh((prev) => !prev);
 			}
 		} catch (error) {}
@@ -129,7 +127,7 @@ const Timesheet = ({ company, userId, refresh, filter, setRefresh, setTimesheetR
 		if (formData.approve !== undefined) {
 			handleSubmit();
 		}
-	}, [formData.approve]);
+	}, [formData.approve, formData.recordId]);
 
 	useEffect(() => {
 		if (formData.clockIn) {
@@ -402,6 +400,19 @@ const Timesheet = ({ company, userId, refresh, filter, setRefresh, setTimesheetR
 												}));
 											}}
 										/>
+										{/* <IconButton
+											size={"xs"}
+											color={"var(--incorrect_ans)"}
+											icon={<FaRProject />}
+											variant={"solid"}
+											onClick={() => {
+												setFormData((prev) => ({
+													...prev,
+													recordId: _id,
+													approve: undefined,
+												}));
+											}}
+										/> */}
 										<IconButton
 											size={"xs"}
 											color={"var(--main_color_black)"}
@@ -426,6 +437,14 @@ const Timesheet = ({ company, userId, refresh, filter, setRefresh, setTimesheetR
 					isOpen={showDeletePopUp}
 					onClose={handleClose}
 					onOpen={handleDelete}
+				/>
+			)}
+			{showAddEntry && (
+				<ExtraTimeEntryModal
+					company={company}
+					showAddEntry={showAddEntry}
+					setRefresh={setRefresh}
+					setShowAddEntry={setShowAddEntry}
 				/>
 			)}
 		</TableLayout>

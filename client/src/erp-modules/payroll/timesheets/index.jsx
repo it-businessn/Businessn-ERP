@@ -13,7 +13,6 @@ import LocalStorageService from "services/LocalStorageService";
 import { isManager } from "utils";
 import { getDefaultDate, getMomentDate } from "utils/convertDate";
 import DateFilterPopup from "./DateFilterPopup";
-import ExtraTimeEntryModal from "./ExtraTimeEntryModal";
 import OtherFilter from "./OtherFilter";
 import Timecard from "./Timecard";
 import Timesheet from "./Timesheet";
@@ -28,7 +27,6 @@ const Timesheets = () => {
 	const { payGroupSchedule, closestRecord, closestRecordIndex } = usePaygroup(company, false);
 	const lastRecord = payGroupSchedule?.length > 0 && payGroupSchedule[closestRecordIndex - 1];
 
-	const [refresh, setRefresh] = useState(false);
 	const [dataRefresh, setDataRefresh] = useState(false);
 	const [filter, setFilter] = useState(null);
 	const { employees } = useEmployees(false, company, false, true);
@@ -108,12 +106,12 @@ const Timesheets = () => {
 			type: "Timesheet",
 			name: (
 				<Timesheet
-					setRefresh={setRefresh}
 					setTimesheetRefresh={setDataRefresh}
 					company={company}
 					userId={userId}
-					refresh={refresh}
 					filter={filter}
+					showAddEntry={showAddEntry}
+					setShowAddEntry={setShowAddEntry}
 				/>
 			),
 		},
@@ -154,14 +152,6 @@ const Timesheets = () => {
 				<PrimaryButton size={"sm"} name={"Add record"} onOpen={() => setShowAddEntry(true)} />
 			</HStack>
 
-			{showAddEntry && (
-				<ExtraTimeEntryModal
-					company={company}
-					showAddEntry={showAddEntry}
-					setRefresh={setRefresh}
-					setShowAddEntry={setShowAddEntry}
-				/>
-			)}
 			<HStack w={"90%"} justifyContent={"start"} gap={5} position="sticky" zIndex={4}>
 				<TabsButtonGroup
 					w={"20%"}

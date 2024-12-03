@@ -71,10 +71,7 @@ const createTimecard = async (req, res) => {
 					timestamp,
 					punch,
 				});
-				if (
-					!punchRecordExists &&
-					moment(entry.timestamp).isAfter(dateThreshold)
-				) {
+				if (!punchRecordExists && moment(entry.timestamp).isAfter(dateThreshold)) {
 					await addPunchEntry(entry);
 				}
 			}
@@ -100,10 +97,7 @@ const mapTimecardRawToTimecard = async () => {
 					$ne: null,
 				},
 				$expr: {
-					$eq: [
-						{ $dateToString: { format: "%Y-%m-%d", date: "$clockIn" } },
-						targetDate,
-					],
+					$eq: [{ $dateToString: { format: "%Y-%m-%d", date: "$clockIn" } }, targetDate],
 				},
 			});
 
@@ -118,7 +112,7 @@ const mapTimecardRawToTimecard = async () => {
 				});
 			}
 			if (punch === "2" && sameClockInTimeEntryExists) {
-				await Timecard.findByIdAndUpdate(sameClockInTimeEntryExists._id, {
+				await updateTimecardData(sameClockInTimeEntryExists._id, {
 					startBreaks: sameClockInTimeEntryExists.startBreaks.push(timestamp),
 					notDevice: record?.notDevice,
 				});
@@ -133,7 +127,7 @@ const mapTimecardRawToTimecard = async () => {
 				updateTimecardEntry(updatedEntry);
 			}
 			if (punch === "3" && sameClockInTimeEntryExists) {
-				await Timecard.findByIdAndUpdate(sameClockInTimeEntryExists._id, {
+				await updateTimecardData(sameClockInTimeEntryExists._id, {
 					endBreaks: sameClockInTimeEntryExists.endBreaks.push(timestamp),
 					notDevice: record?.notDevice,
 				});
@@ -148,7 +142,7 @@ const mapTimecardRawToTimecard = async () => {
 				updateTimecardEntry(updatedEntry);
 			}
 			if (punch === "1" && sameClockInTimeEntryExists) {
-				await Timecard.findByIdAndUpdate(sameClockInTimeEntryExists._id, {
+				await updateTimecardData(sameClockInTimeEntryExists._id, {
 					clockOut: timestamp,
 					notDevice: record?.notDevice,
 				});
@@ -165,6 +159,11 @@ const mapTimecardRawToTimecard = async () => {
 		});
 	} catch (error) {}
 };
+
+const updateTimecardData = async (id, data) =>
+	await Timecard.findByIdAndUpdate(id, data, {
+		new: true,
+	});
 
 const findTimecardEntry = async (entry) => await Timecard.findOne(entry);
 

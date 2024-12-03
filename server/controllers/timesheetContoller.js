@@ -355,7 +355,7 @@ const updateTimesheet = async (req, res) => {
 				[param_hours]: 8,
 				approveStatus: approve ? "Approved" : approve === false ? "Rejected" : "Pending",
 			};
-			const timesheet = await Timesheet.findByIdAndUpdate(id, updatedData);
+			const timesheet = await updateTimesheetData(id, updatedData);
 			return res.status(201).json(timesheet);
 		}
 		const updatedData = {
@@ -365,12 +365,17 @@ const updateTimesheet = async (req, res) => {
 			approveStatus: approve ? "Approved" : approve === false ? "Rejected" : "Pending",
 		};
 
-		const timesheet = await Timesheet.findByIdAndUpdate(id, updatedData);
+		const timesheet = await updateTimesheetData(id, updatedData);
 		return res.status(201).json(timesheet);
 	} catch (error) {
 		res.status(400).json({ message: error.message });
 	}
 };
+
+const updateTimesheetData = async (id, data) =>
+	await Timesheet.findByIdAndUpdate(id, data, {
+		new: true,
+	});
 
 const deleteTimesheet = async (req, res) => {
 	const { id } = req.params;
