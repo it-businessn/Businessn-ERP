@@ -63,20 +63,21 @@ const updateBalanceInfo = async (id, data) =>
 const addEmployeeBalanceInfo = async (req, res) => {
 	const { empId, companyName, carryFwd, typeOfVacationTreatment, vacationPayPercent } = req.body;
 	try {
-		let newVacationPayPercent = vacationPayPercent ? parseFloat(vacationPayPercent) : 0;
-		const existingBalanceInfo = await findEmployeeBalanceInfo(empId, companyName, true);
-		if (existingBalanceInfo) {
-			const updatedBalanceInfo = await updateBalanceInfo(existingBalanceInfo._id, req.body);
-			return res.status(201).json(updatedBalanceInfo);
-		}
-		const newBalanceInfo = await EmployeeBalanceInfo.create({
+		const newVacationPayPercent = vacationPayPercent ? parseFloat(vacationPayPercent) : 0;
+		const data = {
 			empId,
 			companyName,
 			carryFwd,
 			typeOfVacationTreatment,
 			vacationPayPercent:
 				newVacationPayPercent > 1 ? newVacationPayPercent / 100 : newVacationPayPercent,
-		});
+		};
+		const existingBalanceInfo = await findEmployeeBalanceInfo(empId, companyName, true);
+		if (existingBalanceInfo) {
+			const updatedBalanceInfo = await updateBalanceInfo(existingBalanceInfo._id, data);
+			return res.status(201).json(updatedBalanceInfo);
+		}
+		const newBalanceInfo = await EmployeeBalanceInfo.create(data);
 		return res.status(201).json(newBalanceInfo);
 	} catch (error) {
 		res.status(400).json({ message: error.message });
