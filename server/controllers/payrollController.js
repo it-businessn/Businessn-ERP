@@ -957,6 +957,8 @@ const buildPayStubDetails = async (currentPayPeriod, companyName, empTimesheetDa
 
 	newEmpData.currentFDTaxDeductions = federalTaxDeductionByPayPeriod;
 	newEmpData.currentStateTaxDeductions = totalProvincialTaxDeduction;
+	newEmpData.currentIncomeTaxDeductions =
+		federalTaxDeductionByPayPeriod + totalProvincialTaxDeduction;
 	newEmpData.currentCPPDeductions = CPPContribution;
 	newEmpData.currentEmployeeEIDeductions = EmployeeEIContribution;
 	newEmpData.currentEmployerEIDeductions = EmployerEIContribution;
@@ -1084,6 +1086,7 @@ const buildPayStub = (
 		currentGrossPay,
 		currentFDTaxDeductions,
 		currentStateTaxDeductions,
+		currentIncomeTaxDeductions,
 		currentCPPDeductions,
 		currentUnionDuesDeductions,
 		currentEmployeeEIDeductions,
@@ -1185,6 +1188,7 @@ const buildPayStub = (
 		currentGrossPay,
 		currentFDTaxDeductions,
 		currentStateTaxDeductions,
+		currentIncomeTaxDeductions,
 		currentCPPDeductions,
 		currentUnionDuesDeductions,
 		currentEmployeeEIDeductions,
@@ -1231,6 +1235,10 @@ const buildPayStub = (
 		YTDStateTaxDeductions: getSumTotal(
 			prevPayPayInfo?.YTDStateTaxDeductions,
 			currentStateTaxDeductions,
+		),
+		YTD_IncomeTaxDeductions: getSumTotal(
+			prevPayPayInfo?.YTD_IncomeTaxDeductions,
+			currentIncomeTaxDeductions,
 		),
 		YTD_EmployeeEIDeductions: getSumTotal(
 			prevPayPayInfo?.YTD_EmployeeEIDeductions,

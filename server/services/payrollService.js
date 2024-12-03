@@ -20,36 +20,88 @@ const TAX_CONFIG = {
 	MAX_PROVINCIAL_CLAIM: 11981.0,
 };
 
+//2024 FD tax brackets
 const applyFederalTaxRate = (annualIncome) => {
-	let taxRateConstant =
-		annualIncome > 0 && annualIncome <= 53359
-			? { rate: 0.15, kRate: 0 }
-			: annualIncome > 53359.01 && annualIncome <= 106717
-			? { rate: 0.205, kRate: 2935 }
-			: annualIncome > 106717.01 && annualIncome < 165430.0
-			? { rate: 0.26, kRate: 8804 }
-			: annualIncome > 165430.01 && annualIncome < 235675
-			? { rate: 0.29, kRate: 13767 }
-			: { rate: 0.33, kRate: 23194 };
-	return taxRateConstant;
+	const taxBrackets = [
+		{ upperLimit: 55867, rate: 0.15 },
+		{ upperLimit: 111733, rate: 0.205 },
+		{ upperLimit: 173205, rate: 0.26 },
+		{ upperLimit: 246752, rate: 0.29 },
+		{ upperLimit: Infinity, rate: 0.33 },
+	];
+	const projectedTaxes = [];
+
+	for (let i = 0; i < taxBrackets.length; i++) {
+		const bracket = taxBrackets[i];
+		const lowerLimit = i === 0 ? 0 : taxBrackets[i - 1].upperLimit;
+		let remainingIncome = annualIncome;
+
+		if (remainingIncome > lowerLimit) {
+			const taxableIncome = bracket.upperLimit - lowerLimit;
+			const taxInBracket = taxableIncome * bracket.rate;
+			projectedTaxes.push({
+				bracket: `Income between $${lowerLimit.toFixed(2)} and $${bracket.upperLimit.toFixed(2)}`,
+				taxableIncome,
+				taxInBracket,
+			});
+			remainingIncome -= taxableIncome;
+		} else {
+			projectedTaxes.push({
+				bracket: `Income between $${lowerLimit.toFixed(2)} and $${bracket.upperLimit.toFixed(2)}`,
+				taxableIncome: 0,
+				taxInBracket: 0,
+			});
+		}
+	}
+
+	const projectedAnnualTaxBill = projectedTaxes.reduce(
+		(sum, bracketIncome) => sum + bracketIncome.taxInBracket,
+		0,
+	);
+	return projectedAnnualTaxBill;
 };
 
+//2024 BC Provincial tax brackets
 const applyProvincialTaxRate = (annualIncome) => {
-	let taxRateConstant =
-		annualIncome > 0 && annualIncome <= 45654
-			? { rate: 0.0506, kRate: 0 }
-			: annualIncome > 45654.01 && annualIncome <= 91310
-			? { rate: 0.077, kRate: 1205 }
-			: annualIncome > 91310.01 && annualIncome < 104835.0
-			? { rate: 0.105, kRate: 3762 }
-			: annualIncome > 104835.01 && annualIncome < 127299
-			? { rate: 0.1229, kRate: 5638 }
-			: annualIncome > 127299.01 && annualIncome < 172602.0
-			? { rate: 0.147, kRate: 8706 }
-			: annualIncome > 172602.01 && annualIncome < 240716.0
-			? { rate: 0.168, kRate: 12331 }
-			: { rate: 0.205, kRate: 21238 };
-	return taxRateConstant;
+	const taxBrackets = [
+		{ upperLimit: 47937, rate: 0.506 },
+		{ upperLimit: 95875, rate: 0.77 },
+		{ upperLimit: 110076, rate: 0.105 },
+		{ upperLimit: 133664, rate: 0.1229 },
+		{ upperLimit: 181232, rate: 0.147 },
+		{ upperLimit: 252752, rate: 0.168 },
+		{ upperLimit: Infinity, rate: 0.205 },
+	];
+	const projectedTaxes = [];
+
+	for (let i = 0; i < taxBrackets.length; i++) {
+		const bracket = taxBrackets[i];
+		const lowerLimit = i === 0 ? 0 : taxBrackets[i - 1].upperLimit;
+		let remainingIncome = annualIncome;
+
+		if (remainingIncome > lowerLimit) {
+			const taxableIncome = bracket.upperLimit - lowerLimit;
+			const taxInBracket = taxableIncome * bracket.rate;
+			projectedTaxes.push({
+				bracket: `Income between $${lowerLimit.toFixed(2)} and $${bracket.upperLimit.toFixed(2)}`,
+				taxableIncome,
+				taxInBracket,
+			});
+			remainingIncome -= taxableIncome;
+		} else {
+			projectedTaxes.push({
+				bracket: `Income between $${lowerLimit.toFixed(2)} and $${bracket.upperLimit.toFixed(2)}`,
+				taxableIncome: 0,
+				taxInBracket: 0,
+			});
+		}
+	}
+
+	const projectedAnnualTaxBill = projectedTaxes.reduce(
+		(sum, bracketIncome) => sum + bracketIncome.taxInBracket,
+		0,
+	);
+	return projectedAnnualTaxBill;
 };
 
 const applyBCTaxRate = (annualIncome) => {
@@ -72,114 +124,28 @@ const getSumHours = (hrs) => (hrs ? parseFloat(hrs) : 0);
 
 const getSumTotal = (data1, data2) => (data1 ?? 0) + data2;
 
-const getTotalProvincialTaxDeduction = (grossSalaryByPayPeriod) => {
-	const CPPContribution =
-		TAX_CONFIG.TOTAL_CONTRIBUTION_RATE *
-		((grossSalaryByPayPeriod - TAX_CONFIG.CPP_BASIC_EXEMPTION) /
-			TAX_CONFIG.NUMBER_OF_MONTHS);
+const getTaxDetails = (payRate, grossEarning) => {
+	const projectedIncome = payRate * TAX_CONFIG.HOURS_PER_WEEK * TAX_CONFIG.ANNUAL_PAY_PERIODS;
+	const adjustedProjectedIncome = projectedIncome - TAX_CONFIG.CPP_BASIC_EXEMPTION;
+	const adjustedGrossEarning = adjustedProjectedIncome / TAX_CONFIG.ANNUAL_PAY_PERIODS;
+	const CPPContribution = adjustedGrossEarning * TAX_CONFIG.TOTAL_CONTRIBUTION_RATE;
 
-	const CPPByPayPeriod =
-		CPPContribution *
-		(TAX_CONFIG.CPP_BASE_EMP_COMP_RATE / TAX_CONFIG.TOTAL_CONTRIBUTION_RATE) *
-		TAX_CONFIG.NUMBER_OF_MONTHS;
-
-	const CPPByPayPeriodMax =
-		CPPByPayPeriod > TAX_CONFIG.MAX_CPP_CONTRIBUTION
-			? TAX_CONFIG.MAX_CPP_CONTRIBUTION
-			: CPPByPayPeriod;
-
-	const EIContribution =
-		TAX_CONFIG.EMP_CONTRIBUTION_RATE * grossSalaryByPayPeriod;
-
-	const EIByPayPeriodMax =
-		EIContribution > TAX_CONFIG.MAX_EMPLOYEE_EI_CONTRIBUTION
-			? TAX_CONFIG.MAX_EMPLOYEE_EI_CONTRIBUTION
-			: EIContribution;
-
-	const CPPAdditionalContribution =
-		CPPContribution *
-		(TAX_CONFIG.CPP_ADDITIONAL_EMP_COMP_RATE /
-			TAX_CONFIG.TOTAL_CONTRIBUTION_RATE);
-
-	const netRemuneration = grossSalaryByPayPeriod - CPPAdditionalContribution;
-	const annualNetIncome = netRemuneration * TAX_CONFIG.NUMBER_OF_MONTHS;
-	const zoneDeduction = 0;
-	const annualTaxableIncome = annualNetIncome - zoneDeduction;
-
-	const federalTaxRate = applyFederalTaxRate(annualTaxableIncome).rate;
-
-	const federalTaxConstantRate = applyFederalTaxRate(annualTaxableIncome).kRate;
-
-	const federalTax =
-		annualTaxableIncome * federalTaxRate - federalTaxConstantRate;
-
-	const federalClaim = TAX_CONFIG.MAX_FEDERAL_BASIC;
-
-	const totalFederalTaxCredits =
-		federalClaim +
-		CPPByPayPeriodMax +
-		EIByPayPeriodMax +
-		TAX_CONFIG.MAX_CANADA_EMP_CREDIT;
-
-	const totalFederalTaxCreditsRate =
-		totalFederalTaxCredits * TAX_CONFIG.MIN_FEDERAL_TAX_RATE;
-
-	const totalFederalTaxPayable = federalTax - totalFederalTaxCreditsRate;
-
-	const provincialTaxRate = applyProvincialTaxRate(annualTaxableIncome).rate;
-	const provincialTaxConstantRate =
-		applyProvincialTaxRate(annualTaxableIncome).kRate;
-
-	const provincialTax =
-		annualTaxableIncome * provincialTaxRate - provincialTaxConstantRate;
-	const provincialClaim = TAX_CONFIG.MAX_PROVINCIAL_CLAIM;
-	const totalProvincialTaxCredits =
-		provincialClaim + CPPByPayPeriodMax + EIByPayPeriodMax;
-	const totalProvincialTaxCreditsRate =
-		totalProvincialTaxCredits * TAX_CONFIG.MIN_PROVINCIAL_TAX_RATE;
-	const totalProvincialTaxPayableBeforeReduction =
-		provincialTax - totalProvincialTaxCreditsRate;
-	const BCTaxReductionAmount = applyBCTaxRate(annualNetIncome);
-
-	const totalProvincialTaxPayableAfterReduction =
-		totalProvincialTaxPayableBeforeReduction - BCTaxReductionAmount;
-
-	const totalFederalProvincialTax =
-		totalFederalTaxPayable + totalProvincialTaxPayableAfterReduction;
-
-	const totalProvincialTaxDeduction =
-		totalFederalProvincialTax > 0 ? totalFederalProvincialTax : 0;
+	const annualProjectedGrossEarning = grossEarning * TAX_CONFIG.ANNUAL_PAY_PERIODS;
 
 	const federalTaxDeductionByPayPeriod =
-		totalProvincialTaxDeduction / TAX_CONFIG.ANNUAL_PAY_PERIODS;
+		applyFederalTaxRate(annualProjectedGrossEarning) / TAX_CONFIG.ANNUAL_PAY_PERIODS;
 
-	return {
-		CPPContribution: CPPByPayPeriodMax,
-		totalProvincialTaxDeduction,
-		federalTaxDeductionByPayPeriod,
-		EIContribution: EIByPayPeriodMax,
-	};
-};
+	const totalProvincialTaxDeduction =
+		applyProvincialTaxRate(annualProjectedGrossEarning) / TAX_CONFIG.ANNUAL_PAY_PERIODS;
 
-const getTaxDetails = (payRate, grossSalary) => {
-	const projectedIncome =
-		payRate * TAX_CONFIG.HOURS_PER_WEEK * TAX_CONFIG.ANNUAL_PAY_PERIODS;
-	const adjustedProjectedIncome =
-		projectedIncome - TAX_CONFIG.CPP_BASIC_EXEMPTION;
-	const adjustedGrossEarning =
-		adjustedProjectedIncome / TAX_CONFIG.ANNUAL_PAY_PERIODS;
-	const CPPContribution =
-		adjustedGrossEarning * TAX_CONFIG.TOTAL_CONTRIBUTION_RATE;
-
-	const EmployeeEIContribution = TAX_CONFIG.EMP_CONTRIBUTION_RATE * grossSalary;
+	const EmployeeEIContribution = TAX_CONFIG.EMP_CONTRIBUTION_RATE * grossEarning;
 
 	const EmployeeEIByPayPeriodMax =
 		EmployeeEIContribution > TAX_CONFIG.MAX_EMPLOYEE_EI_CONTRIBUTION
 			? TAX_CONFIG.MAX_EMPLOYEE_EI_CONTRIBUTION
 			: EmployeeEIContribution;
 
-	const EmployerEIContribution =
-		TAX_CONFIG.EMP_CONTRIBUTION_RATE * 1.4 * grossSalary;
+	const EmployerEIContribution = TAX_CONFIG.EMP_CONTRIBUTION_RATE * 1.4 * grossEarning;
 
 	const EmployerEIByPayPeriodMax =
 		EmployerEIContribution > TAX_CONFIG.MAX_EMPLOYER_EI_CONTRIBUTION
@@ -188,138 +154,12 @@ const getTaxDetails = (payRate, grossSalary) => {
 
 	return {
 		CPPContribution,
-		totalProvincialTaxDeduction: 0,
-		federalTaxDeductionByPayPeriod: 0,
+		totalProvincialTaxDeduction,
+		federalTaxDeductionByPayPeriod,
 		EmployeeEIContribution: EmployeeEIByPayPeriodMax,
 		EmployerEIContribution: EmployerEIByPayPeriodMax,
 	};
 };
-
-// const getTaxDetails = (grossSalary) => {
-// 	const annualSalaryByPayPeriod = grossSalary * TAX_CONFIG.ANNUAL_PAY_PERIODS;
-// 	const currentUnionDuesDeductions = grossSalary * TAX_CONFIG.UNION_DUES_RATE;
-// 	const grossSalaryByPayPeriod = grossSalary;
-
-// 	const CPPContribution =
-// 		TAX_CONFIG.TOTAL_CONTRIBUTION_RATE *
-// 		(grossSalaryByPayPeriod -
-// 			TAX_CONFIG.CPP_BASIC_EXEMPTION / TAX_CONFIG.NUMBER_OF_MONTHS);
-
-// 	const EIContribution =
-// 		TAX_CONFIG.EMP_CONTRIBUTION_RATE * grossSalaryByPayPeriod;
-
-// 	const CPPAdditionalContribution =
-// 		CPPContribution *
-// 		(TAX_CONFIG.CPP_ADDITIONAL_EMP_COMP_RATE /
-// 			TAX_CONFIG.TOTAL_CONTRIBUTION_RATE);
-
-// 	const netRemuneration = grossSalaryByPayPeriod - CPPAdditionalContribution;
-// 	const annualNetIncome = netRemuneration * TAX_CONFIG.NUMBER_OF_MONTHS;
-// 	const zoneDeduction = 0;
-// 	const annualTaxableIncome = annualNetIncome - zoneDeduction;
-
-// 	const federalTaxRate = applyFederalTaxRate(annualTaxableIncome).rate;
-
-// 	const federalTaxConstantRate = applyFederalTaxRate(annualTaxableIncome).kRate;
-
-// 	const federalTax =
-// 		annualTaxableIncome * federalTaxRate - federalTaxConstantRate;
-
-// 	const federalClaim = TAX_CONFIG.MAX_FEDERAL_BASIC;
-
-// 	const CPPByPayPeriod =
-// 		CPPContribution *
-// 		(TAX_CONFIG.CPP_BASE_EMP_COMP_RATE / TAX_CONFIG.TOTAL_CONTRIBUTION_RATE) *
-// 		TAX_CONFIG.NUMBER_OF_MONTHS;
-
-// 	const CPPByPayPeriodMax =
-// 		CPPByPayPeriod > TAX_CONFIG.MAX_CPP_CONTRIBUTION
-// 			? TAX_CONFIG.MAX_CPP_CONTRIBUTION
-// 			: CPPByPayPeriod;
-
-// 	// const EIByPayPeriod =
-// 	// EIContribution *
-// 	//   (CPP_BASE_EMP_COMP_RATE / TOTAL_CONTRIBUTION_RATE) *
-// 	//   NUMBER_OF_MONTHS;
-
-// 	const EIByPayPeriodMax =
-// 		EIContribution > TAX_CONFIG.MAX_EI_CONTRIBUTION
-// 			? TAX_CONFIG.MAX_EI_CONTRIBUTION
-// 			: EIContribution;
-
-// 	const totalFederalTaxCredits =
-// 		federalClaim +
-// 		CPPByPayPeriodMax +
-// 		EIByPayPeriodMax +
-// 		TAX_CONFIG.MAX_CANADA_EMP_CREDIT;
-// 	const totalFederalTaxCreditsRate =
-// 		totalFederalTaxCredits * TAX_CONFIG.MIN_FEDERAL_TAX_RATE;
-// 	const totalFederalTaxPayable = federalTax - totalFederalTaxCreditsRate;
-
-// 	const provincialTaxRate = applyProvincialTaxRate(annualTaxableIncome).rate;
-// 	const provincialTaxConstantRate =
-// 		applyProvincialTaxRate(annualTaxableIncome).kRate;
-
-// 	const provincialTax =
-// 		annualTaxableIncome * provincialTaxRate - provincialTaxConstantRate;
-// 	const provincialClaim = 11981.0;
-// 	const totalProvincialTaxCredits =
-// 		provincialClaim + CPPByPayPeriodMax + EIByPayPeriodMax;
-// 	const totalProvincialTaxCreditsRate =
-// 		totalProvincialTaxCredits * TAX_CONFIG.MIN_PROVINCIAL_TAX_RATE;
-// 	const totalProvincialTaxPayableBeforeReduction =
-// 		provincialTax - totalProvincialTaxCreditsRate;
-// 	const BCTaxReductionAmount = applyBCTaxRate(annualNetIncome);
-
-// 	const totalProvincialTaxPayableAfterReduction =
-// 		totalProvincialTaxPayableBeforeReduction - BCTaxReductionAmount;
-
-// 	const totalFederalProvincialTax =
-// 		totalFederalTaxPayable + totalProvincialTaxPayableAfterReduction;
-
-// 	const totalProvincialTaxDeduction =
-// 		totalFederalProvincialTax > 0 ? totalFederalProvincialTax : 0;
-
-// 	const federalTaxDeductionByPayPeriod =
-// 		totalProvincialTaxDeduction / TAX_CONFIG.ANNUAL_PAY_PERIODS;
-
-// 	return {
-// 		currentUnionDuesDeductions,
-// 		grossSalaryByPayPeriod,
-// 		totalProvincialTaxDeduction,
-// 		federalTaxDeductionByPayPeriod,
-// 		CPPContribution: CPPByPayPeriodMax,
-// 		EIContribution: EIByPayPeriodMax,
-// 		CPPAdditionalContribution,
-// 		netRemuneration,
-// 		annualNetIncome,
-// 		zoneDeduction,
-// 		annualTaxableIncome,
-// 		federalTaxRate,
-// 		federalTaxConstantRate,
-// 		federalTax,
-// 		federalClaim,
-// 		CPPByPayPeriodMax,
-// 		EIByPayPeriodMax,
-// 		HOURLY_RATE: TAX_CONFIG.HOURLY_RATE,
-// 		MAX_CANADA_EMP_CREDIT: TAX_CONFIG.MAX_CANADA_EMP_CREDIT,
-// 		totalFederalTaxCredits,
-// 		totalFederalTaxCreditsRate,
-// 		totalFederalTaxPayable,
-// 		provincialTaxRate,
-// 		provincialTaxConstantRate,
-// 		provincialTax,
-// 		provincialClaim,
-// 		totalProvincialTaxCredits,
-// 		totalProvincialTaxCreditsRate,
-// 		totalProvincialTaxPayableBeforeReduction,
-// 		BCTaxReductionAmount,
-// 		totalProvincialTaxPayableAfterReduction,
-// 		totalFederalProvincialTax,
-// 		MIN_PROVINCIAL_TAX_RATE: TAX_CONFIG.MIN_PROVINCIAL_TAX_RATE,
-// 		MIN_FEDERAL_TAX_RATE: TAX_CONFIG.MIN_FEDERAL_TAX_RATE,
-// 	};
-// };
 
 module.exports = {
 	TAX_CONFIG,

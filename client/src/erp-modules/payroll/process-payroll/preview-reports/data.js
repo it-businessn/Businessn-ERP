@@ -193,6 +193,13 @@ export const EARNINGS_TYPES = [
 
 export const DEDUCTION_TYPES = [
 	{
+		name: "Income Tax",
+		rate: 0,
+		totalHours: 0,
+		currentTotal: "currentIncomeTaxDeductions",
+		YTDTotal: "YTD_IncomeTaxDeductions",
+	},
+	{
 		name: "Federal Tax",
 		rate: 0,
 		totalHours: 0,
