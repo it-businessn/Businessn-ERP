@@ -90,7 +90,7 @@ const buildURL = (path) => {
 };
 
 const fetchData = async (path, params) => {
-	return API.get(buildURL(path));
+	return API.get(buildURL(path), params);
 	// return await (await fetch(url.href)).json();
 };
 
