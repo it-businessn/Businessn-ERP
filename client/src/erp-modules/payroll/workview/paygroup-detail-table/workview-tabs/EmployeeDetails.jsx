@@ -70,9 +70,9 @@ const EmployeeDetails = ({ company, closestRecord, path, groupId, selectedPayGro
 				cols={[
 					{ key: "Employee Name", pair: "obj", pair_key: "fullName" },
 					{ key: "Employee Number", pair: "obj", pair_key: "employeeId" },
+					{ key: "Department", pair: "employmentCostCenter", main_key: "empPayStubResult" },
 					{ key: "Payrate", pair: "regPay", round: true },
 					// { key: "Employee Department", pair: "companyDepartment" },
-					{ key: "Department", pair: "employmentCostCenter", main_key: "empPayStubResult" },
 					{
 						key: "",
 						pair: (

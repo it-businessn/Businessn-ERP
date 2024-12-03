@@ -108,13 +108,14 @@ const WorkviewTable = ({
 											bg,
 											color,
 										}}
+										w={"92px"}
 									/>
 								</Td>
 							)}
 							<Td p={1} w={autoScroll && "150px"} textAlign={autoScroll ? "center" : textAlign}>
 								{autoScroll ? (
 									isViewAction ? (
-										<OutlineButton label={"View"} size="xs" onClick={handleView} />
+										<OutlineButton label={"View"} size="xs" onClick={handleView} w={"95px"} />
 									) : (
 										<PrimaryButton
 											bg={isDisabledAction ? "var(--calendar_border)" : "var(--primary_button_bg)"}
@@ -152,6 +153,7 @@ const WorkviewTable = ({
 												}}
 												isDisabled={isDisabledAction}
 												name={"Pay now"}
+												w={"99px"}
 												size="xs"
 												onOpen={() => handlePay(payPeriod)}
 											/>

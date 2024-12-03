@@ -403,7 +403,6 @@ const Timesheet = ({ company, userId, refresh, filter, setRefresh, setTimesheetR
 											}}
 										/>
 										<IconButton
-											isDisabled={isDisabled}
 											size={"xs"}
 											color={"var(--main_color_black)"}
 											icon={<FaRegTrashAlt />}

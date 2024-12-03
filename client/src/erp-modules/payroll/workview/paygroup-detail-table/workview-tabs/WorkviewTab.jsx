@@ -2,6 +2,7 @@ import { Tbody, Td, Tr } from "@chakra-ui/react";
 import PrimaryButton from "components/ui/button/PrimaryButton";
 import BoxCard from "components/ui/card";
 import EmptyRowRecord from "components/ui/EmptyRowRecord";
+import NormalTextTitle from "components/ui/NormalTextTitle";
 import WorkviewTable from "components/ui/table/WorkviewTable";
 import TextTitle from "components/ui/text/TextTitle";
 import { useNavigate } from "react-router-dom";
@@ -76,7 +77,7 @@ const WorkviewTab = ({
 										col.pair === "totalAmountAllocated" ? (
 											<TextTitle title={getAmount(row[col.pair])} />
 										) : (
-											getAmount(row[col.pair])
+											<NormalTextTitle align="end" title={getAmount(row[col.pair])} />
 										)
 									) : col.main_key ? (
 										row[col.main_key][col.pair]

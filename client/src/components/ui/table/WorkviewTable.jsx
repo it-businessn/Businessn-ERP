@@ -29,6 +29,16 @@ const WorkviewTable = ({ cols, isSmall, height, whiteSpace, children, overflowX 
 									}
 									whiteSpace={whiteSpace}
 									title={col}
+									align={
+										[
+											"Union Dues",
+											"Employer Pension Plan (EE)",
+											"Employer Health Plan (EE)",
+											"ER Pension Plan",
+											"ER Health Plan",
+											"Payrate",
+										].includes(col) && "end"
+									}
 								/>
 							</Th>
 						))}
