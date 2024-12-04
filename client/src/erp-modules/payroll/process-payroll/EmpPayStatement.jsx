@@ -26,9 +26,9 @@ const EmpPayStatement = ({ record, isOpen, onClose }) => {
 		setTimeout(() => handlePrint(), 1000);
 	};
 	return (
-		<Drawer isOpen={isOpen} onClose={onClose} size="xl">
+		<Drawer isOpen={isOpen} onClose={onClose}>
 			<DrawerOverlay />
-			<DrawerContent>
+			<DrawerContent sx={{ maxWidth: "900px" }}>
 				<DrawerHeader p={0}>
 					<DrawerCloseButton />
 					<Flex w={"95%"} justify={"end"} alignItems={"center"}>

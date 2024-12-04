@@ -37,7 +37,7 @@ const ItemRow = ({
 						color="var(--main_color_black)"
 						align={"right"}
 						visibility={rate === 0 && "hidden"}
-						title={`$${rate}`}
+						title={getAmount(rate)}
 					/>
 				</Td>
 			)}
@@ -48,7 +48,7 @@ const ItemRow = ({
 						color="var(--main_color_black)"
 						align={"right"}
 						visibility={!isEarning && totalHours === 0 && "hidden"}
-						title={totalHours}
+						title={totalHours?.toFixed(2)}
 					/>
 				</Td>
 			)}
@@ -70,7 +70,7 @@ const ItemRow = ({
 						size={"xs"}
 						align={"right"}
 						visibility={(isTotals || (!isEarning && totalHours === 0)) && "hidden"}
-						title={YTDHoursTotal}
+						title={YTDHoursTotal?.toFixed(2)}
 					/>
 				</Td>
 			)}
