@@ -648,12 +648,11 @@ const findEmployeeBenefitInfo = async (empId, companyName) =>
 		companyName,
 	}).select("empId typeOfVacationTreatment vacationPayPercent");
 
-const findEmployeeGovernmentInfo = async (empId) =>
+const findEmployeeGovernmentInfo = async (empId, companyName) =>
 	await EmployeeGovernmentInfo.findOne({
 		empId,
-	}).select(
-		"empId federalPensionEE federalPensionER federalEmploymentInsuranceEE federalEmploymentInsuranceER",
-	);
+		companyName,
+	}).select("empId federalTaxCredit regionalTaxCredit");
 
 const addEmployeePayStubInfo = async (req, res) => {
 	const { companyName, currentPayPeriod } = req.body;
@@ -912,6 +911,7 @@ const buildPayStubDetails = async (currentPayPeriod, companyName, empTimesheetDa
 
 	const empPayInfoResult = await findEmployeePayInfo(empId, companyName);
 	const empBenefitInfoResult = await findEmployeeBenefitInfo(empId, companyName);
+	const empTaxCreditResult = await findEmployeeGovernmentInfo(empId, companyName);
 
 	const newEmpData = getCurrentTotals(
 		empTimesheetData,
@@ -942,7 +942,7 @@ const buildPayStubDetails = async (currentPayPeriod, companyName, empTimesheetDa
 		federalTaxDeductionByPayPeriod,
 		EmployeeEIContribution,
 		EmployerEIContribution,
-	} = getTaxDetails(newEmpData?.regPay, newEmpData?.currentGrossPay);
+	} = getTaxDetails(newEmpData?.regPay, newEmpData?.currentGrossPay, empTaxCreditResult);
 
 	const { unionDues, EE_EPP, EE_EHP, ER_EPP, ER_EHP } = getContributionsDeductions(newEmpData);
 

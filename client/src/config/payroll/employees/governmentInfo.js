@@ -22,7 +22,7 @@ export const EMP_INCOME_TAX_CONFIG = [
 		type: "sfsgdsgdsgdsg15",
 		params: [
 			{
-				name: "Personal Federal Tax  Credit",
+				name: "Personal Federal Tax Credit",
 				param_key: "federalTaxCredit",
 			},
 			{

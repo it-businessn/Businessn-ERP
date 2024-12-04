@@ -21,7 +21,8 @@ const TAX_CONFIG = {
 };
 
 //2024 FD tax brackets
-const applyFederalTaxRate = (annualIncome) => {
+const applyFederalTaxRate = (annualIncome, taxCredit) => {
+	const personalCredit = taxCredit ? parseFloat(taxCredit) : 0;
 	const taxBrackets = [
 		{ upperLimit: 55867, rate: 0.15 },
 		{ upperLimit: 111733, rate: 0.205 },
@@ -33,11 +34,13 @@ const applyFederalTaxRate = (annualIncome) => {
 
 	for (let i = 0; i < taxBrackets.length; i++) {
 		const bracket = taxBrackets[i];
-		const lowerLimit = i === 0 ? 0 : taxBrackets[i - 1].upperLimit;
+		const lowerLimit = i === 0 ? personalCredit : taxBrackets[i - 1].upperLimit;
 		let remainingIncome = annualIncome;
 
 		if (remainingIncome > lowerLimit) {
-			const taxableIncome = bracket.upperLimit - lowerLimit;
+			const taxableEarning = annualIncome < bracket.upperLimit ? annualIncome : bracket.upperLimit;
+			const taxableIncome = taxableEarning - lowerLimit;
+
 			const taxInBracket = taxableIncome * bracket.rate;
 			projectedTaxes.push({
 				bracket: `Income between $${lowerLimit.toFixed(2)} and $${bracket.upperLimit.toFixed(2)}`,
@@ -62,7 +65,8 @@ const applyFederalTaxRate = (annualIncome) => {
 };
 
 //2024 BC Provincial tax brackets
-const applyProvincialTaxRate = (annualIncome) => {
+const applyProvincialTaxRate = (annualIncome, taxCredit) => {
+	const personalCredit = taxCredit ? parseFloat(taxCredit) : 0;
 	const taxBrackets = [
 		{ upperLimit: 47937, rate: 0.506 },
 		{ upperLimit: 95875, rate: 0.77 },
@@ -76,11 +80,13 @@ const applyProvincialTaxRate = (annualIncome) => {
 
 	for (let i = 0; i < taxBrackets.length; i++) {
 		const bracket = taxBrackets[i];
-		const lowerLimit = i === 0 ? 0 : taxBrackets[i - 1].upperLimit;
+		const lowerLimit = i === 0 ? personalCredit : taxBrackets[i - 1].upperLimit;
 		let remainingIncome = annualIncome;
 
 		if (remainingIncome > lowerLimit) {
-			const taxableIncome = bracket.upperLimit - lowerLimit;
+			const taxableEarning = annualIncome < bracket.upperLimit ? annualIncome : bracket.upperLimit;
+			const taxableIncome = taxableEarning - lowerLimit;
+
 			const taxInBracket = taxableIncome * bracket.rate;
 			projectedTaxes.push({
 				bracket: `Income between $${lowerLimit.toFixed(2)} and $${bracket.upperLimit.toFixed(2)}`,
@@ -124,7 +130,8 @@ const getSumHours = (hrs) => (hrs ? parseFloat(hrs) : 0);
 
 const getSumTotal = (data1, data2) => (data1 ?? 0) + data2;
 
-const getTaxDetails = (payRate, grossEarning) => {
+const getTaxDetails = (payRate, grossEarning, empTaxCreditResult) => {
+	const { federalTaxCredit, regionalTaxCredit } = empTaxCreditResult;
 	const projectedIncome = payRate * TAX_CONFIG.HOURS_PER_WEEK * TAX_CONFIG.ANNUAL_PAY_PERIODS;
 	const adjustedProjectedIncome = projectedIncome - TAX_CONFIG.CPP_BASIC_EXEMPTION;
 	const adjustedGrossEarning = adjustedProjectedIncome / TAX_CONFIG.ANNUAL_PAY_PERIODS;
@@ -133,10 +140,12 @@ const getTaxDetails = (payRate, grossEarning) => {
 	const annualProjectedGrossEarning = grossEarning * TAX_CONFIG.ANNUAL_PAY_PERIODS;
 
 	const federalTaxDeductionByPayPeriod =
-		applyFederalTaxRate(annualProjectedGrossEarning) / TAX_CONFIG.ANNUAL_PAY_PERIODS;
+		applyFederalTaxRate(annualProjectedGrossEarning, federalTaxCredit) /
+		TAX_CONFIG.ANNUAL_PAY_PERIODS;
 
 	const totalProvincialTaxDeduction =
-		applyProvincialTaxRate(annualProjectedGrossEarning) / TAX_CONFIG.ANNUAL_PAY_PERIODS;
+		applyProvincialTaxRate(annualProjectedGrossEarning, regionalTaxCredit) /
+		TAX_CONFIG.ANNUAL_PAY_PERIODS;
 
 	const EmployeeEIContribution = TAX_CONFIG.EMP_CONTRIBUTION_RATE * grossEarning;
 
