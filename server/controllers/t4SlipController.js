@@ -101,7 +101,7 @@ const generateT4Slip = async (companyName, payPeriodNum) => {
 	if (!fs.existsSync(outputDir)) {
 		fs.mkdirSync(outputDir, { recursive: true });
 	}
-	const root = xml.create("T4SlipType"); // Create root node
+	const root = xml.create("Return"); // Create root node
 
 	// const xml = create("T4SlipType");
 	// 	.ele("Company", {
@@ -114,12 +114,15 @@ const generateT4Slip = async (companyName, payPeriodNum) => {
 
 	const companyFileName = payrollData[0]?.companyInfo?.registration_number;
 
+	const T4Node = root.ele("T4");
+
 	payrollData.map((paystubRecord) => {
 		const { companyInfo, employeeInfo, employerInfo } = paystubRecord;
 
 		const { empProfileInfo, empEmploymentInfo, empGovtInfo, empT4Info, name } = employeeInfo;
 
-		const employeeNode = root.ele("EMPE_NM", name).up();
+		const T4SlipNode = T4Node.ele("T4Slip");
+		const employeeNode = T4SlipNode.ele("EMPE_NM", name).up();
 
 		const addressNode = employeeNode.ele("EMPE_ADDR");
 		addressNode.ele("street", empProfileInfo?.streetAddress).up();
@@ -165,8 +168,17 @@ const generateT4Slip = async (companyName, payPeriodNum) => {
 		otherInfoNode.ele("med_trvl_amt").up();
 		otherInfoNode.ele("stok_opt_ben_amt").up();
 		otherInfoNode.up();
-	});
 
+		T4SlipNode.up();
+	});
+	const T4SummmaryNode = T4Node.ele("T4Summary");
+	T4SummmaryNode.ele("hm_brd_lodg_amt").up();
+	T4SummmaryNode.ele("spcl_wrk_site_amt").up();
+	T4SummmaryNode.ele("med_trvl_amt").up();
+	T4SummmaryNode.ele("stok_opt_ben_amt").up();
+	T4SummmaryNode.up();
+
+	T4Node.up();
 	let xmlT4Data = root.end({ pretty: true });
 	const specificTags = ["empr_dntl_ben_rpt_cd", "T4_AMT", "OTH_INFO"];
 	specificTags.forEach((tag) => {
