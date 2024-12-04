@@ -59,8 +59,8 @@ const addEmployeeGovernmentInfo = async (req, res) => {
 	} = req.body;
 	try {
 		if (req.body.isCPPExempt || req.body.isEIExempt) {
-			req.body.isCPPExempt = await checkExemption(empId, companyName, req.body.isCPPExempt);
-			req.body.isEIExempt = await checkExemption(empId, companyName, req.body.isEIExempt);
+			// req.body.isCPPExempt = await checkExemption(empId, companyName, req.body.isCPPExempt);
+			// req.body.isEIExempt = await checkExemption(empId, companyName, req.body.isEIExempt);
 		}
 
 		const existingGovernmentInfo = await findEmployeeGovernmentInfo(empId, companyName);
