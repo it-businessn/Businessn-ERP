@@ -251,6 +251,18 @@ const buildEmpEEDetails = (
 ) => {
 	const data = ERData(empTimesheetData, empPayInfoResult, empAdditionalHoursAllocated);
 	data.vacationPayPercent = parseFloat(empBenefitInfoResult?.vacationPayPercent) || 0;
+	data.typeOfUnionDuesTreatment = empBenefitInfoResult?.typeOfUnionDuesTreatment;
+	data.unionDuesContribution = parseFloat(empBenefitInfoResult?.unionDuesContribution) || 0;
+	data.typeOfPensionEETreatment = empBenefitInfoResult?.typeOfPensionEETreatment;
+	data.pensionEEContribution = parseFloat(empBenefitInfoResult?.pensionEEContribution) || 0;
+	data.typeOfExtendedHealthEETreatment = empBenefitInfoResult?.typeOfExtendedHealthEETreatment;
+	data.extendedHealthEEContribution =
+		parseFloat(empBenefitInfoResult?.extendedHealthEEContribution) || 0;
+	data.typeOfPensionERTreatment = empBenefitInfoResult?.typeOfPensionERTreatment;
+	data.pensionERContribution = parseFloat(empBenefitInfoResult?.pensionERContribution) || 0;
+	data.typeOfExtendedHealthERTreatment = empBenefitInfoResult?.typeOfExtendedHealthERTreatment;
+	data.extendedHealthERContribution =
+		parseFloat(empBenefitInfoResult?.extendedHealthERContribution) || 0;
 
 	const { unionDues, EE_EPP, EE_EHP } = getContributionsDeductions(data);
 	const { _id, fullName } = employee;
@@ -317,6 +329,18 @@ const buildEmpERDetails = (
 ) => {
 	const data = ERData(empTimesheetData, empPayInfoResult, empAdditionalHoursAllocated);
 	data.vacationPayPercent = parseFloat(empBenefitInfoResult?.vacationPayPercent) || 0;
+	data.typeOfUnionDuesTreatment = empBenefitInfoResult?.typeOfUnionDuesTreatment;
+	data.unionDuesContribution = parseFloat(empBenefitInfoResult?.unionDuesContribution) || 0;
+	data.typeOfPensionEETreatment = empBenefitInfoResult?.typeOfPensionEETreatment;
+	data.pensionEEContribution = parseFloat(empBenefitInfoResult?.pensionEEContribution) || 0;
+	data.typeOfExtendedHealthEETreatment = empBenefitInfoResult?.typeOfExtendedHealthEETreatment;
+	data.extendedHealthEEContribution =
+		parseFloat(empBenefitInfoResult?.extendedHealthEEContribution) || 0;
+	data.typeOfPensionERTreatment = empBenefitInfoResult?.typeOfPensionERTreatment;
+	data.pensionERContribution = parseFloat(empBenefitInfoResult?.pensionERContribution) || 0;
+	data.typeOfExtendedHealthERTreatment = empBenefitInfoResult?.typeOfExtendedHealthERTreatment;
+	data.extendedHealthERContribution =
+		parseFloat(empBenefitInfoResult?.extendedHealthERContribution) || 0;
 
 	const { ER_EPP, ER_EHP } = getContributionsDeductions(data);
 	const { _id, fullName } = employee;
@@ -646,7 +670,7 @@ const findEmployeeBenefitInfo = async (empId, companyName) =>
 	await EmployeeBalanceInfo.findOne({
 		empId,
 		companyName,
-	}).select("empId typeOfVacationTreatment vacationPayPercent");
+	});
 
 const findEmployeeGovernmentInfo = async (empId, companyName) =>
 	await EmployeeGovernmentInfo.findOne({
@@ -829,6 +853,9 @@ const calcEmployeeContribution = (grossPay, newEmpData) =>
 		newEmpData.currentOverTimePayTotal +
 		newEmpData.currentDblOverTimePayTotal);
 
+const validateContribution = (treatmentType, value, sumTotal) =>
+	treatmentType?.includes("No") ? 0 : treatmentType?.includes("%") ? sumTotal * value : value;
+
 const getContributionsDeductions = (data) => {
 	const {
 		regPay,
@@ -844,6 +871,16 @@ const getContributionsDeductions = (data) => {
 		totalStatHours,
 		totalSickHoursWorked,
 		vacationPayPercent,
+		typeOfUnionDuesTreatment,
+		unionDuesContribution,
+		typeOfPensionEETreatment,
+		pensionEEContribution,
+		typeOfExtendedHealthEETreatment,
+		extendedHealthEEContribution,
+		typeOfPensionERTreatment,
+		pensionERContribution,
+		typeOfExtendedHealthERTreatment,
+		extendedHealthERContribution,
 	} = data;
 
 	const sumTotalHoursWithoutVacation =
@@ -870,13 +907,34 @@ const getContributionsDeductions = (data) => {
 
 	const vacationAccruedAmount = (sumTotalWithoutVacation + sumTotalOvertime) * vacationPayPercent;
 
-	const unionDues = (sumTotalWithoutVacation + sumTotalOvertime + vacationAccruedAmount) * 0.02;
+	const unionDues = validateContribution(
+		typeOfUnionDuesTreatment,
+		unionDuesContribution,
+		sumTotalWithoutVacation + sumTotalOvertime + vacationAccruedAmount,
+	);
 
-	const EE_EPP = (sumTotalWithoutVacation + sumTotalOvertime + vacationAccruedAmount) * 0.04;
-	const EE_EHP = sumTotalHoursWithoutVacation * 0.42;
+	const EE_EPP = validateContribution(
+		typeOfPensionEETreatment,
+		pensionEEContribution,
+		sumTotalWithoutVacation + sumTotalOvertime + vacationAccruedAmount,
+	);
 
-	const ER_EPP = EE_EPP;
-	const ER_EHP = (sumTotalHoursWithoutVacation + sumTotalOvertimeHours) * 2.05;
+	const EE_EHP = validateContribution(
+		typeOfExtendedHealthEETreatment,
+		extendedHealthEEContribution,
+		sumTotalHoursWithoutVacation,
+	);
+
+	const ER_EPP = validateContribution(
+		typeOfPensionERTreatment,
+		pensionERContribution,
+		sumTotalWithoutVacation + sumTotalOvertime + vacationAccruedAmount,
+	);
+	const ER_EHP = validateContribution(
+		typeOfExtendedHealthERTreatment,
+		extendedHealthERContribution,
+		sumTotalHoursWithoutVacation + sumTotalOvertimeHours,
+	);
 
 	return {
 		unionDues,
@@ -919,6 +977,20 @@ const buildPayStubDetails = async (currentPayPeriod, companyName, empTimesheetDa
 		empAdditionalHoursAllocated,
 	);
 	newEmpData.vacationPayPercent = parseFloat(empBenefitInfoResult?.vacationPayPercent) || 0;
+	newEmpData.typeOfUnionDuesTreatment = empBenefitInfoResult?.typeOfUnionDuesTreatment;
+	newEmpData.unionDuesContribution = parseFloat(empBenefitInfoResult?.unionDuesContribution) || 0;
+	newEmpData.typeOfPensionEETreatment = empBenefitInfoResult?.typeOfPensionEETreatment;
+	newEmpData.pensionEEContribution = parseFloat(empBenefitInfoResult?.pensionEEContribution) || 0;
+	newEmpData.typeOfExtendedHealthEETreatment =
+		empBenefitInfoResult?.typeOfExtendedHealthEETreatment;
+	newEmpData.extendedHealthEEContribution =
+		parseFloat(empBenefitInfoResult?.extendedHealthEEContribution) || 0;
+	newEmpData.typeOfPensionERTreatment = empBenefitInfoResult?.typeOfPensionERTreatment;
+	newEmpData.pensionERContribution = parseFloat(empBenefitInfoResult?.pensionERContribution) || 0;
+	newEmpData.typeOfExtendedHealthERTreatment =
+		empBenefitInfoResult?.typeOfExtendedHealthERTreatment;
+	newEmpData.extendedHealthERContribution =
+		parseFloat(empBenefitInfoResult?.extendedHealthERContribution) || 0;
 
 	newEmpData.payInLieuPay = empPayStubResult?.payInLieuPay ?? 0;
 	newEmpData.pILBenefitPay = empPayStubResult?.pILBenefitPay ?? 0;
