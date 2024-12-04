@@ -9,7 +9,7 @@ const RadioTypeRecord = ({ param, formData, setFormData, handleConfirm, isOnboar
 			<HStack visibility={hideLabel(param.name) && "hidden"}>
 				<FormLabel>{param.name}</FormLabel>
 				<RadioGroup
-					value={formData[param.param_key]}
+					value={formData[param.param_key] ?? ""}
 					onChange={(value) => {
 						setFormData((prev) => ({
 							...prev,

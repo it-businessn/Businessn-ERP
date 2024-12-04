@@ -19,8 +19,8 @@ import Record from "../step-content/Record";
 const BenefitsInfo = ({ company }) => {
 	const { empId } = useSelectedEmp(LocalStorageService.getItem("empId"));
 	const balanceInfo = useEmployeeBalanceInfo(company, empId);
-	const setBalanceInfo = () => getInitialBalanceInfo(empId, company);
-	const [formData, setFormData] = useState(setBalanceInfo);
+	const initialBalanceInfo = getInitialBalanceInfo(empId, company);
+	const [formData, setFormData] = useState(initialBalanceInfo);
 	const [isDisabled, setIsDisabled] = useState(true);
 	const [isLoading, setIsLoading] = useState(false);
 	const [carryFwd, setCarryFwd] = useState(false);
@@ -30,19 +30,19 @@ const BenefitsInfo = ({ company }) => {
 			setFormData(balanceInfo);
 			setCarryFwd(balanceInfo?.carryFwd);
 		} else {
-			setFormData(setBalanceInfo);
+			setFormData(initialBalanceInfo);
 		}
-	}, [balanceInfo, empId]);
+	}, [balanceInfo]);
 
 	useEffect(() => {
-		if (formData.typeOfVacationTreatment && formData.vacationPayPercent) {
-			setIsDisabled(false);
-		}
-	}, [formData.typeOfVacationTreatment, formData.vacationPayPercent]);
+		if (formData.typeOfVacationTreatment && formData.vacationPayPercent) setIsDisabled(false);
+		else setIsDisabled(true);
+	}, [formData.typeOfVacationTreatment, formData.vacationPayPercent, empId]);
 
 	const handleSubmit = async () => {
 		setIsLoading(true);
 		const updatedBenefit = formData;
+
 		updatedBenefit.carryFwd = carryFwd !== undefined ? !carryFwd : false;
 		updatedBenefit.empId = empId;
 		updatedBenefit.companyName = company;

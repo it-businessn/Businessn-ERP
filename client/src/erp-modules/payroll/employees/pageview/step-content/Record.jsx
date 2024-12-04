@@ -40,9 +40,7 @@ const Record = ({
 								colorScheme={"facebook"}
 								isChecked={carryFwd || isEIExempt || isCPPExempt}
 								onChange={() => {
-									if (carryFwd !== undefined) {
-										setCarryFwd(!carryFwd);
-									}
+									setCarryFwd(!carryFwd);
 									if (isEIExempt !== undefined) {
 										setIsEIExempt(!isEIExempt);
 									}

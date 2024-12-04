@@ -121,7 +121,9 @@ const getCompanyEmployees = async (req, res) => {
 		const existingCompany = await findCompany("name", companyName);
 		const result = await Employee.find({
 			companyId: existingCompany._id,
-		}).select("fullName employeeId payrollStatus employeeNo timeManagementBadgeID department");
+		})
+			.select("fullName employeeId payrollStatus employeeNo timeManagementBadgeID department")
+			.sort({ fullName: 1 });
 
 		res.status(200).json(result);
 	} catch (error) {
