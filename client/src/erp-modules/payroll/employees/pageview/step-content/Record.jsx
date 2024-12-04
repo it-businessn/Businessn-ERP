@@ -27,6 +27,7 @@ const Record = ({
 	isEIExempt,
 	setIsCPPExempt,
 	setIsEIExempt,
+	isContribution,
 }) => {
 	return (
 		<>
@@ -57,6 +58,23 @@ const Record = ({
 							<FormLabel visibility={hideLabel(tab.type) && "hidden"}>{tab.type}</FormLabel>
 						)}
 						{tab.params.map((param) => {
+							const isReadOnly =
+								readOnly ||
+								(param.name.includes("Pension Contribution - ER") &&
+									formData?.typeOfPensionERTreatment?.includes("No")) ||
+								(param.name.includes("Dental - ER") &&
+									formData?.typeOfDentalERTreatment?.includes("No")) ||
+								(param.name.includes("Extended Health - ER") &&
+									formData?.typeOfExtendedHealthERTreatment?.includes("No")) ||
+								(param.name.includes("Pension Contribution - EE") &&
+									formData?.typeOfPensionEETreatment?.includes("No")) ||
+								(param.name.includes("Dental - EE") &&
+									formData?.typeOfDentalEETreatment?.includes("No")) ||
+								(param.name.includes("Extended Health - EE") &&
+									formData?.typeOfExtendedHealthEETreatment?.includes("No")) ||
+								(param.name.includes("Union Dues") &&
+									formData?.typeOfUnionDuesTreatment?.includes("No"));
+
 							return param?.control === "label" ? (
 								<FormLabel color={"var(--status_button_border)"} key={param.name}>
 									{param.name}
@@ -105,8 +123,9 @@ const Record = ({
 									setFormData={setFormData}
 									handleConfirm={handleConfirm}
 									isOnboarding={isOnboarding}
-									readOnly={readOnly}
+									readOnly={isReadOnly}
 									isBalanceInfo={isBalanceInfo}
+									isContribution={isContribution}
 								/>
 							);
 						})}

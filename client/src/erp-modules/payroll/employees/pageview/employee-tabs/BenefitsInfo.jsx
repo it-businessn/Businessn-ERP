@@ -2,9 +2,10 @@ import { SimpleGrid } from "@chakra-ui/react";
 import BoxCard from "components/ui/card";
 import VerticalStepper from "components/ui/VerticalStepper";
 import {
+	EE_PAID_BENEFITS_CONFIG,
 	EMP_PAY_INFO_ACCRUALS_CONFIG,
-	EMP_PAY_INFO_DEDUCTION_CONFIG,
 	EMP_VACATION_BALANCE_CONFIG,
+	ER_PAID_BENEFITS_CONFIG,
 	getInitialBalanceInfo,
 } from "config/payroll/employees/balanceInfo";
 import useEmployeeBalanceInfo from "hooks/useEmployeeBalanceInfo";
@@ -41,13 +42,11 @@ const BenefitsInfo = ({ company }) => {
 
 	const handleSubmit = async () => {
 		setIsLoading(true);
-		const updatedBenefit = {
-			carryFwd: carryFwd !== undefined ? !carryFwd : false,
-			empId,
-			companyName: company,
-			typeOfVacationTreatment: formData?.typeOfVacationTreatment,
-			vacationPayPercent: formData?.vacationPayPercent,
-		};
+		const updatedBenefit = formData;
+		updatedBenefit.carryFwd = carryFwd !== undefined ? !carryFwd : false;
+		updatedBenefit.empId = empId;
+		updatedBenefit.companyName = company;
+
 		try {
 			await PayrollService.addEmployeeBalanceInfo(updatedBenefit);
 			setIsLoading(false);
@@ -90,17 +89,32 @@ const BenefitsInfo = ({ company }) => {
 			),
 		},
 		{
-			title: "Contributions",
+			title: "Employer Contributions",
 			content: (
 				<Record
+					handleConfirm={() => ""}
 					formData={formData}
 					setFormData={setFormData}
-					title="Contributions"
-					config={EMP_PAY_INFO_DEDUCTION_CONFIG}
+					title="Employer Contributions"
+					config={ER_PAID_BENEFITS_CONFIG}
 					isLoading={isLoading}
 					handleSubmit={handleSubmit}
-					isBalanceInfo
-					readOnly={true}
+					isContribution
+				/>
+			),
+		},
+		{
+			title: "Employee Contributions",
+			content: (
+				<Record
+					handleConfirm={() => ""}
+					formData={formData}
+					setFormData={setFormData}
+					title="Employee Contributions"
+					config={EE_PAID_BENEFITS_CONFIG}
+					isLoading={isLoading}
+					handleSubmit={handleSubmit}
+					isContribution
 				/>
 			),
 		},

@@ -31,31 +31,95 @@ export const EMP_VACATION_BALANCE_CONFIG = [
 	},
 ];
 
-export const EMP_PAY_INFO_DEDUCTION_CONFIG = [
+export const ER_PAID_BENEFITS_CONFIG = [
 	{
-		type: "Employer Paid Benefits",
+		type: "",
 		params: [
 			{
-				name: "Pension Contribution - ER",
-				param_key: "YTDEmployerPensionContributions",
+				name: "Pension Contribution Treatment",
+				param_key: "typeOfPensionERTreatment",
+				control: "radio",
+				options: [
+					"No Pension Contributions",
+					"Pension Contributions (%)",
+					"Amount Pension Contributions",
+				],
 			},
-			{ name: "Dental - ER", param_key: "dentalER" },
-			{ name: "Extended Health - ER", param_key: "YTDEmployerHealthContributions" },
-			{ name: "Union Dues", param_key: "YTDUnionDuesDeductions" },
+			{ name: "Pension Contribution - ER", param_key: "pensionERContribution" },
+			{
+				name: "Dental - ER Treatment",
+				param_key: "typeOfDentalERTreatment",
+				control: "radio",
+				options: [
+					"No Dental Contributions",
+					"Dental Contributions (%)",
+					"Amount Dental Contributions",
+				],
+			},
+			{ name: "Dental - ER", param_key: "dentalERContribution" },
+			{
+				name: "Extended Health - ER Treatment",
+				param_key: "typeOfExtendedHealthERTreatment",
+				control: "radio",
+				options: [
+					"No Extended Health Contributions",
+					"Extended Health Contributions (%)",
+					"Amount Extended Health Contributions",
+				],
+			},
+			{ name: "Extended Health - ER", param_key: "extendedHealthERContribution" },
 		],
 	},
+];
+
+export const EE_PAID_BENEFITS_CONFIG = [
 	{
-		type: "Employee Paid Benefits",
+		type: "",
 		params: [
 			{
-				name: "Pension Contribution - EE",
-				param_key: "YTDEmployeePensionContributions",
+				name: "Pension Contribution Treatment",
+				param_key: "typeOfPensionEETreatment",
+				control: "radio",
+				options: [
+					"No Pension Contributions",
+					"Pension Contributions (%)",
+					"Amount Pension Contributions",
+				],
 			},
-			{ name: "Dental - EE", param_key: "dentalEE" },
+			{ name: "Pension Contribution - EE", param_key: "pensionEEContribution" },
 			{
-				name: "Extended Health - EE",
-				param_key: "YTDEmployeeHealthContributions",
+				name: "Dental - EE Treatment",
+				param_key: "typeOfDentalEETreatment",
+				control: "radio",
+				options: [
+					"No Dental Contributions",
+					"Dental Contributions (%)",
+					"Amount Dental Contributions",
+				],
 			},
+			{ name: "Dental - EE", param_key: "dentalEEContribution" },
+			{
+				name: "Extended Health - EE Treatment",
+				param_key: "typeOfExtendedHealthEETreatment",
+				control: "radio",
+				options: [
+					"No Extended Health Contributions",
+					"Extended Health Contributions (%)",
+					"Amount Extended Health Contributions",
+				],
+			},
+			{ name: "Extended Health - EE", param_key: "extendedHealthEEContribution" },
+			{
+				name: "Union Dues Treatment",
+				param_key: "typeOfUnionDuesTreatment",
+				control: "radio",
+				options: [
+					"No Union Contributions",
+					"Union Contributions (%)",
+					"Amount Union Contributions",
+				],
+			},
+			{ name: "Union Dues", param_key: "unionDuesContribution" },
 		],
 	},
 ];
@@ -82,5 +146,19 @@ export const getInitialBalanceInfo = (empId, companyName) => {
 		carryFwd: false,
 		vacationPayPercent: null,
 		typeOfVacationTreatment: null,
+		typeOfUnionDuesTreatment: "No Union Contributions",
+		typeOfExtendedHealthEETreatment: "No Extended Health Contributions",
+		typeOfDentalEETreatment: "No Dental Contributions",
+		typeOfPensionEETreatment: "No Pension Contributions",
+		typeOfExtendedHealthERTreatment: "No Extended Health Contributions",
+		typeOfDentalERTreatment: "No Dental Contributions",
+		typeOfPensionERTreatment: "No Pension Contributions",
+		pensionEEContribution: 0,
+		extendedHealthERContribution: 0,
+		dentalERContribution: 0,
+		pensionERContribution: 0,
+		dentalEEContribution: 0,
+		extendedHealthEEContribution: 0,
+		unionDuesContribution: 0,
 	};
 };

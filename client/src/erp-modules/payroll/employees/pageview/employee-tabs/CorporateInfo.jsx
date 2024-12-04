@@ -35,12 +35,12 @@ const CorporateInfo = ({
 		isOnboarding,
 	);
 	const onboardingEmpId = LocalStorageService.getItem("onboardingEmpId");
-	const setCorporateInfo = getInitialCorporateInfo(
+	const initialCorporateInfo = getInitialCorporateInfo(
 		onboardingEmpId ?? empId,
 		company,
 		selectedPayGroupName,
 	);
-	const [formData, setFormData] = useState(setCorporateInfo);
+	const [formData, setFormData] = useState(initialCorporateInfo);
 	const [isDisabled, setIsDisabled] = useState(true);
 	const [isLoading, setIsLoading] = useState(false);
 	const { payGroups } = usePaygroup(company, false);
@@ -57,9 +57,9 @@ const CorporateInfo = ({
 		if (employmentInfo) {
 			setFormData(employmentInfo);
 		} else {
-			setFormData(setCorporateInfo);
+			setFormData(initialCorporateInfo);
 		}
-	}, [employmentInfo, empId]);
+	}, [employmentInfo?._id, empId]);
 
 	const handleConfirm = () => {
 		setIsDisabled(false);

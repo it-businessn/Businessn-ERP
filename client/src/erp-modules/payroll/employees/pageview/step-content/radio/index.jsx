@@ -3,16 +3,9 @@ import TextTitle from "components/ui/text/TextTitle";
 import { HIDE_ONBOARDING_SECTION } from "erp-modules/payroll/workview/data";
 import { hideLabel } from "../Record";
 
-const RadioTypeRecord = ({
-	param,
-	formData,
-	setFormData,
-	handleConfirm,
-	isOnboarding,
-}) => {
+const RadioTypeRecord = ({ param, formData, setFormData, handleConfirm, isOnboarding }) => {
 	return (
-		(!isOnboarding ||
-			(isOnboarding && !HIDE_ONBOARDING_SECTION.includes(param.name))) && (
+		(!isOnboarding || (isOnboarding && !HIDE_ONBOARDING_SECTION.includes(param.name))) && (
 			<HStack visibility={hideLabel(param.name) && "hidden"}>
 				<FormLabel>{param.name}</FormLabel>
 				<RadioGroup
@@ -27,11 +20,7 @@ const RadioTypeRecord = ({
 				>
 					<Flex gap={5} align={"center"}>
 						{param?.options?.map((option, index) => (
-							<Radio
-								key={index}
-								value={option}
-								border={"1px solid var(--gray2_color)"}
-							>
+							<Radio key={index} value={option} border={"1px solid var(--gray2_color)"}>
 								<TextTitle size={"sm"} title={option} />
 							</Radio>
 						))}

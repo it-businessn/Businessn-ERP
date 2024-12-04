@@ -39,9 +39,23 @@ const findEmployeeBalanceInfo = async (empId, companyName, isUpdate) => {
 	const empPayStub = await findEmployeePayStub(empId, companyName);
 
 	return {
-		typeOfVacationTreatment: empBalanceInfo?.typeOfVacationTreatment || null,
-		vacationPayPercent: empBalanceInfo?.vacationPayPercent || null,
-		carryFwd: empBalanceInfo?.carryFwd || false,
+		typeOfVacationTreatment: empBalanceInfo?.typeOfVacationTreatment,
+		vacationPayPercent: empBalanceInfo?.vacationPayPercent,
+		carryFwd: empBalanceInfo?.carryFwd,
+		typeOfUnionDuesTreatment: empBalanceInfo?.typeOfUnionDuesTreatment,
+		unionDuesContribution: empBalanceInfo?.unionDuesContribution,
+		typeOfExtendedHealthEETreatment: empBalanceInfo?.typeOfExtendedHealthEETreatment,
+		extendedHealthEEContribution: empBalanceInfo?.extendedHealthEEContribution,
+		typeOfDentalEETreatment: empBalanceInfo?.typeOfDentalEETreatment,
+		dentalEEContribution: empBalanceInfo?.dentalEEContribution,
+		typeOfPensionEETreatment: empBalanceInfo?.typeOfPensionEETreatment,
+		pensionEEContribution: empBalanceInfo?.pensionEEContribution,
+		typeOfExtendedHealthERTreatment: empBalanceInfo?.typeOfExtendedHealthERTreatment,
+		extendedHealthERContribution: empBalanceInfo?.extendedHealthERContribution,
+		typeOfDentalERTreatment: empBalanceInfo?.typeOfDentalERTreatment,
+		dentalERContribution: empBalanceInfo?.dentalERContribution,
+		typeOfPensionERTreatment: empBalanceInfo?.typeOfPensionERTreatment,
+		pensionERContribution: empBalanceInfo?.pensionERContribution,
 		empPayStub: empPayStub[0],
 	};
 };
@@ -60,17 +74,68 @@ const updateBalanceInfo = async (id, data) =>
 		new: true,
 	});
 
+const getPercent = (value) => {
+	const convertedFloatValue = value === "" ? 0 : parseFloat(value);
+	return convertedFloatValue > 1 ? convertedFloatValue / 100 : convertedFloatValue;
+};
+
 const addEmployeeBalanceInfo = async (req, res) => {
-	const { empId, companyName, carryFwd, typeOfVacationTreatment, vacationPayPercent } = req.body;
+	const {
+		empId,
+		companyName,
+		carryFwd,
+		typeOfVacationTreatment,
+		vacationPayPercent,
+		typeOfUnionDuesTreatment,
+		unionDuesContribution,
+		typeOfExtendedHealthEETreatment,
+		extendedHealthEEContribution,
+		typeOfDentalEETreatment,
+		dentalEEContribution,
+		typeOfPensionEETreatment,
+		pensionEEContribution,
+		typeOfExtendedHealthERTreatment,
+		extendedHealthERContribution,
+		typeOfDentalERTreatment,
+		dentalERContribution,
+		typeOfPensionERTreatment,
+		pensionERContribution,
+	} = req.body;
 	try {
-		const newVacationPayPercent = vacationPayPercent ? parseFloat(vacationPayPercent) : 0;
 		const data = {
 			empId,
 			companyName,
 			carryFwd,
 			typeOfVacationTreatment,
-			vacationPayPercent:
-				newVacationPayPercent > 1 ? newVacationPayPercent / 100 : newVacationPayPercent,
+			vacationPayPercent: getPercent(vacationPayPercent),
+			typeOfUnionDuesTreatment,
+			unionDuesContribution: typeOfUnionDuesTreatment?.includes("%")
+				? getPercent(unionDuesContribution)
+				: unionDuesContribution ?? 0,
+			typeOfExtendedHealthEETreatment,
+			extendedHealthEEContribution: typeOfExtendedHealthEETreatment?.includes("%")
+				? getPercent(extendedHealthEEContribution)
+				: extendedHealthEEContribution ?? 0,
+			typeOfDentalEETreatment,
+			dentalEEContribution: typeOfDentalEETreatment?.includes("%")
+				? getPercent(dentalEEContribution)
+				: dentalEEContribution ?? 0,
+			typeOfPensionEETreatment,
+			pensionEEContribution: typeOfPensionEETreatment?.includes("%")
+				? getPercent(pensionEEContribution)
+				: pensionEEContribution ?? 0,
+			typeOfExtendedHealthERTreatment,
+			extendedHealthERContribution: typeOfExtendedHealthERTreatment?.includes("%")
+				? getPercent(extendedHealthERContribution)
+				: extendedHealthERContribution ?? 0,
+			typeOfDentalERTreatment,
+			dentalERContribution: typeOfDentalERTreatment?.includes("%")
+				? getPercent(dentalERContribution)
+				: dentalERContribution ?? 0,
+			typeOfPensionERTreatment,
+			pensionERContribution: typeOfPensionERTreatment?.includes("%")
+				? getPercent(pensionERContribution)
+				: pensionERContribution ?? 0,
 		};
 		const existingBalanceInfo = await findEmployeeBalanceInfo(empId, companyName, true);
 		if (existingBalanceInfo) {
