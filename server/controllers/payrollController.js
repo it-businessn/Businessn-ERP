@@ -250,6 +250,7 @@ const buildEmpEEDetails = (
 	empBenefitInfoResult,
 ) => {
 	const data = ERData(empTimesheetData, empPayInfoResult, empAdditionalHoursAllocated);
+
 	data.vacationPayPercent = parseFloat(empBenefitInfoResult?.vacationPayPercent) || 0;
 	data.typeOfUnionDuesTreatment = empBenefitInfoResult?.typeOfUnionDuesTreatment;
 	data.unionDuesContribution = parseFloat(empBenefitInfoResult?.unionDuesContribution) || 0;
@@ -853,8 +854,21 @@ const calcEmployeeContribution = (grossPay, newEmpData) =>
 		newEmpData.currentOverTimePayTotal +
 		newEmpData.currentDblOverTimePayTotal);
 
-const validateContribution = (treatmentType, value, sumTotal) =>
-	treatmentType?.includes("No") ? 0 : treatmentType?.includes("%") ? sumTotal * value : value;
+const validateContribution = (
+	treatmentType,
+	contributionAmt,
+	accumulatedHrs,
+	totalAllocatedHours,
+) => {
+	const newAmount = treatmentType?.includes("No")
+		? 0
+		: treatmentType?.includes("%")
+		? accumulatedHrs * contributionAmt
+		: treatmentType?.includes("per Hour")
+		? contributionAmt * totalAllocatedHours
+		: contributionAmt;
+	return newAmount;
+};
 
 const getContributionsDeductions = (data) => {
 	const {
@@ -882,6 +896,14 @@ const getContributionsDeductions = (data) => {
 		typeOfExtendedHealthERTreatment,
 		extendedHealthERContribution,
 	} = data;
+
+	const totalAllocatedHours =
+		// data.totalDblOvertimeHoursWorked +
+		data.totalOvertimeHoursWorked +
+		data.totalRegHoursWorked +
+		data.totalSickHoursWorked +
+		data.totalStatDayHoursWorked +
+		data.totalStatHours;
 
 	const sumTotalHoursWithoutVacation =
 		totalSickHoursWorked + totalStatHours + totalStatDayHoursWorked + totalRegHoursWorked;
@@ -911,29 +933,35 @@ const getContributionsDeductions = (data) => {
 		typeOfUnionDuesTreatment,
 		unionDuesContribution,
 		sumTotalWithoutVacation + sumTotalOvertime + vacationAccruedAmount,
+		totalAllocatedHours,
 	);
 
 	const EE_EPP = validateContribution(
 		typeOfPensionEETreatment,
 		pensionEEContribution,
 		sumTotalWithoutVacation + sumTotalOvertime + vacationAccruedAmount,
+		totalAllocatedHours,
 	);
 
 	const EE_EHP = validateContribution(
 		typeOfExtendedHealthEETreatment,
 		extendedHealthEEContribution,
 		sumTotalHoursWithoutVacation,
+		totalAllocatedHours,
 	);
 
 	const ER_EPP = validateContribution(
 		typeOfPensionERTreatment,
 		pensionERContribution,
 		sumTotalWithoutVacation + sumTotalOvertime + vacationAccruedAmount,
+		totalAllocatedHours,
 	);
+
 	const ER_EHP = validateContribution(
 		typeOfExtendedHealthERTreatment,
 		extendedHealthERContribution,
 		sumTotalHoursWithoutVacation + sumTotalOvertimeHours,
+		totalAllocatedHours,
 	);
 
 	return {
