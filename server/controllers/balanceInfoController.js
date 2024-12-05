@@ -75,9 +75,9 @@ const updateBalanceInfo = async (id, data) =>
 	});
 
 const getPercent = (value) => {
-	const convertedFloatValue = value === "" ? 0 : parseFloat(value);
-	return convertedFloatValue;
-	// return convertedFloatValue > 1 ? convertedFloatValue / 100 : convertedFloatValue;
+	const input = value === "" ? 0 : parseFloat(value);
+	// return convertedFloatValue;
+	return Number.isInteger(input) ? input / 100 : input;
 };
 
 const addEmployeeBalanceInfo = async (req, res) => {
