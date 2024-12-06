@@ -3,11 +3,7 @@ const Employee = require("../models/Employee");
 const UserActivity = require("../models/UserActivity");
 const UserPermissions = require("../models/permissions");
 
-const {
-	hashPassword,
-	comparePassword,
-	hashSyncPassword,
-} = require("../services/passwordService");
+const { hashPassword, comparePassword, hashSyncPassword } = require("../services/passwordService");
 const { getResetPasswordLink } = require("../services/tokenService");
 const { sendEmail } = require("../services/emailService");
 const {
@@ -18,8 +14,7 @@ const {
 	NW_EMPLOYEE_PERMISSION,
 } = require("../services/data");
 
-const findCompany = async (key, value) =>
-	await Company.findOne({ [key]: value });
+const findCompany = async (key, value) => await Company.findOne({ [key]: value });
 
 const addEmployee = async (name, data) => {
 	const existingCompany = await findCompany("name", name);
@@ -87,13 +82,9 @@ const signUp = async (req, res) => {
 
 const setInitialPermissions = async (empId, isManager, companyName) => {
 	const IS_NICO_WYND_ORG = companyName.includes("NW1378");
-	const adminPermissionName = IS_NICO_WYND_ORG
-		? NW_ADMIN_PERMISSION
-		: ADMIN_PERMISSION;
+	const adminPermissionName = IS_NICO_WYND_ORG ? NW_ADMIN_PERMISSION : ADMIN_PERMISSION;
 
-	const empPermissionName = IS_NICO_WYND_ORG
-		? NW_EMPLOYEE_PERMISSION
-		: EMPLOYEE_PERMISSION;
+	const empPermissionName = IS_NICO_WYND_ORG ? NW_EMPLOYEE_PERMISSION : EMPLOYEE_PERMISSION;
 
 	const permissionName = isManager ? adminPermissionName : empPermissionName;
 	try {
@@ -158,15 +149,30 @@ const login = async (req, res) => {
 		if (!user) {
 			return res.status(500).json({ error: "User does not exist" });
 		}
+
+		const {
+			_id,
+			firstName,
+			lastName,
+			middleName,
+			fullName,
+			role,
+			department,
+			phoneNumber,
+			primaryAddress,
+			employmentType,
+			manager,
+			employeeId,
+			payrollStatus,
+		} = user;
+
 		const existingCompanyUser = await Company.findOne({
 			registration_number: companyId,
 			employees: user._id,
 		}).select("name registration_number");
 
 		if (!existingCompanyUser) {
-			return res
-				.status(500)
-				.json({ error: "User does not exist for the company" });
+			return res.status(500).json({ error: "User does not exist for the company" });
 		}
 		logUserLoginActivity(user._id);
 
@@ -174,7 +180,26 @@ const login = async (req, res) => {
 
 		const match = await comparePassword(password, user.password);
 		return match
-			? res.json({ message: "Login successful", user, existingCompanyUser })
+			? res.json({
+					message: "Login successful",
+					user: {
+						_id,
+						firstName,
+						lastName,
+						middleName,
+						fullName,
+						email,
+						role,
+						department,
+						phoneNumber,
+						primaryAddress,
+						employmentType,
+						manager,
+						employeeId,
+						payrollStatus,
+					},
+					existingCompanyUser,
+			  })
 			: res.status(401).json({ error: "Invalid password" });
 	} catch (error) {
 		console.error("Error checking password:", error);

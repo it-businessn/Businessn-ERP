@@ -6,6 +6,7 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 const cron = require("node-cron");
 const moment = require("moment");
+const helmet = require("helmet");
 
 const { addStatHolidayTimesheet } = require("./controllers/timesheetContoller");
 const { STAT_HOLIDAYS } = require("./services/data");
@@ -58,8 +59,44 @@ app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ limit: "50mb" }));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ limit: "10mb", extended: false }));
-app.use(cors());
 
+// Allow only specific domains
+const corsOptions = {
+	origin: "https://businessn-erp.com",
+	// methods: ["GET", "POST"],
+};
+
+app.use(cors(corsOptions));
+
+app.use(helmet());
+app.use(
+	helmet.contentSecurityPolicy({
+		directives: {
+			defaultSrc: ["'self'"],
+			scriptSrc: ["'self'", "https://businessn-erp.com"],
+		},
+	}),
+);
+
+app.use(helmet.crossOriginEmbedderPolicy());
+
+app.use(helmet.crossOriginResourcePolicy({ policy: "same-site" }));
+
+app.use(helmet.crossOriginOpenerPolicy({ policy: "same-origin" }));
+
+// app.use(
+// 	helmet.expectCt({
+// 		enforce: true,
+// 		maxAge: 30,
+// 		reportUri: "https://businessn-erp.com",
+// 	}),
+// );
+
+app.use(helmet.referrerPolicy({ policy: "no-referrer" }));
+
+app.use(helmet.permittedCrossDomainPolicies({ policy: "none" }));
+
+app.use(helmet.originAgentCluster());
 app.use((request, response, next) => {
 	console.log(request.path, request.method);
 	next();

@@ -49,3 +49,5 @@ export const getAddress = (address) =>
 				`${address.streetNumber} ${address.city} ${address.state} ${address.country} ${address.postalCode}`,
 		  )
 		: "";
+
+export const isEmptyOrNullOrUndefined = (value) => !value || value === "";
