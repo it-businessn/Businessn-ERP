@@ -52,7 +52,9 @@ const SignInForm = ({ title }) => {
 		setIsLoading(true);
 		try {
 			const res = await LoginService.signIn(formData);
-			const { user, existingCompanyUser } = res.data;
+			const { user, existingCompanyUser, accessToken, refreshToken } = res.data;
+			localStorage.setItem("accessToken", accessToken);
+			localStorage.setItem("refreshToken", refreshToken);
 
 			user.companyId = existingCompanyUser;
 

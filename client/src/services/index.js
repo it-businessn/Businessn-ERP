@@ -81,7 +81,7 @@ const expirationTime = timestamp + 300; // 5 minutes = (5 * 60seconds per minute
 
 export const BASE_URL = process.env.REACT_APP_BASE_URL;
 
-const buildURL = (path) => {
+export const buildURL = (path) => {
 	const url = new URL(BASE_URL);
 	url.pathname += path;
 
@@ -91,25 +91,25 @@ const buildURL = (path) => {
 };
 
 const fetchData = async (path, params) => {
-	return API.get(buildURL(path), withAuthHeader);
+	return API.get(buildURL(path));
 	// return await (await fetch(url.href)).json();
 };
 
 const postData = async (path, data) => {
-	return API.post(buildURL(path), data, withAuthHeader);
+	return API.post(buildURL(path), data);
 };
 
 const putData = async (path, data, id, token) => {
 	return token
 		? API.put(buildURL(path), data, withAuthHeader(token))
-		: API.put(buildURL(path), data, withAuthHeader);
+		: API.put(buildURL(path), data);
 };
 
 const deleteData = async (path, data) => {
 	return API.delete(buildURL(path), data);
 };
 
-const apiService = {
+export const apiService = {
 	async get(path, searchParams) {
 		return fetchData(path, searchParams);
 	},

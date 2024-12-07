@@ -14,6 +14,7 @@ const {
 	NW_ADMIN_PERMISSION,
 	NW_EMPLOYEE_PERMISSION,
 } = require("../services/data");
+const { generateAccessToken, generateRefreshToken } = require("../middleware/auth");
 
 const findCompany = async (key, value) => await Company.findOne({ [key]: value });
 
@@ -129,7 +130,32 @@ const setInitialPermissions = async (empId, isManager, companyName) => {
 		console.log(error);
 	}
 };
+const refresh = async (req, res) => {
+	const { token } = req.body;
 
+	try {
+		if (!token) {
+			return res.status(401).json({ message: "Refresh token is required" });
+		}
+		const refreshTokens = [];
+
+		if (!refreshTokens.includes(token)) {
+			return res.status(403).json({ message: "Invalid refresh token" });
+		}
+		const REFRESH_SECRET_KEY = process.env.REFRESH_SECRET_KEY;
+		jwt.verify(token, REFRESH_SECRET_KEY, (err, user) => {
+			if (err) {
+				return res.status(403).json({ message: "Invalid refresh token" });
+			}
+			console.log("user=", user);
+			const accessToken = generateAccessToken({ id: user._id, username: user.username });
+			res.json({ accessToken });
+		});
+	} catch (error) {
+		console.error("Error checking password:", error);
+		return res.status(500).json({ error: "Internal server error" });
+	}
+};
 const login = async (req, res) => {
 	const { email, password, companyId } = req.body;
 
@@ -177,17 +203,8 @@ const login = async (req, res) => {
 		}
 		const match = await comparePassword(password, user.password);
 		if (match) {
-			const JWT_SECRET = process.env.JWT_SECRET_KEY;
-			const token = jwt.sign({ _id }, JWT_SECRET, { expiresIn: "1h" });
-
-			res.cookie("token", token, {
-				domain: "businessn-erp.com",
-				path: "/",
-				httpOnly: true, // Prevent JavaScript access
-				secure: true,
-				maxAge: 3600000, // Cookie expiration (1 hour)
-				sameSite: "none",
-			});
+			const accessToken = generateAccessToken({ id: _id, fullName });
+			const refreshToken = generateRefreshToken({ id: _id, fullName });
 
 			logUserLoginActivity(_id);
 			return res.json({
@@ -209,6 +226,8 @@ const login = async (req, res) => {
 					payrollStatus,
 				},
 				existingCompanyUser,
+				accessToken,
+				refreshToken,
 			});
 		}
 		return res.status(401).json({ error: "Invalid credentials" });
@@ -357,4 +376,5 @@ module.exports = {
 	addEmployee,
 	findCompany,
 	hashedPassword,
+	refresh,
 };
