@@ -182,8 +182,9 @@ const login = async (req, res) => {
 
 			res.cookie("token", token, {
 				httpOnly: true, // Prevent JavaScript access
-				// secure: process.env.NODE_ENV === "production", // Use secure cookies in production
+				secure: true,
 				maxAge: 3600000, // Cookie expiration (1 hour)
+				sameSite: "none",
 			});
 
 			logUserLoginActivity(_id);
@@ -236,7 +237,7 @@ const logOut = async (req, res) => {
 			if (req.cookies.hasOwnProperty(cookieName)) {
 				res.clearCookie(cookieName, {
 					httpOnly: true,
-					// secure: process.env.NODE_ENV === "production",
+					secure: true,
 					sameSite: "None",
 					path: "/",
 				});
