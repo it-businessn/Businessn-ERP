@@ -1091,8 +1091,9 @@ const buildPayStubDetails = async (currentPayPeriod, companyName, empTimesheetDa
 
 	newEmpData.currentDeductionsTotal = calcCurrentDeductionsTotal(newEmpData);
 
-	newEmpData.currentNetPay = newEmpData.currentGrossPay - newEmpData.currentDeductionsTotal;
-
+	const netPay = newEmpData.currentGrossPay - newEmpData.currentDeductionsTotal;
+	// newEmpData.currentNetPay = netPay < 0 ? 0 : netPay;
+	newEmpData.currentNetPay = netPay;
 	newEmpData.totalAmountAllocated =
 		newEmpData.commission +
 		newEmpData.bonus +
