@@ -426,7 +426,7 @@ const buildEmpHourlyDetails = async (empTimesheetData, employee, companyName) =>
 const EMP_INFO = {
 	path: "empId",
 	model: "Employee",
-	select: ["companyId", "employeeId", "fullName", "primaryAddress"],
+	select: ["companyId", "employeeId", "fullName", "primaryAddress", "employeeNo"],
 };
 
 const getPayDetailsReportInfo = async (req, res) => {
@@ -441,8 +441,8 @@ const getPayDetailsReportInfo = async (req, res) => {
 		}).populate(EMP_INFO);
 
 		payStubs.sort((a, b) => {
-			const nameA = a.empId.fullName.toLowerCase();
-			const nameB = b.empId.fullName.toLowerCase();
+			const nameA = a.empId?.fullName?.toLowerCase();
+			const nameB = b.empId?.fullName?.toLowerCase();
 			return nameA < nameB ? -1 : nameA > nameB ? 1 : 0;
 		});
 		res.status(200).json(payStubs);

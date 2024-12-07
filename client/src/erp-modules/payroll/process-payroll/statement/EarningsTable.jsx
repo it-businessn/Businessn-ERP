@@ -19,15 +19,7 @@ const EarningsTable = ({ cols, rows, data, colBg, isNetSummary }) => {
 		>
 			<Tbody>
 				{rows.map(
-					({
-						name,
-						rate,
-						totalHours,
-						currentTotal,
-						YTDTotal,
-						YTDHoursTotal,
-						isEarning,
-					}) => (
+					({ name, rate, totalHours, currentTotal, YTDTotal, YTDHoursTotal, isEarning }) => (
 						<React.Fragment key={name}>
 							{(name === "Regular" ||
 								name === "Net Pay" ||

@@ -318,7 +318,7 @@ const EMPLOYER_BENEFIT_TYPES = [
 		YTDTotal: "YTDEmployerHealthContributions",
 	},
 	{
-		name: "Total Employee Paid Benefits",
+		name: "Total Employer Paid Benefits",
 		rate: 0,
 		totalHours: 0,
 		currentTotal: "currentEmployerContributions",
@@ -382,10 +382,6 @@ const VACATION_BENEFIT = [
 ];
 
 export const ACCRUAL_TYPES = [
-	{
-		type: "Vacation",
-		items: VACATION_BENEFIT,
-	},
 	// {
 	// 	type: "Sick",
 	// 	items: SICK_TYPES,
@@ -393,5 +389,9 @@ export const ACCRUAL_TYPES = [
 	{
 		type: "Employer Paid Benefits",
 		items: EMPLOYER_BENEFIT_TYPES,
+	},
+	{
+		type: "Vacation",
+		items: VACATION_BENEFIT,
 	},
 ];

@@ -8,17 +8,13 @@ import PreviewReportsModal from "../process-payroll/preview-reports/PreviewRepor
 import WorkviewTable from "../workview/paygroup-header-table/WorkviewTable";
 
 const Reports = () => {
-	const { company } = useCompany(
-		LocalStorageService.getItem("selectedCompany"),
-	);
+	const { company } = useCompany(LocalStorageService.getItem("selectedCompany"));
 
 	const { payGroupSchedule, closestRecordIndex } = usePaygroup(company, false);
 
 	const filteredPayPeriods = payGroupSchedule
 		?.filter((_, index) => index <= closestRecordIndex)
-		.sort(
-			(a, b) => new Date(b.payPeriodPayDate) - new Date(a.payPeriodPayDate),
-		);
+		.sort((a, b) => new Date(b.payPeriodPayDate) - new Date(a.payPeriodPayDate));
 
 	const [showReport, setShowReport] = useState(undefined);
 	const [selectedPayPeriod, setSelectedPayPeriod] = useState(null);
@@ -26,8 +22,7 @@ const Reports = () => {
 	const handleRegister = (payNo, isExtra) => {
 		const payNum = isExtra
 			? payGroupSchedule?.find(
-					({ payPeriod, isExtraRun }) =>
-						payPeriod === parseInt(payNo) && isExtraRun === isExtra,
+					({ payPeriod, isExtraRun }) => payPeriod === parseInt(payNo) && isExtraRun === isExtra,
 			  )
 			: payNo;
 
@@ -35,11 +30,7 @@ const Reports = () => {
 		setShowReport(true);
 	};
 
-	const registerData = useEmployeePayReport(
-		company,
-		selectedPayPeriod,
-		showReport,
-	);
+	const reportData = useEmployeePayReport(company, selectedPayPeriod, showReport);
 
 	return (
 		<PageLayout title={"Reports"}>
@@ -56,7 +47,7 @@ const Reports = () => {
 					isReport
 					isOpen={showReport}
 					onClose={() => setShowReport(false)}
-					reportData={registerData}
+					reportData={reportData}
 					payPeriodNum={selectedPayPeriod}
 				/>
 			)}
