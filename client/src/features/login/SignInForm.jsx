@@ -124,12 +124,7 @@ const SignInForm = ({ title }) => {
 					<Stack spacing={4}>
 						<FormControl>
 							<FormLabel>Company ID</FormLabel>
-							<Input
-								name="companyId"
-								value={formData.companyId}
-								onChange={handleChange}
-								required
-							/>
+							<Input name="companyId" value={formData.companyId} onChange={handleChange} required />
 						</FormControl>
 						<FormControl>
 							<FormLabel>Email</FormLabel>
@@ -169,11 +164,7 @@ const SignInForm = ({ title }) => {
 						</Button>
 					</Stack>
 				</form>
-				<Button
-					variant={"link"}
-					textDecor={"underline"}
-					onClick={showForgotPasswordPage}
-				>
+				<Button variant={"link"} textDecor={"underline"} onClick={showForgotPasswordPage}>
 					Forgot Password
 				</Button>
 				{error && (

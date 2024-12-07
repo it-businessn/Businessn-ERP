@@ -1,20 +1,15 @@
-const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 
-const User = require("../models/User");
+const authenticateToken = async (req, res, next) => {
+	const token = req.cookies.token;
+	if (!token) return res.status(401).json({ message: "Authentication required" });
+	const JWT_SECRET = process.env.JWT_SECRET_KEY;
 
-const authenticate = async (req, res, next) => {
-	const { userId } = req.params;
-	const { currentPassword } = req.body;
-	const user = await User.find({ _id: userId });
-
-	if (!user || !bcrypt.compareSync(currentPassword, user[0].password)) {
-		return res.status(401).json({ error: "Invalid credentials" });
-	}
-	// if (!user || currentPassword !== user[0].password) {
-	//   return res.status(401).json({ error: "Invalid credentials" });
-	// }
-	req.user = user;
-	next();
+	jwt.verify(token, JWT_SECRET, (err, user) => {
+		if (err) return res.status(403).json({ message: "Invalid or expired token" });
+		req.user = user;
+		next();
+	});
 };
 
-module.exports = { authenticate };
+module.exports = { authenticateToken };

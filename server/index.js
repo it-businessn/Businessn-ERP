@@ -7,6 +7,7 @@ const cors = require("cors");
 const cron = require("node-cron");
 const moment = require("moment");
 const helmet = require("helmet");
+const cookieParser = require("cookie-parser");
 
 const { addStatHolidayTimesheet } = require("./controllers/timesheetContoller");
 const { STAT_HOLIDAYS } = require("./services/data");
@@ -47,6 +48,7 @@ const t4SlipRoutes = require("./routes/t4SlipRoutes");
 const app = express();
 const expressLayouts = require("express-ejs-layouts");
 const path = require("path");
+const { authenticateToken } = require("./middleware/auth");
 const PORT = process.env.PORT;
 const MONGO_URI = process.env.DB_CONNECTION_URL_STAGING_CRM;
 
@@ -59,11 +61,13 @@ app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ limit: "50mb" }));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ limit: "10mb", extended: false }));
+app.use(cookieParser());
 
 // Allow only specific domains
 const corsOptions = {
-	origin: "https://businessn-erp.com",
-	// methods: ["GET", "POST"],
+	origin: ["https://businessn-erp.com"],
+	methods: ["GET", "POST", "PUT", "DELETE"],
+	credentials: true, // Allow cookies to be sent
 };
 
 app.use(cors(corsOptions));
@@ -103,8 +107,8 @@ app.use((request, response, next) => {
 });
 
 // Routes
-
 app.use("/api", appRoutes);
+app.use(authenticateToken);
 app.use("/api/activities", activityRoutes);
 app.use("/api/assessment", assessmentRoutes);
 app.use("/api/contacts", contactRoutes);

@@ -8,15 +8,7 @@ import LocalStorageService from "services/LocalStorageService";
 import LoginService from "services/LoginService";
 import navBarImg from "../../assets/navbar_bg.png";
 
-const Navbar = ({
-	handleClick,
-	companyName,
-	companyId,
-	onOpen,
-	user,
-	setUser,
-	isMobile,
-}) => {
+const Navbar = ({ handleClick, companyName, companyId, onOpen, user, setUser, isMobile }) => {
 	const { company } = useCompany(companyName);
 
 	const handleLogout = async () => {
@@ -69,11 +61,7 @@ const Navbar = ({
 								<TextTitle size={"lg"} title={companyId} width="150px" />
 								{menuList?.map((menu) =>
 									menu.permissions?.canAccessModule ? (
-										<Menu
-											key={menu.name}
-											handleClick={handleClick}
-											menu={menu}
-										/>
+										<Menu key={menu.name} handleClick={handleClick} menu={menu} />
 									) : null,
 								)}
 								<Spacer />

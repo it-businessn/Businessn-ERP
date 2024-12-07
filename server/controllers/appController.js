@@ -1,3 +1,4 @@
+const jwt = require("jsonwebtoken");
 const Company = require("../models/Company");
 const Employee = require("../models/Employee");
 const UserActivity = require("../models/UserActivity");
@@ -174,33 +175,40 @@ const login = async (req, res) => {
 		if (!existingCompanyUser) {
 			return res.status(500).json({ error: "User does not exist for the company" });
 		}
-		logUserLoginActivity(user._id);
-
-		// return res.json({ message: "Login successful", user, existingCompanyUser });
-
 		const match = await comparePassword(password, user.password);
-		return match
-			? res.json({
-					message: "Login successful",
-					user: {
-						_id,
-						firstName,
-						lastName,
-						middleName,
-						fullName,
-						email,
-						role,
-						department,
-						phoneNumber,
-						primaryAddress,
-						employmentType,
-						manager,
-						employeeId,
-						payrollStatus,
-					},
-					existingCompanyUser,
-			  })
-			: res.status(401).json({ error: "Invalid password" });
+		if (match) {
+			const JWT_SECRET = process.env.JWT_SECRET_KEY;
+			const token = jwt.sign({ _id }, JWT_SECRET, { expiresIn: "1h" });
+
+			res.cookie("token", token, {
+				httpOnly: true, // Prevent JavaScript access
+				secure: process.env.NODE_ENV === "production", // Use secure cookies in production
+				maxAge: 3600000, // Cookie expiration (1 hour)
+			});
+
+			logUserLoginActivity(_id);
+			return res.json({
+				message: "Logged in successfully",
+				user: {
+					_id,
+					firstName,
+					lastName,
+					middleName,
+					fullName,
+					email,
+					role,
+					department,
+					phoneNumber,
+					primaryAddress,
+					employmentType,
+					manager,
+					employeeId,
+					payrollStatus,
+				},
+				existingCompanyUser,
+			});
+		}
+		return res.status(401).json({ error: "Invalid credentials" });
 	} catch (error) {
 		console.error("Error checking password:", error);
 		return res.status(500).json({ error: "Internal server error" });
@@ -222,7 +230,18 @@ const logUserLoginActivity = async (userID) => {
 
 const logOut = async (req, res) => {
 	const { id } = req.params;
+
 	try {
+		for (const cookieName in req.cookies) {
+			if (req.cookies.hasOwnProperty(cookieName)) {
+				res.clearCookie(cookieName, {
+					httpOnly: true,
+					secure: process.env.NODE_ENV === "production",
+					sameSite: "None",
+					path: "/",
+				});
+			}
+		}
 		const logoutTime = new Date();
 		const activity = await UserActivity.findOne({
 			userID: id,
@@ -236,7 +255,7 @@ const logOut = async (req, res) => {
 		} else {
 			console.log(`User ${id} is not logged in.`);
 		}
-		return res.json({ message: "Logout successful", activity });
+		return res.json({ message: "Logged out successfully", activity });
 	} catch (error) {
 		return res.status(500).json({ error: "Internal server error" });
 	}

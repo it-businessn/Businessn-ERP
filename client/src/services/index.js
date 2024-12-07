@@ -1,10 +1,11 @@
 import { API } from "api";
 
-const withAuthHeader = (token) => ({
+const withAuthHeader = {
 	headers: {
-		Authorization: `Bearer ${token}`,
+		"Content-Type": "application/json",
 	},
-});
+	withCredentials: true,
+};
 
 // Authentication APIs
 // export const signIn = (formData) => API.post("/user/login", formData);
@@ -90,18 +91,18 @@ const buildURL = (path) => {
 };
 
 const fetchData = async (path, params) => {
-	return API.get(buildURL(path));
+	return API.get(buildURL(path), withAuthHeader);
 	// return await (await fetch(url.href)).json();
 };
 
 const postData = async (path, data) => {
-	return API.post(buildURL(path), data);
+	return API.post(buildURL(path), data, withAuthHeader);
 };
 
 const putData = async (path, data, id, token) => {
 	return token
 		? API.put(buildURL(path), data, withAuthHeader(token))
-		: API.put(buildURL(path), data);
+		: API.put(buildURL(path), data, withAuthHeader);
 };
 
 const deleteData = async (path, data) => {
