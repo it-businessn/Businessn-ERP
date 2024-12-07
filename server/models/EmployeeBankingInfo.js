@@ -7,15 +7,15 @@ const employeeBankingInfoSchema = new mongoose.Schema({
 	bankNum: String,
 	transitNum: String,
 	accountNum: String,
+	accountIv: String,
+	transitIv: String,
+	bankIv: String,
 	payStubSendByEmail: String,
 	paymentEmail: String,
 	createdOn: { type: Date, default: Date.now },
 	updatedOn: { type: Date, default: Date.now },
 });
 
-const EmployeeBankingInfo = mongoose.model(
-	"EmployeeBankingInfo",
-	employeeBankingInfoSchema,
-);
+const EmployeeBankingInfo = mongoose.model("EmployeeBankingInfo", employeeBankingInfoSchema);
 
 module.exports = EmployeeBankingInfo;

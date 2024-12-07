@@ -47,10 +47,10 @@ export const getInitialBankingInfo = (empId, companyName) => {
 		empId,
 		companyName,
 		directDeposit: "Yes",
-		bankNum: null,
-		transitNum: null,
-		accountNum: null,
+		bankNum: "",
+		transitNum: "",
+		accountNum: "",
 		payStubSendByEmail: "Yes",
-		paymentEmail: null,
+		paymentEmail: "",
 	};
 };

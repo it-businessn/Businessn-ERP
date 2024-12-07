@@ -5,10 +5,7 @@ const bankingInfoController = require("../controllers/bankingInfoController");
 
 router.get("/:companyName", bankingInfoController.getAllBankingInfo);
 
-router.get(
-	"/:companyName/:empId",
-	bankingInfoController.getEmployeeBankingInfo,
-);
+router.get("/:company/:employeeId", bankingInfoController.getEmployeeBankingInfo);
 
 router.post("/", bankingInfoController.addEmployeeBankingInfo);
 
