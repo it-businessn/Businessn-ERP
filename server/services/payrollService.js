@@ -132,12 +132,14 @@ const getSumTotal = (data1, data2) => (data1 ?? 0) + data2;
 
 const getTaxDetails = (payRate, grossEarning, empTaxCreditResult) => {
 	const { federalTaxCredit, regionalTaxCredit } = empTaxCreditResult;
-	const projectedIncome = payRate * TAX_CONFIG.HOURS_PER_WEEK * TAX_CONFIG.ANNUAL_PAY_PERIODS;
+
+	const annualProjectedGrossEarning = grossEarning * TAX_CONFIG.ANNUAL_PAY_PERIODS;
+
+	// const projectedIncome = payRate * TAX_CONFIG.HOURS_PER_WEEK * TAX_CONFIG.ANNUAL_PAY_PERIODS;
+	const projectedIncome = annualProjectedGrossEarning;
 	const adjustedProjectedIncome = projectedIncome - TAX_CONFIG.CPP_BASIC_EXEMPTION;
 	const adjustedGrossEarning = adjustedProjectedIncome / TAX_CONFIG.ANNUAL_PAY_PERIODS;
 	const CPPContribution = adjustedGrossEarning * TAX_CONFIG.TOTAL_CONTRIBUTION_RATE;
-
-	const annualProjectedGrossEarning = grossEarning * TAX_CONFIG.ANNUAL_PAY_PERIODS;
 
 	const federalTaxDeductionByPayPeriod =
 		applyFederalTaxRate(annualProjectedGrossEarning, federalTaxCredit) /
