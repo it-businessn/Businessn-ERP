@@ -65,7 +65,7 @@ app.use(cookieParser());
 
 // Allow only specific domains
 const corsOptions = {
-	origin: ["https://businessn-erp.com"],
+	origin: ["https://businessn-erp.com", "http://10.0.0.79:3000", "http://localhost:3000"],
 	methods: ["GET", "POST", "PUT", "DELETE"],
 	credentials: true, // Allow cookies to be sent
 };
@@ -73,20 +73,20 @@ const corsOptions = {
 app.use(cors(corsOptions));
 
 app.use(helmet());
-app.use(
-	helmet.contentSecurityPolicy({
-		directives: {
-			defaultSrc: ["'self'"],
-			scriptSrc: ["'self'", "https://businessn-erp.com"],
-		},
-	}),
-);
+// app.use(
+// 	helmet.contentSecurityPolicy({
+// 		directives: {
+// 			defaultSrc: ["'self'"],
+// 			scriptSrc: ["'self'", "https://businessn-erp.com"],
+// 		},
+// 	}),
+// );
 
-app.use(helmet.crossOriginEmbedderPolicy());
+// app.use(helmet.crossOriginEmbedderPolicy());
 
-app.use(helmet.crossOriginResourcePolicy({ policy: "same-site" }));
+// app.use(helmet.crossOriginResourcePolicy({ policy: "same-site" }));
 
-app.use(helmet.crossOriginOpenerPolicy({ policy: "same-origin" }));
+// app.use(helmet.crossOriginOpenerPolicy({ policy: "same-origin" }));
 
 // app.use(
 // 	helmet.expectCt({
@@ -96,13 +96,13 @@ app.use(helmet.crossOriginOpenerPolicy({ policy: "same-origin" }));
 // 	}),
 // );
 
-app.use(helmet.referrerPolicy({ policy: "no-referrer" }));
+// app.use(helmet.referrerPolicy({ policy: "no-referrer" }));
 
-app.use(helmet.permittedCrossDomainPolicies({ policy: "none" }));
+// app.use(helmet.permittedCrossDomainPolicies({ policy: "none" }));
 
-app.use(helmet.originAgentCluster());
+// app.use(helmet.originAgentCluster());
 app.use((request, response, next) => {
-	console.log(request.path, request.method);
+	console.log("Cookies:", request.cookies);
 	next();
 });
 

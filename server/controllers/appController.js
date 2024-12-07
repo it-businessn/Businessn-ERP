@@ -181,6 +181,8 @@ const login = async (req, res) => {
 			const token = jwt.sign({ _id }, JWT_SECRET, { expiresIn: "1h" });
 
 			res.cookie("token", token, {
+				domain: "businessn-erp.com",
+				path: "/",
 				httpOnly: true, // Prevent JavaScript access
 				secure: true,
 				maxAge: 3600000, // Cookie expiration (1 hour)
