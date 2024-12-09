@@ -4,19 +4,15 @@ import Logo from "components/logo";
 import TextTitle from "components/ui/text/TextTitle";
 import { SIDEBAR_MENU } from "data";
 import useCompany from "hooks/useCompany";
-import { useNavigate } from "react-router-dom";
-import { ROUTE_PATH } from "routes";
 import LocalStorageService from "services/LocalStorageService";
 import LoginService from "services/LoginService";
 import navBarImg from "../../assets/navbar_bg.png";
 
 const Navbar = ({ handleClick, companyName, companyId, onOpen, user, setUser, isMobile }) => {
 	const { company } = useCompany(companyName);
-	const navigate = useNavigate();
 
 	const handleLogout = async () => {
 		try {
-			navigate(ROUTE_PATH.LOGIN);
 			await LoginService.signOut(user._id);
 			LocalStorageService.clear();
 			setUser(null);

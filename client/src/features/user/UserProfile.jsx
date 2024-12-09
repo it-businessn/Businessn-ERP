@@ -51,20 +51,9 @@ const UserProfile = ({ user, handleLogout }) => {
 		<HStack pb={2} _hover={{ cursor: "pointer" }}>
 			<Popover isOpen={isOpen} onClose={() => setIsOpen(false)}>
 				<PopoverTrigger>
-					<Avatar
-						onClick={handleToggle}
-						name={user?.fullName}
-						src=""
-						boxSize="12"
-					/>
+					<Avatar onClick={handleToggle} name={user?.fullName} src="" boxSize="12" />
 				</PopoverTrigger>
-				<PopoverContent
-					maxW="xs"
-					w="12rem"
-					border="none"
-					position="sticky"
-					zIndex={5}
-				>
+				<PopoverContent maxW="xs" w="12rem" border="none" position="sticky" zIndex={5}>
 					<PopoverArrow />
 
 					<PopoverBody>
@@ -77,7 +66,13 @@ const UserProfile = ({ user, handleLogout }) => {
 									Create Account
 								</Button>
 							)} */}
-							<Button variant="ghost" onClick={handleLogout}>
+							<Button
+								variant="ghost"
+								onClick={() => {
+									navigate("/login");
+									handleLogout();
+								}}
+							>
 								Logout
 							</Button>
 						</VStack>
