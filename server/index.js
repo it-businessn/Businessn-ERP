@@ -65,7 +65,13 @@ app.use(cookieParser());
 
 // Allow only specific domains
 const corsOptions = {
-	origin: ["https://businessn-erp.com"],
+	origin: [
+		"https://businessn-erp.com",
+		"https:businessn-nwg.ddns.net",
+		"http:businessn-nwg.ddns.net",
+		"http://10.0.0.79:3000",
+		"http://localhost:3000",
+	],
 	methods: ["GET", "POST", "PUT", "DELETE"],
 	credentials: true, // Allow cookies to be sent
 };
@@ -108,6 +114,7 @@ app.use((request, response, next) => {
 
 // Routes
 app.use("/api", appRoutes);
+app.use("/api/timecard", timecardRoutes);
 app.use(authenticateToken);
 app.use("/api/activities", activityRoutes);
 app.use("/api/assessment", assessmentRoutes);
@@ -138,7 +145,6 @@ app.use("/api/schedule", scheduleRoutes);
 app.use("/api/setup", setUpRoutes);
 app.use("/api/tasks", taskRoutes);
 app.use("/api/timesheet", timesheetRoutes);
-app.use("/api/timecard", timecardRoutes);
 app.use("/api/user", userRoutes);
 app.use("/api/generate-t4", t4SlipRoutes);
 

@@ -9,8 +9,7 @@ const useSidebarMenu = (userId, company, isManager) => {
 	useEffect(() => {
 		const fetchUserPermissions = async () => {
 			try {
-				const companyName =
-					company ?? LocalStorageService.getItem("selectedCompany");
+				const companyName = company ?? LocalStorageService.getItem("selectedCompany");
 
 				const response = await UserService.getUserPermission({
 					userId,
@@ -19,9 +18,7 @@ const useSidebarMenu = (userId, company, isManager) => {
 
 				if (response.data) {
 					SIDEBAR_MENU.map((data) => {
-						const menu = response.data.permissionType.find(
-							(item) => item.name === data.name,
-						);
+						const menu = response.data.permissionType.find((item) => item.name === data.name);
 						if (menu) {
 							data.permissions = menu;
 						}
@@ -30,21 +27,18 @@ const useSidebarMenu = (userId, company, isManager) => {
 								(item) => item.name === `${data.name} ${child.name}`,
 							);
 							if (childMenu?.name?.includes("Setup")) {
-								data.children[cIndex].permissions = isManager
-									? childMenu
-									: null;
+								data.children[cIndex].permissions = isManager ? childMenu : null;
 							} else {
 								data.children[cIndex].permissions = childMenu ?? null;
 							}
 						});
 						return data;
 					});
-					setActiveMenu(
-						SIDEBAR_MENU.find((_) => _.permissions?.canAccessModule),
-					);
+					setActiveMenu(SIDEBAR_MENU.find((_) => _.permissions?.canAccessModule));
 				}
 			} catch (error) {
 				console.error(error);
+				window.location.href = "login";
 			}
 		};
 		if (userId && company) {
