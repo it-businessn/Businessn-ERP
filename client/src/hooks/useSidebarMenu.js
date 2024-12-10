@@ -1,5 +1,5 @@
 import { SIDEBAR_MENU } from "data";
-import { useEffect, useState } from "react";
+import { startTransition, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ROUTE_PATH } from "routes";
 import LocalStorageService from "services/LocalStorageService";
@@ -40,7 +40,9 @@ const useSidebarMenu = (userId, company, isManager) => {
 					setActiveMenu(SIDEBAR_MENU.find((_) => _.permissions?.canAccessModule));
 				}
 			} catch (error) {
-				navigate(ROUTE_PATH.LOGIN);
+				startTransition(() => {
+					navigate(ROUTE_PATH.LOGIN);
+				});
 			}
 		};
 		if (userId && company) {
