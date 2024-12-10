@@ -49,6 +49,7 @@ const app = express();
 const expressLayouts = require("express-ejs-layouts");
 const path = require("path");
 const { authenticateToken } = require("./middleware/auth");
+const corsOptions = require("./config");
 const PORT = process.env.PORT;
 const MONGO_URI = process.env.DB_CONNECTION_URL_STAGING_CRM;
 
@@ -62,21 +63,6 @@ app.use(express.urlencoded({ limit: "50mb" }));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ limit: "10mb", extended: false }));
 app.use(cookieParser());
-
-// Allow only specific domains
-const corsOptions = {
-	origin: [
-		"https://businessn-erp.com",
-		"https:businessn-nwg.ddns.net",
-		"http:businessn-nwg.ddns.net",
-		"http://10.0.0.79:3000",
-		"http://localhost:3000",
-		"https://businessn-erp.onrender.com",
-	],
-	methods: ["GET", "POST", "PUT", "DELETE"],
-	credentials: true, // Allow cookies to be sent
-};
-
 app.use(cors(corsOptions));
 
 app.use(helmet());
@@ -177,9 +163,10 @@ const COMPANIES = {
 
 // Scheduler
 cron.schedule("0 0 * * *", () => {
-	//every 15sec cron.schedule("*/15 * * * * *", () => {
-
+	// every 15sec
+	// cron.schedule("*/15 * * * * *", () => {
 	const isStatDay = STAT_HOLIDAYS.find(({ date }) => date === moment().format("YYYY-MM-DD"));
+
 	if (isStatDay) {
 		console.log("Scheduling to add timecard entry to run every day at midnight");
 		addStatHolidayTimesheet(COMPANIES.NW);
