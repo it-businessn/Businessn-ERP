@@ -53,7 +53,7 @@ const Timesheet = ({ company, setShowAddEntry, showAddEntry, filter, setTimeshee
 			try {
 				const post = await TimesheetService.addTimecard([]);
 				if (post.data) {
-					setRefresh(true);
+					// setRefresh(true);
 				}
 			} catch (error) {
 				console.error(error);

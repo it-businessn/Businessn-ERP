@@ -40,7 +40,6 @@ const useSidebarMenu = (userId, company, isManager) => {
 					setActiveMenu(SIDEBAR_MENU.find((_) => _.permissions?.canAccessModule));
 				}
 			} catch (error) {
-				console.error(error);
 				navigate(ROUTE_PATH.LOGIN);
 			}
 		};

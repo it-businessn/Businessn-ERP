@@ -18,20 +18,6 @@ const PayrollActionSection = ({ company, filter, handleClick, activeUsers, total
 	const [timesheets, setTimesheets] = useState(null);
 
 	useEffect(() => {
-		const fetchAllEmployeeTimesheet = async () => {
-			try {
-				const { data } = await TimesheetService.getFilteredTimesheetsByStatus(company, filter);
-				setTimesheets(data);
-			} catch (error) {
-				console.error(error);
-			}
-		};
-		if (filter) {
-			fetchAllEmployeeTimesheet();
-		}
-	}, [filter]);
-
-	useEffect(() => {
 		if (!timesheets?.length) {
 			return;
 		}

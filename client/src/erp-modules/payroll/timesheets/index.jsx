@@ -62,7 +62,7 @@ const Timesheets = () => {
 	}, [closestRecord]);
 
 	useEffect(() => {
-		if (filteredEmployees) {
+		if (filteredEmployees.length) {
 			setFilter((prev) => ({
 				...prev,
 				filteredEmployees,
@@ -80,13 +80,13 @@ const Timesheets = () => {
 				endDate,
 			}));
 		}
-		if (filteredDept) {
+		if (filteredDept.length) {
 			setFilter((prev) => ({
 				...prev,
 				filteredDept,
 			}));
 		}
-		if (filteredCC) {
+		if (filteredCC.length) {
 			setFilter((prev) => ({
 				...prev,
 				filteredCC,
