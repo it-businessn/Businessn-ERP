@@ -6,11 +6,8 @@ const useEmployeeBankingInfo = (company, empId, isOnboarding) => {
 	useEffect(() => {
 		const fetchEmployeeBankingInfo = async () => {
 			try {
-				const response = await PayrollService.getEmployeeBankingInfo(
-					company,
-					empId,
-				);
-				setBankingInfo(response.data);
+				const { data } = await PayrollService.getEmployeeBankingInfo(company, empId);
+				setBankingInfo(data);
 			} catch (error) {
 				console.error(error);
 			}

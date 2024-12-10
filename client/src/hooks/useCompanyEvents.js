@@ -7,8 +7,8 @@ const useCompanyEvents = (user, company) => {
 	useEffect(() => {
 		const fetchAllEvents = async () => {
 			try {
-				const response = await CalendarService.getCompEvents(company);
-				setEvents(response.data);
+				const { data } = await CalendarService.getCompEvents(company);
+				setEvents(data);
 			} catch (error) {
 				console.error(error);
 			}

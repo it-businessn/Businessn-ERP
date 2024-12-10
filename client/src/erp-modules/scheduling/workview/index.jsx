@@ -12,9 +12,7 @@ import QuickSelection from "./quick-selection";
 import Scheduler from "./scheduler";
 
 const ScheduleWorkView = () => {
-	const { company } = useCompany(
-		LocalStorageService.getItem("selectedCompany"),
-	);
+	const { company } = useCompany(LocalStorageService.getItem("selectedCompany"));
 	const [newEmployeeAdded, setNewEmployeeAdded] = useState(null);
 	const [employees, setEmployees] = useState(null);
 	const [refresh, setRefresh] = useState(null);
@@ -22,12 +20,12 @@ const ScheduleWorkView = () => {
 	useEffect(() => {
 		const fetchAllEmployeeByRole = async () => {
 			try {
-				const response = await UserService.getAllEmployeesByRole(company);
-				response.data.forEach((user) => {
+				const { data } = await UserService.getAllEmployeesByRole(company);
+				data.forEach((user) => {
 					user.color = getRoleColor(user._id);
 				});
 
-				// const sortedArray = response.data.sort((a, b) => {
+				// const sortedArray = data.sort((a, b) => {
 				// 	const titleA = a.title;
 				// 	const titleB = b.title;
 				// 	const indexA = ALL_ROLES.indexOf(titleA);
@@ -48,7 +46,7 @@ const ScheduleWorkView = () => {
 				// });
 
 				// setEmployees(sortedArray);
-				setEmployees(response.data);
+				setEmployees(data);
 			} catch (error) {
 				console.error(error);
 			}
@@ -73,10 +71,7 @@ const ScheduleWorkView = () => {
 					mt="4"
 					templateColumns={{ lg: "30% 70%" }}
 				>
-					<QuickSelection
-						employees={employees}
-						setNewEmployeeAdded={setNewEmployeeAdded}
-					/>
+					<QuickSelection employees={employees} setNewEmployeeAdded={setNewEmployeeAdded} />
 					<Scheduler
 						company={company}
 						newEmployeeAdded={newEmployeeAdded}

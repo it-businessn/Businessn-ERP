@@ -1,14 +1,4 @@
-import {
-	Box,
-	Flex,
-	FormLabel,
-	HStack,
-	Input,
-	Radio,
-	Select,
-	Spacer,
-	Text,
-} from "@chakra-ui/react";
+import { Box, Flex, FormLabel, HStack, Input, Radio, Select, Spacer, Text } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { FaCaretDown } from "react-icons/fa";
 import SettingService from "services/SettingService";
@@ -29,14 +19,9 @@ const AutoAssign = () => {
 	useEffect(() => {
 		const fetchSetUpConfig = async () => {
 			try {
-				const response = await SettingService.getIdleLeadReAssignment();
-				if (response.data.length > 0) {
-					const {
-						isIdleLeadReassignment,
-						idleTimeHours,
-						idleTimeMinutes,
-						AssignLeadTo,
-					} = response?.data[0];
+				const { data } = await SettingService.getIdleLeadReAssignment();
+				if (data.length > 0) {
+					const { isIdleLeadReassignment, idleTimeHours, idleTimeMinutes, AssignLeadTo } = data[0];
 
 					setSetUpConfigData((prevData) => ({
 						...prevData,
@@ -46,7 +31,7 @@ const AutoAssign = () => {
 						AssignLeadTo,
 					}));
 
-					setSetUpId(response?.data[0]?._id);
+					setSetUpId(data[0]?._id);
 				}
 			} catch (error) {}
 		};
@@ -70,32 +55,20 @@ const AutoAssign = () => {
 	const handleSubmit = async () => {
 		try {
 			if (setUpId) {
-				const response = await SettingService.updateSetUpIdleLeadReAssignment(
-					setUpConfigData,
-					setUpId,
-				);
+				await SettingService.updateSetUpIdleLeadReAssignment(setUpConfigData, setUpId);
 			} else {
-				const response = await SettingService.setUpIdleLeadReAssignment(
-					setUpConfigData,
-					setUpId,
-				);
+				await SettingService.setUpIdleLeadReAssignment(setUpConfigData, setUpId);
 			}
 		} catch (error) {}
 	};
 
 	return (
-		<Flex
-			gap={{ base: 5, lg: 15, xl: 20 }}
-			my={"1em"}
-			flexDir={{ base: "column", lg: "row" }}
-		>
+		<Flex gap={{ base: 5, lg: 15, xl: 20 }} my={"1em"} flexDir={{ base: "column", lg: "row" }}>
 			{!setUpConfigData && <></>}
 			{setUpConfigData && (
 				<>
 					<Box flex={0.8}>
-						<FormLabel color={"var(--nav_color)"}>
-							Idle Lead Reassignment
-						</FormLabel>
+						<FormLabel color={"var(--nav_color)"}>Idle Lead Reassignment</FormLabel>
 						<HStack>
 							<Text fontSize={"sm"} fontWeight={"bold"}>
 								Status:

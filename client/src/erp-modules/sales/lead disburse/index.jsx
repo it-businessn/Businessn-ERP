@@ -57,16 +57,16 @@ const LeadsDisbursed = () => {
 	useEffect(() => {
 		const fetchAllLeads = async () => {
 			try {
-				const response = await LeadsService.getDisbursedLeads(company);
-				setLeads(response.data);
+				const { data } = await LeadsService.getDisbursedLeads(company);
+				setLeads(data);
 			} catch (error) {
 				console.error(error);
 			}
 		};
 		const fetchAllUserActivity = async () => {
 			try {
-				const response = await UserService.getAllUserActivity();
-				setActivity(response.data);
+				const { data } = await UserService.getAllUserActivity();
+				setActivity(data);
 			} catch (error) {
 				console.error(error);
 			}

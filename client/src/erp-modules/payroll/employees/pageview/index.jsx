@@ -35,9 +35,9 @@ const Employees = ({ isOnboarding, selectedPayGroupName, handleClose }) => {
 	useEffect(() => {
 		const fetchAllEmployees = async () => {
 			try {
-				const response = await UserService.getAllCompanyUsers(company);
-				setEmployees(response.data);
-				setFilteredEmployees(response.data);
+				const { data } = await UserService.getAllCompanyUsers(company);
+				setEmployees(data);
+				setFilteredEmployees(data);
 			} catch (error) {
 				console.error(error);
 			}

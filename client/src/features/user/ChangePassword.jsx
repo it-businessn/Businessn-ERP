@@ -17,13 +17,7 @@ import TextTitle from "components/ui/text/TextTitle";
 import { useState } from "react";
 import PasswordService from "services/PasswordService";
 
-const ChangePassword = ({
-	setPasswordMode,
-	userData,
-	setUserData,
-	setError,
-	error,
-}) => {
+const ChangePassword = ({ setPasswordMode, userData, setUserData, setError, error }) => {
 	const [showPassword, setShowPassword] = useState(false);
 
 	const [passwordError, setPasswordError] = useState("");
@@ -59,11 +53,8 @@ const ChangePassword = ({
 		e.preventDefault();
 
 		try {
-			const response = await PasswordService.updateUserPassword(
-				passwordData,
-				userData._id,
-			);
-			setUserData(response.data.result);
+			const { data } = await PasswordService.updateUserPassword(passwordData, userData._id);
+			setUserData(data.result);
 			setPasswordMode(false);
 		} catch (error) {
 			console.error("Error changing password:", error?.response?.data);
@@ -89,11 +80,7 @@ const ChangePassword = ({
 							onChange={handlePasswordChange}
 						/>
 						<InputRightElement>
-							<Button
-								size="sm"
-								variant="unstyled"
-								onClick={handleTogglePassword}
-							>
+							<Button size="sm" variant="unstyled" onClick={handleTogglePassword}>
 								{showPassword ? <ViewOffIcon /> : <ViewIcon />}
 							</Button>
 						</InputRightElement>
@@ -111,11 +98,7 @@ const ChangePassword = ({
 							// onBlur={validatePasswordMatch}
 						/>
 						<InputRightElement>
-							<Button
-								size="sm"
-								variant="unstyled"
-								onClick={handleTogglePassword}
-							>
+							<Button size="sm" variant="unstyled" onClick={handleTogglePassword}>
 								{showPassword ? <ViewOffIcon /> : <ViewIcon />}
 							</Button>
 						</InputRightElement>
@@ -132,11 +115,7 @@ const ChangePassword = ({
 							onBlur={validatePasswordMatch}
 						/>
 						<InputRightElement>
-							<Button
-								size="sm"
-								variant="unstyled"
-								onClick={handleTogglePassword}
-							>
+							<Button size="sm" variant="unstyled" onClick={handleTogglePassword}>
 								{showPassword ? <ViewOffIcon /> : <ViewIcon />}
 							</Button>
 						</InputRightElement>

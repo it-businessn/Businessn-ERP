@@ -28,9 +28,9 @@ const Meetings = () => {
 	useEffect(() => {
 		const fetchAllAgents = async () => {
 			try {
-				const response = await UserService.getAllUsers();
-				// setAgents(response.data.filter((user) => user.role.includes("Sales")));
-				setAgents(response.data);
+				const { data } = await UserService.getAllUsers();
+				// setAgents(data.filter((user) => user.role.includes("Sales")));
+				setAgents(data);
 			} catch (error) {
 				console.error(error);
 			}
@@ -40,12 +40,7 @@ const Meetings = () => {
 	return (
 		<SimpleGrid columns={{ base: 1, md: 1, lg: 3 }} spacing="1em">
 			<BoxCard px="1em" fontWeight="bold" h="350px">
-				<Flex
-					justify="space-between"
-					align="center"
-					mb="1"
-					color={"var(--nav_color)"}
-				>
+				<Flex justify="space-between" align="center" mb="1" color={"var(--nav_color)"}>
 					<Text fontWeight="bold">Leaderboard</Text>
 					<Select width="auto" border={"none"} fontSize={"xs"} ml={"1em"}>
 						<option>This month</option>
@@ -91,14 +86,8 @@ const Meetings = () => {
 				<TextTitle title={"Activity Tracking"} mt="2" mb="1" />
 				<VStack spacing={0}>
 					<Box h={"30px"} />
-					<Box
-						w={{ base: "50%", md: "50%", lg: "100%", xl: "50%" }}
-						m={"0 auto"}
-					>
-						<Doughnut
-							data={activityChartData}
-							options={doughnutOptions("50%")}
-						/>
+					<Box w={{ base: "50%", md: "50%", lg: "100%", xl: "50%" }} m={"0 auto"}>
+						<Doughnut data={activityChartData} options={doughnutOptions("50%")} />
 					</Box>
 				</VStack>
 			</BoxCard>

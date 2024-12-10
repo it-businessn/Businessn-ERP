@@ -7,8 +7,8 @@ const useDepartment = (company) => {
 	useEffect(() => {
 		const fetchAllDepartments = async () => {
 			try {
-				const response = await SettingService.getAllDepartments(company);
-				setDepartments(response.data);
+				const { data } = await SettingService.getAllDepartments(company);
+				setDepartments(data);
 			} catch (error) {
 				console.error(error);
 			}

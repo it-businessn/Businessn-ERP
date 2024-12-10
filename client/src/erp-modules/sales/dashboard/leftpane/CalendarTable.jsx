@@ -17,7 +17,7 @@ const CalendarTable = ({ cols, setIsRefresh, filterText, filter, setStats, user,
 	useEffect(() => {
 		const fetchAllUserEvents = async () => {
 			try {
-				const response =
+				const { data } =
 					filter === "event"
 						? await CalendarService.getUserEventsByType({
 								type: "event",
@@ -35,8 +35,8 @@ const CalendarTable = ({ cols, setIsRefresh, filterText, filter, setStats, user,
 								name: selectedUser?.fullName,
 								company,
 						  });
-				setData(response.data);
-				setStatInfo(filterText, response.data.length);
+				setData(data);
+				setStatInfo(filterText, data.length);
 			} catch (error) {
 				console.error(error);
 			}

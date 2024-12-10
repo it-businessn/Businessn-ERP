@@ -17,9 +17,7 @@ import LocalStorageService from "services/LocalStorageService";
 import QuestionnaireService from "services/QuestionnaireService";
 
 const Assessment = () => {
-	const { company } = useCompany(
-		LocalStorageService.getItem("selectedCompany"),
-	);
+	const { company } = useCompany(LocalStorageService.getItem("selectedCompany"));
 	const userId = LocalStorageService.getItem("user")?._id;
 	const { category } = useParams();
 	const [questionnaires, setQuestionnaires] = useState(null);
@@ -31,11 +29,11 @@ const Assessment = () => {
 	useEffect(() => {
 		const fetchAllAssessments = async () => {
 			try {
-				const response = await QuestionnaireService.getSubjectQuestionnaire({
+				const { data } = await QuestionnaireService.getSubjectQuestionnaire({
 					type: category,
 					company,
 				});
-				setQuestionnaires(response.data);
+				setQuestionnaires(data);
 			} catch (error) {
 				console.error(error);
 			}
@@ -84,25 +82,15 @@ const Assessment = () => {
 				<form onSubmit={handleSubmit}>
 					{questionnaires?.map((questionnaire, index) => (
 						<FormControl key={questionnaire._id} mb={3}>
-							<FormLabel fontSize={"1em"}>{`${index + 1}: ${
-								questionnaire.question
-							}`}</FormLabel>
+							<FormLabel fontSize={"1em"}>{`${index + 1}: ${questionnaire.question}`}</FormLabel>
 							<HStack w={"100%"}>
 								<RadioGroup
 									onChange={(e) => handleAnswerChange(questionnaire._id, e)}
 									value={answers[questionnaire._id]}
 								>
-									<VStack
-										spacing={3}
-										justifyContent={"flex-start"}
-										alignItems={"self-start"}
-									>
+									<VStack spacing={3} justifyContent={"flex-start"} alignItems={"self-start"}>
 										{questionnaire.options.map((item) => (
-											<Radio
-												value={item}
-												key={item}
-												border={"1px solid var(--gray2_color)"}
-											>
+											<Radio value={item} key={item} border={"1px solid var(--gray2_color)"}>
 												{item}
 											</Radio>
 										))}
@@ -117,14 +105,12 @@ const Assessment = () => {
 										<Text
 											fontWeight="bold"
 											color={
-												answers[questionnaire._id] ===
-												questionnaire.correctAnswer
+												answers[questionnaire._id] === questionnaire.correctAnswer
 													? "var(--correct_ans)"
 													: "var(--incorrect_ans)"
 											}
 										>
-											{answers[questionnaire._id] ===
-											questionnaire.correctAnswer
+											{answers[questionnaire._id] === questionnaire.correctAnswer
 												? "Correct!"
 												: "Incorrect!"}
 										</Text>

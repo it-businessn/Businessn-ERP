@@ -56,8 +56,8 @@ const LeadsDocket = () => {
 	useEffect(() => {
 		const fetchAllCompanies = async () => {
 			try {
-				const response = await LeadsService.getLeadCompanies(company);
-				setCompanies(response.data);
+				const { data } = await LeadsService.getLeadCompanies(company);
+				setCompanies(data);
 			} catch (error) {
 				console.error(error);
 			}
@@ -68,9 +68,9 @@ const LeadsDocket = () => {
 
 	const fetchAllLeads = async () => {
 		try {
-			const response = await LeadsService.getNotDisbursedLeads(company);
-			setLeads(response.data);
-			setAllLeadIDs(response.data.map((item) => item._id));
+			const { data } = await LeadsService.getNotDisbursedLeads(company);
+			setLeads(data);
+			setAllLeadIDs(data.map((item) => item._id));
 		} catch (error) {
 			console.error(error);
 		}
@@ -83,12 +83,12 @@ const LeadsDocket = () => {
 	useEffect(() => {
 		const addMultipleLeads = async () => {
 			try {
-				const response = await LeadsService.createMultipleOpportunity({
+				const { data } = await LeadsService.createMultipleOpportunity({
 					newRecord: data,
 					companyName: company,
 				});
-				setLeads(response.data);
-				setAllLeadIDs(response.data.map((item) => item._id));
+				setLeads(data);
+				setAllLeadIDs(data.map((item) => item._id));
 			} catch (error) {
 				console.error(error);
 			}

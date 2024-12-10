@@ -30,12 +30,12 @@ const LeftPane = ({ selectedUser, setStats, company, user }) => {
 	useEffect(() => {
 		const fetchAllOpportunities = async () => {
 			try {
-				const response = await LeadsService.getGroupedOpportunitiesByCompany(company);
-				setOpportunities(response.data);
-				const pipelineData = response.data[0]?.pipeline || 0;
-				const salesData = response.data[0]?.salesMade || 0;
+				const { data } = await LeadsService.getGroupedOpportunitiesByCompany(company);
+				setOpportunities(data);
+				const pipelineData = data[0]?.pipeline || 0;
+				const salesData = data[0]?.salesMade || 0;
 
-				headerCards[0].value = response.data?.find((_) => _.month === month)?.count || 0;
+				headerCards[0].value = data?.find((_) => _.month === month)?.count || 0;
 				headerCards[1].value = pipelineData;
 				headerCards[2].value = pipelineData;
 				headerCards[3].value = salesData;

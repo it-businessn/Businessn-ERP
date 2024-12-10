@@ -12,8 +12,8 @@ const CompanyPanel = ({ employees, setFilteredEmployees, filteredEmployees, comp
 	useEffect(() => {
 		const fetchAllModules = async () => {
 			try {
-				const response = await SettingService.getAllModules(company);
-				setModules(response.data);
+				const { data } = await SettingService.getAllModules(company);
+				setModules(data);
 			} catch (error) {
 				console.error(error);
 			}

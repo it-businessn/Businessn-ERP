@@ -18,27 +18,23 @@ const SalesChart = ({ company, selectedUser, user }) => {
 	useEffect(() => {
 		const fetchAllUserActivities = async () => {
 			try {
-				const response = await ActivityService.getActivitiesByUser({
+				const { data } = await ActivityService.getActivitiesByUser({
 					id: selectedUser?._id,
 					company,
 					type: "Weekly",
 				});
 
-				setActivity(response.data);
+				setActivity(data);
 				callsMadeBarData.map(
 					(item) =>
-						(item.call = response.data.filter(
-							(_) =>
-								_.type === "Call" &&
-								moment(_.createdOn).format("ddd") === item.day,
+						(item.call = data.filter(
+							(_) => _.type === "Call" && moment(_.createdOn).format("ddd") === item.day,
 						).length),
 				);
 				emailsMadeBarData.map(
 					(item) =>
-						(item.email = response.data.filter(
-							(_) =>
-								_.type === "Email" &&
-								moment(_.createdOn).format("ddd") === item.day,
+						(item.email = data.filter(
+							(_) => _.type === "Email" && moment(_.createdOn).format("ddd") === item.day,
 						).length),
 				);
 
@@ -143,10 +139,7 @@ const SalesChart = ({ company, selectedUser, user }) => {
 							<option>Last Month</option>
 						</Select>
 					</Flex> */}
-						<Box
-							w={{ base: "70%", md: "65%", lg: "70%", xl: "70%" }}
-							mx={"auto"}
-						>
+						<Box w={{ base: "70%", md: "65%", lg: "70%", xl: "70%" }} mx={"auto"}>
 							<Bar data={bar.data} options={options} />
 						</Box>
 						<HighlightButton

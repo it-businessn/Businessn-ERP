@@ -23,8 +23,8 @@ const ForgotPassword = () => {
 	const handleSubmit = async (e) => {
 		e.preventDefault();
 		try {
-			const response = await PasswordService.sendPassword({ email });
-			setCaptionTitle(response.data.message);
+			const { data } = await PasswordService.sendPassword({ email });
+			setCaptionTitle(data.message);
 			setErrorMessage("");
 		} catch (error) {
 			setCaptionTitle("Sorry! Unable to sent reset link!");

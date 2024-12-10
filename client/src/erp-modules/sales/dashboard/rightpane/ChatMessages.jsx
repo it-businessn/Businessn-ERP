@@ -1,12 +1,4 @@
-import {
-	Avatar,
-	Box,
-	Button,
-	HStack,
-	IconButton,
-	Text,
-	VStack,
-} from "@chakra-ui/react";
+import { Avatar, Box, Button, HStack, IconButton, Text, VStack } from "@chakra-ui/react";
 import TextTitle from "components/ui/text/TextTitle";
 import { useState } from "react";
 import "react-big-calendar/lib/css/react-big-calendar.css";
@@ -24,11 +16,11 @@ const ChatMessages = ({ userId, company }) => {
 	// useEffect(() => {
 	// 	const fetchAllUserConversation = async () => {
 	// 		try {
-	// 			const response = await CommunicationService.getUserConversations({
+	// 			const {data} = await CommunicationService.getUserConversations({
 	// 				userId,
 	// 				company,
 	// 			});
-	// 			response.data.forEach((conversation) => {
+	// 			data.forEach((conversation) => {
 	// 				conversation.isPersonal =
 	// 					conversation.conversationType === "one-on-one";
 	// 				conversation.participant = conversation.isPersonal
@@ -45,8 +37,8 @@ const ChatMessages = ({ userId, company }) => {
 	// 					  ]?.text.slice(0, 50)
 	// 					: "";
 	// 			});
-	// 			setUserConversation(response.data);
-	// 			if (response.data.length === 0) {
+	// 			setUserConversation(data);
+	// 			if (data.length === 0) {
 	// 				fetchAllGroups();
 	// 			}
 	// 		} catch (error) {
@@ -60,11 +52,11 @@ const ChatMessages = ({ userId, company }) => {
 
 	// const fetchAllGroups = async () => {
 	// 	try {
-	// 		const response = await UserService.getAllMemberGroups({
+	// 		const {data} = await UserService.getAllMemberGroups({
 	// 			userId,
 	// 			company,
 	// 		});
-	// 		setGroups(response.data);
+	// 		setGroups(data);
 	// 	} catch (error) {
 	// 		console.error(error);
 	// 	}
@@ -80,9 +72,7 @@ const ChatMessages = ({ userId, company }) => {
 
 	const handleChat = (conversation, isPersonal) => {
 		setCurrentConversation(conversation);
-		setCurrentChat(
-			isPersonal ? conversation.messages : conversation.groupMessages,
-		);
+		setCurrentChat(isPersonal ? conversation.messages : conversation.groupMessages);
 	};
 
 	const NoMessage = ({ title }) => <TextTitle p="10px" title={title} />;
@@ -92,9 +82,7 @@ const ChatMessages = ({ userId, company }) => {
 			{userConversation ? (
 				<>
 					<HStack>
-						{currentChat && (
-							<IoMdArrowRoundBack onClick={() => setCurrentChat(null)} />
-						)}
+						{currentChat && <IoMdArrowRoundBack onClick={() => setCurrentChat(null)} />}
 						<NoMessage title={"Chat History"} />
 					</HStack>
 					{currentChat ? (
@@ -109,9 +97,7 @@ const ChatMessages = ({ userId, company }) => {
 						<VStack align="stretch" spacing={2}>
 							{userConversation?.length === 0 && (
 								<>
-									{!groups?.length && (
-										<NoMessage title={"No recent conversation found."} />
-									)}
+									{!groups?.length && <NoMessage title={"No recent conversation found."} />}
 									{groups?.map((group) => (
 										<HStack
 											key={group._id}
@@ -138,12 +124,7 @@ const ChatMessages = ({ userId, company }) => {
 													_hover={{ bg: "transparent" }}
 												/>
 											</Box>
-											<Button
-												justifyContent={"space-between"}
-												p={0}
-												variant="ghost"
-												fontSize="xs"
-											>
+											<Button justifyContent={"space-between"} p={0} variant="ghost" fontSize="xs">
 												<VStack align={"self-start"}>
 													<TextTitle title={group.name} />
 												</VStack>
@@ -159,26 +140,14 @@ const ChatMessages = ({ userId, company }) => {
 									spacing={"1em"}
 									bg={"var(--lead_cards_bg)"}
 									cursor="pointer"
-									onClick={() =>
-										handleChat(conversation, conversation.isPersonal)
-									}
+									onClick={() => handleChat(conversation, conversation.isPersonal)}
 								>
 									{conversation.isPersonal ? (
 										<>
-											<Avatar
-												size={"sm"}
-												name={conversation?.participant?.fullName}
-											/>
-											<Button
-												justifyContent={"space-between"}
-												p={0}
-												variant="ghost"
-												fontSize="xs"
-											>
+											<Avatar size={"sm"} name={conversation?.participant?.fullName} />
+											<Button justifyContent={"space-between"} p={0} variant="ghost" fontSize="xs">
 												<VStack align={"self-start"}>
-													<Text fontWeight="bold">
-														{conversation?.participant?.fullName}
-													</Text>
+													<Text fontWeight="bold">{conversation?.participant?.fullName}</Text>
 													<Text>{conversation.participantMsg}</Text>
 												</VStack>
 											</Button>
@@ -202,16 +171,9 @@ const ChatMessages = ({ userId, company }) => {
 													_hover={{ bg: "transparent" }}
 												/>
 											</Box>
-											<Button
-												justifyContent={"space-between"}
-												p={0}
-												variant="ghost"
-												fontSize="xs"
-											>
+											<Button justifyContent={"space-between"} p={0} variant="ghost" fontSize="xs">
 												<VStack align={"self-start"}>
-													<Text fontWeight="bold">
-														{conversation?.groupName}
-													</Text>
+													<Text fontWeight="bold">{conversation?.groupName}</Text>
 
 													<Text>{conversation.participantMsg}</Text>
 												</VStack>

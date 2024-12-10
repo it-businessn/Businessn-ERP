@@ -33,9 +33,9 @@ const SalesReport = () => {
 	const [contacts, setContacts] = useState(null);
 	const fetchAllContacts = async () => {
 		try {
-			const response = await ContactService.getContacts();
-			response.data.map((item) => (item.comm = "Meeting"));
-			setContacts(response.data);
+			const { data } = await ContactService.getContacts();
+			data.map((item) => (item.comm = "Meeting"));
+			setContacts(data);
 		} catch (error) {
 			console.error(error);
 		}

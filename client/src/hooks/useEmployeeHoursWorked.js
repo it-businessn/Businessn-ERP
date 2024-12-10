@@ -8,7 +8,7 @@ const useEmployeeHoursWorked = (company, payPeriod, groupId) => {
 		const extraRun = payPeriod?.isExtraRun ?? false;
 		const fetchHoursWorkedInfo = async () => {
 			try {
-				const response = await PayrollService.getHoursWorkedAllocation(
+				const { data } = await PayrollService.getHoursWorkedAllocation(
 					company,
 					payPeriod.payPeriodStartDate,
 					payPeriod.payPeriodEndDate,
@@ -16,7 +16,7 @@ const useEmployeeHoursWorked = (company, payPeriod, groupId) => {
 					extraRun,
 					groupId,
 				);
-				setHours(response.data);
+				setHours(data);
 			} catch (error) {
 				console.error(error);
 			}

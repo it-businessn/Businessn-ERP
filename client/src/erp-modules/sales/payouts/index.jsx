@@ -42,12 +42,10 @@ const Payouts = () => {
 	useEffect(() => {
 		const fetchAllPayouts = async () => {
 			try {
-				const response = await PayoutService.getPayouts(company);
+				const { data } = await PayoutService.getPayouts(company);
 
 				setPayouts(
-					isManagerUser
-						? response.data
-						: response.data.filter(({ fullName }) => fullName === loggedInUser.fullName),
+					isManagerUser ? data : data.filter(({ fullName }) => fullName === loggedInUser.fullName),
 				);
 			} catch (error) {
 				console.error(error);

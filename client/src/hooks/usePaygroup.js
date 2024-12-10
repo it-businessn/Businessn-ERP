@@ -34,16 +34,13 @@ const usePaygroup = (company, refresh) => {
 	useEffect(() => {
 		const fetchAllPaygroups = async () => {
 			try {
-				const response = await PayrollService.getAllPaygroups(company);
-				setPayGroups(response.data);
-				if (response.data.length) {
-					setSelectedPayGroup(response.data[0]);
-					const sortedResult = sortRecordsByDate(
-						response.data[0]?.scheduleSettings,
-						"payPeriodPayDate",
-					);
+				const { data } = await PayrollService.getAllPaygroups(company);
+				setPayGroups(data);
+				if (data.length) {
+					setSelectedPayGroup(data[0]);
+					const sortedResult = sortRecordsByDate(data[0]?.scheduleSettings, "payPeriodPayDate");
 					setPayGroupSchedule(sortedResult);
-					getClosestScheduleByProcessingDate(response.data[0]?.scheduleSettings);
+					getClosestScheduleByProcessingDate(data[0]?.scheduleSettings);
 				}
 			} catch (error) {
 				console.error(error);

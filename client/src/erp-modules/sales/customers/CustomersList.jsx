@@ -45,8 +45,8 @@ const CustomersList = ({ user, handleProfileView, icons, company }) => {
 	useEffect(() => {
 		const fetchAllCompanies = async () => {
 			try {
-				const response = await LeadsService.getLeadCompanies(company);
-				setCompanies(response.data);
+				const { data } = await LeadsService.getLeadCompanies(company);
+				setCompanies(data);
 			} catch (error) {
 				console.error(error);
 			}
@@ -64,9 +64,9 @@ const CustomersList = ({ user, handleProfileView, icons, company }) => {
 
 	const fetchAllContacts = async () => {
 		try {
-			const response = await ContactService.getCompContacts(company);
-			response.data.map((_) => (_.stage = _.leadId?.stage));
-			const filterContacts = response.data.filter((_) => _.stage === "T4");
+			const { data } = await ContactService.getCompContacts(company);
+			data.map((_) => (_.stage = _.leadId?.stage));
+			const filterContacts = data.filter((_) => _.stage === "T4");
 
 			setContacts(
 				isUserManager

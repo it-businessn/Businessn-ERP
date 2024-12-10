@@ -13,11 +13,11 @@ const TaskTable = ({ cols, user, company }) => {
 	useEffect(() => {
 		const fetchAllUserTasks = async () => {
 			try {
-				const response = await TaskService.getTaskByAssignee({
+				const { data } = await TaskService.getTaskByAssignee({
 					name: selectedUser?.fullName,
 					company,
 				});
-				setTasks(response.data);
+				setTasks(data);
 			} catch (error) {
 				console.error(error);
 			}

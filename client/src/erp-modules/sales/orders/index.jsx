@@ -39,9 +39,9 @@ const Orders = () => {
 	const [contacts, setContacts] = useState(null);
 	const fetchAllContacts = async () => {
 		try {
-			const response = await ContactService.getContacts();
-			response.data.map((item) => (item.comm = "Meeting"));
-			setContacts(response.data);
+			const { data } = await ContactService.getContacts();
+			data.map((item) => (item.comm = "Meeting"));
+			setContacts(data);
 		} catch (error) {
 			console.error(error);
 		}
@@ -77,24 +77,13 @@ const Orders = () => {
 						borderRadius="10px"
 						fontWeight="bold"
 					>
-						<Text
-							fontWeight="bold"
-							color={"var(--main_color_black)"}
-							mt="2"
-							mb="1"
-						>
+						<Text fontWeight="bold" color={"var(--main_color_black)"} mt="2" mb="1">
 							Open stage mix
 						</Text>
 						<VStack>
 							<Box h={"40px"} />
-							<Box
-								w={{ base: "70%", md: "50%", lg: "100%", xl: "65%" }}
-								mx={"auto"}
-							>
-								<Doughnut
-									data={activityChartData}
-									options={doughnutOptions("0%")}
-								/>
+							<Box w={{ base: "70%", md: "50%", lg: "100%", xl: "65%" }} mx={"auto"}>
+								<Doughnut data={activityChartData} options={doughnutOptions("0%")} />
 							</Box>
 						</VStack>
 					</Box>
@@ -117,11 +106,7 @@ const Orders = () => {
 								display="flex"
 								flexDir="column"
 							>
-								<Text
-									fontSize="xs"
-									fontWeight="bold"
-									color={"var(--nav_color)"}
-								>
+								<Text fontSize="xs" fontWeight="bold" color={"var(--nav_color)"}>
 									Orders to be Fulfilled
 								</Text>
 								<Text mr="3" fontSize={"1.25em"}>
@@ -136,11 +121,7 @@ const Orders = () => {
 								display="flex"
 								flexDir="column"
 							>
-								<Text
-									fontSize="xs"
-									fontWeight="bold"
-									color={"var(--nav_color)"}
-								>
+								<Text fontSize="xs" fontWeight="bold" color={"var(--nav_color)"}>
 									New Order
 								</Text>
 								<Text mr="3" fontSize={"1.25em"}>
@@ -155,11 +136,7 @@ const Orders = () => {
 								display="flex"
 								flexDir="column"
 							>
-								<Text
-									fontSize="xs"
-									fontWeight="bold"
-									color={"var(--nav_color)"}
-								>
+								<Text fontSize="xs" fontWeight="bold" color={"var(--nav_color)"}>
 									Approved Orders
 								</Text>
 								<Text mr="3" fontSize={"1.25em"}>
@@ -364,12 +341,7 @@ const Orders = () => {
 										<Td fontSize={"xs"}>$345</Td>
 										<Td fontSize={"xs"}>Product1</Td>
 										<Td fontSize={"xs"} p={0}>
-											<Progress
-												colorScheme="blue"
-												size="sm"
-												bg={"#d5def5"}
-												value={55}
-											/>
+											<Progress colorScheme="blue" size="sm" bg={"#d5def5"} value={55} />
 											<Text fontSize={"xs"}>Paid, preparing for shipment</Text>
 										</Td>
 										<Td fontSize={"xs"}>Product1</Td>

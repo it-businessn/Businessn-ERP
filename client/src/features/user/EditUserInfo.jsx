@@ -35,9 +35,9 @@ const EditUserInfo = ({ setEditMode, userData, setUserData, setError, error, com
 		e.preventDefault();
 		try {
 			userData.companies = userData.companyId;
-			const response = await UserService.updateUserProfile(userData, userData._id);
+			const { data } = await UserService.updateUserProfile(userData, userData._id);
 			setEditMode(false);
-			setUserData(response.data);
+			setUserData(data);
 			setError(null);
 		} catch (error) {
 			console.error("Error adding user:", error?.response?.data);

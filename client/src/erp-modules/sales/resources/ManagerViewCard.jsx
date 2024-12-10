@@ -17,8 +17,8 @@ const ManagerViewCard = ({ company }) => {
 	useEffect(() => {
 		const fetchAllAssessmentTypes = async () => {
 			try {
-				const response = await AssessmentService.getAssessmentTypes(company);
-				setAssessments(response.data);
+				const { data } = await AssessmentService.getAssessmentTypes(company);
+				setAssessments(data);
 			} catch (error) {
 				console.error(error);
 			}

@@ -6,8 +6,8 @@ const useEmployeeGovernment = (company, empId, isOnboarding, refresh) => {
 	useEffect(() => {
 		const fetchEmployeeGovernmentInfo = async () => {
 			try {
-				const response = await PayrollService.getEmployeeGovernmentInfo(company, empId);
-				setGovernmentInfo(response.data);
+				const { data } = await PayrollService.getEmployeeGovernmentInfo(company, empId);
+				setGovernmentInfo(data);
 			} catch (error) {
 				console.error(error);
 			}

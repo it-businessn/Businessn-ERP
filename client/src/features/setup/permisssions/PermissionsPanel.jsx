@@ -1,14 +1,4 @@
-import {
-	Box,
-	HStack,
-	Table,
-	Tbody,
-	Td,
-	Text,
-	Th,
-	Thead,
-	Tr,
-} from "@chakra-ui/react";
+import { Box, HStack, Table, Tbody, Td, Text, Th, Thead, Tr } from "@chakra-ui/react";
 
 import EmptyRowRecord from "components/ui/EmptyRowRecord";
 import { SIDEBAR_MENU } from "data";
@@ -21,21 +11,14 @@ import LocalStorageService from "services/LocalStorageService";
 import UserService from "services/UserService";
 import EmpSearchMenu from "../company/group-tab/EmpSearchMenu";
 
-const PermissionsPanel = ({
-	employees,
-	setFilteredEmployees,
-	filteredEmployees,
-	company,
-}) => {
+const PermissionsPanel = ({ employees, setFilteredEmployees, filteredEmployees, company }) => {
 	const [isRefresh, setIsRefresh] = useState(false);
 	const [empName, setEmpName] = useState("");
 	const [userPermission, setUserPermission] = useState(null);
 	const [showLoader, setShowLoader] = useState(false);
 	const location = useLocation();
 	const currentModule = location.pathname.split("/")[1];
-	const defaultIndex = SIDEBAR_MENU?.findIndex(
-		(menu) => menu.id === currentModule,
-	);
+	const defaultIndex = SIDEBAR_MENU?.findIndex((menu) => menu.id === currentModule);
 	const [isExpanded, setExpanded] = useState(defaultIndex);
 	const [children, setChildren] = useState(null);
 
@@ -45,20 +28,18 @@ const PermissionsPanel = ({
 		const fetchUserPermissions = async () => {
 			setShowLoader(true);
 			try {
-				const response = await UserService.getUserPermission({
+				const { data } = await UserService.getUserPermission({
 					userId,
 					company,
 				});
-				if (response.data) {
+				if (data) {
 					SIDEBAR_MENU.forEach((data, index) => {
-						const menu = response.data.permissionType.find(
-							(item) => item.name === data.name,
-						);
+						const menu = data.permissionType.find((item) => item.name === data.name);
 						if (menu) {
 							SIDEBAR_MENU[index].permissions = menu;
 						}
 						data?.children?.forEach((child, cIndex) => {
-							const childMenu = response.data.permissionType.find(
+							const childMenu = data.permissionType.find(
 								(item) => item.name === `${data.name} ${child.name}`,
 							);
 							if (menu) {
@@ -66,7 +47,7 @@ const PermissionsPanel = ({
 							}
 						});
 					});
-					setUserPermission(response.data);
+					setUserPermission(data);
 				} else {
 					setUserPermission(null);
 				}
@@ -87,18 +68,14 @@ const PermissionsPanel = ({
 	const handleInputChange = (value) => {
 		setEmpName(value);
 		setFilteredEmployees(
-			employees.filter((emp) =>
-				emp?.fullName?.toLowerCase().includes(value.toLowerCase()),
-			),
+			employees.filter((emp) => emp?.fullName?.toLowerCase().includes(value.toLowerCase())),
 		);
 	};
 
 	const handleSelect = (emp) => {
 		setEmpName(emp.fullName);
 		setFilteredEmployees(
-			employees.filter((emp) =>
-				emp?.fullName?.toLowerCase().includes(emp.fullName.toLowerCase()),
-			),
+			employees.filter((emp) => emp?.fullName?.toLowerCase().includes(emp.fullName.toLowerCase())),
 		);
 		handleSubmit(emp);
 	};

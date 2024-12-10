@@ -8,13 +8,13 @@ const useEmployeeAmountAllocation = (company, refresh, payPeriod, groupId) => {
 		const extraRun = payPeriod?.isExtraRun ?? false;
 		const fetchEmployeeAmountInfo = async () => {
 			try {
-				const response = await PayrollService.getAllEmployeeAmountInfo(
+				const { data } = await PayrollService.getAllEmployeeAmountInfo(
 					company,
 					payPeriod.payPeriodPayDate,
 					extraRun,
 					groupId,
 				);
-				setAmountInfo(response.data);
+				setAmountInfo(data);
 			} catch (error) {
 				console.error(error);
 			}

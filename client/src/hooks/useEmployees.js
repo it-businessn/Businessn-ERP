@@ -16,14 +16,14 @@ const useEmployees = (isRefresh, company, isOnboarding, isPayrollState, userId) 
 	useEffect(() => {
 		const fetchAllEmployees = async () => {
 			try {
-				const response = isPayrollActiveState
+				const { data } = isPayrollActiveState
 					? await UserService.getPayrollActiveCompanyUsers(company)
 					: isPayrollInActiveState
 					? await UserService.getPayrollInActiveCompanyUsers(company)
 					: await UserService.getAllCompanyUsers(company);
 
-				setEmployees(response.data);
-				setFilteredEmployees(response.data);
+				setEmployees(data);
+				setFilteredEmployees(data);
 			} catch (error) {
 				console.error(error);
 			}

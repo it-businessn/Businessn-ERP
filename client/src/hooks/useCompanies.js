@@ -7,8 +7,8 @@ const useCompanies = () => {
 	useEffect(() => {
 		const fetchAllCompanies = async () => {
 			try {
-				const response = await SettingService.getAllCompanies();
-				setCompanies(response.data);
+				const { data } = await SettingService.getAllCompanies();
+				setCompanies(data);
 			} catch (error) {
 				console.error(error);
 			}

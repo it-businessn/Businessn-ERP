@@ -34,10 +34,10 @@ const Activities = () => {
 	useEffect(() => {
 		const fetchAllContacts = async () => {
 			try {
-				const response = await ContactService.getCompContacts(company);
-				response.data.map((_) => (_.stage = _.leadId?.stage));
-				const filterContacts = response.data.filter((_) => _.stage === "T4");
-				const filterLeads = response.data.filter((_) => _.stage?.includes("L"));
+				const { data } = await ContactService.getCompContacts(company);
+				data?.map((_) => (_.stage = _.leadId?.stage));
+				const filterContacts = data?.filter((_) => _.stage === "T4");
+				const filterLeads = data?.filter((_) => _.stage?.includes("L"));
 				setLeads(filterLeads);
 				setContacts(filterContacts);
 			} catch (error) {
@@ -52,12 +52,12 @@ const Activities = () => {
 	useEffect(() => {
 		const fetchAllUserActivities = async () => {
 			try {
-				const response = await ActivityService.getActivitiesByUser({
+				const { data } = await ActivityService.getActivitiesByUser({
 					id: selectedUser?._id,
 					company,
 					type: selectedFilter,
 				});
-				setUserActivities(response.data);
+				setUserActivities(data);
 
 				const isToday = selectedFilter === "Daily";
 				const isWeekly = selectedFilter === "Weekly";
@@ -66,7 +66,7 @@ const Activities = () => {
 				const isAnnual = selectedFilter === "Annual";
 
 				ACTIVITY_CARDS.map((item) => {
-					item.count = response.data.filter(({ type }) => type === item.value).length;
+					item.count = data?.filter(({ type }) => type === item.value).length;
 					const target = item.target;
 					item.target1 = isWeekly
 						? target * 5
@@ -80,7 +80,7 @@ const Activities = () => {
 					return item;
 				});
 				SALES_ACTIVITY_CARDS.map((_) => {
-					_.count = response.data.filter((_) => _.type === _.value).length;
+					_.count = data?.filter((_) => _.type === _.value).length;
 					const target = _.target;
 					_.target2 = isWeekly
 						? target * 5

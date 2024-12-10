@@ -6,12 +6,12 @@ const useTimesheet = (company, userId, refresh, filter) => {
 
 	const fetchAllEmployeeTimesheet = async () => {
 		try {
-			const response = userId
+			const { data } = userId
 				? await TimesheetService.getTimesheetById(company, userId)
 				: filter
 				? await TimesheetService.getFilteredTimesheets(company, filter)
 				: await TimesheetService.getTimesheets(company);
-			setTimesheets(response.data);
+			setTimesheets(data);
 		} catch (error) {
 			console.error(error);
 		}

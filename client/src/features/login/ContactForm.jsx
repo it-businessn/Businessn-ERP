@@ -30,9 +30,9 @@ const ContactForm = ({ showContactForm, handleClose }) => {
 		e.preventDefault();
 		setIsLoading(true);
 		try {
-			const response = await ContactService.contactCustomer(formData);
+			const { data } = await ContactService.contactCustomer(formData);
 			setIsLoading(false);
-			showToast("success", response.data.message, "");
+			showToast("success", data.message, "");
 			handleClose();
 		} catch (error) {
 			setIsLoading(false);
@@ -50,12 +50,7 @@ const ContactForm = ({ showContactForm, handleClose }) => {
 	};
 
 	return (
-		<ModalLayout
-			title={"Contact Details"}
-			size="lg"
-			isOpen={showContactForm}
-			onClose={handleClose}
-		>
+		<ModalLayout title={"Contact Details"} size="lg" isOpen={showContactForm} onClose={handleClose}>
 			<form onSubmit={handleSubmit}>
 				<Stack spacing={3} justifyContent={"end"}>
 					<InputFormControl

@@ -20,8 +20,8 @@ const Notes = ({ contactId, user, company, currentTab }) => {
 	useEffect(() => {
 		const fetchNotesByContactId = async () => {
 			try {
-				const response = await NotesService.getNotesByContactId(contactId);
-				setNotes(response.data);
+				const { data } = await NotesService.getNotesByContactId(contactId);
+				setNotes(data);
 			} catch (error) {
 				console.error(error);
 			}

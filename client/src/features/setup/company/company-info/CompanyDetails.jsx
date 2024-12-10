@@ -20,8 +20,8 @@ const CompanyDetails = ({ company, modules }) => {
 	useEffect(() => {
 		const fetchCompanyInfo = async () => {
 			try {
-				const response = await SettingService.getCompanyInfo(company);
-				setCompanyInfo(response.data);
+				const { data } = await SettingService.getCompanyInfo(company);
+				setCompanyInfo(data);
 			} catch (error) {
 				console.error(error);
 			}

@@ -43,11 +43,7 @@ const UserList = ({ employees }) => {
 	const toast = useToast();
 	const handleSubmit = async (values) => {
 		try {
-			const updateData = await UserService.updateUserById(
-				values,
-				record._id,
-				loggedInUser.token,
-			);
+			const updateData = await UserService.updateUserById(values, record._id, loggedInUser.token);
 			toast(TOAST.SUCCESS);
 			onClose();
 		} catch (error) {
@@ -68,7 +64,7 @@ const UserList = ({ employees }) => {
 			// onClose();
 		} catch (error) {
 			toast(TOAST.ERROR);
-			// setError(error.response.data.error);
+			// setError(error.data.error);
 			console.log(error);
 		}
 	};
@@ -179,21 +175,12 @@ const UserList = ({ employees }) => {
 					rowsPerPageOptions={[5, 10, 25, 50]}
 					tableStyle={{ whiteSpace: "pre-line" }}
 				>
-					<Column
-						selectionMode="multiple"
-						headerStyle={{ width: "3rem" }}
-					></Column>
+					<Column selectionMode="multiple" headerStyle={{ width: "3rem" }}></Column>
 					<Column
 						field="name"
 						body={(value) => (
 							<HStack spacing="3">
-								<Avatar
-									name={value.name}
-									src=""
-									w="2.5rem"
-									h="2.5rem"
-									fontSize="1rem"
-								/>
+								<Avatar name={value.name} src="" w="2.5rem" h="2.5rem" fontSize="1rem" />
 								<Box>
 									<Text textTransform="capitalize">{value.name}</Text>
 								</Box>
@@ -215,19 +202,13 @@ const UserList = ({ employees }) => {
 						body={(value) => {
 							<>
 								{value?.annualSalary
-									? userCurrency(value.bankDetails.currency).format(
-											value.annualSalary,
-									  )
+									? userCurrency(value.bankDetails.currency).format(value.annualSalary)
 									: 0}
 							</>;
 						}}
 						header="Annual Salary"
 					></Column>
-					<Column
-						style={{ cursor: "pointer" }}
-						body={<FiEdit2 />}
-						header="Action"
-					></Column>
+					<Column style={{ cursor: "pointer" }} body={<FiEdit2 />} header="Action"></Column>
 				</DataTable>
 			</div>
 			{record && (

@@ -17,11 +17,8 @@ const LeftPane = ({ selectedUser, company }) => {
 	useEffect(() => {
 		const fetchEmpPayStubs = async () => {
 			try {
-				const response = await PayrollService.getEmpPayReportDetails(
-					company,
-					selectedUser._id,
-				);
-				setEmpPayStub(response.data);
+				const { data } = await PayrollService.getEmpPayReportDetails(company, selectedUser._id);
+				setEmpPayStub(data);
 			} catch (error) {
 				console.error(error);
 			}
@@ -36,12 +33,7 @@ const LeftPane = ({ selectedUser, company }) => {
 
 	return (
 		<Box>
-			<SimpleGrid
-				mb={"1em"}
-				columns={{ base: 1 }}
-				spacing="1em"
-				color={"var(--menu_item_color)"}
-			>
+			<SimpleGrid mb={"1em"} columns={{ base: 1 }} spacing="1em" color={"var(--menu_item_color)"}>
 				<EmployeeTimeCard selectedUser={selectedUser} company={company} />
 			</SimpleGrid>
 			<SimpleGrid

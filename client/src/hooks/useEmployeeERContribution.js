@@ -8,7 +8,7 @@ const useEmployeeERContribution = (company, payPeriod, groupId) => {
 		const extraRun = payPeriod?.isExtraRun ?? false;
 		const fetchERContribution = async () => {
 			try {
-				const response = await PayrollService.getERContribution(
+				const { data } = await PayrollService.getERContribution(
 					company,
 					payPeriod.payPeriodStartDate,
 					payPeriod.payPeriodEndDate,
@@ -16,7 +16,7 @@ const useEmployeeERContribution = (company, payPeriod, groupId) => {
 					extraRun,
 					groupId,
 				);
-				setHours(response.data);
+				setHours(data);
 			} catch (error) {
 				console.error(error);
 			}

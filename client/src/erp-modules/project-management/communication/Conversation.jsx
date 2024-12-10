@@ -1,12 +1,4 @@
-import {
-	Avatar,
-	Box,
-	Button,
-	HStack,
-	Input,
-	Text,
-	VStack,
-} from "@chakra-ui/react";
+import { Avatar, Box, Button, HStack, Input, Text, VStack } from "@chakra-ui/react";
 import TextTitle from "components/ui/text/TextTitle";
 import { useEffect, useState } from "react";
 import { BsFillSendFill } from "react-icons/bs";
@@ -30,27 +22,23 @@ const Conversation = ({
 	useEffect(() => {
 		const fetchGroupConversations = async () => {
 			try {
-				const response = await CommunicationService.getGroupMessages(
-					selectedGroup?.name,
-				);
-				response?.data[0]?.groupMessages.map((msg) => {
-					msg.senderName = groupMembers.find(
-						(_) => _._id === msg.sender,
-					)?.fullName;
+				const { data } = await CommunicationService.getGroupMessages(selectedGroup?.name);
+				data[0]?.groupMessages.map((msg) => {
+					msg.senderName = groupMembers.find((_) => _._id === msg.sender)?.fullName;
 					return msg;
 				});
-				setConversations(response?.data[0]?.groupMessages || []);
+				setConversations(data[0]?.groupMessages || []);
 			} catch (error) {
 				console.error("Error fetching conversations:", error);
 			}
 		};
 		const fetchTwoUsersConversations = async () => {
 			try {
-				const response = await CommunicationService.getOneToOneConversation({
+				const { data } = await CommunicationService.getOneToOneConversation({
 					userId1: selectedGroupMember._id,
 					userId2: userId,
 				});
-				setConversations(response?.data[0]?.messages || []);
+				setConversations(data[0]?.messages || []);
 			} catch (error) {
 				console.error("Error fetching conversations:", error);
 			}
@@ -72,13 +60,13 @@ const Conversation = ({
 			} else {
 				groupMembers.forEach((member) => participants.push(member._id));
 			}
-			const response = await CommunicationService.createConversation({
+			const { data } = await CommunicationService.createConversation({
 				participants,
 				conversationType: type,
 				groupName: selectedGroup.name,
 				companyName: company,
 			});
-			return { id: response.data._id, type: response.data.conversationType };
+			return { id: data._id, type: data.conversationType };
 		} catch (error) {
 			setMessage("An error occurred. Please try again.");
 		}
@@ -121,11 +109,7 @@ const Conversation = ({
 					<Avatar name={user?.fullName} />
 					<VStack align={"start"} spacing={1}>
 						<TextTitle
-							title={
-								selectedGroupMember
-									? selectedGroupMember?.fullName
-									: selectedGroup?.name
-							}
+							title={selectedGroupMember ? selectedGroupMember?.fullName : selectedGroup?.name}
 						/>
 						<Text fontSize={"xs"}>{selectedGroupMember?.email}</Text>
 					</VStack>

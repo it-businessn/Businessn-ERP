@@ -92,15 +92,15 @@ const SchedulingCalendar = ({ newEmployeeAdded, setRefresh, company }) => {
 	useEffect(() => {
 		const fetchShifts = async () => {
 			try {
-				const response = await SchedulerService.getShiftsByDate({
+				const { data } = await SchedulerService.getShiftsByDate({
 					date: getMomentDateISO(currentDate),
 					company,
 				});
 				const uniqueEvents = [];
-				if (response.data.length > 0) {
+				if (data.length > 0) {
 					const titles = {};
 
-					response.data.map((item) => {
+					data.map((item) => {
 						const startDate = new Date(item.start_time);
 						const hoursFromStartDate = startDate.getUTCHours();
 						const endDate = new Date(item.end_time);
@@ -126,7 +126,7 @@ const SchedulingCalendar = ({ newEmployeeAdded, setRefresh, company }) => {
 				}
 				setGroups(uniqueEvents);
 
-				setItems(response.data);
+				setItems(data);
 			} catch (error) {
 				console.error(error);
 			}

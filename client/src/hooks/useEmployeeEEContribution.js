@@ -8,7 +8,7 @@ const useEmployeeEEContribution = (company, payPeriod, groupId) => {
 		const extraRun = payPeriod?.isExtraRun ?? false;
 		const fetchEEContribution = async () => {
 			try {
-				const response = await PayrollService.getEEContribution(
+				const { data } = await PayrollService.getEEContribution(
 					company,
 					payPeriod.payPeriodStartDate,
 					payPeriod.payPeriodEndDate,
@@ -16,7 +16,7 @@ const useEmployeeEEContribution = (company, payPeriod, groupId) => {
 					extraRun,
 					groupId,
 				);
-				setHours(response.data);
+				setHours(data);
 			} catch (error) {
 				console.error(error);
 			}

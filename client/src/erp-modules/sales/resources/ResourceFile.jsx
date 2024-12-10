@@ -29,12 +29,12 @@ const ResourceFile = ({
 	useEffect(() => {
 		const fetchResourceByType = async () => {
 			try {
-				const response = await ResourceService.getResourcesByType({
+				const { data } = await ResourceService.getResourcesByType({
 					type: selectedFilter,
 					company,
 				});
 
-				setResources(response.data);
+				setResources(data);
 			} catch (error) {
 				console.error(error);
 			}
@@ -47,8 +47,8 @@ const ResourceFile = ({
 	useEffect(() => {
 		const fetchAllResources = async () => {
 			try {
-				const response = await ResourceService.getResourcesByCompany(company);
-				setResources(response.data);
+				const { data } = await ResourceService.getResourcesByCompany(company);
+				setResources(data);
 			} catch (error) {
 				console.error(error);
 			}

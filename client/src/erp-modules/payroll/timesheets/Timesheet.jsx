@@ -21,8 +21,8 @@ const Timesheet = ({ company, setShowAddEntry, showAddEntry, filter, setTimeshee
 	useEffect(() => {
 		const fetchAllEmployeeTimesheet = async () => {
 			try {
-				const response = await TimesheetService.getFilteredTimesheets(company, filter);
-				setTimesheets(response.data);
+				const { data } = await TimesheetService.getFilteredTimesheets(company, filter);
+				setTimesheets(data);
 			} catch (error) {
 				console.error(error);
 			}

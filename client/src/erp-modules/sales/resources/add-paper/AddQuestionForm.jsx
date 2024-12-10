@@ -45,8 +45,8 @@ const AddQuestionForm = () => {
 	useEffect(() => {
 		const fetchAllAssessmentTypes = async () => {
 			try {
-				const response = await AssessmentService.getAssessmentTypes(company);
-				setAssessmentTypes(response.data);
+				const { data } = await AssessmentService.getAssessmentTypes(company);
+				setAssessmentTypes(data);
 			} catch (error) {
 				console.error(error);
 			}
@@ -54,11 +54,11 @@ const AddQuestionForm = () => {
 		fetchAllAssessmentTypes();
 		const fetchQuestionsByType = async (type) => {
 			try {
-				const response = await QuestionnaireService.getSubjectQuestionnaire({
+				const { data } = await QuestionnaireService.getSubjectQuestionnaire({
 					type,
 					company,
 				});
-				setQuestionnaires(response.data);
+				setQuestionnaires(data);
 			} catch (error) {
 				console.error(error);
 			}

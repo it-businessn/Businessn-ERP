@@ -5,23 +5,17 @@ import "react-big-calendar/lib/css/react-big-calendar.css";
 import { BsFillSendFill } from "react-icons/bs";
 import CommunicationService from "services/CommsService";
 
-const ChatHistory = ({
-	currentConversation,
-	userId,
-	isRefresh,
-	setIsRefresh,
-	company,
-}) => {
+const ChatHistory = ({ currentConversation, userId, isRefresh, setIsRefresh, company }) => {
 	const [messages, setMessages] = useState(null);
 	const [message, setMessage] = useState("");
 	useEffect(() => {
 		const fetchConversationHistory = async () => {
 			try {
-				const response = await CommunicationService.getConversationHistory({
+				const { data } = await CommunicationService.getConversationHistory({
 					id: currentConversation._id,
 					type: currentConversation.conversationType,
 				});
-				setMessages(response.data);
+				setMessages(data);
 			} catch (error) {
 				console.error(error);
 			}
@@ -36,17 +30,15 @@ const ChatHistory = ({
 		}
 	};
 	const createConversation = async () => {
-		const participants = currentConversation?.participants.map(
-			(item) => item._id,
-		);
+		const participants = currentConversation?.participants.map((item) => item._id);
 		try {
-			const response = await CommunicationService.createConversation({
+			const { data } = await CommunicationService.createConversation({
 				participants,
 				conversationType: currentConversation?.conversationType,
 				groupName: currentConversation.groupName,
 				companyName: company,
 			});
-			return { id: response.data._id, type: response.data.conversationType };
+			return { id: data._id, type: data.conversationType };
 		} catch (error) {
 			setMessage("An error occurred. Please try again.");
 		}

@@ -12,16 +12,14 @@ import AgentsView from "./AgentsView";
 import ListView from "./ListView";
 
 const FreshLeads = () => {
-	const { company } = useCompany(
-		LocalStorageService.getItem("selectedCompany"),
-	);
+	const { company } = useCompany(LocalStorageService.getItem("selectedCompany"));
 	const [leads, setLeads] = useState(null);
 	const [isUpdated, setIsUpdated] = useState(false);
 
 	const fetchAllLeads = async () => {
 		try {
-			const response = await LeadsService.getFreshLeads(company);
-			setLeads(response.data);
+			const { data } = await LeadsService.getFreshLeads(company);
+			setLeads(data);
 		} catch (error) {
 			console.error(error);
 		}
@@ -79,15 +77,10 @@ const FreshLeads = () => {
 		},
 	];
 	const [viewMode, setViewMode] = useState(TAB_LIST[0].type);
-	const showComponent = (viewMode) =>
-		TAB_LIST.find(({ type }) => type === viewMode)?.name;
+	const showComponent = (viewMode) => TAB_LIST.find(({ type }) => type === viewMode)?.name;
 	return (
 		<PageLayout title={"Fresh Leads"}>
-			<TabsButtonGroup
-				tabs={TAB_LIST}
-				setViewMode={setViewMode}
-				viewMode={viewMode}
-			/>
+			<TabsButtonGroup tabs={TAB_LIST} setViewMode={setViewMode} viewMode={viewMode} />
 			{showConfirmationPopUp && (
 				<DeletePopUp
 					headerTitle={"Delete Fresh Lead"}

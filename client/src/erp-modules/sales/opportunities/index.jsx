@@ -53,8 +53,8 @@ const Opportunities = () => {
 	useEffect(() => {
 		const fetchAllCompanies = async () => {
 			try {
-				const response = await LeadsService.getLeadCompanies(company);
-				setCompanies(response.data);
+				const { data } = await LeadsService.getLeadCompanies(company);
+				setCompanies(data);
 			} catch (error) {
 				console.error(error);
 			}
@@ -65,10 +65,10 @@ const Opportunities = () => {
 
 	const fetchAllOpportunities = async () => {
 		try {
-			const response = await LeadsService.getOpportunities(company);
+			const { data } = await LeadsService.getOpportunities(company);
 			const leadList = isManager(loggedInUser?.role)
-				? response.data
-				: response.data?.filter(
+				? data
+				: data?.filter(
 						(item) =>
 							(item.primaryAssignee?.length > 0 &&
 								item.primaryAssignee.find(({ name }) => name === loggedInUser?.fullName)) ||

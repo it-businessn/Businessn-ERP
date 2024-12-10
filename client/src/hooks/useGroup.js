@@ -8,18 +8,18 @@ const useGroup = (company, isRefresh, isCalendar) => {
 	useEffect(() => {
 		const fetchAllGroups = async () => {
 			try {
-				const response = await SettingService.getAllGroups(company);
-				setGroups(response.data);
-				if (response.data.length) {
+				const { data } = await SettingService.getAllGroups(company);
+				setGroups(data);
+				if (data.length) {
 					if (isCalendar) {
-						response.data.forEach((data) => {
+						data.forEach((data) => {
 							data.members = data.members.filter(({ role }) => isManager(role));
 						});
 					}
 
-					response.data[0].members.forEach((member) => {
-						member.baseModule = response.data[0].modules;
-						member.group = response.data[0].name;
+					data[0].members.forEach((member) => {
+						member.baseModule = data[0].modules;
+						member.group = data[0].name;
 					});
 				}
 			} catch (error) {

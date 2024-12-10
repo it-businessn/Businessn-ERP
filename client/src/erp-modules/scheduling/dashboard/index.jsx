@@ -17,33 +17,33 @@ const SchedulingDashboard = () => {
 	// useEffect(() => {
 	// 	const fetchAllEvents = async () => {
 	// 		try {
-	// 			const response = await CalendarService.getEventsByType({
+	// 			const {data} = await CalendarService.getEventsByType({
 	// 				type: "event",
 	// 				company,
 	// 			});
-	// 			setEvents(response.data);
+	// 			setEvents(data);
 	// 		} catch (error) {
 	// 			console.error(error);
 	// 		}
 	// 	};
 	// 	const fetchAllMeetings = async () => {
 	// 		try {
-	// 			const response = await CalendarService.getEventsByType({
+	// 			const {data} = await CalendarService.getEventsByType({
 	// 				type: "meeting",
 	// 				company,
 	// 			});
-	// 			setMeetings(response.data);
+	// 			setMeetings(data);
 	// 		} catch (error) {
 	// 			console.error(error);
 	// 		}
 	// 	};
 	// 	const fetchAllAppointments = async () => {
 	// 		try {
-	// 			const response = await CalendarService.getEventsByType({
+	// 			const {data} = await CalendarService.getEventsByType({
 	// 				type: "phoneCall",
 	// 				company,
 	// 			});
-	// 			setAppointments(response.data);
+	// 			setAppointments(data);
 	// 		} catch (error) {
 	// 			console.error(error);
 	// 		}

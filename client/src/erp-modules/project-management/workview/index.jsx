@@ -33,10 +33,10 @@ const WorkView = () => {
 		const fetchAllProjectInfo = async () => {
 			try {
 				setProjects(null);
-				const response = isManagerView
+				const { data } = isManagerView
 					? await ProjectService.getAllCompanyProjects(company)
 					: await ProjectService.getAllCompanyProjectsByUser(loggedInUser?.fullName, company);
-				setProjects(response.data);
+				setProjects(data);
 			} catch (error) {
 				console.error(error);
 				setProjects(null);

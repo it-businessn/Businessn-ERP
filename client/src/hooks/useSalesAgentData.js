@@ -7,10 +7,10 @@ const useSalesAgentData = (company, refresh, isDashboard) => {
 	useEffect(() => {
 		const fetchAllSalesAgents = async () => {
 			try {
-				const response = isDashboard
+				const { data } = isDashboard
 					? await UserService.getAllSalesAgentsDashboard(company)
 					: await UserService.getAllSalesAgents(company);
-				setEmployees(response.data);
+				setEmployees(data);
 			} catch (error) {
 				console.error(error);
 			}

@@ -7,10 +7,10 @@ export const API = axios.create({
 
 const refreshToken = async () => {
 	try {
-		const response = await apiService.post(`/refresh`, {
+		const { data } = await apiService.post(`/refresh`, {
 			token: localStorage.getItem("refreshToken"),
 		});
-		const { accessToken } = response.data;
+		const { accessToken } = data;
 
 		localStorage.setItem("accessToken", accessToken);
 		API.defaults.headers.common["Authorization"] = `Bearer ${accessToken}`;

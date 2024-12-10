@@ -13,8 +13,8 @@ const Timecard = ({ company, userId, timecardRefresh, filter }) => {
 	useEffect(() => {
 		const fetchAllTimecards = async () => {
 			try {
-				const response = await TimesheetService.getTimecards(company);
-				setTimeRecords(response.data);
+				const { data } = await TimesheetService.getTimecards(company);
+				setTimeRecords(data);
 			} catch (error) {
 				console.error(error);
 			}

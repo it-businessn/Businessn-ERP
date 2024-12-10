@@ -34,8 +34,8 @@ const Tasks = ({ contactId, user, company }) => {
 	useEffect(() => {
 		const fetchTasksByContactId = async () => {
 			try {
-				const response = await LogTaskService.getTaskByContactId(contactId);
-				setTasks(response.data);
+				const { data } = await LogTaskService.getTaskByContactId(contactId);
+				setTasks(data);
 			} catch (error) {
 				console.error(error);
 			}

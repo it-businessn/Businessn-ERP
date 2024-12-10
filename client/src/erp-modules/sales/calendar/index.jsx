@@ -48,11 +48,11 @@ const Calendar = () => {
 		// checkClassExists();
 		const fetchAllEvents = async () => {
 			try {
-				const response = await CalendarService.getCompEvents({
+				const { data } = await CalendarService.getCompEvents({
 					name: loggedInUser?.fullName,
 					company,
 				});
-				response.data.map((event) => {
+				data.map((event) => {
 					event.fromDate = getTimezone(event.fromDate);
 					event.toDate = getTimezone(event.toDate);
 					const fromDateTimeString = getDefaultDateTime(event.fromDate, event.fromTime);
@@ -74,7 +74,7 @@ const Calendar = () => {
 							: "var(--event_bg_light)";
 					return event;
 				});
-				setEvents(response.data);
+				setEvents(data);
 				setIsLoading(false);
 			} catch (error) {
 				console.error(error);

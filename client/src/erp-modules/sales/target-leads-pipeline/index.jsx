@@ -16,9 +16,7 @@ import { TARGET_LEADS } from "../opportunities/data";
 import GradientAreaFillColorChart from "./AreaFillColorChart";
 
 const Pipeline = () => {
-	const { company } = useCompany(
-		LocalStorageService.getItem("selectedCompany"),
-	);
+	const { company } = useCompany(LocalStorageService.getItem("selectedCompany"));
 	const loggedInUser = LocalStorageService.getItem("user");
 	const [leads, setLeads] = useState(null);
 	const [isUpdated, setIsUpdated] = useState(false);
@@ -27,8 +25,8 @@ const Pipeline = () => {
 
 	const fetchAllLeads = async () => {
 		try {
-			const response = await LeadsService.getTargetLeads(company);
-			setLeads(response.data);
+			const { data } = await LeadsService.getTargetLeads(company);
+			setLeads(data);
 		} catch (error) {
 			console.error(error);
 		}
@@ -79,22 +77,10 @@ const Pipeline = () => {
 
 	return (
 		<PageLayout title={"Target Leads"}>
-			<Box
-				width="100%"
-				borderRadius="10px"
-				border="3px solid var(--main_color)"
-				mb={3}
-			>
-				<TextTitle
-					p={"1em"}
-					title="Pipeline"
-					color={"var(--menu_item_color)"}
-					mb={"0.5em"}
-				/>
+			<Box width="100%" borderRadius="10px" border="3px solid var(--main_color)" mb={3}>
+				<TextTitle p={"1em"} title="Pipeline" color={"var(--menu_item_color)"} mb={"0.5em"} />
 
-				{opportunityData && (
-					<GradientAreaFillColorChart data={opportunityData} />
-				)}
+				{opportunityData && <GradientAreaFillColorChart data={opportunityData} />}
 			</Box>
 			{TARGET_LEADS && (
 				<AgentsView

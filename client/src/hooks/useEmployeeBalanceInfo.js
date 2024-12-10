@@ -6,11 +6,8 @@ const useEmployeeBalanceInfo = (company, empId) => {
 	useEffect(() => {
 		const fetchEmployeeBalanceInfo = async () => {
 			try {
-				const response = await PayrollService.getEmployeeBalanceInfo(
-					company,
-					empId,
-				);
-				setBalanceInfo(response.data);
+				const { data } = await PayrollService.getEmployeeBalanceInfo(company, empId);
+				setBalanceInfo(data);
 			} catch (error) {
 				console.error(error);
 			}

@@ -42,8 +42,8 @@ const AddContact = () => {
 	useEffect(() => {
 		const fetchIndustryTypes = async () => {
 			try {
-				const response = await IndustryService.getIndustryType();
-				setIndustryTypeOptions(response.data);
+				const { data } = await IndustryService.getIndustryType();
+				setIndustryTypeOptions(data);
 			} catch (error) {
 				console.error(error);
 			}
@@ -95,13 +95,7 @@ const AddContact = () => {
 		setFormData((prevData) => ({ ...prevData, [name]: value }));
 	};
 	return (
-		<Box
-			m="2em"
-			p={4}
-			justifyContent="center"
-			borderWidth="1px"
-			borderRadius="lg"
-		>
+		<Box m="2em" p={4} justifyContent="center" borderWidth="1px" borderRadius="lg">
 			<form onSubmit={handleSubmit}>
 				<HStack maxW="100%" justify="center">
 					<Stack flex={1}>
@@ -128,11 +122,7 @@ const AddContact = () => {
 						<Flex direction="row" align="center">
 							<FormControl>
 								<FormLabel>Type Of Industry </FormLabel>
-								<Select
-									name="industryType"
-									value={formData.industryType}
-									onChange={handleChange}
-								>
+								<Select name="industryType" value={formData.industryType} onChange={handleChange}>
 									{industryTypeOptions?.map((type) => (
 										<option value={type.name} key={type._id}>
 											{type.name}
@@ -162,11 +152,7 @@ const AddContact = () => {
 										onChange={(e) => setNewOption(e.target.value)}
 									/>
 								</FormControl>
-								<Button
-									ml={2}
-									onClick={handleIndustryTypeOption}
-									bg="var(--logo_bg)"
-								>
+								<Button ml={2} onClick={handleIndustryTypeOption} bg="var(--logo_bg)">
 									Add
 								</Button>
 							</Flex>
@@ -202,12 +188,7 @@ const AddContact = () => {
 							/>
 						</FormControl>
 					</Stack>
-					<Divider
-						orientation="vertical"
-						height="600px"
-						borderWidth="1px"
-						borderColor="gray.300"
-					/>
+					<Divider orientation="vertical" height="600px" borderWidth="1px" borderColor="gray.300" />
 					<Stack flex={1}>
 						<VStack align="center" justify="center" mb="4">
 							<Avatar name=" " size="lg" bg="gray.300" position="relative">
@@ -271,11 +252,7 @@ const AddContact = () => {
 						</FormControl>
 					</Stack>
 				</HStack>
-				<Button
-					type="submit"
-					bg="var(--logo_bg)"
-					isDisabled={formData.companyName === ""}
-				>
+				<Button type="submit" bg="var(--logo_bg)" isDisabled={formData.companyName === ""}>
 					Add Contact
 				</Button>
 			</form>
