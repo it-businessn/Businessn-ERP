@@ -7,6 +7,24 @@ const LocalStorageService = {
 		}
 	},
 
+	sessionSetItem: (key, value) => {
+		try {
+			sessionStorage.setItem(key, JSON.stringify(value));
+		} catch (error) {
+			console.error("Error setting localStorage item:", error);
+		}
+	},
+
+	getSessionItem: (key) => {
+		try {
+			const item = sessionStorage.getItem(key);
+			return item ? JSON.parse(item) : null;
+		} catch (error) {
+			console.error("Error getting localStorage item:", error);
+			return null;
+		}
+	},
+
 	getItem: (key) => {
 		try {
 			const item = localStorage.getItem(key);

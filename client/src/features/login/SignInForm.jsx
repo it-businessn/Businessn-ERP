@@ -15,6 +15,7 @@ import {
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useBreakpointValue } from "services/Breakpoint";
+import LocalStorageService from "services/LocalStorageService";
 import LoginService from "services/LoginService";
 import { buildUserInfo, storeUser } from "utils/common";
 import logoImg from "../../assets/logos/BusinessN_lightLogo1.png";
@@ -53,8 +54,8 @@ const SignInForm = ({ title }) => {
 		try {
 			const res = await LoginService.signIn(formData);
 			const { user, existingCompanyUser, accessToken, refreshToken } = res.data;
-			localStorage.setItem("accessToken", accessToken);
-			localStorage.setItem("refreshToken", refreshToken);
+			LocalStorageService.sessionSetItem("accessToken", accessToken);
+			LocalStorageService.setItem("refreshToken", refreshToken);
 
 			user.companyId = existingCompanyUser;
 

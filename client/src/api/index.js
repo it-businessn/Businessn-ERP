@@ -1,4 +1,5 @@
 import axios from "axios";
+import LocalStorageService from "services/LocalStorageService";
 import LoginService from "services/LoginService";
 
 export const API = axios.create({
@@ -8,7 +9,7 @@ export const API = axios.create({
 // Add access token to headers
 API.interceptors.request.use(
 	(config) => {
-		const token = localStorage.getItem("accessToken");
+		const token = LocalStorageService.getSessionItem("accessToken");
 		if (token) {
 			config.headers["Authorization"] = `Bearer ${token}`;
 		}
@@ -28,17 +29,17 @@ export const setupAxiosInterceptors = (setSessionExpired) => {
 
 				try {
 					const { data } = await LoginService.refresh({
-						refreshToken: localStorage.getItem("refreshToken"),
+						refreshToken: LocalStorageService.getItem("refreshToken"),
 					});
 					const { accessToken } = data;
-					localStorage.setItem("accessToken", accessToken);
+					LocalStorageService.sessionSetItem("accessToken", accessToken);
 					originalRequest.headers["Authorization"] = `Bearer ${accessToken}`;
 					return API(originalRequest);
 				} catch (refreshError) {
 					console.error("Refresh token invalid or expired", refreshError);
 					// setSessionExpired(true);
-					localStorage.removeItem("accessToken");
-					localStorage.removeItem("refreshToken");
+					LocalStorageService.removeItem("accessToken");
+					LocalStorageService.removeItem("refreshToken");
 					window.location.href = "/login";
 				}
 			}
