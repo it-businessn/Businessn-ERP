@@ -1,5 +1,6 @@
 const EmployeeBankingInfo = require("../models/EmployeeBankingInfo");
-const { encryptData, decryptData } = require("../services/encryptDataService");
+const { encryptData, decryptData, newEncryptionKey } = require("../services/encryptDataService");
+const { saveKeyToEnv } = require("../services/fileService");
 const { deleteAlerts } = require("./payrollController");
 
 const getAllBankingInfo = async (req, res) => {
@@ -20,7 +21,6 @@ const getAllBankingInfo = async (req, res) => {
 const getEmployeeBankingInfo = async (req, res) => {
 	const { company, employeeId } = req.params;
 	try {
-		const key = process.env.ENCRYPTION_KEY;
 		// const updatedData = {
 		// 	bankNum: null,
 		// 	transitNum: null,
@@ -40,21 +40,32 @@ const getEmployeeBankingInfo = async (req, res) => {
 			paymentEmail,
 		};
 
+		const banking_key = Buffer.from(process.env.BANKING_ENCRYPTION_KEY, "hex");
+
+		if (!banking_key) {
+			newData.accountNum = "";
+			newData.bankNum = "";
+			newData.transitNum = "";
+			return res.status(200).json(newData);
+		}
+
 		const accountNumber = result?.accountNum
-			? decryptData(result.accountNum, key, result.accountIv).replace(/.(?=.{3})/g, "*")
+			? decryptData(result.accountNum, banking_key, result.accountIv).replace(/.(?=.{3})/g, "*")
 			: "";
+
 		const bankNumber = result?.bankNum
-			? `**${decryptData(result.bankNum, key, result.bankIv).slice(-1)}`
+			? `**${decryptData(result.bankNum, banking_key, result.bankIv).slice(-1)}`
 			: "";
+
 		const transitNumber = result?.transitNum
-			? `***${decryptData(result.transitNum, key, result.transitIv).slice(-2)}`
+			? `***${decryptData(result.transitNum, banking_key, result.transitIv).slice(-2)}`
 			: "";
 
 		newData.accountNum = accountNumber;
 		newData.bankNum = bankNumber;
 		newData.transitNum = transitNumber;
 
-		res.status(200).json(newData);
+		return res.status(200).json(newData);
 	} catch (error) {
 		res.status(404).json({ error: error.message });
 	}
@@ -72,30 +83,40 @@ const updateBankingInfo = async (id, data) =>
 	});
 
 const addEmployeeBankingInfo = async (req, res) => {
-	const { empId, companyName, directDeposit, payStubSendByEmail, paymentEmail } = req.body;
-	const key = process.env.ENCRYPTION_KEY;
-	try {
-		const bankEncrypted = encryptData(req.body?.bankDetails?.bankNum, key);
-		const transitEncrypted = encryptData(req.body?.bankDetails?.transitNum, key);
-		const accountEncrypted = encryptData(req.body?.bankDetails?.accountNum, key);
+	const { empId, companyName, directDeposit, payStubSendByEmail, paymentEmail, bankDetails } =
+		req.body;
+	// const ENCRYPTION_KEY = newEncryptionKey();
+	// saveKeyToEnv("BANKING_ENCRYPTION_KEY", ENCRYPTION_KEY);
+	const ENCRYPTION_KEY = process.env.BANKING_ENCRYPTION_KEY;
 
+	const updatedData = {
+		empId,
+		companyName,
+		directDeposit,
+		payStubSendByEmail,
+		paymentEmail,
+	};
+	if (bankDetails) {
+		const { bankNum, transitNum, accountNum } = bankDetails;
+		const bankEncrypted = encryptData(bankNum, ENCRYPTION_KEY);
+		const transitEncrypted = encryptData(transitNum, ENCRYPTION_KEY);
+		const accountEncrypted = encryptData(accountNum, ENCRYPTION_KEY);
+
+		updatedData.bankNum = bankEncrypted.encryptedData;
+		updatedData.bankIv = bankEncrypted.iv;
+
+		updatedData.transitNum = transitEncrypted.encryptedData;
+		updatedData.transitIv = transitEncrypted.iv;
+
+		updatedData.accountNum = accountEncrypted.encryptedData;
+		updatedData.accountIv = accountEncrypted.iv;
+	}
+	try {
 		const existingBankingInfo = await findEmployeeBankingInfo(empId, companyName);
 		// if (bankNum !== "" || transitNum !== "" || accountNum !== "") {
 		// 	await deleteAlerts(empId);
 		// }
-		const updatedData = {
-			empId,
-			companyName,
-			directDeposit,
-			bankNum: bankEncrypted.encryptedData,
-			bankIv: bankEncrypted.iv,
-			transitNum: transitEncrypted.encryptedData,
-			accountNum: accountEncrypted.encryptedData,
-			accountIv: accountEncrypted.iv,
-			transitIv: transitEncrypted.iv,
-			payStubSendByEmail,
-			paymentEmail,
-		};
+
 		if (existingBankingInfo) {
 			const updatedBankingInfo = await updateBankingInfo(existingBankingInfo._id, updatedData);
 			return res.status(201).json(updatedBankingInfo);

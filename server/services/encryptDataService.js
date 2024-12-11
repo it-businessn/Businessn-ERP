@@ -1,20 +1,24 @@
 const crypto = require("crypto");
 
-const encryptData = (data, key) => {
+const newEncryptionKey = () => crypto.randomBytes(32);
+
+const encryptData = (data, encryption_key) => {
 	const algorithm = "aes-256-cbc";
 	const iv = crypto.randomBytes(16);
-	const cipher = crypto.createCipheriv(algorithm, key, iv);
+
+	const cipher = crypto.createCipheriv(algorithm, encryption_key, iv);
 	let encrypted = cipher.update(data, "utf8", "hex");
 	encrypted += cipher.final("hex");
 	return { encryptedData: encrypted, iv: iv.toString("hex") };
 };
 
-const decryptData = (encryptedData, key, iv) => {
+const decryptData = (encryptedData, encryption_key, iv) => {
 	const algorithm = "aes-256-cbc";
-	const decipher = crypto.createDecipheriv(algorithm, key, Buffer.from(iv, "hex"));
+	const decipher = crypto.createDecipheriv(algorithm, encryption_key, Buffer.from(iv, "hex"));
+
 	let decrypted = decipher.update(encryptedData, "hex", "utf8");
 	decrypted += decipher.final("utf8");
 	return decrypted;
 };
 
-module.exports = { encryptData, decryptData };
+module.exports = { encryptData, decryptData, newEncryptionKey };

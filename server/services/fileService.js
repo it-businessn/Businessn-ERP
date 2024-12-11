@@ -35,21 +35,24 @@ const fileContentType = (file) => {
 	}
 };
 
-const newEncryptionKey = () => crypto.randomBytes(16);
-
-const saveKeyToEnv = (name, key) => {
+const saveKeyToEnv = (keyName, newKey) => {
 	const envFilePath = path.join(__dirname, "../", ".env");
-
+	const keyString = newKey.toString("hex");
 	try {
-		const envContent = `${name}=${key}\n`;
-		if (fs.existsSync(envFilePath)) {
-			fs.appendFileSync(envFilePath, envContent, { mode: 0o600 });
+		let envContent = fs.readFileSync(envFilePath, "utf8");
+		const keyRegex = new RegExp(`^${keyName}=.*`, "gm");
+		if (keyRegex.test(envContent)) {
+			envContent = envContent.replace(keyRegex, `${keyName}=${keyString}`);
+			console.log(`${keyName} updated in .env file.`);
 		} else {
-			fs.writeFileSync(envFilePath, envContent, { mode: 0o600 });
+			envContent += `${keyName}=${keyString}\n`;
+			console.log(`${keyName} added to .env file.`);
 		}
+
+		fs.writeFileSync(envFilePath, envContent, { mode: 0o600 });
 	} catch (error) {
-		console.error("Error saving encryption key:", error.message);
+		console.error("Error updating encryption key:", error.message);
 	}
 };
 
-module.exports = { storageSpace, filePath, fileContentType, saveKeyToEnv, newEncryptionKey };
+module.exports = { storageSpace, filePath, fileContentType, saveKeyToEnv };
