@@ -15,6 +15,7 @@ const Navbar = ({ handleClick, companyName, companyId, onOpen, user, setUser, is
 		try {
 			await LoginService.signOut(user._id);
 			LocalStorageService.clear();
+			sessionStorage.removeItem("accessToken");
 			setUser(null);
 		} catch (error) {
 			console.log(error.response.data.error);
