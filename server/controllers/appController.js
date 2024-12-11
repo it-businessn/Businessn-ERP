@@ -130,32 +130,26 @@ const setInitialPermissions = async (empId, isManager, companyName) => {
 		console.log(error);
 	}
 };
-const refresh = async (req, res) => {
-	const { token } = req.body;
 
+const refreshToken = async (req, res) => {
+	const { refreshToken } = req.body;
 	try {
-		if (!token) {
+		if (!refreshToken) {
 			return res.status(401).json({ message: "Refresh token is required" });
 		}
-		const refreshTokens = [];
-
-		if (!refreshTokens.includes(token)) {
-			return res.status(403).json({ message: "Invalid refresh token" });
-		}
-		const REFRESH_SECRET_KEY = process.env.REFRESH_SECRET_KEY;
-		jwt.verify(token, REFRESH_SECRET_KEY, (err, user) => {
+		jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
 			if (err) {
-				return res.status(403).json({ message: "Invalid refresh token" });
+				return res.status(403).json({ error: "Invalid or expired refresh token" });
 			}
-			console.log("user=", user);
-			const accessToken = generateAccessToken({ id: user._id, username: user.username });
-			res.json({ accessToken });
+			const newAccessToken = generateAccessToken({ id: user._id, username: user.username });
+			res.json({ accessToken: newAccessToken });
 		});
 	} catch (error) {
 		console.error("Error checking password:", error);
 		return res.status(500).json({ error: "Internal server error" });
 	}
 };
+
 const login = async (req, res) => {
 	const { email, password, companyId } = req.body;
 
@@ -376,5 +370,5 @@ module.exports = {
 	addEmployee,
 	findCompany,
 	hashedPassword,
-	refresh,
+	refreshToken,
 };

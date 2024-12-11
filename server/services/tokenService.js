@@ -2,7 +2,7 @@ const jwt = require("jsonwebtoken");
 
 const getResetPasswordLink = (userID) => {
 	try {
-		const token = jwt.sign({ _id: userID }, process.env.JWT_SECRET_KEY, {
+		const token = jwt.sign({ _id: userID }, process.env.ACCESS_TOKEN_SECRET, {
 			expiresIn: "3d",
 		});
 		return `${process.env.BASE_URL_LIVE}/api/reset-password/${userID}/${token}`;

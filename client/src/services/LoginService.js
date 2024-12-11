@@ -5,6 +5,10 @@ const LoginService = {
 		return apiService.post("/login", data);
 	},
 
+	async refresh(data) {
+		return apiService.post("/refresh-token", data);
+	},
+
 	async signOut(id) {
 		return apiService.get(`/logout/${id}`);
 	},

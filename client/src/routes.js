@@ -3,11 +3,11 @@ import { createBrowserRouter } from "react-router-dom";
 
 import Home from "components/Home";
 import Loader from "components/Loader";
+import Login from "features/login";
 import PageNotFound from "./components/PageNotFound";
 
 // login
 const ForgotPassword = lazy(() => import("./features/login/ForgotPassword"));
-const Login = lazy(() => import("./features/login"));
 const Setup = lazy(() => import("./features/setup"));
 
 const SignUp = lazy(() => import("./features/sign-up"));

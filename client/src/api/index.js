@@ -1,26 +1,9 @@
 import axios from "axios";
-import apiService from "services";
+import LoginService from "services/LoginService";
 
 export const API = axios.create({
 	baseURL: process.env.REACT_APP_BASE_URL,
 });
-
-const refreshToken = async () => {
-	try {
-		const { data } = await apiService.post(`/refresh`, {
-			token: localStorage.getItem("refreshToken"),
-		});
-		const { accessToken } = data;
-
-		localStorage.setItem("accessToken", accessToken);
-		API.defaults.headers.common["Authorization"] = `Bearer ${accessToken}`;
-
-		return accessToken;
-	} catch (error) {
-		console.error("Failed to refresh token", error);
-		throw error;
-	}
-};
 
 // Add access token to headers
 API.interceptors.request.use(
@@ -40,17 +23,23 @@ export const setupAxiosInterceptors = (setSessionExpired) => {
 		async (error) => {
 			const originalRequest = error.config;
 
-			if (error.response.status === 401 && !originalRequest._retry) {
+			if (error.response.status === 403 && !originalRequest._retry) {
 				originalRequest._retry = true; // Prevent infinite retry loop
 
 				try {
-					const newAccessToken = await refreshToken();
-					originalRequest.headers["Authorization"] = `Bearer ${newAccessToken}`;
-					return API(originalRequest); // Retry the original request
-				} catch (err) {
-					console.error("Automatic token refresh failed", err);
-					setSessionExpired(true);
-					return Promise.reject(err);
+					const { data } = await LoginService.refresh({
+						refreshToken: localStorage.getItem("refreshToken"),
+					});
+					const { accessToken } = data;
+					localStorage.setItem("accessToken", accessToken);
+					originalRequest.headers["Authorization"] = `Bearer ${accessToken}`;
+					return API(originalRequest);
+				} catch (refreshError) {
+					console.error("Refresh token invalid or expired", refreshError);
+					// setSessionExpired(true);
+					localStorage.removeItem("accessToken");
+					localStorage.removeItem("refreshToken");
+					window.location.href = "/login";
 				}
 			}
 

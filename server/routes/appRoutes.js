@@ -7,7 +7,7 @@ const appController = require("../controllers/appController");
 const { authenticateToken } = require("../middleware/auth");
 
 router.post("/signup", appController.signUp);
-router.post("/refresh", appController.refresh);
+router.post("/refresh-token", appController.refreshToken);
 router.post("/login", appController.login);
 router.get("/logout/:id", authenticateToken, appController.logOut);
 router.get("/reset-password/:id/:token", authenticateToken, appController.resetPassword);
