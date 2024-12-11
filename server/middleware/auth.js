@@ -1,7 +1,7 @@
 const jwt = require("jsonwebtoken");
 
-const SECRET_KEY = process.env.JWT_SECRET_KEY;
-const REFRESH_SECRET_KEY = process.env.REFRESH_SECRET_KEY;
+const SECRET_KEY = process.env.ACCESS_TOKEN_SECRET;
+const REFRESH_TOKEN_SECRET = process.env.REFRESH_TOKEN_SECRET;
 
 function generateAccessToken(user) {
 	return jwt.sign(user, SECRET_KEY, { expiresIn: "15m" });
@@ -9,7 +9,7 @@ function generateAccessToken(user) {
 
 const refreshTokens = [];
 function generateRefreshToken(user) {
-	const refreshToken = jwt.sign(user, REFRESH_SECRET_KEY, { expiresIn: "1h" });
+	const refreshToken = jwt.sign(user, REFRESH_TOKEN_SECRET, { expiresIn: "1h" });
 	refreshTokens.push(refreshToken);
 	return refreshToken;
 }

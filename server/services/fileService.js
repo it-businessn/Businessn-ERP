@@ -1,5 +1,6 @@
 const multer = require("multer");
 const path = require("path");
+const fs = require("fs");
 
 const storage = multer.diskStorage({
 	destination(req, file, cb) {
@@ -34,4 +35,21 @@ const fileContentType = (file) => {
 	}
 };
 
-module.exports = { storageSpace, filePath, fileContentType };
+const newEncryptionKey = () => crypto.randomBytes(16);
+
+const saveKeyToEnv = (name, key) => {
+	const envFilePath = path.join(__dirname, "../", ".env");
+
+	try {
+		const envContent = `${name}=${key}\n`;
+		if (fs.existsSync(envFilePath)) {
+			fs.appendFileSync(envFilePath, envContent, { mode: 0o600 });
+		} else {
+			fs.writeFileSync(envFilePath, envContent, { mode: 0o600 });
+		}
+	} catch (error) {
+		console.error("Error saving encryption key:", error.message);
+	}
+};
+
+module.exports = { storageSpace, filePath, fileContentType, saveKeyToEnv, newEncryptionKey };
