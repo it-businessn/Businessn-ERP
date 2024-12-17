@@ -58,26 +58,10 @@
 	--calendar_color: #a9a9ab;
 	--gray2_color: #959595;
 	--tas_item_color: #858181;
-	--nav_gradient: linear-gradient(
-		180deg,
-		rgb(108 118 134) 0%,
-		rgb(237 243 255) 100%
-	);
-	--nav_gradient_blue: linear-gradient(
-		180deg,
-		rgb(219, 217, 228) 0%,
-		rgb(237 243 255) 100%
-	);
-	--nav_gradient_orange: linear-gradient(
-		180deg,
-		rgb(231, 223, 207) 0%,
-		rgb(237 243 255) 100%
-	);
-	--nav_gradient_green: linear-gradient(
-		180deg,
-		rgb(197, 229, 202) 0%,
-		rgb(237 243 255) 100%
-	);
+	--nav_gradient: linear-gradient(180deg, rgb(108 118 134) 0%, rgb(237 243 255) 100%);
+	--nav_gradient_blue: linear-gradient(180deg, rgb(219, 217, 228) 0%, rgb(237 243 255) 100%);
+	--nav_gradient_orange: linear-gradient(180deg, rgb(231, 223, 207) 0%, rgb(237 243 255) 100%);
+	--nav_gradient_green: linear-gradient(180deg, rgb(197, 229, 202) 0%, rgb(237 243 255) 100%);
 	--receiver_msg_bg: rgb(234 242 255);
 	--product1: #de9445;
 	--product2: #f192de;
@@ -99,7 +83,8 @@ html {
 	padding: 8px 12px !important;
 	border-radius: 10px;
 }
-input {
+input,
+textarea {
 	background: var(--input_bg) !important;
 	border-color: var(--filter_border_color) !important;
 }
@@ -112,11 +97,7 @@ body {
 		rgb(228 235 255) 0%,
 		rgb(240 245 255) 100%
 	) !important; */
-	background: linear-gradient(
-		0deg,
-		rgb(213, 220, 236) 0%,
-		rgb(240 245 255) 100%
-	) !important;
+	background: linear-gradient(0deg, rgb(213, 220, 236) 0%, rgb(240 245 255) 100%) !important;
 	overflow: hidden;
 }
 .radial-progress {
@@ -201,11 +182,7 @@ body {
 }
 
 .sidebarMenu.active {
-	background: linear-gradient(
-		103deg,
-		rgba(84, 61, 210, 1) 0%,
-		rgba(62, 138, 232, 1) 100%
-	);
+	background: linear-gradient(103deg, rgba(84, 61, 210, 1) 0%, rgba(62, 138, 232, 1) 100%);
 	padding: 0 5px;
 	width: 100%;
 	border-radius: 10px;

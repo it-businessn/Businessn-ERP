@@ -1,5 +1,7 @@
-import { Checkbox, FormLabel, HStack, VStack } from "@chakra-ui/react";
+import { Checkbox, FormLabel, HStack, Textarea, VStack } from "@chakra-ui/react";
 import PrimaryButton from "components/ui/button/PrimaryButton";
+import FormControlMain from "components/ui/form";
+import RequiredLabel from "components/ui/form/RequiredLabel";
 import TextTitle from "components/ui/text/TextTitle";
 import DateTypeRecord from "./date";
 import InputRecord from "./input";
@@ -88,6 +90,7 @@ const Record = ({
 								/>
 							) : param?.control === "radio" ? (
 								<RadioTypeRecord
+									required={param?.mandatory}
 									key={param.name}
 									formData={formData}
 									param={param}
@@ -113,6 +116,27 @@ const Record = ({
 									setFormData={setFormData}
 									handleConfirm={handleConfirm}
 								/>
+							) : param?.control === "textarea" ? (
+								<FormControlMain key={param.name}>
+									<RequiredLabel
+										name={param.param_key}
+										label={param.name}
+										required={param?.mandatory}
+										htmlFor={param.param_key}
+									/>
+									<Textarea
+										onBlur={handleConfirm}
+										name={param.param_key}
+										value={formData[param.param_key]?.toLocaleString() || ""}
+										onChange={(e) =>
+											setFormData((prev) => ({
+												...prev,
+												[param.param_key]: e.target.value,
+											}))
+										}
+										required={param?.mandatory}
+									/>
+								</FormControlMain>
 							) : (
 								<InputRecord
 									key={param.name}

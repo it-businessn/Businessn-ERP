@@ -4,6 +4,7 @@ import { createBrowserRouter } from "react-router-dom";
 import Home from "components/Home";
 import Loader from "components/Loader";
 import Login from "features/login";
+import Support from "features/support";
 import PageNotFound from "./components/PageNotFound";
 
 // login
@@ -357,6 +358,7 @@ export const router = createBrowserRouter([
 		path: ROUTE_PATH.LOGIN,
 		element: <Login />,
 	},
+	{ path: "/support", element: <Support /> },
 	{
 		path: ROUTE_PATH.FORGOT_PWD,
 		element: <ForgotPassword />,
