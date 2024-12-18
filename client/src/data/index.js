@@ -1103,6 +1103,12 @@ export const SIDEBAR_MENU = [
 				icon: <IoDocumentTextOutline />,
 			},
 			{
+				path: "tickets",
+				name: "Tickets",
+				children: [],
+				icon: <IoDocumentTextOutline />,
+			},
+			{
 				path: "set-up",
 				name: "Setup",
 				children: [],

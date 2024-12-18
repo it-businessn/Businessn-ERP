@@ -24,6 +24,7 @@ const ADMIN_PERMISSION = [
 	{ name: "Project Management Taskboard" },
 	{ name: "Project Management Agenda" },
 	{ name: "Project Management Gantt" },
+	{ name: "Project Management Tickets" },
 	{ name: "Project Management PM Reports" },
 	{ name: "Project Management Setup" },
 	{ name: "Payroll" },

@@ -67,6 +67,7 @@ const ShiftAssignment = lazy(() => import("./erp-modules/scheduling/ShiftAssignm
 const Communications = lazy(() => import("./erp-modules/project-management/communication"));
 const Agenda = lazy(() => import("./erp-modules/project-management/Agenda"));
 const PMReports = lazy(() => import("./erp-modules/project-management/Reports"));
+const Tickets = lazy(() => import("./erp-modules/project-management/tickets"));
 const Gantt = lazy(() => import("./erp-modules/project-management/Gantt"));
 const WorkView = lazy(() => import("./erp-modules/project-management/workview"));
 const Taskboard = lazy(() => import("./erp-modules/project-management/Taskboard"));
@@ -264,6 +265,10 @@ export const router = createBrowserRouter([
 			{
 				path: `${ROUTE_PATH.PROJECT}${ROUTE_PATH.REPORT}`,
 				element: <PMReports />,
+			},
+			{
+				path: `${ROUTE_PATH.PROJECT}/tickets`,
+				element: <Tickets />,
 			},
 
 			/* Payroll */
