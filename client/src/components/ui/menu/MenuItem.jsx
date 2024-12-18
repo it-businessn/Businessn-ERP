@@ -1,20 +1,14 @@
-import {
-	Box,
-	Button,
-	Flex,
-	HStack,
-	IconButton,
-	Stack,
-	VStack,
-} from "@chakra-ui/react";
+import { Box, Button, Flex, HStack, IconButton, Stack, VStack } from "@chakra-ui/react";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
-import { payrollEmployeePath } from "routes";
+import { payrollEmployeePath, payrollReportPath } from "routes";
 
 const MenuItem = ({ menu, parent, textTransform, handleMenuItemClick }) => {
 	const location = useLocation();
 	const navigate = useNavigate();
 
-	const empPath = location.pathname.includes(payrollEmployeePath);
+	const empPath =
+		location.pathname.includes(payrollEmployeePath) ||
+		location.pathname.includes(payrollReportPath);
 
 	// const [isOpen, setIsOpen] = useState(true);
 
@@ -84,9 +78,7 @@ const MenuItem = ({ menu, parent, textTransform, handleMenuItemClick }) => {
 							/>
 
 							<Button
-								className={
-									navigatePath.includes(menu?.name) ? "isActive" : "notActive"
-								}
+								className={navigatePath.includes(menu?.name) ? "isActive" : "notActive"}
 								justifyContent={"space-between"}
 								p={0}
 								variant="ghost"

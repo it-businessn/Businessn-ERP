@@ -14,11 +14,7 @@ import { GoTasklist } from "react-icons/go";
 import { HiOutlineBadgeCheck, HiOutlineCalendar } from "react-icons/hi";
 import { IoBagRemoveOutline, IoDocumentTextOutline } from "react-icons/io5";
 import { LuLayoutDashboard } from "react-icons/lu";
-import {
-	MdCleanHands,
-	MdOutlineSettingsApplications,
-	MdPayments,
-} from "react-icons/md";
+import { MdCleanHands, MdOutlineSettingsApplications, MdPayments } from "react-icons/md";
 import { PiBooks, PiListMagnifyingGlassFill } from "react-icons/pi";
 import { RiUserSearchLine, RiUserStarLine } from "react-icons/ri";
 import { RxDashboard } from "react-icons/rx";
@@ -1168,8 +1164,17 @@ export const SIDEBAR_MENU = [
 			{
 				path: "reports",
 				name: "Reports",
-				children: [],
 				icon: <IoDocumentTextOutline />,
+				children: [
+					{
+						path: "reports",
+						name: "Payrun Reports",
+					},
+					{
+						path: "reports/info",
+						name: "Individual Reports",
+					},
+				],
 			},
 			{
 				path: "settings",
