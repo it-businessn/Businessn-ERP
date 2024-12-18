@@ -29,14 +29,11 @@ const PreviewReportsModal = ({
 			textAlign={"center"}
 			fontSize="2xl"
 			overflow={"hidden"}
+			isReport={isReport}
 		>
 			{isReport && !reportData && <Loader />}
 			{!isEarningTable && !reportData?.length && (
-				<NormalTextTitle
-					align={"center"}
-					size={"lg"}
-					title={"No records found"}
-				/>
+				<NormalTextTitle align={"center"} size={"lg"} title={"No records found"} />
 			)}
 			{isEarningTable ? (
 				<Statement data={reportData} />
