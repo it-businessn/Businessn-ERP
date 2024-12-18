@@ -7,7 +7,6 @@ import NormalTextTitle from "components/ui/NormalTextTitle";
 import TableLayout from "components/ui/table/TableLayout";
 import TextTitle from "components/ui/text/TextTitle";
 import useCompany from "hooks/useCompany";
-import usePaygroup from "hooks/usePaygroup";
 import PageLayout from "layouts/PageLayout";
 import { useEffect, useState } from "react";
 import LocalStorageService from "services/LocalStorageService";
@@ -16,24 +15,16 @@ import UserService from "services/UserService";
 import { sortRecordsByDate } from "utils";
 import { dayMonthYear, formatDateRange } from "utils/convertDate";
 import EmpProfileSearch from "../employees/EmpProfileSearch";
+import PreviewReportsModal from "../process-payroll/preview-reports/PreviewReportsModal";
 
 const Reports = () => {
 	const { company } = useCompany(LocalStorageService.getItem("selectedCompany"));
-
-	const { payGroupSchedule } = usePaygroup(company, false);
-
 	const [showReport, setShowReport] = useState(undefined);
-	const [selectedPayPeriod, setSelectedPayPeriod] = useState(null);
 	const REPORT_COLS = ["Pay number", "Pay date", "Pay period", "Status", "Action"];
+	const [payStub, setPayStub] = useState(null);
 
-	const handleRegister = (payNo, isExtra) => {
-		const payNum = isExtra
-			? payGroupSchedule?.find(
-					({ payPeriod, isExtraRun }) => payPeriod === parseInt(payNo) && isExtraRun === isExtra,
-			  )
-			: payNo;
-
-		setSelectedPayPeriod(payNum);
+	const handleRegister = (payNo) => {
+		setPayStub(empPayStub.find((_) => _.payPeriodNum === payNo));
 		setShowReport(true);
 	};
 
@@ -157,7 +148,7 @@ const Reports = () => {
 											label="View Paystub"
 											size="xs"
 											onClick={() => {
-												// handleRegister(isExtraPay(payPeriod, isExtraRun), isExtraRun);
+												handleRegister(payPeriodNum);
 											}}
 										/>
 									</Td>
@@ -166,6 +157,16 @@ const Reports = () => {
 						)}
 					</Tbody>
 				</TableLayout>
+				{showReport && (
+					<PreviewReportsModal
+						isReport
+						size="4xl"
+						isOpen={showReport}
+						onClose={() => setShowReport(false)}
+						reportData={payStub}
+						isEarningTable
+					/>
+				)}
 			</PageLayout>
 		</>
 	);
