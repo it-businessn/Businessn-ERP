@@ -93,8 +93,12 @@ const getFilteredTimesheetsByStatus = async (req, res) => {
 		const timesheets = await Timesheet.find({
 			companyName,
 			clockIn: {
-				$lte: filteredData?.endDate ? moment(filteredData?.endDate) : currentDate,
-				$gte: filteredData?.startDate ? moment(filteredData?.startDate) : currentDate,
+				$gte: filteredData?.startDate
+					? moment(filteredData?.startDate).utc().startOf("day").toDate()
+					: currentDate,
+				$lte: filteredData?.endDate
+					? moment(filteredData?.endDate).utc().endOf("day").toDate()
+					: currentDate,
 			},
 		}).select("approveStatus");
 

@@ -1,4 +1,5 @@
 // const Employee = require("../models/Employee");
+const moment = require("moment");
 const Employee = require("../models/Employee");
 const EmployeeAlertsViolationInfo = require("../models/EmployeeAlertsViolationInfo");
 const EmployeeBalanceInfo = require("../models/EmployeeBalanceInfo");
@@ -589,7 +590,10 @@ const findCurrentPayStub = async (payPeriodNum, companyName, empId, isExtra) => 
 const calculateTotalAggregatedHours = async (startDate, endDate, companyName) => {
 	const timesheets = await Timesheet.find({
 		companyName,
-		clockIn: { $gte: startDate, $lte: endDate },
+		clockIn: {
+			$gte: moment(startDate).utc().startOf("day").toDate(),
+			$lte: moment(endDate).utc().endOf("day").toDate(),
+		},
 		approveStatus: "Approved",
 	}).populate({
 		path: "employeeId",
