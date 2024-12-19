@@ -217,6 +217,7 @@ const updateTimecardEntry = async (entry) => {
 	});
 
 	const timesheetRecord = await findTimesheet({
+		deleted: false,
 		employeeId: empRec?.empId?._id,
 		companyName: empRec?.companyName,
 		clockIn: entry.clockIn,

@@ -37,7 +37,7 @@ const TimesheetService = {
 	},
 
 	async deleteEntry(data, id) {
-		return apiService.delete(`/timesheet/${id}`, data, id);
+		return apiService.put(`/timesheet/delete-entry/${id}`, data, id);
 	},
 };
 

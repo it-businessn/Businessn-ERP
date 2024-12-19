@@ -589,6 +589,7 @@ const findCurrentPayStub = async (payPeriodNum, companyName, empId, isExtra) => 
 
 const calculateTotalAggregatedHours = async (startDate, endDate, companyName) => {
 	const timesheets = await Timesheet.find({
+		deleted: false,
 		companyName,
 		clockIn: {
 			$gte: moment(startDate).utc().startOf("day").toDate(),

@@ -95,7 +95,7 @@ const Timesheet = ({ company, setShowAddEntry, showAddEntry, filter, setTimeshee
 
 	const handleDelete = async (id) => {
 		try {
-			const record = await TimesheetService.deleteEntry({}, deleteRecordId);
+			const record = await TimesheetService.deleteEntry({ deleted: true }, deleteRecordId);
 			if (record) {
 				setRefresh((prev) => !prev);
 				handleClose();

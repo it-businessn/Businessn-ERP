@@ -73,6 +73,7 @@ const getTimesheets = async (req, res) => {
 	const { companyName } = req.params;
 	try {
 		const timesheets = await findByRecordTimesheets({
+			deleted: false,
 			companyName,
 			clockIn: { $lte: currentDate },
 		});
@@ -91,6 +92,7 @@ const getFilteredTimesheetsByStatus = async (req, res) => {
 	const filteredData = JSON.parse(filter.split("=")[1]);
 	try {
 		const timesheets = await Timesheet.find({
+			deleted: false,
 			companyName,
 			clockIn: {
 				$gte: filteredData?.startDate
@@ -114,6 +116,7 @@ const getFilteredTimesheets = async (req, res) => {
 
 	try {
 		let timesheets = await findByRecordTimesheets({
+			deleted: false,
 			companyName,
 			clockIn: {
 				$gte: filteredData?.startDate
@@ -156,6 +159,7 @@ const getTimesheet = async (req, res) => {
 
 	try {
 		const timesheets = await findByRecordTimesheets({
+			deleted: false,
 			companyName,
 			employeeId,
 			clockIn: { $lte: currentDate },
@@ -173,6 +177,7 @@ const findMonthlyEarning = async (employeeId, companyName) => {
 	const past30Days = moment.utc().subtract(30, "days");
 
 	const timesheets = await Timesheet.find({
+		deleted: false,
 		employeeId,
 		companyName,
 		clockIn: {
@@ -215,6 +220,7 @@ const addStatHolidayDefaultTimesheet = async (employeeId, companyName) => {
 	const endOfToday = moment().endOf("day");
 
 	const existingStatTimesheetInfo = await findEmployeeTimesheetExists({
+		deleted: false,
 		employeeId,
 		companyName,
 		payType: "Statutory Pay",
@@ -389,19 +395,16 @@ const updateTimesheetData = async (id, data) =>
 const deleteTimesheet = async (req, res) => {
 	const { id } = req.params;
 	try {
-		console.log(
-			await Timesheet.findById({
-				_id: id,
-			}),
-		);
+		const timesheet = await updateTimesheetData(id, req.body);
+
 		// const resource = await Timesheet.findByIdAndDelete({
 		// 	_id: id,
 		// });
-		// if (resource) {
-		// 	res.status(200).json(`Timesheet with id ${id} deleted successfully.`);
-		// } else {
-		// 	res.status(200).json("Timesheet Details not found.");
-		// }
+		if (timesheet) {
+			res.status(200).json(`Timesheet with id ${id} deleted successfully.`);
+		} else {
+			res.status(200).json("Timesheet Details not found.");
+		}
 	} catch (error) {
 		res.status(404).json({ error: "Error deleting Timesheet:", error });
 	}
