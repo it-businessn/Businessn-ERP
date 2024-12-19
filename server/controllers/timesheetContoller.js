@@ -107,12 +107,17 @@ const getFilteredTimesheetsByStatus = async (req, res) => {
 const getFilteredTimesheets = async (req, res) => {
 	const { companyName, filter } = req.params;
 	const filteredData = JSON.parse(filter.split("=")[1]);
+
 	try {
 		let timesheets = await findByRecordTimesheets({
 			companyName,
 			clockIn: {
-				$lte: filteredData?.endDate ? moment.utc(filteredData?.endDate) : currentDate,
-				$gte: filteredData?.startDate ? moment.utc(filteredData?.startDate) : currentDate,
+				$gte: filteredData?.startDate
+					? moment(filteredData?.startDate).utc().startOf("day").toDate()
+					: currentDate,
+				$lte: filteredData?.endDate
+					? moment(filteredData?.endDate).utc().endOf("day").toDate()
+					: currentDate,
 			},
 			// payType: { $ne: "Regular Pay" },
 			// regHoursWorked: { $ne: 0 },

@@ -62,7 +62,7 @@ const Timesheets = () => {
 	}, [closestRecord]);
 
 	useEffect(() => {
-		if (filteredEmployees.length) {
+		if (filteredEmployees?.length) {
 			setFilter((prev) => ({
 				...prev,
 				filteredEmployees,

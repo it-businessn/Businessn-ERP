@@ -29,8 +29,8 @@ const DateFilterPopup = ({
 					format: "YYYY/MM/DD",
 				},
 				ranges: {
-					Today: [moment(), moment()],
-					Yesterday: [moment().subtract(1, "days"), moment().subtract(1, "days")],
+					Today: [moment.utc(), moment.utc()],
+					Yesterday: [moment.utc().subtract(1, "days"), moment.utc().subtract(1, "days")],
 					"Last pay period": [
 						getMomentDate(lastRecord?.payPeriodStartDate),
 						getMomentDate(lastRecord?.payPeriodEndDate),
@@ -39,12 +39,12 @@ const DateFilterPopup = ({
 						getMomentDate(closestRecord?.payPeriodStartDate),
 						getMomentDate(closestRecord?.payPeriodEndDate),
 					],
-					"Last 7 Days": [moment().subtract(6, "days"), moment()],
-					"Last 30 Days": [moment().subtract(29, "days"), moment()],
-					"This Year": [moment().startOf("year"), moment().endOf("year")],
+					"Last 7 Days": [moment.utc().subtract(6, "days"), moment.utc()],
+					"Last 30 Days": [moment.utc().subtract(29, "days"), moment.utc()],
+					"This Year": [moment.utc().startOf("year"), moment.utc().endOf("year")],
 					"Last Year": [
-						moment().subtract(1, "year").startOf("year"),
-						moment().subtract(1, "year").endOf("year"),
+						moment.utc().subtract(1, "year").startOf("year"),
+						moment.utc().subtract(1, "year").endOf("year"),
 					],
 				},
 			},
