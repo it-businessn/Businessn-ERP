@@ -939,28 +939,37 @@ const getContributionsDeductions = (data) => {
 	const EE_EPP = validateContribution(
 		typeOfPensionEETreatment,
 		pensionEEContribution,
-		sumTotalWithoutVacation + sumTotalOvertime + vacationAccruedAmount,
-		totalAllocatedHours,
+		sumTotalWithoutVacation + vacationAccruedAmount,
+		data.totalRegHoursWorked +
+			data.totalSickHoursWorked +
+			data.totalStatDayHoursWorked +
+			data.totalStatHours,
 	);
 
 	const EE_EHP = validateContribution(
 		typeOfExtendedHealthEETreatment,
 		extendedHealthEEContribution,
 		sumTotalHoursWithoutVacation,
-		totalAllocatedHours,
+		data.totalRegHoursWorked +
+			data.totalSickHoursWorked +
+			data.totalStatDayHoursWorked +
+			data.totalStatHours,
 	);
 
 	const ER_EPP = validateContribution(
 		typeOfPensionERTreatment,
 		pensionERContribution,
-		sumTotalWithoutVacation + sumTotalOvertime + vacationAccruedAmount,
-		totalAllocatedHours,
+		sumTotalWithoutVacation + vacationAccruedAmount,
+		data.totalRegHoursWorked +
+			data.totalSickHoursWorked +
+			data.totalStatDayHoursWorked +
+			data.totalStatHours,
 	);
 
 	const ER_EHP = validateContribution(
 		typeOfExtendedHealthERTreatment,
 		extendedHealthERContribution,
-		sumTotalHoursWithoutVacation + sumTotalOvertimeHours,
+		sumTotalHoursWithoutVacation,
 		totalAllocatedHours,
 	);
 
