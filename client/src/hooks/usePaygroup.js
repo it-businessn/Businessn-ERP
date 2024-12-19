@@ -27,8 +27,9 @@ const usePaygroup = (company, refresh) => {
 		const closestPayPeriodIndex = schedules.findIndex(
 			({ payPeriod }) => payPeriod === closestPayPeriod?.payPeriod,
 		);
+		const lastIndex = schedules.length - 1;
 		setClosestRecord(closestPayPeriod || schedules[schedules.length - 1]);
-		setClosestRecordIndex(closestPayPeriodIndex);
+		setClosestRecordIndex(closestPayPeriod ? closestPayPeriodIndex : lastIndex);
 	};
 
 	useEffect(() => {
