@@ -179,6 +179,7 @@ const findRecentClockInRecord = async (badge_id, timestamp) => {
 };
 
 const addTimecardEntry = async (entry) => {
+	// const updatedTimecard = await Timecard.updateMany({}, { $set: { processedForTimesheet: true } });
 	const { badge_id, clockIn, notDevice } = entry;
 	const empRec = await findEmployee({
 		timeManagementBadgeID: badge_id,
@@ -201,6 +202,9 @@ const addTimecardEntry = async (entry) => {
 
 		if (!timesheetRecord) {
 			await Timesheet.create(newTimesheetRecord);
+			await updateTimecardData(newTimecard._id, {
+				processedForTimesheet: true,
+			});
 		}
 	}
 };
