@@ -29,6 +29,7 @@ const EditGroup = ({ isOpen, onClose, selectedGroup }) => {
 
 	const handleSubmit = async (e) => {
 		e.preventDefault();
+		selectedGroup.selectedYear = selectedYear;
 		selectedGroup.scheduleSettings = schedules;
 		setIsSubmitting(true);
 		try {
@@ -63,6 +64,7 @@ const EditGroup = ({ isOpen, onClose, selectedGroup }) => {
 				setEdit(false);
 			}}
 			required
+			w="150px"
 		/>
 	);
 	return (
@@ -80,7 +82,10 @@ const EditGroup = ({ isOpen, onClose, selectedGroup }) => {
 				borderRadius="10px"
 				value={selectedYear}
 				placeholder="Select Year"
-				onChange={(e) => setSelectedYear(e.target.value)}
+				onChange={(e) => {
+					setSelectedYear(e.target.value);
+					handleSubmit(e);
+				}}
 			>
 				{[2024, 2025]?.map((year) => (
 					<option value={year} key={year}>

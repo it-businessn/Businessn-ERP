@@ -17,21 +17,19 @@ const DateTimeFormControl = ({
 	border,
 	handleConfirm,
 	minDate,
+	w = "100%",
 }) => {
 	return (
 		<>
 			{name1 && (
 				<FormControlMain flex="1">
 					{required ? (
-						<RequiredLabel
-							hideLabel={hideLabel}
-							label={label}
-							required={required}
-						/>
+						<RequiredLabel hideLabel={hideLabel} label={label} required={required} />
 					) : (
 						<FormLabel display={hideLabel && "none"}>{label}</FormLabel>
 					)}
 					<Input
+						w={w}
 						min={minDate}
 						size={size}
 						type="date"

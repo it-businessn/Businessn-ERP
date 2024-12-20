@@ -146,11 +146,14 @@ const addGroup = async (req, res) => {
 	}
 };
 
-const schedulePaygroup = async (groupID) => {
+const schedulePaygroup = async (groupID, newStartDate = "2023-12-18") => {
 	try {
-		const startDate = new Date("2023-12-18");
 		const numberOfPayPeriods = 26;
 		const payPeriods = [];
+		const yearSchedules = [];
+		const startDate = new Date(newStartDate);
+		const currentYear = new Date("2024-12-16").getFullYear();
+
 		for (let i = 0; i < numberOfPayPeriods; i++) {
 			const payPeriodStartDate = new Date(startDate);
 			payPeriodStartDate.setDate(startDate.getDate() + i * 14);
@@ -170,11 +173,14 @@ const schedulePaygroup = async (groupID) => {
 				payPeriodEndDate,
 				payPeriodProcessingDate,
 				payPeriodPayDate,
+				year: currentYear,
 			});
 		}
+		yearSchedules.push({ year: currentYear, payPeriods });
 
 		await updatePayGroup(groupID, {
 			scheduleSettings: payPeriods,
+			yearSchedules,
 		});
 	} catch (error) {
 		console.log(error);
@@ -202,6 +208,27 @@ const updateGroup = async (req, res) => {
 			await schedulePaygroup(id);
 			return res.status(200).json("Added schedules");
 		}
+		// if (scheduleSettings && !scheduleSettings.length && payrollActivated) {
+		// 	if (req.body?.selectedYear) {
+		// 		await schedulePaygroup(id, "2024-12-16");
+		// 	} else {
+		// 		await schedulePaygroup(id);
+		// 	}
+		// 	return res.status(200).json("Added schedules");
+		// }
+		// if (req.body?.selectedYear) {
+		// 	// const groupName = await Group.findById(id).select("yearSchedules");
+
+		// 	// console.log(groupName, req.body?.selectedYear);
+		// 	// await schedulePaygroup(id, "2024-12-16");
+		// 	// return res.status(200).json(setup);
+		// 	const setup = await updatePayGroup(id, req.body);
+		// 	return res.status(200).json(setup);
+		// } else {
+		// 	const setup = await updatePayGroup(id, req.body);
+		// 	return res.status(200).json(setup);
+		// }
+
 		const setup = await updatePayGroup(id, req.body);
 		res.status(200).json(setup);
 	} catch (error) {
