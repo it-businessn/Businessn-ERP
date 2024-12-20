@@ -17,10 +17,11 @@ const PaygroupTable = ({
 	closestRecord,
 	closestRecordIndex,
 	empPath,
+	selectedYear,
+	setSelectedYear,
 }) => {
 	const [showExtraPayrun, setShowExtraPayrun] = useState(false);
 	const [showOnboard, setShowOnboard] = useState(false);
-	const [selectedYear, setSelectedYear] = useState("2024");
 	const loggedInUser = LocalStorageService.getItem("user");
 	const navigate = useNavigate();
 

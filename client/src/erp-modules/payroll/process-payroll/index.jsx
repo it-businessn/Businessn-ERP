@@ -1,11 +1,4 @@
-import {
-	FormLabel,
-	HStack,
-	Icon,
-	SimpleGrid,
-	useToast,
-	VStack,
-} from "@chakra-ui/react";
+import { FormLabel, HStack, Icon, SimpleGrid, useToast, VStack } from "@chakra-ui/react";
 import PrimaryButton from "components/ui/button/PrimaryButton";
 import BoxCard from "components/ui/card";
 import ActionButtonGroup from "components/ui/form/ActionButtonGroup";
@@ -39,18 +32,13 @@ const ProcessPayroll = () => {
 	const { payNo } = useParams();
 	const isExtra = payNo?.includes("E");
 
-	const { company } = useCompany(
-		LocalStorageService.getItem("selectedCompany"),
+	const { company } = useCompany(LocalStorageService.getItem("selectedCompany"));
+	const { payGroupSchedule, closestRecord, payGroups, selectedPayGroup } = usePaygroup(
+		company,
+		false,
 	);
-	const { payGroupSchedule, closestRecord, payGroups, selectedPayGroup } =
-		usePaygroup(company, false);
 
-	const selectedPayPeriod = getClosestRecord(
-		payNo,
-		isExtra,
-		payGroupSchedule,
-		closestRecord,
-	);
+	const selectedPayPeriod = getClosestRecord(payNo, isExtra, payGroupSchedule, closestRecord);
 
 	const isPayPeriodInactive = selectedPayPeriod?.isDisabledAction;
 	const isPayrollSubmitDisabled =

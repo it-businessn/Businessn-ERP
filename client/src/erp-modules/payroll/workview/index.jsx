@@ -9,10 +9,9 @@ import PaygroupTable from "./paygroup-header-table";
 
 const PayrollWorkview = () => {
 	const empPath = `${ROUTE_PATH.PAYROLL}${ROUTE_PATH.EMPLOYEES}/info`;
-	const { company } = useCompany(
-		LocalStorageService.getItem("selectedCompany"),
-	);
+	const { company } = useCompany(LocalStorageService.getItem("selectedCompany"));
 	const [refresh, setRefresh] = useState(false);
+	const [selectedYear, setSelectedYear] = useState("2024");
 
 	const {
 		payGroups,
@@ -21,7 +20,7 @@ const PayrollWorkview = () => {
 		payGroupSchedule,
 		closestRecord,
 		closestRecordIndex,
-	} = usePaygroup(company, refresh);
+	} = usePaygroup(company, refresh, selectedYear);
 
 	const handleChange = (value) => {
 		if (value !== "") {
@@ -42,6 +41,8 @@ const PayrollWorkview = () => {
 		>
 			{payGroupSchedule && (
 				<PaygroupTable
+					selectedYear={selectedYear}
+					setSelectedYear={setSelectedYear}
 					empPath={empPath}
 					selectedPayGroup={selectedPayGroup}
 					payGroupSchedule={payGroupSchedule}

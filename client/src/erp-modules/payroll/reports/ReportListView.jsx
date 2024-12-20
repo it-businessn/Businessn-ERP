@@ -9,17 +9,20 @@ import PreviewReportsModal from "../process-payroll/preview-reports/PreviewRepor
 import WorkviewTable from "../workview/paygroup-header-table/WorkviewTable";
 
 const ReportListView = () => {
+	const [selectedYear, setSelectedYear] = useState("2024");
 	const { company } = useCompany(LocalStorageService.getItem("selectedCompany"));
 
-	const { payGroupSchedule, closestRecordIndex } = usePaygroup(company, false);
+	const { payGroupSchedule, closestRecordIndex } = usePaygroup(company, false, selectedYear, true);
 
-	const filteredPayPeriods = payGroupSchedule
-		?.filter((_, index) => index <= closestRecordIndex)
-		.sort((a, b) => new Date(b.payPeriodPayDate) - new Date(a.payPeriodPayDate));
+	let filteredPayPeriods = closestRecordIndex
+		? payGroupSchedule?.filter((_, index) => index <= closestRecordIndex)
+		: payGroupSchedule;
 
+	filteredPayPeriods = filteredPayPeriods?.sort(
+		(a, b) => new Date(b.payPeriodPayDate) - new Date(a.payPeriodPayDate),
+	);
 	const [showReport, setShowReport] = useState(undefined);
 	const [selectedPayPeriod, setSelectedPayPeriod] = useState(null);
-	const [selectedYear, setSelectedYear] = useState("2024");
 
 	const handleRegister = (payNo, isExtra) => {
 		const payNum = isExtra
