@@ -267,13 +267,18 @@ const addStatHolidayDefaultTimesheet = async (employeeId, companyName) => {
 
 const addTimesheetEntry = async (record) => await Timesheet.create(record);
 
-const calcTotalWorkedHours = (clockIn, clockOut) =>
-	clockOut
-		? moment
-				.duration(moment(clockOut).diff(moment(clockIn)))
-				.asHours()
-				.toFixed(2)
-		: null;
+const calcTotalWorkedHours = (clockIn, clockOut) => {
+	if (clockOut) {
+		const hoursWorked = moment.duration(moment(clockOut).diff(moment(clockIn))).asHours();
+
+		const totalTime = hoursWorked.toFixed(2).includes(".99")
+			? Math.round(hoursWorked)
+			: hoursWorked.toFixed(2);
+
+		return totalTime;
+	}
+	return null;
+};
 
 const addOvertimeRecord = async (clockIn, clockOut, employeeId, company) => {
 	const adjustedClockOut = moment(clockIn).add(8, "hours");
