@@ -47,6 +47,7 @@ const t4SlipRoutes = require("./routes/t4SlipRoutes");
 
 const app = express();
 const expressLayouts = require("express-ejs-layouts");
+const rateLimit = require("express-rate-limit");
 const path = require("path");
 const { authenticateToken } = require("./middleware/auth");
 const corsOptions = require("./config");
