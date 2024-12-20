@@ -30,6 +30,7 @@ const ModalLayout = ({
 	fontSize,
 	isCentered = true,
 	isReport,
+	spacing = "5",
 }) => {
 	const componentRef = useRef();
 	const [isPrintDisabled, setIsPrintDisabled] = useState(true);
@@ -61,7 +62,7 @@ const ModalLayout = ({
 						fontSize={fontSize}
 					>
 						<Flex justify="space-between">
-							<Spacer />
+							{isReport && <Spacer />}
 							{title}
 							{isReport ? (
 								<HStack alignItems="center" gap={"1em"}>
@@ -84,7 +85,7 @@ const ModalLayout = ({
 					</ModalHeader>
 				)}
 				<ModalBody p={hideOverlay && 0} zIndex="0" ref={componentRef}>
-					<Stack spacing="5" mt={0.5}>
+					<Stack spacing={spacing}>
 						{children}
 						{error && (
 							<Alert status="error" mt={4}>

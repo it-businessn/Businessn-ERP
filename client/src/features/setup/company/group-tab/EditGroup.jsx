@@ -1,4 +1,4 @@
-import { Tbody, Td, Tr } from "@chakra-ui/react";
+import { Select, Tbody, Td, Tr } from "@chakra-ui/react";
 import EmptyRowRecord from "components/ui/EmptyRowRecord";
 import ActionButtonGroup from "components/ui/form/ActionButtonGroup";
 import DateTimeFormControl from "components/ui/form/DateTimeFormControl";
@@ -11,6 +11,7 @@ import { dayMonthYear, getDefaultDate } from "utils/convertDate";
 const EditGroup = ({ isOpen, onClose, selectedGroup }) => {
 	const schedules = selectedGroup?.scheduleSettings;
 	const [isSubmitting, setIsSubmitting] = useState(false);
+	const [selectedYear, setSelectedYear] = useState("2024");
 
 	useEffect(() => {
 		if (!selectedGroup?.scheduleSettings?.length) {
@@ -70,8 +71,24 @@ const EditGroup = ({ isOpen, onClose, selectedGroup }) => {
 			size="7xl"
 			isOpen={isOpen}
 			onClose={onClose}
+			spacing="0"
 		>
-			<TableLayout cols={COLS} height="83vh" isSmall>
+			<Select
+				w={"10%"}
+				size={"sm"}
+				border="1px solid var(--primary_button_bg)"
+				borderRadius="10px"
+				value={selectedYear}
+				placeholder="Select Year"
+				onChange={(e) => setSelectedYear(e.target.value)}
+			>
+				{[2024, 2025]?.map((year) => (
+					<option value={year} key={year}>
+						{year}
+					</option>
+				))}
+			</Select>
+			<TableLayout cols={COLS} isSmall>
 				<Tbody>
 					{(!schedules || schedules?.length === 0) && (
 						<EmptyRowRecord data={schedules} colSpan={COLS.length} />

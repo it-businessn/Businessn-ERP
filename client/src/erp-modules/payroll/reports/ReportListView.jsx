@@ -1,3 +1,4 @@
+import { Select } from "@chakra-ui/react";
 import useCompany from "hooks/useCompany";
 import useEmployeePayReport from "hooks/useEmployeePayReport";
 import usePaygroup from "hooks/usePaygroup";
@@ -18,6 +19,7 @@ const ReportListView = () => {
 
 	const [showReport, setShowReport] = useState(undefined);
 	const [selectedPayPeriod, setSelectedPayPeriod] = useState(null);
+	const [selectedYear, setSelectedYear] = useState("2024");
 
 	const handleRegister = (payNo, isExtra) => {
 		const payNum = isExtra
@@ -34,6 +36,21 @@ const ReportListView = () => {
 
 	return (
 		<PageLayout title={"Payrun Reports"}>
+			<Select
+				w={"10%"}
+				size={"sm"}
+				border="1px solid var(--primary_button_bg)"
+				borderRadius="10px"
+				value={selectedYear}
+				placeholder="Select Year"
+				onChange={(e) => setSelectedYear(e.target.value)}
+			>
+				{[2024, 2025]?.map((year) => (
+					<option value={year} key={year}>
+						{year}
+					</option>
+				))}
+			</Select>
 			{filteredPayPeriods && (
 				<WorkviewTable
 					payGroupSchedule={filteredPayPeriods}

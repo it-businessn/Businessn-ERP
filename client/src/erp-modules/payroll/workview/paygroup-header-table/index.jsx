@@ -1,4 +1,4 @@
-import { SimpleGrid, VStack } from "@chakra-ui/react";
+import { HStack, Select, SimpleGrid, VStack } from "@chakra-ui/react";
 import PrimaryButton from "components/ui/button/PrimaryButton";
 import BoxCard from "components/ui/card";
 import { useState } from "react";
@@ -20,7 +20,7 @@ const PaygroupTable = ({
 }) => {
 	const [showExtraPayrun, setShowExtraPayrun] = useState(false);
 	const [showOnboard, setShowOnboard] = useState(false);
-
+	const [selectedYear, setSelectedYear] = useState("2024");
 	const loggedInUser = LocalStorageService.getItem("user");
 	const navigate = useNavigate();
 
@@ -38,6 +38,7 @@ const PaygroupTable = ({
 			navigate(`${empPath}/${loggedInUser._id}/3`);
 		}
 	};
+
 	return (
 		<SimpleGrid
 			columns={{ base: 1, md: 1, lg: 2 }}
@@ -48,12 +49,29 @@ const PaygroupTable = ({
 		>
 			<BoxCard>
 				<VStack w={"100%"} alignItems={"end"} spacing={2}>
-					<PrimaryButton
-						name={"Add extra payrun"}
-						size="xs"
-						px={0}
-						onOpen={() => setShowExtraPayrun(true)}
-					/>
+					<HStack justifyContent="end" alignItems="center">
+						<Select
+							size={"sm"}
+							border="1px solid var(--primary_button_bg)"
+							borderRadius="10px"
+							value={selectedYear}
+							placeholder="Select Year"
+							onChange={(e) => setSelectedYear(e.target.value)}
+						>
+							{[2024, 2025]?.map((year) => (
+								<option value={year} key={year}>
+									{year}
+								</option>
+							))}
+						</Select>
+
+						<PrimaryButton
+							name={"Add extra payrun"}
+							size="xs"
+							px={"3em"}
+							onOpen={() => setShowExtraPayrun(true)}
+						/>
+					</HStack>
 					{showExtraPayrun && (
 						<ExtraPayrunModal
 							selectedPayGroupId={selectedPayGroup._id}
@@ -73,7 +91,6 @@ const PaygroupTable = ({
 							selectedPayGroupName={selectedPayGroup?.name}
 						/>
 					)}
-
 					<WorkviewTable
 						payGroupSchedule={payGroupSchedule}
 						closestRecordIndex={closestRecordIndex}
