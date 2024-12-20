@@ -9,9 +9,21 @@ import SettingService from "services/SettingService";
 import { dayMonthYear, getDefaultDate } from "utils/convertDate";
 
 const EditGroup = ({ isOpen, onClose, selectedGroup }) => {
-	const schedules = selectedGroup?.scheduleSettings;
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [selectedYear, setSelectedYear] = useState("2024");
+	const [schedules, setSchedules] = useState([]);
+
+	const currentScheduleIndex = selectedGroup?.yearSchedules.findIndex(({ year }) => year === 2024);
+	const [currentYearScheduleIndex, setCurrentYearScheduleIndex] = useState(currentScheduleIndex);
+
+	useEffect(() => {
+		const parsedYear = parseInt(selectedYear);
+
+		setSchedules(selectedGroup?.yearSchedules.find(({ year }) => year === parsedYear)?.payPeriods);
+		setCurrentYearScheduleIndex(
+			selectedGroup?.yearSchedules?.findIndex(({ year }) => year === parsedYear),
+		);
+	}, [selectedYear]);
 
 	useEffect(() => {
 		if (!selectedGroup?.scheduleSettings?.length) {
@@ -29,8 +41,10 @@ const EditGroup = ({ isOpen, onClose, selectedGroup }) => {
 
 	const handleSubmit = async (e) => {
 		e.preventDefault();
-		selectedGroup.selectedYear = selectedYear;
-		selectedGroup.scheduleSettings = schedules;
+		if (currentYearScheduleIndex < 0) {
+			return;
+		}
+		selectedGroup.yearSchedules[currentYearScheduleIndex].payPeriods = schedules;
 		setIsSubmitting(true);
 		try {
 			await SettingService.updateGroup(selectedGroup, selectedGroup._id);
@@ -82,10 +96,7 @@ const EditGroup = ({ isOpen, onClose, selectedGroup }) => {
 				borderRadius="10px"
 				value={selectedYear}
 				placeholder="Select Year"
-				onChange={(e) => {
-					setSelectedYear(e.target.value);
-					handleSubmit(e);
-				}}
+				onChange={(e) => setSelectedYear(e.target.value)}
 			>
 				{[2024, 2025]?.map((year) => (
 					<option value={year} key={year}>
