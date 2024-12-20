@@ -73,6 +73,8 @@ const EmployeeList = ({ employees }) => {
 								<Td py={0} borderBottomColor={"var(--filter_border_color)"}>
 									{payrollStatus?.includes("Active") ? (
 										<ActiveBadge title={"Payroll Activated"} />
+									) : payrollStatus?.includes("Terminated") ? (
+										<ActiveBadge bg="var(--stat_worked)" title={payrollStatus} />
 									) : (
 										payrollStatus
 									)}
