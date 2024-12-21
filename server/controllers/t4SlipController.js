@@ -27,7 +27,7 @@ const buildRecord = async (record) => {
 
 	const companyInfo = await Company.findOne({
 		name: record?.companyName,
-	}).select("cra_business_number registration_number");
+	}).select("cra_business_number registration_number name");
 	const empGovtInfo = await EmployeeGovernmentInfo.findOne({
 		empId: record?.empId._id,
 	}).select("pensionPlanNumber isCPPExempt isEIExempt isPIPExempt employmentCode");
@@ -111,24 +111,30 @@ const generateT4Slip = async (companyName, payPeriodNum) => {
 	// 		year: moment().format("YYYY"),
 	// 	}
 	// );
-	const headerNode = root.ele("Header");
+	const t4summaryNode = root.ele("T4SummaryType");
 
 	const payrollData = await buildT4PayrollData(companyName, payPeriodNum);
 
-	const companyFileName = payrollData[0]?.companyInfo?.registration_number;
+	const companyRegdNum = payrollData[0]?.companyInfo?.registration_number;
 
 	const companyInfo = payrollData[0].companyInfo;
 
-	headerNode.ele("BN", "empProfileInfo?.streetAddress").up();
+	const currentYear = new Date().getFullYear();
+	t4summaryNode.ele("bn", companyRegdNum).up();
 
-	const emprNameNode = headerNode.ele("EmployerName");
-	emprNameNode.ele("snm", "empProfileInfo?.streetAddress").up();
+	const emprNameNode = t4summaryNode.ele("EMPR_NM");
+	emprNameNode.ele("snm", companyInfo?.name).up();
 	emprNameNode.up();
-	headerNode.ele("Year", "companyInfo").up();
-	headerNode.ele("ReturnType", "companyInfo").up();
-	headerNode.up();
+	t4summaryNode.ele("tx_yr", currentYear).up();
+	t4summaryNode.ele("ReturnType", "T4").up();
+	t4summaryNode.up();
 
 	const T4Node = root.ele("T4");
+
+	let tot_empt_incamt = 0;
+	let tot_empe_cpp_amt = 0;
+	let tot_empe_eip_amt = 0;
+	let tot_itx_ddct_amt = 0;
 
 	payrollData.map((paystubRecord) => {
 		const { companyInfo, employeeInfo, employerInfo } = paystubRecord;
@@ -167,7 +173,7 @@ const generateT4Slip = async (companyName, payPeriodNum) => {
 		// t4AmtNode.ele("cppe_cntrb_amt").up();
 		// t4AmtNode.ele("qpp_cntrb_amt").up();
 		// t4AmtNode.ele("qppe_cntrb_amt").up();
-		t4AmtNode.ele("empe_eip_amt").up();
+		t4AmtNode.ele("empe_eip_amt", employeeInfo?.currentEmployeeEIDeductions).up();
 		// t4AmtNode.ele("rpp_cntrb_amt").up();
 		t4AmtNode.ele("itx_ddct_amt", employeeInfo?.totalTaxDeductions).up();
 		// t4AmtNode.ele("ei_insu_ern_amt", employeeInfo?.currentEmployeeEIDeductions).up();
@@ -185,13 +191,18 @@ const generateT4Slip = async (companyName, payPeriodNum) => {
 		// otherInfoNode.ele("stok_opt_ben_amt").up();
 		// otherInfoNode.up();
 		T4SlipNode.up();
+
+		tot_empt_incamt += employeeInfo?.currentGrossPay;
+		tot_empe_cpp_amt += employeeInfo?.currentCPPDeductions;
+		tot_empe_eip_amt += employeeInfo?.currentEmployeeEIDeductions;
+		tot_itx_ddct_amt += employeeInfo?.totalTaxDeductions;
 	});
 	T4Node.up();
 	const T4TotalNode = root.ele("T4_TAMT");
-	T4TotalNode.ele("tot_empt_incamt").up();
-	T4TotalNode.ele("tot_empe_cpp_amt").up();
-	T4TotalNode.ele("tot_empe_eip_amt").up();
-	T4TotalNode.ele("tot_itx_ddct_amt").up();
+	T4TotalNode.ele("tot_empt_incamt", tot_empt_incamt).up();
+	T4TotalNode.ele("tot_empe_cpp_amt", tot_empe_cpp_amt).up();
+	T4TotalNode.ele("tot_empe_eip_amt", tot_empe_eip_amt).up();
+	T4TotalNode.ele("tot_itx_ddct_amt", tot_itx_ddct_amt).up();
 	T4TotalNode.up();
 
 	let xmlT4Data = root.end({ pretty: true });
@@ -203,7 +214,7 @@ const generateT4Slip = async (companyName, payPeriodNum) => {
 	});
 
 	// File path for the XML file
-	const fileName = `T4_${companyFileName}_${Date.now()}.xml`;
+	const fileName = `T4_${companyRegdNum}_${Date.now()}.xml`;
 	const filePath = path.join(outputDir, fileName);
 
 	fs.writeFileSync(filePath, xmlT4Data, (err) => {
