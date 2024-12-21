@@ -4,8 +4,11 @@ import VerticalStepper from "components/ui/VerticalStepper";
 import StepContent from "erp-modules/payroll/employees/pageview/step-content";
 import Record from "erp-modules/payroll/employees/pageview/step-content/Record";
 import { useEffect, useState } from "react";
+import LocalStorageService from "services/LocalStorageService";
+import TicketService from "services/TicketService";
 
 const QueryInfo = ({ id, handleNext, handlePrev }) => {
+	const ticketId = LocalStorageService.getItem("ticketId");
 	const INQUIRIES = [
 		{ name: "Price related inquiry", id: "price" },
 		{ name: "Client Experience or Support Inquiry", id: "support" },
@@ -36,6 +39,7 @@ const QueryInfo = ({ id, handleNext, handlePrev }) => {
 		},
 	];
 	const [formData, setFormData] = useState({
+		_id: ticketId,
 		inquiryType: "",
 		issue: "",
 	});
@@ -51,17 +55,17 @@ const QueryInfo = ({ id, handleNext, handlePrev }) => {
 	const toast = useToast();
 
 	const handleSubmit = async () => {
-		// setIsLoading(true);
-		// try {
-		// 	const result = await PayrollService.addEmployeeProfileInfo(formData);
-		// 	setIsLoading(false);
-		// 	toast({
-		// 		title: "Personal info added successfully.",
-		// 		status: "success",
-		// 		duration: 1000,
-		// 		isClosable: true,
-		// 	});
-		// } catch (error) {}
+		setIsLoading(true);
+		try {
+			await TicketService.updateInfo(formData, formData._id);
+			setIsLoading(false);
+			toast({
+				title: "Query info added successfully.",
+				status: "success",
+				duration: 1000,
+				isClosable: true,
+			});
+		} catch (error) {}
 	};
 
 	const steps = [

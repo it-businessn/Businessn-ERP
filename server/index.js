@@ -42,6 +42,7 @@ const setUpRoutes = require("./routes/setupRoutes");
 const taskRoutes = require("./routes/taskRoutes");
 const timesheetRoutes = require("./routes/timesheetRoutes");
 const timecardRoutes = require("./routes/timecardRoutes");
+const ticketRoutes = require("./routes/ticketRoutes");
 const userRoutes = require("./routes/userRoutes");
 const t4SlipRoutes = require("./routes/t4SlipRoutes");
 
@@ -109,6 +110,7 @@ app.use((request, response, next) => {
 // Routes
 app.use("/api", appRoutes);
 app.use("/api/timecard", timecardRoutes);
+app.use("/api/ticket", ticketRoutes);
 app.use(authenticateToken);
 app.use("/api/activities", activityRoutes);
 app.use("/api/assessment", assessmentRoutes);

@@ -4,7 +4,8 @@ import VerticalStepper from "components/ui/VerticalStepper";
 import StepContent from "erp-modules/payroll/employees/pageview/step-content";
 import Record from "erp-modules/payroll/employees/pageview/step-content/Record";
 import { useEffect, useState } from "react";
-import PayrollService from "services/PayrollService";
+import LocalStorageService from "services/LocalStorageService";
+import TicketService from "services/TicketService";
 
 const CompanyInfo = ({ id, handleNext }) => {
 	const COMPANY_INFO = [
@@ -32,17 +33,18 @@ const CompanyInfo = ({ id, handleNext }) => {
 	const toast = useToast();
 
 	const handleSubmit = async () => {
-		// setIsLoading(true);
-		// try {
-		// 	const result = await PayrollService.addEmployeeProfileInfo(formData);
-		// 	setIsLoading(false);
-		// 	toast({
-		// 		title: "Personal info added successfully.",
-		// 		status: "success",
-		// 		duration: 1000,
-		// 		isClosable: true,
-		// 	});
-		// } catch (error) {}
+		setIsLoading(true);
+		try {
+			const { data } = await TicketService.addInfo(formData);
+			LocalStorageService.setItem("ticketId", data._id);
+			setIsLoading(false);
+			toast({
+				title: "Company info added successfully.",
+				status: "success",
+				duration: 1000,
+				isClosable: true,
+			});
+		} catch (error) {}
 	};
 
 	const steps = [
