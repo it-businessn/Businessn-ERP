@@ -26,18 +26,12 @@ const Home = () => {
 	const { isOpen, onOpen, onClose } = useDisclosure();
 
 	const [refresh, setRefresh] = useState(false);
-	const { activeMenu, setActiveMenu } = useSidebarMenu(
-		user?._id,
-		company,
-		isManager(user?.role),
-	);
+	const { activeMenu, setActiveMenu } = useSidebarMenu(user?._id, company, isManager(user?.role));
 
 	useEffect(() => {
 		setSelectedCompany(user?.companyId?.name);
 		if (user && Object.keys(user).length > 0) {
-			const dashboard = activeMenu?.children.find(
-				(_) => _.permissions?.canAccessModule,
-			);
+			const dashboard = activeMenu?.children.find((_) => _.permissions?.canAccessModule);
 			if (activeMenu?.path) {
 				navigate(`/${activeMenu?.path}/${dashboard?.path}`);
 			}
