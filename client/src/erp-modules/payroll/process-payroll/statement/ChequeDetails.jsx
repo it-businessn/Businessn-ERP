@@ -7,7 +7,12 @@ import { monthDayYearFormat } from "utils/convertDate";
 import PayStubHeader from "./PayStubHeader";
 
 const PaymentDateTitle = ({ payDate }) => (
-	<TextTitle align={"right"} title={`Payment Date: ${monthDayYearFormat(payDate)}`} size={"xs"} />
+	<TextTitle
+		p="0 1em"
+		align={"right"}
+		title={`Payment Date: ${monthDayYearFormat(payDate)}`}
+		size={"xs"}
+	/>
 );
 
 const InfoText = ({ title1, title2, title3, hasBg }) => (

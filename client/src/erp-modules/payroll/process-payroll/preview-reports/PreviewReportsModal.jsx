@@ -15,7 +15,7 @@ const PreviewReportsModal = ({
 	title = "Payroll Register",
 }) => {
 	const Statement = ({ data }) => (
-		<Box borderBottom={"1px solid var(--calendar_border)"} mx={"auto"} pb={5}>
+		<Box borderBottom={"1px solid var(--calendar_border)"} mx={"auto"}>
 			<PayStubStatement data={data} />
 		</Box>
 	);

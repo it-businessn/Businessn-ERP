@@ -84,7 +84,7 @@ const ModalLayout = ({
 						</Flex>
 					</ModalHeader>
 				)}
-				<ModalBody p={hideOverlay && 0} zIndex="0" ref={componentRef}>
+				<ModalBody p={hideOverlay && 0} zIndex="0" ref={componentRef} bg={"#fff"} height={"100vh"}>
 					<Stack spacing={spacing}>
 						{children}
 						{error && (

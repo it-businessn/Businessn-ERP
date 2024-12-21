@@ -48,8 +48,8 @@ const usePaygroup = (company, refresh, year = "2024", isReport = false) => {
 					setPayGroupSchedule(sortedResult);
 					const schedules = data[0]?.yearSchedules[yearIndex].payPeriods;
 					const closestPayPeriod = schedules?.find(({ isProcessed }) => !isProcessed);
+
 					if (isReport) {
-						const closestPayPeriod = schedules?.find(({ isProcessed }) => !isProcessed);
 						const lastIndex = schedules.length - 1;
 						const closestPayPeriodIndex = closestPayPeriod
 							? schedules.findIndex(({ payPeriod }) => payPeriod === closestPayPeriod?.payPeriod)
@@ -58,6 +58,7 @@ const usePaygroup = (company, refresh, year = "2024", isReport = false) => {
 						setClosestRecord(closestPayPeriod || schedules[lastIndex]);
 						setClosestRecordIndex(closestPayPeriodIndex);
 					}
+
 					if (closestPayPeriod) {
 						getClosestScheduleByProcessingDate(schedules, isReport);
 					} else {

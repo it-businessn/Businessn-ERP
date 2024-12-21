@@ -670,7 +670,9 @@ const findEmployeePayInfo = async (empId, companyName) =>
 	await EmployeePayInfo.findOne({
 		empId,
 		companyName,
-	}).select("empId regPay overTimePay dblOverTimePay statWorkPay statPay sickPay vacationPay");
+	}).select(
+		"empId typeOfEarning fullTimeStandardHours partTimeStandardHours regPay overTimePay dblOverTimePay statWorkPay statPay sickPay vacationPay",
+	);
 
 const findEmployeeBenefitInfo = async (empId, companyName) =>
 	await EmployeeBalanceInfo.findOne({
@@ -732,9 +734,15 @@ const getCurrentTotals = (empTimesheetData, empPayInfoResult, empAdditionalHours
 	newEmpData.sprayPay = 1;
 	newEmpData.firstAidPay = 0.5;
 
-	newEmpData.totalRegHoursWorked =
-		getSumHours(empTimesheetData?.totalRegHoursWorked) +
-		getSumHours(empAdditionalHoursAllocated?.additionalRegHoursWorked);
+	const isFT = empPayInfoResult?.typeOfEarning === "Full Time Salaried";
+	const isPT = empPayInfoResult?.typeOfEarning === "Part Time Salaried";
+
+	newEmpData.totalRegHoursWorked = isFT
+		? getSumHours(empPayInfoResult?.fullTimeStandardHours)
+		: isPT
+		? getSumHours(empPayInfoResult?.partTimeStandardHours)
+		: getSumHours(empTimesheetData?.totalRegHoursWorked) +
+		  getSumHours(empAdditionalHoursAllocated?.additionalRegHoursWorked);
 	newEmpData.totalOvertimeHoursWorked =
 		getSumHours(empTimesheetData?.totalOvertimeHoursWorked) +
 		getSumHours(empAdditionalHoursAllocated?.additionalOvertimeHoursWorked);
