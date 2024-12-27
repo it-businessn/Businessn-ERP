@@ -352,7 +352,7 @@ const SICK_TYPES = [
 
 const VACATION_BENEFIT = [
 	{
-		name: "Balance Fwd",
+		name: "Balance Adjustment",
 		rate: 0,
 		totalHours: 0,
 		currentTotal: "currentVacationBalanceFwd",

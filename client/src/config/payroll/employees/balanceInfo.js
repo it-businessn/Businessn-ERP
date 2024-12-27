@@ -1,33 +1,26 @@
 export const EMP_VACATION_BALANCE_CONFIG = [
+	// {
+	// 	type: "Carry forward adjustment",
+	// 	control: "checkbox",
+	// 	param_key: "carryFwd",
+	// 	params: [
+	// 		{
+	// 			name: "Available Balance",
+	// 			param_key: "YTDVacationBalance",
+	// 		},
+	// 		{
+	// 			name: "Available at the Start of the Year",
+	// 			param_key: "YTDVacationBalanceFwd",
+	// 		},
+	// 	],
+	// },
 	{
-		type: "Carry forward adjustment",
-		control: "checkbox",
-		param_key: "carryFwd",
-		params: [
-			{
-				name: "Available Balance",
-				param_key: "YTDVacationBalance",
-			},
-			{
-				name: "Available at the Start of the Year",
-				param_key: "YTDVacationBalanceFwd",
-			},
-		],
+		type: "",
+		params: [{ name: "Accrued This Year", param_key: "YTDVacationAccrued" }],
 	},
 	{
-		type: "sfsgdsgdsgdsg1",
-		params: [
-			{ name: "sfsgdsgdsgdsg", param_key: "sfsgdsgdsgdsg1" },
-			{ name: "Accrued This Year", param_key: "YTDVacationAccrued" },
-		],
-	},
-
-	{
-		type: "sfsgdsgdsgdsg2",
-		params: [
-			{ name: "sfsgdsgdsgdsg", param_key: "sfsgdsgdsgdsg2" },
-			{ name: "Used this year", param_key: "YTDVacationUsed" },
-		],
+		type: "",
+		params: [{ name: "Used this year", param_key: "YTDVacationUsed" }],
 	},
 ];
 

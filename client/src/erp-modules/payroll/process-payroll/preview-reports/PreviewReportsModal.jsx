@@ -30,6 +30,11 @@ const PreviewReportsModal = ({
 			fontSize="2xl"
 			overflow={"hidden"}
 			isReport={isReport}
+			reportData={
+				isEarningTable
+					? reportData?.payPeriodProcessingDate
+					: reportData[0]?.payPeriodProcessingDate
+			}
 		>
 			{isReport && !reportData && <Loader />}
 			{!isEarningTable && !reportData?.length && (

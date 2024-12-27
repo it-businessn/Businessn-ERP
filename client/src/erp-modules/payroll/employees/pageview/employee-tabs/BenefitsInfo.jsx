@@ -1,4 +1,5 @@
-import { SimpleGrid } from "@chakra-ui/react";
+import { FormControl, HStack, Input, SimpleGrid } from "@chakra-ui/react";
+import PrimaryButton from "components/ui/button/PrimaryButton";
 import BoxCard from "components/ui/card";
 import VerticalStepper from "components/ui/VerticalStepper";
 import {
@@ -73,19 +74,33 @@ const BenefitsInfo = ({ company }) => {
 		{
 			title: "Vacation Balances",
 			content: (
-				<Record
-					carryFwd={carryFwd}
-					setCarryFwd={setCarryFwd}
-					formData={formData}
-					setFormData={setFormData}
-					title="Vacation Balances"
-					config={EMP_VACATION_BALANCE_CONFIG}
-					isLoading={isLoading}
-					isDisabled={isDisabled}
-					handleSubmit={handleSubmit}
-					readOnly={true}
-					isBalanceInfo
-				/>
+				<>
+					<Record
+						carryFwd={carryFwd}
+						setCarryFwd={setCarryFwd}
+						formData={formData}
+						setFormData={setFormData}
+						title="Vacation Balances"
+						config={EMP_VACATION_BALANCE_CONFIG}
+						isLoading={isLoading}
+						isDisabled={isDisabled}
+						handleSubmit={handleSubmit}
+						readOnly={true}
+						showAdjustment={true}
+					/>
+					<HStack justifyContent="space-between">
+						<PrimaryButton
+							size="xs"
+							name="Add Adjustment"
+							isLoading={isLoading}
+							loadingText="Loading"
+							onOpen={handleSubmit}
+						/>
+						<FormControl>
+							<Input size="sm" w="20%" placeholder="Enter amount to adjust" value="" readOnly />
+						</FormControl>
+					</HStack>
+				</>
 			),
 		},
 		{

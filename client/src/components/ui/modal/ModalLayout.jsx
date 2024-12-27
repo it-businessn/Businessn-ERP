@@ -17,6 +17,7 @@ import {
 import { useEffect, useRef, useState } from "react";
 import { FaPrint } from "react-icons/fa";
 import { useReactToPrint } from "react-to-print";
+import { formatDateBar } from "utils/convertDate";
 
 const ModalLayout = ({
 	title,
@@ -31,6 +32,7 @@ const ModalLayout = ({
 	isCentered = true,
 	isReport,
 	spacing = "5",
+	reportData,
 }) => {
 	const componentRef = useRef();
 	const [isPrintDisabled, setIsPrintDisabled] = useState(true);
@@ -41,6 +43,9 @@ const ModalLayout = ({
 
 	const handlePrint = useReactToPrint({
 		content: () => componentRef.current,
+		onBeforeGetContent: () => {
+			document.title = `${formatDateBar(reportData)}_BusinessN_Paystub`;
+		},
 	});
 
 	const handleClick = () => {
