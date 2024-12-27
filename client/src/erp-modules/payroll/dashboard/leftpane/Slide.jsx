@@ -4,6 +4,7 @@ import { animated, useSpring } from "react-spring";
 import { withGesture } from "react-with-gesture";
 import { workViewPath } from "routes";
 import { longFormat } from "utils/convertDate";
+import currentImg from "../../../../assets/card_bg.png";
 import PayPeriodDetailCard from "./PayPeriodDetailCard";
 
 function Slide({ content, offsetRadius, index, animationConfig, moveSlide, delta, down, up }) {
@@ -16,7 +17,7 @@ function Slide({ content, offsetRadius, index, animationConfig, moveSlide, delta
 		1: {
 			transform: "translateX(0%) translateY(-100%) scale(0.85)",
 			top: "55%",
-			opacity: 0.85,
+			opacity: 0.1,
 		},
 		2: {
 			transform: "translateX(0%) translateY(-70%) scale(0.9)",
@@ -107,7 +108,8 @@ function Slide({ content, offsetRadius, index, animationConfig, moveSlide, delta
 				borderRadius="10px"
 				width="100%"
 				p="0.5em 0.8em"
-				bg={"var(--empName_bg)"}
+				backgroundImage={currentImg}
+				backgroundSize="cover"
 				color="var(--main_color)"
 			>
 				<PayPeriodDetailCard

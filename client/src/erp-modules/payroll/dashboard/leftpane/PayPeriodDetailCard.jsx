@@ -30,7 +30,7 @@ const PayPeriodDetailCard = ({
 		{payNum && (
 			<TextTitle size="sm" align={"right"} p={"0 2em 0 0 "} title={`Pay Period ${payNum}`} />
 		)}
-		<HStack justifyContent={"space-between"} p="0.8em" pb={pb} bg={"#1c6b96"}>
+		<HStack justifyContent={"space-between"} p="0.8em" pb={pb}>
 			<VStack spacing={0} alignItems={"start"} justifyContent={"center"}>
 				<TextTitle size="sm" color={"var(--filter_border_color)"} title={header} />
 				<TextTitle size="sm" title={text1} />
