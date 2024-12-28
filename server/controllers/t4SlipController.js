@@ -111,7 +111,8 @@ const generateT4Slip = async (companyName, payPeriodNum) => {
 	// 		year: moment().format("YYYY"),
 	// 	}
 	// );
-	const t4summaryNode = root.ele("T4SummaryType");
+
+	const T4Node = root.ele("T4");
 
 	const payrollData = await buildT4PayrollData(companyName, payPeriodNum);
 
@@ -120,16 +121,6 @@ const generateT4Slip = async (companyName, payPeriodNum) => {
 	const companyInfo = payrollData[0].companyInfo;
 
 	const currentYear = new Date().getFullYear();
-	t4summaryNode.ele("bn", companyRegdNum).up();
-
-	const emprNameNode = t4summaryNode.ele("EMPR_NM");
-	emprNameNode.ele("snm", companyInfo?.name).up();
-	emprNameNode.up();
-	t4summaryNode.ele("tx_yr", currentYear).up();
-	t4summaryNode.ele("ReturnType", "T4").up();
-	t4summaryNode.up();
-
-	const T4Node = root.ele("T4");
 
 	let tot_empt_incamt = 0;
 	let tot_empe_cpp_amt = 0;
@@ -145,51 +136,90 @@ const generateT4Slip = async (companyName, payPeriodNum) => {
 		const employeeNode = T4SlipNode.ele("EMPE_NM");
 		employeeNode.ele("snm", name).up();
 		employeeNode.ele("gvn_nm", name).up();
+		employeeNode.ele("init", name).up();
 		employeeNode.up();
 
 		const addressNode = T4SlipNode.ele("EMPE_ADDR");
-		addressNode.ele("street", empProfileInfo?.streetAddress).up();
-		addressNode.ele("city", empProfileInfo?.city).up();
-		addressNode.ele("province", empProfileInfo?.province).up();
-		addressNode.ele("postalCode", empProfileInfo?.postalCode).up();
-		addressNode.ele("country", empProfileInfo?.country).up();
+		addressNode.ele("addr_l1_txt", empProfileInfo?.streetAddress).up();
+		addressNode.ele("addr_l2_txt", empProfileInfo?.streetAddress).up();
+		addressNode.ele("cty_nm", empProfileInfo?.city).up();
+		addressNode.ele("prov_cd", empProfileInfo?.province).up();
+		addressNode.ele("cntry_cd", empProfileInfo?.country).up();
+		addressNode.ele("pstl_cd", empProfileInfo?.postalCode).up();
 		addressNode.up(); // Close EMPE_ADDR
 
 		T4SlipNode.ele("sin", empProfileInfo?.SIN).up();
-		// employeeNode.ele("empe_nbr", empEmploymentInfo?.employeeNo).up();
-		// employeeNode.ele("bn", companyInfo?.cra_business_number).up();
-		// employeeNode.ele("rpp_dpsp_rgst_nbr", empGovtInfo?.pensionPlanNumber).up();
-		// employeeNode.ele("cpp_qpp_xmpt_cd", empGovtInfo?.isCPPExempt ? 1 : 0).up();
-		// employeeNode.ele("ei_xmpt_cd", empGovtInfo?.isEIExempt ? 1 : 0).up();
-		// employeeNode.ele("prov_pip_xmpt_cd", empGovtInfo?.isPIPExempt ? 1 : 0).up();
-		// employeeNode.ele("empt_cd", empGovtInfo?.employmentCode).up();
-		// employeeNode.ele("rpt_tcd", empT4Info?.slipDataType ?? "T4").up();
-		// employeeNode.ele("empt_prov_cd", empEmploymentInfo?.employmentRegion).up();
-		// employeeNode.ele("empr_dntl_ben_rpt_cd").up();
+		T4SlipNode.ele("empe_nbr", empEmploymentInfo?.employeeNo).up();
+		T4SlipNode.ele("bn", companyInfo?.cra_business_number).up();
+		T4SlipNode.ele("rpp_dpsp_rgst_nbr", empGovtInfo?.pensionPlanNumber).up();
+		T4SlipNode.ele("cpp_qpp_xmpt_cd", empGovtInfo?.isCPPExempt ? 1 : 0).up();
+		T4SlipNode.ele("ei_xmpt_cd", empGovtInfo?.isEIExempt ? 1 : 0).up();
+		T4SlipNode.ele("prov_pip_xmpt_cd", empGovtInfo?.isPIPExempt ? 1 : 0).up();
+		T4SlipNode.ele("empt_cd", empGovtInfo?.employmentCode).up();
+		T4SlipNode.ele("rpt_tcd", empT4Info?.slipDataType ?? "T4").up();
+		T4SlipNode.ele("empt_prov_cd", empEmploymentInfo?.employmentRegion).up();
+		T4SlipNode.ele("empr_dntl_ben_rpt_cd", 0).up();
 
 		const t4AmtNode = T4SlipNode.ele("T4_AMT");
 		t4AmtNode.ele("empt_incamt", employeeInfo?.currentGrossPay).up();
 		t4AmtNode.ele("cpp_cntrb_amt", employeeInfo?.currentCPPDeductions).up();
-		// t4AmtNode.ele("cppe_cntrb_amt").up();
-		// t4AmtNode.ele("qpp_cntrb_amt").up();
-		// t4AmtNode.ele("qppe_cntrb_amt").up();
+		t4AmtNode.ele("cppe_cntrb_amt", 0).up();
+		t4AmtNode.ele("qpp_cntrb_amt", 0).up();
+		t4AmtNode.ele("qppe_cntrb_amt", 0).up();
 		t4AmtNode.ele("empe_eip_amt", employeeInfo?.currentEmployeeEIDeductions).up();
-		// t4AmtNode.ele("rpp_cntrb_amt").up();
+		t4AmtNode.ele("rpp_cntrb_amt", 0).up();
 		t4AmtNode.ele("itx_ddct_amt", employeeInfo?.totalTaxDeductions).up();
-		// t4AmtNode.ele("ei_insu_ern_amt", employeeInfo?.currentEmployeeEIDeductions).up();
-		// t4AmtNode.ele("cpp_qpp_ern_amt").up();
-		// t4AmtNode.ele("unn_dues_amt", employeeInfo?.currentUnionDuesDeductions).up();
-		// t4AmtNode.ele("chrty_dons_amt").up();
-		// t4AmtNode.ele("padj_amt").up();
-		// t4AmtNode.ele("prov_pip_amt", employeeInfo?.currentEmployeeHealthContributions).up();
-		// t4AmtNode.ele("prov_insu_ern_amt", employeeInfo?.currentEmployeePensionContributions).up();
+		t4AmtNode.ele("ei_insu_ern_amt", employeeInfo?.currentEmployeeEIDeductions).up();
+		t4AmtNode.ele("cpp_qpp_ern_amt", 0).up();
+		t4AmtNode.ele("unn_dues_amt", employeeInfo?.currentUnionDuesDeductions).up();
+		t4AmtNode.ele("chrty_dons_amt", 0).up();
+		t4AmtNode.ele("padj_amt", 0).up();
+		t4AmtNode.ele("prov_pip_amt", employeeInfo?.currentEmployeeHealthContributions).up();
+		t4AmtNode.ele("prov_insu_ern_amt", employeeInfo?.currentEmployeePensionContributions).up();
 		t4AmtNode.up();
-		// const otherInfoNode = employeeNode.ele("OTH_INFO");
-		// otherInfoNode.ele("hm_brd_lodg_amt").up();
-		// otherInfoNode.ele("spcl_wrk_site_amt").up();
-		// otherInfoNode.ele("med_trvl_amt").up();
-		// otherInfoNode.ele("stok_opt_ben_amt").up();
-		// otherInfoNode.up();
+		const otherInfoNode = T4SlipNode.ele("OTH_INFO");
+		otherInfoNode.ele("hm_brd_lodg_amt", 0).up();
+		otherInfoNode.ele("spcl_wrk_site_amt", 0).up();
+		otherInfoNode.ele("prscb_zn_trvl_amt", 0).up();
+		otherInfoNode.ele("med_trvl_amt", 0).up();
+		otherInfoNode.ele("prsnl_vhcl_amt").up();
+		otherInfoNode.ele("rsn_per_km_amt", 0).up();
+		otherInfoNode.ele("low_int_loan_amt", 0).up();
+		otherInfoNode.ele("empe_hm_loan_amt", 0).up();
+		otherInfoNode.ele("stok_opt_ben_amt", 0).up();
+		otherInfoNode.ele("sob_a00_feb_amt", 0).up();
+		otherInfoNode.ele("shr_opt_d_ben_amt", 0).up();
+		otherInfoNode.ele("sod_d_a00_feb_amt", 0).up();
+		otherInfoNode.ele("oth_tx_ben_amt", 0).up();
+		otherInfoNode.ele("shr_opt_d1_ben_amt", 0).up();
+		otherInfoNode.ele("sod_d1_a00_feb_amt", 0).up();
+		otherInfoNode.ele("empt_cmsn_amt", 0).up();
+		otherInfoNode.ele("cfppa_amt", 0).up();
+		otherInfoNode.ele("dfr_sob_amt", 0).up();
+		otherInfoNode.ele("empt_inc_amt_covid_prd1", 0).up();
+		otherInfoNode.ele("empt_inc_amt_covid_prd2", 0).up();
+		otherInfoNode.ele("empt_inc_amt_covid_prd3", 0).up();
+		otherInfoNode.ele("empt_inc_amt_covid_prd4", 0).up();
+		otherInfoNode.ele("elg_rtir_amt", 0).up();
+		otherInfoNode.ele("nelg_rtir_amt", 0).up();
+		otherInfoNode.ele("indn_nelg_rtir_amt", 0).up();
+		otherInfoNode.ele("indn_empe_amt", 0).up();
+		otherInfoNode.ele("oc_incamt", 0).up();
+		otherInfoNode.ele("oc_dy_cnt", 0).up();
+		otherInfoNode.ele("pr_90_cntrbr_amt", 0).up();
+		otherInfoNode.ele("pr_90_ncntrbr_amt", 0).up();
+		otherInfoNode.ele("cmpn_rpay_empr_amt", 0).up();
+		otherInfoNode.ele("fish_gro_ern_amt", 0).up();
+		otherInfoNode.ele("fish_net_ptnr_amt", 0).up();
+		otherInfoNode.ele("fish_shr_prsn_amt", 0).up();
+		otherInfoNode.ele("plcmt_emp_agcy_amt", 0).up();
+		otherInfoNode.ele("drvr_taxis_oth_amt", 0).up();
+		otherInfoNode.ele("brbr_hrdrssr_amt", 0).up();
+		otherInfoNode.ele("pub_trnst_pass_amt", 0).up();
+		otherInfoNode.ele("epaid_hlth_pln_amt", 0).up();
+		otherInfoNode.ele("stok_opt_csh_out_eamt", 0).up();
+		otherInfoNode.ele("vlntr_emergencyworker_xmpt_amt", 0).up();
+		otherInfoNode.up();
 		T4SlipNode.up();
 
 		tot_empt_incamt += employeeInfo?.currentGrossPay;
@@ -197,21 +227,66 @@ const generateT4Slip = async (companyName, payPeriodNum) => {
 		tot_empe_eip_amt += employeeInfo?.currentEmployeeEIDeductions;
 		tot_itx_ddct_amt += employeeInfo?.totalTaxDeductions;
 	});
-	T4Node.up();
-	const T4TotalNode = root.ele("T4_TAMT");
+	const t4summaryNode = T4Node.ele("T4Summary");
+	t4summaryNode.ele("bn", companyRegdNum).up();
+
+	const emprNameNode = t4summaryNode.ele("EMPR_NM");
+	emprNameNode.ele("l1_nm", companyInfo?.name).up();
+	emprNameNode.ele("l2_nm", companyInfo?.name).up();
+	emprNameNode.ele("l3_nm", companyInfo?.name).up();
+	emprNameNode.up();
+
+	const emprAddressNode = t4summaryNode.ele("EMPR_ADDR");
+	emprAddressNode.ele("addr_l1_txt").up();
+	emprAddressNode.ele("addr_l2_txt").up();
+	emprAddressNode.ele("cty_nm").up();
+	emprAddressNode.ele("prov_cd").up();
+	emprAddressNode.ele("cntry_cd").up();
+	emprAddressNode.ele("pstl_cd").up();
+	emprAddressNode.up();
+
+	const cntcNode = t4summaryNode.ele("CNTC");
+	cntcNode.ele("cntc_nm").up();
+	cntcNode.ele("cntc_area_cd").up();
+	cntcNode.ele("cntc_phn_nbr").up();
+	cntcNode.ele("cntc_extn_nbr").up();
+	cntcNode.up();
+
+	t4summaryNode.ele("tx_yr", currentYear).up();
+	t4summaryNode.ele("slp_cnt", currentYear).up();
+
+	const pptrNode = t4summaryNode.ele("PPRTR_SIN");
+	pptrNode.ele("pprtr_1_sin", currentYear).up();
+	pptrNode.ele("pprtr_2_sin", currentYear).up();
+	pptrNode.up();
+
+	t4summaryNode.ele("rpt_tcd", currentYear).up();
+	t4summaryNode.ele("fileramendmentnote", currentYear).up();
+
+	const T4TotalNode = t4summaryNode.ele("T4_TAMT");
 	T4TotalNode.ele("tot_empt_incamt", tot_empt_incamt).up();
 	T4TotalNode.ele("tot_empe_cpp_amt", tot_empe_cpp_amt).up();
-	T4TotalNode.ele("tot_empe_eip_amt", tot_empe_eip_amt).up();
+	T4TotalNode.ele("tot_empe_cppe_amt", tot_empe_cpp_amt).up();
+	T4TotalNode.ele("tot_empe_eip_amt", tot_empe_cpp_amt).up();
+	T4TotalNode.ele("tot_rpp_cntrb_amt", tot_empe_eip_amt).up();
 	T4TotalNode.ele("tot_itx_ddct_amt", tot_itx_ddct_amt).up();
+	T4TotalNode.ele("tot_padj_amt", tot_itx_ddct_amt).up();
+	T4TotalNode.ele("tot_empr_cpp_amt", tot_itx_ddct_amt).up();
+	T4TotalNode.ele("tot_empr_cppe_amt", tot_itx_ddct_amt).up();
+	T4TotalNode.ele("tot_empr_eip_amt", tot_itx_ddct_amt).up();
 	T4TotalNode.up();
 
+	t4summaryNode.up();
+	T4Node.up();
+	// t4summaryNode.ele("ReturnType", "T4").up();
 	let xmlT4Data = root.end({ pretty: true });
 
-	const specificTags = ["empr_dntl_ben_rpt_cd", "OTH_INFO"];
-	specificTags.forEach((tag) => {
-		const regex = new RegExp(`</${tag}>`, "g");
-		xmlT4Data = xmlT4Data.replace(regex, `</${tag}>\n`);
-	});
+	// const specificTags = ["empr_dntl_ben_rpt_cd", "OTH_INFO"];
+	// const specificTags = ["T4Slip"];
+	// specificTags.forEach((tag) => {
+	// 	const regex = new RegExp(`</${tag}>`, "g");
+	// 	xmlT4Data = xmlT4Data.replace(regex, `</${tag}>\n`);
+	// });
 
 	// File path for the XML file
 	const fileName = `T4_${companyRegdNum}_${Date.now()}.xml`;

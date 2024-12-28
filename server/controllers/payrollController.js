@@ -1094,11 +1094,8 @@ const buildPayStubDetails = async (currentPayPeriod, companyName, empTimesheetDa
 	newEmpData.currentEmployerHealthContributions = ER_EHP;
 
 	newEmpData.currentEmployerContributions = ER_EPP + ER_EHP;
-
-	newEmpData.currentVacationAccrued = empBenefitInfoResult
-		? parseFloat(empBenefitInfoResult.vacationPayPercent) * newEmpData.currentGrossPay
-		: 0;
-
+	let k = parseFloat(empBenefitInfoResult?.vacationPayPercent) || 0;
+	newEmpData.currentVacationAccrued = k * newEmpData.currentGrossPay;
 	newEmpData.currentVacationUsed =
 		empBenefitInfoResult?.typeOfVacationTreatment === "Payout"
 			? newEmpData.currentVacationAccrued
