@@ -291,3 +291,18 @@ export const meetingsData = [
 		status: "completed",
 	},
 ];
+
+export const PAYRUN_OPTIONS = [
+	{ name: "Payrun Details", code: 1, highlightColor: "var(--primary_button_bg)" },
+	{ name: "Payrun Details - Separate Cheque", code: 2, highlightColor: "var(--event_color1)" },
+	{
+		name: "Payrun Adjustment Details - No Payout",
+		code: 3,
+		highlightColor: "var(--overtime)",
+	},
+	{
+		name: "Payrun Adjustment Details - Balances",
+		code: 4,
+		highlightColor: "var(--dbl_overtime)",
+	},
+];
