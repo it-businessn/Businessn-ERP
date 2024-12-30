@@ -70,6 +70,7 @@ const Timesheet = ({ company, setShowAddEntry, showAddEntry, filter, setTimeshee
 		company,
 		recordId: null,
 		empId: null,
+		payType: "",
 	};
 	const [formData, setFormData] = useState(initialFormData);
 	const [timesheetData, setTimesheetData] = useState(timesheets);
@@ -115,6 +116,7 @@ const Timesheet = ({ company, setShowAddEntry, showAddEntry, filter, setTimeshee
 			formData.clockOut = updatedRec.clockOut;
 			formData.company = updatedRec.companyName;
 			formData.empId = updatedRec.employeeId._id;
+			formData.payType = updatedRec.payType;
 
 			if (formData.recordId) {
 				await TimesheetService.updateTimesheet(formData, formData.recordId);

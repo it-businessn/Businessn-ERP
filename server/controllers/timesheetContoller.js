@@ -257,6 +257,12 @@ const addStatHolidayDefaultTimesheet = async (employeeId, companyName) => {
 		createdOn: moment(),
 		clockIn: startTime,
 		clockOut: endTime,
+		regHoursWorked: 0,
+		overtimeHoursWorked: 0,
+		dblOvertimeHoursWorked: 0,
+		statDayHoursWorked: 0,
+		sickHoursWorked: 0,
+		vacationPayHours: 0,
 		statDayHours: statHours.toFixed(2),
 	};
 
@@ -293,7 +299,14 @@ const addOvertimeRecord = async (clockIn, clockOut, employeeId, company) => {
 		employeeId,
 		clockIn: overtimeClockIn,
 		clockOut: overtimeClockOut,
+		regHoursWorked: 0,
 		overtimeHoursWorked,
+		dblOvertimeHoursWorked: 0,
+		statDayHoursWorked: 0,
+		statDayHours: 0,
+		sickHoursWorked: 0,
+		vacationPayHours: 0,
+
 		companyName: company,
 	});
 	return adjustedClockOut;
@@ -311,7 +324,7 @@ const createTimesheet = async (req, res) => {
 				employeeId,
 				clockIn,
 				clockOut: adjustedClockOut,
-				[param_hours]: 8,
+				regHoursWorked: 8,
 				companyName: company,
 				payType: type,
 			};
@@ -323,7 +336,13 @@ const createTimesheet = async (req, res) => {
 			employeeId,
 			clockIn,
 			clockOut,
-			[param_hours]: totalWorkedHours,
+			regHoursWorked: 0,
+			overtimeHoursWorked: 0,
+			dblOvertimeHoursWorked: 0,
+			statDayHoursWorked: payType === "Statutory Worked Pay" ? totalWorkedHours : 0,
+			statDayHours: payType === "Statutory Pay" ? totalWorkedHours : 0,
+			sickHoursWorked: payType === "Sick Pay" ? totalWorkedHours : 0,
+			vacationPayHours: payType === "Vacation Pay" ? totalWorkedHours : 0,
 			companyName: company,
 			payType: type,
 		};
@@ -362,7 +381,7 @@ const addOvertimeTimesheet = async (record) => {
 
 const updateTimesheet = async (req, res) => {
 	const { id } = req.params;
-	let { clockIn, clockOut, empId, approve, param_hours, company } = req.body;
+	let { clockIn, clockOut, empId, approve, param_hours, company, payType } = req.body;
 
 	try {
 		const totalWorkedHours = calcTotalWorkedHours(clockIn, clockOut);
@@ -372,20 +391,26 @@ const updateTimesheet = async (req, res) => {
 			const updatedData = {
 				clockIn,
 				clockOut: adjustedClockOut,
-				[param_hours]: 8,
+				regHoursWorked: 8,
 				approveStatus: approve ? "Approved" : approve === false ? "Rejected" : "Pending",
 			};
 			const timesheet = await updateTimesheetData(id, updatedData);
 			return res.status(201).json(timesheet);
 		}
-		const updatedData = {
-			clockIn,
-			clockOut,
-			[param_hours]: totalWorkedHours,
-			approveStatus: approve ? "Approved" : approve === false ? "Rejected" : "Pending",
-		};
 
-		const timesheet = await updateTimesheetData(id, updatedData);
+		const timesheet = await Timesheet.findById(id);
+		timesheet.clockIn = clockIn;
+		timesheet.clockOut = clockOut;
+		timesheet.regHoursWorked = 0;
+		timesheet.overtimeHoursWorked = 0;
+		timesheet.dblOvertimeHoursWorked = 0;
+		timesheet.statDayHoursWorked = payType === "Statutory Worked Pay" ? totalWorkedHours : 0;
+		timesheet.statDayHours = payType === "Statutory Pay" ? totalWorkedHours : 0;
+		timesheet.sickHoursWorked = payType === "Sick Pay" ? totalWorkedHours : 0;
+		timesheet.vacationPayHours = payType === "Vacation Pay" ? totalWorkedHours : 0;
+		timesheet.approveStatus = approve ? "Approved" : approve === false ? "Rejected" : "Pending";
+
+		await timesheet.save();
 		return res.status(201).json(timesheet);
 	} catch (error) {
 		res.status(400).json({ message: error.message });
