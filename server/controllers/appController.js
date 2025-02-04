@@ -220,36 +220,36 @@ const login = async (req, res) => {
                 .status(500)
                 .json({ error: "User does not exist for the company" });
         }
-        // const match = await comparePassword(password, user.password);
-        // if (match) {
-        const accessToken = generateAccessToken({ id: _id, fullName });
-        const refreshToken = generateRefreshToken({ id: _id, fullName });
+        const match = await comparePassword(password, user.password);
+        if (match) {
+            const accessToken = generateAccessToken({ id: _id, fullName });
+            const refreshToken = generateRefreshToken({ id: _id, fullName });
 
-        logUserLoginActivity(_id);
-        return res.json({
-            message: "Logged in successfully",
-            user: {
-                _id,
-                firstName,
-                lastName,
-                middleName,
-                fullName,
-                email,
-                role,
-                department,
-                phoneNumber,
-                primaryAddress,
-                employmentType,
-                manager,
-                employeeId,
-                payrollStatus,
-            },
-            existingCompanyUser,
-            accessToken,
-            refreshToken,
-        });
-        // }
-        // return res.status(401).json({ error: "Invalid credentials" });
+            logUserLoginActivity(_id);
+            return res.json({
+                message: "Logged in successfully",
+                user: {
+                    _id,
+                    firstName,
+                    lastName,
+                    middleName,
+                    fullName,
+                    email,
+                    role,
+                    department,
+                    phoneNumber,
+                    primaryAddress,
+                    employmentType,
+                    manager,
+                    employeeId,
+                    payrollStatus,
+                },
+                existingCompanyUser,
+                accessToken,
+                refreshToken,
+            });
+        }
+        return res.status(401).json({ error: "Invalid credentials" });
     } catch (error) {
         console.error("Error checking password:", error);
         return res.status(500).json({ error: "Internal server error" });
