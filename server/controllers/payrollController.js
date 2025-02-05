@@ -1125,7 +1125,8 @@ const buildPayStubDetails = async (currentPayPeriod, companyName, empTimesheetDa
 	newEmpData.currentSickUsed = 0;
 	newEmpData.sickBalance = 0;
 
-	newEmpData.currentDeductionsTotal = calcCurrentDeductionsTotal(newEmpData);
+	const deductions = calcCurrentDeductionsTotal(newEmpData);
+	newEmpData.currentDeductionsTotal = deductions < 0 ? 0 : deductions;
 
 	const netPay = newEmpData.currentGrossPay - newEmpData.currentDeductionsTotal;
 	// newEmpData.currentNetPay = netPay < 0 ? 0 : netPay;
