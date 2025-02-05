@@ -96,6 +96,7 @@ const PaygroupTable = ({
 						payGroupSchedule={payGroupSchedule}
 						closestRecordIndex={closestRecordIndex}
 						autoScroll
+						selectedYear={selectedYear}
 					/>
 				</VStack>
 			</BoxCard>

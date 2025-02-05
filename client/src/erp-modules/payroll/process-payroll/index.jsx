@@ -29,13 +29,14 @@ const ProcessPayroll = () => {
 	const goToNextStep = (index) => {
 		setCurrentStep(index);
 	};
-	const { payNo } = useParams();
+	const { payNo, year } = useParams();
 	const isExtra = payNo?.includes("E");
 
 	const { company } = useCompany(LocalStorageService.getItem("selectedCompany"));
 	const { payGroupSchedule, closestRecord, payGroups, selectedPayGroup } = usePaygroup(
 		company,
 		false,
+		year,
 	);
 
 	const selectedPayPeriod = getClosestRecord(payNo, isExtra, payGroupSchedule, closestRecord);
