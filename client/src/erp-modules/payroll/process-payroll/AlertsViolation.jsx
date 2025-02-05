@@ -1,13 +1,4 @@
-import {
-	Button,
-	HStack,
-	Table,
-	Tbody,
-	Td,
-	Th,
-	Thead,
-	Tr,
-} from "@chakra-ui/react";
+import { Button, HStack, Table, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
 
 import OutlineButton from "components/ui/button/OutlineButton";
 import PrimaryButton from "components/ui/button/PrimaryButton";
@@ -33,16 +24,9 @@ const AlertsViolation = ({
 	const { payNo } = useParams();
 	const isExtra = payNo?.includes("E");
 
-	const { company } = useCompany(
-		LocalStorageService.getItem("selectedCompany"),
-	);
+	const { company } = useCompany(LocalStorageService.getItem("selectedCompany"));
 
-	const selectedPayPeriod = getClosestRecord(
-		payNo,
-		isExtra,
-		payGroupSchedule,
-		closestRecord,
-	);
+	const selectedPayPeriod = getClosestRecord(payNo, isExtra, payGroupSchedule, closestRecord);
 
 	const alertsReviewData = useEmployeeAlertsInfo(
 		company,
@@ -50,8 +34,7 @@ const AlertsViolation = ({
 		isAlertsOpen,
 		currentStep,
 	);
-	const isDisabled =
-		alertsReviewData?.find((_) => _.actionRequired) || isPayPeriodInactive;
+	const isDisabled = alertsReviewData?.find((_) => _.actionRequired) || isPayPeriodInactive;
 
 	const COLS = ["Description", "Employee name", "Status", "Action"];
 
@@ -59,10 +42,8 @@ const AlertsViolation = ({
 
 	const handleReview = (data) => {
 		const empId = data?.empId?._id;
-		const stepNum = data?.actionRequired ? 4 : 1;
-		navigate(
-			`${ROUTE_PATH.PAYROLL}${ROUTE_PATH.EMPLOYEES}/info/${empId}/${stepNum}`,
-		);
+		const stepNum = data?.actionRequired ? 5 : 1;
+		navigate(`${ROUTE_PATH.PAYROLL}${ROUTE_PATH.EMPLOYEES}/info/${empId}/${stepNum}`);
 	};
 	const filteredEmp = [];
 	const isExtraRun = closestRecord?.isExtraRun;
@@ -92,11 +73,7 @@ const AlertsViolation = ({
 				</Thead>
 				<Tbody>
 					{(!data || data?.length === 0) && (
-						<EmptyRowRecord
-							title="No violations found"
-							data={data}
-							colSpan={COLS.length}
-						/>
+						<EmptyRowRecord title="No violations found" data={data} colSpan={COLS.length} />
 					)}
 					{data?.map((data) => (
 						<Tr key={data._id}>
@@ -142,7 +119,7 @@ const AlertsViolation = ({
 				bg="var(--correct_ans)"
 				name={"CONFIRM"}
 				rightIcon={<MdCheckCircle />}
-				isDisabled={isDisabled}
+				// isDisabled={isDisabled}
 				loadingText="Loading"
 				onOpen={handleClick}
 			/>
