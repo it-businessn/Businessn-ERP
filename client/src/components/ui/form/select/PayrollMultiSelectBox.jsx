@@ -36,6 +36,7 @@ const PayrollMultiSelectBox = ({
 	const handleClearAll = (e) => {
 		e.preventDefault();
 		setSelectedOptions([]);
+		handleApply([]);
 	};
 
 	const onApply = () => {
@@ -69,9 +70,7 @@ const PayrollMultiSelectBox = ({
 								isChecked={selectedOptions?.includes(
 									assignee.fullName ?? (assignee.name || assignee),
 								)}
-								onChange={() =>
-									handleCheckboxChange(assignee.fullName ?? assignee.name)
-								}
+								onChange={() => handleCheckboxChange(assignee.fullName ?? assignee.name)}
 							>
 								{assignee.fullName ?? assignee.name}
 							</Checkbox>

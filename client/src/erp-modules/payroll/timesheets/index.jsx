@@ -49,11 +49,10 @@ const Timesheets = () => {
 	const [filteredCC, setFilteredCC] = useState([]);
 
 	const toggleDateFilter = () => setShowDateFilter(!showDateFilter);
-	const toggleEmpFilter = () => setShowEmpFilter((prev) => !prev);
-	const toggleDeptFilter = () => setShowDeptFilter((prev) => !prev);
+	const toggleEmpFilter = () => setShowEmpFilter((prev) => (employees?.length ? !prev : prev));
+	const toggleDeptFilter = () => setShowDeptFilter((prev) => (departments?.length ? !prev : prev));
 	const toggleCCFilter = () => setShowCCFilter((prev) => !prev);
 	const handleFilter = () => console.log(filteredEmployees);
-
 	useEffect(() => {
 		if (closestRecord && !startDate && !endDate) {
 			setStartDate(getMomentDate(closestRecord?.payPeriodStartDate));
@@ -62,12 +61,11 @@ const Timesheets = () => {
 	}, [closestRecord]);
 
 	useEffect(() => {
-		if (filteredEmployees?.length) {
-			setFilter((prev) => ({
-				...prev,
-				filteredEmployees,
-			}));
-		}
+		setFilter((prev) => ({
+			...prev,
+			filteredEmployees,
+			filteredDept,
+		}));
 		if (startDate) {
 			setFilter((prev) => ({
 				...prev,
@@ -80,18 +78,12 @@ const Timesheets = () => {
 				endDate,
 			}));
 		}
-		if (filteredDept.length) {
-			setFilter((prev) => ({
-				...prev,
-				filteredDept,
-			}));
-		}
-		if (filteredCC.length) {
-			setFilter((prev) => ({
-				...prev,
-				filteredCC,
-			}));
-		}
+		// if (filteredCC.length) {
+		// 	setFilter((prev) => ({
+		// 		...prev,
+		// 		filteredCC,
+		// 	}));
+		// }
 
 		setShowEmpFilter(false);
 		setShowDeptFilter(false);

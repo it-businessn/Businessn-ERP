@@ -9,10 +9,11 @@ const TimesheetService = {
 		return apiService.get(`/timecard/${companyName}`);
 	},
 
-	async getFilteredTimesheets(company, filter, params) {
+	async getFilteredTimesheets(company, filter, params, signal) {
 		return apiService.get(
 			`/timesheet/filtered/${company}/filter=${JSON.stringify(filter)}`,
 			params,
+			signal,
 		);
 	},
 

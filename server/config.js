@@ -6,6 +6,7 @@ const corsOptions = {
 		"http:businessn-nwg.ddns.net",
 		"http://10.0.0.79:3000",
 		"http://localhost:3000",
+		"http://localhost:3001",
 		"https://businessn-erp.onrender.com",
 	],
 	methods: ["GET", "POST", "PUT", "DELETE"],

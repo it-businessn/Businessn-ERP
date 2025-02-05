@@ -90,8 +90,8 @@ export const buildURL = (path) => {
 	return url.href;
 };
 
-const fetchData = async (path, params) => {
-	return API.get(buildURL(path), params);
+const fetchData = async (path, params, signal) => {
+	return API.get(buildURL(path), params, signal);
 	// return await (await fetch(url.href)).json();
 };
 
@@ -110,8 +110,8 @@ const deleteData = async (path, data) => {
 };
 
 export const apiService = {
-	async get(path, searchParams) {
-		return fetchData(path, searchParams);
+	async get(path, searchParams, signal) {
+		return fetchData(path, searchParams, signal);
 	},
 
 	async post(path, data) {

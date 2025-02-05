@@ -35,19 +35,13 @@ const OtherFilter = ({
 	return (
 		<Popover isOpen={showOtherFilter} overflow="auto">
 			<PopoverTrigger>
-				<HStack
-					cursor="pointer"
-					borderRadius="md"
-					onClick={toggleOtherFilter}
-					p={0}
-					spacing={1}
-				>
+				<HStack cursor="pointer" borderRadius="md" onClick={toggleOtherFilter} p={0} spacing={1}>
 					<MdOutlineFilterList />
 					<OutlineButton
-						borderColor={!filteredData?.length && "var(--filter_border_color)"}
+						borderColor={!selectedOptions?.length && "var(--filter_border_color)"}
 						label={
 							<>
-								{filteredData?.length ?? 0} {helperText}(s) selected
+								{selectedOptions?.length ?? 0} {helperText}(s) selected
 								<FaCaretDown />
 							</>
 						}
@@ -60,7 +54,7 @@ const OtherFilter = ({
 					{showOtherFilter && (
 						<Stack spacing={3} justifyContent={"end"}>
 							<PayrollMultiSelectBox
-								w={"15vw"}
+								w="15vw"
 								data={data}
 								openMenu={openMenu}
 								handleCloseMenu={handleCloseMenu}
