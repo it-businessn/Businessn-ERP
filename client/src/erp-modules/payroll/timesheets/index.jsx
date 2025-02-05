@@ -11,7 +11,7 @@ import { IoRefresh } from "react-icons/io5";
 import { useParams } from "react-router-dom";
 import LocalStorageService from "services/LocalStorageService";
 import { isManager } from "utils";
-import { getDefaultDate, getMomentDate } from "utils/convertDate";
+import { getDefaultDate, todayDate } from "utils/convertDate";
 import DateFilterPopup from "./DateFilterPopup";
 import OtherFilter from "./OtherFilter";
 import Timecard from "./Timecard";
@@ -35,8 +35,8 @@ const Timesheets = () => {
 	const [date, setDate] = useState(getDefaultDate);
 
 	// const [selectedFilter, setSelectedFilter] = useState("This pay period");
-	const [startDate, setStartDate] = useState(null);
-	const [endDate, setEndDate] = useState(null);
+	const [startDate, setStartDate] = useState(todayDate);
+	const [endDate, setEndDate] = useState(todayDate);
 
 	const [showDateFilter, setShowDateFilter] = useState(false);
 	const [showEmpFilter, setShowEmpFilter] = useState(false);
@@ -53,31 +53,33 @@ const Timesheets = () => {
 	const toggleDeptFilter = () => setShowDeptFilter((prev) => (departments?.length ? !prev : prev));
 	const toggleCCFilter = () => setShowCCFilter((prev) => !prev);
 	const handleFilter = () => console.log(filteredEmployees);
-	useEffect(() => {
-		if (closestRecord && !startDate && !endDate) {
-			setStartDate(getMomentDate(closestRecord?.payPeriodStartDate));
-			setEndDate(getMomentDate(closestRecord?.payPeriodEndDate));
-		}
-	}, [closestRecord]);
+	// useEffect(() => {
+	// 	if (closestRecord && !startDate && !endDate) {
+	// 		setStartDate(todayDate);
+	// 		setEndDate(todayDate);
+	// 	}
+	// }, [closestRecord]);
 
 	useEffect(() => {
 		setFilter((prev) => ({
 			...prev,
+			endDate,
+			startDate,
 			filteredEmployees,
 			filteredDept,
 		}));
-		if (startDate) {
-			setFilter((prev) => ({
-				...prev,
-				startDate,
-			}));
-		}
-		if (endDate) {
-			setFilter((prev) => ({
-				...prev,
-				endDate,
-			}));
-		}
+		// if (startDate) {
+		// 	setFilter((prev) => ({
+		// 		...prev,
+		// 		startDate,
+		// 	}));
+		// }
+		// if (endDate) {
+		// 	setFilter((prev) => ({
+		// 		...prev,
+		// 		endDate,
+		// 	}));
+		// }
 		// if (filteredCC.length) {
 		// 	setFilter((prev) => ({
 		// 		...prev,
