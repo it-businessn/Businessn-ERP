@@ -4,7 +4,12 @@ import EmptyRowRecord from "components/ui/EmptyRowRecord";
 import NormalTextTitle from "components/ui/NormalTextTitle";
 import TableLayout from "components/ui/table/TableLayout";
 import TextTitle from "components/ui/text/TextTitle";
-import { getParamKey, getPayTypeStyle, getStatusStyle } from "erp-modules/payroll/timesheets/data";
+import {
+	getParamKey,
+	getPayTypeStyle,
+	getStatusStyle,
+	PAY_TYPES_TITLE,
+} from "erp-modules/payroll/timesheets/data";
 import { useEffect, useState } from "react";
 import { FaCheck, FaRegTrashAlt } from "react-icons/fa";
 import { IoClose } from "react-icons/io5";
@@ -121,7 +126,7 @@ const ClosedTicket = ({ company, setShowAddEntry, showAddEntry, filter, setTicke
 								? vacationPayHours
 								: 0;
 
-						const isStatPay = payType === "Statutory Pay";
+						const isStatPay = payType === PAY_TYPES_TITLE.STAT_PAY;
 
 						const isDisabled = !clockIn || !clockOut;
 

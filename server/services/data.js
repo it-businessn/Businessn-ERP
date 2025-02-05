@@ -120,12 +120,22 @@ const STAT_HOLIDAYS = [
 	{ name: "Christmas Day", date: "2024-12-25" },
 ];
 
+const PAY_TYPES_TITLE = {
+	REG_PAY: "Regular Pay",
+	OVERTIME_PAY: "Overtime Pay",
+	DBL_OVERTIME_PAY: "Double Overtime Pay",
+	STAT_WORK_PAY: "Statutory Worked Pay",
+	STAT_PAY: "Statutory Pay",
+	SICK_PAY: "Sick Pay",
+	VACATION_PAY: "Vacation Pay",
+};
+
 const getPayType = (workedDate) => {
 	const isStatHoliday = STAT_HOLIDAYS.find(({ date }) => isSameDay(date, workedDate));
 	if (isStatHoliday) {
-		return "Statutory Worked Pay";
+		return PAY_TYPES_TITLE.STAT_WORK_PAY;
 	}
-	return "Regular Pay";
+	return PAY_TYPES_TITLE.REG_PAY;
 };
 
 const calcTotalHours = (data) => {
@@ -167,6 +177,7 @@ const calcTotalHours = (data) => {
 };
 
 module.exports = {
+	PAY_TYPES_TITLE,
 	ADMIN_PERMISSION,
 	NW_ADMIN_PERMISSION,
 	NW_EMPLOYEE_PERMISSION,

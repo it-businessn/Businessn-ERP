@@ -1,5 +1,6 @@
 import { HStack } from "@chakra-ui/react";
 import TextTitle from "components/ui/text/TextTitle";
+import { PAY_TYPES_TITLE } from "erp-modules/payroll/timesheets/data";
 
 export const SUM_TOTALS = ["Gross ", "Total ", "Available ", "Net Pay"];
 export const EARNINGS_COLS = ["", "Rate", "Hours", "Curr. Total", "YTD Hrs.", "YTD Totals"];
@@ -45,7 +46,7 @@ export const EARNINGS_TYPES = [
 		isEarning: true,
 	},
 	{
-		name: "Statutory Pay",
+		name: PAY_TYPES_TITLE.STAT_PAY,
 		rate: "statPay",
 		totalHours: "totalStatHours",
 		currentTotal: "currentStatPayTotal",
@@ -54,7 +55,7 @@ export const EARNINGS_TYPES = [
 		isEarning: true,
 	},
 	{
-		name: "Statutory Worked Pay",
+		name: PAY_TYPES_TITLE.STAT_WORK_PAY,
 		rate: "statWorkPay",
 		totalHours: "totalStatDayHoursWorked",
 		currentTotal: "currentStatWorkPayTotal",

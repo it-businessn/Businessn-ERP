@@ -11,7 +11,7 @@ import { IoClose } from "react-icons/io5";
 import TimesheetService from "services/TimesheetService";
 import { getAmount } from "utils/convertAmt";
 import { getTimeCardFormat, getTimeFormat, setUTCDate } from "utils/convertDate";
-import { getParamKey, getPayTypeStyle, getStatusStyle } from "./data";
+import { getParamKey, getPayTypeStyle, getStatusStyle, PAY_TYPES_TITLE } from "./data";
 import ExtraTimeEntryModal from "./ExtraTimeEntryModal";
 
 const Timesheet = ({ company, setShowAddEntry, showAddEntry, filter, setTimesheetRefresh }) => {
@@ -291,7 +291,7 @@ const Timesheet = ({ company, setShowAddEntry, showAddEntry, filter, setTimeshee
 								? vacationPayHours
 								: 0;
 
-						const isStatPay = payType === "Statutory Pay";
+						const isStatPay = payType === PAY_TYPES_TITLE.STAT_PAY;
 
 						const isDisabled = !clockIn || !clockOut;
 

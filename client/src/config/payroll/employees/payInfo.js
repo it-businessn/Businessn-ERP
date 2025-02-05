@@ -1,3 +1,5 @@
+import { PAY_TYPES_TITLE } from "erp-modules/payroll/timesheets/data";
+
 export const EMP_PAY_INFO_EARNINGS_CONFIG = [
 	{
 		type: "",
@@ -8,7 +10,7 @@ export const EMP_PAY_INFO_EARNINGS_CONFIG = [
 				control: "radio",
 				options: ["Hourly", "Full Time Salaried", "Part Time Salaried"],
 			},
-			{ name: "Regular Pay", param_key: "regPay" },
+			{ name: PAY_TYPES_TITLE.REG_PAY, param_key: "regPay" },
 			{ name: "Standard Hours (FT)", param_key: "fullTimeStandardHours" },
 			{ name: "Standard Hours (PT)", param_key: "partTimeStandardHours" },
 		],

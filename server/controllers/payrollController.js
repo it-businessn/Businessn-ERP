@@ -24,6 +24,7 @@ const {
 const { findGroupEmployees } = require("./setUpController");
 const { generateT4Slip } = require("./t4SlipController");
 const { getPayrollActiveEmployees } = require("./userController");
+const { PAY_TYPES_TITLE } = require("../services/data");
 
 //update roles-
 
@@ -601,31 +602,46 @@ const calculateTotalAggregatedHours = async (startDate, endDate, companyName) =>
 		model: "Employee",
 		select: ["companyId", "employeeId", "fullName", "payrollStatus"],
 	});
+	const aggregatedHours = timesheets
+		.sort((a, b) => a.clockIn - b.clockIn)
+		.reduce((acc, timesheet) => {
+			if (!acc[timesheet.employeeId]) {
+				acc[timesheet.employeeId] = {
+					_id: timesheet._id,
+					empId: timesheet.employeeId,
+					totalRegHoursWorked: 0,
+					totalOvertimeHoursWorked: 0,
+					totalDblOvertimeHoursWorked: 0,
+					totalStatDayHoursWorked: 0,
+					totalStatHours: 0,
+					totalSickHoursWorked: 0,
+					totalVacationHoursWorked: 0,
+				};
+			}
 
-	const aggregatedHours = timesheets.reduce((acc, timesheet) => {
-		if (!acc[timesheet.employeeId]) {
-			acc[timesheet.employeeId] = {
-				_id: timesheet._id,
-				empId: timesheet.employeeId,
-				totalRegHoursWorked: 0,
-				totalOvertimeHoursWorked: 0,
-				totalDblOvertimeHoursWorked: 0,
-				totalStatDayHoursWorked: 0,
-				totalStatHours: 0,
-				totalSickHoursWorked: 0,
-				totalVacationHoursWorked: 0,
-			};
-		}
+			if (timesheet.payType === PAY_TYPES_TITLE.REG_PAY)
+				acc[timesheet.employeeId].totalRegHoursWorked += timesheet.regHoursWorked || 0;
 
-		acc[timesheet.employeeId].totalRegHoursWorked += timesheet.regHoursWorked || 0;
-		acc[timesheet.employeeId].totalOvertimeHoursWorked += timesheet.overtimeHoursWorked || 0;
-		acc[timesheet.employeeId].totalDblOvertimeHoursWorked += timesheet.dblOvertimeHoursWorked || 0;
-		acc[timesheet.employeeId].totalStatHours += timesheet.statDayHours || 0;
-		acc[timesheet.employeeId].totalStatDayHoursWorked += timesheet.statDayHoursWorked || 0;
-		acc[timesheet.employeeId].totalSickHoursWorked += timesheet.sickPayHours || 0;
-		acc[timesheet.employeeId].totalVacationHoursWorked += timesheet.vacationPayHours || 0;
-		return acc;
-	}, {});
+			if (timesheet.payType === PAY_TYPES_TITLE.OVERTIME_PAY)
+				acc[timesheet.employeeId].totalOvertimeHoursWorked += timesheet.overtimeHoursWorked || 0;
+
+			if (timesheet.payType === PAY_TYPES_TITLE.DBL_OVERTIME_PAY)
+				acc[timesheet.employeeId].totalDblOvertimeHoursWorked +=
+					timesheet.dblOvertimeHoursWorked || 0;
+			if (timesheet.payType === PAY_TYPES_TITLE.STAT_PAY)
+				acc[timesheet.employeeId].totalStatHours += timesheet.statDayHours || 0;
+
+			if (timesheet.payType === PAY_TYPES_TITLE.STAT_WORK_PAY)
+				acc[timesheet.employeeId].totalStatDayHoursWorked += timesheet.statDayHoursWorked || 0;
+
+			if (timesheet.payType === PAY_TYPES_TITLE.SICK_PAY)
+				acc[timesheet.employeeId].totalSickHoursWorked += timesheet.sickPayHours || 0;
+
+			if (timesheet.payType === PAY_TYPES_TITLE.VACATION_PAY)
+				acc[timesheet.employeeId].totalVacationHoursWorked += timesheet.vacationPayHours || 0;
+
+			return acc;
+		}, {});
 
 	const result = Object.values(aggregatedHours);
 	return result;

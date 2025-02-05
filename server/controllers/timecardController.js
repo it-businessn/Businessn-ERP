@@ -9,6 +9,7 @@ const {
 	endOfDay,
 	getPayType,
 	calcTotalHours,
+	PAY_TYPES_TITLE,
 } = require("../services/data");
 const moment = require("moment");
 
@@ -243,7 +244,7 @@ const updateTimecardEntry = async (entry) => {
 			if (timesheetRecord.payType.includes("Regular")) {
 				timesheetRecord.regHoursWorked = durationHrs;
 			}
-			if (timesheetRecord.payType === "Statutory Worked Pay") {
+			if (timesheetRecord.payType === PAY_TYPES_TITLE.STAT_WORK_PAY) {
 				timesheetRecord.statDayHoursWorked = durationHrs;
 			}
 		}
