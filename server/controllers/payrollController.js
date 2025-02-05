@@ -791,39 +791,40 @@ const getCurrentTotals = (empTimesheetData, empPayInfoResult, empAdditionalHours
 	newEmpData.totalFirstAidHoursWorked = getSumHours(empTimesheetData?.totalFirstAidHoursWorked);
 	newEmpData.currentRegPayTotal = getCalcAmount(
 		newEmpData?.totalRegHoursWorked || 0,
-		newEmpData.regPay,
+		newEmpData.regPay || 0,
 	);
+
 	newEmpData.currentOverTimePayTotal = getCalcAmount(
 		newEmpData?.totalOvertimeHoursWorked || 0,
-		newEmpData.overTimePay,
+		newEmpData.overTimePay || 0,
 	);
 	newEmpData.currentDblOverTimePayTotal = getCalcAmount(
 		newEmpData?.totalDblOvertimeHoursWorked || 0,
-		newEmpData.dblOverTimePay,
+		newEmpData.dblOverTimePay || 0,
 	);
 	newEmpData.currentStatWorkPayTotal = getCalcAmount(
 		newEmpData?.totalStatDayHoursWorked || 0,
-		newEmpData.statWorkPay,
+		newEmpData.statWorkPay || 0,
 	);
 	newEmpData.currentStatPayTotal = getCalcAmount(
 		newEmpData?.totalStatHours || 0,
-		newEmpData.statPay,
+		newEmpData.statPay || 0,
 	);
 	newEmpData.currentSickPayTotal = getCalcAmount(
 		newEmpData?.totalSickHoursWorked || 0,
-		newEmpData.sickPay,
+		newEmpData.sickPay || 0,
 	);
 	newEmpData.currentVacationPayTotal = getCalcAmount(
 		newEmpData?.totalVacationHoursWorked || 0,
-		newEmpData.vacationPay,
+		newEmpData.vacationPay || 0,
 	);
 	newEmpData.currentSprayPayTotal = getCalcAmount(
 		newEmpData?.totalSprayHoursWorked || 0,
-		newEmpData.sprayPay,
+		newEmpData.sprayPay || 0,
 	);
 	newEmpData.currentFirstAidPayTotal = getCalcAmount(
 		newEmpData?.totalFirstAidHoursWorked || 0,
-		newEmpData.firstAidPay,
+		newEmpData.firstAidPay || 0,
 	);
 	return newEmpData;
 };
