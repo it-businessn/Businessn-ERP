@@ -129,7 +129,7 @@ const getFilteredTimesheets = async (req, res) => {
 					: currentDate,
 			},
 			// payType: { $ne: PAY_TYPES_TITLE.REG_PAY },
-			regHoursWorked: { $ne: 0 },
+			// regHoursWorked: { $ne: 0 },
 		});
 
 		const payInfo = await getTimesheetResult(companyName);
