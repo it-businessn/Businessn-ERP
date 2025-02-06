@@ -321,6 +321,10 @@ export const router = createBrowserRouter([
 				element: <ReportListView />,
 			},
 			{
+				path: `${payrollReportPath}/:year`,
+				element: <ReportListView />,
+			},
+			{
 				path: `${payrollReportPath}/info`,
 				element: <Reports />,
 			},

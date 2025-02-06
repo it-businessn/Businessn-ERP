@@ -41,7 +41,7 @@ const WorkviewTable = ({
 
 	const navigate = useNavigate();
 
-	const handleView = () => navigate(payrollReportPath);
+	const handleView = () => navigate(`${payrollReportPath}/${selectedYear}`);
 
 	const handlePay = (payPeriod) =>
 		navigate(`${ROUTE_PATH.PAYROLL}${ROUTE_PATH.PROCESS}/${payPeriod}/${selectedYear}`);
