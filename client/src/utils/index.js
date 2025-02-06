@@ -15,7 +15,7 @@ import { CgNotes } from "react-icons/cg";
 import { FaChevronDown, FaChevronUp } from "react-icons/fa";
 import { GoTasklist } from "react-icons/go";
 import { ToWords } from "to-words";
-import { getMomentDate, isFutureDate, todayDate } from "./convertDate";
+import { getMomentDate, isFutureDate, TODAY_DATE } from "./convertDate";
 
 export const userCurrency = (currency) =>
 	new Intl.NumberFormat("en-US", {
@@ -408,9 +408,9 @@ export const getPayrollStatus = (data, prevRecordEndDate) => {
 	const targetPayDate = getMomentDate(data?.payPeriodPayDate);
 	const targetProcessingDate = getMomentDate(data?.payPeriodProcessingDate);
 
-	const isEndDatePassed = targetEndDate.isBefore(todayDate, "day");
-	const isPayDateInFuture = targetPayDate.isAfter(todayDate, "day");
-	const isPayDateToday = targetPayDate.isSameOrBefore(todayDate, "day");
+	const isEndDatePassed = targetEndDate.isBefore(TODAY_DATE, "day");
+	const isPayDateInFuture = targetPayDate.isAfter(TODAY_DATE, "day");
+	const isPayDateToday = targetPayDate.isSameOrBefore(TODAY_DATE, "day");
 
 	// const isProcessingDateTomorrow = targetProcessingDate.isBefore(
 	// 	today.clone().add(1, "day"),
@@ -429,7 +429,7 @@ export const getPayrollStatus = (data, prevRecordEndDate) => {
 		};
 	} else if (
 		!data?.isProcessed &&
-		(isEndDatePassed || todayDate.isBetween(targetStartDate, targetEndDate, "day", "[]"))
+		(isEndDatePassed || TODAY_DATE.isBetween(targetStartDate, targetEndDate, "day", "[]"))
 	) {
 		return {
 			name: "Pending",

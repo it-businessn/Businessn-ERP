@@ -91,6 +91,7 @@ const ROLES = {
 const isRoleManager = (role) =>
 	role?.includes(ROLES.ADMINISTRATOR) || role?.includes(ROLES.MANAGER);
 
+const CURRENT_YEAR = moment().year();
 const getUTCTime = (time, notDevice) => (notDevice ? moment() : moment.utc(time).toISOString());
 
 const calculateAge = (dob) => moment().diff(moment(dob, "YYYY-MM-DD"), "years");
@@ -183,6 +184,7 @@ module.exports = {
 	NW_EMPLOYEE_PERMISSION,
 	EMPLOYEE_PERMISSION,
 	isRoleManager,
+	CURRENT_YEAR,
 	getUTCTime,
 	startOfDay,
 	endOfDay,

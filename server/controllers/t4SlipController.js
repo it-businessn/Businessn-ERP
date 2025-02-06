@@ -8,6 +8,7 @@ const Company = require("../models/Company");
 const EmployeeGovernmentInfo = require("../models/EmployeeGovernmentInfo");
 const EmployeeT4 = require("../models/EmployeeT4");
 const { encryptData, decryptData } = require("../services/encryptDataService");
+const { CURRENT_YEAR } = require("../services/data");
 
 const getT4Slips = async (req, res) => {
 	const { companyName } = req.params;
@@ -119,8 +120,6 @@ const generateT4Slip = async (companyName, payPeriodNum) => {
 	const companyRegdNum = payrollData[0]?.companyInfo?.registration_number;
 
 	const companyInfo = payrollData[0].companyInfo;
-
-	const currentYear = new Date().getFullYear();
 
 	let tot_empt_incamt = 0;
 	let tot_empe_cpp_amt = 0;
@@ -252,16 +251,16 @@ const generateT4Slip = async (companyName, payPeriodNum) => {
 	cntcNode.ele("cntc_extn_nbr").up();
 	cntcNode.up();
 
-	t4summaryNode.ele("tx_yr", currentYear).up();
-	t4summaryNode.ele("slp_cnt", currentYear).up();
+	t4summaryNode.ele("tx_yr", CURRENT_YEAR).up();
+	t4summaryNode.ele("slp_cnt", CURRENT_YEAR).up();
 
 	const pptrNode = t4summaryNode.ele("PPRTR_SIN");
-	pptrNode.ele("pprtr_1_sin", currentYear).up();
-	pptrNode.ele("pprtr_2_sin", currentYear).up();
+	pptrNode.ele("pprtr_1_sin", CURRENT_YEAR).up();
+	pptrNode.ele("pprtr_2_sin", CURRENT_YEAR).up();
 	pptrNode.up();
 
-	t4summaryNode.ele("rpt_tcd", currentYear).up();
-	t4summaryNode.ele("fileramendmentnote", currentYear).up();
+	t4summaryNode.ele("rpt_tcd", CURRENT_YEAR).up();
+	t4summaryNode.ele("fileramendmentnote", CURRENT_YEAR).up();
 
 	const T4TotalNode = t4summaryNode.ele("T4_TAMT");
 	T4TotalNode.ele("tot_empt_incamt", tot_empt_incamt).up();

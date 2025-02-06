@@ -10,13 +10,14 @@ export const timeSpan = (time) => {
 	return `${hoursAgo}hr ${minutesAgo}m ago`;
 };
 
-export const todayDate = moment();
+export const TODAY_DATE = moment();
+export const CURRENT_YEAR = moment().year();
 
-export const isFutureDate = (date) => todayDate.isAfter(date, "day");
+export const isFutureDate = (date) => TODAY_DATE.isAfter(date, "day");
 export const getMomentDate = (date) => moment.utc(date);
 
 export const daysAgo = (date) => {
-	const numDays = todayDate?.diff(date, "days");
+	const numDays = TODAY_DATE?.diff(date, "days");
 	const days = numDays < 0 ? Math.abs(numDays) : numDays;
 	return days;
 };
@@ -35,9 +36,9 @@ export const monthDayYearFormat = (date) => moment(date).format("MMMM, DD, YYYY"
 
 export const mmmDayYearFormat = (date) => moment(date).format("MMM, DD, YYYY");
 
-export const monthDayYear = todayDate.format("MMM DD, YYYY");
+export const monthDayYear = TODAY_DATE.format("MMM DD, YYYY");
 
-export const today = todayDate.format("MMDDYY");
+export const today = TODAY_DATE.format("MMDDYY");
 
 export const formatDateMMDDYY = (date) => moment.utc(date).format("MM/DD/YYYY");
 

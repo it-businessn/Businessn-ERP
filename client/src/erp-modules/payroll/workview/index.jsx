@@ -4,6 +4,7 @@ import PageLayout from "layouts/PageLayout";
 import { useState } from "react";
 import { ROUTE_PATH } from "routes";
 import LocalStorageService from "services/LocalStorageService";
+import { CURRENT_YEAR } from "utils/convertDate";
 import PaygroupDetailTable from "./paygroup-detail-table/workview-tabs";
 import PaygroupTable from "./paygroup-header-table";
 
@@ -11,7 +12,7 @@ const PayrollWorkview = () => {
 	const empPath = `${ROUTE_PATH.PAYROLL}${ROUTE_PATH.EMPLOYEES}/info`;
 	const { company } = useCompany(LocalStorageService.getItem("selectedCompany"));
 	const [refresh, setRefresh] = useState(false);
-	const [selectedYear, setSelectedYear] = useState("2024");
+	const [selectedYear, setSelectedYear] = useState(CURRENT_YEAR);
 
 	const {
 		payGroups,

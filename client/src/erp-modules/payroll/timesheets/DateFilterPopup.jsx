@@ -4,7 +4,7 @@ import "daterangepicker/daterangepicker.css";
 import $ from "jquery";
 import moment from "moment";
 import { useEffect, useRef, useState } from "react";
-import { getMomentDate, todayDate } from "utils/convertDate";
+import { getMomentDate, TODAY_DATE } from "utils/convertDate";
 
 const DateFilterPopup = ({
 	toggleDateFilter,
@@ -24,13 +24,13 @@ const DateFilterPopup = ({
 		$(inputRef.current).daterangepicker(
 			{
 				alwaysShowCalendars: true,
-				startDate: todayDate,
-				endDate: todayDate,
+				startDate: TODAY_DATE,
+				endDate: TODAY_DATE,
 				locale: {
 					format: "YYYY/MM/DD",
 				},
 				ranges: {
-					Today: [todayDate, todayDate],
+					Today: [TODAY_DATE, TODAY_DATE],
 					Yesterday: [yesterday, yesterday],
 					"Last pay period": [
 						getMomentDate(lastRecord?.payPeriodStartDate),

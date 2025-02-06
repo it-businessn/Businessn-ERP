@@ -5,6 +5,7 @@ const EmploymentType = require("../models/EmploymentType");
 const Group = require("../models/Group");
 const Module = require("../models/Module");
 const Setup = require("../models/Setup");
+const { CURRENT_YEAR } = require("../services/data");
 
 const getAllSetup = async (req, res) => {
 	try {
@@ -154,12 +155,11 @@ const addPaygroupSchedules = async (groupID) => {
 		const payPeriods = [];
 		let newStartDate = "2023-12-18";
 
-		const currentYear = new Date().getFullYear();
-		if (currentYear === 2024) {
+		if (CURRENT_YEAR === 2024) {
 			newStartDate = "2023-12-18";
-		} else if (currentYear === 2025) {
+		} else if (CURRENT_YEAR === 2025) {
 			newStartDate = "2024-12-16";
-		} else if (currentYear === 2026) {
+		} else if (CURRENT_YEAR === 2026) {
 			newStartDate = "2025-12-08";
 		}
 		const startDate = new Date(newStartDate);
@@ -183,10 +183,10 @@ const addPaygroupSchedules = async (groupID) => {
 				payPeriodEndDate,
 				payPeriodProcessingDate,
 				payPeriodPayDate,
-				year: currentYear,
+				year: CURRENT_YEAR,
 			});
 		}
-		yearSchedules.push({ year: currentYear, payPeriods: groupSchedules.scheduleSettings });
+		yearSchedules.push({ year: CURRENT_YEAR, payPeriods: groupSchedules.scheduleSettings });
 
 		await updatePayGroup(groupID, {
 			// scheduleSettings: payPeriods,

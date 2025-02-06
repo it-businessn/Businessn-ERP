@@ -5,11 +5,12 @@ import usePaygroup from "hooks/usePaygroup";
 import PageLayout from "layouts/PageLayout";
 import { useState } from "react";
 import LocalStorageService from "services/LocalStorageService";
+import { CURRENT_YEAR } from "utils/convertDate";
 import PreviewReportsModal from "../process-payroll/preview-reports/PreviewReportsModal";
 import WorkviewTable from "../workview/paygroup-header-table/WorkviewTable";
 
 const ReportListView = () => {
-	const [selectedYear, setSelectedYear] = useState("2024");
+	const [selectedYear, setSelectedYear] = useState(CURRENT_YEAR);
 	const { company } = useCompany(LocalStorageService.getItem("selectedCompany"));
 
 	const { payGroupSchedule, closestRecordIndex } = usePaygroup(company, false, selectedYear, true);
@@ -60,6 +61,7 @@ const ReportListView = () => {
 					closestRecordIndex={closestRecordIndex}
 					height="80vh"
 					handleRegister={handleRegister}
+					selectedYear={selectedYear}
 				/>
 			)}
 			{showReport && (

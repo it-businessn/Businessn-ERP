@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import PayrollService from "services/PayrollService";
 import { sortRecordsByDate } from "utils";
+import { CURRENT_YEAR } from "utils/convertDate";
 
-const usePaygroup = (company, refresh, year = "2024", isReport = false) => {
+const usePaygroup = (company, refresh, year = CURRENT_YEAR, isReport = false) => {
 	const [payGroups, setPayGroups] = useState(null);
 	const [selectedPayGroup, setSelectedPayGroup] = useState(null);
 	const [payGroupSchedule, setPayGroupSchedule] = useState(null);

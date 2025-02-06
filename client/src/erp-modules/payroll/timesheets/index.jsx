@@ -11,7 +11,7 @@ import { IoRefresh } from "react-icons/io5";
 import { useParams } from "react-router-dom";
 import LocalStorageService from "services/LocalStorageService";
 import { isManager } from "utils";
-import { getDefaultDate, todayDate } from "utils/convertDate";
+import { getDefaultDate, TODAY_DATE } from "utils/convertDate";
 import DateFilterPopup from "./DateFilterPopup";
 import OtherFilter from "./OtherFilter";
 import Timecard from "./Timecard";
@@ -35,8 +35,8 @@ const Timesheets = () => {
 	const [date, setDate] = useState(getDefaultDate);
 
 	// const [selectedFilter, setSelectedFilter] = useState("This pay period");
-	const [startDate, setStartDate] = useState(todayDate);
-	const [endDate, setEndDate] = useState(todayDate);
+	const [startDate, setStartDate] = useState(TODAY_DATE);
+	const [endDate, setEndDate] = useState(TODAY_DATE);
 
 	const [showDateFilter, setShowDateFilter] = useState(false);
 	const [showEmpFilter, setShowEmpFilter] = useState(false);

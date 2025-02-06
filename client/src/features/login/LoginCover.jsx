@@ -1,14 +1,6 @@
-import {
-	Box,
-	DarkMode,
-	Flex,
-	HStack,
-	Heading,
-	Stack,
-	Text,
-	VStack,
-} from "@chakra-ui/react";
+import { Box, DarkMode, Flex, HStack, Heading, Stack, Text, VStack } from "@chakra-ui/react";
 import AvatarGroups from "components/ui/AvatarGroup";
+import { CURRENT_YEAR } from "utils/convertDate";
 import Logo from "../../components/logo";
 
 const LoginCover = () => {
@@ -58,7 +50,7 @@ const LoginCover = () => {
 					<Flex h="24">
 						<VStack align="flex-start">
 							<Text color="fg.accent.subtle" textStyle="sm">
-								© {new Date().getFullYear()} BusinessN. All rights reserved.
+								© {CURRENT_YEAR} BusinessN. All rights reserved.
 							</Text>
 						</VStack>
 					</Flex>

@@ -6,14 +6,16 @@ import ModalLayout from "components/ui/modal/ModalLayout";
 import TableLayout from "components/ui/table/TableLayout";
 import { useEffect, useState } from "react";
 import SettingService from "services/SettingService";
-import { dayMonthYear, getDefaultDate } from "utils/convertDate";
+import { CURRENT_YEAR, dayMonthYear, getDefaultDate } from "utils/convertDate";
 
 const EditGroup = ({ isOpen, onClose, selectedGroup }) => {
 	const [isSubmitting, setIsSubmitting] = useState(false);
-	const [selectedYear, setSelectedYear] = useState("2024");
+	const [selectedYear, setSelectedYear] = useState(CURRENT_YEAR);
 	const [schedules, setSchedules] = useState([]);
 
-	const currentScheduleIndex = selectedGroup?.yearSchedules.findIndex(({ year }) => year === 2024);
+	const currentScheduleIndex = selectedGroup?.yearSchedules.findIndex(
+		({ year }) => year === CURRENT_YEAR,
+	);
 	const [currentYearScheduleIndex, setCurrentYearScheduleIndex] = useState(currentScheduleIndex);
 
 	useEffect(() => {
