@@ -41,7 +41,7 @@ const Reports = () => {
 			try {
 				const { data } = await PayrollService.getEmpPayReportDetails(company, userId);
 
-				const sortedResult = sortRecordsByDate(data, "payPeriodNum");
+				const sortedResult = sortRecordsByDate(data, "payPeriodNum", false);
 				setEmpPayStub(sortedResult);
 			} catch (error) {
 				console.error(error);
