@@ -68,11 +68,12 @@ const ProcessPayroll = () => {
 		selectedPayPeriod.isProcessed = true;
 		setIsSubmitting(true);
 		// selectedPayGroup.scheduleSettings.map((_) => (_.isProcessed = false));
-		// console.log(selectedPayGroup.scheduleSettings);
+		// console.log(selectedPayGroup.scheduleSettings, selectedPayGroup.yearSchedules);
 		try {
 			const payrollProcessed = await SettingService.updateGroup(
 				{
-					scheduleSettings: selectedPayGroup.scheduleSettings,
+					scheduleSettings: selectedPayGroup.yearSchedules[0].payPeriods,
+					yearSchedules: selectedPayGroup.yearSchedules,
 				},
 				selectedPayGroup._id,
 			);

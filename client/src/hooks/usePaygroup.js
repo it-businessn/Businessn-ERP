@@ -34,7 +34,7 @@ const usePaygroup = (company, refresh, year = "2024", isReport = false) => {
 	useEffect(() => {
 		const fetchAllPaygroups = async () => {
 			try {
-				const { data } = await PayrollService.getAllPaygroups(company, year);
+				const { data } = await PayrollService.getAllPaygroups(company);
 				const parsedYr = parseInt(year);
 
 				setPayGroups(data);
@@ -42,11 +42,11 @@ const usePaygroup = (company, refresh, year = "2024", isReport = false) => {
 					setSelectedPayGroup(data[0]);
 					const yearIndex = data[0]?.yearSchedules.findIndex(({ year }) => year === parsedYr);
 					const sortedResult = sortRecordsByDate(
-						data[0]?.yearSchedules[yearIndex].payPeriods,
+						data[0]?.yearSchedules[yearIndex]?.payPeriods,
 						"payPeriodPayDate",
 					);
 					setPayGroupSchedule(sortedResult);
-					const schedules = data[0]?.yearSchedules[yearIndex].payPeriods;
+					const schedules = data[0]?.yearSchedules[yearIndex]?.payPeriods;
 					const closestPayPeriod = schedules?.find(({ isProcessed }) => !isProcessed);
 
 					if (isReport) {
