@@ -11,8 +11,9 @@ const {
 	ADMIN_PERMISSION,
 	EMPLOYEE_PERMISSION,
 	isRoleManager,
-	NW_ADMIN_PERMISSION,
-	NW_EMPLOYEE_PERMISSION,
+	CLIENT_ORG_ADMIN_PERMISSION,
+	CLIENT_ORG_EMP_PERMISSION,
+	BUSINESSN_ORG,
 } = require("../services/data");
 const { generateAccessToken, generateRefreshToken } = require("../middleware/auth");
 
@@ -87,10 +88,11 @@ const setInitialPermissions = async (empId, isManager, companyName) => {
 	// 	? !email.includes("davidd@businessn.com") && companyName.includes("NW1378")
 	// 	: companyName.includes("NW1378");
 
-	const IS_NICO_WYND_ORG = companyName.includes("NW1378");
-	const adminPermissionName = IS_NICO_WYND_ORG ? NW_ADMIN_PERMISSION : ADMIN_PERMISSION;
+	const adminPermissionName =
+		companyName === BUSINESSN_ORG ? ADMIN_PERMISSION : CLIENT_ORG_ADMIN_PERMISSION;
 
-	const empPermissionName = IS_NICO_WYND_ORG ? NW_EMPLOYEE_PERMISSION : EMPLOYEE_PERMISSION;
+	const empPermissionName =
+		companyName === BUSINESSN_ORG ? EMPLOYEE_PERMISSION : CLIENT_ORG_EMP_PERMISSION;
 
 	const permissionName = isManager ? adminPermissionName : empPermissionName;
 	try {

@@ -1,5 +1,7 @@
 const moment = require("moment");
 
+const BUSINESSN_ORG = "BusinessN Corporate";
+
 const ADMIN_PERMISSION = [
 	{ name: "Sales" },
 	{ name: "Sales Dashboard" },
@@ -64,7 +66,7 @@ const EMPLOYEE_PERMISSION = [
 	{ name: "Project Management Communication" },
 ];
 
-const NW_ADMIN_PERMISSION = [
+const CLIENT_ORG_ADMIN_PERMISSION = [
 	{ name: "Payroll" },
 	{ name: "Payroll Dashboard" },
 	{ name: "Payroll Workview" },
@@ -79,7 +81,7 @@ const NW_ADMIN_PERMISSION = [
 	// { name: "Payroll Setup" },
 ];
 
-const NW_EMPLOYEE_PERMISSION = [{ name: "Payroll" }, { name: "Payroll Employee Dashboard" }];
+const CLIENT_ORG_EMP_PERMISSION = [{ name: "Payroll" }, { name: "Payroll Employee Dashboard" }];
 
 const ROLES = {
 	EMPLOYEE: "Employee",
@@ -180,8 +182,8 @@ const calcTotalHours = (data) => {
 module.exports = {
 	PAY_TYPES_TITLE,
 	ADMIN_PERMISSION,
-	NW_ADMIN_PERMISSION,
-	NW_EMPLOYEE_PERMISSION,
+	CLIENT_ORG_ADMIN_PERMISSION,
+	CLIENT_ORG_EMP_PERMISSION,
 	EMPLOYEE_PERMISSION,
 	isRoleManager,
 	CURRENT_YEAR,
@@ -196,4 +198,5 @@ module.exports = {
 	calcTotalHours,
 	isSameDay,
 	calculateAge,
+	BUSINESSN_ORG,
 };

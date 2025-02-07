@@ -6,7 +6,8 @@ const EmploymentType = require("../models/EmploymentType");
 const Group = require("../models/Group");
 const Module = require("../models/Module");
 const Setup = require("../models/Setup");
-const { CURRENT_YEAR } = require("../services/data");
+const { CURRENT_YEAR, BUSINESSN_ORG } = require("../services/data");
+const { setInitialPermissions } = require("./appController");
 
 const getAllSetup = async (req, res) => {
 	try {
@@ -305,6 +306,10 @@ const addCompany = async (req, res) => {
 			],
 			role: { $regex: /manager|administrator/i },
 		}).select("_id");
+
+		adminEmployees.forEach(
+			async (emp) => await setInitialPermissions(emp._id, true, BUSINESSN_ORG),
+		);
 		const newCompany = await Company.create({
 			name,
 			founding_year,
