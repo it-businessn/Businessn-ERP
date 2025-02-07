@@ -12,20 +12,33 @@ import {
 } from "@chakra-ui/react";
 import PrimaryButton from "components/ui/button/PrimaryButton";
 import InputFormControl from "components/ui/form/InputFormControl";
+import MultiSelectFormControl from "components/ui/form/MultiSelectFormControl";
 // import MultiSelectFormControl from "components/ui/form/MultiSelectFormControl";
 import TextTitle from "components/ui/text/TextTitle";
+import useCompanies from "hooks/useCompanies";
 import useDepartment from "hooks/useDepartment";
 import { useSignup } from "hooks/useSignup";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import UserService from "services/UserService";
 // import { isManager } from "utils";
 
 const EditUserInfo = ({ setEditMode, userData, setUserData, setError, error, company }) => {
 	const departments = useDepartment(company);
+
+	const allCompanies = useCompanies();
+	const [selectedOptions, setSelectedOptions] = useState(company);
+
 	const { roles, managers } = useSignup();
 	const [openAssigneeMenu, setOpenAssigneeMenu] = useState(false);
-	// const assignedCompanies = userData?.companyId?.map(({ name }) => name);
-	// const [selectedOptions, setSelectedOptions] = useState(assignedCompanies);
+
+	useEffect(() => {
+		if (allCompanies) {
+			const assignedCompanies = allCompanies
+				?.filter((comp) => comp.employees.includes(userData._id))
+				?.map(({ name }) => name);
+			setSelectedOptions(assignedCompanies);
+		}
+	}, [allCompanies]);
 
 	const handleMenuToggle = () => {
 		setOpenAssigneeMenu((prev) => !prev);
@@ -197,7 +210,7 @@ const EditUserInfo = ({ setEditMode, userData, setUserData, setError, error, com
 							<Select
 								name="role"
 								value={userData?.role}
-								bg={"var(--main_color)"}
+								bg="var(--main_color)"
 								onChange={handleChange}
 								placeholder="Select role"
 							>
@@ -213,7 +226,7 @@ const EditUserInfo = ({ setEditMode, userData, setUserData, setError, error, com
 						<FormControl mb={4}>
 							<FormLabel>Type of Department</FormLabel>
 							<Select
-								bg={"var(--main_color)"}
+								bg="var(--main_color)"
 								name="department"
 								value={userData?.department}
 								onChange={handleChange}
@@ -232,7 +245,7 @@ const EditUserInfo = ({ setEditMode, userData, setUserData, setError, error, com
 					<FormControl mb={4}>
 						<FormLabel>Manager</FormLabel>
 						<Select
-							bg={"var(--main_color)"}
+							bg="var(--main_color)"
 							name="manager"
 							value={userData?.manager}
 							onChange={handleChange}
@@ -246,28 +259,42 @@ const EditUserInfo = ({ setEditMode, userData, setUserData, setError, error, com
 						</Select>
 					</FormControl>
 				)}
+				{/* {userAssociatedCompanies && (
+					<MultiSelectFormControl
+						label="Assigned Companies"
+						tag={"companies(s) assigned"}
+						showMultiSelect={openMenu}
+						data={userAssociatedCompanies}
+						handleCloseMenu={handleCloseMenu}
+						selectedOptions={selectedOptions}
+						setSelectedOptions={setSelectedOptions}
+						handleMenuToggle={handleMenuToggle}
+						list={userAssociatedCompanies}
+						hideAvatar
+					/>
+				)} */}
 				<HStack>
-					{/* {isManager(userData.role) && (
+					{allCompanies && (
 						<MultiSelectFormControl
 							hideAvatar
-							label={"Assign Companies"}
-							tag={"companie(s)"}
+							label="Assign Companies"
+							tag="companie(s)"
 							showMultiSelect={openAssigneeMenu}
 							height="10vh"
-							data={companies}
+							data={allCompanies}
 							handleCloseMenu={handleCloseMenu}
 							selectedOptions={selectedOptions}
 							setSelectedOptions={setSelectedOptions}
 							handleMenuToggle={handleMenuToggle}
 							list={userData?.companyId}
 						/>
-					)} */}
+					)}
 
 					{/* {departments && (
 						<FormControl mb={4}>
 							<FormLabel>Link Company</FormLabel>
 							<Select
-								bg={"var(--main_color)"}
+								bg="var(--main_color)"
 								name="department"
 								value={userData?.department}
 								onChange={handleChange}
@@ -287,7 +314,7 @@ const EditUserInfo = ({ setEditMode, userData, setUserData, setError, error, com
 							<Select
 								name="employmentType"
 								value={userData?.employmentType}
-								bg={"var(--main_color)"}
+								bg="var(--main_color)"
 								onChange={handleChange}
 								placeholder="Select employment type"
 							>
@@ -300,7 +327,7 @@ const EditUserInfo = ({ setEditMode, userData, setUserData, setError, error, com
 						</FormControl>
 					)} */}
 				</HStack>
-				<PrimaryButton name={"Save"} size={"sm"} />
+				<PrimaryButton name="Save" size="sm" />
 				{error && (
 					<Alert status="error" mt={4}>
 						<AlertIcon />

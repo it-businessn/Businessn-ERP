@@ -14,6 +14,7 @@ const {
 	CLIENT_ORG_ADMIN_PERMISSION,
 	CLIENT_ORG_EMP_PERMISSION,
 	BUSINESSN_ORG,
+	BUSINESSN_ORG_ADMIN_EMAILS,
 } = require("../services/data");
 const { generateAccessToken, generateRefreshToken } = require("../middleware/auth");
 
@@ -83,13 +84,11 @@ const signUp = async (req, res) => {
 	}
 };
 
-const setInitialPermissions = async (empId, isManager, companyName) => {
-	// const IS_NICO_WYND_ORG = email
-	// 	? !email.includes("davidd@businessn.com") && companyName.includes("NW1378")
-	// 	: companyName.includes("NW1378");
+const setInitialPermissions = async (empId, isManager, companyName, email) => {
+	const isBusinessNAdmin =
+		companyName === BUSINESSN_ORG || BUSINESSN_ORG_ADMIN_EMAILS.find((name) => name === email);
 
-	const adminPermissionName =
-		companyName === BUSINESSN_ORG ? ADMIN_PERMISSION : CLIENT_ORG_ADMIN_PERMISSION;
+	const adminPermissionName = isBusinessNAdmin ? ADMIN_PERMISSION : CLIENT_ORG_ADMIN_PERMISSION;
 
 	const empPermissionName =
 		companyName === BUSINESSN_ORG ? EMPLOYEE_PERMISSION : CLIENT_ORG_EMP_PERMISSION;

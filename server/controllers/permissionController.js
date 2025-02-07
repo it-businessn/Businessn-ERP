@@ -16,10 +16,16 @@ const getPermission = async (req, res) => {
 	const { empId, companyName } = req.params;
 
 	try {
-		const user = await findPermission({
+		const userPermission = await findPermission({
 			empId,
 			companyName,
 		});
+		if (userPermission) return res.status(200).json(userPermission);
+		const userExistingPermission = await findPermission({
+			empId,
+		});
+		return res.status(200).json(userExistingPermission);
+
 		// const userPermissions = await UserPermissions.find({
 		// 	empId,
 		// 	companyName,
@@ -32,8 +38,6 @@ const getPermission = async (req, res) => {
 		// 	});
 		// 	console.log("deleted", deleteDuplicates);
 		// }
-
-		res.status(200).json(user);
 	} catch (error) {
 		res.status(404).json({ error: error.message });
 	}

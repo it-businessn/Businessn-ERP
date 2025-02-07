@@ -11,6 +11,7 @@ import {
 	useColorMode,
 	VStack,
 } from "@chakra-ui/react";
+import { isBusinessNAdmin } from "constant";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { userProfilePath } from "routes";
@@ -58,9 +59,11 @@ const UserProfile = ({ user, handleLogout }) => {
 
 					<PopoverBody>
 						<VStack w="100%" alignItems="start" color="var(--logo_bg)">
-							{/* <Button variant="ghost" onClick={showProfilePage}>
-								Profile
-							</Button> */}
+							{isBusinessNAdmin(user?.email) && (
+								<Button variant="ghost" onClick={showProfilePage}>
+									Profile
+								</Button>
+							)}
 							{/* {user?.role === "Administrator" && (
 								<Button variant="ghost" onClick={showRegisterPage}>
 									Create Account

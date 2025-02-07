@@ -10,6 +10,7 @@ const BUSINESSN_ORG_ADMIN_EMAILS = [
 	"jesse.christiaens@fractionaldepartments.com",
 	"it@businessn.com",
 	"andrew.dehkurdi@fractionaldepartments.com",
+	"daniel.heyns@businessn.com",
 ];
 
 const ADMIN_PERMISSION = [
