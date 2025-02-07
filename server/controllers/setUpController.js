@@ -1,5 +1,6 @@
 const Company = require("../models/Company");
 const Department = require("../models/Department");
+const Employee = require("../models/Employee");
 const EmployeeRole = require("../models/EmployeeRole");
 const EmploymentType = require("../models/EmploymentType");
 const Group = require("../models/Group");
@@ -227,7 +228,9 @@ const updateGroup = async (req, res) => {
 
 const getCompanies = async (req, res) => {
 	try {
-		const companies = await Company.find({});
+		const companies = await Company.find({}).sort({
+			createdOn: -1,
+		});
 		res.status(200).json(companies);
 	} catch (error) {
 		res.status(404).json({ error: error.message });
@@ -289,12 +292,26 @@ const addCompany = async (req, res) => {
 	const { streetNumber, city, state, postalCode, country } = address;
 
 	try {
+		const adminEmployees = await Employee.find({
+			fullName: [
+				"Juli  Khosla",
+				"Stefan  Esterhuysen",
+				"David  Dehkurdi",
+				"Erwan  Dantier",
+				"Azra  Demirovic",
+				"Jesse  Christiaens",
+				"Jean  Pouabou",
+				"Andrew  Dehkurdi",
+			],
+			role: { $regex: /manager|administrator/i },
+		}).select("_id");
 		const newCompany = await Company.create({
 			name,
 			founding_year,
 			registration_number,
 			industry_type,
 			address: { streetNumber, city, state, postalCode, country },
+			employees: adminEmployees,
 		});
 
 		res.status(201).json(newCompany);

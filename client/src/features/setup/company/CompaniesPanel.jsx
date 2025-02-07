@@ -1,6 +1,7 @@
 import { FormLabel, HStack, Input, Table, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
 import ActionButton from "components/ui/button/ActionButton";
 import EmptyRowRecord from "components/ui/EmptyRowRecord";
+import TextTitle from "components/ui/text/TextTitle";
 import useCompanies from "hooks/useCompanies";
 import { useState } from "react";
 import SettingService from "services/SettingService";
@@ -160,29 +161,32 @@ const CompaniesPanel = ({ setOpenCompanyForm }) => {
 				mt={2}
 				isDisabled={formData.name === ""}
 				isLoading={isSubmitting}
-				name={"Add Company"}
+				name="Add Company"
 				onClick={handleSubmit}
 			/>
 			{companies && (
-				<Table variant="simple">
-					<Thead>
-						<Tr>
-							<Th>Name</Th>
-							<Th>Description</Th>
-						</Tr>
-					</Thead>
-					<Tbody>
-						{(!companies || companies?.length === 0) && (
-							<EmptyRowRecord data={companies} colSpan={2} />
-						)}
-						{companies?.map((empType) => (
-							<Tr key={empType._id}>
-								<Td>{empType.name}</Td>
-								<Td>{empType.description}</Td>
+				<>
+					<TextTitle mt={3} title="All companies" />
+					<Table variant="simple" size="sm">
+						<Thead>
+							<Tr>
+								<Th>Name</Th>
+								<Th>Registration Number</Th>
 							</Tr>
-						))}
-					</Tbody>
-				</Table>
+						</Thead>
+						<Tbody>
+							{(!companies || companies?.length === 0) && (
+								<EmptyRowRecord data={companies} colSpan={2} />
+							)}
+							{companies?.map((company) => (
+								<Tr key={company._id}>
+									<Td>{company.name}</Td>
+									<Td>{company.registration_number}</Td>
+								</Tr>
+							))}
+						</Tbody>
+					</Table>
+				</>
 			)}
 		</>
 	);

@@ -34,17 +34,17 @@ const CompanyDetails = ({ company, modules }) => {
 			{isManager(loggedInUser?.role) && (
 				<HStack justify={"end"}>
 					<LeftIconButton
-						color={"var(--nav_color)"}
-						border={"2px solid var(--filter_border_color)"}
-						name={"Update"}
-						borderRadius={"10px"}
-						variant={"ghost"}
+						color="var(--nav_color)"
+						border="2px solid var(--filter_border_color)"
+						name="Update"
+						borderRadius="10px"
+						variant="ghost"
 						isFilter
 						size="md"
 						handleClick={() => setShowEditDialog(true)}
 						icon={<MdSettingsSuggest />}
 					/>
-					<PrimaryButton name={"Add new company"} onOpen={() => setOpenCompanyForm(true)} />
+					<PrimaryButton name="View / Add Company" onOpen={() => setOpenCompanyForm(true)} />
 				</HStack>
 			)}
 			{openCompanyForm && <CompaniesPanel setOpenCompanyForm={setOpenCompanyForm} />}
