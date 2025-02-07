@@ -29,6 +29,7 @@ const getAllEmploymentInfo = async (req, res) => {
 			}
 			empInfo._id = empInfo?.empPayStubResult?._id;
 			empInfo.empId = empInfo?.empPayStubResult?.empId;
+			empInfo.employmentCostCenter = empInfo?.empPayStubResult?.employmentCostCenter;
 		});
 
 		res.status(200).json(aggregatedResult);
