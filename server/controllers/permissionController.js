@@ -81,9 +81,7 @@ const updatePermission = async (req, res) => {
 	try {
 		const user = await findPermission({ empId, companyName });
 
-		const permissionIndex = user.permissionType.findIndex(
-			(item) => item.name === name,
-		);
+		const permissionIndex = user.permissionType.findIndex((item) => item.name === name);
 		const permission = user.permissionType.find((item) => item.name === name);
 
 		if (permissionIndex > -1) {

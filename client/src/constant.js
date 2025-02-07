@@ -12,6 +12,18 @@ export const ROLES = {
 	ENROLLER: "Enroller",
 };
 
+export const BUSINESSN_ORG = "BusinessN Corporate";
+export const BUSINESSN_ORG_ADMIN_EMAILS = [
+	"julik@businessn.com",
+	"stefan.esterhuysen@businessn.com",
+	"davidd@businessn.com",
+	"erwan@fractionaldepartments.com",
+	"azra.demirovic@fractionaldepartments.com",
+	"jesse.christiaens@fractionaldepartments.com",
+	"it@businessn.com",
+	"andrew.dehkurdi@fractionaldepartments.com",
+];
+
 export const TOAST = {
 	SUCCESS: {
 		title: "Data Updated Successfully",

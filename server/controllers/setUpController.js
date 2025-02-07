@@ -6,7 +6,7 @@ const EmploymentType = require("../models/EmploymentType");
 const Group = require("../models/Group");
 const Module = require("../models/Module");
 const Setup = require("../models/Setup");
-const { CURRENT_YEAR, BUSINESSN_ORG } = require("../services/data");
+const { CURRENT_YEAR, BUSINESSN_ORG, BUSINESSN_ORG_ADMIN_EMAILS } = require("../services/data");
 const { setInitialPermissions } = require("./appController");
 
 const getAllSetup = async (req, res) => {
@@ -294,16 +294,7 @@ const addCompany = async (req, res) => {
 
 	try {
 		const adminEmployees = await Employee.find({
-			fullName: [
-				"Juli  Khosla",
-				"Stefan  Esterhuysen",
-				"David  Dehkurdi",
-				"Erwan  Dantier",
-				"Azra  Demirovic",
-				"Jesse  Christiaens",
-				"Jean  Pouabou",
-				"Andrew  Dehkurdi",
-			],
+			email: BUSINESSN_ORG_ADMIN_EMAILS,
 			role: { $regex: /manager|administrator/i },
 		}).select("_id");
 

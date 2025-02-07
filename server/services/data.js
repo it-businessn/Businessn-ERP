@@ -1,6 +1,16 @@
 const moment = require("moment");
 
 const BUSINESSN_ORG = "BusinessN Corporate";
+const BUSINESSN_ORG_ADMIN_EMAILS = [
+	"julik@businessn.com",
+	"stefan.esterhuysen@businessn.com",
+	"davidd@businessn.com",
+	"erwan@fractionaldepartments.com",
+	"azra.demirovic@fractionaldepartments.com",
+	"jesse.christiaens@fractionaldepartments.com",
+	"it@businessn.com",
+	"andrew.dehkurdi@fractionaldepartments.com",
+];
 
 const ADMIN_PERMISSION = [
 	{ name: "Sales" },
@@ -199,4 +209,5 @@ module.exports = {
 	isSameDay,
 	calculateAge,
 	BUSINESSN_ORG,
+	BUSINESSN_ORG_ADMIN_EMAILS,
 };

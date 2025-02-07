@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 
 import Navbar from "components/header";
 import Sidebar from "components/sidebar";
+import { BUSINESSN_ORG, BUSINESSN_ORG_ADMIN_EMAILS } from "constant";
 import useCompany from "hooks/useCompany";
 import useSidebarMenu from "hooks/useSidebarMenu";
 import RootLayout from "layouts/RootLayout";
@@ -26,7 +27,15 @@ const Home = () => {
 	const { isOpen, onOpen, onClose } = useDisclosure();
 
 	const [refresh, setRefresh] = useState(false);
-	const { activeMenu, setActiveMenu } = useSidebarMenu(user?._id, company, isManager(user?.role));
+	const selectedCompanyName = BUSINESSN_ORG_ADMIN_EMAILS.find((email) => email === user?.email)
+		? BUSINESSN_ORG
+		: company;
+
+	const { activeMenu, setActiveMenu } = useSidebarMenu(
+		user?._id,
+		selectedCompanyName,
+		isManager(user?.role),
+	);
 
 	useEffect(() => {
 		setSelectedCompany(user?.companyId?.name);
