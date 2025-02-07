@@ -17,7 +17,7 @@ const EmployeeDetails = ({ company, closestRecord, path, groupId, selectedPayGro
 
 	const [showAddEmp, setShowAddEmp] = useState(false);
 	const selectedEmployeeIndex = selectedPayGroup?.scheduleSettings?.findIndex(
-		(_) => _.payPeriod === closestRecord.payPeriod && _.isExtraRun === true,
+		(_) => _?.payPeriod === closestRecord?.payPeriod && _.isExtraRun === true,
 	);
 
 	const selectedEmployee = selectedPayGroup?.scheduleSettings[selectedEmployeeIndex]?.selectedEmp;
