@@ -27,9 +27,7 @@ const UserSection = ({
 		setShowConfirmationPopUp((prev) => !prev);
 	};
 	const handleDelete = async () => {
-		selectedGroup.members = selectedGroup.members.filter(
-			(_) => _._id !== deleteRecord,
-		);
+		selectedGroup.members = selectedGroup.members.filter((_) => _._id !== deleteRecord);
 		try {
 			await SettingService.updateGroup(selectedGroup, selectedGroup._id);
 			setIsRefresh((prev) => !prev);
@@ -40,6 +38,9 @@ const UserSection = ({
 	};
 	const handleConfirm = async (e) => {
 		e.preventDefault();
+		if (!selectedGroup) {
+			return;
+		}
 		setIsSubmitting(true);
 		selectedGroup.admin = selectedAdmins;
 		selectedGroup.modules = selectedModules;
@@ -73,9 +74,7 @@ const UserSection = ({
 	const handleInputChange = (value) => {
 		setEmpName(value);
 		setFilteredEmployees(
-			employees.filter((emp) =>
-				emp?.fullName?.toLowerCase().includes(value.toLowerCase()),
-			),
+			employees.filter((emp) => emp?.fullName?.toLowerCase().includes(value.toLowerCase())),
 		);
 	};
 
@@ -83,7 +82,7 @@ const UserSection = ({
 		<>
 			<BoxCard>
 				<HStack justify={"space-between"}>
-					<TextTitle title={`${groupMembers?.length} User(s)` ?? ""} />
+					<TextTitle title={`${groupMembers?.length || 0} User(s)` ?? ""} />
 
 					<Spacer />
 					<EmpSearchMenu
@@ -93,7 +92,7 @@ const UserSection = ({
 						handleSelect={handleSelect}
 					/>
 					<LeftIconButton
-						name={"Add User"}
+						name="Add User"
 						handleClick={handleConfirm}
 						icon={<SmallAddIcon />}
 						px={{ base: "2em" }}

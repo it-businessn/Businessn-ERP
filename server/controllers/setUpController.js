@@ -188,7 +188,7 @@ const addPaygroupSchedules = async (groupID) => {
 				year: CURRENT_YEAR,
 			});
 		}
-		yearSchedules.push({ year: CURRENT_YEAR, payPeriods: groupSchedules.scheduleSettings });
+		yearSchedules.push({ year: CURRENT_YEAR, payPeriods });
 
 		await updatePayGroup(groupID, {
 			// scheduleSettings: payPeriods,

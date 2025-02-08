@@ -34,7 +34,7 @@ const PermissionsPanel = ({ employees, setFilteredEmployees, filteredEmployees, 
 				});
 				if (data) {
 					SIDEBAR_MENU.forEach((data, index) => {
-						const menu = data.permissionType.find((item) => item.name === data.name);
+						const menu = data?.permissionType?.find((item) => item.name === data.name);
 						if (menu) {
 							SIDEBAR_MENU[index].permissions = menu;
 						}
