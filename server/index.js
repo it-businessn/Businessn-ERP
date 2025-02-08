@@ -84,11 +84,11 @@ app.use(
 	helmet.contentSecurityPolicy({
 		directives: {
 			defaultSrc: ["'self'", "https://businessn-erp.com"],
-			scriptSrc: [
-				"'self'",
-				"https://businessn-erp.com",
-				(req, res) => `'nonce-${res.locals.nonce}'`,
-			],
+			// scriptSrc: [
+			// 	"'self'",
+			// 	"https://businessn-erp.com",
+			// 	(req, res) => `'nonce-${res.locals.nonce}'`,
+			// ],
 		},
 	}),
 );
