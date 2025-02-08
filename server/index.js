@@ -74,11 +74,20 @@ app.use(cookieParser());
 app.use(cors(corsOptions));
 
 app.use(helmet());
+app.use((req, res, next) => {
+	res.locals.nonce = crypto.randomBytes(16).toString("base64");
+	console.log(req.path, req.method);
+	next();
+});
 app.use(
 	helmet.contentSecurityPolicy({
 		directives: {
-			defaultSrc: ["'self'"],
-			scriptSrc: ["'self'", "https://businessn-erp.com"],
+			defaultSrc: ["'self'", "https://businessn-erp.com"],
+			scriptSrc: [
+				"'self'",
+				"https://businessn-erp.com",
+				(req, res) => `'nonce-${res.locals.nonce}'`,
+			],
 		},
 	}),
 );
@@ -102,10 +111,6 @@ app.use(helmet.referrerPolicy({ policy: "no-referrer" }));
 app.use(helmet.permittedCrossDomainPolicies({ policy: "none" }));
 
 app.use(helmet.originAgentCluster());
-app.use((request, response, next) => {
-	console.log(request.path, request.method);
-	next();
-});
 
 // Routes
 app.use("/api", appRoutes);
