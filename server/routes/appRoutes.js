@@ -11,9 +11,9 @@ router.post("/refresh-token", appController.refreshToken);
 router.post("/login", appController.login);
 router.get("/logout/:id", authenticateToken, appController.logOut);
 router.get("/reset-password/:id/:token", authenticateToken, appController.resetPassword);
-router.post("/forgot-password", authenticateToken, appController.forgotPassword);
-router.post("/reset-password/:id/:token", authenticateToken, appController.setNewPassword);
-router.put("/change-password/:id", authenticateToken, appController.changePassword);
+router.post("/forgot-password", appController.forgotPassword);
+router.post("/reset-password/:id/:token", appController.setNewPassword);
+router.put("/change-password/:id", appController.changePassword);
 
 // const userController = require("../controllers/userController");
 // router.get("/", userController.getUsers);
