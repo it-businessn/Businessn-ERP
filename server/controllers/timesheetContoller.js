@@ -24,8 +24,8 @@ const findByRecordTimesheets = async (record) => {
 			select: ["department", "fullName", "role"],
 		});
 	const empData = result?.sort((a, b) => {
-		if (a.employeeId.fullName < b.employeeId.fullName) return -1;
-		if (a.employeeId.fullName > b.employeeId.fullName) return 1;
+		if (a.employeeId?.fullName < b.employeeId?.fullName) return -1;
+		if (a.employeeId?.fullName > b.employeeId?.fullName) return 1;
 		return a.clockIn - b.clockIn;
 	});
 	return empData;
@@ -179,7 +179,7 @@ const getFilteredTimesheets = async (req, res) => {
 		const payInfo = await getTimesheetResult(companyName);
 		if (filteredData?.filteredEmployees?.length) {
 			timesheets = timesheets.filter((item) =>
-				filteredData?.filteredEmployees?.includes(item.employeeId.fullName),
+				filteredData?.filteredEmployees?.includes(item?.employeeId?.fullName),
 			);
 		}
 		if (filteredData?.filteredDept?.length) {
