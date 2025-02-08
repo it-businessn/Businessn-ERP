@@ -10,7 +10,7 @@ router.post("/signup", appController.signUp);
 router.post("/refresh-token", appController.refreshToken);
 router.post("/login", appController.login);
 router.get("/logout/:id", authenticateToken, appController.logOut);
-router.get("/reset-password/:id/:token", authenticateToken, appController.resetPassword);
+router.get("/reset-password/:id/:token", appController.resetPassword);
 router.post("/forgot-password", appController.forgotPassword);
 router.post("/reset-password/:id/:token", appController.setNewPassword);
 router.put("/change-password/:id", appController.changePassword);
