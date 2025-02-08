@@ -81,14 +81,12 @@ app.use((req, res, next) => {
 	next();
 });
 app.use(
-	helmet.contentSecurityPolicy({
-		directives: {
-			defaultSrc: ["'self'", "https://businessn-erp.com"],
-			// scriptSrc: [
-			// 	"'self'",
-			// 	"https://businessn-erp.com",
-			// 	(req, res) => `'nonce-${res.locals.nonce}'`,
-			// ],
+	helmet({
+		contentSecurityPolicy: {
+			directives: {
+				defaultSrc: ["'self'", "https://businessn-erp.com"],
+				scriptSrc: ["'self'", "https://businessn-erp.com", "'unsafe-inline'"],
+			},
 		},
 	}),
 );
