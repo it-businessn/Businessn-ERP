@@ -41,11 +41,11 @@ const PersonalInfo = ({ company, isOnboarding, id, handleNext }) => {
 		}
 	}, [formData.firstName, formData.lastName, formData.birthDate]);
 
-	useEffect(() => {
-		if (formData.employeeNo) {
-			setIsSave2Disabled(false);
-		}
-	}, [formData.employeeNo]);
+	// useEffect(() => {
+	// 	if (formData.employeeNo) {
+	// 		setIsSave2Disabled(false);
+	// 	}
+	// }, [formData.employeeNo]);
 
 	useEffect(() => {
 		if (
@@ -154,7 +154,8 @@ const PersonalInfo = ({ company, isOnboarding, id, handleNext }) => {
 					isOnboarding={isOnboarding}
 					id={id}
 					handleNext={handleNext}
-					handleNextEnabled={!isSave1Disabled && !isSave2Disabled && !isSave3Disabled}
+					// handleNextEnabled={!isSave1Disabled && !isSave2Disabled && !isSave3Disabled}
+					handleNextEnabled={!isSave1Disabled && !isSave3Disabled}
 				/>
 			</BoxCard>
 			<StepContent currentStep={currentStep} steps={steps} isOnboarding={isOnboarding} />

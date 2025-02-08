@@ -17,7 +17,7 @@ import PayrollService from "services/PayrollService";
 import StepContent from "../step-content";
 import Record from "../step-content/Record";
 
-const BenefitsInfo = ({ company }) => {
+const BenefitsInfo = ({ company, id, isOnboarding, handleNext }) => {
 	const { empId } = useSelectedEmp(LocalStorageService.getItem("empId"));
 	const balanceInfo = useEmployeeBalanceInfo(company, empId);
 	const initialBalanceInfo = getInitialBalanceInfo(empId, company);
@@ -149,8 +149,12 @@ const BenefitsInfo = ({ company }) => {
 				<VerticalStepper
 					hideProgress
 					steps={steps}
+					id={id}
+					isOnboarding={isOnboarding}
 					currentStep={currentStep}
 					handleClick={goToNextStep}
+					handleNextEnabled={true}
+					handleNext={handleNext}
 				/>
 			</BoxCard>
 			<StepContent currentStep={currentStep} steps={steps} />

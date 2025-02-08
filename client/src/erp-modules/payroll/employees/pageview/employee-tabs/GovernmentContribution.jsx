@@ -16,7 +16,7 @@ import PayrollService from "services/PayrollService";
 import StepContent from "../step-content";
 import Record from "../step-content/Record";
 
-const GovernmentContribution = ({ company, isOnboarding, handleNext, handlePrev, id }) => {
+const GovernmentContribution = ({ company, isOnboarding, handleClose, handlePrev, id }) => {
 	const { empId } = useSelectedEmp(LocalStorageService.getItem("empId"));
 	const onboardingEmpId = LocalStorageService.getItem("onboardingEmpId");
 	const [refresh, setIsRefresh] = useState(true);
@@ -142,7 +142,8 @@ const GovernmentContribution = ({ company, isOnboarding, handleNext, handlePrev,
 					currentStep={currentStep}
 					handleClick={goToNextStep}
 					isOnboarding={isOnboarding}
-					handleNext={handleNext}
+					// handleNext={handleNext}
+					handleClose={handleClose}
 					handlePrev={handlePrev}
 					id={id}
 					handleNextEnabled={true}

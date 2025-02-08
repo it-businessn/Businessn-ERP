@@ -20,7 +20,7 @@ const getAllEmploymentInfo = async (req, res) => {
 		const aggregatedResult = [];
 		for (const employee of activeEmployees) {
 			const result = await buildPayPeriodEmpDetails(companyName, employee._id, true);
-			aggregatedResult.push(result);
+			if (result) aggregatedResult.push(result);
 		}
 		aggregatedResult.map((empInfo) => {
 			const empIdStr = empInfo.empPayStubResult?.empId?._id.toString();
@@ -67,7 +67,7 @@ const buildPayPeriodEmpDetails = async (companyName, employeeId, hideDetails) =>
 
 	const payInfoResult = await findEmpPayInfo(companyName);
 	const payInfoMapResult = new Map(payInfoResult.map((payInfo) => [payInfo.empId, payInfo.regPay]));
-	return { empPayStubResult, payInfoMapResult };
+	if (empPayStubResult) return { empPayStubResult, payInfoMapResult };
 };
 
 const getEmployeeEmploymentInfo = async (req, res) => {

@@ -85,24 +85,24 @@ export const EMP_REGN_GOVT_CONFIG = [
 ];
 
 export const EMP_CPP_EXEMPT = [
-	{
-		type: "Is CPP/QPP exempt",
-		control: "checkbox",
-		param_key: "isCPPExempt",
-		params: [
-			{
-				name: "Employees aged 18 or older are not exempt from CPP.",
-				param_key: "",
-				control: "label",
-			},
-		],
-	},
-	{
-		type: "Is EI exempt",
-		control: "checkbox",
-		param_key: "isEIExempt",
-		params: [],
-	},
+	// {
+	// 	type: "Is CPP/QPP exempt",
+	// 	control: "checkbox",
+	// 	param_key: "isCPPExempt",
+	// 	params: [
+	// 		{
+	// 			name: "Employees aged 18 or older are not exempt from CPP.",
+	// 			param_key: "",
+	// 			control: "label",
+	// 		},
+	// 	],
+	// },
+	// {
+	// 	type: "Is EI exempt",
+	// 	control: "checkbox",
+	// 	param_key: "isEIExempt",
+	// 	params: [],
+	// },
 ];
 
 export const getInitialGovernmentInfo = (empId, companyName) => {

@@ -130,7 +130,8 @@ const Employees = ({ isOnboarding, selectedPayGroupName, handleClose }) => {
 					id={5}
 					company={company}
 					isOnboarding={isOnboarding}
-					handleNext={handleNext}
+					// handleNext={handleNext}
+					handleClose={handleClose}
 					handlePrev={handlePrev}
 				/>
 			),
