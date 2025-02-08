@@ -16,9 +16,19 @@ const moment = require("moment");
 const getTimecard = async (req, res) => {
 	const { companyName } = req.params;
 	try {
-		const result = await Timecard.find({ companyName }).sort({
-			clockIn: -1,
-		});
+		let { page, limit } = req.query;
+		page = parseInt(page) || 1;
+		limit = parseInt(limit) || 10;
+
+		const skip = (page - 1) * limit;
+		const result = await Timecard.find({ companyName })
+			.sort({
+				clockIn: -1,
+			})
+			.skip(skip)
+			.limit(limit);
+
+		const total = await Timecard.countDocuments();
 
 		result.map((_) => {
 			_.totalBreakHours = calcTotalHours(_)?.totalBreakHours;
@@ -26,7 +36,13 @@ const getTimecard = async (req, res) => {
 			return _;
 		});
 
-		res.status(200).json(result);
+		res.status(200).json({
+			page,
+			limit,
+			total: total?.length,
+			totalPages: Math.ceil(total / limit),
+			items: result,
+		});
 	} catch (error) {
 		res.status(404).json({ error: error.message });
 	}

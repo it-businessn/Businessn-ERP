@@ -22,9 +22,8 @@ const Timesheet = ({
 	pageNum,
 	setPageNum,
 	setTimesheetRefresh,
-	totalPage,
-	setTotalPages,
 }) => {
+	const [totalPage, setTotalPages] = useState(1);
 	const [timesheets, setTimesheets] = useState(null);
 	const [refresh, setRefresh] = useState(false);
 	const limit = 50;

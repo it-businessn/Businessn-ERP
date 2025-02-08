@@ -36,7 +36,6 @@ const Timesheets = () => {
 
 	// const [selectedFilter, setSelectedFilter] = useState("This pay period");
 	const [pageNum, setPageNum] = useState(1);
-	const [totalPages, setTotalPages] = useState(1);
 	const [startDate, setStartDate] = useState(TODAY_DATE);
 	const [endDate, setEndDate] = useState(TODAY_DATE);
 
@@ -62,39 +61,6 @@ const Timesheets = () => {
 	// 	}
 	// }, [closestRecord]);
 
-	useEffect(() => {
-		setPageNum(1);
-		setFilter((prev) => ({
-			...prev,
-			endDate,
-			startDate,
-			filteredEmployees,
-			filteredDept,
-		}));
-		// if (startDate) {
-		// 	setFilter((prev) => ({
-		// 		...prev,
-		// 		startDate,
-		// 	}));
-		// }
-		// if (endDate) {
-		// 	setFilter((prev) => ({
-		// 		...prev,
-		// 		endDate,
-		// 	}));
-		// }
-		// if (filteredCC.length) {
-		// 	setFilter((prev) => ({
-		// 		...prev,
-		// 		filteredCC,
-		// 	}));
-		// }
-
-		setShowEmpFilter(false);
-		setShowDeptFilter(false);
-		setShowCCFilter(false);
-	}, [startDate, endDate, filteredEmployees, filteredDept, filteredCC]);
-
 	const handleRefresh = () => setDataRefresh(!dataRefresh);
 
 	const TABS = [
@@ -107,8 +73,6 @@ const Timesheets = () => {
 					company={company}
 					pageNum={pageNum}
 					setPageNum={setPageNum}
-					totalPage={totalPages}
-					setTotalPages={setTotalPages}
 					userId={userId}
 					filter={filter}
 					showAddEntry={showAddEntry}
@@ -125,6 +89,8 @@ const Timesheets = () => {
 					company={company}
 					userId={userId}
 					timecardRefresh={dataRefresh}
+					pageNum={pageNum}
+					setPageNum={setPageNum}
 				/>
 			),
 		},
@@ -132,6 +98,21 @@ const Timesheets = () => {
 
 	const [viewMode, setViewMode] = useState(TABS[0].type);
 	const showComponent = (viewMode) => TABS.find(({ type }) => type === viewMode)?.name;
+
+	useEffect(() => {
+		setPageNum(1);
+		setFilter((prev) => ({
+			...prev,
+			endDate,
+			startDate,
+			filteredEmployees,
+			filteredDept,
+		}));
+		setShowEmpFilter(false);
+		setShowDeptFilter(false);
+		setShowCCFilter(false);
+	}, [startDate, endDate, filteredEmployees, filteredDept, filteredCC, viewMode]);
+
 	return (
 		<PageLayout
 			width="full"
