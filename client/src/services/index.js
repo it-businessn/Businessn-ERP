@@ -81,17 +81,19 @@ const expirationTime = timestamp + 300; // 5 minutes = (5 * 60seconds per minute
 
 export const BASE_URL = process.env.REACT_APP_BASE_URL;
 
-export const buildURL = (path) => {
+export const buildURL = (path, queryParams) => {
 	const url = new URL(BASE_URL);
 	url.pathname += path;
 
 	url.searchParams.set("timestamp", timestamp);
 	url.searchParams.set("expirationTime", expirationTime);
+	url.searchParams.set("page", queryParams?.page);
+	url.searchParams.set("limit", queryParams?.limit);
 	return url.href;
 };
 
-const fetchData = async (path, params, signal) => {
-	return API.get(buildURL(path), params, signal);
+const fetchData = async (path, queryParams, params, signal) => {
+	return API.get(buildURL(path, queryParams), params, signal);
 	// return await (await fetch(url.href)).json();
 };
 
@@ -110,8 +112,8 @@ const deleteData = async (path, data) => {
 };
 
 export const apiService = {
-	async get(path, searchParams, signal) {
-		return fetchData(path, searchParams, signal);
+	async get(path, queryParams, searchParams, signal) {
+		return fetchData(path, queryParams, searchParams, signal);
 	},
 
 	async post(path, data) {

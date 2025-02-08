@@ -117,7 +117,51 @@ const getFilteredTimesheets = async (req, res) => {
 	const filteredData = JSON.parse(filter.split("=")[1]);
 
 	try {
-		let timesheets = await findByRecordTimesheets({
+		let { page, limit } = req.query;
+		page = parseInt(page) || 1;
+		limit = parseInt(limit) || 10;
+		const skip = (page - 1) * limit;
+		const timesheets = await Timesheet.aggregate([
+			{
+				$match: {
+					deleted: false,
+					companyName,
+					clockIn: {
+						$gte: filteredData?.startDate
+							? moment(filteredData?.startDate).utc().startOf("day").toDate()
+							: currentDate,
+						$lte: filteredData?.endDate
+							? moment(filteredData?.endDate).utc().endOf("day").toDate()
+							: currentDate,
+					},
+				},
+			},
+			{
+				$lookup: {
+					from: "employees", // collection name for Employee model
+					localField: "employeeId", // field in Timesheet that references Employee
+					foreignField: "_id", // field in Employee collection
+					as: "employee", // this will be the result of the join
+				},
+			},
+			{
+				$unwind: "$employee", // Flatten the array of employee data
+			},
+			{
+				$sort: {
+					"employee.fullName": 1, // Sort by employee full name
+					clockIn: 1, // Then by clockIn time
+				},
+			},
+			{
+				$skip: skip, // Skip previous pages
+			},
+			{
+				$limit: limit, // Limit the number of results
+			},
+		]);
+
+		const total = await findByRecordTimesheets({
 			deleted: false,
 			companyName,
 			clockIn: {
@@ -150,7 +194,13 @@ const getFilteredTimesheets = async (req, res) => {
 		}
 
 		const result = mapTimesheet(payInfo, timesheets);
-		res.status(200).json(result);
+		res.status(200).json({
+			page,
+			limit,
+			total: total?.length,
+			totalPages: Math.ceil(total?.length / limit),
+			items: result,
+		});
 	} catch (error) {
 		res.status(404).json({ error: error.message });
 	}

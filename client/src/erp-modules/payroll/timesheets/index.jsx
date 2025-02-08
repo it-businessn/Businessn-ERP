@@ -35,6 +35,8 @@ const Timesheets = () => {
 	const [date, setDate] = useState(getDefaultDate);
 
 	// const [selectedFilter, setSelectedFilter] = useState("This pay period");
+	const [pageNum, setPageNum] = useState(1);
+	const [totalPages, setTotalPages] = useState(1);
 	const [startDate, setStartDate] = useState(TODAY_DATE);
 	const [endDate, setEndDate] = useState(TODAY_DATE);
 
@@ -61,6 +63,7 @@ const Timesheets = () => {
 	// }, [closestRecord]);
 
 	useEffect(() => {
+		setPageNum(1);
 		setFilter((prev) => ({
 			...prev,
 			endDate,
@@ -102,6 +105,10 @@ const Timesheets = () => {
 				<Timesheet
 					setTimesheetRefresh={setDataRefresh}
 					company={company}
+					pageNum={pageNum}
+					setPageNum={setPageNum}
+					totalPage={totalPages}
+					setTotalPages={setTotalPages}
 					userId={userId}
 					filter={filter}
 					showAddEntry={showAddEntry}

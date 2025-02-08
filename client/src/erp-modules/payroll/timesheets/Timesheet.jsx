@@ -14,9 +14,20 @@ import { getTimeCardFormat, getTimeFormat, setUTCDate } from "utils/convertDate"
 import { getParamKey, getPayTypeStyle, getStatusStyle, PAY_TYPES_TITLE } from "./data";
 import ExtraTimeEntryModal from "./ExtraTimeEntryModal";
 
-const Timesheet = ({ company, setShowAddEntry, showAddEntry, filter, setTimesheetRefresh }) => {
+const Timesheet = ({
+	company,
+	setShowAddEntry,
+	showAddEntry,
+	filter,
+	pageNum,
+	setPageNum,
+	setTimesheetRefresh,
+	totalPage,
+	setTotalPages,
+}) => {
 	const [timesheets, setTimesheets] = useState(null);
 	const [refresh, setRefresh] = useState(false);
+	const limit = 50;
 
 	useEffect(() => {
 		// const controller = new AbortController();
@@ -28,10 +39,14 @@ const Timesheet = ({ company, setShowAddEntry, showAddEntry, filter, setTimeshee
 				const { data } = await TimesheetService.getFilteredTimesheets(
 					company,
 					filter,
+					{ page: pageNum, limit },
 					// null,
 					// controller.signal,
 				);
-				setTimesheets(data);
+				const { totalPages, page, items } = data;
+				setTimesheets(items);
+				setTotalPages(totalPages ?? totalPage);
+				setPageNum(page);
 			} catch (error) {
 				console.error(error);
 			}
@@ -43,6 +58,7 @@ const Timesheet = ({ company, setShowAddEntry, showAddEntry, filter, setTimeshee
 		// 	if (controller) controller.abort();
 		// };
 	}, [
+		pageNum,
 		filter?.startDate,
 		filter?.endDate,
 		filter?.filteredEmployees,
@@ -221,138 +237,139 @@ const Timesheet = ({ company, setShowAddEntry, showAddEntry, filter, setTimeshee
 		"Action",
 	];
 	return (
-		<TableLayout cols={cols} position="sticky" zIndex={3} top={-1} height="73vh">
-			<Tbody>
-				{(!timesheetData || timesheetData?.length === 0) && (
-					<EmptyRowRecord data={timesheetData} colSpan={cols.length} />
-				)}
-				{timesheetData?.map(
-					({
-						_id,
-						employeeId,
-						approveStatus,
-						payType,
-						regPay,
-						statWorkPay,
-						dblOverTimePay,
-						overTimePay,
-						createdOn,
-						regHoursWorked,
-						overtimeHoursWorked,
-						dblOvertimeHoursWorked,
-						statDayHoursWorked,
-						statDayHours,
-						sickPayHours,
-						vacationPayHours,
-						statPay,
-						sickPay,
-						vacationPay,
-						totalBreaks,
-						clockIn,
-						clockOut,
-						totalBreakHours,
-						totalWorkedHours,
-						notDevice,
-					}) => {
-						const approveStatusBtnCss = getStatusStyle(approveStatus);
-						const { type, color } = getPayTypeStyle(payType);
+		<>
+			<TableLayout cols={cols} position="sticky" zIndex={3} top={-1} height="72vh">
+				<Tbody>
+					{(!timesheetData || timesheetData?.length === 0) && (
+						<EmptyRowRecord data={timesheetData} colSpan={cols.length} />
+					)}
+					{timesheetData?.map(
+						({
+							_id,
+							approveStatus,
+							payType,
+							regPay,
+							statWorkPay,
+							dblOverTimePay,
+							overTimePay,
+							createdOn,
+							regHoursWorked,
+							overtimeHoursWorked,
+							dblOvertimeHoursWorked,
+							statDayHoursWorked,
+							statDayHours,
+							sickPayHours,
+							vacationPayHours,
+							statPay,
+							sickPay,
+							vacationPay,
+							totalBreaks,
+							clockIn,
+							clockOut,
+							totalBreakHours,
+							totalWorkedHours,
+							notDevice,
+							employee,
+						}) => {
+							const approveStatusBtnCss = getStatusStyle(approveStatus);
+							const { type, color } = getPayTypeStyle(payType);
 
-						const { param_key, param_hours } = getParamKey(payType);
+							const { param_key, param_hours } = getParamKey(payType);
 
-						const param_pay_type =
-							param_key === "regPay"
-								? regPay
-								: param_key === "overTimePay"
-								? overTimePay
-								: param_key === "dblOverTimePay"
-								? dblOverTimePay
-								: param_key === "statWorkPay"
-								? statWorkPay
-								: param_key === "statPay"
-								? statPay
-								: param_key === "sickPay"
-								? sickPay
-								: vacationPay;
+							const param_pay_type =
+								param_key === "regPay"
+									? regPay
+									: param_key === "overTimePay"
+									? overTimePay
+									: param_key === "dblOverTimePay"
+									? dblOverTimePay
+									: param_key === "statWorkPay"
+									? statWorkPay
+									: param_key === "statPay"
+									? statPay
+									: param_key === "sickPay"
+									? sickPay
+									: vacationPay;
 
-						const param_hours_worked =
-							param_hours === "regHoursWorked"
-								? regHoursWorked
-								: param_hours === "overtimeHoursWorked"
-								? overtimeHoursWorked
-								: param_hours === "dblOvertimeHoursWorked"
-								? dblOvertimeHoursWorked
-								: param_hours === "statDayHoursWorked"
-								? statDayHoursWorked
-								: param_hours === "statDayHours"
-								? statDayHours
-								: param_hours === "sickPayHours"
-								? sickPayHours
-								: param_hours === "vacationPayHours"
-								? vacationPayHours
-								: 0;
+							const param_hours_worked =
+								param_hours === "regHoursWorked"
+									? regHoursWorked
+									: param_hours === "overtimeHoursWorked"
+									? overtimeHoursWorked
+									: param_hours === "dblOvertimeHoursWorked"
+									? dblOvertimeHoursWorked
+									: param_hours === "statDayHoursWorked"
+									? statDayHoursWorked
+									: param_hours === "statDayHours"
+									? statDayHours
+									: param_hours === "sickPayHours"
+									? sickPayHours
+									: param_hours === "vacationPayHours"
+									? vacationPayHours
+									: 0;
 
-						const isStatPay = payType === PAY_TYPES_TITLE.STAT_PAY;
+							const isStatPay = payType === PAY_TYPES_TITLE.STAT_PAY;
 
-						const isDisabled = !clockIn || !clockOut;
+							const isDisabled = !clockIn || !clockOut;
 
-						return (
-							<Tr key={_id} _hover={{ bg: "var(--phoneCall_bg_light)" }}>
-								<Td py={0}>
-									<TextTitle title={employeeId?.fullName} />
-								</Td>
-								<Td py={0}>
-									<TextTitle title={clockIn && getTimeCardFormat(clockIn, notDevice, true)} />
-								</Td>
-								<Td py={0}>
-									<NormalTextTitle size="sm" title={employeeId?.department?.[0]} />
-								</Td>
-								<Td textAlign={"right"} py={0} w={"90px"}>
-									{getAmount(param_pay_type)}
-								</Td>
-								<Td py={0}>
-									<NormalTextTitle color={color} size="sm" title={type} />
-								</Td>
-								<Td p={0.5}>
-									<Input
-										cursor={"pointer"}
-										size={"sm"}
-										onBlur={() => handleSubmit(param_hours)}
-										className={`timeClockInInput ${_id}`}
-										type="time"
-										name="clockIn"
-										value={clockIn ? getTimeFormat(clockIn, notDevice) : ""}
-										onClick={() => showPicker(`timeClockInInput ${_id}`)}
-										onChange={(e) => {
-											setFormData({
-												param_hours,
-												recordId: _id,
-												clockIn: setUTCDate(clockIn, e.target.value, notDevice),
-											});
-										}}
-										required
-									/>
-								</Td>
-								<Td p={0.5} pl={3}>
-									<Input
-										cursor={"pointer"}
-										size={"sm"}
-										onBlur={() => handleSubmit(param_hours)}
-										className={`timeClockOutInput ${_id}`}
-										type="time"
-										name="clockOut"
-										value={clockOut ? getTimeFormat(clockOut, notDevice) : ""}
-										onClick={() => showPicker(`timeClockOutInput ${_id}`)}
-										onChange={(e) => {
-											setFormData({
-												param_hours,
-												recordId: _id,
-												clockOut: setUTCDate(clockIn, e.target.value, notDevice),
-											});
-										}}
-										required
-									/>
-								</Td>
-								{/* <Td p={0} pl={3}>
+							return (
+								<Tr key={_id} _hover={{ bg: "var(--phoneCall_bg_light)" }}>
+									<Td py={0}>
+										<TextTitle title={employee?.fullName} />
+									</Td>
+									<Td py={0}>
+										<TextTitle title={clockIn && getTimeCardFormat(clockIn, notDevice, true)} />
+									</Td>
+									<Td py={0}>
+										<NormalTextTitle size="sm" title={employee?.department?.[0]} />
+									</Td>
+									<Td textAlign={"right"} py={0} w={"90px"}>
+										{getAmount(param_pay_type)}
+									</Td>
+									<Td py={0}>
+										<NormalTextTitle color={color} size="sm" title={type} />
+									</Td>
+									<Td p={0.5}>
+										<Input
+											cursor={"pointer"}
+											size={"sm"}
+											onBlur={() => handleSubmit(param_hours)}
+											className={`timeClockInInput ${_id}`}
+											type="time"
+											name="clockIn"
+											value={clockIn ? getTimeFormat(clockIn, notDevice) : ""}
+											onClick={() => showPicker(`timeClockInInput ${_id}`)}
+											onChange={(e) => {
+												setFormData({
+													param_hours,
+													recordId: _id,
+													clockIn: setUTCDate(clockIn, e.target.value, notDevice),
+												});
+											}}
+											required
+										/>
+									</Td>
+									<Td p={0.5} pl={3}>
+										<Input
+											cursor={"pointer"}
+											size={"sm"}
+											onBlur={() => handleSubmit(param_hours)}
+											className={`timeClockOutInput ${_id}`}
+											type="time"
+											name="clockOut"
+											value={clockOut ? getTimeFormat(clockOut, notDevice) : ""}
+											onClick={() => showPicker(`timeClockOutInput ${_id}`)}
+											onChange={(e) => {
+												setFormData({
+													param_hours,
+													recordId: _id,
+													clockOut: setUTCDate(clockIn, e.target.value, notDevice),
+												});
+											}}
+											required
+										/>
+									</Td>
+									{/* <Td p={0} pl={3}>
 									{renderEditableInput(
 										_id,
 										"totalBreakHours",
@@ -362,59 +379,59 @@ const Timesheet = ({ company, setShowAddEntry, showAddEntry, filter, setTimeshee
 									)}
 								</Td> */}
 
-								<Td py={0} w={"80px"}>
-									<NormalTextTitle
-										// align={"center"}
-										size="sm"
-										title={param_hours_worked}
-									/>
-								</Td>
-								<Td p={0} position={"sticky"} right={"0"} zIndex="1">
-									<PrimaryButton
-										cursor="text"
-										color={approveStatusBtnCss.color}
-										bg={approveStatusBtnCss.bg}
-										name={approveStatus}
-										size="xs"
-										px={0}
-										hover={{
-											bg: approveStatusBtnCss.bg,
-											color: approveStatusBtnCss.color,
-										}}
-									/>
-								</Td>
-								<Td py={0}>
-									<HStack spacing={0}>
-										<IconButton
-											isDisabled={isDisabled}
-											size={"xs"}
-											icon={<FaCheck />}
-											ml={-5}
-											variant={"solid"}
-											color={"var(--status_button_border)"}
-											onClick={() => {
-												setFormData((prev) => ({
-													...prev,
-													recordId: _id,
-													approve: true,
-												}));
+									<Td py={0} w={"80px"}>
+										<NormalTextTitle
+											// align={"center"}
+											size="sm"
+											title={param_hours_worked}
+										/>
+									</Td>
+									<Td p={0} position={"sticky"} right={"0"} zIndex="1">
+										<PrimaryButton
+											cursor="text"
+											color={approveStatusBtnCss.color}
+											bg={approveStatusBtnCss.bg}
+											name={approveStatus}
+											size="xs"
+											px={0}
+											hover={{
+												bg: approveStatusBtnCss.bg,
+												color: approveStatusBtnCss.color,
 											}}
 										/>
-										<IconButton
-											isDisabled={isDisabled}
-											size={"xs"}
-											color={"var(--incorrect_ans)"}
-											icon={<IoClose />}
-											variant={"solid"}
-											onClick={() => {
-												setFormData((prev) => ({
-													...prev,
-													recordId: _id,
-													approve: false,
-												}));
-											}}
-										/>
-										{/* <IconButton
+									</Td>
+									<Td py={0}>
+										<HStack spacing={0}>
+											<IconButton
+												isDisabled={isDisabled}
+												size={"xs"}
+												icon={<FaCheck />}
+												ml={-5}
+												variant={"solid"}
+												color={"var(--status_button_border)"}
+												onClick={() => {
+													setFormData((prev) => ({
+														...prev,
+														recordId: _id,
+														approve: true,
+													}));
+												}}
+											/>
+											<IconButton
+												isDisabled={isDisabled}
+												size={"xs"}
+												color={"var(--incorrect_ans)"}
+												icon={<IoClose />}
+												variant={"solid"}
+												onClick={() => {
+													setFormData((prev) => ({
+														...prev,
+														recordId: _id,
+														approve: false,
+													}));
+												}}
+											/>
+											{/* <IconButton
 											size={"xs"}
 											color={"var(--incorrect_ans)"}
 											icon={<FaRProject />}
@@ -427,41 +444,58 @@ const Timesheet = ({ company, setShowAddEntry, showAddEntry, filter, setTimeshee
 												}));
 											}}
 										/> */}
-										<IconButton
-											size={"xs"}
-											color={"var(--main_color_black)"}
-											icon={<FaRegTrashAlt />}
-											variant={"solid"}
-											onClick={() => {
-												setShowDeletePopUp(true);
-												setDeleteRecordId(_id);
-											}}
-										/>
-									</HStack>
-								</Td>
-							</Tr>
-						);
-					},
+											<IconButton
+												size={"xs"}
+												color={"var(--main_color_black)"}
+												icon={<FaRegTrashAlt />}
+												variant={"solid"}
+												onClick={() => {
+													setShowDeletePopUp(true);
+													setDeleteRecordId(_id);
+												}}
+											/>
+										</HStack>
+									</Td>
+								</Tr>
+							);
+						},
+					)}
+				</Tbody>
+				{showDeletePopUp && (
+					<DeletePopUp
+						headerTitle={"Delete Timesheet Entry"}
+						textTitle={"Are you sure you want to delete the time entry?"}
+						isOpen={showDeletePopUp}
+						onClose={handleClose}
+						onOpen={handleDelete}
+					/>
 				)}
-			</Tbody>
-			{showDeletePopUp && (
-				<DeletePopUp
-					headerTitle={"Delete Timesheet Entry"}
-					textTitle={"Are you sure you want to delete the time entry?"}
-					isOpen={showDeletePopUp}
-					onClose={handleClose}
-					onOpen={handleDelete}
+				{showAddEntry && (
+					<ExtraTimeEntryModal
+						company={company}
+						showAddEntry={showAddEntry}
+						setRefresh={setRefresh}
+						setShowAddEntry={setShowAddEntry}
+					/>
+				)}
+			</TableLayout>
+			<HStack>
+				<PrimaryButton
+					size="sm"
+					isDisabled={pageNum === 1}
+					name="Prev"
+					onOpen={() => setPageNum(pageNum - 1)}
 				/>
-			)}
-			{showAddEntry && (
-				<ExtraTimeEntryModal
-					company={company}
-					showAddEntry={showAddEntry}
-					setRefresh={setRefresh}
-					setShowAddEntry={setShowAddEntry}
+
+				<NormalTextTitle align="center" width="100px" title={`Page ${pageNum} of ${totalPage}`} />
+				<PrimaryButton
+					size="sm"
+					isDisabled={pageNum === totalPage}
+					name="Next"
+					onOpen={() => setPageNum(pageNum + 1)}
 				/>
-			)}
-		</TableLayout>
+			</HStack>
+		</>
 	);
 };
 
