@@ -61,6 +61,14 @@ const CorporateInfo = ({
 		}
 	}, [employmentInfo?._id, empId]);
 
+	useEffect(() => {
+		if (formData.employeeNo) {
+			setIsDisabled(false);
+		} else {
+			setIsDisabled(true);
+		}
+	}, [formData.employeeNo]);
+
 	const handleConfirm = () => {
 		setIsDisabled(false);
 	};
@@ -93,6 +101,7 @@ const CorporateInfo = ({
 					config={EMP_IDENTIFICATION_STATUS_CONFIG}
 					isLoading={isLoading}
 					handleSubmit={handleSubmit}
+					isDisabled={isDisabled}
 				/>
 			),
 		},

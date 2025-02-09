@@ -1,5 +1,6 @@
 import { HStack, VStack, useToast } from "@chakra-ui/react";
 import LeftIconButton from "components/ui/button/LeftIconButton";
+import PrimaryButton from "components/ui/button/PrimaryButton";
 import BoxCard from "components/ui/card";
 import TextTitle from "components/ui/text/TextTitle";
 import { useEffect, useState } from "react";
@@ -33,6 +34,7 @@ const EmployeeTimeCard = ({ selectedUser, company }) => {
 					status: "4",
 					punch,
 					isNotDevice: true,
+					companyName: company,
 				},
 			];
 			await TimesheetService.addTimecard(newEntry);
@@ -108,6 +110,7 @@ const EmployeeTimeCard = ({ selectedUser, company }) => {
 					/>
 				</HStack>
 			</VStack>
+			{/* <PrimaryButton mt={3} name="Add ClockIN" /> */}
 		</BoxCard>
 	);
 };

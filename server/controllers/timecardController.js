@@ -1,4 +1,4 @@
-const EmployeeProfileInfo = require("../models/EmployeeProfileInfo");
+const EmployeeEmploymentInfo = require("../models/EmployeeEmploymentInfo");
 const Timecard = require("../models/Timecard");
 const TimecardRaw = require("../models/TimecardRaw");
 const Timesheet = require("../models/Timesheet");
@@ -67,14 +67,18 @@ const createTimecard = async (req, res) => {
 
 		data?.map(async (entry) => {
 			if (entry?.isNotDevice && entry?.empId) {
+				const { isNotDevice, companyName, empId } = entry;
 				entry.timestamp = moment();
-				entry.notDevice = entry?.isNotDevice;
+				entry.notDevice = isNotDevice;
 
-				const emp_user_id = await EmployeeProfileInfo.findOne({
-					empId: entry?.empId,
-				}).select("timeManagementBadgeID");
+				const emp_user_id = await EmployeeEmploymentInfo.findOne({
+					empId,
+					companyName,
+				}).select("timeManagementBadgeID employeeNo");
 
-				entry.user_id = emp_user_id?.timeManagementBadgeID;
+				entry.user_id = emp_user_id?.timeManagementBadgeID
+					? emp_user_id?.timeManagementBadgeID
+					: emp_user_id?.employeeNo;
 			}
 			entry.timestamp = getUTCTime(entry.timestamp, entry?.isNotDevice);
 
@@ -199,8 +203,9 @@ const addTimecardEntry = async (entry) => {
 	// const updatedTimecard = await Timecard.updateMany({}, { $set: { processedForTimesheet: true } });
 	const { badge_id, clockIn, notDevice } = entry;
 	const empRec = await findEmployee({
-		timeManagementBadgeID: badge_id,
+		$or: [{ timeManagementBadgeID: badge_id }, { employeeNo: badge_id }],
 	});
+
 	entry.notDevice = notDevice;
 	entry.companyName = empRec?.companyName;
 	entry.employeeName = empRec?.empId?.fullName;
@@ -230,7 +235,7 @@ const findTimesheet = async (record) => Timesheet.findOne(record);
 
 const updateTimecardEntry = async (entry) => {
 	const empRec = await findEmployee({
-		timeManagementBadgeID: entry.badge_id,
+		$or: [{ timeManagementBadgeID: entry.badge_id }, { employeeNo: entry.badge_id }],
 	});
 
 	const timesheetRecord = await findTimesheet({
@@ -270,7 +275,7 @@ const updateTimecardEntry = async (entry) => {
 };
 
 const findEmployee = async (timeManagementBadgeID) =>
-	await EmployeeProfileInfo.findOne(timeManagementBadgeID)
+	await EmployeeEmploymentInfo.findOne(timeManagementBadgeID)
 		.populate({
 			path: "empId",
 			model: "Employee",
