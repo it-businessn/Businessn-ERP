@@ -44,7 +44,7 @@ const Timesheet = ({
 				);
 				const { totalPages, page, items } = data;
 				setTimesheets(items);
-				setTotalPages(totalPages ?? totalPage);
+				setTotalPages(totalPages > 0 ? totalPages : 1);
 				setPageNum(page);
 			} catch (error) {
 				console.error(error);

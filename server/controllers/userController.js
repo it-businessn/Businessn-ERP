@@ -11,7 +11,7 @@ const { setInitialPermissions, findCompany } = require("./appController");
 const getPayrollActiveEmployees = async (companyName) => {
 	const existingCompany = await findCompany("name", companyName);
 	const result = await Employee.find({
-		payrollStatus: { $ne: "Payroll Terminated" },
+		payrollStatus: "Payroll Active",
 		companyId: existingCompany._id,
 	})
 		.select(["fullName", "payrollStatus", "employeeNo", "timeManagementBadgeID", "department"])
@@ -24,7 +24,7 @@ const getPayrollActiveEmployees = async (companyName) => {
 const getPayrollInActiveEmployees = async (companyName) => {
 	const existingCompany = await findCompany("name", companyName);
 	return await findEmployee({
-		payrollStatus: "Payroll Terminated",
+		payrollStatus: { $ne: "Payroll Active" },
 		companyId: existingCompany._id,
 	});
 };

@@ -21,7 +21,7 @@ const Timecard = ({ company, userId, timecardRefresh, filter, pageNum, setPageNu
 				});
 				const { totalPages, page, items } = data;
 				setTimeRecords(items);
-				setTotalPages(totalPages ?? totalPage);
+				setTotalPages(totalPages > 0 ? totalPages : 1);
 				setPageNum(page);
 			} catch (error) {
 				console.error(error);

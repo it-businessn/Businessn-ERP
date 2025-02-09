@@ -36,10 +36,10 @@ const PersonalInfo = ({ company, isOnboarding, id, handleNext }) => {
 	}, [profileInfo, empId]);
 
 	useEffect(() => {
-		if (formData.firstName && formData.lastName && formData.birthDate) {
+		if (formData.firstName && formData.lastName && formData.password) {
 			setIsSave1Disabled(false);
 		}
-	}, [formData.firstName, formData.lastName, formData.birthDate]);
+	}, [formData.firstName, formData.lastName, formData.password]);
 
 	// useEffect(() => {
 	// 	if (formData.employeeNo) {

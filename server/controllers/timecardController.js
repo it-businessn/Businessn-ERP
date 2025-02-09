@@ -28,7 +28,7 @@ const getTimecard = async (req, res) => {
 			.skip(skip)
 			.limit(limit);
 
-		const total = await Timecard.countDocuments();
+		const total = await Timecard.find({ companyName });
 
 		result.map((_) => {
 			_.totalBreakHours = calcTotalHours(_)?.totalBreakHours;
