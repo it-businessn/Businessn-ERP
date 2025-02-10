@@ -134,6 +134,13 @@ const STAT_HOLIDAYS = [
 	{ name: "Christmas Day", date: "2024-12-25" },
 ];
 
+const PUNCH_CODE = {
+	CLOCK_IN: "0",
+	BREAK_IN: "3",
+	BREAK_OUT: "2",
+	CLOCK_OUT: "1",
+};
+
 const PAY_TYPES_TITLE = {
 	REG_PAY: "Regular Pay",
 	REG_PAY_BRK: "Regular Pay Break",
@@ -212,4 +219,5 @@ module.exports = {
 	calculateAge,
 	BUSINESSN_ORG,
 	BUSINESSN_ORG_ADMIN_EMAILS,
+	PUNCH_CODE,
 };

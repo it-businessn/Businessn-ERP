@@ -34,6 +34,7 @@ const Timesheets = () => {
 
 	const [date, setDate] = useState(getDefaultDate);
 
+	const [timesheets, setTimesheets] = useState(null);
 	// const [selectedFilter, setSelectedFilter] = useState("This pay period");
 	const [pageNum, setPageNum] = useState(1);
 	const [startDate, setStartDate] = useState(TODAY_DATE);
@@ -77,6 +78,8 @@ const Timesheets = () => {
 					filter={filter}
 					showAddEntry={showAddEntry}
 					setShowAddEntry={setShowAddEntry}
+					timesheets={timesheets}
+					setTimesheets={setTimesheets}
 				/>
 			),
 		},
@@ -153,7 +156,7 @@ const Timesheets = () => {
 					endDate={endDate}
 				/>
 				<OtherFilter
-					showOtherFilter={showEmpFilter}
+					showOtherFilter={timesheets && showEmpFilter}
 					toggleOtherFilter={toggleEmpFilter}
 					handleFilter={handleFilter}
 					data={employees}
@@ -162,7 +165,7 @@ const Timesheets = () => {
 					helperText="employee"
 				/>
 				<OtherFilter
-					showOtherFilter={showDeptFilter}
+					showOtherFilter={timesheets && showDeptFilter}
 					toggleOtherFilter={toggleDeptFilter}
 					handleFilter={handleFilter}
 					data={departments}

@@ -29,11 +29,11 @@ const OtherFilter = ({
 	};
 
 	const handleCloseMenu = () => {
-		setFilteredData(null);
+		toggleOtherFilter();
 	};
 
 	return (
-		<Popover isOpen={showOtherFilter} overflow="auto">
+		<Popover isOpen={showOtherFilter} overflow="auto" isDisabled={true}>
 			<PopoverTrigger>
 				<HStack cursor="pointer" borderRadius="md" onClick={toggleOtherFilter} p={0} spacing={1}>
 					<MdOutlineFilterList />

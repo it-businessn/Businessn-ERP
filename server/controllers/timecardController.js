@@ -10,6 +10,7 @@ const {
 	getPayType,
 	calcTotalHours,
 	PAY_TYPES_TITLE,
+	PUNCH_CODE,
 } = require("../services/data");
 const moment = require("moment");
 
@@ -122,7 +123,7 @@ const mapTimecardRawToTimecard = async () => {
 				},
 			});
 
-			if (punch == "0" && !sameClockInTimeEntryExists) {
+			if (punch == PUNCH_CODE.CLOCK_IN && !sameClockInTimeEntryExists) {
 				addTimecardEntry({
 					badge_id: user_id,
 					clockIn: timestamp,
@@ -132,37 +133,35 @@ const mapTimecardRawToTimecard = async () => {
 					notDevice: record?.notDevice,
 				});
 			}
-			if (punch === "2" && sameClockInTimeEntryExists) {
+			if (punch === PUNCH_CODE.BREAK_IN && sameClockInTimeEntryExists) {
+				addTimecardEntry(
+					{
+						badge_id: user_id,
+						clockIn: timestamp,
+						startBreaks: [],
+						endBreaks: [],
+						clockOut: null,
+						notDevice: record?.notDevice,
+					},
+					true,
+				);
+			}
+			if (punch === PUNCH_CODE.BREAK_OUT && sameClockInTimeEntryExists) {
 				await updateTimecardData(sameClockInTimeEntryExists._id, {
-					startBreaks: sameClockInTimeEntryExists.startBreaks.push(timestamp),
+					clockOut: timestamp,
 					notDevice: record?.notDevice,
 				});
 				const updatedEntry = {
 					badge_id: user_id,
 					clockIn: sameClockInTimeEntryExists.clockIn,
-					startBreaks: sameClockInTimeEntryExists.startBreaks.push(timestamp),
-					endBreaks: sameClockInTimeEntryExists.endBreaks,
-					clockOut: sameClockInTimeEntryExists.clockOut,
+					startBreaks: [],
+					endBreaks: [],
+					clockOut: timestamp,
 					notDevice: record?.notDevice,
 				};
-				updateTimecardEntry(updatedEntry);
+				updateTimecardEntry(updatedEntry, true);
 			}
-			if (punch === "3" && sameClockInTimeEntryExists) {
-				await updateTimecardData(sameClockInTimeEntryExists._id, {
-					endBreaks: sameClockInTimeEntryExists.endBreaks.push(timestamp),
-					notDevice: record?.notDevice,
-				});
-				const updatedEntry = {
-					badge_id: user_id,
-					clockIn: sameClockInTimeEntryExists.clockIn,
-					startBreaks: sameClockInTimeEntryExists.startBreaks,
-					endBreaks: sameClockInTimeEntryExists.endBreaks.push(timestamp),
-					clockOut: sameClockInTimeEntryExists.clockOut,
-					notDevice: record?.notDevice,
-				};
-				updateTimecardEntry(updatedEntry);
-			}
-			if (punch === "1" && sameClockInTimeEntryExists) {
+			if (punch === PUNCH_CODE.CLOCK_OUT && sameClockInTimeEntryExists) {
 				await updateTimecardData(sameClockInTimeEntryExists._id, {
 					clockOut: timestamp,
 					notDevice: record?.notDevice,
@@ -199,7 +198,7 @@ const findRecentClockInRecord = async (badge_id, timestamp) => {
 	return recentClockInEntry;
 };
 
-const addTimecardEntry = async (entry) => {
+const addTimecardEntry = async (entry, isBreak) => {
 	// const updatedTimecard = await Timecard.updateMany({}, { $set: { processedForTimesheet: true } });
 	const { badge_id, clockIn, notDevice } = entry;
 	const empRec = await findEmployee({
@@ -216,7 +215,7 @@ const addTimecardEntry = async (entry) => {
 		const newTimesheetRecord = {
 			employeeId: entry.employeeId,
 			companyName: entry.companyName,
-			payType: getPayType(clockIn),
+			payType: isBreak ? PAY_TYPES_TITLE.REG_PAY_BRK : getPayType(clockIn),
 			clockIn,
 			notDevice,
 		};
@@ -233,7 +232,7 @@ const addTimecardEntry = async (entry) => {
 
 const findTimesheet = async (record) => Timesheet.findOne(record);
 
-const updateTimecardEntry = async (entry) => {
+const updateTimecardEntry = async (entry, isBreakType) => {
 	const empRec = await findEmployee({
 		$or: [{ timeManagementBadgeID: entry.badge_id }, { employeeNo: entry.badge_id }],
 	});
@@ -248,13 +247,14 @@ const updateTimecardEntry = async (entry) => {
 	if (!timesheetRecord) {
 		return;
 	}
-	if (!timesheetRecord?.startBreaks?.length) {
-		timesheetRecord.startBreaks = entry.startBreaks;
+	if (isBreakType && entry?.clockOut && timesheetRecord.payType === PAY_TYPES_TITLE.REG_PAY_BRK) {
+		const durationHrs = moment
+			.duration(moment(entry.clockOut).diff(moment(entry.clockIn)))
+			.asHours()
+			.toFixed(2);
+		timesheetRecord.breakHoursWorked = durationHrs;
 	}
-	if (!timesheetRecord?.endBreaks?.length) {
-		timesheetRecord.endBreaks = entry.endBreaks;
-	}
-	if (!timesheetRecord?.clockOut) {
+	if (!isBreakType && !timesheetRecord?.clockOut) {
 		timesheetRecord.clockOut = entry.clockOut;
 		if (entry?.clockOut) {
 			const durationHrs = moment
@@ -262,7 +262,7 @@ const updateTimecardEntry = async (entry) => {
 				.asHours()
 				.toFixed(2);
 
-			if (timesheetRecord.payType.includes("Regular")) {
+			if (timesheetRecord.payType === PAY_TYPES_TITLE.REG_PAY) {
 				timesheetRecord.regHoursWorked = durationHrs;
 			}
 			if (timesheetRecord.payType === PAY_TYPES_TITLE.STAT_WORK_PAY) {
