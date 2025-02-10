@@ -121,7 +121,7 @@ const getFilteredTimesheets = async (req, res) => {
 		page = parseInt(page) || 1;
 		limit = parseInt(limit) || 10;
 		const skip = (page - 1) * limit;
-		const timesheets = await Timesheet.aggregate([
+		let timesheets = await Timesheet.aggregate([
 			{
 				$match: {
 					deleted: false,
@@ -179,17 +179,17 @@ const getFilteredTimesheets = async (req, res) => {
 		const payInfo = await getTimesheetResult(companyName);
 		if (filteredData?.filteredEmployees?.length) {
 			timesheets = timesheets.filter((item) =>
-				filteredData?.filteredEmployees?.includes(item?.employeeId?.fullName),
+				filteredData?.filteredEmployees?.includes(item?.employee?.fullName),
 			);
 		}
 		if (filteredData?.filteredDept?.length) {
 			timesheets = timesheets.filter((item) =>
-				filteredData?.filteredDept?.includes(item.employeeId.department[0]),
+				filteredData?.filteredDept?.includes(item?.employee?.department[0]),
 			);
 		}
 		if (filteredData?.filteredCC?.length) {
 			timesheets = timesheets.filter((item) =>
-				filteredData?.filteredCC?.includes(item.employeeId.role),
+				filteredData?.filteredCC?.includes(item?.employee?.role),
 			);
 		}
 
