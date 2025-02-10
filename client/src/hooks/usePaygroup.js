@@ -65,7 +65,8 @@ const usePaygroup = (company, refresh, year = CURRENT_YEAR, isReport = false) =>
 					} else {
 						const nextYrSchedules =
 							data[0]?.yearSchedules[data[0]?.yearSchedules.findIndex(({ year }) => year === 2025)]
-								.payPeriods;
+								?.payPeriods;
+
 						getClosestScheduleByProcessingDate(nextYrSchedules);
 					}
 				}

@@ -253,6 +253,7 @@ const Timesheet = ({
 							overTimePay,
 							createdOn,
 							regHoursWorked,
+							breakHoursWorked,
 							overtimeHoursWorked,
 							dblOvertimeHoursWorked,
 							statDayHoursWorked,
@@ -305,6 +306,8 @@ const Timesheet = ({
 									? sickPayHours
 									: param_hours === "vacationPayHours"
 									? vacationPayHours
+									: param_hours === "breakHoursWorked"
+									? breakHoursWorked
 									: 0;
 
 							const isStatPay = payType === PAY_TYPES_TITLE.STAT_PAY;

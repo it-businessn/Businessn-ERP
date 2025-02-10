@@ -136,6 +136,7 @@ const STAT_HOLIDAYS = [
 
 const PAY_TYPES_TITLE = {
 	REG_PAY: "Regular Pay",
+	REG_PAY_BRK: "Regular Pay Break",
 	OVERTIME_PAY: "Overtime Pay",
 	DBL_OVERTIME_PAY: "Double Overtime Pay",
 	STAT_WORK_PAY: "Statutory Worked Pay",

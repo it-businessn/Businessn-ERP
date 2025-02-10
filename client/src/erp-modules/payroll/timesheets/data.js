@@ -1,5 +1,6 @@
 export const PAY_TYPES_TITLE = {
 	REG_PAY: "Regular Pay",
+	REG_PAY_BRK: "Regular Pay Break",
 	OVERTIME_PAY: "Overtime Pay",
 	DBL_OVERTIME_PAY: "Double Overtime Pay",
 	STAT_WORK_PAY: "Statutory Worked Pay",
@@ -15,6 +16,13 @@ export const PAY_TYPES = [
 		param_key: "regPay",
 		param_hours: "regHoursWorked",
 		color: "var(--main_color_black)",
+	},
+	{
+		type: PAY_TYPES_TITLE.REG_PAY_BRK,
+		value: PAY_TYPES_TITLE.REG_PAY_BRK,
+		param_key: "regPay",
+		param_hours: "breakHoursWorked",
+		color: "var(--stat_item_color)",
 	},
 	{
 		type: PAY_TYPES_TITLE.OVERTIME_PAY,
