@@ -18,7 +18,7 @@ const Navbar = ({ handleClick, companyName, companyId, onOpen, user, setUser, is
 			sessionStorage.removeItem("accessToken");
 			setUser(null);
 		} catch (error) {
-			console.log(error.response.data.error);
+			console.log(error?.response?.data?.error);
 		}
 	};
 

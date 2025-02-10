@@ -28,7 +28,7 @@ const ForgotPassword = () => {
 			setErrorMessage("");
 		} catch (error) {
 			setCaptionTitle("Sorry! Unable to sent reset link!");
-			setErrorMessage(error.response.data.error);
+			setErrorMessage(error?.response?.data?.error);
 			console.log(error);
 		}
 	};

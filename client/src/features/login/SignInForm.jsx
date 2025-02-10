@@ -63,7 +63,7 @@ const SignInForm = ({ title }) => {
 
 			resetForm();
 		} catch (error) {
-			setError(error.response.data.error);
+			setError(error?.response?.data?.error);
 		} finally {
 			setIsLoading(false);
 		}
