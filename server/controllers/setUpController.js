@@ -293,12 +293,17 @@ const addCompany = async (req, res) => {
 	const { streetNumber, city, state, postalCode, country } = address;
 
 	try {
+		const adminEmployees = await Employee.find({
+			email: BUSINESSN_ORG_ADMIN_EMAILS,
+			role: { $regex: /manager|administrator/i },
+		}).select("_id");
 		const newCompany = await Company.create({
 			name,
 			founding_year,
 			registration_number,
 			industry_type,
 			address: { streetNumber, city, state, postalCode, country },
+			employees: adminEmployees,
 		});
 
 		res.status(201).json(newCompany);
