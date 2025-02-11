@@ -39,7 +39,7 @@ const PermissionsPanel = ({ employees, setFilteredEmployees, filteredEmployees, 
 							SIDEBAR_MENU[index].permissions = menu;
 						}
 						data?.children?.forEach((child, cIndex) => {
-							const childMenu = data.permissionType.find(
+							const childMenu = data?.permissionType?.find(
 								(item) => item.name === `${data.name} ${child.name}`,
 							);
 							if (menu) {

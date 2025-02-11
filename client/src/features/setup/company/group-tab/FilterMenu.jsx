@@ -112,7 +112,7 @@ const FilterMenu = ({
 							handleCloseMenu={handleAdminCloseMenu}
 							selectedOptions={selectedAdmins}
 							setSelectedOptions={setSelectedAdmins}
-							tag="modules(s)"
+							tag="manager(s)"
 							label="Select Group Admin"
 						/>
 					</FormControl>

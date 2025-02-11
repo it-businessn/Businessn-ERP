@@ -188,10 +188,11 @@ const addPaygroupSchedules = async (groupID) => {
 				year: CURRENT_YEAR,
 			});
 		}
-		yearSchedules.push({ year: CURRENT_YEAR, payPeriods });
+		const recordExists = yearSchedules.findIndex((rec) => rec.year === CURRENT_YEAR);
+		if (recordExists === -1) yearSchedules.push({ year: CURRENT_YEAR, payPeriods });
 
 		await updatePayGroup(groupID, {
-			// scheduleSettings: payPeriods,
+			scheduleSettings: payPeriods,
 			yearSchedules,
 		});
 	} catch (error) {
@@ -215,16 +216,16 @@ const updatePayGroup = async (id, data) =>
 const updateGroup = async (req, res) => {
 	const { id } = req.params;
 	const { scheduleSettings, payrollActivated } = req.body;
-	// try {
-	// 	if (scheduleSettings && !scheduleSettings.length && payrollActivated) {
-	// 		await addPaygroupSchedules(id);
-	// 		return res.status(200).json("Added schedules");
-	// 	}
-	// 	const setup = await updatePayGroup(id, req.body);
-	// 	res.status(200).json(setup);
-	// } catch (error) {
-	// 	console.log(error, "Error in updating");
-	// }
+	try {
+		// 	if (scheduleSettings && !scheduleSettings.length && payrollActivated) {
+		// 		await addPaygroupSchedules(id);
+		// 		return res.status(200).json("Added schedules");
+		// 	}
+		const setup = await updatePayGroup(id, req.body);
+		res.status(200).json(setup);
+	} catch (error) {
+		console.log(error, "Error in updating");
+	}
 };
 
 const getCompanies = async (req, res) => {

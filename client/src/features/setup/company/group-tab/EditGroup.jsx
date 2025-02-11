@@ -27,21 +27,6 @@ const EditGroup = ({ isOpen, onClose, selectedGroup, yearsList }) => {
 		);
 	}, [selectedYear]);
 
-	// useEffect(() => {
-	// 	console.log(selectedGroup);
-	// 	if (!selectedGroup?.scheduleSettings?.length) {
-	// 		const setUpSchedules = async () => {
-	// 			try {
-	// 				await SettingService.updateGroup(selectedGroup, selectedGroup._id);
-	// 			} catch (error) {
-	// 			} finally {
-	// 				setIsSubmitting(false);
-	// 			}
-	// 		};
-	// 		setUpSchedules();
-	// 	}
-	// }, [selectedGroup?.scheduleSettings]);
-
 	const handleSubmit = async (e) => {
 		e.preventDefault();
 		if (currentYearScheduleIndex < 0) {
@@ -87,7 +72,7 @@ const EditGroup = ({ isOpen, onClose, selectedGroup, yearsList }) => {
 	return (
 		<ModalLayout
 			title={`Set ${selectedGroup.name} Schedule`}
-			size="7xl"
+			size="5xl"
 			isOpen={isOpen}
 			onClose={onClose}
 			spacing="0"
@@ -99,7 +84,8 @@ const EditGroup = ({ isOpen, onClose, selectedGroup, yearsList }) => {
 				borderRadius="10px"
 				value={selectedYear}
 				placeholder="Select Year"
-				onChange={(e) => setSelectedYear(e.target.value)}
+				// onChange={(e) => setSelectedYear(e.target.value)}
+				onChange={(e) => console.log(e.target.value)}
 			>
 				{yearsList?.map((year) => (
 					<option value={year} key={year}>
