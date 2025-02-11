@@ -31,6 +31,10 @@ const TimesheetService = {
 	},
 
 	async addTimecard(data) {
+		return apiService.post("/timecard", data);
+	},
+
+	async addTimecardManual(data) {
 		return apiService.post("/timecard/manual", data);
 	},
 

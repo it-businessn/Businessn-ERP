@@ -37,7 +37,7 @@ const EmployeeTimeCard = ({ selectedUser, company }) => {
 					companyName: company,
 				},
 			];
-			await TimesheetService.addTimecard(newEntry);
+			await TimesheetService.addTimecardManual(newEntry);
 			toast({
 				title: message,
 				status: "success",
