@@ -84,8 +84,13 @@ app.use(
 	helmet({
 		contentSecurityPolicy: {
 			directives: {
-				defaultSrc: ["'self'", "https://businessn-erp.com"],
-				scriptSrc: ["'self'", "https://businessn-erp.com", "'unsafe-inline'"],
+				defaultSrc: ["'self'", "https://businessn-erp.com", "https://test-crm-staging.netlify.app"],
+				scriptSrc: [
+					"'self'",
+					"https://businessn-erp.com",
+					"https://test-crm-staging.netlify.app",
+					"'unsafe-inline'",
+				],
 			},
 		},
 	}),
