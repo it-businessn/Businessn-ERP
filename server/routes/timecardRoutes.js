@@ -7,4 +7,6 @@ router.get("/:companyName", timecardController.getTimecard);
 
 router.post("/", timecardController.createTimecard);
 
+router.post("/manual", timecardController.createTimecardManual);
+
 module.exports = router;

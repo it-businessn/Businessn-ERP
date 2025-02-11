@@ -31,7 +31,7 @@ const TimesheetService = {
 	},
 
 	async addTimecard(data) {
-		return apiService.post("/timecard", data);
+		return apiService.post("/timecard/manual", data);
 	},
 
 	async updateTimesheet(data, id) {
