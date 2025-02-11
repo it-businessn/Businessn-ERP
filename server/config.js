@@ -8,6 +8,7 @@ const corsOptions = {
 		"http://localhost:3000",
 		"http://localhost:3001",
 		"https://businessn-erp.onrender.com",
+		"https://crm-backend-874t.onrender.com",
 	],
 	methods: ["GET", "POST", "PUT", "DELETE"],
 	credentials: true, // Allow cookies to be sent
