@@ -6,12 +6,13 @@ import useDepartment from "hooks/useDepartment";
 import useEmployees from "hooks/useEmployees";
 import usePaygroup from "hooks/usePaygroup";
 import PageLayout from "layouts/PageLayout";
+import moment from "moment";
 import { useEffect, useState } from "react";
 import { IoRefresh } from "react-icons/io5";
 import { useParams } from "react-router-dom";
 import LocalStorageService from "services/LocalStorageService";
 import { isManager } from "utils";
-import { getDefaultDate, TODAY_DATE } from "utils/convertDate";
+import { getDefaultDate } from "utils/convertDate";
 import DateFilterPopup from "./DateFilterPopup";
 import OtherFilter from "./OtherFilter";
 import Timecard from "./Timecard";
@@ -37,8 +38,8 @@ const Timesheets = () => {
 	const [timesheets, setTimesheets] = useState(null);
 	// const [selectedFilter, setSelectedFilter] = useState("This pay period");
 	const [pageNum, setPageNum] = useState(1);
-	const [startDate, setStartDate] = useState(TODAY_DATE);
-	const [endDate, setEndDate] = useState(TODAY_DATE);
+	const [startDate, setStartDate] = useState(null);
+	const [endDate, setEndDate] = useState(null);
 
 	const [showDateFilter, setShowDateFilter] = useState(false);
 	const [showEmpFilter, setShowEmpFilter] = useState(false);
@@ -101,6 +102,11 @@ const Timesheets = () => {
 
 	const [viewMode, setViewMode] = useState(TABS[0].type);
 	const showComponent = (viewMode) => TABS.find(({ type }) => type === viewMode)?.name;
+
+	useEffect(() => {
+		setStartDate(moment().format("YYYY-MM-DD"));
+		setEndDate(moment().format("YYYY-MM-DD"));
+	}, []);
 
 	useEffect(() => {
 		setPageNum(1);

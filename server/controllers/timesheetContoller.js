@@ -7,8 +7,8 @@ const { findEmployeePayInfo } = require("./payInfoController");
 const { PAY_TYPES_TITLE } = require("../services/data");
 
 // const currentTime = currentDate.format("HH:mm:ss");
-const currentDate = momentTz.utc().tz(momentTz.tz.guess());
-// const currentDate = moment().add(1, "days");
+// const currentDate = momentTz.utc().tz(momentTz.tz.guess());
+const currentDate = moment().add(1, "days");
 const currentTime = currentDate.format("HH:mm");
 
 const findByRecordTimesheets = async (record) => {
@@ -130,14 +130,10 @@ const getFilteredTimesheets = async (req, res) => {
 					companyName,
 					clockIn: {
 						$gte: filteredData?.startDate
-							? momentTz
-									.utc(filteredData?.startDate)
-									.tz(momentTz.tz.guess())
-									.startOf("day")
-									.toDate()
+							? moment(filteredData?.startDate).utc().startOf("day").toDate()
 							: currentDate,
 						$lte: filteredData?.endDate
-							? momentTz.utc(filteredData?.endDate).tz(momentTz.tz.guess()).endOf("day").toDate()
+							? moment(filteredData?.endDate).utc().endOf("day").toDate()
 							: currentDate,
 					},
 				},
