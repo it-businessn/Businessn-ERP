@@ -5,7 +5,7 @@ const BUSINESSN_ORG_ADMIN_EMAILS = [
 	"julik@businessn.com",
 	"stefan.esterhuysen@businessn.com",
 	"davidd@businessn.com",
-	"erwan@fractionaldepartments.com",
+	"erwan.dantier@businessn.com",
 	"azra.demirovic@fractionaldepartments.com",
 	"jesse.christiaens@fractionaldepartments.com",
 	"it@businessn.com",
