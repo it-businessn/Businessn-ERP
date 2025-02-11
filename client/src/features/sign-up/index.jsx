@@ -30,6 +30,7 @@ import useDepartment from "hooks/useDepartment";
 import LocalStorageService from "services/LocalStorageService";
 import MultiSelectControl from "./MultiSelectControl";
 import RolesPanel from "./RolesPanel";
+// import CompaniesPanel from "features/setup/company/CompaniesPanel";
 // import signUpImg from "../../assets/logos/BusinessN_dark.jpg";
 
 const SignUp = ({ isModal, setRefresh, onClose, hideCompany }) => {
@@ -143,6 +144,7 @@ const SignUp = ({ isModal, setRefresh, onClose, hideCompany }) => {
 					companyName={formData.company}
 				/>
 			),
+			// content: <CompaniesPanel setOpenCompanyForm={true} />,
 		},
 		{
 			name: "Type of Base module",
