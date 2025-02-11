@@ -67,20 +67,6 @@ const createTimecard = async (req, res) => {
 		// console.log("del", y);
 
 		data?.map(async (entry) => {
-			if (entry?.isNotDevice && entry?.empId) {
-				const { isNotDevice, companyName, empId } = entry;
-				entry.timestamp = moment();
-				entry.notDevice = isNotDevice;
-
-				const emp_user_id = await EmployeeEmploymentInfo.findOne({
-					empId,
-					companyName,
-				}).select("timeManagementBadgeID employeeNo");
-
-				entry.user_id = emp_user_id?.timeManagementBadgeID
-					? emp_user_id?.timeManagementBadgeID
-					: emp_user_id?.employeeNo;
-			}
 			entry.timestamp = getUTCTime(entry.timestamp, entry?.isNotDevice);
 
 			const { user_id, timestamp, punch } = entry;
@@ -132,34 +118,6 @@ const mapTimecardRawToTimecard = async () => {
 					clockOut: null,
 					notDevice: record?.notDevice,
 				});
-			}
-			if (punch === PUNCH_CODE.BREAK_IN && sameClockInTimeEntryExists) {
-				addTimecardEntry(
-					{
-						badge_id: user_id,
-						clockIn: timestamp,
-						startBreaks: [],
-						endBreaks: [],
-						clockOut: null,
-						notDevice: record?.notDevice,
-					},
-					true,
-				);
-			}
-			if (punch === PUNCH_CODE.BREAK_OUT && sameClockInTimeEntryExists) {
-				await updateTimecardData(sameClockInTimeEntryExists._id, {
-					clockOut: timestamp,
-					notDevice: record?.notDevice,
-				});
-				const updatedEntry = {
-					badge_id: user_id,
-					clockIn: sameClockInTimeEntryExists.clockIn,
-					startBreaks: [],
-					endBreaks: [],
-					clockOut: timestamp,
-					notDevice: record?.notDevice,
-				};
-				updateTimecardEntry(updatedEntry, true);
 			}
 			if (punch === PUNCH_CODE.CLOCK_OUT && sameClockInTimeEntryExists) {
 				await updateTimecardData(sameClockInTimeEntryExists._id, {
@@ -287,7 +245,109 @@ const findPunchEntry = async (entry) => await TimecardRaw.findOne(entry);
 
 const addPunchEntry = async (entry) => await TimecardRaw.create(entry);
 
+const createTimecardManual = async (req, res) => {
+	try {
+		const data = req.body;
+		// console.log("createTimecardManual", data);
+		data?.map(async (entry) => {
+			if (entry?.isNotDevice && entry?.empId) {
+				const { isNotDevice, companyName, empId, punch } = entry;
+
+				entry.notDevice = isNotDevice;
+
+				const emp_user_id = await EmployeeEmploymentInfo.findOne({
+					empId,
+					companyName,
+				}).select("employeeNo");
+
+				entry.user_id = emp_user_id?.employeeNo;
+
+				const targetDate = moment().format("YYYY-MM-DD");
+
+				const sameClockInTimeEntryExists = await Timecard.findOne({
+					badge_id: entry.user_id,
+					companyName,
+					clockIn: {
+						$ne: null,
+					},
+					clockOut: null,
+				}).sort({ clockIn: 1 });
+				// console.log("sameClockInTimeEntryExists", punch, sameClockInTimeEntryExists);
+				if (punch == PUNCH_CODE.CLOCK_IN && !sameClockInTimeEntryExists) {
+					console.log("CLOCK_IN");
+
+					// addTimecardEntry({
+					// 	badge_id: entry.user_id,
+					// 	clockIn: moment(),
+					// 	startBreaks: [],
+					// 	endBreaks: [],
+					// 	clockOut: null,
+					// 	notDevice: entry?.notDevice,
+					// });
+				}
+				if (punch === PUNCH_CODE.CLOCK_OUT && sameClockInTimeEntryExists) {
+					console.log("CLOCK_OUT");
+					// const clockOutRecord = await updateTimecardData(sameClockInTimeEntryExists._id, {
+					// 	clockOut: moment(),
+					// 	notDevice: entry?.notDevice,
+					// });
+					// const updatedEntry = {
+					// 	badge_id: entry.user_id,
+					// 	clockIn: sameClockInTimeEntryExists.clockIn,
+					// 	startBreaks: [],
+					// 	endBreaks: [],
+					// 	clockOut: moment(),
+					// 	notDevice: entry?.notDevice,
+					// };
+					// updateTimecardEntry(updatedEntry);
+				}
+				if (punch === PUNCH_CODE.BREAK_IN && !sameClockInTimeEntryExists) {
+					console.log("BREAK_IN");
+					// addTimecardEntry(
+					// 	{
+					// 		badge_id: entry.user_id,
+					// 		clockIn: moment(),
+					// 		startBreaks: [],
+					// 		endBreaks: [],
+					// 		clockOut: null,
+					// 		notDevice: record?.notDevice,
+					// 	},
+					// 	true,
+					// );
+				}
+				if (punch === PUNCH_CODE.BREAK_OUT && sameClockInTimeEntryExists) {
+					console.log("BREAK_OUT");
+					// await updateTimecardData(sameClockInTimeEntryExists._id, {
+					// 	clockOut: moment(),
+					// 	notDevice: record?.notDevice,
+					// });
+					// const updatedEntry = {
+					// 	badge_id: entry.user_id,
+					// 	clockIn: sameClockInTimeEntryExists.clockIn,
+					// 	startBreaks: [],
+					// 	endBreaks: [],
+					// 	clockOut: moment(),
+					// 	notDevice: record?.notDevice,
+					// };
+					// updateTimecardEntry(updatedEntry, true);
+				}
+			}
+			// const k = await Timecard.deleteMany({
+			// 	companyName: "Cornerstone Maintenance Group Ltd.",
+			// });
+			// const s = await Timesheet.deleteMany({
+			// 	companyName: "Cornerstone Maintenance Group Ltd.",
+			// });
+			// console.log(k, s);
+			res.status(201).json("Timecard entries added manually");
+		});
+	} catch (error) {
+		res.status(400).json({ message: error.message });
+	}
+};
+
 module.exports = {
 	getTimecard,
 	createTimecard,
+	createTimecardManual,
 };
