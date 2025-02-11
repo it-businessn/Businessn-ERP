@@ -1,7 +1,7 @@
 import useCompany from "hooks/useCompany";
 import usePaygroup from "hooks/usePaygroup";
 import PageLayout from "layouts/PageLayout";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ROUTE_PATH } from "routes";
 import LocalStorageService from "services/LocalStorageService";
 import { CURRENT_YEAR } from "utils/convertDate";
@@ -13,6 +13,7 @@ const PayrollWorkview = () => {
 	const { company } = useCompany(LocalStorageService.getItem("selectedCompany"));
 	const [refresh, setRefresh] = useState(false);
 	const [selectedYear, setSelectedYear] = useState(CURRENT_YEAR);
+	const [yearsList, setYearsList] = useState([CURRENT_YEAR]);
 
 	const {
 		payGroups,
@@ -22,6 +23,10 @@ const PayrollWorkview = () => {
 		closestRecord,
 		closestRecordIndex,
 	} = usePaygroup(company, refresh, selectedYear);
+
+	useEffect(() => {
+		if (selectedPayGroup) setYearsList(selectedPayGroup?.yearSchedules.map(({ year }) => year));
+	}, [selectedPayGroup]);
 
 	const handleChange = (value) => {
 		if (value !== "") {
@@ -46,6 +51,7 @@ const PayrollWorkview = () => {
 					setSelectedYear={setSelectedYear}
 					empPath={empPath}
 					selectedPayGroup={selectedPayGroup}
+					yearsList={yearsList}
 					payGroupSchedule={payGroupSchedule}
 					company={company}
 					refresh={refresh}

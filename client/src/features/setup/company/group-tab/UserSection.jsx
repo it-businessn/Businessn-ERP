@@ -45,7 +45,7 @@ const UserSection = ({
 		selectedGroup.admin = selectedAdmins;
 		selectedGroup.modules = selectedModules;
 		const memberExists = selectedGroup.members.findIndex(
-			(member) => member.email === filteredEmployees[0].email,
+			(member) => member.fullName === filteredEmployees[0].fullName,
 		);
 		if (memberExists === -1) {
 			selectedGroup.members.push(filteredEmployees[0]);

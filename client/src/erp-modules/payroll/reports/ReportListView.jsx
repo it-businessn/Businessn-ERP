@@ -3,7 +3,7 @@ import useCompany from "hooks/useCompany";
 import useEmployeePayReport from "hooks/useEmployeePayReport";
 import usePaygroup from "hooks/usePaygroup";
 import PageLayout from "layouts/PageLayout";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import LocalStorageService from "services/LocalStorageService";
 import { CURRENT_YEAR } from "utils/convertDate";
@@ -12,10 +12,20 @@ import WorkviewTable from "../workview/paygroup-header-table/WorkviewTable";
 
 const ReportListView = () => {
 	const { year } = useParams();
-	const [selectedYear, setSelectedYear] = useState(year ?? CURRENT_YEAR);
 	const { company } = useCompany(LocalStorageService.getItem("selectedCompany"));
+	const [yearsList, setYearsList] = useState([CURRENT_YEAR]);
+	const [selectedYear, setSelectedYear] = useState(year ?? CURRENT_YEAR);
 
-	const { payGroupSchedule, closestRecordIndex } = usePaygroup(company, false, selectedYear, true);
+	const { payGroupSchedule, closestRecordIndex, selectedPayGroup } = usePaygroup(
+		company,
+		false,
+		selectedYear,
+		true,
+	);
+
+	useEffect(() => {
+		if (selectedPayGroup) setYearsList(selectedPayGroup?.yearSchedules.map(({ year }) => year));
+	}, [selectedPayGroup]);
 
 	let filteredPayPeriods = closestRecordIndex
 		? payGroupSchedule?.filter((_, index) => index <= closestRecordIndex || _?.isProcessed)
@@ -51,7 +61,7 @@ const ReportListView = () => {
 				placeholder="Select Year"
 				onChange={(e) => setSelectedYear(e.target.value)}
 			>
-				{[2024, 2025]?.map((year) => (
+				{yearsList?.map((year) => (
 					<option value={year} key={year}>
 						{year}
 					</option>

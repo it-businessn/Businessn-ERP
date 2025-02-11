@@ -3,9 +3,10 @@ import LeftIconButton from "components/ui/button/LeftIconButton";
 import PrimaryButton from "components/ui/button/PrimaryButton";
 import BoxCard from "components/ui/card";
 import useManager from "hooks/useManager";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { MdSettingsSuggest } from "react-icons/md";
 import { isPaygroup } from "utils";
+import { CURRENT_YEAR } from "utils/convertDate";
 import AddNewGroup from "./group-tab/AddNewGroup";
 import EditGroup from "./group-tab/EditGroup";
 import FilterMenu from "./group-tab/FilterMenu";
@@ -13,6 +14,7 @@ import UserSection from "./group-tab/UserSection";
 
 const GroupsPanel = ({ employees, setFilteredEmployees, filteredEmployees, company, modules }) => {
 	const managers = useManager(company);
+	const [yearsList, setYearsList] = useState([CURRENT_YEAR]);
 	const [selectedGroup, setSelectedGroup] = useState(null);
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [isRefresh, setIsRefresh] = useState(false);
@@ -22,6 +24,10 @@ const GroupsPanel = ({ employees, setFilteredEmployees, filteredEmployees, compa
 	const [groupMembers, setGroupMembers] = useState(null);
 	const [openAddGroup, setOpenAddGroup] = useState(false);
 	const [showEditDetails, setShowEditDetails] = useState(false);
+
+	useEffect(() => {
+		if (selectedGroup) setYearsList(selectedGroup?.yearSchedules.map(({ year }) => year));
+	}, [selectedGroup]);
 
 	return (
 		<BoxCard fontWeight="bold" minH="50vh">
@@ -51,17 +57,20 @@ const GroupsPanel = ({ employees, setFilteredEmployees, filteredEmployees, compa
 						selectedGroup={selectedGroup}
 						isOpen={showEditDetails}
 						onClose={() => setShowEditDetails(false)}
+						yearsList={yearsList}
 					/>
 				)}
 				{openAddGroup && (
-					<AddNewGroup
-						modules={modules}
-						managers={managers}
-						isOpen={openAddGroup}
-						company={company}
-						onClose={() => setOpenAddGroup(false)}
-						setRefresh={setIsRefresh}
-					/>
+					<>
+						<AddNewGroup
+							modules={modules}
+							managers={managers}
+							isOpen={openAddGroup}
+							company={company}
+							onClose={() => setOpenAddGroup(false)}
+							setRefresh={setIsRefresh}
+						/>
+					</>
 				)}
 			</HStack>
 			<FilterMenu

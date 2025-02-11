@@ -19,6 +19,7 @@ const PaygroupTable = ({
 	empPath,
 	selectedYear,
 	setSelectedYear,
+	yearsList,
 }) => {
 	const [showExtraPayrun, setShowExtraPayrun] = useState(false);
 	const [showOnboard, setShowOnboard] = useState(false);
@@ -59,7 +60,7 @@ const PaygroupTable = ({
 							placeholder="Select Year"
 							onChange={(e) => setSelectedYear(e.target.value)}
 						>
-							{[2024, 2025]?.map((year) => (
+							{yearsList?.map((year) => (
 								<option value={year} key={year}>
 									{year}
 								</option>

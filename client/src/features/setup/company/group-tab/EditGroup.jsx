@@ -8,7 +8,7 @@ import { useEffect, useState } from "react";
 import SettingService from "services/SettingService";
 import { CURRENT_YEAR, dayMonthYear, getDefaultDate } from "utils/convertDate";
 
-const EditGroup = ({ isOpen, onClose, selectedGroup }) => {
+const EditGroup = ({ isOpen, onClose, selectedGroup, yearsList }) => {
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [selectedYear, setSelectedYear] = useState(CURRENT_YEAR);
 	const [schedules, setSchedules] = useState([]);
@@ -27,19 +27,20 @@ const EditGroup = ({ isOpen, onClose, selectedGroup }) => {
 		);
 	}, [selectedYear]);
 
-	useEffect(() => {
-		if (!selectedGroup?.scheduleSettings?.length) {
-			const setUpSchedules = async () => {
-				try {
-					await SettingService.updateGroup(selectedGroup, selectedGroup._id);
-				} catch (error) {
-				} finally {
-					setIsSubmitting(false);
-				}
-			};
-			setUpSchedules();
-		}
-	}, [selectedGroup?.scheduleSettings]);
+	// useEffect(() => {
+	// 	console.log(selectedGroup);
+	// 	if (!selectedGroup?.scheduleSettings?.length) {
+	// 		const setUpSchedules = async () => {
+	// 			try {
+	// 				await SettingService.updateGroup(selectedGroup, selectedGroup._id);
+	// 			} catch (error) {
+	// 			} finally {
+	// 				setIsSubmitting(false);
+	// 			}
+	// 		};
+	// 		setUpSchedules();
+	// 	}
+	// }, [selectedGroup?.scheduleSettings]);
 
 	const handleSubmit = async (e) => {
 		e.preventDefault();
@@ -100,7 +101,7 @@ const EditGroup = ({ isOpen, onClose, selectedGroup }) => {
 				placeholder="Select Year"
 				onChange={(e) => setSelectedYear(e.target.value)}
 			>
-				{[2024, 2025]?.map((year) => (
+				{yearsList?.map((year) => (
 					<option value={year} key={year}>
 						{year}
 					</option>

@@ -21,12 +21,12 @@ const getAllSetup = async (req, res) => {
 const getRoles = async (req, res) => {
 	const { companyName } = req.params;
 	try {
-		const roles = await EmployeeRole.find({ inactive: false }).sort({
+		const roles = await EmployeeRole.find({
+			inactive: { $ne: true },
+			companyName,
+		}).sort({
 			createdOn: -1,
 		});
-		// const roles = await EmployeeRole.find({ companyName }).sort({
-		// 	createdOn: -1,
-		// });
 		res.status(200).json(roles);
 	} catch (error) {
 		res.status(404).json({ error: error.message });
@@ -215,16 +215,16 @@ const updatePayGroup = async (id, data) =>
 const updateGroup = async (req, res) => {
 	const { id } = req.params;
 	const { scheduleSettings, payrollActivated } = req.body;
-	try {
-		if (scheduleSettings && !scheduleSettings.length && payrollActivated) {
-			await addPaygroupSchedules(id);
-			return res.status(200).json("Added schedules");
-		}
-		const setup = await updatePayGroup(id, req.body);
-		res.status(200).json(setup);
-	} catch (error) {
-		console.log(error, "Error in updating");
-	}
+	// try {
+	// 	if (scheduleSettings && !scheduleSettings.length && payrollActivated) {
+	// 		await addPaygroupSchedules(id);
+	// 		return res.status(200).json("Added schedules");
+	// 	}
+	// 	const setup = await updatePayGroup(id, req.body);
+	// 	res.status(200).json(setup);
+	// } catch (error) {
+	// 	console.log(error, "Error in updating");
+	// }
 };
 
 const getCompanies = async (req, res) => {
