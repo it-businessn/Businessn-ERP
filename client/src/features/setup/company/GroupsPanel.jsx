@@ -11,6 +11,8 @@ import AddNewGroup from "./group-tab/AddNewGroup";
 import EditGroup from "./group-tab/EditGroup";
 import FilterMenu from "./group-tab/FilterMenu";
 import UserSection from "./group-tab/UserSection";
+// import BaseModulePanel from "features/sign-up/BaseModulePanel";
+// import RolesPanel from "features/sign-up/RolesPanel";
 
 const GroupsPanel = ({ employees, setFilteredEmployees, filteredEmployees, company, modules }) => {
 	const managers = useManager(company);
@@ -62,6 +64,8 @@ const GroupsPanel = ({ employees, setFilteredEmployees, filteredEmployees, compa
 				)}
 				{openAddGroup && (
 					<>
+						{/* <BaseModulePanel showAddModules={openAddGroup} companyName={company} /> */}
+						{/* <RolesPanel showAddRoles={openAddGroup} companyName={company} /> */}
 						<AddNewGroup
 							modules={modules}
 							managers={managers}
