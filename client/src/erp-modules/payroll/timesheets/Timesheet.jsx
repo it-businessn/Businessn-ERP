@@ -143,7 +143,7 @@ const Timesheet = ({
 			formData.clockIn = updatedRec.clockIn;
 			formData.clockOut = updatedRec.clockOut;
 			formData.company = updatedRec.companyName;
-			formData.empId = updatedRec.employeeId._id;
+			formData.empId = updatedRec.employee._id;
 			formData.payType = updatedRec.payType;
 
 			if (formData.recordId) {

@@ -347,6 +347,7 @@ const updateTimesheet = async (req, res) => {
 	let { clockIn, clockOut, empId, approve, param_hours, company } = req.body;
 
 	try {
+		clockOut = moment(clockOut).tz("America/Vancouver").format();
 		const totalWorkedHours = calcTotalWorkedHours(clockIn, clockOut);
 		if (param_hours === PARAM_HOURS.REGULAR && totalWorkedHours > 8) {
 			const adjustedClockOut = await addOvertimeRecord(clockIn, clockOut, empId, company);
