@@ -1,4 +1,5 @@
 const moment = require("moment");
+// const momentTz = require("moment-timezone");
 
 const BUSINESSN_ORG = "BusinessN Corporate";
 const BUSINESSN_ORG_ADMIN_EMAILS = [
@@ -102,8 +103,23 @@ const ROLES = {
 	ENROLLER: "Enroller",
 };
 
+const PARAM_HOURS = {
+	REGULAR: "regHoursWorked",
+	STAT: "statDayHoursWorked",
+};
+
+const TIMESHEET_STATUS = {
+	APPROVED: "Approved",
+	REJECTED: "Rejected",
+	PENDING: "Pending",
+};
 const isRoleManager = (role) =>
 	role?.includes(ROLES.ADMINISTRATOR) || role?.includes(ROLES.MANAGER);
+
+const NEXT_DAY = moment().add(1, "days");
+const CURRENT_TIME_HHMM = NEXT_DAY.format("HH:mm");
+// const currentTime = NEXT_DAY.format("HH:mm:ss");
+// const currentDate = momentTz.utc().tz(momentTz.tz.guess());
 
 const CURRENT_YEAR = moment().year();
 const getUTCTime = (time, notDevice) => (notDevice ? moment() : moment.utc(time).toISOString());
@@ -201,6 +217,8 @@ const calcTotalHours = (data) => {
 
 module.exports = {
 	PAY_TYPES_TITLE,
+	CURRENT_TIME_HHMM,
+	NEXT_DAY,
 	ADMIN_PERMISSION,
 	CLIENT_ORG_ADMIN_PERMISSION,
 	CLIENT_ORG_EMP_PERMISSION,
@@ -221,4 +239,6 @@ module.exports = {
 	BUSINESSN_ORG,
 	BUSINESSN_ORG_ADMIN_EMAILS,
 	PUNCH_CODE,
+	TIMESHEET_STATUS,
+	PARAM_HOURS,
 };

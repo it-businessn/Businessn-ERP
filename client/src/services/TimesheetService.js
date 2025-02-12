@@ -26,6 +26,10 @@ const TimesheetService = {
 		return apiService.get(`/timesheet/${company}/${id}`);
 	},
 
+	async addTimesheetManual(data) {
+		return apiService.post("/timesheet/manual", data);
+	},
+
 	async addTimesheet(data) {
 		return apiService.post("/timesheet", data);
 	},

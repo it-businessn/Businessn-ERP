@@ -5,6 +5,8 @@ const timesheetController = require("../controllers/timesheetContoller");
 
 router.get("/:companyName", timesheetController.getTimesheets);
 
+router.get("/:companyName/:employeeId", timesheetController.getEmployeeTimesheet);
+
 router.get("/filtered/:companyName/:filter", timesheetController.getFilteredTimesheets);
 
 router.get(
@@ -12,9 +14,9 @@ router.get(
 	timesheetController.getFilteredTimesheetsByStatus,
 );
 
-router.get("/:companyName/:employeeId", timesheetController.getTimesheet);
-
 router.post("/", timesheetController.createTimesheet);
+
+router.post("/manual", timesheetController.createManualTimesheet);
 
 router.put("/:id", timesheetController.updateTimesheet);
 

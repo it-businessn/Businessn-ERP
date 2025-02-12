@@ -11,6 +11,7 @@ const {
 	calcTotalHours,
 	PAY_TYPES_TITLE,
 	PUNCH_CODE,
+	PARAM_HOURS,
 } = require("../services/data");
 const moment = require("moment");
 
@@ -221,14 +222,13 @@ const updateTimecardEntry = async (entry, isBreakType) => {
 				.toFixed(2);
 
 			if (timesheetRecord.payType === PAY_TYPES_TITLE.REG_PAY) {
-				timesheetRecord.regHoursWorked = durationHrs;
+				timesheetRecord[PARAM_HOURS.REGULAR] = durationHrs;
 			}
 			if (timesheetRecord.payType === PAY_TYPES_TITLE.STAT_WORK_PAY) {
-				timesheetRecord.statDayHoursWorked = durationHrs;
+				timesheetRecord[PARAM_HOURS.STAT] = durationHrs;
 			}
 		}
 	}
-
 	await timesheetRecord.save();
 };
 

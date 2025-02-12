@@ -1,3 +1,5 @@
+const { TIMESHEET_STATUS } = require("../services/data");
+
 [
 	{
 		name: "Employment Type",
@@ -60,8 +62,7 @@
 		item: [
 			{
 				name: "Health Insurance Deduction",
-				description:
-					"This deduction covers the employee's health insurance premium.",
+				description: "This deduction covers the employee's health insurance premium.",
 				isSystemMenu: true,
 				deductionAmt: "Amount Percentage: 5% of the employee's gross salary.",
 			},
@@ -74,8 +75,7 @@
 			},
 			{
 				name: "Social Security Tax",
-				description:
-					"This deduction goes towards the employee's contribution to social security.",
+				description: "This deduction goes towards the employee's contribution to social security.",
 				isSystemMenu: true,
 				deductionAmt: "Amount Percentage: 6.2% of the employee's gross salary.",
 			},
@@ -189,8 +189,7 @@
 		item: [
 			{
 				name: "Annual Leave/Vacation Leave",
-				description:
-					"Paid time off that employees can take for vacation or personal reasons",
+				description: "Paid time off that employees can take for vacation or personal reasons",
 				isSystemMenu: true,
 				totalDays: "15 days per calendar year",
 			},
@@ -217,8 +216,7 @@
 			},
 			{
 				name: "Parental Leave",
-				description:
-					"Paid time off that employees can take for vacation or personal reasons",
+				description: "Paid time off that employees can take for vacation or personal reasons",
 				isSystemMenu: true,
 				totalDays: "84",
 			},
@@ -230,8 +228,7 @@
 			},
 			{
 				name: "Compensatory Leave",
-				description:
-					"Paid time off that employees can take for vacation or personal reasons",
+				description: "Paid time off that employees can take for vacation or personal reasons",
 				isSystemMenu: true,
 				totalDays: "5 days per calendar year",
 			},
@@ -243,15 +240,13 @@
 			},
 			{
 				name: "Study Leave/Educational Leave",
-				description:
-					"Paid time off that employees can take for vacation or personal reasons",
+				description: "Paid time off that employees can take for vacation or personal reasons",
 				isSystemMenu: true,
 				totalDays: "5 days per calendar year",
 			},
 			{
 				name: "Unpaid Leave",
-				description:
-					"Paid time off that employees can take for vacation or personal reasons",
+				description: "Paid time off that employees can take for vacation or personal reasons",
 				isSystemMenu: true,
 				totalDays: "30 days per calendar year",
 			},
@@ -263,15 +258,13 @@
 			},
 			{
 				name: "Sabbatical Leave",
-				description:
-					"Paid time off that employees can take for vacation or personal reasons",
+				description: "Paid time off that employees can take for vacation or personal reasons",
 				isSystemMenu: true,
 				totalDays: "90 days per calendar year",
 			},
 			{
 				name: "Personal",
-				description:
-					"Paid time off that employees can take for vacation or personal reasons",
+				description: "Paid time off that employees can take for vacation or personal reasons",
 				isSystemMenu: false,
 				totalDays: "d per calendar year",
 			},
@@ -290,8 +283,7 @@
 		item: [
 			{
 				name: "Present",
-				description:
-					"The employee was present and worked for the full scheduled shift.",
+				description: "The employee was present and worked for the full scheduled shift.",
 				isSystemMenu: true,
 			},
 			{
@@ -302,14 +294,12 @@
 			},
 			{
 				name: "Late Arrival",
-				description:
-					"The employee arrived at work later than the scheduled start time.",
+				description: "The employee arrived at work later than the scheduled start time.",
 				isSystemMenu: true,
 			},
 			{
 				name: "Early Departure",
-				description:
-					"The employee left work earlier than the scheduled end time",
+				description: "The employee left work earlier than the scheduled end time",
 				isSystemMenu: true,
 			},
 			{
@@ -319,8 +309,7 @@
 			},
 			{
 				name: "Overtime",
-				description:
-					"The employee worked additional hours beyond the regular work hours.",
+				description: "The employee worked additional hours beyond the regular work hours.",
 				isSystemMenu: true,
 			},
 		],
@@ -344,7 +333,7 @@
 				issoftdeleted: true,
 			},
 			{
-				name: "Rejected",
+				name: TIMESHEET_STATUS.REJECTED,
 				description:
 					"The leave request has been reviewed and denied by the manager or HR department. The employee's request for leave has not been approved.",
 				isSystemMenu: true,
@@ -425,8 +414,7 @@
 			},
 			{
 				name: "Physical Check",
-				description:
-					"Employees receive a physical paper check as their salary payment.",
+				description: "Employees receive a physical paper check as their salary payment.",
 				isSystemMenu: true,
 			},
 			{
@@ -437,8 +425,7 @@
 			},
 			{
 				name: "Cash",
-				description:
-					"Employees receive their payment in cash directly from the employer",
+				description: "Employees receive their payment in cash directly from the employer",
 				isSystemMenu: true,
 			},
 			{
@@ -449,8 +436,7 @@
 			},
 			{
 				name: "Bonuses and Commissions",
-				description:
-					"Employees receive additional payments based on performance or achievements",
+				description: "Employees receive additional payments based on performance or achievements",
 				isSystemMenu: true,
 			},
 		],
@@ -788,8 +774,7 @@
 			},
 			{
 				name: "View Salary Details",
-				description:
-					"Grants access to view salary-related information of employees.",
+				description: "Grants access to view salary-related information of employees.",
 				subtext:
 					"Example: The finance manager may have this permission to view and verify salary details for budgeting purposes",
 				isSystemMenu: true,

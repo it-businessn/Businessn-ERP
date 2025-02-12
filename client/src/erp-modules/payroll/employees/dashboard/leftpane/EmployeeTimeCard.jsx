@@ -1,6 +1,5 @@
 import { HStack, VStack, useToast } from "@chakra-ui/react";
 import LeftIconButton from "components/ui/button/LeftIconButton";
-import PrimaryButton from "components/ui/button/PrimaryButton";
 import BoxCard from "components/ui/card";
 import TextTitle from "components/ui/text/TextTitle";
 import { useEffect, useState } from "react";
@@ -28,16 +27,11 @@ const EmployeeTimeCard = ({ selectedUser, company }) => {
 
 	const updateSubmit = async (punch, message) => {
 		try {
-			const newEntry = [
-				{
-					empId: selectedUser?._id,
-					status: "4",
-					punch,
-					isNotDevice: true,
-					companyName: company,
-				},
-			];
-			await TimesheetService.addTimecardManual(newEntry);
+			await TimesheetService.addTimesheetManual({
+				punch,
+				company,
+				employeeId: selectedUser?._id,
+			});
 			toast({
 				title: message,
 				status: "success",

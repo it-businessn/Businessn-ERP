@@ -473,15 +473,17 @@ const Timesheet = ({
 						onOpen={handleDelete}
 					/>
 				)}
-				{showAddEntry && (
-					<ExtraTimeEntryModal
-						company={company}
-						showAddEntry={showAddEntry}
-						setRefresh={setRefresh}
-						setShowAddEntry={setShowAddEntry}
-					/>
-				)}
 			</TableLayout>
+
+			{showAddEntry && (
+				<ExtraTimeEntryModal
+					company={company}
+					showAddEntry={showAddEntry}
+					setRefresh={setRefresh}
+					setShowAddEntry={setShowAddEntry}
+				/>
+			)}
+
 			<HStack>
 				<PrimaryButton
 					size="sm"

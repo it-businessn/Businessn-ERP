@@ -24,7 +24,7 @@ const {
 const { findGroupEmployees } = require("./setUpController");
 const { generateT4Slip } = require("./t4SlipController");
 const { getPayrollActiveEmployees } = require("./userController");
-const { PAY_TYPES_TITLE } = require("../services/data");
+const { PAY_TYPES_TITLE, TIMESHEET_STATUS } = require("../services/data");
 
 //update roles-
 
@@ -596,7 +596,7 @@ const calculateTotalAggregatedHours = async (startDate, endDate, companyName) =>
 			$gte: moment(startDate).utc().startOf("day").toDate(),
 			$lte: moment(endDate).utc().endOf("day").toDate(),
 		},
-		approveStatus: "Approved",
+		approveStatus: TIMESHEET_STATUS.APPROVED,
 	}).populate({
 		path: "employeeId",
 		model: "Employee",

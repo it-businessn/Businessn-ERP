@@ -2,7 +2,6 @@ const Employee = require("../models/Employee");
 const EmployeeProfileInfo = require("../models/EmployeeProfileInfo");
 const { addEmployee, hashedPassword } = require("./appController");
 const { deleteAlerts } = require("./payrollController");
-// const { addStatHolidayDefaultTimesheet } = require("./timesheetContoller");
 
 const getAllProfileInfo = async (req, res) => {
 	const { companyName } = req.params;
