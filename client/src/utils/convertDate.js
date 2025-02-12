@@ -66,7 +66,8 @@ export const getTimeFormat = (timestamp, notDevice) => {
 };
 
 export const setUTCDate = (date, newDate, notDevice) => {
-	const utcDate = date ? (notDevice ? moment(date) : moment.utc(date)) : moment.utc();
+	// const utcDate = date ? (notDevice ? moment(date) : moment.utc(date)) : moment.utc();
+	const utcDate = date ? moment(date) : moment();
 
 	let [hours, minutes] = newDate.split(":");
 	utcDate.set({
