@@ -1,5 +1,5 @@
 const moment = require("moment");
-// const momentTz = require("moment-timezone");
+const momentTz = require("moment-timezone");
 
 const BUSINESSN_ORG = "BusinessN Corporate";
 const BUSINESSN_ORG_ADMIN_EMAILS = [
@@ -106,6 +106,7 @@ const ROLES = {
 const PARAM_HOURS = {
 	REGULAR: "regHoursWorked",
 	STAT: "statDayHoursWorked",
+	BREAK: "breakHoursWorked",
 };
 
 const TIMESHEET_STATUS = {
@@ -119,7 +120,7 @@ const isRoleManager = (role) =>
 const NEXT_DAY = moment().add(1, "days");
 const CURRENT_TIME_HHMM = NEXT_DAY.format("HH:mm");
 // const currentTime = NEXT_DAY.format("HH:mm:ss");
-// const currentDate = momentTz.utc().tz(momentTz.tz.guess());
+let LOCAL_TIME = moment().tz("America/Vancouver").toDate();
 
 const CURRENT_YEAR = moment().year();
 const getUTCTime = (time, notDevice) => (notDevice ? moment() : moment.utc(time).toISOString());
@@ -169,12 +170,12 @@ const PAY_TYPES_TITLE = {
 	VACATION_PAY: "Vacation Pay",
 };
 
-const getPayType = (workedDate) => {
+const getPayType = (workedDate, isBreak) => {
 	const isStatHoliday = STAT_HOLIDAYS.find(({ date }) => isSameDay(date, workedDate));
 	if (isStatHoliday) {
 		return PAY_TYPES_TITLE.STAT_WORK_PAY;
 	}
-	return PAY_TYPES_TITLE.REG_PAY;
+	return isBreak ? PAY_TYPES_TITLE.REG_PAY_BRK : PAY_TYPES_TITLE.REG_PAY;
 };
 
 const calcTotalHours = (data) => {
@@ -241,4 +242,5 @@ module.exports = {
 	PUNCH_CODE,
 	TIMESHEET_STATUS,
 	PARAM_HOURS,
+	LOCAL_TIME,
 };

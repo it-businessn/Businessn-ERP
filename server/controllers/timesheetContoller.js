@@ -3,7 +3,15 @@ const Timesheet = require("../models/Timesheet");
 const moment = require("moment");
 const { getPayrollActiveEmployees } = require("./userController");
 const { findEmployeePayInfo } = require("./payInfoController");
-const { PAY_TYPES_TITLE, TIMESHEET_STATUS, PARAM_HOURS, NEXT_DAY } = require("../services/data");
+const {
+	PAY_TYPES_TITLE,
+	TIMESHEET_STATUS,
+	PARAM_HOURS,
+	NEXT_DAY,
+	PUNCH_CODE,
+	getPayType,
+	LOCAL_TIME,
+} = require("../services/data");
 
 const findByRecordTimesheets = async (record) => {
 	// const y = await Timesheet.deleteMany({
@@ -63,6 +71,7 @@ const mapTimesheet = (payInfos, timesheets) => {
 		timesheet.statPay = payInfo.statPay;
 		timesheet.sickPay = payInfo.sickPay;
 		timesheet.vacationPay = payInfo.vacationPay;
+		timesheet.clockIn = moment(timesheet.clockIn).tz("America/Vancouver").format();
 	});
 	return timesheets;
 };
@@ -124,10 +133,10 @@ const getFilteredTimesheets = async (req, res) => {
 					companyName,
 					clockIn: {
 						$gte: filteredData?.startDate
-							? moment(filteredData?.startDate).utc().startOf("day").toDate()
+							? moment(filteredData?.startDate).startOf("day").toDate()
 							: NEXT_DAY,
 						$lte: filteredData?.endDate
-							? moment(filteredData?.endDate).utc().endOf("day").toDate()
+							? moment(filteredData?.endDate).endOf("day").toDate()
 							: NEXT_DAY,
 					},
 				},
@@ -254,21 +263,45 @@ const addOvertimeRecord = async (clockIn, clockOut, employeeId, company) => {
 
 const createManualTimesheet = async (req, res) => {
 	const { company, punch, employeeId } = req.body;
-	console.log(req.body);
-	// const { company, type, clockIn, clockOut, employeeId, param_hours } = req.body;
+
+	const param_hours =
+		punch === PUNCH_CODE.CLOCK_IN || punch === PUNCH_CODE.CLOCK_OUT
+			? PARAM_HOURS.REGULAR
+			: PARAM_HOURS.BREAK;
+	const payType = getPayType(moment(), param_hours === PARAM_HOURS.BREAK);
 
 	try {
-		// const newEntry = {
-		// 	employeeId,
-		// 	clockIn,
-		// 	clockOut,
-		// 	[param_hours]: totalWorkedHours,
-		// 	companyName: company,
-		// 	payType: type,
-		// };
+		const newEntry = {
+			employeeId,
+			clockIn: moment().tz("America/Vancouver").toDate(),
+			[param_hours]: 0,
+			companyName: company,
+			payType,
+		};
 
-		// const newTimesheet = await addTimesheetEntry(newEntry);
-		res.status(201).json("newTimesheet");
+		if (punch === PUNCH_CODE.CLOCK_IN || punch === PUNCH_CODE.BREAK_IN) {
+			const newTimesheet = await addTimesheetEntry(newEntry);
+			return res.status(201).json(newTimesheet);
+		}
+
+		const findEmployeeTimesheetExists = await Timesheet.find({
+			employeeId,
+			clockIn: { $ne: null },
+			[param_hours]: 0,
+			companyName: company,
+			payType,
+		}).sort({ clockIn: -1 });
+
+		if (findEmployeeTimesheetExists.length) {
+			findEmployeeTimesheetExists[0].clockOut = moment().tz("America/Vancouver").toDate();
+			const totalWorkedHours = calcTotalWorkedHours(
+				findEmployeeTimesheetExists[0].clockIn,
+				findEmployeeTimesheetExists[0].clockOut,
+			);
+			findEmployeeTimesheetExists[0][param_hours] = totalWorkedHours;
+			await findEmployeeTimesheetExists[0].save();
+		}
+		return res.status(201).json(findEmployeeTimesheetExists[0]);
 	} catch (error) {
 		res.status(400).json({ message: error.message });
 	}

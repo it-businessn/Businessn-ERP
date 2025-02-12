@@ -53,13 +53,15 @@ export const formatDateRange = (startDate, endDate) => {
 export const getDefaultTime = (date) => moment(date, "HH:mm").format("hh:mm A");
 
 export const getTimeCardFormat = (timestamp, notDevice, timeSheet) => {
-	const date = notDevice ? moment(timestamp) : moment.utc(timestamp);
+	// const date = notDevice ? moment(timestamp) : moment.utc(timestamp);
+	const date = moment(timestamp);
 	return timeSheet ? date.format("ddd, YYYY-MM-DD") : date.format("YYYY-MM-DD  hh:mm A");
 };
 
 // export const getTimeFormat = (date) => moment.utc(date).format("hh:mm A");
 export const getTimeFormat = (timestamp, notDevice) => {
-	const date = notDevice ? moment(timestamp) : moment.utc(timestamp);
+	// const date = notDevice ? moment(timestamp) : moment.utc(timestamp);
+	const date = moment(timestamp);
 	return date.format("HH:mm");
 };
 
