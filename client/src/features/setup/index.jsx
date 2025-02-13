@@ -5,22 +5,23 @@ import PageLayout from "layouts/PageLayout";
 import { useState } from "react";
 import LocalStorageService from "services/LocalStorageService";
 import CompanyPanel from "./company/CompanyPanel";
+import ConfigurationPanel from "./configuration";
 import PermissionsPanel from "./permisssions/PermissionsPanel";
 import UsersPanel from "./users/UsersPanel";
 
 const Setup = () => {
 	const [isRefresh, setIsRefresh] = useState(false);
-	const { company } = useCompany(
-		LocalStorageService.getItem("selectedCompany"),
-	);
-	const { employees, filteredEmployees, setFilteredEmployees } = useEmployees(
-		isRefresh,
-		company,
-	);
+	const { company } = useCompany(LocalStorageService.getItem("selectedCompany"));
+	const { employees, filteredEmployees, setFilteredEmployees } = useEmployees(isRefresh, company);
 
 	const SETUP_LIST = [
 		{
 			id: 0,
+			type: "Configuration",
+			name: <ConfigurationPanel company={company} />,
+		},
+		{
+			id: 1,
 			type: "Users",
 			name: (
 				<UsersPanel
@@ -33,7 +34,7 @@ const Setup = () => {
 			),
 		},
 		{
-			id: 1,
+			id: 2,
 			type: "Company",
 			name: (
 				<CompanyPanel
@@ -45,7 +46,7 @@ const Setup = () => {
 			),
 		},
 		{
-			id: 2,
+			id: 3,
 			type: "Permissions",
 			name: (
 				<PermissionsPanel
@@ -58,16 +59,11 @@ const Setup = () => {
 		},
 	];
 	const [viewMode, setViewMode] = useState(SETUP_LIST[0].type);
-	const showComponent = (viewMode) =>
-		SETUP_LIST.find(({ type }) => type === viewMode)?.name;
+	const showComponent = (viewMode) => SETUP_LIST.find(({ type }) => type === viewMode)?.name;
 
 	return (
 		<PageLayout title={"Set up"} showBgLayer>
-			<TabsButtonGroup
-				tabs={SETUP_LIST}
-				setViewMode={setViewMode}
-				viewMode={viewMode}
-			/>
+			<TabsButtonGroup tabs={SETUP_LIST} setViewMode={setViewMode} viewMode={viewMode} />
 			{showComponent(viewMode)}
 		</PageLayout>
 	);

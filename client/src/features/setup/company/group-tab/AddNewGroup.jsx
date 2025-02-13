@@ -1,4 +1,4 @@
-import { Checkbox, FormControl, FormLabel, HStack, Stack } from "@chakra-ui/react";
+import { Checkbox, FormControl, FormLabel, HStack, Stack, useToast } from "@chakra-ui/react";
 import ActionButtonGroup from "components/ui/form/ActionButtonGroup";
 import InputFormControl from "components/ui/form/InputFormControl";
 import MultiSelectButton from "components/ui/form/MultiSelectButton";
@@ -7,6 +7,7 @@ import { useState } from "react";
 import SettingService from "services/SettingService";
 
 const AddNewGroup = ({ isOpen, onClose, setRefresh, modules, managers, company }) => {
+	const toast = useToast();
 	const defaultGroup = {
 		name: "",
 		baseModule: [],
@@ -53,6 +54,12 @@ const AddNewGroup = ({ isOpen, onClose, setRefresh, modules, managers, company }
 		try {
 			await SettingService.addGroup(formData);
 			onClose();
+			toast({
+				title: "Group added successfully",
+				status: "success",
+				duration: 1500,
+				isClosable: true,
+			});
 			setFormData(defaultGroup);
 			setRefresh((prev) => !prev);
 		} catch (error) {

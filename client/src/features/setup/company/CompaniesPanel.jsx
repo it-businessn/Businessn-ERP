@@ -1,4 +1,15 @@
-import { FormLabel, HStack, Input, Table, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
+import {
+	FormLabel,
+	HStack,
+	Input,
+	Table,
+	Tbody,
+	Td,
+	Th,
+	Thead,
+	Tr,
+	useToast,
+} from "@chakra-ui/react";
 import ActionButton from "components/ui/button/ActionButton";
 import EmptyRowRecord from "components/ui/EmptyRowRecord";
 import TextTitle from "components/ui/text/TextTitle";
@@ -7,6 +18,7 @@ import { useState } from "react";
 import SettingService from "services/SettingService";
 
 const CompaniesPanel = ({ setOpenCompanyForm }) => {
+	const toast = useToast();
 	const defaultFormData = {
 		name: "",
 		founding_year: "",
@@ -24,7 +36,7 @@ const CompaniesPanel = ({ setOpenCompanyForm }) => {
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [isRefresh, setIsRefresh] = useState(false);
 
-	const companies = useCompanies();
+	const companies = useCompanies(isRefresh);
 
 	const resetForm = () => setFormData(defaultFormData);
 
@@ -37,7 +49,13 @@ const CompaniesPanel = ({ setOpenCompanyForm }) => {
 		setIsSubmitting(true);
 		try {
 			await SettingService.addCompany(formData);
-			setIsRefresh((prev) => !prev);
+			setIsRefresh(!isRefresh);
+			toast({
+				title: "Company added successfully",
+				status: "success",
+				duration: 1500,
+				isClosable: true,
+			});
 			resetForm();
 			setOpenCompanyForm(false);
 		} catch (error) {
