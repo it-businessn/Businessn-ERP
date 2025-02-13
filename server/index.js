@@ -189,11 +189,15 @@ cron.schedule("0 0 * * *", async () => {
 			return;
 		}
 		const isStatDay = currentYrSTAT_HOLIDAYS.find(
-			({ date }) => date === moment().format("YYYY-MM-DD"),
+			({ date }) => moment.utc(date).format("YYYY-MM-DD") === moment().format("YYYY-MM-DD"),
 		);
 
 		if (isStatDay) {
-			console.log("Scheduling to add timecard entry to run every day at midnight");
+			console.log(
+				"Scheduling to add timecard entry to run every day at midnight",
+				isStatDay,
+				company.name,
+			);
 			addStatHolidayTimesheet(company.name);
 		} else return;
 	});
