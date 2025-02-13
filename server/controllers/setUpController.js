@@ -4,10 +4,11 @@ const Employee = require("../models/Employee");
 const EmployeeRole = require("../models/EmployeeRole");
 const EmploymentType = require("../models/EmploymentType");
 const Group = require("../models/Group");
+const Holiday = require("../models/Holiday");
 const Module = require("../models/Module");
 const Setup = require("../models/Setup");
-const { CURRENT_YEAR, BUSINESSN_ORG, BUSINESSN_ORG_ADMIN_EMAILS } = require("../services/data");
-const { setInitialPermissions } = require("./appController");
+const { CURRENT_YEAR, BUSINESSN_ORG_ADMIN_EMAILS } = require("../services/data");
+const moment = require("moment");
 
 const getAllSetup = async (req, res) => {
 	try {
@@ -367,7 +368,52 @@ const addSetUpRule = async (req, res) => {
 	}
 };
 
+const getStatHoliday = async (req, res) => {
+	const { companyName, year } = req.params;
+	try {
+		const empTypes = await Holiday.find({ companyName, year }).sort({
+			date: 1,
+		});
+		res.status(200).json(empTypes);
+	} catch (error) {
+		res.status(404).json({ error: error.message });
+	}
+};
+
+const addStatHoliday = async (req, res) => {
+	const { name, date, company } = req.body;
+
+	try {
+		const newHoliday = await Holiday.create({
+			name,
+			date,
+			companyName: company,
+			year: moment(date).format("YYYY"),
+		});
+		res.status(201).json(newHoliday);
+	} catch (error) {
+		res.status(400).json({ message: error.message });
+	}
+};
+
+const deleteStatHoliday = async (req, res) => {
+	const { id } = req.params;
+	try {
+		const resource = await Holiday.findByIdAndDelete(id);
+		if (resource) {
+			res.status(200).json(`Holiday with id ${id} deleted successfully.`);
+		} else {
+			res.status(200).json("Holiday Details not found.");
+		}
+	} catch (error) {
+		res.status(404).json({ error: "Error deleting Holiday:", error });
+	}
+};
+
 module.exports = {
+	getStatHoliday,
+	deleteStatHoliday,
+	addStatHoliday,
 	addSetUpRule,
 	getAllSetup,
 	updateSetUp,

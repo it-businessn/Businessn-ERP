@@ -1,4 +1,5 @@
 import apiService from "services";
+import { CURRENT_YEAR } from "utils/convertDate";
 
 const SettingService = {
 	async getIdleLeadReAssignment() {
@@ -19,6 +20,18 @@ const SettingService = {
 
 	async getAllRoles(id) {
 		return apiService.get(`/setup/roles/${id}`);
+	},
+
+	async getStatHolidays(id) {
+		return apiService.get(`/setup/stat-holidays/${id}/${CURRENT_YEAR}`);
+	},
+
+	async addStatHoliday(data) {
+		return apiService.post("/setup/stat-holidays", data);
+	},
+
+	async deleteHoliday(data, id) {
+		return apiService.delete(`/setup/stat-holidays/${id}`, data, id);
 	},
 
 	async addRole(data) {

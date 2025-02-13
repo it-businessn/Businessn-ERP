@@ -21,9 +21,13 @@ router.get("/groups/:companyName", setUpController.getGroups);
 
 router.get("/empTypes/:companyName", setUpController.getEmpTypes);
 
+router.get("/stat-holidays/:companyName/:year", setUpController.getStatHoliday);
+
 router.post("/", setUpController.addSetUpRule);
 
 router.put("/:id", setUpController.updateSetUp);
+
+router.post("/stat-holidays", setUpController.addStatHoliday);
 
 router.post("/roles", setUpController.addRole);
 
@@ -42,5 +46,7 @@ router.post("/empTypes", setUpController.addEmpType);
 router.post("/companies", setUpController.addCompany);
 
 router.put("/companies/:id", setUpController.updateCompany);
+
+router.delete("/stat-holidays/:id", setUpController.deleteStatHoliday);
 
 module.exports = router;
