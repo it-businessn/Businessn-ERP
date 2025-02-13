@@ -11,7 +11,6 @@ const helmet = require("helmet");
 const cookieParser = require("cookie-parser");
 
 const { addStatHolidayTimesheet } = require("./controllers/timesheetContoller");
-const { STAT_HOLIDAYS } = require("./services/data");
 const activityRoutes = require("./routes/activityRoutes");
 const appRoutes = require("./routes/appRoutes");
 const assessmentRoutes = require("./routes/assessmentRoutes");
@@ -53,6 +52,7 @@ const rateLimit = require("express-rate-limit");
 const path = require("path");
 const { authenticateToken } = require("./middleware/auth");
 const corsOptions = require("./config");
+const { getAllCompanies, getHolidays } = require("./controllers/setUpController");
 const PORT = process.env.PORT;
 const MONGO_URI = process.env.DB_CONNECTION_URL_STAGING_CRM;
 const limiter = rateLimit({
@@ -169,21 +169,34 @@ mongoose.connect(MONGO_URI, {
 
 const db = mongoose.connection;
 
-const COMPANIES = {
-	FD: "Fractional Departments Inc.",
-	NW: "The Owners Of Strata Plan NW1378",
-};
+// const COMPANIES = {
+// 	FD: "Fractional Departments Inc.",
+// 	NW: "The Owners Of Strata Plan NW1378",
+// };
 
 // Scheduler
-cron.schedule("0 0 * * *", () => {
+cron.schedule("0 0 * * *", async () => {
 	// every 15sec
-	// cron.schedule("*/15 * * * * *", () => {
-	const isStatDay = STAT_HOLIDAYS.find(({ date }) => date === moment().format("YYYY-MM-DD"));
+	// cron.schedule("*/15 * * * * *", async() => {
+	// const isStatDay = STAT_HOLIDAYS.find(({ date }) => date === moment().format("YYYY-MM-DD"));
 
-	if (isStatDay) {
-		console.log("Scheduling to add timecard entry to run every day at midnight");
-		addStatHolidayTimesheet(COMPANIES.NW);
-	} else return;
+	const allCompanies = await getAllCompanies();
+	allCompanies?.forEach(async (company) => {
+		const currentYrSTAT_HOLIDAYS = await getHolidays({
+			companyName: company.name,
+		});
+		if (!currentYrSTAT_HOLIDAYS.length) {
+			return;
+		}
+		const isStatDay = currentYrSTAT_HOLIDAYS.find(
+			({ date }) => date === moment().format("YYYY-MM-DD"),
+		);
+
+		if (isStatDay) {
+			console.log("Scheduling to add timecard entry to run every day at midnight");
+			addStatHolidayTimesheet(company.name);
+		} else return;
+	});
 });
 
 db.once("open", () => {

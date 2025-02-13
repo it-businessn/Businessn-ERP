@@ -229,11 +229,14 @@ const updateGroup = async (req, res) => {
 	}
 };
 
+const getAllCompanies = async () =>
+	await Company.find({}).sort({
+		createdOn: -1,
+	});
+
 const getCompanies = async (req, res) => {
 	try {
-		const companies = await Company.find({}).sort({
-			createdOn: -1,
-		});
+		const companies = await getAllCompanies();
 		res.status(200).json(companies);
 	} catch (error) {
 		res.status(404).json({ error: error.message });
@@ -368,13 +371,16 @@ const addSetUpRule = async (req, res) => {
 	}
 };
 
+const getHolidays = async (record) =>
+	await Holiday.find(record).sort({
+		date: 1,
+	});
+
 const getStatHoliday = async (req, res) => {
 	const { companyName, year } = req.params;
 	try {
-		const empTypes = await Holiday.find({ companyName, year }).sort({
-			date: 1,
-		});
-		res.status(200).json(empTypes);
+		const holidays = await getHolidays({ companyName, year });
+		res.status(200).json(holidays);
 	} catch (error) {
 		res.status(404).json({ error: error.message });
 	}
@@ -435,4 +441,6 @@ module.exports = {
 	getGroups,
 	addGroup,
 	findGroupEmployees,
+	getHolidays,
+	getAllCompanies,
 };
