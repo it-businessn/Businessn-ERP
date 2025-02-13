@@ -193,11 +193,7 @@ cron.schedule("0 0 * * *", async () => {
 		);
 
 		if (isStatDay) {
-			console.log(
-				"Scheduling to add timecard entry to run every day at midnight",
-				isStatDay,
-				company.name,
-			);
+			console.log("Scheduling to add timecard entry to run every day at midnight", company.name);
 			addStatHolidayTimesheet(company.name);
 		} else return;
 	});
