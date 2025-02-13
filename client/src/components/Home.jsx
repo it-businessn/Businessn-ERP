@@ -50,7 +50,10 @@ const Home = () => {
 		<>
 			{user && Object.keys(user).length && (
 				<Navbar
-					handleClick={(menu) => setActiveMenu(menu)}
+					handleClick={(menu) => {
+						setActiveMenu(menu);
+						onOpen();
+					}}
 					onOpen={onOpen}
 					user={user}
 					setUser={setUser}
