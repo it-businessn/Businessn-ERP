@@ -1,16 +1,12 @@
-import { Stack, useDisclosure } from "@chakra-ui/react";
+import { Stack, useDisclosure, useToast } from "@chakra-ui/react";
 import ActionButtonGroup from "components/ui/form/ActionButtonGroup";
 import InputFormControl from "components/ui/form/InputFormControl";
 import ModalLayout from "components/ui/modal/ModalLayout";
 import { useState } from "react";
 import SettingService from "services/SettingService";
 
-const RolesPanel = ({
-	showAddRoles,
-	setShowAddRoles,
-	setOptionDataRefresh,
-	companyName,
-}) => {
+const RolesPanel = ({ showAddRoles, setShowAddRoles, setOptionDataRefresh, companyName }) => {
+	const toast = useToast();
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [roleName, setRoleName] = useState("");
 	const [roleDescription, setRoleDescription] = useState("");
@@ -30,6 +26,12 @@ const RolesPanel = ({
 				description: roleDescription,
 				companyName,
 			});
+			toast({
+				title: "Role added successfully",
+				status: "success",
+				duration: 1500,
+				isClosable: true,
+			});
 			setOptionDataRefresh((prev) => !prev);
 			setRoleName("");
 			setRoleDescription("");
@@ -42,12 +44,7 @@ const RolesPanel = ({
 	};
 
 	return (
-		<ModalLayout
-			title={"Add new role"}
-			size="md"
-			isOpen={showAddRoles}
-			onClose={handleClose}
-		>
+		<ModalLayout title="Add new role" size="md" isOpen={showAddRoles} onClose={handleClose}>
 			<Stack spacing={4}>
 				<InputFormControl
 					label={"Name"}

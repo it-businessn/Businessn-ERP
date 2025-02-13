@@ -1,4 +1,4 @@
-import { Stack, useDisclosure } from "@chakra-ui/react";
+import { Stack, useDisclosure, useToast } from "@chakra-ui/react";
 import ActionButtonGroup from "components/ui/form/ActionButtonGroup";
 import InputFormControl from "components/ui/form/InputFormControl";
 import ModalLayout from "components/ui/modal/ModalLayout";
@@ -11,6 +11,7 @@ const BaseModulePanel = ({
 	setOptionDataRefresh,
 	companyName,
 }) => {
+	const toast = useToast();
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [moduleName, setModuleName] = useState("");
 	const [moduleDesc, setModuleDesc] = useState("");
@@ -29,6 +30,12 @@ const BaseModulePanel = ({
 				name: moduleName,
 				description: moduleDesc,
 				companyName,
+			});
+			toast({
+				title: "Module added successfully",
+				status: "success",
+				duration: 1500,
+				isClosable: true,
 			});
 			setOptionDataRefresh((prev) => !prev);
 			setModuleName("");
