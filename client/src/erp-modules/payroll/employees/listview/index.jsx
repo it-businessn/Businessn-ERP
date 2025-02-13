@@ -6,7 +6,7 @@ import useCompany from "hooks/useCompany";
 import useEmployees from "hooks/useEmployees";
 import usePaygroup from "hooks/usePaygroup";
 import PageLayout from "layouts/PageLayout";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { payrollEmployeePath } from "routes";
 import LocalStorageService from "services/LocalStorageService";
@@ -45,6 +45,11 @@ const EmployeeListView = () => {
 	const [showOnboard, setShowOnboard] = useState(false);
 
 	const navigate = useNavigate();
+
+	useEffect(() => {
+		setIsRefresh(showOnboard);
+	}, [showOnboard]);
+
 	const loggedInUser = LocalStorageService.getItem("user");
 
 	const { selectedPayGroup } = usePaygroup(company, false);
@@ -158,7 +163,7 @@ const EmployeeListView = () => {
 			<EmployeeList employees={employees} />
 			{showOnboard && (
 				<OnboardEmpModal
-					title={"Onboard employee"}
+					title="Onboard employee"
 					showOnboard={showOnboard}
 					setShowOnboard={setShowOnboard}
 					selectedPayGroupName={selectedPayGroup?.name}

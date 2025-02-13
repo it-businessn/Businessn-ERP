@@ -1,5 +1,4 @@
 import { HStack } from "@chakra-ui/react";
-import LinkButton from "components/ui/button/LinkButton";
 import PrimaryButton from "components/ui/button/PrimaryButton";
 import BaseModulePanel from "features/sign-up/BaseModulePanel";
 import DepartmentsPanel from "features/sign-up/DepartmentsPanel";
@@ -19,11 +18,11 @@ const ConfigurationPanel = ({ company }) => {
 	return (
 		<>
 			<HStack>
-				<PrimaryButton name="Add Module" onOpen={() => setOpenAddModule(true)} />
-				<PrimaryButton name="Add Role" onOpen={() => setOpenAddRole(true)} />
-				<PrimaryButton name="Add Paygroup" onOpen={() => setOpenAddGroup(true)} />
-				<PrimaryButton name="Add Department" onOpen={() => setOpenAddDepartment(true)} />
-				<LinkButton fontSize="sm" name="Set up Stat Holidays" onClick={goToSettings} />
+				<PrimaryButton size="xs" name="Add Module" onOpen={() => setOpenAddModule(true)} />
+				<PrimaryButton size="xs" name="Add Role" onOpen={() => setOpenAddRole(true)} />
+				<PrimaryButton size="xs" name="Add Paygroup" onOpen={() => setOpenAddGroup(true)} />
+				<PrimaryButton size="xs" name="Add Department" onOpen={() => setOpenAddDepartment(true)} />
+				<PrimaryButton size="xs" name="Set up Stat Holidays" onOpen={goToSettings} />
 			</HStack>
 			<CompaniesPanel />
 			{openAddGroup && (
