@@ -170,13 +170,8 @@ const PAY_TYPES_TITLE = {
 	VACATION_PAY: "Vacation Pay",
 };
 
-const getPayType = (workedDate, isBreak) => {
-	const isStatHoliday = STAT_HOLIDAYS.find(({ date }) => isSameDay(date, workedDate));
-	if (isStatHoliday) {
-		return PAY_TYPES_TITLE.STAT_WORK_PAY;
-	}
-	return isBreak ? PAY_TYPES_TITLE.REG_PAY_BRK : PAY_TYPES_TITLE.REG_PAY;
-};
+const getPayType = (isBreak = false) =>
+	isBreak ? PAY_TYPES_TITLE.REG_PAY_BRK : PAY_TYPES_TITLE.REG_PAY;
 
 const calcTotalHours = (data) => {
 	if (!(data?.clockIn && data?.clockOut)) {

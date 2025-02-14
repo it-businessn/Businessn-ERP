@@ -14,6 +14,7 @@ const {
 	PARAM_HOURS,
 } = require("../services/data");
 const moment = require("moment");
+const { getHolidays } = require("./setUpController");
 
 const getTimecard = async (req, res) => {
 	const { companyName } = req.params;
@@ -171,10 +172,20 @@ const addTimecardEntry = async (entry, isBreak) => {
 	const newTimecard = await Timecard.create(entry);
 
 	if (newTimecard) {
+		const currentYrSTAT_HOLIDAYS = await getHolidays({
+			companyName: empRec?.companyName,
+		});
+		const isStatHoliday = currentYrSTAT_HOLIDAYS.find(
+			({ date }) => moment.utc(date).format("YYYY-MM-DD") === moment(clockIn).format("YYYY-MM-DD"),
+		);
 		const newTimesheetRecord = {
 			employeeId: entry.employeeId,
 			companyName: entry.companyName,
-			payType: isBreak ? PAY_TYPES_TITLE.REG_PAY_BRK : getPayType(clockIn),
+			payType: isBreak
+				? PAY_TYPES_TITLE.REG_PAY_BRK
+				: isStatHoliday
+				? PAY_TYPES_TITLE.STAT_WORK_PAY
+				: getPayType(),
 			clockIn,
 			notDevice,
 		};

@@ -10,7 +10,6 @@ const {
 	NEXT_DAY,
 	PUNCH_CODE,
 	getPayType,
-	LOCAL_TIME,
 } = require("../services/data");
 
 const findByRecordTimesheets = async (record) => {
@@ -268,7 +267,7 @@ const createManualTimesheet = async (req, res) => {
 		punch === PUNCH_CODE.CLOCK_IN || punch === PUNCH_CODE.CLOCK_OUT
 			? PARAM_HOURS.REGULAR
 			: PARAM_HOURS.BREAK;
-	const payType = getPayType(moment(), param_hours === PARAM_HOURS.BREAK);
+	const payType = getPayType(param_hours === PARAM_HOURS.BREAK);
 
 	try {
 		const newEntry = {
@@ -441,7 +440,6 @@ const addStatHolidayDefaultTimesheet = async (employeeId, companyName) => {
 		employeeId,
 		companyName,
 		payType: PAY_TYPES_TITLE.STAT_PAY,
-		createdOn: moment(),
 		clockIn: startTime,
 		clockOut: endTime,
 		statDayHours: statHours.toFixed(2),
