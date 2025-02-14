@@ -87,7 +87,7 @@ const addEmployeeBankingInfo = async (req, res) => {
 		req.body;
 	// const ENCRYPTION_KEY = newEncryptionKey();
 	// saveKeyToEnv("BANKING_ENCRYPTION_KEY", ENCRYPTION_KEY);
-	const ENCRYPTION_KEY = process.env.BANKING_ENCRYPTION_KEY;
+	const ENCRYPTION_KEY = Buffer.from(process.env.BANKING_ENCRYPTION_KEY, "hex");
 
 	const updatedData = {
 		empId,
@@ -96,22 +96,22 @@ const addEmployeeBankingInfo = async (req, res) => {
 		payStubSendByEmail,
 		paymentEmail,
 	};
-	if (bankDetails) {
-		const { bankNum, transitNum, accountNum } = bankDetails;
-		const bankEncrypted = encryptData(bankNum, ENCRYPTION_KEY);
-		const transitEncrypted = encryptData(transitNum, ENCRYPTION_KEY);
-		const accountEncrypted = encryptData(accountNum, ENCRYPTION_KEY);
-
-		updatedData.bankNum = bankEncrypted.encryptedData;
-		updatedData.bankIv = bankEncrypted.iv;
-
-		updatedData.transitNum = transitEncrypted.encryptedData;
-		updatedData.transitIv = transitEncrypted.iv;
-
-		updatedData.accountNum = accountEncrypted.encryptedData;
-		updatedData.accountIv = accountEncrypted.iv;
-	}
 	try {
+		if (bankDetails) {
+			const { bankNum, transitNum, accountNum } = bankDetails;
+			const bankEncrypted = encryptData(bankNum, ENCRYPTION_KEY);
+			const transitEncrypted = encryptData(transitNum, ENCRYPTION_KEY);
+			const accountEncrypted = encryptData(accountNum, ENCRYPTION_KEY);
+
+			updatedData.bankNum = bankEncrypted.encryptedData;
+			updatedData.bankIv = bankEncrypted.iv;
+
+			updatedData.transitNum = transitEncrypted.encryptedData;
+			updatedData.transitIv = transitEncrypted.iv;
+
+			updatedData.accountNum = accountEncrypted.encryptedData;
+			updatedData.accountIv = accountEncrypted.iv;
+		}
 		const existingBankingInfo = await findEmployeeBankingInfo(empId, companyName);
 		// if (bankNum !== "" || transitNum !== "" || accountNum !== "") {
 		// 	await deleteAlerts(empId);

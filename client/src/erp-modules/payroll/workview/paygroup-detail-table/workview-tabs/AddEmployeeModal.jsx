@@ -4,7 +4,6 @@ import MultiSelectFormControl from "components/ui/form/MultiSelectFormControl";
 import ModalLayout from "components/ui/modal/ModalLayout";
 import useEmployees from "hooks/useEmployees";
 import { useState } from "react";
-import SettingService from "services/SettingService";
 
 const AddEmployeeModal = ({
 	showAddEmp,
@@ -48,12 +47,11 @@ const AddEmployeeModal = ({
 		setIsSubmitting(true);
 
 		try {
-			selectedPayGroup.scheduleSettings[selectedEmployeeIndex].selectedEmp =
-				selectedEmp;
-			await SettingService.updateGroup(
-				{ scheduleSettings: selectedPayGroup.scheduleSettings },
-				selectedPayGroupId,
-			);
+			selectedPayGroup.scheduleSettings[selectedEmployeeIndex].selectedEmp = selectedEmp;
+			// await SettingService.updateGroup(
+			// 	{ scheduleSettings: selectedPayGroup.scheduleSettings },
+			// 	selectedPayGroupId,
+			// );
 			setRefresh((prev) => !prev);
 			handleClose();
 		} catch (error) {

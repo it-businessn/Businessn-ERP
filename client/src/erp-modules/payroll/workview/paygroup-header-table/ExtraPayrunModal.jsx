@@ -5,7 +5,6 @@ import MultiSelectFormControl from "components/ui/form/MultiSelectFormControl";
 import ModalLayout from "components/ui/modal/ModalLayout";
 import useEmployees from "hooks/useEmployees";
 import { useEffect, useState } from "react";
-import SettingService from "services/SettingService";
 import { addBusinessDays, getDefaultDate } from "utils/convertDate";
 
 const ExtraPayrunModal = ({
@@ -84,10 +83,10 @@ const ExtraPayrunModal = ({
 				payPeriodEndDate,
 				isExtraRun: true,
 			});
-			await SettingService.updateGroup(
-				{ scheduleSettings: selectedPayGroup.scheduleSettings },
-				selectedPayGroupId,
-			);
+			// await SettingService.updateGroup(
+			// 	{ scheduleSettings: selectedPayGroup.scheduleSettings },
+			// 	selectedPayGroupId,
+			// );
 			setRefresh((prev) => !prev);
 			handleClose();
 		} catch (error) {

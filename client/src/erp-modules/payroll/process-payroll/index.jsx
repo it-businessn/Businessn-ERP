@@ -72,7 +72,6 @@ const ProcessPayroll = () => {
 		try {
 			const payrollProcessed = await SettingService.updateGroup(
 				{
-					scheduleSettings: selectedPayGroup.yearSchedules[0].payPeriods,
 					yearSchedules: selectedPayGroup.yearSchedules,
 				},
 				selectedPayGroup._id,

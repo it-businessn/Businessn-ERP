@@ -4,7 +4,6 @@ import PrimaryButton from "components/ui/button/PrimaryButton";
 import DeletePopUp from "components/ui/modal/DeletePopUp";
 import useEmployeeEmploymentInfo from "hooks/useEmployeeEmploymentInfo";
 import { useState } from "react";
-import SettingService from "services/SettingService";
 import AddEmployeeModal from "./AddEmployeeModal";
 import WorkviewTab from "./WorkviewTab";
 
@@ -31,10 +30,10 @@ const EmployeeDetails = ({ company, closestRecord, path, groupId, selectedPayGro
 
 	const handleSubmit = async () => {
 		try {
-			await SettingService.updateGroup(
-				{ scheduleSettings: selectedPayGroup.scheduleSettings },
-				groupId,
-			);
+			// await SettingService.updateGroup(
+			// 	{ scheduleSettings: selectedPayGroup.scheduleSettings },
+			// 	groupId,
+			// );
 			setRefresh((prev) => !prev);
 			handleClose();
 		} catch (error) {
