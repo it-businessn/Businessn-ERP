@@ -24,6 +24,37 @@ const EmployeeTimeCard = ({ selectedUser, company }) => {
 		// "Break/Lunch",
 		"Total Hours",
 	];
+
+	const CLOCK_TYPES = {
+		row_1: [
+			{
+				name: "Clock IN",
+				bg: "var(--correct_ans)",
+				isClicked: false,
+				onClick: () => updateSubmit("0", `Clock In successful!`),
+			},
+			{
+				name: "Break START",
+				isClicked: false,
+				onClick: () => updateSubmit("3", `Break Started!`),
+			},
+		],
+		row_2: [
+			{
+				name: "Clock OUT",
+				bg: "var(--incorrect_ans)",
+				isClicked: false,
+				onClick: () => updateSubmit("1", `Clock Out Successful!`),
+			},
+			{
+				name: "Break END",
+				bg: "var(--event_color)",
+				isClicked: false,
+				onClick: () => updateSubmit("2", `Break Ended!`),
+			},
+		],
+	};
+
 	const toast = useToast();
 	useEffect(() => {
 		const fetchAllEmployeeTimesheet = async () => {
@@ -77,8 +108,8 @@ const EmployeeTimeCard = ({ selectedUser, company }) => {
 	};
 
 	return (
-		<BoxCard gap={"1em"}>
-			<VStack w={"100%"} spacing={3}>
+		<BoxCard gap="1em">
+			<VStack w="100%" spacing={3}>
 				<LeftIconButton
 					size="3em"
 					name={
@@ -88,54 +119,45 @@ const EmployeeTimeCard = ({ selectedUser, company }) => {
 						</VStack>
 					}
 					variant="outline"
-					colorScheme={"blue"}
-					w={"full"}
+					colorScheme="blue"
+					w="full"
 				/>
-				<HStack justify={"space-between"} w={"100%"}>
-					<LeftIconButton
-						size="xl"
-						name={"Clock IN"}
-						variant="solid"
-						w={"50%"}
-						bg={"var(--correct_ans)"}
-						_hover={{ color: "var(--main_color)" }}
-						handleClick={() => updateSubmit("0", `Clock In successful!`)}
-					/>
-					<LeftIconButton
-						size="xl"
-						name={"Break START"}
-						variant="solid"
-						w={"50%"}
-						_hover={{ color: "var(--main_color)" }}
-						handleClick={() => updateSubmit("3", `Break Started!`)}
-					/>
+				<HStack justify="space-between" w="100%">
+					{CLOCK_TYPES.row_1.map(({ name, onClick, bg, isClicked }) => (
+						<LeftIconButton
+							key={name}
+							isLoading={isClicked}
+							size="xl"
+							name={name}
+							variant="solid"
+							w="50%"
+							bg={bg}
+							_hover={{ color: "var(--main_color)" }}
+							handleClick={onClick}
+						/>
+					))}
 				</HStack>
-				<HStack justify={"space-between"} w={"100%"}>
-					<LeftIconButton
-						size="xl"
-						name={"Clock OUT"}
-						variant="solid"
-						w={"50%"}
-						bg={"var(--incorrect_ans)"}
-						_hover={{ color: "var(--main_color)" }}
-						handleClick={() => updateSubmit("1", `Clock Out Successful!`)}
-					/>
-					<LeftIconButton
-						size="xl"
-						name={"Break END"}
-						variant="solid"
-						w={"50%"}
-						bg={"var(--event_color)"}
-						_hover={{ color: "var(--main_color)" }}
-						handleClick={() => updateSubmit("2", `Break Ended!`)}
-					/>
+				<HStack justify="space-between" w="100%">
+					{CLOCK_TYPES.row_2.map(({ name, onClick, bg, isClicked }) => (
+						<LeftIconButton
+							key={name}
+							isLoading={isClicked}
+							size="xl"
+							name={name}
+							variant="solid"
+							w="50%"
+							bg={bg}
+							_hover={{ color: "var(--main_color)" }}
+							handleClick={onClick}
+						/>
+					))}
 				</HStack>
 			</VStack>
 			<PrimaryButton mt={3} name="Add Timesheet" onOpen={() => setShowAddEntry(true)} />
 			<TableLayout
 				cols={cols}
 				isSmall
-				w={"100%"}
+				w="100%"
 				position="sticky"
 				zIndex={3}
 				top={-1}
