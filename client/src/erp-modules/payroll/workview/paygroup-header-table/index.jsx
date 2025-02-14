@@ -76,7 +76,6 @@ const PaygroupTable = ({
 					</HStack>
 					{showExtraPayrun && (
 						<ExtraPayrunModal
-							selectedPayGroupId={selectedPayGroup._id}
 							company={company}
 							showExtraPayrun={showExtraPayrun}
 							setRefresh={setRefresh}
