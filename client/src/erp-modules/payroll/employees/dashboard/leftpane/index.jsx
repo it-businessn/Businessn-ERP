@@ -9,7 +9,7 @@ import { useEffect, useState } from "react";
 import PayrollService from "services/PayrollService";
 import EmployeeTimeCard from "./EmployeeTimeCard";
 
-const LeftPane = ({ selectedUser, company }) => {
+const LeftPane = ({ selectedUser, company, isMobile }) => {
 	const [empPayStub, setEmpPayStub] = useState(null);
 	const [showReport, setShowReport] = useState(false);
 	const [payStub, setPayStub] = useState(null);
@@ -33,8 +33,8 @@ const LeftPane = ({ selectedUser, company }) => {
 
 	return (
 		<Box>
-			<SimpleGrid mb={"1em"} columns={{ base: 1 }} spacing="1em" color={"var(--menu_item_color)"}>
-				<EmployeeTimeCard selectedUser={selectedUser} company={company} />
+			<SimpleGrid mb="1em" columns={{ base: 1 }} spacing="1em" color="var(--menu_item_color)">
+				<EmployeeTimeCard isMobile={isMobile} selectedUser={selectedUser} company={company} />
 			</SimpleGrid>
 			<SimpleGrid
 				mb={"1em"}

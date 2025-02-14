@@ -14,15 +14,12 @@ import {
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useBreakpointValue } from "services/Breakpoint";
 import LoginService from "services/LoginService";
 import { buildUserInfo, storeUser } from "utils/common";
 import logoImg from "../../assets/logos/BusinessN_lightLogo1.png";
 import Logo from "../../components/logo";
 
-const SignInForm = ({ title }) => {
-	const { isMobile } = useBreakpointValue();
-
+const SignInForm = ({ title, isMobile }) => {
 	const [isLoading, setIsLoading] = useState(false);
 
 	const [error, setError] = useState(null);
@@ -90,7 +87,7 @@ const SignInForm = ({ title }) => {
 			spacing="8"
 			p={"1em 2em"}
 			mt={"20vh"}
-			width="md"
+			width={isMobile ? "100vw" : "md"}
 			bg="var(--main_color)"
 			boxShadow="xl"
 			justifyContent={"center"}
@@ -166,9 +163,11 @@ const SignInForm = ({ title }) => {
 						</Button>
 					</Stack>
 				</form>
-				<Button variant={"link"} textDecor={"underline"} onClick={showForgotPasswordPage}>
-					Forgot Password
-				</Button>
+				{!isMobile && (
+					<Button variant={"link"} textDecor={"underline"} onClick={showForgotPasswordPage}>
+						Forgot Password
+					</Button>
+				)}
 				{error && (
 					<Alert status="error" mt={4}>
 						<AlertIcon />

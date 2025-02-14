@@ -4,7 +4,7 @@ import TextTitle from "../text/TextTitle";
 
 const Menu = ({ icon, textTransform, handleClick, variant, menu }) => (
 	<NavLink to={menu?.path} activeclassname="active" className="navbarMenu">
-		<Stack ml={{ base: "1em", md: "2em" }}>
+		<Stack ml={{ base: "0", md: "2em" }}>
 			<Button
 				variant={variant ? variant : "ghost"}
 				justifyContent="start"

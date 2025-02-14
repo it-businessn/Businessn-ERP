@@ -30,9 +30,11 @@ const Navbar = ({ handleClick, companyName, companyId, user, setUser, isMobile }
 			pt={3}
 			position="fixed"
 			width="100%"
-			color="var(--nav_color)"
+			color={isMobile ? "var(--lead_cards_bg)" : "var(--nav_color)"}
 			zIndex={1}
 			bg="var(--nav_gradient)"
+			backgroundImage={isMobile && navBarImg}
+			backgroundSize={isMobile && "cover"}
 		>
 			{isMobile ? (
 				<HStack>

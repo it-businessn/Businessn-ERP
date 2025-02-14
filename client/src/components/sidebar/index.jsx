@@ -8,8 +8,9 @@ const Sidebar = ({ activeMenu, handleMenuItemClick, isMobile, isOpen, onClose })
 		<MobileSidebar
 			isOpen={isOpen}
 			onClose={onClose}
-			activeMenu={activeMenu ? activeMenu : { name: "CRM Dashboard" }}
+			activeMenu={activeMenu}
 			handleMenuItemClick={handleMenuItemClick}
+			menuList={menuList}
 		/>
 	) : (
 		<Flex

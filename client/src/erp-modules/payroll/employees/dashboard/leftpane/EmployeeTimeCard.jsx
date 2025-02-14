@@ -19,7 +19,7 @@ import {
 	monthDayYear,
 } from "utils/convertDate";
 
-const EmployeeTimeCard = ({ selectedUser, company }) => {
+const EmployeeTimeCard = ({ selectedUser, company, isMobile }) => {
 	const [time, setTime] = useState(new Date());
 	const [showAddEntry, setShowAddEntry] = useState(false);
 	const [refresh, setRefresh] = useState(false);
@@ -188,10 +188,18 @@ const EmployeeTimeCard = ({ selectedUser, company }) => {
 				</VStack>
 			</BoxCard>
 			<BoxCard>
-				<HStack>
-					<TextTitle title={`Time Entries from ${startDate} to ${endDate}`} />
-					<PrimaryButton mt={3} name="Add ENTRY" onOpen={() => setShowAddEntry(true)} />
-				</HStack>
+				{isMobile ? (
+					<VStack spacing={1}>
+						<TextTitle title="Time Entries:" />
+						<TextTitle whiteSpace="wrap" title={`${startDate} - ${endDate}`} />
+						<PrimaryButton mt={3} name="Add ENTRY" onOpen={() => setShowAddEntry(true)} />
+					</VStack>
+				) : (
+					<HStack>
+						<TextTitle title={`Time Entries from ${startDate} to ${endDate}`} />
+						<PrimaryButton mt={3} name="Add ENTRY" onOpen={() => setShowAddEntry(true)} />
+					</HStack>
+				)}
 
 				<TableLayout
 					cols={cols}
