@@ -68,7 +68,7 @@ const UserSection = ({
 
 	const handleSelect = (emp) => {
 		setEmpName(emp.fullName);
-		setFilteredEmployees(employees.filter((item) => item?.email === emp.email));
+		setFilteredEmployees(employees.filter((item) => item?.fullName === emp.fullName));
 	};
 
 	const handleInputChange = (value) => {
