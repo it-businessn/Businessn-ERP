@@ -1,15 +1,42 @@
-import { HStack, VStack, useToast } from "@chakra-ui/react";
+import { HStack, Tbody, Td, Tr, VStack, useToast } from "@chakra-ui/react";
 import LeftIconButton from "components/ui/button/LeftIconButton";
+import PrimaryButton from "components/ui/button/PrimaryButton";
 import BoxCard from "components/ui/card";
+import EmptyRowRecord from "components/ui/EmptyRowRecord";
+import NormalTextTitle from "components/ui/NormalTextTitle";
+import TableLayout from "components/ui/table/TableLayout";
 import TextTitle from "components/ui/text/TextTitle";
+import { getParamKey } from "erp-modules/payroll/timesheets/data";
+import ExtraTimeEntryModal from "erp-modules/payroll/timesheets/ExtraTimeEntryModal";
 import { useEffect, useState } from "react";
 import TimesheetService from "services/TimesheetService";
-import { monthDayYear } from "utils/convertDate";
+import { getTimeCardFormat, getTimeFormat, monthDayYear } from "utils/convertDate";
 
 const EmployeeTimeCard = ({ selectedUser, company }) => {
 	const [time, setTime] = useState(new Date());
-
+	const [showAddEntry, setShowAddEntry] = useState(false);
+	const [refresh, setRefresh] = useState(false);
+	const [timesheetData, setTimesheetData] = useState([]);
+	const cols = [
+		"Worked Date",
+		"Start Time",
+		"End Time",
+		// "Break/Lunch",
+		"Total Hours",
+	];
 	const toast = useToast();
+	useEffect(() => {
+		const fetchAllEmployeeTimesheet = async () => {
+			setTimesheetData(null);
+			try {
+				const { data } = await TimesheetService.getTimesheetById(company, selectedUser?._id);
+				setTimesheetData(data);
+			} catch (error) {
+				console.error(error);
+			}
+		};
+		fetchAllEmployeeTimesheet();
+	}, [refresh]);
 
 	useEffect(() => {
 		const timer = setInterval(() => {
@@ -104,7 +131,96 @@ const EmployeeTimeCard = ({ selectedUser, company }) => {
 					/>
 				</HStack>
 			</VStack>
-			{/* <PrimaryButton mt={3} name="Add ClockIN" /> */}
+			<PrimaryButton mt={3} name="Add Timesheet" onOpen={() => setShowAddEntry(true)} />
+			<TableLayout
+				cols={cols}
+				isSmall
+				w={"100%"}
+				position="sticky"
+				zIndex={3}
+				top={-1}
+				textAlign="center"
+			>
+				<Tbody>
+					{(!timesheetData || timesheetData?.length === 0) && (
+						<EmptyRowRecord data={timesheetData} colSpan={cols.length} />
+					)}
+					{timesheetData?.map(
+						({
+							_id,
+							payType,
+							regHoursWorked,
+							breakHoursWorked,
+							overtimeHoursWorked,
+							dblOvertimeHoursWorked,
+							statDayHoursWorked,
+							statDayHours,
+							sickPayHours,
+							vacationPayHours,
+							totalBreaks,
+							clockIn,
+							clockOut,
+							totalBreakHours,
+							totalWorkedHours,
+							notDevice,
+						}) => {
+							const { param_hours } = getParamKey(payType);
+
+							const param_hours_worked =
+								param_hours === "regHoursWorked"
+									? regHoursWorked
+									: param_hours === "overtimeHoursWorked"
+									? overtimeHoursWorked
+									: param_hours === "dblOvertimeHoursWorked"
+									? dblOvertimeHoursWorked
+									: param_hours === "statDayHoursWorked"
+									? statDayHoursWorked
+									: param_hours === "statDayHours"
+									? statDayHours
+									: param_hours === "sickPayHours"
+									? sickPayHours
+									: param_hours === "vacationPayHours"
+									? vacationPayHours
+									: param_hours === "breakHoursWorked"
+									? breakHoursWorked
+									: 0;
+
+							return (
+								<Tr key={_id} _hover={{ bg: "var(--phoneCall_bg_light)" }}>
+									<Td p={0.5}>
+										<TextTitle title={clockIn && getTimeCardFormat(clockIn, notDevice, true)} />
+									</Td>
+
+									<Td p={0.5}>
+										<NormalTextTitle
+											size="sm"
+											title={clockIn ? getTimeFormat(clockIn, notDevice) : ""}
+										/>
+									</Td>
+									<Td p={0.5}>
+										<NormalTextTitle
+											size="sm"
+											title={clockOut ? getTimeFormat(clockOut, notDevice) : ""}
+										/>
+									</Td>
+
+									<Td p={0.5}>
+										<NormalTextTitle size="sm" title={param_hours_worked} />
+									</Td>
+								</Tr>
+							);
+						},
+					)}
+				</Tbody>
+			</TableLayout>
+			{showAddEntry && (
+				<ExtraTimeEntryModal
+					company={company}
+					showAddEntry={showAddEntry}
+					setRefresh={setRefresh}
+					setShowAddEntry={setShowAddEntry}
+				/>
+			)}
 		</BoxCard>
 	);
 };
