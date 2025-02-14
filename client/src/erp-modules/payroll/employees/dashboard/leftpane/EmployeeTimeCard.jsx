@@ -11,7 +11,13 @@ import ExtraTimeEntryModal from "erp-modules/payroll/timesheets/ExtraTimeEntryMo
 import usePaygroup from "hooks/usePaygroup";
 import { useEffect, useState } from "react";
 import TimesheetService from "services/TimesheetService";
-import { getMomentDate, getTimeCardFormat, getTimeFormat, monthDayYear } from "utils/convertDate";
+import {
+	dayMonthYear,
+	getMomentDate,
+	getTimeCardFormat,
+	getTimeFormat,
+	monthDayYear,
+} from "utils/convertDate";
 
 const EmployeeTimeCard = ({ selectedUser, company }) => {
 	const [time, setTime] = useState(new Date());
@@ -20,6 +26,8 @@ const EmployeeTimeCard = ({ selectedUser, company }) => {
 	const [timesheetData, setTimesheetData] = useState([]);
 	const [filter, setFilter] = useState(null);
 	const { closestRecord } = usePaygroup(company, false);
+	const [startDate, setStartDate] = useState(null);
+	const [endDate, setEndDate] = useState(null);
 
 	const cols = [
 		"Worked Date",
@@ -68,6 +76,11 @@ const EmployeeTimeCard = ({ selectedUser, company }) => {
 		const startDate = getMomentDate(closestRecord?.payPeriodStartDate);
 		const endDate = getMomentDate(closestRecord?.payPeriodEndDate);
 		setFilter({ startDate, endDate });
+
+		const formattedStartDate = dayMonthYear(closestRecord?.payPeriodStartDate);
+		const formattedEndDate = dayMonthYear(closestRecord?.payPeriodEndDate);
+		setStartDate(formattedStartDate);
+		setEndDate(formattedEndDate);
 	}, [closestRecord]);
 
 	useEffect(() => {
@@ -176,8 +189,8 @@ const EmployeeTimeCard = ({ selectedUser, company }) => {
 			</BoxCard>
 			<BoxCard>
 				<HStack>
-					<TextTitle title="Timesheet from " />
-					<PrimaryButton mt={3} name="Add Timesheet" onOpen={() => setShowAddEntry(true)} />
+					<TextTitle title={`Time Entries from ${startDate} to ${endDate}`} />
+					<PrimaryButton mt={3} name="Add ENTRY" onOpen={() => setShowAddEntry(true)} />
 				</HStack>
 
 				<TableLayout
