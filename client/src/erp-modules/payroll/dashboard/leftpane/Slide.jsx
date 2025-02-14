@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { animated, useSpring } from "react-spring";
 import { withGesture } from "react-with-gesture";
 import { workViewPath } from "routes";
+import { isExtraPay } from "utils";
 import { longFormat } from "utils/convertDate";
 import currentImg from "../../../../assets/card_bg.png";
 import PayPeriodDetailCard from "./PayPeriodDetailCard";
@@ -113,7 +114,7 @@ function Slide({ content, offsetRadius, index, animationConfig, moveSlide, delta
 				color="var(--main_color)"
 			>
 				<PayPeriodDetailCard
-					payNum={content.payPeriod}
+					payNum={isExtraPay(content.payPeriod, content?.isExtraRun)}
 					borderTopLeftRadius={"10px"}
 					borderTopRightRadius={"10px"}
 					header={"Pay Period:"}

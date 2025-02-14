@@ -150,9 +150,11 @@ const addGroup = async (req, res) => {
 	}
 };
 
+const groupPaySchedules = async (groupID) => await Group.findById(groupID).select("yearSchedules");
+
 const addPaygroupSchedules = async (groupID) => {
 	try {
-		const groupSchedules = await Group.findById(groupID).select("scheduleSettings yearSchedules");
+		const groupSchedules = await groupPaySchedules(groupID);
 		const yearSchedules = groupSchedules.yearSchedules;
 		const numberOfPayPeriods = 26;
 		const payPeriods = [];
@@ -201,9 +203,9 @@ const addPaygroupSchedules = async (groupID) => {
 	}
 };
 
-const findGroupEmployees = async (groupId, payDate) => {
-	const groupName = await Group.findById(groupId).select("scheduleSettings");
-	const schedule = groupName.scheduleSettings.find(
+const findGroupEmployees = async (groupID, payDate) => {
+	const groupSchedules = await groupPaySchedules(groupID);
+	const schedule = groupSchedules.yearSchedules[0]?.payPeriods.find(
 		(schedule) => schedule.payPeriodPayDate === payDate,
 	);
 	return schedule?.selectedEmp;

@@ -18,8 +18,7 @@ const WorkviewTab = ({
 	cellClick,
 	handleAddEmp,
 	isExtraRun,
-	handleDelete,
-	setShowConfirmationPopUp,
+	setDeletedEmp,
 	overflowX,
 }) => {
 	const navigate = useNavigate();
@@ -32,8 +31,7 @@ const WorkviewTab = ({
 			);
 			return;
 		} else if (col.key === "") {
-			setShowConfirmationPopUp(true);
-			handleDelete(row.empId.fullName);
+			setDeletedEmp(row.empId.fullName);
 			return;
 		} else if (isEditable) {
 			cellClick(row);
