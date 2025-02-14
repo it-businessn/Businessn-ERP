@@ -22,8 +22,8 @@ const TimesheetService = {
 		return apiService.get(`/timesheet/filtered-status/${company}/filter=${JSON.stringify(filter)}`);
 	},
 
-	async getTimesheetById(company, id) {
-		return apiService.get(`/timesheet/${company}/${id}`);
+	async getTimesheetById(company, id, filter) {
+		return apiService.get(`/timesheet/${company}/${id}/filter=${JSON.stringify(filter)}`);
 	},
 
 	async addTimesheetManual(data) {

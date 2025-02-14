@@ -211,15 +211,23 @@ const getFilteredTimesheets = async (req, res) => {
 };
 
 const getEmployeeTimesheet = async (req, res) => {
-	const { companyName, employeeId } = req.params;
+	const { companyName, employeeId, filter } = req.params;
+	const filteredData = JSON.parse(filter.split("=")[1]);
 
 	try {
-		const timesheets = await findByRecordTimesheets({
+		const timesheets = await Timesheet.find({
 			deleted: false,
 			companyName,
 			employeeId,
-			clockIn: { $lte: NEXT_DAY },
-		});
+			clockIn: {
+				$gte: filteredData?.startDate
+					? moment(filteredData?.startDate).startOf("day").toDate()
+					: NEXT_DAY,
+				$lte: filteredData?.endDate
+					? moment(filteredData?.endDate).endOf("day").toDate()
+					: NEXT_DAY,
+			},
+		}).sort({ createdOn: -1 });
 		res.status(200).json(timesheets);
 	} catch (error) {
 		res.status(404).json({ error: error.message });

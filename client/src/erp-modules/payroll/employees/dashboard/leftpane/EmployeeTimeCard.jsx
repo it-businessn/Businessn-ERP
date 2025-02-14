@@ -8,15 +8,19 @@ import TableLayout from "components/ui/table/TableLayout";
 import TextTitle from "components/ui/text/TextTitle";
 import { getParamKey } from "erp-modules/payroll/timesheets/data";
 import ExtraTimeEntryModal from "erp-modules/payroll/timesheets/ExtraTimeEntryModal";
+import usePaygroup from "hooks/usePaygroup";
 import { useEffect, useState } from "react";
 import TimesheetService from "services/TimesheetService";
-import { getTimeCardFormat, getTimeFormat, monthDayYear } from "utils/convertDate";
+import { getMomentDate, getTimeCardFormat, getTimeFormat, monthDayYear } from "utils/convertDate";
 
 const EmployeeTimeCard = ({ selectedUser, company }) => {
 	const [time, setTime] = useState(new Date());
 	const [showAddEntry, setShowAddEntry] = useState(false);
 	const [refresh, setRefresh] = useState(false);
 	const [timesheetData, setTimesheetData] = useState([]);
+	const [filter, setFilter] = useState(null);
+	const { closestRecord } = usePaygroup(company, false);
+
 	const cols = [
 		"Worked Date",
 		"Start Time",
@@ -56,18 +60,32 @@ const EmployeeTimeCard = ({ selectedUser, company }) => {
 	};
 
 	const toast = useToast();
+
+	useEffect(() => {
+		if (!closestRecord) {
+			return;
+		}
+		const startDate = getMomentDate(closestRecord?.payPeriodStartDate);
+		const endDate = getMomentDate(closestRecord?.payPeriodEndDate);
+		setFilter({ startDate, endDate });
+	}, [closestRecord]);
+
 	useEffect(() => {
 		const fetchAllEmployeeTimesheet = async () => {
 			setTimesheetData(null);
 			try {
-				const { data } = await TimesheetService.getTimesheetById(company, selectedUser?._id);
+				const { data } = await TimesheetService.getTimesheetById(
+					company,
+					selectedUser?._id,
+					filter,
+				);
 				setTimesheetData(data);
 			} catch (error) {
 				console.error(error);
 			}
 		};
-		fetchAllEmployeeTimesheet();
-	}, [refresh]);
+		if (filter) fetchAllEmployeeTimesheet();
+	}, [refresh, filter]);
 
 	useEffect(() => {
 		const timer = setInterval(() => {
@@ -90,6 +108,7 @@ const EmployeeTimeCard = ({ selectedUser, company }) => {
 				company,
 				employeeId: selectedUser?._id,
 			});
+			setRefresh((prev) => !prev);
 			toast({
 				title: message,
 				status: "success",
@@ -108,142 +127,152 @@ const EmployeeTimeCard = ({ selectedUser, company }) => {
 	};
 
 	return (
-		<BoxCard gap="1em">
-			<VStack w="100%" spacing={3}>
-				<LeftIconButton
-					size="3em"
-					name={
-						<VStack p={3}>
-							<TextTitle size="2xl" title={formattedTime} />
-							<TextTitle title={monthDayYear} />
-						</VStack>
-					}
-					variant="outline"
-					colorScheme="blue"
-					w="full"
-				/>
-				<HStack justify="space-between" w="100%">
-					{CLOCK_TYPES.row_1.map(({ name, onClick, bg, isClicked }) => (
-						<LeftIconButton
-							key={name}
-							isLoading={isClicked}
-							size="xl"
-							name={name}
-							variant="solid"
-							w="50%"
-							bg={bg}
-							_hover={{ color: "var(--main_color)" }}
-							handleClick={onClick}
-						/>
-					))}
+		<>
+			<BoxCard gap="1em">
+				<VStack w="100%" spacing={3}>
+					<LeftIconButton
+						size="3em"
+						name={
+							<VStack p={3}>
+								<TextTitle size="2xl" title={formattedTime} />
+								<TextTitle title={monthDayYear} />
+							</VStack>
+						}
+						variant="outline"
+						colorScheme="blue"
+						w="full"
+					/>
+					<HStack justify="space-between" w="100%">
+						{CLOCK_TYPES.row_1.map(({ name, onClick, bg, isClicked }) => (
+							<LeftIconButton
+								key={name}
+								isLoading={isClicked}
+								size="xl"
+								name={name}
+								variant="solid"
+								w="50%"
+								bg={bg}
+								_hover={{ color: "var(--main_color)" }}
+								handleClick={onClick}
+							/>
+						))}
+					</HStack>
+					<HStack justify="space-between" w="100%">
+						{CLOCK_TYPES.row_2.map(({ name, onClick, bg, isClicked }) => (
+							<LeftIconButton
+								key={name}
+								isLoading={isClicked}
+								size="xl"
+								name={name}
+								variant="solid"
+								w="50%"
+								bg={bg}
+								_hover={{ color: "var(--main_color)" }}
+								handleClick={onClick}
+							/>
+						))}
+					</HStack>
+				</VStack>
+			</BoxCard>
+			<BoxCard>
+				<HStack>
+					<TextTitle title="Timesheet from " />
+					<PrimaryButton mt={3} name="Add Timesheet" onOpen={() => setShowAddEntry(true)} />
 				</HStack>
-				<HStack justify="space-between" w="100%">
-					{CLOCK_TYPES.row_2.map(({ name, onClick, bg, isClicked }) => (
-						<LeftIconButton
-							key={name}
-							isLoading={isClicked}
-							size="xl"
-							name={name}
-							variant="solid"
-							w="50%"
-							bg={bg}
-							_hover={{ color: "var(--main_color)" }}
-							handleClick={onClick}
-						/>
-					))}
-				</HStack>
-			</VStack>
-			<PrimaryButton mt={3} name="Add Timesheet" onOpen={() => setShowAddEntry(true)} />
-			<TableLayout
-				cols={cols}
-				isSmall
-				w="100%"
-				position="sticky"
-				zIndex={3}
-				top={-1}
-				textAlign="center"
-			>
-				<Tbody>
-					{(!timesheetData || timesheetData?.length === 0) && (
-						<EmptyRowRecord data={timesheetData} colSpan={cols.length} />
-					)}
-					{timesheetData?.map(
-						({
-							_id,
-							payType,
-							regHoursWorked,
-							breakHoursWorked,
-							overtimeHoursWorked,
-							dblOvertimeHoursWorked,
-							statDayHoursWorked,
-							statDayHours,
-							sickPayHours,
-							vacationPayHours,
-							totalBreaks,
-							clockIn,
-							clockOut,
-							totalBreakHours,
-							totalWorkedHours,
-							notDevice,
-						}) => {
-							const { param_hours } = getParamKey(payType);
 
-							const param_hours_worked =
-								param_hours === "regHoursWorked"
-									? regHoursWorked
-									: param_hours === "overtimeHoursWorked"
-									? overtimeHoursWorked
-									: param_hours === "dblOvertimeHoursWorked"
-									? dblOvertimeHoursWorked
-									: param_hours === "statDayHoursWorked"
-									? statDayHoursWorked
-									: param_hours === "statDayHours"
-									? statDayHours
-									: param_hours === "sickPayHours"
-									? sickPayHours
-									: param_hours === "vacationPayHours"
-									? vacationPayHours
-									: param_hours === "breakHoursWorked"
-									? breakHoursWorked
-									: 0;
+				<TableLayout
+					cols={cols}
+					isSmall
+					w="100%"
+					position="sticky"
+					zIndex={3}
+					top={-1}
+					textAlign="center"
+					height="15vh"
+				>
+					<Tbody>
+						{(!timesheetData || timesheetData?.length === 0) && (
+							<EmptyRowRecord data={timesheetData} colSpan={cols.length} />
+						)}
+						{timesheetData?.map(
+							({
+								_id,
+								payType,
+								regHoursWorked,
+								breakHoursWorked,
+								overtimeHoursWorked,
+								dblOvertimeHoursWorked,
+								statDayHoursWorked,
+								statDayHours,
+								sickPayHours,
+								vacationPayHours,
+								totalBreaks,
+								clockIn,
+								clockOut,
+								totalBreakHours,
+								totalWorkedHours,
+								notDevice,
+							}) => {
+								const { param_hours } = getParamKey(payType);
 
-							return (
-								<Tr key={_id} _hover={{ bg: "var(--phoneCall_bg_light)" }}>
-									<Td p={0.5}>
-										<TextTitle title={clockIn && getTimeCardFormat(clockIn, notDevice, true)} />
-									</Td>
+								const param_hours_worked =
+									param_hours === "regHoursWorked"
+										? regHoursWorked
+										: param_hours === "overtimeHoursWorked"
+										? overtimeHoursWorked
+										: param_hours === "dblOvertimeHoursWorked"
+										? dblOvertimeHoursWorked
+										: param_hours === "statDayHoursWorked"
+										? statDayHoursWorked
+										: param_hours === "statDayHours"
+										? statDayHours
+										: param_hours === "sickPayHours"
+										? sickPayHours
+										: param_hours === "vacationPayHours"
+										? vacationPayHours
+										: param_hours === "breakHoursWorked"
+										? breakHoursWorked
+										: 0;
 
-									<Td p={0.5}>
-										<NormalTextTitle
-											size="sm"
-											title={clockIn ? getTimeFormat(clockIn, notDevice) : ""}
-										/>
-									</Td>
-									<Td p={0.5}>
-										<NormalTextTitle
-											size="sm"
-											title={clockOut ? getTimeFormat(clockOut, notDevice) : ""}
-										/>
-									</Td>
+								return (
+									<Tr key={_id} _hover={{ bg: "var(--phoneCall_bg_light)" }}>
+										<Td p={0.5}>
+											<TextTitle title={clockIn && getTimeCardFormat(clockIn, notDevice, true)} />
+										</Td>
 
-									<Td p={0.5}>
-										<NormalTextTitle size="sm" title={param_hours_worked} />
-									</Td>
-								</Tr>
-							);
-						},
-					)}
-				</Tbody>
-			</TableLayout>
-			{showAddEntry && (
-				<ExtraTimeEntryModal
-					company={company}
-					showAddEntry={showAddEntry}
-					setRefresh={setRefresh}
-					setShowAddEntry={setShowAddEntry}
-				/>
-			)}
-		</BoxCard>
+										<Td p={0.5}>
+											<NormalTextTitle
+												size="sm"
+												title={clockIn ? getTimeFormat(clockIn, notDevice) : ""}
+											/>
+										</Td>
+										<Td p={0.5}>
+											<NormalTextTitle
+												size="sm"
+												title={clockOut ? getTimeFormat(clockOut, notDevice) : ""}
+											/>
+										</Td>
+
+										<Td p={0.5}>
+											<NormalTextTitle size="sm" title={param_hours_worked} />
+										</Td>
+									</Tr>
+								);
+							},
+						)}
+					</Tbody>
+				</TableLayout>
+				{showAddEntry && (
+					<ExtraTimeEntryModal
+						company={company}
+						showAddEntry={showAddEntry}
+						setRefresh={setRefresh}
+						setShowAddEntry={setShowAddEntry}
+						userId={selectedUser?._id}
+					/>
+				)}
+			</BoxCard>
+		</>
 	);
 };
 

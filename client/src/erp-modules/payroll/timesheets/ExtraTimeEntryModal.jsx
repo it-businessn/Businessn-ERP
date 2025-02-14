@@ -9,19 +9,13 @@ import TimesheetService from "services/TimesheetService";
 import { getDefaultDate, getTimeFormat, setUTCDate } from "utils/convertDate";
 import { getParamKey, PAY_TYPES } from "./data";
 
-const ExtraTimeEntryModal = ({
-	showAddEntry,
-	setShowAddEntry,
-	setRefresh,
-	company,
-	closestRecord,
-}) => {
+const ExtraTimeEntryModal = ({ showAddEntry, setShowAddEntry, setRefresh, company, userId }) => {
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const initialFormData = {
 		type: "",
 		createdOn: new Date(),
 		company,
-		employeeId: "",
+		employeeId: userId ? userId : "",
 		clockIn: null,
 		clockOut: null,
 		param_hours: "",
@@ -71,21 +65,23 @@ const ExtraTimeEntryModal = ({
 			isOpen={showAddEntry}
 			onClose={handleClose}
 		>
-			<Stack spacing={3} mt={"-1em"}>
-				<SelectFormControl
-					valueParam="_id"
-					name="fullName"
-					label={"Select employee"}
-					valueText={formData.employeeId}
-					handleChange={(e) =>
-						setFormData((prevData) => ({
-							...prevData,
-							employeeId: e.target.value,
-						}))
-					}
-					options={employees}
-					placeholder="Select employee"
-				/>
+			<Stack spacing={3}>
+				{!userId && (
+					<SelectFormControl
+						valueParam="_id"
+						name="fullName"
+						label="Select employee"
+						valueText={formData.employeeId}
+						handleChange={(e) =>
+							setFormData((prevData) => ({
+								...prevData,
+								employeeId: e.target.value,
+							}))
+						}
+						options={employees}
+						placeholder="Select employee"
+					/>
+				)}
 				<SelectFormControl
 					name="type"
 					label={"Type of Pay"}
