@@ -24,59 +24,67 @@ const Navbar = ({ handleClick, companyName, companyId, user, setUser, isMobile }
 
 	const menuList = SIDEBAR_MENU?.filter((tab) => tab.permissions);
 
-	return (
+	return isMobile ? (
 		<Box
 			pl={{ base: 0, md: 3 }}
 			pt={3}
 			position="fixed"
 			width="100%"
-			color={isMobile ? "var(--lead_cards_bg)" : "var(--nav_color)"}
+			color="var(--lead_cards_bg)"
 			zIndex={1}
 			bg="var(--nav_gradient)"
-			backgroundImage={isMobile && navBarImg}
-			backgroundSize={isMobile && "cover"}
+			backgroundImage={navBarImg}
+			backgroundSize="cover"
 		>
-			{isMobile ? (
-				<HStack>
-					{menuList?.map((menu) =>
-						menu.permissions?.canAccessModule ? (
-							<Menu key={menu.name} handleClick={handleClick} menu={menu} />
-						) : null,
-					)}
-				</HStack>
-			) : (
-				<HStack spacing={0} alignItems="center" pr={{ base: "0em", md: "1em" }}>
-					<Logo />
-					<Flex
+			<HStack>
+				{menuList?.map((menu) =>
+					menu.permissions?.canAccessModule ? (
+						<Menu key={menu.name} handleClick={handleClick} menu={menu} />
+					) : null,
+				)}
+			</HStack>
+		</Box>
+	) : (
+		<Box
+			pl={{ base: 0, md: 3 }}
+			pt={3}
+			position="fixed"
+			width="100%"
+			color={"var(--nav_color)"}
+			zIndex={1}
+			bg="var(--nav_gradient)"
+		>
+			<HStack spacing={0} alignItems="center" pr={{ base: "0em", md: "1em" }}>
+				<Logo />
+				<Flex
+					w="100%"
+					backgroundImage={navBarImg}
+					p={3}
+					borderRadius="10px"
+					ml={3}
+					backgroundSize={"cover"}
+				>
+					<VStack
+						align="center"
+						spacing={0}
 						w="100%"
-						backgroundImage={navBarImg}
-						p={3}
-						borderRadius="10px"
-						ml={3}
-						backgroundSize={"cover"}
+						justifyContent={"start"}
+						color="var(--main_color)"
 					>
-						<VStack
-							align="center"
-							spacing={0}
-							w="100%"
-							justifyContent={"start"}
-							color="var(--main_color)"
-						>
-							<TextTitle size={"lg"} title={company} />
-							<HStack w="100%" align={"flex-end"} h={"30"}>
-								<TextTitle size={"lg"} title={companyId} width="150px" />
-								{menuList?.map((menu) =>
-									menu.permissions?.canAccessModule ? (
-										<Menu key={menu.name} handleClick={handleClick} menu={menu} />
-									) : null,
-								)}
-								<Spacer />
-								<UserProfile user={user} handleLogout={handleLogout} />
-							</HStack>
-						</VStack>
-					</Flex>
-				</HStack>
-			)}
+						<TextTitle size={"lg"} title={company} />
+						<HStack w="100%" align={"flex-end"} h={"30"}>
+							<TextTitle size={"lg"} title={companyId} width="150px" />
+							{menuList?.map((menu) =>
+								menu.permissions?.canAccessModule ? (
+									<Menu key={menu.name} handleClick={handleClick} menu={menu} />
+								) : null,
+							)}
+							<Spacer />
+							<UserProfile user={user} handleLogout={handleLogout} />
+						</HStack>
+					</VStack>
+				</Flex>
+			</HStack>
 		</Box>
 	);
 };
