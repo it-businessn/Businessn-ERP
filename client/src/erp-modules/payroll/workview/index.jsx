@@ -14,6 +14,7 @@ const PayrollWorkview = () => {
 	const [refresh, setRefresh] = useState(false);
 	const [selectedYear, setSelectedYear] = useState(CURRENT_YEAR);
 	const [yearsList, setYearsList] = useState([CURRENT_YEAR]);
+	const loggedInUser = LocalStorageService.getItem("user");
 
 	const {
 		payGroups,
@@ -58,6 +59,7 @@ const PayrollWorkview = () => {
 					setRefresh={setRefresh}
 					closestRecord={closestRecord}
 					closestRecordIndex={closestRecordIndex}
+					loggedInUser={loggedInUser}
 				/>
 			)}
 			<PaygroupDetailTable
@@ -66,6 +68,7 @@ const PayrollWorkview = () => {
 				empPath={empPath}
 				selectedPayGroup={selectedPayGroup}
 				groupId={selectedPayGroup?._id}
+				loggedInUser={loggedInUser}
 			/>
 		</PageLayout>
 	);

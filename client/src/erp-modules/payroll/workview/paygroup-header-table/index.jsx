@@ -3,7 +3,6 @@ import PrimaryButton from "components/ui/button/PrimaryButton";
 import BoxCard from "components/ui/card";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import LocalStorageService from "services/LocalStorageService";
 import ExtraPayrunModal from "./ExtraPayrunModal";
 import OnboardEmpModal from "./OnboardEmpModal";
 import PayrollActions from "./PayrollActions";
@@ -20,10 +19,10 @@ const PaygroupTable = ({
 	selectedYear,
 	setSelectedYear,
 	yearsList,
+	loggedInUser,
 }) => {
 	const [showExtraPayrun, setShowExtraPayrun] = useState(false);
 	const [showOnboard, setShowOnboard] = useState(false);
-	const loggedInUser = LocalStorageService.getItem("user");
 	const navigate = useNavigate();
 
 	const handleClick = (val) => {

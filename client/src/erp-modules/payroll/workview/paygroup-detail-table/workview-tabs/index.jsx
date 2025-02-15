@@ -1,14 +1,14 @@
 import BoxCard from "components/ui/card";
 import TabsButtonGroup from "components/ui/tab/TabsButtonGroup";
 import TextTitle from "components/ui/text/TextTitle";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { isExtraPay } from "utils";
 import AmountAllocation from "./AmountAllocation";
 // import EmployeeContribution fr om "./EmployeeContribution";
 import EmployeeDetails from "./EmployeeDetails";
 // import EmployerContribution from "./EmployerContribution";
 import { HStack, Select } from "@chakra-ui/react";
-import { PAYRUN_OPTIONS } from "constant";
+import { isBusinessNAdmin, PAYRUN_OPTIONS } from "constant";
 import EmployeeContribution from "./EmployeeContribution";
 import EmployerContribution from "./EmployerContribution";
 import HourlyAllocation from "./HourlyAllocation";
@@ -20,9 +20,19 @@ const PaygroupDetailTable = ({
 	groupId,
 	selectedPayGroup,
 	company,
+	loggedInUser,
 }) => {
 	const [payrunOption, setPayrunOption] = useState(1);
 	const [selectedHighlightColor, setHighlightColor] = useState(1);
+	const [payOptions, setPayOptions] = useState([]);
+
+	useEffect(() => {
+		PAYRUN_OPTIONS.map((option) => {
+			option.show = option.code === 4 ? isBusinessNAdmin(loggedInUser?.email) : true;
+			return option;
+		});
+		setPayOptions(PAYRUN_OPTIONS);
+	}, []);
 
 	useEffect(() => {
 		setHighlightColor(
@@ -108,10 +118,10 @@ const PaygroupDetailTable = ({
 					placeholder="Select Payrun Option"
 					onChange={handlePayrun}
 				>
-					{PAYRUN_OPTIONS?.map(({ name, code }) => (
-						<option value={code} key={name}>
-							{name}
-						</option>
+					{payOptions?.map(({ name, code, show }) => (
+						<React.Fragment key={name}>
+							{show ? <option value={code}>{name}</option> : <></>}
+						</React.Fragment>
 					))}
 				</Select>
 			</HStack>
