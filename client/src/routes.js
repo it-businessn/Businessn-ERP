@@ -13,6 +13,7 @@ const Setup = lazy(() => import("./features/setup"));
 
 const SignUp = lazy(() => import("./features/sign-up"));
 
+const Configuration = lazy(() => import("./features/configuration"));
 const UserProfileDetails = lazy(() => import("./features/user/UserProfileDetails"));
 const VerifyEmail = lazy(() => import("./features/verify-user"));
 
@@ -127,10 +128,14 @@ export const ROUTE_PATH = {
 
 	// reports
 	REPORT: "/reports",
+
+	//admin console
+	ADMIN_CONSOLE: "/admin-console",
 };
 
 export const workViewPath = `${ROUTE_PATH.PAYROLL}${ROUTE_PATH.WORKVIEW}`;
-export const userProfilePath = `${ROUTE_PATH.SALES}${ROUTE_PATH.PROFILE}`;
+export const userProfilePath = ROUTE_PATH.PROFILE;
+export const adminConsolePath = ROUTE_PATH.ADMIN_CONSOLE;
 export const customerPath = `${ROUTE_PATH.SALES}${ROUTE_PATH.CUSTOMERS}`;
 export const questionnairePath = `${ROUTE_PATH.SALES}${ROUTE_PATH.ADD_PAPER}`;
 export const processPayrollPath = `${ROUTE_PATH.PAYROLL}${ROUTE_PATH.PROCESS}`;
@@ -361,6 +366,10 @@ export const router = createBrowserRouter([
 			{
 				path: ROUTE_PATH.SETUP,
 				element: <Setup />,
+			},
+			{
+				path: ROUTE_PATH.ADMIN_CONSOLE,
+				element: <Configuration />,
 			},
 			{
 				path: "*",

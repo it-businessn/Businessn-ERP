@@ -5,7 +5,6 @@ import PageLayout from "layouts/PageLayout";
 import { useState } from "react";
 import LocalStorageService from "services/LocalStorageService";
 import CompanyPanel from "./company/CompanyPanel";
-import ConfigurationPanel from "./configuration";
 import PermissionsPanel from "./permisssions/PermissionsPanel";
 import UsersPanel from "./users/UsersPanel";
 
@@ -17,11 +16,6 @@ const Setup = () => {
 	const SETUP_LIST = [
 		{
 			id: 0,
-			type: "Configuration",
-			name: <ConfigurationPanel company={company} />,
-		},
-		{
-			id: 1,
 			type: "Users",
 			name: (
 				<UsersPanel
@@ -34,7 +28,7 @@ const Setup = () => {
 			),
 		},
 		{
-			id: 2,
+			id: 1,
 			type: "Company",
 			name: (
 				<CompanyPanel
@@ -46,7 +40,7 @@ const Setup = () => {
 			),
 		},
 		{
-			id: 3,
+			id: 2,
 			type: "Permissions",
 			name: (
 				<PermissionsPanel

@@ -4,15 +4,12 @@ import EmptyRowRecord from "components/ui/EmptyRowRecord";
 import NormalTextTitle from "components/ui/NormalTextTitle";
 import TableLayout from "components/ui/table/TableLayout";
 import TextTitle from "components/ui/text/TextTitle";
-import useCompany from "hooks/useCompany";
 import PageLayout from "layouts/PageLayout";
 import moment from "moment";
 import { useEffect, useState } from "react";
-import LocalStorageService from "services/LocalStorageService";
 import SettingService from "services/SettingService";
 
-const Settings = () => {
-	const { company } = useCompany(LocalStorageService.getItem("selectedCompany"));
+const Settings = ({ company }) => {
 	const [holidays, setHolidays] = useState([]);
 	const [name, setName] = useState("");
 	const [date, setDate] = useState("");

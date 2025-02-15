@@ -14,7 +14,7 @@ import {
 import { isBusinessNAdmin } from "constant";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { userProfilePath } from "routes";
+import { adminConsolePath, userProfilePath } from "routes";
 // import { styleConsole } from "utils";
 
 const UserProfile = ({ user, handleLogout }) => {
@@ -44,13 +44,23 @@ const UserProfile = ({ user, handleLogout }) => {
 		navigate(userProfilePath);
 	};
 
+	const showConfigPage = () => {
+		handleToggle();
+		navigate(adminConsolePath);
+	};
+
 	const showRegisterPage = () => {
 		setSignUp(true);
 	};
 
+	const MENU_OPTIONS = [
+		{ name: "Profile", handleClick: showProfilePage },
+		{ name: "Admin console", handleClick: showConfigPage },
+	];
+
 	return (
 		<HStack pb={2} _hover={{ cursor: "pointer" }}>
-			<Popover isOpen={isOpen} onClose={() => setIsOpen(false)}>
+			<Popover isOpen={isOpen} onClose={handleToggle}>
 				<PopoverTrigger>
 					<Avatar onClick={handleToggle} name={user?.fullName} src="" boxSize="12" />
 				</PopoverTrigger>
@@ -59,11 +69,12 @@ const UserProfile = ({ user, handleLogout }) => {
 
 					<PopoverBody>
 						<VStack w="100%" alignItems="start" color="var(--logo_bg)">
-							{isBusinessNAdmin(user?.email) && (
-								<Button variant="ghost" onClick={showProfilePage}>
-									Profile
-								</Button>
-							)}
+							{isBusinessNAdmin(user?.email) &&
+								MENU_OPTIONS.map(({ name, handleClick }) => (
+									<Button key={name} variant="ghost" onClick={handleClick}>
+										{name}
+									</Button>
+								))}
 							{/* {user?.role === "Administrator" && (
 								<Button variant="ghost" onClick={showRegisterPage}>
 									Create Account
