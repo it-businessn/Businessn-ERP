@@ -68,7 +68,7 @@ const Conversation = ({
 			});
 			return { id: data._id, type: data.conversationType };
 		} catch (error) {
-			setMessage("An error occurred. Please try again.");
+			setMessage("An error occurred. Please try again.", error);
 		}
 	};
 
@@ -94,7 +94,7 @@ const Conversation = ({
 			setIsRefresh((prev) => !prev);
 			setMessage("");
 		} catch (error) {
-			setMessage("An error occurred. Please try again.");
+			setMessage("An error occurred. Please try again.", error);
 		}
 	};
 	const handleKeyPress = (event) => {

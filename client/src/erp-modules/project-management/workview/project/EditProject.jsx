@@ -62,7 +62,7 @@ const EditProject = ({ isOpen, onClose, project, projectId, setRefresh, managers
 			setFormData(defaultProject);
 			setRefresh((prev) => !prev);
 		} catch (error) {
-			setMessage("An error occurred. Please try again.");
+			setMessage("An error occurred. Please try again.", error);
 		} finally {
 			setSubmitting(false);
 		}

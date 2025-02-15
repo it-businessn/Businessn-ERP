@@ -101,7 +101,7 @@ const AddNewProjectTask = ({ isOpen, onClose, task, projectId, setRefresh }) => 
 			setSubTasks([]);
 			setRefresh((prev) => !prev);
 		} catch (error) {
-			setMessage("An error occurred. Please try again.");
+			setMessage("An error occurred. Please try again.", error);
 		} finally {
 			setSubmitting(false);
 		}

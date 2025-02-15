@@ -33,7 +33,7 @@ const UserSection = ({
 			setIsRefresh((prev) => !prev);
 			setShowConfirmationPopUp((prev) => !prev);
 		} catch (error) {
-			console.log("An error occurred. Please try again.");
+			console.log("An error occurred. Please try again.", error);
 		}
 	};
 	const handleConfirm = async (e) => {
@@ -55,7 +55,7 @@ const UserSection = ({
 				setFilteredEmployees(employees);
 				setEmpName("");
 			} catch (error) {
-				console.log("An error occurred. Please try again.");
+				console.log("An error occurred. Please try again.", error);
 			} finally {
 				setIsSubmitting(false);
 			}

@@ -40,7 +40,7 @@ const ChatHistory = ({ currentConversation, userId, isRefresh, setIsRefresh, com
 			});
 			return { id: data._id, type: data.conversationType };
 		} catch (error) {
-			setMessage("An error occurred. Please try again.");
+			setMessage("An error occurred. Please try again.", error);
 		}
 	};
 
@@ -65,7 +65,7 @@ const ChatHistory = ({ currentConversation, userId, isRefresh, setIsRefresh, com
 			setIsRefresh((prev) => !prev);
 			setMessage("");
 		} catch (error) {
-			setMessage("An error occurred. Please try again.");
+			setMessage("An error occurred. Please try again.", error);
 		}
 	};
 	return (

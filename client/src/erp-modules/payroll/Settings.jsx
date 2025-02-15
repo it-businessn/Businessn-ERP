@@ -39,7 +39,7 @@ const Settings = ({ company }) => {
 			setName("");
 			setDate("");
 		} catch (error) {
-			console.log("An error occurred. Please try again.");
+			console.log("An error occurred. Please try again.", error);
 		}
 	};
 

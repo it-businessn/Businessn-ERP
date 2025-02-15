@@ -42,7 +42,7 @@ const BaseModulePanel = ({
 			setModuleDesc("");
 			handleClose();
 		} catch (error) {
-			console.log("An error occurred. Please try again.");
+			console.log("An error occurred. Please try again.", error);
 		} finally {
 			setIsSubmitting(false);
 		}

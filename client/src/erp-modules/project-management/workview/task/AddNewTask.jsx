@@ -60,7 +60,7 @@ const AddNewTask = ({ isOpen, onClose, setRefresh, allProjects, isFiltered, allP
 			setFormData(defaultTask);
 			setRefresh((prev) => !prev);
 		} catch (error) {
-			setMessage("An error occurred. Please try again.");
+			setMessage("An error occurred. Please try again.", error);
 		} finally {
 			setSubmitting(false);
 		}

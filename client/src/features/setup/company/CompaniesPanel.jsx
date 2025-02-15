@@ -59,7 +59,7 @@ const CompaniesPanel = ({ setOpenCompanyForm }) => {
 			resetForm();
 			setOpenCompanyForm(false);
 		} catch (error) {
-			console.log("An error occurred. Please try again.");
+			console.log("An error occurred. Please try again.", error);
 		} finally {
 			setIsSubmitting(false);
 		}
