@@ -37,7 +37,7 @@ const BaseModulePanel = ({
 				duration: 1500,
 				isClosable: true,
 			});
-			setOptionDataRefresh((prev) => !prev);
+			if (setOptionDataRefresh) setOptionDataRefresh((prev) => !prev);
 			setModuleName("");
 			setModuleDesc("");
 			handleClose();

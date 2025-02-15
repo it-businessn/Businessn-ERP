@@ -4,7 +4,6 @@ import EmptyRowRecord from "components/ui/EmptyRowRecord";
 import NormalTextTitle from "components/ui/NormalTextTitle";
 import TableLayout from "components/ui/table/TableLayout";
 import TextTitle from "components/ui/text/TextTitle";
-import PageLayout from "layouts/PageLayout";
 import moment from "moment";
 import { useEffect, useState } from "react";
 import SettingService from "services/SettingService";
@@ -49,51 +48,51 @@ const Settings = ({ company }) => {
 	};
 
 	return (
-		<PageLayout title="Settings">
-			<Box p={5}>
-				<TextTitle title="Setup Stat Holidays" />
-				<VStack align="start" spacing={4}>
-					<HStack>
-						<Input
-							placeholder="Holiday Name"
-							value={name}
-							onChange={(e) => setName(e.target.value)}
-						/>
-						<Input
-							placeholder="Date"
-							type="date"
-							value={date}
-							onChange={(e) => setDate(e.target.value)}
-						/>
-						<PrimaryButton name="Add" onOpen={addHoliday} />
-					</HStack>
+		<Box p={5}>
+			<TextTitle title="Add Holidays" />
+			<VStack align="start" spacing={4}>
+				<HStack>
+					<Input
+						placeholder="Holiday Name"
+						value={name}
+						onChange={(e) => setName(e.target.value)}
+					/>
+					<Input
+						placeholder="Date"
+						type="date"
+						value={date}
+						onChange={(e) => setDate(e.target.value)}
+					/>
+					<PrimaryButton name="Add" onOpen={addHoliday} />
+				</HStack>
 
-					<TableLayout
-						w="100%"
-						tableSize="sm"
-						cols={cols}
-						position="sticky"
-						top={-1}
-						zIndex={1}
-						textAlign="center"
-					>
-						<Tbody>
-							{(!holidays || holidays?.length === 0) && (
-								<EmptyRowRecord data={holidays} colSpan={cols.length} />
-							)}
-							{holidays?.map(({ _id, name, date }) => (
-								<Tr key={_id}>
-									<Td p={0} px={"0.5em"} borderBottomColor={"var(--filter_border_color)"}>
-										<NormalTextTitle size="sm" title={name} />
-									</Td>
-									<Td>{moment.utc(date).format("dddd, YYYY-MM-DD")}</Td>
-								</Tr>
-							))}
-						</Tbody>
-					</TableLayout>
-				</VStack>
-			</Box>
-		</PageLayout>
+				<TableLayout
+					w="100%"
+					tableSize="xs"
+					cols={cols}
+					position="sticky"
+					top={-1}
+					zIndex={1}
+					textAlign="center"
+				>
+					<Tbody>
+						{(!holidays || holidays?.length === 0) && (
+							<EmptyRowRecord data={holidays} colSpan={cols.length} />
+						)}
+						{holidays?.map(({ _id, name, date }) => (
+							<Tr key={_id}>
+								<Td p={0}>
+									<TextTitle size="sm" title={name} />
+								</Td>
+								<Td>
+									<NormalTextTitle size="sm" title={moment.utc(date).format("dddd, YYYY-MM-DD")} />
+								</Td>
+							</Tr>
+						))}
+					</Tbody>
+				</TableLayout>
+			</VStack>
+		</Box>
 	);
 };
 

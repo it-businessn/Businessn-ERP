@@ -37,7 +37,7 @@ const DepartmentsPanel = ({
 				duration: 1500,
 				isClosable: true,
 			});
-			setOptionDataRefresh((prev) => !prev);
+			if (setOptionDataRefresh) setOptionDataRefresh((prev) => !prev);
 			setDeptName("");
 			setDeptDescription("");
 			handleClose();

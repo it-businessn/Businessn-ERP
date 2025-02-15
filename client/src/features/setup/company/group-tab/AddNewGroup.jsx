@@ -61,7 +61,7 @@ const AddNewGroup = ({ isOpen, onClose, setRefresh, modules, managers, company }
 				isClosable: true,
 			});
 			setFormData(defaultGroup);
-			setRefresh((prev) => !prev);
+			if (setRefresh) setRefresh((prev) => !prev);
 		} catch (error) {
 			setMessage("An error occurred. Please try again.", error);
 		} finally {

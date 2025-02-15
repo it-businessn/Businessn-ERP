@@ -5,20 +5,27 @@ import Settings from "erp-modules/payroll/Settings";
 import BaseModulePanel from "features/sign-up/BaseModulePanel";
 import DepartmentsPanel from "features/sign-up/DepartmentsPanel";
 import RolesPanel from "features/sign-up/RolesPanel";
+import useCompany from "hooks/useCompany";
+import useManager from "hooks/useManager";
 import PageLayout from "layouts/PageLayout";
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import LocalStorageService from "services/LocalStorageService";
+import SettingService from "services/SettingService";
 import CompaniesPanel from "../setup/company/CompaniesPanel";
 import AddNewGroup from "../setup/company/group-tab/AddNewGroup";
 
-const Configuration = ({ company }) => {
-	const navigate = useNavigate();
+const Configuration = () => {
+	const { company } = useCompany(LocalStorageService.getItem("selectedCompany"));
+	const managers = useManager(company);
+	const [modules, setModules] = useState(null);
+
 	const [openAddGroup, setOpenAddGroup] = useState(false);
 	const [openAddModule, setOpenAddModule] = useState(false);
 	const [openAddDepartment, setOpenAddDepartment] = useState(false);
 	const [openAddRole, setOpenAddRole] = useState(false);
 	const [openCompanyForm, setOpenCompanyForm] = useState(false);
 	const [openHoliday, setOpenHoliday] = useState(false);
+
 	const CONFIG_OPTIONS = [
 		{
 			name: ` ${openCompanyForm ? "Hide" : "Show"} Company Details`,
@@ -57,6 +64,19 @@ const Configuration = ({ company }) => {
 			title: "Manage Stat Holidays",
 		},
 	];
+
+	useEffect(() => {
+		const fetchAllModules = async () => {
+			try {
+				const { data } = await SettingService.getAllModules(company);
+				setModules(data);
+			} catch (error) {
+				console.error(error);
+			}
+		};
+		fetchAllModules();
+	}, []);
+
 	return (
 		<PageLayout width="full" title="Configuration" showBgLayer>
 			<Grid templateColumns={{ base: "1fr", md: "repeat(6, 1fr)" }} gap={6}>
@@ -69,12 +89,14 @@ const Configuration = ({ company }) => {
 					</GridItem>
 				))}
 			</Grid>
-			{openCompanyForm && <CompaniesPanel />}
+			{openCompanyForm && <CompaniesPanel setOpenCompanyForm={setOpenCompanyForm} />}
 			{openAddGroup && (
 				<AddNewGroup
 					isOpen={openAddGroup}
 					company={company}
 					onClose={() => setOpenAddGroup(false)}
+					modules={modules}
+					managers={managers}
 				/>
 			)}
 			{openAddModule && (
@@ -98,7 +120,7 @@ const Configuration = ({ company }) => {
 					companyName={company}
 				/>
 			)}
-			{openHoliday && <Settings companyName={company} />}
+			{openHoliday && <Settings company={company} />}
 		</PageLayout>
 	);
 };

@@ -32,7 +32,7 @@ const RolesPanel = ({ showAddRoles, setShowAddRoles, setOptionDataRefresh, compa
 				duration: 1500,
 				isClosable: true,
 			});
-			setOptionDataRefresh((prev) => !prev);
+			if (setOptionDataRefresh) setOptionDataRefresh((prev) => !prev);
 			setRoleName("");
 			setRoleDescription("");
 			handleClose();
