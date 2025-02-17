@@ -153,7 +153,22 @@ const updateAdditionalHoursAllocatedInfo = async (id, data) =>
 
 const findAdditionalHoursAllocatedInfo = async (record) =>
 	await EmployeeExtraAllocation.findOne(record).select(
-		"empId additionalRegHoursWorked additionalOvertimeHoursWorked additionalDblOvertimeHoursWorked additionalStatDayHoursWorked additionalVacationHoursWorked additionalStatHoursWorked additionalSickHoursWorked",
+		"empId additionalRegHoursWorked additionalOvertimeHoursWorked additionalDblOvertimeHoursWorked additionalStatDayHoursWorked additionalVacationHoursWorked additionalStatHoursWorked additionalSickHoursWorked ",
+	);
+
+const findAdditionalSuperficialHoursAllocatedInfo = async (record) =>
+	await EmployeeExtraAllocation.findOne(record).select(
+		"empId additionalSuperficialRegHoursWorked additionalSuperficialOvertimeHoursWorked additionalSuperficialDblOvertimeHoursWorked additionalSuperficialStatDayHoursWorked additionalVacationHoursWorked additionalSuperficialStatHoursWorked additionalSuperficialSickHoursWorked ",
+	);
+
+const findAdditionalPayoutHoursAllocatedInfo = async (record) =>
+	await EmployeeExtraAllocation.findOne(record).select(
+		"empId additionalPayoutRegHoursWorked additionalPayoutOvertimeHoursWorked additionalPayoutDblOvertimeHoursWorked additionalPayoutStatDayHoursWorked additionalPayoutVacationHoursWorked additionalPayoutStatHoursWorked additionalPayoutSickHoursWorked ",
+	);
+
+const findAdditionalManualHoursAllocatedInfo = async (record) =>
+	await EmployeeExtraAllocation.findOne(record).select(
+		"empId additionalManualRegHoursWorked additionalManualOvertimeHoursWorked additionalManualDblOvertimeHoursWorked additionalManualStatDayHoursWorked additionalVacationHoursWorked additionalManualStatHoursWorked additionalManualSickHoursWorked ",
 	);
 
 const findAdditionalAmountAllocatedInfo = async (record) =>
@@ -166,6 +181,9 @@ const findAdditionalAmountAllocatedInfo = async (record) =>
 		.select("empId commission bonus retroactive reimbursement terminationPayout vacationPayout");
 
 module.exports = {
+	findAdditionalSuperficialHoursAllocatedInfo,
+	findAdditionalPayoutHoursAllocatedInfo,
+	findAdditionalManualHoursAllocatedInfo,
 	addAdditionalHoursAllocationInfo,
 	findAdditionalHoursAllocatedInfo,
 	findAdditionalAmountAllocatedInfo,

@@ -4,12 +4,40 @@ const employeeExtraAllocationSchema = new mongoose.Schema({
 	empId: { type: String, ref: "Employee" },
 	companyName: { type: String, ref: "Company" },
 	additionalRegHoursWorked: { type: Number, default: 0 },
+	additionalPayoutRegHoursWorked: { type: Number, default: 0 },
+	additionalManualRegHoursWorked: { type: Number, default: 0 },
+	additionalSuperficialRegHoursWorked: { type: Number, default: 0 },
+
 	additionalOvertimeHoursWorked: { type: Number, default: 0 },
+	additionalPayoutOvertimeHoursWorked: { type: Number, default: 0 },
+	additionalManualOvertimeHoursWorked: { type: Number, default: 0 },
+	additionalSuperficialOvertimeHoursWorked: { type: Number, default: 0 },
+
 	additionalDblOvertimeHoursWorked: { type: Number, default: 0 },
+	additionalPayoutDblOvertimeHoursWorked: { type: Number, default: 0 },
+	additionalManualDblOvertimeHoursWorked: { type: Number, default: 0 },
+	additionalSuperficialDblOvertimeHoursWorked: { type: Number, default: 0 },
+
 	additionalStatDayHoursWorked: { type: Number, default: 0 },
+	additionalPayoutStatDayHoursWorked: { type: Number, default: 0 },
+	additionalManualStatDayHoursWorked: { type: Number, default: 0 },
+	additionalSuperficialStatDayHoursWorked: { type: Number, default: 0 },
+
 	additionalStatHoursWorked: { type: Number, default: 0 },
+	additionalPayoutStatHoursWorked: { type: Number, default: 0 },
+	additionalManualStatHoursWorked: { type: Number, default: 0 },
+	additionalSuperficialStatHoursWorked: { type: Number, default: 0 },
+
 	additionalVacationHoursWorked: { type: Number, default: 0 },
+	additionalPayoutVacationHoursWorked: { type: Number, default: 0 },
+	additionalManualVacationHoursWorked: { type: Number, default: 0 },
+	additionalSuperficialVacationHoursWorked: { type: Number, default: 0 },
+
 	additionalSickHoursWorked: { type: Number, default: 0 },
+	additionalPayoutSickHoursWorked: { type: Number, default: 0 },
+	additionalManualSickHoursWorked: { type: Number, default: 0 },
+	additionalSuperficialSickHoursWorked: { type: Number, default: 0 },
+
 	payPeriodStartDate: Date,
 	payPeriodEndDate: Date,
 	payPeriodPayDate: Date,

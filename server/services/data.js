@@ -170,7 +170,7 @@ const PAY_TYPES_TITLE = {
 	VACATION_PAY: "Vacation Pay",
 };
 
-const PAYRUN_TYPE = { REGULAR: 1, PAYOUT: 2, MANUAL: 3, SUPERFICIAL: 4 };
+const PAYRUN_TYPE = { REGULAR: "1", PAYOUT: "2", MANUAL: "3", SUPERFICIAL: "4" };
 
 const getPayType = (isBreak = false) =>
 	isBreak ? PAY_TYPES_TITLE.REG_PAY_BRK : PAY_TYPES_TITLE.REG_PAY;

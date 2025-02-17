@@ -81,9 +81,17 @@ const PayrollService = {
 		return apiService.post("/payroll/balanceInfo", data);
 	},
 
-	async getHoursWorkedAllocation(company, startDate, endDate, payDate, isExtraRun, groupId) {
+	async getHoursWorkedAllocationByType(
+		company,
+		startDate,
+		endDate,
+		payDate,
+		isExtraRun,
+		groupId,
+		payrunOption,
+	) {
 		return apiService.get(
-			`/payroll/hoursTimesheet/${company}/${startDate}/${endDate}/${payDate}/${isExtraRun}/${groupId}`,
+			`/payroll/hoursTimesheet/${company}/${startDate}/${endDate}/${payDate}/${isExtraRun}/${groupId}/${payrunOption}`,
 		);
 	},
 
