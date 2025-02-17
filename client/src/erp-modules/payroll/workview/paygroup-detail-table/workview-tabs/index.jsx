@@ -24,6 +24,7 @@ const PaygroupDetailTable = ({
 }) => {
 	const [highlightColor, setHighlightColor] = useState("var(--primary_button_bg)");
 	const [isOpen, setIsOpen] = useState(true);
+	const [payrunOption, setPayrunOption] = useState(1);
 
 	const TABS = [
 		{
@@ -45,7 +46,14 @@ const PaygroupDetailTable = ({
 			id: 1,
 			type: "Hourly Allocation",
 			highlightColor,
-			name: <HourlyAllocation company={company} closestRecord={closestRecord} groupId={groupId} />,
+			name: (
+				<HourlyAllocation
+					company={company}
+					closestRecord={closestRecord}
+					groupId={groupId}
+					payrunOption={payrunOption}
+				/>
+			),
 		},
 		{
 			id: 2,
@@ -57,6 +65,7 @@ const PaygroupDetailTable = ({
 					company={company}
 					closestRecord={closestRecord}
 					groupId={groupId}
+					payrunOption={payrunOption}
 				/>
 			),
 		},
@@ -65,7 +74,12 @@ const PaygroupDetailTable = ({
 			type: "EE Contribution",
 			highlightColor,
 			name: (
-				<EmployeeContribution company={company} closestRecord={closestRecord} groupId={groupId} />
+				<EmployeeContribution
+					company={company}
+					closestRecord={closestRecord}
+					groupId={groupId}
+					payrunOption={payrunOption}
+				/>
 			),
 		},
 		{
@@ -73,7 +87,12 @@ const PaygroupDetailTable = ({
 			type: "ER Contribution",
 			highlightColor,
 			name: (
-				<EmployerContribution company={company} closestRecord={closestRecord} groupId={groupId} />
+				<EmployerContribution
+					company={company}
+					closestRecord={closestRecord}
+					groupId={groupId}
+					payrunOption={payrunOption}
+				/>
 			),
 		},
 	];
@@ -99,6 +118,8 @@ const PaygroupDetailTable = ({
 					handleClick={handleClick}
 					loggedInUser={loggedInUser}
 					setHighlightColor={setHighlightColor}
+					payrunOption={payrunOption}
+					setPayrunOption={setPayrunOption}
 					highlightColor={highlightColor}
 				/>
 			</HStack>

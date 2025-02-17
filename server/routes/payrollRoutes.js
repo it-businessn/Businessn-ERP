@@ -28,7 +28,7 @@ router.get(
 );
 
 router.get(
-	"/hoursTimesheet/:companyName/:startDate/:endDate/:payDate/:isExtraRun/:groupId",
+	"/hoursTimesheet/:companyName/:startDate/:endDate/:payDate/:isExtraRun/:groupId/:payrunType",
 	payrollController.getGroupedTimesheet,
 );
 

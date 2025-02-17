@@ -19,9 +19,9 @@ export default function PopupMessage({
 	loggedInUser,
 	highlightColor,
 	setHighlightColor,
+	payrunOption,
+	setPayrunOption,
 }) {
-	const [payrunOption, setPayrunOption] = useState(1);
-
 	const [payOptions, setPayOptions] = useState([]);
 	const [info, setInfo] = useState("");
 

@@ -1,91 +1,35 @@
 import { Input } from "@chakra-ui/react";
-import OutlineButton from "components/ui/button/OutlineButton";
-import { COLS } from "constant";
 import useEmployeeHoursWorked from "hooks/useEmployeeHoursWorked";
 import { useEffect, useState } from "react";
 import { timesheetPath } from "routes";
 import PayrollService from "services/PayrollService";
 import { convertDecimal } from "utils/convertAmt";
 import WorkviewTab from "./WorkviewTab";
+import {
+	MANUAL_PAYOUT_HOURLY_ALLOCATE_COLS,
+	PAYOUT_HOURLY_ALLOCATE_COLS,
+	REGULAR_HOURLY_ALLOCATE_COLS,
+	SUPERFICIAL_HOURLY_ALLOCATE_COLS,
+} from "./payrunCols";
 
-const HourlyAllocation = ({ company, closestRecord, groupId }) => {
-	const data = useEmployeeHoursWorked(company, closestRecord, groupId);
+const HourlyAllocation = ({ company, closestRecord, groupId, payrunOption }) => {
+	const data = useEmployeeHoursWorked(company, closestRecord, groupId, payrunOption);
+
+	const PAYRUN_HOURS_DATA = {
+		1: REGULAR_HOURLY_ALLOCATE_COLS,
+		2: PAYOUT_HOURLY_ALLOCATE_COLS,
+		3: MANUAL_PAYOUT_HOURLY_ALLOCATE_COLS,
+		4: SUPERFICIAL_HOURLY_ALLOCATE_COLS,
+	};
 
 	const [hourlyAllocatedHours, setHourlyAllocatedHours] = useState(null);
-	const HOURLY_ALLOCATE_COLS = [
-		{ key: COLS.EMP_NAME, pair: "obj", pair_key: "fullName" },
-		{ key: "Total Hours", pair: "totalHoursWorked", align: "center", nearest: true },
-		{ key: "Regular Hrs", pair: "totalRegHoursWorked", align: "center", nearest: true },
-		{
-			key: "Add Regular",
-			pair: "additionalRegHoursWorked",
-			isEditable: true,
-			nearest: true,
-		},
-		{ key: "Overtime Hrs", pair: "totalOvertimeHoursWorked", align: "center", nearest: true },
-		{
-			key: "Add Overtime",
-			pair: "additionalOvertimeHoursWorked",
-			isEditable: true,
-			nearest: true,
-		},
-		{
-			key: "Double OT Hrs",
-			pair: "totalDblOvertimeHoursWorked",
-			align: "center",
-			nearest: true,
-		},
-		{
-			key: "Add Double OT",
-			pair: "additionalDblOvertimeHoursWorked",
-			isEditable: true,
-			nearest: true,
-		},
-		{ key: "Stat. Pay Hrs", pair: "totalStatHours", align: "center", nearest: true },
-		{
-			key: "Add Stat. Pay",
-			pair: "additionalStatHoursWorked",
-			isEditable: true,
-			nearest: true,
-		},
-		{
-			key: "Stat. Worked Hrs",
-			pair: "totalStatDayHoursWorked",
-			align: "center",
-			nearest: true,
-		},
-		{
-			key: "Add Stat. Wrked",
-			pair: "additionalStatDayHoursWorked",
-			isEditable: true,
-			nearest: true,
-		},
-		{ key: "Vacation Hrs", pair: "totalVacationHoursWorked", align: "center", nearest: true },
-		{
-			key: "Add Vacation",
-			pair: "additionalVacationHoursWorked",
-			isEditable: true,
-			nearest: true,
-		},
-		{
-			key: "Sick Pay Hrs",
-			pair: "totalSickHoursWorked",
-			align: "center",
-			nearest: true,
-		},
-		{
-			key: "Add Sick",
-			pair: "additionalSickHoursWorked",
-			isEditable: true,
-			nearest: true,
-		},
-		{
-			key: "",
-			pair: <OutlineButton size="xs" name="setup" label="View Timesheets" mr={3} />,
-		},
-	];
 
+	const [payrunHoursData, setPayrunHoursData] = useState(null);
 	const [formData, setFormData] = useState(null);
+
+	useEffect(() => {
+		setPayrunHoursData(PAYRUN_HOURS_DATA[payrunOption]);
+	}, [payrunOption]);
 
 	useEffect(() => {
 		if (data) {
@@ -132,15 +76,17 @@ const HourlyAllocation = ({ company, closestRecord, groupId }) => {
 		);
 	};
 	return (
-		<WorkviewTab
-			cellClick={cellClick}
-			renderEditableInput={renderEditableInput}
-			isEditable
-			cols={HOURLY_ALLOCATE_COLS}
-			data={hourlyAllocatedHours}
-			label="Setup"
-			path={timesheetPath}
-		/>
+		payrunHoursData && (
+			<WorkviewTab
+				cellClick={cellClick}
+				renderEditableInput={renderEditableInput}
+				isEditable
+				cols={payrunHoursData}
+				data={hourlyAllocatedHours}
+				label="Setup"
+				path={timesheetPath}
+			/>
+		)
 	);
 };
 
