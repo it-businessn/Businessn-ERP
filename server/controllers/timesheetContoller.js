@@ -131,12 +131,8 @@ const getFilteredTimesheets = async (req, res) => {
 					deleted: false,
 					companyName,
 					clockIn: {
-						$gte: filteredData?.startDate
-							? moment(filteredData?.startDate).startOf("day").toDate()
-							: NEXT_DAY,
-						$lte: filteredData?.endDate
-							? moment(filteredData?.endDate).endOf("day").toDate()
-							: NEXT_DAY,
+						$gte: moment(filteredData?.startDate).startOf("day").toDate(),
+						$lte: moment(filteredData?.endDate).endOf("day").toDate(),
 					},
 				},
 			},
