@@ -1,3 +1,4 @@
+import { CONTRIBUTION } from "constant";
 import { COUNTRIES, REGIONS } from "erp-modules/project-management/workview/project/data";
 
 export const EMP_INCOME_TAX_CONFIG = [
@@ -39,7 +40,7 @@ export const EMP_FED_GOVT_CONFIG = [
 		params: [
 			{ name: "Pension (EE)", param_key: "federalPensionEE" },
 			{
-				name: "Employment Insurance (EE)",
+				name: `${CONTRIBUTION.EI} (EE)`,
 				param_key: "federalEmploymentInsuranceEE",
 			},
 		],
@@ -49,7 +50,7 @@ export const EMP_FED_GOVT_CONFIG = [
 		params: [
 			{ name: "Pension (ER)", param_key: "federalPensionER" },
 			{
-				name: "Employment Insurance (ER)",
+				name: `${CONTRIBUTION.EI} (ER)`,
 				param_key: "federalEmploymentInsuranceER",
 			},
 		],

@@ -4,6 +4,7 @@ import EmptyRowRecord from "components/ui/EmptyRowRecord";
 import NormalTextTitle from "components/ui/NormalTextTitle";
 import TableLayout from "components/ui/table/TableLayout";
 import TextTitle from "components/ui/text/TextTitle";
+import { COLS } from "constant";
 import { HiOutlineDotsHorizontal } from "react-icons/hi";
 import { useNavigate } from "react-router-dom";
 import { ROUTE_PATH } from "routes";
@@ -16,7 +17,7 @@ const EmployeeList = ({ employees }) => {
 		navigate(`${empPath}/${id}/0`);
 	};
 	const cols = [
-		"Employee Name",
+		COLS.EMP_NAME,
 		"Department",
 		// "Role",
 		"Employee No",

@@ -1,3 +1,4 @@
+import { COLS, CONTRIBUTION } from "constant";
 import useEmployeeEEContribution from "hooks/useEmployeeEEContribution";
 import WorkviewTab from "./WorkviewTab";
 
@@ -9,39 +10,35 @@ const EmployeeContribution = ({ company, closestRecord, groupId }) => {
 			overflowX="hidden"
 			cols={[
 				{
-					key: "Employee Name",
+					key: COLS.EMP_NAME,
 					pair: "obj",
 					pair_key: "fullName",
 					round: true,
 				},
-				// {
-				// 	key: "Employment Insurance (EE)",
-				// 	pair: "EI",
-				// 	round: true,
-				// },
-				// {
-				// 	key: "Canada Pension Plan (EE)",
-				// 	pair: "CPP",
-				// 	round: true,
-				// },
-				{ key: "Union Dues", pair: "unionDues", align: "center", round: true },
 				{
-					key: "Employer Pension Plan (EE)",
+					key: `${CONTRIBUTION.EI} (EE)`,
+					pair: "EI",
+					align: "center",
+					round: true,
+				},
+				{
+					key: `${CONTRIBUTION.CPP} (EE)`,
+					pair: "CPP",
+					align: "center",
+					round: true,
+				},
+				{ key: COLS.UNION_DUE, pair: "unionDues", align: "center", round: true },
+				{
+					key: `Employer ${CONTRIBUTION.PENSION_PLAN} (EE)`,
 					pair: "EPP",
 					align: "center",
 					round: true,
 				},
 				{
-					key: "Employer Health Plan (EE)",
+					key: `Employer ${CONTRIBUTION.HEALTH_PLAN} (EE)`,
 					pair: "EHP",
 					align: "center",
 					round: true,
-				},
-				{
-					key: "ee1",
-				},
-				{
-					key: "ee2",
 				},
 				{
 					key: "ee3",

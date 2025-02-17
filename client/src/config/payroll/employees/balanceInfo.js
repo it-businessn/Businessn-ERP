@@ -1,3 +1,5 @@
+import { COLS, CONTRIBUTION } from "constant";
+
 export const EMP_VACATION_BALANCE_CONFIG = [
 	// {
 	// 	type: "Carry forward adjustment",
@@ -29,7 +31,7 @@ export const ER_PAID_BENEFITS_CONFIG = [
 		type: "",
 		params: [
 			{
-				name: "Pension Contribution Treatment",
+				name: `${CONTRIBUTION.PENSION} Treatment`,
 				param_key: "typeOfPensionERTreatment",
 				control: "radio",
 				options: [
@@ -39,7 +41,7 @@ export const ER_PAID_BENEFITS_CONFIG = [
 					"Amount per Hour Pension Contributions",
 				],
 			},
-			{ name: "Pension Contribution - ER", param_key: "pensionERContribution" },
+			{ name: `${CONTRIBUTION.PENSION} - ER`, param_key: "pensionERContribution" },
 			{
 				name: "Dental - ER Treatment",
 				param_key: "typeOfDentalERTreatment",
@@ -83,7 +85,7 @@ export const EE_PAID_BENEFITS_CONFIG = [
 					"Amount per Hour Pension Contributions",
 				],
 			},
-			{ name: "Pension Contribution - EE", param_key: "pensionEEContribution" },
+			{ name: `${CONTRIBUTION.PENSION} - EE`, param_key: "pensionEEContribution" },
 			{
 				name: "Dental - EE Treatment",
 				param_key: "typeOfDentalEETreatment",
@@ -109,7 +111,7 @@ export const EE_PAID_BENEFITS_CONFIG = [
 			},
 			{ name: "Extended Health - EE", param_key: "extendedHealthEEContribution" },
 			{
-				name: "Union Dues Treatment",
+				name: `${COLS.UNION_DUE} Treatment`,
 				param_key: "typeOfUnionDuesTreatment",
 				control: "radio",
 				options: [
@@ -119,7 +121,7 @@ export const EE_PAID_BENEFITS_CONFIG = [
 					"Amount per Hour Union Contributions",
 				],
 			},
-			{ name: "Union Dues", param_key: "unionDuesContribution" },
+			{ name: COLS.UNION_DUE, param_key: "unionDuesContribution" },
 		],
 	},
 ];

@@ -2,6 +2,7 @@ import { HStack } from "@chakra-ui/react";
 import OutlineButton from "components/ui/button/OutlineButton";
 import PrimaryButton from "components/ui/button/PrimaryButton";
 import DeletePopUp from "components/ui/modal/DeletePopUp";
+import { COLS } from "constant";
 import useEmployeeEmploymentInfo from "hooks/useEmployeeEmploymentInfo";
 import { useState } from "react";
 import SettingService from "services/SettingService";
@@ -68,10 +69,10 @@ const EmployeeDetails = ({ company, closestRecord, path, groupId, selectedPayGro
 			<WorkviewTab
 				overflowX="hidden"
 				cols={[
-					{ key: "Employee Name", pair: "obj", pair_key: "fullName" },
+					{ key: COLS.EMP_NAME, pair: "obj", pair_key: "fullName" },
 					{ key: "Employee Number", pair: "obj", pair_key: "employeeId" },
 					{ key: "Department", pair: "employmentCostCenter" },
-					{ key: "Payrate", pair: "regPay", round: true },
+					{ key: COLS.PAYRATE, pair: "regPay", round: true },
 					// { key: "Employee Department", pair: "companyDepartment" },
 					{
 						key: "",

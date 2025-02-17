@@ -1,5 +1,6 @@
 import { HStack } from "@chakra-ui/react";
 import TextTitle from "components/ui/text/TextTitle";
+import { COLS, CONTRIBUTION } from "constant";
 import { PAY_TYPES_TITLE } from "erp-modules/payroll/timesheets/data";
 
 export const SUM_TOTALS = ["Gross ", "Total ", "Available ", "Net Pay"];
@@ -229,7 +230,7 @@ export const DEDUCTION_TYPES = [
 		YTDTotal: "YTD_CPPDeductions",
 	},
 	{
-		name: "Union Dues",
+		name: COLS.UNION_DUE,
 		rate: 0,
 		totalHours: 0,
 		currentTotal: "currentUnionDuesDeductions",
@@ -250,7 +251,7 @@ export const DEDUCTION_TYPES = [
 		YTDTotal: "YTDPrimaryDeposit",
 	},
 	{
-		name: "Pension Contribution",
+		name: CONTRIBUTION.PENSION,
 		rate: 0,
 		totalHours: 0,
 		currentTotal: "currentEmployeePensionContributions",
@@ -305,7 +306,7 @@ const EMPLOYER_BENEFIT_TYPES = [
 		YTDTotal: "YTD_CPPDeductions",
 	},
 	{
-		name: "Pension Contribution",
+		name: CONTRIBUTION.PENSION,
 		rate: 0,
 		totalHours: 0,
 		currentTotal: "currentEmployerPensionContributions",

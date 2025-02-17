@@ -1,5 +1,6 @@
 import { Input } from "@chakra-ui/react";
 import OutlineButton from "components/ui/button/OutlineButton";
+import { COLS } from "constant";
 import useEmployeeAmountAllocation from "hooks/useEmployeeAmountAllocation";
 import { useEffect, useState } from "react";
 import PayrollService from "services/PayrollService";
@@ -77,13 +78,12 @@ const AmountAllocation = ({ company, closestRecord, groupId, path }) => {
 
 	return (
 		<WorkviewTab
-			overflowX="hidden"
 			cellClick={cellClick}
 			renderEditableInput={renderEditableInput}
 			isEditable
 			setRefresh={setRefresh}
 			cols={[
-				{ key: "Employee Name", pair: "obj", pair_key: "fullName" },
+				{ key: COLS.EMP_NAME, pair: "obj", pair_key: "fullName" },
 				{
 					key: "Total Amount",
 					pair: "totalAmountAllocated",
@@ -97,11 +97,6 @@ const AmountAllocation = ({ company, closestRecord, groupId, path }) => {
 				},
 				{ key: "Retroactive $", pair: "retroactive", isEditable: true },
 				{ key: "Reimbursement $", pair: "reimbursement", isEditable: true },
-				{
-					key: "Vacation Payout $",
-					pair: "vacationPayout",
-					isEditable: true,
-				},
 				{ key: "Bonus $", pair: "bonus", isEditable: true },
 				{
 					key: "Termination Payout $",
@@ -109,23 +104,43 @@ const AmountAllocation = ({ company, closestRecord, groupId, path }) => {
 					isEditable: true,
 				},
 				{
+					key: "Vacation Payout $",
+					pair: "vacationPayout",
+					isEditable: true,
+				},
+				{
+					key: "Vac. Balance Adjustment $",
+					pair: "vacationPayout",
+					isEditable: true,
+				},
+				{
+					key: "Vac. Accrual $",
+					pair: "vacationPayout",
+					isEditable: true,
+				},
+				{
+					key: "Vac. Used $",
+					pair: "vacationPayout",
+					isEditable: true,
+				},
+				{
+					key: "Federal Tax $",
+					pair: "vacationPayout",
+					isEditable: true,
+				},
+				{
+					key: "Provincial Tax $",
+					pair: "vacationPayout",
+					isEditable: true,
+				},
+				{
+					key: "Income Tax $",
+					pair: "vacationPayout",
+					isEditable: true,
+				},
+				{
 					key: "",
 					pair: <OutlineButton size="xs" name="setup" label="View Balances" />,
-				},
-				{
-					key: "amount2",
-				},
-				{
-					key: "amount3",
-				},
-				{
-					key: "amount4",
-				},
-				{
-					key: "amount5",
-				},
-				{
-					key: "amount6",
 				},
 				{
 					key: "amount7",

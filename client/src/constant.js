@@ -25,6 +25,35 @@ export const BUSINESSN_ORG_ADMIN_EMAILS = [
 	"daniel.heyns@businessn.com",
 	"ruthkhosla17@gmail.com",
 ];
+
+export const CONTRIBUTION = {
+	EI: "Employment Insurance",
+	CPP: "Canada Pension Plan",
+	HEALTH_PLAN: "Health Plan",
+	PENSION_PLAN: "Pension Plan",
+	PENSION: "Pension Contribution",
+};
+
+export const COLS = {
+	EMP_NAME: "Employee Name",
+	UNION_DUE: "Union Dues",
+	PAYRATE: "Payrate",
+};
+
+export const TITLE_COLS = [COLS.EMP_NAME, "Total Hours", "Total Amount"];
+export const ALIGN_COLS = [
+	COLS.UNION_DUE,
+	COLS.PAYRATE,
+	`Employer ${CONTRIBUTION.PENSION_PLAN} (EE)`,
+	`Employer ${CONTRIBUTION.HEALTH_PLAN} (EE)`,
+	`${CONTRIBUTION.EI} (EE)`,
+	`${CONTRIBUTION.CPP} (EE)`,
+	`ER ${CONTRIBUTION.PENSION_PLAN}`,
+	`ER ${CONTRIBUTION.HEALTH_PLAN}`,
+	`${CONTRIBUTION.EI} (ER)`,
+	`${CONTRIBUTION.CPP} (ER)`,
+];
+
 export const isBusinessNAdmin = (email) =>
 	BUSINESSN_ORG_ADMIN_EMAILS.find((name) => name === email);
 

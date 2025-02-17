@@ -4,6 +4,7 @@ import EmptyRowRecord from "components/ui/EmptyRowRecord";
 import NormalTextTitle from "components/ui/NormalTextTitle";
 import TableLayout from "components/ui/table/TableLayout";
 import TextTitle from "components/ui/text/TextTitle";
+import { COLS } from "constant";
 import { useEffect, useState } from "react";
 import TimesheetService from "services/TimesheetService";
 import { getTimeCardFormat } from "utils/convertDate";
@@ -31,7 +32,7 @@ const Timecard = ({ company, userId, timecardRefresh, filter, pageNum, setPageNu
 	}, [timecardRefresh, pageNum]);
 
 	const cols = [
-		"Employee Name",
+		COLS.EMP_NAME,
 		"TM Badge ID",
 		"Clock In",
 		"Clock Out",

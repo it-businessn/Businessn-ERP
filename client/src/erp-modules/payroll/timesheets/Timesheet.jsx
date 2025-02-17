@@ -5,6 +5,7 @@ import DeletePopUp from "components/ui/modal/DeletePopUp";
 import NormalTextTitle from "components/ui/NormalTextTitle";
 import TableLayout from "components/ui/table/TableLayout";
 import TextTitle from "components/ui/text/TextTitle";
+import { COLS } from "constant";
 import { useEffect, useState } from "react";
 import { FaCheck, FaRegTrashAlt } from "react-icons/fa";
 import { IoClose } from "react-icons/io5";
@@ -224,7 +225,7 @@ const Timesheet = ({
 	);
 
 	const cols = [
-		"Employee Name",
+		COLS.EMP_NAME,
 		"Worked Date",
 		"Department",
 		"Pay Rate",

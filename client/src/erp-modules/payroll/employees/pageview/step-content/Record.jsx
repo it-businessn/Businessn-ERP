@@ -3,6 +3,7 @@ import PrimaryButton from "components/ui/button/PrimaryButton";
 import FormControlMain from "components/ui/form";
 import RequiredLabel from "components/ui/form/RequiredLabel";
 import TextTitle from "components/ui/text/TextTitle";
+import { COLS, CONTRIBUTION } from "constant";
 import DateTypeRecord from "./date";
 import InputRecord from "./input";
 import RadioTypeRecord from "./radio";
@@ -60,19 +61,19 @@ const Record = ({
 						{tab.params.map((param) => {
 							const isReadOnly =
 								readOnly ||
-								(param.name.includes("Pension Contribution - ER") &&
+								(param.name.includes(`${CONTRIBUTION.PENSION} - ER`) &&
 									formData?.typeOfPensionERTreatment?.includes("No")) ||
 								(param.name.includes("Dental - ER") &&
 									formData?.typeOfDentalERTreatment?.includes("No")) ||
 								(param.name.includes("Extended Health - ER") &&
 									formData?.typeOfExtendedHealthERTreatment?.includes("No")) ||
-								(param.name.includes("Pension Contribution - EE") &&
+								(param.name.includes(`${CONTRIBUTION.PENSION} - EE`) &&
 									formData?.typeOfPensionEETreatment?.includes("No")) ||
 								(param.name.includes("Dental - EE") &&
 									formData?.typeOfDentalEETreatment?.includes("No")) ||
 								(param.name.includes("Extended Health - EE") &&
 									formData?.typeOfExtendedHealthEETreatment?.includes("No")) ||
-								(param.name.includes("Union Dues") &&
+								(param.name.includes(COLS.UNION_DUE) &&
 									formData?.typeOfUnionDuesTreatment?.includes("No"));
 
 							return param?.control === "label" ? (
