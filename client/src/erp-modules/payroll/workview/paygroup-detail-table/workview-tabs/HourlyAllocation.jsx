@@ -81,7 +81,7 @@ const HourlyAllocation = ({ company, closestRecord, groupId }) => {
 		},
 		{
 			key: "",
-			pair: <OutlineButton size="xs" name="setup" label="View Timesheets" />,
+			pair: <OutlineButton size="xs" name="setup" label="View Timesheets" mr={3} />,
 		},
 	];
 

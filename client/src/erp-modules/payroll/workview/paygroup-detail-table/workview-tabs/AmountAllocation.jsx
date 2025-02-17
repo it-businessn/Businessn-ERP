@@ -140,10 +140,7 @@ const AmountAllocation = ({ company, closestRecord, groupId, path }) => {
 				},
 				{
 					key: "",
-					pair: <OutlineButton size="xs" name="setup" label="View Balances" />,
-				},
-				{
-					key: "amount7",
+					pair: <OutlineButton size="xs" name="setup" label="View Balances" mr={3} />,
 				},
 			]}
 			data={amountAllocateData}
