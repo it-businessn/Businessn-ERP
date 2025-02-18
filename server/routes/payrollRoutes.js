@@ -16,6 +16,7 @@ router.get(
 	"/total-alerts/:companyName/:payPeriodNum",
 	payrollController.getTotalAlertsAndViolationsInfo,
 );
+
 router.get(
 	"/hoursTimesheet/:companyName/:startDate/:endDate/:payDate/:isExtraRun/:groupId/:payrunType",
 	payrollController.getGroupedTimesheet,

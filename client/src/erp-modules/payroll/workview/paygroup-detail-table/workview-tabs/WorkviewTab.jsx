@@ -5,6 +5,7 @@ import EmptyRowRecord from "components/ui/EmptyRowRecord";
 import NormalTextTitle from "components/ui/NormalTextTitle";
 import WorkviewTable from "components/ui/table/WorkviewTable";
 import TextTitle from "components/ui/text/TextTitle";
+import { HRS_DECIMAL_COLS, TOTAL_AMT_HRS_COLS } from "constant";
 import { useNavigate } from "react-router-dom";
 import { convertDecimal, getAmount } from "utils/convertAmt";
 
@@ -74,7 +75,7 @@ const WorkviewTab = ({
 											""
 										)
 									) : col.round ? (
-										col.pair === "totalAmountAllocated" ? (
+										TOTAL_AMT_HRS_COLS.includes(col.pair) ? (
 											<TextTitle title={getAmount(row[col.pair])} />
 										) : (
 											<NormalTextTitle align="end" title={getAmount(row[col.pair])} />
@@ -82,7 +83,7 @@ const WorkviewTab = ({
 									) : col.main_key ? (
 										row[col.main_key][col.pair]
 									) : col.nearest ? (
-										col.pair === "totalHoursWorked" ? (
+										HRS_DECIMAL_COLS.includes(col.pair) ? (
 											<TextTitle title={convertDecimal(row[col.pair])} />
 										) : (
 											convertDecimal(row[col.pair])

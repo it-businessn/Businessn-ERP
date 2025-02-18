@@ -41,6 +41,7 @@ export const COLS = {
 };
 
 export const TITLE_COLS = [COLS.EMP_NAME, "Total Hours", "Total Amount"];
+
 export const ALIGN_COLS = [
 	COLS.UNION_DUE,
 	COLS.PAYRATE,
@@ -52,6 +53,20 @@ export const ALIGN_COLS = [
 	`ER ${CONTRIBUTION.HEALTH_PLAN}`,
 	`${CONTRIBUTION.EI} (ER)`,
 	`${CONTRIBUTION.CPP} (ER)`,
+];
+
+export const TOTAL_AMT_HRS_COLS = [
+	"totalAmountAllocated",
+	"totalPayoutAmountAllocated",
+	"totalManualAmountAllocated",
+	"totalSuperficialAmountAllocated",
+];
+
+export const HRS_DECIMAL_COLS = [
+	"totalHoursWorked",
+	"totalSuperficialHoursWorked",
+	"totalManualHoursWorked",
+	"totalPayoutHoursWorked",
 ];
 
 export const isBusinessNAdmin = (email) =>

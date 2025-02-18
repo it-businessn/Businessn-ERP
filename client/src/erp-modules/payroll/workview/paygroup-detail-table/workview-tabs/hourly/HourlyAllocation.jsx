@@ -4,13 +4,13 @@ import { useEffect, useState } from "react";
 import { timesheetPath } from "routes";
 import PayrollService from "services/PayrollService";
 import { convertDecimal } from "utils/convertAmt";
-import WorkviewTab from "./WorkviewTab";
+import WorkviewTab from "../WorkviewTab";
 import {
 	MANUAL_PAYOUT_HOURLY_ALLOCATE_COLS,
 	PAYOUT_HOURLY_ALLOCATE_COLS,
 	REGULAR_HOURLY_ALLOCATE_COLS,
 	SUPERFICIAL_HOURLY_ALLOCATE_COLS,
-} from "./payrunCols";
+} from "./payrunHourlyAllocationCols";
 
 const HourlyAllocation = ({ company, closestRecord, groupId, payrunOption }) => {
 	const data = useEmployeeHoursWorked(company, closestRecord, groupId, payrunOption);

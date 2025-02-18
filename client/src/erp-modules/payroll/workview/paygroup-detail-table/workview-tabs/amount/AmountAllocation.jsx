@@ -2,13 +2,13 @@ import { Input } from "@chakra-ui/react";
 import useEmployeeAmountAllocation from "hooks/useEmployeeAmountAllocation";
 import { useEffect, useState } from "react";
 import PayrollService from "services/PayrollService";
-import WorkviewTab from "./WorkviewTab";
+import WorkviewTab from "../WorkviewTab";
 import {
 	MANUAL_AMT_ALLOCATE_COLS,
 	PAYOUT_AMT_ALLOCATE_COLS,
 	REGULAR_AMT_ALLOCATE_COLS,
 	SUPERFICIAL_AMT_ALLOCATE_COLS,
-} from "./amtAllocateCols";
+} from "./payrunAmountAllocationCols.jsx";
 
 const AmountAllocation = ({ company, closestRecord, groupId, path, payrunOption }) => {
 	const [refresh, setRefresh] = useState(false);
@@ -22,10 +22,22 @@ const AmountAllocation = ({ company, closestRecord, groupId, path, payrunOption 
 	const [payrunAmtData, setPayrunAmtData] = useState(null);
 	const [amountAllocateData, setAmountAllocateData] = useState(null);
 	const [formData, setFormData] = useState(null);
+	const [colKeys, setColKeys] = useState(null);
+	const [totalColumnKey, setTotalColumnKey] = useState(null);
 
 	useEffect(() => {
 		setPayrunAmtData(PAYRUN_AMT_ALLOCATE_DATA[payrunOption]);
 	}, [payrunOption]);
+
+	useEffect(() => {
+		const allocateColKeys = payrunAmtData?.map(({ pair, key }) =>
+			key !== "" && pair !== "obj" ? pair : null,
+		);
+		setColKeys(allocateColKeys);
+
+		const allocateColMainKey = payrunAmtData?.find(({ isTotal }) => isTotal)?.pair;
+		setTotalColumnKey(allocateColMainKey);
+	}, [payrunAmtData]);
 
 	useEffect(() => {
 		if (data) {
@@ -53,15 +65,21 @@ const AmountAllocation = ({ company, closestRecord, groupId, path, payrunOption 
 			const { empId } = updatedRec;
 
 			if (updatedRec) {
+				updatedRec[totalColumnKey] = 0;
+				colKeys.forEach((key) => {
+					if (key && key !== totalColumnKey) {
+						updatedRec[totalColumnKey] += parseInt(updatedRec[key]);
+					}
+				});
 				updatedRec.companyName = company;
-				await PayrollService.addEmployeeExtraAmount({
+				const { data } = await PayrollService.addEmployeeExtraAmount({
 					payPeriodPayDate: closestRecord?.payPeriodPayDate,
 					companyName: company,
 					updatedRec,
 					empId,
 				});
 				setRefresh((prev) => !prev);
-				setFormData(null);
+				setFormData(data);
 			}
 		} catch (error) {}
 	};

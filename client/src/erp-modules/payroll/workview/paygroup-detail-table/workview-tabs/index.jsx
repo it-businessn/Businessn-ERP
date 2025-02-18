@@ -3,7 +3,7 @@ import TabsButtonGroup from "components/ui/tab/TabsButtonGroup";
 import TextTitle from "components/ui/text/TextTitle";
 import { useState } from "react";
 import { isExtraPay } from "utils";
-import AmountAllocation from "./AmountAllocation";
+import AmountAllocation from "./amount/AmountAllocation";
 // import EmployeeContribution fr om "./EmployeeContribution";
 import EmployeeDetails from "./EmployeeDetails";
 // import EmployerContribution from "./EmployerContribution";
@@ -11,7 +11,7 @@ import { HStack } from "@chakra-ui/react";
 import PopupMessage from "components/ui/PopupMessage";
 import EmployeeContribution from "./EmployeeContribution";
 import EmployerContribution from "./EmployerContribution";
-import HourlyAllocation from "./HourlyAllocation";
+import HourlyAllocation from "./hourly/HourlyAllocation";
 
 const PaygroupDetailTable = ({
 	closestRecord,

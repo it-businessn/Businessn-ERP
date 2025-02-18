@@ -6,8 +6,44 @@ export const REGULAR_AMT_ALLOCATE_COLS = [
 	{
 		key: "Total Amount",
 		pair: "totalAmountAllocated",
+		isTotal: true,
 		align: "center",
 		round: true,
+	},
+	{
+		key: "Regular $",
+		pair: "regPayAmt",
+		isEditable: true,
+	},
+	{
+		key: "Overtime $",
+		pair: "OTPayAmt",
+		isEditable: true,
+	},
+	{
+		key: "Double OT $",
+		pair: "oblOTPayAmt",
+		isEditable: true,
+	},
+	{
+		key: "Stat. Pay $",
+		pair: "statPayAmt",
+		isEditable: true,
+	},
+	{
+		key: "Stat. Worked $",
+		pair: "statWorkPayAmt",
+		isEditable: true,
+	},
+	{
+		key: "Vacation $",
+		pair: "vacationPayAmt",
+		isEditable: true,
+	},
+	{
+		key: "Sick $",
+		pair: "sickPayAmt",
+		isEditable: true,
 	},
 	{
 		key: "Commission $",
@@ -67,9 +103,45 @@ export const PAYOUT_AMT_ALLOCATE_COLS = [
 	{ key: COLS.EMP_NAME, pair: "obj", pair_key: "fullName" },
 	{
 		key: "Total Amount",
-		pair: "totalAmountAllocated",
+		pair: "totalPayoutAmountAllocated",
+		isTotal: true,
 		align: "center",
 		round: true,
+	},
+	{
+		key: "Regular $",
+		pair: "regPayAmtPayout",
+		isEditable: true,
+	},
+	{
+		key: "Overtime $",
+		pair: "OTPayAmtPayout",
+		isEditable: true,
+	},
+	{
+		key: "Double OT $",
+		pair: "oblOTPayAmtPayout",
+		isEditable: true,
+	},
+	{
+		key: "Stat. Pay $",
+		pair: "statPayAmtPayout",
+		isEditable: true,
+	},
+	{
+		key: "Stat. Worked $",
+		pair: "statWorkPayAmtPayout",
+		isEditable: true,
+	},
+	{
+		key: "Vacation $",
+		pair: "vacationPayAmtPayout",
+		isEditable: true,
+	},
+	{
+		key: "Sick $",
+		pair: "sickPayAmtPayout",
+		isEditable: true,
 	},
 	{
 		key: "Commission $",
@@ -129,9 +201,45 @@ export const MANUAL_AMT_ALLOCATE_COLS = [
 	{ key: COLS.EMP_NAME, pair: "obj", pair_key: "fullName" },
 	{
 		key: "Total Amount",
-		pair: "totalAmountAllocated",
+		pair: "totalManualAmountAllocated",
+		isTotal: true,
 		align: "center",
 		round: true,
+	},
+	{
+		key: "Regular $",
+		pair: "regPayAmtManual",
+		isEditable: true,
+	},
+	{
+		key: "Overtime $",
+		pair: "OTPayAmtManual",
+		isEditable: true,
+	},
+	{
+		key: "Double OT $",
+		pair: "oblOTPayAmtManual",
+		isEditable: true,
+	},
+	{
+		key: "Stat. Pay $",
+		pair: "statPayAmtManual",
+		isEditable: true,
+	},
+	{
+		key: "Stat. Worked $",
+		pair: "statWorkPayAmtManual",
+		isEditable: true,
+	},
+	{
+		key: "Vacation $",
+		pair: "vacationPayAmtManual",
+		isEditable: true,
+	},
+	{
+		key: "Sick $",
+		pair: "sickPayAmtManual",
+		isEditable: true,
 	},
 	{
 		key: "Commission $",
@@ -191,9 +299,45 @@ export const SUPERFICIAL_AMT_ALLOCATE_COLS = [
 	{ key: COLS.EMP_NAME, pair: "obj", pair_key: "fullName" },
 	{
 		key: "Total Amount",
-		pair: "totalAmountAllocated",
+		pair: "totalSuperficialAmountAllocated",
+		isTotal: true,
 		align: "center",
 		round: true,
+	},
+	{
+		key: "Regular $",
+		pair: "regPayAmtSuperficial",
+		isEditable: true,
+	},
+	{
+		key: "Overtime $",
+		pair: "OTPayAmtSuperficial",
+		isEditable: true,
+	},
+	{
+		key: "Double OT $",
+		pair: "oblOTPayAmtSuperficial",
+		isEditable: true,
+	},
+	{
+		key: "Stat. Pay $",
+		pair: "statPayAmtSuperficial",
+		isEditable: true,
+	},
+	{
+		key: "Stat. Worked $",
+		pair: "statWorkPayAmtSuperficial",
+		isEditable: true,
+	},
+	{
+		key: "Vacation $",
+		pair: "vacationPayAmtSuperficial",
+		isEditable: true,
+	},
+	{
+		key: "Sick $",
+		pair: "sickPayAmtSuperficial",
+		isEditable: true,
 	},
 	{
 		key: "Commission $",
