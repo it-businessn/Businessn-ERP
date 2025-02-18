@@ -23,6 +23,7 @@ const EarningsTable = ({ cols, rows, data, colBg, isNetSummary }) => {
 						<React.Fragment key={name}>
 							{(name === "Regular" ||
 								name === "Net Pay" ||
+								data[YTDHoursTotal] > 0 ||
 								data[YTDTotal] > 0 ||
 								name.includes("Gross ")) && (
 								<ItemRow

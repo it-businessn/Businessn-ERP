@@ -22,6 +22,7 @@ const {
 	findAdditionalSuperficialHoursAllocatedInfo,
 	findAdditionalManualHoursAllocatedInfo,
 	findAdditionalPayoutHoursAllocatedInfo,
+	findAllAdditionalHoursAllocatedInfo,
 } = require("./additionalAllocationInfoController");
 
 const { findGroupEmployees } = require("./setUpController");
@@ -1218,7 +1219,7 @@ const buildPayStubDetails = async (currentPayPeriod, companyName, empTimesheetDa
 
 	const empPayStubResult = await findEmployeePayStub(empId, payPeriod);
 
-	const empAdditionalHoursAllocated = await findAdditionalHoursAllocatedInfo({
+	const empAdditionalHoursAllocated = await findAllAdditionalHoursAllocatedInfo({
 		empId,
 		payPeriodPayDate,
 	});
@@ -1357,7 +1358,161 @@ const buildPayStubDetails = async (currentPayPeriod, companyName, empTimesheetDa
 	);
 	if (currentPayInfo) {
 		await updatePayStub(currentPayInfo._id, currentPayStub);
+		// await addSeparateCheque();
 	} else {
+		await addPayStub(currentPayStub);
+		await addSeparateCheque(
+			empId,
+			companyName,
+			payPeriodStartDate,
+			payPeriodEndDate,
+			payPeriodPayDate,
+			payPeriodProcessingDate,
+			payPeriod,
+			isExtraRun,
+			newEmpData,
+			prevPayPayInfo,
+			empAdditionalHoursAllocated,
+		);
+	}
+};
+
+const addSeparateCheque = async (
+	empId,
+	companyName,
+	payPeriodStartDate,
+	payPeriodEndDate,
+	payPeriodPayDate,
+	payPeriodProcessingDate,
+	payPeriod,
+	isExtraRun,
+	newEmpData,
+	prevPayPayInfo,
+	empAdditionalHoursAllocated,
+) => {
+	const {
+		additionalManualRegHoursWorked,
+		additionalManualOvertimeHoursWorked,
+		additionalManualDblOvertimeHoursWorked,
+		additionalManualStatDayHoursWorked,
+		additionalManualVacationHoursWorked,
+		additionalManualStatHoursWorked,
+		additionalManualSickHoursWorked,
+		additionalPayoutRegHoursWorked,
+		additionalPayoutOvertimeHoursWorked,
+		additionalPayoutDblOvertimeHoursWorked,
+		additionalPayoutStatDayHoursWorked,
+		additionalPayoutVacationHoursWorked,
+		additionalPayoutStatHoursWorked,
+		additionalPayoutSickHoursWorked,
+		additionalSuperficialRegHoursWorked,
+		additionalSuperficialOvertimeHoursWorked,
+		additionalSuperficialDblOvertimeHoursWorked,
+		additionalSuperficialStatDayHoursWorked,
+		additionalSuperficialVacationHoursWorked,
+		additionalSuperficialStatHoursWorked,
+		additionalSuperficialSickHoursWorked,
+	} = empAdditionalHoursAllocated;
+	if (
+		additionalManualRegHoursWorked ||
+		additionalManualOvertimeHoursWorked ||
+		additionalManualDblOvertimeHoursWorked ||
+		additionalManualStatDayHoursWorked ||
+		additionalManualVacationHoursWorked ||
+		additionalManualStatHoursWorked ||
+		additionalManualSickHoursWorked
+	) {
+		const hrsData = {
+			totalRegHoursWorked: additionalManualRegHoursWorked,
+			totalOvertimeHoursWorked: additionalManualOvertimeHoursWorked,
+			totalDblOvertimeHoursWorked: additionalManualDblOvertimeHoursWorked,
+			totalStatDayHoursWorked: additionalManualStatDayHoursWorked,
+			totalStatHours: additionalManualStatHoursWorked,
+			totalSickHoursWorked: additionalManualSickHoursWorked,
+			totalVacationHoursWorked: additionalManualVacationHoursWorked,
+		};
+		const currentPayStub = buildPayStub(
+			empId,
+			companyName,
+			payPeriodStartDate,
+			payPeriodEndDate,
+			payPeriodPayDate,
+			payPeriodProcessingDate,
+			payPeriod,
+			isExtraRun,
+			newEmpData,
+			prevPayPayInfo,
+			true,
+			hrsData,
+		);
+		await addPayStub(currentPayStub);
+	}
+	if (
+		additionalPayoutRegHoursWorked ||
+		additionalPayoutOvertimeHoursWorked ||
+		additionalPayoutDblOvertimeHoursWorked ||
+		additionalPayoutStatDayHoursWorked ||
+		additionalPayoutVacationHoursWorked ||
+		additionalPayoutStatHoursWorked ||
+		additionalPayoutSickHoursWorked
+	) {
+		const hrsData = {
+			totalRegHoursWorked: additionalPayoutRegHoursWorked,
+			totalOvertimeHoursWorked: additionalPayoutOvertimeHoursWorked,
+			totalDblOvertimeHoursWorked: additionalPayoutDblOvertimeHoursWorked,
+			totalStatDayHoursWorked: additionalPayoutStatDayHoursWorked,
+			totalStatHours: additionalPayoutStatHoursWorked,
+			totalSickHoursWorked: additionalPayoutSickHoursWorked,
+			totalVacationHoursWorked: additionalPayoutVacationHoursWorked,
+		};
+		const currentPayStub = buildPayStub(
+			empId,
+			companyName,
+			payPeriodStartDate,
+			payPeriodEndDate,
+			payPeriodPayDate,
+			payPeriodProcessingDate,
+			payPeriod,
+			isExtraRun,
+			newEmpData,
+			prevPayPayInfo,
+			true,
+			hrsData,
+		);
+		await addPayStub(currentPayStub);
+	}
+	if (
+		additionalSuperficialRegHoursWorked ||
+		additionalSuperficialOvertimeHoursWorked ||
+		additionalSuperficialDblOvertimeHoursWorked ||
+		additionalSuperficialStatDayHoursWorked ||
+		additionalSuperficialVacationHoursWorked ||
+		additionalSuperficialStatHoursWorked ||
+		additionalSuperficialSickHoursWorked
+	) {
+		const hrsData = {
+			totalRegHoursWorked: additionalSuperficialRegHoursWorked,
+			totalOvertimeHoursWorked: additionalSuperficialOvertimeHoursWorked,
+			totalDblOvertimeHoursWorked: additionalSuperficialDblOvertimeHoursWorked,
+			totalStatDayHoursWorked: additionalSuperficialStatDayHoursWorked,
+			totalStatHours: additionalSuperficialStatHoursWorked,
+			totalSickHoursWorked: additionalSuperficialSickHoursWorked,
+			totalVacationHoursWorked: additionalSuperficialVacationHoursWorked,
+		};
+		const currentPayStub = buildPayStub(
+			empId,
+			companyName,
+			payPeriodStartDate,
+			payPeriodEndDate,
+			payPeriodPayDate,
+			payPeriodProcessingDate,
+			payPeriod,
+			isExtraRun,
+			newEmpData,
+			prevPayPayInfo,
+			true,
+			hrsData,
+		);
 		await addPayStub(currentPayStub);
 	}
 };
@@ -1373,6 +1528,8 @@ const buildPayStub = (
 	isExtraRun,
 	newEmpData,
 	prevPayPayInfo,
+	isSeparate,
+	additionalAllocatedData,
 ) => {
 	const {
 		regPay,
@@ -1472,35 +1629,56 @@ const buildPayStub = (
 		terminationPayout,
 		totalAmountAllocated,
 
-		totalRegHoursWorked,
-		totalOvertimeHoursWorked,
-		totalDblOvertimeHoursWorked,
-		totalStatDayHoursWorked,
-		totalStatHours,
-		totalSickHoursWorked,
-		totalVacationHoursWorked,
+		totalRegHoursWorked: isSeparate
+			? additionalAllocatedData?.totalRegHoursWorked
+			: totalRegHoursWorked,
+		totalOvertimeHoursWorked: isSeparate
+			? additionalAllocatedData?.totalOvertimeHoursWorked
+			: totalOvertimeHoursWorked,
+		totalDblOvertimeHoursWorked: isSeparate
+			? additionalAllocatedData?.totalDblOvertimeHoursWorked
+			: totalDblOvertimeHoursWorked,
+		totalStatDayHoursWorked: isSeparate
+			? additionalAllocatedData?.totalStatDayHoursWorked
+			: totalStatDayHoursWorked,
+		totalStatHours: isSeparate ? additionalAllocatedData?.totalStatHours : totalStatHours,
+		totalSickHoursWorked: isSeparate
+			? additionalAllocatedData?.totalSickHoursWorked
+			: totalSickHoursWorked,
+		totalVacationHoursWorked: isSeparate
+			? additionalAllocatedData?.totalVacationHoursWorked
+			: totalVacationHoursWorked,
 		totalSprayHoursWorked,
 		totalFirstAidHoursWorked,
 		totalHoursWorked,
 
-		YTDRegHoursWorked: getSumTotal(prevPayPayInfo?.YTDRegHoursWorked, totalRegHoursWorked),
+		YTDRegHoursWorked: getSumTotal(
+			prevPayPayInfo?.YTDRegHoursWorked,
+			(additionalAllocatedData?.totalRegHoursWorked || 0) + totalRegHoursWorked,
+		),
 		YTDOvertimeHoursWorked: getSumTotal(
 			prevPayPayInfo?.YTDOvertimeHoursWorked,
-			totalOvertimeHoursWorked,
+			(additionalAllocatedData?.totalOvertimeHoursWorked || 0) + totalOvertimeHoursWorked,
 		),
 		YTDDblOvertimeHoursWorked: getSumTotal(
 			prevPayPayInfo?.YTDDblOvertimeHoursWorked,
-			totalDblOvertimeHoursWorked,
+			(additionalAllocatedData?.totalDblOvertimeHoursWorked || 0) + totalDblOvertimeHoursWorked,
 		),
 		YTDStatDayHoursWorked: getSumTotal(
 			prevPayPayInfo?.YTDStatDayHoursWorked,
-			totalStatDayHoursWorked,
+			(additionalAllocatedData?.totalStatDayHoursWorked || 0) + totalStatDayHoursWorked,
 		),
-		YTDStatHoursWorked: getSumTotal(prevPayPayInfo?.YTDStatHoursWorked, totalStatHours),
-		YTDSickHoursWorked: getSumTotal(prevPayPayInfo?.YTDSickHoursWorked, totalSickHoursWorked),
+		YTDStatHoursWorked: getSumTotal(
+			prevPayPayInfo?.YTDStatHoursWorked,
+			(additionalAllocatedData?.totalStatHours || 0) + totalStatHours,
+		),
+		YTDSickHoursWorked: getSumTotal(
+			prevPayPayInfo?.YTDSickHoursWorked,
+			(additionalAllocatedData?.totalSickHoursWorked || 0) + totalSickHoursWorked,
+		),
 		YTDVacationHoursWorked: getSumTotal(
 			prevPayPayInfo?.YTDVacationHoursWorked,
-			totalVacationHoursWorked,
+			(additionalAllocatedData?.totalVacationHoursWorked || 0) + totalVacationHoursWorked,
 		),
 		YTDSprayHoursWorked: getSumTotal(prevPayPayInfo?.YTDSprayHoursWorked, totalSprayHoursWorked),
 		YTDFirstAidHoursWorked: getSumTotal(
