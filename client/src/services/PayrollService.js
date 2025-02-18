@@ -9,9 +9,9 @@ const PayrollService = {
 		return apiService.get(`/payroll/payInfo/${company}/${payDate}/${isExtraRun}/${groupId}`);
 	},
 
-	async getAllEmployeeAmountInfo(company, payDate, extraRun, groupId) {
+	async getAllEmployeeAmountInfo(company, payDate, extraRun, groupId, payrunOption) {
 		return apiService.get(
-			`/payroll/additionalAllocation/${company}/${payDate}/${extraRun}/${groupId}`,
+			`/payroll/additionalAllocation/${company}/${payDate}/${extraRun}/${groupId}/${payrunOption}`,
 		);
 	},
 

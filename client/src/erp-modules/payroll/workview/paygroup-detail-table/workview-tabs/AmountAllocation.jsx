@@ -1,17 +1,31 @@
 import { Input } from "@chakra-ui/react";
-import OutlineButton from "components/ui/button/OutlineButton";
-import { COLS } from "constant";
 import useEmployeeAmountAllocation from "hooks/useEmployeeAmountAllocation";
 import { useEffect, useState } from "react";
 import PayrollService from "services/PayrollService";
 import WorkviewTab from "./WorkviewTab";
+import {
+	MANUAL_AMT_ALLOCATE_COLS,
+	PAYOUT_AMT_ALLOCATE_COLS,
+	REGULAR_AMT_ALLOCATE_COLS,
+	SUPERFICIAL_AMT_ALLOCATE_COLS,
+} from "./amtAllocateCols";
 
-const AmountAllocation = ({ company, closestRecord, groupId, path }) => {
+const AmountAllocation = ({ company, closestRecord, groupId, path, payrunOption }) => {
 	const [refresh, setRefresh] = useState(false);
-	const data = useEmployeeAmountAllocation(company, refresh, closestRecord, groupId);
-
+	const data = useEmployeeAmountAllocation(company, refresh, closestRecord, groupId, payrunOption);
+	const PAYRUN_AMT_ALLOCATE_DATA = {
+		1: REGULAR_AMT_ALLOCATE_COLS,
+		2: PAYOUT_AMT_ALLOCATE_COLS,
+		3: MANUAL_AMT_ALLOCATE_COLS,
+		4: SUPERFICIAL_AMT_ALLOCATE_COLS,
+	};
+	const [payrunAmtData, setPayrunAmtData] = useState(null);
 	const [amountAllocateData, setAmountAllocateData] = useState(null);
 	const [formData, setFormData] = useState(null);
+
+	useEffect(() => {
+		setPayrunAmtData(PAYRUN_AMT_ALLOCATE_DATA[payrunOption]);
+	}, [payrunOption]);
 
 	useEffect(() => {
 		if (data) {
@@ -36,27 +50,14 @@ const AmountAllocation = ({ company, closestRecord, groupId, path }) => {
 			const updatedRec = amountAllocateData?.find(
 				(record) => record?.empId?._id === formData?.empId?._id,
 			);
-			const {
-				commission,
-				bonus,
-				retroactive,
-				reimbursement,
-				terminationPayout,
-				vacationPayout,
-				empId,
-			} = updatedRec;
+			const { empId } = updatedRec;
 
 			if (updatedRec) {
 				updatedRec.companyName = company;
 				await PayrollService.addEmployeeExtraAmount({
 					payPeriodPayDate: closestRecord?.payPeriodPayDate,
 					companyName: company,
-					commission,
-					bonus,
-					retroactive,
-					reimbursement,
-					terminationPayout,
-					vacationPayout,
+					updatedRec,
 					empId,
 				});
 				setRefresh((prev) => !prev);
@@ -77,77 +78,19 @@ const AmountAllocation = ({ company, closestRecord, groupId, path }) => {
 	);
 
 	return (
-		<WorkviewTab
-			cellClick={cellClick}
-			renderEditableInput={renderEditableInput}
-			isEditable
-			setRefresh={setRefresh}
-			cols={[
-				{ key: COLS.EMP_NAME, pair: "obj", pair_key: "fullName" },
-				{
-					key: "Total Amount",
-					pair: "totalAmountAllocated",
-					align: "center",
-					round: true,
-				},
-				{
-					key: "Commission $",
-					pair: "commission",
-					isEditable: true,
-				},
-				{ key: "Retroactive $", pair: "retroactive", isEditable: true },
-				{ key: "Reimbursement $", pair: "reimbursement", isEditable: true },
-				{ key: "Bonus $", pair: "bonus", isEditable: true },
-				{
-					key: "Termination Payout $",
-					pair: "terminationPayout",
-					isEditable: true,
-				},
-				{
-					key: "Vacation Payout $",
-					pair: "vacationPayout",
-					isEditable: true,
-				},
-				{
-					key: "Vac. Balance Adjustment $",
-					pair: "vacationPayout",
-					isEditable: true,
-				},
-				{
-					key: "Vac. Accrual $",
-					pair: "vacationPayout",
-					isEditable: true,
-				},
-				{
-					key: "Vac. Used $",
-					pair: "vacationPayout",
-					isEditable: true,
-				},
-				{
-					key: "Federal Tax $",
-					pair: "vacationPayout",
-					isEditable: true,
-				},
-				{
-					key: "Provincial Tax $",
-					pair: "vacationPayout",
-					isEditable: true,
-				},
-				{
-					key: "Income Tax $",
-					pair: "vacationPayout",
-					isEditable: true,
-				},
-				{
-					key: "",
-					pair: <OutlineButton size="xs" name="setup" label="View Balances" mr={3} />,
-				},
-			]}
-			data={amountAllocateData}
-			label="Setup"
-			path={path}
-			stepNum={5}
-		/>
+		payrunAmtData && (
+			<WorkviewTab
+				cellClick={cellClick}
+				renderEditableInput={renderEditableInput}
+				isEditable
+				setRefresh={setRefresh}
+				cols={payrunAmtData}
+				data={amountAllocateData}
+				label="Setup"
+				path={path}
+				stepNum={5}
+			/>
+		)
 	);
 };
 
