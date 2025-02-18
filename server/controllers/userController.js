@@ -7,6 +7,7 @@ const Task = require("../models/Task");
 const UserActivity = require("../models/UserActivity");
 const { isRoleManager } = require("../services/data");
 const { setInitialPermissions, findCompany } = require("./appController");
+const { findGroupEmployees } = require("./setUpController");
 
 const getPayrollActiveEmployees = async (companyName) => {
 	const existingCompany = await findCompany("name", companyName);
@@ -20,7 +21,6 @@ const getPayrollActiveEmployees = async (companyName) => {
 		});
 	return result;
 };
-
 const getPayrollInActiveEmployees = async (companyName) => {
 	const existingCompany = await findCompany("name", companyName);
 	return await findEmployee({
@@ -352,6 +352,23 @@ const getActiveUsers = async () => {
 	return { totalLeadsDisbursed, totalWeight, activeUsers };
 };
 
+const getEmployeeId = async (empList) => {
+	const list = [];
+	for (const fullName of empList) {
+		const employee = await Employee.findOne({ fullName });
+		list.push(employee);
+	}
+	return list;
+};
+
+const fetchActiveEmployees = async (isExtraPayRun, groupId, payDate, companyName) => {
+	const employees = isExtraPayRun && (await findGroupEmployees(groupId, payDate));
+
+	return isExtraPayRun
+		? await getEmployeeId(employees)
+		: await getPayrollActiveEmployees(companyName);
+};
+
 module.exports = {
 	getAllEmployees,
 	getUserActivity,
@@ -371,4 +388,6 @@ module.exports = {
 	getPayrollInActiveCompanyEmployees,
 	getAllSalesAgentsList,
 	getAllCompManagers,
+	getEmployeeId,
+	fetchActiveEmployees,
 };

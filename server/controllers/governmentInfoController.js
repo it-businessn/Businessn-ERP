@@ -105,7 +105,14 @@ const updateEmployeeGovernmentInfo = async (req, res) => {
 	}
 };
 
+const findEmployeeGovernmentInfoDetails = async (empId, companyName) =>
+	await EmployeeGovernmentInfo.findOne({
+		empId,
+		companyName,
+	}).select("empId federalTaxCredit regionalTaxCredit");
+
 module.exports = {
+	findEmployeeGovernmentInfoDetails,
 	getAllGovernmentInfo,
 	getEmployeeGovernmentInfo,
 	addEmployeeGovernmentInfo,

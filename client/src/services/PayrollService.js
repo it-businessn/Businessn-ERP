@@ -115,16 +115,16 @@ const PayrollService = {
 		return apiService.get(`/payroll/payDetailsReport/${company}/${payNum}/${isExtraRun}`);
 	},
 
+	async addPayPeriodPayStub(data) {
+		return apiService.post("/payroll/payDetailsReport", data);
+	},
+
 	async getTotalAlerts(company, payNum) {
 		return apiService.get(`/payroll/total-alerts/${company}/${payNum}`);
 	},
 
 	async getAlertsDetails(company, payNum) {
 		return apiService.get(`/payroll/alertsReport/${company}/${payNum}`);
-	},
-
-	async addPayPeriodPayStub(data) {
-		return apiService.post("/payroll/generate-payStub", data);
 	},
 
 	async addAlertsAndViolations(data) {

@@ -3,9 +3,8 @@ const EmployeeEmploymentInfo = require("../models/EmployeeEmploymentInfo");
 const EmployeePayInfo = require("../models/EmployeePayInfo");
 const { isRoleManager } = require("../services/data");
 const { setInitialPermissions } = require("./appController");
-const { getEmployeeId } = require("./payrollController");
 const { findGroupEmployees } = require("./setUpController");
-const { getPayrollActiveEmployees } = require("./userController");
+const { getPayrollActiveEmployees, getEmployeeId } = require("./userController");
 
 const getAllEmploymentInfo = async (req, res) => {
 	const { companyName, startDate, endDate, payDate, isExtraRun, groupId } = req.params;

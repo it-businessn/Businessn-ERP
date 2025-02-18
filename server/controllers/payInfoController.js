@@ -1,7 +1,7 @@
 const EmployeePayInfo = require("../models/EmployeePayInfo");
-const { getEmployeeId, addPayStub, findEmpPayStubDetail } = require("./payrollController");
+const { findEmpPayStubDetail } = require("./payStubController");
 const { findGroupEmployees } = require("./setUpController");
-const { getPayrollActiveEmployees } = require("./userController");
+const { getPayrollActiveEmployees, getEmployeeId } = require("./userController");
 
 const getAllPayInfo = async (req, res) => {
 	const { companyName, payDate, isExtraRun, groupId } = req.params;
@@ -23,25 +23,6 @@ const getAllPayInfo = async (req, res) => {
 	} catch (error) {
 		res.status(500).json({ message: error.message });
 	}
-};
-
-const getRecordId = async (empPayStubResult, empId, companyName, payPeriodPayDate) => {
-	if (empPayStubResult) {
-		return empPayStubResult._id;
-	}
-	const payStub = {
-		empId,
-		companyName,
-		payPeriodPayDate,
-		commission: 0,
-		retroactive: 0,
-		vacationPayout: 0,
-		bonus: 0,
-		terminationPayout: 0,
-		reimbursement: 0,
-	};
-	const newPayStub = await addPayStub(payStub);
-	return newPayStub._id;
 };
 
 const buildAmountAllocationEmpDetails = async (payDate, employee, companyName) => {
@@ -147,5 +128,4 @@ module.exports = {
 	getEmployeePayInfo,
 	addEmployeePayInfo,
 	updateEmployeePayInfo,
-	findEmployeePayInfo,
 };

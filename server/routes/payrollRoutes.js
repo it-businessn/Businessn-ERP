@@ -16,17 +16,6 @@ router.get(
 	"/total-alerts/:companyName/:payPeriodNum",
 	payrollController.getTotalAlertsAndViolationsInfo,
 );
-
-router.get(
-	"/payDetailsReport/:companyName/:empId",
-	payrollController.getEmployeePayDetailsReportInfo,
-);
-
-router.get(
-	"/payDetailsReport/:companyName/:payPeriodNum/:isExtraRun",
-	payrollController.getPayDetailsReportInfo,
-);
-
 router.get(
 	"/hoursTimesheet/:companyName/:startDate/:endDate/:payDate/:isExtraRun/:groupId/:payrunType",
 	payrollController.getGroupedTimesheet,
@@ -45,8 +34,6 @@ router.get(
 router.post("/payGroups", payrollController.addPayGroup);
 
 router.put("/payGroups/:id", payrollController.updatePayGroup);
-
-router.post("/generate-payStub", payrollController.addEmployeePayStubInfo);
 
 router.post("/generate-alerts", payrollController.addAlertsAndViolations);
 
