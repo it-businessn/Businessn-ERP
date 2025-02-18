@@ -98,9 +98,22 @@ const addSeparateCheque = async (
 		additionalManualStatDayHoursWorked ||
 		additionalManualVacationHoursWorked ||
 		additionalManualStatHoursWorked ||
-		additionalManualSickHoursWorked
+		additionalManualSickHoursWorked ||
+		commissionManual ||
+		retroactiveManual ||
+		vacationPayoutManual ||
+		bonusManual ||
+		terminationPayoutManual ||
+		reimbursementManual ||
+		vacationBalAdjustManual ||
+		vacationAccrualManual ||
+		vacationUsedManual ||
+		federalTaxManual ||
+		provTaxManual ||
+		incomeTaxManual
 	) {
 		const hrsData = {
+			reportType: "Manual",
 			totalRegHoursWorked: additionalManualRegHoursWorked,
 			totalOvertimeHoursWorked: additionalManualOvertimeHoursWorked,
 			totalDblOvertimeHoursWorked: additionalManualDblOvertimeHoursWorked,
@@ -144,9 +157,22 @@ const addSeparateCheque = async (
 		additionalPayoutStatDayHoursWorked ||
 		additionalPayoutVacationHoursWorked ||
 		additionalPayoutStatHoursWorked ||
-		additionalPayoutSickHoursWorked
+		additionalPayoutSickHoursWorked ||
+		commissionPayout ||
+		retroactivePayout ||
+		vacationPayoutPayout ||
+		bonusPayout ||
+		terminationPayoutPayout ||
+		reimbursementPayout ||
+		vacationBalAdjustPayout ||
+		vacationAccrualPayout ||
+		vacationUsedPayout ||
+		federalTaxPayout ||
+		provTaxPayout ||
+		incomeTaxPayout
 	) {
 		const hrsData = {
+			reportType: "Paid Out",
 			totalRegHoursWorked: additionalPayoutRegHoursWorked,
 			totalOvertimeHoursWorked: additionalPayoutOvertimeHoursWorked,
 			totalDblOvertimeHoursWorked: additionalPayoutDblOvertimeHoursWorked,
@@ -191,9 +217,22 @@ const addSeparateCheque = async (
 		additionalSuperficialStatDayHoursWorked ||
 		additionalSuperficialVacationHoursWorked ||
 		additionalSuperficialStatHoursWorked ||
-		additionalSuperficialSickHoursWorked
+		additionalSuperficialSickHoursWorked ||
+		commissionSuperficial ||
+		retroactiveSuperficial ||
+		vacationPayoutSuperficial ||
+		bonusSuperficial ||
+		terminationPayoutSuperficial ||
+		reimbursementSuperficial ||
+		vacationBalAdjustSuperficial ||
+		vacationAccrualSuperficial ||
+		vacationUsedSuperficial ||
+		federalTaxSuperficial ||
+		provTaxSuperficial ||
+		incomeTaxSuperficial
 	) {
 		const hrsData = {
+			reportType: "Superficial",
 			totalRegHoursWorked: additionalSuperficialRegHoursWorked,
 			totalOvertimeHoursWorked: additionalSuperficialOvertimeHoursWorked,
 			totalDblOvertimeHoursWorked: additionalSuperficialDblOvertimeHoursWorked,
@@ -345,6 +384,7 @@ const buildPayStub = (
 		pILBenefitPay,
 		bankedTimePay,
 		regularByAmount,
+		reportType: additionalAllocatedData?.reportType,
 		commission: isSeparate ? additionalAllocatedData?.commission : commission,
 		retroactive: isSeparate ? additionalAllocatedData?.retroactive : retroactive,
 		vacationPayout: isSeparate ? additionalAllocatedData?.vacationPayout : vacationPayout,

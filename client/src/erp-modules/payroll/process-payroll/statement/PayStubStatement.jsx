@@ -8,8 +8,7 @@ import ChequeDetails from "./ChequeDetails";
 import PayStubHeader from "./PayStubHeader";
 
 const PayStubStatement = ({ data }) => {
-	const companyNum =
-		LocalStorageService.getItem("user")?.companyId?.registration_number;
+	const companyNum = LocalStorageService.getItem("user")?.companyId?.registration_number;
 
 	return (
 		<Box w={"100%"} overflow={"hidden"}>

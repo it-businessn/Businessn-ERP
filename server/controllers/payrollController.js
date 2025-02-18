@@ -1,3 +1,4 @@
+const moment = require("moment");
 const EmployeeAlertsViolationInfo = require("../models/EmployeeAlertsViolationInfo");
 const EmployeeBalanceInfo = require("../models/EmployeeBalanceInfo");
 const EmployeeBankingInfo = require("../models/EmployeeBankingInfo");
@@ -12,9 +13,9 @@ const {
 	findAdditionalPayoutHoursAllocatedInfo,
 } = require("./additionalAllocationInfoController");
 
-const { PAYRUN_TYPE } = require("../services/data");
+const { PAYRUN_TYPE, TIMESHEET_STATUS, PAY_TYPES_TITLE } = require("../services/data");
 const { fetchActiveEmployees } = require("./userController");
-const { calculateTotalAggregatedHours } = require("./payStubController");
+const Timesheet = require("../models/Timesheet");
 
 //update roles-
 
@@ -374,6 +375,65 @@ const getEEContribution = async (req, res) => {
 	} catch (error) {
 		res.status(404).json({ error: error.message });
 	}
+};
+
+const calculateTotalAggregatedHours = async (startDate, endDate, companyName) => {
+	const timesheets = await Timesheet.find({
+		deleted: false,
+		companyName,
+		clockIn: {
+			$gte: moment(startDate).utc().startOf("day").toDate(),
+			$lte: moment(endDate).utc().endOf("day").toDate(),
+		},
+		approveStatus: TIMESHEET_STATUS.APPROVED,
+	}).populate({
+		path: "employeeId",
+		model: "Employee",
+		select: ["companyId", "employeeId", "fullName", "payrollStatus"],
+	});
+	const aggregatedHours = timesheets
+		.sort((a, b) => a.clockIn - b.clockIn)
+		.reduce((acc, timesheet) => {
+			if (!acc[timesheet.employeeId]) {
+				acc[timesheet.employeeId] = {
+					_id: timesheet._id,
+					empId: timesheet.employeeId,
+					totalRegHoursWorked: 0,
+					totalOvertimeHoursWorked: 0,
+					totalDblOvertimeHoursWorked: 0,
+					totalStatDayHoursWorked: 0,
+					totalStatHours: 0,
+					totalSickHoursWorked: 0,
+					totalVacationHoursWorked: 0,
+				};
+			}
+
+			if (timesheet.payType === PAY_TYPES_TITLE.REG_PAY)
+				acc[timesheet.employeeId].totalRegHoursWorked += timesheet.regHoursWorked || 0;
+
+			if (timesheet.payType === PAY_TYPES_TITLE.OVERTIME_PAY)
+				acc[timesheet.employeeId].totalOvertimeHoursWorked += timesheet.overtimeHoursWorked || 0;
+
+			if (timesheet.payType === PAY_TYPES_TITLE.DBL_OVERTIME_PAY)
+				acc[timesheet.employeeId].totalDblOvertimeHoursWorked +=
+					timesheet.dblOvertimeHoursWorked || 0;
+			if (timesheet.payType === PAY_TYPES_TITLE.STAT_PAY)
+				acc[timesheet.employeeId].totalStatHours += timesheet.statDayHours || 0;
+
+			if (timesheet.payType === PAY_TYPES_TITLE.STAT_WORK_PAY)
+				acc[timesheet.employeeId].totalStatDayHoursWorked += timesheet.statDayHoursWorked || 0;
+
+			if (timesheet.payType === PAY_TYPES_TITLE.SICK_PAY)
+				acc[timesheet.employeeId].totalSickHoursWorked += timesheet.sickPayHours || 0;
+
+			if (timesheet.payType === PAY_TYPES_TITLE.VACATION_PAY)
+				acc[timesheet.employeeId].totalVacationHoursWorked += timesheet.vacationPayHours || 0;
+
+			return acc;
+		}, {});
+
+	const result = Object.values(aggregatedHours);
+	return result;
 };
 
 const getERContribution = async (req, res) => {

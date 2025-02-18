@@ -195,6 +195,7 @@ const employeePayStubSchema = new mongoose.Schema({
 	totalSuperficialHoursWorked: { type: Number, default: 0 },
 
 	totalAmountAllocated: { type: Number, default: 0 },
+	reportType: String,
 });
 
 const EmployeePayStub = mongoose.model("EmployeePayStub", employeePayStubSchema);

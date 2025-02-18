@@ -13,6 +13,7 @@ const EmployeeInfo = ({ data, companyNum }) => {
 			<BoxCard p={0}>
 				<Box w={"100%"} bg={"var(--primary_bg_1)"} p={2}>
 					<VStack mt={1} spacing={0}>
+						<BasicInfo title1="Report Type:" title2={data.reportType || "NA"} />
 						<BasicInfo title1={"Net Pay:"} title2={getAmount(data.currentNetPay)} />
 						<BasicInfo title1={"Pay Date:"} title2={formatDateBar(data.payPeriodPayDate)} />
 						<BasicInfo title1={"Pay Start Date:"} title2={formatDateBar(data.payPeriodStartDate)} />
