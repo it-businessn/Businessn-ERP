@@ -3,7 +3,7 @@ import { COLS } from "constant";
 
 export const REGULAR_HOURLY_ALLOCATE_COLS = [
 	{ key: COLS.EMP_NAME, pair: "obj", pair_key: "fullName" },
-	{ key: "Total Hours", pair: "totalHoursWorked", align: "center", nearest: true },
+	{ key: "Total Hours", pair: "totalHoursWorked", isTotal: true, align: "center", nearest: true },
 	{ key: "Regular Hrs", pair: "totalRegHoursWorked", align: "center", nearest: true },
 	{
 		key: "Add Regular",
@@ -76,7 +76,13 @@ export const REGULAR_HOURLY_ALLOCATE_COLS = [
 
 export const PAYOUT_HOURLY_ALLOCATE_COLS = [
 	{ key: COLS.EMP_NAME, pair: "obj", pair_key: "fullName" },
-	{ key: "Total Hours", pair: "totalPayoutHoursWorked", align: "center", nearest: true },
+	{
+		key: "Total Hours",
+		pair: "totalPayoutHoursWorked",
+		isTotal: true,
+		align: "center",
+		nearest: true,
+	},
 	{
 		key: "Regular Hrs",
 		pair: "totalRegHoursWorked",
@@ -164,7 +170,13 @@ export const PAYOUT_HOURLY_ALLOCATE_COLS = [
 
 export const MANUAL_PAYOUT_HOURLY_ALLOCATE_COLS = [
 	{ key: COLS.EMP_NAME, pair: "obj", pair_key: "fullName" },
-	{ key: "Total Hours", pair: "totalManualHoursWorked", align: "center", nearest: true },
+	{
+		key: "Total Hours",
+		pair: "totalManualHoursWorked",
+		isTotal: true,
+		align: "center",
+		nearest: true,
+	},
 	{
 		key: "Regular Hrs",
 		pair: "totalRegHoursWorked",
@@ -252,7 +264,13 @@ export const MANUAL_PAYOUT_HOURLY_ALLOCATE_COLS = [
 
 export const SUPERFICIAL_HOURLY_ALLOCATE_COLS = [
 	{ key: COLS.EMP_NAME, pair: "obj", pair_key: "fullName" },
-	{ key: "Total Hours", pair: "totalSuperficialHoursWorked", align: "center", nearest: true },
+	{
+		key: "Total Hours",
+		pair: "totalSuperficialHoursWorked",
+		isTotal: true,
+		align: "center",
+		nearest: true,
+	},
 	{
 		key: "Regular Hrs",
 		pair: "totalRegHoursWorked",

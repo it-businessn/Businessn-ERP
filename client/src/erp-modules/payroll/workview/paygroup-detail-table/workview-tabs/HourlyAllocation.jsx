@@ -26,10 +26,22 @@ const HourlyAllocation = ({ company, closestRecord, groupId, payrunOption }) => 
 
 	const [payrunHoursData, setPayrunHoursData] = useState(null);
 	const [formData, setFormData] = useState(null);
+	const [colKeys, setColKeys] = useState(null);
+	const [totalColumnKey, setTotalColumnKey] = useState(null);
 
 	useEffect(() => {
 		setPayrunHoursData(PAYRUN_HOURS_DATA[payrunOption]);
 	}, [payrunOption]);
+
+	useEffect(() => {
+		const allocateColKeys = payrunHoursData?.map(({ pair, key }) =>
+			key !== "" && pair !== "obj" ? pair : null,
+		);
+		setColKeys(allocateColKeys);
+
+		const allocateColMainKey = payrunHoursData?.find(({ isTotal }) => isTotal)?.pair;
+		setTotalColumnKey(allocateColMainKey);
+	}, [payrunHoursData]);
 
 	useEffect(() => {
 		if (data) {
@@ -55,10 +67,16 @@ const HourlyAllocation = ({ company, closestRecord, groupId, payrunOption }) => 
 				(record) => record.empId._id === formData.empId._id,
 			);
 			if (updatedRec) {
+				updatedRec[totalColumnKey] = 0;
+				colKeys.forEach((key) => {
+					if (key && key !== totalColumnKey) {
+						updatedRec[totalColumnKey] += parseInt(updatedRec[key]);
+					}
+				});
 				updatedRec.companyName = company;
 				updatedRec.payPeriodPayDate = closestRecord?.payPeriodPayDate;
-				await PayrollService.addAdditionalHoursAllocation(updatedRec);
-				setFormData(null);
+				const { data } = await PayrollService.addAdditionalHoursAllocation(updatedRec);
+				setFormData(data);
 			}
 		} catch (error) {}
 	};

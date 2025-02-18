@@ -170,6 +170,10 @@ const addAdditionalHoursAllocationInfo = async (req, res) => {
 		additionalSuperficialVacationHoursWorked,
 		additionalSuperficialSickHoursWorked,
 		payPeriodPayDate,
+		totalHoursWorked,
+		totalSuperficialHoursWorked,
+		totalManualHoursWorked,
+		totalPayoutHoursWorked,
 	} = req.body;
 	try {
 		const existingInfo = await findAdditionalHoursAllocatedInfo({
@@ -208,6 +212,10 @@ const addAdditionalHoursAllocationInfo = async (req, res) => {
 				additionalSuperficialStatDayHoursWorked,
 				additionalSuperficialVacationHoursWorked,
 				additionalSuperficialSickHoursWorked,
+				totalHoursWorked,
+				totalSuperficialHoursWorked,
+				totalManualHoursWorked,
+				totalPayoutHoursWorked,
 			});
 			return res.status(201).json(updatedInfo);
 		}
@@ -243,6 +251,10 @@ const addAdditionalHoursAllocationInfo = async (req, res) => {
 			additionalSuperficialVacationHoursWorked,
 			additionalSuperficialSickHoursWorked,
 			payPeriodPayDate,
+			totalHoursWorked,
+			totalSuperficialHoursWorked,
+			totalManualHoursWorked,
+			totalPayoutHoursWorked,
 		});
 		return res.status(201).json(newInfo);
 	} catch (error) {

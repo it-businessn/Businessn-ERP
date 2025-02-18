@@ -1,11 +1,9 @@
 const moment = require("moment");
 const EmployeeAlertsViolationInfo = require("../models/EmployeeAlertsViolationInfo");
-const EmployeeBalanceInfo = require("../models/EmployeeBalanceInfo");
 const EmployeeBankingInfo = require("../models/EmployeeBankingInfo");
 const EmployeePayInfo = require("../models/EmployeePayInfo");
 const EmployeeProfileInfo = require("../models/EmployeeProfileInfo");
 const Group = require("../models/Group");
-const { getCalcAmount, getSumHours } = require("../services/payrollService");
 const {
 	findAdditionalHoursAllocatedInfo,
 	findAdditionalSuperficialHoursAllocatedInfo,
@@ -16,6 +14,12 @@ const {
 const { PAYRUN_TYPE, TIMESHEET_STATUS, PAY_TYPES_TITLE } = require("../services/data");
 const { fetchActiveEmployees } = require("./userController");
 const Timesheet = require("../models/Timesheet");
+const {
+	getCurrentTotals,
+	findEmployeeBenefitInfo,
+	findEmployeePayInfoDetails,
+	getContributionsDeductions,
+} = require("./payrollCalc");
 
 //update roles-
 
@@ -762,112 +766,6 @@ const getPayGroup = () => {};
 const addPayGroup = () => {};
 const updatePayGroup = () => {};
 
-const findEmployeePayInfoDetails = async (empId, companyName) =>
-	await EmployeePayInfo.findOne({
-		empId,
-		companyName,
-	}).select(
-		"empId typeOfEarning fullTimeStandardHours partTimeStandardHours regPay overTimePay dblOverTimePay statWorkPay statPay sickPay vacationPay",
-	);
-
-const findEmployeeBenefitInfo = async (empId, companyName) =>
-	await EmployeeBalanceInfo.findOne({
-		empId,
-		companyName,
-	});
-
-const getCurrentTotals = (empTimesheetData, empPayInfoResult, empAdditionalHoursAllocated) => {
-	const newEmpData = empTimesheetData ? empTimesheetData : {};
-
-	newEmpData.regPay = empPayInfoResult?.regPay;
-	newEmpData.overTimePay = 1.5 * empPayInfoResult?.regPay;
-	newEmpData.dblOverTimePay = 2 * empPayInfoResult?.regPay;
-	newEmpData.statPay = empPayInfoResult?.regPay;
-	newEmpData.statWorkPay = 1.5 * empPayInfoResult?.regPay;
-	newEmpData.sickPay = empPayInfoResult?.regPay;
-	newEmpData.vacationPay = empPayInfoResult?.regPay;
-	newEmpData.sprayPay = 1;
-	newEmpData.firstAidPay = 0.5;
-
-	const isFT = empPayInfoResult?.typeOfEarning === "Full Time Salaried";
-	const isPT = empPayInfoResult?.typeOfEarning === "Part Time Salaried";
-
-	newEmpData.totalRegHoursWorked = isFT
-		? getSumHours(empPayInfoResult?.fullTimeStandardHours)
-		: isPT
-		? getSumHours(empPayInfoResult?.partTimeStandardHours)
-		: getSumHours(empTimesheetData?.totalRegHoursWorked) +
-		  getSumHours(empAdditionalHoursAllocated?.additionalRegHoursWorked);
-	newEmpData.totalOvertimeHoursWorked =
-		getSumHours(empTimesheetData?.totalOvertimeHoursWorked) +
-		getSumHours(empAdditionalHoursAllocated?.additionalOvertimeHoursWorked);
-	newEmpData.totalDblOvertimeHoursWorked =
-		getSumHours(empTimesheetData?.totalDblOvertimeHoursWorked) +
-		getSumHours(empAdditionalHoursAllocated?.additionalDblOvertimeHoursWorked);
-	newEmpData.totalStatHours =
-		getSumHours(empTimesheetData?.totalStatHours) +
-		getSumHours(empAdditionalHoursAllocated?.additionalStatHoursWorked);
-	newEmpData.totalStatDayHoursWorked =
-		getSumHours(empTimesheetData?.totalStatDayHoursWorked) +
-		getSumHours(empAdditionalHoursAllocated?.additionalStatDayHoursWorked);
-	newEmpData.totalSickHoursWorked =
-		getSumHours(empTimesheetData?.totalSickHoursWorked) +
-		getSumHours(empAdditionalHoursAllocated?.additionalSickHoursWorked);
-	newEmpData.totalVacationHoursWorked =
-		getSumHours(empTimesheetData?.totalVacationHoursWorked) +
-		getSumHours(empAdditionalHoursAllocated?.additionalVacationHoursWorked);
-
-	newEmpData.totalHoursWorked =
-		newEmpData.totalRegHoursWorked +
-		newEmpData.totalOvertimeHoursWorked +
-		newEmpData.totalDblOvertimeHoursWorked +
-		newEmpData.totalStatHours +
-		newEmpData.totalStatDayHoursWorked +
-		newEmpData.totalSickHoursWorked +
-		newEmpData.totalVacationHoursWorked;
-
-	newEmpData.totalSprayHoursWorked = getSumHours(empTimesheetData?.totalSprayHoursWorked);
-	newEmpData.totalFirstAidHoursWorked = getSumHours(empTimesheetData?.totalFirstAidHoursWorked);
-	newEmpData.currentRegPayTotal = getCalcAmount(
-		newEmpData?.totalRegHoursWorked || 0,
-		newEmpData.regPay || 0,
-	);
-
-	newEmpData.currentOverTimePayTotal = getCalcAmount(
-		newEmpData?.totalOvertimeHoursWorked || 0,
-		newEmpData.overTimePay || 0,
-	);
-	newEmpData.currentDblOverTimePayTotal = getCalcAmount(
-		newEmpData?.totalDblOvertimeHoursWorked || 0,
-		newEmpData.dblOverTimePay || 0,
-	);
-	newEmpData.currentStatWorkPayTotal = getCalcAmount(
-		newEmpData?.totalStatDayHoursWorked || 0,
-		newEmpData.statWorkPay || 0,
-	);
-	newEmpData.currentStatPayTotal = getCalcAmount(
-		newEmpData?.totalStatHours || 0,
-		newEmpData.statPay || 0,
-	);
-	newEmpData.currentSickPayTotal = getCalcAmount(
-		newEmpData?.totalSickHoursWorked || 0,
-		newEmpData.sickPay || 0,
-	);
-	newEmpData.currentVacationPayTotal = getCalcAmount(
-		newEmpData?.totalVacationHoursWorked || 0,
-		newEmpData.vacationPay || 0,
-	);
-	newEmpData.currentSprayPayTotal = getCalcAmount(
-		newEmpData?.totalSprayHoursWorked || 0,
-		newEmpData.sprayPay || 0,
-	);
-	newEmpData.currentFirstAidPayTotal = getCalcAmount(
-		newEmpData?.totalFirstAidHoursWorked || 0,
-		newEmpData.firstAidPay || 0,
-	);
-	return newEmpData;
-};
-
 const findAlertInfo = async (record) => await EmployeeAlertsViolationInfo.findOne(record);
 
 const addAlertsAndViolations = async (req, res) => {
@@ -956,7 +854,4 @@ module.exports = {
 	getEEContribution,
 	getERContribution,
 	getTotalAlertsAndViolationsInfo,
-	findEmployeePayInfoDetails,
-	findEmployeeBenefitInfo,
-	getCurrentTotals,
 };

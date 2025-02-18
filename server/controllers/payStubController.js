@@ -9,12 +9,13 @@ const {
 } = require("./additionalAllocationInfoController");
 const { findEmployeeGovernmentInfoDetails } = require("./governmentInfoController");
 const { getEmployeeId, getPayrollActiveEmployees } = require("./userController");
-const {
-	findEmployeePayInfoDetails,
-	findEmployeeBenefitInfo,
-	getCurrentTotals,
-} = require("./payrollController");
 const { generateT4Slip } = require("./t4SlipController");
+const {
+	getCurrentTotals,
+	findEmployeeBenefitInfo,
+	findEmployeePayInfoDetails,
+	getContributionsDeductions,
+} = require("./payrollCalc");
 
 const addSeparateCheque = async (
 	empId,
@@ -834,140 +835,6 @@ const calcCurrentDeductionsTotal = (newEmpData) => {
 	// 	);
 	// }
 	return sum;
-};
-
-const calcEmployeeContribution = (grossPay, newEmpData) =>
-	grossPay -
-	(newEmpData.retroactive +
-		newEmpData.currentOverTimePayTotal +
-		newEmpData.currentDblOverTimePayTotal);
-
-const validateContribution = (
-	treatmentType,
-	contributionAmt,
-	accumulatedHrs,
-	totalAllocatedHours,
-) => {
-	const newAmount = treatmentType?.includes("No")
-		? 0
-		: treatmentType?.includes("%")
-		? accumulatedHrs * contributionAmt
-		: treatmentType?.includes("per Hour")
-		? contributionAmt * totalAllocatedHours
-		: contributionAmt;
-	return newAmount;
-};
-
-const getContributionsDeductions = (data) => {
-	const {
-		regPay,
-		overTimePay,
-		dblOverTimePay,
-		statPay,
-		statWorkPay,
-		sickPay,
-		totalRegHoursWorked,
-		totalOvertimeHoursWorked,
-		totalDblOvertimeHoursWorked,
-		totalStatDayHoursWorked,
-		totalStatHours,
-		totalSickHoursWorked,
-		vacationPayPercent,
-		typeOfUnionDuesTreatment,
-		unionDuesContribution,
-		typeOfPensionEETreatment,
-		pensionEEContribution,
-		typeOfExtendedHealthEETreatment,
-		extendedHealthEEContribution,
-		typeOfPensionERTreatment,
-		pensionERContribution,
-		typeOfExtendedHealthERTreatment,
-		extendedHealthERContribution,
-	} = data;
-
-	const totalAllocatedHours =
-		// data.totalDblOvertimeHoursWorked +
-		data.totalOvertimeHoursWorked +
-		data.totalRegHoursWorked +
-		data.totalSickHoursWorked +
-		data.totalStatDayHoursWorked +
-		data.totalStatHours;
-
-	const sumTotalHoursWithoutVacation =
-		totalSickHoursWorked + totalStatHours + totalStatDayHoursWorked + totalRegHoursWorked;
-
-	const sumTotalOvertimeHours = totalOvertimeHoursWorked + totalDblOvertimeHoursWorked;
-
-	const sumTotalWithoutVacation =
-		getCalcAmount(totalSickHoursWorked, sickPay) +
-		getCalcAmount(totalStatHours, statPay) +
-		getCalcAmount(totalStatDayHoursWorked, statWorkPay) +
-		getCalcAmount(totalRegHoursWorked, regPay);
-
-	const sumTotalOvertime =
-		getCalcAmount(totalOvertimeHoursWorked, overTimePay) +
-		getCalcAmount(totalDblOvertimeHoursWorked, dblOverTimePay);
-
-	// const sumTotalWithVacation =
-	// 	getCalcAmount(totalSickHoursWorked, sickPay) +
-	// 	getCalcAmount(totalStatHours, statPay) +
-	// 	getCalcAmount(totalStatDayHoursWorked, statWorkPay) +
-	// 	getCalcAmount(totalRegHoursWorked, regPay) +
-	// 	getCalcAmount(totalVacationHoursWorked, vacationPay);
-
-	const vacationAccruedAmount = (sumTotalWithoutVacation + sumTotalOvertime) * vacationPayPercent;
-
-	const unionDues = validateContribution(
-		typeOfUnionDuesTreatment,
-		unionDuesContribution,
-		sumTotalWithoutVacation + sumTotalOvertime + vacationAccruedAmount,
-		totalAllocatedHours,
-	);
-
-	const EE_EPP = validateContribution(
-		typeOfPensionEETreatment,
-		pensionEEContribution,
-		sumTotalWithoutVacation + vacationAccruedAmount,
-		data.totalRegHoursWorked +
-			data.totalSickHoursWorked +
-			data.totalStatDayHoursWorked +
-			data.totalStatHours,
-	);
-
-	const EE_EHP = validateContribution(
-		typeOfExtendedHealthEETreatment,
-		extendedHealthEEContribution,
-		sumTotalHoursWithoutVacation,
-		data.totalRegHoursWorked +
-			data.totalSickHoursWorked +
-			data.totalStatDayHoursWorked +
-			data.totalStatHours,
-	);
-
-	const ER_EPP = validateContribution(
-		typeOfPensionERTreatment,
-		pensionERContribution,
-		sumTotalWithoutVacation + vacationAccruedAmount,
-		data.totalRegHoursWorked +
-			data.totalSickHoursWorked +
-			data.totalStatDayHoursWorked +
-			data.totalStatHours,
-	);
-
-	const ER_EHP = validateContribution(
-		typeOfExtendedHealthERTreatment,
-		extendedHealthERContribution,
-		sumTotalHoursWithoutVacation,
-		totalAllocatedHours,
-	);
-
-	return {
-		unionDues,
-		EE_EPP,
-		EE_EHP,
-		ER_EPP,
-		ER_EHP,
-	};
 };
 
 const addPayStub = async (data) => await EmployeePayStub.create(data);
