@@ -55,7 +55,12 @@ export const getDefaultTime = (date) => moment(date, "HH:mm").format("hh:mm A");
 
 export const getTimeCardFormat = (timestamp, notDevice, timeSheet) => {
 	// const date = notDevice ? moment(timestamp) : moment.utc(timestamp);
-	const date = timestamp.endsWith("Z") ? moment(timestamp) : momentTz(timestamp).tz("UTC");
+	timestamp = momentTz(timestamp).utc().format("YYYY-MM-DDTHH:mm:ss.SSS[Z]");
+	let date = moment(timestamp);
+
+	if (date.hour() <= 8) {
+		date = date.utc();
+	}
 	return timeSheet ? date.format("ddd, YYYY-MM-DD") : date.format("YYYY-MM-DD hh:mm A");
 };
 
