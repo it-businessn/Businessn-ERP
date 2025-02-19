@@ -5,6 +5,7 @@ import DeletePopUp from "components/ui/modal/DeletePopUp";
 import NormalTextTitle from "components/ui/NormalTextTitle";
 import TableLayout from "components/ui/table/TableLayout";
 import TextTitle from "components/ui/text/TextTitle";
+import moment from "moment";
 import { useEffect, useState } from "react";
 import { FaCheck, FaRegTrashAlt } from "react-icons/fa";
 import { IoClose } from "react-icons/io5";
@@ -44,7 +45,15 @@ const Timesheet = ({
 					// controller.signal,
 				);
 				const { totalPages, page, items } = data;
-				setTimesheets(items);
+				if (moment(filter?.startDate).isSame(moment(filter?.endDate), "day")) {
+					setTimesheets(
+						items?.filter(({ clockIn }) =>
+							moment(clockIn).isSame(moment(filter?.startDate), "day"),
+						),
+					);
+				} else {
+					setTimesheets(items);
+				}
 				setTotalPages(totalPages > 0 ? totalPages : 1);
 				setPageNum(page);
 			} catch (error) {
