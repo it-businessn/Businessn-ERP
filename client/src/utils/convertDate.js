@@ -53,26 +53,37 @@ export const formatDateRange = (startDate, endDate) => {
 
 export const getDefaultTime = (date) => moment(date, "HH:mm").format("hh:mm A");
 
+export const convertMomentTzDate = (timestamp) =>
+	momentTz(timestamp).utc().format("YYYY-MM-DDTHH:mm:ss.SSS[Z]");
+
 export const getTimeCardFormat = (timestamp, notDevice, timeSheet) => {
 	// const date = notDevice ? moment(timestamp) : moment.utc(timestamp);
-	timestamp = momentTz(timestamp).utc().format("YYYY-MM-DDTHH:mm:ss.SSS[Z]");
+	timestamp = convertMomentTzDate(timestamp);
 	let date = moment(timestamp);
 
-	if (date.hour() <= 8) {
+	if (date.hour() <= 23) {
 		date = date.utc();
 	}
 	return timeSheet ? date.format("ddd, YYYY-MM-DD") : date.format("YYYY-MM-DD hh:mm A");
 };
 
 // export const getTimeFormat = (date) => moment.utc(date).format("hh:mm A");
-export const getTimeFormat = (timestamp, notDevice) => {
-	timestamp = momentTz(timestamp).utc().format("YYYY-MM-DDTHH:mm:ss.SSS[Z]");
-	const time = moment(timestamp);
-
-	if (time.hour() >= 8) {
-		return time.format("HH:mm");
-	} else {
+export const getClockInTimeFormat = (timestamp, notDevice) => {
+	let time = moment(timestamp);
+	if (time.format("HH:mm") < "05:00" || time.format("HH:mm") > "17:00") {
 		return time.utc().format("HH:mm");
+	} else {
+		return time.format("HH:mm");
+	}
+};
+
+export const getTimeFormat = (timestamp, notDevice) => {
+	let time = moment(timestamp);
+
+	if (time.format("HH") < "12") {
+		return time.utc().format("HH:mm");
+	} else {
+		return time.format("HH:mm");
 	}
 };
 

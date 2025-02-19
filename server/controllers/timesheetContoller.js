@@ -95,18 +95,16 @@ const getTimesheets = async (req, res) => {
 
 const getFilteredTimesheetsByStatus = async (req, res) => {
 	const { companyName, filter } = req.params;
-	const filteredData = JSON.parse(filter.split("=")[1]);
 	try {
+		const filteredData = JSON.parse(filter.split("=")[1]);
+		const { startDate, endDate } = filteredData;
+
 		const timesheets = await Timesheet.find({
 			deleted: false,
 			companyName,
 			clockIn: {
-				$gte: filteredData?.startDate
-					? moment(filteredData?.startDate).utc().startOf("day").toDate()
-					: NEXT_DAY,
-				$lte: filteredData?.endDate
-					? moment(filteredData?.endDate).utc().endOf("day").toDate()
-					: NEXT_DAY,
+				$gte: moment(startDate).utc().startOf("day").toDate(),
+				$lte: moment(endDate).utc().endOf("day").toDate(),
 			},
 		}).select("approveStatus");
 
@@ -118,23 +116,30 @@ const getFilteredTimesheetsByStatus = async (req, res) => {
 
 const getFilteredTimesheets = async (req, res) => {
 	const { companyName, filter } = req.params;
-	const filteredData = JSON.parse(filter.split("=")[1]);
 
 	try {
+		const filteredData = JSON.parse(filter.split("=")[1]);
+		const { startDate, endDate } = filteredData;
+
 		let { page, limit } = req.query;
 		page = parseInt(page) || 1;
 		limit = parseInt(limit) || 10;
 		const skip = (page - 1) * limit;
+
+		const filterRecordCriteria = {
+			deleted: false,
+			companyName,
+			clockIn: {
+				$gte: moment.utc(startDate).startOf("day").toDate(),
+				$lte: moment.utc(endDate).endOf("day").toDate(),
+			},
+			// payType: { $ne: PAY_TYPES_TITLE.REG_PAY },
+			// regHoursWorked: { $ne: 0 },
+		};
+
 		let timesheets = await Timesheet.aggregate([
 			{
-				$match: {
-					deleted: false,
-					companyName,
-					clockIn: {
-						$gte: moment(filteredData?.startDate).startOf("day").toDate(),
-						$lte: moment(filteredData?.endDate).endOf("day").toDate(),
-					},
-				},
+				$match: filterRecordCriteria,
 			},
 			{
 				$lookup: {
@@ -161,20 +166,7 @@ const getFilteredTimesheets = async (req, res) => {
 			},
 		]);
 
-		const total = await findByRecordTimesheets({
-			deleted: false,
-			companyName,
-			clockIn: {
-				$gte: filteredData?.startDate
-					? moment(filteredData?.startDate).utc().startOf("day").toDate()
-					: NEXT_DAY,
-				$lte: filteredData?.endDate
-					? moment(filteredData?.endDate).utc().endOf("day").toDate()
-					: NEXT_DAY,
-			},
-			// payType: { $ne: PAY_TYPES_TITLE.REG_PAY },
-			// regHoursWorked: { $ne: 0 },
-		});
+		const total = await findByRecordTimesheets(filterRecordCriteria);
 
 		const payInfo = await getTimesheetResult(companyName);
 		if (filteredData?.filteredEmployees?.length) {
@@ -208,20 +200,18 @@ const getFilteredTimesheets = async (req, res) => {
 
 const getEmployeeTimesheet = async (req, res) => {
 	const { companyName, employeeId, filter } = req.params;
-	const filteredData = JSON.parse(filter.split("=")[1]);
 
 	try {
+		const filteredData = JSON.parse(filter.split("=")[1]);
+		const { startDate, endDate } = filteredData;
+
 		const timesheets = await Timesheet.find({
 			deleted: false,
 			companyName,
 			employeeId,
 			clockIn: {
-				$gte: filteredData?.startDate
-					? moment(filteredData?.startDate).startOf("day").toDate()
-					: NEXT_DAY,
-				$lte: filteredData?.endDate
-					? moment(filteredData?.endDate).endOf("day").toDate()
-					: NEXT_DAY,
+				$gte: moment(startDate).startOf("day").toDate(),
+				$lte: moment(endDate).endOf("day").toDate(),
 			},
 		}).sort({ createdOn: -1 });
 		res.status(200).json(timesheets);
