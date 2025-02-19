@@ -1,4 +1,5 @@
 import moment from "moment";
+import momentTz from "moment-timezone";
 
 export const timeSpan = (time) => {
 	const givenTime = new Date(time);
@@ -54,15 +55,20 @@ export const getDefaultTime = (date) => moment(date, "HH:mm").format("hh:mm A");
 
 export const getTimeCardFormat = (timestamp, notDevice, timeSheet) => {
 	// const date = notDevice ? moment(timestamp) : moment.utc(timestamp);
-	const date = moment(timestamp);
-	return timeSheet ? date.format("ddd, YYYY-MM-DD") : date.format("YYYY-MM-DD  hh:mm A");
+	const date = timestamp.endsWith("Z") ? moment(timestamp) : momentTz(timestamp).tz("UTC");
+	return timeSheet ? date.format("ddd, YYYY-MM-DD") : date.format("YYYY-MM-DD hh:mm A");
 };
 
 // export const getTimeFormat = (date) => moment.utc(date).format("hh:mm A");
 export const getTimeFormat = (timestamp, notDevice) => {
-	// const date = notDevice ? moment(timestamp) : moment.utc(timestamp);
-	const date = moment(timestamp);
-	return date.format("HH:mm");
+	timestamp = momentTz(timestamp).utc().format("YYYY-MM-DDTHH:mm:ss.SSS[Z]");
+	const time = moment(timestamp);
+
+	if (time.hour() >= 8) {
+		return time.format("HH:mm");
+	} else {
+		return time.utc().format("HH:mm");
+	}
 };
 
 export const setUTCDate = (date, newDate, notDevice) => {

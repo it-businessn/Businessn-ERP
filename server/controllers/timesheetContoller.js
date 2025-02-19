@@ -296,7 +296,7 @@ const createManualTimesheet = async (req, res) => {
 		}).sort({ clockIn: -1 });
 
 		if (findEmployeeTimesheetExists.length) {
-			findEmployeeTimesheetExists[0].clockOut = moment().tz("America/Vancouver").toDate();
+			findEmployeeTimesheetExists[0].clockOut = moment();
 			const totalWorkedHours = calcTotalWorkedHours(
 				findEmployeeTimesheetExists[0].clockIn,
 				findEmployeeTimesheetExists[0].clockOut,

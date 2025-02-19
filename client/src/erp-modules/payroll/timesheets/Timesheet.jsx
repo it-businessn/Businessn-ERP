@@ -6,12 +6,13 @@ import NormalTextTitle from "components/ui/NormalTextTitle";
 import TableLayout from "components/ui/table/TableLayout";
 import TextTitle from "components/ui/text/TextTitle";
 import { COLS } from "constant";
+import moment from "moment";
 import { useEffect, useState } from "react";
 import { FaCheck, FaRegTrashAlt } from "react-icons/fa";
 import { IoClose } from "react-icons/io5";
 import TimesheetService from "services/TimesheetService";
 import { getAmount } from "utils/convertAmt";
-import { getTimeCardFormat, getTimeFormat, setUTCDate } from "utils/convertDate";
+import { getTimeFormat, setUTCDate } from "utils/convertDate";
 import { getParamKey, getPayTypeStyle, getStatusStyle, PAY_TYPES_TITLE } from "./data";
 import ExtraTimeEntryModal from "./ExtraTimeEntryModal";
 
@@ -45,7 +46,15 @@ const Timesheet = ({
 					// controller.signal,
 				);
 				const { totalPages, page, items } = data;
-				setTimesheets(items);
+				if (moment(filter?.startDate).isSame(moment(filter?.endDate), "day")) {
+					setTimesheets(
+						items?.filter(({ clockIn }) =>
+							moment(clockIn).isSame(moment(filter?.startDate), "day"),
+						),
+					);
+				} else {
+					setTimesheets(items);
+				}
 				setTotalPages(totalPages > 0 ? totalPages : 1);
 				setPageNum(page);
 			} catch (error) {
@@ -322,7 +331,7 @@ const Timesheet = ({
 										<TextTitle title={employee?.fullName} />
 									</Td>
 									<Td py={0}>
-										<TextTitle title={clockIn && getTimeCardFormat(clockIn, notDevice, true)} />
+										<TextTitle title={clockIn && moment(clockIn).format("ddd, YYYY-MM-DD")} />
 									</Td>
 									<Td py={0}>
 										<NormalTextTitle size="sm" title={employee?.department?.[0]} />
