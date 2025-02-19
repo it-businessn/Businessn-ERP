@@ -11,10 +11,10 @@ const {
 	buildNewEmpPayStubInfo,
 	findEmployeeBenefitInfo,
 	getContributionsDeductions,
-	getHourlyAggregatedResult,
 } = require("./payrollHelper");
 const { findEmployeePayInfoDetails } = require("./payInfoController");
 const { findAdditionalHoursAllocatedInfo } = require("./additionalAllocationInfoController");
+const { getHourlyAggregatedResult } = require("./hourlyAggregatedHrsCalc");
 
 //update roles-
 

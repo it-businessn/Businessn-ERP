@@ -362,7 +362,7 @@ const getEmployeeId = async (empList) => {
 };
 
 const fetchActiveEmployees = async (isExtraPayRun, groupId, payDate, companyName) => {
-	const employees = isExtraPayRun && (await findGroupEmployees(groupId, payDate));
+	const employees = isExtraPayRun ? await findGroupEmployees(groupId, payDate) : null;
 
 	return isExtraPayRun
 		? await getEmployeeId(employees)

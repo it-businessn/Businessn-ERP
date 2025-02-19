@@ -3,18 +3,19 @@ const EmployeeEmploymentInfo = require("../models/EmployeeEmploymentInfo");
 const EmployeePayInfo = require("../models/EmployeePayInfo");
 const { isRoleManager } = require("../services/data");
 const { setInitialPermissions } = require("./appController");
-const { findGroupEmployees } = require("./setUpController");
-const { getPayrollActiveEmployees, getEmployeeId } = require("./userController");
+const { fetchActiveEmployees } = require("./userController");
 
 const getAllEmploymentInfo = async (req, res) => {
 	const { companyName, startDate, endDate, payDate, isExtraRun, groupId } = req.params;
 	try {
 		const isExtraPayRun = isExtraRun === "true";
-		const employees = isExtraPayRun ? await findGroupEmployees(groupId, payDate) : null;
 
-		const activeEmployees = isExtraPayRun
-			? await getEmployeeId(employees)
-			: await getPayrollActiveEmployees(companyName);
+		const activeEmployees = await fetchActiveEmployees(
+			isExtraPayRun,
+			groupId,
+			payDate,
+			companyName,
+		);
 
 		const aggregatedResult = [];
 		for (const employee of activeEmployees) {
