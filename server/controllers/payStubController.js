@@ -597,9 +597,9 @@ const buildPayStubDetails = async (currentPayPeriod, companyName, empTimesheetDa
 	const payStubInfoData = buildNewEmpPayStubInfo(
 		empTimesheetData,
 		empPayInfoResult,
+		empAdditionalHoursAllocated,
 		empBenefitInfoResult,
 		empAdditionalAmountAllocated,
-		empAdditionalHoursAllocated,
 		empTaxCreditResult,
 	);
 

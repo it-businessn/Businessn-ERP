@@ -271,9 +271,9 @@ const calcCurrentGrossPay = (newEmpData) => {
 const buildNewEmpPayStubInfo = (
 	empTimesheetData,
 	empPayInfoResult,
+	empAdditionalHoursAllocated,
 	empBenefitInfoResult,
 	empAdditionalAmountAllocated,
-	empAdditionalHoursAllocated,
 	empTaxCreditResult,
 ) => {
 	const newEmpData = empTimesheetData ? empTimesheetData : {};
@@ -289,12 +289,11 @@ const buildNewEmpPayStubInfo = (
 
 	calcSalaryByEarningType(newEmpData);
 	calcEmpBenefits(newEmpData, empBenefitInfoResult);
-	calcEmpAmtAllocation(newEmpData, empAdditionalAmountAllocated);
+	if (empAdditionalAmountAllocated) calcEmpAmtAllocation(newEmpData, empAdditionalAmountAllocated);
 
 	newEmpData.currentVacationBalanceFwd = 0;
 	newEmpData.currentGrossPay = calcCurrentGrossPay(newEmpData);
-
-	calcEmpContributions(newEmpData, empTaxCreditResult);
+	if (empTaxCreditResult) calcEmpContributions(newEmpData, empTaxCreditResult);
 	calcVacBalance(newEmpData, empBenefitInfoResult);
 
 	const deductions = calcCurrentDeductionsTotal(newEmpData);

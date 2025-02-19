@@ -123,11 +123,11 @@ const getEEContribution = async (req, res) => {
 			const empBenefitInfoResult = await findEmployeeBenefitInfo(employee._id, companyName);
 
 			const result = buildEmpEEDetails(
-				empTimesheetData ?? null,
+				empTimesheetData ?? {},
 				empPayInfoResult,
 				empAdditionalHoursAllocated,
-				employee,
 				empBenefitInfoResult,
+				employee,
 			);
 			aggregatedResult.push(result);
 		}
@@ -223,11 +223,11 @@ const getERContribution = async (req, res) => {
 			const empBenefitInfoResult = await findEmployeeBenefitInfo(employee._id, companyName);
 
 			const result = buildEmpERDetails(
-				empTimesheetData ?? null,
+				empTimesheetData ?? {},
 				empPayInfoResult,
 				empAdditionalHoursAllocated,
-				employee,
 				empBenefitInfoResult,
+				employee,
 			);
 			aggregatedResult.push(result);
 		}
@@ -241,10 +241,15 @@ const buildEmpEEDetails = (
 	empTimesheetData,
 	empPayInfoResult,
 	empAdditionalHoursAllocated,
-	employee,
 	empBenefitInfoResult,
+	employee,
 ) => {
-	const data = ERData(empTimesheetData, empPayInfoResult, empAdditionalHoursAllocated);
+	const data = ERData(
+		empTimesheetData,
+		empPayInfoResult,
+		empAdditionalHoursAllocated,
+		empBenefitInfoResult,
+	);
 
 	data.vacationPayPercent = parseFloat(empBenefitInfoResult?.vacationPayPercent) || 0;
 	data.typeOfUnionDuesTreatment = empBenefitInfoResult?.typeOfUnionDuesTreatment;
@@ -273,11 +278,17 @@ const buildEmpEEDetails = (
 	};
 };
 
-const ERData = (empTimesheetData, empPayInfoResult, empAdditionalHoursAllocated) => {
+const ERData = (
+	empTimesheetData,
+	empPayInfoResult,
+	empAdditionalHoursAllocated,
+	empBenefitInfoResult,
+) => {
 	const newEmpData = buildNewEmpPayStubInfo(
 		empTimesheetData,
 		empPayInfoResult,
 		empAdditionalHoursAllocated,
+		empBenefitInfoResult,
 	);
 
 	const {
@@ -320,10 +331,15 @@ const buildEmpERDetails = (
 	empTimesheetData,
 	empPayInfoResult,
 	empAdditionalHoursAllocated,
-	employee,
 	empBenefitInfoResult,
+	employee,
 ) => {
-	const data = ERData(empTimesheetData, empPayInfoResult, empAdditionalHoursAllocated);
+	const data = ERData(
+		empTimesheetData,
+		empPayInfoResult,
+		empAdditionalHoursAllocated,
+		empBenefitInfoResult,
+	);
 	data.vacationPayPercent = parseFloat(empBenefitInfoResult?.vacationPayPercent) || 0;
 	data.typeOfUnionDuesTreatment = empBenefitInfoResult?.typeOfUnionDuesTreatment;
 	data.unionDuesContribution = parseFloat(empBenefitInfoResult?.unionDuesContribution) || 0;
