@@ -11,7 +11,7 @@ import { FaCheck, FaRegTrashAlt } from "react-icons/fa";
 import { IoClose } from "react-icons/io5";
 import TimesheetService from "services/TimesheetService";
 import { getAmount } from "utils/convertAmt";
-import { getTimeCardFormat, getTimeFormat, setUTCDate } from "utils/convertDate";
+import { getTimeFormat, setUTCDate } from "utils/convertDate";
 import { getParamKey, getPayTypeStyle, getStatusStyle, PAY_TYPES_TITLE } from "./data";
 import ExtraTimeEntryModal from "./ExtraTimeEntryModal";
 
@@ -330,7 +330,7 @@ const Timesheet = ({
 										<TextTitle title={employee?.fullName} />
 									</Td>
 									<Td py={0}>
-										<TextTitle title={clockIn && getTimeCardFormat(clockIn, notDevice, true)} />
+										<TextTitle title={clockIn && moment(clockIn).format("ddd, YYYY-MM-DD")} />
 									</Td>
 									<Td py={0}>
 										<NormalTextTitle size="sm" title={employee?.department?.[0]} />
