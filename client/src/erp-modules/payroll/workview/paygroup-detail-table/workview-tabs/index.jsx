@@ -1,6 +1,5 @@
 import BoxCard from "components/ui/card";
 import TabsButtonGroup from "components/ui/tab/TabsButtonGroup";
-import TextTitle from "components/ui/text/TextTitle";
 import { useState } from "react";
 import { isExtraPay } from "utils";
 import AmountAllocation from "./amount/AmountAllocation";
@@ -9,6 +8,7 @@ import EmployeeDetails from "./EmployeeDetails";
 // import EmployerContribution from "./EmployerContribution";
 import { HStack } from "@chakra-ui/react";
 import PopupMessage from "components/ui/PopupMessage";
+import TextTitle from "components/ui/text/TextTitle";
 import EmployeeContribution from "./EmployeeContribution";
 import EmployerContribution from "./EmployerContribution";
 import HourlyAllocation from "./hourly/HourlyAllocation";
@@ -109,9 +109,8 @@ const PaygroupDetailTable = ({
 
 	return (
 		<BoxCard>
-			<HStack alignItems="center" w="40%" justifyContent="start" mb="2px">
-				<TextTitle flex={0.2} mb={2} title={`Pay Number: ${payNum}`} />
-
+			<HStack w="30%" alignItems="center" justifyContent="start" mb="2px">
+				<TextTitle mb={2} width="200px" title={`Pay Number: ${payNum}`} />
 				<PopupMessage
 					isOpen={isOpen}
 					setIsOpen={setIsOpen}

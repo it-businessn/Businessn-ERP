@@ -46,34 +46,31 @@ export default function PopupMessage({
 	};
 
 	return (
-		<Box p={5}>
-			<Popover isOpen={isOpen} placement="right">
-				<PopoverTrigger>
-					<Select
-						flex={0.7}
-						size={"sm"}
-						border="1px solid var(--primary_button_bg)"
-						borderRadius="10px"
-						value={payrunOption}
-						placeholder="Select Payrun Option"
-						onChange={handlePayrun}
-					>
-						{payOptions?.map(({ name, code, show }) => (
-							<React.Fragment key={name}>
-								{show ? <option value={code}>{name}</option> : <></>}
-							</React.Fragment>
-						))}
-					</Select>
-				</PopoverTrigger>
-				<PopoverContent w="auto" bg={generateLighterShade(highlightColor, 0.8)}>
-					<PopoverBody display="flex" alignItems="center">
-						<HStack justifyContent="space-between">
-							<Box fontSize="sm">{info}</Box>
-							<CloseButton size="sm" ml={5} onClick={handleClick} />
-						</HStack>
-					</PopoverBody>
-				</PopoverContent>
-			</Popover>
-		</Box>
+		<Popover isOpen={isOpen} placement="right">
+			<PopoverTrigger>
+				<Select
+					size={"sm"}
+					border="1px solid var(--primary_button_bg)"
+					borderRadius="10px"
+					value={payrunOption}
+					placeholder="Select Payrun Option"
+					onChange={handlePayrun}
+				>
+					{payOptions?.map(({ name, code, show }) => (
+						<React.Fragment key={name}>
+							{show ? <option value={code}>{name}</option> : <></>}
+						</React.Fragment>
+					))}
+				</Select>
+			</PopoverTrigger>
+			<PopoverContent w="auto" bg={generateLighterShade(highlightColor, 0.8)}>
+				<PopoverBody display="flex" alignItems="center">
+					<HStack justifyContent="space-between">
+						<Box fontSize="sm">{info}</Box>
+						<CloseButton size="sm" ml={5} onClick={handleClick} />
+					</HStack>
+				</PopoverBody>
+			</PopoverContent>
+		</Popover>
 	);
 }
