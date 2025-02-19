@@ -1,5 +1,5 @@
 const EmployeePayInfo = require("../models/EmployeePayInfo");
-const { findEmpPayStubDetail } = require("./payStubController");
+const { findEmpPayStubDetail } = require("./payStubHelper");
 const { findGroupEmployees } = require("./setUpController");
 const { getPayrollActiveEmployees, getEmployeeId } = require("./userController");
 
@@ -123,9 +123,18 @@ const updateEmployeePayInfo = async (req, res) => {
 	}
 };
 
+const findEmployeePayInfoDetails = async (empId, companyName) =>
+	await EmployeePayInfo.findOne({
+		empId,
+		companyName,
+	}).select(
+		"empId typeOfEarning fullTimeStandardHours partTimeStandardHours regPay overTimePay dblOverTimePay statWorkPay statPay sickPay vacationPay",
+	);
+
 module.exports = {
 	getAllPayInfo,
 	getEmployeePayInfo,
 	addEmployeePayInfo,
 	updateEmployeePayInfo,
+	findEmployeePayInfoDetails,
 };

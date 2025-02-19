@@ -99,6 +99,22 @@ const employeeExtraAllocationSchema = new mongoose.Schema({
 	incomeTaxSuperficial: { type: Number, default: 0 },
 
 	totalAmountAllocated: { type: Number, default: 0 },
+	totalSuperficialAmountAllocated: { type: Number, default: 0 },
+	totalManualAmountAllocated: { type: Number, default: 0 },
+	totalPayoutAmountAllocated: { type: Number, default: 0 },
+
+	regPayAmt: Number,
+	OTPayAmt: Number,
+	oblOTPayAmt: Number,
+	statPayAmt: Number,
+	statWorkPayAmt: Number,
+	vacationPayAmt: Number,
+	sickPayAmt: Number,
+
+	totalHoursWorked: { type: Number, default: 0 },
+	totalSuperficialHoursWorked: { type: Number, default: 0 },
+	totalManualHoursWorked: { type: Number, default: 0 },
+	totalPayoutHoursWorked: { type: Number, default: 0 },
 });
 
 const EmployeeExtraAllocation = mongoose.model(

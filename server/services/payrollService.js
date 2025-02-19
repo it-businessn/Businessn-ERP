@@ -120,13 +120,13 @@ const applyBCTaxRate = (annualIncome) => {
 	return BC_TaxReductionAmount;
 };
 
-// const getCalcAmount = (hrs, rate) => (hrs / 60).toFixed(2) * rate;
-const getCalcAmount = (hrs, rate) => hrs * rate;
+// const calcSalary = (hrs, rate) => (hrs / 60).toFixed(2) * rate;
+const calcSalary = (hrs, rate) => hrs * rate;
 
 const getHrs = (num) => `${(num / 60).toFixed(0)}.${num % 60}`;
 
-// const getSumHours = (hrs) => (hrs ? parseFloat(getHrs(hrs)) : 0);
-const getSumHours = (hrs) => (hrs ? parseFloat(hrs) : 0);
+// const convertHrsToFloat = (hrs) => (hrs ? parseFloat(getHrs(hrs)) : 0);
+const convertHrsToFloat = (hrs) => (hrs ? parseFloat(hrs) : 0);
 
 const getSumTotal = (data1, data2) => (data1 ?? 0) + data2;
 
@@ -177,7 +177,7 @@ module.exports = {
 	applyBCTaxRate,
 	getTaxDetails,
 	getHrs,
-	getCalcAmount,
+	calcSalary,
 	getSumTotal,
-	getSumHours,
+	convertHrsToFloat,
 };

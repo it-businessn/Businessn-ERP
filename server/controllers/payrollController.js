@@ -8,13 +8,13 @@ const { PAYRUN_TYPE, TIMESHEET_STATUS, PAY_TYPES_TITLE } = require("../services/
 const { fetchActiveEmployees } = require("./userController");
 const Timesheet = require("../models/Timesheet");
 const {
-	getCurrentTotals,
+	buildNewEmpPayStubInfo,
 	findEmployeeBenefitInfo,
-	findEmployeePayInfoDetails,
 	getContributionsDeductions,
 	getHourlyAggregatedResult,
-	findAdditionalHoursAllocatedInfo,
-} = require("./payrollCalc");
+} = require("./payrollHelper");
+const { findEmployeePayInfoDetails } = require("./payInfoController");
+const { findAdditionalHoursAllocatedInfo } = require("./additionalAllocationInfoController");
 
 //update roles-
 
@@ -60,7 +60,7 @@ const getGroupedTimesheet = async (req, res) => {
 
 		const currentPeriodEmployees = isExtraPayRun
 			? null
-			: await calculateTotalAggregatedHours(startDate, endDate, companyName);
+			: await calculateTimesheetApprovedHours(startDate, endDate, companyName);
 
 		const isSuperficial = payrunType === PAYRUN_TYPE.SUPERFICIAL;
 		const isManual = payrunType === PAYRUN_TYPE.MANUAL;
@@ -109,7 +109,7 @@ const getEEContribution = async (req, res) => {
 
 		const currentPeriodEmployees = isExtraPayRun
 			? null
-			: await calculateTotalAggregatedHours(startDate, endDate, companyName);
+			: await calculateTimesheetApprovedHours(startDate, endDate, companyName);
 
 		const aggregatedResult = [];
 
@@ -137,7 +137,7 @@ const getEEContribution = async (req, res) => {
 	}
 };
 
-const calculateTotalAggregatedHours = async (startDate, endDate, companyName) => {
+const calculateTimesheetApprovedHours = async (startDate, endDate, companyName) => {
 	const timesheets = await Timesheet.find({
 		deleted: false,
 		companyName,
@@ -209,7 +209,7 @@ const getERContribution = async (req, res) => {
 		);
 		const currentPeriodEmployees = isExtraPayRun
 			? null
-			: await calculateTotalAggregatedHours(startDate, endDate, companyName);
+			: await calculateTimesheetApprovedHours(startDate, endDate, companyName);
 
 		const aggregatedResult = [];
 
@@ -274,7 +274,7 @@ const buildEmpEEDetails = (
 };
 
 const ERData = (empTimesheetData, empPayInfoResult, empAdditionalHoursAllocated) => {
-	const newEmpData = getCurrentTotals(
+	const newEmpData = buildNewEmpPayStubInfo(
 		empTimesheetData,
 		empPayInfoResult,
 		empAdditionalHoursAllocated,

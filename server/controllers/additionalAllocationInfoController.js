@@ -1,5 +1,7 @@
 const EmployeeExtraAllocation = require("../models/EmployeeExtraAllocation");
 const { PAYRUN_TYPE } = require("../services/data");
+const { calcSalary } = require("../services/payrollService");
+const { findEmployeePayInfoDetails } = require("./payInfoController");
 const { findGroupEmployees } = require("./setUpController");
 const { getPayrollActiveEmployees, getEmployeeId } = require("./userController");
 
@@ -16,6 +18,7 @@ const getAmountAllocation = async (req, res) => {
 
 		const aggregatedResult = [];
 		for (const employee of activeEmployees) {
+			const empPayInfoResult = await findEmployeePayInfoDetails(employee._id, companyName);
 			const result = await findAdditionalAmountAllocatedInfo({
 				empId: employee._id,
 				companyName,
@@ -114,6 +117,10 @@ const getAmountAllocation = async (req, res) => {
 						incomeTax,
 					} = result;
 
+					result.regPayAmt = calcSalary(
+						parseFloat(result?.totalHoursWorked) || 0,
+						parseFloat(empPayInfoResult?.regPay) || 0,
+					);
 					result.totalAmountAllocated =
 						(commission || 0) +
 						(bonus || 0) +
@@ -325,6 +332,11 @@ const addAmountAllocation = async (req, res) => {
 			federalTaxSuperficial,
 			provTaxSuperficial,
 			incomeTaxSuperficial,
+
+			totalAmountAllocated,
+			totalSuperficialAmountAllocated,
+			totalManualAmountAllocated,
+			totalPayoutAmountAllocated,
 		} = updatedRec;
 
 		const newData = {
@@ -379,6 +391,11 @@ const addAmountAllocation = async (req, res) => {
 			federalTaxSuperficial,
 			provTaxSuperficial,
 			incomeTaxSuperficial,
+
+			totalAmountAllocated,
+			totalSuperficialAmountAllocated,
+			totalManualAmountAllocated,
+			totalPayoutAmountAllocated,
 		};
 		if (existingInfo) {
 			const updatedInfo = await updateAdditionalHoursAllocatedInfo(existingInfo._id, newData);
@@ -402,24 +419,19 @@ const updateAdditionalHoursAllocatedInfo = async (id, data) =>
 		new: true,
 	});
 
-const findAdditionalHoursAllocatedInfo = async (record) =>
-	await EmployeeExtraAllocation.findOne(record).select(
-		"empId additionalRegHoursWorked additionalOvertimeHoursWorked additionalDblOvertimeHoursWorked additionalStatDayHoursWorked additionalVacationHoursWorked additionalStatHoursWorked additionalSickHoursWorked ",
-	);
-
 const findAdditionalSuperficialHoursAllocatedInfo = async (record) =>
 	await EmployeeExtraAllocation.findOne(record).select(
-		"empId additionalSuperficialRegHoursWorked additionalSuperficialOvertimeHoursWorked additionalSuperficialDblOvertimeHoursWorked additionalSuperficialStatDayHoursWorked additionalSuperficialVacationHoursWorked additionalSuperficialStatHoursWorked additionalSuperficialSickHoursWorked ",
+		"empId totalSuperficialHoursWorked additionalSuperficialRegHoursWorked additionalSuperficialOvertimeHoursWorked additionalSuperficialDblOvertimeHoursWorked additionalSuperficialStatDayHoursWorked additionalSuperficialVacationHoursWorked additionalSuperficialStatHoursWorked additionalSuperficialSickHoursWorked ",
 	);
 
 const findAdditionalPayoutHoursAllocatedInfo = async (record) =>
 	await EmployeeExtraAllocation.findOne(record).select(
-		"empId additionalPayoutRegHoursWorked additionalPayoutOvertimeHoursWorked additionalPayoutDblOvertimeHoursWorked additionalPayoutStatDayHoursWorked additionalPayoutVacationHoursWorked additionalPayoutStatHoursWorked additionalPayoutSickHoursWorked ",
+		"empId totalPayoutHoursWorked additionalPayoutRegHoursWorked additionalPayoutOvertimeHoursWorked additionalPayoutDblOvertimeHoursWorked additionalPayoutStatDayHoursWorked additionalPayoutVacationHoursWorked additionalPayoutStatHoursWorked additionalPayoutSickHoursWorked ",
 	);
 
 const findAdditionalManualHoursAllocatedInfo = async (record) =>
 	await EmployeeExtraAllocation.findOne(record).select(
-		"empId additionalManualRegHoursWorked additionalManualOvertimeHoursWorked additionalManualDblOvertimeHoursWorked additionalManualStatDayHoursWorked additionalManualVacationHoursWorked additionalManualStatHoursWorked additionalManualSickHoursWorked ",
+		"empId totalManualHoursWorked additionalManualRegHoursWorked additionalManualOvertimeHoursWorked additionalManualDblOvertimeHoursWorked additionalManualStatDayHoursWorked additionalManualVacationHoursWorked additionalManualStatHoursWorked additionalManualSickHoursWorked ",
 	);
 
 const findAllAdditionalHoursAllocatedInfo = async (record) =>
@@ -435,8 +447,13 @@ const findAdditionalAmountAllocatedInfo = async (record) =>
 			select: ["fullName"],
 		})
 		.select(
-			"empId commission bonus retroactive reimbursement terminationPayout vacationPayout vacationBalAdjust vacationAccrual vacationUsed federalTax provTax incomeTax commissionPayout bonusPayout retroactivePayout reimbursementPayout terminationPayoutPayout vacationPayoutPayout vacationBalAdjustPayout vacationAccrualPayout vacationUsedPayout federalTaxPayout provTaxPayout incomeTaxPayout commissionManual bonusManual retroactiveManual reimbursementManual terminationPayoutManual vacationPayoutManual vacationBalAdjustManual vacationAccrualManual vacationUsedManual federalTaxManual provTaxManual incomeTaxManual commissionSuperficial bonusSuperficial retroactiveSuperficial reimbursementSuperficial terminationPayoutSuperficial vacationPayoutSuperficial vacationBalAdjustSuperficial vacationAccrualSuperficial vacationUsedSuperficial federalTaxSuperficial provTaxSuperficial incomeTaxSuperficial",
+			"empId regPayAmt totalHoursWorked totalAmountAllocated totalSuperficialAmountAllocated totalManualAmountAllocated totalPayoutAmountAllocated commission bonus retroactive reimbursement terminationPayout vacationPayout vacationBalAdjust vacationAccrual vacationUsed federalTax provTax incomeTax commissionPayout bonusPayout retroactivePayout reimbursementPayout terminationPayoutPayout vacationPayoutPayout vacationBalAdjustPayout vacationAccrualPayout vacationUsedPayout federalTaxPayout provTaxPayout incomeTaxPayout commissionManual bonusManual retroactiveManual reimbursementManual terminationPayoutManual vacationPayoutManual vacationBalAdjustManual vacationAccrualManual vacationUsedManual federalTaxManual provTaxManual incomeTaxManual commissionSuperficial bonusSuperficial retroactiveSuperficial reimbursementSuperficial terminationPayoutSuperficial vacationPayoutSuperficial vacationBalAdjustSuperficial vacationAccrualSuperficial vacationUsedSuperficial federalTaxSuperficial provTaxSuperficial incomeTaxSuperficial",
 		);
+
+const findAdditionalHoursAllocatedInfo = async (record) =>
+	await EmployeeExtraAllocation.findOne(record).select(
+		"empId totalHoursWorked additionalRegHoursWorked additionalOvertimeHoursWorked additionalDblOvertimeHoursWorked additionalStatDayHoursWorked additionalVacationHoursWorked additionalStatHoursWorked additionalSickHoursWorked ",
+	);
 
 module.exports = {
 	findAdditionalSuperficialHoursAllocatedInfo,

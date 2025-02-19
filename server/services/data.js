@@ -159,6 +159,8 @@ const PUNCH_CODE = {
 	CLOCK_OUT: "1",
 };
 
+const EARNING_TYPE = { FT: "Full Time Salaried", PT: "Part Time Salaried" };
+
 const PAY_TYPES_TITLE = {
 	REG_PAY: "Regular Pay",
 	REG_PAY_BRK: "Regular Pay Break",
@@ -214,6 +216,7 @@ const calcTotalHours = (data) => {
 };
 
 module.exports = {
+	EARNING_TYPE,
 	PAY_TYPES_TITLE,
 	CURRENT_TIME_HHMM,
 	NEXT_DAY,

@@ -1,6 +1,4 @@
 const EmployeeGovernmentInfo = require("../models/EmployeeGovernmentInfo");
-const { calculateAge } = require("../services/data");
-const { findEmployeeProfileInfo } = require("./profileInfoController");
 
 const getAllGovernmentInfo = async (req, res) => {
 	const { companyName } = req.params;
