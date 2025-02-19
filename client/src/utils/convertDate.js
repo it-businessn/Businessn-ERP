@@ -53,12 +53,15 @@ export const formatDateRange = (startDate, endDate) => {
 
 export const getDefaultTime = (date) => moment(date, "HH:mm").format("hh:mm A");
 
+export const convertMomentTzDate = (timestamp) =>
+	momentTz(timestamp).utc().format("YYYY-MM-DDTHH:mm:ss.SSS[Z]");
+
 export const getTimeCardFormat = (timestamp, notDevice, timeSheet) => {
 	// const date = notDevice ? moment(timestamp) : moment.utc(timestamp);
-	timestamp = momentTz(timestamp).utc().format("YYYY-MM-DDTHH:mm:ss.SSS[Z]");
+	timestamp = convertMomentTzDate(timestamp);
 	let date = moment(timestamp);
 
-	if (date.hour() <= 8) {
+	if (date.hour() <= 23) {
 		date = date.utc();
 	}
 	return timeSheet ? date.format("ddd, YYYY-MM-DD") : date.format("YYYY-MM-DD hh:mm A");
@@ -66,14 +69,12 @@ export const getTimeCardFormat = (timestamp, notDevice, timeSheet) => {
 
 // export const getTimeFormat = (date) => moment.utc(date).format("hh:mm A");
 export const getTimeFormat = (timestamp, notDevice) => {
-	timestamp = momentTz(timestamp).utc().format("YYYY-MM-DDTHH:mm:ss.SSS[Z]");
-	const time = moment(timestamp);
+	let time = moment(timestamp);
 
-	if (time.hour() >= 8) {
-		return time.format("HH:mm");
-	} else {
-		return time.utc().format("HH:mm");
+	if (time.hour() < 8) {
+		time = time.utc();
 	}
+	return time.format("HH:mm");
 };
 
 export const setUTCDate = (date, newDate, notDevice) => {

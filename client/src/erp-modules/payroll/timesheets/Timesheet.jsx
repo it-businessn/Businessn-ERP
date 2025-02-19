@@ -11,7 +11,12 @@ import { FaCheck, FaRegTrashAlt } from "react-icons/fa";
 import { IoClose } from "react-icons/io5";
 import TimesheetService from "services/TimesheetService";
 import { getAmount } from "utils/convertAmt";
-import { getTimeFormat, setUTCDate } from "utils/convertDate";
+import {
+	convertMomentTzDate,
+	getTimeCardFormat,
+	getTimeFormat,
+	setUTCDate,
+} from "utils/convertDate";
 import { getParamKey, getPayTypeStyle, getStatusStyle, PAY_TYPES_TITLE } from "./data";
 import ExtraTimeEntryModal from "./ExtraTimeEntryModal";
 
@@ -28,7 +33,7 @@ const Timesheet = ({
 }) => {
 	const [totalPage, setTotalPages] = useState(1);
 	const [refresh, setRefresh] = useState(false);
-	const limit = 50;
+	const limit = 40;
 
 	useEffect(() => {
 		// const controller = new AbortController();
@@ -45,12 +50,18 @@ const Timesheet = ({
 					// controller.signal,
 				);
 				const { totalPages, page, items } = data;
-				if (moment(filter?.startDate).isSame(moment(filter?.endDate), "day")) {
-					setTimesheets(
-						items?.filter(({ clockIn }) =>
-							moment(clockIn).isSame(moment(filter?.startDate), "day"),
-						),
-					);
+
+				if (moment.utc(filter?.startDate).isSame(moment.utc(filter?.endDate), "day")) {
+					const filteredItems = items
+						?.map((record) => {
+							record.clockIn = convertMomentTzDate(record.clockIn);
+							if (record.clockOut) record.clockOut = convertMomentTzDate(record.clockOut);
+							return record;
+						})
+						?.filter(({ clockIn }) =>
+							moment.utc(clockIn).isSame(moment.utc(filter?.startDate), "day"),
+						);
+					setTimesheets(filteredItems);
 				} else {
 					setTimesheets(items);
 				}
@@ -330,7 +341,7 @@ const Timesheet = ({
 										<TextTitle title={employee?.fullName} />
 									</Td>
 									<Td py={0}>
-										<TextTitle title={clockIn && moment(clockIn).format("ddd, YYYY-MM-DD")} />
+										<TextTitle title={clockIn && getTimeCardFormat(clockIn, notDevice, true)} />
 									</Td>
 									<Td py={0}>
 										<NormalTextTitle size="sm" title={employee?.department?.[0]} />
