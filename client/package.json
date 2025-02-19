@@ -33,7 +33,7 @@
 		"framer-motion": "^10.12.12",
 		"jquery": "^3.7.1",
 		"moment": "^2.29.4",
-		"moment-timezone": "^0.5.45",
+		"moment-timezone": "^0.5.47",
 		"primereact": "^9.6.0",
 		"react": "^18.2.0",
 		"react-beautiful-dnd": "^13.1.1",
