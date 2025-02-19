@@ -13,6 +13,7 @@ import TimesheetService from "services/TimesheetService";
 import { getAmount } from "utils/convertAmt";
 import {
 	convertMomentTzDate,
+	getClockInTimeFormat,
 	getTimeCardFormat,
 	getTimeFormat,
 	setUTCDate,
@@ -360,7 +361,7 @@ const Timesheet = ({
 											className={`timeClockInInput ${_id}`}
 											type="time"
 											name="clockIn"
-											value={clockIn ? getTimeFormat(clockIn, notDevice) : ""}
+											value={clockIn ? getClockInTimeFormat(clockIn, notDevice) : ""}
 											onClick={() => showPicker(`timeClockInInput ${_id}`)}
 											onChange={(e) => {
 												setFormData({

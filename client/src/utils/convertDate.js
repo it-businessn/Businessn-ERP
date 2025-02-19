@@ -68,13 +68,23 @@ export const getTimeCardFormat = (timestamp, notDevice, timeSheet) => {
 };
 
 // export const getTimeFormat = (date) => moment.utc(date).format("hh:mm A");
+export const getClockInTimeFormat = (timestamp, notDevice) => {
+	let time = moment(timestamp);
+	if (time.format("HH:mm") < "05:00" || time.format("HH:mm") > "17:00") {
+		return time.utc().format("HH:mm");
+	} else {
+		return time.format("HH:mm");
+	}
+};
+
 export const getTimeFormat = (timestamp, notDevice) => {
 	let time = moment(timestamp);
 
-	if (time.hour() < 8) {
-		time = time.utc();
+	if (time.format("HH") < "12") {
+		return time.utc().format("HH:mm");
+	} else {
+		return time.format("HH:mm");
 	}
-	return time.format("HH:mm");
 };
 
 export const setUTCDate = (date, newDate, notDevice) => {
