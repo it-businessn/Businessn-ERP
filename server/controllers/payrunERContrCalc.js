@@ -29,7 +29,7 @@ const getPayrunERContributionResult = async (
 				payDate,
 				aggregatedResult,
 			);
-		} else if (isManual) {
+			// } else if (isManual) {
 			// await calcManualERContribution(
 			// 	currentPeriodEmployees,
 			// 	employee._id,
@@ -38,7 +38,7 @@ const getPayrunERContributionResult = async (
 			// 	companyName,
 			// 	aggregatedResult,
 			// );
-		} else if (isPayout) {
+			// } else if (isPayout) {
 			// await calcPayoutERContribution(
 			// 	currentPeriodEmployees,
 			// 	employee._id,

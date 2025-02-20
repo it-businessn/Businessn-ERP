@@ -46,6 +46,7 @@ const addAdditionalHoursAllocationInfo = async (req, res) => {
 		additionalStatDayHoursWorked,
 		additionalVacationHoursWorked,
 		additionalSickHoursWorked,
+
 		additionalPayoutRegHoursWorked,
 		additionalPayoutOvertimeHoursWorked,
 		additionalPayoutDblOvertimeHoursWorked,
@@ -53,6 +54,7 @@ const addAdditionalHoursAllocationInfo = async (req, res) => {
 		additionalPayoutStatDayHoursWorked,
 		additionalPayoutVacationHoursWorked,
 		additionalPayoutSickHoursWorked,
+
 		additionalManualRegHoursWorked,
 		additionalManualOvertimeHoursWorked,
 		additionalManualDblOvertimeHoursWorked,
@@ -60,6 +62,7 @@ const addAdditionalHoursAllocationInfo = async (req, res) => {
 		additionalManualStatDayHoursWorked,
 		additionalManualVacationHoursWorked,
 		additionalManualSickHoursWorked,
+
 		additionalSuperficialRegHoursWorked,
 		additionalSuperficialOvertimeHoursWorked,
 		additionalSuperficialDblOvertimeHoursWorked,
@@ -67,6 +70,7 @@ const addAdditionalHoursAllocationInfo = async (req, res) => {
 		additionalSuperficialStatDayHoursWorked,
 		additionalSuperficialVacationHoursWorked,
 		additionalSuperficialSickHoursWorked,
+
 		payPeriodPayDate,
 		totalHoursWorked,
 		totalSuperficialHoursWorked,
@@ -96,6 +100,7 @@ const addAdditionalHoursAllocationInfo = async (req, res) => {
 				additionalStatDayHoursWorked,
 				additionalVacationHoursWorked,
 				additionalSickHoursWorked,
+
 				additionalPayoutRegHoursWorked,
 				additionalPayoutOvertimeHoursWorked,
 				additionalPayoutDblOvertimeHoursWorked,
@@ -103,6 +108,7 @@ const addAdditionalHoursAllocationInfo = async (req, res) => {
 				additionalPayoutStatDayHoursWorked,
 				additionalPayoutVacationHoursWorked,
 				additionalPayoutSickHoursWorked,
+
 				additionalManualRegHoursWorked,
 				additionalManualOvertimeHoursWorked,
 				additionalManualDblOvertimeHoursWorked,
@@ -110,6 +116,7 @@ const addAdditionalHoursAllocationInfo = async (req, res) => {
 				additionalManualStatDayHoursWorked,
 				additionalManualVacationHoursWorked,
 				additionalManualSickHoursWorked,
+
 				additionalSuperficialRegHoursWorked,
 				additionalSuperficialOvertimeHoursWorked,
 				additionalSuperficialDblOvertimeHoursWorked,
@@ -117,6 +124,7 @@ const addAdditionalHoursAllocationInfo = async (req, res) => {
 				additionalSuperficialStatDayHoursWorked,
 				additionalSuperficialVacationHoursWorked,
 				additionalSuperficialSickHoursWorked,
+
 				totalHoursWorked,
 				totalSuperficialHoursWorked,
 				totalManualHoursWorked,
@@ -135,6 +143,7 @@ const addAdditionalHoursAllocationInfo = async (req, res) => {
 			additionalStatHoursWorked,
 			additionalVacationHoursWorked,
 			additionalSickHoursWorked,
+
 			additionalPayoutRegHoursWorked,
 			additionalPayoutOvertimeHoursWorked,
 			additionalPayoutDblOvertimeHoursWorked,
@@ -142,6 +151,7 @@ const addAdditionalHoursAllocationInfo = async (req, res) => {
 			additionalPayoutStatDayHoursWorked,
 			additionalPayoutVacationHoursWorked,
 			additionalPayoutSickHoursWorked,
+
 			additionalManualRegHoursWorked,
 			additionalManualOvertimeHoursWorked,
 			additionalManualDblOvertimeHoursWorked,
@@ -149,6 +159,7 @@ const addAdditionalHoursAllocationInfo = async (req, res) => {
 			additionalManualStatDayHoursWorked,
 			additionalManualVacationHoursWorked,
 			additionalManualSickHoursWorked,
+
 			additionalSuperficialRegHoursWorked,
 			additionalSuperficialOvertimeHoursWorked,
 			additionalSuperficialDblOvertimeHoursWorked,
@@ -156,6 +167,7 @@ const addAdditionalHoursAllocationInfo = async (req, res) => {
 			additionalSuperficialStatDayHoursWorked,
 			additionalSuperficialVacationHoursWorked,
 			additionalSuperficialSickHoursWorked,
+
 			payPeriodPayDate,
 			totalHoursWorked,
 			totalSuperficialHoursWorked,

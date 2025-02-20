@@ -90,7 +90,7 @@ const AmountAllocation = ({ company, closestRecord, groupId, path, payrunOption 
 		<Input
 			type="number"
 			onBlur={() => handleSave()}
-			value={value}
+			value={value || ""}
 			onChange={(e) => handleUpdateData(id, field, e.target.value)}
 			placeholder="0"
 			size="sm"

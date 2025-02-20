@@ -119,7 +119,7 @@ export const PAYOUT_HOURLY_ALLOCATE_COLS = [
 		isEditable: true,
 		nearest: true,
 	},
-	{ key: "Stat. Pay Hrs", pair: "totalStatHoursWorked", align: "center", nearest: true },
+	{ key: "Stat. Pay Hrs", pair: "totalStatHours", align: "center", nearest: true },
 	{
 		key: "Add Stat. Pay",
 		pair: "additionalPayoutStatHoursWorked",
@@ -213,7 +213,7 @@ export const MANUAL_PAYOUT_HOURLY_ALLOCATE_COLS = [
 		isEditable: true,
 		nearest: true,
 	},
-	{ key: "Stat. Pay Hrs", pair: "totalStatHoursWorked", align: "center", nearest: true },
+	{ key: "Stat. Pay Hrs", pair: "totalStatHours", align: "center", nearest: true },
 	{
 		key: "Add Stat. Pay",
 		pair: "additionalManualStatHoursWorked",

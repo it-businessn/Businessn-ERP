@@ -97,6 +97,12 @@ export const PAYOUT_EE_COLS = [
 		round: true,
 	},
 	{
+		key: "ee1",
+	},
+	{
+		key: "ee2",
+	},
+	{
 		key: "ee3",
 	},
 	{
@@ -153,6 +159,12 @@ export const MANUAL_EE_COLS = [
 		pair: "EHP",
 		align: "center",
 		round: true,
+	},
+	{
+		key: "ee1",
+	},
+	{
+		key: "ee2",
 	},
 	{
 		key: "ee3",

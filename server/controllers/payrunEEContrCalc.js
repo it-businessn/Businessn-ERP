@@ -30,24 +30,24 @@ const getPayrunEEContributionResult = async (
 				payDate,
 				aggregatedResult,
 			);
-		} else if (isManual) {
-			await calcManualEEContribution(
-				currentPeriodEmployees,
-				employee._id,
-				employee.fullName,
-				payDate,
-				companyName,
-				aggregatedResult,
-			);
-		} else if (isPayout) {
-			await calcPayoutEEContribution(
-				currentPeriodEmployees,
-				employee._id,
-				employee.fullName,
-				payDate,
-				companyName,
-				aggregatedResult,
-			);
+			// } else if (isManual) {
+			// 	await calcManualEEContribution(
+			// 		currentPeriodEmployees,
+			// 		employee._id,
+			// 		employee.fullName,
+			// 		payDate,
+			// 		companyName,
+			// 		aggregatedResult,
+			// 	);
+			// } else if (isPayout) {
+			// 	await calcPayoutEEContribution(
+			// 		currentPeriodEmployees,
+			// 		employee._id,
+			// 		employee.fullName,
+			// 		payDate,
+			// 		companyName,
+			// 		aggregatedResult,
+			// 	);
 		} else {
 			await calcRegularEEContribution(
 				employee._id,

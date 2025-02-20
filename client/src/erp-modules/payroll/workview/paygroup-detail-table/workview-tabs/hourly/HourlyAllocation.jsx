@@ -86,7 +86,7 @@ const HourlyAllocation = ({ company, closestRecord, groupId, payrunOption }) => 
 			<Input
 				type="number"
 				onBlur={() => handleSave()}
-				value={value}
+				value={value || ""}
 				onChange={(e) => handleUpdateData(id, field, e.target.value)}
 				width={"80px"}
 				size="sm"
