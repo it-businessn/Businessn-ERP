@@ -22,232 +22,290 @@ const getHourlyAggregatedResult = async (
 		);
 		const result = await buildEmpHourlyDetails(empTimesheetData ?? null, employee, companyName);
 
-		// if (isSuperficial) {
-		// 	const additionalHoursAllocatedInfo = await findAdditionalSuperficialHoursAllocatedInfo({
-		// 		empId: employee._id,
-		// 		companyName,
-		// 		payPeriodPayDate: payDate,
-		// 	});
-
-		// 	result.additionalSuperficialRegHoursWorked =
-		// 		additionalHoursAllocatedInfo?.additionalSuperficialRegHoursWorked ?? 0;
-		// 	result.additionalSuperficialOvertimeHoursWorked =
-		// 		additionalHoursAllocatedInfo?.additionalSuperficialOvertimeHoursWorked || 0;
-		// 	result.additionalSuperficialDblOvertimeHoursWorked =
-		// 		additionalHoursAllocatedInfo?.additionalSuperficialDblOvertimeHoursWorked || 0;
-		// 	result.additionalSuperficialStatHoursWorked =
-		// 		additionalHoursAllocatedInfo?.additionalSuperficialStatHoursWorked || 0;
-		// 	result.additionalSuperficialStatDayHoursWorked =
-		// 		additionalHoursAllocatedInfo?.additionalSuperficialStatDayHoursWorked || 0;
-		// 	result.additionalSuperficialSickHoursWorked =
-		// 		additionalHoursAllocatedInfo?.additionalSuperficialSickHoursWorked || 0;
-		// 	result.additionalSuperficialVacationHoursWorked =
-		// 		additionalHoursAllocatedInfo?.additionalSuperficialVacationHoursWorked || 0;
-
-		// 	const {
-		// 		totalDblOvertimeHoursWorked,
-		// 		totalOvertimeHoursWorked,
-		// 		totalRegHoursWorked,
-		// 		totalSickHoursWorked,
-		// 		totalStatDayHoursWorked,
-		// 		totalStatHours,
-		// 		totalVacationHoursWorked,
-		// 		additionalSuperficialRegHoursWorked,
-		// 		additionalSuperficialOvertimeHoursWorked,
-		// 		additionalSuperficialDblOvertimeHoursWorked,
-		// 		additionalSuperficialStatHoursWorked,
-		// 		additionalSuperficialStatDayHoursWorked,
-		// 		additionalSuperficialSickHoursWorked,
-		// 		additionalSuperficialVacationHoursWorked,
-		// 	} = result;
-
-		// 	result.totalSuperficialHoursWorked =
-		// 		totalDblOvertimeHoursWorked +
-		// 		totalOvertimeHoursWorked +
-		// 		totalRegHoursWorked +
-		// 		totalSickHoursWorked +
-		// 		totalStatDayHoursWorked +
-		// 		totalStatHours +
-		// 		totalVacationHoursWorked +
-		// 		additionalSuperficialRegHoursWorked +
-		// 		additionalSuperficialOvertimeHoursWorked +
-		// 		additionalSuperficialDblOvertimeHoursWorked +
-		// 		additionalSuperficialStatHoursWorked +
-		// 		additionalSuperficialStatDayHoursWorked +
-		// 		additionalSuperficialSickHoursWorked +
-		// 		additionalSuperficialVacationHoursWorked;
-		// 	aggregatedResult.push(result);
-		// } else if (isManual) {
-		// 	const additionalHoursAllocatedInfo = await findAdditionalManualHoursAllocatedInfo({
-		// 		empId: employee._id,
-		// 		companyName,
-		// 		payPeriodPayDate: payDate,
-		// 	});
-
-		// 	result.additionalManualRegHoursWorked =
-		// 		additionalHoursAllocatedInfo?.additionalManualRegHoursWorked ?? 0;
-		// 	result.additionalManualOvertimeHoursWorked =
-		// 		additionalHoursAllocatedInfo?.additionalManualOvertimeHoursWorked || 0;
-		// 	result.additionalManualDblOvertimeHoursWorked =
-		// 		additionalHoursAllocatedInfo?.additionalManualDblOvertimeHoursWorked || 0;
-		// 	result.additionalManualStatHoursWorked =
-		// 		additionalHoursAllocatedInfo?.additionalManualStatHoursWorked || 0;
-		// 	result.additionalManualStatDayHoursWorked =
-		// 		additionalHoursAllocatedInfo?.additionalManualStatDayHoursWorked || 0;
-		// 	result.additionalManualSickHoursWorked =
-		// 		additionalHoursAllocatedInfo?.additionalManualSickHoursWorked || 0;
-		// 	result.additionalManualVacationHoursWorked =
-		// 		additionalHoursAllocatedInfo?.additionalManualVacationHoursWorked || 0;
-
-		// 	const {
-		// 		totalDblOvertimeHoursWorked,
-		// 		totalOvertimeHoursWorked,
-		// 		totalRegHoursWorked,
-		// 		totalSickHoursWorked,
-		// 		totalStatDayHoursWorked,
-		// 		totalStatHours,
-		// 		totalVacationHoursWorked,
-		// 		additionalManualRegHoursWorked,
-		// 		additionalManualOvertimeHoursWorked,
-		// 		additionalManualDblOvertimeHoursWorked,
-		// 		additionalManualStatHoursWorked,
-		// 		additionalManualStatDayHoursWorked,
-		// 		additionalManualSickHoursWorked,
-		// 		additionalManualVacationHoursWorked,
-		// 	} = result;
-
-		// 	result.totalManualHoursWorked =
-		// 		totalDblOvertimeHoursWorked +
-		// 		totalOvertimeHoursWorked +
-		// 		totalRegHoursWorked +
-		// 		totalSickHoursWorked +
-		// 		totalStatDayHoursWorked +
-		// 		totalStatHours +
-		// 		totalVacationHoursWorked +
-		// 		additionalManualRegHoursWorked +
-		// 		additionalManualOvertimeHoursWorked +
-		// 		additionalManualDblOvertimeHoursWorked +
-		// 		additionalManualStatHoursWorked +
-		// 		additionalManualStatDayHoursWorked +
-		// 		additionalManualSickHoursWorked +
-		// 		additionalManualVacationHoursWorked;
-		// 	aggregatedResult.push(result);
-		// } else if (isPayout) {
-		// 	const additionalHoursAllocatedInfo = await findAdditionalPayoutHoursAllocatedInfo({
-		// 		empId: employee._id,
-		// 		companyName,
-		// 		payPeriodPayDate: payDate,
-		// 	});
-
-		// 	result.additionalPayoutRegHoursWorked =
-		// 		additionalHoursAllocatedInfo?.additionalPayoutRegHoursWorked ?? 0;
-		// 	result.additionalPayoutOvertimeHoursWorked =
-		// 		additionalHoursAllocatedInfo?.additionalPayoutOvertimeHoursWorked || 0;
-		// 	result.additionalPayoutDblOvertimeHoursWorked =
-		// 		additionalHoursAllocatedInfo?.additionalPayoutDblOvertimeHoursWorked || 0;
-		// 	result.additionalPayoutStatHoursWorked =
-		// 		additionalHoursAllocatedInfo?.additionalPayoutStatHoursWorked || 0;
-		// 	result.additionalPayoutStatDayHoursWorked =
-		// 		additionalHoursAllocatedInfo?.additionalPayoutStatDayHoursWorked || 0;
-		// 	result.additionalPayoutSickHoursWorked =
-		// 		additionalHoursAllocatedInfo?.additionalPayoutSickHoursWorked || 0;
-		// 	result.additionalPayoutVacationHoursWorked =
-		// 		additionalHoursAllocatedInfo?.additionalPayoutVacationHoursWorked || 0;
-
-		// 	const {
-		// 		totalDblOvertimeHoursWorked,
-		// 		totalOvertimeHoursWorked,
-		// 		totalRegHoursWorked,
-		// 		totalSickHoursWorked,
-		// 		totalStatDayHoursWorked,
-		// 		totalStatHours,
-		// 		totalVacationHoursWorked,
-		// 		additionalPayoutRegHoursWorked,
-		// 		additionalPayoutOvertimeHoursWorked,
-		// 		additionalPayoutDblOvertimeHoursWorked,
-		// 		additionalPayoutStatHoursWorked,
-		// 		additionalPayoutStatDayHoursWorked,
-		// 		additionalPayoutSickHoursWorked,
-		// 		additionalPayoutVacationHoursWorked,
-		// 	} = result;
-
-		// 	result.totalPayoutHoursWorked =
-		// 		totalDblOvertimeHoursWorked +
-		// 		totalOvertimeHoursWorked +
-		// 		totalRegHoursWorked +
-		// 		totalSickHoursWorked +
-		// 		totalStatDayHoursWorked +
-		// 		totalStatHours +
-		// 		totalVacationHoursWorked +
-		// 		additionalPayoutRegHoursWorked +
-		// 		additionalPayoutOvertimeHoursWorked +
-		// 		additionalPayoutDblOvertimeHoursWorked +
-		// 		additionalPayoutStatHoursWorked +
-		// 		additionalPayoutStatDayHoursWorked +
-		// 		additionalPayoutSickHoursWorked +
-		// 		additionalPayoutVacationHoursWorked;
-		// 	aggregatedResult.push(result);
-		// } else {
-		const additionalHoursAllocatedInfo = await findAdditionalHoursAllocatedInfo({
-			empId: employee._id,
-			companyName,
-			payPeriodPayDate: payDate,
-		});
-
-		result.additionalRegHoursWorked = additionalHoursAllocatedInfo?.additionalRegHoursWorked ?? 0;
-		result.additionalOvertimeHoursWorked =
-			additionalHoursAllocatedInfo?.additionalOvertimeHoursWorked || 0;
-		result.additionalDblOvertimeHoursWorked =
-			additionalHoursAllocatedInfo?.additionalDblOvertimeHoursWorked || 0;
-		result.additionalStatHoursWorked = additionalHoursAllocatedInfo?.additionalStatHoursWorked || 0;
-		result.additionalStatDayHoursWorked =
-			additionalHoursAllocatedInfo?.additionalStatDayHoursWorked || 0;
-		result.additionalSickHoursWorked = additionalHoursAllocatedInfo?.additionalSickHoursWorked || 0;
-		result.additionalVacationHoursWorked =
-			additionalHoursAllocatedInfo?.additionalVacationHoursWorked || 0;
-
-		const {
-			totalDblOvertimeHoursWorked,
-			totalOvertimeHoursWorked,
-			totalRegHoursWorked,
-			totalSickHoursWorked,
-			totalStatDayHoursWorked,
-			totalStatHours,
-			totalVacationHoursWorked,
-			additionalRegHoursWorked,
-			additionalOvertimeHoursWorked,
-			additionalDblOvertimeHoursWorked,
-			additionalStatDayHoursWorked,
-			additionalVacationHoursWorked,
-			additionalStatHoursWorked,
-			additionalSickHoursWorked,
-		} = result;
-
-		const regSumHrs =
-			totalDblOvertimeHoursWorked +
-			totalOvertimeHoursWorked +
-			totalRegHoursWorked +
-			totalSickHoursWorked +
-			totalStatDayHoursWorked +
-			totalStatHours +
-			totalVacationHoursWorked;
-
-		const additionalSumHrs =
-			additionalRegHoursWorked +
-			additionalOvertimeHoursWorked +
-			additionalDblOvertimeHoursWorked +
-			additionalStatDayHoursWorked +
-			additionalVacationHoursWorked +
-			additionalStatHoursWorked +
-			additionalSickHoursWorked;
-
-		result.totalHoursWorked =
-			regSumHrs === additionalHoursAllocatedInfo?.totalHoursWorked
-				? regSumHrs
-				: regSumHrs + additionalSumHrs;
-		aggregatedResult.push(result);
-		// }
+		if (isSuperficial) {
+			await calcSuperficialAggregatedHours(
+				employee._id,
+				companyName,
+				payDate,
+				result,
+				aggregatedResult,
+			);
+		} else if (isManual) {
+			await calcManualAggregatedHours(employee._id, companyName, payDate, result, aggregatedResult);
+		} else if (isPayout) {
+			await calcPayoutAggregatedHours(employee._id, companyName, payDate, result, aggregatedResult);
+		} else {
+			await calcRegularAggregatedHours(
+				employee._id,
+				companyName,
+				payDate,
+				result,
+				aggregatedResult,
+			);
+		}
 	}
+	return aggregatedResult;
+};
+
+const calcRegularAggregatedHours = async (
+	empId,
+	companyName,
+	payPeriodPayDate,
+	result,
+	aggregatedResult,
+) => {
+	const additionalHoursAllocatedInfo = await findAdditionalHoursAllocatedInfo({
+		empId,
+		companyName,
+		payPeriodPayDate,
+	});
+
+	result.additionalRegHoursWorked = additionalHoursAllocatedInfo?.additionalRegHoursWorked || 0;
+	result.additionalOvertimeHoursWorked =
+		additionalHoursAllocatedInfo?.additionalOvertimeHoursWorked || 0;
+	result.additionalDblOvertimeHoursWorked =
+		additionalHoursAllocatedInfo?.additionalDblOvertimeHoursWorked || 0;
+	result.additionalStatHoursWorked = additionalHoursAllocatedInfo?.additionalStatHoursWorked || 0;
+	result.additionalStatDayHoursWorked =
+		additionalHoursAllocatedInfo?.additionalStatDayHoursWorked || 0;
+	result.additionalSickHoursWorked = additionalHoursAllocatedInfo?.additionalSickHoursWorked || 0;
+	result.additionalVacationHoursWorked =
+		additionalHoursAllocatedInfo?.additionalVacationHoursWorked || 0;
+
+	const {
+		totalDblOvertimeHoursWorked,
+		totalOvertimeHoursWorked,
+		totalRegHoursWorked,
+		totalSickHoursWorked,
+		totalStatDayHoursWorked,
+		totalStatHours,
+		totalVacationHoursWorked,
+		additionalRegHoursWorked,
+		additionalOvertimeHoursWorked,
+		additionalDblOvertimeHoursWorked,
+		additionalStatDayHoursWorked,
+		additionalVacationHoursWorked,
+		additionalStatHoursWorked,
+		additionalSickHoursWorked,
+	} = result;
+
+	const regSumHrs =
+		totalDblOvertimeHoursWorked +
+		totalOvertimeHoursWorked +
+		totalRegHoursWorked +
+		totalSickHoursWorked +
+		totalStatDayHoursWorked +
+		totalStatHours +
+		totalVacationHoursWorked;
+
+	const additionalSumHrs =
+		additionalRegHoursWorked +
+		additionalOvertimeHoursWorked +
+		additionalDblOvertimeHoursWorked +
+		additionalStatDayHoursWorked +
+		additionalVacationHoursWorked +
+		additionalStatHoursWorked +
+		additionalSickHoursWorked;
+
+	result.totalHoursWorked =
+		regSumHrs === additionalHoursAllocatedInfo?.totalHoursWorked
+			? regSumHrs
+			: regSumHrs + additionalSumHrs;
+	aggregatedResult.push(result);
+	return aggregatedResult;
+};
+
+const calcManualAggregatedHours = async (
+	empId,
+	companyName,
+	payPeriodPayDate,
+	result,
+	aggregatedResult,
+) => {
+	const additionalHoursAllocatedInfo = await findAdditionalManualHoursAllocatedInfo({
+		empId,
+		companyName,
+		payPeriodPayDate,
+	});
+
+	result.additionalManualRegHoursWorked =
+		additionalHoursAllocatedInfo?.additionalManualRegHoursWorked || 0;
+	result.additionalManualOvertimeHoursWorked =
+		additionalHoursAllocatedInfo?.additionalManualOvertimeHoursWorked || 0;
+	result.additionalManualDblOvertimeHoursWorked =
+		additionalHoursAllocatedInfo?.additionalManualDblOvertimeHoursWorked || 0;
+	result.additionalManualStatHoursWorked =
+		additionalHoursAllocatedInfo?.additionalManualStatHoursWorked || 0;
+	result.additionalManualStatDayHoursWorked =
+		additionalHoursAllocatedInfo?.additionalManualStatDayHoursWorked || 0;
+	result.additionalManualSickHoursWorked =
+		additionalHoursAllocatedInfo?.additionalManualSickHoursWorked || 0;
+	result.additionalManualVacationHoursWorked =
+		additionalHoursAllocatedInfo?.additionalManualVacationHoursWorked || 0;
+
+	const {
+		totalDblOvertimeHoursWorked,
+		totalOvertimeHoursWorked,
+		totalRegHoursWorked,
+		totalSickHoursWorked,
+		totalStatDayHoursWorked,
+		totalStatHours,
+		totalVacationHoursWorked,
+		additionalManualRegHoursWorked,
+		additionalManualOvertimeHoursWorked,
+		additionalManualDblOvertimeHoursWorked,
+		additionalManualStatDayHoursWorked,
+		additionalManualVacationHoursWorked,
+		additionalManualStatHoursWorked,
+		additionalManualSickHoursWorked,
+	} = result;
+
+	const regSumHrs =
+		totalDblOvertimeHoursWorked +
+		totalOvertimeHoursWorked +
+		totalRegHoursWorked +
+		totalSickHoursWorked +
+		totalStatDayHoursWorked +
+		totalStatHours +
+		totalVacationHoursWorked;
+
+	const additionalSumHrs =
+		additionalManualRegHoursWorked +
+		additionalManualOvertimeHoursWorked +
+		additionalManualDblOvertimeHoursWorked +
+		additionalManualStatDayHoursWorked +
+		additionalManualVacationHoursWorked +
+		additionalManualStatHoursWorked +
+		additionalManualSickHoursWorked;
+
+	result.totalManualHoursWorked =
+		regSumHrs === additionalHoursAllocatedInfo?.totalManualHoursWorked
+			? regSumHrs
+			: regSumHrs + additionalSumHrs;
+	aggregatedResult.push(result);
+	return aggregatedResult;
+};
+
+const calcPayoutAggregatedHours = async (
+	empId,
+	companyName,
+	payPeriodPayDate,
+	result,
+	aggregatedResult,
+) => {
+	const additionalHoursAllocatedInfo = await findAdditionalPayoutHoursAllocatedInfo({
+		empId,
+		companyName,
+		payPeriodPayDate,
+	});
+
+	result.additionalPayoutRegHoursWorked =
+		additionalHoursAllocatedInfo?.additionalPayoutRegHoursWorked || 0;
+	result.additionalPayoutOvertimeHoursWorked =
+		additionalHoursAllocatedInfo?.additionalPayoutOvertimeHoursWorked || 0;
+	result.additionalPayoutDblOvertimeHoursWorked =
+		additionalHoursAllocatedInfo?.additionalPayoutDblOvertimeHoursWorked || 0;
+	result.additionalPayoutStatHoursWorked =
+		additionalHoursAllocatedInfo?.additionalPayoutStatHoursWorked || 0;
+	result.additionalPayoutStatDayHoursWorked =
+		additionalHoursAllocatedInfo?.additionalPayoutStatDayHoursWorked || 0;
+	result.additionalPayoutSickHoursWorked =
+		additionalHoursAllocatedInfo?.additionalPayoutSickHoursWorked || 0;
+	result.additionalPayoutVacationHoursWorked =
+		additionalHoursAllocatedInfo?.additionalPayoutVacationHoursWorked || 0;
+
+	const {
+		totalDblOvertimeHoursWorked,
+		totalOvertimeHoursWorked,
+		totalRegHoursWorked,
+		totalSickHoursWorked,
+		totalStatDayHoursWorked,
+		totalStatHours,
+		totalVacationHoursWorked,
+		additionalPayoutRegHoursWorked,
+		additionalPayoutOvertimeHoursWorked,
+		additionalPayoutDblOvertimeHoursWorked,
+		additionalPayoutStatDayHoursWorked,
+		additionalPayoutVacationHoursWorked,
+		additionalPayoutStatHoursWorked,
+		additionalPayoutSickHoursWorked,
+	} = result;
+
+	const regSumHrs =
+		totalDblOvertimeHoursWorked +
+		totalOvertimeHoursWorked +
+		totalRegHoursWorked +
+		totalSickHoursWorked +
+		totalStatDayHoursWorked +
+		totalStatHours +
+		totalVacationHoursWorked;
+
+	const additionalSumHrs =
+		additionalPayoutRegHoursWorked +
+		additionalPayoutOvertimeHoursWorked +
+		additionalPayoutDblOvertimeHoursWorked +
+		additionalPayoutStatDayHoursWorked +
+		additionalPayoutVacationHoursWorked +
+		additionalPayoutStatHoursWorked +
+		additionalPayoutSickHoursWorked;
+
+	result.totalPayoutHoursWorked =
+		regSumHrs === additionalHoursAllocatedInfo?.totalPayoutHoursWorked
+			? regSumHrs
+			: regSumHrs + additionalSumHrs;
+	aggregatedResult.push(result);
+	return aggregatedResult;
+};
+
+const calcSuperficialAggregatedHours = async (
+	empId,
+	companyName,
+	payPeriodPayDate,
+	result,
+	aggregatedResult,
+) => {
+	const additionalHoursAllocatedInfo = await findAdditionalSuperficialHoursAllocatedInfo({
+		empId,
+		companyName,
+		payPeriodPayDate,
+	});
+
+	result.additionalSuperficialRegHoursWorked =
+		additionalHoursAllocatedInfo?.additionalSuperficialRegHoursWorked || 0;
+	result.additionalSuperficialOvertimeHoursWorked =
+		additionalHoursAllocatedInfo?.additionalSuperficialOvertimeHoursWorked || 0;
+	result.additionalSuperficialDblOvertimeHoursWorked =
+		additionalHoursAllocatedInfo?.additionalSuperficialDblOvertimeHoursWorked || 0;
+	result.additionalSuperficialStatHoursWorked =
+		additionalHoursAllocatedInfo?.additionalSuperficialStatHoursWorked || 0;
+	result.additionalSuperficialStatDayHoursWorked =
+		additionalHoursAllocatedInfo?.additionalSuperficialStatDayHoursWorked || 0;
+	result.additionalSuperficialSickHoursWorked =
+		additionalHoursAllocatedInfo?.additionalSuperficialSickHoursWorked || 0;
+	result.additionalSuperficialVacationHoursWorked =
+		additionalHoursAllocatedInfo?.additionalSuperficialVacationHoursWorked || 0;
+
+	const {
+		additionalSuperficialRegHoursWorked,
+		additionalSuperficialOvertimeHoursWorked,
+		additionalSuperficialDblOvertimeHoursWorked,
+		additionalSuperficialStatHoursWorked,
+		additionalSuperficialStatDayHoursWorked,
+		additionalSuperficialSickHoursWorked,
+		additionalSuperficialVacationHoursWorked,
+	} = result;
+
+	const additionalSumHrs =
+		additionalSuperficialRegHoursWorked +
+		additionalSuperficialOvertimeHoursWorked +
+		additionalSuperficialDblOvertimeHoursWorked +
+		additionalSuperficialStatHoursWorked +
+		additionalSuperficialStatDayHoursWorked +
+		additionalSuperficialSickHoursWorked +
+		additionalSuperficialVacationHoursWorked;
+
+	result.totalSuperficialHoursWorked = additionalSumHrs;
+	aggregatedResult.push(result);
 	return aggregatedResult;
 };
 
@@ -315,6 +373,7 @@ const getGroupedData = async (empTimesheetData, employee, companyName) => {
 		totalVacationHoursWorked: parseFloat(totalVacationHoursWorked || 0),
 	};
 };
+
 module.exports = {
 	getHourlyAggregatedResult,
 };
