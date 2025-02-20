@@ -286,6 +286,7 @@ const buildNewEmpPayStubInfo = (
 	newEmpData.currentVacationBalanceFwd = 0;
 	newEmpData.currentGrossPay = calcCurrentGrossPay(newEmpData);
 	if (empTaxCreditResult) calcEmpContributions(newEmpData, empTaxCreditResult);
+	calcContrDeductions(newEmpData);
 	calcVacBalance(newEmpData, empBenefitInfoResult);
 
 	const deductions = calcCurrentDeductionsTotal(newEmpData);
@@ -301,6 +302,19 @@ const buildNewEmpPayStubInfo = (
 		newEmpData.reimbursement +
 		newEmpData.terminationPayout +
 		newEmpData.vacationPayout;
+	return newEmpData;
+};
+
+const calcContrDeductions = (newEmpData) => {
+	const { unionDues, EE_EPP, EE_EHP, ER_EPP, ER_EHP } = getContributionsDeductions(newEmpData);
+	newEmpData.currentUnionDuesDeductions = unionDues;
+	newEmpData.currentEmployeeHealthContributions = EE_EHP;
+	newEmpData.currentPrimaryDeposit = 0;
+	newEmpData.currentEmployeePensionContributions = EE_EPP;
+	newEmpData.currentOtherDeductions = 0;
+	newEmpData.currentEmployerPensionContributions = ER_EPP;
+	newEmpData.currentEmployerHealthContributions = ER_EHP;
+	newEmpData.currentEmployerContributions = ER_EPP + ER_EHP;
 	return newEmpData;
 };
 
@@ -362,16 +376,6 @@ const calcEmpContributions = (newEmpData, empTaxCreditResult) => {
 	newEmpData.currentEmployeeEIDeductions = EmployeeEIContribution;
 	newEmpData.currentEmployerEIDeductions = EmployerEIContribution;
 
-	const { unionDues, EE_EPP, EE_EHP, ER_EPP, ER_EHP } = getContributionsDeductions(newEmpData);
-	newEmpData.currentUnionDuesDeductions = unionDues;
-	newEmpData.currentEmployeeHealthContributions = EE_EHP;
-	newEmpData.currentPrimaryDeposit = 0;
-	newEmpData.currentEmployeePensionContributions = EE_EPP;
-	newEmpData.currentOtherDeductions = 0;
-	newEmpData.currentEmployerPensionContributions = ER_EPP;
-	newEmpData.currentEmployerHealthContributions = ER_EHP;
-
-	newEmpData.currentEmployerContributions = ER_EPP + ER_EHP;
 	return newEmpData;
 };
 
@@ -514,4 +518,7 @@ module.exports = {
 	buildNewEmpPayStubInfo,
 	getContributionsDeductions,
 	calculateTimesheetApprovedHours,
+	calcHoursWorkedTotals,
+	calcEmpBenefits,
+	calcPayRates,
 };

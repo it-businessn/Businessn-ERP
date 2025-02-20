@@ -12,6 +12,7 @@ import {
 const EmployeeContribution = ({ company, closestRecord, groupId, payrunOption }) => {
 	const [refresh, setRefresh] = useState(false);
 	const data = useEmployeeEEContribution(company, closestRecord, groupId, payrunOption);
+
 	const EE_CONTRIBUTION_COL_DATA = {
 		1: REGULAR_EE_COLS,
 		2: PAYOUT_EE_COLS,
@@ -51,13 +52,8 @@ const EmployeeContribution = ({ company, closestRecord, groupId, payrunOption })
 			const { empId } = updatedRec;
 
 			if (updatedRec) {
-				// updatedRec[totalColumnKey] = 0;
-				// colKeys.forEach((key) => {
-				// 	if (key && key !== totalColumnKey) {
-				// 		updatedRec[totalColumnKey] += parseFloat(updatedRec[key]);
-				// 	}
-				// });
 				updatedRec.companyName = company;
+				// console.log(updatedRec);
 				// const { data } = await PayrollService.addEmployeeExtraAmount({
 				// 	payPeriodPayDate: closestRecord?.payPeriodPayDate,
 				// 	companyName: company,

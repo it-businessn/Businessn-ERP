@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import PayrollService from "services/PayrollService";
 
-const useEmployeeEEContribution = (company, payPeriod, groupId) => {
+const useEmployeeEEContribution = (company, payPeriod, groupId, payrunOption) => {
 	const [hours, setHours] = useState(null);
 
 	useEffect(() => {
@@ -15,6 +15,7 @@ const useEmployeeEEContribution = (company, payPeriod, groupId) => {
 					payPeriod?.payPeriodPayDate,
 					extraRun,
 					groupId,
+					payrunOption,
 				);
 				setHours(data);
 			} catch (error) {
@@ -24,7 +25,7 @@ const useEmployeeEEContribution = (company, payPeriod, groupId) => {
 		if (payPeriod) {
 			fetchEEContribution();
 		}
-	}, [company, payPeriod]);
+	}, [company, payPeriod, payrunOption]);
 	return hours;
 };
 

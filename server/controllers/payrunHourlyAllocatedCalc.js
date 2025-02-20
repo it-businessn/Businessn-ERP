@@ -4,7 +4,7 @@ const {
 	findAdditionalManualHoursAllocatedInfo,
 	findAdditionalPayoutHoursAllocatedInfo,
 	findAdditionalHoursAllocatedInfo,
-} = require("./additionalAllocationInfoController");
+} = require("./payrunExtraAllocationInfoController");
 
 const getHourlyAggregatedResult = async (
 	activeEmployees,

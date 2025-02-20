@@ -187,22 +187,22 @@ export const SUPERFICIAL_ER_COLS = [
 	{ key: COLS.EMP_NAME, pair: "obj", pair_key: "fullName" },
 	{
 		key: `ER ${CONTRIBUTION.PENSION_PLAN}`,
-		pair: "EPP",
+		pair: "ER_EPPSuperficial",
 		isEditable: true,
 	},
 	{
 		key: `ER ${CONTRIBUTION.HEALTH_PLAN}`,
-		pair: "EHP",
+		pair: "ER_EHPSuperficial",
 		isEditable: true,
 	},
 	{
 		key: `${CONTRIBUTION.EI} (ER)`,
-		pair: "EI",
+		pair: "ER_EISuperficial",
 		isEditable: true,
 	},
 	{
 		key: `${CONTRIBUTION.CPP} (ER)`,
-		pair: "CPP",
+		pair: "ER_CPPSuperficial",
 		isEditable: true,
 	},
 	{

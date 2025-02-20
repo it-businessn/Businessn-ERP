@@ -1,6 +1,6 @@
 const EmployeePayStub = require("../models/EmployeePayStub");
 const { getSumTotal } = require("../services/payrollService");
-const { findAllAdditionalHoursAllocatedInfo } = require("./additionalAllocationInfoController");
+const { findAllAdditionalHoursAllocatedInfo } = require("./payrunExtraAllocationInfoController");
 const { getEmployeeId, getPayrollActiveEmployees } = require("./userController");
 // const { generateT4Slip } = require("./t4SlipController");
 const {

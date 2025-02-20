@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 
-const additionalAllocationInfoController = require("../controllers/additionalAllocationInfoController");
+const additionalAllocationInfoController = require("../controllers/payrunExtraAllocationInfoController");
 
 router.get(
 	"/:companyName/:payDate/:isExtraRun/:groupId/:payrunType",

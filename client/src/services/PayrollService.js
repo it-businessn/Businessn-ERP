@@ -95,15 +95,15 @@ const PayrollService = {
 		);
 	},
 
-	async getEEContribution(company, startDate, endDate, payDate, isExtraRun, groupId) {
+	async getEEContribution(company, startDate, endDate, payDate, isExtraRun, groupId, payrunOption) {
 		return apiService.get(
-			`/payroll/EEContribution/${company}/${startDate}/${endDate}/${payDate}/${isExtraRun}/${groupId}`,
+			`/payroll/EEContribution/${company}/${startDate}/${endDate}/${payDate}/${isExtraRun}/${groupId}/${payrunOption}`,
 		);
 	},
 
-	async getERContribution(company, startDate, endDate, payDate, isExtraRun, groupId) {
+	async getERContribution(company, startDate, endDate, payDate, isExtraRun, groupId, payrunOption) {
 		return apiService.get(
-			`/payroll/ERContribution/${company}/${startDate}/${endDate}/${payDate}/${isExtraRun}/${groupId}`,
+			`/payroll/ERContribution/${company}/${startDate}/${endDate}/${payDate}/${isExtraRun}/${groupId}/${payrunOption}`,
 		);
 	},
 

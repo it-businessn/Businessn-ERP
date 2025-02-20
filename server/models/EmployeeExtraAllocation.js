@@ -139,6 +139,17 @@ const employeeExtraAllocationSchema = new mongoose.Schema({
 	totalSuperficialHoursWorked: { type: Number, default: 0 },
 	totalManualHoursWorked: { type: Number, default: 0 },
 	totalPayoutHoursWorked: { type: Number, default: 0 },
+
+	unionDuesSuperficial: { type: Number, default: 0 },
+	EE_EHPSuperficial: { type: Number, default: 0 },
+	EE_EPPSuperficial: { type: Number, default: 0 },
+	EE_EISuperficial: { type: Number, default: 0 },
+	EE_CPPSuperficial: { type: Number, default: 0 },
+
+	ER_EHPSuperficial: { type: Number, default: 0 },
+	ER_EPPSuperficial: { type: Number, default: 0 },
+	ER_EISuperficial: { type: Number, default: 0 },
+	ER_CPPSuperficial: { type: Number, default: 0 },
 });
 
 const EmployeeExtraAllocation = mongoose.model(

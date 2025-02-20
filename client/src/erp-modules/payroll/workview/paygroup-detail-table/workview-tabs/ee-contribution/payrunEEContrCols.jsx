@@ -187,25 +187,25 @@ export const SUPERFICIAL_EE_COLS = [
 		pair_key: "fullName",
 		round: true,
 	},
-	{ key: COLS.UNION_DUE, pair: "unionDues", align: "center", isEditable: true },
+	{ key: COLS.UNION_DUE, pair: "unionDuesSuperficial", align: "center", isEditable: true },
 	{
 		key: `Employer ${CONTRIBUTION.PENSION_PLAN} (EE)`,
-		pair: "EPP",
+		pair: "EE_EPPSuperficial",
 		isEditable: true,
 	},
 	{
 		key: `Employer ${CONTRIBUTION.HEALTH_PLAN} (EE)`,
-		pair: "EHP",
+		pair: "EE_EHPSuperficial",
 		isEditable: true,
 	},
 	{
 		key: `${CONTRIBUTION.EI} (EE)`,
-		pair: "EI",
+		pair: "EE_EISuperficial",
 		isEditable: true,
 	},
 	{
 		key: `${CONTRIBUTION.CPP} (EE)`,
-		pair: "CPP",
+		pair: "EE_CPPSuperficial",
 		isEditable: true,
 	},
 	{

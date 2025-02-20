@@ -23,12 +23,12 @@ router.get(
 );
 
 router.get(
-	"/EEContribution/:companyName/:startDate/:endDate/:payDate/:isExtraRun/:groupId",
+	"/EEContribution/:companyName/:startDate/:endDate/:payDate/:isExtraRun/:groupId/:payrunType",
 	payrollController.getEEContribution,
 );
 
 router.get(
-	"/ERContribution/:companyName/:startDate/:endDate/:payDate/:isExtraRun/:groupId",
+	"/ERContribution/:companyName/:startDate/:endDate/:payDate/:isExtraRun/:groupId/:payrunType",
 	payrollController.getERContribution,
 );
 

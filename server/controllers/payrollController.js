@@ -7,14 +7,9 @@ const Group = require("../models/Group");
 const { PAYRUN_TYPE, TIMESHEET_STATUS, PAY_TYPES_TITLE } = require("../services/data");
 const { fetchActiveEmployees } = require("./userController");
 const Timesheet = require("../models/Timesheet");
-const {
-	buildNewEmpPayStubInfo,
-	findEmployeeBenefitInfo,
-	getContributionsDeductions,
-} = require("./payrollHelper");
-const { findEmployeePayInfoDetails } = require("./payInfoController");
-const { findAdditionalHoursAllocatedInfo } = require("./additionalAllocationInfoController");
-const { getHourlyAggregatedResult } = require("./hourlyAggregatedHrsCalc");
+const { getHourlyAggregatedResult } = require("./payrunHourlyAllocatedCalc");
+const { getPayrunEEContributionResult } = require("./payrunEEContrCalc");
+const { getPayrunERContributionResult } = require("./payrunERContrCalc");
 
 //update roles-
 
@@ -81,62 +76,6 @@ const getGroupedTimesheet = async (req, res) => {
 	}
 };
 
-const basicInfo = async (currentPeriodEmployees, empId, payPeriodPayDate, companyName) => {
-	const empAdditionalHoursAllocated = await findAdditionalHoursAllocatedInfo({
-		empId,
-		payPeriodPayDate,
-	});
-
-	const empPayInfoResult = await findEmployeePayInfoDetails(empId, companyName);
-	const empTimesheetData = currentPeriodEmployees?.find(
-		(el) => el.empId._id.toString() === empId.toString(),
-	);
-	return { empAdditionalHoursAllocated, empPayInfoResult, empTimesheetData };
-};
-
-const getEEContribution = async (req, res) => {
-	const { companyName, startDate, endDate, payDate, isExtraRun, groupId } = req.params;
-
-	try {
-		const isExtraPayRun = isExtraRun === "true";
-
-		const activeEmployees = await fetchActiveEmployees(
-			isExtraPayRun,
-			groupId,
-			payDate,
-			companyName,
-		);
-
-		const currentPeriodEmployees = isExtraPayRun
-			? null
-			: await calculateTimesheetApprovedHours(startDate, endDate, companyName);
-
-		const aggregatedResult = [];
-
-		for (const employee of activeEmployees) {
-			const { empTimesheetData, empPayInfoResult, empAdditionalHoursAllocated } = await basicInfo(
-				currentPeriodEmployees,
-				employee._id,
-				payDate,
-				companyName,
-			);
-			const empBenefitInfoResult = await findEmployeeBenefitInfo(employee._id, companyName);
-
-			const result = buildEmpEEDetails(
-				empTimesheetData ?? {},
-				empPayInfoResult,
-				empAdditionalHoursAllocated,
-				empBenefitInfoResult,
-				employee,
-			);
-			aggregatedResult.push(result);
-		}
-		res.status(200).json(aggregatedResult);
-	} catch (error) {
-		res.status(404).json({ error: error.message });
-	}
-};
-
 const calculateTimesheetApprovedHours = async (startDate, endDate, companyName) => {
 	const timesheets = await Timesheet.find({
 		deleted: false,
@@ -196,173 +135,78 @@ const calculateTimesheetApprovedHours = async (startDate, endDate, companyName) 
 	return result;
 };
 
-const getERContribution = async (req, res) => {
-	const { companyName, startDate, endDate, payDate, isExtraRun, groupId } = req.params;
+const getEEContribution = async (req, res) => {
+	const { companyName, startDate, endDate, payDate, isExtraRun, groupId, payrunType } = req.params;
 
 	try {
 		const isExtraPayRun = isExtraRun === "true";
+
 		const activeEmployees = await fetchActiveEmployees(
 			isExtraPayRun,
 			groupId,
 			payDate,
 			companyName,
 		);
+
 		const currentPeriodEmployees = isExtraPayRun
 			? null
 			: await calculateTimesheetApprovedHours(startDate, endDate, companyName);
 
-		const aggregatedResult = [];
+		const isSuperficial = payrunType === PAYRUN_TYPE.SUPERFICIAL;
+		const isManual = payrunType === PAYRUN_TYPE.MANUAL;
+		const isPayout = payrunType === PAYRUN_TYPE.PAYOUT;
 
-		for (const employee of activeEmployees) {
-			const { empTimesheetData, empPayInfoResult, empAdditionalHoursAllocated } = await basicInfo(
-				currentPeriodEmployees,
-				employee._id,
-				payDate,
-				companyName,
-			);
-			const empBenefitInfoResult = await findEmployeeBenefitInfo(employee._id, companyName);
+		const aggregatedResult = await getPayrunEEContributionResult(
+			activeEmployees,
+			currentPeriodEmployees,
+			companyName,
+			payDate,
+			isSuperficial,
+			isManual,
+			isPayout,
+		);
 
-			const result = buildEmpERDetails(
-				empTimesheetData ?? {},
-				empPayInfoResult,
-				empAdditionalHoursAllocated,
-				empBenefitInfoResult,
-				employee,
-			);
-			aggregatedResult.push(result);
-		}
 		res.status(200).json(aggregatedResult);
 	} catch (error) {
 		res.status(404).json({ error: error.message });
 	}
 };
 
-const buildEmpEEDetails = (
-	empTimesheetData,
-	empPayInfoResult,
-	empAdditionalHoursAllocated,
-	empBenefitInfoResult,
-	employee,
-) => {
-	const data = ERData(
-		empTimesheetData,
-		empPayInfoResult,
-		empAdditionalHoursAllocated,
-		empBenefitInfoResult,
-	);
+const getERContribution = async (req, res) => {
+	const { companyName, startDate, endDate, payDate, isExtraRun, groupId, payrunType } = req.params;
 
-	data.vacationPayPercent = parseFloat(empBenefitInfoResult?.vacationPayPercent) || 0;
-	data.typeOfUnionDuesTreatment = empBenefitInfoResult?.typeOfUnionDuesTreatment;
-	data.unionDuesContribution = parseFloat(empBenefitInfoResult?.unionDuesContribution) || 0;
-	data.typeOfPensionEETreatment = empBenefitInfoResult?.typeOfPensionEETreatment;
-	data.pensionEEContribution = parseFloat(empBenefitInfoResult?.pensionEEContribution) || 0;
-	data.typeOfExtendedHealthEETreatment = empBenefitInfoResult?.typeOfExtendedHealthEETreatment;
-	data.extendedHealthEEContribution =
-		parseFloat(empBenefitInfoResult?.extendedHealthEEContribution) || 0;
-	data.typeOfPensionERTreatment = empBenefitInfoResult?.typeOfPensionERTreatment;
-	data.pensionERContribution = parseFloat(empBenefitInfoResult?.pensionERContribution) || 0;
-	data.typeOfExtendedHealthERTreatment = empBenefitInfoResult?.typeOfExtendedHealthERTreatment;
-	data.extendedHealthERContribution =
-		parseFloat(empBenefitInfoResult?.extendedHealthERContribution) || 0;
+	try {
+		const isExtraPayRun = isExtraRun === "true";
 
-	const { unionDues, EE_EPP, EE_EHP } = getContributionsDeductions(data);
-	const { _id, fullName } = employee;
-	return {
-		_id,
-		empId: { fullName, _id },
-		unionDues,
-		// CPP: CPPContribution,
-		// EI: EIContribution,
-		EPP: EE_EPP,
-		EHP: EE_EHP,
-	};
-};
+		const activeEmployees = await fetchActiveEmployees(
+			isExtraPayRun,
+			groupId,
+			payDate,
+			companyName,
+		);
 
-const ERData = (
-	empTimesheetData,
-	empPayInfoResult,
-	empAdditionalHoursAllocated,
-	empBenefitInfoResult,
-) => {
-	const newEmpData = buildNewEmpPayStubInfo(
-		empTimesheetData,
-		empPayInfoResult,
-		empAdditionalHoursAllocated,
-		empBenefitInfoResult,
-	);
+		const currentPeriodEmployees = isExtraPayRun
+			? null
+			: await calculateTimesheetApprovedHours(startDate, endDate, companyName);
 
-	const {
-		totalRegHoursWorked,
-		totalOvertimeHoursWorked,
-		totalDblOvertimeHoursWorked,
-		totalStatDayHoursWorked,
-		totalStatHours,
-		totalSickHoursWorked,
-		totalVacationHoursWorked,
-		regPay,
-		overTimePay,
-		dblOverTimePay,
-		sickPay,
-		statPay,
-		statWorkPay,
-		vacationPay,
-	} = newEmpData;
+		const isSuperficial = payrunType === PAYRUN_TYPE.SUPERFICIAL;
+		const isManual = payrunType === PAYRUN_TYPE.MANUAL;
+		const isPayout = payrunType === PAYRUN_TYPE.PAYOUT;
 
-	const data = {
-		regPay,
-		overTimePay,
-		dblOverTimePay,
-		statPay,
-		statWorkPay,
-		sickPay,
-		vacationPay,
-		totalRegHoursWorked,
-		totalOvertimeHoursWorked,
-		totalDblOvertimeHoursWorked,
-		totalStatDayHoursWorked,
-		totalStatHours,
-		totalSickHoursWorked,
-		totalVacationHoursWorked,
-	};
-	return data;
-};
+		const aggregatedResult = await getPayrunERContributionResult(
+			activeEmployees,
+			currentPeriodEmployees,
+			companyName,
+			payDate,
+			isSuperficial,
+			isManual,
+			isPayout,
+		);
 
-const buildEmpERDetails = (
-	empTimesheetData,
-	empPayInfoResult,
-	empAdditionalHoursAllocated,
-	empBenefitInfoResult,
-	employee,
-) => {
-	const data = ERData(
-		empTimesheetData,
-		empPayInfoResult,
-		empAdditionalHoursAllocated,
-		empBenefitInfoResult,
-	);
-	data.vacationPayPercent = parseFloat(empBenefitInfoResult?.vacationPayPercent) || 0;
-	data.typeOfUnionDuesTreatment = empBenefitInfoResult?.typeOfUnionDuesTreatment;
-	data.unionDuesContribution = parseFloat(empBenefitInfoResult?.unionDuesContribution) || 0;
-	data.typeOfPensionEETreatment = empBenefitInfoResult?.typeOfPensionEETreatment;
-	data.pensionEEContribution = parseFloat(empBenefitInfoResult?.pensionEEContribution) || 0;
-	data.typeOfExtendedHealthEETreatment = empBenefitInfoResult?.typeOfExtendedHealthEETreatment;
-	data.extendedHealthEEContribution =
-		parseFloat(empBenefitInfoResult?.extendedHealthEEContribution) || 0;
-	data.typeOfPensionERTreatment = empBenefitInfoResult?.typeOfPensionERTreatment;
-	data.pensionERContribution = parseFloat(empBenefitInfoResult?.pensionERContribution) || 0;
-	data.typeOfExtendedHealthERTreatment = empBenefitInfoResult?.typeOfExtendedHealthERTreatment;
-	data.extendedHealthERContribution =
-		parseFloat(empBenefitInfoResult?.extendedHealthERContribution) || 0;
-
-	const { ER_EPP, ER_EHP } = getContributionsDeductions(data);
-	const { _id, fullName } = employee;
-
-	return {
-		_id,
-		empId: { fullName, _id },
-		EPP: ER_EPP,
-		EHP: ER_EHP,
-	};
+		res.status(200).json(aggregatedResult);
+	} catch (error) {
+		res.status(404).json({ error: error.message });
+	}
 };
 
 const EMP_INFO = {
