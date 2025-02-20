@@ -22,7 +22,7 @@ export const REGULAR_AMT_ALLOCATE_COLS = [
 	},
 	{
 		key: "Double OT $",
-		pair: "oblOTPayAmt",
+		pair: "dblOTPayAmt",
 		isEditable: true,
 	},
 	{
@@ -120,7 +120,7 @@ export const PAYOUT_AMT_ALLOCATE_COLS = [
 	},
 	{
 		key: "Double OT $",
-		pair: "oblOTPayAmtPayout",
+		pair: "dblOTPayAmtPayout",
 		isEditable: true,
 	},
 	{
@@ -218,7 +218,7 @@ export const MANUAL_AMT_ALLOCATE_COLS = [
 	},
 	{
 		key: "Double OT $",
-		pair: "oblOTPayAmtManual",
+		pair: "dblOTPayAmtManual",
 		isEditable: true,
 	},
 	{
@@ -316,7 +316,7 @@ export const SUPERFICIAL_AMT_ALLOCATE_COLS = [
 	},
 	{
 		key: "Double OT $",
-		pair: "oblOTPayAmtSuperficial",
+		pair: "dblOTPayAmtSuperficial",
 		isEditable: true,
 	},
 	{
