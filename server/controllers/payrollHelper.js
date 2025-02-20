@@ -191,7 +191,6 @@ const calcSalaryByEarningType = (newEmpData) => {
 };
 
 const calcEmpBenefits = (newEmpData, empBenefitInfoResult) => {
-	console.log("empBenefitInfoResult", empBenefitInfoResult);
 	// const empPayStubResult = await findEmployeePayStub(empId, payPeriod);
 	// newEmpData.payInLieuPay = empPayStubResult?.payInLieuPay ?? 0;
 	// newEmpData.pILBenefitPay = empPayStubResult?.pILBenefitPay ?? 0;

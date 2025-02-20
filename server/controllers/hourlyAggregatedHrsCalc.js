@@ -21,6 +21,7 @@ const getHourlyAggregatedResult = async (
 			(el) => el.empId._id.toString() === employee._id.toString(),
 		);
 		const result = await buildEmpHourlyDetails(empTimesheetData ?? null, employee, companyName);
+
 		// if (isSuperficial) {
 		// 	const additionalHoursAllocatedInfo = await findAdditionalSuperficialHoursAllocatedInfo({
 		// 		empId: employee._id,
@@ -205,15 +206,45 @@ const getHourlyAggregatedResult = async (
 		result.additionalVacationHoursWorked =
 			additionalHoursAllocatedInfo?.additionalVacationHoursWorked || 0;
 
-		result.totalHoursWorked = additionalHoursAllocatedInfo?.totalHoursWorked
-			? additionalHoursAllocatedInfo?.totalHoursWorked
-			: totalDblOvertimeHoursWorked +
-			  totalOvertimeHoursWorked +
-			  totalRegHoursWorked +
-			  totalSickHoursWorked +
-			  totalStatDayHoursWorked +
-			  totalStatHours +
-			  totalVacationHoursWorked;
+		const {
+			totalDblOvertimeHoursWorked,
+			totalOvertimeHoursWorked,
+			totalRegHoursWorked,
+			totalSickHoursWorked,
+			totalStatDayHoursWorked,
+			totalStatHours,
+			totalVacationHoursWorked,
+			additionalRegHoursWorked,
+			additionalOvertimeHoursWorked,
+			additionalDblOvertimeHoursWorked,
+			additionalStatDayHoursWorked,
+			additionalVacationHoursWorked,
+			additionalStatHoursWorked,
+			additionalSickHoursWorked,
+		} = result;
+
+		const regSumHrs =
+			totalDblOvertimeHoursWorked +
+			totalOvertimeHoursWorked +
+			totalRegHoursWorked +
+			totalSickHoursWorked +
+			totalStatDayHoursWorked +
+			totalStatHours +
+			totalVacationHoursWorked;
+
+		const additionalSumHrs =
+			additionalRegHoursWorked +
+			additionalOvertimeHoursWorked +
+			additionalDblOvertimeHoursWorked +
+			additionalStatDayHoursWorked +
+			additionalVacationHoursWorked +
+			additionalStatHoursWorked +
+			additionalSickHoursWorked;
+
+		result.totalHoursWorked =
+			regSumHrs === additionalHoursAllocatedInfo?.totalHoursWorked
+				? regSumHrs
+				: regSumHrs + additionalSumHrs;
 		aggregatedResult.push(result);
 		// }
 	}
