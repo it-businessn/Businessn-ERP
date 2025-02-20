@@ -15,6 +15,8 @@ const BUSINESSN_ORG_ADMIN_EMAILS = [
 	"ruthkhosla17@gmail.com",
 ];
 
+const EARNING_TYPE = { FT: "Full Time Salaried", PT: "Part Time Salaried", HOURLY: "Hourly" };
+
 const ADMIN_PERMISSION = [
 	{ name: "Sales" },
 	{ name: "Sales Dashboard" },
@@ -238,4 +240,5 @@ module.exports = {
 	TIMESHEET_STATUS,
 	PARAM_HOURS,
 	LOCAL_TIME,
+	EARNING_TYPE,
 };
