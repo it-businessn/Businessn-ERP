@@ -91,6 +91,18 @@ const addAdditionalHoursAllocationInfo = async (req, res) => {
 				);
 				if (!chequeTypeSuperficialExists) existingInfo?.chequesType.push(PAYRUN_TYPE.SUPERFICIAL);
 			}
+			if (totalManualHoursWorked) {
+				const chequeTypeManualExists = existingInfo?.chequesType.find(
+					(_) => _ === PAYRUN_TYPE.MANUAL,
+				);
+				if (!chequeTypeManualExists) existingInfo?.chequesType.push(PAYRUN_TYPE.MANUAL);
+			}
+			if (totalPayoutHoursWorked) {
+				const chequeTypePayoutExists = existingInfo?.chequesType.find(
+					(_) => _ === PAYRUN_TYPE.PAYOUT,
+				);
+				if (!chequeTypePayoutExists) existingInfo?.chequesType.push(PAYRUN_TYPE.PAYOUT);
+			}
 			const updatedInfo = await updateAdditionalHoursAllocatedInfo(existingInfo._id, {
 				additionalRegHoursWorked,
 				chequesType: existingInfo.chequesType,
@@ -132,9 +144,19 @@ const addAdditionalHoursAllocationInfo = async (req, res) => {
 			});
 			return res.status(201).json(updatedInfo);
 		}
+		const chequesType = [];
+		if (totalSuperficialHoursWorked) {
+			chequesType.push(PAYRUN_TYPE.SUPERFICIAL);
+		}
+		if (totalManualHoursWorked) {
+			chequesType.push(PAYRUN_TYPE.MANUAL);
+		}
+		if (totalPayoutHoursWorked) {
+			chequesType.push(PAYRUN_TYPE.PAYOUT);
+		}
 		const newInfo = await addNewAllocationRecord({
 			empId,
-			chequesType: totalSuperficialHoursWorked ? [PAYRUN_TYPE.SUPERFICIAL] : [],
+			chequesType,
 			companyName,
 			additionalRegHoursWorked,
 			additionalOvertimeHoursWorked,
@@ -371,14 +393,34 @@ const addAmountAllocation = async (req, res) => {
 					(_) => _ === PAYRUN_TYPE.SUPERFICIAL,
 				);
 				if (!chequeTypeSuperficialExists) existingInfo?.chequesType.push(PAYRUN_TYPE.SUPERFICIAL);
-				newData.chequesType = existingInfo?.chequesType;
 			}
-
+			if (totalManualAmountAllocated) {
+				const chequeTypeManualExists = existingInfo?.chequesType.find(
+					(_) => _ === PAYRUN_TYPE.MANUAL,
+				);
+				if (!chequeTypeManualExists) existingInfo?.chequesType.push(PAYRUN_TYPE.MANUAL);
+			}
+			if (totalPayoutAmountAllocated) {
+				const chequeTypePayoutExists = existingInfo?.chequesType.find(
+					(_) => _ === PAYRUN_TYPE.PAYOUT,
+				);
+				if (!chequeTypePayoutExists) existingInfo?.chequesType.push(PAYRUN_TYPE.PAYOUT);
+			}
+			newData.chequesType = existingInfo?.chequesType;
 			const updatedInfo = await updateAdditionalHoursAllocatedInfo(existingInfo._id, newData);
 			return res.status(201).json(updatedInfo);
 		}
-
-		newData.chequesType = totalSuperficialAmountAllocated ? [PAYRUN_TYPE.SUPERFICIAL] : [];
+		const chequesType = [];
+		if (totalSuperficialAmountAllocated) {
+			chequesType.push(PAYRUN_TYPE.SUPERFICIAL);
+		}
+		if (totalManualAmountAllocated) {
+			chequesType.push(PAYRUN_TYPE.MANUAL);
+		}
+		if (totalPayoutAmountAllocated) {
+			chequesType.push(PAYRUN_TYPE.PAYOUT);
+		}
+		newData.chequesType = chequesType;
 		newData.empId = empId;
 		newData.companyName = companyName;
 		newData.payPeriodPayDate = payPeriodPayDate;

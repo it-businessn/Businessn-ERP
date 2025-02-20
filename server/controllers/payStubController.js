@@ -12,6 +12,8 @@ const { findEmployeePayInfoDetails } = require("./payInfoController");
 const { findEmployeeGovernmentInfoDetails } = require("./governmentInfoController");
 const { PAYRUN_TYPE } = require("../services/data");
 const { addSeparateSuperficialCheque } = require("./payStubSuperficialCalc");
+const { addSeparateManualCheque } = require("./payStubManualCalc");
+const { addSeparatePayoutCheque } = require("./payStubPayoutCalc");
 
 const buildPayStub = (
 	empId,
@@ -343,24 +345,52 @@ const buildPayStubDetails = async (currentPayPeriod, companyName, empTimesheetDa
 	} else {
 		await addPayStub(currentPayStub);
 	}
-	const separateValid = empAdditionalDataAllocated.chequesType.find(
-		(_) => _ === PAYRUN_TYPE.SUPERFICIAL,
-	);
-	if (!separateValid) {
-		return;
+
+	if (empAdditionalDataAllocated.chequesType?.includes(PAYRUN_TYPE.SUPERFICIAL)) {
+		console.log("SUPERFICIAL");
+		// const newPayStub = await addSeparateSuperficialCheque(
+		// 	empId,
+		// 	companyName,
+		// 	payPeriodStartDate,
+		// 	payPeriodEndDate,
+		// 	payPeriodPayDate,
+		// 	payPeriodProcessingDate,
+		// 	payPeriod,
+		// 	isExtraRun,
+		// 	prevPayPayInfo,
+		// );
+		// await addPayStub(newPayStub);
 	}
-	const newPayStub = await addSeparateSuperficialCheque(
-		empId,
-		companyName,
-		payPeriodStartDate,
-		payPeriodEndDate,
-		payPeriodPayDate,
-		payPeriodProcessingDate,
-		payPeriod,
-		isExtraRun,
-		prevPayPayInfo,
-	);
-	await addPayStub(newPayStub);
+	if (empAdditionalDataAllocated.chequesType?.includes(PAYRUN_TYPE.MANUAL)) {
+		console.log("MANUAL");
+		// const newPayStub = await addSeparateManualCheque(
+		// 	empId,
+		// 	companyName,
+		// 	payPeriodStartDate,
+		// 	payPeriodEndDate,
+		// 	payPeriodPayDate,
+		// 	payPeriodProcessingDate,
+		// 	payPeriod,
+		// 	isExtraRun,
+		// 	prevPayPayInfo,
+		// );
+		// await addPayStub(newPayStub);
+	}
+	if (empAdditionalDataAllocated.chequesType?.includes(PAYRUN_TYPE.PAYOUT)) {
+		console.log("PAYOUT");
+		// const newPayStub = await addSeparatePayoutCheque(
+		// 	empId,
+		// 	companyName,
+		// 	payPeriodStartDate,
+		// 	payPeriodEndDate,
+		// 	payPeriodPayDate,
+		// 	payPeriodProcessingDate,
+		// 	payPeriod,
+		// 	isExtraRun,
+		// 	prevPayPayInfo,
+		// );
+		// await addPayStub(newPayStub);
+	}
 };
 
 const findPayStub = async (payPeriodNum, companyName, empId, isExtra) => {
