@@ -10,263 +10,8 @@ const {
 } = require("./payrollHelper");
 const { findEmployeePayInfoDetails } = require("./payInfoController");
 const { findEmployeeGovernmentInfoDetails } = require("./governmentInfoController");
-const { findAdditionalRegularAmountAllocatedInfo } = require("./payrunAmtAllocatedCalc");
-
-const addSeparateCheque = async (
-	empId,
-	companyName,
-	payPeriodStartDate,
-	payPeriodEndDate,
-	payPeriodPayDate,
-	payPeriodProcessingDate,
-	payPeriod,
-	isExtraRun,
-	newEmpData,
-	prevPayPayInfo,
-	empAdditionalHoursAllocated,
-) => {
-	const {
-		additionalManualRegHoursWorked,
-		additionalManualOvertimeHoursWorked,
-		additionalManualDblOvertimeHoursWorked,
-		additionalManualStatDayHoursWorked,
-		additionalManualVacationHoursWorked,
-		additionalManualStatHoursWorked,
-		additionalManualSickHoursWorked,
-		additionalPayoutRegHoursWorked,
-		additionalPayoutOvertimeHoursWorked,
-		additionalPayoutDblOvertimeHoursWorked,
-		additionalPayoutStatDayHoursWorked,
-		additionalPayoutVacationHoursWorked,
-		additionalPayoutStatHoursWorked,
-		additionalPayoutSickHoursWorked,
-		additionalSuperficialRegHoursWorked,
-		additionalSuperficialOvertimeHoursWorked,
-		additionalSuperficialDblOvertimeHoursWorked,
-		additionalSuperficialStatDayHoursWorked,
-		additionalSuperficialVacationHoursWorked,
-		additionalSuperficialStatHoursWorked,
-		additionalSuperficialSickHoursWorked,
-
-		commissionManual,
-		retroactiveManual,
-		vacationPayoutManual,
-		bonusManual,
-		terminationPayoutManual,
-		reimbursementManual,
-		vacationBalAdjustManual,
-		vacationAccrualManual,
-		vacationUsedManual,
-		federalTaxManual,
-		provTaxManual,
-		incomeTaxManual,
-
-		commissionPayout,
-		retroactivePayout,
-		vacationPayoutPayout,
-		bonusPayout,
-		terminationPayoutPayout,
-		reimbursementPayout,
-		vacationBalAdjustPayout,
-		vacationAccrualPayout,
-		vacationUsedPayout,
-		federalTaxPayout,
-		provTaxPayout,
-		incomeTaxPayout,
-
-		commissionSuperficial,
-		retroactiveSuperficial,
-		vacationPayoutSuperficial,
-		bonusSuperficial,
-		terminationPayoutSuperficial,
-		reimbursementSuperficial,
-		vacationBalAdjustSuperficial,
-		vacationAccrualSuperficial,
-		vacationUsedSuperficial,
-		federalTaxSuperficial,
-		provTaxSuperficial,
-		incomeTaxSuperficial,
-	} = empAdditionalHoursAllocated;
-	if (
-		additionalManualRegHoursWorked ||
-		additionalManualOvertimeHoursWorked ||
-		additionalManualDblOvertimeHoursWorked ||
-		additionalManualStatDayHoursWorked ||
-		additionalManualVacationHoursWorked ||
-		additionalManualStatHoursWorked ||
-		additionalManualSickHoursWorked ||
-		commissionManual ||
-		retroactiveManual ||
-		vacationPayoutManual ||
-		bonusManual ||
-		terminationPayoutManual ||
-		reimbursementManual ||
-		vacationBalAdjustManual ||
-		vacationAccrualManual ||
-		vacationUsedManual ||
-		federalTaxManual ||
-		provTaxManual ||
-		incomeTaxManual
-	) {
-		const hrsData = {
-			reportType: "Manual",
-			totalRegHoursWorked: additionalManualRegHoursWorked,
-			totalOvertimeHoursWorked: additionalManualOvertimeHoursWorked,
-			totalDblOvertimeHoursWorked: additionalManualDblOvertimeHoursWorked,
-			totalStatDayHoursWorked: additionalManualStatDayHoursWorked,
-			totalStatHours: additionalManualStatHoursWorked,
-			totalSickHoursWorked: additionalManualSickHoursWorked,
-			totalVacationHoursWorked: additionalManualVacationHoursWorked,
-			commission: commissionManual,
-			retroactive: retroactiveManual,
-			vacationPayout: vacationPayoutManual,
-			bonus: bonusManual,
-			terminationPayout: terminationPayoutManual,
-			reimbursement: reimbursementManual,
-			vacationBalAdjust: vacationBalAdjustManual,
-			vacationAccrual: vacationAccrualManual,
-			vacationUsed: vacationUsedManual,
-			federalTax: federalTaxManual,
-			provTax: provTaxManual,
-			incomeTax: incomeTaxManual,
-		};
-		const currentPayStub = buildPayStub(
-			empId,
-			companyName,
-			payPeriodStartDate,
-			payPeriodEndDate,
-			payPeriodPayDate,
-			payPeriodProcessingDate,
-			payPeriod,
-			isExtraRun,
-			newEmpData,
-			prevPayPayInfo,
-			true,
-			hrsData,
-		);
-		await addPayStub(currentPayStub);
-	}
-	if (
-		additionalPayoutRegHoursWorked ||
-		additionalPayoutOvertimeHoursWorked ||
-		additionalPayoutDblOvertimeHoursWorked ||
-		additionalPayoutStatDayHoursWorked ||
-		additionalPayoutVacationHoursWorked ||
-		additionalPayoutStatHoursWorked ||
-		additionalPayoutSickHoursWorked ||
-		commissionPayout ||
-		retroactivePayout ||
-		vacationPayoutPayout ||
-		bonusPayout ||
-		terminationPayoutPayout ||
-		reimbursementPayout ||
-		vacationBalAdjustPayout ||
-		vacationAccrualPayout ||
-		vacationUsedPayout ||
-		federalTaxPayout ||
-		provTaxPayout ||
-		incomeTaxPayout
-	) {
-		const hrsData = {
-			reportType: "Paid Out",
-			totalRegHoursWorked: additionalPayoutRegHoursWorked,
-			totalOvertimeHoursWorked: additionalPayoutOvertimeHoursWorked,
-			totalDblOvertimeHoursWorked: additionalPayoutDblOvertimeHoursWorked,
-			totalStatDayHoursWorked: additionalPayoutStatDayHoursWorked,
-			totalStatHours: additionalPayoutStatHoursWorked,
-			totalSickHoursWorked: additionalPayoutSickHoursWorked,
-			totalVacationHoursWorked: additionalPayoutVacationHoursWorked,
-
-			commission: commissionPayout,
-			retroactive: retroactivePayout,
-			vacationPayout: vacationPayoutPayout,
-			bonus: bonusPayout,
-			terminationPayout: terminationPayoutPayout,
-			reimbursement: reimbursementPayout,
-			vacationBalAdjust: vacationBalAdjustPayout,
-			vacationAccrual: vacationAccrualPayout,
-			vacationUsed: vacationUsedPayout,
-			federalTax: federalTaxPayout,
-			provTax: provTaxPayout,
-			incomeTax: incomeTaxPayout,
-		};
-		const currentPayStub = buildPayStub(
-			empId,
-			companyName,
-			payPeriodStartDate,
-			payPeriodEndDate,
-			payPeriodPayDate,
-			payPeriodProcessingDate,
-			payPeriod,
-			isExtraRun,
-			newEmpData,
-			prevPayPayInfo,
-			true,
-			hrsData,
-		);
-		await addPayStub(currentPayStub);
-	}
-	if (
-		additionalSuperficialRegHoursWorked ||
-		additionalSuperficialOvertimeHoursWorked ||
-		additionalSuperficialDblOvertimeHoursWorked ||
-		additionalSuperficialStatDayHoursWorked ||
-		additionalSuperficialVacationHoursWorked ||
-		additionalSuperficialStatHoursWorked ||
-		additionalSuperficialSickHoursWorked ||
-		commissionSuperficial ||
-		retroactiveSuperficial ||
-		vacationPayoutSuperficial ||
-		bonusSuperficial ||
-		terminationPayoutSuperficial ||
-		reimbursementSuperficial ||
-		vacationBalAdjustSuperficial ||
-		vacationAccrualSuperficial ||
-		vacationUsedSuperficial ||
-		federalTaxSuperficial ||
-		provTaxSuperficial ||
-		incomeTaxSuperficial
-	) {
-		const hrsData = {
-			reportType: "Superficial",
-			totalRegHoursWorked: additionalSuperficialRegHoursWorked,
-			totalOvertimeHoursWorked: additionalSuperficialOvertimeHoursWorked,
-			totalDblOvertimeHoursWorked: additionalSuperficialDblOvertimeHoursWorked,
-			totalStatDayHoursWorked: additionalSuperficialStatDayHoursWorked,
-			totalStatHours: additionalSuperficialStatHoursWorked,
-			totalSickHoursWorked: additionalSuperficialSickHoursWorked,
-			totalVacationHoursWorked: additionalSuperficialVacationHoursWorked,
-
-			commission: commissionSuperficial,
-			retroactive: retroactiveSuperficial,
-			vacationPayout: vacationPayoutSuperficial,
-			bonus: bonusSuperficial,
-			terminationPayout: terminationPayoutSuperficial,
-			reimbursement: reimbursementSuperficial,
-			vacationBalAdjust: vacationBalAdjustSuperficial,
-			vacationAccrual: vacationAccrualSuperficial,
-			vacationUsed: vacationUsedSuperficial,
-			federalTax: federalTaxSuperficial,
-			provTax: provTaxSuperficial,
-			incomeTax: incomeTaxSuperficial,
-		};
-		const currentPayStub = buildPayStub(
-			empId,
-			companyName,
-			payPeriodStartDate,
-			payPeriodEndDate,
-			payPeriodPayDate,
-			payPeriodProcessingDate,
-			payPeriod,
-			isExtraRun,
-			newEmpData,
-			prevPayPayInfo,
-			true,
-			hrsData,
-		);
-		await addPayStub(currentPayStub);
-	}
-};
+const { PAYRUN_TYPE } = require("../services/data");
+const { addSeparateSuperficialCheque } = require("./payStubSuperficialCalc");
 
 const buildPayStub = (
 	empId,
@@ -279,8 +24,6 @@ const buildPayStub = (
 	isExtraRun,
 	newEmpData,
 	prevPayPayInfo,
-	isSeparate,
-	additionalAllocatedData,
 ) => {
 	const {
 		regPay,
@@ -380,71 +123,49 @@ const buildPayStub = (
 		pILBenefitPay,
 		bankedTimePay,
 		regularByAmount,
-		reportType: additionalAllocatedData?.reportType,
-		commission: isSeparate ? additionalAllocatedData?.commission : commission,
-		retroactive: isSeparate ? additionalAllocatedData?.retroactive : retroactive,
-		vacationPayout: isSeparate ? additionalAllocatedData?.vacationPayout : vacationPayout,
-		bonus: isSeparate ? additionalAllocatedData?.bonus : bonus,
-		terminationPayout: isSeparate ? additionalAllocatedData?.terminationPayout : terminationPayout,
-		reimbursement: isSeparate ? additionalAllocatedData?.reimbursement : reimbursement,
-		vacationBalAdjust: isSeparate ? additionalAllocatedData?.vacationBalAdjust : vacationBalAdjust,
-		vacationAccrual: isSeparate ? additionalAllocatedData?.vacationAccrual : vacationAccrual,
-		vacationUsed: isSeparate ? additionalAllocatedData?.vacationUsed : vacationUsed,
-		federalTax: isSeparate ? additionalAllocatedData?.federalTax : federalTax,
-		provTax: isSeparate ? additionalAllocatedData?.provTax : provTax,
-		incomeTax: isSeparate ? additionalAllocatedData?.incomeTax : incomeTax,
+		commission,
+		retroactive,
+		vacationPayout,
+		bonus,
+		terminationPayout,
+		reimbursement,
+		vacationBalAdjust,
+		vacationAccrual,
+		vacationUsed,
+		federalTax,
+		provTax,
+		incomeTax,
 		totalAmountAllocated,
 
-		totalRegHoursWorked: isSeparate
-			? additionalAllocatedData?.totalRegHoursWorked
-			: totalRegHoursWorked,
-		totalOvertimeHoursWorked: isSeparate
-			? additionalAllocatedData?.totalOvertimeHoursWorked
-			: totalOvertimeHoursWorked,
-		totalDblOvertimeHoursWorked: isSeparate
-			? additionalAllocatedData?.totalDblOvertimeHoursWorked
-			: totalDblOvertimeHoursWorked,
-		totalStatDayHoursWorked: isSeparate
-			? additionalAllocatedData?.totalStatDayHoursWorked
-			: totalStatDayHoursWorked,
-		totalStatHours: isSeparate ? additionalAllocatedData?.totalStatHours : totalStatHours,
-		totalSickHoursWorked: isSeparate
-			? additionalAllocatedData?.totalSickHoursWorked
-			: totalSickHoursWorked,
-		totalVacationHoursWorked: isSeparate
-			? additionalAllocatedData?.totalVacationHoursWorked
-			: totalVacationHoursWorked,
+		totalRegHoursWorked,
+		totalOvertimeHoursWorked,
+		totalDblOvertimeHoursWorked,
+		totalStatDayHoursWorked,
+		totalStatHours,
+		totalSickHoursWorked,
+		totalVacationHoursWorked,
 		totalSprayHoursWorked,
 		totalFirstAidHoursWorked,
 		totalHoursWorked,
 
-		YTDRegHoursWorked: getSumTotal(
-			prevPayPayInfo?.YTDRegHoursWorked,
-			(additionalAllocatedData?.totalRegHoursWorked || 0) + totalRegHoursWorked,
-		),
+		YTDRegHoursWorked: getSumTotal(prevPayPayInfo?.YTDRegHoursWorked, totalRegHoursWorked),
 		YTDOvertimeHoursWorked: getSumTotal(
 			prevPayPayInfo?.YTDOvertimeHoursWorked,
-			(additionalAllocatedData?.totalOvertimeHoursWorked || 0) + totalOvertimeHoursWorked,
+			totalOvertimeHoursWorked,
 		),
 		YTDDblOvertimeHoursWorked: getSumTotal(
 			prevPayPayInfo?.YTDDblOvertimeHoursWorked,
-			(additionalAllocatedData?.totalDblOvertimeHoursWorked || 0) + totalDblOvertimeHoursWorked,
+			totalDblOvertimeHoursWorked,
 		),
 		YTDStatDayHoursWorked: getSumTotal(
 			prevPayPayInfo?.YTDStatDayHoursWorked,
-			(additionalAllocatedData?.totalStatDayHoursWorked || 0) + totalStatDayHoursWorked,
+			totalStatDayHoursWorked,
 		),
-		YTDStatHoursWorked: getSumTotal(
-			prevPayPayInfo?.YTDStatHoursWorked,
-			(additionalAllocatedData?.totalStatHours || 0) + totalStatHours,
-		),
-		YTDSickHoursWorked: getSumTotal(
-			prevPayPayInfo?.YTDSickHoursWorked,
-			(additionalAllocatedData?.totalSickHoursWorked || 0) + totalSickHoursWorked,
-		),
+		YTDStatHoursWorked: getSumTotal(prevPayPayInfo?.YTDStatHoursWorked, totalStatHours),
+		YTDSickHoursWorked: getSumTotal(prevPayPayInfo?.YTDSickHoursWorked, totalSickHoursWorked),
 		YTDVacationHoursWorked: getSumTotal(
 			prevPayPayInfo?.YTDVacationHoursWorked,
-			(additionalAllocatedData?.totalVacationHoursWorked || 0) + totalVacationHoursWorked,
+			totalVacationHoursWorked,
 		),
 		YTDSprayHoursWorked: getSumTotal(prevPayPayInfo?.YTDSprayHoursWorked, totalSprayHoursWorked),
 		YTDFirstAidHoursWorked: getSumTotal(
@@ -616,25 +337,30 @@ const buildPayStubDetails = async (currentPayPeriod, companyName, empTimesheetDa
 		payStubInfoData,
 		prevPayPayInfo,
 	);
+
 	if (currentPayInfo) {
 		await updatePayStub(currentPayInfo._id, currentPayStub);
-		// await addSeparateCheque();
 	} else {
 		await addPayStub(currentPayStub);
-		// await addSeparateCheque(
-		// 	empId,
-		// 	companyName,
-		// 	payPeriodStartDate,
-		// 	payPeriodEndDate,
-		// 	payPeriodPayDate,
-		// 	payPeriodProcessingDate,
-		// 	payPeriod,
-		// 	isExtraRun,
-		// 	newEmpData,
-		// 	prevPayPayInfo,
-		// 	empAdditionalHoursAllocated,
-		// );
 	}
+	const separateValid = empAdditionalDataAllocated.chequesType.find(
+		(_) => _ === PAYRUN_TYPE.SUPERFICIAL,
+	);
+	if (!separateValid) {
+		return;
+	}
+	const newPayStub = await addSeparateSuperficialCheque(
+		empId,
+		companyName,
+		payPeriodStartDate,
+		payPeriodEndDate,
+		payPeriodPayDate,
+		payPeriodProcessingDate,
+		payPeriod,
+		isExtraRun,
+		prevPayPayInfo,
+	);
+	await addPayStub(newPayStub);
 };
 
 const findPayStub = async (payPeriodNum, companyName, empId, isExtra) => {

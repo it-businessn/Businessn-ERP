@@ -135,6 +135,9 @@ const employeePayStubSchema = new mongoose.Schema({
 	currentCPPDeductions: { type: Number, default: 0 },
 	YTD_CPPDeductions: { type: Number, default: 0 },
 
+	currentEmployerCPPDeductions: { type: Number, default: 0 },
+	YTD_EmployerCPPDeductions: { type: Number, default: 0 },
+
 	currentUnionDuesDeductions: { type: Number, default: 0 },
 	YTDUnionDuesDeductions: { type: Number, default: 0 },
 
