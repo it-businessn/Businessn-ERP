@@ -589,7 +589,6 @@ const buildPayStubDetails = async (currentPayPeriod, companyName, empTimesheetDa
 		empId,
 		payPeriodPayDate,
 	});
-
 	const empTaxCreditResult = await findEmployeeGovernmentInfoDetails(empId, companyName);
 
 	const payStubInfoData = buildNewEmpPayStubInfo(
@@ -602,8 +601,8 @@ const buildPayStubDetails = async (currentPayPeriod, companyName, empTimesheetDa
 	);
 
 	const prevPayPeriodNum = isExtraRun ? payPeriod : payPeriod - 1;
-	const prevPayPayInfo = await findCurrentPayStub(prevPayPeriodNum, companyName, empId, false);
-	const currentPayInfo = await findCurrentPayStub(
+	const prevPayPayInfo = await findPayStub(prevPayPeriodNum, companyName, empId, false);
+	const currentPayInfo = await findPayStub(
 		payPeriod,
 		companyName,
 		empId,
@@ -643,7 +642,7 @@ const buildPayStubDetails = async (currentPayPeriod, companyName, empTimesheetDa
 	}
 };
 
-const findCurrentPayStub = async (payPeriodNum, companyName, empId, isExtra) => {
+const findPayStub = async (payPeriodNum, companyName, empId, isExtra) => {
 	const searchObj = isExtra
 		? {
 				payPeriodNum,
