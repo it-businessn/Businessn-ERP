@@ -86,19 +86,19 @@ const addAdditionalHoursAllocationInfo = async (req, res) => {
 
 		if (existingInfo) {
 			if (totalSuperficialHoursWorked) {
-				const chequeTypeSuperficialExists = existingInfo?.chequesType.find(
+				const chequeTypeSuperficialExists = existingInfo?.chequesType?.find(
 					(_) => _ === PAYRUN_TYPE.SUPERFICIAL,
 				);
 				if (!chequeTypeSuperficialExists) existingInfo?.chequesType.push(PAYRUN_TYPE.SUPERFICIAL);
 			}
 			if (totalManualHoursWorked) {
-				const chequeTypeManualExists = existingInfo?.chequesType.find(
+				const chequeTypeManualExists = existingInfo?.chequesType?.find(
 					(_) => _ === PAYRUN_TYPE.MANUAL,
 				);
 				if (!chequeTypeManualExists) existingInfo?.chequesType.push(PAYRUN_TYPE.MANUAL);
 			}
 			if (totalPayoutHoursWorked) {
-				const chequeTypePayoutExists = existingInfo?.chequesType.find(
+				const chequeTypePayoutExists = existingInfo?.chequesType?.find(
 					(_) => _ === PAYRUN_TYPE.PAYOUT,
 				);
 				if (!chequeTypePayoutExists) existingInfo?.chequesType.push(PAYRUN_TYPE.PAYOUT);
@@ -389,19 +389,19 @@ const addAmountAllocation = async (req, res) => {
 
 		if (existingInfo) {
 			if (totalSuperficialAmountAllocated) {
-				const chequeTypeSuperficialExists = existingInfo?.chequesType.find(
+				const chequeTypeSuperficialExists = existingInfo?.chequesType?.find(
 					(_) => _ === PAYRUN_TYPE.SUPERFICIAL,
 				);
 				if (!chequeTypeSuperficialExists) existingInfo?.chequesType.push(PAYRUN_TYPE.SUPERFICIAL);
 			}
 			if (totalManualAmountAllocated) {
-				const chequeTypeManualExists = existingInfo?.chequesType.find(
+				const chequeTypeManualExists = existingInfo?.chequesType?.find(
 					(_) => _ === PAYRUN_TYPE.MANUAL,
 				);
 				if (!chequeTypeManualExists) existingInfo?.chequesType.push(PAYRUN_TYPE.MANUAL);
 			}
 			if (totalPayoutAmountAllocated) {
-				const chequeTypePayoutExists = existingInfo?.chequesType.find(
+				const chequeTypePayoutExists = existingInfo?.chequesType?.find(
 					(_) => _ === PAYRUN_TYPE.PAYOUT,
 				);
 				if (!chequeTypePayoutExists) existingInfo?.chequesType.push(PAYRUN_TYPE.PAYOUT);
@@ -459,10 +459,13 @@ const addEmployeeContribution = async (req, res) => {
 		};
 
 		if (existingInfo) {
-			const chequeTypeSuperficialExists = existingInfo?.chequesType.find(
+			const chequeTypeSuperficialExists = existingInfo?.chequesType?.find(
 				(_) => _ === PAYRUN_TYPE.SUPERFICIAL,
 			);
-			if (!chequeTypeSuperficialExists) existingInfo?.chequesType.push(PAYRUN_TYPE.SUPERFICIAL);
+			if (!chequeTypeSuperficialExists) {
+				if (!existingInfo?.chequesType?.length) existingInfo.chequesType = [];
+				existingInfo?.chequesType.push(PAYRUN_TYPE.SUPERFICIAL);
+			}
 			newData.chequesType = existingInfo?.chequesType;
 
 			const updatedInfo = await updateAdditionalHoursAllocatedInfo(existingInfo._id, newData);
@@ -502,10 +505,13 @@ const addEmployerContribution = async (req, res) => {
 		};
 
 		if (existingInfo) {
-			const chequeTypeSuperficialExists = existingInfo?.chequesType.find(
+			const chequeTypeSuperficialExists = existingInfo?.chequesType?.find(
 				(_) => _ === PAYRUN_TYPE.SUPERFICIAL,
 			);
-			if (!chequeTypeSuperficialExists) existingInfo?.chequesType.push(PAYRUN_TYPE.SUPERFICIAL);
+			if (!chequeTypeSuperficialExists) {
+				if (!existingInfo?.chequesType?.length) existingInfo.chequesType = [];
+				existingInfo?.chequesType.push(PAYRUN_TYPE.SUPERFICIAL);
+			}
 			newData.chequesType = existingInfo?.chequesType;
 
 			const updatedInfo = await updateAdditionalHoursAllocatedInfo(existingInfo._id, newData);
