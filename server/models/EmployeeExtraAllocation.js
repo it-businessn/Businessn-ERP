@@ -80,6 +80,14 @@ const employeeExtraAllocationSchema = new mongoose.Schema({
 	provTaxPayout: { type: Number, default: 0 },
 	incomeTaxPayout: { type: Number, default: 0 },
 
+	regPayAmtPayout: { type: Number, default: 0 },
+	OTPayAmtPayout: { type: Number, default: 0 },
+	dblOTPayAmtPayout: { type: Number, default: 0 },
+	statPayAmtPayout: { type: Number, default: 0 },
+	statWorkPayAmtPayout: { type: Number, default: 0 },
+	vacationPayAmtPayout: { type: Number, default: 0 },
+	sickPayAmtPayout: { type: Number, default: 0 },
+
 	commissionManual: { type: Number, default: 0 },
 	retroactiveManual: { type: Number, default: 0 },
 	reimbursementManual: { type: Number, default: 0 },
@@ -93,6 +101,14 @@ const employeeExtraAllocationSchema = new mongoose.Schema({
 	provTaxManual: { type: Number, default: 0 },
 	incomeTaxManual: { type: Number, default: 0 },
 
+	regPayAmtManual: { type: Number, default: 0 },
+	OTPayAmtManual: { type: Number, default: 0 },
+	dblOTPayAmtManual: { type: Number, default: 0 },
+	statPayAmtManual: { type: Number, default: 0 },
+	statWorkPayAmtManual: { type: Number, default: 0 },
+	vacationPayAmtManual: { type: Number, default: 0 },
+	sickPayAmtManual: { type: Number, default: 0 },
+
 	commissionSuperficial: { type: Number, default: 0 },
 	retroactiveSuperficial: { type: Number, default: 0 },
 	reimbursementSuperficial: { type: Number, default: 0 },
@@ -105,6 +121,14 @@ const employeeExtraAllocationSchema = new mongoose.Schema({
 	federalTaxSuperficial: { type: Number, default: 0 },
 	provTaxSuperficial: { type: Number, default: 0 },
 	incomeTaxSuperficial: { type: Number, default: 0 },
+
+	regPayAmtSuperficial: { type: Number, default: 0 },
+	OTPayAmtSuperficial: { type: Number, default: 0 },
+	dblOTPayAmtSuperficial: { type: Number, default: 0 },
+	statPayAmtSuperficial: { type: Number, default: 0 },
+	statWorkPayAmtSuperficial: { type: Number, default: 0 },
+	vacationPayAmtSuperficial: { type: Number, default: 0 },
+	sickPayAmtSuperficial: { type: Number, default: 0 },
 
 	totalAmountAllocated: { type: Number, default: 0 },
 	totalSuperficialAmountAllocated: { type: Number, default: 0 },

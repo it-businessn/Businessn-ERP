@@ -1,7 +1,6 @@
 const EmployeeExtraAllocation = require("../models/EmployeeExtraAllocation");
 const { PAYRUN_TYPE } = require("../services/data");
-const { calcSalary } = require("../services/payrollService");
-const { findEmployeePayInfoDetails } = require("./payInfoController");
+const { getPayrunAmtAllocatedResult } = require("./payrunAmtAllocatedCalc");
 const { fetchActiveEmployees } = require("./userController");
 
 const getAmountAllocation = async (req, res) => {
@@ -17,144 +16,19 @@ const getAmountAllocation = async (req, res) => {
 			companyName,
 		);
 
-		const aggregatedResult = [];
-		for (const employee of activeEmployees) {
-			const empPayInfoResult = await findEmployeePayInfoDetails(employee._id, companyName);
-			const result = await findAdditionalAmountAllocatedInfo({
-				empId: employee._id,
-				companyName,
-				payPeriodPayDate: payDate,
-			});
-			if (result) {
-				// const isSuperficial = payrunType === PAYRUN_TYPE.SUPERFICIAL;
-				// const isManual = payrunType === PAYRUN_TYPE.MANUAL;
-				// const isPayout = payrunType === PAYRUN_TYPE.PAYOUT;
+		const isSuperficial = payrunType === PAYRUN_TYPE.SUPERFICIAL;
+		const isManual = payrunType === PAYRUN_TYPE.MANUAL;
+		const isPayout = payrunType === PAYRUN_TYPE.PAYOUT;
 
-				// if (isSuperficial) {
-				// 	const {
-				// 		commissionSuperficial,
-				// 		bonusSuperficial,
-				// 		retroactiveSuperficial,
-				// 		reimbursementSuperficial,
-				// 		terminationPayoutSuperficial,
-				// 		vacationPayoutSuperficial,
-				// 		vacationBalAdjustSuperficial,
-				// 		vacationAccrualSuperficial,
-				// 		vacationUsedSuperficial,
-				// 		federalTaxSuperficial,
-				// 		provTaxSuperficial,
-				// 		incomeTaxSuperficial,
-				// 	} = result;
+		const aggregatedResult = await getPayrunAmtAllocatedResult(
+			activeEmployees,
+			companyName,
+			payDate,
+			isSuperficial,
+			isManual,
+			isPayout,
+		);
 
-				// 	result.totalAmountAllocated =
-				// 		(commissionSuperficial || 0) +
-				// 		(bonusSuperficial || 0) +
-				// 		(retroactiveSuperficial || 0) +
-				// 		(reimbursementSuperficial || 0) +
-				// 		(terminationPayoutSuperficial || 0) +
-				// 		(vacationPayoutSuperficial || 0);
-				// 	aggregatedResult.push(result);
-				// } else if (isManual) {
-				// 	const {
-				// 		commissionManual,
-				// 		bonusManual,
-				// 		retroactiveManual,
-				// 		reimbursementManual,
-				// 		terminationPayoutManual,
-				// 		vacationPayoutManual,
-				// 		vacationBalAdjustManual,
-				// 		vacationAccrualManual,
-				// 		vacationUsedManual,
-				// 		federalTaxManual,
-				// 		provTaxManual,
-				// 		incomeTaxManual,
-				// 	} = result;
-
-				// 	result.totalAmountAllocated =
-				// 		(commissionManual || 0) +
-				// 		(bonusManual || 0) +
-				// 		(retroactiveManual || 0) +
-				// 		(reimbursementManual || 0) +
-				// 		(terminationPayoutManual || 0) +
-				// 		(vacationPayoutManual || 0);
-				// 	aggregatedResult.push(result);
-				// } else if (isPayout) {
-				// 	const {
-				// 		commissionPayout,
-				// 		bonusPayout,
-				// 		retroactivePayout,
-				// 		reimbursementPayout,
-				// 		terminationPayoutPayout,
-				// 		vacationPayoutPayout,
-				// 		vacationBalAdjustPayout,
-				// 		vacationAccrualPayout,
-				// 		vacationUsedPayout,
-				// 		federalTaxPayout,
-				// 		provTaxPayout,
-				// 		incomeTaxPayout,
-				// 	} = result;
-
-				// 	result.totalAmountAllocated =
-				// 		(commissionPayout || 0) +
-				// 		(bonusPayout || 0) +
-				// 		(retroactivePayout || 0) +
-				// 		(reimbursementPayout || 0) +
-				// 		(terminationPayoutPayout || 0) +
-				// 		(vacationPayoutPayout || 0);
-				// 	aggregatedResult.push(result);
-				// } else {
-				const {
-					commission,
-					bonus,
-					retroactive,
-					reimbursement,
-					terminationPayout,
-					vacationPayout,
-					vacationBalAdjust,
-					vacationAccrual,
-					vacationUsed,
-					federalTax,
-					provTax,
-					incomeTax,
-					regPayAmt,
-					OTPayAmt,
-					dblOTPayAmt,
-					statPayAmt,
-					statWorkPayAmt,
-					vacationPayAmt,
-					sickPayAmt,
-				} = result;
-				if (!result.totalAmountAllocated)
-					result.totalAmountAllocated =
-						commission +
-						bonus +
-						retroactive +
-						reimbursement +
-						terminationPayout +
-						vacationPayout +
-						vacationBalAdjust +
-						vacationAccrual +
-						vacationUsed +
-						federalTax +
-						provTax +
-						incomeTax +
-						regPayAmt +
-						OTPayAmt +
-						dblOTPayAmt +
-						statPayAmt +
-						statWorkPayAmt +
-						vacationPayAmt +
-						sickPayAmt;
-				aggregatedResult.push(result);
-				// }
-			} else {
-				const result = {
-					empId: { _id: employee._id, fullName: employee.fullName },
-					totalAmountAllocated: 0,
-				};
-				aggregatedResult.push(result);
-			}
-		}
 		res.status(200).json(aggregatedResult);
 	} catch (error) {
 		res.status(404).json({ error: error.message });
@@ -330,6 +204,13 @@ const addAmountAllocation = async (req, res) => {
 			federalTaxPayout,
 			provTaxPayout,
 			incomeTaxPayout,
+			regPayAmtPayout,
+			OTPayAmtPayout,
+			dblOTPayAmtPayout,
+			statPayAmtPayout,
+			statWorkPayAmtPayout,
+			vacationPayAmtPayout,
+			sickPayAmtPayout,
 
 			commissionManual,
 			bonusManual,
@@ -343,6 +224,13 @@ const addAmountAllocation = async (req, res) => {
 			federalTaxManual,
 			provTaxManual,
 			incomeTaxManual,
+			regPayAmtManual,
+			OTPayAmtManual,
+			dblOTPayAmtManual,
+			statPayAmtManual,
+			statWorkPayAmtManual,
+			vacationPayAmtManual,
+			sickPayAmtManual,
 
 			commissionSuperficial,
 			bonusSuperficial,
@@ -356,6 +244,13 @@ const addAmountAllocation = async (req, res) => {
 			federalTaxSuperficial,
 			provTaxSuperficial,
 			incomeTaxSuperficial,
+			regPayAmtSuperficial,
+			OTPayAmtSuperficial,
+			dblOTPayAmtSuperficial,
+			statPayAmtSuperficial,
+			statWorkPayAmtSuperficial,
+			vacationPayAmtSuperficial,
+			sickPayAmtSuperficial,
 
 			totalAmountAllocated,
 			totalSuperficialAmountAllocated,
@@ -396,6 +291,13 @@ const addAmountAllocation = async (req, res) => {
 			federalTaxPayout,
 			provTaxPayout,
 			incomeTaxPayout,
+			regPayAmtPayout,
+			OTPayAmtPayout,
+			dblOTPayAmtPayout,
+			statPayAmtPayout,
+			statWorkPayAmtPayout,
+			vacationPayAmtPayout,
+			sickPayAmtPayout,
 
 			commissionManual,
 			bonusManual,
@@ -409,6 +311,13 @@ const addAmountAllocation = async (req, res) => {
 			federalTaxManual,
 			provTaxManual,
 			incomeTaxManual,
+			regPayAmtManual,
+			OTPayAmtManual,
+			dblOTPayAmtManual,
+			statPayAmtManual,
+			statWorkPayAmtManual,
+			vacationPayAmtManual,
+			sickPayAmtManual,
 
 			commissionSuperficial,
 			bonusSuperficial,
@@ -422,6 +331,13 @@ const addAmountAllocation = async (req, res) => {
 			federalTaxSuperficial,
 			provTaxSuperficial,
 			incomeTaxSuperficial,
+			regPayAmtSuperficial,
+			OTPayAmtSuperficial,
+			dblOTPayAmtSuperficial,
+			statPayAmtSuperficial,
+			statWorkPayAmtSuperficial,
+			vacationPayAmtSuperficial,
+			sickPayAmtSuperficial,
 
 			totalAmountAllocated,
 			totalSuperficialAmountAllocated,
@@ -470,17 +386,6 @@ const findAllAdditionalHoursAllocatedInfo = async (record) =>
 		"empId additionalRegHoursWorked additionalOvertimeHoursWorked additionalDblOvertimeHoursWorked additionalStatDayHoursWorked additionalVacationHoursWorked additionalStatHoursWorked additionalSickHoursWorked additionalManualRegHoursWorked additionalManualOvertimeHoursWorked additionalManualDblOvertimeHoursWorked additionalManualStatDayHoursWorked additionalManualVacationHoursWorked additionalManualStatHoursWorked additionalManualSickHoursWorked additionalPayoutRegHoursWorked additionalPayoutOvertimeHoursWorked additionalPayoutDblOvertimeHoursWorked additionalPayoutStatDayHoursWorked additionalPayoutVacationHoursWorked additionalPayoutStatHoursWorked additionalPayoutSickHoursWorked additionalSuperficialRegHoursWorked additionalSuperficialOvertimeHoursWorked additionalSuperficialDblOvertimeHoursWorked additionalSuperficialStatDayHoursWorked additionalSuperficialVacationHoursWorked additionalSuperficialStatHoursWorked additionalSuperficialSickHoursWorked commissionPayout bonusPayout retroactivePayout reimbursementPayout terminationPayoutPayout vacationPayoutPayout vacationBalAdjustPayout vacationAccrualPayout vacationUsedPayout federalTaxPayout provTaxPayout incomeTaxPayout commissionManual bonusManual retroactiveManual reimbursementManual terminationPayoutManual vacationPayoutManual vacationBalAdjustManual vacationAccrualManual vacationUsedManual federalTaxManual provTaxManual incomeTaxManual commissionSuperficial bonusSuperficial retroactiveSuperficial reimbursementSuperficial terminationPayoutSuperficial vacationPayoutSuperficial vacationBalAdjustSuperficial vacationAccrualSuperficial vacationUsedSuperficial federalTaxSuperficial provTaxSuperficial incomeTaxSuperficial",
 	);
 
-const findAdditionalAmountAllocatedInfo = async (record) =>
-	await EmployeeExtraAllocation.findOne(record)
-		.populate({
-			path: "empId",
-			model: "Employee",
-			select: ["fullName"],
-		})
-		.select(
-			"empId regPayAmt OTPayAmt dblOTPayAmt statPayAmt statWorkPayAmt vacationPayAmt sickPayAmt totalAmountAllocated totalSuperficialAmountAllocated totalManualAmountAllocated totalPayoutAmountAllocated commission bonus retroactive reimbursement terminationPayout vacationPayout vacationBalAdjust vacationAccrual vacationUsed federalTax provTax incomeTax commissionPayout bonusPayout retroactivePayout reimbursementPayout terminationPayoutPayout vacationPayoutPayout vacationBalAdjustPayout vacationAccrualPayout vacationUsedPayout federalTaxPayout provTaxPayout incomeTaxPayout commissionManual bonusManual retroactiveManual reimbursementManual terminationPayoutManual vacationPayoutManual vacationBalAdjustManual vacationAccrualManual vacationUsedManual federalTaxManual provTaxManual incomeTaxManual commissionSuperficial bonusSuperficial retroactiveSuperficial reimbursementSuperficial terminationPayoutSuperficial vacationPayoutSuperficial vacationBalAdjustSuperficial vacationAccrualSuperficial vacationUsedSuperficial federalTaxSuperficial provTaxSuperficial incomeTaxSuperficial",
-		);
-
 const findAdditionalHoursAllocatedInfo = async (record) =>
 	await EmployeeExtraAllocation.findOne(record).select(
 		"empId totalHoursWorked additionalRegHoursWorked additionalOvertimeHoursWorked additionalDblOvertimeHoursWorked additionalStatDayHoursWorked additionalVacationHoursWorked additionalStatHoursWorked additionalSickHoursWorked ",
@@ -492,7 +397,6 @@ module.exports = {
 	findAdditionalManualHoursAllocatedInfo,
 	addAdditionalHoursAllocationInfo,
 	findAdditionalHoursAllocatedInfo,
-	findAdditionalAmountAllocatedInfo,
 	addAmountAllocation,
 	getAmountAllocation,
 	findAllAdditionalHoursAllocatedInfo,

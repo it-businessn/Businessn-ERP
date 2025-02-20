@@ -13,12 +13,14 @@ import {
 const AmountAllocation = ({ company, closestRecord, groupId, path, payrunOption }) => {
 	const [refresh, setRefresh] = useState(false);
 	const data = useEmployeeAmountAllocation(company, refresh, closestRecord, groupId, payrunOption);
+
 	const PAYRUN_AMT_ALLOCATE_DATA = {
 		1: REGULAR_AMT_ALLOCATE_COLS,
 		2: PAYOUT_AMT_ALLOCATE_COLS,
 		3: MANUAL_AMT_ALLOCATE_COLS,
 		4: SUPERFICIAL_AMT_ALLOCATE_COLS,
 	};
+
 	const [payrunAmtData, setPayrunAmtData] = useState(null);
 	const [amountAllocateData, setAmountAllocateData] = useState(null);
 	const [formData, setFormData] = useState(null);

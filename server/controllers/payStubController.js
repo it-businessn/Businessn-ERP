@@ -1,9 +1,6 @@
 const EmployeePayStub = require("../models/EmployeePayStub");
 const { getSumTotal } = require("../services/payrollService");
-const {
-	findAdditionalAmountAllocatedInfo,
-	findAllAdditionalHoursAllocatedInfo,
-} = require("./additionalAllocationInfoController");
+const { findAllAdditionalHoursAllocatedInfo } = require("./additionalAllocationInfoController");
 const { getEmployeeId, getPayrollActiveEmployees } = require("./userController");
 // const { generateT4Slip } = require("./t4SlipController");
 const {
@@ -13,6 +10,7 @@ const {
 } = require("./payrollHelper");
 const { findEmployeePayInfoDetails } = require("./payInfoController");
 const { findEmployeeGovernmentInfoDetails } = require("./governmentInfoController");
+const { findAdditionalRegularAmountAllocatedInfo } = require("./payrunAmtAllocatedCalc");
 
 const addSeparateCheque = async (
 	empId,
@@ -583,7 +581,7 @@ const buildPayStubDetails = async (currentPayPeriod, companyName, empTimesheetDa
 
 	const empPayInfoResult = await findEmployeePayInfoDetails(empId, companyName);
 	const empBenefitInfoResult = await findEmployeeBenefitInfo(empId, companyName);
-	const empAdditionalAmountAllocated = await findAdditionalAmountAllocatedInfo({
+	const empAdditionalAmountAllocated = await findAdditionalRegularAmountAllocatedInfo({
 		empId,
 		payPeriodPayDate,
 	});
