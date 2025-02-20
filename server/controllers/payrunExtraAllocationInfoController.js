@@ -81,8 +81,15 @@ const addAdditionalHoursAllocationInfo = async (req, res) => {
 		});
 
 		if (existingInfo) {
+			if (totalSuperficialHoursWorked) {
+				const chequeTypeSuperficialExists = existingInfo?.chequesType.find(
+					(_) => _ === PAYRUN_TYPE.SUPERFICIAL,
+				);
+				if (!chequeTypeSuperficialExists) existingInfo?.chequesType.push(PAYRUN_TYPE.SUPERFICIAL);
+			}
 			const updatedInfo = await updateAdditionalHoursAllocatedInfo(existingInfo._id, {
 				additionalRegHoursWorked,
+				chequesType: existingInfo.chequesType,
 				additionalOvertimeHoursWorked,
 				additionalDblOvertimeHoursWorked,
 				additionalStatHoursWorked,
@@ -119,6 +126,7 @@ const addAdditionalHoursAllocationInfo = async (req, res) => {
 		}
 		const newInfo = await addNewAllocationRecord({
 			empId,
+			chequesType: totalSuperficialHoursWorked ? [PAYRUN_TYPE.SUPERFICIAL] : [],
 			companyName,
 			additionalRegHoursWorked,
 			additionalOvertimeHoursWorked,
@@ -344,11 +352,21 @@ const addAmountAllocation = async (req, res) => {
 			totalManualAmountAllocated,
 			totalPayoutAmountAllocated,
 		};
+
 		if (existingInfo) {
+			if (totalSuperficialAmountAllocated) {
+				const chequeTypeSuperficialExists = existingInfo?.chequesType.find(
+					(_) => _ === PAYRUN_TYPE.SUPERFICIAL,
+				);
+				if (!chequeTypeSuperficialExists) existingInfo?.chequesType.push(PAYRUN_TYPE.SUPERFICIAL);
+				newData.chequesType = existingInfo?.chequesType;
+			}
+
 			const updatedInfo = await updateAdditionalHoursAllocatedInfo(existingInfo._id, newData);
 			return res.status(201).json(updatedInfo);
 		}
 
+		newData.chequesType = totalSuperficialAmountAllocated ? [PAYRUN_TYPE.SUPERFICIAL] : [];
 		newData.empId = empId;
 		newData.companyName = companyName;
 		newData.payPeriodPayDate = payPeriodPayDate;
@@ -385,11 +403,19 @@ const addEmployeeContribution = async (req, res) => {
 			EE_EISuperficial,
 			EE_CPPSuperficial,
 		};
+
 		if (existingInfo) {
+			const chequeTypeSuperficialExists = existingInfo?.chequesType.find(
+				(_) => _ === PAYRUN_TYPE.SUPERFICIAL,
+			);
+			if (!chequeTypeSuperficialExists) existingInfo?.chequesType.push(PAYRUN_TYPE.SUPERFICIAL);
+			newData.chequesType = existingInfo?.chequesType;
+
 			const updatedInfo = await updateAdditionalHoursAllocatedInfo(existingInfo._id, newData);
 			return res.status(201).json(updatedInfo);
 		}
 
+		newData.chequesType = [PAYRUN_TYPE.SUPERFICIAL];
 		newData.empId = empId;
 		newData.companyName = companyName;
 		newData.payPeriodPayDate = payPeriodPayDate;
@@ -420,11 +446,19 @@ const addEmployerContribution = async (req, res) => {
 			ER_EISuperficial,
 			ER_CPPSuperficial,
 		};
+
 		if (existingInfo) {
+			const chequeTypeSuperficialExists = existingInfo?.chequesType.find(
+				(_) => _ === PAYRUN_TYPE.SUPERFICIAL,
+			);
+			if (!chequeTypeSuperficialExists) existingInfo?.chequesType.push(PAYRUN_TYPE.SUPERFICIAL);
+			newData.chequesType = existingInfo?.chequesType;
+
 			const updatedInfo = await updateAdditionalHoursAllocatedInfo(existingInfo._id, newData);
 			return res.status(201).json(updatedInfo);
 		}
 
+		newData.chequesType = [PAYRUN_TYPE.SUPERFICIAL];
 		newData.empId = empId;
 		newData.companyName = companyName;
 		newData.payPeriodPayDate = payPeriodPayDate;
@@ -462,7 +496,7 @@ const findAllAdditionalHoursAllocatedInfo = async (record) =>
 
 const findAdditionalHoursAllocatedInfo = async (record) =>
 	await EmployeeExtraAllocation.findOne(record).select(
-		"empId totalHoursWorked additionalRegHoursWorked additionalOvertimeHoursWorked additionalDblOvertimeHoursWorked additionalStatDayHoursWorked additionalVacationHoursWorked additionalStatHoursWorked additionalSickHoursWorked ",
+		"empId chequesType totalHoursWorked additionalRegHoursWorked additionalOvertimeHoursWorked additionalDblOvertimeHoursWorked additionalStatDayHoursWorked additionalVacationHoursWorked additionalStatHoursWorked additionalSickHoursWorked ",
 	);
 
 const findEESuperficialContribution = async (record) =>

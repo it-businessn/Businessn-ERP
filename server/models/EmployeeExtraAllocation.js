@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 const employeeExtraAllocationSchema = new mongoose.Schema({
 	empId: { type: String, ref: "Employee" },
 	companyName: { type: String, ref: "Company" },
+	chequesType: { type: Array, default: [] },
 	additionalRegHoursWorked: { type: Number, default: 0 },
 	additionalPayoutRegHoursWorked: { type: Number, default: 0 },
 	additionalManualRegHoursWorked: { type: Number, default: 0 },

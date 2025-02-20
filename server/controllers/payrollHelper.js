@@ -256,7 +256,7 @@ const calcCurrentGrossPay = (newEmpData) => {
 const buildNewEmpPayStubInfo = (
 	empTimesheetData,
 	empPayInfoResult,
-	empAdditionalHoursAllocated,
+	empAdditionalDataAllocated,
 	empBenefitInfoResult,
 	empTaxCreditResult,
 ) => {
@@ -264,29 +264,24 @@ const buildNewEmpPayStubInfo = (
 	newEmpData.regPay = empPayInfoResult?.regPay || 0;
 	calcPayRates(newEmpData);
 
-	calcHoursWorkedTotals(
-		newEmpData,
-		empPayInfoResult,
-		empTimesheetData,
-		empAdditionalHoursAllocated,
-	);
+	calcHoursWorkedTotals(newEmpData, empPayInfoResult, empTimesheetData, empAdditionalDataAllocated);
 
-	calcSalaryByEarningType(newEmpData, empAdditionalHoursAllocated);
+	calcSalaryByEarningType(newEmpData, empAdditionalDataAllocated);
 	calcEmpBenefits(newEmpData, empBenefitInfoResult);
-	calcEmpAmtAllocation(newEmpData, empAdditionalHoursAllocated);
+	calcEmpAmtAllocation(newEmpData, empAdditionalDataAllocated);
 	calcCurrentGrossPay(newEmpData);
 
 	if (empTaxCreditResult)
-		calcEmpContributions(newEmpData, empTaxCreditResult, empAdditionalHoursAllocated);
+		calcEmpContributions(newEmpData, empTaxCreditResult, empAdditionalDataAllocated);
 	calcContrDeductions(newEmpData);
-	calcVacBalance(newEmpData, empBenefitInfoResult, empAdditionalHoursAllocated);
+	calcVacBalance(newEmpData, empBenefitInfoResult, empAdditionalDataAllocated);
 
 	calcCurrentDeductionsTotal(newEmpData);
 
 	const netPay = newEmpData.currentGrossPay - newEmpData.currentDeductionsTotal;
 	// newEmpData.currentNetPay = netPay < 0 ? 0 : netPay;
 	newEmpData.currentNetPay = netPay;
-	newEmpData.totalAmountAllocated = empAdditionalHoursAllocated?.totalAmountAllocated;
+	newEmpData.totalAmountAllocated = empAdditionalDataAllocated?.totalAmountAllocated;
 	return newEmpData;
 };
 

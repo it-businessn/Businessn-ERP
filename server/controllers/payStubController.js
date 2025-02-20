@@ -581,7 +581,7 @@ const buildPayStubDetails = async (currentPayPeriod, companyName, empTimesheetDa
 
 	const empPayInfoResult = await findEmployeePayInfoDetails(empId, companyName);
 	const empBenefitInfoResult = await findEmployeeBenefitInfo(empId, companyName);
-	const empAdditionalHoursAllocated = await findAllAdditionalHoursAllocatedInfo({
+	const empAdditionalDataAllocated = await findAllAdditionalHoursAllocatedInfo({
 		empId,
 		payPeriodPayDate,
 	});
@@ -590,7 +590,7 @@ const buildPayStubDetails = async (currentPayPeriod, companyName, empTimesheetDa
 	const payStubInfoData = buildNewEmpPayStubInfo(
 		empTimesheetData,
 		empPayInfoResult,
-		empAdditionalHoursAllocated,
+		empAdditionalDataAllocated,
 		empBenefitInfoResult,
 		empTaxCreditResult,
 	);
