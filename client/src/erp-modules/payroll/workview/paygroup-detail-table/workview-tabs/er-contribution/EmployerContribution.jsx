@@ -1,6 +1,7 @@
 import { Input } from "@chakra-ui/react";
 import useEmployeeERContribution from "hooks/useEmployeeERContribution";
 import { useEffect, useState } from "react";
+import PayrollService from "services/PayrollService";
 import WorkviewTab from "../WorkviewTab";
 import {
 	MANUAL_ER_COLS,
@@ -52,21 +53,14 @@ const EmployerContribution = ({ company, closestRecord, groupId, payrunOption })
 			const { empId } = updatedRec;
 
 			if (updatedRec) {
-				// updatedRec[totalColumnKey] = 0;
-				// colKeys.forEach((key) => {
-				// 	if (key && key !== totalColumnKey) {
-				// 		updatedRec[totalColumnKey] += parseFloat(updatedRec[key]);
-				// 	}
-				// });
-				updatedRec.companyName = company;
-				// const { data } = await PayrollService.addEmployeeExtraAmount({
-				// 	payPeriodPayDate: closestRecord?.payPeriodPayDate,
-				// 	companyName: company,
-				// 	updatedRec,
-				// 	empId,
-				// });
-				// setRefresh((prev) => !prev);
-				// setFormData(data);
+				const { data } = await PayrollService.addEmployerContribution({
+					payPeriodPayDate: closestRecord?.payPeriodPayDate,
+					companyName: company,
+					updatedRec,
+					empId,
+				});
+				setRefresh((prev) => !prev);
+				setFormData(data);
 			}
 		} catch (error) {}
 	};
@@ -75,7 +69,7 @@ const EmployerContribution = ({ company, closestRecord, groupId, payrunOption })
 		<Input
 			type="number"
 			onBlur={() => handleSave()}
-			value={value}
+			value={value || ""}
 			onChange={(e) => handleUpdateData(id, field, e.target.value)}
 			placeholder="0"
 			size="sm"
@@ -90,7 +84,7 @@ const EmployerContribution = ({ company, closestRecord, groupId, payrunOption })
 				data={contributionData}
 				cellClick={cellClick}
 				renderEditableInput={renderEditableInput}
-				isEditable
+				isEditable={payrunOption === "4"}
 				setRefresh={setRefresh}
 			/>
 		)

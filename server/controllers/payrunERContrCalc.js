@@ -6,8 +6,10 @@ const {
 	calcPayRates,
 	calcEmpBenefits,
 } = require("./payrollHelper");
-const { findEESuperficialContribution } = require("./payrunEEContrCalc");
-const { findAdditionalHoursAllocatedInfo } = require("./payrunExtraAllocationInfoController");
+const {
+	findAdditionalHoursAllocatedInfo,
+	findEESuperficialContribution,
+} = require("./payrunExtraAllocationInfoController");
 
 const getPayrunERContributionResult = async (
 	activeEmployees,

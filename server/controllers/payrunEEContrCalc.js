@@ -7,7 +7,10 @@ const {
 	calcPayRates,
 	calcEmpBenefits,
 } = require("./payrollHelper");
-const { findAdditionalHoursAllocatedInfo } = require("./payrunExtraAllocationInfoController");
+const {
+	findAdditionalHoursAllocatedInfo,
+	findEESuperficialContribution,
+} = require("./payrunExtraAllocationInfoController");
 
 const getPayrunEEContributionResult = async (
 	activeEmployees,
@@ -219,11 +222,6 @@ const calcRegularEEContribution = async (
 	return aggregatedResult;
 };
 
-const findEESuperficialContribution = async (record) =>
-	await EmployeeExtraAllocation.findOne(record).select(
-		"empId unionDuesSuperficial EE_EHPSuperficial EE_EPPSuperficial EE_EISuperficial EE_CPPSuperficial ER_EHPSuperficial ER_EPPSuperficial ER_EISuperficial ER_CPPSuperficial",
-	);
-
 const findAdditionalRegularAmountAllocatedInfo = async (record) =>
 	await EmployeeExtraAllocation.findOne(record)
 		.populate({
@@ -274,5 +272,4 @@ module.exports = {
 	findAdditionalManualAmountAllocatedInfo,
 	findAdditionalSuperficialAmountAllocatedInfo,
 	getPayrunEEContributionResult,
-	findEESuperficialContribution,
 };

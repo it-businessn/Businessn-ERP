@@ -23,6 +23,14 @@ const PayrollService = {
 		return apiService.post(`/payroll/additionalAllocation/amount`, data);
 	},
 
+	async addEmployeeContribution(data) {
+		return apiService.post(`/payroll/additionalAllocation/ee-contr`, data);
+	},
+
+	async addEmployerContribution(data) {
+		return apiService.post(`/payroll/additionalAllocation/er-contr`, data);
+	},
+
 	async updateEmployeePayInfo(data, id) {
 		return apiService.put(`/payroll/payInfo/${id}`, data, id);
 	},

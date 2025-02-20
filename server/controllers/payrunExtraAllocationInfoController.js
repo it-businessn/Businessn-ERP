@@ -361,6 +361,82 @@ const addAmountAllocation = async (req, res) => {
 	}
 };
 
+const addEmployeeContribution = async (req, res) => {
+	const { empId, companyName, updatedRec, payPeriodPayDate } = req.body;
+	try {
+		const existingInfo = await findEESuperficialContribution({
+			empId: empId._id,
+			companyName,
+			payPeriodPayDate,
+		});
+
+		const {
+			unionDuesSuperficial,
+			EE_EHPSuperficial,
+			EE_EPPSuperficial,
+			EE_EISuperficial,
+			EE_CPPSuperficial,
+		} = updatedRec;
+
+		const newData = {
+			unionDuesSuperficial,
+			EE_EHPSuperficial,
+			EE_EPPSuperficial,
+			EE_EISuperficial,
+			EE_CPPSuperficial,
+		};
+		if (existingInfo) {
+			const updatedInfo = await updateAdditionalHoursAllocatedInfo(existingInfo._id, newData);
+			return res.status(201).json(updatedInfo);
+		}
+
+		newData.empId = empId;
+		newData.companyName = companyName;
+		newData.payPeriodPayDate = payPeriodPayDate;
+
+		const newInfo = await addNewAllocationRecord(newData);
+
+		return res.status(201).json(newInfo);
+	} catch (error) {
+		res.status(400).json({ message: error.message });
+	}
+};
+
+const addEmployerContribution = async (req, res) => {
+	const { empId, companyName, updatedRec, payPeriodPayDate } = req.body;
+	try {
+		const existingInfo = await findEESuperficialContribution({
+			empId: empId._id,
+			companyName,
+			payPeriodPayDate,
+		});
+
+		const { ER_EHPSuperficial, ER_EPPSuperficial, ER_EISuperficial, ER_CPPSuperficial } =
+			updatedRec;
+
+		const newData = {
+			ER_EHPSuperficial,
+			ER_EPPSuperficial,
+			ER_EISuperficial,
+			ER_CPPSuperficial,
+		};
+		if (existingInfo) {
+			const updatedInfo = await updateAdditionalHoursAllocatedInfo(existingInfo._id, newData);
+			return res.status(201).json(updatedInfo);
+		}
+
+		newData.empId = empId;
+		newData.companyName = companyName;
+		newData.payPeriodPayDate = payPeriodPayDate;
+
+		const newInfo = await addNewAllocationRecord(newData);
+
+		return res.status(201).json(newInfo);
+	} catch (error) {
+		res.status(400).json({ message: error.message });
+	}
+};
+
 const updateAdditionalHoursAllocatedInfo = async (id, data) =>
 	await EmployeeExtraAllocation.findByIdAndUpdate(id, data, {
 		new: true,
@@ -391,6 +467,11 @@ const findAdditionalHoursAllocatedInfo = async (record) =>
 		"empId totalHoursWorked additionalRegHoursWorked additionalOvertimeHoursWorked additionalDblOvertimeHoursWorked additionalStatDayHoursWorked additionalVacationHoursWorked additionalStatHoursWorked additionalSickHoursWorked ",
 	);
 
+const findEESuperficialContribution = async (record) =>
+	await EmployeeExtraAllocation.findOne(record).select(
+		"empId unionDuesSuperficial EE_EHPSuperficial EE_EPPSuperficial EE_EISuperficial EE_CPPSuperficial ER_EHPSuperficial ER_EPPSuperficial ER_EISuperficial ER_CPPSuperficial",
+	);
+
 module.exports = {
 	findAdditionalSuperficialHoursAllocatedInfo,
 	findAdditionalPayoutHoursAllocatedInfo,
@@ -400,4 +481,7 @@ module.exports = {
 	addAmountAllocation,
 	getAmountAllocation,
 	findAllAdditionalHoursAllocatedInfo,
+	addEmployeeContribution,
+	addEmployerContribution,
+	findEESuperficialContribution,
 };
