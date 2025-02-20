@@ -353,23 +353,28 @@ export const meetingsData = [
 ];
 
 export const PAYRUN_OPTIONS = [
-	{ name: "Payrun Details", code: 1, highlightColor: "#537eee", info: "s" },
+	{
+		name: "Payrun Details",
+		code: 1,
+		highlightColor: "#537eee",
+		info: "Adjustments made here will be included in this pay run.",
+	},
 	{
 		name: "Payrun Details - Separate Cheque",
 		code: 2,
 		highlightColor: "#7713c9",
-		info: "adjustments here will be included on this payrun but will appear on a separate cheque ",
+		info: "Adjustments made here will be included in this pay run but will appear on a separate cheque.",
 	},
 	{
 		name: "Payrun Details - Separate Cheque No Payout",
 		code: 3,
 		highlightColor: "#326274",
-		info: " will not be payid out",
+		info: "Adjustments made here will not be paid out.",
 	},
 	{
 		name: "Payrun Details - Balances",
 		code: 4,
 		highlightColor: "#b47318",
-		info: " will update the paystub internally without reporting to cra",
+		info: "Adjustments made here will update the pay stub internally without reporting to the CRA.",
 	},
 ];

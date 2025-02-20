@@ -1,5 +1,4 @@
 import {
-	Box,
 	CloseButton,
 	HStack,
 	Popover,
@@ -11,6 +10,7 @@ import {
 import { isBusinessNAdmin, PAYRUN_OPTIONS } from "constant";
 import React, { useEffect, useState } from "react";
 import { generateLighterShade } from "utils";
+import TextTitle from "./text/TextTitle";
 
 export default function PopupMessage({
 	isOpen,
@@ -66,7 +66,7 @@ export default function PopupMessage({
 			<PopoverContent w="auto" bg={generateLighterShade(highlightColor, 0.8)}>
 				<PopoverBody display="flex" alignItems="center">
 					<HStack justifyContent="space-between">
-						<Box fontSize="sm">{info}</Box>
+						<TextTitle title={info} size="sm" em="italic" />
 						<CloseButton size="sm" ml={5} onClick={handleClick} />
 					</HStack>
 				</PopoverBody>
