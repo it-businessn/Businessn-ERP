@@ -19,27 +19,33 @@ const EarningsTable = ({ cols, rows, data, colBg, isNetSummary }) => {
 		>
 			<Tbody>
 				{rows.map(
-					({ name, rate, totalHours, currentTotal, YTDTotal, YTDHoursTotal, isEarning }) => (
-						<React.Fragment key={name}>
-							{(name === "Regular" ||
+					({ name, rate, totalHours, currentTotal, YTDTotal, YTDHoursTotal, isEarning }) => {
+						const isValid =
+							!name.includes("Federal") &&
+							!name.includes("Provincial") &&
+							(name === "Regular" ||
 								name === "Net Pay" ||
+								name.includes("Gross ") ||
 								data[currentTotal] > 0 ||
 								data[YTDHoursTotal] > 0 ||
-								data[YTDTotal] > 0 ||
-								name.includes("Gross ")) && (
-								<ItemRow
-									isNetSummary={isNetSummary}
-									title={name}
-									isEarning={isEarning}
-									rate={data[rate] ?? 0}
-									totalHours={data[totalHours] ?? 0}
-									currentTotal={data[currentTotal] ?? 0}
-									YTDTotal={data[YTDTotal] ?? 0}
-									YTDHoursTotal={data[YTDHoursTotal] ?? 0}
-								/>
-							)}
-						</React.Fragment>
-					),
+								data[YTDTotal] > 0);
+						return (
+							<React.Fragment key={name}>
+								{isValid && (
+									<ItemRow
+										isNetSummary={isNetSummary}
+										title={name}
+										isEarning={isEarning}
+										rate={data[rate] ?? 0}
+										totalHours={data[totalHours] ?? 0}
+										currentTotal={data[currentTotal] ?? 0}
+										YTDTotal={data[YTDTotal] ?? 0}
+										YTDHoursTotal={data[YTDHoursTotal] ?? 0}
+									/>
+								)}
+							</React.Fragment>
+						);
+					},
 				)}
 			</Tbody>
 		</TableLayout>

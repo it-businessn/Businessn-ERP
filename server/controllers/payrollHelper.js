@@ -94,43 +94,37 @@ const calcPayRates = (newEmpDataPay) => {
 	return newEmpDataPay;
 };
 
-const calcHoursWorkedTotals = (
-	newEmpData,
-	empPayInfoResult,
-	empTimesheetData,
-	empAdditionalHoursAllocated,
-) => {
+const calcHoursWorkedTotals = (newEmpData, empPayInfoResult, empTimesheetData, amtAllocated) => {
 	newEmpData.totalRegHoursWorked = calcRegHrsWorked(
 		empPayInfoResult?.typeOfEarning,
 		empPayInfoResult?.fullTimeStandardHours,
 		empPayInfoResult?.partTimeStandardHours,
 		convertHrsToFloat(empTimesheetData?.totalRegHoursWorked) +
-			convertHrsToFloat(empAdditionalHoursAllocated?.additionalRegHoursWorked),
+			convertHrsToFloat(amtAllocated?.additionalRegHoursWorked),
 	);
-
 	newEmpData.totalOvertimeHoursWorked =
 		convertHrsToFloat(empTimesheetData?.totalOvertimeHoursWorked) +
-		convertHrsToFloat(empAdditionalHoursAllocated?.additionalOvertimeHoursWorked);
+		convertHrsToFloat(amtAllocated?.additionalOvertimeHoursWorked);
 
 	newEmpData.totalDblOvertimeHoursWorked =
 		convertHrsToFloat(empTimesheetData?.totalDblOvertimeHoursWorked) +
-		convertHrsToFloat(empAdditionalHoursAllocated?.additionalDblOvertimeHoursWorked);
+		convertHrsToFloat(amtAllocated?.additionalDblOvertimeHoursWorked);
 
 	newEmpData.totalStatHours =
 		convertHrsToFloat(empTimesheetData?.totalStatHours) +
-		convertHrsToFloat(empAdditionalHoursAllocated?.additionalStatHoursWorked);
+		convertHrsToFloat(amtAllocated?.additionalStatHoursWorked);
 
 	newEmpData.totalStatDayHoursWorked =
 		convertHrsToFloat(empTimesheetData?.totalStatDayHoursWorked) +
-		convertHrsToFloat(empAdditionalHoursAllocated?.additionalStatDayHoursWorked);
+		convertHrsToFloat(amtAllocated?.additionalStatDayHoursWorked);
 
 	newEmpData.totalSickHoursWorked =
 		convertHrsToFloat(empTimesheetData?.totalSickHoursWorked) +
-		convertHrsToFloat(empAdditionalHoursAllocated?.additionalSickHoursWorked);
+		convertHrsToFloat(amtAllocated?.additionalSickHoursWorked);
 
 	newEmpData.totalVacationHoursWorked =
 		convertHrsToFloat(empTimesheetData?.totalVacationHoursWorked) +
-		convertHrsToFloat(empAdditionalHoursAllocated?.additionalVacationHoursWorked);
+		convertHrsToFloat(amtAllocated?.additionalVacationHoursWorked);
 
 	newEmpData.totalSprayHoursWorked = convertHrsToFloat(empTimesheetData?.totalSprayHoursWorked);
 
@@ -149,36 +143,35 @@ const calcHoursWorkedTotals = (
 	return newEmpData;
 };
 
-const calcSalaryByEarningType = (newEmpData) => {
-	newEmpData.currentRegPayTotal = calcSalary(
-		newEmpData?.totalRegHoursWorked || 0,
-		newEmpData.regPay || 0,
-	);
+const calcSalaryByEarningType = (newEmpData, amtAllocated) => {
+	newEmpData.currentRegPayTotal =
+		calcSalary(newEmpData?.totalRegHoursWorked || 0, newEmpData.regPay || 0) +
+		convertHrsToFloat(amtAllocated?.regPayAmt);
 
-	newEmpData.currentOverTimePayTotal = calcSalary(
-		newEmpData?.totalOvertimeHoursWorked || 0,
-		newEmpData.overTimePay || 0,
-	);
-	newEmpData.currentDblOverTimePayTotal = calcSalary(
-		newEmpData?.totalDblOvertimeHoursWorked || 0,
-		newEmpData.dblOverTimePay || 0,
-	);
-	newEmpData.currentStatWorkPayTotal = calcSalary(
-		newEmpData?.totalStatDayHoursWorked || 0,
-		newEmpData.statWorkPay || 0,
-	);
-	newEmpData.currentStatPayTotal = calcSalary(
-		newEmpData?.totalStatHours || 0,
-		newEmpData.statPay || 0,
-	);
-	newEmpData.currentSickPayTotal = calcSalary(
-		newEmpData?.totalSickHoursWorked || 0,
-		newEmpData.sickPay || 0,
-	);
-	newEmpData.currentVacationPayTotal = calcSalary(
-		newEmpData?.totalVacationHoursWorked || 0,
-		newEmpData.vacationPay || 0,
-	);
+	newEmpData.currentOverTimePayTotal =
+		calcSalary(newEmpData?.totalOvertimeHoursWorked || 0, newEmpData.overTimePay || 0) +
+		convertHrsToFloat(amtAllocated?.OTPayAmt);
+
+	newEmpData.currentDblOverTimePayTotal =
+		calcSalary(newEmpData?.totalDblOvertimeHoursWorked || 0, newEmpData.dblOverTimePay || 0) +
+		convertHrsToFloat(amtAllocated?.dblOTPayAmt);
+
+	newEmpData.currentStatWorkPayTotal =
+		calcSalary(newEmpData?.totalStatDayHoursWorked || 0, newEmpData.statWorkPay || 0) +
+		convertHrsToFloat(amtAllocated?.statWorkPayAmt);
+
+	newEmpData.currentStatPayTotal =
+		calcSalary(newEmpData?.totalStatHours || 0, newEmpData.statPay || 0) +
+		convertHrsToFloat(amtAllocated?.statPayAmt);
+
+	newEmpData.currentSickPayTotal =
+		calcSalary(newEmpData?.totalSickHoursWorked || 0, newEmpData.sickPay || 0) +
+		convertHrsToFloat(amtAllocated?.sickPayAmt);
+
+	newEmpData.currentVacationPayTotal =
+		calcSalary(newEmpData?.totalVacationHoursWorked || 0, newEmpData.vacationPay || 0) +
+		convertHrsToFloat(amtAllocated?.vacationPayAmt);
+
 	newEmpData.currentSprayPayTotal = calcSalary(
 		newEmpData?.totalSprayHoursWorked || 0,
 		newEmpData.sprayPay || 0,
@@ -216,29 +209,29 @@ const calcEmpBenefits = (newEmpData, empBenefitInfoResult) => {
 	return newEmpData;
 };
 
-const calcEmpAmtAllocation = (newEmpData, empAdditionalAmountAllocated) => {
+const calcEmpAmtAllocation = (newEmpData, amtAllocated) => {
 	newEmpData.payInLieuPay = 0;
 	newEmpData.pILBenefitPay = 0;
 	newEmpData.bankedTimePay = 0;
 	newEmpData.regularByAmount = 0;
-	newEmpData.commission = convertHrsToFloat(empAdditionalAmountAllocated?.commission);
-	newEmpData.retroactive = convertHrsToFloat(empAdditionalAmountAllocated?.retroactive);
-	newEmpData.vacationPayout = convertHrsToFloat(empAdditionalAmountAllocated?.vacationPayout);
-	newEmpData.terminationPayout = convertHrsToFloat(empAdditionalAmountAllocated?.terminationPayout);
-	newEmpData.bonus = convertHrsToFloat(empAdditionalAmountAllocated?.bonus);
-	newEmpData.reimbursement = convertHrsToFloat(empAdditionalAmountAllocated?.reimbursement);
+	newEmpData.commission = convertHrsToFloat(amtAllocated?.commission);
+	newEmpData.retroactive = convertHrsToFloat(amtAllocated?.retroactive);
+	newEmpData.vacationPayout = convertHrsToFloat(amtAllocated?.vacationPayout);
+	newEmpData.terminationPayout = convertHrsToFloat(amtAllocated?.terminationPayout);
+	newEmpData.bonus = convertHrsToFloat(amtAllocated?.bonus);
+	newEmpData.reimbursement = convertHrsToFloat(amtAllocated?.reimbursement);
 
-	newEmpData.vacationBalAdjust = convertHrsToFloat(empAdditionalAmountAllocated?.vacationBalAdjust);
-	newEmpData.vacationAccrual = convertHrsToFloat(empAdditionalAmountAllocated?.vacationAccrual);
-	newEmpData.vacationUsed = convertHrsToFloat(empAdditionalAmountAllocated?.vacationUsed);
-	newEmpData.federalTax = convertHrsToFloat(empAdditionalAmountAllocated?.federalTax);
-	newEmpData.provTax = convertHrsToFloat(empAdditionalAmountAllocated?.provTax);
-	newEmpData.incomeTax = convertHrsToFloat(empAdditionalAmountAllocated?.incomeTax);
+	newEmpData.vacationBalAdjust = convertHrsToFloat(amtAllocated?.vacationBalAdjust);
+	newEmpData.vacationAccrual = convertHrsToFloat(amtAllocated?.vacationAccrual);
+	newEmpData.vacationUsed = convertHrsToFloat(amtAllocated?.vacationUsed);
+	newEmpData.federalTax = convertHrsToFloat(amtAllocated?.federalTax);
+	newEmpData.provTax = convertHrsToFloat(amtAllocated?.provTax);
+	newEmpData.incomeTax = convertHrsToFloat(amtAllocated?.incomeTax);
 	return newEmpData;
 };
 
 const calcCurrentGrossPay = (newEmpData) => {
-	const sum =
+	newEmpData.currentGrossPay =
 		newEmpData.currentRegPayTotal +
 		newEmpData.currentOverTimePayTotal +
 		newEmpData.currentDblOverTimePayTotal +
@@ -257,7 +250,7 @@ const calcCurrentGrossPay = (newEmpData) => {
 		newEmpData.vacationPayout +
 		newEmpData.bonus +
 		newEmpData.terminationPayout;
-	return sum;
+	return newEmpData;
 };
 
 const buildNewEmpPayStubInfo = (
@@ -265,7 +258,6 @@ const buildNewEmpPayStubInfo = (
 	empPayInfoResult,
 	empAdditionalHoursAllocated,
 	empBenefitInfoResult,
-	empAdditionalAmountAllocated,
 	empTaxCreditResult,
 ) => {
 	const newEmpData = empTimesheetData ? empTimesheetData : {};
@@ -279,52 +271,50 @@ const buildNewEmpPayStubInfo = (
 		empAdditionalHoursAllocated,
 	);
 
-	calcSalaryByEarningType(newEmpData);
+	calcSalaryByEarningType(newEmpData, empAdditionalHoursAllocated);
 	calcEmpBenefits(newEmpData, empBenefitInfoResult);
-	if (empAdditionalAmountAllocated) calcEmpAmtAllocation(newEmpData, empAdditionalAmountAllocated);
+	calcEmpAmtAllocation(newEmpData, empAdditionalHoursAllocated);
+	calcCurrentGrossPay(newEmpData);
 
-	newEmpData.currentVacationBalanceFwd = 0;
-	newEmpData.currentGrossPay = calcCurrentGrossPay(newEmpData);
-	if (empTaxCreditResult) calcEmpContributions(newEmpData, empTaxCreditResult);
+	if (empTaxCreditResult)
+		calcEmpContributions(newEmpData, empTaxCreditResult, empAdditionalHoursAllocated);
 	calcContrDeductions(newEmpData);
-	calcVacBalance(newEmpData, empBenefitInfoResult);
+	calcVacBalance(newEmpData, empBenefitInfoResult, empAdditionalHoursAllocated);
 
-	const deductions = calcCurrentDeductionsTotal(newEmpData);
-	newEmpData.currentDeductionsTotal = deductions < 0 ? 0 : deductions;
+	calcCurrentDeductionsTotal(newEmpData);
 
 	const netPay = newEmpData.currentGrossPay - newEmpData.currentDeductionsTotal;
 	// newEmpData.currentNetPay = netPay < 0 ? 0 : netPay;
 	newEmpData.currentNetPay = netPay;
-	newEmpData.totalAmountAllocated =
-		newEmpData.commission +
-		newEmpData.bonus +
-		newEmpData.retroactive +
-		newEmpData.reimbursement +
-		newEmpData.terminationPayout +
-		newEmpData.vacationPayout;
+	newEmpData.totalAmountAllocated = empAdditionalHoursAllocated?.totalAmountAllocated;
 	return newEmpData;
 };
 
 const calcContrDeductions = (newEmpData) => {
 	const { unionDues, EE_EPP, EE_EHP, ER_EPP, ER_EHP } = getContributionsDeductions(newEmpData);
-	newEmpData.currentUnionDuesDeductions = unionDues;
-	newEmpData.currentEmployeeHealthContributions = EE_EHP;
+	newEmpData.currentUnionDuesDeductions = unionDues; //only added superficial;
+	newEmpData.currentEmployeeHealthContributions = EE_EHP; //only added superficial;
 	newEmpData.currentPrimaryDeposit = 0;
-	newEmpData.currentEmployeePensionContributions = EE_EPP;
+	newEmpData.currentEmployeePensionContributions = EE_EPP; //only added superficial;
 	newEmpData.currentOtherDeductions = 0;
-	newEmpData.currentEmployerPensionContributions = ER_EPP;
-	newEmpData.currentEmployerHealthContributions = ER_EHP;
-	newEmpData.currentEmployerContributions = ER_EPP + ER_EHP;
+	newEmpData.currentEmployerPensionContributions = ER_EPP; //only added superficial;
+	newEmpData.currentEmployerHealthContributions = ER_EHP; //only added superficial;
+	newEmpData.currentEmployerContributions = ER_EPP + ER_EHP; //only added superficial;
 	return newEmpData;
 };
 
-const calcVacBalance = (newEmpData, empBenefitInfoResult) => {
+const calcVacBalance = (newEmpData, empBenefitInfoResult, amtAllocated) => {
 	const vacationPayPercent = convertHrsToFloat(empBenefitInfoResult?.vacationPayPercent);
-	newEmpData.currentVacationAccrued = vacationPayPercent * newEmpData.currentGrossPay;
-	newEmpData.currentVacationUsed =
+	newEmpData.currentVacationBalanceFwd = convertHrsToFloat(amtAllocated?.vacationBalAdjust);
+
+	newEmpData.currentVacationAccrued =
+		vacationPayPercent * newEmpData.currentGrossPay +
+		convertHrsToFloat(amtAllocated?.vacationAccrual);
+	const vacTreatmentData =
 		empBenefitInfoResult?.typeOfVacationTreatment === "Payout"
 			? newEmpData.currentVacationAccrued
 			: newEmpData.currentVacationPayTotal;
+	newEmpData.currentVacationUsed = vacTreatmentData + convertHrsToFloat(amtAllocated?.vacationUsed);
 
 	newEmpData.vacationBalance =
 		newEmpData.currentVacationBalanceFwd +
@@ -336,7 +326,7 @@ const calcVacBalance = (newEmpData, empBenefitInfoResult) => {
 };
 
 const calcCurrentDeductionsTotal = (newEmpData) => {
-	const sum =
+	const deductions =
 		newEmpData.currentFDTaxDeductions +
 		newEmpData.currentStateTaxDeductions +
 		newEmpData.currentCPPDeductions +
@@ -347,10 +337,11 @@ const calcCurrentDeductionsTotal = (newEmpData) => {
 		newEmpData.currentEmployeePensionContributions +
 		newEmpData.currentOtherDeductions;
 
-	return sum;
+	newEmpData.currentDeductionsTotal = deductions < 0 ? 0 : deductions;
+	return newEmpData;
 };
 
-const calcEmpContributions = (newEmpData, empTaxCreditResult) => {
+const calcEmpContributions = (newEmpData, empTaxCreditResult, amtAllocated) => {
 	const {
 		CPPContribution,
 		totalProvincialTaxDeduction,
@@ -368,13 +359,18 @@ const calcEmpContributions = (newEmpData, empTaxCreditResult) => {
 	// const employerContribution =
 	// 	pensionContribution + 2.05 * newEmpData.totalRegHoursWorked;
 
-	newEmpData.currentFDTaxDeductions = federalTaxDeductionByPayPeriod;
-	newEmpData.currentStateTaxDeductions = totalProvincialTaxDeduction;
+	newEmpData.currentFDTaxDeductions =
+		federalTaxDeductionByPayPeriod + convertHrsToFloat(amtAllocated?.federalTax);
+	newEmpData.currentStateTaxDeductions =
+		totalProvincialTaxDeduction + convertHrsToFloat(amtAllocated?.provTax);
+
 	newEmpData.currentIncomeTaxDeductions =
-		federalTaxDeductionByPayPeriod + totalProvincialTaxDeduction;
-	newEmpData.currentCPPDeductions = CPPContribution;
-	newEmpData.currentEmployeeEIDeductions = EmployeeEIContribution;
-	newEmpData.currentEmployerEIDeductions = EmployerEIContribution;
+		newEmpData.currentFDTaxDeductions +
+		newEmpData.currentStateTaxDeductions +
+		convertHrsToFloat(amtAllocated?.incomeTax);
+	newEmpData.currentCPPDeductions = CPPContribution; //only added superficial
+	newEmpData.currentEmployeeEIDeductions = EmployeeEIContribution; //only added superficial;
+	newEmpData.currentEmployerEIDeductions = EmployerEIContribution; //only added superficial;
 
 	return newEmpData;
 };

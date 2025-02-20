@@ -20,7 +20,8 @@ const InformationSection = ({ type, items, data }) => (
 			<Tbody>
 				{items?.map(({ name, rate, totalHours, currentTotal, YTDTotal }) => (
 					<React.Fragment key={name}>
-						{(data[YTDTotal] > 0 ||
+						{(data[YTDTotal] >= 0 ||
+							name.includes("CPP") ||
 							name.includes("Vacation") ||
 							name.includes("Balance") ||
 							name.includes("Benefits")) && (
