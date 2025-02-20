@@ -1,5 +1,5 @@
 const moment = require("moment");
-const momentTz = require("moment-timezone");
+// const momentTz = require("moment-timezone");
 
 const BUSINESSN_ORG = "BusinessN Corporate";
 const BUSINESSN_ORG_ADMIN_EMAILS = [
@@ -120,7 +120,7 @@ const isRoleManager = (role) =>
 const NEXT_DAY = moment().add(1, "days");
 const CURRENT_TIME_HHMM = NEXT_DAY.format("HH:mm");
 // const currentTime = NEXT_DAY.format("HH:mm:ss");
-let LOCAL_TIME = moment().tz("America/Vancouver").toDate();
+// let LOCAL_TIME = moment().tz("America/Vancouver").toDate();
 
 const CURRENT_YEAR = moment().year();
 const getUTCTime = (time, notDevice) => (notDevice ? moment() : moment.utc(time).toISOString());
@@ -242,6 +242,6 @@ module.exports = {
 	PUNCH_CODE,
 	TIMESHEET_STATUS,
 	PARAM_HOURS,
-	LOCAL_TIME,
+	// LOCAL_TIME,
 	PAYRUN_TYPE,
 };

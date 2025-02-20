@@ -271,79 +271,79 @@ export const SUPERFICIAL_HOURLY_ALLOCATE_COLS = [
 		align: "center",
 		nearest: true,
 	},
-	{
-		key: "Regular Hrs",
-		pair: "totalRegHoursWorked",
-		align: "center",
-		nearest: true,
-	},
+	// {
+	// 	key: "Regular Hrs",
+	// 	pair: "totalRegHoursWorked",
+	// 	align: "center",
+	// 	nearest: true,
+	// },
 	{
 		key: "Add Regular",
 		pair: "additionalSuperficialRegHoursWorked",
 		isEditable: true,
 		nearest: true,
 	},
-	{
-		key: "Overtime Hrs",
-		pair: "totalOvertimeHoursWorked",
-		align: "center",
-		nearest: true,
-	},
+	// {
+	// 	key: "Overtime Hrs",
+	// 	pair: "totalOvertimeHoursWorked",
+	// 	align: "center",
+	// 	nearest: true,
+	// },
 	{
 		key: "Add Overtime",
 		pair: "additionalSuperficialOvertimeHoursWorked",
 		isEditable: true,
 		nearest: true,
 	},
-	{
-		key: "Double OT Hrs",
-		pair: "totalDblOvertimeHoursWorked",
-		align: "center",
-		nearest: true,
-	},
+	// {
+	// 	key: "Double OT Hrs",
+	// 	pair: "totalDblOvertimeHoursWorked",
+	// 	align: "center",
+	// 	nearest: true,
+	// },
 	{
 		key: "Add Double OT",
 		pair: "additionalSuperficialDblOvertimeHoursWorked",
 		isEditable: true,
 		nearest: true,
 	},
-	{ key: "Stat. Pay Hrs", pair: "totalStatHours", align: "center", nearest: true },
+	// { key: "Stat. Pay Hrs", pair: "totalStatHours", align: "center", nearest: true },
 	{
 		key: "Add Stat. Pay",
 		pair: "additionalSuperficialStatHoursWorked",
 		isEditable: true,
 		nearest: true,
 	},
-	{
-		key: "Stat. Worked Hrs",
-		pair: "totalStatDayHoursWorked",
-		align: "center",
-		nearest: true,
-	},
+	// {
+	// 	key: "Stat. Worked Hrs",
+	// 	pair: "totalStatDayHoursWorked",
+	// 	align: "center",
+	// 	nearest: true,
+	// },
 	{
 		key: "Add Stat. Wrked",
 		pair: "additionalSuperficialStatDayHoursWorked",
 		isEditable: true,
 		nearest: true,
 	},
-	{
-		key: "Vacation Hrs",
-		pair: "totalVacationHoursWorked",
-		align: "center",
-		nearest: true,
-	},
+	// {
+	// 	key: "Vacation Hrs",
+	// 	pair: "totalVacationHoursWorked",
+	// 	align: "center",
+	// 	nearest: true,
+	// },
 	{
 		key: "Add Vacation",
 		pair: "additionalSuperficialVacationHoursWorked",
 		isEditable: true,
 		nearest: true,
 	},
-	{
-		key: "Sick Pay Hrs",
-		pair: "totalSickHoursWorked",
-		align: "center",
-		nearest: true,
-	},
+	// {
+	// 	key: "Sick Pay Hrs",
+	// 	pair: "totalSickHoursWorked",
+	// 	align: "center",
+	// 	nearest: true,
+	// },
 	{
 		key: "Add Sick",
 		pair: "additionalSuperficialSickHoursWorked",
@@ -353,5 +353,15 @@ export const SUPERFICIAL_HOURLY_ALLOCATE_COLS = [
 	{
 		key: "",
 		pair: <OutlineButton size="xs" name="setup" label="View Timesheets" mr={3} />,
+	},
+
+	{
+		key: "er5",
+	},
+	{
+		key: "er6",
+	},
+	{
+		key: "er7",
 	},
 ];
