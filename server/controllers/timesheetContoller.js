@@ -11,6 +11,7 @@ const {
 	NEXT_DAY,
 	PUNCH_CODE,
 	getPayType,
+	EARNING_TYPE,
 } = require("../services/data");
 
 const findByRecordTimesheets = async (record) => {
@@ -38,7 +39,9 @@ const findByRecordTimesheets = async (record) => {
 const getTimesheetResult = async (companyName) => {
 	const payInfoResult = await EmployeePayInfo.find({
 		companyName,
-	}).select("empId regPay overTimePay dblOverTimePay statWorkPay statPay sickPay vacationPay");
+	}).select(
+		"empId regPay overTimePay dblOverTimePay statWorkPay statPay sickPay vacationPay typeOfEarning",
+	);
 
 	const payInfoMap = new Map(
 		payInfoResult.map((payInfo) => [
@@ -51,6 +54,7 @@ const getTimesheetResult = async (companyName) => {
 				statPay: payInfo.statPay,
 				sickPay: payInfo.sickPay,
 				vacationPay: payInfo.vacationPay,
+				typeOfEarning: payInfo.typeOfEarning,
 			},
 		]),
 	);
@@ -72,8 +76,9 @@ const mapTimesheet = (payInfos, timesheets) => {
 		timesheet.sickPay = payInfo.sickPay;
 		timesheet.vacationPay = payInfo.vacationPay;
 		timesheet.clockIn = moment(timesheet.clockIn).tz("America/Vancouver").format();
+		timesheet.typeOfEarning = payInfo.typeOfEarning;
 	});
-	return timesheets;
+	return timesheets?.filter(({ typeOfEarning }) => typeOfEarning === EARNING_TYPE.HOURLY);
 };
 
 const getTimesheets = async (req, res) => {

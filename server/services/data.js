@@ -159,7 +159,7 @@ const PUNCH_CODE = {
 	CLOCK_OUT: "1",
 };
 
-const EARNING_TYPE = { FT: "Full Time Salaried", PT: "Part Time Salaried" };
+const EARNING_TYPE = { FT: "Full Time Salaried", PT: "Part Time Salaried", HOURLY: "Hourly" };
 
 const PAY_TYPES_TITLE = {
 	REG_PAY: "Regular Pay",
