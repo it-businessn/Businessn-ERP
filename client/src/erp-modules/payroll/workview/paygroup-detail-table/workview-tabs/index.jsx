@@ -9,8 +9,8 @@ import EmployeeDetails from "./EmployeeDetails";
 import { HStack } from "@chakra-ui/react";
 import PopupMessage from "components/ui/PopupMessage";
 import TextTitle from "components/ui/text/TextTitle";
-import EmployeeContribution from "./EmployeeContribution";
-import EmployerContribution from "./EmployerContribution";
+import EmployeeContribution from "./ee-contribution/EmployeeContribution";
+import EmployerContribution from "./er-contribution/EmployerContribution";
 import HourlyAllocation from "./hourly/HourlyAllocation";
 
 const PaygroupDetailTable = ({
