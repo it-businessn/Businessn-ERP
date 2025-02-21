@@ -75,13 +75,7 @@ const mapTimesheet = (payInfos, timesheets) => {
 		timesheet.statPay = payInfo.statPay;
 		timesheet.sickPay = payInfo.sickPay;
 		timesheet.vacationPay = payInfo.vacationPay;
-		// timesheet.clockIn = convertMomentTzDate(timesheet.clockIn);
 
-		timesheet.startTime = getClockInTimeFormat(timesheet.clockIn);
-		if (timesheet.clockOut) {
-			// timesheet.clockOut = convertMomentTzDate(timesheet.clockOut);
-			timesheet.endTime = getTimeFormat(timesheet.clockOut);
-		}
 		timesheet.typeOfEarning = payInfo.typeOfEarning;
 	});
 	return timesheets?.filter(({ typeOfEarning }) => typeOfEarning === EARNING_TYPE.HOURLY);
@@ -349,24 +343,24 @@ const createManualTimesheet = async (req, res) => {
 
 const createTimesheet = async (req, res) => {
 	let { company, type, clockIn, clockOut, employeeId, param_hours, startTime, endTime } = req.body;
-
 	try {
-		if (startTime) clockIn = setUTCDate(clockIn, startTime);
-		if (endTime) clockOut = setUTCDate(clockOut, endTime);
+		if (startTime) clockIn = setTime(clockIn, startTime);
+		if (endTime) clockOut = setTime(clockIn, endTime);
 		const totalWorkedHours = calcTotalWorkedHours(clockIn, clockOut);
-		if (type === PAY_TYPES_TITLE.REG_PAY && totalWorkedHours > 8) {
-			const adjustedClockOut = await addOvertimeRecord(clockIn, clockOut, employeeId, company);
-			const newEntry = {
-				employeeId,
-				clockIn,
-				clockOut: adjustedClockOut,
-				[param_hours]: 8,
-				companyName: company,
-				payType: type,
-			};
-			const newTimesheetWithOvertime = await addTimesheetEntry(newEntry);
-			return res.status(201).json(newTimesheetWithOvertime);
-		}
+
+		// if (type === PAY_TYPES_TITLE.REG_PAY && totalWorkedHours > 8) {
+		// 	const adjustedClockOut = await addOvertimeRecord(clockIn, clockOut, employeeId, company);
+		// 	const newEntry = {
+		// 		employeeId,
+		// 		clockIn,
+		// 		clockOut: adjustedClockOut,
+		// 		[param_hours]: 8,
+		// 		companyName: company,
+		// 		payType: type,
+		// 	};
+		// 	const newTimesheetWithOvertime = await addTimesheetEntry(newEntry);
+		// 	return res.status(201).json(newTimesheetWithOvertime);
+		// }
 
 		const newEntry = {
 			employeeId,
@@ -384,17 +378,17 @@ const createTimesheet = async (req, res) => {
 	}
 };
 
-const setUTCDate = (date, newDate, notDevice) => {
+const setTime = (date, time) => {
 	// const utcDate = date ? (notDevice ? moment(date) : moment.utc(date)) : moment.utc();
 	const utcDate = moment.utc(date);
 
-	let [hours, minutes] = newDate.split(":");
+	let [hours, minutes] = time.split(":");
 	utcDate.set({
 		hour: parseInt(hours),
 		minute: parseInt(minutes),
 		second: 0,
 	});
-	return utcDate;
+	return utcDate.toISOString();
 };
 
 const updateTimesheet = async (req, res) => {
@@ -402,24 +396,24 @@ const updateTimesheet = async (req, res) => {
 	let { clockIn, clockOut, empId, approve, param_hours, company, startTime, endTime } = req.body;
 
 	try {
-		if (startTime) clockIn = setUTCDate(clockIn, startTime);
-		if (endTime) clockOut = setUTCDate(clockOut, endTime);
+		if (startTime) clockIn = setTime(clockIn, startTime);
+		if (endTime) clockOut = setTime(clockIn, endTime);
 		const totalWorkedHours = calcTotalWorkedHours(clockIn, clockOut);
-		if (param_hours === PARAM_HOURS.REGULAR && totalWorkedHours > 8) {
-			const adjustedClockOut = await addOvertimeRecord(clockIn, clockOut, empId, company);
-			const updatedData = {
-				clockIn,
-				clockOut: adjustedClockOut,
-				[param_hours]: 8,
-				approveStatus: approve
-					? TIMESHEET_STATUS.APPROVED
-					: approve === false
-					? TIMESHEET_STATUS.REJECTED
-					: TIMESHEET_STATUS.PENDING,
-			};
-			const timesheet = await updateTimesheetData(id, updatedData);
-			return res.status(201).json(timesheet);
-		}
+		// if (param_hours === PARAM_HOURS.REGULAR && totalWorkedHours > 8) {
+		// 	const adjustedClockOut = await addOvertimeRecord(clockIn, clockOut, empId, company);
+		// 	const updatedData = {
+		// 		clockIn,
+		// 		clockOut: adjustedClockOut,
+		// 		[param_hours]: 8,
+		// 		approveStatus: approve
+		// 			? TIMESHEET_STATUS.APPROVED
+		// 			: approve === false
+		// 			? TIMESHEET_STATUS.REJECTED
+		// 			: TIMESHEET_STATUS.PENDING,
+		// 	};
+		// 	const timesheet = await updateTimesheetData(id, updatedData);
+		// 	return res.status(201).json(timesheet);
+		// }
 		const updatedData = {
 			clockIn,
 			clockOut,
