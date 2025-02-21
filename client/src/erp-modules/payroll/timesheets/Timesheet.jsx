@@ -52,17 +52,11 @@ const Timesheet = ({
 				);
 				const { totalPages, page, items } = data;
 
-				if (moment.utc(filter?.startDate).isSame(moment.utc(filter?.endDate), "day")) {
-					const filteredItems = items
-						?.map((record) => {
-							record.clockIn = convertMomentTzDate(record.clockIn);
-							if (record.clockOut) record.clockOut = convertMomentTzDate(record.clockOut);
-							return record;
-						})
-						?.filter(({ clockIn }) =>
-							moment.utc(clockIn).isSame(moment.utc(filter?.startDate), "day"),
-						);
-					setTimesheets(filteredItems);
+				if (filter?.startDate === filter?.endDate) {
+					const filteredItems = items?.filter(({ clockIn }) =>
+						moment(clockIn).isSame(moment(filter?.startDate), "day"),
+					);
+					setTimesheets(items);
 				} else {
 					setTimesheets(items);
 				}
@@ -292,6 +286,8 @@ const Timesheet = ({
 							totalWorkedHours,
 							notDevice,
 							employee,
+							startTime,
+							endTime,
 						}) => {
 							const approveStatusBtnCss = getStatusStyle(approveStatus);
 							const { type, color } = getPayTypeStyle(payType);
@@ -360,14 +356,14 @@ const Timesheet = ({
 											onBlur={() => handleSubmit(param_hours)}
 											className={`timeClockInInput ${_id}`}
 											type="time"
-											name="clockIn"
-											value={clockIn ? getClockInTimeFormat(clockIn, notDevice) : ""}
+											name="startTime"
+											value={startTime || ""}
 											onClick={() => showPicker(`timeClockInInput ${_id}`)}
 											onChange={(e) => {
 												setFormData({
 													param_hours,
 													recordId: _id,
-													clockIn: setUTCDate(clockIn, e.target.value, notDevice),
+													startTime: e.target.value,
 												});
 											}}
 											required
@@ -380,14 +376,14 @@ const Timesheet = ({
 											onBlur={() => handleSubmit(param_hours)}
 											className={`timeClockOutInput ${_id}`}
 											type="time"
-											name="clockOut"
-											value={clockOut ? getTimeFormat(clockOut, notDevice) : ""}
+											name="endTime"
+											value={endTime || ""}
 											onClick={() => showPicker(`timeClockOutInput ${_id}`)}
 											onChange={(e) => {
 												setFormData({
 													param_hours,
 													recordId: _id,
-													clockOut: setUTCDate(clockIn, e.target.value, notDevice),
+													endTime: e.target.value,
 												});
 											}}
 											required

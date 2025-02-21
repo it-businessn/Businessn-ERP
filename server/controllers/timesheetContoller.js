@@ -1,6 +1,7 @@
 const EmployeePayInfo = require("../models/EmployeePayInfo");
 const Timesheet = require("../models/Timesheet");
 const moment = require("moment");
+const momentTz = require("moment-timezone");
 const { getPayrollActiveEmployees } = require("./userController");
 const { findEmployeePayInfo } = require("./payInfoController");
 const {
@@ -74,11 +75,52 @@ const mapTimesheet = (payInfos, timesheets) => {
 		timesheet.statPay = payInfo.statPay;
 		timesheet.sickPay = payInfo.sickPay;
 		timesheet.vacationPay = payInfo.vacationPay;
-		timesheet.clockIn = moment(timesheet.clockIn).tz("America/Vancouver").format();
+		// timesheet.clockIn = convertMomentTzDate(timesheet.clockIn);
+
+		timesheet.startTime = getClockInTimeFormat(timesheet.clockIn);
+		if (timesheet.clockOut) {
+			// timesheet.clockOut = convertMomentTzDate(timesheet.clockOut);
+			timesheet.endTime = getTimeFormat(timesheet.clockOut);
+		}
 		timesheet.typeOfEarning = payInfo.typeOfEarning;
 	});
 	return timesheets?.filter(({ typeOfEarning }) => typeOfEarning === EARNING_TYPE.HOURLY);
 };
+
+const getTimeFormat = (timestamp) => {
+	let time = moment(timestamp);
+
+	// const date = notDevice ? moment(timestamp) : moment.utc(timestamp);
+	// return date.format("HH:mm");
+
+	if (time.format("HH") <= "12") {
+		return time.utc().format("HH:mm");
+	} else {
+		return time.format("HH:mm");
+	}
+};
+const getClockInTimeFormat = (timestamp) => {
+	// const date = notDevice ? moment(timestamp) : moment.utc(timestamp);
+	// return timeSheet ? date.format("YYYY-MM-DD") : date.format("YYYY-MM-DD  hh:mm A");
+
+	let time = moment(timestamp);
+	if (time.format("HH:mm") < "05:00" || time.format("HH:mm") > "17:00") {
+		return time.utc().format("HH:mm");
+	} else {
+		return time.format("HH:mm");
+	}
+
+	// const utcHours = new Date(timestamp).getUTCHours();
+	// const utcMinutes = new Date(timestamp).getUTCMinutes();
+	// const formattedUTC = `${(utcHours % 24).toString().padStart(2, "0") || 12}:${utcMinutes
+	// 	.toString()
+	// 	.padStart(2, "0")}`;
+
+	// return formattedUTC;
+};
+
+const convertMomentTzDate = (timestamp) =>
+	momentTz(timestamp).utc().format("YYYY-MM-DDTHH:mm:ss.SSS[Z]");
 
 const getTimesheets = async (req, res) => {
 	const { companyName } = req.params;
@@ -306,9 +348,11 @@ const createManualTimesheet = async (req, res) => {
 };
 
 const createTimesheet = async (req, res) => {
-	const { company, type, clockIn, clockOut, employeeId, param_hours } = req.body;
+	let { company, type, clockIn, clockOut, employeeId, param_hours, startTime, endTime } = req.body;
 
 	try {
+		if (startTime) clockIn = setUTCDate(clockIn, startTime);
+		if (endTime) clockOut = setUTCDate(clockOut, endTime);
 		const totalWorkedHours = calcTotalWorkedHours(clockIn, clockOut);
 		if (type === PAY_TYPES_TITLE.REG_PAY && totalWorkedHours > 8) {
 			const adjustedClockOut = await addOvertimeRecord(clockIn, clockOut, employeeId, company);
@@ -340,12 +384,26 @@ const createTimesheet = async (req, res) => {
 	}
 };
 
+const setUTCDate = (date, newDate, notDevice) => {
+	// const utcDate = date ? (notDevice ? moment(date) : moment.utc(date)) : moment.utc();
+	const utcDate = moment.utc(date);
+
+	let [hours, minutes] = newDate.split(":");
+	utcDate.set({
+		hour: parseInt(hours),
+		minute: parseInt(minutes),
+		second: 0,
+	});
+	return utcDate;
+};
+
 const updateTimesheet = async (req, res) => {
 	const { id } = req.params;
-	let { clockIn, clockOut, empId, approve, param_hours, company } = req.body;
+	let { clockIn, clockOut, empId, approve, param_hours, company, startTime, endTime } = req.body;
 
 	try {
-		clockOut = moment(clockOut).tz("America/Vancouver").format();
+		if (startTime) clockIn = setUTCDate(clockIn, startTime);
+		if (endTime) clockOut = setUTCDate(clockOut, endTime);
 		const totalWorkedHours = calcTotalWorkedHours(clockIn, clockOut);
 		if (param_hours === PARAM_HOURS.REGULAR && totalWorkedHours > 8) {
 			const adjustedClockOut = await addOvertimeRecord(clockIn, clockOut, empId, company);
