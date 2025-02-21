@@ -69,26 +69,26 @@ export const getTimeCardFormat = (timestamp, notDevice, timeSheet) => {
 
 // export const getTimeFormat = (date) => moment.utc(date).format("hh:mm A");
 export const getClockInTimeFormat = (timestamp, notDevice) => {
-	// let time = moment(timestamp);
-	// if (time.format("HH:mm") < "05:00" || time.format("HH:mm") > "17:00") {
-	// 	return time.utc().format("HH:mm");
-	// } else {
-	// 	return time.format("HH:mm");
-	// }
+	let time = moment(timestamp);
+	if (time.format("HH") < "05" || time.format("HH:mm") > "17:00") {
+		return time.utc().format("HH:mm");
+	} else {
+		return time.format("HH:mm");
+	}
 
-	const utcHours = new Date(timestamp).getUTCHours();
-	const utcMinutes = new Date(timestamp).getUTCMinutes();
-	const formattedUTC = `${(utcHours % 24).toString().padStart(2, "0") || 12}:${utcMinutes
-		.toString()
-		.padStart(2, "0")}`;
+	// const utcHours = new Date(timestamp).getUTCHours();
+	// const utcMinutes = new Date(timestamp).getUTCMinutes();
+	// const formattedUTC = `${(utcHours % 24).toString().padStart(2, "0") || 12}:${utcMinutes
+	// 	.toString()
+	// 	.padStart(2, "0")}`;
 
-	return formattedUTC;
+	// return formattedUTC;
 };
 
 export const getTimeFormat = (timestamp, notDevice) => {
 	let time = moment(timestamp);
 
-	if (time.format("HH") < "12") {
+	if (time.format("HH") <= "12") {
 		return time.utc().format("HH:mm");
 	} else {
 		return time.format("HH:mm");

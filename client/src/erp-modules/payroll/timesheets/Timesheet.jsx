@@ -52,7 +52,7 @@ const Timesheet = ({
 				);
 				const { totalPages, page, items } = data;
 
-				if (moment.utc(filter?.startDate).isSame(moment.utc(filter?.endDate), "day")) {
+				if (filter?.startDate === filter?.endDate) {
 					const filteredItems = items
 						?.map((record) => {
 							record.clockIn = convertMomentTzDate(record.clockIn);
