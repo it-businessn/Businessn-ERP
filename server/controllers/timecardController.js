@@ -33,7 +33,17 @@ const getTimecard = async (req, res) => {
 
 		const total = await Timecard.find({ companyName });
 
-		result.map((_) => {
+		const uniqueEntries = [
+			...new Map(
+				result.map((entry) => {
+					const key = entry.clockOut
+						? `${entry.clockIn.getTime()}`
+						: `${entry.clockIn.getTime()}-null`;
+					return [key, entry];
+				}),
+			).values(),
+		];
+		uniqueEntries.map((_) => {
 			_.totalBreakHours = calcTotalHours(_)?.totalBreakHours;
 			_.totalWorkedHours = calcTotalHours(_)?.totalWorkedHours;
 			return _;
@@ -44,7 +54,7 @@ const getTimecard = async (req, res) => {
 			limit,
 			total: total?.length,
 			totalPages: Math.ceil(total / limit),
-			items: result,
+			items: uniqueEntries,
 		});
 	} catch (error) {
 		res.status(404).json({ error: error.message });
