@@ -3,7 +3,7 @@ const router = express.Router();
 
 const timecardController = require("../controllers/timecardController");
 
-router.get("/:companyName", timecardController.getTimecard);
+router.get("/:companyName/:filter", timecardController.getTimecard);
 
 router.post("/", timecardController.createTimecard);
 

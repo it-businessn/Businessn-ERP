@@ -17,21 +17,29 @@ const moment = require("moment");
 const { getHolidays } = require("./setUpController");
 
 const getTimecard = async (req, res) => {
-	const { companyName } = req.params;
+	const { companyName, filter } = req.params;
 	try {
+		const filteredData = JSON.parse(filter.split("=")[1]);
+		const { startDate, endDate } = filteredData;
+
 		let { page, limit } = req.query;
 		page = parseInt(page) || 1;
 		limit = parseInt(limit) || 10;
 
 		const skip = (page - 1) * limit;
-		const result = await Timecard.find({ companyName })
+		const filterCriteria = {
+			companyName,
+			clockIn: {
+				$gte: moment.utc(startDate).startOf("day").toDate(),
+				$lte: moment.utc(endDate).endOf("day").toDate(),
+			},
+		};
+		const result = await Timecard.find(filterCriteria)
 			.sort({
 				clockIn: -1,
 			})
 			.skip(skip);
 		// .limit(limit);
-
-		const total = await Timecard.find({ companyName });
 
 		const uniqueEntries = [
 			...new Map(
@@ -43,7 +51,7 @@ const getTimecard = async (req, res) => {
 				}),
 			).values(),
 		];
-		uniqueEntries.map((_) => {
+		uniqueEntries?.map((_) => {
 			_.totalBreakHours = calcTotalHours(_)?.totalBreakHours;
 			_.totalWorkedHours = calcTotalHours(_)?.totalWorkedHours;
 			return _;
@@ -52,8 +60,8 @@ const getTimecard = async (req, res) => {
 		res.status(200).json({
 			page,
 			limit,
-			total: total?.length,
-			totalPages: Math.ceil(total / limit),
+			total: uniqueEntries?.length,
+			totalPages: Math.ceil(uniqueEntries?.length / limit),
 			items: uniqueEntries,
 		});
 	} catch (error) {

@@ -289,6 +289,7 @@ const addOvertimeRecord = async (clockIn, clockOut, employeeId, company) => {
 		clockOut: overtimeClockOut.toISOString(),
 		payType: PAY_TYPES_TITLE.OVERTIME_PAY,
 		overtimeHoursWorked,
+		manualAdded: true,
 	};
 
 	await addTimesheetEntry(newEntry);
@@ -311,6 +312,7 @@ const createManualTimesheet = async (req, res) => {
 			[param_hours]: 0,
 			companyName: company,
 			payType,
+			manualAdded: true,
 		};
 
 		if (punch === PUNCH_CODE.CLOCK_IN || punch === PUNCH_CODE.BREAK_IN) {
@@ -357,6 +359,7 @@ const createTimesheet = async (req, res) => {
 				[param_hours]: 8,
 				companyName: company,
 				payType: type,
+				manualAdded: true,
 			};
 			const newTimesheetWithOvertime = await addTimesheetEntry(newEntry);
 			return res.status(201).json(newTimesheetWithOvertime);
@@ -369,6 +372,7 @@ const createTimesheet = async (req, res) => {
 			[param_hours]: totalWorkedHours,
 			companyName: company,
 			payType: type,
+			manualAdded: true,
 		};
 
 		const newTimesheet = await addTimesheetEntry(newEntry);
@@ -396,6 +400,8 @@ const updateTimesheet = async (req, res) => {
 	let { clockIn, clockOut, empId, approve, param_hours, company, startTime, endTime } = req.body;
 
 	try {
+		const existingTimesheetInfo = await Timesheet.findById(id);
+
 		if (startTime) clockIn = setTime(clockIn, startTime);
 		if (endTime) clockOut = setTime(clockIn, endTime);
 		const totalWorkedHours = calcTotalWorkedHours(clockIn, clockOut);
@@ -406,11 +412,12 @@ const updateTimesheet = async (req, res) => {
 				clockIn,
 				clockOut: adjustedClockOut,
 				[param_hours]: 8,
-				approveStatus: approve
-					? TIMESHEET_STATUS.APPROVED
-					: approve === false
-					? TIMESHEET_STATUS.REJECTED
-					: TIMESHEET_STATUS.PENDING,
+				approveStatus:
+					existingTimesheetInfo?.approveStatus === TIMESHEET_STATUS.APPROVED || approve
+						? TIMESHEET_STATUS.APPROVED
+						: approve === false
+						? TIMESHEET_STATUS.REJECTED
+						: TIMESHEET_STATUS.PENDING,
 			};
 			const timesheet = await updateTimesheetData(id, updatedData);
 			return res.status(201).json(timesheet);
@@ -420,11 +427,12 @@ const updateTimesheet = async (req, res) => {
 			clockIn,
 			clockOut,
 			[param_hours]: totalWorkedHours,
-			approveStatus: approve
-				? TIMESHEET_STATUS.APPROVED
-				: approve === false
-				? TIMESHEET_STATUS.REJECTED
-				: TIMESHEET_STATUS.PENDING,
+			approveStatus:
+				existingTimesheetInfo?.approveStatus === TIMESHEET_STATUS.APPROVED || approve
+					? TIMESHEET_STATUS.APPROVED
+					: approve === false
+					? TIMESHEET_STATUS.REJECTED
+					: TIMESHEET_STATUS.PENDING,
 		};
 
 		const timesheet = await updateTimesheetData(id, updatedData);

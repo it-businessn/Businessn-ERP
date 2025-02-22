@@ -12,7 +12,7 @@ import { IoRefresh } from "react-icons/io5";
 import { useParams } from "react-router-dom";
 import LocalStorageService from "services/LocalStorageService";
 import { isManager } from "utils";
-import { getDefaultDate } from "utils/convertDate";
+import { getDefaultDate, getMomentDate } from "utils/convertDate";
 import DateFilterPopup from "./DateFilterPopup";
 import OtherFilter from "./OtherFilter";
 import Timecard from "./Timecard";
@@ -63,6 +63,11 @@ const Timesheets = () => {
 	// 	}
 	// }, [closestRecord]);
 
+	useEffect(() => {
+		setStartDate(moment().format("YYYY-MM-DD"));
+		setEndDate(moment().format("YYYY-MM-DD"));
+	}, []);
+
 	const handleRefresh = () => setDataRefresh(!dataRefresh);
 
 	const TABS = [
@@ -95,6 +100,11 @@ const Timesheets = () => {
 					timecardRefresh={dataRefresh}
 					pageNum={pageNum}
 					setPageNum={setPageNum}
+					filter={{
+						startDate: getMomentDate(closestRecord?.payPeriodStartDate).format("YYYY-MM-DD"),
+						endDate: getMomentDate(closestRecord?.payPeriodEndDate).format("YYYY-MM-DD"),
+					}}
+					startDate
 				/>
 			),
 		},
@@ -102,11 +112,6 @@ const Timesheets = () => {
 
 	const [viewMode, setViewMode] = useState(TABS[0].type);
 	const showComponent = (viewMode) => TABS.find(({ type }) => type === viewMode)?.name;
-
-	useEffect(() => {
-		setStartDate(moment().format("YYYY-MM-DD"));
-		setEndDate(moment().format("YYYY-MM-DD"));
-	}, []);
 
 	useEffect(() => {
 		setPageNum(1);
