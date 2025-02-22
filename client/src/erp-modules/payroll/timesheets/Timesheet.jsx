@@ -5,13 +5,12 @@ import DeletePopUp from "components/ui/modal/DeletePopUp";
 import NormalTextTitle from "components/ui/NormalTextTitle";
 import TableLayout from "components/ui/table/TableLayout";
 import TextTitle from "components/ui/text/TextTitle";
-import moment from "moment";
 import { useEffect, useState } from "react";
 import { FaCheck, FaRegTrashAlt } from "react-icons/fa";
 import { IoClose } from "react-icons/io5";
 import TimesheetService from "services/TimesheetService";
 import { getAmount } from "utils/convertAmt";
-import { getTimeCardFormat } from "utils/convertDate";
+import { getClockInTimeFormat, getTimeCardFormat, getTimeFormat } from "utils/convertDate";
 import { getParamKey, getPayTypeStyle, getStatusStyle, PAY_TYPES_TITLE } from "./data";
 import ExtraTimeEntryModal from "./ExtraTimeEntryModal";
 
@@ -42,8 +41,8 @@ const Timesheet = ({
 				const { totalPages, page, items } = data;
 
 				items?.map((_) => {
-					_.startTime = moment.utc(_.clockIn).format("HH:mm");
-					_.endTime = _.clockOut ? moment.utc(_.clockOut).format("HH:mm") : "";
+					_.startTime = getClockInTimeFormat(_.clockIn);
+					_.endTime = _.clockOut ? getTimeFormat(_.clockOut) : "";
 					return _;
 				});
 				setTimesheets(items);

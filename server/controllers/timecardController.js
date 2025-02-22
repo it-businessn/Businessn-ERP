@@ -28,8 +28,8 @@ const getTimecard = async (req, res) => {
 			.sort({
 				clockIn: -1,
 			})
-			.skip(skip)
-			.limit(limit);
+			.skip(skip);
+		// .limit(limit);
 
 		const total = await Timecard.find({ companyName });
 
