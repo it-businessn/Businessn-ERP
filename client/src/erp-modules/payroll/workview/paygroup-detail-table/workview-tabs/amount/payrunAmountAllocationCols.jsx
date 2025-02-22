@@ -63,36 +63,36 @@ export const REGULAR_AMT_ALLOCATE_COLS = [
 		pair: "vacationPayout",
 		isEditable: true,
 	},
-	{
-		key: "Vac. Balance Adjustment $",
-		pair: "vacationBalAdjust",
-		isEditable: true,
-	},
-	{
-		key: "Vac. Accrual $",
-		pair: "vacationAccrual",
-		isEditable: true,
-	},
-	{
-		key: "Vac. Used $",
-		pair: "vacationUsed",
-		isEditable: true,
-	},
-	{
-		key: "Federal Tax $",
-		pair: "federalTax",
-		isEditable: true,
-	},
-	{
-		key: "Provincial Tax $",
-		pair: "provTax",
-		isEditable: true,
-	},
-	{
-		key: "Income Tax $",
-		pair: "incomeTax",
-		isEditable: true,
-	},
+	// {
+	// 	key: "Vac. Balance Adjustment $",
+	// 	pair: "vacationBalAdjust",
+	// 	isEditable: true,
+	// },
+	// {
+	// 	key: "Vac. Accrual $",
+	// 	pair: "vacationAccrual",
+	// 	isEditable: true,
+	// },
+	// {
+	// 	key: "Vac. Used $",
+	// 	pair: "vacationUsed",
+	// 	isEditable: true,
+	// },
+	// {
+	// 	key: "Federal Tax $",
+	// 	pair: "federalTax",
+	// 	isEditable: true,
+	// },
+	// {
+	// 	key: "Provincial Tax $",
+	// 	pair: "provTax",
+	// 	isEditable: true,
+	// },
+	// {
+	// 	key: "Income Tax $",
+	// 	pair: "incomeTax",
+	// 	isEditable: true,
+	// },
 	{
 		key: "",
 		pair: <OutlineButton size="xs" name="setup" label="View Balances" mr={3} />,

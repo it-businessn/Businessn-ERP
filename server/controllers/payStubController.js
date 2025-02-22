@@ -319,7 +319,7 @@ const buildPayStubDetails = async (currentPayPeriod, companyName, empTimesheetDa
 	);
 
 	const prevPayPeriodNum = isExtraRun ? payPeriod : payPeriod - 1;
-	const prevPayPayInfo = await findPayStub(prevPayPeriodNum, companyName, empId, false);
+	let prevPayPayInfo = await findPayStub(prevPayPeriodNum, companyName, empId, false);
 	const currentPayInfo = await findPayStub(
 		payPeriod,
 		companyName,
@@ -343,53 +343,299 @@ const buildPayStubDetails = async (currentPayPeriod, companyName, empTimesheetDa
 	if (currentPayInfo) {
 		await updatePayStub(currentPayInfo._id, currentPayStub);
 	} else {
-		await addPayStub(currentPayStub);
-	}
+		empAdditionalDataAllocated.chequesType?.forEach(async (_, index) => {
+			if (_ === PAYRUN_TYPE.SUPERFICIAL) {
+				const newPayStub = await addSeparateSuperficialCheque(
+					empId,
+					companyName,
+					payPeriodStartDate,
+					payPeriodEndDate,
+					payPeriodPayDate,
+					payPeriodProcessingDate,
+					payPeriod,
+					isExtraRun,
+					prevPayPayInfo,
+				);
+				await addPayStub(newPayStub);
+				const {
+					YTDCommission,
+					YTDRetroactive,
+					YTDVacationPayout,
+					YTDBonus,
+					YTDTerminationPayout,
+					YTDRegHoursWorked,
+					YTDOvertimeHoursWorked,
+					YTDDblOvertimeHoursWorked,
+					YTDStatDayHoursWorked,
+					YTDStatHoursWorked,
+					YTDSickHoursWorked,
+					YTDVacationHoursWorked,
+					YTDSprayHoursWorked,
+					YTDFirstAidHoursWorked,
+					YTDRegPayTotal,
+					YTDDblOverTimePayTotal,
+					YTDStatWorkPayTotal,
+					YTDStatPayTotal,
+					YTDSickPayTotal,
+					YTDVacationPayTotal,
+					YTD_FDTaxDeductions,
+					YTDStateTaxDeductions,
+					YTD_IncomeTaxDeductions,
+					YTD_EmployeeEIDeductions,
+					YTD_EmployerEIDeductions,
+					YTD_EmployerCPPDeductions,
+					YTD_CPPDeductions,
+					YTDUnionDuesDeductions,
+					YTDEmployeeHealthContributions,
+					YTDEmployeePensionContributions,
+					YTDEmployerPensionContributions,
+					YTDEmployerHealthContributions,
+					YTDEmployerContributions,
+					YTDVacationAccrued,
+					YTDVacationUsed,
+					YTDVacationBalanceFwd,
+					YTDVacationBalance,
+					YTDSprayPayTotal,
+					YTDFirstAidPayTotal,
+					YTDPayInLieuPay,
+					YTDBenefitPay,
+					YTDBankedTimePay,
+					YTDRegularByAmount,
+					YTDPrimaryDeposit,
+					YTDOtherDeductions,
+					YTDGrossPay,
+					YTDDeductionsTotal,
+					YTDNetPay,
+					YTDSickAccrued,
+					YTDSickUsed,
+					YTDSickBalance,
+				} = newPayStub;
+				if (!prevPayPayInfo) {
+					prevPayPayInfo = {};
+				}
+				prevPayPayInfo.YTDCommission = getSumTotal(prevPayPayInfo.YTDCommission, YTDCommission);
+				prevPayPayInfo.YTDRetroactive = getSumTotal(prevPayPayInfo.YTDRetroactive, YTDRetroactive);
+				prevPayPayInfo.YTDVacationPayout = getSumTotal(
+					prevPayPayInfo.YTDVacationPayout,
+					YTDVacationPayout,
+				);
+				prevPayPayInfo.YTDBonus = getSumTotal(prevPayPayInfo.YTDBonus, YTDBonus);
+				prevPayPayInfo.YTDTerminationPayout = getSumTotal(
+					prevPayPayInfo.YTDTerminationPayout,
+					YTDTerminationPayout,
+				);
+				prevPayPayInfo.YTDRegHoursWorked = getSumTotal(
+					prevPayPayInfo.YTDRegHoursWorked,
+					YTDRegHoursWorked,
+				);
+				prevPayPayInfo.YTDOvertimeHoursWorked = getSumTotal(
+					prevPayPayInfo.YTDOvertimeHoursWorked,
+					YTDOvertimeHoursWorked,
+				);
+				prevPayPayInfo.YTDDblOvertimeHoursWorked = getSumTotal(
+					prevPayPayInfo.YTDDblOvertimeHoursWorked,
+					YTDDblOvertimeHoursWorked,
+				);
+				prevPayPayInfo.YTDStatDayHoursWorked = getSumTotal(
+					prevPayPayInfo.YTDStatDayHoursWorked,
+					YTDStatDayHoursWorked,
+				);
+				prevPayPayInfo.YTDStatHoursWorked = getSumTotal(
+					prevPayPayInfo.YTDStatHoursWorked,
+					YTDStatHoursWorked,
+				);
+				prevPayPayInfo.YTDSickHoursWorked = getSumTotal(
+					prevPayPayInfo.YTDSickHoursWorked,
+					YTDSickHoursWorked,
+				);
+				prevPayPayInfo.YTDVacationHoursWorked = getSumTotal(
+					prevPayPayInfo.YTDVacationHoursWorked,
+					YTDVacationHoursWorked,
+				);
+				prevPayPayInfo.YTDSprayHoursWorked = getSumTotal(
+					prevPayPayInfo.YTDSprayHoursWorked,
+					YTDSprayHoursWorked,
+				);
+				prevPayPayInfo.YTDFirstAidHoursWorked = getSumTotal(
+					prevPayPayInfo.YTDFirstAidHoursWorked,
+					YTDFirstAidHoursWorked,
+				);
 
-	if (empAdditionalDataAllocated.chequesType?.includes(PAYRUN_TYPE.SUPERFICIAL)) {
-		console.log("SUPERFICIAL");
-		// const newPayStub = await addSeparateSuperficialCheque(
-		// 	empId,
-		// 	companyName,
-		// 	payPeriodStartDate,
-		// 	payPeriodEndDate,
-		// 	payPeriodPayDate,
-		// 	payPeriodProcessingDate,
-		// 	payPeriod,
-		// 	isExtraRun,
-		// 	prevPayPayInfo,
-		// );
-		// await addPayStub(newPayStub);
-	}
-	if (empAdditionalDataAllocated.chequesType?.includes(PAYRUN_TYPE.MANUAL)) {
-		console.log("MANUAL");
-		// const newPayStub = await addSeparateManualCheque(
-		// 	empId,
-		// 	companyName,
-		// 	payPeriodStartDate,
-		// 	payPeriodEndDate,
-		// 	payPeriodPayDate,
-		// 	payPeriodProcessingDate,
-		// 	payPeriod,
-		// 	isExtraRun,
-		// 	prevPayPayInfo,
-		// );
-		// await addPayStub(newPayStub);
-	}
-	if (empAdditionalDataAllocated.chequesType?.includes(PAYRUN_TYPE.PAYOUT)) {
-		console.log("PAYOUT");
-		// const newPayStub = await addSeparatePayoutCheque(
-		// 	empId,
-		// 	companyName,
-		// 	payPeriodStartDate,
-		// 	payPeriodEndDate,
-		// 	payPeriodPayDate,
-		// 	payPeriodProcessingDate,
-		// 	payPeriod,
-		// 	isExtraRun,
-		// 	prevPayPayInfo,
-		// );
-		// await addPayStub(newPayStub);
+				prevPayPayInfo.YTDRegPayTotal = getSumTotal(prevPayPayInfo.YTDRegPayTotal, YTDRegPayTotal);
+				prevPayPayInfo.YTDDblOverTimePayTotal = getSumTotal(
+					prevPayPayInfo.YTDDblOverTimePayTotal,
+					YTDDblOverTimePayTotal,
+				);
+				prevPayPayInfo.YTDStatWorkPayTotal = getSumTotal(
+					prevPayPayInfo.YTDStatWorkPayTotal,
+					YTDStatWorkPayTotal,
+				);
+				prevPayPayInfo.YTDStatPayTotal = getSumTotal(
+					prevPayPayInfo.YTDStatPayTotal,
+					YTDStatPayTotal,
+				);
+				prevPayPayInfo.YTDSickPayTotal = getSumTotal(
+					prevPayPayInfo.YTDSickPayTotal,
+					YTDSickPayTotal,
+				);
+				prevPayPayInfo.YTDVacationPayTotal = getSumTotal(
+					prevPayPayInfo.YTDVacationPayTotal,
+					YTDVacationPayTotal,
+				);
+				prevPayPayInfo.YTD_FDTaxDeductions = getSumTotal(
+					prevPayPayInfo.YTD_FDTaxDeductions,
+					YTD_FDTaxDeductions,
+				);
+				prevPayPayInfo.YTDStateTaxDeductions = getSumTotal(
+					prevPayPayInfo.YTDStateTaxDeductions,
+					YTDStateTaxDeductions,
+				);
+				prevPayPayInfo.YTD_IncomeTaxDeductions = getSumTotal(
+					prevPayPayInfo.YTD_IncomeTaxDeductions,
+					YTD_IncomeTaxDeductions,
+				);
+				prevPayPayInfo.YTD_EmployeeEIDeductions = getSumTotal(
+					prevPayPayInfo.YTD_EmployeeEIDeductions,
+					YTD_EmployeeEIDeductions,
+				);
+				prevPayPayInfo.YTD_EmployerEIDeductions = getSumTotal(
+					prevPayPayInfo.YTD_EmployerEIDeductions,
+					YTD_EmployerEIDeductions,
+				);
+				prevPayPayInfo.YTD_EmployerCPPDeductions = getSumTotal(
+					prevPayPayInfo.YTD_EmployerCPPDeductions,
+					YTD_EmployerCPPDeductions,
+				);
+				prevPayPayInfo.YTD_CPPDeductions = getSumTotal(
+					prevPayPayInfo.YTD_CPPDeductions,
+					YTD_CPPDeductions,
+				);
+				prevPayPayInfo.YTDUnionDuesDeductions = getSumTotal(
+					prevPayPayInfo.YTDUnionDuesDeductions,
+					YTDUnionDuesDeductions,
+				);
+				prevPayPayInfo.YTDEmployeeHealthContributions = getSumTotal(
+					prevPayPayInfo.YTDEmployeeHealthContributions,
+					YTDEmployeeHealthContributions,
+				);
+				prevPayPayInfo.YTDEmployeePensionContributions = getSumTotal(
+					prevPayPayInfo.YTDEmployeePensionContributions,
+					YTDEmployeePensionContributions,
+				);
+				prevPayPayInfo.YTDEmployerPensionContributions = getSumTotal(
+					prevPayPayInfo.YTDEmployerPensionContributions,
+					YTDEmployerPensionContributions,
+				);
+				prevPayPayInfo.YTDEmployerHealthContributions = getSumTotal(
+					prevPayPayInfo.YTDEmployerHealthContributions,
+					YTDEmployerHealthContributions,
+				);
+				prevPayPayInfo.YTDEmployerContributions = getSumTotal(
+					prevPayPayInfo.YTDEmployerContributions,
+					YTDEmployerContributions,
+				);
+				prevPayPayInfo.YTDVacationAccrued = getSumTotal(
+					prevPayPayInfo.YTDVacationAccrued,
+					YTDVacationAccrued,
+				);
+				prevPayPayInfo.YTDVacationUsed = getSumTotal(
+					prevPayPayInfo.YTDVacationUsed,
+					YTDVacationUsed,
+				);
+				prevPayPayInfo.YTDVacationBalanceFwd = getSumTotal(
+					prevPayPayInfo.YTDVacationBalanceFwd,
+					YTDVacationBalanceFwd,
+				);
+				prevPayPayInfo.YTDVacationBalance = getSumTotal(
+					prevPayPayInfo.YTDVacationBalance,
+					YTDVacationBalance,
+				);
+				prevPayPayInfo.YTDSprayPayTotal = getSumTotal(
+					prevPayPayInfo.YTDSprayPayTotal,
+					YTDSprayPayTotal,
+				);
+				prevPayPayInfo.YTDFirstAidPayTotal = getSumTotal(
+					prevPayPayInfo.YTDFirstAidPayTotal,
+					YTDFirstAidPayTotal,
+				);
+				prevPayPayInfo.YTDPayInLieuPay = getSumTotal(
+					prevPayPayInfo.YTDPayInLieuPay,
+					YTDPayInLieuPay,
+				);
+				prevPayPayInfo.YTDBenefitPay = getSumTotal(prevPayPayInfo.YTDBenefitPay, YTDBenefitPay);
+				prevPayPayInfo.YTDBankedTimePay = getSumTotal(
+					prevPayPayInfo.YTDBankedTimePay,
+					YTDBankedTimePay,
+				);
+				prevPayPayInfo.YTDRegularByAmount = getSumTotal(
+					prevPayPayInfo.YTDRegularByAmount,
+					YTDRegularByAmount,
+				);
+				prevPayPayInfo.YTDPrimaryDeposit = getSumTotal(
+					prevPayPayInfo.YTDPrimaryDeposit,
+					YTDPrimaryDeposit,
+				);
+				prevPayPayInfo.YTDOtherDeductions = getSumTotal(
+					prevPayPayInfo.YTDOtherDeductions,
+					YTDOtherDeductions,
+				);
+				prevPayPayInfo.YTDGrossPay = getSumTotal(prevPayPayInfo.YTDGrossPay, YTDGrossPay);
+				prevPayPayInfo.YTDDeductionsTotal = getSumTotal(
+					prevPayPayInfo.YTDDeductionsTotal,
+					YTDDeductionsTotal,
+				);
+				prevPayPayInfo.YTDNetPay = getSumTotal(prevPayPayInfo.YTDNetPay, YTDNetPay);
+				prevPayPayInfo.YTDSickAccrued = getSumTotal(prevPayPayInfo.YTDSickAccrued, YTDSickAccrued);
+				prevPayPayInfo.YTDSickUsed = getSumTotal(prevPayPayInfo.YTDSickUsed, YTDSickUsed);
+				prevPayPayInfo.YTDSickBalance = getSumTotal(prevPayPayInfo.YTDSickBalance, YTDSickBalance);
+			}
+
+			if (_ === PAYRUN_TYPE.MANUAL) {
+				console.log("MANUAL");
+				// const newPayStub = await addSeparateManualCheque(
+				// 	empId,
+				// 	companyName,
+				// 	payPeriodStartDate,
+				// 	payPeriodEndDate,
+				// 	payPeriodPayDate,
+				// 	payPeriodProcessingDate,
+				// 	payPeriod,
+				// 	isExtraRun,
+				// 	prevPayPayInfo,
+				// );
+				// await addPayStub(newPayStub);
+			}
+			if (_ === PAYRUN_TYPE.PAYOUT) {
+				console.log("PAYOUT");
+				// const newPayStub = await addSeparatePayoutCheque(
+				// 	empId,
+				// 	companyName,
+				// 	payPeriodStartDate,
+				// 	payPeriodEndDate,
+				// 	payPeriodPayDate,
+				// 	payPeriodProcessingDate,
+				// 	payPeriod,
+				// 	isExtraRun,
+				// 	prevPayPayInfo,
+				// );
+				// await addPayStub(newPayStub);
+			}
+			if (index === empAdditionalDataAllocated.chequesType?.length - 1) {
+				const updatedPayStub = buildPayStub(
+					empId,
+					companyName,
+					payPeriodStartDate,
+					payPeriodEndDate,
+					payPeriodPayDate,
+					payPeriodProcessingDate,
+					payPeriod,
+					isExtraRun,
+					payStubInfoData,
+					prevPayPayInfo,
+				);
+				await addPayStub(updatedPayStub);
+			}
+		});
 	}
 };
 
