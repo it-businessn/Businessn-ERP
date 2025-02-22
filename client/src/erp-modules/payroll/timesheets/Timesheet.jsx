@@ -41,7 +41,7 @@ const Timesheet = ({
 				const { totalPages, page, items } = data;
 
 				items?.map((_) => {
-					_.startTime = getClockInTimeFormat(_.clockIn);
+					_.startTime = getClockInTimeFormat(_.clockIn, _.payType);
 					_.endTime = _.clockOut ? getTimeFormat(_.clockOut) : "";
 					return _;
 				});

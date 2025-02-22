@@ -285,14 +285,14 @@ const addOvertimeRecord = async (clockIn, clockOut, employeeId, company) => {
 	const newEntry = {
 		employeeId,
 		companyName: company,
-		clockIn: overtimeClockIn,
-		clockOut: overtimeClockOut,
+		clockIn: overtimeClockIn.toISOString(),
+		clockOut: overtimeClockOut.toISOString(),
 		payType: PAY_TYPES_TITLE.OVERTIME_PAY,
 		overtimeHoursWorked,
 	};
 
 	await addTimesheetEntry(newEntry);
-	return adjustedClockOut;
+	return adjustedClockOut.toISOString();
 };
 
 const createManualTimesheet = async (req, res) => {
@@ -348,19 +348,19 @@ const createTimesheet = async (req, res) => {
 		if (endTime) clockOut = setTime(clockIn, endTime);
 		const totalWorkedHours = calcTotalWorkedHours(clockIn, clockOut);
 
-		// if (type === PAY_TYPES_TITLE.REG_PAY && totalWorkedHours > 8) {
-		// 	const adjustedClockOut = await addOvertimeRecord(clockIn, clockOut, employeeId, company);
-		// 	const newEntry = {
-		// 		employeeId,
-		// 		clockIn,
-		// 		clockOut: adjustedClockOut,
-		// 		[param_hours]: 8,
-		// 		companyName: company,
-		// 		payType: type,
-		// 	};
-		// 	const newTimesheetWithOvertime = await addTimesheetEntry(newEntry);
-		// 	return res.status(201).json(newTimesheetWithOvertime);
-		// }
+		if (type === PAY_TYPES_TITLE.REG_PAY && totalWorkedHours > 8) {
+			const adjustedClockOut = await addOvertimeRecord(clockIn, clockOut, employeeId, company);
+			const newEntry = {
+				employeeId,
+				clockIn,
+				clockOut: adjustedClockOut,
+				[param_hours]: 8,
+				companyName: company,
+				payType: type,
+			};
+			const newTimesheetWithOvertime = await addTimesheetEntry(newEntry);
+			return res.status(201).json(newTimesheetWithOvertime);
+		}
 
 		const newEntry = {
 			employeeId,
@@ -399,21 +399,23 @@ const updateTimesheet = async (req, res) => {
 		if (startTime) clockIn = setTime(clockIn, startTime);
 		if (endTime) clockOut = setTime(clockIn, endTime);
 		const totalWorkedHours = calcTotalWorkedHours(clockIn, clockOut);
-		// if (param_hours === PARAM_HOURS.REGULAR && totalWorkedHours > 8) {
-		// 	const adjustedClockOut = await addOvertimeRecord(clockIn, clockOut, empId, company);
-		// 	const updatedData = {
-		// 		clockIn,
-		// 		clockOut: adjustedClockOut,
-		// 		[param_hours]: 8,
-		// 		approveStatus: approve
-		// 			? TIMESHEET_STATUS.APPROVED
-		// 			: approve === false
-		// 			? TIMESHEET_STATUS.REJECTED
-		// 			: TIMESHEET_STATUS.PENDING,
-		// 	};
-		// 	const timesheet = await updateTimesheetData(id, updatedData);
-		// 	return res.status(201).json(timesheet);
-		// }
+
+		if (param_hours === PARAM_HOURS.REGULAR && totalWorkedHours > 8) {
+			const adjustedClockOut = await addOvertimeRecord(clockIn, clockOut, empId, company);
+			const updatedData = {
+				clockIn,
+				clockOut: adjustedClockOut,
+				[param_hours]: 8,
+				approveStatus: approve
+					? TIMESHEET_STATUS.APPROVED
+					: approve === false
+					? TIMESHEET_STATUS.REJECTED
+					: TIMESHEET_STATUS.PENDING,
+			};
+			const timesheet = await updateTimesheetData(id, updatedData);
+			return res.status(201).json(timesheet);
+		}
+
 		const updatedData = {
 			clockIn,
 			clockOut,
