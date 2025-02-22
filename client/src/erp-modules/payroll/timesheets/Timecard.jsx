@@ -28,7 +28,7 @@ const Timecard = ({ company, userId, timecardRefresh, filter, pageNum, setPageNu
 				console.error(error);
 			}
 		};
-		fetchAllTimecards();
+		if (filter?.startDate) fetchAllTimecards();
 	}, [timecardRefresh, pageNum]);
 
 	const cols = [
