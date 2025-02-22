@@ -1,4 +1,3 @@
-import { PAY_TYPES_TITLE } from "erp-modules/payroll/timesheets/data";
 import moment from "moment";
 import momentTz from "moment-timezone";
 
@@ -69,13 +68,9 @@ export const getTimeCardFormat = (timestamp, notDevice, timeSheet) => {
 };
 
 // export const getTimeFormat = (date) => moment.utc(date).format("hh:mm A");
-export const getClockInTimeFormat = (timestamp, payType) => {
+export const getClockInTimeFormat = (timestamp) => {
 	const time = moment(timestamp);
-	if (
-		time.format("HH") < "05" ||
-		time.format("HH:mm") > "17:00" ||
-		payType === PAY_TYPES_TITLE.OVERTIME_PAY
-	) {
+	if (time.format("HH") < "05" || time.format("HH:mm") > "17:00") {
 		return time.utc().format("HH:mm");
 	} else {
 		return time.format("HH:mm");

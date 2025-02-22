@@ -41,7 +41,15 @@ const Timesheet = ({
 				const { totalPages, page, items } = data;
 
 				items?.map((_) => {
-					_.startTime = getClockInTimeFormat(_.clockIn, _.payType);
+					const isOvertime = _.payType === PAY_TYPES_TITLE.OVERTIME_PAY;
+					if (isOvertime) {
+						const date = new Date(_.clockIn);
+						const hours = date.getUTCHours().toString().padStart(2, "0");
+						const minutes = date.getUTCMinutes().toString().padStart(2, "0");
+						_.startTime = `${hours}:${minutes}`;
+					} else {
+						_.startTime = getClockInTimeFormat(_.clockIn);
+					}
 					_.endTime = _.clockOut ? getTimeFormat(_.clockOut) : "";
 					return _;
 				});
