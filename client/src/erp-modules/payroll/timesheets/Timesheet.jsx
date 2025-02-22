@@ -10,7 +10,12 @@ import { FaCheck, FaRegTrashAlt } from "react-icons/fa";
 import { IoClose } from "react-icons/io5";
 import TimesheetService from "services/TimesheetService";
 import { getAmount } from "utils/convertAmt";
-import { getClockInTimeFormat, getTimeCardFormat, getTimeFormat } from "utils/convertDate";
+import {
+	getClockInTimeFormat,
+	getTimeCardFormat,
+	getTimeFormat,
+	getUTCTime,
+} from "utils/convertDate";
 import { getParamKey, getPayTypeStyle, getStatusStyle, PAY_TYPES_TITLE } from "./data";
 import ExtraTimeEntryModal from "./ExtraTimeEntryModal";
 
@@ -28,7 +33,6 @@ const Timesheet = ({
 	const [totalPage, setTotalPages] = useState(1);
 	const [refresh, setRefresh] = useState(false);
 	const limit = 40;
-
 	useEffect(() => {
 		const fetchAllEmployeeTimesheet = async () => {
 			setTimesheetData(null);
@@ -41,8 +45,14 @@ const Timesheet = ({
 				const { totalPages, page, items } = data;
 
 				items?.map((_) => {
-					_.startTime = getClockInTimeFormat(_.clockIn, _.payType);
-					_.endTime = _.clockOut ? getTimeFormat(_.clockOut) : "";
+					const isOvertime = _.payType === PAY_TYPES_TITLE.OVERTIME_PAY;
+					if (isOvertime) {
+						_.startTime = getUTCTime(_.clockIn);
+						_.endTime = getUTCTime(_.clockOut);
+					} else {
+						_.startTime = getClockInTimeFormat(_.clockIn);
+						_.endTime = _.clockOut ? getTimeFormat(_.clockOut) : "";
+					}
 					return _;
 				});
 				setTimesheets(items);
