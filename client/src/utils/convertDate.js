@@ -67,6 +67,13 @@ export const getTimeCardFormat = (timestamp, notDevice, timeSheet) => {
 	return timeSheet ? date.format("ddd, YYYY-MM-DD") : date.format("YYYY-MM-DD hh:mm A");
 };
 
+export const getUTCTime = (time) => {
+	const date = new Date(time);
+	const hours = date.getUTCHours().toString().padStart(2, "0");
+	const minutes = date.getUTCMinutes().toString().padStart(2, "0");
+	return `${hours}:${minutes}`;
+};
+
 // export const getTimeFormat = (date) => moment.utc(date).format("hh:mm A");
 export const getClockInTimeFormat = (timestamp) => {
 	const time = moment(timestamp);
