@@ -4,20 +4,18 @@ import DateTimeFormControl from "components/ui/form/DateTimeFormControl";
 import SelectFormControl from "components/ui/form/SelectFormControl";
 import ModalLayout from "components/ui/modal/ModalLayout";
 import useEmployees from "hooks/useEmployees";
+import moment from "moment";
 import { useEffect, useState } from "react";
 import TimesheetService from "services/TimesheetService";
-import { getDefaultDate, getTimeFormat, setUTCDate } from "utils/convertDate";
 import { getParamKey, PAY_TYPES } from "./data";
 
 const ExtraTimeEntryModal = ({ showAddEntry, setShowAddEntry, setRefresh, company, userId }) => {
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const initialFormData = {
 		type: "",
-		createdOn: new Date(),
+		clockIn: moment(),
 		company,
 		employeeId: userId ? userId : "",
-		clockIn: null,
-		clockOut: null,
 		param_hours: "",
 	};
 	const [formData, setFormData] = useState(initialFormData);
@@ -93,33 +91,33 @@ const ExtraTimeEntryModal = ({ showAddEntry, setShowAddEntry, setRefresh, compan
 				/>
 				<DateTimeFormControl
 					label={"Select worked date"}
-					valueText={getDefaultDate(formData.createdOn)}
-					name1="createdOn"
+					valueText1={formData.clockIn}
+					name1="clockIn"
 					handleChange={handleChange}
 					required
 				/>
 				<HStack>
 					<DateTimeFormControl
 						timeLabel="Start Time"
-						valueText2={formData.clockIn ? getTimeFormat(formData.clockIn) : ""}
-						name2="clockIn"
+						valueText2={formData.startTime || ""}
+						name2="startTime"
 						handleChange={(e) => {
 							setFormData((prevData) => ({
 								...prevData,
-								clockIn: setUTCDate(formData.createdOn, e.target.value),
+								startTime: e.target.value,
 							}));
 						}}
 						required
 					/>
 					<DateTimeFormControl
 						timeLabel="End Time"
-						valueText2={formData.clockOut ? getTimeFormat(formData.clockOut) : ""}
-						name2="clockOut"
+						valueText2={formData.endTime || ""}
+						name2="endTime"
 						required
 						handleChange={(e) => {
 							setFormData((prevData) => ({
 								...prevData,
-								clockOut: setUTCDate(formData.createdOn, e.target.value),
+								endTime: e.target.value,
 							}));
 						}}
 					/>

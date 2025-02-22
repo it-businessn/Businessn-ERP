@@ -75,11 +75,46 @@ const mapTimesheet = (payInfos, timesheets) => {
 		timesheet.statPay = payInfo.statPay;
 		timesheet.sickPay = payInfo.sickPay;
 		timesheet.vacationPay = payInfo.vacationPay;
-		timesheet.clockIn = moment(timesheet.clockIn).tz("America/Vancouver").format();
+
 		timesheet.typeOfEarning = payInfo.typeOfEarning;
 	});
 	return timesheets?.filter(({ typeOfEarning }) => typeOfEarning === EARNING_TYPE.HOURLY);
 };
+
+const getTimeFormat = (timestamp) => {
+	let time = moment(timestamp);
+
+	// const date = notDevice ? moment(timestamp) : moment.utc(timestamp);
+	// return date.format("HH:mm");
+
+	if (time.format("HH") <= "12") {
+		return time.utc().format("HH:mm");
+	} else {
+		return time.format("HH:mm");
+	}
+};
+const getClockInTimeFormat = (timestamp) => {
+	// const date = notDevice ? moment(timestamp) : moment.utc(timestamp);
+	// return timeSheet ? date.format("YYYY-MM-DD") : date.format("YYYY-MM-DD  hh:mm A");
+
+	let time = moment(timestamp);
+	if (time.format("HH:mm") < "05:00" || time.format("HH:mm") > "17:00") {
+		return time.utc().format("HH:mm");
+	} else {
+		return time.format("HH:mm");
+	}
+
+	// const utcHours = new Date(timestamp).getUTCHours();
+	// const utcMinutes = new Date(timestamp).getUTCMinutes();
+	// const formattedUTC = `${(utcHours % 24).toString().padStart(2, "0") || 12}:${utcMinutes
+	// 	.toString()
+	// 	.padStart(2, "0")}`;
+
+	// return formattedUTC;
+};
+
+const convertMomentTzDate = (timestamp) =>
+	momentTz(timestamp).utc().format("YYYY-MM-DDTHH:mm:ss.SSS[Z]");
 
 const getTimesheets = async (req, res) => {
 	const { companyName } = req.params;
@@ -250,14 +285,14 @@ const addOvertimeRecord = async (clockIn, clockOut, employeeId, company) => {
 	const newEntry = {
 		employeeId,
 		companyName: company,
-		clockIn: overtimeClockIn,
-		clockOut: overtimeClockOut,
+		clockIn: overtimeClockIn.toISOString(),
+		clockOut: overtimeClockOut.toISOString(),
 		payType: PAY_TYPES_TITLE.OVERTIME_PAY,
 		overtimeHoursWorked,
 	};
 
 	await addTimesheetEntry(newEntry);
-	return adjustedClockOut;
+	return adjustedClockOut.toISOString();
 };
 
 const createManualTimesheet = async (req, res) => {
@@ -307,10 +342,12 @@ const createManualTimesheet = async (req, res) => {
 };
 
 const createTimesheet = async (req, res) => {
-	const { company, type, clockIn, clockOut, employeeId, param_hours } = req.body;
-
+	let { company, type, clockIn, clockOut, employeeId, param_hours, startTime, endTime } = req.body;
 	try {
+		if (startTime) clockIn = setTime(clockIn, startTime);
+		if (endTime) clockOut = setTime(clockIn, endTime);
 		const totalWorkedHours = calcTotalWorkedHours(clockIn, clockOut);
+
 		if (type === PAY_TYPES_TITLE.REG_PAY && totalWorkedHours > 8) {
 			const adjustedClockOut = await addOvertimeRecord(clockIn, clockOut, employeeId, company);
 			const newEntry = {
@@ -341,13 +378,28 @@ const createTimesheet = async (req, res) => {
 	}
 };
 
+const setTime = (date, time) => {
+	// const utcDate = date ? (notDevice ? moment(date) : moment.utc(date)) : moment.utc();
+	const utcDate = moment.utc(date);
+
+	let [hours, minutes] = time.split(":");
+	utcDate.set({
+		hour: parseInt(hours),
+		minute: parseInt(minutes),
+		second: 0,
+	});
+	return utcDate.toISOString();
+};
+
 const updateTimesheet = async (req, res) => {
 	const { id } = req.params;
-	let { clockIn, clockOut, empId, approve, param_hours, company } = req.body;
+	let { clockIn, clockOut, empId, approve, param_hours, company, startTime, endTime } = req.body;
 
 	try {
-		clockOut = moment(clockOut).tz("America/Vancouver").format();
+		if (startTime) clockIn = setTime(clockIn, startTime);
+		if (endTime) clockOut = setTime(clockIn, endTime);
 		const totalWorkedHours = calcTotalWorkedHours(clockIn, clockOut);
+
 		if (param_hours === PARAM_HOURS.REGULAR && totalWorkedHours > 8) {
 			const adjustedClockOut = await addOvertimeRecord(clockIn, clockOut, empId, company);
 			const updatedData = {
@@ -363,6 +415,7 @@ const updateTimesheet = async (req, res) => {
 			const timesheet = await updateTimesheetData(id, updatedData);
 			return res.status(201).json(timesheet);
 		}
+
 		const updatedData = {
 			clockIn,
 			clockOut,

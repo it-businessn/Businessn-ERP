@@ -4,7 +4,6 @@ import EmptyRowRecord from "components/ui/EmptyRowRecord";
 import NormalTextTitle from "components/ui/NormalTextTitle";
 import TableLayout from "components/ui/table/TableLayout";
 import TextTitle from "components/ui/text/TextTitle";
-import moment from "moment";
 import { useEffect, useState } from "react";
 import SettingService from "services/SettingService";
 
@@ -85,7 +84,7 @@ const Settings = ({ company }) => {
 									<TextTitle size="sm" title={name} />
 								</Td>
 								<Td>
-									<NormalTextTitle size="sm" title={moment.utc(date).format("dddd, YYYY-MM-DD")} />
+									<NormalTextTitle size="sm" title={date.slice(0, 10)} />
 								</Td>
 							</Tr>
 						))}

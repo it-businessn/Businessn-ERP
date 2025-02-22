@@ -6,19 +6,12 @@ import NormalTextTitle from "components/ui/NormalTextTitle";
 import TableLayout from "components/ui/table/TableLayout";
 import TextTitle from "components/ui/text/TextTitle";
 import { COLS } from "constant";
-import moment from "moment";
 import { useEffect, useState } from "react";
 import { FaCheck, FaRegTrashAlt } from "react-icons/fa";
 import { IoClose } from "react-icons/io5";
 import TimesheetService from "services/TimesheetService";
 import { getAmount } from "utils/convertAmt";
-import {
-	convertMomentTzDate,
-	getClockInTimeFormat,
-	getTimeCardFormat,
-	getTimeFormat,
-	setUTCDate,
-} from "utils/convertDate";
+import { getClockInTimeFormat, getTimeCardFormat, getTimeFormat } from "utils/convertDate";
 import { getParamKey, getPayTypeStyle, getStatusStyle, PAY_TYPES_TITLE } from "./data";
 import ExtraTimeEntryModal from "./ExtraTimeEntryModal";
 
@@ -38,35 +31,22 @@ const Timesheet = ({
 	const limit = 40;
 
 	useEffect(() => {
-		// const controller = new AbortController();
-
 		const fetchAllEmployeeTimesheet = async () => {
 			setTimesheetData(null);
 
 			try {
-				const { data } = await TimesheetService.getFilteredTimesheets(
-					company,
-					filter,
-					{ page: pageNum, limit },
-					// null,
-					// controller.signal,
-				);
+				const { data } = await TimesheetService.getFilteredTimesheets(company, filter, {
+					page: pageNum,
+					limit,
+				});
 				const { totalPages, page, items } = data;
 
-				if (moment.utc(filter?.startDate).isSame(moment.utc(filter?.endDate), "day")) {
-					const filteredItems = items
-						?.map((record) => {
-							record.clockIn = convertMomentTzDate(record.clockIn);
-							if (record.clockOut) record.clockOut = convertMomentTzDate(record.clockOut);
-							return record;
-						})
-						?.filter(({ clockIn }) =>
-							moment.utc(clockIn).isSame(moment.utc(filter?.startDate), "day"),
-						);
-					setTimesheets(filteredItems);
-				} else {
-					setTimesheets(items);
-				}
+				items?.map((_) => {
+					_.startTime = getClockInTimeFormat(_.clockIn, _.payType);
+					_.endTime = _.clockOut ? getTimeFormat(_.clockOut) : "";
+					return _;
+				});
+				setTimesheets(items);
 				setTotalPages(totalPages > 0 ? totalPages : 1);
 				setPageNum(page);
 			} catch (error) {
@@ -76,9 +56,6 @@ const Timesheet = ({
 		if (filter?.startDate) {
 			fetchAllEmployeeTimesheet();
 		}
-		// return () => {
-		// 	if (controller) controller.abort();
-		// };
 	}, [
 		pageNum,
 		filter?.startDate,
@@ -258,6 +235,19 @@ const Timesheet = ({
 		"Status",
 		"Action",
 	];
+
+	const handleUpdateData = (id, field, value, param_hours) => {
+		const updatedData = timesheetData?.map((record) =>
+			record._id === id ? { ...record, [field]: value } : record,
+		);
+		setFormData({
+			param_hours,
+			recordId: id,
+			[field]: value,
+		});
+		setTimesheetData(updatedData);
+	};
+
 	return (
 		<>
 			<TableLayout cols={cols} position="sticky" zIndex={3} top={-1} height="72vh">
@@ -293,6 +283,8 @@ const Timesheet = ({
 							totalWorkedHours,
 							notDevice,
 							employee,
+							startTime,
+							endTime,
 						}) => {
 							const approveStatusBtnCss = getStatusStyle(approveStatus);
 							const { type, color } = getPayTypeStyle(payType);
@@ -361,16 +353,13 @@ const Timesheet = ({
 											onBlur={() => handleSubmit(param_hours)}
 											className={`timeClockInInput ${_id}`}
 											type="time"
-											name="clockIn"
-											value={clockIn ? getClockInTimeFormat(clockIn, notDevice) : ""}
-											onClick={() => showPicker(`timeClockInInput ${_id}`)}
-											onChange={(e) => {
-												setFormData({
-													param_hours,
-													recordId: _id,
-													clockIn: setUTCDate(clockIn, e.target.value, notDevice),
-												});
-											}}
+											name="startTime"
+											value={startTime || ""}
+											onClick={() => !isDisabled && showPicker(`timeClockInInput ${_id}`)}
+											onChange={(e) =>
+												!isDisabled &&
+												handleUpdateData(_id, "startTime", e.target.value, param_hours)
+											}
 											required
 										/>
 									</Td>
@@ -381,16 +370,12 @@ const Timesheet = ({
 											onBlur={() => handleSubmit(param_hours)}
 											className={`timeClockOutInput ${_id}`}
 											type="time"
-											name="clockOut"
-											value={clockOut ? getTimeFormat(clockOut, notDevice) : ""}
+											name="endTime"
+											value={endTime || ""}
 											onClick={() => showPicker(`timeClockOutInput ${_id}`)}
-											onChange={(e) => {
-												setFormData({
-													param_hours,
-													recordId: _id,
-													clockOut: setUTCDate(clockIn, e.target.value, notDevice),
-												});
-											}}
+											onChange={(e) =>
+												handleUpdateData(_id, "endTime", e.target.value, param_hours)
+											}
 											required
 										/>
 									</Td>
@@ -439,6 +424,8 @@ const Timesheet = ({
 														...prev,
 														recordId: _id,
 														approve: true,
+														startTime: null,
+														endTime: null,
 													}));
 												}}
 											/>
@@ -453,6 +440,8 @@ const Timesheet = ({
 														...prev,
 														recordId: _id,
 														approve: false,
+														startTime: null,
+														endTime: null,
 													}));
 												}}
 											/>
