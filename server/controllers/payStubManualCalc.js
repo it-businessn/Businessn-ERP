@@ -1,8 +1,8 @@
 const { getSumTotal } = require("../services/payrollService");
-const { findAdditionalSuperficialAmountAllocatedInfo } = require("./payrunEEContrCalc");
+const { findAdditionalManualAmountAllocatedInfo } = require("./payrunEEContrCalc");
 const {
-	findAdditionalSuperficialHoursAllocatedInfo,
-	findEESuperficialContribution,
+	findAdditionalManualHoursAllocatedInfo,
+	findEEManualContribution,
 } = require("./payrunExtraAllocationInfoController");
 
 const addSeparateManualCheque = async (
@@ -16,70 +16,99 @@ const addSeparateManualCheque = async (
 	isExtraRun,
 	prevPayPayInfo,
 ) => {
-	const empAdditionalSuperficialDataAllocated = await findAdditionalSuperficialAmountAllocatedInfo({
+	const empAdditionalManualDataAllocated = await findAdditionalManualAmountAllocatedInfo({
 		empId,
 		companyName,
 		payPeriodPayDate,
 	});
 
-	const additionalHoursAllocatedInfo = await findAdditionalSuperficialHoursAllocatedInfo({
+	const additionalHoursAllocatedInfo = await findAdditionalManualHoursAllocatedInfo({
 		empId,
 		companyName,
 		payPeriodPayDate,
 	});
 
-	const empEESuperficialContribution = await findEESuperficialContribution({
+	const empEEManualContribution = await findEEManualContribution({
 		empId,
 		payPeriodPayDate,
 	});
 
 	const {
-		totalSuperficialHoursWorked,
-		additionalSuperficialRegHoursWorked,
-		additionalSuperficialOvertimeHoursWorked,
-		additionalSuperficialDblOvertimeHoursWorked,
-		additionalSuperficialStatDayHoursWorked,
-		additionalSuperficialVacationHoursWorked,
-		additionalSuperficialStatHoursWorked,
-		additionalSuperficialSickHoursWorked,
+		totalManualHoursWorked,
+		additionalManualRegHoursWorked,
+		additionalManualOvertimeHoursWorked,
+		additionalManualDblOvertimeHoursWorked,
+		additionalManualStatDayHoursWorked,
+		additionalManualVacationHoursWorked,
+		additionalManualStatHoursWorked,
+		additionalManualSickHoursWorked,
 	} = additionalHoursAllocatedInfo;
 
 	const {
-		regPayAmtSuperficial,
-		OTPayAmtSuperficial,
-		dblOTPayAmtSuperficial,
-		statPayAmtSuperficial,
-		statWorkPayAmtSuperficial,
-		vacationPayAmtSuperficial,
-		sickPayAmtSuperficial,
-		totalSuperficialAmountAllocated,
-		commissionSuperficial,
-		bonusSuperficial,
-		retroactiveSuperficial,
-		reimbursementSuperficial,
-		terminationPayoutSuperficial,
-		vacationPayoutSuperficial,
-		vacationBalAdjustSuperficial,
-		vacationAccrualSuperficial,
-		vacationUsedSuperficial,
-		federalTaxSuperficial,
-		provTaxSuperficial,
-		incomeTaxSuperficial,
-	} = empAdditionalSuperficialDataAllocated;
+		regPayAmtManual,
+		OTPayAmtManual,
+		dblOTPayAmtManual,
+		statPayAmtManual,
+		statWorkPayAmtManual,
+		vacationPayAmtManual,
+		sickPayAmtManual,
+		totalManualAmountAllocated,
+		commissionManual,
+		bonusManual,
+		retroactiveManual,
+		reimbursementManual,
+		terminationPayoutManual,
+		vacationPayoutManual,
+		vacationBalAdjustManual,
+		vacationAccrualManual,
+		vacationUsedManual,
+		federalTaxManual,
+		provTaxManual,
+		incomeTaxManual,
+	} = empAdditionalManualDataAllocated;
 
 	const {
-		unionDuesSuperficial,
-		EE_EHPSuperficial,
-		EE_EPPSuperficial,
-		EE_EISuperficial,
-		EE_CPPSuperficial,
-		ER_EHPSuperficial,
-		ER_EPPSuperficial,
-		ER_EISuperficial,
-		ER_CPPSuperficial,
-	} = empEESuperficialContribution;
+		unionDuesManual,
+		EE_EHPManual,
+		EE_EPPManual,
+		EE_EIManual,
+		EE_CPPManual,
+		ER_EHPManual,
+		ER_EPPManual,
+		ER_EIManual,
+		ER_CPPManual,
+	} = empEEManualContribution;
 
-	const superficialPayStub = {
+	const grossSum =
+		regPayAmtManual +
+		OTPayAmtManual +
+		dblOTPayAmtManual +
+		statWorkPayAmtManual +
+		statPayAmtManual +
+		sickPayAmtManual +
+		vacationPayAmtManual +
+		commissionManual +
+		retroactiveManual +
+		vacationPayoutManual +
+		bonusManual +
+		terminationPayoutManual;
+
+	const deductionSum =
+		federalTaxManual +
+		provTaxManual +
+		EE_CPPManual +
+		EE_EIManual +
+		unionDuesManual +
+		EE_EHPManual +
+		0 +
+		EE_EPPManual +
+		0;
+
+	const netPay = grossSum - deductionSum;
+	const vacBalance = vacationBalAdjustManual + (vacationAccrualManual - vacationUsedManual);
+	const empContr = ER_EPPManual + ER_EHPManual;
+
+	const manualPayStub = {
 		empId,
 		companyName,
 		payPeriodStartDate,
@@ -103,169 +132,151 @@ const addSeparateManualCheque = async (
 		bankedTimePay: 0,
 		regularByAmount: 0,
 
-		commission: commissionSuperficial,
-		retroactive: retroactiveSuperficial,
-		vacationPayout: vacationPayoutSuperficial,
-		bonus: bonusSuperficial,
-		terminationPayout: terminationPayoutSuperficial,
-		reimbursement: reimbursementSuperficial,
-		vacationBalAdjust: vacationBalAdjustSuperficial,
-		vacationAccrual: vacationAccrualSuperficial,
-		vacationUsed: vacationUsedSuperficial,
-		federalTax: federalTaxSuperficial,
-		provTax: provTaxSuperficial,
-		incomeTax: incomeTaxSuperficial,
-		totalAmountAllocated: totalSuperficialAmountAllocated,
+		commission: commissionManual,
+		retroactive: retroactiveManual,
+		vacationPayout: vacationPayoutManual,
+		bonus: bonusManual,
+		terminationPayout: terminationPayoutManual,
+		reimbursement: reimbursementManual,
+		vacationBalAdjust: vacationBalAdjustManual,
+		vacationAccrual: vacationAccrualManual,
+		vacationUsed: vacationUsedManual,
+		federalTax: federalTaxManual,
+		provTax: provTaxManual,
+		incomeTax: incomeTaxManual,
+		totalAmountAllocated: totalManualAmountAllocated,
 
-		YTDCommission: getSumTotal(prevPayPayInfo?.YTDCommission, commissionSuperficial),
-		YTDRetroactive: getSumTotal(prevPayPayInfo?.YTDRetroactive, retroactiveSuperficial),
-		YTDVacationPayout: getSumTotal(prevPayPayInfo?.YTDVacationPayout, vacationPayoutSuperficial),
-		YTDBonus: getSumTotal(prevPayPayInfo?.YTDBonus, bonusSuperficial),
+		YTDCommission: getSumTotal(prevPayPayInfo?.YTDCommission, commissionManual),
+		YTDRetroactive: getSumTotal(prevPayPayInfo?.YTDRetroactive, retroactiveManual),
+		YTDVacationPayout: getSumTotal(prevPayPayInfo?.YTDVacationPayout, vacationPayoutManual),
+		YTDBonus: getSumTotal(prevPayPayInfo?.YTDBonus, bonusManual),
 		YTDTerminationPayout: getSumTotal(
 			prevPayPayInfo?.YTDTerminationPayout,
-			terminationPayoutSuperficial,
+			terminationPayoutManual,
 		),
 
-		totalRegHoursWorked: additionalSuperficialRegHoursWorked,
-		totalOvertimeHoursWorked: additionalSuperficialOvertimeHoursWorked,
-		totalDblOvertimeHoursWorked: additionalSuperficialDblOvertimeHoursWorked,
-		totalStatDayHoursWorked: additionalSuperficialStatDayHoursWorked,
-		totalStatHours: additionalSuperficialStatHoursWorked,
-		totalSickHoursWorked: additionalSuperficialSickHoursWorked,
-		totalVacationHoursWorked: additionalSuperficialVacationHoursWorked,
+		totalRegHoursWorked: additionalManualRegHoursWorked,
+		totalOvertimeHoursWorked: additionalManualOvertimeHoursWorked,
+		totalDblOvertimeHoursWorked: additionalManualDblOvertimeHoursWorked,
+		totalStatDayHoursWorked: additionalManualStatDayHoursWorked,
+		totalStatHours: additionalManualStatHoursWorked,
+		totalSickHoursWorked: additionalManualSickHoursWorked,
+		totalVacationHoursWorked: additionalManualVacationHoursWorked,
 		totalSprayHoursWorked: 0,
 		totalFirstAidHoursWorked: 0,
-		totalHoursWorked: totalSuperficialHoursWorked,
+		totalHoursWorked: totalManualHoursWorked,
 
 		YTDRegHoursWorked: getSumTotal(
 			prevPayPayInfo?.YTDRegHoursWorked,
-			additionalSuperficialRegHoursWorked,
+			additionalManualRegHoursWorked,
 		),
 		YTDOvertimeHoursWorked: getSumTotal(
 			prevPayPayInfo?.YTDOvertimeHoursWorked,
-			additionalSuperficialOvertimeHoursWorked,
+			additionalManualOvertimeHoursWorked,
 		),
 		YTDDblOvertimeHoursWorked: getSumTotal(
 			prevPayPayInfo?.YTDDblOvertimeHoursWorked,
-			additionalSuperficialDblOvertimeHoursWorked,
+			additionalManualDblOvertimeHoursWorked,
 		),
 		YTDStatDayHoursWorked: getSumTotal(
 			prevPayPayInfo?.YTDStatDayHoursWorked,
-			additionalSuperficialStatDayHoursWorked,
+			additionalManualStatDayHoursWorked,
 		),
 		YTDStatHoursWorked: getSumTotal(
 			prevPayPayInfo?.YTDStatHoursWorked,
-			additionalSuperficialStatHoursWorked,
+			additionalManualStatHoursWorked,
 		),
 		YTDSickHoursWorked: getSumTotal(
 			prevPayPayInfo?.YTDSickHoursWorked,
-			additionalSuperficialSickHoursWorked,
+			additionalManualSickHoursWorked,
 		),
 		YTDVacationHoursWorked: getSumTotal(
 			prevPayPayInfo?.YTDVacationHoursWorked,
-			additionalSuperficialVacationHoursWorked,
+			additionalManualVacationHoursWorked,
 		),
 		YTDSprayHoursWorked: getSumTotal(prevPayPayInfo?.YTDSprayHoursWorked, 0),
 		YTDFirstAidHoursWorked: getSumTotal(prevPayPayInfo?.YTDFirstAidHoursWorked, 0),
 
-		currentEmployerCPPDeductions: ER_CPPSuperficial,
-		currentRegPayTotal: regPayAmtSuperficial,
-		currentOverTimePayTotal: OTPayAmtSuperficial,
-		currentDblOverTimePayTotal: dblOTPayAmtSuperficial,
-		currentStatWorkPayTotal: statWorkPayAmtSuperficial,
-		currentStatPayTotal: statPayAmtSuperficial,
-		currentSickPayTotal: sickPayAmtSuperficial,
-		currentVacationPayTotal: vacationPayAmtSuperficial,
+		currentEmployerCPPDeductions: ER_CPPManual,
+		currentRegPayTotal: regPayAmtManual,
+		currentOverTimePayTotal: OTPayAmtManual,
+		currentDblOverTimePayTotal: dblOTPayAmtManual,
+		currentStatWorkPayTotal: statWorkPayAmtManual,
+		currentStatPayTotal: statPayAmtManual,
+		currentSickPayTotal: sickPayAmtManual,
+		currentVacationPayTotal: vacationPayAmtManual,
 		currentSprayPayTotal: 0,
 		currentFirstAidPayTotal: 0,
-		currentGrossPay: 0,
+		currentGrossPay: grossSum,
 
-		YTDRegPayTotal: getSumTotal(prevPayPayInfo?.YTDRegPayTotal, regPayAmtSuperficial),
-		YTDOverTimePayTotal: getSumTotal(prevPayPayInfo?.YTDOverTimePayTotal, OTPayAmtSuperficial),
-		YTDDblOverTimePayTotal: getSumTotal(
-			prevPayPayInfo?.YTDDblOverTimePayTotal,
-			dblOTPayAmtSuperficial,
-		),
-		YTDStatWorkPayTotal: getSumTotal(
-			prevPayPayInfo?.YTDStatWorkPayTotal,
-			statWorkPayAmtSuperficial,
-		),
-		YTDStatPayTotal: getSumTotal(prevPayPayInfo?.YTDStatPayTotal, statPayAmtSuperficial),
-		YTDSickPayTotal: getSumTotal(prevPayPayInfo?.YTDSickPayTotal, sickPayAmtSuperficial),
-		YTDVacationPayTotal: getSumTotal(
-			prevPayPayInfo?.YTDVacationPayTotal,
-			vacationPayAmtSuperficial,
-		),
+		YTDRegPayTotal: getSumTotal(prevPayPayInfo?.YTDRegPayTotal, regPayAmtManual),
+		YTDOverTimePayTotal: getSumTotal(prevPayPayInfo?.YTDOverTimePayTotal, OTPayAmtManual),
+		YTDDblOverTimePayTotal: getSumTotal(prevPayPayInfo?.YTDDblOverTimePayTotal, dblOTPayAmtManual),
+		YTDStatWorkPayTotal: getSumTotal(prevPayPayInfo?.YTDStatWorkPayTotal, statWorkPayAmtManual),
+		YTDStatPayTotal: getSumTotal(prevPayPayInfo?.YTDStatPayTotal, statPayAmtManual),
+		YTDSickPayTotal: getSumTotal(prevPayPayInfo?.YTDSickPayTotal, sickPayAmtManual),
+		YTDVacationPayTotal: getSumTotal(prevPayPayInfo?.YTDVacationPayTotal, vacationPayAmtManual),
 
-		currentFDTaxDeductions: federalTaxSuperficial,
-		currentStateTaxDeductions: provTaxSuperficial,
-		currentIncomeTaxDeductions: incomeTaxSuperficial,
+		currentFDTaxDeductions: federalTaxManual,
+		currentStateTaxDeductions: provTaxManual,
+		currentIncomeTaxDeductions: incomeTaxManual,
 
-		YTD_FDTaxDeductions: getSumTotal(prevPayPayInfo?.YTD_FDTaxDeductions, federalTaxSuperficial),
-		YTDStateTaxDeductions: getSumTotal(prevPayPayInfo?.YTDStateTaxDeductions, provTaxSuperficial),
-		YTD_IncomeTaxDeductions: getSumTotal(
-			prevPayPayInfo?.YTD_IncomeTaxDeductions,
-			incomeTaxSuperficial,
-		),
+		YTD_FDTaxDeductions: getSumTotal(prevPayPayInfo?.YTD_FDTaxDeductions, federalTaxManual),
+		YTDStateTaxDeductions: getSumTotal(prevPayPayInfo?.YTDStateTaxDeductions, provTaxManual),
+		YTD_IncomeTaxDeductions: getSumTotal(prevPayPayInfo?.YTD_IncomeTaxDeductions, incomeTaxManual),
 
-		currentCPPDeductions: EE_CPPSuperficial,
-		currentUnionDuesDeductions: unionDuesSuperficial,
-		currentEmployeeEIDeductions: EE_EISuperficial,
-		currentEmployerEIDeductions: ER_EISuperficial,
-		currentEmployeeHealthContributions: EE_EHPSuperficial,
+		currentCPPDeductions: EE_CPPManual,
+		currentUnionDuesDeductions: unionDuesManual,
+		currentEmployeeEIDeductions: EE_EIManual,
+		currentEmployerEIDeductions: ER_EIManual,
+		currentEmployeeHealthContributions: EE_EHPManual,
 		currentPrimaryDeposit: 0,
-		currentEmployeePensionContributions: EE_EPPSuperficial,
+		currentEmployeePensionContributions: EE_EPPManual,
 		currentOtherDeductions: 0,
-		currentDeductionsTotal: 0,
-		currentNetPay: 0,
-		currentEmployerPensionContributions: ER_EPPSuperficial,
-		currentEmployerHealthContributions: ER_EHPSuperficial,
-		currentEmployerContributions: 0,
+		currentDeductionsTotal: deductionSum,
+		currentNetPay: netPay,
+		currentEmployerPensionContributions: ER_EPPManual,
+		currentEmployerHealthContributions: ER_EHPManual,
+		currentEmployerContributions: empContr,
 
-		YTD_EmployeeEIDeductions: getSumTotal(
-			prevPayPayInfo?.YTD_EmployeeEIDeductions,
-			EE_EISuperficial,
-		),
-		YTD_EmployerEIDeductions: getSumTotal(
-			prevPayPayInfo?.YTD_EmployerEIDeductions,
-			ER_EISuperficial,
-		),
-		YTD_EmployerCPPDeductions: getSumTotal(prevPayPayInfo?.YTD_CPPDeductions, ER_CPPSuperficial),
-		YTD_CPPDeductions: getSumTotal(prevPayPayInfo?.YTD_CPPDeductions, EE_CPPSuperficial),
-		YTDUnionDuesDeductions: getSumTotal(
-			prevPayPayInfo?.YTDUnionDuesDeductions,
-			unionDuesSuperficial,
-		),
+		YTD_EmployeeEIDeductions: getSumTotal(prevPayPayInfo?.YTD_EmployeeEIDeductions, EE_EIManual),
+		YTD_EmployerEIDeductions: getSumTotal(prevPayPayInfo?.YTD_EmployerEIDeductions, ER_EIManual),
+		YTD_EmployerCPPDeductions: getSumTotal(prevPayPayInfo?.YTD_CPPDeductions, ER_CPPManual),
+		YTD_CPPDeductions: getSumTotal(prevPayPayInfo?.YTD_CPPDeductions, EE_CPPManual),
+		YTDUnionDuesDeductions: getSumTotal(prevPayPayInfo?.YTDUnionDuesDeductions, unionDuesManual),
 		YTDEmployeeHealthContributions: getSumTotal(
 			prevPayPayInfo?.YTDEmployeeHealthContributions,
-			EE_EHPSuperficial,
+			EE_EHPManual,
 		),
 		YTDEmployeePensionContributions: getSumTotal(
 			prevPayPayInfo?.YTDEmployeePensionContributions,
-			EE_EPPSuperficial,
+			EE_EPPManual,
 		),
 		YTDEmployerPensionContributions: getSumTotal(
 			prevPayPayInfo?.YTDEmployerPensionContributions,
-			ER_EPPSuperficial,
+			ER_EPPManual,
 		),
 		YTDEmployerHealthContributions: getSumTotal(
 			prevPayPayInfo?.YTDEmployerHealthContributions,
-			ER_EHPSuperficial,
+			ER_EHPManual,
 		),
-		YTDEmployerContributions: getSumTotal(prevPayPayInfo?.YTDEmployerContributions, 0),
+		YTDEmployerContributions: getSumTotal(prevPayPayInfo?.YTDEmployerContributions, empContr),
 
-		currentVacationAccrued: vacationAccrualSuperficial,
-		currentVacationBalanceFwd: vacationBalAdjustSuperficial,
-		currentVacationUsed: vacationUsedSuperficial,
-		vacationBalance: 0,
+		currentVacationAccrued: vacationAccrualManual,
+		currentVacationBalanceFwd: vacationBalAdjustManual,
+		currentVacationUsed: vacationUsedManual,
+		vacationBalance: vacBalance,
 		currentSickAccrued: 0,
 		currentSickUsed: 0,
 		sickBalance: 0,
 
-		YTDVacationAccrued: getSumTotal(prevPayPayInfo?.YTDVacationAccrued, vacationAccrualSuperficial),
-		YTDVacationUsed: getSumTotal(prevPayPayInfo?.YTDVacationUsed, vacationUsedSuperficial),
-		YTDVacationBalanceFwd: vacationBalAdjustSuperficial,
-		YTDVacationBalance: getSumTotal(prevPayPayInfo?.YTDVacationBalance, 0),
+		YTDVacationAccrued: getSumTotal(prevPayPayInfo?.YTDVacationAccrued, vacationAccrualManual),
+		YTDVacationUsed: getSumTotal(prevPayPayInfo?.YTDVacationUsed, vacationUsedManual),
+		YTDVacationBalanceFwd: getSumTotal(
+			prevPayPayInfo?.YTDVacationBalanceFwd,
+			vacationBalAdjustManual,
+		),
+		YTDVacationBalance: getSumTotal(prevPayPayInfo?.YTDVacationBalance, vacBalance),
 
 		YTDSprayPayTotal: getSumTotal(prevPayPayInfo?.YTDSprayPayTotal, 0),
 		YTDFirstAidPayTotal: getSumTotal(prevPayPayInfo?.YTDFirstAidPayTotal, 0),
@@ -276,14 +287,14 @@ const addSeparateManualCheque = async (
 
 		YTDPrimaryDeposit: getSumTotal(prevPayPayInfo?.YTDPrimaryDeposit, 0),
 		YTDOtherDeductions: getSumTotal(prevPayPayInfo?.YTDOtherDeductions, 0),
-		YTDGrossPay: getSumTotal(prevPayPayInfo?.YTDGrossPay, 0),
-		YTDDeductionsTotal: getSumTotal(prevPayPayInfo?.YTDDeductionsTotal, 0),
-		YTDNetPay: getSumTotal(prevPayPayInfo?.YTDNetPay, 0),
+		YTDGrossPay: getSumTotal(prevPayPayInfo?.YTDGrossPay, grossSum),
+		YTDDeductionsTotal: getSumTotal(prevPayPayInfo?.YTDDeductionsTotal, deductionSum),
+		YTDNetPay: getSumTotal(prevPayPayInfo?.YTDNetPay, netPay),
 		YTDSickAccrued: getSumTotal(prevPayPayInfo?.YTDSickAccrued, 0),
 		YTDSickUsed: getSumTotal(prevPayPayInfo?.YTDSickUsed, 0),
 		YTDSickBalance: getSumTotal(prevPayPayInfo?.YTDSickBalance, 0),
 	};
-	return superficialPayStub;
+	return manualPayStub;
 };
 
 module.exports = { addSeparateManualCheque };

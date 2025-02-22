@@ -352,6 +352,8 @@ export const meetingsData = [
 	},
 ];
 
+export const PAYRUN_TYPE = { REGULAR: "1", PAYOUT: "2", MANUAL: "3", SUPERFICIAL: "4" };
+
 export const PAYRUN_OPTIONS = [
 	{
 		name: "Payrun Details",

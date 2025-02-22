@@ -1,6 +1,7 @@
 import { Box, HStack, Stack } from "@chakra-ui/react";
 import NormalTextTitle from "components/ui/NormalTextTitle";
 import TextTitle from "components/ui/text/TextTitle";
+import { PAYRUN_TYPE } from "constant";
 import { toWords } from "utils";
 import { getAmount } from "utils/convertAmt";
 import { monthDayYearFormat } from "utils/convertDate";
@@ -35,6 +36,12 @@ const InfoText = ({ title1, title2, title3, hasBg }) => (
 const ChequeDetails = ({ data }) => {
 	const name = data?.empId?.fullName;
 	const payDate = data.payPeriodPayDate;
+
+	const isSuperficialType = data?.reportType === PAYRUN_TYPE.SUPERFICIAL;
+	const isManualType = data?.reportType === PAYRUN_TYPE.MANUAL;
+	data.currentNetPay = isSuperficialType ? 0 : data.currentNetPay;
+	const paymentType = isManualType ? "Manual" : "DIRECT DEPOSIT";
+
 	const netPay = getAmount(data.currentNetPay);
 	const amountInWords = toWords.convert(data.currentNetPay);
 
@@ -45,7 +52,7 @@ const ChequeDetails = ({ data }) => {
 				<PaymentDateTitle payDate={payDate} />
 				<InfoText title1="Account holder:" title2={name} />
 				<InfoText title1="The amount:" title2={amountInWords} title3={netPay} hasBg />
-				<InfoText title1="Payment method:" title2={"DIRECT DEPOSIT"} />
+				<InfoText title1="Payment method:" title2={paymentType} />
 			</Box>
 			<TextTitle
 				align={"center"}
