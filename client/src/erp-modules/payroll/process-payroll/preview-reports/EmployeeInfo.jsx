@@ -1,5 +1,6 @@
 import { Box, Stack, VStack } from "@chakra-ui/react";
 import BoxCard from "components/ui/card";
+import { getReportName } from "constant";
 import React from "react";
 import { getAmount } from "utils/convertAmt";
 import { formatDateBar } from "utils/convertDate";
@@ -13,7 +14,7 @@ const EmployeeInfo = ({ data, companyNum }) => {
 			<BoxCard p={0}>
 				<Box w={"100%"} bg={"var(--primary_bg_1)"} p={2}>
 					<VStack mt={1} spacing={0}>
-						<BasicInfo title1="Report Type:" title2={data.reportType || "NA"} />
+						<BasicInfo title1="Report Type:" title2={getReportName(data?.reportType)} />
 						<BasicInfo title1={"Net Pay:"} title2={getAmount(data.currentNetPay)} />
 						<BasicInfo title1={"Pay Date:"} title2={formatDateBar(data.payPeriodPayDate)} />
 						<BasicInfo title1={"Pay Start Date:"} title2={formatDateBar(data.payPeriodStartDate)} />

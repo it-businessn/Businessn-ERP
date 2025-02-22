@@ -1,9 +1,6 @@
 const { getSumTotal } = require("../services/payrollService");
 const { findAdditionalPayoutAmountAllocatedInfo } = require("./payrunEEContrCalc");
-const {
-	findAdditionalPayoutHoursAllocatedInfo,
-	findEEPayoutContribution,
-} = require("./payrunExtraAllocationInfoController");
+const { findAdditionalPayoutHoursAllocatedInfo } = require("./payrunExtraAllocationInfoController");
 
 const addSeparatePayoutCheque = async (
 	empId,
@@ -25,11 +22,6 @@ const addSeparatePayoutCheque = async (
 	const additionalHoursAllocatedInfo = await findAdditionalPayoutHoursAllocatedInfo({
 		empId,
 		companyName,
-		payPeriodPayDate,
-	});
-
-	const empEEPayoutContribution = await findEEPayoutContribution({
-		empId,
 		payPeriodPayDate,
 	});
 
@@ -67,18 +59,6 @@ const addSeparatePayoutCheque = async (
 		incomeTaxPayout,
 	} = empAdditionalPayoutDataAllocated;
 
-	const {
-		unionDuesPayout,
-		EE_EHPPayout,
-		EE_EPPPayout,
-		EE_EIPayout,
-		EE_CPPPayout,
-		ER_EHPPayout,
-		ER_EPPPayout,
-		ER_EIPayout,
-		ER_CPPPayout,
-	} = empEEPayoutContribution;
-
 	const grossSum =
 		regPayAmtPayout +
 		OTPayAmtPayout +
@@ -93,20 +73,11 @@ const addSeparatePayoutCheque = async (
 		bonusPayout +
 		terminationPayoutPayout;
 
-	const deductionSum =
-		federalTaxPayout +
-		provTaxPayout +
-		EE_CPPPayout +
-		EE_EIPayout +
-		unionDuesPayout +
-		EE_EHPPayout +
-		0 +
-		EE_EPPPayout +
-		0;
+	const deductionSum = federalTaxPayout + provTaxPayout + 0 + 0 + 0 + 0 + 0 + 0 + 0;
 
 	const netPay = grossSum - deductionSum;
 	const vacBalance = vacationBalAdjustPayout + (vacationAccrualPayout - vacationUsedPayout);
-	const empContr = ER_EPPPayout + ER_EHPPayout;
+	const empContr = 0 + 0;
 
 	const payoutPayStub = {
 		empId,
@@ -197,7 +168,7 @@ const addSeparatePayoutCheque = async (
 		YTDSprayHoursWorked: getSumTotal(prevPayPayInfo?.YTDSprayHoursWorked, 0),
 		YTDFirstAidHoursWorked: getSumTotal(prevPayPayInfo?.YTDFirstAidHoursWorked, 0),
 
-		currentEmployerCPPDeductions: ER_CPPPayout,
+		currentEmployerCPPDeductions: 0,
 		currentRegPayTotal: regPayAmtPayout,
 		currentOverTimePayTotal: OTPayAmtPayout,
 		currentDblOverTimePayTotal: dblOTPayAmtPayout,
@@ -225,41 +196,35 @@ const addSeparatePayoutCheque = async (
 		YTDStateTaxDeductions: getSumTotal(prevPayPayInfo?.YTDStateTaxDeductions, provTaxPayout),
 		YTD_IncomeTaxDeductions: getSumTotal(prevPayPayInfo?.YTD_IncomeTaxDeductions, incomeTaxPayout),
 
-		currentCPPDeductions: EE_CPPPayout,
-		currentUnionDuesDeductions: unionDuesPayout,
-		currentEmployeeEIDeductions: EE_EIPayout,
-		currentEmployerEIDeductions: ER_EIPayout,
-		currentEmployeeHealthContributions: EE_EHPPayout,
+		currentCPPDeductions: 0,
+		currentUnionDuesDeductions: 0,
+		currentEmployeeEIDeductions: 0,
+		currentEmployerEIDeductions: 0,
+		currentEmployeeHealthContributions: 0,
 		currentPrimaryDeposit: 0,
-		currentEmployeePensionContributions: EE_EPPPayout,
+		currentEmployeePensionContributions: 0,
 		currentOtherDeductions: 0,
 		currentDeductionsTotal: deductionSum,
 		currentNetPay: netPay,
-		currentEmployerPensionContributions: ER_EPPPayout,
-		currentEmployerHealthContributions: ER_EHPPayout,
+		currentEmployerPensionContributions: 0,
+		currentEmployerHealthContributions: 0,
 		currentEmployerContributions: empContr,
 
-		YTD_EmployeeEIDeductions: getSumTotal(prevPayPayInfo?.YTD_EmployeeEIDeductions, EE_EIPayout),
-		YTD_EmployerEIDeductions: getSumTotal(prevPayPayInfo?.YTD_EmployerEIDeductions, ER_EIPayout),
-		YTD_EmployerCPPDeductions: getSumTotal(prevPayPayInfo?.YTD_CPPDeductions, ER_CPPPayout),
-		YTD_CPPDeductions: getSumTotal(prevPayPayInfo?.YTD_CPPDeductions, EE_CPPPayout),
-		YTDUnionDuesDeductions: getSumTotal(prevPayPayInfo?.YTDUnionDuesDeductions, unionDuesPayout),
-		YTDEmployeeHealthContributions: getSumTotal(
-			prevPayPayInfo?.YTDEmployeeHealthContributions,
-			EE_EHPPayout,
-		),
+		YTD_EmployeeEIDeductions: getSumTotal(prevPayPayInfo?.YTD_EmployeeEIDeductions, 0),
+		YTD_EmployerEIDeductions: getSumTotal(prevPayPayInfo?.YTD_EmployerEIDeductions, 0),
+		YTD_EmployerCPPDeductions: getSumTotal(prevPayPayInfo?.YTD_CPPDeductions, 0),
+		YTD_CPPDeductions: getSumTotal(prevPayPayInfo?.YTD_CPPDeductions, 0),
+		YTDUnionDuesDeductions: getSumTotal(prevPayPayInfo?.YTDUnionDuesDeductions, 0),
+		YTDEmployeeHealthContributions: getSumTotal(prevPayPayInfo?.YTDEmployeeHealthContributions, 0),
 		YTDEmployeePensionContributions: getSumTotal(
 			prevPayPayInfo?.YTDEmployeePensionContributions,
-			EE_EPPPayout,
+			0,
 		),
 		YTDEmployerPensionContributions: getSumTotal(
 			prevPayPayInfo?.YTDEmployerPensionContributions,
-			ER_EPPPayout,
+			0,
 		),
-		YTDEmployerHealthContributions: getSumTotal(
-			prevPayPayInfo?.YTDEmployerHealthContributions,
-			ER_EHPPayout,
-		),
+		YTDEmployerHealthContributions: getSumTotal(prevPayPayInfo?.YTDEmployerHealthContributions, 0),
 		YTDEmployerContributions: getSumTotal(prevPayPayInfo?.YTDEmployerContributions, empContr),
 
 		currentVacationAccrued: vacationAccrualPayout,

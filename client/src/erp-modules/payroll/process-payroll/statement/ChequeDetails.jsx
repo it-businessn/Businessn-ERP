@@ -1,7 +1,6 @@
 import { Box, HStack, Stack } from "@chakra-ui/react";
 import NormalTextTitle from "components/ui/NormalTextTitle";
 import TextTitle from "components/ui/text/TextTitle";
-import { PAYRUN_TYPE } from "constant";
 import { toWords } from "utils";
 import { getAmount } from "utils/convertAmt";
 import { monthDayYearFormat } from "utils/convertDate";
@@ -37,8 +36,9 @@ const ChequeDetails = ({ data }) => {
 	const name = data?.empId?.fullName;
 	const payDate = data.payPeriodPayDate;
 
-	const isSuperficialType = data?.reportType === PAYRUN_TYPE.SUPERFICIAL;
-	const isManualType = data?.reportType === PAYRUN_TYPE.MANUAL;
+	const isSuperficialType = data?.reportType === "4";
+	const isManualType = data?.reportType === "3";
+
 	data.currentNetPay = isSuperficialType ? 0 : data.currentNetPay;
 	const paymentType = isManualType ? "Manual" : "DIRECT DEPOSIT";
 
