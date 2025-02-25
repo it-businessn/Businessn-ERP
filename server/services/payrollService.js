@@ -20,14 +20,14 @@ const TAX_CONFIG = {
 	MAX_PROVINCIAL_CLAIM: 11981.0,
 };
 
-//2024 FD tax brackets
+//2025 FD tax brackets
 const applyFederalTaxRate = (annualIncome, taxCredit) => {
 	const personalCredit = taxCredit ? parseFloat(taxCredit) : 0;
 	const taxBrackets = [
-		{ upperLimit: 55867, rate: 0.15 },
-		{ upperLimit: 111733, rate: 0.205 },
-		{ upperLimit: 173205, rate: 0.26 },
-		{ upperLimit: 246752, rate: 0.29 },
+		{ upperLimit: 57375, rate: 0.15 },
+		{ upperLimit: 114750, rate: 0.205 },
+		{ upperLimit: 177882, rate: 0.26 },
+		{ upperLimit: 253414, rate: 0.29 },
 		{ upperLimit: Infinity, rate: 0.33 },
 	];
 	const projectedTaxes = [];
@@ -64,16 +64,16 @@ const applyFederalTaxRate = (annualIncome, taxCredit) => {
 	return projectedAnnualTaxBill;
 };
 
-//2024 BC Provincial tax brackets
+//2025 BC Provincial tax brackets
 const applyProvincialTaxRate = (annualIncome, taxCredit) => {
 	const personalCredit = taxCredit ? parseFloat(taxCredit) : 0;
 	const taxBrackets = [
-		{ upperLimit: 47937, rate: 0.506 },
-		{ upperLimit: 95875, rate: 0.77 },
-		{ upperLimit: 110076, rate: 0.105 },
-		{ upperLimit: 133664, rate: 0.1229 },
-		{ upperLimit: 181232, rate: 0.147 },
-		{ upperLimit: 252752, rate: 0.168 },
+		{ upperLimit: 49279, rate: 0.0506 },
+		{ upperLimit: 98560, rate: 0.077 },
+		{ upperLimit: 113158, rate: 0.105 },
+		{ upperLimit: 137407, rate: 0.1229 },
+		{ upperLimit: 186306, rate: 0.147 },
+		{ upperLimit: 259829, rate: 0.168 },
 		{ upperLimit: Infinity, rate: 0.205 },
 	];
 	const projectedTaxes = [];
@@ -138,6 +138,16 @@ const getTaxDetails = (payRate, grossEarning, empTaxCreditResult) => {
 	const adjustedProjectedIncome = projectedIncome - TAX_CONFIG.CPP_BASIC_EXEMPTION;
 	const adjustedGrossEarning = adjustedProjectedIncome / TAX_CONFIG.ANNUAL_PAY_PERIODS;
 	const CPPContribution = adjustedGrossEarning * TAX_CONFIG.TOTAL_CONTRIBUTION_RATE;
+	if (empTaxCreditResult?.federalTaxCredit) {
+		empTaxCreditResult.federalTaxCredit = parseFloat(
+			empTaxCreditResult.federalTaxCredit.replace(/[$,]/g, ""),
+		);
+	}
+	if (empTaxCreditResult?.regionalTaxCredit) {
+		empTaxCreditResult.regionalTaxCredit = parseFloat(
+			empTaxCreditResult.regionalTaxCredit.replace(/[$,]/g, ""),
+		);
+	}
 
 	const federalTaxDeductionByPayPeriod =
 		applyFederalTaxRate(annualProjectedGrossEarning, empTaxCreditResult?.federalTaxCredit) /
