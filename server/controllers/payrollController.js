@@ -728,7 +728,7 @@ const addEmployeePayStubInfo = async (req, res) => {
 				employee._id,
 			);
 		}
-		generateT4Slip(companyName, payPeriod);
+		// generateT4Slip(companyName, payPeriod);
 		//if payroll processed successful
 		//alerts violation generate independently based on emp data, on process payroll will run again to check alerts or violations.
 		res.status(200).json({ message: "Paystub created successfully" });
