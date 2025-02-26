@@ -32,6 +32,7 @@ export const PAY_TYPES = [
 		param_key: "regPay",
 		param_hours: "regBreakHoursWorked",
 		color: "var(--stat_item_color)",
+		rowBg: "var(--break_row_bg)",
 	},
 	{
 		type: PAY_TYPES_TITLE.OVERTIME_PAY,
@@ -46,6 +47,7 @@ export const PAY_TYPES = [
 		param_key: "overTimePay",
 		param_hours: "OTbreakHoursWorked",
 		color: "var(--stat_item_color)",
+		rowBg: "var(--break_row_bg)",
 	},
 	{
 		type: PAY_TYPES_TITLE.DBL_OVERTIME_PAY,
@@ -60,6 +62,7 @@ export const PAY_TYPES = [
 		param_key: "dblOverTimePay",
 		param_hours: "dblOTBreakHoursWorked",
 		color: "var(--stat_item_color)",
+		rowBg: "var(--break_row_bg)",
 	},
 	{
 		type: PAY_TYPES_TITLE.STAT_WORK_PAY,
@@ -74,6 +77,7 @@ export const PAY_TYPES = [
 		param_key: "statWorkPay",
 		param_hours: "statWorkBreakHoursWorked",
 		color: "var(--stat_item_color)",
+		rowBg: "var(--break_row_bg)",
 	},
 	{
 		type: PAY_TYPES_TITLE.STAT_PAY,
@@ -88,6 +92,7 @@ export const PAY_TYPES = [
 		param_key: "statPay",
 		param_hours: "statBreakHoursWorked",
 		color: "var(--stat_item_color)",
+		rowBg: "var(--break_row_bg)",
 	},
 	{
 		type: PAY_TYPES_TITLE.SICK_PAY,
@@ -102,6 +107,7 @@ export const PAY_TYPES = [
 		param_key: "sickPay",
 		param_hours: "sickBreakHoursWorked",
 		color: "var(--stat_item_color)",
+		rowBg: "var(--break_row_bg)",
 	},
 	{
 		type: PAY_TYPES_TITLE.VACATION_PAY,
@@ -116,6 +122,7 @@ export const PAY_TYPES = [
 		param_key: "vacationPay",
 		param_hours: "vacationBreakHoursWorked",
 		color: "var(--stat_item_color)",
+		rowBg: "var(--break_row_bg)",
 	},
 ];
 

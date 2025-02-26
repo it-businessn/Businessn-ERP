@@ -363,7 +363,7 @@ const Timesheet = ({
 							index,
 						) => {
 							const approveStatusBtnCss = getStatusStyle(approveStatus);
-							const { type, color } = getPayTypeStyle(payType);
+							const { type, color, rowBg } = getPayTypeStyle(payType);
 
 							const { param_key, param_hours } = getParamKey(payType);
 
@@ -406,7 +406,11 @@ const Timesheet = ({
 							const isDisabled = startTime === "" || endTime === "";
 
 							return (
-								<Tr key={_id} _hover={{ bg: "var(--phoneCall_bg_light)" }}>
+								<Tr
+									key={_id}
+									bg={rowBg ?? ""}
+									_hover={{ bg: rowBg ?? "var(--phoneCall_bg_light)" }}
+								>
 									<Td py={0}>
 										<TextTitle title={employee?.fullName} />
 									</Td>
