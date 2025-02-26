@@ -15,6 +15,7 @@ const PageLayout = ({
 	selectPlaceholder,
 	valueText1,
 	isTimesheet,
+	showCheckBox,
 }) => (
 	<Box p={{ base: "1em" }} overflow={"hidden"}>
 		<PageHeader
@@ -28,6 +29,7 @@ const PageLayout = ({
 			selectAttr={selectAttr}
 			selectPlaceholder={selectPlaceholder}
 			isTimesheet={isTimesheet}
+			showCheckBox={showCheckBox}
 		/>
 		{showBgLayer ? <BoxCard borderWidth={"2px"}>{children}</BoxCard> : children}
 	</Box>

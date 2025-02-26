@@ -1,4 +1,4 @@
-import { HStack, IconButton } from "@chakra-ui/react";
+import { Checkbox, HStack, IconButton, VStack } from "@chakra-ui/react";
 import PrimaryButton from "components/ui/button/PrimaryButton";
 import TabsButtonGroup from "components/ui/tab/TabsButtonGroup";
 import useCompany from "hooks/useCompany";
@@ -127,6 +127,18 @@ const Timesheets = () => {
 		setShowCCFilter(false);
 	}, [startDate, endDate, filteredEmployees, filteredDept, filteredCC, viewMode]);
 
+	const CHECK_FILTER = [
+		{
+			label: "Shift Hours",
+			onChange: (e) => handleCheckboxChange(e),
+		},
+		{
+			label: "Breaks",
+			onChange: (e) => handleCheckboxChange(e),
+		},
+	];
+	const handleCheckboxChange = (e) => console.log(e);
+
 	return (
 		<PageLayout
 			width="full"
@@ -135,6 +147,15 @@ const Timesheets = () => {
 			valueText1={date}
 			handleChange={(value) => setDate(value)}
 			isTimesheet
+			showCheckBox={
+				<VStack ml={5} alignItems="self-start">
+					{CHECK_FILTER.map(({ label, onChange }) => (
+						<Checkbox key={label} colorScheme="facebook" isChecked={true} onChange={onChange}>
+							{label}
+						</Checkbox>
+					))}
+				</VStack>
+			}
 		>
 			<HStack spacing={3} justify={"flex-end"} mt={-8}>
 				<IconButton

@@ -8,6 +8,7 @@ import TextTitle from "components/ui/text/TextTitle";
 import { COLS } from "constant";
 import { useEffect, useState } from "react";
 import { FaCheck, FaRegTrashAlt } from "react-icons/fa";
+import { GoPlusCircle } from "react-icons/go";
 import { IoClose } from "react-icons/io5";
 import TimesheetService from "services/TimesheetService";
 import { getAmount } from "utils/convertAmt";
@@ -130,6 +131,68 @@ const Timesheet = ({
 		);
 		setTimesheetData(updatedData);
 	};
+	const addRow = (index) => {
+		const newRows = [...timesheetData];
+		const {
+			regPay,
+			statWorkPay,
+			dblOverTimePay,
+			overTimePay,
+			createdOn,
+			regHoursWorked,
+			breakHoursWorked,
+			overtimeHoursWorked,
+			dblOvertimeHoursWorked,
+			statDayHoursWorked,
+			statDayHours,
+			sickPayHours,
+			vacationPayHours,
+			statPay,
+			sickPay,
+			vacationPay,
+			totalBreaks,
+			clockIn,
+			clockOut,
+			totalBreakHours,
+			totalWorkedHours,
+			notDevice,
+			employee,
+			payType,
+		} = timesheetData[index];
+
+		const emptyBreakRecord = {
+			_id: Date.now(),
+			approveStatus: "Pending",
+			payType: `${payType} Break`,
+			regPay,
+			statWorkPay,
+			dblOverTimePay,
+			overTimePay,
+			createdOn,
+			regHoursWorked,
+			breakHoursWorked,
+			overtimeHoursWorked,
+			dblOvertimeHoursWorked,
+			statDayHoursWorked,
+			statDayHours,
+			sickPayHours,
+			vacationPayHours,
+			statPay,
+			sickPay,
+			vacationPay,
+			totalBreaks,
+			clockIn,
+			clockOut,
+			totalBreakHours,
+			totalWorkedHours,
+			notDevice,
+			employee,
+			startTime: "",
+			endTime: "",
+		};
+		newRows.splice(index + 1, 0, emptyBreakRecord);
+		setTimesheetData(newRows);
+	};
 
 	const handleDelete = async (id) => {
 		try {
@@ -240,7 +303,7 @@ const Timesheet = ({
 		"Pay Type",
 		"Start Time",
 		"End Time",
-		// "Break/Lunch",
+		"Break",
 		"Total Hours",
 		"Status",
 		"Action",
@@ -266,36 +329,39 @@ const Timesheet = ({
 						<EmptyRowRecord data={timesheetData} colSpan={cols.length} />
 					)}
 					{timesheetData?.map(
-						({
-							_id,
-							approveStatus,
-							payType,
-							regPay,
-							statWorkPay,
-							dblOverTimePay,
-							overTimePay,
-							createdOn,
-							regHoursWorked,
-							breakHoursWorked,
-							overtimeHoursWorked,
-							dblOvertimeHoursWorked,
-							statDayHoursWorked,
-							statDayHours,
-							sickPayHours,
-							vacationPayHours,
-							statPay,
-							sickPay,
-							vacationPay,
-							totalBreaks,
-							clockIn,
-							clockOut,
-							totalBreakHours,
-							totalWorkedHours,
-							notDevice,
-							employee,
-							startTime,
-							endTime,
-						}) => {
+						(
+							{
+								_id,
+								approveStatus,
+								payType,
+								regPay,
+								statWorkPay,
+								dblOverTimePay,
+								overTimePay,
+								createdOn,
+								regHoursWorked,
+								breakHoursWorked,
+								overtimeHoursWorked,
+								dblOvertimeHoursWorked,
+								statDayHoursWorked,
+								statDayHours,
+								sickPayHours,
+								vacationPayHours,
+								statPay,
+								sickPay,
+								vacationPay,
+								totalBreaks,
+								clockIn,
+								clockOut,
+								totalBreakHours,
+								totalWorkedHours,
+								notDevice,
+								employee,
+								startTime,
+								endTime,
+							},
+							index,
+						) => {
 							const approveStatusBtnCss = getStatusStyle(approveStatus);
 							const { type, color } = getPayTypeStyle(payType);
 
@@ -337,7 +403,7 @@ const Timesheet = ({
 
 							const isStatPay = payType === PAY_TYPES_TITLE.STAT_PAY;
 
-							const isDisabled = !clockIn || !clockOut;
+							const isDisabled = startTime === "" || endTime === "";
 
 							return (
 								<Tr key={_id} _hover={{ bg: "var(--phoneCall_bg_light)" }}>
@@ -389,15 +455,22 @@ const Timesheet = ({
 											required
 										/>
 									</Td>
-									{/* <Td p={0} pl={3}>
-									{renderEditableInput(
+									<Td p={0} pl={5}>
+										{/* {renderEditableInput(
 										_id,
 										"totalBreakHours",
 										totalBreakHours,
 										param_hours,
 										isStatPay,
-									)}
-								</Td> */}
+									)} */}
+										<IconButton
+											isDisabled={isDisabled}
+											icon={<GoPlusCircle />}
+											fontSize="1.8em"
+											color={"#000"}
+											onClick={() => addRow(index)}
+										/>
+									</Td>
 
 									<Td py={0} w={"80px"}>
 										<NormalTextTitle
