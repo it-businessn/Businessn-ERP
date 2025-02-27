@@ -305,10 +305,30 @@ const createManualTimesheet = async (req, res) => {
 			: PARAM_HOURS.BREAK;
 	const payType = getPayType(param_hours === PARAM_HOURS.BREAK);
 
+	const date = new Date();
+	date.setMinutes(date.getMinutes() - date.getTimezoneOffset());
 	try {
+		const findEmployeeTimesheetExists = await Timesheet.find({
+			employeeId,
+			clockIn: { $ne: null },
+			[param_hours]: 0,
+			companyName: company,
+			payType,
+		}).sort({ clockIn: -1 });
+
+		if (findEmployeeTimesheetExists.length) {
+			findEmployeeTimesheetExists[0].clockOut = moment.utc(date).toISOString();
+			const totalWorkedHours = calcTotalWorkedHours(
+				findEmployeeTimesheetExists[0].clockIn,
+				findEmployeeTimesheetExists[0].clockOut,
+			);
+			findEmployeeTimesheetExists[0][param_hours] = totalWorkedHours;
+			await findEmployeeTimesheetExists[0].save();
+			return res.status(201).json(findEmployeeTimesheetExists[0]);
+		}
 		const newEntry = {
 			employeeId,
-			clockIn: moment().tz("America/Vancouver").toDate(),
+			clockIn: moment.utc(date).toISOString(),
 			[param_hours]: 0,
 			companyName: company,
 			payType,
@@ -319,25 +339,6 @@ const createManualTimesheet = async (req, res) => {
 			const newTimesheet = await addTimesheetEntry(newEntry);
 			return res.status(201).json(newTimesheet);
 		}
-
-		const findEmployeeTimesheetExists = await Timesheet.find({
-			employeeId,
-			clockIn: { $ne: null },
-			[param_hours]: 0,
-			companyName: company,
-			payType,
-		}).sort({ clockIn: -1 });
-
-		if (findEmployeeTimesheetExists.length) {
-			findEmployeeTimesheetExists[0].clockOut = moment();
-			const totalWorkedHours = calcTotalWorkedHours(
-				findEmployeeTimesheetExists[0].clockIn,
-				findEmployeeTimesheetExists[0].clockOut,
-			);
-			findEmployeeTimesheetExists[0][param_hours] = totalWorkedHours;
-			await findEmployeeTimesheetExists[0].save();
-		}
-		return res.status(201).json(findEmployeeTimesheetExists[0]);
 	} catch (error) {
 		res.status(400).json({ message: error.message });
 	}

@@ -106,7 +106,7 @@ const ROLES = {
 const PARAM_HOURS = {
 	REGULAR: "regHoursWorked",
 	STAT: "statDayHoursWorked",
-	BREAK: "breakHoursWorked",
+	BREAK: "regBreakHoursWorked",
 };
 
 const TIMESHEET_STATUS = {

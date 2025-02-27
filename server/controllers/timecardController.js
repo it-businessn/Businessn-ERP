@@ -3,7 +3,16 @@ const Timecard = require("../models/Timecard");
 const TimecardRaw = require("../models/TimecardRaw");
 const Timesheet = require("../models/Timesheet");
 
-const { getUTCTime, startOfDay, endOfDay, getPayType, calcTotalHours, PAY_TYPES_TITLE, PUNCH_CODE, PARAM_HOURS } = require("../services/data");
+const {
+	getUTCTime,
+	startOfDay,
+	endOfDay,
+	getPayType,
+	calcTotalHours,
+	PAY_TYPES_TITLE,
+	PUNCH_CODE,
+	PARAM_HOURS,
+} = require("../services/data");
 const moment = require("moment");
 const { getHolidays } = require("./setUpController");
 
@@ -35,7 +44,9 @@ const getTimecard = async (req, res) => {
 		const uniqueEntries = [
 			...new Map(
 				result.map((entry) => {
-					const key = entry.clockOut ? `${entry.clockIn.getTime()}` : `${entry.clockIn.getTime()}-null`;
+					const key = entry.clockOut
+						? `${entry.clockIn.getTime()}`
+						: `${entry.clockIn.getTime()}-null`;
 					return [key, entry];
 				}),
 			).values(),
@@ -182,11 +193,17 @@ const addTimecardEntry = async (entry, isBreak) => {
 		const currentYrSTAT_HOLIDAYS = await getHolidays({
 			companyName: empRec?.companyName,
 		});
-		const isStatHoliday = currentYrSTAT_HOLIDAYS.find(({ date }) => moment.utc(date).format("YYYY-MM-DD") === moment(clockIn).format("YYYY-MM-DD"));
+		const isStatHoliday = currentYrSTAT_HOLIDAYS.find(
+			({ date }) => moment.utc(date).format("YYYY-MM-DD") === moment(clockIn).format("YYYY-MM-DD"),
+		);
 		const newTimesheetRecord = {
 			employeeId: entry.employeeId,
 			companyName: entry.companyName,
-			payType: isBreak ? PAY_TYPES_TITLE.REG_PAY_BRK : isStatHoliday ? PAY_TYPES_TITLE.STAT_WORK_PAY : getPayType(),
+			payType: isBreak
+				? PAY_TYPES_TITLE.REG_PAY_BRK
+				: isStatHoliday
+				? PAY_TYPES_TITLE.STAT_WORK_PAY
+				: getPayType(),
 			clockIn,
 			notDevice,
 		};
@@ -223,7 +240,7 @@ const updateTimecardEntry = async (entry, isBreakType) => {
 			.duration(moment(entry.clockOut).diff(moment(entry.clockIn)))
 			.asHours()
 			.toFixed(2);
-		timesheetRecord.breakHoursWorked = durationHrs;
+		timesheetRecord.regBreakHoursWorked = durationHrs;
 	}
 	if (!isBreakType && !timesheetRecord?.clockOut) {
 		timesheetRecord.clockOut = entry.clockOut;
