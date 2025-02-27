@@ -10,6 +10,7 @@ import { useEffect, useState } from "react";
 import { FaCheck, FaRegTrashAlt } from "react-icons/fa";
 import { GoPlusCircle } from "react-icons/go";
 import { IoClose } from "react-icons/io5";
+import { TbCornerRightUp } from "react-icons/tb";
 import TimesheetService from "services/TimesheetService";
 import { getAmount } from "utils/convertAmt";
 import {
@@ -340,7 +341,6 @@ const Timesheet = ({
 								overTimePay,
 								createdOn,
 								regHoursWorked,
-								breakHoursWorked,
 								overtimeHoursWorked,
 								dblOvertimeHoursWorked,
 								statDayHoursWorked,
@@ -359,6 +359,7 @@ const Timesheet = ({
 								employee,
 								startTime,
 								endTime,
+								regBreakHoursWorked,
 							},
 							index,
 						) => {
@@ -397,8 +398,8 @@ const Timesheet = ({
 									? sickPayHours
 									: param_hours === "vacationPayHours"
 									? vacationPayHours
-									: param_hours === "breakHoursWorked"
-									? breakHoursWorked
+									: param_hours === "regBreakHoursWorked"
+									? regBreakHoursWorked
 									: 0;
 
 							const isStatPay = payType === PAY_TYPES_TITLE.STAT_PAY;
@@ -467,21 +468,31 @@ const Timesheet = ({
 										param_hours,
 										isStatPay,
 									)} */}
-										<IconButton
-											isDisabled={isDisabled}
-											icon={<GoPlusCircle />}
-											fontSize="1.8em"
-											color={"#000"}
-											onClick={() => addRow(index)}
-										/>
+										{regBreakHoursWorked ? (
+											<NormalTextTitle size="sm" p="0 1em" title={regBreakHoursWorked} />
+										) : (
+											<IconButton
+												isDisabled={isDisabled}
+												icon={<GoPlusCircle />}
+												fontSize="1.8em"
+												color="var(--main_color_black)"
+												onClick={() => addRow(index)}
+											/>
+										)}
 									</Td>
 
 									<Td py={0} w={"80px"}>
-										<NormalTextTitle
-											// align={"center"}
-											size="sm"
-											title={param_hours_worked}
-										/>
+										{regBreakHoursWorked ? (
+											<IconButton
+												isDisabled={isDisabled}
+												icon={<TbCornerRightUp />}
+												fontSize="1.8em"
+												ml="-1em"
+												onClick={() => addRow(index)}
+											/>
+										) : (
+											<NormalTextTitle size="sm" title={param_hours_worked} />
+										)}
 									</Td>
 									<Td p={0} position={"sticky"} right={"0"} zIndex="1">
 										<PrimaryButton

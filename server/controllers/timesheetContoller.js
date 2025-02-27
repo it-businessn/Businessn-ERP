@@ -308,36 +308,39 @@ const createManualTimesheet = async (req, res) => {
 	const date = new Date();
 	date.setMinutes(date.getMinutes() - date.getTimezoneOffset());
 	try {
-		const findEmployeeTimesheetExists = await Timesheet.find({
-			employeeId,
-			clockIn: { $ne: null },
-			[param_hours]: 0,
-			companyName: company,
-			payType,
-		}).sort({ clockIn: -1 });
-
-		if (findEmployeeTimesheetExists.length) {
-			findEmployeeTimesheetExists[0].clockOut = moment.utc(date).toISOString();
-			const totalWorkedHours = calcTotalWorkedHours(
-				findEmployeeTimesheetExists[0].clockIn,
-				findEmployeeTimesheetExists[0].clockOut,
-			);
-			findEmployeeTimesheetExists[0][param_hours] = totalWorkedHours;
-			await findEmployeeTimesheetExists[0].save();
-			return res.status(201).json(findEmployeeTimesheetExists[0]);
-		}
-		const newEntry = {
-			employeeId,
-			clockIn: moment.utc(date).toISOString(),
-			[param_hours]: 0,
-			companyName: company,
-			payType,
-			manualAdded: true,
-		};
-
 		if (punch === PUNCH_CODE.CLOCK_IN || punch === PUNCH_CODE.BREAK_IN) {
+			const newEntry = {
+				employeeId,
+				clockIn: moment.utc(date).toISOString(),
+				[param_hours]: 0,
+				companyName: company,
+				payType,
+				manualAdded: true,
+			};
 			const newTimesheet = await addTimesheetEntry(newEntry);
 			return res.status(201).json(newTimesheet);
+		}
+		const searchObject = {
+			employeeId,
+			clockIn: { $ne: null },
+			companyName: company,
+			payType,
+		};
+		if (punch === PUNCH_CODE.CLOCK_OUT) {
+			searchObject[param_hours] = 0;
+		}
+		const findEmployeeTimesheetExists = await Timesheet.find(searchObject).sort({ clockIn: -1 });
+		if (findEmployeeTimesheetExists.length) {
+			findEmployeeTimesheetExists[0].clockOut = moment.utc(date).toISOString();
+			if (punch === PUNCH_CODE.CLOCK_OUT) {
+				const totalWorkedHours = calcTotalWorkedHours(
+					findEmployeeTimesheetExists[0].clockIn,
+					findEmployeeTimesheetExists[0].clockOut,
+				);
+				findEmployeeTimesheetExists[0][param_hours] = totalWorkedHours;
+			}
+			await findEmployeeTimesheetExists[0].save();
+			return res.status(201).json(findEmployeeTimesheetExists[0]);
 		}
 	} catch (error) {
 		res.status(400).json({ message: error.message });
