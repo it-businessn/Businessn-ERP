@@ -1,4 +1,4 @@
-import { HStack, IconButton, Input, Tbody, Td, Tr } from "@chakra-ui/react";
+import { HStack, IconButton, Input, Tbody, Td, Tr, useToast } from "@chakra-ui/react";
 import PrimaryButton from "components/ui/button/PrimaryButton";
 import EmptyRowRecord from "components/ui/EmptyRowRecord";
 import DeletePopUp from "components/ui/modal/DeletePopUp";
@@ -115,7 +115,7 @@ const Timesheet = ({
 	const initialFormData = {
 		clockIn: null,
 		clockOut: null,
-		totalBreakHours: "",
+		regBreakHoursWorked: "",
 		approve: undefined,
 		company,
 		recordId: null,
@@ -165,7 +165,7 @@ const Timesheet = ({
 			totalBreaks,
 			clockIn,
 			clockOut,
-			totalBreakHours,
+			regBreakHoursWorked,
 			totalWorkedHours,
 			notDevice,
 			employee,
@@ -195,7 +195,7 @@ const Timesheet = ({
 			totalBreaks,
 			clockIn,
 			clockOut,
-			totalBreakHours,
+			regBreakHoursWorked,
 			totalWorkedHours,
 			notDevice,
 			employee,
@@ -221,6 +221,7 @@ const Timesheet = ({
 
 	const handleClose = () => setShowDeletePopUp(false);
 
+	const toast = useToast();
 	const handleSubmit = async () => {
 		try {
 			const updatedRec = timesheetData.find((record) => record._id === formData.recordId);
@@ -231,7 +232,14 @@ const Timesheet = ({
 			formData.payType = updatedRec.payType;
 
 			if (formData.recordId) {
-				await TimesheetService.updateTimesheet(formData, formData.recordId);
+				const { data } = await TimesheetService.updateTimesheet(formData, formData.recordId);
+				if (data.message)
+					toast({
+						title: data.message,
+						status: "success",
+						duration: 1500,
+						isClosable: true,
+					});
 				setRefresh((prev) => !prev);
 			}
 		} catch (error) {}
@@ -350,7 +358,6 @@ const Timesheet = ({
 								statWorkPay,
 								dblOverTimePay,
 								overTimePay,
-								createdOn,
 								regHoursWorked,
 								overtimeHoursWorked,
 								dblOvertimeHoursWorked,
@@ -361,11 +368,7 @@ const Timesheet = ({
 								statPay,
 								sickPay,
 								vacationPay,
-								totalBreaks,
 								clockIn,
-								clockOut,
-								totalBreakHours,
-								totalWorkedHours,
 								notDevice,
 								employee,
 								startTime,
@@ -533,6 +536,7 @@ const Timesheet = ({
 												onClick={() => {
 													setFormData((prev) => ({
 														...prev,
+														param_hours,
 														recordId: _id,
 														approve: true,
 														startTime: null,
@@ -549,6 +553,7 @@ const Timesheet = ({
 												onClick={() => {
 													setFormData((prev) => ({
 														...prev,
+														param_hours,
 														recordId: _id,
 														approve: false,
 														startTime: null,

@@ -410,7 +410,9 @@ const updateTimesheet = async (req, res) => {
 
 		if (startTime) clockIn = setTime(clockIn, startTime);
 		if (endTime) clockOut = setTime(clockIn, endTime);
-		const totalWorkedHours = calcTotalWorkedHours(clockIn, clockOut);
+		const totalWorkedHours = existingTimesheetInfo[param_hours]
+			? existingTimesheetInfo[param_hours]
+			: calcTotalWorkedHours(clockIn, clockOut);
 
 		if (param_hours === PARAM_HOURS.REGULAR && totalWorkedHours > 8) {
 			const adjustedClockOut = await addOvertimeRecord(clockIn, clockOut, empId, company);
@@ -428,15 +430,20 @@ const updateTimesheet = async (req, res) => {
 			const timesheet = await updateTimesheetData(id, updatedData);
 			return res.status(201).json(timesheet);
 		}
-		const approved = existingTimesheetInfo?.approveStatus === TIMESHEET_STATUS.APPROVED || approve;
+		const recordApprovedHistory =
+			existingTimesheetInfo?.approveStatus === TIMESHEET_STATUS.APPROVED || approve;
 		const updatedWorkedHrs =
-			param_hours === PARAM_HOURS.BREAK ? (approved ? totalWorkedHours : 0) : totalWorkedHours;
+			param_hours === PARAM_HOURS.BREAK
+				? recordApprovedHistory
+					? totalWorkedHours
+					: 0
+				: totalWorkedHours;
 
 		const updatedData = {
 			clockIn,
 			clockOut,
 			[param_hours]: updatedWorkedHrs,
-			approveStatus: approved
+			approveStatus: recordApprovedHistory
 				? TIMESHEET_STATUS.APPROVED
 				: approve === false
 				? TIMESHEET_STATUS.REJECTED
@@ -450,8 +457,10 @@ const updateTimesheet = async (req, res) => {
 				companyName: company,
 				payType: PAY_TYPES_TITLE.REG_PAY,
 				clockIn: {
-					$gte: moment(clockOut).startOf("day").toDate(),
-					$lte: moment(clockIn).endOf("day").toDate(),
+					$lte: moment(clockIn).toDate(),
+				},
+				clockOut: {
+					$gte: moment(clockOut).toDate(),
 				},
 			}).sort({ clockIn: -1 });
 			if (nearestClockInRecord.length) {
@@ -460,6 +469,12 @@ const updateTimesheet = async (req, res) => {
 					updatedWorkedHrs;
 				nearestClockInRecord[0].regHoursWorked = adjustedRegHours;
 				await nearestClockInRecord[0].save();
+				const timesheet = await updateTimesheetData(id, updatedData);
+				return res.status(201).json(timesheet);
+			} else {
+				return res
+					.status(201)
+					.json({ message: "Break records should be within the correct timeframe." });
 			}
 		}
 		const timesheet = await updateTimesheetData(id, updatedData);
