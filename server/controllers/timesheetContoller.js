@@ -341,6 +341,8 @@ const createManualTimesheet = async (req, res) => {
 			}
 			await findEmployeeTimesheetExists[0].save();
 			return res.status(201).json(findEmployeeTimesheetExists[0]);
+		} else {
+			return res.status(201).json("Record not found");
 		}
 	} catch (error) {
 		res.status(400).json({ message: error.message });
@@ -426,19 +428,40 @@ const updateTimesheet = async (req, res) => {
 			const timesheet = await updateTimesheetData(id, updatedData);
 			return res.status(201).json(timesheet);
 		}
+		const approved = existingTimesheetInfo?.approveStatus === TIMESHEET_STATUS.APPROVED || approve;
+		const updatedWorkedHrs =
+			param_hours === PARAM_HOURS.BREAK ? (approved ? totalWorkedHours : 0) : totalWorkedHours;
 
 		const updatedData = {
 			clockIn,
 			clockOut,
-			[param_hours]: totalWorkedHours,
-			approveStatus:
-				existingTimesheetInfo?.approveStatus === TIMESHEET_STATUS.APPROVED || approve
-					? TIMESHEET_STATUS.APPROVED
-					: approve === false
-					? TIMESHEET_STATUS.REJECTED
-					: TIMESHEET_STATUS.PENDING,
+			[param_hours]: updatedWorkedHrs,
+			approveStatus: approved
+				? TIMESHEET_STATUS.APPROVED
+				: approve === false
+				? TIMESHEET_STATUS.REJECTED
+				: TIMESHEET_STATUS.PENDING,
 		};
 
+		if (param_hours === PARAM_HOURS.BREAK) {
+			const nearestClockInRecord = await Timesheet.find({
+				deleted: false,
+				employeeId: empId,
+				companyName: company,
+				payType: PAY_TYPES_TITLE.REG_PAY,
+				clockIn: {
+					$gte: moment(clockOut).startOf("day").toDate(),
+					$lte: moment(clockIn).endOf("day").toDate(),
+				},
+			}).sort({ clockIn: -1 });
+			if (nearestClockInRecord.length) {
+				const adjustedRegHours =
+					calcTotalWorkedHours(nearestClockInRecord[0].clockIn, nearestClockInRecord[0].clockOut) -
+					updatedWorkedHrs;
+				nearestClockInRecord[0].regHoursWorked = adjustedRegHours;
+				await nearestClockInRecord[0].save();
+			}
+		}
 		const timesheet = await updateTimesheetData(id, updatedData);
 		return res.status(201).json(timesheet);
 	} catch (error) {

@@ -19,7 +19,14 @@ import {
 	getTimeFormat,
 	getUTCTime,
 } from "utils/convertDate";
-import { getParamKey, getPayTypeStyle, getStatusStyle, PAY_TYPES_TITLE } from "./data";
+import {
+	BREAK_TYPES_TITLE,
+	getParamKey,
+	getPayTypeStyle,
+	getStatusStyle,
+	PAY_TYPES_TITLE,
+	TIMESHEET_STATUS_LABEL,
+} from "./data";
 import ExtraTimeEntryModal from "./ExtraTimeEntryModal";
 
 const Timesheet = ({
@@ -56,6 +63,10 @@ const Timesheet = ({
 						_.startTime = getClockInTimeFormat(_.clockIn);
 						_.endTime = _.clockOut ? getTimeFormat(_.clockOut) : "";
 					}
+					_.isDisabled =
+						_.startTime === "" ||
+						_.endTime === "" ||
+						_.approveStatus === TIMESHEET_STATUS_LABEL.APPROVED;
 					return _;
 				});
 				setTimesheets(items);
@@ -360,6 +371,7 @@ const Timesheet = ({
 								startTime,
 								endTime,
 								regBreakHoursWorked,
+								isDisabled,
 							},
 							index,
 						) => {
@@ -403,8 +415,6 @@ const Timesheet = ({
 									: 0;
 
 							const isStatPay = payType === PAY_TYPES_TITLE.STAT_PAY;
-
-							const isDisabled = startTime === "" || endTime === "";
 
 							return (
 								<Tr
@@ -453,7 +463,10 @@ const Timesheet = ({
 											type="time"
 											name="endTime"
 											value={endTime || ""}
-											onClick={() => showPicker(`timeClockOutInput ${_id}`)}
+											onClick={() =>
+												approveStatus !== TIMESHEET_STATUS_LABEL.APPROVED &&
+												showPicker(`timeClockOutInput ${_id}`)
+											}
 											onChange={(e) =>
 												handleUpdateData(_id, "endTime", e.target.value, param_hours)
 											}
@@ -468,7 +481,7 @@ const Timesheet = ({
 										param_hours,
 										isStatPay,
 									)} */}
-										{regBreakHoursWorked ? (
+										{regBreakHoursWorked && payType === BREAK_TYPES_TITLE.REG_PAY_BRK ? (
 											<NormalTextTitle size="sm" p="0 1em" title={regBreakHoursWorked} />
 										) : (
 											<IconButton
@@ -482,7 +495,7 @@ const Timesheet = ({
 									</Td>
 
 									<Td py={0} w={"80px"}>
-										{regBreakHoursWorked ? (
+										{regBreakHoursWorked && payType === BREAK_TYPES_TITLE.REG_PAY_BRK ? (
 											<IconButton
 												isDisabled={isDisabled}
 												icon={<TbCornerRightUp />}
@@ -491,7 +504,7 @@ const Timesheet = ({
 												onClick={() => addRow(index)}
 											/>
 										) : (
-											<NormalTextTitle size="sm" title={param_hours_worked} />
+											<NormalTextTitle size="sm" title={param_hours_worked.toFixed(2)} />
 										)}
 									</Td>
 									<Td p={0} position={"sticky"} right={"0"} zIndex="1">
@@ -557,6 +570,7 @@ const Timesheet = ({
 											}}
 										/> */}
 											<IconButton
+												isDisabled={approveStatus === TIMESHEET_STATUS_LABEL.APPROVED}
 												size={"xs"}
 												color={"var(--main_color_black)"}
 												icon={<FaRegTrashAlt />}

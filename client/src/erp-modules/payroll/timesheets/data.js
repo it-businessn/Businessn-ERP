@@ -126,19 +126,25 @@ export const PAY_TYPES = [
 	},
 ];
 
+export const TIMESHEET_STATUS_LABEL = {
+	APPROVED: "Approved",
+	REJECTED: "Rejected",
+	PENDING: "Pending",
+};
+
 export const TIMESHEET_STATUS = [
 	{
-		value: "Approved",
+		value: TIMESHEET_STATUS_LABEL.APPROVED,
 		color: "var(--primary_bg)",
 		bg: "var(--correct_ans)",
 	},
 	{
-		value: "Rejected",
+		value: TIMESHEET_STATUS_LABEL.REJECTED,
 		color: "var(--primary_bg)",
 		bg: "var(--incorrect_ans)",
 	},
 	{
-		value: "Pending",
+		value: TIMESHEET_STATUS_LABEL.PENDING,
 		color: "var(--primary_bg)",
 		bg: "var(--pending)",
 	},
