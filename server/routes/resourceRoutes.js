@@ -3,28 +3,31 @@ const router = express.Router();
 
 const { storageSpace } = require("../services/fileService");
 const resourceController = require("../controllers/resourceController");
+const { authenticateToken } = require("../middleware/auth");
 
-router.get("/", resourceController.getResources);
+router.get("/", authenticateToken, resourceController.getResources);
 
 router.get("/download/:filename", resourceController.downloadResource);
 
 router.get(
 	"/type/:fileType/:companyName",
+	authenticateToken,
 	resourceController.getCompanyResources,
 );
 
-router.get("/:fileType", resourceController.getResource);
+router.get("/:fileType", authenticateToken, resourceController.getResource);
 
-router.get("/:companyName", resourceController.getResourcesByCompany);
+router.get("/:companyName", authenticateToken, resourceController.getResourcesByCompany);
 
 router.post(
 	"/upload",
+	authenticateToken,
 	storageSpace.single("file"),
 	resourceController.createResource,
 );
 
-router.put("/:id", resourceController.updateResource);
+router.put("/:id", authenticateToken, resourceController.updateResource);
 
-router.delete("/:id", resourceController.deleteResource);
+router.delete("/:id", authenticateToken, resourceController.deleteResource);
 
 module.exports = router;
