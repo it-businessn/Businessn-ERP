@@ -40,7 +40,7 @@ const Resources = lazy(() => import("./erp-modules/sales/resources"));
 const SalesReport = lazy(() => import("./erp-modules/sales/reports"));
 
 // payroll
-const Approvals = lazy(() => import("./erp-modules/payroll/Approvals"));
+const Attendance = lazy(() => import("./erp-modules/payroll/Attendance"));
 const LeaveApprovals = lazy(() => import("./erp-modules/payroll/LeaveApprovals"));
 const EmployeeDashboard = lazy(() =>
 	import("./erp-modules/payroll/employees/dashboard/EmployeeDashboard"),
@@ -294,8 +294,8 @@ export const router = createBrowserRouter([
 				element: <ProcessPayroll />,
 			},
 			{
-				path: `${ROUTE_PATH.PAYROLL}${ROUTE_PATH.APPROVALS}`,
-				element: <Approvals />,
+				path: `${ROUTE_PATH.PAYROLL}/attendance`,
+				element: <Attendance />,
 			},
 			{
 				path: leaveApprovalPath,
