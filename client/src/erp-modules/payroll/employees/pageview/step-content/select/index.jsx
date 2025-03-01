@@ -1,17 +1,9 @@
 import { FormControl, FormLabel, Select } from "@chakra-ui/react";
 import { FaCaretDown } from "react-icons/fa";
 
-const SelectTypeRecord = ({
-	param,
-	formData,
-	setFormData,
-	handleConfirm,
-	size = "sm",
-}) => {
+const SelectTypeRecord = ({ param, formData, setFormData, handleConfirm, size = "sm" }) => {
 	const newCostCenter =
-		formData.employmentCostCenter === "Golf Operations"
-			? "Golf"
-			: formData.employmentCostCenter;
+		formData.employmentCostCenter === "Golf Operations" ? "Golf" : formData.employmentCostCenter;
 
 	return (
 		<FormControl>
@@ -33,18 +25,15 @@ const SelectTypeRecord = ({
 			>
 				{param.name === "Department" && formData.employmentCostCenter !== ""
 					? param.options
-							?.filter(({ type }) => type.includes(newCostCenter))
-							?.map(({ type }) => (
-								<option value={type} key={type}>
-									{type}
+							?.filter((_) => _.type?.includes(newCostCenter) || _.name)
+							?.map((item) => (
+								<option value={item.type || item.name} key={item.type || item.name}>
+									{item.type || item.name}
 								</option>
 							))
 					: param.options?.map((item) => (
-							<option
-								value={item?.type ?? item?.name}
-								key={item?.type ?? item?.name}
-							>
-								{item?.type ?? item?.name}
+							<option value={item?.type || item?.name} key={item?.type || item?.name}>
+								{item?.type || item?.name}
 							</option>
 					  ))}
 			</Select>

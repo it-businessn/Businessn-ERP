@@ -78,25 +78,10 @@ const getEmployeeEmploymentInfo = async (req, res) => {
 		const result = await findEmployeeEmploymentInfo(empId, companyName);
 		const currentDate = moment().format("YYYYMMDD");
 
-		if (result) {
-			if (!result["employeeNo"]) {
-				result["employeeNo"] = `${companyName.slice(0, 2).toUpperCase()}${currentDate}${
-					Math.floor(Math.random() * 10) + 10
-				}`;
-			}
-			const roles = await EmployeeRole.find({
-				companyName,
-			})
-				.select("name")
-				.sort({
-					createdOn: -1,
-				});
-			const depts = await Department.find({ companyName }).select("name").sort({
-				createdOn: -1,
-			});
-
-			result.roles = roles;
-			result.depts = depts;
+		if (result && !result["employeeNo"]) {
+			result["employeeNo"] = `${companyName.slice(0, 2).toUpperCase()}${currentDate}${
+				Math.floor(Math.random() * 10) + 10
+			}`;
 		}
 		res.status(200).json(result);
 	} catch (error) {
