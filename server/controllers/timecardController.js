@@ -12,6 +12,7 @@ const {
 	PAY_TYPES_TITLE,
 	PUNCH_CODE,
 	PARAM_HOURS,
+	TIMESHEET_ORIGIN,
 } = require("../services/data");
 const moment = require("moment");
 const { getHolidays } = require("./setUpController");
@@ -206,6 +207,7 @@ const addTimecardEntry = async (entry, isBreak) => {
 				: getPayType(),
 			clockIn,
 			notDevice,
+			source: TIMESHEET_ORIGIN.TAD,
 		};
 		const timesheetRecord = await findTimesheet(newTimesheetRecord);
 

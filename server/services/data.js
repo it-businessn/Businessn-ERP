@@ -172,6 +172,13 @@ const PAY_TYPES_TITLE = {
 	VACATION_PAY: "Vacation Pay",
 };
 
+const TIMESHEET_ORIGIN = {
+	MANAGER: "Manager",
+	EMP: "Employee",
+	TAD: "TAD",
+	APP: "APP",
+};
+
 const PAYRUN_TYPE = { REGULAR: "1", PAYOUT: "2", MANUAL: "3", SUPERFICIAL: "4" };
 
 const getPayType = (isBreak = false) =>
@@ -244,4 +251,5 @@ module.exports = {
 	PARAM_HOURS,
 	// LOCAL_TIME,
 	PAYRUN_TYPE,
+	TIMESHEET_ORIGIN,
 };

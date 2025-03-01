@@ -10,6 +10,7 @@ const timesheetSchema = new mongoose.Schema({
 	payRate: Number,
 	payType: String,
 	employeeName: String,
+	source: String,
 	clockIn: Date,
 	clockOut: Date,
 	breakOut: Date,

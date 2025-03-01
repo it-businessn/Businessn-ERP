@@ -132,6 +132,29 @@ export const TIMESHEET_STATUS_LABEL = {
 	PENDING: "Pending",
 };
 
+export const TIMESHEET_SOURCES = [
+	{
+		origin: "Manager",
+		color: "var(--primary_button_bg)",
+		bg: "var(--primary_bg)",
+	},
+	{
+		origin: "Employee",
+		color: "var(--stat_worked)",
+		bg: "var(--primary_bg)",
+	},
+	{
+		origin: "TAD",
+		color: "var(--event_color)",
+		bg: "var(--primary_bg)",
+	},
+	{
+		origin: "APP",
+		color: "var(--gauge_needle)",
+		bg: "var(--primary_bg)",
+	},
+];
+
 export const TIMESHEET_STATUS = [
 	{
 		value: TIMESHEET_STATUS_LABEL.APPROVED,
@@ -151,6 +174,9 @@ export const TIMESHEET_STATUS = [
 ];
 
 export const getParamKey = (type) => (type ? PAY_TYPES.find((_) => _.type === type) : "");
+
+export const getSourceStyle = (sourceName) =>
+	TIMESHEET_SOURCES.find(({ origin }) => origin === sourceName);
 
 export const getStatusStyle = (approvedStatusName) =>
 	TIMESHEET_STATUS.find((_) => _.value === approvedStatusName);

@@ -23,9 +23,9 @@ import {
 	BREAK_TYPES_TITLE,
 	getParamKey,
 	getPayTypeStyle,
+	getSourceStyle,
 	getStatusStyle,
 	PAY_TYPES_TITLE,
-	TIMESHEET_STATUS_LABEL,
 } from "./data";
 import ExtraTimeEntryModal from "./ExtraTimeEntryModal";
 
@@ -63,10 +63,7 @@ const Timesheet = ({
 						_.startTime = getClockInTimeFormat(_.clockIn);
 						_.endTime = _.clockOut ? getTimeFormat(_.clockOut) : "";
 					}
-					_.isDisabled =
-						_.startTime === "" ||
-						_.endTime === "" ||
-						_.approveStatus === TIMESHEET_STATUS_LABEL.APPROVED;
+					_.isDisabled = _.startTime === "" || _.endTime === "";
 					return _;
 				});
 				setTimesheets(items);
@@ -319,6 +316,7 @@ const Timesheet = ({
 		COLS.EMP_NAME,
 		"Worked Date",
 		"Department",
+		"Source",
 		"Pay Rate",
 		"Pay Type",
 		"Start Time",
@@ -375,9 +373,11 @@ const Timesheet = ({
 								endTime,
 								regBreakHoursWorked,
 								isDisabled,
+								source,
 							},
 							index,
 						) => {
+							const sourceBtnCss = getSourceStyle(source);
 							const approveStatusBtnCss = getStatusStyle(approveStatus);
 							const { type, color, rowBg } = getPayTypeStyle(payType);
 
@@ -434,6 +434,22 @@ const Timesheet = ({
 									<Td py={0}>
 										<NormalTextTitle size="sm" title={employee?.department?.[0]} />
 									</Td>
+									<Td p={0} position={"sticky"} right={"0"} zIndex="1">
+										{source && (
+											<PrimaryButton
+												cursor="text"
+												color={sourceBtnCss?.color}
+												bg={sourceBtnCss?.bg}
+												name={source}
+												size="xs"
+												px={0}
+												hover={{
+													bg: sourceBtnCss.bg,
+													color: sourceBtnCss.color,
+												}}
+											/>
+										)}
+									</Td>
 									<Td textAlign={"right"} py={0} w={"90px"}>
 										{getAmount(param_pay_type)}
 									</Td>
@@ -466,10 +482,7 @@ const Timesheet = ({
 											type="time"
 											name="endTime"
 											value={endTime || ""}
-											onClick={() =>
-												approveStatus !== TIMESHEET_STATUS_LABEL.APPROVED &&
-												showPicker(`timeClockOutInput ${_id}`)
-											}
+											onClick={() => showPicker(`timeClockOutInput ${_id}`)}
 											onChange={(e) =>
 												handleUpdateData(_id, "endTime", e.target.value, param_hours)
 											}
@@ -488,7 +501,6 @@ const Timesheet = ({
 											<NormalTextTitle size="sm" p="0 1em" title={regBreakHoursWorked} />
 										) : (
 											<IconButton
-												isDisabled={isDisabled}
 												icon={<GoPlusCircle />}
 												fontSize="1.8em"
 												color="var(--main_color_black)"
@@ -575,7 +587,6 @@ const Timesheet = ({
 											}}
 										/> */}
 											<IconButton
-												isDisabled={approveStatus === TIMESHEET_STATUS_LABEL.APPROVED}
 												size={"xs"}
 												color={"var(--main_color_black)"}
 												icon={<FaRegTrashAlt />}

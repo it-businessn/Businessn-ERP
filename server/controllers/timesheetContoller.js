@@ -12,6 +12,7 @@ const {
 	PUNCH_CODE,
 	getPayType,
 	EARNING_TYPE,
+	TIMESHEET_ORIGIN,
 } = require("../services/data");
 
 const findByRecordTimesheets = async (record) => {
@@ -273,7 +274,7 @@ const calcTotalWorkedHours = (clockIn, clockOut) => {
 	return null;
 };
 
-const addOvertimeRecord = async (clockIn, clockOut, employeeId, company) => {
+const addOvertimeRecord = async (clockIn, clockOut, employeeId, company, source) => {
 	const adjustedClockOut = moment(clockIn).add(8, "hours");
 	const overtimeClockIn = moment(adjustedClockOut);
 	const overtimeClockOut = moment(clockOut);
@@ -290,6 +291,7 @@ const addOvertimeRecord = async (clockIn, clockOut, employeeId, company) => {
 		payType: PAY_TYPES_TITLE.OVERTIME_PAY,
 		overtimeHoursWorked,
 		manualAdded: true,
+		source,
 	};
 
 	await addTimesheetEntry(newEntry);
@@ -297,7 +299,7 @@ const addOvertimeRecord = async (clockIn, clockOut, employeeId, company) => {
 };
 
 const createManualTimesheet = async (req, res) => {
-	const { company, punch, employeeId } = req.body;
+	const { company, punch, employeeId, source } = req.body;
 
 	const param_hours =
 		punch === PUNCH_CODE.CLOCK_IN || punch === PUNCH_CODE.CLOCK_OUT
@@ -316,6 +318,7 @@ const createManualTimesheet = async (req, res) => {
 				companyName: company,
 				payType,
 				manualAdded: true,
+				source,
 			};
 			const newTimesheet = await addTimesheetEntry(newEntry);
 			return res.status(201).json(newTimesheet);
@@ -350,14 +353,21 @@ const createManualTimesheet = async (req, res) => {
 };
 
 const createTimesheet = async (req, res) => {
-	let { company, type, clockIn, clockOut, employeeId, param_hours, startTime, endTime } = req.body;
+	let { company, type, clockIn, clockOut, employeeId, param_hours, startTime, endTime, source } =
+		req.body;
 	try {
 		if (startTime) clockIn = setTime(clockIn, startTime);
 		if (endTime) clockOut = setTime(clockIn, endTime);
 		const totalWorkedHours = calcTotalWorkedHours(clockIn, clockOut);
 
 		if (type === PAY_TYPES_TITLE.REG_PAY && totalWorkedHours > 8) {
-			const adjustedClockOut = await addOvertimeRecord(clockIn, clockOut, employeeId, company);
+			const adjustedClockOut = await addOvertimeRecord(
+				clockIn,
+				clockOut,
+				employeeId,
+				company,
+				source,
+			);
 			const newEntry = {
 				employeeId,
 				clockIn,
@@ -366,6 +376,7 @@ const createTimesheet = async (req, res) => {
 				companyName: company,
 				payType: type,
 				manualAdded: true,
+				source,
 			};
 			const newTimesheetWithOvertime = await addTimesheetEntry(newEntry);
 			return res.status(201).json(newTimesheetWithOvertime);
@@ -379,6 +390,7 @@ const createTimesheet = async (req, res) => {
 			companyName: company,
 			payType: type,
 			manualAdded: true,
+			source,
 		};
 
 		const newTimesheet = await addTimesheetEntry(newEntry);
@@ -403,7 +415,8 @@ const setTime = (date, time) => {
 
 const updateTimesheet = async (req, res) => {
 	const { id } = req.params;
-	let { clockIn, clockOut, empId, approve, param_hours, company, startTime, endTime } = req.body;
+	let { clockIn, clockOut, empId, approve, param_hours, company, startTime, endTime, source } =
+		req.body;
 
 	try {
 		const existingTimesheetInfo = await Timesheet.findById(id);
@@ -415,35 +428,29 @@ const updateTimesheet = async (req, res) => {
 			: calcTotalWorkedHours(clockIn, clockOut);
 
 		if (param_hours === PARAM_HOURS.REGULAR && totalWorkedHours > 8) {
-			const adjustedClockOut = await addOvertimeRecord(clockIn, clockOut, empId, company);
+			const adjustedClockOut = await addOvertimeRecord(clockIn, clockOut, empId, company, source);
 			const updatedData = {
 				clockIn,
 				clockOut: adjustedClockOut,
 				[param_hours]: 8,
-				approveStatus:
-					existingTimesheetInfo?.approveStatus === TIMESHEET_STATUS.APPROVED || approve
-						? TIMESHEET_STATUS.APPROVED
-						: approve === false
-						? TIMESHEET_STATUS.REJECTED
-						: TIMESHEET_STATUS.PENDING,
+				approveStatus: approve
+					? TIMESHEET_STATUS.APPROVED
+					: approve === false
+					? TIMESHEET_STATUS.REJECTED
+					: TIMESHEET_STATUS.PENDING,
 			};
 			const timesheet = await updateTimesheetData(id, updatedData);
 			return res.status(201).json(timesheet);
 		}
-		const recordApprovedHistory =
-			existingTimesheetInfo?.approveStatus === TIMESHEET_STATUS.APPROVED || approve;
+
 		const updatedWorkedHrs =
-			param_hours === PARAM_HOURS.BREAK
-				? recordApprovedHistory
-					? totalWorkedHours
-					: 0
-				: totalWorkedHours;
+			param_hours === PARAM_HOURS.BREAK ? (approve ? totalWorkedHours : 0) : totalWorkedHours;
 
 		const updatedData = {
 			clockIn,
 			clockOut,
 			[param_hours]: updatedWorkedHrs,
-			approveStatus: recordApprovedHistory
+			approveStatus: approve
 				? TIMESHEET_STATUS.APPROVED
 				: approve === false
 				? TIMESHEET_STATUS.REJECTED
@@ -546,6 +553,7 @@ const addStatHolidayDefaultTimesheet = async (employeeId, companyName) => {
 		clockIn: startTime,
 		clockOut: endTime,
 		statDayHours: statHours.toFixed(2),
+		source: TIMESHEET_ORIGIN.APP,
 	};
 	const newRecord = await addTimesheetEntry(newStatTimeSheetRecord);
 	return newRecord;
