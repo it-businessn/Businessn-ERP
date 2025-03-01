@@ -50,7 +50,7 @@ const MenuItem = ({ menu, parent, textTransform, handleMenuItemClick }) => {
 							fontSize="xs"
 							textTransform={textTransform}
 						>
-							{menu?.name}
+							{menu?.name === "Approvals" ? "Attendance" : menu?.name}
 						</Button>
 					</NavLink>
 				</Flex>
