@@ -103,7 +103,7 @@ export const DEPARTMENT_OPTIONS = [
 	},
 ];
 
-export const EMP_COMPANY_CONFIG = [
+export const EMP_COMPANY_CONFIG = (payGroups = [], company, department) => [
 	{
 		type: "sfsgdsgdsgdsg13",
 		params: [
@@ -111,7 +111,7 @@ export const EMP_COMPANY_CONFIG = [
 				name: "Pay Group",
 				param_key: "employmentPayGroup",
 				control: "select",
-				options: [],
+				options: payGroups,
 			},
 			{
 				name: "Cost Center",
@@ -123,7 +123,7 @@ export const EMP_COMPANY_CONFIG = [
 				name: "Department",
 				param_key: "employmentDepartment",
 				control: "select",
-				options: DEPARTMENT_OPTIONS,
+				options: company === "The Owners Of Strata Plan NW1378" ? DEPARTMENT_OPTIONS : department,
 			},
 		],
 	},
@@ -154,7 +154,7 @@ export const EMP_REGION_CONFIG = [
 	},
 ];
 
-export const EMP_ROLE_CONFIG = [
+export const EMP_ROLE_CONFIG = (company, roles) => [
 	{
 		type: "sfsgdsgdsgdsg11",
 		params: [
@@ -169,7 +169,7 @@ export const EMP_ROLE_CONFIG = [
 				name: "Role",
 				param_key: "employmentRole",
 				control: "select",
-				options: ROLE_OPTIONS,
+				options: company === "The Owners Of Strata Plan NW1378" ? ROLE_OPTIONS : roles,
 			},
 			// {
 			// 	name: "Department",

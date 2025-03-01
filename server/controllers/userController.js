@@ -6,21 +6,12 @@ const Lead = require("../models/Lead");
 const Task = require("../models/Task");
 const UserActivity = require("../models/UserActivity");
 const { isRoleManager } = require("../services/data");
-const { setInitialPermissions, findCompany } = require("./appController");
-const { findGroupEmployees } = require("./setUpController");
+const {
+	setInitialPermissions,
+	findCompany,
+	getPayrollActiveEmployees,
+} = require("./appController");
 
-const getPayrollActiveEmployees = async (companyName) => {
-	const existingCompany = await findCompany("name", companyName);
-	const result = await Employee.find({
-		payrollStatus: "Payroll Active",
-		companyId: existingCompany._id,
-	})
-		.select(["fullName", "payrollStatus", "employeeNo", "timeManagementBadgeID", "department"])
-		.sort({
-			fullName: 1,
-		});
-	return result;
-};
 const getPayrollInActiveEmployees = async (companyName) => {
 	const existingCompany = await findCompany("name", companyName);
 	return await findEmployee({
@@ -384,7 +375,6 @@ module.exports = {
 	findEmployee,
 	getPayrollActiveCompanyEmployees,
 	getPayrollActiveCompanyEmployeesCount,
-	getPayrollActiveEmployees,
 	getPayrollInActiveCompanyEmployees,
 	getAllSalesAgentsList,
 	getAllCompManagers,

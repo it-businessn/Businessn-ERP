@@ -1,8 +1,6 @@
-const Department = require("../models/Department");
 const Employee = require("../models/Employee");
 const EmployeeEmploymentInfo = require("../models/EmployeeEmploymentInfo");
 const EmployeePayInfo = require("../models/EmployeePayInfo");
-const EmployeeRole = require("../models/EmployeeRole");
 const { isRoleManager } = require("../services/data");
 const { setInitialPermissions } = require("./appController");
 const { fetchActiveEmployees } = require("./userController");
@@ -76,20 +74,13 @@ const getEmployeeEmploymentInfo = async (req, res) => {
 	const { companyName, empId } = req.params;
 	try {
 		const result = await findEmployeeEmploymentInfo(empId, companyName);
+		const currentDate = moment().format("YYYYMMDD");
 
-		const roles = await EmployeeRole.find({
-			companyName,
-		})
-			.select("name")
-			.sort({
-				createdOn: -1,
-			});
-		const depts = await Department.find({ companyName }).select("name").sort({
-			createdOn: -1,
-		});
-
-		result.roles = roles;
-		result.depts = depts;
+		if (result && !result["employeeNo"]) {
+			result["employeeNo"] = `${companyName.slice(0, 2).toUpperCase()}${currentDate}${
+				Math.floor(Math.random() * 10) + 10
+			}`;
+		}
 		res.status(200).json(result);
 	} catch (error) {
 		res.status(404).json({ error: error.message });
@@ -212,4 +203,5 @@ module.exports = {
 	getEmployeeEmploymentInfo,
 	addEmployeeEmploymentInfo,
 	updateEmployeeEmploymentInfo,
+	findEmployeeEmploymentInfo,
 };

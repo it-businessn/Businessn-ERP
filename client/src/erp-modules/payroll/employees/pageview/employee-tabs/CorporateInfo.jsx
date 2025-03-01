@@ -8,8 +8,10 @@ import {
 	EMP_ROLE_CONFIG,
 	getInitialCorporateInfo,
 } from "config/payroll/employees/employmentInfo";
+import useDepartment from "hooks/useDepartment";
 import useEmployeeEmploymentInfo from "hooks/useEmployeeEmploymentInfo";
 import usePaygroup from "hooks/usePaygroup";
+import useRoles from "hooks/useRoles";
 import useSelectedEmp from "hooks/useSelectedEmp";
 import { useEffect, useState } from "react";
 import LocalStorageService from "services/LocalStorageService";
@@ -44,14 +46,8 @@ const CorporateInfo = ({
 	const [isDisabled, setIsDisabled] = useState(true);
 	const [isLoading, setIsLoading] = useState(false);
 	const { payGroups } = usePaygroup(company, false);
-
-	useEffect(() => {
-		if (payGroups) {
-			EMP_COMPANY_CONFIG.find(
-				({ params }) => (params.find((param) => param.name === "Pay Group").options = payGroups),
-			);
-		}
-	}, [payGroups]);
+	const department = useDepartment(company);
+	const roles = useRoles(company);
 
 	useEffect(() => {
 		if (employmentInfo) {
@@ -114,7 +110,7 @@ const CorporateInfo = ({
 					formData={formData}
 					setFormData={setFormData}
 					title="Role"
-					config={EMP_ROLE_CONFIG}
+					config={EMP_ROLE_CONFIG(company, roles)}
 					isLoading={isLoading}
 					handleSubmit={handleSubmit}
 				/>
@@ -128,7 +124,7 @@ const CorporateInfo = ({
 					formData={formData}
 					setFormData={setFormData}
 					title="Company"
-					config={EMP_COMPANY_CONFIG}
+					config={EMP_COMPANY_CONFIG(payGroups, company, department)}
 					isLoading={isLoading}
 					handleSubmit={handleSubmit}
 				/>
