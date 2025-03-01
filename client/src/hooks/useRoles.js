@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import SettingService from "services/SettingService";
 
-const useRoles = (company) => {
+const useRoles = (company, refresh) => {
 	const [roles, setRoles] = useState(null);
 
 	useEffect(() => {
@@ -14,7 +14,7 @@ const useRoles = (company) => {
 			}
 		};
 		fetchAllRoles();
-	}, [company]);
+	}, [company, refresh]);
 
 	return roles;
 };

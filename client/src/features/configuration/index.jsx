@@ -29,9 +29,9 @@ const Configuration = () => {
 	const [openCompanyForm, setOpenCompanyForm] = useState(false);
 	const [openHoliday, setOpenHoliday] = useState(false);
 
-	const roles = useRoles(company);
-	const dept = useDepartment(company);
-	const paygroup = useGroup(company);
+	const roles = useRoles(company, openAddRole);
+	const dept = useDepartment(company, openAddDepartment);
+	const paygroup = useGroup(company, openAddGroup);
 
 	useEffect(() => {
 		const fetchAllModules = async () => {
@@ -43,7 +43,7 @@ const Configuration = () => {
 			}
 		};
 		fetchAllModules();
-	}, []);
+	}, [openAddGroup]);
 
 	const CONFIG_OPTIONS = [
 		{
@@ -140,7 +140,13 @@ const Configuration = () => {
 					</GridItem>
 				))}
 			</Grid>
-			<Flex m={"2em 10em"} p={"2em"} gap={"2em"} borderRadius="10px" justifyContent="space-evenly">
+			<Flex
+				p={"3em"}
+				gap={"3em"}
+				borderRadius="10px"
+				justifyContent="center"
+				flexDir={openCompanyForm ? "column" : "row"}
+			>
 				{openCompanyForm && <CompaniesPanel setOpenCompanyForm={setOpenCompanyForm} />}
 				{openAddGroup && (
 					<PaygroupForm

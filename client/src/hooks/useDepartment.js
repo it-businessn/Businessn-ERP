@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import SettingService from "services/SettingService";
 
-const useDepartment = (company) => {
+const useDepartment = (company, refresh) => {
 	const [departments, setDepartments] = useState(null);
 
 	useEffect(() => {
@@ -14,7 +14,7 @@ const useDepartment = (company) => {
 			}
 		};
 		fetchAllDepartments();
-	}, [company]);
+	}, [company, refresh]);
 
 	return departments;
 };
