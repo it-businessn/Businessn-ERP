@@ -1,18 +1,21 @@
-import { Grid, GridItem, VStack } from "@chakra-ui/react";
+import { Flex, Grid, GridItem, VStack } from "@chakra-ui/react";
 import PrimaryButton from "components/ui/button/PrimaryButton";
 import TextTitle from "components/ui/text/TextTitle";
 import Settings from "erp-modules/payroll/Settings";
-import BaseModulePanel from "features/sign-up/BaseModulePanel";
-import DepartmentsPanel from "features/sign-up/DepartmentsPanel";
-import RolesPanel from "features/sign-up/RolesPanel";
 import useCompany from "hooks/useCompany";
+import useDepartment from "hooks/useDepartment";
+import useGroup from "hooks/useGroup";
 import useManager from "hooks/useManager";
+import useRoles from "hooks/useRoles";
 import PageLayout from "layouts/PageLayout";
 import { useEffect, useState } from "react";
 import LocalStorageService from "services/LocalStorageService";
 import SettingService from "services/SettingService";
 import CompaniesPanel from "../setup/company/CompaniesPanel";
-import AddNewGroup from "../setup/company/group-tab/AddNewGroup";
+import DeptForm from "./DeptForm";
+import ModuleForm from "./ModuleForm";
+import PaygroupForm from "./PaygroupForm";
+import RoleForm from "./RoleForm";
 
 const Configuration = () => {
 	const { company } = useCompany(LocalStorageService.getItem("selectedCompany"));
@@ -26,44 +29,9 @@ const Configuration = () => {
 	const [openCompanyForm, setOpenCompanyForm] = useState(false);
 	const [openHoliday, setOpenHoliday] = useState(false);
 
-	const CONFIG_OPTIONS = [
-		{
-			name: ` ${openCompanyForm ? "Hide" : "Show"} Company Details`,
-			handleClick: () => {
-				setOpenCompanyForm(true);
-				setOpenHoliday(false);
-			},
-			title: "Manage Companies",
-		},
-		{
-			name: "Add Module",
-			handleClick: () => setOpenAddModule(true),
-			title: "Manage Modules",
-		},
-		{
-			name: "Add Role",
-			handleClick: () => setOpenAddRole(true),
-			title: "Manage Role",
-		},
-		{
-			name: "Add Paygroup",
-			handleClick: () => setOpenAddGroup(true),
-			title: "Manage Paygroup",
-		},
-		{
-			name: "Add Department",
-			handleClick: () => setOpenAddDepartment(true),
-			title: "Manage Department",
-		},
-		{
-			name: "Add Stat Holidays",
-			handleClick: () => {
-				setOpenHoliday(true);
-				setOpenCompanyForm(false);
-			},
-			title: "Manage Stat Holidays",
-		},
-	];
+	const roles = useRoles(company);
+	const dept = useDepartment(company);
+	const paygroup = useGroup(company);
 
 	useEffect(() => {
 		const fetchAllModules = async () => {
@@ -77,50 +45,117 @@ const Configuration = () => {
 		fetchAllModules();
 	}, []);
 
+	const CONFIG_OPTIONS = [
+		{
+			name: ` ${openCompanyForm ? "Hide" : "Show"} Company Details`,
+			handleClick: () => {
+				setOpenCompanyForm(true);
+				setOpenAddModule(false);
+				setOpenAddRole(false);
+				setOpenAddGroup(false);
+				setOpenAddDepartment(false);
+				setOpenHoliday(false);
+			},
+			title: "Manage Companies",
+		},
+		{
+			name: "Add Module",
+			handleClick: () => {
+				setOpenCompanyForm(false);
+				setOpenAddModule(true);
+				setOpenAddRole(false);
+				setOpenAddGroup(false);
+				setOpenAddDepartment(false);
+				setOpenHoliday(false);
+			},
+			title: "Manage Modules",
+		},
+		{
+			name: "Add Role",
+			handleClick: () => {
+				setOpenCompanyForm(false);
+				setOpenAddModule(false);
+				setOpenAddRole(true);
+				setOpenAddGroup(false);
+				setOpenAddDepartment(false);
+				setOpenHoliday(false);
+			},
+			title: "Manage Role",
+		},
+		{
+			name: "Add Paygroup",
+			handleClick: () => {
+				setOpenCompanyForm(false);
+				setOpenAddModule(false);
+				setOpenAddRole(false);
+				setOpenAddGroup(true);
+				setOpenAddDepartment(false);
+				setOpenHoliday(false);
+			},
+			title: "Manage Paygroup",
+		},
+		{
+			name: "Add Department",
+			handleClick: () => {
+				setOpenCompanyForm(false);
+				setOpenAddModule(false);
+				setOpenAddRole(false);
+				setOpenAddGroup(false);
+				setOpenAddDepartment(true);
+				setOpenHoliday(false);
+			},
+			title: "Manage Department",
+		},
+		{
+			name: "Add Stat Holidays",
+			handleClick: () => {
+				setOpenCompanyForm(false);
+				setOpenAddModule(false);
+				setOpenAddRole(false);
+				setOpenAddGroup(false);
+				setOpenAddDepartment(false);
+				setOpenHoliday(true);
+			},
+			title: "Manage Stat Holidays",
+		},
+	];
+
 	return (
-		<PageLayout width="full" title="Configuration" showBgLayer>
+		<PageLayout width="full" title={`Configuration for ${company}`} size="2em" showBgLayer>
 			<Grid templateColumns={{ base: "1fr", md: "repeat(6, 1fr)" }} gap={6}>
 				{CONFIG_OPTIONS.map(({ title, handleClick, name }) => (
 					<GridItem key={name}>
-						<VStack spacing={4} p={5} boxShadow="md" borderRadius="lg" bg="gray.100">
-							<TextTitle title={title} align="center" />
-							<PrimaryButton size="xs" name={name} onOpen={handleClick} />
+						<VStack spacing={4} p={5} boxShadow="md" borderRadius="lg" bg="var(--logo_bg)">
+							<TextTitle color="var(--primary_bg)" title={title} align="center" />
+							<PrimaryButton
+								hover={{
+									color: "var(--primary_bg)",
+									bg: "var(--primary_button_bg)",
+								}}
+								size="xs"
+								name={name}
+								onOpen={handleClick}
+							/>
 						</VStack>
 					</GridItem>
 				))}
 			</Grid>
-			{openCompanyForm && <CompaniesPanel setOpenCompanyForm={setOpenCompanyForm} />}
-			{openAddGroup && (
-				<AddNewGroup
-					isOpen={openAddGroup}
-					company={company}
-					onClose={() => setOpenAddGroup(false)}
-					modules={modules}
-					managers={managers}
-				/>
-			)}
-			{openAddModule && (
-				<BaseModulePanel
-					showAddModules={openAddModule}
-					companyName={company}
-					setShowAddModules={setOpenAddModule}
-				/>
-			)}
-			{openAddRole && (
-				<RolesPanel
-					showAddRoles={openAddRole}
-					companyName={company}
-					setShowAddRoles={setOpenAddRole}
-				/>
-			)}
-			{openAddDepartment && (
-				<DepartmentsPanel
-					showAddDepartments={openAddDepartment}
-					setShowAddDepartments={setOpenAddDepartment}
-					companyName={company}
-				/>
-			)}
-			{openHoliday && <Settings company={company} />}
+			<Flex m={"2em 10em"} p={"2em"} gap={"2em"} borderRadius="10px" justifyContent="space-evenly">
+				{openCompanyForm && <CompaniesPanel setOpenCompanyForm={setOpenCompanyForm} />}
+				{openAddGroup && (
+					<PaygroupForm
+						company={company}
+						modules={modules}
+						managers={managers}
+						showList={true}
+						paygroup={paygroup}
+					/>
+				)}
+				{openAddModule && <ModuleForm companyName={company} showList={true} modules={modules} />}
+				{openAddRole && <RoleForm companyName={company} showList={true} roles={roles} />}
+				{openAddDepartment && <DeptForm companyName={company} showList={true} dept={dept} />}
+				{openHoliday && <Settings company={company} />}
+			</Flex>
 		</PageLayout>
 	);
 };

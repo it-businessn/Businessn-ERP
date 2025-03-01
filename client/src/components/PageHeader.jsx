@@ -12,19 +12,13 @@ const PageHeader = ({
 	selectAttr,
 	selectPlaceholder,
 	isTimesheet,
+	size,
 }) => {
-	const themeMode = useColorModeValue(
-		"var(--primary_button_bg)",
-		"var(--primary_button_bg_dark)",
-	);
+	const themeMode = useColorModeValue("var(--primary_button_bg)", "var(--primary_button_bg_dark)");
 	return (
 		<Flex width={width}>
 			{title && (
-				<TextTitle
-					title={title}
-					mb={"0.5em"}
-					width={isTimesheet ? "auto" : width}
-				/>
+				<TextTitle title={title} mb={"0.5em"} width={isTimesheet ? "auto" : width} size={size} />
 			)}
 			{showSelectBox ? (
 				<SelectBox

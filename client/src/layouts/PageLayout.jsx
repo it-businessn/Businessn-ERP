@@ -15,9 +15,11 @@ const PageLayout = ({
 	selectPlaceholder,
 	valueText1,
 	isTimesheet,
+	size,
 }) => (
 	<Box p={{ base: "1em" }} overflow={"hidden"}>
 		<PageHeader
+			size={size}
 			valueText1={valueText1}
 			showSelectBox={showSelectBox}
 			title={title}
