@@ -438,6 +438,7 @@ const updateTimesheet = async (req, res) => {
 					: approve === false
 					? TIMESHEET_STATUS.REJECTED
 					: TIMESHEET_STATUS.PENDING,
+				source,
 			};
 			const timesheet = await updateTimesheetData(id, updatedData);
 			return res.status(201).json(timesheet);
@@ -455,6 +456,7 @@ const updateTimesheet = async (req, res) => {
 				: approve === false
 				? TIMESHEET_STATUS.REJECTED
 				: TIMESHEET_STATUS.PENDING,
+			source,
 		};
 
 		if (param_hours === PARAM_HOURS.BREAK) {
@@ -475,6 +477,7 @@ const updateTimesheet = async (req, res) => {
 					calcTotalWorkedHours(nearestClockInRecord[0].clockIn, nearestClockInRecord[0].clockOut) -
 					updatedWorkedHrs;
 				nearestClockInRecord[0].regHoursWorked = adjustedRegHours;
+				nearestClockInRecord[0].source = source;
 				await nearestClockInRecord[0].save();
 				const timesheet = await updateTimesheetData(id, updatedData);
 				return res.status(201).json(timesheet);

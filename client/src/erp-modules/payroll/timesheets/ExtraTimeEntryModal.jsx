@@ -9,7 +9,14 @@ import { useEffect, useState } from "react";
 import TimesheetService from "services/TimesheetService";
 import { getParamKey, PAY_TYPES } from "./data";
 
-const ExtraTimeEntryModal = ({ showAddEntry, setShowAddEntry, setRefresh, company, userId }) => {
+const ExtraTimeEntryModal = ({
+	showAddEntry,
+	setShowAddEntry,
+	setRefresh,
+	company,
+	userId,
+	source,
+}) => {
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const initialFormData = {
 		type: "",
@@ -17,6 +24,7 @@ const ExtraTimeEntryModal = ({ showAddEntry, setShowAddEntry, setRefresh, compan
 		company,
 		employeeId: userId ? userId : "",
 		param_hours: "",
+		source,
 	};
 	const [formData, setFormData] = useState(initialFormData);
 	const { employees } = useEmployees(false, company, false, true);

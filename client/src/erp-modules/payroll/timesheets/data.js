@@ -132,26 +132,33 @@ export const TIMESHEET_STATUS_LABEL = {
 	PENDING: "Pending",
 };
 
+export const TIMESHEET_SOURCE = {
+	MANAGER: "Manager",
+	EMP: "Employee",
+	TAD: "TAD",
+	APP: "APP",
+};
+
 export const TIMESHEET_SOURCES = [
 	{
-		origin: "Manager",
-		color: "var(--primary_button_bg)",
-		bg: "var(--primary_bg)",
+		origin: TIMESHEET_SOURCE.MANAGER,
+		color: "var(--primary_bg)",
+		bg: "var(--primary_button_bg)",
 	},
 	{
-		origin: "Employee",
-		color: "var(--stat_worked)",
-		bg: "var(--primary_bg)",
+		origin: TIMESHEET_SOURCE.EMP,
+		color: "var(--primary_bg)",
+		bg: "var(--stat_worked)",
 	},
 	{
-		origin: "TAD",
-		color: "var(--event_color)",
-		bg: "var(--primary_bg)",
+		origin: TIMESHEET_SOURCE.TAD,
+		color: "var(--primary_bg)",
+		bg: "var(--event_color)",
 	},
 	{
-		origin: "APP",
-		color: "var(--gauge_needle)",
-		bg: "var(--primary_bg)",
+		origin: TIMESHEET_SOURCE.APP,
+		color: "var(--primary_bg)",
+		bg: "var(--gauge_needle)",
 	},
 ];
 

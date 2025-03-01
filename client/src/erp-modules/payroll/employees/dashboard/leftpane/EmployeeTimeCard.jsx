@@ -1,4 +1,4 @@
-import { HStack, Tbody, Td, Tr, VStack, useToast } from "@chakra-ui/react";
+import { HStack, Tbody, Td, Tr, useToast, VStack } from "@chakra-ui/react";
 import LeftIconButton from "components/ui/button/LeftIconButton";
 import PrimaryButton from "components/ui/button/PrimaryButton";
 import BoxCard from "components/ui/card";
@@ -6,7 +6,7 @@ import EmptyRowRecord from "components/ui/EmptyRowRecord";
 import NormalTextTitle from "components/ui/NormalTextTitle";
 import TableLayout from "components/ui/table/TableLayout";
 import TextTitle from "components/ui/text/TextTitle";
-import { getParamKey } from "erp-modules/payroll/timesheets/data";
+import { getParamKey, TIMESHEET_SOURCE } from "erp-modules/payroll/timesheets/data";
 import ExtraTimeEntryModal from "erp-modules/payroll/timesheets/ExtraTimeEntryModal";
 import usePaygroup from "hooks/usePaygroup";
 import { useEffect, useState } from "react";
@@ -120,6 +120,7 @@ const EmployeeTimeCard = ({ selectedUser, company, isMobile }) => {
 				punch,
 				company,
 				employeeId: selectedUser?._id,
+				source: TIMESHEET_SOURCE.APP,
 			});
 			setRefresh((prev) => !prev);
 			toast({
@@ -290,6 +291,7 @@ const EmployeeTimeCard = ({ selectedUser, company, isMobile }) => {
 						setRefresh={setRefresh}
 						setShowAddEntry={setShowAddEntry}
 						userId={selectedUser?._id}
+						source={TIMESHEET_SOURCE.EMP}
 					/>
 				)}
 			</BoxCard>

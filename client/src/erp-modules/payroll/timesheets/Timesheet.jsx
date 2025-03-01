@@ -26,6 +26,7 @@ import {
 	getSourceStyle,
 	getStatusStyle,
 	PAY_TYPES_TITLE,
+	TIMESHEET_SOURCE,
 } from "./data";
 import ExtraTimeEntryModal from "./ExtraTimeEntryModal";
 
@@ -118,6 +119,7 @@ const Timesheet = ({
 		recordId: null,
 		empId: null,
 		payType: "",
+		source: TIMESHEET_SOURCE.MANAGER,
 	};
 	const [formData, setFormData] = useState(initialFormData);
 	const [timesheetData, setTimesheetData] = useState([]);
@@ -167,6 +169,7 @@ const Timesheet = ({
 			notDevice,
 			employee,
 			payType,
+			source,
 		} = timesheetData[index];
 
 		const emptyBreakRecord = {
@@ -198,6 +201,7 @@ const Timesheet = ({
 			employee,
 			startTime: "",
 			endTime: "",
+			source,
 		};
 		newRows.splice(index + 1, 0, emptyBreakRecord);
 		setTimesheetData(newRows);
@@ -227,6 +231,7 @@ const Timesheet = ({
 			formData.company = updatedRec.companyName;
 			formData.empId = updatedRec.employee._id;
 			formData.payType = updatedRec.payType;
+			formData.source = updatedRec?.source || TIMESHEET_SOURCE.MANAGER;
 
 			if (formData.recordId) {
 				const { data } = await TimesheetService.updateTimesheet(formData, formData.recordId);
@@ -620,6 +625,7 @@ const Timesheet = ({
 					showAddEntry={showAddEntry}
 					setRefresh={setRefresh}
 					setShowAddEntry={setShowAddEntry}
+					source={TIMESHEET_SOURCE.MANAGER}
 				/>
 			)}
 
