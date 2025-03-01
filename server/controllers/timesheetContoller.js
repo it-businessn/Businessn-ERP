@@ -290,7 +290,6 @@ const addOvertimeRecord = async (clockIn, clockOut, employeeId, company, source)
 		clockOut: overtimeClockOut.toISOString(),
 		payType: PAY_TYPES_TITLE.OVERTIME_PAY,
 		overtimeHoursWorked,
-		manualAdded: true,
 		source,
 	};
 
@@ -375,7 +374,6 @@ const createTimesheet = async (req, res) => {
 				[param_hours]: 8,
 				companyName: company,
 				payType: type,
-				manualAdded: true,
 				source,
 			};
 			const newTimesheetWithOvertime = await addTimesheetEntry(newEntry);
@@ -389,7 +387,6 @@ const createTimesheet = async (req, res) => {
 			[param_hours]: totalWorkedHours,
 			companyName: company,
 			payType: type,
-			manualAdded: true,
 			source,
 		};
 

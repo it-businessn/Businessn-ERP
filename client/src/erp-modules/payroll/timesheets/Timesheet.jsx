@@ -18,6 +18,7 @@ import {
 	getTimeCardFormat,
 	getTimeFormat,
 	getUTCTime,
+	isSameAsToday,
 } from "utils/convertDate";
 import {
 	BREAK_TYPES_TITLE,
@@ -44,6 +45,7 @@ const Timesheet = ({
 	const [totalPage, setTotalPages] = useState(1);
 	const [refresh, setRefresh] = useState(false);
 	const limit = 40;
+
 	useEffect(() => {
 		const fetchAllEmployeeTimesheet = async () => {
 			setTimesheetData(null);
@@ -64,7 +66,13 @@ const Timesheet = ({
 						_.startTime = getClockInTimeFormat(_.clockIn);
 						_.endTime = _.clockOut ? getTimeFormat(_.clockOut) : "";
 					}
-					_.isDisabled = _.startTime === "" || _.endTime === "";
+					// _.isActionDisabled = _.startTime === "" || _.endTime === "";
+					_.isEditable = _.source !== TIMESHEET_SOURCE.EMP;
+					_.isAppOrTad = _.manualAdded || _.source === TIMESHEET_SOURCE.TAD;
+					if (_.isEditable && _.isAppOrTad) {
+						_.isEditable = !isSameAsToday(_.clockIn);
+					}
+
 					return _;
 				});
 				setTimesheets(items);
@@ -377,8 +385,8 @@ const Timesheet = ({
 								startTime,
 								endTime,
 								regBreakHoursWorked,
-								isDisabled,
 								source,
+								isEditable,
 							},
 							index,
 						) => {
@@ -463,16 +471,16 @@ const Timesheet = ({
 									</Td>
 									<Td p={0.5}>
 										<Input
-											cursor={"pointer"}
+											cursor={isEditable ? "pointer" : "auto"}
 											size={"sm"}
-											onBlur={() => handleSubmit(param_hours)}
+											onBlur={() => isEditable && handleSubmit(param_hours)}
 											className={`timeClockInInput ${_id}`}
 											type="time"
 											name="startTime"
 											value={startTime || ""}
-											onClick={() => !isDisabled && showPicker(`timeClockInInput ${_id}`)}
+											onClick={() => isEditable && showPicker(`timeClockInInput ${_id}`)}
 											onChange={(e) =>
-												!isDisabled &&
+												isEditable &&
 												handleUpdateData(_id, "startTime", e.target.value, param_hours)
 											}
 											required
@@ -480,16 +488,16 @@ const Timesheet = ({
 									</Td>
 									<Td p={0.5} pl={3}>
 										<Input
-											cursor={"pointer"}
+											cursor={isEditable ? "pointer" : "auto"}
 											size={"sm"}
-											onBlur={() => handleSubmit(param_hours)}
+											onBlur={() => isEditable && handleSubmit(param_hours)}
 											className={`timeClockOutInput ${_id}`}
 											type="time"
 											name="endTime"
 											value={endTime || ""}
-											onClick={() => showPicker(`timeClockOutInput ${_id}`)}
+											onClick={() => isEditable && showPicker(`timeClockOutInput ${_id}`)}
 											onChange={(e) =>
-												handleUpdateData(_id, "endTime", e.target.value, param_hours)
+												isEditable && handleUpdateData(_id, "endTime", e.target.value, param_hours)
 											}
 											required
 										/>
@@ -505,19 +513,21 @@ const Timesheet = ({
 										{regBreakHoursWorked && payType === BREAK_TYPES_TITLE.REG_PAY_BRK ? (
 											<NormalTextTitle size="sm" p="0 1em" title={regBreakHoursWorked} />
 										) : (
-											<IconButton
-												icon={<GoPlusCircle />}
-												fontSize="1.8em"
-												color="var(--main_color_black)"
-												onClick={() => addRow(index)}
-											/>
+											isEditable && (
+												<IconButton
+													icon={<GoPlusCircle />}
+													fontSize="1.8em"
+													color="var(--main_color_black)"
+													onClick={() => addRow(index)}
+												/>
+											)
 										)}
 									</Td>
 
 									<Td py={0} w={"80px"}>
 										{regBreakHoursWorked && payType === BREAK_TYPES_TITLE.REG_PAY_BRK ? (
 											<IconButton
-												isDisabled={isDisabled}
+												isDisabled={!isEditable}
 												icon={<TbCornerRightUp />}
 												fontSize="1.8em"
 												ml="-1em"
@@ -544,7 +554,7 @@ const Timesheet = ({
 									<Td py={0}>
 										<HStack spacing={0}>
 											<IconButton
-												isDisabled={isDisabled}
+												isDisabled={!isEditable}
 												size={"xs"}
 												icon={<FaCheck />}
 												ml={-5}
@@ -562,7 +572,7 @@ const Timesheet = ({
 												}}
 											/>
 											<IconButton
-												isDisabled={isDisabled}
+												isDisabled={!isEditable}
 												size={"xs"}
 												color={"var(--incorrect_ans)"}
 												icon={<IoClose />}
@@ -592,6 +602,7 @@ const Timesheet = ({
 											}}
 										/> */}
 											<IconButton
+												isDisabled={!isEditable}
 												size={"xs"}
 												color={"var(--main_color_black)"}
 												icon={<FaRegTrashAlt />}
