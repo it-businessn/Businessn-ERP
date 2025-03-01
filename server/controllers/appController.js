@@ -20,6 +20,19 @@ const { generateAccessToken, generateRefreshToken } = require("../middleware/aut
 
 const findCompany = async (key, value) => await Company.findOne({ [key]: value });
 
+const getPayrollActiveEmployees = async (companyName) => {
+	const existingCompany = await findCompany("name", companyName);
+	const result = await Employee.find({
+		payrollStatus: "Payroll Active",
+		companyId: existingCompany._id,
+	})
+		.select(["fullName", "payrollStatus", "employeeNo", "timeManagementBadgeID", "department"])
+		.sort({
+			fullName: 1,
+		});
+	return result;
+};
+
 const addEmployee = async (name, data) => {
 	const existingCompany = await findCompany("name", name);
 	data.companyId = existingCompany._id;
@@ -381,5 +394,6 @@ module.exports = {
 	addEmployee,
 	findCompany,
 	hashedPassword,
+	getPayrollActiveEmployees,
 	refreshToken,
 };

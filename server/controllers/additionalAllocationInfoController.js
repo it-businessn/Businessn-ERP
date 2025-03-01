@@ -1,7 +1,7 @@
 const EmployeeExtraAllocation = require("../models/EmployeeExtraAllocation");
+const { getPayrollActiveEmployees } = require("./appController");
 const { getEmployeeId } = require("./payrollController");
 const { findGroupEmployees } = require("./setUpController");
-const { getPayrollActiveEmployees } = require("./userController");
 
 const getAmountAllocation = async (req, res) => {
 	const { companyName, payDate, isExtraRun, groupId } = req.params;

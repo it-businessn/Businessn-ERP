@@ -4,10 +4,10 @@ const EmployeeEmploymentInfo = require("../models/EmployeeEmploymentInfo");
 const EmployeePayInfo = require("../models/EmployeePayInfo");
 const EmployeeRole = require("../models/EmployeeRole");
 const { isRoleManager } = require("../services/data");
-const { setInitialPermissions } = require("./appController");
+const { setInitialPermissions, getPayrollActiveEmployees } = require("./appController");
 const { getEmployeeId } = require("./payrollController");
 const { findGroupEmployees } = require("./setUpController");
-const { getPayrollActiveEmployees } = require("./userController");
+const moment = require("moment");
 
 const getAllEmploymentInfo = async (req, res) => {
 	const { companyName, startDate, endDate, payDate, isExtraRun, groupId } = req.params;
@@ -76,20 +76,28 @@ const getEmployeeEmploymentInfo = async (req, res) => {
 	const { companyName, empId } = req.params;
 	try {
 		const result = await findEmployeeEmploymentInfo(empId, companyName);
+		const currentDate = moment().format("YYYYMMDD");
 
-		const roles = await EmployeeRole.find({
-			companyName,
-		})
-			.select("name")
-			.sort({
+		if (result) {
+			if (!result["employeeNo"]) {
+				result["employeeNo"] = `${companyName.slice(0, 2).toUpperCase()}${currentDate}${
+					Math.floor(Math.random() * 10) + 10
+				}`;
+			}
+			const roles = await EmployeeRole.find({
+				companyName,
+			})
+				.select("name")
+				.sort({
+					createdOn: -1,
+				});
+			const depts = await Department.find({ companyName }).select("name").sort({
 				createdOn: -1,
 			});
-		const depts = await Department.find({ companyName }).select("name").sort({
-			createdOn: -1,
-		});
 
-		result.roles = roles;
-		result.depts = depts;
+			result.roles = roles;
+			result.depts = depts;
+		}
 		res.status(200).json(result);
 	} catch (error) {
 		res.status(404).json({ error: error.message });
@@ -212,4 +220,5 @@ module.exports = {
 	getEmployeeEmploymentInfo,
 	addEmployeeEmploymentInfo,
 	updateEmployeeEmploymentInfo,
+	findEmployeeEmploymentInfo,
 };

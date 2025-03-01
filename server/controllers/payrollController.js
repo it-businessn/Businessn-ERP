@@ -23,7 +23,7 @@ const {
 
 const { findGroupEmployees } = require("./setUpController");
 const { generateT4Slip } = require("./t4SlipController");
-const { getPayrollActiveEmployees } = require("./userController");
+const { getPayrollActiveEmployees } = require("./appController");
 const { PAY_TYPES_TITLE, TIMESHEET_STATUS } = require("../services/data");
 
 //update roles-
