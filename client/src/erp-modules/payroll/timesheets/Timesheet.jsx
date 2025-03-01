@@ -28,6 +28,7 @@ import {
 	getStatusStyle,
 	PAY_TYPES_TITLE,
 	TIMESHEET_SOURCE,
+	TIMESHEET_STATUS_LABEL,
 } from "./data";
 import ExtraTimeEntryModal from "./ExtraTimeEntryModal";
 
@@ -66,13 +67,15 @@ const Timesheet = ({
 						_.startTime = getClockInTimeFormat(_.clockIn);
 						_.endTime = _.clockOut ? getTimeFormat(_.clockOut) : "";
 					}
-					// _.isActionDisabled = _.startTime === "" || _.endTime === "";
 					_.isEditable = _.source !== TIMESHEET_SOURCE.EMP;
 					_.isAppOrTad = _.manualAdded || _.source === TIMESHEET_SOURCE.TAD;
 					if (_.isEditable && _.isAppOrTad) {
 						_.isEditable = !isSameAsToday(_.clockIn);
 					}
-
+					_.isActionDisabled = _.startTime === "" || _.endTime === "";
+					_.showAddBreak = _.payType.includes("Break")
+						? _.approveStatus === TIMESHEET_STATUS_LABEL.APPROVED
+						: _.isEditable;
 					return _;
 				});
 				setTimesheets(items);
@@ -387,6 +390,8 @@ const Timesheet = ({
 								regBreakHoursWorked,
 								source,
 								isEditable,
+								isActionDisabled,
+								showAddBreak,
 							},
 							index,
 						) => {
@@ -513,7 +518,7 @@ const Timesheet = ({
 										{regBreakHoursWorked && payType === BREAK_TYPES_TITLE.REG_PAY_BRK ? (
 											<NormalTextTitle size="sm" p="0 1em" title={regBreakHoursWorked} />
 										) : (
-											isEditable && (
+											showAddBreak && (
 												<IconButton
 													icon={<GoPlusCircle />}
 													fontSize="1.8em"
@@ -525,7 +530,7 @@ const Timesheet = ({
 									</Td>
 
 									<Td py={0} w={"80px"}>
-										{regBreakHoursWorked && payType === BREAK_TYPES_TITLE.REG_PAY_BRK ? (
+										{regBreakHoursWorked && payType.includes("Break") ? (
 											<IconButton
 												isDisabled={!isEditable}
 												icon={<TbCornerRightUp />}
@@ -554,7 +559,7 @@ const Timesheet = ({
 									<Td py={0}>
 										<HStack spacing={0}>
 											<IconButton
-												isDisabled={!isEditable}
+												isDisabled={isActionDisabled}
 												size={"xs"}
 												icon={<FaCheck />}
 												ml={-5}
@@ -572,7 +577,7 @@ const Timesheet = ({
 												}}
 											/>
 											<IconButton
-												isDisabled={!isEditable}
+												isDisabled={isActionDisabled}
 												size={"xs"}
 												color={"var(--incorrect_ans)"}
 												icon={<IoClose />}
@@ -602,7 +607,6 @@ const Timesheet = ({
 											}}
 										/> */}
 											<IconButton
-												isDisabled={!isEditable}
 												size={"xs"}
 												color={"var(--main_color_black)"}
 												icon={<FaRegTrashAlt />}
