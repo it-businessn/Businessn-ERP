@@ -171,7 +171,7 @@ const Timesheet = ({
 
 			if (formData.recordId) {
 				await TimesheetService.updateTimesheet(formData, formData.recordId);
-				setRefresh((prev) => !prev);
+				// setRefresh((prev) => !prev);
 			}
 		} catch (error) {}
 	};
