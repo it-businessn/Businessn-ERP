@@ -10,14 +10,7 @@ import {
 } from "@chakra-ui/react";
 import { FaSearch } from "react-icons/fa";
 
-const EmpSearchMenu = ({
-	filteredEmployees,
-	empName,
-	handleInputChange,
-	handleSelect,
-	width,
-	hideMenu,
-}) => {
+const EmpSearchMenu = ({ filteredEmployees, empName, handleInputChange, handleSelect, width }) => {
 	return (
 		<Menu>
 			<MenuButton w={width}>
@@ -47,22 +40,20 @@ const EmpSearchMenu = ({
 					<InputRightElement size="xs" children={<FaSearch />} />
 				</InputGroup>
 			</MenuButton>
-			{!hideMenu && (
-				<MenuList height="45vh" overflowY={"auto"}>
-					<Input
-						size="xs"
-						placeholder="Enter Manager Name"
-						value={empName}
-						onChange={(e) => handleInputChange(e.target.value)}
-						mb={2}
-					/>
-					{filteredEmployees?.map((emp) => (
-						<MenuItem key={emp._id} onClick={() => handleSelect(emp)}>
-							<Text fontSize="xs">{emp.fullName}</Text>
-						</MenuItem>
-					))}
-				</MenuList>
-			)}
+			<MenuList height="45vh" overflowY={"auto"}>
+				<Input
+					size="xs"
+					placeholder="Enter Manager Name"
+					value={empName}
+					onChange={(e) => handleInputChange(e.target.value)}
+					mb={2}
+				/>
+				{filteredEmployees?.map((emp) => (
+					<MenuItem key={emp._id} onClick={() => handleSelect(emp)}>
+						<Text fontSize="xs">{emp.fullName}</Text>
+					</MenuItem>
+				))}
+			</MenuList>
 		</Menu>
 	);
 };
