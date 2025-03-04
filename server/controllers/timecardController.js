@@ -34,11 +34,7 @@ const getTimecard = async (req, res) => {
 				$lte: moment().endOf("day").toDate(),
 			},
 		};
-		const result = await Timecard.find(filterCriteria)
-			.sort({
-				clockIn: -1,
-			})
-			.skip(skip);
+		const result = await Timecard.find(filterCriteria).sort({ clockIn: -1 }).skip(skip);
 		// .limit(limit);
 
 		const uniqueEntries = [

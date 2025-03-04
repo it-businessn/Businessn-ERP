@@ -172,12 +172,22 @@ const Timesheet = ({
 			if (formData.recordId) {
 				const { data } = await TimesheetService.updateTimesheet(formData, formData.recordId);
 				// setRefresh((prev) => !prev);
-				if (data?.regHoursWorked != null) {
+				if (data) {
 					const updatedData = timesheetData?.map((record) =>
 						record._id === formData.recordId
 							? {
 									...record,
+									clockIn: data?.clockIn,
+									clockOut: data?.clockOut,
 									regHoursWorked: data?.regHoursWorked,
+									overtimeHoursWorked: data?.overtimeHoursWorked,
+									dblOvertimeHoursWorked: data?.dblOvertimeHoursWorked,
+									statDayHoursWorked: data?.statDayHoursWorked,
+									statDayHours: data?.statDayHours,
+									sickPayHours: data?.sickPayHours,
+									vacationPayHours: data?.vacationPayHours,
+									breakHoursWorked: data?.breakHoursWorked,
+									approveStatus: data?.approveStatus,
 							  }
 							: record,
 					);
