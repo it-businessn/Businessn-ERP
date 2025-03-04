@@ -42,8 +42,16 @@ const SettingService = {
 		return apiService.get(`/setup/departments/${id}`);
 	},
 
+	async getAllCC(id) {
+		return apiService.get(`/setup/cost-centers/${id}`);
+	},
+
 	async addDepartment(data) {
 		return apiService.post("/setup/departments", data);
+	},
+
+	async addCC(data) {
+		return apiService.post("/setup/cost-centers", data);
 	},
 
 	async getAllModules(id) {

@@ -86,7 +86,6 @@ const BenefitsInfo = ({ company, id, isOnboarding, handleNext }) => {
 						isDisabled={isDisabled}
 						handleSubmit={handleSubmit}
 						readOnly={true}
-						showAdjustment={true}
 					/>
 					<HStack justifyContent="space-between">
 						<PrimaryButton

@@ -1,6 +1,7 @@
-import { FormLabel, Select } from "@chakra-ui/react";
+import { Select } from "@chakra-ui/react";
 import { getPayTypeStyle } from "erp-modules/payroll/timesheets/data";
 import FormControlMain from ".";
+import RequiredLabel from "./RequiredLabel";
 
 const SelectFormControl = ({
 	name,
@@ -13,10 +14,11 @@ const SelectFormControl = ({
 	placeholder,
 	valueParam = "value",
 	isPayType,
+	required,
 }) => {
 	return (
 		<FormControlMain>
-			<FormLabel>{label}</FormLabel>
+			<RequiredLabel label={label} required={required} htmlFor={name} />
 			<Select
 				w={w}
 				name={name}

@@ -3,6 +3,7 @@ import PrimaryButton from "components/ui/button/PrimaryButton";
 import TextTitle from "components/ui/text/TextTitle";
 import Settings from "erp-modules/payroll/Settings";
 import useCompany from "hooks/useCompany";
+import useCostCenter from "hooks/useCostCenter";
 import useDepartment from "hooks/useDepartment";
 import useGroup from "hooks/useGroup";
 import useManager from "hooks/useManager";
@@ -12,6 +13,7 @@ import { useEffect, useState } from "react";
 import LocalStorageService from "services/LocalStorageService";
 import SettingService from "services/SettingService";
 import CompaniesPanel from "../setup/company/CompaniesPanel";
+import CCForm from "./CCForm";
 import DeptForm from "./DeptForm";
 import ModuleForm from "./ModuleForm";
 import PaygroupForm from "./PaygroupForm";
@@ -27,10 +29,12 @@ const Configuration = () => {
 	const [openAddDepartment, setOpenAddDepartment] = useState(false);
 	const [openAddRole, setOpenAddRole] = useState(false);
 	const [openCompanyForm, setOpenCompanyForm] = useState(false);
+	const [openCCForm, setOpenCCForm] = useState(false);
 	const [openHoliday, setOpenHoliday] = useState(false);
 
 	const roles = useRoles(company, openAddRole);
 	const dept = useDepartment(company, openAddDepartment);
+	const cc = useCostCenter(company, openCCForm);
 	const paygroup = useGroup(company, openAddGroup);
 
 	useEffect(() => {
@@ -50,6 +54,7 @@ const Configuration = () => {
 			name: ` ${openCompanyForm ? "Hide" : "Show"} Company Details`,
 			handleClick: () => {
 				setOpenCompanyForm(true);
+				setOpenCCForm(false);
 				setOpenAddModule(false);
 				setOpenAddRole(false);
 				setOpenAddGroup(false);
@@ -62,6 +67,7 @@ const Configuration = () => {
 			name: "Add Module",
 			handleClick: () => {
 				setOpenCompanyForm(false);
+				setOpenCCForm(false);
 				setOpenAddModule(true);
 				setOpenAddRole(false);
 				setOpenAddGroup(false);
@@ -74,6 +80,7 @@ const Configuration = () => {
 			name: "Add Role",
 			handleClick: () => {
 				setOpenCompanyForm(false);
+				setOpenCCForm(false);
 				setOpenAddModule(false);
 				setOpenAddRole(true);
 				setOpenAddGroup(false);
@@ -86,6 +93,7 @@ const Configuration = () => {
 			name: "Add Paygroup",
 			handleClick: () => {
 				setOpenCompanyForm(false);
+				setOpenCCForm(false);
 				setOpenAddModule(false);
 				setOpenAddRole(false);
 				setOpenAddGroup(true);
@@ -95,9 +103,23 @@ const Configuration = () => {
 			title: "Manage Paygroup",
 		},
 		{
+			name: "Add Cost Center",
+			handleClick: () => {
+				setOpenCompanyForm(false);
+				setOpenCCForm(true);
+				setOpenAddModule(false);
+				setOpenAddRole(false);
+				setOpenAddGroup(false);
+				setOpenAddDepartment(false);
+				setOpenHoliday(false);
+			},
+			title: "Manage Cost Center",
+		},
+		{
 			name: "Add Department",
 			handleClick: () => {
 				setOpenCompanyForm(false);
+				setOpenCCForm(false);
 				setOpenAddModule(false);
 				setOpenAddRole(false);
 				setOpenAddGroup(false);
@@ -110,6 +132,7 @@ const Configuration = () => {
 			name: "Add Stat Holidays",
 			handleClick: () => {
 				setOpenCompanyForm(false);
+				setOpenCCForm(false);
 				setOpenAddModule(false);
 				setOpenAddRole(false);
 				setOpenAddGroup(false);
@@ -159,6 +182,14 @@ const Configuration = () => {
 				)}
 				{openAddModule && <ModuleForm companyName={company} showList={true} modules={modules} />}
 				{openAddRole && <RoleForm companyName={company} showList={true} roles={roles} />}
+				{openCCForm && (
+					<CCForm
+						companyName={company}
+						showList={true}
+						cc={cc}
+						handleClose={() => setOpenCCForm(false)}
+					/>
+				)}
 				{openAddDepartment && <DeptForm companyName={company} showList={true} dept={dept} />}
 				{openHoliday && <Settings company={company} />}
 			</Flex>

@@ -7,11 +7,9 @@ const PrimaryButton = ({
 	px,
 	loadingText,
 	isDisabled = false,
-	ml,
 	size,
 	minW,
 	flex,
-	mt,
 	rightIcon,
 	bg = "var(--primary_button_bg)",
 	color = "var(--primary_bg)",
@@ -22,10 +20,12 @@ const PrimaryButton = ({
 	},
 	cursor,
 	w,
+	ml,
+	mt,
+	my,
 }) => {
 	return (
 		<Button
-			mt={mt}
 			flex={flex}
 			minW={minW}
 			isDisabled={isDisabled}
@@ -36,6 +36,8 @@ const PrimaryButton = ({
 			color={color}
 			_hover={hover}
 			ml={ml}
+			mt={mt}
+			my={my}
 			size={size}
 			type="submit"
 			borderRadius={"10px"}

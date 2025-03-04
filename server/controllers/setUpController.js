@@ -1,4 +1,5 @@
 const Company = require("../models/Company");
+const CostCenter = require("../models/CostCenter");
 const Department = require("../models/Department");
 const Employee = require("../models/Employee");
 const EmployeeRole = require("../models/EmployeeRole");
@@ -49,6 +50,24 @@ const addRole = async (req, res) => {
 	}
 };
 
+const getCC = async (req, res) => {
+	const { companyName } = req.params;
+	try {
+		const cc = await CostCenter.find({ companyName }).select("name").sort({
+			createdOn: -1,
+		});
+		if (!cc.length) {
+			const cc = await CostCenter.find({ companyName: null }).sort({
+				createdOn: -1,
+			});
+			return res.status(200).json(cc);
+		}
+		return res.status(200).json(cc);
+	} catch (error) {
+		res.status(404).json({ error: error.message });
+	}
+};
+
 const getDepartments = async (req, res) => {
 	const { companyName } = req.params;
 	try {
@@ -64,6 +83,21 @@ const getDepartments = async (req, res) => {
 		return res.status(200).json(department);
 	} catch (error) {
 		res.status(404).json({ error: error.message });
+	}
+};
+
+const addCC = async (req, res) => {
+	const { name, description, companyName } = req.body;
+
+	try {
+		const newCC = await CostCenter.create({
+			name,
+			description,
+			companyName,
+		});
+		res.status(201).json(newCC);
+	} catch (error) {
+		res.status(400).json({ message: error.message });
 	}
 };
 
@@ -445,4 +479,6 @@ module.exports = {
 	findGroupEmployees,
 	getHolidays,
 	getAllCompanies,
+	addCC,
+	getCC,
 };
