@@ -170,8 +170,19 @@ const Timesheet = ({
 			formData.payType = updatedRec.payType;
 
 			if (formData.recordId) {
-				await TimesheetService.updateTimesheet(formData, formData.recordId);
+				const { data } = await TimesheetService.updateTimesheet(formData, formData.recordId);
 				// setRefresh((prev) => !prev);
+				if (data?.regHoursWorked != null) {
+					const updatedData = timesheetData?.map((record) =>
+						record._id === formData.recordId
+							? {
+									...record,
+									regHoursWorked: data?.regHoursWorked,
+							  }
+							: record,
+					);
+					setTimesheetData(updatedData);
+				}
 			}
 		} catch (error) {}
 	};
