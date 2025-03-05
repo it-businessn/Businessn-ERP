@@ -230,7 +230,7 @@ const Timesheet = ({
 	};
 
 	useEffect(() => {
-		if (checkedRows.length === allTimesheetIDs.length) {
+		if (checkedRows?.length === allTimesheetIDs?.length) {
 			setIsAllChecked(true);
 		} else {
 			setIsAllChecked(false);
@@ -412,7 +412,7 @@ const Timesheet = ({
 					<Thead position="sticky" top={-1} zIndex={3}>
 						<Tr>
 							{cols?.map((col, index) =>
-								index === 10 ? (
+								index === 12 ? (
 									<Th key={`action_${index}`}>
 										<Checkbox
 											isChecked={isAllChecked}
@@ -434,7 +434,7 @@ const Timesheet = ({
 					</Thead>
 					<Tbody>
 						{(!timesheetData || timesheetData?.length === 0 || loading) && (
-							<EmptyRowRecord data={timesheetData} colSpan={cols.length} progress={progress} />
+							<EmptyRowRecord data={timesheetData} colSpan={cols?.length} progress={progress} />
 						)}
 						{!loading &&
 							timesheetData?.map(
@@ -533,14 +533,14 @@ const Timesheet = ({
 												<NormalTextTitle
 													maxW="150px"
 													size="sm"
-													title={positions.length ? positions[0]?.title : ""}
+													title={positions?.length ? positions[0]?.title : ""}
 												/>
 											</Td>
 											<Td py={0}>
 												<NormalTextTitle
 													maxW="150px"
 													size="sm"
-													title={positions.length ? positions[0]?.employmentDepartment : ""}
+													title={positions?.length ? positions[0]?.employmentDepartment : ""}
 												/>
 											</Td>
 											<Td p={0} position={"sticky"} right={"0"} zIndex="1">
