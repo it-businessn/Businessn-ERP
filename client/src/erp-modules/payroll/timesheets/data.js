@@ -126,12 +126,6 @@ export const PAY_TYPES = [
 	},
 ];
 
-export const TIMESHEET_STATUS_LABEL = {
-	APPROVED: "Approved",
-	REJECTED: "Rejected",
-	PENDING: "Pending",
-};
-
 export const TIMESHEET_SOURCE = {
 	MANAGER: "Manager",
 	EMP: "Employee",
@@ -162,6 +156,13 @@ export const TIMESHEET_SOURCES = [
 	},
 ];
 
+export const TIMESHEET_STATUS_LABEL = {
+	APPROVED: "Approved",
+	REJECTED: "Rejected",
+	PENDING: "Pending",
+	DELETE: "Delete",
+};
+
 export const TIMESHEET_STATUS = [
 	{
 		value: TIMESHEET_STATUS_LABEL.APPROVED,
@@ -177,6 +178,25 @@ export const TIMESHEET_STATUS = [
 		value: TIMESHEET_STATUS_LABEL.PENDING,
 		color: "var(--primary_bg)",
 		bg: "var(--pending)",
+	},
+];
+
+export const ACTION_STATUS = [
+	{
+		name: TIMESHEET_STATUS_LABEL.APPROVED,
+		color: "var(--correct_ans)",
+	},
+	{
+		name: TIMESHEET_STATUS_LABEL.PENDING,
+		color: "var(--pending)",
+	},
+	{
+		name: TIMESHEET_STATUS_LABEL.REJECTED,
+		color: "var(--incorrect_ans)",
+	},
+	{
+		name: TIMESHEET_STATUS_LABEL.DELETE,
+		color: "var(--nav_color)",
 	},
 ];
 

@@ -14,6 +14,8 @@ const SelectList = ({
 	isRight,
 	handleSelect,
 	type,
+	isTimesheetAction,
+	isTimesheetPayType,
 }) => {
 	const handleChange = (event) => {
 		if (handleSelect && type) {
@@ -32,15 +34,23 @@ const SelectList = ({
 			icon={<Icon as={isRight ? FaCaretRight : FaCaretDown} />}
 			borderRadius={"10px"}
 			size={"sm"}
-			color={"var(--primary_button_bg)"}
+			color={!isTimesheetPayType && "var(--primary_button_bg)"}
 			bg={generateLighterShade(bg_color, 0.9)}
-			border={`1px solid var(--primary_button_bg)`}
+			border={
+				isTimesheetPayType
+					? `1px solid var(--filter_border_color)`
+					: `1px solid var(--primary_button_bg)`
+			}
 			value={value}
 			onChange={handleChange}
-			placeholder="Select"
+			placeholder={!isTimesheetAction && "Select"}
 		>
 			{data?.map((item) => (
-				<option value={item[code]} key={`${_id}${item.name || item._id}`}>
+				<option
+					value={item[code]}
+					key={`${_id}${item.name || item._id}`}
+					style={{ color: (isTimesheetAction || isTimesheetPayType) && item.color }}
+				>
 					{item[code]}
 					{code === "abbr" && ` - ${item.name}`}
 				</option>

@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const { TIMESHEET_STATUS } = require("../services/data");
 
 const timesheetSchema = new mongoose.Schema({
 	employeeId: {
@@ -6,7 +7,7 @@ const timesheetSchema = new mongoose.Schema({
 		ref: "Employee",
 	},
 	department: String,
-	approveStatus: { type: String, default: "Pending" },
+	approveStatus: { type: String, default: TIMESHEET_STATUS.PENDING },
 	payRate: Number,
 	payType: String,
 	employeeName: String,

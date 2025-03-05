@@ -406,6 +406,21 @@ const setTime = (date, time) => {
 	return utcDate.toISOString();
 };
 
+const actionAllTimesheets = async (req, res) => {
+	const { timesheetIDs, approveStatus } = req.body;
+
+	try {
+		const updatedData = { approveStatus };
+		const updatedIDs = await Timesheet.updateMany(
+			{ _id: { $in: timesheetIDs } },
+			{ $set: updatedData },
+		);
+		res.status(201).json(updatedIDs);
+	} catch (error) {
+		res.status(400).json({ message: error.message });
+	}
+};
+
 const updateTimesheet = async (req, res) => {
 	const { id } = req.params;
 	let { clockIn, clockOut, empId, approve, param_hours, company, startTime, endTime, source } =
@@ -426,11 +441,13 @@ const updateTimesheet = async (req, res) => {
 				clockIn,
 				clockOut: adjustedClockOut,
 				[param_hours]: 8,
-				approveStatus: approve
-					? TIMESHEET_STATUS.APPROVED
-					: approve === false
-					? TIMESHEET_STATUS.REJECTED
-					: TIMESHEET_STATUS.PENDING,
+				approveStatus:
+					// existingTimesheetInfo?.approveStatus === TIMESHEET_STATUS.APPROVED || approve
+					approve
+						? TIMESHEET_STATUS.APPROVED
+						: approve === false
+						? TIMESHEET_STATUS.REJECTED
+						: TIMESHEET_STATUS.PENDING,
 				source,
 			};
 			const timesheet = await updateTimesheetData(id, updatedData);
@@ -444,11 +461,13 @@ const updateTimesheet = async (req, res) => {
 			clockIn,
 			clockOut,
 			[param_hours]: updatedWorkedHrs,
-			approveStatus: approve
-				? TIMESHEET_STATUS.APPROVED
-				: approve === false
-				? TIMESHEET_STATUS.REJECTED
-				: TIMESHEET_STATUS.PENDING,
+			approveStatus:
+				// existingTimesheetInfo?.approveStatus === TIMESHEET_STATUS.APPROVED || approve
+				approve
+					? TIMESHEET_STATUS.APPROVED
+					: approve === false
+					? TIMESHEET_STATUS.REJECTED
+					: TIMESHEET_STATUS.PENDING,
 			source,
 		};
 
@@ -612,4 +631,5 @@ module.exports = {
 	addStatHolidayTimesheet,
 	deleteTimesheet,
 	createManualTimesheet,
+	actionAllTimesheets,
 };
