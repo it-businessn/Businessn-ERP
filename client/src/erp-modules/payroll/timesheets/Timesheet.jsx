@@ -1,24 +1,11 @@
-import {
-	Box,
-	Checkbox,
-	HStack,
-	IconButton,
-	Input,
-	Table,
-	Tbody,
-	Td,
-	Th,
-	Thead,
-	Tr,
-} from "@chakra-ui/react";
+import { Box, Checkbox, HStack, Input, Table, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
 import PrimaryButton from "components/ui/button/PrimaryButton";
 import EmptyRowRecord from "components/ui/EmptyRowRecord";
+import SelectList from "components/ui/form/select/SelectList";
 import DeletePopUp from "components/ui/modal/DeletePopUp";
 import NormalTextTitle from "components/ui/NormalTextTitle";
 import TextTitle from "components/ui/text/TextTitle";
 import { useEffect, useState } from "react";
-import { FaCheck, FaRegTrashAlt } from "react-icons/fa";
-import { IoClose } from "react-icons/io5";
 import TimesheetService from "services/TimesheetService";
 import { getAmount } from "utils/convertAmt";
 import {
@@ -27,7 +14,14 @@ import {
 	getTimeFormat,
 	getUTCTime,
 } from "utils/convertDate";
-import { getParamKey, getPayTypeStyle, getStatusStyle, PAY_TYPES_TITLE } from "./data";
+import {
+	ACTION_STATUS,
+	getParamKey,
+	getPayTypeStyle,
+	getStatusStyle,
+	PAY_TYPES_TITLE,
+	TIMESHEET_STATUS_LABEL,
+} from "./data";
 import ExtraTimeEntryModal from "./ExtraTimeEntryModal";
 
 const Timesheet = ({
@@ -92,6 +86,7 @@ const Timesheet = ({
 				const { totalPages, page, items } = data;
 				clearInterval(interval);
 				items?.map((_) => {
+					_.approveStatusAction = _.approveStatus;
 					const isOvertime = _.payType === PAY_TYPES_TITLE.OVERTIME_PAY;
 					if (isOvertime) {
 						_.startTime = getUTCTime(_.clockIn);
@@ -285,6 +280,24 @@ const Timesheet = ({
 			[field]: value,
 		});
 		setTimesheetData(updatedData);
+		if (value === TIMESHEET_STATUS_LABEL.DELETE) {
+			setShowDeletePopUp(true);
+			setDeleteRecordId(id);
+		}
+		// setFormData((prev) => ({
+		// 	...prev,
+		// 	recordId: _id,
+		// 	approve: true,
+		// 	startTime: null,
+		// 	endTime: null,
+		// }));
+		// setFormData((prev) => ({
+		// 	...prev,
+		// 	recordId: _id,
+		// 	approve: false,
+		// 	startTime: null,
+		// 	endTime: null,
+		// }));
 	};
 
 	return (
@@ -350,6 +363,7 @@ const Timesheet = ({
 									startTime,
 									endTime,
 									positions,
+									approveStatusAction,
 								}) => {
 									const approveStatusBtnCss = getStatusStyle(approveStatus);
 									const { type, color } = getPayTypeStyle(payType);
@@ -495,64 +509,18 @@ const Timesheet = ({
 												/>
 											</Td>
 											<Td py={0}>
-												<HStack spacing={0}>
-													<IconButton
-														isDisabled={isDisabled}
-														size={"xs"}
-														icon={<FaCheck />}
-														ml={-5}
-														variant={"solid"}
-														color={"var(--status_button_border)"}
-														onClick={() => {
-															setFormData((prev) => ({
-																...prev,
-																recordId: _id,
-																approve: true,
-																startTime: null,
-																endTime: null,
-															}));
-														}}
-													/>
-													<IconButton
-														isDisabled={isDisabled}
-														size={"xs"}
-														color={"var(--incorrect_ans)"}
-														icon={<IoClose />}
-														variant={"solid"}
-														onClick={() => {
-															setFormData((prev) => ({
-																...prev,
-																recordId: _id,
-																approve: false,
-																startTime: null,
-																endTime: null,
-															}));
-														}}
-													/>
-													{/* <IconButton
-										size={"xs"}
-										color={"var(--incorrect_ans)"}
-										icon={<FaRProject />}
-										variant={"solid"}
-										onClick={() => {
-											setFormData((prev) => ({
-												...prev,
-												recordId: _id,
-												approve: undefined,
-											}));
-										}}
-									/> */}
-													<IconButton
-														size={"xs"}
-														color={"var(--main_color_black)"}
-														icon={<FaRegTrashAlt />}
-														variant={"solid"}
-														onClick={() => {
-															setShowDeletePopUp(true);
-															setDeleteRecordId(_id);
-														}}
-													/>
-												</HStack>
+												<SelectList
+													id={_id}
+													type="approveStatusAction"
+													handleSelect={(type, value, rowId) =>
+														handleUpdateData(rowId, type, value, param_hours)
+													}
+													code="name"
+													selectedValue={approveStatusAction}
+													data={ACTION_STATUS}
+													hidePlaceholder
+													isTimesheetAction
+												/>
 											</Td>
 										</Tr>
 									);

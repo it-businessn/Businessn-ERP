@@ -100,6 +100,14 @@ body {
 	background: linear-gradient(0deg, rgb(213, 220, 236) 0%, rgb(240 245 255) 100%) !important;
 	overflow: hidden;
 }
+
+.chakra-select:focus,
+.chakra-select:focus-visible {
+	box-shadow: none !important;
+	border-color: var(--filter_border_color) !important;
+	outline: none !important;
+}
+
 .radial-progress {
 	position: relative;
 	width: 100px;
