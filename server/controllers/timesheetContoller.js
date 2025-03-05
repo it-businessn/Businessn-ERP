@@ -391,6 +391,21 @@ const setTime = (date, time) => {
 	return utcDate.toISOString();
 };
 
+const approveTimesheets = async (req, res) => {
+	const timesheetIDs = req.body;
+
+	try {
+		const updatedData = { approveStatus: TIMESHEET_STATUS.APPROVED };
+		const updatedIDs = await Timesheet.updateMany(
+			{ _id: { $in: timesheetIDs } },
+			{ $set: updatedData },
+		);
+		res.status(201).json(updatedIDs);
+	} catch (error) {
+		res.status(400).json({ message: error.message });
+	}
+};
+
 const updateTimesheet = async (req, res) => {
 	const { id } = req.params;
 	let { clockIn, clockOut, empId, approve, param_hours, company, startTime, endTime } = req.body;
@@ -562,4 +577,5 @@ module.exports = {
 	addStatHolidayTimesheet,
 	deleteTimesheet,
 	createManualTimesheet,
+	approveTimesheets,
 };

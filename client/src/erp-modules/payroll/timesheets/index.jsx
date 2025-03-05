@@ -1,7 +1,8 @@
-import { HStack, IconButton } from "@chakra-ui/react";
+import { Flex, HStack, IconButton, useToast } from "@chakra-ui/react";
 import PrimaryButton from "components/ui/button/PrimaryButton";
 import TabsButtonGroup from "components/ui/tab/TabsButtonGroup";
 import useCompany from "hooks/useCompany";
+import useCostCenter from "hooks/useCostCenter";
 import useDepartment from "hooks/useDepartment";
 import useEmployees from "hooks/useEmployees";
 import usePaygroup from "hooks/usePaygroup";
@@ -11,6 +12,7 @@ import { useEffect, useState } from "react";
 import { IoRefresh } from "react-icons/io5";
 import { useParams } from "react-router-dom";
 import LocalStorageService from "services/LocalStorageService";
+import TimesheetService from "services/TimesheetService";
 import { isManager } from "utils";
 import { getDefaultDate, getMomentDate } from "utils/convertDate";
 import DateFilterPopup from "./DateFilterPopup";
@@ -20,6 +22,7 @@ import Timesheet from "./Timesheet";
 
 const Timesheets = () => {
 	const { id } = useParams();
+	const toast = useToast();
 	const { company } = useCompany(LocalStorageService.getItem("selectedCompany"));
 	const loggedInUser = LocalStorageService.getItem("user");
 	const isManagerView = isManager(loggedInUser?.role);
@@ -32,6 +35,7 @@ const Timesheets = () => {
 	const [filter, setFilter] = useState(null);
 	const { employees } = useEmployees(false, company, false, true);
 	const departments = useDepartment(company);
+	const cc = useCostCenter(company);
 
 	const [date, setDate] = useState(getDefaultDate);
 
@@ -56,6 +60,11 @@ const Timesheets = () => {
 	const toggleDeptFilter = () => setShowDeptFilter((prev) => (departments?.length ? !prev : prev));
 	const toggleCCFilter = () => setShowCCFilter((prev) => !prev);
 	const handleFilter = () => console.log(filteredEmployees);
+
+	const [refresh, setRefresh] = useState(false);
+	const [isAllChecked, setIsAllChecked] = useState(true);
+	const [allTimesheetIDs, setAllTimesheetIDs] = useState([]);
+
 	// useEffect(() => {
 	// 	if (closestRecord && !startDate && !endDate) {
 	// 		setStartDate(todayDate);
@@ -86,6 +95,12 @@ const Timesheets = () => {
 					setShowAddEntry={setShowAddEntry}
 					timesheets={timesheets}
 					setTimesheets={setTimesheets}
+					isAllChecked={isAllChecked}
+					setIsAllChecked={setIsAllChecked}
+					allTimesheetIDs={allTimesheetIDs}
+					setAllTimesheetIDs={setAllTimesheetIDs}
+					refresh={refresh}
+					setRefresh={setRefresh}
 				/>
 			),
 		},
@@ -127,6 +142,20 @@ const Timesheets = () => {
 		setShowCCFilter(false);
 	}, [startDate, endDate, filteredEmployees, filteredDept, filteredCC, viewMode]);
 
+	const handleApprove = async () => {
+		const { data } = await TimesheetService.approveTimesheets(allTimesheetIDs);
+		if (data) {
+			toast({
+				title: "Approved successfully!",
+				description: "Your action was completed successfully.",
+				status: "success",
+				duration: 1500,
+				isClosable: true,
+			});
+			setRefresh((prev) => !prev);
+		}
+	};
+
 	return (
 		<PageLayout
 			width="full"
@@ -148,51 +177,67 @@ const Timesheets = () => {
 				<PrimaryButton size={"sm"} name={"Add record"} onOpen={() => setShowAddEntry(true)} />
 			</HStack>
 
-			<HStack w={"90%"} justifyContent={"start"} gap={5} position="sticky" zIndex={4}>
-				<TabsButtonGroup
-					w={"20%"}
-					mt={4}
-					isOutlineTab
-					tabs={TABS}
-					setViewMode={setViewMode}
-					viewMode={viewMode}
-				/>
-				<DateFilterPopup
-					toggleDateFilter={toggleDateFilter}
-					setEndDate={setEndDate}
-					setStartDate={setStartDate}
-					closestRecord={closestRecord}
-					lastRecord={lastRecord}
-					startDate={startDate}
-					endDate={endDate}
-				/>
-				<OtherFilter
-					showOtherFilter={timesheets && showEmpFilter}
-					toggleOtherFilter={toggleEmpFilter}
-					handleFilter={handleFilter}
-					data={employees}
-					filteredData={filteredEmployees}
-					setFilteredData={setFilteredEmployees}
-					helperText="employee"
-				/>
-				<OtherFilter
-					showOtherFilter={timesheets && showDeptFilter}
-					toggleOtherFilter={toggleDeptFilter}
-					handleFilter={handleFilter}
-					data={departments}
-					filteredData={filteredDept}
-					setFilteredData={setFilteredDept}
-					helperText="department"
-				/>
-				{/* <OtherFilter
-					showOtherFilter={showCCFilter}
-					toggleOtherFilter={toggleCCFilter}
-					handleFilter={handleFilter}
-					data={roles}
-					filteredData={filteredCC}
-					setFilteredData={setFilteredCC}
-					helperText="cost center"
-				/> */}
+			<HStack justifyContent="space-between" position="sticky" zIndex={4}>
+				<Flex w="80%" gap={5}>
+					<TabsButtonGroup
+						mt={4}
+						isOutlineTab
+						tabs={TABS}
+						setViewMode={setViewMode}
+						viewMode={viewMode}
+					/>
+					<DateFilterPopup
+						toggleDateFilter={toggleDateFilter}
+						setEndDate={setEndDate}
+						setStartDate={setStartDate}
+						closestRecord={closestRecord}
+						lastRecord={lastRecord}
+						startDate={startDate}
+						endDate={endDate}
+					/>
+					<OtherFilter
+						showOtherFilter={timesheets && showEmpFilter}
+						toggleOtherFilter={toggleEmpFilter}
+						handleFilter={handleFilter}
+						data={employees}
+						filteredData={filteredEmployees}
+						setFilteredData={setFilteredEmployees}
+						helperText="employee"
+					/>
+					<OtherFilter
+						showOtherFilter={timesheets && showDeptFilter}
+						toggleOtherFilter={toggleDeptFilter}
+						handleFilter={handleFilter}
+						data={departments}
+						filteredData={filteredDept}
+						setFilteredData={setFilteredDept}
+						helperText="department"
+					/>
+					<OtherFilter
+						showOtherFilter={timesheets && showCCFilter}
+						toggleOtherFilter={toggleCCFilter}
+						handleFilter={handleFilter}
+						data={cc}
+						filteredData={filteredCC}
+						setFilteredData={setFilteredCC}
+						helperText="cost center"
+					/>
+				</Flex>
+				<Flex w="10%">
+					{isAllChecked && (
+						<PrimaryButton
+							color="var(--primary_bg)"
+							bg="var(--correct_ans)"
+							name="Approve All"
+							px={0}
+							hover={{
+								bg: "var(--correct_ans)",
+								color: "var(--primary_bg)",
+							}}
+							onOpen={handleApprove}
+						/>
+					)}
+				</Flex>
 			</HStack>
 
 			{showComponent(viewMode)}
