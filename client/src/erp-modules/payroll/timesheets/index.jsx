@@ -229,19 +229,18 @@ const Timesheets = () => {
 					/>
 				</Flex>
 				<Flex w="10%">
-					{isAllChecked && (
-						<PrimaryButton
-							color="var(--primary_bg)"
-							bg="var(--correct_ans)"
-							name="Approve All"
-							px={0}
-							hover={{
-								bg: "var(--correct_ans)",
-								color: "var(--primary_bg)",
-							}}
-							onOpen={() => setShowConfirmationPopUp(true)}
-						/>
-					)}
+					<PrimaryButton
+						isDisabled={!isAllChecked || !timesheets?.length}
+						color="var(--primary_bg)"
+						bg="var(--correct_ans)"
+						name="Approve All"
+						px={0}
+						hover={{
+							bg: "var(--correct_ans)",
+							color: "var(--primary_bg)",
+						}}
+						onOpen={() => setShowConfirmationPopUp(true)}
+					/>
 				</Flex>
 			</HStack>
 

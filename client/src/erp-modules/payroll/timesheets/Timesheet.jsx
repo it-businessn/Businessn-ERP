@@ -203,6 +203,14 @@ const Timesheet = ({
 		}
 	};
 
+	useEffect(() => {
+		if (checkedRows.length === allTimesheetIDs.length) {
+			setIsAllChecked(true);
+		} else {
+			setIsAllChecked(false);
+		}
+	}, [checkedRows]);
+
 	const handleTimeChange = (key, value) => {
 		const updatedData = timesheetData?.map((record) =>
 			record._id === formData.recordId
@@ -289,8 +297,7 @@ const Timesheet = ({
 								index === 10 ? (
 									<Th key={`action_${index}`}>
 										<Checkbox
-											checked={isAllChecked}
-											defaultChecked
+											isChecked={isAllChecked}
 											colorScheme="facebook"
 											onChange={(e) => handleHeaderCheckboxChange(e)}
 										/>
