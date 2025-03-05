@@ -67,7 +67,7 @@ const CorporateInfo = ({ company, isOnboarding, id, handleNext, handlePrev }) =>
 			if (position) {
 				const existingPositions = formData.positions;
 				const positionIndex = formData.positions?.findIndex(
-					({ title }) => title === position.title,
+					({ timeManagementBadgeID }) => timeManagementBadgeID === position.timeManagementBadgeID,
 				);
 				if (positionIndex === -1) {
 					existingPositions.push(position);

@@ -29,7 +29,6 @@ const PositionInfo = ({
 		positions: [],
 	};
 
-	const [isEditable, setIsEditable] = useState(false);
 	const [roleInfo, setRoleInfo] = useState(defaultRoleInfo);
 	const [filteredDept, setFilteredDept] = useState(department);
 
@@ -41,12 +40,11 @@ const PositionInfo = ({
 			roleInfo.employmentPayGroup &&
 			roleInfo.employmentDepartment
 		) {
-			if (!isOpen) setIsEditable(true);
 			setIsDisabled(false);
 		} else {
 			setIsDisabled(true);
 		}
-	}, [isOpen, roleInfo]);
+	}, [roleInfo]);
 
 	useEffect(() => {
 		if (department && roleInfo.employmentCostCenter) {
@@ -64,29 +62,22 @@ const PositionInfo = ({
 				{rolePos ? <TextTitle title={rolePos} /> : <FormLabel>New Role Details</FormLabel>}
 				<HStack alignItems="self-start" spacing={5} w="70%">
 					<Stack>
-						{isOpen ? (
-							<InputFormControl
-								required={isOpen && true}
-								label="Role title"
-								name="title"
-								placeholder="Enter title"
-								valueText={roleInfo.title}
-								handleChange={(e) => {
-									setRoleInfo((prev) => ({
-										...prev,
-										title: e.target.value,
-									}));
-								}}
-							/>
-						) : (
-							<>
-								<FormLabel>Role title</FormLabel>
-								<NormalTextTitle title={roleInfo.title} />
-							</>
-						)}
+						<InputFormControl
+							required={(isOpen || !roleInfo.title) && true}
+							label="Role title"
+							name="title"
+							placeholder="Enter title"
+							valueText={roleInfo.title}
+							handleChange={(e) => {
+								setRoleInfo((prev) => ({
+									...prev,
+									title: e.target.value,
+								}));
+							}}
+						/>
 
 						<InputFormControl
-							required={isOpen && true}
+							required={(isOpen || !roleInfo.description) && true}
 							label="Role description"
 							name="description"
 							maxLength={30}
@@ -99,22 +90,30 @@ const PositionInfo = ({
 								}));
 							}}
 						/>
-						<InputFormControl
-							label="Time Management Badge ID"
-							name="timeManagementBadgeID"
-							placeholder="Enter new Badge ID"
-							valueText={roleInfo.timeManagementBadgeID}
-							handleChange={(e) => {
-								setRoleInfo((prev) => ({
-									...prev,
-									timeManagementBadgeID: e.target.value,
-								}));
-							}}
-						/>
+
+						{isOpen ? (
+							<InputFormControl
+								label="Time Management Badge ID"
+								name="timeManagementBadgeID"
+								placeholder="Enter new Badge ID"
+								valueText={roleInfo.timeManagementBadgeID}
+								handleChange={(e) => {
+									setRoleInfo((prev) => ({
+										...prev,
+										timeManagementBadgeID: e.target.value,
+									}));
+								}}
+							/>
+						) : (
+							<>
+								<FormLabel>Time Management Badge ID</FormLabel>
+								<NormalTextTitle title={roleInfo.timeManagementBadgeID} />
+							</>
+						)}
 					</Stack>
 					<Stack>
 						<SelectFormControl
-							required={isOpen && true}
+							required={(isOpen || !roleInfo.employmentPayGroup) && true}
 							valueParam="name"
 							name="employmentPayGroup"
 							label="Pay Group"
@@ -130,7 +129,7 @@ const PositionInfo = ({
 						/>
 
 						<SelectFormControl
-							required={isOpen && true}
+							required={(isOpen || !roleInfo.employmentCostCenter) && true}
 							valueParam="name"
 							name="employmentCostCenter"
 							label="Cost Center"
@@ -145,7 +144,7 @@ const PositionInfo = ({
 							placeholder="Select Cost Center"
 						/>
 						<SelectFormControl
-							required={isOpen && true}
+							required={(isOpen || !roleInfo.employmentDepartment) && true}
 							valueParam="name"
 							name="employmentDepartment"
 							label="Department"
@@ -182,9 +181,20 @@ const PositionInfo = ({
 				<PrimaryButton
 					w="100px"
 					size="xs"
-					isDisabled={!isEditable}
 					name="Save"
-					onOpen={() => handleSubmit(roleInfo)}
+					onOpen={() => {
+						if (
+							roleInfo.description &&
+							roleInfo.title &&
+							roleInfo.employmentCostCenter &&
+							roleInfo.employmentPayGroup &&
+							roleInfo.employmentDepartment
+						) {
+							handleSubmit(roleInfo);
+						} else {
+							return;
+						}
+					}}
 				/>
 			)}
 		</Stack>

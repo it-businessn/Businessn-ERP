@@ -22,6 +22,7 @@ const InputFormControl = ({
 	size,
 	readOnly = false,
 	subRequired,
+	maxLength,
 }) => {
 	return (
 		<FormControlMain isInvalid={isInvalid}>
@@ -35,7 +36,9 @@ const InputFormControl = ({
 				fontWeight={fontWeight}
 				visibility={visibility}
 			/>
+			{maxLength && <FormHelperText>Max characters: {maxLength}</FormHelperText>}
 			<Input
+				maxLength={maxLength}
 				onBlur={handleConfirm}
 				display={display}
 				type={type}

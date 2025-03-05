@@ -61,7 +61,6 @@ const getTimesheetResult = async (companyName) => {
 			},
 		]),
 	);
-	console.log(payInfoMap);
 	return payInfoMap;
 };
 
