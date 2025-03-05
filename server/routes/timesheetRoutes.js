@@ -16,7 +16,7 @@ router.get("/:companyName/:employeeId/:filter", timesheetController.getEmployeeT
 
 router.post("/", timesheetController.createTimesheet);
 
-router.post("/approve", timesheetController.approveTimesheets);
+router.post("/approve", timesheetController.actionAllTimesheets);
 
 router.post("/manual", timesheetController.createManualTimesheet);
 

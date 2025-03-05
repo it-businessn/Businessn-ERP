@@ -20,6 +20,7 @@ import DateFilterPopup from "./DateFilterPopup";
 import OtherFilter from "./OtherFilter";
 import Timecard from "./Timecard";
 import Timesheet from "./Timesheet";
+import { TIMESHEET_STATUS_LABEL } from "./data";
 
 const Timesheets = () => {
 	const { id } = useParams();
@@ -148,7 +149,10 @@ const Timesheets = () => {
 
 	const handleApprove = async () => {
 		handleClose();
-		const { data } = await TimesheetService.approveTimesheets(allTimesheetIDs);
+		const { data } = await TimesheetService.actionAllTimesheets({
+			timesheetIDs: allTimesheetIDs,
+			approveStatus: TIMESHEET_STATUS_LABEL.APPROVED,
+		});
 		if (data) {
 			toast({
 				title: "Approved successfully!",

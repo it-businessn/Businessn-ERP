@@ -46,7 +46,7 @@ const TimesheetService = {
 		return apiService.put(`/timesheet/${id}`, data, id);
 	},
 
-	async approveTimesheets(data) {
+	async actionAllTimesheets(data) {
 		return apiService.post("/timesheet/approve", data);
 	},
 

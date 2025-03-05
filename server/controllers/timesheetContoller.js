@@ -391,11 +391,11 @@ const setTime = (date, time) => {
 	return utcDate.toISOString();
 };
 
-const approveTimesheets = async (req, res) => {
-	const timesheetIDs = req.body;
+const actionAllTimesheets = async (req, res) => {
+	const { timesheetIDs, approveStatus } = req.body;
 
 	try {
-		const updatedData = { approveStatus: TIMESHEET_STATUS.APPROVED };
+		const updatedData = { approveStatus };
 		const updatedIDs = await Timesheet.updateMany(
 			{ _id: { $in: timesheetIDs } },
 			{ $set: updatedData },
@@ -424,7 +424,9 @@ const updateTimesheet = async (req, res) => {
 				clockOut: adjustedClockOut,
 				[param_hours]: 8,
 				approveStatus:
-					existingTimesheetInfo?.approveStatus === TIMESHEET_STATUS.APPROVED || approve
+					// existingTimesheetInfo?.approveStatus === TIMESHEET_STATUS.APPROVED || approve
+
+					approve
 						? TIMESHEET_STATUS.APPROVED
 						: approve === false
 						? TIMESHEET_STATUS.REJECTED
@@ -439,7 +441,8 @@ const updateTimesheet = async (req, res) => {
 			clockOut,
 			[param_hours]: totalWorkedHours,
 			approveStatus:
-				existingTimesheetInfo?.approveStatus === TIMESHEET_STATUS.APPROVED || approve
+				// existingTimesheetInfo?.approveStatus === TIMESHEET_STATUS.APPROVED || approve
+				approve
 					? TIMESHEET_STATUS.APPROVED
 					: approve === false
 					? TIMESHEET_STATUS.REJECTED
@@ -577,5 +580,5 @@ module.exports = {
 	addStatHolidayTimesheet,
 	deleteTimesheet,
 	createManualTimesheet,
-	approveTimesheets,
+	actionAllTimesheets,
 };
