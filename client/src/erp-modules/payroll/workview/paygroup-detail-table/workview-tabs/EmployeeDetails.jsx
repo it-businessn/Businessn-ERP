@@ -72,7 +72,6 @@ const EmployeeDetails = ({ company, closestRecord, path, groupId, selectedPayGro
 					{ key: "Employee Number", pair: "obj", pair_key: "employeeId" },
 					{ key: "Department", pair: "employmentCostCenter" },
 					{ key: "Payrate", pair: "regPay", round: true },
-					// { key: "Employee Department", pair: "companyDepartment" },
 					{
 						key: "",
 						pair: (
