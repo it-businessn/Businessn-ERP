@@ -15,6 +15,7 @@ const SelectList = ({
 	handleSelect,
 	type,
 	isTimesheetAction,
+	isTimesheetPayType,
 }) => {
 	const handleChange = (event) => {
 		if (handleSelect && type) {
@@ -36,7 +37,7 @@ const SelectList = ({
 			color={!isTimesheetAction && "var(--primary_button_bg)"}
 			bg={generateLighterShade(bg_color, 0.9)}
 			border={
-				isTimesheetAction
+				isTimesheetPayType
 					? `1px solid var(--filter_border_color)`
 					: `1px solid var(--primary_button_bg)`
 			}
@@ -48,7 +49,7 @@ const SelectList = ({
 				<option
 					value={item[code]}
 					key={`${_id}${item.name || item._id}`}
-					style={{ color: isTimesheetAction && item.color }}
+					style={{ color: (isTimesheetAction || isTimesheetPayType) && item.color }}
 				>
 					{item[code]}
 					{code === "abbr" && ` - ${item.name}`}

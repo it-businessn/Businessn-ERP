@@ -19,6 +19,7 @@ import {
 	getParamKey,
 	getPayTypeStyle,
 	getStatusStyle,
+	PAY_TYPES,
 	PAY_TYPES_TITLE,
 	TIMESHEET_STATUS_LABEL,
 } from "./data";
@@ -434,7 +435,17 @@ const Timesheet = ({
 												{getAmount(param_pay_type)}
 											</Td>
 											<Td py={0}>
-												<NormalTextTitle color={color} size="sm" title={type} />
+												<SelectList
+													id={_id}
+													type="payType"
+													handleSelect={(type, value, rowId) =>
+														handleUpdateData(rowId, type, value, param_hours)
+													}
+													code="type"
+													selectedValue={type}
+													data={PAY_TYPES}
+													isTimesheetPayType
+												/>
 											</Td>
 											<Td p={0.5}>
 												<Input
@@ -518,7 +529,6 @@ const Timesheet = ({
 													code="name"
 													selectedValue={approveStatusAction}
 													data={ACTION_STATUS}
-													hidePlaceholder
 													isTimesheetAction
 												/>
 											</Td>
