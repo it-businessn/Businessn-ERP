@@ -31,6 +31,7 @@ const PositionInfo = ({
 
 	const [isEditable, setIsEditable] = useState(false);
 	const [roleInfo, setRoleInfo] = useState(defaultRoleInfo);
+	const [filteredDept, setFilteredDept] = useState(department);
 
 	useEffect(() => {
 		if (
@@ -46,6 +47,16 @@ const PositionInfo = ({
 			setIsDisabled(true);
 		}
 	}, [isOpen, roleInfo]);
+
+	useEffect(() => {
+		if (roleInfo.employmentCostCenter) {
+			setFilteredDept(
+				department.filter((_) => _.name.includes(roleInfo.employmentCostCenter.slice(0, 4))),
+			);
+		} else {
+			setFilteredDept(department);
+		}
+	}, [roleInfo.employmentCostCenter]);
 
 	return (
 		<Stack>
@@ -145,7 +156,7 @@ const PositionInfo = ({
 									employmentDepartment: e.target.value,
 								}))
 							}
-							options={department}
+							options={filteredDept}
 							placeholder="Select Department"
 						/>
 					</Stack>
