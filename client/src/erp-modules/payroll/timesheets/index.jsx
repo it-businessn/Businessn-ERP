@@ -1,5 +1,6 @@
 import { Flex, HStack, IconButton, useToast } from "@chakra-ui/react";
 import PrimaryButton from "components/ui/button/PrimaryButton";
+import DeletePopUp from "components/ui/modal/DeletePopUp";
 import TabsButtonGroup from "components/ui/tab/TabsButtonGroup";
 import useCompany from "hooks/useCompany";
 import useCostCenter from "hooks/useCostCenter";
@@ -64,6 +65,7 @@ const Timesheets = () => {
 	const [refresh, setRefresh] = useState(false);
 	const [isAllChecked, setIsAllChecked] = useState(true);
 	const [allTimesheetIDs, setAllTimesheetIDs] = useState([]);
+	const [showConfirmationPopUp, setShowConfirmationPopUp] = useState(false);
 
 	// useEffect(() => {
 	// 	if (closestRecord && !startDate && !endDate) {
@@ -142,7 +144,10 @@ const Timesheets = () => {
 		setShowCCFilter(false);
 	}, [startDate, endDate, filteredEmployees, filteredDept, filteredCC, viewMode]);
 
+	const handleClose = () => setShowConfirmationPopUp(false);
+
 	const handleApprove = async () => {
+		handleClose();
 		const { data } = await TimesheetService.approveTimesheets(allTimesheetIDs);
 		if (data) {
 			toast({
@@ -234,11 +239,21 @@ const Timesheets = () => {
 								bg: "var(--correct_ans)",
 								color: "var(--primary_bg)",
 							}}
-							onOpen={handleApprove}
+							onOpen={() => setShowConfirmationPopUp(true)}
 						/>
 					)}
 				</Flex>
 			</HStack>
+
+			{showConfirmationPopUp && (
+				<DeletePopUp
+					headerTitle="Please confirm"
+					textTitle="Are you sure you want to approve all timesheet records?"
+					isOpen={showConfirmationPopUp}
+					onClose={handleClose}
+					onOpen={handleApprove}
+				/>
+			)}
 
 			{showComponent(viewMode)}
 		</PageLayout>
