@@ -270,6 +270,7 @@ const Timesheet = ({
 	const cols = [
 		"Employee Name",
 		"Worked Date",
+		"Role",
 		"Department",
 		"Pay Rate",
 		"Pay Type",
@@ -379,13 +380,21 @@ const Timesheet = ({
 								return (
 									<Tr key={_id} _hover={{ bg: "var(--phoneCall_bg_light)" }}>
 										<Td py={0}>
-											<TextTitle title={employeeId?.fullName} />
+											<TextTitle maxW="150px" title={employeeId?.fullName} />
 										</Td>
 										<Td py={0}>
 											<TextTitle title={clockIn && getTimeCardFormat(clockIn, notDevice, true)} />
 										</Td>
 										<Td py={0}>
 											<NormalTextTitle
+												maxW="150px"
+												size="sm"
+												title={positions.length ? positions[0]?.title : ""}
+											/>
+										</Td>
+										<Td py={0}>
+											<NormalTextTitle
+												maxW="150px"
 												size="sm"
 												title={positions.length ? positions[0]?.employmentDepartment : ""}
 											/>
