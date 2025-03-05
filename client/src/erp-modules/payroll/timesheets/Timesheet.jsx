@@ -328,9 +328,10 @@ const Timesheet = ({
 								totalBreakHours,
 								totalWorkedHours,
 								notDevice,
-								employee,
+								employeeId,
 								startTime,
 								endTime,
+								positions,
 							}) => {
 								const approveStatusBtnCss = getStatusStyle(approveStatus);
 								const { type, color } = getPayTypeStyle(payType);
@@ -378,13 +379,16 @@ const Timesheet = ({
 								return (
 									<Tr key={_id} _hover={{ bg: "var(--phoneCall_bg_light)" }}>
 										<Td py={0}>
-											<TextTitle title={employee?.fullName} />
+											<TextTitle title={employeeId?.fullName} />
 										</Td>
 										<Td py={0}>
 											<TextTitle title={clockIn && getTimeCardFormat(clockIn, notDevice, true)} />
 										</Td>
 										<Td py={0}>
-											<NormalTextTitle size="sm" title={employee?.department?.[0]} />
+											<NormalTextTitle
+												size="sm"
+												title={positions.length ? positions[0]?.employmentDepartment : ""}
+											/>
 										</Td>
 										<Td textAlign={"right"} py={0} w={"90px"}>
 											{getAmount(param_pay_type)}

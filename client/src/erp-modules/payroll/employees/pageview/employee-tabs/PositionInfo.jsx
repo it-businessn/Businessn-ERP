@@ -49,14 +49,14 @@ const PositionInfo = ({
 	}, [isOpen, roleInfo]);
 
 	useEffect(() => {
-		if (roleInfo.employmentCostCenter) {
+		if (department && roleInfo.employmentCostCenter) {
 			setFilteredDept(
 				department.filter((_) => _.name.includes(roleInfo.employmentCostCenter.slice(0, 4))),
 			);
 		} else {
 			setFilteredDept(department);
 		}
-	}, [roleInfo.employmentCostCenter]);
+	}, [roleInfo.employmentCostCenter, department]);
 
 	return (
 		<Stack>

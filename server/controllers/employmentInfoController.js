@@ -31,7 +31,8 @@ const getAllEmploymentInfo = async (req, res) => {
 			}
 			empInfo._id = empInfo?.empPayStubResult?._id;
 			empInfo.empId = empInfo?.empPayStubResult?.empId;
-			empInfo.employmentCostCenter = empInfo?.empPayStubResult?.employmentCostCenter;
+			empInfo.employmentCostCenter =
+				empInfo?.empPayStubResult?.positions?.[0]?.employmentDepartment;
 		});
 
 		res.status(200).json(aggregatedResult);
@@ -64,7 +65,7 @@ const buildPayPeriodEmpDetails = async (companyName, employeeId, hideDetails) =>
 					model: "Employee",
 					select: ["employeeId", "fullName"],
 				})
-				.select("empId")
+				.select("empId positions")
 		: await findEmpEmploymentInfo(employeeId);
 
 	const payInfoResult = await findEmpPayInfo(companyName);

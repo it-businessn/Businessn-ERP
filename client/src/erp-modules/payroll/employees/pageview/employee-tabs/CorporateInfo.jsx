@@ -59,7 +59,7 @@ const CorporateInfo = ({ company, isOnboarding, id, handleNext, handlePrev }) =>
 		} else {
 			setIsDisabled(true);
 		}
-	}, [formData.employeeNo]);
+	}, [formData.employeeNo, formData.payrollStatus]);
 
 	const handleSubmit = async (position) => {
 		setIsLoading(true);
@@ -148,7 +148,11 @@ const CorporateInfo = ({ company, isOnboarding, id, handleNext, handlePrev }) =>
 								onOpen={() => setIsOpen(true)}
 							/>
 							{formData.positions?.map((position, index) => (
-								<BoxCard mt={2} border="1px solid var(--lead_cards_border)" key={position?.title}>
+								<BoxCard
+									mt={2}
+									border="1px solid var(--lead_cards_border)"
+									key={`${position?.title}_${index}`}
+								>
 									<PositionInfo
 										rolePos={`Position ${index + 1}`}
 										currentRoleInfo={position}

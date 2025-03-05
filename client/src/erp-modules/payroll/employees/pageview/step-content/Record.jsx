@@ -164,7 +164,7 @@ const Record = ({
 					name={"Save"}
 					isLoading={isLoading}
 					loadingText="Loading"
-					onOpen={handleSubmit}
+					onOpen={() => handleSubmit()}
 				/>
 			)}
 		</>
