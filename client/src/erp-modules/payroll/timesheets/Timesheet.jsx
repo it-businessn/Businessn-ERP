@@ -166,7 +166,7 @@ const Timesheet = ({
 			formData.clockIn = updatedRec.clockIn;
 			formData.clockOut = updatedRec.clockOut;
 			formData.company = updatedRec.companyName;
-			formData.empId = updatedRec.employee._id;
+			formData.empId = updatedRec.employeeId?._id;
 			formData.payType = updatedRec.payType;
 
 			if (formData.recordId) {
@@ -214,58 +214,6 @@ const Timesheet = ({
 			handleTimeChange("clockOut", formData.clockOut);
 		}
 	}, [formData.clockOut]);
-
-	const handleClick = (e) => {
-		const cursorPos = e.target.selectionStart;
-		if (cursorPos === 3) {
-			e.target.setSelectionRange(3, 3);
-		}
-	};
-
-	const handleKeyDown = (e) => {
-		const cursorPos = e.target.selectionStart;
-		const disabledClick = cursorPos === 2 || cursorPos === 3;
-		if (disabledClick && (e.key === "Backspace" || e.key === "Delete")) {
-			e.preventDefault();
-		}
-
-		if (disabledClick && (e.key === "ArrowLeft" || e.key === "ArrowRight")) {
-			e.preventDefault();
-			if (e.key === "ArrowLeft") {
-				e.target.setSelectionRange(1, 1);
-			} else if (e.key === "ArrowRight") {
-				e.target.setSelectionRange(3, 3);
-			}
-		}
-	};
-
-	const renderEditableInput = (id, field, value, param_hours, isStatPay) => (
-		<>
-			<Input
-				readOnly={true}
-				// onBlur={() => handleSubmit(param_hours)}
-				value={value}
-				// onChange={(e) => {
-				// 	setFormData({
-				// 		param_hours,
-				// 		recordId: id,
-				// 	});
-				// 	handleTimeChange(id, field, e.target.value);
-				// }}
-				// onKeyDown={handleKeyDown}
-				// onClick={handleClick}
-				placeholder="HH:mm"
-				size="sm"
-				maxLength={5}
-				// isInvalid={!!errors[`${id}-${field}`]}
-			/>
-			{/* {errors[`${id}-${field}`] && (
-				<Text color="red.500" fontSize="sm">
-					{errors[`${id}-${field}`]}
-				</Text>
-			)} */}
-		</>
-	);
 
 	const cols = [
 		"Employee Name",
@@ -409,16 +357,17 @@ const Timesheet = ({
 											<Input
 												cursor={"pointer"}
 												size={"sm"}
-												onBlur={() => handleSubmit(param_hours)}
+												onBlur={() => handleSubmit()}
 												className={`timeClockInInput ${_id}`}
 												type="time"
 												name="startTime"
 												value={startTime || ""}
 												onClick={() => !isDisabled && showPicker(`timeClockInInput ${_id}`)}
-												onChange={(e) =>
-													!isDisabled &&
-													handleUpdateData(_id, "startTime", e.target.value, param_hours)
-												}
+												onChange={(e) => {
+													if (!isDisabled) {
+														handleUpdateData(_id, "startTime", e.target.value, param_hours);
+													}
+												}}
 												required
 											/>
 										</Td>
@@ -426,7 +375,7 @@ const Timesheet = ({
 											<Input
 												cursor={"pointer"}
 												size={"sm"}
-												onBlur={() => handleSubmit(param_hours)}
+												onBlur={() => handleSubmit()}
 												className={`timeClockOutInput ${_id}`}
 												type="time"
 												name="endTime"
