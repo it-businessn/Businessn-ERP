@@ -14,8 +14,9 @@ const {
 	EARNING_TYPE,
 	TIMESHEET_ORIGIN,
 } = require("../services/data");
+const EmployeeEmploymentInfo = require("../models/EmployeeEmploymentInfo");
 
-const findByRecordTimesheets = async (record) => {
+const findByRecordTimesheets = async (record, skip, limit) => {
 	// const y = await Timesheet.deleteMany({
 	// 	clockIn: {
 	// 		$lte: moment("2024-10-22"),
@@ -23,11 +24,13 @@ const findByRecordTimesheets = async (record) => {
 	// });
 	// console.log("del", y);
 	const result = await Timesheet.find(record)
+		.skip(skip)
+		.limit(limit)
 		// .limit(50)
 		.populate({
 			path: "employeeId",
 			model: "Employee",
-			select: ["department", "fullName", "role"],
+			select: ["fullName"],
 		});
 	const empData = result?.sort((a, b) => {
 		if (a.employeeId?.fullName < b.employeeId?.fullName) return -1;
@@ -62,22 +65,41 @@ const getTimesheetResult = async (companyName) => {
 	return payInfoMap;
 };
 
-const mapTimesheet = (payInfos, timesheets) => {
+const getEmploymentResult = async (companyName) => {
+	const empInfoResult = await EmployeeEmploymentInfo.find({
+		companyName,
+	}).select("empId positions");
+	const empInfoMap = new Map(
+		empInfoResult.map((empInfo) => [
+			empInfo.empId.toString(),
+			{
+				positions: empInfo.positions,
+			},
+		]),
+	);
+	return empInfoMap;
+};
+
+const mapTimesheet = (payInfos, timesheets, empInfos) => {
 	timesheets.forEach((timesheet) => {
 		const empIdStr = timesheet?.employeeId?._id.toString();
-		if (!payInfos.has(empIdStr)) {
-			return;
+		if (empInfos?.has(empIdStr)) {
+			const empInfo = empInfos?.get(empIdStr);
+			timesheet.positions = empInfo.positions;
 		}
-		const payInfo = payInfos.get(empIdStr);
-		timesheet.regPay = payInfo.regPay;
-		timesheet.overTimePay = payInfo.overTimePay;
-		timesheet.dblOverTimePay = payInfo.dblOverTimePay;
-		timesheet.statWorkPay = payInfo.statWorkPay;
-		timesheet.statPay = payInfo.statPay;
-		timesheet.sickPay = payInfo.sickPay;
-		timesheet.vacationPay = payInfo.vacationPay;
 
-		timesheet.typeOfEarning = payInfo.typeOfEarning;
+		if (payInfos.has(empIdStr)) {
+			const payInfo = payInfos.get(empIdStr);
+			timesheet.regPay = payInfo.regPay;
+			timesheet.overTimePay = payInfo.overTimePay;
+			timesheet.dblOverTimePay = payInfo.dblOverTimePay;
+			timesheet.statWorkPay = payInfo.statWorkPay;
+			timesheet.statPay = payInfo.statPay;
+			timesheet.sickPay = payInfo.sickPay;
+			timesheet.vacationPay = payInfo.vacationPay;
+
+			timesheet.typeOfEarning = payInfo.typeOfEarning;
+		}
 	});
 	return timesheets?.filter(({ typeOfEarning }) => typeOfEarning === EARNING_TYPE.HOURLY);
 };
@@ -179,38 +201,10 @@ const getFilteredTimesheets = async (req, res) => {
 			// regHoursWorked: { $ne: 0 },
 		};
 
-		let timesheets = await Timesheet.aggregate([
-			{
-				$match: filterRecordCriteria,
-			},
-			{
-				$lookup: {
-					from: "employees", // collection name for Employee model
-					localField: "employeeId", // field in Timesheet that references Employee
-					foreignField: "_id", // field in Employee collection
-					as: "employee", // this will be the result of the join
-				},
-			},
-			{
-				$unwind: "$employee", // Flatten the array of employee data
-			},
-			{
-				$sort: {
-					"employee.fullName": 1, // Sort by employee full name
-					clockIn: 1, // Then by clockIn time
-				},
-			},
-			{
-				$skip: skip, // Skip previous pages
-			},
-			{
-				$limit: limit, // Limit the number of results
-			},
-		]);
+		const timesheets = await findByRecordTimesheets(filterRecordCriteria, skip, limit);
 
 		const total = await findByRecordTimesheets(filterRecordCriteria);
 
-		const payInfo = await getTimesheetResult(companyName);
 		if (filteredData?.filteredEmployees?.length) {
 			timesheets = timesheets.filter((item) =>
 				filteredData?.filteredEmployees?.includes(item?.employee?.fullName),
@@ -226,8 +220,10 @@ const getFilteredTimesheets = async (req, res) => {
 				filteredData?.filteredCC?.includes(item?.employee?.role),
 			);
 		}
+		const payInfo = await getTimesheetResult(companyName);
+		const employmentInfo = await getEmploymentResult(companyName);
 
-		const result = mapTimesheet(payInfo, timesheets);
+		const result = mapTimesheet(payInfo, timesheets, employmentInfo);
 		res.status(200).json({
 			page,
 			limit,

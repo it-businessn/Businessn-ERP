@@ -23,6 +23,7 @@ const TextTitle = ({
 	mr,
 	cursor,
 	textTransform,
+	maxW,
 }) => (
 	<Text
 		textTransform={textTransform}
@@ -48,6 +49,7 @@ const TextTitle = ({
 		border={border}
 		borderLeftWidth={borderLeftWidth}
 		textDecoration={textDecoration}
+		maxW={maxW}
 	>
 		{title}
 	</Text>

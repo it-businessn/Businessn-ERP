@@ -1,4 +1,12 @@
-import { Checkbox, HStack, SimpleGrid, VStack } from "@chakra-ui/react";
+import {
+	Checkbox,
+	HStack,
+	Input,
+	InputGroup,
+	InputRightElement,
+	SimpleGrid,
+	VStack,
+} from "@chakra-ui/react";
 import PrimaryButton from "components/ui/button/PrimaryButton";
 import OnboardEmpModal from "erp-modules/payroll/workview/paygroup-header-table/OnboardEmpModal";
 import PayrollActions from "erp-modules/payroll/workview/paygroup-header-table/PayrollActions";
@@ -7,10 +15,10 @@ import useEmployees from "hooks/useEmployees";
 import usePaygroup from "hooks/usePaygroup";
 import PageLayout from "layouts/PageLayout";
 import { useEffect, useState } from "react";
+import { FaSearch } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { payrollEmployeePath } from "routes";
 import LocalStorageService from "services/LocalStorageService";
-import EmpProfileSearch from "../EmpProfileSearch";
 import EmployeeList from "./EmployeeList";
 
 const EmployeeListView = () => {
@@ -60,6 +68,13 @@ const EmployeeListView = () => {
 			navigate(empPath);
 		}
 	};
+	const [empName, setEmpName] = useState("");
+	const handleInputChange = (value) => {
+		setEmpName(value);
+		setFilteredEmployees(
+			employees.filter((emp) => emp?.fullName?.toLowerCase().includes(value.toLowerCase())),
+		);
+	};
 
 	return (
 		<PageLayout
@@ -77,14 +92,40 @@ const EmployeeListView = () => {
 			>
 				<VStack>
 					<HStack w={"100%"} spacing={2} justifyContent={"space-between"}>
-						<EmpProfileSearch
-							hideMenu
-							filteredEmployees={filteredEmployees}
-							setFilteredEmployees={setFilteredEmployees}
-							// setUserId={setUserId}
-							// setEmployee={setEmployee}
-							employees={employees}
-						/>
+						<VStack spacing={1} w={"30%"} align={"start"} zIndex={2}>
+							<InputGroup
+								borderRadius={"10px"}
+								border={"1px solid var(--filter_border_color)"}
+								fontSize="xs"
+								fontWeight="bold"
+								size="xs"
+							>
+								<Input
+									_placeholder={{
+										color: "var(--nav_color)",
+										fontSize: "sm",
+									}}
+									size="xs"
+									name="empName"
+									value={empName}
+									onChange={(e) => handleInputChange(e.target.value)}
+									color={"var(--nav_color)"}
+									bg={"var(--primary_bg)"}
+									type="text"
+									placeholder="Search employee"
+									pr="4.5rem"
+									py="1.1em"
+								/>
+								<InputRightElement size="xs" children={<FaSearch />} />
+							</InputGroup>
+							<Checkbox
+								colorScheme={"facebook"}
+								// isChecked={hasChecklist}
+								// onChange={() => setHasChecklist(!hasChecklist)}
+							>
+								Terminated
+							</Checkbox>
+						</VStack>
 						<PrimaryButton
 							name={"Add Employee"}
 							size="xs"
@@ -160,7 +201,7 @@ const EmployeeListView = () => {
 					]}
 				/>
 			</SimpleGrid>
-			<EmployeeList employees={employees} />
+			<EmployeeList employees={filteredEmployees} />
 			{showOnboard && (
 				<OnboardEmpModal
 					title="Onboard employee"

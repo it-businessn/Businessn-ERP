@@ -29,7 +29,8 @@ const getAllEmploymentInfo = async (req, res) => {
 			}
 			empInfo._id = empInfo?.empPayStubResult?._id;
 			empInfo.empId = empInfo?.empPayStubResult?.empId;
-			empInfo.employmentCostCenter = empInfo?.empPayStubResult?.employmentCostCenter;
+			empInfo.employmentCostCenter =
+				empInfo?.empPayStubResult?.positions?.[0]?.employmentDepartment;
 		});
 
 		res.status(200).json(aggregatedResult);
@@ -62,7 +63,7 @@ const buildPayPeriodEmpDetails = async (companyName, employeeId, hideDetails) =>
 					model: "Employee",
 					select: ["employeeId", "fullName"],
 				})
-				.select("empId companyDepartment employmentCostCenter")
+				.select("empId positions")
 		: await findEmpEmploymentInfo(employeeId);
 
 	const payInfoResult = await findEmpPayInfo(companyName);
@@ -99,30 +100,17 @@ const updateEmploymentInfo = async (id, data) =>
 	});
 
 const updateEmployee = async (empId, data) => {
-	const {
-		employmentRole,
-		employmentCostCenter,
-		employmentDepartment,
-		payrollStatus,
-		employeeNo,
-		timeManagementBadgeID,
-	} = data;
+	const { employmentRole, payrollStatus, employeeNo } = data;
 	const employee = await Employee.findById(empId);
 
 	if (employmentRole) {
 		employee.role = employmentRole;
-	}
-	if (employmentDepartment) {
-		employee.department = employmentDepartment;
 	}
 	if (employee?.payrollStatus !== payrollStatus) {
 		employee.payrollStatus = payrollStatus;
 	}
 	if (employeeNo && employeeNo !== "") {
 		employee.employeeNo = employeeNo;
-	}
-	if (timeManagementBadgeID && timeManagementBadgeID !== "") {
-		employee.timeManagementBadgeID = timeManagementBadgeID;
 	}
 
 	await employee.save();
@@ -134,23 +122,16 @@ const addEmployeeEmploymentInfo = async (req, res) => {
 		companyName,
 		payrollStatus,
 		employeeNo,
-		timeManagementBadgeID,
 		employmentStartDate,
 		employmentLeaveDate,
 		employmentRole,
-		employmentPayGroup,
-		employmentCostCenter,
-		employmentDepartment,
-		companyDepartment,
+		positions,
 	} = req.body;
 	try {
 		const data = {
 			payrollStatus,
 			employeeNo,
-			timeManagementBadgeID,
 			employmentRole,
-			employmentCostCenter,
-			employmentDepartment,
 		};
 		const existingEmploymentInfo = await findEmployeeEmploymentInfo(empId, companyName);
 		if (existingEmploymentInfo) {
@@ -170,15 +151,11 @@ const addEmployeeEmploymentInfo = async (req, res) => {
 			empId,
 			payrollStatus,
 			employeeNo,
-			timeManagementBadgeID,
 			companyName,
 			employmentStartDate,
 			employmentLeaveDate,
 			employmentRole,
-			employmentPayGroup,
-			employmentCostCenter,
-			employmentDepartment,
-			companyDepartment,
+			positions,
 		});
 		await updateEmployee(empId, data);
 		await setInitialPermissions(empId, isRoleManager(employmentRole), companyName);

@@ -24,6 +24,7 @@ const timesheetSchema = new mongoose.Schema({
 	updatedOn: { type: Date, default: Date.now },
 	createdOn: { type: Date, default: Date.now },
 	companyName: { type: String, ref: "Company" },
+	positions: { type: Array, default: [] },
 	regPay: String,
 	totalBreaks: { type: Number, default: "0" },
 	overTimePay: String,

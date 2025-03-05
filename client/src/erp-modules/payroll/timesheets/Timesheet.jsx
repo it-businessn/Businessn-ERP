@@ -260,14 +260,39 @@ const Timesheet = ({
 
 			if (formData.recordId) {
 				const { data } = await TimesheetService.updateTimesheet(formData, formData.recordId);
-				if (data.message)
+				// setRefresh((prev) => !prev);
+
+				if (data.message) {
 					toast({
 						title: data.message,
 						status: "success",
 						duration: 1500,
 						isClosable: true,
 					});
-				setRefresh((prev) => !prev);
+				}
+				// setRefresh((prev) => !prev);
+
+				if (data) {
+					const updatedData = timesheetData?.map((record) =>
+						record._id === formData.recordId
+							? {
+									...record,
+									clockIn: data?.clockIn,
+									clockOut: data?.clockOut,
+									regHoursWorked: data?.regHoursWorked,
+									overtimeHoursWorked: data?.overtimeHoursWorked,
+									dblOvertimeHoursWorked: data?.dblOvertimeHoursWorked,
+									statDayHoursWorked: data?.statDayHoursWorked,
+									statDayHours: data?.statDayHours,
+									sickPayHours: data?.sickPayHours,
+									vacationPayHours: data?.vacationPayHours,
+									breakHoursWorked: data?.breakHoursWorked,
+									approveStatus: data?.approveStatus,
+							  }
+							: record,
+					);
+					setTimesheetData(updatedData);
+				}
 			}
 		} catch (error) {}
 	};
@@ -345,6 +370,7 @@ const Timesheet = ({
 	const cols = [
 		COLS.EMP_NAME,
 		"Worked Date",
+		"Role",
 		"Department",
 		"Source",
 		"Pay Rate",
@@ -399,7 +425,7 @@ const Timesheet = ({
 									vacationPay,
 									clockIn,
 									notDevice,
-									employee,
+									employeeId,
 									startTime,
 									endTime,
 									regBreakHoursWorked,
@@ -407,6 +433,7 @@ const Timesheet = ({
 									isEditable,
 									isActionDisabled,
 									showAddBreak,
+									positions,
 								},
 								index,
 							) => {
@@ -458,13 +485,24 @@ const Timesheet = ({
 										_hover={{ bg: rowBg ?? "var(--phoneCall_bg_light)" }}
 									>
 										<Td py={0}>
-											<TextTitle title={employee?.fullName} />
+											<TextTitle maxW="150px" title={employeeId?.fullName} />
 										</Td>
 										<Td py={0}>
 											<TextTitle title={clockIn && getTimeCardFormat(clockIn, notDevice, true)} />
 										</Td>
 										<Td py={0}>
-											<NormalTextTitle size="sm" title={employee?.department?.[0]} />
+											<NormalTextTitle
+												maxW="150px"
+												size="sm"
+												title={positions.length ? positions[0]?.title : ""}
+											/>
+										</Td>
+										<Td py={0}>
+											<NormalTextTitle
+												maxW="150px"
+												size="sm"
+												title={positions.length ? positions[0]?.employmentDepartment : ""}
+											/>
 										</Td>
 										<Td p={0} position={"sticky"} right={"0"} zIndex="1">
 											{source && (

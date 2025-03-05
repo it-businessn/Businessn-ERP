@@ -17,6 +17,7 @@ const NormalTextTitle = ({
 	cursor,
 	textTransform,
 	p,
+	maxW,
 }) => (
 	<TextTitle
 		textTransform={textTransform}
@@ -35,6 +36,7 @@ const NormalTextTitle = ({
 		width={width}
 		textDecoration={textDecoration}
 		cursor={cursor}
+		maxW={maxW}
 	/>
 );
 

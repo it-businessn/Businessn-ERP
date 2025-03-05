@@ -35,11 +35,7 @@ const getTimecard = async (req, res) => {
 				$lte: moment().endOf("day").toDate(),
 			},
 		};
-		const result = await Timecard.find(filterCriteria)
-			.sort({
-				clockIn: -1,
-			})
-			.skip(skip);
+		const result = await Timecard.find(filterCriteria).sort({ clockIn: -1 }).skip(skip);
 		// .limit(limit);
 
 		const uniqueEntries = [
@@ -115,7 +111,16 @@ const createTimecard = async (req, res) => {
 
 const mapTimecardRawToTimecard = async () => {
 	try {
-		const entries = await TimecardRaw.find({}).sort({ timestamp: 1 });
+		const today = new Date();
+		const yesterday = new Date(today);
+		yesterday.setDate(today.getDate() - 1);
+
+		const entries = await TimecardRaw.find({
+			timestamp: {
+				$gte: moment(yesterday).startOf("day").toDate(),
+				$lte: moment(today).endOf("day").toDate(),
+			},
+		}).sort({ timestamp: 1 });
 		entries?.forEach(async (record) => {
 			const { user_id, timestamp, punch } = record;
 			const targetDate = moment(timestamp).format("YYYY-MM-DD");

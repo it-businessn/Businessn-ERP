@@ -31,12 +31,15 @@ const Record = ({
 	setIsCPPExempt,
 	setIsEIExempt,
 	isContribution,
+	showAddForm,
+	formContent,
 }) => {
 	return (
 		<>
 			<TextTitle title={title} />
+			{showAddForm && formContent}
 			<HStack align={"start"} justify={"start"} mb={2}>
-				{config.map((tab, index) => (
+				{config?.map((tab, index) => (
 					<VStack align={"start"} key={`${tab.type}**${index * 2}`}>
 						{tab?.control === "checkbox" ? (
 							<Checkbox
@@ -162,7 +165,7 @@ const Record = ({
 					name={"Save"}
 					isLoading={isLoading}
 					loadingText="Loading"
-					onOpen={handleSubmit}
+					onOpen={() => handleSubmit()}
 				/>
 			)}
 		</>
