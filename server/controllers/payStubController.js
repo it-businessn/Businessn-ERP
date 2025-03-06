@@ -2,6 +2,7 @@ const EmployeePayStub = require("../models/EmployeePayStub");
 const { getSumTotal } = require("../services/payrollService");
 const { findAllAdditionalHoursAllocatedInfo } = require("./payrunExtraAllocationInfoController");
 const { getEmployeeId } = require("./userController");
+const moment = require("moment");
 // const { generateT4Slip } = require("./t4SlipController");
 const {
 	buildNewEmpPayStubInfo,
@@ -501,6 +502,10 @@ const getPayDetailsReportInfo = async (req, res) => {
 			companyName,
 			payPeriodNum,
 			isExtraRun: isExtraPayRun,
+			payPeriodPayDate: {
+				$gte: moment().startOf("year").toDate(),
+				$lt: moment().endOf("year").toDate(),
+			},
 		}).populate(EMP_INFO);
 
 		payStubs.sort((a, b) => {
