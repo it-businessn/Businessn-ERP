@@ -16,6 +16,7 @@ import LocalStorageService from "services/LocalStorageService";
 import TimesheetService from "services/TimesheetService";
 import { isManager } from "utils";
 import { getDefaultDate, getMomentDate } from "utils/convertDate";
+import ActionAll from "./ActionAll";
 import DateFilterPopup from "./DateFilterPopup";
 import OtherFilter from "./OtherFilter";
 import Timecard from "./Timecard";
@@ -65,6 +66,7 @@ const Timesheets = () => {
 
 	const [refresh, setRefresh] = useState(false);
 	const [isAllChecked, setIsAllChecked] = useState(true);
+	const [isActioned, setIsActioned] = useState(false);
 	const [allTimesheetIDs, setAllTimesheetIDs] = useState([]);
 	const [showConfirmationPopUp, setShowConfirmationPopUp] = useState(false);
 
@@ -100,6 +102,8 @@ const Timesheets = () => {
 					setTimesheets={setTimesheets}
 					isAllChecked={isAllChecked}
 					setIsAllChecked={setIsAllChecked}
+					setIsActioned={setIsActioned}
+					isActioned={isActioned}
 					allTimesheetIDs={allTimesheetIDs}
 					setAllTimesheetIDs={setAllTimesheetIDs}
 					refresh={refresh}
@@ -162,6 +166,7 @@ const Timesheets = () => {
 				isClosable: true,
 			});
 			setRefresh((prev) => !prev);
+			setIsActioned(true);
 		}
 	};
 
@@ -232,20 +237,10 @@ const Timesheets = () => {
 						helperText="cost center"
 					/>
 				</Flex>
-				<Flex w="10%">
-					<PrimaryButton
-						isDisabled={!isAllChecked || !timesheets?.length}
-						color="var(--primary_bg)"
-						bg="var(--correct_ans)"
-						name="Approve All"
-						px={0}
-						hover={{
-							bg: "var(--correct_ans)",
-							color: "var(--primary_bg)",
-						}}
-						onOpen={() => setShowConfirmationPopUp(true)}
-					/>
-				</Flex>
+				<ActionAll
+					isDisabled={!isAllChecked || !timesheets?.length}
+					handleButtonClick={() => setShowConfirmationPopUp(true)}
+				/>
 			</HStack>
 
 			{showConfirmationPopUp && (

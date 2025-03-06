@@ -23,9 +23,11 @@ const PrimaryButton = ({
 	ml,
 	mt,
 	my,
+	textTransform,
 }) => {
 	return (
 		<Button
+			textTransform={textTransform}
 			flex={flex}
 			minW={minW}
 			isDisabled={isDisabled}

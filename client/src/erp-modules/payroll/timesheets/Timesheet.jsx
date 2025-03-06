@@ -14,8 +14,8 @@ import {
 	getTimeFormat,
 	getUTCTime,
 } from "utils/convertDate";
+import ActionAll from "./ActionAll";
 import {
-	ACTION_STATUS,
 	getParamKey,
 	getPayTypeStyle,
 	getStatusStyle,
@@ -41,6 +41,8 @@ const Timesheet = ({
 	setAllTimesheetIDs,
 	setRefresh,
 	refresh,
+	isActioned,
+	setIsActioned,
 }) => {
 	const cols = [
 		"Employee Name",
@@ -150,9 +152,6 @@ const Timesheet = ({
 	useEffect(() => {
 		if (timesheets) {
 			setTimesheetData(timesheets);
-			const ids = timesheets.map((item) => item._id);
-			setAllTimesheetIDs(ids);
-			setCheckedRows(ids);
 			setTimesheetRefresh(false);
 
 			setProgress(100);
@@ -185,27 +184,42 @@ const Timesheet = ({
 		}
 	};
 
+	useEffect(() => {
+		if (timesheetData?.length) {
+			if (isActioned) {
+				setCheckedRows([]);
+				setAllTimesheetIDs([]);
+				setIsAllChecked(false);
+			} else {
+				const ids = timesheetData.map((item) => item._id);
+				setAllTimesheetIDs(ids);
+				setCheckedRows(ids);
+				setIsAllChecked(true);
+			}
+		}
+	}, [timesheetData, isActioned]);
+
+	// useEffect(() => {
+	// 	if (checkedRows.length === allTimesheetIDs.length && !isActioned) {
+
+	// 	} else {
+	// 	}
+	// }, [checkedRows, isActioned]);
 	const handleHeaderCheckboxChange = (e) => {
+		setIsActioned(false);
 		setIsAllChecked(e.target.checked);
 		if (e.target.checked) setCheckedRows(allTimesheetIDs);
 		if (!e.target.checked) setCheckedRows([]);
 	};
 
 	const handleCheckboxChange = (rowId) => {
+		setIsActioned(false);
 		if (checkedRows.includes(rowId)) {
 			setCheckedRows(checkedRows.filter((id) => id !== rowId));
 		} else {
 			setCheckedRows([...checkedRows, rowId]);
 		}
 	};
-
-	useEffect(() => {
-		if (checkedRows.length === allTimesheetIDs.length) {
-			setIsAllChecked(true);
-		} else {
-			setIsAllChecked(false);
-		}
-	}, [checkedRows]);
 
 	const handleTimeChange = (key, value) => {
 		const updatedData = timesheetData?.map((record) =>
@@ -520,7 +534,8 @@ const Timesheet = ({
 												/>
 											</Td>
 											<Td py={0}>
-												<SelectList
+												<ActionAll id={_id} w="auto" isRowAction />
+												{/* <SelectList
 													id={_id}
 													type="approveStatusAction"
 													handleSelect={(type, value, rowId) =>
@@ -530,7 +545,7 @@ const Timesheet = ({
 													selectedValue={approveStatusAction}
 													data={ACTION_STATUS}
 													isTimesheetAction
-												/>
+												/> */}
 											</Td>
 										</Tr>
 									);

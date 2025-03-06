@@ -97,18 +97,22 @@ export const ACTION_STATUS = [
 	{
 		name: TIMESHEET_STATUS_LABEL.APPROVED,
 		color: "var(--correct_ans)",
+		title: "Approve",
 	},
 	{
 		name: TIMESHEET_STATUS_LABEL.PENDING,
 		color: "var(--pending)",
+		title: "Pend",
 	},
 	{
 		name: TIMESHEET_STATUS_LABEL.REJECTED,
 		color: "var(--incorrect_ans)",
+		title: "Reject",
 	},
 	{
 		name: TIMESHEET_STATUS_LABEL.DELETE,
 		color: "var(--nav_color)",
+		title: "Delete",
 	},
 ];
 
