@@ -164,6 +164,7 @@ const Timesheet = ({
 	};
 
 	const [formData, setFormData] = useState(initialFormData);
+	const [isPayTypeChanged, setIsPayTypeChanged] = useState(false);
 	const [timesheetData, setTimesheetData] = useState([]);
 
 	useEffect(() => {
@@ -192,6 +193,12 @@ const Timesheet = ({
 			handleTimeChange("clockOut", formData.clockOut);
 		}
 	}, [formData.clockOut]);
+
+	useEffect(() => {
+		if (isPayTypeChanged) {
+			handlePayTypeSubmit();
+		}
+	}, [isPayTypeChanged]);
 
 	const showPicker = (className) => {
 		const timeInput = document.getElementsByClassName(className);
@@ -307,10 +314,6 @@ const Timesheet = ({
 		} catch (error) {}
 	};
 
-	useEffect(() => {
-		handlePayTypeSubmit();
-	}, [formData?.payType]);
-
 	const handlePayTypeSubmit = async () => {
 		try {
 			const updatedRec = timesheetData.find((record) => record._id === formData.recordId);
@@ -352,6 +355,7 @@ const Timesheet = ({
 					);
 					setTimesheetData(updatedData);
 					setIsActioned(true);
+					setIsPayTypeChanged(false);
 				}
 			}
 		} catch (error) {}
@@ -370,6 +374,7 @@ const Timesheet = ({
 				recordId: id,
 				[field]: value,
 			});
+			setIsPayTypeChanged(true);
 			setTimesheetData(updatedData);
 			return;
 		}
