@@ -223,15 +223,15 @@ const Timesheets = () => {
 			valueText1={date}
 			handleChange={(value) => setDate(value)}
 			isTimesheet
-			showCheckBox={
-				<VStack ml={5} alignItems="self-start">
-					{CHECK_FILTER.map(({ label, onChange }) => (
-						<Checkbox key={label} colorScheme="facebook" isChecked={true} onChange={onChange}>
-							{label}
-						</Checkbox>
-					))}
-				</VStack>
-			}
+			// showCheckBox={
+			// 	<VStack ml={5} alignItems="self-start">
+			// 		{CHECK_FILTER.map(({ label, onChange }) => (
+			// 			<Checkbox key={label} colorScheme="facebook" isChecked={true} onChange={onChange}>
+			// 				{label}
+			// 			</Checkbox>
+			// 		))}
+			// 	</VStack>
+			// }
 		>
 			<HStack spacing={3} justify={"flex-end"} mt={-8}>
 				<IconButton
