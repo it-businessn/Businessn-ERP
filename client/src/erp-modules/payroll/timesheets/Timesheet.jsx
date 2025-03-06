@@ -2,7 +2,7 @@ import {
 	Box,
 	Checkbox,
 	HStack,
-	IconButton,
+	// IconButton,
 	Input,
 	Table,
 	Tbody,
@@ -21,7 +21,7 @@ import TextTitle from "components/ui/text/TextTitle";
 import { COLS } from "constant";
 import { useEffect, useState } from "react";
 // import { GoPlusCircle } from "react-icons/go";
-import { TbCornerRightUp } from "react-icons/tb";
+// import { TbCornerRightUp } from "react-icons/tb";
 import TimesheetService from "services/TimesheetService";
 import { getAmount } from "utils/convertAmt";
 import {
@@ -37,7 +37,7 @@ import {
 	// BREAK_TYPES_TITLE,
 	getParamKey,
 	getPayTypeStyle,
-	getSourceStyle,
+	// getSourceStyle,
 	getStatusStyle,
 	PAY_TYPES,
 	PAY_TYPES_TITLE,
@@ -583,7 +583,7 @@ const Timesheet = ({
 									},
 									index,
 								) => {
-									const sourceBtnCss = getSourceStyle(source);
+									// const sourceBtnCss = getSourceStyle(source);
 									const approveStatusBtnCss = getStatusStyle(approveStatus);
 									const { type, color, rowBg } = getPayTypeStyle(payType);
 
