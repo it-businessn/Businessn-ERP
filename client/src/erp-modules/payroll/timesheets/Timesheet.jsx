@@ -738,7 +738,7 @@ const Timesheet = ({
 														onClick={() => addRow(index)}
 													/>
 												) : (
-													<NormalTextTitle size="sm" title={param_hours_worked.toFixed(2)} />
+													<NormalTextTitle size="sm" title={param_hours_worked?.toFixed(2)} />
 												)}
 											</Td>
 											<Td p={0} position={"sticky"} right={"0"} zIndex="1">
