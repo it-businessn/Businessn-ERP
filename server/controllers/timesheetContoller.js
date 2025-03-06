@@ -446,9 +446,10 @@ const updateTimesheet = async (req, res) => {
 
 		if (startTime) clockIn = setTime(clockIn, startTime);
 		if (endTime) clockOut = setTime(clockIn, endTime);
-		const totalWorkedHours = existingTimesheetInfo[param_hours]
-			? existingTimesheetInfo[param_hours]
-			: calcTotalWorkedHours(clockIn, clockOut);
+		// const totalWorkedHours = existingTimesheetInfo[param_hours]
+		// 	? existingTimesheetInfo[param_hours]
+		// 	: calcTotalWorkedHours(clockIn, clockOut);
+		const totalWorkedHours = calcTotalWorkedHours(clockIn, clockOut);
 
 		if (param_hours === PARAM_HOURS.REGULAR && totalWorkedHours > 8) {
 			const adjustedClockOut = await addOvertimeRecord(clockIn, clockOut, empId, company, source);

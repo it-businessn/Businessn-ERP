@@ -20,7 +20,7 @@ import NormalTextTitle from "components/ui/NormalTextTitle";
 import TextTitle from "components/ui/text/TextTitle";
 import { COLS } from "constant";
 import { useEffect, useState } from "react";
-import { GoPlusCircle } from "react-icons/go";
+// import { GoPlusCircle } from "react-icons/go";
 import { TbCornerRightUp } from "react-icons/tb";
 import TimesheetService from "services/TimesheetService";
 import { getAmount } from "utils/convertAmt";
@@ -34,7 +34,7 @@ import {
 import ActionAll from "./ActionAll";
 import {
 	ACTION_STATUS,
-	BREAK_TYPES_TITLE,
+	// BREAK_TYPES_TITLE,
 	getParamKey,
 	getPayTypeStyle,
 	getSourceStyle,
@@ -73,12 +73,12 @@ const Timesheet = ({
 		"Worked Date",
 		"Role",
 		"Department",
-		"Source",
+		// "Source",
 		"Pay Rate",
 		"Pay Type",
 		"Start Time",
 		"End Time",
-		"Break",
+		// "Break",
 		"Total Hours",
 		"Status",
 		"",
@@ -279,6 +279,7 @@ const Timesheet = ({
 		);
 		setTimesheetData(updatedData);
 	};
+
 	const addRow = (index) => {
 		const newRows = [...timesheetData];
 		const {
@@ -521,7 +522,7 @@ const Timesheet = ({
 					<Thead position="sticky" top={-1} zIndex={3}>
 						<Tr>
 							{cols?.map((col, index) =>
-								index === 12 ? (
+								index === 10 ? (
 									<Th key={`action_${index}`}>
 										<Checkbox
 											isChecked={isAllChecked}
@@ -652,7 +653,7 @@ const Timesheet = ({
 													title={positions?.length ? positions[0]?.employmentDepartment : ""}
 												/>
 											</Td>
-											<Td p={0} position={"sticky"} right={"0"} zIndex="1">
+											{/* <Td p={0} position={"sticky"} right={"0"} zIndex="1">
 												{source && (
 													<PrimaryButton
 														cursor="text"
@@ -667,7 +668,7 @@ const Timesheet = ({
 														}}
 													/>
 												)}
-											</Td>
+											</Td> */}
 											<Td textAlign={"right"} py={0} w={"90px"}>
 												{getAmount(param_pay_type)}
 											</Td>
@@ -719,14 +720,7 @@ const Timesheet = ({
 													required
 												/>
 											</Td>
-											<Td p={0} pl={5}>
-												{/* {renderEditableInput(
-										_id,
-										"totalBreakHours",
-										totalBreakHours,
-										param_hours,
-										isStatPay,
-									)} */}
+											{/* <Td p={0} pl={5}>
 												{regBreakHoursWorked && payType === BREAK_TYPES_TITLE.REG_PAY_BRK ? (
 													<NormalTextTitle size="sm" p="0 1em" title={regBreakHoursWorked} />
 												) : (
@@ -739,7 +733,7 @@ const Timesheet = ({
 														/>
 													)
 												)}
-											</Td>
+											</Td> */}
 
 											<Td py={0} w={"80px"}>
 												{regBreakHoursWorked && payType.includes("Break") ? (
