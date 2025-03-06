@@ -39,7 +39,7 @@ const MenuItem = ({ menu, parent, textTransform, handleMenuItemClick }) => {
 							variant="ghost"
 							icon={menu?.icon ?? ""}
 							color="var(--nav_color)"
-							size="xs"
+							size="sm"
 						/>
 
 						<Button
@@ -47,7 +47,7 @@ const MenuItem = ({ menu, parent, textTransform, handleMenuItemClick }) => {
 							p={0}
 							variant="ghost"
 							color="var(--menu_item_color)"
-							fontSize="xs"
+							fontSize="sm"
 							textTransform={textTransform}
 						>
 							{menu?.name === "Approvals" ? "Attendance" : menu?.name}

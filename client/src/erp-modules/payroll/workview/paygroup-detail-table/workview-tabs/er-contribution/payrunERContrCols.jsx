@@ -36,7 +36,7 @@ export const REGULAR_ER_COLS = [
 		key: "er3",
 	},
 	{
-		key: "er4",
+		key: "er41",
 	},
 	{
 		key: "er5",
@@ -88,37 +88,37 @@ export const PAYOUT_ER_COLS = [
 		round: true,
 	},
 	{
-		key: "er3",
+		key: "er31",
 	},
 	{
 		key: "er4",
 	},
 	{
-		key: "er3",
+		key: "er33",
 	},
 	{
-		key: "er4",
+		key: "er42",
 	},
 	{
-		key: "er5",
+		key: "er51",
 	},
 	{
-		key: "er6",
+		key: "er61",
 	},
 	{
-		key: "er7",
+		key: "er71",
 	},
 	{
-		key: "er8",
+		key: "er81",
 	},
 	{
-		key: "er9",
+		key: "er91",
 	},
 	{
-		key: "er10",
+		key: "er102",
 	},
 	{
-		key: "er11",
+		key: "er121",
 	},
 ];
 
@@ -149,37 +149,37 @@ export const MANUAL_ER_COLS = [
 		round: true,
 	},
 	{
-		key: "er3",
+		key: "er32",
 	},
 	{
-		key: "er4",
+		key: "er43",
 	},
 	{
-		key: "er3",
+		key: "er34",
 	},
 	{
-		key: "er4",
+		key: "er44",
 	},
 	{
-		key: "er5",
+		key: "er52",
 	},
 	{
-		key: "er6",
+		key: "er62",
 	},
 	{
-		key: "er7",
+		key: "er72",
 	},
 	{
-		key: "er8",
+		key: "er82",
 	},
 	{
-		key: "er9",
+		key: "er92",
 	},
 	{
-		key: "er10",
+		key: "er103",
 	},
 	{
-		key: "er11",
+		key: "er14",
 	},
 ];
 
@@ -206,30 +206,30 @@ export const SUPERFICIAL_ER_COLS = [
 		isEditable: true,
 	},
 	{
-		key: "er3",
+		key: "er35",
 	},
 	{
-		key: "er4",
+		key: "er46",
 	},
 	{
-		key: "er5",
+		key: "er53",
 	},
 	{
-		key: "er6",
+		key: "er323",
 	},
 	{
-		key: "er7",
+		key: "er73",
 	},
 	{
-		key: "er8",
+		key: "er83",
 	},
 	{
-		key: "er9",
+		key: "er93",
 	},
 	{
-		key: "er10",
+		key: "er104",
 	},
 	{
-		key: "er11",
+		key: "er15",
 	},
 ];

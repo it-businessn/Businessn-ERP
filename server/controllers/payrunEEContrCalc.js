@@ -68,22 +68,14 @@ const calcSuperficialEEContribution = async (empId, fullName, payDate, aggregate
 		payPeriodPayDate: payDate,
 	});
 
-	const {
-		unionDuesSuperficial,
-		EE_EHPSuperficial,
-		EE_EPPSuperficial,
-		EE_EISuperficial,
-		EE_CPPSuperficial,
-	} = empEESuperficialContribution;
-
 	aggregatedResult.push({
 		_id: empId,
 		empId: { fullName, _id: empId },
-		unionDuesSuperficial,
-		EE_EHPSuperficial,
-		EE_EPPSuperficial,
-		EE_EISuperficial,
-		EE_CPPSuperficial,
+		unionDuesSuperficial: empEESuperficialContribution?.unionDuesSuperficial || 0,
+		EE_EHPSuperficial: empEESuperficialContribution?.EE_EHPSuperficial || 0,
+		EE_EPPSuperficial: empEESuperficialContribution?.EE_EPPSuperficial || 0,
+		EE_EISuperficial: empEESuperficialContribution?.EE_EISuperficial || 0,
+		EE_CPPSuperficial: empEESuperficialContribution?.EE_CPPSuperficial || 0,
 	});
 
 	return aggregatedResult;

@@ -356,12 +356,12 @@ export const SUPERFICIAL_HOURLY_ALLOCATE_COLS = [
 	},
 
 	{
-		key: "er5",
+		key: "er56",
 	},
 	{
-		key: "er6",
+		key: "er66",
 	},
 	{
-		key: "er7",
+		key: "er78",
 	},
 ];
