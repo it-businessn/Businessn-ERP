@@ -13,6 +13,7 @@ import {
 } from "@chakra-ui/react";
 import PrimaryButton from "components/ui/button/PrimaryButton";
 import EmptyRowRecord from "components/ui/EmptyRowRecord";
+import SelectList from "components/ui/form/select/SelectList";
 import DeletePopUp from "components/ui/modal/DeletePopUp";
 import NormalTextTitle from "components/ui/NormalTextTitle";
 import TextTitle from "components/ui/text/TextTitle";
@@ -30,6 +31,7 @@ import {
 	getParamKey,
 	getPayTypeStyle,
 	getStatusStyle,
+	PAY_TYPES,
 	PAY_TYPES_TITLE,
 	TIMESHEET_STATUS,
 	TIMESHEET_STATUS_LABEL,
@@ -297,12 +299,77 @@ const Timesheet = ({
 		} catch (error) {}
 	};
 
-	const handleUpdateData = (id, field, value, param_hours) => {
+	useEffect(() => {
+		handlePayTypeSubmit();
+	}, [formData?.payType]);
+
+	const handlePayTypeSubmit = async () => {
+		try {
+			const updatedRec = timesheetData.find((record) => record._id === formData.recordId);
+			formData.clockIn = updatedRec.clockIn;
+			formData.clockOut = updatedRec.clockOut;
+			formData.company = updatedRec.companyName;
+			formData.empId = updatedRec.employeeId?._id;
+			formData.payType = updatedRec.payType;
+			formData.regHoursWorked = updatedRec?.regHoursWorked;
+			formData.overtimeHoursWorked = updatedRec?.overtimeHoursWorked;
+			formData.dblOvertimeHoursWorked = updatedRec?.dblOvertimeHoursWorked;
+			formData.statDayHoursWorked = updatedRec?.statDayHoursWorked;
+			formData.sickPayHours = updatedRec?.sickPayHours;
+			formData.statDayHours = updatedRec?.statDayHours;
+			formData.breakHoursWorked = updatedRec?.breakHoursWorked;
+			formData.vacationPayHours = updatedRec?.vacationPayHours;
+
+			if (formData.recordId) {
+				const { data } = await TimesheetService.updateTimesheetPayType(formData, formData.recordId);
+				// setRefresh((prev) => !prev);
+				if (data) {
+					const updatedData = timesheetData?.map((record) =>
+						record._id === formData.recordId
+							? {
+									...record,
+									clockIn: data?.clockIn,
+									clockOut: data?.clockOut,
+									regHoursWorked: data?.regHoursWorked,
+									overtimeHoursWorked: data?.overtimeHoursWorked,
+									dblOvertimeHoursWorked: data?.dblOvertimeHoursWorked,
+									statDayHoursWorked: data?.statDayHoursWorked,
+									statDayHours: data?.statDayHours,
+									sickPayHours: data?.sickPayHours,
+									vacationPayHours: data?.vacationPayHours,
+									breakHoursWorked: data?.breakHoursWorked,
+									approveStatus: data?.approveStatus,
+							  }
+							: record,
+					);
+					setTimesheetData(updatedData);
+					setIsActioned(true);
+				}
+			}
+		} catch (error) {}
+	};
+
+	const handleUpdateData = (id, field, value, paramHours, param_hours_worked) => {
+		if (field === "payType") {
+			const { param_hours } = getParamKey(value);
+			const updatedData = timesheetData?.map((record) =>
+				record._id === id
+					? { ...record, [param_hours]: param_hours_worked, [field]: value }
+					: record,
+			);
+			setFormData({
+				param_hours: paramHours,
+				recordId: id,
+				[field]: value,
+			});
+			setTimesheetData(updatedData);
+			return;
+		}
 		const updatedData = timesheetData?.map((record) =>
 			record._id === id ? { ...record, [field]: value } : record,
 		);
 		setFormData({
-			param_hours,
+			param_hours: paramHours,
 			recordId: id,
 			[field]: value,
 		});
@@ -475,17 +542,17 @@ const Timesheet = ({
 												{getAmount(param_pay_type)}
 											</Td>
 											<Td py={0}>
-												{/* <SelectList
+												<SelectList
 													id={_id}
 													type="payType"
 													handleSelect={(type, value, rowId) =>
-														handleUpdateData(rowId, type, value, param_hours)
+														handleUpdateData(rowId, type, value, param_hours, param_hours_worked)
 													}
 													code="type"
 													selectedValue={type}
 													data={PAY_TYPES}
 													isTimesheetPayType
-												/> */}
+												/>
 											</Td>
 											<Td p={0.5}>
 												<Input

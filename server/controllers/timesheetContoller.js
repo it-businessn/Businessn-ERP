@@ -410,6 +410,17 @@ const actionAllTimesheets = async (req, res) => {
 	}
 };
 
+const updateTimesheetPayType = async (req, res) => {
+	const { id } = req.params;
+
+	try {
+		const timesheet = await updateTimesheetData(id, req.body);
+		return res.status(201).json(timesheet);
+	} catch (error) {
+		res.status(400).json({ message: error.message });
+	}
+};
+
 const updateTimesheet = async (req, res) => {
 	const { id } = req.params;
 	let { clockIn, clockOut, empId, approve, param_hours, company, startTime, endTime } = req.body;
@@ -585,4 +596,5 @@ module.exports = {
 	deleteTimesheet,
 	createManualTimesheet,
 	actionAllTimesheets,
+	updateTimesheetPayType,
 };
