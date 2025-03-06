@@ -223,7 +223,7 @@ const Timesheet = ({
 				setAllTimesheetIDs(allTimesheetIDs.filter((id) => id !== formData?.recordId));
 				setIsAllChecked(false);
 			} else {
-				const ids = timesheetData.map((item) => item._id);
+				const ids = timesheetData.filter((_) => _.clockOut)?.map((item) => item._id);
 				setAllTimesheetIDs(ids);
 				setCheckedRows(ids);
 				setIsAllChecked(true);
@@ -759,7 +759,7 @@ const Timesheet = ({
 												<Checkbox
 													colorScheme="facebook"
 													isChecked={checkedRows.includes(_id)}
-													onChange={() => handleCheckboxChange(_id)}
+													onChange={() => !isDisabled && handleCheckboxChange(_id)}
 												/>
 											</Td>
 											<Td py={0} pl={0}>
@@ -769,6 +769,7 @@ const Timesheet = ({
 													isRowAction
 													status={approveStatus}
 													handleButtonClick={(action) => handleAction(_id, action, param_hours)}
+													isApproveDisabled={isDisabled}
 												/>
 											</Td>
 										</Tr>
