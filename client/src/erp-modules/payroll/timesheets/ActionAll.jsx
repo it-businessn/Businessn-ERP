@@ -12,6 +12,7 @@ const ActionAll = ({
 	isRowAction,
 	status,
 	setIsActionSwitched,
+	isApproveDisabled,
 }) => {
 	const [actionName, setActionName] = useState(ACTION_STATUS[0].title);
 	const [bg, setBg] = useState(ACTION_STATUS[0].color);
@@ -29,7 +30,11 @@ const ActionAll = ({
 			<PrimaryButton
 				minW="100px"
 				textTransform="uppercase"
-				isDisabled={isDisabled || status?.includes(actionName)}
+				isDisabled={
+					(actionName === ACTION_STATUS[0].title && isApproveDisabled) ||
+					isDisabled ||
+					status?.includes(actionName)
+				}
 				color={"var(--primary_bg)"}
 				bg={bg}
 				size="xs"
