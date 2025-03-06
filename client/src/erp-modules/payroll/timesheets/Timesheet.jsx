@@ -630,7 +630,7 @@ const Timesheet = ({
 									return (
 										<Tr
 											key={_id}
-											bg={rowBg ?? ""}
+											// bg={rowBg ?? ""}
 											_hover={{ bg: rowBg ?? "var(--phoneCall_bg_light)" }}
 										>
 											<Td py={0}>
@@ -736,7 +736,7 @@ const Timesheet = ({
 											</Td> */}
 
 											<Td py={0} w={"80px"}>
-												{regBreakHoursWorked && payType.includes("Break") ? (
+												{/* {regBreakHoursWorked && payType.includes("Break") ? (
 													<IconButton
 														isDisabled={!isEditable}
 														icon={<TbCornerRightUp />}
@@ -744,9 +744,9 @@ const Timesheet = ({
 														ml="-1em"
 														onClick={() => addRow(index)}
 													/>
-												) : (
-													<NormalTextTitle size="sm" title={param_hours_worked?.toFixed(2)} />
-												)}
+												) : ( */}
+												<NormalTextTitle size="sm" title={param_hours_worked?.toFixed(2)} />
+												{/* )} */}
 											</Td>
 											<Td p={0} position={"sticky"} right={"0"} zIndex="1">
 												<PrimaryButton
