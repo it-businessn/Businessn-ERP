@@ -5,7 +5,14 @@ import { useState } from "react";
 import { FaCaretDown } from "react-icons/fa";
 import { ACTION_STATUS } from "./data";
 
-const ActionAll = ({ isDisabled, handleButtonClick, w = "10%", isRowAction, status }) => {
+const ActionAll = ({
+	isDisabled,
+	handleButtonClick,
+	w = "10%",
+	isRowAction,
+	status,
+	setIsActionSwitched,
+}) => {
 	const [actionName, setActionName] = useState(ACTION_STATUS[0].title);
 	const [bg, setBg] = useState(ACTION_STATUS[0].color);
 
@@ -48,6 +55,7 @@ const ActionAll = ({ isDisabled, handleButtonClick, w = "10%", isRowAction, stat
 							onClick={() => {
 								setActionName(title);
 								setBg(color);
+								if (setIsActionSwitched) setIsActionSwitched(title);
 							}}
 							color={color}
 							hover={{

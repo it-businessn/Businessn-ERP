@@ -47,7 +47,7 @@ const TimesheetService = {
 	},
 
 	async actionAllTimesheets(data) {
-		return apiService.post("/timesheet/approve", data);
+		return apiService.post("/timesheet/action", data);
 	},
 
 	async deleteEntry(data, id) {

@@ -69,7 +69,8 @@ const Timesheets = () => {
 	const [isActioned, setIsActioned] = useState(false);
 	const [allTimesheetIDs, setAllTimesheetIDs] = useState([]);
 	const [showConfirmationPopUp, setShowConfirmationPopUp] = useState(false);
-	const [isAllApproved, setIsAllApproved] = useState(false);
+	const [isAllSameStatus, setIsAllSameStatus] = useState(false);
+	const [isActionSwitched, setIsActionSwitched] = useState(TIMESHEET_STATUS_LABEL.APPROVED);
 	const [checkedRows, setCheckedRows] = useState([]);
 	const [actionName, setActionName] = useState(TIMESHEET_STATUS_LABEL.APPROVED);
 
@@ -79,6 +80,14 @@ const Timesheets = () => {
 	// 		setEndDate(todayDate);
 	// 	}
 	// }, [closestRecord]);
+
+	useEffect(() => {
+		if (timesheets?.length) {
+			setIsAllSameStatus(timesheets?.every((_) => _?.approveStatus.includes(isActionSwitched)));
+		} else {
+			setIsAllSameStatus(true);
+		}
+	}, [isActionSwitched, timesheets]);
 
 	useEffect(() => {
 		setStartDate(moment().format("YYYY-MM-DD"));
@@ -111,7 +120,6 @@ const Timesheets = () => {
 					setAllTimesheetIDs={setAllTimesheetIDs}
 					refresh={refresh}
 					setRefresh={setRefresh}
-					setIsAllApproved={setIsAllApproved}
 					checkedRows={checkedRows}
 					setCheckedRows={setCheckedRows}
 				/>
@@ -158,8 +166,11 @@ const Timesheets = () => {
 	const handleClose = () => setShowConfirmationPopUp(false);
 
 	const handleActionClick = (action) => {
-		if (action === TIMESHEET_STATUS_LABEL.DELETE) return;
-		setActionName(TIMESHEET_STATUS.find((_) => _.value.includes(action)).value);
+		if (action === TIMESHEET_STATUS_LABEL.DELETE) {
+			setActionName(action);
+		} else {
+			setActionName(TIMESHEET_STATUS.find((_) => _.value.includes(action)).value);
+		}
 		if (!checkedRows.length) {
 			toast({
 				title: "Action Incomplete!",
@@ -189,7 +200,7 @@ const Timesheets = () => {
 				isClosable: true,
 			});
 			setRefresh((prev) => !prev);
-			setIsActioned(true);
+			setCheckedRows([]);
 		}
 	};
 
@@ -261,10 +272,11 @@ const Timesheets = () => {
 					/>
 				</Flex>
 				<ActionAll
-					isDisabled={isAllApproved && (!isAllChecked || !timesheets?.length)}
+					isDisabled={isAllSameStatus}
 					handleButtonClick={(action) => {
 						handleActionClick(action);
 					}}
+					setIsActionSwitched={setIsActionSwitched}
 				/>
 			</HStack>
 

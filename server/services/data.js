@@ -115,6 +115,7 @@ const TIMESHEET_STATUS = {
 	APPROVED: "Approved",
 	REJECTED: "Rejected",
 	PENDING: "Pending",
+	DELETE: "Delete",
 };
 const isRoleManager = (role) =>
 	role?.includes(ROLES.ADMINISTRATOR) || role?.includes(ROLES.MANAGER);

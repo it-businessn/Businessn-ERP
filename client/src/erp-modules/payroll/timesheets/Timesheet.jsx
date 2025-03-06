@@ -54,7 +54,6 @@ const Timesheet = ({
 	refresh,
 	isActioned,
 	setIsActioned,
-	setIsAllApproved,
 	checkedRows,
 	setCheckedRows,
 }) => {
@@ -166,9 +165,6 @@ const Timesheet = ({
 		if (timesheets) {
 			setTimesheetData(timesheets);
 			setTimesheetRefresh(false);
-			setIsAllApproved(
-				timesheets.every((_) => _.approveStatus === TIMESHEET_STATUS_LABEL.APPROVED),
-			);
 			setProgress(100);
 			setTimeout(() => setLoading(false), 500);
 		}
@@ -202,8 +198,8 @@ const Timesheet = ({
 	useEffect(() => {
 		if (timesheetData?.length) {
 			if (isActioned) {
-				setCheckedRows([]);
-				setAllTimesheetIDs([]);
+				setCheckedRows(checkedRows.filter((id) => id !== formData?.recordId));
+				setAllTimesheetIDs(allTimesheetIDs.filter((id) => id !== formData?.recordId));
 				setIsAllChecked(false);
 			} else {
 				const ids = timesheetData.map((item) => item._id);
@@ -214,12 +210,12 @@ const Timesheet = ({
 		}
 	}, [timesheetData, isActioned]);
 
-	// useEffect(() => {
-	// 	if (checkedRows.length === allTimesheetIDs.length && !isActioned) {
+	useEffect(() => {
+		if (checkedRows.length === timesheetData?.length) {
+			setIsAllChecked(true);
+		}
+	}, [checkedRows]);
 
-	// 	} else {
-	// 	}
-	// }, [checkedRows, isActioned]);
 	const handleHeaderCheckboxChange = (e) => {
 		setIsActioned(false);
 		setIsAllChecked(e.target.checked);
@@ -228,8 +224,8 @@ const Timesheet = ({
 	};
 
 	const handleCheckboxChange = (rowId) => {
-		setIsActioned(false);
 		if (checkedRows.includes(rowId)) {
+			setIsAllChecked(false);
 			setCheckedRows(checkedRows.filter((id) => id !== rowId));
 		} else {
 			setCheckedRows([...checkedRows, rowId]);
@@ -295,6 +291,7 @@ const Timesheet = ({
 							: record,
 					);
 					setTimesheetData(updatedData);
+					setIsActioned(true);
 				}
 			}
 		} catch (error) {}
@@ -565,7 +562,7 @@ const Timesheet = ({
 											<Td py={0}>
 												<ActionAll
 													id={_id}
-													w="auto"
+													w="150px"
 													isRowAction
 													status={approveStatus}
 													handleButtonClick={(action) => handleAction(_id, action, param_hours)}

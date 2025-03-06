@@ -395,12 +395,16 @@ const actionAllTimesheets = async (req, res) => {
 	const { timesheetIDs, approveStatus } = req.body;
 
 	try {
+		if (approveStatus === TIMESHEET_STATUS.DELETE) {
+			const updatedIDs = await Timesheet.deleteMany({ _id: { $in: timesheetIDs } });
+			return res.status(201).json(updatedIDs);
+		}
 		const updatedData = { approveStatus };
 		const updatedIDs = await Timesheet.updateMany(
 			{ _id: { $in: timesheetIDs } },
 			{ $set: updatedData },
 		);
-		res.status(201).json(updatedIDs);
+		return res.status(201).json(updatedIDs);
 	} catch (error) {
 		res.status(400).json({ message: error.message });
 	}
