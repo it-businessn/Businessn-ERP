@@ -426,7 +426,7 @@ const Timesheet = ({
 								) : (
 									<Th key={`${col}_${index}`} pl={index === 0 && "1em !important"}>
 										<TextTitle
-											width={col.includes("Hours") && "100px"}
+											width={col.includes("Hours") && "80px"}
 											whiteSpace={col.includes("Hours") && "wrap"}
 											title={col}
 										/>
@@ -519,30 +519,31 @@ const Timesheet = ({
 									return (
 										<Tr key={_id} _hover={{ bg: "var(--phoneCall_bg_light)" }}>
 											<Td py={0}>
-												<TextTitle maxW="150px" title={employeeId?.fullName} />
+												<TextTitle maxW="130px" title={employeeId?.fullName} />
 											</Td>
 											<Td py={0}>
 												<TextTitle title={clockIn && getTimeCardFormat(clockIn, notDevice, true)} />
 											</Td>
 											<Td py={0}>
 												<NormalTextTitle
-													maxW="150px"
+													maxW="130px"
 													size="sm"
 													title={positions.length ? positions[0]?.title : ""}
 												/>
 											</Td>
 											<Td py={0}>
 												<NormalTextTitle
-													maxW="150px"
+													maxW="120px"
 													size="sm"
 													title={positions.length ? positions[0]?.employmentDepartment : ""}
 												/>
 											</Td>
-											<Td textAlign={"right"} py={0} w={"90px"}>
+											<Td textAlign={"right"} py={0}>
 												{getAmount(param_pay_type)}
 											</Td>
-											<Td py={0}>
+											<Td p={0}>
 												<SelectList
+													w="150px"
 													id={_id}
 													type="payType"
 													handleSelect={(type, value, rowId) =>
@@ -572,7 +573,7 @@ const Timesheet = ({
 													required
 												/>
 											</Td>
-											<Td p={0.5} pl={3}>
+											<Td p={0.5} pl={2}>
 												<Input
 													cursor={"pointer"}
 													size={"sm"}
@@ -598,7 +599,7 @@ const Timesheet = ({
 								)}
 							</Td> */}
 
-											<Td py={0} w={"80px"}>
+											<Td py={0} pr={0}>
 												<NormalTextTitle
 													// align={"center"}
 													size="sm"
@@ -619,17 +620,17 @@ const Timesheet = ({
 													}}
 												/>
 											</Td>
-											<Td py={0}>
+											<Td py={0} w="60px" pr={0}>
 												<Checkbox
 													colorScheme="facebook"
 													isChecked={checkedRows.includes(_id)}
 													onChange={() => handleCheckboxChange(_id)}
 												/>
 											</Td>
-											<Td py={0}>
+											<Td py={0} pl={0}>
 												<ActionAll
 													id={_id}
-													w="150px"
+													w="100px"
 													isRowAction
 													status={approveStatus}
 													handleButtonClick={(action) => handleAction(_id, action, param_hours)}
