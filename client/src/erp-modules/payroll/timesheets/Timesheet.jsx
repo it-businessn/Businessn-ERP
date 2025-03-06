@@ -1,7 +1,18 @@
-import { Box, Checkbox, HStack, Input, Table, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
+import {
+	Box,
+	Checkbox,
+	HStack,
+	Input,
+	Table,
+	Tbody,
+	Td,
+	Th,
+	Thead,
+	Tr,
+	useToast,
+} from "@chakra-ui/react";
 import PrimaryButton from "components/ui/button/PrimaryButton";
 import EmptyRowRecord from "components/ui/EmptyRowRecord";
-import SelectList from "components/ui/form/select/SelectList";
 import DeletePopUp from "components/ui/modal/DeletePopUp";
 import NormalTextTitle from "components/ui/NormalTextTitle";
 import TextTitle from "components/ui/text/TextTitle";
@@ -19,8 +30,8 @@ import {
 	getParamKey,
 	getPayTypeStyle,
 	getStatusStyle,
-	PAY_TYPES,
 	PAY_TYPES_TITLE,
+	TIMESHEET_STATUS,
 	TIMESHEET_STATUS_LABEL,
 } from "./data";
 import ExtraTimeEntryModal from "./ExtraTimeEntryModal";
@@ -43,6 +54,9 @@ const Timesheet = ({
 	refresh,
 	isActioned,
 	setIsActioned,
+	setIsAllApproved,
+	checkedRows,
+	setCheckedRows,
 }) => {
 	const cols = [
 		"Employee Name",
@@ -60,6 +74,7 @@ const Timesheet = ({
 		"Action",
 	];
 
+	const toast = useToast();
 	const [totalPage, setTotalPages] = useState(1);
 	const limit = 40;
 	const [progress, setProgress] = useState(0);
@@ -67,8 +82,6 @@ const Timesheet = ({
 
 	const [deleteRecordId, setDeleteRecordId] = useState(false);
 	const [showDeletePopUp, setShowDeletePopUp] = useState(false);
-
-	const [checkedRows, setCheckedRows] = useState([]);
 
 	useEffect(() => {
 		const fetchAllEmployeeTimesheet = async () => {
@@ -153,7 +166,9 @@ const Timesheet = ({
 		if (timesheets) {
 			setTimesheetData(timesheets);
 			setTimesheetRefresh(false);
-
+			setIsAllApproved(
+				timesheets.every((_) => _.approveStatus === TIMESHEET_STATUS_LABEL.APPROVED),
+			);
 			setProgress(100);
 			setTimeout(() => setLoading(false), 500);
 		}
@@ -295,24 +310,38 @@ const Timesheet = ({
 			[field]: value,
 		});
 		setTimesheetData(updatedData);
+	};
+
+	const handleAction = (id, value, param_hours) => {
+		if (!checkedRows.includes(id)) {
+			toast({
+				title: "Action Incomplete!",
+				description: "Please check the row to apply the action.",
+				status: "warning",
+				duration: 1500,
+				isClosable: true,
+			});
+			return;
+		}
 		if (value === TIMESHEET_STATUS_LABEL.DELETE) {
 			setShowDeletePopUp(true);
 			setDeleteRecordId(id);
+		} else {
+			value = TIMESHEET_STATUS.find((_) => _.value.includes(value)).value;
+			setFormData((prev) => ({
+				...prev,
+				recordId: id,
+				approve:
+					value === TIMESHEET_STATUS_LABEL.APPROVED
+						? true
+						: value === TIMESHEET_STATUS_LABEL.REJECTED
+						? false
+						: null,
+				startTime: null,
+				endTime: null,
+				param_hours,
+			}));
 		}
-		// setFormData((prev) => ({
-		// 	...prev,
-		// 	recordId: _id,
-		// 	approve: true,
-		// 	startTime: null,
-		// 	endTime: null,
-		// }));
-		// setFormData((prev) => ({
-		// 	...prev,
-		// 	recordId: _id,
-		// 	approve: false,
-		// 	startTime: null,
-		// 	endTime: null,
-		// }));
 	};
 
 	return (
@@ -449,7 +478,7 @@ const Timesheet = ({
 												{getAmount(param_pay_type)}
 											</Td>
 											<Td py={0}>
-												<SelectList
+												{/* <SelectList
 													id={_id}
 													type="payType"
 													handleSelect={(type, value, rowId) =>
@@ -459,7 +488,7 @@ const Timesheet = ({
 													selectedValue={type}
 													data={PAY_TYPES}
 													isTimesheetPayType
-												/>
+												/> */}
 											</Td>
 											<Td p={0.5}>
 												<Input
@@ -534,7 +563,13 @@ const Timesheet = ({
 												/>
 											</Td>
 											<Td py={0}>
-												<ActionAll id={_id} w="auto" isRowAction />
+												<ActionAll
+													id={_id}
+													w="auto"
+													isRowAction
+													status={approveStatus}
+													handleButtonClick={(action) => handleAction(_id, action, param_hours)}
+												/>
 												{/* <SelectList
 													id={_id}
 													type="approveStatusAction"

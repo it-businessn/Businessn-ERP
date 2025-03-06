@@ -5,7 +5,7 @@ import { useState } from "react";
 import { FaCaretDown } from "react-icons/fa";
 import { ACTION_STATUS } from "./data";
 
-const ActionAll = ({ isDisabled, handleButtonClick, w = "10%", isRowAction }) => {
+const ActionAll = ({ isDisabled, handleButtonClick, w = "10%", isRowAction, status }) => {
 	const [actionName, setActionName] = useState(ACTION_STATUS[0].title);
 	const [bg, setBg] = useState(ACTION_STATUS[0].color);
 
@@ -22,7 +22,7 @@ const ActionAll = ({ isDisabled, handleButtonClick, w = "10%", isRowAction }) =>
 			<PrimaryButton
 				minW="100px"
 				textTransform="uppercase"
-				isDisabled={isDisabled}
+				isDisabled={isDisabled || status?.includes(actionName)}
 				color={"var(--primary_bg)"}
 				bg={bg}
 				size="xs"
@@ -32,7 +32,7 @@ const ActionAll = ({ isDisabled, handleButtonClick, w = "10%", isRowAction }) =>
 					bg,
 					color: "var(--primary_bg)",
 				}}
-				onOpen={handleButtonClick}
+				onOpen={() => handleButtonClick(actionName)}
 			/>
 			<Menu>
 				<MenuButton

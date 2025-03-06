@@ -21,7 +21,7 @@ import DateFilterPopup from "./DateFilterPopup";
 import OtherFilter from "./OtherFilter";
 import Timecard from "./Timecard";
 import Timesheet from "./Timesheet";
-import { TIMESHEET_STATUS_LABEL } from "./data";
+import { TIMESHEET_STATUS, TIMESHEET_STATUS_LABEL } from "./data";
 
 const Timesheets = () => {
 	const { id } = useParams();
@@ -69,6 +69,9 @@ const Timesheets = () => {
 	const [isActioned, setIsActioned] = useState(false);
 	const [allTimesheetIDs, setAllTimesheetIDs] = useState([]);
 	const [showConfirmationPopUp, setShowConfirmationPopUp] = useState(false);
+	const [isAllApproved, setIsAllApproved] = useState(false);
+	const [checkedRows, setCheckedRows] = useState([]);
+	const [actionName, setActionName] = useState(TIMESHEET_STATUS_LABEL.APPROVED);
 
 	// useEffect(() => {
 	// 	if (closestRecord && !startDate && !endDate) {
@@ -108,6 +111,9 @@ const Timesheets = () => {
 					setAllTimesheetIDs={setAllTimesheetIDs}
 					refresh={refresh}
 					setRefresh={setRefresh}
+					setIsAllApproved={setIsAllApproved}
+					checkedRows={checkedRows}
+					setCheckedRows={setCheckedRows}
 				/>
 			),
 		},
@@ -151,15 +157,32 @@ const Timesheets = () => {
 
 	const handleClose = () => setShowConfirmationPopUp(false);
 
-	const handleApprove = async () => {
+	const handleActionClick = (action) => {
+		if (action === TIMESHEET_STATUS_LABEL.DELETE) return;
+		setActionName(TIMESHEET_STATUS.find((_) => _.value.includes(action)).value);
+		if (!checkedRows.length) {
+			toast({
+				title: "Action Incomplete!",
+				description: "Please check the row to apply the action.",
+				status: "warning",
+				duration: 1500,
+				isClosable: true,
+			});
+			return;
+		}
+
+		setShowConfirmationPopUp(true);
+	};
+
+	const handleActionAll = async () => {
 		handleClose();
 		const { data } = await TimesheetService.actionAllTimesheets({
-			timesheetIDs: allTimesheetIDs,
-			approveStatus: TIMESHEET_STATUS_LABEL.APPROVED,
+			timesheetIDs: checkedRows,
+			approveStatus: actionName,
 		});
 		if (data) {
 			toast({
-				title: "Approved successfully!",
+				title: "Action successful!",
 				description: "Your action was completed successfully.",
 				status: "success",
 				duration: 1500,
@@ -238,18 +261,20 @@ const Timesheets = () => {
 					/>
 				</Flex>
 				<ActionAll
-					isDisabled={!isAllChecked || !timesheets?.length}
-					handleButtonClick={() => setShowConfirmationPopUp(true)}
+					isDisabled={isAllApproved && (!isAllChecked || !timesheets?.length)}
+					handleButtonClick={(action) => {
+						handleActionClick(action);
+					}}
 				/>
 			</HStack>
 
 			{showConfirmationPopUp && (
 				<DeletePopUp
 					headerTitle="Please confirm"
-					textTitle="Are you sure you want to approve all timesheet records?"
+					textTitle="Are you sure you want to apply the action?"
 					isOpen={showConfirmationPopUp}
 					onClose={handleClose}
-					onOpen={handleApprove}
+					onOpen={handleActionAll}
 				/>
 			)}
 
