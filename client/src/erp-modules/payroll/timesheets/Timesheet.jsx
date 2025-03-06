@@ -33,6 +33,7 @@ import {
 } from "utils/convertDate";
 import ActionAll from "./ActionAll";
 import {
+	ACTION_STATUS,
 	BREAK_TYPES_TITLE,
 	getParamKey,
 	getPayTypeStyle,
@@ -92,6 +93,7 @@ const Timesheet = ({
 
 	const [deleteRecordId, setDeleteRecordId] = useState(false);
 	const [showDeletePopUp, setShowDeletePopUp] = useState(false);
+	const [rowAction, setRowAction] = useState(ACTION_STATUS[0].title);
 
 	useEffect(() => {
 		const fetchAllEmployeeTimesheet = async () => {
@@ -135,6 +137,7 @@ const Timesheet = ({
 				setTimesheets(items);
 				setTotalPages(totalPages > 0 ? totalPages : 1);
 				setPageNum(page);
+				setRowAction(ACTION_STATUS[0].title);
 			} catch (error) {
 				console.error(error);
 				clearInterval(interval);
@@ -248,7 +251,12 @@ const Timesheet = ({
 		if (checkedRows.includes(rowId)) {
 			setIsAllChecked(false);
 			setCheckedRows(checkedRows.filter((id) => id !== rowId));
-		} else {
+		} else if (
+			!(
+				!timesheetData.find((_) => _._id === rowId)?.clockOut &&
+				rowAction === ACTION_STATUS[0].title
+			)
+		) {
 			setCheckedRows([...checkedRows, rowId]);
 		}
 	};
@@ -759,7 +767,7 @@ const Timesheet = ({
 												<Checkbox
 													colorScheme="facebook"
 													isChecked={checkedRows.includes(_id)}
-													onChange={() => !isDisabled && handleCheckboxChange(_id)}
+													onChange={() => handleCheckboxChange(_id)}
 												/>
 											</Td>
 											<Td py={0} pl={0}>
@@ -770,6 +778,7 @@ const Timesheet = ({
 													status={approveStatus}
 													handleButtonClick={(action) => handleAction(_id, action, param_hours)}
 													isApproveDisabled={isDisabled}
+													setRowAction={setRowAction}
 												/>
 											</Td>
 										</Tr>
