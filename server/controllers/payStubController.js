@@ -1,7 +1,7 @@
 const EmployeePayStub = require("../models/EmployeePayStub");
 const { getSumTotal } = require("../services/payrollService");
 const { findAllAdditionalHoursAllocatedInfo } = require("./payrunExtraAllocationInfoController");
-const { getEmployeeId, getPayrollActiveEmployees } = require("./userController");
+const { getEmployeeId } = require("./userController");
 // const { generateT4Slip } = require("./t4SlipController");
 const {
 	buildNewEmpPayStubInfo,
@@ -15,6 +15,7 @@ const { addSeparateSuperficialCheque } = require("./payStubSuperficialCalc");
 const { addSeparateManualCheque } = require("./payStubManualCalc");
 const { addSeparatePayoutCheque } = require("./payStubPayoutCalc");
 const { appendPrevPayInfoBalance } = require("./payStubHelper");
+const { getPayrollActiveEmployees } = require("./appController");
 
 const buildPayStub = (
 	empId,
@@ -343,10 +344,14 @@ const buildPayStubDetails = async (currentPayPeriod, companyName, empTimesheetDa
 
 	if (currentPayInfo) {
 		await updatePayStub(currentPayInfo._id, currentPayStub);
-	} else {
-		empAdditionalDataAllocated.chequesType?.forEach(async (_, index) => {
-			if (_ === PAYRUN_TYPE.SUPERFICIAL) {
-				const newPayStub = await addSeparateSuperficialCheque(
+		return;
+	}
+	const runBalances = async () => {
+		for (const chequeType of empAdditionalDataAllocated?.chequesType || []) {
+			let newPayStub;
+
+			if (chequeType === PAYRUN_TYPE.SUPERFICIAL) {
+				newPayStub = await addSeparateSuperficialCheque(
 					empId,
 					companyName,
 					payPeriodStartDate,
@@ -358,11 +363,10 @@ const buildPayStubDetails = async (currentPayPeriod, companyName, empTimesheetDa
 					prevPayPayInfo,
 				);
 				newPayStub.reportType = PAYRUN_TYPE.SUPERFICIAL;
-				await addPayStub(newPayStub);
+			}
 
-				prevPayPayInfo = appendPrevPayInfoBalance(prevPayPayInfo, newPayStub);
-			} else if (_ === PAYRUN_TYPE.MANUAL) {
-				const newPayStub = await addSeparateManualCheque(
+			if (chequeType === PAYRUN_TYPE.MANUAL) {
+				newPayStub = await addSeparateManualCheque(
 					empId,
 					companyName,
 					payPeriodStartDate,
@@ -374,11 +378,10 @@ const buildPayStubDetails = async (currentPayPeriod, companyName, empTimesheetDa
 					prevPayPayInfo,
 				);
 				newPayStub.reportType = PAYRUN_TYPE.MANUAL;
-				await addPayStub(newPayStub);
+			}
 
-				prevPayPayInfo = appendPrevPayInfoBalance(prevPayPayInfo, newPayStub);
-			} else if (_ === PAYRUN_TYPE.PAYOUT) {
-				const newPayStub = await addSeparatePayoutCheque(
+			if (chequeType === PAYRUN_TYPE.PAYOUT) {
+				newPayStub = await addSeparatePayoutCheque(
 					empId,
 					companyName,
 					payPeriodStartDate,
@@ -390,26 +393,30 @@ const buildPayStubDetails = async (currentPayPeriod, companyName, empTimesheetDa
 					prevPayPayInfo,
 				);
 				newPayStub.reportType = PAYRUN_TYPE.PAYOUT;
+			}
+			if (newPayStub) {
 				await addPayStub(newPayStub);
-
 				prevPayPayInfo = appendPrevPayInfoBalance(prevPayPayInfo, newPayStub);
 			}
-			if (index === empAdditionalDataAllocated.chequesType?.length - 1) {
-				const updatedPayStub = buildPayStub(
-					empId,
-					companyName,
-					payPeriodStartDate,
-					payPeriodEndDate,
-					payPeriodPayDate,
-					payPeriodProcessingDate,
-					payPeriod,
-					isExtraRun,
-					payStubInfoData,
-					prevPayPayInfo,
-				);
-				await addPayStub(updatedPayStub);
-			}
-		});
+		}
+		return prevPayPayInfo || 1;
+	};
+
+	const checkAllChequesRun = await runBalances();
+	if (checkAllChequesRun) {
+		const updatedPayStub = buildPayStub(
+			empId,
+			companyName,
+			payPeriodStartDate,
+			payPeriodEndDate,
+			payPeriodPayDate,
+			payPeriodProcessingDate,
+			payPeriod,
+			isExtraRun,
+			payStubInfoData,
+			prevPayPayInfo,
+		);
+		await addPayStub(updatedPayStub);
 	}
 };
 

@@ -1,7 +1,8 @@
 const EmployeePayInfo = require("../models/EmployeePayInfo");
+const { getPayrollActiveEmployees } = require("./appController");
 const { findEmpPayStubDetail } = require("./payStubHelper");
 const { findGroupEmployees } = require("./setUpController");
-const { getPayrollActiveEmployees, getEmployeeId } = require("./userController");
+const { getEmployeeId } = require("./userController");
 
 const getAllPayInfo = async (req, res) => {
 	const { companyName, payDate, isExtraRun, groupId } = req.params;

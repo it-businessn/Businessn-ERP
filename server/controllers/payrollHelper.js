@@ -271,8 +271,9 @@ const buildNewEmpPayStubInfo = (
 	calcEmpAmtAllocation(newEmpData, empAdditionalDataAllocated);
 	calcCurrentGrossPay(newEmpData);
 
-	if (empTaxCreditResult)
+	if (empTaxCreditResult) {
 		calcEmpContributions(newEmpData, empTaxCreditResult, empAdditionalDataAllocated);
+	}
 	calcContrDeductions(newEmpData);
 	calcVacBalance(newEmpData, empBenefitInfoResult, empAdditionalDataAllocated);
 
