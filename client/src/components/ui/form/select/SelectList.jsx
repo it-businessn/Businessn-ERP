@@ -16,6 +16,7 @@ const SelectList = ({
 	type,
 	isTimesheetAction,
 	isTimesheetPayType,
+	w,
 }) => {
 	const handleChange = (event) => {
 		if (handleSelect && type) {
@@ -44,11 +45,12 @@ const SelectList = ({
 			value={value}
 			onChange={handleChange}
 			placeholder={!isTimesheetAction && "Select"}
+			w={w}
 		>
 			{data?.map((item) => (
 				<option
 					value={item[code]}
-					key={`${_id}${item.name || item._id}`}
+					key={`${_id}${item.name || item._id || item[code]}`}
 					style={{ color: (isTimesheetAction || isTimesheetPayType) && item.color }}
 				>
 					{item[code]}

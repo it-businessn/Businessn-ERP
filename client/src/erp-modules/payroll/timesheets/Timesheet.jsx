@@ -31,8 +31,8 @@ import {
 	getUTCTime,
 	isSameAsToday,
 } from "utils/convertDate";
+import ActionAll from "./ActionAll";
 import {
-	ACTION_STATUS,
 	BREAK_TYPES_TITLE,
 	getParamKey,
 	getPayTypeStyle,
@@ -41,6 +41,7 @@ import {
 	PAY_TYPES,
 	PAY_TYPES_TITLE,
 	TIMESHEET_SOURCE,
+	TIMESHEET_STATUS,
 	TIMESHEET_STATUS_LABEL,
 } from "./data";
 import ExtraTimeEntryModal from "./ExtraTimeEntryModal";
@@ -61,6 +62,10 @@ const Timesheet = ({
 	setAllTimesheetIDs,
 	setRefresh,
 	refresh,
+	isActioned,
+	setIsActioned,
+	checkedRows,
+	setCheckedRows,
 }) => {
 	const cols = [
 		COLS.EMP_NAME,
@@ -87,7 +92,6 @@ const Timesheet = ({
 
 	const [deleteRecordId, setDeleteRecordId] = useState(false);
 	const [showDeletePopUp, setShowDeletePopUp] = useState(false);
-	const [checkedRows, setCheckedRows] = useState([]);
 
 	useEffect(() => {
 		const fetchAllEmployeeTimesheet = async () => {
@@ -180,9 +184,6 @@ const Timesheet = ({
 	useEffect(() => {
 		if (timesheets) {
 			setTimesheetData(timesheets);
-			const ids = timesheets.map((item) => item._id);
-			setAllTimesheetIDs(ids);
-			setCheckedRows(ids);
 			setTimesheetRefresh(false);
 
 			setProgress(100);
@@ -215,7 +216,29 @@ const Timesheet = ({
 		}
 	};
 
+	useEffect(() => {
+		if (timesheetData?.length) {
+			if (isActioned) {
+				setCheckedRows(checkedRows.filter((id) => id !== formData?.recordId));
+				setAllTimesheetIDs(allTimesheetIDs.filter((id) => id !== formData?.recordId));
+				setIsAllChecked(false);
+			} else {
+				const ids = timesheetData.map((item) => item._id);
+				setAllTimesheetIDs(ids);
+				setCheckedRows(ids);
+				setIsAllChecked(true);
+			}
+		}
+	}, [timesheetData, isActioned]);
+
+	useEffect(() => {
+		if (checkedRows.length === timesheetData?.length) {
+			setIsAllChecked(true);
+		}
+	}, [checkedRows]);
+
 	const handleHeaderCheckboxChange = (e) => {
+		setIsActioned(false);
 		setIsAllChecked(e.target.checked);
 		if (e.target.checked) setCheckedRows(allTimesheetIDs);
 		if (!e.target.checked) setCheckedRows([]);
@@ -223,19 +246,12 @@ const Timesheet = ({
 
 	const handleCheckboxChange = (rowId) => {
 		if (checkedRows.includes(rowId)) {
+			setIsAllChecked(false);
 			setCheckedRows(checkedRows.filter((id) => id !== rowId));
 		} else {
 			setCheckedRows([...checkedRows, rowId]);
 		}
 	};
-
-	useEffect(() => {
-		if (checkedRows?.length === allTimesheetIDs?.length) {
-			setIsAllChecked(true);
-		} else {
-			setIsAllChecked(false);
-		}
-	}, [checkedRows]);
 
 	const handleTimeChange = (key, value) => {
 		const updatedData = timesheetData?.map((record) =>
@@ -370,39 +386,119 @@ const Timesheet = ({
 							: record,
 					);
 					setTimesheetData(updatedData);
+					setIsActioned(true);
 				}
 			}
 		} catch (error) {}
 	};
 
-	const handleUpdateData = (id, field, value, param_hours) => {
+	useEffect(() => {
+		handlePayTypeSubmit();
+	}, [formData?.payType]);
+
+	const handlePayTypeSubmit = async () => {
+		try {
+			const updatedRec = timesheetData.find((record) => record._id === formData.recordId);
+			formData.clockIn = updatedRec.clockIn;
+			formData.clockOut = updatedRec.clockOut;
+			formData.company = updatedRec.companyName;
+			formData.empId = updatedRec.employeeId?._id;
+			formData.payType = updatedRec.payType;
+			formData.regHoursWorked = updatedRec?.regHoursWorked;
+			formData.overtimeHoursWorked = updatedRec?.overtimeHoursWorked;
+			formData.dblOvertimeHoursWorked = updatedRec?.dblOvertimeHoursWorked;
+			formData.statDayHoursWorked = updatedRec?.statDayHoursWorked;
+			formData.sickPayHours = updatedRec?.sickPayHours;
+			formData.statDayHours = updatedRec?.statDayHours;
+			formData.breakHoursWorked = updatedRec?.breakHoursWorked;
+			formData.vacationPayHours = updatedRec?.vacationPayHours;
+
+			if (formData.recordId) {
+				const { data } = await TimesheetService.updateTimesheetPayType(formData, formData.recordId);
+				// setRefresh((prev) => !prev);
+				if (data) {
+					const updatedData = timesheetData?.map((record) =>
+						record._id === formData.recordId
+							? {
+									...record,
+									clockIn: data?.clockIn,
+									clockOut: data?.clockOut,
+									regHoursWorked: data?.regHoursWorked,
+									overtimeHoursWorked: data?.overtimeHoursWorked,
+									dblOvertimeHoursWorked: data?.dblOvertimeHoursWorked,
+									statDayHoursWorked: data?.statDayHoursWorked,
+									statDayHours: data?.statDayHours,
+									sickPayHours: data?.sickPayHours,
+									vacationPayHours: data?.vacationPayHours,
+									breakHoursWorked: data?.breakHoursWorked,
+									approveStatus: data?.approveStatus,
+							  }
+							: record,
+					);
+					setTimesheetData(updatedData);
+					setIsActioned(true);
+				}
+			}
+		} catch (error) {}
+	};
+
+	const handleUpdateData = (id, field, value, paramHours, param_hours_worked) => {
+		if (field === "payType") {
+			const { param_hours } = getParamKey(value);
+			const updatedData = timesheetData?.map((record) =>
+				record._id === id
+					? { ...record, [param_hours]: param_hours_worked, [field]: value }
+					: record,
+			);
+			setFormData({
+				param_hours: paramHours,
+				recordId: id,
+				[field]: value,
+			});
+			setTimesheetData(updatedData);
+			return;
+		}
 		const updatedData = timesheetData?.map((record) =>
 			record._id === id ? { ...record, [field]: value } : record,
 		);
 		setFormData({
-			param_hours,
+			param_hours: paramHours,
 			recordId: id,
 			[field]: value,
 		});
 		setTimesheetData(updatedData);
+	};
+
+	const handleAction = (id, value, param_hours) => {
+		if (!checkedRows.includes(id)) {
+			toast({
+				title: "Action Incomplete!",
+				description: "Please check the row to apply the action.",
+				status: "warning",
+				duration: 1500,
+				isClosable: true,
+			});
+			return;
+		}
 		if (value === TIMESHEET_STATUS_LABEL.DELETE) {
 			setShowDeletePopUp(true);
 			setDeleteRecordId(id);
+		} else {
+			value = TIMESHEET_STATUS.find((_) => _.value.includes(value)).value;
+			setFormData((prev) => ({
+				...prev,
+				recordId: id,
+				approve:
+					value === TIMESHEET_STATUS_LABEL.APPROVED
+						? true
+						: value === TIMESHEET_STATUS_LABEL.REJECTED
+						? false
+						: null,
+				startTime: null,
+				endTime: null,
+				param_hours,
+			}));
 		}
-		// setFormData((prev) => ({
-		// 	...prev,
-		// 	recordId: _id,
-		// 	approve: true,
-		// 	startTime: null,
-		// 	endTime: null,
-		// }));
-		// setFormData((prev) => ({
-		// 	...prev,
-		// 	recordId: _id,
-		// 	approve: false,
-		// 	startTime: null,
-		// 	endTime: null,
-		// }));
 	};
 
 	return (
@@ -423,7 +519,7 @@ const Timesheet = ({
 								) : (
 									<Th key={`${col}_${index}`} pl={index === 0 && "1em !important"}>
 										<TextTitle
-											width={col.includes("Hours") && "100px"}
+											width={col.includes("Hours") && "80px"}
 											whiteSpace={col.includes("Hours") && "wrap"}
 											title={col}
 										/>
@@ -524,21 +620,21 @@ const Timesheet = ({
 											_hover={{ bg: rowBg ?? "var(--phoneCall_bg_light)" }}
 										>
 											<Td py={0}>
-												<TextTitle maxW="150px" title={employeeId?.fullName} />
+												<TextTitle maxW="130px" title={employeeId?.fullName} />
 											</Td>
 											<Td py={0}>
 												<TextTitle title={clockIn && getTimeCardFormat(clockIn, notDevice, true)} />
 											</Td>
 											<Td py={0}>
 												<NormalTextTitle
-													maxW="150px"
+													maxW="130px"
 													size="sm"
 													title={positions?.length ? positions[0]?.title : ""}
 												/>
 											</Td>
 											<Td py={0}>
 												<NormalTextTitle
-													maxW="150px"
+													maxW="120px"
 													size="sm"
 													title={positions?.length ? positions[0]?.employmentDepartment : ""}
 												/>
@@ -562,12 +658,13 @@ const Timesheet = ({
 											<Td textAlign={"right"} py={0} w={"90px"}>
 												{getAmount(param_pay_type)}
 											</Td>
-											<Td py={0}>
+											<Td p={0}>
 												<SelectList
+													w="150px"
 													id={_id}
 													type="payType"
 													handleSelect={(type, value, rowId) =>
-														handleUpdateData(rowId, type, value, param_hours)
+														handleUpdateData(rowId, type, value, param_hours, param_hours_worked)
 													}
 													code="type"
 													selectedValue={type}
@@ -592,7 +689,7 @@ const Timesheet = ({
 													required
 												/>
 											</Td>
-											<Td p={0.5} pl={3}>
+											<Td p={0.5} pl={2}>
 												<Input
 													cursor={isEditable ? "pointer" : "auto"}
 													size={"sm"}
@@ -658,24 +755,20 @@ const Timesheet = ({
 													}}
 												/>
 											</Td>
-											<Td py={0}>
+											<Td py={0} w="60px" pr={0}>
 												<Checkbox
 													colorScheme="facebook"
 													isChecked={checkedRows.includes(_id)}
 													onChange={() => handleCheckboxChange(_id)}
 												/>
 											</Td>
-											<Td py={0}>
-												<SelectList
+											<Td py={0} pl={0}>
+												<ActionAll
 													id={_id}
-													type="approveStatusAction"
-													handleSelect={(type, value, rowId) =>
-														handleUpdateData(rowId, type, value, param_hours)
-													}
-													code="name"
-													selectedValue={approveStatusAction}
-													data={ACTION_STATUS}
-													isTimesheetAction
+													w="100px"
+													isRowAction
+													status={approveStatus}
+													handleButtonClick={(action) => handleAction(_id, action, param_hours)}
 												/>
 											</Td>
 										</Tr>

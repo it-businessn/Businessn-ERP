@@ -16,11 +16,12 @@ import LocalStorageService from "services/LocalStorageService";
 import TimesheetService from "services/TimesheetService";
 import { isManager } from "utils";
 import { getDefaultDate, getMomentDate } from "utils/convertDate";
+import ActionAll from "./ActionAll";
 import DateFilterPopup from "./DateFilterPopup";
 import OtherFilter from "./OtherFilter";
 import Timecard from "./Timecard";
 import Timesheet from "./Timesheet";
-import { TIMESHEET_STATUS_LABEL } from "./data";
+import { TIMESHEET_STATUS, TIMESHEET_STATUS_LABEL } from "./data";
 
 const Timesheets = () => {
 	const { id } = useParams();
@@ -65,8 +66,13 @@ const Timesheets = () => {
 
 	const [refresh, setRefresh] = useState(false);
 	const [isAllChecked, setIsAllChecked] = useState(true);
+	const [isActioned, setIsActioned] = useState(false);
 	const [allTimesheetIDs, setAllTimesheetIDs] = useState([]);
 	const [showConfirmationPopUp, setShowConfirmationPopUp] = useState(false);
+	const [isAllSameStatus, setIsAllSameStatus] = useState(false);
+	const [isActionSwitched, setIsActionSwitched] = useState(TIMESHEET_STATUS_LABEL.APPROVED);
+	const [checkedRows, setCheckedRows] = useState([]);
+	const [actionName, setActionName] = useState(TIMESHEET_STATUS_LABEL.APPROVED);
 
 	// useEffect(() => {
 	// 	if (closestRecord && !startDate && !endDate) {
@@ -74,6 +80,14 @@ const Timesheets = () => {
 	// 		setEndDate(todayDate);
 	// 	}
 	// }, [closestRecord]);
+
+	useEffect(() => {
+		if (timesheets?.length) {
+			setIsAllSameStatus(timesheets?.every((_) => _?.approveStatus.includes(isActionSwitched)));
+		} else {
+			setIsAllSameStatus(true);
+		}
+	}, [isActionSwitched, timesheets]);
 
 	useEffect(() => {
 		setStartDate(moment().format("YYYY-MM-DD"));
@@ -100,10 +114,14 @@ const Timesheets = () => {
 					setTimesheets={setTimesheets}
 					isAllChecked={isAllChecked}
 					setIsAllChecked={setIsAllChecked}
+					setIsActioned={setIsActioned}
+					isActioned={isActioned}
 					allTimesheetIDs={allTimesheetIDs}
 					setAllTimesheetIDs={setAllTimesheetIDs}
 					refresh={refresh}
 					setRefresh={setRefresh}
+					checkedRows={checkedRows}
+					setCheckedRows={setCheckedRows}
 				/>
 			),
 		},
@@ -158,21 +176,42 @@ const Timesheets = () => {
 	const handleCheckboxChange = (e) => console.log(e);
 	const handleClose = () => setShowConfirmationPopUp(false);
 
-	const handleApprove = async () => {
+	const handleActionClick = (action) => {
+		if (action === TIMESHEET_STATUS_LABEL.DELETE) {
+			setActionName(action);
+		} else {
+			setActionName(TIMESHEET_STATUS.find((_) => _.value.includes(action)).value);
+		}
+		if (!checkedRows.length) {
+			toast({
+				title: "Action Incomplete!",
+				description: "Please check the row to apply the action.",
+				status: "warning",
+				duration: 1500,
+				isClosable: true,
+			});
+			return;
+		}
+
+		setShowConfirmationPopUp(true);
+	};
+
+	const handleActionAll = async () => {
 		handleClose();
 		const { data } = await TimesheetService.actionAllTimesheets({
-			timesheetIDs: allTimesheetIDs,
-			approveStatus: TIMESHEET_STATUS_LABEL.APPROVED,
+			timesheetIDs: checkedRows,
+			approveStatus: actionName,
 		});
 		if (data) {
 			toast({
-				title: "Approved successfully!",
+				title: "Action successful!",
 				description: "Your action was completed successfully.",
 				status: "success",
 				duration: 1500,
 				isClosable: true,
 			});
 			setRefresh((prev) => !prev);
+			setCheckedRows([]);
 		}
 	};
 
@@ -252,29 +291,22 @@ const Timesheets = () => {
 						helperText="cost center"
 					/>
 				</Flex>
-				<Flex w="10%">
-					<PrimaryButton
-						isDisabled={!isAllChecked || !timesheets?.length}
-						color="var(--primary_bg)"
-						bg="var(--correct_ans)"
-						name="Approve All"
-						px={0}
-						hover={{
-							bg: "var(--correct_ans)",
-							color: "var(--primary_bg)",
-						}}
-						onOpen={() => setShowConfirmationPopUp(true)}
-					/>
-				</Flex>
+				<ActionAll
+					isDisabled={isAllSameStatus}
+					handleButtonClick={(action) => {
+						handleActionClick(action);
+					}}
+					setIsActionSwitched={setIsActionSwitched}
+				/>
 			</HStack>
 
 			{showConfirmationPopUp && (
 				<DeletePopUp
 					headerTitle="Please confirm"
-					textTitle="Are you sure you want to approve all timesheet records?"
+					textTitle="Are you sure you want to apply the action?"
 					isOpen={showConfirmationPopUp}
 					onClose={handleClose}
-					onOpen={handleApprove}
+					onOpen={handleActionAll}
 				/>
 			)}
 

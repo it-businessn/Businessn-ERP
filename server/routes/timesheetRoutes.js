@@ -16,11 +16,13 @@ router.get("/:companyName/:employeeId/:filter", timesheetController.getEmployeeT
 
 router.post("/", timesheetController.createTimesheet);
 
-router.post("/approve", timesheetController.actionAllTimesheets);
+router.post("/action", timesheetController.actionAllTimesheets);
 
 router.post("/manual", timesheetController.createManualTimesheet);
 
 router.put("/:id", timesheetController.updateTimesheet);
+
+router.put("/paytype/:id", timesheetController.updateTimesheetPayType);
 
 router.put("/delete-entry/:id", timesheetController.deleteTimesheet);
 

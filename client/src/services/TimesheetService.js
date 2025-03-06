@@ -46,8 +46,12 @@ const TimesheetService = {
 		return apiService.put(`/timesheet/${id}`, data, id);
 	},
 
+	async updateTimesheetPayType(data, id) {
+		return apiService.put(`/timesheet/paytype/${id}`, data, id);
+	},
+
 	async actionAllTimesheets(data) {
-		return apiService.post("/timesheet/approve", data);
+		return apiService.post("/timesheet/action", data);
 	},
 
 	async deleteEntry(data, id) {
