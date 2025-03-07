@@ -201,23 +201,23 @@ const getFilteredTimesheets = async (req, res) => {
 			// regHoursWorked: { $ne: 0 },
 		};
 
-		const timesheets = await findByRecordTimesheets(filterRecordCriteria, skip, limit);
+		let timesheets = await findByRecordTimesheets(filterRecordCriteria, skip, limit);
 
 		const total = await findByRecordTimesheets(filterRecordCriteria);
 
 		if (filteredData?.filteredEmployees?.length) {
 			timesheets = timesheets.filter((item) =>
-				filteredData?.filteredEmployees?.includes(item?.employee?.fullName),
+				filteredData?.filteredEmployees?.includes(item?.employeeId?.fullName),
 			);
 		}
 		if (filteredData?.filteredDept?.length) {
 			timesheets = timesheets.filter((item) =>
-				filteredData?.filteredDept?.includes(item?.employee?.department[0]),
+				filteredData?.filteredDept?.includes(item?.positions[0]?.employmentDepartment),
 			);
 		}
 		if (filteredData?.filteredCC?.length) {
 			timesheets = timesheets.filter((item) =>
-				filteredData?.filteredCC?.includes(item?.employee?.role),
+				filteredData?.filteredCC?.includes(item?.positions[0]?.employmentCostCenter),
 			);
 		}
 		const payInfo = await getTimesheetResult(companyName);
