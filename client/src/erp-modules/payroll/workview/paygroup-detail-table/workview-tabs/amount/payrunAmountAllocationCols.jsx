@@ -1,4 +1,3 @@
-import OutlineButton from "components/ui/button/OutlineButton";
 import { COLS } from "constant";
 
 export const REGULAR_AMT_ALLOCATE_COLS = [
@@ -93,10 +92,10 @@ export const REGULAR_AMT_ALLOCATE_COLS = [
 	// 	pair: "incomeTax",
 	// 	isEditable: true,
 	// },
-	{
-		key: "",
-		pair: <OutlineButton size="xs" name="setup" label="View Balances" mr={3} />,
-	},
+	// {
+	// 	key: "",
+	// 	pair: <OutlineButton size="xs" name="setup" label="View Balances" mr={3} />,
+	// },
 ];
 
 export const PAYOUT_AMT_ALLOCATE_COLS = [
@@ -161,40 +160,40 @@ export const PAYOUT_AMT_ALLOCATE_COLS = [
 		pair: "vacationPayoutPayout",
 		isEditable: true,
 	},
-	{
-		key: "Vac. Balance Adjustment $",
-		pair: "vacationBalAdjustPayout",
-		isEditable: true,
-	},
-	{
-		key: "Vac. Accrual $",
-		pair: "vacationAccrualPayout",
-		isEditable: true,
-	},
-	{
-		key: "Vac. Used $",
-		pair: "vacationUsedPayout",
-		isEditable: true,
-	},
-	{
-		key: "Federal Tax $",
-		pair: "federalTaxPayout",
-		isEditable: true,
-	},
-	{
-		key: "Provincial Tax $",
-		pair: "provTaxPayout",
-		isEditable: true,
-	},
-	{
-		key: "Income Tax $",
-		pair: "incomeTaxPayout",
-		isEditable: true,
-	},
-	{
-		key: "",
-		pair: <OutlineButton size="xs" name="setup" label="View Balances" mr={3} />,
-	},
+	// {
+	// 	key: "Vac. Balance Adjustment $",
+	// 	pair: "vacationBalAdjustPayout",
+	// 	isEditable: true,
+	// },
+	// {
+	// 	key: "Vac. Accrual $",
+	// 	pair: "vacationAccrualPayout",
+	// 	isEditable: true,
+	// },
+	// {
+	// 	key: "Vac. Used $",
+	// 	pair: "vacationUsedPayout",
+	// 	isEditable: true,
+	// },
+	// {
+	// 	key: "Federal Tax $",
+	// 	pair: "federalTaxPayout",
+	// 	isEditable: true,
+	// },
+	// {
+	// 	key: "Provincial Tax $",
+	// 	pair: "provTaxPayout",
+	// 	isEditable: true,
+	// },
+	// {
+	// 	key: "Income Tax $",
+	// 	pair: "incomeTaxPayout",
+	// 	isEditable: true,
+	// },
+	// {
+	// 	key: "",
+	// 	pair: <OutlineButton size="xs" name="setup" label="View Balances" mr={3} />,
+	// },
 ];
 
 export const MANUAL_AMT_ALLOCATE_COLS = [
@@ -259,40 +258,40 @@ export const MANUAL_AMT_ALLOCATE_COLS = [
 		pair: "vacationPayoutManual",
 		isEditable: true,
 	},
-	{
-		key: "Vac. Balance Adjustment $",
-		pair: "vacationBalAdjustManual",
-		isEditable: true,
-	},
-	{
-		key: "Vac. Accrual $",
-		pair: "vacationAccrualManual",
-		isEditable: true,
-	},
-	{
-		key: "Vac. Used $",
-		pair: "vacationUsedManual",
-		isEditable: true,
-	},
-	{
-		key: "Federal Tax $",
-		pair: "federalTaxManual",
-		isEditable: true,
-	},
-	{
-		key: "Provincial Tax $",
-		pair: "provTaxManual",
-		isEditable: true,
-	},
-	{
-		key: "Income Tax $",
-		pair: "incomeTaxManual",
-		isEditable: true,
-	},
-	{
-		key: "",
-		pair: <OutlineButton size="xs" name="setup" label="View Balances" mr={3} />,
-	},
+	// {
+	// 	key: "Vac. Balance Adjustment $",
+	// 	pair: "vacationBalAdjustManual",
+	// 	isEditable: true,
+	// },
+	// {
+	// 	key: "Vac. Accrual $",
+	// 	pair: "vacationAccrualManual",
+	// 	isEditable: true,
+	// },
+	// {
+	// 	key: "Vac. Used $",
+	// 	pair: "vacationUsedManual",
+	// 	isEditable: true,
+	// },
+	// {
+	// 	key: "Federal Tax $",
+	// 	pair: "federalTaxManual",
+	// 	isEditable: true,
+	// },
+	// {
+	// 	key: "Provincial Tax $",
+	// 	pair: "provTaxManual",
+	// 	isEditable: true,
+	// },
+	// {
+	// 	key: "Income Tax $",
+	// 	pair: "incomeTaxManual",
+	// 	isEditable: true,
+	// },
+	// {
+	// 	key: "",
+	// 	pair: <OutlineButton size="xs" name="setup" label="View Balances" mr={3} />,
+	// },
 ];
 
 export const SUPERFICIAL_AMT_ALLOCATE_COLS = [
@@ -387,8 +386,8 @@ export const SUPERFICIAL_AMT_ALLOCATE_COLS = [
 		pair: "incomeTaxSuperficial",
 		isEditable: true,
 	},
-	{
-		key: "",
-		pair: <OutlineButton size="xs" name="setup" label="View Balances" mr={3} />,
-	},
+	// {
+	// 	key: "",
+	// 	pair: <OutlineButton size="xs" name="setup" label="View Balances" mr={3} />,
+	// },
 ];
