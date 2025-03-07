@@ -1,4 +1,4 @@
-import { Checkbox, Flex, HStack, IconButton, useToast, VStack } from "@chakra-ui/react";
+import { Flex, HStack, IconButton, useToast } from "@chakra-ui/react";
 import PrimaryButton from "components/ui/button/PrimaryButton";
 import DeletePopUp from "components/ui/modal/DeletePopUp";
 import TabsButtonGroup from "components/ui/tab/TabsButtonGroup";
@@ -90,9 +90,15 @@ const Timesheets = () => {
 	}, [isActionSwitched, timesheets]);
 
 	useEffect(() => {
-		setStartDate(moment().format("YYYY-MM-DD"));
-		setEndDate(moment().format("YYYY-MM-DD"));
-	}, []);
+		if (userId) {
+			setFilteredEmployees([userId]);
+			setStartDate(getMomentDate(closestRecord?.payPeriodStartDate).format("YYYY-MM-DD"));
+			setEndDate(getMomentDate(closestRecord?.payPeriodEndDate).format("YYYY-MM-DD"));
+		} else {
+			setStartDate(moment().format("YYYY-MM-DD"));
+			setEndDate(moment().format("YYYY-MM-DD"));
+		}
+	}, [userId, closestRecord]);
 
 	const handleRefresh = () => setDataRefresh(!dataRefresh);
 
@@ -106,7 +112,6 @@ const Timesheets = () => {
 					company={company}
 					pageNum={pageNum}
 					setPageNum={setPageNum}
-					userId={userId}
 					filter={filter}
 					showAddEntry={showAddEntry}
 					setShowAddEntry={setShowAddEntry}
@@ -132,7 +137,6 @@ const Timesheets = () => {
 				<Timecard
 					setTimecardRefresh={setDataRefresh}
 					company={company}
-					userId={userId}
 					timecardRefresh={dataRefresh}
 					pageNum={pageNum}
 					setPageNum={setPageNum}

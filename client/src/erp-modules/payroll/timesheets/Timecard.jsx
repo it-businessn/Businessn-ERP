@@ -9,7 +9,7 @@ import { useEffect, useState } from "react";
 import TimesheetService from "services/TimesheetService";
 import { getTimeCardFormat } from "utils/convertDate";
 
-const Timecard = ({ company, userId, timecardRefresh, filter, pageNum, setPageNum }) => {
+const Timecard = ({ company, timecardRefresh, filter, pageNum, setPageNum }) => {
 	const [totalPage, setTotalPages] = useState(1);
 	const [timeRecords, setTimeRecords] = useState(null);
 	const limit = 30;

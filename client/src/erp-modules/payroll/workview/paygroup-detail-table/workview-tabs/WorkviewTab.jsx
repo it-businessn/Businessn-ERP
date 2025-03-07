@@ -1,11 +1,12 @@
-import { Tbody, Td, Tr } from "@chakra-ui/react";
+import { HStack, Tbody, Td, Tooltip, Tr } from "@chakra-ui/react";
 import PrimaryButton from "components/ui/button/PrimaryButton";
+import RightIconButton from "components/ui/button/RightIconButton";
 import BoxCard from "components/ui/card";
 import EmptyRowRecord from "components/ui/EmptyRowRecord";
 import NormalTextTitle from "components/ui/NormalTextTitle";
 import WorkviewTable from "components/ui/table/WorkviewTable";
 import TextTitle from "components/ui/text/TextTitle";
-import { HRS_DECIMAL_COLS, TOTAL_AMT_HRS_COLS } from "constant";
+import { COLS, HRS_DECIMAL_COLS, TOTAL_AMT_HRS_COLS } from "constant";
 import { useNavigate } from "react-router-dom";
 import { convertDecimal, getAmount } from "utils/convertAmt";
 
@@ -25,10 +26,12 @@ const WorkviewTab = ({
 	const navigate = useNavigate();
 
 	const handleClick = (col, row, name) => {
-		const navigatePage = col.key === "" && name === "setup";
+		const navigatePage = (col.key === "" || col.key === COLS.EMP_NAME) && name === "setup";
 		if (navigatePage) {
 			navigate(
-				stepNum !== undefined ? `${path}/${row.empId._id}/${stepNum}` : `${path}/${row.empId._id}`,
+				stepNum !== undefined
+					? `${path}/${row.empId._id}/${stepNum}`
+					: `${path}/${row.empId.fullName}`,
 			);
 			return;
 		} else if (col.key === "") {
@@ -59,16 +62,32 @@ const WorkviewTab = ({
 										col.pair
 									) : col.pair === "obj" ? (
 										col.pair_key === "fullName" ? (
-											<TextTitle
-												bg="var(--empName_bg)"
-												color="var(--main_color)"
-												borderRadius="6px"
-												p="7px"
-												title={row?.empId?.[col.pair_key] ? row?.empId[col.pair_key] : ""}
-												whiteSpace="wrap"
-												width="150px"
-												mr={"0.5em"}
-											/>
+											<HStack spacing={0}>
+												<TextTitle
+													bg="var(--empName_bg)"
+													color="var(--main_color)"
+													borderRadius="6px"
+													p="7px"
+													title={<>{row?.empId?.[col.pair_key] ? row?.empId[col.pair_key] : ""}</>}
+													whiteSpace="wrap"
+													width="150px"
+													mr={"0.5em"}
+												/>
+												{col?.icon && (
+													<Tooltip label={col?.iconLabel}>
+														<span>
+															<RightIconButton
+																icon={col?.icon}
+																color="var(--main_color_black)"
+																cursor="pointer"
+																handleIconClick={() => {
+																	handleClick(col, row, "setup");
+																}}
+															/>
+														</span>
+													</Tooltip>
+												)}
+											</HStack>
 										) : row?.empId?.[col.pair_key] ? (
 											row?.empId[col.pair_key]
 										) : (

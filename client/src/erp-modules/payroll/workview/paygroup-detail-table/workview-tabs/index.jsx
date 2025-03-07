@@ -39,6 +39,7 @@ const PaygroupDetailTable = ({
 					closestRecord={closestRecord}
 					groupId={groupId}
 					selectedPayGroup={selectedPayGroup}
+					payrunOption={payrunOption}
 				/>
 			),
 		},

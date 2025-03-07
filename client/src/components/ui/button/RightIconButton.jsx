@@ -1,16 +1,23 @@
 import { ArrowForwardIcon } from "@chakra-ui/icons";
 import { Box } from "@chakra-ui/react";
 
-const RightIconButton = () => {
+const RightIconButton = ({
+	icon = <ArrowForwardIcon />,
+	handleIconClick,
+	cursor,
+	color = "purple.500",
+}) => {
 	return (
 		<Box
-			color="purple.500"
+			cursor={cursor}
+			color={color}
 			d="flex"
 			p={"0.4em"}
 			size={"xxs"}
 			_hover={{ bg: "transparent" }}
+			onClick={handleIconClick}
 		>
-			<ArrowForwardIcon />
+			{icon}
 		</Box>
 	);
 };

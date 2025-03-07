@@ -1,8 +1,15 @@
 import OutlineButton from "components/ui/button/OutlineButton";
 import { COLS } from "constant";
+import { CiViewTimeline } from "react-icons/ci";
 
 export const REGULAR_HOURLY_ALLOCATE_COLS = [
-	{ key: COLS.EMP_NAME, pair: "obj", pair_key: "fullName" },
+	{
+		key: COLS.EMP_NAME,
+		pair: "obj",
+		pair_key: "fullName",
+		icon: <CiViewTimeline />,
+		iconLabel: "View Timesheets",
+	},
 	{ key: "Total Hours", pair: "totalHoursWorked", isTotal: true, align: "center", nearest: true },
 	{ key: "Regular Hrs", pair: "totalRegHoursWorked", align: "center", nearest: true },
 	{
@@ -75,7 +82,13 @@ export const REGULAR_HOURLY_ALLOCATE_COLS = [
 ];
 
 export const PAYOUT_HOURLY_ALLOCATE_COLS = [
-	{ key: COLS.EMP_NAME, pair: "obj", pair_key: "fullName" },
+	{
+		key: COLS.EMP_NAME,
+		pair: "obj",
+		pair_key: "fullName",
+		icon: <CiViewTimeline />,
+		iconLabel: "View Timesheets",
+	},
 	{
 		key: "Total Hours",
 		pair: "totalPayoutHoursWorked",
@@ -169,7 +182,13 @@ export const PAYOUT_HOURLY_ALLOCATE_COLS = [
 ];
 
 export const MANUAL_PAYOUT_HOURLY_ALLOCATE_COLS = [
-	{ key: COLS.EMP_NAME, pair: "obj", pair_key: "fullName" },
+	{
+		key: COLS.EMP_NAME,
+		pair: "obj",
+		pair_key: "fullName",
+		icon: <CiViewTimeline />,
+		iconLabel: "View Timesheets",
+	},
 	{
 		key: "Total Hours",
 		pair: "totalManualHoursWorked",
@@ -350,9 +369,12 @@ export const SUPERFICIAL_HOURLY_ALLOCATE_COLS = [
 		isEditable: true,
 		nearest: true,
 	},
+	// {
+	// 	key: "",
+	// 	pair: <OutlineButton size="xs" name="setup" label="View Timesheets" mr={3} />,
+	// },
 	{
-		key: "",
-		pair: <OutlineButton size="xs" name="setup" label="View Timesheets" mr={3} />,
+		key: "er7ss8",
 	},
 
 	{

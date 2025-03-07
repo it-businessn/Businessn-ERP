@@ -13,6 +13,8 @@ const DateFilterPopup = ({
 	setStartDate,
 	closestRecord,
 	lastRecord,
+	startDate,
+	endDate,
 }) => {
 	const inputRef = useRef(null);
 	const [selectedDateRange, setSelectedDateRange] = useState(null);
@@ -24,8 +26,8 @@ const DateFilterPopup = ({
 		$(inputRef.current).daterangepicker(
 			{
 				alwaysShowCalendars: true,
-				startDate: TODAY_DATE,
-				endDate: TODAY_DATE,
+				startDate,
+				endDate,
 				locale: {
 					format: "YYYY/MM/DD",
 				},
@@ -58,7 +60,7 @@ const DateFilterPopup = ({
 		return () => {
 			$(inputRef?.current).data("daterangepicker")?.remove();
 		};
-	}, [selectedDateRange, closestRecord]);
+	}, [selectedDateRange, closestRecord, startDate, endDate]);
 
 	return (
 		<HStack

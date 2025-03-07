@@ -8,7 +8,7 @@ import {
 } from "@chakra-ui/react";
 import OutlineButton from "components/ui/button/OutlineButton";
 import PayrollMultiSelectBox from "components/ui/form/select/PayrollMultiSelectBox";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FaCaretDown } from "react-icons/fa";
 import { MdOutlineFilterList } from "react-icons/md";
 
@@ -23,6 +23,10 @@ const OtherFilter = ({
 }) => {
 	const [openMenu, setOpenMenu] = useState(true);
 	const [selectedOptions, setSelectedOptions] = useState([]);
+
+	useEffect(() => {
+		setSelectedOptions(filteredData);
+	}, [filteredData]);
 
 	const handleApply = (options) => {
 		setFilteredData(options);

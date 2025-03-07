@@ -5,11 +5,19 @@ import DeletePopUp from "components/ui/modal/DeletePopUp";
 import { COLS } from "constant";
 import useEmployeeEmploymentInfo from "hooks/useEmployeeEmploymentInfo";
 import { useState } from "react";
+import { FaPeopleGroup } from "react-icons/fa6";
 import SettingService from "services/SettingService";
 import AddEmployeeModal from "./AddEmployeeModal";
 import WorkviewTab from "./WorkviewTab";
 
-const EmployeeDetails = ({ company, closestRecord, path, groupId, selectedPayGroup }) => {
+const EmployeeDetails = ({
+	company,
+	closestRecord,
+	path,
+	groupId,
+	selectedPayGroup,
+	payrunOption,
+}) => {
 	const [showConfirmationPopUp, setShowConfirmationPopUp] = useState(false);
 	const [refresh, setRefresh] = useState(false);
 	const empData = useEmployeeEmploymentInfo(company, null, closestRecord, groupId, refresh);
@@ -69,7 +77,13 @@ const EmployeeDetails = ({ company, closestRecord, path, groupId, selectedPayGro
 			<WorkviewTab
 				overflowX="hidden"
 				cols={[
-					{ key: COLS.EMP_NAME, pair: "obj", pair_key: "fullName" },
+					{
+						key: COLS.EMP_NAME,
+						pair: "obj",
+						pair_key: "fullName",
+						icon: payrunOption === "4" ? null : <FaPeopleGroup />,
+						iconLabel: "View Pay Details",
+					},
 					{ key: "Employee Number", pair: "obj", pair_key: "employeeId" },
 					{ key: "Department", pair: "employmentCostCenter" },
 					{ key: COLS.PAYRATE, pair: "regPay", round: true },
@@ -77,9 +91,13 @@ const EmployeeDetails = ({ company, closestRecord, path, groupId, selectedPayGro
 						key: "",
 						pair: (
 							<HStack w={"100%"} justifyContent={"center"}>
-								<OutlineButton size="xs" name="setup" label="View Setup" />
-								{closestRecord?.isExtraRun && (
-									<PrimaryButton name={"Delete"} size="xs" px={0} onOpen={handleDelete} />
+								{payrunOption === "4" ? null : (
+									<>
+										<OutlineButton size="xs" name="setup" label="View Pay Details" />
+										{closestRecord?.isExtraRun && (
+											<PrimaryButton name={"Delete"} size="xs" px={0} onOpen={handleDelete} />
+										)}
+									</>
 								)}
 							</HStack>
 						),
@@ -105,17 +123,11 @@ const EmployeeDetails = ({ company, closestRecord, path, groupId, selectedPayGro
 					{
 						key: "detail6",
 					},
-					{
-						key: "detail7",
-					},
-					{
-						key: "detail8",
-					},
 				]}
 				data={empData}
 				label="Setup"
 				path={path}
-				stepNum={0}
+				stepNum={1}
 				handleAddEmp={() => setShowAddEmp(true)}
 				isExtraRun={closestRecord?.isExtraRun}
 				setDeletedEmp={setDeletedEmp}
