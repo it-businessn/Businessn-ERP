@@ -143,6 +143,7 @@ const addEmployeeProfileInfo = async (req, res) => {
 					businessPhoneNum,
 					emergencyPersonalEmail,
 					emergencyPersonalPhoneNum,
+					password,
 				});
 				await updateEmployee(existingProfileInfo?.empId, data);
 				return res.status(201).json(updatedProfileInfo);
