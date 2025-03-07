@@ -113,12 +113,11 @@ const addEmployeeProfileInfo = async (req, res) => {
 			country,
 			password,
 		};
-		if (!empId && (firstName, companyName, lastName, birthDate)) {
+		if (!empId && firstName && companyName && lastName) {
 			const existingProfileInfo = await EmployeeProfileInfo.findOne({
 				firstName,
 				companyName,
 				lastName,
-				birthDate,
 			});
 
 			if (existingProfileInfo) {
@@ -209,6 +208,7 @@ const addEmployeeProfileInfo = async (req, res) => {
 			province,
 			country,
 			postalCode,
+			password,
 		});
 		return res.status(201).json(newProfileInfo);
 	} catch (error) {

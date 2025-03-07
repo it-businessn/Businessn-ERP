@@ -34,7 +34,7 @@ export const HIDE_ONBOARDING_SECTION = [
 	"Regional Government Deductions",
 	"Federal Government Contributions",
 	"Deductions",
-	"Emergency Contact",
+	// "Emergency Contact",
 	"Leave Date",
 	"Marital Status",
 ];
