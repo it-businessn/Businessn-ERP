@@ -516,7 +516,7 @@ const Timesheet = ({
 
 	return (
 		<>
-			<Box overflow="auto" height="calc(100vh - 230px)" w={"100%"}>
+			<Box overflow="auto" height="74vh" w={"100%"}>
 				<Table bg="var(--lead_cards_bg)" variant="simple">
 					<Thead position="sticky" top={-1} zIndex={3}>
 						<Tr>
