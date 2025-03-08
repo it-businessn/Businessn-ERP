@@ -24,8 +24,8 @@ const findByRecordTimesheets = async (record, skip, limit) => {
 	// });
 	// console.log("del", y);
 	const result = await Timesheet.find(record)
-		.skip(skip)
-		.limit(limit)
+		// .skip(skip)
+		// .limit(limit)
 		// .limit(50)
 		.populate({
 			path: "employeeId",
@@ -203,7 +203,7 @@ const getFilteredTimesheets = async (req, res) => {
 
 		let timesheets = await findByRecordTimesheets(filterRecordCriteria, skip, limit);
 
-		const total = await findByRecordTimesheets(filterRecordCriteria);
+		// const total = await findByRecordTimesheets(filterRecordCriteria);
 
 		if (filteredData?.filteredEmployees?.length) {
 			timesheets = timesheets.filter((item) =>
@@ -227,8 +227,8 @@ const getFilteredTimesheets = async (req, res) => {
 		res.status(200).json({
 			page,
 			limit,
-			total: total?.length,
-			totalPages: Math.ceil(total?.length / limit),
+			total: timesheets?.length,
+			totalPages: Math.ceil(timesheets?.length / limit),
 			items: result,
 		});
 	} catch (error) {

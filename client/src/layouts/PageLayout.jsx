@@ -18,7 +18,7 @@ const PageLayout = ({
 	showCheckBox,
 	size,
 }) => (
-	<Box p={{ base: "1em" }} overflow={"hidden"}>
+	<Box p={{ base: "1em" }} overflow={"hidden"} height="calc(100vh - 100px)">
 		<PageHeader
 			size={size}
 			valueText1={valueText1}

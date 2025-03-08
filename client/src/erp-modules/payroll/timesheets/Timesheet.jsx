@@ -1,7 +1,6 @@
 import {
 	Box,
 	Checkbox,
-	HStack,
 	// IconButton,
 	Input,
 	Table,
@@ -517,7 +516,7 @@ const Timesheet = ({
 
 	return (
 		<>
-			<Box overflow="auto" height="72vh" w={"100%"}>
+			<Box overflow="auto" height="calc(100vh - 230px)" w={"100%"}>
 				<Table bg="var(--lead_cards_bg)" variant="simple">
 					<Thead position="sticky" top={-1} zIndex={3}>
 						<Tr>
@@ -807,7 +806,7 @@ const Timesheet = ({
 				/>
 			)}
 
-			<HStack>
+			{/* <HStack>
 				<PrimaryButton
 					size="sm"
 					isDisabled={pageNum === 1}
@@ -822,7 +821,7 @@ const Timesheet = ({
 					name="Next"
 					onOpen={() => setPageNum(pageNum + 1)}
 				/>
-			</HStack>
+			</HStack> */}
 		</>
 	);
 };
