@@ -20,11 +20,13 @@ const getPermission = async (req, res) => {
 			empId,
 			companyName,
 		});
+		// const deletePermissions = userPermission
+		// 	.filter((_) => _.permissionType?.length !== 44)
+		// 	?.map((_id) => _id);
+		// // const updatedIDs = await UserPermissions.deleteMany({ _id: { $in: deletePermissions } });
+		// console.log(deletePermissions);
+
 		if (userPermission) return res.status(200).json(userPermission);
-		const userExistingPermission = await findPermission({
-			empId,
-		});
-		return res.status(200).json(userExistingPermission);
 
 		// const userPermissions = await UserPermissions.find({
 		// 	empId,
@@ -118,4 +120,5 @@ module.exports = {
 	getUserPermissions,
 	updatePermission,
 	getPermission,
+	findPermission,
 };
