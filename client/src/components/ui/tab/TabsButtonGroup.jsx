@@ -30,7 +30,7 @@ const TabsButtonGroup = ({ isOutlineTab, tabs, setViewMode, viewMode, mt, w }) =
 						borderRadius={!isOutlineTab && "1em"}
 						variant={isOutlineTab ? "ghost" : "solid"}
 						fontWeight={isOutlineTab || viewMode === type ? "bold" : "normal"}
-						_hover={{ bg: "transparent", color: "var(--main_color_black)" }}
+						_hover={{ bg: getBgColor(type, highlightColor), color: "var(--main_color_black)" }}
 					>
 						{icon ? <Icon as={icon} boxSize="5" /> : type}
 					</Button>

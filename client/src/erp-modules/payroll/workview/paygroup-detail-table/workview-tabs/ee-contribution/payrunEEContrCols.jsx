@@ -1,4 +1,6 @@
+import OutlineButton from "components/ui/button/OutlineButton";
 import { COLS, CONTRIBUTION } from "constant";
+import { FaPeopleGroup } from "react-icons/fa6";
 
 export const REGULAR_EE_COLS = [
 	{
@@ -6,6 +8,8 @@ export const REGULAR_EE_COLS = [
 		pair: "obj",
 		pair_key: "fullName",
 		round: true,
+		icon: <FaPeopleGroup />,
+		iconLabel: "View Benefits",
 	},
 	// {
 	// 	key: `${CONTRIBUTION.EI} (EE)`,
@@ -33,7 +37,8 @@ export const REGULAR_EE_COLS = [
 		round: true,
 	},
 	{
-		key: "ee1",
+		key: "",
+		pair: <OutlineButton size="xs" name="setup" label="View Benefits" ml={3} />,
 	},
 	{
 		key: "ee2",
@@ -70,6 +75,8 @@ export const PAYOUT_EE_COLS = [
 		pair: "obj",
 		pair_key: "fullName",
 		round: true,
+		icon: <FaPeopleGroup />,
+		iconLabel: "View Benefits",
 	},
 	// {
 	// 	key: `${CONTRIBUTION.EI} (EE)`,
@@ -97,7 +104,8 @@ export const PAYOUT_EE_COLS = [
 		round: true,
 	},
 	{
-		key: "ee1",
+		key: "",
+		pair: <OutlineButton size="xs" name="setup" label="View Benefits" ml={3} />,
 	},
 	{
 		key: "ee2",
@@ -134,6 +142,8 @@ export const MANUAL_EE_COLS = [
 		pair: "obj",
 		pair_key: "fullName",
 		round: true,
+		icon: <FaPeopleGroup />,
+		iconLabel: "View Benefits",
 	},
 	// {
 	// 	key: `${CONTRIBUTION.EI} (EE)`,
@@ -161,7 +171,8 @@ export const MANUAL_EE_COLS = [
 		round: true,
 	},
 	{
-		key: "ee1",
+		key: "",
+		pair: <OutlineButton size="xs" name="setup" label="View Benefits" ml={3} />,
 	},
 	{
 		key: "ee2",

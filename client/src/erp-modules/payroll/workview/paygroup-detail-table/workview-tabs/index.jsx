@@ -62,7 +62,6 @@ const PaygroupDetailTable = ({
 			highlightColor,
 			name: (
 				<AmountAllocation
-					path={empPath}
 					company={company}
 					closestRecord={closestRecord}
 					groupId={groupId}
@@ -76,6 +75,7 @@ const PaygroupDetailTable = ({
 			highlightColor,
 			name: (
 				<EmployeeContribution
+					path={empPath}
 					company={company}
 					closestRecord={closestRecord}
 					groupId={groupId}
@@ -89,6 +89,7 @@ const PaygroupDetailTable = ({
 			highlightColor,
 			name: (
 				<EmployerContribution
+					path={empPath}
 					company={company}
 					closestRecord={closestRecord}
 					groupId={groupId}

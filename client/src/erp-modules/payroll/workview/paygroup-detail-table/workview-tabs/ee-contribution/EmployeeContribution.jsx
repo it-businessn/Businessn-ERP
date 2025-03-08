@@ -10,7 +10,7 @@ import {
 	SUPERFICIAL_EE_COLS,
 } from "./payrunEEContrCols";
 
-const EmployeeContribution = ({ company, closestRecord, groupId, payrunOption }) => {
+const EmployeeContribution = ({ company, closestRecord, groupId, payrunOption, path }) => {
 	const [refresh, setRefresh] = useState(false);
 	const data = useEmployeeEEContribution(company, closestRecord, groupId, payrunOption);
 
@@ -87,6 +87,8 @@ const EmployeeContribution = ({ company, closestRecord, groupId, payrunOption })
 				renderEditableInput={renderEditableInput}
 				isEditable={payrunOption === "4"}
 				setRefresh={setRefresh}
+				path={path}
+				stepNum={2}
 			/>
 		)
 	);

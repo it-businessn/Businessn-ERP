@@ -142,7 +142,7 @@ const CorporateInfo = ({ company, isOnboarding, id, handleNext, handlePrev }) =>
 							<PrimaryButton
 								my={3}
 								size="xs"
-								name="Add Role"
+								name="Add Role / Position"
 								isLoading={isLoading}
 								loadingText="Loading"
 								onOpen={() => setIsOpen(true)}

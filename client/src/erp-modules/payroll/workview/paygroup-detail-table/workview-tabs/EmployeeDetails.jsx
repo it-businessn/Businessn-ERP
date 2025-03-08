@@ -93,7 +93,7 @@ const EmployeeDetails = ({
 							<HStack w={"100%"} justifyContent={"center"}>
 								{payrunOption === "4" ? null : (
 									<>
-										<OutlineButton size="xs" name="setup" label="View Pay Details" />
+										<OutlineButton size="xs" name="setup" label="View Pay Details" ml={3} />
 										{closestRecord?.isExtraRun && (
 											<PrimaryButton name={"Delete"} size="xs" px={0} onOpen={handleDelete} />
 										)}

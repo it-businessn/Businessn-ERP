@@ -12,7 +12,7 @@ const BUSINESSN_ORG_ADMIN_EMAILS = [
 	"it@businessn.com",
 	"andrew.dehkurdi@fractionaldepartments.com",
 	"daniel.heyns@businessn.com",
-	"ruthkhosla17@gmail.com",
+	"testuserstaging@test.com",
 ];
 
 const ADMIN_PERMISSION = [

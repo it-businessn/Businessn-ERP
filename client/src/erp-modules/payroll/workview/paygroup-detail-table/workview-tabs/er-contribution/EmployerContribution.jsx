@@ -10,7 +10,7 @@ import {
 	SUPERFICIAL_ER_COLS,
 } from "./payrunERContrCols";
 
-const EmployerContribution = ({ company, closestRecord, groupId, payrunOption }) => {
+const EmployerContribution = ({ company, closestRecord, groupId, payrunOption, path }) => {
 	const [refresh, setRefresh] = useState(false);
 	const data = useEmployeeERContribution(company, closestRecord, groupId, payrunOption);
 	const ER_CONTRIBUTION_COL_DATA = {
@@ -86,6 +86,8 @@ const EmployerContribution = ({ company, closestRecord, groupId, payrunOption })
 				renderEditableInput={renderEditableInput}
 				isEditable={payrunOption === "4"}
 				setRefresh={setRefresh}
+				path={path}
+				stepNum={2}
 			/>
 		)
 	);

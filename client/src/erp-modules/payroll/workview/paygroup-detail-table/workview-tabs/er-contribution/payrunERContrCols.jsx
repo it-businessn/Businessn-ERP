@@ -1,7 +1,15 @@
+import OutlineButton from "components/ui/button/OutlineButton";
 import { COLS, CONTRIBUTION } from "constant";
+import { FaPeopleGroup } from "react-icons/fa6";
 
 export const REGULAR_ER_COLS = [
-	{ key: COLS.EMP_NAME, pair: "obj", pair_key: "fullName" },
+	{
+		key: COLS.EMP_NAME,
+		pair: "obj",
+		pair_key: "fullName",
+		icon: <FaPeopleGroup />,
+		iconLabel: "View Benefits",
+	},
 	// {
 	// 	key: `${CONTRIBUTION.EI} (ER)`,
 	// 	pair: "EI",
@@ -27,7 +35,8 @@ export const REGULAR_ER_COLS = [
 		round: true,
 	},
 	{
-		key: "er1",
+		key: "",
+		pair: <OutlineButton size="xs" name="setup" label="View Benefits" ml={3} />,
 	},
 	{
 		key: "er2",
@@ -62,7 +71,13 @@ export const REGULAR_ER_COLS = [
 ];
 
 export const PAYOUT_ER_COLS = [
-	{ key: COLS.EMP_NAME, pair: "obj", pair_key: "fullName" },
+	{
+		key: COLS.EMP_NAME,
+		pair: "obj",
+		pair_key: "fullName",
+		icon: <FaPeopleGroup />,
+		iconLabel: "View Benefits",
+	},
 	// {
 	// 	key: `${CONTRIBUTION.EI} (ER)`,
 	// 	pair: "EI",
@@ -88,7 +103,8 @@ export const PAYOUT_ER_COLS = [
 		round: true,
 	},
 	{
-		key: "er31",
+		key: "",
+		pair: <OutlineButton size="xs" name="setup" label="View Benefits" ml={3} />,
 	},
 	{
 		key: "er4",
@@ -123,7 +139,13 @@ export const PAYOUT_ER_COLS = [
 ];
 
 export const MANUAL_ER_COLS = [
-	{ key: COLS.EMP_NAME, pair: "obj", pair_key: "fullName" },
+	{
+		key: COLS.EMP_NAME,
+		pair: "obj",
+		pair_key: "fullName",
+		icon: <FaPeopleGroup />,
+		iconLabel: "View Benefits",
+	},
 	// {
 	// 	key: `${CONTRIBUTION.EI} (ER)`,
 	// 	pair: "EI",
@@ -149,7 +171,8 @@ export const MANUAL_ER_COLS = [
 		round: true,
 	},
 	{
-		key: "er32",
+		key: "",
+		pair: <OutlineButton size="xs" name="setup" label="View Benefits" ml={3} />,
 	},
 	{
 		key: "er43",
