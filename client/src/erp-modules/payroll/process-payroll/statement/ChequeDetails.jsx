@@ -32,7 +32,7 @@ const InfoText = ({ title1, title2, title3, hasBg }) => (
 	</HStack>
 );
 
-const ChequeDetails = ({ data }) => {
+const ChequeDetails = ({ data, companyInfo }) => {
 	const name = data?.empId?.fullName;
 	const payDate = data.payPeriodPayDate;
 
@@ -46,8 +46,8 @@ const ChequeDetails = ({ data }) => {
 	const amountInWords = toWords.convert(data.currentNetPay);
 
 	return (
-		<Stack w={"100%"} mt={3} h={"17em"} justifyContent={"space-between"}>
-			<PayStubHeader />
+		<Stack w={"100%"} mt={5} h={"16em"} justifyContent={"space-between"}>
+			<PayStubHeader companyInfo={companyInfo} />
 			<Box w={"100%"}>
 				<PaymentDateTitle payDate={payDate} />
 				<InfoText title1="Account holder:" title2={name} />

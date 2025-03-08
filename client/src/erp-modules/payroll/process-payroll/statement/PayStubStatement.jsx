@@ -8,11 +8,11 @@ import ChequeDetails from "./ChequeDetails";
 import PayStubHeader from "./PayStubHeader";
 
 const PayStubStatement = ({ data }) => {
-	const companyNum = LocalStorageService.getItem("user")?.companyId?.registration_number;
+	const companyInfo = LocalStorageService.getItem("user")?.companyId;
 
 	return (
 		<Box w={"100%"} overflow={"hidden"}>
-			<PayStubHeader />
+			<PayStubHeader companyInfo={companyInfo} />
 			<Stack
 				position="relative"
 				padding={0}
@@ -34,11 +34,11 @@ const PayStubStatement = ({ data }) => {
 					filter={"opacity(0.2)"}
 				/>
 				<HStack alignItems={"start"} spacing={5} p={5}>
-					<EmployeeInfo data={data} companyNum={companyNum} />
+					<EmployeeInfo data={data} companyNum={companyInfo?.registration_number} />
 					<EmployeePayDetails data={data} />
 				</HStack>
 			</Stack>
-			<ChequeDetails data={data} />
+			<ChequeDetails data={data} companyInfo={companyInfo} />
 		</Box>
 	);
 };

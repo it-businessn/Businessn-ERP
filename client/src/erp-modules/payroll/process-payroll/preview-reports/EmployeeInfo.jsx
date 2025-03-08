@@ -23,17 +23,17 @@ const EmployeeInfo = ({ data, companyNum }) => {
 						<BasicInfo
 							title1={"Address:"}
 							title2={
-								data.empId?.primaryAddress?.streetNumber === ""
+								data?.empId?.primaryAddress?.streetNumber === ""
 									? "NA"
-									: data.empId?.primaryAddress?.streetNumber
+									: data?.empId?.primaryAddress?.streetNumber
 							}
 						/>
 						<BasicInfo
 							title1={""}
 							whiteSpace="wrap"
-							title2={`${data.empId?.primaryAddress?.city}, ${data.empId?.primaryAddress?.state} ${data.empId?.primaryAddress?.postalCode}`}
+							title2={`${data?.empId?.primaryAddress?.city}, ${data?.empId?.primaryAddress?.state} ${data?.empId?.primaryAddress?.postalCode}`}
 						/>
-						<BasicInfo mt={4} title1={"Employee#:"} title2={data.empId.employeeNo} />
+						<BasicInfo mt={4} title1={"Employee#:"} title2={data?.empId?.employeeNo} />
 						<BasicInfo title1={"Company#:"} title2={companyNum} />
 					</VStack>
 				</Box>

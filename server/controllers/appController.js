@@ -218,7 +218,7 @@ const login = async (req, res) => {
 		const existingCompanyUser = await Company.findOne({
 			registration_number: companyId,
 			employees: user._id,
-		}).select("name registration_number");
+		}).select("name registration_number address");
 
 		if (!existingCompanyUser) {
 			return res.status(500).json({ error: "User does not exist for the company" });
