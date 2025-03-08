@@ -4,7 +4,7 @@ import PayrollService from "services/PayrollService";
 
 const AddTimesheet = ({ isOpen, onClose, editFormData, setRefresh }) => {
 	const [formData, setFormData] = useState(editFormData);
-	const { fullName } = editFormData.empId;
+	const { fullName } = editFormData?.empId;
 
 	const handleSubmit = async (e) => {
 		e.preventDefault();
@@ -24,12 +24,7 @@ const AddTimesheet = ({ isOpen, onClose, editFormData, setRefresh }) => {
 	};
 
 	return (
-		<ModalLayout
-			title={`Add overtime: ${fullName}`}
-			size="xl"
-			isOpen={isOpen}
-			onClose={onClose}
-		>
+		<ModalLayout title={`Add overtime: ${fullName}`} size="xl" isOpen={isOpen} onClose={onClose}>
 			{/* <Stack spacing={2}>
 			<HStack spacing={2}>
 				<InputFormControl

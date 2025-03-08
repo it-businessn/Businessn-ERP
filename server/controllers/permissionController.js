@@ -118,4 +118,5 @@ module.exports = {
 	getUserPermissions,
 	updatePermission,
 	getPermission,
+	findPermission,
 };

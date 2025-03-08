@@ -17,6 +17,7 @@ const {
 	BUSINESSN_ORG_ADMIN_EMAILS,
 } = require("../services/data");
 const { generateAccessToken, generateRefreshToken } = require("../middleware/auth");
+const { findPermission } = require("./permissionController");
 
 const findCompany = async (key, value) => await Company.findOne({ [key]: value });
 
@@ -108,42 +109,48 @@ const setInitialPermissions = async (empId, isManager, companyName, email) => {
 
 	const permissionName = isManager ? adminPermissionName : empPermissionName;
 	try {
-		const userPermission = new UserPermissions({
+		const permissionExists = await findPermission({
 			empId,
 			companyName,
 		});
-		userPermission.permissionType = [];
+		if (!permissionExists) {
+			const userPermission = new UserPermissions({
+				empId,
+				companyName,
+			});
+			userPermission.permissionType = [];
 
-		if (isManager) {
-			permissionName.forEach((_) => {
-				userPermission.permissionType.push({
-					name: _.name,
-					canAccessModule: true,
-					canAccessUserData: true,
-					canAccessGroupData: true,
-					canAccessRegionData: true,
-					canAccessAllData: true,
-					canViewModule: true,
-					canEditModule: true,
-					canDeleteModule: true,
+			if (isManager) {
+				permissionName.forEach((_) => {
+					userPermission.permissionType.push({
+						name: _.name,
+						canAccessModule: true,
+						canAccessUserData: true,
+						canAccessGroupData: true,
+						canAccessRegionData: true,
+						canAccessAllData: true,
+						canViewModule: true,
+						canEditModule: true,
+						canDeleteModule: true,
+					});
 				});
-			});
-		} else {
-			permissionName.forEach((_) => {
-				userPermission.permissionType.push({
-					name: _.name,
-					canAccessModule: true,
-					canAccessUserData: true,
-					canAccessGroupData: false,
-					canAccessRegionData: false,
-					canAccessAllData: false,
-					canViewModule: true,
-					canEditModule: true,
-					canDeleteModule: false,
+			} else {
+				permissionName.forEach((_) => {
+					userPermission.permissionType.push({
+						name: _.name,
+						canAccessModule: true,
+						canAccessUserData: true,
+						canAccessGroupData: false,
+						canAccessRegionData: false,
+						canAccessAllData: false,
+						canViewModule: true,
+						canEditModule: true,
+						canDeleteModule: false,
+					});
 				});
-			});
+			}
+			await userPermission.save();
 		}
-		await userPermission.save();
 	} catch (error) {
 		console.log(error);
 	}
@@ -211,7 +218,7 @@ const login = async (req, res) => {
 		const existingCompanyUser = await Company.findOne({
 			registration_number: companyId,
 			employees: user._id,
-		}).select("name registration_number");
+		}).select("name registration_number address");
 
 		if (!existingCompanyUser) {
 			return res.status(500).json({ error: "User does not exist for the company" });
