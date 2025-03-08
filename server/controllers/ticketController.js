@@ -2,8 +2,28 @@ const SupportTicket = require("../models/Ticket");
 const moment = require("moment");
 
 const getAllTickets = async (req, res) => {
+	const { id } = req.params;
 	try {
-		const tasks = await SupportTicket.find({});
+		const tasks = await SupportTicket.find({
+			$or: [{ originator: id }, { assignee: id }],
+		}).sort({
+			createdOn: -1,
+		});
+		res.status(200).json(tasks);
+	} catch (error) {
+		res.status(404).json({ error: error.message });
+	}
+};
+
+const getClosedTickets = async (req, res) => {
+	const { id } = req.params;
+	try {
+		const tasks = await SupportTicket.find({
+			status: "Close",
+			$or: [{ originator: id }, { assignee: id }],
+		}).sort({
+			createdOn: -1,
+		});
 		res.status(200).json(tasks);
 	} catch (error) {
 		res.status(404).json({ error: error.message });
@@ -20,12 +40,17 @@ const generateTicketNumber = (customerPrefix) => {
 const createTicket = async (req, res) => {
 	try {
 		const newTicket = req.body;
+		if (newTicket?.originator) {
+			newTicket.ticketNumber = generateTicketNumber("DEV");
+			const newTask = await SupportTicket.create(newTicket);
+			return res.status(201).json(newTask);
+		}
 		newTicket.ticketNumber = generateTicketNumber("CUST");
 		newTicket.category = "Support";
 		newTicket.priority = 4;
 		newTicket.assignee = "NA";
 		const newTask = await SupportTicket.create(newTicket);
-		res.status(201).json(newTask);
+		return res.status(201).json(newTask);
 	} catch (error) {
 		res.status(400).json({ message: error.message });
 	}
@@ -37,7 +62,7 @@ const updateTicket = async (req, res) => {
 		const updatedTicket = req.body;
 		const existingTicket = await SupportTicket.findById(id);
 
-		if (existingTicket)
+		if (existingTicket && !existingTicket?.originator)
 			updatedTicket.originator = `${existingTicket.clientFirstName} ${existingTicket.clientLastName}`;
 
 		const setup = await SupportTicket.findByIdAndUpdate(id, { $set: updatedTicket }, { new: true });
@@ -51,4 +76,5 @@ module.exports = {
 	getAllTickets,
 	createTicket,
 	updateTicket,
+	getClosedTickets,
 };

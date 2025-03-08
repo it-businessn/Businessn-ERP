@@ -14,9 +14,10 @@ const ActionAll = ({
 	setIsActionSwitched,
 	isApproveDisabled,
 	setRowAction,
+	actions = ACTION_STATUS,
 }) => {
-	const [actionName, setActionName] = useState(ACTION_STATUS[0].title);
-	const [bg, setBg] = useState(ACTION_STATUS[0].color);
+	const [actionName, setActionName] = useState(actions[0].title);
+	const [bg, setBg] = useState(actions[0].color);
 
 	return (
 		<Flex
@@ -32,7 +33,7 @@ const ActionAll = ({
 				minW="100px"
 				textTransform="uppercase"
 				isDisabled={
-					(actionName === ACTION_STATUS[0].title && isApproveDisabled) ||
+					(actionName === actions[0].title && isApproveDisabled) ||
 					isDisabled ||
 					status?.includes(actionName)
 				}
@@ -55,7 +56,7 @@ const ActionAll = ({
 					aria-label="Options"
 				/>
 				<MenuList minW="150px">
-					{ACTION_STATUS.map(({ color, title, bg }) => (
+					{actions.map(({ color, title, bg }) => (
 						<MenuItem
 							key={title}
 							onClick={() => {

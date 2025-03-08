@@ -295,13 +295,15 @@ const Timesheets = () => {
 						helperText="cost center"
 					/>
 				</Flex>
-				<ActionAll
-					isDisabled={isAllSameStatus}
-					handleButtonClick={(action) => {
-						handleActionClick(action);
-					}}
-					setIsActionSwitched={setIsActionSwitched}
-				/>
+				{viewMode === "Timesheet" && (
+					<ActionAll
+						isDisabled={isAllSameStatus}
+						handleButtonClick={(action) => {
+							handleActionClick(action);
+						}}
+						setIsActionSwitched={setIsActionSwitched}
+					/>
+				)}
 			</HStack>
 
 			{showConfirmationPopUp && (

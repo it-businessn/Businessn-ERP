@@ -1,8 +1,12 @@
 import apiService from "services";
 
 const TicketService = {
-	async getInfo() {
-		return apiService.get("/ticket");
+	async getInfo(id) {
+		return apiService.get(`/ticket/${id}`);
+	},
+
+	async getClosedTicket(id) {
+		return apiService.get(`/ticket/closed/${id}`);
 	},
 
 	async addInfo(data) {

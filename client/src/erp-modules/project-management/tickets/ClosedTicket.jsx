@@ -1,47 +1,37 @@
-import { HStack, IconButton, Tbody, Td, Tr } from "@chakra-ui/react";
+import { Tbody, Td, Tr, useToast } from "@chakra-ui/react";
 import PrimaryButton from "components/ui/button/PrimaryButton";
 import EmptyRowRecord from "components/ui/EmptyRowRecord";
 import NormalTextTitle from "components/ui/NormalTextTitle";
 import TableLayout from "components/ui/table/TableLayout";
 import TextTitle from "components/ui/text/TextTitle";
-import {
-	getParamKey,
-	getPayTypeStyle,
-	getStatusStyle,
-	PAY_TYPES_TITLE,
-} from "erp-modules/payroll/timesheets/data";
+import ActionAll from "erp-modules/payroll/timesheets/ActionAll";
+import { TICKET_ACTION_STATUS } from "erp-modules/payroll/timesheets/data";
 import { useEffect, useState } from "react";
-import { FaCheck, FaRegTrashAlt } from "react-icons/fa";
-import { IoClose } from "react-icons/io5";
-import { getAmount } from "utils/convertAmt";
-import { getTimeCardFormat } from "utils/convertDate";
+import TicketService from "services/TicketService";
+import { longTimeFormat } from "utils/convertDate";
+import NewTicket from "./NewTicket";
 
-const ClosedTicket = ({ company, setShowAddEntry, showAddEntry, filter, setTicketRefresh }) => {
-	const [tickets, setTickets] = useState(null);
+const ClosedTicket = ({ company, setShowAddEntry, showAddEntry, userId }) => {
+	const [ticketData, setTicketData] = useState([]);
 	const [refresh, setRefresh] = useState(false);
 
-	const [deleteRecordId, setDeleteRecordId] = useState(false);
-	const [showDeletePopUp, setShowDeletePopUp] = useState(false);
-
-	const initialFormData = {
-		clockIn: null,
-		clockOut: null,
-		totalBreakHours: "",
-		approve: undefined,
-		company,
-		recordId: null,
-		empId: null,
-	};
-	const [formData, setFormData] = useState(initialFormData);
-	const [ticketData, setTicketData] = useState(tickets);
-
 	useEffect(() => {
-		if (tickets) {
-			setTicketData(tickets);
-			setTicketRefresh(false);
-		}
-	}, [tickets]);
+		const fetchAllTickets = async () => {
+			try {
+				const { data } = await TicketService.getClosedTicket(userId);
+				data?.map((_) => {
+					_.bg = TICKET_ACTION_STATUS.find(({ name }) => name === _.status)?.color;
+					return _;
+				});
+				setTicketData(data);
+			} catch (error) {
+				console.error(error);
+			}
+		};
+		fetchAllTickets();
+	}, [refresh]);
 
+	const toast = useToast();
 	const cols = [
 		"Ticket Number",
 		"Category",
@@ -55,169 +45,113 @@ const ClosedTicket = ({ company, setShowAddEntry, showAddEntry, filter, setTicke
 		"Status",
 		"Action",
 	];
+
+	const handleUpdate = async (action, id) => {
+		const { data } = await TicketService.updateInfo({ status: action }, id);
+		if (data) {
+			toast({
+				title: "Action updated successfully.",
+				status: "success",
+				duration: 1500,
+				isClosable: true,
+			});
+			setRefresh((prev) => !prev);
+		}
+	};
 	return (
-		<TableLayout cols={cols} position="sticky" zIndex={3} top={-1} height="73vh">
-			<Tbody>
-				{(!ticketData || ticketData?.length === 0) && (
-					<EmptyRowRecord data={ticketData} colSpan={cols.length} />
-				)}
-				{ticketData?.map(
-					({
-						_id,
-						employeeId,
-						approveStatus,
-						payType,
-						regPay,
-						statWorkPay,
-						dblOverTimePay,
-						overTimePay,
-						createdOn,
-						regHoursWorked,
-						overtimeHoursWorked,
-						dblOvertimeHoursWorked,
-						statDayHoursWorked,
-						statDayHours,
-						sickPayHours,
-						vacationPayHours,
-						statPay,
-						sickPay,
-						vacationPay,
-						totalBreaks,
-						clockIn,
-						clockOut,
-						totalBreakHours,
-						totalWorkedHours,
-						notDevice,
-					}) => {
-						const approveStatusBtnCss = getStatusStyle(approveStatus);
-						const { type, color } = getPayTypeStyle(payType);
-
-						const { param_key, param_hours } = getParamKey(payType);
-
-						const param_pay_type =
-							param_key === "regPay"
-								? regPay
-								: param_key === "overTimePay"
-								? overTimePay
-								: param_key === "dblOverTimePay"
-								? dblOverTimePay
-								: param_key === "statWorkPay"
-								? statWorkPay
-								: param_key === "statPay"
-								? statPay
-								: param_key === "sickPay"
-								? sickPay
-								: vacationPay;
-
-						const param_hours_worked =
-							param_hours === "regHoursWorked"
-								? regHoursWorked
-								: param_hours === "overtimeHoursWorked"
-								? overtimeHoursWorked
-								: param_hours === "dblOvertimeHoursWorked"
-								? dblOvertimeHoursWorked
-								: param_hours === "statDayHoursWorked"
-								? statDayHoursWorked
-								: param_hours === "statDayHours"
-								? statDayHours
-								: param_hours === "sickPayHours"
-								? sickPayHours
-								: param_hours === "vacationPayHours"
-								? vacationPayHours
-								: 0;
-
-						const isStatPay = payType === PAY_TYPES_TITLE.STAT_PAY;
-
-						const isDisabled = !clockIn || !clockOut;
-
-						return (
-							<Tr key={_id} _hover={{ bg: "var(--phoneCall_bg_light)" }}>
-								<Td py={0}>
-									<TextTitle title={employeeId?.fullName} />
-								</Td>
-								<Td py={0}>
-									<TextTitle title={clockIn && getTimeCardFormat(clockIn, notDevice, true)} />
-								</Td>
-								<Td py={0}>
-									<NormalTextTitle size="sm" title={employeeId?.department?.[0]} />
-								</Td>
-								<Td textAlign={"right"} py={0} w={"90px"}>
-									{getAmount(param_pay_type)}
-								</Td>
-								<Td py={0}>
-									<NormalTextTitle color={color} size="sm" title={type} />
-								</Td>
-
-								<Td py={0} w={"80px"}>
-									<NormalTextTitle
-										// align={"center"}
-										size="sm"
-										title={param_hours_worked}
-									/>
-								</Td>
-								<Td p={0} position={"sticky"} right={"0"} zIndex="1">
-									<PrimaryButton
-										cursor="text"
-										color={approveStatusBtnCss.color}
-										bg={approveStatusBtnCss.bg}
-										name={approveStatus}
-										size="xs"
-										px={0}
-										hover={{
-											bg: approveStatusBtnCss.bg,
-											color: approveStatusBtnCss.color,
-										}}
-									/>
-								</Td>
-								<Td py={0}>
-									<HStack spacing={0}>
-										<IconButton
-											isDisabled={isDisabled}
-											size={"xs"}
-											icon={<FaCheck />}
-											ml={-5}
-											variant={"solid"}
-											color={"var(--status_button_border)"}
-											onClick={() => {
-												setFormData((prev) => ({
-													...prev,
-													recordId: _id,
-													approve: true,
-												}));
+		<>
+			<TableLayout cols={cols} position="sticky" zIndex={3} top={-1} height="73vh">
+				<Tbody>
+					{(!ticketData || ticketData?.length === 0) && (
+						<EmptyRowRecord data={ticketData} colSpan={cols.length} />
+					)}
+					{ticketData?.map(
+						({
+							ticketNumber,
+							category,
+							assignee,
+							priority,
+							issue,
+							ticketClosedDate,
+							status,
+							ticketDaysOpened,
+							createdOn,
+							originator,
+							_id,
+							bg,
+						}) => {
+							return (
+								<Tr key={_id} _hover={{ bg: "var(--phoneCall_bg_light)" }}>
+									<Td py={0}>
+										<TextTitle title={ticketNumber} />
+									</Td>
+									<Td py={0}>
+										<TextTitle title={category} />
+									</Td>
+									<Td py={0}>
+										<NormalTextTitle size="sm" title={priority} />
+									</Td>
+									<Td py={0}>
+										<NormalTextTitle size="sm" title={assignee} />
+									</Td>
+									<Td py={0}>
+										<NormalTextTitle size="sm" title={originator} />
+									</Td>
+									<Td py={0}>
+										<NormalTextTitle size="sm" title={issue} />
+									</Td>
+									<Td py={0}>
+										<NormalTextTitle size="sm" title={longTimeFormat(createdOn)} />
+									</Td>
+									<Td py={0}>
+										<NormalTextTitle
+											size="sm"
+											title={ticketClosedDate && longTimeFormat(ticketClosedDate)}
+										/>
+									</Td>
+									<Td py={0}>
+										<NormalTextTitle size="sm" title={ticketDaysOpened} />
+									</Td>
+									<Td py={0}>
+										<PrimaryButton
+											cursor="text"
+											color="var(--primary_bg)"
+											bg={bg}
+											name={status}
+											size="xs"
+											px={0}
+											hover={{
+												bg,
+												color: "var(--primary_bg)",
 											}}
 										/>
-										<IconButton
-											isDisabled={isDisabled}
-											size={"xs"}
-											color={"var(--incorrect_ans)"}
-											icon={<IoClose />}
-											variant={"solid"}
-											onClick={() => {
-												setFormData((prev) => ({
-													...prev,
-													recordId: _id,
-													approve: false,
-												}));
-											}}
+									</Td>
+									<Td py={0} pl={0}>
+										<ActionAll
+											id={_id}
+											w="100px"
+											isRowAction
+											status={status}
+											handleButtonClick={(action) => handleUpdate(action, _id)}
+											actions={TICKET_ACTION_STATUS}
 										/>
-										<IconButton
-											size={"xs"}
-											color={"var(--main_color_black)"}
-											icon={<FaRegTrashAlt />}
-											variant={"solid"}
-											onClick={() => {
-												setShowDeletePopUp(true);
-												setDeleteRecordId(_id);
-											}}
-										/>
-									</HStack>
-								</Td>
-							</Tr>
-						);
-					},
-				)}
-			</Tbody>
-		</TableLayout>
+									</Td>
+								</Tr>
+							);
+						},
+					)}
+				</Tbody>
+			</TableLayout>
+			{showAddEntry && (
+				<NewTicket
+					company={company}
+					showAddEntry={showAddEntry}
+					setRefresh={setRefresh}
+					setShowAddEntry={setShowAddEntry}
+					userId={userId}
+				/>
+			)}
+		</>
 	);
 };
 
