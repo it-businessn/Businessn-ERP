@@ -1,14 +1,15 @@
 import { SimpleGrid, useToast } from "@chakra-ui/react";
 import BoxCard from "components/ui/card";
+import TextTitle from "components/ui/text/TextTitle";
 import VerticalStepper from "components/ui/VerticalStepper";
-import { EMP_PAY_INFO_EARNINGS_CONFIG, getInitialPayInfo } from "config/payroll/employees/payInfo";
+import { getInitialPayInfo } from "config/payroll/employees/payInfo";
 import useEmployeePayInfo from "hooks/useEmployeePayInfo";
 import useSelectedEmp from "hooks/useSelectedEmp";
 import { useEffect, useState } from "react";
 import LocalStorageService from "services/LocalStorageService";
 import PayrollService from "services/PayrollService";
 import StepContent from "../step-content";
-import Record from "../step-content/Record";
+import EarningsInfo from "./EarningsInfo";
 
 const PayInfo = ({ company, isOnboarding, id, handleNext, handlePrev }) => {
 	const { empId } = useSelectedEmp(LocalStorageService.getItem("empId"));
@@ -28,9 +29,14 @@ const PayInfo = ({ company, isOnboarding, id, handleNext, handlePrev }) => {
 	}, [payInfo, empId]);
 
 	const toast = useToast();
-	const handleSubmit = async () => {
+	const handleSubmit = async (data) => {
 		setIsLoading(true);
 		try {
+			if (data) {
+				const existingEarnings = formData.roles;
+				const positionIndex = existingEarnings?.findIndex(({ title }) => title === data.title);
+				formData.roles[positionIndex] = data;
+			}
 			await PayrollService.addEmployeePayInfo(formData);
 			setIsLoading(false);
 			// setIsDisabled(true);
@@ -47,15 +53,19 @@ const PayInfo = ({ company, isOnboarding, id, handleNext, handlePrev }) => {
 		{
 			title: "Earnings",
 			content: (
-				<Record
-					handleConfirm={() => ""}
-					formData={formData}
-					setFormData={setFormData}
-					title="Earnings"
-					config={EMP_PAY_INFO_EARNINGS_CONFIG}
-					isLoading={isLoading}
-					handleSubmit={handleSubmit}
-				/>
+				<>
+					<TextTitle title="Earnings" />
+					{formData.roles?.map((role, index) => (
+						<BoxCard
+							mt={2}
+							border="1px solid var(--lead_cards_border)"
+							key={`${role.title}_${index}`}
+						>
+							<TextTitle title={`Position ${index + 1}: ${role.title}`} />
+							<EarningsInfo role={role} handleSubmit={handleSubmit} />
+						</BoxCard>
+					))}
+				</>
 			),
 		},
 	];

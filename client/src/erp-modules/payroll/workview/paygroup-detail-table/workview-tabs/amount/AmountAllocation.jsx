@@ -107,7 +107,6 @@ const AmountAllocation = ({ company, closestRecord, groupId, payrunOption }) => 
 				cols={payrunAmtData}
 				data={amountAllocateData}
 				label="Setup"
-				stepNum={5}
 			/>
 		)
 	);

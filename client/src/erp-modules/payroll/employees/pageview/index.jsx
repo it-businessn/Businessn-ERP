@@ -82,12 +82,13 @@ const Employees = ({ isOnboarding, selectedPayGroupName, handleClose }) => {
 		},
 		{
 			id: 1,
-			type: "Pay",
+			type: "Employment",
 			name: (
-				<PayInfo
+				<CorporateInfo
 					id={2}
 					company={company}
 					isOnboarding={isOnboarding}
+					selectedPayGroupName={selectedPayGroupName}
 					handleNext={handleNext}
 					handlePrev={handlePrev}
 				/>
@@ -95,9 +96,9 @@ const Employees = ({ isOnboarding, selectedPayGroupName, handleClose }) => {
 		},
 		{
 			id: 2,
-			type: "Benefits",
+			type: "Pay",
 			name: (
-				<BenefitsInfo
+				<PayInfo
 					id={3}
 					company={company}
 					isOnboarding={isOnboarding}
@@ -108,14 +109,12 @@ const Employees = ({ isOnboarding, selectedPayGroupName, handleClose }) => {
 		},
 		{
 			id: 3,
-			type: "Employment",
-
+			type: "Benefits",
 			name: (
-				<CorporateInfo
+				<BenefitsInfo
 					id={4}
 					company={company}
 					isOnboarding={isOnboarding}
-					selectedPayGroupName={selectedPayGroupName}
 					handleNext={handleNext}
 					handlePrev={handlePrev}
 				/>

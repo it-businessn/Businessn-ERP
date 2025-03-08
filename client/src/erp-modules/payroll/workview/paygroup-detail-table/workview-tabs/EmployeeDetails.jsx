@@ -127,7 +127,7 @@ const EmployeeDetails = ({
 				data={empData}
 				label="Setup"
 				path={path}
-				stepNum={1}
+				stepNum={2}
 				handleAddEmp={() => setShowAddEmp(true)}
 				isExtraRun={closestRecord?.isExtraRun}
 				setDeletedEmp={setDeletedEmp}

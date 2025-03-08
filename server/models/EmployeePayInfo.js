@@ -17,6 +17,7 @@ const employeePayInfoSchema = new mongoose.Schema({
 	partTimeStandardHours: String,
 	createdOn: { type: Date, default: Date.now },
 	updatedOn: { type: Date, default: Date.now },
+	roles: { type: Array, default: [] },
 });
 
 const EmployeePayInfo = mongoose.model("EmployeePayInfo", employeePayInfoSchema);

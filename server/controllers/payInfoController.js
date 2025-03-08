@@ -69,43 +69,30 @@ const updatePayInfo = async (id, data) =>
 	});
 
 const addEmployeePayInfo = async (req, res) => {
-	const {
-		empId,
-		companyName,
-		regPay,
-		salaryRate,
-		dailyHours,
-		fullTimeStandardHours,
-		partTimeStandardHours,
-	} = req.body;
+	const { empId, companyName, roles } = req.body;
 	try {
+		if (roles) {
+			roles.forEach((role) => {
+				const regPay = role?.payRate;
+				if (regPay) {
+					role.overTimePay = 1.5 * regPay;
+					role.dblOverTimePay = 2 * regPay;
+					role.statWorkPay = 1.5 * regPay;
+					role.statPay = regPay;
+					role.sickPay = regPay;
+					role.vacationPay = regPay;
+				}
+			});
+		}
 		const existingPayInfo = await findEmployeePayInfo(empId, companyName);
 		if (existingPayInfo) {
-			if (regPay) {
-				req.body.overTimePay = 1.5 * regPay;
-				req.body.dblOverTimePay = 2 * regPay;
-				req.body.statWorkPay = 1.5 * regPay;
-				req.body.statPay = regPay;
-				req.body.sickPay = regPay;
-				req.body.vacationPay = regPay;
-			}
-			const updatedPayInfo = await updatePayInfo(existingPayInfo._id, req.body);
+			const updatedPayInfo = await updatePayInfo(existingPayInfo._id, { roles });
 			return res.status(201).json(updatedPayInfo);
 		}
 		const newPayInfo = await EmployeePayInfo.create({
 			empId,
 			companyName,
-			regPay,
-			overTimePay: 1.5 * regPay,
-			dblOverTimePay: 2 * regPay,
-			statWorkPay: 1.5 * regPay,
-			statPay: regPay,
-			sickPay: regPay,
-			salaryRate,
-			dailyHours,
-			vacationPay: regPay,
-			fullTimeStandardHours,
-			partTimeStandardHours,
+			roles,
 		});
 		return res.status(201).json(newPayInfo);
 	} catch (error) {
@@ -138,4 +125,5 @@ module.exports = {
 	addEmployeePayInfo,
 	updateEmployeePayInfo,
 	findEmployeePayInfoDetails,
+	updatePayInfo,
 };

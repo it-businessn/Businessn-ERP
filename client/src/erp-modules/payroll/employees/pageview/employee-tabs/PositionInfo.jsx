@@ -21,7 +21,7 @@ const PositionInfo = ({
 }) => {
 	const defaultRoleInfo = currentRoleInfo || {
 		title: "",
-		description: "",
+		payRate: "",
 		employmentPayGroup: "",
 		employmentCostCenter: "",
 		employmentDepartment: "",
@@ -34,7 +34,7 @@ const PositionInfo = ({
 
 	useEffect(() => {
 		if (
-			roleInfo.description &&
+			roleInfo.payRate &&
 			roleInfo.title &&
 			roleInfo.employmentCostCenter &&
 			roleInfo.employmentPayGroup &&
@@ -75,21 +75,27 @@ const PositionInfo = ({
 								}));
 							}}
 						/>
-
+						{/* {isOpen ? ( */}
 						<InputFormControl
-							required={(isOpen || !roleInfo.description) && true}
-							label="Role description"
-							name="description"
-							maxLength={30}
-							placeholder="Enter description"
-							valueText={roleInfo.description}
+							type="number"
+							required={(isOpen || !roleInfo.payRate) && true}
+							label="Payrate"
+							name="payRate"
+							placeholder="Add payrate"
+							valueText={roleInfo.payRate}
 							handleChange={(e) => {
 								setRoleInfo((prev) => ({
 									...prev,
-									description: e.target.value,
+									payRate: e.target.value,
 								}));
 							}}
 						/>
+						{/* // ) : (
+						// 	<>
+						// 		<FormLabel>Linked Payrate</FormLabel>
+						// 		<NormalTextTitle title={getAmount(roleInfo.payRate) || "NA"} />
+						// 	</>
+						// )} */}
 
 						{isOpen ? (
 							<InputFormControl
@@ -106,8 +112,8 @@ const PositionInfo = ({
 							/>
 						) : (
 							<>
-								<FormLabel>Time Management Badge ID</FormLabel>
-								<NormalTextTitle title={roleInfo.timeManagementBadgeID} />
+								<FormLabel>Linked Time Management Badge ID</FormLabel>
+								<NormalTextTitle title={roleInfo.timeManagementBadgeID || "NA"} />
 							</>
 						)}
 					</Stack>
@@ -184,7 +190,6 @@ const PositionInfo = ({
 					name="Save"
 					onOpen={() => {
 						if (
-							roleInfo.description &&
 							roleInfo.title &&
 							roleInfo.employmentCostCenter &&
 							roleInfo.employmentPayGroup &&

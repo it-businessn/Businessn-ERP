@@ -33,5 +33,6 @@ export const getInitialPayInfo = (empId, companyName) => {
 		typeOfEarning: "Hourly",
 		fullTimeStandardHours: "80",
 		partTimeStandardHours: "",
+		roles: [],
 	};
 };

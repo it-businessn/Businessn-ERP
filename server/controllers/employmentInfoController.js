@@ -5,6 +5,7 @@ const EmployeePayInfo = require("../models/EmployeePayInfo");
 const { isRoleManager } = require("../services/data");
 const { setInitialPermissions } = require("./appController");
 const { fetchActiveEmployees } = require("./userController");
+const { updatePayInfo, findEmployeePayInfoDetails } = require("./payInfoController");
 
 const getAllEmploymentInfo = async (req, res) => {
 	const { companyName, startDate, endDate, payDate, isExtraRun, groupId } = req.params;
@@ -134,6 +135,23 @@ const addEmployeeEmploymentInfo = async (req, res) => {
 			employeeNo,
 			employmentRole,
 		};
+		let roles = [...positions];
+		roles.map((_) => {
+			_.typeOfEarning = "Hourly";
+			_.fullTimeStandardHours = 0;
+			_.partTimeStandardHours = 0;
+			return _;
+		});
+		const existingPayInfo = await findEmployeePayInfoDetails(empId, companyName);
+		if (existingPayInfo) {
+			const updatedPayInfo = await updatePayInfo(existingPayInfo._id, { roles });
+		} else {
+			const newPayInfo = await EmployeePayInfo.create({
+				empId,
+				companyName,
+				roles,
+			});
+		}
 		const existingEmploymentInfo = await findEmployeeEmploymentInfo(empId, companyName);
 		if (existingEmploymentInfo) {
 			const updatedEmploymentInfo = await updateEmploymentInfo(
