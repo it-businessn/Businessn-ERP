@@ -181,6 +181,31 @@ export const TIMESHEET_STATUS = [
 	},
 ];
 
+export const TICKET_ACTION = {
+	OPEN: "Open",
+	CLOSED: "Close",
+	NEW: "New",
+	DELETE: "Delete",
+};
+
+export const TICKET_ACTION_STATUS = [
+	{
+		name: TICKET_ACTION.OPEN,
+		color: "var(--pending)",
+		title: TICKET_ACTION.OPEN,
+	},
+	{
+		name: TICKET_ACTION.CLOSED,
+		color: "var(--correct_ans)",
+		title: TICKET_ACTION.CLOSED,
+	},
+	{
+		name: TICKET_ACTION.NEW,
+		color: "var(--nav_color)",
+		title: TICKET_ACTION.NEW,
+	},
+];
+
 export const ACTION_STATUS = [
 	{
 		name: TIMESHEET_STATUS_LABEL.APPROVED,

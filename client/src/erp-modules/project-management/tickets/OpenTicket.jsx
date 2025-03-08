@@ -1,28 +1,37 @@
-import { Tbody, Td, Tr } from "@chakra-ui/react";
+import { Tbody, Td, Tr, useToast } from "@chakra-ui/react";
 import PrimaryButton from "components/ui/button/PrimaryButton";
 import EmptyRowRecord from "components/ui/EmptyRowRecord";
 import NormalTextTitle from "components/ui/NormalTextTitle";
 import TableLayout from "components/ui/table/TableLayout";
 import TextTitle from "components/ui/text/TextTitle";
+import ActionAll from "erp-modules/payroll/timesheets/ActionAll";
+import { TICKET_ACTION_STATUS } from "erp-modules/payroll/timesheets/data";
 import { useEffect, useState } from "react";
 import TicketService from "services/TicketService";
-import { mmmDayYearFormat } from "utils/convertDate";
+import { longTimeFormat } from "utils/convertDate";
+import NewTicket from "./NewTicket";
 
-const OpenTicket = ({ company, setShowAddEntry, showAddEntry, filter, setTicketRefresh }) => {
+const OpenTicket = ({ company, setShowAddEntry, showAddEntry, userId }) => {
 	const [ticketData, setTicketData] = useState([]);
+	const [refresh, setRefresh] = useState(false);
 
 	useEffect(() => {
 		const fetchAllTickets = async () => {
 			try {
-				const { data } = await TicketService.getInfo();
+				const { data } = await TicketService.getInfo(userId);
+				data?.map((_) => {
+					_.bg = TICKET_ACTION_STATUS.find(({ name }) => name === _.status)?.color;
+					return _;
+				});
 				setTicketData(data);
 			} catch (error) {
 				console.error(error);
 			}
 		};
 		fetchAllTickets();
-	}, []);
+	}, [refresh]);
 
+	const toast = useToast();
 	const cols = [
 		"Ticket Number",
 		"Category",
@@ -36,60 +45,113 @@ const OpenTicket = ({ company, setShowAddEntry, showAddEntry, filter, setTicketR
 		"Status",
 		"Action",
 	];
+
+	const handleUpdate = async (action, id) => {
+		const { data } = await TicketService.updateInfo({ status: action }, id);
+		if (data) {
+			toast({
+				title: "Action updated successfully.",
+				status: "success",
+				duration: 1500,
+				isClosable: true,
+			});
+			setRefresh((prev) => !prev);
+		}
+	};
 	return (
-		<TableLayout cols={cols} position="sticky" zIndex={3} top={-1} height="73vh">
-			<Tbody>
-				{(!ticketData || ticketData?.length === 0) && (
-					<EmptyRowRecord data={ticketData} colSpan={cols.length} />
-				)}
-				{ticketData?.map((ticket) => {
-					const approveStatusBtnCss = { color: "var(--primary_bg)", bg: "var(--pending)" };
-					return (
-						<Tr key={ticket?._id} _hover={{ bg: "var(--phoneCall_bg_light)" }}>
-							<Td py={0}>
-								<TextTitle title={ticket?.ticketNumber} />
-							</Td>
-							<Td py={0}>
-								<TextTitle title={ticket?.category} />
-							</Td>
-							<Td py={0}>
-								<NormalTextTitle size="sm" title={ticket?.priority} />
-							</Td>
-							<Td>{ticket?.assignee}</Td>
-							<Td py={0}>
-								<NormalTextTitle size="sm" title={ticket?.originator} />
-							</Td>
-							<Td py={0}>
-								<NormalTextTitle size="sm" title={ticket?.issue} />
-							</Td>
-							<Td py={0}>
-								<NormalTextTitle size="sm" title={mmmDayYearFormat(ticket?.ticketOpenedDate)} />
-							</Td>
-							<Td py={0}>
-								<NormalTextTitle size="sm" title={mmmDayYearFormat(ticket?.ticketClosedDate)} />
-							</Td>
-							<Td py={0}>
-								<NormalTextTitle size="sm" title={ticket?.ticketDaysOpened} />
-							</Td>
-							<Td py={0}>
-								<PrimaryButton
-									cursor="text"
-									color={approveStatusBtnCss.color}
-									bg={approveStatusBtnCss.bg}
-									name={ticket?.status}
-									size="xs"
-									px={0}
-									hover={{
-										bg: approveStatusBtnCss.bg,
-										color: approveStatusBtnCss.color,
-									}}
-								/>
-							</Td>
-						</Tr>
-					);
-				})}
-			</Tbody>
-		</TableLayout>
+		<>
+			<TableLayout cols={cols} position="sticky" zIndex={3} top={-1} height="73vh">
+				<Tbody>
+					{(!ticketData || ticketData?.length === 0) && (
+						<EmptyRowRecord data={ticketData} colSpan={cols.length} />
+					)}
+					{ticketData?.map(
+						({
+							ticketNumber,
+							category,
+							assignee,
+							priority,
+							issue,
+							ticketClosedDate,
+							status,
+							ticketDaysOpened,
+							createdOn,
+							originator,
+							_id,
+							bg,
+						}) => {
+							return (
+								<Tr key={_id} _hover={{ bg: "var(--phoneCall_bg_light)" }}>
+									<Td py={0}>
+										<TextTitle title={ticketNumber} />
+									</Td>
+									<Td py={0}>
+										<TextTitle title={category} />
+									</Td>
+									<Td py={0}>
+										<NormalTextTitle size="sm" title={priority} />
+									</Td>
+									<Td py={0}>
+										<NormalTextTitle size="sm" title={assignee} />
+									</Td>
+									<Td py={0}>
+										<NormalTextTitle size="sm" title={originator} />
+									</Td>
+									<Td py={0}>
+										<NormalTextTitle size="sm" title={issue} />
+									</Td>
+									<Td py={0}>
+										<NormalTextTitle size="sm" title={longTimeFormat(createdOn)} />
+									</Td>
+									<Td py={0}>
+										<NormalTextTitle
+											size="sm"
+											title={ticketClosedDate && longTimeFormat(ticketClosedDate)}
+										/>
+									</Td>
+									<Td py={0}>
+										<NormalTextTitle size="sm" title={ticketDaysOpened} />
+									</Td>
+									<Td py={0}>
+										<PrimaryButton
+											cursor="text"
+											color="var(--primary_bg)"
+											bg={bg}
+											name={status}
+											size="xs"
+											px={0}
+											hover={{
+												bg,
+												color: "var(--primary_bg)",
+											}}
+										/>
+									</Td>
+									<Td py={0} pl={0}>
+										<ActionAll
+											id={_id}
+											w="100px"
+											isRowAction
+											status={status}
+											handleButtonClick={(action) => handleUpdate(action, _id)}
+											actions={TICKET_ACTION_STATUS}
+										/>
+									</Td>
+								</Tr>
+							);
+						},
+					)}
+				</Tbody>
+			</TableLayout>
+			{showAddEntry && (
+				<NewTicket
+					company={company}
+					showAddEntry={showAddEntry}
+					setRefresh={setRefresh}
+					setShowAddEntry={setShowAddEntry}
+					userId={userId}
+				/>
+			)}
+		</>
 	);
 };
 
