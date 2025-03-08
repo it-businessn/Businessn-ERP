@@ -1,4 +1,4 @@
-import { Checkbox, Flex, HStack, IconButton, useToast, VStack } from "@chakra-ui/react";
+import { Flex, HStack, IconButton, useToast } from "@chakra-ui/react";
 import PrimaryButton from "components/ui/button/PrimaryButton";
 import DeletePopUp from "components/ui/modal/DeletePopUp";
 import TabsButtonGroup from "components/ui/tab/TabsButtonGroup";
@@ -291,13 +291,15 @@ const Timesheets = () => {
 						helperText="cost center"
 					/>
 				</Flex>
-				<ActionAll
-					isDisabled={isAllSameStatus}
-					handleButtonClick={(action) => {
-						handleActionClick(action);
-					}}
-					setIsActionSwitched={setIsActionSwitched}
-				/>
+				{viewMode === "Timesheet" && (
+					<ActionAll
+						isDisabled={isAllSameStatus}
+						handleButtonClick={(action) => {
+							handleActionClick(action);
+						}}
+						setIsActionSwitched={setIsActionSwitched}
+					/>
+				)}
 			</HStack>
 
 			{showConfirmationPopUp && (
