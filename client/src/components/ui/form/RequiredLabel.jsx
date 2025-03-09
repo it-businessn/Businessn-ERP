@@ -9,6 +9,7 @@ const RequiredLabel = ({
 	visibility,
 	hideLabel,
 	subRequired,
+	fontSize,
 }) => {
 	return (
 		<FormLabel
@@ -16,6 +17,7 @@ const RequiredLabel = ({
 			display={hideLabel && "none"}
 			htmlFor={name}
 			visibility={visibility}
+			fontSize={fontSize}
 		>
 			{label}
 			{required && <MandatoryField color={"red"} />}

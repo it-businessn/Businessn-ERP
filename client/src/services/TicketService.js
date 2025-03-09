@@ -13,6 +13,10 @@ const TicketService = {
 		return apiService.post("/ticket", data);
 	},
 
+	async saveCustomerPricingInfo(data) {
+		return apiService.post("/ticket/pricing", data);
+	},
+
 	async updateInfo(data, id) {
 		return apiService.put(`/ticket/${id}`, data, id);
 	},

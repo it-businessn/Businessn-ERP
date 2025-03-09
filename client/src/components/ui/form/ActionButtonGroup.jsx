@@ -22,7 +22,7 @@ const ActionButtonGroup = ({
 				loadingText="Loading"
 				onOpen={onOpen}
 			/>
-			<CancelButton name={closeLabel} onClick={onClose} size={size} />
+			{onClose && <CancelButton name={closeLabel} onClick={onClose} size={size} />}
 		</HStack>
 	);
 };

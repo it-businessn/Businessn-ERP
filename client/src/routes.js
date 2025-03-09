@@ -5,6 +5,7 @@ import Home from "components/Home";
 import Loader from "components/Loader";
 import Login from "features/login";
 import Support from "features/support";
+import CustomerInfo from "features/support/CustomerInfo";
 import PageNotFound from "./components/PageNotFound";
 
 // login
@@ -382,6 +383,7 @@ export const router = createBrowserRouter([
 		element: <Login />,
 	},
 	{ path: "/support", element: <Support /> },
+	{ path: "/pricing", element: <CustomerInfo /> },
 	{
 		path: ROUTE_PATH.FORGOT_PWD,
 		element: <ForgotPassword />,
