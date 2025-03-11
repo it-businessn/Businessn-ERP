@@ -19,7 +19,8 @@ import Record from "../step-content/Record";
 
 const BenefitsInfo = ({ company, id, isOnboarding, handleNext }) => {
 	const { empId } = useSelectedEmp(LocalStorageService.getItem("empId"));
-	const balanceInfo = useEmployeeBalanceInfo(company, empId);
+	const onboardingEmpId = LocalStorageService.getItem("onboardingEmpId");
+	const balanceInfo = useEmployeeBalanceInfo(company, onboardingEmpId || empId);
 	const initialBalanceInfo = getInitialBalanceInfo(empId, company);
 	const [formData, setFormData] = useState(initialBalanceInfo);
 	const [isDisabled, setIsDisabled] = useState(true);

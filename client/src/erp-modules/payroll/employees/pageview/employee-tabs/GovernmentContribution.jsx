@@ -20,7 +20,12 @@ const GovernmentContribution = ({ company, isOnboarding, handleNext, handlePrev,
 	const { empId } = useSelectedEmp(LocalStorageService.getItem("empId"));
 	const onboardingEmpId = LocalStorageService.getItem("onboardingEmpId");
 	const [refresh, setIsRefresh] = useState(true);
-	const governmentInfo = useEmployeeGovernment(company, empId, isOnboarding, refresh);
+	const governmentInfo = useEmployeeGovernment(
+		company,
+		onboardingEmpId || empId,
+		isOnboarding,
+		refresh,
+	);
 	const setGovernmentInfo = () => getInitialGovernmentInfo(onboardingEmpId ?? empId, company);
 	const [formData, setFormData] = useState(setGovernmentInfo);
 	const [isDisabled, setIsDisabled] = useState(true);

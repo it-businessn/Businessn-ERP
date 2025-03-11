@@ -13,8 +13,15 @@ import EarningsInfo from "./EarningsInfo";
 
 const PayInfo = ({ company, isOnboarding, id, handleNext, handlePrev }) => {
 	const { empId } = useSelectedEmp(LocalStorageService.getItem("empId"));
-	const payInfo = useEmployeePayInfo(company, false, empId, null, null, isOnboarding);
 	const onboardingEmpId = LocalStorageService.getItem("onboardingEmpId");
+	const payInfo = useEmployeePayInfo(
+		company,
+		false,
+		onboardingEmpId || empId,
+		null,
+		null,
+		isOnboarding,
+	);
 	const setPayInfo = () => getInitialPayInfo(onboardingEmpId ?? empId, company);
 
 	const [formData, setFormData] = useState(setPayInfo);

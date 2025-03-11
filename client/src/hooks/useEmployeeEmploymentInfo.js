@@ -23,9 +23,9 @@ const useEmployeeEmploymentInfo = (company, empId, payPeriod, groupId, refresh, 
 				console.error(error);
 			}
 		};
-		if (!isOnboarding && payPeriod) {
-			fetchEmployeeEmploymentInfo();
-		}
+		// if (!isOnboarding && payPeriod) {
+		fetchEmployeeEmploymentInfo();
+		// }
 	}, [company, empId, payPeriod, refresh, isOnboarding]);
 	return employmentInfo;
 };

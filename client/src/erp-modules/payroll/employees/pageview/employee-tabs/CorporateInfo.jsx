@@ -26,15 +26,15 @@ const CorporateInfo = ({ company, isOnboarding, id, handleNext, handlePrev }) =>
 	const toast = useToast();
 	const { empId } = useSelectedEmp(LocalStorageService.getItem("empId"));
 	const [refresh, setRefresh] = useState(false);
+	const onboardingEmpId = LocalStorageService.getItem("onboardingEmpId");
 	const employmentInfo = useEmployeeEmploymentInfo(
 		company,
-		empId,
+		onboardingEmpId || empId,
 		true,
 		false,
 		refresh,
 		isOnboarding,
 	);
-	const onboardingEmpId = LocalStorageService.getItem("onboardingEmpId");
 	const initialCorporateInfo = getInitialCorporateInfo(onboardingEmpId ?? empId, company);
 	const [formData, setFormData] = useState(initialCorporateInfo);
 	const [isOpen, setIsOpen] = useState(false);

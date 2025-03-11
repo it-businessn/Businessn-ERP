@@ -12,9 +12,9 @@ const useEmployeeGovernment = (company, empId, isOnboarding, refresh) => {
 				console.error(error);
 			}
 		};
-		if (!isOnboarding) {
-			fetchEmployeeGovernmentInfo();
-		}
+		// if (!isOnboarding) {
+		fetchEmployeeGovernmentInfo();
+		// }
 	}, [company, empId, isOnboarding, refresh]);
 	return governmentInfo;
 };
