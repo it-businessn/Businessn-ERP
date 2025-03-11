@@ -189,7 +189,7 @@ const BankingInfo = ({ company, isOnboarding, handlePrev, id, handleClose }) => 
 					handlePrev={handlePrev}
 					handleClose={handleClose}
 					id={id}
-					handleNextEnabled={!isSave1Disabled && !isDisabled}
+					handleNextEnabled={isOnboarding ? true : !isSave1Disabled && !isDisabled}
 				/>
 			</BoxCard>
 			<StepContent currentStep={currentStep} steps={steps} />
