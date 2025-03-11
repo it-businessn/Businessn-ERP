@@ -5,6 +5,10 @@ const TicketService = {
 		return apiService.get(`/ticket/${id}`);
 	},
 
+	async getOpenTicket(id) {
+		return apiService.get(`/ticket/open/${id}`);
+	},
+
 	async getClosedTicket(id) {
 		return apiService.get(`/ticket/closed/${id}`);
 	},

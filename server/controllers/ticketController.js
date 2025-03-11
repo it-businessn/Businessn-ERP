@@ -15,6 +15,21 @@ const getAllTickets = async (req, res) => {
 	}
 };
 
+const getOpenTickets = async (req, res) => {
+	const { id } = req.params;
+	try {
+		const tasks = await SupportTicket.find({
+			status: "Open",
+			$or: [{ originator: id }, { assignee: id }],
+		}).sort({
+			createdOn: -1,
+		});
+		res.status(200).json(tasks);
+	} catch (error) {
+		res.status(404).json({ error: error.message });
+	}
+};
+
 const getClosedTickets = async (req, res) => {
 	const { id } = req.params;
 	try {
@@ -77,4 +92,5 @@ module.exports = {
 	createTicket,
 	updateTicket,
 	getClosedTickets,
+	getOpenTickets,
 };
