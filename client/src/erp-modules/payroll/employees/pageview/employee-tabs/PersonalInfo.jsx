@@ -27,9 +27,10 @@ const PersonalInfo = ({ company, isOnboarding, id, handleNext }) => {
 	const [isLoading, setIsLoading] = useState(false);
 
 	useEffect(() => {
+		if (LocalStorageService.getItem("onboardingEmpId"))
+			LocalStorageService.removeItem("onboardingEmpId");
 		if (profileInfo) {
 			setFormData(profileInfo);
-			LocalStorageService.removeItem("onboardingEmpId");
 		} else {
 			setFormData(setProfileInfo);
 		}
