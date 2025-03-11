@@ -17,7 +17,9 @@ import Record from "../step-content/Record";
 
 const PersonalInfo = ({ company, isOnboarding, id, handleNext }) => {
 	const { empId } = useSelectedEmp(LocalStorageService.getItem("empId"));
-	const profileInfo = useEmployeeProfileInfo(company, empId, isOnboarding);
+	const onboardingEmpId = LocalStorageService.getItem("onboardingEmpId");
+	const userId = isOnboarding ? onboardingEmpId : empId;
+	const profileInfo = useEmployeeProfileInfo(company, userId, isOnboarding);
 
 	const setProfileInfo = () => getInitialProfileInfo(isOnboarding ? null : empId, company);
 	const [formData, setFormData] = useState(setProfileInfo);
@@ -27,8 +29,7 @@ const PersonalInfo = ({ company, isOnboarding, id, handleNext }) => {
 	const [isLoading, setIsLoading] = useState(false);
 
 	useEffect(() => {
-		if (LocalStorageService.getItem("onboardingEmpId"))
-			LocalStorageService.removeItem("onboardingEmpId");
+		LocalStorageService.removeItem("onboardingEmpId");
 		if (profileInfo) {
 			setFormData(profileInfo);
 		} else {

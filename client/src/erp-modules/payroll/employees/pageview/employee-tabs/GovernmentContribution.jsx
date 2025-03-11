@@ -19,14 +19,10 @@ import Record from "../step-content/Record";
 const GovernmentContribution = ({ company, isOnboarding, handleNext, handlePrev, id }) => {
 	const { empId } = useSelectedEmp(LocalStorageService.getItem("empId"));
 	const onboardingEmpId = LocalStorageService.getItem("onboardingEmpId");
+	const userId = isOnboarding ? onboardingEmpId : empId;
 	const [refresh, setIsRefresh] = useState(true);
-	const governmentInfo = useEmployeeGovernment(
-		company,
-		onboardingEmpId || empId,
-		isOnboarding,
-		refresh,
-	);
-	const setGovernmentInfo = () => getInitialGovernmentInfo(onboardingEmpId ?? empId, company);
+	const governmentInfo = useEmployeeGovernment(company, userId, isOnboarding, refresh);
+	const setGovernmentInfo = () => getInitialGovernmentInfo(userId, company);
 	const [formData, setFormData] = useState(setGovernmentInfo);
 	const [isDisabled, setIsDisabled] = useState(true);
 	const [isLoading, setIsLoading] = useState(false);

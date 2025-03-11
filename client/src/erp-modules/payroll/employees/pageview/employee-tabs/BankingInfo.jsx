@@ -32,8 +32,9 @@ import Record from "../step-content/Record";
 const BankingInfo = ({ company, isOnboarding, handlePrev, id, handleClose }) => {
 	const { empId } = useSelectedEmp(LocalStorageService.getItem("empId"));
 	const onboardingEmpId = LocalStorageService.getItem("onboardingEmpId");
-	const bankingInfo = useEmployeeBankingInfo(company, onboardingEmpId || empId, isOnboarding);
-	const setBankingInfo = () => getInitialBankingInfo(onboardingEmpId ?? empId, company);
+	const userId = isOnboarding ? onboardingEmpId : empId;
+	const bankingInfo = useEmployeeBankingInfo(company, userId, isOnboarding);
+	const setBankingInfo = () => getInitialBankingInfo(userId, company);
 	const [formData, setFormData] = useState(setBankingInfo);
 	const [isDisabled, setIsDisabled] = useState(true);
 	const [isSave1Disabled, setIsSave1Disabled] = useState(true);
