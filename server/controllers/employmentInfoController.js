@@ -2,7 +2,7 @@ const moment = require("moment");
 const Employee = require("../models/Employee");
 const EmployeeEmploymentInfo = require("../models/EmployeeEmploymentInfo");
 const EmployeePayInfo = require("../models/EmployeePayInfo");
-const { isRoleManager } = require("../services/data");
+const { isRoleManager, BUSINESSN_ORG_ADMIN_EMAILS } = require("../services/data");
 const { setInitialPermissions } = require("./appController");
 const { fetchActiveEmployees } = require("./userController");
 const { updatePayInfo, findEmployeePayInfoDetails } = require("./payInfoController");
@@ -76,6 +76,13 @@ const buildPayPeriodEmpDetails = async (companyName, employeeId, hideDetails) =>
 const getEmployeeEmploymentInfo = async (req, res) => {
 	const { companyName, empId } = req.params;
 	try {
+		const employee = await Employee.findById(empId);
+		if (BUSINESSN_ORG_ADMIN_EMAILS.includes(employee?.email)) {
+			const result = await EmployeeEmploymentInfo.findOne({
+				empId,
+			});
+			return res.status(200).json(result);
+		}
 		const result = await findEmployeeEmploymentInfo(empId, companyName);
 		const currentDate = moment().format("YYYYMMDD");
 
@@ -84,7 +91,7 @@ const getEmployeeEmploymentInfo = async (req, res) => {
 				Math.floor(Math.random() * 10) + 10
 			}`;
 		}
-		res.status(200).json(result);
+		return res.status(200).json(result);
 	} catch (error) {
 		res.status(404).json({ error: error.message });
 	}

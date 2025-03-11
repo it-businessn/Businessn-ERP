@@ -1,5 +1,6 @@
 const Employee = require("../models/Employee");
 const EmployeeProfileInfo = require("../models/EmployeeProfileInfo");
+const { BUSINESSN_ORG_ADMIN_EMAILS } = require("../services/data");
 const { addEmployee, hashedPassword } = require("./appController");
 const { deleteAlerts } = require("./payrollController");
 
@@ -21,8 +22,15 @@ const getAllProfileInfo = async (req, res) => {
 const getEmployeeProfileInfo = async (req, res) => {
 	const { companyName, empId } = req.params;
 	try {
+		const employee = await Employee.findById(empId);
+		if (BUSINESSN_ORG_ADMIN_EMAILS.includes(employee?.email)) {
+			const result = await EmployeeProfileInfo.findOne({
+				empId,
+			});
+			return res.status(200).json(result);
+		}
 		const result = await findEmployeeProfileInfo(empId, companyName);
-		res.status(200).json(result);
+		return res.status(200).json(result);
 	} catch (error) {
 		res.status(404).json({ error: error.message });
 	}
