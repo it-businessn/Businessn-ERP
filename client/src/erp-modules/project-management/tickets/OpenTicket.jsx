@@ -1,4 +1,4 @@
-import { Tbody, Td, Tr, useToast } from "@chakra-ui/react";
+import { Tbody, Td, Tooltip, Tr, useToast } from "@chakra-ui/react";
 import PrimaryButton from "components/ui/button/PrimaryButton";
 import EmptyRowRecord from "components/ui/EmptyRowRecord";
 import NormalTextTitle from "components/ui/NormalTextTitle";
@@ -97,8 +97,12 @@ const OpenTicket = ({ company, setShowAddEntry, showAddEntry, userId }) => {
 									<Td py={0}>
 										<NormalTextTitle size="sm" title={originator} />
 									</Td>
-									<Td py={0}>
-										<NormalTextTitle size="sm" title={issue} />
+									<Td py={0} maxW="180px">
+										<Tooltip label={issue}>
+											<span>
+												<NormalTextTitle maxW="180px" size="sm" title={issue} />
+											</span>
+										</Tooltip>
 									</Td>
 									<Td py={0}>
 										<NormalTextTitle size="sm" title={longTimeFormat(createdOn)} />

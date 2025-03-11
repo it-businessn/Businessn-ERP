@@ -17,7 +17,7 @@ const supportTicketSchema = new mongoose.Schema({
 	originator: { type: String, ref: "Employee" },
 	ticketClosedDate: Date,
 	ticketDaysOpened: { type: Number, default: 0 },
-	status: { type: String, default: "Open" },
+	status: { type: String, default: "New" },
 	updatedOn: { type: Date, default: Date.now },
 	createdOn: { type: Date, default: Date.now },
 });

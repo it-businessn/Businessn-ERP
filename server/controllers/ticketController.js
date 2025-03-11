@@ -19,7 +19,7 @@ const getOpenTickets = async (req, res) => {
 	const { id } = req.params;
 	try {
 		const tasks = await SupportTicket.find({
-			status: "Open",
+			status: { $ne: "Close" },
 			$or: [{ originator: id }, { assignee: id }],
 		}).sort({
 			createdOn: -1,
@@ -79,6 +79,14 @@ const updateTicket = async (req, res) => {
 
 		if (existingTicket && !existingTicket?.originator)
 			updatedTicket.originator = `${existingTicket.clientFirstName} ${existingTicket.clientLastName}`;
+
+		if (updatedTicket?.status === "Close") {
+			updatedTicket.ticketClosedDate = moment();
+		} else {
+			updatedTicket.ticketDaysOpened = Math.round(
+				moment.duration(moment().diff(moment(existingTicket.createdOn))).asDays(),
+			);
+		}
 
 		const setup = await SupportTicket.findByIdAndUpdate(id, { $set: updatedTicket }, { new: true });
 		res.status(200).json(setup);

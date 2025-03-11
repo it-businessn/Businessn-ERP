@@ -190,6 +190,11 @@ export const TICKET_ACTION = {
 
 export const TICKET_ACTION_STATUS = [
 	{
+		name: TICKET_ACTION.NEW,
+		color: "var(--nav_color)",
+		title: TICKET_ACTION.NEW,
+	},
+	{
 		name: TICKET_ACTION.OPEN,
 		color: "var(--pending)",
 		title: TICKET_ACTION.OPEN,
@@ -198,11 +203,6 @@ export const TICKET_ACTION_STATUS = [
 		name: TICKET_ACTION.CLOSED,
 		color: "var(--correct_ans)",
 		title: TICKET_ACTION.CLOSED,
-	},
-	{
-		name: TICKET_ACTION.NEW,
-		color: "var(--nav_color)",
-		title: TICKET_ACTION.NEW,
 	},
 ];
 
