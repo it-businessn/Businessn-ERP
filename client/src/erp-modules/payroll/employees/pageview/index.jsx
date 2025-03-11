@@ -47,7 +47,7 @@ const Employees = ({ isOnboarding, selectedPayGroupName, handleClose }) => {
 
 	useEffect(() => {
 		if (isOnboarding) {
-			setTabs((prev) => prev.filter((item, index) => index < 5));
+			// setTabs((prev) => prev.filter((item, index) => index < 5));
 			setEmployee(null);
 			setUserId(null);
 		}
@@ -123,13 +123,12 @@ const Employees = ({ isOnboarding, selectedPayGroupName, handleClose }) => {
 		{
 			id: 4,
 			type: "Government",
-
 			name: (
 				<GovernmentInfo
 					id={5}
 					company={company}
 					isOnboarding={isOnboarding}
-					// handleNext={handleNext}
+					handleNext={handleNext}
 					handleClose={handleClose}
 					handlePrev={handlePrev}
 				/>
@@ -193,7 +192,7 @@ const Employees = ({ isOnboarding, selectedPayGroupName, handleClose }) => {
 				w={"100%"}
 			>
 				<SimpleGrid
-					columns={{ base: 4, lg: isOnboarding ? 5 : 6 }}
+					columns={{ base: 4, lg: 6 }}
 					spacing="1em"
 					my="5"
 					bg={"var(--primary_bg)"}

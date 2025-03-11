@@ -83,7 +83,6 @@ const CorporateInfo = ({ company, isOnboarding, id, handleNext, handlePrev }) =>
 			setIsLoading(false);
 			setIsDisabled(true);
 			setRefresh((prev) => !prev);
-			setIsOpen(false);
 			toast({
 				title: "Employment info updated successfully.",
 				status: "success",

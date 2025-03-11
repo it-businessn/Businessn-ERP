@@ -11,6 +11,7 @@ import { ROUTE_PATH } from "routes";
 import { useBreakpointValue } from "services/Breakpoint";
 import LocalStorageService from "services/LocalStorageService";
 import { isManager } from "utils";
+import ErrorBoundary from "./ErrorBoundary";
 import Loader from "./Loader";
 
 const Home = () => {
@@ -47,7 +48,7 @@ const Home = () => {
 	}, [activeMenu]);
 
 	return (
-		<>
+		<ErrorBoundary>
 			{user && Object.keys(user).length && (
 				<Navbar
 					handleClick={(menu) => {
@@ -74,7 +75,7 @@ const Home = () => {
 					/>
 				</RootLayout>
 			) : null}
-		</>
+		</ErrorBoundary>
 	);
 };
 

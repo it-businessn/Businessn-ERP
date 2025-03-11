@@ -107,7 +107,7 @@ const ExtraTimeEntryModal = ({
 				<HStack>
 					<DateTimeFormControl
 						timeLabel="Start Time"
-						valueText2={formData.startTime || ""}
+						valueText2={formData.startTime || "05:00"}
 						name2="startTime"
 						handleChange={(e) => {
 							setFormData((prevData) => ({
@@ -119,7 +119,7 @@ const ExtraTimeEntryModal = ({
 					/>
 					<DateTimeFormControl
 						timeLabel="End Time"
-						valueText2={formData.endTime || ""}
+						valueText2={formData.endTime || "13:00"}
 						name2="endTime"
 						required
 						handleChange={(e) => {

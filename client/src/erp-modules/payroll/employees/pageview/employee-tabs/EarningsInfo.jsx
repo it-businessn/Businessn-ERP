@@ -39,6 +39,7 @@ const EarningsInfo = ({ role, handleSubmit }) => {
 				</RadioGroup>
 			</HStack>
 			<InputFormControl
+				type="number"
 				label="Regular Pay"
 				name="payRate"
 				placeholder="Enter Payrate"
@@ -52,6 +53,7 @@ const EarningsInfo = ({ role, handleSubmit }) => {
 			/>
 			{isFTSalaried ? (
 				<InputFormControl
+					type="number"
 					label="Standard Hours (FT)"
 					name="fullTimeStandardHours"
 					placeholder="Enter Full Time Hours"
@@ -65,6 +67,7 @@ const EarningsInfo = ({ role, handleSubmit }) => {
 				/>
 			) : isPTSalaried ? (
 				<InputFormControl
+					type="number"
 					label="Standard Hours (PT)"
 					name="partTimeStandardHours"
 					placeholder="Enter Part Time Hours"

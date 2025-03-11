@@ -68,6 +68,7 @@ const BankingInfo = ({ company, isOnboarding, handlePrev, id, handleClose }) => 
 				duration: 1000,
 				isClosable: true,
 			});
+			setIsDisabled(true);
 		} catch (error) {
 			console.error("Error:", error);
 			alert("Failed to submit banking information.");
@@ -162,7 +163,7 @@ const BankingInfo = ({ company, isOnboarding, handlePrev, id, handleClose }) => 
 					config={EMP_PAYMENT_NOTIFICATION_CONFIG}
 					isLoading={isLoading}
 					isDisabled={isSave1Disabled}
-					handleSubmit={() => handleSubmit()}
+					handleSubmit={handleSubmit}
 				/>
 			),
 		},
