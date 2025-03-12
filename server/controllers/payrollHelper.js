@@ -281,7 +281,8 @@ const buildNewEmpPayStubInfo = (
 
 	const netPay = newEmpData.currentGrossPay - newEmpData.currentDeductionsTotal;
 	// newEmpData.currentNetPay = netPay < 0 ? 0 : netPay;
-	newEmpData.currentNetPay = netPay;
+
+	newEmpData.currentNetPay = netPay || 0;
 	newEmpData.totalAmountAllocated = empAdditionalDataAllocated?.totalAmountAllocated;
 	return newEmpData;
 };
@@ -332,8 +333,7 @@ const calcCurrentDeductionsTotal = (newEmpData) => {
 		newEmpData.currentPrimaryDeposit +
 		newEmpData.currentEmployeePensionContributions +
 		newEmpData.currentOtherDeductions;
-
-	newEmpData.currentDeductionsTotal = deductions < 0 ? 0 : deductions;
+	newEmpData.currentDeductionsTotal = !deductions || deductions < 0 ? 0 : deductions;
 	return newEmpData;
 };
 

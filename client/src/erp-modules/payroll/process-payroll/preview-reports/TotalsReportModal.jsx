@@ -65,9 +65,10 @@ const TotalsReportModal = ({
 			textAlign={"center"}
 			fontSize="2xl"
 			overflow={"hidden"}
+			isReport={true}
 		>
 			{!reportData && <Loader />}
-			<Stack padding={"2em"}>
+			<Stack padding="1em">
 				<Stack mt={2} spacing={0}>
 					<TextTitle size="sm" title="Totals withdrawn to remit to the CRA" />
 					<HStack borderBottom="1px solid var(--main_color_black)" mt={6}>
@@ -106,7 +107,7 @@ const TotalsReportModal = ({
 				</Stack>
 
 				<HStack mt={6}>
-					<TextTitle title="ALL GOVERNMENT CONTRIBUTIONS TO REMIT" />
+					<TextTitle title="ALL GOVERNMENT CONTRIBUTIONS TO REMIT" whiteSpace="wrap" />
 					<TextTitle title={totalGovtContr} align="right" />
 				</HStack>
 

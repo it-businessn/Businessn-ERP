@@ -128,7 +128,7 @@ const getHrs = (num) => `${(num / 60).toFixed(0)}.${num % 60}`;
 // const convertHrsToFloat = (hrs) => (hrs ? parseFloat(getHrs(hrs)) : 0);
 const convertHrsToFloat = (hrs) => (hrs ? parseFloat(hrs) : 0);
 
-const getSumTotal = (data1, data2) => (data1 ?? 0) + data2;
+const getSumTotal = (data1, data2) => (data1 || 0) + data2;
 
 const getTaxDetails = (payRate, grossEarning, empTaxCreditResult) => {
 	const annualProjectedGrossEarning = grossEarning * TAX_CONFIG.ANNUAL_PAY_PERIODS;

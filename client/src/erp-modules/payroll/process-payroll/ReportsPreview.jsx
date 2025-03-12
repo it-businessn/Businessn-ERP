@@ -54,7 +54,7 @@ const ReportsPreview = ({
 					onClose={() => setShowTotalsReport(false)}
 					reportData={fundingTotalsData}
 					payPeriodNum={payPeriodNum}
-					size="3xl"
+					size="5xl"
 				/>
 			)}
 			<PrimaryButton

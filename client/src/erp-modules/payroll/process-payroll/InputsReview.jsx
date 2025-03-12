@@ -109,7 +109,7 @@ const InputsReview = ({
 										<TextTitle
 											title={
 												title.includes("Employee")
-													? data?.empId[value]
+													? data?.empId?.[value]
 													: round
 													? getAmount(data[value])
 													: nearest

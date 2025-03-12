@@ -471,8 +471,13 @@ const addEmployeePayStubInfo = async (req, res) => {
 	try {
 		// const y = await EmployeePayStub.deleteMany({
 		// 	payPeriodNum: "6",
+		// 	companyName,
 		// });
-		// console.log("del", y);
+
+		// const k = await FundingTotalsPay.deleteMany({
+		// 	payPeriodNum: "6",
+		// });
+		// console.log("del", y, k);
 		// return;
 		const {
 			payPeriodStartDate,
@@ -530,15 +535,15 @@ const addEmployeePayStubInfo = async (req, res) => {
 				empTimesheetData ?? null,
 				employee._id,
 			);
-			fundingTotal.totalIncomeTaxContr += payStubResult?.currentIncomeTaxDeductions;
-			fundingTotal.totalCPP_EE_Contr += payStubResult?.currentCPPDeductions;
-			fundingTotal.totalCPP_ER_Contr += payStubResult?.currentCPPDeductions;
-			fundingTotal.totalEI_EE_Contr += payStubResult?.currentEmployeeEIDeductions;
-			fundingTotal.totalEI_ER_Contr += payStubResult?.currentEmployerEIDeductions;
+			fundingTotal.totalIncomeTaxContr += payStubResult?.currentIncomeTaxDeductions || 0;
+			fundingTotal.totalCPP_EE_Contr += payStubResult?.currentCPPDeductions || 0;
+			fundingTotal.totalCPP_ER_Contr += payStubResult?.currentCPPDeductions || 0;
+			fundingTotal.totalEI_EE_Contr += payStubResult?.currentEmployeeEIDeductions || 0;
+			fundingTotal.totalEI_ER_Contr += payStubResult?.currentEmployerEIDeductions || 0;
 			fundingTotal.totalNetPay += payStubResult?.currentNetPay;
 		}
 
-		await buildFundingTotalsReport(fundingTotal);
+		await buildFundingTotalsReport(fundingTotal, activeEmployees?.length);
 		// generateT4Slip(companyName, payPeriod);
 		//if payroll processed successful
 		//alerts violation generate independently based on emp data, on process payroll will run again to check alerts or violations.
@@ -548,28 +553,31 @@ const addEmployeePayStubInfo = async (req, res) => {
 	}
 };
 
-const buildFundingTotalsReport = async (fundingTotal) => {
-	fundingTotal.totalCPP_Contr = fundingTotal?.totalCPP_EE_Contr + fundingTotal?.totalCPP_ER_Contr;
-	fundingTotal.totalEI_Contr = fundingTotal?.totalEI_EE_Contr + fundingTotal?.totalEI_ER_Contr;
+const buildFundingTotalsReport = async (fundingTotal, totalEmployees) => {
+	fundingTotal.totalCPP_Contr =
+		fundingTotal?.totalCPP_EE_Contr + fundingTotal?.totalCPP_ER_Contr || 0;
+	fundingTotal.totalEI_Contr = fundingTotal?.totalEI_EE_Contr + fundingTotal?.totalEI_ER_Contr || 0;
 	fundingTotal.totalGovtContr =
-		fundingTotal?.totalCPP_Contr + fundingTotal?.totalEI_Contr + fundingTotal?.totalIncomeTaxContr;
+		fundingTotal?.totalCPP_Contr +
+			fundingTotal?.totalEI_Contr +
+			fundingTotal?.totalIncomeTaxContr || 0;
 
-	fundingTotal.totalEmpPaymentRemitCost = fundingTotal.totalNetPay;
+	fundingTotal.totalEmpPaymentRemitCost = fundingTotal.totalNetPay || 0;
 
-	fundingTotal.totalEmpPayrollCost = activeEmployees?.length * 2;
-	fundingTotal.totalTimeManagementEmpCost = activeEmployees?.length * 1.75;
+	fundingTotal.totalEmpPayrollCost = totalEmployees * 2;
+	fundingTotal.totalTimeManagementEmpCost = totalEmployees * 1.75;
 
 	fundingTotal.totalCorePayrollCost =
-		fundingTotal.totalBatchCharges + fundingTotal.totalEmpPayrollCost;
+		fundingTotal.totalBatchCharges + fundingTotal.totalEmpPayrollCost || 0;
 	fundingTotal.totalTimeManagementPayrollCost =
-		fundingTotal.timeClockMaintenanceCost + fundingTotal.totalTimeManagementEmpCost;
+		fundingTotal.timeClockMaintenanceCost + fundingTotal.totalTimeManagementEmpCost || 0;
 	fundingTotal.totalServiceCharges =
-		fundingTotal.totalCorePayrollCost + fundingTotal.totalTimeManagementPayrollCost;
+		fundingTotal.totalCorePayrollCost + fundingTotal.totalTimeManagementPayrollCost || 0;
 
 	fundingTotal.totalFundingWithDrawals =
 		fundingTotal.totalGovtContr +
-		fundingTotal.totalEmpPaymentRemitCost +
-		fundingTotal.totalServiceCharges;
+			fundingTotal.totalEmpPaymentRemitCost +
+			fundingTotal.totalServiceCharges || 0;
 
 	const existsFundDetails = await FundingTotalsPay.findOne({
 		companyName: fundingTotal.companyName,
