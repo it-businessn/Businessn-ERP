@@ -218,7 +218,7 @@ button:active {
   top: 3px;
 } */
 .main_content {
-	width: 85vw;
+	width: 90vw;
 	margin-top: 6em;
 	max-height: calc(var(--base));
 	overflow: auto;
