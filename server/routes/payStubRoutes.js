@@ -7,6 +7,11 @@ router.get("/:companyName/:empId", payStubController.getEmployeePayDetailsReport
 
 router.get("/:companyName/:payPeriodNum/:isExtraRun", payStubController.getPayDetailsReportInfo);
 
+router.get(
+	"/fund-totals/:companyName/:payPeriodNum/:isExtraRun",
+	payStubController.getFundPayDetailsReportInfo,
+);
+
 router.post("/", payStubController.addEmployeePayStubInfo);
 
 module.exports = router;

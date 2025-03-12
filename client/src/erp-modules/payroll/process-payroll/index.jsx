@@ -149,6 +149,7 @@ const ProcessPayroll = () => {
 					isPayPeriodInactive={isPayPeriodInactive}
 					setReportData={setReportData}
 					reportData={reportData}
+					company={company}
 				/>
 			</SimpleGrid>
 

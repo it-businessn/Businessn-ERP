@@ -19,15 +19,14 @@ const PayrollStageContent = ({
 	isPayPeriodInactive,
 	setReportData,
 	reportData,
+	company,
 }) => {
-	const { isOpen: isPayrollStepupOpen, onToggle: onPayrollStepupToggle } =
-		useDisclosure({
-			defaultIsOpen: false,
-		});
-	const { isOpen: isInputsReviewOpen, onToggle: onInputsReviewToggle } =
-		useDisclosure({
-			defaultIsOpen: false,
-		});
+	const { isOpen: isPayrollStepupOpen, onToggle: onPayrollStepupToggle } = useDisclosure({
+		defaultIsOpen: false,
+	});
+	const { isOpen: isInputsReviewOpen, onToggle: onInputsReviewToggle } = useDisclosure({
+		defaultIsOpen: false,
+	});
 	const { isOpen: isAlertsOpen, onToggle: onAlertsOpenToggle } = useDisclosure({
 		defaultIsOpen: false,
 	});
@@ -142,6 +141,7 @@ const PayrollStageContent = ({
 							handleConfirm(4);
 							onReportsToggle();
 						}}
+						company={company}
 						payPeriodNum={closestRecord?.payPeriod}
 						isPayPeriodInactive={isPayPeriodInactive}
 					/>

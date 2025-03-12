@@ -18,8 +18,10 @@ const NormalTextTitle = ({
 	textTransform,
 	p,
 	maxW,
+	fontStyle,
 }) => (
 	<TextTitle
+		em={fontStyle}
 		textTransform={textTransform}
 		onClick={onClick}
 		weight={weight}

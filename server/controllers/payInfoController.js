@@ -1,4 +1,6 @@
+const Employee = require("../models/Employee");
 const EmployeePayInfo = require("../models/EmployeePayInfo");
+const { BUSINESSN_ORG_ADMIN_EMAILS } = require("../services/data");
 const { getPayrollActiveEmployees } = require("./appController");
 const { findEmpPayStubDetail } = require("./payStubHelper");
 const { findGroupEmployees } = require("./setUpController");
@@ -50,8 +52,15 @@ const buildAmountAllocationEmpDetails = async (payDate, employee, companyName) =
 const getEmployeePayInfo = async (req, res) => {
 	const { companyName, empId } = req.params;
 	try {
+		const employee = await Employee.findById(empId);
+		if (BUSINESSN_ORG_ADMIN_EMAILS.includes(employee?.email)) {
+			const result = await EmployeePayInfo.findOne({
+				empId,
+			});
+			return res.status(200).json(result);
+		}
 		const result = await findEmployeePayInfo(empId, companyName);
-		res.status(200).json(result);
+		return res.status(200).json(result);
 	} catch (error) {
 		res.status(404).json({ error: error.message });
 	}
@@ -103,6 +112,7 @@ const addEmployeePayInfo = async (req, res) => {
 const updateEmployeePayInfo = async (req, res) => {
 	const { id } = req.params;
 	try {
+		req.body.updatedOn = moment();
 		const updatedPayInfo = await updatePayInfo(id, req.body);
 
 		res.status(201).json(updatedPayInfo);

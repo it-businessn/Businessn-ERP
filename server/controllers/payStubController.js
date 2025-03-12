@@ -17,6 +17,7 @@ const { addSeparateManualCheque } = require("./payStubManualCalc");
 const { addSeparatePayoutCheque } = require("./payStubPayoutCalc");
 const { appendPrevPayInfoBalance } = require("./payStubHelper");
 const { getPayrollActiveEmployees } = require("./appController");
+const FundingTotalsPay = require("../models/FundingTotalsPay");
 
 const buildPayStub = (
 	empId,
@@ -233,44 +234,56 @@ const buildPayStub = (
 		YTDVacationPayout: getSumTotal(prevPayPayInfo?.YTDVacationPayout, vacationPayout),
 		YTDBonus: getSumTotal(prevPayPayInfo?.YTDBonus, bonus),
 		YTDTerminationPayout: getSumTotal(prevPayPayInfo?.YTDTerminationPayout, terminationPayout),
-		YTD_FDTaxDeductions: getSumTotal(prevPayPayInfo?.YTD_FDTaxDeductions, currentFDTaxDeductions),
+		YTD_FDTaxDeductions: getSumTotal(
+			prevPayPayInfo?.YTD_FDTaxDeductions || 0,
+			currentFDTaxDeductions || 0,
+		),
 		YTDStateTaxDeductions: getSumTotal(
-			prevPayPayInfo?.YTDStateTaxDeductions,
-			currentStateTaxDeductions,
+			prevPayPayInfo?.YTDStateTaxDeductions || 0,
+			currentStateTaxDeductions || 0,
 		),
 		YTD_IncomeTaxDeductions: getSumTotal(
-			prevPayPayInfo?.YTD_IncomeTaxDeductions,
-			currentIncomeTaxDeductions,
+			prevPayPayInfo?.YTD_IncomeTaxDeductions || 0,
+			currentIncomeTaxDeductions || 0,
 		),
 		YTD_EmployeeEIDeductions: getSumTotal(
-			prevPayPayInfo?.YTD_EmployeeEIDeductions,
-			currentEmployeeEIDeductions,
+			prevPayPayInfo?.YTD_EmployeeEIDeductions || 0,
+			currentEmployeeEIDeductions || 0,
 		),
 		YTD_EmployerEIDeductions: getSumTotal(
-			prevPayPayInfo?.YTD_EmployerEIDeductions,
-			currentEmployerEIDeductions,
+			prevPayPayInfo?.YTD_EmployerEIDeductions || 0,
+			currentEmployerEIDeductions || 0,
 		),
-		YTD_CPPDeductions: getSumTotal(prevPayPayInfo?.YTD_CPPDeductions, currentCPPDeductions),
+		YTD_CPPDeductions: getSumTotal(
+			prevPayPayInfo?.YTD_CPPDeductions || 0,
+			currentCPPDeductions || 0,
+		),
 		YTDUnionDuesDeductions: getSumTotal(
-			prevPayPayInfo?.YTDUnionDuesDeductions,
-			currentUnionDuesDeductions,
+			prevPayPayInfo?.YTDUnionDuesDeductions || 0,
+			currentUnionDuesDeductions || 0,
 		),
 		YTDEmployeeHealthContributions: getSumTotal(
-			prevPayPayInfo?.YTDEmployeeHealthContributions,
-			currentEmployeeHealthContributions,
+			prevPayPayInfo?.YTDEmployeeHealthContributions || 0,
+			currentEmployeeHealthContributions || 0,
 		),
 		YTDPrimaryDeposit: getSumTotal(prevPayPayInfo?.YTDPrimaryDeposit, currentPrimaryDeposit),
 		YTDEmployeePensionContributions: getSumTotal(
 			prevPayPayInfo?.YTDEmployeePensionContributions,
-			currentEmployeePensionContributions,
+			currentEmployeePensionContributions || 0,
 		),
-		YTDOtherDeductions: getSumTotal(prevPayPayInfo?.YTDOtherDeductions, currentOtherDeductions),
+		YTDOtherDeductions: getSumTotal(
+			prevPayPayInfo?.YTDOtherDeductions || 0,
+			currentOtherDeductions,
+		),
 
-		YTDGrossPay: getSumTotal(prevPayPayInfo?.YTDGrossPay, currentGrossPay),
+		YTDGrossPay: getSumTotal(prevPayPayInfo?.YTDGrossPay || 0, currentGrossPay || 0),
 
-		YTDDeductionsTotal: getSumTotal(prevPayPayInfo?.YTDDeductionsTotal, currentDeductionsTotal),
+		YTDDeductionsTotal: getSumTotal(
+			prevPayPayInfo?.YTDDeductionsTotal || 0,
+			currentDeductionsTotal || 0,
+		),
 
-		YTDNetPay: getSumTotal(prevPayPayInfo?.YTDNetPay, currentNetPay),
+		YTDNetPay: getSumTotal(prevPayPayInfo?.YTDNetPay || 0, currentNetPay || 0),
 
 		YTDEmployerPensionContributions: getSumTotal(
 			prevPayPayInfo?.YTDEmployerPensionContributions,
@@ -345,7 +358,7 @@ const buildPayStubDetails = async (currentPayPeriod, companyName, empTimesheetDa
 
 	if (currentPayInfo) {
 		await updatePayStub(currentPayInfo._id, currentPayStub);
-		return;
+		return currentPayStub;
 	}
 	const runBalances = async () => {
 		for (const chequeType of empAdditionalDataAllocated?.chequesType || []) {
@@ -418,6 +431,7 @@ const buildPayStubDetails = async (currentPayPeriod, companyName, empTimesheetDa
 			prevPayPayInfo,
 		);
 		await addPayStub(updatedPayStub);
+		return updatedPayStub;
 	}
 };
 
@@ -455,8 +469,20 @@ const updatePayStub = async (id, data) =>
 const addEmployeePayStubInfo = async (req, res) => {
 	const { companyName, currentPayPeriod } = req.body;
 	try {
-		const { payPeriodStartDate, payPeriodEndDate, isExtraRun, selectedEmp, payPeriod } =
-			currentPayPeriod;
+		// const y = await EmployeePayStub.deleteMany({
+		// 	payPeriodNum: "6",
+		// });
+		// console.log("del", y);
+		// return;
+		const {
+			payPeriodStartDate,
+			payPeriodEndDate,
+			isExtraRun,
+			selectedEmp,
+			payPeriod,
+			payPeriodPayDate,
+			payPeriodProcessingDate,
+		} = currentPayPeriod;
 
 		const activeEmployees = isExtraRun
 			? await getEmployeeId(selectedEmp)
@@ -465,6 +491,33 @@ const addEmployeePayStubInfo = async (req, res) => {
 		const result = isExtraRun
 			? null
 			: await calculateTimesheetApprovedHours(payPeriodStartDate, payPeriodEndDate, companyName);
+
+		const fundingTotal = {
+			companyName,
+			payPeriodStartDate,
+			payPeriodEndDate,
+			payPeriodPayDate,
+			payPeriodProcessingDate,
+			payPeriodNum: payPeriod,
+			totalIncomeTaxContr: 0,
+			totalCPP_EE_Contr: 0,
+			totalCPP_ER_Contr: 0,
+			totalCPP_Contr: 0,
+			totalEI_EE_Contr: 0,
+			totalEI_ER_Contr: 0,
+			totalEI_Contr: 0,
+			totalGovtContr: 0,
+			totalNetPay: 0,
+			totalBatchCharges: 20,
+			totalEmpPayrollCost: 0,
+			timeClockMaintenanceCost: 5.75,
+			totalTimeManagementEmpCost: 0,
+			totalCorePayrollCost: 0,
+			totalTimeManagementPayrollCost: 0,
+			totalServiceCharges: 0,
+			totalFundingWithDrawals: 0,
+			totalEmpPaymentRemitCost: 0,
+		};
 
 		for (const employee of activeEmployees) {
 			const empTimesheetData = result?.find(
@@ -477,7 +530,15 @@ const addEmployeePayStubInfo = async (req, res) => {
 				empTimesheetData ?? null,
 				employee._id,
 			);
+			fundingTotal.totalIncomeTaxContr += payStubResult?.currentIncomeTaxDeductions;
+			fundingTotal.totalCPP_EE_Contr += payStubResult?.currentCPPDeductions;
+			fundingTotal.totalCPP_ER_Contr += payStubResult?.currentCPPDeductions;
+			fundingTotal.totalEI_EE_Contr += payStubResult?.currentEmployeeEIDeductions;
+			fundingTotal.totalEI_ER_Contr += payStubResult?.currentEmployerEIDeductions;
+			fundingTotal.totalNetPay += payStubResult?.currentNetPay;
 		}
+
+		await buildFundingTotalsReport(fundingTotal);
 		// generateT4Slip(companyName, payPeriod);
 		//if payroll processed successful
 		//alerts violation generate independently based on emp data, on process payroll will run again to check alerts or violations.
@@ -487,10 +548,68 @@ const addEmployeePayStubInfo = async (req, res) => {
 	}
 };
 
+const buildFundingTotalsReport = async (fundingTotal) => {
+	fundingTotal.totalCPP_Contr = fundingTotal?.totalCPP_EE_Contr + fundingTotal?.totalCPP_ER_Contr;
+	fundingTotal.totalEI_Contr = fundingTotal?.totalEI_EE_Contr + fundingTotal?.totalEI_ER_Contr;
+	fundingTotal.totalGovtContr =
+		fundingTotal?.totalCPP_Contr + fundingTotal?.totalEI_Contr + fundingTotal?.totalIncomeTaxContr;
+
+	fundingTotal.totalEmpPaymentRemitCost = fundingTotal.totalNetPay;
+
+	fundingTotal.totalEmpPayrollCost = activeEmployees?.length * 2;
+	fundingTotal.totalTimeManagementEmpCost = activeEmployees?.length * 1.75;
+
+	fundingTotal.totalCorePayrollCost =
+		fundingTotal.totalBatchCharges + fundingTotal.totalEmpPayrollCost;
+	fundingTotal.totalTimeManagementPayrollCost =
+		fundingTotal.timeClockMaintenanceCost + fundingTotal.totalTimeManagementEmpCost;
+	fundingTotal.totalServiceCharges =
+		fundingTotal.totalCorePayrollCost + fundingTotal.totalTimeManagementPayrollCost;
+
+	fundingTotal.totalFundingWithDrawals =
+		fundingTotal.totalGovtContr +
+		fundingTotal.totalEmpPaymentRemitCost +
+		fundingTotal.totalServiceCharges;
+
+	const existsFundDetails = await FundingTotalsPay.findOne({
+		companyName: fundingTotal.companyName,
+		payPeriodNum: fundingTotal.payPeriodNum,
+	});
+	if (existsFundDetails) {
+		fundingTotal.updatedOn = moment();
+		await FundingTotalsPay.findByIdAndUpdate(existsFundDetails._id, fundingTotal, {
+			new: true,
+		});
+	} else {
+		await FundingTotalsPay.create(fundingTotal);
+	}
+};
+
 const EMP_INFO = {
 	path: "empId",
 	model: "Employee",
 	select: ["companyId", "employeeId", "fullName", "primaryAddress", "employeeNo"],
+};
+
+const getFundPayDetailsReportInfo = async (req, res) => {
+	const { companyName, payPeriodNum, isExtraRun } = req.params;
+	try {
+		const isExtraPayRun = isExtraRun === "true";
+		const payStubs = await FundingTotalsPay.findOne({
+			companyName,
+			payPeriodNum,
+			isExtraRun: isExtraPayRun,
+			payPeriodPayDate: {
+				$gte: moment().startOf("year").toDate(),
+				$lt: moment().endOf("year").toDate(),
+			},
+		}).sort({
+			createdOn: -1,
+		});
+		res.status(200).json(payStubs);
+	} catch (error) {
+		res.status(404).json({ error: error.message });
+	}
 };
 
 const getPayDetailsReportInfo = async (req, res) => {
@@ -563,4 +682,5 @@ module.exports = {
 	addEmployeePayStubInfo,
 	getRecordId,
 	calculateTimesheetApprovedHours,
+	getFundPayDetailsReportInfo,
 };
