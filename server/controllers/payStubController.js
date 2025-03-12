@@ -476,6 +476,7 @@ const addEmployeePayStubInfo = async (req, res) => {
 
 		// const k = await FundingTotalsPay.deleteMany({
 		// 	payPeriodNum: "6",
+		// 	companyName,
 		// });
 		// console.log("del", y, k);
 		// return;

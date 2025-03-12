@@ -90,15 +90,15 @@ const Timesheets = () => {
 	}, [isActionSwitched, timesheets]);
 
 	useEffect(() => {
-		if (userId) {
-			setFilteredEmployees([userId]);
+		if (id) {
+			setFilteredEmployees([id]);
 			setStartDate(getMomentDate(closestRecord?.payPeriodStartDate).format("YYYY-MM-DD"));
 			setEndDate(getMomentDate(closestRecord?.payPeriodEndDate).format("YYYY-MM-DD"));
 		} else {
 			setStartDate(moment().format("YYYY-MM-DD"));
 			setEndDate(moment().format("YYYY-MM-DD"));
 		}
-	}, [userId, closestRecord]);
+	}, [id, closestRecord]);
 
 	const handleRefresh = () => setDataRefresh(!dataRefresh);
 
