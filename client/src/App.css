@@ -194,7 +194,7 @@ body {
 	/* background: linear-gradient(103deg, #1f5189 0%, #114e5e 65%, #13bcc1 100%); */
 	background-image: url("./assets/navbar_bg.png");
 	background-size: cover;
-	padding: 0 5px;
+	padding: 0 2px;
 	width: 100%;
 	border-radius: 10px;
 }
