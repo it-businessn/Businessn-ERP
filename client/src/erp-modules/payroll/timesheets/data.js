@@ -184,15 +184,20 @@ export const TIMESHEET_STATUS = [
 export const TICKET_ACTION = {
 	OPEN: "Open",
 	CLOSED: "Close",
-	NEW: "New",
-	DELETE: "Delete",
+	PROGRESS: "In Progress",
+	ON_HOLD: "On Hold",
 };
 
 export const TICKET_ACTION_STATUS = [
 	{
-		name: TICKET_ACTION.NEW,
+		name: TICKET_ACTION.PROGRESS,
 		color: "var(--nav_color)",
-		title: TICKET_ACTION.NEW,
+		title: TICKET_ACTION.PROGRESS,
+	},
+	{
+		name: TICKET_ACTION.ON_HOLD,
+		color: "var(--nav_color)",
+		title: TICKET_ACTION.ON_HOLD,
 	},
 	{
 		name: TICKET_ACTION.OPEN,
