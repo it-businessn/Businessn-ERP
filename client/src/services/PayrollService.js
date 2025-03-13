@@ -15,6 +15,10 @@ const PayrollService = {
 		);
 	},
 
+	async getEmployeeROEEmploymentInfo(company, empId) {
+		return apiService.get(`/payroll/roe/${company}/${empId}`);
+	},
+
 	async addAdditionalHoursAllocation(data) {
 		return apiService.post("/payroll/additionalAllocation/hours", data);
 	},
@@ -59,6 +63,10 @@ const PayrollService = {
 
 	async getEmployeeEmploymentInfo(company, empId) {
 		return apiService.get(`/payroll/employmentInfo/${company}/${empId}`);
+	},
+
+	async addEmployeeROEEmploymentInfo(data) {
+		return apiService.post("/payroll/roe", data);
 	},
 
 	async addEmployeeEmploymentInfo(data) {

@@ -2,7 +2,7 @@ const moment = require("moment");
 const Employee = require("../models/Employee");
 const EmployeeEmploymentInfo = require("../models/EmployeeEmploymentInfo");
 const EmployeePayInfo = require("../models/EmployeePayInfo");
-const { isRoleManager, BUSINESSN_ORG_ADMIN_EMAILS } = require("../services/data");
+const { isRoleManager, BUSINESSN_ORG_ADMIN_EMAILS, BUSINESSN_ORG } = require("../services/data");
 const { setInitialPermissions } = require("./appController");
 const { fetchActiveEmployees } = require("./userController");
 const { updatePayInfo, findEmployeePayInfoDetails } = require("./payInfoController");
@@ -78,6 +78,11 @@ const getEmployeeEmploymentInfo = async (req, res) => {
 	try {
 		const employee = await Employee.findById(empId);
 		if (BUSINESSN_ORG_ADMIN_EMAILS.includes(employee?.email)) {
+			// const result = await EmployeeEmploymentInfo.deleteMany({
+			// 	empId,
+			// 	companyName: { $ne: BUSINESSN_ORG },
+			// });
+			// return res.status(200).json(result);
 			const result = await EmployeeEmploymentInfo.findOne({
 				empId,
 			});
@@ -207,4 +212,5 @@ module.exports = {
 	addEmployeeEmploymentInfo,
 	updateEmployeeEmploymentInfo,
 	findEmployeeEmploymentInfo,
+	updateEmploymentInfo,
 };

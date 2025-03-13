@@ -1,130 +1,213 @@
-import { HStack, SimpleGrid, Stack } from "@chakra-ui/react";
+import { FormLabel, HStack, SimpleGrid, Stack, useToast } from "@chakra-ui/react";
 import PrimaryButton from "components/ui/button/PrimaryButton";
 import BoxCard from "components/ui/card";
 import DateTimeFormControl from "components/ui/form/DateTimeFormControl";
 import SelectFormControl from "components/ui/form/SelectFormControl";
+import NormalTextTitle from "components/ui/NormalTextTitle";
 import TextTitle from "components/ui/text/TextTitle";
 import VerticalStepper from "components/ui/VerticalStepper";
 import { REASON_CODE, RECALL_OPTIONS } from "constant";
 import useEmployeeEmploymentInfo from "hooks/useEmployeeEmploymentInfo";
-import { useState } from "react";
+import usePaygroup from "hooks/usePaygroup";
+import moment from "moment";
+import { useEffect, useState } from "react";
 import LocalStorageService from "services/LocalStorageService";
+import PayrollService from "services/PayrollService";
+import { getAmount } from "utils/convertAmt";
 import { getDefaultDate } from "utils/convertDate";
 import StepContent from "../employees/pageview/step-content";
 
 const EmploymentInfo = ({ company, handleNext, tabId }) => {
+	const toast = useToast();
+	const { payGroupSchedule } = usePaygroup(company, true);
 	const roeEmpId = LocalStorageService.getItem("roeEmpId");
+
 	const initialFormData = {
-		empId: "",
-		employee: "",
-		firstName: "",
-		lastName: "",
-		middleName: "",
-		SIN: "",
-		streetAddress: "",
-		streetAddressSuite: "",
-		city: "",
-		province: "",
-		country: "",
+		empId: roeEmpId,
+		employmentStartDate: "",
+		employmentLeaveDate: new Date(),
+		finalPayPeriodEndDate: "",
+		recallDate: "",
+		expectedRecallDate: "",
+		reasonCode: "",
 		positions: [],
 	};
 
 	const [formData, setFormData] = useState(initialFormData);
+	const [roeInfo, setRoeInfo] = useState(null);
 
 	const employmentInfo = useEmployeeEmploymentInfo(company, roeEmpId);
 
-	const populateEmpInfo = () => {
+	useEffect(() => {
+		const fetchEmployeeROEEmploymentInfo = async () => {
+			try {
+				const { data } = await PayrollService.getEmployeeROEEmploymentInfo(company, roeEmpId);
+				setRoeInfo(data);
+			} catch (error) {
+				console.error(error);
+			}
+		};
+		fetchEmployeeROEEmploymentInfo();
+	}, [company, roeEmpId]);
+
+	useEffect(() => {
+		if (roeInfo) {
+			setFormData(roeInfo);
+			return;
+		}
+		if (employmentInfo) setFormData(employmentInfo);
+	}, [employmentInfo, roeInfo]);
+
+	useEffect(() => {
+		const finalPayPeriodRecord = payGroupSchedule?.find(
+			({ payPeriodStartDate, payPeriodEndDate }) =>
+				moment(formData?.employmentLeaveDate).isBetween(
+					payPeriodStartDate,
+					payPeriodEndDate,
+					null,
+					"[]",
+				),
+		);
 		setFormData((prevData) => ({
 			...prevData,
-			firstName: employmentInfo?.firstName,
-			lastName: employmentInfo?.lastName,
-			middleName: employmentInfo?.middleName,
-			SIN: employmentInfo?.SIN,
-			streetAddress: employmentInfo?.streetAddress,
-			streetAddressSuite: employmentInfo?.streetAddressSuite,
-			city: employmentInfo?.city,
-			province: employmentInfo?.province,
-			country: employmentInfo?.country,
-			postalCode: employmentInfo?.postalCode,
+			finalPayPeriodEndDate: finalPayPeriodRecord?.payPeriodEndDate,
 		}));
+	}, [formData?.employmentLeaveDate]);
+
+	const handleEmpROEInfo = async () => {
+		try {
+			if (!formData?.expectedRecallDate) {
+				formData.expectedRecallDate = "Unknown";
+			}
+			await PayrollService.addEmployeeROEEmploymentInfo(formData);
+			handleNext(tabId);
+			toast({
+				title: "Employment info updated successfully.",
+				status: "success",
+				duration: 1000,
+				isClosable: true,
+			});
+		} catch (error) {}
 	};
+
 	const steps = [
 		{
 			title: "Tenure",
 			content: (
 				<>
-					<Stack w="50%" spacing={3}>
-						<TextTitle title="Tenure" />
-						<DateTimeFormControl
-							w="40%"
-							label="Start Date"
-							valueText1={getDefaultDate(formData?.startDate)}
-							name1="startDate"
-							handleChange={(e) => {
-								setFormData((prev) => ({
-									...prev,
-									startDate: e.target.value,
-								}));
-							}}
-						/>
-						<DateTimeFormControl
-							w="40%"
-							label="Last Day Worked"
-							valueText1={getDefaultDate(formData?.endDate)}
-							name1="endDate"
-							handleChange={(e) => {
-								setFormData((prev) => ({
-									...prev,
-									endDate: e.target.value,
-								}));
-							}}
-						/>
-						<HStack>
+					<Stack spacing={3}>
+						<HStack alignItems="baseline" spacing={5}>
+							<Stack w="50%">
+								<TextTitle title="Tenure" />
+								<HStack>
+									<DateTimeFormControl
+										label="Start Date"
+										valueText1={getDefaultDate(formData?.employmentStartDate)}
+										name1="employmentStartDate"
+										handleChange={(e) => {
+											setFormData((prev) => ({
+												...prev,
+												employmentStartDate: e.target.value,
+											}));
+										}}
+									/>
+									<DateTimeFormControl
+										required
+										label="Last Day Worked"
+										valueText1={
+											formData?.employmentLeaveDate
+												? getDefaultDate(formData?.employmentLeaveDate)
+												: ""
+										}
+										name1="employmentLeaveDate"
+										handleChange={(e) => {
+											setFormData((prev) => ({
+												...prev,
+												employmentLeaveDate: e.target.value,
+											}));
+										}}
+									/>
+								</HStack>
+							</Stack>
+							<Stack>
+								<TextTitle title="Occupation" />
+								{formData?.positions?.map((position, index) => (
+									<Stack key={`${position?.title}_${index}`} spacing={2}>
+										<HStack>
+											<FormLabel w="100%">
+												Position:
+												<NormalTextTitle title={position?.title || ""} />
+											</FormLabel>
+											<FormLabel w="100%">
+												Payrate:
+												<NormalTextTitle title={getAmount(position?.payRate) || ""} />
+											</FormLabel>
+										</HStack>
+
+										<FormLabel>
+											Linked Time Management Badge ID:
+											<NormalTextTitle title={position?.timeManagementBadgeID || "NA"} />
+										</FormLabel>
+									</Stack>
+								))}
+							</Stack>
+						</HStack>
+
+						<HStack w="50%">
 							<DateTimeFormControl
 								label="Final Pay Period End Date"
-								valueText1={getDefaultDate(formData?.finalPayDate)}
-								name1="finalPayDate"
+								valueText1={
+									formData?.finalPayPeriodEndDate
+										? getDefaultDate(formData?.finalPayPeriodEndDate)
+										: ""
+								}
+								name1="finalPayPeriodEndDate"
 								handleChange={(e) => {
 									setFormData((prev) => ({
 										...prev,
-										finalPayDate: e.target.value,
+										finalPayPeriodEndDate: e.target.value,
 									}));
 								}}
 							/>
 							<SelectFormControl
 								valueParam="name"
-								name="province"
+								name="expectedRecallDate"
 								label="Expected Date of Recall"
-								valueText={formData.province || ""}
+								valueText={formData.expectedRecallDate || RECALL_OPTIONS[0]?.name}
 								handleChange={(e) =>
 									setFormData((prevData) => ({
 										...prevData,
-										province: e.target.value,
+										expectedRecallDate: e.target.value,
 									}))
 								}
 								options={RECALL_OPTIONS}
 							/>
-							<DateTimeFormControl
-								label="Recall Date"
-								valueText1={getDefaultDate(formData?.finalPayDate)}
-								name1="finalPayDate"
-								handleChange={(e) => {
-									setFormData((prev) => ({
-										...prev,
-										finalPayDate: e.target.value,
-									}));
-								}}
-							/>
+							{formData.expectedRecallDate === "Return Date" && (
+								<DateTimeFormControl
+									required
+									label="Recall Date"
+									valueText1={formData?.recallDate ? getDefaultDate(formData?.recallDate) : ""}
+									name1="recallDate"
+									handleChange={(e) => {
+										setFormData((prev) => ({
+											...prev,
+											recallDate: e.target.value,
+										}));
+									}}
+								/>
+							)}
 						</HStack>
 						<SelectFormControl
+							w="50%"
 							valueParam="name"
-							name="province"
+							name="reasonCode"
 							label="Reason Code"
-							valueText={formData.province || ""}
+							placeholder="Select reason"
+							valueText={formData.reasonCode || ""}
 							handleChange={(e) =>
 								setFormData((prevData) => ({
 									...prevData,
-									province: e.target.value,
+									reasonCode: e.target.value,
 								}))
 							}
 							options={REASON_CODE}
@@ -135,7 +218,7 @@ const EmploymentInfo = ({ company, handleNext, tabId }) => {
 						size="sm"
 						name="Save"
 						loadingText="Loading"
-						onOpen={() => handleNext(tabId)}
+						onOpen={handleEmpROEInfo}
 					/>
 				</>
 			),
