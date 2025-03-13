@@ -3,9 +3,9 @@ import ActionButtonGroup from "components/ui/form/ActionButtonGroup";
 import SelectFormControl from "components/ui/form/SelectFormControl";
 import TextAreaFormControl from "components/ui/form/TextAreaFormControl";
 import ModalLayout from "components/ui/modal/ModalLayout";
-import { useEffect, useState } from "react";
+import useCompanyEmployees from "hooks/useCompanyEmployees";
+import { useState } from "react";
 import TicketService from "services/TicketService";
-import UserService from "services/UserService";
 
 const NewTicket = ({ showAddEntry, setShowAddEntry, setRefresh, company, userId }) => {
 	const CATEGORY_LIST = [
@@ -43,20 +43,7 @@ const NewTicket = ({ showAddEntry, setShowAddEntry, setRefresh, company, userId 
 		originator: userId,
 	};
 	const [formData, setFormData] = useState(initialFormData);
-	const [employees, setEmployees] = useState(null);
-
-	useEffect(() => {
-		const fetchAllEmployees = async () => {
-			try {
-				const { data } = await UserService.getAllCompanyUsers(company);
-
-				setEmployees(data);
-			} catch (error) {
-				console.error(error);
-			}
-		};
-		fetchAllEmployees();
-	}, []);
+	const employees = useCompanyEmployees(company);
 
 	const handleChange = (e) => {
 		const { name, value } = e.target;

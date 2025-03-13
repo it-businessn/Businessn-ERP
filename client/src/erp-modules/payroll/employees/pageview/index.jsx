@@ -4,13 +4,13 @@ import NormalTextTitle from "components/ui/NormalTextTitle";
 import RadioButtonGroup from "components/ui/tab/RadioButtonGroup";
 import TextTitle from "components/ui/text/TextTitle";
 import useCompany from "hooks/useCompany";
+import useCompanyEmployees from "hooks/useCompanyEmployees";
 import useSelectedEmp from "hooks/useSelectedEmp";
 import PageLayout from "layouts/PageLayout";
 import { useEffect, useState } from "react";
 import { FaCheckCircle } from "react-icons/fa";
 import { useParams } from "react-router-dom";
 import LocalStorageService from "services/LocalStorageService";
-import UserService from "services/UserService";
 import EmpProfileSearch from "../EmpProfileSearch";
 import BankingInfo from "./employee-tabs/BankingInfo";
 import BenefitsInfo from "./employee-tabs/BenefitsInfo";
@@ -29,21 +29,12 @@ const Employees = ({ isOnboarding, selectedPayGroupName, handleClose }) => {
 
 	const isActivePayroll = employee?.payrollStatus?.includes("Active");
 
-	const [employees, setEmployees] = useState(null);
+	const employees = useCompanyEmployees(company);
 	const [filteredEmployees, setFilteredEmployees] = useState(null);
 
 	useEffect(() => {
-		const fetchAllEmployees = async () => {
-			try {
-				const { data } = await UserService.getAllCompanyUsers(company);
-				setEmployees(data);
-				setFilteredEmployees(data);
-			} catch (error) {
-				console.error(error);
-			}
-		};
-		fetchAllEmployees();
-	}, []);
+		setFilteredEmployees(employees);
+	}, [employees]);
 
 	useEffect(() => {
 		if (isOnboarding) {

@@ -52,14 +52,7 @@ export const workView_Table = {
 		"Last Updated",
 		"Status",
 	],
-	task_cols: [
-		"Task name",
-		"Assignee(s)",
-		"Priority",
-		"Last Updated",
-		"Due Date",
-		"Status",
-	],
+	task_cols: ["Task name", "Assignee(s)", "Priority", "Last Updated", "Due Date", "Status"],
 	task_view_cols: [
 		"Task name",
 		"Assignee(s)",

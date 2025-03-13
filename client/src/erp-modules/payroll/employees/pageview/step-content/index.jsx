@@ -2,7 +2,7 @@
 import BoxCard from "components/ui/card";
 import { HIDE_ONBOARDING_SECTION } from "erp-modules/payroll/workview/data";
 
-const StepContent = ({ currentStep, steps, isOnboarding }) => {
+const StepContent = ({ currentStep, steps, isOnboarding, h = "68vh" }) => {
 	// const { isOpen: isPayrollStepupOpen, onToggle: onPayrollStepupToggle } =
 	// 	useDisclosure({
 	// 		defaultIsOpen: false,
@@ -39,16 +39,12 @@ const StepContent = ({ currentStep, steps, isOnboarding }) => {
 	// 	}
 	// };
 	return (
-		<BoxCard h="68vh">
+		<BoxCard h={h}>
 			{steps.map((step) => (
 				<BoxCard
-					mt={0.1}
+					mt={step?.mt || 0.1}
 					key={step.title}
-					display={
-						isOnboarding &&
-						HIDE_ONBOARDING_SECTION.includes(step.title) &&
-						"none"
-					}
+					display={isOnboarding && HIDE_ONBOARDING_SECTION.includes(step.title) && "none"}
 				>
 					{step.content}
 				</BoxCard>

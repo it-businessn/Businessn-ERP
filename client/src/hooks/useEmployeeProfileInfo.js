@@ -12,9 +12,9 @@ const useEmployeeProfileInfo = (company, empId, isOnboarding) => {
 				console.error(error);
 			}
 		};
-		// if (!isOnboarding) {
-		fetchEmployeeProfileInfo();
-		// }
+		if (empId) {
+			fetchEmployeeProfileInfo();
+		}
 	}, [company, empId, isOnboarding]);
 	return profileInfo;
 };

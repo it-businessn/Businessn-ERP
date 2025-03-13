@@ -7,11 +7,11 @@ import NormalTextTitle from "components/ui/NormalTextTitle";
 import TableLayout from "components/ui/table/TableLayout";
 import TextTitle from "components/ui/text/TextTitle";
 import useCompany from "hooks/useCompany";
+import useCompanyEmployees from "hooks/useCompanyEmployees";
 import PageLayout from "layouts/PageLayout";
 import { useEffect, useState } from "react";
 import LocalStorageService from "services/LocalStorageService";
 import PayrollService from "services/PayrollService";
-import UserService from "services/UserService";
 import { sortRecordsByDate } from "utils";
 import { dayMonthYear, formatDateRange } from "utils/convertDate";
 import EmpProfileSearch from "../employees/EmpProfileSearch";
@@ -31,7 +31,7 @@ const Reports = () => {
 	const loggedInUser = LocalStorageService.getItem("user");
 	const [employee, setEmployee] = useState(loggedInUser);
 	const isActivePayroll = employee?.payrollStatus?.includes("Active");
-	const [employees, setEmployees] = useState(null);
+	const employees = useCompanyEmployees(company);
 	const [filteredEmployees, setFilteredEmployees] = useState(null);
 	const [userId, setUserId] = useState(loggedInUser._id);
 	const [empPayStub, setEmpPayStub] = useState(null);
@@ -51,17 +51,8 @@ const Reports = () => {
 	}, [userId]);
 
 	useEffect(() => {
-		const fetchAllEmployees = async () => {
-			try {
-				const { data } = await UserService.getAllCompanyUsers(company);
-				setEmployees(data);
-				setFilteredEmployees(data);
-			} catch (error) {
-				console.error(error);
-			}
-		};
-		fetchAllEmployees();
-	}, []);
+		setFilteredEmployees(employees);
+	}, [employees]);
 
 	return (
 		<>

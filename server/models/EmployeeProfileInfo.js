@@ -21,6 +21,7 @@ const employeeProfileInfoSchema = new mongoose.Schema({
 	emergencyPersonalEmail: String,
 	emergencyPersonalPhoneNum: String,
 	streetAddress: String,
+	streetAddressSuite: String,
 	city: String,
 	province: String,
 	country: String,

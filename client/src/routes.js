@@ -56,6 +56,7 @@ const Reports = lazy(() => import("./erp-modules/payroll/reports"));
 const Timesheets = lazy(() => import("./erp-modules/payroll/timesheets"));
 const Dashboard = lazy(() => import("erp-modules/payroll/dashboard"));
 const Employees = lazy(() => import("erp-modules/payroll/employees/pageview"));
+const ROE = lazy(() => import("erp-modules/payroll/roe"));
 const EmployeeListView = lazy(() => import("erp-modules/payroll/employees/listview"));
 const Settings = lazy(() => import("erp-modules/payroll/Settings"));
 
@@ -143,6 +144,7 @@ export const processPayrollPath = `${ROUTE_PATH.PAYROLL}${ROUTE_PATH.PROCESS}`;
 export const timesheetPath = `${ROUTE_PATH.PAYROLL}${ROUTE_PATH.TIMESHEETS}`;
 export const leaveApprovalPath = `${ROUTE_PATH.PAYROLL}${ROUTE_PATH.LEAVE_APPROVALS}`;
 export const payrollEmployeePath = `${ROUTE_PATH.PAYROLL}${ROUTE_PATH.EMPLOYEES}`;
+export const payrollROEPath = `${ROUTE_PATH.PAYROLL}/roe`;
 export const payrollReportPath = `${ROUTE_PATH.PAYROLL}${ROUTE_PATH.REPORT}`;
 
 export const router = createBrowserRouter([
@@ -321,6 +323,10 @@ export const router = createBrowserRouter([
 			{
 				path: `${payrollEmployeePath}/info/:id/:stepNo`,
 				element: <Employees />,
+			},
+			{
+				path: payrollROEPath,
+				element: <ROE />,
 			},
 			{
 				path: payrollReportPath,

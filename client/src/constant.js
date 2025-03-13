@@ -40,6 +40,57 @@ export const COLS = {
 	PAYRATE: "Payrate",
 };
 
+export const RECALL_OPTIONS = [
+	{
+		name: "Unknown",
+	},
+	{
+		name: "Not Returning",
+	},
+	{
+		name: "Return Date",
+	},
+];
+
+export const REASON_CODE = [
+	{
+		name: "AOO - Shortage of Work / End of Contract or Season",
+	},
+	{
+		name: "A01 - Employer bankruptcy or receivership",
+	},
+	{
+		name: "B00 - Strike or Lockout",
+	},
+	{ name: "D00 - Illness or Injury" },
+	{ name: "E00 - Quit" },
+	{ name: "E02 - Quit / Follow spouse" },
+	{ name: "E03 - Quit / Return to school" },
+	{ name: "E04 - Quit / Health reasons" },
+	{ name: "E05 - Quit / Voluntary retirement" },
+	{ name: "E06 - Quit / Take another job" },
+	{ name: "E09 - Quit / Employer relocation" },
+	{ name: "E10 - Quit / Care for a dependant" },
+	{ name: "E11 - Quit / To become self-employed" },
+	{ name: "F00 - Maternity" },
+	{ name: "G00 - Mandatory retirement" },
+	{ name: "G07 - Retirement / Approved workforce reduction" },
+	{ name: "H00 - Work Sharing" },
+	{ name: "J00 - Apprentice Training" },
+	{ name: "K00 - Other" },
+	{ name: "K12 - Other / Change of payroll frequency" },
+	{ name: "K13 - Other / Change of ownership" },
+	{ name: "K14 - Other / Requested by Employment Insurance" },
+	{ name: "K15 - Other / Canadian Forces - Queen's Regulations / Orders" },
+	{ name: "K16 - Other / At the employee's request" },
+	{ name: "K17 - Other /  Change of Service Provider" },
+	{ name: "M00 - Dismissal or suspension" },
+	{ name: "M08 - Dismissal / Terminated within probationary period" },
+	{ name: "N00 - Leave" },
+	{ name: "P00 - Parental Leave" },
+	{ name: "Z00 - Compassionate care / Family caregiver" },
+];
+
 export const TITLE_COLS = [COLS.EMP_NAME, "Total Hours", "Total Amount"];
 
 export const ALIGN_COLS = [
@@ -353,7 +404,7 @@ export const meetingsData = [
 ];
 
 export const PAYRUN_TYPE = [
-	{ name: "Default", code: "1" },
+	{ name: "Regular", code: "1" },
 	{ name: "Paid out", code: "2" },
 	{ name: "Manual Cheque", code: "3" },
 	{ name: "Superficial Balance", code: "4" },
