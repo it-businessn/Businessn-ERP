@@ -77,7 +77,7 @@ const Configuration = () => {
 			title: "Manage Modules",
 		},
 		{
-			name: "Add Role",
+			name: "Add System Access Level",
 			handleClick: () => {
 				setOpenCompanyForm(false);
 				setOpenCCForm(false);
@@ -87,7 +87,7 @@ const Configuration = () => {
 				setOpenAddDepartment(false);
 				setOpenHoliday(false);
 			},
-			title: "Manage Role",
+			title: "Manage System Access Level",
 		},
 		{
 			name: "Add Paygroup",

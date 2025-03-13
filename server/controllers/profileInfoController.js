@@ -1,3 +1,4 @@
+const moment = require("moment");
 const Employee = require("../models/Employee");
 const EmployeeProfileInfo = require("../models/EmployeeProfileInfo");
 const { BUSINESSN_ORG_ADMIN_EMAILS } = require("../services/data");
@@ -67,7 +68,7 @@ const updateEmployee = async (empId, data) => {
 		employee.email = personalEmail;
 	}
 
-	const streetNumber = `${streetAddressSuite ?? ""} ${streetAddress ?? ""}`;
+	const streetNumber = `${streetAddressSuite || ""} ${streetAddress || ""}`;
 	if (streetNumber && streetNumber !== "") {
 		employee.primaryAddress = {
 			streetNumber,
@@ -78,6 +79,7 @@ const updateEmployee = async (empId, data) => {
 		};
 	}
 
+	employee.updatedOn = moment();
 	await employee.save();
 };
 
@@ -189,6 +191,7 @@ const addEmployeeProfileInfo = async (req, res) => {
 		await updateEmployee(empId, data);
 
 		if (existingProfileInfo) {
+			req.body.updatedOn = moment();
 			const updatedProfileInfo = await updateProfileInfo(existingProfileInfo._id, req.body);
 			return res.status(201).json(updatedProfileInfo);
 		}

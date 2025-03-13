@@ -10,6 +10,7 @@ import useCompanyEmployees from "hooks/useCompanyEmployees";
 import useEmployeeProfileInfo from "hooks/useEmployeeProfileInfo";
 import { useState } from "react";
 import LocalStorageService from "services/LocalStorageService";
+import PayrollService from "services/PayrollService";
 import StepContent from "../employees/pageview/step-content";
 
 const EmployeeInfo = ({ company, handleNext, tabId }) => {
@@ -27,6 +28,7 @@ const EmployeeInfo = ({ company, handleNext, tabId }) => {
 		province: "",
 		country: "",
 		postalCode: "",
+		companyName: company,
 	};
 
 	const [formData, setFormData] = useState(initialFormData);
@@ -34,7 +36,6 @@ const EmployeeInfo = ({ company, handleNext, tabId }) => {
 	const empInfo = useEmployeeProfileInfo(company, formData.empId);
 
 	const populateEmpInfo = () => {
-		LocalStorageService.setItem("roeEmpId", formData.empId);
 		setFormData((prevData) => ({
 			...prevData,
 			firstName: empInfo?.firstName,
@@ -49,6 +50,15 @@ const EmployeeInfo = ({ company, handleNext, tabId }) => {
 			postalCode: empInfo?.postalCode,
 		}));
 	};
+
+	const handleConfirm = async () => {
+		try {
+			const { data } = await PayrollService.addEmployeeProfileInfo(formData);
+			LocalStorageService.setItem("roeEmpId", data?.empId);
+			handleNext(tabId);
+		} catch (error) {}
+	};
+
 	const steps = [
 		{
 			title: "Choose Employee",
@@ -60,13 +70,14 @@ const EmployeeInfo = ({ company, handleNext, tabId }) => {
 						valueParam="fullName"
 						name="fullName"
 						label=""
+						placeholder="Select Employee"
 						valueText={formData.employee || ""}
 						handleChange={(e) => {
 							const val = e.target.value;
-							setFormData((prevData) => ({
-								...prevData,
+							setFormData(() => ({
 								employee: val,
 								empId: employees?.find((_) => _.fullName === val)?._id,
+								companyName: company,
 							}));
 						}}
 						options={employees}
@@ -198,7 +209,7 @@ const EmployeeInfo = ({ company, handleNext, tabId }) => {
 						<SelectFormControl
 							w="40%"
 							valueParam="type"
-							name="country"
+							name="type"
 							label="Country"
 							valueText={formData.country || ""}
 							handleChange={(e) =>
@@ -229,7 +240,7 @@ const EmployeeInfo = ({ company, handleNext, tabId }) => {
 						size="sm"
 						name="Confirm"
 						loadingText="Loading"
-						onOpen={() => handleNext(tabId)}
+						onOpen={handleConfirm}
 					/>
 				</>
 			),

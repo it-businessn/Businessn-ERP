@@ -31,8 +31,8 @@ const Configuration = () => {
 			content: <AddNewGroup company={company} modules={modules} managers={managers} />,
 		},
 		{
-			name: "Add Role",
-			title: "Manage Role",
+			name: "Add System Access Level",
+			title: "Manage System Access Level",
 			content: <CompaniesPanel setOpenCompanyForm />,
 		},
 		{
