@@ -90,9 +90,6 @@ const getPayrollActiveCompanyEmployees = async (req, res) => {
 	const { companyName } = req.params;
 	try {
 		let result = await getPayrollActiveEmployees(companyName);
-		if (companyName !== BUSINESSN_ORG) {
-			result = result?.filter((emp) => !BUSINESSN_ORG_ADMIN_EMAILS.includes(emp.email));
-		}
 		res.status(200).json(result);
 	} catch (error) {
 		res.status(404).json({ error: error.message });
@@ -119,7 +116,7 @@ const getCompanyEmployees = async (req, res) => {
 		let result = await Employee.find({
 			companyId: existingCompany._id,
 		})
-			.select("fullName employeeId payrollStatus employeeNo timeManagementBadgeID department")
+			.select("fullName employeeId payrollStatus employeeNo timeManagementBadgeID department email")
 			.sort({ fullName: 1 });
 		if (companyName !== BUSINESSN_ORG) {
 			result = result?.filter((emp) => !BUSINESSN_ORG_ADMIN_EMAILS.includes(emp.email));
