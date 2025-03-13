@@ -19,6 +19,7 @@ const getOpenTickets = async (req, res) => {
 	const { id, companyName } = req.params;
 	try {
 		const tasks = await SupportTicket.find({
+			// companyName: { $exists: false },
 			companyName,
 			status: { $ne: "Close" },
 			$or: [{ originator: id }, { assignee: id }],
