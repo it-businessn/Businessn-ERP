@@ -5,9 +5,9 @@ const ticketController = require("../controllers/ticketController");
 
 router.get("/:id", ticketController.getAllTickets);
 
-router.get("/open/:id", ticketController.getOpenTickets);
+router.get("/open/:id/:companyName", ticketController.getOpenTickets);
 
-router.get("/closed/:id", ticketController.getClosedTickets);
+router.get("/closed/:id/:companyName", ticketController.getClosedTickets);
 
 router.post("/", ticketController.createTicket);
 

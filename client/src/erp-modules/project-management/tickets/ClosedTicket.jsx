@@ -18,7 +18,7 @@ const ClosedTicket = ({ company, setShowAddEntry, showAddEntry, userId }) => {
 	useEffect(() => {
 		const fetchAllTickets = async () => {
 			try {
-				const { data } = await TicketService.getClosedTicket(userId);
+				const { data } = await TicketService.getClosedTicket(userId, company);
 				data?.map((_) => {
 					_.bg = TICKET_ACTION_STATUS.find(({ name }) => name === _.status)?.color;
 					return _;

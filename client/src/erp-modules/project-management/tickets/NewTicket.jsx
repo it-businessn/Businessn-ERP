@@ -37,7 +37,7 @@ const NewTicket = ({ showAddEntry, setShowAddEntry, setRefresh, company, userId 
 	const initialFormData = {
 		category: "",
 		priority: 0,
-		company,
+		companyName: company,
 		assignee: "",
 		issue: "",
 		originator: userId,

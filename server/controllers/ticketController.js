@@ -16,13 +16,20 @@ const getAllTickets = async (req, res) => {
 };
 
 const getOpenTickets = async (req, res) => {
-	const { id } = req.params;
+	const { id, companyName } = req.params;
 	try {
 		const tasks = await SupportTicket.find({
+			companyName,
 			status: { $ne: "Close" },
 			$or: [{ originator: id }, { assignee: id }],
 		}).sort({
 			createdOn: -1,
+		});
+		tasks.map((task) => {
+			task.ticketDaysOpened = Math.round(
+				moment.duration(moment().diff(moment(task.createdOn))).asDays(),
+			);
+			return task;
 		});
 		res.status(200).json(tasks);
 	} catch (error) {
@@ -31,9 +38,10 @@ const getOpenTickets = async (req, res) => {
 };
 
 const getClosedTickets = async (req, res) => {
-	const { id } = req.params;
+	const { id, companyName } = req.params;
 	try {
 		const tasks = await SupportTicket.find({
+			companyName,
 			status: "Close",
 			$or: [{ originator: id }, { assignee: id }],
 		}).sort({

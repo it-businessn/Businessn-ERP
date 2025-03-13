@@ -18,7 +18,7 @@ const OpenTicket = ({ company, setShowAddEntry, showAddEntry, userId }) => {
 	useEffect(() => {
 		const fetchAllTickets = async () => {
 			try {
-				const { data } = await TicketService.getOpenTicket(userId);
+				const { data } = await TicketService.getOpenTicket(userId, company);
 				data?.map((_) => {
 					_.bg = TICKET_ACTION_STATUS.find(({ name }) => name === _.status)?.color;
 					return _;
