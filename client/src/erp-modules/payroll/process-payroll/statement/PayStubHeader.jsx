@@ -8,8 +8,8 @@ const PayStubHeader = ({ companyInfo }) => {
 	return (
 		<HStack justifyContent={"space-between"}>
 			<Image objectFit="cover" height={"50px"} w={"280px"} src={payStubLogo} alt="Company logo" />
-			<VStack spacing={0} align={"end"}>
-				<TextTitle color={"var(--main_color_black)"} size={"xs"} title={name} />
+			<VStack spacing={0} align={"end"} flex={0.4}>
+				<TextTitle color={"var(--main_color_black)"} size={"sm"} title={name} />
 				<TextTitle
 					color={"var(--main_color_black)"}
 					size={"xs"}
@@ -17,6 +17,7 @@ const PayStubHeader = ({ companyInfo }) => {
 				/>
 			</VStack>
 			<TextTitle
+				flex={0.6}
 				width="50%"
 				align={"center"}
 				color={"var(--nav_color)"}

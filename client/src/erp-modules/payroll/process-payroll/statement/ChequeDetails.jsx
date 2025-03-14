@@ -8,8 +8,8 @@ import PayStubHeader from "./PayStubHeader";
 
 const PaymentDateTitle = ({ payDate }) => (
 	<TextTitle
-		p="0 1em"
-		align={"right"}
+		p="0 2em"
+		align="right"
 		title={`Payment Date: ${monthDayYearFormat(payDate)}`}
 		size={"xs"}
 	/>
@@ -48,7 +48,7 @@ const ChequeDetails = ({ data, companyInfo }) => {
 	return (
 		<Stack w={"100%"} mt={5} h={"16em"} justifyContent={"space-between"}>
 			<PayStubHeader companyInfo={companyInfo} />
-			<Box w={"100%"}>
+			<Box w={"100%"} pl={5}>
 				<PaymentDateTitle payDate={payDate} />
 				<InfoText title1="Account holder:" title2={name} />
 				<InfoText title1="The amount:" title2={amountInWords} title3={netPay} hasBg />

@@ -90,7 +90,7 @@ const ModalLayout = ({
 					</ModalHeader>
 				)}
 				<ModalBody p={hideOverlay && 0} zIndex="0" ref={componentRef} bg={"#fff"} height={"100vh"}>
-					<Stack spacing={spacing}>
+					<Stack w="100%" ml="-36px" px="1em" spacing={spacing}>
 						{children}
 						{error && (
 							<Alert status="error" mt={4}>
