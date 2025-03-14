@@ -33,7 +33,7 @@ const MenuItem = ({ menu, parent, textTransform, handleMenuItemClick }) => {
 							}
 						}}
 						className="sidebarMenu"
-						activeclassname={"active"}
+						activeclassname="active"
 					>
 						<IconButton
 							variant="ghost"
@@ -63,12 +63,7 @@ const MenuItem = ({ menu, parent, textTransform, handleMenuItemClick }) => {
 							onClick={() => {
 								navigate(`/${parent}/${menu.path}`);
 							}}
-							className={
-								(index === 0 && location.pathname.endsWith(menu.path)) ||
-								(index === 1 && location.pathname.includes("info"))
-									? "isSubChild active"
-									: ""
-							}
+							className={location.pathname.endsWith(menu.path) ? "isSubChild active" : ""}
 						>
 							<IconButton
 								variant="ghost"

@@ -1177,7 +1177,7 @@ export const SIDEBAR_MENU = [
 						name: "Payrun Reports",
 					},
 					{
-						path: "reports/info",
+						path: "reports/detail",
 						name: "Individual Reports",
 					},
 				],

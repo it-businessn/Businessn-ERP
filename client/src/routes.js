@@ -337,7 +337,7 @@ export const router = createBrowserRouter([
 				element: <ReportListView />,
 			},
 			{
-				path: `${payrollReportPath}/info`,
+				path: `${payrollReportPath}/detail`,
 				element: <Reports />,
 			},
 			{
