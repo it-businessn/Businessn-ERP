@@ -24,7 +24,8 @@ const getOpenTickets = async (req, res) => {
 			status: { $ne: "Close" },
 			$or: [{ originator: id }, { assignee: id }],
 		}).sort({
-			createdOn: -1,
+			// createdOn: -1,
+			assignee: 1,
 		});
 		tasks.map((task) => {
 			task.ticketDaysOpened = Math.round(
@@ -46,7 +47,8 @@ const getClosedTickets = async (req, res) => {
 			status: "Close",
 			$or: [{ originator: id }, { assignee: id }],
 		}).sort({
-			createdOn: -1,
+			// createdOn: -1,
+			assignee: 1,
 		});
 		res.status(200).json(tasks);
 	} catch (error) {
