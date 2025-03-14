@@ -130,6 +130,7 @@ const PayrollService = {
 	async getEmpPayReportDetails(company, empId) {
 		return apiService.get(`/payroll/payDetailsReport/${company}/${empId}`);
 	},
+
 	async getTotalFundingPayReportDetails(company, payNum, isExtraRun) {
 		return apiService.get(
 			`/payroll/payDetailsReport/fund-totals/${company}/${payNum}/${isExtraRun}`,

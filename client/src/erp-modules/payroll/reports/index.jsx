@@ -32,7 +32,13 @@ const Reports = () => {
 	const [employee, setEmployee] = useState(loggedInUser);
 	const isActivePayroll = employee?.payrollStatus?.includes("Active");
 	const employees = useCompanyEmployees(company);
+
 	const [filteredEmployees, setFilteredEmployees] = useState(null);
+
+	useEffect(() => {
+		setFilteredEmployees(employees);
+	}, [employees]);
+
 	const [userId, setUserId] = useState(loggedInUser._id);
 	const [empPayStub, setEmpPayStub] = useState(null);
 
@@ -41,7 +47,7 @@ const Reports = () => {
 			try {
 				const { data } = await PayrollService.getEmpPayReportDetails(company, userId);
 
-				const sortedResult = sortRecordsByDate(data, "payPeriodNum", false);
+				const sortedResult = sortRecordsByDate(data, "payPeriodNum", false, false);
 				setEmpPayStub(sortedResult);
 			} catch (error) {
 				console.error(error);
@@ -50,116 +56,101 @@ const Reports = () => {
 		fetchEmpPayStubs();
 	}, [userId]);
 
-	useEffect(() => {
-		setFilteredEmployees(employees);
-	}, [employees]);
-
 	return (
-		<>
-			<PageLayout title="Individual Reports">
-				<HStack spacing="1em" mt="1em" justifyContent={"space-between"}>
-					<HStack spacing="1em" mt="1em" justifyContent={"space-between"}>
-						<Avatar
-							// onClick={handleToggle}
-							name={employee?.fullName}
-							src=""
-							boxSize="15"
-						/>
-						<VStack spacing={0} align={"start"}>
-							<TextTitle size="sm" title={employee?.fullName} />
-							<NormalTextTitle size="xs" title={employee?.employeeId} />
-							{isActivePayroll && <ActiveBadge title={"Payroll Activated"} />}
-						</VStack>
-					</HStack>
-					<Spacer />
-					<EmpProfileSearch
-						filteredEmployees={filteredEmployees}
-						setFilteredEmployees={setFilteredEmployees}
-						setUserId={setUserId}
-						setEmployee={setEmployee}
-						employees={employees}
+		<PageLayout title="Individual Reports">
+			<HStack mb={5} spacing="1em" justifyContent={"space-between"}>
+				<HStack spacing="1em" justifyContent={"space-between"}>
+					<Avatar
+						// onClick={handleToggle}
+						name={employee?.fullName}
+						src=""
+						boxSize="15"
 					/>
+					<VStack spacing={0} align={"start"}>
+						<TextTitle size="sm" title={employee?.fullName} />
+						<NormalTextTitle size="xs" title={employee?.employeeId} />
+						{isActivePayroll && <ActiveBadge title={"Payroll Activated"} />}
+					</VStack>
 				</HStack>
-			</PageLayout>
-			<PageLayout title="Reports">
-				<TableLayout
-					cols={REPORT_COLS}
-					w={"100%"}
-					position="sticky"
-					zIndex={1}
-					top={-1}
-					textAlign="center"
-					height={"66vh"}
-				>
-					<Tbody>
-						{(!empPayStub || empPayStub?.length === 0) && (
-							<EmptyRowRecord data={empPayStub} colSpan={REPORT_COLS.length} />
-						)}
-						{empPayStub?.map(
-							(
-								{
-									payPeriod,
-									payPeriodStartDate,
-									payPeriodEndDate,
-									payPeriodPayDate,
-									color,
-									name,
-									bg,
-									isViewAction,
-									isDisabledStatus,
-									isDisabledAction,
-									isExtraRun,
-									payPeriodNum,
-								},
-								index,
-							) => (
-								<Tr key={`${payPeriod}_${index}`}>
-									<Td p={1} pl={8}>
-										{payPeriodNum}
-									</Td>
-									<Td p={1}>{dayMonthYear(payPeriodPayDate)}</Td>
-									<Td p={1}>{formatDateRange(payPeriodStartDate, payPeriodEndDate)}</Td>
-									<Td p={1}>
-										<PrimaryButton
-											color={color}
-											bg={bg}
-											name={name}
-											size="xs"
-											px={0}
-											isDisabled={isDisabledStatus}
-											hover={{
-												bg,
-												color,
-											}}
-											w={"92px"}
-										/>
-									</Td>
-									<Td p={1}>
-										<OutlineButton
-											label="View Paystub"
-											size="xs"
-											onClick={() => {
-												handleRegister(payPeriodNum);
-											}}
-										/>
-									</Td>
-								</Tr>
-							),
-						)}
-					</Tbody>
-				</TableLayout>
-				{showReport && (
-					<PreviewReportsModal
-						isReport
-						size="4xl"
-						isOpen={showReport}
-						onClose={() => setShowReport(false)}
-						reportData={payStub}
-						isEarningTable
-					/>
-				)}
-			</PageLayout>
-		</>
+				<Spacer />
+				<EmpProfileSearch
+					filteredEmployees={filteredEmployees}
+					setFilteredEmployees={setFilteredEmployees}
+					setUserId={setUserId}
+					setEmployee={setEmployee}
+					employees={employees}
+				/>
+			</HStack>
+			<TextTitle title="Reports" />
+			<TableLayout cols={REPORT_COLS} w={"100%"} top={-1} textAlign="center" height={"66vh"}>
+				<Tbody>
+					{(!empPayStub || empPayStub?.length === 0) && (
+						<EmptyRowRecord data={empPayStub} colSpan={REPORT_COLS.length} />
+					)}
+					{empPayStub?.map(
+						(
+							{
+								payPeriod,
+								payPeriodStartDate,
+								payPeriodEndDate,
+								payPeriodPayDate,
+								color,
+								name,
+								bg,
+								isViewAction,
+								isDisabledStatus,
+								isDisabledAction,
+								isExtraRun,
+								payPeriodNum,
+							},
+							index,
+						) => (
+							<Tr key={`${payPeriod}_${index}`}>
+								<Td p={1} pl={8}>
+									{payPeriodNum}
+								</Td>
+								<Td p={1}>{dayMonthYear(payPeriodPayDate)}</Td>
+								<Td p={1}>{formatDateRange(payPeriodStartDate, payPeriodEndDate)}</Td>
+								<Td p={1}>
+									<PrimaryButton
+										color={color}
+										bg={bg}
+										name={name}
+										size="xs"
+										px={0}
+										isDisabled={isDisabledStatus}
+										hover={{
+											bg,
+											color,
+										}}
+										w={"92px"}
+									/>
+								</Td>
+								<Td p={1}>
+									<OutlineButton
+										label="View Paystub"
+										size="xs"
+										onClick={() => {
+											handleRegister(payPeriodNum);
+										}}
+									/>
+								</Td>
+							</Tr>
+						),
+					)}
+				</Tbody>
+			</TableLayout>
+			{showReport && (
+				<PreviewReportsModal
+					isReport
+					size="4xl"
+					isOpen={showReport}
+					onClose={() => setShowReport(false)}
+					reportData={payStub}
+					isEarningTable
+				/>
+			)}
+		</PageLayout>
 	);
 };
 

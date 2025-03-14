@@ -370,10 +370,10 @@ export const convertToNum = (str) => parseFloat(str.replace(/,/g, ""));
 
 export const isPaygroup = (name) => name?.payrollActivated;
 
-export const sortRecordsByDate = (records, key, isDate = true) => {
-	const sortedList = records?.sort((a, b) =>
-		isDate ? new Date(a[key]) - new Date(b[key]) : a[key] - b[key],
-	);
+export const sortRecordsByDate = (records, key, isDate = true, sort = true) => {
+	const sortedList = sort
+		? records?.sort((a, b) => (isDate ? new Date(a[key]) - new Date(b[key]) : a[key] - b[key]))
+		: records;
 
 	sortedList?.map((record, index) => {
 		const {
