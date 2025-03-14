@@ -2,8 +2,6 @@ import { Icon, Select } from "@chakra-ui/react";
 import { COLORS } from "erp-modules/project-management/workview/project/data";
 import { FaCaretDown, FaCaretRight } from "react-icons/fa";
 
-import { generateLighterShade } from "utils";
-
 const SelectList = ({
 	_id,
 	id,
@@ -36,7 +34,7 @@ const SelectList = ({
 			borderRadius={"10px"}
 			size={"sm"}
 			color={!isTimesheetPayType && "var(--primary_button_bg)"}
-			bg={generateLighterShade(bg_color, 0.9)}
+			// bg={generateLighterShade(bg_color, 0.9)}
 			border={
 				isTimesheetPayType
 					? `1px solid var(--filter_border_color)`

@@ -116,7 +116,7 @@ const AlertsViolation = ({
 				</Tbody>
 			</Table>
 			<PrimaryButton
-				bg="var(--correct_ans)"
+				bg="var(--action_status_approve)"
 				name={"CONFIRM"}
 				rightIcon={<MdCheckCircle />}
 				// isDisabled={isDisabled}

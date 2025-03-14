@@ -132,7 +132,7 @@ const InputsReview = ({
 				</Table>
 			</Box>
 			<PrimaryButton
-				bg="var(--correct_ans)"
+				bg="var(--action_status_approve)"
 				name={"CONFIRM"}
 				rightIcon={<MdCheckCircle />}
 				// isLoading={isLoading}

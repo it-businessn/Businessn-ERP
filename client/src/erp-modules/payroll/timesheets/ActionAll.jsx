@@ -1,4 +1,4 @@
-import { Flex, IconButton, Menu, MenuButton, MenuItem, MenuList } from "@chakra-ui/react";
+import { Flex, HStack, IconButton, Menu, MenuButton, MenuItem, MenuList } from "@chakra-ui/react";
 import PrimaryButton from "components/ui/button/PrimaryButton";
 import TextTitle from "components/ui/text/TextTitle";
 import { useState } from "react";
@@ -19,7 +19,8 @@ const ActionAll = ({
 	setRowId,
 }) => {
 	const [actionName, setActionName] = useState(actions[0].title);
-	const [bg, setBg] = useState(actions[0].color);
+	const [actionIcon, setActionIcon] = useState(actions[0].icon);
+	const [color, setColor] = useState(actions[0].color);
 
 	return (
 		<Flex
@@ -32,21 +33,26 @@ const ActionAll = ({
 			justifyContent="space-between"
 		>
 			<PrimaryButton
-				minW="100px"
-				textTransform="uppercase"
+				minW="105px"
+				// textTransform="uppercase"
 				isDisabled={
 					(actionName === actions[0].title && isApproveDisabled) ||
 					isDisabled ||
 					status?.includes(actionName)
 				}
-				color={"var(--primary_bg)"}
-				bg={bg}
+				bg={"var(--action_status_bg)"}
+				color={color}
 				size="xs"
-				name={`${actionName} ${isRowAction ? "" : "all"}`}
+				name={
+					<HStack spacing={1} alignItems="center">
+						{actionIcon}
+						<TextTitle size="sm" title={`${actionName} ${isRowAction ? "" : "all"}`} />
+					</HStack>
+				}
 				px={0}
 				hover={{
-					bg,
-					color: "var(--primary_bg)",
+					bg: "var(--action_status_bg)",
+					color,
 				}}
 				onOpen={() => handleButtonClick(actionName)}
 			/>
@@ -57,26 +63,31 @@ const ActionAll = ({
 					icon={<FaCaretDown fontSize={isRowAction ? "1.2em" : "1.5em"} color="var(--logo_bg)" />}
 					aria-label="Options"
 				/>
-				<MenuList minW="150px">
-					{actions.map(({ color, title, bg }) => (
+				<MenuList minW="150px" zIndex={10}>
+					{actions.map(({ color, title, icon }) => (
 						<MenuItem
+							py={"2px"}
 							key={title}
 							onClick={() => {
 								setActionName(title);
+								setActionIcon(icon);
 								if (setRowAction) {
 									setRowAction(title);
 									setRowId(id);
 								}
-								setBg(color);
+								setColor(color);
 								if (setIsActionSwitched) setIsActionSwitched(title);
 							}}
 							color={color}
 							hover={{
-								bg: "var(--correct_ans)",
+								bg: "var(--action_status_approve)",
 								color: "var(--primary_bg)",
 							}}
 						>
-							<TextTitle textTransform="uppercase" title={title} />
+							<HStack p={0} justifyContent="start" alignItems="center">
+								{icon}
+								<TextTitle size="sm" title={title} />
+							</HStack>
 						</MenuItem>
 					))}
 				</MenuList>

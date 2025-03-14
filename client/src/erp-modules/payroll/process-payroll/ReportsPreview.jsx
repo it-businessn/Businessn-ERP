@@ -58,7 +58,7 @@ const ReportsPreview = ({
 				/>
 			)}
 			<PrimaryButton
-				bg="var(--correct_ans)"
+				bg="var(--action_status_approve)"
 				name={"CONFIRM"}
 				rightIcon={<MdCheckCircle />}
 				isDisabled={showReport === undefined || isPayPeriodInactive}

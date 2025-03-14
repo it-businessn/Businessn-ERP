@@ -41,7 +41,7 @@ const EmployeeTimeCard = ({ selectedUser, company, isMobile }) => {
 		row_1: [
 			{
 				name: "Clock IN",
-				bg: "var(--correct_ans)",
+				bg: "var(--action_status_approve)",
 				isClicked: false,
 				onClick: () => updateSubmit("0", `Clock In successful!`),
 			},
@@ -54,7 +54,7 @@ const EmployeeTimeCard = ({ selectedUser, company, isMobile }) => {
 		row_2: [
 			{
 				name: "Clock OUT",
-				bg: "var(--incorrect_ans)",
+				bg: "var(--action_status_reject)",
 				isClicked: false,
 				onClick: () => updateSubmit("1", `Clock Out Successful!`),
 			},

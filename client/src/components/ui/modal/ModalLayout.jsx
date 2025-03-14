@@ -33,6 +33,7 @@ const ModalLayout = ({
 	isReport,
 	spacing = "5",
 	reportData,
+	ml,
 }) => {
 	const componentRef = useRef();
 	const [isPrintDisabled, setIsPrintDisabled] = useState(true);
@@ -90,7 +91,7 @@ const ModalLayout = ({
 					</ModalHeader>
 				)}
 				<ModalBody p={hideOverlay && 0} zIndex="0" ref={componentRef} bg={"#fff"} height={"100vh"}>
-					<Stack w="100%" ml="-36px" px="1em" spacing={spacing}>
+					<Stack w="100%" ml={ml} px="1em" spacing={spacing}>
 						{children}
 						{error && (
 							<Alert status="error" mt={4}>

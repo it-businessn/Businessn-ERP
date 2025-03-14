@@ -58,11 +58,12 @@ const Navbar = ({ handleClick, companyName, companyId, user, setUser, isMobile }
 				<Logo />
 				<Flex
 					w="100%"
-					backgroundImage={navBarImg}
+					bg="var(--banner_bg)"
+					// backgroundImage={navBarImg}
 					p={3}
 					borderRadius="10px"
 					ml={3}
-					backgroundSize={"cover"}
+					// backgroundSize={"cover"}
 				>
 					<VStack
 						align="center"

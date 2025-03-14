@@ -51,10 +51,7 @@ const VerifyPIN = () => {
 							{() => (
 								<FormControl>
 									<HStack>
-										<PinInput
-											type="alphanumeric"
-											onChange={(value) => setOTP(value)}
-										>
+										<PinInput type="alphanumeric" onChange={(value) => setOTP(value)}>
 											<PinInputField />
 											<PinInputField />
 											<PinInputField />
@@ -67,12 +64,7 @@ const VerifyPIN = () => {
 							)}
 						</Field>
 						<Stack>
-							<Button
-								marginTop="1em"
-								variant="primary"
-								type="submit"
-								isLoading={isLoading}
-							>
+							<Button marginTop="1em" variant="primary" type="submit" isLoading={isLoading}>
 								Verify
 							</Button>
 						</Stack>
@@ -80,7 +72,7 @@ const VerifyPIN = () => {
 				</FormikProvider>
 			</HStack>
 			{message && (
-				<Text color="var(--correct_ans)" align="center">
+				<Text color="var(--action_status_approve)" align="center">
 					{message}
 				</Text>
 			)}

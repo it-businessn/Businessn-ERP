@@ -91,7 +91,7 @@ const TimeCard = ({ selectedUser, company }) => {
 						name={"Clock IN"}
 						variant="solid"
 						w={"50%"}
-						bg={"var(--correct_ans)"}
+						bg={"var(--action_status_approve)"}
 						_hover={{ color: "var(--main_color)" }}
 						handleClick={handleSubmit}
 					/>
@@ -110,7 +110,7 @@ const TimeCard = ({ selectedUser, company }) => {
 						name={"Clock OUT"}
 						variant="solid"
 						w={"50%"}
-						bg={"var(--incorrect_ans)"}
+						bg={"var(--action_status_reject)"}
 						_hover={{ color: "var(--main_color)" }}
 						handleClick={() => updateSubmit("clockOuts", `Clock Out Successful!`)}
 					/>

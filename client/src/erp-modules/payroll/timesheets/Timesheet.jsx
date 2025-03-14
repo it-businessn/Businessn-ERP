@@ -529,7 +529,7 @@ const Timesheet = ({
 						<Tr>
 							{cols?.map((col, index) =>
 								index === 10 ? (
-									<Th key={`action_${index}`}>
+									<Th key={`action_${index}`} bg="var(--th_bg)">
 										<Checkbox
 											isChecked={isAllChecked}
 											colorScheme="facebook"
@@ -537,7 +537,11 @@ const Timesheet = ({
 										/>
 									</Th>
 								) : (
-									<Th key={`${col}_${index}`} pl={index === 0 && "1em !important"}>
+									<Th
+										key={`${col}_${index}`}
+										pl={index === 0 && "1em !important"}
+										bg="var(--th_bg)"
+									>
 										<TextTitle
 											width={col.includes("Hours") && "80px"}
 											whiteSpace={col.includes("Hours") && "wrap"}
@@ -760,8 +764,10 @@ const Timesheet = ({
 													color={approveStatusBtnCss.color}
 													bg={approveStatusBtnCss.bg}
 													name={approveStatus}
-													size="xs"
-													px={0}
+													size="sm"
+													fontWeight="bold"
+													px="1em"
+													w="100px"
 													hover={{
 														bg: approveStatusBtnCss.bg,
 														color: approveStatusBtnCss.color,
@@ -777,8 +783,8 @@ const Timesheet = ({
 											</Td>
 											<Td py={0} pl={0}>
 												<ActionAll
+													w="108px"
 													id={_id}
-													w="100px"
 													isRowAction
 													status={approveStatus}
 													handleButtonClick={(action) => handleAction(_id, action, param_hours)}

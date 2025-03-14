@@ -38,7 +38,7 @@ const Finalize = ({ handleClick, isPayPeriodInactive }) => {
 				</Tbody>
 			</Table>
 			<PrimaryButton
-				bg="var(--correct_ans)"
+				bg="var(--action_status_approve)"
 				name={"CONFIRM"}
 				rightIcon={<MdCheckCircle />}
 				loadingText="Loading"

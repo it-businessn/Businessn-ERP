@@ -343,7 +343,7 @@ export const COVER_COLORS = [
 export const getRoleColor = (role) => {
 	const colors = [
 		{ title: ROLES.MANAGER, color: "var(--stat_item_color)" },
-		{ title: ROLES.EMPLOYEE, color: "var(--correct_ans)" },
+		{ title: ROLES.EMPLOYEE, color: "var(--action_status_approve)" },
 		{ title: ROLES.ADMINISTRATOR, color: "var(--primary_button_bg)" },
 		{ title: ROLES.ENROLLER, color: "var(--gray2_color)" },
 	];
@@ -445,7 +445,7 @@ export const getPayrollStatus = (data, prevRecordEndDate) => {
 		return {
 			name: "Paid",
 			color: "var(--primary_bg)",
-			bg: "var(--correct_ans)",
+			bg: "var(--action_status_approve)",
 			isDisabledStatus: false,
 			isViewAction: true,
 		};
@@ -453,7 +453,7 @@ export const getPayrollStatus = (data, prevRecordEndDate) => {
 		return {
 			name: "Submitted",
 			color: "var(--primary_bg)",
-			bg: "var(--correct_ans)",
+			bg: "var(--action_status_approve)",
 			isDisabledStatus: false,
 			isViewAction: true,
 		};

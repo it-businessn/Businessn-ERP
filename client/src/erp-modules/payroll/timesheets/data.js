@@ -1,3 +1,8 @@
+import { FaCheckCircle } from "react-icons/fa";
+import { MdDelete } from "react-icons/md";
+import { PiDotsThreeCircleFill } from "react-icons/pi";
+import { TiDelete } from "react-icons/ti";
+
 export const PAY_TYPES_TITLE = {
 	REG_PAY: "Regular Pay",
 	OVERTIME_PAY: "Overtime Pay",
@@ -167,12 +172,12 @@ export const TIMESHEET_STATUS = [
 	{
 		value: TIMESHEET_STATUS_LABEL.APPROVED,
 		color: "var(--primary_bg)",
-		bg: "var(--correct_ans)",
+		bg: "var(--action_status_approve)",
 	},
 	{
 		value: TIMESHEET_STATUS_LABEL.REJECTED,
 		color: "var(--primary_bg)",
-		bg: "var(--incorrect_ans)",
+		bg: "var(--action_status_reject)",
 	},
 	{
 		value: TIMESHEET_STATUS_LABEL.PENDING,
@@ -206,7 +211,7 @@ export const TICKET_ACTION_STATUS = [
 	},
 	{
 		name: TICKET_ACTION.CLOSED,
-		color: "var(--correct_ans)",
+		color: "var(--action_status_approve)",
 		title: TICKET_ACTION.CLOSED,
 	},
 ];
@@ -214,23 +219,27 @@ export const TICKET_ACTION_STATUS = [
 export const ACTION_STATUS = [
 	{
 		name: TIMESHEET_STATUS_LABEL.APPROVED,
-		color: "var(--correct_ans)",
+		color: "var(--action_status_approve)",
 		title: "Approve",
+		icon: <FaCheckCircle size={"2em"} />,
 	},
 	{
 		name: TIMESHEET_STATUS_LABEL.PENDING,
 		color: "var(--pending)",
 		title: "Pend",
+		icon: <PiDotsThreeCircleFill size={"2.5em"} />,
 	},
 	{
 		name: TIMESHEET_STATUS_LABEL.REJECTED,
-		color: "var(--incorrect_ans)",
+		color: "var(--action_status_reject)",
 		title: "Reject",
+		icon: <TiDelete size={"3em"} />,
 	},
 	{
 		name: TIMESHEET_STATUS_LABEL.DELETE,
 		color: "var(--nav_color)",
 		title: "Delete",
+		icon: <MdDelete size={"2.5em"} />,
 	},
 ];
 

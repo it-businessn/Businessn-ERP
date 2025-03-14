@@ -22,26 +22,32 @@
 		rgba(95, 166, 190, 1) 0%,
 		rgba(19, 170, 178, 1) 100%
 	);
+	--action_status_approve: #498b8f;
+	--action_status_reject: #d57b7b;
+	--action_status_bg: #fbf6f7;
+	--primary_button_bg: #7d7d7d;
+	--th_bg: #f7f7f7;
+	--nav_menu: #4c364b;
 	--overtime: #326274;
 	--dbl_overtime: #b47318;
 	--stat_worked: #a9201b;
-	--pending: #eba623;
+	--pending: #d68e67;
 	--filter_border_color: #d3d3d3;
 	--input_bg: #eee;
 	--empName_bg: rgb(29 80 136);
 	--payStub_bg: #efefef;
 	--calendar_border: #bbbbbb;
 	--bg_color_1: #dbe5ff;
-	--lead_cards_bg: #eef0fc;
+	--lead_cards_bg: #f0f0f0;
 	--lead_cards_border: #e3e5f1;
 	--main_color: #ffffff;
-	--primary_bg: #f7f7ff;
+	--primary_bg: #e6e6e6;
 	--primary_bg_1: #f4f8fa;
 	--nav_color: #485763;
 	--logo_bg: #01193d;
 	--main_color_black: #000000;
 	--break_row_bg: #a3c1db;
-	--primary_button_bg: #537eee;
+	/* --primary_button_bg: #537eee; */
 	--primary_button_bg_dark: red;
 
 	--status_button_border: #76c094;
@@ -59,6 +65,7 @@
 	--calendar_color: #a9a9ab;
 	--gray2_color: #959595;
 	--tas_item_color: #858181;
+	--banner_bg: #371f37;
 	--nav_gradient: linear-gradient(180deg, rgb(108 118 134) 0%, rgb(237 243 255) 100%);
 	--nav_gradient_blue: linear-gradient(180deg, rgb(219, 217, 228) 0%, rgb(237 243 255) 100%);
 	--nav_gradient_orange: linear-gradient(180deg, rgb(231, 223, 207) 0%, rgb(237 243 255) 100%);
@@ -79,7 +86,7 @@ html {
 }
 
 .applyBtn {
-	background: var(--correct_ans);
+	background: var(--action_status_approve);
 	color: var(--main_color);
 	padding: 8px 12px !important;
 	border-radius: 10px;
@@ -98,7 +105,7 @@ body {
 		rgb(228 235 255) 0%,
 		rgb(240 245 255) 100%
 	) !important; */
-	background: linear-gradient(0deg, rgb(213, 220, 236) 0%, rgb(240 245 255) 100%) !important;
+	background: var(--primary_bg) !important;
 	overflow: hidden;
 }
 
@@ -192,18 +199,23 @@ body {
 
 .sidebarMenu.active {
 	/* background: linear-gradient(103deg, #1f5189 0%, #114e5e 65%, #13bcc1 100%); */
-	background-image: url("./assets/navbar_bg.png");
-	background-size: cover;
+	/* background-image: url("./assets/navbar_bg.png"); */
+	/* background-size: cover; */
 	padding: 0 2px;
 	width: 100%;
 	border-radius: 10px;
+	background: var(--main_color);
+	color: var(--primary_button_bg);
 }
 
 .active button {
-	color: var(--main_color);
+	font-weight: bold;
+	color: var(--primary_button_bg);
 }
 .navbarMenu.active button {
-	font-size: large;
+	color: var(--main_color);
+	font-weight: normal;
+	border: 1px solid var(--action_status_bg);
 }
 button:active {
 	background: transparent !important;

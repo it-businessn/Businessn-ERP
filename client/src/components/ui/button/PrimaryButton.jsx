@@ -24,6 +24,7 @@ const PrimaryButton = ({
 	mt,
 	my,
 	textTransform,
+	fontWeight,
 }) => {
 	return (
 		<Button
@@ -47,6 +48,7 @@ const PrimaryButton = ({
 			rightIcon={rightIcon}
 			cursor={cursor}
 			w={w}
+			fontWeight={fontWeight}
 		>
 			{name}
 		</Button>
