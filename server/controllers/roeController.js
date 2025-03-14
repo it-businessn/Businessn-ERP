@@ -1,6 +1,7 @@
 const moment = require("moment");
 const EmployeeROE = require("../models/EmployeeROE");
 const { findEmployeeEmploymentInfo, updateEmploymentInfo } = require("./employmentInfoController");
+const EmployeePayStub = require("../models/EmployeePayStub");
 
 const findEmployeeROEInfoDetails = async (empId, companyName) =>
 	await EmployeeROE.findOne({
@@ -14,6 +15,27 @@ const getEmployeeROEEmploymentInfo = async (req, res) => {
 		const existingROEInfo = await findEmployeeROEInfoDetails(empId, companyName);
 
 		return res.status(200).json(existingROEInfo);
+	} catch (error) {
+		res.status(404).json({ error: error.message });
+	}
+};
+
+const getEmployeeEarningsInfo = async (req, res) => {
+	const { companyName, empId } = req.params;
+
+	try {
+		const payStubs = await EmployeePayStub.find({
+			companyName,
+			empId,
+			isProcessed: true,
+		})
+			.sort({
+				payPeriodEndDate: -1,
+			})
+			.select(
+				"payPeriodNum payPeriodEndDate currentGrossPay totalRegHoursWorked totalOvertimeHoursWorked totalDblOvertimeHoursWorked totalSickHoursWorked totalSprayHoursWorked totalStatDayHoursWorked totalStatHours totalVacationHoursWorked totalFirstAidHoursWorked",
+			);
+		res.status(200).json(payStubs);
 	} catch (error) {
 		res.status(404).json({ error: error.message });
 	}
@@ -80,4 +102,5 @@ const addEmployeeROEEmploymentInfo = async (req, res) => {
 module.exports = {
 	getEmployeeROEEmploymentInfo,
 	addEmployeeROEEmploymentInfo,
+	getEmployeeEarningsInfo,
 };

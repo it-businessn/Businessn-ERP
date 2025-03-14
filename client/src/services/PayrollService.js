@@ -19,6 +19,10 @@ const PayrollService = {
 		return apiService.get(`/payroll/roe/${company}/${empId}`);
 	},
 
+	async getEmpEarningInfo(company, empId) {
+		return apiService.get(`/payroll/roe/earnings/${company}/${empId}`);
+	},
+
 	async addAdditionalHoursAllocation(data) {
 		return apiService.post("/payroll/additionalAllocation/hours", data);
 	},
@@ -126,7 +130,6 @@ const PayrollService = {
 	async getEmpPayReportDetails(company, empId) {
 		return apiService.get(`/payroll/payDetailsReport/${company}/${empId}`);
 	},
-
 	async getTotalFundingPayReportDetails(company, payNum, isExtraRun) {
 		return apiService.get(
 			`/payroll/payDetailsReport/fund-totals/${company}/${payNum}/${isExtraRun}`,
