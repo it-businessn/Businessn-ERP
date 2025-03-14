@@ -158,7 +158,7 @@ const SignInForm = ({ title, isMobile }) => {
 								</InputRightElement>
 							</InputGroup>
 						</FormControl>
-						<Button isLoading={isLoading} type="submit" bg="var(--logo_bg)">
+						<Button isLoading={isLoading} type="submit" bg="var(--banner_bg)">
 							Login
 						</Button>
 					</Stack>

@@ -38,10 +38,10 @@
 	--payStub_bg: #efefef;
 	--calendar_border: #bbbbbb;
 	--bg_color_1: #dbe5ff;
-	--lead_cards_bg: #f0f0f0;
+	--lead_cards_bg: #fdfdfd;
 	--lead_cards_border: #e3e5f1;
 	--main_color: #ffffff;
-	--primary_bg: #e6e6e6;
+	--primary_bg: #f9f9fb;
 	--primary_bg_1: #f4f8fa;
 	--nav_color: #485763;
 	--logo_bg: #01193d;
@@ -210,12 +210,18 @@ body {
 
 .active button {
 	font-weight: bold;
-	color: var(--primary_button_bg);
+	color: var(--banner_bg);
 }
 .navbarMenu.active button {
 	color: var(--main_color);
 	font-weight: normal;
 	border: 1px solid var(--action_status_bg);
+}
+.navbarMenu p {
+	font-weight: normal;
+}
+.navbarMenu.active p {
+	font-weight: bold;
 }
 button:active {
 	background: transparent !important;

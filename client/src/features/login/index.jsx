@@ -3,7 +3,7 @@ import Logo from "components/logo";
 import { useEffect, useRef, useState } from "react";
 import { useBreakpointValue } from "services/Breakpoint";
 import coverVideo from "../../assets/cover.mp4";
-import logoImg from "../../assets/logos/logoCover.jpg";
+import logoImg from "../../assets/logos/BusinessN_dark1.png";
 import ContactForm from "./ContactForm";
 import SignInForm from "./SignInForm";
 
@@ -20,7 +20,7 @@ const Login = () => {
 	return (
 		<Box position="relative" height="100vh" width="100vw" overflow="hidden">
 			{isMobile ? (
-				<Box as="nav" bg="var(--logo_bg)" position="absolute" p={3} width="100%" zIndex="1">
+				<Box as="nav" bg="var(--banner_bg)" position="absolute" p={3} width="100%" zIndex="1">
 					<Flex h="50" align={"center"} justify={"space-between"} ml={3} px={8}>
 						<Logo isFullLogo logoImgSrc={logoImg} width="250px" />
 					</Flex>
@@ -28,7 +28,7 @@ const Login = () => {
 			) : (
 				<Box
 					as="nav"
-					bg="var(--logo_bg)"
+					bg="var(--banner_bg)"
 					position="absolute"
 					top={3}
 					left={5}
@@ -38,7 +38,7 @@ const Login = () => {
 					borderRadius="10px"
 				>
 					<Flex h="50" align={"center"} justify={"space-between"} ml={3} px={8}>
-						<Logo isFullLogo logoImgSrc={logoImg} width="180px" />
+						<Logo isFullLogo logoImgSrc={logoImg} width="500px" ml={"-110px"} />
 						<HStack spacing={0} justifyContent={"start"}>
 							<Button alignItems={"end"} onClick={() => setShowContactForm(true)}>
 								Contact us

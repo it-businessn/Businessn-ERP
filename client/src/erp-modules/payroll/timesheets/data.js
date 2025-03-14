@@ -233,7 +233,7 @@ export const ACTION_STATUS = [
 		name: TIMESHEET_STATUS_LABEL.REJECTED,
 		color: "var(--action_status_reject)",
 		title: "Reject",
-		icon: <TiDelete size={"3em"} />,
+		icon: <TiDelete size={"2.8em"} />,
 	},
 	{
 		name: TIMESHEET_STATUS_LABEL.DELETE,

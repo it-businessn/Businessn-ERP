@@ -4,7 +4,7 @@ import TextTitle from "../text/TextTitle";
 
 const Menu = ({ icon, textTransform, handleClick, variant, menu }) => (
 	<NavLink to={menu?.path} activeclassname="active" className="navbarMenu">
-		<Stack ml={{ base: "0", md: "2em" }}>
+		<Stack ml={{ base: "0", md: "1em" }}>
 			<Button
 				variant={variant ? variant : "ghost"}
 				onClick={() => handleClick(menu)}
@@ -14,7 +14,7 @@ const Menu = ({ icon, textTransform, handleClick, variant, menu }) => (
 				borderRadius="8px"
 				w="150px"
 				justifyContent="center"
-				h="3rem"
+				h="3.5rem"
 				outline="none"
 			>
 				<HStack spacing="3">

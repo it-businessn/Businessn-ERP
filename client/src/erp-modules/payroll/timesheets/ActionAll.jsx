@@ -63,10 +63,9 @@ const ActionAll = ({
 					icon={<FaCaretDown fontSize={isRowAction ? "1.2em" : "1.5em"} color="var(--logo_bg)" />}
 					aria-label="Options"
 				/>
-				<MenuList minW="150px" zIndex={10}>
+				<MenuList minW={isRowAction ? "150px" : "170px"} zIndex={10}>
 					{actions.map(({ color, title, icon }) => (
 						<MenuItem
-							py={"2px"}
 							key={title}
 							onClick={() => {
 								setActionName(title);
@@ -84,7 +83,7 @@ const ActionAll = ({
 								color: "var(--primary_bg)",
 							}}
 						>
-							<HStack p={0} justifyContent="start" alignItems="center">
+							<HStack p={0} height={"20px"} justifyContent="start" alignItems="center">
 								{icon}
 								<TextTitle size="sm" title={title} />
 							</HStack>

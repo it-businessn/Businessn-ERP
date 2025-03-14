@@ -12,6 +12,7 @@ const Logo = ({
 	logoImgSrc = logoImg,
 	width,
 	pl,
+	ml,
 }) => {
 	const { isMobile } = useBreakpointValue();
 
@@ -23,13 +24,7 @@ const Logo = ({
 
 	return isFullLogo ? (
 		<Link to="/">
-			<Image
-				pl={pl}
-				objectFit="cover"
-				src={logoImgSrc}
-				alt="Company logo"
-				width={width}
-			/>
+			<Image ml={ml} pl={pl} objectFit="cover" src={logoImgSrc} alt="Company logo" width={width} />
 		</Link>
 	) : (
 		<Link to="/" style={linkStyle}>

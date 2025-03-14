@@ -14,7 +14,7 @@ const LoginCover = () => {
 		>
 			<DarkMode>
 				<Flex
-					bg="var(--logo_bg)"
+					bg="var(--banner_bg)"
 					direction="column"
 					px={{
 						base: "4",
