@@ -93,6 +93,7 @@ const Timesheet = ({
 	const [deleteRecordId, setDeleteRecordId] = useState(false);
 	const [showDeletePopUp, setShowDeletePopUp] = useState(false);
 	const [rowAction, setRowAction] = useState(ACTION_STATUS[0].title);
+	const [rowId, setRowId] = useState("");
 
 	useEffect(() => {
 		const fetchAllEmployeeTimesheet = async () => {
@@ -266,6 +267,12 @@ const Timesheet = ({
 			setCheckedRows([...checkedRows, rowId]);
 		}
 	};
+
+	useEffect(() => {
+		if (rowId && !checkedRows.includes(rowId)) {
+			setCheckedRows([...checkedRows, rowId]);
+		}
+	}, [rowId]);
 
 	const handleTimeChange = (key, value) => {
 		const updatedData = timesheetData?.map((record) =>
@@ -777,6 +784,7 @@ const Timesheet = ({
 													handleButtonClick={(action) => handleAction(_id, action, param_hours)}
 													isApproveDisabled={isDisabled}
 													setRowAction={setRowAction}
+													setRowId={setRowId}
 												/>
 											</Td>
 										</Tr>

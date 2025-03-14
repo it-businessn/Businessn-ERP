@@ -15,6 +15,8 @@ const ActionAll = ({
 	isApproveDisabled,
 	setRowAction,
 	actions = ACTION_STATUS,
+	id,
+	setRowId,
 }) => {
 	const [actionName, setActionName] = useState(actions[0].title);
 	const [bg, setBg] = useState(actions[0].color);
@@ -61,7 +63,10 @@ const ActionAll = ({
 							key={title}
 							onClick={() => {
 								setActionName(title);
-								if (setRowAction) setRowAction(title);
+								if (setRowAction) {
+									setRowAction(title);
+									setRowId(id);
+								}
 								setBg(color);
 								if (setIsActionSwitched) setIsActionSwitched(title);
 							}}
