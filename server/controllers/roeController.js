@@ -29,11 +29,18 @@ const addEmployeeROEEmploymentInfo = async (req, res) => {
 		reasonCode,
 		expectedRecallDate,
 		recallDate,
+		contactExtNumber,
+		contactName,
+		contactTelNumber,
+		issuerExtNumber,
+		issuerName,
+		issuerTelNumber,
+		preferredCommunication,
 	} = req.body;
 	try {
 		const empTenureInfo = await findEmployeeEmploymentInfo(empId, companyName);
 		req.body.updatedOn = moment();
-		if (empTenureInfo) {
+		if (empTenureInfo && employmentStartDate && employmentLeaveDate) {
 			await updateEmploymentInfo(empTenureInfo._id, {
 				employmentStartDate,
 				employmentLeaveDate,
@@ -56,6 +63,13 @@ const addEmployeeROEEmploymentInfo = async (req, res) => {
 			reasonCode,
 			expectedRecallDate,
 			recallDate,
+			contactExtNumber,
+			contactName,
+			contactTelNumber,
+			issuerExtNumber,
+			issuerName,
+			issuerTelNumber,
+			preferredCommunication,
 		});
 		return res.status(201).json(newROEInfo);
 	} catch (error) {

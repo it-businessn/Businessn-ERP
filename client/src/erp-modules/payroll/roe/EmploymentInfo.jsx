@@ -21,22 +21,7 @@ const EmploymentInfo = ({ company, handleNext, tabId }) => {
 	const toast = useToast();
 	const { payGroupSchedule } = usePaygroup(company, true);
 	const roeEmpId = LocalStorageService.getItem("roeEmpId");
-
-	const initialFormData = {
-		empId: roeEmpId,
-		employmentStartDate: "",
-		employmentLeaveDate: new Date(),
-		finalPayPeriodEndDate: "",
-		recallDate: "",
-		expectedRecallDate: "",
-		reasonCode: "",
-		positions: [],
-	};
-
-	const [formData, setFormData] = useState(initialFormData);
 	const [roeInfo, setRoeInfo] = useState(null);
-
-	const employmentInfo = useEmployeeEmploymentInfo(company, roeEmpId);
 
 	useEffect(() => {
 		const fetchEmployeeROEEmploymentInfo = async () => {
@@ -48,14 +33,36 @@ const EmploymentInfo = ({ company, handleNext, tabId }) => {
 			}
 		};
 		fetchEmployeeROEEmploymentInfo();
-	}, [company, roeEmpId]);
+	}, [company]);
+
+	const initialFormData = {
+		empId: roeEmpId,
+		employmentStartDate: "",
+		employmentLeaveDate: new Date(),
+		finalPayPeriodEndDate: "",
+		recallDate: "",
+		expectedRecallDate: "",
+		reasonCode: "",
+		positions: [],
+		companyName: company,
+	};
+
+	const [formData, setFormData] = useState(initialFormData);
+
+	const employmentInfo = useEmployeeEmploymentInfo(company, roeEmpId);
 
 	useEffect(() => {
+		if (employmentInfo) {
+			setFormData((prevData) => ({
+				...prevData,
+				positions: employmentInfo?.positions,
+				employmentStartDate: employmentInfo?.employmentStartDate,
+				employmentLeaveDate: employmentInfo?.employmentLeaveDate,
+			}));
+		}
 		if (roeInfo) {
 			setFormData(roeInfo);
-			return;
 		}
-		if (employmentInfo) setFormData(employmentInfo);
 	}, [employmentInfo, roeInfo]);
 
 	useEffect(() => {

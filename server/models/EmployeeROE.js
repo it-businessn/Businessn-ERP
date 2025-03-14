@@ -9,9 +9,16 @@ const employeeROESchema = new mongoose.Schema({
 	reasonCode: String,
 	expectedRecallDate: String,
 	recallDate: Date,
+	contactExtNumber: String,
+	contactName: String,
+	contactTelNumber: String,
+	issuerExtNumber: String,
+	issuerName: String,
+	issuerTelNumber: String,
+	preferredCommunication: String,
 	createdOn: { type: Date, default: Date.now },
 	updatedOn: { type: Date, default: Date.now },
-	roles: { type: Array, default: [] },
+	positions: { type: Array, default: [] },
 });
 
 const EmployeeROE = mongoose.model("EmployeeROE", employeeROESchema);

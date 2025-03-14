@@ -12,21 +12,13 @@ import ReviewInfo from "./ReviewInfo";
 
 const ROE = () => {
 	const { company } = useCompany(LocalStorageService.getItem("selectedCompany"));
-	const loggedInUser = LocalStorageService.getItem("user");
 
 	const handleNext = (id) => setViewMode(ROE_TABS[id]?.type);
 	const ROE_TABS = [
 		{
 			id: 0,
 			type: "Employee Info",
-			name: (
-				<EmployeeInfo
-					tabId={1}
-					company={company}
-					handleNext={handleNext}
-					loggedInUser={loggedInUser}
-				/>
-			),
+			name: <EmployeeInfo tabId={1} company={company} handleNext={handleNext} />,
 		},
 		{
 			id: 1,
