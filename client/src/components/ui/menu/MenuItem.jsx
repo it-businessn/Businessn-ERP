@@ -57,34 +57,37 @@ const MenuItem = ({ menu, parent, textTransform, handleMenuItemClick }) => {
 			</HStack>
 			{empPath && (
 				<Stack justify="start" width="full" my={0} spacing={0}>
-					{menu?.children?.map((menu, index) => (
-						<Box
-							key={menu.path}
-							onClick={() => {
-								navigate(`/${parent}/${menu.path}`);
-							}}
-							className={location.pathname.endsWith(menu.path) ? "isSubChild active" : ""}
-						>
-							<IconButton
-								variant="ghost"
-								icon={menu?.icon ?? ""}
-								color="var(--nav_color)"
-								size="xs"
-							/>
+					{menu?.children?.map(
+						(menu) =>
+							location.pathname.includes(navigatePath) && (
+								<Box
+									key={menu.path}
+									onClick={() => {
+										navigate(`/${parent}/${menu.path}`);
+									}}
+									className={location.pathname.endsWith(menu.path) ? "isSubChild active" : ""}
+								>
+									<IconButton
+										variant="ghost"
+										icon={menu?.icon ?? ""}
+										color="var(--nav_color)"
+										size="xs"
+									/>
 
-							<Button
-								className={navigatePath.includes(menu?.name) ? "isActive" : "notActive"}
-								justifyContent={"space-between"}
-								p={0}
-								variant="ghost"
-								color="var(--menu_item_color)"
-								fontSize="xs"
-								textTransform={textTransform}
-							>
-								{menu?.name}
-							</Button>
-						</Box>
-					))}
+									<Button
+										className={navigatePath.includes(menu?.name) ? "isActive" : "notActive"}
+										justifyContent={"space-between"}
+										p={0}
+										variant="ghost"
+										color="var(--menu_item_color)"
+										fontSize="xs"
+										textTransform={textTransform}
+									>
+										{menu?.name}
+									</Button>
+								</Box>
+							),
+					)}
 				</Stack>
 			)}
 		</VStack>

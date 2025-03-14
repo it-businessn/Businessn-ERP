@@ -17,8 +17,10 @@ const PageLayout = ({
 	isTimesheet,
 	showCheckBox,
 	size,
+	zIndex = 0,
+	position = "sticky",
 }) => (
-	<Box p={{ base: "1em" }} overflow={"hidden"}>
+	<Box p={{ base: "1em" }} overflow={"hidden"} zIndex={zIndex} position={position}>
 		<PageHeader
 			size={size}
 			valueText1={valueText1}

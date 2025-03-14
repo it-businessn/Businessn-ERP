@@ -1,9 +1,11 @@
-import { Box, HStack, Input, Tbody, Td, Tr, VStack } from "@chakra-ui/react";
+import { HStack, Input, Tbody, Td, Tr } from "@chakra-ui/react";
 import PrimaryButton from "components/ui/button/PrimaryButton";
+import BoxCard from "components/ui/card";
 import EmptyRowRecord from "components/ui/EmptyRowRecord";
 import NormalTextTitle from "components/ui/NormalTextTitle";
 import TableLayout from "components/ui/table/TableLayout";
 import TextTitle from "components/ui/text/TextTitle";
+import PageLayout from "layouts/PageLayout";
 import { useEffect, useState } from "react";
 import SettingService from "services/SettingService";
 
@@ -47,10 +49,9 @@ const Settings = ({ company }) => {
 	};
 
 	return (
-		<Box p={5}>
-			<TextTitle title="Add Holidays" />
-			<VStack align="start" spacing={4}>
-				<HStack>
+		<PageLayout title="Add Holidays">
+			<BoxCard>
+				<HStack mb={5}>
 					<Input
 						placeholder="Holiday Name"
 						value={name}
@@ -90,8 +91,8 @@ const Settings = ({ company }) => {
 						))}
 					</Tbody>
 				</TableLayout>
-			</VStack>
-		</Box>
+			</BoxCard>
+		</PageLayout>
 	);
 };
 

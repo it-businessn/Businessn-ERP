@@ -249,7 +249,7 @@ const Timesheets = () => {
 				<PrimaryButton size={"sm"} name={"Add record"} onOpen={() => setShowAddEntry(true)} />
 			</HStack>
 
-			<HStack justifyContent="space-between" position="sticky" zIndex={4}>
+			<HStack justifyContent="space-between">
 				<Flex w="80%" gap={5}>
 					<TabsButtonGroup
 						mt={4}

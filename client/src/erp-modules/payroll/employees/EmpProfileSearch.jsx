@@ -24,7 +24,7 @@ const EmpProfileSearch = ({
 	};
 
 	return (
-		<VStack spacing={1} w={"30%"} align={"start"} zIndex={2}>
+		<VStack spacing={1} w={"30%"} align={"start"}>
 			<EmpSearchMenu
 				width={"full"}
 				filteredEmployees={filteredEmployees}

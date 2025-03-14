@@ -152,7 +152,7 @@ const Employees = ({ isOnboarding, selectedPayGroupName, handleClose }) => {
 		<PageLayout title={isOnboarding ? "" : "Employees"}>
 			{!isOnboarding && (
 				<HStack spacing="1em" mt="1em" justifyContent={"space-between"}>
-					<HStack spacing="1em" mt="1em" justifyContent={"space-between"}>
+					<HStack spacing="1em" justifyContent={"space-between"}>
 						<Avatar
 							// onClick={handleToggle}
 							name={employee?.fullName}
