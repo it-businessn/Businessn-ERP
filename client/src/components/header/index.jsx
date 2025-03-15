@@ -52,7 +52,7 @@ const Navbar = ({ handleClick, companyName, companyId, user, setUser, isMobile }
 			width="100%"
 			color={"var(--nav_color)"}
 			zIndex={1}
-			bg="var(--nav_gradient)"
+			bg="var(--main_color)"
 		>
 			<HStack spacing={0} alignItems="center" pr={{ base: "0em", md: "1em" }}>
 				<Logo />

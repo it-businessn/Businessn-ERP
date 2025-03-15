@@ -144,7 +144,11 @@ const ChatMessages = ({ userId, company }) => {
 								>
 									{conversation.isPersonal ? (
 										<>
-											<Avatar size={"sm"} name={conversation?.participant?.fullName} />
+											<Avatar
+												size={"sm"}
+												name={conversation?.participant?.fullName}
+												borderRadius="10%"
+											/>
 											<Button justifyContent={"space-between"} p={0} variant="ghost" fontSize="xs">
 												<VStack align={"self-start"}>
 													<Text fontWeight="bold">{conversation?.participant?.fullName}</Text>

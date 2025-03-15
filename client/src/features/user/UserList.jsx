@@ -180,7 +180,14 @@ const UserList = ({ employees }) => {
 						field="name"
 						body={(value) => (
 							<HStack spacing="3">
-								<Avatar name={value.name} src="" w="2.5rem" h="2.5rem" fontSize="1rem" />
+								<Avatar
+									name={value.name}
+									src=""
+									w="2.5rem"
+									h="2.5rem"
+									fontSize="1rem"
+									borderRadius="10%"
+								/>
 								<Box>
 									<Text textTransform="capitalize">{value.name}</Text>
 								</Box>

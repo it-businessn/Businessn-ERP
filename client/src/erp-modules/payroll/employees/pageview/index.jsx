@@ -154,6 +154,7 @@ const Employees = ({ isOnboarding, selectedPayGroupName, handleClose }) => {
 				<HStack spacing="1em" mt="1em" justifyContent={"space-between"}>
 					<HStack spacing="1em" justifyContent={"space-between"}>
 						<Avatar
+							borderRadius="10%"
 							// onClick={handleToggle}
 							name={employee?.fullName}
 							src=""

@@ -46,7 +46,7 @@ const EmployeeList = ({ employees }) => {
 							<Tr key={_id} _hover={{ bg: "var(--phoneCall_bg_light)" }}>
 								<Td p={0} px={"2em"} borderBottomColor={"var(--filter_border_color)"}>
 									<HStack spacing={4} cursor={"pointer"}>
-										<Avatar name={fullName} size={"xs"} src="" boxSize="6" />
+										<Avatar name={fullName} size={"xs"} src="" boxSize="6" borderRadius="10%" />
 										<TextTitle
 											mt={1}
 											bg="var(--empName_bg)"

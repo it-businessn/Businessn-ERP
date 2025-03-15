@@ -62,7 +62,13 @@ const UserProfile = ({ user, handleLogout }) => {
 		<HStack pb={2} _hover={{ cursor: "pointer" }}>
 			<Popover isOpen={isOpen} onClose={handleToggle}>
 				<PopoverTrigger>
-					<Avatar onClick={handleToggle} name={user?.fullName} src="" boxSize="12" />
+					<Avatar
+						onClick={handleToggle}
+						name={user?.fullName}
+						src=""
+						boxSize="12"
+						borderRadius="10%"
+					/>
 				</PopoverTrigger>
 				<PopoverContent maxW="xs" w="12rem" border="none" position="sticky" zIndex={5}>
 					<PopoverArrow />

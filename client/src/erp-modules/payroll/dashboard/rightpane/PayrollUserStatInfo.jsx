@@ -41,7 +41,7 @@ const PayrollUserStatInfo = ({
 	return (
 		<>
 			<VStack justify="center" align="center" mb="1" w={{ base: "auto", md: "106%" }} spacing={0}>
-				<Avatar name={name} src={name} />
+				<Avatar name={name} src={name} borderRadius="10%" />
 				<TextTitle title={name} />
 				<NormalTextTitle size="xs" title={email} />
 			</VStack>
