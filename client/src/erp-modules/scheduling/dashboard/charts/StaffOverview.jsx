@@ -16,7 +16,7 @@ const StaffOverview = () => {
 				ticks: {
 					font: {
 						weight: "bold",
-						family: "Inter Variable,-apple-system,system-ui,sans-serif",
+						family: "Arial, Helvetica, sans-serif",
 					},
 				},
 			},
@@ -27,7 +27,7 @@ const StaffOverview = () => {
 				ticks: {
 					font: {
 						weight: "bold",
-						family: "Inter Variable,-apple-system,system-ui,sans-serif",
+						family: "Arial, Helvetica, sans-serif",
 					},
 					autoSkip: false,
 				},
@@ -46,20 +46,7 @@ const StaffOverview = () => {
 		},
 	};
 	const data = {
-		labels: [
-			"Jan",
-			"Feb",
-			"Mar",
-			"Apr",
-			"May",
-			"Jun",
-			"Jul",
-			"Aug",
-			"Sep",
-			"Oct",
-			"Nov",
-			"Dec",
-		],
+		labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
 		datasets: [
 			{
 				label: "Assigned",
@@ -92,12 +79,7 @@ const StaffOverview = () => {
 			borderRadius="1px"
 			fontWeight="bold"
 		>
-			<Flex
-				justify="space-between"
-				align="center"
-				mb="1"
-				color={"var(--nav_color)"}
-			>
+			<Flex justify="space-between" align="center" mb="1" color={"var(--nav_color)"}>
 				<TextTitle title={"Staffing Overview for all Positions"} />
 				<Select
 					width="auto"

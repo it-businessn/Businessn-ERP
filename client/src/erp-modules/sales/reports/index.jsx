@@ -65,7 +65,7 @@ const SalesReport = () => {
 				ticks: {
 					font: {
 						weight: "bold",
-						family: "Inter Variable,-apple-system,system-ui,sans-serif",
+						family: "Arial, Helvetica, sans-serif",
 					},
 				},
 			},
@@ -76,7 +76,7 @@ const SalesReport = () => {
 				ticks: {
 					font: {
 						weight: "bold",
-						family: "Inter Variable,-apple-system,system-ui,sans-serif",
+						family: "Arial, Helvetica, sans-serif",
 					},
 					autoSkip: false,
 				},

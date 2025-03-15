@@ -16,7 +16,7 @@ const ProjectOverview = () => {
 				ticks: {
 					font: {
 						weight: "bold",
-						family: "Inter Variable,-apple-system,system-ui,sans-serif",
+						family: "Arial, Helvetica, sans-serif",
 					},
 				},
 				stacked: true,
@@ -28,7 +28,7 @@ const ProjectOverview = () => {
 				ticks: {
 					font: {
 						weight: "bold",
-						family: "Inter Variable,-apple-system,system-ui,sans-serif",
+						family: "Arial, Helvetica, sans-serif",
 					},
 					autoSkip: false,
 				},
@@ -48,20 +48,7 @@ const ProjectOverview = () => {
 		},
 	};
 	const data = {
-		labels: [
-			"Jan",
-			"Feb",
-			"Mar",
-			"Apr",
-			"May",
-			"Jun",
-			"Jul",
-			"Aug",
-			"Sep",
-			"Oct",
-			"Nov",
-			"Dec",
-		],
+		labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
 		datasets: [
 			{
 				label: "Total Expense",
@@ -92,12 +79,7 @@ const ProjectOverview = () => {
 			borderRadius="1px"
 			fontWeight="bold"
 		>
-			<Flex
-				justify="space-between"
-				align="center"
-				mb="1"
-				color={"var(--nav_color)"}
-			>
+			<Flex justify="space-between" align="center" mb="1" color={"var(--nav_color)"}>
 				<TextTitle title={"Project Overview"} />
 				<Select
 					width="auto"

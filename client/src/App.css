@@ -87,6 +87,10 @@ html {
 	background: var(--lead_cards_bg);
 }
 
+* {
+	font-family: Arial, Helvetica, sans-serif !important;
+}
+
 .applyBtn {
 	background: var(--action_status_approve);
 	color: var(--main_color);

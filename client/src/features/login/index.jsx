@@ -61,7 +61,7 @@ const Login = () => {
 				height="100%"
 				objectFit="cover"
 				zIndex="0"
-				filter="brightness(0.8)"
+				filter="grayscale(0.9)"
 			>
 				<source src={coverVideo} type="video/mp4" />
 				Your browser does not support the video tag.

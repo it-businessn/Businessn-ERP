@@ -81,7 +81,7 @@ const SalesChart = ({ company, selectedUser, user }) => {
 				ticks: {
 					font: {
 						weight: "bold",
-						family: "Inter Variable,-apple-system,system-ui,sans-serif",
+						family: "Arial, Helvetica, sans-serif",
 					},
 				},
 			},
@@ -92,7 +92,7 @@ const SalesChart = ({ company, selectedUser, user }) => {
 				ticks: {
 					font: {
 						weight: "bold",
-						family: "Inter Variable,-apple-system,system-ui,sans-serif",
+						family: "Arial, Helvetica, sans-serif",
 					},
 					autoSkip: false,
 				},
