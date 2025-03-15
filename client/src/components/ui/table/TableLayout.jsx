@@ -28,6 +28,7 @@ const TableLayout = ({
 	isEarning,
 	isInfo,
 	autoScroll,
+	specifyPaddingCols,
 }) => {
 	return (
 		<Box overflow="auto" height={height} w={w}>
@@ -48,7 +49,10 @@ const TableLayout = ({
 								bg={colBg}
 								textAlign={index < 2 ? "left" : textAlign}
 								p={isSmall ? 1 : "auto"}
-								pl={isTimesheet && index === 0 && "1em !important"}
+								pl={
+									(isTimesheet && index === 0 && "1em !important") ||
+									(specifyPaddingCols?.includes(col) && 0)
+								}
 								key={`${col}_${index}`}
 								// width={
 								// 	isEarning && index === 1 ? width2 : index === 2 && width2

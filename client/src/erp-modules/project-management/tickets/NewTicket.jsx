@@ -1,5 +1,6 @@
 import { Stack, useDisclosure } from "@chakra-ui/react";
 import ActionButtonGroup from "components/ui/form/ActionButtonGroup";
+import InputFormControl from "components/ui/form/InputFormControl";
 import SelectFormControl from "components/ui/form/SelectFormControl";
 import TextAreaFormControl from "components/ui/form/TextAreaFormControl";
 import ModalLayout from "components/ui/modal/ModalLayout";
@@ -39,6 +40,7 @@ const NewTicket = ({ showAddEntry, setShowAddEntry, setRefresh, company, userId 
 		priority: 0,
 		companyName: company,
 		assignee: "",
+		topic: "",
 		issue: "",
 		originator: userId,
 	};
@@ -108,6 +110,14 @@ const NewTicket = ({ showAddEntry, setShowAddEntry, setRefresh, company, userId 
 					options={employees}
 					placeholder="Select assignee"
 				/>
+				<InputFormControl
+					maxLength={100}
+					label="Topic"
+					name="topic"
+					valueText={formData.topic}
+					handleChange={handleChange}
+					required
+				/>
 				<TextAreaFormControl
 					maxLength={500}
 					label="Description"
@@ -119,7 +129,12 @@ const NewTicket = ({ showAddEntry, setShowAddEntry, setRefresh, company, userId 
 
 				<ActionButtonGroup
 					submitBtnName={"Add"}
-					isDisabled={formData.fullName === ""}
+					isDisabled={
+						formData.assignee === "" ||
+						formData.topic === "" ||
+						formData.issue === "" ||
+						formData.category === ""
+					}
 					isLoading={isSubmitting}
 					onClose={handleClose}
 					onOpen={handleSubmit}

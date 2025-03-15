@@ -9,6 +9,7 @@ const supportTicketSchema = new mongoose.Schema({
 	clientPhoneNumber: String,
 	clientModeOfContact: String,
 	inquiryType: String,
+	topic: String,
 	issue: String,
 	ticketNumber: String,
 	category: String,
