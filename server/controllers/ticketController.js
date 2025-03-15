@@ -1,6 +1,7 @@
 const SupportTicket = require("../models/Ticket");
 const moment = require("moment");
 const Employee = require("../models/Employee");
+const { sendEmail } = require("../services/emailService");
 
 const getAllTickets = async (req, res) => {
 	const { id } = req.params;
@@ -70,40 +71,119 @@ const createTicket = async (req, res) => {
 		if (newTicket?.originator) {
 			newTicket.ticketNumber = generateTicketNumber(newTicket.category.slice(0, 5));
 			const newTask = await SupportTicket.create(newTicket);
-			// 	const assigneeEmail = await Employee.find({ fullName: newTicket.assignee })
-			// 		.select(["email"])
-			// 		.sort({
-			// 			fullName: 1,
-			// 		});
-			// 	await sendEmail(
-			// 		assigneeEmail,
-			// 		`${newTicket.category} Ticket Assignment Confirmation`,
-			// 		"We have received your inquiry. An agent will get in touch with you shortly to discuss your interests and provide more information.",
-			// 		`
-			// 	<div style="font-family: Arial, sans-serif; max-width: 600px; margin: 20px auto; border: 1px solid #ccc; border-radius: 5px;">
-			// 		<div style="background-color: #f0f0f0; padding: 10px; text-align: center;">
-			// 			<h2 style="margin: 0;">New File Attachment</h2>
-			// 		</div>
-			// 		<div style="padding: 20px;">
-			// 			<p>Hello ${newTicket.assignee},</p>
-
-			// 			<p>We wanted to inform you that a new resume has been uploaded to the system. Here are the details:</p>
-
-			// 			<ul style="list-style-type: none; padding: 0;">
-
-			// 			</ul>
-
-			// 			<p style="margin-top: 20px;">Thank you for your attention.</p>
-
-			// 			<p style="margin-top: 10px;">Best regards,</p>
-			// 			<p style="margin-top: 10px;">Fractional Departments</p>
-
-			// 			<p style="margin-top: 10px;">Thank you!</p>
-			// 		</div>
-			//   </div>
-			// `,
-			// 		process.env.NODEMAILER_ZOHO_SMTP_USER_EMAIL1,
-			// 	);
+			const assigneeEmail = await Employee.findOne({ fullName: newTicket.assignee })
+				.select(["email"])
+				.sort({
+					fullName: 1,
+				});
+			if (assigneeEmail?.email)
+				await sendEmail(
+					assigneeEmail?.email,
+					`${newTicket.category} Ticket Assignment Confirmation`,
+					"We have received your inquiry. An agent will get in touch with you shortly to discuss your interests and provide more information.",
+					`
+				<body style="margin: 0; font-family: Arial, Helvetica, sans-serif;height:'auto">
+		<div
+			class="header"
+			style="
+				background-color: #371f37;
+				color: white;
+				text-align: center;
+				height: 150px;
+				display: flex;
+				align-items: center;
+			"
+		>
+			<div
+				id="header_content"
+				style="
+					display: flex;
+					flex-direction: column;
+					align-items: self-start;
+					background: #4c364b;
+					border-radius: 10px;
+					gap: 1em;
+					width: 80%;
+					margin: 0 auto;
+					padding: 1.5em;
+				"
+			>
+				<p
+					class="category"
+					style="color: #e8ccb7; font-weight: bold; margin: 0"
+				>
+					${newTask?.category}
+				</p>
+				<p
+					class="topic"
+					style="font-weight: bold; font-size: larger; margin: 0"
+				>
+					Ticket Assignment Confirmation
+				</p>
+			</div>
+		</div>
+		<div
+			class="container"
+			style="
+				background: #fdfdfd;
+				color: #371f37;
+				display: flex;
+				flex-direction: column;
+				align-items: self-start;
+				padding: 2em 3em;
+				gap: 1em;
+				font-size: 14px;
+			"
+		>
+			<h3 style="margin: 0; margin-bottom: 2em">Hello ${newTask?.assignee}</h3>
+			<p style="margin: 0">
+				We are confirming that we have received ticket <span style="
+				background: #d5efe2;">${newTask?.ticketNumber}</span> assigned to
+				you.
+			</p>
+			<p style="font-weight: bold; margin: 5px">Topic:</p>
+			<p>${newTask?.topic}</p>
+			<p style="font-weight: bold; margin: 0">Description:</p>
+			<p>${newTask?.issue}</p>
+			<p style="font-weight: bold; margin: 0">Assignor:</p>
+			<p>${newTask?.originator}</p>
+			<p style="font-weight: bold; margin: 0">Channel:</p>
+			<p>${newTask?.category}</p>
+			<p style="font-weight: bold; margin: 0">View Ticket:</p>
+			<p style="margin: 5px">
+				To view the full ticket or add a reply, access your account via the link
+				below:
+			</p>
+			<p style="margin: 5px">
+				<a href="https://businessn-erp.com/" target="_blank"
+					>https://businessn-erp.com/login/</a
+				>
+			</p>
+			<p style="margin: 5px">
+				Please do not reply to this email as responses are not monitored.
+			</p>
+		</div>
+		<div
+			class="footer"
+			style="
+				background-color: #371f37;
+				color: white;
+				text-align: center;
+				height: 150px;
+				display: flex;
+				align-items: center;
+			"
+		>
+			<img
+				alt="logo"
+				src='/assets/logos/BusinessN_dark1.png'
+				style="margin: 0 auto"
+			/>
+		</div>
+	</body>
+			`,
+					// process.env.NODEMAILER_ZOHO_SMTP_USER_EMAIL1,
+				);
 			return res.status(201).json(newTask);
 		}
 		newTicket.ticketNumber = generateTicketNumber("CUST");
