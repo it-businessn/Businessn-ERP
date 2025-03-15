@@ -1,4 +1,4 @@
-import { Box, Flex, HStack, Spacer, VStack } from "@chakra-ui/react";
+import { Box, Flex, HStack, Spacer, Stack } from "@chakra-ui/react";
 import { Menu, UserProfile } from "components";
 import Logo from "components/logo";
 import TextTitle from "components/ui/text/TextTitle";
@@ -65,25 +65,27 @@ const Navbar = ({ handleClick, companyName, companyId, user, setUser, isMobile }
 					ml={3}
 					// backgroundSize={"cover"}
 				>
-					<VStack
+					<HStack
 						align="center"
 						spacing={0}
 						w="100%"
 						justifyContent={"start"}
 						color="var(--main_color)"
 					>
-						<TextTitle size={"lg"} title={company} />
-						<HStack w="100%" align={"flex-end"} h={"30"}>
-							<TextTitle size={"lg"} title={companyId} width="150px" />
+						<Stack minW="320px">
+							<TextTitle size={"lg"} title={company} />
+							<TextTitle size={"lg"} title={companyId} />
+						</Stack>
+						<HStack w="100%" h={"30"}>
 							{menuList?.map((menu) =>
 								menu.permissions?.canAccessModule ? (
 									<Menu key={menu.name} handleClick={handleClick} menu={menu} />
 								) : null,
 							)}
-							<Spacer />
-							<UserProfile user={user} handleLogout={handleLogout} />
 						</HStack>
-					</VStack>
+						<Spacer />
+						<UserProfile user={user} handleLogout={handleLogout} />
+					</HStack>
 				</Flex>
 			</HStack>
 		</Box>
