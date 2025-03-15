@@ -1,4 +1,4 @@
-import { Box, Tbody, Td, Tooltip, Tr, useToast } from "@chakra-ui/react";
+import { Tbody, Td, Tooltip, Tr, useToast } from "@chakra-ui/react";
 import PrimaryButton from "components/ui/button/PrimaryButton";
 import EmptyRowRecord from "components/ui/EmptyRowRecord";
 import NormalTextTitle from "components/ui/NormalTextTitle";
@@ -138,7 +138,8 @@ const OpenTicket = ({ company, setShowAddEntry, showAddEntry, userId }) => {
 											color="var(--primary_bg)"
 											bg={bg}
 											name={status}
-											size="xs"
+											size="sm"
+											fontWeight="bold"
 											px={0}
 											hover={{
 												bg,
@@ -149,7 +150,7 @@ const OpenTicket = ({ company, setShowAddEntry, showAddEntry, userId }) => {
 									<Td py={0} pl={0}>
 										<ActionAll
 											id={_id}
-											w="105px"
+											w="108px"
 											isRowAction
 											status={status}
 											handleButtonClick={(action) => handleUpdate(action, _id)}

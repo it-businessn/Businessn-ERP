@@ -38,6 +38,7 @@ const ClosedTicket = ({ company, setShowAddEntry, showAddEntry, userId }) => {
 		"Priority",
 		"Assignee",
 		"Originator",
+		"Topic",
 		"Description",
 		"Ticket Opened",
 		"Ticket Closed",
@@ -60,7 +61,14 @@ const ClosedTicket = ({ company, setShowAddEntry, showAddEntry, userId }) => {
 	};
 	return (
 		<>
-			<TableLayout cols={cols} position="sticky" zIndex={3} top={-1} height="73vh">
+			<TableLayout
+				cols={cols}
+				position="sticky"
+				zIndex={3}
+				top={-1}
+				height="73vh"
+				specifyPaddingCols={["Category", "Topic", "Description"]}
+			>
 				<Tbody>
 					{(!ticketData || ticketData?.length === 0) && (
 						<EmptyRowRecord data={ticketData} colSpan={cols.length} />
@@ -71,6 +79,7 @@ const ClosedTicket = ({ company, setShowAddEntry, showAddEntry, userId }) => {
 							category,
 							assignee,
 							priority,
+							topic,
 							issue,
 							ticketClosedDate,
 							status,
@@ -85,7 +94,7 @@ const ClosedTicket = ({ company, setShowAddEntry, showAddEntry, userId }) => {
 									<Td py={0}>
 										<TextTitle title={ticketNumber} />
 									</Td>
-									<Td py={0}>
+									<Td py={0} px={1}>
 										<TextTitle title={category} />
 									</Td>
 									<Td py={0}>
@@ -97,10 +106,17 @@ const ClosedTicket = ({ company, setShowAddEntry, showAddEntry, userId }) => {
 									<Td py={0}>
 										<NormalTextTitle size="sm" title={originator} />
 									</Td>
-									<Td py={0} maxW="180px">
+									<Td py={0} maxW="100px" px={1}>
+										<Tooltip label={topic}>
+											<span>
+												<NormalTextTitle maxW="100px" size="sm" title={topic} />
+											</span>
+										</Tooltip>
+									</Td>
+									<Td py={0} maxW="100px" px={1}>
 										<Tooltip label={issue}>
 											<span>
-												<NormalTextTitle maxW="180px" size="sm" title={issue} />
+												<NormalTextTitle maxW="100px" size="sm" title={issue} />
 											</span>
 										</Tooltip>
 									</Td>
@@ -121,8 +137,9 @@ const ClosedTicket = ({ company, setShowAddEntry, showAddEntry, userId }) => {
 											cursor="text"
 											color="var(--primary_bg)"
 											bg={bg}
-											name={status}
-											size="xs"
+											name="Closed"
+											size="sm"
+											fontWeight="bold"
 											px={0}
 											hover={{
 												bg,
@@ -133,7 +150,7 @@ const ClosedTicket = ({ company, setShowAddEntry, showAddEntry, userId }) => {
 									<Td py={0} pl={0}>
 										<ActionAll
 											id={_id}
-											w="100px"
+											w="108px"
 											isRowAction
 											status={status}
 											handleButtonClick={(action) => handleUpdate(action, _id)}

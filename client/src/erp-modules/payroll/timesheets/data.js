@@ -196,12 +196,12 @@ export const TICKET_ACTION = {
 export const TICKET_ACTION_STATUS = [
 	{
 		name: TICKET_ACTION.PROGRESS,
-		color: "var(--nav_color)",
+		color: "var(--ticket_progress)",
 		title: TICKET_ACTION.PROGRESS,
 	},
 	{
 		name: TICKET_ACTION.ON_HOLD,
-		color: "var(--nav_color)",
+		color: "var(--ticket_hold)",
 		title: TICKET_ACTION.ON_HOLD,
 	},
 	{

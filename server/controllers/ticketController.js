@@ -1,5 +1,6 @@
 const SupportTicket = require("../models/Ticket");
 const moment = require("moment");
+const Employee = require("../models/Employee");
 
 const getAllTickets = async (req, res) => {
 	const { id } = req.params;
@@ -67,8 +68,42 @@ const createTicket = async (req, res) => {
 	try {
 		const newTicket = req.body;
 		if (newTicket?.originator) {
-			newTicket.ticketNumber = generateTicketNumber("DEV");
+			newTicket.ticketNumber = generateTicketNumber(newTicket.category.slice(0, 5));
 			const newTask = await SupportTicket.create(newTicket);
+			// 	const assigneeEmail = await Employee.find({ fullName: newTicket.assignee })
+			// 		.select(["email"])
+			// 		.sort({
+			// 			fullName: 1,
+			// 		});
+			// 	await sendEmail(
+			// 		assigneeEmail,
+			// 		`${newTicket.category} Ticket Assignment Confirmation`,
+			// 		"We have received your inquiry. An agent will get in touch with you shortly to discuss your interests and provide more information.",
+			// 		`
+			// 	<div style="font-family: Arial, sans-serif; max-width: 600px; margin: 20px auto; border: 1px solid #ccc; border-radius: 5px;">
+			// 		<div style="background-color: #f0f0f0; padding: 10px; text-align: center;">
+			// 			<h2 style="margin: 0;">New File Attachment</h2>
+			// 		</div>
+			// 		<div style="padding: 20px;">
+			// 			<p>Hello ${newTicket.assignee},</p>
+
+			// 			<p>We wanted to inform you that a new resume has been uploaded to the system. Here are the details:</p>
+
+			// 			<ul style="list-style-type: none; padding: 0;">
+
+			// 			</ul>
+
+			// 			<p style="margin-top: 20px;">Thank you for your attention.</p>
+
+			// 			<p style="margin-top: 10px;">Best regards,</p>
+			// 			<p style="margin-top: 10px;">Fractional Departments</p>
+
+			// 			<p style="margin-top: 10px;">Thank you!</p>
+			// 		</div>
+			//   </div>
+			// `,
+			// 		process.env.NODEMAILER_ZOHO_SMTP_USER_EMAIL1,
+			// 	);
 			return res.status(201).json(newTask);
 		}
 		newTicket.ticketNumber = generateTicketNumber("CUST");

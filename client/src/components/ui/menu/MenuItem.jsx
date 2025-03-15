@@ -35,19 +35,13 @@ const MenuItem = ({ menu, parent, textTransform, handleMenuItemClick }) => {
 						className="sidebarMenu"
 						activeclassname="active"
 					>
-						<IconButton
-							variant="ghost"
-							icon={menu?.icon ?? ""}
-							color="var(--nav_color)"
-							size="sm"
-						/>
+						<IconButton variant="ghost" icon={menu?.icon ?? ""} color="var(--nav_color)" />
 
 						<Button
 							justifyContent={"space-between"}
 							p={0}
 							variant="ghost"
 							color="var(--menu_item_color)"
-							fontSize="sm"
 							textTransform={textTransform}
 						>
 							{menu?.name === "Approvals" ? "Attendance" : menu?.name}
@@ -67,20 +61,14 @@ const MenuItem = ({ menu, parent, textTransform, handleMenuItemClick }) => {
 									}}
 									className={location.pathname.endsWith(menu.path) ? "isSubChild active" : ""}
 								>
-									<IconButton
-										variant="ghost"
-										icon={menu?.icon ?? ""}
-										color="var(--nav_color)"
-										size="xs"
-									/>
+									<IconButton variant="ghost" icon={menu?.icon ?? ""} color="var(--nav_color)" />
 
 									<Button
 										className={navigatePath.includes(menu?.name) ? "isActive" : "notActive"}
 										justifyContent={"space-between"}
 										p={0}
 										variant="ghost"
-										color="var(--menu_item_color)"
-										fontSize="xs"
+										color="var(--banner_bg)"
 										textTransform={textTransform}
 									>
 										{menu?.name}

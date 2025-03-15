@@ -27,6 +27,8 @@
 	--action_status_bg: #fbf6f7;
 	--primary_button_bg: #7d7d7d;
 	--th_bg: #f7f7f7;
+	--ticket_progress: #819eb6;
+	--ticket_hold: #93949a;
 	--nav_menu: #4c364b;
 	--overtime: #326274;
 	--dbl_overtime: #b47318;
@@ -194,7 +196,7 @@ body {
 .isSubChild.active,
 .isSubChild.active button {
 	font-weight: 700;
-	color: var(--main_color_black);
+	/* color: var(--main_color_black); */
 }
 
 .sidebarMenu.active {
@@ -208,9 +210,12 @@ body {
 	color: var(--primary_button_bg);
 }
 
+.sidebarMenu button {
+	color: var(--banner_bg);
+}
+
 .active button {
 	font-weight: bold;
-	color: var(--banner_bg);
 }
 .navbarMenu.active button {
 	color: var(--main_color);
@@ -236,7 +241,7 @@ button:active {
   top: 3px;
 } */
 .main_content {
-	width: 90vw;
+	width: 88vw;
 	margin-top: 6em;
 	max-height: calc(var(--base));
 	overflow: auto;
