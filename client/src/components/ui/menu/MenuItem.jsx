@@ -2,7 +2,13 @@ import { Box, Button, Flex, HStack, IconButton, Stack, VStack } from "@chakra-ui
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import { payrollEmployeePath, payrollReportPath } from "routes";
 
-const MenuItem = ({ menu, parent, textTransform, handleMenuItemClick }) => {
+const MenuItem = ({
+	menu,
+	parent,
+	textTransform,
+	handleMenuItemClick,
+	navigatePath = `/${parent}/${menu.path}`,
+}) => {
 	const location = useLocation();
 	const navigate = useNavigate();
 
@@ -15,8 +21,6 @@ const MenuItem = ({ menu, parent, textTransform, handleMenuItemClick }) => {
 	// const handleToggle = () => {
 	// 	setIsOpen(!isOpen);
 	// };
-	const navigatePath = `/${parent}/${menu.path}`;
-
 	return (
 		<VStack align="stretch" spacing={0}>
 			<HStack

@@ -379,6 +379,10 @@ export const router = createBrowserRouter([
 				element: <Configuration />,
 			},
 			{
+				path: `/tickets`,
+				element: <Tickets />,
+			},
+			{
 				path: "*",
 				element: <PageNotFound />,
 			},

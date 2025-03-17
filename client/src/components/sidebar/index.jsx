@@ -1,4 +1,6 @@
 import { Flex, Stack } from "@chakra-ui/react";
+import TextTitle from "components/ui/text/TextTitle";
+import { IoDocumentTextOutline } from "react-icons/io5";
 import MenuItem from "../ui/menu/MenuItem";
 import MobileSidebar from "./MobileSidebar";
 
@@ -29,6 +31,16 @@ const Sidebar = ({ activeMenu, handleMenuItemClick, isMobile, isOpen, onClose })
 							<MenuItem key={menu.path} menu={menu} parent={activeMenu.id} />
 						),
 				)}
+				<TextTitle mt={5} title="Tools" color="var(--primary_button_bg)" p="0 1em" />
+				<MenuItem
+					navigatePath={"/tickets"}
+					menu={{
+						path: "tickets",
+						name: "Tickets",
+						children: [],
+						icon: <IoDocumentTextOutline />,
+					}}
+				/>
 			</Stack>
 		</Flex>
 	);
