@@ -2,6 +2,7 @@ const SupportTicket = require("../models/Ticket");
 const moment = require("moment");
 const Employee = require("../models/Employee");
 const { sendEmail } = require("../services/emailService");
+const path = require("path");
 
 const getAllTickets = async (req, res) => {
 	const { id } = req.params;
@@ -174,15 +175,19 @@ const createTicket = async (req, res) => {
 				align-items: center;
 			"
 		>
-			<img
-				alt="logo"
-				src='/assets/logos/BusinessN_dark1.png'
-				style="margin: 0 auto"
-			/>
+      <img src="cid:footerLogo" 
+				style="margin: 0 auto;width:300px" alt="Footer Logo"/>
+			
 		</div>
 	</body>
 			`,
-					// process.env.NODEMAILER_ZOHO_SMTP_USER_EMAIL1,
+					[
+						{
+							filename: "BusinessN_dark1.png",
+							path: path.join(__dirname, "../", "assets/logos/BusinessN_dark1.png"),
+							cid: "footerLogo",
+						},
+					],
 				);
 			return res.status(201).json(newTask);
 		}
