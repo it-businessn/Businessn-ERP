@@ -15,6 +15,7 @@ const {
 	CLIENT_ORG_EMP_PERMISSION,
 	BUSINESSN_ORG,
 	BUSINESSN_ORG_ADMIN_EMAILS,
+	ROLES,
 } = require("../services/data");
 const { generateAccessToken, generateRefreshToken } = require("../middleware/auth");
 const { findPermission } = require("./permissionController");
@@ -225,10 +226,19 @@ const login = async (req, res) => {
 			payrollStatus,
 		} = user;
 
-		const existingCompanyUser = await Company.findOne({
-			registration_number: companyId,
-			employees: user._id,
-		}).select("name registration_number address");
+		const isShadowAdmin = user?.role === ROLES.SHADOW_ADMIN;
+
+		const filterCompanyData = isShadowAdmin
+			? {
+					registration_number: companyId,
+			  }
+			: {
+					registration_number: companyId,
+					employees: user._id,
+			  };
+		const existingCompanyUser = await Company.findOne(filterCompanyData).select(
+			"name registration_number address",
+		);
 
 		if (!existingCompanyUser) {
 			return res.status(500).json({ error: "User does not exist for the company" });
@@ -242,6 +252,7 @@ const login = async (req, res) => {
 			return res.json({
 				message: "Logged in successfully",
 				user: {
+					isShadowAdmin,
 					_id,
 					firstName,
 					lastName,

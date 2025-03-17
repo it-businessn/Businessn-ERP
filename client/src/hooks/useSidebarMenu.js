@@ -5,7 +5,7 @@ import { ROUTE_PATH } from "routes";
 import LocalStorageService from "services/LocalStorageService";
 import UserService from "services/UserService";
 
-const useSidebarMenu = (userId, company, isManager) => {
+const useSidebarMenu = (userId, company, isManager, isShadowAdmin) => {
 	const [activeMenu, setActiveMenu] = useState(null);
 	const navigate = useNavigate();
 
@@ -13,31 +13,55 @@ const useSidebarMenu = (userId, company, isManager) => {
 		const fetchUserPermissions = async () => {
 			try {
 				const companyName = company ?? LocalStorageService.getItem("selectedCompany");
+				if (isShadowAdmin) {
+					const permissionMenu = {
+						canAccessAllData: true,
+						canAccessGroupData: true,
+						canAccessModule: true,
+						canAccessRegionData: true,
+						canAccessUserData: true,
+						canDeleteModule: true,
+						canEditModule: true,
+						canViewModule: true,
+					};
+					SIDEBAR_MENU?.map((menuLink) => {
+						permissionMenu.name = menuLink.name;
 
-				const { data } = await UserService.getUserPermission({
-					userId,
-					company: companyName,
-				});
+						menuLink.permissions = permissionMenu;
 
-				if (data) {
-					SIDEBAR_MENU.map((menuLink) => {
-						const menu = data?.permissionType?.find((item) => item.name === menuLink.name);
-						if (menu) {
-							menuLink.permissions = menu;
-						}
 						menuLink?.children?.forEach((child, cIndex) => {
-							const childMenu = data?.permissionType.find(
-								(item) => item.name === `${menuLink.name} ${child.name}`,
-							);
-							if (childMenu?.name?.includes("Setup")) {
-								menuLink.children[cIndex].permissions = isManager ? childMenu : null;
-							} else {
-								menuLink.children[cIndex].permissions = childMenu ?? null;
-							}
+							permissionMenu.name = `${menuLink?.name} ${child?.name}`;
+							menuLink.children[cIndex].permissions = permissionMenu;
 						});
 						return menuLink;
 					});
 					setActiveMenu(SIDEBAR_MENU.find((_) => _.permissions?.canAccessModule));
+				} else {
+					const { data } = await UserService.getUserPermission({
+						userId,
+						company: companyName,
+					});
+
+					if (data) {
+						SIDEBAR_MENU?.map((menuLink) => {
+							const menu = data?.permissionType?.find((item) => item.name === menuLink.name);
+							if (menu) {
+								menuLink.permissions = menu;
+							}
+							menuLink?.children?.forEach((child, cIndex) => {
+								const childMenu = data?.permissionType.find(
+									(item) => item.name === `${menuLink.name} ${child.name}`,
+								);
+								if (childMenu?.name?.includes("Setup")) {
+									menuLink.children[cIndex].permissions = isManager ? childMenu : null;
+								} else {
+									menuLink.children[cIndex].permissions = childMenu || null;
+								}
+							});
+							return menuLink;
+						});
+						setActiveMenu(SIDEBAR_MENU.find((_) => _.permissions?.canAccessModule));
+					}
 				}
 			} catch (error) {
 				startTransition(() => {

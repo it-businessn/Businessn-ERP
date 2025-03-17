@@ -98,6 +98,7 @@ const CLIENT_ORG_ADMIN_PERMISSION = [
 const CLIENT_ORG_EMP_PERMISSION = [{ name: "Payroll" }, { name: "Payroll Employee Dashboard" }];
 
 const ROLES = {
+	SHADOW_ADMIN: "Shadow Admin",
 	EMPLOYEE: "Employee",
 	ADMINISTRATOR: "Administrator",
 	MANAGER: "Manager",
@@ -254,4 +255,5 @@ module.exports = {
 	// LOCAL_TIME,
 	PAYRUN_TYPE,
 	TIMESHEET_ORIGIN,
+	ROLES,
 };

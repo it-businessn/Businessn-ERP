@@ -27,7 +27,12 @@ const Home = () => {
 	const { isOpen, onOpen, onClose } = useDisclosure();
 
 	const [refresh, setRefresh] = useState(false);
-	const { activeMenu, setActiveMenu } = useSidebarMenu(user?._id, company, isManager(user?.role));
+	const { activeMenu, setActiveMenu } = useSidebarMenu(
+		user?._id,
+		company,
+		isManager(user?.role),
+		user?.isShadowAdmin,
+	);
 
 	useEffect(() => {
 		setSelectedCompany(user?.companyId?.name);
