@@ -4,11 +4,10 @@ import InputFormControl from "components/ui/form/InputFormControl";
 import SelectFormControl from "components/ui/form/SelectFormControl";
 import TextAreaFormControl from "components/ui/form/TextAreaFormControl";
 import ModalLayout from "components/ui/modal/ModalLayout";
-import useCompanyEmployees from "hooks/useCompanyEmployees";
 import { useState } from "react";
 import TicketService from "services/TicketService";
 
-const NewTicket = ({ showAddEntry, setShowAddEntry, setRefresh, company, userId }) => {
+const NewTicket = ({ showAddEntry, setShowAddEntry, setRefresh, company, userId, employees }) => {
 	const CATEGORY_LIST = [
 		{ category: "Onboarding" },
 		{ category: "Development" },
@@ -21,6 +20,7 @@ const NewTicket = ({ showAddEntry, setShowAddEntry, setRefresh, company, userId 
 		{ category: "Support" },
 		{ category: "AI" },
 	];
+
 	const PRIORITY_LIST = [
 		{ priority: 0 },
 		{ priority: 1 },
@@ -35,6 +35,7 @@ const NewTicket = ({ showAddEntry, setShowAddEntry, setRefresh, company, userId 
 		{ priority: 10 },
 	];
 	const [isSubmitting, setIsSubmitting] = useState(false);
+
 	const initialFormData = {
 		category: "",
 		priority: 0,
@@ -44,13 +45,14 @@ const NewTicket = ({ showAddEntry, setShowAddEntry, setRefresh, company, userId 
 		issue: "",
 		originator: userId,
 	};
+
 	const [formData, setFormData] = useState(initialFormData);
-	const employees = useCompanyEmployees(company);
 
 	const handleChange = (e) => {
 		const { name, value } = e.target;
 		setFormData((prevData) => ({ ...prevData, [name]: value }));
 	};
+
 	const { onClose } = useDisclosure();
 
 	const handleClose = () => {

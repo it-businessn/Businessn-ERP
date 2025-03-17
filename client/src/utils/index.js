@@ -353,7 +353,9 @@ export const getRoleColor = (role) => {
 };
 
 export const isManager = (role) =>
-	role?.includes(ROLES.ADMINISTRATOR) || role?.includes(ROLES.MANAGER);
+	role?.includes(ROLES.ADMINISTRATOR) ||
+	role?.includes(ROLES.MANAGER) ||
+	role?.includes(ROLES.SHADOW_ADMIN);
 
 export const calcTotal = (data, param1, param2) => {
 	return data.reduce((acc, product) => {

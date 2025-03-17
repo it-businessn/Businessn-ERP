@@ -13,7 +13,7 @@ import { longTimeFormat } from "utils/convertDate";
 import NewTicket from "./NewTicket";
 import NoteDetails from "./NoteDetails";
 
-const OpenTicket = ({ company, setShowAddEntry, showAddEntry, userId }) => {
+const OpenTicket = ({ company, setShowAddEntry, showAddEntry, userId, employees }) => {
 	const [ticketData, setTicketData] = useState([]);
 	const [refresh, setRefresh] = useState(false);
 	const [openNote, setOpenNote] = useState(false);
@@ -184,6 +184,7 @@ const OpenTicket = ({ company, setShowAddEntry, showAddEntry, userId }) => {
 					setRefresh={setRefresh}
 					setShowAddEntry={setShowAddEntry}
 					userId={userId}
+					employees={employees}
 				/>
 			)}
 			{openNote && <NoteDetails isOpen={openNote} setIsOpen={setOpenNote} data={rowData} />}

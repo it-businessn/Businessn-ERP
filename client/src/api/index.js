@@ -45,6 +45,8 @@ export const setupAxiosInterceptors = (setSessionExpired) => {
 					sessionStorage.removeItem("accessToken");
 					LocalStorageService.clear();
 				}
+			} else {
+				window.location.href = "/login";
 			}
 
 			return Promise.reject(error);

@@ -7,6 +7,7 @@ import { useState } from "react";
 import LocalStorageService from "services/LocalStorageService";
 import ClosedTicket from "./ClosedTicket";
 import OpenTicket from "./OpenTicket";
+import useCompanyEmployees from "hooks/useCompanyEmployees";
 
 const Tickets = () => {
 	const { company } = useCompany(LocalStorageService.getItem("selectedCompany"));
@@ -14,6 +15,7 @@ const Tickets = () => {
 	const userId = loggedInUser.fullName;
 
 	const [showAddEntry, setShowAddEntry] = useState(false);
+	const employees = useCompanyEmployees(company);
 
 	const TABS = [
 		{
@@ -25,6 +27,7 @@ const Tickets = () => {
 					userId={userId}
 					showAddEntry={showAddEntry}
 					setShowAddEntry={setShowAddEntry}
+					employees={employees}
 				/>
 			),
 		},
@@ -37,6 +40,7 @@ const Tickets = () => {
 					userId={userId}
 					showAddEntry={showAddEntry}
 					setShowAddEntry={setShowAddEntry}
+					employees={employees}
 				/>
 			),
 		},
