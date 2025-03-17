@@ -69,7 +69,7 @@ const createTicket = async (req, res) => {
 	try {
 		const newTicket = req.body;
 		if (newTicket?.originator) {
-			newTicket.ticketNumber = generateTicketNumber(newTicket.category.slice(0, 5));
+			newTicket.ticketNumber = generateTicketNumber(newTicket.companyName.split(" ")[0]);
 			const newTask = await SupportTicket.create(newTicket);
 			const assigneeEmail = await Employee.findOne({ fullName: newTicket.assignee })
 				.select(["email"])
