@@ -2,18 +2,19 @@ const moment = require("moment");
 // const momentTz = require("moment-timezone");
 
 const BUSINESSN_ORG = "BusinessN Corporate";
-const BUSINESSN_ORG_ADMIN_EMAILS = [
+const BUSINESSN_SHADOW_ADMIN_EMAILS = [
 	"julik@businessn.com",
-	"stefan.esterhuysen@businessn.com",
 	"davidd@businessn.com",
-	"erwan.dantier@businessn.com",
-	"azra.demirovic@fractionaldepartments.com",
-	"jesse.christiaens@fractionaldepartments.com",
-	"it@businessn.com",
-	"andrew.dehkurdi@fractionaldepartments.com",
 	"daniel.heyns@businessn.com",
-	"testuserstaging@test.com",
 	"jonas.schumacher@businessn.com",
+
+	// "stefan.esterhuysen@businessn.com",
+	// "erwan.dantier@businessn.com",
+	// "azra.demirovic@fractionaldepartments.com",
+	// "jesse.christiaens@fractionaldepartments.com",
+	// "it@businessn.com",
+	// "andrew.dehkurdi@fractionaldepartments.com",
+	"testuserstaging@test.com",
 ];
 
 const ADMIN_PERMISSION = [
@@ -248,7 +249,6 @@ module.exports = {
 	isSameDay,
 	calculateAge,
 	BUSINESSN_ORG,
-	BUSINESSN_ORG_ADMIN_EMAILS,
 	PUNCH_CODE,
 	TIMESHEET_STATUS,
 	PARAM_HOURS,

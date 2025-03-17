@@ -115,7 +115,9 @@ const getCompanyEmployees = async (req, res) => {
 		let result = await Employee.find({
 			companyId: existingCompany._id,
 		})
-			.select("fullName employeeId payrollStatus employeeNo timeManagementBadgeID department email")
+			.select(
+				"fullName employeeId payrollStatus employeeNo timeManagementBadgeID department email role",
+			)
 			.sort({ fullName: 1 });
 		if (companyName !== BUSINESSN_ORG) {
 			result = result?.filter((emp) => emp?.role !== ROLES.SHADOW_ADMIN);

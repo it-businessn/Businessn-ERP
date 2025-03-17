@@ -31,12 +31,13 @@ const getPayrollActiveEmployees = async (companyName) => {
 			"timeManagementBadgeID",
 			"department",
 			"email",
+			"role",
 		])
 		.sort({
 			fullName: 1,
 		});
 	if (companyName !== BUSINESSN_ORG) {
-		result = result?.filter(() => emp?.role !== ROLES.SHADOW_ADMIN);
+		result = result?.filter((emp) => emp?.role !== ROLES.SHADOW_ADMIN);
 	}
 	return result;
 };
