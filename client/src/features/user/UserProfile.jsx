@@ -11,7 +11,7 @@ import {
 	useColorMode,
 	VStack,
 } from "@chakra-ui/react";
-import { isBusinessNAdmin } from "constant";
+import { ROLES } from "constant";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { adminConsolePath, userProfilePath } from "routes";
@@ -75,7 +75,7 @@ const UserProfile = ({ user, handleLogout }) => {
 
 					<PopoverBody>
 						<VStack w="100%" alignItems="start" color="var(--logo_bg)">
-							{isBusinessNAdmin(user?.email) &&
+							{user?.role === ROLES.SHADOW_ADMIN &&
 								MENU_OPTIONS.map(({ name, handleClick }) => (
 									<Button key={name} variant="ghost" onClick={handleClick}>
 										{name}

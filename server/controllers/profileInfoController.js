@@ -1,9 +1,9 @@
 const moment = require("moment");
 const Employee = require("../models/Employee");
 const EmployeeProfileInfo = require("../models/EmployeeProfileInfo");
-const { BUSINESSN_ORG_ADMIN_EMAILS } = require("../services/data");
 const { addEmployee, hashedPassword } = require("./appController");
 const { deleteAlerts } = require("./payrollController");
+const { ROLES } = require("../services/data");
 
 const getAllProfileInfo = async (req, res) => {
 	const { companyName } = req.params;
@@ -24,7 +24,7 @@ const getEmployeeProfileInfo = async (req, res) => {
 	const { companyName, empId } = req.params;
 	try {
 		const employee = await Employee.findById(empId);
-		if (BUSINESSN_ORG_ADMIN_EMAILS.includes(employee?.email)) {
+		if (employee?.role === ROLES.SHADOW_ADMIN) {
 			const result = await EmployeeProfileInfo.findOne({
 				empId,
 			});

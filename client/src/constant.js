@@ -6,26 +6,12 @@ import { IoMdCall } from "react-icons/io";
 import { MdCall, MdOutlineEventNote } from "react-icons/md";
 
 export const ROLES = {
+	SHADOW_ADMIN: "Shadow Admin",
 	EMPLOYEE: "Employee",
 	ADMINISTRATOR: "Administrator",
 	MANAGER: "Manager",
 	ENROLLER: "Enroller",
 };
-
-export const BUSINESSN_ORG = "BusinessN Corporate";
-export const BUSINESSN_ORG_ADMIN_EMAILS = [
-	"julik@businessn.com",
-	"stefan.esterhuysen@businessn.com",
-	"davidd@businessn.com",
-	"erwan.dantier@businessn.com",
-	"azra.demirovic@fractionaldepartments.com",
-	"jesse.christiaens@fractionaldepartments.com",
-	"it@businessn.com",
-	"andrew.dehkurdi@fractionaldepartments.com",
-	"daniel.heyns@businessn.com",
-	"testuserstaging@test.com",
-	"jonas.schumacher@businessn.com",
-];
 
 export const CONTRIBUTION = {
 	EI: "Employment Insurance",
@@ -120,9 +106,6 @@ export const HRS_DECIMAL_COLS = [
 	"totalManualHoursWorked",
 	"totalPayoutHoursWorked",
 ];
-
-export const isBusinessNAdmin = (email) =>
-	BUSINESSN_ORG_ADMIN_EMAILS.find((name) => name === email);
 
 export const TOAST = {
 	SUCCESS: {

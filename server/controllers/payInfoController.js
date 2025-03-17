@@ -1,6 +1,6 @@
 const Employee = require("../models/Employee");
 const EmployeePayInfo = require("../models/EmployeePayInfo");
-const { BUSINESSN_ORG_ADMIN_EMAILS } = require("../services/data");
+const { ROLES } = require("../services/data");
 const { getPayrollActiveEmployees } = require("./appController");
 const { findEmpPayStubDetail } = require("./payStubHelper");
 const { findGroupEmployees } = require("./setUpController");
@@ -53,7 +53,7 @@ const getEmployeePayInfo = async (req, res) => {
 	const { companyName, empId } = req.params;
 	try {
 		const employee = await Employee.findById(empId);
-		if (BUSINESSN_ORG_ADMIN_EMAILS.includes(employee?.email)) {
+		if (employee?.role === ROLES.SHADOW_ADMIN) {
 			const result = await EmployeePayInfo.findOne({
 				empId,
 			});

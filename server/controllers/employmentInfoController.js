@@ -2,7 +2,7 @@ const moment = require("moment");
 const Employee = require("../models/Employee");
 const EmployeeEmploymentInfo = require("../models/EmployeeEmploymentInfo");
 const EmployeePayInfo = require("../models/EmployeePayInfo");
-const { isRoleManager, BUSINESSN_ORG_ADMIN_EMAILS, BUSINESSN_ORG } = require("../services/data");
+const { isRoleManager, ROLES } = require("../services/data");
 const { setInitialPermissions } = require("./appController");
 const { fetchActiveEmployees } = require("./userController");
 const { updatePayInfo, findEmployeePayInfoDetails } = require("./payInfoController");
@@ -77,7 +77,7 @@ const getEmployeeEmploymentInfo = async (req, res) => {
 	const { companyName, empId } = req.params;
 	try {
 		const employee = await Employee.findById(empId);
-		if (BUSINESSN_ORG_ADMIN_EMAILS.includes(employee?.email)) {
+		if (employee?.role === ROLES.SHADOW_ADMIN) {
 			// const result = await EmployeeEmploymentInfo.deleteMany({
 			// 	empId,
 			// 	companyName: { $ne: BUSINESSN_ORG },

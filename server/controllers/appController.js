@@ -8,13 +8,9 @@ const { hashPassword, comparePassword, hashSyncPassword } = require("../services
 const { getResetPasswordLink } = require("../services/tokenService");
 const { sendEmail } = require("../services/emailService");
 const {
-	ADMIN_PERMISSION,
-	EMPLOYEE_PERMISSION,
-	isRoleManager,
 	CLIENT_ORG_ADMIN_PERMISSION,
 	CLIENT_ORG_EMP_PERMISSION,
 	BUSINESSN_ORG,
-	BUSINESSN_ORG_ADMIN_EMAILS,
 	ROLES,
 } = require("../services/data");
 const { generateAccessToken, generateRefreshToken } = require("../middleware/auth");
@@ -40,7 +36,7 @@ const getPayrollActiveEmployees = async (companyName) => {
 			fullName: 1,
 		});
 	if (companyName !== BUSINESSN_ORG) {
-		result = result?.filter((emp) => !BUSINESSN_ORG_ADMIN_EMAILS.includes(emp.email));
+		result = result?.filter(() => emp?.role !== ROLES.SHADOW_ADMIN);
 	}
 	return result;
 };
@@ -77,7 +73,6 @@ const signUp = async (req, res) => {
 		employmentType,
 	} = req.body;
 	const { streetNumber, city, state, postalCode, country } = primaryAddress;
-	const isManager = isRoleManager(role);
 
 	// const updatedData = { companyId: "6646b03e96dcdc0583fb5dca" };for fd
 	// const updatedLeads = await Employee.updateMany({}, { $set: updatedData });
@@ -101,24 +96,14 @@ const signUp = async (req, res) => {
 			fullName: `${firstName} ${middleName} ${lastName}`,
 		});
 
-		await setInitialPermissions(employee._id, isManager, company);
-
 		res.status(201).json(employee);
 	} catch (error) {
 		res.status(400).json({ message: error.message });
 	}
 };
 
-const setInitialPermissions = async (empId, isManager, companyName, email) => {
-	const isBusinessNAdmin =
-		companyName === BUSINESSN_ORG || BUSINESSN_ORG_ADMIN_EMAILS.find((name) => name === email);
-
-	const adminPermissionName = isBusinessNAdmin ? ADMIN_PERMISSION : CLIENT_ORG_ADMIN_PERMISSION;
-
-	const empPermissionName =
-		companyName === BUSINESSN_ORG ? EMPLOYEE_PERMISSION : CLIENT_ORG_EMP_PERMISSION;
-
-	const permissionName = isManager ? adminPermissionName : empPermissionName;
+const setInitialPermissions = async (empId, isManager, companyName) => {
+	const permissionName = isManager ? CLIENT_ORG_ADMIN_PERMISSION : CLIENT_ORG_EMP_PERMISSION;
 	try {
 		const permissionExists = await findPermission({
 			empId,
@@ -132,32 +117,34 @@ const setInitialPermissions = async (empId, isManager, companyName, email) => {
 			userPermission.permissionType = [];
 
 			if (isManager) {
+				const permissionObj = {
+					canAccessModule: true,
+					canAccessUserData: true,
+					canAccessGroupData: true,
+					canAccessRegionData: true,
+					canAccessAllData: true,
+					canViewModule: true,
+					canEditModule: true,
+					canDeleteModule: true,
+				};
 				permissionName.forEach((_) => {
-					userPermission.permissionType.push({
-						name: _.name,
-						canAccessModule: true,
-						canAccessUserData: true,
-						canAccessGroupData: true,
-						canAccessRegionData: true,
-						canAccessAllData: true,
-						canViewModule: true,
-						canEditModule: true,
-						canDeleteModule: true,
-					});
+					permissionObj.name = _.name;
+					userPermission.permissionType.push(permissionObj);
 				});
 			} else {
+				const permissionObj = {
+					canAccessModule: true,
+					canAccessUserData: true,
+					canAccessGroupData: false,
+					canAccessRegionData: false,
+					canAccessAllData: false,
+					canViewModule: true,
+					canEditModule: true,
+					canDeleteModule: false,
+				};
 				permissionName.forEach((_) => {
-					userPermission.permissionType.push({
-						name: _.name,
-						canAccessModule: true,
-						canAccessUserData: true,
-						canAccessGroupData: false,
-						canAccessRegionData: false,
-						canAccessAllData: false,
-						canViewModule: true,
-						canEditModule: true,
-						canDeleteModule: false,
-					});
+					permissionObj.name = _.name;
+					userPermission.permissionType.push(permissionObj);
 				});
 			}
 			await userPermission.save();

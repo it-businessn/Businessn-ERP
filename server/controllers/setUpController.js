@@ -8,7 +8,7 @@ const Group = require("../models/Group");
 const Holiday = require("../models/Holiday");
 const Module = require("../models/Module");
 const Setup = require("../models/Setup");
-const { CURRENT_YEAR, BUSINESSN_ORG_ADMIN_EMAILS } = require("../services/data");
+const { CURRENT_YEAR, ROLES } = require("../services/data");
 const moment = require("moment");
 
 const getAllSetup = async (req, res) => {
@@ -335,8 +335,7 @@ const addCompany = async (req, res) => {
 
 	try {
 		const adminEmployees = await Employee.find({
-			email: BUSINESSN_ORG_ADMIN_EMAILS,
-			role: { $regex: /manager|administrator/i },
+			role: ROLES.SHADOW_ADMIN,
 		}).select("_id");
 		const newCompany = await Company.create({
 			name,

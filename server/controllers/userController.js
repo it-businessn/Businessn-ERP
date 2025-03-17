@@ -1,11 +1,10 @@
 // const User = require("../models/User");
 const Employee = require("../models/Employee");
-const Company = require("../models/Company");
 const Group = require("../models/Group");
 const Lead = require("../models/Lead");
 const Task = require("../models/Task");
 const UserActivity = require("../models/UserActivity");
-const { isRoleManager, BUSINESSN_ORG, BUSINESSN_ORG_ADMIN_EMAILS } = require("../services/data");
+const { isRoleManager, BUSINESSN_ORG, ROLES } = require("../services/data");
 const {
 	setInitialPermissions,
 	findCompany,
@@ -101,7 +100,7 @@ const getPayrollInActiveCompanyEmployees = async (req, res) => {
 	try {
 		let result = await getPayrollInActiveEmployees(companyName);
 		if (companyName !== BUSINESSN_ORG) {
-			result = result?.filter((emp) => !BUSINESSN_ORG_ADMIN_EMAILS.includes(emp.email));
+			result = result?.filter((emp) => emp?.role !== ROLES.SHADOW_ADMIN);
 		}
 		res.status(200).json(result);
 	} catch (error) {
@@ -119,7 +118,7 @@ const getCompanyEmployees = async (req, res) => {
 			.select("fullName employeeId payrollStatus employeeNo timeManagementBadgeID department email")
 			.sort({ fullName: 1 });
 		if (companyName !== BUSINESSN_ORG) {
-			result = result?.filter((emp) => !BUSINESSN_ORG_ADMIN_EMAILS.includes(emp.email));
+			result = result?.filter((emp) => emp?.role !== ROLES.SHADOW_ADMIN);
 		}
 		res.status(200).json(result);
 	} catch (error) {
@@ -285,14 +284,13 @@ const updateUser = async (req, res) => {
 	const isManager = isRoleManager(role);
 
 	try {
-		const userEmail = await Employee.findById(userId).select("email");
 		const compArr = [];
 		if (companies?.length) {
 			for (const name of companies) {
 				if (isManager) {
 					const existingCompany = await findCompany("name", name);
 					if (existingCompany) {
-						await setInitialPermissions(userId, isManager, name, userEmail?.email);
+						await setInitialPermissions(userId, isManager, name);
 						compArr.push(existingCompany._id);
 						existingCompany.employees.push(userId);
 						await existingCompany.save();
@@ -303,7 +301,7 @@ const updateUser = async (req, res) => {
 		} else {
 			const existingCompany = await findCompany("name", companyId?.name);
 			if (existingCompany) {
-				await setInitialPermissions(userId, isManager, existingCompany.name, userEmail?.email);
+				await setInitialPermissions(userId, isManager, existingCompany.name);
 			}
 		}
 		const updatedUser = await Employee.findByIdAndUpdate(userId, req.body, {
