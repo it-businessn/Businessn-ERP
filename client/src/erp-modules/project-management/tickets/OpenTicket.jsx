@@ -1,4 +1,4 @@
-import { Tbody, Td, Tooltip, Tr, useToast } from "@chakra-ui/react";
+import { HStack, Tbody, Td, Tooltip, Tr, useToast } from "@chakra-ui/react";
 import PrimaryButton from "components/ui/button/PrimaryButton";
 import EmptyRowRecord from "components/ui/EmptyRowRecord";
 import NormalTextTitle from "components/ui/NormalTextTitle";
@@ -7,13 +7,17 @@ import TextTitle from "components/ui/text/TextTitle";
 import ActionAll from "erp-modules/payroll/timesheets/ActionAll";
 import { TICKET_ACTION_STATUS } from "erp-modules/payroll/timesheets/data";
 import { useEffect, useState } from "react";
+import { CgNotes } from "react-icons/cg";
 import TicketService from "services/TicketService";
 import { longTimeFormat } from "utils/convertDate";
 import NewTicket from "./NewTicket";
+import NoteDetails from "./NoteDetails";
 
 const OpenTicket = ({ company, setShowAddEntry, showAddEntry, userId }) => {
 	const [ticketData, setTicketData] = useState([]);
 	const [refresh, setRefresh] = useState(false);
+	const [openNote, setOpenNote] = useState(false);
+	const [rowData, setRowData] = useState(null);
 
 	useEffect(() => {
 		const fetchAllTickets = async () => {
@@ -114,11 +118,21 @@ const OpenTicket = ({ company, setShowAddEntry, showAddEntry, userId }) => {
 										</Tooltip>
 									</Td>
 									<Td py={0} maxW="100px" px={1}>
-										<Tooltip label={issue}>
-											<span>
-												<NormalTextTitle maxW="100px" size="sm" title={issue} />
-											</span>
-										</Tooltip>
+										<HStack>
+											<NormalTextTitle maxW="100px" size="sm" title={issue} />
+											<Tooltip label="Click to view details">
+												<span>
+													<CgNotes
+														size="12px"
+														cursor="pointer"
+														onClick={() => {
+															setOpenNote(true);
+															setRowData({ issue, topic, ticketNumber });
+														}}
+													/>
+												</span>
+											</Tooltip>
+										</HStack>
 									</Td>
 									<Td py={0}>
 										<NormalTextTitle size="sm" title={longTimeFormat(createdOn)} />
@@ -172,6 +186,7 @@ const OpenTicket = ({ company, setShowAddEntry, showAddEntry, userId }) => {
 					userId={userId}
 				/>
 			)}
+			{openNote && <NoteDetails isOpen={openNote} setIsOpen={setOpenNote} data={rowData} />}
 		</>
 	);
 };
