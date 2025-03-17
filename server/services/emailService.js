@@ -7,13 +7,13 @@ const sendEmail = async (email, subject, text, html, fromEmail) => {
 			port: process.env.NODEMAILER_ZOHO_SMTP_PORT,
 			secure: true,
 			auth: {
-				user: process.env.NODEMAILER_ZOHO_SMTP_USER_EMAIL_ADMIN,
-				pass: process.env.NODEMAILER_ZOHO_SMTP_PASSWORD_ADMIN,
+				user: process.env.NODEMAILER_ZOHO_SMTP_SUPPORT_EMAIL_ADMIN,
+				pass: process.env.NODEMAILER_ZOHO_SMTP_SUPPORT_PASSWORD_ADMIN,
 			},
 		});
 
 		await transporter.sendMail({
-			from: process.env.NODEMAILER_ZOHO_SMTP_USER_EMAIL_ADMIN,
+			from: process.env.NODEMAILER_ZOHO_SMTP_SUPPORT_EMAIL_ADMIN,
 			to: email,
 			subject,
 			text,

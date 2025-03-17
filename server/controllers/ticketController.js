@@ -116,7 +116,7 @@ const createTicket = async (req, res) => {
 				</p>
 				<p
 					class="topic"
-					style="font-weight: bold; font-size: larger; margin: 0"
+					style="font-weight: bold; font-size: larger; margin: 5px 0"
 				>
 					Ticket Assignment Confirmation
 				</p>
@@ -141,7 +141,7 @@ const createTicket = async (req, res) => {
 				background: #d5efe2;">${newTask?.ticketNumber}</span> assigned to
 				you.
 			</p>
-			<p style="font-weight: bold; margin: 5px">Topic:</p>
+			<p style="font-weight: bold; margin: 5px 0">Topic:</p>
 			<p>${newTask?.topic}</p>
 			<p style="font-weight: bold; margin: 0">Description:</p>
 			<p>${newTask?.issue}</p>
@@ -150,16 +150,16 @@ const createTicket = async (req, res) => {
 			<p style="font-weight: bold; margin: 0">Channel:</p>
 			<p>${newTask?.category}</p>
 			<p style="font-weight: bold; margin: 0">View Ticket:</p>
-			<p style="margin: 5px">
+			<p style="margin: 5px 0">
 				To view the full ticket or add a reply, access your account via the link
 				below:
 			</p>
-			<p style="margin: 5px">
+			<p style="margin: 5px 0">
 				<a href="https://businessn-erp.com/" target="_blank"
 					>https://businessn-erp.com/login/</a
 				>
 			</p>
-			<p style="margin: 5px">
+			<p style="margin: 5px 0">
 				Please do not reply to this email as responses are not monitored.
 			</p>
 		</div>
