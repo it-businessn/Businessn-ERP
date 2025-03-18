@@ -75,7 +75,7 @@ const createTicket = async (req, res) => {
 			const assigneeEmail = await Employee.findOne({ fullName: newTicket.assignee })
 				.select(["email"])
 				.sort({
-					fullName: 1,
+					createdOn: -1,
 				});
 			if (assigneeEmail?.email)
 				await sendEmail(
