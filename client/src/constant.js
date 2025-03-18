@@ -7,9 +7,10 @@ import { MdCall, MdOutlineEventNote } from "react-icons/md";
 
 export const ROLES = {
 	SHADOW_ADMIN: "Shadow Admin",
-	EMPLOYEE: "Employee",
+	AUTH_ADMINISTRATOR: "Authorizing Admin",
 	ADMINISTRATOR: "Administrator",
 	MANAGER: "Manager",
+	EMPLOYEE: "Employee",
 	ENROLLER: "Enroller",
 };
 
