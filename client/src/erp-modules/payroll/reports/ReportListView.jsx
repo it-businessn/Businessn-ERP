@@ -51,16 +51,16 @@ const ReportListView = () => {
 				);
 
 				setTotalsReport(data);
-				setShowTotalsReport(true);
 			} catch (error) {
 				console.error(error);
 			}
 		};
-		if (selectedPayPeriod) fetchFundTotalsInfo();
+		if (selectedPayPeriod && showTotalsReport) fetchFundTotalsInfo();
 	}, [selectedPayPeriod]);
 
 	const handleTotalsReport = (payNo) => {
 		setSelectedPayPeriod(payNo);
+		setShowTotalsReport(true);
 	};
 
 	const handleRegister = (payNo, isExtra) => {
@@ -112,7 +112,7 @@ const ReportListView = () => {
 					payPeriodNum={selectedPayPeriod}
 				/>
 			)}
-			{showTotalsReport && (
+			{showTotalsReport && totalsReport && (
 				<TotalsReportModal
 					isOpen={showTotalsReport}
 					onClose={() => setShowTotalsReport(false)}
