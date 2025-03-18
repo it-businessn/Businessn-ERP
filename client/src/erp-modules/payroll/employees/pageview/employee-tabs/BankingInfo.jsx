@@ -29,12 +29,10 @@ import StepContent from "../step-content";
 import RadioTypeRecord from "../step-content/radio";
 import Record from "../step-content/Record";
 
-const BankingInfo = ({ company, isOnboarding, handlePrev, id, handleClose }) => {
+const BankingInfo = ({ company, isOnboarding, handlePrev, id }) => {
 	const { empId } = useSelectedEmp(LocalStorageService.getItem("empId"));
-	const onboardingEmpId = LocalStorageService.getItem("onboardingEmpId");
-	const userId = isOnboarding ? onboardingEmpId : empId;
-	const bankingInfo = useEmployeeBankingInfo(company, userId, isOnboarding);
-	const setBankingInfo = () => getInitialBankingInfo(userId, company);
+	const bankingInfo = useEmployeeBankingInfo(company, empId, isOnboarding);
+	const setBankingInfo = () => getInitialBankingInfo(empId, company);
 	const [formData, setFormData] = useState(setBankingInfo);
 	const [isDisabled, setIsDisabled] = useState(true);
 	const [isSave1Disabled, setIsSave1Disabled] = useState(true);
@@ -47,13 +45,11 @@ const BankingInfo = ({ company, isOnboarding, handlePrev, id, handleClose }) => 
 			setFormData(setBankingInfo);
 		}
 	}, [bankingInfo, empId]);
-
 	useEffect(() => {
 		if (formData.paymentEmail) {
 			setIsSave1Disabled(false);
 		}
 	}, [formData.paymentEmail]);
-
 	const toast = useToast();
 
 	const handleSubmit = async (values) => {
@@ -76,6 +72,10 @@ const BankingInfo = ({ company, isOnboarding, handlePrev, id, handleClose }) => 
 		} finally {
 			setIsLoading(false);
 		}
+	};
+	const [currentStep, setCurrentStep] = useState(0);
+	const goToNextStep = (index) => {
+		setCurrentStep(index);
 	};
 	const steps = [
 		{
@@ -169,10 +169,6 @@ const BankingInfo = ({ company, isOnboarding, handlePrev, id, handleClose }) => 
 			),
 		},
 	];
-	const [currentStep, setCurrentStep] = useState(0);
-	const goToNextStep = (index) => {
-		setCurrentStep(index);
-	};
 	return (
 		<SimpleGrid
 			columns={{ base: 1, md: 1, lg: 2 }}
@@ -188,7 +184,6 @@ const BankingInfo = ({ company, isOnboarding, handlePrev, id, handleClose }) => 
 					handleClick={goToNextStep}
 					isOnboarding={isOnboarding}
 					handlePrev={handlePrev}
-					handleClose={handleClose}
 					id={id}
 					handleNextEnabled={isOnboarding ? true : !isSave1Disabled && !isDisabled}
 				/>
