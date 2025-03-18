@@ -167,15 +167,13 @@ const Employees = ({ isOnboarding, selectedPayGroupName, handleClose }) => {
 						</VStack>
 					</HStack>
 					<Spacer />
-					{viewMode !== "Banking" && (
-						<EmpProfileSearch
-							filteredEmployees={filteredEmployees}
-							setFilteredEmployees={setFilteredEmployees}
-							setUserId={setUserId}
-							setEmployee={setEmployee}
-							employees={employees}
-						/>
-					)}
+					<EmpProfileSearch
+						filteredEmployees={filteredEmployees}
+						setFilteredEmployees={setFilteredEmployees}
+						setUserId={setUserId}
+						setEmployee={setEmployee}
+						employees={employees}
+					/>
 				</HStack>
 			)}
 

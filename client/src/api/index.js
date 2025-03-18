@@ -46,7 +46,7 @@ export const setupAxiosInterceptors = (setSessionExpired) => {
 					LocalStorageService.clear();
 				}
 			} else {
-				window.location.href = "/login";
+				console.error("Refresh token invalid or expired", error);
 			}
 
 			return Promise.reject(error);

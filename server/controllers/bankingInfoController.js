@@ -30,14 +30,13 @@ const getEmployeeBankingInfo = async (req, res) => {
 
 		const result = await findEmployeeBankingInfo(employeeId, company);
 
-		const { _id, empId, companyName, directDeposit, payStubSendByEmail, paymentEmail } = result;
 		const newData = {
-			_id,
-			empId,
-			companyName,
-			directDeposit,
-			payStubSendByEmail,
-			paymentEmail,
+			_id: result?._id,
+			empId: result?.empId,
+			companyName: result?.companyName,
+			directDeposit: result?.directDeposit,
+			payStubSendByEmail: result?.payStubSendByEmail,
+			paymentEmail: result?.paymentEmail,
 		};
 
 		const banking_key = Buffer.from(process.env.BANKING_ENCRYPTION_KEY, "hex");
