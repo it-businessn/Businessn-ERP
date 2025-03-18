@@ -118,21 +118,19 @@ const OpenTicket = ({ company, setShowAddEntry, showAddEntry, userId, employees 
 										</Tooltip>
 									</Td>
 									<Td py={0} maxW="100px" px={1}>
-										<HStack>
-											<NormalTextTitle maxW="100px" size="sm" title={issue} />
-											<Tooltip label="Click to view details">
-												<span>
-													<CgNotes
-														size="12px"
-														cursor="pointer"
-														onClick={() => {
-															setOpenNote(true);
-															setRowData({ issue, topic, ticketNumber });
-														}}
-													/>
-												</span>
-											</Tooltip>
-										</HStack>
+										<Tooltip label={issue}>
+											<HStack spacing={0}>
+												<NormalTextTitle maxW="100px" size="sm" title={issue} />
+												<CgNotes
+													size="12px"
+													cursor="pointer"
+													onClick={() => {
+														setOpenNote(true);
+														setRowData({ issue, topic, ticketNumber });
+													}}
+												/>
+											</HStack>
+										</Tooltip>
 									</Td>
 									<Td py={0}>
 										<NormalTextTitle size="sm" title={longTimeFormat(createdOn)} />
