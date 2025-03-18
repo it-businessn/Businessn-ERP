@@ -18,10 +18,10 @@ const PositionInfo = ({
 	currentRoleInfo,
 	handleSubmit,
 	rolePos,
+	company,
 }) => {
 	const defaultRoleInfo = currentRoleInfo || {
 		title: "",
-		payRate: "",
 		employmentPayGroup: "",
 		employmentCostCenter: "",
 		employmentDepartment: "",
@@ -34,7 +34,6 @@ const PositionInfo = ({
 
 	useEffect(() => {
 		if (
-			roleInfo.payRate &&
 			roleInfo.title &&
 			roleInfo.employmentCostCenter &&
 			roleInfo.employmentPayGroup &&
@@ -47,7 +46,11 @@ const PositionInfo = ({
 	}, [roleInfo]);
 
 	useEffect(() => {
-		if (department && roleInfo.employmentCostCenter) {
+		if (
+			company === "The Owners Of Strata Plan NW1378" &&
+			department &&
+			roleInfo.employmentCostCenter
+		) {
 			setFilteredDept(
 				department.filter((_) => _.name.includes(roleInfo.employmentCostCenter.slice(0, 4))),
 			);
@@ -75,27 +78,6 @@ const PositionInfo = ({
 								}));
 							}}
 						/>
-						{/* {isOpen ? ( */}
-						<InputFormControl
-							type="number"
-							required={(isOpen || !roleInfo.payRate) && true}
-							label="Payrate"
-							name="payRate"
-							placeholder="Add payrate"
-							valueText={roleInfo.payRate}
-							handleChange={(e) => {
-								setRoleInfo((prev) => ({
-									...prev,
-									payRate: e.target.value,
-								}));
-							}}
-						/>
-						{/* // ) : (
-						// 	<>
-						// 		<FormLabel>Linked Payrate</FormLabel>
-						// 		<NormalTextTitle title={getAmount(roleInfo.payRate) || "NA"} />
-						// 	</>
-						// )} */}
 
 						{isOpen ? (
 							<InputFormControl
@@ -196,8 +178,6 @@ const PositionInfo = ({
 							roleInfo.employmentDepartment
 						) {
 							handleSubmit(roleInfo);
-						} else {
-							return;
 						}
 					}}
 				/>

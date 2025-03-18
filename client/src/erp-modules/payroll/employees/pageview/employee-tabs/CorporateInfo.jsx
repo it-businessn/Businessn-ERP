@@ -68,10 +68,7 @@ const CorporateInfo = ({ company, isOnboarding, id, handleNext, handlePrev }) =>
 			if (position) {
 				const existingPositions = formData.positions;
 				const positionIndex = formData.positions?.findIndex(
-					({ title, payRate, timeManagementBadgeID }) =>
-						timeManagementBadgeID === position?.timeManagementBadgeID ||
-						title === position?.title ||
-						payRate === position?.payRate,
+					({ title }) => title === position?.title,
 				);
 				if (positionIndex === -1) {
 					existingPositions.push(position);
@@ -83,6 +80,7 @@ const CorporateInfo = ({ company, isOnboarding, id, handleNext, handlePrev }) =>
 			await PayrollService.addEmployeeEmploymentInfo(formData);
 			setIsLoading(false);
 			setIsDisabled(true);
+			setIsOpen(false);
 			setRefresh((prev) => !prev);
 			toast({
 				title: "Employment info updated successfully.",
@@ -131,6 +129,7 @@ const CorporateInfo = ({ company, isOnboarding, id, handleNext, handlePrev }) =>
 					<TextTitle title="Positions" />
 					{isOpen ? (
 						<PositionInfo
+							company={company}
 							isOpen={isOpen}
 							setIsOpen={setIsOpen}
 							isDisabled={isDisabled}
@@ -167,6 +166,7 @@ const CorporateInfo = ({ company, isOnboarding, id, handleNext, handlePrev }) =>
 										department={department}
 										costCentres={costCentres}
 										handleSubmit={handleSubmit}
+										company={company}
 									/>
 								</BoxCard>
 							))}

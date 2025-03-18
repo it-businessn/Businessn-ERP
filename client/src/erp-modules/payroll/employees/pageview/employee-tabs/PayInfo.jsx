@@ -56,6 +56,13 @@ const PayInfo = ({ company, isOnboarding, id, handleNext, handlePrev }) => {
 			content: (
 				<>
 					<TextTitle title="Earnings" />
+					{!formData.roles.length && (
+						<TextTitle
+							color="var(--pending)"
+							title="** Please add roles/positions under employment section."
+							size="sm"
+						/>
+					)}
 					{formData.roles?.map((role, index) => (
 						<BoxCard
 							mt={2}
