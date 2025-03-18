@@ -23,7 +23,7 @@ const Employees = ({ isOnboarding, selectedPayGroupName, handleClose }) => {
 	const { id, stepNo } = useParams();
 	const { company } = useCompany(LocalStorageService.getItem("selectedCompany"));
 	const loggedInUser = LocalStorageService.getItem("user");
-	const [employee, setEmployee] = useState(loggedInUser);
+	const [employee, setEmployee] = useState(null);
 	const [userId, setUserId] = useState(id ? id : loggedInUser._id);
 	const { setEmpId } = useSelectedEmp(userId);
 
@@ -156,13 +156,13 @@ const Employees = ({ isOnboarding, selectedPayGroupName, handleClose }) => {
 						<Avatar
 							borderRadius="10%"
 							// onClick={handleToggle}
-							name={employee?.fullName}
+							name={employee?.fullName || ""}
 							src=""
 							boxSize="15"
 						/>
 						<VStack spacing={0} align={"start"}>
-							<TextTitle size="sm" title={employee?.fullName} />
-							<NormalTextTitle size="xs" title={employee?.employeeId} />
+							<TextTitle size="sm" title={employee?.fullName || ""} />
+							<NormalTextTitle size="xs" title={employee?.employeeId || ""} />
 							{isActivePayroll && <ActiveBadge title={"Payroll Activated"} />}
 						</VStack>
 					</HStack>
