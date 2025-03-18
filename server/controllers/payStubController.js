@@ -621,6 +621,46 @@ const getFundPayDetailsReportInfo = async (req, res) => {
 	}
 };
 
+const getFundingPayDetailsReportInfo = async (req, res) => {
+	const { companyName, payPeriodNum, isExtraRun } = req.params;
+
+	try {
+		const isExtraPayRun = isExtraRun === "true";
+		const totals = await FundingTotalsPay.findOne({
+			companyName,
+			payPeriodNum,
+			isExtraRun: isExtraPayRun,
+			payPeriodPayDate: {
+				$gte: moment().startOf("year").toDate(),
+				$lt: moment().endOf("year").toDate(),
+			},
+		});
+		if (totals) return res.status(200).json(totals);
+
+		return res.status(200).json({
+			totalIncomeTaxContr: 0,
+			totalCPP_EE_Contr: 0,
+			totalCPP_ER_Contr: 0,
+			totalCPP_Contr: 0,
+			totalBatchCharges: 0,
+			timeClockMaintenanceCost: 0,
+			totalCorePayrollCost: 0,
+			totalEI_Contr: 0,
+			totalEI_EE_Contr: 0,
+			totalEI_ER_Contr: 0,
+			totalEmpPaymentRemitCost: 0,
+			totalEmpPayrollCost: 0,
+			totalFundingWithDrawals: 0,
+			totalGovtContr: 0,
+			totalNetPay: 0,
+			totalServiceCharges: 0,
+			totalTimeManagementEmpCost: 0,
+			totalTimeManagementPayrollCost: 0,
+		});
+	} catch (error) {
+		res.status(404).json({ error: error.message });
+	}
+};
 const getPayDetailsReportInfo = async (req, res) => {
 	const { companyName, payPeriodNum, isExtraRun } = req.params;
 
@@ -692,4 +732,5 @@ module.exports = {
 	getRecordId,
 	calculateTimesheetApprovedHours,
 	getFundPayDetailsReportInfo,
+	getFundingPayDetailsReportInfo,
 };

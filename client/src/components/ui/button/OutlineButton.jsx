@@ -13,8 +13,10 @@ const OutlineButton = ({
 	minW,
 	bg,
 	w,
+	isDisabled,
 }) => (
 	<Button
+		isDisabled={isDisabled}
 		bg={bg}
 		minW={minW}
 		variant={"outline"}

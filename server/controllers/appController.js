@@ -317,7 +317,9 @@ const logOut = async (req, res) => {
 const forgotPassword = async (req, res) => {
 	const { email } = req.body;
 	try {
-		const user = await Employee.findOne({ email });
+		const user = await Employee.findOne({ email }).sort({
+			createdOn: -1,
+		});
 		if (!user) {
 			return res.status(404).json({
 				error: "Email not found! Please enter your registered email address.",
