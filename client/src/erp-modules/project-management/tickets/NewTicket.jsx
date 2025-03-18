@@ -32,6 +32,7 @@ const NewTicket = ({ showAddEntry, setShowAddEntry, setRefresh, company, userId,
 		topic: "",
 		issue: "",
 		originator: userId,
+		file: null,
 	};
 
 	const [formData, setFormData] = useState(initialFormData);
@@ -39,6 +40,10 @@ const NewTicket = ({ showAddEntry, setShowAddEntry, setRefresh, company, userId,
 	const handleChange = (e) => {
 		const { name, value } = e.target;
 		setFormData((prevData) => ({ ...prevData, [name]: value }));
+	};
+
+	const handleFileChange = (e) => {
+		setFormData((prevData) => ({ ...prevData, file: e.target.files[0] }));
 	};
 
 	const { onClose } = useDisclosure();
@@ -54,9 +59,20 @@ const NewTicket = ({ showAddEntry, setShowAddEntry, setRefresh, company, userId,
 	};
 
 	const handleSubmit = async () => {
+		const { category, priority, companyName, assignee, topic, issue, originator, file } = formData;
+		const ticketData = new FormData();
+		ticketData.append("category", category);
+		ticketData.append("companyName", companyName);
+		ticketData.append("assignee", assignee);
+		ticketData.append("priority", priority);
+		ticketData.append("topic", topic);
+		ticketData.append("issue", issue);
+		ticketData.append("originator", originator);
+		ticketData.append("file", file);
+
 		setIsSubmitting(true);
 		try {
-			await TicketService.addInfo(formData);
+			await TicketService.addInfo(ticketData);
 			setRefresh((prev) => !prev);
 			handleClose();
 		} catch (error) {
@@ -115,7 +131,12 @@ const NewTicket = ({ showAddEntry, setShowAddEntry, setRefresh, company, userId,
 					handleChange={handleChange}
 					required
 				/>
-
+				<InputFormControl
+					label="File/Attachment"
+					name="file"
+					type="file"
+					handleChange={handleFileChange}
+				/>
 				<ActionButtonGroup
 					submitBtnName={"Add"}
 					isDisabled={

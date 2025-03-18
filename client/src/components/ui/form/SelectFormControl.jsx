@@ -29,7 +29,7 @@ const SelectFormControl = ({
 			>
 				{options?.map((_) => (
 					<option
-						key={_?.value || _[valueParam]}
+						key={_?.value || _[valueParam] || _}
 						value={_[valueParam] || _}
 						style={{ color: isPayType && getPayTypeStyle(_[name]).color }}
 					>

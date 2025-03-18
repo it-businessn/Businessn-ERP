@@ -1,8 +1,10 @@
+const fs = require("fs");
 const SupportTicket = require("../models/Ticket");
 const moment = require("moment");
 const Employee = require("../models/Employee");
 const { sendEmail } = require("../services/emailService");
 const path = require("path");
+const { filePath, fileContentType } = require("../services/fileService");
 
 const getAllTickets = async (req, res) => {
 	const { id } = req.params;
@@ -66,9 +68,53 @@ const generateTicketNumber = (customerPrefix) => {
 	return `${datePart}${customerPrefix}#${sequencePart}`;
 };
 
+const downloadResource = async (req, res) => {
+	try {
+		const { filename } = req.params;
+		const resource = await SupportTicket.find({ originalname: filename });
+		if (!resource) {
+			return res.status(404).json({ error: "Resource not found" });
+		}
+		const file = filePath(filename);
+		fs.writeFileSync(file, resource[0].file.data);
+
+		res.setHeader("Content-Type", fileContentType(file));
+
+		res.download(file, filename, (err) => {
+			fs.unlinkSync(file);
+			if (err) {
+				console.error("Error downloading file:", err);
+				res.status(404).json({ error: "File not found" });
+			}
+		});
+	} catch (error) {
+		res.status(404).json({ error: error.message });
+	}
+};
+
 const createTicket = async (req, res) => {
 	try {
 		const newTicket = req.body;
+		const attachment = req.file;
+		const attachments = [
+			{
+				filename: "BusinessN_dark1.png",
+				path: path.join(__dirname, "../", "assets/logos/BusinessN_dark1.png"),
+				cid: "footerLogo",
+			},
+		];
+		if (attachment) {
+			attachments.push({
+				filename: attachment.filename,
+				path: attachment.path,
+			});
+			newTicket.file = {
+				data: fs.readFileSync(attachment?.path),
+				contentType: attachment?.mimetype,
+				path: attachment?.path,
+			};
+			newTicket.originalname = attachment?.originalname;
+		}
 		if (newTicket?.originator) {
 			newTicket.ticketNumber = generateTicketNumber(newTicket.companyName.split(" ")[0]);
 			const newTask = await SupportTicket.create(newTicket);
@@ -136,13 +182,14 @@ const createTicket = async (req, res) => {
 				font-size: 14px;
 			"
 		>
-			<h3 style="margin: 0; margin-bottom: 2em">Hello ${newTask?.assignee}</h3>
-			<p style="margin: 0">
+			<h3 style="margin: 0; margin-bottom: 1em">Hello ${newTask?.assignee}</h3>
+			<p style="margin: 5px 0">
 				We are confirming that we have received ticket <span style="
 				background: #d5efe2;">${newTask?.ticketNumber}</span> assigned to
-				you.
+				you. 
 			</p>
-			<p style="font-weight: bold; margin: 5px 0">Topic:</p>
+			${attachment && '<p style="margin: 5px 0"> Please find attached file for your reference. </p>'}
+			<p style="font-weight: bold; margin: 0">Topic:</p>
 			<p>${newTask?.topic}</p>
 			<p style="font-weight: bold; margin: 0">Description:</p>
 			<p>${newTask?.issue}</p>
@@ -181,13 +228,7 @@ const createTicket = async (req, res) => {
 		</div>
 	</body>
 			`,
-					[
-						{
-							filename: "BusinessN_dark1.png",
-							path: path.join(__dirname, "../", "assets/logos/BusinessN_dark1.png"),
-							cid: "footerLogo",
-						},
-					],
+					attachments,
 				);
 			return res.status(201).json(newTask);
 		}
@@ -232,4 +273,5 @@ module.exports = {
 	updateTicket,
 	getClosedTickets,
 	getOpenTickets,
+	downloadResource,
 };

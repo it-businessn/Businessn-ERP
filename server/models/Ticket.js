@@ -1,6 +1,12 @@
 const mongoose = require("mongoose");
 
 const supportTicketSchema = new mongoose.Schema({
+	file: {
+		data: Buffer,
+		contentType: String,
+		path: String,
+	},
+	originalname: String,
 	companyName: String,
 	clientId: String,
 	clientFirstName: String,

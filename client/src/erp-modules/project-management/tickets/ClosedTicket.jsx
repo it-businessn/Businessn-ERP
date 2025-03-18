@@ -92,6 +92,8 @@ const ClosedTicket = ({ company, setShowAddEntry, showAddEntry, userId, employee
 							originator,
 							_id,
 							bg,
+							file,
+							originalname,
 						}) => {
 							return (
 								<Tr key={_id} _hover={{ bg: "var(--phoneCall_bg_light)" }}>
@@ -126,7 +128,7 @@ const ClosedTicket = ({ company, setShowAddEntry, showAddEntry, userId, employee
 													cursor="pointer"
 													onClick={() => {
 														setOpenNote(true);
-														setRowData({ issue, topic, ticketNumber });
+														setRowData({ issue, topic, ticketNumber, file, originalname });
 													}}
 												/>
 											</HStack>

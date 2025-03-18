@@ -8,9 +8,16 @@ import {
 	ModalOverlay,
 	Textarea,
 } from "@chakra-ui/react";
+import PrimaryButton from "components/ui/button/PrimaryButton";
 import TextTitle from "components/ui/text/TextTitle";
+import { BASE_URL } from "services";
 
 const NoteDetails = ({ setIsOpen, isOpen, data }) => {
+	const handleDownload = (fileName) => {
+		const downloadUrl = `${BASE_URL}/ticket/download/${fileName}`;
+		window.location.href = downloadUrl;
+	};
+
 	return (
 		<Modal isCentered isOpen={isOpen} size={"xl"} onClose={() => setIsOpen(false)}>
 			<ModalOverlay />
@@ -28,6 +35,15 @@ const NoteDetails = ({ setIsOpen, isOpen, data }) => {
 						readOnly={true}
 						placeholder="Log notes..."
 					/>
+					{data?.originalname && (
+						<>
+							<FormLabel mt="1em">File</FormLabel>
+							<PrimaryButton
+								name={data?.originalname}
+								onOpen={() => handleDownload(data?.originalname)}
+							/>
+						</>
+					)}
 				</ModalBody>
 			</ModalContent>
 		</Modal>

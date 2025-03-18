@@ -90,6 +90,8 @@ const OpenTicket = ({ company, setShowAddEntry, showAddEntry, userId, employees 
 							ticketDaysOpened,
 							createdOn,
 							originator,
+							file,
+							originalname,
 							_id,
 							bg,
 						}) => {
@@ -126,7 +128,7 @@ const OpenTicket = ({ company, setShowAddEntry, showAddEntry, userId, employees 
 													cursor="pointer"
 													onClick={() => {
 														setOpenNote(true);
-														setRowData({ issue, topic, ticketNumber });
+														setRowData({ issue, topic, ticketNumber, file, originalname });
 													}}
 												/>
 											</HStack>

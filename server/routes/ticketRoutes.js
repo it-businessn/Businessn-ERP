@@ -2,15 +2,19 @@ const express = require("express");
 const router = express.Router();
 
 const ticketController = require("../controllers/ticketController");
+const { storageSpace } = require("../services/fileService");
+const { authenticateToken } = require("../middleware/auth");
 
-router.get("/:id", ticketController.getAllTickets);
+router.get("/:id", authenticateToken, ticketController.getAllTickets);
 
-router.get("/open/:id/:companyName", ticketController.getOpenTickets);
+router.get("/download/:filename", ticketController.downloadResource);
 
-router.get("/closed/:id/:companyName", ticketController.getClosedTickets);
+router.get("/open/:id/:companyName", authenticateToken, ticketController.getOpenTickets);
 
-router.post("/", ticketController.createTicket);
+router.get("/closed/:id/:companyName", authenticateToken, ticketController.getClosedTickets);
 
-router.put("/:id", ticketController.updateTicket);
+router.post("/", authenticateToken, storageSpace.single("file"), ticketController.createTicket);
+
+router.put("/:id", authenticateToken, ticketController.updateTicket);
 
 module.exports = router;
