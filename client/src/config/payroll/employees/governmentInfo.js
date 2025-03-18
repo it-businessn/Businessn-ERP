@@ -1,5 +1,5 @@
 import { CONTRIBUTION } from "constant";
-import { COUNTRIES, REGIONS } from "erp-modules/project-management/workview/project/data";
+import { COUNTRIES } from "./profileInfo";
 
 export const EMP_INCOME_TAX_CONFIG = [
 	{
@@ -15,7 +15,7 @@ export const EMP_INCOME_TAX_CONFIG = [
 				name: "Regional Tax",
 				param_key: "regionalTax",
 				control: "select",
-				options: REGIONS,
+				options: COUNTRIES,
 			},
 		],
 	},

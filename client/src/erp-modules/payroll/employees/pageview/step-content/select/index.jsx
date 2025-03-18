@@ -8,10 +8,11 @@ const SelectTypeRecord = ({ param, formData, setFormData, handleConfirm, size = 
 	const [provinces, setProvinces] = useState([]);
 
 	useEffect(() => {
-		if (formData?.country) {
-			setProvinces(param.options?.find(({ type }) => type === formData?.country)?.provinces);
+		if (formData?.country || formData?.federalTax || formData?.employmentCountry) {
+			const country = formData?.country || formData?.federalTax || formData?.employmentCountry;
+			setProvinces(param.options?.find(({ type }) => type === country)?.provinces);
 		}
-	}, [formData?.country]);
+	}, [formData?.country, formData?.federalTax, formData?.employmentCountry]);
 
 	return (
 		<FormControl>
@@ -39,7 +40,7 @@ const SelectTypeRecord = ({ param, formData, setFormData, handleConfirm, size = 
 									{item.type || item.name}
 								</option>
 							))
-					: param.name === "Province/State"
+					: ["Province/State", "Regional Tax", "Region"].includes(param.name)
 					? provinces?.map((item) => (
 							<option value={item} key={item}>
 								{item}

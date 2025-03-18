@@ -1,4 +1,4 @@
-const COUNTRIES = [
+export const COUNTRIES = [
 	{
 		type: "Canada",
 		dependent: false,

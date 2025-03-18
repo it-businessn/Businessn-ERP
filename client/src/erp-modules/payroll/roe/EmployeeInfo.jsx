@@ -5,10 +5,10 @@ import InputFormControl from "components/ui/form/InputFormControl";
 import SelectFormControl from "components/ui/form/SelectFormControl";
 import TextTitle from "components/ui/text/TextTitle";
 import VerticalStepper from "components/ui/VerticalStepper";
-import { COUNTRIES, REGIONS } from "erp-modules/project-management/workview/project/data";
+import { COUNTRIES } from "config/payroll/employees/profileInfo";
 import useCompanyEmployees from "hooks/useCompanyEmployees";
 import useEmployeeProfileInfo from "hooks/useEmployeeProfileInfo";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import LocalStorageService from "services/LocalStorageService";
 import PayrollService from "services/PayrollService";
 import StepContent from "../employees/pageview/step-content";
@@ -34,6 +34,13 @@ const EmployeeInfo = ({ company, handleNext, tabId }) => {
 	const [formData, setFormData] = useState(initialFormData);
 
 	const empInfo = useEmployeeProfileInfo(company, formData.empId);
+	const [provinces, setProvinces] = useState([]);
+
+	useEffect(() => {
+		if (formData?.country) {
+			setProvinces(COUNTRIES.find(({ type }) => type === formData?.country)?.provinces);
+		}
+	}, [formData?.country]);
 
 	const populateEmpInfo = () => {
 		setFormData((prevData) => ({
@@ -191,21 +198,6 @@ const EmployeeInfo = ({ company, handleNext, tabId }) => {
 								}));
 							}}
 						/>
-
-						<SelectFormControl
-							w="40%"
-							valueParam="name"
-							name="province"
-							label="Province/State"
-							valueText={formData.province || ""}
-							handleChange={(e) =>
-								setFormData((prevData) => ({
-									...prevData,
-									province: e.target.value,
-								}))
-							}
-							options={REGIONS}
-						/>
 						<SelectFormControl
 							w="40%"
 							valueParam="type"
@@ -219,6 +211,20 @@ const EmployeeInfo = ({ company, handleNext, tabId }) => {
 								}))
 							}
 							options={COUNTRIES}
+						/>
+						<SelectFormControl
+							w="40%"
+							valueParam="name"
+							name="province"
+							label="Province/State"
+							valueText={formData.province || ""}
+							handleChange={(e) =>
+								setFormData((prevData) => ({
+									...prevData,
+									province: e.target.value,
+								}))
+							}
+							options={provinces}
 						/>
 						<InputFormControl
 							label="Postal Code"

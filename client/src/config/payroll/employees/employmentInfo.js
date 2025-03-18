@@ -1,4 +1,4 @@
-import { COUNTRIES, REGIONS } from "erp-modules/project-management/workview/project/data";
+import { COUNTRIES } from "./profileInfo";
 
 export const PAYROLL_STATUS = [
 	{
@@ -64,10 +64,10 @@ export const EMP_REGION_CONFIG = [
 		type: "",
 		params: [
 			{
-				name: "Region",
-				param_key: "employmentRegion",
+				name: "Country",
+				param_key: "employmentCountry",
 				control: "select",
-				options: REGIONS,
+				options: COUNTRIES,
 			},
 		],
 	},
@@ -75,8 +75,8 @@ export const EMP_REGION_CONFIG = [
 		type: "",
 		params: [
 			{
-				name: "Country",
-				param_key: "employmentCountry",
+				name: "Region",
+				param_key: "employmentRegion",
 				control: "select",
 				options: COUNTRIES,
 			},
