@@ -75,12 +75,12 @@ const createTicket = async (req, res) => {
 			const assigneeEmail = await Employee.findOne({ fullName: newTicket.assignee })
 				.select(["email"])
 				.sort({
-					fullName: 1,
+					createdOn: -1,
 				});
 			if (assigneeEmail?.email)
 				await sendEmail(
 					assigneeEmail?.email,
-					`${newTicket.category} Ticket Assignment Confirmation`,
+					`Ticket Assignment Confirmation`,
 					"We have received your inquiry. An agent will get in touch with you shortly to discuss your interests and provide more information.",
 					`
 				<body style="margin: 0; font-family: Arial, Helvetica, sans-serif;height:'auto">
