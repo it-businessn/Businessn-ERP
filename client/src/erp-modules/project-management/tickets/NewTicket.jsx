@@ -21,19 +21,7 @@ const NewTicket = ({ showAddEntry, setShowAddEntry, setRefresh, company, userId,
 		{ category: "AI" },
 	];
 
-	const PRIORITY_LIST = [
-		{ priority: 0 },
-		{ priority: 1 },
-		{ priority: 2 },
-		{ priority: 3 },
-		{ priority: 4 },
-		{ priority: 5 },
-		{ priority: 6 },
-		{ priority: 7 },
-		{ priority: 8 },
-		{ priority: 9 },
-		{ priority: 10 },
-	];
+	const PRIORITY_LIST = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 	const [isSubmitting, setIsSubmitting] = useState(false);
 
 	const initialFormData = {
@@ -90,7 +78,6 @@ const NewTicket = ({ showAddEntry, setShowAddEntry, setRefresh, company, userId,
 					placeholder="Select category"
 				/>
 				<SelectFormControl
-					valueParam="priority"
 					name="priority"
 					label="Priority"
 					valueText={formData.priority}
