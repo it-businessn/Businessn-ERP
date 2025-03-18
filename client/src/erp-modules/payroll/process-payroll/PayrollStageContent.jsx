@@ -42,16 +42,18 @@ const PayrollStageContent = ({
 	}, [currentStep]);
 
 	const handleStepChange = () => {
-		if (currentStep === 0) {
-			onPayrollStepupToggle();
-		} else if (currentStep === 1) {
-			onInputsReviewToggle();
-		} else if (currentStep === 2) {
-			onAlertsOpenToggle();
-		} else if (currentStep === 3) {
-			onReportsToggle();
-		} else if (currentStep === 4) {
-			onFinalizeToggle();
+		if (!isPayPeriodInactive) {
+			if (currentStep === 0) {
+				onPayrollStepupToggle();
+			} else if (currentStep === 1) {
+				onInputsReviewToggle();
+			} else if (currentStep === 2) {
+				onAlertsOpenToggle();
+			} else if (currentStep === 3) {
+				onReportsToggle();
+			} else if (currentStep === 4) {
+				onFinalizeToggle();
+			}
 		}
 	};
 
