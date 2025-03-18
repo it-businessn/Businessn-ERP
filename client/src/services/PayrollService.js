@@ -141,6 +141,12 @@ const PayrollService = {
 		return apiService.get(`/payroll/payDetailsReport/${company}/${payNum}/${isExtraRun}`);
 	},
 
+	async getTotalsPayReportDetails(company, payNum, isExtraRun) {
+		return apiService.get(
+			`/payroll/payDetailsReport/funding-totals/${company}/${payNum}/${isExtraRun}`,
+		);
+	},
+
 	async addPayPeriodPayStub(data) {
 		return apiService.post("/payroll/payDetailsReport", data);
 	},

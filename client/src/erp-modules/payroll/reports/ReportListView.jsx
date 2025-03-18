@@ -6,8 +6,10 @@ import PageLayout from "layouts/PageLayout";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import LocalStorageService from "services/LocalStorageService";
+import PayrollService from "services/PayrollService";
 import { CURRENT_YEAR } from "utils/convertDate";
 import PreviewReportsModal from "../process-payroll/preview-reports/PreviewReportsModal";
+import TotalsReportModal from "../process-payroll/preview-reports/TotalsReportModal";
 import WorkviewTable from "../workview/paygroup-header-table/WorkviewTable";
 
 const ReportListView = () => {
@@ -35,7 +37,31 @@ const ReportListView = () => {
 		(a, b) => new Date(b.payPeriodPayDate) - new Date(a.payPeriodPayDate),
 	);
 	const [showReport, setShowReport] = useState(undefined);
+	const [showTotalsReport, setShowTotalsReport] = useState(false);
+	const [totalsReport, setTotalsReport] = useState(null);
 	const [selectedPayPeriod, setSelectedPayPeriod] = useState(null);
+
+	useEffect(() => {
+		const fetchFundTotalsInfo = async () => {
+			try {
+				const { data } = await PayrollService.getTotalsPayReportDetails(
+					company,
+					selectedPayPeriod,
+					false,
+				);
+
+				setTotalsReport(data);
+				setShowTotalsReport(true);
+			} catch (error) {
+				console.error(error);
+			}
+		};
+		if (selectedPayPeriod) fetchFundTotalsInfo();
+	}, [selectedPayPeriod]);
+
+	const handleTotalsReport = (payNo) => {
+		setSelectedPayPeriod(payNo);
+	};
 
 	const handleRegister = (payNo, isExtra) => {
 		const payNum = isExtra
@@ -74,6 +100,7 @@ const ReportListView = () => {
 					height="80vh"
 					handleRegister={handleRegister}
 					selectedYear={selectedYear}
+					handleTotalsReport={handleTotalsReport}
 				/>
 			)}
 			{showReport && (
@@ -83,6 +110,13 @@ const ReportListView = () => {
 					onClose={() => setShowReport(false)}
 					reportData={reportData}
 					payPeriodNum={selectedPayPeriod}
+				/>
+			)}
+			{showTotalsReport && (
+				<TotalsReportModal
+					isOpen={showTotalsReport}
+					onClose={() => setShowTotalsReport(false)}
+					reportData={totalsReport}
 				/>
 			)}
 		</PageLayout>

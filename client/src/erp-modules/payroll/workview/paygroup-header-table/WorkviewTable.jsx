@@ -17,6 +17,7 @@ const WorkviewTable = ({
 	height = "26vh",
 	autoScroll = false,
 	handleRegister,
+	handleTotalsReport,
 	isEarningTable,
 	cols = PAYGROUP_COLS,
 	viewLabel = "View Register",
@@ -154,11 +155,17 @@ const WorkviewTable = ({
 												}}
 												isDisabled={isDisabledAction}
 												name={"Pay now"}
-												w={"99px"}
+												minW={"105px"}
 												size="xs"
 												onOpen={() => handlePay(payPeriod)}
 											/>
 										)}
+										<OutlineButton
+											isDisabled={isDisabledAction}
+											label="View Funding Totals"
+											size="xs"
+											onClick={() => handleTotalsReport(payPeriod)}
+										/>
 										{!isEarningTable && (
 											<OutlineButton
 												label={"View Journal"}

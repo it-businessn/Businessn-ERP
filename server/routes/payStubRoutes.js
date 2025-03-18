@@ -8,6 +8,11 @@ router.get("/:companyName/:empId", payStubController.getEmployeePayDetailsReport
 router.get("/:companyName/:payPeriodNum/:isExtraRun", payStubController.getPayDetailsReportInfo);
 
 router.get(
+	"/funding-totals/:companyName/:payPeriodNum/:isExtraRun",
+	payStubController.getFundingPayDetailsReportInfo,
+);
+
+router.get(
 	"/fund-totals/:companyName/:payPeriodNum/:isExtraRun",
 	payStubController.getFundPayDetailsReportInfo,
 );

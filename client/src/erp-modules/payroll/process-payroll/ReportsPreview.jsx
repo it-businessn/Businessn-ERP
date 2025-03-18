@@ -49,12 +49,9 @@ const ReportsPreview = ({
 			)}
 			{showTotalsReport && fundingTotalsData && (
 				<TotalsReportModal
-					title={REPORTS[1].name}
 					isOpen={showTotalsReport}
 					onClose={() => setShowTotalsReport(false)}
 					reportData={fundingTotalsData}
-					payPeriodNum={payPeriodNum}
-					size="5xl"
 				/>
 			)}
 			<PrimaryButton
