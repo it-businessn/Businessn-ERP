@@ -1,9 +1,17 @@
 import { FormControl, FormLabel, Select } from "@chakra-ui/react";
+import { useEffect, useState } from "react";
 import { FaCaretDown } from "react-icons/fa";
 
 const SelectTypeRecord = ({ param, formData, setFormData, handleConfirm, size = "sm" }) => {
 	const newCostCenter =
 		formData.employmentCostCenter === "Golf Operations" ? "Golf" : formData.employmentCostCenter;
+	const [provinces, setProvinces] = useState([]);
+
+	useEffect(() => {
+		if (formData?.country) {
+			setProvinces(param.options?.find(({ type }) => type === formData?.country)?.provinces);
+		}
+	}, [formData?.country]);
 
 	return (
 		<FormControl>
@@ -31,6 +39,12 @@ const SelectTypeRecord = ({ param, formData, setFormData, handleConfirm, size = 
 									{item.type || item.name}
 								</option>
 							))
+					: param.name === "Province/State"
+					? provinces?.map((item) => (
+							<option value={item} key={item}>
+								{item}
+							</option>
+					  ))
 					: param.options?.map((item) => (
 							<option value={item?.type || item?.name} key={item?.type || item?.name}>
 								{item?.type || item?.name}
