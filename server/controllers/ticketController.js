@@ -188,7 +188,10 @@ const createTicket = async (req, res) => {
 				background: #d5efe2;">${newTask?.ticketNumber}</span> assigned to
 				you. 
 			</p>
-			${attachment && '<p style="margin: 5px 0"> Please find attached file for your reference. </p>'}
+			${
+				attachment &&
+				'<p style="font-weight: bold; margin: 5px 0"> Please find attached file for your reference. </p>'
+			}
 			<p style="font-weight: bold; margin: 0">Topic:</p>
 			<p>${newTask?.topic}</p>
 			<p style="font-weight: bold; margin: 0">Description:</p>
