@@ -137,7 +137,10 @@ const getTaxDetails = (payRate, grossEarning, empTaxCreditResult) => {
 	const projectedIncome = annualProjectedGrossEarning;
 	const adjustedProjectedIncome = projectedIncome - TAX_CONFIG.CPP_BASIC_EXEMPTION;
 	const adjustedGrossEarning = adjustedProjectedIncome / TAX_CONFIG.ANNUAL_PAY_PERIODS;
-	const CPPContribution = adjustedGrossEarning * TAX_CONFIG.TOTAL_CONTRIBUTION_RATE;
+
+	const CPPAmount = adjustedGrossEarning * TAX_CONFIG.TOTAL_CONTRIBUTION_RATE;
+	const CPPContribution = CPPAmount < 0 ? 0 : CPPAmount;
+
 	if (empTaxCreditResult?.federalTaxCredit) {
 		empTaxCreditResult.federalTaxCredit = parseFloat(
 			empTaxCreditResult.federalTaxCredit.replace(/[$,]/g, ""),
@@ -157,14 +160,16 @@ const getTaxDetails = (payRate, grossEarning, empTaxCreditResult) => {
 		applyProvincialTaxRate(annualProjectedGrossEarning, empTaxCreditResult?.regionalTaxCredit) /
 		TAX_CONFIG.ANNUAL_PAY_PERIODS;
 
-	const EmployeeEIContribution = TAX_CONFIG.EMP_CONTRIBUTION_RATE * grossEarning;
+	const EE_EIContribution = TAX_CONFIG.EMP_CONTRIBUTION_RATE * grossEarning;
+	const EmployeeEIContribution = EE_EIContribution < 0 ? 0 : EE_EIContribution;
 
 	const EmployeeEIByPayPeriodMax =
 		EmployeeEIContribution > TAX_CONFIG.MAX_EMPLOYEE_EI_CONTRIBUTION
 			? TAX_CONFIG.MAX_EMPLOYEE_EI_CONTRIBUTION
 			: EmployeeEIContribution;
 
-	const EmployerEIContribution = TAX_CONFIG.EMP_CONTRIBUTION_RATE * 1.4 * grossEarning;
+	const ER_EIContribution = TAX_CONFIG.EMP_CONTRIBUTION_RATE * 1.4 * grossEarning;
+	const EmployerEIContribution = ER_EIContribution < 0 ? 0 : ER_EIContribution;
 
 	const EmployerEIByPayPeriodMax =
 		EmployerEIContribution > TAX_CONFIG.MAX_EMPLOYER_EI_CONTRIBUTION

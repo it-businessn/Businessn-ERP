@@ -250,14 +250,18 @@ const buildPayStub = (
 			prevPayPayInfo?.YTD_EmployeeEIDeductions || 0,
 			currentEmployeeEIDeductions || 0,
 		),
-		YTD_EmployerEIDeductions: getSumTotal(
-			prevPayPayInfo?.YTD_EmployerEIDeductions || 0,
-			currentEmployerEIDeductions || 0,
-		),
-		YTD_CPPDeductions: getSumTotal(
-			prevPayPayInfo?.YTD_CPPDeductions || 0,
-			currentCPPDeductions || 0,
-		),
+		YTD_EmployerEIDeductions:
+			getSumTotal(prevPayPayInfo?.YTD_EmployerEIDeductions || 0, currentEmployerEIDeductions || 0) <
+			0
+				? 0
+				: getSumTotal(
+						prevPayPayInfo?.YTD_EmployerEIDeductions || 0,
+						currentEmployerEIDeductions || 0,
+				  ),
+		YTD_CPPDeductions:
+			getSumTotal(prevPayPayInfo?.YTD_CPPDeductions || 0, currentCPPDeductions || 0) < 0
+				? 0
+				: getSumTotal(prevPayPayInfo?.YTD_CPPDeductions || 0, currentCPPDeductions || 0),
 		YTDUnionDuesDeductions: getSumTotal(
 			prevPayPayInfo?.YTDUnionDuesDeductions || 0,
 			currentUnionDuesDeductions || 0,
@@ -541,7 +545,7 @@ const addEmployeePayStubInfo = async (req, res) => {
 			fundingTotal.totalCPP_ER_Contr += payStubResult?.currentCPPDeductions || 0;
 			fundingTotal.totalEI_EE_Contr += payStubResult?.currentEmployeeEIDeductions || 0;
 			fundingTotal.totalEI_ER_Contr += payStubResult?.currentEmployerEIDeductions || 0;
-			fundingTotal.totalNetPay += payStubResult?.currentNetPay;
+			fundingTotal.totalNetPay += payStubResult?.currentNetPay || 0;
 		}
 
 		await buildFundingTotalsReport(fundingTotal, activeEmployees?.length);
