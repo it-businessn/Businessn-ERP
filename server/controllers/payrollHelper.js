@@ -30,7 +30,7 @@ const calculateTimesheetApprovedHours = async (startDate, endDate, companyName) 
 		approveStatus: TIMESHEET_STATUS.APPROVED,
 	});
 
-	const timesheetApprovedHoursSum = timesheets.reduce((acc, timesheet) => {
+	const timesheetApprovedHoursSum = timesheets?.reduce((acc, timesheet) => {
 		if (!acc[timesheet.employeeId]) {
 			acc[timesheet.employeeId] = {
 				_id: timesheet._id,

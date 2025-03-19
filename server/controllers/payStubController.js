@@ -531,7 +531,7 @@ const addEmployeePayStubInfo = async (req, res) => {
 
 		for (const employee of activeEmployees) {
 			const empTimesheetData = result?.find(
-				(el) => el.empId._id.toString() === employee._id.toString(),
+				(el) => el.empId?._id.toString() === employee._id.toString(),
 			);
 
 			const payStubResult = await buildPayStubDetails(

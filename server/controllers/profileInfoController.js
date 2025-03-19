@@ -23,13 +23,6 @@ const getAllProfileInfo = async (req, res) => {
 const getEmployeeProfileInfo = async (req, res) => {
 	const { companyName, empId } = req.params;
 	try {
-		const employee = await Employee.findById(empId);
-		if (employee?.role === ROLES.SHADOW_ADMIN) {
-			const result = await EmployeeProfileInfo.findOne({
-				empId,
-			});
-			return res.status(200).json(result);
-		}
 		const result = await findEmployeeProfileInfo(empId, companyName);
 		if (!result) {
 			const user = await Employee.findById(empId)

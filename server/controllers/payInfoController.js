@@ -52,13 +52,6 @@ const buildAmountAllocationEmpDetails = async (payDate, employee, companyName) =
 const getEmployeePayInfo = async (req, res) => {
 	const { companyName, empId } = req.params;
 	try {
-		const employee = await Employee.findById(empId);
-		if (employee?.role === ROLES.SHADOW_ADMIN) {
-			const result = await EmployeePayInfo.findOne({
-				empId,
-			});
-			return res.status(200).json(result);
-		}
 		const result = await findEmployeePayInfo(empId, companyName);
 		return res.status(200).json(result);
 	} catch (error) {

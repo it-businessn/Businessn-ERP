@@ -5,6 +5,7 @@ import ActionButtonGroup from "components/ui/form/ActionButtonGroup";
 import ModalLayout from "components/ui/modal/ModalLayout";
 import NormalTextTitle from "components/ui/NormalTextTitle";
 import TextTitle from "components/ui/text/TextTitle";
+import { ROLES } from "constant";
 import useCompany from "hooks/useCompany";
 import usePaygroup from "hooks/usePaygroup";
 import PageLayout from "layouts/PageLayout";
@@ -31,6 +32,9 @@ const ProcessPayroll = () => {
 	};
 	const { payNo, year } = useParams();
 	const isExtra = payNo?.includes("E");
+	const loggedInUser = LocalStorageService.getItem("user");
+	const hasAccessRole =
+		loggedInUser?.role === ROLES.AUTH_ADMINISTRATOR || loggedInUser?.role === ROLES.SHADOW_ADMIN;
 
 	const { company } = useCompany(LocalStorageService.getItem("selectedCompany"));
 	const { payGroupSchedule, closestRecord, payGroups, selectedPayGroup } = usePaygroup(
@@ -127,15 +131,16 @@ const ProcessPayroll = () => {
 							handleClick={goToNextStep}
 							height="60vh"
 						/>
-
-						<PrimaryButton
-							minW={"100%"}
-							isDisabled={isPayrollSubmitDisabled}
-							name={"Submit payroll"}
-							onOpen={handleClick}
-							// isLoading={isLoading}
-							loadingText="Loading"
-						/>
+						{hasAccessRole && (
+							<PrimaryButton
+								minW={"100%"}
+								isDisabled={isPayrollSubmitDisabled}
+								name={"Submit payroll"}
+								onOpen={handleClick}
+								// isLoading={isLoading}
+								loadingText="Loading"
+							/>
+						)}
 					</VStack>
 				</BoxCard>
 				<PayrollStageContent

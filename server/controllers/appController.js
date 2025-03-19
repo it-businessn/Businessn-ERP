@@ -233,9 +233,6 @@ const login = async (req, res) => {
 			payrollStatus,
 		} = user;
 
-		const isShadowAdmin = user?.role === ROLES.SHADOW_ADMIN;
-		const isEnroller = user?.role === ROLES.ENROLLER;
-
 		const existingCompanyUser = await Company.findOne({
 			registration_number: companyId,
 			employees: user._id,
@@ -257,8 +254,6 @@ const login = async (req, res) => {
 			return res.json({
 				message: "Logged in successfully",
 				user: {
-					isEnroller,
-					isShadowAdmin,
 					_id,
 					firstName,
 					lastName,

@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 
 import Navbar from "components/header";
 import Sidebar from "components/sidebar";
+import { ROLES } from "constant";
 import useCompany from "hooks/useCompany";
 import useSidebarMenu from "hooks/useSidebarMenu";
 import RootLayout from "layouts/RootLayout";
@@ -32,12 +33,12 @@ const Home = () => {
 		user?._id,
 		company,
 		isManager(user?.role),
-		user?.isShadowAdmin,
+		user?.role === ROLES.SHADOW_ADMIN,
 	);
 
 	useEffect(() => {
 		setSelectedCompany(user?.companyId?.name);
-		if (user?.isEnroller) {
+		if (user?.role === ROLES.ENROLLER) {
 			toast({
 				title: "Kindly contact administrator to provide erp access.",
 				status: "error",

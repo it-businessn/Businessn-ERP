@@ -76,18 +76,6 @@ const buildPayPeriodEmpDetails = async (companyName, employeeId, hideDetails) =>
 const getEmployeeEmploymentInfo = async (req, res) => {
 	const { companyName, empId } = req.params;
 	try {
-		const employee = await Employee.findById(empId);
-		if (employee?.role === ROLES.SHADOW_ADMIN) {
-			// const result = await EmployeeEmploymentInfo.deleteMany({
-			// 	empId,
-			// 	companyName: { $ne: BUSINESSN_ORG },
-			// });
-			// return res.status(200).json(result);
-			const result = await EmployeeEmploymentInfo.findOne({
-				empId,
-			});
-			return res.status(200).json(result);
-		}
 		const result = await findEmployeeEmploymentInfo(empId, companyName);
 		if (!result) {
 			const user = await Employee.findById(empId).select("email position dateOfJoining").sort({
