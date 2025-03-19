@@ -43,7 +43,7 @@ const EmpPayStatement = ({ record, isOpen, onClose }) => {
 					</Flex>
 				</DrawerHeader>
 
-				<DrawerBody ref={componentRef} bg={"var(--main_color)"} minH={"100vh"}>
+				<DrawerBody ref={componentRef} bg={"var(--main_color)"} minH="100vh" p="5px">
 					{record && <PayStubStatement data={record} />}
 				</DrawerBody>
 			</DrawerContent>

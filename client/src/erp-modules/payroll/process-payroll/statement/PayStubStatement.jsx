@@ -33,7 +33,7 @@ const PayStubStatement = ({ data }) => {
 					backgroundBlendMode="overlay"
 					filter={"opacity(0.2)"}
 				/>
-				<HStack alignItems="start" spacing={5} p={5}>
+				<HStack alignItems="start" spacing={3}>
 					<EmployeeInfo data={data} companyNum={companyInfo?.registration_number} />
 					<EmployeePayDetails data={data} />
 				</HStack>
