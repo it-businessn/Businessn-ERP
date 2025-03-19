@@ -73,11 +73,11 @@ const calculateTimesheetApprovedHours = async (startDate, endDate, companyName) 
 	return result;
 };
 
-const calcRegHrsWorked = (earningType, FTHrs, PTHrs, regHrs) => {
-	if (earningType === EARNING_TYPE.FT) {
+const calcRegHrsWorked = (earningType, FTHrs, PTHrs, regHrs, isExtraRun) => {
+	if (!isExtraRun && earningType === EARNING_TYPE.FT) {
 		return convertHrsToFloat(FTHrs);
 	} else {
-		return earningType === EARNING_TYPE.PT ? convertHrsToFloat(PTHrs) : regHrs;
+		return !isExtraRun && earningType === EARNING_TYPE.PT ? convertHrsToFloat(PTHrs) : regHrs;
 	}
 };
 
@@ -94,13 +94,20 @@ const calcPayRates = (newEmpDataPay) => {
 	return newEmpDataPay;
 };
 
-const calcHoursWorkedTotals = (newEmpData, empPayInfoResult, empTimesheetData, amtAllocated) => {
+const calcHoursWorkedTotals = (
+	newEmpData,
+	empPayInfoResult,
+	empTimesheetData,
+	amtAllocated,
+	isExtraRun,
+) => {
 	newEmpData.totalRegHoursWorked = calcRegHrsWorked(
 		empPayInfoResult?.typeOfEarning,
 		empPayInfoResult?.fullTimeStandardHours,
 		empPayInfoResult?.partTimeStandardHours,
 		convertHrsToFloat(empTimesheetData?.totalRegHoursWorked) +
 			convertHrsToFloat(amtAllocated?.additionalRegHoursWorked),
+		isExtraRun,
 	);
 	newEmpData.totalOvertimeHoursWorked =
 		convertHrsToFloat(empTimesheetData?.totalOvertimeHoursWorked) +
@@ -259,12 +266,19 @@ const buildNewEmpPayStubInfo = (
 	empAdditionalDataAllocated,
 	empBenefitInfoResult,
 	empTaxCreditResult,
+	isExtraRun,
 ) => {
 	const newEmpData = empTimesheetData ? empTimesheetData : {};
 	newEmpData.regPay = empPayInfoResult?.regPay || 0;
 	calcPayRates(newEmpData);
 
-	calcHoursWorkedTotals(newEmpData, empPayInfoResult, empTimesheetData, empAdditionalDataAllocated);
+	calcHoursWorkedTotals(
+		newEmpData,
+		empPayInfoResult,
+		empTimesheetData,
+		empAdditionalDataAllocated,
+		isExtraRun,
+	);
 
 	calcSalaryByEarningType(newEmpData, empAdditionalDataAllocated);
 	calcEmpBenefits(newEmpData, empBenefitInfoResult);

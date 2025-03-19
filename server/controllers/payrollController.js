@@ -69,6 +69,7 @@ const getGroupedTimesheet = async (req, res) => {
 			isSuperficial,
 			isManual,
 			isPayout,
+			isExtraPayRun,
 		);
 		res.status(200).json(aggregatedResult);
 	} catch (error) {

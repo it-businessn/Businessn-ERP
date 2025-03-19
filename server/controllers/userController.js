@@ -11,6 +11,7 @@ const {
 	getPayrollActiveEmployees,
 	addEmployee,
 } = require("./appController");
+const { findGroupEmployees } = require("./setUpController");
 
 const getPayrollInActiveEmployees = async (companyName) => {
 	const existingCompany = await findCompany("name", companyName);

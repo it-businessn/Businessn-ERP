@@ -336,6 +336,7 @@ const buildPayStubDetails = async (currentPayPeriod, companyName, empTimesheetDa
 		empAdditionalDataAllocated,
 		empBenefitInfoResult,
 		empTaxCreditResult,
+		isExtraRun,
 	);
 
 	const prevPayPeriodNum = isExtraRun ? payPeriod : payPeriod - 1;
@@ -539,6 +540,7 @@ const addEmployeePayStubInfo = async (req, res) => {
 				companyName,
 				empTimesheetData ?? null,
 				employee._id,
+				isExtraRun,
 			);
 			fundingTotal.totalIncomeTaxContr += payStubResult?.currentIncomeTaxDeductions || 0;
 			fundingTotal.totalCPP_EE_Contr += payStubResult?.currentCPPDeductions || 0;
