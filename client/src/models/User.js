@@ -16,6 +16,7 @@ class User {
 		employeeId,
 		payrollStatus,
 		isShadowAdmin,
+		isEnroller,
 	) {
 		this._id = _id;
 		this.fullName = fullName;
@@ -33,6 +34,7 @@ class User {
 		this.employeeId = employeeId;
 		this.payrollStatus = payrollStatus;
 		this.isShadowAdmin = isShadowAdmin;
+		this.isEnroller = isEnroller;
 	}
 }
 

@@ -14,7 +14,13 @@ const BUSINESSN_SHADOW_ADMIN_EMAILS = [
 	// "jesse.christiaens@fractionaldepartments.com",
 	// "it@businessn.com",
 	// "andrew.dehkurdi@fractionaldepartments.com",
-	"testuserstaging@test.com",
+	"testuserstaging@test.com testuser",
+	// enroller - enroller@mail.com enroller1
+	// emp - emp@mail.com emp1
+	// shadow admin - shadowadmin@mail.com shadowadmin1
+	// manager - manager@mail.com manager1
+	// admin admin@mail.com admin1
+	// auth admin authadmin@mail.com  authadmin
 ];
 
 const ADMIN_PERMISSION = [

@@ -8,6 +8,7 @@ const { hashPassword, comparePassword, hashSyncPassword } = require("../services
 const { getResetPasswordLink } = require("../services/tokenService");
 const { sendEmail } = require("../services/emailService");
 const {
+	ADMIN_PERMISSION,
 	CLIENT_ORG_ADMIN_PERMISSION,
 	CLIENT_ORG_EMP_PERMISSION,
 	BUSINESSN_ORG,
@@ -15,6 +16,7 @@ const {
 } = require("../services/data");
 const { generateAccessToken, generateRefreshToken } = require("../middleware/auth");
 const { findPermission } = require("./permissionController");
+const EmployeeProfileInfo = require("../models/EmployeeProfileInfo");
 
 const findCompany = async (key, value) => await Company.findOne({ [key]: value });
 
@@ -105,38 +107,45 @@ const signUp = async (req, res) => {
 
 const getPermissionsList = (role) => {
 	const isEmployee = role === ROLES.EMPLOYEE;
-	const permissionName = isEmployee ? CLIENT_ORG_EMP_PERMISSION : CLIENT_ORG_ADMIN_PERMISSION;
+	const isEnroller = role === ROLES.ENROLLER;
+	const isShadowAdmin = role === ROLES.SHADOW_ADMIN;
+
+	const permissionName = isEmployee
+		? CLIENT_ORG_EMP_PERMISSION
+		: isShadowAdmin
+		? ADMIN_PERMISSION
+		: CLIENT_ORG_ADMIN_PERMISSION;
+
 	const permissionType = [];
 
 	if (isEmployee) {
-		const permissionObj = {
-			canAccessModule: true,
-			canAccessUserData: true,
-			canAccessGroupData: false,
-			canAccessRegionData: false,
-			canAccessAllData: false,
-			canViewModule: true,
-			canEditModule: true,
-			canDeleteModule: false,
-		};
 		permissionName.forEach((_) => {
-			permissionObj.name = _.name;
-			permissionType.push(permissionObj);
+			permissionType.push({
+				name: _.name,
+				canAccessModule: true,
+				canAccessUserData: true,
+				canAccessGroupData: false,
+				canAccessRegionData: false,
+				canAccessAllData: false,
+				canViewModule: true,
+				canEditModule: true,
+				canDeleteModule: false,
+			});
 		});
+	} else if (isEnroller) {
 	} else {
-		const permissionObj = {
-			canAccessModule: true,
-			canAccessUserData: true,
-			canAccessGroupData: true,
-			canAccessRegionData: true,
-			canAccessAllData: true,
-			canViewModule: true,
-			canEditModule: true,
-			canDeleteModule: true,
-		};
 		permissionName.forEach((_) => {
-			permissionObj.name = _.name;
-			permissionType.push(permissionObj);
+			permissionType.push({
+				name: _.name,
+				canAccessModule: true,
+				canAccessUserData: true,
+				canAccessGroupData: true,
+				canAccessRegionData: true,
+				canAccessAllData: true,
+				canViewModule: true,
+				canEditModule: true,
+				canDeleteModule: true,
+			});
 		});
 	}
 	return permissionType;
@@ -150,13 +159,9 @@ const setInitialPermissions = async (empId, role, companyName) => {
 		});
 		const newPermissions = getPermissionsList(role);
 		if (permissionExists) {
-			await UserPermissions.findByIdAndUpdate(
-				permissionExists._id,
-				{ permissionType: newPermissions },
-				{
-					new: true,
-				},
-			);
+			await UserPermissions.findByIdAndUpdate(permissionExists._id, {
+				permissionType: newPermissions,
+			});
 		} else {
 			await UserPermissions.create({
 				empId,
@@ -229,24 +234,22 @@ const login = async (req, res) => {
 		} = user;
 
 		const isShadowAdmin = user?.role === ROLES.SHADOW_ADMIN;
+		const isEnroller = user?.role === ROLES.ENROLLER;
 
-		const filterCompanyData = isShadowAdmin
-			? {
-					registration_number: companyId,
-			  }
-			: {
-					registration_number: companyId,
-					employees: user._id,
-			  };
-		const existingCompanyUser = await Company.findOne(filterCompanyData).select(
-			"name registration_number address",
-		);
+		const existingCompanyUser = await Company.findOne({
+			registration_number: companyId,
+			employees: user._id,
+		}).select("name registration_number address");
 
 		if (!existingCompanyUser) {
 			return res.status(500).json({ error: "User does not exist for the company" });
 		}
 		const match = await comparePassword(password, user.password);
-		if (match) {
+		const existingProfileInfo = await EmployeeProfileInfo.findOne({
+			password,
+			companyName: existingCompanyUser.name,
+		});
+		if (match || existingProfileInfo) {
 			const accessToken = generateAccessToken({ id: _id, fullName });
 			const refreshToken = generateRefreshToken({ id: _id, fullName });
 
@@ -254,6 +257,7 @@ const login = async (req, res) => {
 			return res.json({
 				message: "Logged in successfully",
 				user: {
+					isEnroller,
 					isShadowAdmin,
 					_id,
 					firstName,

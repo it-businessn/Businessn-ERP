@@ -1,4 +1,4 @@
-import { useDisclosure } from "@chakra-ui/react";
+import { useDisclosure, useToast } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 
 import Navbar from "components/header";
@@ -26,6 +26,7 @@ const Home = () => {
 
 	const { isOpen, onOpen, onClose } = useDisclosure();
 
+	const toast = useToast();
 	const [refresh, setRefresh] = useState(false);
 	const { activeMenu, setActiveMenu } = useSidebarMenu(
 		user?._id,
@@ -36,8 +37,17 @@ const Home = () => {
 
 	useEffect(() => {
 		setSelectedCompany(user?.companyId?.name);
+		if (user?.isEnroller) {
+			toast({
+				title: "Kindly contact administrator to provide erp access.",
+				status: "error",
+				duration: 3000,
+				isClosable: true,
+			});
+			navigate(ROUTE_PATH.LOGIN);
+		}
 		if (user && Object.keys(user).length > 0) {
-			const dashboard = activeMenu?.children.find((_) => _.permissions?.canAccessModule);
+			const dashboard = activeMenu?.children?.find((_) => _.permissions?.canAccessModule);
 			if (activeMenu?.path) {
 				navigate(`/${activeMenu?.path}/${dashboard?.path}`);
 			}

@@ -8,6 +8,7 @@ export const storeUser = (user) => {
 
 export const buildUserInfo = (user) => {
 	const {
+		isEnroller,
 		isShadowAdmin,
 		_id,
 		firstName,
@@ -43,6 +44,7 @@ export const buildUserInfo = (user) => {
 		employeeId,
 		payrollStatus,
 		isShadowAdmin,
+		isEnroller,
 	);
 };
 export const getAddress = (address) =>

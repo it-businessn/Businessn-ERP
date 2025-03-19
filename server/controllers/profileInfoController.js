@@ -1,7 +1,7 @@
 const moment = require("moment");
 const Employee = require("../models/Employee");
 const EmployeeProfileInfo = require("../models/EmployeeProfileInfo");
-const { addEmployee, hashedPassword } = require("./appController");
+const { addEmployee } = require("./appController");
 const { deleteAlerts } = require("./payrollController");
 const { ROLES } = require("../services/data");
 
@@ -67,28 +67,30 @@ const updateEmployee = async (empId, data) => {
 		country,
 		password,
 	} = data;
+	const streetNumber = `${streetAddressSuite || ""} ${streetAddress || ""}`;
+
 	const employee = await Employee.findById(empId);
 
-	if (password && password !== "") {
-		employee.password = await hashedPassword(password);
-	}
-	if (personalEmail && personalEmail !== "") {
-		employee.email = personalEmail;
-	}
+	const primaryAddress =
+		streetNumber && streetNumber !== ""
+			? {
+					streetNumber,
+					city,
+					state: province,
+					postalCode,
+					country,
+			  }
+			: employee?.primaryAddress;
+	const email = personalEmail && personalEmail !== "" ? personalEmail : employee?.email;
+	const empPassword = password && password !== "" ? password : employee?.password;
 
-	const streetNumber = `${streetAddressSuite || ""} ${streetAddress || ""}`;
-	if (streetNumber && streetNumber !== "") {
-		employee.primaryAddress = {
-			streetNumber,
-			city,
-			state: province,
-			postalCode,
-			country,
-		};
-	}
-
-	employee.updatedOn = moment();
-	await employee.save();
+	await Employee.findByIdAndUpdate(
+		empId,
+		{ password: empPassword, email, primaryAddress, updatedOn: moment() },
+		{
+			new: true,
+		},
+	);
 };
 
 const addEmployeeProfileInfo = async (req, res) => {
@@ -130,6 +132,8 @@ const addEmployeeProfileInfo = async (req, res) => {
 			postalCode,
 			country,
 			password,
+			firstName,
+			lastName,
 		};
 		if (!empId && firstName && companyName && lastName) {
 			const existingProfileInfo = await EmployeeProfileInfo.findOne({
@@ -175,7 +179,7 @@ const addEmployeeProfileInfo = async (req, res) => {
 				fullName: `${firstName} ${middleName} ${lastName}`,
 			};
 			if (password) {
-				newRecord.password = await hashedPassword(password);
+				newRecord.password = password;
 			}
 			const newEmployee = await addEmployee(companyName, newRecord);
 			if (newEmployee) {
