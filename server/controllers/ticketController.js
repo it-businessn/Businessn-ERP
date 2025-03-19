@@ -190,6 +190,8 @@ const createTicket = async (req, res) => {
 			</p>
 			${
 				attachment &&
+				attachment !== "undefined" &&
+				attachment !== undefined &&
 				'<p style="font-weight: bold; margin: 5px 0"> Please find attached file for your reference. </p>'
 			}
 			<p style="font-weight: bold; margin: 0">Topic:</p>
