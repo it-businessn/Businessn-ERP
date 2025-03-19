@@ -185,11 +185,7 @@ const addEmployeeEmploymentInfo = async (req, res) => {
 				employmentRegion,
 			});
 			await updateEmployee(existingEmploymentInfo.empId, data);
-			// await setInitialPermissions(
-			// 	existingEmploymentInfo.empId,
-			// 	isRoleManager(employmentRole),
-			// 	companyName,
-			// );
+			await setInitialPermissions(existingEmploymentInfo.empId, employmentRole, companyName);
 			return res.status(201).json(updatedEmploymentInfo);
 		}
 		const newEmploymentInfo = await EmployeeEmploymentInfo.create({
@@ -205,7 +201,7 @@ const addEmployeeEmploymentInfo = async (req, res) => {
 			employmentRegion,
 		});
 		await updateEmployee(empId, data);
-		// await setInitialPermissions(empId, isRoleManager(employmentRole), companyName);
+		await setInitialPermissions(empId, employmentRole, companyName);
 		return res.status(201).json(newEmploymentInfo);
 	} catch (error) {
 		res.status(400).json({ message: error.message });

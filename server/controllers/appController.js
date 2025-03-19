@@ -103,52 +103,66 @@ const signUp = async (req, res) => {
 	}
 };
 
-const setInitialPermissions = async (empId, isManager, companyName) => {
-	const permissionName = isManager ? CLIENT_ORG_ADMIN_PERMISSION : CLIENT_ORG_EMP_PERMISSION;
+const getPermissionsList = (role) => {
+	const isEmployee = role === ROLES.EMPLOYEE;
+	const permissionName = isEmployee ? CLIENT_ORG_EMP_PERMISSION : CLIENT_ORG_ADMIN_PERMISSION;
+	const permissionType = [];
+
+	if (isEmployee) {
+		const permissionObj = {
+			canAccessModule: true,
+			canAccessUserData: true,
+			canAccessGroupData: false,
+			canAccessRegionData: false,
+			canAccessAllData: false,
+			canViewModule: true,
+			canEditModule: true,
+			canDeleteModule: false,
+		};
+		permissionName.forEach((_) => {
+			permissionObj.name = _.name;
+			permissionType.push(permissionObj);
+		});
+	} else {
+		const permissionObj = {
+			canAccessModule: true,
+			canAccessUserData: true,
+			canAccessGroupData: true,
+			canAccessRegionData: true,
+			canAccessAllData: true,
+			canViewModule: true,
+			canEditModule: true,
+			canDeleteModule: true,
+		};
+		permissionName.forEach((_) => {
+			permissionObj.name = _.name;
+			permissionType.push(permissionObj);
+		});
+	}
+	return permissionType;
+};
+
+const setInitialPermissions = async (empId, role, companyName) => {
 	try {
 		const permissionExists = await findPermission({
 			empId,
 			companyName,
 		});
-		if (!permissionExists) {
-			const userPermission = new UserPermissions({
+		const newPermissions = getPermissionsList(role);
+		if (permissionExists) {
+			await UserPermissions.findByIdAndUpdate(
+				permissionExists._id,
+				{ permissionType: newPermissions },
+				{
+					new: true,
+				},
+			);
+		} else {
+			await UserPermissions.create({
 				empId,
 				companyName,
+				permissionType: newPermissions,
 			});
-			userPermission.permissionType = [];
-
-			if (isManager) {
-				const permissionObj = {
-					canAccessModule: true,
-					canAccessUserData: true,
-					canAccessGroupData: true,
-					canAccessRegionData: true,
-					canAccessAllData: true,
-					canViewModule: true,
-					canEditModule: true,
-					canDeleteModule: true,
-				};
-				permissionName.forEach((_) => {
-					permissionObj.name = _.name;
-					userPermission.permissionType.push(permissionObj);
-				});
-			} else {
-				const permissionObj = {
-					canAccessModule: true,
-					canAccessUserData: true,
-					canAccessGroupData: false,
-					canAccessRegionData: false,
-					canAccessAllData: false,
-					canViewModule: true,
-					canEditModule: true,
-					canDeleteModule: false,
-				};
-				permissionName.forEach((_) => {
-					permissionObj.name = _.name;
-					userPermission.permissionType.push(permissionObj);
-				});
-			}
-			await userPermission.save();
 		}
 	} catch (error) {
 		console.log(error);
