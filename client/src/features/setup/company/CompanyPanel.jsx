@@ -1,25 +1,13 @@
 import TabGroup from "components/ui/tab";
-import { useEffect, useState } from "react";
-import SettingService from "services/SettingService";
+import useModule from "hooks/useModule";
+import { useState } from "react";
 import CompanyDetails from "./company-info/CompanyDetails";
 import GroupsPanel from "./GroupsPanel";
 import ModulePanel from "./ModulePanel";
 import Naming from "./Naming";
 
 const CompanyPanel = ({ employees, setFilteredEmployees, filteredEmployees, company }) => {
-	const [modules, setModules] = useState(null);
-
-	useEffect(() => {
-		const fetchAllModules = async () => {
-			try {
-				const { data } = await SettingService.getAllModules(company);
-				setModules(data);
-			} catch (error) {
-				console.error(error);
-			}
-		};
-		fetchAllModules();
-	}, []);
+	const modules = useModule(company);
 
 	const COMPANY_SETUP_TAB = [
 		{ id: 0, type: "Modules", name: <ModulePanel modules={modules} /> },

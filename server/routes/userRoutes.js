@@ -32,6 +32,10 @@ router.get("/:companyName", userController.getCompanyEmployees);
 
 router.get("/count/:companyName", userController.getCompanyEmployeesCount);
 
+router.post("/create", userController.createMasterUser);
+
+router.put("/master/:userId", userController.updateMasterUser);
+
 router.put("/:userId", userController.updateUser);
 
 router.put("/assignLeads", userController.updateUserAssignedLeads);

@@ -7,11 +7,11 @@ import useCostCenter from "hooks/useCostCenter";
 import useDepartment from "hooks/useDepartment";
 import useGroup from "hooks/useGroup";
 import useManager from "hooks/useManager";
+import useModule from "hooks/useModule";
 import useRoles from "hooks/useRoles";
 import PageLayout from "layouts/PageLayout";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import LocalStorageService from "services/LocalStorageService";
-import SettingService from "services/SettingService";
 import CompaniesPanel from "../setup/company/CompaniesPanel";
 import CCForm from "./CCForm";
 import DeptForm from "./DeptForm";
@@ -22,9 +22,9 @@ import RoleForm from "./RoleForm";
 const Configuration = () => {
 	const { company } = useCompany(LocalStorageService.getItem("selectedCompany"));
 	const managers = useManager(company);
-	const [modules, setModules] = useState(null);
 
 	const [openAddGroup, setOpenAddGroup] = useState(false);
+	const modules = useModule(company, openAddGroup);
 	const [openAddModule, setOpenAddModule] = useState(false);
 	const [openAddDepartment, setOpenAddDepartment] = useState(false);
 	const [openAddRole, setOpenAddRole] = useState(false);
@@ -36,18 +36,6 @@ const Configuration = () => {
 	const dept = useDepartment(company, openAddDepartment);
 	const cc = useCostCenter(company, openCCForm);
 	const paygroup = useGroup(company, openAddGroup);
-
-	useEffect(() => {
-		const fetchAllModules = async () => {
-			try {
-				const { data } = await SettingService.getAllModules(company);
-				setModules(data);
-			} catch (error) {
-				console.error(error);
-			}
-		};
-		fetchAllModules();
-	}, [openAddGroup]);
 
 	const CONFIG_OPTIONS = [
 		{

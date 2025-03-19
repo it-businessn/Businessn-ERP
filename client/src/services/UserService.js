@@ -65,6 +65,14 @@ const UserService = {
 		return apiService.post("/user/register", data);
 	},
 
+	async addMasterUser(data) {
+		return apiService.post("/user/create", data);
+	},
+
+	async updateMasterUser(data, id) {
+		return apiService.put(`/user/master/${id}`, data, id);
+	},
+
 	async verifyUser(data) {
 		return apiService.post("/user/verify-email", data);
 	},

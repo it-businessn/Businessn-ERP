@@ -3,17 +3,17 @@ import PrimaryButton from "components/ui/button/PrimaryButton";
 import TextTitle from "components/ui/text/TextTitle";
 import useCompany from "hooks/useCompany";
 import useManager from "hooks/useManager";
+import useModule from "hooks/useModule";
 import PageLayout from "layouts/PageLayout";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import LocalStorageService from "services/LocalStorageService";
-import SettingService from "services/SettingService";
 import CompaniesPanel from "../setup/company/CompaniesPanel";
 import AddNewGroup from "../setup/company/group-tab/AddNewGroup";
 
 const Configuration = () => {
 	const { company } = useCompany(LocalStorageService.getItem("selectedCompany"));
 	const managers = useManager(company);
-	const [modules, setModules] = useState(null);
+	const modules = useModule(company);
 
 	// const [darkMode, setDarkMode] = useState(false);
 	// const [fontSize, setFontSize] = useState(16);
@@ -51,18 +51,6 @@ const Configuration = () => {
 			content: <CompaniesPanel setOpenCompanyForm />,
 		},
 	];
-
-	useEffect(() => {
-		const fetchAllModules = async () => {
-			try {
-				const { data } = await SettingService.getAllModules(company);
-				setModules(data);
-			} catch (error) {
-				console.error(error);
-			}
-		};
-		fetchAllModules();
-	}, []);
 
 	const { isOpen, onToggle } = useDisclosure();
 	const [currentSection, setCurrentSection] = useState(null);

@@ -9,6 +9,7 @@ const {
 	setInitialPermissions,
 	findCompany,
 	getPayrollActiveEmployees,
+	addEmployee,
 } = require("./appController");
 
 const getPayrollInActiveEmployees = async (companyName) => {
@@ -280,6 +281,47 @@ const getAllSalesAgents = async (req, res) => {
 	}
 };
 
+const createMasterUser = async (req, res) => {
+	const { company, firstName, middleName, lastName, email, phoneNumber, position, startDate } =
+		req.body;
+
+	try {
+		const employee = await addEmployee(company, {
+			firstName,
+			middleName,
+			lastName,
+			fullName: `${firstName} ${middleName} ${lastName}`,
+			email,
+			phoneNumber,
+			position,
+			dateOfJoining: startDate,
+		});
+
+		res.status(201).json(employee);
+	} catch (error) {
+		res.status(400).json({ message: error.message });
+	}
+};
+
+const updateMasterUser = async (req, res) => {
+	const { userId } = req.params;
+	try {
+		const userExists = await Employee.findById(userId);
+		if (userExists) {
+			const updatedUser = await Employee.findByIdAndUpdate(
+				userId,
+				{ baseModule: req.body },
+				{
+					new: true,
+				},
+			);
+			res.status(201).json(updatedUser);
+		}
+	} catch (error) {
+		res.status(400).json({ message: error.message });
+	}
+};
+
 const updateUser = async (req, res) => {
 	const { userId } = req.params;
 	const { role, companyId, companies } = req.body;
@@ -385,4 +427,6 @@ module.exports = {
 	getAllCompManagers,
 	getEmployeeId,
 	fetchActiveEmployees,
+	createMasterUser,
+	updateMasterUser,
 };
