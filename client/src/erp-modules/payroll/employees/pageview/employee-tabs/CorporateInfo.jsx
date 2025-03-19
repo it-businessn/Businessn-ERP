@@ -48,6 +48,11 @@ const CorporateInfo = ({ company, isOnboarding, id, handleNext, handlePrev }) =>
 
 	useEffect(() => {
 		if (employmentInfo) {
+			if (employmentInfo.email) {
+				employmentInfo.empId = employmentInfo._id;
+				employmentInfo.positions = [{ title: employmentInfo?.position }];
+				employmentInfo.employmentStartDate = employmentInfo?.dateOfJoining;
+			}
 			setFormData(employmentInfo);
 		} else {
 			setFormData(initialCorporateInfo);
@@ -77,6 +82,7 @@ const CorporateInfo = ({ company, isOnboarding, id, handleNext, handlePrev }) =>
 					formData.positions[positionIndex] = position;
 				}
 			}
+			formData.companyName = company;
 			await PayrollService.addEmployeeEmploymentInfo(formData);
 			setIsLoading(false);
 			setIsDisabled(true);

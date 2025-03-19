@@ -31,6 +31,11 @@ const PersonalInfo = ({ company, isOnboarding, id, handleNext }) => {
 	useEffect(() => {
 		LocalStorageService.removeItem("onboardingEmpId");
 		if (profileInfo) {
+			if (profileInfo.email) {
+				profileInfo.empId = profileInfo._id;
+				profileInfo.personalEmail = profileInfo.email;
+				profileInfo.personalPhoneNum = profileInfo.phoneNumber;
+			}
 			setFormData(profileInfo);
 		} else {
 			setFormData(setProfileInfo);
@@ -75,6 +80,7 @@ const PersonalInfo = ({ company, isOnboarding, id, handleNext }) => {
 	const handleSubmit = async () => {
 		setIsLoading(true);
 		try {
+			formData.companyName = company;
 			const result = await PayrollService.addEmployeeProfileInfo(formData);
 			setIsLoading(false);
 			// setIsSave1Disabled(true);

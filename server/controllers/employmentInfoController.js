@@ -89,10 +89,16 @@ const getEmployeeEmploymentInfo = async (req, res) => {
 			return res.status(200).json(result);
 		}
 		const result = await findEmployeeEmploymentInfo(empId, companyName);
+		if (!result) {
+			const user = await Employee.findById(empId).select("email position dateOfJoining").sort({
+				createdOn: -1,
+			});
+			return res.status(200).json(user);
+		}
 		const currentDate = moment().format("YYYYMMDD");
 
-		if (result && !result["employeeNo"]) {
-			result["employeeNo"] = `${companyName.slice(0, 2).toUpperCase()}${currentDate}${
+		if (!result?.employeeNo) {
+			result.employeeNo = `${companyName.slice(0, 2).toUpperCase()}${currentDate}${
 				Math.floor(Math.random() * 10) + 10
 			}`;
 		}
@@ -140,6 +146,8 @@ const addEmployeeEmploymentInfo = async (req, res) => {
 		employmentLeaveDate,
 		employmentRole,
 		positions,
+		employmentCountry,
+		employmentRegion,
 	} = req.body;
 	try {
 		const data = {
@@ -166,16 +174,22 @@ const addEmployeeEmploymentInfo = async (req, res) => {
 		}
 		const existingEmploymentInfo = await findEmployeeEmploymentInfo(empId, companyName);
 		if (existingEmploymentInfo) {
-			const updatedEmploymentInfo = await updateEmploymentInfo(
-				existingEmploymentInfo._id,
-				req.body,
-			);
+			const updatedEmploymentInfo = await updateEmploymentInfo(existingEmploymentInfo._id, {
+				payrollStatus,
+				employeeNo,
+				employmentStartDate,
+				employmentLeaveDate,
+				employmentRole,
+				positions,
+				employmentCountry,
+				employmentRegion,
+			});
 			await updateEmployee(existingEmploymentInfo.empId, data);
-			await setInitialPermissions(
-				existingEmploymentInfo.empId,
-				isRoleManager(employmentRole),
-				companyName,
-			);
+			// await setInitialPermissions(
+			// 	existingEmploymentInfo.empId,
+			// 	isRoleManager(employmentRole),
+			// 	companyName,
+			// );
 			return res.status(201).json(updatedEmploymentInfo);
 		}
 		const newEmploymentInfo = await EmployeeEmploymentInfo.create({
@@ -187,9 +201,11 @@ const addEmployeeEmploymentInfo = async (req, res) => {
 			employmentLeaveDate,
 			employmentRole,
 			positions,
+			employmentCountry,
+			employmentRegion,
 		});
 		await updateEmployee(empId, data);
-		await setInitialPermissions(empId, isRoleManager(employmentRole), companyName);
+		// await setInitialPermissions(empId, isRoleManager(employmentRole), companyName);
 		return res.status(201).json(newEmploymentInfo);
 	} catch (error) {
 		res.status(400).json({ message: error.message });
@@ -198,8 +214,29 @@ const addEmployeeEmploymentInfo = async (req, res) => {
 
 const updateEmployeeEmploymentInfo = async (req, res) => {
 	const { id } = req.params;
+	const {
+		payrollStatus,
+		employeeNo,
+		companyName,
+		employmentStartDate,
+		employmentLeaveDate,
+		employmentRole,
+		positions,
+		employmentCountry,
+		employmentRegion,
+	} = req.body;
 	try {
-		const updatedInfo = await updateEmploymentInfo(id, req.body);
+		const updatedInfo = await updateEmploymentInfo(id, {
+			payrollStatus,
+			employeeNo,
+			companyName,
+			employmentStartDate,
+			employmentLeaveDate,
+			employmentRole,
+			positions,
+			employmentCountry,
+			employmentRegion,
+		});
 		res.status(201).json(updatedInfo);
 	} catch (error) {
 		res.status(400).json({ message: error.message });

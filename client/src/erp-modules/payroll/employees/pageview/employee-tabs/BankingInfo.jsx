@@ -45,19 +45,24 @@ const BankingInfo = ({ company, isOnboarding, handlePrev, id }) => {
 			setFormData(setBankingInfo);
 		}
 	}, [bankingInfo, empId]);
+
 	useEffect(() => {
 		if (formData.paymentEmail) {
 			setIsSave1Disabled(false);
 		}
 	}, [formData.paymentEmail]);
+
 	const toast = useToast();
 
 	const handleSubmit = async (values) => {
 		setIsLoading(true);
 		try {
 			if (values) {
+				setIsDisabled(false);
 				formData.bankDetails = values;
 			}
+			formData.empId = empId;
+			formData.companyName = company;
 			await PayrollService.addEmployeeBankingInfo(formData);
 			toast({
 				title: "Banking info updated successfully.",
@@ -73,6 +78,7 @@ const BankingInfo = ({ company, isOnboarding, handlePrev, id }) => {
 			setIsLoading(false);
 		}
 	};
+
 	const [currentStep, setCurrentStep] = useState(0);
 	const goToNextStep = (index) => {
 		setCurrentStep(index);
@@ -185,7 +191,7 @@ const BankingInfo = ({ company, isOnboarding, handlePrev, id }) => {
 					isOnboarding={isOnboarding}
 					handlePrev={handlePrev}
 					id={id}
-					handleNextEnabled={isOnboarding ? true : !isSave1Disabled && !isDisabled}
+					handleNextEnabled={!isSave1Disabled && !isDisabled}
 				/>
 			</BoxCard>
 			<StepContent currentStep={currentStep} steps={steps} />

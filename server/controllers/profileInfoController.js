@@ -31,6 +31,14 @@ const getEmployeeProfileInfo = async (req, res) => {
 			return res.status(200).json(result);
 		}
 		const result = await findEmployeeProfileInfo(empId, companyName);
+		if (!result) {
+			const user = await Employee.findById(empId)
+				.select("firstName middleName lastName email phoneNumber")
+				.sort({
+					createdOn: -1,
+				});
+			return res.status(200).json(user);
+		}
 		return res.status(200).json(result);
 	} catch (error) {
 		res.status(404).json({ error: error.message });

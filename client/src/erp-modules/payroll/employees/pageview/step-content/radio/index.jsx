@@ -19,7 +19,7 @@ const RadioTypeRecord = ({
 					{param.name} {required && <MandatoryField color={"red"} />}
 				</FormLabel>
 				<RadioGroup
-					value={formData[param.param_key] ?? ""}
+					value={formData[param.param_key] || ""}
 					onChange={(value) => {
 						setFormData((prev) => ({
 							...prev,

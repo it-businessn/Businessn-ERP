@@ -49,6 +49,7 @@ const GovernmentContribution = ({ company, isOnboarding, handleNext, handlePrev,
 		formData.isCPPExempt = isCPPExempt !== undefined ? !isCPPExempt : false;
 		setIsLoading(true);
 		try {
+			formData.companyName = company;
 			await PayrollService.addEmployeeGovernmentInfo(formData);
 			setIsLoading(false);
 			// setIsDisabled(true);

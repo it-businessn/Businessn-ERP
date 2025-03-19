@@ -38,6 +38,7 @@ const PayInfo = ({ company, isOnboarding, id, handleNext, handlePrev }) => {
 				const positionIndex = existingEarnings?.findIndex(({ title }) => title === data.title);
 				formData.roles[positionIndex] = data;
 			}
+			formData.companyName = company;
 			await PayrollService.addEmployeePayInfo(formData);
 			setIsLoading(false);
 			// setIsDisabled(true);
@@ -56,7 +57,7 @@ const PayInfo = ({ company, isOnboarding, id, handleNext, handlePrev }) => {
 			content: (
 				<>
 					<TextTitle title="Earnings" />
-					{!formData.roles.length && (
+					{!formData?.roles?.length && (
 						<TextTitle
 							color="var(--pending)"
 							title="** Please add roles/positions under employment section."

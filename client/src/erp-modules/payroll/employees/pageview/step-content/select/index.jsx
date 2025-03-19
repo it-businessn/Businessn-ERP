@@ -23,7 +23,7 @@ const SelectTypeRecord = ({ param, formData, setFormData, handleConfirm, size = 
 				size={size}
 				placeholder={`Select ${param.name}`}
 				name={param.param_key}
-				value={formData[param.param_key]}
+				value={formData[param.param_key] || ""}
 				onChange={(e) => {
 					setFormData((prev) => ({
 						...prev,
