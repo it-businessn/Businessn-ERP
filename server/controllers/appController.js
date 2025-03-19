@@ -25,6 +25,7 @@ const getPayrollActiveEmployees = async (companyName) => {
 	let result = await Employee.find({
 		payrollStatus: "Payroll Active",
 		companyId: existingCompany._id,
+		role: { $ne: ROLES.SHADOW_ADMIN },
 	})
 		.select([
 			"fullName",
@@ -38,9 +39,6 @@ const getPayrollActiveEmployees = async (companyName) => {
 		.sort({
 			fullName: 1,
 		});
-	if (companyName !== BUSINESSN_ORG) {
-		result = result?.filter((emp) => emp?.role !== ROLES.SHADOW_ADMIN);
-	}
 	return result;
 };
 

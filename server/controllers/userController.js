@@ -4,7 +4,7 @@ const Group = require("../models/Group");
 const Lead = require("../models/Lead");
 const Task = require("../models/Task");
 const UserActivity = require("../models/UserActivity");
-const { isRoleManager, BUSINESSN_ORG, ROLES } = require("../services/data");
+const { isRoleManager, ROLES } = require("../services/data");
 const {
 	setInitialPermissions,
 	findCompany,
@@ -16,6 +16,7 @@ const { findGroupEmployees } = require("./setUpController");
 const getPayrollInActiveEmployees = async (companyName) => {
 	const existingCompany = await findCompany("name", companyName);
 	return await findEmployee({
+		role: { $ne: ROLES.SHADOW_ADMIN },
 		payrollStatus: { $ne: "Payroll Active" },
 		companyId: existingCompany._id,
 	});
@@ -101,9 +102,6 @@ const getPayrollInActiveCompanyEmployees = async (req, res) => {
 	const { companyName } = req.params;
 	try {
 		let result = await getPayrollInActiveEmployees(companyName);
-		if (companyName !== BUSINESSN_ORG) {
-			result = result?.filter((emp) => emp?.role !== ROLES.SHADOW_ADMIN);
-		}
 		res.status(200).json(result);
 	} catch (error) {
 		res.status(404).json({ error: error.message });
@@ -116,14 +114,12 @@ const getCompanyEmployees = async (req, res) => {
 		const existingCompany = await findCompany("name", companyName);
 		let result = await Employee.find({
 			companyId: existingCompany._id,
+			role: { $ne: ROLES.SHADOW_ADMIN },
 		})
 			.select(
 				"fullName employeeId payrollStatus employeeNo timeManagementBadgeID department email role",
 			)
 			.sort({ fullName: 1 });
-		if (companyName !== BUSINESSN_ORG) {
-			result = result?.filter((emp) => emp?.role !== ROLES.SHADOW_ADMIN);
-		}
 		res.status(200).json(result);
 	} catch (error) {
 		res.status(404).json({ error: error.message });
