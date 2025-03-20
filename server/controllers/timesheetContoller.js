@@ -49,7 +49,7 @@ const getTimesheetResult = async (companyName) => {
 
 	const payInfoMap = new Map(
 		payInfoResult.map((payInfo) => [
-			payInfo.empId.toString(),
+			payInfo?.empId?.toString(),
 			{
 				regPay: payInfo.regPay,
 				overTimePay: payInfo.overTimePay,
@@ -71,7 +71,7 @@ const getEmploymentResult = async (companyName) => {
 	}).select("empId positions");
 	const empInfoMap = new Map(
 		empInfoResult.map((empInfo) => [
-			empInfo.empId.toString(),
+			empInfo?.empId?.toString(),
 			{
 				positions: empInfo.positions,
 			},
@@ -82,7 +82,7 @@ const getEmploymentResult = async (companyName) => {
 
 const mapTimesheet = (payInfos, timesheets, empInfos) => {
 	timesheets.forEach((timesheet) => {
-		const empIdStr = timesheet?.employeeId?._id.toString();
+		const empIdStr = timesheet?.employeeId?._id?.toString();
 		if (empInfos?.has(empIdStr)) {
 			const empInfo = empInfos?.get(empIdStr);
 			timesheet.positions = empInfo.positions;
