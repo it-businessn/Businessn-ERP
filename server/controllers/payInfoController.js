@@ -29,8 +29,8 @@ const getAllPayInfo = async (req, res) => {
 };
 
 const buildAmountAllocationEmpDetails = async (payDate, employee, companyName) => {
-	const employeeId = employee._id;
-	const fullName = employee.fullName;
+	const employeeId = employee?.empId?._id;
+	const fullName = employee?.empId?.fullName;
 
 	const empPayStubResult = await findEmpPayStubDetail(employeeId, payDate, companyName);
 
@@ -118,9 +118,7 @@ const findEmployeePayInfoDetails = async (empId, companyName) =>
 	await EmployeePayInfo.findOne({
 		empId,
 		companyName,
-	}).select(
-		"empId typeOfEarning fullTimeStandardHours partTimeStandardHours regPay overTimePay dblOverTimePay statWorkPay statPay sickPay vacationPay",
-	);
+	}).select("empId roles");
 
 module.exports = {
 	getAllPayInfo,

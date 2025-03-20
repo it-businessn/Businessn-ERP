@@ -33,8 +33,8 @@ const getPayrunEEContributionResult = async (
 			// } else if (isManual) {
 			// 	await calcManualEEContribution(
 			// 		currentPeriodEmployees,
-			// 		employee._id,
-			// 		employee.fullName,
+			// employee?.empId?._id,
+			// employee?.empId?.fullName,
 			// 		payDate,
 			// 		companyName,
 			// 		aggregatedResult,
@@ -42,8 +42,8 @@ const getPayrunEEContributionResult = async (
 			// } else if (isPayout) {
 			// 	await calcPayoutEEContribution(
 			// 		currentPeriodEmployees,
-			// 		employee._id,
-			// 		employee.fullName,
+			// employee?.empId?._id,
+			// employee?.empId?.fullName,
 			// 		payDate,
 			// 		companyName,
 			// 		aggregatedResult,

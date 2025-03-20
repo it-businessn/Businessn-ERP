@@ -102,9 +102,9 @@ const calcHoursWorkedTotals = (
 	isExtraRun,
 ) => {
 	newEmpData.totalRegHoursWorked = calcRegHrsWorked(
-		empPayInfoResult?.typeOfEarning,
-		empPayInfoResult?.fullTimeStandardHours,
-		empPayInfoResult?.partTimeStandardHours,
+		empPayInfoResult?.roles[0]?.typeOfEarning,
+		empPayInfoResult?.roles[0]?.fullTimeStandardHours,
+		empPayInfoResult?.roles[0]?.partTimeStandardHours,
 		convertHrsToFloat(empTimesheetData?.totalRegHoursWorked) +
 			convertHrsToFloat(amtAllocated?.additionalRegHoursWorked),
 		isExtraRun,
@@ -269,7 +269,7 @@ const buildNewEmpPayStubInfo = (
 	isExtraRun,
 ) => {
 	const newEmpData = empTimesheetData ? empTimesheetData : {};
-	newEmpData.regPay = empPayInfoResult?.regPay || 0;
+	newEmpData.regPay = empPayInfoResult?.roles[0]?.payRate || 0;
 	calcPayRates(newEmpData);
 
 	calcHoursWorkedTotals(
