@@ -49,8 +49,8 @@ const EmpSearchMenu = ({ filteredEmployees, empName, handleInputChange, handleSe
 					mb={2}
 				/>
 				{filteredEmployees?.map((emp) => (
-					<MenuItem key={emp._id} onClick={() => handleSelect(emp)}>
-						<Text fontSize="xs">{emp.fullName}</Text>
+					<MenuItem key={emp?.empId?._id} onClick={() => handleSelect(emp)}>
+						<Text fontSize="xs">{emp?.empId?.fullName}</Text>
 					</MenuItem>
 				))}
 			</MenuList>

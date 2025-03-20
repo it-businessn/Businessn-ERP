@@ -46,7 +46,7 @@ const Employees = ({ isOnboarding, selectedPayGroupName, handleClose }) => {
 
 	useEffect(() => {
 		if (id && employees) {
-			const user = employees?.find(({ _id }) => _id === id);
+			const user = employees?.find(({ empId }) => empId?._id === id);
 			setEmployee(user);
 		}
 	}, [id, employees]);
@@ -156,13 +156,13 @@ const Employees = ({ isOnboarding, selectedPayGroupName, handleClose }) => {
 						<Avatar
 							borderRadius="10%"
 							// onClick={handleToggle}
-							name={employee?.fullName || ""}
+							name={employee?.empId?.fullName || ""}
 							src=""
 							boxSize="15"
 						/>
 						<VStack spacing={0} align={"start"}>
-							<TextTitle size="sm" title={employee?.fullName || ""} />
-							<NormalTextTitle size="xs" title={employee?.employeeId || ""} />
+							<TextTitle size="sm" title={employee?.empId?.fullName || ""} />
+							<NormalTextTitle size="xs" title={employee?.empId?.employeeNo || ""} />
 							{isActivePayroll && <ActiveBadge title={"Payroll Activated"} />}
 						</VStack>
 					</HStack>

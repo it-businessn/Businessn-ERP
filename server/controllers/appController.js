@@ -11,33 +11,29 @@ const {
 	ADMIN_PERMISSION,
 	CLIENT_ORG_ADMIN_PERMISSION,
 	CLIENT_ORG_EMP_PERMISSION,
-	BUSINESSN_ORG,
 	ROLES,
 } = require("../services/data");
 const { generateAccessToken, generateRefreshToken } = require("../middleware/auth");
 const { findPermission } = require("./permissionController");
 const EmployeeProfileInfo = require("../models/EmployeeProfileInfo");
+const EmployeeEmploymentInfo = require("../models/EmployeeEmploymentInfo");
 
 const findCompany = async (key, value) => await Company.findOne({ [key]: value });
 
 const getPayrollActiveEmployees = async (companyName) => {
-	const existingCompany = await findCompany("name", companyName);
-	let result = await Employee.find({
+	let result = await EmployeeEmploymentInfo.find({
 		payrollStatus: "Payroll Active",
-		companyId: existingCompany._id,
-		role: { $ne: ROLES.SHADOW_ADMIN },
+		companyName,
+		employmentRole: { $ne: ROLES.SHADOW_ADMIN },
 	})
-		.select([
-			"fullName",
-			"payrollStatus",
-			"employeeNo",
-			"timeManagementBadgeID",
-			"department",
-			"email",
-			"role",
-		])
+		.populate({
+			path: "empId",
+			model: "Employee",
+			select: ["fullName", "email"],
+		})
+		.select("payrollStatus employeeNo positions employmentRole")
 		.sort({
-			fullName: 1,
+			"empId.fullName": 1,
 		});
 	return result;
 };
@@ -65,7 +61,6 @@ const signUp = async (req, res) => {
 		lastName,
 		email,
 		password,
-		role,
 		department,
 		baseModule,
 		manager,
@@ -86,7 +81,6 @@ const signUp = async (req, res) => {
 			middleName,
 			lastName,
 			email,
-			role,
 			department,
 			baseModule,
 			manager,
@@ -199,8 +193,13 @@ const login = async (req, res) => {
 
 	try {
 		const user = await Employee.findOne({ email }).select(
-			"firstName lastName middleName fullName email password role department phoneNumber primaryAddress employmentType manager employeeId payrollStatus",
+			"firstName lastName middleName fullName email password phoneNumber primaryAddress manager",
 		);
+		const existingCompany = await findCompany("registration_number", companyId);
+		const empInfo = await EmployeeEmploymentInfo.findOne({
+			companyName: existingCompany.name,
+			empId: user._id,
+		}).select("positions employeeNo payrollStatus employmentRole");
 		// if (!user.companyId) {
 		// 	user.companyId = [];
 		// user.companyId.push("669c3a69b52384bab5035425");
@@ -215,21 +214,8 @@ const login = async (req, res) => {
 			return res.status(500).json({ error: "User does not exist" });
 		}
 
-		const {
-			_id,
-			firstName,
-			lastName,
-			middleName,
-			fullName,
-			role,
-			department,
-			phoneNumber,
-			primaryAddress,
-			employmentType,
-			manager,
-			employeeId,
-			payrollStatus,
-		} = user;
+		const { _id, firstName, lastName, middleName, fullName, phoneNumber, primaryAddress, manager } =
+			user;
 
 		const existingCompanyUser = await Company.findOne({
 			registration_number: companyId,
@@ -258,14 +244,14 @@ const login = async (req, res) => {
 					middleName,
 					fullName,
 					email,
-					role,
-					department,
+					role: empInfo?.employmentRole,
+					department: empInfo?.positions?.[0]?.employmentDepartment,
 					phoneNumber,
 					primaryAddress,
-					employmentType,
+					employmentType: empInfo?.employmentRole,
 					manager,
-					employeeId,
-					payrollStatus,
+					employeeId: empInfo?.employeeNo,
+					payrollStatus: empInfo?.payrollStatus,
 				},
 				existingCompanyUser,
 				accessToken,

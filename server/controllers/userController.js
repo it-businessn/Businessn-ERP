@@ -1,5 +1,6 @@
 // const User = require("../models/User");
 const Employee = require("../models/Employee");
+const EmployeeEmploymentInfo = require("../models/EmployeeEmploymentInfo");
 const Group = require("../models/Group");
 const Lead = require("../models/Lead");
 const Task = require("../models/Task");
@@ -14,30 +15,23 @@ const {
 const { findGroupEmployees } = require("./setUpController");
 
 const getPayrollInActiveEmployees = async (companyName) => {
-	const existingCompany = await findCompany("name", companyName);
 	return await findEmployee({
-		role: { $ne: ROLES.SHADOW_ADMIN },
 		payrollStatus: { $ne: "Payroll Active" },
-		companyId: existingCompany._id,
+		companyName,
+		employmentRole: { $ne: ROLES.SHADOW_ADMIN },
 	});
 };
 
 const findEmployee = async (data) =>
-	await Employee.find(data)
-		.select([
-			"fullName",
-			"_id",
-			"email",
-			"baseModule",
-			"group",
-			"role",
-			"payrollStatus",
-			"employeeNo",
-			"timeManagementBadgeID",
-			"department",
-		])
+	await EmployeeEmploymentInfo.find(data)
+		.populate({
+			path: "empId",
+			model: "Employee",
+			select: ["fullName", "email", "baseModule", "group"],
+		})
+		.select("payrollStatus employeeNo positions employmentRole")
 		.sort({
-			fullName: 1,
+			"empId.fullName": 1,
 		});
 
 const getAllEmployees = async (req, res) => {
@@ -111,15 +105,10 @@ const getPayrollInActiveCompanyEmployees = async (req, res) => {
 const getCompanyEmployees = async (req, res) => {
 	const { companyName } = req.params;
 	try {
-		const existingCompany = await findCompany("name", companyName);
-		let result = await Employee.find({
-			companyId: existingCompany._id,
-			role: { $ne: ROLES.SHADOW_ADMIN },
-		})
-			.select(
-				"fullName employeeId payrollStatus employeeNo timeManagementBadgeID department email role",
-			)
-			.sort({ fullName: 1 });
+		const result = await findEmployee({
+			companyName,
+			employmentRole: { $ne: ROLES.SHADOW_ADMIN },
+		});
 		res.status(200).json(result);
 	} catch (error) {
 		res.status(404).json({ error: error.message });
@@ -212,15 +201,12 @@ const getAllGroupMembers = async (req, res) => {
 const getAllCompManagers = async (req, res) => {
 	const { companyName } = req.params;
 	try {
-		const existingCompany = await findCompany("name", companyName);
-		const result = await Employee.find({
-			companyId: existingCompany._id,
-			role: { $regex: /manager|administrator/i },
-		})
-			.select(["fullName"])
-			.sort({
-				fullName: 1,
-			});
+		const result = await findEmployee({
+			companyName,
+			employmentRole: {
+				$in: [ROLES.SHADOW_ADMIN, ROLES.AUTH_ADMINISTRATOR, ROLES.ADMINISTRATOR, ROLES.MANAGER],
+			},
+		});
 
 		res.status(200).json(result);
 	} catch (error) {
@@ -229,12 +215,12 @@ const getAllCompManagers = async (req, res) => {
 };
 
 const getAllManagers = async (req, res) => {
-	const { companyName } = req.params;
 	try {
-		const existingCompany = await findCompany("name", companyName);
 		const result = await findEmployee({
-			companyId: existingCompany._id,
-			role: { $regex: /manager|administrator/i },
+			companyName,
+			employmentRole: {
+				$in: [ROLES.SHADOW_ADMIN, ROLES.AUTH_ADMINISTRATOR, ROLES.ADMINISTRATOR, ROLES.MANAGER],
+			},
 		});
 		res.status(200).json(result);
 	} catch (error) {
@@ -245,15 +231,12 @@ const getAllManagers = async (req, res) => {
 const getAllSalesAgentsList = async (req, res) => {
 	const { companyName } = req.params;
 	try {
-		const existingCompany = await findCompany("name", companyName);
-		const result = await Employee.find({
-			companyId: existingCompany._id,
-			role: {
-				$not: {
-					$regex: /manager|administrator/i,
-				},
+		const result = await findEmployee({
+			companyName,
+			employmentRole: {
+				$nin: [ROLES.SHADOW_ADMIN, ROLES.AUTH_ADMINISTRATOR, ROLES.ADMINISTRATOR, ROLES.MANAGER],
 			},
-		}).select("_id fullName");
+		});
 		res.status(200).json(result);
 	} catch (error) {
 		res.status(404).json({ error: error.message });
@@ -263,13 +246,10 @@ const getAllSalesAgentsList = async (req, res) => {
 const getAllSalesAgents = async (req, res) => {
 	const { companyName } = req.params;
 	try {
-		const existingCompany = await findCompany("name", companyName);
-		const result = await Employee.find({
-			companyId: existingCompany._id,
-			role: {
-				$not: {
-					$regex: /manager|administrator/i,
-				},
+		const result = await findEmployee({
+			companyName,
+			employmentRole: {
+				$nin: [ROLES.SHADOW_ADMIN, ROLES.AUTH_ADMINISTRATOR, ROLES.ADMINISTRATOR, ROLES.MANAGER],
 			},
 		});
 		res.status(200).json(result);

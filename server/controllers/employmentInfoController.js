@@ -108,12 +108,9 @@ const updateEmploymentInfo = async (id, data) =>
 	});
 
 const updateEmployee = async (empId, data) => {
-	const { employmentRole, payrollStatus, employeeNo } = data;
+	const { payrollStatus, employeeNo } = data;
 	const employee = await Employee.findById(empId);
 
-	if (employmentRole) {
-		employee.role = employmentRole;
-	}
 	if (employee?.payrollStatus !== payrollStatus) {
 		employee.payrollStatus = payrollStatus;
 	}

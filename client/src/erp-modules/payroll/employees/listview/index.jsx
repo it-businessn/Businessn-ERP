@@ -72,7 +72,7 @@ const EmployeeListView = () => {
 	const handleInputChange = (value) => {
 		setEmpName(value);
 		setFilteredEmployees(
-			employees.filter((emp) => emp?.fullName?.toLowerCase().includes(value.toLowerCase())),
+			employees.filter((emp) => emp?.empId?.fullName?.toLowerCase().includes(value.toLowerCase())),
 		);
 	};
 

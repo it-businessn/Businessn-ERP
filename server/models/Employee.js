@@ -34,7 +34,6 @@ const employeeSchema = new mongoose.Schema({
 		type: String,
 	},
 	position: String,
-	role: { type: String, ref: "EmployeeRole" },
 	isActive: Boolean,
 	lastLogin: String,
 	employmentType: { type: String, ref: "EmploymentType" },

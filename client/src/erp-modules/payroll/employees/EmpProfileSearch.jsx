@@ -13,14 +13,14 @@ const EmpProfileSearch = ({
 	const handleInputChange = (value) => {
 		setEmpName(value);
 		setFilteredEmployees(
-			employees.filter((emp) => emp?.fullName?.toLowerCase().includes(value.toLowerCase())),
+			employees.filter((emp) => emp?.empId?.fullName?.toLowerCase().includes(value.toLowerCase())),
 		);
 	};
 
 	const handleSelect = (emp) => {
-		setEmpName(emp.fullName);
+		setEmpName(emp?.empId?.fullName);
 		setEmployee(emp);
-		setUserId(emp._id);
+		setUserId(emp?.empId?._id);
 	};
 
 	return (
