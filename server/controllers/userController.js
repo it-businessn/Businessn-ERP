@@ -114,7 +114,7 @@ const getCompanyEmployees = async (req, res) => {
 			companyName,
 			empId: { $exists: true },
 		}).select("empId firstName middleName lastName");
-		const updatedResult = await Promise.all(
+		let updatedResult = await Promise.all(
 			result.map(async (emp) => {
 				const empInfo = await EmployeeEmploymentInfo.findOne({
 					companyName,
@@ -133,11 +133,13 @@ const getCompanyEmployees = async (req, res) => {
 				};
 			}),
 		);
-		updatedResult?.sort((a, b) => {
-			if (a.empId?.fullName < b.empId?.fullName) return -1;
-			if (a.empId?.fullName > b.empId?.fullName) return 1;
-			return a.createdOn - b.createdOn;
-		});
+		updatedResult = updatedResult
+			?.filter((emp) => emp?.employmentRole !== ROLES.SHADOW_ADMIN)
+			?.sort((a, b) => {
+				if (a.empId?.fullName < b.empId?.fullName) return -1;
+				if (a.empId?.fullName > b.empId?.fullName) return 1;
+				return a.createdOn - b.createdOn;
+			});
 		res.status(200).json(updatedResult);
 	} catch (error) {
 		res.status(404).json({ error: error.message });

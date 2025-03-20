@@ -80,12 +80,12 @@ const PersonalInfo = ({ company, isOnboarding, id, handleNext }) => {
 		setIsLoading(true);
 		try {
 			formData.companyName = company;
-			const result = await PayrollService.addEmployeeProfileInfo(formData);
+			const { data } = await PayrollService.addEmployeeProfileInfo(formData);
 			setIsLoading(false);
 			// setIsSave1Disabled(true);
 			// setIsSave2Disabled(true);
 			// setIsSave3Disabled(true);
-			LocalStorageService.setItem("onboardingEmpId", result?.data?.empId);
+			LocalStorageService.setItem("onboardingEmpId", data?.empId);
 			toast({
 				title: "Personal info added successfully.",
 				status: "success",

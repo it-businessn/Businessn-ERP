@@ -163,28 +163,36 @@ const addEmployeeProfileInfo = async (req, res) => {
 				await updateEmployee(existingProfileInfo?.empId, data);
 				return res.status(201).json(updatedProfileInfo);
 			}
-			const newRecord = {
+			const existingEmp = await Employee.findOne({
 				firstName,
-				middleName,
 				lastName,
-				email: `${firstName}${Math.random().toFixed(2)}@mail.com`,
-				fullName: `${firstName} ${middleName} ${lastName}`,
-			};
-			if (password) {
-				newRecord.password = password;
-			}
-			const newEmployee = await addEmployee(companyName, newRecord);
-			if (newEmployee) {
-				const newProfileInfo = await EmployeeProfileInfo.create({
-					companyName,
+			});
+			let profileInfoEmpId = existingEmp?._id;
+			if (!existingEmp) {
+				const newRecord = {
 					firstName,
 					middleName,
 					lastName,
-					birthDate,
-					empId: newEmployee._id,
-				});
-				return res.status(201).json(newProfileInfo);
+					email: `${firstName}${Math.random().toFixed(2)}@mail.com`,
+					fullName: `${firstName} ${middleName} ${lastName}`,
+				};
+				if (password) {
+					newRecord.password = password;
+				}
+				const newEmployee = await addEmployee(companyName, newRecord);
+				profileInfoEmpId = newEmployee._id;
 			}
+
+			const newProfileInfo = await EmployeeProfileInfo.create({
+				companyName,
+				firstName,
+				middleName,
+				lastName,
+				birthDate,
+				empId: profileInfoEmpId,
+				password,
+			});
+			return res.status(201).json(newProfileInfo);
 		}
 		const existingProfileInfo = await findEmployeeProfileInfo(empId, companyName);
 
