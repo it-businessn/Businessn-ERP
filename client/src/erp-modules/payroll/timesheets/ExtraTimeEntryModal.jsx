@@ -3,10 +3,10 @@ import ActionButtonGroup from "components/ui/form/ActionButtonGroup";
 import DateTimeFormControl from "components/ui/form/DateTimeFormControl";
 import SelectFormControl from "components/ui/form/SelectFormControl";
 import ModalLayout from "components/ui/modal/ModalLayout";
-import useEmployees from "hooks/useEmployees";
 import moment from "moment";
 import { useEffect, useState } from "react";
 import TimesheetService from "services/TimesheetService";
+import UserService from "services/UserService";
 import { getParamKey, PAY_TYPES } from "./data";
 
 const ExtraTimeEntryModal = ({
@@ -25,9 +25,28 @@ const ExtraTimeEntryModal = ({
 		employeeId: userId ? userId : "",
 		param_hours: "",
 		source,
+		startTime: "05:00",
+		endTime: "13:00",
 	};
 	const [formData, setFormData] = useState(initialFormData);
-	const { employees } = useEmployees(false, company, false, true);
+	const [employees, setEmployees] = useState(null);
+
+	useEffect(() => {
+		const fetchAllEmployees = async () => {
+			try {
+				const { data } = await UserService.getPayrollActiveCompanyUsers(company);
+				data.map((emp) => {
+					emp.fullName = emp?.empId?.fullName;
+					emp._id = emp?.empId?._id;
+					return emp;
+				});
+				setEmployees(data);
+			} catch (error) {
+				console.error(error);
+			}
+		};
+		fetchAllEmployees();
+	}, []);
 
 	const handleChange = (e) => {
 		const { name, value } = e.target;
@@ -107,7 +126,7 @@ const ExtraTimeEntryModal = ({
 				<HStack>
 					<DateTimeFormControl
 						timeLabel="Start Time"
-						valueText2={formData.startTime || "05:00"}
+						valueText2={formData.startTime}
 						name2="startTime"
 						handleChange={(e) => {
 							setFormData((prevData) => ({
@@ -119,7 +138,7 @@ const ExtraTimeEntryModal = ({
 					/>
 					<DateTimeFormControl
 						timeLabel="End Time"
-						valueText2={formData.endTime || "13:00"}
+						valueText2={formData.endTime}
 						name2="endTime"
 						required
 						handleChange={(e) => {

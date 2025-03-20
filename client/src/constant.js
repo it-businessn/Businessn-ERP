@@ -14,6 +14,8 @@ export const ROLES = {
 	ENROLLER: "Enroller",
 };
 
+export const BUSINESSN_ORG = "BusinessN Corporate";
+
 export const CONTRIBUTION = {
 	EI: "Employment Insurance",
 	CPP: "Canada Pension Plan",

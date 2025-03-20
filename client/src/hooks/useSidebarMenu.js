@@ -1,3 +1,4 @@
+import { BUSINESSN_ORG } from "constant";
 import { SIDEBAR_MENU } from "data";
 import { startTransition, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -12,8 +13,8 @@ const useSidebarMenu = (userId, company, isManager, isShadowAdmin) => {
 	useEffect(() => {
 		const fetchUserPermissions = async () => {
 			try {
-				const companyName = company ?? LocalStorageService.getItem("selectedCompany");
-				if (isShadowAdmin) {
+				const companyName = company || LocalStorageService.getItem("selectedCompany");
+				if (isShadowAdmin || companyName === BUSINESSN_ORG) {
 					const permissionMenu = {
 						canAccessAllData: true,
 						canAccessGroupData: true,
