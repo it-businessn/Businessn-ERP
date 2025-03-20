@@ -12,32 +12,32 @@ const getPayrunAmtAllocatedResult = async (
 	for (const employee of activeEmployees) {
 		if (isSuperficial) {
 			await calcSuperficialAggregatedAmount(
-				employee._id,
-				employee.fullName,
+				employee.empId?._id,
+				employee.empId?.fullName,
 				companyName,
 				payDate,
 				aggregatedResult,
 			);
 		} else if (isManual) {
 			await calcManualAggregatedAmount(
-				employee._id,
-				employee.fullName,
+				employee.empId?._id,
+				employee.empId?.fullName,
 				companyName,
 				payDate,
 				aggregatedResult,
 			);
 		} else if (isPayout) {
 			await calcPayoutAggregatedAmount(
-				employee._id,
-				employee.fullName,
+				employee.empId?._id,
+				employee.empId?.fullName,
 				companyName,
 				payDate,
 				aggregatedResult,
 			);
 		} else {
 			await calcRegularAggregatedAmount(
-				employee._id,
-				employee.fullName,
+				employee.empId?._id,
+				employee.empId?.fullName,
 				companyName,
 				payDate,
 				aggregatedResult,

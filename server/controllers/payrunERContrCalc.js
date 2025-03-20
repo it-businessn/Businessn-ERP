@@ -24,8 +24,8 @@ const getPayrunERContributionResult = async (
 	for (const employee of activeEmployees) {
 		if (isSuperficial) {
 			await calcSuperficialERContribution(
-				employee._id,
-				employee.fullName,
+				employee?.empId?._id,
+				employee?.empId?.fullName,
 				payDate,
 				aggregatedResult,
 			);
@@ -49,8 +49,8 @@ const getPayrunERContributionResult = async (
 			// );
 		} else {
 			await calcRegularERContribution(
-				employee._id,
-				employee.fullName,
+				employee?.empId?._id,
+				employee?.empId?.fullName,
 				payDate,
 				aggregatedResult,
 				currentPeriodEmployees,

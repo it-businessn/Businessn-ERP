@@ -25,8 +25,8 @@ const getPayrunEEContributionResult = async (
 	for (const employee of activeEmployees) {
 		if (isSuperficial) {
 			await calcSuperficialEEContribution(
-				employee._id,
-				employee.fullName,
+				employee?.empId?._id,
+				employee?.empId?.fullName,
 				payDate,
 				aggregatedResult,
 			);
@@ -50,8 +50,8 @@ const getPayrunEEContributionResult = async (
 			// 	);
 		} else {
 			await calcRegularEEContribution(
-				employee._id,
-				employee.fullName,
+				employee?.empId?._id,
+				employee?.empId?.fullName,
 				payDate,
 				aggregatedResult,
 				currentPeriodEmployees,

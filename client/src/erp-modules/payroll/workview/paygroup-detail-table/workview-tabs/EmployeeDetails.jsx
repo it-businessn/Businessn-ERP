@@ -84,7 +84,7 @@ const EmployeeDetails = ({
 						icon: payrunOption === "4" ? null : <FaPeopleGroup />,
 						iconLabel: "View Pay Details",
 					},
-					{ key: "Employee Number", pair: "obj", pair_key: "employeeId" },
+					{ key: "Employee Number", pair: "obj", pair_key: "employeeNo" },
 					{ key: "Department", pair: "employmentCostCenter" },
 					{ key: COLS.PAYRATE, pair: "regPay", round: true },
 					{

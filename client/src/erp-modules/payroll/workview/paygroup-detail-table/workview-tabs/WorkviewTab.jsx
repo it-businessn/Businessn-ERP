@@ -88,10 +88,8 @@ const WorkviewTab = ({
 													</Tooltip>
 												)}
 											</HStack>
-										) : row?.empId?.[col.pair_key] ? (
-											row?.empId[col.pair_key]
 										) : (
-											""
+											row?.empPayStubResult?.[col.pair_key] || row?.empId?.[col.pair_key] || ""
 										)
 									) : col.round ? (
 										TOTAL_AMT_HRS_COLS.includes(col.pair) ? (

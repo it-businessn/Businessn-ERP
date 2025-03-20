@@ -19,7 +19,7 @@ const getHourlyAggregatedResult = async (
 	const aggregatedResult = [];
 	for (const employee of activeEmployees) {
 		const empTimesheetData = currentPeriodEmployees?.find(
-			(el) => el.empId._id.toString() === employee._id.toString(),
+			(el) => el.empId._id.toString() === employee?.empId?._id.toString(),
 		);
 		const result = await buildEmpHourlyDetails(
 			empTimesheetData || null,
@@ -30,19 +30,31 @@ const getHourlyAggregatedResult = async (
 
 		if (isSuperficial) {
 			await calcSuperficialAggregatedHours(
-				employee._id,
+				employee.empId?._id,
 				companyName,
 				payDate,
 				result,
 				aggregatedResult,
 			);
 		} else if (isManual) {
-			await calcManualAggregatedHours(employee._id, companyName, payDate, result, aggregatedResult);
+			await calcManualAggregatedHours(
+				employee.empId?._id,
+				companyName,
+				payDate,
+				result,
+				aggregatedResult,
+			);
 		} else if (isPayout) {
-			await calcPayoutAggregatedHours(employee._id, companyName, payDate, result, aggregatedResult);
+			await calcPayoutAggregatedHours(
+				employee.empId?._id,
+				companyName,
+				payDate,
+				result,
+				aggregatedResult,
+			);
 		} else {
 			await calcRegularAggregatedHours(
-				employee._id,
+				employee.empId?._id,
 				companyName,
 				payDate,
 				result,
@@ -342,14 +354,14 @@ const buildEmpHourlyDetails = async (empTimesheetData, employee, companyName, is
 };
 
 const getGroupedData = async (empTimesheetData, employee, companyName, isExtraPayRun) => {
-	const empPayInfoResult = await findEmployeePayInfoDetails(employee._id, companyName);
+	const empPayInfoResult = await findEmployeePayInfoDetails(employee.empId?._id, companyName);
 	const isFT = empPayInfoResult?.typeOfEarning === "Full Time Salaried";
 	const isPT = empPayInfoResult?.typeOfEarning === "Part Time Salaried";
 
-	const employeeId = empTimesheetData ? empTimesheetData.empId.employeeId : employee.employeeId;
+	const employeeId = empTimesheetData?.empId?.employeeId || employee?.employeeNo;
 
-	const recordId = empTimesheetData ? empTimesheetData.empId._id : employee._id;
-	const fullName = empTimesheetData ? empTimesheetData.empId.fullName : employee.fullName;
+	const recordId = empTimesheetData?.empId?._id || employee.empId?._id;
+	const fullName = empTimesheetData?.empId?.fullName || employee.empId?.fullName;
 
 	const totalRegHoursWorked =
 		!isExtraPayRun && isFT

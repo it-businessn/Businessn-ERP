@@ -87,7 +87,7 @@ const EmployerContribution = ({ company, closestRecord, groupId, payrunOption, p
 				isEditable={payrunOption === "4"}
 				setRefresh={setRefresh}
 				path={path}
-				stepNum={2}
+				stepNum={3}
 			/>
 		)
 	);

@@ -21,7 +21,7 @@ const getAllEmploymentInfo = async (req, res) => {
 
 		const aggregatedResult = [];
 		for (const employee of activeEmployees) {
-			const result = await buildPayPeriodEmpDetails(companyName, employee._id, true);
+			const result = await buildPayPeriodEmpDetails(companyName, employee?.empId?._id, true);
 			if (result) aggregatedResult.push(result);
 		}
 		aggregatedResult.map((empInfo) => {
@@ -53,7 +53,7 @@ const findEmpEmploymentInfo = async (empId) =>
 const findEmpPayInfo = async (companyName) =>
 	await EmployeePayInfo.find({
 		companyName,
-	}).select("empId regPay");
+	}).select("empId roles");
 
 const buildPayPeriodEmpDetails = async (companyName, employeeId, hideDetails) => {
 	const empPayStubResult = hideDetails
@@ -63,13 +63,15 @@ const buildPayPeriodEmpDetails = async (companyName, employeeId, hideDetails) =>
 				.populate({
 					path: "empId",
 					model: "Employee",
-					select: ["employeeId", "fullName"],
+					select: ["fullName"],
 				})
-				.select("empId positions")
+				.select("empId positions employeeNo")
 		: await findEmpEmploymentInfo(employeeId);
 
 	const payInfoResult = await findEmpPayInfo(companyName);
-	const payInfoMapResult = new Map(payInfoResult.map((payInfo) => [payInfo.empId, payInfo.regPay]));
+	const payInfoMapResult = new Map(
+		payInfoResult.map((payInfo) => [payInfo.empId, payInfo?.roles?.[0]?.payRate]),
+	);
 	if (empPayStubResult) return { empPayStubResult, payInfoMapResult };
 };
 
