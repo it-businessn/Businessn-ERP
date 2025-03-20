@@ -43,22 +43,20 @@ const findByRecordTimesheets = async (record, skip, limit) => {
 const getTimesheetResult = async (companyName) => {
 	const payInfoResult = await EmployeePayInfo.find({
 		companyName,
-	}).select(
-		"empId regPay overTimePay dblOverTimePay statWorkPay statPay sickPay vacationPay typeOfEarning",
-	);
+	}).select("empId roles");
 
 	const payInfoMap = new Map(
 		payInfoResult.map((payInfo) => [
 			payInfo?.empId?.toString(),
 			{
-				regPay: payInfo.regPay,
-				overTimePay: payInfo.overTimePay,
-				dblOverTimePay: payInfo.dblOverTimePay,
-				statWorkPay: payInfo.statWorkPay,
-				statPay: payInfo.statPay,
-				sickPay: payInfo.sickPay,
-				vacationPay: payInfo.vacationPay,
-				typeOfEarning: payInfo.typeOfEarning,
+				regPay: payInfo?.roles[0]?.payRate,
+				overTimePay: payInfo?.roles[0]?.overTimePay,
+				dblOverTimePay: payInfo?.roles[0]?.dblOverTimePay,
+				statWorkPay: payInfo?.roles[0]?.statWorkPay,
+				statPay: payInfo?.roles[0]?.statPay,
+				sickPay: payInfo?.roles[0]?.sickPay,
+				vacationPay: payInfo?.roles[0]?.vacationPay,
+				typeOfEarning: payInfo?.roles[0]?.typeOfEarning,
 			},
 		]),
 	);
