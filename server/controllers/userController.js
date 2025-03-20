@@ -1,6 +1,7 @@
 // const User = require("../models/User");
 const Employee = require("../models/Employee");
 const EmployeeEmploymentInfo = require("../models/EmployeeEmploymentInfo");
+const EmployeeProfileInfo = require("../models/EmployeeProfileInfo");
 const Group = require("../models/Group");
 const Lead = require("../models/Lead");
 const Task = require("../models/Task");
@@ -70,10 +71,9 @@ const getUserActivity = async (req, res) => {
 const getPayrollActiveCompanyEmployeesCount = async (req, res) => {
 	const { companyName } = req.params;
 	try {
-		const existingCompany = await findCompany("name", companyName);
-		const result = await Employee.countDocuments({
+		const result = await EmployeeEmploymentInfo.countDocuments({
 			payrollStatus: { $ne: "Payroll Terminated" },
-			companyId: existingCompany._id,
+			companyName,
 		});
 
 		res.status(200).json(result);
@@ -105,11 +105,31 @@ const getPayrollInActiveCompanyEmployees = async (req, res) => {
 const getCompanyEmployees = async (req, res) => {
 	const { companyName } = req.params;
 	try {
-		const result = await findEmployee({
+		const result = await EmployeeProfileInfo.find({
 			companyName,
-			employmentRole: { $ne: ROLES.SHADOW_ADMIN },
-		});
-		res.status(200).json(result);
+			empId: { $exists: true },
+		}).select("empId firstName middleName lastName");
+		const updatedResult = await Promise.all(
+			result.map(async (emp) => {
+				const empInfo = await EmployeeEmploymentInfo.findOne({
+					companyName,
+					empId: emp?.empId,
+				}).select("payrollStatus employeeNo positions employmentRole");
+
+				return {
+					empId: {
+						_id: emp?.empId,
+						fullName: `${emp?.firstName} ${emp?.middleName} ${emp?.lastName}`,
+					},
+					payrollStatus: empInfo?.payrollStatus,
+					employmentRole: empInfo?.employmentRole,
+					employeeNo: empInfo?.employeeNo,
+					positions: empInfo?.positions,
+				};
+			}),
+		);
+
+		res.status(200).json(updatedResult);
 	} catch (error) {
 		res.status(404).json({ error: error.message });
 	}
