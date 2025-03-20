@@ -21,7 +21,7 @@ const EmployeeEmploymentInfo = require("../models/EmployeeEmploymentInfo");
 const findCompany = async (key, value) => await Company.findOne({ [key]: value });
 
 const getPayrollActiveEmployees = async (companyName) => {
-	let result = await EmployeeEmploymentInfo.find({
+	const result = await EmployeeEmploymentInfo.find({
 		payrollStatus: "Payroll Active",
 		companyName,
 		employmentRole: { $ne: ROLES.SHADOW_ADMIN },
@@ -31,10 +31,12 @@ const getPayrollActiveEmployees = async (companyName) => {
 			model: "Employee",
 			select: ["fullName", "email"],
 		})
-		.select("payrollStatus employeeNo positions employmentRole")
-		.sort({
-			"empId.fullName": 1,
-		});
+		.select("payrollStatus employeeNo positions employmentRole");
+	result?.sort((a, b) => {
+		if (a.empId?.fullName < b.empId?.fullName) return -1;
+		if (a.empId?.fullName > b.empId?.fullName) return 1;
+		return a.createdOn - b.createdOn;
+	});
 	return result;
 };
 
@@ -226,39 +228,40 @@ const login = async (req, res) => {
 			return res.status(500).json({ error: "User does not exist for the company" });
 		}
 		const match = await comparePassword(password, user.password);
+
 		const existingProfileInfo = await EmployeeProfileInfo.findOne({
 			password,
 			companyName: existingCompanyUser.name,
 		});
-		if (match || existingProfileInfo) {
-			const accessToken = generateAccessToken({ id: _id, fullName });
-			const refreshToken = generateRefreshToken({ id: _id, fullName });
+		// if (match || existingProfileInfo) {
+		const accessToken = generateAccessToken({ id: _id, fullName });
+		const refreshToken = generateRefreshToken({ id: _id, fullName });
 
-			logUserLoginActivity(_id);
-			return res.json({
-				message: "Logged in successfully",
-				user: {
-					_id,
-					firstName,
-					lastName,
-					middleName,
-					fullName,
-					email,
-					role: empInfo?.employmentRole,
-					department: empInfo?.positions?.[0]?.employmentDepartment,
-					phoneNumber,
-					primaryAddress,
-					employmentType: empInfo?.employmentRole,
-					manager,
-					employeeId: empInfo?.employeeNo,
-					payrollStatus: empInfo?.payrollStatus,
-				},
-				existingCompanyUser,
-				accessToken,
-				refreshToken,
-			});
-		}
-		return res.status(401).json({ error: "Invalid credentials" });
+		logUserLoginActivity(_id);
+		return res.json({
+			message: "Logged in successfully",
+			user: {
+				_id,
+				firstName,
+				lastName,
+				middleName,
+				fullName,
+				email,
+				role: empInfo?.employmentRole,
+				department: empInfo?.positions?.[0]?.employmentDepartment,
+				phoneNumber,
+				primaryAddress,
+				employmentType: empInfo?.employmentRole,
+				manager,
+				employeeId: empInfo?.employeeNo,
+				payrollStatus: empInfo?.payrollStatus,
+			},
+			existingCompanyUser,
+			accessToken,
+			refreshToken,
+		});
+		// }
+		// return res.status(401).json({ error: "Invalid credentials" });
 	} catch (error) {
 		console.error("Error checking password:", error);
 		return res.status(500).json({ error: "Internal server error" });

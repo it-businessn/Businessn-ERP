@@ -24,12 +24,11 @@ const PersonalInfo = ({ company, isOnboarding, id, handleNext }) => {
 	const setProfileInfo = () => getInitialProfileInfo(isOnboarding ? null : empId, company);
 	const [formData, setFormData] = useState(setProfileInfo);
 	const [isSave1Disabled, setIsSave1Disabled] = useState(true);
-	const [isSave2Disabled, setIsSave2Disabled] = useState(true);
 	const [isSave3Disabled, setIsSave3Disabled] = useState(true);
 	const [isLoading, setIsLoading] = useState(false);
 
 	useEffect(() => {
-		LocalStorageService.removeItem("onboardingEmpId");
+		if (!isOnboarding) LocalStorageService.removeItem("onboardingEmpId");
 		if (profileInfo) {
 			if (profileInfo.email) {
 				profileInfo.empId = profileInfo._id;

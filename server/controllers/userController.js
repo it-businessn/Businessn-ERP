@@ -23,17 +23,22 @@ const getPayrollInActiveEmployees = async (companyName) => {
 	});
 };
 
-const findEmployee = async (data) =>
-	await EmployeeEmploymentInfo.find(data)
+const findEmployee = async (data) => {
+	const result = await EmployeeEmploymentInfo.find(data)
 		.populate({
 			path: "empId",
 			model: "Employee",
 			select: ["fullName", "email", "baseModule", "group"],
 		})
-		.select("payrollStatus employeeNo positions employmentRole")
-		.sort({
-			"empId.fullName": 1,
-		});
+		.select("payrollStatus employeeNo positions employmentRole");
+
+	result?.sort((a, b) => {
+		if (a.empId?.fullName < b.empId?.fullName) return -1;
+		if (a.empId?.fullName > b.empId?.fullName) return 1;
+		return a.createdOn - b.createdOn;
+	});
+	return result;
+};
 
 const getAllEmployees = async (req, res) => {
 	try {
@@ -128,7 +133,11 @@ const getCompanyEmployees = async (req, res) => {
 				};
 			}),
 		);
-
+		updatedResult?.sort((a, b) => {
+			if (a.empId?.fullName < b.empId?.fullName) return -1;
+			if (a.empId?.fullName > b.empId?.fullName) return 1;
+			return a.createdOn - b.createdOn;
+		});
 		res.status(200).json(updatedResult);
 	} catch (error) {
 		res.status(404).json({ error: error.message });
