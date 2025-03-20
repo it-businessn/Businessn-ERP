@@ -30,6 +30,8 @@ router.get("/payroll-inactive/:companyName", userController.getPayrollInActiveCo
 
 router.get("/:companyName", userController.getCompanyEmployees);
 
+router.get("/all/:companyName", userController.getCompanyUsers);
+
 router.get("/count/:companyName", userController.getCompanyEmployeesCount);
 
 router.post("/create", userController.createMasterUser);

@@ -3,11 +3,11 @@ import PrimaryButton from "components/ui/button/PrimaryButton";
 import TabsButtonGroup from "components/ui/tab/TabsButtonGroup";
 import useCompany from "hooks/useCompany";
 import PageLayout from "layouts/PageLayout";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import LocalStorageService from "services/LocalStorageService";
+import UserService from "services/UserService";
 import ClosedTicket from "./ClosedTicket";
 import OpenTicket from "./OpenTicket";
-import useCompanyEmployees from "hooks/useCompanyEmployees";
 
 const Tickets = () => {
 	const { company } = useCompany(LocalStorageService.getItem("selectedCompany"));
@@ -15,7 +15,20 @@ const Tickets = () => {
 	const userId = loggedInUser.fullName;
 
 	const [showAddEntry, setShowAddEntry] = useState(false);
-	const employees = useCompanyEmployees(company);
+	const [employees, setEmployees] = useState(null);
+
+	useEffect(() => {
+		const fetchAllEmployees = async () => {
+			try {
+				const { data } = await UserService.getCompanyUsers(company);
+				data.map((emp) => (emp.fullName = `${emp?.firstName} ${emp?.middleName} ${emp?.lastName}`));
+				setEmployees(data);
+			} catch (error) {
+				console.error(error);
+			}
+		};
+		fetchAllEmployees();
+	}, []);
 
 	const TABS = [
 		{
