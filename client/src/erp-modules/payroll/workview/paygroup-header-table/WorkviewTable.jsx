@@ -164,7 +164,9 @@ const WorkviewTable = ({
 											isDisabled={isDisabledAction}
 											label="View Funding Totals"
 											size="xs"
-											onClick={() => handleTotalsReport(payPeriod)}
+											onClick={() =>
+												handleTotalsReport(isExtraPay(payPeriod, isExtraRun), isExtraRun)
+											}
 										/>
 										{!isEarningTable && (
 											<OutlineButton
