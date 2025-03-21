@@ -132,7 +132,7 @@ const OpenTicket = ({ company, setShowAddEntry, showAddEntry, userId, employees 
 				position="sticky"
 				zIndex={3}
 				top={-1}
-				height="73vh"
+				height="43vh"
 			>
 				<Tbody>
 					{(!ticketData || ticketData?.length === 0) && (
