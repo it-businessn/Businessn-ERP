@@ -44,11 +44,9 @@ const ReportListView = () => {
 	useEffect(() => {
 		const fetchFundTotalsInfo = async () => {
 			try {
-				const { data } = await PayrollService.getTotalsPayReportDetails(
-					company,
-					selectedPayPeriod,
-					false,
-				);
+				const payNum = selectedPayPeriod?.payPeriod || selectedPayPeriod;
+				const extraRun = selectedPayPeriod?.isExtraRun || false;
+				const { data } = await PayrollService.getTotalsPayReportDetails(company, payNum, extraRun);
 
 				setTotalsReport(data);
 			} catch (error) {
@@ -58,18 +56,21 @@ const ReportListView = () => {
 		if (selectedPayPeriod && showTotalsReport) fetchFundTotalsInfo();
 	}, [selectedPayPeriod]);
 
-	const handleTotalsReport = (payNo) => {
-		setSelectedPayPeriod(payNo);
+	const handleTotalsReport = (payNo, isExtra) => {
+		const payNum = getPayNum(payNo, isExtra);
+		setSelectedPayPeriod(payNum);
 		setShowTotalsReport(true);
 	};
 
-	const handleRegister = (payNo, isExtra) => {
-		const payNum = isExtra
+	const getPayNum = (payNo, isExtra) =>
+		isExtra
 			? payGroupSchedule?.find(
 					({ payPeriod, isExtraRun }) => payPeriod === parseInt(payNo) && isExtraRun === isExtra,
 			  )
 			: payNo;
 
+	const handleRegister = (payNo, isExtra) => {
+		const payNum = getPayNum(payNo, isExtra);
 		setSelectedPayPeriod(payNum);
 		setShowReport(true);
 	};

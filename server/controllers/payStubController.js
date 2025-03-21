@@ -550,7 +550,7 @@ const addEmployeePayStubInfo = async (req, res) => {
 			fundingTotal.totalNetPay += payStubResult?.currentNetPay || 0;
 		}
 
-		await buildFundingTotalsReport(fundingTotal, activeEmployees?.length);
+		await buildFundingTotalsReport(fundingTotal, activeEmployees?.length, isExtraRun);
 		// generateT4Slip(companyName, payPeriod);
 		//if payroll processed successful
 		//alerts violation generate independently based on emp data, on process payroll will run again to check alerts or violations.
@@ -560,7 +560,7 @@ const addEmployeePayStubInfo = async (req, res) => {
 	}
 };
 
-const buildFundingTotalsReport = async (fundingTotal, totalEmployees) => {
+const buildFundingTotalsReport = async (fundingTotal, totalEmployees, isExtraRun) => {
 	fundingTotal.totalCPP_Contr =
 		fundingTotal?.totalCPP_EE_Contr + fundingTotal?.totalCPP_ER_Contr || 0;
 	fundingTotal.totalEI_Contr = fundingTotal?.totalEI_EE_Contr + fundingTotal?.totalEI_ER_Contr || 0;
@@ -585,10 +585,12 @@ const buildFundingTotalsReport = async (fundingTotal, totalEmployees) => {
 		fundingTotal.totalGovtContr +
 			fundingTotal.totalEmpPaymentRemitCost +
 			fundingTotal.totalServiceCharges || 0;
+	if (isExtraRun) fundingTotal.isExtraRun = isExtraRun;
 
 	const existsFundDetails = await FundingTotalsPay.findOne({
 		companyName: fundingTotal.companyName,
 		payPeriodNum: fundingTotal.payPeriodNum,
+		isExtraRun,
 	});
 	if (existsFundDetails) {
 		fundingTotal.updatedOn = moment();
