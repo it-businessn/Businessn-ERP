@@ -20,6 +20,7 @@ const PayrollStageContent = ({
 	setReportData,
 	reportData,
 	company,
+	deptName,
 }) => {
 	const { isOpen: isPayrollStepupOpen, onToggle: onPayrollStepupToggle } = useDisclosure({
 		defaultIsOpen: false,
@@ -69,6 +70,7 @@ const PayrollStageContent = ({
 				title={"Payrun Setup"}
 				content={
 					<PayrunSetup
+						deptName={deptName}
 						handleClick={() => {
 							handleConfirm(1);
 							onPayrollStepupToggle();
@@ -91,6 +93,7 @@ const PayrollStageContent = ({
 				title={"Inputs Review"}
 				content={
 					<InputsReview
+						deptName={deptName}
 						currentStep={currentStep}
 						isInputsReviewOpen={isInputsReviewOpen}
 						handleClick={(data) => {
@@ -116,6 +119,7 @@ const PayrollStageContent = ({
 				title={"Alerts and Violations"}
 				content={
 					<AlertsViolation
+						deptName={deptName}
 						currentStep={currentStep}
 						isAlertsOpen={isAlertsOpen}
 						handleClick={() => {
@@ -138,6 +142,7 @@ const PayrollStageContent = ({
 				title={"Review Reports"}
 				content={
 					<ReportsPreview
+						deptName={deptName}
 						reportData={reportData}
 						handleClick={() => {
 							handleConfirm(4);
@@ -159,6 +164,7 @@ const PayrollStageContent = ({
 				title={"Finalize"}
 				content={
 					<Finalize
+						deptName={deptName}
 						handleClick={() => {
 							handleConfirm(5);
 							// onFinalizeToggle();

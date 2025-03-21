@@ -18,17 +18,17 @@ router.get(
 );
 
 router.get(
-	"/hoursTimesheet/:companyName/:startDate/:endDate/:payDate/:isExtraRun/:groupId/:payrunType",
+	"/hoursTimesheet/:companyName/:startDate/:endDate/:payDate/:isExtraRun/:groupId/:payrunType/:deptName",
 	payrollController.getGroupedTimesheet,
 );
 
 router.get(
-	"/EEContribution/:companyName/:startDate/:endDate/:payDate/:isExtraRun/:groupId/:payrunType",
+	"/EEContribution/:companyName/:startDate/:endDate/:payDate/:isExtraRun/:groupId/:payrunType/:deptName",
 	payrollController.getEEContribution,
 );
 
 router.get(
-	"/ERContribution/:companyName/:startDate/:endDate/:payDate/:isExtraRun/:groupId/:payrunType",
+	"/ERContribution/:companyName/:startDate/:endDate/:payDate/:isExtraRun/:groupId/:payrunType/:deptName",
 	payrollController.getERContribution,
 );
 

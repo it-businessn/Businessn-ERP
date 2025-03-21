@@ -20,6 +20,7 @@ const OtherFilter = ({
 	filteredData,
 	setFilteredData,
 	helperText,
+	isDisabled,
 }) => {
 	const [openMenu, setOpenMenu] = useState(true);
 	const [selectedOptions, setSelectedOptions] = useState([]);
@@ -37,7 +38,7 @@ const OtherFilter = ({
 	};
 
 	return (
-		<Popover isOpen={showOtherFilter} overflow="auto" isDisabled={true}>
+		<Popover isOpen={showOtherFilter && !isDisabled} overflow="auto">
 			<PopoverTrigger>
 				<HStack cursor="pointer" borderRadius="md" onClick={toggleOtherFilter} p={0} spacing={1}>
 					<MdOutlineFilterList />

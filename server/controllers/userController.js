@@ -15,12 +15,16 @@ const {
 } = require("./appController");
 const { findGroupEmployees } = require("./setUpController");
 
-const getPayrollInActiveEmployees = async (companyName) => {
-	return await findEmployee({
+const getPayrollInActiveEmployees = async (companyName, deptName) => {
+	let result = await findEmployee({
 		payrollStatus: { $ne: "Payroll Active" },
 		companyName,
 		employmentRole: { $ne: ROLES.SHADOW_ADMIN },
 	});
+	if (deptName !== "null") {
+		result = result?.filter((emp) => emp?.positions?.[0]?.employmentDepartment === deptName);
+	}
+	return result;
 };
 
 const findEmployee = async (data) => {
@@ -88,9 +92,10 @@ const getPayrollActiveCompanyEmployeesCount = async (req, res) => {
 };
 
 const getPayrollActiveCompanyEmployees = async (req, res) => {
-	const { companyName } = req.params;
+	const { companyName, deptName } = req.params;
 	try {
-		let result = await getPayrollActiveEmployees(companyName);
+		const result = await getPayrollActiveEmployees(companyName, deptName);
+
 		res.status(200).json(result);
 	} catch (error) {
 		res.status(404).json({ error: error.message });
@@ -98,9 +103,9 @@ const getPayrollActiveCompanyEmployees = async (req, res) => {
 };
 
 const getPayrollInActiveCompanyEmployees = async (req, res) => {
-	const { companyName } = req.params;
+	const { companyName, deptName } = req.params;
 	try {
-		let result = await getPayrollInActiveEmployees(companyName);
+		const result = await getPayrollInActiveEmployees(companyName, deptName);
 		res.status(200).json(result);
 	} catch (error) {
 		res.status(404).json({ error: error.message });
@@ -124,7 +129,7 @@ const getCompanyUsers = async (req, res) => {
 };
 
 const getCompanyEmployees = async (req, res) => {
-	const { companyName } = req.params;
+	const { companyName, deptName } = req.params;
 	try {
 		const result = await EmployeeProfileInfo.find({
 			companyName,
@@ -149,6 +154,11 @@ const getCompanyEmployees = async (req, res) => {
 				};
 			}),
 		);
+		if (deptName !== "null") {
+			updatedResult = updatedResult?.filter(
+				(emp) => emp?.positions?.[0]?.employmentDepartment === deptName,
+			);
+		}
 		updatedResult = updatedResult
 			?.filter((emp) => emp?.employmentRole !== ROLES.SHADOW_ADMIN)
 			?.sort((a, b) => {
@@ -423,12 +433,12 @@ const getEmployeeId = async (empList) => {
 	return list;
 };
 
-const fetchActiveEmployees = async (isExtraPayRun, groupId, payDate, companyName) => {
+const fetchActiveEmployees = async (isExtraPayRun, groupId, payDate, companyName, deptName) => {
 	const employees = isExtraPayRun ? await findGroupEmployees(groupId, payDate) : null;
 
 	return isExtraPayRun
 		? await getEmployeeId(employees)
-		: await getPayrollActiveEmployees(companyName);
+		: await getPayrollActiveEmployees(companyName, deptName);
 };
 
 module.exports = {

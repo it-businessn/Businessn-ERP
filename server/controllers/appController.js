@@ -20,8 +20,8 @@ const EmployeeEmploymentInfo = require("../models/EmployeeEmploymentInfo");
 
 const findCompany = async (key, value) => await Company.findOne({ [key]: value });
 
-const getPayrollActiveEmployees = async (companyName) => {
-	const result = await EmployeeEmploymentInfo.find({
+const getPayrollActiveEmployees = async (companyName, deptName) => {
+	let result = await EmployeeEmploymentInfo.find({
 		payrollStatus: "Payroll Active",
 		companyName,
 		employmentRole: { $ne: ROLES.SHADOW_ADMIN },
@@ -32,6 +32,10 @@ const getPayrollActiveEmployees = async (companyName) => {
 			select: ["fullName", "email"],
 		})
 		.select("payrollStatus employeeNo positions employmentRole");
+
+	if (deptName !== "null") {
+		result = result?.filter((emp) => emp?.positions?.[0]?.employmentDepartment === deptName);
+	}
 	result?.sort((a, b) => {
 		if (a.empId?.fullName < b.empId?.fullName) return -1;
 		if (a.empId?.fullName > b.empId?.fullName) return 1;

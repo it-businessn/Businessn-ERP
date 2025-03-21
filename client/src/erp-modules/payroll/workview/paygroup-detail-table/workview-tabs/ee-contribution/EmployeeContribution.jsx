@@ -10,9 +10,16 @@ import {
 	SUPERFICIAL_EE_COLS,
 } from "./payrunEEContrCols";
 
-const EmployeeContribution = ({ company, closestRecord, groupId, payrunOption, path }) => {
+const EmployeeContribution = ({
+	company,
+	closestRecord,
+	groupId,
+	payrunOption,
+	path,
+	deptName,
+}) => {
 	const [refresh, setRefresh] = useState(false);
-	const data = useEmployeeEEContribution(company, closestRecord, groupId, payrunOption);
+	const data = useEmployeeEEContribution(company, closestRecord, groupId, payrunOption, deptName);
 
 	const EE_CONTRIBUTION_COL_DATA = {
 		1: REGULAR_EE_COLS,

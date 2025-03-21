@@ -4,7 +4,7 @@ const router = express.Router();
 const additionalAllocationInfoController = require("../controllers/payrunExtraAllocationInfoController");
 
 router.get(
-	"/:companyName/:payDate/:isExtraRun/:groupId/:payrunType",
+	"/:companyName/:payDate/:isExtraRun/:groupId/:payrunType/:deptName",
 	additionalAllocationInfoController.getAmountAllocation,
 );
 

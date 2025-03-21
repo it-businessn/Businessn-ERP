@@ -24,11 +24,17 @@ router.get(
 	userController.getPayrollActiveCompanyEmployeesCount,
 );
 
-router.get("/payroll-active/:companyName", userController.getPayrollActiveCompanyEmployees);
+router.get(
+	"/payroll-active/:companyName/:deptName",
+	userController.getPayrollActiveCompanyEmployees,
+);
 
-router.get("/payroll-inactive/:companyName", userController.getPayrollInActiveCompanyEmployees);
+router.get(
+	"/payroll-inactive/:companyName/:deptName",
+	userController.getPayrollInActiveCompanyEmployees,
+);
 
-router.get("/:companyName", userController.getCompanyEmployees);
+router.get("/:companyName/:deptName", userController.getCompanyEmployees);
 
 router.get("/all/:companyName", userController.getCompanyUsers);
 

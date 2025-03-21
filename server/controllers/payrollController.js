@@ -41,7 +41,8 @@ const getAllPayGroups = async (req, res) => {
 };
 
 const getGroupedTimesheet = async (req, res) => {
-	const { companyName, startDate, endDate, payDate, isExtraRun, groupId, payrunType } = req.params;
+	const { companyName, startDate, endDate, payDate, isExtraRun, groupId, payrunType, deptName } =
+		req.params;
 
 	try {
 		const isExtraPayRun = isExtraRun === "true";
@@ -51,6 +52,7 @@ const getGroupedTimesheet = async (req, res) => {
 			groupId,
 			payDate,
 			companyName,
+			deptName,
 		);
 
 		const currentPeriodEmployees = isExtraPayRun
@@ -137,7 +139,8 @@ const calculateTimesheetApprovedHours = async (startDate, endDate, companyName) 
 };
 
 const getEEContribution = async (req, res) => {
-	const { companyName, startDate, endDate, payDate, isExtraRun, groupId, payrunType } = req.params;
+	const { companyName, startDate, endDate, payDate, isExtraRun, groupId, payrunType, deptName } =
+		req.params;
 
 	try {
 		const isExtraPayRun = isExtraRun === "true";
@@ -147,6 +150,7 @@ const getEEContribution = async (req, res) => {
 			groupId,
 			payDate,
 			companyName,
+			deptName,
 		);
 
 		const currentPeriodEmployees = isExtraPayRun
@@ -174,7 +178,8 @@ const getEEContribution = async (req, res) => {
 };
 
 const getERContribution = async (req, res) => {
-	const { companyName, startDate, endDate, payDate, isExtraRun, groupId, payrunType } = req.params;
+	const { companyName, startDate, endDate, payDate, isExtraRun, groupId, payrunType, deptName } =
+		req.params;
 
 	try {
 		const isExtraPayRun = isExtraRun === "true";
@@ -184,6 +189,7 @@ const getERContribution = async (req, res) => {
 			groupId,
 			payDate,
 			companyName,
+			deptName,
 		);
 
 		const currentPeriodEmployees = isExtraPayRun

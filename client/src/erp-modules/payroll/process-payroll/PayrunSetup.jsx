@@ -17,6 +17,7 @@ const PayrunSetup = ({
 	selectedPayGroup,
 	closestRecord,
 	isPayPeriodInactive,
+	deptName,
 }) => {
 	const [isLoading, setIsLoading] = useState(false);
 	const { company } = useCompany(LocalStorageService.getItem("selectedCompany"));
@@ -29,6 +30,7 @@ const PayrunSetup = ({
 				const response = await PayrollService.addPayPeriodPayStub({
 					companyName: company,
 					currentPayPeriod: closestRecord,
+					deptName,
 				});
 				if (response) {
 					handleClick();

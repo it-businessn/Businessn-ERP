@@ -17,10 +17,18 @@ const EmployeeDetails = ({
 	groupId,
 	selectedPayGroup,
 	payrunOption,
+	deptName,
 }) => {
 	const [showConfirmationPopUp, setShowConfirmationPopUp] = useState(false);
 	const [refresh, setRefresh] = useState(false);
-	const empData = useEmployeeEmploymentInfo(company, null, closestRecord, groupId, refresh);
+	const empData = useEmployeeEmploymentInfo(
+		company,
+		null,
+		closestRecord,
+		groupId,
+		refresh,
+		deptName,
+	);
 	const [deletedEmp, setDeletedEmp] = useState(null);
 
 	const [showAddEmp, setShowAddEmp] = useState(false);

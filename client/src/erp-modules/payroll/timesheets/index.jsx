@@ -2,6 +2,7 @@ import { Flex, HStack, IconButton, useToast } from "@chakra-ui/react";
 import PrimaryButton from "components/ui/button/PrimaryButton";
 import DeletePopUp from "components/ui/modal/DeletePopUp";
 import TabsButtonGroup from "components/ui/tab/TabsButtonGroup";
+import { ROLES } from "constant";
 import useCompany from "hooks/useCompany";
 import useCostCenter from "hooks/useCostCenter";
 import useDepartment from "hooks/useDepartment";
@@ -28,6 +29,7 @@ const Timesheets = () => {
 	const toast = useToast();
 	const { company } = useCompany(LocalStorageService.getItem("selectedCompany"));
 	const loggedInUser = LocalStorageService.getItem("user");
+	const deptName = loggedInUser?.role === ROLES.MANAGER ? loggedInUser?.department : null;
 	const isManagerView = isManager(loggedInUser?.role);
 	const userId = id ? id : isManagerView ? null : loggedInUser._id;
 
@@ -36,7 +38,7 @@ const Timesheets = () => {
 
 	const [dataRefresh, setDataRefresh] = useState(false);
 	const [filter, setFilter] = useState(null);
-	const { employees } = useEmployees(false, company, false, true);
+	const { employees } = useEmployees(false, company, false, true, null, deptName);
 	const departments = useDepartment(company);
 	const cc = useCostCenter(company);
 
@@ -55,7 +57,7 @@ const Timesheets = () => {
 	const [showAddEntry, setShowAddEntry] = useState(false);
 
 	const [filteredEmployees, setFilteredEmployees] = useState([]);
-	const [filteredDept, setFilteredDept] = useState([]);
+	const [filteredDept, setFilteredDept] = useState(deptName ? [deptName] : []);
 	const [filteredCC, setFilteredCC] = useState([]);
 
 	const toggleDateFilter = () => setShowDateFilter(!showDateFilter);
@@ -280,12 +282,13 @@ const Timesheets = () => {
 						showOtherFilter={timesheets && showDeptFilter}
 						toggleOtherFilter={toggleDeptFilter}
 						handleFilter={handleFilter}
-						data={departments}
+						data={deptName ? departments?.filter((_) => _?.name === deptName) : departments}
 						filteredData={filteredDept}
 						setFilteredData={setFilteredDept}
 						helperText="department"
 					/>
 					<OtherFilter
+						isDisabled={deptName}
 						showOtherFilter={timesheets && showCCFilter}
 						toggleOtherFilter={toggleCCFilter}
 						handleFilter={handleFilter}

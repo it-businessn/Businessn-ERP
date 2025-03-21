@@ -9,6 +9,7 @@ import EmployeeDetails from "./EmployeeDetails";
 import { HStack } from "@chakra-ui/react";
 import PopupMessage from "components/ui/PopupMessage";
 import TextTitle from "components/ui/text/TextTitle";
+import { ROLES } from "constant";
 import EmployeeContribution from "./ee-contribution/EmployeeContribution";
 import EmployerContribution from "./er-contribution/EmployerContribution";
 import HourlyAllocation from "./hourly/HourlyAllocation";
@@ -22,6 +23,7 @@ const PaygroupDetailTable = ({
 	company,
 	loggedInUser,
 }) => {
+	const deptName = loggedInUser?.role === ROLES.MANAGER ? loggedInUser?.department : null;
 	const [highlightColor, setHighlightColor] = useState("var(--primary_button_bg)");
 	const [isOpen, setIsOpen] = useState(true);
 	const [payrunOption, setPayrunOption] = useState(1);
@@ -40,6 +42,7 @@ const PaygroupDetailTable = ({
 					groupId={groupId}
 					selectedPayGroup={selectedPayGroup}
 					payrunOption={payrunOption}
+					deptName={deptName}
 				/>
 			),
 		},
@@ -53,6 +56,7 @@ const PaygroupDetailTable = ({
 					closestRecord={closestRecord}
 					groupId={groupId}
 					payrunOption={payrunOption}
+					deptName={deptName}
 				/>
 			),
 		},
@@ -66,6 +70,7 @@ const PaygroupDetailTable = ({
 					closestRecord={closestRecord}
 					groupId={groupId}
 					payrunOption={payrunOption}
+					deptName={deptName}
 				/>
 			),
 		},
@@ -80,6 +85,7 @@ const PaygroupDetailTable = ({
 					closestRecord={closestRecord}
 					groupId={groupId}
 					payrunOption={payrunOption}
+					deptName={deptName}
 				/>
 			),
 		},
@@ -94,6 +100,7 @@ const PaygroupDetailTable = ({
 					closestRecord={closestRecord}
 					groupId={groupId}
 					payrunOption={payrunOption}
+					deptName={deptName}
 				/>
 			),
 		},

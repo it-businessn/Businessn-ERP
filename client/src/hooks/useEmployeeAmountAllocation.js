@@ -1,7 +1,14 @@
 import { useEffect, useState } from "react";
 import PayrollService from "services/PayrollService";
 
-const useEmployeeAmountAllocation = (company, refresh, payPeriod, groupId, payrunOption) => {
+const useEmployeeAmountAllocation = (
+	company,
+	refresh,
+	payPeriod,
+	groupId,
+	payrunOption,
+	deptName,
+) => {
 	const [amountInfo, setAmountInfo] = useState(null);
 
 	useEffect(() => {
@@ -14,6 +21,7 @@ const useEmployeeAmountAllocation = (company, refresh, payPeriod, groupId, payru
 					extraRun,
 					groupId,
 					payrunOption,
+					deptName,
 				);
 				setAmountInfo(data);
 			} catch (error) {

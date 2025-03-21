@@ -35,6 +35,7 @@ const ProcessPayroll = () => {
 	const loggedInUser = LocalStorageService.getItem("user");
 	const hasAccessRole =
 		loggedInUser?.role === ROLES.AUTH_ADMINISTRATOR || loggedInUser?.role === ROLES.SHADOW_ADMIN;
+	const deptName = loggedInUser?.role === ROLES.MANAGER ? loggedInUser?.department : null;
 
 	const { company } = useCompany(LocalStorageService.getItem("selectedCompany"));
 	const { payGroupSchedule, closestRecord, payGroups, selectedPayGroup } = usePaygroup(
@@ -155,6 +156,7 @@ const ProcessPayroll = () => {
 					setReportData={setReportData}
 					reportData={reportData}
 					company={company}
+					deptName={deptName}
 				/>
 			</SimpleGrid>
 

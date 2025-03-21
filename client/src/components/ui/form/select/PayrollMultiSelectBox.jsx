@@ -64,15 +64,19 @@ const PayrollMultiSelectBox = ({
 				</MenuItem>
 				<Stack spacing={1} overflow={"auto"} maxHeight={"33vh"} w={w}>
 					{data?.map((assignee) => (
-						<MenuItem key={assignee?._id ?? assignee}>
+						<MenuItem key={assignee?._id || assignee?.empId?._id}>
 							<Checkbox
 								colorScheme="facebook"
 								isChecked={selectedOptions?.includes(
-									assignee.fullName ?? (assignee.name || assignee),
+									assignee.fullName || assignee?.empId?.fullName || assignee.name || assignee,
 								)}
-								onChange={() => handleCheckboxChange(assignee.fullName ?? assignee.name)}
+								onChange={() =>
+									handleCheckboxChange(
+										assignee.fullName || assignee?.empId?.fullName || assignee.name,
+									)
+								}
 							>
-								{assignee.fullName ?? assignee.name}
+								{assignee.fullName || assignee?.empId?.fullName || assignee.name}
 							</Checkbox>
 						</MenuItem>
 					))}

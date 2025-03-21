@@ -9,9 +9,9 @@ const PayrollService = {
 		return apiService.get(`/payroll/payInfo/${company}/${payDate}/${isExtraRun}/${groupId}`);
 	},
 
-	async getAllEmployeeAmountInfo(company, payDate, extraRun, groupId, payrunOption) {
+	async getAllEmployeeAmountInfo(company, payDate, extraRun, groupId, payrunOption, deptName) {
 		return apiService.get(
-			`/payroll/additionalAllocation/${company}/${payDate}/${extraRun}/${groupId}/${payrunOption}`,
+			`/payroll/additionalAllocation/${company}/${payDate}/${extraRun}/${groupId}/${payrunOption}/${deptName}`,
 		);
 	},
 
@@ -59,9 +59,17 @@ const PayrollService = {
 		return apiService.post("/payroll/profileInfo", data);
 	},
 
-	async getAllEmployeeEmploymentInfo(company, startDate, endDate, payDate, isExtraRun, groupId) {
+	async getAllEmployeeEmploymentInfo(
+		company,
+		startDate,
+		endDate,
+		payDate,
+		isExtraRun,
+		groupId,
+		deptName,
+	) {
 		return apiService.get(
-			`/payroll/employmentInfo/${company}/${startDate}/${endDate}/${payDate}/${isExtraRun}/${groupId}`,
+			`/payroll/employmentInfo/${company}/${startDate}/${endDate}/${payDate}/${isExtraRun}/${groupId}/${deptName}`,
 		);
 	},
 
@@ -109,21 +117,40 @@ const PayrollService = {
 		isExtraRun,
 		groupId,
 		payrunOption,
+		deptName,
 	) {
 		return apiService.get(
-			`/payroll/hoursTimesheet/${company}/${startDate}/${endDate}/${payDate}/${isExtraRun}/${groupId}/${payrunOption}`,
+			`/payroll/hoursTimesheet/${company}/${startDate}/${endDate}/${payDate}/${isExtraRun}/${groupId}/${payrunOption}/${deptName}`,
 		);
 	},
 
-	async getEEContribution(company, startDate, endDate, payDate, isExtraRun, groupId, payrunOption) {
+	async getEEContribution(
+		company,
+		startDate,
+		endDate,
+		payDate,
+		isExtraRun,
+		groupId,
+		payrunOption,
+		deptName,
+	) {
 		return apiService.get(
-			`/payroll/EEContribution/${company}/${startDate}/${endDate}/${payDate}/${isExtraRun}/${groupId}/${payrunOption}`,
+			`/payroll/EEContribution/${company}/${startDate}/${endDate}/${payDate}/${isExtraRun}/${groupId}/${payrunOption}/${deptName}`,
 		);
 	},
 
-	async getERContribution(company, startDate, endDate, payDate, isExtraRun, groupId, payrunOption) {
+	async getERContribution(
+		company,
+		startDate,
+		endDate,
+		payDate,
+		isExtraRun,
+		groupId,
+		payrunOption,
+		deptName,
+	) {
 		return apiService.get(
-			`/payroll/ERContribution/${company}/${startDate}/${endDate}/${payDate}/${isExtraRun}/${groupId}/${payrunOption}`,
+			`/payroll/ERContribution/${company}/${startDate}/${endDate}/${payDate}/${isExtraRun}/${groupId}/${payrunOption}/${deptName}`,
 		);
 	},
 

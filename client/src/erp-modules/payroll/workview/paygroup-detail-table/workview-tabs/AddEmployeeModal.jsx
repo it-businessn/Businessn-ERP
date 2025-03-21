@@ -2,8 +2,10 @@ import { Stack, useDisclosure } from "@chakra-ui/react";
 import ActionButtonGroup from "components/ui/form/ActionButtonGroup";
 import MultiSelectFormControl from "components/ui/form/MultiSelectFormControl";
 import ModalLayout from "components/ui/modal/ModalLayout";
+import { ROLES } from "constant";
 import useEmployees from "hooks/useEmployees";
 import { useState } from "react";
+import LocalStorageService from "services/LocalStorageService";
 import SettingService from "services/SettingService";
 
 const AddEmployeeModal = ({
@@ -16,10 +18,12 @@ const AddEmployeeModal = ({
 	selectedEmployee,
 	selectedEmployeeIndex,
 }) => {
+	const loggedInUser = LocalStorageService.getItem("user");
+	const deptName = loggedInUser?.role === ROLES.MANAGER ? loggedInUser?.department : null;
 	const [isSubmitting, setIsSubmitting] = useState(false);
 
 	const [selectedEmp, setSelectedEmp] = useState(selectedEmployee);
-	const { employees } = useEmployees(false, company, false, true);
+	const { employees } = useEmployees(false, company, false, true, null, deptName);
 	const [openMenu, setOpenMenu] = useState(false);
 	const [selectedOptions, setSelectedOptions] = useState(selectedEmp ?? []);
 

@@ -8,6 +8,7 @@ import {
 	VStack,
 } from "@chakra-ui/react";
 import PrimaryButton from "components/ui/button/PrimaryButton";
+import { ROLES } from "constant";
 import OnboardEmpModal from "erp-modules/payroll/workview/paygroup-header-table/OnboardEmpModal";
 import PayrollActions from "erp-modules/payroll/workview/paygroup-header-table/PayrollActions";
 import useCompany from "hooks/useCompany";
@@ -23,6 +24,7 @@ import EmployeeList from "./EmployeeList";
 
 const EmployeeListView = () => {
 	const { company } = useCompany(LocalStorageService.getItem("selectedCompany"));
+	const loggedInUser = LocalStorageService.getItem("user");
 
 	const [formData, setFormData] = useState({
 		isPayrollActive: true,
@@ -30,13 +32,15 @@ const EmployeeListView = () => {
 	});
 
 	const [isRefresh, setIsRefresh] = useState(false);
+	const deptName = loggedInUser?.role === ROLES.MANAGER ? loggedInUser?.department : null;
 
 	const { employees, filteredEmployees, setFilteredEmployees } = useEmployees(
 		isRefresh,
 		company,
 		false,
 		formData,
-		// userId,
+		null,
+		deptName,
 	);
 	const [showEmpFilter, setShowEmpFilter] = useState(false);
 	const [showDeptFilter, setShowDeptFilter] = useState(false);
@@ -57,8 +61,6 @@ const EmployeeListView = () => {
 	useEffect(() => {
 		setIsRefresh(showOnboard);
 	}, [showOnboard]);
-
-	const loggedInUser = LocalStorageService.getItem("user");
 
 	const { selectedPayGroup } = usePaygroup(company, false);
 

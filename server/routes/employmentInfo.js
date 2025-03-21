@@ -6,7 +6,7 @@ const employmentInfoController = require("../controllers/employmentInfoControlle
 router.get("/:companyName/:empId", employmentInfoController.getEmployeeEmploymentInfo);
 
 router.get(
-	"/:companyName/:startDate/:endDate/:payDate/:isExtraRun/:groupId",
+	"/:companyName/:startDate/:endDate/:payDate/:isExtraRun/:groupId/:deptName",
 	employmentInfoController.getAllEmploymentInfo,
 );
 

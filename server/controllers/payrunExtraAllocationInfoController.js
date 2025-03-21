@@ -4,7 +4,7 @@ const { getPayrunAmtAllocatedResult } = require("./payrunAmtAllocatedCalc");
 const { fetchActiveEmployees } = require("./userController");
 
 const getAmountAllocation = async (req, res) => {
-	const { companyName, payDate, isExtraRun, groupId, payrunType } = req.params;
+	const { companyName, payDate, isExtraRun, groupId, payrunType, deptName } = req.params;
 
 	try {
 		const isExtraPayRun = isExtraRun === "true";
@@ -14,6 +14,7 @@ const getAmountAllocation = async (req, res) => {
 			groupId,
 			payDate,
 			companyName,
+			deptName,
 		);
 
 		const isSuperficial = payrunType === PAYRUN_TYPE.SUPERFICIAL;

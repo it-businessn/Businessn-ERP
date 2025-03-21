@@ -7,7 +7,7 @@ const { fetchActiveEmployees } = require("./userController");
 const { updatePayInfo, findEmployeePayInfoDetails } = require("./payInfoController");
 
 const getAllEmploymentInfo = async (req, res) => {
-	const { companyName, startDate, endDate, payDate, isExtraRun, groupId } = req.params;
+	const { companyName, startDate, endDate, payDate, isExtraRun, groupId, deptName } = req.params;
 	try {
 		const isExtraPayRun = isExtraRun === "true";
 
@@ -16,6 +16,7 @@ const getAllEmploymentInfo = async (req, res) => {
 			groupId,
 			payDate,
 			companyName,
+			deptName,
 		);
 
 		const aggregatedResult = [];

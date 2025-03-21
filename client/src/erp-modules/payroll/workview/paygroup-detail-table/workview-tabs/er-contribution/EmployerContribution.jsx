@@ -10,9 +10,16 @@ import {
 	SUPERFICIAL_ER_COLS,
 } from "./payrunERContrCols";
 
-const EmployerContribution = ({ company, closestRecord, groupId, payrunOption, path }) => {
+const EmployerContribution = ({
+	company,
+	closestRecord,
+	groupId,
+	payrunOption,
+	path,
+	deptName,
+}) => {
 	const [refresh, setRefresh] = useState(false);
-	const data = useEmployeeERContribution(company, closestRecord, groupId, payrunOption);
+	const data = useEmployeeERContribution(company, closestRecord, groupId, payrunOption, deptName);
 	const ER_CONTRIBUTION_COL_DATA = {
 		1: REGULAR_ER_COLS,
 		2: PAYOUT_ER_COLS,

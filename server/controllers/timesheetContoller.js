@@ -200,28 +200,28 @@ const getFilteredTimesheets = async (req, res) => {
 		};
 
 		let timesheets = await findByRecordTimesheets(filterRecordCriteria, skip, limit);
+		const payInfo = await getTimesheetResult(companyName);
+		const employmentInfo = await getEmploymentResult(companyName);
+
+		let result = mapTimesheet(payInfo, timesheets, employmentInfo);
 
 		// const total = await findByRecordTimesheets(filterRecordCriteria);
 
 		if (filteredData?.filteredEmployees?.length) {
-			timesheets = timesheets.filter((item) =>
+			result = result.filter((item) =>
 				filteredData?.filteredEmployees?.includes(item?.employeeId?.fullName),
 			);
 		}
 		if (filteredData?.filteredDept?.length) {
-			timesheets = timesheets.filter((item) =>
-				filteredData?.filteredDept?.includes(item?.positions[0]?.employmentDepartment),
+			result = result.filter((item) =>
+				filteredData?.filteredDept?.includes(item?.positions?.[0]?.employmentDepartment),
 			);
 		}
 		if (filteredData?.filteredCC?.length) {
-			timesheets = timesheets.filter((item) =>
-				filteredData?.filteredCC?.includes(item?.positions[0]?.employmentCostCenter),
+			result = result.filter((item) =>
+				filteredData?.filteredCC?.includes(item?.positions?.[0]?.employmentCostCenter),
 			);
 		}
-		const payInfo = await getTimesheetResult(companyName);
-		const employmentInfo = await getEmploymentResult(companyName);
-
-		const result = mapTimesheet(payInfo, timesheets, employmentInfo);
 		res.status(200).json({
 			page,
 			limit,
