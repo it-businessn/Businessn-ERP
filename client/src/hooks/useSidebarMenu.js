@@ -74,8 +74,6 @@ const useSidebarMenu = (userId, company, isManager, isShadowAdmin) => {
 			fetchUserPermissions();
 		}
 	}, [company]);
-	// }, []);
-
 	return { activeMenu, setActiveMenu };
 };
 

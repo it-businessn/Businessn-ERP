@@ -359,7 +359,7 @@ export const SIDEBAR_MENU = [
 		],
 	},
 	{
-		path: "/hr",
+		path: "hr",
 		name: "HR",
 		id: "hr",
 		icon: <FaCalendar />,
