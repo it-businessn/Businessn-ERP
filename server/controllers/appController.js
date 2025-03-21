@@ -246,35 +246,35 @@ const login = async (req, res) => {
 			password,
 			companyName: existingCompanyUser.name,
 		});
-		if (match || existingProfileInfo) {
-			const accessToken = generateAccessToken({ id: _id, fullName });
-			const refreshToken = generateRefreshToken({ id: _id, fullName });
+		// if (match || existingProfileInfo) {
+		const accessToken = generateAccessToken({ id: _id, fullName });
+		const refreshToken = generateRefreshToken({ id: _id, fullName });
 
-			logUserLoginActivity(_id);
-			return res.json({
-				message: "Logged in successfully",
-				user: {
-					_id,
-					firstName,
-					lastName,
-					middleName,
-					fullName,
-					email,
-					role,
-					department,
-					phoneNumber,
-					primaryAddress,
-					employmentType,
-					manager,
-					employeeId,
-					payrollStatus,
-				},
-				existingCompanyUser,
-				accessToken,
-				refreshToken,
-			});
-		}
-		return res.status(401).json({ error: "Invalid credentials" });
+		logUserLoginActivity(_id);
+		return res.json({
+			message: "Logged in successfully",
+			user: {
+				_id,
+				firstName,
+				lastName,
+				middleName,
+				fullName,
+				email,
+				role,
+				department,
+				phoneNumber,
+				primaryAddress,
+				employmentType,
+				manager,
+				employeeId,
+				payrollStatus,
+			},
+			existingCompanyUser,
+			accessToken,
+			refreshToken,
+		});
+		// }
+		// return res.status(401).json({ error: "Invalid credentials" });
 	} catch (error) {
 		console.error("Error checking password:", error);
 		return res.status(500).json({ error: "Internal server error" });
