@@ -16,8 +16,12 @@ const BoxCard = ({
 	minH,
 	bg = "var(--primary_bg)",
 	width,
+	boxShadow,
+	flexWrap,
 }) => (
 	<Box
+		flexWrap={flexWrap}
+		boxShadow={boxShadow}
 		bg={bg}
 		border={`${borderWidth} solid var(--main_color)`}
 		borderRadius="10px"

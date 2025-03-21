@@ -5,16 +5,93 @@ const Employee = require("../models/Employee");
 const { sendEmail } = require("../services/emailService");
 const path = require("path");
 const { filePath, fileContentType } = require("../services/fileService");
+const { TICKET_STATUS } = require("../services/data");
 
 const getAllTickets = async (req, res) => {
 	const { id } = req.params;
 	try {
-		const tasks = await SupportTicket.find({
+		const tickets = await SupportTicket.find({
 			$or: [{ originator: id }, { assignee: id }],
-		}).sort({
-			createdOn: -1,
+		}).sort({ priority: 1 });
+		res.status(200).json(tickets);
+	} catch (error) {
+		res.status(404).json({ error: error.message });
+	}
+};
+
+const getAggregateTicketCount = async (req, res) => {
+	const { id, companyName } = req.params;
+
+	try {
+		const openTicketsByCategory = await SupportTicket.aggregate([
+			{
+				$match: {
+					companyName,
+					originator: id,
+					status: { $in: [TICKET_STATUS.OPEN, TICKET_STATUS.PROGRESS, TICKET_STATUS.ON_HOLD] },
+				},
+			},
+			{
+				$group: {
+					_id: { category: "$category", status: "$status" },
+					count: { $sum: 1 },
+				},
+			},
+			{
+				$group: {
+					_id: "$_id.category",
+					statuses: {
+						$push: {
+							status: "$_id.status",
+							count: "$count",
+						},
+					},
+				},
+			},
+		]);
+
+		const myTicketsCount = await SupportTicket.aggregate([
+			{
+				$match: { companyName, originator: id, status: { $ne: TICKET_STATUS.CLOSED } },
+			},
+			{
+				$group: {
+					_id: "$status",
+					count: { $sum: 1 },
+				},
+			},
+		]);
+
+		res.status(200).json({ openTicketsByCategory, myTicketsCount });
+	} catch (error) {
+		res.status(404).json({ error: error.message });
+	}
+};
+
+const getFilteredTickets = async (req, res) => {
+	const { id, companyName, category } = req.params;
+	try {
+		const filterCriteria =
+			category === "My"
+				? {
+						companyName,
+						originator: id,
+						status: { $ne: TICKET_STATUS.CLOSED },
+				  }
+				: {
+						companyName,
+						category,
+						originator: id,
+						status: { $ne: TICKET_STATUS.CLOSED },
+				  };
+		const tickets = await SupportTicket.find(filterCriteria).sort({ priority: 1 });
+		tickets.map((task) => {
+			task.ticketDaysOpened = Math.round(
+				moment.duration(moment().diff(moment(task.createdOn))).asDays(),
+			);
+			return task;
 		});
-		res.status(200).json(tasks);
+		res.status(200).json({ tickets, category });
 	} catch (error) {
 		res.status(404).json({ error: error.message });
 	}
@@ -23,22 +100,19 @@ const getAllTickets = async (req, res) => {
 const getOpenTickets = async (req, res) => {
 	const { id, companyName } = req.params;
 	try {
-		const tasks = await SupportTicket.find({
+		const tickets = await SupportTicket.find({
 			// companyName: { $exists: false },
 			companyName,
 			status: { $ne: "Close" },
 			$or: [{ originator: id }, { assignee: id }],
-		}).sort({
-			// createdOn: -1,
-			assignee: 1,
-		});
-		tasks.map((task) => {
+		}).sort({ priority: 1 });
+		tickets.map((task) => {
 			task.ticketDaysOpened = Math.round(
 				moment.duration(moment().diff(moment(task.createdOn))).asDays(),
 			);
 			return task;
 		});
-		res.status(200).json(tasks);
+		res.status(200).json(tickets);
 	} catch (error) {
 		res.status(404).json({ error: error.message });
 	}
@@ -47,15 +121,12 @@ const getOpenTickets = async (req, res) => {
 const getClosedTickets = async (req, res) => {
 	const { id, companyName } = req.params;
 	try {
-		const tasks = await SupportTicket.find({
+		const tickets = await SupportTicket.find({
 			companyName,
 			status: "Close",
 			$or: [{ originator: id }, { assignee: id }],
-		}).sort({
-			// createdOn: -1,
-			assignee: 1,
-		});
-		res.status(200).json(tasks);
+		}).sort({ priority: 1 });
+		res.status(200).json(tickets);
 	} catch (error) {
 		res.status(404).json({ error: error.message });
 	}
@@ -120,9 +191,7 @@ const createTicket = async (req, res) => {
 			const newTask = await SupportTicket.create(newTicket);
 			const assigneeEmail = await Employee.findOne({ fullName: newTicket.assignee })
 				.select(["email"])
-				.sort({
-					createdOn: -1,
-				});
+				.sort({ priority: 1 });
 			if (assigneeEmail?.email)
 				await sendEmail(
 					assigneeEmail?.email,
@@ -278,4 +347,6 @@ module.exports = {
 	getClosedTickets,
 	getOpenTickets,
 	downloadResource,
+	getAggregateTicketCount,
+	getFilteredTickets,
 };

@@ -30,6 +30,19 @@ export const COLS = {
 	PAYRATE: "Payrate",
 };
 
+export const CATEGORY_LIST = [
+	{ category: "Onboarding" },
+	{ category: "Development" },
+	{ category: "Sales" },
+	{ category: "Marketing" },
+	{ category: "Service Delivery" },
+	{ category: "IT Support" },
+	{ category: "Finance" },
+	{ category: "Testing" },
+	{ category: "Support" },
+	{ category: "AI" },
+];
+
 export const RECALL_OPTIONS = [
 	{
 		name: "Unknown",

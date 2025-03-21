@@ -5,12 +5,20 @@ const TicketService = {
 		return apiService.get(`/ticket/${id}`);
 	},
 
-	async getOpenTicket(id, companyName) {
-		return apiService.get(`/ticket/open/${id}/${companyName}`);
+	async getAggregateTicketCount(userId, companyName) {
+		return apiService.get(`/ticket/count/${userId}/${companyName}`);
 	},
 
-	async getClosedTicket(id, companyName) {
-		return apiService.get(`/ticket/closed/${id}/${companyName}`);
+	async getOpenTicket(userId, companyName) {
+		return apiService.get(`/ticket/open/${userId}/${companyName}`);
+	},
+
+	async filterTicket(userId, companyName, name) {
+		return apiService.get(`/ticket/filter/${userId}/${companyName}/${name}`);
+	},
+
+	async getClosedTicket(userId, companyName) {
+		return apiService.get(`/ticket/closed/${userId}/${companyName}`);
 	},
 
 	async addInfo(data) {

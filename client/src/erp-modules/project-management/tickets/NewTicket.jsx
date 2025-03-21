@@ -4,23 +4,11 @@ import InputFormControl from "components/ui/form/InputFormControl";
 import SelectFormControl from "components/ui/form/SelectFormControl";
 import TextAreaFormControl from "components/ui/form/TextAreaFormControl";
 import ModalLayout from "components/ui/modal/ModalLayout";
+import { CATEGORY_LIST } from "constant";
 import { useState } from "react";
 import TicketService from "services/TicketService";
 
 const NewTicket = ({ showAddEntry, setShowAddEntry, setRefresh, company, userId, employees }) => {
-	const CATEGORY_LIST = [
-		{ category: "Onboarding" },
-		{ category: "Development" },
-		{ category: "Sales" },
-		{ category: "Marketing" },
-		{ category: "Service Delivery" },
-		{ category: "IT Support" },
-		{ category: "Finance" },
-		{ category: "Testing" },
-		{ category: "Support" },
-		{ category: "AI" },
-	];
-
 	const PRIORITY_LIST = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 	const [isSubmitting, setIsSubmitting] = useState(false);
 

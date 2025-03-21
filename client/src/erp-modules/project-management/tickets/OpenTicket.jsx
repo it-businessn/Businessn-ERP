@@ -4,12 +4,14 @@ import EmptyRowRecord from "components/ui/EmptyRowRecord";
 import NormalTextTitle from "components/ui/NormalTextTitle";
 import TableLayout from "components/ui/table/TableLayout";
 import TextTitle from "components/ui/text/TextTitle";
+import { CATEGORY_LIST } from "constant";
 import ActionAll from "erp-modules/payroll/timesheets/ActionAll";
 import { TICKET_ACTION_STATUS } from "erp-modules/payroll/timesheets/data";
 import { useEffect, useState } from "react";
 import { CgNotes } from "react-icons/cg";
 import TicketService from "services/TicketService";
 import { longTimeFormat } from "utils/convertDate";
+import CategoryFilter from "./CategoryFilter";
 import NewTicket from "./NewTicket";
 import NoteDetails from "./NoteDetails";
 
@@ -18,6 +20,12 @@ const OpenTicket = ({ company, setShowAddEntry, showAddEntry, userId, employees 
 	const [refresh, setRefresh] = useState(false);
 	const [openNote, setOpenNote] = useState(false);
 	const [rowData, setRowData] = useState(null);
+	const [ticketsCount, setTicketsCount] = useState(null);
+	const [presentTitle, setPresentTitle] = useState({
+		title: "Present",
+		color: "var(--primary_bg)",
+	});
+	const [filterName, setFilterName] = useState(null);
 
 	useEffect(() => {
 		const fetchAllTickets = async () => {
@@ -32,7 +40,16 @@ const OpenTicket = ({ company, setShowAddEntry, showAddEntry, userId, employees 
 				console.error(error);
 			}
 		};
+		const fetchAggregateTickets = async () => {
+			try {
+				const { data } = await TicketService.getAggregateTicketCount(userId, company);
+				setTicketsCount(data);
+			} catch (error) {
+				console.error(error);
+			}
+		};
 		fetchAllTickets();
+		fetchAggregateTickets();
 	}, [refresh]);
 
 	const toast = useToast();
@@ -63,8 +80,52 @@ const OpenTicket = ({ company, setShowAddEntry, showAddEntry, userId, employees 
 			setRefresh((prev) => !prev);
 		}
 	};
+
+	const filterTickets = async (name) => {
+		try {
+			const { data } = await TicketService.filterTicket(userId, company, name);
+			data?.tickets?.map((_) => {
+				_.bg = TICKET_ACTION_STATUS.find(({ name }) => name === _.status)?.color;
+				return _;
+			});
+			setFilterName(data?.category);
+			setTicketData(data?.tickets);
+		} catch (error) {
+			console.error(error);
+		}
+	};
+
+	const filterTicket = (name) => {
+		filterTickets(name);
+	};
 	return (
 		<>
+			{ticketsCount && (
+				<HStack mb={5} spacing={3} flexWrap="wrap">
+					<CategoryFilter
+						index={0}
+						name="My"
+						isMyChannel
+						data={ticketsCount?.myTicketsCount}
+						filterTicket={filterTicket}
+						presentTitle={presentTitle}
+						setPresentTitle={setPresentTitle}
+						filterName={filterName}
+					/>
+					{CATEGORY_LIST.map(({ category }, index) => (
+						<CategoryFilter
+							index={index + 1}
+							key={category}
+							name={category}
+							data={ticketsCount?.openTicketsByCategory.find(({ _id }) => _id === category)}
+							filterTicket={filterTicket}
+							presentTitle={presentTitle}
+							setPresentTitle={setPresentTitle}
+							filterName={filterName}
+						/>
+					))}
+				</HStack>
+			)}
 			<TableLayout
 				specifyPaddingCols={["Category", "Topic", "Description"]}
 				cols={cols}

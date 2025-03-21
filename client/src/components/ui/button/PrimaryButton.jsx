@@ -25,9 +25,11 @@ const PrimaryButton = ({
 	my,
 	textTransform,
 	fontWeight,
+	fontSize,
 }) => {
 	return (
 		<Button
+			fontSize={fontSize}
 			textTransform={textTransform}
 			flex={flex}
 			minW={minW}

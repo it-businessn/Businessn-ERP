@@ -126,6 +126,14 @@ const TIMESHEET_STATUS = {
 	PENDING: "Pending",
 	DELETE: "Delete",
 };
+
+const TICKET_STATUS = {
+	OPEN: "Open",
+	CLOSED: "Close",
+	PROGRESS: "In Progress",
+	ON_HOLD: "On Hold",
+};
+
 const isRoleManager = (role) =>
 	role?.includes(ROLES.ADMINISTRATOR) || role?.includes(ROLES.MANAGER);
 
@@ -264,4 +272,5 @@ module.exports = {
 	PAYRUN_TYPE,
 	TIMESHEET_ORIGIN,
 	ROLES,
+	TICKET_STATUS,
 };

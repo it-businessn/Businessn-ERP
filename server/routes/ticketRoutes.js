@@ -7,9 +7,17 @@ const { authenticateToken } = require("../middleware/auth");
 
 router.get("/:id", authenticateToken, ticketController.getAllTickets);
 
+router.get("/count/:id/:companyName", authenticateToken, ticketController.getAggregateTicketCount);
+
 router.get("/download/:filename", ticketController.downloadResource);
 
 router.get("/open/:id/:companyName", authenticateToken, ticketController.getOpenTickets);
+
+router.get(
+	"/filter/:id/:companyName/:category",
+	authenticateToken,
+	ticketController.getFilteredTickets,
+);
 
 router.get("/closed/:id/:companyName", authenticateToken, ticketController.getClosedTickets);
 

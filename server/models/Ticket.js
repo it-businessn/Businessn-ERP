@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const { TICKET_STATUS } = require("../services/data");
 
 const supportTicketSchema = new mongoose.Schema({
 	file: {
@@ -24,7 +25,7 @@ const supportTicketSchema = new mongoose.Schema({
 	originator: { type: String, ref: "Employee" },
 	ticketClosedDate: Date,
 	ticketDaysOpened: { type: Number, default: 0 },
-	status: { type: String, default: "Open" },
+	status: { type: String, default: TICKET_STATUS.OPEN },
 	updatedOn: { type: Date, default: Date.now },
 	createdOn: { type: Date, default: Date.now },
 });
