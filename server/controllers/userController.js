@@ -273,6 +273,7 @@ const getAllCompManagers = async (req, res) => {
 };
 
 const getAllManagers = async (req, res) => {
+	const { companyName } = req.params;
 	try {
 		const result = await findEmployee({
 			companyName,
