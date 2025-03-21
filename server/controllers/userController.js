@@ -21,7 +21,7 @@ const getPayrollInActiveEmployees = async (companyName, deptName) => {
 		companyName,
 		employmentRole: { $ne: ROLES.SHADOW_ADMIN },
 	});
-	if (deptName !== "null") {
+	if (deptName && deptName !== "null") {
 		result = result?.filter((emp) => emp?.positions?.[0]?.employmentDepartment === deptName);
 	}
 	return result;
@@ -155,7 +155,7 @@ const getCompanyEmployees = async (req, res) => {
 				};
 			}),
 		);
-		if (deptName !== "null") {
+		if (deptName && deptName !== "null") {
 			updatedResult = updatedResult?.filter(
 				(emp) => emp?.positions?.[0]?.employmentDepartment === deptName,
 			);

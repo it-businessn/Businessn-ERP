@@ -18,8 +18,8 @@ const employeeGovernmentInfoSchema = new mongoose.Schema({
 	regionalEmployerHealth: String,
 	createdOn: { type: Date, default: Date.now },
 	updatedOn: { type: Date, default: Date.now },
-	isCPPExempt: Boolean,
-	isEIExempt: Boolean,
+	isCPPExempt: { type: Boolean, default: false },
+	isEIExempt: { type: Boolean, default: false },
 	isPIPExempt: Boolean,
 	employmentCode: String,
 });

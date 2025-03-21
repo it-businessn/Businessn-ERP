@@ -1,8 +1,9 @@
-import { SimpleGrid, useToast } from "@chakra-ui/react";
+import { Checkbox, FormLabel, HStack, SimpleGrid, Stack, useToast } from "@chakra-ui/react";
+import PrimaryButton from "components/ui/button/PrimaryButton";
 import BoxCard from "components/ui/card";
+import TextTitle from "components/ui/text/TextTitle";
 import VerticalStepper from "components/ui/VerticalStepper";
 import {
-	EMP_CPP_EXEMPT,
 	EMP_FED_GOVT_CONFIG,
 	EMP_INCOME_TAX_CONFIG,
 	EMP_REGN_GOVT_CONFIG,
@@ -45,8 +46,15 @@ const GovernmentContribution = ({ company, isOnboarding, handleNext, handlePrev,
 		setIsDisabled(false);
 	};
 
+	useEffect(() => {
+		setFormData((prev) => ({
+			...prev,
+			isCPPExempt,
+			isEIExempt,
+		}));
+	}, [isCPPExempt, isEIExempt]);
+
 	const handleSubmit = async () => {
-		formData.isCPPExempt = isCPPExempt !== undefined ? !isCPPExempt : false;
 		setIsLoading(true);
 		try {
 			formData.companyName = company;
@@ -65,21 +73,35 @@ const GovernmentContribution = ({ company, isOnboarding, handleNext, handlePrev,
 
 	const steps = [
 		{
-			title: "CPP Exemption",
+			title: "Exemption",
 			content: (
-				<Record
-					handleConfirm={() => ""}
-					formData={formData}
-					setFormData={setFormData}
-					title="CPP Exemption"
-					config={EMP_CPP_EXEMPT}
-					handleSubmit={handleSubmit}
-					isCPPExempt={isCPPExempt}
-					setIsCPPExempt={setIsCPPExempt}
-					isEIExempt={isEIExempt}
-					setIsEIExempt={setIsEIExempt}
-					readOnly
-				/>
+				<Stack>
+					<TextTitle title={"Exemption"} />
+					<HStack w="40%" justify="space-between">
+						<Checkbox
+							colorScheme="facebook"
+							isChecked={isCPPExempt}
+							onChange={() => setIsCPPExempt(!isCPPExempt)}
+						>
+							<FormLabel>Is CPP/QPP Exempt</FormLabel>
+						</Checkbox>
+						<Checkbox
+							colorScheme="facebook"
+							isChecked={isEIExempt}
+							onChange={() => setIsEIExempt(!isEIExempt)}
+						>
+							<FormLabel>Is EI Exempt</FormLabel>
+						</Checkbox>
+					</HStack>
+					<PrimaryButton
+						w="100px"
+						size="xs"
+						name="Save"
+						onOpen={() => {
+							handleSubmit();
+						}}
+					/>
+				</Stack>
 			),
 		},
 		{

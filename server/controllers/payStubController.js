@@ -497,7 +497,7 @@ const addEmployeePayStubInfo = async (req, res) => {
 
 		const activeEmployees = isExtraRun
 			? await getEmployeeId(selectedEmp)
-			: await getPayrollActiveEmployees(companyName, deptName);
+			: await getPayrollActiveEmployees(companyName, req.body?.deptName);
 
 		const result = isExtraRun
 			? null

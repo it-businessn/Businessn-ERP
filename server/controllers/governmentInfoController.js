@@ -56,11 +56,6 @@ const addEmployeeGovernmentInfo = async (req, res) => {
 		regionalEmployerHealth,
 	} = req.body;
 	try {
-		if (req.body.isCPPExempt || req.body.isEIExempt) {
-			// req.body.isCPPExempt = await checkExemption(empId, companyName, req.body.isCPPExempt);
-			// req.body.isEIExempt = await checkExemption(empId, companyName, req.body.isEIExempt);
-		}
-
 		const existingGovernmentInfo = await findEmployeeGovernmentInfo(empId, companyName);
 		if (existingGovernmentInfo) {
 			const updatedGovernmentInfo = await updateGovernmentInfo(
@@ -107,7 +102,7 @@ const findEmployeeGovernmentInfoDetails = async (empId, companyName) =>
 	await EmployeeGovernmentInfo.findOne({
 		empId,
 		companyName,
-	}).select("empId federalTaxCredit regionalTaxCredit");
+	}).select("empId federalTaxCredit regionalTaxCredit isCPPExempt isEIExempt");
 
 module.exports = {
 	findEmployeeGovernmentInfoDetails,

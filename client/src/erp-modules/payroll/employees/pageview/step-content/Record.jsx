@@ -26,10 +26,6 @@ const Record = ({
 	isBalanceInfo,
 	carryFwd,
 	setCarryFwd,
-	isCPPExempt,
-	isEIExempt,
-	setIsCPPExempt,
-	setIsEIExempt,
 	isContribution,
 	showAddForm,
 	formContent,
@@ -44,15 +40,9 @@ const Record = ({
 						{tab?.control === "checkbox" ? (
 							<Checkbox
 								colorScheme={"facebook"}
-								isChecked={carryFwd || isEIExempt || isCPPExempt}
+								isChecked={carryFwd}
 								onChange={() => {
-									setCarryFwd(!carryFwd);
-									if (isEIExempt !== undefined) {
-										setIsEIExempt(!isEIExempt);
-									}
-									if (isCPPExempt !== undefined) {
-										setIsCPPExempt(!isCPPExempt);
-									}
+									if (setCarryFwd) setCarryFwd(!carryFwd);
 									handleSubmit();
 								}}
 							>
