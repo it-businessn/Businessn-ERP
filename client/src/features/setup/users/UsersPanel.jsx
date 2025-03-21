@@ -17,12 +17,12 @@ const UsersPanel = ({
 	const handleInputChange = (value) => {
 		setEmpName(value);
 		setFilteredEmployees(
-			employees.filter((emp) => emp?.fullName?.toLowerCase().includes(value.toLowerCase())),
+			employees.filter((emp) => emp?.empId?.fullName?.toLowerCase().includes(value.toLowerCase())),
 		);
 	};
 	const [openAddUser, setOpenAddUser] = useState(false);
 	const handleSelect = (emp) => {
-		setEmpName(emp.fullName);
+		setEmpName(emp?.empId?.fullName);
 	};
 	return (
 		<>

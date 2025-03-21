@@ -134,7 +134,7 @@ const getCompanyEmployees = async (req, res) => {
 		const result = await EmployeeProfileInfo.find({
 			companyName,
 			empId: { $exists: true },
-		}).select("empId firstName middleName lastName");
+		}).select("empId firstName middleName lastName personalEmail");
 		let updatedResult = await Promise.all(
 			result.map(async (emp) => {
 				const empInfo = await EmployeeEmploymentInfo.findOne({
@@ -151,6 +151,7 @@ const getCompanyEmployees = async (req, res) => {
 					employmentRole: empInfo?.employmentRole,
 					employeeNo: empInfo?.employeeNo,
 					positions: empInfo?.positions,
+					personalEmail: emp?.personalEmail,
 				};
 			}),
 		);

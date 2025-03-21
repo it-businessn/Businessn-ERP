@@ -39,16 +39,16 @@ const UserList = ({
 					{(!filteredEmployees || filteredEmployees?.length === 0) && (
 						<EmptyRowRecord data={filteredEmployees} colSpan={5} />
 					)}
-					{filteredEmployees?.map(({ fullName, _id, email, baseModule, group, role }) => (
-						<Tr key={_id}>
+					{filteredEmployees?.map(({ empId, personalEmail, baseModule, group, employmentRole }) => (
+						<Tr key={empId?._id}>
 							<Td w={"200px"} whiteSpace={"pre-wrap"} py={1} px={1.5} fontSize={"xs"}>
-								{fullName}
+								{empId?.fullName}
 							</Td>
 							<Td w={"200px"} whiteSpace={"pre-wrap"} py={1} px={1.5} fontSize={"xs"}>
-								{email}
+								{personalEmail}
 							</Td>
 							<Td w={"100px"} whiteSpace={"pre-wrap"} py={1} px={1.5} fontSize={"xs"}>
-								{baseModule || ""}
+								{baseModule || "Payroll"}
 							</Td>
 							{!isUser && (
 								<Td w={"100px"} whiteSpace={"pre-wrap"} py={1} px={1.5} fontSize={"xs"}>
@@ -56,7 +56,7 @@ const UserList = ({
 								</Td>
 							)}
 							<Td w={"100px"} whiteSpace={"pre-wrap"} py={1} px={1.5} fontSize={"xs"}>
-								{role}
+								{employmentRole}
 							</Td>
 							<Td>
 								{isGroup && (
@@ -64,7 +64,7 @@ const UserList = ({
 										cursor={"pointer"}
 										onClick={() => {
 											setShowConfirmationPopUp(true);
-											setDeleteRecord(_id);
+											setDeleteRecord(empId?._id);
 										}}
 									/>
 								)}

@@ -285,7 +285,7 @@ const LeadsDisbursed = () => {
 									<Td p={1}>{role}</Td>
 									<Td
 										p={1}
-									>{`${primaryAddress.streetNumber} ${primaryAddress.city} ${primaryAddress.state} ${primaryAddress.country} ${primaryAddress.postalCode}`}</Td>
+									>{`${primaryAddress?.streetNumber} ${primaryAddress?.city} ${primaryAddress?.state} ${primaryAddress?.country} ${primaryAddress?.postalCode}`}</Td>
 									<Td p={1}>
 										<SelectList
 											id={_id}
