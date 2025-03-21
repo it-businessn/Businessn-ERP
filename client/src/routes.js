@@ -18,6 +18,9 @@ const Configuration = lazy(() => import("./features/configuration"));
 const UserProfileDetails = lazy(() => import("./features/user/UserProfileDetails"));
 const VerifyEmail = lazy(() => import("./features/verify-user"));
 
+// hr
+const CompanyHR = lazy(() => import("./erp-modules/hr/CompanyHR"));
+
 // sales
 const Activities = lazy(() => import("./erp-modules/sales/activities"));
 const AddQuestionForm = lazy(() =>
@@ -382,9 +385,10 @@ export const router = createBrowserRouter([
 				path: `/tickets`,
 				element: <Tickets />,
 			},
+			/* HR */
 			{
-				path: "*",
-				element: <PageNotFound />,
+				path: "/hr",
+				element: <CompanyHR />,
 			},
 		],
 	},

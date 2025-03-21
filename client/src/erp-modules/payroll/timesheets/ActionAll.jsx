@@ -17,6 +17,9 @@ const ActionAll = ({
 	actions = ACTION_STATUS,
 	id,
 	setRowId,
+	minW = "105px",
+	size = "sm",
+	menuW = "150px",
 }) => {
 	const [actionName, setActionName] = useState(actions[0].title);
 	const [actionIcon, setActionIcon] = useState(actions[0].icon);
@@ -33,7 +36,7 @@ const ActionAll = ({
 			justifyContent="space-between"
 		>
 			<PrimaryButton
-				minW="105px"
+				minW={minW}
 				// textTransform="uppercase"
 				isDisabled={
 					(actionName === actions[0].title && isApproveDisabled) ||
@@ -44,9 +47,9 @@ const ActionAll = ({
 				color={color}
 				size="xs"
 				name={
-					<HStack spacing={1} alignItems="center">
+					<HStack spacing={1} alignItems="center" gap={0}>
 						{actionIcon}
-						<TextTitle size="sm" title={`${actionName} ${isRowAction ? "" : "all"}`} />
+						<TextTitle size={size} title={`${actionName} ${isRowAction ? "" : "all"}`} />
 					</HStack>
 				}
 				px={0}
@@ -56,14 +59,15 @@ const ActionAll = ({
 				}}
 				onOpen={() => handleButtonClick(actionName)}
 			/>
-			<Menu>
+			<Menu placement="left-start">
 				<MenuButton
 					as={IconButton}
 					height="auto"
 					icon={<FaCaretDown fontSize={isRowAction ? "1.2em" : "1.5em"} color="var(--logo_bg)" />}
 					aria-label="Options"
+					minW="auto"
 				/>
-				<MenuList minW={isRowAction ? "150px" : "170px"} zIndex={10}>
+				<MenuList minW={isRowAction ? menuW : "170px"} zIndex={10}>
 					{actions.map(({ color, title, icon }) => (
 						<MenuItem
 							key={title}

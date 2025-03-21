@@ -24,7 +24,6 @@ const PaygroupTable = ({
 }) => {
 	const [showExtraPayrun, setShowExtraPayrun] = useState(false);
 	const [showOnboard, setShowOnboard] = useState(false);
-	const [showAddUser, setShowAddUser] = useState(false);
 	const navigate = useNavigate();
 
 	const handleClick = (val) => {
@@ -42,9 +41,6 @@ const PaygroupTable = ({
 		}
 		if (val === "roe") {
 			navigate(payrollROEPath);
-		}
-		if (val === "new") {
-			setShowAddUser(true);
 		}
 	};
 
@@ -97,14 +93,6 @@ const PaygroupTable = ({
 							showOnboard={showOnboard}
 							setShowOnboard={setShowOnboard}
 							selectedPayGroupName={selectedPayGroup?.name}
-						/>
-					)}
-					{showAddUser && (
-						<OnboardEmpModal
-							title="Add User"
-							showOnboard={showAddUser}
-							setShowOnboard={setShowAddUser}
-							company={company}
 						/>
 					)}
 					<WorkviewTable
