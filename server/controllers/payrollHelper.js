@@ -73,13 +73,12 @@ const calculateTimesheetApprovedHours = async (startDate, endDate, companyName) 
 	return result;
 };
 
-const calcRegHrsWorked = (earningType, FTHrs, PTHrs, regHrs, isExtraRun) => {
-	if (!isExtraRun && earningType === EARNING_TYPE.FT) {
-		return convertHrsToFloat(FTHrs);
-	} else {
-		return !isExtraRun && earningType === EARNING_TYPE.PT ? convertHrsToFloat(PTHrs) : regHrs;
-	}
-};
+const calcRegHrsWorked = (earningType, FTHrs, PTHrs, regHrs, isExtraRun) =>
+	!isExtraRun && earningType === EARNING_TYPE.FT
+		? convertHrsToFloat(FTHrs)
+		: !isExtraRun && earningType === EARNING_TYPE.PT
+		? convertHrsToFloat(PTHrs)
+		: regHrs;
 
 const calcPayRates = (newEmpDataPay) => {
 	const { regPay } = newEmpDataPay;
