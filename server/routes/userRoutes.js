@@ -34,11 +34,11 @@ router.get(
 	userController.getPayrollInActiveCompanyEmployees,
 );
 
-router.get("/:companyName/:deptName", userController.getCompanyEmployees);
-
 router.get("/all/:companyName", userController.getCompanyUsers);
 
 router.get("/count/:companyName", userController.getCompanyEmployeesCount);
+
+router.get("/:companyName/:deptName", userController.getCompanyEmployees);
 
 router.post("/create", userController.createMasterUser);
 
