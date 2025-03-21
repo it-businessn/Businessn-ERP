@@ -17,8 +17,10 @@ import {
 } from "@chakra-ui/react";
 import HighlightButton from "components/ui/button/HighlightButton";
 import LeftIconButton from "components/ui/button/LeftIconButton";
+import LinkButton from "components/ui/button/LinkButton";
 import PrimaryButton from "components/ui/button/PrimaryButton";
 import TextTitle from "components/ui/text/TextTitle";
+import OnboardEmpModal from "erp-modules/payroll/workview/paygroup-header-table/OnboardEmpModal";
 import useManager from "hooks/useManager";
 import useSalesAgentData from "hooks/useSalesAgentData";
 import PageLayout from "layouts/PageLayout";
@@ -41,6 +43,7 @@ const CustomersList = ({ user, handleProfileView, icons, company }) => {
 	const assignees = useSalesAgentData(company, false, true);
 	const managers = useManager(company);
 	const [companies, setCompanies] = useState(null);
+	const [showOnboard, setShowOnboard] = useState(false);
 
 	useEffect(() => {
 		const fetchAllCompanies = async () => {
@@ -57,6 +60,10 @@ const CustomersList = ({ user, handleProfileView, icons, company }) => {
 
 	const handleEdit = (id) => {
 		console.log(id);
+	};
+
+	const handleClick = () => {
+		setShowOnboard(true);
 	};
 
 	const { isOpen, onOpen, onClose } = useDisclosure();
@@ -209,6 +216,7 @@ const CustomersList = ({ user, handleProfileView, icons, company }) => {
 													handleProfileView(_id);
 												}}
 											/>
+											<LinkButton name="Onboard" onClick={handleClick} />
 										</HStack>
 									</Td>
 									{/* <Td>
@@ -235,6 +243,14 @@ const CustomersList = ({ user, handleProfileView, icons, company }) => {
 					managers={managers}
 					companies={companies}
 					setRefresh={setRefresh}
+				/>
+			)}
+			{showOnboard && (
+				<OnboardEmpModal
+					title="Onboard employee"
+					showOnboard={showOnboard}
+					setShowOnboard={setShowOnboard}
+					isSalesOnboard
 				/>
 			)}
 		</PageLayout>

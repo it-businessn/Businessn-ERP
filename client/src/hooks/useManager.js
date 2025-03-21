@@ -8,6 +8,11 @@ const useManager = (company) => {
 		const fetchAllManagers = async () => {
 			try {
 				const { data } = await UserService.getAllCompManagers(company);
+				data.map((emp) => {
+					emp.fullName = emp?.empId?.fullName;
+					emp._id = emp?.empId?._id;
+					return emp;
+				});
 				setManagers(data);
 			} catch (error) {
 				console.error(error);

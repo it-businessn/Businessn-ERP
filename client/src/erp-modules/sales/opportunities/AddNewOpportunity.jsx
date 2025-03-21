@@ -216,6 +216,7 @@ const AddNewOpportunity = ({
 					)}
 					<HStack>
 						<InputFormControl
+							type="number"
 							label={"Phone"}
 							name="phone"
 							valueText={formData.phone}
