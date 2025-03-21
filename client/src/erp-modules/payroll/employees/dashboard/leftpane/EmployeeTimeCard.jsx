@@ -6,10 +6,12 @@ import EmptyRowRecord from "components/ui/EmptyRowRecord";
 import NormalTextTitle from "components/ui/NormalTextTitle";
 import TableLayout from "components/ui/table/TableLayout";
 import TextTitle from "components/ui/text/TextTitle";
+import { ROLES } from "constant";
 import { getParamKey, TIMESHEET_SOURCE } from "erp-modules/payroll/timesheets/data";
 import ExtraTimeEntryModal from "erp-modules/payroll/timesheets/ExtraTimeEntryModal";
 import usePaygroup from "hooks/usePaygroup";
 import { useEffect, useState } from "react";
+import LocalStorageService from "services/LocalStorageService";
 import TimesheetService from "services/TimesheetService";
 import {
 	dayMonthYear,
@@ -28,6 +30,8 @@ const EmployeeTimeCard = ({ selectedUser, company, isMobile }) => {
 	const { closestRecord } = usePaygroup(company, false);
 	const [startDate, setStartDate] = useState(null);
 	const [endDate, setEndDate] = useState(null);
+	const loggedInUser = LocalStorageService.getItem("user");
+	const deptName = loggedInUser?.role === ROLES.MANAGER ? loggedInUser?.department : null;
 
 	const cols = [
 		"Worked Date",
@@ -292,6 +296,7 @@ const EmployeeTimeCard = ({ selectedUser, company, isMobile }) => {
 						setShowAddEntry={setShowAddEntry}
 						userId={selectedUser?._id}
 						source={TIMESHEET_SOURCE.EMP}
+						deptName={deptName}
 					/>
 				)}
 			</BoxCard>

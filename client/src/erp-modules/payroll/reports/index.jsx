@@ -6,6 +6,7 @@ import EmptyRowRecord from "components/ui/EmptyRowRecord";
 import NormalTextTitle from "components/ui/NormalTextTitle";
 import TableLayout from "components/ui/table/TableLayout";
 import TextTitle from "components/ui/text/TextTitle";
+import { ROLES } from "constant";
 import useCompany from "hooks/useCompany";
 import useCompanyEmployees from "hooks/useCompanyEmployees";
 import PageLayout from "layouts/PageLayout";
@@ -29,9 +30,10 @@ const Reports = () => {
 	};
 
 	const loggedInUser = LocalStorageService.getItem("user");
+	const deptName = loggedInUser?.role === ROLES.MANAGER ? loggedInUser?.department : null;
 	const [employee, setEmployee] = useState(loggedInUser);
 	const isActivePayroll = employee?.payrollStatus?.includes("Active");
-	const employees = useCompanyEmployees(company);
+	const employees = useCompanyEmployees(company, deptName);
 
 	const [filteredEmployees, setFilteredEmployees] = useState(null);
 

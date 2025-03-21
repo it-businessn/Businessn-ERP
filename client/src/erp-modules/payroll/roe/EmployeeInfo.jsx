@@ -13,8 +13,8 @@ import LocalStorageService from "services/LocalStorageService";
 import PayrollService from "services/PayrollService";
 import StepContent from "../employees/pageview/step-content";
 
-const EmployeeInfo = ({ company, handleNext, tabId }) => {
-	const employees = useCompanyEmployees(company);
+const EmployeeInfo = ({ company, handleNext, tabId, deptName }) => {
+	const employees = useCompanyEmployees(company, deptName);
 	const initialFormData = {
 		empId: "",
 		employee: "",

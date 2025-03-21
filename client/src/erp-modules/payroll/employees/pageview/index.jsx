@@ -3,6 +3,7 @@ import ActiveBadge from "components/ActiveBadge";
 import NormalTextTitle from "components/ui/NormalTextTitle";
 import RadioButtonGroup from "components/ui/tab/RadioButtonGroup";
 import TextTitle from "components/ui/text/TextTitle";
+import { ROLES } from "constant";
 import useCompany from "hooks/useCompany";
 import useCompanyEmployees from "hooks/useCompanyEmployees";
 import useSelectedEmp from "hooks/useSelectedEmp";
@@ -23,13 +24,14 @@ const Employees = ({ isOnboarding, selectedPayGroupName, handleClose }) => {
 	const { id, stepNo } = useParams();
 	const { company } = useCompany(LocalStorageService.getItem("selectedCompany"));
 	const loggedInUser = LocalStorageService.getItem("user");
+	const deptName = loggedInUser?.role === ROLES.MANAGER ? loggedInUser?.department : null;
 	const [employee, setEmployee] = useState(null);
 	const [userId, setUserId] = useState(id ? id : loggedInUser._id);
 	const { setEmpId } = useSelectedEmp(userId);
 
 	const isActivePayroll = employee?.payrollStatus?.includes("Active");
 
-	const employees = useCompanyEmployees(company);
+	const employees = useCompanyEmployees(company, deptName);
 	const [filteredEmployees, setFilteredEmployees] = useState(null);
 
 	useEffect(() => {

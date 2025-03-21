@@ -110,6 +110,7 @@ const Timesheets = () => {
 			type: "Timesheet",
 			name: (
 				<Timesheet
+					deptName={deptName}
 					setTimesheetRefresh={setDataRefresh}
 					company={company}
 					pageNum={pageNum}

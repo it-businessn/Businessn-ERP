@@ -9,16 +9,21 @@ import EmployeeInfo from "./EmployeeInfo";
 import EmployerInfo from "./EmployerInfo";
 import EmploymentInfo from "./EmploymentInfo";
 import ReviewInfo from "./ReviewInfo";
+import { ROLES } from "constant";
 
 const ROE = () => {
 	const { company } = useCompany(LocalStorageService.getItem("selectedCompany"));
+	const loggedInUser = LocalStorageService.getItem("user");
+	const deptName = loggedInUser?.role === ROLES.MANAGER ? loggedInUser?.department : null;
 
 	const handleNext = (id) => setViewMode(ROE_TABS[id]?.type);
 	const ROE_TABS = [
 		{
 			id: 0,
 			type: "Employee Info",
-			name: <EmployeeInfo tabId={1} company={company} handleNext={handleNext} />,
+			name: (
+				<EmployeeInfo tabId={1} company={company} handleNext={handleNext} deptName={deptName} />
+			),
 		},
 		{
 			id: 1,

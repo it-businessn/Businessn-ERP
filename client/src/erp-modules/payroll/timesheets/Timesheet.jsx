@@ -66,6 +66,7 @@ const Timesheet = ({
 	setIsActioned,
 	checkedRows,
 	setCheckedRows,
+	deptName,
 }) => {
 	const cols = [
 		COLS.EMP_NAME,
@@ -817,6 +818,7 @@ const Timesheet = ({
 					setRefresh={setRefresh}
 					setShowAddEntry={setShowAddEntry}
 					source={TIMESHEET_SOURCE.MANAGER}
+					deptName={deptName}
 				/>
 			)}
 
