@@ -33,6 +33,7 @@ const getPayrollActiveEmployees = async (companyName, deptName) => {
 		})
 		.select("payrollStatus employeeNo positions employmentRole");
 
+	result = result?.filter((a) => a.empId);
 	if (deptName && deptName !== "null") {
 		result = result?.filter((emp) => emp?.positions?.[0]?.employmentDepartment === deptName);
 	}

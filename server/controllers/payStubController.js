@@ -675,7 +675,7 @@ const getPayDetailsReportInfo = async (req, res) => {
 
 	try {
 		const isExtraPayRun = isExtraRun === "true";
-		const payStubs = await EmployeePayStub.find({
+		let payStubs = await EmployeePayStub.find({
 			companyName,
 			payPeriodNum,
 			isExtraRun: isExtraPayRun,
@@ -685,6 +685,7 @@ const getPayDetailsReportInfo = async (req, res) => {
 			},
 		}).populate(EMP_INFO);
 
+		payStubs = payStubs?.filter((a) => a?.empId);
 		payStubs.sort((a, b) => {
 			const nameA = a.empId?.fullName?.toLowerCase();
 			const nameB = b.empId?.fullName?.toLowerCase();

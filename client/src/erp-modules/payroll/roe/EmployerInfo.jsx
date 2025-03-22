@@ -50,11 +50,7 @@ const EmployerInfo = ({ company, handleNext, tabId }) => {
 		const fetchAllAdmins = async () => {
 			try {
 				const { data } = await UserService.getAllManagers(company);
-				data.map((emp) => {
-					emp.fullName = emp?.empId?.fullName;
-					emp._id = emp?.empId?._id;
-					return emp;
-				});
+				data?.map((emp) => (emp.fullName = emp?.empId?.fullName));
 				setAdmins(data);
 			} catch (error) {
 				console.error(error);
@@ -62,7 +58,7 @@ const EmployerInfo = ({ company, handleNext, tabId }) => {
 		};
 		fetchAllAdmins();
 		fetchEmployeeROEEmploymentInfo();
-	}, [company]);
+	}, []);
 
 	useEffect(() => {
 		if (companyInfo)
@@ -119,22 +115,24 @@ const EmployerInfo = ({ company, handleNext, tabId }) => {
 						</HStack>
 
 						<HStack>
-							<Stack>
-								<TextTitle title="Contact Name" />
-								<SelectFormControl
-									valueParam="fullName"
-									name="fullName"
-									label=""
-									valueText={formData.contactName || loggedInUser?.fullName}
-									handleChange={(e) =>
-										setFormData((prevData) => ({
-											...prevData,
-											contactName: e.target.value,
-										}))
-									}
-									options={admins}
-								/>
-							</Stack>
+							{admins && (
+								<Stack>
+									<TextTitle title="Contact Name" />
+									<SelectFormControl
+										valueParam="fullName"
+										name="fullName"
+										label=""
+										valueText={formData.contactName || loggedInUser?.fullName}
+										handleChange={(e) =>
+											setFormData((prevData) => ({
+												...prevData,
+												contactName: e.target.value,
+											}))
+										}
+										options={admins}
+									/>
+								</Stack>
+							)}
 							<Stack>
 								<TextTitle title="Contact Telephone Number" />
 								<HStack>
@@ -169,19 +167,21 @@ const EmployerInfo = ({ company, handleNext, tabId }) => {
 						<HStack>
 							<Stack>
 								<TextTitle title="Issuer Name" />
-								<SelectFormControl
-									valueParam="fullName"
-									name="fullName"
-									label=""
-									valueText={formData.issuerName || loggedInUser?.fullName}
-									handleChange={(e) =>
-										setFormData((prevData) => ({
-											...prevData,
-											issuerName: e.target.value,
-										}))
-									}
-									options={admins}
-								/>
+								{admins && (
+									<SelectFormControl
+										valueParam="fullName"
+										name="fullName"
+										label=""
+										valueText={formData.issuerName || loggedInUser?.fullName}
+										handleChange={(e) =>
+											setFormData((prevData) => ({
+												...prevData,
+												issuerName: e.target.value,
+											}))
+										}
+										options={admins}
+									/>
+								)}
 							</Stack>
 							<Stack>
 								<TextTitle title="Issuer Telephone Number" />

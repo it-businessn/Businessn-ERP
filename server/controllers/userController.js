@@ -28,7 +28,7 @@ const getPayrollInActiveEmployees = async (companyName, deptName) => {
 };
 
 const findEmployee = async (data) => {
-	const result = await EmployeeEmploymentInfo.find(data)
+	let result = await EmployeeEmploymentInfo.find(data)
 		.populate({
 			path: "empId",
 			model: "Employee",
@@ -36,6 +36,7 @@ const findEmployee = async (data) => {
 		})
 		.select("payrollStatus employeeNo positions employmentRole");
 
+	result = result?.filter((a) => a.empId);
 	result?.sort((a, b) => {
 		if (a.empId?.fullName < b.empId?.fullName) return -1;
 		if (a.empId?.fullName > b.empId?.fullName) return 1;

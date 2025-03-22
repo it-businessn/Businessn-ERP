@@ -27,15 +27,17 @@ const SelectFormControl = ({
 				onChange={handleChange}
 				placeholder={placeholder}
 			>
-				{options?.map((_) => (
-					<option
-						key={_?.value || _[valueParam] || _}
-						value={_[valueParam] || _}
-						style={{ color: isPayType && getPayTypeStyle(_[name]).color }}
-					>
-						{_?.name || _[name] || _}
-					</option>
-				))}
+				{options?.map((_) => {
+					return (
+						<option
+							key={_?.value || _[valueParam] || _}
+							value={_[valueParam] || _}
+							style={{ color: isPayType && getPayTypeStyle(_[name]).color }}
+						>
+							{_?.name || _[name] || _}
+						</option>
+					);
+				})}
 			</Select>
 		</FormControlMain>
 	);
