@@ -93,7 +93,7 @@ const EditGroup = ({ isOpen, onClose, selectedGroup, yearsList }) => {
 					</option>
 				))}
 			</Select>
-			<TableLayout cols={COLS} isSmall>
+			<TableLayout cols={COLS} isSmall height="calc(100vh - 162px)">
 				<Tbody>
 					{(!schedules || schedules?.length === 0) && (
 						<EmptyRowRecord data={schedules} colSpan={COLS.length} />

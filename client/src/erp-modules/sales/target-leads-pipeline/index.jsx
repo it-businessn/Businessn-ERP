@@ -76,7 +76,7 @@ const Pipeline = () => {
 	};
 
 	return (
-		<PageLayout title={"Target Leads"}>
+		<PageLayout title={"Target Leads"} pb={0}>
 			<Box width="100%" borderRadius="10px" border="3px solid var(--main_color)" mb={3}>
 				<TextTitle p={"1em"} title="Pipeline" color={"var(--menu_item_color)"} mb={"0.5em"} />
 

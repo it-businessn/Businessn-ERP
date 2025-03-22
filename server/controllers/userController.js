@@ -306,11 +306,23 @@ const getAllSalesAgentsList = async (req, res) => {
 const getAllSalesAgents = async (req, res) => {
 	const { companyName } = req.params;
 	try {
-		const result = await findEmployee({
+		let result = await EmployeeEmploymentInfo.find({
 			companyName,
 			employmentRole: {
 				$nin: [ROLES.SHADOW_ADMIN, ROLES.AUTH_ADMINISTRATOR, ROLES.ADMINISTRATOR, ROLES.MANAGER],
 			},
+		})
+			.populate({
+				path: "empId",
+				model: "Employee",
+				select: ["fullName", "email", "baseModule", "group", "primaryAddress"],
+			})
+			.select("payrollStatus employeeNo positions employmentRole");
+		result = result?.filter((a) => a.empId);
+		result?.sort((a, b) => {
+			if (a.empId?.fullName < b.empId?.fullName) return -1;
+			if (a.empId?.fullName > b.empId?.fullName) return 1;
+			return a.createdOn - b.createdOn;
 		});
 		res.status(200).json(result);
 	} catch (error) {

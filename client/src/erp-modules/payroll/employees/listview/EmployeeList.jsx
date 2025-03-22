@@ -19,7 +19,14 @@ const EmployeeList = ({ employees }) => {
 	const cols = [COLS.EMP_NAME, "Department", "Role", "Employee No", "Badge ID", "Status", "Action"];
 
 	return (
-		<TableLayout cols={cols} height="60vh" position="sticky" top={-1} zIndex={1} textAlign="center">
+		<TableLayout
+			cols={cols}
+			height="calc(100vh - 380px)"
+			position="sticky"
+			top={-1}
+			zIndex={1}
+			textAlign="center"
+		>
 			<Tbody>
 				{(!employees || employees?.length === 0) && (
 					<EmptyRowRecord data={employees} colSpan={cols.length} />

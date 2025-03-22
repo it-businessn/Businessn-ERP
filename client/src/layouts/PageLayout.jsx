@@ -19,6 +19,7 @@ const PageLayout = ({
 	size,
 	zIndex = 0,
 	position = "sticky",
+	pb,
 }) => (
 	<Box p={{ base: "1em" }} overflow={"hidden"} zIndex={zIndex} position={position}>
 		<PageHeader
@@ -35,7 +36,13 @@ const PageLayout = ({
 			isTimesheet={isTimesheet}
 			showCheckBox={showCheckBox}
 		/>
-		{showBgLayer ? <BoxCard borderWidth={"2px"}>{children}</BoxCard> : children}
+		{showBgLayer ? (
+			<BoxCard pb={pb} borderWidth={"2px"}>
+				{children}
+			</BoxCard>
+		) : (
+			children
+		)}
 	</Box>
 );
 

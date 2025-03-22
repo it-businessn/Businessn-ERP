@@ -18,7 +18,7 @@ const Sidebar = ({ activeMenu, handleMenuItemClick, isMobile, isOpen, onClose })
 		<Flex
 			boxShadow="md"
 			maxW={{ md: "24vw", lg: "18vw", xl: "12vw" }}
-			p={2}
+			p={0}
 			minW={{ md: "24vw", lg: "18vw", xl: "12vw" }}
 			mt="6.5em"
 			maxHeight={`calc(var(--custom_height))`}

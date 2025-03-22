@@ -51,10 +51,10 @@ const Orders = () => {
 		fetchAllContacts();
 	}, []);
 	return (
-		<PageLayout title={"Orders"}>
+		<PageLayout title={"Orders"} pb={0}>
 			{/* <Box
 			p={{ base: "1em", md: "2em" }}
-			h={{ base: "auto", md: "70vh", lg: "auto" }}
+			h={{ base: "auto", md: "calc(100vh - 278px)", lg: "auto" }}
 			overflow="auto"
 		> */}
 
@@ -317,7 +317,7 @@ const Orders = () => {
 					</Flex>
 				)}
 				{contacts && (
-					<Box overflow="auto" height={"30vh"}>
+					<Box overflow="auto" height={"450px"}>
 						<Table color={"var(--nav_color)"} bg={"var(--primary_bg)"}>
 							<Thead>
 								<Tr fontSize="xs">

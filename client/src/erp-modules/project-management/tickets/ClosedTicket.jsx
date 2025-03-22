@@ -70,7 +70,7 @@ const ClosedTicket = ({ company, setShowAddEntry, showAddEntry, userId, employee
 				position="sticky"
 				zIndex={3}
 				top={-1}
-				height="73vh"
+				height="calc(100vh - 233px)"
 				specifyPaddingCols={["Category", "Topic", "Description"]}
 			>
 				<Tbody>

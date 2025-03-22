@@ -112,59 +112,69 @@ const AgentsView = ({
 								</Text> */}
 							</Flex>
 						</Box>
-						{!leadList && <SkeletonLoader />}
-						{leadList
-							?.filter((lead) => lead.stage === category.abbr)
-							?.map(({ _id, name, opportunityName, email, phone, stage }) => (
-								<Card
-									key={_id}
-									m="8px"
-									bg="var(--lead_cards_bg)"
-									border={"1px solid var(--lead_cards_border)"}
-								>
-									<VStack
-										align="flex-start"
-										color={"var(--menu_item_color)"}
-										fontSize="xs"
-										p={"0.5em"}
-										spacing={0.5}
+						<Box overflow="auto" height="calc(100vh - 275px)">
+							{!leadList && <SkeletonLoader />}
+							{leadList
+								?.filter((lead) => lead.stage === category.abbr)
+								?.map(({ _id, name, opportunityName, email, phone, stage }) => (
+									<Card
+										key={_id}
+										m="8px"
+										bg="var(--lead_cards_bg)"
+										border={"1px solid var(--lead_cards_border)"}
 									>
-										<HStack justifyContent={"space-between"} w={"100%"} spacing={0}>
-											<TextTitle size="xs" title="Company" />
-											<NormalTextTitle size="xs" color={"var(--main_color_black)"} title={name} />
-											<Box>
-												<RiEditLine
-													cursor={"pointer"}
-													onClick={() => handleEdit(_id, name, email, phone, stage)}
+										<VStack
+											align="flex-start"
+											color={"var(--menu_item_color)"}
+											fontSize="xs"
+											p={"0.5em"}
+											spacing={0.5}
+										>
+											<HStack justifyContent={"space-between"} w={"100%"} spacing={0}>
+												<TextTitle size="xs" title="Company" />
+												<NormalTextTitle size="xs" color={"var(--main_color_black)"} title={name} />
+												<Box>
+													<RiEditLine
+														cursor={"pointer"}
+														onClick={() => handleEdit(_id, name, email, phone, stage)}
+													/>
+												</Box>
+											</HStack>
+											<HStack justifyContent={"space-between"} w={"100%"}>
+												<TextTitle size="xs" title="Email" />
+												<NormalTextTitle
+													size="xs"
+													color={"var(--main_color_black)"}
+													title={email}
 												/>
-											</Box>
-										</HStack>
-										<HStack justifyContent={"space-between"} w={"100%"}>
-											<TextTitle size="xs" title="Email" />
-											<NormalTextTitle size="xs" color={"var(--main_color_black)"} title={email} />
-											<Box>
-												<CopyIcon
-													cursor={"pointer"}
-													onClick={() => handleCopy(_id, opportunityName, email, phone, stage)}
+												<Box>
+													<CopyIcon
+														cursor={"pointer"}
+														onClick={() => handleCopy(_id, opportunityName, email, phone, stage)}
+													/>
+												</Box>
+											</HStack>
+											<HStack w={"100%"} justifyContent={"space-between"}>
+												<TextTitle size="xs" title="Phone" />
+												<NormalTextTitle
+													size="xs"
+													color={"var(--main_color_black)"}
+													title={phone}
 												/>
-											</Box>
-										</HStack>
-										<HStack w={"100%"} justifyContent={"space-between"}>
-											<TextTitle size="xs" title="Phone" />
-											<NormalTextTitle size="xs" color={"var(--main_color_black)"} title={phone} />
-											<Box>
-												<FaRegTrashAlt
-													cursor={"pointer"}
-													onClick={() => {
-														setShowConfirmationPopUp(true);
-														setDeleteRecord(_id);
-													}}
-												/>
-											</Box>
-										</HStack>
-									</VStack>
-								</Card>
-							))}
+												<Box>
+													<FaRegTrashAlt
+														cursor={"pointer"}
+														onClick={() => {
+															setShowConfirmationPopUp(true);
+															setDeleteRecord(_id);
+														}}
+													/>
+												</Box>
+											</HStack>
+										</VStack>
+									</Card>
+								))}
+						</Box>
 					</Box>
 				))}
 			</SimpleGrid>

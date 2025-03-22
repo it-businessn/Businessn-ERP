@@ -7,11 +7,11 @@ import EmployeePayDetails from "../preview-reports/EmployeePayDetails";
 import ChequeDetails from "./ChequeDetails";
 import PayStubHeader from "./PayStubHeader";
 
-const PayStubStatement = ({ data }) => {
+const PayStubStatement = ({ data, height, overflow = "hidden" }) => {
 	const companyInfo = LocalStorageService.getItem("user")?.companyId;
 
 	return (
-		<Box w={"100%"} overflow={"hidden"}>
+		<Box w={"100%"} overflow={overflow} height={height}>
 			<PayStubHeader companyInfo={companyInfo} />
 			<Stack
 				position="relative"

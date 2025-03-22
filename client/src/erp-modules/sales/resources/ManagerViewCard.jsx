@@ -69,7 +69,7 @@ const ManagerViewCard = ({ company }) => {
 						key={assessment._id}
 						p={{ base: "1em", lg: "1em 5px" }}
 						my={"auto"}
-						bg={"var(--primary_bg)"}
+						bg={"var(--logo_bg)"}
 						border="3px solid var(--main_color)"
 						borderRadius="10px"
 						fontWeight="bold"
@@ -86,19 +86,29 @@ const ManagerViewCard = ({ company }) => {
 							minH={{ base: "6em" }}
 						>
 							<TextTitle
-								// color={"var(--nav_color)"}
+								color={"var(--th_bg)"}
 								size="sm"
 								whiteSpace="pre-wrap"
 								title={assessment.name}
-								color="var(--primary_button_bg)"
 							/>
 							<HStack spacing={2}>
 								<PrimaryButton
+									hover={{
+										color: "var(--th_bg)",
+										bg: "var(--primary_button_bg)",
+										border: "1px solid var(--primary_button_bg)",
+									}}
+									w="100px"
 									size={"xs"}
 									name={"View / Update"}
 									onOpen={() => navigate(`/sales/add-paper/${assessment.name}`)}
 								/>
 								<PrimaryButton
+									hover={{
+										color: "var(--th_bg)",
+										bg: "var(--primary_button_bg)",
+										border: "1px solid var(--primary_button_bg)",
+									}}
 									size={"xs"}
 									name={"Delete"}
 									onOpen={() => {

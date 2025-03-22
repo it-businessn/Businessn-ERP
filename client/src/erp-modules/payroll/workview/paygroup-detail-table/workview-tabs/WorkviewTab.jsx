@@ -43,11 +43,11 @@ const WorkviewTab = ({
 	};
 
 	return (
-		<BoxCard>
+		<BoxCard pb={0}>
 			<WorkviewTable
 				cols={cols.map((_) => _.key)}
 				isSmall
-				height={"28vh"}
+				height="calc(100vh - 617px)"
 				whiteSpace="wrap"
 				textAlign={"center"}
 				overflowX={overflowX}

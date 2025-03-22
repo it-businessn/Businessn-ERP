@@ -39,38 +39,50 @@ const UserList = ({
 					{(!filteredEmployees || filteredEmployees?.length === 0) && (
 						<EmptyRowRecord data={filteredEmployees} colSpan={5} />
 					)}
-					{filteredEmployees?.map(({ empId, personalEmail, baseModule, group, employmentRole }) => (
-						<Tr key={empId?._id}>
-							<Td w={"200px"} whiteSpace={"pre-wrap"} py={1} px={1.5} fontSize={"xs"}>
-								{empId?.fullName}
-							</Td>
-							<Td w={"200px"} whiteSpace={"pre-wrap"} py={1} px={1.5} fontSize={"xs"}>
-								{personalEmail}
-							</Td>
-							<Td w={"100px"} whiteSpace={"pre-wrap"} py={1} px={1.5} fontSize={"xs"}>
-								{baseModule || "Payroll"}
-							</Td>
-							{!isUser && (
-								<Td w={"100px"} whiteSpace={"pre-wrap"} py={1} px={1.5} fontSize={"xs"}>
-									{group || ""}
+					{filteredEmployees?.map(
+						({
+							empId,
+							personalEmail,
+							baseModule,
+							group,
+							employmentRole,
+							_id,
+							fullName,
+							email,
+							role,
+						}) => (
+							<Tr key={empId?._id}>
+								<Td w={"200px"} whiteSpace={"pre-wrap"} py={1} px={1.5} fontSize={"xs"}>
+									{empId?.fullName || fullName}
 								</Td>
-							)}
-							<Td w={"100px"} whiteSpace={"pre-wrap"} py={1} px={1.5} fontSize={"xs"}>
-								{employmentRole}
-							</Td>
-							<Td>
-								{isGroup && (
-									<FaRegTrashAlt
-										cursor={"pointer"}
-										onClick={() => {
-											setShowConfirmationPopUp(true);
-											setDeleteRecord(empId?._id);
-										}}
-									/>
+								<Td w={"200px"} whiteSpace={"pre-wrap"} py={1} px={1.5} fontSize={"xs"}>
+									{personalEmail || email}
+								</Td>
+								<Td w={"100px"} whiteSpace={"pre-wrap"} py={1} px={1.5} fontSize={"xs"}>
+									{baseModule || baseModule?.[0] || "Payroll"}
+								</Td>
+								{!isUser && (
+									<Td w={"100px"} whiteSpace={"pre-wrap"} py={1} px={1.5} fontSize={"xs"}>
+										{group || ""}
+									</Td>
 								)}
-							</Td>
-						</Tr>
-					))}
+								<Td w={"100px"} whiteSpace={"pre-wrap"} py={1} px={1.5} fontSize={"xs"}>
+									{employmentRole || role}
+								</Td>
+								<Td>
+									{isGroup && (
+										<FaRegTrashAlt
+											cursor={"pointer"}
+											onClick={() => {
+												setShowConfirmationPopUp(true);
+												setDeleteRecord(empId?._id || _id);
+											}}
+										/>
+									)}
+								</Td>
+							</Tr>
+						),
+					)}
 				</Tbody>
 			</Table>
 		</Box>

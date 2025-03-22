@@ -18,6 +18,7 @@ const BoxCard = ({
 	width,
 	boxShadow,
 	flexWrap,
+	pb,
 }) => (
 	<Box
 		flexWrap={flexWrap}
@@ -36,6 +37,7 @@ const BoxCard = ({
 		overflow={"hidden"}
 		overflowY={overflowY}
 		p={p}
+		pb={pb}
 		px={px}
 		minH={minH}
 		w={width}

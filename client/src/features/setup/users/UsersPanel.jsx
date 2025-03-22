@@ -51,7 +51,7 @@ const UsersPanel = ({
 				isUser={isUser}
 				filteredEmployees={filteredEmployees}
 				company={company}
-				height={"70vh"}
+				height={"calc(100vh - 278px)"}
 			/>
 		</>
 	);

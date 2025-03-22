@@ -98,7 +98,7 @@ const ReportListView = () => {
 				<WorkviewTable
 					payGroupSchedule={filteredPayPeriods}
 					closestRecordIndex={closestRecordIndex}
-					height="80vh"
+					height="calc(100vh - 192px)"
 					handleRegister={handleRegister}
 					selectedYear={selectedYear}
 					handleTotalsReport={handleTotalsReport}

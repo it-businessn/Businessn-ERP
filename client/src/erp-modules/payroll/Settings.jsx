@@ -51,7 +51,7 @@ const Settings = ({ company }) => {
 	return (
 		<PageLayout title="Add Holidays">
 			<BoxCard>
-				<HStack mb={5}>
+				<HStack mb={5} w="50%">
 					<Input
 						placeholder="Holiday Name"
 						value={name}

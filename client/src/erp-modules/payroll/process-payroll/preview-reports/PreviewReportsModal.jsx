@@ -13,9 +13,15 @@ const PreviewReportsModal = ({
 	isEarningTable,
 	size = "7xl",
 	title = "Payroll Register",
+	isIndividual,
 }) => {
 	const Statement = ({ data }) => (
-		<Box borderBottom={"1px solid var(--calendar_border)"} mx={"auto"}>
+		<Box
+			borderBottom={"1px solid var(--calendar_border)"}
+			mx={"auto"}
+			height={isIndividual && "calc(100vh - 95px)"}
+			overflow={isIndividual && "auto"}
+		>
 			<PayStubStatement data={data} />
 		</Box>
 	);

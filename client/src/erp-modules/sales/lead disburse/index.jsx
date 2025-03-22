@@ -203,7 +203,7 @@ const LeadsDisbursed = () => {
 	);
 
 	return (
-		<PageLayout width="full" title={"Lead Disbursement"} showBgLayer>
+		<PageLayout width="full" title={"Lead Disbursement"} showBgLayer pb={0}>
 			<AutoAssign />
 			{isMobile || isIpad ? (
 				<Flex flexDir="column" gap={{ base: 0, md: 3 }}>
@@ -228,7 +228,7 @@ const LeadsDisbursed = () => {
 				</HStack>
 			)}
 
-			<TableLayout cols={columns} isSmall height={"73vh"}>
+			<TableLayout cols={columns} isSmall height="calc(100vh - 308px)">
 				<Tbody>
 					{(!activity || activity?.length === 0) && (
 						<EmptyRowRecord data={activity} colSpan={columns?.length} />
@@ -270,7 +270,7 @@ const LeadsDisbursed = () => {
 											rightIcon={<FaCaretRight />}
 											bg={generateLighterShade(COLORS.primary, 0.9)}
 											border={`1px solid var(--primary_button_bg)`}
-										>{`${assignedLeads} leads`}</Button>
+										>{`${assignedLeads || 0} leads`}</Button>
 									</Td>
 									<Td p={1}>
 										{lastLoginStatus ? (

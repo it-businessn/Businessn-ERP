@@ -79,7 +79,7 @@ const FreshLeads = () => {
 	const [viewMode, setViewMode] = useState(TAB_LIST[0].type);
 	const showComponent = (viewMode) => TAB_LIST.find(({ type }) => type === viewMode)?.name;
 	return (
-		<PageLayout title={"Fresh Leads"}>
+		<PageLayout title={"Fresh Leads"} pb={0}>
 			<TabsButtonGroup tabs={TAB_LIST} setViewMode={setViewMode} viewMode={viewMode} />
 			{showConfirmationPopUp && (
 				<DeletePopUp

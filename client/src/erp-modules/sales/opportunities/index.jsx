@@ -190,7 +190,7 @@ const Opportunities = () => {
 		setShowEditLead(null);
 	};
 	return (
-		<PageLayout width="full" title={"Opportunities"} showBgLayer>
+		<PageLayout width="full" title={"Opportunities"} showBgLayer pb={0}>
 			{isMobile || isIpad ? (
 				<Flex flexDir="column">
 					<Flex justify="space-between">
@@ -246,7 +246,7 @@ const Opportunities = () => {
 				</Flex>
 			)}
 
-			<TableLayout isOpportunity cols={OPPORTUNITY_COLUMNS} height={"73vh"}>
+			<TableLayout isOpportunity cols={OPPORTUNITY_COLUMNS} height="calc(100vh - 212px)">
 				<Tbody>
 					{(!opportunities || opportunities?.length === 0) && (
 						<EmptyRowRecord data={opportunities} colSpan={OPPORTUNITY_COLUMNS?.length} />

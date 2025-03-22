@@ -145,12 +145,13 @@ const Reports = () => {
 			</TableLayout>
 			{showReport && (
 				<PreviewReportsModal
-					isReport
 					size="4xl"
+					isReport
 					isOpen={showReport}
 					onClose={() => setShowReport(false)}
 					reportData={payStub}
 					isEarningTable
+					isIndividual
 				/>
 			)}
 		</PageLayout>

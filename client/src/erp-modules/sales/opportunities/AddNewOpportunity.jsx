@@ -171,9 +171,10 @@ const AddNewOpportunity = ({
 			isOpen={isOpen || showEditLead}
 			onClose={onClose}
 			error={error}
+			px="0"
 		>
 			<form onSubmit={handleSubmit}>
-				<Stack spacing={4}>
+				<Stack spacing={2} overflow="auto" height="calc(100vh - 80px)">
 					<HStack>
 						<FormControl>
 							<FormLabel>Company Name</FormLabel>

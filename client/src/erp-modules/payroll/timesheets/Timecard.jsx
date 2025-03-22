@@ -47,7 +47,7 @@ const Timecard = ({ company, timecardRefresh, filter, pageNum, setPageNum }) => 
 
 	return (
 		<>
-			<TableLayout cols={cols} height="72vh" position="sticky" zIndex={3} top={-1}>
+			<TableLayout cols={cols} height="calc(100vh - 260px)" position="sticky" zIndex={3} top={-1}>
 				<Tbody>
 					{(!timeRecords || timeRecords?.length === 0) && (
 						<EmptyRowRecord data={timeRecords} colSpan={cols.length} />

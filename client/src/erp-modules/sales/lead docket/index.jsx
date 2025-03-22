@@ -159,7 +159,7 @@ const LeadsDocket = () => {
 	);
 
 	return (
-		<PageLayout width="full" title={"Lead Docket"} showBgLayer>
+		<PageLayout width="full" title={"Lead Docket"} showBgLayer pb={0}>
 			{isMobile ? (
 				<Flex flexDir="column">
 					<Flex justify="space-between">
@@ -240,7 +240,7 @@ const LeadsDocket = () => {
 				isSmall
 				isAllChecked={isAllChecked}
 				handleHeaderCheckboxChange={handleHeaderCheckboxChange}
-				height={"73vh"}
+				height="calc(100vh - 213px)"
 			>
 				<Tbody>
 					{(!leads || leads?.length === 0) && (

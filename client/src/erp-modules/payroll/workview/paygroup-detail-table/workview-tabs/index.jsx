@@ -117,7 +117,7 @@ const PaygroupDetailTable = ({
 	const handleClick = () => setIsOpen(!isOpen);
 
 	return (
-		<BoxCard>
+		<BoxCard pb={0}>
 			<HStack w="30%" alignItems="center" justifyContent="start" mb="2px">
 				<TextTitle mb={2} width="200px" title={`Pay Number: ${payNum}`} />
 				<PopupMessage

@@ -26,7 +26,7 @@ const Resources = () => {
 	const [selectedFilter, setSelectedFilter] = useState(FILE_TYPES[0].type);
 
 	return (
-		<PageLayout title={"Resources"}>
+		<PageLayout title={"Resources"} pb={0}>
 			<ResourceFile
 				fileTypes={FILE_TYPES}
 				isUserManager={isUserManager}

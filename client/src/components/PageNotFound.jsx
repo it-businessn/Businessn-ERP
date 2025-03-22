@@ -3,7 +3,12 @@ import { Link } from "react-router-dom";
 
 export default function PageNotFound() {
 	return (
-		<Flex alignItems="center" justifyContent="center" flexDirection="column" minH="80vh">
+		<Flex
+			alignItems="center"
+			justifyContent="center"
+			flexDirection="column"
+			minH="calc(100vh - 192px)"
+		>
 			<Heading>404</Heading>
 			<Text fontSize="18px" mt={3} mb={2}>
 				Page Not Found

@@ -78,7 +78,7 @@ const ListView = ({
 					company={company}
 				/>
 			) : (
-				<TableLayout cols={LEADS_COLS} height={"73vh"}>
+				<TableLayout cols={LEADS_COLS} height="calc(100vh - 212px)">
 					<Tbody>
 						{(!leadList || leadList?.length === 0) && (
 							<EmptyRowRecord data={leadList} colSpan={LEADS_COLS?.length} />
@@ -88,7 +88,7 @@ const ListView = ({
 								<Td py={0.5}>
 									<NormalTextTitle
 										width="250px"
-										size="sm"
+										size="xs"
 										whiteSpace="wrap"
 										textTransform={"capitalize"}
 										title={_.opportunityName}
@@ -97,7 +97,7 @@ const ListView = ({
 								<Td py={0.5}>
 									<NormalTextTitle
 										width="200px"
-										size="sm"
+										size="xs"
 										whiteSpace="wrap"
 										textTransform={"capitalize"}
 										title={_.name}

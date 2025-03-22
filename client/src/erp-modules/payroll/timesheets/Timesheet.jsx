@@ -524,13 +524,13 @@ const Timesheet = ({
 
 	return (
 		<>
-			<Box overflow="auto" height="74vh" w={"100%"}>
+			<Box overflow="auto" height="calc(100vh - 225px)" w={"100%"}>
 				<Table bg="var(--lead_cards_bg)" variant="simple">
 					<Thead position="sticky" top={-1} zIndex={3}>
 						<Tr>
-							{cols?.map((col, index) =>
-								index === 10 ? (
-									<Th key={`action_${index}`} bg="var(--th_bg)">
+							{cols?.map((col, colIndex) =>
+								colIndex === 10 ? (
+									<Th key={`action_${colIndex}`} bg="var(--th_bg)">
 										<Checkbox
 											isChecked={isAllChecked}
 											colorScheme="facebook"
@@ -539,8 +539,11 @@ const Timesheet = ({
 									</Th>
 								) : (
 									<Th
-										key={`${col}_${index}`}
-										pl={index === 0 && "1em !important"}
+										position={colIndex === 0 && "sticky"}
+										left={colIndex === 0 && "0"}
+										zIndex={colIndex === 0 && 1}
+										key={`${col}_${colIndex}`}
+										pl={colIndex === 0 && "1em !important"}
 										bg="var(--th_bg)"
 									>
 										<TextTitle
@@ -559,41 +562,38 @@ const Timesheet = ({
 						)}
 						{!loading &&
 							timesheetData?.map(
-								(
-									{
-										_id,
-										approveStatus,
-										payType,
-										regPay,
-										statWorkPay,
-										dblOverTimePay,
-										overTimePay,
-										regHoursWorked,
-										overtimeHoursWorked,
-										dblOvertimeHoursWorked,
-										statDayHoursWorked,
-										statDayHours,
-										sickPayHours,
-										vacationPayHours,
-										statPay,
-										sickPay,
-										vacationPay,
-										clockIn,
-										clockOut,
-										notDevice,
-										employeeId,
-										startTime,
-										endTime,
-										regBreakHoursWorked,
-										source,
-										isEditable,
-										isActionDisabled,
-										showAddBreak,
-										positions,
-										approveStatusAction,
-									},
-									index,
-								) => {
+								({
+									_id,
+									approveStatus,
+									payType,
+									regPay,
+									statWorkPay,
+									dblOverTimePay,
+									overTimePay,
+									regHoursWorked,
+									overtimeHoursWorked,
+									dblOvertimeHoursWorked,
+									statDayHoursWorked,
+									statDayHours,
+									sickPayHours,
+									vacationPayHours,
+									statPay,
+									sickPay,
+									vacationPay,
+									clockIn,
+									clockOut,
+									notDevice,
+									employeeId,
+									startTime,
+									endTime,
+									regBreakHoursWorked,
+									source,
+									isEditable,
+									isActionDisabled,
+									showAddBreak,
+									positions,
+									approveStatusAction,
+								}) => {
 									// const sourceBtnCss = getSourceStyle(source);
 									const approveStatusBtnCss = getStatusStyle(approveStatus);
 									const { type, color, rowBg } = getPayTypeStyle(payType);
@@ -644,11 +644,25 @@ const Timesheet = ({
 											// bg={rowBg ?? ""}
 											_hover={{ bg: rowBg ?? "var(--phoneCall_bg_light)" }}
 										>
+											{cols?.map(
+												(col, colIndex) =>
+													colIndex === 0 && (
+														<Td
+															bg="var(--lead_cards_bg)"
+															position={colIndex === 0 && "sticky"}
+															left={colIndex === 0 && "0"}
+															zIndex={colIndex === 0 && 1}
+															py={0}
+														>
+															<TextTitle maxW="130px" size="sm" title={employeeId?.fullName} />
+														</Td>
+													),
+											)}
 											<Td py={0}>
-												<TextTitle maxW="130px" title={employeeId?.fullName} />
-											</Td>
-											<Td py={0}>
-												<TextTitle title={clockIn && getTimeCardFormat(clockIn, notDevice, true)} />
+												<TextTitle
+													size="sm"
+													title={clockIn && getTimeCardFormat(clockIn, notDevice, true)}
+												/>
 											</Td>
 											<Td py={0}>
 												<NormalTextTitle

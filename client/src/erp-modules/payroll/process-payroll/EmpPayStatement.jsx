@@ -44,7 +44,7 @@ const EmpPayStatement = ({ record, isOpen, onClose }) => {
 				</DrawerHeader>
 
 				<DrawerBody ref={componentRef} bg={"var(--main_color)"} minH="100vh" p="5px">
-					{record && <PayStubStatement data={record} />}
+					{record && <PayStubStatement data={record} height="calc(100vh - 50px)" overflow="auto" />}
 				</DrawerBody>
 			</DrawerContent>
 		</Drawer>

@@ -313,8 +313,8 @@ const SalesReport = () => {
 						</Flex>
 					)}
 
-					<Box overflow="auto" height={"40vh"}>
-						<Table color={"var(--nav_color)"} bg={"var(--primary_bg)"}>
+					<Box overflow="auto" height={"450px"}>
+						<Table color={"var(--nav_color)"} bg={"var(--primary_bg)"} variant="small">
 							<Thead>
 								<Tr fontSize="xs">
 									<Th fontWeight={"bolder"} p={0}>

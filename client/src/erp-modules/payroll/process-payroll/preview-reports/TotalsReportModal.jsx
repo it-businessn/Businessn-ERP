@@ -68,7 +68,7 @@ const TotalsReportModal = ({
 		>
 			{!reportData && <Loader />}
 			{reportData && (
-				<Stack padding="1em">
+				<Stack padding={0} height="calc(100vh - 93px)" overflow="auto">
 					<Stack mt={2} spacing={0}>
 						<TextTitle size="sm" title="Totals withdrawn to remit to the CRA" />
 						<HStack borderBottom="1px solid var(--main_color_black)" mt={6}>
