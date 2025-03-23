@@ -10,6 +10,7 @@ import {
 import { ROLES } from "constant";
 import AddNotes from "erp-modules/project-management/workview/project/cell/AddNotes";
 import { COLORS } from "erp-modules/project-management/workview/project/data";
+import moment from "moment";
 import { useState } from "react";
 import { CgNotes } from "react-icons/cg";
 import { FaChevronDown, FaChevronUp } from "react-icons/fa";
@@ -430,7 +431,7 @@ export const getPayrollStatus = (data, prevRecordEndDate) => {
 		};
 	} else if (
 		!data?.isProcessed &&
-		(isEndDatePassed || TODAY_DATE.isBetween(targetStartDate, targetEndDate, "day", "[]"))
+		(isEndDatePassed || moment.utc().isBetween(targetStartDate, targetEndDate, "day", "[]"))
 	) {
 		return {
 			name: "Pending",

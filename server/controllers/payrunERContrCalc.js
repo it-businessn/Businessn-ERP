@@ -187,7 +187,7 @@ const calcRegularERContribution = async (
 	});
 
 	const newEmpData = empTimesheetData ? empTimesheetData : {};
-	newEmpData.regPay = empPayInfoResult?.regPay || 0;
+	newEmpData.regPay = empPayInfoResult?.roles?.[0]?.payRate || 0;
 	calcPayRates(newEmpData);
 	calcHoursWorkedTotals(
 		newEmpData,
