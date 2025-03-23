@@ -355,8 +355,8 @@ const buildEmpHourlyDetails = async (empTimesheetData, employee, companyName, is
 
 const getGroupedData = async (empTimesheetData, employee, companyName, isExtraPayRun) => {
 	const empPayInfoResult = await findEmployeePayInfoDetails(employee.empId?._id, companyName);
-	const isFT = empPayInfoResult?.typeOfEarning === "Full Time Salaried";
-	const isPT = empPayInfoResult?.typeOfEarning === "Part Time Salaried";
+	const isFT = empPayInfoResult?.roles?.[0]?.typeOfEarning === "Full Time Salaried";
+	const isPT = empPayInfoResult?.roles?.[0]?.typeOfEarning === "Part Time Salaried";
 
 	const employeeId = empTimesheetData?.empId?.employeeId || employee?.employeeNo;
 
@@ -365,9 +365,9 @@ const getGroupedData = async (empTimesheetData, employee, companyName, isExtraPa
 
 	const totalRegHoursWorked =
 		!isExtraPayRun && isFT
-			? empPayInfoResult?.fullTimeStandardHours
+			? empPayInfoResult?.roles?.[0]?.fullTimeStandardHours
 			: !isExtraPayRun && isPT
-			? empPayInfoResult?.partTimeStandardHours
+			? empPayInfoResult?.roles?.[0]?.partTimeStandardHours
 			: empTimesheetData
 			? empTimesheetData.totalRegHoursWorked
 			: 0;

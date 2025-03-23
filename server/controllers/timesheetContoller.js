@@ -614,17 +614,17 @@ const findStatPayMonthlyEarning = async (employeeId, companyName) => {
 	});
 
 	const empPayInfoResult = await findEmployeePayInfo(employeeId, companyName);
-	const statPayRate = empPayInfoResult?.sickPay || 0;
+	const statPayRate = empPayInfoResult?.roles?.[0]?.sickPay || 0;
 	const employeeEarnings = timesheets?.reduce((acc, item) => {
 		return (
 			acc +
-			(item?.[PARAM_HOURS.REGULAR] * empPayInfoResult?.regPay +
-				item?.overtimeHoursWorked * empPayInfoResult?.overTimePay +
-				item?.dblOvertimeHoursWorked * empPayInfoResult?.dblOverTimePay +
-				item?.statDayHoursWorked * empPayInfoResult?.statWorkPay +
-				item?.statDayHours * empPayInfoResult?.statPay +
-				item?.sickPayHours * empPayInfoResult?.sickPay +
-				item?.vacationPayHours * empPayInfoResult?.vacationPay)
+			(item?.[PARAM_HOURS.REGULAR] * empPayInfoResult?.roles?.[0]?.payRate +
+				item?.overtimeHoursWorked * empPayInfoResult?.roles?.[0]?.overTimePay +
+				item?.dblOvertimeHoursWorked * empPayInfoResult?.roles?.[0]?.dblOverTimePay +
+				item?.statDayHoursWorked * empPayInfoResult?.roles?.[0]?.statWorkPay +
+				item?.statDayHours * empPayInfoResult?.roles?.[0]?.statPay +
+				item?.sickPayHours * empPayInfoResult?.roles?.[0]?.sickPay +
+				item?.vacationPayHours * empPayInfoResult?.roles?.[0]?.vacationPay)
 		);
 	}, 0);
 

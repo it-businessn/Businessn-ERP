@@ -100,7 +100,7 @@ const calcPayoutEEContribution = async (
 	const empBenefitInfoResult = await findEmployeeBenefitInfo(empId, companyName);
 
 	const newEmpData = empTimesheetData ? empTimesheetData : {};
-	newEmpData.regPay = empPayInfoResult?.regPay || 0;
+	newEmpData.regPay = empPayInfoResult?.roles?.[0]?.payRate || 0;
 	calcPayRates(newEmpData);
 	calcHoursWorkedTotals(
 		newEmpData,
@@ -144,7 +144,7 @@ const calcManualEEContribution = async (
 	const empBenefitInfoResult = await findEmployeeBenefitInfo(empId, companyName);
 
 	const newEmpData = empTimesheetData ? empTimesheetData : {};
-	newEmpData.regPay = empPayInfoResult?.regPay || 0;
+	newEmpData.regPay = empPayInfoResult?.roles?.[0]?.payRate || 0;
 	calcPayRates(newEmpData);
 	calcHoursWorkedTotals(
 		newEmpData,
