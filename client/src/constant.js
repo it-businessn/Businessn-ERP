@@ -41,6 +41,9 @@ export const CATEGORY_LIST = [
 	{ category: "Testing" },
 	{ category: "Support" },
 	{ category: "AI" },
+	{ category: "Payroll" },
+	{ category: "HR" },
+	{ category: "Accounting" },
 ];
 
 export const RECALL_OPTIONS = [

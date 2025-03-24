@@ -1,7 +1,9 @@
-import { Button, Flex, Heading, Text } from "@chakra-ui/react";
-import { Link } from "react-router-dom";
+import { Flex, Heading, Text } from "@chakra-ui/react";
+import { useNavigate } from "react-router-dom";
+import PrimaryButton from "./ui/button/PrimaryButton";
 
 export default function PageNotFound() {
+	const navigate = useNavigate();
 	return (
 		<Flex
 			alignItems="center"
@@ -14,11 +16,7 @@ export default function PageNotFound() {
 				Page Not Found
 			</Text>
 			<Text mb={6}>The page you're looking for does not seem to exist</Text>
-			<Link to="/login">
-				<Button size="lg" variant="primary">
-					Go to Home
-				</Button>
-			</Link>
+			<PrimaryButton name="Go to Home" onOpen={() => navigate("/login")} />
 		</Flex>
 	);
 }
