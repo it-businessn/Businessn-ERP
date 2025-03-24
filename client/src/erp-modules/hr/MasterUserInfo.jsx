@@ -26,8 +26,6 @@ const MasterUserInfo = ({ company, handleNext }) => {
 	useEffect(() => {
 		if (formData.firstName && formData.lastName && formData.email && formData.phoneNumber) {
 			setIsDisabled(false);
-		} else {
-			setIsDisabled(true);
 		}
 	}, [formData.firstName, formData.lastName, formData.email, formData.phoneNumber]);
 

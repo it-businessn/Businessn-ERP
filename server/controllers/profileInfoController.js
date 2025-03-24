@@ -58,6 +58,7 @@ const updateProfileInfo = async (id, data) =>
 
 const updateEmployee = async (empId, data) => {
 	const {
+		businessEmail,
 		personalEmail,
 		streetAddressSuite,
 		streetAddress,
@@ -81,16 +82,17 @@ const updateEmployee = async (empId, data) => {
 					country,
 			  }
 			: employee?.primaryAddress;
-	const email = personalEmail && personalEmail !== "" ? personalEmail : employee?.email;
-	const empPassword = password && password !== "" ? password : employee?.password;
+	const empEmail = businessEmail || personalEmail;
+	const email = empEmail && empEmail !== "" ? empEmail : employee?.email;
 
-	await Employee.findByIdAndUpdate(
-		empId,
-		{ password: empPassword, email, primaryAddress, updatedOn: moment() },
-		{
-			new: true,
-		},
-	);
+	const empPassword = password && password !== "" ? password : employee?.password;
+	const updatedObj =
+		email === employee?.email
+			? { password: empPassword, primaryAddress, updatedOn: moment() }
+			: { password: empPassword, email, primaryAddress, updatedOn: moment() };
+	await Employee.findByIdAndUpdate(empId, updatedObj, {
+		new: true,
+	});
 };
 
 const addEmployeeProfileInfo = async (req, res) => {
@@ -125,6 +127,7 @@ const addEmployeeProfileInfo = async (req, res) => {
 	try {
 		const data = {
 			personalEmail,
+			businessEmail,
 			streetAddressSuite,
 			streetAddress,
 			city,
@@ -206,15 +209,17 @@ const addEmployeeProfileInfo = async (req, res) => {
 		if (SIN !== "") {
 			await deleteAlerts(empId);
 		}
-
-		const ENCRYPTION_KEY = Buffer.from(process.env.SIN_ENCRYPTION_KEY, "hex");
 		await updateEmployee(empId, data);
-
-		if (existingProfileInfo) {
-			req.body.updatedOn = moment();
+		if (SIN) {
+			const ENCRYPTION_KEY = Buffer.from(process.env.SIN_ENCRYPTION_KEY, "hex");
 			const sinEncrypted = encryptData(SIN, ENCRYPTION_KEY);
 			req.body.SIN = sinEncrypted.encryptedData;
 			req.body.SINIv = sinEncrypted.iv;
+		}
+
+		if (existingProfileInfo) {
+			req.body.updatedOn = moment();
+			if (req.body?._id) delete req.body._id;
 			const updatedProfileInfo = await updateProfileInfo(existingProfileInfo._id, req.body);
 			return res.status(201).json(updatedProfileInfo);
 		}
@@ -227,7 +232,7 @@ const addEmployeeProfileInfo = async (req, res) => {
 			emergencyFirstName,
 			emergencyLastName,
 			birthDate,
-			SIN,
+			SIN: req.body?.SIN || "",
 			maritalStatus,
 			citizenship,
 			workPermitNo,
@@ -254,6 +259,7 @@ const addEmployeeProfileInfo = async (req, res) => {
 const updateEmployeeProfileInfo = async (req, res) => {
 	const { id } = req.params;
 	try {
+		if (req.body?._id) delete req.body._id;
 		const updatedInfo = await updateProfileInfo(id, req.body);
 		res.status(201).json(updatedInfo);
 	} catch (error) {

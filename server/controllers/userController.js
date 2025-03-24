@@ -345,7 +345,15 @@ const createMasterUser = async (req, res) => {
 			position,
 			dateOfJoining: startDate,
 		});
-
+		await EmployeeProfileInfo.create({
+			companyName: company,
+			firstName,
+			middleName,
+			lastName,
+			empId: employee._id,
+			businessEmail: email,
+			personalPhoneNum: phoneNumber,
+		});
 		res.status(201).json(employee);
 	} catch (error) {
 		res.status(400).json({ message: error.message });
