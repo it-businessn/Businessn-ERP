@@ -26,12 +26,14 @@ const getEmployeeProfileInfo = async (req, res) => {
 		const sin_key = Buffer.from(process.env.SIN_ENCRYPTION_KEY, "hex");
 
 		const result = await findEmployeeProfileInfo(empId, companyName);
-		const SIN =
-			result?.SIN && result?.SINIv
-				? decryptData(result?.SIN, sin_key, result?.SINIv).replace(/.(?=.{3})/g, "*")
-				: "";
-		if (SIN) result.SIN = SIN;
-		if (!result || !sin_key) {
+		if (result) {
+			if (!result?.SIN?.startsWith("*") && result?.SIN && result?.SINIv) {
+				result.SIN = decryptData(result?.SIN, sin_key, result?.SINIv).replace(/.(?=.{3})/g, "*");
+			}
+			return res.status(200).json(result);
+		}
+
+		if (!result) {
 			const user = await Employee.findById(empId)
 				.select("firstName middleName lastName email phoneNumber")
 				.sort({
@@ -39,7 +41,6 @@ const getEmployeeProfileInfo = async (req, res) => {
 				});
 			return res.status(200).json(user);
 		}
-		return res.status(200).json(result);
 	} catch (error) {
 		res.status(404).json({ error: error.message });
 	}
