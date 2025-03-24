@@ -1,5 +1,5 @@
 const EmployeeBankingInfo = require("../models/EmployeeBankingInfo");
-const { encryptData, decryptData, newEncryptionKey } = require("../services/encryptDataService");
+const { encryptData, decryptData } = require("../services/encryptDataService");
 // const { saveKeyToEnv } = require("../services/fileService");
 // const { deleteAlerts } = require("./payrollController");
 
@@ -96,6 +96,30 @@ const addEmployeeBankingInfo = async (req, res) => {
 		paymentEmail,
 	};
 	try {
+		const existingBankingInfo = await findEmployeeBankingInfo(empId, companyName);
+
+		if (existingBankingInfo) {
+			const { bankNum, transitNum, accountNum } = bankDetails;
+
+			if (bankNum && existingBankingInfo?.bankNum !== bankNum) {
+				const bankEncrypted = encryptData(bankNum, ENCRYPTION_KEY);
+				updatedData.bankNum = bankEncrypted.encryptedData;
+				updatedData.bankIv = bankEncrypted.iv;
+			}
+			if (transitNum && existingBankingInfo?.transitNum !== transitNum) {
+				const transitEncrypted = encryptData(transitNum, ENCRYPTION_KEY);
+				updatedData.transitNum = transitEncrypted.encryptedData;
+				updatedData.transitIv = transitEncrypted.iv;
+			}
+			if (accountNum && existingBankingInfo?.accountNum !== accountNum) {
+				const accountEncrypted = encryptData(accountNum, ENCRYPTION_KEY);
+				updatedData.accountNum = accountEncrypted.encryptedData;
+				updatedData.accountIv = accountEncrypted.iv;
+			}
+
+			const updatedBankingInfo = await updateBankingInfo(existingBankingInfo._id, updatedData);
+			return res.status(201).json(updatedBankingInfo);
+		}
 		if (bankDetails) {
 			const { bankNum, transitNum, accountNum } = bankDetails;
 			const bankEncrypted = encryptData(bankNum, ENCRYPTION_KEY);
@@ -110,15 +134,6 @@ const addEmployeeBankingInfo = async (req, res) => {
 
 			updatedData.accountNum = accountEncrypted.encryptedData;
 			updatedData.accountIv = accountEncrypted.iv;
-		}
-		const existingBankingInfo = await findEmployeeBankingInfo(empId, companyName);
-		// if (bankNum !== "" || transitNum !== "" || accountNum !== "") {
-		// 	await deleteAlerts(empId);
-		// }
-
-		if (existingBankingInfo) {
-			const updatedBankingInfo = await updateBankingInfo(existingBankingInfo._id, updatedData);
-			return res.status(201).json(updatedBankingInfo);
 		}
 		const newBankingInfo = await EmployeeBankingInfo.create(updatedData);
 		return res.status(201).json(newBankingInfo);
