@@ -3,6 +3,7 @@ const Employee = require("../models/Employee");
 const EmployeeProfileInfo = require("../models/EmployeeProfileInfo");
 const { addEmployee } = require("./appController");
 const { deleteAlerts } = require("./payrollController");
+const { decryptData, encryptData } = require("../services/encryptDataService");
 
 const getAllProfileInfo = async (req, res) => {
 	const { companyName } = req.params;
@@ -25,9 +26,10 @@ const getEmployeeProfileInfo = async (req, res) => {
 		const sin_key = Buffer.from(process.env.SIN_ENCRYPTION_KEY, "hex");
 
 		const result = await findEmployeeProfileInfo(empId, companyName);
-		const SIN = result?.SIN
-			? decryptData(result?.SIN, sin_key, result?.SINIv).replace(/.(?=.{3})/g, "*")
-			: "";
+		const SIN =
+			result?.SIN && result?.SINIv
+				? decryptData(result?.SIN, sin_key, result?.SINIv).replace(/.(?=.{3})/g, "*")
+				: "";
 
 		result.SIN = SIN;
 		if (!result || !sin_key) {
