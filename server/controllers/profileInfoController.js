@@ -30,8 +30,7 @@ const getEmployeeProfileInfo = async (req, res) => {
 			result?.SIN && result?.SINIv
 				? decryptData(result?.SIN, sin_key, result?.SINIv).replace(/.(?=.{3})/g, "*")
 				: "";
-
-		result.SIN = SIN;
+		if (SIN) result.SIN = SIN;
 		if (!result || !sin_key) {
 			const user = await Employee.findById(empId)
 				.select("firstName middleName lastName email phoneNumber")
