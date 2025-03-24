@@ -84,7 +84,7 @@ const updateBankingInfo = async (id, data) =>
 const addEmployeeBankingInfo = async (req, res) => {
 	const { empId, companyName, directDeposit, payStubSendByEmail, paymentEmail, bankDetails } =
 		req.body;
-	// const ENCRYPTION_KEY = newEncryptionKey();
+	// const ENCRYPTION_KEY = newEncryptionKey;
 	// saveKeyToEnv("BANKING_ENCRYPTION_KEY", ENCRYPTION_KEY);
 	const ENCRYPTION_KEY = Buffer.from(process.env.BANKING_ENCRYPTION_KEY, "hex");
 

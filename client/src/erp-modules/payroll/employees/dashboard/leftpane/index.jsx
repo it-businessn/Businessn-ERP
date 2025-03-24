@@ -61,7 +61,7 @@ const LeftPane = ({ selectedUser, company, isMobile }) => {
 			{showReport && (
 				<PreviewReportsModal
 					isReport
-					size="4xl"
+					size="5xl"
 					isOpen={showReport}
 					onClose={() => setShowReport(false)}
 					reportData={payStub}

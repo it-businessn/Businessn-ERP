@@ -3,7 +3,6 @@ const Employee = require("../models/Employee");
 const EmployeeProfileInfo = require("../models/EmployeeProfileInfo");
 const { addEmployee } = require("./appController");
 const { deleteAlerts } = require("./payrollController");
-const { ROLES } = require("../services/data");
 
 const getAllProfileInfo = async (req, res) => {
 	const { companyName } = req.params;
@@ -23,8 +22,15 @@ const getAllProfileInfo = async (req, res) => {
 const getEmployeeProfileInfo = async (req, res) => {
 	const { companyName, empId } = req.params;
 	try {
+		const sin_key = Buffer.from(process.env.SIN_ENCRYPTION_KEY, "hex");
+
 		const result = await findEmployeeProfileInfo(empId, companyName);
-		if (!result) {
+		const SIN = result?.SIN
+			? decryptData(result?.SIN, sin_key, result?.SINIv).replace(/.(?=.{3})/g, "*")
+			: "";
+
+		result.SIN = SIN;
+		if (!result || !sin_key) {
 			const user = await Employee.findById(empId)
 				.select("firstName middleName lastName email phoneNumber")
 				.sort({
@@ -200,10 +206,14 @@ const addEmployeeProfileInfo = async (req, res) => {
 			await deleteAlerts(empId);
 		}
 
+		const ENCRYPTION_KEY = Buffer.from(process.env.SIN_ENCRYPTION_KEY, "hex");
 		await updateEmployee(empId, data);
 
 		if (existingProfileInfo) {
 			req.body.updatedOn = moment();
+			const sinEncrypted = encryptData(SIN, ENCRYPTION_KEY);
+			req.body.SIN = sinEncrypted.encryptedData;
+			req.body.SINIv = sinEncrypted.iv;
 			const updatedProfileInfo = await updateProfileInfo(existingProfileInfo._id, req.body);
 			return res.status(201).json(updatedProfileInfo);
 		}

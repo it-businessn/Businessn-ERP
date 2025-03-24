@@ -10,6 +10,7 @@ const employeeProfileInfoSchema = new mongoose.Schema({
 	emergencyLastName: String,
 	birthDate: Date,
 	SIN: String,
+	SINIv: String,
 	maritalStatus: String,
 	citizenship: String,
 	workPermitNo: String,

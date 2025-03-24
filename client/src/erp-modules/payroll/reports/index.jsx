@@ -145,7 +145,7 @@ const Reports = () => {
 			</TableLayout>
 			{showReport && (
 				<PreviewReportsModal
-					size="4xl"
+					size="5xl"
 					isReport
 					isOpen={showReport}
 					onClose={() => setShowReport(false)}

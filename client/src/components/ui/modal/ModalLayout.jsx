@@ -25,7 +25,7 @@ const ModalLayout = ({
 	onClose,
 	children,
 	error,
-	size = "4xl",
+	size = "5xl",
 	hideOverlay,
 	textAlign,
 	fontSize,
