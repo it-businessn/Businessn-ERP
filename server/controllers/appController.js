@@ -266,7 +266,7 @@ const login = async (req, res) => {
 				accessToken,
 				refreshToken,
 			});
-		} else if (existingProfileInfo?.password) {
+		} else if (password === existingProfileInfo?.password) {
 			user.password = await hashPassword(existingProfileInfo?.password);
 			await user.save();
 			const accessToken = generateAccessToken({ id: _id, fullName });
