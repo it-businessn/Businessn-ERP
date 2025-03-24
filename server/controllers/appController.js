@@ -297,7 +297,7 @@ const login = async (req, res) => {
 				refreshToken,
 			});
 		}
-		return res.status(401).json({ error: "Invalid credentials" });
+		return res.status(401).json({ error: "Invalid credentials. Please reset your password!" });
 	} catch (error) {
 		console.error("Error checking password:", error);
 		return res.status(500).json({ error: "Internal server error" });
