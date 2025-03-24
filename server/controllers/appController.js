@@ -177,7 +177,9 @@ const refreshToken = async (req, res) => {
 	const { refreshToken } = req.body;
 	try {
 		if (!refreshToken) {
-			return res.status(401).json({ message: "Refresh token is required" });
+			return res
+				.status(401)
+				.json({ error: "Refresh token is required", message: "Refresh token is required" });
 		}
 		jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
 			if (err) {
@@ -202,11 +204,6 @@ const login = async (req, res) => {
 		const user = await Employee.findOne({ email }).select(
 			"firstName lastName middleName fullName email password phoneNumber primaryAddress manager",
 		);
-		const existingCompany = await findCompany("registration_number", companyId);
-		const empInfo = await EmployeeEmploymentInfo.findOne({
-			companyName: existingCompany.name,
-			empId: user._id,
-		}).select("positions employeeNo payrollStatus employmentRole");
 		// if (!user.companyId) {
 		// 	user.companyId = [];
 		// user.companyId.push("669c3a69b52384bab5035425");
@@ -216,7 +213,6 @@ const login = async (req, res) => {
 		// await existingCompany.save();
 		// }
 
-		// console.log(user);
 		if (!user) {
 			return res.status(500).json({ error: "User does not exist" });
 		}
@@ -233,40 +229,75 @@ const login = async (req, res) => {
 			return res.status(500).json({ error: "User does not exist for the company" });
 		}
 		const match = await comparePassword(password, user.password);
-
 		const existingProfileInfo = await EmployeeProfileInfo.findOne({
 			password,
 			companyName: existingCompanyUser.name,
 		});
-		// if (match || existingProfileInfo) {
-		const accessToken = generateAccessToken({ id: _id, fullName });
-		const refreshToken = generateRefreshToken({ id: _id, fullName });
+		const existingCompany = await findCompany("registration_number", companyId);
+		const empInfo = await EmployeeEmploymentInfo.findOne({
+			companyName: existingCompany.name,
+			empId: user._id,
+		}).select("positions employeeNo payrollStatus employmentRole");
 
-		logUserLoginActivity(_id);
-		return res.json({
-			message: "Logged in successfully",
-			user: {
-				_id,
-				firstName,
-				lastName,
-				middleName,
-				fullName,
-				email,
-				role: empInfo?.employmentRole,
-				department: empInfo?.positions?.[0]?.employmentDepartment,
-				phoneNumber,
-				primaryAddress,
-				employmentType: empInfo?.employmentRole,
-				manager,
-				employeeId: empInfo?.employeeNo,
-				payrollStatus: empInfo?.payrollStatus,
-			},
-			existingCompanyUser,
-			accessToken,
-			refreshToken,
-		});
-		// }
-		// return res.status(401).json({ error: "Invalid credentials" });
+		if (match) {
+			const accessToken = generateAccessToken({ id: _id, fullName });
+			const refreshToken = generateRefreshToken({ id: _id, fullName });
+
+			logUserLoginActivity(_id);
+			return res.json({
+				message: "Logged in successfully",
+				user: {
+					_id,
+					firstName,
+					lastName,
+					middleName,
+					fullName,
+					email,
+					role: empInfo?.employmentRole,
+					department: empInfo?.positions?.[0]?.employmentDepartment,
+					phoneNumber,
+					primaryAddress,
+					employmentType: empInfo?.employmentRole,
+					manager,
+					employeeId: empInfo?.employeeNo,
+					payrollStatus: empInfo?.payrollStatus,
+				},
+				existingCompanyUser,
+				accessToken,
+				refreshToken,
+			});
+		} else if (existingProfileInfo?.password) {
+			user.password = await hashPassword(existingProfileInfo?.password);
+			await user.save();
+			const accessToken = generateAccessToken({ id: _id, fullName });
+			const refreshToken = generateRefreshToken({ id: _id, fullName });
+
+			logUserLoginActivity(_id);
+
+			return res.json({
+				message: "Logged in successfully",
+				user: {
+					_id,
+					firstName,
+					lastName,
+					middleName,
+					fullName,
+					email,
+					role: empInfo?.employmentRole,
+					department: empInfo?.positions?.[0]?.employmentDepartment,
+					phoneNumber,
+					primaryAddress,
+					employmentType: empInfo?.employmentRole,
+					manager,
+					employeeId: empInfo?.employeeNo,
+					payrollStatus: empInfo?.payrollStatus,
+				},
+				existingCompanyUser,
+				accessToken,
+				refreshToken,
+			});
+		}
+		return res.status(401).json({ error: "Invalid credentials" });
 	} catch (error) {
 		console.error("Error checking password:", error);
 		return res.status(500).json({ error: "Internal server error" });

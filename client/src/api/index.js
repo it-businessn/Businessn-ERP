@@ -47,7 +47,7 @@ export const setupAxiosInterceptors = (setSessionExpired) => {
 				}
 			} else {
 				console.error("Refresh token invalid or expired", error);
-				if (error.response.data.message.includes("token")) window.location.href = "/login";
+				if (error?.response?.data?.message?.includes("token")) window.location.href = "/login";
 			}
 
 			return Promise.reject(error);
