@@ -16,8 +16,10 @@ const Resources = () => {
 	const isUserManager = isManager(role);
 
 	const FILE_TYPES = [
-		{ type: "Training" },
-		{ type: "Scripts" },
+		// { type: "Training" },
+		{ type: "Sales Scripts" },
+		{ type: "On-boarding Scripts" },
+		{ type: "Marketing Scripts" },
 		{ type: "Product Knowledge" },
 		{ type: "Employee Handbook" },
 		{ type: "Associates" },
