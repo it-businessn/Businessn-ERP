@@ -1,7 +1,7 @@
 const moment = require("moment");
 const Employee = require("../models/Employee");
 const EmployeeProfileInfo = require("../models/EmployeeProfileInfo");
-const { addEmployee } = require("./appController");
+const { addEmployee, findCompany } = require("./appController");
 const { deleteAlerts } = require("./payrollController");
 const { decryptData, encryptData } = require("../services/encryptDataService");
 
@@ -68,6 +68,7 @@ const updateEmployee = async (empId, data) => {
 		postalCode,
 		country,
 		password,
+		companyName,
 	} = data;
 	const streetNumber = `${streetAddressSuite || ""} ${streetAddress || ""}`;
 
@@ -94,6 +95,9 @@ const updateEmployee = async (empId, data) => {
 	await Employee.findByIdAndUpdate(empId, updatedObj, {
 		new: true,
 	});
+	const existingCompany = await findCompany("name", companyName);
+	if (!existingCompany.employees.includes(empId)) existingCompany.employees.push(empId);
+	await existingCompany.save();
 };
 
 const addEmployeeProfileInfo = async (req, res) => {
@@ -138,6 +142,7 @@ const addEmployeeProfileInfo = async (req, res) => {
 			password,
 			firstName,
 			lastName,
+			companyName,
 		};
 		if (!empId && firstName && companyName && lastName) {
 			const existingProfileInfo = await EmployeeProfileInfo.findOne({

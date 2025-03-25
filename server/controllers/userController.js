@@ -350,7 +350,7 @@ const createMasterUser = async (req, res) => {
 			firstName,
 			middleName,
 			lastName,
-			empId: employee._id,
+			empId: employee?._id,
 			businessEmail: email,
 			personalPhoneNum: phoneNumber,
 		});

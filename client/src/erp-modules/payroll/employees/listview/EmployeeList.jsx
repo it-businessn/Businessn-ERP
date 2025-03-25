@@ -33,7 +33,7 @@ const EmployeeList = ({ employees }) => {
 				)}
 				{employees?.map(({ _id, empId, payrollStatus, employmentRole, employeeNo, positions }) => {
 					return (
-						<Tr key={_id} _hover={{ bg: "var(--phoneCall_bg_light)" }}>
+						<Tr key={empId?._id || _id} _hover={{ bg: "var(--phoneCall_bg_light)" }}>
 							<Td p={0} px={"2em"} borderBottomColor={"var(--filter_border_color)"}>
 								<HStack spacing={4} cursor={"pointer"}>
 									<Avatar
