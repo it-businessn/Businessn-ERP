@@ -16,7 +16,11 @@ const {
 } = require("../services/data");
 const moment = require("moment");
 const { getHolidays } = require("./setUpController");
-const { calcTotalWorkedHours } = require("./timesheetContoller");
+const {
+	calcTotalWorkedHours,
+	addOvertimeRecord,
+	addTimesheetEntry,
+} = require("./timesheetContoller");
 
 const getTimecard = async (req, res) => {
 	const { companyName, filter } = req.params;
@@ -218,7 +222,7 @@ const addTimecardEntry = async (entry, isBreak) => {
 		const timesheetRecord = await findTimesheet(newTimesheetRecord);
 
 		if (!timesheetRecord) {
-			await Timesheet.create(newTimesheetRecord);
+			await addTimesheetEntry(newTimesheetRecord);
 			await updateTimecardData(newTimecard._id, {
 				processedForTimesheet: true,
 			});
@@ -244,60 +248,38 @@ const updateTimecardEntry = async (entry, isBreakType) => {
 		return;
 	}
 	if (isBreakType && entry?.clockOut && timesheetRecord.payType === PAY_TYPES_TITLE.REG_PAY_BRK) {
-		const durationHrs = moment
-			.duration(moment(entry.clockOut).diff(moment(entry.clockIn)))
-			.asHours()
-			.toFixed(2);
+		const durationHrs = calcTotalWorkedHours(entry.clockIn, entry.clockOut);
 		timesheetRecord.regBreakHoursWorked = durationHrs;
 	}
 	if (!isBreakType && !timesheetRecord?.clockOut) {
 		timesheetRecord.clockOut = entry.clockOut;
 		if (entry?.clockOut) {
 			const totalWorkedHours = calcTotalWorkedHours(entry.clockIn, entry.clockOut);
-
-			if (timesheetRecord.payType === PAY_TYPES_TITLE.REG_PAY && totalWorkedHours > 8) {
-				const adjustedClockOut = await addOvertimeRecord(
-					clockIn,
-					clockOut,
-					employeeId,
-					company,
-					source,
-				);
-				const newEntry = {
-					employeeId,
-					clockIn,
-					clockOut: adjustedClockOut,
-					[PARAM_HOURS.REGULAR]: 8,
-					companyName: company,
-					payType: type,
-					source,
-				};
-				const newTimesheetWithOvertime = await addTimesheetEntry(newEntry);
-			} else {
-				timesheetRecord[PARAM_HOURS.REGULAR] = durationHrs;
-				const newTimesheetRecord = {
-					employeeId: entry.employeeId,
-					companyName: entry.companyName,
-					payType: isBreak
-						? PAY_TYPES_TITLE.REG_PAY_BRK
-						: isStatHoliday
-						? PAY_TYPES_TITLE.STAT_WORK_PAY
-						: getPayType(),
-					clockIn,
-					notDevice,
-					source: TIMESHEET_ORIGIN.TAD,
-				};
-				const timesheetRecord = await findTimesheet(newTimesheetRecord);
-
-				if (!timesheetRecord) {
-					await Timesheet.create(newTimesheetRecord);
-					await updateTimecardData(newTimecard._id, {
-						processedForTimesheet: true,
-					});
+			if (timesheetRecord.payType === PAY_TYPES_TITLE.REG_PAY) {
+				if (totalWorkedHours > 8) {
+					const adjustedClockOut = await addOvertimeRecord(
+						entry.clockIn,
+						entry.clockOut,
+						timesheetRecord?.employeeId,
+						timesheetRecord?.companyName,
+						timesheetRecord?.source,
+					);
+					const newEntry = {
+						employeeId: timesheetRecord?.employeeId,
+						clockIn: entry.clockIn,
+						clockOut: adjustedClockOut,
+						[PARAM_HOURS.REGULAR]: 8,
+						companyName: timesheetRecord?.companyName,
+						payType: timesheetRecord.payType,
+						source: timesheetRecord?.source,
+					};
+					await addTimesheetEntry(newEntry);
+				} else {
+					timesheetRecord[PARAM_HOURS.REGULAR] = totalWorkedHours;
 				}
 			}
 			if (timesheetRecord.payType === PAY_TYPES_TITLE.STAT_WORK_PAY) {
-				timesheetRecord[PARAM_HOURS.STAT] = durationHrs;
+				timesheetRecord[PARAM_HOURS.STAT] = totalWorkedHours;
 			}
 		}
 	}

@@ -272,10 +272,7 @@ const addOvertimeRecord = async (clockIn, clockOut, employeeId, company, source)
 	const adjustedClockOut = moment(clockIn).add(8, "hours");
 	const overtimeClockIn = moment(adjustedClockOut);
 	const overtimeClockOut = moment(clockOut);
-	const overtimeHoursWorked = moment
-		.duration(overtimeClockOut.diff(overtimeClockIn))
-		.asHours()
-		.toFixed(2);
+	const overtimeHoursWorked = calcTotalWorkedHours(overtimeClockIn, overtimeClockOut);
 
 	const newEntry = {
 		employeeId,
@@ -648,4 +645,6 @@ module.exports = {
 	actionAllTimesheets,
 	updateTimesheetPayType,
 	calcTotalWorkedHours,
+	addOvertimeRecord,
+	addTimesheetEntry,
 };
