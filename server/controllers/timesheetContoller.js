@@ -647,4 +647,5 @@ module.exports = {
 	createManualTimesheet,
 	actionAllTimesheets,
 	updateTimesheetPayType,
+	calcTotalWorkedHours,
 };
