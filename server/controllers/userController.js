@@ -451,7 +451,7 @@ const getEmployeeId = async (empList) => {
 	const list = [];
 	for (const fullName of empList) {
 		const employee = await Employee.findOne({ fullName });
-		list.push(employee);
+		list.push({ empId: employee });
 	}
 	return list;
 };
