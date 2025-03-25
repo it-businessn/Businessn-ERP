@@ -13,7 +13,7 @@ import PageLayout from "layouts/PageLayout";
 import { useEffect, useState } from "react";
 import LocalStorageService from "services/LocalStorageService";
 import PayrollService from "services/PayrollService";
-import { sortRecordsByDate } from "utils";
+import { isExtraPay, sortRecordsByDate } from "utils";
 import { dayMonthYear, formatDateRange } from "utils/convertDate";
 import EmpProfileSearch from "../employees/EmpProfileSearch";
 import PreviewReportsModal from "../process-payroll/preview-reports/PreviewReportsModal";
@@ -24,8 +24,18 @@ const Reports = () => {
 	const REPORT_COLS = ["Pay number", "Pay date", "Pay period", "Status", "Action"];
 	const [payStub, setPayStub] = useState(null);
 
-	const handleRegister = (payNo) => {
-		setPayStub(empPayStub.find((_) => _.payPeriodNum === payNo));
+	const getPayNum = (payNo, isExtra) => {
+		return isExtra
+			? empPayStub?.find(
+					({ payPeriodNum, isExtraRun }) =>
+						parseInt(payPeriodNum) === parseInt(payNo) && isExtraRun === isExtra,
+			  )
+			: empPayStub?.find(({ payPeriodNum }) => payPeriodNum === payNo);
+	};
+
+	const handleRegister = (payNo, isExtra) => {
+		const record = getPayNum(payNo, isExtra);
+		setPayStub(record);
 		setShowReport(true);
 	};
 
@@ -110,7 +120,7 @@ const Reports = () => {
 						) => (
 							<Tr key={`${payPeriod}_${index}`}>
 								<Td p={1} pl={8}>
-									{payPeriodNum}
+									{isExtraPay(payPeriodNum, isExtraRun)}
 								</Td>
 								<Td p={1}>{dayMonthYear(payPeriodPayDate)}</Td>
 								<Td p={1}>{formatDateRange(payPeriodStartDate, payPeriodEndDate)}</Td>
@@ -134,7 +144,7 @@ const Reports = () => {
 										label="View Paystub"
 										size="xs"
 										onClick={() => {
-											handleRegister(payPeriodNum);
+											handleRegister(isExtraPay(payPeriodNum, isExtraRun), isExtraRun);
 										}}
 									/>
 								</Td>
@@ -143,7 +153,7 @@ const Reports = () => {
 					)}
 				</Tbody>
 			</TableLayout>
-			{showReport && (
+			{showReport && payStub && (
 				<PreviewReportsModal
 					size="5xl"
 					isReport
