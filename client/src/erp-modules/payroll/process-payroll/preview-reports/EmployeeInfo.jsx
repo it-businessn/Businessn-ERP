@@ -15,10 +15,13 @@ const EmployeeInfo = ({ data, companyNum }) => {
 				<Box w={"100%"} bg={"var(--primary_bg_1)"} p={2}>
 					<VStack mt={1} spacing={0}>
 						<BasicInfo title1="Report Type:" title2={getReportName(data?.reportType)} />
-						<BasicInfo title1={"Net Pay:"} title2={getAmount(data.currentNetPay)} />
-						<BasicInfo title1={"Pay Date:"} title2={formatDateBar(data.payPeriodPayDate)} />
-						<BasicInfo title1={"Pay Start Date:"} title2={formatDateBar(data.payPeriodStartDate)} />
-						<BasicInfo title1={"Pay End Date:"} title2={formatDateBar(data.payPeriodEndDate)} />
+						<BasicInfo title1={"Net Pay:"} title2={getAmount(data?.currentNetPay)} />
+						<BasicInfo title1={"Pay Date:"} title2={formatDateBar(data?.payPeriodPayDate)} />
+						<BasicInfo
+							title1={"Pay Start Date:"}
+							title2={formatDateBar(data?.payPeriodStartDate)}
+						/>
+						<BasicInfo title1={"Pay End Date:"} title2={formatDateBar(data?.payPeriodEndDate)} />
 						<BasicInfo mt={4} title1={"Name:"} title2={data?.empId?.fullName} />
 						<BasicInfo
 							title1={"Address:"}
