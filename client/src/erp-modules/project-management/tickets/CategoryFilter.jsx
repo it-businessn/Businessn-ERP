@@ -28,7 +28,7 @@ const CategoryFilter = ({ name, data, isMyChannel, presentTitle, filterTicket, f
 				<Stack w="120px" justify="center" bg="var(--input_bg)" p={"8px"}>
 					<Box mb={5}>
 						<TextTitle whiteSpace="wrap" title={name} />
-						<TextTitle size="xs" title="Channel" />
+						{isMyChannel && <TextTitle size="xs" title="Channel" />}
 					</Box>
 					<PrimaryButton
 						onOpen={() => handlePresent(name)}
