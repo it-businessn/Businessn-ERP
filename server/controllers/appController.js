@@ -1,4 +1,5 @@
 const jwt = require("jsonwebtoken");
+const path = require("path");
 const Company = require("../models/Company");
 const Employee = require("../models/Employee");
 const UserActivity = require("../models/UserActivity");
@@ -362,8 +363,87 @@ const forgotPassword = async (req, res) => {
 			});
 		}
 
-		const emailURL = getResetPasswordLink(user._id);
-		await sendEmail(user.email, "Reset Password", emailURL);
+		const resetLink = getResetPasswordLink(user._id);
+		await sendEmail(
+			user.email,
+			"Reset Password",
+			resetLink,
+			`<body style="margin: 0; font-family: Arial, Helvetica, sans-serif;height:'auto">
+		<div
+			class="header"
+			style="
+				background-color: #371f37;
+				color: white;
+				text-align: center;
+				height: 150px;
+				display: flex;
+				align-items: center;
+			"
+		>
+			<div
+				id="header_content"
+				style="
+					display: flex;
+					flex-direction: column;
+					align-items: self-start;
+					background: #4c364b;
+					border-radius: 10px;
+					gap: 1em;
+					width: 80%;
+					margin: 0 auto;
+					padding: 1.5em;
+				"
+			>
+				<p
+					class="topic"
+					style="font-weight: bold; font-size: larger; margin: 5px 0"
+				>
+					Reset Password
+				</p>
+			</div>
+		</div><div
+			class="container"
+			style="
+				background: #fdfdfd;
+				color: #371f37;
+				display: flex;
+				flex-direction: column;
+				align-items: self-start;
+				padding: 2em 3em;
+				gap: 1em;
+				font-size: 14px;
+			"
+		>
+      <p style="margin: 5px 0">Hello,</p>
+      <p>You requested a password reset. Click the link below to reset your password:</p>
+      <p><a href="${resetLink}" target="_blank">Reset Password</a></p>
+      <p>If you did not request this, please ignore this email.</p>
+      <p>Thanks,<br>Your Company Name</p>
+   </div>
+		<div
+			class="footer"
+			style="
+				background-color: #371f37;
+				color: white;
+				text-align: center;
+				height: 150px;
+				display: flex;
+				align-items: center;
+			"
+		>
+      <img src="cid:footerLogo" 
+				style="margin: 0 auto;width:300px" alt="Footer Logo"/>
+			
+		</div>
+	</body> `,
+			[
+				{
+					filename: "BusinessN_dark1.png",
+					path: path.join(__dirname, "../", "assets/logos/BusinessN_dark1.png"),
+					cid: "footerLogo",
+				},
+			],
+		);
 
 		return res.status(200).json({
 			message: "A password reset link has been sent to your email account",
