@@ -530,7 +530,7 @@ const Timesheet = ({
 						<Tr>
 							{cols?.map((col, colIndex) =>
 								colIndex === 10 ? (
-									<Th key={`action_${colIndex}`} bg="var(--th_bg)">
+									<Th key={`action_${col}_${colIndex}`} bg="var(--th_bg)">
 										<Checkbox
 											isChecked={isAllChecked}
 											colorScheme="facebook"
@@ -648,6 +648,7 @@ const Timesheet = ({
 												(col, colIndex) =>
 													colIndex === 0 && (
 														<Td
+															key={`${col}_${_id}`}
 															bg="var(--lead_cards_bg)"
 															position={colIndex === 0 && "sticky"}
 															left={colIndex === 0 && "0"}
