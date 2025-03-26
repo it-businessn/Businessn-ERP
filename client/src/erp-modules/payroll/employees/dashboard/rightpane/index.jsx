@@ -1,16 +1,24 @@
 import BoxCard from "components/ui/card";
-import UserStatInfo from "components/ui/UserStatInfo";
+import PayrollUserStatInfo from "erp-modules/payroll/dashboard/rightpane/PayrollUserStatInfo";
 import ChatMessages from "erp-modules/sales/dashboard/rightpane/ChatMessages";
 import MiniCalendar from "erp-modules/sales/dashboard/rightpane/MiniCalendar";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 
-const RightPane = ({ selectedUser, stats, company }) => {
+const RightPane = ({
+	selectedUser,
+	company,
+	payGroupSchedule,
+	closestRecord,
+	closestRecordIndex,
+}) => {
 	return (
 		<BoxCard>
-			<UserStatInfo
+			<PayrollUserStatInfo
 				name={selectedUser?.fullName}
 				email={selectedUser?.email}
-				stats={stats}
+				payGroupSchedule={payGroupSchedule}
+				closestRecord={closestRecord}
+				closestRecordIndex={closestRecordIndex}
 			/>
 			<MiniCalendar user={selectedUser} company={company} isPayrollDashboard />
 			<ChatMessages userId={selectedUser._id} company={company} />

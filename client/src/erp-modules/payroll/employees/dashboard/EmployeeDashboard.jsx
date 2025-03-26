@@ -1,8 +1,8 @@
 import { SimpleGrid } from "@chakra-ui/react";
 
 import useCompany from "hooks/useCompany";
+import usePaygroup from "hooks/usePaygroup";
 import PageLayout from "layouts/PageLayout";
-import { useState } from "react";
 import { useBreakpointValue } from "services/Breakpoint";
 import LocalStorageService from "services/LocalStorageService";
 import LeftPane from "./leftpane";
@@ -12,22 +12,10 @@ const EmployeeDashboard = () => {
 	const { isMobile } = useBreakpointValue();
 	const { company } = useCompany(LocalStorageService.getItem("selectedCompany"));
 	const selectedUser = LocalStorageService.getItem("user");
-	const STATS = [
-		{
-			name: "In Progress",
-			value: 0,
-		},
-		{
-			name: "Completed",
-			value: 0,
-		},
-		{
-			name: "Estimate",
-			value: 0,
-		},
-	];
-	const [stats, setStats] = useState(STATS);
-
+	const { selectedPayGroup, closestRecord, payGroupSchedule, closestRecordIndex } = usePaygroup(
+		company,
+		false,
+	);
 	return (
 		<PageLayout title="Employee Dashboard">
 			<SimpleGrid
@@ -36,13 +24,17 @@ const EmployeeDashboard = () => {
 				mt="4"
 				templateColumns={{ lg: "70% 30%" }}
 			>
-				<LeftPane
-					isMobile={isMobile}
-					selectedUser={selectedUser}
-					setStats={setStats}
-					company={company}
-				/>
-				{!isMobile && <RightPane stats={stats} selectedUser={selectedUser} company={company} />}
+				<LeftPane isMobile={isMobile} selectedUser={selectedUser} company={company} />
+				{!isMobile && (
+					<RightPane
+						selectedUser={selectedUser}
+						company={company}
+						selectedPayGroup={selectedPayGroup}
+						payGroupSchedule={payGroupSchedule}
+						closestRecord={closestRecord}
+						closestRecordIndex={closestRecordIndex}
+					/>
+				)}
 			</SimpleGrid>
 		</PageLayout>
 	);

@@ -160,23 +160,26 @@ const WorkviewTable = ({
 												onOpen={() => handlePay(payPeriodNum || payPeriod)}
 											/>
 										)}
-										<OutlineButton
-											isDisabled={isDisabledAction}
-											label="View Funding Totals"
-											size="xs"
-											onClick={() =>
-												handleTotalsReport(
-													isExtraPay(payPeriodNum || payPeriod, isExtraRun),
-													isExtraRun,
-												)
-											}
-										/>
+
 										{!isEarningTable && (
-											<OutlineButton
-												label={"View Journal"}
-												size="xs"
-												// onClick={handleClick}
-											/>
+											<>
+												<OutlineButton
+													isDisabled={isDisabledAction}
+													label="View Funding Totals"
+													size="xs"
+													onClick={() =>
+														handleTotalsReport(
+															isExtraPay(payPeriodNum || payPeriod, isExtraRun),
+															isExtraRun,
+														)
+													}
+												/>
+												<OutlineButton
+													label={"View Journal"}
+													size="xs"
+													// onClick={handleClick}
+												/>
+											</>
 										)}
 									</HStack>
 								)}
