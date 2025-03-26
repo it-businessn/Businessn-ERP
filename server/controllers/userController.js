@@ -82,8 +82,9 @@ const getPayrollActiveCompanyEmployeesCount = async (req, res) => {
 	const { companyName } = req.params;
 	try {
 		const result = await EmployeeEmploymentInfo.countDocuments({
-			payrollStatus: { $ne: "Payroll Terminated" },
+			payrollStatus: "Payroll Active",
 			companyName,
+			employmentRole: { $ne: ROLES.SHADOW_ADMIN },
 		});
 
 		res.status(200).json(result);

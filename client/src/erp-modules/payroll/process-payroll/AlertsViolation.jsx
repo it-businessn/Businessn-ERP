@@ -42,7 +42,7 @@ const AlertsViolation = ({
 
 	const handleReview = (data) => {
 		const empId = data?.empId?._id;
-		const stepNum = data?.actionRequired ? 5 : 1;
+		const stepNum = data?.actionRequired ? 5 : 0;
 		navigate(`${ROUTE_PATH.PAYROLL}${ROUTE_PATH.EMPLOYEES}/info/${empId}/${stepNum}`);
 	};
 	const filteredEmp = [];
@@ -75,16 +75,16 @@ const AlertsViolation = ({
 					{(!data || data?.length === 0) && (
 						<EmptyRowRecord title="No violations found" data={data} colSpan={COLS.length} />
 					)}
-					{data?.map((data) => (
-						<Tr key={data._id}>
+					{data?.map((record) => (
+						<Tr key={record._id}>
 							<Td>
-								<NormalTextTitle title={data?.description} />
+								<NormalTextTitle title={record?.description} />
 							</Td>
 							<Td>
-								<TextTitle title={data?.empId?.fullName} />
+								<TextTitle title={record?.empId?.fullName} />
 							</Td>
 							<Td>
-								{data.actionRequired ? (
+								{record.actionRequired ? (
 									<Button
 										size={"sm"}
 										borderRadius={"10px"}
@@ -106,9 +106,9 @@ const AlertsViolation = ({
 							</Td>
 							<Td>
 								<OutlineButton
-									label={"Review payroll details"}
+									label="Address violation"
 									size={"sm"}
-									onClick={() => handleReview(data)}
+									onClick={() => handleReview(record)}
 								/>
 							</Td>
 						</Tr>
@@ -119,7 +119,7 @@ const AlertsViolation = ({
 				bg="var(--action_status_approve)"
 				name={"CONFIRM"}
 				rightIcon={<MdCheckCircle />}
-				// isDisabled={isDisabled}
+				isDisabled={isDisabled}
 				loadingText="Loading"
 				onOpen={handleClick}
 			/>

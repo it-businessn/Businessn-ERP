@@ -322,56 +322,58 @@ const updatePayGroup = () => {};
 
 const findAlertInfo = async (record) => await EmployeeAlertsViolationInfo.findOne(record);
 
+const addAlertInfo = async (record) => await EmployeeAlertsViolationInfo.create(record);
+
 const addAlertsAndViolations = async (req, res) => {
 	const { companyName, inputsReviewData } = req.body;
 
 	try {
 		for (const data of inputsReviewData) {
-			const empResult = await EmployeeBankingInfo.findOne({
+			const empBankResult = await EmployeeBankingInfo.findOne({
+				companyName,
 				empId: data?.empId?._id,
 			}).select("empId bankNum transitNum accountNum");
 
 			const empSINResult = await EmployeeProfileInfo.findOne({
+				companyName,
 				empId: data?.empId?._id,
 			}).select("empId SIN");
-			if (
-				!empResult ||
-				empResult.bankNum === "" ||
-				empResult.transitNum === "" ||
-				empResult.accountNum === ""
-			) {
-				const alertsExists = await findAlertInfo({
+
+			const alertsExists = await findAlertInfo({
+				empId: data?.empId?._id,
+				companyName,
+				actionRequired: true,
+			});
+
+			const missingBankInfo =
+				!empBankResult ||
+				!empBankResult.bankNum ||
+				!empBankResult.transitNum ||
+				!empBankResult.accountNum ||
+				empBankResult.bankNum === "" ||
+				empBankResult.transitNum === "" ||
+				empBankResult.accountNum === "";
+
+			const missingSINInfo = !empSINResult || !empSINResult.SIN || empSINResult.SIN === "";
+
+			if (!alertsExists && missingBankInfo) {
+				await addAlertInfo({
 					empId: data?.empId?._id,
 					companyName,
+					description: "Banking information missing",
 					actionRequired: true,
+					payPeriodNum: data?.payPeriodNum,
 				});
-				if (alertsExists) {
-				} else {
-					await EmployeeAlertsViolationInfo.create({
-						empId: data?.empId?._id,
-						companyName,
-						description: "Banking information missing",
-						actionRequired: true,
-						payPeriodNum: data.payPeriodNum,
-					});
-				}
 			}
-			if (!empSINResult || empSINResult.SIN === "") {
-				const alertsExists = await findAlertInfo({
+
+			if (!alertsExists && missingSINInfo) {
+				await addAlertInfo({
 					empId: data?.empId?._id,
 					companyName,
+					description: "SIN missing",
 					actionRequired: false,
+					payPeriodNum: data?.payPeriodNum,
 				});
-				if (alertsExists) {
-				} else {
-					await EmployeeAlertsViolationInfo.create({
-						empId: data?.empId?._id,
-						companyName,
-						description: "SIN missing",
-						actionRequired: false,
-						payPeriodNum: data.payPeriodNum,
-					});
-				}
 			}
 		}
 		res.status(200).json({ message: "Alerts processed successfully" });
@@ -381,7 +383,7 @@ const addAlertsAndViolations = async (req, res) => {
 };
 
 const deleteAlerts = async (empId) => {
-	const existingAlert = await EmployeeAlertsViolationInfo.findOne({
+	const existingAlert = await findAlertInfo({
 		empId,
 	});
 	if (existingAlert) {

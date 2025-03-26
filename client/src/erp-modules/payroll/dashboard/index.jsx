@@ -28,7 +28,7 @@ const Dashboard = () => {
 	return (
 		<PageLayout
 			width={"35%"}
-			title={"Dashboard"}
+			title="Dashboard"
 			showSelectBox={true}
 			data={payGroups}
 			selectAttr="name"
