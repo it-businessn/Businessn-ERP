@@ -56,12 +56,6 @@ const ReportListView = () => {
 		if (selectedPayPeriod && showTotalsReport) fetchFundTotalsInfo();
 	}, [selectedPayPeriod]);
 
-	const handleTotalsReport = (payNo, isExtra) => {
-		const payNum = getPayNum(payNo, isExtra);
-		setSelectedPayPeriod(payNum);
-		setShowTotalsReport(true);
-	};
-
 	const getPayNum = (payNo, isExtra) =>
 		isExtra
 			? payGroupSchedule?.find(
@@ -73,9 +67,17 @@ const ReportListView = () => {
 		const payNum = getPayNum(payNo, isExtra);
 		setSelectedPayPeriod(payNum);
 		setShowReport(true);
+		setShowTotalsReport(false);
 	};
 
 	const reportData = useEmployeePayReport(company, selectedPayPeriod, showReport);
+
+	const handleTotalsReport = (payNo, isExtra) => {
+		const payNum = getPayNum(payNo, isExtra);
+		setSelectedPayPeriod(payNum);
+		setShowTotalsReport(true);
+		setShowReport(false);
+	};
 
 	return (
 		<PageLayout title={"Payrun Reports"}>
