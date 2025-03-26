@@ -29,8 +29,6 @@ const Employees = ({ isOnboarding, selectedPayGroupName, handleClose }) => {
 	const [userId, setUserId] = useState(id ? id : loggedInUser._id);
 	const { setEmpId } = useSelectedEmp(userId);
 
-	const isActivePayroll = employee?.payrollStatus?.includes("Active");
-
 	const employees = useCompanyEmployees(company, deptName);
 	const [filteredEmployees, setFilteredEmployees] = useState(null);
 
@@ -56,6 +54,12 @@ const Employees = ({ isOnboarding, selectedPayGroupName, handleClose }) => {
 	useEffect(() => {
 		setEmpId(userId);
 	}, [userId]);
+
+	const isActivePayroll =
+		employee?.payrollStatus?.includes("Active") ||
+		(!id && !employee && loggedInUser?.payrollStatus?.includes("Active"));
+	const employeeID = employee?.employeeNo || (!id && !employee && loggedInUser?.employeeId);
+	const employeeName = employee?.empId?.fullName || (!id && !employee && loggedInUser?.fullName);
 
 	const handleNext = (id) => setViewMode(SETUP_LIST[id]?.type);
 	const handlePrev = (id) => setViewMode(SETUP_LIST[id - 2]?.type);
@@ -158,13 +162,13 @@ const Employees = ({ isOnboarding, selectedPayGroupName, handleClose }) => {
 						<Avatar
 							borderRadius="10%"
 							// onClick={handleToggle}
-							name={employee?.empId?.fullName || ""}
+							name={employeeName}
 							src=""
 							boxSize="15"
 						/>
 						<VStack spacing={0} align={"start"}>
-							<TextTitle size="sm" title={employee?.empId?.fullName || ""} />
-							<NormalTextTitle size="xs" title={employee?.empId?.employeeNo || ""} />
+							<TextTitle size="sm" title={employeeName} />
+							<NormalTextTitle size="xs" title={employeeID} />
 							{isActivePayroll && <ActiveBadge title={"Payroll Activated"} />}
 						</VStack>
 					</HStack>
