@@ -178,9 +178,10 @@ const getCompanyEmployees = async (req, res) => {
 const getCompanyEmployeesCount = async (req, res) => {
 	const { companyName } = req.params;
 	try {
-		const existingCompany = await findCompany("name", companyName);
-		const result = await Employee.countDocuments({
-			companyId: existingCompany._id,
+		const result = await EmployeeEmploymentInfo.countDocuments({
+			companyName,
+			employmentRole: { $ne: ROLES.SHADOW_ADMIN },
+			empId: { $exists: true },
 		});
 
 		res.status(200).json(result);
