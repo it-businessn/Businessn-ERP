@@ -5,7 +5,10 @@ const payStubController = require("../controllers/payStubController");
 
 router.get("/:companyName/:empId", payStubController.getEmployeePayDetailsReportInfo);
 
-router.get("/:companyName/:payPeriodNum/:isExtraRun", payStubController.getPayDetailsReportInfo);
+router.get(
+	"/:companyName/:payPeriodNum/:isExtraRun/:year",
+	payStubController.getPayDetailsReportInfo,
+);
 
 router.get(
 	"/funding-totals/:companyName/:payPeriodNum/:isExtraRun",

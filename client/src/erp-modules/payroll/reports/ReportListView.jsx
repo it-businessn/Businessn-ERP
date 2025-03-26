@@ -70,7 +70,7 @@ const ReportListView = () => {
 		setShowTotalsReport(false);
 	};
 
-	const reportData = useEmployeePayReport(company, selectedPayPeriod, showReport);
+	const reportData = useEmployeePayReport(company, selectedPayPeriod, showReport, selectedYear);
 
 	const handleTotalsReport = (payNo, isExtra) => {
 		const payNum = getPayNum(payNo, isExtra);

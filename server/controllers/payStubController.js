@@ -671,17 +671,20 @@ const getFundingPayDetailsReportInfo = async (req, res) => {
 };
 
 const getPayDetailsReportInfo = async (req, res) => {
-	const { companyName, payPeriodNum, isExtraRun } = req.params;
+	const { companyName, payPeriodNum, isExtraRun, year } = req.params;
 
 	try {
+		const startOfYear = moment().year(year).startOf("year").toDate();
+		const endOfYear = moment().year(year).endOf("year").toDate();
+
 		const isExtraPayRun = isExtraRun === "true";
 		let payStubs = await EmployeePayStub.find({
 			companyName,
 			payPeriodNum,
 			isExtraRun: isExtraPayRun,
 			payPeriodPayDate: {
-				$gte: moment().startOf("year").toDate(),
-				$lt: moment().endOf("year").toDate(),
+				$gte: startOfYear,
+				$lt: endOfYear,
 			},
 		}).populate(EMP_INFO);
 

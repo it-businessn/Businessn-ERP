@@ -164,8 +164,8 @@ const PayrollService = {
 		);
 	},
 
-	async getPayReportDetails(company, payNum, isExtraRun) {
-		return apiService.get(`/payroll/payDetailsReport/${company}/${payNum}/${isExtraRun}`);
+	async getPayReportDetails(company, payNum, isExtraRun, year) {
+		return apiService.get(`/payroll/payDetailsReport/${company}/${payNum}/${isExtraRun}/${year}`);
 	},
 
 	async getTotalsPayReportDetails(company, payNum, isExtraRun) {
