@@ -110,7 +110,6 @@ const ReportListView = () => {
 					isOpen={showReport}
 					onClose={() => setShowReport(false)}
 					reportData={reportData}
-					payPeriodNum={selectedPayPeriod}
 				/>
 			)}
 			{showTotalsReport && totalsReport && (

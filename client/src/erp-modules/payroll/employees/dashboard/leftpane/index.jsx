@@ -7,6 +7,7 @@ import { EARNING_TABLE_COLS } from "erp-modules/payroll/workview/data";
 import WorkviewTable from "erp-modules/payroll/workview/paygroup-header-table/WorkviewTable";
 import { useEffect, useState } from "react";
 import PayrollService from "services/PayrollService";
+import { getPayNum, sortRecordsByDate } from "utils";
 import EmployeeTimeCard from "./EmployeeTimeCard";
 
 const LeftPane = ({ selectedUser, company, isMobile }) => {
@@ -18,7 +19,8 @@ const LeftPane = ({ selectedUser, company, isMobile }) => {
 		const fetchEmpPayStubs = async () => {
 			try {
 				const { data } = await PayrollService.getEmpPayReportDetails(company, selectedUser._id);
-				setEmpPayStub(data);
+				const sortedResult = sortRecordsByDate(data, "payPeriodNum", false, false);
+				setEmpPayStub(sortedResult);
 			} catch (error) {
 				console.error(error);
 			}
@@ -26,9 +28,10 @@ const LeftPane = ({ selectedUser, company, isMobile }) => {
 		fetchEmpPayStubs();
 	}, []);
 
-	const handleClick = (num) => {
+	const handleRegister = (payNo, isExtra) => {
+		const record = getPayNum(payNo, isExtra, empPayStub);
+		setPayStub(record);
 		setShowReport(true);
-		setPayStub(empPayStub.find((_) => _.payPeriodNum === num));
 	};
 
 	return (
@@ -50,7 +53,7 @@ const LeftPane = ({ selectedUser, company, isMobile }) => {
 						payGroupSchedule={empPayStub}
 						height="30vh"
 						viewLabel="View Paystub"
-						handleRegister={handleClick}
+						handleRegister={handleRegister}
 						textAlign={"center"}
 					/>
 				</BoxCard>

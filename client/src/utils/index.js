@@ -370,21 +370,25 @@ export const convertToNum = (str) => parseFloat(str.replace(/,/g, ""));
 
 export const isPaygroup = (name) => name?.payrollActivated;
 
+export const isExtraPay = (payPeriodNum, isExtra) => (isExtra ? `${payPeriodNum}E` : payPeriodNum);
+
+export const getPayNum = (payNo, isExtra, payStubs) => {
+	return isExtra
+		? payStubs?.find(
+				({ payPeriodNum, isExtraRun }) =>
+					parseInt(payPeriodNum) === parseInt(payNo) && isExtraRun === isExtra,
+		  )
+		: payStubs?.find(({ payPeriodNum, isExtraRun }) => payPeriodNum === payNo && !isExtraRun);
+};
+
 export const sortRecordsByDate = (records, key, isDate = true, sort = true) => {
 	const sortedList = sort
 		? records?.sort((a, b) => (isDate ? new Date(a[key]) - new Date(b[key]) : a[key] - b[key]))
 		: records;
 
-	sortedList?.map((record, index) => {
-		const {
-			color,
-			bg,
-			name,
-			isDisabledStatus,
-			isViewAction,
-			isDisabledAction,
-			// } = getPayrollStatus(record, payGroupSchedule[index - 1]?.payPeriodEndDate);
-		} = getPayrollStatus(record);
+	sortedList?.map((record) => {
+		const { color, bg, name, isDisabledStatus, isViewAction, isDisabledAction } =
+			getPayrollStatus(record);
 		record.color = color;
 		record.bg = bg;
 		record.name = name;
@@ -474,8 +478,6 @@ export const getPayrollStatus = (data, prevRecordEndDate) => {
 		return defaultStatus;
 	}
 };
-
-export const isExtraPay = (payPeriodNum, isExtra) => (isExtra ? `${payPeriodNum}E` : payPeriodNum);
 
 export const toWords = new ToWords({
 	localeCode: "en-US",

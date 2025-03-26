@@ -13,7 +13,7 @@ import PageLayout from "layouts/PageLayout";
 import { useEffect, useState } from "react";
 import LocalStorageService from "services/LocalStorageService";
 import PayrollService from "services/PayrollService";
-import { isExtraPay, sortRecordsByDate } from "utils";
+import { getPayNum, isExtraPay, sortRecordsByDate } from "utils";
 import { dayMonthYear, formatDateRange } from "utils/convertDate";
 import EmpProfileSearch from "../employees/EmpProfileSearch";
 import PreviewReportsModal from "../process-payroll/preview-reports/PreviewReportsModal";
@@ -23,21 +23,6 @@ const Reports = () => {
 	const [showReport, setShowReport] = useState(undefined);
 	const REPORT_COLS = ["Pay number", "Pay date", "Pay period", "Status", "Action"];
 	const [payStub, setPayStub] = useState(null);
-
-	const getPayNum = (payNo, isExtra) => {
-		return isExtra
-			? empPayStub?.find(
-					({ payPeriodNum, isExtraRun }) =>
-						parseInt(payPeriodNum) === parseInt(payNo) && isExtraRun === isExtra,
-			  )
-			: empPayStub?.find(({ payPeriodNum }) => payPeriodNum === payNo);
-	};
-
-	const handleRegister = (payNo, isExtra) => {
-		const record = getPayNum(payNo, isExtra);
-		setPayStub(record);
-		setShowReport(true);
-	};
 
 	const loggedInUser = LocalStorageService.getItem("user");
 	const deptName = loggedInUser?.role === ROLES.MANAGER ? loggedInUser?.department : null;
@@ -67,6 +52,12 @@ const Reports = () => {
 		};
 		fetchEmpPayStubs();
 	}, [userId]);
+
+	const handleRegister = (payNo, isExtra) => {
+		const record = getPayNum(payNo, isExtra, empPayStub);
+		setPayStub(record);
+		setShowReport(true);
+	};
 
 	return (
 		<PageLayout title="Individual Reports">

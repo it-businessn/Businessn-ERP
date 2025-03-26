@@ -84,7 +84,7 @@ const WorkviewTable = ({
 					) => (
 						<Tr key={`${payPeriod}_${index}`} ref={(el) => (rowRefs.current[index] = el)}>
 							<Td p={1} pl={8}>
-								{isEarningTable ? payPeriodNum : isExtraPay(payPeriod, isExtraRun)}
+								{isExtraPay(payPeriodNum || payPeriod, isExtraRun)}
 							</Td>
 							<Td p={1} textAlign={textAlign}>
 								{dayMonthYear(payPeriodPayDate)}
@@ -127,7 +127,7 @@ const WorkviewTable = ({
 											isDisabled={isDisabledAction}
 											name={"Pay now"}
 											size="xs"
-											onOpen={() => handlePay(isExtraPay(payPeriod, isExtraRun))}
+											onOpen={() => handlePay(isExtraPay(payPeriodNum || payPeriod, isExtraRun))}
 										/>
 									)
 								) : (
@@ -137,10 +137,10 @@ const WorkviewTable = ({
 												label={viewLabel}
 												size="xs"
 												onClick={() => {
-													if (isEarningTable) {
-														return handleRegister(payPeriodNum);
-													}
-													handleRegister(isExtraPay(payPeriod, isExtraRun), isExtraRun);
+													handleRegister(
+														isExtraPay(payPeriodNum || payPeriod, isExtraRun),
+														isExtraRun,
+													);
 												}}
 											/>
 										) : (
@@ -157,7 +157,7 @@ const WorkviewTable = ({
 												name={"Pay now"}
 												minW={"105px"}
 												size="xs"
-												onOpen={() => handlePay(payPeriod)}
+												onOpen={() => handlePay(payPeriodNum || payPeriod)}
 											/>
 										)}
 										<OutlineButton
@@ -165,7 +165,10 @@ const WorkviewTable = ({
 											label="View Funding Totals"
 											size="xs"
 											onClick={() =>
-												handleTotalsReport(isExtraPay(payPeriod, isExtraRun), isExtraRun)
+												handleTotalsReport(
+													isExtraPay(payPeriodNum || payPeriod, isExtraRun),
+													isExtraRun,
+												)
 											}
 										/>
 										{!isEarningTable && (
