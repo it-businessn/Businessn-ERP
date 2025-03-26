@@ -27,7 +27,7 @@ const getAggregateTicketCount = async (req, res) => {
 			{
 				$match: {
 					companyName,
-					originator: id,
+					$or: [{ originator: id }, { assignee: id }],
 					status: { $in: [TICKET_STATUS.OPEN, TICKET_STATUS.PROGRESS, TICKET_STATUS.ON_HOLD] },
 				},
 			},
@@ -81,7 +81,7 @@ const getFilteredTickets = async (req, res) => {
 				: {
 						companyName,
 						category,
-						originator: id,
+						$or: [{ originator: id }, { assignee: id }],
 						status: { $ne: TICKET_STATUS.CLOSED },
 				  };
 		const tickets = await SupportTicket.find(filterCriteria).sort({ priority: 1 });
