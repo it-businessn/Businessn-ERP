@@ -1,7 +1,7 @@
 const EmployeeBankingInfo = require("../models/EmployeeBankingInfo");
 const { encryptData, decryptData } = require("../services/encryptDataService");
 // const { saveKeyToEnv } = require("../services/fileService");
-// const { deleteAlerts } = require("./payrollController");
+const { deleteAlerts } = require("./payrollController");
 
 const getAllBankingInfo = async (req, res) => {
 	const { companyName } = req.params;
@@ -96,6 +96,17 @@ const addEmployeeBankingInfo = async (req, res) => {
 		paymentEmail,
 	};
 	try {
+		if (
+			bankDetails.bankNum &&
+			bankDetails.transitNum &&
+			bankDetails.accountNum &&
+			bankDetails.bankNum !== "" &&
+			bankDetails.transitNum !== "" &&
+			bankDetails.accountNum !== ""
+		) {
+			await deleteAlerts(empId);
+		}
+
 		const existingBankingInfo = await findEmployeeBankingInfo(empId, companyName);
 
 		if (existingBankingInfo) {

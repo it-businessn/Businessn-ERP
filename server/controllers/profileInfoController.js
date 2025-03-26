@@ -212,7 +212,7 @@ const addEmployeeProfileInfo = async (req, res) => {
 		}
 		const existingProfileInfo = await findEmployeeProfileInfo(empId, companyName);
 
-		if (SIN !== "") {
+		if (SIN && SIN !== "") {
 			await deleteAlerts(empId);
 		}
 		await updateEmployee(empId, data);
