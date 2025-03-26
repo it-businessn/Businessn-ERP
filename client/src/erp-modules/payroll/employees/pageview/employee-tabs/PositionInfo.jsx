@@ -5,6 +5,7 @@ import InputFormControl from "components/ui/form/InputFormControl";
 import SelectFormControl from "components/ui/form/SelectFormControl";
 import NormalTextTitle from "components/ui/NormalTextTitle";
 import TextTitle from "components/ui/text/TextTitle";
+import { COMPANIES } from "constant";
 import { useEffect, useState } from "react";
 
 const PositionInfo = ({
@@ -20,7 +21,7 @@ const PositionInfo = ({
 	rolePos,
 	company,
 }) => {
-	const defaultRoleInfo = currentRoleInfo || {
+	const defaultRoleInfo = {
 		title: "",
 		employmentPayGroup: "",
 		employmentCostCenter: "",
@@ -29,7 +30,7 @@ const PositionInfo = ({
 		positions: [],
 	};
 
-	const [roleInfo, setRoleInfo] = useState(defaultRoleInfo);
+	const [roleInfo, setRoleInfo] = useState(currentRoleInfo || defaultRoleInfo);
 	const [filteredDept, setFilteredDept] = useState(department);
 
 	useEffect(() => {
@@ -43,17 +44,19 @@ const PositionInfo = ({
 		} else {
 			setIsDisabled(true);
 		}
-	}, [roleInfo]);
+	}, [
+		roleInfo.title,
+		roleInfo.employmentCostCenter,
+		roleInfo.employmentPayGroup,
+		roleInfo.employmentDepartment,
+	]);
 
 	useEffect(() => {
-		if (
-			company === "The Owners Of Strata Plan NW1378" &&
-			department &&
-			roleInfo.employmentCostCenter
-		) {
-			setFilteredDept(
-				department.filter((_) => _.name.includes(roleInfo.employmentCostCenter.slice(0, 4))),
+		if (company === COMPANIES.NW && department && roleInfo.employmentCostCenter) {
+			const selectedDepts = department?.filter((_) =>
+				_.name.includes(roleInfo.employmentCostCenter.slice(0, 4)),
 			);
+			setFilteredDept(selectedDepts);
 		} else {
 			setFilteredDept(department);
 		}

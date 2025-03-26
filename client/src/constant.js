@@ -14,7 +14,11 @@ export const ROLES = {
 	ENROLLER: "Enroller",
 };
 
-export const BUSINESSN_ORG = "BusinessN Corporate";
+export const COMPANIES = {
+	FD: "Fractional Departments Inc.",
+	NW: "The Owners Of Strata Plan NW1378",
+	BUSINESSN_ORG: "BusinessN Corporate",
+};
 
 export const CONTRIBUTION = {
 	EI: "Employment Insurance",
