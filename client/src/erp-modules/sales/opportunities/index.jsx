@@ -200,7 +200,7 @@ const Opportunities = () => {
 		setShowEditLead(null);
 	};
 	return (
-		<PageLayout width="full" title={"Opportunities"} showBgLayer pb={0}>
+		<PageLayout width="full" title="Opportunities" showBgLayer>
 			{isMobile || isIpad ? (
 				<Flex flexDir="column">
 					<Flex justify="space-between">

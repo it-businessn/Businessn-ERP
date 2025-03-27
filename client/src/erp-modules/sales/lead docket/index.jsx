@@ -159,7 +159,7 @@ const LeadsDocket = () => {
 	);
 
 	return (
-		<PageLayout width="full" title={"Lead Docket"} showBgLayer pb={0}>
+		<PageLayout width="full" title="Lead Docket" showBgLayer>
 			{isMobile ? (
 				<Flex flexDir="column">
 					<Flex justify="space-between">

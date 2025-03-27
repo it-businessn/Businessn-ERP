@@ -19,7 +19,7 @@ const PageLayout = ({
 	size,
 	zIndex = 0,
 	position = "sticky",
-	pb,
+	pb = 0,
 }) => (
 	<Box p={{ base: "1em" }} overflow={"hidden"} zIndex={zIndex} position={position} pb={pb}>
 		<PageHeader

@@ -203,7 +203,7 @@ const LeadsDisbursed = () => {
 	);
 
 	return (
-		<PageLayout width="full" title={"Lead Disbursement"} showBgLayer pb={0}>
+		<PageLayout width="full" title="Lead Disbursement" showBgLayer>
 			<AutoAssign />
 			{isMobile || isIpad ? (
 				<Flex flexDir="column" gap={{ base: 0, md: 3 }}>

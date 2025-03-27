@@ -95,7 +95,7 @@ const Products = () => {
 	};
 
 	return (
-		<PageLayout title={"Products"} pb={0}>
+		<PageLayout title="Products">
 			{/* <Box
 	 	p={{ base: "1em", md: "2em" }}
 			overflowY={{ base: "hidden", md: "auto" }}

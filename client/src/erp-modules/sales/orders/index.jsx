@@ -51,7 +51,7 @@ const Orders = () => {
 		fetchAllContacts();
 	}, []);
 	return (
-		<PageLayout title={"Orders"} pb={0}>
+		<PageLayout title="Orders">
 			{/* <Box
 			p={{ base: "1em", md: "2em" }}
 			h={{ base: "auto", md: "calc(100vh - 278px)", lg: "auto" }}

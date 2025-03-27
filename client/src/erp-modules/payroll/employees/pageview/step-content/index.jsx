@@ -2,7 +2,7 @@
 import BoxCard from "components/ui/card";
 import { HIDE_ONBOARDING_SECTION } from "erp-modules/payroll/workview/data";
 
-const StepContent = ({ currentStep, steps, isOnboarding, h = "calc(100vh - 345px)" }) => {
+const StepContent = ({ currentStep, steps, isOnboarding, h = "calc(100vh - 330px)" }) => {
 	// const { isOpen: isPayrollStepupOpen, onToggle: onPayrollStepupToggle } =
 	// 	useDisclosure({
 	// 		defaultIsOpen: false,
