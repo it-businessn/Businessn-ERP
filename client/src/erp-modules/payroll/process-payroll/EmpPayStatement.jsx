@@ -28,7 +28,7 @@ const EmpPayStatement = ({ record, isOpen, onClose }) => {
 	return (
 		<Drawer isOpen={isOpen} onClose={onClose}>
 			<DrawerOverlay />
-			<DrawerContent sx={{ maxWidth: "900px" }}>
+			<DrawerContent sx={{ maxWidth: "1000px" }}>
 				<DrawerHeader p={0}>
 					<DrawerCloseButton />
 					<Flex w={"95%"} justify={"end"} alignItems={"center"}>
@@ -44,7 +44,7 @@ const EmpPayStatement = ({ record, isOpen, onClose }) => {
 				</DrawerHeader>
 
 				<DrawerBody ref={componentRef} bg={"var(--main_color)"} minH="100vh" p="5px">
-					{record && <PayStubStatement data={record} height="calc(100vh - 50px)" overflow="auto" />}
+					{record && <PayStubStatement data={record} />}
 				</DrawerBody>
 			</DrawerContent>
 		</Drawer>
