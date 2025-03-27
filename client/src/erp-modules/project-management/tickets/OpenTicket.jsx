@@ -1,4 +1,4 @@
-import { HStack, Tbody, Td, Tooltip, Tr, useToast } from "@chakra-ui/react";
+import { HStack, IconButton, Tbody, Td, Tooltip, Tr, useToast } from "@chakra-ui/react";
 import PrimaryButton from "components/ui/button/PrimaryButton";
 import EmptyRowRecord from "components/ui/EmptyRowRecord";
 import NormalTextTitle from "components/ui/NormalTextTitle";
@@ -7,8 +7,9 @@ import TextTitle from "components/ui/text/TextTitle";
 import { CATEGORY_LIST } from "constant";
 import ActionAll from "erp-modules/payroll/timesheets/ActionAll";
 import { TICKET_ACTION_STATUS } from "erp-modules/payroll/timesheets/data";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { CgNotes } from "react-icons/cg";
+import { SlArrowLeft, SlArrowRight } from "react-icons/sl";
 import TicketService from "services/TicketService";
 import { longTimeFormat } from "utils/convertDate";
 import CategoryFilter from "./CategoryFilter";
@@ -26,6 +27,8 @@ const OpenTicket = ({ company, setShowAddEntry, showAddEntry, userId, employees 
 		color: "var(--primary_bg)",
 	});
 	const [filterName, setFilterName] = useState(null);
+	const scrollRef = useRef(null);
+	const [isScrolling, setIsScrolling] = useState(false);
 
 	useEffect(() => {
 		const fetchAllTickets = async () => {
@@ -98,32 +101,85 @@ const OpenTicket = ({ company, setShowAddEntry, showAddEntry, userId, employees 
 	const filterTicket = (name) => {
 		filterTickets(name);
 	};
+
+	const scrollRight = () => {
+		if (scrollRef.current) {
+			scrollRef.current.scrollBy({ left: 200, behavior: "smooth" });
+			setIsScrolling(true);
+		}
+	};
+	const scrollLeft = () => {
+		if (scrollRef.current) {
+			scrollRef.current.scrollBy({ left: -200, behavior: "smooth" });
+		}
+	};
+
 	return (
 		<>
 			{ticketsCount && (
-				<HStack mb={5} spacing={3} flexWrap="wrap">
-					<CategoryFilter
-						index={0}
-						name="My"
-						isMyChannel
-						data={ticketsCount?.myTicketsCount}
-						filterTicket={filterTicket}
-						presentTitle={presentTitle}
-						setPresentTitle={setPresentTitle}
-						filterName={filterName}
-					/>
-					{CATEGORY_LIST.map(({ category }, index) => (
+				<HStack justifyContent="space-between">
+					{isScrolling && (
+						<IconButton
+							minW="auto"
+							background="transparent"
+							color="var(--nav_color)"
+							icon={<SlArrowLeft fontSize="2em" />}
+							aria-label="Scroll left"
+							position="absolute"
+							left={0}
+							top="30%"
+							transform="translateY(-50%)"
+							onClick={scrollLeft}
+							zIndex={1}
+						/>
+					)}
+					<HStack
+						m="0 1em 1em 1em"
+						spacing={3}
+						ref={scrollRef}
+						overflowX="auto"
+						css={{
+							"&::-webkit-scrollbar": { display: "none" },
+							"-ms-overflow-style": "none",
+							"scrollbar-width": "none",
+						}}
+					>
 						<CategoryFilter
-							index={index + 1}
-							key={category}
-							name={category}
-							data={ticketsCount?.openTicketsByCategory.find(({ _id }) => _id === category)}
+							index={0}
+							name="My"
+							isMyChannel
+							data={ticketsCount?.myTicketsCount}
 							filterTicket={filterTicket}
 							presentTitle={presentTitle}
 							setPresentTitle={setPresentTitle}
 							filterName={filterName}
 						/>
-					))}
+						{CATEGORY_LIST.map(({ category }, index) => (
+							<CategoryFilter
+								index={index + 1}
+								key={category}
+								name={category}
+								data={ticketsCount?.openTicketsByCategory.find(({ _id }) => _id === category)}
+								filterTicket={filterTicket}
+								presentTitle={presentTitle}
+								setPresentTitle={setPresentTitle}
+								filterName={filterName}
+							/>
+						))}
+					</HStack>
+					<IconButton
+						minW="auto"
+						color="var(--nav_color)"
+						background="transparent"
+						icon={<SlArrowRight fontSize="2em" />}
+						aria-label="Scroll right"
+						position="absolute"
+						right={0}
+						top="30%"
+						transform="translateY(-50%)"
+						onClick={scrollRight}
+						zIndex={1}
+					/>
 				</HStack>
 			)}
 			<TableLayout
@@ -132,7 +188,7 @@ const OpenTicket = ({ company, setShowAddEntry, showAddEntry, userId, employees 
 				position="sticky"
 				zIndex={3}
 				top={-1}
-				height="43vh"
+				height="calc(100vh - 475px)"
 			>
 				<Tbody>
 					{(!ticketData || ticketData?.length === 0) && (

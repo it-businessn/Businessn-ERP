@@ -22,7 +22,7 @@ const CategoryFilter = ({ name, data, isMyChannel, presentTitle, filterTicket, f
 	};
 
 	return (
-		<BoxCard boxShadow="md" p={0} borderWidth="0" borderRadius="1em">
+		<BoxCard boxShadow="md" p={0} borderWidth="0" borderRadius="1em" minW="130px">
 			<Stack
 				alignItems="center"
 				justify="space-between"
@@ -31,10 +31,10 @@ const CategoryFilter = ({ name, data, isMyChannel, presentTitle, filterTicket, f
 				p="8px"
 				gap={0}
 			>
-				<TextTitle align="center" title={isMyChannel ? `${name} Channel` : name} />
+				<TextTitle size="14px" align="center" title={isMyChannel ? `${name} Channel` : name} />
 				<Stack p="0 10px" gap={0}>
 					<HStack spacing={0} justify="center">
-						<TextTitle size="32px" width="40%" color="var(--open)" title={pending || 0} />
+						<TextTitle size="32px" width="30%" color="var(--open)" title={pending || 0} />
 						<PrimaryButton
 							w="90px"
 							cursor="text"
@@ -49,7 +49,7 @@ const CategoryFilter = ({ name, data, isMyChannel, presentTitle, filterTicket, f
 						/>
 					</HStack>
 					<HStack spacing={0} justify="start">
-						<TextTitle size="32px" width="40%" color="var(--ticket_hold)" title={onHold || 0} />
+						<TextTitle size="32px" width="30%" color="var(--ticket_hold)" title={onHold || 0} />
 						<PrimaryButton
 							w="90px"
 							cursor="text"
@@ -65,7 +65,7 @@ const CategoryFilter = ({ name, data, isMyChannel, presentTitle, filterTicket, f
 					</HStack>
 					<HStack spacing={0} justify="start">
 						<TextTitle
-							width="40%"
+							width="30%"
 							size="32px"
 							color="var(--ticket_progress)"
 							title={inProgress || 0}
