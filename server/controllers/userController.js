@@ -265,7 +265,7 @@ const getAllCompManagers = async (req, res) => {
 		const result = await findEmployee({
 			companyName,
 			employmentRole: {
-				$in: [ROLES.SHADOW_ADMIN, ROLES.AUTH_ADMINISTRATOR, ROLES.ADMINISTRATOR, ROLES.MANAGER],
+				$in: [ROLES.AUTH_ADMINISTRATOR, ROLES.ADMINISTRATOR, ROLES.MANAGER],
 			},
 		});
 

@@ -44,8 +44,11 @@ const LeadsService = {
 		return apiService.get(`/leads/opportunity-names/${id}`);
 	},
 
-	async getOpportunities(id) {
-		return apiService.get(`/leads/opportunities/${id}`);
+	async getOpportunities(companyName, filter, queryParams) {
+		return apiService.get(
+			`/leads/opportunities/${companyName}/filter=${JSON.stringify(filter)}`,
+			queryParams,
+		);
 	},
 
 	async createMultipleOpportunity(data) {

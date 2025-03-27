@@ -49,6 +49,10 @@ const Opportunities = () => {
 	const [refresh, setRefresh] = useState(false);
 	const managers = useManager(company);
 	const [companies, setCompanies] = useState(null);
+	const [filter, setFilter] = useState(null);
+	const [pageNum, setPageNum] = useState(1);
+	const [totalPage, setTotalPages] = useState(1);
+	const limit = 30;
 
 	useEffect(() => {
 		const fetchAllCompanies = async () => {
@@ -65,10 +69,14 @@ const Opportunities = () => {
 
 	const fetchAllOpportunities = async () => {
 		try {
-			const { data } = await LeadsService.getOpportunities(company);
+			const { data } = await LeadsService.getOpportunities(company, filter, {
+				page: pageNum,
+				limit,
+			});
+			const { totalPages, page, items } = data;
 			const leadList = isManager(loggedInUser?.role)
-				? data
-				: data?.filter(
+				? items
+				: items?.filter(
 						(item) =>
 							(item.primaryAssignee?.length > 0 &&
 								item.primaryAssignee.find(({ name }) => name === loggedInUser?.fullName)) ||
@@ -76,6 +84,8 @@ const Opportunities = () => {
 								item.supervisorAssignee.find(({ name }) => name === loggedInUser?.fullName)),
 				  );
 			setOpportunities(leadList);
+			setTotalPages(totalPages > 0 ? totalPages : 1);
+			setPageNum(page);
 		} catch (error) {
 			console.error(error);
 		}
@@ -83,7 +93,7 @@ const Opportunities = () => {
 
 	useEffect(() => {
 		fetchAllOpportunities();
-	}, [isAdded, company]);
+	}, [isAdded, pageNum]);
 
 	const [formData, setFormData] = useState({
 		id: null,
@@ -246,7 +256,7 @@ const Opportunities = () => {
 				</Flex>
 			)}
 
-			<TableLayout isOpportunity cols={OPPORTUNITY_COLUMNS} height="calc(100vh - 212px)">
+			<TableLayout isOpportunity cols={OPPORTUNITY_COLUMNS} height="calc(100vh - 240px)">
 				<Tbody>
 					{(!opportunities || opportunities?.length === 0) && (
 						<EmptyRowRecord data={opportunities} colSpan={OPPORTUNITY_COLUMNS?.length} />
@@ -326,6 +336,22 @@ const Opportunities = () => {
 					})}
 				</Tbody>
 			</TableLayout>
+			<HStack>
+				<PrimaryButton
+					size="sm"
+					isDisabled={pageNum === 1}
+					name="Prev"
+					onOpen={() => setPageNum(pageNum - 1)}
+				/>
+
+				<NormalTextTitle align="center" width="200px" title={`Page ${pageNum} of ${totalPage}`} />
+				<PrimaryButton
+					size="sm"
+					isDisabled={pageNum === totalPage}
+					name="Next"
+					onOpen={() => setPageNum(pageNum + 1)}
+				/>
+			</HStack>
 
 			{(isOpen || showEditLead) && (
 				<AddNewOpportunity

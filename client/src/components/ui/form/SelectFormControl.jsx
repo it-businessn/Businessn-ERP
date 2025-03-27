@@ -15,10 +15,11 @@ const SelectFormControl = ({
 	valueParam = "value",
 	isPayType,
 	required,
+	size,
 }) => {
 	return (
 		<FormControlMain>
-			<RequiredLabel label={label} required={required} htmlFor={name} />
+			{label && <RequiredLabel label={label} required={required} htmlFor={name} />}
 			<Select
 				w={w}
 				name={name}
@@ -26,6 +27,7 @@ const SelectFormControl = ({
 				icon={icon}
 				onChange={handleChange}
 				placeholder={placeholder}
+				size={size}
 			>
 				{options?.map((_) => {
 					return (

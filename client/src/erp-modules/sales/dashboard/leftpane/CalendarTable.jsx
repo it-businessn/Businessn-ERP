@@ -1,6 +1,7 @@
 import { Box, Table, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
 import LeftIconButton from "components/ui/button/LeftIconButton";
 import EmptyRowRecord from "components/ui/EmptyRowRecord";
+import useGroup from "hooks/useGroup";
 import useSelectUser from "hooks/useSelectUser";
 import { useEffect, useState } from "react";
 import { BsPlus } from "react-icons/bs";
@@ -13,6 +14,7 @@ const CalendarTable = ({ cols, setIsRefresh, filterText, filter, setStats, user,
 	const [isLoading, setIsLoading] = useState(false);
 	const [data, setData] = useState(null);
 	const { selectedUser } = useSelectUser(user);
+	const groups = useGroup(company, false, showEventForm);
 
 	useEffect(() => {
 		const fetchAllUserEvents = async () => {
@@ -56,7 +58,7 @@ const CalendarTable = ({ cols, setIsRefresh, filterText, filter, setStats, user,
 		);
 
 	return (
-		<Box overflow="auto" fontWeight={"normal"}>
+		<Box overflow="auto" fontWeight={"normal"} height="30vh">
 			<LeftIconButton name={"New"} handleClick={() => setShowEventForm(true)} icon={<BsPlus />} />
 
 			{showEventForm && (
@@ -70,6 +72,7 @@ const CalendarTable = ({ cols, setIsRefresh, filterText, filter, setStats, user,
 					onClose={() => {
 						setShowEventForm(false);
 					}}
+					groups={groups}
 				/>
 			)}
 			<Table variant={"simple"} size={"small"}>

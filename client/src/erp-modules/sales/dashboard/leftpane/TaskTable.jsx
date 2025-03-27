@@ -27,7 +27,7 @@ const TaskTable = ({ cols, user, company }) => {
 	}, [selectedUser]);
 
 	return (
-		<Box overflow="auto">
+		<Box overflow="auto" height="30vh">
 			<Table variant="simple" size={"small"}>
 				<Thead>
 					<Tr>
@@ -48,7 +48,7 @@ const TaskTable = ({ cols, user, company }) => {
 							<Td fontSize={"xs"}>
 								<HStack spacing="1">{renderPriorityBars(priority)}</HStack>
 							</Td>
-							<Td fontSize={"xs"}>{formatDate(dueDate)}</Td>
+							<Td fontSize={"xs"}>{dueDate && formatDate(dueDate)}</Td>
 						</Tr>
 					))}
 				</Tbody>

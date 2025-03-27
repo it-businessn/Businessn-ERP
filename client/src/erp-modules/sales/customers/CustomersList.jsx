@@ -17,7 +17,6 @@ import {
 } from "@chakra-ui/react";
 import HighlightButton from "components/ui/button/HighlightButton";
 import LeftIconButton from "components/ui/button/LeftIconButton";
-import LinkButton from "components/ui/button/LinkButton";
 import PrimaryButton from "components/ui/button/PrimaryButton";
 import TextTitle from "components/ui/text/TextTitle";
 import OnboardEmpModal from "erp-modules/payroll/workview/paygroup-header-table/OnboardEmpModal";
@@ -216,7 +215,7 @@ const CustomersList = ({ user, handleProfileView, icons, company }) => {
 													handleProfileView(_id);
 												}}
 											/>
-											<LinkButton name="Onboard" onClick={handleClick} />
+											{/* <LinkButton name="Onboard" onClick={handleClick} /> */}
 										</HStack>
 									</Td>
 									{/* <Td>

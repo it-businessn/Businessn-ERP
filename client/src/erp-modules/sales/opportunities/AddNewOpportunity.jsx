@@ -12,14 +12,15 @@ import {
 import ActionButtonGroup from "components/ui/form/ActionButtonGroup";
 import InputFormControl from "components/ui/form/InputFormControl";
 import RequiredLabel from "components/ui/form/RequiredLabel";
+import SelectFormControl from "components/ui/form/SelectFormControl";
 import ModalLayout from "components/ui/modal/ModalLayout";
+import { COUNTRIES } from "config/payroll/employees/profileInfo";
 import {
 	INDUSTRIES,
 	LEAD_SOURCES,
 	PRODUCTS_SERVICES,
-	REGIONS,
 } from "erp-modules/project-management/workview/project/data";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FaCaretDown, FaPlus } from "react-icons/fa";
 import LeadsService from "services/LeadsService";
 import { toCapitalize } from "utils";
@@ -96,6 +97,7 @@ const AddNewOpportunity = ({
 	const [showAddCompany, setShowAddCompany] = useState(false);
 
 	const [formData, setFormData] = useState(showEditLead ? savedData : defaultOpportunity);
+	const [provinces, setProvinces] = useState([]);
 
 	const [selectedProductService, setSelectedProductService] = useState(
 		showEditLead ? savedData?.productService : [],
@@ -106,6 +108,12 @@ const AddNewOpportunity = ({
 	const [selectedSupervisorAssignees, setSelectedSupervisorAssignees] = useState(
 		showEditLead ? savedData?.supervisorAssignee : [],
 	);
+
+	useEffect(() => {
+		if (formData?.address?.country) {
+			setProvinces(COUNTRIES.find(({ type }) => type === formData?.address?.country)?.provinces);
+		}
+	}, [formData?.address?.country]);
 
 	const handleChange = (e) => {
 		const { name, value } = e.target;
@@ -174,7 +182,12 @@ const AddNewOpportunity = ({
 			px="0"
 		>
 			<form onSubmit={handleSubmit}>
-				<Stack spacing={2} overflow="auto" height="calc(100vh - 80px)">
+				<Stack
+					spacing={2}
+					overflow="auto"
+					height="calc(100vh - 80px)"
+					justifyContent="space-between"
+				>
 					<HStack>
 						<FormControl>
 							<FormLabel>Company Name</FormLabel>
@@ -274,27 +287,48 @@ const AddNewOpportunity = ({
 							/>
 						</HStack>
 						<HStack mt={3}>
-							<Input
-								type="text"
-								name="state"
-								size={"sm"}
-								value={formData.address.state}
-								onChange={(e) => {
-									setFormData({
-										...formData,
+							<SelectFormControl
+								valueParam="type"
+								name="type"
+								placeholder="Select Country"
+								size="sm"
+								valueText={formData.address.country || ""}
+								handleChange={(e) =>
+									setFormData((prevData) => ({
+										...prevData,
+										address: {
+											...formData.address,
+											country: e.target.value,
+										},
+									}))
+								}
+								required
+								options={COUNTRIES}
+								icon={<FaCaretDown />}
+							/>
+							<SelectFormControl
+								icon={<FaCaretDown />}
+								size="sm"
+								required
+								valueParam="name"
+								name="province"
+								placeholder="Select Province / State"
+								valueText={formData.address.state || ""}
+								handleChange={(e) =>
+									setFormData((prevData) => ({
+										...prevData,
 										address: {
 											...formData.address,
 											state: e.target.value,
 										},
-									});
-								}}
-								placeholder="State"
-								required
+									}))
+								}
+								options={provinces}
 							/>
 							<Input
 								type="text"
 								name="postalCode"
-								size={"sm"}
+								size="sm"
 								value={formData.address.postalCode}
 								onChange={(e) => {
 									setFormData({
@@ -308,44 +342,27 @@ const AddNewOpportunity = ({
 								placeholder="Postal Code"
 								required
 							/>
-							<Input
-								type="text"
-								name="country"
-								size={"sm"}
-								value={formData.address.country}
-								onChange={(e) => {
-									setFormData({
-										...formData,
-										address: {
-											...formData.address,
-											country: e.target.value,
-										},
-									});
-								}}
-								placeholder="Country"
-								required
-							/>
 						</HStack>
 					</FormControl>
 					<HStack>
-						<FormControl>
-							<FormLabel>Region</FormLabel>
-							<Select
-								icon={<FaCaretDown />}
-								borderRadius="10px"
-								size="sm"
-								placeholder="Select Region"
-								name="region"
-								value={formData.region}
-								onChange={handleChange}
-							>
-								{REGIONS.map(({ id, name }) => (
-									<option value={name} key={id}>
-										{name}
-									</option>
-								))}
-							</Select>
-						</FormControl>
+						<SelectFormControl
+							icon={<FaCaretDown />}
+							required
+							size="sm"
+							valueParam="name"
+							name="province"
+							label="Region"
+							valueText={formData.region || ""}
+							handleChange={(e) =>
+								setFormData((prevData) => ({
+									...prevData,
+									region: e.target.value,
+								}))
+							}
+							options={provinces}
+							placeholder="Select Region"
+						/>
+
 						<FormControl>
 							<FormLabel>Industry</FormLabel>
 							<Select

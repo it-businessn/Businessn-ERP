@@ -154,6 +154,7 @@ const Payouts = () => {
 								<Th fontWeight={"bolder"}>Date </Th>
 								<Th fontWeight={"bolder"}>Amount</Th>
 								<Th fontWeight={"bolder"}>Sales Person </Th>
+								<Th fontWeight={"bolder"}>Approval Status</Th>
 							</Tr>
 						</Thead>
 						<Tbody color={"var(--nav_color)"}>
@@ -165,6 +166,7 @@ const Payouts = () => {
 									<Td fontSize={"xs"}>{formatDate(payout.createdOn)}</Td>
 									<Td fontSize={"xs"}>{payout.amount}</Td>
 									<Td fontSize={"xs"}>{payout.fullName}</Td>
+									<Td fontSize={"xs"}>{payout.approvalStatus}</Td>
 								</Tr>
 							))}
 						</Tbody>

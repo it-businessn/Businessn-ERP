@@ -113,6 +113,7 @@ const Activities = () => {
 	};
 	return (
 		<PageLayout
+			selectPlaceholder="Select Agent"
 			showSelectBox={isManagerRole && employees}
 			handleChange={handleChange}
 			data={employees}

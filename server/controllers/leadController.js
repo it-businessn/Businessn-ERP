@@ -87,13 +87,26 @@ const getOpportunityNames = async (req, res) => {
 };
 
 const getOpportunities = async (req, res) => {
-	const { companyName } = req.params;
+	const { companyName, filter } = req.params;
 	// const updatedData = { companyName: "Fractional Departments Inc." };
 	// const updatedLeads = await Lead.updateMany({}, { $set: updatedData });
 	// console.log(updatedLeads);
 	try {
-		const leads = (await Lead.find({ companyName })).sort((a, b) => b.createdOn - a.createdOn);
-		res.status(200).json(leads);
+		let { page, limit } = req.query;
+		page = parseInt(page) || 1;
+		limit = parseInt(limit) || 10;
+
+		const skip = (page - 1) * limit;
+		const leads = await Lead.find({ companyName }).skip(skip).limit(limit).sort({ createdOn: -1 });
+		const totalLeads = await Lead.countDocuments({ companyName });
+
+		res.status(200).json({
+			page,
+			limit,
+			total: totalLeads,
+			totalPages: Math.ceil(totalLeads / limit),
+			items: leads,
+		});
 	} catch (error) {
 		res.status(404).json({ error: error.message });
 	}

@@ -124,7 +124,7 @@ export const EMP_CONTACT_CONFIG = [
 				options: COUNTRIES,
 			},
 			{
-				name: "Province/State",
+				name: "Province / State",
 				param_key: "province",
 				mandatory: true,
 				control: "select",

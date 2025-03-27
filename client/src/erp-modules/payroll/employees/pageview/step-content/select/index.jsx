@@ -40,7 +40,7 @@ const SelectTypeRecord = ({ param, formData, setFormData, handleConfirm, size = 
 									{item.type || item.name}
 								</option>
 							))
-					: ["Province/State", "Regional Tax", "Region"].includes(param.name)
+					: ["Province / State", "Regional Tax", "Region"].includes(param.name)
 					? provinces?.map((item) => (
 							<option value={item} key={item}>
 								{item}

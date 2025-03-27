@@ -7,19 +7,13 @@ router.get("/grouped-opportunities", leadController.getGroupedOpportunities);
 
 router.get("/disburse/:companyName", leadController.getDisbursedLeads);
 
-router.get(
-	"/disburse/isConfirmed/:companyName",
-	leadController.getConfirmedDisbursedLeads,
-);
+router.get("/disburse/isConfirmed/:companyName", leadController.getConfirmedDisbursedLeads);
 
 router.get("/not-disbursed/:companyName", leadController.getLeadsNotDisbursed);
 
-router.get("/opportunities/:companyName", leadController.getOpportunities);
+router.get("/opportunities/:companyName/:filter", leadController.getOpportunities);
 
-router.get(
-	"/opportunity-names/:companyName",
-	leadController.getOpportunityNames,
-);
+router.get("/opportunity-names/:companyName", leadController.getOpportunityNames);
 
 router.get("/targets/:companyName", leadController.getTargetLeads);
 
@@ -31,10 +25,7 @@ router.get("/:id/:companyName", leadController.getLead);
 
 router.post("/companies", leadController.createLeadCompany);
 
-router.post(
-	"/multiple-opportunities",
-	leadController.createMultipleLeadOpportunity,
-);
+router.post("/multiple-opportunities", leadController.createMultipleLeadOpportunity);
 router.post("/confirm-disburse", leadController.confirmDisburseLeads);
 
 router.post("/disburse", leadController.disburseLeads);

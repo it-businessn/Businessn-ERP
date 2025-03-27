@@ -216,7 +216,7 @@ const EmployeeInfo = ({ company, handleNext, tabId, deptName }) => {
 							w="40%"
 							valueParam="name"
 							name="province"
-							label="Province/State"
+							label="Province / State"
 							valueText={formData.province || ""}
 							handleChange={(e) =>
 								setFormData((prevData) => ({
