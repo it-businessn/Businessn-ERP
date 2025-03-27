@@ -1,7 +1,6 @@
 import { Box, HStack, Stack } from "@chakra-ui/react";
 import PrimaryButton from "components/ui/button/PrimaryButton";
 import BoxCard from "components/ui/card";
-import NormalTextTitle from "components/ui/NormalTextTitle";
 import TextTitle from "components/ui/text/TextTitle";
 import { TICKET_ACTION } from "erp-modules/payroll/timesheets/data";
 
@@ -23,9 +22,16 @@ const CategoryFilter = ({ name, data, isMyChannel, presentTitle, filterTicket, f
 	};
 
 	return (
-		<BoxCard boxShadow="md" p={0} color="var(--banner_bg)" borderWidth="0">
+		<BoxCard boxShadow="md" p={0} borderWidth="0">
 			<HStack justify="space-between" spacing={0} gap={0} w="100%">
-				<Stack w="120px" justify="center" bg="var(--input_bg)" p={"8px"}>
+				<Stack
+					w="120px"
+					h="120px"
+					justify="space-between"
+					bg="var(--banner_bg)"
+					color="var(--primary_bg)"
+					p="8px"
+				>
 					<Box mb={5}>
 						<TextTitle whiteSpace="wrap" title={name} />
 						{isMyChannel && <TextTitle size="xs" title="Channel" />}
@@ -33,24 +39,24 @@ const CategoryFilter = ({ name, data, isMyChannel, presentTitle, filterTicket, f
 					<PrimaryButton
 						onOpen={() => handlePresent(name)}
 						color={filterName?.includes(name) ? "var(--product5)" : presentTitle.color}
-						bg="var(--banner_bg)"
+						bg="var(--nav_menu)"
 						name={filterName?.includes(name) ? "Presenting" : presentTitle.title}
 						size="xs"
 						hover={{
-							bg: "var(--banner_bg)",
+							bg: "var(--nav_menu)",
 							color: "var(--primary_bg)",
 						}}
 					/>
 				</Stack>
 				<Stack p="10px" bg="var(--main_color)">
 					<HStack spacing={0} justify="center">
-						<NormalTextTitle width="40%" title={pending || 0} />
+						<TextTitle width="40%" title={pending || 0} />
 						<PrimaryButton
 							w="90px"
 							cursor="text"
 							color="var(--primary_bg)"
-							bg="var(--pending)"
-							name="Pending"
+							bg="var(--open)"
+							name="Open"
 							size="xs"
 							hover={{
 								bg: "var(--pending)",
@@ -59,7 +65,7 @@ const CategoryFilter = ({ name, data, isMyChannel, presentTitle, filterTicket, f
 						/>
 					</HStack>
 					<HStack spacing={0} justify="start">
-						<NormalTextTitle width="40%" title={onHold || 0} />
+						<TextTitle width="40%" title={onHold || 0} />
 						<PrimaryButton
 							w="90px"
 							cursor="text"
@@ -74,7 +80,7 @@ const CategoryFilter = ({ name, data, isMyChannel, presentTitle, filterTicket, f
 						/>
 					</HStack>
 					<HStack spacing={0} justify="start">
-						<NormalTextTitle width="40%" title={inProgress || 0} />
+						<TextTitle width="40%" title={inProgress || 0} />
 						<PrimaryButton
 							w="90px"
 							cursor="text"

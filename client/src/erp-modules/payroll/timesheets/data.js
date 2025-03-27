@@ -206,7 +206,7 @@ export const TICKET_ACTION_STATUS = [
 	},
 	{
 		name: TICKET_ACTION.OPEN,
-		color: "var(--pending)",
+		color: "var(--open)",
 		title: TICKET_ACTION.OPEN,
 	},
 	{

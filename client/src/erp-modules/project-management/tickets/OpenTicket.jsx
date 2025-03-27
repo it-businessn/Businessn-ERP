@@ -213,13 +213,14 @@ const OpenTicket = ({ company, setShowAddEntry, showAddEntry, userId, employees 
 											color="var(--primary_bg)"
 											bg={bg}
 											name={status}
-											size="sm"
+											size="xs"
 											fontWeight="bold"
 											px={0}
 											hover={{
 												bg,
 												color: "var(--primary_bg)",
 											}}
+											w="100px"
 										/>
 									</Td>
 									<Td py={0} pl={0}>
