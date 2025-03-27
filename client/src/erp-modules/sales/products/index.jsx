@@ -39,7 +39,7 @@ const Products = () => {
 	const [contacts, setContacts] = useState(null);
 	const fetchAllContacts = async () => {
 		try {
-			const { data } = await ContactService.getContacts();
+			const { data } = await ContactService.getCompContacts();
 			data.map((item) => (item.comm = "Meeting"));
 			setContacts(data);
 		} catch (error) {
@@ -53,7 +53,7 @@ const Products = () => {
 	useEffect(() => {
 		setTotalCost(calcTotal(productsInfo, "cost", "quantity"));
 		setTotalQuantity(calcTotal(productsInfo, "quantity"));
-		fetchAllContacts();
+		// fetchAllContacts();
 	}, []);
 
 	const groupedData = productsInfo.reduce((acc, product) => {

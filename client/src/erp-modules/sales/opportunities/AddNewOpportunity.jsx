@@ -182,12 +182,7 @@ const AddNewOpportunity = ({
 			px="0"
 		>
 			<form onSubmit={handleSubmit}>
-				<Stack
-					spacing={2}
-					overflow="auto"
-					height="calc(100vh - 80px)"
-					justifyContent="space-between"
-				>
+				<Stack spacing={2} overflow="auto" height="calc(100vh - 80px)" justifyContent="start">
 					<HStack>
 						<FormControl>
 							<FormLabel>Company Name</FormLabel>

@@ -35,6 +35,7 @@ const AgentsView = ({
 	company,
 	setShowConfirmationPopUp,
 	setDeleteRecord,
+	height,
 }) => {
 	const defaultLeadInfo = {
 		_id: null,
@@ -112,7 +113,7 @@ const AgentsView = ({
 								</Text> */}
 							</Flex>
 						</Box>
-						<Box overflow="auto" height="calc(100vh - 275px)">
+						<Box overflow="auto" height={height}>
 							{!leadList && <SkeletonLoader />}
 							{leadList
 								?.filter((lead) => lead.stage === category.abbr)

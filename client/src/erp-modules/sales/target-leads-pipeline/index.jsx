@@ -84,6 +84,7 @@ const Pipeline = () => {
 			</Box>
 			{TARGET_LEADS && (
 				<AgentsView
+					height="calc(100vh - 538px)"
 					leads={leads}
 					reference={TARGET_LEADS}
 					setIsUpdated={setIsUpdated}

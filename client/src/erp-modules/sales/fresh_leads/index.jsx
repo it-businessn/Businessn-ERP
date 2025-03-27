@@ -51,6 +51,7 @@ const FreshLeads = () => {
 			icon: MdSpaceDashboard,
 			name: FRESH_LEADS && (
 				<AgentsView
+					height="calc(100vh - 260px)"
 					leads={leads}
 					reference={FRESH_LEADS}
 					setIsUpdated={setIsUpdated}

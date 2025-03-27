@@ -18,6 +18,7 @@ import {
 	Tr,
 	VStack,
 } from "@chakra-ui/react";
+import NormalTextTitle from "components/ui/NormalTextTitle";
 import { activityChartData, doughnutOptions } from "constant";
 import PageLayout from "layouts/PageLayout";
 import { useEffect, useState } from "react";
@@ -26,8 +27,10 @@ import { FaSearch } from "react-icons/fa";
 import { MdOutlineFilterList } from "react-icons/md";
 import { useBreakpointValue } from "services/Breakpoint";
 import ContactService from "services/ContactService";
+import LocalStorageService from "services/LocalStorageService";
 
 const Orders = () => {
+	const company = LocalStorageService.getItem("selectedCompany");
 	const { isMobile } = useBreakpointValue();
 
 	const [selectedDateFilter, setSelectedDateFilter] = useState("This Week");
@@ -39,7 +42,7 @@ const Orders = () => {
 	const [contacts, setContacts] = useState(null);
 	const fetchAllContacts = async () => {
 		try {
-			const { data } = await ContactService.getContacts();
+			const { data } = await ContactService.getCompContacts(company);
 			data.map((item) => (item.comm = "Meeting"));
 			setContacts(data);
 		} catch (error) {
@@ -318,7 +321,7 @@ const Orders = () => {
 				)}
 				{contacts && (
 					<Box overflow="auto" height={"450px"}>
-						<Table color={"var(--nav_color)"} bg={"var(--primary_bg)"}>
+						<Table color={"var(--nav_color)"} bg={"var(--primary_bg)"} variant="small">
 							<Thead>
 								<Tr fontSize="xs">
 									<Th fontWeight={"bolder"} p={0}>
@@ -338,11 +341,15 @@ const Orders = () => {
 											04/02/2024
 										</Td>
 										<Td fontSize={"xs"}>{contact.companyName}</Td>
-										<Td fontSize={"xs"}>$345</Td>
-										<Td fontSize={"xs"}>Product1</Td>
-										<Td fontSize={"xs"} p={0}>
+										<Td py={0} fontSize={"xs"}>
+											$345
+										</Td>
+										<Td py={0} fontSize={"xs"}>
+											Product1
+										</Td>
+										<Td py={0} fontSize={"xs"} p={0}>
 											<Progress colorScheme="blue" size="sm" bg={"#d5def5"} value={55} />
-											<Text fontSize={"xs"}>Paid, preparing for shipment</Text>
+											<NormalTextTitle size="xs" title={"Paid, preparing for shipment"} />
 										</Td>
 										<Td fontSize={"xs"}>Product1</Td>
 									</Tr>

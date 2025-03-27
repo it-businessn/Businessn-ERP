@@ -1,9 +1,13 @@
 import apiService from "services";
 
 const LeadsService = {
-	async getNotDisbursedLeads(id) {
-		return apiService.get(`/leads/not-disbursed/${id}`);
+	async getNotDisbursedLeads(companyName, filter, queryParams) {
+		return apiService.get(
+			`/leads/not-disbursed/${companyName}/filter=${JSON.stringify(filter)}`,
+			queryParams,
+		);
 	},
+
 	async getLeadCompanies(id) {
 		return apiService.get(`/leads/companies/${id}`);
 	},

@@ -17,6 +17,7 @@ import TableLayout from "components/ui/table/TableLayout";
 
 import EmptyRowRecord from "components/ui/EmptyRowRecord";
 import NormalTextTitle from "components/ui/NormalTextTitle";
+import Pagination from "components/ui/Pagination";
 import DeletePopUp from "components/ui/modal/DeletePopUp";
 import useCompany from "hooks/useCompany";
 import useManager from "hooks/useManager";
@@ -212,7 +213,7 @@ const Opportunities = () => {
 					</HStack>
 				</Flex>
 			) : (
-				<Flex>
+				<Flex pb={0}>
 					<Caption title={"Opportunities"} />
 					<Spacer />
 					<HStack w={{ lg: "50%" }} spacing={3} justify={"flex-end"}>
@@ -336,22 +337,7 @@ const Opportunities = () => {
 					})}
 				</Tbody>
 			</TableLayout>
-			<HStack>
-				<PrimaryButton
-					size="sm"
-					isDisabled={pageNum === 1}
-					name="Prev"
-					onOpen={() => setPageNum(pageNum - 1)}
-				/>
-
-				<NormalTextTitle align="center" width="200px" title={`Page ${pageNum} of ${totalPage}`} />
-				<PrimaryButton
-					size="sm"
-					isDisabled={pageNum === totalPage}
-					name="Next"
-					onOpen={() => setPageNum(pageNum + 1)}
-				/>
-			</HStack>
+			<Pagination pageNum={pageNum} setPageNum={setPageNum} totalPage={totalPage} />
 
 			{(isOpen || showEditLead) && (
 				<AddNewOpportunity

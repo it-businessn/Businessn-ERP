@@ -36,7 +36,13 @@ const PageLayout = ({
 			isTimesheet={isTimesheet}
 			showCheckBox={showCheckBox}
 		/>
-		{showBgLayer ? <BoxCard borderWidth={"2px"}>{children}</BoxCard> : children}
+		{showBgLayer ? (
+			<BoxCard pb={pb} borderWidth={"2px"}>
+				{children}
+			</BoxCard>
+		) : (
+			children
+		)}
 	</Box>
 );
 

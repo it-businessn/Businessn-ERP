@@ -26,14 +26,16 @@ import { FaSearch } from "react-icons/fa";
 import { MdOutlineFilterList } from "react-icons/md";
 import { useBreakpointValue } from "services/Breakpoint";
 import ContactService from "services/ContactService";
+import LocalStorageService from "services/LocalStorageService";
 
 const SalesReport = () => {
+	const company = LocalStorageService.getItem("selectedCompany");
 	const { isMobile, isIpad } = useBreakpointValue();
 
 	const [contacts, setContacts] = useState(null);
 	const fetchAllContacts = async () => {
 		try {
-			const { data } = await ContactService.getContacts();
+			const { data } = await ContactService.getCompContacts(company);
 			data.map((item) => (item.comm = "Meeting"));
 			setContacts(data);
 		} catch (error) {

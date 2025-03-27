@@ -1,7 +1,7 @@
-import { HStack, Tbody, Td, Tr } from "@chakra-ui/react";
-import PrimaryButton from "components/ui/button/PrimaryButton";
+import { Tbody, Td, Tr } from "@chakra-ui/react";
 import EmptyRowRecord from "components/ui/EmptyRowRecord";
 import NormalTextTitle from "components/ui/NormalTextTitle";
+import Pagination from "components/ui/Pagination";
 import TableLayout from "components/ui/table/TableLayout";
 import TextTitle from "components/ui/text/TextTitle";
 import { COLS } from "constant";
@@ -142,22 +142,7 @@ const Timecard = ({ company, timecardRefresh, filter, pageNum, setPageNum }) => 
 					)}
 				</Tbody>
 			</TableLayout>
-			<HStack>
-				<PrimaryButton
-					size="sm"
-					isDisabled={pageNum === 1}
-					name="Prev"
-					onOpen={() => setPageNum(pageNum - 1)}
-				/>
-
-				<NormalTextTitle align="center" width="200px" title={`Page ${pageNum} of ${totalPage}`} />
-				<PrimaryButton
-					size="sm"
-					isDisabled={pageNum === totalPage}
-					name="Next"
-					onOpen={() => setPageNum(pageNum + 1)}
-				/>
-			</HStack>
+			<Pagination pageNum={pageNum} setPageNum={setPageNum} totalPage={totalPage} />
 		</>
 	);
 };

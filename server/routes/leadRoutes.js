@@ -9,7 +9,7 @@ router.get("/disburse/:companyName", leadController.getDisbursedLeads);
 
 router.get("/disburse/isConfirmed/:companyName", leadController.getConfirmedDisbursedLeads);
 
-router.get("/not-disbursed/:companyName", leadController.getLeadsNotDisbursed);
+router.get("/not-disbursed/:companyName/:filter", leadController.getLeadsNotDisbursed);
 
 router.get("/opportunities/:companyName/:filter", leadController.getOpportunities);
 

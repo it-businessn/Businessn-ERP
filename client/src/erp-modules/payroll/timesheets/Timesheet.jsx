@@ -837,22 +837,7 @@ const Timesheet = ({
 				/>
 			)}
 
-			{/* <HStack>
-				<PrimaryButton
-					size="sm"
-					isDisabled={pageNum === 1}
-					name="Prev"
-					onOpen={() => setPageNum(pageNum - 1)}
-				/>
-
-				<NormalTextTitle align="center" width="100px" title={`Page ${pageNum} of ${totalPage}`} />
-				<PrimaryButton
-					size="sm"
-					isDisabled={pageNum === totalPage}
-					name="Next"
-					onOpen={() => setPageNum(pageNum + 1)}
-				/>
-			</HStack> */}
+			{/* <Pagination pageNum={pageNum} setPageNum={setPageNum} totalPage={totalPage} /> */}
 		</>
 	);
 };
