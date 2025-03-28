@@ -560,7 +560,7 @@ const addEmployeePayStubInfo = async (req, res) => {
 	}
 };
 
-const buildFundingTotalsReport = async (fundingTotal, totalEmployees, isExtraRun) => {
+const buildFundingTotalsReport = async (fundingTotal, totalEmployees, isExtraRun = false) => {
 	fundingTotal.totalCPP_Contr =
 		fundingTotal?.totalCPP_EE_Contr + fundingTotal?.totalCPP_ER_Contr || 0;
 	fundingTotal.totalEI_Contr = fundingTotal?.totalEI_EE_Contr + fundingTotal?.totalEI_ER_Contr || 0;

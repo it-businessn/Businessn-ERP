@@ -3,21 +3,21 @@ const router = express.Router();
 
 const payStubController = require("../controllers/payStubController");
 
+router.get(
+	"/funds/totals/:companyName/:payPeriodNum/:isExtraRun",
+	payStubController.getFundingPayDetailsReportInfo,
+);
+
+router.get(
+	"/funds/report/:companyName/:payPeriodNum/:isExtraRun",
+	payStubController.getFundPayDetailsReportInfo,
+);
+
 router.get("/:companyName/:empId", payStubController.getEmployeePayDetailsReportInfo);
 
 router.get(
 	"/:companyName/:payPeriodNum/:isExtraRun/:year",
 	payStubController.getPayDetailsReportInfo,
-);
-
-router.get(
-	"/funding-totals/:companyName/:payPeriodNum/:isExtraRun",
-	payStubController.getFundingPayDetailsReportInfo,
-);
-
-router.get(
-	"/fund-totals/:companyName/:payPeriodNum/:isExtraRun",
-	payStubController.getFundPayDetailsReportInfo,
 );
 
 router.post("/", payStubController.addEmployeePayStubInfo);
