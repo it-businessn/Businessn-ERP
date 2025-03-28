@@ -54,7 +54,7 @@ const ReportListView = () => {
 			}
 		};
 		if (selectedPayPeriod && showTotalsReport) fetchFundTotalsInfo();
-	}, [selectedPayPeriod]);
+	}, [selectedPayPeriod, showTotalsReport]);
 
 	const getPayNum = (payNo, isExtra) =>
 		isExtra
