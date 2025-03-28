@@ -26,7 +26,7 @@ const Reports = () => {
 
 	const loggedInUser = LocalStorageService.getItem("user");
 	const deptName = loggedInUser?.role === ROLES.MANAGER ? loggedInUser?.department : null;
-	const [employee, setEmployee] = useState(loggedInUser);
+	const [employee, setEmployee] = useState(null);
 	const isActivePayroll = employee?.payrollStatus?.includes("Active");
 	const employees = useCompanyEmployees(company, deptName);
 

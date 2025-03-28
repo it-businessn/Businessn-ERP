@@ -13,13 +13,7 @@ const PayStubStatement = ({ data, height, overflow = "hidden" }) => {
 	return (
 		<Box w={"100%"} overflow={overflow} height={height}>
 			<PayStubHeader companyInfo={companyInfo} />
-			<Stack
-				position="relative"
-				padding={0}
-				h={"calc(92vh - 17em)"}
-				alignItems={"center"}
-				spacing={2}
-			>
+			<Stack position="relative" alignItems="center" spacing={2}>
 				<Box
 					w={"100%"}
 					h={"100%"}

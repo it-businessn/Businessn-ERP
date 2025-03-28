@@ -11,49 +11,30 @@ const TotalsReportModal = ({
 	size = "5xl",
 	title = "Funding Totals Report",
 }) => {
-	let {
-		totalIncomeTaxContr,
-		totalCPP_EE_Contr,
-		totalCPP_ER_Contr,
-		totalCPP_Contr,
-		totalBatchCharges,
-		timeClockMaintenanceCost,
-		totalCorePayrollCost,
-		totalEI_Contr,
-		totalEI_EE_Contr,
-		totalEI_ER_Contr,
-		totalEmpPaymentRemitCost,
-		totalEmpPayrollCost,
-		totalFundingWithDrawals,
-		totalGovtContr,
-		totalNetPay,
-		totalServiceCharges,
-		totalTimeManagementEmpCost,
-		totalTimeManagementPayrollCost,
-	} = reportData;
+	const totalIncomeTaxContr = reportData?.totalIncomeTaxContr?.toFixed(2);
+	const totalCPP_EE_Contr = reportData?.totalCPP_EE_Contr?.toFixed(2);
+	const totalCPP_ER_Contr = reportData?.totalCPP_ER_Contr?.toFixed(2);
+	const totalCPP_Contr = (reportData?.totalCPP_EE_Contr * 2)?.toFixed(2);
+	const totalEI_EE_Contr = reportData?.totalEI_EE_Contr?.toFixed(2);
+	const totalEI_ER_Contr = reportData?.totalEI_ER_Contr?.toFixed(2);
+	const totalEI_Contr = (
+		parseFloat(reportData?.totalEI_EE_Contr) + parseFloat(reportData?.totalEI_ER_Contr)
+	)?.toFixed(2);
+	const totalGovtContr = reportData?.totalGovtContr?.toFixed(2);
 
-	totalIncomeTaxContr = totalIncomeTaxContr.toFixed(2);
-	totalCPP_EE_Contr = totalCPP_EE_Contr.toFixed(2);
-	totalCPP_ER_Contr = totalCPP_ER_Contr.toFixed(2);
-	totalCPP_Contr = (totalCPP_EE_Contr * 2).toFixed(2);
-	totalEI_EE_Contr = totalEI_EE_Contr.toFixed(2);
-	totalEI_ER_Contr = totalEI_ER_Contr.toFixed(2);
-	totalEI_Contr = (parseFloat(totalEI_EE_Contr) + parseFloat(totalEI_ER_Contr)).toFixed(2);
-	totalGovtContr = totalGovtContr.toFixed(2);
+	const totalNetPay = reportData?.totalNetPay?.toFixed(2);
+	const totalEmpPaymentRemitCost = reportData?.totalEmpPaymentRemitCost?.toFixed(2);
 
-	totalNetPay = totalNetPay.toFixed(2);
-	totalEmpPaymentRemitCost = totalEmpPaymentRemitCost.toFixed(2);
+	const totalBatchCharges = reportData?.totalBatchCharges?.toFixed(2);
+	const totalEmpPayrollCost = reportData?.totalEmpPayrollCost?.toFixed(2);
+	const totalCorePayrollCost = reportData?.totalCorePayrollCost?.toFixed(2);
 
-	totalBatchCharges = totalBatchCharges.toFixed(2);
-	totalEmpPayrollCost = totalEmpPayrollCost.toFixed(2);
-	totalCorePayrollCost = totalCorePayrollCost.toFixed(2);
+	const timeClockMaintenanceCost = reportData?.timeClockMaintenanceCost?.toFixed(2);
+	const totalTimeManagementEmpCost = reportData?.totalTimeManagementEmpCost?.toFixed(2);
+	const totalTimeManagementPayrollCost = reportData?.totalTimeManagementPayrollCost?.toFixed(2);
 
-	timeClockMaintenanceCost = timeClockMaintenanceCost.toFixed(2);
-	totalTimeManagementEmpCost = totalTimeManagementEmpCost.toFixed(2);
-	totalTimeManagementPayrollCost = totalTimeManagementPayrollCost.toFixed(2);
-
-	totalServiceCharges = totalServiceCharges.toFixed(2);
-	totalFundingWithDrawals = totalFundingWithDrawals.toFixed(2);
+	const totalServiceCharges = reportData?.totalServiceCharges?.toFixed(2);
+	const totalFundingWithDrawals = reportData?.totalFundingWithDrawals?.toFixed(2);
 
 	return (
 		<ModalLayout
