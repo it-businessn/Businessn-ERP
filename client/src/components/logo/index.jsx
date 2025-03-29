@@ -27,18 +27,20 @@ const Logo = ({
 			<Image ml={ml} pl={pl} objectFit="cover" src={logoImgSrc} alt="Company logo" width={width} />
 		</Link>
 	) : (
-		<Link to="/" style={linkStyle}>
-			<Image
-				height={imageHeight}
-				width={isCover ? "50%" : imageWidth}
-				ml={isCover || src ? "0%" : imageMarginLeft}
-				mt={src ? 0 : imageMarginTop}
-				m={isForgotPassword && "0 auto"}
-				objectFit="contain"
-				src={isCover ? signInLogoImg : src ? src : logoImgSrc}
-				alt="Company logo"
-			/>
-		</Link>
+		!isMobile && (
+			<Link to="/" style={linkStyle}>
+				<Image
+					height={imageHeight}
+					width={isCover ? "50%" : imageWidth}
+					ml={isCover || src ? "0%" : imageMarginLeft}
+					mt={src ? 0 : imageMarginTop}
+					m={isForgotPassword && "0 auto"}
+					objectFit="contain"
+					src={isCover ? signInLogoImg : src ? src : logoImgSrc}
+					alt="Company logo"
+				/>
+			</Link>
+		)
 	);
 };
 

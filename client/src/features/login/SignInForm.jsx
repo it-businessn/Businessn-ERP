@@ -85,9 +85,9 @@ const SignInForm = ({ title, isMobile }) => {
 			m={"auto"}
 			position="relative"
 			spacing="8"
-			p={"1em 2em"}
-			mt={"20vh"}
-			width={isMobile ? "100vw" : "md"}
+			p={isMobile ? "2em" : "1em 2em"}
+			mt={isMobile ? "50%" : "20vh"}
+			width={isMobile ? "90vw" : "md"}
 			bg="var(--main_color)"
 			boxShadow="xl"
 			justifyContent={"center"}

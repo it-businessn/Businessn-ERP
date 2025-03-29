@@ -709,6 +709,7 @@ const getEmployeePayDetailsReportInfo = async (req, res) => {
 			empId,
 			isProcessed: true,
 			reportType: { $nin: [PAYRUN_TYPE.SUPERFICIAL, PAYRUN_TYPE.MANUAL, PAYRUN_TYPE.PAYOUT] },
+			currentNetPay: { $ne: 0 },
 		})
 			.populate(EMP_INFO)
 			.sort({

@@ -22,7 +22,7 @@ const CategoryFilter = ({ name, data, isMyChannel, presentTitle, filterTicket, f
 	};
 
 	return (
-		<BoxCard boxShadow="md" p={0} borderWidth="0" borderRadius="1em" minW="150px">
+		<BoxCard boxShadow="md" p={0} borderWidth="0" borderRadius="1em" minW="160px">
 			<Stack
 				alignItems="center"
 				justify="space-between"
@@ -31,70 +31,37 @@ const CategoryFilter = ({ name, data, isMyChannel, presentTitle, filterTicket, f
 				p="8px"
 				gap={0}
 			>
-				<TextTitle size="14px" align="center" title={isMyChannel ? `${name} Channel` : name} />
+				<TextTitle size="lg" align="center" title={isMyChannel ? `${name} Channel` : name} />
 				<Stack p="0 10px" gap={0}>
-					<HStack spacing={1} justify="center">
+					<HStack spacing={0} justify="center">
 						<TextTitle
-							size="32px"
+							size="2em"
 							align="center"
-							width="30%"
+							width="50px"
 							color="var(--open)"
 							title={pending || 0}
 						/>
-						<PrimaryButton
-							w="90px"
-							cursor="text"
-							color="var(--primary_bg)"
-							bg="var(--open)"
-							name="Open"
-							size="xs"
-							hover={{
-								bg: "var(--pending)",
-								color: "var(--primary_bg)",
-							}}
-						/>
+						<TextTitle align="center" title={TICKET_ACTION.OPEN} />
 					</HStack>
-					<HStack spacing={1} justify="start">
+					<HStack spacing={0} justify="center">
 						<TextTitle
-							size="32px"
+							size="2em"
 							align="center"
-							width="30%"
+							width="50px"
 							color="var(--ticket_hold)"
 							title={onHold || 0}
 						/>
-						<PrimaryButton
-							w="90px"
-							cursor="text"
-							color="var(--primary_bg)"
-							bg="var(--ticket_hold)"
-							name={TICKET_ACTION.ON_HOLD}
-							size="xs"
-							hover={{
-								bg: "var(--ticket_hold)",
-								color: "var(--primary_bg)",
-							}}
-						/>
+						<TextTitle align="center" title={TICKET_ACTION.ON_HOLD} />
 					</HStack>
-					<HStack spacing={1} justify="start">
+					<HStack spacing={0} justify="center">
 						<TextTitle
-							width="30%"
-							size="32px"
+							width="50px"
+							size="2em"
 							align="center"
 							color="var(--ticket_progress)"
 							title={inProgress || 0}
 						/>
-						<PrimaryButton
-							w="90px"
-							cursor="text"
-							color="var(--primary_bg)"
-							bg="var(--ticket_progress)"
-							name={TICKET_ACTION.PROGRESS}
-							size="xs"
-							hover={{
-								bg: "var(--ticket_progress)",
-								color: "var(--primary_bg)",
-							}}
-						/>
+						<TextTitle align="center" title={TICKET_ACTION.PROGRESS} />
 					</HStack>
 				</Stack>
 				<PrimaryButton

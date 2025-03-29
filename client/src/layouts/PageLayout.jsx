@@ -20,8 +20,16 @@ const PageLayout = ({
 	zIndex = 0,
 	position = "sticky",
 	pb = 0,
+	isMobile,
 }) => (
-	<Box p={{ base: "1em" }} overflow={"hidden"} zIndex={zIndex} position={position} pb={pb}>
+	<Box
+		p={{ base: "1em" }}
+		mt={isMobile && "1em"}
+		overflow={"hidden"}
+		zIndex={zIndex}
+		position={position}
+		pb={pb}
+	>
 		<PageHeader
 			size={size}
 			valueText1={valueText1}
@@ -30,7 +38,7 @@ const PageLayout = ({
 			handleChange={handleChange}
 			data={data}
 			value={selectedValue}
-			width={width}
+			width={!isMobile && width}
 			selectAttr={selectAttr}
 			selectPlaceholder={selectPlaceholder}
 			isTimesheet={isTimesheet}

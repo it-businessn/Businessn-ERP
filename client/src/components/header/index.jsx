@@ -2,11 +2,11 @@ import { Box, Flex, HStack, Spacer, Stack } from "@chakra-ui/react";
 import { Menu, UserProfile } from "components";
 import Logo from "components/logo";
 import TextTitle from "components/ui/text/TextTitle";
+import { ROLES } from "constant";
 import { SIDEBAR_MENU } from "data";
 import useCompany from "hooks/useCompany";
 import LocalStorageService from "services/LocalStorageService";
 import LoginService from "services/LoginService";
-import navBarImg from "../../assets/navbar_bg.png";
 
 const Navbar = ({ handleClick, companyName, companyId, user, setUser, isMobile }) => {
 	const { company } = useCompany(companyName);
@@ -24,33 +24,13 @@ const Navbar = ({ handleClick, companyName, companyId, user, setUser, isMobile }
 
 	const menuList = SIDEBAR_MENU?.filter((tab) => tab.permissions);
 
-	return isMobile ? (
+	return (
 		<Box
 			pl={{ base: 0, md: 3 }}
-			pt={3}
+			pt={isMobile ? 0 : 3}
 			position="fixed"
 			width="100%"
-			color="var(--lead_cards_bg)"
-			zIndex={1}
-			bg="var(--nav_gradient)"
-			backgroundImage={navBarImg}
-			backgroundSize="cover"
-		>
-			<HStack>
-				{menuList?.map((menu) =>
-					menu.permissions?.canAccessModule ? (
-						<Menu key={menu.name} handleClick={handleClick} menu={menu} />
-					) : null,
-				)}
-			</HStack>
-		</Box>
-	) : (
-		<Box
-			pl={{ base: 0, md: 3 }}
-			pt={3}
-			position="fixed"
-			width="100%"
-			color={"var(--nav_color)"}
+			color="var(--nav_color)"
 			zIndex={1}
 			bg="var(--main_color)"
 		>
@@ -61,8 +41,8 @@ const Navbar = ({ handleClick, companyName, companyId, user, setUser, isMobile }
 					bg="var(--banner_bg)"
 					// backgroundImage={navBarImg}
 					p={3}
-					borderRadius="10px"
-					ml={3}
+					borderRadius={isMobile ? 0 : "10px"}
+					ml={isMobile ? 0 : 3}
 					// backgroundSize={"cover"}
 				>
 					<HStack
@@ -72,19 +52,20 @@ const Navbar = ({ handleClick, companyName, companyId, user, setUser, isMobile }
 						justifyContent={"start"}
 						color="var(--main_color)"
 					>
-						<Stack minW="320px">
-							<TextTitle size={"lg"} title={company} />
+						<Stack minW={isMobile ? "auto" : "320px"}>
+							<TextTitle size={isMobile ? "sm" : "lg"} title={company} />
 							<TextTitle size={"lg"} title={companyId} />
 						</Stack>
 						<HStack w="100%" h={"30"}>
-							{menuList?.map((menu) =>
-								menu.permissions?.canAccessModule ? (
-									<Menu key={menu.name} handleClick={handleClick} menu={menu} />
-								) : null,
-							)}
+							{user?.role !== ROLES.EMPLOYEE &&
+								menuList?.map((menu) =>
+									menu.permissions?.canAccessModule ? (
+										<Menu key={menu.name} handleClick={handleClick} menu={menu} />
+									) : null,
+								)}
 						</HStack>
 						<Spacer />
-						<UserProfile user={user} handleLogout={handleLogout} />
+						<UserProfile user={user} isMobile={isMobile} handleLogout={handleLogout} />
 					</HStack>
 				</Flex>
 			</HStack>

@@ -17,7 +17,7 @@ const EmployeeDashboard = () => {
 		false,
 	);
 	return (
-		<PageLayout title="Employee Dashboard">
+		<PageLayout title="Employee Dashboard" isMobile={isMobile}>
 			<SimpleGrid
 				columns={{ base: 1, md: 1, lg: 2 }}
 				spacing="4"

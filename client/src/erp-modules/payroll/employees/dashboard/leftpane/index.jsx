@@ -56,11 +56,14 @@ const LeftPane = ({ selectedUser, company, isMobile }) => {
 						viewLabel="View Paystub"
 						handleRegister={handleRegister}
 						textAlign={"center"}
+						isMobile={isMobile}
 					/>
 				</BoxCard>
-				<BoxCard>
-					<TextTitle title="Year End Forms" />
-				</BoxCard>
+				{!isMobile && (
+					<BoxCard>
+						<TextTitle title="Year End Forms" />
+					</BoxCard>
+				)}
 			</SimpleGrid>
 			{showReport && (
 				<PreviewReportsModal

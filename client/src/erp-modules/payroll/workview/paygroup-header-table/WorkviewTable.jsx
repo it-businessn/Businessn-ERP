@@ -23,6 +23,7 @@ const WorkviewTable = ({
 	viewLabel = "View Register",
 	textAlign,
 	selectedYear,
+	isMobile,
 }) => {
 	const rowRefs = useRef([]);
 	const scrollToRow = (index) => {
@@ -114,76 +115,80 @@ const WorkviewTable = ({
 									/>
 								</Td>
 							)}
-							<Td p={1} w={autoScroll && "150px"} textAlign={autoScroll ? "center" : textAlign}>
-								{autoScroll ? (
-									isViewAction ? (
-										<OutlineButton label={"View"} size="xs" onClick={handleView} w={"95px"} />
-									) : (
-										<PrimaryButton
-											bg={isDisabledAction ? "var(--calendar_border)" : "var(--primary_button_bg)"}
-											hover={{
-												bg: isDisabledAction && "var(--calendar_border)",
-											}}
-											isDisabled={isDisabledAction}
-											name={"Pay now"}
-											size="xs"
-											onOpen={() => handlePay(isExtraPay(payPeriodNum || payPeriod, isExtraRun))}
-										/>
-									)
-								) : (
-									<HStack justifyContent={"left"}>
-										{isViewAction || isEarningTable ? (
-											<OutlineButton
-												label={viewLabel}
-												size="xs"
-												onClick={() => {
-													handleRegister(
-														isExtraPay(payPeriodNum || payPeriod, isExtraRun),
-														isExtraRun,
-													);
-												}}
-											/>
+							{!isMobile && (
+								<Td p={1} w={autoScroll && "150px"} textAlign={autoScroll ? "center" : textAlign}>
+									{autoScroll ? (
+										isViewAction ? (
+											<OutlineButton label={"View"} size="xs" onClick={handleView} w={"95px"} />
 										) : (
 											<PrimaryButton
 												bg={
 													isDisabledAction ? "var(--calendar_border)" : "var(--primary_button_bg)"
 												}
 												hover={{
-													bg: isDisabledAction
-														? "var(--calendar_border)"
-														: "var(--primary_button_bg)",
+													bg: isDisabledAction && "var(--calendar_border)",
 												}}
 												isDisabled={isDisabledAction}
 												name={"Pay now"}
-												minW={"105px"}
 												size="xs"
-												onOpen={() => handlePay(payPeriodNum || payPeriod)}
+												onOpen={() => handlePay(isExtraPay(payPeriodNum || payPeriod, isExtraRun))}
 											/>
-										)}
-
-										{!isEarningTable && (
-											<>
+										)
+									) : (
+										<HStack justifyContent={"left"}>
+											{isViewAction || isEarningTable ? (
 												<OutlineButton
-													isDisabled={isDisabledAction}
-													label="View Funding Totals"
+													label={viewLabel}
 													size="xs"
-													onClick={() =>
-														handleTotalsReport(
+													onClick={() => {
+														handleRegister(
 															isExtraPay(payPeriodNum || payPeriod, isExtraRun),
 															isExtraRun,
-														)
+														);
+													}}
+												/>
+											) : (
+												<PrimaryButton
+													bg={
+														isDisabledAction ? "var(--calendar_border)" : "var(--primary_button_bg)"
 													}
-												/>
-												<OutlineButton
-													label={"View Journal"}
+													hover={{
+														bg: isDisabledAction
+															? "var(--calendar_border)"
+															: "var(--primary_button_bg)",
+													}}
+													isDisabled={isDisabledAction}
+													name={"Pay now"}
+													minW={"105px"}
 													size="xs"
-													// onClick={handleClick}
+													onOpen={() => handlePay(payPeriodNum || payPeriod)}
 												/>
-											</>
-										)}
-									</HStack>
-								)}
-							</Td>
+											)}
+
+											{!isEarningTable && (
+												<>
+													<OutlineButton
+														isDisabled={isDisabledAction}
+														label="View Funding Totals"
+														size="xs"
+														onClick={() =>
+															handleTotalsReport(
+																isExtraPay(payPeriodNum || payPeriod, isExtraRun),
+																isExtraRun,
+															)
+														}
+													/>
+													<OutlineButton
+														label={"View Journal"}
+														size="xs"
+														// onClick={handleClick}
+													/>
+												</>
+											)}
+										</HStack>
+									)}
+								</Td>
+							)}
 						</Tr>
 					),
 				)}

@@ -80,14 +80,13 @@ const ReportListView = () => {
 	};
 
 	return (
-		<PageLayout title={"Payrun Reports"}>
+		<PageLayout title="Payrun Reports">
 			<Select
 				w={"10%"}
 				size={"sm"}
 				border="1px solid var(--primary_button_bg)"
 				borderRadius="10px"
 				value={selectedYear}
-				placeholder="Select Year"
 				onChange={(e) => setSelectedYear(e.target.value)}
 			>
 				{yearsList?.map((year) => (
