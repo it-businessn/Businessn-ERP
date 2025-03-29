@@ -8,7 +8,7 @@ import useCompany from "hooks/useCompany";
 import useSidebarMenu from "hooks/useSidebarMenu";
 import RootLayout from "layouts/RootLayout";
 import { useNavigate } from "react-router-dom";
-import { ROUTE_PATH } from "routes";
+import { payrollEmpDashboardPath, ROUTE_PATH } from "routes";
 import { useBreakpointValue } from "services/Breakpoint";
 import LocalStorageService from "services/LocalStorageService";
 import { isManager } from "utils";
@@ -50,7 +50,7 @@ const Home = () => {
 		if (user && Object.keys(user).length > 0) {
 			const dashboard = activeMenu?.children?.find((_) => _.permissions?.canAccessModule);
 			if (activeMenu?.path) {
-				navigate(`/${activeMenu?.path}/${dashboard?.path}`);
+				navigate(isMobile ? payrollEmpDashboardPath : `/${activeMenu?.path}/${dashboard?.path}`);
 			}
 		} else {
 			navigate(ROUTE_PATH.LOGIN);

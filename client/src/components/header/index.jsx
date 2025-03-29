@@ -57,7 +57,7 @@ const Navbar = ({ handleClick, companyName, companyId, user, setUser, isMobile }
 							<TextTitle size={"lg"} title={companyId} />
 						</Stack>
 						<HStack w="100%" h={"30"}>
-							{user?.role !== ROLES.EMPLOYEE &&
+							{!isMobile &&
 								menuList?.map((menu) =>
 									menu.permissions?.canAccessModule ? (
 										<Menu key={menu.name} handleClick={handleClick} menu={menu} />

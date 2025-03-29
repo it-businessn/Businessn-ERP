@@ -149,6 +149,7 @@ export const leaveApprovalPath = `${ROUTE_PATH.PAYROLL}${ROUTE_PATH.LEAVE_APPROV
 export const payrollEmployeePath = `${ROUTE_PATH.PAYROLL}${ROUTE_PATH.EMPLOYEES}`;
 export const payrollROEPath = `${ROUTE_PATH.PAYROLL}/roe`;
 export const payrollReportPath = `${ROUTE_PATH.PAYROLL}${ROUTE_PATH.REPORT}`;
+export const payrollEmpDashboardPath = `${ROUTE_PATH.PAYROLL}${ROUTE_PATH.EMP_DASHBOARD}`;
 
 export const router = createBrowserRouter([
 	{
@@ -348,7 +349,7 @@ export const router = createBrowserRouter([
 				element: <Settings />,
 			},
 			{
-				path: `${ROUTE_PATH.PAYROLL}${ROUTE_PATH.EMP_DASHBOARD}`,
+				path: payrollEmpDashboardPath,
 				element: <EmployeeDashboard />,
 			},
 			{
