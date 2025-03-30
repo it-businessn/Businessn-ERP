@@ -4,11 +4,18 @@ import InputFormControl from "components/ui/form/InputFormControl";
 import SelectFormControl from "components/ui/form/SelectFormControl";
 import TextAreaFormControl from "components/ui/form/TextAreaFormControl";
 import ModalLayout from "components/ui/modal/ModalLayout";
-import { CATEGORY_LIST } from "constant";
 import { useState } from "react";
 import TicketService from "services/TicketService";
 
-const NewTicket = ({ showAddEntry, setShowAddEntry, setRefresh, company, userId, employees }) => {
+const NewTicket = ({
+	showAddEntry,
+	setShowAddEntry,
+	setRefresh,
+	company,
+	userId,
+	employees,
+	depts,
+}) => {
 	const PRIORITY_LIST = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 	const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -73,12 +80,12 @@ const NewTicket = ({ showAddEntry, setShowAddEntry, setRefresh, company, userId,
 		<ModalLayout title={"New ticket"} size="lg" isOpen={showAddEntry} onClose={handleClose}>
 			<Stack spacing={3}>
 				<SelectFormControl
-					valueParam="category"
+					valueParam="name"
 					name="category"
 					label="Category"
 					valueText={formData.category}
 					handleChange={handleChange}
-					options={CATEGORY_LIST}
+					options={depts}
 					placeholder="Select category"
 				/>
 				<SelectFormControl

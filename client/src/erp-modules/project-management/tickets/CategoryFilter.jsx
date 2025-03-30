@@ -1,6 +1,7 @@
 import { HStack, Stack } from "@chakra-ui/react";
 import PrimaryButton from "components/ui/button/PrimaryButton";
 import BoxCard from "components/ui/card";
+import NormalTextTitle from "components/ui/NormalTextTitle";
 import TextTitle from "components/ui/text/TextTitle";
 import { TICKET_ACTION } from "erp-modules/payroll/timesheets/data";
 
@@ -31,37 +32,43 @@ const CategoryFilter = ({ name, data, isMyChannel, presentTitle, filterTicket, f
 				p="8px"
 				gap={0}
 			>
-				<TextTitle size="lg" align="center" title={isMyChannel ? `${name} Channel` : name} />
+				<TextTitle
+					h="2.5em"
+					size="lg"
+					whiteSpace="wrap"
+					align="center"
+					title={isMyChannel ? `${name} Channel` : name}
+				/>
 				<Stack p="0 10px" gap={0}>
-					<HStack spacing={0} justify="center">
+					<HStack spacing={1}>
 						<TextTitle
-							size="2em"
+							size="1.8em"
 							align="center"
 							width="50px"
 							color="var(--open)"
 							title={pending || 0}
 						/>
-						<TextTitle align="center" title={TICKET_ACTION.OPEN} />
+						<NormalTextTitle size="1.1em" title={TICKET_ACTION.OPEN} />
 					</HStack>
-					<HStack spacing={0} justify="center">
+					<HStack spacing={1}>
 						<TextTitle
-							size="2em"
+							size="1.8em"
 							align="center"
 							width="50px"
 							color="var(--ticket_hold)"
 							title={onHold || 0}
 						/>
-						<TextTitle align="center" title={TICKET_ACTION.ON_HOLD} />
+						<NormalTextTitle size="1.1em" title={TICKET_ACTION.ON_HOLD} />
 					</HStack>
-					<HStack spacing={0} justify="center">
+					<HStack spacing={1}>
 						<TextTitle
 							width="50px"
-							size="2em"
+							size="1.8em"
 							align="center"
 							color="var(--ticket_progress)"
 							title={inProgress || 0}
 						/>
-						<TextTitle align="center" title={TICKET_ACTION.PROGRESS} />
+						<NormalTextTitle size="1.1em" title={TICKET_ACTION.PROGRESS} />
 					</HStack>
 				</Stack>
 				<PrimaryButton
@@ -70,7 +77,7 @@ const CategoryFilter = ({ name, data, isMyChannel, presentTitle, filterTicket, f
 					color={filterName?.includes(name) ? "var(--product5)" : presentTitle.color}
 					bg="var(--nav_menu)"
 					name={filterName?.includes(name) ? "Presenting" : presentTitle.title}
-					size="xs"
+					size="sm"
 					hover={{
 						bg: "var(--nav_menu)",
 						color: "var(--primary_bg)",

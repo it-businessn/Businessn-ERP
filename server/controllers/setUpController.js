@@ -73,11 +73,11 @@ const getDepartments = async (req, res) => {
 	const { companyName } = req.params;
 	try {
 		const department = await Department.find({ companyName }).select("name").sort({
-			createdOn: -1,
+			createdOn: 1,
 		});
 		if (!department.length) {
 			const department = await Department.find({ companyName: null }).sort({
-				createdOn: -1,
+				createdOn: 1,
 			});
 			return res.status(200).json(department);
 		}

@@ -11,7 +11,6 @@ import {
 	useColorMode,
 	VStack,
 } from "@chakra-ui/react";
-import { ROLES } from "constant";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { adminConsolePath, userProfilePath } from "routes";
@@ -75,12 +74,14 @@ const UserProfile = ({ user, handleLogout }) => {
 
 					<PopoverBody>
 						<VStack w="100%" alignItems="start" color="var(--logo_bg)">
-							{user?.role === ROLES.SHADOW_ADMIN &&
-								MENU_OPTIONS.map(({ name, handleClick }) => (
-									<Button key={name} variant="ghost" onClick={handleClick}>
-										{name}
-									</Button>
-								))}
+							{MENU_OPTIONS.map(
+								({ name, handleClick }, index) =>
+									(index === 0 || (index === 1 && user?.role?.includes("Admin"))) && (
+										<Button key={name} variant="ghost" onClick={handleClick}>
+											{name}
+										</Button>
+									),
+							)}
 							{/* {user?.role === "Administrator" && (
 								<Button variant="ghost" onClick={showRegisterPage}>
 									Create Account

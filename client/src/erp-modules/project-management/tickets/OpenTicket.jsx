@@ -4,9 +4,9 @@ import EmptyRowRecord from "components/ui/EmptyRowRecord";
 import NormalTextTitle from "components/ui/NormalTextTitle";
 import TableLayout from "components/ui/table/TableLayout";
 import TextTitle from "components/ui/text/TextTitle";
-import { CATEGORY_LIST } from "constant";
 import ActionAll from "erp-modules/payroll/timesheets/ActionAll";
 import { TICKET_ACTION_STATUS } from "erp-modules/payroll/timesheets/data";
+import useDepartment from "hooks/useDepartment";
 import { useEffect, useRef, useState } from "react";
 import { CgNotes } from "react-icons/cg";
 import { SlArrowLeft, SlArrowRight } from "react-icons/sl";
@@ -29,6 +29,7 @@ const OpenTicket = ({ company, setShowAddEntry, showAddEntry, userId, employees 
 	const [filterName, setFilterName] = useState(null);
 	const scrollRef = useRef(null);
 	const [isScrolling, setIsScrolling] = useState(false);
+	const depts = useDepartment(company);
 
 	useEffect(() => {
 		const fetchAllTickets = async () => {
@@ -65,8 +66,7 @@ const OpenTicket = ({ company, setShowAddEntry, showAddEntry, userId, employees 
 		"Topic",
 		"Description",
 		"Ticket Opened",
-		"Ticket Closed",
-		"Days Opened",
+		"Days Open",
 		"Status",
 		"Action",
 	];
@@ -154,12 +154,12 @@ const OpenTicket = ({ company, setShowAddEntry, showAddEntry, userId, employees 
 							setPresentTitle={setPresentTitle}
 							filterName={filterName}
 						/>
-						{CATEGORY_LIST.map(({ category }, index) => (
+						{depts?.map(({ name, _id }, index) => (
 							<CategoryFilter
 								index={index + 1}
-								key={category}
-								name={category}
-								data={ticketsCount?.openTicketsByCategory.find(({ _id }) => _id === category)}
+								key={_id}
+								name={name}
+								data={ticketsCount?.openTicketsByCategory.find(({ _id }) => _id === name)}
 								filterTicket={filterTicket}
 								presentTitle={presentTitle}
 								setPresentTitle={setPresentTitle}
@@ -255,12 +255,6 @@ const OpenTicket = ({ company, setShowAddEntry, showAddEntry, userId, employees 
 										<NormalTextTitle size="sm" title={longTimeFormat(createdOn)} />
 									</Td>
 									<Td py={0}>
-										<NormalTextTitle
-											size="sm"
-											title={ticketClosedDate && longTimeFormat(ticketClosedDate)}
-										/>
-									</Td>
-									<Td py={0}>
 										<NormalTextTitle size="sm" title={ticketDaysOpened} />
 									</Td>
 									<Td py={0}>
@@ -303,6 +297,7 @@ const OpenTicket = ({ company, setShowAddEntry, showAddEntry, userId, employees 
 					setShowAddEntry={setShowAddEntry}
 					userId={userId}
 					employees={employees}
+					depts={depts}
 				/>
 			)}
 			{openNote && <NoteDetails isOpen={openNote} setIsOpen={setOpenNote} data={rowData} />}

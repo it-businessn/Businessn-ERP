@@ -24,6 +24,7 @@ const TextTitle = ({
 	cursor,
 	textTransform,
 	maxW,
+	h,
 }) => (
 	<Text
 		textTransform={textTransform}
@@ -41,6 +42,7 @@ const TextTitle = ({
 		fontStyle={em}
 		color={color}
 		width={width}
+		h={h}
 		align={align}
 		textOverflow={"ellipsis"}
 		whiteSpace={whiteSpace}
