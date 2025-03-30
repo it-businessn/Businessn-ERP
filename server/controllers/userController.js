@@ -117,13 +117,21 @@ const getPayrollInActiveCompanyEmployees = async (req, res) => {
 const getCompanyUsers = async (req, res) => {
 	const { companyName } = req.params;
 	try {
-		const result = await EmployeeProfileInfo.find({
+		const result = await EmployeeEmploymentInfo.find({
 			companyName,
-			empId: { $exists: true },
-		})
-			.select("empId firstName middleName lastName")
-			.sort({ firstName: 1 });
-
+			employmentRole: {
+				$ne: ROLES.SHADOW_ADMIN,
+			},
+		}).populate({
+			path: "empId",
+			model: "Employee",
+			select: ["empId", "fullName"],
+		});
+		result?.sort((a, b) => {
+			if (a.empId?.fullName < b.empId?.fullName) return -1;
+			if (a.empId?.fullName > b.empId?.fullName) return 1;
+			return a.createdOn - b.createdOn;
+		});
 		res.status(200).json(result);
 	} catch (error) {
 		res.status(404).json({ error: error.message });

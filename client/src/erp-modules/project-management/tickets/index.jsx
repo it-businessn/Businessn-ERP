@@ -21,7 +21,7 @@ const Tickets = () => {
 		const fetchAllEmployees = async () => {
 			try {
 				const { data } = await UserService.getCompanyUsers(company);
-				data.map((emp) => (emp.fullName = `${emp?.firstName} ${emp?.middleName} ${emp?.lastName}`));
+				data.map((emp) => (emp.fullName = emp?.empId?.fullName));
 				setEmployees(data);
 			} catch (error) {
 				console.error(error);
