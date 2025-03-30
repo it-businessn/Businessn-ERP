@@ -60,7 +60,7 @@ const UserProfileDetails = () => {
 	const SECTION2 = [
 		{ name: "Manager", value: manager },
 		{ name: "Role", value: role },
-		{ name: "Department", value: department[0] },
+		{ name: "Department", value: department?.[0] },
 		// { name: "Employment Type", value: employmentType },
 	];
 	const showActionButton = () => (
