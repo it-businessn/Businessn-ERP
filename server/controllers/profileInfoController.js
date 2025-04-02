@@ -69,6 +69,9 @@ const updateEmployee = async (empId, data) => {
 		country,
 		password,
 		companyName,
+		firstName,
+		middleName,
+		lastName,
 	} = data;
 	const streetNumber = `${streetAddressSuite || ""} ${streetAddress || ""}`;
 
@@ -88,10 +91,16 @@ const updateEmployee = async (empId, data) => {
 	const email = empEmail && empEmail !== "" ? empEmail : employee?.email;
 
 	const empPassword = password && password !== "" ? password : employee?.password;
-	const updatedObj =
-		email === employee?.email
-			? { password: empPassword, primaryAddress, updatedOn: moment() }
-			: { password: empPassword, email, primaryAddress, updatedOn: moment() };
+	const updatedObj = {
+		password: empPassword,
+		primaryAddress,
+		updatedOn: moment(),
+		firstName,
+		middleName,
+		lastName,
+		fullName: `${firstName} ${middleName} ${lastName}`,
+	};
+	if (email === employee?.email) updatedObj.email = email;
 	await Employee.findByIdAndUpdate(empId, updatedObj, {
 		new: true,
 	});
@@ -141,6 +150,7 @@ const addEmployeeProfileInfo = async (req, res) => {
 			country,
 			password,
 			firstName,
+			middleName,
 			lastName,
 			companyName,
 		};
