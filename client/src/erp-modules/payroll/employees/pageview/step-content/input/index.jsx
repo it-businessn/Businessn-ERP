@@ -18,25 +18,27 @@ const InputRecord = ({
 	const isPTSalaried = formData.typeOfEarning === "Part Time Salaried";
 
 	const standardHrsHidden = isHourlyEarning && param.name.includes("Standard Hours");
-
 	const PTSalariedHidden = isFTSalaried && param.name.includes("(PT)");
-
 	const FTSalariedHidden = isPTSalaried && param.name.includes("(FT)");
-
 	const fullTimeSalariedReadonly = isFTSalaried && param.name.includes("(FT)");
+	const hasPassword = param.param_key === 'password' && formData[param.param_key]
 
 	const showField =
 		!isOnboarding || (isOnboarding && !HIDE_ONBOARDING_SECTION.includes(param.name));
+
+	const hideField =
+		hasPassword || standardHrsHidden || PTSalariedHidden || FTSalariedHidden;
+
 	const controlType = param.name.includes("Email") ? "email" : "text"; // text or number
 
 	const valueText =
 		isContribution && readOnly
 			? 0
 			: isBalanceInfo
-			? convertDecimal(formData?.empPayStub?.[param.param_key]) ?? ""
-			: formData[param.param_key]?.toLocaleString() ?? "";
+				? convertDecimal(formData?.empPayStub?.[param.param_key]) ?? ""
+				: formData[param.param_key]?.toLocaleString() ?? "";
 
-	return standardHrsHidden || PTSalariedHidden || FTSalariedHidden ? (
+	return hideField ? (
 		<></>
 	) : (
 		showField && (
