@@ -33,7 +33,7 @@ const CategoryFilter = ({ name, data, isMyChannel, presentTitle, filterTicket, f
 				gap={0}
 			>
 				<TextTitle
-					h="2.5em"
+					h="2.7em"
 					size="lg"
 					whiteSpace="wrap"
 					align="center"

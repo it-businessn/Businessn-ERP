@@ -74,8 +74,8 @@ const getFilteredTickets = async (req, res) => {
 		const filterCriteria =
 			category === "My"
 				? {
-						companyName,
-						originator: id,
+						companyName,				
+						$or: [{ originator: id }, { assignee: id }],
 						status: { $ne: TICKET_STATUS.CLOSED },
 				  }
 				: {
