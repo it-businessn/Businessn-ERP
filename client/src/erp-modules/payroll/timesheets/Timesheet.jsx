@@ -203,6 +203,12 @@ const Timesheet = ({
 	}, [formData.approve, formData.recordId]);
 
 	useEffect(() => {
+		if (formData.role) {
+			handleRoleChangeSubmit();
+		}
+	}, [formData.role]);
+
+	useEffect(() => {
 		if (formData.clockIn) {
 			handleTimeChange("clockIn", formData.clockIn);
 		}
@@ -366,6 +372,39 @@ const Timesheet = ({
 	};
 
 	const handleClose = () => setShowDeletePopUp(false);
+
+	const handleRoleChangeSubmit = async () => {
+		try {
+			const updatedRec = timesheetData.find((record) => record._id === formData.recordId);
+			formData.role = updatedRec.role;
+			formData.company = updatedRec.companyName;
+			formData.positions = updatedRec.positions;
+
+			if (formData.recordId) {
+				const { data } = await TimesheetService.updateRoleTimesheet(formData, formData.recordId);
+
+				if (data.message) {
+					toast({
+						title: data.message,
+						status: "success",
+						duration: 1500,
+						isClosable: true,
+					});
+				}
+				if (data) {
+					const updatedData = timesheetData?.map((record) =>
+						record._id === formData.recordId
+							? {
+									...record,
+							  }
+							: record,
+					);
+					setTimesheetData(updatedData);
+					setIsActioned(true);
+				}
+			}
+		} catch (error) {}
+	};
 
 	const handleSubmit = async () => {
 		try {
@@ -593,6 +632,8 @@ const Timesheet = ({
 									showAddBreak,
 									positions,
 									approveStatusAction,
+									role = positions[0].title,
+									department = positions[0].employmentDepartment,
 								}) => {
 									// const sourceBtnCss = getSourceStyle(source);
 									const approveStatusBtnCss = getStatusStyle(approveStatus);
@@ -666,18 +707,22 @@ const Timesheet = ({
 												/>
 											</Td>
 											<Td py={0}>
-												<NormalTextTitle
-													maxW="130px"
+												<SelectList
 													size="sm"
-													title={positions?.length ? positions[0]?.title : ""}
+													w="130px"
+													id={_id}
+													type="role"
+													handleSelect={(type, value, rowId) =>
+														handleUpdateData(rowId, type, value, param_hours, param_hours_worked)
+													}
+													code="title"
+													selectedValue={role}
+													data={positions}
+													isTimesheetPayType
 												/>
 											</Td>
 											<Td py={0}>
-												<NormalTextTitle
-													maxW="120px"
-													size="sm"
-													title={positions?.length ? positions[0]?.employmentDepartment : ""}
-												/>
+												<NormalTextTitle maxW="120px" size="sm" title={department} />
 											</Td>
 											{/* <Td p={0} position={"sticky"} right={"0"} zIndex="1">
 												{source && (

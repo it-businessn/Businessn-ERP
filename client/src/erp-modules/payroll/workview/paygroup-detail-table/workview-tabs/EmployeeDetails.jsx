@@ -94,7 +94,8 @@ const EmployeeDetails = ({
 					},
 					{ key: "Employee Number", pair: "obj", pair_key: "employeeNo" },
 					{ key: "Department", pair: "employmentCostCenter" },
-					{ key: COLS.PAYRATE, pair: "regPay", round: true },
+					{ key: COLS.PAYRATE, pair: 0, isPayRate: true, round: true },
+					{ key: `${COLS.PAYRATE} 2`, pair: 1, isPayRate: true, round: true },
 					{
 						key: "",
 						pair: (
@@ -109,9 +110,6 @@ const EmployeeDetails = ({
 								)}
 							</HStack>
 						),
-					},
-					{
-						key: "detail1",
 					},
 					{
 						key: "detail1s",

@@ -46,6 +46,10 @@ const TimesheetService = {
 		return apiService.put(`/timesheet/${id}`, data, id);
 	},
 
+	async updateRoleTimesheet(data, id) {
+		return apiService.put(`/timesheet/role/${id}`, data, id);
+	},
+
 	async updateTimesheetPayType(data, id) {
 		return apiService.put(`/timesheet/paytype/${id}`, data, id);
 	},

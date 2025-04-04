@@ -10,6 +10,8 @@ const timesheetSchema = new mongoose.Schema({
 	approveStatus: { type: String, default: TIMESHEET_STATUS.PENDING },
 	payRate: Number,
 	payType: String,
+	role: String,
+	department: String,
 	employeeName: String,
 	source: String,
 	clockIn: Date,

@@ -15,6 +15,7 @@ const {
 	TIMESHEET_ORIGIN,
 } = require("../services/data");
 const EmployeeEmploymentInfo = require("../models/EmployeeEmploymentInfo");
+const { findEmpPayInfo } = require("./employmentInfoController");
 
 const findByRecordTimesheets = async (record, skip, limit) => {
 	// const y = await Timesheet.deleteMany({
@@ -41,26 +42,25 @@ const findByRecordTimesheets = async (record, skip, limit) => {
 };
 
 const getTimesheetResult = async (companyName) => {
-	const payInfoResult = await EmployeePayInfo.find({
-		companyName,
-	}).select("empId roles");
+	const payInfoResult = await findEmpPayInfo(companyName);
 
-	const payInfoMap = new Map(
-		payInfoResult.map((payInfo) => [
-			payInfo?.empId?.toString(),
-			{
-				regPay: payInfo?.roles[0]?.payRate,
-				overTimePay: payInfo?.roles[0]?.overTimePay,
-				dblOverTimePay: payInfo?.roles[0]?.dblOverTimePay,
-				statWorkPay: payInfo?.roles[0]?.statWorkPay,
-				statPay: payInfo?.roles[0]?.statPay,
-				sickPay: payInfo?.roles[0]?.sickPay,
-				vacationPay: payInfo?.roles[0]?.vacationPay,
-				typeOfEarning: payInfo?.roles[0]?.typeOfEarning,
-			},
-		]),
-	);
-	return payInfoMap;
+	const payInfoMapResult = new Map(payInfoResult.map((payInfo) => [payInfo.empId, payInfo?.roles]));
+	// const payInfoMap = new Map(
+	// 	payInfoResult.map((payInfo) => [
+	// 		payInfo?.empId?.toString(),
+	// 		{
+	// 			regPay: payInfo?.roles[0]?.payRate,
+	// 			overTimePay: payInfo?.roles[0]?.overTimePay,
+	// 			dblOverTimePay: payInfo?.roles[0]?.dblOverTimePay,
+	// 			statWorkPay: payInfo?.roles[0]?.statWorkPay,
+	// 			statPay: payInfo?.roles[0]?.statPay,
+	// 			sickPay: payInfo?.roles[0]?.sickPay,
+	// 			vacationPay: payInfo?.roles[0]?.vacationPay,
+	// 			typeOfEarning: payInfo?.roles[0]?.typeOfEarning,
+	// 		},
+	// 	]),
+	// );
+	return payInfoMapResult;
 };
 
 const getEmploymentResult = async (companyName) => {
@@ -87,17 +87,17 @@ const mapTimesheet = (payInfos, timesheets, empInfos) => {
 		}
 
 		if (payInfos.has(empIdStr)) {
-			const payInfo = payInfos.get(empIdStr);
-			timesheet.regPay = payInfo.regPay;
-			timesheet.overTimePay = payInfo.overTimePay;
-			timesheet.dblOverTimePay = payInfo.dblOverTimePay;
-			timesheet.statWorkPay = payInfo.statWorkPay;
-			timesheet.statPay = payInfo.statPay;
-			timesheet.sickPay = payInfo.sickPay;
-			timesheet.vacationPay = payInfo.vacationPay;
-
-			timesheet.typeOfEarning = payInfo.typeOfEarning;
+			timesheet.payInfo = payInfos.get(empIdStr);
 		}
+		timesheet.regPay = timesheet.payInfo?.[0]?.regPay;
+		timesheet.overTimePay = timesheet.payInfo?.[0]?.overTimePay;
+		timesheet.dblOverTimePay = timesheet.payInfo?.[0]?.dblOverTimePay;
+		timesheet.statWorkPay = timesheet.payInfo?.[0]?.statWorkPay;
+		timesheet.statPay = timesheet.payInfo?.[0]?.statPay;
+		timesheet.sickPay = timesheet.payInfo?.[0]?.sickPay;
+		timesheet.vacationPay = timesheet.payInfo?.[0]?.vacationPay;
+
+		timesheet.typeOfEarning = timesheet.payInfo?.[0]?.typeOfEarning;
 	});
 	return timesheets?.filter(({ typeOfEarning }) => typeOfEarning === EARNING_TYPE.HOURLY);
 };
@@ -420,6 +420,20 @@ const actionAllTimesheets = async (req, res) => {
 	}
 };
 
+const updateTimesheetRole = async (req, res) => {
+	const { id } = req.params;
+	const { role, positions } = req.body;
+	try {
+		const department = positions?.find(({ title }) => title === role)?.employmentDepartment;
+		const updatedData = { role, department };
+
+		const timesheet = await updateTimesheetData(id, updatedData);
+		return res.status(201).json(timesheet);
+	} catch (error) {
+		res.status(400).json({ message: error.message });
+	}
+};
+
 const updateTimesheetPayType = async (req, res) => {
 	const { id } = req.params;
 
@@ -647,4 +661,5 @@ module.exports = {
 	calcTotalWorkedHours,
 	addOvertimeRecord,
 	addTimesheetEntry,
+	updateTimesheetRole,
 };

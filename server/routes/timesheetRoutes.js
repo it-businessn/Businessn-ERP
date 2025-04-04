@@ -24,6 +24,8 @@ router.put("/:id", timesheetController.updateTimesheet);
 
 router.put("/paytype/:id", timesheetController.updateTimesheetPayType);
 
+router.put("/role/:id", timesheetController.updateTimesheetRole);
+
 router.put("/delete-entry/:id", timesheetController.deleteTimesheet);
 
 module.exports = router;

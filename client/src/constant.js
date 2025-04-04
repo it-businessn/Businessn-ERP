@@ -106,6 +106,7 @@ export const TITLE_COLS = [COLS.EMP_NAME, "Total Hours", "Total Amount"];
 export const ALIGN_COLS = [
 	COLS.UNION_DUE,
 	COLS.PAYRATE,
+	`${COLS.PAYRATE} 2`,
 	`Employer ${CONTRIBUTION.PENSION_PLAN} (EE)`,
 	`Employer ${CONTRIBUTION.HEALTH_PLAN} (EE)`,
 	`${CONTRIBUTION.EI} (EE)`,
