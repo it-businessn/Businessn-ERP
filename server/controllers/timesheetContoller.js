@@ -45,21 +45,6 @@ const getTimesheetResult = async (companyName) => {
 	const payInfoResult = await findEmpPayInfo(companyName);
 
 	const payInfoMapResult = new Map(payInfoResult.map((payInfo) => [payInfo.empId, payInfo?.roles]));
-	// const payInfoMap = new Map(
-	// 	payInfoResult.map((payInfo) => [
-	// 		payInfo?.empId?.toString(),
-	// 		{
-	// 			regPay: payInfo?.roles[0]?.payRate,
-	// 			overTimePay: payInfo?.roles[0]?.overTimePay,
-	// 			dblOverTimePay: payInfo?.roles[0]?.dblOverTimePay,
-	// 			statWorkPay: payInfo?.roles[0]?.statWorkPay,
-	// 			statPay: payInfo?.roles[0]?.statPay,
-	// 			sickPay: payInfo?.roles[0]?.sickPay,
-	// 			vacationPay: payInfo?.roles[0]?.vacationPay,
-	// 			typeOfEarning: payInfo?.roles[0]?.typeOfEarning,
-	// 		},
-	// 	]),
-	// );
 	return payInfoMapResult;
 };
 
@@ -88,16 +73,20 @@ const mapTimesheet = (payInfos, timesheets, empInfos) => {
 
 		if (payInfos.has(empIdStr)) {
 			timesheet.payInfo = payInfos.get(empIdStr);
-		}
-		timesheet.regPay = timesheet.payInfo?.[0]?.regPay;
-		timesheet.overTimePay = timesheet.payInfo?.[0]?.overTimePay;
-		timesheet.dblOverTimePay = timesheet.payInfo?.[0]?.dblOverTimePay;
-		timesheet.statWorkPay = timesheet.payInfo?.[0]?.statWorkPay;
-		timesheet.statPay = timesheet.payInfo?.[0]?.statPay;
-		timesheet.sickPay = timesheet.payInfo?.[0]?.sickPay;
-		timesheet.vacationPay = timesheet.payInfo?.[0]?.vacationPay;
+			const empRole = timesheet?.role
+				? timesheet.payInfo?.find(({ title }) => title === timesheet?.role)
+				: timesheet.payInfo[0];
 
-		timesheet.typeOfEarning = timesheet.payInfo?.[0]?.typeOfEarning;
+			timesheet.regPay = empRole?.payRate;
+			timesheet.overTimePay = empRole?.overTimePay;
+			timesheet.dblOverTimePay = empRole?.dblOverTimePay;
+			timesheet.statWorkPay = empRole?.statWorkPay;
+			timesheet.statPay = empRole?.statPay;
+			timesheet.sickPay = empRole?.sickPay;
+			timesheet.vacationPay = empRole?.vacationPay;
+
+			timesheet.typeOfEarning = empRole?.typeOfEarning;
+		}
 	});
 	return timesheets?.filter(({ typeOfEarning }) => typeOfEarning === EARNING_TYPE.HOURLY);
 };
@@ -424,8 +413,16 @@ const updateTimesheetRole = async (req, res) => {
 	const { id } = req.params;
 	const { role, positions } = req.body;
 	try {
-		const department = positions?.find(({ title }) => title === role)?.employmentDepartment;
-		const updatedData = { role, department };
+		const updatedRole = positions?.find(({ title }) => title === role);
+		const updatedData = { role, department: updatedRole?.employmentDepartment };
+
+		updatedData.regPay = updatedRole?.payRate || 0;
+		updatedData.overTimePay = 1.5 * updatedRole?.payRate || 0;
+		updatedData.dblOverTimePay = 2 * updatedRole?.payRate || 0;
+		updatedData.statWorkPay = 1.5 * updatedRole?.payRate || 0;
+		updatedData.statPay = updatedRole?.payRate || 0;
+		updatedData.sickPay = updatedRole?.payRate || 0;
+		updatedData.vacationPay = updatedRole?.payRate || 0;
 
 		const timesheet = await updateTimesheetData(id, updatedData);
 		return res.status(201).json(timesheet);

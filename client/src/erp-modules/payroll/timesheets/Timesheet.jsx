@@ -245,6 +245,52 @@ const Timesheet = ({
 				setCheckedRows(ids);
 				setIsAllChecked(true);
 			}
+			timesheetData?.map((rec) => {
+				// rec.sourceBtnCss = getSourceStyle(rec.source);
+				rec.approveStatusBtnCss = getStatusStyle(rec?.approveStatus);
+				rec.payTypeCss = getPayTypeStyle(rec.payType);
+				rec.type = rec.payTypeCss?.type;
+				rec.color = rec.payTypeCss?.color;
+				rec.rowBg = rec.payTypeCss?.rowBg;
+				rec.payTypeParam = getParamKey(rec.payType);
+				rec.param_pay_key = rec.payTypeParam?.param_key;
+				rec.param_hours = rec.payTypeParam?.param_hours;
+				rec.param_pay_type =
+					rec.param_pay_key === "regPay"
+						? rec.regPay
+						: rec.param_pay_key === "overTimePay"
+						? rec.overTimePay
+						: rec.param_pay_key === "dblOverTimePay"
+						? rec.dblOverTimePay
+						: rec.param_pay_key === "statWorkPay"
+						? rec.statWorkPay
+						: rec.param_pay_key === "statPay"
+						? rec.statPay
+						: rec.param_pay_key === "sickPay"
+						? rec.sickPay
+						: rec.vacationPay;
+				rec.param_hours_worked =
+					rec.param_hours === "regHoursWorked"
+						? rec.regHoursWorked
+						: rec.param_hours === "overtimeHoursWorked"
+						? rec.overtimeHoursWorked
+						: rec.param_hours === "dblOvertimeHoursWorked"
+						? rec.dblOvertimeHoursWorked
+						: rec.param_hours === "statDayHoursWorked"
+						? rec.statDayHoursWorked
+						: rec.param_hours === "statDayHours"
+						? rec.statDayHours
+						: rec.param_hours === "sickPayHours"
+						? rec.sickPayHours
+						: rec.param_hours === "vacationPayHours"
+						? rec.vacationPayHours
+						: rec.param_hours === "regBreakHoursWorked"
+						? rec.regBreakHoursWorked
+						: 0;
+				rec.isDisabled = !rec?.clockIn || !rec?.clockOut;
+				rec.isStatPay = rec?.payType === PAY_TYPES_TITLE.STAT_PAY;
+				return rec;
+			});
 		}
 	}, [timesheetData, isActioned]);
 
@@ -396,6 +442,15 @@ const Timesheet = ({
 						record._id === formData.recordId
 							? {
 									...record,
+									role: data?.role,
+									department: data?.department,
+									regPay: data?.regPay,
+									statWorkPay: data?.statWorkPay,
+									statPay: data?.statPay,
+									sickPay: data?.sickPay,
+									vacationPay: data?.vacationPay,
+									dblOverTimePay: data?.dblOverTimePay,
+									overTimePay: data?.overTimePay,
 							  }
 							: record,
 					);
@@ -604,21 +659,13 @@ const Timesheet = ({
 								({
 									_id,
 									approveStatus,
-									payType,
-									regPay,
-									statWorkPay,
-									dblOverTimePay,
-									overTimePay,
-									regHoursWorked,
-									overtimeHoursWorked,
-									dblOvertimeHoursWorked,
-									statDayHoursWorked,
-									statDayHours,
-									sickPayHours,
-									vacationPayHours,
-									statPay,
-									sickPay,
-									vacationPay,
+									rowBg,
+									param_hours,
+									type,
+									approveStatusBtnCss,
+									isDisabled,
+									param_hours_worked,
+									param_pay_type,
 									clockIn,
 									clockOut,
 									notDevice,
@@ -635,50 +682,6 @@ const Timesheet = ({
 									role = positions[0].title,
 									department = positions[0].employmentDepartment,
 								}) => {
-									// const sourceBtnCss = getSourceStyle(source);
-									const approveStatusBtnCss = getStatusStyle(approveStatus);
-									const { type, color, rowBg } = getPayTypeStyle(payType);
-
-									const { param_key, param_hours } = getParamKey(payType);
-
-									const param_pay_type =
-										param_key === "regPay"
-											? regPay
-											: param_key === "overTimePay"
-											? overTimePay
-											: param_key === "dblOverTimePay"
-											? dblOverTimePay
-											: param_key === "statWorkPay"
-											? statWorkPay
-											: param_key === "statPay"
-											? statPay
-											: param_key === "sickPay"
-											? sickPay
-											: vacationPay;
-
-									const param_hours_worked =
-										param_hours === "regHoursWorked"
-											? regHoursWorked
-											: param_hours === "overtimeHoursWorked"
-											? overtimeHoursWorked
-											: param_hours === "dblOvertimeHoursWorked"
-											? dblOvertimeHoursWorked
-											: param_hours === "statDayHoursWorked"
-											? statDayHoursWorked
-											: param_hours === "statDayHours"
-											? statDayHours
-											: param_hours === "sickPayHours"
-											? sickPayHours
-											: param_hours === "vacationPayHours"
-											? vacationPayHours
-											: param_hours === "regBreakHoursWorked"
-											? regBreakHoursWorked
-											: 0;
-
-									const isStatPay = payType === PAY_TYPES_TITLE.STAT_PAY;
-
-									const isDisabled = !clockIn || !clockOut;
-
 									return (
 										<Tr
 											key={_id}
@@ -707,19 +710,23 @@ const Timesheet = ({
 												/>
 											</Td>
 											<Td py={0}>
-												<SelectList
-													size="sm"
-													w="130px"
-													id={_id}
-													type="role"
-													handleSelect={(type, value, rowId) =>
-														handleUpdateData(rowId, type, value, param_hours, param_hours_worked)
-													}
-													code="title"
-													selectedValue={role}
-													data={positions}
-													isTimesheetPayType
-												/>
+												{positions?.length > 1 ? (
+													<SelectList
+														size="sm"
+														w="130px"
+														id={_id}
+														type="role"
+														handleSelect={(type, value, rowId) =>
+															handleUpdateData(rowId, type, value, param_hours, param_hours_worked)
+														}
+														code="title"
+														selectedValue={role}
+														data={positions}
+														isTimesheetPayType
+													/>
+												) : (
+													<NormalTextTitle maxW="120px" size="sm" title={role} />
+												)}
 											</Td>
 											<Td py={0}>
 												<NormalTextTitle maxW="120px" size="sm" title={department} />
@@ -822,16 +829,16 @@ const Timesheet = ({
 											<Td p={0} position={"sticky"} right={"0"} zIndex="1">
 												<PrimaryButton
 													cursor="text"
-													color={approveStatusBtnCss.color}
-													bg={approveStatusBtnCss.bg}
+													color={approveStatusBtnCss?.color}
+													bg={approveStatusBtnCss?.bg}
 													name={approveStatus}
 													size="sm"
 													fontWeight="bold"
 													px="1em"
 													w="100px"
 													hover={{
-														bg: approveStatusBtnCss.bg,
-														color: approveStatusBtnCss.color,
+														bg: approveStatusBtnCss?.bg,
+														color: approveStatusBtnCss?.color,
 													}}
 												/>
 											</Td>
