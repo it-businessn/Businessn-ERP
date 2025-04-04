@@ -2,11 +2,10 @@ import { Box, Button, Flex, HStack } from "@chakra-ui/react";
 import Logo from "components/logo";
 import { useEffect, useRef, useState } from "react";
 import { useBreakpointValue } from "services/Breakpoint";
-import coverVideo from "../../assets/cover.mp4";
 import logoImg from "../../assets/logos/BusinessN_dark1.png";
+import CirclePattern from "./CirclePattern";
 import ContactForm from "./ContactForm";
 import SignInForm from "./SignInForm";
-
 const Login = () => {
 	const videoRef = useRef(null);
 	const { isMobile } = useBreakpointValue();
@@ -49,22 +48,24 @@ const Login = () => {
 				</Box>
 			)}
 			<Box
-				as="video"
-				loop
-				muted
-				autoPlay
-				ref={videoRef}
+				// as="video"
+				// loop
+				// muted
+				// autoPlay
+				// ref={videoRef}
 				position="absolute"
 				top="0"
 				left="0"
-				width="100%"
+				width="50%"
 				height="100%"
-				objectFit="cover"
-				zIndex="0"
-				filter="grayscale(0.9)"
+				px="10em"
+				// objectFit="cover"
+				// zIndex="0"
+				// filter="grayscale(0.9)"
 			>
-				<source src={coverVideo} type="video/mp4" />
-				Your browser does not support the video tag.
+				<CirclePattern />
+				{/* <source src={coverVideo} type="video/mp4" />
+				Your browser does not support the video tag. */}
 			</Box>
 			{showContactForm && (
 				<ContactForm
