@@ -75,9 +75,9 @@ const calculateTimesheetApprovedHours = async (startDate, endDate, companyName) 
 
 const calcRegHrsWorked = (earningType, FTHrs, PTHrs, regHrs, isExtraRun) =>
 	!isExtraRun && earningType === EARNING_TYPE.FT
-		? convertHrsToFloat(FTHrs)
+		? convertHrsToFloat(FTHrs) || 0
 		: !isExtraRun && earningType === EARNING_TYPE.PT
-		? convertHrsToFloat(PTHrs)
+		? convertHrsToFloat(PTHrs) || 0
 		: regHrs;
 
 const calcPayRates = (newEmpDataPay) => {
@@ -314,7 +314,7 @@ const calcContrDeductions = (newEmpData) => {
 };
 
 const calcVacBalance = (newEmpData, empBenefitInfoResult, amtAllocated) => {
-	const vacationPayPercent = convertHrsToFloat(empBenefitInfoResult?.vacationPayPercent);
+	const vacationPayPercent = convertHrsToFloat(empBenefitInfoResult?.vacationPayPercent) || 0;
 	newEmpData.currentVacationBalanceFwd = convertHrsToFloat(amtAllocated?.vacationBalAdjust);
 
 	newEmpData.currentVacationAccrued =
@@ -369,7 +369,7 @@ const calcEmpContributions = (newEmpData, empTaxCreditResult, amtAllocated) => {
 	// 	pensionContribution + 2.05 * newEmpData.totalRegHoursWorked;
 
 	newEmpData.currentFDTaxDeductions =
-		federalTaxDeductionByPayPeriod + convertHrsToFloat(amtAllocated?.federalTax);
+		federalTaxDeductionByPayPeriod + convertHrsToFloat(amtAllocated?.federalTax) || 0;
 	newEmpData.currentStateTaxDeductions =
 		totalProvincialTaxDeduction + convertHrsToFloat(amtAllocated?.provTax);
 
