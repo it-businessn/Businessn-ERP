@@ -174,6 +174,12 @@ const PayrollService = {
 		);
 	},
 
+	async getJournalEntryReportDetails(company, payNum, isExtraRun) {
+		return apiService.get(
+			`/payroll/payDetailsReport/funds/journals/${company}/${payNum}/${isExtraRun}`,
+		);
+	},
+
 	async addPayPeriodPayStub(data) {
 		return apiService.post("/payroll/payDetailsReport", data);
 	},

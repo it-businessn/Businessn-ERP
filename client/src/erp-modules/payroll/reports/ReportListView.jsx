@@ -7,6 +7,7 @@ import { useParams } from "react-router-dom";
 import LocalStorageService from "services/LocalStorageService";
 import PayrollService from "services/PayrollService";
 import { CURRENT_YEAR } from "utils/convertDate";
+import JournalsReportModal from "../process-payroll/preview-reports/JournalsReportModal";
 import PreviewReportsModal from "../process-payroll/preview-reports/PreviewReportsModal";
 import TotalsReportModal from "../process-payroll/preview-reports/TotalsReportModal";
 import WorkviewTable from "../workview/paygroup-header-table/WorkviewTable";
@@ -37,8 +38,10 @@ const ReportListView = () => {
 	);
 	const [showReport, setShowReport] = useState(undefined);
 	const [showTotalsReport, setShowTotalsReport] = useState(false);
+	const [showJournalsReport, setShowJournalsReport] = useState(false);
 	const [hasLoaded, setHasLoaded] = useState(false);
 	const [totalsReport, setTotalsReport] = useState(null);
+	const [journalReport, setJournalReport] = useState(null);
 	const [selectedPayPeriod, setSelectedPayPeriod] = useState(null);
 
 	const getPayNum = (payNo, isExtra) =>
@@ -48,12 +51,6 @@ const ReportListView = () => {
 			  )
 			: payNo;
 
-	const handleRegister = (payNo, isExtra) => {
-		const payNum = getPayNum(payNo, isExtra);
-		setSelectedPayPeriod(payNum);
-		setShowReport(true);
-		setShowTotalsReport(false);
-	};
 	const [reportData, setReport] = useState(null);
 
 	useEffect(() => {
@@ -61,6 +58,21 @@ const ReportListView = () => {
 		const extraRun = selectedPayPeriod?.isExtraRun ?? false;
 
 		setHasLoaded(false);
+		const fetchJournalInfo = async () => {
+			try {
+				setJournalReport(null);
+				const { data } = await PayrollService.getJournalEntryReportDetails(
+					company,
+					payNum,
+					extraRun,
+				);
+				setHasLoaded(true);
+				setJournalReport(data);
+			} catch (error) {
+				console.error(error);
+			}
+		};
+
 		const fetchFundTotalsInfo = async () => {
 			try {
 				setTotalsReport(null);
@@ -91,14 +103,33 @@ const ReportListView = () => {
 			fetchFundTotalsInfo();
 		} else if (selectedPayPeriod && showReport) {
 			fetchHoursWorkedInfo();
+		} else if (selectedPayPeriod && showJournalsReport) {
+			fetchJournalInfo();
 		}
 	}, [selectedPayPeriod, showReport, year, showTotalsReport]);
+
+	const handleRegister = (payNo, isExtra) => {
+		const payNum = getPayNum(payNo, isExtra);
+		setSelectedPayPeriod(payNum);
+		setShowReport(true);
+		setShowTotalsReport(false);
+		setShowJournalsReport(false);
+	};
 
 	const handleTotalsReport = (payNo, isExtra) => {
 		const payNum = getPayNum(payNo, isExtra);
 		setSelectedPayPeriod(payNum);
 		setShowTotalsReport(true);
 		setShowReport(false);
+		setShowJournalsReport(false);
+	};
+
+	const handleJournalsReport = (payNo, isExtra) => {
+		const payNum = getPayNum(payNo, isExtra);
+		// setSelectedPayPeriod(payNum);
+		// setShowTotalsReport(false);
+		// setShowReport(false);
+		// setShowJournalsReport(true);
 	};
 
 	return (
@@ -125,6 +156,7 @@ const ReportListView = () => {
 					handleRegister={handleRegister}
 					selectedYear={selectedYear}
 					handleTotalsReport={handleTotalsReport}
+					handleJournalsReport={handleJournalsReport}
 				/>
 			)}
 			{hasLoaded && showReport && reportData && (
@@ -140,6 +172,13 @@ const ReportListView = () => {
 					isOpen={showTotalsReport}
 					onClose={() => setShowTotalsReport(false)}
 					reportData={totalsReport}
+				/>
+			)}
+			{hasLoaded && showJournalsReport && journalReport && (
+				<JournalsReportModal
+					isOpen={showJournalsReport}
+					onClose={() => setShowJournalsReport(false)}
+					reportData={journalReport}
 				/>
 			)}
 		</PageLayout>

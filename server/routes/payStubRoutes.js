@@ -13,6 +13,11 @@ router.get(
 	payStubController.getFundPayDetailsReportInfo,
 );
 
+router.get(
+	"/funds/journals/:companyName/:payPeriodNum/:isExtraRun",
+	payStubController.getJournalEntryReportInfo,
+);
+
 router.get("/:companyName/:empId", payStubController.getEmployeePayDetailsReportInfo);
 
 router.get(

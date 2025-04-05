@@ -19,6 +19,8 @@ const { appendPrevPayInfoBalance } = require("./payStubHelper");
 const { getPayrollActiveEmployees } = require("./appController");
 const FundingTotalsPay = require("../models/FundingTotalsPay");
 const Order = require("../models/Order");
+const JournalEntry = require("../models/JournalEntry");
+const { findEmployeeEmploymentInfo } = require("./employmentInfoController");
 
 const buildPayStub = (
 	empId,
@@ -602,17 +604,109 @@ const buildFundingTotalsReport = async (fundingTotal, totalEmployees, isExtraRun
 		const newTotals = await FundingTotalsPay.create(fundingTotal);
 		if (newTotals) {
 			const { companyName } = fundingTotal;
-			const length = await Order.countDocuments({ companyName: BUSINESSN_ORG });
-			const orderNumber = `BE100${length + 1}`;
-			const newOrder = {
-				companyName: BUSINESSN_ORG,
-				orderNumber,
-				fundingTotalsId: newTotals._id,
-				totalRecipients: totalEmployees,
-				customer: companyName,
-			};
-			await Order.create(newOrder);
+			createNewOrder(newTotals._id, companyName, totalEmployees);
+			createJournalEntry(newTotals._id, companyName);
 		}
+	}
+};
+
+const createNewOrder = async (fundingTotalsId, customer, totalRecipients) => {
+	const length = await Order.countDocuments({ companyName: BUSINESSN_ORG });
+	const orderNumber = `BE100${length + 1}`;
+	const newOrder = {
+		companyName: BUSINESSN_ORG,
+		orderNumber,
+		fundingTotalsId,
+		totalRecipients,
+		customer,
+	};
+	await Order.create(newOrder);
+};
+
+const createJournalEntry = async (fundingTotalReportId, companyName) => {
+	let journalEntry = {
+		companyName,
+		departmentBreakDown: [],
+		totalDebit: 0,
+		totalCredit: 0,
+		netFundingWithdrawals: 0,
+	};
+	const existsFundDetails = await FundingTotalsPay.findById(fundingTotalReportId);
+	if (existsFundDetails) {
+		const {
+			totalEmpPaymentRemitCost,
+			totalGovtContr,
+			totalEI_Contr,
+			totalCPP_Contr,
+			totalIncomeTaxContr,
+			totalServiceCharges,
+			totalFundingWithDrawals,
+			payPeriodNum,
+			isExtraRun,
+			payPeriodProcessingDate,
+		} = existsFundDetails;
+
+		const currentPayStubs = await EmployeePayStub.find({
+			companyName,
+			payPeriodNum,
+			isExtraRun,
+		}).select(
+			"empId currentGrossPay currentCPPDeductions currentEmployerCPPDeductions currentEmployerEIDeductions currentEmployeeEIDeductions currentIncomeTaxDeductions",
+		);
+		const deptPromises = currentPayStubs.map(async (record) => {
+			const empDeptInfoResult = await findEmployeeEmploymentInfo(record?.empId, companyName);
+			const department = empDeptInfoResult?.positions[0]?.employmentDepartment;
+			return {
+				record,
+				department,
+			};
+		});
+
+		const allDepartmentBreakDown = await Promise.all(deptPromises);
+		const departmentBreakdown = allDepartmentBreakDown.reduce((acc, { record, department }) => {
+			const dept = acc[department] || {
+				department,
+				incomeTaxContribution: 0,
+				employeeEIContribution: 0,
+				employerEIBenefitExpense: 0,
+				employeeCPPContribution: 0,
+				employerCPPBenefitExpense: 0,
+				grossWageExpense: 0,
+				CPPPayable: 0,
+				EIPayable: 0,
+			};
+
+			dept.incomeTaxContribution += record.currentIncomeTaxDeductions || 0;
+			dept.employeeEIContribution += record.currentEmployeeEIDeductions || 0;
+			dept.employerEIBenefitExpense += record.currentEmployerEIDeductions || 0;
+			dept.employeeCPPContribution += record.currentCPPDeductions || 0;
+			dept.employerCPPBenefitExpense += record.currentCPPDeductions || 0;
+			dept.grossWageExpense += record.currentGrossPay || 0;
+			dept.CPPPayable = dept.employerCPPBenefitExpense;
+			dept.EIPayable = dept.employerEIBenefitExpense;
+
+			acc[department] = dept;
+			return acc;
+		}, {});
+
+		const groupedDepartmentBreakDown = Object.values(departmentBreakdown);
+
+		journalEntry = {
+			companyName,
+			departmentBreakDown: groupedDepartmentBreakDown,
+			totalDebit: 0,
+			totalCredit: 0,
+			netFundingWithdrawals: totalEmpPaymentRemitCost + totalGovtContr,
+			totalEIPayable: totalEI_Contr,
+			totalCPPPayable: totalCPP_Contr,
+			totalIncomeTaxPayable: totalIncomeTaxContr,
+			totalServiceCharges,
+			totalFundingWithDrawals,
+			payPeriodProcessingDate,
+			payPeriodNum,
+			isExtraRun,
+		};
+		const newEntry = await JournalEntry.create(journalEntry);
 	}
 };
 
@@ -638,6 +732,47 @@ const getFundPayDetailsReportInfo = async (req, res) => {
 			createdOn: -1,
 		});
 		res.status(200).json(payStubs);
+	} catch (error) {
+		res.status(404).json({ error: error.message });
+	}
+};
+
+const getJournalEntryReportInfo = async (req, res) => {
+	const { companyName, payPeriodNum, isExtraRun } = req.params;
+
+	try {
+		const isExtraPayRun = isExtraRun === "true";
+		const entries = await JournalEntry.findOne({
+			companyName,
+			payPeriodNum,
+			isExtraRun: isExtraPayRun,
+			payPeriodProcessingDate: {
+				$gte: moment().startOf("year").toDate(),
+				$lt: moment().endOf("year").toDate(),
+			},
+		});
+		// if (entries)
+		res.status(200).json(entries);
+		// return res.status(200).json({
+		// 	totalIncomeTaxContr: 0,
+		// 	totalCPP_EE_Contr: 0,
+		// 	totalCPP_ER_Contr: 0,
+		// 	totalCPP_Contr: 0,
+		// 	totalBatchCharges: 0,
+		// 	timeClockMaintenanceCost: 0,
+		// 	totalCorePayrollCost: 0,
+		// 	totalEI_Contr: 0,
+		// 	totalEI_EE_Contr: 0,
+		// 	totalEI_ER_Contr: 0,
+		// 	totalEmpPaymentRemitCost: 0,
+		// 	totalEmpPayrollCost: 0,
+		// 	totalFundingWithDrawals: 0,
+		// 	totalGovtContr: 0,
+		// 	totalNetPay: 0,
+		// 	totalServiceCharges: 0,
+		// 	totalTimeManagementEmpCost: 0,
+		// 	totalTimeManagementPayrollCost: 0,
+		// });
 	} catch (error) {
 		res.status(404).json({ error: error.message });
 	}
@@ -762,4 +897,5 @@ module.exports = {
 	calculateTimesheetApprovedHours,
 	getFundPayDetailsReportInfo,
 	getFundingPayDetailsReportInfo,
+	getJournalEntryReportInfo,
 };
