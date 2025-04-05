@@ -166,10 +166,10 @@ const Orders = () => {
 										<Tr key={_id}>
 											<Td p={0}>{`#${orderNumber}`}</Td>
 											<Td py={0}>
-												<NormalTextTitle size="xs" title={formatDateBar(createdOn)} />
+												<NormalTextTitle size="sm" title={formatDateBar(createdOn)} />
 											</Td>
 											<Td py={0}>
-												<NormalTextTitle size="xs" title={customer} />
+												<NormalTextTitle size="sm" title={customer} />
 											</Td>
 											<Td py={0}>{type}</Td>
 											{/* <Td py={0}>
