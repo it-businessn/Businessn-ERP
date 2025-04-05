@@ -2,6 +2,7 @@ import { Box, Button, Flex, HStack } from "@chakra-ui/react";
 import Logo from "components/logo";
 import { useEffect, useRef, useState } from "react";
 import { useBreakpointValue } from "services/Breakpoint";
+// import coverVideo from "../../assets/cover.mp4";
 import logoImg from "../../assets/logos/BusinessN_dark1.png";
 import CirclePattern from "./CirclePattern";
 import ContactForm from "./ContactForm";

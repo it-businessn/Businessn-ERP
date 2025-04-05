@@ -14,6 +14,7 @@ const SelectList = ({
 	type,
 	isTimesheetAction,
 	isTimesheetPayType,
+	isOrderAction,
 	w,
 }) => {
 	const handleChange = (event) => {
@@ -42,7 +43,7 @@ const SelectList = ({
 			}
 			value={value}
 			onChange={handleChange}
-			placeholder={!isTimesheetAction && "Select"}
+			placeholder={!isTimesheetAction && !isOrderAction && "Select"}
 			w={w}
 		>
 			{data?.map((item) => (

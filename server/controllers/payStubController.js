@@ -11,13 +11,14 @@ const {
 } = require("./payrollHelper");
 const { findEmployeePayInfoDetails } = require("./payInfoController");
 const { findEmployeeGovernmentInfoDetails } = require("./governmentInfoController");
-const { PAYRUN_TYPE } = require("../services/data");
+const { PAYRUN_TYPE, BUSINESSN_ORG } = require("../services/data");
 const { addSeparateSuperficialCheque } = require("./payStubSuperficialCalc");
 const { addSeparateManualCheque } = require("./payStubManualCalc");
 const { addSeparatePayoutCheque } = require("./payStubPayoutCalc");
 const { appendPrevPayInfoBalance } = require("./payStubHelper");
 const { getPayrollActiveEmployees } = require("./appController");
 const FundingTotalsPay = require("../models/FundingTotalsPay");
+const Order = require("../models/Order");
 
 const buildPayStub = (
 	empId,
@@ -598,7 +599,20 @@ const buildFundingTotalsReport = async (fundingTotal, totalEmployees, isExtraRun
 			new: true,
 		});
 	} else {
-		await FundingTotalsPay.create(fundingTotal);
+		const newTotals = await FundingTotalsPay.create(fundingTotal);
+		if (newTotals) {
+			const { companyName } = fundingTotal;
+			const length = await Order.countDocuments({ companyName: BUSINESSN_ORG });
+			const orderNumber = `BE100${length + 1}`;
+			const newOrder = {
+				companyName: BUSINESSN_ORG,
+				orderNumber,
+				fundingTotalsId: newTotals._id,
+				totalRecipients: totalEmployees,
+				customer: companyName,
+			};
+			await Order.create(newOrder);
+		}
 	}
 };
 

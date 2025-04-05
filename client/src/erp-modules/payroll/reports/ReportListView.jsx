@@ -1,6 +1,5 @@
 import { Select } from "@chakra-ui/react";
 import useCompany from "hooks/useCompany";
-import useEmployeePayReport from "hooks/useEmployeePayReport";
 import usePaygroup from "hooks/usePaygroup";
 import PageLayout from "layouts/PageLayout";
 import { useEffect, useState } from "react";
@@ -38,23 +37,9 @@ const ReportListView = () => {
 	);
 	const [showReport, setShowReport] = useState(undefined);
 	const [showTotalsReport, setShowTotalsReport] = useState(false);
+	const [hasLoaded, setHasLoaded] = useState(false);
 	const [totalsReport, setTotalsReport] = useState(null);
 	const [selectedPayPeriod, setSelectedPayPeriod] = useState(null);
-
-	useEffect(() => {
-		const fetchFundTotalsInfo = async () => {
-			try {
-				const payNum = selectedPayPeriod?.payPeriod || selectedPayPeriod;
-				const extraRun = selectedPayPeriod?.isExtraRun || false;
-				const { data } = await PayrollService.getTotalsPayReportDetails(company, payNum, extraRun);
-
-				setTotalsReport(data);
-			} catch (error) {
-				console.error(error);
-			}
-		};
-		if (selectedPayPeriod && showTotalsReport) fetchFundTotalsInfo();
-	}, [selectedPayPeriod, showTotalsReport]);
 
 	const getPayNum = (payNo, isExtra) =>
 		isExtra
@@ -69,8 +54,45 @@ const ReportListView = () => {
 		setShowReport(true);
 		setShowTotalsReport(false);
 	};
+	const [reportData, setReport] = useState(null);
 
-	const reportData = useEmployeePayReport(company, selectedPayPeriod, showReport, selectedYear);
+	useEffect(() => {
+		const payNum = selectedPayPeriod?.payPeriod ?? selectedPayPeriod;
+		const extraRun = selectedPayPeriod?.isExtraRun ?? false;
+
+		setHasLoaded(false);
+		const fetchFundTotalsInfo = async () => {
+			try {
+				setTotalsReport(null);
+				const { data } = await PayrollService.getTotalsPayReportDetails(company, payNum, extraRun);
+				setHasLoaded(true);
+				setTotalsReport(data);
+			} catch (error) {
+				console.error(error);
+			}
+		};
+
+		const fetchHoursWorkedInfo = async () => {
+			try {
+				setReport(null);
+				const { data } = await PayrollService.getPayReportDetails(
+					company,
+					payNum,
+					extraRun,
+					selectedYear,
+				);
+				setReport(data);
+				setHasLoaded(true);
+			} catch (error) {
+				console.error(error);
+			}
+		};
+		if (selectedPayPeriod && showTotalsReport) {
+			fetchFundTotalsInfo();
+		} else if (selectedPayPeriod && showReport) {
+			fetchHoursWorkedInfo();
+		}
+	}, [selectedPayPeriod, showReport, year, showTotalsReport]);
 
 	const handleTotalsReport = (payNo, isExtra) => {
 		const payNum = getPayNum(payNo, isExtra);
@@ -105,7 +127,7 @@ const ReportListView = () => {
 					handleTotalsReport={handleTotalsReport}
 				/>
 			)}
-			{showReport && (
+			{hasLoaded && showReport && reportData && (
 				<PreviewReportsModal
 					isReport
 					isOpen={showReport}
@@ -113,7 +135,7 @@ const ReportListView = () => {
 					reportData={reportData}
 				/>
 			)}
-			{showTotalsReport && totalsReport && (
+			{hasLoaded && showTotalsReport && totalsReport && (
 				<TotalsReportModal
 					isOpen={showTotalsReport}
 					onClose={() => setShowTotalsReport(false)}

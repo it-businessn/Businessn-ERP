@@ -1,35 +1,43 @@
-import {
-	Box,
-	Button,
-	Flex,
-	HStack,
-	Input,
-	InputGroup,
-	InputLeftElement,
-	Progress,
-	SimpleGrid,
-	Spacer,
-	Table,
-	Tbody,
-	Td,
-	Text,
-	Th,
-	Thead,
-	Tr,
-	VStack,
-} from "@chakra-ui/react";
+import { Box, Table, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
+import SelectList from "components/ui/form/select/SelectList";
 import NormalTextTitle from "components/ui/NormalTextTitle";
-import { activityChartData, doughnutOptions } from "constant";
 import PageLayout from "layouts/PageLayout";
 import { useEffect, useState } from "react";
-import { Doughnut } from "react-chartjs-2";
-import { FaSearch } from "react-icons/fa";
-import { MdOutlineFilterList } from "react-icons/md";
 import { useBreakpointValue } from "services/Breakpoint";
-import ContactService from "services/ContactService";
 import LocalStorageService from "services/LocalStorageService";
+import OrderService from "services/OrderService";
+import { getAmount } from "utils/convertAmt";
+import { formatDateBar } from "utils/convertDate";
+import CustomFilter from "./CustomFilter";
+import OrderGraph from "./OrderGraph";
 
 const Orders = () => {
+	const ORDER_COLS = [
+		"Order",
+		"Created On ",
+		"Customer",
+		"Type",
+		"Total Remitted",
+		"Total Employee Remittance",
+		"Total CRA Remittance",
+		"Total Recipients",
+		"Funds Received Status",
+		"Emp EFTSent Status",
+		"Emp EFTDeposited Status",
+		"CRA Sent Status",
+		"CRA Deposited Status",
+	];
+	const ORDER_STATUS = [{ name: "Settled" }, { name: "Unsettled" }];
+
+	const initialFormData = {
+		fundsReceivedStatus: "",
+		craDepositedStatus: "",
+		craSentStatus: "",
+		empEFTDepositedStatus: "",
+		empEFTSentStatus: "",
+		recordId: null,
+	};
+
 	const company = LocalStorageService.getItem("selectedCompany");
 	const { isMobile } = useBreakpointValue();
 
@@ -39,176 +47,84 @@ const Orders = () => {
 		setSelectedDateFilter(event.target.value);
 		// Fetch data based on the selected date filter
 	};
-	const [contacts, setContacts] = useState(null);
-	const fetchAllContacts = async () => {
-		try {
-			const { data } = await ContactService.getCompContacts(company);
-			data.map((item) => (item.comm = "Meeting"));
-			setContacts(data);
-		} catch (error) {
-			console.error(error);
-		}
-	};
+	const [orders, setOrders] = useState(null);
+	const [statusChanged, setStatusChanged] = useState(false);
+	const [formData, setFormData] = useState(initialFormData);
 
 	useEffect(() => {
-		fetchAllContacts();
+		const fetchAllOrders = async () => {
+			try {
+				const { data } = await OrderService.getCompOrders(company);
+				data?.map((record) => {
+					const { isExtraRun, totalFundingWithDrawals, totalEmpPaymentRemitCost, totalGovtContr } =
+						record.fundingTotalsId;
+					record.type = isExtraRun ? "Extra" : "Regular";
+					record.totalsRemitted = getAmount(totalFundingWithDrawals);
+					record.totalEmpRemitted = getAmount(totalEmpPaymentRemitCost);
+					record.totalCRARemitted = getAmount(totalGovtContr);
+					return record;
+				});
+				setOrders(data);
+			} catch (error) {
+				console.error(error);
+			}
+		};
+		fetchAllOrders();
 	}, []);
+
+	useEffect(() => {
+		if (statusChanged) {
+			handleUpdate();
+		}
+	}, [statusChanged]);
+
+	const handleSelect = (type, value, id) => {
+		const updatedData = orders?.map((record) =>
+			record._id === id ? { ...record, [type]: value } : record,
+		);
+		setFormData({
+			recordId: id,
+			[type]: value,
+		});
+		setStatusChanged(true);
+		setOrders(updatedData);
+	};
+
+	const handleUpdate = async () => {
+		try {
+			const updatedRec = orders.find(({ _id }) => _id === formData.recordId);
+			formData.fundsReceivedStatus = updatedRec.fundsReceivedStatus;
+			formData.craDepositedStatus = updatedRec.craDepositedStatus;
+			formData.craSentStatus = updatedRec.craSentStatus;
+			formData.empEFTDepositedStatus = updatedRec.empEFTDepositedStatus;
+			formData.empEFTSentStatus = updatedRec.empEFTSentStatus;
+
+			if (formData.recordId) {
+				const { data } = await OrderService.updateOrder(formData, formData.recordId);
+
+				if (data) {
+					const updatedData = orders?.map((record) =>
+						record._id === formData.recordId
+							? {
+									...record,
+									fundsReceivedStatus: data?.fundsReceivedStatus,
+									craDepositedStatus: data?.craDepositedStatus,
+									craSentStatus: data?.craSentStatus,
+									empEFTDepositedStatus: data?.empEFTDepositedStatus,
+									empEFTSentStatus: data?.empEFTSentStatus,
+							  }
+							: record,
+					);
+					setOrders(updatedData);
+				}
+				setStatusChanged(false);
+			}
+		} catch (error) {}
+	};
+
 	return (
 		<PageLayout title="Orders">
-			{/* <Box
-			p={{ base: "1em", md: "2em" }}
-			h={{ base: "auto", md: "calc(100vh - 278px)", lg: "auto" }}
-			overflow="auto"
-		> */}
-
-			<Box
-				p="1em"
-				bg={"var(--primary_bg)"}
-				border="3px solid var(--main_color)"
-				borderRadius="10px"
-				fontWeight="bold"
-				mb="1em"
-			>
-				<Text fontWeight="bold" mb="1em" color={"var(--nav_color)"}>
-					Order Categories
-				</Text>
-				<SimpleGrid columns={{ base: 1, lg: 3 }} spacing="1em">
-					<Box
-						px="1em"
-						bg={"var(--primary_bg)"}
-						border="3px solid var(--main_color)"
-						borderRadius="10px"
-						fontWeight="bold"
-					>
-						<Text fontWeight="bold" color={"var(--main_color_black)"} mt="2" mb="1">
-							Open stage mix
-						</Text>
-						<VStack>
-							<Box h={"40px"} />
-							<Box w={{ base: "70%", md: "50%", lg: "100%", xl: "65%" }} mx={"auto"}>
-								<Doughnut data={activityChartData} options={doughnutOptions("0%")} />
-							</Box>
-						</VStack>
-					</Box>
-					<Box
-						p="1em"
-						bg={"var(--primary_bg)"}
-						border="3px solid var(--main_color)"
-						borderRadius="10px"
-						fontWeight="bold"
-					>
-						<Flex justify="space-between" align="center" mb="2">
-							<Text fontWeight="bold">Orders to fulfill</Text>
-						</Flex>
-						<SimpleGrid columns={{ base: 2, md: 1 }} gap={4} h={"85%"}>
-							<Box
-								p={4}
-								border={"2px solid var(--filter_border_color)"}
-								borderRadius={"10px"}
-								justifyContent="space-evenly"
-								display="flex"
-								flexDir="column"
-							>
-								<Text fontSize="xs" fontWeight="bold" color={"var(--nav_color)"}>
-									Orders to be Fulfilled
-								</Text>
-								<Text mr="3" fontSize={"1.25em"}>
-									123
-								</Text>
-							</Box>
-							<Box
-								p={4}
-								border={"2px solid var(--filter_border_color)"}
-								borderRadius={"10px"}
-								justifyContent="space-evenly"
-								display="flex"
-								flexDir="column"
-							>
-								<Text fontSize="xs" fontWeight="bold" color={"var(--nav_color)"}>
-									New Order
-								</Text>
-								<Text mr="3" fontSize={"1.25em"}>
-									455
-								</Text>
-							</Box>
-							<Box
-								p={4}
-								border={"2px solid var(--filter_border_color)"}
-								borderRadius={"10px"}
-								justifyContent="space-evenly"
-								display="flex"
-								flexDir="column"
-							>
-								<Text fontSize="xs" fontWeight="bold" color={"var(--nav_color)"}>
-									Approved Orders
-								</Text>
-								<Text mr="3" fontSize={"1.25em"}>
-									$55
-								</Text>
-							</Box>
-						</SimpleGrid>
-					</Box>
-					<Box
-						p="1em"
-						bg={"var(--primary_bg)"}
-						border="3px solid var(--main_color)"
-						borderRadius="10px"
-						fontWeight="bold"
-					>
-						<Flex justify="space-between" align="center" mb="2">
-							<Text fontWeight="bold">Key Metrics</Text>
-						</Flex>
-						<SimpleGrid columns={{ base: 2, md: 1 }} gap={4} h={"80%"}>
-							<Box
-								p={4}
-								border={"2px solid var(--filter_border_color)"}
-								borderRadius={"10px"}
-								justifyContent="space-evenly"
-								display="flex"
-								flexDir="column"
-							>
-								<Text fontSize="xs" fontWeight="bold">
-									Fulfillment Rate
-								</Text>
-								<Text mr="3" fontSize={"1.25em"}>
-									45%
-								</Text>
-							</Box>
-							<Box
-								p={4}
-								border={"2px solid var(--filter_border_color)"}
-								borderRadius={"10px"}
-								justifyContent="space-evenly"
-								display="flex"
-								flexDir="column"
-							>
-								<Text fontSize="xs" fontWeight="bold">
-									Time to fulfill
-								</Text>
-								<Text mr="3" fontSize={"1.25em"}>
-									5 days
-								</Text>
-							</Box>
-
-							<Box
-								p={4}
-								border={"2px solid var(--filter_border_color)"}
-								borderRadius={"10px"}
-								justifyContent="space-evenly"
-								display="flex"
-								flexDir="column"
-							>
-								<Text fontSize="xs" fontWeight="bold">
-									Average order value
-								</Text>
-								<Text mr="3" fontSize={"1.25em"}>
-									$100
-								</Text>
-							</Box>
-						</SimpleGrid>
-					</Box>
-				</SimpleGrid>
-			</Box>
+			<OrderGraph />
 			<Box
 				p="1em"
 				bg={"var(--primary_bg)"}
@@ -216,144 +132,118 @@ const Orders = () => {
 				borderRadius="10px"
 				color={"var(--nav_color)"}
 			>
-				{isMobile ? (
-					<Flex flexDir="column">
-						<Flex justify="space-between">
-							<Text fontWeight="bold">Orders</Text>
-							{/* <Button
-								bg="var(--primary_button_bg)"
-								color={"var(--primary_bg)"}
-								variant={"solid"}
-								size="xs"
-								_hover={{ color: "var(--main_color_black)" }}
-								borderRadius={"10px"}
-							>
-								Add new sales
-							</Button> */}
-						</Flex>
-						<HStack spacing="1em" mt="1em">
-							<Button
-								color={"var(--nav_color)"}
-								leftIcon={<MdOutlineFilterList />}
-								border={"2px solid var(--filter_border_color)"}
-								borderRadius={"10px"}
-								variant={"ghost"}
-								size={"xs"}
-								_hover={{ color: "var(--main_color_black)", bg: "transparent" }}
-							>
-								Filter
-							</Button>
-							<InputGroup
-								borderRadius={"10px"}
-								border={"1px solid var(--filter_border_color)"}
-								fontSize="xs"
-								size={"xs"}
-								fontWeight="bold"
-							>
-								<InputLeftElement children={<FaSearch />} />
-								<Input
-									_placeholder={{
-										color: "var(--nav_color)",
-										fontSize: "xs",
-									}}
-									color={"var(--nav_color)"}
-									bg={"var(--primary_bg)"}
-									type="text"
-									placeholder="Search here"
-									pr="4.5rem"
-									py={"1.2em"}
-								/>
-							</InputGroup>
-						</HStack>
-					</Flex>
-				) : (
-					<Flex>
-						<Text fontWeight="bold">Orders</Text>
-						<Spacer />
-						<HStack w={{ lg: "50%" }} spacing={3} justify={"flex-end"}>
-							<Button
-								color={"var(--nav_color)"}
-								leftIcon={<MdOutlineFilterList />}
-								border={"2px solid var(--filter_border_color)"}
-								borderRadius={"10px"}
-								variant={"ghost"}
-								size={"xs"}
-								_hover={{ color: "var(--main_color_black)", bg: "transparent" }}
-								ml={2}
-							>
-								Filter
-							</Button>
-							<InputGroup
-								w={"40%"}
-								borderRadius={"10px"}
-								border={"1px solid var(--filter_border_color)"}
-								fontSize="xs"
-								fontWeight="bold"
-								size={"xs"}
-							>
-								<InputLeftElement children={<FaSearch />} />
-								<Input
-									_placeholder={{
-										color: "var(--nav_color)",
-										fontSize: "xs",
-									}}
-									color={"var(--nav_color)"}
-									bg={"var(--primary_bg)"}
-									type="text"
-									placeholder="Search here"
-									pr="4.5rem"
-									py={"1.2em"}
-								/>
-							</InputGroup>
-							<Button
-								bg="var(--primary_button_bg)"
-								color={"var(--primary_bg)"}
-								variant={"solid"}
-								size={"xs"}
-								px={"1em"}
-								_hover={{ color: "var(--main_color_black)" }}
-								borderRadius={"10px"}
-							>
-								Add new orders
-							</Button>
-						</HStack>
-					</Flex>
-				)}
-				{contacts && (
+				<CustomFilter isMobile={isMobile} />
+				{orders && (
 					<Box overflow="auto" height={"450px"}>
 						<Table color={"var(--nav_color)"} bg={"var(--primary_bg)"} variant="small">
 							<Thead>
 								<Tr fontSize="xs">
-									<Th fontWeight={"bolder"} p={0}>
-										Order ID
-									</Th>
-									<Th fontWeight={"bolder"}>Created On </Th>
-									<Th fontWeight={"bolder"}>Status</Th>
-									<Th fontWeight={"bolder"}> Amount</Th>
-									<Th p={0}>Sales Person</Th>
-									<Th fontWeight={"bolder"}> Paid</Th>
+									{ORDER_COLS.map((col) => (
+										<Th key={col} fontWeight={"bolder"} p={col === "Order" && 0} whiteSpace="wrap">
+											{col}
+										</Th>
+									))}
 								</Tr>
 							</Thead>
 							<Tbody color={"var(--nav_color)"}>
-								{contacts.map((contact, index) => (
-									<Tr key={contact._id}>
-										<Td fontSize={"xs"} p={0}>
-											04/02/2024
-										</Td>
-										<Td fontSize={"xs"}>{contact.companyName}</Td>
-										<Td py={0} fontSize={"xs"}>
-											$345
-										</Td>
-										<Td py={0} fontSize={"xs"}>
-											Product1
-										</Td>
-										<Td py={0} fontSize={"xs"} p={0}>
-											<Progress colorScheme="blue" size="sm" bg={"#d5def5"} value={55} />
-											<NormalTextTitle size="xs" title={"Paid, preparing for shipment"} />
-										</Td>
-										<Td fontSize={"xs"}>Product1</Td>
-									</Tr>
-								))}
+								{orders.map(
+									({
+										_id,
+										orderNumber,
+										totalsRemitted,
+										craDepositedStatus,
+										craSentStatus,
+										createdOn,
+										customer,
+										empEFTDepositedStatus,
+										empEFTSentStatus,
+										fundsReceivedStatus,
+										totalRecipients,
+										totalEmpRemitted,
+										totalCRARemitted,
+										type,
+									}) => (
+										<Tr key={_id}>
+											<Td p={0}>{`#${orderNumber}`}</Td>
+											<Td py={0}>
+												<NormalTextTitle size="sm" title={formatDateBar(createdOn)} />
+											</Td>
+											<Td py={0}>
+												<NormalTextTitle size="sm" title={customer} />
+											</Td>
+											<Td py={0}>{type}</Td>
+											{/* <Td py={0}>
+												<Progress colorScheme="blue" size="sm" bg={"#d5def5"} value={55} />
+												<NormalTextTitle size="xs" title={"Paid, preparing for shipment"} />
+											</Td> */}
+
+											<Td py={0}>{totalsRemitted}</Td>
+											<Td py={0}>{totalEmpRemitted}</Td>
+											<Td py={0}>{totalCRARemitted}</Td>
+											<Td py={0}>{totalRecipients}</Td>
+											<Td py={0}>
+												<SelectList
+													w="100px"
+													id={_id}
+													code="name"
+													selectedValue={fundsReceivedStatus}
+													handleSelect={handleSelect}
+													type="fundsReceivedStatus"
+													data={ORDER_STATUS}
+													isOrderAction
+												/>
+											</Td>
+											<Td py={0}>
+												<SelectList
+													w="100px"
+													id={_id}
+													code="name"
+													selectedValue={empEFTSentStatus}
+													handleSelect={handleSelect}
+													type="empEFTSentStatus"
+													data={ORDER_STATUS}
+													isOrderAction
+												/>
+											</Td>
+											<Td py={0}>
+												<SelectList
+													w="100px"
+													id={_id}
+													code="name"
+													selectedValue={empEFTDepositedStatus}
+													handleSelect={handleSelect}
+													type="empEFTDepositedStatus"
+													data={ORDER_STATUS}
+													isOrderAction
+												/>
+											</Td>
+											<Td py={0}>
+												<SelectList
+													w="100px"
+													id={_id}
+													code="name"
+													selectedValue={craSentStatus}
+													handleSelect={handleSelect}
+													type="craSentStatus"
+													data={ORDER_STATUS}
+													isOrderAction
+												/>
+											</Td>
+											<Td py={0}>
+												<SelectList
+													w="100px"
+													id={_id}
+													code="name"
+													selectedValue={craDepositedStatus}
+													handleSelect={handleSelect}
+													type="craDepositedStatus"
+													data={ORDER_STATUS}
+													isOrderAction
+												/>
+											</Td>
+										</Tr>
+									),
+								)}
 							</Tbody>
 						</Table>
 					</Box>

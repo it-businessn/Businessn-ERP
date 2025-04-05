@@ -1,7 +1,5 @@
-"use client";
 import { gsap } from "gsap";
 import { useEffect, useRef } from "react";
-import "./hero.css";
 
 const CirclePattern = () => {
 	const rows = 15;
