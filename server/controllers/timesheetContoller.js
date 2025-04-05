@@ -88,7 +88,7 @@ const mapTimesheet = (payInfos, timesheets, empInfos) => {
 			timesheet.typeOfEarning = empRole?.typeOfEarning;
 		}
 	});
-	return timesheets?.filter(({ typeOfEarning }) => typeOfEarning === EARNING_TYPE.HOURLY);
+	return timesheets?.filter(({ typeOfEarning }) => typeOfEarning !== EARNING_TYPE.FT);
 };
 
 const getTimeFormat = (timestamp) => {

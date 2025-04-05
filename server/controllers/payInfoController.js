@@ -1,7 +1,6 @@
-const Employee = require("../models/Employee");
 const EmployeePayInfo = require("../models/EmployeePayInfo");
-const { ROLES } = require("../services/data");
 const { getPayrollActiveEmployees } = require("./appController");
+const { updateEmploymentInfo, findEmployeeEmploymentInfo } = require("./employmentInfoController");
 const { findEmpPayStubDetail } = require("./payStubHelper");
 const { findGroupEmployees } = require("./setUpController");
 const { getEmployeeId } = require("./userController");
@@ -88,6 +87,10 @@ const addEmployeePayInfo = async (req, res) => {
 		}
 		const existingPayInfo = await findEmployeePayInfo(empId, companyName);
 		if (existingPayInfo) {
+			const existingEmploymentInfo = await findEmployeeEmploymentInfo(empId, companyName);
+			if (existingEmploymentInfo) {
+				await updateEmploymentInfo(existingEmploymentInfo._id, { positions: roles });
+			}
 			const updatedPayInfo = await updatePayInfo(existingPayInfo._id, { roles });
 			return res.status(201).json(updatedPayInfo);
 		}

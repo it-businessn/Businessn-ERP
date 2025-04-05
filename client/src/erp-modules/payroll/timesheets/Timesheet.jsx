@@ -679,8 +679,8 @@ const Timesheet = ({
 									showAddBreak,
 									positions,
 									approveStatusAction,
-									role = positions[0].title,
-									department = positions[0].employmentDepartment,
+									role = positions[0]?.title,
+									department = positions[0]?.employmentDepartment,
 								}) => {
 									return (
 										<Tr
