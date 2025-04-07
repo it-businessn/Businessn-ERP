@@ -18,14 +18,15 @@ const Orders = () => {
 		"Customer",
 		"Type",
 		"Total Remitted",
-		"Total Employee Remittance",
-		"Total CRA Remittance",
-		"Total Recipients",
 		"Funds Received Status",
+		"Total Employee Remittance",
+		"Total Recipients",
 		"Emp EFTSent Status",
 		"Emp EFTDeposited Status",
+		"Total CRA Remittance",
 		"CRA Sent Status",
 		"CRA Deposited Status",
+		"Fulfillment Status",
 	];
 	const ORDER_STATUS = [{ name: "Settled" }, { name: "Unsettled" }];
 
@@ -134,7 +135,7 @@ const Orders = () => {
 			>
 				<CustomFilter isMobile={isMobile} />
 				{orders && (
-					<Box overflow="auto" height={"450px"}>
+					<Box overflow="auto" maxH={"450px"}>
 						<Table color={"var(--nav_color)"} bg={"var(--primary_bg)"} variant="small">
 							<Thead>
 								<Tr fontSize="xs">
@@ -162,6 +163,7 @@ const Orders = () => {
 										totalEmpRemitted,
 										totalCRARemitted,
 										type,
+										fulfillmentStatus,
 									}) => (
 										<Tr key={_id}>
 											<Td p={0}>{`#${orderNumber}`}</Td>
@@ -178,9 +180,6 @@ const Orders = () => {
 											</Td> */}
 
 											<Td py={0}>{totalsRemitted}</Td>
-											<Td py={0}>{totalEmpRemitted}</Td>
-											<Td py={0}>{totalCRARemitted}</Td>
-											<Td py={0}>{totalRecipients}</Td>
 											<Td py={0}>
 												<SelectList
 													w="100px"
@@ -193,6 +192,8 @@ const Orders = () => {
 													isOrderAction
 												/>
 											</Td>
+											<Td py={0}>{totalEmpRemitted}</Td>
+											<Td py={0}>{totalRecipients}</Td>
 											<Td py={0}>
 												<SelectList
 													w="100px"
@@ -217,6 +218,7 @@ const Orders = () => {
 													isOrderAction
 												/>
 											</Td>
+											<Td py={0}>{totalCRARemitted}</Td>
 											<Td py={0}>
 												<SelectList
 													w="100px"
@@ -241,6 +243,7 @@ const Orders = () => {
 													isOrderAction
 												/>
 											</Td>
+											<Td py={0}>{fulfillmentStatus}</Td>
 										</Tr>
 									),
 								)}

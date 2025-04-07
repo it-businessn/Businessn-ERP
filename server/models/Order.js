@@ -13,6 +13,7 @@ const orderSchema = new mongoose.Schema({
 	empEFTDepositedStatus: { type: String, default: "Unsettled" },
 	craSentStatus: { type: String, default: "Unsettled" },
 	craDepositedStatus: { type: String, default: "Unsettled" },
+	fulfillmentStatus: { type: String, default: "Unsettled" },
 });
 
 const Order = mongoose.model("Order", orderSchema);

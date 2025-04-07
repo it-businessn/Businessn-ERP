@@ -14,6 +14,24 @@ const getCompanyOrders = async (req, res) => {
 				"totalGovtContr",
 			],
 		});
+		const isSettled = (status) => status === "Settled";
+		orders.map(
+			({
+				fulfillmentStatus,
+				fundsReceivedStatus,
+				empEFTSentStatus,
+				empEFTDepositedStatus,
+				craSentStatus,
+				craDepositedStatus,
+			}) =>
+				(fulfillmentStatus =
+					isSettled(fundsReceivedStatus) &&
+					isSettled(empEFTSentStatus) &&
+					isSettled(empEFTDepositedStatus) &&
+					isSettled(craSentStatus) &&
+					isSettled(craDepositedStatus) &&
+					"Settled"),
+		);
 		res.status(200).json(orders);
 	} catch (error) {
 		res.status(404).json({ error: error.message });
