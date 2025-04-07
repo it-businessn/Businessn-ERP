@@ -22,6 +22,7 @@
 		rgba(95, 166, 190, 1) 0%,
 		rgba(19, 170, 178, 1) 100%
 	);
+	--order_unsettled: #fff8c3;
 	--action_status_approve: #498b8f;
 	--action_status_reject: #d57b7b;
 	--action_status_bg: #fbf6f7;

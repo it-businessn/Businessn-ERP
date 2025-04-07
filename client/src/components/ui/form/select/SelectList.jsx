@@ -16,6 +16,7 @@ const SelectList = ({
 	isTimesheetPayType,
 	isOrderAction,
 	w,
+	isUnsettled,
 }) => {
 	const handleChange = (event) => {
 		if (handleSelect && type) {
@@ -35,6 +36,7 @@ const SelectList = ({
 			borderRadius={"10px"}
 			size={"sm"}
 			color={!isTimesheetPayType && "var(--primary_button_bg)"}
+			bg={isUnsettled && "var(--order_unsettled)"}
 			// bg={generateLighterShade(bg_color, 0.9)}
 			border={
 				isTimesheetPayType

@@ -18,6 +18,8 @@ import { GoTasklist } from "react-icons/go";
 import { ToWords } from "to-words";
 import { getMomentDate, isFutureDate, TODAY_DATE } from "./convertDate";
 
+export const isSettled = (status) => status === "Settled";
+
 export const userCurrency = (currency) =>
 	new Intl.NumberFormat("en-US", {
 		style: "currency",

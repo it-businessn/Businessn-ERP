@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { useBreakpointValue } from "services/Breakpoint";
 import LocalStorageService from "services/LocalStorageService";
 import OrderService from "services/OrderService";
+import { isSettled } from "utils";
 import { getAmount } from "utils/convertAmt";
 import { formatDateBar } from "utils/convertDate";
 import CustomFilter from "./CustomFilter";
@@ -17,7 +18,7 @@ const Orders = () => {
 		"Created On ",
 		"Customer",
 		"Type",
-		"Total Remitted",
+		"Total Withdrawn",
 		"Funds Received Status",
 		"Total Employee Remittance",
 		"Total Recipients",
@@ -113,6 +114,7 @@ const Orders = () => {
 									craSentStatus: data?.craSentStatus,
 									empEFTDepositedStatus: data?.empEFTDepositedStatus,
 									empEFTSentStatus: data?.empEFTSentStatus,
+									fulfillmentStatus: data?.fulfillmentStatus,
 							  }
 							: record,
 					);
@@ -190,6 +192,7 @@ const Orders = () => {
 													type="fundsReceivedStatus"
 													data={ORDER_STATUS}
 													isOrderAction
+													isUnsettled={!isSettled(fundsReceivedStatus)}
 												/>
 											</Td>
 											<Td py={0}>{totalEmpRemitted}</Td>
@@ -204,6 +207,7 @@ const Orders = () => {
 													type="empEFTSentStatus"
 													data={ORDER_STATUS}
 													isOrderAction
+													isUnsettled={!isSettled(empEFTSentStatus)}
 												/>
 											</Td>
 											<Td py={0}>
@@ -216,6 +220,7 @@ const Orders = () => {
 													type="empEFTDepositedStatus"
 													data={ORDER_STATUS}
 													isOrderAction
+													isUnsettled={!isSettled(empEFTDepositedStatus)}
 												/>
 											</Td>
 											<Td py={0}>{totalCRARemitted}</Td>
@@ -229,6 +234,7 @@ const Orders = () => {
 													type="craSentStatus"
 													data={ORDER_STATUS}
 													isOrderAction
+													isUnsettled={!isSettled(craSentStatus)}
 												/>
 											</Td>
 											<Td py={0}>
@@ -241,9 +247,12 @@ const Orders = () => {
 													type="craDepositedStatus"
 													data={ORDER_STATUS}
 													isOrderAction
+													isUnsettled={!isSettled(craDepositedStatus)}
 												/>
 											</Td>
-											<Td py={0}>{fulfillmentStatus}</Td>
+											<Td bg={!isSettled(fulfillmentStatus) && "var(--order_unsettled)"} py={0}>
+												{fulfillmentStatus}
+											</Td>
 										</Tr>
 									),
 								)}
