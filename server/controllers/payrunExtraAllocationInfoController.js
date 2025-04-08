@@ -47,6 +47,7 @@ const addAdditionalHoursAllocationInfo = async (req, res) => {
 		additionalStatDayHoursWorked,
 		additionalVacationHoursWorked,
 		additionalSickHoursWorked,
+		additionalRegHoursWorked2,
 
 		additionalPayoutRegHoursWorked,
 		additionalPayoutOvertimeHoursWorked,
@@ -113,6 +114,7 @@ const addAdditionalHoursAllocationInfo = async (req, res) => {
 				additionalStatDayHoursWorked,
 				additionalVacationHoursWorked,
 				additionalSickHoursWorked,
+				additionalRegHoursWorked2,
 
 				additionalPayoutRegHoursWorked,
 				additionalPayoutOvertimeHoursWorked,
@@ -166,6 +168,7 @@ const addAdditionalHoursAllocationInfo = async (req, res) => {
 			additionalStatHoursWorked,
 			additionalVacationHoursWorked,
 			additionalSickHoursWorked,
+			additionalRegHoursWorked2,
 
 			additionalPayoutRegHoursWorked,
 			additionalPayoutOvertimeHoursWorked,
@@ -228,6 +231,7 @@ const addAmountAllocation = async (req, res) => {
 			provTax,
 			incomeTax,
 			regPayAmt,
+			regPayAmt2,
 			OTPayAmt,
 			dblOTPayAmt,
 			statPayAmt,
@@ -315,6 +319,7 @@ const addAmountAllocation = async (req, res) => {
 			provTax,
 			incomeTax,
 			regPayAmt,
+			regPayAmt2,
 			OTPayAmt,
 			dblOTPayAmt,
 			statPayAmt,
@@ -557,7 +562,7 @@ const findAllAdditionalHoursAllocatedInfo = async (record) =>
 
 const findAdditionalHoursAllocatedInfo = async (record) =>
 	await EmployeeExtraAllocation.findOne(record).select(
-		"empId chequesType totalHoursWorked additionalRegHoursWorked additionalOvertimeHoursWorked additionalDblOvertimeHoursWorked additionalStatDayHoursWorked additionalVacationHoursWorked additionalStatHoursWorked additionalSickHoursWorked ",
+		"empId chequesType totalHoursWorked additionalRegHoursWorked additionalRegHoursWorked2 additionalOvertimeHoursWorked additionalDblOvertimeHoursWorked additionalStatDayHoursWorked additionalVacationHoursWorked additionalStatHoursWorked additionalSickHoursWorked ",
 	);
 
 const findEESuperficialContribution = async (record) =>

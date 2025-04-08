@@ -62,6 +62,11 @@ export const REGULAR_AMT_ALLOCATE_COLS = [
 		pair: "vacationPayout",
 		isEditable: true,
 	},
+	{
+		key: "Regular2 $",
+		pair: "regPayAmt2",
+		isEditable: true,
+	},
 	// {
 	// 	key: "Vac. Balance Adjustment $",
 	// 	pair: "vacationBalAdjust",

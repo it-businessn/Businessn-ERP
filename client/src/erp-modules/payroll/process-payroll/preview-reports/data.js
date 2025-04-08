@@ -183,6 +183,15 @@ export const EARNINGS_TYPES = [
 		isEarning: false,
 	},
 	{
+		name: "Regular 2",
+		rate: "regPay2",
+		totalHours: "totalRegHoursWorked2",
+		currentTotal: "currentRegPayTotal2",
+		YTDHoursTotal: "YTDRegHoursWorked2",
+		YTDTotal: "YTDRegPayTotal2",
+		isEarning: true,
+	},
+	{
 		name: "Gross Earnings",
 		rate: 0,
 		totalHours: 0,

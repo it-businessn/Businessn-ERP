@@ -76,7 +76,7 @@ const AmountAllocation = ({ company, closestRecord, groupId, payrunOption, deptN
 			if (updatedRec) {
 				updatedRec[totalColumnKey] = 0;
 				colKeys.forEach((key) => {
-					if (key && key !== totalColumnKey) {
+					if (key && key !== totalColumnKey && updatedRec[key]) {
 						updatedRec[totalColumnKey] += parseFloat(updatedRec[key]);
 					}
 				});

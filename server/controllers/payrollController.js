@@ -10,6 +10,7 @@ const Timesheet = require("../models/Timesheet");
 const { getHourlyAggregatedResult } = require("./payrunHourlyAllocatedCalc");
 const { getPayrunEEContributionResult } = require("./payrunEEContrCalc");
 const { getPayrunERContributionResult } = require("./payrunERContrCalc");
+const { getSumRegHrs } = require("../services/payrollService");
 
 //update roles-
 
@@ -111,7 +112,8 @@ const calculateTimesheetApprovedHours = async (startDate, endDate, companyName) 
 			}
 
 			if (timesheet.payType === PAY_TYPES_TITLE.REG_PAY)
-				acc[timesheet.employeeId].totalRegHoursWorked += timesheet.regHoursWorked || 0;
+				acc[timesheet.employeeId].totalRegHoursWorked +=
+					getSumRegHrs(timesheet.regHoursWorked, timesheet.regHoursWorked2) || 0;
 
 			if (timesheet.payType === PAY_TYPES_TITLE.OVERTIME_PAY)
 				acc[timesheet.employeeId].totalOvertimeHoursWorked += timesheet.overtimeHoursWorked || 0;
@@ -410,4 +412,5 @@ module.exports = {
 	getEEContribution,
 	getERContribution,
 	getTotalAlertsAndViolationsInfo,
+	getSumRegHrs,
 };

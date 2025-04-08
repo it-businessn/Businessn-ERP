@@ -2,7 +2,12 @@ const moment = require("moment");
 const Timesheet = require("../models/Timesheet");
 const { TIMESHEET_STATUS, PAY_TYPES_TITLE, EARNING_TYPE } = require("../services/data");
 const EmployeeBalanceInfo = require("../models/EmployeeBalanceInfo");
-const { calcSalary, convertHrsToFloat, getTaxDetails } = require("../services/payrollService");
+const {
+	calcSalary,
+	convertHrsToFloat,
+	getTaxDetails,
+	getSumRegHrs,
+} = require("../services/payrollService");
 
 const getApprovedTimesheets = async (record) =>
 	await Timesheet.find(record)
@@ -36,6 +41,7 @@ const calculateTimesheetApprovedHours = async (startDate, endDate, companyName) 
 				_id: timesheet._id,
 				empId: timesheet.employeeId,
 				totalRegHoursWorked: 0,
+				totalRegHoursWorked2: 0,
 				totalOvertimeHoursWorked: 0,
 				totalDblOvertimeHoursWorked: 0,
 				totalStatDayHoursWorked: 0,
@@ -46,7 +52,11 @@ const calculateTimesheetApprovedHours = async (startDate, endDate, companyName) 
 		}
 
 		if (timesheet.payType === PAY_TYPES_TITLE.REG_PAY)
-			acc[timesheet.employeeId].totalRegHoursWorked += timesheet.regHoursWorked || 0;
+			acc[timesheet.employeeId].totalRegHoursWorked +=
+				getSumRegHrs(timesheet.regHoursWorked, timesheet.regHoursWorked2) || 0;
+
+		if (timesheet.payType === PAY_TYPES_TITLE.REG_PAY)
+			acc[timesheet.employeeId].totalRegHoursWorked2 += timesheet.regHoursWorked2 || 0;
 
 		if (timesheet.payType === PAY_TYPES_TITLE.OVERTIME_PAY)
 			acc[timesheet.employeeId].totalOvertimeHoursWorked += timesheet.overtimeHoursWorked || 0;
@@ -108,6 +118,16 @@ const calcHoursWorkedTotals = (
 			convertHrsToFloat(amtAllocated?.additionalRegHoursWorked),
 		isExtraRun,
 	);
+
+	newEmpData.totalRegHoursWorked2 = calcRegHrsWorked(
+		empPayInfoResult?.roles[1]?.typeOfEarning,
+		empPayInfoResult?.roles[1]?.fullTimeStandardHours,
+		empPayInfoResult?.roles[1]?.partTimeStandardHours,
+		convertHrsToFloat(empTimesheetData?.totalRegHoursWorked2) +
+			convertHrsToFloat(amtAllocated?.additionalRegHoursWorked2),
+		isExtraRun,
+	);
+
 	newEmpData.totalOvertimeHoursWorked =
 		convertHrsToFloat(empTimesheetData?.totalOvertimeHoursWorked) +
 		convertHrsToFloat(amtAllocated?.additionalOvertimeHoursWorked);
@@ -153,6 +173,10 @@ const calcSalaryByEarningType = (newEmpData, amtAllocated) => {
 	newEmpData.currentRegPayTotal =
 		calcSalary(newEmpData?.totalRegHoursWorked || 0, newEmpData.regPay || 0) +
 		convertHrsToFloat(amtAllocated?.regPayAmt);
+
+	newEmpData.currentRegPayTotal2 =
+		calcSalary(newEmpData?.totalRegHoursWorked2 || 0, newEmpData?.regPay2 || 0) +
+		convertHrsToFloat(amtAllocated?.regPayAmt2);
 
 	newEmpData.currentOverTimePayTotal =
 		calcSalary(newEmpData?.totalOvertimeHoursWorked || 0, newEmpData.overTimePay || 0) +
@@ -239,6 +263,7 @@ const calcEmpAmtAllocation = (newEmpData, amtAllocated) => {
 const calcCurrentGrossPay = (newEmpData) => {
 	newEmpData.currentGrossPay =
 		newEmpData.currentRegPayTotal +
+		newEmpData?.currentRegPayTotal2 +
 		newEmpData.currentOverTimePayTotal +
 		newEmpData.currentDblOverTimePayTotal +
 		newEmpData.currentStatWorkPayTotal +
@@ -269,6 +294,7 @@ const buildNewEmpPayStubInfo = (
 ) => {
 	const newEmpData = empTimesheetData ? empTimesheetData : {};
 	newEmpData.regPay = empPayInfoResult?.roles[0]?.payRate || 0;
+	newEmpData.regPay2 = empPayInfoResult?.roles[1]?.payRate || 0;
 	calcPayRates(newEmpData);
 
 	calcHoursWorkedTotals(
@@ -413,11 +439,11 @@ const getContributionsDeductions = (data) => {
 
 	const totalAllocatedHours =
 		// data.totalDblOvertimeHoursWorked +
-		data.totalOvertimeHoursWorked +
-		data.totalRegHoursWorked +
-		data.totalSickHoursWorked +
-		data.totalStatDayHoursWorked +
-		data.totalStatHours;
+		totalOvertimeHoursWorked +
+		totalRegHoursWorked +
+		totalSickHoursWorked +
+		totalStatDayHoursWorked +
+		totalStatHours;
 
 	const sumTotalHoursWithoutVacation =
 		totalSickHoursWorked + totalStatHours + totalStatDayHoursWorked + totalRegHoursWorked;

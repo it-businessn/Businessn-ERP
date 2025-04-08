@@ -14,13 +14,18 @@ const employeePayStubSchema = new mongoose.Schema({
 	updatedOn: { type: Date, default: Date.now },
 
 	regPay: String,
+	regPay2: String,
 	currentRegPayTotal: { type: Number, default: 0 },
+	currentRegPayTotal2: { type: Number, default: 0 },
 	YTDRegPayTotal: { type: Number, default: 0 },
+	YTDRegPayTotal2: { type: Number, default: 0 },
 	totalRegHoursWorked: { type: Number, default: 0 },
+	totalRegHoursWorked2: { type: Number, default: 0 },
 	// totalPayoutRegHoursWorked: Number,
 	// totalManualRegHoursWorked: Number,
 	// totalSuperficialRegHoursWorked: Number,
 	YTDRegHoursWorked: { type: Number, default: 0 },
+	YTDRegHoursWorked2: { type: Number, default: 0 },
 
 	overTimePay: String,
 	currentOverTimePayTotal: { type: Number, default: 0 },

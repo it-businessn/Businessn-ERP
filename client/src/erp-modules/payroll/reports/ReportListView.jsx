@@ -126,10 +126,10 @@ const ReportListView = () => {
 
 	const handleJournalsReport = (payNo, isExtra) => {
 		const payNum = getPayNum(payNo, isExtra);
-		// setSelectedPayPeriod(payNum);
-		// setShowTotalsReport(false);
-		// setShowReport(false);
-		// setShowJournalsReport(true);
+		setSelectedPayPeriod(payNum);
+		setShowTotalsReport(false);
+		setShowReport(false);
+		setShowJournalsReport(true);
 	};
 
 	return (

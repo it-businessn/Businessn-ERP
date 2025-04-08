@@ -25,11 +25,6 @@ const getAllEmploymentInfo = async (req, res) => {
 			if (result) aggregatedResult.push(result);
 		}
 		aggregatedResult.map((empInfo) => {
-			const empIdStr = empInfo.empPayStubResult?.empId?._id.toString();
-			if (empInfo?.payInfoMapResult.has(empIdStr)) {
-				const pay = empInfo.payInfoMapResult.get(empIdStr);
-				empInfo.payInfoMapResult = pay;
-			}
 			empInfo._id = empInfo?.empPayStubResult?._id;
 			empInfo.empId = empInfo?.empPayStubResult?.empId;
 			empInfo.employmentCostCenter =

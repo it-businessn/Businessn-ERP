@@ -191,6 +191,8 @@ const getTaxDetails = (payRate, grossEarning, empTaxCreditResult) => {
 	};
 };
 
+const getSumRegHrs = (regHrs1, regHrs2) => (regHrs2 ? regHrs1 - regHrs2 : regHrs1);
+
 module.exports = {
 	TAX_CONFIG,
 	applyFederalTaxRate,
@@ -201,4 +203,5 @@ module.exports = {
 	calcSalary,
 	getSumTotal,
 	convertHrsToFloat,
+	getSumRegHrs,
 };

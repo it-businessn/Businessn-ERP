@@ -36,6 +36,7 @@ const buildPayStub = (
 ) => {
 	const {
 		regPay,
+		regPay2,
 		overTimePay,
 		dblOverTimePay,
 		statPay,
@@ -62,7 +63,7 @@ const buildPayStub = (
 		provTax,
 		incomeTax,
 		totalAmountAllocated,
-
+		totalRegHoursWorked2,
 		totalRegHoursWorked,
 		totalOvertimeHoursWorked,
 		totalDblOvertimeHoursWorked,
@@ -74,6 +75,7 @@ const buildPayStub = (
 		totalFirstAidHoursWorked,
 		totalHoursWorked,
 		currentRegPayTotal,
+		currentRegPayTotal2,
 		currentOverTimePayTotal,
 		currentDblOverTimePayTotal,
 		currentStatWorkPayTotal,
@@ -119,6 +121,7 @@ const buildPayStub = (
 		isProcessed: true,
 		isExtraRun,
 		regPay,
+		regPay2,
 		overTimePay,
 		dblOverTimePay,
 		statPay,
@@ -147,6 +150,7 @@ const buildPayStub = (
 		totalAmountAllocated,
 
 		totalRegHoursWorked,
+		totalRegHoursWorked2,
 		totalOvertimeHoursWorked,
 		totalDblOvertimeHoursWorked,
 		totalStatDayHoursWorked,
@@ -158,6 +162,7 @@ const buildPayStub = (
 		totalHoursWorked,
 
 		YTDRegHoursWorked: getSumTotal(prevPayPayInfo?.YTDRegHoursWorked, totalRegHoursWorked),
+		YTDRegHoursWorked2: getSumTotal(prevPayPayInfo?.YTDRegHoursWorked2, totalRegHoursWorked2),
 		YTDOvertimeHoursWorked: getSumTotal(
 			prevPayPayInfo?.YTDOvertimeHoursWorked,
 			totalOvertimeHoursWorked,
@@ -183,6 +188,7 @@ const buildPayStub = (
 		),
 
 		currentRegPayTotal,
+		currentRegPayTotal2,
 		currentOverTimePayTotal,
 		currentDblOverTimePayTotal,
 		currentStatWorkPayTotal,
@@ -217,6 +223,7 @@ const buildPayStub = (
 		sickBalance,
 
 		YTDRegPayTotal: getSumTotal(prevPayPayInfo?.YTDRegPayTotal, currentRegPayTotal),
+		YTDRegPayTotal2: getSumTotal(prevPayPayInfo?.YTDRegPayTotal2, currentRegPayTotal2),
 		YTDOverTimePayTotal: getSumTotal(prevPayPayInfo?.YTDOverTimePayTotal, currentOverTimePayTotal),
 		YTDDblOverTimePayTotal: getSumTotal(
 			prevPayPayInfo?.YTDDblOverTimePayTotal,
@@ -655,37 +662,40 @@ const createJournalEntry = async (fundingTotalReportId, companyName) => {
 		);
 		const deptPromises = currentPayStubs.map(async (record) => {
 			const empDeptInfoResult = await findEmployeeEmploymentInfo(record?.empId, companyName);
-			const department = empDeptInfoResult?.positions[0]?.employmentDepartment;
+			const departments =
+				empDeptInfoResult?.positions?.map((pos) => pos?.employmentDepartment).filter(Boolean) || [];
 			return {
 				record,
-				department,
+				departments,
 			};
 		});
 
 		const allDepartmentBreakDown = await Promise.all(deptPromises);
-		const departmentBreakdown = allDepartmentBreakDown.reduce((acc, { record, department }) => {
-			const dept = acc[department] || {
-				department,
-				incomeTaxContribution: 0,
-				employeeEIContribution: 0,
-				employerEIBenefitExpense: 0,
-				employeeCPPContribution: 0,
-				employerCPPBenefitExpense: 0,
-				grossWageExpense: 0,
-				CPPPayable: 0,
-				EIPayable: 0,
-			};
+		const departmentBreakdown = allDepartmentBreakDown.reduce((acc, { record, departments }) => {
+			departments.forEach((department) => {
+				const dept = acc[department] || {
+					department,
+					incomeTaxContribution: 0,
+					employeeEIContribution: 0,
+					employerEIBenefitExpense: 0,
+					employeeCPPContribution: 0,
+					employerCPPBenefitExpense: 0,
+					grossWageExpense: 0,
+					CPPPayable: 0,
+					EIPayable: 0,
+				};
 
-			dept.incomeTaxContribution += record.currentIncomeTaxDeductions || 0;
-			dept.employeeEIContribution += record.currentEmployeeEIDeductions || 0;
-			dept.employerEIBenefitExpense += record.currentEmployerEIDeductions || 0;
-			dept.employeeCPPContribution += record.currentCPPDeductions || 0;
-			dept.employerCPPBenefitExpense += record.currentCPPDeductions || 0;
-			dept.grossWageExpense += record.currentGrossPay || 0;
-			dept.CPPPayable = dept.employerCPPBenefitExpense;
-			dept.EIPayable = dept.employerEIBenefitExpense;
+				dept.incomeTaxContribution += record.currentIncomeTaxDeductions || 0;
+				dept.employeeEIContribution += record.currentEmployeeEIDeductions || 0;
+				dept.employerEIBenefitExpense += record.currentEmployerEIDeductions || 0;
+				dept.employeeCPPContribution += record.currentCPPDeductions || 0;
+				dept.employerCPPBenefitExpense += record.currentCPPDeductions || 0;
+				dept.grossWageExpense += record.currentGrossPay || 0;
+				dept.CPPPayable = dept.employerCPPBenefitExpense;
+				dept.EIPayable = dept.employerEIBenefitExpense;
 
-			acc[department] = dept;
+				acc[department] = dept;
+			});
 			return acc;
 		}, {});
 

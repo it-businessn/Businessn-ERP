@@ -76,6 +76,12 @@ export const REGULAR_HOURLY_ALLOCATE_COLS = [
 		nearest: true,
 	},
 	{
+		key: "Add Regular2",
+		pair: "additionalRegHoursWorked2",
+		isEditable: true,
+		nearest: true,
+	},
+	{
 		key: "",
 		pair: <OutlineButton size="xs" name="setup" label="View Timesheets" mr={3} />,
 	},

@@ -80,6 +80,7 @@ const calcRegularAggregatedHours = async (
 	});
 
 	result.additionalRegHoursWorked = additionalHoursAllocatedInfo?.additionalRegHoursWorked || 0;
+	result.additionalRegHoursWorked2 = additionalHoursAllocatedInfo?.additionalRegHoursWorked2 || 0;
 	result.additionalOvertimeHoursWorked =
 		additionalHoursAllocatedInfo?.additionalOvertimeHoursWorked || 0;
 	result.additionalDblOvertimeHoursWorked =
@@ -106,6 +107,7 @@ const calcRegularAggregatedHours = async (
 		additionalVacationHoursWorked,
 		additionalStatHoursWorked,
 		additionalSickHoursWorked,
+		additionalRegHoursWorked2,
 	} = result;
 
 	const regSumHrs =
@@ -119,6 +121,7 @@ const calcRegularAggregatedHours = async (
 
 	const additionalSumHrs =
 		additionalRegHoursWorked +
+		additionalRegHoursWorked2 +
 		additionalOvertimeHoursWorked +
 		additionalDblOvertimeHoursWorked +
 		additionalStatDayHoursWorked +

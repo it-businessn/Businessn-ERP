@@ -5,6 +5,7 @@ const employeeExtraAllocationSchema = new mongoose.Schema({
 	companyName: { type: String, ref: "Company" },
 	chequesType: { type: Array, default: [] },
 	additionalRegHoursWorked: { type: Number, default: 0 },
+	additionalRegHoursWorked2: { type: Number, default: 0 },
 	additionalPayoutRegHoursWorked: { type: Number, default: 0 },
 	additionalManualRegHoursWorked: { type: Number, default: 0 },
 	additionalSuperficialRegHoursWorked: { type: Number, default: 0 },
@@ -61,6 +62,7 @@ const employeeExtraAllocationSchema = new mongoose.Schema({
 	incomeTax: { type: Number, default: 0 },
 
 	regPayAmt: { type: Number, default: 0 },
+	regPayAmt2: { type: Number, default: 0 },
 	OTPayAmt: { type: Number, default: 0 },
 	dblOTPayAmt: { type: Number, default: 0 },
 	statPayAmt: { type: Number, default: 0 },
