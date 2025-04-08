@@ -4,7 +4,7 @@ const SECRET_KEY = process.env.ACCESS_TOKEN_SECRET;
 const REFRESH_TOKEN_SECRET = process.env.REFRESH_TOKEN_SECRET;
 
 function generateAccessToken(user) {
-	return jwt.sign(user, SECRET_KEY, { expiresIn: "1h" });
+	return jwt.sign(user, SECRET_KEY, { expiresIn: "2h" });
 }
 
 const refreshTokens = [];
