@@ -335,7 +335,9 @@ const calcContrDeductions = (newEmpData) => {
 	newEmpData.currentOtherDeductions = 0;
 	newEmpData.currentEmployerPensionContributions = ER_EPP; //only added superficial;
 	newEmpData.currentEmployerHealthContributions = ER_EHP; //only added superficial;
-	newEmpData.currentEmployerContributions = ER_EPP + ER_EHP; //only added superficial;
+	newEmpData.currentEmployerContributions =
+		ER_EPP + ER_EHP + newEmpData?.currentCPPDeductions + newEmpData?.currentEmployerEIDeductions ||
+		0; //only added superficial;
 	return newEmpData;
 };
 
