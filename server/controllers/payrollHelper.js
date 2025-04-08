@@ -160,6 +160,7 @@ const calcHoursWorkedTotals = (
 
 	newEmpData.totalHoursWorked =
 		newEmpData.totalRegHoursWorked +
+		newEmpData.totalRegHoursWorked2 +
 		newEmpData.totalOvertimeHoursWorked +
 		newEmpData.totalDblOvertimeHoursWorked +
 		newEmpData.totalStatHours +

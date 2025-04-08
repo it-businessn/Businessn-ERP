@@ -50,7 +50,7 @@ const InputsReview = ({
 		{ title: "Net Income", value: "currentNetPay", round: true },
 		{ title: "Gross Income", value: "currentGrossPay", round: true },
 		{ title: "Total Hours", value: "totalHoursWorked", nearest: true },
-		{ title: "Total Amount", value: "totalAmountAllocated", round: true },
+		{ title: "Total Addl. Amount", value: "totalAmountAllocated", round: true },
 	];
 
 	const { isOpen, onOpen, onClose } = useDisclosure();
