@@ -3,8 +3,10 @@ import OutlineButton from "components/ui/button/OutlineButton";
 import PrimaryButton from "components/ui/button/PrimaryButton";
 import TextTitle from "components/ui/text/TextTitle";
 import useFundingTotalsReport from "hooks/useFundingTotalsReport";
+import useJournalReport from "hooks/useJournalReport";
 import { useState } from "react";
 import { MdCheckCircle } from "react-icons/md";
+import JournalsReportModal from "./preview-reports/JournalsReportModal";
 import PreviewReportsModal from "./preview-reports/PreviewReportsModal";
 import TotalsReportModal from "./preview-reports/TotalsReportModal";
 
@@ -17,11 +19,15 @@ const ReportsPreview = ({
 }) => {
 	const [showReport, setShowReport] = useState(false);
 	const [showTotalsReport, setShowTotalsReport] = useState(false);
+	const [showJournalReport, setShowJournalReport] = useState(false);
 	const REPORTS = [
 		{ name: "Payroll Register", handleClick: () => setShowReport(true) },
 		{ name: "Funding Totals Report", handleClick: () => setShowTotalsReport(true) },
+		{ name: "Journal Entry Report", handleClick: () => setShowJournalReport(true) },
 	];
 	const fundingTotalsData = useFundingTotalsReport(company, payPeriodNum, showTotalsReport);
+	const journalReport = useJournalReport(company, payPeriodNum, showJournalReport);
+
 	return (
 		<HStack alignItems={"end"}>
 			<Table w={"100%"}>
@@ -39,7 +45,7 @@ const ReportsPreview = ({
 					))}
 				</Tbody>
 			</Table>
-			{showReport && (
+			{showReport && reportData && (
 				<PreviewReportsModal
 					isOpen={showReport}
 					onClose={() => setShowReport(false)}
@@ -52,6 +58,13 @@ const ReportsPreview = ({
 					isOpen={showTotalsReport}
 					onClose={() => setShowTotalsReport(false)}
 					reportData={fundingTotalsData}
+				/>
+			)}
+			{showJournalReport && journalReport && (
+				<JournalsReportModal
+					isOpen={showJournalReport}
+					onClose={() => setShowJournalReport(false)}
+					reportData={journalReport}
 				/>
 			)}
 			<PrimaryButton
