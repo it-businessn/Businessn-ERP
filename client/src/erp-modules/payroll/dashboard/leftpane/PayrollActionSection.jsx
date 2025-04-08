@@ -4,7 +4,6 @@ import TextTitle from "components/ui/text/TextTitle";
 import VerticalStepper from "components/ui/VerticalStepper";
 import { useEffect, useState } from "react";
 import { processPayrollPath, timesheetPath } from "routes";
-import TimesheetService from "services/TimesheetService";
 
 const PayrollActionSection = ({ company, filter, handleClick, activeUsers, totalAlerts }) => {
 	const [approvalPercent, setApprovalPercent] = useState(0);
@@ -59,7 +58,7 @@ const PayrollActionSection = ({ company, filter, handleClick, activeUsers, total
 			description: violationPercent,
 			linkTo: {
 				title: "Address violation",
-				path: processPayrollPath,
+				path: `${processPayrollPath}/2`,
 			},
 		},
 		{
@@ -67,7 +66,7 @@ const PayrollActionSection = ({ company, filter, handleClick, activeUsers, total
 			description: 0,
 			linkTo: {
 				title: "Process Payroll",
-				path: processPayrollPath,
+				path: `${processPayrollPath}/3`,
 			},
 		},
 		{

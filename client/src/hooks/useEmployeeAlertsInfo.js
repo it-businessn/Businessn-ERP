@@ -13,7 +13,7 @@ const useEmployeeAlertsInfo = (company, payPeriodNum, isOpen, currentStep) => {
 				console.error(error);
 			}
 		};
-		if (payPeriodNum && isOpen && currentStep === 2) {
+		if (payPeriodNum && currentStep === 2) {
 			fetchAlertsInfo();
 		}
 	}, [company, payPeriodNum, isOpen]);

@@ -228,11 +228,11 @@ const getTotalAlertsAndViolationsInfo = async (req, res) => {
 	const { companyName, payPeriodNum } = req.params;
 
 	try {
-		const payStubs = await EmployeeAlertsViolationInfo.countDocuments({
+		const alerts = await EmployeeAlertsViolationInfo.countDocuments({
 			companyName,
-			payPeriodNum,
+			// payPeriodNum,
 		});
-		res.status(200).json(payStubs);
+		res.status(200).json(alerts);
 	} catch (error) {
 		res.status(404).json({ error: error.message });
 	}
@@ -242,15 +242,15 @@ const getAlertsAndViolationsInfo = async (req, res) => {
 	const { companyName, payPeriodNum } = req.params;
 
 	try {
-		const payStubs = await EmployeeAlertsViolationInfo.find({
+		const alerts = await EmployeeAlertsViolationInfo.find({
 			companyName,
-			payPeriodNum,
+			// payPeriodNum,
 		})
 			.populate(EMP_INFO)
 			.sort({
 				createdOn: -1,
 			});
-		res.status(200).json(payStubs);
+		res.status(200).json(alerts);
 	} catch (error) {
 		res.status(404).json({ error: error.message });
 	}
@@ -368,7 +368,13 @@ const addAlertsAndViolations = async (req, res) => {
 				});
 			}
 
-			if (!alertsExists && missingSINInfo) {
+			const violationExists = await findAlertInfo({
+				empId: data?.empId?._id,
+				companyName,
+				actionRequired: false,
+			});
+
+			if (!violationExists && missingSINInfo) {
 				await addAlertInfo({
 					empId: data?.empId?._id,
 					companyName,

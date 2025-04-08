@@ -29,10 +29,10 @@ const PayrollStageContent = ({
 		defaultIsOpen: false,
 	});
 	const { isOpen: isAlertsOpen, onToggle: onAlertsOpenToggle } = useDisclosure({
-		defaultIsOpen: false,
+		defaultIsOpen: currentStep === 2,
 	});
 	const { isOpen: isReportsOpen, onToggle: onReportsToggle } = useDisclosure({
-		defaultIsOpen: false,
+		defaultIsOpen: currentStep === 3,
 	});
 	const { isOpen: isFinalizeOpen, onToggle: onFinalizeToggle } = useDisclosure({
 		defaultIsOpen: false,

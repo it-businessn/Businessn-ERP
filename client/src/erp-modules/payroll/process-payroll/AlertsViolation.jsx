@@ -119,7 +119,7 @@ const AlertsViolation = ({
 				bg="var(--action_status_approve)"
 				name={"CONFIRM"}
 				rightIcon={<MdCheckCircle />}
-				// isDisabled={isDisabled}
+				isDisabled={isDisabled}
 				loadingText="Loading"
 				onOpen={handleClick}
 			/>

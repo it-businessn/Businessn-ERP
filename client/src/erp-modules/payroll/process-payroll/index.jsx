@@ -26,11 +26,9 @@ import PayrunSetup from "./PayrunSetup";
 import ReportsPreview from "./ReportsPreview";
 
 const ProcessPayroll = () => {
-	const [currentStep, setCurrentStep] = useState(0);
-	const goToNextStep = (index) => {
-		setCurrentStep(index);
-	};
-	const { payNo, year } = useParams();
+	const { payNo, year, stepNum } = useParams();
+	const activeStep = stepNum ? parseInt(stepNum) : 0;
+	const [currentStep, setCurrentStep] = useState(activeStep);
 	const isExtra = payNo?.includes("E");
 	const loggedInUser = LocalStorageService.getItem("user");
 	const hasAccessRole =
@@ -49,6 +47,10 @@ const ProcessPayroll = () => {
 	const isPayPeriodInactive = selectedPayPeriod?.isDisabledAction;
 	const isPayrollSubmitDisabled =
 		currentStep !== 5 || selectedPayPeriod?.isProcessed || isPayPeriodInactive;
+
+	const goToNextStep = (index) => {
+		setCurrentStep(index);
+	};
 
 	const steps = [
 		{ title: "Payrun Setup", content: <PayrunSetup /> },
