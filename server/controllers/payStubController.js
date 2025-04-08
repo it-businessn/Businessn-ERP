@@ -658,21 +658,61 @@ const createJournalEntry = async (fundingTotalReportId, companyName) => {
 			payPeriodNum,
 			isExtraRun,
 		}).select(
-			"empId currentGrossPay currentCPPDeductions currentEmployerCPPDeductions currentEmployerEIDeductions currentEmployeeEIDeductions currentIncomeTaxDeductions",
+			"empId currentGrossPay currentCPPDeductions currentRegPayTotal2 currentEmployerCPPDeductions currentEmployerEIDeductions currentEmployeeEIDeductions currentIncomeTaxDeductions",
 		);
-		const deptPromises = currentPayStubs.map(async (record) => {
-			const empDeptInfoResult = await findEmployeeEmploymentInfo(record?.empId, companyName);
+		const deptPromises = currentPayStubs.map(async (empPayStub) => {
+			const empDeptInfoResult = await findEmployeeEmploymentInfo(empPayStub?.empId, companyName);
 			const departments =
 				empDeptInfoResult?.positions?.map((pos) => pos?.employmentDepartment).filter(Boolean) || [];
-			return {
-				record,
-				departments,
-			};
+			if (empDeptInfoResult) {
+				const originalPayStub = empPayStub.toObject();
+				originalPayStub.currentEmployerCPPDeductions = originalPayStub.currentCPPDeductions;
+				const grossPay = originalPayStub.currentGrossPay || 0;
+				const cppDeductions = originalPayStub.currentCPPDeductions || 0;
+				const eiEmployee = originalPayStub.currentEmployeeEIDeductions || 0;
+				const eiEmployer = originalPayStub.currentEmployerEIDeductions || 0;
+				const cppEmployer = originalPayStub.currentEmployerCPPDeductions || 0;
+				const incomeTax = originalPayStub.currentIncomeTaxDeductions || 0;
+				const regPay2 = originalPayStub.currentRegPayTotal2 || 0;
+
+				if (departments.length > 1) {
+					const dept1Stub = {
+						currentGrossPay: grossPay - regPay2,
+						currentCPPDeductions: cppDeductions,
+						currentEmployerCPPDeductions: cppDeductions - (regPay2 / grossPay) * cppDeductions || 0,
+						currentEmployeeEIDeductions: eiEmployee,
+						currentEmployerEIDeductions: eiEmployer - (regPay2 / grossPay) * eiEmployer || 0,
+						currentIncomeTaxDeductions: incomeTax,
+						currentRegPayTotal2: regPay2,
+					};
+
+					const dept2Stub = {
+						currentGrossPay: regPay2,
+						currentCPPDeductions: 0,
+						currentEmployerCPPDeductions: (regPay2 / grossPay) * cppDeductions || 0,
+						currentEmployeeEIDeductions: 0,
+						currentEmployerEIDeductions: (regPay2 / grossPay) * eiEmployer || 0,
+						currentIncomeTaxDeductions: 0,
+						currentRegPayTotal2: regPay2,
+					};
+					return {
+						records: [dept1Stub, dept2Stub],
+						departments,
+					};
+				}
+
+				return {
+					records: [originalPayStub],
+					departments,
+				};
+			}
 		});
 
 		const allDepartmentBreakDown = await Promise.all(deptPromises);
-		const departmentBreakdown = allDepartmentBreakDown.reduce((acc, { record, departments }) => {
-			departments.forEach((department) => {
+		const departmentBreakdown = allDepartmentBreakDown.reduce((acc, { records, departments }) => {
+			records.forEach((record, idx) => {
+				const department = departments[idx] || "Unknown";
+
 				const dept = acc[department] || {
 					department,
 					incomeTaxContribution: 0,
@@ -689,7 +729,7 @@ const createJournalEntry = async (fundingTotalReportId, companyName) => {
 				dept.employeeEIContribution += record.currentEmployeeEIDeductions || 0;
 				dept.employerEIBenefitExpense += record.currentEmployerEIDeductions || 0;
 				dept.employeeCPPContribution += record.currentCPPDeductions || 0;
-				dept.employerCPPBenefitExpense += record.currentCPPDeductions || 0;
+				dept.employerCPPBenefitExpense += record.currentEmployerCPPDeductions || 0;
 				dept.grossWageExpense += record.currentGrossPay || 0;
 				dept.CPPPayable = dept.employerCPPBenefitExpense;
 				dept.EIPayable = dept.employerEIBenefitExpense;
