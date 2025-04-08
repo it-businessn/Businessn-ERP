@@ -1,4 +1,4 @@
-import { setupAxiosInterceptors } from "api";
+import { redirectLogin, setupAxiosInterceptors } from "api";
 import "App.css";
 import { useEffect, useState } from "react";
 import { RouterProvider } from "react-router-dom";
@@ -11,7 +11,7 @@ const App = ({ theme }) => {
 
 	const handleClose = () => {
 		setSessionExpired(false);
-		window.location.href = "/login";
+		redirectLogin();
 	};
 
 	useEffect(() => {

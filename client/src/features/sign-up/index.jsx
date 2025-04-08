@@ -25,6 +25,7 @@ import LoginService from "services/LoginService";
 import BaseModulePanel from "./BaseModulePanel";
 import DepartmentsPanel from "./DepartmentsPanel";
 // import EmploymentPanel from "./EmploymentPanel";
+import { redirectLogin } from "api";
 import useCompanies from "hooks/useCompanies";
 import useDepartment from "hooks/useDepartment";
 import LocalStorageService from "services/LocalStorageService";
@@ -73,7 +74,7 @@ const SignUp = ({ isModal, setRefresh, onClose, hideCompany }) => {
 				onClose();
 				return;
 			}
-			navigate("/login");
+			redirectLogin();
 		} catch (error) {
 			setIsLoading(false);
 			console.error("Error adding user:", error?.response?.data);

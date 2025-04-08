@@ -7,6 +7,7 @@ import logoImg from "../../assets/logos/BusinessN_dark1.png";
 import CirclePattern from "./CirclePattern";
 import ContactForm from "./ContactForm";
 import SignInForm from "./SignInForm";
+
 const Login = () => {
 	const videoRef = useRef(null);
 	const { isMobile } = useBreakpointValue();
@@ -15,6 +16,11 @@ const Login = () => {
 	useEffect(() => {
 		if (videoRef.current) {
 			videoRef.current.playbackRate = 0.5; //  0.5x speed (slower)
+		}
+		if ("serviceWorker" in navigator) {
+			navigator.serviceWorker.getRegistrations().then((regs) => {
+				regs.forEach((reg) => reg.unregister());
+			});
 		}
 	}, []);
 	return (

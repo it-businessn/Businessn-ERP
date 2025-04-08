@@ -1,11 +1,10 @@
 import { Box, Flex, HStack, Spacer, Stack } from "@chakra-ui/react";
+import { redirectLogin } from "api";
 import { Menu, UserProfile } from "components";
 import Logo from "components/logo";
 import TextTitle from "components/ui/text/TextTitle";
-import { ROLES } from "constant";
 import { SIDEBAR_MENU } from "data";
 import useCompany from "hooks/useCompany";
-import LocalStorageService from "services/LocalStorageService";
 import LoginService from "services/LoginService";
 
 const Navbar = ({ handleClick, companyName, companyId, user, setUser, isMobile }) => {
@@ -14,8 +13,7 @@ const Navbar = ({ handleClick, companyName, companyId, user, setUser, isMobile }
 	const handleLogout = async () => {
 		try {
 			await LoginService.signOut(user._id);
-			LocalStorageService.clear();
-			sessionStorage.removeItem("accessToken");
+			redirectLogin();
 			setUser(null);
 		} catch (error) {
 			console.log(error?.response?.data?.error);

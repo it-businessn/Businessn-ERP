@@ -1,6 +1,7 @@
 import { useDisclosure, useToast } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 
+import { redirectLogin } from "api";
 import Navbar from "components/header";
 import Sidebar from "components/sidebar";
 import { ROLES } from "constant";
@@ -8,7 +9,7 @@ import useCompany from "hooks/useCompany";
 import useSidebarMenu from "hooks/useSidebarMenu";
 import RootLayout from "layouts/RootLayout";
 import { useNavigate } from "react-router-dom";
-import { payrollEmpDashboardPath, ROUTE_PATH } from "routes";
+import { payrollEmpDashboardPath } from "routes";
 import { useBreakpointValue } from "services/Breakpoint";
 import LocalStorageService from "services/LocalStorageService";
 import { isManager } from "utils";
@@ -45,7 +46,7 @@ const Home = () => {
 				duration: 3000,
 				isClosable: true,
 			});
-			navigate(ROUTE_PATH.LOGIN);
+			redirectLogin();
 		}
 		if (user && Object.keys(user).length > 0) {
 			const dashboard = activeMenu?.children?.find((_) => _.permissions?.canAccessModule);
@@ -53,7 +54,7 @@ const Home = () => {
 				navigate(isMobile ? payrollEmpDashboardPath : `/${activeMenu?.path}/${dashboard?.path}`);
 			}
 		} else {
-			navigate(ROUTE_PATH.LOGIN);
+			redirectLogin();
 		}
 	}, [user, activeMenu]);
 

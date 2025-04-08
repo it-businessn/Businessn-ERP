@@ -1,8 +1,8 @@
+import { redirectLogin } from "api";
 import { COMPANIES } from "constant";
 import { SIDEBAR_MENU } from "data";
 import { startTransition, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ROUTE_PATH } from "routes";
 import LocalStorageService from "services/LocalStorageService";
 import UserService from "services/UserService";
 
@@ -66,7 +66,7 @@ const useSidebarMenu = (userId, company, isManager, isShadowAdmin) => {
 				}
 			} catch (error) {
 				startTransition(() => {
-					navigate(ROUTE_PATH.LOGIN);
+					redirectLogin();
 				});
 			}
 		};

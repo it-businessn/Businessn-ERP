@@ -90,7 +90,6 @@ const UserProfile = ({ user, handleLogout }) => {
 							<Button
 								variant="ghost"
 								onClick={() => {
-									navigate("/login");
 									handleLogout();
 								}}
 							>

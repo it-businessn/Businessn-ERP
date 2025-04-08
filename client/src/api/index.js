@@ -40,17 +40,21 @@ export const setupAxiosInterceptors = (setSessionExpired) => {
 				} catch (refreshError) {
 					console.error("Refresh token invalid or expired", refreshError);
 					// setSessionExpired(true);
-					window.location.href = "/login";
-
-					sessionStorage.removeItem("accessToken");
-					LocalStorageService.clear();
+					redirectLogin();
 				}
 			} else {
 				console.error("Refresh token invalid or expired", error);
-				if (error?.response?.data?.message?.includes("token")) window.location.href = "/login";
+				if (error?.response?.data?.message?.includes("token")) redirectLogin();
 			}
 
 			return Promise.reject(error);
 		},
 	);
+};
+
+export const redirectLogin = () => {
+	window.location.replace(`/login?nocache=${new Date().getTime()}`);
+	sessionStorage.clear();
+	sessionStorage.removeItem("accessToken");
+	LocalStorageService.clear();
 };
