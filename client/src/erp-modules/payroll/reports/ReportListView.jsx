@@ -106,7 +106,7 @@ const ReportListView = () => {
 		} else if (selectedPayPeriod && showJournalsReport) {
 			fetchJournalInfo();
 		}
-	}, [selectedPayPeriod, showReport, year, showTotalsReport]);
+	}, [selectedPayPeriod, showReport, year, showTotalsReport, showJournalsReport]);
 
 	const handleRegister = (payNo, isExtra) => {
 		const payNum = getPayNum(payNo, isExtra);
