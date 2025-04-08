@@ -2,13 +2,13 @@ import { Box, Table, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
 import SelectList from "components/ui/form/select/SelectList";
 import NormalTextTitle from "components/ui/NormalTextTitle";
 import PageLayout from "layouts/PageLayout";
+import moment from "moment";
 import { useEffect, useState } from "react";
 import { useBreakpointValue } from "services/Breakpoint";
 import LocalStorageService from "services/LocalStorageService";
 import OrderService from "services/OrderService";
 import { isSettled } from "utils";
 import { getAmount } from "utils/convertAmt";
-import { formatDateBar } from "utils/convertDate";
 import CustomFilter from "./CustomFilter";
 import OrderGraph from "./OrderGraph";
 
@@ -58,12 +58,10 @@ const Orders = () => {
 			try {
 				const { data } = await OrderService.getCompOrders(company);
 				data?.map((record) => {
-					const { isExtraRun, totalFundingWithDrawals, totalEmpPaymentRemitCost, totalGovtContr } =
-						record.fundingTotalsId;
-					record.type = isExtraRun ? "Extra" : "Regular";
-					record.totalsRemitted = getAmount(totalFundingWithDrawals);
-					record.totalEmpRemitted = getAmount(totalEmpPaymentRemitCost);
-					record.totalCRARemitted = getAmount(totalGovtContr);
+					record.type = record.fundingTotalsId?.isExtraRun ? "Extra" : "Regular";
+					record.totalsRemitted = getAmount(record.fundingTotalsId?.totalFundingWithDrawals);
+					record.totalEmpRemitted = getAmount(record.fundingTotalsId?.totalEmpPaymentRemitCost);
+					record.totalCRARemitted = getAmount(record.fundingTotalsId?.totalGovtContr);
 					return record;
 				});
 				setOrders(data);
@@ -170,7 +168,10 @@ const Orders = () => {
 										<Tr key={_id}>
 											<Td p={0}>{`#${orderNumber}`}</Td>
 											<Td py={0}>
-												<NormalTextTitle size="sm" title={formatDateBar(createdOn)} />
+												<NormalTextTitle
+													size="sm"
+													title={moment(createdOn).format("YYYY-MM-DD hh:mm A")}
+												/>
 											</Td>
 											<Td py={0}>
 												<NormalTextTitle size="sm" title={customer} />
@@ -182,8 +183,9 @@ const Orders = () => {
 											</Td> */}
 
 											<Td py={0}>{totalsRemitted}</Td>
-											<Td py={0}>
+											<Td py={0} pt={1}>
 												<SelectList
+													size="xs"
 													w="100px"
 													id={_id}
 													code="name"
@@ -197,8 +199,9 @@ const Orders = () => {
 											</Td>
 											<Td py={0}>{totalEmpRemitted}</Td>
 											<Td py={0}>{totalRecipients}</Td>
-											<Td py={0}>
+											<Td py={0} pt={1}>
 												<SelectList
+													size="xs"
 													w="100px"
 													id={_id}
 													code="name"
@@ -210,8 +213,9 @@ const Orders = () => {
 													isUnsettled={!isSettled(empEFTSentStatus)}
 												/>
 											</Td>
-											<Td py={0}>
+											<Td py={0} pt={1}>
 												<SelectList
+													size="xs"
 													w="100px"
 													id={_id}
 													code="name"
@@ -224,8 +228,9 @@ const Orders = () => {
 												/>
 											</Td>
 											<Td py={0}>{totalCRARemitted}</Td>
-											<Td py={0}>
+											<Td py={0} pt={1}>
 												<SelectList
+													size="xs"
 													w="100px"
 													id={_id}
 													code="name"
@@ -237,8 +242,9 @@ const Orders = () => {
 													isUnsettled={!isSettled(craSentStatus)}
 												/>
 											</Td>
-											<Td py={0}>
+											<Td py={0} pt={1}>
 												<SelectList
+													size="xs"
 													w="100px"
 													id={_id}
 													code="name"
@@ -250,8 +256,12 @@ const Orders = () => {
 													isUnsettled={!isSettled(craDepositedStatus)}
 												/>
 											</Td>
-											<Td bg={!isSettled(fulfillmentStatus) && "var(--order_unsettled)"} py={0}>
-												{fulfillmentStatus}
+											<Td py={0}>
+												<NormalTextTitle
+													size="sm"
+													bg={!isSettled(fulfillmentStatus) && "var(--order_unsettled)"}
+													title={fulfillmentStatus}
+												/>
 											</Td>
 										</Tr>
 									),

@@ -17,6 +17,7 @@ const SelectList = ({
 	isOrderAction,
 	w,
 	isUnsettled,
+	size = "sm",
 }) => {
 	const handleChange = (event) => {
 		if (handleSelect && type) {
@@ -34,7 +35,7 @@ const SelectList = ({
 		<Select
 			icon={<Icon as={isRight ? FaCaretRight : FaCaretDown} />}
 			borderRadius={"10px"}
-			size={"sm"}
+			size={size}
 			color={!isTimesheetPayType && "var(--primary_button_bg)"}
 			bg={isUnsettled && "var(--order_unsettled)"}
 			// bg={generateLighterShade(bg_color, 0.9)}
