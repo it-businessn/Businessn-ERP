@@ -18,7 +18,7 @@ const PreviewReportsModal = ({
 	const { isMobile } = useBreakpointValue();
 	const Statement = ({ data }) => (
 		<Box borderBottom="1px solid var(--calendar_border)" mx="auto">
-			<PayStubStatement data={data} isMobile={isMobile} />
+			<PayStubStatement data={data} isMobile={isMobile} height="95vh" />
 		</Box>
 	);
 
@@ -32,7 +32,8 @@ const PreviewReportsModal = ({
 			fontSize="2xl"
 			overflow={"hidden"}
 			isReport={isReport}
-			ml="-1.5em"
+			p="1em"
+			px={0}
 			empName={isEarningTable ? reportData?.empId?.fullName : null}
 			reportData={
 				isEarningTable

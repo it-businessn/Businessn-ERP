@@ -13,9 +13,16 @@ const PayStubStatement = ({ data, height, overflow = "hidden", isMobile }) => {
 	return isMobile ? (
 		<MobilePayStub companyInfo={companyInfo} reportData={data} />
 	) : (
-		<Box w={"100%"} overflow={overflow} height={height}>
-			<PayStubHeader companyInfo={companyInfo} />
-			<Stack position="relative" alignItems="center" spacing={2}>
+		<Box
+			w={"100%"}
+			flexDir="column"
+			display="flex"
+			overflow={overflow}
+			height={height}
+			justifyContent="space-between"
+		>
+			<PayStubHeader flex={0.1} companyInfo={companyInfo} />
+			<Stack alignItems="center" flex={1} position={"relative"}>
 				<Box
 					w={"100%"}
 					h={"100%"}

@@ -17,7 +17,7 @@ const PaymentDateTitle = ({ payDate }) => (
 
 const InfoText = ({ title1, title2, title3, hasBg }) => (
 	<HStack w={"100%"}>
-		<NormalTextTitle width={"200px"} title={title1} size={"xs"} />
+		<NormalTextTitle width={"150px"} title={title1} size={"xs"} />
 		<TextTitle
 			width={"100%"}
 			bg={hasBg && "var(--calendar_border)"}
@@ -28,11 +28,11 @@ const InfoText = ({ title1, title2, title3, hasBg }) => (
 			size={"xs"}
 			align={"left"}
 		/>
-		<TextTitle align={"left"} width={"300px"} title={title3} size={"xs"} />
+		<TextTitle width={"200px"} align={"left"} title={title3} size={"xs"} />
 	</HStack>
 );
 
-const ChequeDetails = ({ data, companyInfo }) => {
+const ChequeDetails = ({ data, companyInfo, flex }) => {
 	const name = data?.empId?.fullName;
 	const payDate = data.payPeriodPayDate;
 
@@ -46,9 +46,9 @@ const ChequeDetails = ({ data, companyInfo }) => {
 	const amountInWords = toWords.convert(data.currentNetPay);
 
 	return (
-		<Stack w={"100%"} mt={5} h={"16em"} justifyContent={"space-between"}>
+		<Stack w={"100%"} justifyContent={"space-between"} flex={flex} minH="16em">
 			<PayStubHeader companyInfo={companyInfo} />
-			<Box w={"100%"} pl={5}>
+			<Box>
 				<PaymentDateTitle payDate={payDate} />
 				<InfoText title1="Account holder:" title2={name} />
 				<InfoText title1="The amount:" title2={amountInWords} title3={netPay} hasBg />

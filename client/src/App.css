@@ -116,6 +116,12 @@ body {
 	background: var(--primary_bg) !important;
 	overflow: hidden;
 }
+@media print {
+	@page {
+		size: A4;
+		margin: 0mm;
+	}
+}
 
 .chakra-select:focus,
 .chakra-select:focus-visible {

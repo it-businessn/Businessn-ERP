@@ -4,7 +4,7 @@ import TextTitle from "components/ui/text/TextTitle";
 const BasicInfo = ({ title1, title2, mt, border, weight, whiteSpace }) => (
 	<HStack w={"100%"} mt={mt} spacing={border && 0}>
 		<TextTitle
-			flex={0.6}
+			flex={0.7}
 			title={title1}
 			size="xs"
 			border={border}

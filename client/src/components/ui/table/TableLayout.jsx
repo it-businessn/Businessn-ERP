@@ -60,8 +60,8 @@ const TableLayout = ({
 							>
 								<TextTitle
 									width={
-										col.includes("Hours")
-											? "100px"
+										col === "Hours" || col.includes("Current")
+											? "50px"
 											: isEarning && index === 0
 											? width1
 											: isEarning && index > 2
