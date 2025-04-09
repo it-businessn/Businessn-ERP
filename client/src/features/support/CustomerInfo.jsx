@@ -10,12 +10,15 @@ import {
 } from "@chakra-ui/react";
 import ActionButtonGroup from "components/ui/form/ActionButtonGroup";
 import InputFormControl from "components/ui/form/InputFormControl";
+import SelectFormControl from "components/ui/form/SelectFormControl";
 import NormalTextTitle from "components/ui/NormalTextTitle";
 import TextTitle from "components/ui/text/TextTitle";
-import { useState } from "react";
+import { COUNTRIES } from "config/payroll/employees/profileInfo";
+import { useEffect, useState } from "react";
+import { FaCaretDown } from "react-icons/fa";
 import TicketService from "services/TicketService";
 
-export default function CustomerInfo({ onClose }) {
+export default function CustomerInfo() {
 	const [formData, setFormData] = useState({
 		firstName: "",
 		lastName: "",
@@ -27,7 +30,15 @@ export default function CustomerInfo({ onClose }) {
 		annualRevenue: "",
 		totalEmployees: "",
 		interests: [],
+		companyName: "",
 	});
+	const [provinces, setProvinces] = useState([]);
+
+	useEffect(() => {
+		if (formData?.country) {
+			setProvinces(COUNTRIES.find(({ type }) => type === formData?.country)?.provinces);
+		}
+	}, [formData?.country]);
 
 	const INTERESTS = {
 		set1: ["Payroll", "Time management", "Scheduling", "Accounting"],
@@ -55,10 +66,10 @@ export default function CustomerInfo({ onClose }) {
 		setIsSubmitting(true);
 		formData.interests = selectedCheckboxes;
 		try {
-			const { data } = await TicketService.saveCustomerPricingInfo(formData);
+			const { data } = await TicketService.createLeadTicket(formData);
 			setIsSubmitting(false);
 			toast({
-				title: "Info saved successfully.",
+				title: "Thanks for reaching out! We’ll get back to you shortly.",
 				status: "success",
 				duration: 1000,
 				isClosable: true,
@@ -82,7 +93,7 @@ export default function CustomerInfo({ onClose }) {
 				</a>
 			</Center>
 			<Box w={"100%"} p={"2em 35em"}>
-				<TextTitle align="center" size="3xl" title="Plans & Pricing" />
+				<TextTitle align="center" size="3xl" title="Thank you for reaching out." />
 				<NormalTextTitle
 					align="center"
 					title="
@@ -97,12 +108,6 @@ export default function CustomerInfo({ onClose }) {
 								name="firstName"
 								placeholder="Enter First Name"
 								valueText={formData.firstName || ""}
-								// handleChange={(e) => {
-								// 	setFormData((prev) => ({
-								// 		...prev,
-								// 		payRate: e.target.value,
-								// 	}));
-								// }}
 								handleChange={handleInputChange}
 							/>
 							<InputFormControl
@@ -114,20 +119,25 @@ export default function CustomerInfo({ onClose }) {
 								handleChange={handleInputChange}
 							/>
 						</HStack>
-						<InputFormControl
-							fontSize="md"
-							label="Your Title"
-							name="title"
-							placeholder="Enter Role"
-							valueText={formData.title || ""}
-							// handleChange={(e) => {
-							// 	setFormData((prev) => ({
-							// 		...prev,
-							// 		payRate: e.target.value,
-							// 	}));
-							// }}
-							handleChange={handleInputChange}
-						/>
+						<HStack spacing={5}>
+							<InputFormControl
+								fontSize="md"
+								label="Your Title"
+								name="title"
+								placeholder="Enter Role"
+								valueText={formData.title || ""}
+								handleChange={handleInputChange}
+							/>
+							<InputFormControl
+								fontSize="md"
+								label="Your Company Name"
+								name="companyName"
+								placeholder="Enter Company Name"
+								valueText={formData.companyName || ""}
+								handleChange={handleInputChange}
+							/>
+						</HStack>
+
 						<HStack spacing={5}>
 							<InputFormControl
 								fontSize="md"
@@ -149,21 +159,39 @@ export default function CustomerInfo({ onClose }) {
 							/>
 						</HStack>
 						<HStack spacing={5}>
-							<InputFormControl
-								fontSize="md"
+							<SelectFormControl
+								valueParam="type"
+								name="type"
 								label="Country"
-								name="country"
-								placeholder="Enter Country"
-								valueText={formData.country || ""}
-								handleChange={handleInputChange}
+								placeholder="Select Country"
+								size="sm"
+								valueText={formData?.country || ""}
+								handleChange={(e) =>
+									setFormData((prevData) => ({
+										...prevData,
+										country: e.target.value,
+									}))
+								}
+								required
+								options={COUNTRIES}
+								icon={<FaCaretDown />}
 							/>
-							<InputFormControl
-								fontSize="md"
-								label="Province / State"
+							<SelectFormControl
+								icon={<FaCaretDown />}
+								required
+								size="sm"
+								valueParam="name"
 								name="province"
-								placeholder="Enter Province / State"
+								label="Province / State"
 								valueText={formData.province || ""}
-								handleChange={handleInputChange}
+								handleChange={(e) =>
+									setFormData((prevData) => ({
+										...prevData,
+										province: e.target.value,
+									}))
+								}
+								options={provinces}
+								placeholder="Select Province / State"
 							/>
 						</HStack>
 						<InputFormControl

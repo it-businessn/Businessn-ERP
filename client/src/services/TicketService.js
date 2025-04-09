@@ -25,8 +25,8 @@ const TicketService = {
 		return apiService.post("/ticket", data);
 	},
 
-	async saveCustomerPricingInfo(data) {
-		return apiService.post("/ticket/pricing", data);
+	async createLeadTicket(data) {
+		return apiService.post("/ticket/leads", data);
 	},
 
 	async updateInfo(data, id) {

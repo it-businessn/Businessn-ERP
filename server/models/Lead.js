@@ -28,6 +28,10 @@ const leadSchema = new mongoose.Schema({
 	supervisorAssignee: Object,
 	amount: Number,
 	companyName: { type: String, ref: "Company" },
+	roleTitle: String,
+	country: String,
+	annualRevenue: String,
+	totalEmployees: String,
 });
 
 const Lead = mongoose.model("Lead", leadSchema);
