@@ -1,10 +1,20 @@
-import { HStack, IconButton, Tbody, Td, Tooltip, Tr, useToast } from "@chakra-ui/react";
-import PrimaryButton from "components/ui/button/PrimaryButton";
+import { TriangleDownIcon, TriangleUpIcon } from "@chakra-ui/icons";
+import {
+	Box,
+	HStack,
+	IconButton,
+	Table,
+	Tbody,
+	Td,
+	Th,
+	Thead,
+	Tooltip,
+	Tr,
+	useToast,
+} from "@chakra-ui/react";
 import EmptyRowRecord from "components/ui/EmptyRowRecord";
 import NormalTextTitle from "components/ui/NormalTextTitle";
-import TableLayout from "components/ui/table/TableLayout";
 import TextTitle from "components/ui/text/TextTitle";
-import ActionAll from "erp-modules/payroll/timesheets/ActionAll";
 import { TICKET_ACTION_STATUS } from "erp-modules/payroll/timesheets/data";
 import useDepartment from "hooks/useDepartment";
 import { useEffect, useRef, useState } from "react";
@@ -15,9 +25,23 @@ import { longTimeFormat } from "utils/convertDate";
 import CategoryFilter from "./CategoryFilter";
 import NewTicket from "./NewTicket";
 import NoteDetails from "./NoteDetails";
+import StatusCol from "./StatusCol";
 
 const OpenTicket = ({ company, setShowAddEntry, showAddEntry, userId, employees }) => {
+	const TICKET_TABLE_COLS = [
+		{ name: "Ticket Number", key: "ticketNumber" },
+		{ name: "Category", key: "category" },
+		{ name: "Priority", key: "priority" },
+		{ name: "Assignee", key: "assignee" },
+		{ name: "Originator", key: "originator" },
+		{ name: "Topic", key: "topic" },
+		{ name: "Description", key: "issue" },
+		{ name: "Ticket Opened", key: "createdOn" },
+		{ name: "Days Open", key: "ticketDaysOpened" },
+		{ name: "Status", key: "" },
+	];
 	const [ticketData, setTicketData] = useState([]);
+	const [sortConfig, setSortConfig] = useState({ key: null, direction: "asc" });
 	const [refresh, setRefresh] = useState(false);
 	const [openNote, setOpenNote] = useState(false);
 	const [rowData, setRowData] = useState(null);
@@ -57,19 +81,6 @@ const OpenTicket = ({ company, setShowAddEntry, showAddEntry, userId, employees 
 	}, [refresh]);
 
 	const toast = useToast();
-	const cols = [
-		"Ticket Number",
-		"Category",
-		"Priority",
-		"Assignee",
-		"Originator",
-		"Topic",
-		"Description",
-		"Ticket Opened",
-		"Days Open",
-		"Status",
-		"Action",
-	];
 
 	const handleUpdate = async (action, id) => {
 		const { data } = await TicketService.updateInfo({ status: action }, id);
@@ -84,7 +95,7 @@ const OpenTicket = ({ company, setShowAddEntry, showAddEntry, userId, employees 
 		}
 	};
 
-	const filterTickets = async (name) => {
+	const handleFilter = async (name) => {
 		try {
 			const { data } = await TicketService.filterTicket(userId, company, name);
 			data?.tickets?.map((_) => {
@@ -99,7 +110,7 @@ const OpenTicket = ({ company, setShowAddEntry, showAddEntry, userId, employees 
 	};
 
 	const filterTicket = (name) => {
-		filterTickets(name);
+		handleFilter(name);
 	};
 
 	const scrollRight = () => {
@@ -108,10 +119,35 @@ const OpenTicket = ({ company, setShowAddEntry, showAddEntry, userId, employees 
 			setIsScrolling(true);
 		}
 	};
+
 	const scrollLeft = () => {
 		if (scrollRef.current) {
 			scrollRef.current.scrollBy({ left: -200, behavior: "smooth" });
 		}
+	};
+
+	const sortedData = [...ticketData].sort((a, b) => {
+		if (!sortConfig.key) return 0;
+		const aVal = a[sortConfig.key];
+		const bVal = b[sortConfig.key];
+
+		if (aVal < bVal) return sortConfig.direction === "asc" ? -1 : 1;
+		if (aVal > bVal) return sortConfig.direction === "asc" ? 1 : -1;
+		return 0;
+	});
+
+	const requestSort = (key) => {
+		let direction = "asc";
+		if (!key) return;
+		if (sortConfig.key === key && sortConfig.direction === "asc") {
+			direction = "desc";
+		}
+		setSortConfig({ key, direction });
+	};
+
+	const getSortIcon = (key) => {
+		if (sortConfig.key !== key) return null;
+		return sortConfig.direction === "asc" ? <TriangleUpIcon ml={2} /> : <TriangleDownIcon ml={2} />;
 	};
 
 	return (
@@ -182,113 +218,109 @@ const OpenTicket = ({ company, setShowAddEntry, showAddEntry, userId, employees 
 					/>
 				</HStack>
 			)}
-			<TableLayout
-				specifyPaddingCols={["Category", "Topic", "Description"]}
-				cols={cols}
-				position="sticky"
-				zIndex={3}
-				top={-1}
-				height="calc(100vh - 475px)"
-			>
-				<Tbody>
-					{(!ticketData || ticketData?.length === 0) && (
-						<EmptyRowRecord data={ticketData} colSpan={cols.length} />
-					)}
-					{ticketData?.map(
-						({
-							ticketNumber,
-							category,
-							assignee,
-							priority,
-							topic,
-							issue,
-							ticketClosedDate,
-							status,
-							ticketDaysOpened,
-							createdOn,
-							originator,
-							file,
-							originalname,
-							_id,
-							bg,
-						}) => {
-							return (
-								<Tr key={_id} _hover={{ bg: "var(--phoneCall_bg_light)" }}>
-									<Td py={0}>
-										<TextTitle title={ticketNumber} />
-									</Td>
-									<Td py={0} px={1}>
-										<TextTitle title={category} />
-									</Td>
-									<Td py={0}>
-										<NormalTextTitle size="sm" title={priority} />
-									</Td>
-									<Td py={0}>
-										<NormalTextTitle size="sm" title={assignee} />
-									</Td>
-									<Td py={0}>
-										<NormalTextTitle size="sm" title={originator} />
-									</Td>
-									<Td py={0} maxW="100px" px={1}>
-										<Tooltip label={topic}>
-											<span>
-												<NormalTextTitle maxW="100px" size="sm" title={topic} />
-											</span>
-										</Tooltip>
-									</Td>
-									<Td py={0} maxW="100px" px={1}>
-										<Tooltip label={issue}>
-											<HStack spacing={0}>
-												<NormalTextTitle maxW="100px" size="sm" title={issue} />
-												<CgNotes
-													size="12px"
-													cursor="pointer"
-													onClick={() => {
-														setOpenNote(true);
-														setRowData({ issue, topic, ticketNumber, file, originalname });
-													}}
-												/>
-											</HStack>
-										</Tooltip>
-									</Td>
-									<Td py={0}>
-										<NormalTextTitle size="sm" title={longTimeFormat(createdOn)} />
-									</Td>
-									<Td py={0}>
-										<NormalTextTitle size="sm" title={ticketDaysOpened} />
-									</Td>
-									<Td py={0}>
-										<PrimaryButton
-											cursor="text"
-											color="var(--primary_bg)"
-											bg={bg}
-											name={status}
-											size="xs"
-											fontWeight="bold"
-											px={0}
-											hover={{
-												bg,
-												color: "var(--primary_bg)",
-											}}
-											w="100px"
-										/>
-									</Td>
-									<Td py={0} pl={0}>
-										<ActionAll
-											id={_id}
-											w="108px"
-											isRowAction
-											status={status}
-											handleButtonClick={(action) => handleUpdate(action, _id)}
-											actions={TICKET_ACTION_STATUS}
-										/>
-									</Td>
-								</Tr>
-							);
-						},
-					)}
-				</Tbody>
-			</TableLayout>
+			<Box overflow="auto" height="calc(100vh - 475px)">
+				<Table variant="simple">
+					<Thead position={"sticky"} zIndex={3} top={-1}>
+						<Tr>
+							{TICKET_TABLE_COLS?.map((col) => (
+								<Th
+									pl={["Category", "Topic", "Description"]?.includes(col.name) && 0}
+									key={col.name}
+									onClick={() => requestSort(col.key)}
+									cursor="pointer"
+								>
+									<HStack spacing={0}>
+										<TextTitle width="auto" title={col.name} />
+										{getSortIcon(col.key)}
+									</HStack>
+								</Th>
+							))}
+						</Tr>
+					</Thead>
+					<Tbody>
+						{(!ticketData || ticketData?.length === 0) && (
+							<EmptyRowRecord data={ticketData} colSpan={TICKET_TABLE_COLS.length} />
+						)}
+						{sortedData?.map(
+							({
+								ticketNumber,
+								category,
+								assignee,
+								priority,
+								topic,
+								issue,
+								status,
+								ticketDaysOpened,
+								createdOn,
+								originator,
+								file,
+								originalname,
+								_id,
+								bg,
+							}) => {
+								return (
+									<Tr key={_id} _hover={{ bg: "var(--phoneCall_bg_light)" }}>
+										<Td py={0}>
+											<TextTitle title={ticketNumber} />
+										</Td>
+										<Td py={0} px={1}>
+											<TextTitle title={category} />
+										</Td>
+										<Td py={0}>
+											<NormalTextTitle size="sm" title={priority} />
+										</Td>
+										<Td py={0}>
+											<NormalTextTitle size="sm" title={assignee} />
+										</Td>
+										<Td py={0}>
+											<NormalTextTitle size="sm" title={originator} />
+										</Td>
+										<Td py={0} maxW="100px" px={1}>
+											<Tooltip label={topic}>
+												<span>
+													<NormalTextTitle maxW="100px" size="sm" title={topic} />
+												</span>
+											</Tooltip>
+										</Td>
+										<Td py={0} maxW="100px" px={1}>
+											<Tooltip label={issue}>
+												<HStack spacing={0}>
+													<NormalTextTitle maxW="100px" size="sm" title={issue} />
+													<CgNotes
+														size="12px"
+														cursor="pointer"
+														onClick={() => {
+															setOpenNote(true);
+															setRowData({ issue, topic, ticketNumber, file, originalname });
+														}}
+													/>
+												</HStack>
+											</Tooltip>
+										</Td>
+										<Td py={0}>
+											<NormalTextTitle size="sm" title={longTimeFormat(createdOn)} />
+										</Td>
+										<Td py={0}>
+											<NormalTextTitle size="sm" title={ticketDaysOpened} />
+										</Td>
+										<Td py={0}>
+											<StatusCol
+												id={_id}
+												w="108px"
+												bg={bg}
+												isRowAction
+												status={status}
+												handleButtonClick={(action) => handleUpdate(action, _id)}
+												actions={TICKET_ACTION_STATUS}
+											/>
+										</Td>
+									</Tr>
+								);
+							},
+						)}
+					</Tbody>
+				</Table>
+			</Box>
 			{showAddEntry && (
 				<NewTicket
 					company={company}
