@@ -35,6 +35,7 @@ const ModalLayout = ({
 	reportData,
 	ml,
 	px,
+	empName,
 }) => {
 	const componentRef = useRef();
 	const [isPrintDisabled, setIsPrintDisabled] = useState(true);
@@ -46,7 +47,9 @@ const ModalLayout = ({
 	const handlePrint = useReactToPrint({
 		content: () => componentRef.current,
 		onBeforeGetContent: () => {
-			document.title = `${formatDateBar(reportData)}_BusinessN_Paystub`;
+			document.title = empName
+				? `${formatDateBar(reportData)}${empName.replace(/\s+/g, "")}_Paystub.pdf`
+				: `${formatDateBar(reportData)}_Paystub`;
 		},
 	});
 

@@ -5,12 +5,14 @@ import payStubImg from "../../../../assets/coverImgPaystub.png";
 import EmployeeInfo from "../preview-reports/EmployeeInfo";
 import EmployeePayDetails from "../preview-reports/EmployeePayDetails";
 import ChequeDetails from "./ChequeDetails";
+import MobilePayStub from "./MobilePayStub";
 import PayStubHeader from "./PayStubHeader";
 
-const PayStubStatement = ({ data, height, overflow = "hidden" }) => {
+const PayStubStatement = ({ data, height, overflow = "hidden", isMobile }) => {
 	const companyInfo = LocalStorageService.getItem("user")?.companyId;
-
-	return (
+	return isMobile ? (
+		<MobilePayStub companyInfo={companyInfo} reportData={data} />
+	) : (
 		<Box w={"100%"} overflow={overflow} height={height}>
 			<PayStubHeader companyInfo={companyInfo} />
 			<Stack position="relative" alignItems="center" spacing={2}>

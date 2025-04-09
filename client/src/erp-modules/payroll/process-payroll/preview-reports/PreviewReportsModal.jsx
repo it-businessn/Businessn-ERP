@@ -3,6 +3,7 @@ import Loader from "components/Loader";
 import ModalLayout from "components/ui/modal/ModalLayout";
 import NormalTextTitle from "components/ui/NormalTextTitle";
 import TextTitle from "components/ui/text/TextTitle";
+import { useBreakpointValue } from "services/Breakpoint";
 import PayStubStatement from "../statement/PayStubStatement";
 
 const PreviewReportsModal = ({
@@ -14,9 +15,10 @@ const PreviewReportsModal = ({
 	size = "7xl",
 	title = "Payroll Register",
 }) => {
+	const { isMobile } = useBreakpointValue();
 	const Statement = ({ data }) => (
 		<Box borderBottom="1px solid var(--calendar_border)" mx="auto">
-			<PayStubStatement data={data} />
+			<PayStubStatement data={data} isMobile={isMobile} />
 		</Box>
 	);
 
@@ -31,6 +33,7 @@ const PreviewReportsModal = ({
 			overflow={"hidden"}
 			isReport={isReport}
 			ml="-1.5em"
+			empName={isEarningTable ? reportData?.empId?.fullName : null}
 			reportData={
 				isEarningTable
 					? reportData?.payPeriodProcessingDate

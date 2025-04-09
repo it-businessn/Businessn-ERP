@@ -24,7 +24,7 @@ export const setupAxiosInterceptors = (setSessionExpired) => {
 		async (error) => {
 			const originalRequest = error.config;
 
-			if (error.response.status === 403 && !originalRequest._retry) {
+			if (error?.response?.status === 403 && !originalRequest._retry) {
 				originalRequest._retry = true; // Prevent infinite retry loop
 
 				try {

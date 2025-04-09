@@ -48,16 +48,23 @@ const LeftPane = ({ selectedUser, company, isMobile }) => {
 			>
 				<BoxCard>
 					<TextTitle title={"Earning Statement"} />
-					<WorkviewTable
-						isEarningTable
-						cols={EARNING_TABLE_COLS}
-						payGroupSchedule={empPayStub}
-						height="30vh"
-						viewLabel="View Paystub"
-						handleRegister={handleRegister}
-						textAlign={"center"}
-						isMobile={isMobile}
-					/>
+					{isMobile ? (
+						empPayStub?.map((payStub) => (
+							<BoxCard mt={3} key={payStub._id}>
+								{payStub.name}
+							</BoxCard>
+						))
+					) : (
+						<WorkviewTable
+							isEarningTable
+							cols={EARNING_TABLE_COLS}
+							payGroupSchedule={empPayStub}
+							height="30vh"
+							viewLabel="View Paystub"
+							handleRegister={handleRegister}
+							textAlign={"center"}
+						/>
+					)}
 				</BoxCard>
 				{!isMobile && (
 					<BoxCard>
