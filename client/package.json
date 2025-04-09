@@ -9,6 +9,7 @@
 		"test": "react-scripts test",
 		"eject": "react-scripts eject",
 		"build-staging": "env-cmd -f .env.staging react-scripts build",
+		"prebuild": "node scripts/write-version.js",
 		"build": "env-cmd -f .env.production react-scripts build"
 	},
 	"dependencies": {
