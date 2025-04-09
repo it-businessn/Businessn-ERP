@@ -35,7 +35,7 @@ const CompanyInfo = ({ id, handleNext }) => {
 	const handleSubmit = async () => {
 		setIsLoading(true);
 		try {
-			const { data } = await TicketService.addInfo(formData);
+			const { data } = await TicketService.addSupportTicket(formData);
 			LocalStorageService.setItem("ticketId", data._id);
 			setIsLoading(false);
 			toast({

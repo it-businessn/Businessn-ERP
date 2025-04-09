@@ -164,28 +164,33 @@ const downloadResource = async (req, res) => {
 	}
 };
 
+const createNewFreshLead = async (lead) => {
+	const newLeadOpportunity = {
+		name: `${lead?.firstName} ${lead?.lastName}`,
+		companyName: BUSINESSN_ORG,
+		email: lead?.email,
+		opportunityName: lead?.companyName,
+		phone: lead?.phone,
+		productService: lead?.interests?.map((interest) => {
+			return { name: interest };
+		}),
+		region: lead?.province,
+		source: "Website Inquiry",
+		stage: "L1",
+		roleTitle: lead?.title,
+		country: lead?.country,
+		annualRevenue: lead?.annualRevenue,
+		totalEmployees: lead?.totalEmployees,
+	};
+
+	await Lead.create(newLeadOpportunity);
+};
+
 const createLeadTicket = async (req, res) => {
 	try {
 		const data = req.body;
-		const newLeadOpportunity = {
-			name: `${data?.firstName} ${data?.lastName}`,
-			companyName: BUSINESSN_ORG,
-			email: data?.email,
-			opportunityName: data?.companyName,
-			phone: data?.phone,
-			productService: data?.interests?.map((interest) => {
-				return { name: interest };
-			}),
-			region: data?.province,
-			source: "Website Inquiry",
-			stage: "L1",
-			roleTitle: data?.title,
-			country: data?.country,
-			annualRevenue: data?.annualRevenue,
-			totalEmployees: data?.totalEmployees,
-		};
+		createNewFreshLead(data);
 
-		await Lead.create(newLeadOpportunity);
 		const attachments = [
 			{
 				filename: "BusinessN_dark1.png",
@@ -316,6 +321,137 @@ const createLeadTicket = async (req, res) => {
 		res.status(400).json({ message: error.message });
 	}
 };
+
+const createSupportTicket = async (req, res) => {
+	try {
+		const newTicket = req.body;
+		const attachments = [
+			{
+				filename: "BusinessN_dark1.png",
+				path: path.join(__dirname, "../", "assets/logos/BusinessN_dark1.png"),
+				cid: "footerLogo",
+			},
+		];
+
+		const companyNamePrefix = newTicket.companyName.split(" ")[0];
+
+		newTicket.ticketNumber = generateTicketNumber(companyNamePrefix);
+		newTicket.category = "Support";
+		newTicket.priority = 4;
+		const ticket = await SupportTicket.create(newTicket);
+		const assigneeEmail = await Employee.findOne({ email: "jesse.christiaens@businessn.com" });
+
+		if (assigneeEmail?.email) {
+			await sendEmail(
+				assigneeEmail?.email,
+				`New Support Ticket Logged`,
+				"",
+				`
+					<body style="margin: 0; font-family: Arial, Helvetica, sans-serif;height:'auto">
+			<div
+				class="header"
+				style="
+					background-color: #371f37;
+					color: white;
+					text-align: center;
+					height: 150px;
+					display: flex;
+					align-items: center;
+				"
+			>
+				<div
+					id="header_content"
+					style="
+						display: flex;
+						flex-direction: column;
+						align-items: self-start;
+						background: #4c364b;
+						border-radius: 10px;
+						gap: 1em;
+						width: 80%;
+						margin: 0 auto;
+						padding: 1.5em;
+					"
+				>
+					<p
+						class="category"
+						style="color: #e8ccb7; font-weight: bold; margin: 0"
+					>
+						${ticket?.category}
+					</p>
+					<p
+						class="topic"
+						style="font-weight: bold; font-size: larger; margin: 5px 0"
+					>
+						Customer Support Inquiry
+					</p>
+				</div>
+			</div>
+			<div
+				class="container"
+				style="
+					background: #fdfdfd;
+					color: #371f37;
+					display: flex;
+					flex-direction: column;
+					align-items: self-start;
+					padding: 2em 3em;
+					gap: 1em;
+					font-size: 14px;
+				"
+			>
+				<h3 style="margin: 0; margin-bottom: 1em">Hello Jesse,</h3>
+				<p style="margin: 5px 0">
+					We are confirming that we have received ticket <span style="
+					background: #d5efe2;">${ticket?.ticketNumber}</span> assigned to
+					you.
+				</p>
+
+				<p>You’ve got a new support ticket! Here are the basic details:</p>
+
+				<p style="font-weight: bold; margin: 0">Company Name:</p>
+				<p>${newTicket?.companyName}</p>
+				
+				<p style="font-weight: bold; margin: 0">View Ticket:</p>
+				<p style="margin: 5px 0">
+					To view the full ticket or add a reply, access your account via the link
+					below:
+				</p>
+				<p style="margin: 5px 0">
+					<a href="https://businessn-erp.com/" target="_blank"
+						>https://businessn-erp.com/login/</a
+					>
+				</p>
+				<p style="margin: 5px 0">
+					Please do not reply to this email as responses are not monitored.
+				</p>
+			</div>
+			<div
+				class="footer"
+				style="
+					background-color: #371f37;
+					color: white;
+					text-align: center;
+					height: 150px;
+					display: flex;
+					align-items: center;
+				"
+			>
+		  <img src="cid:footerLogo"
+					style="margin: 0 auto;width:300px" alt="Footer Logo"/>
+
+			</div>
+		</body>
+				`,
+				attachments,
+			);
+		}
+		res.status(201).json(ticket);
+	} catch (error) {
+		res.status(400).json({ message: error.message });
+	}
+};
+
 const createTicket = async (req, res) => {
 	try {
 		const newTicket = req.body;
@@ -507,4 +643,5 @@ module.exports = {
 	getAggregateTicketCount,
 	getFilteredTickets,
 	createLeadTicket,
+	createSupportTicket,
 };

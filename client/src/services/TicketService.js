@@ -25,6 +25,10 @@ const TicketService = {
 		return apiService.post("/ticket", data);
 	},
 
+	async addSupportTicket(data) {
+		return apiService.post("/ticket/support", data);
+	},
+
 	async createLeadTicket(data) {
 		return apiService.post("/ticket/leads", data);
 	},

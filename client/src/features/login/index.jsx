@@ -3,6 +3,7 @@ import Logo from "components/logo";
 import { useEffect, useRef, useState } from "react";
 import { useBreakpointValue } from "services/Breakpoint";
 // import coverVideo from "../../assets/cover.mp4";
+import { useNavigate } from "react-router-dom";
 import logoImg from "../../assets/logos/BusinessN_dark1.png";
 import CirclePattern from "./CirclePattern";
 import ContactForm from "./ContactForm";
@@ -12,6 +13,7 @@ const Login = () => {
 	const videoRef = useRef(null);
 	const { isMobile } = useBreakpointValue();
 	const [showContactForm, setShowContactForm] = useState(false);
+	const navigate = useNavigate();
 
 	useEffect(() => {
 		if (videoRef.current) {
@@ -46,7 +48,7 @@ const Login = () => {
 					<Flex h="50" align={"center"} justify={"space-between"} ml={3} px={8}>
 						<Logo isFullLogo logoImgSrc={logoImg} width="500px" ml={"-110px"} />
 						<HStack spacing={0} justifyContent={"start"}>
-							<Button alignItems={"end"} onClick={() => setShowContactForm(true)}>
+							<Button alignItems={"end"} onClick={() => navigate("/support")}>
 								Contact us
 							</Button>
 							<Button alignItems={"end"}>English</Button>

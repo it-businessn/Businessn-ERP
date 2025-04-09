@@ -23,8 +23,10 @@ router.get("/closed/:id/:companyName", authenticateToken, ticketController.getCl
 
 router.post("/", authenticateToken, storageSpace.single("file"), ticketController.createTicket);
 
+router.post("/support", ticketController.createSupportTicket);
+
 router.post("/leads", ticketController.createLeadTicket);
 
-router.put("/:id", authenticateToken, ticketController.updateTicket);
+router.put("/:id", ticketController.updateTicket);
 
 module.exports = router;
