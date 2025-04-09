@@ -313,7 +313,7 @@ const Opportunities = () => {
 										selectedValue={_.supervisorAssignee?.[0]?.name}
 										type="supervisorAssignee"
 										handleSelect={handleSelect}
-										data={assignees}
+										data={managers}
 									/>
 								</Td>
 								<Td py={"0.5em"}>
