@@ -19,7 +19,7 @@ const UserProfileDetails = lazy(() => import("./features/user/UserProfileDetails
 const VerifyEmail = lazy(() => import("./features/verify-user"));
 
 // hr
-const CompanyHR = lazy(() => import("./erp-modules/hr/CompanyHR"));
+const HRDashboard = lazy(() => import("./erp-modules/hr"));
 
 // operations
 const Operations = lazy(() => import("./erp-modules/operations"));
@@ -42,7 +42,7 @@ const LeadsDocket = lazy(() => import("./erp-modules/sales/lead docket"));
 const Opportunities = lazy(() => import("./erp-modules/sales/opportunities"));
 const Payouts = lazy(() => import("./erp-modules/sales/payouts"));
 const Pipeline = lazy(() => import("./erp-modules/sales/target-leads-pipeline"));
-const Onboarding = lazy(() => import("./erp-modules/sales/Onboarding"));
+const Onboarding = lazy(() => import("./erp-modules/sales/onboarding"));
 const Products = lazy(() => import("./erp-modules/sales/products"));
 const Resources = lazy(() => import("./erp-modules/sales/resources"));
 const SalesReport = lazy(() => import("./erp-modules/sales/reports"));
@@ -397,7 +397,11 @@ export const router = createBrowserRouter([
 			/* HR */
 			{
 				path: "/hr",
-				element: <CompanyHR />,
+				element: <HRDashboard />,
+			},
+			{
+				path: "/hr/resources",
+				element: <Resources isHRType />,
 			},
 			/* Operations */
 			{

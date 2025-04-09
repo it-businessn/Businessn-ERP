@@ -4,8 +4,8 @@ import BoxCard from "components/ui/card";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { payrollROEPath } from "routes";
+import OnboardEmpModal from "../../../sales/onboarding/OnboardEmpModal";
 import ExtraPayrunModal from "./ExtraPayrunModal";
-import OnboardEmpModal from "./OnboardEmpModal";
 import PayrollActions from "./PayrollActions";
 import WorkviewTable from "./WorkviewTable";
 

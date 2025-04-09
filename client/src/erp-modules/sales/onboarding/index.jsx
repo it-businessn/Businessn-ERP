@@ -3,7 +3,7 @@ import PrimaryButton from "components/ui/button/PrimaryButton";
 import NormalTextTitle from "components/ui/NormalTextTitle";
 import TextTitle from "components/ui/text/TextTitle";
 import ActionAll from "erp-modules/payroll/timesheets/ActionAll";
-import OnboardEmpModal from "erp-modules/payroll/workview/paygroup-header-table/OnboardEmpModal";
+import OnboardEmpModal from "erp-modules/sales/onboarding/OnboardEmpModal";
 import PageLayout from "layouts/PageLayout";
 import { useEffect, useState } from "react";
 import ContactService from "services/ContactService";

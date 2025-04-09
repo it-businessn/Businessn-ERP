@@ -19,7 +19,7 @@ import HighlightButton from "components/ui/button/HighlightButton";
 import LeftIconButton from "components/ui/button/LeftIconButton";
 import PrimaryButton from "components/ui/button/PrimaryButton";
 import TextTitle from "components/ui/text/TextTitle";
-import OnboardEmpModal from "erp-modules/payroll/workview/paygroup-header-table/OnboardEmpModal";
+import OnboardEmpModal from "erp-modules/sales/onboarding/OnboardEmpModal";
 import useManager from "hooks/useManager";
 import useSalesAgentData from "hooks/useSalesAgentData";
 import PageLayout from "layouts/PageLayout";

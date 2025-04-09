@@ -9,28 +9,30 @@ import EmployeeViewCard from "./EmployeeViewCard";
 import ManagerViewCard from "./ManagerViewCard";
 import ResourceFile from "./ResourceFile";
 
-const Resources = () => {
+const Resources = ({ isHRType = false }) => {
 	const { company } = useCompany(LocalStorageService.getItem("selectedCompany"));
 	const loggedInUser = LocalStorageService.getItem("user");
 	const { fullName, role } = loggedInUser;
 	const isUserManager = isManager(role);
 
 	const FILE_TYPES = [
-		// { type: "Training" },
-		{ type: "Sales Scripts" },
-		{ type: "On-boarding Scripts" },
-		{ type: "Marketing Scripts" },
-		{ type: "Product Knowledge" },
-		{ type: "Employee Handbook" },
-		{ type: "Associates" },
-		{ type: "Training resources" },
+		{ type: "Training", show: isHRType },
+		{ type: "Sales Scripts", show: true },
+		{ type: "On-boarding Scripts", show: true },
+		{ type: "Marketing Scripts", show: true },
+		{ type: "Product Knowledge", show: true },
+		{ type: "Employee Handbook", show: true },
+		{ type: "Associates", show: true },
+		{ type: "Training resources", show: true },
 	];
-	const [selectedFilter, setSelectedFilter] = useState(FILE_TYPES[0].type);
+	const [selectedFilter, setSelectedFilter] = useState(
+		FILE_TYPES?.find(({ show }) => show === true)?.type,
+	);
 
 	return (
 		<PageLayout title="Resources">
 			<ResourceFile
-				fileTypes={FILE_TYPES}
+				fileTypes={FILE_TYPES?.filter(({ show }) => show)}
 				isUserManager={isUserManager}
 				fullName={fullName}
 				company={company}

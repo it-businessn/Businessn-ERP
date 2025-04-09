@@ -9,8 +9,8 @@ import {
 } from "@chakra-ui/react";
 import PrimaryButton from "components/ui/button/PrimaryButton";
 import { ROLES } from "constant";
-import OnboardEmpModal from "erp-modules/payroll/workview/paygroup-header-table/OnboardEmpModal";
 import PayrollActions from "erp-modules/payroll/workview/paygroup-header-table/PayrollActions";
+import OnboardEmpModal from "erp-modules/sales/onboarding/OnboardEmpModal";
 import useCompany from "hooks/useCompany";
 import useEmployees from "hooks/useEmployees";
 import usePaygroup from "hooks/usePaygroup";

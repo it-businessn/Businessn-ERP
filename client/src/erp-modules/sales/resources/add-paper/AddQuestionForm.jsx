@@ -13,6 +13,7 @@ import {
 	VStack,
 } from "@chakra-ui/react";
 import PrimaryButton from "components/ui/button/PrimaryButton";
+import BoxCard from "components/ui/card";
 import ActionButtonGroup from "components/ui/form/ActionButtonGroup";
 import DeletePopUp from "components/ui/modal/DeletePopUp";
 import TextTitle from "components/ui/text/TextTitle";
@@ -151,60 +152,75 @@ const AddQuestionForm = () => {
 				/>
 			</HStack>
 
-			{questionnaires?.map((questionnaire, index) => (
-				<Box
-					key={questionnaire._id}
-					bg={"var(--primary_bg)"}
-					border="3px solid var(--main_color)"
-					p={{ base: "1em" }}
-					mt={"0.5em"}
+			{questionnaires && (
+				<BoxCard
+					borderColor="var(--calendar_border)"
+					h={"calc(100vh - 603px)"}
+					p={0}
+					overflow={"auto"}
 				>
-					<HStack>
-						<FormLabel>{`${index + 1}: ${questionnaire.question}`}</FormLabel>
-						<Icon
-							as={RiEditLine}
-							boxSize={4}
-							cursor={"pointer"}
-							mb={1}
-							onClick={() => handleEdit(questionnaire)}
-						/>
-						<Icon
-							as={FaRegTrashCan}
-							boxSize={3.5}
-							cursor={"pointer"}
-							mb={1}
-							onClick={() => {
-								setShowConfirmationPopUp(true);
-								setDeleteRecord(questionnaire._id);
-							}}
-						/>
-					</HStack>
-					<FormLabel>
-						<HStack alignItems="start">
-							<Text ml={6}>Options:</Text>
-							{questionnaire.options.map((_, index) => (
-								<HStack key={_} spacing={1} alignItems="start" justifyContent={"start"} w={"100%"}>
-									<TextTitle whiteSpace="pre-wrap" flex={0.1} title={`${index + 1}:`} />
-									<TextTitle flex={1} title={_} whiteSpace="pre-wrap" weight="normal" />
+					{questionnaires?.map((questionnaire, index) => (
+						<Box
+							key={questionnaire._id}
+							bg={"var(--primary_bg)"}
+							border="3px solid var(--main_color)"
+							p={{ base: "1em" }}
+							mt={"0.5em"}
+						>
+							<HStack>
+								<FormLabel>{`${index + 1}: ${questionnaire.question}`}</FormLabel>
+								<Icon
+									as={RiEditLine}
+									boxSize={4}
+									cursor={"pointer"}
+									mb={1}
+									onClick={() => handleEdit(questionnaire)}
+								/>
+								<Icon
+									as={FaRegTrashCan}
+									boxSize={3.5}
+									cursor={"pointer"}
+									mb={1}
+									onClick={() => {
+										setShowConfirmationPopUp(true);
+										setDeleteRecord(questionnaire._id);
+									}}
+								/>
+							</HStack>
+							<FormLabel>
+								<HStack alignItems="start">
+									<Text ml={6}>Options:</Text>
+									{questionnaire.options.map((_, index) => (
+										<HStack
+											key={_}
+											spacing={1}
+											alignItems="start"
+											justifyContent={"start"}
+											w={"100%"}
+										>
+											<TextTitle whiteSpace="pre-wrap" flex={0.1} title={`${index + 1}:`} />
+											<TextTitle flex={1} title={_} whiteSpace="pre-wrap" weight="normal" />
+										</HStack>
+									))}
 								</HStack>
-							))}
-						</HStack>
-					</FormLabel>
-					<FormLabel color={"green"}>
-						<HStack alignItems="start">
-							<Text ml={6}>Best answer:</Text>
-							<Text>{questionnaire.correctAnswer}</Text>
-						</HStack>
-					</FormLabel>
+							</FormLabel>
+							<FormLabel color={"green"}>
+								<HStack alignItems="start">
+									<Text ml={6}>Best answer:</Text>
+									<Text>{questionnaire.correctAnswer}</Text>
+								</HStack>
+							</FormLabel>
 
-					<FormLabel fontWeight={"bold"}>
-						<HStack alignItems="start">
-							<Text ml={6}>Explanation:</Text>
-							<Text>{questionnaire.explanation}</Text>
-						</HStack>
-					</FormLabel>
-				</Box>
-			))}
+							<FormLabel fontWeight={"bold"}>
+								<HStack alignItems="start">
+									<Text ml={6}>Explanation:</Text>
+									<Text>{questionnaire.explanation}</Text>
+								</HStack>
+							</FormLabel>
+						</Box>
+					))}
+				</BoxCard>
+			)}
 			{showConfirmationPopUp && (
 				<DeletePopUp
 					headerTitle={"Delete Question"}
@@ -234,7 +250,8 @@ const AddQuestionForm = () => {
 			{!assessmentTypes && (
 				<Text color={"green"}>No assessments available. Please add new quiz.</Text>
 			)}
-			<Box mt={3}>
+			<BoxCard borderColor="var(--calendar_border)" mt={"1em"}>
+				<TextTitle title="New Question:" />
 				<form onSubmit={handleSubmit}>
 					{assessmentTypes && (
 						<FormControl>
@@ -281,13 +298,13 @@ const AddQuestionForm = () => {
 							<FormControl>
 								<FormLabel>Best Answer:</FormLabel>
 								<RadioGroup value={correctAnswer} onChange={setCorrectAnswer}>
-									<VStack spacing={3} justifyContent={"flex-start"} alignItems={"self-start"}>
+									<HStack spacing={3} justifyContent={"flex-start"} alignItems={"self-start"}>
 										{options.map((option, index) => (
 											<Radio key={index} value={option} border={"1px solid var(--gray2_color)"}>
 												{option}
 											</Radio>
 										))}
-									</VStack>
+									</HStack>
 								</RadioGroup>
 							</FormControl>
 
@@ -303,7 +320,7 @@ const AddQuestionForm = () => {
 					)}
 					<ActionButtonGroup submitBtnName={"Add Question"} onClose={() => navigate(-1)} />
 				</form>
-			</Box>
+			</BoxCard>
 		</Box>
 	);
 };

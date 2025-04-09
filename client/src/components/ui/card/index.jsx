@@ -21,13 +21,14 @@ const BoxCard = ({
 	pb,
 	borderRadius = "10px",
 	minW,
+	borderColor = "var(--main_color)",
 }) => (
 	<Box
 		minW={minW}
 		flexWrap={flexWrap}
 		boxShadow={boxShadow}
 		bg={bg}
-		border={`${borderWidth} solid var(--main_color)`}
+		border={`${borderWidth} solid ${borderColor}`}
 		borderRadius={borderRadius}
 		color={"var(--nav_color)"}
 		display={display}
