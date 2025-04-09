@@ -70,16 +70,12 @@ const CustomersList = ({ user, handleProfileView, icons, company }) => {
 
 	const fetchAllContacts = async () => {
 		try {
-			const { data } = await ContactService.getCompContacts(company);
-			data.map((_) => (_.stage = _.leadId?.stage));
-			const filterContacts = data.filter((_) => _.stage === "T4");
+			const { data } = await ContactService.getOnboardedContacts(company);
 
 			setContacts(
 				isUserManager
-					? filterContacts
-					: filterContacts?.filter(
-							(lead) => lead.leadId.primaryAssignee[0]?.name === user.fullName,
-					  ),
+					? data
+					: data?.filter((lead) => lead.leadId.primaryAssignee[0]?.name === user.fullName),
 			);
 		} catch (error) {
 			console.error(error);

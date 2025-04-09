@@ -26,6 +26,23 @@ const getContact = async (req, res) => {
 	}
 };
 
+const getOnboardedCompanyContact = async (req, res) => {
+	const { companyName } = req.params;
+
+	try {
+		const contacts = await Contact.find({ companyName })
+			.populate({
+				path: "leadId",
+				match: { stage: "T4" },
+			})
+			.select("leadId");
+		const filteredContacts = contacts.filter((contact) => contact.leadId);
+		res.status(200).json(filteredContacts);
+	} catch (error) {
+		res.status(404).json({ error: error.message });
+	}
+};
+
 const getCompanyContact = async (req, res) => {
 	const { companyName } = req.params;
 
@@ -107,4 +124,5 @@ module.exports = {
 	updateContact,
 	getCompanyContact,
 	followUpContact,
+	getOnboardedCompanyContact,
 };

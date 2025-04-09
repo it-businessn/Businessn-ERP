@@ -109,17 +109,17 @@ export const SIDEBAR_MENU = [
 				icon: <RiUserSearchLine />,
 			},
 			{
+				path: "onboarding",
+				name: "Onboarding",
+				children: [],
+				icon: <FaUsersGear />,
+			},
+			{
 				path: "products",
 				name: "Products",
 				children: [],
 				icon: <IoBagRemoveOutline />,
 			},
-			// {
-			// 	path: "orders",
-			// 	name: "Orders",
-			// 	children: [],
-			// 	icon: <TbShoppingBag />,
-			// },
 			{
 				path: "resources",
 				name: "Resources",

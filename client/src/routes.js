@@ -42,6 +42,7 @@ const LeadsDocket = lazy(() => import("./erp-modules/sales/lead docket"));
 const Opportunities = lazy(() => import("./erp-modules/sales/opportunities"));
 const Payouts = lazy(() => import("./erp-modules/sales/payouts"));
 const Pipeline = lazy(() => import("./erp-modules/sales/target-leads-pipeline"));
+const Onboarding = lazy(() => import("./erp-modules/sales/Onboarding"));
 const Products = lazy(() => import("./erp-modules/sales/products"));
 const Resources = lazy(() => import("./erp-modules/sales/resources"));
 const SalesReport = lazy(() => import("./erp-modules/sales/reports"));
@@ -213,6 +214,10 @@ export const router = createBrowserRouter([
 			{
 				path: `${ROUTE_PATH.SALES}${ROUTE_PATH.PIPELINE}`,
 				element: <Pipeline />,
+			},
+			{
+				path: `${ROUTE_PATH.SALES}/onboarding`,
+				element: <Onboarding />,
 			},
 			{
 				path: `${ROUTE_PATH.SALES}${ROUTE_PATH.PRODUCTS}`,
