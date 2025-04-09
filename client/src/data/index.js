@@ -1,6 +1,6 @@
 import { BiNotepad, BiTask } from "react-icons/bi";
 import { CiViewTimeline } from "react-icons/ci";
-import { FaAddressBook, FaDashcube, FaRProject } from "react-icons/fa";
+import { FaAddressBook, FaDashcube, FaRProject, FaSalesforce } from "react-icons/fa";
 import {
 	FaCalendar,
 	FaChartGantt,
@@ -114,12 +114,12 @@ export const SIDEBAR_MENU = [
 				children: [],
 				icon: <IoBagRemoveOutline />,
 			},
-			{
-				path: "orders",
-				name: "Orders",
-				children: [],
-				icon: <TbShoppingBag />,
-			},
+			// {
+			// 	path: "orders",
+			// 	name: "Orders",
+			// 	children: [],
+			// 	icon: <TbShoppingBag />,
+			// },
 			{
 				path: "resources",
 				name: "Resources",
@@ -369,6 +369,26 @@ export const SIDEBAR_MENU = [
 				name: "Company",
 				children: [],
 				icon: <BiTask />,
+			},
+		],
+	},
+	{
+		path: "operations",
+		name: "Operations",
+		id: "operations",
+		icon: <FaSalesforce />,
+		children: [
+			{
+				path: "",
+				name: "Dashboard",
+				children: [],
+				icon: <BiTask />,
+			},
+			{
+				path: "orders",
+				name: "Orders",
+				children: [],
+				icon: <TbShoppingBag />,
 			},
 		],
 	},

@@ -21,6 +21,10 @@ const VerifyEmail = lazy(() => import("./features/verify-user"));
 // hr
 const CompanyHR = lazy(() => import("./erp-modules/hr/CompanyHR"));
 
+// operations
+const Operations = lazy(() => import("./erp-modules/operations"));
+const Orders = lazy(() => import("./erp-modules/operations/orders"));
+
 // sales
 const Activities = lazy(() => import("./erp-modules/sales/activities"));
 const AddQuestionForm = lazy(() =>
@@ -36,7 +40,6 @@ const FreshLeads = lazy(() => import("./erp-modules/sales/fresh_leads"));
 const LeadsDisburse = lazy(() => import("./erp-modules/sales/lead disburse"));
 const LeadsDocket = lazy(() => import("./erp-modules/sales/lead docket"));
 const Opportunities = lazy(() => import("./erp-modules/sales/opportunities"));
-const Orders = lazy(() => import("./erp-modules/sales/orders"));
 const Payouts = lazy(() => import("./erp-modules/sales/payouts"));
 const Pipeline = lazy(() => import("./erp-modules/sales/target-leads-pipeline"));
 const Products = lazy(() => import("./erp-modules/sales/products"));
@@ -216,10 +219,6 @@ export const router = createBrowserRouter([
 				element: <Products />,
 			},
 			{
-				path: `${ROUTE_PATH.SALES}${ROUTE_PATH.ORDERS}`,
-				element: <Orders />,
-			},
-			{
 				path: `${ROUTE_PATH.SALES}${ROUTE_PATH.RESOURCES}`,
 				element: <Resources />,
 			},
@@ -394,6 +393,15 @@ export const router = createBrowserRouter([
 			{
 				path: "/hr",
 				element: <CompanyHR />,
+			},
+			/* Operations */
+			{
+				path: "/operations",
+				element: <Operations />,
+			},
+			{
+				path: `/operations${ROUTE_PATH.ORDERS}`,
+				element: <Orders />,
 			},
 		],
 	},
