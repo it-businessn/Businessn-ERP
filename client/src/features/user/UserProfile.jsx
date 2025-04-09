@@ -3,6 +3,7 @@ import {
 	Avatar,
 	Button,
 	HStack,
+	IconButton,
 	Popover,
 	PopoverArrow,
 	PopoverBody,
@@ -12,6 +13,7 @@ import {
 	VStack,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
+import { IoMdHelp } from "react-icons/io";
 import { useNavigate } from "react-router-dom";
 import { adminConsolePath, userProfilePath } from "routes";
 // import { styleConsole } from "utils";
@@ -58,7 +60,7 @@ const UserProfile = ({ user, handleLogout }) => {
 	];
 
 	return (
-		<HStack pb={2} _hover={{ cursor: "pointer" }}>
+		<HStack pb={2} spacing={0} _hover={{ cursor: "pointer" }}>
 			<Popover isOpen={isOpen} onClose={handleToggle}>
 				<PopoverTrigger>
 					<Avatar
@@ -99,6 +101,12 @@ const UserProfile = ({ user, handleLogout }) => {
 					</PopoverBody>
 				</PopoverContent>
 			</Popover>
+			<IconButton
+				size="lg"
+				icon={<IoMdHelp />}
+				onClick={() => navigate("/support")}
+				aria-label="Support"
+			/>
 		</HStack>
 	);
 };
