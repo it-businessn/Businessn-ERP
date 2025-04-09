@@ -1,4 +1,4 @@
-import { redirectLogin } from "api";
+import { redirectLogin, setupAxiosInterceptors } from "api";
 import "App.css";
 import { useEffect, useState } from "react";
 import { RouterProvider } from "react-router-dom";
