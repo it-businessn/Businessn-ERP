@@ -53,7 +53,7 @@ export const setupAxiosInterceptors = (setSessionExpired) => {
 };
 
 export const redirectLogin = () => {
-	window.location.replace(`/login?nocache=${new Date().getTime()}`);
+	window.location.replace(`/login`);
 	sessionStorage.clear();
 	sessionStorage.removeItem("accessToken");
 	LocalStorageService.clear();
