@@ -56,7 +56,8 @@ const ChequeDetails = ({ data, companyInfo, flex, isMobile }) => {
 			textAlign="center"
 		>
 			<PayStubHeader isMobile companyInfo={companyInfo} />
-			<TextTitle title={`Payable by Cheque to: ${name}`} />
+			<TextTitle title={`Payable by Cheque to:`} />
+			<TextTitle size="md" title={`${name}`} />
 			<TextTitle size="md" title={`${netPay}`} />
 			{/* <TextTitle title={`${paymentType}`} /> */}
 			<TextTitle

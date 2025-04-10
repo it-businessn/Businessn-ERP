@@ -11,6 +11,7 @@ const { getHourlyAggregatedResult } = require("./payrunHourlyAllocatedCalc");
 const { getPayrunEEContributionResult } = require("./payrunEEContrCalc");
 const { getPayrunERContributionResult } = require("./payrunERContrCalc");
 const { getSumRegHrs } = require("../services/payrollService");
+const EmployeeEmploymentInfo = require("../models/EmployeeEmploymentInfo");
 
 //update roles-
 
@@ -242,9 +243,16 @@ const getAlertsAndViolationsInfo = async (req, res) => {
 	const { companyName, payPeriodNum } = req.params;
 
 	try {
+		const payrollActiveEmps = await EmployeeEmploymentInfo.find({
+			payrollStatus: "Payroll Active",
+			companyName,
+		}).select("empId");
+		const payrollActiveIds = payrollActiveEmps.map((emp) => emp.empId);
+
 		const alerts = await EmployeeAlertsViolationInfo.find({
 			companyName,
 			// payPeriodNum,
+			empId: { $in: payrollActiveIds },
 		})
 			.populate(EMP_INFO)
 			.sort({
