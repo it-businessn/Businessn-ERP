@@ -108,7 +108,7 @@ const WorkviewTab = ({
 										HRS_DECIMAL_COLS.includes(col.pair) ? (
 											<TextTitle title={convertDecimal(row[col.pair])} />
 										) : (
-											convertDecimal(row[col.pair])
+											row[col.pair]
 										)
 									) : (
 										row[col.pair]
