@@ -1,5 +1,6 @@
-import { Box, SimpleGrid } from "@chakra-ui/react";
+import { Box, SimpleGrid, VStack } from "@chakra-ui/react";
 
+import PrimaryButton from "components/ui/button/PrimaryButton";
 import BoxCard from "components/ui/card";
 import TextTitle from "components/ui/text/TextTitle";
 import PreviewReportsModal from "erp-modules/payroll/process-payroll/preview-reports/PreviewReportsModal";
@@ -7,7 +8,8 @@ import { EARNING_TABLE_COLS } from "erp-modules/payroll/workview/data";
 import WorkviewTable from "erp-modules/payroll/workview/paygroup-header-table/WorkviewTable";
 import { useEffect, useState } from "react";
 import PayrollService from "services/PayrollService";
-import { getPayNum, sortRecordsByDate } from "utils";
+import { getPayNum, isExtraPay, sortRecordsByDate } from "utils";
+import { dayMonthYear, formatDateRange } from "utils/convertDate";
 import EmployeeTimeCard from "./EmployeeTimeCard";
 
 const LeftPane = ({ selectedUser, company, isMobile }) => {
@@ -49,11 +51,38 @@ const LeftPane = ({ selectedUser, company, isMobile }) => {
 				<BoxCard>
 					<TextTitle title={"Earning Statement"} />
 					{isMobile ? (
-						empPayStub?.map((payStub) => (
-							<BoxCard mt={3} key={payStub._id}>
-								{payStub.name}
-							</BoxCard>
-						))
+						empPayStub?.map(
+							({
+								payPeriodNum,
+								_id,
+								payPeriod,
+								isExtraRun,
+								payPeriodPayDate,
+								payPeriodStartDate,
+								payPeriodEndDate,
+							}) => (
+								<BoxCard mt={3} key={_id}>
+									<VStack alignItems="start">
+										<TextTitle
+											title={`Pay number: ${isExtraPay(payPeriodNum || payPeriod, isExtraRun)}`}
+										/>
+										<TextTitle title={`Pay date: ${dayMonthYear(payPeriodPayDate)}`} />
+										<TextTitle title={`Pay period-`} />
+										<TextTitle title={formatDateRange(payPeriodStartDate, payPeriodEndDate)} />
+										<PrimaryButton
+											size="xs"
+											name="View"
+											onOpen={() =>
+												handleRegister(
+													isExtraPay(payPeriodNum || payPeriod, isExtraRun),
+													isExtraRun,
+												)
+											}
+										/>
+									</VStack>
+								</BoxCard>
+							),
+						)
 					) : (
 						<WorkviewTable
 							isEarningTable
@@ -74,6 +103,7 @@ const LeftPane = ({ selectedUser, company, isMobile }) => {
 			</SimpleGrid>
 			{showReport && (
 				<PreviewReportsModal
+					isMobile={isMobile}
 					isReport
 					size="5xl"
 					isOpen={showReport}

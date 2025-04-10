@@ -11,6 +11,7 @@ import useCompany from "hooks/useCompany";
 import useCompanyEmployees from "hooks/useCompanyEmployees";
 import PageLayout from "layouts/PageLayout";
 import { useEffect, useState } from "react";
+import { useBreakpointValue } from "services/Breakpoint";
 import LocalStorageService from "services/LocalStorageService";
 import PayrollService from "services/PayrollService";
 import { getPayNum, isExtraPay, sortRecordsByDate } from "utils";
@@ -19,6 +20,7 @@ import EmpProfileSearch from "../employees/EmpProfileSearch";
 import PreviewReportsModal from "../process-payroll/preview-reports/PreviewReportsModal";
 
 const Reports = () => {
+	const { isMobile } = useBreakpointValue();
 	const { company } = useCompany(LocalStorageService.getItem("selectedCompany"));
 	const [showReport, setShowReport] = useState(undefined);
 	const REPORT_COLS = ["Pay number", "Pay date", "Pay period", "Status", "Action"];
@@ -146,6 +148,7 @@ const Reports = () => {
 			</TableLayout>
 			{showReport && payStub && (
 				<PreviewReportsModal
+					isMobile={isMobile}
 					size="4xl"
 					isReport
 					isOpen={showReport}

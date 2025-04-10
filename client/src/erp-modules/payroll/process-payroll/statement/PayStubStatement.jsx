@@ -1,18 +1,13 @@
 import { Box, HStack, Stack } from "@chakra-ui/react";
 
-import LocalStorageService from "services/LocalStorageService";
 import payStubImg from "../../../../assets/coverImgPaystub.png";
 import EmployeeInfo from "../preview-reports/EmployeeInfo";
 import EmployeePayDetails from "../preview-reports/EmployeePayDetails";
 import ChequeDetails from "./ChequeDetails";
-import MobilePayStub from "./MobilePayStub";
 import PayStubHeader from "./PayStubHeader";
 
-const PayStubStatement = ({ data, height, overflow = "hidden", isMobile }) => {
-	const companyInfo = LocalStorageService.getItem("user")?.companyId;
-	return isMobile ? (
-		<MobilePayStub companyInfo={companyInfo} reportData={data} />
-	) : (
+const PayStubStatement = ({ data, height, overflow = "hidden", companyInfo }) => {
+	return (
 		<Box
 			w={"100%"}
 			flexDir="column"

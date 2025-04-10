@@ -4,6 +4,7 @@ import usePaygroup from "hooks/usePaygroup";
 import PageLayout from "layouts/PageLayout";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { useBreakpointValue } from "services/Breakpoint";
 import LocalStorageService from "services/LocalStorageService";
 import PayrollService from "services/PayrollService";
 import { CURRENT_YEAR } from "utils/convertDate";
@@ -17,6 +18,7 @@ const ReportListView = () => {
 	const { company } = useCompany(LocalStorageService.getItem("selectedCompany"));
 	const [yearsList, setYearsList] = useState([CURRENT_YEAR]);
 	const [selectedYear, setSelectedYear] = useState(year ?? CURRENT_YEAR);
+	const { isMobile } = useBreakpointValue();
 
 	const { payGroupSchedule, closestRecordIndex, selectedPayGroup } = usePaygroup(
 		company,
@@ -161,6 +163,7 @@ const ReportListView = () => {
 			)}
 			{hasLoaded && showReport && reportData && (
 				<PreviewReportsModal
+					isMobile={isMobile}
 					isReport
 					isOpen={showReport}
 					onClose={() => setShowReport(false)}

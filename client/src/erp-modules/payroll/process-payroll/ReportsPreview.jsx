@@ -6,6 +6,7 @@ import useFundingTotalsReport from "hooks/useFundingTotalsReport";
 import useJournalReport from "hooks/useJournalReport";
 import { useState } from "react";
 import { MdCheckCircle } from "react-icons/md";
+import { useBreakpointValue } from "services/Breakpoint";
 import JournalsReportModal from "./preview-reports/JournalsReportModal";
 import PreviewReportsModal from "./preview-reports/PreviewReportsModal";
 import TotalsReportModal from "./preview-reports/TotalsReportModal";
@@ -17,6 +18,7 @@ const ReportsPreview = ({
 	payPeriodNum,
 	isPayPeriodInactive,
 }) => {
+	const { isMobile } = useBreakpointValue();
 	const [showReport, setShowReport] = useState(false);
 	const [showTotalsReport, setShowTotalsReport] = useState(false);
 	const [showJournalReport, setShowJournalReport] = useState(false);
@@ -47,6 +49,7 @@ const ReportsPreview = ({
 			</Table>
 			{showReport && reportData && (
 				<PreviewReportsModal
+					isMobile={isMobile}
 					isOpen={showReport}
 					onClose={() => setShowReport(false)}
 					reportData={reportData}

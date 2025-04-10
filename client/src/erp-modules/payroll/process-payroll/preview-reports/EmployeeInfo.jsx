@@ -8,9 +8,9 @@ import BasicInfo from "../statement/BasicInfo";
 import InformationSection from "../statement/InformationSection";
 import { ACCRUAL_TYPES } from "./data";
 
-const EmployeeInfo = ({ data, companyNum }) => {
+const EmployeeInfo = ({ data, companyNum, isMobile }) => {
 	return (
-		<Stack position="relative" flex={0.1} spacing={0}>
+		<Stack position="relative" flex={isMobile ? 1 : 0.1} spacing={0} w={isMobile && "100%"}>
 			<BoxCard p={0}>
 				<Box w={"100%"} bg={"var(--primary_bg_1)"} p={2}>
 					<VStack mt={1} spacing={0}>

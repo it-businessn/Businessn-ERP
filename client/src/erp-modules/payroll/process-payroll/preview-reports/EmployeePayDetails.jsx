@@ -11,12 +11,13 @@ import {
 	NET_SUMMARY_COLS,
 } from "./data";
 
-const EmployeePayDetails = ({ data }) => (
-	<Stack position="relative" flex={0.9} spacing={0}>
+const EmployeePayDetails = ({ data, isMobile }) => (
+	<Stack position="relative" flex={isMobile ? 1 : 0.9} w={isMobile && "100%"}>
 		<BoxCard bg={"var(--main_color)"} p={1}>
 			<HeaderTable title1="Earnings" title2="Current" title3="Year to Date" />
 
 			<EarningsTable
+				isMobile={isMobile}
 				cols={EARNINGS_COLS}
 				rows={EARNINGS_TYPES}
 				data={data}
@@ -25,12 +26,14 @@ const EmployeePayDetails = ({ data }) => (
 			/>
 			<Box mt={2} />
 			<EarningsTable
+				isMobile={isMobile}
 				cols={DEDUCTIONS_COLS}
 				rows={DEDUCTION_TYPES}
 				data={data}
 			/>
 			<Box mt={2} />
 			<EarningsTable
+				isMobile={isMobile}
 				isNetSummary
 				cols={NET_SUMMARY_COLS}
 				rows={NET_SUMMARY}

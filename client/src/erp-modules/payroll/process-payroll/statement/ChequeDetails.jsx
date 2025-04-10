@@ -32,7 +32,7 @@ const InfoText = ({ title1, title2, title3, hasBg }) => (
 	</HStack>
 );
 
-const ChequeDetails = ({ data, companyInfo, flex }) => {
+const ChequeDetails = ({ data, companyInfo, flex, isMobile }) => {
 	const name = data?.empId?.fullName;
 	const payDate = data.payPeriodPayDate;
 
@@ -42,10 +42,31 @@ const ChequeDetails = ({ data, companyInfo, flex }) => {
 	data.currentNetPay = isSuperficialType ? 0 : data.currentNetPay;
 	const paymentType = isManualType ? "Manual" : "DIRECT DEPOSIT";
 
-	const netPay = getAmount(data.currentNetPay);
-	const amountInWords = toWords.convert(data.currentNetPay);
+	const netPay = getAmount(data?.currentNetPay);
+	const amountInWords = toWords.convert(data?.currentNetPay);
 
-	return (
+	return isMobile ? (
+		<Box
+			w="full"
+			mt={6}
+			p={4}
+			border="2px dashed red"
+			borderRadius="md"
+			bg="gray.50"
+			textAlign="center"
+		>
+			<PayStubHeader isMobile companyInfo={companyInfo} />
+			<TextTitle title={`Payable by Cheque to: ${name}`} />
+			<TextTitle size="md" title={`${netPay}`} />
+			{/* <TextTitle title={`${paymentType}`} /> */}
+			<TextTitle
+				mt={"2em"}
+				color={"var(--filter_border_color)"}
+				whiteSpace="wrap"
+				title={"***THIS IS NOT A CHEQUE. DO NOT DEPOSIT.***"}
+			/>
+		</Box>
+	) : (
 		<Stack w={"100%"} justifyContent={"space-between"} flex={flex} minH="16em">
 			<PayStubHeader companyInfo={companyInfo} />
 			<Box>

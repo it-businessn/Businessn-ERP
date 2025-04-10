@@ -3,7 +3,7 @@ import TableLayout from "components/ui/table/TableLayout";
 import React from "react";
 import ItemRow from "../preview-reports/ItemRow";
 
-const EarningsTable = ({ cols, rows, data, colBg, isNetSummary }) => {
+const EarningsTable = ({ cols, rows, data, colBg, isNetSummary, isMobile }) => {
 	return (
 		<TableLayout
 			colBg={colBg}
@@ -11,9 +11,9 @@ const EarningsTable = ({ cols, rows, data, colBg, isNetSummary }) => {
 			cols={cols}
 			textSize="xs"
 			bg={"var(--main_color)"}
-			width1="9em"
-			width2="80px"
-			width3="46px"
+			width1={isMobile ? "auto" : "9em"}
+			width2={isMobile ? "auto" : "80px"}
+			width3={isMobile ? "auto" : "46px"}
 			isEarning
 			whiteSpace="wrap"
 		>
