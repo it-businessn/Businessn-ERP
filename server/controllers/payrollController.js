@@ -12,6 +12,7 @@ const { getPayrunEEContributionResult } = require("./payrunEEContrCalc");
 const { getPayrunERContributionResult } = require("./payrunERContrCalc");
 const { getSumRegHrs } = require("../services/payrollService");
 const EmployeeEmploymentInfo = require("../models/EmployeeEmploymentInfo");
+const EmployeePayInfo = require("../models/EmployeePayInfo");
 
 //update roles-
 
@@ -349,11 +350,10 @@ const addAlertsAndViolations = async (req, res) => {
 				empId: data?.empId?._id,
 			}).select("empId SIN");
 
-			const alertsExists = await findAlertInfo({
-				empId: data?.empId?._id,
+			const empPayRate = await EmployeePayInfo.findOne({
 				companyName,
-				actionRequired: true,
-			});
+				empId: data?.empId?._id,
+			}).select("empId roles");
 
 			const missingBankInfo =
 				!empBankResult ||
@@ -363,33 +363,50 @@ const addAlertsAndViolations = async (req, res) => {
 				empBankResult.bankNum === "" ||
 				empBankResult.transitNum === "" ||
 				empBankResult.accountNum === "";
-
-			const missingSINInfo = !empSINResult || !empSINResult.SIN || empSINResult.SIN === "";
-
-			if (!alertsExists && missingBankInfo) {
-				await addAlertInfo({
+			if (missingBankInfo) {
+				const alertInfo = {
 					empId: data?.empId?._id,
 					companyName,
 					description: "Banking information missing",
 					actionRequired: true,
-					payPeriodNum: data?.payPeriodNum,
-				});
+				};
+				const bankingInfoAlertExists = await findAlertInfo(alertInfo);
+				if (!bankingInfoAlertExists) {
+					alertInfo.payPeriodNum = data?.payPeriodNum;
+					await addAlertInfo(alertInfo);
+				}
 			}
 
-			const violationExists = await findAlertInfo({
-				empId: data?.empId?._id,
-				companyName,
-				actionRequired: false,
-			});
-
-			if (!violationExists && missingSINInfo) {
-				await addAlertInfo({
+			const belowMinimumWage =
+				!empPayRate?.roles?.length ||
+				empPayRate?.roles?.find((_) => parseFloat(_?.payRate) < 17.85);
+			if (belowMinimumWage) {
+				const alertInfo = {
 					empId: data?.empId?._id,
 					companyName,
-					description: "SIN missing",
+					description: "Minimum wage is below $17.85.",
+					actionRequired: true,
+				};
+				const wageAlertExists = await findAlertInfo(alertInfo);
+				if (!wageAlertExists) {
+					alertInfo.payPeriodNum = data?.payPeriodNum;
+					await addAlertInfo(alertInfo);
+				}
+			}
+
+			const missingSINInfo = !empSINResult || !empSINResult.SIN || empSINResult.SIN === "";
+			if (missingSINInfo) {
+				const alertInfo = {
+					empId: data?.empId?._id,
+					companyName,
 					actionRequired: false,
-					payPeriodNum: data?.payPeriodNum,
-				});
+					description: "SIN missing",
+				};
+				const SINViolationExists = await findAlertInfo(alertInfo);
+				if (!SINViolationExists) {
+					alertInfo.payPeriodNum = data?.payPeriodNum;
+					await addAlertInfo(alertInfo);
+				}
 			}
 		}
 		res.status(200).json({ message: "Alerts processed successfully" });
