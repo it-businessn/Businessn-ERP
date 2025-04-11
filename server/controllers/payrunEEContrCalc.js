@@ -1,5 +1,5 @@
 const EmployeeExtraAllocation = require("../models/EmployeeExtraAllocation");
-const { findEmployeePayInfoDetails } = require("./payInfoController");
+const EmployeePayInfo = require("../models/EmployeePayInfo");
 const {
 	findEmployeeBenefitInfo,
 	getContributionsDeductions,
@@ -92,7 +92,10 @@ const calcPayoutEEContribution = async (
 	const empTimesheetData = currentPeriodEmployees?.find(
 		(el) => el.empId._id.toString() === empId.toString(),
 	);
-	const empPayInfoResult = await findEmployeePayInfoDetails(empId, companyName);
+	const empPayInfoResult = await EmployeePayInfo.findOne({
+		empId,
+		companyName,
+	});
 	const empAdditionalHoursAllocated = await findAdditionalHoursAllocatedInfo({
 		empId,
 		payPeriodPayDate: payDate,
@@ -136,7 +139,10 @@ const calcManualEEContribution = async (
 	const empTimesheetData = currentPeriodEmployees?.find(
 		(el) => el.empId._id.toString() === empId.toString(),
 	);
-	const empPayInfoResult = await findEmployeePayInfoDetails(empId, companyName);
+	const empPayInfoResult = await EmployeePayInfo.findOne({
+		empId,
+		companyName,
+	});
 	const empAdditionalHoursAllocated = await findAdditionalHoursAllocatedInfo({
 		empId,
 		payPeriodPayDate: payDate,
@@ -180,7 +186,10 @@ const calcRegularEEContribution = async (
 	const empTimesheetData = currentPeriodEmployees?.find(
 		(el) => el.empId._id.toString() === empId.toString(),
 	);
-	const empPayInfoResult = await findEmployeePayInfoDetails(empId, companyName);
+	const empPayInfoResult = await EmployeePayInfo.findOne({
+		empId,
+		companyName,
+	});
 	const empBenefitInfoResult = await findEmployeeBenefitInfo(empId, companyName);
 
 	const empAdditionalHoursAllocated = await findAdditionalHoursAllocatedInfo({

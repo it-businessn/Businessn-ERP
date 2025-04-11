@@ -1,5 +1,5 @@
+const EmployeePayInfo = require("../models/EmployeePayInfo");
 const { EARNING_TYPE } = require("../services/data");
-const { findEmployeePayInfoDetails } = require("./payInfoController");
 const {
 	findAdditionalSuperficialHoursAllocatedInfo,
 	findAdditionalManualHoursAllocatedInfo,
@@ -358,7 +358,10 @@ const buildEmpHourlyDetails = async (empTimesheetData, employee, companyName, is
 };
 
 const getGroupedData = async (empTimesheetData, employee, companyName, isExtraPayRun) => {
-	const empPayInfoResult = await findEmployeePayInfoDetails(employee.empId?._id, companyName);
+	const empPayInfoResult = await EmployeePayInfo.findOne({
+		empId: employee.empId?._id,
+		companyName,
+	});
 	const isFT = empPayInfoResult?.roles?.[0]?.typeOfEarning === EARNING_TYPE.FT;
 	const isPT = empPayInfoResult?.roles?.[0]?.typeOfEarning === EARNING_TYPE.PT;
 
