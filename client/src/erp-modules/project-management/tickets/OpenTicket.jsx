@@ -1,6 +1,7 @@
-import { TriangleDownIcon, TriangleUpIcon } from "@chakra-ui/icons";
+import { AttachmentIcon, TriangleDownIcon, TriangleUpIcon } from "@chakra-ui/icons";
 import {
 	Box,
+	Flex,
 	HStack,
 	IconButton,
 	Table,
@@ -275,25 +276,24 @@ const OpenTicket = ({ company, setShowAddEntry, showAddEntry, userId, employees 
 										<Td py={0}>
 											<NormalTextTitle size="sm" title={originator} />
 										</Td>
-										<Td py={0} maxW="100px" px={1}>
-											<Tooltip label={topic}>
-												<span>
-													<NormalTextTitle maxW="100px" size="sm" title={topic} />
-												</span>
-											</Tooltip>
+										<Td py={0} px={1}>
+											<NormalTextTitle whiteSpace="nowrap" size="sm" title={topic} />
 										</Td>
-										<Td py={0} maxW="100px" px={1}>
+										<Td py={0} maxW="150px" px={1}>
 											<Tooltip label={issue}>
-												<HStack spacing={0}>
-													<NormalTextTitle maxW="100px" size="sm" title={issue} />
-													<CgNotes
-														size="12px"
+												<HStack spacing={1}>
+													<NormalTextTitle maxW="150px" size="sm" title={issue} />
+													<Flex
 														cursor="pointer"
+														gap={1}
 														onClick={() => {
 															setOpenNote(true);
 															setRowData({ issue, topic, ticketNumber, file, originalname });
 														}}
-													/>
+													>
+														<CgNotes size="12px" />
+														{file && <AttachmentIcon />}
+													</Flex>
 												</HStack>
 											</Tooltip>
 										</Td>
@@ -306,7 +306,6 @@ const OpenTicket = ({ company, setShowAddEntry, showAddEntry, userId, employees 
 										<Td py={0}>
 											<StatusCol
 												id={_id}
-												w="108px"
 												bg={bg}
 												isRowAction
 												status={status}

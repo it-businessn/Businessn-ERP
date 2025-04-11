@@ -7,7 +7,6 @@ import { ACTION_STATUS } from "../../payroll/timesheets/data";
 
 const StatusCol = ({
 	handleButtonClick,
-	w = "10%",
 	status,
 	actions = ACTION_STATUS,
 	id,
@@ -20,10 +19,9 @@ const StatusCol = ({
 
 	return (
 		<Flex
-			w={w}
+			w={"120px"}
 			alignItems="center"
 			cursor="pointer"
-			border="1px solid var(--filter_border_color)"
 			borderRadius="10px"
 			gap={0}
 			justifyContent="space-between"
