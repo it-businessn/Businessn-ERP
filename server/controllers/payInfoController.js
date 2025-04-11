@@ -51,14 +51,14 @@ const buildAmountAllocationEmpDetails = async (payDate, employee, companyName) =
 const getEmployeePayInfo = async (req, res) => {
 	const { companyName, empId } = req.params;
 	try {
-		const result = await findEmployeePayInfo(empId, companyName);
+		const result = await findEmployeePayInfoDetails(empId, companyName);
 		return res.status(200).json(result);
 	} catch (error) {
 		res.status(404).json({ error: error.message });
 	}
 };
 
-const findEmployeePayInfo = async (empId, companyName) =>
+const findEmployeePayInfoDetails = async (empId, companyName) =>
 	await EmployeePayInfo.findOne({
 		empId,
 		companyName,
@@ -85,7 +85,7 @@ const addEmployeePayInfo = async (req, res) => {
 				}
 			});
 		}
-		const existingPayInfo = await findEmployeePayInfo(empId, companyName);
+		const existingPayInfo = await findEmployeePayInfoDetails(empId, companyName);
 		if (existingPayInfo) {
 			const existingEmploymentInfo = await EmployeeEmploymentInfo.findOne({
 				empId,
