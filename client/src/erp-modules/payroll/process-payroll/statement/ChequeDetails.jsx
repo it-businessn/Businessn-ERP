@@ -1,4 +1,4 @@
-import { Box, HStack, Stack } from "@chakra-ui/react";
+import { Box, HStack, Stack, VStack } from "@chakra-ui/react";
 import NormalTextTitle from "components/ui/NormalTextTitle";
 import TextTitle from "components/ui/text/TextTitle";
 import { toWords } from "utils";
@@ -17,7 +17,7 @@ const PaymentDateTitle = ({ payDate }) => (
 
 const InfoText = ({ title1, title2, title3, hasBg }) => (
 	<HStack w={"100%"}>
-		<NormalTextTitle width={"150px"} title={title1} size={"xs"} />
+		<NormalTextTitle width={"180px"} title={title1} size={"xs"} />
 		<TextTitle
 			width={"100%"}
 			bg={hasBg && "var(--calendar_border)"}
@@ -68,19 +68,21 @@ const ChequeDetails = ({ data, companyInfo, flex, isMobile }) => {
 			/>
 		</Box>
 	) : (
-		<Stack w={"100%"} justifyContent={"space-between"} flex={flex} minH="16em">
+		<Stack w={"100%"} justifyContent={"center"} flex={flex} minH="15em" mt={"0.5em"}>
 			<PayStubHeader companyInfo={companyInfo} />
-			<Box>
-				<PaymentDateTitle payDate={payDate} />
-				<InfoText title1="Account holder:" title2={name} />
-				<InfoText title1="The amount:" title2={amountInWords} title3={netPay} hasBg />
-				<InfoText title1="Payment method:" title2={paymentType} />
-			</Box>
-			<TextTitle
-				align={"center"}
-				color={"var(--filter_border_color)"}
-				title={"THIS IS NOT A CHEQUE. DO NOT DEPOSIT."}
-			/>
+			<VStack w="100%" mx="auto" spacing={"2em"}>
+				<Box>
+					<PaymentDateTitle payDate={payDate} />
+					<InfoText title1="Account holder:" title2={name} />
+					<InfoText title1="The amount:" title2={amountInWords} title3={netPay} hasBg />
+					<InfoText title1="Payment method:" title2={paymentType} />
+				</Box>
+				<TextTitle
+					align={"center"}
+					color={"var(--filter_border_color)"}
+					title={"THIS IS NOT A CHEQUE. DO NOT DEPOSIT."}
+				/>
+			</VStack>
 		</Stack>
 	);
 };

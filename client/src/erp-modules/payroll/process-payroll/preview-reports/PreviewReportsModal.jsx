@@ -18,7 +18,7 @@ const PreviewReportsModal = ({
 }) => {
 	const Statement = ({ data }) => (
 		<Box borderBottom="1px solid var(--calendar_border)" mx="auto">
-			<PayStubStatement data={data} height="95vh" />
+			<PayStubStatement data={data} height="98vh" />
 		</Box>
 	);
 

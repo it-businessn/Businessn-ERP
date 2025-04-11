@@ -22,7 +22,7 @@ const EmployeeInfo = ({ data, companyNum, isMobile }) => {
 							title2={formatDateBar(data?.payPeriodStartDate)}
 						/>
 						<BasicInfo title1={"Pay End Date:"} title2={formatDateBar(data?.payPeriodEndDate)} />
-						<BasicInfo mt={4} title1={"Name:"} title2={data?.empId?.fullName} />
+						<BasicInfo mt={4} whiteSpace="wrap" title1={"Name:"} title2={data?.empId?.fullName} />
 						<BasicInfo
 							title1={"Address:"}
 							title2={
