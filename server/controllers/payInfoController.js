@@ -1,6 +1,6 @@
+const EmployeeEmploymentInfo = require("../models/EmployeeEmploymentInfo");
 const EmployeePayInfo = require("../models/EmployeePayInfo");
 const { getPayrollActiveEmployees } = require("./appController");
-const { updateEmploymentInfo, findEmployeeEmploymentInfo } = require("./employmentInfoController");
 const { findEmpPayStubDetail } = require("./payStubHelper");
 const { findGroupEmployees } = require("./setUpController");
 const { getEmployeeId } = require("./userController");
@@ -87,9 +87,18 @@ const addEmployeePayInfo = async (req, res) => {
 		}
 		const existingPayInfo = await findEmployeePayInfo(empId, companyName);
 		if (existingPayInfo) {
-			const existingEmploymentInfo = await findEmployeeEmploymentInfo(empId, companyName);
+			const existingEmploymentInfo = await EmployeeEmploymentInfo.findOne({
+				empId,
+				companyName,
+			});
 			if (existingEmploymentInfo) {
-				await updateEmploymentInfo(existingEmploymentInfo._id, { positions: roles });
+				await EmployeeEmploymentInfo.findByIdAndUpdate(
+					existingEmploymentInfo._id,
+					{ positions: roles },
+					{
+						new: true,
+					},
+				);
 			}
 			const updatedPayInfo = await updatePayInfo(existingPayInfo._id, { roles });
 			return res.status(201).json(updatedPayInfo);
@@ -117,17 +126,10 @@ const updateEmployeePayInfo = async (req, res) => {
 	}
 };
 
-const findEmployeePayInfoDetails = async (empId, companyName) =>
-	await EmployeePayInfo.findOne({
-		empId,
-		companyName,
-	}).select("empId roles");
-
 module.exports = {
 	getAllPayInfo,
 	getEmployeePayInfo,
 	addEmployeePayInfo,
 	updateEmployeePayInfo,
-	findEmployeePayInfoDetails,
 	updatePayInfo,
 };

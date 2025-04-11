@@ -81,6 +81,6 @@
 		]
 	},
 	"devDependencies": {
-		"caniuse-lite": "^1.0.30001611"
+		"caniuse-lite": "^1.0.30001713"
 	}
 }
