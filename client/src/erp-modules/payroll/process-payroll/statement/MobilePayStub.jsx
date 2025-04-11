@@ -9,12 +9,14 @@ import {
 } from "@chakra-ui/react";
 
 import TextTitle from "components/ui/text/TextTitle";
+import LocalStorageService from "services/LocalStorageService";
 import EmployeeInfo from "../preview-reports/EmployeeInfo";
 import EmployeePayDetails from "../preview-reports/EmployeePayDetails";
 import ChequeDetails from "./ChequeDetails";
 import PayStubHeader from "./PayStubHeader";
 
-const MobilePayStub = ({ reportData, companyInfo, isOpen, onClose, title }) => {
+const MobilePayStub = ({ reportData, isOpen, onClose, title }) => {
+	const companyInfo = LocalStorageService.getItem("user")?.companyId;
 	return (
 		<Modal isOpen={isOpen} onClose={onClose} size="full">
 			<ModalContent>

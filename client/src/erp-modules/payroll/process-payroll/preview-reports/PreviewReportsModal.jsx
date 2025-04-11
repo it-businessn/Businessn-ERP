@@ -3,7 +3,6 @@ import Loader from "components/Loader";
 import ModalLayout from "components/ui/modal/ModalLayout";
 import NormalTextTitle from "components/ui/NormalTextTitle";
 import TextTitle from "components/ui/text/TextTitle";
-import LocalStorageService from "services/LocalStorageService";
 import MobilePayStub from "../statement/MobilePayStub";
 import PayStubStatement from "../statement/PayStubStatement";
 
@@ -17,10 +16,9 @@ const PreviewReportsModal = ({
 	title = "Payroll Register",
 	isMobile,
 }) => {
-	const companyInfo = LocalStorageService.getItem("user")?.companyId;
 	const Statement = ({ data }) => (
 		<Box borderBottom="1px solid var(--calendar_border)" mx="auto">
-			<PayStubStatement companyInfo={companyInfo} data={data} height="95vh" />
+			<PayStubStatement data={data} height="95vh" />
 		</Box>
 	);
 
@@ -28,7 +26,6 @@ const PreviewReportsModal = ({
 		<MobilePayStub
 			onClose={onClose}
 			isOpen={isOpen}
-			companyInfo={companyInfo}
 			reportData={reportData}
 			title={<TextTitle title={title} />}
 		/>
