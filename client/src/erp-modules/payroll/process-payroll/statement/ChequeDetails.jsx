@@ -71,7 +71,7 @@ const ChequeDetails = ({ data, companyInfo, flex, isMobile }) => {
 		<Stack w={"100%"} justifyContent={"center"} flex={flex} minH="15em" mt={"0.5em"}>
 			<PayStubHeader companyInfo={companyInfo} />
 			<VStack w="100%" mx="auto" spacing={"2em"}>
-				<Box>
+				<Box w="98%">
 					<PaymentDateTitle payDate={payDate} />
 					<InfoText title1="Account holder:" title2={name} />
 					<InfoText title1="The amount:" title2={amountInWords} title3={netPay} hasBg />
