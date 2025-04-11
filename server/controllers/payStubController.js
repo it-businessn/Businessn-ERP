@@ -9,7 +9,6 @@ const {
 	findEmployeeBenefitInfo,
 	calculateTimesheetApprovedHours,
 } = require("./payrollHelper");
-const { findEmployeePayInfoDetails } = require("./payInfoController");
 const { findEmployeeGovernmentInfoDetails } = require("./governmentInfoController");
 const { PAYRUN_TYPE, BUSINESSN_ORG } = require("../services/data");
 const { addSeparateSuperficialCheque } = require("./payStubSuperficialCalc");
@@ -21,6 +20,7 @@ const FundingTotalsPay = require("../models/FundingTotalsPay");
 const Order = require("../models/Order");
 const JournalEntry = require("../models/JournalEntry");
 const { findEmployeeEmploymentInfo } = require("./employmentInfoController");
+const EmployeePayInfo = require("../models/EmployeePayInfo");
 
 const buildPayStub = (
 	empId,
@@ -332,7 +332,10 @@ const buildPayStubDetails = async (currentPayPeriod, companyName, empTimesheetDa
 		isExtraRun,
 	} = currentPayPeriod;
 
-	const empPayInfoResult = await findEmployeePayInfoDetails(empId, companyName);
+	const empPayInfoResult = await EmployeePayInfo.findOne({
+		empId,
+		companyName,
+	});
 	const empBenefitInfoResult = await findEmployeeBenefitInfo(empId, companyName);
 	const empAdditionalDataAllocated = await findAllAdditionalHoursAllocatedInfo({
 		empId,
