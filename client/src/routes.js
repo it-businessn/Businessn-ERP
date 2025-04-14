@@ -419,7 +419,7 @@ export const router = createBrowserRouter([
 		element: <Login />,
 	},
 	{ path: "/support", element: <Support /> },
-	{ path: "/pricing", element: <CustomerInfo /> },
+	{ path: "/info", element: <CustomerInfo /> },
 	{
 		path: ROUTE_PATH.FORGOT_PWD,
 		element: <ForgotPassword />,

@@ -80,28 +80,33 @@ export default function CustomerInfo() {
 	};
 
 	return (
-		<Box padding={"24px"} backgroundColor="var(--main_color)" h={"100vh"}>
+		<Box padding={"24px"} backgroundColor="var(--main_color)" h={"100vh"} overflow={"auto"}>
 			<Center>
 				<a href="/" aria-current="page" className="main-logo w-inline-block w--current">
 					<img
 						src="https://cdn.prod.website-files.com/66d2b99c721c32f423762484/66dade9174eaeb438087f3ff_logo.png"
 						loading="lazy"
-						sizes="(max-width: 479px) 100vw, (max-width: 767px) 180px, (max-width: 991px) 23vw, 213px"
+						sizes="(max-width: 479px) 50vw, (max-width: 767px) 180px, (max-width: 991px) 23vw, 213px"
 						srcSet="https://cdn.prod.website-files.com/66d2b99c721c32f423762484/66dade9174eaeb438087f3ff_logo-p-500.png 500w, https://cdn.prod.website-files.com/66d2b99c721c32f423762484/66dade9174eaeb438087f3ff_logo-p-800.png 800w, https://cdn.prod.website-files.com/66d2b99c721c32f423762484/66dade9174eaeb438087f3ff_logo.png 852w"
 						alt="main-logo"
 					/>
 				</a>
 			</Center>
-			<Box w={"100%"} p={"2em 35em"}>
-				<TextTitle align="center" size="3xl" title="Thank you for reaching out." />
+			<Box w={{ base: "100%", md: "80%", lg: "70%" }} py="2em" m="0 auto">
+				<TextTitle
+					align="center"
+					size={{ base: "xl", md: "3xl" }}
+					title="Thank you for reaching out."
+				/>
 				<NormalTextTitle
 					align="center"
+					whiteSpace="wrap"
 					title="
 				Please fill in the form below and our representative will contact you shortly."
 				/>
 				<form>
 					<Stack spacing="1em" p="2em">
-						<HStack spacing={5}>
+						<HStack spacing={5} flexDir={{ base: "column", md: "row" }}>
 							<InputFormControl
 								fontSize="md"
 								label="First Name"
@@ -119,7 +124,7 @@ export default function CustomerInfo() {
 								handleChange={handleInputChange}
 							/>
 						</HStack>
-						<HStack spacing={5}>
+						<HStack spacing={5} flexDir={{ base: "column", md: "row" }}>
 							<InputFormControl
 								fontSize="md"
 								label="Your Title"
@@ -138,7 +143,7 @@ export default function CustomerInfo() {
 							/>
 						</HStack>
 
-						<HStack spacing={5}>
+						<HStack spacing={5} flexDir={{ base: "column", md: "row" }}>
 							<InputFormControl
 								fontSize="md"
 								label="Work Email"
@@ -158,7 +163,7 @@ export default function CustomerInfo() {
 								handleChange={handleInputChange}
 							/>
 						</HStack>
-						<HStack spacing={5}>
+						<HStack spacing={5} flexDir={{ base: "column", md: "row" }}>
 							<SelectFormControl
 								valueParam="type"
 								name="type"
@@ -213,7 +218,11 @@ export default function CustomerInfo() {
 						<FormControl>
 							<FormLabel fontSize="md">I'm interested in</FormLabel>
 							<Stack>
-								<HStack spacing={8}>
+								<HStack
+									spacing={{ base: 1, md: 8 }}
+									flexDir={{ base: "column", md: "row" }}
+									alignItems={{ base: "start", md: "center" }}
+								>
 									{INTERESTS.set1?.map((name, index) => (
 										<Checkbox
 											colorScheme="facebook"
@@ -225,7 +234,11 @@ export default function CustomerInfo() {
 										</Checkbox>
 									))}
 								</HStack>
-								<HStack spacing={8}>
+								<HStack
+									spacing={{ base: 1, md: 8 }}
+									flexDir={{ base: "column", md: "row" }}
+									alignItems={{ base: "start", md: "center" }}
+								>
 									{INTERESTS.set2?.map((name, index) => (
 										<Checkbox
 											colorScheme="facebook"

@@ -15,7 +15,7 @@ const RadioButtonGroup = ({
 }) => {
 	return (
 		<Button
-			whiteSpace={whiteSpace}
+			whiteSpace={{ base: "wrap", md: whiteSpace }}
 			borderRadius={selectedFilter === name ? borderRadius : 0}
 			border={selectedFilter === name ? "1px" : "none"}
 			p={p}

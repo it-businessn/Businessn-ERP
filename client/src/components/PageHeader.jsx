@@ -17,7 +17,7 @@ const PageHeader = ({
 }) => {
 	const themeMode = useColorModeValue("var(--primary_button_bg)", "var(--primary_button_bg_dark)");
 	return (
-		<Flex width={width}>
+		<Flex width={{ base: "100%", md: width }}>
 			{title && (
 				<TextTitle title={title} mb={"0.5em"} size={size} width={isTimesheet ? "auto" : width} />
 			)}
