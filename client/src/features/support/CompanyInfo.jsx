@@ -4,10 +4,12 @@ import VerticalStepper from "components/ui/VerticalStepper";
 import StepContent from "erp-modules/payroll/employees/pageview/step-content";
 import Record from "erp-modules/payroll/employees/pageview/step-content/Record";
 import { useEffect, useState } from "react";
+import { useBreakpointValue } from "services/Breakpoint";
 import LocalStorageService from "services/LocalStorageService";
 import TicketService from "services/TicketService";
 
 const CompanyInfo = ({ id, handleNext }) => {
+	const { isMobile, isIpad } = useBreakpointValue();
 	const COMPANY_INFO = [
 		{
 			type: "sfsgdsgdsgdsg26",
@@ -68,6 +70,7 @@ const CompanyInfo = ({ id, handleNext }) => {
 	const goToNextStep = (index) => {
 		setCurrentStep(index);
 	};
+
 	return (
 		<SimpleGrid
 			columns={{ base: 1, md: 1, lg: 2 }}
@@ -75,17 +78,22 @@ const CompanyInfo = ({ id, handleNext }) => {
 			mr="4"
 			templateColumns={{ lg: "20% 80%" }}
 		>
-			<BoxCard>
-				<VerticalStepper
-					hideProgress
-					steps={steps}
-					currentStep={currentStep}
-					handleClick={goToNextStep}
-					id={id}
-					handleNext={handleNext}
-				/>
-			</BoxCard>
-			<StepContent currentStep={currentStep} steps={steps} />
+			{isMobile || isIpad ? (
+				<></>
+			) : (
+				<BoxCard>
+					<VerticalStepper
+						hideProgress
+						steps={steps}
+						currentStep={currentStep}
+						handleClick={goToNextStep}
+						id={id}
+						handleNext={handleNext}
+					/>
+				</BoxCard>
+			)}
+
+			<StepContent currentStep={currentStep} steps={steps} h={(isMobile || isIpad) && "auto"} />
 		</SimpleGrid>
 	);
 };
