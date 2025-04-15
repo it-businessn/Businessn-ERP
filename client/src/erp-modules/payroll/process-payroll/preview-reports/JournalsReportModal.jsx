@@ -1,6 +1,7 @@
 import { Table, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
 import Loader from "components/Loader";
 import ModalLayout from "components/ui/modal/ModalLayout";
+import NormalTextTitle from "components/ui/NormalTextTitle";
 import TextTitle from "components/ui/text/TextTitle";
 import React from "react";
 
@@ -11,7 +12,15 @@ const JournalsReportModal = ({
 	size = "6xl",
 	title = "Journal Entry Report",
 }) => {
-	const rowData = [
+	const JOURNAL_TABLE_COLS = [
+		{ name: "Client Account Code" },
+		{ name: "Code Name" },
+		{ name: "Description" },
+		{ name: "Debit", isNumeric: true },
+		{ name: "Credit", isNumeric: true },
+	];
+
+	const JOURNAL_TABLE_ROW_DATA = [
 		// ["", "", "Employee Disbursements", "-6107.89", ""],
 		// ["", "", "Government Remittances", "-3035.56", ""],
 		["", "1001", "Bank", "Funding Withdrawal", "", reportData?.netFundingWithdrawals.toFixed(2)],
@@ -28,6 +37,7 @@ const JournalsReportModal = ({
 		],
 		["", "5321", "Payroll Expense", "Service Charges", "0", ""],
 	];
+
 	let counter = 10;
 	reportData.totalCredit = reportData?.netFundingWithdrawals;
 	reportData.totalDebit =
@@ -44,6 +54,7 @@ const JournalsReportModal = ({
 			dept?.grossWageExpense + dept.employerCPPBenefitExpense + dept.employerEIBenefitExpense;
 		return dept;
 	});
+
 	return (
 		<ModalLayout
 			title={<TextTitle title={title} />}
@@ -59,20 +70,24 @@ const JournalsReportModal = ({
 				<Table variant="simple" size="small">
 					<Thead>
 						<Tr>
-							<Th></Th>
-							<Th>Client Account Code </Th>
-							<Th>Code Name</Th>
-							<Th>Description</Th>
-							<Th isNumeric>Debit</Th>
-							<Th isNumeric>Credit</Th>
+							<Th />
+							{JOURNAL_TABLE_COLS.map((col) => (
+								<Th key={col.name} isNumeric={col?.isNumeric}>
+									<TextTitle size="sm" title={col.name} />
+								</Th>
+							))}
 						</Tr>
 					</Thead>
 					<Tbody>
-						{rowData.map((row, idx) => (
-							<Tr key={idx}>
+						{JOURNAL_TABLE_ROW_DATA.map((row, idx) => (
+							<Tr key={`row_${idx}`}>
 								{row.map((cell, cellIdx) => (
 									<Td key={cellIdx} isNumeric={cellIdx > 3}>
-										{cell}
+										{cellIdx > 3 ? (
+											<TextTitle size="sm" title={cell} />
+										) : (
+											<NormalTextTitle size="sm" title={cell} />
+										)}
 									</Td>
 								))}
 							</Tr>
@@ -80,7 +95,9 @@ const JournalsReportModal = ({
 						{reportData?.departmentBreakDown?.map((dept, index) => (
 							<React.Fragment key={dept.department}>
 								<Tr>
-									<Td>Department:</Td>
+									<Td>
+										<TextTitle size="sm" title="Department:" />
+									</Td>
 									<Td />
 									<Td />
 									<Td />
@@ -88,81 +105,149 @@ const JournalsReportModal = ({
 									<Td />
 								</Tr>
 								<Tr>
-									<Td>{dept.department}</Td>
-									<Td>{`${dept.code}${index + 1}`}</Td>
-									<Td>{`${dept.department} Wages`}</Td>
-									<Td>Gross Wage Expense</Td>
-									<Td isNumeric>{dept.grossWageExpense?.toFixed(2)}</Td>
-									<Td isNumeric></Td>
-								</Tr>
-								<Tr>
-									<Td></Td>
-									<Td>{`${dept.code}${index + 2}`}</Td>
-									<Td>{`${dept.department} Benefits`}</Td>
-									<Td> CPP Benefits Expense</Td>
-									<Td isNumeric>{dept.employerCPPBenefitExpense?.toFixed(2)}</Td>
-									<Td isNumeric></Td>
-								</Tr>
-								<Tr>
-									<Td></Td>
-									<Td>{`${dept.code}${index + 3}`}</Td>
-									<Td>{`${dept.department} Benefits`}</Td>
-									<Td> EI Benefits Expense</Td>
-									<Td isNumeric>{dept.employerEIBenefitExpense?.toFixed(2)}</Td>
-									<Td isNumeric></Td>
-								</Tr>
-								<Tr>
-									<Td></Td>
-									<Td>{`${dept.code}${index + 4}`}</Td>
-									<Td>CPP Payable</Td>
-									<Td>CPP Payable</Td>
-									<Td isNumeric></Td>
-									<Td isNumeric>{dept.CPPPayable?.toFixed(2)}</Td>
-								</Tr>
-								<Tr>
-									<Td></Td>
-									<Td>{`${dept.code}${index + 5}`}</Td>
-									<Td>EI Payable</Td>
-									<Td>EI Payable</Td>
-									<Td isNumeric></Td>
-									<Td isNumeric>{dept.EIPayable?.toFixed(2)}</Td>
+									<Td>
+										<NormalTextTitle size="sm" title={dept.department} />
+									</Td>
+									<Td>
+										<NormalTextTitle size="sm" title={`${dept.code}${index + 1}`} />
+									</Td>
+									<Td>
+										<NormalTextTitle size="sm" title={`${dept.department} Wages`} />
+									</Td>
+									<Td>
+										<NormalTextTitle size="sm" title={"Gross Wage Expense"} />
+									</Td>
+									<Td isNumeric>
+										<TextTitle size="sm" title={dept.grossWageExpense?.toFixed(2)} />
+									</Td>
+									<Td isNumeric />
 								</Tr>
 								<Tr>
 									<Td />
-									<Td /> <Td /> <Td /> <Td /> <Td />
+									<Td>
+										<NormalTextTitle size="sm" title={`${dept.code}${index + 2}`} />
+									</Td>
+									<Td>
+										<NormalTextTitle size="sm" title={`${dept.department} Benefits`} />
+									</Td>
+									<Td>
+										<NormalTextTitle size="sm" title={"CPP Benefits Expense"} />
+									</Td>
+									<Td isNumeric>
+										<TextTitle size="sm" title={dept.employerCPPBenefitExpense?.toFixed(2)} />
+									</Td>
+									<Td isNumeric />
 								</Tr>
 								<Tr>
-									<Td></Td>
-									<Td>{`${dept.code}${index + 6}`}</Td>
-									<Td>EI Payable</Td>
-									<Td> EI Employee Contribution</Td>
-									<Td isNumeric></Td>
-									<Td isNumeric>{dept.employeeEIContribution?.toFixed(2)}</Td>
+									<Td />
+									<Td>
+										<NormalTextTitle size="sm" title={`${dept.code}${index + 3}`} />
+									</Td>
+									<Td>
+										<NormalTextTitle size="sm" title={`${dept.department} Benefits`} />
+									</Td>
+									<Td>
+										<NormalTextTitle size="sm" title={"EI Benefits Expense"} />
+									</Td>
+									<Td isNumeric>
+										<TextTitle size="sm" title={dept.employerEIBenefitExpense?.toFixed(2)} />
+									</Td>
+									<Td isNumeric />
 								</Tr>
 								<Tr>
-									<Td></Td>
-									<Td>{`${dept.code}${index + 7}`}</Td>
-									<Td>CPP Payable</Td>
-									<Td> CPP Employee Contribution</Td>
-									<Td isNumeric></Td>
-									<Td isNumeric>{dept.employeeCPPContribution?.toFixed(2)}</Td>
+									<Td />
+									<Td>
+										<NormalTextTitle size="sm" title={`${dept.code}${index + 4}`} />
+									</Td>
+									<Td>
+										<NormalTextTitle size="sm" title={"CPP Payable"} />
+									</Td>
+									<Td>
+										<NormalTextTitle size="sm" title={"CPP Payable"} />
+									</Td>
+									<Td isNumeric />
+									<Td isNumeric>
+										<TextTitle size="sm" title={dept.CPPPayable?.toFixed(2)} />
+									</Td>
 								</Tr>
 								<Tr>
-									<Td></Td>
-									<Td>{`${dept.code}${index + 7}`}</Td>
-									<Td>Income Tax Payable</Td>
-									<Td> Income Tax Contribution</Td>
-									<Td isNumeric></Td>
-									<Td isNumeric>{dept.incomeTaxContribution?.toFixed(2)}</Td>
+									<Td />
+									<Td>
+										<NormalTextTitle size="sm" title={`${dept.code}${index + 5}`} />
+									</Td>
+									<Td>
+										<NormalTextTitle size="sm" title={"EI Payable"} />
+									</Td>
+									<Td>
+										<NormalTextTitle size="sm" title={"EI Payable"} />
+									</Td>
+									<Td isNumeric />
+									<Td isNumeric>
+										<TextTitle size="sm" title={dept.EIPayable?.toFixed(2)} />
+									</Td>
+								</Tr>
+								<Tr>
+									<Td />
+									<Td>
+										<NormalTextTitle size="sm" title={`${dept.code}${index + 6}`} />
+									</Td>
+									<Td>
+										<NormalTextTitle size="sm" title={"EI Payable"} />
+									</Td>
+									<Td>
+										<NormalTextTitle size="sm" title={"EI Employee Contribution"} />
+									</Td>
+									<Td isNumeric />
+									<Td isNumeric>
+										<TextTitle size="sm" title={dept.employeeEIContribution?.toFixed(2)} />
+									</Td>
+								</Tr>
+								<Tr>
+									<Td />
+									<Td>
+										<NormalTextTitle size="sm" title={`${dept.code}${index + 7}`} />
+									</Td>
+									<Td>
+										<NormalTextTitle size="sm" title={"CPP Payable"} />
+									</Td>
+									<Td>
+										<NormalTextTitle size="sm" title={"CPP Employee Contribution"} />
+									</Td>
+									<Td isNumeric />
+									<Td isNumeric>
+										<TextTitle size="sm" title={dept.employeeCPPContribution?.toFixed(2)} />
+									</Td>
+								</Tr>
+								<Tr>
+									<Td />
+									<Td>
+										<NormalTextTitle size="sm" title={`${dept.code}${index + 8}`} />
+									</Td>
+									<Td>
+										<NormalTextTitle size="sm" title={"Income Tax  Payable"} />
+									</Td>
+									<Td>
+										<NormalTextTitle size="sm" title={"Income Tax  Contribution"} />
+									</Td>
+									<Td isNumeric />
+									<Td isNumeric>
+										<TextTitle size="sm" title={dept.incomeTaxContribution?.toFixed(2)} />
+									</Td>
 								</Tr>
 							</React.Fragment>
 						))}
 
-						<Tr mt={3}>
-							<Td>IN BALANCE</Td>
+						<Tr>
+							<Td pt={3}>
+								<TextTitle title="IN BALANCE" />
+							</Td>
 							<Td /> <Td /> <Td />
-							<Td isNumeric>{reportData.totalDebit?.toFixed(2)}</Td>
-							<Td isNumeric>{reportData.totalCredit?.toFixed(2)}</Td>
+							<Td pt={3} isNumeric>
+								<TextTitle title={reportData.totalDebit?.toFixed(2)} />
+							</Td>
+							<Td pt={3} isNumeric>
+								<TextTitle title={reportData.totalCredit?.toFixed(2)} />
+							</Td>
 						</Tr>
 					</Tbody>
 				</Table>

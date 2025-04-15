@@ -50,8 +50,8 @@ const TotalsReportModal = ({
 			{reportData && (
 				<Stack padding={0}>
 					<Stack mt={2} spacing={0}>
-						<TextTitle size="sm" title="Totals withdrawn to remit to the CRA" />
-						<HStack borderBottom="1px solid var(--main_color_black)" mt={6}>
+						<TextTitle title="Totals withdrawn to remit to the CRA" />
+						<HStack borderBottom="1px solid var(--main_color_black)" mt={5}>
 							<NormalTextTitle title="Total Income Tax Contribution" />
 							<NormalTextTitle align="right" title={totalIncomeTaxContr} />
 						</HStack>
@@ -59,7 +59,7 @@ const TotalsReportModal = ({
 							<NormalTextTitle title="Total Income Tax Contribution" fontStyle="italic" />
 							<NormalTextTitle align="right" title={totalIncomeTaxContr} fontStyle="italic" />
 						</HStack>
-						<HStack mt={6}>
+						<HStack mt={5}>
 							<NormalTextTitle title="Total CPP - Employee Contribution" />
 							<NormalTextTitle align="right" title={totalCPP_EE_Contr} />
 						</HStack>
@@ -72,7 +72,7 @@ const TotalsReportModal = ({
 							<NormalTextTitle align="right" title={totalCPP_Contr} fontStyle="italic" />
 						</HStack>
 
-						<HStack mt={6}>
+						<HStack mt={5}>
 							<NormalTextTitle title="Total EI - Employee Contribution" />
 							<NormalTextTitle align="right" title={totalEI_EE_Contr} />
 						</HStack>
@@ -86,14 +86,14 @@ const TotalsReportModal = ({
 						</HStack>
 					</Stack>
 
-					<HStack mt={6}>
+					<HStack mt={5}>
 						<TextTitle title="ALL GOVERNMENT CONTRIBUTIONS TO REMIT" whiteSpace="wrap" />
 						<TextTitle title={totalGovtContr} align="right" />
 					</HStack>
 
 					<Stack mt={3} size="xs" spacing={0}>
-						<TextTitle size="sm" title="Totals withdrawn to remit to Employees" />
-						<HStack borderBottom="1px solid var(--main_color_black)" mt={6}>
+						<TextTitle title="Totals withdrawn to remit to Employees" />
+						<HStack borderBottom="1px solid var(--main_color_black)" mt={5}>
 							<NormalTextTitle title="All Employees Net Pay" />
 							<NormalTextTitle align="right" title={totalNetPay} />
 						</HStack>
@@ -103,7 +103,7 @@ const TotalsReportModal = ({
 						</HStack>
 					</Stack>
 
-					<Stack mt={6} size="xs">
+					<Stack mt={5} size="xs">
 						<HStack>
 							<TextTitle title="ALL EMPLOYEE PAYMENTS TO REMIT" />
 							<TextTitle align="right" title={totalEmpPaymentRemitCost} />
@@ -111,8 +111,8 @@ const TotalsReportModal = ({
 					</Stack>
 
 					<Stack mt={3} size="xs" spacing={0}>
-						<TextTitle size="sm" title="Totals withdrawn for services" />
-						<HStack mt={6}>
+						<TextTitle title="Totals withdrawn for services" />
+						<HStack mt={5}>
 							<NormalTextTitle title="Core Payroll - Batch" />
 							<NormalTextTitle align="right" title={totalBatchCharges} />
 						</HStack>
@@ -125,7 +125,7 @@ const TotalsReportModal = ({
 							<NormalTextTitle align="right" title={totalCorePayrollCost} fontStyle="italic" />
 						</HStack>
 
-						<HStack mt={6}>
+						<HStack mt={5}>
 							<NormalTextTitle title="Time Clock Device Maintenance" />
 							<NormalTextTitle align="right" title={timeClockMaintenanceCost} />
 						</HStack>
@@ -143,7 +143,7 @@ const TotalsReportModal = ({
 						</HStack>
 					</Stack>
 
-					<Stack mt={6} size="xs" spacing={2}>
+					<Stack mt={5} size="xs" spacing={2}>
 						<HStack>
 							<TextTitle title="ALL SERVICE CHARGES" />
 							<TextTitle align="right" title={totalServiceCharges} />
