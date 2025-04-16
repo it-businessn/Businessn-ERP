@@ -5,18 +5,20 @@ import {
 	InputGroup,
 	InputRightElement,
 	SimpleGrid,
+	Stack,
 	VStack,
 } from "@chakra-ui/react";
+import LeftIconButton from "components/ui/button/LeftIconButton";
 import PrimaryButton from "components/ui/button/PrimaryButton";
 import OtherFilter from "erp-modules/payroll/timesheets/OtherFilter";
 import PayrollActions from "erp-modules/payroll/workview/paygroup-header-table/PayrollActions";
 import useCompany from "hooks/useCompany";
 import PageLayout from "layouts/PageLayout";
 import { useEffect, useState } from "react";
-import { FaSearch } from "react-icons/fa";
-import { useNavigate } from "react-router-dom";
+import { FaArrowLeft, FaSearch } from "react-icons/fa";
 import AccountService from "services/AccountService";
 import LocalStorageService from "services/LocalStorageService";
+import AccountJournalDetail from "./AccountJournalDetail";
 import AddAccountModal from "./AddAccountModal";
 import LedgerList from "./LedgerList";
 
@@ -28,6 +30,7 @@ const AccountingLedger = () => {
 		isPayrollInactive: false,
 	});
 
+	const [showAccDetail, setShowAccDetail] = useState(false);
 	const [isRefresh, setIsRefresh] = useState(false);
 	const [accounts, setAccounts] = useState(null);
 	const [filteredAccounts, setFilteredAccounts] = useState(null);
@@ -35,7 +38,7 @@ const AccountingLedger = () => {
 	useEffect(() => {
 		const fetchAllAccounts = async () => {
 			try {
-				const { data } = await AccountService.geAccount(company);
+				const { data } = await AccountService.getAllAccounts(company);
 				setAccounts(data);
 				setFilteredAccounts(data);
 			} catch (error) {
@@ -53,30 +56,29 @@ const AccountingLedger = () => {
 	const toggleDeptFilter = () => setShowDeptFilter((prev) => !prev);
 	const toggleCCFilter = () => setShowCCFilter((prev) => !prev);
 	const handleFilter = () => console.log(filteredAccounts);
-	// const { departments, roles } = useSignup(false, company);
+
 	const [filteredDept, setFilteredDept] = useState([]);
 	const [filteredCC, setFilteredCC] = useState([]);
 
 	const [showModal, setShowModal] = useState(false);
-
-	const navigate = useNavigate();
+	const [accName, setAccName] = useState("");
 
 	const handleClick = (val) => {
 		if (val === "add") {
 			setShowModal(true);
 		}
 	};
-	const [empName, setEmpName] = useState("");
+
 	const handleInputChange = (value) => {
-		setEmpName(value);
+		setAccName(value);
 		setFilteredAccounts(
-			accounts.filter((emp) => emp?.empId?.fullName?.toLowerCase().includes(value.toLowerCase())),
+			accounts.filter((acc) => acc?.accountName.toLowerCase().includes(value.toLowerCase())),
 		);
 	};
 
 	return (
 		<PageLayout
-			title="Record of Bucket Movement"
+			title={showAccDetail ? "Record of Bucket Movement" : "General Ledger Summary"}
 			selectPlaceholder="Select Paygroup"
 			selectAttr="name"
 		>
@@ -103,8 +105,8 @@ const AccountingLedger = () => {
 										fontSize: "sm",
 									}}
 									size="xs"
-									name="empName"
-									value={empName}
+									name="accName"
+									value={accName}
 									onChange={(e) => handleInputChange(e.target.value)}
 									color={"var(--nav_color)"}
 									bg={"var(--primary_bg)"}
@@ -123,32 +125,53 @@ const AccountingLedger = () => {
 							onOpen={() => setShowModal(true)}
 						/>
 					</HStack>
-					<HStack w={"100%"} pt={"5em"} spacing={"3em"} justifyContent={"start"}>
-						<HStack spacing={2}>
-							<Checkbox
-								colorScheme={"facebook"}
-								isChecked={formData.isPayrollActive}
-								onChange={(e) =>
-									setFormData((prevData) => ({
-										...prevData,
-										isPayrollActive: e.target.checked,
-									}))
-								}
-							>
-								Active
-							</Checkbox>
-							<Checkbox
-								colorScheme={"facebook"}
-								isChecked={formData.isPayrollInactive}
-								onChange={(e) =>
-									setFormData((prevData) => ({
-										...prevData,
-										isPayrollInactive: e.target.checked,
-									}))
-								}
-							>
-								Inactive
-							</Checkbox>
+					<HStack
+						w={"100%"}
+						pt={"5em"}
+						spacing={"3em"}
+						alignItems="self-start"
+						justifyContent={"start"}
+					>
+						<HStack>
+							<Stack alignItems="self-start">
+								<HStack spacing={2}>
+									<Checkbox
+										colorScheme={"facebook"}
+										isChecked={formData.isPayrollActive}
+										onChange={(e) =>
+											setFormData((prevData) => ({
+												...prevData,
+												isPayrollActive: e.target.checked,
+											}))
+										}
+									>
+										Active
+									</Checkbox>
+									<Checkbox
+										colorScheme={"facebook"}
+										isChecked={formData.isPayrollInactive}
+										onChange={(e) =>
+											setFormData((prevData) => ({
+												...prevData,
+												isPayrollInactive: e.target.checked,
+											}))
+										}
+									>
+										Inactive
+									</Checkbox>
+								</HStack>
+								{showAccDetail && (
+									<LeftIconButton
+										color={"var(--nav_color)"}
+										name={"Go Back"}
+										variant={"ghost"}
+										isFilter
+										size="xs"
+										handleClick={() => setShowAccDetail(false)}
+										icon={<FaArrowLeft />}
+									/>
+								)}
+							</Stack>
 						</HStack>
 						<HStack>
 							<OtherFilter
@@ -182,7 +205,6 @@ const AccountingLedger = () => {
 						</HStack>
 					</HStack>
 				</VStack>
-
 				<PayrollActions
 					title="Chart of Account Actions"
 					handleClick={handleClick}
@@ -193,7 +215,16 @@ const AccountingLedger = () => {
 					]}
 				/>
 			</SimpleGrid>
-			<LedgerList accounts={filteredAccounts} />
+			{showAccDetail ? (
+				<AccountJournalDetail accName={accName} company={company} />
+			) : (
+				<LedgerList
+					setShowAccDetail={setShowAccDetail}
+					setAccName={setAccName}
+					accounts={filteredAccounts}
+					company={company}
+				/>
+			)}
 			{showModal && (
 				<AddAccountModal
 					company={company}

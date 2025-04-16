@@ -40,7 +40,7 @@ const AccountingWorkview = () => {
 	useEffect(() => {
 		const fetchAllAccounts = async () => {
 			try {
-				const { data } = await AccountService.geAccount(company);
+				const { data } = await AccountService.getAllAccounts(company);
 				setAccounts(data);
 			} catch (error) {
 				console.error(error);
@@ -60,7 +60,10 @@ const AccountingWorkview = () => {
 	const toast = useToast();
 
 	const [formData, setFormData] = useState(defaultJournalInfo);
-	const [rows, setRows] = useState([{ accountName: "", debit: "", credit: "" }]);
+	const [rows, setRows] = useState([
+		{ accountName: "", debit: "", credit: "" },
+		{ accountName: "", debit: "", credit: "" },
+	]);
 
 	const handleInputChange = (index, field, value) => {
 		const updatedRows = [...rows];
@@ -140,6 +143,7 @@ const AccountingWorkview = () => {
 					<Box minH={"40vh"} mt={5}>
 						<HStack justifyContent="start" w="100%">
 							<DateTimeFormControl
+								size="sm"
 								label="Date"
 								valueText1={
 									formData.transactionDate ? getDefaultDate(formData.transactionDate) : ""
@@ -148,6 +152,7 @@ const AccountingWorkview = () => {
 								handleChange={handleChange}
 							/>
 							<InputFormControl
+								size="sm"
 								label="Description"
 								name="description"
 								placeholder="Enter Description"
@@ -155,25 +160,26 @@ const AccountingWorkview = () => {
 								handleChange={handleChange}
 							/>
 						</HStack>
-						<Table variant="SMALL">
+						<Table variant="small">
 							<Thead>
 								<Tr>
 									<Th>
-										<TextTitle title="Account" />
+										<TextTitle size="sm" title="Account" />
 									</Th>
 									<Th>
-										<TextTitle title="Debit" />
+										<TextTitle size="sm" title="Debit" />
 									</Th>
 									<Th>
-										<TextTitle title="Credit" />
+										<TextTitle size="sm" title="Credit" />
 									</Th>
 								</Tr>
 							</Thead>
 							<Tbody>
 								{rows?.map((row, index) => (
 									<Tr key={`${row.accountName}*${index}`}>
-										<Td>
+										<Td py={1}>
 											<Select
+												size="sm"
 												placeholder="Select account"
 												value={row.accountName}
 												onChange={(e) => handleInputChange(index, "accountName", e.target.value)}
@@ -185,15 +191,17 @@ const AccountingWorkview = () => {
 												))}
 											</Select>
 										</Td>
-										<Td>
+										<Td py={1}>
 											<Input
+												size="sm"
 												type="number"
 												value={row.debit}
 												onChange={(e) => handleInputChange(index, "debit", e.target.value)}
 											/>
 										</Td>
-										<Td>
+										<Td py={1}>
 											<Input
+												size="sm"
 												type="number"
 												value={row.credit}
 												onChange={(e) => handleInputChange(index, "credit", e.target.value)}

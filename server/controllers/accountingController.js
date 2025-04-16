@@ -7,36 +7,62 @@ const getAccounts = async (req, res) => {
 		const accounts = await AccountLedger.find({ companyName }).sort({
 			createdOn: -1,
 		});
-		res.status(200).json(accounts);
+		const updatedAccounts = await Promise.all(
+			accounts.map(async (account) => {
+				const accountDetails = await GeneralJournal.find({
+					companyName,
+					"entries.accountName": account.accountName,
+				}).select("transactionDate entries");
+
+				const allEntries = accountDetails.flatMap((doc) => doc.entries || []);
+
+				const filteredEntries = allEntries.filter(
+					(entry) => entry.accountName === account.accountName,
+				);
+
+				account.entries = filteredEntries;
+				account.totalDebit = filteredEntries.reduce(
+					(sum, record) => sum + (parseFloat(record.debit) || 0),
+					0,
+				);
+				account.totalCredit = filteredEntries.reduce(
+					(sum, record) => sum + (parseFloat(record.credit) || 0),
+					0,
+				);
+				account.totalJournalEntries = filteredEntries.length;
+				return account;
+			}),
+		);
+
+		res.status(200).json(updatedAccounts);
 	} catch (error) {
 		res.status(404).json({ error: error.message });
 	}
 };
 
-const getGeneralJournalEntries = async (req, res) => {
-	const { companyName } = req.params;
+const getAccountJournalEntries = async (req, res) => {
+	const { companyName, accountName } = req.params;
 	try {
-		const accounts = await GeneralJournal.find({ companyName }).sort({
-			createdOn: -1,
-		});
-		res.status(200).json(accounts);
+		const accounts = await GeneralJournal.find({
+			companyName,
+			"entries.accountName": accountName,
+		}).select("transactionDate entries");
+
+		const allEntries = accounts.flatMap((doc) =>
+			(doc.entries || []).map((entry) => ({
+				...(entry.toObject?.() ?? entry),
+				transactionDate: doc.transactionDate,
+			})),
+		);
+
+		res.status(200).json(allEntries);
 	} catch (error) {
 		res.status(404).json({ error: error.message });
 	}
 };
 
 const createAccount = async (req, res) => {
-	const { companyName } = req.body;
 	try {
-		const recentJournalEntryNum = await AccountLedger.findOne({ companyName })
-			.sort({
-				createdOn: -1,
-			})
-			.select("journalEntryNum");
-
-		req.body.journalEntryNum = recentJournalEntryNum
-			? recentJournalEntryNum?.journalEntryNum + 1
-			: 1;
 		const newAcc = await AccountLedger.create(req.body);
 		res.status(201).json(newAcc);
 	} catch (error) {
@@ -45,6 +71,15 @@ const createAccount = async (req, res) => {
 };
 
 const addGeneralJournalEntry = async (req, res) => {
+	// const { companyName } = req.body;
+	// const recentJournalEntryNum = await AccountLedger.findOne({ companyName })
+	// 	.sort({
+	// 		createdOn: -1,
+	// 	})
+	// 	.select("journalEntryNum");
+
+	// req.body.journalEntryNum = recentJournalEntryNum ? recentJournalEntryNum?.journalEntryNum + 1 : 1;
+
 	try {
 		const newEntry = await GeneralJournal.create(req.body);
 		res.status(201).json(newEntry);
@@ -69,6 +104,7 @@ module.exports = {
 	createAccount,
 	getAccounts,
 	addGeneralJournalEntry,
+	getAccountJournalEntries,
 	// getTasks,
 	// updateTask,
 };

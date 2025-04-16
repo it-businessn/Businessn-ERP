@@ -1,8 +1,12 @@
 import apiService from "services";
 
 const AccountService = {
-	async geAccount(id) {
+	async getAllAccounts(id) {
 		return apiService.get(`/accounting/${id}`);
+	},
+
+	async getAccountJournalEntries(id, accName) {
+		return apiService.get(`/accounting/general-journal/${id}/${accName}`);
 	},
 
 	async addAccount(data) {
