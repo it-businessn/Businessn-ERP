@@ -8,6 +8,10 @@ const AccountService = {
 	async addAccount(data) {
 		return apiService.post("/accounting", data);
 	},
+
+	async addJournalEntry(data) {
+		return apiService.post("/accounting/general-journal", data);
+	},
 };
 
 export default AccountService;

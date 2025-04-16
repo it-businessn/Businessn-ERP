@@ -7,7 +7,7 @@ import { useState } from "react";
 import AccountService from "services/AccountService";
 import { getDefaultDate } from "utils/convertDate";
 
-const AddAccountModal = ({ company, setShowOnboard, showOnboard }) => {
+const AddAccountModal = ({ company, setShowOnboard, showOnboard, setIsRefresh }) => {
 	const { onClose } = useDisclosure();
 
 	const handleClose = () => {
@@ -35,6 +35,7 @@ const AddAccountModal = ({ company, setShowOnboard, showOnboard }) => {
 	const handleSubmit = async () => {
 		await AccountService.addAccount(formData);
 		handleClose();
+		if (setIsRefresh) setIsRefresh((prev) => !prev);
 	};
 	return (
 		<ModalLayout title="Add New Account" size="3xl" isOpen={showOnboard} onClose={handleClose}>

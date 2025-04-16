@@ -1,0 +1,209 @@
+import {
+	Checkbox,
+	HStack,
+	Input,
+	InputGroup,
+	InputRightElement,
+	SimpleGrid,
+	VStack,
+} from "@chakra-ui/react";
+import PrimaryButton from "components/ui/button/PrimaryButton";
+import OtherFilter from "erp-modules/payroll/timesheets/OtherFilter";
+import PayrollActions from "erp-modules/payroll/workview/paygroup-header-table/PayrollActions";
+import useCompany from "hooks/useCompany";
+import PageLayout from "layouts/PageLayout";
+import { useEffect, useState } from "react";
+import { FaSearch } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
+import AccountService from "services/AccountService";
+import LocalStorageService from "services/LocalStorageService";
+import AddAccountModal from "./AddAccountModal";
+import LedgerList from "./LedgerList";
+
+const AccountingLedger = () => {
+	const { company } = useCompany(LocalStorageService.getItem("selectedCompany"));
+
+	const [formData, setFormData] = useState({
+		isPayrollActive: true,
+		isPayrollInactive: false,
+	});
+
+	const [isRefresh, setIsRefresh] = useState(false);
+	const [accounts, setAccounts] = useState(null);
+	const [filteredAccounts, setFilteredAccounts] = useState(null);
+
+	useEffect(() => {
+		const fetchAllAccounts = async () => {
+			try {
+				const { data } = await AccountService.geAccount(company);
+				setAccounts(data);
+				setFilteredAccounts(data);
+			} catch (error) {
+				console.error(error);
+			}
+		};
+		fetchAllAccounts();
+	}, [isRefresh]);
+
+	const [showAccFilter, setShowAccFilter] = useState(false);
+	const [showDeptFilter, setShowDeptFilter] = useState(false);
+	const [showCCFilter, setShowCCFilter] = useState(false);
+
+	const toggleEmpFilter = () => setShowAccFilter((prev) => !prev);
+	const toggleDeptFilter = () => setShowDeptFilter((prev) => !prev);
+	const toggleCCFilter = () => setShowCCFilter((prev) => !prev);
+	const handleFilter = () => console.log(filteredAccounts);
+	// const { departments, roles } = useSignup(false, company);
+	const [filteredDept, setFilteredDept] = useState([]);
+	const [filteredCC, setFilteredCC] = useState([]);
+
+	const [showModal, setShowModal] = useState(false);
+
+	const navigate = useNavigate();
+
+	const handleClick = (val) => {
+		if (val === "add") {
+			setShowModal(true);
+		}
+	};
+	const [empName, setEmpName] = useState("");
+	const handleInputChange = (value) => {
+		setEmpName(value);
+		setFilteredAccounts(
+			accounts.filter((emp) => emp?.empId?.fullName?.toLowerCase().includes(value.toLowerCase())),
+		);
+	};
+
+	return (
+		<PageLayout
+			title="Record of Bucket Movement"
+			selectPlaceholder="Select Paygroup"
+			selectAttr="name"
+		>
+			<SimpleGrid
+				columns={{ base: 1, md: 1, lg: 2 }}
+				spacing="4"
+				my="4"
+				mr="4"
+				templateColumns={{ lg: "70% 30%" }}
+			>
+				<VStack>
+					<HStack w={"100%"} spacing={2} justifyContent={"space-between"}>
+						<VStack spacing={1} w={"30%"} align={"start"} zIndex={2}>
+							<InputGroup
+								borderRadius={"10px"}
+								border={"1px solid var(--filter_border_color)"}
+								fontSize="xs"
+								fontWeight="bold"
+								size="xs"
+							>
+								<Input
+									_placeholder={{
+										color: "var(--nav_color)",
+										fontSize: "sm",
+									}}
+									size="xs"
+									name="empName"
+									value={empName}
+									onChange={(e) => handleInputChange(e.target.value)}
+									color={"var(--nav_color)"}
+									bg={"var(--primary_bg)"}
+									type="text"
+									placeholder="Search account"
+									pr="4.5rem"
+									py="1.1em"
+								/>
+								<InputRightElement size="xs" children={<FaSearch />} />
+							</InputGroup>
+						</VStack>
+						<PrimaryButton
+							name={"Add Account"}
+							size="xs"
+							px={0}
+							onOpen={() => setShowModal(true)}
+						/>
+					</HStack>
+					<HStack w={"100%"} pt={"5em"} spacing={"3em"} justifyContent={"start"}>
+						<HStack spacing={2}>
+							<Checkbox
+								colorScheme={"facebook"}
+								isChecked={formData.isPayrollActive}
+								onChange={(e) =>
+									setFormData((prevData) => ({
+										...prevData,
+										isPayrollActive: e.target.checked,
+									}))
+								}
+							>
+								Active
+							</Checkbox>
+							<Checkbox
+								colorScheme={"facebook"}
+								isChecked={formData.isPayrollInactive}
+								onChange={(e) =>
+									setFormData((prevData) => ({
+										...prevData,
+										isPayrollInactive: e.target.checked,
+									}))
+								}
+							>
+								Inactive
+							</Checkbox>
+						</HStack>
+						<HStack>
+							<OtherFilter
+								showOtherFilter={showAccFilter}
+								toggleOtherFilter={toggleEmpFilter}
+								handleFilter={handleFilter}
+								data={accounts}
+								filteredData={filteredAccounts}
+								setFilteredData={setFilteredAccounts}
+								helperText="Account Type"
+								type="accountName"
+							/>
+							{/* <OtherFilter
+								showOtherFilter={showDeptFilter}
+								toggleOtherFilter={toggleDeptFilter}
+								handleFilter={handleFilter}
+								data={employees}
+								filteredData={filteredDept}
+								setFilteredData={setFilteredDept}
+								helperText="department"
+							/>
+							<OtherFilter
+								showOtherFilter={showCCFilter}
+								toggleOtherFilter={toggleCCFilter}
+								handleFilter={handleFilter}
+								data={employees}
+								filteredData={filteredCC}
+								setFilteredData={setFilteredCC}
+								helperText="cost center"
+							/> */}
+						</HStack>
+					</HStack>
+				</VStack>
+
+				<PayrollActions
+					title="Chart of Account Actions"
+					handleClick={handleClick}
+					actions={[
+						{ key: "add", name: "Add Account" },
+						{ key: "change", name: "Change Account" },
+						{ key: "remove", name: "Remove Account" },
+					]}
+				/>
+			</SimpleGrid>
+			<LedgerList accounts={filteredAccounts} />
+			{showModal && (
+				<AddAccountModal
+					company={company}
+					showOnboard={showModal}
+					setShowOnboard={setShowModal}
+					setIsRefresh={setIsRefresh}
+				/>
+			)}
+		</PageLayout>
+	);
+};
+
+export default AccountingLedger;

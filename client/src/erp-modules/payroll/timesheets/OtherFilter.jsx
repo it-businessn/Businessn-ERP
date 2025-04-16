@@ -47,7 +47,7 @@ const OtherFilter = ({
 						borderColor={!selectedOptions?.length && "var(--filter_border_color)"}
 						label={
 							<>
-								{selectedOptions?.length ?? 0} {helperText}(s) selected
+								{selectedOptions?.length || 0} {helperText}(s) selected
 								<FaCaretDown />
 							</>
 						}

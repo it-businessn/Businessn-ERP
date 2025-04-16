@@ -7,4 +7,6 @@ router.get("/:companyName", accountingController.getAccounts);
 
 router.post("/", accountingController.createAccount);
 
+router.post("/general-journal", accountingController.addGeneralJournalEntry);
+
 module.exports = router;
