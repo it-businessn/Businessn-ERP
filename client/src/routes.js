@@ -18,6 +18,11 @@ const Configuration = lazy(() => import("./features/configuration"));
 const UserProfileDetails = lazy(() => import("./features/user/UserProfileDetails"));
 const VerifyEmail = lazy(() => import("./features/verify-user"));
 
+// accounting
+const AccountingDashboard = lazy(() => import("./erp-modules/accounting"));
+const AccountingLedger = lazy(() => import("./erp-modules/accounting/AccountingLedger"));
+const AccountingWorkview = lazy(() => import("./erp-modules/accounting/AccountingWorkview"));
+
 // hr
 const HRDashboard = lazy(() => import("./erp-modules/hr"));
 
@@ -411,6 +416,19 @@ export const router = createBrowserRouter([
 			{
 				path: `/operations${ROUTE_PATH.ORDERS}`,
 				element: <Orders />,
+			},
+			/* Accounting */
+			{
+				path: "/accounting",
+				element: <AccountingDashboard />,
+			},
+			{
+				path: `/accounting${ROUTE_PATH.WORKVIEW}`,
+				element: <AccountingWorkview />,
+			},
+			{
+				path: `/accounting/ledger`,
+				element: <AccountingLedger />,
 			},
 		],
 	},

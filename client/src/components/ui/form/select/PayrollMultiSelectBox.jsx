@@ -18,6 +18,7 @@ const PayrollMultiSelectBox = ({
 	data,
 	w,
 	handleApply,
+	type,
 }) => {
 	const { onClose } = useDisclosure();
 
@@ -68,15 +69,22 @@ const PayrollMultiSelectBox = ({
 							<Checkbox
 								colorScheme="facebook"
 								isChecked={selectedOptions?.includes(
-									assignee.fullName || assignee?.empId?.fullName || assignee.name || assignee,
+									assignee[type] ||
+										assignee.fullName ||
+										assignee?.empId?.fullName ||
+										assignee.name ||
+										assignee,
 								)}
 								onChange={() =>
 									handleCheckboxChange(
-										assignee.fullName || assignee?.empId?.fullName || assignee.name,
+										assignee[type] ||
+											assignee.fullName ||
+											assignee?.empId?.fullName ||
+											assignee.name,
 									)
 								}
 							>
-								{assignee.fullName || assignee?.empId?.fullName || assignee.name}
+								{assignee[type] || assignee.fullName || assignee?.empId?.fullName || assignee.name}
 							</Checkbox>
 						</MenuItem>
 					))}

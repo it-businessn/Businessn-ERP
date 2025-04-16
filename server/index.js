@@ -11,6 +11,7 @@ const helmet = require("helmet");
 const cookieParser = require("cookie-parser");
 
 const { addStatHolidayTimesheet } = require("./controllers/timesheetContoller");
+const accountingRoutes = require("./routes/accountingRoutes");
 const activityRoutes = require("./routes/activityRoutes");
 const appRoutes = require("./routes/appRoutes");
 const assessmentRoutes = require("./routes/assessmentRoutes");
@@ -120,6 +121,7 @@ app.use("/api/timecard", timecardRoutes);
 app.use("/api/ticket", ticketRoutes);
 app.use("/api/resource", resourceRoutes);
 app.use(authenticateToken);
+app.use("/api/accounting", accountingRoutes);
 app.use("/api/activities", activityRoutes);
 app.use("/api/assessment", assessmentRoutes);
 app.use("/api/contacts", contactRoutes);

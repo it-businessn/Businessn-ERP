@@ -18,7 +18,7 @@ import { MdCleanHands, MdOutlineSettingsApplications, MdPayments } from "react-i
 import { PiBooks, PiListMagnifyingGlassFill } from "react-icons/pi";
 import { RiUserSearchLine, RiUserStarLine } from "react-icons/ri";
 import { RxDashboard } from "react-icons/rx";
-import { TbChartDots, TbShoppingBag, TbUsersPlus } from "react-icons/tb";
+import { TbChartDots, TbFileInvoice, TbShoppingBag, TbUsersPlus } from "react-icons/tb";
 
 export const SIDEBAR_MENU = [
 	{
@@ -398,6 +398,32 @@ export const SIDEBAR_MENU = [
 			},
 		],
 	},
+	{
+		path: "accounting",
+		name: "Accounting",
+		id: "accounting",
+		icon: <FaDashcube />,
+		children: [
+			{
+				path: "",
+				name: "Dashboard",
+				children: [],
+				icon: <TbFileInvoice />,
+			},
+			{
+				path: "workview",
+				name: "Workview",
+				children: [],
+				icon: <BiNotepad />,
+			},
+			{
+				path: "ledger",
+				name: "General Ledger",
+				children: [],
+				icon: <FaPeopleGroup />,
+			},
+		],
+	},
 
 	// {
 	// 	path: "/payroll-insight",
@@ -589,20 +615,6 @@ export const SIDEBAR_MENU = [
 	// 					icon: LuLayoutDashboard,
 	// 				},
 	// 			],
-	// 		},
-	// 	],
-	// },
-	// {
-	// 	path: "/payroll",
-	// 	name: "Accounting",
-	// 	id: "accounting",
-	// 	icon: <FaDashcube />,
-	// 	children: [
-	// 		{
-	// 			path: "/invoice",
-	// 			name: "Invoices",
-	// 			children: [],
-	// 			icon: <TbFileInvoice />,
 	// 		},
 	// 	],
 	// },

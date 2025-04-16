@@ -21,6 +21,7 @@ const OtherFilter = ({
 	setFilteredData,
 	helperText,
 	isDisabled,
+	type,
 }) => {
 	const [openMenu, setOpenMenu] = useState(true);
 	const [selectedOptions, setSelectedOptions] = useState([]);
@@ -66,6 +67,7 @@ const OtherFilter = ({
 								handleApply={handleApply}
 								selectedOptions={selectedOptions}
 								setSelectedOptions={setSelectedOptions}
+								type={type}
 							/>
 						</Stack>
 					)}
