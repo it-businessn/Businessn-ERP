@@ -201,54 +201,28 @@ const getCompanyEmployeesCount = async (req, res) => {
 const groupEmployeesByRole = async (req, res) => {
 	const { companyName } = req.params;
 	try {
-		const tasksByEmployee = await Task.aggregate([
-			{
-				$match: { companyName },
-			},
-			{
-				$group: {
-					_id: "$selectedAssignees",
-					tasks: {
-						$push: {
-							taskName: "$taskName",
-						},
-					},
-				},
-			},
-		]);
+		let result = await EmployeeEmploymentInfo.find({
+			companyName,
+			employmentRole: { $ne: ROLES.SHADOW_ADMIN },
+		})
+			.populate({
+				path: "empId",
+				model: "Employee",
+				select: ["fullName"],
+			})
+			.select("employmentRole");
+		const grouped = result.reduce((acc, item) => {
+			const role = item.employmentRole;
+			const name = item.empId.fullName;
+			const empId = item.empId._id;
 
-		const existingCompany = await findCompany("name", companyName);
-
-		const result = await Employee.aggregate([
-			{
-				$match: { companyId: existingCompany._id },
-			},
-			{
-				$group: {
-					_id: "$role",
-					employees: {
-						$push: {
-							fullName: "$fullName",
-							id: "$_id",
-							tasks: {
-								$reduce: {
-									input: tasksByEmployee,
-									initialValue: [],
-									in: {
-										$cond: {
-											if: { $in: ["$fullName", "$$this._id"] }, // if employee name is in the selectedAssignees of the task
-											then: { $concatArrays: ["$$value", "$$this.tasks"] }, // Merge tasks arrays
-											else: "$$value", // default value
-										},
-									},
-								},
-							},
-						},
-					},
-				},
-			},
-		]);
-		res.status(200).json(result);
+			if (!acc[role]) {
+				acc[role] = [];
+			}
+			acc[role].push({ name, empId });
+			return acc;
+		}, {});
+		res.status(200).json(grouped);
 	} catch (error) {
 		res.status(404).json({ error: error.message });
 	}

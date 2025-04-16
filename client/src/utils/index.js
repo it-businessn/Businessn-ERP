@@ -348,7 +348,8 @@ export const getRoleColor = (role) => {
 		{ title: ROLES.MANAGER, color: "var(--stat_item_color)" },
 		{ title: ROLES.EMPLOYEE, color: "var(--action_status_approve)" },
 		{ title: ROLES.ADMINISTRATOR, color: "var(--primary_button_bg)" },
-		{ title: ROLES.ENROLLER, color: "var(--gray2_color)" },
+		{ title: ROLES.ENROLLER, color: "var(--action_status_approve)" },
+		{ title: ROLES.AUTH_ADMINISTRATOR, color: "var(--primary_button_bg)" },
 	];
 	// const randomIndex = Math.floor(Math.random() * colors.length);
 

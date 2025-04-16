@@ -4,7 +4,6 @@ import Timeline, { CustomHeader, SidebarHeader, TimelineHeaders } from "react-ca
 import "react-calendar-timeline/lib/Timeline.css";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { useDrop } from "react-dnd";
 import { CiCalendar } from "react-icons/ci";
 // import { FaChevronDown } from "react-icons/fa";
 import NormalTextTitle from "components/ui/NormalTextTitle";
@@ -29,32 +28,9 @@ const SchedulingCalendar = ({ newEmployeeAdded, setRefresh, company }) => {
 	const eventPrevEndTime = new Date(currentDate);
 	eventPrevEndTime.setHours(8, 0, 0, 0);
 
-	const [{ isOver }, drop] = useDrop({
-		accept: "employee",
-		drop: (item) => handleHourDrop(item),
-		collect: (monitor) => ({
-			isOver: !!monitor.isOver(),
-		}),
-	});
-
 	const [groups, setGroups] = useState([{ id: 1, title: "Drop here", color: "transparent" }]);
 
 	const [items, setItems] = useState([]);
-	// const onItemMove = (itemId, dragTime, newGroupOrder) => {
-	// 	const updatedItems = items.map((item) =>
-	// 		item.id === itemId
-	// 			? {
-	// 					...item,
-	// 					start_time: dragTime,
-	// 					end_time: new Date(
-	// 						dragTime.getTime() + (item.end_time - item.start_time),
-	// 					),
-	// 					group: newGroupOrder,
-	// 			  }
-	// 			: item,
-	// 	);
-	// 	setItems(updatedItems);
-	// };
 
 	const onItemResize = (itemId, time, edge) => {
 		const updatedItems = items.map((item) =>
@@ -136,7 +112,7 @@ const SchedulingCalendar = ({ newEmployeeAdded, setRefresh, company }) => {
 
 	useEffect(() => {
 		if (newEmployeeAdded) {
-			handleHourDrop(newEmployeeAdded);
+			// handleHourDrop(newEmployeeAdded);
 		}
 	}, [newEmployeeAdded]);
 
@@ -185,9 +161,7 @@ const SchedulingCalendar = ({ newEmployeeAdded, setRefresh, company }) => {
 		setItems([...items, newItem]);
 	};
 
-	const groupRenderer = ({ group }) => (
-		<Group group={group} drop={drop} isOver={isOver} handleHourDrop={handleHourDrop} />
-	);
+	const groupRenderer = ({ group }) => <Group group={group} handleHourDrop={handleHourDrop} />;
 
 	const itemRenderer = ({ item, itemContext, getItemProps, getResizeProps }) => {
 		return (
@@ -276,7 +250,6 @@ const SchedulingCalendar = ({ newEmployeeAdded, setRefresh, company }) => {
 				items={items}
 				defaultTimeStart={currentDate}
 				defaultTimeEnd={new Date(currentDate.getTime() + 12 * 60 * 60 * 1000)} // 12 hours duration
-				onItemResize={onItemResize}
 				canMove={false}
 				canResize="both"
 				timeSteps={{

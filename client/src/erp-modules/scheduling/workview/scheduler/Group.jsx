@@ -5,11 +5,11 @@ const Group = ({ group, drop, isOver, handleHourDrop }) => {
 		<Text
 			whiteSpace={"pre-wrap"}
 			className="custom-group"
-			ref={drop}
+			// ref={drop}
 			fontSize={"sm"}
 			fontWeight={"normal"}
-			border={isOver && "2px solid #ccc"}
-			bgColor={isOver ? "green.100" : "transparent"}
+			// border={isOver && "2px solid #ccc"}
+			bgColor={"transparent"}
 			onDrop={handleHourDrop}
 		>
 			{group.title}

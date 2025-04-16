@@ -1,52 +1,32 @@
-import { SimpleGrid } from "@chakra-ui/react";
+import { Avatar, Button, HStack, Icon, SimpleGrid, VStack } from "@chakra-ui/react";
+import BoxCard from "components/ui/card";
+import TextTitle from "components/ui/text/TextTitle";
 import useCompany from "hooks/useCompany";
 import PageLayout from "layouts/PageLayout";
 import { useEffect, useState } from "react";
-import { DndProvider } from "react-dnd";
-import { HTML5Backend } from "react-dnd-html5-backend";
+import { RxDragHandleDots2 } from "react-icons/rx";
 import LocalStorageService from "services/LocalStorageService";
 import UserService from "services/UserService";
 import { getRoleColor } from "utils";
 import HeaderCards from "./HeaderCards";
-import QuickSelection from "./quick-selection";
 import Scheduler from "./scheduler";
+import ShiftModal from "./ShiftModal";
 
 const ScheduleWorkView = () => {
 	const { company } = useCompany(LocalStorageService.getItem("selectedCompany"));
 	const [newEmployeeAdded, setNewEmployeeAdded] = useState(null);
 	const [employees, setEmployees] = useState(null);
 	const [refresh, setRefresh] = useState(null);
+	const [showAddShiftModal, setShowAddShiftModal] = useState(false);
 
 	useEffect(() => {
 		const fetchAllEmployeeByRole = async () => {
 			try {
 				const { data } = await UserService.getAllEmployeesByRole(company);
-				data.forEach((user) => {
-					user.color = getRoleColor(user._id);
+				const newData = Object.keys(data)?.map((role) => {
+					return { roleName: role, color: getRoleColor(role), employees: data[role] };
 				});
-
-				// const sortedArray = data.sort((a, b) => {
-				// 	const titleA = a.title;
-				// 	const titleB = b.title;
-				// 	const indexA = ALL_ROLES.indexOf(titleA);
-				// 	const indexB = ALL_ROLES.indexOf(titleB);
-				// 	if (indexA !== -1 && indexB !== -1) {
-				// 		return indexA - indexB;
-				// 	}
-
-				// 	if (indexA !== -1) {
-				// 		return -1;
-				// 	}
-
-				// 	if (indexB !== -1) {
-				// 		return 1;
-				// 	}
-
-				// 	return 0;
-				// });
-
-				// setEmployees(sortedArray);
-				setEmployees(data);
+				setEmployees(newData);
 			} catch (error) {
 				console.error(error);
 			}
@@ -54,8 +34,13 @@ const ScheduleWorkView = () => {
 
 		fetchAllEmployeeByRole();
 	}, [refresh, company]);
+
+	const handleShift = () => {
+		setShowAddShiftModal(true);
+	};
+
 	return (
-		<PageLayout title={"WorkView"}>
+		<PageLayout title="WorkView">
 			<SimpleGrid
 				mb={"1em"}
 				columns={{ base: 1, md: 3 }}
@@ -64,21 +49,53 @@ const ScheduleWorkView = () => {
 			>
 				<HeaderCards />
 			</SimpleGrid>
-			<DndProvider backend={HTML5Backend}>
-				<SimpleGrid
-					columns={{ base: 1, md: 1, lg: 2 }}
-					spacing="4"
-					mt="4"
-					templateColumns={{ lg: "30% 70%" }}
-				>
-					<QuickSelection employees={employees} setNewEmployeeAdded={setNewEmployeeAdded} />
-					<Scheduler
-						company={company}
-						newEmployeeAdded={newEmployeeAdded}
-						setRefresh={setRefresh}
-					/>
-				</SimpleGrid>
-			</DndProvider>
+			<SimpleGrid
+				columns={{ base: 1, md: 1, lg: 2 }}
+				spacing="4"
+				mt="4"
+				templateColumns={{ lg: "20% 80%" }}
+			>
+				<BoxCard fontWeight="bold">
+					<TextTitle title="Role" />
+					{employees?.map((record) => (
+						<VStack spacing={1} key={record.roleName} w={"100%"} alignItems={"self-start"}>
+							<TextTitle size="sm" title={record.roleName} />
+							{record?.employees?.map(({ empId, name }) => (
+								<HStack key={empId} w={"100%"}>
+									<HStack
+										w={"90%"}
+										bgColor={record.color}
+										borderRadius={"50px"}
+										px={"1"}
+										spacing={0}
+										cursor={"pointer"}
+									>
+										<Avatar size={"xs"} name={name} />
+										<Button variant="ghost" size="xs" color={"var(--bg_color_1)"}>
+											{name}
+										</Button>
+									</HStack>
+									<Icon
+										cursor="pointer"
+										as={RxDragHandleDots2}
+										onClick={() => handleShift(empId, name, record.color)}
+										boxSize={5}
+									/>
+								</HStack>
+							))}
+						</VStack>
+					))}
+				</BoxCard>
+				<Scheduler company={company} newEmployeeAdded={newEmployeeAdded} setRefresh={setRefresh} />
+			</SimpleGrid>
+			{showAddShiftModal && (
+				<ShiftModal
+					company={company}
+					showModal={showAddShiftModal}
+					setShowModal={setShowAddShiftModal}
+					setIsRefresh={setRefresh}
+				/>
+			)}
 		</PageLayout>
 	);
 };
