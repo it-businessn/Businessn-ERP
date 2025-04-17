@@ -22,6 +22,10 @@ const SettingService = {
 		return apiService.get(`/setup/roles/${id}`);
 	},
 
+	async getAllLocations(id) {
+		return apiService.get(`/setup/location/${id}`);
+	},
+
 	async getStatHolidays(id) {
 		return apiService.get(`/setup/stat-holidays/${id}/${CURRENT_YEAR}`);
 	},
@@ -36,6 +40,10 @@ const SettingService = {
 
 	async addRole(data) {
 		return apiService.post("/setup/roles", data);
+	},
+
+	async addLocation(data) {
+		return apiService.post("/setup/location", data);
 	},
 
 	async getAllDepartments(id) {

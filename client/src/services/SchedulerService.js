@@ -9,12 +9,20 @@ const SchedulerService = {
 		return apiService.get(`/schedule/${data.date}/${data.company}`);
 	},
 
+	async getWorkShiftsByDate(data) {
+		return apiService.get(`/schedule/work/${data.date}/${data.company}`);
+	},
+
 	async getTaskByAssignee(name) {
 		return apiService.get(`/tasks/${name}`);
 	},
 
 	async addShifts(data) {
 		return apiService.post("/schedule", data);
+	},
+
+	async addWorkShifts(data) {
+		return apiService.post("/schedule/work", data);
 	},
 
 	async updateShift(data, id) {

@@ -7,6 +7,7 @@ const EmployeeRole = require("../models/EmployeeRole");
 const EmploymentType = require("../models/EmploymentType");
 const Group = require("../models/Group");
 const Holiday = require("../models/Holiday");
+const Location = require("../models/Location");
 const Module = require("../models/Module");
 const Setup = require("../models/Setup");
 const { CURRENT_YEAR, ROLES } = require("../services/data");
@@ -16,6 +17,20 @@ const getAllSetup = async (req, res) => {
 	try {
 		const rule = await Setup.find({});
 		res.status(200).json(rule);
+	} catch (error) {
+		res.status(404).json({ error: error.message });
+	}
+};
+
+const getLocations = async (req, res) => {
+	const { companyName } = req.params;
+	try {
+		const locations = await Location.find({
+			companyName,
+		}).sort({
+			name: 1,
+		});
+		res.status(200).json(locations);
 	} catch (error) {
 		res.status(404).json({ error: error.message });
 	}
@@ -33,6 +48,20 @@ const getRoles = async (req, res) => {
 		res.status(200).json(roles);
 	} catch (error) {
 		res.status(404).json({ error: error.message });
+	}
+};
+
+const addLocation = async (req, res) => {
+	const { name, companyName } = req.body;
+
+	try {
+		const location = await Location.create({
+			name,
+			companyName,
+		});
+		res.status(201).json(location);
+	} catch (error) {
+		res.status(400).json({ message: error.message });
 	}
 };
 
@@ -453,6 +482,8 @@ const deleteStatHoliday = async (req, res) => {
 };
 
 module.exports = {
+	addLocation,
+	getLocations,
 	getStatHoliday,
 	deleteStatHoliday,
 	addStatHoliday,

@@ -7,7 +7,11 @@ router.get("/", scheduleController.getShifts);
 
 router.get("/:id/:name", scheduleController.getShiftByDate);
 
+router.get("/work/:date/:name", scheduleController.getWorkShiftByDate);
+
 router.post("/", scheduleController.addShifts);
+
+router.post("/work", scheduleController.addWorkShifts);
 
 router.put("/:id", scheduleController.updateShift);
 
