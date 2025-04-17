@@ -19,6 +19,7 @@ const NormalTextTitle = ({
 	p,
 	maxW,
 	fontStyle,
+	flex,
 }) => (
 	<TextTitle
 		em={fontStyle}
@@ -26,6 +27,7 @@ const NormalTextTitle = ({
 		onClick={onClick}
 		weight={weight}
 		bg={bg}
+		flex={flex}
 		size={size}
 		title={title}
 		visibility={visibility}

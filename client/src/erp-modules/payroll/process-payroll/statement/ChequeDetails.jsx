@@ -16,10 +16,9 @@ const PaymentDateTitle = ({ payDate }) => (
 );
 
 const InfoText = ({ title1, title2, title3, hasBg }) => (
-	<HStack w={"100%"}>
-		<NormalTextTitle width={"180px"} title={title1} size={"xs"} />
+	<HStack w={"100%"} justifyContent="start">
+		<NormalTextTitle title={title1} size={"xs"} flex={0.2} />
 		<TextTitle
-			width={"100%"}
 			bg={hasBg && "var(--calendar_border)"}
 			p={hasBg && 1}
 			border={hasBg && "1px solid var(--main_color_black)"}
@@ -27,8 +26,9 @@ const InfoText = ({ title1, title2, title3, hasBg }) => (
 			title={title2}
 			size={"xs"}
 			align={"left"}
+			flex={0.6}
 		/>
-		<TextTitle width={"200px"} align={"left"} title={title3} size={"xs"} />
+		<TextTitle align={"left"} title={title3} size={"xs"} flex={0.2} />
 	</HStack>
 );
 

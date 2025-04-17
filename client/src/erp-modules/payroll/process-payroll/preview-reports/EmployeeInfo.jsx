@@ -10,7 +10,7 @@ import { ACCRUAL_TYPES } from "./data";
 
 const EmployeeInfo = ({ data, companyNum, isMobile }) => {
 	return (
-		<Stack position="relative" flex={isMobile ? 1 : 0.1} spacing={0} w={isMobile && "100%"}>
+		<Stack position="relative" flex={isMobile ? 1 : 0.3} spacing={0} w={isMobile && "100%"}>
 			<BoxCard p={0}>
 				<Box w={"100%"} bg={"var(--primary_bg_1)"} p={2}>
 					<VStack mt={1} spacing={0}>
@@ -24,6 +24,7 @@ const EmployeeInfo = ({ data, companyNum, isMobile }) => {
 						<BasicInfo title1={"Pay End Date:"} title2={formatDateBar(data?.payPeriodEndDate)} />
 						<BasicInfo mt={4} whiteSpace="wrap" title1={"Name:"} title2={data?.empId?.fullName} />
 						<BasicInfo
+							whiteSpace="wrap"
 							title1={"Address:"}
 							title2={
 								data?.empId?.primaryAddress?.streetNumber === ""
