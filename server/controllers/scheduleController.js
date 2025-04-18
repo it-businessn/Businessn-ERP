@@ -40,8 +40,8 @@ const getWorkShiftByDate = async (req, res) => {
 		const shifts = await WorkShift.find({
 			companyName: name,
 			shiftDate: {
-				$gte: moment(date).utc().startOf("day").toDate(),
-				$lte: moment().utc().endOf("day").toDate(),
+				$gte: moment.utc(date).startOf("day").toDate(),
+				$lte: moment.utc(date).endOf("day").toDate(),
 			},
 		});
 		res.status(200).json(shifts);
@@ -51,9 +51,9 @@ const getWorkShiftByDate = async (req, res) => {
 };
 
 const calculateBreak = (shiftDate, start, end) => {
-	const startDate = new Date(`${shiftDate}T${start}`);
-	const endDate = new Date(`${shiftDate}T${end}`);
-	const diff = (endDate - startDate) / (1000 * 60 * 60);
+	const startDate = moment(`${shiftDate}T${start}`);
+	const endDate = moment(`${shiftDate}T${end}`);
+	const diff = endDate.diff(startDate, "hours", true);
 	return diff > 5 ? 30 : 0; // 30 min break if over 5 hours
 };
 
@@ -72,20 +72,21 @@ const addWorkShifts = async (req, res) => {
 	} = req.body;
 
 	try {
-		const shiftStartDate = new Date(`${shiftDate}T${shiftStart}`);
-		const shiftEndDate = new Date(`${shiftDate}T${shiftEnd}`);
+		const shiftStartDate = moment(`${shiftDate}T${shiftStart}`);
+		const shiftEndDate = moment(`${shiftDate}T${shiftEnd}`);
 		const repeatCount = repeatSchedule ? 7 : 1;
 		const shiftsToSave = [];
 
 		for (let i = 0; i < repeatCount; i++) {
-			const currentShiftDate = format(addDays(new Date(shiftDate), i), "yyyy-MM-dd");
+			const currentShiftDate = moment(shiftDate).add(i, "days").format("YYYY-MM-DD");
+
 			const breakDuration = calculateBreak(currentShiftDate, shiftStart, shiftEnd);
 			if (breakDuration) {
-				const totalMs = shiftEndDate - shiftStartDate;
+				const totalMs = shiftEndDate.diff(shiftStartDate);
 				const halfMs = Math.floor((totalMs - breakDuration * 60000) / 2);
 
-				const firstEnd = new Date(shiftStartDate.getTime() + halfMs);
-				const secondStart = new Date(firstEnd.getTime() + breakDuration * 60000);
+				const firstEnd = moment(shiftStartDate).add(halfMs, "milliseconds");
+				const secondStart = moment(firstEnd).add(breakDuration, "minutes");
 
 				shiftsToSave.push({
 					empName,
@@ -94,7 +95,7 @@ const addWorkShifts = async (req, res) => {
 					notes,
 					shiftDate: currentShiftDate,
 					shiftStart,
-					shiftEnd: firstEnd.toTimeString().slice(0, 5),
+					shiftEnd: firstEnd.format("HH:mm"),
 					repeatSchedule,
 					repeatDuration: "1 week",
 					breakDuration: 0,
@@ -107,7 +108,7 @@ const addWorkShifts = async (req, res) => {
 					location,
 					notes,
 					shiftDate: currentShiftDate,
-					shiftStart: secondStart.toTimeString().slice(0, 5),
+					shiftStart: secondStart.format("HH:mm"),
 					shiftEnd,
 					repeatSchedule,
 					repeatDuration: "1 week",

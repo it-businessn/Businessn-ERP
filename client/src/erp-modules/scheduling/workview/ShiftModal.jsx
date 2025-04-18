@@ -76,9 +76,9 @@ const ShiftModal = ({
 	};
 
 	const handleSubmit = async () => {
-		await SchedulerService.addWorkShifts(formData);
+		const { data } = await SchedulerService.addWorkShifts(formData);
 		handleClose();
-		setNewShiftAdded((prev) => !prev);
+		setNewShiftAdded(data);
 	};
 
 	return (

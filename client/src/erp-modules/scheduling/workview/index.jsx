@@ -104,7 +104,12 @@ const ScheduleWorkView = () => {
 					/>
 				</SimpleGrid>
 			) : (
-				<Scheduler company={company} setRefresh={setRefresh} locations={locations} />
+				<Scheduler
+					company={company}
+					setRefresh={setRefresh}
+					locations={locations}
+					newShiftAdded={newShiftAdded}
+				/>
 			)}
 			{showAddShiftModal && (
 				<ShiftModal
