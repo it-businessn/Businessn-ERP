@@ -15,7 +15,6 @@ const {
 } = require("../services/data");
 const EmployeeEmploymentInfo = require("../models/EmployeeEmploymentInfo");
 const { findEmpPayInfo } = require("./employmentInfoController");
-const { findEmployeePayInfoDetails } = require("./payInfoController");
 
 const findByRecordTimesheets = async (record, skip, limit) => {
 	// const y = await Timesheet.deleteMany({
@@ -450,10 +449,10 @@ const updateTimesheet = async (req, res) => {
 	try {
 		const existingTimesheetInfo = await Timesheet.findById(id);
 
-		const empPayInfoResult = await findEmployeePayInfoDetails(
+		const empPayInfoResult = await EmployeePayInfo.findOne({
 			empId,
-			existingTimesheetInfo?.companyName,
-		);
+			companyName: existingTimesheetInfo?.companyName,
+		});
 		if (existingTimesheetInfo?.role === empPayInfoResult?.roles?.[1]?.title) {
 			param_hours = PARAM_HOURS.REGULAR2;
 		}
@@ -629,7 +628,7 @@ const findStatPayMonthlyEarning = async (employeeId, companyName) => {
 		},
 	});
 
-	const empPayInfoResult = await findEmployeePayInfoDetails(employeeId, companyName);
+	const empPayInfoResult = await EmployeePayInfo.find({ empId: employeeId, companyName });
 	const statPayRate = empPayInfoResult?.roles?.[0]?.sickPay || 0;
 	const employeeEarnings = timesheets?.reduce((acc, item) => {
 		return (
