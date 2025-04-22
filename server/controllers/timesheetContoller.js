@@ -15,6 +15,7 @@ const {
 } = require("../services/data");
 const EmployeeEmploymentInfo = require("../models/EmployeeEmploymentInfo");
 const { findEmpPayInfo } = require("./employmentInfoController");
+const { calcPayRates } = require("./payrollHelper");
 
 const findByRecordTimesheets = async (record, skip, limit) => {
 	// const y = await Timesheet.deleteMany({
@@ -75,16 +76,20 @@ const mapTimesheet = (payInfos, timesheets, empInfos) => {
 			const empRole = timesheet?.role
 				? timesheet.payInfo?.find(({ title }) => title === timesheet?.role)
 				: timesheet.payInfo[0];
+			if (empRole) {
+				empRole.regPay = empRole?.payRate || 0;
+				const empRoleRates = calcPayRates(empRole);
 
-			timesheet.regPay = empRole?.payRate;
-			timesheet.overTimePay = empRole?.overTimePay;
-			timesheet.dblOverTimePay = empRole?.dblOverTimePay;
-			timesheet.statWorkPay = empRole?.statWorkPay;
-			timesheet.statPay = empRole?.statPay;
-			timesheet.sickPay = empRole?.sickPay;
-			timesheet.vacationPay = empRole?.vacationPay;
+				timesheet.regPay = empRoleRates?.regPay;
+				timesheet.overTimePay = empRoleRates?.overTimePay;
+				timesheet.dblOverTimePay = empRoleRates?.dblOverTimePay;
+				timesheet.statWorkPay = empRoleRates?.statWorkPay;
+				timesheet.statPay = empRoleRates?.statPay;
+				timesheet.sickPay = empRoleRates?.sickPay;
+				timesheet.vacationPay = empRoleRates?.vacationPay;
 
-			timesheet.typeOfEarning = empRole?.typeOfEarning;
+				timesheet.typeOfEarning = empRole?.typeOfEarning;
+			}
 		}
 	});
 	return timesheets?.filter(({ typeOfEarning }) => typeOfEarning !== EARNING_TYPE.FT);
