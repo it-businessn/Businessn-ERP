@@ -29,13 +29,13 @@ import StepContent from "../step-content";
 import RadioTypeRecord from "../step-content/radio";
 import Record from "../step-content/Record";
 
-const BankingInfo = ({ company, isOnboarding, handlePrev, id }) => {
+const BankingInfo = ({ company, isOnboarding, handlePrev, id, handleClose }) => {
 	const { empId } = useSelectedEmp(LocalStorageService.getItem("empId"));
 	const bankingInfo = useEmployeeBankingInfo(company, empId, isOnboarding);
 	const setBankingInfo = () => getInitialBankingInfo(empId, company);
 	const [formData, setFormData] = useState(setBankingInfo);
 	const [isDisabled, setIsDisabled] = useState(true);
-	const [isSave1Disabled, setIsSave1Disabled] = useState(true);
+	const [isSave1Disabled, setIsSave1Disabled] = useState(false);
 	const [isLoading, setIsLoading] = useState(false);
 
 	useEffect(() => {
@@ -58,7 +58,6 @@ const BankingInfo = ({ company, isOnboarding, handlePrev, id }) => {
 		setIsLoading(true);
 		try {
 			if (values) {
-				setIsDisabled(false);
 				formData.bankDetails = values;
 			}
 			formData.empId = empId;
@@ -70,7 +69,7 @@ const BankingInfo = ({ company, isOnboarding, handlePrev, id }) => {
 				duration: 1000,
 				isClosable: true,
 			});
-			setIsDisabled(true);
+			setIsDisabled(false);
 		} catch (error) {
 			console.error("Error:", error);
 			alert("Failed to submit banking information.");
@@ -191,7 +190,8 @@ const BankingInfo = ({ company, isOnboarding, handlePrev, id }) => {
 					isOnboarding={isOnboarding}
 					handlePrev={handlePrev}
 					id={id}
-					handleNextEnabled={!isSave1Disabled && !isDisabled}
+					handleNextEnabled={!isDisabled}
+					handleClose={handleClose}
 				/>
 			</BoxCard>
 			<StepContent currentStep={currentStep} steps={steps} />

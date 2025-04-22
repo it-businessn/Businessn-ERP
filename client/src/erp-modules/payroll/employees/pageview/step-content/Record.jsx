@@ -29,6 +29,7 @@ const Record = ({
 	isContribution,
 	showAddForm,
 	formContent,
+	hasPassword,
 }) => {
 	return (
 		<>
@@ -142,6 +143,7 @@ const Record = ({
 									readOnly={isReadOnly}
 									isBalanceInfo={isBalanceInfo}
 									isContribution={isContribution}
+									hasPassword={hasPassword}
 								/>
 							);
 						})}

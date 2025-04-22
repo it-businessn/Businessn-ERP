@@ -109,6 +109,7 @@ const PersonalInfo = ({ company, isOnboarding, id, handleNext }) => {
 					isDisabled={isSave1Disabled}
 					handleSubmit={handleSubmit}
 					isOnboarding={isOnboarding}
+					hasPassword={profileInfo?.password}
 				/>
 			),
 		},

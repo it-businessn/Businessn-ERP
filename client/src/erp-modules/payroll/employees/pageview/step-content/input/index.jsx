@@ -12,6 +12,7 @@ const InputRecord = ({
 	readOnly,
 	isBalanceInfo,
 	isContribution,
+	hasPassword,
 }) => {
 	const isHourlyEarning = formData.typeOfEarning === "Hourly";
 	const isFTSalaried = formData.typeOfEarning === "Full Time Salaried";
@@ -21,13 +22,12 @@ const InputRecord = ({
 	const PTSalariedHidden = isFTSalaried && param.name.includes("(PT)");
 	const FTSalariedHidden = isPTSalaried && param.name.includes("(FT)");
 	const fullTimeSalariedReadonly = isFTSalaried && param.name.includes("(FT)");
-	const hasPassword = param.param_key === 'password' && formData[param.param_key]
+	const passwordExists = param.param_key === "password" && hasPassword;
 
 	const showField =
 		!isOnboarding || (isOnboarding && !HIDE_ONBOARDING_SECTION.includes(param.name));
 
-	const hideField =
-		hasPassword || standardHrsHidden || PTSalariedHidden || FTSalariedHidden;
+	const hideField = passwordExists || standardHrsHidden || PTSalariedHidden || FTSalariedHidden;
 
 	const controlType = param.name.includes("Email") ? "email" : "text"; // text or number
 
@@ -35,8 +35,8 @@ const InputRecord = ({
 		isContribution && readOnly
 			? 0
 			: isBalanceInfo
-				? convertDecimal(formData?.empPayStub?.[param.param_key]) ?? ""
-				: formData[param.param_key]?.toLocaleString() ?? "";
+			? convertDecimal(formData?.empPayStub?.[param.param_key]) || ""
+			: formData[param.param_key]?.toLocaleString() || "";
 
 	return hideField ? (
 		<></>

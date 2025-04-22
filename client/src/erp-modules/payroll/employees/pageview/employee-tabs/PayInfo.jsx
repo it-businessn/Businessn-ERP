@@ -23,6 +23,7 @@ const PayInfo = ({ company, isOnboarding, id, handleNext, handlePrev }) => {
 
 	useEffect(() => {
 		if (payInfo) {
+			payInfo.roles = payInfo?.roles?.filter((_) => _.title);
 			setFormData(payInfo);
 		} else {
 			setFormData(setPayInfo);

@@ -204,7 +204,7 @@ const EmployeeListView = () => {
 				/>
 			</SimpleGrid>
 			<EmployeeList employees={filteredEmployees} />
-			{showOnboard && (
+			{showOnboard && selectedPayGroup && (
 				<OnboardEmpModal
 					title="Onboard employee"
 					showOnboard={showOnboard}

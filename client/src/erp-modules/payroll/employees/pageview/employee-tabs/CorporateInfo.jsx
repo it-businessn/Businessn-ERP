@@ -48,6 +48,7 @@ const CorporateInfo = ({ company, isOnboarding, id, handleNext, handlePrev }) =>
 
 	useEffect(() => {
 		if (employmentInfo) {
+			employmentInfo.positions = employmentInfo?.positions?.filter((_) => _.title);
 			if (employmentInfo.email) {
 				employmentInfo.empId = employmentInfo._id;
 				employmentInfo.positions = [{ title: employmentInfo?.position }];
