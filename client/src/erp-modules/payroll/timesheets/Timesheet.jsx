@@ -106,6 +106,17 @@ const Timesheet = ({
 				setProgress((prev) => (prev < 100 ? prev + 2 : prev));
 			}, 2000);
 
+			const getHourDifference = (start, end) => {
+				const [startHour, startMinute] = start.split(":").map(Number);
+				const [endHour, endMinute] = end.split(":").map(Number);
+
+				const startDate = new Date(0, 0, 0, startHour, startMinute);
+				const endDate = new Date(0, 0, 0, endHour, endMinute);
+
+				const diffMs = endDate - startDate;
+				return diffMs / (1000 * 60 * 60);
+			};
+
 			try {
 				const { data } = await TimesheetService.getFilteredTimesheets(company, filter, {
 					page: pageNum,
@@ -124,6 +135,7 @@ const Timesheet = ({
 						_.startTime = getClockInTimeFormat(_.clockIn);
 						_.endTime = _.clockOut ? getTimeFormat(_.clockOut) : "";
 					}
+					_.totalHours = getHourDifference(_.startTime, _.endTime);
 					_.isEditable = _.source !== TIMESHEET_SOURCE.EMP;
 					_.isAppOrTad = _.manualAdded || _.source === TIMESHEET_SOURCE.TAD;
 					if (_.isEditable && _.isAppOrTad) {
@@ -672,6 +684,7 @@ const Timesheet = ({
 									employeeId,
 									startTime,
 									endTime,
+									totalHours,
 									regBreakHoursWorked,
 									source,
 									isEditable,
@@ -823,7 +836,10 @@ const Timesheet = ({
 														onClick={() => addRow(index)}
 													/>
 												) : ( */}
-												<NormalTextTitle size="sm" title={param_hours_worked?.toFixed(2)} />
+												<NormalTextTitle
+													size="sm"
+													title={totalHours ? totalHours?.toFixed(2) : ""}
+												/>
 												{/* )} */}
 											</Td>
 											<Td p={0} position={"sticky"} right={"0"} zIndex="1">

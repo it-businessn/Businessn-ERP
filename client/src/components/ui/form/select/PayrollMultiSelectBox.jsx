@@ -69,14 +69,10 @@ const PayrollMultiSelectBox = ({
 							<Checkbox
 								colorScheme="facebook"
 								isChecked={
-									selectedOptions?.find((_) => _[type] === assignee[type]) ||
 									selectedOptions?.includes(
-										assignee[type] ||
-											assignee.fullName ||
-											assignee?.empId?.fullName ||
-											assignee.name ||
-											assignee,
-									)
+										assignee.fullName || assignee?.empId?.fullName || assignee.name || assignee,
+									) ||
+									(type && selectedOptions?.find((_) => _[type] === assignee[type]))
 								}
 								onChange={() =>
 									handleCheckboxChange(
