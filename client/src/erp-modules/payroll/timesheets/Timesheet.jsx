@@ -106,17 +106,6 @@ const Timesheet = ({
 				setProgress((prev) => (prev < 100 ? prev + 2 : prev));
 			}, 2000);
 
-			const getHourDifference = (start, end) => {
-				const [startHour, startMinute] = start.split(":").map(Number);
-				const [endHour, endMinute] = end.split(":").map(Number);
-
-				const startDate = new Date(0, 0, 0, startHour, startMinute);
-				const endDate = new Date(0, 0, 0, endHour, endMinute);
-
-				const diffMs = endDate - startDate;
-				return diffMs / (1000 * 60 * 60);
-			};
-
 			try {
 				const { data } = await TimesheetService.getFilteredTimesheets(company, filter, {
 					page: pageNum,
@@ -194,6 +183,7 @@ const Timesheet = ({
 		payType: "",
 		source: TIMESHEET_SOURCE.MANAGER,
 	};
+
 	const [formData, setFormData] = useState(initialFormData);
 	const [isPayTypeChanged, setIsPayTypeChanged] = useState(false);
 	const [timesheetData, setTimesheetData] = useState([]);
@@ -311,6 +301,17 @@ const Timesheet = ({
 			setIsAllChecked(true);
 		}
 	}, [checkedRows]);
+
+	const getHourDifference = (start, end) => {
+		const [startHour, startMinute] = start.split(":").map(Number);
+		const [endHour, endMinute] = end.split(":").map(Number);
+
+		const startDate = new Date(0, 0, 0, startHour, startMinute);
+		const endDate = new Date(0, 0, 0, endHour, endMinute);
+
+		const diffMs = endDate - startDate;
+		return diffMs / (1000 * 60 * 60);
+	};
 
 	const handleHeaderCheckboxChange = (e) => {
 		setIsActioned(false);
@@ -495,13 +496,20 @@ const Timesheet = ({
 						isClosable: true,
 					});
 				}
-				if (data) {
+				const updatedRecordIndex = timesheetData?.findIndex(
+					(record) => record._id === formData.recordId,
+				);
+				if (updatedRecordIndex > -1) {
 					const updatedData = timesheetData?.map((record) =>
 						record._id === formData.recordId
 							? {
 									...record,
 									clockIn: data?.clockIn,
 									clockOut: data?.clockOut,
+									totalHours: getHourDifference(
+										timesheetData[updatedRecordIndex].startTime,
+										timesheetData[updatedRecordIndex].endTime,
+									),
 									regHoursWorked: data?.regHoursWorked,
 									overtimeHoursWorked: data?.overtimeHoursWorked,
 									dblOvertimeHoursWorked: data?.dblOvertimeHoursWorked,

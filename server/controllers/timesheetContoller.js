@@ -453,7 +453,10 @@ const updateTimesheet = async (req, res) => {
 			empId,
 			companyName: existingTimesheetInfo?.companyName,
 		});
-		if (existingTimesheetInfo?.role === empPayInfoResult?.roles?.[1]?.title) {
+		if (
+			existingTimesheetInfo?.role &&
+			existingTimesheetInfo?.role === empPayInfoResult?.roles?.[1]?.title
+		) {
 			param_hours = PARAM_HOURS.REGULAR2;
 		}
 
