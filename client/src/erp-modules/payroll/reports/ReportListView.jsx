@@ -172,6 +172,7 @@ const ReportListView = () => {
 			)}
 			{hasLoaded && showTotalsReport && totalsReport && (
 				<TotalsReportModal
+					company={company}
 					isOpen={showTotalsReport}
 					onClose={() => setShowTotalsReport(false)}
 					reportData={totalsReport}

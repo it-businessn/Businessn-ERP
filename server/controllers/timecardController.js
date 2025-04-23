@@ -13,6 +13,7 @@ const {
 	PUNCH_CODE,
 	PARAM_HOURS,
 	TIMESHEET_ORIGIN,
+	COMPANIES,
 } = require("../services/data");
 const moment = require("moment");
 const { getHolidays } = require("./setUpController");
@@ -22,12 +23,6 @@ const {
 	addTimesheetEntry,
 } = require("./timesheetContoller");
 const EmployeeTADProfileInfo = require("../models/EmployeeTADProfile");
-
-const COMPANIES = {
-	FD: "Fractional Departments Inc.",
-	NW: "The Owners Of Strata Plan NW1378",
-	BUSINESSN_ORG: "BusinessN Corporate",
-};
 
 const getTADUsers = async (req, res) => {
 	try {

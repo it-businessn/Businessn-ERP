@@ -10,7 +10,7 @@ const {
 	calculateTimesheetApprovedHours,
 } = require("./payrollHelper");
 const { findEmployeeGovernmentInfoDetails } = require("./governmentInfoController");
-const { PAYRUN_TYPE, BUSINESSN_ORG } = require("../services/data");
+const { PAYRUN_TYPE, BUSINESSN_ORG, COMPANIES } = require("../services/data");
 const { addSeparateSuperficialCheque } = require("./payStubSuperficialCalc");
 const { addSeparateManualCheque } = require("./payStubManualCalc");
 const { addSeparatePayoutCheque } = require("./payStubPayoutCalc");
@@ -515,7 +515,7 @@ const addEmployeePayStubInfo = async (req, res) => {
 		const result = isExtraRun
 			? null
 			: await calculateTimesheetApprovedHours(payPeriodStartDate, payPeriodEndDate, companyName);
-
+		const isCornerStone = companyName === COMPANIES.CORNERSTONE;
 		const fundingTotal = {
 			companyName,
 			payPeriodStartDate,
@@ -532,9 +532,9 @@ const addEmployeePayStubInfo = async (req, res) => {
 			totalEI_Contr: 0,
 			totalGovtContr: 0,
 			totalNetPay: 0,
-			totalBatchCharges: 20,
+			totalBatchCharges: isCornerStone ? 0 : 20,
 			totalEmpPayrollCost: 0,
-			timeClockMaintenanceCost: 5.75,
+			timeClockMaintenanceCost: isCornerStone ? 0 : 5.75,
 			totalTimeManagementEmpCost: 0,
 			totalCorePayrollCost: 0,
 			totalTimeManagementPayrollCost: 0,
@@ -563,7 +563,12 @@ const addEmployeePayStubInfo = async (req, res) => {
 			fundingTotal.totalNetPay += payStubResult?.currentNetPay || 0;
 		}
 
-		await buildFundingTotalsReport(fundingTotal, activeEmployees?.length, isExtraRun);
+		await buildFundingTotalsReport(
+			fundingTotal,
+			activeEmployees?.length,
+			isExtraRun,
+			isCornerStone,
+		);
 		// generateT4Slip(companyName, payPeriod);
 		//if payroll processed successful
 		//alerts violation generate independently based on emp data, on process payroll will run again to check alerts or violations.
@@ -573,7 +578,12 @@ const addEmployeePayStubInfo = async (req, res) => {
 	}
 };
 
-const buildFundingTotalsReport = async (fundingTotal, totalEmployees, isExtraRun = false) => {
+const buildFundingTotalsReport = async (
+	fundingTotal,
+	totalEmployees,
+	isExtraRun = false,
+	isCornerStone,
+) => {
 	fundingTotal.totalCPP_Contr =
 		fundingTotal?.totalCPP_EE_Contr + fundingTotal?.totalCPP_ER_Contr || 0;
 	fundingTotal.totalEI_Contr = fundingTotal?.totalEI_EE_Contr + fundingTotal?.totalEI_ER_Contr || 0;
@@ -584,8 +594,8 @@ const buildFundingTotalsReport = async (fundingTotal, totalEmployees, isExtraRun
 
 	fundingTotal.totalEmpPaymentRemitCost = fundingTotal.totalNetPay || 0;
 
-	fundingTotal.totalEmpPayrollCost = totalEmployees * 2;
-	fundingTotal.totalTimeManagementEmpCost = totalEmployees * 1.75;
+	fundingTotal.totalEmpPayrollCost = isCornerStone ? 0 : totalEmployees * 2;
+	fundingTotal.totalTimeManagementEmpCost = isCornerStone ? 0 : totalEmployees * 1.75;
 
 	fundingTotal.totalCorePayrollCost =
 		fundingTotal.totalBatchCharges + fundingTotal.totalEmpPayrollCost || 0;

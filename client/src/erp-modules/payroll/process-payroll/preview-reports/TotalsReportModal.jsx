@@ -3,6 +3,7 @@ import Loader from "components/Loader";
 import ModalLayout from "components/ui/modal/ModalLayout";
 import NormalTextTitle from "components/ui/NormalTextTitle";
 import TextTitle from "components/ui/text/TextTitle";
+import { COMPANIES } from "constant";
 
 const TotalsReportModal = ({
 	isOpen,
@@ -10,7 +11,9 @@ const TotalsReportModal = ({
 	reportData,
 	size = "5xl",
 	title = "Funding Totals Report",
+	company,
 }) => {
+	const isCornerStone = company === COMPANIES.CORNERSTONE;
 	const totalIncomeTaxContr = reportData?.totalIncomeTaxContr?.toFixed(2);
 	const totalCPP_EE_Contr = reportData?.totalCPP_EE_Contr?.toFixed(2);
 	const totalCPP_ER_Contr = reportData?.totalCPP_ER_Contr?.toFixed(2);
@@ -125,22 +128,26 @@ const TotalsReportModal = ({
 							<NormalTextTitle align="right" title={totalCorePayrollCost} fontStyle="italic" />
 						</HStack>
 
-						<HStack mt={5}>
-							<NormalTextTitle title="Time Clock Device Maintenance" />
-							<NormalTextTitle align="right" title={timeClockMaintenanceCost} />
-						</HStack>
-						<HStack borderBottom="1px solid var(--main_color_black)">
-							<NormalTextTitle title="Time Management" />
-							<NormalTextTitle align="right" title={totalTimeManagementEmpCost} />
-						</HStack>
-						<HStack borderBottom="1px solid var(--main_color_black)">
-							<NormalTextTitle title="Total Time Management" fontStyle="italic" />
-							<NormalTextTitle
-								align="right"
-								title={totalTimeManagementPayrollCost}
-								fontStyle="italic"
-							/>
-						</HStack>
+						{!isCornerStone && (
+							<>
+								<HStack mt={5}>
+									<NormalTextTitle title="Time Clock Device Maintenance" />
+									<NormalTextTitle align="right" title={timeClockMaintenanceCost} />
+								</HStack>
+								<HStack borderBottom="1px solid var(--main_color_black)">
+									<NormalTextTitle title="Time Management" />
+									<NormalTextTitle align="right" title={totalTimeManagementEmpCost} />
+								</HStack>
+								<HStack borderBottom="1px solid var(--main_color_black)">
+									<NormalTextTitle title="Total Time Management" fontStyle="italic" />
+									<NormalTextTitle
+										align="right"
+										title={totalTimeManagementPayrollCost}
+										fontStyle="italic"
+									/>
+								</HStack>
+							</>
+						)}
 					</Stack>
 
 					<Stack mt={5} size="xs" spacing={2}>

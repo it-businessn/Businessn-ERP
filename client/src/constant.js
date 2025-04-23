@@ -18,6 +18,7 @@ export const COMPANIES = {
 	FD: "Fractional Departments Inc.",
 	NW: "The Owners Of Strata Plan NW1378",
 	BUSINESSN_ORG: "BusinessN Corporate",
+	CORNERSTONE: "Cornerstone Maintenance Group Ltd.",
 };
 
 export const CONTRIBUTION = {
