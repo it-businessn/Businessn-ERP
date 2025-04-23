@@ -23,14 +23,14 @@ const getAllEmploymentInfo = async (req, res) => {
 
 		const aggregatedResult = [];
 		for (const employee of activeEmployees) {
-			const result = await buildPayPeriodEmpDetails(companyName, employee?.empId?._id, true);
+			const result = await buildPayPeriodEmpDetails(companyName, employee?.empId?._id);
 			if (result) aggregatedResult.push(result);
 		}
 		aggregatedResult.map((empInfo) => {
+			const position = empInfo?.empPayStubResult?.positions?.find((_) => _.title);
 			empInfo._id = empInfo?.empPayStubResult?._id;
 			empInfo.empId = empInfo?.empPayStubResult?.empId;
-			empInfo.employmentCostCenter =
-				empInfo?.empPayStubResult?.positions?.[0]?.employmentDepartment;
+			empInfo.employmentCostCenter = position?.employmentDepartment;
 		});
 
 		res.status(200).json(aggregatedResult);
@@ -53,21 +53,24 @@ const findEmpPayInfo = async (companyName) =>
 		companyName,
 	}).select("empId roles");
 
-const buildPayPeriodEmpDetails = async (companyName, employeeId, hideDetails) => {
-	const empPayStubResult = hideDetails
-		? await EmployeeEmploymentInfo.findOne({
-				empId: employeeId,
-		  })
-				.populate({
-					path: "empId",
-					model: "Employee",
-					select: ["fullName"],
-				})
-				.select("empId positions employeeNo")
-		: await findEmpEmploymentInfo(employeeId);
+const buildPayPeriodEmpDetails = async (companyName, employeeId) => {
+	const empPayStubResult = await EmployeeEmploymentInfo.findOne({
+		companyName,
+		empId: employeeId,
+		positions: { $exists: true, $not: { $size: 0 } },
+	})
+		.populate({
+			path: "empId",
+			model: "Employee",
+			select: ["fullName"],
+		})
+		.select("empId positions employeeNo");
 
-	const payInfoResult = await findEmpPayInfo(companyName);
-	const payInfoMapResult = new Map(payInfoResult.map((payInfo) => [payInfo.empId, payInfo?.roles]));
+	const payInfoMapResult = await EmployeePayInfo.findOne({
+		companyName,
+		empId: employeeId,
+		roles: { $exists: true, $not: { $size: 0 } },
+	}).select("empId roles");
 	if (empPayStubResult) return { empPayStubResult, payInfoMapResult };
 };
 

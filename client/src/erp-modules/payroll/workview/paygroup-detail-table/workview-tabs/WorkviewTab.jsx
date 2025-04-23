@@ -95,7 +95,7 @@ const WorkviewTab = ({
 										col?.isPayRate ? (
 											<NormalTextTitle
 												align="end"
-												title={getAmount(row?.empPayStubResult?.positions?.[col.pair]?.payRate)}
+												title={getAmount(row?.payInfoMapResult?.roles?.[col.pair]?.payRate)}
 											/>
 										) : TOTAL_AMT_HRS_COLS.includes(col.pair) ? (
 											<TextTitle title={getAmount(row[col.pair])} />
