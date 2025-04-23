@@ -21,6 +21,24 @@ const {
 	addOvertimeRecord,
 	addTimesheetEntry,
 } = require("./timesheetContoller");
+const EmployeeTADProfileInfo = require("../models/EmployeeTADProfile");
+
+const COMPANIES = {
+	FD: "Fractional Departments Inc.",
+	NW: "The Owners Of Strata Plan NW1378",
+	BUSINESSN_ORG: "BusinessN Corporate",
+};
+
+const getTADUsers = async (req, res) => {
+	try {
+		const result = await EmployeeTADProfileInfo.find({
+			companyName: COMPANIES.NW,
+		}).select("companyName firstName middleName lastName cardNum timeManagementBadgeID createdOn");
+		res.status(200).json(result);
+	} catch (error) {
+		res.status(404).json({ error: error.message });
+	}
+};
 
 const getTimecard = async (req, res) => {
 	const { companyName, filter } = req.params;
@@ -404,4 +422,5 @@ module.exports = {
 	getTimecard,
 	createTimecard,
 	createTimecardManual,
+	getTADUsers,
 };

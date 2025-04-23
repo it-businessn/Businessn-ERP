@@ -177,11 +177,6 @@ mongoose.connect(MONGO_URI, {
 
 const db = mongoose.connection;
 
-// const COMPANIES = {
-// 	FD: "Fractional Departments Inc.",
-// 	NW: "The Owners Of Strata Plan NW1378",
-// };
-
 // Scheduler
 cron.schedule("0 0 * * *", async () => {
 	// every 15sec

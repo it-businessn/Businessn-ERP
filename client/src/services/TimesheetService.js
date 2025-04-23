@@ -9,6 +9,10 @@ const TimesheetService = {
 		return apiService.get(`/timecard/${companyName}/filter=${JSON.stringify(filter)}`, queryParams);
 	},
 
+	async getTimecardTADUsers() {
+		return apiService.get(`/timecard/tad-users`);
+	},
+
 	async getFilteredTimesheets(company, filter, queryParams, params, signal) {
 		return apiService.get(
 			`/timesheet/filtered/${company}/filter=${JSON.stringify(filter)}`,

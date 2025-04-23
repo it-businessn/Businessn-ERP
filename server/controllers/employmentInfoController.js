@@ -5,6 +5,8 @@ const EmployeePayInfo = require("../models/EmployeePayInfo");
 const { setInitialPermissions } = require("./appController");
 const { fetchActiveEmployees } = require("./userController");
 const { updatePayInfo } = require("./payInfoController");
+const EmployeeProfileInfo = require("../models/EmployeeProfileInfo");
+const EmployeeTADProfileInfo = require("../models/EmployeeTADProfile");
 
 const getAllEmploymentInfo = async (req, res) => {
 	const { companyName, startDate, endDate, payDate, isExtraRun, groupId, deptName } = req.params;
@@ -117,6 +119,34 @@ const updateEmployee = async (empId, data) => {
 	await employee.save();
 };
 
+const updateTADEmployee = async (empId, companyName, positionData) => {
+	const empProfileInfo = await EmployeeProfileInfo.findOne({
+		empId,
+		companyName,
+	}).select("firstName middleName lastName");
+
+	const { firstName, middleName, lastName } = empProfileInfo;
+	const { cardNum, timeManagementBadgeID } = positionData;
+
+	const tadUserExists = await EmployeeTADProfileInfo.findOne({ empId });
+	if (tadUserExists) {
+		tadUserExists.cardNum = cardNum;
+		tadUserExists.timeManagementBadgeID = timeManagementBadgeID;
+		return await tadUserExists.save();
+	}
+	if ((!tadUserExists && cardNum, timeManagementBadgeID)) {
+		return await EmployeeTADProfileInfo.create({
+			empId,
+			companyName,
+			firstName,
+			middleName,
+			lastName,
+			cardNum,
+			timeManagementBadgeID,
+		});
+	}
+};
+
 const addEmployeeEmploymentInfo = async (req, res) => {
 	const {
 		empId,
@@ -136,22 +166,18 @@ const addEmployeeEmploymentInfo = async (req, res) => {
 			employeeNo,
 			employmentRole,
 		};
-		let roles = [...positions];
-		roles.map((_) => {
-			_.typeOfEarning = "Hourly";
-			_.fullTimeStandardHours = 0;
-			_.partTimeStandardHours = 0;
-			return _;
-		});
-		const existingPayInfo = await EmployeePayInfo.findOne({ empId, companyName });
-		if (existingPayInfo) {
-			const updatedPayInfo = await updatePayInfo(existingPayInfo._id, { roles });
-		} else {
-			const newPayInfo = await EmployeePayInfo.create({
-				empId,
-				companyName,
-				roles,
-			});
+		if (positions?.length) {
+			const roles = [...positions];
+			const existingPayInfo = await EmployeePayInfo.findOne({ empId, companyName });
+			if (existingPayInfo) {
+				await updatePayInfo(existingPayInfo._id, { roles });
+			} else {
+				await EmployeePayInfo.create({
+					empId,
+					companyName,
+					roles,
+				});
+			}
 		}
 		const existingEmploymentInfo = await findEmployeeEmploymentInfo(empId, companyName);
 		if (existingEmploymentInfo) {
@@ -166,7 +192,13 @@ const addEmployeeEmploymentInfo = async (req, res) => {
 				employmentRegion,
 			});
 			await updateEmployee(existingEmploymentInfo.empId, data);
-			await setInitialPermissions(existingEmploymentInfo.empId, employmentRole, companyName);
+			await updateTADEmployee(existingEmploymentInfo.empId, companyName, positions[0]);
+			if (
+				employmentRole !== existingEmploymentInfo?.employmentRole &&
+				companyName !== existingEmploymentInfo?.companyName
+			) {
+				await setInitialPermissions(existingEmploymentInfo.empId, employmentRole, companyName);
+			}
 			return res.status(201).json(updatedEmploymentInfo);
 		}
 		const newEmploymentInfo = await EmployeeEmploymentInfo.create({
@@ -182,6 +214,7 @@ const addEmployeeEmploymentInfo = async (req, res) => {
 			employmentRegion,
 		});
 		await updateEmployee(empId, data);
+		await updateTADEmployee(empId, companyName, positions[0]);
 		await setInitialPermissions(empId, employmentRole, companyName);
 		return res.status(201).json(newEmploymentInfo);
 	} catch (error) {

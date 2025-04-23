@@ -20,6 +20,8 @@ const Timecard = ({ company, timecardRefresh, filter, pageNum, setPageNum }) => 
 					page: pageNum,
 					limit,
 				});
+				// const tadData = await TimesheetService.getTimecardTADUsers();
+				// console.log(JSON.stringify(tadData));
 				const { totalPages, page, items } = data;
 				setTimeRecords(items);
 				setTotalPages(totalPages > 0 ? totalPages : 1);

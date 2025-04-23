@@ -3,7 +3,6 @@ import { Button, FormLabel, HStack, Stack } from "@chakra-ui/react";
 import PrimaryButton from "components/ui/button/PrimaryButton";
 import InputFormControl from "components/ui/form/InputFormControl";
 import SelectFormControl from "components/ui/form/SelectFormControl";
-import NormalTextTitle from "components/ui/NormalTextTitle";
 import TextTitle from "components/ui/text/TextTitle";
 import { COMPANIES } from "constant";
 import { useEffect, useState } from "react";
@@ -27,6 +26,7 @@ const PositionInfo = ({
 		employmentCostCenter: "",
 		employmentDepartment: "",
 		timeManagementBadgeID: "",
+		cardNum: "",
 		positions: [],
 	};
 
@@ -62,6 +62,11 @@ const PositionInfo = ({
 		}
 	}, [roleInfo.employmentCostCenter, department]);
 
+	const handleChange = (e) => {
+		const { name, value } = e.target;
+		setRoleInfo((prevData) => ({ ...prevData, [name]: value }));
+	};
+
 	return (
 		<Stack>
 			<Stack>
@@ -74,33 +79,35 @@ const PositionInfo = ({
 							name="title"
 							placeholder="Enter title"
 							valueText={roleInfo.title}
-							handleChange={(e) => {
-								setRoleInfo((prev) => ({
-									...prev,
-									title: e.target.value,
-								}));
-							}}
+							handleChange={handleChange}
 						/>
 
-						{isOpen ? (
+						{/* {isOpen ? ( */}
+						<>
 							<InputFormControl
 								label="Time Management Badge ID"
 								name="timeManagementBadgeID"
 								placeholder="Enter new Badge ID"
 								valueText={roleInfo.timeManagementBadgeID}
-								handleChange={(e) => {
-									setRoleInfo((prev) => ({
-										...prev,
-										timeManagementBadgeID: e.target.value,
-									}));
-								}}
+								handleChange={handleChange}
+								type="number"
 							/>
-						) : (
-							<>
-								<FormLabel>Linked Time Management Badge ID</FormLabel>
-								<NormalTextTitle title={roleInfo.timeManagementBadgeID || "NA"} />
-							</>
-						)}
+							<InputFormControl
+								label="Employee Card Number"
+								name="cardNum"
+								placeholder="Enter Card Number"
+								valueText={roleInfo.cardNum}
+								handleChange={handleChange}
+							/>
+						</>
+						{/* // ) : (
+						// 	<Stack>
+						// 		<FormLabel>Linked Time Management Badge ID</FormLabel>
+						// 		<NormalTextTitle title={roleInfo.timeManagementBadgeID || "NA"} />
+						// 		<FormLabel>Employee Card Number</FormLabel>
+						// 		<NormalTextTitle title={roleInfo.cardNum || "NA"} />
+						// 	</Stack>
+						// )} */}
 					</Stack>
 					<Stack>
 						<SelectFormControl
@@ -109,12 +116,7 @@ const PositionInfo = ({
 							name="employmentPayGroup"
 							label="Pay Group"
 							valueText={roleInfo.employmentPayGroup || ""}
-							handleChange={(e) =>
-								setRoleInfo((prevData) => ({
-									...prevData,
-									employmentPayGroup: e.target.value,
-								}))
-							}
+							handleChange={handleChange}
 							options={payGroups}
 							placeholder="Select Pay Group"
 						/>
@@ -125,12 +127,7 @@ const PositionInfo = ({
 							name="employmentCostCenter"
 							label="Cost Center"
 							valueText={roleInfo.employmentCostCenter || ""}
-							handleChange={(e) =>
-								setRoleInfo((prevData) => ({
-									...prevData,
-									employmentCostCenter: e.target.value,
-								}))
-							}
+							handleChange={handleChange}
 							options={costCentres}
 							placeholder="Select Cost Center"
 						/>
@@ -140,12 +137,7 @@ const PositionInfo = ({
 							name="employmentDepartment"
 							label="Department"
 							valueText={roleInfo.employmentDepartment || ""}
-							handleChange={(e) =>
-								setRoleInfo((prevData) => ({
-									...prevData,
-									employmentDepartment: e.target.value,
-								}))
-							}
+							handleChange={handleChange}
 							options={filteredDept}
 							placeholder="Select Department"
 						/>
@@ -173,13 +165,13 @@ const PositionInfo = ({
 					w="100px"
 					size="xs"
 					name="Save"
+					isDisabled={
+						!roleInfo.employmentCostCenter ||
+						!roleInfo.employmentPayGroup ||
+						!roleInfo.employmentDepartment
+					}
 					onOpen={() => {
-						if (
-							roleInfo.title &&
-							roleInfo.employmentCostCenter &&
-							roleInfo.employmentPayGroup &&
-							roleInfo.employmentDepartment
-						) {
+						if (roleInfo.title) {
 							handleSubmit(roleInfo);
 						}
 					}}
