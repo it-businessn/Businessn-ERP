@@ -138,6 +138,34 @@ const getCompanyUsers = async (req, res) => {
 	}
 };
 
+const getCompanyEmpEmployees = async (req, res) => {
+	const { companyName } = req.params;
+	try {
+		console.log("companyName=", companyName);
+		let result = await EmployeeEmploymentInfo.find({
+			companyName,
+			empId: { $exists: true },
+		})
+			.populate({
+				path: "empId",
+				model: "Employee",
+				select: ["fullName", "email"],
+			})
+			.select("employmentRole");
+
+		result = result
+			?.filter((emp) => emp?.employmentRole !== ROLES.SHADOW_ADMIN)
+			?.sort((a, b) => {
+				if (a.empId?.fullName < b.empId?.fullName) return -1;
+				if (a.empId?.fullName > b.empId?.fullName) return 1;
+				return a.createdOn - b.createdOn;
+			});
+		res.status(200).json(result);
+	} catch (error) {
+		res.status(404).json({ error: error.message });
+	}
+};
+
 const getCompanyEmployees = async (req, res) => {
 	const { companyName, deptName } = req.params;
 	try {
@@ -471,4 +499,5 @@ module.exports = {
 	createMasterUser,
 	updateMasterUser,
 	getCompanyUsers,
+	getCompanyEmpEmployees,
 };

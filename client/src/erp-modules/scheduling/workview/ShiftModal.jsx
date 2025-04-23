@@ -1,17 +1,17 @@
-import { Checkbox, HStack, Tooltip, useDisclosure, VStack } from "@chakra-ui/react";
+import { Checkbox, HStack, Select, Tooltip, useDisclosure, VStack } from "@chakra-ui/react";
+import FormControlMain from "components/ui/form";
 import ActionButtonGroup from "components/ui/form/ActionButtonGroup";
 import DateTimeFormControl from "components/ui/form/DateTimeFormControl";
 import InputFormControl from "components/ui/form/InputFormControl";
+import RequiredLabel from "components/ui/form/RequiredLabel";
 import SelectFormControl from "components/ui/form/SelectFormControl";
 import ModalLayout from "components/ui/modal/ModalLayout";
 import TextTitle from "components/ui/text/TextTitle";
 import { ROLES } from "constant";
-import useRoles from "hooks/useRoles";
 import moment from "moment";
 import { useEffect, useState } from "react";
 import { FaPlus } from "react-icons/fa";
 import SchedulerService from "services/SchedulerService";
-import UserService from "services/UserService";
 import AddNewShiftLocation from "./AddNewShiftLocation";
 import AddNewShiftRole from "./AddNewShiftRole";
 
@@ -22,9 +22,10 @@ const ShiftModal = ({
 	setShowModal,
 	showModal,
 	setIsRefresh,
-	refresh,
 	setNewShiftAdded,
 	locations,
+	employees,
+	roles,
 }) => {
 	const { onClose } = useDisclosure();
 
@@ -32,30 +33,11 @@ const ShiftModal = ({
 		onClose();
 		setShowModal(false);
 	};
-	const [employees, setEmployees] = useState(null);
 	const [showAddNewRole, setShowAddNewRole] = useState(false);
 	const [showAddNewLocation, setShowAddNewLocation] = useState(false);
-	const roles = useRoles(company, refresh);
-
-	useEffect(() => {
-		const fetchAllEmployees = async () => {
-			try {
-				const { data } = await UserService.getAllCompanyUsers(company, null);
-				data.map((emp) => {
-					emp.fullName = emp?.empId?.fullName;
-					emp._id = emp?.empId?._id;
-					return emp;
-				});
-				setEmployees(data);
-			} catch (error) {
-				console.error(error);
-			}
-		};
-		fetchAllEmployees();
-	}, []);
 
 	const defaultShiftInfo = {
-		empName: empName || "",
+		employeeName: empName || "",
 		role: empRole || "",
 		location: "",
 		notes: "",
@@ -84,7 +66,7 @@ const ShiftModal = ({
 			...prev,
 			shiftDuration: `${hours}h ${minutes}m`,
 		}));
-	}, [formData?.shiftEnd]);
+	}, [formData?.shiftStart, formData?.shiftEnd]);
 
 	const handleChange = (e) => {
 		const { name, value, type, checked } = e.target;
@@ -103,20 +85,26 @@ const ShiftModal = ({
 	return (
 		<ModalLayout title="Add New Shift" size="lg" isOpen={showModal} onClose={handleClose}>
 			<VStack alignItems="flex-start">
-				<SelectFormControl
-					valueParam="fullName"
-					name="fullName"
-					label="Employee Name"
-					valueText={formData.empName || ""}
-					handleChange={(e) =>
-						setFormData((prevData) => ({
-							...prevData,
-							empName: e.target.value,
-						}))
-					}
-					options={employees}
-					placeholder="Select Employee"
-				/>
+				<FormControlMain>
+					<RequiredLabel label="Employee Name" />
+					<Select
+						name="fullName"
+						value={formData.employeeName}
+						onChange={(e) =>
+							setFormData((prevData) => ({
+								...prevData,
+								employeeName: e.target.value,
+							}))
+						}
+						placeholder="Select Employee"
+					>
+						{employees?.map((_) => (
+							<option key={_?._id} value={_.fullName}>
+								{_.fullName}
+							</option>
+						))}
+					</Select>
+				</FormControlMain>
 				<HStack w="100%" justify={"space-between"}>
 					<SelectFormControl
 						valueParam="name"
@@ -199,7 +187,7 @@ const ShiftModal = ({
 						}}
 					/>
 				</HStack>
-				{formData.shiftEnd && (
+				{formData.shiftDuration && (
 					<TextTitle size="sm" title={`Shift duration: ${formData.shiftDuration}`} />
 				)}
 				<Checkbox

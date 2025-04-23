@@ -2,6 +2,7 @@ import { Avatar, Button, HStack, Icon, SimpleGrid, VStack } from "@chakra-ui/rea
 import BoxCard from "components/ui/card";
 import TextTitle from "components/ui/text/TextTitle";
 import useCompany from "hooks/useCompany";
+import useRoles from "hooks/useRoles";
 import useWorkLocations from "hooks/useWorkLocations";
 import PageLayout from "layouts/PageLayout";
 import { useEffect, useState } from "react";
@@ -22,8 +23,28 @@ const ScheduleWorkView = () => {
 	const [refresh, setRefresh] = useState(null);
 	const [showAddShiftModal, setShowAddShiftModal] = useState(false);
 	const [empName, setEmpName] = useState(null);
+	const [selectedEmp, setSelectedEmp] = useState(null);
 	const [empRole, setEmpRole] = useState(null);
 	const locations = useWorkLocations(company, refresh);
+	const [employeesList, setEmployeesList] = useState(null);
+	const roles = useRoles(company, refresh);
+
+	useEffect(() => {
+		const fetchAllEmployees = async () => {
+			try {
+				const { data } = await UserService.getAllEmpCompanyUsers(company);
+				data.map((emp) => {
+					emp.fullName = emp?.empId?.fullName;
+					emp._id = emp?.empId?._id;
+					return emp;
+				});
+				setEmployeesList(data);
+			} catch (error) {
+				console.error(error);
+			}
+		};
+		fetchAllEmployees();
+	}, []);
 
 	useEffect(() => {
 		const fetchAllEmployeeByRole = async () => {
@@ -82,7 +103,7 @@ const ScheduleWorkView = () => {
 										>
 											<Avatar size={"xs"} name={name} />
 											<Button
-												onClick={() => setEmpName(name)}
+												onClick={() => setSelectedEmp(name)}
 												variant="ghost"
 												size="xs"
 												color={"var(--bg_color_1)"}
@@ -106,7 +127,7 @@ const ScheduleWorkView = () => {
 						newShiftAdded={newShiftAdded}
 						setRefresh={setRefresh}
 						locations={locations}
-						empName={empName}
+						empName={selectedEmp}
 					/>
 				</SimpleGrid>
 			) : (
@@ -115,18 +136,19 @@ const ScheduleWorkView = () => {
 					setRefresh={setRefresh}
 					locations={locations}
 					newShiftAdded={newShiftAdded}
-					empName={empName}
+					empName={selectedEmp}
 				/>
 			)}
 			{showAddShiftModal && (
 				<ShiftModal
+					roles={roles}
+					employees={employeesList}
 					locations={locations}
 					company={company}
 					showModal={showAddShiftModal}
 					setShowModal={setShowAddShiftModal}
 					setIsRefresh={setRefresh}
 					setNewShiftAdded={setNewShiftAdded}
-					refresh={refresh}
 					empName={empName}
 					empRole={empRole}
 				/>

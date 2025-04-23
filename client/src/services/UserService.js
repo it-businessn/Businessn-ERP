@@ -45,6 +45,10 @@ const UserService = {
 		return apiService.get(`/user/all/${id}`);
 	},
 
+	async getAllEmpCompanyUsers(id) {
+		return apiService.get(`/user/emp/${id}`);
+	},
+
 	async getAllCompanyUsers(id, deptName) {
 		return apiService.get(`/user/${id}/${deptName}`);
 	},

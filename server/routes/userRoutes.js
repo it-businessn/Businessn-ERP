@@ -17,6 +17,8 @@ router.get("/comp-managers/:companyName", userController.getAllCompManagers);
 
 router.get("/managers/:companyName", userController.getAllManagers);
 
+router.get("/emp/:companyName", userController.getCompanyEmpEmployees);
+
 router.get("/groups/:memberId/:companyName", userController.getAllGroupMembers);
 
 router.get(
