@@ -47,7 +47,7 @@ const SchedulingCalendar = ({ newShiftAdded, setRefresh, company }) => {
 			try {
 				setIsLoading(true);
 				const { data } = await SchedulerService.getWorkShiftsByDate({
-					date: moment(),
+					date: currentDate,
 					company,
 				});
 				const groupMap = new Map();
@@ -68,16 +68,15 @@ const SchedulingCalendar = ({ newShiftAdded, setRefresh, company }) => {
 					const start_time = moment(`${dateStr}T${shift.shiftStart}:00`);
 					const end_time = moment(`${dateStr}T${shift.shiftEnd}:00`);
 
-					return {
-						id: `${shift.empName}-${index}`,
-						group: shift.empName,
-						title: shift.empName,
-						start_time,
-						end_time,
-						canResize: false,
-						color: getRoleColor(shift.role),
-						duration: end_time.diff(start_time, "hours", true),
-					};
+					shift.id = `${shift.empName}-${index}`;
+					shift.group = shift.empName;
+					shift.title = shift.empName;
+					shift.start_time = start_time;
+					shift.end_time = end_time;
+					shift.canResize = false;
+					shift.color = getRoleColor(shift.role);
+					shift.duration = end_time.diff(start_time, "hours", true);
+					return shift;
 				});
 				setItems(mappedItems);
 				setIsLoading(false);
