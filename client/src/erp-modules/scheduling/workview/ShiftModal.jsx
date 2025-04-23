@@ -4,8 +4,10 @@ import DateTimeFormControl from "components/ui/form/DateTimeFormControl";
 import InputFormControl from "components/ui/form/InputFormControl";
 import SelectFormControl from "components/ui/form/SelectFormControl";
 import ModalLayout from "components/ui/modal/ModalLayout";
+import TextTitle from "components/ui/text/TextTitle";
 import { ROLES } from "constant";
 import useRoles from "hooks/useRoles";
+import moment from "moment";
 import { useEffect, useState } from "react";
 import { FaPlus } from "react-icons/fa";
 import SchedulerService from "services/SchedulerService";
@@ -60,12 +62,28 @@ const ShiftModal = ({
 		shiftDate: null,
 		shiftStart: null,
 		shiftEnd: null,
+		shiftDuration: null,
 		repeatSchedule: false,
 		duration: "1 week",
 		companyName: company,
 	};
 
 	const [formData, setFormData] = useState(defaultShiftInfo);
+	useEffect(() => {
+		if (!(formData.shiftStart && formData?.shiftEnd)) {
+			return;
+		}
+		const start = moment(formData.shiftStart, "HH:mm");
+		const end = moment(formData.shiftEnd, "HH:mm");
+		const duration = moment.duration(end.diff(start));
+		const hours = Math.floor(duration.asHours());
+		const minutes = duration.minutes();
+
+		setFormData((prev) => ({
+			...prev,
+			shiftDuration: `${hours}h ${minutes}m`,
+		}));
+	}, [formData?.shiftEnd]);
 
 	const handleChange = (e) => {
 		const { name, value, type, checked } = e.target;
@@ -180,6 +198,9 @@ const ShiftModal = ({
 						}}
 					/>
 				</HStack>
+				{formData.shiftEnd && (
+					<TextTitle size="sm" title={`Shift duration: ${formData.shiftDuration}`} />
+				)}
 				<Checkbox
 					colorScheme="facebook"
 					name="repeatSchedule"

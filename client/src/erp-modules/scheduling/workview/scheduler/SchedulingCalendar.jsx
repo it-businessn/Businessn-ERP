@@ -6,6 +6,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { CiCalendar } from "react-icons/ci";
 // import { FaChevronDown } from "react-icons/fa";
+import SkeletonLoader from "components/SkeletonLoader";
 import NormalTextTitle from "components/ui/NormalTextTitle";
 import moment from "moment";
 import { MdOutlineChevronLeft, MdOutlineChevronRight } from "react-icons/md";
@@ -37,12 +38,14 @@ const SchedulingCalendar = ({ newShiftAdded, setRefresh, company }) => {
 	const [selectedDate, setSelectedDate] = useState(new Date());
 	const isToday = isSameAsToday(currentDate);
 
+	const [isLoading, setIsLoading] = useState(false);
 	const [groups, setGroups] = useState([]);
 	const [items, setItems] = useState([]);
 
 	useEffect(() => {
 		const fetchShifts = async () => {
 			try {
+				setIsLoading(true);
 				const { data } = await SchedulerService.getWorkShiftsByDate({
 					date: moment(),
 					company,
@@ -77,6 +80,7 @@ const SchedulingCalendar = ({ newShiftAdded, setRefresh, company }) => {
 					};
 				});
 				setItems(mappedItems);
+				setIsLoading(false);
 			} catch (error) {
 				console.error(error);
 			}
@@ -155,7 +159,8 @@ const SchedulingCalendar = ({ newShiftAdded, setRefresh, company }) => {
 					</Text>
 				</Text>
 			</HStack>
-			{groups?.length && (
+			{isLoading && <SkeletonLoader />}
+			{!isLoading && groups?.length ? (
 				<Timeline
 					style={{
 						zIndex: 0,
@@ -216,6 +221,8 @@ const SchedulingCalendar = ({ newShiftAdded, setRefresh, company }) => {
 						</CustomHeader>
 					</TimelineHeaders>
 				</Timeline>
+			) : (
+				<NormalTextTitle p="0 1em" width="15%" size="sm" title="No shifts found" />
 			)}
 		</Box>
 	);
