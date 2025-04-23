@@ -34,17 +34,28 @@ const getShiftByDate = async (req, res) => {
 };
 
 const getWorkShiftByDate = async (req, res) => {
-	const { date, location, name } = req.params;
+	const { date, location, name, empName } = req.params;
 
 	try {
-		const shifts = await WorkShift.find({
-			companyName: name,
-			location,
-			shiftDate: {
-				$gte: moment.utc(date).startOf("day").toDate(),
-				$lte: moment.utc(date).endOf("day").toDate(),
-			},
-		});
+		const shifts =
+			empName === "null"
+				? await WorkShift.find({
+						companyName: name,
+						location,
+						shiftDate: {
+							$gte: moment.utc(date).startOf("day").toDate(),
+							$lte: moment.utc(date).endOf("day").toDate(),
+						},
+				  })
+				: await WorkShift.find({
+						companyName: name,
+						location,
+						shiftDate: {
+							$gte: moment.utc(date).startOf("day").toDate(),
+							$lte: moment.utc(date).endOf("day").toDate(),
+						},
+						empName,
+				  });
 		res.status(200).json(shifts);
 	} catch (error) {
 		res.status(404).json({ error: error.message });

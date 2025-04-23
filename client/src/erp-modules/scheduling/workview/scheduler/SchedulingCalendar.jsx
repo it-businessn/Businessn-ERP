@@ -17,7 +17,7 @@ import Group from "./Group";
 import ItemsRow from "./ItemsRow";
 import "./Scheduler.css";
 
-const SchedulingCalendar = ({ newShiftAdded, setRefresh, company, location }) => {
+const SchedulingCalendar = ({ newShiftAdded, setRefresh, company, location, empName }) => {
 	const [currentDate, setCurrentDate] = useState(new Date());
 	currentDate.setHours(6, 0, 0, 0);
 
@@ -50,6 +50,7 @@ const SchedulingCalendar = ({ newShiftAdded, setRefresh, company, location }) =>
 					date: currentDate,
 					location,
 					company,
+					empName,
 				});
 				const groupMap = new Map();
 				data?.forEach(({ _id, empName, role }) => {
@@ -86,7 +87,7 @@ const SchedulingCalendar = ({ newShiftAdded, setRefresh, company, location }) =>
 			}
 		};
 		fetchShifts();
-	}, [currentDate, company, newShiftAdded, location]);
+	}, [currentDate, company, newShiftAdded, location, empName]);
 
 	const groupRenderer = ({ group }) => <Group group={group} />;
 

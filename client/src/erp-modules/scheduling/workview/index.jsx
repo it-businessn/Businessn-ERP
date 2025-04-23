@@ -81,7 +81,12 @@ const ScheduleWorkView = () => {
 											cursor={"pointer"}
 										>
 											<Avatar size={"xs"} name={name} />
-											<Button variant="ghost" size="xs" color={"var(--bg_color_1)"}>
+											<Button
+												onClick={() => setEmpName(name)}
+												variant="ghost"
+												size="xs"
+												color={"var(--bg_color_1)"}
+											>
 												{name}
 											</Button>
 										</HStack>
@@ -101,6 +106,7 @@ const ScheduleWorkView = () => {
 						newShiftAdded={newShiftAdded}
 						setRefresh={setRefresh}
 						locations={locations}
+						empName={empName}
 					/>
 				</SimpleGrid>
 			) : (
@@ -109,6 +115,7 @@ const ScheduleWorkView = () => {
 					setRefresh={setRefresh}
 					locations={locations}
 					newShiftAdded={newShiftAdded}
+					empName={empName}
 				/>
 			)}
 			{showAddShiftModal && (

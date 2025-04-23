@@ -61,7 +61,7 @@ const ShiftModal = ({
 		notes: "",
 		shiftDate: null,
 		shiftStart: null,
-		shiftEnd: null,
+		shiftEnd: "12:00",
 		shiftDuration: null,
 		repeatSchedule: false,
 		duration: "1 week",
@@ -69,6 +69,7 @@ const ShiftModal = ({
 	};
 
 	const [formData, setFormData] = useState(defaultShiftInfo);
+
 	useEffect(() => {
 		if (!(formData.shiftStart && formData?.shiftEnd)) {
 			return;

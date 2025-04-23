@@ -3,7 +3,7 @@ import SelectFormControl from "components/ui/form/SelectFormControl";
 import { useEffect, useState } from "react";
 import SchedulingCalendar from "./SchedulingCalendar";
 
-const Scheduler = ({ newShiftAdded, setRefresh, company, locations }) => {
+const Scheduler = ({ newShiftAdded, setRefresh, company, locations, empName }) => {
 	const [location, setLocation] = useState(null);
 
 	useEffect(() => {
@@ -25,6 +25,7 @@ const Scheduler = ({ newShiftAdded, setRefresh, company, locations }) => {
 				/>
 			)}
 			<SchedulingCalendar
+				empName={empName}
 				location={location}
 				company={company}
 				setRefresh={setRefresh}
