@@ -24,7 +24,12 @@ const Scheduler = ({ newShiftAdded, setRefresh, company, locations }) => {
 					placeholder="Select Location"
 				/>
 			)}
-			<SchedulingCalendar company={company} setRefresh={setRefresh} newShiftAdded={newShiftAdded} />
+			<SchedulingCalendar
+				location={location}
+				company={company}
+				setRefresh={setRefresh}
+				newShiftAdded={newShiftAdded}
+			/>
 		</BoxCard>
 	);
 };

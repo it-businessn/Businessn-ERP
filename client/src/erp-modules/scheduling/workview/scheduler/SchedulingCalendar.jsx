@@ -17,7 +17,7 @@ import Group from "./Group";
 import ItemsRow from "./ItemsRow";
 import "./Scheduler.css";
 
-const SchedulingCalendar = ({ newShiftAdded, setRefresh, company }) => {
+const SchedulingCalendar = ({ newShiftAdded, setRefresh, company, location }) => {
 	const [currentDate, setCurrentDate] = useState(new Date());
 	currentDate.setHours(6, 0, 0, 0);
 
@@ -48,6 +48,7 @@ const SchedulingCalendar = ({ newShiftAdded, setRefresh, company }) => {
 				setIsLoading(true);
 				const { data } = await SchedulerService.getWorkShiftsByDate({
 					date: currentDate,
+					location,
 					company,
 				});
 				const groupMap = new Map();
@@ -85,7 +86,7 @@ const SchedulingCalendar = ({ newShiftAdded, setRefresh, company }) => {
 			}
 		};
 		fetchShifts();
-	}, [currentDate, company, newShiftAdded]);
+	}, [currentDate, company, newShiftAdded, location]);
 
 	const groupRenderer = ({ group }) => <Group group={group} />;
 
@@ -124,6 +125,7 @@ const SchedulingCalendar = ({ newShiftAdded, setRefresh, company }) => {
 				<Text>Schedule</Text>
 				<HStack spacing={0}>
 					<Icon
+						cursor="pointer"
 						as={MdOutlineChevronLeft}
 						onClick={() => handleChangeDate("prev")}
 						boxSize="5"
@@ -131,6 +133,7 @@ const SchedulingCalendar = ({ newShiftAdded, setRefresh, company }) => {
 					/>
 					<NormalTextTitle title={isToday ? "Today" : longFormat(currentDate)} />
 					<Icon
+						cursor="pointer"
 						as={MdOutlineChevronRight}
 						onClick={() => handleChangeDate("next")}
 						boxSize="5"
