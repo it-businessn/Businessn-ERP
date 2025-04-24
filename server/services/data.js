@@ -23,6 +23,13 @@ const BUSINESSN_SHADOW_ADMIN_EMAILS = [
 	// auth admin authadmin@mail.com  authadmin
 ];
 
+const COMPANIES = {
+	FD: "Fractional Departments Inc.",
+	NW: "The Owners Of Strata Plan NW1378",
+	BUSINESSN_ORG: "BusinessN Corporate",
+	CORNERSTONE: "Cornerstone Maintenance Group Ltd.",
+};
+
 const ADMIN_PERMISSION = [
 	{ name: "Sales" },
 	{ name: "Sales Dashboard" },
@@ -273,4 +280,5 @@ module.exports = {
 	TIMESHEET_ORIGIN,
 	ROLES,
 	TICKET_STATUS,
+	COMPANIES,
 };
