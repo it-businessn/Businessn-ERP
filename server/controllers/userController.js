@@ -398,15 +398,23 @@ const updateUser = async (req, res) => {
 
 	try {
 		const compArr = [];
+
 		if (companies?.length) {
 			for (const name of companies) {
 				if (isManager) {
 					const existingCompany = await findCompany("name", name);
 					if (existingCompany) {
 						await setInitialPermissions(userId, role, name);
-						compArr.push(existingCompany._id);
-						existingCompany.employees.push(userId);
+						if (!existingCompany.employees.includes(userId)) {
+							await EmployeeEmploymentInfo.create({
+								empId: userId,
+								companyName: name,
+								employmentRole: role,
+							});
+							existingCompany.employees.push(userId);
+						}
 						await existingCompany.save();
+						compArr.push(existingCompany._id);
 					}
 				}
 			}

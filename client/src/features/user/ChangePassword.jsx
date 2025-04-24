@@ -15,10 +15,12 @@ import {
 import PrimaryButton from "components/ui/button/PrimaryButton";
 import TextTitle from "components/ui/text/TextTitle";
 import { useState } from "react";
+import LocalStorageService from "services/LocalStorageService";
 import PasswordService from "services/PasswordService";
 
-const ChangePassword = ({ setPasswordMode, userData, setUserData, setError, error }) => {
+const ChangePassword = ({ setPasswordMode, setError, error }) => {
 	const [showPassword, setShowPassword] = useState(false);
+	const [userData, setUserData] = useState(LocalStorageService.getItem("user"));
 
 	const [passwordError, setPasswordError] = useState("");
 

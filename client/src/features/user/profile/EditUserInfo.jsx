@@ -17,18 +17,22 @@ import MultiSelectFormControl from "components/ui/form/MultiSelectFormControl";
 import TextTitle from "components/ui/text/TextTitle";
 import useCompanies from "hooks/useCompanies";
 import useDepartment from "hooks/useDepartment";
-import { useSignup } from "hooks/useSignup";
+import useManager from "hooks/useManager";
+import useRoles from "hooks/useRoles";
 import { useEffect, useState } from "react";
+import LocalStorageService from "services/LocalStorageService";
 import UserService from "services/UserService";
 // import { isManager } from "utils";
 
-const EditUserInfo = ({ setEditMode, userData, setUserData, setError, error, company }) => {
+const EditUserInfo = ({ setEditMode, setError, error, company }) => {
 	const departments = useDepartment(company);
+	const [userData, setUserData] = useState(LocalStorageService.getItem("user"));
 
 	const allCompanies = useCompanies();
 	const [companies, setCompanies] = useState(company);
 
-	const { roles, managers } = useSignup();
+	const managers = useManager(company);
+	const roles = useRoles(company);
 	const [openAssigneeMenu, setOpenAssigneeMenu] = useState(false);
 
 	useEffect(() => {
@@ -86,21 +90,21 @@ const EditUserInfo = ({ setEditMode, userData, setUserData, setError, error, com
 					<InputFormControl
 						label={"First Name"}
 						name="firstName"
-						valueText={userData.firstName}
+						valueText={userData.firstName || ""}
 						handleChange={handleChange}
 						placeholder="First Name"
 					/>
 					<InputFormControl
 						label={"Middle Name"}
 						name="middleName"
-						valueText={userData.middleName}
+						valueText={userData.middleName || ""}
 						handleChange={handleChange}
 						placeholder="Middle Name"
 					/>
 					<InputFormControl
 						label={"Last Name"}
 						name="lastName"
-						valueText={userData.lastName}
+						valueText={userData.lastName || ""}
 						handleChange={handleChange}
 						placeholder="Last Name"
 					/>
@@ -109,14 +113,15 @@ const EditUserInfo = ({ setEditMode, userData, setUserData, setError, error, com
 					label={"Email"}
 					name="email"
 					type="email"
-					valueText={userData.email}
+					valueText={userData.email || ""}
 					handleChange={handleChange}
 					placeholder="Email"
 				/>
 				<InputFormControl
 					label={"Phone Number"}
 					name="phoneNumber"
-					valueText={userData.phoneNumber}
+					type="number"
+					valueText={userData.phoneNumber || ""}
 					handleChange={handleChange}
 					placeholder="Phone Number"
 				/>
@@ -126,7 +131,7 @@ const EditUserInfo = ({ setEditMode, userData, setUserData, setError, error, com
 						<Input
 							type="text"
 							name="streetNumber"
-							value={userData?.primaryAddress?.streetNumber}
+							value={userData?.primaryAddress?.streetNumber || ""}
 							onChange={(e) => {
 								setUserData({
 									...userData,
@@ -142,7 +147,7 @@ const EditUserInfo = ({ setEditMode, userData, setUserData, setError, error, com
 						<Input
 							type="text"
 							name="city"
-							value={userData?.primaryAddress?.city}
+							value={userData?.primaryAddress?.city || ""}
 							onChange={(e) => {
 								setUserData({
 									...userData,
@@ -159,7 +164,7 @@ const EditUserInfo = ({ setEditMode, userData, setUserData, setError, error, com
 						<Input
 							type="text"
 							name="state"
-							value={userData?.primaryAddress?.state}
+							value={userData?.primaryAddress?.state || ""}
 							onChange={(e) => {
 								setUserData({
 									...userData,
@@ -174,7 +179,7 @@ const EditUserInfo = ({ setEditMode, userData, setUserData, setError, error, com
 						<Input
 							type="text"
 							name="postalCode"
-							value={userData?.primaryAddress?.postalCode}
+							value={userData?.primaryAddress?.postalCode || ""}
 							onChange={(e) => {
 								setUserData({
 									...userData,
@@ -189,7 +194,7 @@ const EditUserInfo = ({ setEditMode, userData, setUserData, setError, error, com
 						<Input
 							type="text"
 							name="country"
-							value={userData?.primaryAddress?.country}
+							value={userData?.primaryAddress?.country || ""}
 							onChange={(e) => {
 								setUserData({
 									...userData,
@@ -209,7 +214,7 @@ const EditUserInfo = ({ setEditMode, userData, setUserData, setError, error, com
 							<FormLabel>Type of Role</FormLabel>
 							<Select
 								name="role"
-								value={userData?.role}
+								value={userData?.role || ""}
 								bg="var(--main_color)"
 								onChange={handleChange}
 								placeholder="Select role"
@@ -228,7 +233,7 @@ const EditUserInfo = ({ setEditMode, userData, setUserData, setError, error, com
 							<Select
 								bg="var(--main_color)"
 								name="department"
-								value={userData?.department}
+								value={userData?.department || ""}
 								onChange={handleChange}
 								placeholder="Select department"
 							>
@@ -247,7 +252,7 @@ const EditUserInfo = ({ setEditMode, userData, setUserData, setError, error, com
 						<Select
 							bg="var(--main_color)"
 							name="manager"
-							value={userData?.manager}
+							value={userData?.manager || ""}
 							onChange={handleChange}
 							placeholder="Select manager"
 						>

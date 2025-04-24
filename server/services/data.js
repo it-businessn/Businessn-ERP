@@ -142,7 +142,10 @@ const TICKET_STATUS = {
 };
 
 const isRoleManager = (role) =>
-	role?.includes(ROLES.ADMINISTRATOR) || role?.includes(ROLES.MANAGER);
+	role === ROLES.SHADOW_ADMIN ||
+	role === ROLES.AUTH_ADMINISTRATOR ||
+	role === ROLES.ADMINISTRATOR ||
+	role === ROLES.MANAGER;
 
 const NEXT_DAY = moment().add(1, "days");
 const CURRENT_TIME_HHMM = NEXT_DAY.format("HH:mm");

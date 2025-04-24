@@ -14,7 +14,7 @@ import EditUserInfo from "./EditUserInfo";
 
 const UserProfileDetails = () => {
 	const { company } = useCompany(LocalStorageService.getItem("selectedCompany"));
-	const [userData, setUserData] = useState(LocalStorageService.getItem("user"));
+	const userData = LocalStorageService.getItem("user");
 	const { isMobile } = useBreakpointValue();
 	const [editMode, setEditMode] = useState(false);
 
@@ -98,6 +98,8 @@ const UserProfileDetails = () => {
 				borderRadius="10px"
 				border="3px solid var(--main_color)"
 				m="1em"
+				justifyContent="space-between"
+				alignItems="flex-start"
 			>
 				<Card
 					flex={1}
@@ -151,8 +153,6 @@ const UserProfileDetails = () => {
 						<EditUserInfo
 							company={company}
 							setEditMode={setEditMode}
-							userData={userData}
-							setUserData={setUserData}
 							setError={setError}
 							error={error}
 						/>
@@ -168,13 +168,7 @@ const UserProfileDetails = () => {
 								borderColor="gray.200"
 							/>
 						)}
-						<ChangePassword
-							setPasswordMode={setPasswordMode}
-							userData={userData}
-							setUserData={setUserData}
-							setError={setError}
-							error={error}
-						/>
+						<ChangePassword setPasswordMode={setPasswordMode} setError={setError} error={error} />
 					</>
 				)}
 			</HStack>
