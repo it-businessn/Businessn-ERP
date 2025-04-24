@@ -185,6 +185,9 @@ const addEmployeeProfileInfo = async (req, res) => {
 					emergencyPersonalEmail,
 					emergencyPersonalPhoneNum,
 					password,
+					firstName,
+					middleName,
+					lastName,
 				});
 				await updateEmployee(existingProfileInfo?.empId, data);
 				return res.status(201).json(updatedProfileInfo);
@@ -210,12 +213,30 @@ const addEmployeeProfileInfo = async (req, res) => {
 			}
 
 			const newProfileInfo = await EmployeeProfileInfo.create({
+				empId: profileInfoEmpId,
 				companyName,
 				firstName,
 				middleName,
 				lastName,
+				emergencyFirstName,
+				emergencyLastName,
 				birthDate,
-				empId: profileInfoEmpId,
+				SIN: req.body?.SIN || "",
+				maritalStatus,
+				citizenship,
+				workPermitNo,
+				workPermitExpiryNo,
+				personalEmail,
+				personalPhoneNum,
+				businessEmail,
+				businessPhoneNum,
+				emergencyPersonalEmail,
+				emergencyPersonalPhoneNum,
+				streetAddress,
+				city,
+				province,
+				country,
+				postalCode,
 				password,
 			});
 			return res.status(201).json(newProfileInfo);

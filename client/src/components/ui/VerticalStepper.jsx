@@ -38,6 +38,7 @@ const VerticalStepper = ({
 }) => {
 	const handleSubmitClick = () => {
 		if (handleNext) {
+			if (handleSubmit) handleSubmit();
 			handleNext(id);
 		} else {
 			handleClose();
@@ -107,7 +108,7 @@ const VerticalStepper = ({
 					/>
 					<PrimaryButton
 						size={"sm"}
-						isDisabled={!handleNextEnabled && true}
+						isDisabled={isDisabled}
 						name={handleNext ? "Next" : "Submit"}
 						onOpen={handleSubmitClick}
 					/>
