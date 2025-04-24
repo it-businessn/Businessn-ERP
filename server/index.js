@@ -1,4 +1,13 @@
-require("dotenv").config();
+console.log("NODE_ENV", process.env.NODE_ENV);
+
+if(process.env.NODE_ENV === "development") {
+	require("dotenv").config({ path: ".env.local" });
+	console.log("Using .env.local file");
+} else {
+	require("dotenv").config();
+}
+
+
 
 const express = require("express");
 const crypto = require("crypto");
