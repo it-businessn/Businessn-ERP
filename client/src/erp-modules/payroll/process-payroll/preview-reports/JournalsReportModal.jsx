@@ -23,19 +23,19 @@ const JournalsReportModal = ({
 	const JOURNAL_TABLE_ROW_DATA = [
 		// ["", "", "Employee Disbursements", "-6107.89", ""],
 		// ["", "", "Government Remittances", "-3035.56", ""],
-		["", "1001", "Bank", "Funding Withdrawal", "", reportData?.netFundingWithdrawals.toFixed(2)],
+		["", "00000", "Bank", "Funding Withdrawal", "", reportData?.netFundingWithdrawals.toFixed(2)],
 		["", "", "", "Net Payroll Payable", "", ""],
-		["", "2105", "EI Payable", "EI Payable", reportData?.totalEIPayable?.toFixed(2), ""],
-		["", "2106", "CPP Payable", "CPP Payable", reportData?.totalCPPPayable?.toFixed(2), ""],
+		["", "00000", "EI Payable", "EI Payable", reportData?.totalEIPayable?.toFixed(2), ""],
+		["", "00000", "CPP Payable", "CPP Payable", reportData?.totalCPPPayable?.toFixed(2), ""],
 		[
 			"",
-			"2110",
+			"00000",
 			"Income Tax Payable",
 			"Income Tax Payable",
 			reportData?.totalIncomeTaxPayable?.toFixed(2),
 			"",
 		],
-		["", "5321", "Payroll Expense", "Service Charges", "0", ""],
+		["", "00000", "Payroll Expense", "Service Charges", "0", ""],
 	];
 
 	let counter = 10;
@@ -109,7 +109,7 @@ const JournalsReportModal = ({
 										<NormalTextTitle size="sm" title={dept.department} />
 									</Td>
 									<Td>
-										<NormalTextTitle size="sm" title={`${dept.code}${index + 1}`} />
+										<NormalTextTitle size="sm" title="00000" />
 									</Td>
 									<Td>
 										<NormalTextTitle size="sm" title={`${dept.department} Wages`} />
@@ -125,7 +125,7 @@ const JournalsReportModal = ({
 								<Tr>
 									<Td />
 									<Td>
-										<NormalTextTitle size="sm" title={`${dept.code}${index + 2}`} />
+										<NormalTextTitle size="sm" title="00000" />
 									</Td>
 									<Td>
 										<NormalTextTitle size="sm" title={`${dept.department} Benefits`} />
@@ -141,7 +141,7 @@ const JournalsReportModal = ({
 								<Tr>
 									<Td />
 									<Td>
-										<NormalTextTitle size="sm" title={`${dept.code}${index + 3}`} />
+										<NormalTextTitle size="sm" title="00000" />
 									</Td>
 									<Td>
 										<NormalTextTitle size="sm" title={`${dept.department} Benefits`} />
@@ -157,7 +157,7 @@ const JournalsReportModal = ({
 								<Tr>
 									<Td />
 									<Td>
-										<NormalTextTitle size="sm" title={`${dept.code}${index + 4}`} />
+										<NormalTextTitle size="sm" title="00000" />
 									</Td>
 									<Td>
 										<NormalTextTitle size="sm" title={"CPP Payable"} />
@@ -173,7 +173,7 @@ const JournalsReportModal = ({
 								<Tr>
 									<Td />
 									<Td>
-										<NormalTextTitle size="sm" title={`${dept.code}${index + 5}`} />
+										<NormalTextTitle size="sm" title="00000" />
 									</Td>
 									<Td>
 										<NormalTextTitle size="sm" title={"EI Payable"} />
@@ -189,7 +189,7 @@ const JournalsReportModal = ({
 								<Tr>
 									<Td />
 									<Td>
-										<NormalTextTitle size="sm" title={`${dept.code}${index + 6}`} />
+										<NormalTextTitle size="sm" title="00000" />
 									</Td>
 									<Td>
 										<NormalTextTitle size="sm" title={"EI Payable"} />
@@ -205,7 +205,7 @@ const JournalsReportModal = ({
 								<Tr>
 									<Td />
 									<Td>
-										<NormalTextTitle size="sm" title={`${dept.code}${index + 7}`} />
+										<NormalTextTitle size="sm" title="00000" />
 									</Td>
 									<Td>
 										<NormalTextTitle size="sm" title={"CPP Payable"} />
@@ -221,7 +221,7 @@ const JournalsReportModal = ({
 								<Tr>
 									<Td />
 									<Td>
-										<NormalTextTitle size="sm" title={`${dept.code}${index + 8}`} />
+										<NormalTextTitle size="sm" title="00000" />
 									</Td>
 									<Td>
 										<NormalTextTitle size="sm" title={"Income Tax  Payable"} />
