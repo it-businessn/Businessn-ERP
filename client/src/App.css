@@ -1,188 +1,188 @@
 :root {
-	--base: 100vh - 6em;
-	--mobile_base: 100vh - 3.5em;
-	--comms: 100vh - 12em;
-	--custom_height: 100vh - 6.7em;
-	--payroll_bg: #5fa6be;
-	--payroll_card1: linear-gradient(
-		67deg,
-		rgb(29 80 136) 64%,
-		rgb(24, 57, 92) 80%,
-		rgb(29 80 136) 100%
-	);
-	--payroll_card2: linear-gradient(
-		77deg,
-		rgba(29, 103, 148, 1) 30%,
-		rgba(64, 168, 185, 1) 86%,
-		rgba(95, 166, 190, 1) 100%
-	);
-	--payroll_card3: linear-gradient(
-		77deg,
-		rgba(29, 103, 148, 1) 0%,
-		rgba(95, 166, 190, 1) 0%,
-		rgba(19, 170, 178, 1) 100%
-	);
-	--order_unsettled: #fff8c3;
-	--action_status_approve: #498b8f;
-	--action_status_reject: #d57b7b;
-	--action_status_bg: #fbf6f7;
-	--primary_button_bg: #7d7d7d;
-	--th_bg: #f7f7f7;
-	--ticket_progress: #819eb6;
-	--ticket_hold: #93949a;
-	--nav_menu: #4c364b;
-	--overtime: #326274;
-	--dbl_overtime: #b47318;
-	--stat_worked: #a9201b;
-	--pending: #d68e67;
-	--open: #f9665e;
-	--filter_border_color: #d3d3d3;
-	--input_bg: #eee;
-	--empName_bg: rgb(29 80 136);
-	--payStub_bg: #efefef;
-	--calendar_border: #bbbbbb;
-	--bg_color_1: #dbe5ff;
-	--lead_cards_bg: #fdfdfd;
-	--lead_cards_border: #e3e5f1;
-	--main_color: #ffffff;
-	--primary_bg: #f9f9fb;
-	--primary_bg_1: #f4f8fa;
-	--nav_color: #485763;
-	--logo_bg: #01193d;
-	--main_color_black: #000000;
-	--break_row_bg: #a3c1db;
-	--primary_button_bg1: #537eee;
-	--primary_button_bg_dark: red;
+  --base: 100vh - 6em;
+  --mobile_base: 100vh - 3.5em;
+  --comms: 100vh - 12em;
+  --custom_height: 100vh - 6.7em;
+  --payroll_bg: #5fa6be;
+  --payroll_card1: linear-gradient(
+    67deg,
+    rgb(29 80 136) 64%,
+    rgb(24, 57, 92) 80%,
+    rgb(29 80 136) 100%
+  );
+  --payroll_card2: linear-gradient(
+    77deg,
+    rgba(29, 103, 148, 1) 30%,
+    rgba(64, 168, 185, 1) 86%,
+    rgba(95, 166, 190, 1) 100%
+  );
+  --payroll_card3: linear-gradient(
+    77deg,
+    rgba(29, 103, 148, 1) 0%,
+    rgba(95, 166, 190, 1) 0%,
+    rgba(19, 170, 178, 1) 100%
+  );
+  --order_unsettled: #fff8c3;
+  --action_status_approve: #498b8f;
+  --action_status_reject: #d57b7b;
+  --action_status_bg: #fbf6f7;
+  --primary_button_bg: #7d7d7d;
+  --th_bg: #f7f7f7;
+  --ticket_progress: #819eb6;
+  --ticket_hold: #93949a;
+  --nav_menu: #4c364b;
+  --overtime: #326274;
+  --dbl_overtime: #b47318;
+  --stat_worked: #a9201b;
+  --pending: #d68e67;
+  --open: #f9665e;
+  --filter_border_color: #d3d3d3;
+  --input_bg: #eee;
+  --empName_bg: rgb(29 80 136);
+  --payStub_bg: #efefef;
+  --calendar_border: #bbbbbb;
+  --bg_color_1: #dbe5ff;
+  --lead_cards_bg: #fdfdfd;
+  --lead_cards_border: #e3e5f1;
+  --main_color: #ffffff;
+  --primary_bg: #f9f9fb;
+  --primary_bg_1: #f4f8fa;
+  --nav_color: #485763;
+  --logo_bg: #01193d;
+  --main_color_black: #000000;
+  --break_row_bg: #a3c1db;
+  --primary_button_bg1: #537eee;
+  --primary_button_bg_dark: red;
 
-	--status_button_border: #76c094;
-	--gauge_needle: #345243;
-	--stat_item_color: #41306e;
-	--incorrect_ans: #f62f29;
-	--almost_pass: #f6998b;
-	--correct_ans: #49a86f;
-	--event_color: #6299ae;
-	--event_color1: #7713c9;
-	--tab_radio: #676e78;
-	--meeting_bg_light: #d8e3fd;
-	--phoneCall_bg_light: rgb(213, 242, 225);
-	--event_bg_light: #caeaf5;
-	--calendar_color: #a9a9ab;
-	--gray2_color: #959595;
-	--tas_item_color: #858181;
-	--banner_bg: #371f37;
-	--nav_gradient: linear-gradient(180deg, rgb(108 118 134) 0%, rgb(237 243 255) 100%);
-	--nav_gradient_blue: linear-gradient(180deg, rgb(219, 217, 228) 0%, rgb(237 243 255) 100%);
-	--nav_gradient_orange: linear-gradient(180deg, rgb(231, 223, 207) 0%, rgb(237 243 255) 100%);
-	--nav_gradient_green: linear-gradient(180deg, rgb(197, 229, 202) 0%, rgb(237 243 255) 100%);
-	--receiver_msg_bg: rgb(234 242 255);
-	--product1: #de9445;
-	--product2: #f192de;
-	--product3: #f6ed99;
-	--product4: #cadc52;
-	--product5: #adebc6;
-	--product6: #eea462;
+  --status_button_border: #76c094;
+  --gauge_needle: #345243;
+  --stat_item_color: #41306e;
+  --incorrect_ans: #f62f29;
+  --almost_pass: #f6998b;
+  --correct_ans: #49a86f;
+  --event_color: #6299ae;
+  --event_color1: #7713c9;
+  --tab_radio: #676e78;
+  --meeting_bg_light: #d8e3fd;
+  --phoneCall_bg_light: rgb(213, 242, 225);
+  --event_bg_light: #caeaf5;
+  --calendar_color: #a9a9ab;
+  --gray2_color: #959595;
+  --tas_item_color: #858181;
+  --banner_bg: #371f37;
+  --nav_gradient: linear-gradient(180deg, rgb(108 118 134) 0%, rgb(237 243 255) 100%);
+  --nav_gradient_blue: linear-gradient(180deg, rgb(219, 217, 228) 0%, rgb(237 243 255) 100%);
+  --nav_gradient_orange: linear-gradient(180deg, rgb(231, 223, 207) 0%, rgb(237 243 255) 100%);
+  --nav_gradient_green: linear-gradient(180deg, rgb(197, 229, 202) 0%, rgb(237 243 255) 100%);
+  --receiver_msg_bg: rgb(234 242 255);
+  --product1: #de9445;
+  --product2: #f192de;
+  --product3: #f6ed99;
+  --product4: #cadc52;
+  --product5: #adebc6;
+  --product6: #eea462;
 }
 
 html {
-	min-height: 80%;
-	margin: 0 auto;
-	background: var(--lead_cards_bg);
+  min-height: 80%;
+  margin: 0 auto;
+  background: var(--lead_cards_bg);
 }
 
 * {
-	font-family: Arial, Helvetica, sans-serif !important;
+  font-family: Arial, Helvetica, sans-serif !important;
 }
 
 .applyBtn {
-	background: var(--action_status_approve);
-	color: var(--main_color);
-	padding: 8px 12px !important;
-	border-radius: 10px;
+  background: var(--action_status_approve);
+  color: var(--main_color);
+  padding: 8px 12px !important;
+  border-radius: 10px;
 }
 input,
 textarea {
-	background: var(--input_bg) !important;
-	border-color: var(--filter_border_color) !important;
+  background: var(--input_bg) !important;
+  border-color: var(--filter_border_color) !important;
 }
 body {
-	margin: 0;
-	padding: 0;
-	min-height: 100%;
-	/* background: linear-gradient(
+  margin: 0;
+  padding: 0;
+  min-height: 100%;
+  /* background: linear-gradient(
 		0deg,
 		rgb(228 235 255) 0%,
 		rgb(240 245 255) 100%
 	) !important; */
-	background: var(--primary_bg) !important;
-	overflow: hidden;
+  background: var(--primary_bg) !important;
+  overflow: hidden;
 }
 @media print {
-	@page {
-		size: A4;
-		margin: 0mm;
-	}
+  @page {
+    size: A4;
+    margin: 0mm;
+  }
 }
 
 .chakra-select:focus,
 .chakra-select:focus-visible {
-	box-shadow: none !important;
-	border-color: var(--filter_border_color) !important;
-	outline: none !important;
+  box-shadow: none !important;
+  border-color: var(--filter_border_color) !important;
+  outline: none !important;
 }
 
 .radial-progress {
-	position: relative;
-	width: 100px;
-	height: 100px;
+  position: relative;
+  width: 100px;
+  height: 100px;
 }
 
 .date_picker {
-	width: 100%;
-	padding: 5px;
-	box-sizing: border-box;
-	border: 1px solid var(--filter_border_color);
-	font-size: 16px;
-	border-radius: 10px;
+  width: 100%;
+  padding: 5px;
+  box-sizing: border-box;
+  border: 1px solid var(--filter_border_color);
+  font-size: 16px;
+  border-radius: 10px;
 }
 
 .circle {
-	position: absolute;
-	width: 100%;
-	height: 100%;
-	border: 2px solid var(--primary_button_bg);
-	border-radius: 50%;
-	background-color: var(--lead_cards_bg);
-	clip: rect(0px, 100px, 100px, 50px);
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border: 2px solid var(--primary_button_bg);
+  border-radius: 50%;
+  background-color: var(--lead_cards_bg);
+  clip: rect(0px, 100px, 100px, 50px);
 }
 
 .mask {
-	position: absolute;
-	width: 100%;
-	height: 100%;
-	clip: rect(0px, 50px, 100px, 0px);
-	background: var(--lead_cards_bg);
-	border-radius: 50%;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  clip: rect(0px, 50px, 100px, 0px);
+  background: var(--lead_cards_bg);
+  border-radius: 50%;
 }
 .fill {
-	position: absolute;
-	width: 100%;
-	height: 100%;
-	clip: rect(0px, 50px, 100px, 0px);
-	/* clip: rect(0px, 100px, 100px, 50px); */
-	border-radius: 50%;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  clip: rect(0px, 50px, 100px, 0px);
+  /* clip: rect(0px, 100px, 100px, 50px); */
+  border-radius: 50%;
 }
 
 .mask {
-	background-color: var(--primary_button_bg);
+  background-color: var(--primary_button_bg);
 }
 
 .fill {
-	background-color: var(--lead_cards_bg);
+  background-color: var(--lead_cards_bg);
 }
 
 .fill-complete {
-	background-color: var(--primary_button_bg);
-	/* position: absolute;
+  background-color: var(--primary_button_bg);
+  /* position: absolute;
 	width: 100%;
 	height: 100%;
 	clip: rect(auto, auto, auto, auto);
@@ -192,56 +192,61 @@ body {
 
 .timeClockOutInput::-webkit-calendar-picker-indicator,
 .timeClockInInput::-webkit-calendar-picker-indicator {
-	display: none;
-	-webkit-appearance: none;
+  display: none;
+  -webkit-appearance: none;
 }
 
 .label {
-	position: absolute;
-	top: 50%;
-	left: 50%;
-	transform: translate(-50%, -50%);
-	font-size: larger;
-	color: var(--main_color_black);
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: larger;
+  color: var(--main_color_black);
 }
 
 .isSubChild.active,
 .isSubChild.active button {
-	font-weight: 700;
-	/* color: var(--main_color_black); */
+  font-weight: 700;
+  /* color: var(--main_color_black); */
 }
 
 .sidebarMenu.active {
-	/* background: linear-gradient(103deg, #1f5189 0%, #114e5e 65%, #13bcc1 100%); */
-	/* background-image: url("./assets/navbar_bg.png"); */
-	/* background-size: cover; */
-	padding: 0 2px;
-	width: 100%;
-	border-radius: 10px;
-	background: var(--main_color);
-	color: var(--primary_button_bg);
+  /* background: linear-gradient(103deg, #1f5189 0%, #114e5e 65%, #13bcc1 100%); */
+  /* background-image: url("./assets/navbar_bg.png"); */
+  /* background-size: cover; */
+  padding: 0 2px;
+  width: 100%;
+  border-radius: 10px;
+  background: var(--main_color);
+  color: var(--primary_button_bg);
 }
 
 .sidebarMenu button {
-	color: var(--banner_bg);
+  color: var(--banner_bg);
 }
 
 .active button {
-	font-weight: bold;
+  font-weight: bold;
 }
 .navbarMenu.active button {
-	color: var(--main_color);
-	font-weight: normal;
-	border: 1px solid var(--action_status_bg);
+  color: white;
+  font-weight: bold;
+  background-color: rgba(255, 255, 255, 0.3);
+  border: none;
+  font-size: 0.95em;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
 }
 .navbarMenu p {
-	font-weight: normal;
+  font-weight: normal;
+  font-size: 0.95em;
 }
 .navbarMenu.active p {
-	font-weight: bold;
+  font-weight: bold;
+  color: white;
 }
 button:active {
-	background: transparent !important;
+  background: transparent !important;
 }
 
 /* .active::before {
@@ -253,80 +258,80 @@ button:active {
   top: 3px;
 } */
 .main_content {
-	width: 88vw;
-	margin-top: 6em;
-	max-height: calc(var(--base));
-	overflow: auto;
+  width: 88vw;
+  margin-top: 6em;
+  max-height: calc(var(--base));
+  overflow: auto;
 }
 
 .tab-form {
-	width: 100%;
+  width: 100%;
 }
 
 .date-picker {
-	padding: 8px;
+  padding: 8px;
 }
 
 .header-logo {
-	position: absolute;
-	top: 50%;
-	left: 50%;
-	transform: translate(-50%, -50%);
-	font-size: 1.5em;
-	color: var(--main_color);
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 1.5em;
+  color: var(--main_color);
 }
 
 /* react calendar css overrides */
 .rbc-header {
-	min-height: 2.5em !important;
-	align-items: center;
-	display: flex;
-	justify-content: center;
-	text-transform: uppercase;
-	color: var(--calendar_color);
+  min-height: 2.5em !important;
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  text-transform: uppercase;
+  color: var(--calendar_color);
 }
 
 .rbc-month-view {
-	border: none !important;
+  border: none !important;
 }
 
 .rbc-date-cell {
-	padding: 1em;
-	text-align: left !important;
-	color: var(--main_color_black);
+  padding: 1em;
+  text-align: left !important;
+  color: var(--main_color_black);
 }
 
 .rbc-button-link {
-	font-weight: 600;
+  font-weight: 600;
 }
 
 .mini_cal .rbc-header,
 .mini_cal .rbc-button-link {
-	font-size: 70%;
+  font-size: 70%;
 }
 .mini_cal .rbc-header {
-	font-weight: bold;
+  font-weight: bold;
 }
 .mini_cal .rbc-date-cell {
-	padding: 0 !important;
-	text-align: center !important;
+  padding: 0 !important;
+  text-align: center !important;
 }
 .mini_cal .rbc-month-row + .rbc-month-row,
 .mini_cal .rbc-day-bg + .rbc-day-bg,
 .mini_cal .rbc-header + .rbc-header {
-	border: none !important;
+  border: none !important;
 }
 .rbc-event {
-	margin-left: -2px !important;
-	padding: 0 !important;
+  margin-left: -2px !important;
+  padding: 0 !important;
 }
 
 @media only screen and (max-width: 767px) {
-	.main_content {
-		width: 100vw;
-		margin-top: 3.5em;
-		max-height: calc(var(--mobile_base));
-	}
+  .main_content {
+    width: 100vw;
+    margin-top: 3.5em;
+    max-height: calc(var(--mobile_base));
+  }
 }
 @media only screen and (min-width: 768px) and (max-width: 991px) {
 }
