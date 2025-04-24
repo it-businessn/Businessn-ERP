@@ -1,5 +1,4 @@
 import { Checkbox, FormLabel, HStack, SimpleGrid, Stack, useToast } from "@chakra-ui/react";
-import PrimaryButton from "components/ui/button/PrimaryButton";
 import BoxCard from "components/ui/card";
 import TextTitle from "components/ui/text/TextTitle";
 import VerticalStepper from "components/ui/VerticalStepper";
@@ -25,7 +24,7 @@ const GovernmentContribution = ({ company, isOnboarding, handleNext, handlePrev,
 	const governmentInfo = useEmployeeGovernment(company, userId, isOnboarding, refresh);
 	const setGovernmentInfo = () => getInitialGovernmentInfo(userId, company);
 	const [formData, setFormData] = useState(setGovernmentInfo);
-	const [isDisabled, setIsDisabled] = useState(true);
+	const [isDisabled, setIsDisabled] = useState(false);
 	const [isLoading, setIsLoading] = useState(false);
 	const [isCPPExempt, setIsCPPExempt] = useState(false);
 	const [isEIExempt, setIsEIExempt] = useState(false);
@@ -93,14 +92,6 @@ const GovernmentContribution = ({ company, isOnboarding, handleNext, handlePrev,
 							<FormLabel>Is EI Exempt</FormLabel>
 						</Checkbox>
 					</HStack>
-					<PrimaryButton
-						w="100px"
-						size="xs"
-						name="Save"
-						onOpen={() => {
-							handleSubmit();
-						}}
-					/>
 				</Stack>
 			),
 		},
@@ -113,8 +104,6 @@ const GovernmentContribution = ({ company, isOnboarding, handleNext, handlePrev,
 					setFormData={setFormData}
 					title="Income Tax"
 					config={EMP_INCOME_TAX_CONFIG}
-					isLoading={isLoading}
-					handleSubmit={handleSubmit}
 				/>
 			),
 		},
@@ -127,8 +116,6 @@ const GovernmentContribution = ({ company, isOnboarding, handleNext, handlePrev,
 					setFormData={setFormData}
 					title="Federal Government Contributions"
 					config={EMP_FED_GOVT_CONFIG}
-					isLoading={isLoading}
-					handleSubmit={handleSubmit}
 				/>
 			),
 		},
@@ -142,8 +129,6 @@ const GovernmentContribution = ({ company, isOnboarding, handleNext, handlePrev,
 					setFormData={setFormData}
 					title="Regional Government Deductions"
 					config={EMP_REGN_GOVT_CONFIG}
-					isLoading={isLoading}
-					handleSubmit={handleSubmit}
 				/>
 			),
 		},
@@ -170,6 +155,9 @@ const GovernmentContribution = ({ company, isOnboarding, handleNext, handlePrev,
 					handlePrev={handlePrev}
 					id={id}
 					handleNextEnabled={true}
+					isLoading={isLoading}
+					handleSubmit={handleSubmit}
+					isDisabled={isDisabled}
 				/>
 			</BoxCard>
 			<StepContent currentStep={currentStep} steps={steps} isOnboarding={isOnboarding} />

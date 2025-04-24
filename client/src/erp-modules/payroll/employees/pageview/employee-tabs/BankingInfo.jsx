@@ -46,12 +46,6 @@ const BankingInfo = ({ company, isOnboarding, handlePrev, id, handleClose }) => 
 		}
 	}, [bankingInfo, empId]);
 
-	useEffect(() => {
-		if (formData.paymentEmail) {
-			setIsSave1Disabled(false);
-		}
-	}, [formData.paymentEmail]);
-
 	const toast = useToast();
 
 	const handleSubmit = async (values) => {
@@ -84,6 +78,18 @@ const BankingInfo = ({ company, isOnboarding, handlePrev, id, handleClose }) => 
 	};
 	const steps = [
 		{
+			title: "Payment Notification",
+			content: (
+				<Record
+					handleConfirm={() => ""}
+					formData={formData}
+					setFormData={setFormData}
+					title="Payment Notification"
+					config={EMP_PAYMENT_NOTIFICATION_CONFIG}
+				/>
+			),
+		},
+		{
 			title: "Banking Info",
 			content: (
 				<>
@@ -95,7 +101,7 @@ const BankingInfo = ({ company, isOnboarding, handlePrev, id, handleClose }) => 
 						onSubmit={handleSubmit}
 						enableReinitialize
 					>
-						{({ isSubmitting, errors, touched }) => (
+						{({ isSubmitting, values, errors, touched }) => (
 							<Form autoComplete="off">
 								<HStack align={"start"} justify={"start"} mb={2}>
 									{EMP_BANKING_CONFIG.map((field, index) => (
@@ -113,7 +119,11 @@ const BankingInfo = ({ company, isOnboarding, handlePrev, id, handleClose }) => 
 												) : (
 													<React.Fragment key={param.name}>
 														<FormControl
-															isInvalid={!!errors[param.param_key] && touched[param.param_key]}
+															isInvalid={
+																!!errors[param.param_key] &&
+																touched[param.param_key] &&
+																!values[param.param_key]?.includes("*")
+															}
 															mb={4}
 														>
 															<FormLabel htmlFor={param.param_key}>
@@ -157,21 +167,6 @@ const BankingInfo = ({ company, isOnboarding, handlePrev, id, handleClose }) => 
 						)}
 					</Formik>
 				</>
-			),
-		},
-		{
-			title: "Payment Notification",
-			content: (
-				<Record
-					handleConfirm={() => ""}
-					formData={formData}
-					setFormData={setFormData}
-					title="Payment Notification"
-					config={EMP_PAYMENT_NOTIFICATION_CONFIG}
-					isLoading={isLoading}
-					isDisabled={isSave1Disabled}
-					handleSubmit={handleSubmit}
-				/>
 			),
 		},
 	];

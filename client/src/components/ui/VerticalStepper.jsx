@@ -32,6 +32,9 @@ const VerticalStepper = ({
 	indicatorStyle,
 	circleSize,
 	top = "25%",
+	handleSubmit,
+	isDisabled,
+	isLoading,
 }) => {
 	const handleSubmitClick = () => {
 		if (handleNext) {
@@ -89,7 +92,7 @@ const VerticalStepper = ({
 					</Step>
 				))}
 			</Stepper>
-			{isOnboarding && (
+			{isOnboarding ? (
 				<HStack>
 					<CancelButton
 						name={
@@ -109,6 +112,18 @@ const VerticalStepper = ({
 						onOpen={handleSubmitClick}
 					/>
 				</HStack>
+			) : (
+				handleSubmit && (
+					<HStack justifyContent="end">
+						<PrimaryButton
+							isDisabled={isDisabled}
+							isLoading={isLoading}
+							name={"Save"}
+							onOpen={handleSubmit}
+							loadingText="Loading"
+						/>
+					</HStack>
+				)
 			)}
 		</VStack>
 	);

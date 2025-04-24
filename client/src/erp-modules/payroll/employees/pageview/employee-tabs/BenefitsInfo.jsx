@@ -67,9 +67,6 @@ const BenefitsInfo = ({ company, id, isOnboarding, handleNext }) => {
 					setFormData={setFormData}
 					title="Vacation"
 					config={EMP_PAY_INFO_ACCRUALS_CONFIG}
-					isLoading={isLoading}
-					handleSubmit={handleSubmit}
-					isDisabled={isDisabled}
 				/>
 			),
 		},
@@ -84,9 +81,6 @@ const BenefitsInfo = ({ company, id, isOnboarding, handleNext }) => {
 						setFormData={setFormData}
 						title="Vacation Balances"
 						config={EMP_VACATION_BALANCE_CONFIG}
-						isLoading={isLoading}
-						isDisabled={isDisabled}
-						handleSubmit={handleSubmit}
 						readOnly={true}
 					/>
 					<HStack justifyContent="space-between">
@@ -113,8 +107,6 @@ const BenefitsInfo = ({ company, id, isOnboarding, handleNext }) => {
 					setFormData={setFormData}
 					title="Employer Contributions"
 					config={ER_PAID_BENEFITS_CONFIG}
-					isLoading={isLoading}
-					handleSubmit={handleSubmit}
 					isContribution
 				/>
 			),
@@ -128,8 +120,6 @@ const BenefitsInfo = ({ company, id, isOnboarding, handleNext }) => {
 					setFormData={setFormData}
 					title="Employee Contributions"
 					config={EE_PAID_BENEFITS_CONFIG}
-					isLoading={isLoading}
-					handleSubmit={handleSubmit}
 					isContribution
 				/>
 			),
@@ -156,6 +146,9 @@ const BenefitsInfo = ({ company, id, isOnboarding, handleNext }) => {
 					handleClick={goToNextStep}
 					handleNextEnabled={true}
 					handleNext={handleNext}
+					isLoading={isLoading}
+					isDisabled={isDisabled}
+					handleSubmit={handleSubmit}
 				/>
 			</BoxCard>
 			<StepContent currentStep={currentStep} steps={steps} />

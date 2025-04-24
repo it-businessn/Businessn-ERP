@@ -105,8 +105,6 @@ const PersonalInfo = ({ company, isOnboarding, id, handleNext }) => {
 					setFormData={setFormData}
 					title="Personal Information"
 					config={EMP_PERSONAL_INFO_CONFIG}
-					isLoading={isLoading}
-					isDisabled={isSave1Disabled}
 					handleSubmit={handleSubmit}
 					isOnboarding={isOnboarding}
 					hasPassword={profileInfo?.password}
@@ -122,8 +120,6 @@ const PersonalInfo = ({ company, isOnboarding, id, handleNext }) => {
 					setFormData={setFormData}
 					title="Contact"
 					config={EMP_CONTACT_CONFIG}
-					isLoading={isLoading}
-					isDisabled={isSave3Disabled}
 					handleSubmit={handleSubmit}
 				/>
 			),
@@ -136,7 +132,6 @@ const PersonalInfo = ({ company, isOnboarding, id, handleNext }) => {
 					setFormData={setFormData}
 					title="Emergency Contact"
 					config={EMP_EMERGENCY_CONTACT_CONFIG}
-					isLoading={isLoading}
 					handleSubmit={handleSubmit}
 				/>
 			),
@@ -164,6 +159,9 @@ const PersonalInfo = ({ company, isOnboarding, id, handleNext }) => {
 					handleNext={handleNext}
 					// handleNextEnabled={!isSave1Disabled && !isSave2Disabled && !isSave3Disabled}
 					handleNextEnabled={!isSave1Disabled && !isSave3Disabled}
+					handleSubmit={handleSubmit}
+					isLoading={isLoading}
+					isDisabled={isSave3Disabled || isSave1Disabled}
 				/>
 			</BoxCard>
 			<StepContent currentStep={currentStep} steps={steps} isOnboarding={isOnboarding} />

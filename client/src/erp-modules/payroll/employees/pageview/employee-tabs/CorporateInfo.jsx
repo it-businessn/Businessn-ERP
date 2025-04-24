@@ -108,9 +108,7 @@ const CorporateInfo = ({ company, isOnboarding, id, handleNext, handlePrev }) =>
 					setFormData={setFormData}
 					title="Identification and Status"
 					config={EMP_IDENTIFICATION_STATUS_CONFIG(roles)}
-					isLoading={isLoading}
 					handleSubmit={handleSubmit}
-					isDisabled={isDisabled}
 				/>
 			),
 		},
@@ -124,7 +122,6 @@ const CorporateInfo = ({ company, isOnboarding, id, handleNext, handlePrev }) =>
 					setFormData={setFormData}
 					title="Tenure"
 					config={EMP_TENURE_CONFIG}
-					isLoading={isLoading}
 					handleSubmit={handleSubmit}
 				/>
 			),
@@ -191,7 +188,6 @@ const CorporateInfo = ({ company, isOnboarding, id, handleNext, handlePrev }) =>
 					setFormData={setFormData}
 					title="Region"
 					config={EMP_REGION_CONFIG}
-					isLoading={isLoading}
 					handleSubmit={handleSubmit}
 				/>
 			),
@@ -219,6 +215,9 @@ const CorporateInfo = ({ company, isOnboarding, id, handleNext, handlePrev }) =>
 					handleNext={handleNext}
 					handlePrev={handlePrev}
 					handleNextEnabled={true}
+					handleSubmit={() => handleSubmit()}
+					isLoading={isLoading}
+					isDisabled={isDisabled}
 				/>
 			</BoxCard>
 			<StepContent currentStep={currentStep} steps={steps} />
