@@ -74,6 +74,7 @@ const PositionInfo = ({
 				<HStack alignItems="self-start" spacing={5} w="70%">
 					<Stack>
 						<InputFormControl
+							autoComplete="off"
 							required={(isOpen || !roleInfo.title) && true}
 							label="Role title"
 							name="title"
@@ -85,6 +86,7 @@ const PositionInfo = ({
 						{/* {isOpen ? ( */}
 						<>
 							<InputFormControl
+								autoComplete="off"
 								label="Time Management Badge ID"
 								name="timeManagementBadgeID"
 								placeholder="Enter new Badge ID"
@@ -93,6 +95,7 @@ const PositionInfo = ({
 								type="number"
 							/>
 							<InputFormControl
+								autoComplete="off"
 								label="Employee Card Number"
 								name="cardNum"
 								placeholder="Enter Card Number"

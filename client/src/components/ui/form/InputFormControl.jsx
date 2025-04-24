@@ -25,6 +25,7 @@ const InputFormControl = ({
 	maxLength,
 	fontSize,
 	p,
+	autoComplete,
 }) => {
 	return (
 		<FormControlMain isInvalid={isInvalid}>
@@ -41,6 +42,7 @@ const InputFormControl = ({
 			/>
 			{maxLength && <FormHelperText>Max characters: {maxLength}</FormHelperText>}
 			<Input
+				autoComplete={autoComplete}
 				maxLength={maxLength}
 				onBlur={handleConfirm}
 				display={display}

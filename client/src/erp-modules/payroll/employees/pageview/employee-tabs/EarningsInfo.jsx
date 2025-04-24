@@ -39,6 +39,7 @@ const EarningsInfo = ({ role, handleSubmit }) => {
 				</RadioGroup>
 			</HStack>
 			<InputFormControl
+				autoComplete="off"
 				type="number"
 				label="Regular Pay"
 				name="payRate"
@@ -53,6 +54,7 @@ const EarningsInfo = ({ role, handleSubmit }) => {
 			/>
 			{isFTSalaried ? (
 				<InputFormControl
+					autoComplete="off"
 					type="number"
 					label="Standard Hours (FT)"
 					name="fullTimeStandardHours"
@@ -67,6 +69,7 @@ const EarningsInfo = ({ role, handleSubmit }) => {
 				/>
 			) : isPTSalaried ? (
 				<InputFormControl
+					autoComplete="off"
 					type="number"
 					label="Standard Hours (PT)"
 					name="partTimeStandardHours"

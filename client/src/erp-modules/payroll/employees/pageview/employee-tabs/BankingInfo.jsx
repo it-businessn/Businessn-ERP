@@ -96,7 +96,7 @@ const BankingInfo = ({ company, isOnboarding, handlePrev, id, handleClose }) => 
 						enableReinitialize
 					>
 						{({ isSubmitting, errors, touched }) => (
-							<Form>
+							<Form autoComplete="off">
 								<HStack align={"start"} justify={"start"} mb={2}>
 									{EMP_BANKING_CONFIG.map((field, index) => (
 										<VStack align={"start"} key={`bank_${field.type}**${index * 2}`}>
@@ -126,6 +126,7 @@ const BankingInfo = ({ company, isOnboarding, handlePrev, id, handleClose }) => 
 																name={param.param_key}
 																type="text"
 																variant="outline"
+																autoComplete="off"
 															/>
 															<FormErrorMessage>{errors[param.param_key]}</FormErrorMessage>
 														</FormControl>

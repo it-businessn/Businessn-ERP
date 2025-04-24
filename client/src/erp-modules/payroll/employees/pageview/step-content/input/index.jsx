@@ -13,6 +13,7 @@ const InputRecord = ({
 	isBalanceInfo,
 	isContribution,
 	hasPassword,
+	autoComplete,
 }) => {
 	const isHourlyEarning = formData.typeOfEarning === "Hourly";
 	const isFTSalaried = formData.typeOfEarning === "Full Time Salaried";
@@ -43,6 +44,7 @@ const InputRecord = ({
 	) : (
 		showField && (
 			<InputFormControl
+				autoComplete={autoComplete}
 				required={param?.mandatory}
 				subRequired={param?.submandatory}
 				readOnly={readOnly || fullTimeSalariedReadonly}

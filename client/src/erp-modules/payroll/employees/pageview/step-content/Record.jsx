@@ -134,6 +134,7 @@ const Record = ({
 								</FormControlMain>
 							) : (
 								<InputRecord
+									autoComplete="off"
 									key={param.name}
 									formData={formData}
 									param={param}
