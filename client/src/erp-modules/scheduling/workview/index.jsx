@@ -5,6 +5,7 @@ import useCompany from "hooks/useCompany";
 import useRoles from "hooks/useRoles";
 import useWorkLocations from "hooks/useWorkLocations";
 import PageLayout from "layouts/PageLayout";
+import moment from "moment";
 import { useEffect, useState } from "react";
 import { RxDragHandleDots2 } from "react-icons/rx";
 import LocalStorageService from "services/LocalStorageService";
@@ -28,6 +29,9 @@ const ScheduleWorkView = () => {
 	const locations = useWorkLocations(company, refresh);
 	const [employeesList, setEmployeesList] = useState(null);
 	const roles = useRoles(company, refresh);
+	const [location, setLocation] = useState(null);
+	const [currentDate, setCurrentDate] = useState(new Date());
+	currentDate.setHours(6, 0, 0, 0);
 
 	useEffect(() => {
 		const fetchAllEmployees = async () => {
@@ -128,6 +132,10 @@ const ScheduleWorkView = () => {
 						setRefresh={setRefresh}
 						locations={locations}
 						empName={selectedEmp}
+						location={location}
+						setLocation={setLocation}
+						currentDate={currentDate}
+						setCurrentDate={setCurrentDate}
 					/>
 				</SimpleGrid>
 			) : (
@@ -137,13 +145,19 @@ const ScheduleWorkView = () => {
 					locations={locations}
 					newShiftAdded={newShiftAdded}
 					empName={selectedEmp}
+					location={location}
+					setLocation={setLocation}
+					currentDate={currentDate}
+					setCurrentDate={setCurrentDate}
 				/>
 			)}
 			{showAddShiftModal && (
 				<ShiftModal
+					currentDate={moment(currentDate).format("YYYY-MM-DD")}
 					roles={roles}
 					employees={employeesList}
 					locations={locations}
+					location={location}
 					company={company}
 					showModal={showAddShiftModal}
 					setShowModal={setShowAddShiftModal}

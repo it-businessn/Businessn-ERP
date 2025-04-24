@@ -1,11 +1,19 @@
 import BoxCard from "components/ui/card";
 import SelectFormControl from "components/ui/form/SelectFormControl";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import SchedulingCalendar from "./SchedulingCalendar";
 
-const Scheduler = ({ newShiftAdded, setRefresh, company, locations, empName }) => {
-	const [location, setLocation] = useState(null);
-
+const Scheduler = ({
+	newShiftAdded,
+	setRefresh,
+	company,
+	locations,
+	empName,
+	location,
+	setLocation,
+	currentDate,
+	setCurrentDate,
+}) => {
 	useEffect(() => {
 		setLocation(locations?.[0]?.name);
 	}, [locations]);
@@ -30,6 +38,8 @@ const Scheduler = ({ newShiftAdded, setRefresh, company, locations, empName }) =
 				company={company}
 				setRefresh={setRefresh}
 				newShiftAdded={newShiftAdded}
+				currentDate={currentDate}
+				setCurrentDate={setCurrentDate}
 			/>
 		</BoxCard>
 	);

@@ -26,6 +26,8 @@ const ShiftModal = ({
 	locations,
 	employees,
 	roles,
+	location,
+	currentDate,
 }) => {
 	const { onClose } = useDisclosure();
 
@@ -39,9 +41,9 @@ const ShiftModal = ({
 	const defaultShiftInfo = {
 		employeeName: empName || "",
 		role: empRole || "",
-		location: "",
+		location: location || "",
 		notes: "",
-		shiftDate: null,
+		shiftDate: currentDate || null,
 		shiftStart: null,
 		shiftEnd: "12:00",
 		shiftDuration: null,

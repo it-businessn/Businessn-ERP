@@ -12,15 +12,19 @@ import moment from "moment";
 import { MdOutlineChevronLeft, MdOutlineChevronRight } from "react-icons/md";
 import SchedulerService from "services/SchedulerService";
 import { getRoleColor } from "utils";
-import { isSameAsToday, longFormat } from "utils/convertDate";
 import Group from "./Group";
 import ItemsRow from "./ItemsRow";
 import "./Scheduler.css";
 
-const SchedulingCalendar = ({ newShiftAdded, setRefresh, company, location, empName }) => {
-	const [currentDate, setCurrentDate] = useState(new Date());
-	currentDate.setHours(6, 0, 0, 0);
-
+const SchedulingCalendar = ({
+	newShiftAdded,
+	setRefresh,
+	company,
+	location,
+	empName,
+	currentDate,
+	setCurrentDate,
+}) => {
 	const eventInitialStartTime = new Date(currentDate);
 	eventInitialStartTime.setHours(9, 0, 0, 0);
 	const eventInitialEndTime = new Date(currentDate);
@@ -35,8 +39,6 @@ const SchedulingCalendar = ({ newShiftAdded, setRefresh, company, location, empN
 	yesterdayDate.setDate(currentDate.getDate() - 1);
 	const tomorrowDate = new Date(currentDate);
 	tomorrowDate.setDate(currentDate.getDate() + 1);
-	const [selectedDate, setSelectedDate] = useState(new Date());
-	const isToday = isSameAsToday(currentDate);
 
 	const [isLoading, setIsLoading] = useState(false);
 	const [groups, setGroups] = useState([]);
@@ -132,7 +134,17 @@ const SchedulingCalendar = ({ newShiftAdded, setRefresh, company, location, empN
 						boxSize="5"
 						color="fg.muted"
 					/>
-					<NormalTextTitle title={isToday ? "Today" : longFormat(currentDate)} />
+					<HStack cursor={"pointer"}>
+						<Icon as={CiCalendar} boxSize="5" color="fg.muted" />
+						<DatePicker
+							style={{ bg: "red" }}
+							selected={currentDate}
+							onChange={(date) => {
+								setCurrentDate(date);
+							}}
+							dateFormat="dd, MMMM yyyy"
+						/>
+					</HStack>
 					<Icon
 						cursor="pointer"
 						as={MdOutlineChevronRight}
@@ -140,19 +152,6 @@ const SchedulingCalendar = ({ newShiftAdded, setRefresh, company, location, empN
 						boxSize="5"
 						color="fg.muted"
 					/>
-				</HStack>
-				<HStack cursor={"pointer"}>
-					<Icon as={CiCalendar} boxSize="5" color="fg.muted" />
-					<DatePicker
-						style={{ bg: "red" }}
-						selected={selectedDate}
-						onChange={(date) => {
-							setSelectedDate(date);
-							setCurrentDate(date);
-						}}
-						dateFormat="dd, MMMM yyyy"
-					/>
-					{/* <Icon as={FaChevronDown} boxSize="3" color="fg.muted" /> */}
 				</HStack>
 
 				<Text fontWeight={"normal"}>
