@@ -92,7 +92,7 @@ const ExtraTimeEntryModal = ({
 			onClose={handleClose}
 		>
 			<Stack spacing={3}>
-				{!userId && (
+				{!userId && employees && (
 					<SelectFormControl
 						valueParam="_id"
 						name="fullName"

@@ -15,7 +15,7 @@ const Setup = lazy(() => import("./features/setup"));
 const SignUp = lazy(() => import("./features/sign-up"));
 
 const Configuration = lazy(() => import("./features/configuration"));
-const UserProfileDetails = lazy(() => import("./features/user/UserProfileDetails"));
+const UserProfileDetails = lazy(() => import("./features/user/profile/UserProfileDetails"));
 const VerifyEmail = lazy(() => import("./features/verify-user"));
 
 // accounting

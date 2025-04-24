@@ -16,10 +16,13 @@ const MultiSelectFormControl = ({
 	hideAvatar,
 	height,
 	w,
+	titleLabelText,
 }) => {
 	return (
 		<FormControlMain>
-			<FormLabel visibility={showMultiSelect ? "" : "hidden"}>{label}</FormLabel>
+			<FormLabel visibility={showMultiSelect || titleLabelText ? "visible" : "hidden"}>
+				{titleLabelText || label}
+			</FormLabel>
 
 			<MultiSelectButton
 				handleMenuToggle={handleMenuToggle}

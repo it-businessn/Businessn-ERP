@@ -9,7 +9,7 @@ import { FaAddressCard, FaUndoAlt } from "react-icons/fa";
 import { useBreakpointValue } from "services/Breakpoint";
 import LocalStorageService from "services/LocalStorageService";
 import { toCapitalize } from "utils";
-import ChangePassword from "./ChangePassword";
+import ChangePassword from "../ChangePassword";
 import EditUserInfo from "./EditUserInfo";
 
 const UserProfileDetails = () => {
@@ -49,7 +49,9 @@ const UserProfileDetails = () => {
 	const { streetNumber, city, state, country, postalCode } = (userData && primaryAddress) || {};
 
 	const getAddress = primaryAddress
-		? toCapitalize(`${streetNumber} ${city} ${state} ${country} ${postalCode}`)
+		? toCapitalize(
+				`${streetNumber || ""} ${city || ""} ${state || ""} ${country || ""} ${postalCode || ""}`,
+		  )
 		: "";
 
 	const SECTION1 = [

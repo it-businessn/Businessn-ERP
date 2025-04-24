@@ -26,7 +26,7 @@ const EditUserInfo = ({ setEditMode, userData, setUserData, setError, error, com
 	const departments = useDepartment(company);
 
 	const allCompanies = useCompanies();
-	const [selectedOptions, setSelectedOptions] = useState(company);
+	const [companies, setCompanies] = useState(company);
 
 	const { roles, managers } = useSignup();
 	const [openAssigneeMenu, setOpenAssigneeMenu] = useState(false);
@@ -36,7 +36,7 @@ const EditUserInfo = ({ setEditMode, userData, setUserData, setError, error, com
 			const assignedCompanies = allCompanies
 				?.filter((comp) => comp.employees.includes(userData._id))
 				?.map(({ name }) => name);
-			setSelectedOptions(assignedCompanies);
+			setCompanies(assignedCompanies);
 		}
 	}, [allCompanies]);
 
@@ -278,13 +278,14 @@ const EditUserInfo = ({ setEditMode, userData, setUserData, setError, error, com
 						<MultiSelectFormControl
 							hideAvatar
 							label="Assign Companies"
-							tag="companie(s)"
+							tag="selected"
+							titleLabelText="Companies"
 							showMultiSelect={openAssigneeMenu}
 							height="10vh"
 							data={allCompanies}
 							handleCloseMenu={handleCloseMenu}
-							selectedOptions={selectedOptions}
-							setSelectedOptions={setSelectedOptions}
+							selectedOptions={companies}
+							setSelectedOptions={setCompanies}
 							handleMenuToggle={handleMenuToggle}
 							list={userData?.companyId}
 						/>

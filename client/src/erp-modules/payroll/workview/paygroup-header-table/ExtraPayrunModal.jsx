@@ -4,10 +4,10 @@ import DateTimeFormControl from "components/ui/form/DateTimeFormControl";
 import MultiSelectFormControl from "components/ui/form/MultiSelectFormControl";
 import ModalLayout from "components/ui/modal/ModalLayout";
 import { ROLES } from "constant";
-import useEmployees from "hooks/useEmployees";
 import { useEffect, useState } from "react";
 import LocalStorageService from "services/LocalStorageService";
 import SettingService from "services/SettingService";
+import UserService from "services/UserService";
 import { addBusinessDays, getDefaultDate } from "utils/convertDate";
 
 const ExtraPayrunModal = ({
@@ -43,11 +43,29 @@ const ExtraPayrunModal = ({
 	);
 
 	const [selectedEmp, setSelectedEmp] = useState([]);
-	const { employees } = useEmployees(false, company, false, true, null, deptName);
+
+	const [employees, setEmployees] = useState(null);
 	const [openMenu, setOpenMenu] = useState(false);
 	const [selectedOptions, setSelectedOptions] = useState([]);
 
 	const { onClose } = useDisclosure();
+
+	useEffect(() => {
+		const fetchAllEmployees = async () => {
+			try {
+				const { data } = await UserService.getAllCompanyUsers(company, deptName);
+				data?.map((emp) => {
+					emp.fullName = emp?.empId?.fullName;
+					emp._id = emp?.empId?._id;
+					return emp;
+				});
+				setEmployees(data);
+			} catch (error) {
+				console.error(error);
+			}
+		};
+		fetchAllEmployees();
+	}, [deptName]);
 
 	const handleClose = () => {
 		onClose();
