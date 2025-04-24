@@ -31,8 +31,10 @@ import Record from "../step-content/Record";
 
 const BankingInfo = ({ company, isOnboarding, handlePrev, id, handleClose }) => {
 	const { empId } = useSelectedEmp(LocalStorageService.getItem("empId"));
-	const bankingInfo = useEmployeeBankingInfo(company, empId, isOnboarding);
-	const setBankingInfo = () => getInitialBankingInfo(empId, company);
+	const onboardingEmpId = LocalStorageService.getItem("onboardingEmpId");
+	const userId = isOnboarding ? onboardingEmpId : empId;
+	const bankingInfo = useEmployeeBankingInfo(company, userId, isOnboarding);
+	const setBankingInfo = () => getInitialBankingInfo(userId, company);
 	const [formData, setFormData] = useState(setBankingInfo);
 	const [isDisabled, setIsDisabled] = useState(true);
 	const [isSave1Disabled, setIsSave1Disabled] = useState(false);
@@ -44,7 +46,7 @@ const BankingInfo = ({ company, isOnboarding, handlePrev, id, handleClose }) => 
 		} else {
 			setFormData(setBankingInfo);
 		}
-	}, [bankingInfo, empId]);
+	}, [bankingInfo, userId]);
 
 	const toast = useToast();
 
@@ -54,7 +56,7 @@ const BankingInfo = ({ company, isOnboarding, handlePrev, id, handleClose }) => 
 			if (values) {
 				formData.bankDetails = values;
 			}
-			formData.empId = empId;
+			formData.empId = userId;
 			formData.companyName = company;
 			await PayrollService.addEmployeeBankingInfo(formData);
 			toast({

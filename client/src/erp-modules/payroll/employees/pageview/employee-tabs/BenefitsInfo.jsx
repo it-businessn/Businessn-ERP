@@ -22,7 +22,7 @@ const BenefitsInfo = ({ company, id, isOnboarding, handleNext }) => {
 	const onboardingEmpId = LocalStorageService.getItem("onboardingEmpId");
 	const userId = isOnboarding ? onboardingEmpId : empId;
 	const balanceInfo = useEmployeeBalanceInfo(company, userId);
-	const initialBalanceInfo = getInitialBalanceInfo(empId, company);
+	const initialBalanceInfo = getInitialBalanceInfo(userId, company);
 	const [formData, setFormData] = useState(initialBalanceInfo);
 	const [isDisabled, setIsDisabled] = useState(true);
 	const [isLoading, setIsLoading] = useState(false);
@@ -40,14 +40,14 @@ const BenefitsInfo = ({ company, id, isOnboarding, handleNext }) => {
 	useEffect(() => {
 		if (formData.typeOfVacationTreatment && formData.vacationPayPercent) setIsDisabled(false);
 		else setIsDisabled(true);
-	}, [formData.typeOfVacationTreatment, formData.vacationPayPercent, empId]);
+	}, [formData.typeOfVacationTreatment, formData.vacationPayPercent, userId]);
 
 	const handleSubmit = async () => {
 		setIsLoading(true);
 		const updatedBenefit = formData;
 
 		updatedBenefit.carryFwd = carryFwd !== undefined ? !carryFwd : false;
-		updatedBenefit.empId = empId;
+		updatedBenefit.empId = userId;
 		updatedBenefit.companyName = company;
 
 		try {
