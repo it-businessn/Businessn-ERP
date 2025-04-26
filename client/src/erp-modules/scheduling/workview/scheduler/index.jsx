@@ -13,6 +13,8 @@ const Scheduler = ({
 	setLocation,
 	currentDate,
 	setCurrentDate,
+	isUserManager,
+	handleItemClick,
 }) => {
 	useEffect(() => {
 		setLocation(locations?.[0]?.name);
@@ -33,6 +35,7 @@ const Scheduler = ({
 				/>
 			)}
 			<SchedulingCalendar
+				isUserManager={isUserManager}
 				empName={empName}
 				location={location}
 				company={company}
@@ -40,6 +43,7 @@ const Scheduler = ({
 				newShiftAdded={newShiftAdded}
 				currentDate={currentDate}
 				setCurrentDate={setCurrentDate}
+				handleItemClick={handleItemClick}
 			/>
 		</BoxCard>
 	);

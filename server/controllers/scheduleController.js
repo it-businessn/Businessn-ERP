@@ -62,6 +62,25 @@ const getWorkShiftByDate = async (req, res) => {
 	}
 };
 
+const getEmpWorkShiftByDate = async (req, res) => {
+	const { date, location, name, empName } = req.params;
+
+	try {
+		const shifts = await WorkShift.find({
+			companyName: name,
+			location,
+			// shiftDate: {
+			// 	$gte: moment.utc(date).startOf("day").toDate(),
+			// 	$lte: moment.utc(date).endOf("day").toDate(),
+			// },
+			empName,
+		});
+		res.status(200).json(shifts);
+	} catch (error) {
+		res.status(404).json({ error: error.message });
+	}
+};
+
 const splitShiftEveryFiveHours = (shiftDate, start, end) => {
 	const startDate = moment(`${shiftDate}T${start}`);
 	const endDate = moment(`${shiftDate}T${end}`);
@@ -192,15 +211,118 @@ const updateShift = async (req, res) => {
 	const { id } = req.params;
 
 	try {
-		const updatedShift = await EmployeeShift.findByIdAndUpdate(id, req.body, {
-			new: true,
-		});
+		const {
+			employeeName,
+			role,
+			location,
+			notes,
+			shiftDate,
+			shiftStart,
+			shiftEnd,
+			repeatSchedule,
+			hours,
+			companyName,
+		} = req.body;
 
-		res.status(201).json(updatedShift);
+		if (hours < 5) {
+			const updatedShift = await saveOrUpdateShift(
+				id,
+				{},
+				{
+					employeeName,
+					role,
+					location,
+					notes,
+					shiftDate,
+					shiftStart,
+					shiftEnd,
+					repeatSchedule,
+					hours,
+					companyName,
+				},
+			);
+			return res.status(201).json(updatedShift);
+		} else {
+			const shift = await WorkShift.findById(id);
+			const repeatCount = shift?.repeatSchedule === repeatSchedule ? 1 : repeatSchedule ? 7 : 1;
+			for (let i = 0; i < repeatCount; i++) {
+				const currentShiftDate = moment(shiftDate).add(i, "days").format("YYYY-MM-DD");
+
+				if (hours > 5) {
+					const splitShifts = splitShiftEveryFiveHours(currentShiftDate, shiftStart, shiftEnd);
+
+					for (const shift of splitShifts) {
+						await saveOrUpdateShift(
+							null,
+							{
+								empName: employeeName,
+								shiftDate: currentShiftDate,
+								shiftStart: shift.start,
+								shiftEnd: shift.end,
+								companyName,
+							},
+							{
+								empName: employeeName,
+								role,
+								location,
+								notes,
+								shiftDate: currentShiftDate,
+								shiftStart: shift.start,
+								shiftEnd: shift.end,
+								repeatSchedule,
+								repeatDuration: "1 week",
+								breakDuration: 0.5,
+								companyName,
+							},
+						);
+					}
+				} else {
+					await saveOrUpdateShift(
+						null,
+						{
+							empName: employeeName,
+							shiftDate: currentShiftDate,
+							shiftStart,
+							shiftEnd,
+							companyName,
+						},
+						{
+							empName: employeeName,
+							role,
+							location,
+							notes,
+							shiftDate: currentShiftDate,
+							shiftStart,
+							shiftEnd,
+							repeatSchedule,
+							repeatDuration: "1 week",
+							breakDuration: 0,
+							companyName,
+						},
+					);
+				}
+			}
+
+			return res.status(201).json({ message: "Shifts upserted or updated successfully" });
+		}
 	} catch (error) {
 		res.status(400).json({ message: error.message });
 	}
 };
+
+async function saveOrUpdateShift(shiftId, filter, data) {
+	if (shiftId) {
+		return await WorkShift.findByIdAndUpdate(shiftId, data, {
+			new: true,
+			upsert: true,
+		});
+	} else {
+		return await WorkShift.findOneAndUpdate(filter, data, {
+			new: true,
+			upsert: true,
+		});
+	}
+}
 
 module.exports = {
 	addShifts,
@@ -209,4 +331,5 @@ module.exports = {
 	getShiftByDate,
 	addWorkShifts,
 	getWorkShiftByDate,
+	getEmpWorkShiftByDate,
 };

@@ -1,10 +1,10 @@
-import { Avatar, Box, Button, HStack } from "@chakra-ui/react";
+import { SmallAddIcon } from "@chakra-ui/icons";
+import { Avatar, Box, Button, HStack, IconButton } from "@chakra-ui/react";
 import { useState } from "react";
 import AddTask from "./AddTask";
 
-const ItemsRow = ({ getItemProps, item, itemContext, setRefresh }) => {
+const ItemsRow = ({ getItemProps, item, itemContext, setRefresh, handleItemClick }) => {
 	const durationText = item.duration < 2 ? "hour" : "hours";
-
 	const [showAddTask, setShowAddTask] = useState(false);
 	const [assignee, setAssignee] = useState("");
 
@@ -24,16 +24,15 @@ const ItemsRow = ({ getItemProps, item, itemContext, setRefresh }) => {
 					<Button variant="ghost" size="xs" color={"var(--bg_color_1)"}>
 						{`${item.duration} ${durationText}`}
 					</Button>
-					{/* <IconButton */}
-					{/* size={"xs"} */}
-					{/* icon={<SmallAddIcon />} */}
-					{/* aria-label="Open Sidebar" */}
-					{/* _hover={{ bg: "transparent" }} */}
-					{/* onClick={() => {
-							setAssignee(itemContext.title);
-							setShowAddTask(true); */}
-					{/* }} */}
-					{/* /> */}
+					<IconButton
+						size={"xs"}
+						icon={<SmallAddIcon />}
+						aria-label="Open Sidebar"
+						_hover={{ bg: "transparent" }}
+						onClick={() => {
+							handleItemClick(item);
+						}}
+					/>
 				</HStack>
 			</Box>
 			{showAddTask && (

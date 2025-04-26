@@ -15,6 +15,12 @@ const SchedulerService = {
 		);
 	},
 
+	async getEmpWorkShiftsByDate(data) {
+		return apiService.get(
+			`/schedule/work/emp/${data.date}/${data.location}/${data.empName}/${data.company}`,
+		);
+	},
+
 	async getTaskByAssignee(name) {
 		return apiService.get(`/tasks/${name}`);
 	},

@@ -14,6 +14,7 @@ const QuickSelection = ({
 	setSelectedEmp,
 	handleShift,
 	clearFilter,
+	empName,
 }) => {
 	const departments = useDepartment(company);
 
@@ -31,11 +32,13 @@ const QuickSelection = ({
 						placeholder="Select department"
 					/>
 				)}
-				<Tooltip label="Clear Filter">
-					<span>
-						<MdFilterAltOff onClick={clearFilter} />
-					</span>
-				</Tooltip>
+				{empName && (
+					<Tooltip label="Clear Filter">
+						<span>
+							<MdFilterAltOff onClick={clearFilter} />
+						</span>
+					</Tooltip>
+				)}
 			</HStack>
 
 			<TextTitle title="Role" mt={3} />

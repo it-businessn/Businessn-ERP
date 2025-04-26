@@ -28,6 +28,7 @@ const ShiftModal = ({
 	roles,
 	location,
 	currentDate,
+	shift,
 }) => {
 	const { onClose } = useDisclosure();
 
@@ -39,18 +40,18 @@ const ShiftModal = ({
 	const [showAddNewLocation, setShowAddNewLocation] = useState(false);
 
 	const defaultShiftInfo = {
-		employeeName: empName || "",
-		role: empRole || "",
-		location: location || "",
-		notes: "",
-		shiftDate: currentDate || null,
-		shiftStart: null,
-		shiftEnd: "12:00",
-		shiftDuration: null,
-		repeatSchedule: false,
-		duration: "1 week",
-		companyName: company,
-		hours: 0,
+		employeeName: shift?.empName || empName || "",
+		role: shift?.role || empRole || "",
+		location: shift?.location || location || "",
+		notes: shift?.notes || "",
+		shiftDate: shift?.shiftDate?.split("T")[0] || currentDate || null,
+		shiftStart: shift?.shiftStart || null,
+		shiftEnd: shift?.shiftEnd || "12:00",
+		shiftDuration: shift?.shiftDuration || null,
+		repeatSchedule: shift?.repeatSchedule || false,
+		duration: shift?.duration || "1 week",
+		companyName: shift?.companyName || company,
+		hours: parseInt(shift?.duration) || 0,
 	};
 
 	const [formData, setFormData] = useState(defaultShiftInfo);
@@ -81,7 +82,9 @@ const ShiftModal = ({
 	};
 
 	const handleSubmit = async () => {
-		const { data } = await SchedulerService.addWorkShifts(formData);
+		const { data } = shift
+			? await SchedulerService.updateShift(formData, shift._id)
+			: await SchedulerService.addWorkShifts(formData);
 		handleClose();
 		setNewShiftAdded(data);
 	};

@@ -22,8 +22,9 @@ const ScheduleWorkView = () => {
 	const [refresh, setRefresh] = useState(null);
 	const [showAddShiftModal, setShowAddShiftModal] = useState(false);
 	const [empName, setEmpName] = useState(null);
-	const [selectedEmp, setSelectedEmp] = useState(null);
 	const [empRole, setEmpRole] = useState(null);
+	const [shift, setShift] = useState(null);
+	const [selectedEmp, setSelectedEmp] = useState(isUserManager ? null : loggedInUser?.fullName);
 	const locations = useWorkLocations(company, refresh);
 	const [employeesList, setEmployeesList] = useState(null);
 	const roles = useRoles(company, refresh);
@@ -74,6 +75,10 @@ const ScheduleWorkView = () => {
 	const clearFilter = () => {
 		setSelectedEmp(null);
 	};
+	const handleItemClick = (item) => {
+		setShowAddShiftModal(true);
+		setShift(item);
+	};
 	return (
 		<PageLayout title="WorkView">
 			<SimpleGrid
@@ -99,6 +104,7 @@ const ScheduleWorkView = () => {
 						setSelectedEmp={setSelectedEmp}
 						handleShift={handleShift}
 						clearFilter={clearFilter}
+						empName={selectedEmp}
 					/>
 					<Scheduler
 						company={company}
@@ -110,6 +116,8 @@ const ScheduleWorkView = () => {
 						setLocation={setLocation}
 						currentDate={currentDate}
 						setCurrentDate={setCurrentDate}
+						isUserManager={isUserManager}
+						handleItemClick={handleItemClick}
 					/>
 				</SimpleGrid>
 			) : (
@@ -123,6 +131,8 @@ const ScheduleWorkView = () => {
 					setLocation={setLocation}
 					currentDate={currentDate}
 					setCurrentDate={setCurrentDate}
+					isUserManager={isUserManager}
+					handleItemClick={handleItemClick}
 				/>
 			)}
 			{showAddShiftModal && (
@@ -139,6 +149,7 @@ const ScheduleWorkView = () => {
 					setNewShiftAdded={setNewShiftAdded}
 					empName={empName}
 					empRole={empRole}
+					shift={shift}
 				/>
 			)}
 		</PageLayout>
