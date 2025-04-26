@@ -1,72 +1,78 @@
-import { HStack, Icon, Text, VStack } from "@chakra-ui/react";
+import { Avatar, Button, HStack, Icon, Tooltip, VStack } from "@chakra-ui/react";
 import BoxCard from "components/ui/card";
-import React, { useState } from "react";
-import { GoDash } from "react-icons/go";
-import { RxDropdownMenu } from "react-icons/rx";
-import EmployeeDragFromQuickSelection from "./EmployeeDragFromQuickSelection";
+import SelectFormControl from "components/ui/form/SelectFormControl";
+import TextTitle from "components/ui/text/TextTitle";
+import useDepartment from "hooks/useDepartment";
+import { MdFilterAltOff } from "react-icons/md";
+import { RxDragHandleDots2 } from "react-icons/rx";
 
-const QuickSelection = ({ setNewEmployeeAdded, employees }) => {
-	const [isExpanded, setIsExpanded] = useState(false);
-	const [isExpandedIndex, setIsExpandedIndex] = useState(null);
-
-	const addEmployee = (employee, color) => {
-		setNewEmployeeAdded({
-			id: employee.id,
-			name: employee.fullName,
-			color,
-		});
-	};
+const QuickSelection = ({
+	dept,
+	setDept,
+	company,
+	employees,
+	setSelectedEmp,
+	handleShift,
+	clearFilter,
+}) => {
+	const departments = useDepartment(company);
 
 	return (
 		<BoxCard fontWeight="bold">
-			<Text>Quick Selections</Text>
-			<Text color={"var(--main_color_black)"}>Role</Text>
-			{employees?.map((employee) => (
-				<VStack key={employee._id} w={"100%"} alignItems={"self-start"}>
-					<HStack>
-						<Icon as={RxDropdownMenu} boxSize={8} />
+			<HStack alignItems="flex-start">
+				{departments && (
+					<SelectFormControl
+						valueParam="name"
+						name="name"
+						label="Department"
+						valueText={dept || ""}
+						handleChange={(e) => setDept(e.target.value)}
+						options={departments}
+						placeholder="Select department"
+					/>
+				)}
+				<Tooltip label="Clear Filter">
+					<span>
+						<MdFilterAltOff onClick={clearFilter} />
+					</span>
+				</Tooltip>
+			</HStack>
 
-						<Text fontWeight="bold" fontSize={"sm"} mb={"0.5em"}>
-							{employee._id}
-						</Text>
-					</HStack>
-					{employee.employees.map((emp, index) => (
-						<React.Fragment key={emp.id}>
-							<EmployeeDragFromQuickSelection
-								employee={emp}
-								color={employee.color}
-								isExpanded={isExpanded}
-								setIsExpandedIndex={setIsExpandedIndex}
-								setIsExpanded={setIsExpanded}
-								sendEmployee={addEmployee}
+			<TextTitle title="Role" mt={3} />
+			{employees?.map((record) => (
+				<VStack spacing={1} key={record.roleName} w={"100%"} alignItems={"self-start"} mb={3}>
+					<TextTitle size="sm" title={record.roleName} />
+					{record?.employees?.map(({ empId, name }) => (
+						<HStack key={empId} w={"100%"}>
+							<HStack
+								w={"90%"}
+								bgColor={record.color}
+								borderRadius={"50px"}
+								px={"1"}
+								spacing={0}
+								cursor={"pointer"}
+							>
+								<Avatar size={"xs"} name={name} />
+								<Button
+									onClick={() => setSelectedEmp(name)}
+									variant="ghost"
+									size="xs"
+									color={"var(--bg_color_1)"}
+								>
+									{name}
+								</Button>
+							</HStack>
+							<Icon
+								cursor="pointer"
+								as={RxDragHandleDots2}
+								onClick={() => handleShift(empId, name, record.color, record.roleName)}
+								boxSize={5}
 							/>
-							{isExpanded &&
-								isExpandedIndex === emp.id &&
-								emp.tasks?.map((task, index) => (
-									<HStack
-										key={task.taskName + index}
-										w={"100%"}
-										ml={"2em"}
-										p={0}
-									>
-										<Icon as={GoDash} boxSize={5} />
-										<Text
-											overflow={"hidden"}
-											whiteSpace={"nowrap"}
-											textOverflow={"ellipsis"}
-											fontSize={"sm"}
-											fontWeight={"normal"}
-										>
-											{task?.taskName}
-										</Text>
-									</HStack>
-								))}
-						</React.Fragment>
+						</HStack>
 					))}
 				</VStack>
 			))}
 		</BoxCard>
 	);
 };
-
 export default QuickSelection;

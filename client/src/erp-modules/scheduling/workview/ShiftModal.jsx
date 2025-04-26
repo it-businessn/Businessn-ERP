@@ -50,6 +50,7 @@ const ShiftModal = ({
 		repeatSchedule: false,
 		duration: "1 week",
 		companyName: company,
+		hours: 0,
 	};
 
 	const [formData, setFormData] = useState(defaultShiftInfo);
@@ -67,6 +68,7 @@ const ShiftModal = ({
 		setFormData((prev) => ({
 			...prev,
 			shiftDuration: `${hours}h ${minutes}m`,
+			hours,
 		}));
 	}, [formData?.shiftStart, formData?.shiftEnd]);
 

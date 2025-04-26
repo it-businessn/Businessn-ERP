@@ -1,17 +1,15 @@
-import { Avatar, Button, HStack, Icon, SimpleGrid, VStack } from "@chakra-ui/react";
-import BoxCard from "components/ui/card";
-import TextTitle from "components/ui/text/TextTitle";
+import { SimpleGrid } from "@chakra-ui/react";
 import useCompany from "hooks/useCompany";
 import useRoles from "hooks/useRoles";
 import useWorkLocations from "hooks/useWorkLocations";
 import PageLayout from "layouts/PageLayout";
 import moment from "moment";
 import { useEffect, useState } from "react";
-import { RxDragHandleDots2 } from "react-icons/rx";
 import LocalStorageService from "services/LocalStorageService";
 import UserService from "services/UserService";
 import { getRoleColor, isManager } from "utils";
 import HeaderCards from "./HeaderCards";
+import QuickSelection from "./quick-selection";
 import Scheduler from "./scheduler";
 import ShiftModal from "./ShiftModal";
 
@@ -30,6 +28,7 @@ const ScheduleWorkView = () => {
 	const [employeesList, setEmployeesList] = useState(null);
 	const roles = useRoles(company, refresh);
 	const [location, setLocation] = useState(null);
+	const [dept, setDept] = useState(loggedInUser?.department);
 	const [currentDate, setCurrentDate] = useState(new Date());
 	currentDate.setHours(6, 0, 0, 0);
 
@@ -72,7 +71,9 @@ const ScheduleWorkView = () => {
 		setEmpName(name);
 		setEmpRole(role);
 	};
-
+	const clearFilter = () => {
+		setSelectedEmp(null);
+	};
 	return (
 		<PageLayout title="WorkView">
 			<SimpleGrid
@@ -90,42 +91,15 @@ const ScheduleWorkView = () => {
 					mt="4"
 					templateColumns={{ lg: "20% 80%" }}
 				>
-					<BoxCard fontWeight="bold">
-						<TextTitle title="Role" />
-						{employees?.map((record) => (
-							<VStack spacing={1} key={record.roleName} w={"100%"} alignItems={"self-start"}>
-								<TextTitle size="sm" title={record.roleName} />
-								{record?.employees?.map(({ empId, name }) => (
-									<HStack key={empId} w={"100%"}>
-										<HStack
-											w={"90%"}
-											bgColor={record.color}
-											borderRadius={"50px"}
-											px={"1"}
-											spacing={0}
-											cursor={"pointer"}
-										>
-											<Avatar size={"xs"} name={name} />
-											<Button
-												onClick={() => setSelectedEmp(name)}
-												variant="ghost"
-												size="xs"
-												color={"var(--bg_color_1)"}
-											>
-												{name}
-											</Button>
-										</HStack>
-										<Icon
-											cursor="pointer"
-											as={RxDragHandleDots2}
-											onClick={() => handleShift(empId, name, record.color, record.roleName)}
-											boxSize={5}
-										/>
-									</HStack>
-								))}
-							</VStack>
-						))}
-					</BoxCard>
+					<QuickSelection
+						dept={dept}
+						setDept={setDept}
+						company={company}
+						employees={employees}
+						setSelectedEmp={setSelectedEmp}
+						handleShift={handleShift}
+						clearFilter={clearFilter}
+					/>
 					<Scheduler
 						company={company}
 						newShiftAdded={newShiftAdded}

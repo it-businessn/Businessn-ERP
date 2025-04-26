@@ -25,21 +25,6 @@ const SchedulingCalendar = ({
 	currentDate,
 	setCurrentDate,
 }) => {
-	const eventInitialStartTime = new Date(currentDate);
-	eventInitialStartTime.setHours(9, 0, 0, 0);
-	const eventInitialEndTime = new Date(currentDate);
-	eventInitialEndTime.setHours(17, 0, 0, 0);
-
-	const eventPrevStartTime = new Date(currentDate);
-	eventPrevStartTime.setHours(7, 0, 0, 0);
-	const eventPrevEndTime = new Date(currentDate);
-	eventPrevEndTime.setHours(8, 0, 0, 0);
-
-	const yesterdayDate = new Date(currentDate);
-	yesterdayDate.setDate(currentDate.getDate() - 1);
-	const tomorrowDate = new Date(currentDate);
-	tomorrowDate.setDate(currentDate.getDate() + 1);
-
 	const [isLoading, setIsLoading] = useState(false);
 	const [groups, setGroups] = useState([]);
 	const [items, setItems] = useState([]);
@@ -79,7 +64,7 @@ const SchedulingCalendar = ({
 					shift.end_time = end_time;
 					shift.canResize = false;
 					shift.color = getRoleColor(shift.role);
-					shift.duration = end_time.diff(start_time, "hours", true);
+					shift.duration = end_time.diff(start_time, "hours", true).toFixed(2);
 					return shift;
 				});
 				setItems(mappedItems);
@@ -201,9 +186,9 @@ const SchedulingCalendar = ({
 						<CustomHeader unit="hour">
 							{({ headerContext: { intervals }, getRootProps, getIntervalProps, showPeriod }) => (
 								<Box {...getRootProps()}>
-									{intervals.map((interval) => (
+									{intervals.map((interval, index) => (
 										<Text
-											key={interval.startTime}
+											key={`${interval.startTime}_${index}`}
 											textAlign={"center"}
 											borderLeft={"1px solid var(--calendar_border)"}
 											borderTop={"1px solid var(--calendar_border)"}

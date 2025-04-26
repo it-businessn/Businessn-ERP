@@ -26,9 +26,9 @@ const Sidebar = ({ activeMenu, handleMenuItemClick, isMobile, isOpen, onClose })
 		>
 			<Stack justify="start" width="full" my={0} spacing={0}>
 				{menuList?.map(
-					(menu) =>
+					(menu, index) =>
 						menu?.permissions?.canAccessModule && (
-							<MenuItem key={menu.path} menu={menu} parent={activeMenu.id} />
+							<MenuItem key={`${menu.path}_${index}`} menu={menu} parent={activeMenu.id} />
 						),
 				)}
 				<TextTitle mt={5} title="Tools" color="var(--primary_button_bg)" p="0 1em" />
