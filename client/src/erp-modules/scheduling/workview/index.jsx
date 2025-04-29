@@ -14,7 +14,9 @@ import Scheduler from "./scheduler";
 import ShiftModal from "./ShiftModal";
 
 const ScheduleWorkView = () => {
-	const { company } = useCompany(LocalStorageService.getItem("selectedCompany"));
+	const { company } = useCompany(
+		LocalStorageService.getItem("selectedCompany"),
+	);
 	const loggedInUser = LocalStorageService.getItem("user");
 	const isUserManager = isManager(loggedInUser.role);
 	const [newShiftAdded, setNewShiftAdded] = useState(null);
@@ -24,7 +26,9 @@ const ScheduleWorkView = () => {
 	const [empName, setEmpName] = useState(null);
 	const [empRole, setEmpRole] = useState(null);
 	const [shift, setShift] = useState(null);
-	const [selectedEmp, setSelectedEmp] = useState(isUserManager ? null : loggedInUser?.fullName);
+	const [selectedEmp, setSelectedEmp] = useState(
+		isUserManager ? null : loggedInUser?.fullName,
+	);
 	const locations = useWorkLocations(company, refresh);
 	const [employeesList, setEmployeesList] = useState(null);
 	const roles = useRoles(company, refresh);
@@ -56,7 +60,11 @@ const ScheduleWorkView = () => {
 				const { data } = await UserService.getAllEmployeesByRole(company);
 
 				const newData = Object.keys(data)?.map((role) => {
-					return { roleName: role, color: getRoleColor(role), employees: data[role] };
+					return {
+						roleName: role,
+						color: getRoleColor(role),
+						employees: data[role],
+					};
 				});
 
 				setEmployees(newData);
@@ -71,6 +79,7 @@ const ScheduleWorkView = () => {
 		setShowAddShiftModal(true);
 		setEmpName(name);
 		setEmpRole(role);
+		setShift(null);
 	};
 	const clearFilter = () => {
 		setSelectedEmp(null);

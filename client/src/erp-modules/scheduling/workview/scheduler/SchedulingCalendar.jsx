@@ -32,7 +32,7 @@ const SchedulingCalendar = ({
 	const [items, setItems] = useState([]);
 
 	useEffect(() => {
-		if (items?.length || groups?.length) setIsLoading(false);
+		setIsLoading(false);
 	}, [items, groups]);
 
 	useEffect(() => {
