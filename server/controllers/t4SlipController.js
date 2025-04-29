@@ -21,7 +21,12 @@ const getEmployeeT4Slip = async (req, res) => {
 const buildRecord = async (record) => {
 	const empProfileInfo = await EmployeeProfileInfo.findOne({
 		empId: record?.empId._id,
-	}).select("streetAddress city province postalCode country SIN");
+	}).select("streetAddress city province postalCode country SIN SINIv");
+
+	const sin_key = Buffer.from(process.env.SIN_ENCRYPTION_KEY, "hex");
+	empProfileInfo.SIN =
+		empProfileInfo?.SIN && decryptData(empProfileInfo?.SIN, sin_key, empProfileInfo?.SINIv);
+
 	const empEmploymentInfo = await EmployeeEmploymentInfo.findOne({
 		empId: record?.empId._id,
 	}).select("employeeNo employmentRegion");
