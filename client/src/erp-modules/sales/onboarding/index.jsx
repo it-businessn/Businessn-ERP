@@ -3,6 +3,7 @@ import PrimaryButton from "components/ui/button/PrimaryButton";
 import NormalTextTitle from "components/ui/NormalTextTitle";
 import TextTitle from "components/ui/text/TextTitle";
 import ActionAll from "erp-modules/payroll/timesheets/ActionAll";
+import { ACTION_STATUS } from "erp-modules/payroll/timesheets/data";
 import OnboardEmpModal from "erp-modules/sales/onboarding/OnboardEmpModal";
 import PageLayout from "layouts/PageLayout";
 import { useEffect, useState } from "react";
@@ -66,10 +67,16 @@ const Onboarding = () => {
 						{contacts?.map(({ _id, leadId }) => (
 							<Tr key={_id} _hover={{ bg: "var(--phoneCall_bg_light)" }}>
 								<Td py={0}>
-									<NormalTextTitle size="sm" title={leadId.opportunityName} />
+									<NormalTextTitle
+										width="200px"
+										whiteSpace="wrap"
+										size="xs"
+										title={leadId.opportunityName}
+									/>
 								</Td>
 								<Td py={0} pl={0}>
 									<ActionAll
+										defaultAction={ACTION_STATUS[1]}
 										minW="82px"
 										w="80px"
 										size="xs"
@@ -81,6 +88,7 @@ const Onboarding = () => {
 								</Td>
 								<Td py={0} pl={0}>
 									<ActionAll
+										defaultAction={ACTION_STATUS[1]}
 										minW="82px"
 										w="80px"
 										size="xs"
@@ -92,6 +100,7 @@ const Onboarding = () => {
 								</Td>
 								<Td py={0} pl={0}>
 									<ActionAll
+										defaultAction={ACTION_STATUS[1]}
 										minW="82px"
 										w="80px"
 										size="xs"
@@ -103,6 +112,7 @@ const Onboarding = () => {
 								</Td>
 								<Td py={0} pl={0}>
 									<ActionAll
+										defaultAction={ACTION_STATUS[1]}
 										minW="82px"
 										w="80px"
 										size="xs"
@@ -114,6 +124,7 @@ const Onboarding = () => {
 								</Td>
 								<Td py={0} pl={0}>
 									<ActionAll
+										defaultAction={ACTION_STATUS[1]}
 										minW="82px"
 										w="80px"
 										size="xs"
@@ -125,6 +136,7 @@ const Onboarding = () => {
 								</Td>
 								<Td py={0} pl={0}>
 									<ActionAll
+										defaultAction={ACTION_STATUS[1]}
 										minW="82px"
 										w="80px"
 										size="xs"
@@ -136,6 +148,7 @@ const Onboarding = () => {
 								</Td>
 								<Td py={0} pl={0}>
 									<ActionAll
+										defaultAction={ACTION_STATUS[1]}
 										minW="82px"
 										w="80px"
 										size="xs"
@@ -147,6 +160,7 @@ const Onboarding = () => {
 								</Td>
 								<Td py={0} pl={0}>
 									<ActionAll
+										defaultAction={ACTION_STATUS[1]}
 										minW="82px"
 										w="80px"
 										size="xs"
@@ -158,6 +172,7 @@ const Onboarding = () => {
 								</Td>
 								<Td py={0} pl={0}>
 									<ActionAll
+										defaultAction={ACTION_STATUS[1]}
 										minW="82px"
 										w="80px"
 										size="xs"
@@ -169,6 +184,7 @@ const Onboarding = () => {
 								</Td>
 								<Td py={0} pl={0}>
 									<ActionAll
+										defaultAction={ACTION_STATUS[1]}
 										minW="82px"
 										w="80px"
 										size="xs"
@@ -180,6 +196,7 @@ const Onboarding = () => {
 								</Td>
 								<Td py={0} pl={0}>
 									<ActionAll
+										defaultAction={ACTION_STATUS[1]}
 										minW="82px"
 										w="80px"
 										size="xs"
@@ -191,6 +208,7 @@ const Onboarding = () => {
 								</Td>
 								<Td py={0} pl={0}>
 									<ActionAll
+										defaultAction={ACTION_STATUS[1]}
 										minW="82px"
 										w="80px"
 										size="xs"
@@ -202,6 +220,7 @@ const Onboarding = () => {
 								</Td>
 								<Td py={0} pl={0}>
 									<ActionAll
+										defaultAction={ACTION_STATUS[1]}
 										minW="82px"
 										w="80px"
 										size="xs"
@@ -213,6 +232,7 @@ const Onboarding = () => {
 								</Td>
 								<Td py={0} pl={0}>
 									<ActionAll
+										defaultAction={ACTION_STATUS[1]}
 										minW="82px"
 										w="80px"
 										size="xs"
@@ -224,6 +244,7 @@ const Onboarding = () => {
 								</Td>
 								<Td py={0} pl={0}>
 									<ActionAll
+										defaultAction={ACTION_STATUS[1]}
 										minW="82px"
 										w="80px"
 										size="xs"
@@ -235,6 +256,7 @@ const Onboarding = () => {
 								</Td>
 								<Td py={0} pl={0}>
 									<ActionAll
+										defaultAction={ACTION_STATUS[1]}
 										minW="82px"
 										w="80px"
 										size="xs"
@@ -246,6 +268,7 @@ const Onboarding = () => {
 								</Td>
 								<Td py={0} pl={0}>
 									<ActionAll
+										defaultAction={ACTION_STATUS[1]}
 										minW="82px"
 										w="80px"
 										size="xs"
