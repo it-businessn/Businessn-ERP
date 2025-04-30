@@ -28,7 +28,35 @@ const getTADUsers = async (req, res) => {
 	try {
 		const result = await EmployeeTADProfileInfo.find({
 			companyName: COMPANIES.NW,
-		}).select("companyName firstName middleName lastName cardNum timeManagementBadgeID createdOn");
+		}).select(
+			"companyName firstName middleName lastName cardNum timeManagementBadgeID createdOn isNewUser",
+		);
+		res.status(200).json(result);
+	} catch (error) {
+		res.status(404).json({ error: error.message });
+	}
+};
+
+const getFilteredTADUsers = async (req, res) => {
+	try {
+		const timecardBadges = await Timecard.find({
+			companyName: COMPANIES.NW,
+		}).distinct("badge_id");
+		await EmployeeTADProfileInfo.updateMany(
+			{
+				companyName: COMPANIES.NW,
+				timeManagementBadgeID: { $in: timecardBadges },
+			},
+			{
+				$set: { isNewUser: false },
+			},
+		);
+		const result = await EmployeeTADProfileInfo.find({
+			companyName: COMPANIES.NW,
+			timeManagementBadgeID: { $nin: timecardBadges },
+		}).select(
+			"companyName firstName middleName lastName cardNum timeManagementBadgeID createdOn isNewUser",
+		);
 		res.status(200).json(result);
 	} catch (error) {
 		res.status(404).json({ error: error.message });
@@ -418,4 +446,5 @@ module.exports = {
 	createTimecard,
 	createTimecardManual,
 	getTADUsers,
+	getFilteredTADUsers,
 };
