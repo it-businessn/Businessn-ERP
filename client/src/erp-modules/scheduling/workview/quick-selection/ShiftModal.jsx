@@ -7,7 +7,6 @@ import RequiredLabel from "components/ui/form/RequiredLabel";
 import SelectFormControl from "components/ui/form/SelectFormControl";
 import ModalLayout from "components/ui/modal/ModalLayout";
 import TextTitle from "components/ui/text/TextTitle";
-import { ROLES } from "constant";
 import moment from "moment";
 import { useEffect, useState } from "react";
 import { FaPlus } from "react-icons/fa";
@@ -124,7 +123,7 @@ const ShiftModal = ({
 								role: e.target.value,
 							}))
 						}
-						options={roles?.filter(({ name }) => name !== ROLES.SHADOW_ADMIN)}
+						options={roles}
 						placeholder="Select Role"
 					/>
 					<Tooltip label="Add new role">

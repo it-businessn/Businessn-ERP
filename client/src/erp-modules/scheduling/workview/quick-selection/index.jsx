@@ -2,13 +2,14 @@ import { Avatar, Button, HStack, Icon, Tooltip, VStack } from "@chakra-ui/react"
 import BoxCard from "components/ui/card";
 import SelectFormControl from "components/ui/form/SelectFormControl";
 import TextTitle from "components/ui/text/TextTitle";
-import useDepartment from "hooks/useDepartment";
+import { useEffect, useState } from "react";
 import { MdFilterAltOff } from "react-icons/md";
 import { RxDragHandleDots2 } from "react-icons/rx";
+import SettingService from "services/SettingService";
 
 const QuickSelection = ({
-	dept,
-	setDept,
+	selectedFilter,
+	setSelectedFilter,
 	company,
 	employees,
 	setSelectedEmp,
@@ -16,20 +17,31 @@ const QuickSelection = ({
 	clearFilter,
 	empName,
 }) => {
-	const departments = useDepartment(company);
+	const [crews, setCrews] = useState(null);
+	useEffect(() => {
+		const fetchAllCrews = async () => {
+			try {
+				const { data } = await SettingService.getAllCrews(company);
+				setCrews(data);
+			} catch (error) {
+				console.error(error);
+			}
+		};
+		fetchAllCrews();
+	}, [company]);
 
 	return (
 		<BoxCard fontWeight="bold">
 			<HStack alignItems="flex-start">
-				{departments && (
+				{crews && (
 					<SelectFormControl
 						valueParam="name"
 						name="name"
-						label="Department"
-						valueText={dept || ""}
-						handleChange={(e) => setDept(e.target.value)}
-						options={departments}
-						placeholder="Select department"
+						label="Crew"
+						valueText={selectedFilter || ""}
+						handleChange={(e) => setSelectedFilter(e.target.value)}
+						options={crews}
+						placeholder="Select crew"
 					/>
 				)}
 				{empName && (
