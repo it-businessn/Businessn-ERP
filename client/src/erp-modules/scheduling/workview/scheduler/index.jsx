@@ -1,7 +1,7 @@
 import BoxCard from "components/ui/card";
 import SelectFormControl from "components/ui/form/SelectFormControl";
 import { useEffect } from "react";
-import SchedulingCalendar from "./SchedulingCalendar";
+import SchedulingWeeklyCalendar from "./SchedulingWeeklyCalendar";
 
 const Scheduler = ({
 	newShiftAdded,
@@ -34,7 +34,7 @@ const Scheduler = ({
 					placeholder="Select Location"
 				/>
 			)}
-			<SchedulingCalendar
+			<SchedulingWeeklyCalendar
 				isUserManager={isUserManager}
 				empName={empName}
 				location={location}

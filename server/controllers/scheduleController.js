@@ -33,6 +33,26 @@ const getShiftByDate = async (req, res) => {
 	}
 };
 
+const getWorkShiftByWeek = async (req, res) => {
+	const { date, location, name } = req.params;
+	const startOfWeek = moment(date).startOf("week");
+	const endOfWeek = moment(date).endOf("week");
+
+	try {
+		const shifts = await WorkShift.find({
+			companyName: name,
+			location,
+			shiftDate: {
+				$gte: startOfWeek,
+				$lte: endOfWeek,
+			},
+		});
+		res.status(200).json(shifts);
+	} catch (error) {
+		res.status(404).json({ error: error.message });
+	}
+};
+
 const getWorkShiftByDate = async (req, res) => {
 	const { date, location, name, empName } = req.params;
 
@@ -331,5 +351,6 @@ module.exports = {
 	getShiftByDate,
 	addWorkShifts,
 	getWorkShiftByDate,
+	getWorkShiftByWeek,
 	getEmpWorkShiftByDate,
 };
