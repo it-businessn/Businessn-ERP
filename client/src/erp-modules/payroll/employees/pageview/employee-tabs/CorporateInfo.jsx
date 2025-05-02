@@ -13,6 +13,7 @@ import useCostCenter from "hooks/useCostCenter";
 import useDepartment from "hooks/useDepartment";
 import useEmployeeEmploymentInfo from "hooks/useEmployeeEmploymentInfo";
 import usePaygroup from "hooks/usePaygroup";
+import usePositionRoles from "hooks/usePositionRoles";
 import useRoles from "hooks/useRoles";
 import useSelectedEmp from "hooks/useSelectedEmp";
 import { useEffect, useState } from "react";
@@ -26,6 +27,7 @@ const CorporateInfo = ({ company, isOnboarding, id, handleNext, handlePrev }) =>
 	const toast = useToast();
 	const { empId } = useSelectedEmp(LocalStorageService.getItem("empId"));
 	const [refresh, setRefresh] = useState(false);
+	const [positionAdded, setPositionAdded] = useState(false);
 	const onboardingEmpId = LocalStorageService.getItem("onboardingEmpId");
 	const userId = isOnboarding ? onboardingEmpId : empId;
 	const employmentInfo = useEmployeeEmploymentInfo(
@@ -45,6 +47,7 @@ const CorporateInfo = ({ company, isOnboarding, id, handleNext, handlePrev }) =>
 	const department = useDepartment(company);
 	const costCentres = useCostCenter(company);
 	const roles = useRoles(company);
+	const positionRoles = usePositionRoles(company, positionAdded);
 
 	useEffect(() => {
 		if (employmentInfo) {
@@ -68,14 +71,16 @@ const CorporateInfo = ({ company, isOnboarding, id, handleNext, handlePrev }) =>
 		}
 	}, [formData.employeeNo, formData.payrollStatus]);
 
-	const handleSubmit = async (position) => {
+	const handleSubmit = async (position, updateRecordIndex) => {
 		setIsLoading(true);
 		try {
 			if (position) {
 				const existingPositions = formData.positions;
-				const positionIndex = formData.positions?.findIndex(
-					({ title }) => title === position?.title,
-				);
+				const positionIndex =
+					updateRecordIndex > -1
+						? updateRecordIndex
+						: formData.positions?.findIndex(({ title }) => title === position?.title);
+
 				if (positionIndex === -1) {
 					existingPositions.push(position);
 					formData.positions = existingPositions;
@@ -142,6 +147,8 @@ const CorporateInfo = ({ company, isOnboarding, id, handleNext, handlePrev }) =>
 							department={department}
 							costCentres={costCentres}
 							handleSubmit={handleSubmit}
+							positionRoles={positionRoles}
+							setPositionAdded={setPositionAdded}
 						/>
 					) : (
 						<>
@@ -160,6 +167,7 @@ const CorporateInfo = ({ company, isOnboarding, id, handleNext, handlePrev }) =>
 									key={`${position?.title}_${index}`}
 								>
 									<PositionInfo
+										updateRecordIndex={index}
 										rolePos={`Position ${index + 1}`}
 										currentRoleInfo={position}
 										isOpen={isOpen}
@@ -171,6 +179,8 @@ const CorporateInfo = ({ company, isOnboarding, id, handleNext, handlePrev }) =>
 										costCentres={costCentres}
 										handleSubmit={handleSubmit}
 										company={company}
+										positionRoles={positionRoles}
+										setPositionAdded={setPositionAdded}
 									/>
 								</BoxCard>
 							))}
