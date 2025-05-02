@@ -1,9 +1,11 @@
 const Company = require("../models/Company");
 const CostCenter = require("../models/CostCenter");
+const Crew = require("../models/Crew");
 const Department = require("../models/Department");
 const Employee = require("../models/Employee");
 const EmployeeEmploymentInfo = require("../models/EmployeeEmploymentInfo");
 const EmployeeRole = require("../models/EmployeeRole");
+const EmploymentPositionRole = require("../models/EmploymentPositionRole");
 const EmploymentType = require("../models/EmploymentType");
 const Group = require("../models/Group");
 const Holiday = require("../models/Holiday");
@@ -31,6 +33,34 @@ const getLocations = async (req, res) => {
 			name: 1,
 		});
 		res.status(200).json(locations);
+	} catch (error) {
+		res.status(404).json({ error: error.message });
+	}
+};
+
+const getPositionRoles = async (req, res) => {
+	const { companyName } = req.params;
+	try {
+		const roles = await EmploymentPositionRole.find({
+			companyName,
+		}).sort({
+			name: 1,
+		});
+		res.status(200).json(roles);
+	} catch (error) {
+		res.status(404).json({ error: error.message });
+	}
+};
+
+const getCrews = async (req, res) => {
+	const { companyName } = req.params;
+	try {
+		const roles = await Crew.find({
+			companyName,
+		}).sort({
+			createdOn: -1,
+		});
+		res.status(200).json(roles);
 	} catch (error) {
 		res.status(404).json({ error: error.message });
 	}
@@ -65,11 +95,75 @@ const addLocation = async (req, res) => {
 	}
 };
 
+const addCrew = async (req, res) => {
+	const { name, description, companyName } = req.body;
+
+	try {
+		const newRole = await Crew.create({
+			name,
+			description,
+			companyName,
+		});
+		res.status(201).json(newRole);
+	} catch (error) {
+		res.status(400).json({ message: error.message });
+	}
+};
+
 const addRole = async (req, res) => {
 	const { name, description, companyName } = req.body;
 
 	try {
 		const newRole = await EmployeeRole.create({
+			name,
+			description,
+			companyName,
+		});
+		res.status(201).json(newRole);
+	} catch (error) {
+		res.status(400).json({ message: error.message });
+	}
+};
+
+const addPositionRole = async (req, res) => {
+	const { name, description, companyName } = req.body;
+
+	try {
+		// ******move from emplomntpositions to EmploymentPositionRole
+		// const distinctTitles = await EmployeeEmploymentInfo.aggregate([
+		// 	{
+		// 		$match: { companyName },
+		// 	},
+		// 	{
+		// 		$unwind: "$positions",
+		// 	},
+		// 	{
+		// 		$match: {
+		// 			"positions.title": { $exists: true, $ne: null },
+		// 		},
+		// 	},
+		// 	{
+		// 		$group: {
+		// 			_id: null,
+		// 			titles: { $addToSet: "$positions.title" },
+		// 		},
+		// 	},
+		// 	{
+		// 		$project: {
+		// 			_id: 0,
+		// 			titles: 1,
+		// 		},
+		// 	},
+		// ]);
+		// let roles = distinctTitles[0]?.titles || [];
+		// roles = roles?.map((role) => ({
+		// 	name: role,
+		// 	companyName,
+		// })); const k = await EmploymentPositionRole.insertMany(roles);
+
+		// *************************
+
+		const newRole = await EmploymentPositionRole.create({
 			name,
 			description,
 			companyName,
@@ -490,8 +584,12 @@ module.exports = {
 	addSetUpRule,
 	getAllSetup,
 	updateSetUp,
+	addCrew,
 	addRole,
+	addPositionRole,
 	getRoles,
+	getCrews,
+	getPositionRoles,
 	getDepartments,
 	addDepartment,
 	getEmpTypes,

@@ -77,9 +77,7 @@ const SchedulingCalendar = () => {
 		const updatedEmployees = [...employees];
 		const { id, name, color } = employee;
 
-		const existingEmpIndex = updatedEmployees.findIndex(
-			(emp) => emp.name === name,
-		);
+		const existingEmpIndex = updatedEmployees.findIndex((emp) => emp.name === name);
 		if (existingEmpIndex === -1) {
 			setUpdatedEmployees([
 				...updatedEmployees,

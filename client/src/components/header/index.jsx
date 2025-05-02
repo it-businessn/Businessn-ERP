@@ -2,8 +2,8 @@ import { Box, Flex, HStack, Spacer, Stack } from "@chakra-ui/react";
 import { redirectLogin } from "api";
 import { Menu, UserProfile } from "components";
 import Logo from "components/logo";
+import { SIDEBAR_MENU } from "components/sidebar/data";
 import TextTitle from "components/ui/text/TextTitle";
-import { SIDEBAR_MENU } from "data";
 import useCompany from "hooks/useCompany";
 import LoginService from "services/LoginService";
 

@@ -1,6 +1,6 @@
 import { redirectLogin } from "api";
+import { SIDEBAR_MENU } from "components/sidebar/data";
 import { COMPANIES } from "constant";
-import { SIDEBAR_MENU } from "data";
 import { startTransition, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import LocalStorageService from "services/LocalStorageService";

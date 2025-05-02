@@ -76,6 +76,8 @@ const Settings = lazy(() => import("erp-modules/payroll/Settings"));
 const SchedulingDashboard = lazy(() => import("erp-modules/scheduling/dashboard"));
 const ScheduleReports = lazy(() => import("./erp-modules/scheduling/Reports"));
 const ScheduleWorkView = lazy(() => import("./erp-modules/scheduling/workview"));
+const Crew = lazy(() => import("./erp-modules/scheduling/crew"));
+const LocationSite = lazy(() => import("./erp-modules/scheduling/location-site"));
 const ShiftAssignment = lazy(() => import("./erp-modules/scheduling/ShiftAssignment"));
 
 // projectmanagement
@@ -378,6 +380,14 @@ export const router = createBrowserRouter([
 			{
 				path: `${ROUTE_PATH.SCHEDULING}${ROUTE_PATH.WORKVIEW}`,
 				element: <ScheduleWorkView />,
+			},
+			{
+				path: `${ROUTE_PATH.SCHEDULING}/crew`,
+				element: <Crew />,
+			},
+			{
+				path: `${ROUTE_PATH.SCHEDULING}/sites`,
+				element: <LocationSite />,
 			},
 			{
 				path: `${ROUTE_PATH.SCHEDULING}${ROUTE_PATH.REPORT}`,

@@ -13,6 +13,7 @@ import { FiSettings } from "react-icons/fi";
 import { GoTasklist } from "react-icons/go";
 import { HiOutlineBadgeCheck, HiOutlineCalendar } from "react-icons/hi";
 import { IoBagRemoveOutline, IoDocumentTextOutline } from "react-icons/io5";
+import { LiaSearchLocationSolid } from "react-icons/lia";
 import { LuLayoutDashboard } from "react-icons/lu";
 import { MdCleanHands, MdOutlineSettingsApplications, MdPayments } from "react-icons/md";
 import { PiBooks, PiListMagnifyingGlassFill } from "react-icons/pi";
@@ -338,6 +339,18 @@ export const SIDEBAR_MENU = [
 				name: "Workview",
 				children: [],
 				icon: <LuLayoutDashboard />,
+			},
+			{
+				path: "crew",
+				name: "Crew",
+				children: [],
+				icon: <FaPeopleGroup />,
+			},
+			{
+				path: "sites",
+				name: "Location Sites",
+				children: [],
+				icon: <LiaSearchLocationSolid />,
 			},
 			{
 				path: "reports",

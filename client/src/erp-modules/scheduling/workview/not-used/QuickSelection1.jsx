@@ -43,12 +43,7 @@ const QuickSelection = ({ setNewEmployeeAdded, employees }) => {
 							{isExpanded &&
 								isExpandedIndex === emp.id &&
 								emp.tasks?.map((task, index) => (
-									<HStack
-										key={task.taskName + index}
-										w={"100%"}
-										ml={"2em"}
-										p={0}
-									>
+									<HStack key={task.taskName + index} w={"100%"} ml={"2em"} p={0}>
 										<Icon as={GoDash} boxSize={5} />
 										<Text
 											overflow={"hidden"}

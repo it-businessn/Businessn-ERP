@@ -22,8 +22,16 @@ const SettingService = {
 		return apiService.get(`/setup/roles/${id}`);
 	},
 
+	async getAllPositionRoles(id) {
+		return apiService.get(`/setup/position-roles/${id}`);
+	},
+
 	async getAllLocations(id) {
 		return apiService.get(`/setup/location/${id}`);
+	},
+
+	async getAllCrews(id) {
+		return apiService.get(`/setup/crews/${id}`);
 	},
 
 	async getStatHolidays(id) {
@@ -40,6 +48,10 @@ const SettingService = {
 
 	async addRole(data) {
 		return apiService.post("/setup/roles", data);
+	},
+
+	async addPositionRole(data) {
+		return apiService.post("/setup/position-roles", data);
 	},
 
 	async addLocation(data) {

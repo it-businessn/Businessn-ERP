@@ -1,6 +1,6 @@
 import { SimpleGrid } from "@chakra-ui/react";
 import useCompany from "hooks/useCompany";
-import useRoles from "hooks/useRoles";
+import usePositionRoles from "hooks/usePositionRoles";
 import useWorkLocations from "hooks/useWorkLocations";
 import PageLayout from "layouts/PageLayout";
 import moment from "moment";
@@ -10,13 +10,11 @@ import UserService from "services/UserService";
 import { getRoleColor, isManager } from "utils";
 import HeaderCards from "./HeaderCards";
 import QuickSelection from "./quick-selection";
+import ShiftModal from "./quick-selection/ShiftModal";
 import Scheduler from "./scheduler";
-import ShiftModal from "./ShiftModal";
 
 const ScheduleWorkView = () => {
-	const { company } = useCompany(
-		LocalStorageService.getItem("selectedCompany"),
-	);
+	const { company } = useCompany(LocalStorageService.getItem("selectedCompany"));
 	const loggedInUser = LocalStorageService.getItem("user");
 	const isUserManager = isManager(loggedInUser.role);
 	const [newShiftAdded, setNewShiftAdded] = useState(null);
@@ -26,12 +24,10 @@ const ScheduleWorkView = () => {
 	const [empName, setEmpName] = useState(null);
 	const [empRole, setEmpRole] = useState(null);
 	const [shift, setShift] = useState(null);
-	const [selectedEmp, setSelectedEmp] = useState(
-		isUserManager ? null : loggedInUser?.fullName,
-	);
+	const [selectedEmp, setSelectedEmp] = useState(isUserManager ? null : loggedInUser?.fullName);
 	const locations = useWorkLocations(company, refresh);
 	const [employeesList, setEmployeesList] = useState(null);
-	const roles = useRoles(company, refresh);
+	const roles = usePositionRoles(company, refresh);
 	const [location, setLocation] = useState(null);
 	const [dept, setDept] = useState(loggedInUser?.department);
 	const [currentDate, setCurrentDate] = useState(new Date());

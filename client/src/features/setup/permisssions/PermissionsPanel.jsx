@@ -1,7 +1,7 @@
 import { Box, HStack, Table, Tbody, Td, Text, Th, Thead, Tr } from "@chakra-ui/react";
 
+import { SIDEBAR_MENU } from "components/sidebar/data";
 import EmptyRowRecord from "components/ui/EmptyRowRecord";
-import { SIDEBAR_MENU } from "data";
 import { useEffect, useState } from "react";
 import { FaChevronDown } from "react-icons/fa";
 import { GoCheckCircleFill } from "react-icons/go";

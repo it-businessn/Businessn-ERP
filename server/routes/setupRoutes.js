@@ -15,6 +15,10 @@ router.get("/location/:companyName", setUpController.getLocations);
 
 router.get("/roles/:companyName", setUpController.getRoles);
 
+router.get("/crews/:companyName", setUpController.getCrews);
+
+router.get("/position-roles/:companyName", setUpController.getPositionRoles);
+
 router.get("/departments/:companyName", setUpController.getDepartments);
 
 router.get("/cost-centers/:companyName", setUpController.getCC);
@@ -35,7 +39,11 @@ router.post("/stat-holidays", setUpController.addStatHoliday);
 
 router.post("/location", setUpController.addLocation);
 
+router.post("/crews", setUpController.addCrew);
+
 router.post("/roles", setUpController.addRole);
+
+router.post("/position-roles", setUpController.addPositionRole);
 
 router.post("/departments", setUpController.addDepartment);
 
