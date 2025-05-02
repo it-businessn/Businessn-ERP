@@ -3,7 +3,7 @@ const { getSumTotal } = require("../services/payrollService");
 const { findAllAdditionalHoursAllocatedInfo } = require("./payrunExtraAllocationInfoController");
 const { getEmployeeId } = require("./userController");
 const moment = require("moment");
-// const { generateT4Slip } = require("./t4SlipController");
+const { generateT4Slip } = require("./t4SlipController");
 const {
 	buildNewEmpPayStubInfo,
 	findEmployeeBenefitInfo,
@@ -569,9 +569,7 @@ const addEmployeePayStubInfo = async (req, res) => {
 			isExtraRun,
 			isCornerStone,
 		);
-		// generateT4Slip(companyName, payPeriod);
-		//if payroll processed successful
-		//alerts violation generate independently based on emp data, on process payroll will run again to check alerts or violations.
+		generateT4Slip(companyName, payPeriod);
 		res.status(200).json({ message: "Paystub created successfully" });
 	} catch (error) {
 		res.status(400).json({ message: error.message });
