@@ -74,14 +74,14 @@ const ProcessPayroll = () => {
 	const handleSubmit = async () => {
 		selectedPayPeriod.isProcessed = true;
 		setIsSubmitting(true);
-		// selectedPayGroup.yearSchedules[0].payPeriods.map((_) => (_.isProcessed = false));
-		// console.log(selectedPayGroup.yearSchedules[0].payPeriods, selectedPayGroup.yearSchedules);
+		// selectedPayGroup?.yearSchedules[0].payPeriods.map((_) => (_.isProcessed = false));
+		// console.log(selectedPayGroup?.yearSchedules[0].payPeriods, selectedPayGroup?.yearSchedules);
 		try {
 			const payrollProcessed = await SettingService.updateGroup(
 				{
-					yearSchedules: selectedPayGroup.yearSchedules,
+					yearSchedules: selectedPayGroup?.yearSchedules,
 				},
-				selectedPayGroup._id,
+				selectedPayGroup?._id,
 			);
 			if (payrollProcessed) {
 				handleClick();

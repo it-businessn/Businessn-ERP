@@ -82,7 +82,7 @@ const PayrunSetup = ({
 						</Th>
 						<Th>
 							<SelectBox
-								// handleChange={handleChange}
+								handleChange={(value) => console.log(value)}
 								data={payGroups}
 								name="name"
 								border="1px solid var(--primary_button_bg)"

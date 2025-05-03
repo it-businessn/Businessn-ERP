@@ -47,7 +47,7 @@ const EmployeeDetails = ({
 
 	const handleSubmit = async () => {
 		try {
-			await SettingService.updateGroup({ yearSchedules: selectedPayGroup.yearSchedules }, groupId);
+			await SettingService.updateGroup({ yearSchedules: selectedPayGroup?.yearSchedules }, groupId);
 			setRefresh((prev) => !prev);
 			handleClose();
 		} catch (error) {

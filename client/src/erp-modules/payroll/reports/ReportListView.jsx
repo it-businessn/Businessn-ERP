@@ -28,7 +28,7 @@ const ReportListView = () => {
 	);
 
 	useEffect(() => {
-		if (selectedPayGroup) setYearsList(selectedPayGroup?.yearSchedules.map(({ year }) => year));
+		if (selectedPayGroup) setYearsList(selectedPayGroup?.yearSchedules?.map(({ year }) => year));
 	}, [selectedPayGroup]);
 
 	let filteredPayPeriods = closestRecordIndex

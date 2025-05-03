@@ -17,6 +17,7 @@ import EmptyRowRecord from "components/ui/EmptyRowRecord";
 import ActionButtonGroup from "components/ui/form/ActionButtonGroup";
 import InputFormControl from "components/ui/form/InputFormControl";
 import MultiSelectButton from "components/ui/form/MultiSelectButton";
+import SelectFormControl from "components/ui/form/SelectFormControl";
 import TextTitle from "components/ui/text/TextTitle";
 import { useState } from "react";
 import SettingService from "services/SettingService";
@@ -38,7 +39,20 @@ const PaygroupForm = ({
 		admin: [],
 		company,
 		payrollActivated: false,
+		payFrequency: "",
 	};
+
+	const payFrequencies = [
+		{
+			name: "Daily",
+		},
+		{ name: "Weekly" },
+		{ name: "Biweekly" },
+		{ name: "Semimonthly" },
+		{ name: "Monthly" },
+		{ name: "Quarterly" },
+		{ name: "Annually" },
+	];
 
 	const [isSubmitting, setSubmitting] = useState(false);
 	const [formData, setFormData] = useState(defaultGroup);
@@ -151,9 +165,28 @@ const PaygroupForm = ({
 				>
 					Is Payroll Activated?
 				</Checkbox>
+				{formData.payrollActivated && (
+					<SelectFormControl
+						valueParam="name"
+						required={true}
+						name="name"
+						label="Pay Frequency"
+						valueText={formData.payFrequency || ""}
+						handleChange={(e) =>
+							setFormData((prevData) => ({
+								...prevData,
+								payFrequency: e.target.value,
+							}))
+						}
+						options={payFrequencies}
+						placeholder="Select pay frequency"
+					/>
+				)}
 				<ActionButtonGroup
 					submitBtnName={"Add"}
-					isDisabled={formData.name === ""}
+					isDisabled={
+						formData.name === "" || (formData?.payrollActivated && !formData?.payFrequency)
+					}
 					isLoading={isSubmitting}
 					onClose={onClose}
 					onOpen={handleSubmit}
@@ -173,10 +206,10 @@ const PaygroupForm = ({
 							{(!paygroup || paygroup?.length === 0) && (
 								<EmptyRowRecord data={paygroup} colSpan={2} />
 							)}
-							{paygroup?.map(({ _id, name, isActive }) => (
+							{paygroup?.map(({ _id, name, payrollActivated }) => (
 								<Tr key={_id}>
 									<Td>{name}</Td>
-									<Td>{isActive ? "Yes" : "No"}</Td>
+									<Td>{payrollActivated ? "Yes" : "No"}</Td>
 								</Tr>
 							))}
 						</Tbody>

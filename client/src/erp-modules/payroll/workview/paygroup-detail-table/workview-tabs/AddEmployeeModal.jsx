@@ -71,7 +71,7 @@ const AddEmployeeModal = ({
 		try {
 			selectedPayGroup.yearSchedules[0].payPeriods[selectedEmployeeIndex].selectedEmp = selectedEmp;
 			await SettingService.updateGroup(
-				{ yearSchedules: selectedPayGroup.yearSchedules },
+				{ yearSchedules: selectedPayGroup?.yearSchedules },
 				selectedPayGroupId,
 			);
 			setRefresh((prev) => !prev);

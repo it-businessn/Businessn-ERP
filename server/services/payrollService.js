@@ -1,7 +1,17 @@
+const FREQUENCY_MAP = {
+	Daily: { ANNUAL_PAY_PERIODS: 260, HOURS_PER_PERIOD: 8, TOTAL_WEEKS: 52 },
+	Weekly: { ANNUAL_PAY_PERIODS: 52, HOURS_PER_PERIOD: 40, TOTAL_WEEKS: 52 },
+	Biweekly: { ANNUAL_PAY_PERIODS: 26, HOURS_PER_PERIOD: 80, TOTAL_WEEKS: 52 },
+	Semimonthly: { ANNUAL_PAY_PERIODS: 24, HOURS_PER_PERIOD: 86.67, TOTAL_WEEKS: 52 },
+	Monthly: { ANNUAL_PAY_PERIODS: 12, HOURS_PER_PERIOD: 173.33, TOTAL_WEEKS: 52 },
+	Quarterly: { ANNUAL_PAY_PERIODS: 4, HOURS_PER_PERIOD: 520, TOTAL_WEEKS: 52 },
+	Annually: { ANNUAL_PAY_PERIODS: 1, HOURS_PER_PERIOD: 2080, TOTAL_WEEKS: 52 },
+};
+// const freqSettings = FREQUENCY_MAP[frequency];
 const TAX_CONFIG = {
-	HOURS_PER_WEEK: 40,
-	ANNUAL_PAY_PERIODS: 26,
-	TOTAL_WEEKS: 52,
+	// HOURS_PER_WEEK: freqSettings.HOURS_PER_PERIOD,
+	// ANNUAL_PAY_PERIODS: freqSettings.ANNUAL_PAY_PERIODS,
+	// TOTAL_WEEKS: freqSettings.TOTAL_WEEKS,
 	TOTAL_CONTRIBUTION_RATE: 0.0595,
 	CPP_BASIC_EXEMPTION: 3500,
 	NUMBER_OF_MONTHS: 12,
@@ -130,13 +140,16 @@ const convertHrsToFloat = (hrs) => (hrs ? parseFloat(hrs) : 0);
 
 const getSumTotal = (data1, data2) => (data1 || 0) + data2;
 
-const getTaxDetails = (payRate, grossEarning, empTaxCreditResult) => {
-	const annualProjectedGrossEarning = grossEarning * TAX_CONFIG.ANNUAL_PAY_PERIODS;
+const getTaxDetails = (payRate, grossEarning, empTaxCreditResult, frequency = "Biweekly") => {
+	frequency = "bi-weekly" || "Biweekly" ? "Biweekly" : frequency;
+	const annualPayPeriods = FREQUENCY_MAP[frequency].ANNUAL_PAY_PERIODS;
+	const hrsPayPeriods = FREQUENCY_MAP[frequency].HOURS_PER_PERIOD;
+	const annualProjectedGrossEarning = grossEarning * annualPayPeriods;
 
-	// const projectedIncome = payRate * TAX_CONFIG.HOURS_PER_WEEK * TAX_CONFIG.ANNUAL_PAY_PERIODS;
+	// const projectedIncome = payRate * hrsPayPeriods * annualPayPeriods;
 	const projectedIncome = annualProjectedGrossEarning;
 	const adjustedProjectedIncome = projectedIncome - TAX_CONFIG.CPP_BASIC_EXEMPTION;
-	const adjustedGrossEarning = adjustedProjectedIncome / TAX_CONFIG.ANNUAL_PAY_PERIODS;
+	const adjustedGrossEarning = adjustedProjectedIncome / annualPayPeriods;
 
 	const CPPAmount = empTaxCreditResult?.isCPPExempt
 		? 0
@@ -156,11 +169,11 @@ const getTaxDetails = (payRate, grossEarning, empTaxCreditResult) => {
 
 	const federalTaxDeductionByPayPeriod =
 		applyFederalTaxRate(annualProjectedGrossEarning, empTaxCreditResult?.federalTaxCredit) /
-		TAX_CONFIG.ANNUAL_PAY_PERIODS;
+		annualPayPeriods;
 
 	const totalProvincialTaxDeduction =
 		applyProvincialTaxRate(annualProjectedGrossEarning, empTaxCreditResult?.regionalTaxCredit) /
-		TAX_CONFIG.ANNUAL_PAY_PERIODS;
+		annualPayPeriods;
 
 	const EE_EIContribution = empTaxCreditResult?.isEIExempt
 		? 0

@@ -330,6 +330,7 @@ const buildPayStubDetails = async (currentPayPeriod, companyName, empTimesheetDa
 		payPeriodProcessingDate,
 		payPeriod,
 		isExtraRun,
+		frequency,
 	} = currentPayPeriod;
 
 	const empPayInfoResult = await EmployeePayInfo.findOne({
@@ -350,6 +351,7 @@ const buildPayStubDetails = async (currentPayPeriod, companyName, empTimesheetDa
 		empBenefitInfoResult,
 		empTaxCreditResult,
 		isExtraRun,
+		frequency,
 	);
 
 	const prevPayPeriodNum = isExtraRun ? payPeriod : payPeriod - 1;

@@ -96,7 +96,7 @@ const ExtraPayrunModal = ({
 			? closestRecord.payPeriod
 			: closestRecord.payPeriod - 1;
 		try {
-			selectedPayGroup.yearSchedules[0]?.payPeriods.push({
+			selectedPayGroup?.yearSchedules[0]?.payPeriods.push({
 				payPeriod: payPeriodNum,
 				selectedEmp,
 				payPeriodPayDate,
@@ -106,8 +106,8 @@ const ExtraPayrunModal = ({
 				isExtraRun: true,
 			});
 			await SettingService.updateGroup(
-				{ yearSchedules: selectedPayGroup.yearSchedules },
-				selectedPayGroup._id,
+				{ yearSchedules: selectedPayGroup?.yearSchedules },
+				selectedPayGroup?._id,
 			);
 			setRefresh((prev) => !prev);
 			handleClose();

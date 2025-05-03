@@ -36,7 +36,7 @@ const getAllPayGroups = async (req, res) => {
 		const groups = await Group.find({
 			companyName,
 			payrollActivated: true,
-		}).select("scheduleSettings yearSchedules name");
+		}).select("scheduleSettings yearSchedules name scheduleFrequency");
 		res.status(200).json(groups);
 	} catch (error) {
 		res.status(404).json({ error: error.message });
