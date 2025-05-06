@@ -182,18 +182,18 @@ const refreshToken = async (req, res) => {
 				.status(401)
 				.json({ error: "Refresh token is required", message: "Refresh token is required" });
 		}
-		jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
-			if (err) {
-				return res.status(403).json({ error: "Invalid or expired refresh token" });
-			}
-			const newAccessToken = generateAccessToken({
-				id: user._id,
-				username: user.username,
-			});
-			res.json({ accessToken: newAccessToken });
+		const user = await jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
+
+		const newAccessToken = generateAccessToken({
+			id: user._id,
+			username: user.username,
 		});
+		res.json({ accessToken: newAccessToken });
 	} catch (error) {
-		console.error("Error checking password:", error);
+		if (error.name === "TokenExpiredError" || error.name === "JsonWebTokenError") {
+			return res.status(403).json({ error: "Invalid or expired refresh token" });
+		}
+		console.error("Error verifying refresh token:", error);
 		return res.status(500).json({ error: "Internal server error" });
 	}
 };

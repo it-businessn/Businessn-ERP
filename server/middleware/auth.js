@@ -19,11 +19,13 @@ const authenticateToken = async (req, res, next) => {
 	const token = authHeader && authHeader.split(" ")[1]; // Bearer <token>
 	if (!token) return res.status(401).json({ message: "Access token is required" });
 
-	jwt.verify(token, SECRET_KEY, (err, user) => {
-		if (err) return res.status(403).json({ message: "Invalid or expired token" });
+	try {
+		const user = await jwt.verify(token, SECRET_KEY);
 		req.user = user;
 		next();
-	});
+	} catch (err) {
+		return res.status(403).json({ message: "Invalid or expired token" });
+	}
 };
 
 module.exports = { authenticateToken, generateAccessToken, generateRefreshToken };
