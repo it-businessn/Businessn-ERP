@@ -13,6 +13,12 @@ export const PAY_TYPES_TITLE = {
 	VACATION_PAY: "Vacation Pay",
 };
 
+export const convertToMinutes = (time) => {
+	if (!time || typeof time !== "string") return null;
+	const [h, m] = time.split(":").map(Number);
+	return h * 60 + m;
+};
+
 export const BREAK_TYPES_TITLE = {
 	REG_PAY_BRK: "Regular Pay Break",
 	OVERTIME_PAY_BRK: "Overtime Pay Break",
