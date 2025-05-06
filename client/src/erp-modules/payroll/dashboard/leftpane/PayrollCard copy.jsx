@@ -85,7 +85,8 @@ const PayrollCard = ({ prevSchedule, closestRecord, runType, nextSchedule, compa
 			/>
 
 			{/* {showReport && (
-				<PreviewReportsModal
+				<PreviewReportsModal 
+					isMobile={isMobile}
 					isReport
 					isOpen={showReport}
 					onClose={() => setShowReport(false)}

@@ -34,10 +34,8 @@ const TaskByDate = () => {
 
 	const fetchAllTasksByDate = async () => {
 		try {
-			const response = await CalendarService.getEvents();
-			const tasksByDate = response.data.filter(
-				(task) => task.taskDueDate !== null,
-			);
+			const { data } = await CalendarService.getEvents();
+			const tasksByDate = data.filter((task) => task.taskDueDate !== null);
 			tasksByDate.map((task) => (task.status = "Open"));
 			setTasks(tasksByDate);
 		} catch (error) {
@@ -63,9 +61,7 @@ const TaskByDate = () => {
 												<HStack spacing={4} w="70%">
 													<Checkbox
 														isChecked={task.status === "Closed"}
-														onChange={(e) =>
-															handleCheckboxChange(e.target.checked, task)
-														}
+														onChange={(e) => handleCheckboxChange(e.target.checked, task)}
 														colorScheme="facebook"
 														borderRadius="full"
 														borderColor="var(--logo_bg)"
@@ -77,9 +73,7 @@ const TaskByDate = () => {
 												<Spacer />
 												<Text color="var(--gray2_color)">
 													Due Date:
-													{moment(task?.dueDate).format(
-														"MMM DD, YYYY hh:mm A Z",
-													)}
+													{moment(task?.dueDate).format("MMM DD, YYYY hh:mm A Z")}
 												</Text>
 											</Flex>
 										</VStack>

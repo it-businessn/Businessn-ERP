@@ -4,7 +4,7 @@ import "daterangepicker/daterangepicker.css";
 import $ from "jquery";
 import moment from "moment";
 import { useEffect, useRef, useState } from "react";
-import { getDefaultDate, getMomentDate } from "utils/convertDate";
+import { getMomentDate, TODAY_DATE } from "utils/convertDate";
 
 const DateFilterPopup = ({
 	toggleDateFilter,
@@ -13,6 +13,8 @@ const DateFilterPopup = ({
 	setStartDate,
 	closestRecord,
 	lastRecord,
+	startDate,
+	endDate,
 }) => {
 	const inputRef = useRef(null);
 	const [selectedDateRange, setSelectedDateRange] = useState(null);
@@ -20,17 +22,18 @@ const DateFilterPopup = ({
 	const handleDateRangeChange = (range) => setSelectedDateRange(range);
 
 	useEffect(() => {
+		const yesterday = moment().subtract(1, "days");
 		$(inputRef.current).daterangepicker(
 			{
 				alwaysShowCalendars: true,
-				startDate: getMomentDate(closestRecord?.payPeriodStartDate),
-				endDate: getMomentDate(closestRecord?.payPeriodEndDate),
+				startDate,
+				endDate,
 				locale: {
 					format: "YYYY/MM/DD",
 				},
 				ranges: {
-					Today: [moment(), moment()],
-					Yesterday: [moment().subtract(1, "days"), moment().subtract(1, "days")],
+					Today: [TODAY_DATE, TODAY_DATE],
+					Yesterday: [yesterday, yesterday],
 					"Last pay period": [
 						getMomentDate(lastRecord?.payPeriodStartDate),
 						getMomentDate(lastRecord?.payPeriodEndDate),
@@ -49,15 +52,15 @@ const DateFilterPopup = ({
 				},
 			},
 			(start, end, label) => {
-				setStartDate(getDefaultDate(start));
-				setEndDate(getDefaultDate(end));
+				setStartDate(start.format("YYYY-MM-DD"));
+				setEndDate(end.format("YYYY-MM-DD"));
 				// setSelectedFilter(label);
 			},
 		);
 		return () => {
 			$(inputRef?.current).data("daterangepicker")?.remove();
 		};
-	}, [selectedDateRange, closestRecord]);
+	}, [selectedDateRange, closestRecord, startDate, endDate]);
 
 	return (
 		<HStack

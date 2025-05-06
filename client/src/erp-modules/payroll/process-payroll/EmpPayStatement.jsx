@@ -26,9 +26,9 @@ const EmpPayStatement = ({ record, isOpen, onClose }) => {
 		setTimeout(() => handlePrint(), 1000);
 	};
 	return (
-		<Drawer isOpen={isOpen} onClose={onClose} size="xl">
+		<Drawer isOpen={isOpen} onClose={onClose}>
 			<DrawerOverlay />
-			<DrawerContent>
+			<DrawerContent sx={{ maxWidth: "850px", overflow: "auto" }}>
 				<DrawerHeader p={0}>
 					<DrawerCloseButton />
 					<Flex w={"95%"} justify={"end"} alignItems={"center"}>
@@ -43,8 +43,8 @@ const EmpPayStatement = ({ record, isOpen, onClose }) => {
 					</Flex>
 				</DrawerHeader>
 
-				<DrawerBody ref={componentRef} bg={"var(--main_color)"} minH={"100vh"}>
-					{record && <PayStubStatement data={record} />}
+				<DrawerBody ref={componentRef} bg={"var(--main_color)"} minH="100vh" p="5px">
+					{record && <PayStubStatement data={record} height="98vh" />}
 				</DrawerBody>
 			</DrawerContent>
 		</Drawer>

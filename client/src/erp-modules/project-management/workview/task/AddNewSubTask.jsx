@@ -122,7 +122,7 @@ const AddNewSubTask = ({
 		// 		setSubTasks([]);
 		// 		setRefresh(true);
 		// 	} catch (error) {
-		// 		setMessage("An error occurred. Please try again.");
+		// 		setMessage("An error occurred. Please try again.", error);
 		// 	} finally {
 		// 		setSubmitting(false);
 		// 	}
@@ -134,7 +134,7 @@ const AddNewSubTask = ({
 			// setSubTasks([]);
 			setRefresh((prev) => !prev);
 		} catch (error) {
-			setMessage("An error occurred. Please try again.");
+			setMessage("An error occurred. Please try again.", error);
 		} finally {
 			setSubmitting(false);
 		}

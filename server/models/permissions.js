@@ -23,7 +23,7 @@ const userPermissionsSchema = new Schema({
 
 	createdOn: { type: Date, default: Date.now },
 	updatedOn: { type: Date, default: Date.now },
-	companyName: { type: String, ref: "Company" },
+	companyName: String,
 });
 
 module.exports = mongoose.model("UserPermissions", userPermissionsSchema);

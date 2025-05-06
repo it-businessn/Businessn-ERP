@@ -1,4 +1,5 @@
 import moment from "moment";
+import momentTz from "moment-timezone";
 
 export const timeSpan = (time) => {
 	const givenTime = new Date(time);
@@ -10,13 +11,14 @@ export const timeSpan = (time) => {
 	return `${hoursAgo}hr ${minutesAgo}m ago`;
 };
 
-export const todayDate = moment();
+export const TODAY_DATE = moment();
+export const CURRENT_YEAR = moment().year();
 
-export const isFutureDate = (date) => todayDate.isAfter(date, "day");
+export const isFutureDate = (date) => TODAY_DATE.isAfter(date, "day");
 export const getMomentDate = (date) => moment.utc(date);
 
 export const daysAgo = (date) => {
-	const numDays = todayDate?.diff(date, "days");
+	const numDays = TODAY_DATE?.diff(date, "days");
 	const days = numDays < 0 ? Math.abs(numDays) : numDays;
 	return days;
 };
@@ -31,13 +33,13 @@ export const longTimeFormat = (date) => moment(date).format("MMM DD, YYYY hh:mm 
 
 export const longFormat = (date) => moment.utc(date).format("dddd, D MMMM YYYY");
 
-export const monthDayYearFormat = (date) => moment(date).format("MMMM, DD, YYYY");
+export const monthDayYearFormat = (date) => moment.utc(date).format("MMMM, DD, YYYY");
 
 export const mmmDayYearFormat = (date) => moment(date).format("MMM, DD, YYYY");
 
-export const monthDayYear = todayDate.format("MMM DD, YYYY");
+export const monthDayYear = TODAY_DATE.format("MMM DD, YYYY");
 
-export const today = todayDate.format("MMDDYY");
+export const today = TODAY_DATE.format("MMDDYY");
 
 export const formatDateMMDDYY = (date) => moment.utc(date).format("MM/DD/YYYY");
 
@@ -51,19 +53,85 @@ export const formatDateRange = (startDate, endDate) => {
 
 export const getDefaultTime = (date) => moment(date, "HH:mm").format("hh:mm A");
 
+export const convertMomentTzDate = (timestamp) =>
+	momentTz(timestamp).utc().format("YYYY-MM-DDTHH:mm:ss.SSS[Z]");
+
 export const getTimeCardFormat = (timestamp, notDevice, timeSheet) => {
-	const date = notDevice ? moment(timestamp) : moment.utc(timestamp);
-	return timeSheet ? date.format("ddd, YYYY-MM-DD") : date.format("YYYY-MM-DD  hh:mm A");
+	// const date = notDevice ? moment(timestamp) : moment.utc(timestamp);
+	timestamp = convertMomentTzDate(timestamp);
+	let date = moment(timestamp);
+
+	if (date.hour() <= 23) {
+		date = date.utc();
+	}
+	return timeSheet ? date.format("ddd, YYYY-MM-DD") : date.format("YYYY-MM-DD hh:mm A");
+};
+
+export const getUTCTime = (time) => {
+	const date = new Date(time);
+	const hours = date.getUTCHours().toString().padStart(2, "0");
+	const minutes = date.getUTCMinutes().toString().padStart(2, "0");
+	return `${hours}:${minutes}`;
 };
 
 // export const getTimeFormat = (date) => moment.utc(date).format("hh:mm A");
+export const getClockInTimeFormat = (timestamp) => {
+	const time = moment(timestamp);
+	if (
+		time.format("HH") <= "05" ||
+		time.format("HH:mm") > "17:00" ||
+		time.format("HH:mm") < "16:00"
+	) {
+		// console.log(
+		// 	"here",
+		// 	timestamp,
+		// 	time.format("HH"),
+		// 	time.format("HH:mm"),
+		// 	time.utc().format("HH:mm"),
+		// );
+		return time.utc().format("HH:mm");
+	} else {
+		// console.log(
+		// 	"else",
+		// 	timestamp,
+		// 	time.format("HH"),
+		// 	time.format("HH:mm"),
+		// 	time.utc().format("HH:mm"),
+		// 	time.format("hh:mm"),
+		// 	time.format("HH:mm") < "17:00",
+		// );
+		return time.format("HH:mm");
+	}
+	// timestamp = convertMomentTzDate(timestamp);
+	// let date = moment(timestamp);
+
+	// if (date.hour() <= 23) {
+	// 	date = date.utc();
+	// }
+	// const utcHours = new Date(timestamp).getUTCHours();
+	// const utcMinutes = new Date(timestamp).getUTCMinutes();
+	// const formattedUTC = `${(utcHours % 24).toString().padStart(2, "0") || 12}:${utcMinutes
+	// 	.toString()
+	// 	.padStart(2, "0")}`;
+
+	// return formattedUTC;
+};
+
 export const getTimeFormat = (timestamp, notDevice) => {
-	const date = notDevice ? moment(timestamp) : moment.utc(timestamp);
-	return date.format("HH:mm");
+	let time = moment(timestamp);
+
+	if (time.format("HH") <= "16") {
+		// console.log("here", timestamp, time.format("HH"), time.format("HH:mm"));
+		return time.utc().format("HH:mm");
+	} else {
+		// console.log("else", timestamp, time.format("HH"), time.format("HH:mm"));
+		return time.format("HH:mm");
+	}
 };
 
 export const setUTCDate = (date, newDate, notDevice) => {
-	const utcDate = date ? (notDevice ? moment(date) : moment.utc(date)) : moment.utc();
+	// const utcDate = date ? (notDevice ? moment(date) : moment.utc(date)) : moment.utc();
+	const utcDate = date ? moment(date) : moment();
 
 	let [hours, minutes] = newDate.split(":");
 	utcDate.set({

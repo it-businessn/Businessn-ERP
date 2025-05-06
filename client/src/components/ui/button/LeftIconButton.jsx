@@ -17,9 +17,11 @@ const LeftIconButton = ({
 	bg,
 	_hover,
 	px,
+	isLoading,
 }) => {
 	return (
 		<Button
+			isLoading={isLoading}
 			px={px}
 			type={type}
 			w={w}

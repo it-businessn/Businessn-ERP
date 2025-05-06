@@ -2,6 +2,7 @@ const Project = require("../models/Project");
 const Task = require("../models/Task");
 const SubTask = require("../models/SubTask");
 const Activity = require("../models/Activity");
+const { TIMESHEET_STATUS } = require("../services/data");
 
 const findProject = async (projects) =>
 	await Promise.all(
@@ -28,9 +29,7 @@ const findProject = async (projects) =>
 
 const getProjects = async (req, res) => {
 	try {
-		const projects = (await Project.find({})).sort(
-			(a, b) => b.createdOn - a.createdOn,
-		);
+		const projects = (await Project.find({})).sort((a, b) => b.createdOn - a.createdOn);
 		const populatedProjects = await findProject(projects);
 		res.status(200).json(populatedProjects);
 	} catch (error) {
@@ -54,9 +53,9 @@ const getCompanyProjects = async (req, res) => {
 const getAssigneeProjects = async (req, res) => {
 	const { selectedAssignees, companyName } = req.params;
 	try {
-		const projects = (
-			await Project.find({ selectedAssignees, companyName })
-		).sort((a, b) => b.createdOn - a.createdOn);
+		const projects = (await Project.find({ selectedAssignees, companyName })).sort(
+			(a, b) => b.createdOn - a.createdOn,
+		);
 		if (projects.length) {
 			const populatedProjects = await findProject(projects);
 			res.status(200).json(populatedProjects);
@@ -96,9 +95,7 @@ const addSubTask = async (req, res) => {
 		savedTask.subtasks = savedTask.subtasks.concat(newSubtask._id);
 		savedTask.totalTasks += 1;
 
-		const concatenatedTaskArray = savedTask.selectedAssignees.concat(
-			newSubtask.selectedAssignees,
-		);
+		const concatenatedTaskArray = savedTask.selectedAssignees.concat(newSubtask.selectedAssignees);
 		const uniqueTaskSet = new Set(concatenatedTaskArray);
 		const uniqueTaskArray = Array.from(uniqueTaskSet);
 		savedTask.selectedAssignees = uniqueTaskArray;
@@ -167,8 +164,7 @@ const addTaskSubTasks = async (req, res) => {
 const updateProjectSubTask = async (req, res) => {
 	const { projectId } = req.params;
 
-	const { subtasks, activities, timeToComplete, dueDate, taskName, taskId } =
-		req.body;
+	const { subtasks, activities, timeToComplete, dueDate, taskName, taskId } = req.body;
 
 	try {
 		const savedSubtasks = await Promise.all(
@@ -221,15 +217,12 @@ const updateProjectSubTask = async (req, res) => {
 		savedTask.status = getProjectStatus(dueDate);
 
 		savedTask.timeToComplete = timeToComplete;
-		savedTask.subtasks = savedTask.subtasks.concat(
-			savedSubtasks.map((subtask) => subtask._id),
-		);
+		savedTask.subtasks = savedTask.subtasks.concat(savedSubtasks.map((subtask) => subtask._id));
 		savedTask.activities = savedTask.activities.concat(
 			savedActivities.map((activity) => activity._id),
 		);
 
-		const concatenatedTaskArray =
-			savedTask.selectedAssignees.concat(mergedAssignees);
+		const concatenatedTaskArray = savedTask.selectedAssignees.concat(mergedAssignees);
 		const uniqueTaskSet = new Set(concatenatedTaskArray);
 		const uniqueTaskArray = Array.from(uniqueTaskSet);
 		savedTask.selectedAssignees = uniqueTaskArray;
@@ -277,32 +270,22 @@ const createActivity = async (req, res) => {
 			),
 		);
 
-		task.activities = task.activities.concat(
-			activities.map((activity) => activity._id),
-		);
+		task.activities = task.activities.concat(activities.map((activity) => activity._id));
 
 		const mergedAssignees = [
-			...activities.reduce(
-				(assignees, action) => assignees.concat(action.selectedAssignees),
-				[],
-			),
+			...activities.reduce((assignees, action) => assignees.concat(action.selectedAssignees), []),
 		];
 
-		const concatenatedTaskArray =
-			task.selectedAssignees.concat(mergedAssignees);
+		const concatenatedTaskArray = task.selectedAssignees.concat(mergedAssignees);
 		const uniqueTaskSet = new Set(concatenatedTaskArray);
 		const uniqueTaskArray = Array.from(uniqueTaskSet);
 		task.selectedAssignees = uniqueTaskArray;
 
 		await task.save();
 
-		const concatenatedProjectTaskArray = project.selectedAssignees.concat(
-			task.selectedAssignees,
-		);
+		const concatenatedProjectTaskArray = project.selectedAssignees.concat(task.selectedAssignees);
 
-		const uniqueProjectArray = Array.from(
-			new Set(concatenatedProjectTaskArray),
-		);
+		const uniqueProjectArray = Array.from(new Set(concatenatedProjectTaskArray));
 		project.selectedAssignees = uniqueProjectArray;
 
 		await project.save();
@@ -394,8 +377,7 @@ const scheduleTask = async (req, res) => {
 const addProjectTask = async (req, res) => {
 	const { projectId } = req.params;
 
-	const { timeToComplete, dueDate, taskName, selectedAssignees, companyName } =
-		req.body;
+	const { timeToComplete, dueDate, taskName, selectedAssignees, companyName } = req.body;
 
 	try {
 		const status = getProjectStatus(dueDate);
@@ -436,14 +418,7 @@ const addProjectTask = async (req, res) => {
 
 const updateProjectTask = async (req, res) => {
 	const { id } = req.params;
-	const {
-		timeToComplete,
-		dueDate,
-		taskName,
-		priority,
-		selectedAssignees,
-		projectId,
-	} = req.body;
+	const { timeToComplete, dueDate, taskName, priority, selectedAssignees, projectId } = req.body;
 
 	try {
 		const status = getProjectStatus(dueDate);
@@ -456,11 +431,7 @@ const updateProjectTask = async (req, res) => {
 			selectedAssignees,
 		};
 
-		const updatedTask = await Task.findByIdAndUpdate(
-			id,
-			{ $set: updatedData },
-			{ new: true },
-		);
+		const updatedTask = await Task.findByIdAndUpdate(id, { $set: updatedData }, { new: true });
 		const savedProject = await Project.findById(projectId);
 
 		if (savedProject?.selectedAssignees?.length === 0) {
@@ -614,15 +585,7 @@ const updateInnerSubTasks = async (req, res) => {
 const updateTaskActivity = async (req, res) => {
 	const { id } = req.params;
 
-	const {
-		projectId,
-		action,
-		taskId,
-		dueDate,
-		taskName,
-		projectName,
-		timeToComplete,
-	} = req.body;
+	const { projectId, action, taskId, dueDate, taskName, projectName, timeToComplete } = req.body;
 	const status = getProjectStatus(dueDate);
 	try {
 		const savedTask = await Task.findById(id);
@@ -651,8 +614,7 @@ const updateTaskActivity = async (req, res) => {
 						projectId,
 						taskId,
 						name: activity.taskName || activity.name,
-						selectedAssignees:
-							activity.selectedAssignees || activity.selectedAssignee,
+						selectedAssignees: activity.selectedAssignees || activity.selectedAssignee,
 						isOpen: true,
 						dueDate,
 						timeToComplete,
@@ -683,7 +645,7 @@ const getProjectStatus = (dueDate) => {
 	} else if (dueDate > currentDate) {
 		return `Upcoming ${daysOverdue}`;
 	} else {
-		return `Pending ${daysOverdue}`;
+		return `${TIMESHEET_STATUS.PENDING} ${daysOverdue}`;
 	}
 };
 
@@ -725,15 +687,8 @@ const updateProject = async (req, res) => {
 };
 
 const createProject = async (req, res) => {
-	const {
-		projectName,
-		timeToComplete,
-		startDate,
-		dueDate,
-		managerId,
-		managerName,
-		companyName,
-	} = req.body;
+	const { projectName, timeToComplete, startDate, dueDate, managerId, managerName, companyName } =
+		req.body;
 
 	try {
 		const status = getProjectStatus(dueDate);

@@ -57,16 +57,16 @@ const LeadsDisbursed = () => {
 	useEffect(() => {
 		const fetchAllLeads = async () => {
 			try {
-				const response = await LeadsService.getDisbursedLeads(company);
-				setLeads(response.data);
+				const { data } = await LeadsService.getDisbursedLeads(company);
+				setLeads(data);
 			} catch (error) {
 				console.error(error);
 			}
 		};
 		const fetchAllUserActivity = async () => {
 			try {
-				const response = await UserService.getAllUserActivity();
-				setActivity(response.data);
+				const { data } = await UserService.getAllUserActivity();
+				setActivity(data);
 			} catch (error) {
 				console.error(error);
 			}
@@ -203,7 +203,7 @@ const LeadsDisbursed = () => {
 	);
 
 	return (
-		<PageLayout width="full" title={"Lead Disbursement"} showBgLayer>
+		<PageLayout width="full" title="Lead Disbursement" showBgLayer>
 			<AutoAssign />
 			{isMobile || isIpad ? (
 				<Flex flexDir="column" gap={{ base: 0, md: 3 }}>
@@ -228,7 +228,7 @@ const LeadsDisbursed = () => {
 				</HStack>
 			)}
 
-			<TableLayout cols={columns} isSmall height={"73vh"}>
+			<TableLayout cols={columns} isSmall height="calc(100vh - 308px)">
 				<Tbody>
 					{(!activity || activity?.length === 0) && (
 						<EmptyRowRecord data={activity} colSpan={columns?.length} />
@@ -270,7 +270,7 @@ const LeadsDisbursed = () => {
 											rightIcon={<FaCaretRight />}
 											bg={generateLighterShade(COLORS.primary, 0.9)}
 											border={`1px solid var(--primary_button_bg)`}
-										>{`${assignedLeads} leads`}</Button>
+										>{`${assignedLeads || 0} leads`}</Button>
 									</Td>
 									<Td p={1}>
 										{lastLoginStatus ? (
@@ -285,7 +285,7 @@ const LeadsDisbursed = () => {
 									<Td p={1}>{role}</Td>
 									<Td
 										p={1}
-									>{`${primaryAddress.streetNumber} ${primaryAddress.city} ${primaryAddress.state} ${primaryAddress.country} ${primaryAddress.postalCode}`}</Td>
+									>{`${primaryAddress?.streetNumber} ${primaryAddress?.city} ${primaryAddress?.state} ${primaryAddress?.country} ${primaryAddress?.postalCode}`}</Td>
 									<Td p={1}>
 										<SelectList
 											id={_id}

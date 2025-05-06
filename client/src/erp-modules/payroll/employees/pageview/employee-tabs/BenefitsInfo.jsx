@@ -1,10 +1,12 @@
-import { SimpleGrid } from "@chakra-ui/react";
+import { FormControl, HStack, Input, SimpleGrid } from "@chakra-ui/react";
+import PrimaryButton from "components/ui/button/PrimaryButton";
 import BoxCard from "components/ui/card";
 import VerticalStepper from "components/ui/VerticalStepper";
 import {
+	EE_PAID_BENEFITS_CONFIG,
 	EMP_PAY_INFO_ACCRUALS_CONFIG,
-	EMP_PAY_INFO_DEDUCTION_CONFIG,
 	EMP_VACATION_BALANCE_CONFIG,
+	ER_PAID_BENEFITS_CONFIG,
 	getInitialBalanceInfo,
 } from "config/payroll/employees/balanceInfo";
 import useEmployeeBalanceInfo from "hooks/useEmployeeBalanceInfo";
@@ -15,11 +17,13 @@ import PayrollService from "services/PayrollService";
 import StepContent from "../step-content";
 import Record from "../step-content/Record";
 
-const BenefitsInfo = ({ company }) => {
+const BenefitsInfo = ({ company, id, isOnboarding, handleNext }) => {
 	const { empId } = useSelectedEmp(LocalStorageService.getItem("empId"));
-	const balanceInfo = useEmployeeBalanceInfo(company, empId);
-	const setBalanceInfo = () => getInitialBalanceInfo(empId, company);
-	const [formData, setFormData] = useState(setBalanceInfo);
+	const onboardingEmpId = LocalStorageService.getItem("onboardingEmpId");
+	const userId = isOnboarding ? onboardingEmpId : empId;
+	const balanceInfo = useEmployeeBalanceInfo(company, userId);
+	const initialBalanceInfo = getInitialBalanceInfo(userId, company);
+	const [formData, setFormData] = useState(initialBalanceInfo);
 	const [isDisabled, setIsDisabled] = useState(true);
 	const [isLoading, setIsLoading] = useState(false);
 	const [carryFwd, setCarryFwd] = useState(false);
@@ -29,25 +33,23 @@ const BenefitsInfo = ({ company }) => {
 			setFormData(balanceInfo);
 			setCarryFwd(balanceInfo?.carryFwd);
 		} else {
-			setFormData(setBalanceInfo);
+			setFormData(initialBalanceInfo);
 		}
-	}, [balanceInfo, empId]);
+	}, [balanceInfo]);
 
 	useEffect(() => {
-		if (formData.typeOfVacationTreatment && formData.vacationPayPercent) {
-			setIsDisabled(false);
-		}
-	}, [formData.typeOfVacationTreatment, formData.vacationPayPercent]);
+		if (formData.typeOfVacationTreatment && formData.vacationPayPercent) setIsDisabled(false);
+		else setIsDisabled(true);
+	}, [formData.typeOfVacationTreatment, formData.vacationPayPercent, userId]);
 
 	const handleSubmit = async () => {
 		setIsLoading(true);
-		const updatedBenefit = {
-			carryFwd: carryFwd !== undefined ? !carryFwd : false,
-			empId,
-			companyName: company,
-			typeOfVacationTreatment: formData?.typeOfVacationTreatment,
-			vacationPayPercent: formData?.vacationPayPercent,
-		};
+		const updatedBenefit = formData;
+
+		updatedBenefit.carryFwd = carryFwd !== undefined ? !carryFwd : false;
+		updatedBenefit.empId = userId;
+		updatedBenefit.companyName = company;
+
 		try {
 			await PayrollService.addEmployeeBalanceInfo(updatedBenefit);
 			setIsLoading(false);
@@ -65,42 +67,60 @@ const BenefitsInfo = ({ company }) => {
 					setFormData={setFormData}
 					title="Vacation"
 					config={EMP_PAY_INFO_ACCRUALS_CONFIG}
-					isLoading={isLoading}
-					handleSubmit={handleSubmit}
-					isDisabled={isDisabled}
 				/>
 			),
 		},
 		{
 			title: "Vacation Balances",
 			content: (
+				<>
+					<Record
+						carryFwd={carryFwd}
+						setCarryFwd={setCarryFwd}
+						formData={formData}
+						setFormData={setFormData}
+						title="Vacation Balances"
+						config={EMP_VACATION_BALANCE_CONFIG}
+						readOnly={true}
+					/>
+					<HStack justifyContent="space-between">
+						<PrimaryButton
+							size="xs"
+							name="Add Adjustment"
+							isLoading={isLoading}
+							loadingText="Loading"
+							onOpen={handleSubmit}
+						/>
+						<FormControl>
+							<Input size="sm" w="20%" placeholder="Enter amount to adjust" value="" readOnly />
+						</FormControl>
+					</HStack>
+				</>
+			),
+		},
+		{
+			title: "Employer Contributions",
+			content: (
 				<Record
-					carryFwd={carryFwd}
-					setCarryFwd={setCarryFwd}
+					handleConfirm={() => ""}
 					formData={formData}
 					setFormData={setFormData}
-					title="Vacation Balances"
-					config={EMP_VACATION_BALANCE_CONFIG}
-					isLoading={isLoading}
-					isDisabled={isDisabled}
-					handleSubmit={handleSubmit}
-					readOnly={true}
-					isBalanceInfo
+					title="Employer Contributions"
+					config={ER_PAID_BENEFITS_CONFIG}
+					isContribution
 				/>
 			),
 		},
 		{
-			title: "Contributions",
+			title: "Employee Contributions",
 			content: (
 				<Record
+					handleConfirm={() => ""}
 					formData={formData}
 					setFormData={setFormData}
-					title="Contributions"
-					config={EMP_PAY_INFO_DEDUCTION_CONFIG}
-					isLoading={isLoading}
-					handleSubmit={handleSubmit}
-					isBalanceInfo
-					readOnly={true}
+					title="Employee Contributions"
+					config={EE_PAID_BENEFITS_CONFIG}
+					isContribution
 				/>
 			),
 		},
@@ -120,8 +140,15 @@ const BenefitsInfo = ({ company }) => {
 				<VerticalStepper
 					hideProgress
 					steps={steps}
+					id={id}
+					isOnboarding={isOnboarding}
 					currentStep={currentStep}
 					handleClick={goToNextStep}
+					handleNextEnabled={true}
+					handleNext={handleNext}
+					isLoading={isLoading}
+					isDisabled={isDisabled}
+					handleSubmit={handleSubmit}
 				/>
 			</BoxCard>
 			<StepContent currentStep={currentStep} steps={steps} />

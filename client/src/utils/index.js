@@ -10,12 +10,15 @@ import {
 import { ROLES } from "constant";
 import AddNotes from "erp-modules/project-management/workview/project/cell/AddNotes";
 import { COLORS } from "erp-modules/project-management/workview/project/data";
+import moment from "moment";
 import { useState } from "react";
 import { CgNotes } from "react-icons/cg";
 import { FaChevronDown, FaChevronUp } from "react-icons/fa";
 import { GoTasklist } from "react-icons/go";
 import { ToWords } from "to-words";
-import { getMomentDate, isFutureDate, todayDate } from "./convertDate";
+import { getMomentDate, isFutureDate, TODAY_DATE } from "./convertDate";
+
+export const isSettled = (status) => status === "Settled";
 
 export const userCurrency = (currency) =>
 	new Intl.NumberFormat("en-US", {
@@ -342,18 +345,19 @@ export const COVER_COLORS = [
 
 export const getRoleColor = (role) => {
 	const colors = [
-		{ title: ROLES.MANAGER, color: "var(--stat_item_color)" },
-		{ title: ROLES.EMPLOYEE, color: "var(--correct_ans)" },
+		{ title: ROLES.MANAGER, color: "var(--overtime)" },
+		{ title: ROLES.EMPLOYEE, color: "var(--action_status_approve)" },
 		{ title: ROLES.ADMINISTRATOR, color: "var(--primary_button_bg)" },
-		{ title: ROLES.ENROLLER, color: "var(--gray2_color)" },
+		{ title: ROLES.ENROLLER, color: "var(--product5)" },
+		{ title: ROLES.AUTH_ADMINISTRATOR, color: "var(--nav_menu)" },
+		{ title: "Tester Role", color: "var(--stat_item_color)" },
 	];
 	// const randomIndex = Math.floor(Math.random() * colors.length);
 
 	return colors?.find(({ title }) => title === role)?.color;
 };
 
-export const isManager = (role) =>
-	role?.includes(ROLES.ADMINISTRATOR) || role?.includes(ROLES.MANAGER);
+export const isManager = (role) => role !== ROLES.EMPLOYEE && role !== ROLES.ENROLLER;
 
 export const calcTotal = (data, param1, param2) => {
 	return data.reduce((acc, product) => {
@@ -370,25 +374,32 @@ export const convertToNum = (str) => parseFloat(str.replace(/,/g, ""));
 
 export const isPaygroup = (name) => name?.payrollActivated;
 
-export const sortRecordsByDate = (records, key) => {
-	const sortedList = records?.sort((a, b) => new Date(a[key]) - new Date(b[key]));
+export const isExtraPay = (payPeriodNum, isExtra) => (isExtra ? `${payPeriodNum}E` : payPeriodNum);
 
-	sortedList?.map((record, index) => {
-		const {
-			color,
-			bg,
-			name,
-			isDisabledStatus,
-			isViewAction,
-			isDisabledAction,
-			// } = getPayrollStatus(record, payGroupSchedule[index - 1]?.payPeriodEndDate);
-		} = getPayrollStatus(record);
+export const getPayNum = (payNo, isExtra, payStubs) => {
+	return isExtra
+		? payStubs?.find(
+				({ payPeriodNum, isExtraRun }) =>
+					parseInt(payPeriodNum) === parseInt(payNo) && isExtraRun === isExtra,
+		  )
+		: payStubs?.find(({ payPeriodNum, isExtraRun }) => payPeriodNum === payNo && !isExtraRun);
+};
+
+export const sortRecordsByDate = (records, key, isDate = true, sort = true, frequency) => {
+	const sortedList = sort
+		? records?.sort((a, b) => (isDate ? new Date(a[key]) - new Date(b[key]) : a[key] - b[key]))
+		: records;
+
+	sortedList?.map((record) => {
+		const { color, bg, name, isDisabledStatus, isViewAction, isDisabledAction } =
+			getPayrollStatus(record);
 		record.color = color;
 		record.bg = bg;
 		record.name = name;
 		record.isDisabledStatus = isDisabledStatus;
 		record.isViewAction = isViewAction;
 		record.isDisabledAction = isDisabledAction;
+		record.frequency = frequency;
 		return record;
 	});
 	return sortedList;
@@ -408,9 +419,9 @@ export const getPayrollStatus = (data, prevRecordEndDate) => {
 	const targetPayDate = getMomentDate(data?.payPeriodPayDate);
 	const targetProcessingDate = getMomentDate(data?.payPeriodProcessingDate);
 
-	const isEndDatePassed = targetEndDate.isBefore(todayDate, "day");
-	const isPayDateInFuture = targetPayDate.isAfter(todayDate, "day");
-	const isPayDateToday = targetPayDate.isSameOrBefore(todayDate, "day");
+	const isEndDatePassed = targetEndDate.isBefore(TODAY_DATE, "day");
+	const isPayDateInFuture = targetPayDate.isAfter(TODAY_DATE, "day");
+	const isPayDateToday = targetPayDate.isSameOrBefore(TODAY_DATE, "day");
 
 	// const isProcessingDateTomorrow = targetProcessingDate.isBefore(
 	// 	today.clone().add(1, "day"),
@@ -429,7 +440,7 @@ export const getPayrollStatus = (data, prevRecordEndDate) => {
 		};
 	} else if (
 		!data?.isProcessed &&
-		(isEndDatePassed || todayDate.isBetween(targetStartDate, targetEndDate, "day", "[]"))
+		(isEndDatePassed || moment.utc().isBetween(targetStartDate, targetEndDate, "day", "[]"))
 	) {
 		return {
 			name: "Pending",
@@ -443,7 +454,7 @@ export const getPayrollStatus = (data, prevRecordEndDate) => {
 		return {
 			name: "Paid",
 			color: "var(--primary_bg)",
-			bg: "var(--correct_ans)",
+			bg: "var(--action_status_approve)",
 			isDisabledStatus: false,
 			isViewAction: true,
 		};
@@ -451,7 +462,7 @@ export const getPayrollStatus = (data, prevRecordEndDate) => {
 		return {
 			name: "Submitted",
 			color: "var(--primary_bg)",
-			bg: "var(--correct_ans)",
+			bg: "var(--action_status_approve)",
 			isDisabledStatus: false,
 			isViewAction: true,
 		};
@@ -472,8 +483,6 @@ export const getPayrollStatus = (data, prevRecordEndDate) => {
 		return defaultStatus;
 	}
 };
-
-export const isExtraPay = (payPeriodNum, isExtra) => (isExtra ? `${payPeriodNum}E` : payPeriodNum);
 
 export const toWords = new ToWords({
 	localeCode: "en-US",

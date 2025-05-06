@@ -7,8 +7,8 @@ const useUserAssociatedCompanies = (userId) => {
 	useEffect(() => {
 		const fetchCompanyInfo = async () => {
 			try {
-				const response = await SettingService.getAllCompaniesByUser(userId);
-				setCompanies(response.data);
+				const { data } = await SettingService.getAllCompaniesByUser(userId);
+				setCompanies(data);
 			} catch (error) {
 				console.error(error);
 			}

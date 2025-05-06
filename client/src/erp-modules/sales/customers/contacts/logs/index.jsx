@@ -26,8 +26,8 @@ const Logs = ({ contactId, user, company, currentTab }) => {
 	useEffect(() => {
 		const fetchActivitiesByContactId = async () => {
 			try {
-				const response = await ActivityService.getActivitiesByContactId(contactId);
-				setActivities(response.data);
+				const { data } = await ActivityService.getActivitiesByContactId(contactId);
+				setActivities(data);
 			} catch (error) {
 				console.error(error);
 			}

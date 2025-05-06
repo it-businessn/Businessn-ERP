@@ -1,4 +1,5 @@
 import { Box, Table, Th, Thead, Tr } from "@chakra-ui/react";
+import { ALIGN_COLS, COLS, TITLE_COLS } from "constant";
 import TextTitle from "../text/TextTitle";
 
 const WorkviewTable = ({ cols, isSmall, height, whiteSpace, children, overflowX }) => {
@@ -18,8 +19,8 @@ const WorkviewTable = ({ cols, isSmall, height, whiteSpace, children, overflowX 
 								width={"98px"}
 							>
 								<TextTitle
-									weight={["Employee Name", "Total Hours", "Total Amount"].includes(col) && 800}
-									width={col === "Employee Name" ? "150px" : "98px"}
+									weight={TITLE_COLS.includes(col) && 800}
+									width={col === COLS.EMP_NAME ? "150px" : "98px"}
 									visibility={
 										(hideLabel(col, "detail") ||
 											hideLabel(col, "amount") ||
@@ -29,16 +30,7 @@ const WorkviewTable = ({ cols, isSmall, height, whiteSpace, children, overflowX 
 									}
 									whiteSpace={whiteSpace}
 									title={col}
-									align={
-										[
-											"Union Dues",
-											"Employer Pension Plan (EE)",
-											"Employer Health Plan (EE)",
-											"ER Pension Plan",
-											"ER Health Plan",
-											"Payrate",
-										].includes(col) && "end"
-									}
+									align={ALIGN_COLS.includes(col) && "end"}
 								/>
 							</Th>
 						))}

@@ -11,14 +11,13 @@ export const useLogin = () => {
 		setIsLoading(true);
 		setError(null);
 		try {
-			const response = await LoginService.signIn(values);
-			const json = response.data;
-			if (response.status === 200) {
+			const { data, status } = await LoginService.signIn(values);
+			const json = data;
+			if (status === 200) {
 				dispatch({ type: "LOGIN", payload: json });
 			}
 		} catch (error) {
-			console.log(error);
-			setError(error.response.data.error);
+			setError(error?.response?.data?.error);
 		} finally {
 			setIsLoading(false);
 		}

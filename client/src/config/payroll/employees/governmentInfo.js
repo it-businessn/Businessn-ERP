@@ -1,4 +1,5 @@
-import { COUNTRIES, REGIONS } from "erp-modules/project-management/workview/project/data";
+import { CONTRIBUTION } from "constant";
+import { COUNTRIES } from "./profileInfo";
 
 export const EMP_INCOME_TAX_CONFIG = [
 	{
@@ -14,7 +15,7 @@ export const EMP_INCOME_TAX_CONFIG = [
 				name: "Regional Tax",
 				param_key: "regionalTax",
 				control: "select",
-				options: REGIONS,
+				options: COUNTRIES,
 			},
 		],
 	},
@@ -22,7 +23,7 @@ export const EMP_INCOME_TAX_CONFIG = [
 		type: "sfsgdsgdsgdsg15",
 		params: [
 			{
-				name: "Personal Federal Tax  Credit",
+				name: "Personal Federal Tax Credit",
 				param_key: "federalTaxCredit",
 			},
 			{
@@ -39,7 +40,7 @@ export const EMP_FED_GOVT_CONFIG = [
 		params: [
 			{ name: "Pension (EE)", param_key: "federalPensionEE" },
 			{
-				name: "Employment Insurance (EE)",
+				name: `${CONTRIBUTION.EI} (EE)`,
 				param_key: "federalEmploymentInsuranceEE",
 			},
 		],
@@ -49,7 +50,7 @@ export const EMP_FED_GOVT_CONFIG = [
 		params: [
 			{ name: "Pension (ER)", param_key: "federalPensionER" },
 			{
-				name: "Employment Insurance (ER)",
+				name: `${CONTRIBUTION.EI} (ER)`,
 				param_key: "federalEmploymentInsuranceER",
 			},
 		],
@@ -85,24 +86,24 @@ export const EMP_REGN_GOVT_CONFIG = [
 ];
 
 export const EMP_CPP_EXEMPT = [
-	{
-		type: "Is CPP/QPP exempt",
-		control: "checkbox",
-		param_key: "isCPPExempt",
-		params: [
-			{
-				name: "Employees aged 18 or older are not exempt from CPP.",
-				param_key: "",
-				control: "label",
-			},
-		],
-	},
-	{
-		type: "Is EI exempt",
-		control: "checkbox",
-		param_key: "isEIExempt",
-		params: [],
-	},
+	// {
+	// 	type: "Is CPP/QPP exempt",
+	// 	control: "checkbox",
+	// 	param_key: "isCPPExempt",
+	// 	params: [
+	// 		{
+	// 			name: "Employees aged 18 or older are not exempt from CPP.",
+	// 			param_key: "",
+	// 			control: "label",
+	// 		},
+	// 	],
+	// },
+	// {
+	// 	type: "Is EI exempt",
+	// 	control: "checkbox",
+	// 	param_key: "isEIExempt",
+	// 	params: [],
+	// },
 ];
 
 export const getInitialGovernmentInfo = (empId, companyName) => {

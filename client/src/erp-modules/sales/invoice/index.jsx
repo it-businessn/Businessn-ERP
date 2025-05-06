@@ -32,9 +32,9 @@ const Invoice = () => {
 	const [contacts, setContacts] = useState(null);
 	const fetchAllContacts = async () => {
 		try {
-			const response = await ContactService.getContacts();
-			response.data.map((item) => (item.comm = "Meeting"));
-			setContacts(response.data);
+			const { data } = await ContactService.getContacts();
+			data.map((item) => (item.comm = "Meeting"));
+			setContacts(data);
 		} catch (error) {
 			console.error(error);
 		}
@@ -91,7 +91,7 @@ const Invoice = () => {
 	return (
 		<Box
 			p={{ base: "1em", md: "2em" }}
-			h={{ base: "auto", md: "70vh", lg: "auto" }}
+			h={{ base: "auto", md: "calc(100vh - 278px)", lg: "auto" }}
 			overflow={"auto"}
 		>
 			<Text fontWeight="bold" mb={"1em"}>
@@ -117,19 +117,11 @@ const Invoice = () => {
 						borderRadius="10px"
 						fontWeight="bold"
 					>
-						<Text
-							fontWeight="bold"
-							color={"var(--main_color_black)"}
-							mt="2"
-							mb="1"
-						>
+						<Text fontWeight="bold" color={"var(--main_color_black)"} mt="2" mb="1">
 							Data
 						</Text>
 						<Box w={{ base: "70%", md: "55%", xl: "40%" }} mx={"auto"}>
-							<Doughnut
-								data={activityChartData}
-								options={doughnutOptions("50%")}
-							/>
+							<Doughnut data={activityChartData} options={doughnutOptions("50%")} />
 						</Box>
 					</Box>
 				</SimpleGrid>

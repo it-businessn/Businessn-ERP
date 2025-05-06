@@ -7,16 +7,13 @@ const useEmployeeAlertsInfo = (company, payPeriodNum, isOpen, currentStep) => {
 	useEffect(() => {
 		const fetchAlertsInfo = async () => {
 			try {
-				const response = await PayrollService.getAlertsDetails(
-					company,
-					payPeriodNum.payPeriod,
-				);
-				setAlerts(response.data);
+				const { data } = await PayrollService.getAlertsDetails(company, payPeriodNum.payPeriod);
+				setAlerts(data);
 			} catch (error) {
 				console.error(error);
 			}
 		};
-		if (payPeriodNum && isOpen && currentStep === 2) {
+		if (payPeriodNum && currentStep === 2) {
 			fetchAlertsInfo();
 		}
 	}, [company, payPeriodNum, isOpen]);

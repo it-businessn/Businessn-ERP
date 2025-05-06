@@ -23,20 +23,14 @@ const Pipeline = () => {
 	useEffect(() => {
 		const fetchOpportunities = async () => {
 			try {
-				const response = await OpportunityService.getOpportunitiesByCategory();
-				setOpportunities(response.data);
+				const { data } = await OpportunityService.getOpportunitiesByCategory();
+				setOpportunities(data);
 				const opportunityStat = [];
-				const sortOrder = [
-					"New",
-					"Presentation",
-					"Meeting",
-					"Negotiating",
-					"Won",
-				];
+				const sortOrder = ["New", "Presentation", "Meeting", "Negotiating", "Won"];
 				PIPELINE_STAGES.map((stage) =>
 					opportunityStat.push({
 						name: stage.name,
-						value: response.data[stage.name]?.opportunities?.length || 0,
+						value: data[stage.name]?.opportunities?.length || 0,
 						color: stage.color,
 					}),
 				);
@@ -57,19 +51,12 @@ const Pipeline = () => {
 	return (
 		<Box width="100%">
 			<Box ml={-30} width="100%">
-				{opportunityData && (
-					<GradientAreaFillColorChart opportunityData={opportunityData} />
-				)}
+				{opportunityData && <GradientAreaFillColorChart opportunityData={opportunityData} />}
 			</Box>
 			<Grid templateColumns="repeat(5, 1fr)" mx={5}>
 				{PIPELINE_STAGES?.map((item) => (
 					<GridItem key={item.name}>
-						<Box
-							height="50px"
-							bg={item.color}
-							borderRadius="md"
-							marginBottom="2"
-						>
+						<Box height="50px" bg={item.color} borderRadius="md" marginBottom="2">
 							<Text color="var(--main_color)" p={2.1} px={5}>
 								{item.name}
 								{opportunities && (
@@ -83,11 +70,7 @@ const Pipeline = () => {
 									<CardBody p={2}>
 										<Flex>
 											<Stack>
-												<Text
-													fontWeight="medium"
-													fontSize="sm"
-													textTransform="capitalize"
-												>
+												<Text fontWeight="medium" fontSize="sm" textTransform="capitalize">
 													{opportunity.name}
 												</Text>
 												<Text color="muted" fontSize="sm">

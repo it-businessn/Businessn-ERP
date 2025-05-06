@@ -15,21 +15,42 @@ const PageLayout = ({
 	selectPlaceholder,
 	valueText1,
 	isTimesheet,
+	showCheckBox,
+	size,
+	zIndex = 0,
+	position = "sticky",
+	pb = 0,
+	isMobile,
 }) => (
-	<Box p={{ base: "1em" }} overflow={"hidden"}>
+	<Box
+		p={{ base: "1em" }}
+		mt={isMobile && "1em"}
+		overflow={"hidden"}
+		zIndex={zIndex}
+		position={position}
+		pb={pb}
+	>
 		<PageHeader
+			size={size}
 			valueText1={valueText1}
 			showSelectBox={showSelectBox}
 			title={title}
 			handleChange={handleChange}
 			data={data}
 			value={selectedValue}
-			width={width}
+			width={!isMobile && width}
 			selectAttr={selectAttr}
 			selectPlaceholder={selectPlaceholder}
 			isTimesheet={isTimesheet}
+			showCheckBox={showCheckBox}
 		/>
-		{showBgLayer ? <BoxCard borderWidth={"2px"}>{children}</BoxCard> : children}
+		{showBgLayer ? (
+			<BoxCard pb={pb} borderWidth={"2px"}>
+				{children}
+			</BoxCard>
+		) : (
+			children
+		)}
 	</Box>
 );
 

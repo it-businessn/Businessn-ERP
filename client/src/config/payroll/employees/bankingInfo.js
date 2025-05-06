@@ -37,7 +37,7 @@ export const EMP_PAYMENT_NOTIFICATION_CONFIG = [
 				control: "radio",
 				options: ["Yes", "No"],
 			},
-			{ name: "Email", param_key: "paymentEmail", mandatory: true },
+			{ name: "Email", param_key: "paymentEmail" },
 		],
 	},
 ];
@@ -47,10 +47,10 @@ export const getInitialBankingInfo = (empId, companyName) => {
 		empId,
 		companyName,
 		directDeposit: "Yes",
-		bankNum: null,
-		transitNum: null,
-		accountNum: null,
+		bankNum: "",
+		transitNum: "",
+		accountNum: "",
 		payStubSendByEmail: "Yes",
-		paymentEmail: null,
+		paymentEmail: "",
 	};
 };

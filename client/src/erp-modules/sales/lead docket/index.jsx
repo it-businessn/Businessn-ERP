@@ -13,6 +13,7 @@ import {
 } from "@chakra-ui/react";
 import EmptyRowRecord from "components/ui/EmptyRowRecord";
 import NormalTextTitle from "components/ui/NormalTextTitle";
+import Pagination from "components/ui/Pagination";
 import LeftIconButton from "components/ui/button/LeftIconButton";
 import SelectList from "components/ui/form/select/SelectList";
 import DeletePopUp from "components/ui/modal/DeletePopUp";
@@ -52,12 +53,16 @@ const LeadsDocket = () => {
 	const [showConfirmationPopUp, setShowConfirmationPopUp] = useState(false);
 	const [refresh, setRefresh] = useState(false);
 	const [companies, setCompanies] = useState(null);
+	const [filter, setFilter] = useState(null);
+	const [pageNum, setPageNum] = useState(1);
+	const [totalPage, setTotalPages] = useState(1);
+	const limit = 30;
 
 	useEffect(() => {
 		const fetchAllCompanies = async () => {
 			try {
-				const response = await LeadsService.getLeadCompanies(company);
-				setCompanies(response.data);
+				const { data } = await LeadsService.getLeadCompanies(company);
+				setCompanies(data);
 			} catch (error) {
 				console.error(error);
 			}
@@ -68,9 +73,15 @@ const LeadsDocket = () => {
 
 	const fetchAllLeads = async () => {
 		try {
-			const response = await LeadsService.getNotDisbursedLeads(company);
-			setLeads(response.data);
-			setAllLeadIDs(response.data.map((item) => item._id));
+			const { data } = await LeadsService.getNotDisbursedLeads(company, filter, {
+				page: pageNum,
+				limit,
+			});
+			const { totalPages, page, items } = data;
+			setLeads(items);
+			setAllLeadIDs(items?.map((item) => item._id));
+			setTotalPages(totalPages > 0 ? totalPages : 1);
+			setPageNum(page);
 		} catch (error) {
 			console.error(error);
 		}
@@ -78,17 +89,17 @@ const LeadsDocket = () => {
 
 	useEffect(() => {
 		fetchAllLeads();
-	}, [isRefresh, company]);
+	}, [isRefresh, pageNum]);
 
 	useEffect(() => {
 		const addMultipleLeads = async () => {
 			try {
-				const response = await LeadsService.createMultipleOpportunity({
+				const { data } = await LeadsService.createMultipleOpportunity({
 					newRecord: data,
 					companyName: company,
 				});
-				setLeads(response.data);
-				setAllLeadIDs(response.data.map((item) => item._id));
+				setLeads(data);
+				setAllLeadIDs(data.map((item) => item._id));
 			} catch (error) {
 				console.error(error);
 			}
@@ -159,7 +170,7 @@ const LeadsDocket = () => {
 	);
 
 	return (
-		<PageLayout width="full" title={"Lead Docket"} showBgLayer>
+		<PageLayout width="full" title="Lead Docket" showBgLayer>
 			{isMobile ? (
 				<Flex flexDir="column">
 					<Flex justify="space-between">
@@ -240,7 +251,7 @@ const LeadsDocket = () => {
 				isSmall
 				isAllChecked={isAllChecked}
 				handleHeaderCheckboxChange={handleHeaderCheckboxChange}
-				height={"73vh"}
+				height="calc(100vh - 238px)"
 			>
 				<Tbody>
 					{(!leads || leads?.length === 0) && (
@@ -267,7 +278,7 @@ const LeadsDocket = () => {
 							name,
 						}) => (
 							<Tr key={_id}>
-								<Td>
+								<Td py={0}>
 									<Checkbox
 										colorScheme="facebook"
 										isChecked={checkedRows.includes(_id)}
@@ -322,6 +333,7 @@ const LeadsDocket = () => {
 					)}
 				</Tbody>
 			</TableLayout>
+			<Pagination pageNum={pageNum} setPageNum={setPageNum} totalPage={totalPage} />
 
 			{showConfirmationPopUp && (
 				<DeletePopUp

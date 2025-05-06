@@ -2,8 +2,6 @@ import { Icon, Select } from "@chakra-ui/react";
 import { COLORS } from "erp-modules/project-management/workview/project/data";
 import { FaCaretDown, FaCaretRight } from "react-icons/fa";
 
-import { generateLighterShade } from "utils";
-
 const SelectList = ({
 	_id,
 	id,
@@ -14,6 +12,12 @@ const SelectList = ({
 	isRight,
 	handleSelect,
 	type,
+	isTimesheetAction,
+	isTimesheetPayType,
+	isOrderAction,
+	w,
+	isUnsettled,
+	size = "sm",
 }) => {
 	const handleChange = (event) => {
 		if (handleSelect && type) {
@@ -31,16 +35,26 @@ const SelectList = ({
 		<Select
 			icon={<Icon as={isRight ? FaCaretRight : FaCaretDown} />}
 			borderRadius={"10px"}
-			size={"sm"}
-			color={"var(--primary_button_bg)"}
-			bg={generateLighterShade(bg_color, 0.9)}
-			border={`1px solid var(--primary_button_bg)`}
+			size={size}
+			color={!isTimesheetPayType && "var(--primary_button_bg)"}
+			bg={isUnsettled && "var(--order_unsettled)"}
+			// bg={generateLighterShade(bg_color, 0.9)}
+			border={
+				isTimesheetPayType
+					? `1px solid var(--filter_border_color)`
+					: `1px solid var(--primary_button_bg)`
+			}
 			value={value}
 			onChange={handleChange}
-			placeholder="Select"
+			placeholder={!isTimesheetAction && !isOrderAction && "Select"}
+			w={w}
 		>
 			{data?.map((item) => (
-				<option value={item[code]} key={`${_id}${item.name || item._id}`}>
+				<option
+					value={item[code]}
+					key={`${_id}${item.name || item._id || item[code]}`}
+					style={{ color: (isTimesheetAction || isTimesheetPayType) && item.color }}
+				>
 					{item[code]}
 					{code === "abbr" && ` - ${item.name}`}
 				</option>

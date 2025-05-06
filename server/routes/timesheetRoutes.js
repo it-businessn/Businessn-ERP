@@ -12,12 +12,20 @@ router.get(
 	timesheetController.getFilteredTimesheetsByStatus,
 );
 
-router.get("/:companyName/:employeeId", timesheetController.getTimesheet);
+router.get("/:companyName/:employeeId/:filter", timesheetController.getEmployeeTimesheet);
 
 router.post("/", timesheetController.createTimesheet);
 
+router.post("/action", timesheetController.actionAllTimesheets);
+
+router.post("/manual", timesheetController.createManualTimesheet);
+
 router.put("/:id", timesheetController.updateTimesheet);
 
-router.delete("/:id", timesheetController.deleteTimesheet);
+router.put("/paytype/:id", timesheetController.updateTimesheetPayType);
+
+router.put("/role/:id", timesheetController.updateTimesheetRole);
+
+router.put("/delete-entry/:id", timesheetController.deleteTimesheet);
 
 module.exports = router;

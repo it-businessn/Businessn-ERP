@@ -17,6 +17,8 @@ router.get("/comp-managers/:companyName", userController.getAllCompManagers);
 
 router.get("/managers/:companyName", userController.getAllManagers);
 
+router.get("/emp/:companyName", userController.getCompanyEmpEmployees);
+
 router.get("/groups/:memberId/:companyName", userController.getAllGroupMembers);
 
 router.get(
@@ -24,13 +26,25 @@ router.get(
 	userController.getPayrollActiveCompanyEmployeesCount,
 );
 
-router.get("/payroll-active/:companyName", userController.getPayrollActiveCompanyEmployees);
+router.get(
+	"/payroll-active/:companyName/:deptName",
+	userController.getPayrollActiveCompanyEmployees,
+);
 
-router.get("/payroll-inactive/:companyName", userController.getPayrollInActiveCompanyEmployees);
+router.get(
+	"/payroll-inactive/:companyName/:deptName",
+	userController.getPayrollInActiveCompanyEmployees,
+);
 
-router.get("/:companyName", userController.getCompanyEmployees);
+router.get("/all/:companyName", userController.getCompanyUsers);
 
 router.get("/count/:companyName", userController.getCompanyEmployeesCount);
+
+router.get("/:companyName/:deptName", userController.getCompanyEmployees);
+
+router.post("/create", userController.createMasterUser);
+
+router.put("/master/:userId", userController.updateMasterUser);
 
 router.put("/:userId", userController.updateUser);
 

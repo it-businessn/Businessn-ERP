@@ -7,8 +7,13 @@ const useManager = (company) => {
 	useEffect(() => {
 		const fetchAllManagers = async () => {
 			try {
-				const response = await UserService.getAllCompManagers(company);
-				setManagers(response.data);
+				const { data } = await UserService.getAllCompManagers(company);
+				data.map((emp) => {
+					emp.fullName = emp?.empId?.fullName;
+					emp._id = emp?.empId?._id;
+					return emp;
+				});
+				setManagers(data);
 			} catch (error) {
 				console.error(error);
 			}

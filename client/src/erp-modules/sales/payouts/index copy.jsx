@@ -38,9 +38,9 @@ const Payouts = () => {
 	const [contacts, setContacts] = useState(null);
 	const fetchAllContacts = async () => {
 		try {
-			const response = await ContactService.getContacts();
-			response.data.map((item) => (item.comm = "Meeting"));
-			setContacts(response.data);
+			const { data } = await ContactService.getContacts();
+			data.map((item) => (item.comm = "Meeting"));
+			setContacts(data);
 		} catch (error) {
 			console.error(error);
 		}
@@ -208,11 +208,7 @@ const Payouts = () => {
 					borderRadius="10px"
 					fontWeight="bold"
 				>
-					<Flex
-						justify="space-between"
-						align="center"
-						color={"var(--nav_color)"}
-					>
+					<Flex justify="space-between" align="center" color={"var(--nav_color)"}>
 						<Text fontWeight="bold">Key Metrics of Sales</Text>
 						<Select width="100px" border={"none"} fontSize={"xs"}>
 							<option>This week </option>

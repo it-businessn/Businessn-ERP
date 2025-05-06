@@ -4,208 +4,147 @@ import Timeline, { CustomHeader, SidebarHeader, TimelineHeaders } from "react-ca
 import "react-calendar-timeline/lib/Timeline.css";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { useDrop } from "react-dnd";
 import { CiCalendar } from "react-icons/ci";
 // import { FaChevronDown } from "react-icons/fa";
+import SkeletonLoader from "components/SkeletonLoader";
 import NormalTextTitle from "components/ui/NormalTextTitle";
+import moment from "moment";
 import { MdOutlineChevronLeft, MdOutlineChevronRight } from "react-icons/md";
 import SchedulerService from "services/SchedulerService";
-import { getMomentDateISO, isSameAsToday, longFormat } from "utils/convertDate";
+import { getRoleColor } from "utils";
 import Group from "./Group";
 import ItemsRow from "./ItemsRow";
 import "./Scheduler.css";
 
-const SchedulingCalendar = ({ newEmployeeAdded, setRefresh, company }) => {
-	const [currentDate, setCurrentDate] = useState(new Date());
-	currentDate.setHours(6, 0, 0, 0);
-
-	const eventInitialStartTime = new Date(currentDate);
-	eventInitialStartTime.setHours(9, 0, 0, 0);
-	const eventInitialEndTime = new Date(currentDate);
-	eventInitialEndTime.setHours(17, 0, 0, 0);
-
-	const eventPrevStartTime = new Date(currentDate);
-	eventPrevStartTime.setHours(7, 0, 0, 0);
-	const eventPrevEndTime = new Date(currentDate);
-	eventPrevEndTime.setHours(8, 0, 0, 0);
-
-	const [{ isOver }, drop] = useDrop({
-		accept: "employee",
-		drop: (item) => handleHourDrop(item),
-		collect: (monitor) => ({
-			isOver: !!monitor.isOver(),
-		}),
-	});
-
-	const [groups, setGroups] = useState([{ id: 1, title: "Drop here", color: "transparent" }]);
-
+const SchedulingCalendar = ({
+	newShiftAdded,
+	setRefresh,
+	company,
+	location,
+	empName,
+	currentDate,
+	setCurrentDate,
+	isUserManager,
+	handleItemClick,
+}) => {
+	const [isLoading, setIsLoading] = useState(false);
+	const [groups, setGroups] = useState([]);
 	const [items, setItems] = useState([]);
-	// const onItemMove = (itemId, dragTime, newGroupOrder) => {
-	// 	const updatedItems = items.map((item) =>
-	// 		item.id === itemId
-	// 			? {
-	// 					...item,
-	// 					start_time: dragTime,
-	// 					end_time: new Date(
-	// 						dragTime.getTime() + (item.end_time - item.start_time),
-	// 					),
-	// 					group: newGroupOrder,
-	// 			  }
-	// 			: item,
-	// 	);
-	// 	setItems(updatedItems);
-	// };
 
-	const onItemResize = (itemId, time, edge) => {
-		const updatedItems = items.map((item) =>
-			item.id === itemId
-				? edge === "left"
-					? {
-							...item,
-							start_time: new Date(time),
-							duration: (item.end_time.getTime() - new Date(time).getTime()) / (1000 * 60 * 60),
-					  }
-					: {
-							...item,
-							end_time: new Date(time),
-							duration: (new Date(time).getTime() - item.start_time.getTime()) / (1000 * 60 * 60),
-					  }
-				: item,
-		);
-
-		const updatedItem = updatedItems.find((item) => item.id === itemId);
-
-		if (updatedItem) {
-			const updateShifts = async () => {
-				try {
-					await SchedulerService.updateShift(updatedItem, updatedItem._id);
-				} catch (error) {
-					console.error(error);
-				}
-			};
-			updateShifts();
-		}
-
-		setItems(updatedItems);
-	};
+	useEffect(() => {
+		setIsLoading(false);
+	}, [items, groups]);
 
 	useEffect(() => {
 		const fetchShifts = async () => {
 			try {
-				const response = await SchedulerService.getShiftsByDate({
-					date: getMomentDateISO(currentDate),
+				setIsLoading(true);
+				const { data } = await SchedulerService.getWorkShiftsByDate({
+					date: currentDate,
+					location,
 					company,
+					empName,
 				});
-				const uniqueEvents = [];
-				if (response.data.length > 0) {
-					const titles = {};
+				const groupMap = new Map();
+				data?.forEach(({ _id, empName, role }) => {
+					if (!groupMap.has(empName)) {
+						groupMap.set(empName, {
+							id: empName,
+							title: empName,
+							color: getRoleColor(role),
+						});
+					}
+				});
+				const mappedGroups = Array.from(groupMap.values());
+				setGroups(mappedGroups);
 
-					response.data.map((item) => {
-						const startDate = new Date(item.start_time);
-						const hoursFromStartDate = startDate.getUTCHours();
-						const endDate = new Date(item.end_time);
-						const hoursFromEndDate = endDate.getUTCHours();
-						item.start_time = new Date(startDate.setUTCHours(hoursFromStartDate, 0, 0, 0));
-						item.end_time = new Date(endDate.setUTCHours(hoursFromEndDate, 0, 0, 0));
-						if (item.id.endsWith("s")) {
-							titles[item.title] = true;
-						} else {
-							uniqueEvents.push(item);
-						}
-						// if (!titles[item.title] && !item.id.endsWith("s")) {
-						// 	titles[item.title] = true;
-						// 	uniqueEvents.push(item);
-						// }
-						return item;
-					});
-					uniqueEvents.sort((a, b) => {
-						if (a.title < b.title) return -1;
-						if (a.title > b.title) return 1;
-						return 0;
-					});
-				}
-				setGroups(uniqueEvents);
+				const mappedItems = data?.map((shift, index) => {
+					const dateStr = shift.shiftDate.split("T")[0];
+					const start_time = moment(`${dateStr}T${shift.shiftStart}:00`);
+					const end_time = moment(`${dateStr}T${shift.shiftEnd}:00`);
 
-				setItems(response.data);
+					shift.id = `${shift.empName}-${index}`;
+					shift.group = shift.empName;
+					shift.title = shift.empName;
+					shift.start_time = start_time;
+					shift.end_time = end_time;
+					shift.canResize = false;
+					shift.color = getRoleColor(shift.role);
+					shift.duration = end_time.diff(start_time, "hours", true).toFixed(2);
+					return shift;
+				});
+				setItems(mappedItems);
 			} catch (error) {
 				console.error(error);
 			}
 		};
-		fetchShifts();
-	}, [currentDate, company]);
 
-	useEffect(() => {
-		if (newEmployeeAdded) {
-			handleHourDrop(newEmployeeAdded);
-		}
-	}, [newEmployeeAdded]);
+		const fetchEmpShifts = async () => {
+			try {
+				setIsLoading(true);
+				const { data } = await SchedulerService.getEmpWorkShiftsByDate({
+					// date: currentDate,
+					location,
+					company,
+					empName,
+				});
+				const groupMap = new Map();
+				data?.forEach(({ _id, empName, shiftDate, role }) => {
+					const dateStr = shiftDate.split("T")[0];
+					const groupKey = `${empName}-${dateStr}`;
 
-	const handleHourDrop = (employee) => {
-		const { id, name, color } = employee;
-		if (!id) {
-			return;
-		}
-		const existingGroup = groups.find((item) => item.id === id);
-		if (!existingGroup) {
-			const newGroup = { id, title: name, color };
-			groups.sort((a, b) => {
-				if (a.title < b.title) return -1;
-				if (a.title > b.title) return 1;
-				return 0;
-			});
-			setGroups([...groups, newGroup]);
-		}
+					if (!groupMap.has(groupKey)) {
+						groupMap.set(groupKey, {
+							id: groupKey,
+							title: dateStr,
+							color: getRoleColor(role),
+						});
+					}
+				});
+				const mappedGroups = Array.from(groupMap.values());
+				setGroups(mappedGroups);
 
-		const existingItem = items.find((item) => item.group === id);
-		const start_time = existingItem ? eventPrevStartTime : eventInitialStartTime;
-		const end_time = existingItem ? eventPrevEndTime : eventInitialEndTime;
+				const mappedItems = data?.map((shift, index) => {
+					const dateStr = shift.shiftDate.split("T")[0];
+					const groupKey = `${shift.empName}-${dateStr}`;
 
-		const newItem = {
-			id: existingItem ? `${id + 1}s` : id,
-			group: id,
-			title: name,
-			color,
-			start_time,
-			end_time,
-			duration: (end_time.getTime() - start_time.getTime()) / (1000 * 60 * 60),
+					const start_time = moment(`${dateStr}T${shift.shiftStart}:00`);
+					const end_time = moment(`${dateStr}T${shift.shiftEnd}:00`);
+
+					shift.id = shift._id;
+					shift.group = groupKey;
+					shift.title = shift.empName.trim();
+					shift.start_time = start_time;
+					shift.end_time = end_time;
+					shift.color = getRoleColor(shift.role);
+					shift.duration = end_time.diff(start_time, "hours", true).toFixed(2);
+					return shift;
+				});
+				setItems(mappedItems);
+			} catch (error) {
+				console.error(error);
+			}
 		};
-
-		if (newItem) {
-			const newRecord = newItem;
-			newRecord.company = company;
-			const addShifts = async () => {
-				try {
-					await SchedulerService.addShifts(newRecord);
-				} catch (error) {
-					console.error(error);
-				}
-			};
-			addShifts();
+		if (location && isUserManager) {
+			fetchShifts();
+		} else {
+			fetchEmpShifts();
 		}
-		setItems([...items, newItem]);
-	};
+	}, [currentDate, company, newShiftAdded, location, empName]);
 
-	const groupRenderer = ({ group }) => (
-		<Group group={group} drop={drop} isOver={isOver} handleHourDrop={handleHourDrop} />
-	);
+	const groupRenderer = ({ group }) => <Group group={group} />;
 
-	const itemRenderer = ({ item, itemContext, getItemProps, getResizeProps }) => {
+	const itemRenderer = ({ item, itemContext, getItemProps }) => {
 		return (
 			<ItemsRow
 				getItemProps={getItemProps}
 				item={item}
 				itemContext={itemContext}
-				getResizeProps={getResizeProps}
 				setRefresh={setRefresh}
+				handleItemClick={handleItemClick}
 			/>
 		);
 	};
-
-	const yesterdayDate = new Date(currentDate);
-	yesterdayDate.setDate(currentDate.getDate() - 1);
-	const tomorrowDate = new Date(currentDate);
-	tomorrowDate.setDate(currentDate.getDate() + 1);
-	const [selectedDate, setSelectedDate] = useState(new Date());
 
 	const handleChangeDate = (action) => {
 		setCurrentDate((prevDate) => {
@@ -218,7 +157,6 @@ const SchedulingCalendar = ({ newEmployeeAdded, setRefresh, company }) => {
 			return newDate;
 		});
 	};
-	const isToday = isSameAsToday(currentDate);
 
 	return (
 		<Box overflow={"auto"} w={"100%"}>
@@ -230,34 +168,35 @@ const SchedulingCalendar = ({ newEmployeeAdded, setRefresh, company }) => {
 				mb={"0.5em"}
 			>
 				<Text>Schedule</Text>
-				<HStack spacing={0}>
-					<Icon
-						as={MdOutlineChevronLeft}
-						onClick={() => handleChangeDate("prev")}
-						boxSize="5"
-						color="fg.muted"
-					/>
-					<NormalTextTitle title={isToday ? "Today" : longFormat(currentDate)} />
-					<Icon
-						as={MdOutlineChevronRight}
-						onClick={() => handleChangeDate("next")}
-						boxSize="5"
-						color="fg.muted"
-					/>
-				</HStack>
-				<HStack cursor={"pointer"}>
-					<Icon as={CiCalendar} boxSize="5" color="fg.muted" />
-					<DatePicker
-						style={{ bg: "red" }}
-						selected={selectedDate}
-						onChange={(date) => {
-							setSelectedDate(date);
-							setCurrentDate(date);
-						}}
-						dateFormat="dd, MMMM yyyy"
-					/>
-					{/* <Icon as={FaChevronDown} boxSize="3" color="fg.muted" /> */}
-				</HStack>
+				{isUserManager && (
+					<HStack spacing={0}>
+						<Icon
+							cursor="pointer"
+							as={MdOutlineChevronLeft}
+							onClick={() => handleChangeDate("prev")}
+							boxSize="5"
+							color="fg.muted"
+						/>
+						<HStack cursor={"pointer"}>
+							<Icon as={CiCalendar} boxSize="5" color="fg.muted" />
+							<DatePicker
+								style={{ bg: "red" }}
+								selected={currentDate}
+								onChange={(date) => {
+									setCurrentDate(date);
+								}}
+								dateFormat="dd, MMMM yyyy"
+							/>
+						</HStack>
+						<Icon
+							cursor="pointer"
+							as={MdOutlineChevronRight}
+							onClick={() => handleChangeDate("next")}
+							boxSize="5"
+							color="fg.muted"
+						/>
+					</HStack>
+				)}
 
 				<Text fontWeight={"normal"}>
 					Default duration:{" "}
@@ -266,68 +205,76 @@ const SchedulingCalendar = ({ newEmployeeAdded, setRefresh, company }) => {
 					</Text>
 				</Text>
 			</HStack>
-			<Timeline
-				style={{
-					zIndex: 0,
-					position: "relative",
-					borderRight: "1px solid var(--calendar_border)",
-				}}
-				groups={groups}
-				items={items}
-				defaultTimeStart={currentDate}
-				defaultTimeEnd={new Date(currentDate.getTime() + 12 * 60 * 60 * 1000)} // 12 hours duration
-				onItemResize={onItemResize}
-				canMove={false}
-				canResize="both"
-				timeSteps={{
-					minute: 15,
-				}}
-				itemRenderer={itemRenderer}
-				viewMode="day"
-				groupRenderer={groupRenderer}
-			>
-				<TimelineHeaders>
-					<SidebarHeader>
-						{({ getRootProps }) => (
-							<Flex
-								{...getRootProps()}
-								w={"148px !important"}
-								alignItems={"center"}
-								justify={"center"}
-								fontSize={"sm"}
-								h={"28px"}
-								borderLeft={"1px solid var(--calendar_border)"}
-								borderTop={"1px solid var(--calendar_border)"}
-							>
-								<Text>Area 1</Text>
-							</Flex>
-						)}
-					</SidebarHeader>
-					<CustomHeader unit="hour">
-						{({ headerContext: { intervals }, getRootProps, getIntervalProps, showPeriod }) => (
-							<Box {...getRootProps()}>
-								{intervals.map((interval) => (
-									<Text
-										key={interval.startTime}
-										textAlign={"center"}
-										borderLeft={"1px solid var(--calendar_border)"}
-										borderTop={"1px solid var(--calendar_border)"}
-										fontSize={{ base: "xs", md: "10px", lg: "sm" }}
-										onClick={() => {
-											// showPeriod(interval.startTime, interval.endTime);
-										}}
-										{...getIntervalProps({
-											interval,
-										})}
-									>
-										{interval.startTime.format("hh:mm A")}
-									</Text>
-								))}
-							</Box>
-						)}
-					</CustomHeader>
-				</TimelineHeaders>
-			</Timeline>
+			{isLoading && <SkeletonLoader />}
+			{!isLoading && groups?.length && items?.length ? (
+				<Timeline
+					style={{
+						zIndex: 0,
+						position: "relative",
+						borderRight: "1px solid var(--calendar_border)",
+					}}
+					groups={groups}
+					items={items}
+					defaultTimeStart={currentDate}
+					defaultTimeEnd={new Date(currentDate.getTime() + 12 * 60 * 60 * 1000)} // 12 hours duration
+					canMove={false}
+					timeSteps={{
+						minute: 15,
+					}}
+					itemRenderer={itemRenderer}
+					viewMode="day"
+					groupRenderer={groupRenderer}
+					itemTimeStartField="start_time"
+					itemTimeEndField="end_time"
+					itemHeightRatio={0.75}
+					canResize={false}
+					stackItems
+				>
+					<TimelineHeaders>
+						<SidebarHeader>
+							{({ getRootProps }) => (
+								<Flex
+									{...getRootProps()}
+									w={"148px !important"}
+									alignItems={"center"}
+									justify={"center"}
+									fontSize={"sm"}
+									h={"28px"}
+									borderLeft={"1px solid var(--calendar_border)"}
+									borderTop={"1px solid var(--calendar_border)"}
+								>
+									<Text>Area 1</Text>
+								</Flex>
+							)}
+						</SidebarHeader>
+						<CustomHeader unit="hour">
+							{({ headerContext: { intervals }, getRootProps, getIntervalProps, showPeriod }) => (
+								<Box {...getRootProps()}>
+									{intervals.map((interval, index) => (
+										<Text
+											key={`${interval.startTime}_${index}`}
+											textAlign={"center"}
+											borderLeft={"1px solid var(--calendar_border)"}
+											borderTop={"1px solid var(--calendar_border)"}
+											fontSize={{ base: "xs", md: "10px", lg: "sm" }}
+											onClick={() => {
+												// showPeriod(interval.startTime, interval.endTime);
+											}}
+											{...getIntervalProps({
+												interval,
+											})}
+										>
+											{interval.startTime.format("hh:mm A")}
+										</Text>
+									))}
+								</Box>
+							)}
+						</CustomHeader>
+					</TimelineHeaders>
+				</Timeline>
+			) : (
+				<NormalTextTitle p="0 1em" width="15%" size="sm" title="No shifts found" />
+			)}
 		</Box>
 	);
 };

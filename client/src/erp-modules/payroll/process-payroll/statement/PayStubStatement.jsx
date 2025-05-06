@@ -7,20 +7,19 @@ import EmployeePayDetails from "../preview-reports/EmployeePayDetails";
 import ChequeDetails from "./ChequeDetails";
 import PayStubHeader from "./PayStubHeader";
 
-const PayStubStatement = ({ data }) => {
-	const companyNum =
-		LocalStorageService.getItem("user")?.companyId?.registration_number;
-
+const PayStubStatement = ({ data, height, overflow = "hidden" }) => {
+	const companyInfo = LocalStorageService.getItem("user")?.companyId;
 	return (
-		<Box w={"100%"} overflow={"hidden"}>
-			<PayStubHeader />
-			<Stack
-				position="relative"
-				padding={0}
-				h={"calc(92vh - 17em)"}
-				alignItems={"center"}
-				spacing={2}
-			>
+		<Box
+			w={"100%"}
+			flexDir="column"
+			display="flex"
+			overflow={overflow}
+			height={height}
+			justifyContent="space-between"
+		>
+			<PayStubHeader flex={0.1} companyInfo={companyInfo} />
+			<Stack alignItems="center" flex={1} position={"relative"}>
 				<Box
 					w={"100%"}
 					h={"100%"}
@@ -34,12 +33,12 @@ const PayStubStatement = ({ data }) => {
 					backgroundBlendMode="overlay"
 					filter={"opacity(0.2)"}
 				/>
-				<HStack alignItems={"start"} spacing={5} p={5}>
-					<EmployeeInfo data={data} companyNum={companyNum} />
+				<HStack alignItems="start" spacing={3}>
+					<EmployeeInfo data={data} companyNum={companyInfo?.registration_number} />
 					<EmployeePayDetails data={data} />
 				</HStack>
 			</Stack>
-			<ChequeDetails data={data} />
+			<ChequeDetails data={data} companyInfo={companyInfo} />
 		</Box>
 	);
 };

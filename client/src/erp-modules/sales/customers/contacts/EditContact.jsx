@@ -1,12 +1,4 @@
-import {
-	Box,
-	Button,
-	HStack,
-	Input,
-	Spacer,
-	Stack,
-	Text,
-} from "@chakra-ui/react";
+import { Box, Button, HStack, Input, Spacer, Stack, Text } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import ContactService from "services/ContactService";
@@ -19,8 +11,8 @@ const EditContact = () => {
 	useEffect(() => {
 		const fetchContacts = async () => {
 			try {
-				const response = await ContactService.getContacts();
-				setContacts(response.data);
+				const { data } = await ContactService.getContacts();
+				setContacts(data);
 			} catch (error) {
 				console.error(error);
 			}
@@ -72,10 +64,7 @@ const EditContact = () => {
 								</Text>
 								<Text fontWeight="bold">Client: {contact.companyName}</Text>
 								<Spacer />
-								<Button
-									bg="var(--logo_bg)"
-									onClick={() => editContact(contact)}
-								>
+								<Button bg="var(--logo_bg)" onClick={() => editContact(contact)}>
 									Edit
 								</Button>
 							</HStack>
@@ -84,11 +73,7 @@ const EditContact = () => {
 				</>
 			)}
 			{edit && (
-				<EditContactForm
-					onSave={handleSave}
-					onCancel={handleCancel}
-					selectedContact={contact}
-				/>
+				<EditContactForm onSave={handleSave} onCancel={handleCancel} selectedContact={contact} />
 			)}
 		</Box>
 	);

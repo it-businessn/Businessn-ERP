@@ -59,11 +59,7 @@ export const MemberTable = (props) => {
 	};
 	const handleSubmit = async (values) => {
 		try {
-			const updateData = await UserService.updateUserById(
-				record._id,
-				values,
-				loggedInUser?.token,
-			);
+			const updateData = await UserService.updateUserById(record._id, values, loggedInUser?.token);
 			if (updateData) {
 				props.update(true);
 			}
@@ -112,9 +108,7 @@ export const MemberTable = (props) => {
                                 boxSize="10"
                             /> */}
 									<Box>
-										<Text fontWeight="medium">
-											{member.firstName + " " + member.lastName}
-										</Text>
+										<Text fontWeight="medium">{`${member.firstName} ${member.lastName}`}</Text>
 										{/* <Text color="muted">{member.handle}</Text> */}
 									</Box>
 								</HStack>
@@ -141,9 +135,7 @@ export const MemberTable = (props) => {
 							<Td>
 								<Text color="muted">
 									{member.annualSalary &&
-										userCurrency(member.bankDetails.currency).format(
-											member.annualSalary,
-										)}
+										userCurrency(member.bankDetails.currency).format(member.annualSalary)}
 								</Text>
 							</Td>
 							{/* <Td>

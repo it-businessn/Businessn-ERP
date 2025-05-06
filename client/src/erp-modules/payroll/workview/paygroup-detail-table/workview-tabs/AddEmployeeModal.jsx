@@ -2,9 +2,11 @@ import { Stack, useDisclosure } from "@chakra-ui/react";
 import ActionButtonGroup from "components/ui/form/ActionButtonGroup";
 import MultiSelectFormControl from "components/ui/form/MultiSelectFormControl";
 import ModalLayout from "components/ui/modal/ModalLayout";
-import useEmployees from "hooks/useEmployees";
-import { useState } from "react";
+import { ROLES } from "constant";
+import { useEffect, useState } from "react";
+import LocalStorageService from "services/LocalStorageService";
 import SettingService from "services/SettingService";
+import UserService from "services/UserService";
 
 const AddEmployeeModal = ({
 	showAddEmp,
@@ -16,14 +18,33 @@ const AddEmployeeModal = ({
 	selectedEmployee,
 	selectedEmployeeIndex,
 }) => {
+	const loggedInUser = LocalStorageService.getItem("user");
+	const deptName = loggedInUser?.role === ROLES.MANAGER ? loggedInUser?.department : null;
 	const [isSubmitting, setIsSubmitting] = useState(false);
 
 	const [selectedEmp, setSelectedEmp] = useState(selectedEmployee);
-	const { employees } = useEmployees(false, company, false, true);
+	const [employees, setEmployees] = useState(null);
 	const [openMenu, setOpenMenu] = useState(false);
 	const [selectedOptions, setSelectedOptions] = useState(selectedEmp ?? []);
 
 	const { onClose } = useDisclosure();
+
+	useEffect(() => {
+		const fetchAllEmployees = async () => {
+			try {
+				const { data } = await UserService.getAllCompanyUsers(company, deptName);
+				data?.map((emp) => {
+					emp.fullName = emp?.empId?.fullName;
+					emp._id = emp?.empId?._id;
+					return emp;
+				});
+				setEmployees(data);
+			} catch (error) {
+				console.error(error);
+			}
+		};
+		fetchAllEmployees();
+	}, [deptName]);
 
 	const handleClose = () => {
 		onClose();
@@ -48,16 +69,15 @@ const AddEmployeeModal = ({
 		setIsSubmitting(true);
 
 		try {
-			selectedPayGroup.scheduleSettings[selectedEmployeeIndex].selectedEmp =
-				selectedEmp;
+			selectedPayGroup.yearSchedules[0].payPeriods[selectedEmployeeIndex].selectedEmp = selectedEmp;
 			await SettingService.updateGroup(
-				{ scheduleSettings: selectedPayGroup.scheduleSettings },
+				{ yearSchedules: selectedPayGroup?.yearSchedules },
 				selectedPayGroupId,
 			);
 			setRefresh((prev) => !prev);
 			handleClose();
 		} catch (error) {
-			console.log("An error occurred. Please try again.");
+			console.log("An error occurred. Please try again.", error);
 		} finally {
 			setIsSubmitting(false);
 		}
@@ -70,18 +90,20 @@ const AddEmployeeModal = ({
 			onClose={handleClose}
 		>
 			<Stack spacing={3} mt={"-1em"}>
-				<MultiSelectFormControl
-					label={"Select Employees"}
-					tag={"employee(s) selected"}
-					showMultiSelect={openMenu}
-					data={employees}
-					handleCloseMenu={handleCloseMenu}
-					selectedOptions={selectedOptions}
-					setSelectedOptions={setSelectedOptions}
-					handleMenuToggle={handleMenuToggle}
-					list={selectedEmp}
-					hideAvatar
-				/>
+				{employees && (
+					<MultiSelectFormControl
+						label={"Select Employees"}
+						tag={"employee(s) selected"}
+						showMultiSelect={openMenu}
+						data={employees}
+						handleCloseMenu={handleCloseMenu}
+						selectedOptions={selectedOptions}
+						setSelectedOptions={setSelectedOptions}
+						handleMenuToggle={handleMenuToggle}
+						list={selectedEmp}
+						hideAvatar
+					/>
+				)}
 
 				<ActionButtonGroup
 					submitBtnName={"Add"}

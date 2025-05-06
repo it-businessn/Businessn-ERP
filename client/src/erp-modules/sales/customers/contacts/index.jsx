@@ -17,13 +17,13 @@ const Contacts = ({ setViewProfile, selectedContact, company, user }) => {
 	const fetchContacts = async () => {
 		const activeContact = selectedContact || id;
 		try {
-			const response = await ContactService.getContactDetails({
+			const { data } = await ContactService.getContactDetails({
 				id: activeContact,
 				company: comp || company,
 			});
 
-			setContact(response.data);
-			// setSelectedContact(response.data);
+			setContact(data);
+			// setSelectedContact(data);
 		} catch (error) {
 			console.error(error);
 		}

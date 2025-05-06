@@ -1,20 +1,20 @@
 import { useEffect, useState } from "react";
 import SettingService from "services/SettingService";
 
-const useCompanies = () => {
+const useCompanies = (refresh) => {
 	const [companies, setCompanies] = useState(null);
 
 	useEffect(() => {
 		const fetchAllCompanies = async () => {
 			try {
-				const response = await SettingService.getAllCompanies();
-				setCompanies(response.data);
+				const { data } = await SettingService.getAllCompanies();
+				setCompanies(data);
 			} catch (error) {
 				console.error(error);
 			}
 		};
 		fetchAllCompanies();
-	}, []);
+	}, [refresh]);
 
 	return companies;
 };

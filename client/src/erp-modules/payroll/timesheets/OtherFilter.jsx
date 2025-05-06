@@ -8,7 +8,7 @@ import {
 } from "@chakra-ui/react";
 import OutlineButton from "components/ui/button/OutlineButton";
 import PayrollMultiSelectBox from "components/ui/form/select/PayrollMultiSelectBox";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FaCaretDown } from "react-icons/fa";
 import { MdOutlineFilterList } from "react-icons/md";
 
@@ -20,34 +20,34 @@ const OtherFilter = ({
 	filteredData,
 	setFilteredData,
 	helperText,
+	isDisabled,
+	type,
 }) => {
 	const [openMenu, setOpenMenu] = useState(true);
 	const [selectedOptions, setSelectedOptions] = useState([]);
+
+	useEffect(() => {
+		setSelectedOptions(filteredData);
+	}, [filteredData]);
 
 	const handleApply = (options) => {
 		setFilteredData(options);
 	};
 
 	const handleCloseMenu = () => {
-		setFilteredData(null);
+		toggleOtherFilter();
 	};
 
 	return (
-		<Popover isOpen={showOtherFilter} overflow="auto">
+		<Popover isOpen={showOtherFilter && !isDisabled} overflow="auto">
 			<PopoverTrigger>
-				<HStack
-					cursor="pointer"
-					borderRadius="md"
-					onClick={toggleOtherFilter}
-					p={0}
-					spacing={1}
-				>
+				<HStack cursor="pointer" borderRadius="md" onClick={toggleOtherFilter} p={0} spacing={1}>
 					<MdOutlineFilterList />
 					<OutlineButton
-						borderColor={!filteredData?.length && "var(--filter_border_color)"}
+						borderColor={!selectedOptions?.length && "var(--filter_border_color)"}
 						label={
 							<>
-								{filteredData?.length ?? 0} {helperText}(s) selected
+								{selectedOptions?.length || 0} {helperText}(s) selected
 								<FaCaretDown />
 							</>
 						}
@@ -60,13 +60,14 @@ const OtherFilter = ({
 					{showOtherFilter && (
 						<Stack spacing={3} justifyContent={"end"}>
 							<PayrollMultiSelectBox
-								w={"15vw"}
+								w="15vw"
 								data={data}
 								openMenu={openMenu}
 								handleCloseMenu={handleCloseMenu}
 								handleApply={handleApply}
 								selectedOptions={selectedOptions}
 								setSelectedOptions={setSelectedOptions}
+								type={type}
 							/>
 						</Stack>
 					)}

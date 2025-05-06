@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import UserService from "services/UserService";
 
-const useEmployees = (isRefresh, company, isOnboarding, isPayrollState, userId) => {
+const useEmployees = (isRefresh, company, isOnboarding, isPayrollState, userId, deptName) => {
 	const [employees, setEmployees] = useState(null);
 	const [filteredEmployees, setFilteredEmployees] = useState(null);
 
@@ -16,14 +16,14 @@ const useEmployees = (isRefresh, company, isOnboarding, isPayrollState, userId) 
 	useEffect(() => {
 		const fetchAllEmployees = async () => {
 			try {
-				const response = isPayrollActiveState
-					? await UserService.getPayrollActiveCompanyUsers(company)
+				const { data } = isPayrollActiveState
+					? await UserService.getPayrollActiveCompanyUsers(company, deptName)
 					: isPayrollInActiveState
-					? await UserService.getPayrollInActiveCompanyUsers(company)
-					: await UserService.getAllCompanyUsers(company);
+					? await UserService.getPayrollInActiveCompanyUsers(company, deptName)
+					: await UserService.getAllCompanyUsers(company, deptName);
 
-				setEmployees(response.data);
-				setFilteredEmployees(response.data);
+				setEmployees(data);
+				setFilteredEmployees(data);
 			} catch (error) {
 				console.error(error);
 			}

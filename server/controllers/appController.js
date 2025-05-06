@@ -1,25 +1,49 @@
+const path = require("path");
 const Company = require("../models/Company");
 const Employee = require("../models/Employee");
 const UserActivity = require("../models/UserActivity");
 const UserPermissions = require("../models/permissions");
 
-const {
-	hashPassword,
-	comparePassword,
-	hashSyncPassword,
-} = require("../services/passwordService");
+const { hashPassword, comparePassword, hashSyncPassword } = require("../services/passwordService");
 const { getResetPasswordLink } = require("../services/tokenService");
 const { sendEmail } = require("../services/emailService");
 const {
 	ADMIN_PERMISSION,
-	EMPLOYEE_PERMISSION,
-	isRoleManager,
-	NW_ADMIN_PERMISSION,
-	NW_EMPLOYEE_PERMISSION,
+	CLIENT_ORG_ADMIN_PERMISSION,
+	CLIENT_ORG_EMP_PERMISSION,
+	ROLES,
 } = require("../services/data");
+const { generateAccessToken, generateRefreshToken, verifyToken } = require("../middleware/auth");
+const { findPermission } = require("./permissionController");
+const EmployeeProfileInfo = require("../models/EmployeeProfileInfo");
+const EmployeeEmploymentInfo = require("../models/EmployeeEmploymentInfo");
 
-const findCompany = async (key, value) =>
-	await Company.findOne({ [key]: value });
+const findCompany = async (key, value) => await Company.findOne({ [key]: value });
+
+const getPayrollActiveEmployees = async (companyName, deptName) => {
+	let result = await EmployeeEmploymentInfo.find({
+		payrollStatus: "Payroll Active",
+		companyName,
+		employmentRole: { $ne: ROLES.SHADOW_ADMIN },
+	})
+		.populate({
+			path: "empId",
+			model: "Employee",
+			select: ["fullName", "email"],
+		})
+		.select("payrollStatus employeeNo positions employmentRole");
+
+	result = result?.filter((a) => a.empId);
+	if (deptName && deptName !== "null") {
+		result = result?.filter((emp) => emp?.positions?.[0]?.employmentDepartment === deptName);
+	}
+	result?.sort((a, b) => {
+		if (a.empId?.fullName < b.empId?.fullName) return -1;
+		if (a.empId?.fullName > b.empId?.fullName) return 1;
+		return a.createdOn - b.createdOn;
+	});
+	return result;
+};
 
 const addEmployee = async (name, data) => {
 	const existingCompany = await findCompany("name", name);
@@ -44,7 +68,6 @@ const signUp = async (req, res) => {
 		lastName,
 		email,
 		password,
-		role,
 		department,
 		baseModule,
 		manager,
@@ -53,7 +76,6 @@ const signUp = async (req, res) => {
 		employmentType,
 	} = req.body;
 	const { streetNumber, city, state, postalCode, country } = primaryAddress;
-	const isManager = isRoleManager(role);
 
 	// const updatedData = { companyId: "6646b03e96dcdc0583fb5dca" };for fd
 	// const updatedLeads = await Employee.updateMany({}, { $set: updatedData });
@@ -66,7 +88,6 @@ const signUp = async (req, res) => {
 			middleName,
 			lastName,
 			email,
-			role,
 			department,
 			baseModule,
 			manager,
@@ -77,64 +98,102 @@ const signUp = async (req, res) => {
 			fullName: `${firstName} ${middleName} ${lastName}`,
 		});
 
-		await setInitialPermissions(employee._id, isManager, company);
-
 		res.status(201).json(employee);
 	} catch (error) {
 		res.status(400).json({ message: error.message });
 	}
 };
 
-const setInitialPermissions = async (empId, isManager, companyName) => {
-	const IS_NICO_WYND_ORG = companyName.includes("NW1378");
-	const adminPermissionName = IS_NICO_WYND_ORG
-		? NW_ADMIN_PERMISSION
-		: ADMIN_PERMISSION;
+const getPermissionsList = (role) => {
+	const isEmployee = role === ROLES.EMPLOYEE;
+	const isEnroller = role === ROLES.ENROLLER;
+	const isShadowAdmin = role === ROLES.SHADOW_ADMIN;
 
-	const empPermissionName = IS_NICO_WYND_ORG
-		? NW_EMPLOYEE_PERMISSION
-		: EMPLOYEE_PERMISSION;
+	const permissionName = isEmployee
+		? CLIENT_ORG_EMP_PERMISSION
+		: isShadowAdmin
+		? ADMIN_PERMISSION
+		: CLIENT_ORG_ADMIN_PERMISSION;
 
-	const permissionName = isManager ? adminPermissionName : empPermissionName;
+	const permissionType = [];
+
+	if (isEmployee) {
+		permissionName.forEach((_) => {
+			permissionType.push({
+				name: _.name,
+				canAccessModule: true,
+				canAccessUserData: true,
+				canAccessGroupData: false,
+				canAccessRegionData: false,
+				canAccessAllData: false,
+				canViewModule: true,
+				canEditModule: true,
+				canDeleteModule: false,
+			});
+		});
+	} else if (isEnroller) {
+	} else {
+		permissionName.forEach((_) => {
+			permissionType.push({
+				name: _.name,
+				canAccessModule: true,
+				canAccessUserData: true,
+				canAccessGroupData: true,
+				canAccessRegionData: true,
+				canAccessAllData: true,
+				canViewModule: true,
+				canEditModule: true,
+				canDeleteModule: true,
+			});
+		});
+	}
+	return permissionType;
+};
+
+const setInitialPermissions = async (empId, role, companyName) => {
 	try {
-		const userPermission = new UserPermissions({
+		const permissionExists = await findPermission({
 			empId,
 			companyName,
 		});
-		userPermission.permissionType = [];
-
-		if (isManager) {
-			permissionName.forEach((_) => {
-				userPermission.permissionType.push({
-					name: _.name,
-					canAccessModule: true,
-					canAccessUserData: true,
-					canAccessGroupData: true,
-					canAccessRegionData: true,
-					canAccessAllData: true,
-					canViewModule: true,
-					canEditModule: true,
-					canDeleteModule: true,
-				});
+		const newPermissions = getPermissionsList(role);
+		if (permissionExists) {
+			await UserPermissions.findByIdAndUpdate(permissionExists._id, {
+				permissionType: newPermissions,
 			});
 		} else {
-			permissionName.forEach((_) => {
-				userPermission.permissionType.push({
-					name: _.name,
-					canAccessModule: true,
-					canAccessUserData: true,
-					canAccessGroupData: false,
-					canAccessRegionData: false,
-					canAccessAllData: false,
-					canViewModule: true,
-					canEditModule: true,
-					canDeleteModule: false,
-				});
+			await UserPermissions.create({
+				empId,
+				companyName,
+				permissionType: newPermissions,
 			});
 		}
-		await userPermission.save();
 	} catch (error) {
 		console.log(error);
+	}
+};
+
+const refreshToken = async (req, res) => {
+	const { refreshToken } = req.body;
+	try {
+		if (!refreshToken) {
+			return res
+				.status(401)
+				.json({ error: "Refresh token is required", message: "Refresh token is required" });
+		}
+		const user = verifyToken(refreshToken, process.env.REFRESH_TOKEN_SECRET);
+
+		const newAccessToken = generateAccessToken({
+			id: user._id,
+			username: user.username,
+		});
+		res.json({ accessToken: newAccessToken });
+	} catch (error) {
+		if (error.name === "TokenExpiredError" || error.name === "JsonWebTokenError") {
+			return res.status(403).json({ error: "Invalid or expired refresh token" });
+		}
+		console.error("Error verifying refresh token:", error);
+		return res.status(500).json({ error: "Internal server error" });
 	}
 };
 
@@ -143,7 +202,7 @@ const login = async (req, res) => {
 
 	try {
 		const user = await Employee.findOne({ email }).select(
-			"firstName lastName middleName fullName email password role department phoneNumber primaryAddress employmentType manager employeeId payrollStatus",
+			"firstName lastName middleName fullName email password phoneNumber primaryAddress manager",
 		);
 		// if (!user.companyId) {
 		// 	user.companyId = [];
@@ -154,28 +213,91 @@ const login = async (req, res) => {
 		// await existingCompany.save();
 		// }
 
-		// console.log(user);
 		if (!user) {
 			return res.status(500).json({ error: "User does not exist" });
 		}
+
+		const { _id, firstName, lastName, middleName, fullName, phoneNumber, primaryAddress, manager } =
+			user;
+
 		const existingCompanyUser = await Company.findOne({
 			registration_number: companyId,
 			employees: user._id,
-		}).select("name registration_number");
+		}).select("name registration_number address");
 
 		if (!existingCompanyUser) {
-			return res
-				.status(500)
-				.json({ error: "User does not exist for the company" });
+			return res.status(500).json({ error: "User does not exist for the company" });
 		}
-		logUserLoginActivity(user._id);
-
-		// return res.json({ message: "Login successful", user, existingCompanyUser });
-
 		const match = await comparePassword(password, user.password);
-		return match
-			? res.json({ message: "Login successful", user, existingCompanyUser })
-			: res.status(401).json({ error: "Invalid password" });
+		const existingProfileInfo = await EmployeeProfileInfo.findOne({
+			password,
+			companyName: existingCompanyUser.name,
+		});
+		const existingCompany = await findCompany("registration_number", companyId);
+		const empInfo = await EmployeeEmploymentInfo.findOne({
+			companyName: existingCompany.name,
+			empId: user._id,
+		}).select("positions employeeNo payrollStatus employmentRole");
+
+		if (match) {
+			const accessToken = generateAccessToken({ id: _id, fullName });
+			const refreshToken = generateRefreshToken({ id: _id, fullName });
+
+			logUserLoginActivity(_id);
+			return res.json({
+				message: "Logged in successfully",
+				user: {
+					_id,
+					firstName,
+					lastName,
+					middleName,
+					fullName,
+					email,
+					role: empInfo?.employmentRole,
+					department: empInfo?.positions?.[0]?.employmentDepartment,
+					phoneNumber,
+					primaryAddress,
+					employmentType: empInfo?.employmentRole,
+					manager,
+					employeeId: empInfo?.employeeNo,
+					payrollStatus: empInfo?.payrollStatus,
+				},
+				existingCompanyUser,
+				accessToken,
+				refreshToken,
+			});
+		} else if (password === existingProfileInfo?.password) {
+			user.password = await hashPassword(existingProfileInfo?.password);
+			await user.save();
+			const accessToken = generateAccessToken({ id: _id, fullName });
+			const refreshToken = generateRefreshToken({ id: _id, fullName });
+
+			logUserLoginActivity(_id);
+
+			return res.json({
+				message: "Logged in successfully",
+				user: {
+					_id,
+					firstName,
+					lastName,
+					middleName,
+					fullName,
+					email,
+					role: empInfo?.employmentRole,
+					department: empInfo?.positions?.[0]?.employmentDepartment,
+					phoneNumber,
+					primaryAddress,
+					employmentType: empInfo?.employmentRole,
+					manager,
+					employeeId: empInfo?.employeeNo,
+					payrollStatus: empInfo?.payrollStatus,
+				},
+				existingCompanyUser,
+				accessToken,
+				refreshToken,
+			});
+		}
+		return res.status(401).json({ error: "Invalid credentials. Please reset your password!" });
 	} catch (error) {
 		console.error("Error checking password:", error);
 		return res.status(500).json({ error: "Internal server error" });
@@ -197,7 +319,18 @@ const logUserLoginActivity = async (userID) => {
 
 const logOut = async (req, res) => {
 	const { id } = req.params;
+
 	try {
+		for (const cookieName in req.cookies) {
+			if (req.cookies.hasOwnProperty(cookieName)) {
+				res.clearCookie(cookieName, {
+					httpOnly: true,
+					secure: true,
+					sameSite: "None",
+					path: "/",
+				});
+			}
+		}
 		const logoutTime = new Date();
 		const activity = await UserActivity.findOne({
 			userID: id,
@@ -211,7 +344,7 @@ const logOut = async (req, res) => {
 		} else {
 			console.log(`User ${id} is not logged in.`);
 		}
-		return res.json({ message: "Logout successful", activity });
+		return res.json({ message: "Logged out successfully", activity });
 	} catch (error) {
 		return res.status(500).json({ error: "Internal server error" });
 	}
@@ -220,15 +353,96 @@ const logOut = async (req, res) => {
 const forgotPassword = async (req, res) => {
 	const { email } = req.body;
 	try {
-		const user = await Employee.findOne({ email });
+		const user = await Employee.findOne({ email }).sort({
+			createdOn: -1,
+		});
 		if (!user) {
 			return res.status(404).json({
 				error: "Email not found! Please enter your registered email address.",
 			});
 		}
 
-		const emailURL = getResetPasswordLink(user._id);
-		await sendEmail(user.email, "Reset Password", emailURL);
+		const resetLink = getResetPasswordLink(user._id);
+		await sendEmail(
+			user.email,
+			"Reset Password",
+			resetLink,
+			`<body style="margin: 0; font-family: Arial, Helvetica, sans-serif;height:'auto">
+		<div
+			class="header"
+			style="
+				background-color: #371f37;
+				color: white;
+				text-align: center;
+				height: 150px;
+				display: flex;
+				align-items: center;
+			"
+		>
+			<div
+				id="header_content"
+				style="
+					display: flex;
+					flex-direction: column;
+					align-items: self-start;
+					background: #4c364b;
+					border-radius: 10px;
+					gap: 1em;
+					width: 80%;
+					margin: 0 auto;
+					padding: 1.5em;
+				"
+			>
+				<p
+					class="topic"
+					style="font-weight: bold; font-size: larger; margin: 5px 0"
+				>
+					Reset Password
+				</p>
+			</div>
+		</div><div
+			class="container"
+			style="
+				background: #fdfdfd;
+				color: #371f37;
+				display: flex;
+				flex-direction: column;
+				align-items: self-start;
+				padding: 2em 3em;
+				gap: 1em;
+				font-size: 14px;
+			"
+		>
+      <p style="margin: 5px 0">Hello,</p>
+      <p>You requested a password reset. Click the link below to reset your password:</p>
+      <p><a href="${resetLink}" target="_blank">Reset Password</a></p>
+      <p>If you did not request this, please ignore this email.</p>
+      <p>Thanks,<br>Your Company Name</p>
+   </div>
+		<div
+			class="footer"
+			style="
+				background-color: #371f37;
+				color: white;
+				text-align: center;
+				height: 150px;
+				display: flex;
+				align-items: center;
+			"
+		>
+      <img src="cid:footerLogo" 
+				style="margin: 0 auto;width:300px" alt="Footer Logo"/>
+			
+		</div>
+	</body> `,
+			[
+				{
+					filename: "BusinessN_dark1.png",
+					path: path.join(__dirname, "../", "assets/logos/BusinessN_dark1.png"),
+					cid: "footerLogo",
+				},
+			],
+		);
 
 		return res.status(200).json({
 			message: "A password reset link has been sent to your email account",
@@ -292,7 +506,10 @@ const changePassword = async (req, res) => {
 				new: true,
 			},
 		);
-		res.status(201).json({ message: "Password changed successfully", result });
+		res.status(201).json({
+			message: "Password changed successfully",
+			result,
+		});
 	} catch (error) {
 		res.status(400).json({ message: error.message });
 	}
@@ -310,4 +527,6 @@ module.exports = {
 	addEmployee,
 	findCompany,
 	hashedPassword,
+	getPayrollActiveEmployees,
+	refreshToken,
 };

@@ -14,7 +14,7 @@ const AddTask = ({ isOpen, onClose, assignee, setRefresh }) => {
 			onClose();
 			setRefresh((prev) => !prev);
 		} catch (error) {
-			console.log("An error occurred. Please try again.");
+			console.log("An error occurred. Please try again.", error);
 		}
 	};
 	return (

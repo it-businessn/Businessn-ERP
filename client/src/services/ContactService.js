@@ -9,6 +9,10 @@ const ContactService = {
 		return apiService.get(`/contacts/${id}`);
 	},
 
+	async getOnboardedContacts(id) {
+		return apiService.get(`/contacts/onboard/${id}`);
+	},
+
 	async getContactDetails(data) {
 		return apiService.get(`/contacts/${data.id}/${data.company}`);
 	},

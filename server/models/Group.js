@@ -9,7 +9,8 @@ const groupSchema = new mongoose.Schema({
 	modules: [{ type: String, ref: "Module" }],
 	companyName: { type: String, ref: "Company" },
 	scheduleSettings: Array,
-	scheduleFrequency: { type: String, default: "bi-weekly" },
+	yearSchedules: Array,
+	scheduleFrequency: { type: String, default: "Biweekly" },
 	payrollActivated: { type: Boolean, default: false },
 });
 

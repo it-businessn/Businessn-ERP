@@ -1,7 +1,7 @@
 import { Image } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
 import { useBreakpointValue } from "services/Breakpoint";
-import logoImg from "../../assets/logos/logo.png";
+import logoImg from "../../assets/logos/logo1.jpg";
 import signInLogoImg from "../../assets/logos/logoCover.jpg";
 
 const Logo = ({
@@ -12,6 +12,7 @@ const Logo = ({
 	logoImgSrc = logoImg,
 	width,
 	pl,
+	ml,
 }) => {
 	const { isMobile } = useBreakpointValue();
 
@@ -23,27 +24,23 @@ const Logo = ({
 
 	return isFullLogo ? (
 		<Link to="/">
-			<Image
-				pl={pl}
-				objectFit="cover"
-				src={logoImgSrc}
-				alt="Company logo"
-				width={width}
-			/>
+			<Image ml={ml} pl={pl} objectFit="cover" src={logoImgSrc} alt="Company logo" width={width} />
 		</Link>
 	) : (
-		<Link to="/" style={linkStyle}>
-			<Image
-				height={imageHeight}
-				width={isCover ? "50%" : imageWidth}
-				ml={isCover || src ? "0%" : imageMarginLeft}
-				mt={src ? 0 : imageMarginTop}
-				m={isForgotPassword && "0 auto"}
-				objectFit="contain"
-				src={isCover ? signInLogoImg : src ? src : logoImgSrc}
-				alt="Company logo"
-			/>
-		</Link>
+		!isMobile && (
+			<Link to="/" style={linkStyle}>
+				<Image
+					height={imageHeight}
+					width={isCover ? "50%" : imageWidth}
+					ml={isCover || src ? "0%" : imageMarginLeft}
+					mt={src ? 0 : imageMarginTop}
+					m={isForgotPassword && "0 auto"}
+					objectFit="contain"
+					src={isCover ? signInLogoImg : src ? src : logoImgSrc}
+					alt="Company logo"
+				/>
+			</Link>
+		)
 	);
 };
 

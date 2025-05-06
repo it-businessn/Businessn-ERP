@@ -17,35 +17,41 @@ import Record from "../step-content/Record";
 
 const PersonalInfo = ({ company, isOnboarding, id, handleNext }) => {
 	const { empId } = useSelectedEmp(LocalStorageService.getItem("empId"));
-	const profileInfo = useEmployeeProfileInfo(company, empId, isOnboarding);
+	const onboardingEmpId = LocalStorageService.getItem("onboardingEmpId");
+	const userId = isOnboarding ? onboardingEmpId : empId;
+	const profileInfo = useEmployeeProfileInfo(company, userId, isOnboarding);
 
 	const setProfileInfo = () => getInitialProfileInfo(isOnboarding ? null : empId, company);
 	const [formData, setFormData] = useState(setProfileInfo);
 	const [isSave1Disabled, setIsSave1Disabled] = useState(true);
-	const [isSave2Disabled, setIsSave2Disabled] = useState(true);
 	const [isSave3Disabled, setIsSave3Disabled] = useState(true);
 	const [isLoading, setIsLoading] = useState(false);
 
 	useEffect(() => {
+		if (!isOnboarding) LocalStorageService.removeItem("onboardingEmpId");
 		if (profileInfo) {
+			if (profileInfo.email) {
+				profileInfo.empId = profileInfo._id;
+				profileInfo.personalEmail = profileInfo.email;
+				profileInfo.personalPhoneNum = profileInfo.phoneNumber;
+			}
 			setFormData(profileInfo);
-			LocalStorageService.removeItem("onboardingEmpId");
 		} else {
 			setFormData(setProfileInfo);
 		}
 	}, [profileInfo, empId]);
 
 	useEffect(() => {
-		if (formData.firstName && formData.lastName && formData.birthDate) {
+		if (formData.firstName && formData.lastName && formData.password) {
 			setIsSave1Disabled(false);
 		}
-	}, [formData.firstName, formData.lastName, formData.birthDate]);
+	}, [formData.firstName, formData.lastName, formData.password]);
 
-	useEffect(() => {
-		if (formData.employeeNo) {
-			setIsSave2Disabled(false);
-		}
-	}, [formData.employeeNo]);
+	// useEffect(() => {
+	// 	if (formData.employeeNo) {
+	// 		setIsSave2Disabled(false);
+	// 	}
+	// }, [formData.employeeNo]);
 
 	useEffect(() => {
 		if (
@@ -73,12 +79,13 @@ const PersonalInfo = ({ company, isOnboarding, id, handleNext }) => {
 	const handleSubmit = async () => {
 		setIsLoading(true);
 		try {
-			const result = await PayrollService.addEmployeeProfileInfo(formData);
+			formData.companyName = company;
+			const { data } = await PayrollService.addEmployeeProfileInfo(formData);
 			setIsLoading(false);
 			// setIsSave1Disabled(true);
 			// setIsSave2Disabled(true);
 			// setIsSave3Disabled(true);
-			LocalStorageService.setItem("onboardingEmpId", result.data.empId);
+			LocalStorageService.setItem("onboardingEmpId", data?.empId);
 			toast({
 				title: "Personal info added successfully.",
 				status: "success",
@@ -98,10 +105,9 @@ const PersonalInfo = ({ company, isOnboarding, id, handleNext }) => {
 					setFormData={setFormData}
 					title="Personal Information"
 					config={EMP_PERSONAL_INFO_CONFIG}
-					isLoading={isLoading}
-					isDisabled={isSave1Disabled}
 					handleSubmit={handleSubmit}
 					isOnboarding={isOnboarding}
+					hasPassword={profileInfo?.password}
 				/>
 			),
 		},
@@ -114,8 +120,6 @@ const PersonalInfo = ({ company, isOnboarding, id, handleNext }) => {
 					setFormData={setFormData}
 					title="Contact"
 					config={EMP_CONTACT_CONFIG}
-					isLoading={isLoading}
-					isDisabled={isSave3Disabled}
 					handleSubmit={handleSubmit}
 				/>
 			),
@@ -128,7 +132,6 @@ const PersonalInfo = ({ company, isOnboarding, id, handleNext }) => {
 					setFormData={setFormData}
 					title="Emergency Contact"
 					config={EMP_EMERGENCY_CONTACT_CONFIG}
-					isLoading={isLoading}
 					handleSubmit={handleSubmit}
 				/>
 			),
@@ -154,7 +157,11 @@ const PersonalInfo = ({ company, isOnboarding, id, handleNext }) => {
 					isOnboarding={isOnboarding}
 					id={id}
 					handleNext={handleNext}
-					handleNextEnabled={!isSave1Disabled && !isSave2Disabled && !isSave3Disabled}
+					// handleNextEnabled={!isSave1Disabled && !isSave2Disabled && !isSave3Disabled}
+					handleNextEnabled={!isSave1Disabled && !isSave3Disabled}
+					handleSubmit={handleSubmit}
+					isLoading={isLoading}
+					isDisabled={isSave3Disabled || isSave1Disabled}
 				/>
 			</BoxCard>
 			<StepContent currentStep={currentStep} steps={steps} isOnboarding={isOnboarding} />

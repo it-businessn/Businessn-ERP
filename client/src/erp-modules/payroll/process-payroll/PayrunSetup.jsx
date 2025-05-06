@@ -17,6 +17,7 @@ const PayrunSetup = ({
 	selectedPayGroup,
 	closestRecord,
 	isPayPeriodInactive,
+	deptName,
 }) => {
 	const [isLoading, setIsLoading] = useState(false);
 	const { company } = useCompany(LocalStorageService.getItem("selectedCompany"));
@@ -29,6 +30,7 @@ const PayrunSetup = ({
 				const response = await PayrollService.addPayPeriodPayStub({
 					companyName: company,
 					currentPayPeriod: closestRecord,
+					deptName,
 				});
 				if (response) {
 					handleClick();
@@ -80,7 +82,7 @@ const PayrunSetup = ({
 						</Th>
 						<Th>
 							<SelectBox
-								// handleChange={handleChange}
+								handleChange={(value) => console.log(value)}
 								data={payGroups}
 								name="name"
 								border="1px solid var(--primary_button_bg)"
@@ -108,7 +110,7 @@ const PayrunSetup = ({
 			</Table>
 			{payGroups && (
 				<PrimaryButton
-					bg="var(--correct_ans)"
+					bg="var(--action_status_approve)"
 					name={"CONFIRM"}
 					rightIcon={<MdCheckCircle />}
 					isLoading={isLoading}

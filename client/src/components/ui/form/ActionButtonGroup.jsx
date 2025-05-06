@@ -10,9 +10,10 @@ const ActionButtonGroup = ({
 	closeLabel,
 	onOpen,
 	size,
+	justifyContent,
 }) => {
 	return (
-		<HStack justifyContent={!closeLabel && "end"}>
+		<HStack justifyContent={justifyContent ? justifyContent : !closeLabel && "end"}>
 			<PrimaryButton
 				size={size}
 				isDisabled={isDisabled}
@@ -21,7 +22,7 @@ const ActionButtonGroup = ({
 				loadingText="Loading"
 				onOpen={onOpen}
 			/>
-			<CancelButton name={closeLabel} onClick={onClose} size={size} />
+			{onClose && <CancelButton name={closeLabel} onClick={onClose} size={size} />}
 		</HStack>
 	);
 };

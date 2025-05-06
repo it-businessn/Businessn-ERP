@@ -17,10 +17,13 @@ const WorkviewTable = ({
 	height = "26vh",
 	autoScroll = false,
 	handleRegister,
+	handleTotalsReport,
+	handleJournalsReport,
 	isEarningTable,
 	cols = PAYGROUP_COLS,
 	viewLabel = "View Register",
 	textAlign,
+	selectedYear,
 }) => {
 	const rowRefs = useRef([]);
 	const scrollToRow = (index) => {
@@ -40,10 +43,10 @@ const WorkviewTable = ({
 
 	const navigate = useNavigate();
 
-	const handleView = () => navigate(payrollReportPath);
+	const handleView = () => navigate(`${payrollReportPath}/${selectedYear}`);
 
 	const handlePay = (payPeriod) =>
-		navigate(`${ROUTE_PATH.PAYROLL}${ROUTE_PATH.PROCESS}/${payPeriod}`);
+		navigate(`${ROUTE_PATH.PAYROLL}${ROUTE_PATH.PROCESS}/${payPeriod}/${selectedYear}`);
 
 	return (
 		<TableLayout
@@ -82,7 +85,7 @@ const WorkviewTable = ({
 					) => (
 						<Tr key={`${payPeriod}_${index}`} ref={(el) => (rowRefs.current[index] = el)}>
 							<Td p={1} pl={8}>
-								{isEarningTable ? payPeriodNum : isExtraPay(payPeriod, isExtraRun)}
+								{isExtraPay(payPeriodNum || payPeriod, isExtraRun)}
 							</Td>
 							<Td p={1} textAlign={textAlign}>
 								{dayMonthYear(payPeriodPayDate)}
@@ -125,7 +128,7 @@ const WorkviewTable = ({
 											isDisabled={isDisabledAction}
 											name={"Pay now"}
 											size="xs"
-											onOpen={() => handlePay(isExtraPay(payPeriod, isExtraRun))}
+											onOpen={() => handlePay(isExtraPay(payPeriodNum || payPeriod, isExtraRun))}
 										/>
 									)
 								) : (
@@ -135,10 +138,10 @@ const WorkviewTable = ({
 												label={viewLabel}
 												size="xs"
 												onClick={() => {
-													if (isEarningTable) {
-														return handleRegister(payPeriodNum);
-													}
-													handleRegister(isExtraPay(payPeriod, isExtraRun), isExtraRun);
+													handleRegister(
+														isExtraPay(payPeriodNum || payPeriod, isExtraRun),
+														isExtraRun,
+													);
 												}}
 											/>
 										) : (
@@ -153,17 +156,37 @@ const WorkviewTable = ({
 												}}
 												isDisabled={isDisabledAction}
 												name={"Pay now"}
-												w={"99px"}
+												minW={"105px"}
 												size="xs"
-												onOpen={() => handlePay(payPeriod)}
+												onOpen={() => handlePay(payPeriodNum || payPeriod)}
 											/>
 										)}
+
 										{!isEarningTable && (
-											<OutlineButton
-												label={"View Journal"}
-												size="xs"
-												// onClick={handleClick}
-											/>
+											<>
+												<OutlineButton
+													isDisabled={isDisabledAction}
+													label="View Funding Totals"
+													size="xs"
+													onClick={() =>
+														handleTotalsReport(
+															isExtraPay(payPeriodNum || payPeriod, isExtraRun),
+															isExtraRun,
+														)
+													}
+												/>
+												<OutlineButton
+													isDisabled={isDisabledAction}
+													label={"View Journal"}
+													size="xs"
+													onClick={() =>
+														handleJournalsReport(
+															isExtraPay(payPeriodNum || payPeriod, isExtraRun),
+															isExtraRun,
+														)
+													}
+												/>
+											</>
 										)}
 									</HStack>
 								)}

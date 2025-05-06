@@ -22,10 +22,15 @@ const InputFormControl = ({
 	size,
 	readOnly = false,
 	subRequired,
+	maxLength,
+	fontSize,
+	p,
+	autoComplete,
 }) => {
 	return (
 		<FormControlMain isInvalid={isInvalid}>
 			<RequiredLabel
+				fontSize={fontSize}
 				subRequired={subRequired}
 				hideLabel={hideLabel}
 				name={name}
@@ -35,7 +40,10 @@ const InputFormControl = ({
 				fontWeight={fontWeight}
 				visibility={visibility}
 			/>
+			{maxLength && <FormHelperText>Max characters: {maxLength}</FormHelperText>}
 			<Input
+				autoComplete={autoComplete}
+				maxLength={maxLength}
 				onBlur={handleConfirm}
 				display={display}
 				type={type}
@@ -48,6 +56,7 @@ const InputFormControl = ({
 				border={border}
 				w={w}
 				size={size}
+				p={p}
 				readOnly={readOnly}
 			/>
 			{error && <FormHelperText color="red.500">{error}</FormHelperText>}

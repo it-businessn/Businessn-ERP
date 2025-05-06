@@ -1,11 +1,5 @@
 import { SmallCloseIcon } from "@chakra-ui/icons";
-import {
-	Avatar,
-	Button,
-	FormControl,
-	FormLabel,
-	Select,
-} from "@chakra-ui/react";
+import { Avatar, Button, FormControl, FormLabel, Select } from "@chakra-ui/react";
 import RequiredLabel from "components/ui/form/RequiredLabel";
 import { useState } from "react";
 import { FaCaretDown } from "react-icons/fa";
@@ -33,9 +27,7 @@ const AssigneeSelector = ({
 
 		if (
 			selectedAssignees?.length === 0 ||
-			!selectedAssignees.some(
-				(assignee) => assignee.name === selectedAssignee.name,
-			)
+			!selectedAssignees.some((assignee) => assignee.name === selectedAssignee.name)
 		) {
 			onAssigneeChange((prevAssignees) => [...prevAssignees, selectedAssignee]);
 			if (assigneeError) {
@@ -50,13 +42,10 @@ const AssigneeSelector = ({
 
 	const handleRemoveAssignee = (assigneeToRemove) => {
 		onRemoveAssignee((prevAssignees) =>
-			prevAssignees.filter(
-				(assignee) => assignee.name !== assigneeToRemove.name,
-			),
+			prevAssignees.filter((assignee) => assignee.name !== assigneeToRemove.name),
 		);
 
-		const defaultVal =
-			selectedAssignees?.length > 1 ? selectedAssignees?.[0].name : "";
+		const defaultVal = selectedAssignees?.length > 1 ? selectedAssignees?.[0].name : "";
 		setSelectedValue(defaultVal);
 	};
 
@@ -74,10 +63,10 @@ const AssigneeSelector = ({
 			>
 				{assignees?.map((assignee) => (
 					<option
-						value={assignee?.fullName ?? assignee?.name}
-						key={assignee?._id ?? assignee?.name}
+						value={assignee?.fullName || assignee?.name}
+						key={assignee?._id || assignee?.name}
 					>
-						{assignee?.fullName ?? assignee?.name}
+						{assignee?.fullName || assignee?.name}
 					</option>
 				))}
 			</Select>

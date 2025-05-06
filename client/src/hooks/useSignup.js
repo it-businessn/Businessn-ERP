@@ -39,32 +39,32 @@ export const useSignup = (refresh) => {
 	useEffect(() => {
 		const fetchAllEmpTypes = async () => {
 			try {
-				const response = await SettingService.getAllEmploymentTypes(formData.company);
-				setEmpTypes(response.data);
+				const { data } = await SettingService.getAllEmploymentTypes(formData.company);
+				setEmpTypes(data);
 			} catch (error) {
 				console.error(error);
 			}
 		};
 		const fetchAllRoles = async () => {
 			try {
-				const response = await SettingService.getAllRoles(formData.company);
-				setRoles(response.data);
+				const { data } = await SettingService.getAllRoles(formData.company);
+				setRoles(data);
 			} catch (error) {
 				console.error(error);
 			}
 		};
 		const fetchAllManagers = async () => {
 			try {
-				const response = await UserService.getAllManagers(formData.company);
-				setManagers(response.data);
+				const { data } = await UserService.getAllManagers(formData.company);
+				setManagers(data);
 			} catch (error) {
 				console.error(error);
 			}
 		};
 		const fetchAllModules = async () => {
 			try {
-				const response = await SettingService.getAllModules(formData.company);
-				setModules(response.data);
+				const { data } = await SettingService.getAllModules(formData.company);
+				setModules(data);
 			} catch (error) {
 				console.error(error);
 			}

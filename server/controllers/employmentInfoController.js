@@ -1,34 +1,36 @@
+const moment = require("moment");
 const Employee = require("../models/Employee");
 const EmployeeEmploymentInfo = require("../models/EmployeeEmploymentInfo");
 const EmployeePayInfo = require("../models/EmployeePayInfo");
-const { isRoleManager } = require("../services/data");
 const { setInitialPermissions } = require("./appController");
-const { getEmployeeId } = require("./payrollController");
-const { findGroupEmployees } = require("./setUpController");
-const { getPayrollActiveEmployees } = require("./userController");
+const { fetchActiveEmployees } = require("./userController");
+const { updatePayInfo } = require("./payInfoController");
+const EmployeeProfileInfo = require("../models/EmployeeProfileInfo");
+const EmployeeTADProfileInfo = require("../models/EmployeeTADProfile");
 
 const getAllEmploymentInfo = async (req, res) => {
-	const { companyName, startDate, endDate, payDate, isExtraRun, groupId } = req.params;
+	const { companyName, startDate, endDate, payDate, isExtraRun, groupId, deptName } = req.params;
 	try {
 		const isExtraPayRun = isExtraRun === "true";
-		const employees = isExtraPayRun ? await findGroupEmployees(groupId, payDate) : null;
 
-		const activeEmployees = isExtraPayRun
-			? await getEmployeeId(employees)
-			: await getPayrollActiveEmployees(companyName);
+		const activeEmployees = await fetchActiveEmployees(
+			isExtraPayRun,
+			groupId,
+			payDate,
+			companyName,
+			deptName,
+		);
 
 		const aggregatedResult = [];
 		for (const employee of activeEmployees) {
-			const result = await buildPayPeriodEmpDetails(companyName, employee._id, true);
-			aggregatedResult.push(result);
+			const result = await buildPayPeriodEmpDetails(companyName, employee?.empId?._id);
+			if (result) aggregatedResult.push(result);
 		}
 		aggregatedResult.map((empInfo) => {
-			const empIdStr = empInfo.empPayStubResult?.empId?._id.toString();
-			if (empInfo?.payInfoMapResult.has(empIdStr)) {
-				empInfo.regPay = empInfo.payInfoMapResult.get(empIdStr);
-			}
+			const position = empInfo?.empPayStubResult?.positions?.find((_) => _.title);
 			empInfo._id = empInfo?.empPayStubResult?._id;
 			empInfo.empId = empInfo?.empPayStubResult?.empId;
+			empInfo.employmentCostCenter = position?.employmentDepartment;
 		});
 
 		res.status(200).json(aggregatedResult);
@@ -49,31 +51,47 @@ const findEmpEmploymentInfo = async (empId) =>
 const findEmpPayInfo = async (companyName) =>
 	await EmployeePayInfo.find({
 		companyName,
-	}).select("empId regPay");
+	}).select("empId roles");
 
-const buildPayPeriodEmpDetails = async (companyName, employeeId, hideDetails) => {
-	const empPayStubResult = hideDetails
-		? await EmployeeEmploymentInfo.findOne({
-				empId: employeeId,
-		  })
-				.populate({
-					path: "empId",
-					model: "Employee",
-					select: ["employeeId", "fullName"],
-				})
-				.select("empId companyDepartment employmentCostCenter")
-		: await findEmpEmploymentInfo(employeeId);
+const buildPayPeriodEmpDetails = async (companyName, employeeId) => {
+	const empPayStubResult = await EmployeeEmploymentInfo.findOne({
+		companyName,
+		empId: employeeId,
+		positions: { $exists: true, $not: { $size: 0 } },
+	})
+		.populate({
+			path: "empId",
+			model: "Employee",
+			select: ["fullName"],
+		})
+		.select("empId positions employeeNo");
 
-	const payInfoResult = await findEmpPayInfo(companyName);
-	const payInfoMapResult = new Map(payInfoResult.map((payInfo) => [payInfo.empId, payInfo.regPay]));
-	return { empPayStubResult, payInfoMapResult };
+	const payInfoMapResult = await EmployeePayInfo.findOne({
+		companyName,
+		empId: employeeId,
+		roles: { $exists: true, $not: { $size: 0 } },
+	}).select("empId roles");
+	if (empPayStubResult) return { empPayStubResult, payInfoMapResult };
 };
 
 const getEmployeeEmploymentInfo = async (req, res) => {
 	const { companyName, empId } = req.params;
 	try {
 		const result = await findEmployeeEmploymentInfo(empId, companyName);
-		res.status(200).json(result);
+		if (!result) {
+			const user = await Employee.findById(empId).select("email position dateOfJoining").sort({
+				createdOn: -1,
+			});
+			return res.status(200).json(user);
+		}
+		const currentDate = moment().format("YYYYMMDD");
+
+		if (!result?.employeeNo) {
+			result.employeeNo = `${companyName.slice(0, 2).toUpperCase()}${currentDate}${
+				Math.floor(Math.random() * 10) + 10
+			}`;
+		}
+		return res.status(200).json(result);
 	} catch (error) {
 		res.status(404).json({ error: error.message });
 	}
@@ -91,33 +109,47 @@ const updateEmploymentInfo = async (id, data) =>
 	});
 
 const updateEmployee = async (empId, data) => {
-	const {
-		employmentRole,
-		employmentCostCenter,
-		employmentDepartment,
-		payrollStatus,
-		employeeNo,
-		timeManagementBadgeID,
-	} = data;
+	const { payrollStatus, employeeNo, employmentRole } = data;
 	const employee = await Employee.findById(empId);
 
-	if (employmentRole) {
-		employee.role = employmentRole;
-	}
-	if (employmentDepartment) {
-		employee.department = employmentDepartment;
-	}
 	if (employee?.payrollStatus !== payrollStatus) {
 		employee.payrollStatus = payrollStatus;
 	}
-	if (employeeNo && employeeNo !== "") {
+	if (employeeNo && employeeNo !== "" && employee?.employeeNo !== employeeNo) {
 		employee.employeeNo = employeeNo;
 	}
-	if (timeManagementBadgeID && timeManagementBadgeID !== "") {
-		employee.timeManagementBadgeID = timeManagementBadgeID;
+	if (employmentRole && employee?.role !== employmentRole) {
+		employee.role = employmentRole;
 	}
 
 	await employee.save();
+};
+
+const updateTADEmployee = async (empId, companyName, positionData) => {
+	const empProfileInfo = await EmployeeProfileInfo.findOne({
+		empId,
+		companyName,
+	}).select("firstName middleName lastName");
+
+	const { firstName, middleName, lastName } = empProfileInfo;
+
+	const tadUserExists = await EmployeeTADProfileInfo.findOne({ empId });
+	if (tadUserExists) {
+		tadUserExists.cardNum = positionData?.cardNum;
+		tadUserExists.timeManagementBadgeID = positionData?.timeManagementBadgeID;
+		return await tadUserExists.save();
+	}
+	if (!tadUserExists && positionData?.timeManagementBadgeID) {
+		return await EmployeeTADProfileInfo.create({
+			empId,
+			companyName,
+			firstName,
+			middleName,
+			lastName,
+			cardNum: positionData?.cardNum,
+			timeManagementBadgeID: positionData?.timeManagementBadgeID,
+		});
+	}
 };
 
 const addEmployeeEmploymentInfo = async (req, res) => {
@@ -126,54 +158,73 @@ const addEmployeeEmploymentInfo = async (req, res) => {
 		companyName,
 		payrollStatus,
 		employeeNo,
-		timeManagementBadgeID,
 		employmentStartDate,
 		employmentLeaveDate,
 		employmentRole,
-		employmentPayGroup,
-		employmentCostCenter,
-		employmentDepartment,
-		companyDepartment,
+		positions,
+		employmentCountry,
+		employmentRegion,
 	} = req.body;
 	try {
 		const data = {
 			payrollStatus,
 			employeeNo,
-			timeManagementBadgeID,
 			employmentRole,
-			employmentCostCenter,
-			employmentDepartment,
 		};
+		if (positions?.length) {
+			const roles = [...positions];
+			const existingPayInfo = await EmployeePayInfo.findOne({ empId, companyName });
+			if (existingPayInfo) {
+				await updatePayInfo(existingPayInfo._id, { roles });
+			} else {
+				await EmployeePayInfo.create({
+					empId,
+					companyName,
+					roles,
+				});
+			}
+		}
 		const existingEmploymentInfo = await findEmployeeEmploymentInfo(empId, companyName);
 		if (existingEmploymentInfo) {
-			const updatedEmploymentInfo = await updateEmploymentInfo(
-				existingEmploymentInfo._id,
-				req.body,
-			);
+			const updatedEmploymentInfo = await updateEmploymentInfo(existingEmploymentInfo._id, {
+				payrollStatus,
+				employeeNo,
+				employmentStartDate,
+				employmentLeaveDate,
+				employmentRole,
+				positions,
+				employmentCountry,
+				employmentRegion,
+			});
 			await updateEmployee(existingEmploymentInfo.empId, data);
-			await setInitialPermissions(
-				existingEmploymentInfo.empId,
-				isRoleManager(employmentRole),
-				companyName,
-			);
+			if (positions?.length && positions[0]) {
+				await updateTADEmployee(existingEmploymentInfo.empId, companyName, positions[0]);
+			}
+			if (
+				employmentRole !== existingEmploymentInfo?.employmentRole &&
+				companyName !== existingEmploymentInfo?.companyName
+			) {
+				await setInitialPermissions(existingEmploymentInfo.empId, employmentRole, companyName);
+			}
 			return res.status(201).json(updatedEmploymentInfo);
 		}
 		const newEmploymentInfo = await EmployeeEmploymentInfo.create({
 			empId,
 			payrollStatus,
 			employeeNo,
-			timeManagementBadgeID,
 			companyName,
 			employmentStartDate,
 			employmentLeaveDate,
 			employmentRole,
-			employmentPayGroup,
-			employmentCostCenter,
-			employmentDepartment,
-			companyDepartment,
+			positions,
+			employmentCountry,
+			employmentRegion,
 		});
 		await updateEmployee(empId, data);
-		await setInitialPermissions(empId, isRoleManager(employmentRole), companyName);
+		if (positions?.length && positions[0]) {
+			await updateTADEmployee(empId, companyName, positions[0]);
+		}
+		await setInitialPermissions(empId, employmentRole, companyName);
 		return res.status(201).json(newEmploymentInfo);
 	} catch (error) {
 		res.status(400).json({ message: error.message });
@@ -182,8 +233,29 @@ const addEmployeeEmploymentInfo = async (req, res) => {
 
 const updateEmployeeEmploymentInfo = async (req, res) => {
 	const { id } = req.params;
+	const {
+		payrollStatus,
+		employeeNo,
+		companyName,
+		employmentStartDate,
+		employmentLeaveDate,
+		employmentRole,
+		positions,
+		employmentCountry,
+		employmentRegion,
+	} = req.body;
 	try {
-		const updatedInfo = await updateEmploymentInfo(id, req.body);
+		const updatedInfo = await updateEmploymentInfo(id, {
+			payrollStatus,
+			employeeNo,
+			companyName,
+			employmentStartDate,
+			employmentLeaveDate,
+			employmentRole,
+			positions,
+			employmentCountry,
+			employmentRegion,
+		});
 		res.status(201).json(updatedInfo);
 	} catch (error) {
 		res.status(400).json({ message: error.message });
@@ -195,4 +267,7 @@ module.exports = {
 	getEmployeeEmploymentInfo,
 	addEmployeeEmploymentInfo,
 	updateEmployeeEmploymentInfo,
+	findEmployeeEmploymentInfo,
+	updateEmploymentInfo,
+	findEmpPayInfo,
 };

@@ -1,6 +1,8 @@
 import { Flex, FormLabel, HStack, Radio, RadioGroup } from "@chakra-ui/react";
+import MandatoryField from "components/ui/form/MandatoryField";
 import TextTitle from "components/ui/text/TextTitle";
 import { HIDE_ONBOARDING_SECTION } from "erp-modules/payroll/workview/data";
+import { useBreakpointValue } from "services/Breakpoint";
 import { hideLabel } from "../Record";
 
 const RadioTypeRecord = ({
@@ -9,14 +11,17 @@ const RadioTypeRecord = ({
 	setFormData,
 	handleConfirm,
 	isOnboarding,
+	required,
 }) => {
+	const { isMobile } = useBreakpointValue();
 	return (
-		(!isOnboarding ||
-			(isOnboarding && !HIDE_ONBOARDING_SECTION.includes(param.name))) && (
-			<HStack visibility={hideLabel(param.name) && "hidden"}>
-				<FormLabel>{param.name}</FormLabel>
+		(!isOnboarding || (isOnboarding && !HIDE_ONBOARDING_SECTION.includes(param.name))) && (
+			<HStack visibility={hideLabel(param.name) && "hidden"} flexDir={isMobile && "column"}>
+				<FormLabel>
+					{param.name} {required && <MandatoryField color={"red"} />}
+				</FormLabel>
 				<RadioGroup
-					value={formData[param.param_key]}
+					value={formData[param.param_key] || ""}
 					onChange={(value) => {
 						setFormData((prev) => ({
 							...prev,
@@ -27,11 +32,7 @@ const RadioTypeRecord = ({
 				>
 					<Flex gap={5} align={"center"}>
 						{param?.options?.map((option, index) => (
-							<Radio
-								key={index}
-								value={option}
-								border={"1px solid var(--gray2_color)"}
-							>
+							<Radio key={index} value={option} border={"1px solid var(--gray2_color)"}>
 								<TextTitle size={"sm"} title={option} />
 							</Radio>
 						))}

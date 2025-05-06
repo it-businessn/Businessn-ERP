@@ -19,20 +19,20 @@ const PayrollStageContent = ({
 	isPayPeriodInactive,
 	setReportData,
 	reportData,
+	company,
+	deptName,
 }) => {
-	const { isOpen: isPayrollStepupOpen, onToggle: onPayrollStepupToggle } =
-		useDisclosure({
-			defaultIsOpen: false,
-		});
-	const { isOpen: isInputsReviewOpen, onToggle: onInputsReviewToggle } =
-		useDisclosure({
-			defaultIsOpen: false,
-		});
-	const { isOpen: isAlertsOpen, onToggle: onAlertsOpenToggle } = useDisclosure({
+	const { isOpen: isPayrollStepupOpen, onToggle: onPayrollStepupToggle } = useDisclosure({
 		defaultIsOpen: false,
 	});
-	const { isOpen: isReportsOpen, onToggle: onReportsToggle } = useDisclosure({
+	const { isOpen: isInputsReviewOpen, onToggle: onInputsReviewToggle } = useDisclosure({
 		defaultIsOpen: false,
+	});
+	const { isOpen: isAlertsOpen, onToggle: onAlertsOpenToggle } = useDisclosure({
+		defaultIsOpen: currentStep === 2,
+	});
+	const { isOpen: isReportsOpen, onToggle: onReportsToggle } = useDisclosure({
+		defaultIsOpen: currentStep === 3,
 	});
 	const { isOpen: isFinalizeOpen, onToggle: onFinalizeToggle } = useDisclosure({
 		defaultIsOpen: false,
@@ -43,16 +43,18 @@ const PayrollStageContent = ({
 	}, [currentStep]);
 
 	const handleStepChange = () => {
-		if (currentStep === 0) {
-			onPayrollStepupToggle();
-		} else if (currentStep === 1) {
-			onInputsReviewToggle();
-		} else if (currentStep === 2) {
-			onAlertsOpenToggle();
-		} else if (currentStep === 3) {
-			onReportsToggle();
-		} else if (currentStep === 4) {
-			onFinalizeToggle();
+		if (!isPayPeriodInactive) {
+			if (currentStep === 0) {
+				onPayrollStepupToggle();
+			} else if (currentStep === 1) {
+				onInputsReviewToggle();
+			} else if (currentStep === 2) {
+				onAlertsOpenToggle();
+			} else if (currentStep === 3) {
+				onReportsToggle();
+			} else if (currentStep === 4) {
+				onFinalizeToggle();
+			}
 		}
 	};
 
@@ -68,6 +70,7 @@ const PayrollStageContent = ({
 				title={"Payrun Setup"}
 				content={
 					<PayrunSetup
+						deptName={deptName}
 						handleClick={() => {
 							handleConfirm(1);
 							onPayrollStepupToggle();
@@ -90,6 +93,7 @@ const PayrollStageContent = ({
 				title={"Inputs Review"}
 				content={
 					<InputsReview
+						deptName={deptName}
 						currentStep={currentStep}
 						isInputsReviewOpen={isInputsReviewOpen}
 						handleClick={(data) => {
@@ -115,6 +119,7 @@ const PayrollStageContent = ({
 				title={"Alerts and Violations"}
 				content={
 					<AlertsViolation
+						deptName={deptName}
 						currentStep={currentStep}
 						isAlertsOpen={isAlertsOpen}
 						handleClick={() => {
@@ -137,11 +142,13 @@ const PayrollStageContent = ({
 				title={"Review Reports"}
 				content={
 					<ReportsPreview
+						deptName={deptName}
 						reportData={reportData}
 						handleClick={() => {
 							handleConfirm(4);
 							onReportsToggle();
 						}}
+						company={company}
 						payPeriodNum={closestRecord?.payPeriod}
 						isPayPeriodInactive={isPayPeriodInactive}
 					/>
@@ -157,6 +164,7 @@ const PayrollStageContent = ({
 				title={"Finalize"}
 				content={
 					<Finalize
+						deptName={deptName}
 						handleClick={() => {
 							handleConfirm(5);
 							// onFinalizeToggle();

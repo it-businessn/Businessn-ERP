@@ -23,8 +23,8 @@ const EditContactForm = ({ selectedContact, onSave, onCancel }) => {
 	useEffect(() => {
 		const fetchIndustryTypes = async () => {
 			try {
-				const response = await IndustryService.getIndustryType();
-				setIndustryTypeOptions(response.data);
+				const { data } = await IndustryService.getIndustryType();
+				setIndustryTypeOptions(data);
 			} catch (error) {
 				console.error(error);
 			}
@@ -72,11 +72,7 @@ const EditContactForm = ({ selectedContact, onSave, onCancel }) => {
 							</FormControl>
 							<FormControl>
 								<FormLabel>Type Of Industry </FormLabel>
-								<Select
-									name="industryType"
-									value={formData.industryType}
-									onChange={handleChange}
-								>
+								<Select name="industryType" value={formData.industryType} onChange={handleChange}>
 									{industryTypeOptions.map((type) => (
 										<option value={type.name} key={type._id}>
 											{type.name}

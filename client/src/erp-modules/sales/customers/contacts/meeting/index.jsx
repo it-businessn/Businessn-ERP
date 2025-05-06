@@ -38,8 +38,8 @@ const Meetings = ({ contactId, user, company, currentTab }) => {
 	useEffect(() => {
 		const fetchMeetingsByContactId = async () => {
 			try {
-				const response = await CalendarService.getMeetingsByContactId(contactId);
-				setMeetings(response.data);
+				const { data } = await CalendarService.getMeetingsByContactId(contactId);
+				setMeetings(data);
 			} catch (error) {
 				console.error(error);
 			}

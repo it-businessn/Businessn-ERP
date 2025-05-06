@@ -33,18 +33,18 @@ const Communications = ({ isDashboard }) => {
 	useEffect(() => {
 		const fetchAllGroups = async () => {
 			try {
-				const response = await UserService.getAllMemberGroups({
+				const { data } = await UserService.getAllMemberGroups({
 					userId,
 					company,
 				});
-				setGroups(response.data);
-				if (response.data.length > 0) {
-					response.data[0].members.forEach((member) => {
-						member.baseModule = response.data[0].modules;
-						member.group = response.data[0].name;
+				setGroups(data);
+				if (data.length > 0) {
+					data[0].members.forEach((member) => {
+						member.baseModule = data[0].modules;
+						member.group = data[0].name;
 					});
-					setGroupMembers(response.data[0].members.filter((member) => member._id !== userId));
-					setSelectedGroup(response.data[0]);
+					setGroupMembers(data[0].members.filter((member) => member._id !== userId));
+					setSelectedGroup(data[0]);
 				}
 			} catch (error) {
 				console.error(error);

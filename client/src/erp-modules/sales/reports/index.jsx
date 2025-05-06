@@ -26,16 +26,18 @@ import { FaSearch } from "react-icons/fa";
 import { MdOutlineFilterList } from "react-icons/md";
 import { useBreakpointValue } from "services/Breakpoint";
 import ContactService from "services/ContactService";
+import LocalStorageService from "services/LocalStorageService";
 
 const SalesReport = () => {
+	const company = LocalStorageService.getItem("selectedCompany");
 	const { isMobile, isIpad } = useBreakpointValue();
 
 	const [contacts, setContacts] = useState(null);
 	const fetchAllContacts = async () => {
 		try {
-			const response = await ContactService.getContacts();
-			response.data.map((item) => (item.comm = "Meeting"));
-			setContacts(response.data);
+			const { data } = await ContactService.getCompContacts(company);
+			data.map((item) => (item.comm = "Meeting"));
+			setContacts(data);
 		} catch (error) {
 			console.error(error);
 		}
@@ -65,7 +67,7 @@ const SalesReport = () => {
 				ticks: {
 					font: {
 						weight: "bold",
-						family: "Inter Variable,-apple-system,system-ui,sans-serif",
+						family: "Arial, Helvetica, sans-serif",
 					},
 				},
 			},
@@ -76,7 +78,7 @@ const SalesReport = () => {
 				ticks: {
 					font: {
 						weight: "bold",
-						family: "Inter Variable,-apple-system,system-ui,sans-serif",
+						family: "Arial, Helvetica, sans-serif",
 					},
 					autoSkip: false,
 				},
@@ -313,8 +315,8 @@ const SalesReport = () => {
 						</Flex>
 					)}
 
-					<Box overflow="auto" height={"40vh"}>
-						<Table color={"var(--nav_color)"} bg={"var(--primary_bg)"}>
+					<Box overflow="auto" height={"450px"}>
+						<Table color={"var(--nav_color)"} bg={"var(--primary_bg)"} variant="small">
 							<Thead>
 								<Tr fontSize="xs">
 									<Th fontWeight={"bolder"} p={0}>

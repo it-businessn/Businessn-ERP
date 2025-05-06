@@ -17,6 +17,7 @@ import TableLayout from "components/ui/table/TableLayout";
 
 import EmptyRowRecord from "components/ui/EmptyRowRecord";
 import NormalTextTitle from "components/ui/NormalTextTitle";
+import Pagination from "components/ui/Pagination";
 import DeletePopUp from "components/ui/modal/DeletePopUp";
 import useCompany from "hooks/useCompany";
 import useManager from "hooks/useManager";
@@ -49,12 +50,16 @@ const Opportunities = () => {
 	const [refresh, setRefresh] = useState(false);
 	const managers = useManager(company);
 	const [companies, setCompanies] = useState(null);
+	const [filter, setFilter] = useState(null);
+	const [pageNum, setPageNum] = useState(1);
+	const [totalPage, setTotalPages] = useState(1);
+	const limit = 30;
 
 	useEffect(() => {
 		const fetchAllCompanies = async () => {
 			try {
-				const response = await LeadsService.getLeadCompanies(company);
-				setCompanies(response.data);
+				const { data } = await LeadsService.getLeadCompanies(company);
+				setCompanies(data);
 			} catch (error) {
 				console.error(error);
 			}
@@ -65,10 +70,14 @@ const Opportunities = () => {
 
 	const fetchAllOpportunities = async () => {
 		try {
-			const response = await LeadsService.getOpportunities(company);
+			const { data } = await LeadsService.getOpportunities(company, filter, {
+				page: pageNum,
+				limit,
+			});
+			const { totalPages, page, items } = data;
 			const leadList = isManager(loggedInUser?.role)
-				? response.data
-				: response.data?.filter(
+				? items
+				: items?.filter(
 						(item) =>
 							(item.primaryAssignee?.length > 0 &&
 								item.primaryAssignee.find(({ name }) => name === loggedInUser?.fullName)) ||
@@ -76,6 +85,8 @@ const Opportunities = () => {
 								item.supervisorAssignee.find(({ name }) => name === loggedInUser?.fullName)),
 				  );
 			setOpportunities(leadList);
+			setTotalPages(totalPages > 0 ? totalPages : 1);
+			setPageNum(page);
 		} catch (error) {
 			console.error(error);
 		}
@@ -83,7 +94,7 @@ const Opportunities = () => {
 
 	useEffect(() => {
 		fetchAllOpportunities();
-	}, [isAdded, company]);
+	}, [isAdded, pageNum]);
 
 	const [formData, setFormData] = useState({
 		id: null,
@@ -190,7 +201,7 @@ const Opportunities = () => {
 		setShowEditLead(null);
 	};
 	return (
-		<PageLayout width="full" title={"Opportunities"} showBgLayer>
+		<PageLayout width="full" title="Opportunities" showBgLayer>
 			{isMobile || isIpad ? (
 				<Flex flexDir="column">
 					<Flex justify="space-between">
@@ -202,7 +213,7 @@ const Opportunities = () => {
 					</HStack>
 				</Flex>
 			) : (
-				<Flex>
+				<Flex pb={0}>
 					<Caption title={"Opportunities"} />
 					<Spacer />
 					<HStack w={{ lg: "50%" }} spacing={3} justify={"flex-end"}>
@@ -246,7 +257,7 @@ const Opportunities = () => {
 				</Flex>
 			)}
 
-			<TableLayout isOpportunity cols={OPPORTUNITY_COLUMNS} height={"73vh"}>
+			<TableLayout isOpportunity cols={OPPORTUNITY_COLUMNS} height="calc(100vh - 240px)">
 				<Tbody>
 					{(!opportunities || opportunities?.length === 0) && (
 						<EmptyRowRecord data={opportunities} colSpan={OPPORTUNITY_COLUMNS?.length} />
@@ -302,7 +313,7 @@ const Opportunities = () => {
 										selectedValue={_.supervisorAssignee?.[0]?.name}
 										type="supervisorAssignee"
 										handleSelect={handleSelect}
-										data={assignees}
+										data={managers}
 									/>
 								</Td>
 								<Td py={"0.5em"}>
@@ -326,6 +337,7 @@ const Opportunities = () => {
 					})}
 				</Tbody>
 			</TableLayout>
+			<Pagination pageNum={pageNum} setPageNum={setPageNum} totalPage={totalPage} />
 
 			{(isOpen || showEditLead) && (
 				<AddNewOpportunity

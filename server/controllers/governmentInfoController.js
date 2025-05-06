@@ -1,6 +1,4 @@
 const EmployeeGovernmentInfo = require("../models/EmployeeGovernmentInfo");
-const { calculateAge } = require("../services/data");
-const { findEmployeeProfileInfo } = require("./profileInfoController");
 
 const getAllGovernmentInfo = async (req, res) => {
 	const { companyName } = req.params;
@@ -58,11 +56,6 @@ const addEmployeeGovernmentInfo = async (req, res) => {
 		regionalEmployerHealth,
 	} = req.body;
 	try {
-		if (req.body.isCPPExempt || req.body.isEIExempt) {
-			req.body.isCPPExempt = await checkExemption(empId, companyName, req.body.isCPPExempt);
-			req.body.isEIExempt = await checkExemption(empId, companyName, req.body.isEIExempt);
-		}
-
 		const existingGovernmentInfo = await findEmployeeGovernmentInfo(empId, companyName);
 		if (existingGovernmentInfo) {
 			const updatedGovernmentInfo = await updateGovernmentInfo(
@@ -105,7 +98,14 @@ const updateEmployeeGovernmentInfo = async (req, res) => {
 	}
 };
 
+const findEmployeeGovernmentInfoDetails = async (empId, companyName) =>
+	await EmployeeGovernmentInfo.findOne({
+		empId,
+		companyName,
+	}).select("empId federalTaxCredit regionalTaxCredit isCPPExempt isEIExempt");
+
 module.exports = {
+	findEmployeeGovernmentInfoDetails,
 	getAllGovernmentInfo,
 	getEmployeeGovernmentInfo,
 	addEmployeeGovernmentInfo,

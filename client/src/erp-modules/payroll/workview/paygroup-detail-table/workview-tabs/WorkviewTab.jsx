@@ -1,12 +1,14 @@
-import { Tbody, Td, Tr } from "@chakra-ui/react";
+import { HStack, Tbody, Td, Tooltip, Tr } from "@chakra-ui/react";
 import PrimaryButton from "components/ui/button/PrimaryButton";
+import RightIconButton from "components/ui/button/RightIconButton";
 import BoxCard from "components/ui/card";
 import EmptyRowRecord from "components/ui/EmptyRowRecord";
 import NormalTextTitle from "components/ui/NormalTextTitle";
 import WorkviewTable from "components/ui/table/WorkviewTable";
 import TextTitle from "components/ui/text/TextTitle";
+import { COLS, HRS_DECIMAL_COLS, TOTAL_AMT_HRS_COLS } from "constant";
 import { useNavigate } from "react-router-dom";
-import { convertDecimal, getAmount } from "utils/convertAmt";
+import { getAmount } from "utils/convertAmt";
 
 const WorkviewTab = ({
 	cols,
@@ -18,22 +20,22 @@ const WorkviewTab = ({
 	cellClick,
 	handleAddEmp,
 	isExtraRun,
-	handleDelete,
-	setShowConfirmationPopUp,
+	setDeletedEmp,
 	overflowX,
 }) => {
 	const navigate = useNavigate();
 
 	const handleClick = (col, row, name) => {
-		const navigatePage = col.key === "" && name === "setup";
+		const navigatePage = (col.key === "" || col.key === COLS.EMP_NAME) && name === "setup";
 		if (navigatePage) {
 			navigate(
-				stepNum !== undefined ? `${path}/${row.empId._id}/${stepNum}` : `${path}/${row.empId._id}`,
+				stepNum !== undefined
+					? `${path}/${row.empId._id}/${stepNum}`
+					: `${path}/${row.empId.fullName}`,
 			);
 			return;
 		} else if (col.key === "") {
-			setShowConfirmationPopUp(true);
-			handleDelete(row.empId.fullName);
+			setDeletedEmp(row.empId.fullName);
 			return;
 		} else if (isEditable) {
 			cellClick(row);
@@ -41,40 +43,61 @@ const WorkviewTab = ({
 	};
 
 	return (
-		<BoxCard>
+		<BoxCard pb={0}>
 			<WorkviewTable
 				cols={cols.map((_) => _.key)}
 				isSmall
-				height={"32vh"}
+				height="calc(100vh - 630px)"
 				whiteSpace="wrap"
 				textAlign={"center"}
 				overflowX={overflowX}
 			>
 				<Tbody>
 					{(!data || data?.length === 0) && <EmptyRowRecord data={data} colSpan={cols.length} />}
-					{data?.map((row) => (
-						<Tr key={row?.empId?._id}>
+					{data?.map((row, index) => (
+						<Tr key={`${row?.empId?._id}_${index}`}>
 							{cols.map((col, colindex) => {
 								const fieldValue =
 									col.key === "" ? (
 										col.pair
 									) : col.pair === "obj" ? (
 										col.pair_key === "fullName" ? (
-											<TextTitle
-												bg="var(--empName_bg)"
-												color="var(--main_color)"
-												borderRadius="6px"
-												p="7px"
-												title={row.empId[col.pair_key]}
-												whiteSpace="wrap"
-												width="150px"
-												mr={"0.5em"}
-											/>
+											<HStack spacing={0}>
+												<TextTitle
+													bg="var(--empName_bg)"
+													color="var(--main_color)"
+													borderRadius="6px"
+													p="7px"
+													title={row?.empId?.[col.pair_key] || ""}
+													whiteSpace="wrap"
+													width="150px"
+													mr={"0.5em"}
+												/>
+												{col?.icon && (
+													<Tooltip label={col?.iconLabel}>
+														<span>
+															<RightIconButton
+																icon={col?.icon}
+																color="var(--main_color_black)"
+																cursor="pointer"
+																handleIconClick={() => {
+																	handleClick(col, row, "setup");
+																}}
+															/>
+														</span>
+													</Tooltip>
+												)}
+											</HStack>
 										) : (
-											row.empId[col.pair_key]
+											row?.empPayStubResult?.[col.pair_key] || row?.empId?.[col.pair_key] || ""
 										)
 									) : col.round ? (
-										col.pair === "totalAmountAllocated" ? (
+										col?.isPayRate ? (
+											<NormalTextTitle
+												align="end"
+												title={getAmount(row?.payInfoMapResult?.roles?.[col.pair]?.payRate)}
+											/>
+										) : TOTAL_AMT_HRS_COLS.includes(col.pair) ? (
 											<TextTitle title={getAmount(row[col.pair])} />
 										) : (
 											<NormalTextTitle align="end" title={getAmount(row[col.pair])} />
@@ -82,10 +105,10 @@ const WorkviewTab = ({
 									) : col.main_key ? (
 										row[col.main_key][col.pair]
 									) : col.nearest ? (
-										col.pair === "totalHoursWorked" ? (
-											<TextTitle title={convertDecimal(row[col.pair])} />
+										HRS_DECIMAL_COLS.includes(col.pair) ? (
+											<TextTitle title={row[col.pair]} />
 										) : (
-											convertDecimal(row[col.pair])
+											row[col.pair]
 										)
 									) : (
 										row[col.pair]

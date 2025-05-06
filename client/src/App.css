@@ -22,25 +22,36 @@
 		rgba(95, 166, 190, 1) 0%,
 		rgba(19, 170, 178, 1) 100%
 	);
+	--order_unsettled: #fff8c3;
+	--action_status_approve: #498b8f;
+	--action_status_reject: #d57b7b;
+	--action_status_bg: #fbf6f7;
+	--primary_button_bg: #7d7d7d;
+	--th_bg: #f7f7f7;
+	--ticket_progress: #819eb6;
+	--ticket_hold: #93949a;
+	--nav_menu: #4c364b;
 	--overtime: #326274;
 	--dbl_overtime: #b47318;
 	--stat_worked: #a9201b;
-	--pending: #eba623;
+	--pending: #d68e67;
+	--open: #f9665e;
 	--filter_border_color: #d3d3d3;
 	--input_bg: #eee;
 	--empName_bg: rgb(29 80 136);
 	--payStub_bg: #efefef;
 	--calendar_border: #bbbbbb;
 	--bg_color_1: #dbe5ff;
-	--lead_cards_bg: #eef0fc;
+	--lead_cards_bg: #fdfdfd;
 	--lead_cards_border: #e3e5f1;
 	--main_color: #ffffff;
-	--primary_bg: #f7f7ff;
+	--primary_bg: #f9f9fb;
 	--primary_bg_1: #f4f8fa;
 	--nav_color: #485763;
 	--logo_bg: #01193d;
 	--main_color_black: #000000;
-	--primary_button_bg: #537eee;
+	--break_row_bg: #a3c1db;
+	--primary_button_bg1: #537eee;
 	--primary_button_bg_dark: red;
 
 	--status_button_border: #76c094;
@@ -58,26 +69,11 @@
 	--calendar_color: #a9a9ab;
 	--gray2_color: #959595;
 	--tas_item_color: #858181;
-	--nav_gradient: linear-gradient(
-		180deg,
-		rgb(108 118 134) 0%,
-		rgb(237 243 255) 100%
-	);
-	--nav_gradient_blue: linear-gradient(
-		180deg,
-		rgb(219, 217, 228) 0%,
-		rgb(237 243 255) 100%
-	);
-	--nav_gradient_orange: linear-gradient(
-		180deg,
-		rgb(231, 223, 207) 0%,
-		rgb(237 243 255) 100%
-	);
-	--nav_gradient_green: linear-gradient(
-		180deg,
-		rgb(197, 229, 202) 0%,
-		rgb(237 243 255) 100%
-	);
+	--banner_bg: #371f37;
+	--nav_gradient: linear-gradient(180deg, rgb(108 118 134) 0%, rgb(237 243 255) 100%);
+	--nav_gradient_blue: linear-gradient(180deg, rgb(219, 217, 228) 0%, rgb(237 243 255) 100%);
+	--nav_gradient_orange: linear-gradient(180deg, rgb(231, 223, 207) 0%, rgb(237 243 255) 100%);
+	--nav_gradient_green: linear-gradient(180deg, rgb(197, 229, 202) 0%, rgb(237 243 255) 100%);
 	--receiver_msg_bg: rgb(234 242 255);
 	--product1: #de9445;
 	--product2: #f192de;
@@ -93,13 +89,18 @@ html {
 	background: var(--lead_cards_bg);
 }
 
+* {
+	font-family: Arial, Helvetica, sans-serif !important;
+}
+
 .applyBtn {
-	background: var(--correct_ans);
+	background: var(--action_status_approve);
 	color: var(--main_color);
 	padding: 8px 12px !important;
 	border-radius: 10px;
 }
-input {
+input,
+textarea {
 	background: var(--input_bg) !important;
 	border-color: var(--filter_border_color) !important;
 }
@@ -112,13 +113,23 @@ body {
 		rgb(228 235 255) 0%,
 		rgb(240 245 255) 100%
 	) !important; */
-	background: linear-gradient(
-		0deg,
-		rgb(213, 220, 236) 0%,
-		rgb(240 245 255) 100%
-	) !important;
+	background: var(--primary_bg) !important;
 	overflow: hidden;
 }
+@media print {
+	@page {
+		size: A4;
+		margin: 0mm;
+	}
+}
+
+.chakra-select:focus,
+.chakra-select:focus-visible {
+	box-shadow: none !important;
+	border-color: var(--filter_border_color) !important;
+	outline: none !important;
+}
+
 .radial-progress {
 	position: relative;
 	width: 100px;
@@ -197,25 +208,37 @@ body {
 .isSubChild.active,
 .isSubChild.active button {
 	font-weight: 700;
-	color: var(--main_color_black);
+	/* color: var(--main_color_black); */
 }
 
 .sidebarMenu.active {
-	background: linear-gradient(
-		103deg,
-		rgba(84, 61, 210, 1) 0%,
-		rgba(62, 138, 232, 1) 100%
-	);
-	padding: 0 5px;
+	/* background: linear-gradient(103deg, #1f5189 0%, #114e5e 65%, #13bcc1 100%); */
+	/* background-image: url("./assets/navbar_bg.png"); */
+	/* background-size: cover; */
+	padding: 0 2px;
 	width: 100%;
 	border-radius: 10px;
+	background: var(--main_color);
+	color: var(--primary_button_bg);
+}
+
+.sidebarMenu button {
+	color: var(--banner_bg);
 }
 
 .active button {
-	color: var(--main_color);
+	font-weight: bold;
 }
 .navbarMenu.active button {
-	font-size: large;
+	color: var(--main_color);
+	font-weight: normal;
+	border: 1px solid var(--action_status_bg);
+}
+.navbarMenu p {
+	font-weight: normal;
+}
+.navbarMenu.active p {
+	font-weight: bold;
 }
 button:active {
 	background: transparent !important;
@@ -230,7 +253,7 @@ button:active {
   top: 3px;
 } */
 .main_content {
-	width: 85vw;
+	width: 88vw;
 	margin-top: 6em;
 	max-height: calc(var(--base));
 	overflow: auto;

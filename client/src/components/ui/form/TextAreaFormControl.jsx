@@ -9,11 +9,13 @@ const TextAreaFormControl = ({
 	required,
 	name,
 	rows,
+	maxLength,
 }) => {
 	return (
 		<FormControlMain>
 			<RequiredLabel label={label} required={required} htmlFor={name} />
 			<Textarea
+				maxLength={maxLength}
 				name={name}
 				value={valueText}
 				onChange={handleChange}

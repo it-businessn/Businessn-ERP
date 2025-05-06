@@ -50,7 +50,7 @@ const InputsReview = ({
 		{ title: "Net Income", value: "currentNetPay", round: true },
 		{ title: "Gross Income", value: "currentGrossPay", round: true },
 		{ title: "Total Hours", value: "totalHoursWorked", nearest: true },
-		{ title: "Total Amount", value: "totalAmountAllocated", round: true },
+		{ title: "Total Addl. Amount", value: "totalAmountAllocated", round: true },
 	];
 
 	const { isOpen, onOpen, onClose } = useDisclosure();
@@ -91,16 +91,14 @@ const InputsReview = ({
 									<TextTitle size={"md"} title={title} />
 								</Th>
 							))}
-
 							<Th>
 								<Icon as={MdSettingsSuggest} boxSize="5" color="fg.muted" />
 							</Th>
-							<Th />
 						</Tr>
 					</Thead>
 					<Tbody>
 						{(!inputsReviewData || inputsReviewData?.length === 0) && (
-							<EmptyRowRecord data={inputsReviewData} colSpan={COLS.length} />
+							<EmptyRowRecord data={inputsReviewData} colSpan={COLS?.length + 1} />
 						)}
 						{inputsReviewData?.map((data) => (
 							<Tr key={data._id}>
@@ -109,7 +107,7 @@ const InputsReview = ({
 										<TextTitle
 											title={
 												title.includes("Employee")
-													? data?.empId[value]
+													? data?.empId?.[value]
 													: round
 													? getAmount(data[value])
 													: nearest
@@ -132,7 +130,7 @@ const InputsReview = ({
 				</Table>
 			</Box>
 			<PrimaryButton
-				bg="var(--correct_ans)"
+				bg="var(--action_status_approve)"
 				name={"CONFIRM"}
 				rightIcon={<MdCheckCircle />}
 				// isLoading={isLoading}

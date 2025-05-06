@@ -2,44 +2,61 @@ import { HStack } from "@chakra-ui/react";
 import OutlineButton from "components/ui/button/OutlineButton";
 import PrimaryButton from "components/ui/button/PrimaryButton";
 import DeletePopUp from "components/ui/modal/DeletePopUp";
+import { COLS } from "constant";
 import useEmployeeEmploymentInfo from "hooks/useEmployeeEmploymentInfo";
 import { useState } from "react";
+import { FaPeopleGroup } from "react-icons/fa6";
 import SettingService from "services/SettingService";
 import AddEmployeeModal from "./AddEmployeeModal";
 import WorkviewTab from "./WorkviewTab";
 
-const EmployeeDetails = ({ company, closestRecord, path, groupId, selectedPayGroup }) => {
+const EmployeeDetails = ({
+	company,
+	closestRecord,
+	path,
+	groupId,
+	selectedPayGroup,
+	payrunOption,
+	deptName,
+}) => {
 	const [showConfirmationPopUp, setShowConfirmationPopUp] = useState(false);
 	const [refresh, setRefresh] = useState(false);
-	const empData = useEmployeeEmploymentInfo(company, null, closestRecord, groupId, refresh);
-
-	const handleClose = () => setShowConfirmationPopUp(false);
+	const empData = useEmployeeEmploymentInfo(
+		company,
+		null,
+		closestRecord,
+		groupId,
+		refresh,
+		deptName,
+	);
+	const [deletedEmp, setDeletedEmp] = useState(null);
 
 	const [showAddEmp, setShowAddEmp] = useState(false);
-	const selectedEmployeeIndex = selectedPayGroup?.scheduleSettings?.findIndex(
-		(_) => _.payPeriod === closestRecord.payPeriod && _.isExtraRun === true,
+	const selectedEmployeeIndex = selectedPayGroup?.yearSchedules[0]?.payPeriods?.findIndex(
+		(_) => _?.payPeriod === closestRecord?.payPeriod && _.isExtraRun === true,
 	);
 
-	const selectedEmployee = selectedPayGroup?.scheduleSettings[selectedEmployeeIndex]?.selectedEmp;
+	const selectedEmployee =
+		selectedPayGroup?.yearSchedules[0]?.payPeriods[selectedEmployeeIndex]?.selectedEmp;
 
-	const handleDelete = (emp) => {
-		setShowConfirmationPopUp(true);
-		selectedPayGroup.scheduleSettings[selectedEmployeeIndex].selectedEmp = selectedEmployee?.filter(
-			(_) => _ !== emp,
-		);
+	const handleDelete = () => {
+		handleClose();
+		selectedPayGroup.yearSchedules[0].payPeriods[selectedEmployeeIndex].selectedEmp =
+			selectedEmployee?.filter((_) => _ !== deletedEmp);
 	};
 
 	const handleSubmit = async () => {
 		try {
-			await SettingService.updateGroup(
-				{ scheduleSettings: selectedPayGroup.scheduleSettings },
-				groupId,
-			);
+			await SettingService.updateGroup({ yearSchedules: selectedPayGroup?.yearSchedules }, groupId);
 			setRefresh((prev) => !prev);
 			handleClose();
 		} catch (error) {
-			console.log("An error occurred. Please try again.");
+			console.log("An error occurred. Please try again.", error);
 		}
+	};
+
+	const handleClose = () => {
+		setShowConfirmationPopUp(!showConfirmationPopUp);
 	};
 
 	return (
@@ -68,22 +85,31 @@ const EmployeeDetails = ({ company, closestRecord, path, groupId, selectedPayGro
 			<WorkviewTab
 				overflowX="hidden"
 				cols={[
-					{ key: "Employee Name", pair: "obj", pair_key: "fullName" },
-					{ key: "Employee Number", pair: "obj", pair_key: "employeeId" },
-					{ key: "Department", pair: "employmentCostCenter", main_key: "empPayStubResult" },
-					{ key: "Payrate", pair: "regPay", round: true },
-					// { key: "Employee Department", pair: "companyDepartment" },
+					{
+						key: COLS.EMP_NAME,
+						pair: "obj",
+						pair_key: "fullName",
+						icon: payrunOption === "4" ? null : <FaPeopleGroup />,
+						iconLabel: "View Pay Details",
+					},
+					{ key: "Employee Number", pair: "obj", pair_key: "employeeNo" },
+					{ key: "Department", pair: "employmentCostCenter" },
+					{ key: COLS.PAYRATE, pair: 0, isPayRate: true, round: true },
+					{ key: `${COLS.PAYRATE} 2`, pair: 1, isPayRate: true, round: true },
 					{
 						key: "",
 						pair: (
 							<HStack w={"100%"} justifyContent={"center"}>
-								<OutlineButton size="xs" name="setup" label="View Setup" />
-								{closestRecord?.isExtraRun && <PrimaryButton name={"Delete"} size="xs" px={0} />}
+								{payrunOption === "4" ? null : (
+									<>
+										<OutlineButton size="xs" name="setup" label="View Pay Details" ml={3} />
+										{closestRecord?.isExtraRun && (
+											<PrimaryButton name={"Delete"} size="xs" px={0} onOpen={handleDelete} />
+										)}
+									</>
+								)}
 							</HStack>
 						),
-					},
-					{
-						key: "detail1",
 					},
 					{
 						key: "detail1s",
@@ -103,21 +129,14 @@ const EmployeeDetails = ({ company, closestRecord, path, groupId, selectedPayGro
 					{
 						key: "detail6",
 					},
-					{
-						key: "detail7",
-					},
-					{
-						key: "detail8",
-					},
 				]}
 				data={empData}
 				label="Setup"
 				path={path}
-				stepNum={0}
+				stepNum={2}
 				handleAddEmp={() => setShowAddEmp(true)}
 				isExtraRun={closestRecord?.isExtraRun}
-				handleDelete={handleDelete}
-				setShowConfirmationPopUp={setShowConfirmationPopUp}
+				setDeletedEmp={setDeletedEmp}
 			/>
 		</>
 	);

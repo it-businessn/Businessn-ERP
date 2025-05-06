@@ -1,16 +1,19 @@
-import { useDisclosure } from "@chakra-ui/react";
+import { useDisclosure, useToast } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 
+import { redirectLogin } from "api";
 import Navbar from "components/header";
 import Sidebar from "components/sidebar";
+import { ROLES } from "constant";
 import useCompany from "hooks/useCompany";
 import useSidebarMenu from "hooks/useSidebarMenu";
 import RootLayout from "layouts/RootLayout";
 import { useNavigate } from "react-router-dom";
-import { ROUTE_PATH } from "routes";
+import { payrollEmpDashboardPath } from "routes";
 import { useBreakpointValue } from "services/Breakpoint";
 import LocalStorageService from "services/LocalStorageService";
 import { isManager } from "utils";
+import ErrorBoundary from "./ErrorBoundary";
 import Loader from "./Loader";
 
 const Home = () => {
@@ -25,24 +28,33 @@ const Home = () => {
 
 	const { isOpen, onOpen, onClose } = useDisclosure();
 
+	const toast = useToast();
 	const [refresh, setRefresh] = useState(false);
 	const { activeMenu, setActiveMenu } = useSidebarMenu(
 		user?._id,
 		company,
 		isManager(user?.role),
+		user?.role === ROLES.SHADOW_ADMIN,
 	);
 
 	useEffect(() => {
 		setSelectedCompany(user?.companyId?.name);
+		if (user?.role === ROLES.ENROLLER) {
+			toast({
+				title: "Kindly contact administrator to provide erp access.",
+				status: "error",
+				duration: 3000,
+				isClosable: true,
+			});
+			redirectLogin();
+		}
 		if (user && Object.keys(user).length > 0) {
-			const dashboard = activeMenu?.children.find(
-				(_) => _.permissions?.canAccessModule,
-			);
+			const dashboard = activeMenu?.children?.find((_) => _.permissions?.canAccessModule);
 			if (activeMenu?.path) {
-				navigate(`/${activeMenu?.path}/${dashboard?.path}`);
+				navigate(isMobile ? payrollEmpDashboardPath : `/${activeMenu?.path}/${dashboard?.path}`);
 			}
 		} else {
-			navigate(ROUTE_PATH.LOGIN);
+			redirectLogin();
 		}
 	}, [user, activeMenu]);
 
@@ -53,10 +65,13 @@ const Home = () => {
 	}, [activeMenu]);
 
 	return (
-		<>
+		<ErrorBoundary>
 			{user && Object.keys(user).length && (
 				<Navbar
-					handleClick={(menu) => setActiveMenu(menu)}
+					handleClick={(menu) => {
+						setActiveMenu(menu);
+						onOpen();
+					}}
 					onOpen={onOpen}
 					user={user}
 					setUser={setUser}
@@ -77,7 +92,7 @@ const Home = () => {
 					/>
 				</RootLayout>
 			) : null}
-		</>
+		</ErrorBoundary>
 	);
 };
 

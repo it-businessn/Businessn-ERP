@@ -101,7 +101,7 @@ const EditTask = ({ isOpen, onClose, setRefresh, isFiltered, task }) => {
 				setSubTasks([]);
 				setRefresh((prev) => !prev);
 			} catch (error) {
-				setMessage("An error occurred. Please try again.");
+				setMessage("An error occurred. Please try again.", error);
 			} finally {
 				setSubmitting(false);
 			}
@@ -113,7 +113,7 @@ const EditTask = ({ isOpen, onClose, setRefresh, isFiltered, task }) => {
 				setSubTasks([]);
 				setRefresh((prev) => !prev);
 			} catch (error) {
-				setMessage("An error occurred. Please try again.");
+				setMessage("An error occurred. Please try again.", error);
 			} finally {
 				setSubmitting(false);
 			}

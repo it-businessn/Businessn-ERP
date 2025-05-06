@@ -1,6 +1,4 @@
-import { SmallAddIcon } from "@chakra-ui/icons";
 import { HStack } from "@chakra-ui/react";
-import LeftIconButton from "components/ui/button/LeftIconButton";
 import { useState } from "react";
 import EmpSearchMenu from "../company/group-tab/EmpSearchMenu";
 import AddNewUser from "./AddNewUser";
@@ -19,14 +17,12 @@ const UsersPanel = ({
 	const handleInputChange = (value) => {
 		setEmpName(value);
 		setFilteredEmployees(
-			employees.filter((emp) =>
-				emp?.fullName?.toLowerCase().includes(value.toLowerCase()),
-			),
+			employees.filter((emp) => emp?.empId?.fullName?.toLowerCase().includes(value.toLowerCase())),
 		);
 	};
 	const [openAddUser, setOpenAddUser] = useState(false);
 	const handleSelect = (emp) => {
-		setEmpName(emp.fullName);
+		setEmpName(emp?.empId?.fullName);
 	};
 	return (
 		<>
@@ -37,11 +33,11 @@ const UsersPanel = ({
 					handleInputChange={handleInputChange}
 					handleSelect={handleSelect}
 				/>
-				<LeftIconButton
+				{/* <LeftIconButton
 					name={"Add User"}
 					handleClick={() => setOpenAddUser(true)}
 					icon={<SmallAddIcon />}
-				/>
+				/> */}
 
 				{openAddUser && (
 					<AddNewUser
@@ -55,7 +51,7 @@ const UsersPanel = ({
 				isUser={isUser}
 				filteredEmployees={filteredEmployees}
 				company={company}
-				height={"70vh"}
+				height={"calc(100vh - 278px)"}
 			/>
 		</>
 	);

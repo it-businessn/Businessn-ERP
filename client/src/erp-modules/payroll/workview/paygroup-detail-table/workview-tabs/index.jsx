@@ -1,15 +1,18 @@
 import BoxCard from "components/ui/card";
 import TabsButtonGroup from "components/ui/tab/TabsButtonGroup";
-import TextTitle from "components/ui/text/TextTitle";
 import { useState } from "react";
 import { isExtraPay } from "utils";
-import AmountAllocation from "./AmountAllocation";
+import AmountAllocation from "./amount/AmountAllocation";
 // import EmployeeContribution fr om "./EmployeeContribution";
 import EmployeeDetails from "./EmployeeDetails";
 // import EmployerContribution from "./EmployerContribution";
-import EmployeeContribution from "./EmployeeContribution";
-import EmployerContribution from "./EmployerContribution";
-import HourlyAllocation from "./HourlyAllocation";
+import { HStack } from "@chakra-ui/react";
+import PopupMessage from "components/ui/PopupMessage";
+import TextTitle from "components/ui/text/TextTitle";
+import { ROLES } from "constant";
+import EmployeeContribution from "./ee-contribution/EmployeeContribution";
+import EmployerContribution from "./er-contribution/EmployerContribution";
+import HourlyAllocation from "./hourly/HourlyAllocation";
 
 const PaygroupDetailTable = ({
 	closestRecord,
@@ -18,11 +21,18 @@ const PaygroupDetailTable = ({
 	groupId,
 	selectedPayGroup,
 	company,
+	loggedInUser,
 }) => {
+	const deptName = loggedInUser?.role === ROLES.MANAGER ? loggedInUser?.department : null;
+	const [highlightColor, setHighlightColor] = useState("var(--primary_button_bg)");
+	const [isOpen, setIsOpen] = useState(true);
+	const [payrunOption, setPayrunOption] = useState(1);
+
 	const TABS = [
 		{
 			id: 0,
 			type: "Employee Details",
+			highlightColor,
 			name: (
 				<EmployeeDetails
 					path={empPath}
@@ -31,51 +41,66 @@ const PaygroupDetailTable = ({
 					closestRecord={closestRecord}
 					groupId={groupId}
 					selectedPayGroup={selectedPayGroup}
+					payrunOption={payrunOption}
+					deptName={deptName}
 				/>
 			),
 		},
 		{
 			id: 1,
 			type: "Hourly Allocation",
+			highlightColor,
 			name: (
 				<HourlyAllocation
 					company={company}
 					closestRecord={closestRecord}
 					groupId={groupId}
+					payrunOption={payrunOption}
+					deptName={deptName}
 				/>
 			),
 		},
 		{
 			id: 2,
 			type: "Amount Allocation",
+			highlightColor,
 			name: (
 				<AmountAllocation
-					path={empPath}
 					company={company}
 					closestRecord={closestRecord}
 					groupId={groupId}
+					payrunOption={payrunOption}
+					deptName={deptName}
 				/>
 			),
 		},
 		{
 			id: 3,
 			type: "EE Contribution",
+			highlightColor,
 			name: (
 				<EmployeeContribution
+					path={empPath}
 					company={company}
 					closestRecord={closestRecord}
 					groupId={groupId}
+					payrunOption={payrunOption}
+					deptName={deptName}
 				/>
 			),
 		},
 		{
 			id: 4,
 			type: "ER Contribution",
+			highlightColor,
 			name: (
 				<EmployerContribution
+					path={empPath}
 					company={company}
 					closestRecord={closestRecord}
 					groupId={groupId}
+					payrunOption={payrunOption}
+					deptName={deptName}
 				/>
 			),
 		},
@@ -83,26 +108,32 @@ const PaygroupDetailTable = ({
 
 	const [viewMode, setViewMode] = useState(TABS[0].type);
 
-	const showComponent = (viewMode) =>
-		TABS.find(({ type }) => type === viewMode)?.name;
+	const showComponent = (viewMode) => TABS.find(({ type }) => type === viewMode)?.name;
+
+	const payNum = closestRecord
+		? isExtraPay(closestRecord?.payPeriod, closestRecord?.isExtraRun)
+		: "";
+
+	const handleClick = () => setIsOpen(!isOpen);
 
 	return (
-		<BoxCard>
-			<TextTitle
-				mb={2}
-				title={`Pay Number: ${
-					closestRecord
-						? isExtraPay(closestRecord?.payPeriod, closestRecord?.isExtraRun)
-						: ""
-				}`}
-			/>
+		<BoxCard pb={0}>
+			<HStack w="30%" alignItems="center" justifyContent="start" mb="2px">
+				<TextTitle mb={2} width="200px" title={`Pay Number: ${payNum}`} />
+				<PopupMessage
+					isOpen={isOpen}
+					setIsOpen={setIsOpen}
+					handleClick={handleClick}
+					loggedInUser={loggedInUser}
+					setHighlightColor={setHighlightColor}
+					payrunOption={payrunOption}
+					setPayrunOption={setPayrunOption}
+					highlightColor={highlightColor}
+				/>
+			</HStack>
 			{company && (
 				<>
-					<TabsButtonGroup
-						tabs={TABS}
-						setViewMode={setViewMode}
-						viewMode={viewMode}
-					/>
+					<TabsButtonGroup tabs={TABS} setViewMode={setViewMode} viewMode={viewMode} />
 					{showComponent(viewMode)}
 				</>
 			)}

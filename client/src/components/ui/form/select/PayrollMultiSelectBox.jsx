@@ -18,6 +18,7 @@ const PayrollMultiSelectBox = ({
 	data,
 	w,
 	handleApply,
+	type,
 }) => {
 	const { onClose } = useDisclosure();
 
@@ -36,6 +37,7 @@ const PayrollMultiSelectBox = ({
 	const handleClearAll = (e) => {
 		e.preventDefault();
 		setSelectedOptions([]);
+		handleApply([]);
 	};
 
 	const onApply = () => {
@@ -63,17 +65,25 @@ const PayrollMultiSelectBox = ({
 				</MenuItem>
 				<Stack spacing={1} overflow={"auto"} maxHeight={"33vh"} w={w}>
 					{data?.map((assignee) => (
-						<MenuItem key={assignee?._id ?? assignee}>
+						<MenuItem key={assignee?._id || assignee?.empId?._id}>
 							<Checkbox
 								colorScheme="facebook"
-								isChecked={selectedOptions?.includes(
-									assignee.fullName ?? (assignee.name || assignee),
-								)}
+								isChecked={
+									selectedOptions?.includes(
+										assignee.fullName || assignee?.empId?.fullName || assignee.name || assignee,
+									) ||
+									(type && selectedOptions?.find((_) => _[type] === assignee[type]))
+								}
 								onChange={() =>
-									handleCheckboxChange(assignee.fullName ?? assignee.name)
+									handleCheckboxChange(
+										assignee[type] ||
+											assignee.fullName ||
+											assignee?.empId?.fullName ||
+											assignee.name,
+									)
 								}
 							>
-								{assignee.fullName ?? assignee.name}
+								{assignee[type] || assignee.fullName || assignee?.empId?.fullName || assignee.name}
 							</Checkbox>
 						</MenuItem>
 					))}

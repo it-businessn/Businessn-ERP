@@ -5,14 +5,8 @@ import TextTitle from "./text/TextTitle";
 const UserStatInfo = ({ name, email, stats }) => {
 	return (
 		<>
-			<VStack
-				justify="center"
-				align="center"
-				mb="1"
-				w={{ base: "auto", md: "106%" }}
-				spacing={0}
-			>
-				<Avatar name={name} src={name} />
+			<VStack justify="center" align="center" mb="1" w={{ base: "auto", md: "106%" }} spacing={0}>
+				<Avatar borderRadius="10%" name={name} src={name} />
 				<TextTitle title={name} />
 				<NormalTextTitle size="xs" title={email} />
 			</VStack>

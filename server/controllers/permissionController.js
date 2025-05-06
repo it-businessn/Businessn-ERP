@@ -16,10 +16,18 @@ const getPermission = async (req, res) => {
 	const { empId, companyName } = req.params;
 
 	try {
-		const user = await findPermission({
+		const userPermission = await findPermission({
 			empId,
 			companyName,
 		});
+		// const deletePermissions = userPermission
+		// 	.filter((_) => _.permissionType?.length !== 44)
+		// 	?.map((_id) => _id);
+		// // const updatedIDs = await UserPermissions.deleteMany({ _id: { $in: deletePermissions } });
+		// console.log(deletePermissions);
+
+		if (userPermission) return res.status(200).json(userPermission);
+
 		// const userPermissions = await UserPermissions.find({
 		// 	empId,
 		// 	companyName,
@@ -32,8 +40,6 @@ const getPermission = async (req, res) => {
 		// 	});
 		// 	console.log("deleted", deleteDuplicates);
 		// }
-
-		res.status(200).json(user);
 	} catch (error) {
 		res.status(404).json({ error: error.message });
 	}
@@ -81,9 +87,7 @@ const updatePermission = async (req, res) => {
 	try {
 		const user = await findPermission({ empId, companyName });
 
-		const permissionIndex = user.permissionType.findIndex(
-			(item) => item.name === name,
-		);
+		const permissionIndex = user.permissionType.findIndex((item) => item.name === name);
 		const permission = user.permissionType.find((item) => item.name === name);
 
 		if (permissionIndex > -1) {
@@ -116,4 +120,5 @@ module.exports = {
 	getUserPermissions,
 	updatePermission,
 	getPermission,
+	findPermission,
 };

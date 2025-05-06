@@ -27,8 +27,8 @@ const LeftPane = ({ setStats, company, closestRecord, payGroupSchedule, closestR
 	useEffect(() => {
 		const fetchAllEmployees = async () => {
 			try {
-				const response = await UserService.getAllCompanyUsersCount(company);
-				setTotalEmployees(response.data);
+				const { data } = await UserService.getAllCompanyUsersCount(company);
+				setTotalEmployees(data);
 			} catch (error) {
 				console.error(error);
 			}
@@ -45,8 +45,8 @@ const LeftPane = ({ setStats, company, closestRecord, payGroupSchedule, closestR
 			});
 			const fetchAlerts = async () => {
 				try {
-					const response = await PayrollService.getTotalAlerts(company, payPeriod);
-					setTotalAlerts(response.data);
+					const { data } = await PayrollService.getTotalAlerts(company, payPeriod);
+					setTotalAlerts(data);
 				} catch (error) {
 					console.error(error);
 				}

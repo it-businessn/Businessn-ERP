@@ -25,9 +25,9 @@ const FilterMenu = ({
 		if (!groups) {
 			return;
 		}
-		setSelectedModules(groups[0].modules);
-		setSelectedAdmins(groups[0].admin);
-		setGroupMembers(groups[0].members);
+		setSelectedModules(groups[0]?.modules);
+		setSelectedAdmins(groups[0]?.admin);
+		setGroupMembers(groups[0]?.members);
 	}, [groups]);
 
 	const [openModuleMenu, setOpenModuleMenu] = useState(null);
@@ -112,7 +112,7 @@ const FilterMenu = ({
 							handleCloseMenu={handleAdminCloseMenu}
 							selectedOptions={selectedAdmins}
 							setSelectedOptions={setSelectedAdmins}
-							tag="modules(s)"
+							tag="manager(s)"
 							label="Select Group Admin"
 						/>
 					</FormControl>

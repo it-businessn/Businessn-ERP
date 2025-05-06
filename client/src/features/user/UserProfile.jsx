@@ -3,6 +3,7 @@ import {
 	Avatar,
 	Button,
 	HStack,
+	IconButton,
 	Popover,
 	PopoverArrow,
 	PopoverBody,
@@ -12,8 +13,9 @@ import {
 	VStack,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
+import { IoMdHelp } from "react-icons/io";
 import { useNavigate } from "react-router-dom";
-import { userProfilePath } from "routes";
+import { adminConsolePath, userProfilePath } from "routes";
 // import { styleConsole } from "utils";
 
 const UserProfile = ({ user, handleLogout }) => {
@@ -43,47 +45,68 @@ const UserProfile = ({ user, handleLogout }) => {
 		navigate(userProfilePath);
 	};
 
+	const showConfigPage = () => {
+		handleToggle();
+		navigate(adminConsolePath);
+	};
+
 	const showRegisterPage = () => {
 		setSignUp(true);
 	};
 
+	const MENU_OPTIONS = [
+		{ name: "Profile", handleClick: showProfilePage },
+		{ name: "Admin console", handleClick: showConfigPage },
+	];
+
 	return (
-		<HStack pb={2} _hover={{ cursor: "pointer" }}>
-			<Popover isOpen={isOpen} onClose={() => setIsOpen(false)}>
+		<HStack pb={2} spacing={0} _hover={{ cursor: "pointer" }}>
+			<Popover isOpen={isOpen} onClose={handleToggle}>
 				<PopoverTrigger>
 					<Avatar
 						onClick={handleToggle}
 						name={user?.fullName}
 						src=""
 						boxSize="12"
+						borderRadius="10%"
 					/>
 				</PopoverTrigger>
-				<PopoverContent
-					maxW="xs"
-					w="12rem"
-					border="none"
-					position="sticky"
-					zIndex={5}
-				>
+				<PopoverContent maxW="xs" w="12rem" border="none" position="sticky" zIndex={5}>
 					<PopoverArrow />
 
 					<PopoverBody>
 						<VStack w="100%" alignItems="start" color="var(--logo_bg)">
-							{/* <Button variant="ghost" onClick={showProfilePage}>
-								Profile
-							</Button> */}
+							{MENU_OPTIONS.map(
+								({ name, handleClick }, index) =>
+									(index === 0 || (index === 1 && user?.role?.includes("Admin"))) && (
+										<Button key={name} variant="ghost" onClick={handleClick}>
+											{name}
+										</Button>
+									),
+							)}
 							{/* {user?.role === "Administrator" && (
 								<Button variant="ghost" onClick={showRegisterPage}>
 									Create Account
 								</Button>
 							)} */}
-							<Button variant="ghost" onClick={handleLogout}>
+							<Button
+								variant="ghost"
+								onClick={() => {
+									handleLogout();
+								}}
+							>
 								Logout
 							</Button>
 						</VStack>
 					</PopoverBody>
 				</PopoverContent>
 			</Popover>
+			<IconButton
+				size="lg"
+				icon={<IoMdHelp />}
+				onClick={() => navigate("/support")}
+				aria-label="Support"
+			/>
 		</HStack>
 	);
 };

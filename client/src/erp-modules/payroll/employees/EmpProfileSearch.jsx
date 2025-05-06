@@ -8,33 +8,29 @@ const EmpProfileSearch = ({
 	setUserId,
 	setEmployee,
 	employees,
-	hideMenu,
 }) => {
 	const [empName, setEmpName] = useState("");
 	const handleInputChange = (value) => {
 		setEmpName(value);
 		setFilteredEmployees(
-			employees.filter((emp) =>
-				emp?.fullName?.toLowerCase().includes(value.toLowerCase()),
-			),
+			employees.filter((emp) => emp?.empId?.fullName?.toLowerCase().includes(value.toLowerCase())),
 		);
 	};
 
 	const handleSelect = (emp) => {
-		setEmpName(emp.fullName);
+		setEmpName(emp?.empId?.fullName);
 		setEmployee(emp);
-		setUserId(emp._id);
+		setUserId(emp?.empId?._id);
 	};
 
 	return (
-		<VStack spacing={1} w={"30%"} align={"start"} zIndex={2}>
+		<VStack spacing={1} w={"30%"} align={"start"}>
 			<EmpSearchMenu
 				width={"full"}
 				filteredEmployees={filteredEmployees}
 				empName={empName}
 				handleInputChange={handleInputChange}
 				handleSelect={handleSelect}
-				hideMenu={hideMenu}
 			/>
 			<Checkbox
 				colorScheme={"facebook"}

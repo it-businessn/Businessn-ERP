@@ -1,63 +1,91 @@
 import { SimpleGrid } from "@chakra-ui/react";
 import useCompany from "hooks/useCompany";
+import usePositionRoles from "hooks/usePositionRoles";
+import useWorkLocations from "hooks/useWorkLocations";
 import PageLayout from "layouts/PageLayout";
+import moment from "moment";
 import { useEffect, useState } from "react";
-import { DndProvider } from "react-dnd";
-import { HTML5Backend } from "react-dnd-html5-backend";
 import LocalStorageService from "services/LocalStorageService";
 import UserService from "services/UserService";
-import { getRoleColor } from "utils";
+import { getRoleColor, isManager } from "utils";
 import HeaderCards from "./HeaderCards";
 import QuickSelection from "./quick-selection";
+import ShiftModal from "./quick-selection/ShiftModal";
 import Scheduler from "./scheduler";
 
 const ScheduleWorkView = () => {
-	const { company } = useCompany(
-		LocalStorageService.getItem("selectedCompany"),
-	);
-	const [newEmployeeAdded, setNewEmployeeAdded] = useState(null);
+	const { company } = useCompany(LocalStorageService.getItem("selectedCompany"));
+	const loggedInUser = LocalStorageService.getItem("user");
+	const isUserManager = isManager(loggedInUser.role);
+	const [newShiftAdded, setNewShiftAdded] = useState(null);
 	const [employees, setEmployees] = useState(null);
 	const [refresh, setRefresh] = useState(null);
+	const [showAddShiftModal, setShowAddShiftModal] = useState(false);
+	const [empName, setEmpName] = useState(null);
+	const [empRole, setEmpRole] = useState(null);
+	const [shift, setShift] = useState(null);
+	const [selectedEmp, setSelectedEmp] = useState(isUserManager ? null : loggedInUser?.fullName);
+	const locations = useWorkLocations(company, refresh);
+	const [employeesList, setEmployeesList] = useState(null);
+	const roles = usePositionRoles(company, refresh);
+	const [location, setLocation] = useState(null);
+	const [dept, setDept] = useState(loggedInUser?.department);
+	const [currentDate, setCurrentDate] = useState(new Date());
+	currentDate.setHours(6, 0, 0, 0);
 
 	useEffect(() => {
-		const fetchAllEmployeeByRole = async () => {
+		const fetchAllEmployees = async () => {
 			try {
-				const response = await UserService.getAllEmployeesByRole(company);
-				response.data.forEach((user) => {
-					user.color = getRoleColor(user._id);
+				const { data } = await UserService.getAllEmpCompanyUsers(company);
+				data.map((emp) => {
+					emp.fullName = emp?.empId?.fullName;
+					emp._id = emp?.empId?._id;
+					return emp;
 				});
-
-				// const sortedArray = response.data.sort((a, b) => {
-				// 	const titleA = a.title;
-				// 	const titleB = b.title;
-				// 	const indexA = ALL_ROLES.indexOf(titleA);
-				// 	const indexB = ALL_ROLES.indexOf(titleB);
-				// 	if (indexA !== -1 && indexB !== -1) {
-				// 		return indexA - indexB;
-				// 	}
-
-				// 	if (indexA !== -1) {
-				// 		return -1;
-				// 	}
-
-				// 	if (indexB !== -1) {
-				// 		return 1;
-				// 	}
-
-				// 	return 0;
-				// });
-
-				// setEmployees(sortedArray);
-				setEmployees(response.data);
+				setEmployeesList(data);
 			} catch (error) {
 				console.error(error);
 			}
 		};
+		fetchAllEmployees();
+	}, []);
 
-		fetchAllEmployeeByRole();
+	useEffect(() => {
+		const fetchAllEmployeeByRole = async () => {
+			try {
+				const { data } = await UserService.getAllEmployeesByRole(company);
+
+				const newData = Object.keys(data)?.map((role) => {
+					return {
+						roleName: role,
+						color: getRoleColor(role),
+						employees: data[role],
+					};
+				});
+
+				setEmployees(newData);
+			} catch (error) {
+				console.error(error);
+			}
+		};
+		if (isUserManager) fetchAllEmployeeByRole();
 	}, [refresh, company]);
+
+	const handleShift = (empId, name, color, role) => {
+		setShowAddShiftModal(true);
+		setEmpName(name);
+		setEmpRole(role);
+		setShift(null);
+	};
+	const clearFilter = () => {
+		setSelectedEmp(null);
+	};
+	const handleItemClick = (item) => {
+		setShowAddShiftModal(true);
+		setShift(item);
+	};
 	return (
-		<PageLayout title={"WorkView"}>
+		<PageLayout title="WorkView">
 			<SimpleGrid
 				mb={"1em"}
 				columns={{ base: 1, md: 3 }}
@@ -66,24 +94,69 @@ const ScheduleWorkView = () => {
 			>
 				<HeaderCards />
 			</SimpleGrid>
-			<DndProvider backend={HTML5Backend}>
+			{isUserManager ? (
 				<SimpleGrid
 					columns={{ base: 1, md: 1, lg: 2 }}
 					spacing="4"
 					mt="4"
-					templateColumns={{ lg: "30% 70%" }}
+					templateColumns={{ lg: "20% 80%" }}
 				>
 					<QuickSelection
+						dept={dept}
+						setDept={setDept}
+						company={company}
 						employees={employees}
-						setNewEmployeeAdded={setNewEmployeeAdded}
+						setSelectedEmp={setSelectedEmp}
+						handleShift={handleShift}
+						clearFilter={clearFilter}
+						empName={selectedEmp}
 					/>
 					<Scheduler
 						company={company}
-						newEmployeeAdded={newEmployeeAdded}
+						newShiftAdded={newShiftAdded}
 						setRefresh={setRefresh}
+						locations={locations}
+						empName={selectedEmp}
+						location={location}
+						setLocation={setLocation}
+						currentDate={currentDate}
+						setCurrentDate={setCurrentDate}
+						isUserManager={isUserManager}
+						handleItemClick={handleItemClick}
 					/>
 				</SimpleGrid>
-			</DndProvider>
+			) : (
+				<Scheduler
+					company={company}
+					setRefresh={setRefresh}
+					locations={locations}
+					newShiftAdded={newShiftAdded}
+					empName={selectedEmp}
+					location={location}
+					setLocation={setLocation}
+					currentDate={currentDate}
+					setCurrentDate={setCurrentDate}
+					isUserManager={isUserManager}
+					handleItemClick={handleItemClick}
+				/>
+			)}
+			{showAddShiftModal && (
+				<ShiftModal
+					currentDate={moment(currentDate).format("YYYY-MM-DD")}
+					roles={roles}
+					employees={employeesList}
+					locations={locations}
+					location={location}
+					company={company}
+					showModal={showAddShiftModal}
+					setShowModal={setShowAddShiftModal}
+					setIsRefresh={setRefresh}
+					setNewShiftAdded={setNewShiftAdded}
+					empName={empName}
+					empRole={empRole}
+					shift={shift}
+				/>
+			)}
 		</PageLayout>
 	);
 };

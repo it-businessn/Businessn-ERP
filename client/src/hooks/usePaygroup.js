@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import PayrollService from "services/PayrollService";
 import { sortRecordsByDate } from "utils";
+import { CURRENT_YEAR } from "utils/convertDate";
 
-const usePaygroup = (company, refresh) => {
+const usePaygroup = (company, refresh, year = CURRENT_YEAR, isReport = false) => {
 	const [payGroups, setPayGroups] = useState(null);
 	const [selectedPayGroup, setSelectedPayGroup] = useState(null);
 	const [payGroupSchedule, setPayGroupSchedule] = useState(null);
@@ -25,7 +26,7 @@ const usePaygroup = (company, refresh) => {
 		const closestPayPeriod = schedules?.find(({ isProcessed }) => !isProcessed);
 
 		const closestPayPeriodIndex = schedules.findIndex(
-			({ payPeriod }) => payPeriod === closestPayPeriod.payPeriod,
+			({ payPeriod }) => payPeriod === closestPayPeriod?.payPeriod,
 		);
 		setClosestRecord(closestPayPeriod);
 		setClosestRecordIndex(closestPayPeriodIndex);
@@ -34,16 +35,43 @@ const usePaygroup = (company, refresh) => {
 	useEffect(() => {
 		const fetchAllPaygroups = async () => {
 			try {
-				const response = await PayrollService.getAllPaygroups(company);
-				setPayGroups(response.data);
-				if (response.data.length) {
-					setSelectedPayGroup(response.data[0]);
+				const { data } = await PayrollService.getAllPaygroups(company);
+				const parsedYr = parseInt(year);
+
+				setPayGroups(data);
+				if (data.length) {
+					setSelectedPayGroup(data[0]);
+					const yearIndex = data[0]?.yearSchedules.findIndex(({ year }) => year === parsedYr);
 					const sortedResult = sortRecordsByDate(
-						response.data[0]?.scheduleSettings,
+						data[0]?.yearSchedules[yearIndex]?.payPeriods,
 						"payPeriodPayDate",
+						false,
+						false,
+						data[0].scheduleFrequency,
 					);
 					setPayGroupSchedule(sortedResult);
-					getClosestScheduleByProcessingDate(response.data[0]?.scheduleSettings);
+					const schedules = data[0]?.yearSchedules[yearIndex]?.payPeriods;
+					const closestPayPeriod = schedules?.find(({ isProcessed }) => !isProcessed);
+
+					if (isReport) {
+						const lastIndex = schedules.length - 1;
+						const closestPayPeriodIndex = closestPayPeriod
+							? schedules.findIndex(({ payPeriod }) => payPeriod === closestPayPeriod?.payPeriod)
+							: lastIndex;
+
+						setClosestRecord(closestPayPeriod || schedules[lastIndex]);
+						setClosestRecordIndex(closestPayPeriodIndex);
+					}
+
+					if (closestPayPeriod) {
+						getClosestScheduleByProcessingDate(schedules, isReport);
+					} else {
+						const nextYrSchedules =
+							data[0]?.yearSchedules[data[0]?.yearSchedules.findIndex(({ year }) => year === 2025)]
+								?.payPeriods;
+
+						getClosestScheduleByProcessingDate(nextYrSchedules);
+					}
 				}
 			} catch (error) {
 				console.error(error);
@@ -53,7 +81,7 @@ const usePaygroup = (company, refresh) => {
 		if (refresh !== undefined) {
 			fetchAllPaygroups();
 		}
-	}, [company, refresh]);
+	}, [company, refresh, year]);
 
 	return {
 		payGroups,

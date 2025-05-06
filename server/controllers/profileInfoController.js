@@ -1,8 +1,9 @@
+const moment = require("moment");
 const Employee = require("../models/Employee");
 const EmployeeProfileInfo = require("../models/EmployeeProfileInfo");
-const { addEmployee, hashedPassword } = require("./appController");
+const { addEmployee, findCompany } = require("./appController");
 const { deleteAlerts } = require("./payrollController");
-// const { addStatHolidayDefaultTimesheet } = require("./timesheetContoller");
+const { decryptData, encryptData } = require("../services/encryptDataService");
 
 const getAllProfileInfo = async (req, res) => {
 	const { companyName } = req.params;
@@ -22,8 +23,24 @@ const getAllProfileInfo = async (req, res) => {
 const getEmployeeProfileInfo = async (req, res) => {
 	const { companyName, empId } = req.params;
 	try {
+		const sin_key = Buffer.from(process.env.SIN_ENCRYPTION_KEY, "hex");
+
 		const result = await findEmployeeProfileInfo(empId, companyName);
-		res.status(200).json(result);
+		if (result) {
+			if (!result?.SIN?.startsWith("*") && result?.SIN && result?.SINIv) {
+				result.SIN = decryptData(result?.SIN, sin_key, result?.SINIv).replace(/.(?=.{3})/g, "*");
+			}
+			return res.status(200).json(result);
+		}
+
+		if (!result) {
+			const user = await Employee.findById(empId)
+				.select("firstName middleName lastName email phoneNumber")
+				.sort({
+					createdOn: -1,
+				});
+			return res.status(200).json(user);
+		}
 	} catch (error) {
 		res.status(404).json({ error: error.message });
 	}
@@ -42,6 +59,7 @@ const updateProfileInfo = async (id, data) =>
 
 const updateEmployee = async (empId, data) => {
 	const {
+		businessEmail,
 		personalEmail,
 		streetAddressSuite,
 		streetAddress,
@@ -50,28 +68,45 @@ const updateEmployee = async (empId, data) => {
 		postalCode,
 		country,
 		password,
+		companyName,
+		firstName,
+		middleName,
+		lastName,
 	} = data;
+	const streetNumber = `${streetAddressSuite || ""} ${streetAddress || ""}`;
+
 	const employee = await Employee.findById(empId);
 
-	if (password && password !== "") {
-		employee.password = await hashedPassword(password);
-	}
-	if (personalEmail && personalEmail !== "") {
-		employee.email = personalEmail;
-	}
+	const primaryAddress =
+		streetNumber && streetNumber !== ""
+			? {
+					streetNumber,
+					city,
+					state: province,
+					postalCode,
+					country,
+			  }
+			: employee?.primaryAddress;
+	const empEmail = businessEmail || personalEmail;
+	const email = empEmail && empEmail !== "" ? empEmail : employee?.email;
 
-	const streetNumber = `${streetAddressSuite ?? ""} ${streetAddress ?? ""}`;
-	if (streetNumber && streetNumber !== "") {
-		employee.primaryAddress = {
-			streetNumber,
-			city,
-			state: province,
-			postalCode,
-			country,
-		};
-	}
-
-	await employee.save();
+	const empPassword = password && password !== "" ? password : employee?.password;
+	const updatedObj = {
+		password: empPassword,
+		primaryAddress,
+		updatedOn: moment(),
+		firstName,
+		middleName,
+		lastName,
+		fullName: `${firstName} ${middleName} ${lastName}`,
+	};
+	if (email === employee?.email) updatedObj.email = email;
+	await Employee.findByIdAndUpdate(empId, updatedObj, {
+		new: true,
+	});
+	const existingCompany = await findCompany("name", companyName);
+	if (!existingCompany.employees.includes(empId)) existingCompany.employees.push(empId);
+	await existingCompany.save();
 };
 
 const addEmployeeProfileInfo = async (req, res) => {
@@ -106,6 +141,7 @@ const addEmployeeProfileInfo = async (req, res) => {
 	try {
 		const data = {
 			personalEmail,
+			businessEmail,
 			streetAddressSuite,
 			streetAddress,
 			city,
@@ -113,13 +149,16 @@ const addEmployeeProfileInfo = async (req, res) => {
 			postalCode,
 			country,
 			password,
+			firstName,
+			middleName,
+			lastName,
+			companyName,
 		};
-		if (!empId && (firstName, companyName, lastName, birthDate)) {
+		if (!empId && firstName && companyName && lastName) {
 			const existingProfileInfo = await EmployeeProfileInfo.findOne({
 				firstName,
 				companyName,
 				lastName,
-				birthDate,
 			});
 
 			if (existingProfileInfo) {
@@ -145,45 +184,89 @@ const addEmployeeProfileInfo = async (req, res) => {
 					businessPhoneNum,
 					emergencyPersonalEmail,
 					emergencyPersonalPhoneNum,
+					password,
+					firstName,
+					middleName,
+					lastName,
 				});
 				await updateEmployee(existingProfileInfo?.empId, data);
 				return res.status(201).json(updatedProfileInfo);
 			}
-			const newRecord = {
+			const existingEmp = await Employee.findOne({
 				firstName,
-				middleName,
 				lastName,
-				role: "Employee",
-				email: `${firstName}${Math.random().toFixed(2)}@mail.com`,
-				fullName: `${firstName} ${middleName} ${lastName}`,
-			};
-			if (password) {
-				newRecord.password = await hashedPassword(password);
-			}
-			const newEmployee = await addEmployee(companyName, newRecord);
-			if (newEmployee) {
-				const newProfileInfo = await EmployeeProfileInfo.create({
-					companyName,
+			});
+			let profileInfoEmpId = existingEmp?._id;
+			if (!existingEmp) {
+				const newRecord = {
 					firstName,
 					middleName,
 					lastName,
-					birthDate,
-					empId: newEmployee._id,
-				});
-				return res.status(201).json(newProfileInfo);
+					email: `${firstName}${Math.random().toFixed(2)}@mail.com`,
+					fullName: `${firstName} ${middleName} ${lastName}`,
+				};
+				if (password) {
+					newRecord.password = password;
+				}
+				const newEmployee = await addEmployee(companyName, newRecord);
+				profileInfoEmpId = newEmployee._id;
 			}
+
+			const newProfileInfo = await EmployeeProfileInfo.create({
+				empId: profileInfoEmpId,
+				companyName,
+				firstName,
+				middleName,
+				lastName,
+				emergencyFirstName,
+				emergencyLastName,
+				birthDate,
+				SIN: req.body?.SIN || "",
+				maritalStatus,
+				citizenship,
+				workPermitNo,
+				workPermitExpiryNo,
+				personalEmail,
+				personalPhoneNum,
+				businessEmail,
+				businessPhoneNum,
+				emergencyPersonalEmail,
+				emergencyPersonalPhoneNum,
+				streetAddress,
+				city,
+				province,
+				country,
+				postalCode,
+				password,
+			});
+			return res.status(201).json(newProfileInfo);
 		}
 		const existingProfileInfo = await findEmployeeProfileInfo(empId, companyName);
 
-		if (SIN !== "") {
+		if (SIN && SIN !== "") {
 			await deleteAlerts(empId);
 		}
-
 		await updateEmployee(empId, data);
 
 		if (existingProfileInfo) {
+			req.body.updatedOn = moment();
+
+			if (SIN && SIN !== existingProfileInfo?.SIN) {
+				const ENCRYPTION_KEY = Buffer.from(process.env.SIN_ENCRYPTION_KEY, "hex");
+				const sinEncrypted = encryptData(SIN, ENCRYPTION_KEY);
+				req.body.SIN = sinEncrypted.encryptedData;
+				req.body.SINIv = sinEncrypted.iv;
+			}
+			if (req.body?._id) delete req.body._id;
+
 			const updatedProfileInfo = await updateProfileInfo(existingProfileInfo._id, req.body);
 			return res.status(201).json(updatedProfileInfo);
+		}
+		if (SIN) {
+			const ENCRYPTION_KEY = Buffer.from(process.env.SIN_ENCRYPTION_KEY, "hex");
+			const sinEncrypted = encryptData(SIN, ENCRYPTION_KEY);
+			req.body.SIN = sinEncrypted.encryptedData;
+			req.body.SINIv = sinEncrypted.iv;
 		}
 		const newProfileInfo = await EmployeeProfileInfo.create({
 			empId,
@@ -194,7 +277,7 @@ const addEmployeeProfileInfo = async (req, res) => {
 			emergencyFirstName,
 			emergencyLastName,
 			birthDate,
-			SIN,
+			SIN: req.body?.SIN || "",
 			maritalStatus,
 			citizenship,
 			workPermitNo,
@@ -210,6 +293,7 @@ const addEmployeeProfileInfo = async (req, res) => {
 			province,
 			country,
 			postalCode,
+			password,
 		});
 		return res.status(201).json(newProfileInfo);
 	} catch (error) {
@@ -220,6 +304,7 @@ const addEmployeeProfileInfo = async (req, res) => {
 const updateEmployeeProfileInfo = async (req, res) => {
 	const { id } = req.params;
 	try {
+		if (req.body?._id) delete req.body._id;
 		const updatedInfo = await updateProfileInfo(id, req.body);
 		res.status(201).json(updatedInfo);
 	} catch (error) {

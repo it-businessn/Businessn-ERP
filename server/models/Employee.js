@@ -33,16 +33,13 @@ const employeeSchema = new mongoose.Schema({
 	password: {
 		type: String,
 	},
-	role: { type: String, ref: "EmployeeRole" },
-
+	position: String,
 	isActive: Boolean,
 	lastLogin: String,
 	employmentType: { type: String, ref: "EmploymentType" },
 	dateOfJoining: Date,
 	emailVerified: Boolean,
-	phoneNumber: {
-		type: String,
-	},
+	phoneNumber: String,
 	emergencyContact: {
 		firstName: String,
 		middleName: String,

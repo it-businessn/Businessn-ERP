@@ -1,10 +1,11 @@
 import { API } from "api";
 
-const withAuthHeader = (token) => ({
+const withAuthHeader = {
 	headers: {
-		Authorization: `Bearer ${token}`,
+		"Content-Type": "application/json",
 	},
-});
+	withCredentials: true,
+};
 
 // Authentication APIs
 // export const signIn = (formData) => API.post("/user/login", formData);
@@ -80,17 +81,19 @@ const expirationTime = timestamp + 300; // 5 minutes = (5 * 60seconds per minute
 
 export const BASE_URL = process.env.REACT_APP_BASE_URL;
 
-const buildURL = (path) => {
+export const buildURL = (path, queryParams) => {
 	const url = new URL(BASE_URL);
 	url.pathname += path;
 
 	url.searchParams.set("timestamp", timestamp);
 	url.searchParams.set("expirationTime", expirationTime);
+	url.searchParams.set("page", queryParams?.page);
+	url.searchParams.set("limit", queryParams?.limit);
 	return url.href;
 };
 
-const fetchData = async (path, params) => {
-	return API.get(buildURL(path), params);
+const fetchData = async (path, queryParams, params, signal) => {
+	return API.get(buildURL(path, queryParams), params, signal);
 	// return await (await fetch(url.href)).json();
 };
 
@@ -108,9 +111,9 @@ const deleteData = async (path, data) => {
 	return API.delete(buildURL(path), data);
 };
 
-const apiService = {
-	async get(path, searchParams) {
-		return fetchData(path, searchParams);
+export const apiService = {
+	async get(path, queryParams, searchParams, signal) {
+		return fetchData(path, queryParams, searchParams, signal);
 	},
 
 	async post(path, data) {

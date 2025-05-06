@@ -62,14 +62,14 @@ const Calendar = () => {
 
 	const fetchAllEvents = async () => {
 		try {
-			const response = await CalendarService.getEvents();
-			response.data.map((event) => {
+			const { data } = await CalendarService.getEvents();
+			data.map((event) => {
 				event.title = event.description;
 				event.start = new Date(event.meetingFromDate);
 				event.end = new Date(event.meetingToDate);
 				return event;
 			});
-			setEvents(response.data);
+			setEvents(data);
 			setIsLoading(false);
 		} catch (error) {
 			console.error(error);
@@ -241,9 +241,7 @@ const Calendar = () => {
 						toolbar: ScrollToolbar,
 					}}
 					dayFormat={(date, culture, localizer) => moment(date).format("D dd")}
-					dayHeaderFormat={(date, culture, localizer) =>
-						moment(date).format("D dddd")
-					}
+					dayHeaderFormat={(date, culture, localizer) => moment(date).format("D dddd")}
 					views={["day", "week", "month", "agenda"]}
 					style={{ height: 800 }}
 				/>
@@ -257,11 +255,7 @@ const Calendar = () => {
 						<ModalBody>
 							<FormControl>
 								<FormLabel>Type of Event</FormLabel>
-								<Select
-									name="eventType"
-									value={formData.eventType}
-									onChange={handleTypeChange}
-								>
+								<Select name="eventType" value={formData.eventType} onChange={handleTypeChange}>
 									<option value="meeting">Meeting</option>
 									<option value="task">Task</option>
 									<option value="phoneCall">Phone Call</option>
@@ -341,11 +335,7 @@ const Calendar = () => {
 								<>
 									<FormControl>
 										<FormLabel> Type</FormLabel>
-										<RadioGroup
-											defaultValue="dueDate"
-											onChange={handleRadioChange}
-											name="taskType"
-										>
+										<RadioGroup defaultValue="dueDate" onChange={handleRadioChange} name="taskType">
 											<Stack direction="row">
 												<Radio value="dueDate">Due Date</Radio>
 												<Radio value="timeFrame">Time-frame</Radio>

@@ -13,10 +13,10 @@ export const useVerifyEmailOTP = () => {
 		setIsLoading(true);
 		setError(null);
 		try {
-			const response = await LoginService.verifyUser(values);
+			const { data, status } = await LoginService.verifyUser(values);
 
-			const json = response.data;
-			if (response.status === 200) {
+			const json = data;
+			if (status === 200) {
 				dispatch({ type: "LOGIN", payload: json });
 
 				setIsLoading(false);
@@ -25,7 +25,7 @@ export const useVerifyEmailOTP = () => {
 		} catch (error) {
 			console.log(error);
 			setIsLoading(false);
-			setError(error.response.data.error);
+			setError(error?.response?.data?.error);
 		}
 	};
 

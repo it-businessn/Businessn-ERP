@@ -1,4 +1,5 @@
 import TabsButtonGroup from "components/ui/tab/TabsButtonGroup";
+import { ROLES } from "constant";
 import useCompany from "hooks/useCompany";
 import useEmployees from "hooks/useEmployees";
 import PageLayout from "layouts/PageLayout";
@@ -9,13 +10,17 @@ import PermissionsPanel from "./permisssions/PermissionsPanel";
 import UsersPanel from "./users/UsersPanel";
 
 const Setup = () => {
+	const loggedInUser = LocalStorageService.getItem("user");
+	const deptName = loggedInUser?.role === ROLES.MANAGER ? loggedInUser?.department : null;
 	const [isRefresh, setIsRefresh] = useState(false);
-	const { company } = useCompany(
-		LocalStorageService.getItem("selectedCompany"),
-	);
+	const { company } = useCompany(LocalStorageService.getItem("selectedCompany"));
 	const { employees, filteredEmployees, setFilteredEmployees } = useEmployees(
 		isRefresh,
 		company,
+		null,
+		null,
+		null,
+		deptName,
 	);
 
 	const SETUP_LIST = [
@@ -58,16 +63,11 @@ const Setup = () => {
 		},
 	];
 	const [viewMode, setViewMode] = useState(SETUP_LIST[0].type);
-	const showComponent = (viewMode) =>
-		SETUP_LIST.find(({ type }) => type === viewMode)?.name;
+	const showComponent = (viewMode) => SETUP_LIST.find(({ type }) => type === viewMode)?.name;
 
 	return (
 		<PageLayout title={"Set up"} showBgLayer>
-			<TabsButtonGroup
-				tabs={SETUP_LIST}
-				setViewMode={setViewMode}
-				viewMode={viewMode}
-			/>
+			<TabsButtonGroup tabs={SETUP_LIST} setViewMode={setViewMode} viewMode={viewMode} />
 			{showComponent(viewMode)}
 		</PageLayout>
 	);

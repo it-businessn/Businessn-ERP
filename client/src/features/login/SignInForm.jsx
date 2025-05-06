@@ -14,15 +14,12 @@ import {
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useBreakpointValue } from "services/Breakpoint";
 import LoginService from "services/LoginService";
 import { buildUserInfo, storeUser } from "utils/common";
 import logoImg from "../../assets/logos/BusinessN_lightLogo1.png";
 import Logo from "../../components/logo";
 
-const SignInForm = ({ title }) => {
-	const { isMobile } = useBreakpointValue();
-
+const SignInForm = ({ title, isMobile }) => {
 	const [isLoading, setIsLoading] = useState(false);
 
 	const [error, setError] = useState(null);
@@ -52,7 +49,9 @@ const SignInForm = ({ title }) => {
 		setIsLoading(true);
 		try {
 			const res = await LoginService.signIn(formData);
-			const { user, existingCompanyUser } = res.data;
+			const { user, existingCompanyUser, accessToken, refreshToken } = res.data;
+			sessionStorage.setItem("accessToken", accessToken);
+			localStorage.setItem("refreshToken", refreshToken);
 
 			user.companyId = existingCompanyUser;
 
@@ -61,7 +60,7 @@ const SignInForm = ({ title }) => {
 
 			resetForm();
 		} catch (error) {
-			setError(error.response.data.error);
+			setError(error?.response?.data?.error);
 		} finally {
 			setIsLoading(false);
 		}
@@ -86,9 +85,9 @@ const SignInForm = ({ title }) => {
 			m={"auto"}
 			position="relative"
 			spacing="8"
-			p={"1em 2em"}
-			mt={"20vh"}
-			width="md"
+			p={isMobile ? "2em" : "1em 2em"}
+			mt={isMobile ? "50%" : "20vh"}
+			width={isMobile ? "90vw" : "md"}
 			bg="var(--main_color)"
 			boxShadow="xl"
 			justifyContent={"center"}
@@ -124,12 +123,7 @@ const SignInForm = ({ title }) => {
 					<Stack spacing={4}>
 						<FormControl>
 							<FormLabel>Company ID</FormLabel>
-							<Input
-								name="companyId"
-								value={formData.companyId}
-								onChange={handleChange}
-								required
-							/>
+							<Input name="companyId" value={formData.companyId} onChange={handleChange} required />
 						</FormControl>
 						<FormControl>
 							<FormLabel>Email</FormLabel>
@@ -164,18 +158,16 @@ const SignInForm = ({ title }) => {
 								</InputRightElement>
 							</InputGroup>
 						</FormControl>
-						<Button isLoading={isLoading} type="submit" bg="var(--logo_bg)">
+						<Button isLoading={isLoading} type="submit" bg="var(--banner_bg)">
 							Login
 						</Button>
 					</Stack>
 				</form>
-				<Button
-					variant={"link"}
-					textDecor={"underline"}
-					onClick={showForgotPasswordPage}
-				>
-					Forgot Password
-				</Button>
+				{!isMobile && (
+					<Button variant={"link"} textDecor={"underline"} onClick={showForgotPasswordPage}>
+						Forgot Password
+					</Button>
+				)}
 				{error && (
 					<Alert status="error" mt={4}>
 						<AlertIcon />

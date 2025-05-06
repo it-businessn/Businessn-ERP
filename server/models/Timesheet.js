@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const { TIMESHEET_STATUS } = require("../services/data");
 
 const timesheetSchema = new mongoose.Schema({
 	employeeId: {
@@ -6,10 +7,13 @@ const timesheetSchema = new mongoose.Schema({
 		ref: "Employee",
 	},
 	department: String,
-	approveStatus: { type: String, default: "Pending" },
+	approveStatus: { type: String, default: TIMESHEET_STATUS.PENDING },
 	payRate: Number,
 	payType: String,
+	role: String,
+	department: String,
 	employeeName: String,
+	source: String,
 	clockIn: Date,
 	clockOut: Date,
 	breakOut: Date,
@@ -23,6 +27,7 @@ const timesheetSchema = new mongoose.Schema({
 	updatedOn: { type: Date, default: Date.now },
 	createdOn: { type: Date, default: Date.now },
 	companyName: { type: String, ref: "Company" },
+	positions: { type: Array, default: [] },
 	regPay: String,
 	totalBreaks: { type: Number, default: "0" },
 	overTimePay: String,
@@ -34,13 +39,25 @@ const timesheetSchema = new mongoose.Schema({
 	statPayHours: Number,
 	sickHoursWorked: Number,
 	regHoursWorked: { type: Number, default: 0 },
+	regHoursWorked2: { type: Number, default: 0 },
 	overtimeHoursWorked: { type: Number, default: 0 },
 	dblOvertimeHoursWorked: { type: Number, default: 0 },
 	statDayHoursWorked: { type: Number, default: 0 },
 	statDayHours: { type: Number, default: 0 },
 	sickPayHours: { type: Number, default: 0 },
 	vacationPayHours: { type: Number, default: 0 },
+
+	regBreakHoursWorked: { type: Number, default: 0 },
+	OTbreakHoursWorked: { type: Number, default: 0 },
+	dblOTBreakHoursWorked: { type: Number, default: 0 },
+	statWorkBreakHoursWorked: { type: Number, default: 0 },
+	statBreakHoursWorked: { type: Number, default: 0 },
+	sickBreakHoursWorked: { type: Number, default: 0 },
+	vacationBreakHoursWorked: { type: Number, default: 0 },
+
 	notDevice: Boolean,
+	deleted: { type: Boolean, default: false },
+	manualAdded: { type: Boolean, default: false },
 });
 
 const Timesheet = mongoose.model("Timesheet", timesheetSchema);

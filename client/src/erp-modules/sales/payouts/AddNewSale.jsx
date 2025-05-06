@@ -1,10 +1,4 @@
-import {
-	FormControl,
-	FormLabel,
-	HStack,
-	Select,
-	Stack,
-} from "@chakra-ui/react";
+import { FormControl, FormLabel, HStack, Select, Stack } from "@chakra-ui/react";
 import ActionButtonGroup from "components/ui/form/ActionButtonGroup";
 import InputFormControl from "components/ui/form/InputFormControl";
 import ModalLayout from "components/ui/modal/ModalLayout";
@@ -30,8 +24,8 @@ const AddNewSale = ({ isOpen, onClose, setIsAdded, company }) => {
 	useEffect(() => {
 		const fetchAllLeads = async () => {
 			try {
-				const response = await LeadsService.getOpportunityNames(company);
-				setLeads(response.data);
+				const { data } = await LeadsService.getOpportunityNames(company);
+				setLeads(data);
 			} catch (error) {
 				console.error(error);
 			}
@@ -112,11 +106,7 @@ const AddNewSale = ({ isOpen, onClose, setIsAdded, company }) => {
 						required
 						type="number"
 					/>
-					<ActionButtonGroup
-						submitBtnName={"Add"}
-						isLoading={isSubmitting}
-						onClose={onClose}
-					/>
+					<ActionButtonGroup submitBtnName={"Add"} isLoading={isSubmitting} onClose={onClose} />
 				</Stack>
 			</form>
 		</ModalLayout>

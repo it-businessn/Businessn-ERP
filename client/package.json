@@ -2,6 +2,16 @@
 	"name": "businessn-erp",
 	"version": "1.0.0",
 	"private": true,
+	"scripts": {
+		"start": "env-cmd -f .env react-scripts start",
+		"start-staging": "env-cmd -f .env.staging react-scripts start",
+		"start-prod": "env-cmd -f .env.production react-scripts start",
+		"test": "react-scripts test",
+		"eject": "react-scripts eject",
+		"build-staging": "env-cmd -f .env.staging react-scripts build",
+		"prebuild": "node scripts/write-version.js",
+		"build": "env-cmd -f .env.production react-scripts build"
+	},
 	"dependencies": {
 		"@chakra-ui/icons": "^2.0.19",
 		"@chakra-ui/pro-theme": "^0.4.0",
@@ -22,11 +32,12 @@
 		"env-cmd": "^10.1.0",
 		"formik": "^2.2.9",
 		"framer-motion": "^10.12.12",
+		"gsap": "^3.12.7",
 		"jquery": "^3.7.1",
 		"moment": "^2.29.4",
-		"moment-timezone": "^0.5.45",
+		"moment-timezone": "^0.5.47",
 		"primereact": "^9.6.0",
-		"react": "^18.2.0",
+		"react": "^18.3.1",
 		"react-beautiful-dnd": "^13.1.1",
 		"react-big-calendar": "^1.8.5",
 		"react-calendar-timeline": "^0.28.0",
@@ -48,15 +59,6 @@
 		"to-words": "^4.1.0",
 		"xlsx": "^0.18.5",
 		"yup": "^1.4.0"
-	},
-	"scripts": {
-		"start": "env-cmd -f .env react-scripts start",
-		"start-staging": "env-cmd -f .env.staging react-scripts start",
-		"start-prod": "env-cmd -f .env.production react-scripts start",
-		"test": "react-scripts test",
-		"eject": "react-scripts eject",
-		"build-staging": "env-cmd -f .env.staging react-scripts build",
-		"build": "env-cmd -f .env.production react-scripts build"
 	},
 	"eslintConfig": {
 		"extends": [
@@ -80,6 +82,6 @@
 		]
 	},
 	"devDependencies": {
-		"caniuse-lite": "^1.0.30001611"
+		"caniuse-lite": "^1.0.30001713"
 	}
 }

@@ -4,7 +4,6 @@ import TextTitle from "components/ui/text/TextTitle";
 import VerticalStepper from "components/ui/VerticalStepper";
 import { useEffect, useState } from "react";
 import { processPayrollPath, timesheetPath } from "routes";
-import TimesheetService from "services/TimesheetService";
 
 const PayrollActionSection = ({ company, filter, handleClick, activeUsers, totalAlerts }) => {
 	const [approvalPercent, setApprovalPercent] = useState(0);
@@ -16,20 +15,6 @@ const PayrollActionSection = ({ company, filter, handleClick, activeUsers, total
 	const [progressPercent, setProgressPercent] = useState(0);
 
 	const [timesheets, setTimesheets] = useState(null);
-
-	useEffect(() => {
-		const fetchAllEmployeeTimesheet = async () => {
-			try {
-				const response = await TimesheetService.getFilteredTimesheetsByStatus(company, filter);
-				setTimesheets(response.data);
-			} catch (error) {
-				console.error(error);
-			}
-		};
-		if (filter) {
-			fetchAllEmployeeTimesheet();
-		}
-	}, [filter]);
 
 	useEffect(() => {
 		if (!timesheets?.length) {
@@ -73,7 +58,7 @@ const PayrollActionSection = ({ company, filter, handleClick, activeUsers, total
 			description: violationPercent,
 			linkTo: {
 				title: "Address violation",
-				path: processPayrollPath,
+				path: `${processPayrollPath}/2`,
 			},
 		},
 		{
@@ -81,7 +66,7 @@ const PayrollActionSection = ({ company, filter, handleClick, activeUsers, total
 			description: 0,
 			linkTo: {
 				title: "Process Payroll",
-				path: processPayrollPath,
+				path: `${processPayrollPath}/3`,
 			},
 		},
 		{

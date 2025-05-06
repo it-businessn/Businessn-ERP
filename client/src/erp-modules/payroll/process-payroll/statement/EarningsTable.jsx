@@ -3,7 +3,7 @@ import TableLayout from "components/ui/table/TableLayout";
 import React from "react";
 import ItemRow from "../preview-reports/ItemRow";
 
-const EarningsTable = ({ cols, rows, data, colBg, isNetSummary }) => {
+const EarningsTable = ({ cols, rows, data, colBg, isNetSummary, isMobile }) => {
 	return (
 		<TableLayout
 			colBg={colBg}
@@ -11,41 +11,41 @@ const EarningsTable = ({ cols, rows, data, colBg, isNetSummary }) => {
 			cols={cols}
 			textSize="xs"
 			bg={"var(--main_color)"}
-			width1="9em"
-			width2="80px"
-			width3="46px"
+			width1={isMobile ? "auto" : "9em"}
+			width2={isMobile ? "auto" : "80px"}
+			width3={isMobile ? "auto" : "46px"}
 			isEarning
 			whiteSpace="wrap"
 		>
 			<Tbody>
 				{rows.map(
-					({
-						name,
-						rate,
-						totalHours,
-						currentTotal,
-						YTDTotal,
-						YTDHoursTotal,
-						isEarning,
-					}) => (
-						<React.Fragment key={name}>
-							{(name === "Regular" ||
+					({ name, rate, totalHours, currentTotal, YTDTotal, YTDHoursTotal, isEarning }) => {
+						const isValid =
+							!name.includes("Federal") &&
+							!name.includes("Provincial") &&
+							(name === "Regular" ||
 								name === "Net Pay" ||
-								data[YTDTotal] > 0 ||
-								name.includes("Gross ")) && (
-								<ItemRow
-									isNetSummary={isNetSummary}
-									title={name}
-									isEarning={isEarning}
-									rate={data[rate] ?? 0}
-									totalHours={data[totalHours] ?? 0}
-									currentTotal={data[currentTotal] ?? 0}
-									YTDTotal={data[YTDTotal] ?? 0}
-									YTDHoursTotal={data[YTDHoursTotal] ?? 0}
-								/>
-							)}
-						</React.Fragment>
-					),
+								name.includes("Gross ") ||
+								data[currentTotal] > 0 ||
+								data[YTDHoursTotal] > 0 ||
+								data[YTDTotal] > 0);
+						return (
+							<React.Fragment key={name}>
+								{isValid && (
+									<ItemRow
+										isNetSummary={isNetSummary}
+										title={name}
+										isEarning={isEarning}
+										rate={data[rate] ?? 0}
+										totalHours={data[totalHours] ?? 0}
+										currentTotal={data[currentTotal] ?? 0}
+										YTDTotal={data[YTDTotal] ?? 0}
+										YTDHoursTotal={data[YTDHoursTotal] ?? 0}
+									/>
+								)}
+							</React.Fragment>
+						);
+					},
 				)}
 			</Tbody>
 		</TableLayout>

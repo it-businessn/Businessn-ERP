@@ -29,20 +29,28 @@ const UserService = {
 		return apiService.get(`/user/payroll-active-count/${id}`);
 	},
 
-	async getPayrollActiveCompanyUsers(id) {
-		return apiService.get(`/user/payroll-active/${id}`);
+	async getPayrollActiveCompanyUsers(id, deptName) {
+		return apiService.get(`/user/payroll-active/${id}/${deptName}`);
 	},
 
-	async getPayrollInActiveCompanyUsers(id) {
-		return apiService.get(`/user/payroll-inactive/${id}`);
+	async getPayrollInActiveCompanyUsers(id, deptName) {
+		return apiService.get(`/user/payroll-inactive/${id}/${deptName}`);
 	},
 
 	async getAllCompanyUsersCount(id) {
 		return apiService.get(`/user/count/${id}`);
 	},
 
-	async getAllCompanyUsers(id) {
-		return apiService.get(`/user/${id}`);
+	async getCompanyUsers(id) {
+		return apiService.get(`/user/all/${id}`);
+	},
+
+	async getAllEmpCompanyUsers(id) {
+		return apiService.get(`/user/emp/${id}`);
+	},
+
+	async getAllCompanyUsers(id, deptName) {
+		return apiService.get(`/user/${id}/${deptName}`);
 	},
 
 	async getAllCompManagers(id) {
@@ -63,6 +71,14 @@ const UserService = {
 
 	async signUp(data) {
 		return apiService.post("/user/register", data);
+	},
+
+	async addMasterUser(data) {
+		return apiService.post("/user/create", data);
+	},
+
+	async updateMasterUser(data, id) {
+		return apiService.put(`/user/master/${id}`, data, id);
 	},
 
 	async verifyUser(data) {

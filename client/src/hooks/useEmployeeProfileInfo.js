@@ -6,16 +6,13 @@ const useEmployeeProfileInfo = (company, empId, isOnboarding) => {
 	useEffect(() => {
 		const fetchEmployeeProfileInfo = async () => {
 			try {
-				const response = await PayrollService.getEmployeeProfileInfo(
-					company,
-					empId,
-				);
-				setProfileInfo(response.data);
+				const { data } = await PayrollService.getEmployeeProfileInfo(company, empId);
+				setProfileInfo(data);
 			} catch (error) {
 				console.error(error);
 			}
 		};
-		if (!isOnboarding) {
+		if (empId) {
 			fetchEmployeeProfileInfo();
 		}
 	}, [company, empId, isOnboarding]);

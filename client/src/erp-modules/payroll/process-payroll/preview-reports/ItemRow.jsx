@@ -17,7 +17,9 @@ const ItemRow = ({
 }) => {
 	const isTotals =
 		(!isNetSummary && SUM_TOTALS.find((_) => title.includes(_))) ||
-		(isNetSummary && SUM_TOTALS.find((_) => title.includes("Net Pay")));
+		(isNetSummary && title.includes("Net Pay")) ||
+		title.includes("Gross Earnings") ||
+		title.includes("Total Deductions");
 
 	return (
 		<Tr bg={isTotals && "var(--main_color)"}>
@@ -37,7 +39,7 @@ const ItemRow = ({
 						color="var(--main_color_black)"
 						align={"right"}
 						visibility={rate === 0 && "hidden"}
-						title={`$${rate}`}
+						title={getAmount(rate)}
 					/>
 				</Td>
 			)}
@@ -48,7 +50,7 @@ const ItemRow = ({
 						color="var(--main_color_black)"
 						align={"right"}
 						visibility={!isEarning && totalHours === 0 && "hidden"}
-						title={totalHours}
+						title={totalHours?.toFixed(2)}
 					/>
 				</Td>
 			)}
@@ -70,7 +72,7 @@ const ItemRow = ({
 						size={"xs"}
 						align={"right"}
 						visibility={(isTotals || (!isEarning && totalHours === 0)) && "hidden"}
-						title={YTDHoursTotal}
+						title={YTDHoursTotal?.toFixed(2)}
 					/>
 				</Td>
 			)}

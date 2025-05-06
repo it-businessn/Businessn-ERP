@@ -12,9 +12,7 @@ import LeftPane from "./leftpane";
 import RightPane from "./rightpane";
 
 const CRMDashboard = () => {
-	const { company } = useCompany(
-		LocalStorageService.getItem("selectedCompany"),
-	);
+	const { company } = useCompany(LocalStorageService.getItem("selectedCompany"));
 	const loggedInUser = LocalStorageService.getItem("user");
 	const [stats, setStats] = useState(STATS);
 
@@ -33,6 +31,7 @@ const CRMDashboard = () => {
 
 	return (
 		<PageLayout
+			selectPlaceholder="Select Agent"
 			showSelectBox={isManagerRole && employees}
 			handleChange={handleChange}
 			title={`CRM ${isManagerRole ? "Manager " : ""}Dashboard`}
@@ -51,11 +50,7 @@ const CRMDashboard = () => {
 					company={company}
 					user={loggedInUser}
 				/>
-				<RightPane
-					stats={stats}
-					selectedUser={selectedUser}
-					company={company}
-				/>
+				<RightPane stats={stats} selectedUser={selectedUser} company={company} />
 			</SimpleGrid>
 		</PageLayout>
 	);

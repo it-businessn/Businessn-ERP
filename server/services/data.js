@@ -1,4 +1,34 @@
 const moment = require("moment");
+// const momentTz = require("moment-timezone");
+
+const BUSINESSN_ORG = "BusinessN Corporate";
+const BUSINESSN_SHADOW_ADMIN_EMAILS = [
+	"julik@businessn.com",
+	"davidd@businessn.com",
+	"daniel.heyns@businessn.com",
+	"jonas.schumacher@businessn.com",
+
+	// "stefan.esterhuysen@businessn.com",
+	// "erwan.dantier@businessn.com",
+	// "azra.demirovic@fractionaldepartments.com",
+	// "jesse.christiaens@fractionaldepartments.com",
+	// "it@businessn.com",
+	// "andrew.dehkurdi@fractionaldepartments.com",
+	"testuserstaging@test.com testuser",
+	// enroller - enroller@mail.com enroller1
+	// emp - emp@mail.com emp1
+	// shadow admin - shadowadmin@mail.com shadowadmin1
+	// manager - manager@mail.com manager1
+	// admin admin@mail.com admin1
+	// auth admin authadmin@mail.com  authadmin
+];
+
+const COMPANIES = {
+	FD: "Fractional Departments Inc.",
+	NW: "The Owners Of Strata Plan NW1378",
+	BUSINESSN_ORG: "BusinessN Corporate",
+	CORNERSTONE: "Cornerstone Maintenance Group Ltd.",
+};
 
 const ADMIN_PERMISSION = [
 	{ name: "Sales" },
@@ -24,6 +54,7 @@ const ADMIN_PERMISSION = [
 	{ name: "Project Management Taskboard" },
 	{ name: "Project Management Agenda" },
 	{ name: "Project Management Gantt" },
+	{ name: "Project Management Tickets" },
 	{ name: "Project Management PM Reports" },
 	{ name: "Project Management Setup" },
 	{ name: "Payroll" },
@@ -63,7 +94,7 @@ const EMPLOYEE_PERMISSION = [
 	{ name: "Project Management Communication" },
 ];
 
-const NW_ADMIN_PERMISSION = [
+const CLIENT_ORG_ADMIN_PERMISSION = [
 	{ name: "Payroll" },
 	{ name: "Payroll Dashboard" },
 	{ name: "Payroll Workview" },
@@ -78,18 +109,50 @@ const NW_ADMIN_PERMISSION = [
 	// { name: "Payroll Setup" },
 ];
 
-const NW_EMPLOYEE_PERMISSION = [{ name: "Payroll" }, { name: "Payroll Employee Dashboard" }];
+const CLIENT_ORG_EMP_PERMISSION = [{ name: "Payroll" }, { name: "Payroll Employee Dashboard" }];
 
 const ROLES = {
-	EMPLOYEE: "Employee",
+	SUPER_SHADOW_ADMIN: "Super Shadow Admin",
+	SHADOW_ADMIN: "Shadow Admin",
+	AUTH_ADMINISTRATOR: "Authorizing Admin",
 	ADMINISTRATOR: "Administrator",
 	MANAGER: "Manager",
+	EMPLOYEE: "Employee",
 	ENROLLER: "Enroller",
 };
 
-const isRoleManager = (role) =>
-	role?.includes(ROLES.ADMINISTRATOR) || role?.includes(ROLES.MANAGER);
+const PARAM_HOURS = {
+	REGULAR: "regHoursWorked",
+	STAT: "statDayHoursWorked",
+	BREAK: "regBreakHoursWorked",
+};
 
+const TIMESHEET_STATUS = {
+	APPROVED: "Approved",
+	REJECTED: "Rejected",
+	PENDING: "Pending",
+	DELETE: "Delete",
+};
+
+const TICKET_STATUS = {
+	OPEN: "Open",
+	CLOSED: "Close",
+	PROGRESS: "In Progress",
+	ON_HOLD: "On Hold",
+};
+
+const isRoleManager = (role) =>
+	role === ROLES.SHADOW_ADMIN ||
+	role === ROLES.AUTH_ADMINISTRATOR ||
+	role === ROLES.ADMINISTRATOR ||
+	role === ROLES.MANAGER;
+
+const NEXT_DAY = moment().add(1, "days");
+const CURRENT_TIME_HHMM = NEXT_DAY.format("HH:mm");
+// const currentTime = NEXT_DAY.format("HH:mm:ss");
+// let LOCAL_TIME = moment().tz("America/Vancouver").toDate();
+
+const CURRENT_YEAR = moment().year();
 const getUTCTime = (time, notDevice) => (notDevice ? moment() : moment.utc(time).toISOString());
 
 const calculateAge = (dob) => moment().diff(moment(dob, "YYYY-MM-DD"), "years");
@@ -119,13 +182,37 @@ const STAT_HOLIDAYS = [
 	{ name: "Christmas Day", date: "2024-12-25" },
 ];
 
-const getPayType = (workedDate) => {
-	const isStatHoliday = STAT_HOLIDAYS.find(({ date }) => isSameDay(date, workedDate));
-	if (isStatHoliday) {
-		return "Statutory Worked Pay";
-	}
-	return "Regular Pay";
+const PUNCH_CODE = {
+	CLOCK_IN: "0",
+	BREAK_IN: "3",
+	BREAK_OUT: "2",
+	CLOCK_OUT: "1",
 };
+
+const EARNING_TYPE = { FT: "Full Time Salaried", PT: "Part Time Salaried", HOURLY: "Hourly" };
+
+const PAY_TYPES_TITLE = {
+	REG_PAY: "Regular Pay",
+	REG_PAY_BRK: "Regular Pay Break",
+	OVERTIME_PAY: "Overtime Pay",
+	DBL_OVERTIME_PAY: "Double Overtime Pay",
+	STAT_WORK_PAY: "Statutory Worked Pay",
+	STAT_PAY: "Statutory Pay",
+	SICK_PAY: "Sick Pay",
+	VACATION_PAY: "Vacation Pay",
+};
+
+const TIMESHEET_ORIGIN = {
+	MANAGER: "Manager",
+	EMP: "Employee",
+	TAD: "TAD",
+	APP: "APP",
+};
+
+const PAYRUN_TYPE = { REGULAR: "1", PAYOUT: "2", MANUAL: "3", SUPERFICIAL: "4" };
+
+const getPayType = (isBreak = false) =>
+	isBreak ? PAY_TYPES_TITLE.REG_PAY_BRK : PAY_TYPES_TITLE.REG_PAY;
 
 const calcTotalHours = (data) => {
 	if (!(data?.clockIn && data?.clockOut)) {
@@ -166,11 +253,16 @@ const calcTotalHours = (data) => {
 };
 
 module.exports = {
+	EARNING_TYPE,
+	PAY_TYPES_TITLE,
+	CURRENT_TIME_HHMM,
+	NEXT_DAY,
 	ADMIN_PERMISSION,
-	NW_ADMIN_PERMISSION,
-	NW_EMPLOYEE_PERMISSION,
+	CLIENT_ORG_ADMIN_PERMISSION,
+	CLIENT_ORG_EMP_PERMISSION,
 	EMPLOYEE_PERMISSION,
 	isRoleManager,
+	CURRENT_YEAR,
 	getUTCTime,
 	startOfDay,
 	endOfDay,
@@ -182,4 +274,14 @@ module.exports = {
 	calcTotalHours,
 	isSameDay,
 	calculateAge,
+	BUSINESSN_ORG,
+	PUNCH_CODE,
+	TIMESHEET_STATUS,
+	PARAM_HOURS,
+	// LOCAL_TIME,
+	PAYRUN_TYPE,
+	TIMESHEET_ORIGIN,
+	ROLES,
+	TICKET_STATUS,
+	COMPANIES,
 };

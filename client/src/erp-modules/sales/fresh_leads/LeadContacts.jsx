@@ -16,20 +16,18 @@ import Tasks from "../customers/contacts/tasks";
 const LeadContacts = ({ setViewProfile, selectedContact }) => {
 	const loggedInUser = LocalStorageService.getItem("user");
 	const { id, comp } = useParams();
-	const { company } = useCompany(
-		LocalStorageService.getItem("selectedCompany"),
-	);
+	const { company } = useCompany(LocalStorageService.getItem("selectedCompany"));
 	const companyName = comp ? comp : company;
 
 	const [contact, setContact] = useState(null);
 	const fetchContacts = async () => {
 		const activeContact = selectedContact || id;
 		try {
-			const response = await ContactService.getContactDetails({
+			const { data } = await ContactService.getContactDetails({
 				id: activeContact,
 				company: companyName,
 			});
-			setContact(response.data);
+			setContact(data);
 		} catch (error) {
 			console.error(error);
 		}
@@ -50,31 +48,19 @@ const LeadContacts = ({ setViewProfile, selectedContact }) => {
 	const tabList = [
 		{
 			name: "Logs",
-			component: (
-				<Logs user={loggedInUser} contactId={contact?._id} company={company} />
-			),
+			component: <Logs user={loggedInUser} contactId={contact?._id} company={company} />,
 		},
 		{
 			name: "Notes",
-			component: (
-				<Notes user={loggedInUser} contactId={contact?._id} company={company} />
-			),
+			component: <Notes user={loggedInUser} contactId={contact?._id} company={company} />,
 		},
 		{
 			name: "Tasks",
-			component: (
-				<Tasks user={loggedInUser} contactId={contact?._id} company={company} />
-			),
+			component: <Tasks user={loggedInUser} contactId={contact?._id} company={company} />,
 		},
 		{
 			name: "Meetings",
-			component: (
-				<Meetings
-					user={loggedInUser}
-					contactId={contact?._id}
-					company={company}
-				/>
-			),
+			component: <Meetings user={loggedInUser} contactId={contact?._id} company={company} />,
 		},
 	];
 
@@ -89,15 +75,10 @@ const LeadContacts = ({ setViewProfile, selectedContact }) => {
 							icon={<FaArrowLeft />}
 							color="var(--nav_color)"
 							aria-label="Cancel"
-							onClick={() =>
-								id ? navigate(-1) : setViewProfile((prev) => !prev)
-							}
+							onClick={() => (id ? navigate(-1) : setViewProfile((prev) => !prev))}
 						/>
 						<Box flex="1">
-							<ContactDetailsInfo
-								contact={contact.leadId}
-								showLogForm={handleButtonClick}
-							/>
+							<ContactDetailsInfo contact={contact.leadId} showLogForm={handleButtonClick} />
 						</Box>
 						<Box flex="2" bg="var(--lead_cards_bg)">
 							<TabGroup

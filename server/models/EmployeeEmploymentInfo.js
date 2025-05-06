@@ -5,19 +5,15 @@ const employeeEmploymentInfoSchema = new mongoose.Schema({
 	companyName: { type: String, ref: "Company" },
 	payrollStatus: String,
 	employeeNo: String,
-	timeManagementBadgeID: String,
 	employmentStartDate: Date,
 	employmentLeaveDate: Date,
 	employmentRole: String,
-	employmentPayGroup: String,
-	employmentCostCenter: String,
-	employmentDepartment: { type: Array, default: [] },
-	companyDepartment: String,
 	createdOn: { type: Date, default: Date.now },
 	updatedOn: { type: Date, default: Date.now },
 	regPay: String,
 	employmentRegion: String,
 	employmentCountry: String,
+	positions: { type: Array, default: [] },
 });
 
 const EmployeeEmploymentInfo = mongoose.model(

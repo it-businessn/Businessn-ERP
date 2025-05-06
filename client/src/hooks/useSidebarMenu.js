@@ -1,58 +1,79 @@
-import { SIDEBAR_MENU } from "data";
-import { useEffect, useState } from "react";
+import { redirectLogin } from "api";
+import { SIDEBAR_MENU } from "components/sidebar/data";
+import { COMPANIES } from "constant";
+import { startTransition, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import LocalStorageService from "services/LocalStorageService";
 import UserService from "services/UserService";
 
-const useSidebarMenu = (userId, company, isManager) => {
+const useSidebarMenu = (userId, company, isManager, isShadowAdmin) => {
 	const [activeMenu, setActiveMenu] = useState(null);
+	const navigate = useNavigate();
 
 	useEffect(() => {
 		const fetchUserPermissions = async () => {
 			try {
-				const companyName =
-					company ?? LocalStorageService.getItem("selectedCompany");
+				const companyName = company || LocalStorageService.getItem("selectedCompany");
+				if (isShadowAdmin || companyName === COMPANIES.BUSINESSN_ORG) {
+					const permissionMenu = {
+						canAccessAllData: true,
+						canAccessGroupData: true,
+						canAccessModule: true,
+						canAccessRegionData: true,
+						canAccessUserData: true,
+						canDeleteModule: true,
+						canEditModule: true,
+						canViewModule: true,
+					};
+					SIDEBAR_MENU?.map((menuLink) => {
+						permissionMenu.name = menuLink.name;
 
-				const response = await UserService.getUserPermission({
-					userId,
-					company: companyName,
-				});
+						menuLink.permissions = permissionMenu;
 
-				if (response.data) {
-					SIDEBAR_MENU.map((data) => {
-						const menu = response.data.permissionType.find(
-							(item) => item.name === data.name,
-						);
-						if (menu) {
-							data.permissions = menu;
-						}
-						data?.children?.forEach((child, cIndex) => {
-							const childMenu = response.data.permissionType.find(
-								(item) => item.name === `${data.name} ${child.name}`,
-							);
-							if (childMenu?.name?.includes("Setup")) {
-								data.children[cIndex].permissions = isManager
-									? childMenu
-									: null;
-							} else {
-								data.children[cIndex].permissions = childMenu ?? null;
-							}
+						menuLink?.children?.forEach((child, cIndex) => {
+							permissionMenu.name = `${menuLink?.name} ${child?.name}`;
+							menuLink.children[cIndex].permissions = permissionMenu;
 						});
-						return data;
+						return menuLink;
 					});
-					setActiveMenu(
-						SIDEBAR_MENU.find((_) => _.permissions?.canAccessModule),
-					);
+					setActiveMenu(SIDEBAR_MENU.find((_) => _.permissions?.canAccessModule));
+				} else {
+					const { data } = await UserService.getUserPermission({
+						userId,
+						company: companyName,
+					});
+
+					if (data) {
+						SIDEBAR_MENU?.map((menuLink) => {
+							const menu = data?.permissionType?.find((item) => item.name === menuLink.name);
+							if (menu) {
+								menuLink.permissions = menu;
+							}
+							menuLink?.children?.forEach((child, cIndex) => {
+								const childMenu = data?.permissionType.find(
+									(item) => item.name === `${menuLink.name} ${child.name}`,
+								);
+								if (childMenu?.name?.includes("Setup")) {
+									menuLink.children[cIndex].permissions = isManager ? childMenu : null;
+								} else {
+									menuLink.children[cIndex].permissions = childMenu || null;
+								}
+							});
+							return menuLink;
+						});
+						setActiveMenu(SIDEBAR_MENU.find((_) => _.permissions?.canAccessModule));
+					}
 				}
 			} catch (error) {
-				console.error(error);
+				startTransition(() => {
+					redirectLogin();
+				});
 			}
 		};
 		if (userId && company) {
 			fetchUserPermissions();
 		}
 	}, [company]);
-	// }, []);
-
 	return { activeMenu, setActiveMenu };
 };
 

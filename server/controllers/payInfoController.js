@@ -1,7 +1,9 @@
+const EmployeeEmploymentInfo = require("../models/EmployeeEmploymentInfo");
 const EmployeePayInfo = require("../models/EmployeePayInfo");
-const { getEmployeeId, addPayStub, findEmpPayStubDetail } = require("./payrollController");
+const { getPayrollActiveEmployees } = require("./appController");
+const { findEmpPayStubDetail } = require("./payStubHelper");
 const { findGroupEmployees } = require("./setUpController");
-const { getPayrollActiveEmployees } = require("./userController");
+const { getEmployeeId } = require("./userController");
 
 const getAllPayInfo = async (req, res) => {
 	const { companyName, payDate, isExtraRun, groupId } = req.params;
@@ -25,28 +27,9 @@ const getAllPayInfo = async (req, res) => {
 	}
 };
 
-const getRecordId = async (empPayStubResult, empId, companyName, payPeriodPayDate) => {
-	if (empPayStubResult) {
-		return empPayStubResult._id;
-	}
-	const payStub = {
-		empId,
-		companyName,
-		payPeriodPayDate,
-		commission: 0,
-		retroactive: 0,
-		vacationPayout: 0,
-		bonus: 0,
-		terminationPayout: 0,
-		reimbursement: 0,
-	};
-	const newPayStub = await addPayStub(payStub);
-	return newPayStub._id;
-};
-
 const buildAmountAllocationEmpDetails = async (payDate, employee, companyName) => {
-	const employeeId = employee._id;
-	const fullName = employee.fullName;
+	const employeeId = employee?.empId?._id;
+	const fullName = employee?.empId?.fullName;
 
 	const empPayStubResult = await findEmpPayStubDetail(employeeId, payDate, companyName);
 
@@ -68,14 +51,14 @@ const buildAmountAllocationEmpDetails = async (payDate, employee, companyName) =
 const getEmployeePayInfo = async (req, res) => {
 	const { companyName, empId } = req.params;
 	try {
-		const result = await findEmployeePayInfo(empId, companyName);
-		res.status(200).json(result);
+		const result = await findEmployeePayInfoDetails(empId, companyName);
+		return res.status(200).json(result);
 	} catch (error) {
 		res.status(404).json({ error: error.message });
 	}
 };
 
-const findEmployeePayInfo = async (empId, companyName) =>
+const findEmployeePayInfoDetails = async (empId, companyName) =>
 	await EmployeePayInfo.findOne({
 		empId,
 		companyName,
@@ -87,43 +70,43 @@ const updatePayInfo = async (id, data) =>
 	});
 
 const addEmployeePayInfo = async (req, res) => {
-	const {
-		empId,
-		companyName,
-		regPay,
-		salaryRate,
-		dailyHours,
-		fullTimeStandardHours,
-		partTimeStandardHours,
-	} = req.body;
+	const { empId, companyName, roles } = req.body;
 	try {
-		const existingPayInfo = await findEmployeePayInfo(empId, companyName);
+		if (roles) {
+			roles.forEach((role) => {
+				const regPay = role?.payRate;
+				if (regPay) {
+					role.overTimePay = 1.5 * regPay;
+					role.dblOverTimePay = 2 * regPay;
+					role.statWorkPay = 1.5 * regPay;
+					role.statPay = regPay;
+					role.sickPay = regPay;
+					role.vacationPay = regPay;
+				}
+			});
+		}
+		const existingPayInfo = await findEmployeePayInfoDetails(empId, companyName);
 		if (existingPayInfo) {
-			if (regPay) {
-				req.body.overTimePay = 1.5 * regPay;
-				req.body.dblOverTimePay = 2 * regPay;
-				req.body.statWorkPay = 1.5 * regPay;
-				req.body.statPay = regPay;
-				req.body.sickPay = regPay;
-				req.body.vacationPay = regPay;
+			const existingEmploymentInfo = await EmployeeEmploymentInfo.findOne({
+				empId,
+				companyName,
+			});
+			if (existingEmploymentInfo) {
+				await EmployeeEmploymentInfo.findByIdAndUpdate(
+					existingEmploymentInfo._id,
+					{ positions: roles },
+					{
+						new: true,
+					},
+				);
 			}
-			const updatedPayInfo = await updatePayInfo(existingPayInfo._id, req.body);
+			const updatedPayInfo = await updatePayInfo(existingPayInfo._id, { roles });
 			return res.status(201).json(updatedPayInfo);
 		}
 		const newPayInfo = await EmployeePayInfo.create({
 			empId,
 			companyName,
-			regPay,
-			overTimePay: 1.5 * regPay,
-			dblOverTimePay: 2 * regPay,
-			statWorkPay: 1.5 * regPay,
-			statPay: regPay,
-			sickPay: regPay,
-			salaryRate,
-			dailyHours,
-			vacationPay: regPay,
-			fullTimeStandardHours,
-			partTimeStandardHours,
+			roles,
 		});
 		return res.status(201).json(newPayInfo);
 	} catch (error) {
@@ -134,6 +117,7 @@ const addEmployeePayInfo = async (req, res) => {
 const updateEmployeePayInfo = async (req, res) => {
 	const { id } = req.params;
 	try {
+		req.body.updatedOn = moment();
 		const updatedPayInfo = await updatePayInfo(id, req.body);
 
 		res.status(201).json(updatedPayInfo);
@@ -147,5 +131,5 @@ module.exports = {
 	getEmployeePayInfo,
 	addEmployeePayInfo,
 	updateEmployeePayInfo,
-	findEmployeePayInfo,
+	updatePayInfo,
 };

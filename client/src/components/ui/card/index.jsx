@@ -16,11 +16,20 @@ const BoxCard = ({
 	minH,
 	bg = "var(--primary_bg)",
 	width,
+	boxShadow,
+	flexWrap,
+	pb,
+	borderRadius = "10px",
+	minW,
+	borderColor = "var(--main_color)",
 }) => (
 	<Box
+		minW={minW}
+		flexWrap={flexWrap}
+		boxShadow={boxShadow}
 		bg={bg}
-		border={`${borderWidth} solid var(--main_color)`}
-		borderRadius="10px"
+		border={`${borderWidth} solid ${borderColor}`}
+		borderRadius={borderRadius}
 		color={"var(--nav_color)"}
 		display={display}
 		flexDir={flexDir}
@@ -32,6 +41,7 @@ const BoxCard = ({
 		overflow={"hidden"}
 		overflowY={overflowY}
 		p={p}
+		pb={pb}
 		px={px}
 		minH={minH}
 		w={width}

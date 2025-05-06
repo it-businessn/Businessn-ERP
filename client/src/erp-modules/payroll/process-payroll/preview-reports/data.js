@@ -1,5 +1,7 @@
 import { HStack } from "@chakra-ui/react";
 import TextTitle from "components/ui/text/TextTitle";
+import { COLS, CONTRIBUTION } from "constant";
+import { PAY_TYPES_TITLE } from "erp-modules/payroll/timesheets/data";
 
 export const SUM_TOTALS = ["Gross ", "Total ", "Available ", "Net Pay"];
 export const EARNINGS_COLS = ["", "Rate", "Hours", "Curr. Total", "YTD Hrs.", "YTD Totals"];
@@ -45,7 +47,7 @@ export const EARNINGS_TYPES = [
 		isEarning: true,
 	},
 	{
-		name: "Statutory Pay",
+		name: PAY_TYPES_TITLE.STAT_PAY,
 		rate: "statPay",
 		totalHours: "totalStatHours",
 		currentTotal: "currentStatPayTotal",
@@ -54,7 +56,7 @@ export const EARNINGS_TYPES = [
 		isEarning: true,
 	},
 	{
-		name: "Statutory Worked Pay",
+		name: PAY_TYPES_TITLE.STAT_WORK_PAY,
 		rate: "statWorkPay",
 		totalHours: "totalStatDayHoursWorked",
 		currentTotal: "currentStatWorkPayTotal",
@@ -181,6 +183,15 @@ export const EARNINGS_TYPES = [
 		isEarning: false,
 	},
 	{
+		name: "Regular 2",
+		rate: "regPay2",
+		totalHours: "totalRegHoursWorked2",
+		currentTotal: "currentRegPayTotal2",
+		YTDHoursTotal: "YTDRegHoursWorked2",
+		YTDTotal: "YTDRegPayTotal2",
+		isEarning: true,
+	},
+	{
 		name: "Gross Earnings",
 		rate: 0,
 		totalHours: 0,
@@ -228,7 +239,7 @@ export const DEDUCTION_TYPES = [
 		YTDTotal: "YTD_CPPDeductions",
 	},
 	{
-		name: "Union Dues",
+		name: COLS.UNION_DUE,
 		rate: 0,
 		totalHours: 0,
 		currentTotal: "currentUnionDuesDeductions",
@@ -249,7 +260,7 @@ export const DEDUCTION_TYPES = [
 		YTDTotal: "YTDPrimaryDeposit",
 	},
 	{
-		name: "Pension Contribution",
+		name: CONTRIBUTION.PENSION,
 		rate: 0,
 		totalHours: 0,
 		currentTotal: "currentEmployeePensionContributions",
@@ -304,7 +315,7 @@ const EMPLOYER_BENEFIT_TYPES = [
 		YTDTotal: "YTD_CPPDeductions",
 	},
 	{
-		name: "Pension Contribution",
+		name: CONTRIBUTION.PENSION,
 		rate: 0,
 		totalHours: 0,
 		currentTotal: "currentEmployerPensionContributions",
@@ -318,7 +329,7 @@ const EMPLOYER_BENEFIT_TYPES = [
 		YTDTotal: "YTDEmployerHealthContributions",
 	},
 	{
-		name: "Total Employee Paid Benefits",
+		name: "Total Employer Paid Benefits",
 		rate: 0,
 		totalHours: 0,
 		currentTotal: "currentEmployerContributions",
@@ -352,7 +363,7 @@ const SICK_TYPES = [
 
 const VACATION_BENEFIT = [
 	{
-		name: "Balance Fwd",
+		name: "Balance Adjustment",
 		rate: 0,
 		totalHours: 0,
 		currentTotal: "currentVacationBalanceFwd",
@@ -382,10 +393,6 @@ const VACATION_BENEFIT = [
 ];
 
 export const ACCRUAL_TYPES = [
-	{
-		type: "Vacation",
-		items: VACATION_BENEFIT,
-	},
 	// {
 	// 	type: "Sick",
 	// 	items: SICK_TYPES,
@@ -393,5 +400,9 @@ export const ACCRUAL_TYPES = [
 	{
 		type: "Employer Paid Benefits",
 		items: EMPLOYER_BENEFIT_TYPES,
+	},
+	{
+		type: "Vacation",
+		items: VACATION_BENEFIT,
 	},
 ];

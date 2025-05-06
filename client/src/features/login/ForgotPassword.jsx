@@ -23,12 +23,12 @@ const ForgotPassword = () => {
 	const handleSubmit = async (e) => {
 		e.preventDefault();
 		try {
-			const response = await PasswordService.sendPassword({ email });
-			setCaptionTitle(response.data.message);
+			const { data } = await PasswordService.sendPassword({ email });
+			setCaptionTitle(data.message);
 			setErrorMessage("");
 		} catch (error) {
 			setCaptionTitle("Sorry! Unable to sent reset link!");
-			setErrorMessage(error.response.data.error);
+			setErrorMessage(error?.response?.data?.error);
 			console.log(error);
 		}
 	};
@@ -70,7 +70,7 @@ const ForgotPassword = () => {
 										required
 									/>
 								</FormControl>
-								<Button type="submit" bg="var(--logo_bg)">
+								<Button type="submit" bg="var(--banner_bg)">
 									Continue with email
 								</Button>
 							</Stack>
@@ -80,7 +80,7 @@ const ForgotPassword = () => {
 						<>
 							<Text color="green">{captionTitle}</Text>
 							<Link to="/">
-								<Button width="100%" bg="var(--logo_bg)">
+								<Button width="100%" bg="var(--banner_bg)">
 									Back to Login
 								</Button>
 							</Link>

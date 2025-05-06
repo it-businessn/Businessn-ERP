@@ -6,11 +6,131 @@ import { IoMdCall } from "react-icons/io";
 import { MdCall, MdOutlineEventNote } from "react-icons/md";
 
 export const ROLES = {
-	EMPLOYEE: "Employee",
+	SHADOW_ADMIN: "Shadow Admin",
+	AUTH_ADMINISTRATOR: "Authorizing Admin",
 	ADMINISTRATOR: "Administrator",
 	MANAGER: "Manager",
+	EMPLOYEE: "Employee",
 	ENROLLER: "Enroller",
 };
+
+export const COMPANIES = {
+	FD: "Fractional Departments Inc.",
+	NW: "The Owners Of Strata Plan NW1378",
+	BUSINESSN_ORG: "BusinessN Corporate",
+	CORNERSTONE: "Cornerstone Maintenance Group Ltd.",
+};
+
+export const CONTRIBUTION = {
+	EI: "Employment Insurance",
+	CPP: "Canada Pension Plan",
+	HEALTH_PLAN: "Health Plan",
+	PENSION_PLAN: "Pension Plan",
+	PENSION: "Pension Contribution",
+};
+
+export const COLS = {
+	EMP_NAME: "Employee Name",
+	UNION_DUE: "Union Dues",
+	PAYRATE: "Payrate",
+};
+
+export const CATEGORY_LIST = [
+	{ category: "Onboarding" },
+	{ category: "Development" },
+	{ category: "Sales" },
+	{ category: "Marketing" },
+	{ category: "Service Delivery" },
+	{ category: "IT Support" },
+	{ category: "Finance" },
+	{ category: "Testing" },
+	{ category: "Support" },
+	{ category: "AI" },
+	{ category: "Payroll" },
+	{ category: "HR" },
+	{ category: "Accounting" },
+];
+
+export const RECALL_OPTIONS = [
+	{
+		name: "Unknown",
+	},
+	{
+		name: "Not Returning",
+	},
+	{
+		name: "Return Date",
+	},
+];
+
+export const REASON_CODE = [
+	{
+		name: "AOO - Shortage of Work / End of Contract or Season",
+	},
+	{
+		name: "A01 - Employer bankruptcy or receivership",
+	},
+	{
+		name: "B00 - Strike or Lockout",
+	},
+	{ name: "D00 - Illness or Injury" },
+	{ name: "E00 - Quit" },
+	{ name: "E02 - Quit / Follow spouse" },
+	{ name: "E03 - Quit / Return to school" },
+	{ name: "E04 - Quit / Health reasons" },
+	{ name: "E05 - Quit / Voluntary retirement" },
+	{ name: "E06 - Quit / Take another job" },
+	{ name: "E09 - Quit / Employer relocation" },
+	{ name: "E10 - Quit / Care for a dependant" },
+	{ name: "E11 - Quit / To become self-employed" },
+	{ name: "F00 - Maternity" },
+	{ name: "G00 - Mandatory retirement" },
+	{ name: "G07 - Retirement / Approved workforce reduction" },
+	{ name: "H00 - Work Sharing" },
+	{ name: "J00 - Apprentice Training" },
+	{ name: "K00 - Other" },
+	{ name: "K12 - Other / Change of payroll frequency" },
+	{ name: "K13 - Other / Change of ownership" },
+	{ name: "K14 - Other / Requested by Employment Insurance" },
+	{ name: "K15 - Other / Canadian Forces - Queen's Regulations / Orders" },
+	{ name: "K16 - Other / At the employee's request" },
+	{ name: "K17 - Other /  Change of Service Provider" },
+	{ name: "M00 - Dismissal or suspension" },
+	{ name: "M08 - Dismissal / Terminated within probationary period" },
+	{ name: "N00 - Leave" },
+	{ name: "P00 - Parental Leave" },
+	{ name: "Z00 - Compassionate care / Family caregiver" },
+];
+
+export const TITLE_COLS = [COLS.EMP_NAME, "Total Hours", "Total Amount"];
+
+export const ALIGN_COLS = [
+	COLS.UNION_DUE,
+	COLS.PAYRATE,
+	`${COLS.PAYRATE} 2`,
+	`Employer ${CONTRIBUTION.PENSION_PLAN} (EE)`,
+	`Employer ${CONTRIBUTION.HEALTH_PLAN} (EE)`,
+	`${CONTRIBUTION.EI} (EE)`,
+	`${CONTRIBUTION.CPP} (EE)`,
+	`ER ${CONTRIBUTION.PENSION_PLAN}`,
+	`ER ${CONTRIBUTION.HEALTH_PLAN}`,
+	`${CONTRIBUTION.EI} (ER)`,
+	`${CONTRIBUTION.CPP} (ER)`,
+];
+
+export const TOTAL_AMT_HRS_COLS = [
+	"totalAmountAllocated",
+	"totalPayoutAmountAllocated",
+	"totalManualAmountAllocated",
+	"totalSuperficialAmountAllocated",
+];
+
+export const HRS_DECIMAL_COLS = [
+	"totalHoursWorked",
+	"totalSuperficialHoursWorked",
+	"totalManualHoursWorked",
+	"totalPayoutHoursWorked",
+];
 
 export const TOAST = {
 	SUCCESS: {
@@ -289,5 +409,42 @@ export const meetingsData = [
 		meetingDate: "01/01/2024",
 		duration: { hours: 1, minutes: 30 },
 		status: "completed",
+	},
+];
+
+export const PAYRUN_TYPE = [
+	{ name: "Regular", code: "1" },
+	{ name: "Paid out", code: "2" },
+	{ name: "Manual Cheque", code: "3" },
+	{ name: "Superficial Balance", code: "4" },
+];
+
+export const getReportName = (type) =>
+	PAYRUN_TYPE.find((_) => _.code === type)?.name || PAYRUN_TYPE[0].name;
+
+export const PAYRUN_OPTIONS = [
+	{
+		name: "Payrun Details",
+		code: 1,
+		highlightColor: "#537eee",
+		info: "Adjustments made here will be included in this pay run.",
+	},
+	{
+		name: "Payrun Details - Separate Cheque",
+		code: 2,
+		highlightColor: "#7713c9",
+		info: "Adjustments made here will be included in this pay run but will appear on a separate cheque.",
+	},
+	{
+		name: "Payrun Details - Separate Cheque No Payout",
+		code: 3,
+		highlightColor: "#326274",
+		info: "Adjustments made here will not be paid out.",
+	},
+	{
+		name: "Payrun Details - Balances",
+		code: 4,
+		highlightColor: "#b47318",
+		info: "Adjustments made here will update the pay stub internally without reporting to the CRA.",
 	},
 ];

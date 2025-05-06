@@ -23,8 +23,8 @@ const EmployeeViewCard = ({ company }) => {
 	useEffect(() => {
 		const fetchAllAssessmentTypes = async () => {
 			try {
-				const response = await AssessmentService.getAssessmentTypes(company);
-				setAssessments(response.data);
+				const { data } = await AssessmentService.getAssessmentTypes(company);
+				setAssessments(data);
 			} catch (error) {
 				console.error(error);
 			}
@@ -35,13 +35,13 @@ const EmployeeViewCard = ({ company }) => {
 	useEffect(() => {
 		const fetchAssessmentsTaken = async () => {
 			try {
-				const response = await AssessmentService.getAssessmentByUserId(loggedInUser._id);
-				const passed = response.data?.filter((type) => type.category === "PASS");
+				const { data } = await AssessmentService.getAssessmentByUserId(loggedInUser._id);
+				const passed = data?.filter((type) => type.category === "PASS");
 
 				const complete = passed.length;
 				const not_completed = assessments?.length - complete || 0;
 
-				setAssessmentsTaken(response.data);
+				setAssessmentsTaken(data);
 				setCompleted(complete);
 				setNotComplete(not_completed);
 

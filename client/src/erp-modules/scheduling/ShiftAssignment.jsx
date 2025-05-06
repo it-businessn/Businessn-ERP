@@ -1,7 +1,15 @@
+import ComingSoon from "components/ComingSoon";
 import PageLayout from "layouts/PageLayout";
 
 const ShiftAssignment = () => {
-	return <PageLayout title={"Shift Assignment"}></PageLayout>;
+	return (
+		<PageLayout title={"Shift Assignment"}>
+			<ComingSoon
+				message={`We are currently working on this module. We will let you know as soon as it's completed.
+									Thank you.`}
+			/>
+		</PageLayout>
+	);
 };
 
 export default ShiftAssignment;

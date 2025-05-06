@@ -1,4 +1,5 @@
-import { FormLabel, Text } from "@chakra-ui/react";
+import { FormLabel } from "@chakra-ui/react";
+import MandatoryField from "./MandatoryField";
 
 const RequiredLabel = ({
 	label,
@@ -8,23 +9,19 @@ const RequiredLabel = ({
 	visibility,
 	hideLabel,
 	subRequired,
+	fontSize,
 }) => {
-	const SpanText = ({ color }) => (
-		<Text as={"span"} color={color}>
-			{" "}
-			*
-		</Text>
-	);
 	return (
 		<FormLabel
 			fontWeight={fontWeight}
 			display={hideLabel && "none"}
 			htmlFor={name}
 			visibility={visibility}
+			fontSize={fontSize}
 		>
 			{label}
-			{required && <SpanText color={"red"} />}
-			{subRequired && <SpanText color={"orange"} />}
+			{required && <MandatoryField color={"red"} />}
+			{subRequired && <MandatoryField color={"orange"} />}
 		</FormLabel>
 	);
 };

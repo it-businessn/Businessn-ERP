@@ -25,7 +25,7 @@ import { MdOutlineFilterList } from "react-icons/md";
 import { useBreakpointValue } from "services/Breakpoint";
 import ContactService from "services/ContactService";
 import { calcTotal } from "utils";
-import { productsInfo } from "../../../data";
+import { productsInfo } from "../../../components/sidebar/data";
 import "./products.css";
 
 const Products = () => {
@@ -39,9 +39,9 @@ const Products = () => {
 	const [contacts, setContacts] = useState(null);
 	const fetchAllContacts = async () => {
 		try {
-			const response = await ContactService.getContacts();
-			response.data.map((item) => (item.comm = "Meeting"));
-			setContacts(response.data);
+			const { data } = await ContactService.getCompContacts();
+			data.map((item) => (item.comm = "Meeting"));
+			setContacts(data);
 		} catch (error) {
 			console.error(error);
 		}
@@ -53,7 +53,7 @@ const Products = () => {
 	useEffect(() => {
 		setTotalCost(calcTotal(productsInfo, "cost", "quantity"));
 		setTotalQuantity(calcTotal(productsInfo, "quantity"));
-		fetchAllContacts();
+		// fetchAllContacts();
 	}, []);
 
 	const groupedData = productsInfo.reduce((acc, product) => {
@@ -66,37 +66,20 @@ const Products = () => {
 
 	const percentages = {};
 	for (const category in groupedData) {
-		percentages[category] = (
-			(groupedData[category] / sumQuantity) *
-			100
-		).toFixed(2);
+		percentages[category] = ((groupedData[category] / sumQuantity) * 100).toFixed(2);
 	}
 
 	const combinedData = Object.keys(percentages);
 	const data = Object.values(groupedData);
-	const labels = combinedData.map(
-		(category, index) => `${category} - ${data[index]}%`,
-	);
+	const labels = combinedData.map((category, index) => `${category} - ${data[index]}%`);
 
 	const productsChartData = {
 		labels,
 		datasets: [
 			{
 				data,
-				backgroundColor: [
-					"#517ae8",
-					"#67afc8",
-					"#8aa8ee",
-					"#c4f7d8",
-					"#caeaf5",
-				],
-				hoverBackgroundColor: [
-					"#517ae8",
-					"#67afc8",
-					"#8aa8ee",
-					"#c4f7d8",
-					"#caeaf5",
-				],
+				backgroundColor: ["#517ae8", "#67afc8", "#8aa8ee", "#c4f7d8", "#caeaf5"],
+				hoverBackgroundColor: ["#517ae8", "#67afc8", "#8aa8ee", "#c4f7d8", "#caeaf5"],
 			},
 		],
 	};
@@ -112,11 +95,11 @@ const Products = () => {
 	};
 
 	return (
-		<PageLayout title={"Products"}>
+		<PageLayout title="Products">
 			{/* <Box
 	 	p={{ base: "1em", md: "2em" }}
 			overflowY={{ base: "hidden", md: "auto" }}
-			h={{ base: "auto", md: "70vh", lg: "auto" }}
+			h={{ base: "auto", md: "calc(100vh - 278px)", lg: "auto" }}
 		 > */}
 
 			<Box
@@ -139,22 +122,11 @@ const Products = () => {
 						borderRadius="10px"
 						fontWeight="bold"
 					>
-						<Text
-							fontWeight="bold"
-							color={"var(--main_color_black)"}
-							mt="2"
-							mb="1"
-						>
+						<Text fontWeight="bold" color={"var(--main_color_black)"} mt="2" mb="1">
 							All Categories
 						</Text>
-						<Box
-							w={{ base: "70%", md: "50%", lg: "70%", xl: "70%" }}
-							mx={"auto"}
-						>
-							<Doughnut
-								data={productsChartData}
-								options={doughnutOptions("0%")}
-							/>
+						<Box w={{ base: "70%", md: "50%", lg: "70%", xl: "70%" }} mx={"auto"}>
+							<Doughnut data={productsChartData} options={doughnutOptions("0%")} />
 						</Box>
 					</Box>
 					<Box
@@ -176,11 +148,7 @@ const Products = () => {
 								display="flex"
 								flexDir="column"
 							>
-								<Text
-									fontSize="xs"
-									fontWeight="bold"
-									color={"var(--nav_color)"}
-								>
+								<Text fontSize="xs" fontWeight="bold" color={"var(--nav_color)"}>
 									Total SKUs
 								</Text>
 								<Text mr="3" fontSize={"1.25em"}>
@@ -195,11 +163,7 @@ const Products = () => {
 								display="flex"
 								flexDir="column"
 							>
-								<Text
-									fontSize="xs"
-									fontWeight="bold"
-									color={"var(--nav_color)"}
-								>
+								<Text fontSize="xs" fontWeight="bold" color={"var(--nav_color)"}>
 									Total Products
 								</Text>
 								<Text mr="3" fontSize={"1.25em"}>
@@ -214,11 +178,7 @@ const Products = () => {
 								display="flex"
 								flexDir="column"
 							>
-								<Text
-									fontSize="xs"
-									fontWeight="bold"
-									color={"var(--nav_color)"}
-								>
+								<Text fontSize="xs" fontWeight="bold" color={"var(--nav_color)"}>
 									$ Inventory #Skus
 								</Text>
 								<Text mr="3" fontSize={"1.25em"}>
@@ -379,7 +339,7 @@ const Products = () => {
 					</Flex>
 				)}
 				{/* {contacts && ( */}
-				<Box overflow="auto" h="350px">
+				<Box overflow="auto" h="450px">
 					<Table color={"var(--nav_color)"} bg={"var(--primary_bg)"}>
 						<Thead>
 							<Tr fontSize="xs">
@@ -402,33 +362,28 @@ const Products = () => {
 							</Tr>
 						</Thead>
 						<Tbody color={"var(--nav_color)"}>
-							{productsInfo.map(
-								(
-									{ _id, name, category, base_price, cost, quantity },
-									index,
-								) => (
-									<Tr key={_id}>
-										<Td fontSize={"xs"} p={0}>
-											{_id}
-										</Td>
-										<Td fontSize={"xs"} p={0}>
-											{name}
-										</Td>
-										<Td fontSize={"xs"} p={0}>
-											{category}
-										</Td>
-										<Td fontSize={"xs"} p={0}>
-											{base_price}
-										</Td>
-										<Td fontSize={"xs"} p={1}>
-											{cost}
-										</Td>
-										<Td fontSize={"xs"} p={0}>
-											{quantity}
-										</Td>
-									</Tr>
-								),
-							)}
+							{productsInfo.map(({ _id, name, category, base_price, cost, quantity }, index) => (
+								<Tr key={_id}>
+									<Td fontSize={"xs"} p={0}>
+										{_id}
+									</Td>
+									<Td fontSize={"xs"} p={0}>
+										{name}
+									</Td>
+									<Td fontSize={"xs"} p={0}>
+										{category}
+									</Td>
+									<Td fontSize={"xs"} p={0}>
+										{base_price}
+									</Td>
+									<Td fontSize={"xs"} p={1}>
+										{cost}
+									</Td>
+									<Td fontSize={"xs"} p={0}>
+										{quantity}
+									</Td>
+								</Tr>
+							))}
 						</Tbody>
 					</Table>
 				</Box>

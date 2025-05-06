@@ -19,6 +19,7 @@ import HighlightButton from "components/ui/button/HighlightButton";
 import LeftIconButton from "components/ui/button/LeftIconButton";
 import PrimaryButton from "components/ui/button/PrimaryButton";
 import TextTitle from "components/ui/text/TextTitle";
+import OnboardEmpModal from "erp-modules/sales/onboarding/OnboardEmpModal";
 import useManager from "hooks/useManager";
 import useSalesAgentData from "hooks/useSalesAgentData";
 import PageLayout from "layouts/PageLayout";
@@ -41,12 +42,13 @@ const CustomersList = ({ user, handleProfileView, icons, company }) => {
 	const assignees = useSalesAgentData(company, false, true);
 	const managers = useManager(company);
 	const [companies, setCompanies] = useState(null);
+	const [showOnboard, setShowOnboard] = useState(false);
 
 	useEffect(() => {
 		const fetchAllCompanies = async () => {
 			try {
-				const response = await LeadsService.getLeadCompanies(company);
-				setCompanies(response.data);
+				const { data } = await LeadsService.getLeadCompanies(company);
+				setCompanies(data);
 			} catch (error) {
 				console.error(error);
 			}
@@ -59,21 +61,21 @@ const CustomersList = ({ user, handleProfileView, icons, company }) => {
 		console.log(id);
 	};
 
+	const handleClick = () => {
+		setShowOnboard(true);
+	};
+
 	const { isOpen, onOpen, onClose } = useDisclosure();
 	const isUserManager = isManager(user?.role);
 
 	const fetchAllContacts = async () => {
 		try {
-			const response = await ContactService.getCompContacts(company);
-			response.data.map((_) => (_.stage = _.leadId?.stage));
-			const filterContacts = response.data.filter((_) => _.stage === "T4");
+			const { data } = await ContactService.getOnboardedContacts(company);
 
 			setContacts(
 				isUserManager
-					? filterContacts
-					: filterContacts?.filter(
-							(lead) => lead.leadId.primaryAssignee[0]?.name === user.fullName,
-					  ),
+					? data
+					: data?.filter((lead) => lead.leadId.primaryAssignee[0]?.name === user.fullName),
 			);
 		} catch (error) {
 			console.error(error);
@@ -209,6 +211,7 @@ const CustomersList = ({ user, handleProfileView, icons, company }) => {
 													handleProfileView(_id);
 												}}
 											/>
+											{/* <LinkButton name="Onboard" onClick={handleClick} /> */}
 										</HStack>
 									</Td>
 									{/* <Td>
@@ -235,6 +238,14 @@ const CustomersList = ({ user, handleProfileView, icons, company }) => {
 					managers={managers}
 					companies={companies}
 					setRefresh={setRefresh}
+				/>
+			)}
+			{showOnboard && (
+				<OnboardEmpModal
+					title="Onboard employee"
+					showOnboard={showOnboard}
+					setShowOnboard={setShowOnboard}
+					isSalesOnboard
 				/>
 			)}
 		</PageLayout>

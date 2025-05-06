@@ -3,14 +3,15 @@ import ActiveBadge from "components/ActiveBadge";
 import NormalTextTitle from "components/ui/NormalTextTitle";
 import RadioButtonGroup from "components/ui/tab/RadioButtonGroup";
 import TextTitle from "components/ui/text/TextTitle";
+import { ROLES } from "constant";
 import useCompany from "hooks/useCompany";
+import useCompanyEmployees from "hooks/useCompanyEmployees";
 import useSelectedEmp from "hooks/useSelectedEmp";
 import PageLayout from "layouts/PageLayout";
 import { useEffect, useState } from "react";
 import { FaCheckCircle } from "react-icons/fa";
 import { useParams } from "react-router-dom";
 import LocalStorageService from "services/LocalStorageService";
-import UserService from "services/UserService";
 import EmpProfileSearch from "../EmpProfileSearch";
 import BankingInfo from "./employee-tabs/BankingInfo";
 import BenefitsInfo from "./employee-tabs/BenefitsInfo";
@@ -23,31 +24,21 @@ const Employees = ({ isOnboarding, selectedPayGroupName, handleClose }) => {
 	const { id, stepNo } = useParams();
 	const { company } = useCompany(LocalStorageService.getItem("selectedCompany"));
 	const loggedInUser = LocalStorageService.getItem("user");
-	const [employee, setEmployee] = useState(loggedInUser);
+	const deptName = loggedInUser?.role === ROLES.MANAGER ? loggedInUser?.department : null;
+	const [employee, setEmployee] = useState(null);
 	const [userId, setUserId] = useState(id ? id : loggedInUser._id);
 	const { setEmpId } = useSelectedEmp(userId);
 
-	const isActivePayroll = employee?.payrollStatus?.includes("Active");
-
-	const [employees, setEmployees] = useState(null);
+	const employees = useCompanyEmployees(company, deptName);
 	const [filteredEmployees, setFilteredEmployees] = useState(null);
 
 	useEffect(() => {
-		const fetchAllEmployees = async () => {
-			try {
-				const response = await UserService.getAllCompanyUsers(company);
-				setEmployees(response.data);
-				setFilteredEmployees(response.data);
-			} catch (error) {
-				console.error(error);
-			}
-		};
-		fetchAllEmployees();
-	}, []);
+		setFilteredEmployees(employees);
+	}, [employees]);
 
 	useEffect(() => {
 		if (isOnboarding) {
-			setTabs((prev) => prev.filter((item, index) => index < 5));
+			// setTabs((prev) => prev.filter((item, index) => index < 5));
 			setEmployee(null);
 			setUserId(null);
 		}
@@ -55,7 +46,7 @@ const Employees = ({ isOnboarding, selectedPayGroupName, handleClose }) => {
 
 	useEffect(() => {
 		if (id && employees) {
-			const user = employees?.find(({ _id }) => _id === id);
+			const user = employees?.find(({ empId }) => empId?._id === id);
 			setEmployee(user);
 		}
 	}, [id, employees]);
@@ -63,6 +54,12 @@ const Employees = ({ isOnboarding, selectedPayGroupName, handleClose }) => {
 	useEffect(() => {
 		setEmpId(userId);
 	}, [userId]);
+
+	const isActivePayroll =
+		employee?.payrollStatus?.includes("Active") ||
+		(!id && !employee && loggedInUser?.payrollStatus?.includes("Active"));
+	const employeeID = employee?.employeeNo || (!id && !employee && loggedInUser?.employeeId);
+	const employeeName = employee?.empId?.fullName || (!id && !employee && loggedInUser?.fullName);
 
 	const handleNext = (id) => setViewMode(SETUP_LIST[id]?.type);
 	const handlePrev = (id) => setViewMode(SETUP_LIST[id - 2]?.type);
@@ -82,12 +79,13 @@ const Employees = ({ isOnboarding, selectedPayGroupName, handleClose }) => {
 		},
 		{
 			id: 1,
-			type: "Pay",
+			type: "Employment",
 			name: (
-				<PayInfo
+				<CorporateInfo
 					id={2}
 					company={company}
 					isOnboarding={isOnboarding}
+					selectedPayGroupName={selectedPayGroupName}
 					handleNext={handleNext}
 					handlePrev={handlePrev}
 				/>
@@ -95,9 +93,9 @@ const Employees = ({ isOnboarding, selectedPayGroupName, handleClose }) => {
 		},
 		{
 			id: 2,
-			type: "Benefits",
+			type: "Pay",
 			name: (
-				<BenefitsInfo
+				<PayInfo
 					id={3}
 					company={company}
 					isOnboarding={isOnboarding}
@@ -108,14 +106,12 @@ const Employees = ({ isOnboarding, selectedPayGroupName, handleClose }) => {
 		},
 		{
 			id: 3,
-			type: "Employment",
-
+			type: "Benefits",
 			name: (
-				<CorporateInfo
+				<BenefitsInfo
 					id={4}
 					company={company}
 					isOnboarding={isOnboarding}
-					selectedPayGroupName={selectedPayGroupName}
 					handleNext={handleNext}
 					handlePrev={handlePrev}
 				/>
@@ -124,13 +120,13 @@ const Employees = ({ isOnboarding, selectedPayGroupName, handleClose }) => {
 		{
 			id: 4,
 			type: "Government",
-
 			name: (
 				<GovernmentInfo
 					id={5}
 					company={company}
 					isOnboarding={isOnboarding}
 					handleNext={handleNext}
+					handleClose={handleClose}
 					handlePrev={handlePrev}
 				/>
 			),
@@ -162,16 +158,17 @@ const Employees = ({ isOnboarding, selectedPayGroupName, handleClose }) => {
 		<PageLayout title={isOnboarding ? "" : "Employees"}>
 			{!isOnboarding && (
 				<HStack spacing="1em" mt="1em" justifyContent={"space-between"}>
-					<HStack spacing="1em" mt="1em" justifyContent={"space-between"}>
+					<HStack spacing="1em" justifyContent={"space-between"}>
 						<Avatar
+							borderRadius="10%"
 							// onClick={handleToggle}
-							name={employee?.fullName}
+							name={employeeName}
 							src=""
 							boxSize="15"
 						/>
 						<VStack spacing={0} align={"start"}>
-							<TextTitle size="sm" title={employee?.fullName} />
-							<NormalTextTitle size="xs" title={employee?.employeeId} />
+							<TextTitle size="sm" title={employeeName} />
+							<NormalTextTitle size="xs" title={employeeID} />
 							{isActivePayroll && <ActiveBadge title={"Payroll Activated"} />}
 						</VStack>
 					</HStack>
@@ -193,7 +190,7 @@ const Employees = ({ isOnboarding, selectedPayGroupName, handleClose }) => {
 				w={"100%"}
 			>
 				<SimpleGrid
-					columns={{ base: 4, lg: isOnboarding ? 5 : 6 }}
+					columns={{ base: 4, lg: 6 }}
 					spacing="1em"
 					my="5"
 					bg={"var(--primary_bg)"}

@@ -1,4 +1,4 @@
-import { Tbody, Td, Tr } from "@chakra-ui/react";
+import { Select, Tbody, Td, Tr } from "@chakra-ui/react";
 import EmptyRowRecord from "components/ui/EmptyRowRecord";
 import ActionButtonGroup from "components/ui/form/ActionButtonGroup";
 import DateTimeFormControl from "components/ui/form/DateTimeFormControl";
@@ -6,29 +6,33 @@ import ModalLayout from "components/ui/modal/ModalLayout";
 import TableLayout from "components/ui/table/TableLayout";
 import { useEffect, useState } from "react";
 import SettingService from "services/SettingService";
-import { dayMonthYear, getDefaultDate } from "utils/convertDate";
+import { CURRENT_YEAR, dayMonthYear, getDefaultDate } from "utils/convertDate";
 
-const EditGroup = ({ isOpen, onClose, selectedGroup }) => {
-	const schedules = selectedGroup?.scheduleSettings;
+const EditGroup = ({ isOpen, onClose, selectedGroup, yearsList }) => {
 	const [isSubmitting, setIsSubmitting] = useState(false);
+	const [selectedYear, setSelectedYear] = useState(CURRENT_YEAR);
+	const [schedules, setSchedules] = useState([]);
+
+	const currentScheduleIndex = selectedGroup?.yearSchedules.findIndex(
+		({ year }) => year === CURRENT_YEAR,
+	);
+	const [currentYearScheduleIndex, setCurrentYearScheduleIndex] = useState(currentScheduleIndex);
 
 	useEffect(() => {
-		if (!selectedGroup?.scheduleSettings?.length) {
-			const setUpSchedules = async () => {
-				try {
-					await SettingService.updateGroup(selectedGroup, selectedGroup._id);
-				} catch (error) {
-				} finally {
-					setIsSubmitting(false);
-				}
-			};
-			setUpSchedules();
-		}
-	}, [selectedGroup?.scheduleSettings]);
+		const parsedYear = parseInt(selectedYear);
+
+		setSchedules(selectedGroup?.yearSchedules.find(({ year }) => year === parsedYear)?.payPeriods);
+		setCurrentYearScheduleIndex(
+			selectedGroup?.yearSchedules?.findIndex(({ year }) => year === parsedYear),
+		);
+	}, [selectedYear]);
 
 	const handleSubmit = async (e) => {
 		e.preventDefault();
-		selectedGroup.scheduleSettings = schedules;
+		if (currentYearScheduleIndex < 0) {
+			return;
+		}
+		selectedGroup.yearSchedules[currentYearScheduleIndex].payPeriods = schedules;
 		setIsSubmitting(true);
 		try {
 			await SettingService.updateGroup(selectedGroup, selectedGroup._id);
@@ -62,16 +66,34 @@ const EditGroup = ({ isOpen, onClose, selectedGroup }) => {
 				setEdit(false);
 			}}
 			required
+			w="150px"
 		/>
 	);
 	return (
 		<ModalLayout
 			title={`Set ${selectedGroup.name} Schedule`}
-			size="7xl"
+			size="5xl"
 			isOpen={isOpen}
 			onClose={onClose}
+			spacing="0"
 		>
-			<TableLayout cols={COLS} height="83vh" isSmall>
+			<Select
+				w={"10%"}
+				size={"sm"}
+				border="1px solid var(--primary_button_bg)"
+				borderRadius="10px"
+				value={selectedYear}
+				placeholder="Select Year"
+				// onChange={(e) => setSelectedYear(e.target.value)}
+				onChange={(e) => console.log(e.target.value)}
+			>
+				{yearsList?.map((year) => (
+					<option value={year} key={year}>
+						{year}
+					</option>
+				))}
+			</Select>
+			<TableLayout cols={COLS} isSmall height="calc(100vh - 162px)">
 				<Tbody>
 					{(!schedules || schedules?.length === 0) && (
 						<EmptyRowRecord data={schedules} colSpan={COLS.length} />

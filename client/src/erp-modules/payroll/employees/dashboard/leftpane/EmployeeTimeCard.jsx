@@ -1,15 +1,108 @@
-import { HStack, VStack, useToast } from "@chakra-ui/react";
+import { HStack, Tbody, Td, Tr, useToast, VStack } from "@chakra-ui/react";
 import LeftIconButton from "components/ui/button/LeftIconButton";
+import PrimaryButton from "components/ui/button/PrimaryButton";
 import BoxCard from "components/ui/card";
+import EmptyRowRecord from "components/ui/EmptyRowRecord";
+import NormalTextTitle from "components/ui/NormalTextTitle";
+import TableLayout from "components/ui/table/TableLayout";
 import TextTitle from "components/ui/text/TextTitle";
+import { ROLES } from "constant";
+import { getParamKey, TIMESHEET_SOURCE } from "erp-modules/payroll/timesheets/data";
+import ExtraTimeEntryModal from "erp-modules/payroll/timesheets/ExtraTimeEntryModal";
+import usePaygroup from "hooks/usePaygroup";
 import { useEffect, useState } from "react";
+import LocalStorageService from "services/LocalStorageService";
 import TimesheetService from "services/TimesheetService";
-import { monthDayYear } from "utils/convertDate";
+import {
+	dayMonthYear,
+	getMomentDate,
+	getTimeCardFormat,
+	getTimeFormat,
+	monthDayYear,
+} from "utils/convertDate";
 
-const EmployeeTimeCard = ({ selectedUser, company }) => {
+const EmployeeTimeCard = ({ selectedUser, company, isMobile }) => {
 	const [time, setTime] = useState(new Date());
+	const [showAddEntry, setShowAddEntry] = useState(false);
+	const [refresh, setRefresh] = useState(false);
+	const [timesheetData, setTimesheetData] = useState([]);
+	const [filter, setFilter] = useState(null);
+	const { closestRecord } = usePaygroup(company, false);
+	const [startDate, setStartDate] = useState(null);
+	const [endDate, setEndDate] = useState(null);
+	const loggedInUser = LocalStorageService.getItem("user");
+	const deptName = loggedInUser?.role === ROLES.MANAGER ? loggedInUser?.department : null;
+
+	const cols = [
+		"Worked Date",
+		"Start Time",
+		"End Time",
+		// "Break/Lunch",
+		"Total Hours",
+	];
+
+	const CLOCK_TYPES = {
+		row_1: [
+			{
+				name: "Clock IN",
+				bg: "var(--action_status_approve)",
+				isClicked: false,
+				onClick: () => updateSubmit("0", `Clock In successful!`),
+			},
+			{
+				name: "Break START",
+				isClicked: false,
+				onClick: () => updateSubmit("3", `Break Started!`),
+			},
+		],
+		row_2: [
+			{
+				name: "Clock OUT",
+				bg: "var(--action_status_reject)",
+				isClicked: false,
+				onClick: () => updateSubmit("1", `Clock Out Successful!`),
+			},
+			{
+				name: "Break END",
+				bg: "var(--event_color)",
+				isClicked: false,
+				onClick: () => updateSubmit("2", `Break Ended!`),
+			},
+		],
+	};
 
 	const toast = useToast();
+
+	useEffect(() => {
+		if (!closestRecord) {
+			return;
+		}
+		const startDate = getMomentDate(closestRecord?.payPeriodStartDate);
+		const endDate = getMomentDate(closestRecord?.payPeriodEndDate);
+		setFilter({ startDate, endDate });
+
+		const formattedStartDate = dayMonthYear(closestRecord?.payPeriodStartDate);
+		const formattedEndDate = dayMonthYear(closestRecord?.payPeriodEndDate);
+		setStartDate(formattedStartDate);
+		setEndDate(formattedEndDate);
+	}, [closestRecord]);
+
+	useEffect(() => {
+		const fetchAllEmployeeTimesheet = async () => {
+			setTimesheetData(null);
+			try {
+				const { data } = await TimesheetService.getTimesheetById(
+					company,
+					selectedUser?._id,
+					filter,
+				);
+				setTimesheetData(data);
+			} catch (error) {
+				console.error(error);
+			}
+		};
+		if (filter) fetchAllEmployeeTimesheet();
+	}, [refresh, filter]);
 
 	useEffect(() => {
 		const timer = setInterval(() => {
@@ -27,15 +120,13 @@ const EmployeeTimeCard = ({ selectedUser, company }) => {
 
 	const updateSubmit = async (punch, message) => {
 		try {
-			const newEntry = [
-				{
-					empId: selectedUser?._id,
-					status: "4",
-					punch,
-					isNotDevice: true,
-				},
-			];
-			await TimesheetService.addTimecard(newEntry);
+			await TimesheetService.addTimesheetManual({
+				punch,
+				company,
+				employeeId: selectedUser?._id,
+				source: TIMESHEET_SOURCE.APP,
+			});
+			setRefresh((prev) => !prev);
 			toast({
 				title: message,
 				status: "success",
@@ -54,61 +145,162 @@ const EmployeeTimeCard = ({ selectedUser, company }) => {
 	};
 
 	return (
-		<BoxCard gap={"1em"}>
-			<VStack w={"100%"} spacing={3}>
-				<LeftIconButton
-					size="3em"
-					name={
-						<VStack p={3}>
-							<TextTitle size="2xl" title={formattedTime} />
-							<TextTitle title={monthDayYear} />
-						</VStack>
-					}
-					variant="outline"
-					colorScheme={"blue"}
-					w={"full"}
-				/>
-				<HStack justify={"space-between"} w={"100%"}>
+		<>
+			<BoxCard gap="1em">
+				<VStack w="100%" spacing={3}>
 					<LeftIconButton
-						size="xl"
-						name={"Clock IN"}
-						variant="solid"
-						w={"50%"}
-						bg={"var(--correct_ans)"}
-						_hover={{ color: "var(--main_color)" }}
-						handleClick={() => updateSubmit("0", `Clock In successful!`)}
+						size="3em"
+						name={
+							<VStack p={3}>
+								<TextTitle size="2xl" title={formattedTime} />
+								<TextTitle title={monthDayYear} />
+							</VStack>
+						}
+						variant="outline"
+						colorScheme="blue"
+						w="full"
 					/>
-					<LeftIconButton
-						size="xl"
-						name={"Break START"}
-						variant="solid"
-						w={"50%"}
-						_hover={{ color: "var(--main_color)" }}
-						handleClick={() => updateSubmit("3", `Break Started!`)}
+					<HStack justify="space-between" w="100%">
+						{CLOCK_TYPES.row_1.map(({ name, onClick, bg, isClicked }) => (
+							<LeftIconButton
+								key={name}
+								isLoading={isClicked}
+								size="xl"
+								name={name}
+								variant="solid"
+								w="50%"
+								bg={bg}
+								_hover={{ color: "var(--main_color)" }}
+								handleClick={onClick}
+							/>
+						))}
+					</HStack>
+					<HStack justify="space-between" w="100%">
+						{CLOCK_TYPES.row_2.map(({ name, onClick, bg, isClicked }) => (
+							<LeftIconButton
+								key={name}
+								isLoading={isClicked}
+								size="xl"
+								name={name}
+								variant="solid"
+								w="50%"
+								bg={bg}
+								_hover={{ color: "var(--main_color)" }}
+								handleClick={onClick}
+							/>
+						))}
+					</HStack>
+				</VStack>
+			</BoxCard>
+			<BoxCard>
+				{isMobile ? (
+					<VStack spacing={1}>
+						<TextTitle title="Time Entries:" />
+						<TextTitle whiteSpace="wrap" title={`${startDate} - ${endDate}`} />
+						<PrimaryButton mt={3} name="Add ENTRY" onOpen={() => setShowAddEntry(true)} />
+					</VStack>
+				) : (
+					<HStack>
+						<TextTitle title={`Time Entries from ${startDate} to ${endDate}`} />
+						<PrimaryButton mt={3} name="Add ENTRY" onOpen={() => setShowAddEntry(true)} />
+					</HStack>
+				)}
+
+				<TableLayout
+					cols={cols}
+					isSmall
+					w="100%"
+					position="sticky"
+					zIndex={3}
+					top={-1}
+					textAlign="center"
+					height="15vh"
+				>
+					<Tbody>
+						{(!timesheetData || timesheetData?.length === 0) && (
+							<EmptyRowRecord data={timesheetData} colSpan={cols.length} />
+						)}
+						{timesheetData?.map(
+							({
+								_id,
+								payType,
+								regHoursWorked,
+								breakHoursWorked,
+								overtimeHoursWorked,
+								dblOvertimeHoursWorked,
+								statDayHoursWorked,
+								statDayHours,
+								sickPayHours,
+								vacationPayHours,
+								totalBreaks,
+								clockIn,
+								clockOut,
+								totalBreakHours,
+								totalWorkedHours,
+								notDevice,
+							}) => {
+								const { param_hours } = getParamKey(payType);
+
+								const param_hours_worked =
+									param_hours === "regHoursWorked"
+										? regHoursWorked
+										: param_hours === "overtimeHoursWorked"
+										? overtimeHoursWorked
+										: param_hours === "dblOvertimeHoursWorked"
+										? dblOvertimeHoursWorked
+										: param_hours === "statDayHoursWorked"
+										? statDayHoursWorked
+										: param_hours === "statDayHours"
+										? statDayHours
+										: param_hours === "sickPayHours"
+										? sickPayHours
+										: param_hours === "vacationPayHours"
+										? vacationPayHours
+										: param_hours === "breakHoursWorked"
+										? breakHoursWorked
+										: 0;
+
+								return (
+									<Tr key={_id} _hover={{ bg: "var(--phoneCall_bg_light)" }}>
+										<Td p={0.5}>
+											<TextTitle title={clockIn && getTimeCardFormat(clockIn, notDevice, true)} />
+										</Td>
+
+										<Td p={0.5}>
+											<NormalTextTitle
+												size="sm"
+												title={clockIn ? getTimeFormat(clockIn, notDevice) : ""}
+											/>
+										</Td>
+										<Td p={0.5}>
+											<NormalTextTitle
+												size="sm"
+												title={clockOut ? getTimeFormat(clockOut, notDevice) : ""}
+											/>
+										</Td>
+
+										<Td p={0.5}>
+											<NormalTextTitle size="sm" title={param_hours_worked} />
+										</Td>
+									</Tr>
+								);
+							},
+						)}
+					</Tbody>
+				</TableLayout>
+				{showAddEntry && (
+					<ExtraTimeEntryModal
+						company={company}
+						showAddEntry={showAddEntry}
+						setRefresh={setRefresh}
+						setShowAddEntry={setShowAddEntry}
+						userId={selectedUser?._id}
+						source={TIMESHEET_SOURCE.EMP}
+						deptName={deptName}
 					/>
-				</HStack>
-				<HStack justify={"space-between"} w={"100%"}>
-					<LeftIconButton
-						size="xl"
-						name={"Clock OUT"}
-						variant="solid"
-						w={"50%"}
-						bg={"var(--incorrect_ans)"}
-						_hover={{ color: "var(--main_color)" }}
-						handleClick={() => updateSubmit("1", `Clock Out Successful!`)}
-					/>
-					<LeftIconButton
-						size="xl"
-						name={"Break END"}
-						variant="solid"
-						w={"50%"}
-						bg={"var(--event_color)"}
-						_hover={{ color: "var(--main_color)" }}
-						handleClick={() => updateSubmit("2", `Break Ended!`)}
-					/>
-				</HStack>
-			</VStack>
-		</BoxCard>
+				)}
+			</BoxCard>
+		</>
 	);
 };
 

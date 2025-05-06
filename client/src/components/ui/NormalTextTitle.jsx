@@ -16,12 +16,18 @@ const NormalTextTitle = ({
 	onClick,
 	cursor,
 	textTransform,
+	p,
+	maxW,
+	fontStyle,
+	flex,
 }) => (
 	<TextTitle
+		em={fontStyle}
 		textTransform={textTransform}
 		onClick={onClick}
 		weight={weight}
 		bg={bg}
+		flex={flex}
 		size={size}
 		title={title}
 		visibility={visibility}
@@ -29,10 +35,12 @@ const NormalTextTitle = ({
 		align={align}
 		mt={mt}
 		mb={mb}
+		p={p}
 		color={color}
 		width={width}
 		textDecoration={textDecoration}
 		cursor={cursor}
+		maxW={maxW}
 	/>
 );
 

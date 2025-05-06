@@ -7,23 +7,27 @@ const RadioButtonGroup = ({
 	handleFilterClick,
 	fontSize,
 	rightIcon,
+	w,
+	borderRadius = "50px",
+	p = "1em",
+	h,
+	whiteSpace,
 }) => {
 	return (
 		<Button
-			borderRadius={selectedFilter === name ? "50px" : 0}
+			whiteSpace={{ base: "wrap", md: whiteSpace }}
+			borderRadius={selectedFilter === name ? borderRadius : 0}
 			border={selectedFilter === name ? "1px" : "none"}
-			p={"1em"}
-			color={
-				selectedFilter === name
-					? "var(--primary_button_bg)"
-					: "var(--tab_radio)"
-			}
+			p={p}
+			color={selectedFilter === name ? "var(--primary_button_bg)" : "var(--tab_radio)"}
 			bgColor={selectedFilter === name && generateLighterShade("#537eee", 0.8)}
 			onClick={() => handleFilterClick(name)}
 			variant={"outline"}
 			size="xs"
 			fontSize={fontSize}
 			rightIcon={rightIcon}
+			w={w}
+			h={h}
 		>
 			{name}
 		</Button>

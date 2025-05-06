@@ -1,51 +1,49 @@
 // const User = require("../models/User");
 const Employee = require("../models/Employee");
-const Company = require("../models/Company");
+const EmployeeEmploymentInfo = require("../models/EmployeeEmploymentInfo");
+const EmployeeProfileInfo = require("../models/EmployeeProfileInfo");
 const Group = require("../models/Group");
 const Lead = require("../models/Lead");
 const Task = require("../models/Task");
 const UserActivity = require("../models/UserActivity");
-const { isRoleManager } = require("../services/data");
-const { setInitialPermissions, findCompany } = require("./appController");
+const { isRoleManager, ROLES } = require("../services/data");
+const {
+	setInitialPermissions,
+	findCompany,
+	getPayrollActiveEmployees,
+	addEmployee,
+} = require("./appController");
+const { findGroupEmployees } = require("./setUpController");
 
-const getPayrollActiveEmployees = async (companyName) => {
-	const existingCompany = await findCompany("name", companyName);
-	const result = await Employee.find({
-		payrollStatus: { $ne: "Payroll Terminated" },
-		companyId: existingCompany._id,
-	})
-		.select(["fullName", "payrollStatus", "employeeNo", "timeManagementBadgeID", "department"])
-		.sort({
-			fullName: 1,
-		});
+const getPayrollInActiveEmployees = async (companyName, deptName) => {
+	let result = await findEmployee({
+		payrollStatus: { $ne: "Payroll Active" },
+		companyName,
+		employmentRole: { $ne: ROLES.SHADOW_ADMIN },
+	});
+	if (deptName && deptName !== "null") {
+		result = result?.filter((emp) => emp?.positions?.[0]?.employmentDepartment === deptName);
+	}
 	return result;
 };
 
-const getPayrollInActiveEmployees = async (companyName) => {
-	const existingCompany = await findCompany("name", companyName);
-	return await findEmployee({
-		payrollStatus: "Payroll Terminated",
-		companyId: existingCompany._id,
-	});
-};
+const findEmployee = async (data) => {
+	let result = await EmployeeEmploymentInfo.find(data)
+		.populate({
+			path: "empId",
+			model: "Employee",
+			select: ["fullName", "email", "baseModule", "group"],
+		})
+		.select("payrollStatus employeeNo positions employmentRole");
 
-const findEmployee = async (data) =>
-	await Employee.find(data)
-		.select([
-			"fullName",
-			"_id",
-			"email",
-			"baseModule",
-			"group",
-			"role",
-			"payrollStatus",
-			"employeeNo",
-			"timeManagementBadgeID",
-			"department",
-		])
-		.sort({
-			fullName: 1,
-		});
+	result = result?.filter((a) => a.empId);
+	result?.sort((a, b) => {
+		if (a.empId?.fullName < b.empId?.fullName) return -1;
+		if (a.empId?.fullName > b.empId?.fullName) return 1;
+		return a.createdOn - b.createdOn;
+	});
+	return result;
+};
 
 const getAllEmployees = async (req, res) => {
 	try {
@@ -83,10 +81,10 @@ const getUserActivity = async (req, res) => {
 const getPayrollActiveCompanyEmployeesCount = async (req, res) => {
 	const { companyName } = req.params;
 	try {
-		const existingCompany = await findCompany("name", companyName);
-		const result = await Employee.countDocuments({
-			payrollStatus: { $ne: "Payroll Terminated" },
-			companyId: existingCompany._id,
+		const result = await EmployeeEmploymentInfo.countDocuments({
+			payrollStatus: "Payroll Active",
+			companyName,
+			employmentRole: { $ne: ROLES.SHADOW_ADMIN },
 		});
 
 		res.status(200).json(result);
@@ -96,9 +94,10 @@ const getPayrollActiveCompanyEmployeesCount = async (req, res) => {
 };
 
 const getPayrollActiveCompanyEmployees = async (req, res) => {
-	const { companyName } = req.params;
+	const { companyName, deptName } = req.params;
 	try {
-		const result = await getPayrollActiveEmployees(companyName);
+		const result = await getPayrollActiveEmployees(companyName, deptName);
+
 		res.status(200).json(result);
 	} catch (error) {
 		res.status(404).json({ error: error.message });
@@ -106,9 +105,61 @@ const getPayrollActiveCompanyEmployees = async (req, res) => {
 };
 
 const getPayrollInActiveCompanyEmployees = async (req, res) => {
+	const { companyName, deptName } = req.params;
+	try {
+		const result = await getPayrollInActiveEmployees(companyName, deptName);
+		res.status(200).json(result);
+	} catch (error) {
+		res.status(404).json({ error: error.message });
+	}
+};
+
+const getCompanyUsers = async (req, res) => {
 	const { companyName } = req.params;
 	try {
-		const result = await getPayrollInActiveEmployees(companyName);
+		const result = await EmployeeEmploymentInfo.find({
+			companyName,
+			employmentRole: {
+				$ne: ROLES.SHADOW_ADMIN,
+			},
+		}).populate({
+			path: "empId",
+			model: "Employee",
+			select: ["empId", "fullName"],
+		});
+		result?.sort((a, b) => {
+			if (a.empId?.fullName < b.empId?.fullName) return -1;
+			if (a.empId?.fullName > b.empId?.fullName) return 1;
+			return a.createdOn - b.createdOn;
+		});
+		res.status(200).json(result);
+	} catch (error) {
+		res.status(404).json({ error: error.message });
+	}
+};
+
+const getCompanyEmpEmployees = async (req, res) => {
+	const { companyName } = req.params;
+	try {
+		console.log("companyName=", companyName);
+		let result = await EmployeeEmploymentInfo.find({
+			companyName,
+			empId: { $exists: true },
+		})
+			.populate({
+				path: "empId",
+				model: "Employee",
+				select: ["fullName", "email"],
+			})
+			.select("employmentRole");
+
+		result = result
+			?.filter((emp) => emp?.employmentRole !== ROLES.SHADOW_ADMIN)
+			?.sort((a, b) => {
+				if (a.empId?.fullName < b.empId?.fullName) return -1;
+				if (a.empId?.fullName > b.empId?.fullName) return 1;
+				return a.createdOn - b.createdOn;
+			});
 		res.status(200).json(result);
 	} catch (error) {
 		res.status(404).json({ error: error.message });
@@ -116,14 +167,45 @@ const getPayrollInActiveCompanyEmployees = async (req, res) => {
 };
 
 const getCompanyEmployees = async (req, res) => {
-	const { companyName } = req.params;
+	const { companyName, deptName } = req.params;
 	try {
-		const existingCompany = await findCompany("name", companyName);
-		const result = await Employee.find({
-			companyId: existingCompany._id,
-		}).select("fullName employeeId payrollStatus employeeNo timeManagementBadgeID department");
+		const result = await EmployeeProfileInfo.find({
+			companyName,
+			empId: { $exists: true },
+		}).select("empId firstName middleName lastName personalEmail");
+		let updatedResult = await Promise.all(
+			result.map(async (emp) => {
+				const empInfo = await EmployeeEmploymentInfo.findOne({
+					companyName,
+					empId: emp?.empId,
+				}).select("payrollStatus employeeNo positions employmentRole");
 
-		res.status(200).json(result);
+				return {
+					empId: {
+						_id: emp?.empId,
+						fullName: `${emp?.firstName} ${emp?.middleName} ${emp?.lastName}`,
+					},
+					payrollStatus: empInfo?.payrollStatus,
+					employmentRole: empInfo?.employmentRole,
+					employeeNo: empInfo?.employeeNo,
+					positions: empInfo?.positions,
+					personalEmail: emp?.personalEmail,
+				};
+			}),
+		);
+		if (deptName && deptName !== "null") {
+			updatedResult = updatedResult?.filter(
+				(emp) => emp?.positions?.[0]?.employmentDepartment === deptName,
+			);
+		}
+		updatedResult = updatedResult
+			?.filter((emp) => emp?.employmentRole !== ROLES.SHADOW_ADMIN)
+			?.sort((a, b) => {
+				if (a.empId?.fullName < b.empId?.fullName) return -1;
+				if (a.empId?.fullName > b.empId?.fullName) return 1;
+				return a.createdOn - b.createdOn;
+			});
+		res.status(200).json(updatedResult);
 	} catch (error) {
 		res.status(404).json({ error: error.message });
 	}
@@ -132,9 +214,10 @@ const getCompanyEmployees = async (req, res) => {
 const getCompanyEmployeesCount = async (req, res) => {
 	const { companyName } = req.params;
 	try {
-		const existingCompany = await findCompany("name", companyName);
-		const result = await Employee.countDocuments({
-			companyId: existingCompany._id,
+		const result = await EmployeeEmploymentInfo.countDocuments({
+			companyName,
+			employmentRole: { $ne: ROLES.SHADOW_ADMIN },
+			empId: { $exists: true },
 		});
 
 		res.status(200).json(result);
@@ -146,54 +229,28 @@ const getCompanyEmployeesCount = async (req, res) => {
 const groupEmployeesByRole = async (req, res) => {
 	const { companyName } = req.params;
 	try {
-		const tasksByEmployee = await Task.aggregate([
-			{
-				$match: { companyName },
-			},
-			{
-				$group: {
-					_id: "$selectedAssignees",
-					tasks: {
-						$push: {
-							taskName: "$taskName",
-						},
-					},
-				},
-			},
-		]);
+		let result = await EmployeeEmploymentInfo.find({
+			companyName,
+			employmentRole: { $ne: ROLES.SHADOW_ADMIN },
+		})
+			.populate({
+				path: "empId",
+				model: "Employee",
+				select: ["fullName"],
+			})
+			.select("employmentRole");
+		const grouped = result.reduce((acc, item) => {
+			const role = item.employmentRole;
+			const name = item.empId.fullName;
+			const empId = item.empId._id;
 
-		const existingCompany = await findCompany("name", companyName);
-
-		const result = await Employee.aggregate([
-			{
-				$match: { companyId: existingCompany._id },
-			},
-			{
-				$group: {
-					_id: "$role",
-					employees: {
-						$push: {
-							fullName: "$fullName",
-							id: "$_id",
-							tasks: {
-								$reduce: {
-									input: tasksByEmployee,
-									initialValue: [],
-									in: {
-										$cond: {
-											if: { $in: ["$fullName", "$$this._id"] }, // if employee name is in the selectedAssignees of the task
-											then: { $concatArrays: ["$$value", "$$this.tasks"] }, // Merge tasks arrays
-											else: "$$value", // default value
-										},
-									},
-								},
-							},
-						},
-					},
-				},
-			},
-		]);
-		res.status(200).json(result);
+			if (!acc[role]) {
+				acc[role] = [];
+			}
+			acc[role].push({ name, empId });
+			return acc;
+		}, {});
+		res.status(200).json(grouped);
 	} catch (error) {
 		res.status(404).json({ error: error.message });
 	}
@@ -215,15 +272,12 @@ const getAllGroupMembers = async (req, res) => {
 const getAllCompManagers = async (req, res) => {
 	const { companyName } = req.params;
 	try {
-		const existingCompany = await findCompany("name", companyName);
-		const result = await Employee.find({
-			companyId: existingCompany._id,
-			role: { $regex: /manager|administrator/i },
-		})
-			.select(["fullName"])
-			.sort({
-				fullName: 1,
-			});
+		const result = await findEmployee({
+			companyName,
+			employmentRole: {
+				$in: [ROLES.AUTH_ADMINISTRATOR, ROLES.ADMINISTRATOR, ROLES.MANAGER],
+			},
+		});
 
 		res.status(200).json(result);
 	} catch (error) {
@@ -234,10 +288,11 @@ const getAllCompManagers = async (req, res) => {
 const getAllManagers = async (req, res) => {
 	const { companyName } = req.params;
 	try {
-		const existingCompany = await findCompany("name", companyName);
 		const result = await findEmployee({
-			companyId: existingCompany._id,
-			role: { $regex: /manager|administrator/i },
+			companyName,
+			employmentRole: {
+				$in: [ROLES.SHADOW_ADMIN, ROLES.AUTH_ADMINISTRATOR, ROLES.ADMINISTRATOR, ROLES.MANAGER],
+			},
 		});
 		res.status(200).json(result);
 	} catch (error) {
@@ -248,15 +303,12 @@ const getAllManagers = async (req, res) => {
 const getAllSalesAgentsList = async (req, res) => {
 	const { companyName } = req.params;
 	try {
-		const existingCompany = await findCompany("name", companyName);
-		const result = await Employee.find({
-			companyId: existingCompany._id,
-			role: {
-				$not: {
-					$regex: /manager|administrator/i,
-				},
+		const result = await findEmployee({
+			companyName,
+			employmentRole: {
+				$nin: [ROLES.SHADOW_ADMIN, ROLES.AUTH_ADMINISTRATOR, ROLES.ADMINISTRATOR, ROLES.MANAGER],
 			},
-		}).select("_id fullName");
+		});
 		res.status(200).json(result);
 	} catch (error) {
 		res.status(404).json({ error: error.message });
@@ -266,18 +318,76 @@ const getAllSalesAgentsList = async (req, res) => {
 const getAllSalesAgents = async (req, res) => {
 	const { companyName } = req.params;
 	try {
-		const existingCompany = await findCompany("name", companyName);
-		const result = await Employee.find({
-			companyId: existingCompany._id,
-			role: {
-				$not: {
-					$regex: /manager|administrator/i,
-				},
+		let result = await EmployeeEmploymentInfo.find({
+			companyName,
+			employmentRole: {
+				$nin: [ROLES.SHADOW_ADMIN, ROLES.AUTH_ADMINISTRATOR, ROLES.ADMINISTRATOR, ROLES.MANAGER],
 			},
+		})
+			.populate({
+				path: "empId",
+				model: "Employee",
+				select: ["fullName", "email", "baseModule", "group", "primaryAddress"],
+			})
+			.select("payrollStatus employeeNo positions employmentRole");
+		result = result?.filter((a) => a.empId);
+		result?.sort((a, b) => {
+			if (a.empId?.fullName < b.empId?.fullName) return -1;
+			if (a.empId?.fullName > b.empId?.fullName) return 1;
+			return a.createdOn - b.createdOn;
 		});
 		res.status(200).json(result);
 	} catch (error) {
 		res.status(404).json({ error: error.message });
+	}
+};
+
+const createMasterUser = async (req, res) => {
+	const { company, firstName, middleName, lastName, email, phoneNumber, position, startDate } =
+		req.body;
+
+	try {
+		const employee = await addEmployee(company, {
+			firstName,
+			middleName,
+			lastName,
+			fullName: `${firstName} ${middleName} ${lastName}`,
+			email,
+			phoneNumber,
+			position,
+			dateOfJoining: startDate,
+		});
+		await EmployeeProfileInfo.create({
+			companyName: company,
+			firstName,
+			middleName,
+			lastName,
+			empId: employee?._id,
+			businessEmail: email,
+			personalPhoneNum: phoneNumber,
+		});
+		res.status(201).json(employee);
+	} catch (error) {
+		res.status(400).json({ message: error.message });
+	}
+};
+
+const updateMasterUser = async (req, res) => {
+	const { userId } = req.params;
+	try {
+		const userExists = await Employee.findById(userId);
+		if (userExists) {
+			const updatedUser = await Employee.findByIdAndUpdate(
+				userId,
+				{ baseModule: req.body },
+				{
+					new: true,
+				},
+			);
+			res.status(201).json(updatedUser);
+		}
+	} catch (error) {
+		res.status(400).json({ message: error.message });
 	}
 };
 
@@ -288,15 +398,23 @@ const updateUser = async (req, res) => {
 
 	try {
 		const compArr = [];
+
 		if (companies?.length) {
 			for (const name of companies) {
 				if (isManager) {
 					const existingCompany = await findCompany("name", name);
 					if (existingCompany) {
-						await setInitialPermissions(userId, isManager, name);
-						compArr.push(existingCompany._id);
-						existingCompany.employees.push(userId);
+						await setInitialPermissions(userId, role, name);
+						if (!existingCompany.employees.includes(userId)) {
+							await EmployeeEmploymentInfo.create({
+								empId: userId,
+								companyName: name,
+								employmentRole: role,
+							});
+							existingCompany.employees.push(userId);
+						}
 						await existingCompany.save();
+						compArr.push(existingCompany._id);
 					}
 				}
 			}
@@ -304,7 +422,7 @@ const updateUser = async (req, res) => {
 		} else {
 			const existingCompany = await findCompany("name", companyId?.name);
 			if (existingCompany) {
-				await setInitialPermissions(userId, isManager, existingCompany.name);
+				await setInitialPermissions(userId, role, existingCompany.name);
 			}
 		}
 		const updatedUser = await Employee.findByIdAndUpdate(userId, req.body, {
@@ -349,6 +467,23 @@ const getActiveUsers = async () => {
 	return { totalLeadsDisbursed, totalWeight, activeUsers };
 };
 
+const getEmployeeId = async (empList) => {
+	const list = [];
+	for (const fullName of empList) {
+		const employee = await Employee.findOne({ fullName });
+		list.push({ empId: employee });
+	}
+	return list;
+};
+
+const fetchActiveEmployees = async (isExtraPayRun, groupId, payDate, companyName, deptName) => {
+	const employees = isExtraPayRun ? await findGroupEmployees(groupId, payDate) : null;
+
+	return isExtraPayRun
+		? await getEmployeeId(employees)
+		: await getPayrollActiveEmployees(companyName, deptName);
+};
+
 module.exports = {
 	getAllEmployees,
 	getUserActivity,
@@ -364,8 +499,13 @@ module.exports = {
 	findEmployee,
 	getPayrollActiveCompanyEmployees,
 	getPayrollActiveCompanyEmployeesCount,
-	getPayrollActiveEmployees,
 	getPayrollInActiveCompanyEmployees,
 	getAllSalesAgentsList,
 	getAllCompManagers,
+	getEmployeeId,
+	fetchActiveEmployees,
+	createMasterUser,
+	updateMasterUser,
+	getCompanyUsers,
+	getCompanyEmpEmployees,
 };

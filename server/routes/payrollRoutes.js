@@ -18,35 +18,23 @@ router.get(
 );
 
 router.get(
-	"/payDetailsReport/:companyName/:empId",
-	payrollController.getEmployeePayDetailsReportInfo,
-);
-
-router.get(
-	"/payDetailsReport/:companyName/:payPeriodNum/:isExtraRun",
-	payrollController.getPayDetailsReportInfo,
-);
-
-router.get(
-	"/hoursTimesheet/:companyName/:startDate/:endDate/:payDate/:isExtraRun/:groupId",
+	"/hoursTimesheet/:companyName/:startDate/:endDate/:payDate/:isExtraRun/:groupId/:payrunType/:deptName",
 	payrollController.getGroupedTimesheet,
 );
 
 router.get(
-	"/EEContribution/:companyName/:startDate/:endDate/:payDate/:isExtraRun/:groupId",
+	"/EEContribution/:companyName/:startDate/:endDate/:payDate/:isExtraRun/:groupId/:payrunType/:deptName",
 	payrollController.getEEContribution,
 );
 
 router.get(
-	"/ERContribution/:companyName/:startDate/:endDate/:payDate/:isExtraRun/:groupId",
+	"/ERContribution/:companyName/:startDate/:endDate/:payDate/:isExtraRun/:groupId/:payrunType/:deptName",
 	payrollController.getERContribution,
 );
 
 router.post("/payGroups", payrollController.addPayGroup);
 
 router.put("/payGroups/:id", payrollController.updatePayGroup);
-
-router.post("/generate-payStub", payrollController.addEmployeePayStubInfo);
 
 router.post("/generate-alerts", payrollController.addAlertsAndViolations);
 

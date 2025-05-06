@@ -27,24 +27,25 @@ const UserSection = ({
 		setShowConfirmationPopUp((prev) => !prev);
 	};
 	const handleDelete = async () => {
-		selectedGroup.members = selectedGroup.members.filter(
-			(_) => _._id !== deleteRecord,
-		);
+		selectedGroup.members = selectedGroup.members.filter((_) => _._id !== deleteRecord);
 		try {
 			await SettingService.updateGroup(selectedGroup, selectedGroup._id);
 			setIsRefresh((prev) => !prev);
 			setShowConfirmationPopUp((prev) => !prev);
 		} catch (error) {
-			console.log("An error occurred. Please try again.");
+			console.log("An error occurred. Please try again.", error);
 		}
 	};
 	const handleConfirm = async (e) => {
 		e.preventDefault();
+		if (!selectedGroup) {
+			return;
+		}
 		setIsSubmitting(true);
 		selectedGroup.admin = selectedAdmins;
 		selectedGroup.modules = selectedModules;
 		const memberExists = selectedGroup.members.findIndex(
-			(member) => member.email === filteredEmployees[0].email,
+			(member) => member.fullName === filteredEmployees[0].fullName,
 		);
 		if (memberExists === -1) {
 			selectedGroup.members.push(filteredEmployees[0]);
@@ -54,7 +55,7 @@ const UserSection = ({
 				setFilteredEmployees(employees);
 				setEmpName("");
 			} catch (error) {
-				console.log("An error occurred. Please try again.");
+				console.log("An error occurred. Please try again.", error);
 			} finally {
 				setIsSubmitting(false);
 			}
@@ -67,15 +68,13 @@ const UserSection = ({
 
 	const handleSelect = (emp) => {
 		setEmpName(emp.fullName);
-		setFilteredEmployees(employees.filter((item) => item?.email === emp.email));
+		setFilteredEmployees(employees.filter((item) => item?.fullName === emp.fullName));
 	};
 
 	const handleInputChange = (value) => {
 		setEmpName(value);
 		setFilteredEmployees(
-			employees.filter((emp) =>
-				emp?.fullName?.toLowerCase().includes(value.toLowerCase()),
-			),
+			employees.filter((emp) => emp?.fullName?.toLowerCase().includes(value.toLowerCase())),
 		);
 	};
 
@@ -83,7 +82,7 @@ const UserSection = ({
 		<>
 			<BoxCard>
 				<HStack justify={"space-between"}>
-					<TextTitle title={`${groupMembers?.length} User(s)` ?? ""} />
+					<TextTitle title={`${groupMembers?.length || 0} User(s)` ?? ""} />
 
 					<Spacer />
 					<EmpSearchMenu
@@ -93,7 +92,7 @@ const UserSection = ({
 						handleSelect={handleSelect}
 					/>
 					<LeftIconButton
-						name={"Add User"}
+						name="Add User"
 						handleClick={handleConfirm}
 						icon={<SmallAddIcon />}
 						px={{ base: "2em" }}

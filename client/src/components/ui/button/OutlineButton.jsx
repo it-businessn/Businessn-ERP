@@ -6,14 +6,17 @@ const OutlineButton = ({
 	onClick,
 	colorScheme,
 	ml,
+	mr,
 	name,
 	color = "var(--primary_button_bg)",
 	borderColor,
 	minW,
 	bg,
 	w,
+	isDisabled,
 }) => (
 	<Button
+		isDisabled={isDisabled}
 		bg={bg}
 		minW={minW}
 		variant={"outline"}
@@ -24,6 +27,7 @@ const OutlineButton = ({
 		color={!colorScheme && color}
 		colorScheme={colorScheme}
 		ml={ml}
+		mr={mr}
 		name={name}
 		w={w}
 		borderColor={borderColor}

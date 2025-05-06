@@ -1,22 +1,24 @@
 import { useEffect, useState } from "react";
 import PayrollService from "services/PayrollService";
 
-const useEmployeeHoursWorked = (company, payPeriod, groupId) => {
+const useEmployeeHoursWorked = (company, payPeriod, groupId, payrunOption, deptName) => {
 	const [hours, setHours] = useState(null);
 
 	useEffect(() => {
 		const extraRun = payPeriod?.isExtraRun ?? false;
 		const fetchHoursWorkedInfo = async () => {
 			try {
-				const response = await PayrollService.getHoursWorkedAllocation(
+				const { data } = await PayrollService.getHoursWorkedAllocationByType(
 					company,
 					payPeriod.payPeriodStartDate,
 					payPeriod.payPeriodEndDate,
 					payPeriod?.payPeriodPayDate,
 					extraRun,
 					groupId,
+					payrunOption,
+					deptName,
 				);
-				setHours(response.data);
+				setHours(data);
 			} catch (error) {
 				console.error(error);
 			}
@@ -24,7 +26,7 @@ const useEmployeeHoursWorked = (company, payPeriod, groupId) => {
 		if (payPeriod) {
 			fetchHoursWorkedInfo();
 		}
-	}, [company, payPeriod]);
+	}, [company, payPeriod, payrunOption]);
 	return hours;
 };
 

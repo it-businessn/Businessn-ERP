@@ -1,8 +1,8 @@
-import { SimpleGrid, useToast } from "@chakra-ui/react";
+import { Checkbox, FormLabel, HStack, SimpleGrid, Stack, useToast } from "@chakra-ui/react";
 import BoxCard from "components/ui/card";
+import TextTitle from "components/ui/text/TextTitle";
 import VerticalStepper from "components/ui/VerticalStepper";
 import {
-	EMP_CPP_EXEMPT,
 	EMP_FED_GOVT_CONFIG,
 	EMP_INCOME_TAX_CONFIG,
 	EMP_REGN_GOVT_CONFIG,
@@ -19,11 +19,12 @@ import Record from "../step-content/Record";
 const GovernmentContribution = ({ company, isOnboarding, handleNext, handlePrev, id }) => {
 	const { empId } = useSelectedEmp(LocalStorageService.getItem("empId"));
 	const onboardingEmpId = LocalStorageService.getItem("onboardingEmpId");
+	const userId = isOnboarding ? onboardingEmpId : empId;
 	const [refresh, setIsRefresh] = useState(true);
-	const governmentInfo = useEmployeeGovernment(company, empId, isOnboarding, refresh);
-	const setGovernmentInfo = () => getInitialGovernmentInfo(onboardingEmpId ?? empId, company);
+	const governmentInfo = useEmployeeGovernment(company, userId, isOnboarding, refresh);
+	const setGovernmentInfo = () => getInitialGovernmentInfo(userId, company);
 	const [formData, setFormData] = useState(setGovernmentInfo);
-	const [isDisabled, setIsDisabled] = useState(true);
+	const [isDisabled, setIsDisabled] = useState(false);
 	const [isLoading, setIsLoading] = useState(false);
 	const [isCPPExempt, setIsCPPExempt] = useState(false);
 	const [isEIExempt, setIsEIExempt] = useState(false);
@@ -38,16 +39,24 @@ const GovernmentContribution = ({ company, isOnboarding, handleNext, handlePrev,
 		} else {
 			setFormData(setGovernmentInfo);
 		}
-	}, [governmentInfo, empId]);
+	}, [governmentInfo, userId]);
 
 	const handleConfirm = () => {
 		setIsDisabled(false);
 	};
 
+	useEffect(() => {
+		setFormData((prev) => ({
+			...prev,
+			isCPPExempt,
+			isEIExempt,
+		}));
+	}, [isCPPExempt, isEIExempt]);
+
 	const handleSubmit = async () => {
-		formData.isCPPExempt = isCPPExempt !== undefined ? !isCPPExempt : false;
 		setIsLoading(true);
 		try {
+			formData.companyName = company;
 			await PayrollService.addEmployeeGovernmentInfo(formData);
 			setIsLoading(false);
 			// setIsDisabled(true);
@@ -63,21 +72,27 @@ const GovernmentContribution = ({ company, isOnboarding, handleNext, handlePrev,
 
 	const steps = [
 		{
-			title: "CPP Exemption",
+			title: "Exemption",
 			content: (
-				<Record
-					handleConfirm={() => ""}
-					formData={formData}
-					setFormData={setFormData}
-					title="CPP Exemption"
-					config={EMP_CPP_EXEMPT}
-					handleSubmit={handleSubmit}
-					isCPPExempt={isCPPExempt}
-					setIsCPPExempt={setIsCPPExempt}
-					isEIExempt={isEIExempt}
-					setIsEIExempt={setIsEIExempt}
-					readOnly
-				/>
+				<Stack>
+					<TextTitle title={"Exemption"} />
+					<HStack w="40%" justify="space-between">
+						<Checkbox
+							colorScheme="facebook"
+							isChecked={isCPPExempt}
+							onChange={() => setIsCPPExempt(!isCPPExempt)}
+						>
+							<FormLabel>Is CPP/QPP Exempt</FormLabel>
+						</Checkbox>
+						<Checkbox
+							colorScheme="facebook"
+							isChecked={isEIExempt}
+							onChange={() => setIsEIExempt(!isEIExempt)}
+						>
+							<FormLabel>Is EI Exempt</FormLabel>
+						</Checkbox>
+					</HStack>
+				</Stack>
 			),
 		},
 		{
@@ -89,8 +104,6 @@ const GovernmentContribution = ({ company, isOnboarding, handleNext, handlePrev,
 					setFormData={setFormData}
 					title="Income Tax"
 					config={EMP_INCOME_TAX_CONFIG}
-					isLoading={isLoading}
-					handleSubmit={handleSubmit}
 				/>
 			),
 		},
@@ -103,8 +116,6 @@ const GovernmentContribution = ({ company, isOnboarding, handleNext, handlePrev,
 					setFormData={setFormData}
 					title="Federal Government Contributions"
 					config={EMP_FED_GOVT_CONFIG}
-					isLoading={isLoading}
-					handleSubmit={handleSubmit}
 				/>
 			),
 		},
@@ -118,8 +129,6 @@ const GovernmentContribution = ({ company, isOnboarding, handleNext, handlePrev,
 					setFormData={setFormData}
 					title="Regional Government Deductions"
 					config={EMP_REGN_GOVT_CONFIG}
-					isLoading={isLoading}
-					handleSubmit={handleSubmit}
 				/>
 			),
 		},
@@ -146,6 +155,9 @@ const GovernmentContribution = ({ company, isOnboarding, handleNext, handlePrev,
 					handlePrev={handlePrev}
 					id={id}
 					handleNextEnabled={true}
+					isLoading={isLoading}
+					handleSubmit={handleSubmit}
+					isDisabled={isDisabled}
 				/>
 			</BoxCard>
 			<StepContent currentStep={currentStep} steps={steps} isOnboarding={isOnboarding} />

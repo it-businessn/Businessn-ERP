@@ -79,13 +79,7 @@ export default function User() {
 							</Stack>
 						</Box>
 						<Box>
-							{employees && (
-								<MemberTable
-									update={refreshData}
-									isEditable
-									employees={employees}
-								/>
-							)}
+							{employees && <MemberTable update={refreshData} isEditable employees={employees} />}
 						</Box>
 						<Box
 							px={{
@@ -97,8 +91,7 @@ export default function User() {
 							<HStack spacing="3" justify="space-between">
 								{!isMobile && employees && (
 									<Text color="muted" fontSize="sm">
-										Showing 1 to {employees.length} of {employees.length}{" "}
-										records
+										Showing 1 to {employees.length} of {employees.length} records
 									</Text>
 								)}
 								{/* <ButtonGroup
