@@ -264,7 +264,7 @@ const calcTotalWorkedHours = (clockIn, clockOut) => {
 		? Math.round(totalTime)
 		: totalTime.toFixed(2).includes(".01")
 		? Math.ceil(totalTime)
-		: totalTime;
+		: totalTime.toFixed(2);
 	return roundedTime;
 };
 
