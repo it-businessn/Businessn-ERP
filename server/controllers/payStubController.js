@@ -673,53 +673,57 @@ const createJournalEntry = async (fundingTotalReportId, companyName) => {
 		}).select(
 			"empId currentGrossPay currentCPPDeductions currentRegPayTotal2 currentEmployerCPPDeductions currentEmployerEIDeductions currentEmployeeEIDeductions currentIncomeTaxDeductions",
 		);
-		const deptPromises = currentPayStubs.map(async (empPayStub) => {
-			const empDeptInfoResult = await findEmployeeEmploymentInfo(empPayStub?.empId, companyName);
-			const departments =
-				empDeptInfoResult?.positions?.map((pos) => pos?.employmentDepartment).filter(Boolean) || [];
-			if (empDeptInfoResult) {
-				const originalPayStub = empPayStub.toObject();
-				originalPayStub.currentEmployerCPPDeductions = originalPayStub.currentCPPDeductions;
-				const grossPay = originalPayStub.currentGrossPay || 0;
-				const cppDeductions = originalPayStub.currentCPPDeductions || 0;
-				const eiEmployee = originalPayStub.currentEmployeeEIDeductions || 0;
-				const eiEmployer = originalPayStub.currentEmployerEIDeductions || 0;
-				const cppEmployer = originalPayStub.currentEmployerCPPDeductions || 0;
-				const incomeTax = originalPayStub.currentIncomeTaxDeductions || 0;
-				const regPay2 = originalPayStub.currentRegPayTotal2 || 0;
+		const deptPromises = await Promise.all(
+			currentPayStubs.map(async (empPayStub) => {
+				const empDeptInfoResult = await findEmployeeEmploymentInfo(empPayStub?.empId, companyName);
+				const departments =
+					empDeptInfoResult?.positions?.map((pos) => pos?.employmentDepartment).filter(Boolean) ||
+					[];
+				if (empDeptInfoResult) {
+					const originalPayStub = empPayStub.toObject();
+					originalPayStub.currentEmployerCPPDeductions = originalPayStub.currentCPPDeductions;
+					const grossPay = originalPayStub.currentGrossPay || 0;
+					const cppDeductions = originalPayStub.currentCPPDeductions || 0;
+					const eiEmployee = originalPayStub.currentEmployeeEIDeductions || 0;
+					const eiEmployer = originalPayStub.currentEmployerEIDeductions || 0;
+					const cppEmployer = originalPayStub.currentEmployerCPPDeductions || 0;
+					const incomeTax = originalPayStub.currentIncomeTaxDeductions || 0;
+					const regPay2 = originalPayStub.currentRegPayTotal2 || 0;
 
-				if (departments.length > 1) {
-					const dept1Stub = {
-						currentGrossPay: grossPay - regPay2,
-						currentCPPDeductions: cppDeductions,
-						currentEmployerCPPDeductions: cppDeductions - (regPay2 / grossPay) * cppDeductions || 0,
-						currentEmployeeEIDeductions: eiEmployee,
-						currentEmployerEIDeductions: eiEmployer - (regPay2 / grossPay) * eiEmployer || 0,
-						currentIncomeTaxDeductions: incomeTax,
-						currentRegPayTotal2: regPay2,
-					};
+					if (departments.length > 1) {
+						const dept1Stub = {
+							currentGrossPay: grossPay - regPay2,
+							currentCPPDeductions: cppDeductions,
+							currentEmployerCPPDeductions:
+								cppDeductions - (regPay2 / grossPay) * cppDeductions || 0,
+							currentEmployeeEIDeductions: eiEmployee,
+							currentEmployerEIDeductions: eiEmployer - (regPay2 / grossPay) * eiEmployer || 0,
+							currentIncomeTaxDeductions: incomeTax,
+							currentRegPayTotal2: regPay2,
+						};
 
-					const dept2Stub = {
-						currentGrossPay: regPay2,
-						currentCPPDeductions: 0,
-						currentEmployerCPPDeductions: (regPay2 / grossPay) * cppDeductions || 0,
-						currentEmployeeEIDeductions: 0,
-						currentEmployerEIDeductions: (regPay2 / grossPay) * eiEmployer || 0,
-						currentIncomeTaxDeductions: 0,
-						currentRegPayTotal2: regPay2,
-					};
+						const dept2Stub = {
+							currentGrossPay: regPay2,
+							currentCPPDeductions: 0,
+							currentEmployerCPPDeductions: (regPay2 / grossPay) * cppDeductions || 0,
+							currentEmployeeEIDeductions: 0,
+							currentEmployerEIDeductions: (regPay2 / grossPay) * eiEmployer || 0,
+							currentIncomeTaxDeductions: 0,
+							currentRegPayTotal2: regPay2,
+						};
+						return {
+							records: [dept1Stub, dept2Stub],
+							departments,
+						};
+					}
+
 					return {
-						records: [dept1Stub, dept2Stub],
+						records: [originalPayStub],
 						departments,
 					};
 				}
-
-				return {
-					records: [originalPayStub],
-					departments,
-				};
-			}
-		});
+			}),
+		);
 
 		const allDepartmentBreakDown = await Promise.all(deptPromises);
 		const departmentBreakdown = allDepartmentBreakDown.reduce((acc, { records, departments }) => {

@@ -623,9 +623,9 @@ const addStatHolidayDefaultTimesheet = async (employeeId, companyName) => {
 const addStatHolidayTimesheet = async (companyName) => {
 	try {
 		const payrollActiveEmployees = await getPayrollActiveEmployees(companyName);
-		payrollActiveEmployees.map(async (emp) => {
-			await addStatHolidayDefaultTimesheet(emp._id, companyName);
-		});
+		await Promise.all(
+			payrollActiveEmployees.map((emp) => addStatHolidayDefaultTimesheet(emp._id, companyName)),
+		);
 		console.log("StatHolidayDefaultTimesheet added");
 	} catch (error) {
 		console.error("Error adding record:", error);
