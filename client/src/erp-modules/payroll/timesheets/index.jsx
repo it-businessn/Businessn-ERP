@@ -118,14 +118,15 @@ const Timesheets = () => {
 			});
 			return;
 		}
-		const hasOverlap = timesheetData.some((record) => {
-			if (
-				record._id === currentRecord._id ||
-				record.employeeId._id !== currentRecord.employeeId._id ||
-				!moment(record.clockIn).isSame(currentRecord.clockIn, "date")
-			) {
-				return false;
-			}
+		const currentDate = moment(currentRecord.clockIn).format("YYYY-MM-DD");
+		const sameDayRecords = timesheetData.filter(
+			(record) =>
+				record._id !== currentRecord._id &&
+				record.employeeId._id === currentRecord.employeeId._id &&
+				moment(record.clockIn).format("YYYY-MM-DD") === currentDate,
+		);
+		if (sameDayRecords.length <= 1) return false;
+		const hasOverlap = sameDayRecords.some((record) => {
 			const otherStart = convertToMinutes(record.startTime);
 			const otherEnd = convertToMinutes(record.endTime);
 			return newStart < otherEnd && newEnd > otherStart;

@@ -123,6 +123,7 @@ const ROLES = {
 
 const PARAM_HOURS = {
 	REGULAR: "regHoursWorked",
+	REGULAR2: "regHoursWorked2",
 	STAT: "statDayHoursWorked",
 	BREAK: "regBreakHoursWorked",
 };

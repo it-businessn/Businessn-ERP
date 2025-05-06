@@ -112,7 +112,7 @@ const calculateTimesheetApprovedHours = async (startDate, endDate, companyName) 
 					totalVacationHoursWorked: 0,
 				};
 			}
-
+			// timesheet.regHoursWorked = timesheet.regHoursWorked.toFixed(2);
 			if (timesheet.payType === PAY_TYPES_TITLE.REG_PAY)
 				acc[timesheet.employeeId].totalRegHoursWorked +=
 					getSumRegHrs(timesheet.regHoursWorked, timesheet.regHoursWorked2) || 0;

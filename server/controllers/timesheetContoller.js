@@ -252,22 +252,20 @@ const getEmployeeTimesheet = async (req, res) => {
 const addTimesheetEntry = async (record) => await Timesheet.create(record);
 
 const calcTotalWorkedHours = (clockIn, clockOut) => {
-	if (clockOut) {
-		// const hoursWorked = moment.duration(moment(clockOut).diff(moment(clockIn))).asHours();
-		// const totalTime = Math.round(hoursWorked * 100) / 100;
-		// const roundedTime = totalTime.toFixed(2).includes(".99") ? Math.round(totalTime) : totalTime;
-		// return roundedTime;
+	// const hoursWorked = moment.duration(moment(clockOut).diff(moment(clockIn))).asHours();
+	// const totalTime = Math.round(hoursWorked * 100) / 100;
+	// const roundedTime = totalTime.toFixed(2).includes(".99") ? Math.round(totalTime) : totalTime;
+	// return roundedTime;
 
-		const start = new Date(clockIn);
-		const end = new Date(clockOut);
-		const hoursWorked = (end - start) / (1000 * 60 * 60); // convert ms to hours
-		const roundedTime = hoursWorked.toFixed(2).includes(".99")
-			? Math.round(hoursWorked)
-			: hoursWorked;
-
-		return roundedTime;
-	}
-	return null;
+	const startDate = new Date(clockIn);
+	const endDate = new Date(clockOut);
+	const totalTime = (endDate - startDate) / (1000 * 60 * 60); // convert ms to hours
+	const roundedTime = totalTime.toFixed(2).includes(".99")
+		? Math.round(totalTime)
+		: totalTime.toFixed(2).includes(".01")
+		? Math.ceil(totalTime)
+		: totalTime;
+	return roundedTime;
 };
 
 const addOvertimeRecord = async (clockIn, clockOut, employeeId, company, source) => {
@@ -481,19 +479,20 @@ const updateTimesheet = async (req, res) => {
 		// 	: calcTotalWorkedHours(clockIn, clockOut);
 		const totalWorkedHours = calcTotalWorkedHours(clockIn, clockOut);
 
+		const approveStatus =
+			approve === true
+				? TIMESHEET_STATUS.APPROVED
+				: approve === false
+				? TIMESHEET_STATUS.REJECTED
+				: TIMESHEET_STATUS.PENDING;
+
 		if (param_hours === PARAM_HOURS.REGULAR && totalWorkedHours > 8) {
 			const adjustedClockOut = await addOvertimeRecord(clockIn, clockOut, empId, company, source);
 			const updatedData = {
 				clockIn,
 				clockOut: adjustedClockOut,
 				[param_hours]: 8,
-				approveStatus:
-					// existingTimesheetInfo?.approveStatus === TIMESHEET_STATUS.APPROVED || approve
-					approve
-						? TIMESHEET_STATUS.APPROVED
-						: approve === false
-						? TIMESHEET_STATUS.REJECTED
-						: TIMESHEET_STATUS.PENDING,
+				approveStatus,
 				source,
 			};
 			const timesheet = await updateTimesheetData(id, updatedData);
@@ -507,13 +506,7 @@ const updateTimesheet = async (req, res) => {
 			clockIn,
 			clockOut,
 			[param_hours]: updatedWorkedHrs,
-			approveStatus:
-				// existingTimesheetInfo?.approveStatus === TIMESHEET_STATUS.APPROVED || approve
-				approve
-					? TIMESHEET_STATUS.APPROVED
-					: approve === false
-					? TIMESHEET_STATUS.REJECTED
-					: TIMESHEET_STATUS.PENDING,
+			approveStatus,
 			source,
 		};
 
@@ -530,15 +523,13 @@ const updateTimesheet = async (req, res) => {
 					$gte: moment(clockOut).toDate(),
 				},
 			}).sort({ clockIn: -1 });
-			if (nearestClockInRecord.length) {
+			if (nearestClockInRecord?.length > 0) {
+				const regRecord = nearestClockInRecord[0];
 				const adjustedRegHours =
-					calcTotalWorkedHours(nearestClockInRecord[0].clockIn, nearestClockInRecord[0].clockOut) -
-					updatedWorkedHrs;
-				nearestClockInRecord[0].regHoursWorked = adjustedRegHours;
-				nearestClockInRecord[0].source = source;
-				await nearestClockInRecord[0].save();
-				const timesheet = await updateTimesheetData(id, updatedData);
-				return res.status(201).json(timesheet);
+					calcTotalWorkedHours(regRecord.clockIn, regRecord.clockOut) - updatedWorkedHrs;
+				regRecord.regHoursWorked = adjustedRegHours;
+				regRecord.source = source;
+				await regRecord.save();
 			} else {
 				return res
 					.status(201)
