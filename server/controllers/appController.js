@@ -1,4 +1,3 @@
-const jwt = require("jsonwebtoken");
 const path = require("path");
 const Company = require("../models/Company");
 const Employee = require("../models/Employee");
@@ -14,7 +13,7 @@ const {
 	CLIENT_ORG_EMP_PERMISSION,
 	ROLES,
 } = require("../services/data");
-const { generateAccessToken, generateRefreshToken } = require("../middleware/auth");
+const { generateAccessToken, generateRefreshToken, verifyToken } = require("../middleware/auth");
 const { findPermission } = require("./permissionController");
 const EmployeeProfileInfo = require("../models/EmployeeProfileInfo");
 const EmployeeEmploymentInfo = require("../models/EmployeeEmploymentInfo");
@@ -182,7 +181,7 @@ const refreshToken = async (req, res) => {
 				.status(401)
 				.json({ error: "Refresh token is required", message: "Refresh token is required" });
 		}
-		const user = await jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
+		const user = verifyToken(refreshToken, process.env.REFRESH_TOKEN_SECRET);
 
 		const newAccessToken = generateAccessToken({
 			id: user._id,
