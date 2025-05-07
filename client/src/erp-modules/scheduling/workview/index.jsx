@@ -1,30 +1,54 @@
-import { SimpleGrid } from "@chakra-ui/react";
+import { SmallAddIcon } from "@chakra-ui/icons";
+import {
+	Box,
+	Flex,
+	HStack,
+	Icon,
+	IconButton,
+	Select,
+	Table,
+	Tbody,
+	Td,
+	Text,
+	Th,
+	Thead,
+	Tr,
+} from "@chakra-ui/react";
+import ComingSoon from "components/ComingSoon";
+import PrimaryButton from "components/ui/button/PrimaryButton";
+import TextTitle from "components/ui/text/TextTitle";
+import { addDays, format, startOfWeek } from "date-fns";
 import usePositionRoles from "hooks/usePositionRoles";
 import PageLayout from "layouts/PageLayout";
 import moment from "moment";
 import { useEffect, useState } from "react";
+import { MdOutlineChevronLeft, MdOutlineChevronRight } from "react-icons/md";
 import LocalStorageService from "services/LocalStorageService";
+import SchedulerService from "services/SchedulerService";
 import SettingService from "services/SettingService";
 import { isManager } from "utils";
-import HeaderCards from "./HeaderCards";
-import QuickSelection from "./quick-selection";
 import ShiftModal from "./quick-selection/ShiftModal";
-import Scheduler from "./scheduler";
+
+const calculateHours = (shift) => {
+	if (shift === "Off") return 0;
+	const [start, end] = shift.split("-").map(Number);
+	return end - start;
+};
 
 const ScheduleWorkView = () => {
 	const company = LocalStorageService.getItem("selectedCompany");
 	const loggedInUser = LocalStorageService.getItem("user");
 	const isUserManager = isManager(loggedInUser.role);
 
-	// const locations = useWorkLocations(company, refresh);
-	// const [employees, setEmployees] = useState(null);
+	const [selectedCrew, setSelectedCrew] = useState(null);
+	const [view, setView] = useState("weekly");
 	const [newShiftAdded, setNewShiftAdded] = useState(null);
 	const [refresh, setRefresh] = useState(null);
 	const [showAddShiftModal, setShowAddShiftModal] = useState(false);
 	const [empName, setEmpName] = useState(null);
 	const [empRole, setEmpRole] = useState(null);
 	const [shift, setShift] = useState(null);
-	const [selectedEmp, setSelectedEmp] = useState(isUserManager ? null : loggedInUser?.fullName);
+	const [employeeShifts, setEmployeeShifts] = useState(null);
 	const [employeesList, setEmployeesList] = useState(null);
 	const roles = usePositionRoles(company, refresh);
 	const [crews, setCrews] = useState(null);
@@ -33,15 +57,16 @@ const ScheduleWorkView = () => {
 	const [locations, setLocations] = useState(null);
 	const [selectedFilter, setSelectedFilter] = useState(null);
 	const [selectedCC, setSelectedCC] = useState(null);
-	const [currentDate, setCurrentDate] = useState(new Date());
-	currentDate.setHours(6, 0, 0, 0);
+	const [isLoading, setIsLoading] = useState(false);
+	const [weekStart, setWeekStart] = useState(startOfWeek(new Date(), { weekStartsOn: 0 }));
+	const weekDays = [...Array(7)].map((_, i) => addDays(weekStart, i));
 
 	useEffect(() => {
 		const fetchAllCrews = async () => {
 			try {
 				const { data } = await SettingService.getAllCrews(company);
 				setCrews(data);
-				setSelectedFilter(data[0]?.name);
+				setSelectedCrew(data[0]?.name);
 				setConfigCC(data[0]?.config?.costCenter);
 				setLocations(data[0]?.config?.department);
 				setEmployeesList(data[0]?.config?.employee);
@@ -53,72 +78,203 @@ const ScheduleWorkView = () => {
 	}, [company]);
 
 	useEffect(() => {
-		const record = crews?.find((crew) => crew.name === selectedFilter);
+		const record = crews?.find((crew) => crew.name === selectedCrew);
 		setConfigCC(record?.config?.costCenter);
 		setLocations(record?.config?.department);
 		setEmployeesList(record?.config?.employee);
-	}, [selectedFilter]);
+	}, [selectedCrew]);
 
-	const handleShift = (empId, name, color, role) => {
-		setShowAddShiftModal(true);
-		setEmpName(name);
-		setEmpRole(role);
-		setShift(null);
+	useEffect(() => {
+		const fetchShifts = async () => {
+			setIsLoading(true);
+			try {
+				const { data } = await SchedulerService.getWorkWeekEmpShifts(
+					weekStart,
+					company,
+					selectedCrew,
+				);
+				setEmployeeShifts(data);
+			} catch (error) {
+				console.error(error);
+			} finally {
+				setIsLoading(true);
+			}
+		};
+		if (selectedCrew) fetchShifts();
+	}, [newShiftAdded, weekStart, selectedCrew]);
+
+	const handleChangeDate = (direction) => {
+		setWeekStart((prev) => (direction === "prev" ? addDays(prev, -7) : addDays(prev, 7)));
 	};
-	const clearFilter = () => {
-		setSelectedEmp(null);
-	};
+
 	const handleItemClick = (item) => {
 		setShowAddShiftModal(true);
-		setShift(item);
+		// setShift(item);
 	};
 	return (
 		<PageLayout title="WorkView">
-			<SimpleGrid
-				mb={"1em"}
-				columns={{ base: 1, md: 3 }}
-				spacing="1em"
-				color={"var(--menu_item_color)"}
-			>
-				<HeaderCards />
-			</SimpleGrid>
-			{isUserManager ? (
-				<SimpleGrid
-					columns={{ base: 1, md: 1, lg: 2 }}
-					spacing="4"
-					mt="4"
-					templateColumns={{ lg: "20% 80%" }}
-				>
-					<QuickSelection
-						crews={crews}
-						selectedFilter={selectedFilter}
-						setSelectedFilter={setSelectedFilter}
-						selectedCC={selectedCC}
-						setSelectedCC={setSelectedCC}
-						configCC={configCC}
+			<Box p={4}>
+				<Flex justify="space-between" align="center" mb={4}>
+					<Flex align="center" gap={2}>
+						<Text fontWeight="bold">Crew:</Text>
+						<Select
+							value={selectedCrew}
+							onChange={(e) => setSelectedCrew(e.target.value)}
+							width="150px"
+						>
+							{crews?.map(({ _id, name }) => (
+								<option key={_id} value={name}>
+									{name}
+								</option>
+							))}
+						</Select>
+					</Flex>
+
+					<HStack spacing={0}>
+						<Icon
+							cursor="pointer"
+							as={MdOutlineChevronLeft}
+							onClick={() => handleChangeDate("prev")}
+							boxSize="5"
+							color="fg.muted"
+						/>
+						<TextTitle
+							size="lg"
+							title={`
+						${format(weekStart, "MMM d")} - ${format(addDays(weekStart, 6), "MMM d")}`}
+						/>
+						<Icon
+							cursor="pointer"
+							as={MdOutlineChevronRight}
+							onClick={() => handleChangeDate("next")}
+							boxSize="5"
+							color="fg.muted"
+						/>
+					</HStack>
+
+					{/* <Tabs variant="enclosed" onChange={(i) => setView(i === 0 ? "weekly" : "daily")}>
+						<TabList>
+							<Tab> */}
+					<PrimaryButton name="Weekly View" />
+					{/* </Tab>
+							<Tab>
+								<PrimaryButton
+									name="
+									Daily View"
+								/>
+							</Tab>
+						</TabList> */}
+					{/* </Tabs> */}
+				</Flex>
+				{view === "weekly" && (
+					<Box overflowX="auto">
+						<Table variant="simple">
+							<Thead>
+								<Tr>
+									<Th py={2}>
+										<TextTitle title="CUSTOM" />
+									</Th>
+									{weekDays.map((day, i) => (
+										<Th py={2} key={i}>
+											{format(day, "EEE dd")}
+										</Th>
+									))}
+								</Tr>
+							</Thead>
+							<Tbody>
+								{employeeShifts?.map(({ name, location, role, shifts }, i) => (
+									<Tr key={name}>
+										<Td py={2}>{name}</Td>
+										{shifts.map((shift, j) => (
+											<Td py={0} key={j}>
+												<HStack
+													bg={"var(--bg_color_1)"}
+													// bgColor={shift.color}
+													px={"1"}
+													py={0}
+													spacing={0}
+													justify={"space-between"}
+												>
+													<PrimaryButton
+														hover={{
+															color: "var(--main_color_black)",
+															bg: shift === "Off" ? "var(--bg_color_1)" : "var(--empName_bg)",
+														}}
+														color={
+															shift === "Off" ? "var(--main_color_black)" : "var(--empName_bg)"
+														}
+														bg={shift === "Off" ? "var(--bg_color_1)" : "transparent"}
+														name={shift === "Off" ? "Off" : `${shift} ${role} @ ${location}`}
+													/>
+													<IconButton
+														size={"xs"}
+														icon={<SmallAddIcon />}
+														aria-label="Open Sidebar"
+														_hover={{ bg: "transparent" }}
+														onClick={() => {
+															handleItemClick(shift);
+														}}
+													/>
+												</HStack>
+											</Td>
+										))}
+									</Tr>
+								))}
+								<Tr fontWeight="bold" bg="gray.100">
+									<Td py={0}>Total Hours</Td>
+									{weekDays.map((_, dayIdx) => {
+										const total = employeeShifts?.reduce(
+											(sum, emp) => sum + calculateHours(emp.shifts[dayIdx]),
+											0,
+										);
+										return (
+											<Td py={2} key={dayIdx}>
+												{total}
+											</Td>
+										);
+									})}
+								</Tr>
+								<Tr fontWeight="bold" bg="gray.100">
+									<Td py={0}>Total Wages</Td>
+									{weekDays.map((_, dayIdx) => {
+										const total = employeeShifts?.reduce(
+											(sum, emp) => sum + calculateHours(emp.shifts[dayIdx]),
+											0,
+										);
+										return (
+											<Td py={2} key={dayIdx}>
+												{total}
+											</Td>
+										);
+									})}
+								</Tr>
+							</Tbody>
+						</Table>
+					</Box>
+				)}
+				{view === "daily" && (
+					<Box mt={4} textAlign="center">
+						<ComingSoon message="Daily view coming soon" />
+					</Box>
+				)}
+				{showAddShiftModal && (
+					<ShiftModal
+						currentDate={moment().format("YYYY-MM-DD")}
+						roles={roles}
+						employees={employeesList}
+						locations={locations}
+						location={location}
+						company={company}
+						showModal={showAddShiftModal}
+						setShowModal={setShowAddShiftModal}
+						setIsRefresh={setRefresh}
+						setNewShiftAdded={setNewShiftAdded}
+						empName={empName}
+						empRole={empRole}
+						shift={shift}
 					/>
-					<Scheduler locations={locations} setLocation={setLocation} location={location} />
-				</SimpleGrid>
-			) : (
-				<Scheduler locations={locations} setLocation={setLocation} location={location} />
-			)}
-			{showAddShiftModal && (
-				<ShiftModal
-					currentDate={moment(currentDate).format("YYYY-MM-DD")}
-					roles={roles}
-					employees={employeesList}
-					locations={locations}
-					location={location}
-					company={company}
-					showModal={showAddShiftModal}
-					setShowModal={setShowAddShiftModal}
-					setIsRefresh={setRefresh}
-					setNewShiftAdded={setNewShiftAdded}
-					empName={empName}
-					empRole={empRole}
-					shift={shift}
-				/>
-			)}
+				)}
+			</Box>
 		</PageLayout>
 	);
 };

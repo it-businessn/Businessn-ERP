@@ -11,6 +11,8 @@ router.get("/work/:date/:location/:empName/:name", scheduleController.getWorkShi
 
 router.get("/work-week/:date/:location/:empName/:name", scheduleController.getWorkShiftByWeek);
 
+router.get("/work-emp-shift/:date/:companyName/:name", scheduleController.getWorkWeekEmpShifts);
+
 router.get("/work/emp/:date/:location/:empName/:name", scheduleController.getEmpWorkShiftByDate);
 
 router.post("/", scheduleController.addShifts);

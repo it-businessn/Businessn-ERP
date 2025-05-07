@@ -15,6 +15,10 @@ const SchedulerService = {
 		);
 	},
 
+	async getWorkWeekEmpShifts(date, company, crewId) {
+		return apiService.get(`/schedule/work-emp-shift/${date}/${company}/${crewId}`);
+	},
+
 	async getWorkShiftsByWeek(data) {
 		return apiService.get(
 			`/schedule/work-week/${data.date}/${data.location}/${data.empName}/${data.company}`,

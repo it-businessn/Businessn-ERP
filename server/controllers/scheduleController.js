@@ -1,8 +1,9 @@
-const { addDays, format } = require("date-fns");
+const { startOfDay, addDays, format } = require("date-fns");
 const moment = require("moment");
 
 const EmployeeShift = require("../models/EmployeeShifts");
 const WorkShift = require("../models/WorkShift");
+const Crew = require("../models/Crew");
 
 const getShifts = async (req, res) => {
 	try {
@@ -27,6 +28,99 @@ const getShiftByDate = async (req, res) => {
 				$lt: today,
 			},
 		});
+		res.status(200).json(shifts);
+	} catch (error) {
+		res.status(404).json({ error: error.message });
+	}
+};
+
+const getWorkWeekEmpShifts = async (req, res) => {
+	const { name, date, companyName } = req.params;
+
+	const inputDate = new Date(date);
+	const start = startOfDay(inputDate);
+	const end = addDays(start, 6);
+
+	try {
+		const crew = await Crew.findOne({ name });
+		const locationIds = crew?.config?.department?.map((_) => _.name) || [];
+		const shifts = await WorkShift.aggregate([
+			{
+				$match: {
+					shiftDate: {
+						$gte: start,
+						$lte: end,
+					},
+					companyName,
+					location: { $in: locationIds },
+				},
+			},
+			{
+				$addFields: {
+					dayOfWeek: { $subtract: [{ $dayOfWeek: "$shiftDate" }, 1] }, // 0 = Sunday
+				},
+			},
+			{
+				$project: {
+					_id: 1,
+					empName: 1,
+					role: 1,
+					location: 1,
+					shift: {
+						$concat: ["$shiftStart", "-", "$shiftEnd"],
+					},
+					dayOfWeek: 1,
+				},
+			},
+			{
+				$group: {
+					_id: {
+						name: "$empName",
+						role: "$role",
+						location: "$location",
+					},
+					shifts: {
+						$push: {
+							k: { $toString: "$dayOfWeek" },
+							v: "$shift",
+						},
+					},
+				},
+			},
+			{
+				$project: {
+					name: "$_id.name",
+					role: "$_id.role",
+					location: "$_id.location",
+					_id: 0,
+					shiftsObj: { $arrayToObject: "$shifts" },
+				},
+			},
+			{
+				$addFields: {
+					shifts: {
+						$map: {
+							input: [0, 1, 2, 3, 4, 5, 6],
+							as: "day",
+							in: {
+								$ifNull: [
+									{ $getField: { field: { $toString: "$$day" }, input: "$shiftsObj" } },
+									"Off",
+								],
+							},
+						},
+					},
+				},
+			},
+			{
+				$project: {
+					name: 1,
+					role: 1,
+					location: 1,
+					shifts: 1,
+				},
+			},
+		]);
 		res.status(200).json(shifts);
 	} catch (error) {
 		res.status(404).json({ error: error.message });
@@ -353,4 +447,5 @@ module.exports = {
 	getWorkShiftByDate,
 	getWorkShiftByWeek,
 	getEmpWorkShiftByDate,
+	getWorkWeekEmpShifts,
 };
