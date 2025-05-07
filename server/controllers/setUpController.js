@@ -96,15 +96,16 @@ const addLocation = async (req, res) => {
 };
 
 const addCrew = async (req, res) => {
-	const { name, description, companyName } = req.body;
+	const { createdBy, crewName, companyName, include } = req.body;
 
 	try {
-		const newRole = await Crew.create({
-			name,
-			description,
+		const newCrew = await Crew.create({
+			name: crewName,
+			createdBy,
+			config: include,
 			companyName,
 		});
-		res.status(201).json(newRole);
+		res.status(201).json(newCrew);
 	} catch (error) {
 		res.status(400).json({ message: error.message });
 	}

@@ -1,5 +1,4 @@
-import { Box, Card, CardBody, Divider, Input, Stack, Text, useToast } from "@chakra-ui/react";
-import PrimaryButton from "components/ui/button/PrimaryButton";
+import { Box, Button, Card, CardBody, Divider, Input, Stack, Text } from "@chakra-ui/react";
 import SelectFormControl from "components/ui/form/SelectFormControl";
 import useCompanyEmployees from "hooks/useCompanyEmployees";
 import useCostCenter from "hooks/useCostCenter";
@@ -7,18 +6,21 @@ import useDepartment from "hooks/useDepartment";
 import PageLayout from "layouts/PageLayout";
 import { useEffect, useState } from "react";
 import LocalStorageService from "services/LocalStorageService";
-import SettingService from "services/SettingService";
 import CrewMultiSelectDropdown from "./CrewMultiSelectDropdown";
 
 const Crew = () => {
 	const company = LocalStorageService.getItem("selectedCompany");
-	const toast = useToast();
 	const [publisher, setPublisher] = useState("");
 	const [crewName, setCrewName] = useState("");
+	const [includeCostCenter, setIncludeCostCenter] = useState("");
+	const [includeDepartment, setIncludeDepartment] = useState("");
+	const [includeEmployee, setIncludeEmployee] = useState("");
+	const [excludeCostCenter, setExcludeCostCenter] = useState("");
+	const [excludeDepartment, setExcludeDepartment] = useState("");
+	const [excludeEmployee, setExcludeEmployee] = useState("");
 	const costCenters = useCostCenter(company);
 	const employees = useCompanyEmployees(company, null);
 	const departments = useDepartment(company);
-	const [isSubmitting, setIsSubmitting] = useState(false);
 
 	const [selectedCostCenters, setSelectedCostCenters] = useState([]);
 	const [filteredDepartments, setFilteredDepartments] = useState([]);
@@ -57,38 +59,23 @@ const Crew = () => {
 		if (openMenu === menu) setOpenMenu(null);
 	};
 
-	const handleCreateCrew = async () => {
-		setIsSubmitting(true);
+	const handleCreateCrew = () => {
 		const result = {
 			createdBy: publisher,
 			crewName,
 			include: {
-				costCenter: selectedCostCenters,
-				department: selectedDepartments,
-				employee: selectedEmployees,
+				costCenter: includeCostCenter,
+				department: includeDepartment,
+				employee: includeEmployee,
 			},
-			companyName: company,
-			// exclude: {
-			// 	costCenter: excludeCostCenter,
-			// 	department: excludeDepartment,
-			// 	employee: excludeEmployee,
-			// },
+			exclude: {
+				costCenter: excludeCostCenter,
+				department: excludeDepartment,
+				employee: excludeEmployee,
+			},
 		};
-		try {
-			await SettingService.addCrew(result);
-			toast({
-				title: "Crew added successfully",
-				status: "success",
-				duration: 1500,
-				isClosable: true,
-				position: "top-right",
-			});
-			setCrewName("");
-		} catch (error) {
-			console.log("An error occurred. Please try again.", error);
-		} finally {
-			setIsSubmitting(false);
-		}
+		console.log("Crew Created:", result);
+		alert("Crew Created! Check console for details.");
 	};
 
 	return (
@@ -166,21 +153,67 @@ const Crew = () => {
 										selectedOptions={selectedEmployees}
 										setSelectedOptions={setSelectedEmployees}
 										handleMenuToggle={() => handleMenuToggle("employee")}
-										isEmp
 									/>
 								)}
 							</CardBody>
 						</Card>
 					)}
 
+					{/* <Card>
+						<CardBody>
+							<Text fontWeight="bold" mb={4}>
+								🚫 Want to exclude anything? (This will override includes)
+							</Text>
+
+							<Text mb={1}>Exclude a cost center</Text>
+							<Select
+								placeholder="Choose cost center to exclude"
+								onChange={(e) => setExcludeCostCenter(e.target.value)}
+							>
+								{costCenters.map((cc) => (
+									<option key={cc}>{cc}</option>
+								))}
+							</Select>
+
+							{excludeCostCenter && (
+								<>
+									<Text mt={3} mb={1}>
+										Exclude a department under "{excludeCostCenter}"
+									</Text>
+									<Select
+										placeholder="Choose department to exclude"
+										onChange={(e) => setExcludeDepartment(e.target.value)}
+									>
+										{(departments[excludeCostCenter] || []).map((dep) => (
+											<option key={dep}>{dep}</option>
+										))}
+									</Select>
+								</>
+							)}
+
+							{excludeDepartment && (
+								<>
+									<Text mt={3} mb={1}>
+										Exclude an employee under "{excludeDepartment}"
+									</Text>
+									<Select
+										placeholder="Choose employee to exclude"
+										onChange={(e) => setExcludeEmployee(e.target.value)}
+									>
+										{(employees[excludeDepartment] || []).map((emp) => (
+											<option key={emp}>{emp}</option>
+										))}
+									</Select>
+								</>
+							)}
+						</CardBody>
+					</Card> */}
+
 					<Divider />
-					<PrimaryButton
-						size="sm"
-						isDisabled={!crewName}
-						name="Create Crew"
-						onOpen={() => handleCreateCrew()}
-						isLoading={isSubmitting}
-					/>
+
+					<Button colorScheme="teal" size="lg" onClick={handleCreateCrew}>
+						✅ Create Crew
+					</Button>
 				</Stack>
 			</Box>
 		</PageLayout>

@@ -4,7 +4,8 @@ const crewSchema = new mongoose.Schema({
 	createdOn: { type: Date, default: Date.now },
 	updatedOn: { type: Date, default: Date.now },
 	name: String,
-	description: String,
+	createdBy: String,
+	config: Object,
 	createdOn: { type: Date, default: Date.now },
 	companyName: { type: String, ref: "Company" },
 });
