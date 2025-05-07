@@ -1,59 +1,46 @@
-import { Avatar, Button, HStack, Icon, Tooltip, VStack } from "@chakra-ui/react";
+import { Stack } from "@chakra-ui/react";
 import BoxCard from "components/ui/card";
 import SelectFormControl from "components/ui/form/SelectFormControl";
-import TextTitle from "components/ui/text/TextTitle";
-import { useEffect, useState } from "react";
-import { MdFilterAltOff } from "react-icons/md";
-import { RxDragHandleDots2 } from "react-icons/rx";
-import SettingService from "services/SettingService";
 
 const QuickSelection = ({
+	crews,
 	selectedFilter,
 	setSelectedFilter,
-	company,
-	employees,
-	setSelectedEmp,
-	handleShift,
-	clearFilter,
-	empName,
+	selectedCC,
+	setSelectedCC,
+	configCC,
 }) => {
-	const [crews, setCrews] = useState(null);
-	useEffect(() => {
-		const fetchAllCrews = async () => {
-			try {
-				const { data } = await SettingService.getAllCrews(company);
-				setCrews(data);
-			} catch (error) {
-				console.error(error);
-			}
-		};
-		fetchAllCrews();
-	}, [company]);
-
 	return (
 		<BoxCard fontWeight="bold">
-			<HStack alignItems="flex-start">
-				{crews && (
-					<SelectFormControl
-						valueParam="name"
-						name="name"
-						label="Crew"
-						valueText={selectedFilter || ""}
-						handleChange={(e) => setSelectedFilter(e.target.value)}
-						options={crews}
-						placeholder="Select crew"
-					/>
-				)}
-				{empName && (
+			<Stack alignItems="flex-start">
+				<SelectFormControl
+					valueParam="name"
+					name="name"
+					label="Crew"
+					valueText={selectedFilter || ""}
+					handleChange={(e) => setSelectedFilter(e.target.value)}
+					options={crews}
+					placeholder="Select crew"
+				/>
+				<SelectFormControl
+					valueParam="name"
+					name="name"
+					label="Cost Center"
+					valueText={selectedCC || ""}
+					handleChange={(e) => setSelectedCC(e.target.value)}
+					options={configCC}
+					placeholder="Select CC"
+				/>
+				{/* {empName && (
 					<Tooltip label="Clear Filter">
 						<span>
 							<MdFilterAltOff onClick={clearFilter} />
 						</span>
 					</Tooltip>
-				)}
-			</HStack>
+				)} */}
+			</Stack>
 
-			<TextTitle title="Role" mt={3} />
+			{/* <TextTitle title="Role" mt={3} />
 			{employees?.map((record) => (
 				<VStack spacing={1} key={record.roleName} w={"100%"} alignItems={"self-start"} mb={3}>
 					<TextTitle size="sm" title={record.roleName} />
@@ -86,7 +73,7 @@ const QuickSelection = ({
 						</HStack>
 					))}
 				</VStack>
-			))}
+			))} */}
 		</BoxCard>
 	);
 };

@@ -1,75 +1,63 @@
 import { SimpleGrid } from "@chakra-ui/react";
-import useCompany from "hooks/useCompany";
 import usePositionRoles from "hooks/usePositionRoles";
-import useWorkLocations from "hooks/useWorkLocations";
 import PageLayout from "layouts/PageLayout";
 import moment from "moment";
 import { useEffect, useState } from "react";
 import LocalStorageService from "services/LocalStorageService";
-import UserService from "services/UserService";
-import { getRoleColor, isManager } from "utils";
+import SettingService from "services/SettingService";
+import { isManager } from "utils";
 import HeaderCards from "./HeaderCards";
 import QuickSelection from "./quick-selection";
 import ShiftModal from "./quick-selection/ShiftModal";
 import Scheduler from "./scheduler";
 
 const ScheduleWorkView = () => {
-	const { company } = useCompany(LocalStorageService.getItem("selectedCompany"));
+	const company = LocalStorageService.getItem("selectedCompany");
 	const loggedInUser = LocalStorageService.getItem("user");
 	const isUserManager = isManager(loggedInUser.role);
+
+	// const locations = useWorkLocations(company, refresh);
+	// const [employees, setEmployees] = useState(null);
 	const [newShiftAdded, setNewShiftAdded] = useState(null);
-	const [employees, setEmployees] = useState(null);
 	const [refresh, setRefresh] = useState(null);
 	const [showAddShiftModal, setShowAddShiftModal] = useState(false);
 	const [empName, setEmpName] = useState(null);
 	const [empRole, setEmpRole] = useState(null);
 	const [shift, setShift] = useState(null);
 	const [selectedEmp, setSelectedEmp] = useState(isUserManager ? null : loggedInUser?.fullName);
-	const locations = useWorkLocations(company, refresh);
 	const [employeesList, setEmployeesList] = useState(null);
 	const roles = usePositionRoles(company, refresh);
+	const [crews, setCrews] = useState(null);
 	const [location, setLocation] = useState(null);
-	const [dept, setDept] = useState(loggedInUser?.department);
+	const [configCC, setConfigCC] = useState(null);
+	const [locations, setLocations] = useState(null);
+	const [selectedFilter, setSelectedFilter] = useState(null);
+	const [selectedCC, setSelectedCC] = useState(null);
 	const [currentDate, setCurrentDate] = useState(new Date());
 	currentDate.setHours(6, 0, 0, 0);
 
 	useEffect(() => {
-		const fetchAllEmployees = async () => {
+		const fetchAllCrews = async () => {
 			try {
-				const { data } = await UserService.getAllEmpCompanyUsers(company);
-				data.map((emp) => {
-					emp.fullName = emp?.empId?.fullName;
-					emp._id = emp?.empId?._id;
-					return emp;
-				});
-				setEmployeesList(data);
+				const { data } = await SettingService.getAllCrews(company);
+				setCrews(data);
+				setSelectedFilter(data[0]?.name);
+				setConfigCC(data[0]?.config?.costCenter);
+				setLocations(data[0]?.config?.department);
+				setEmployeesList(data[0]?.config?.employee);
 			} catch (error) {
 				console.error(error);
 			}
 		};
-		fetchAllEmployees();
-	}, []);
+		fetchAllCrews();
+	}, [company]);
 
 	useEffect(() => {
-		const fetchAllEmployeeByRole = async () => {
-			try {
-				const { data } = await UserService.getAllEmployeesByRole(company);
-
-				const newData = Object.keys(data)?.map((role) => {
-					return {
-						roleName: role,
-						color: getRoleColor(role),
-						employees: data[role],
-					};
-				});
-
-				setEmployees(newData);
-			} catch (error) {
-				console.error(error);
-			}
-		};
-		if (isUserManager) fetchAllEmployeeByRole();
-	}, [refresh, company]);
+		const record = crews?.find((crew) => crew.name === selectedFilter);
+		setConfigCC(record?.config?.costCenter);
+		setLocations(record?.config?.department);
+		setEmployeesList(record?.config?.employee);
+	}, [selectedFilter]);
 
 	const handleShift = (empId, name, color, role) => {
 		setShowAddShiftModal(true);
@@ -102,43 +90,17 @@ const ScheduleWorkView = () => {
 					templateColumns={{ lg: "20% 80%" }}
 				>
 					<QuickSelection
-						dept={dept}
-						setDept={setDept}
-						company={company}
-						employees={employees}
-						setSelectedEmp={setSelectedEmp}
-						handleShift={handleShift}
-						clearFilter={clearFilter}
-						empName={selectedEmp}
+						crews={crews}
+						selectedFilter={selectedFilter}
+						setSelectedFilter={setSelectedFilter}
+						selectedCC={selectedCC}
+						setSelectedCC={setSelectedCC}
+						configCC={configCC}
 					/>
-					<Scheduler
-						company={company}
-						newShiftAdded={newShiftAdded}
-						setRefresh={setRefresh}
-						locations={locations}
-						empName={selectedEmp}
-						location={location}
-						setLocation={setLocation}
-						currentDate={currentDate}
-						setCurrentDate={setCurrentDate}
-						isUserManager={isUserManager}
-						handleItemClick={handleItemClick}
-					/>
+					<Scheduler locations={locations} setLocation={setLocation} location={location} />
 				</SimpleGrid>
 			) : (
-				<Scheduler
-					company={company}
-					setRefresh={setRefresh}
-					locations={locations}
-					newShiftAdded={newShiftAdded}
-					empName={selectedEmp}
-					location={location}
-					setLocation={setLocation}
-					currentDate={currentDate}
-					setCurrentDate={setCurrentDate}
-					isUserManager={isUserManager}
-					handleItemClick={handleItemClick}
-				/>
+				<Scheduler locations={locations} setLocation={setLocation} location={location} />
 			)}
 			{showAddShiftModal && (
 				<ShiftModal
