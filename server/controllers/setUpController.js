@@ -55,12 +55,12 @@ const getPositionRoles = async (req, res) => {
 const getCrews = async (req, res) => {
 	const { companyName } = req.params;
 	try {
-		const roles = await Crew.find({
+		const crews = await Crew.find({
 			companyName,
 		}).sort({
 			createdOn: -1,
 		});
-		res.status(200).json(roles);
+		res.status(200).json(crews);
 	} catch (error) {
 		res.status(404).json({ error: error.message });
 	}

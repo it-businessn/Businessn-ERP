@@ -1,6 +1,7 @@
 import { FormControl, FormLabel, HStack, Select } from "@chakra-ui/react";
 import Loader from "components/Loader";
 import MultiSelectButton from "components/ui/form/MultiSelectButton";
+import NormalTextTitle from "components/ui/NormalTextTitle";
 import useGroup from "hooks/useGroup";
 import { useEffect, useState } from "react";
 import { FaCaretDown } from "react-icons/fa";
@@ -70,6 +71,7 @@ const FilterMenu = ({
 					<FormControl>
 						<FormLabel> Groups </FormLabel>
 						<Select
+							size="sm"
 							icon={<FaCaretDown />}
 							borderRadius="10px"
 							value={selectedGroup?.name ?? ""}
@@ -78,8 +80,8 @@ const FilterMenu = ({
 						>
 							{groups?.map((group) => (
 								<option value={group.name} key={group._id}>
-									{group.name}
-									{group?.payrollActivated && <>&#x1F7E2;</>}
+									{group?.payrollActivated && "📆"}
+									<NormalTextTitle width="5em" title={group.name} />
 								</option>
 							))}
 						</Select>

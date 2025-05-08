@@ -44,6 +44,7 @@ const getWorkWeekEmpShifts = async (req, res) => {
 	try {
 		const crew = await Crew.findOne({ name });
 		const locationIds = crew?.config?.department?.map((_) => _.name) || [];
+		const crewEmps = crew?.config?.employee?.map((_) => _.fullName) || [];
 		const shifts = await WorkShift.aggregate([
 			{
 				$match: {
@@ -114,14 +115,21 @@ const getWorkWeekEmpShifts = async (req, res) => {
 			},
 			{
 				$project: {
-					name: 1,
-					role: 1,
-					location: 1,
+					name: "$name",
+					role: "$role",
+					location: "$location",
 					shifts: 1,
 				},
 			},
 		]);
-		res.status(200).json(shifts);
+		if (shifts?.length) {
+			return res.status(200).json(shifts);
+		}
+		const emptyShift = [];
+		for (const emp of crewEmps) {
+			emptyShift.push({ name: emp, shifts: ["", "", "", "", "", "", ""] });
+		}
+		return res.status(200).json(emptyShift);
 	} catch (error) {
 		res.status(404).json({ error: error.message });
 	}

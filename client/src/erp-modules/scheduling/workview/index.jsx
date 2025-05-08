@@ -107,9 +107,10 @@ const ScheduleWorkView = () => {
 		setWeekStart((prev) => (direction === "prev" ? addDays(prev, -7) : addDays(prev, 7)));
 	};
 
-	const handleItemClick = (item) => {
+	const handleItemClick = (shiftDetail, shiftTime) => {
 		setShowAddShiftModal(true);
-		// setShift(item);
+		console.log("item", shiftDetail, shiftTime);
+		// if (item) setShift(item);
 	};
 	return (
 		<PageLayout title="WorkView">
@@ -182,10 +183,10 @@ const ScheduleWorkView = () => {
 								</Tr>
 							</Thead>
 							<Tbody>
-								{employeeShifts?.map(({ name, location, role, shifts }, i) => (
-									<Tr key={name}>
-										<Td py={2}>{name}</Td>
-										{shifts.map((shift, j) => (
+								{employeeShifts?.map((shiftRec) => (
+									<Tr key={shiftRec?.name}>
+										<Td py={2}>{shiftRec?.name}</Td>
+										{shiftRec?.shifts?.map((shift, j) => (
 											<Td py={0} key={j}>
 												<HStack
 													bg={"var(--bg_color_1)"}
@@ -198,13 +199,23 @@ const ScheduleWorkView = () => {
 													<PrimaryButton
 														hover={{
 															color: "var(--main_color_black)",
-															bg: shift === "Off" ? "var(--bg_color_1)" : "var(--empName_bg)",
+															bg: !shift
+																? "transparent"
+																: shift === "Off"
+																? "var(--bg_color_1)"
+																: "var(--empName_bg)",
 														}}
 														color={
 															shift === "Off" ? "var(--main_color_black)" : "var(--empName_bg)"
 														}
 														bg={shift === "Off" ? "var(--bg_color_1)" : "transparent"}
-														name={shift === "Off" ? "Off" : `${shift} ${role} @ ${location}`}
+														name={
+															!shift
+																? ""
+																: shift === "Off"
+																? "Off"
+																: `${shift} ${shiftRec?.role} @ ${shiftRec?.location}`
+														}
 													/>
 													<IconButton
 														size={"xs"}
@@ -212,7 +223,7 @@ const ScheduleWorkView = () => {
 														aria-label="Open Sidebar"
 														_hover={{ bg: "transparent" }}
 														onClick={() => {
-															handleItemClick(shift);
+															handleItemClick(shiftRec, shift);
 														}}
 													/>
 												</HStack>
@@ -223,10 +234,12 @@ const ScheduleWorkView = () => {
 								<Tr fontWeight="bold" bg="gray.100">
 									<Td py={0}>Total Hours</Td>
 									{weekDays.map((_, dayIdx) => {
-										const total = employeeShifts?.reduce(
-											(sum, emp) => sum + calculateHours(emp.shifts[dayIdx]),
-											0,
-										);
+										const total =
+											employeeShifts?.reduce((sum, emp) => {
+												if (!emp.shifts || !emp.shifts[0]) return sum;
+												return sum + calculateHours(emp.shifts[dayIdx]);
+											}, 0) ?? 0;
+
 										return (
 											<Td py={2} key={dayIdx}>
 												{total}
@@ -237,10 +250,12 @@ const ScheduleWorkView = () => {
 								<Tr fontWeight="bold" bg="gray.100">
 									<Td py={0}>Total Wages</Td>
 									{weekDays.map((_, dayIdx) => {
-										const total = employeeShifts?.reduce(
-											(sum, emp) => sum + calculateHours(emp.shifts[dayIdx]),
-											0,
-										);
+										const total =
+											employeeShifts?.reduce((sum, emp) => {
+												if (!emp.shifts || !emp.shifts[0]) return sum;
+												return sum + calculateHours(emp.shifts[dayIdx]);
+											}, 0) ?? 0;
+
 										return (
 											<Td py={2} key={dayIdx}>
 												{total}
