@@ -87,7 +87,7 @@ const updateEmployee = async (empId, data) => {
 					country,
 			  }
 			: employee?.primaryAddress;
-	const empEmail = businessEmail || personalEmail;
+	const empEmail = personalEmail || businessEmail;
 	const email = empEmail && empEmail !== "" ? empEmail : employee?.email;
 
 	const empPassword = password && password !== "" ? password : employee?.password;
@@ -202,7 +202,7 @@ const addEmployeeProfileInfo = async (req, res) => {
 					firstName,
 					middleName,
 					lastName,
-					email: businessEmail || personalEmail,
+					email: personalEmail || businessEmail,
 					fullName: `${firstName} ${middleName} ${lastName}`,
 				};
 				if (password) {
