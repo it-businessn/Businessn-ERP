@@ -45,8 +45,8 @@ const usePaygroup = (company, refresh, year = CURRENT_YEAR, isReport = false) =>
 					const sortedResult = sortRecordsByDate(
 						data[0]?.yearSchedules[yearIndex]?.payPeriods,
 						"payPeriodPayDate",
-						false,
-						false,
+						true,
+						true,
 						data[0].scheduleFrequency,
 					);
 					setPayGroupSchedule(sortedResult);

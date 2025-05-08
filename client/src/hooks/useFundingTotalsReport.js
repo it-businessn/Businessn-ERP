@@ -5,8 +5,8 @@ const useFundingTotalsReport = (company, payPeriodNum, isOpen) => {
 	const [report, setReport] = useState(null);
 
 	useEffect(() => {
-		const payNum = payPeriodNum?.payPeriod ?? payPeriodNum;
-		const extraRun = payPeriodNum?.isExtraRun ?? false;
+		const payNum = payPeriodNum?.payPeriod;
+		const extraRun = payPeriodNum?.isExtraRun || false;
 
 		const fetchTotalsReportInfo = async () => {
 			try {
