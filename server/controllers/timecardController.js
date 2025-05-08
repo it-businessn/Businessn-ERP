@@ -115,32 +115,35 @@ const getTimecard = async (req, res) => {
 const createTimecard = async (req, res) => {
 	try {
 		const data = req.body;
+		// const data = [
+		// 	{
+		// 		user_id: "7746",
+		// 		timestamp: "2024-10-08 17:44:56",
+		// 		status: "4",
+		// 		punch: "0",
+		// 	},
+		// ];
 
 		// const y = await TimecardRaw.deleteMany({
 		// 	timestamp: { $lt: moment("2024-10-20").toDate() },
 		// });
 
-		const dateThreshold = moment("2024-10-20"); // date since timeclock installed first time
-		const processEntries = async (data) => {
-			if (!Array.isArray(data)) return;
+		const dateThreshold = moment("2024-10-20");
+		data?.map(async (entry) => {
+			entry.timestamp = getUTCTime(entry.timestamp, entry?.isNotDevice);
 
-			for (const entry of data) {
-				entry.timestamp = getUTCTime(entry.timestamp, entry?.isNotDevice);
+			const { user_id, timestamp, punch } = entry;
 
-				const { user_id, timestamp, punch } = entry;
-
-				if (user_id) {
-					const isAfterThreshold = moment(entry.timestamp).isAfter(dateThreshold);
-					if (isAfterThreshold) {
-						const punchRecordExists = await findPunchEntry({ user_id, timestamp, punch });
-						if (!punchRecordExists) {
-							await addPunchEntry(entry);
-						}
+			if (user_id) {
+				const isAfterThreshold = moment(entry.timestamp).isAfter(dateThreshold);
+				if (isAfterThreshold) {
+					const punchRecordExists = await findPunchEntry({ user_id, timestamp, punch });
+					if (!punchRecordExists) {
+						await addPunchEntry(entry);
 					}
 				}
 			}
-		};
-		await processEntries(data);
+		});
 		await mapTimecardRawToTimecard();
 		res.status(201).json("Timecard entries added successfully");
 	} catch (error) {
@@ -161,7 +164,7 @@ const mapTimecardRawToTimecard = async () => {
 			},
 		}).sort({ timestamp: 1 });
 
-		for (const record of entries) {
+		entries?.forEach(async (record) => {
 			const { user_id, timestamp, punch } = record;
 			const date = new Date(timestamp);
 			const targetDate = date.toISOString().split("T")[0];
@@ -190,22 +193,16 @@ const mapTimecardRawToTimecard = async () => {
 					clockOut: timestamp,
 					notDevice: record?.notDevice,
 				});
-
-				if (
-					!sameClockInTimeEntryExists?.clockOut ||
-					sameClockInTimeEntryExists.clockOut !== timestamp
-				) {
-					await updateTimecardEntry({
-						badge_id: user_id,
-						clockIn: sameClockInTimeEntryExists.clockIn,
-						startBreaks: sameClockInTimeEntryExists.startBreaks,
-						endBreaks: sameClockInTimeEntryExists.endBreaks,
-						clockOut: timestamp,
-						notDevice: record?.notDevice,
-					});
-				}
+				await updateTimecardEntry({
+					badge_id: user_id,
+					clockIn: sameClockInTimeEntryExists.clockIn,
+					startBreaks: sameClockInTimeEntryExists.startBreaks,
+					endBreaks: sameClockInTimeEntryExists.endBreaks,
+					clockOut: timestamp,
+					notDevice: record?.notDevice,
+				});
 			}
-		}
+		});
 	} catch (error) {}
 };
 
@@ -281,7 +278,7 @@ const updateTimecardEntry = async (entry, isBreakType) => {
 	if (timesheetRecord) {
 		if (isBreakType && entry?.clockOut && timesheetRecord.payType === PAY_TYPES_TITLE.REG_PAY_BRK) {
 			const durationHrs = calcTotalWorkedHours(entry.clockIn, entry.clockOut);
-			timesheetRecord.regBreakHoursWorked = durationHrs.toFixed(2);
+			timesheetRecord.regBreakHoursWorked = durationHrs;
 			await timesheetRecord.save();
 		} else if (!isBreakType && !timesheetRecord?.clockOut && entry?.clockOut) {
 			const totalWorkedHours = calcTotalWorkedHours(entry.clockIn, entry.clockOut);
@@ -298,11 +295,12 @@ const updateTimecardEntry = async (entry, isBreakType) => {
 					timesheetRecord[PARAM_HOURS.REGULAR] = 8;
 				} else {
 					timesheetRecord.clockOut = entry.clockOut;
-					timesheetRecord[PARAM_HOURS.REGULAR] = totalWorkedHours.toFixed(2);
+					timesheetRecord[PARAM_HOURS.REGULAR] = totalWorkedHours;
 				}
 				await timesheetRecord.save();
 			} else if (timesheetRecord.payType === PAY_TYPES_TITLE.STAT_WORK_PAY) {
 				timesheetRecord[PARAM_HOURS.STAT] = totalWorkedHours;
+				timesheetRecord.clockOut = entry.clockOut;
 				await timesheetRecord.save();
 			}
 		}
@@ -328,8 +326,7 @@ const createTimecardManual = async (req, res) => {
 	try {
 		const data = req.body;
 		// console.log("createTimecardManual", data);
-		if (!Array.isArray(data)) return;
-		for (const entry of data) {
+		data?.map(async (entry) => {
 			if (entry?.isNotDevice && entry?.empId) {
 				const { isNotDevice, companyName, empId, punch } = entry;
 
@@ -420,7 +417,7 @@ const createTimecardManual = async (req, res) => {
 			// });
 			// console.log(k, s);
 			res.status(201).json("Timecard entries added manually");
-		}
+		});
 	} catch (error) {
 		res.status(400).json({ message: error.message });
 	}
