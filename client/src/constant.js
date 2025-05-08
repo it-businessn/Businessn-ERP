@@ -21,6 +21,16 @@ export const COMPANIES = {
 	CORNERSTONE: "Cornerstone Maintenance Group Ltd.",
 };
 
+export const PAY_FREQUENCIES = [
+	{ name: "Daily" },
+	{ name: "Weekly" },
+	{ name: "Biweekly" },
+	{ name: "Semimonthly" },
+	{ name: "Monthly" },
+	{ name: "Quarterly" },
+	{ name: "Annually" },
+];
+
 export const CONTRIBUTION = {
 	EI: "Employment Insurance",
 	CPP: "Canada Pension Plan",

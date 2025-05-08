@@ -21,9 +21,9 @@ const useEmployeePayInfo = (company, refresh, empId, payPeriod, groupId, isOnboa
 				console.error(error);
 			}
 		};
-		// if (!isOnboarding) {
-		fetchEmployeePayInfo();
-		// }
+		if (empId || payPeriod) {
+			fetchEmployeePayInfo();
+		}
 	}, [company, empId, refresh, payPeriod, isOnboarding]);
 	return payInfo;
 };

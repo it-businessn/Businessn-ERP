@@ -19,6 +19,7 @@ import InputFormControl from "components/ui/form/InputFormControl";
 import MultiSelectButton from "components/ui/form/MultiSelectButton";
 import SelectFormControl from "components/ui/form/SelectFormControl";
 import TextTitle from "components/ui/text/TextTitle";
+import { PAY_FREQUENCIES } from "constant";
 import { useState } from "react";
 import SettingService from "services/SettingService";
 
@@ -41,18 +42,6 @@ const PaygroupForm = ({
 		payrollActivated: false,
 		payFrequency: "",
 	};
-
-	const payFrequencies = [
-		{
-			name: "Daily",
-		},
-		{ name: "Weekly" },
-		{ name: "Biweekly" },
-		{ name: "Semimonthly" },
-		{ name: "Monthly" },
-		{ name: "Quarterly" },
-		{ name: "Annually" },
-	];
 
 	const [isSubmitting, setSubmitting] = useState(false);
 	const [formData, setFormData] = useState(defaultGroup);
@@ -178,7 +167,7 @@ const PaygroupForm = ({
 								payFrequency: e.target.value,
 							}))
 						}
-						options={payFrequencies}
+						options={PAY_FREQUENCIES}
 						placeholder="Select pay frequency"
 					/>
 				)}
