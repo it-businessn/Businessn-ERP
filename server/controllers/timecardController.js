@@ -310,6 +310,7 @@ const updateTimecardEntry = async (entry, isBreakType) => {
 const findEmployeeTAD = async (timeManagementBadgeID) =>
 	await EmployeeEmploymentInfo.findOne({
 		"positions.timeManagementBadgeID": timeManagementBadgeID,
+		$or: [{ timeManagementBadgeID }, { employeeNo: timeManagementBadgeID }],
 	})
 		.populate({
 			path: "empId",
