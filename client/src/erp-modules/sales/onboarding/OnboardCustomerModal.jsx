@@ -1,8 +1,8 @@
 import { useDisclosure } from "@chakra-ui/react";
 import ModalLayout from "components/ui/modal/ModalLayout";
-import Employees from "erp-modules/payroll/employees/pageview";
+import SalesOnboardUser from "erp-modules/sales/customers/onboard/SalesOnboardUser";
 
-const OnboardEmpModal = ({ showOnboard, setShowOnboard, selectedPayGroupName, title }) => {
+const OnboardCustomerModal = ({ showOnboard, setShowOnboard, title }) => {
 	const { onClose } = useDisclosure();
 
 	const handleClose = () => {
@@ -12,13 +12,9 @@ const OnboardEmpModal = ({ showOnboard, setShowOnboard, selectedPayGroupName, ti
 
 	return (
 		<ModalLayout title={title} size="7xl" isOpen={showOnboard} onClose={handleClose}>
-			<Employees
-				isOnboarding
-				selectedPayGroupName={selectedPayGroupName}
-				handleClose={handleClose}
-			/>
+			<SalesOnboardUser title={title} />
 		</ModalLayout>
 	);
 };
 
-export default OnboardEmpModal;
+export default OnboardCustomerModal;
