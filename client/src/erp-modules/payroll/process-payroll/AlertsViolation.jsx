@@ -34,8 +34,6 @@ const AlertsViolation = ({
 		isAlertsOpen,
 		currentStep,
 	);
-	const isDisabled = alertsReviewData?.find((_) => _.actionRequired) || isPayPeriodInactive;
-
 	const COLS = ["Description", "Employee name", "Status", "Action"];
 
 	const navigate = useNavigate();
@@ -58,6 +56,7 @@ const AlertsViolation = ({
 		});
 	}
 	const data = isExtraRun ? filteredEmp : alertsReviewData;
+	const isDisabled = data?.find((_) => _.actionRequired) || isPayPeriodInactive;
 
 	return (
 		<HStack alignItems={"end"}>

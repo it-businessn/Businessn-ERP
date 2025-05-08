@@ -149,7 +149,7 @@ const PayrollStageContent = ({
 							onReportsToggle();
 						}}
 						company={company}
-						payPeriodNum={closestRecord?.payPeriod}
+						payPeriodNum={closestRecord}
 						isPayPeriodInactive={isPayPeriodInactive}
 					/>
 				}
