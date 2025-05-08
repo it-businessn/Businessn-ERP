@@ -189,7 +189,10 @@ const BankingInfo = ({ company, isOnboarding, handlePrev, id, handleClose }) => 
 					handlePrev={handlePrev}
 					id={id}
 					handleNextEnabled={!isDisabled}
-					handleClose={handleClose}
+					handleClose={() => {
+						LocalStorageService.removeItem("onboardingEmpId");
+						handleClose();
+					}}
 				/>
 			</BoxCard>
 			<StepContent currentStep={currentStep} steps={steps} />
