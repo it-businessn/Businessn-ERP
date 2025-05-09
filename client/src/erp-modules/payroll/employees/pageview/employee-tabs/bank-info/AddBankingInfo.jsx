@@ -180,7 +180,6 @@ const AddBankingInfo = ({ company, handlePrev, id, handleClose }) => {
 					isOnboarding={true}
 					handlePrev={handlePrev}
 					id={id}
-					handleNextEnabled={!isDisabled}
 					handleClose={() => {
 						LocalStorageService.removeItem("onboardingEmpId");
 						handleClose();

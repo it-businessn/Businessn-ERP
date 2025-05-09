@@ -94,7 +94,6 @@ const AddPayInfo = ({ company, id, handleNext, handlePrev }) => {
 					id={id}
 					handleNext={handleNext}
 					handlePrev={handlePrev}
-					handleNextEnabled={true}
 				/>
 			</BoxCard>
 			<StepContent currentStep={currentStep} steps={steps} isOnboarding={true} />

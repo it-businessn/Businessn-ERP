@@ -144,7 +144,6 @@ const AddPersonalInfo = ({ company, id, handleNext }) => {
 					isOnboarding={true}
 					id={id}
 					handleNext={handleNext}
-					handleNextEnabled={!isSave1Disabled && !isSave3Disabled}
 					handleSubmit={handleSubmit}
 					isLoading={isLoading}
 					isDisabled={isSave3Disabled || isSave1Disabled}

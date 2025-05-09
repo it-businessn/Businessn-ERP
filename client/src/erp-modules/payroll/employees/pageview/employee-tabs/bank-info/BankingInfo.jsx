@@ -179,7 +179,6 @@ const BankingInfo = ({ company, handlePrev, id, handleClose }) => {
 					handleClick={goToNextStep}
 					handlePrev={handlePrev}
 					id={id}
-					handleNextEnabled={!isDisabled}
 					handleClose={handleClose}
 				/>
 			</BoxCard>

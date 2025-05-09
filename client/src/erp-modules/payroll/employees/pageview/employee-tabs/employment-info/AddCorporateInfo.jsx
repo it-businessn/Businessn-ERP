@@ -216,7 +216,6 @@ const AddCorporateInfo = ({ company, id, handleNext, handlePrev }) => {
 					id={id}
 					handleNext={handleNext}
 					handlePrev={handlePrev}
-					handleNextEnabled={true}
 					handleSubmit={() => handleSubmit()}
 					isLoading={isLoading}
 					isDisabled={isDisabled}

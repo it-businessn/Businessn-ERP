@@ -55,9 +55,8 @@ const GovernmentContribution = ({ company, handleNext, handlePrev, id }) => {
 		setIsLoading(true);
 		try {
 			formData.companyName = company;
-			await PayrollService.addEmployeeGovernmentInfo(formData);
+			await PayrollService.updateEmployeeGovernmentInfo(formData, formData._id);
 			setIsLoading(false);
-			// setIsDisabled(true);
 			toast({
 				title: "Government info updated successfully.",
 				status: "success",
@@ -151,7 +150,6 @@ const GovernmentContribution = ({ company, handleNext, handlePrev, id }) => {
 					handleNext={handleNext}
 					handlePrev={handlePrev}
 					id={id}
-					handleNextEnabled={true}
 					isLoading={isLoading}
 					handleSubmit={handleSubmit}
 					isDisabled={isDisabled}

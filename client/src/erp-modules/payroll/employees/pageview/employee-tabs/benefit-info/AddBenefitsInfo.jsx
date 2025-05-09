@@ -142,7 +142,6 @@ const AddBenefitsInfo = ({ company, id, handleNext }) => {
 					isOnboarding={true}
 					currentStep={currentStep}
 					handleClick={goToNextStep}
-					handleNextEnabled={true}
 					handleNext={handleNext}
 					isLoading={isLoading}
 					isDisabled={isDisabled}

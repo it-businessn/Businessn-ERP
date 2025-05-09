@@ -147,7 +147,6 @@ const AddGovernmentContribution = ({ company, handleNext, handlePrev, id }) => {
 					handleNext={handleNext}
 					handlePrev={handlePrev}
 					id={id}
-					handleNextEnabled={true}
 					isLoading={isLoading}
 					handleSubmit={handleSubmit}
 					isDisabled={isDisabled}
