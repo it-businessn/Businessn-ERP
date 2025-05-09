@@ -59,8 +59,6 @@ const AddCorporateInfo = ({ company, id, handleNext, handlePrev }) => {
 	useEffect(() => {
 		if (formData?.employeeNo) {
 			setIsDisabled(false);
-		} else {
-			setIsDisabled(true);
 		}
 	}, [formData?.employeeNo, formData?.payrollStatus]);
 
@@ -84,7 +82,6 @@ const AddCorporateInfo = ({ company, id, handleNext, handlePrev }) => {
 			formData.companyName = company;
 			await PayrollService.addEmployeeEmploymentInfo(formData);
 			setIsLoading(false);
-			setIsDisabled(true);
 			setIsOpen(false);
 			setRefresh((prev) => !prev);
 			toast({

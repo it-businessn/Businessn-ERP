@@ -87,19 +87,19 @@ const addEmployeePayInfo = async (req, res) => {
 		}
 		const existingPayInfo = await findEmployeePayInfoDetails(empId, companyName);
 		if (existingPayInfo) {
-			const existingEmploymentInfo = await EmployeeEmploymentInfo.findOne({
-				empId,
-				companyName,
-			});
-			if (existingEmploymentInfo) {
-				await EmployeeEmploymentInfo.findByIdAndUpdate(
-					existingEmploymentInfo._id,
-					{ positions: roles },
-					{
-						new: true,
-					},
-				);
-			}
+			// const existingEmploymentInfo = await EmployeeEmploymentInfo.findOne({
+			// 	empId,
+			// 	companyName,
+			// });
+			// if (existingEmploymentInfo) {
+			// 	await EmployeeEmploymentInfo.findByIdAndUpdate(
+			// 		existingEmploymentInfo._id,
+			// 		{ positions: roles },
+			// 		{
+			// 			new: true,
+			// 		},
+			// 	);
+			// }
 			const updatedPayInfo = await updatePayInfo(existingPayInfo._id, { roles });
 			return res.status(201).json(updatedPayInfo);
 		}
