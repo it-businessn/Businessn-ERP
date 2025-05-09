@@ -351,19 +351,13 @@ const addAlertsAndViolations = async (req, res) => {
 				empId: data?.empId?._id,
 			}).select("empId SIN");
 
-			const empPayRate = await EmployeePayInfo.findOne({
+			const empPayInfo = await EmployeePayInfo.findOne({
 				companyName,
 				empId: data?.empId?._id,
 			}).select("empId roles");
 
 			const missingBankInfo =
-				!empBankResult ||
-				!empBankResult.bankNum ||
-				!empBankResult.transitNum ||
-				!empBankResult.accountNum ||
-				empBankResult.bankNum === "" ||
-				empBankResult.transitNum === "" ||
-				empBankResult.accountNum === "";
+				!empBankResult?.bankNum || !empBankResult?.transitNum || !empBankResult?.accountNum;
 			if (missingBankInfo) {
 				const alertInfo = {
 					empId: data?.empId?._id,
@@ -380,8 +374,8 @@ const addAlertsAndViolations = async (req, res) => {
 			}
 
 			const belowMinimumWage =
-				!empPayRate?.roles?.length ||
-				empPayRate?.roles?.find((_) => parseFloat(_?.payRate) < 17.85);
+				!empPayInfo?.roles?.length ||
+				empPayInfo?.roles?.find((_) => parseFloat(_?.payRate) < 17.85);
 			if (belowMinimumWage) {
 				const alertInfo = {
 					empId: data?.empId?._id,
