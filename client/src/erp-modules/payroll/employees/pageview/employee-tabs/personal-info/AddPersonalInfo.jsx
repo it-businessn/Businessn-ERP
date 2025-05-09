@@ -21,8 +21,7 @@ const AddPersonalInfo = ({ company, id, handleNext }) => {
 
 	const setProfileInfo = () => getInitialProfileInfo(null, company);
 	const [formData, setFormData] = useState(setProfileInfo);
-	const [isSave1Disabled, setIsSave1Disabled] = useState(true);
-	const [isSave3Disabled, setIsSave3Disabled] = useState(true);
+	const [isDisabled, setIsDisabled] = useState(true);
 	const [isLoading, setIsLoading] = useState(false);
 	const [currentStep, setCurrentStep] = useState(0);
 
@@ -40,13 +39,10 @@ const AddPersonalInfo = ({ company, id, handleNext }) => {
 	}, [profileInfo]);
 
 	useEffect(() => {
-		if (formData?.firstName && formData?.lastName && formData?.password) {
-			setIsSave1Disabled(false);
-		}
-	}, [formData?.firstName, formData?.lastName, formData?.password]);
-
-	useEffect(() => {
 		if (
+			formData?.firstName &&
+			formData?.lastName &&
+			formData?.password &&
 			formData?.personalEmail &&
 			formData?.streetAddress &&
 			formData?.city &&
@@ -54,17 +50,9 @@ const AddPersonalInfo = ({ company, id, handleNext }) => {
 			formData?.country &&
 			formData?.postalCode
 		) {
-			setIsSave3Disabled(false);
+			setIsDisabled(false);
 		}
-	}, [
-		formData?.personalEmail,
-		formData?.streetAddress,
-		formData?.city,
-		formData?.province,
-		formData?.country,
-		formData?.postalCode,
-		formData?.password,
-	]);
+	}, [formData]);
 
 	const handleSubmit = async () => {
 		setIsLoading(true);
@@ -146,7 +134,7 @@ const AddPersonalInfo = ({ company, id, handleNext }) => {
 					handleNext={handleNext}
 					handleSubmit={handleSubmit}
 					isLoading={isLoading}
-					isDisabled={isSave3Disabled || isSave1Disabled}
+					isDisabled={isDisabled}
 				/>
 			</BoxCard>
 			<StepContent currentStep={currentStep} steps={steps} isOnboarding={true} />
