@@ -117,6 +117,10 @@ const PayrollService = {
 		return apiService.post("/payroll/balanceInfo", data);
 	},
 
+	async updateEmployeeBalanceInfo(data, id) {
+		return apiService.put(`/payroll/balanceInfo/${id}`, data, id);
+	},
+
 	async getHoursWorkedAllocationByType(
 		company,
 		startDate,

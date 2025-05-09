@@ -91,6 +91,7 @@ const addEmployeeGovernmentInfo = async (req, res) => {
 const updateEmployeeGovernmentInfo = async (req, res) => {
 	const { id } = req.params;
 	try {
+		if (req.body?._id) delete req.body._id;
 		const updatedInfo = await updateGovernmentInfo(id, req.body);
 		res.status(201).json(updatedInfo);
 	} catch (error) {

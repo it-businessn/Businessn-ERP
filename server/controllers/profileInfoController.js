@@ -258,7 +258,6 @@ const addEmployeeProfileInfo = async (req, res) => {
 				req.body.SINIv = sinEncrypted.iv;
 			}
 			if (req.body?._id) delete req.body._id;
-
 			const updatedProfileInfo = await updateProfileInfo(existingProfileInfo._id, req.body);
 			return res.status(201).json(updatedProfileInfo);
 		}

@@ -299,6 +299,7 @@ const getAlertsAndViolationsInfo = async (req, res) => {
 // 	try {
 // 		const existingPayInfo = await findEmployeePayInfoDetails(empId, companyName);
 // 		if (existingPayInfo) {
+// 		if (req.body?._id) delete req.body._id;
 // 			const updatedPayInfo = await updatePayInfo(existingPayInfo._id, req.body);
 // 			return res.status(201).json(updatedPayInfo);
 // 		}

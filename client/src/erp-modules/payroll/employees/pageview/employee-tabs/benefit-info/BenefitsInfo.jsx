@@ -48,11 +48,9 @@ const BenefitsInfo = ({ company, id, handleNext }) => {
 		updatedBenefit.carryFwd = carryFwd !== undefined ? !carryFwd : false;
 		updatedBenefit.empId = empId;
 		updatedBenefit.companyName = company;
-
 		try {
-			await PayrollService.addEmployeeBalanceInfo(updatedBenefit);
+			await PayrollService.updateEmployeeBalanceInfo(updatedBenefit, formData._id);
 			setIsLoading(false);
-			setIsDisabled(true);
 		} catch (error) {}
 	};
 
@@ -142,7 +140,6 @@ const BenefitsInfo = ({ company, id, handleNext }) => {
 					id={id}
 					currentStep={currentStep}
 					handleClick={goToNextStep}
-					handleNextEnabled={true}
 					handleNext={handleNext}
 					isLoading={isLoading}
 					isDisabled={isDisabled}
