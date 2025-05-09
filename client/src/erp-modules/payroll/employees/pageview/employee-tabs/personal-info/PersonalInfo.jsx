@@ -20,8 +20,7 @@ const PersonalInfo = ({ company, id, handleNext }) => {
 	const profileInfo = useEmployeeProfileInfo(company, empId);
 	const setProfileInfo = () => getInitialProfileInfo(empId, company);
 	const [formData, setFormData] = useState(setProfileInfo);
-	const [isSave1Disabled, setIsSave1Disabled] = useState(true);
-	const [isSave3Disabled, setIsSave3Disabled] = useState(true);
+	const [isDisabled, setIsDisabled] = useState(true);
 	const [isLoading, setIsLoading] = useState(false);
 
 	useEffect(() => {
@@ -39,19 +38,10 @@ const PersonalInfo = ({ company, id, handleNext }) => {
 	}, [profileInfo, empId]);
 
 	useEffect(() => {
-		if (formData?.firstName && formData?.lastName && formData?.password) {
-			setIsSave1Disabled(false);
-		}
-	}, [formData?.firstName, formData?.lastName, formData?.password]);
-
-	// useEffect(() => {
-	// 	if (formData?.employeeNo) {
-	// 		setIsSave2Disabled(false);
-	// 	}
-	// }, [formData?.employeeNo]);
-
-	useEffect(() => {
 		if (
+			formData?.firstName &&
+			formData?.lastName &&
+			formData?.password &&
 			formData?.personalEmail &&
 			formData?.streetAddress &&
 			formData?.city &&
@@ -59,17 +49,9 @@ const PersonalInfo = ({ company, id, handleNext }) => {
 			formData?.country &&
 			formData?.postalCode
 		) {
-			setIsSave3Disabled(false);
+			setIsDisabled(false);
 		}
-	}, [
-		formData?.personalEmail,
-		formData?.streetAddress,
-		formData?.city,
-		formData?.province,
-		formData?.country,
-		formData?.postalCode,
-		formData?.password,
-	]);
+	}, [formData]);
 
 	const toast = useToast();
 
@@ -77,11 +59,8 @@ const PersonalInfo = ({ company, id, handleNext }) => {
 		setIsLoading(true);
 		try {
 			formData.companyName = company;
-			const { data } = await PayrollService.addEmployeeProfileInfo(formData);
+			const { data } = await PayrollService.updateEmployeeProfileInfo(formData, formData?._id);
 			setIsLoading(false);
-			// setIsSave1Disabled(true);
-			// setIsSave2Disabled(true);
-			// setIsSave3Disabled(true);
 			LocalStorageService.setItem("onboardingEmpId", data?.empId);
 			toast({
 				title: "Personal info added successfully.",
@@ -152,11 +131,9 @@ const PersonalInfo = ({ company, id, handleNext }) => {
 					handleClick={goToNextStep}
 					id={id}
 					handleNext={handleNext}
-					// handleNextEnabled={!isSave1Disabled && !isSave2Disabled && !isSave3Disabled}
-					handleNextEnabled={!isSave1Disabled && !isSave3Disabled}
 					handleSubmit={handleSubmit}
 					isLoading={isLoading}
-					isDisabled={isSave3Disabled || isSave1Disabled}
+					isDisabled={isDisabled}
 				/>
 			</BoxCard>
 			<StepContent currentStep={currentStep} steps={steps} />

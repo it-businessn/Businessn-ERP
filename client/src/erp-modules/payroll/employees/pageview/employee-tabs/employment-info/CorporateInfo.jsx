@@ -81,9 +81,8 @@ const CorporateInfo = ({ company, id, handleNext, handlePrev }) => {
 				}
 			}
 			formData.companyName = company;
-			await PayrollService.addEmployeeEmploymentInfo(formData);
+			await PayrollService.updateEmployeeEmploymentInfo(formData, formData._id);
 			setIsLoading(false);
-			setIsDisabled(true);
 			setIsOpen(false);
 			setRefresh((prev) => !prev);
 			toast({
@@ -214,7 +213,6 @@ const CorporateInfo = ({ company, id, handleNext, handlePrev }) => {
 					id={id}
 					handleNext={handleNext}
 					handlePrev={handlePrev}
-					handleNextEnabled={true}
 					handleSubmit={() => handleSubmit()}
 					isLoading={isLoading}
 					isDisabled={isDisabled}

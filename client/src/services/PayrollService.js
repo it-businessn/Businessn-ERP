@@ -59,6 +59,10 @@ const PayrollService = {
 		return apiService.post("/payroll/profileInfo", data);
 	},
 
+	async updateEmployeeProfileInfo(data, id) {
+		return apiService.put(`/payroll/profileInfo/${id}`, data, id);
+	},
+
 	async getAllEmployeeEmploymentInfo(
 		company,
 		startDate,
@@ -83,6 +87,10 @@ const PayrollService = {
 
 	async addEmployeeEmploymentInfo(data) {
 		return apiService.post("/payroll/employmentInfo", data);
+	},
+
+	async updateEmployeeEmploymentInfo(data, id) {
+		return apiService.put(`/payroll/employmentInfo/${id}`, data, id);
 	},
 
 	async getEmployeeGovernmentInfo(company, empId) {

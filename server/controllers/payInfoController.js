@@ -117,7 +117,7 @@ const addEmployeePayInfo = async (req, res) => {
 const updateEmployeePayInfo = async (req, res) => {
 	const { id } = req.params;
 	try {
-		req.body.updatedOn = moment();
+		if (req.body?._id) delete req.body._id;
 		const updatedPayInfo = await updatePayInfo(id, req.body);
 
 		res.status(201).json(updatedPayInfo);

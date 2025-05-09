@@ -39,9 +39,8 @@ const PayInfo = ({ company, id, handleNext, handlePrev }) => {
 				formData.roles[positionIndex] = data;
 			}
 			formData.companyName = company;
-			await PayrollService.addEmployeePayInfo(formData);
+			await PayrollService.updateEmployeePayInfo(formData, formData?._id);
 			setIsLoading(false);
-			// setIsDisabled(true);
 			toast({
 				title: "Payment info updated successfully.",
 				status: "success",
@@ -57,23 +56,26 @@ const PayInfo = ({ company, id, handleNext, handlePrev }) => {
 			content: (
 				<>
 					<TextTitle title="Earnings" />
-					{!formData?.roles?.length && (
+					{formData ? (
+						formData?.roles?.map((role, index) => (
+							<BoxCard
+								mt={2}
+								border="1px solid var(--lead_cards_border)"
+								key={`${role.title}_${index}`}
+							>
+								<TextTitle title={`Position ${index + 1}: ${role.title}`} />
+								<EarningsInfo role={role} handleSubmit={handleSubmit} />
+							</BoxCard>
+						))
+					) : formData?.roles?.length === 0 ? (
 						<TextTitle
 							color="var(--pending)"
 							title="** Please add roles/positions under employment section."
 							size="sm"
 						/>
+					) : (
+						<></>
 					)}
-					{formData?.roles?.map((role, index) => (
-						<BoxCard
-							mt={2}
-							border="1px solid var(--lead_cards_border)"
-							key={`${role.title}_${index}`}
-						>
-							<TextTitle title={`Position ${index + 1}: ${role.title}`} />
-							<EarningsInfo role={role} handleSubmit={handleSubmit} />
-						</BoxCard>
-					))}
 				</>
 			),
 		},
@@ -98,7 +100,6 @@ const PayInfo = ({ company, id, handleNext, handlePrev }) => {
 					id={id}
 					handleNext={handleNext}
 					handlePrev={handlePrev}
-					handleNextEnabled={true}
 				/>
 			</BoxCard>
 			<StepContent currentStep={currentStep} steps={steps} />
