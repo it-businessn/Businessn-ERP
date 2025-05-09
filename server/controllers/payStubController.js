@@ -322,7 +322,13 @@ const buildPayStub = (
 	return newPayStub;
 };
 
-const buildPayStubDetails = async (currentPayPeriod, companyName, empTimesheetData, empId) => {
+const buildPayStubDetails = async (
+	currentPayPeriod,
+	companyName,
+	empTimesheetData,
+	empId,
+	scheduleFrequency,
+) => {
 	const {
 		payPeriodStartDate,
 		payPeriodEndDate,
@@ -429,6 +435,7 @@ const buildPayStubDetails = async (currentPayPeriod, companyName, empTimesheetDa
 				newPayStub.reportType = PAYRUN_TYPE.PAYOUT;
 			}
 			if (newPayStub) {
+				newPayStub.scheduleFrequency = scheduleFrequency;
 				await addPayStub(newPayStub);
 				prevPayPayInfo = appendPrevPayInfoBalance(prevPayPayInfo, newPayStub);
 			}
@@ -450,6 +457,7 @@ const buildPayStubDetails = async (currentPayPeriod, companyName, empTimesheetDa
 			payStubInfoData,
 			prevPayPayInfo,
 		);
+		updatedPayStub.scheduleFrequency = scheduleFrequency;
 		await addPayStub(updatedPayStub);
 		return updatedPayStub;
 	}
@@ -487,7 +495,7 @@ const updatePayStub = async (id, data) =>
 	});
 
 const addEmployeePayStubInfo = async (req, res) => {
-	const { companyName, currentPayPeriod } = req.body;
+	const { companyName, currentPayPeriod, scheduleFrequency } = req.body;
 	try {
 		// const y = await EmployeePayStub.deleteMany({
 		// 	payPeriodNum: "6",
@@ -556,6 +564,7 @@ const addEmployeePayStubInfo = async (req, res) => {
 				empTimesheetData || null,
 				employee?.empId?._id,
 				isExtraRun,
+				scheduleFrequency,
 			);
 			fundingTotal.totalIncomeTaxContr += payStubResult?.currentIncomeTaxDeductions || 0;
 			fundingTotal.totalCPP_EE_Contr += payStubResult?.currentCPPDeductions || 0;
@@ -937,7 +946,13 @@ const getEmployeePayDetailsReportInfo = async (req, res) => {
 	}
 };
 
-const getRecordId = async (empPayStubResult, empId, companyName, payPeriodPayDate) => {
+const getRecordId = async (
+	empPayStubResult,
+	empId,
+	companyName,
+	payPeriodPayDate,
+	scheduleFrequency,
+) => {
 	if (empPayStubResult) {
 		return empPayStubResult._id;
 	}
@@ -951,6 +966,7 @@ const getRecordId = async (empPayStubResult, empId, companyName, payPeriodPayDat
 		bonus: 0,
 		terminationPayout: 0,
 		reimbursement: 0,
+		scheduleFrequency,
 	};
 	const newPayStub = await addPayStub(payStub);
 	return newPayStub._id;

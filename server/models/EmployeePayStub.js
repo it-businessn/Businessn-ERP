@@ -204,6 +204,7 @@ const employeePayStubSchema = new mongoose.Schema({
 
 	totalAmountAllocated: { type: Number, default: 0 },
 	reportType: String,
+	scheduleFrequency: String,
 });
 
 const EmployeePayStub = mongoose.model("EmployeePayStub", employeePayStubSchema);
