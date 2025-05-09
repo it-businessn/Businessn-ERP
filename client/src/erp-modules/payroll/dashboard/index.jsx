@@ -1,5 +1,6 @@
 import { SimpleGrid } from "@chakra-ui/react";
 
+import { COMPANIES } from "constant";
 import useCompany from "hooks/useCompany";
 import usePaygroup from "hooks/usePaygroup";
 import PageLayout from "layouts/PageLayout";
@@ -9,16 +10,17 @@ import LeftPane from "./leftpane";
 import RightPane from "./rightpane";
 
 const Dashboard = () => {
-	const [selectedPayGroupOption, setSelectedPayGroupOption] = useState(null);
+	const loggedInUser = LocalStorageService.getItem("user");
 	const { company } = useCompany(LocalStorageService.getItem("selectedCompany"));
+	const [selectedPayGroupOption, setSelectedPayGroupOption] = useState(
+		company === COMPANIES.BUSINESSN_ORG ? "Monthly" : null,
+	);
 	const { payGroups, selectedPayGroup, closestRecord, payGroupSchedule, closestRecordIndex } =
-		usePaygroup(company, false);
+		usePaygroup(company, selectedPayGroupOption, false);
 
 	useEffect(() => {
-		setSelectedPayGroupOption(selectedPayGroup?.name);
+		if (!selectedPayGroupOption) setSelectedPayGroupOption(selectedPayGroup?.name);
 	}, [selectedPayGroup]);
-
-	const loggedInUser = LocalStorageService.getItem("user");
 
 	const handleChange = (value) => {
 		if (value !== "") {

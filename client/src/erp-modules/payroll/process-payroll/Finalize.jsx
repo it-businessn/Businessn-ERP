@@ -24,7 +24,7 @@ const Finalize = ({ handleClick, isPayPeriodInactive }) => {
 					</Tr>
 					<Tr>
 						<Td>
-							<TextTitle title={"Do Not Lock Timesheets for Other Users"} />{" "}
+							<TextTitle title={"Do Not Lock Timesheets for Other Users"} />
 						</Td>
 						<Td>
 							<Checkbox
