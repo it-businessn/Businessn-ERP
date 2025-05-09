@@ -14,6 +14,8 @@ export const ROLES = {
 	ENROLLER: "Enroller",
 };
 
+export const ALERTS_TYPE = { BANK: "bank", SIN: "SIN", WAGE: "wage" };
+
 export const COMPANIES = {
 	FD: "Fractional Departments Inc.",
 	NW: "The Owners Of Strata Plan NW1378",

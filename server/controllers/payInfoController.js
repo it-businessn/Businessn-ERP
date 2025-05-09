@@ -1,6 +1,8 @@
 const EmployeeEmploymentInfo = require("../models/EmployeeEmploymentInfo");
 const EmployeePayInfo = require("../models/EmployeePayInfo");
+const { ALERTS_TYPE } = require("../services/data");
 const { getPayrollActiveEmployees } = require("./appController");
+const { deleteAlerts } = require("./payrollController");
 const { findEmpPayStubDetail } = require("./payStubHelper");
 const { findGroupEmployees } = require("./setUpController");
 const { getEmployeeId } = require("./userController");
@@ -84,6 +86,9 @@ const addEmployeePayInfo = async (req, res) => {
 					role.vacationPay = regPay;
 				}
 			});
+			if (roles?.every((_) => parseFloat(_?.payRate) > 17.85)) {
+				await deleteAlerts(empId, ALERTS_TYPE.WAGE);
+			}
 		}
 		const existingPayInfo = await findEmployeePayInfoDetails(empId, companyName);
 		if (existingPayInfo) {

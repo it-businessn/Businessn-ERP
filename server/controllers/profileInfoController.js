@@ -4,6 +4,7 @@ const EmployeeProfileInfo = require("../models/EmployeeProfileInfo");
 const { addEmployee, findCompany } = require("./appController");
 const { deleteAlerts } = require("./payrollController");
 const { decryptData, encryptData } = require("../services/encryptDataService");
+const { ALERTS_TYPE } = require("../services/data");
 
 const getAllProfileInfo = async (req, res) => {
 	const { companyName } = req.params;
@@ -288,7 +289,7 @@ const updateEmployeeProfileInfo = async (req, res) => {
 
 		const existingProfileInfo = await EmployeeProfileInfo.findById(id);
 		if (SIN && SIN !== "") {
-			await deleteAlerts(empId);
+			await deleteAlerts(empId, ALERTS_TYPE.SIN);
 		}
 		await updateEmployee(empId, data);
 		if (existingProfileInfo) {
