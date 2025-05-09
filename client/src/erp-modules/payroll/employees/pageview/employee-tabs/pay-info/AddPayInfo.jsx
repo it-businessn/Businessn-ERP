@@ -52,23 +52,26 @@ const AddPayInfo = ({ company, id, handleNext, handlePrev }) => {
 			content: (
 				<>
 					<TextTitle title="Earnings" />
-					{!formData?.roles?.length && (
+					{formData ? (
+						formData?.roles?.map((role, index) => (
+							<BoxCard
+								mt={2}
+								border="1px solid var(--lead_cards_border)"
+								key={`${role.title}_${index}`}
+							>
+								<TextTitle title={`Position ${index + 1}: ${role.title}`} />
+								<EarningsInfo role={role} handleSubmit={handleSubmit} />
+							</BoxCard>
+						))
+					) : formData?.roles?.length === 0 ? (
 						<TextTitle
 							color="var(--pending)"
 							title="** Please add roles/positions under employment section."
 							size="sm"
 						/>
+					) : (
+						<></>
 					)}
-					{formData?.roles?.map((role, index) => (
-						<BoxCard
-							mt={2}
-							border="1px solid var(--lead_cards_border)"
-							key={`${role.title}_${index}`}
-						>
-							<TextTitle title={`Position ${index + 1}: ${role.title}`} />
-							<EarningsInfo role={role} handleSubmit={handleSubmit} />
-						</BoxCard>
-					))}
 				</>
 			),
 		},

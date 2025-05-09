@@ -39,7 +39,7 @@ const PayInfo = ({ company, id, handleNext, handlePrev }) => {
 				formData.roles[positionIndex] = data;
 			}
 			formData.companyName = company;
-			await PayrollService.updateEmployeePayInfo(formData, formData?._id);
+			await PayrollService.addEmployeePayInfo(formData);
 			setIsLoading(false);
 			toast({
 				title: "Payment info updated successfully.",

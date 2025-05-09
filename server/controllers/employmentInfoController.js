@@ -171,7 +171,8 @@ const addEmployeeEmploymentInfo = async (req, res) => {
 			employeeNo,
 			employmentRole,
 		};
-		if (positions?.length) {
+		const positionExists = positions?.find((_) => _.title);
+		if (positionExists) {
 			const roles = [...positions];
 			const existingPayInfo = await EmployeePayInfo.findOne({ empId, companyName });
 			if (existingPayInfo) {
@@ -221,7 +222,7 @@ const addEmployeeEmploymentInfo = async (req, res) => {
 			employmentRegion,
 		});
 		await updateEmployee(empId, data);
-		if (positions?.length && positions[0]) {
+		if (positionExists && positions[0]) {
 			await updateTADEmployee(empId, companyName, positions[0]);
 		}
 		await setInitialPermissions(empId, employmentRole, companyName);

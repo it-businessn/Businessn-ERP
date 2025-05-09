@@ -55,7 +55,7 @@ const GovernmentContribution = ({ company, handleNext, handlePrev, id }) => {
 		setIsLoading(true);
 		try {
 			formData.companyName = company;
-			await PayrollService.updateEmployeeGovernmentInfo(formData, formData._id);
+			await PayrollService.addEmployeeGovernmentInfo(formData);
 			setIsLoading(false);
 			toast({
 				title: "Government info updated successfully.",

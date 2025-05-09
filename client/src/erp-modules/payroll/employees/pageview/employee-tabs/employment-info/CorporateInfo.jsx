@@ -81,7 +81,7 @@ const CorporateInfo = ({ company, id, handleNext, handlePrev }) => {
 				}
 			}
 			formData.companyName = company;
-			await PayrollService.updateEmployeeEmploymentInfo(formData, formData._id);
+			await PayrollService.addEmployeeEmploymentInfo(formData, formData._id);
 			setIsLoading(false);
 			setIsOpen(false);
 			setRefresh((prev) => !prev);

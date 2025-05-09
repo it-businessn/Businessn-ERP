@@ -49,7 +49,7 @@ const BenefitsInfo = ({ company, id, handleNext }) => {
 		updatedBenefit.empId = empId;
 		updatedBenefit.companyName = company;
 		try {
-			await PayrollService.updateEmployeeBalanceInfo(updatedBenefit, formData._id);
+			await PayrollService.addEmployeeBalanceInfo(updatedBenefit);
 			setIsLoading(false);
 		} catch (error) {}
 	};

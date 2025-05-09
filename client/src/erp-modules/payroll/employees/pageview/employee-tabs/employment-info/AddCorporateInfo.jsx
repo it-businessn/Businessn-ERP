@@ -41,6 +41,7 @@ const AddCorporateInfo = ({ company, id, handleNext, handlePrev }) => {
 	const roles = useRoles(company);
 	const positionRoles = usePositionRoles(company, positionAdded);
 	const employmentInfo = useEmployeeEmploymentInfo(company, onboardingEmpId, true, false, refresh);
+
 	useEffect(() => {
 		if (employmentInfo) {
 			employmentInfo.positions = employmentInfo?.positions?.filter((_) => _.title);
