@@ -83,7 +83,7 @@ const EditProject = ({ isOpen, onClose, project, projectId, setRefresh, managers
 									<Input
 										type="text"
 										name="projectName"
-										value={formData.projectName}
+										value={formData?.projectName}
 										onChange={(e) =>
 											setFormData((prevData) => ({
 												...prevData,
@@ -129,7 +129,7 @@ const EditProject = ({ isOpen, onClose, project, projectId, setRefresh, managers
 											type="date"
 											id="startDate"
 											name="startDate"
-											value={formData.startDate}
+											value={formData?.startDate}
 											onChange={(e) =>
 												setFormData((prevData) => ({
 													...prevData,
@@ -146,7 +146,7 @@ const EditProject = ({ isOpen, onClose, project, projectId, setRefresh, managers
 											type="date"
 											id="dueDate"
 											name="dueDate"
-											value={formData.dueDate}
+											value={formData?.dueDate}
 											onChange={(e) =>
 												setFormData((prevData) => ({
 													...prevData,
@@ -161,7 +161,7 @@ const EditProject = ({ isOpen, onClose, project, projectId, setRefresh, managers
 										<Input
 											type="text"
 											name="timeToComplete"
-											value={formData.timeToComplete}
+											value={formData?.timeToComplete}
 											onChange={(e) =>
 												setFormData((prevData) => ({
 													...prevData,
@@ -178,7 +178,7 @@ const EditProject = ({ isOpen, onClose, project, projectId, setRefresh, managers
 										<Select
 											icon={<FaCaretDown />}
 											borderRadius="10px"
-											value={formData.priority}
+											value={formData?.priority}
 											placeholder="Select Priority"
 											onChange={(e) =>
 												setFormData((prevData) => ({
@@ -201,7 +201,7 @@ const EditProject = ({ isOpen, onClose, project, projectId, setRefresh, managers
 
 										<MultiSelectButton
 											handleMenuToggle={handleMenuToggle}
-											assignees={formData.selectedAssignees}
+											assignees={formData?.selectedAssignees}
 											openAssigneeMenu={openAssigneeMenu}
 											handleCloseMenu={handleCloseMenu}
 											selectedOptions={selectedOptions}
@@ -210,7 +210,7 @@ const EditProject = ({ isOpen, onClose, project, projectId, setRefresh, managers
 										/>
 
 										{formData?.selectedAssignees?.length > 0 &&
-											formData.selectedAssignees.map((name) => (
+											formData?.selectedAssignees.map((name) => (
 												<Avatar size={"sm"} name={name} src={name} key={name} />
 											))}
 									</FormControl>

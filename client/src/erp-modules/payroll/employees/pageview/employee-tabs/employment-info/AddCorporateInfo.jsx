@@ -15,40 +15,32 @@ import useEmployeeEmploymentInfo from "hooks/useEmployeeEmploymentInfo";
 import usePaygroup from "hooks/usePaygroup";
 import usePositionRoles from "hooks/usePositionRoles";
 import useRoles from "hooks/useRoles";
-import useSelectedEmp from "hooks/useSelectedEmp";
 import { useEffect, useState } from "react";
 import LocalStorageService from "services/LocalStorageService";
 import PayrollService from "services/PayrollService";
-import StepContent from "../step-content";
-import Record from "../step-content/Record";
+import StepContent from "../../step-content";
+import Record from "../../step-content/Record";
 import PositionInfo from "./PositionInfo";
 
-const CorporateInfo = ({ company, isOnboarding, id, handleNext, handlePrev }) => {
+const AddCorporateInfo = ({ company, id, handleNext, handlePrev }) => {
 	const toast = useToast();
-	const { empId } = useSelectedEmp(LocalStorageService.getItem("empId"));
+	const onboardingEmpId = LocalStorageService.getItem("onboardingEmpId");
+	const initialCorporateInfo = getInitialCorporateInfo(onboardingEmpId, company);
+
 	const [refresh, setRefresh] = useState(false);
 	const [positionAdded, setPositionAdded] = useState(false);
-	const onboardingEmpId = LocalStorageService.getItem("onboardingEmpId");
-	const userId = isOnboarding ? onboardingEmpId : empId;
-	const employmentInfo = useEmployeeEmploymentInfo(
-		company,
-		userId,
-		true,
-		false,
-		refresh,
-		isOnboarding,
-	);
-	const initialCorporateInfo = getInitialCorporateInfo(userId, company);
 	const [formData, setFormData] = useState(initialCorporateInfo);
 	const [isOpen, setIsOpen] = useState(false);
 	const [isDisabled, setIsDisabled] = useState(true);
 	const [isLoading, setIsLoading] = useState(false);
+	const [currentStep, setCurrentStep] = useState(0);
+
 	const { payGroups } = usePaygroup(company, false);
 	const department = useDepartment(company);
 	const costCentres = useCostCenter(company);
 	const roles = useRoles(company);
 	const positionRoles = usePositionRoles(company, positionAdded);
-
+	const employmentInfo = useEmployeeEmploymentInfo(company, onboardingEmpId, true, false, refresh);
 	useEffect(() => {
 		if (employmentInfo) {
 			employmentInfo.positions = employmentInfo?.positions?.filter((_) => _.title);
@@ -61,25 +53,25 @@ const CorporateInfo = ({ company, isOnboarding, id, handleNext, handlePrev }) =>
 		} else {
 			setFormData(initialCorporateInfo);
 		}
-	}, [employmentInfo?._id, empId]);
+	}, [employmentInfo?._id]);
 
 	useEffect(() => {
-		if (formData.employeeNo) {
+		if (formData?.employeeNo) {
 			setIsDisabled(false);
 		} else {
 			setIsDisabled(true);
 		}
-	}, [formData.employeeNo, formData.payrollStatus]);
+	}, [formData?.employeeNo, formData?.payrollStatus]);
 
 	const handleSubmit = async (position, updateRecordIndex) => {
 		setIsLoading(true);
 		try {
 			if (position) {
-				const existingPositions = formData.positions;
+				const existingPositions = formData?.positions;
 				const positionIndex =
 					updateRecordIndex > -1
 						? updateRecordIndex
-						: formData.positions?.findIndex(({ title }) => title === position?.title);
+						: formData?.positions?.findIndex(({ title }) => title === position?.title);
 
 				if (positionIndex === -1) {
 					existingPositions.push(position);
@@ -121,7 +113,7 @@ const CorporateInfo = ({ company, isOnboarding, id, handleNext, handlePrev }) =>
 			title: "Tenure",
 			content: (
 				<Record
-					isOnboarding={isOnboarding}
+					isOnboarding={true}
 					handleConfirm={() => ""}
 					formData={formData}
 					setFormData={setFormData}
@@ -160,7 +152,7 @@ const CorporateInfo = ({ company, isOnboarding, id, handleNext, handlePrev }) =>
 								loadingText="Loading"
 								onOpen={() => setIsOpen(true)}
 							/>
-							{formData.positions?.map((position, index) => (
+							{formData?.positions?.map((position, index) => (
 								<BoxCard
 									mt={2}
 									border="1px solid var(--lead_cards_border)"
@@ -203,7 +195,7 @@ const CorporateInfo = ({ company, isOnboarding, id, handleNext, handlePrev }) =>
 			),
 		},
 	];
-	const [currentStep, setCurrentStep] = useState(0);
+
 	const goToNextStep = (index) => {
 		setCurrentStep(index);
 	};
@@ -220,7 +212,7 @@ const CorporateInfo = ({ company, isOnboarding, id, handleNext, handlePrev }) =>
 					steps={steps}
 					currentStep={currentStep}
 					handleClick={goToNextStep}
-					isOnboarding={isOnboarding}
+					isOnboarding={true}
 					id={id}
 					handleNext={handleNext}
 					handlePrev={handlePrev}
@@ -235,4 +227,4 @@ const CorporateInfo = ({ company, isOnboarding, id, handleNext, handlePrev }) =>
 	);
 };
 
-export default CorporateInfo;
+export default AddCorporateInfo;

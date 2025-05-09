@@ -15,9 +15,9 @@ const InputRecord = ({
 	hasPassword,
 	autoComplete,
 }) => {
-	const isHourlyEarning = formData.typeOfEarning === "Hourly";
-	const isFTSalaried = formData.typeOfEarning === "Full Time Salaried";
-	const isPTSalaried = formData.typeOfEarning === "Part Time Salaried";
+	const isHourlyEarning = formData?.typeOfEarning === "Hourly";
+	const isFTSalaried = formData?.typeOfEarning === "Full Time Salaried";
+	const isPTSalaried = formData?.typeOfEarning === "Part Time Salaried";
 
 	const standardHrsHidden = isHourlyEarning && param.name.includes("Standard Hours");
 	const PTSalariedHidden = isFTSalaried && param.name.includes("(PT)");

@@ -112,7 +112,7 @@ export default function CustomerInfo() {
 								label="First Name"
 								name="firstName"
 								placeholder="Enter First Name"
-								valueText={formData.firstName || ""}
+								valueText={formData?.firstName || ""}
 								handleChange={handleInputChange}
 							/>
 							<InputFormControl
@@ -120,7 +120,7 @@ export default function CustomerInfo() {
 								label="Last Name"
 								name="lastName"
 								placeholder="Enter Last Name"
-								valueText={formData.lastName || ""}
+								valueText={formData?.lastName || ""}
 								handleChange={handleInputChange}
 							/>
 						</HStack>
@@ -130,7 +130,7 @@ export default function CustomerInfo() {
 								label="Your Title"
 								name="title"
 								placeholder="Enter Role"
-								valueText={formData.title || ""}
+								valueText={formData?.title || ""}
 								handleChange={handleInputChange}
 							/>
 							<InputFormControl
@@ -138,7 +138,7 @@ export default function CustomerInfo() {
 								label="Your Company Name"
 								name="companyName"
 								placeholder="Enter Company Name"
-								valueText={formData.companyName || ""}
+								valueText={formData?.companyName || ""}
 								handleChange={handleInputChange}
 							/>
 						</HStack>
@@ -149,7 +149,7 @@ export default function CustomerInfo() {
 								label="Work Email"
 								name="email"
 								placeholder="Enter Email"
-								valueText={formData.email || ""}
+								valueText={formData?.email || ""}
 								type="email"
 								handleChange={handleInputChange}
 							/>
@@ -158,7 +158,7 @@ export default function CustomerInfo() {
 								label="Phone"
 								name="phone"
 								placeholder="Enter Phone"
-								valueText={formData.phone || ""}
+								valueText={formData?.phone || ""}
 								type="number"
 								handleChange={handleInputChange}
 							/>
@@ -188,7 +188,7 @@ export default function CustomerInfo() {
 								valueParam="name"
 								name="province"
 								label="Province / State"
-								valueText={formData.province || ""}
+								valueText={formData?.province || ""}
 								handleChange={(e) =>
 									setFormData((prevData) => ({
 										...prevData,
@@ -204,14 +204,14 @@ export default function CustomerInfo() {
 							label="Annual Revenue"
 							name="annualRevenue"
 							placeholder="Enter Annual Revenue"
-							valueText={formData.annualRevenue || ""}
+							valueText={formData?.annualRevenue || ""}
 							handleChange={handleInputChange}
 						/>
 						<InputFormControl
 							fontSize="md"
 							label="Number of Employees"
 							name="totalEmployees"
-							valueText={formData.totalEmployees || ""}
+							valueText={formData?.totalEmployees || ""}
 							typ="number"
 							handleChange={handleInputChange}
 						/>
@@ -254,7 +254,7 @@ export default function CustomerInfo() {
 						</FormControl>
 						<ActionButtonGroup
 							submitBtnName={"Submit"}
-							isDisabled={formData.fullName === ""}
+							isDisabled={formData?.fullName === ""}
 							isLoading={isSubmitting}
 							onOpen={handleSubmit}
 							justifyContent="center"

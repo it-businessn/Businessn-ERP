@@ -91,19 +91,19 @@ const Orders = () => {
 
 	const handleUpdate = async () => {
 		try {
-			const updatedRec = orders.find(({ _id }) => _id === formData.recordId);
+			const updatedRec = orders.find(({ _id }) => _id === formData?.recordId);
 			formData.fundsReceivedStatus = updatedRec.fundsReceivedStatus;
 			formData.craDepositedStatus = updatedRec.craDepositedStatus;
 			formData.craSentStatus = updatedRec.craSentStatus;
 			formData.empEFTDepositedStatus = updatedRec.empEFTDepositedStatus;
 			formData.empEFTSentStatus = updatedRec.empEFTSentStatus;
 
-			if (formData.recordId) {
-				const { data } = await OrderService.updateOrder(formData, formData.recordId);
+			if (formData?.recordId) {
+				const { data } = await OrderService.updateOrder(formData, formData?.recordId);
 
 				if (data) {
 					const updatedData = orders?.map((record) =>
-						record._id === formData.recordId
+						record._id === formData?.recordId
 							? {
 									...record,
 									fundsReceivedStatus: data?.fundsReceivedStatus,

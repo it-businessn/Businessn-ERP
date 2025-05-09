@@ -152,8 +152,8 @@ const AddNewOpportunity = ({
 		formData.primaryAssignee = selectedPrimaryAssignees;
 		formData.supervisorAssignee = selectedSupervisorAssignees;
 
-		formData.abbreviation = `${formData.name.replace(" ", "_").toUpperCase()}${today}`;
-		formData.opportunityName = formData.abbreviation;
+		formData.abbreviation = `${formData?.name.replace(" ", "_").toUpperCase()}${today}`;
+		formData.opportunityName = formData?.abbreviation;
 		setSubmitting(true);
 		try {
 			if (showEditLead) {
@@ -193,7 +193,7 @@ const AddNewOpportunity = ({
 									size="sm"
 									placeholder="Select Company"
 									name="name"
-									value={formData.name}
+									value={formData?.name}
 									onChange={handleChange}
 								>
 									{companies?.map(({ _id, name }) => (
@@ -228,7 +228,7 @@ const AddNewOpportunity = ({
 							type="number"
 							label={"Phone"}
 							name="phone"
-							valueText={formData.phone}
+							valueText={formData?.phone}
 							handleChange={handleChange}
 							required
 						/>
@@ -236,7 +236,7 @@ const AddNewOpportunity = ({
 							label={"Email"}
 							name="email"
 							type="email"
-							valueText={formData.email}
+							valueText={formData?.email}
 							handleChange={handleChange}
 							required
 						/>
@@ -249,12 +249,12 @@ const AddNewOpportunity = ({
 								type="text"
 								name="streetNumber"
 								size={"sm"}
-								value={formData.address.streetNumber}
+								value={formData?.address.streetNumber}
 								onChange={(e) => {
 									setFormData({
 										...formData,
 										address: {
-											...formData.address,
+											...formData?.address,
 											streetNumber: e.target.value,
 										},
 									});
@@ -267,12 +267,12 @@ const AddNewOpportunity = ({
 								type="text"
 								name="city"
 								size={"sm"}
-								value={formData.address.city}
+								value={formData?.address.city}
 								onChange={(e) => {
 									setFormData({
 										...formData,
 										address: {
-											...formData.address,
+											...formData?.address,
 											city: e.target.value,
 										},
 									});
@@ -287,12 +287,12 @@ const AddNewOpportunity = ({
 								name="type"
 								placeholder="Select Country"
 								size="sm"
-								valueText={formData.address.country || ""}
+								valueText={formData?.address.country || ""}
 								handleChange={(e) =>
 									setFormData((prevData) => ({
 										...prevData,
 										address: {
-											...formData.address,
+											...formData?.address,
 											country: e.target.value,
 										},
 									}))
@@ -308,12 +308,12 @@ const AddNewOpportunity = ({
 								valueParam="name"
 								name="province"
 								placeholder="Select Province / State"
-								valueText={formData.address.state || ""}
+								valueText={formData?.address.state || ""}
 								handleChange={(e) =>
 									setFormData((prevData) => ({
 										...prevData,
 										address: {
-											...formData.address,
+											...formData?.address,
 											state: e.target.value,
 										},
 									}))
@@ -324,12 +324,12 @@ const AddNewOpportunity = ({
 								type="text"
 								name="postalCode"
 								size="sm"
-								value={formData.address.postalCode}
+								value={formData?.address.postalCode}
 								onChange={(e) => {
 									setFormData({
 										...formData,
 										address: {
-											...formData.address,
+											...formData?.address,
 											postalCode: e.target.value,
 										},
 									});
@@ -347,7 +347,7 @@ const AddNewOpportunity = ({
 							valueParam="name"
 							name="province"
 							label="Region"
-							valueText={formData.region || ""}
+							valueText={formData?.region || ""}
 							handleChange={(e) =>
 								setFormData((prevData) => ({
 									...prevData,
@@ -366,7 +366,7 @@ const AddNewOpportunity = ({
 								size="sm"
 								placeholder="Select Industry"
 								name="industry"
-								value={formData.industry}
+								value={formData?.industry}
 								onChange={handleChange}
 							>
 								{INDUSTRIES.map(({ id, name }) => (
@@ -385,7 +385,7 @@ const AddNewOpportunity = ({
 							size="sm"
 							placeholder="Select Lead Source"
 							name="source"
-							value={formData.source}
+							value={formData?.source}
 							onChange={handleChange}
 						>
 							{LEAD_SOURCES.map(({ id, name }) => (
@@ -435,7 +435,7 @@ const AddNewOpportunity = ({
 									size="sm"
 									placeholder="Select Stage"
 									name="stage"
-									value={formData.stage}
+									value={formData?.stage}
 									onChange={handleChange}
 								>
 									{LEAD_STAGES.map(({ abbr, name }) => (

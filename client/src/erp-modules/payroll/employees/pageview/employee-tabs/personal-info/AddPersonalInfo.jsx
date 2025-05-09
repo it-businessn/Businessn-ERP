@@ -8,27 +8,25 @@ import {
 	getInitialProfileInfo,
 } from "config/payroll/employees/profileInfo";
 import useEmployeeProfileInfo from "hooks/useEmployeeProfileInfo";
-import useSelectedEmp from "hooks/useSelectedEmp";
 import { useEffect, useState } from "react";
 import LocalStorageService from "services/LocalStorageService";
 import PayrollService from "services/PayrollService";
-import StepContent from "../step-content";
-import Record from "../step-content/Record";
+import StepContent from "../../step-content";
+import Record from "../../step-content/Record";
 
-const PersonalInfo = ({ company, isOnboarding, id, handleNext }) => {
-	const { empId } = useSelectedEmp(LocalStorageService.getItem("empId"));
+const AddPersonalInfo = ({ company, id, handleNext }) => {
 	const onboardingEmpId = LocalStorageService.getItem("onboardingEmpId");
-	const userId = isOnboarding ? onboardingEmpId : empId;
-	const profileInfo = useEmployeeProfileInfo(company, userId, isOnboarding);
+	const profileInfo = useEmployeeProfileInfo(company, onboardingEmpId);
+	const toast = useToast();
 
-	const setProfileInfo = () => getInitialProfileInfo(isOnboarding ? null : empId, company);
+	const setProfileInfo = () => getInitialProfileInfo(null, company);
 	const [formData, setFormData] = useState(setProfileInfo);
 	const [isSave1Disabled, setIsSave1Disabled] = useState(true);
 	const [isSave3Disabled, setIsSave3Disabled] = useState(true);
 	const [isLoading, setIsLoading] = useState(false);
+	const [currentStep, setCurrentStep] = useState(0);
 
 	useEffect(() => {
-		if (!isOnboarding) LocalStorageService.removeItem("onboardingEmpId");
 		if (profileInfo) {
 			if (profileInfo.email) {
 				profileInfo.empId = profileInfo._id;
@@ -39,42 +37,34 @@ const PersonalInfo = ({ company, isOnboarding, id, handleNext }) => {
 		} else {
 			setFormData(setProfileInfo);
 		}
-	}, [profileInfo, empId]);
+	}, [profileInfo]);
 
 	useEffect(() => {
-		if (formData.firstName && formData.lastName && formData.password) {
+		if (formData?.firstName && formData?.lastName && formData?.password) {
 			setIsSave1Disabled(false);
 		}
-	}, [formData.firstName, formData.lastName, formData.password]);
-
-	// useEffect(() => {
-	// 	if (formData.employeeNo) {
-	// 		setIsSave2Disabled(false);
-	// 	}
-	// }, [formData.employeeNo]);
+	}, [formData?.firstName, formData?.lastName, formData?.password]);
 
 	useEffect(() => {
 		if (
-			formData.personalEmail &&
-			formData.streetAddress &&
-			formData.city &&
-			formData.province &&
-			formData.country &&
-			formData.postalCode
+			formData?.personalEmail &&
+			formData?.streetAddress &&
+			formData?.city &&
+			formData?.province &&
+			formData?.country &&
+			formData?.postalCode
 		) {
 			setIsSave3Disabled(false);
 		}
 	}, [
-		formData.personalEmail,
-		formData.streetAddress,
-		formData.city,
-		formData.province,
-		formData.country,
-		formData.postalCode,
+		formData?.personalEmail,
+		formData?.streetAddress,
+		formData?.city,
+		formData?.province,
+		formData?.country,
+		formData?.postalCode,
 		formData?.password,
 	]);
-
-	const toast = useToast();
 
 	const handleSubmit = async () => {
 		setIsLoading(true);
@@ -82,9 +72,6 @@ const PersonalInfo = ({ company, isOnboarding, id, handleNext }) => {
 			formData.companyName = company;
 			const { data } = await PayrollService.addEmployeeProfileInfo(formData);
 			setIsLoading(false);
-			// setIsSave1Disabled(true);
-			// setIsSave2Disabled(true);
-			// setIsSave3Disabled(true);
 			LocalStorageService.setItem("onboardingEmpId", data?.empId);
 			toast({
 				title: "Personal info added successfully.",
@@ -106,7 +93,7 @@ const PersonalInfo = ({ company, isOnboarding, id, handleNext }) => {
 					title="Personal Information"
 					config={EMP_PERSONAL_INFO_CONFIG}
 					handleSubmit={handleSubmit}
-					isOnboarding={isOnboarding}
+					isOnboarding={true}
 					hasPassword={profileInfo?.password}
 				/>
 			),
@@ -137,7 +124,7 @@ const PersonalInfo = ({ company, isOnboarding, id, handleNext }) => {
 			),
 		},
 	];
-	const [currentStep, setCurrentStep] = useState(0);
+
 	const goToNextStep = (index) => {
 		setCurrentStep(index);
 	};
@@ -154,19 +141,18 @@ const PersonalInfo = ({ company, isOnboarding, id, handleNext }) => {
 					steps={steps}
 					currentStep={currentStep}
 					handleClick={goToNextStep}
-					isOnboarding={isOnboarding}
+					isOnboarding={true}
 					id={id}
 					handleNext={handleNext}
-					// handleNextEnabled={!isSave1Disabled && !isSave2Disabled && !isSave3Disabled}
 					handleNextEnabled={!isSave1Disabled && !isSave3Disabled}
 					handleSubmit={handleSubmit}
 					isLoading={isLoading}
 					isDisabled={isSave3Disabled || isSave1Disabled}
 				/>
 			</BoxCard>
-			<StepContent currentStep={currentStep} steps={steps} isOnboarding={isOnboarding} />
+			<StepContent currentStep={currentStep} steps={steps} isOnboarding={true} />
 		</SimpleGrid>
 	);
 };
 
-export default PersonalInfo;
+export default AddPersonalInfo;

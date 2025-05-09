@@ -123,14 +123,19 @@ const SignInForm = ({ title, isMobile }) => {
 					<Stack spacing={4}>
 						<FormControl>
 							<FormLabel>Company ID</FormLabel>
-							<Input name="companyId" value={formData.companyId} onChange={handleChange} required />
+							<Input
+								name="companyId"
+								value={formData?.companyId}
+								onChange={handleChange}
+								required
+							/>
 						</FormControl>
 						<FormControl>
 							<FormLabel>Email</FormLabel>
 							<Input
 								type="email"
 								name="email"
-								value={formData.email}
+								value={formData?.email}
 								onChange={handleChange}
 								required
 							/>
@@ -142,7 +147,7 @@ const SignInForm = ({ title, isMobile }) => {
 								<Input
 									type={showPassword ? "text" : "password"}
 									name="password"
-									value={formData.password}
+									value={formData?.password}
 									onChange={handleChange}
 									required
 								/>

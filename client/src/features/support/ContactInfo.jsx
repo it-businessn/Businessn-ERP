@@ -43,11 +43,11 @@ const ContactInfo = ({ id, handleNext, handlePrev }) => {
 
 	useEffect(() => {
 		if (
-			formData.clientFirstName !== "" &&
-			formData.clientLastName !== "" &&
-			formData.clientEmail !== "" &&
-			formData.clientPhoneNumber !== "" &&
-			formData.clientModeOfContact !== ""
+			formData?.clientFirstName !== "" &&
+			formData?.clientLastName !== "" &&
+			formData?.clientEmail !== "" &&
+			formData?.clientPhoneNumber !== "" &&
+			formData?.clientModeOfContact !== ""
 		) {
 			setIsSaveDisabled(false);
 		}
@@ -58,7 +58,7 @@ const ContactInfo = ({ id, handleNext, handlePrev }) => {
 	const handleSubmit = async () => {
 		setIsLoading(true);
 		try {
-			await TicketService.updateInfo(formData, formData._id);
+			await TicketService.updateInfo(formData, formData?._id);
 			setIsLoading(false);
 			toast({
 				title: "Contact info added successfully.",

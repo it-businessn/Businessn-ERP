@@ -46,16 +46,10 @@ const AddNotes = ({ data, type, setIsOpen, isOpen, setRefresh }) => {
 				<ModalCloseButton />
 				<ModalBody>
 					<FormLabel>Name</FormLabel>
-					<Input
-						type="text"
-						name="name"
-						value={formData.name}
-						border={"none"}
-						readOnly
-					/>
+					<Input type="text" name="name" value={formData?.name} border={"none"} readOnly />
 					<FormLabel>Description</FormLabel>
 					<Textarea
-						value={formData.notes}
+						value={formData?.notes}
 						rows={5}
 						name="notes"
 						onChange={(e) =>
@@ -76,17 +70,9 @@ const AddNotes = ({ data, type, setIsOpen, isOpen, setRefresh }) => {
 				<ModalFooter>
 					{isEdit && (
 						<>
-							<ActionButton
-								isLoading={isSubmitting}
-								name={"Save"}
-								onClick={handleConfirm}
-							/>
+							<ActionButton isLoading={isSubmitting} name={"Save"} onClick={handleConfirm} />
 
-							<Button
-								ml={3}
-								colorScheme={"gray"}
-								onClick={() => setIsOpen(false)}
-							>
+							<Button ml={3} colorScheme={"gray"} onClick={() => setIsOpen(false)}>
 								Cancel
 							</Button>
 						</>

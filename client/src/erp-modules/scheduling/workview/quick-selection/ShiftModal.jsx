@@ -56,11 +56,11 @@ const ShiftModal = ({
 	const [formData, setFormData] = useState(defaultShiftInfo);
 
 	useEffect(() => {
-		if (!(formData.shiftStart && formData?.shiftEnd)) {
+		if (!(formData?.shiftStart && formData?.shiftEnd)) {
 			return;
 		}
-		const start = moment(formData.shiftStart, "HH:mm");
-		const end = moment(formData.shiftEnd, "HH:mm");
+		const start = moment(formData?.shiftStart, "HH:mm");
+		const end = moment(formData?.shiftEnd, "HH:mm");
 		const duration = moment.duration(end.diff(start));
 		const hours = Math.floor(duration.asHours());
 		const minutes = duration.minutes();
@@ -95,7 +95,7 @@ const ShiftModal = ({
 					<RequiredLabel label="Employee Name" />
 					<Select
 						name="fullName"
-						value={formData.employeeName}
+						value={formData?.employeeName}
 						onChange={(e) =>
 							setFormData((prevData) => ({
 								...prevData,
@@ -116,7 +116,7 @@ const ShiftModal = ({
 						valueParam="name"
 						name="name"
 						label="Role"
-						valueText={formData.role || ""}
+						valueText={formData?.role || ""}
 						handleChange={(e) =>
 							setFormData((prevData) => ({
 								...prevData,
@@ -137,7 +137,7 @@ const ShiftModal = ({
 						valueParam="name"
 						name="name"
 						label="Location"
-						valueText={formData.location || ""}
+						valueText={formData?.location || ""}
 						handleChange={(e) =>
 							setFormData((prevData) => ({
 								...prevData,
@@ -157,12 +157,12 @@ const ShiftModal = ({
 					label="Notes"
 					name="notes"
 					placeholder="Enter notes/instruction"
-					valueText={formData.notes || ""}
+					valueText={formData?.notes || ""}
 					handleChange={handleChange}
 				/>
 				<DateTimeFormControl
 					label={"Select shift date"}
-					valueText1={formData.shiftDate || ""}
+					valueText1={formData?.shiftDate || ""}
 					name1="shiftDate"
 					handleChange={handleChange}
 					required
@@ -170,7 +170,7 @@ const ShiftModal = ({
 				<HStack w="100%">
 					<DateTimeFormControl
 						timeLabel="Shift Start Time"
-						valueText2={formData.shiftStart || ""}
+						valueText2={formData?.shiftStart || ""}
 						name2="shiftStart"
 						handleChange={(e) => {
 							setFormData((prevData) => ({
@@ -182,7 +182,7 @@ const ShiftModal = ({
 					/>
 					<DateTimeFormControl
 						timeLabel="Shift End Time"
-						valueText2={formData.shiftEnd || ""}
+						valueText2={formData?.shiftEnd || ""}
 						name2="shiftEnd"
 						required
 						handleChange={(e) => {
@@ -193,13 +193,13 @@ const ShiftModal = ({
 						}}
 					/>
 				</HStack>
-				{formData.shiftDuration && (
-					<TextTitle size="sm" title={`Shift duration: ${formData.shiftDuration}`} />
+				{formData?.shiftDuration && (
+					<TextTitle size="sm" title={`Shift duration: ${formData?.shiftDuration}`} />
 				)}
 				<Checkbox
 					colorScheme="facebook"
 					name="repeatSchedule"
-					isChecked={formData.repeatSchedule}
+					isChecked={formData?.repeatSchedule}
 					onChange={handleChange}
 				>
 					Repeat for 1 week

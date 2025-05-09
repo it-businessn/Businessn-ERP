@@ -83,7 +83,7 @@ const NewTicket = ({
 					valueParam="name"
 					name="category"
 					label="Category"
-					valueText={formData.category}
+					valueText={formData?.category}
 					handleChange={handleChange}
 					options={depts}
 					placeholder="Select category"
@@ -91,7 +91,7 @@ const NewTicket = ({
 				<SelectFormControl
 					name="priority"
 					label="Priority"
-					valueText={formData.priority}
+					valueText={formData?.priority}
 					handleChange={handleChange}
 					options={PRIORITY_LIST}
 					placeholder="Select priority"
@@ -100,7 +100,7 @@ const NewTicket = ({
 					valueParam="fullName"
 					name="fullName"
 					label="Assignee"
-					valueText={formData.assignee}
+					valueText={formData?.assignee}
 					handleChange={(e) =>
 						setFormData((prevData) => ({
 							...prevData,
@@ -114,7 +114,7 @@ const NewTicket = ({
 					maxLength={100}
 					label="Topic"
 					name="topic"
-					valueText={formData.topic}
+					valueText={formData?.topic}
 					handleChange={handleChange}
 					required
 				/>
@@ -122,7 +122,7 @@ const NewTicket = ({
 					maxLength={500}
 					label="Description"
 					name="issue"
-					valueText={formData.issue}
+					valueText={formData?.issue}
 					handleChange={handleChange}
 					required
 				/>
@@ -135,10 +135,10 @@ const NewTicket = ({
 				<ActionButtonGroup
 					submitBtnName={"Add"}
 					isDisabled={
-						formData.assignee === "" ||
-						formData.topic === "" ||
-						formData.issue === "" ||
-						formData.category === ""
+						formData?.assignee === "" ||
+						formData?.topic === "" ||
+						formData?.issue === "" ||
+						formData?.category === ""
 					}
 					isLoading={isSubmitting}
 					onClose={handleClose}

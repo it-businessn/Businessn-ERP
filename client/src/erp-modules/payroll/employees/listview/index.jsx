@@ -37,7 +37,6 @@ const EmployeeListView = () => {
 	const { employees, filteredEmployees, setFilteredEmployees } = useEmployees(
 		isRefresh,
 		company,
-		false,
 		formData,
 		null,
 		deptName,
@@ -139,7 +138,7 @@ const EmployeeListView = () => {
 						<HStack spacing={2}>
 							<Checkbox
 								colorScheme={"facebook"}
-								isChecked={formData.isPayrollActive}
+								isChecked={formData?.isPayrollActive}
 								onChange={(e) =>
 									setFormData((prevData) => ({
 										...prevData,
@@ -151,7 +150,7 @@ const EmployeeListView = () => {
 							</Checkbox>
 							<Checkbox
 								colorScheme={"facebook"}
-								isChecked={formData.isPayrollInactive}
+								isChecked={formData?.isPayrollInactive}
 								onChange={(e) =>
 									setFormData((prevData) => ({
 										...prevData,

@@ -13,16 +13,14 @@ import useSelectedEmp from "hooks/useSelectedEmp";
 import { useEffect, useState } from "react";
 import LocalStorageService from "services/LocalStorageService";
 import PayrollService from "services/PayrollService";
-import StepContent from "../step-content";
-import Record from "../step-content/Record";
+import StepContent from "../../step-content";
+import Record from "../../step-content/Record";
 
-const GovernmentContribution = ({ company, isOnboarding, handleNext, handlePrev, id }) => {
+const GovernmentContribution = ({ company, handleNext, handlePrev, id }) => {
 	const { empId } = useSelectedEmp(LocalStorageService.getItem("empId"));
-	const onboardingEmpId = LocalStorageService.getItem("onboardingEmpId");
-	const userId = isOnboarding ? onboardingEmpId : empId;
 	const [refresh, setIsRefresh] = useState(true);
-	const governmentInfo = useEmployeeGovernment(company, userId, isOnboarding, refresh);
-	const setGovernmentInfo = () => getInitialGovernmentInfo(userId, company);
+	const governmentInfo = useEmployeeGovernment(company, empId, refresh);
+	const setGovernmentInfo = () => getInitialGovernmentInfo(empId, company);
 	const [formData, setFormData] = useState(setGovernmentInfo);
 	const [isDisabled, setIsDisabled] = useState(false);
 	const [isLoading, setIsLoading] = useState(false);
@@ -39,7 +37,7 @@ const GovernmentContribution = ({ company, isOnboarding, handleNext, handlePrev,
 		} else {
 			setFormData(setGovernmentInfo);
 		}
-	}, [governmentInfo, userId]);
+	}, [governmentInfo, empId]);
 
 	const handleConfirm = () => {
 		setIsDisabled(false);
@@ -150,7 +148,6 @@ const GovernmentContribution = ({ company, isOnboarding, handleNext, handlePrev,
 					steps={steps}
 					currentStep={currentStep}
 					handleClick={goToNextStep}
-					isOnboarding={isOnboarding}
 					handleNext={handleNext}
 					handlePrev={handlePrev}
 					id={id}
@@ -160,7 +157,7 @@ const GovernmentContribution = ({ company, isOnboarding, handleNext, handlePrev,
 					isDisabled={isDisabled}
 				/>
 			</BoxCard>
-			<StepContent currentStep={currentStep} steps={steps} isOnboarding={isOnboarding} />
+			<StepContent currentStep={currentStep} steps={steps} />
 		</SimpleGrid>
 	);
 };

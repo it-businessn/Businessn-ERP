@@ -56,11 +56,11 @@ const ExtraTimeEntryModal = ({
 	const { onClose } = useDisclosure();
 
 	useEffect(() => {
-		if (formData.type !== "") {
-			const { param_hours } = getParamKey(formData.type);
+		if (formData?.type !== "") {
+			const { param_hours } = getParamKey(formData?.type);
 			setFormData((prevData) => ({ ...prevData, param_hours }));
 		}
-	}, [formData.type]);
+	}, [formData?.type]);
 
 	const handleClose = () => {
 		onClose();
@@ -97,7 +97,7 @@ const ExtraTimeEntryModal = ({
 						valueParam="_id"
 						name="fullName"
 						label="Select employee"
-						valueText={formData.employeeId}
+						valueText={formData?.employeeId}
 						handleChange={(e) =>
 							setFormData((prevData) => ({
 								...prevData,
@@ -111,7 +111,7 @@ const ExtraTimeEntryModal = ({
 				<SelectFormControl
 					name="type"
 					label={"Type of Pay"}
-					valueText={formData.type}
+					valueText={formData?.type}
 					handleChange={handleChange}
 					options={PAY_TYPES}
 					isPayType
@@ -119,7 +119,7 @@ const ExtraTimeEntryModal = ({
 				/>
 				<DateTimeFormControl
 					label={"Select worked date"}
-					valueText1={formData.clockIn}
+					valueText1={formData?.clockIn}
 					name1="clockIn"
 					handleChange={handleChange}
 					required
@@ -127,7 +127,7 @@ const ExtraTimeEntryModal = ({
 				<HStack>
 					<DateTimeFormControl
 						timeLabel="Start Time"
-						valueText2={formData.startTime}
+						valueText2={formData?.startTime}
 						name2="startTime"
 						handleChange={(e) => {
 							setFormData((prevData) => ({
@@ -139,7 +139,7 @@ const ExtraTimeEntryModal = ({
 					/>
 					<DateTimeFormControl
 						timeLabel="End Time"
-						valueText2={formData.endTime}
+						valueText2={formData?.endTime}
 						name2="endTime"
 						required
 						handleChange={(e) => {
@@ -152,7 +152,7 @@ const ExtraTimeEntryModal = ({
 				</HStack>
 				<ActionButtonGroup
 					submitBtnName={"Add"}
-					isDisabled={formData.fullName === ""}
+					isDisabled={formData?.fullName === ""}
 					isLoading={isSubmitting}
 					onClose={handleClose}
 					onOpen={handleSubmit}

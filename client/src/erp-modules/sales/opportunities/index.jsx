@@ -107,32 +107,32 @@ const Opportunities = () => {
 	useEffect(() => {
 		const updateOpportunity = async () => {
 			try {
-				await LeadsService.updateLeadInfo(formData, formData.id);
+				await LeadsService.updateLeadInfo(formData, formData?.id);
 				fetchAllOpportunities();
 			} catch (error) {}
 		};
 		const updateAgentsLead = async () => {
 			try {
-				if (formData.primaryAssignee) {
+				if (formData?.primaryAssignee) {
 					const agent = assignees.find(
-						(agent) => agent.fullName === formData.primaryAssignee[0].name,
+						(agent) => agent.fullName === formData?.primaryAssignee[0].name,
 					);
-					await UserService.updateUserInfoById({ leads: [formData.id] }, agent._id);
+					await UserService.updateUserInfoById({ leads: [formData?.id] }, agent._id);
 					return;
 				}
-				if (formData.supervisorAssignee) {
+				if (formData?.supervisorAssignee) {
 					const agent = assignees.find(
-						(agent) => agent.fullName === formData.supervisorAssignee[0].name,
+						(agent) => agent.fullName === formData?.supervisorAssignee[0].name,
 					);
-					await UserService.updateUserInfoById({ leads: [formData.id] }, agent._id);
+					await UserService.updateUserInfoById({ leads: [formData?.id] }, agent._id);
 					return;
 				}
 			} catch (error) {}
 		};
-		if (formData.id) {
+		if (formData?.id) {
 			updateOpportunity();
 		}
-		if (formData.primaryAssignee || formData.supervisorAssignee) {
+		if (formData?.primaryAssignee || formData?.supervisorAssignee) {
 			updateAgentsLead();
 		}
 	}, [formData]);

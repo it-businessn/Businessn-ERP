@@ -259,8 +259,8 @@ const Timesheet = ({
 	}, [timesheetData, isActioned]);
 
 	useEffect(() => {
-		if (formData.approve !== undefined) {
-			if (formData.approve) {
+		if (formData?.approve !== undefined) {
+			if (formData?.approve) {
 				const currentRecord = timesheetData.find((record) => record._id === formData?.recordId);
 				const hasOverlap = checkOverlaps(currentRecord);
 				if (hasOverlap) {
@@ -278,25 +278,25 @@ const Timesheet = ({
 			}
 			handleSubmit();
 		}
-	}, [formData.approve, formData.recordId]);
+	}, [formData?.approve, formData?.recordId]);
 
 	useEffect(() => {
-		if (formData.role) {
+		if (formData?.role) {
 			handleRoleChangeSubmit();
 		}
-	}, [formData.role]);
+	}, [formData?.role]);
 
 	useEffect(() => {
-		if (formData.clockIn) {
-			handleTimeChange("clockIn", formData.clockIn);
+		if (formData?.clockIn) {
+			handleTimeChange("clockIn", formData?.clockIn);
 		}
-	}, [formData.clockIn]);
+	}, [formData?.clockIn]);
 
 	useEffect(() => {
-		if (formData.clockOut) {
-			handleTimeChange("clockOut", formData.clockOut);
+		if (formData?.clockOut) {
+			handleTimeChange("clockOut", formData?.clockOut);
 		}
-	}, [formData.clockOut]);
+	}, [formData?.clockOut]);
 
 	useEffect(() => {
 		if (isPayTypeChanged) {
@@ -357,7 +357,7 @@ const Timesheet = ({
 
 	const handleTimeChange = (key, value) => {
 		const updatedData = timesheetData?.map((record) =>
-			record._id === formData.recordId
+			record._id === formData?.recordId
 				? {
 						...record,
 						[key]: value,
@@ -449,13 +449,13 @@ const Timesheet = ({
 
 	const handleRoleChangeSubmit = async () => {
 		try {
-			const updatedRec = timesheetData.find((record) => record._id === formData.recordId);
+			const updatedRec = timesheetData.find((record) => record._id === formData?.recordId);
 			formData.role = updatedRec.role;
 			formData.company = updatedRec.companyName;
 			formData.positions = updatedRec.positions;
 
-			if (formData.recordId) {
-				const { data } = await TimesheetService.updateRoleTimesheet(formData, formData.recordId);
+			if (formData?.recordId) {
+				const { data } = await TimesheetService.updateRoleTimesheet(formData, formData?.recordId);
 
 				if (data.message) {
 					toast({
@@ -467,7 +467,7 @@ const Timesheet = ({
 				}
 				if (data) {
 					const updatedData = timesheetData?.map((record) =>
-						record._id === formData.recordId
+						record._id === formData?.recordId
 							? {
 									...record,
 									role: data?.role,
@@ -491,7 +491,7 @@ const Timesheet = ({
 
 	const handleSubmit = async () => {
 		try {
-			const currentRecord = timesheetData.find((record) => record._id === formData.recordId);
+			const currentRecord = timesheetData.find((record) => record._id === formData?.recordId);
 			if (!currentRecord) return;
 			formData.clockIn = currentRecord.clockIn;
 			formData.clockOut = currentRecord.clockOut;
@@ -500,8 +500,8 @@ const Timesheet = ({
 			formData.payType = currentRecord.payType;
 			formData.source = currentRecord?.source || TIMESHEET_SOURCE.MANAGER;
 
-			if (formData.recordId) {
-				const { data } = await TimesheetService.updateTimesheet(formData, formData.recordId);
+			if (formData?.recordId) {
+				const { data } = await TimesheetService.updateTimesheet(formData, formData?.recordId);
 				// setRefresh((prev) => !prev);
 
 				if (data.message) {
@@ -513,11 +513,11 @@ const Timesheet = ({
 					});
 				}
 				const updatedRecordIndex = timesheetData?.findIndex(
-					(record) => record._id === formData.recordId,
+					(record) => record._id === formData?.recordId,
 				);
 				if (updatedRecordIndex > -1) {
 					const updatedData = timesheetData?.map((record) =>
-						record._id === formData.recordId
+						record._id === formData?.recordId
 							? {
 									...record,
 									clockIn: data?.clockIn,
@@ -547,7 +547,7 @@ const Timesheet = ({
 
 	const handlePayTypeSubmit = async () => {
 		try {
-			const updatedRec = timesheetData.find((record) => record._id === formData.recordId);
+			const updatedRec = timesheetData.find((record) => record._id === formData?.recordId);
 			formData.clockIn = updatedRec.clockIn;
 			formData.clockOut = updatedRec.clockOut;
 			formData.company = updatedRec.companyName;
@@ -562,12 +562,15 @@ const Timesheet = ({
 			formData.breakHoursWorked = updatedRec?.breakHoursWorked;
 			formData.vacationPayHours = updatedRec?.vacationPayHours;
 
-			if (formData.recordId) {
-				const { data } = await TimesheetService.updateTimesheetPayType(formData, formData.recordId);
+			if (formData?.recordId) {
+				const { data } = await TimesheetService.updateTimesheetPayType(
+					formData,
+					formData?.recordId,
+				);
 				// setRefresh((prev) => !prev);
 				if (data) {
 					const updatedData = timesheetData?.map((record) =>
-						record._id === formData.recordId
+						record._id === formData?.recordId
 							? {
 									...record,
 									clockIn: data?.clockIn,

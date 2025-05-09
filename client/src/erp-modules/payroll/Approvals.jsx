@@ -11,7 +11,7 @@ const Approvals = () => {
 	const { company } = useCompany(LocalStorageService.getItem("selectedCompany"));
 	const loggedInUser = LocalStorageService.getItem("user");
 	const deptName = loggedInUser?.role === ROLES.MANAGER ? loggedInUser?.department : null;
-	const { employees } = useEmployees(false, company, null, null, null, deptName);
+	const { employees } = useEmployees(false, company, null, null, deptName);
 
 	return (
 		<PageLayout title={"Approvals"}>

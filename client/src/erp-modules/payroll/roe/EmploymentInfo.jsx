@@ -180,7 +180,7 @@ const EmploymentInfo = ({ company, handleNext, tabId }) => {
 								valueParam="name"
 								name="expectedRecallDate"
 								label="Expected Date of Recall"
-								valueText={formData.expectedRecallDate || RECALL_OPTIONS[0]?.name}
+								valueText={formData?.expectedRecallDate || RECALL_OPTIONS[0]?.name}
 								handleChange={(e) =>
 									setFormData((prevData) => ({
 										...prevData,
@@ -189,7 +189,7 @@ const EmploymentInfo = ({ company, handleNext, tabId }) => {
 								}
 								options={RECALL_OPTIONS}
 							/>
-							{formData.expectedRecallDate === "Return Date" && (
+							{formData?.expectedRecallDate === "Return Date" && (
 								<DateTimeFormControl
 									required
 									label="Recall Date"
@@ -210,7 +210,7 @@ const EmploymentInfo = ({ company, handleNext, tabId }) => {
 							name="reasonCode"
 							label="Reason Code"
 							placeholder="Select reason"
-							valueText={formData.reasonCode || ""}
+							valueText={formData?.reasonCode || ""}
 							handleChange={(e) =>
 								setFormData((prevData) => ({
 									...prevData,

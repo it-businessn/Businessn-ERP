@@ -71,7 +71,7 @@ const AddNewSubTask = ({ isOpen, onClose, setRefresh, currentTask, managers, com
 		<Modal isCentered size={"4xl"} isOpen={isOpen} onClose={onClose}>
 			<ModalOverlay />
 			<ModalContent>
-				<ModalHeader>Add new task under {formData.taskName}</ModalHeader>
+				<ModalHeader>Add new task under {formData?.taskName}</ModalHeader>
 				<ModalCloseButton />
 				<ModalBody>
 					<Stack spacing="5">
@@ -83,7 +83,7 @@ const AddNewSubTask = ({ isOpen, onClose, setRefresh, currentTask, managers, com
 										<Input
 											type="text"
 											name="subTaskName"
-											value={formData.subTaskName ?? ""}
+											value={formData?.subTaskName ?? ""}
 											onChange={(e) =>
 												setFormData((prevData) => ({
 													...prevData,
@@ -101,7 +101,7 @@ const AddNewSubTask = ({ isOpen, onClose, setRefresh, currentTask, managers, com
 
 										<MultiSelectButton
 											handleMenuToggle={handleMenuToggle}
-											assignees={formData.subTaskSelectedAssignees}
+											assignees={formData?.subTaskSelectedAssignees}
 											openAssigneeMenu={openAssigneeMenu}
 											handleCloseMenu={handleCloseMenu}
 											selectedOptions={selectedOptions}
@@ -110,7 +110,7 @@ const AddNewSubTask = ({ isOpen, onClose, setRefresh, currentTask, managers, com
 										/>
 
 										{formData?.subTaskSelectedAssignees?.length > 0 &&
-											formData.subTaskSelectedAssignees.map((name) => (
+											formData?.subTaskSelectedAssignees.map((name) => (
 												<Avatar size={"sm"} name={name} src={name} key={name} />
 											))}
 									</FormControl>
@@ -123,7 +123,7 @@ const AddNewSubTask = ({ isOpen, onClose, setRefresh, currentTask, managers, com
 											type="date"
 											id="subTaskDueDate"
 											name="subTaskDueDate"
-											value={formData.subTaskDueDate ?? ""}
+											value={formData?.subTaskDueDate ?? ""}
 											onChange={(e) =>
 												setFormData((prevData) => ({
 													...prevData,
@@ -138,7 +138,7 @@ const AddNewSubTask = ({ isOpen, onClose, setRefresh, currentTask, managers, com
 										<Input
 											type="text"
 											name="subTaskTimeToComplete"
-											value={formData.subTaskTimeToComplete ?? ""}
+											value={formData?.subTaskTimeToComplete ?? ""}
 											onChange={(e) =>
 												setFormData((prevData) => ({
 													...prevData,
@@ -154,7 +154,7 @@ const AddNewSubTask = ({ isOpen, onClose, setRefresh, currentTask, managers, com
 										isLoading={isSubmitting}
 										type="submit"
 										bg="var(--logo_bg)"
-										isDisabled={formData.subTaskName === ""}
+										isDisabled={formData?.subTaskName === ""}
 									>
 										Add
 									</Button>

@@ -59,11 +59,7 @@ const FileUploader = ({ fileTypes, userName, setNewUpload, company }) => {
 				</Select>
 				<Flex>
 					{/* <Spacer /> */}
-					<PrimaryButton
-						name="Upload"
-						isDisabled={!file}
-						onOpen={handleUpload}
-					/>
+					<PrimaryButton name="Upload" isDisabled={!file} onOpen={handleUpload} />
 				</Flex>
 			</Box>
 		</Box>

@@ -55,7 +55,7 @@ const AddNewTask = ({ isOpen, onClose, setRefresh, allProjects, isFiltered, allP
 		e.preventDefault();
 		setSubmitting(true);
 		try {
-			await ProjectService.addProjectTask(formData, formData.projectId);
+			await ProjectService.addProjectTask(formData, formData?.projectId);
 			onClose();
 			setFormData(defaultTask);
 			setRefresh((prev) => !prev);
@@ -140,7 +140,7 @@ const AddNewTask = ({ isOpen, onClose, setRefresh, allProjects, isFiltered, allP
 											<Input
 												type="text"
 												name="taskName"
-												value={formData.taskName}
+												value={formData?.taskName}
 												onChange={(e) =>
 													setFormData((prevData) => ({
 														...prevData,
@@ -157,7 +157,7 @@ const AddNewTask = ({ isOpen, onClose, setRefresh, allProjects, isFiltered, allP
 
 											<MultiSelectButton
 												handleMenuToggle={handleMenuToggle}
-												assignees={formData.selectedAssignees}
+												assignees={formData?.selectedAssignees}
 												openAssigneeMenu={openAssigneeMenu}
 												handleCloseMenu={handleCloseMenu}
 												selectedOptions={selectedOptions}
@@ -165,7 +165,7 @@ const AddNewTask = ({ isOpen, onClose, setRefresh, allProjects, isFiltered, allP
 											/>
 
 											{formData?.selectedAssignees?.length > 0 &&
-												formData.selectedAssignees.map((name) => (
+												formData?.selectedAssignees.map((name) => (
 													<Avatar size={"sm"} name={name} src={name} key={name} />
 												))}
 										</FormControl>
@@ -180,7 +180,7 @@ const AddNewTask = ({ isOpen, onClose, setRefresh, allProjects, isFiltered, allP
 											type="date"
 											id="dueDate"
 											name="dueDate"
-											value={formData.dueDate}
+											value={formData?.dueDate}
 											onChange={(e) =>
 												setFormData((prevData) => ({
 													...prevData,
@@ -195,7 +195,7 @@ const AddNewTask = ({ isOpen, onClose, setRefresh, allProjects, isFiltered, allP
 										<Input
 											type="text"
 											name="timeToComplete"
-											value={formData.timeToComplete}
+											value={formData?.timeToComplete}
 											onChange={(e) =>
 												setFormData((prevData) => ({
 													...prevData,
@@ -246,7 +246,7 @@ const AddNewTask = ({ isOpen, onClose, setRefresh, allProjects, isFiltered, allP
 
 										<IconButton
 											icon={<AddIcon />}
-											isDisabled={formData.taskName === ""}
+											isDisabled={formData?.taskName === ""}
 											onClick={(e) => {
 												e.preventDefault();
 												setSubTaskAdded(true);
@@ -387,7 +387,7 @@ const AddNewTask = ({ isOpen, onClose, setRefresh, allProjects, isFiltered, allP
 										isLoading={isSubmitting}
 										type="submit"
 										bg="var(--logo_bg)"
-										isDisabled={formData.taskName === ""}
+										isDisabled={formData?.taskName === ""}
 									>
 										Add
 									</Button>

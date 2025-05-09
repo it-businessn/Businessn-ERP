@@ -95,7 +95,7 @@ const HourlyAllocation = ({ company, closestRecord, groupId, payrunOption, deptN
 	const handleSave = async () => {
 		try {
 			const updatedRec = hourlyAllocatedHours?.find(
-				(record) => record.empId._id === formData.empId._id,
+				(record) => record.empId._id === formData?.empId._id,
 			);
 			if (updatedRec) {
 				updatedRec[totalColumnKey] = 0;

@@ -108,7 +108,7 @@ const Pipeline = () => {
 						<InputFormControl
 							label={"Name of Company"}
 							name="company"
-							// valueText={formData.phoneNo}
+							// valueText={formData?.phoneNo}
 							// handleChange={handleChange}
 							required
 						/>
@@ -116,14 +116,14 @@ const Pipeline = () => {
 							type="email"
 							label={"Email"}
 							name="email"
-							// valueText={formData.phoneNo}
+							// valueText={formData?.phoneNo}
 							// handleChange={handleChange}
 							required
 						/>
 						<InputFormControl
 							label={"Phone"}
 							name="phone"
-							// valueText={formData.phoneNo}
+							// valueText={formData?.phoneNo}
 							// handleChange={handleChange}
 							required
 						/>
