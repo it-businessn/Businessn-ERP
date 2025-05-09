@@ -571,7 +571,7 @@ const addEmployeePayStubInfo = async (req, res) => {
 			isExtraRun,
 			isCornerStone,
 		);
-		// generateT4Slip(companyName, payPeriod);
+		if (!isExtraRun) generateT4Slip(companyName, payPeriod);
 		res.status(200).json({ message: "Paystub created successfully" });
 	} catch (error) {
 		res.status(400).json({ message: error.message });
