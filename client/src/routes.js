@@ -312,7 +312,7 @@ export const router = createBrowserRouter([
 				element: <ProcessPayroll />,
 			},
 			{
-				path: `${processPayrollPath}/:payNo/:year`,
+				path: `${processPayrollPath}/:payNo/:year/:paygroup`,
 				element: <ProcessPayroll />,
 			},
 			{

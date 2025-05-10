@@ -24,6 +24,7 @@ const WorkviewTable = ({
 	viewLabel = "View Register",
 	textAlign,
 	selectedYear,
+	selectedPayGroupName,
 }) => {
 	const rowRefs = useRef([]);
 	const scrollToRow = (index) => {
@@ -46,7 +47,9 @@ const WorkviewTable = ({
 	const handleView = () => navigate(`${payrollReportPath}/${selectedYear}`);
 
 	const handlePay = (payPeriod) =>
-		navigate(`${ROUTE_PATH.PAYROLL}${ROUTE_PATH.PROCESS}/${payPeriod}/${selectedYear}`);
+		navigate(
+			`${ROUTE_PATH.PAYROLL}${ROUTE_PATH.PROCESS}/${payPeriod}/${selectedYear}/${selectedPayGroupName}`,
+		);
 
 	return (
 		<TableLayout
