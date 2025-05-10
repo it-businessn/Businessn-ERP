@@ -4,6 +4,7 @@ const employeeAlertsInfoSchema = new mongoose.Schema({
 	empId: { type: String, ref: "Employee" },
 	companyName: { type: String, ref: "Company" },
 	description: String,
+	type: String,
 	actionRequired: Boolean,
 	createdOn: { type: Date, default: Date.now },
 	updatedOn: { type: Date, default: Date.now },

@@ -5,6 +5,7 @@ import PrimaryButton from "components/ui/button/PrimaryButton";
 import EmptyRowRecord from "components/ui/EmptyRowRecord";
 import NormalTextTitle from "components/ui/NormalTextTitle";
 import TextTitle from "components/ui/text/TextTitle";
+import { ALERTS_TYPE } from "constant";
 import useCompany from "hooks/useCompany";
 import useEmployeeAlertsInfo from "hooks/useEmployeeAlertsInfo";
 import { MdCheckCircle } from "react-icons/md";
@@ -40,7 +41,7 @@ const AlertsViolation = ({
 
 	const handleReview = (data) => {
 		const empId = data?.empId?._id;
-		const stepNum = data?.actionRequired ? 5 : 0;
+		const stepNum = data?.actionRequired ? (data?.type === ALERTS_TYPE.WAGE ? 2 : 5) : 0;
 		navigate(`${ROUTE_PATH.PAYROLL}${ROUTE_PATH.EMPLOYEES}/info/${empId}/${stepNum}`);
 	};
 	const filteredEmp = [];

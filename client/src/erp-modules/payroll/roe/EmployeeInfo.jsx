@@ -6,6 +6,7 @@ import SelectFormControl from "components/ui/form/SelectFormControl";
 import TextTitle from "components/ui/text/TextTitle";
 import VerticalStepper from "components/ui/VerticalStepper";
 import { COUNTRIES } from "config/payroll/employees/profileInfo";
+import { ALERTS_TYPE } from "constant";
 import useCompanyEmployees from "hooks/useCompanyEmployees";
 import useEmployeeProfileInfo from "hooks/useEmployeeProfileInfo";
 import { useEffect, useState } from "react";
@@ -148,7 +149,7 @@ const EmployeeInfo = ({ company, handleNext, tabId, deptName }) => {
 							w="40%"
 							label="Social Insurance Number"
 							subRequired
-							name="SIN"
+							name={ALERTS_TYPE.SIN}
 							placeholder="Enter SIN"
 							valueText={formData?.SIN || ""}
 							handleChange={(e) => {

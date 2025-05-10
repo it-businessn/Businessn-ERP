@@ -1,4 +1,6 @@
-import { Select } from "@chakra-ui/react";
+import { Flex, Select } from "@chakra-ui/react";
+import SelectBox from "components/ui/form/select/SelectBox";
+import { COMPANIES } from "constant";
 import useCompany from "hooks/useCompany";
 import usePaygroup from "hooks/usePaygroup";
 import PageLayout from "layouts/PageLayout";
@@ -19,25 +21,17 @@ const ReportListView = () => {
 	const [yearsList, setYearsList] = useState([CURRENT_YEAR]);
 	const [selectedYear, setSelectedYear] = useState(year ?? CURRENT_YEAR);
 	const { isMobile } = useBreakpointValue();
-
-	const { payGroupSchedule, closestRecordIndex, selectedPayGroup } = usePaygroup(
+	const [selectedPayGroupOption, setSelectedPayGroupOption] = useState(
+		company === COMPANIES.BUSINESSN_ORG ? "Monthly" : null,
+	);
+	const { payGroups, payGroupSchedule, closestRecordIndex, selectedPayGroup } = usePaygroup(
 		company,
+		selectedPayGroupOption,
 		false,
 		selectedYear,
 		true,
 	);
 
-	useEffect(() => {
-		if (selectedPayGroup) setYearsList(selectedPayGroup?.yearSchedules?.map(({ year }) => year));
-	}, [selectedPayGroup]);
-
-	let filteredPayPeriods = closestRecordIndex
-		? payGroupSchedule?.filter((_, index) => index <= closestRecordIndex || _?.isProcessed)
-		: payGroupSchedule;
-
-	filteredPayPeriods = filteredPayPeriods?.sort(
-		(a, b) => new Date(b.payPeriodPayDate) - new Date(a.payPeriodPayDate),
-	);
 	const [showReport, setShowReport] = useState(undefined);
 	const [showTotalsReport, setShowTotalsReport] = useState(false);
 	const [showJournalsReport, setShowJournalsReport] = useState(false);
@@ -45,15 +39,15 @@ const ReportListView = () => {
 	const [totalsReport, setTotalsReport] = useState(null);
 	const [journalReport, setJournalReport] = useState(null);
 	const [selectedPayPeriod, setSelectedPayPeriod] = useState(null);
-
-	const getPayNum = (payNo, isExtra) =>
-		isExtra
-			? payGroupSchedule?.find(
-					({ payPeriod, isExtraRun }) => payPeriod === parseInt(payNo) && isExtraRun === isExtra,
-			  )
-			: payNo;
-
 	const [reportData, setReport] = useState(null);
+
+	useEffect(() => {
+		if (selectedPayGroup) setYearsList(selectedPayGroup?.yearSchedules?.map(({ year }) => year));
+	}, [selectedPayGroup]);
+
+	useEffect(() => {
+		if (!selectedPayGroupOption) setSelectedPayGroupOption(selectedPayGroup?.name);
+	}, [selectedPayGroup]);
 
 	useEffect(() => {
 		const payNum = selectedPayPeriod?.payPeriod ?? selectedPayPeriod;
@@ -110,6 +104,12 @@ const ReportListView = () => {
 		}
 	}, [selectedPayPeriod, showReport, year, showTotalsReport, showJournalsReport]);
 
+	const getPayNum = (payNo, isExtra) =>
+		isExtra
+			? payGroupSchedule?.find(
+					({ payPeriod, isExtraRun }) => payPeriod === parseInt(payNo) && isExtraRun === isExtra,
+			  )
+			: payNo;
 	const handleRegister = (payNo, isExtra) => {
 		const payNum = getPayNum(payNo, isExtra);
 		setSelectedPayPeriod(payNum);
@@ -134,22 +134,48 @@ const ReportListView = () => {
 		setShowJournalsReport(true);
 	};
 
+	let filteredPayPeriods = closestRecordIndex
+		? payGroupSchedule?.filter((_, index) => index <= closestRecordIndex || _?.isProcessed)
+		: payGroupSchedule;
+
+	filteredPayPeriods = filteredPayPeriods?.sort(
+		(a, b) => new Date(b.payPeriodPayDate) - new Date(a.payPeriodPayDate),
+	);
+
 	return (
 		<PageLayout title="Payrun Reports">
-			<Select
-				w={"10%"}
-				size={"sm"}
-				border="1px solid var(--primary_button_bg)"
-				borderRadius="10px"
-				value={selectedYear}
-				onChange={(e) => setSelectedYear(e.target.value)}
-			>
-				{yearsList?.map((year) => (
-					<option value={year} key={year}>
-						{year}
-					</option>
-				))}
-			</Select>
+			<Flex gap={3}>
+				<SelectBox
+					width={"10%"}
+					handleChange={(value) => {
+						if (value !== "") {
+							setSelectedPayGroupOption(value);
+						}
+					}}
+					data={payGroups}
+					name="name"
+					border="1px solid var(--primary_button_bg)"
+					color={"var(--primary_button_bg)"}
+					value={selectedPayGroup?.name}
+					placeholder="Select Paygroup"
+					size={"sm"}
+				/>
+				<Select
+					w={"10%"}
+					size={"sm"}
+					border="1px solid var(--primary_button_bg)"
+					borderRadius="10px"
+					value={selectedYear}
+					onChange={(e) => setSelectedYear(e.target.value)}
+				>
+					{yearsList?.map((year) => (
+						<option value={year} key={year}>
+							{year}
+						</option>
+					))}
+				</Select>
+			</Flex>
+
 			{filteredPayPeriods && (
 				<WorkviewTable
 					payGroupSchedule={filteredPayPeriods}

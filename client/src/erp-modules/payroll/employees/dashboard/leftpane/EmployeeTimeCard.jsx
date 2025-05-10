@@ -6,7 +6,7 @@ import EmptyRowRecord from "components/ui/EmptyRowRecord";
 import NormalTextTitle from "components/ui/NormalTextTitle";
 import TableLayout from "components/ui/table/TableLayout";
 import TextTitle from "components/ui/text/TextTitle";
-import { ROLES } from "constant";
+import { COMPANIES, ROLES } from "constant";
 import { getParamKey, TIMESHEET_SOURCE } from "erp-modules/payroll/timesheets/data";
 import ExtraTimeEntryModal from "erp-modules/payroll/timesheets/ExtraTimeEntryModal";
 import usePaygroup from "hooks/usePaygroup";
@@ -22,17 +22,6 @@ import {
 } from "utils/convertDate";
 
 const EmployeeTimeCard = ({ selectedUser, company, isMobile }) => {
-	const [time, setTime] = useState(new Date());
-	const [showAddEntry, setShowAddEntry] = useState(false);
-	const [refresh, setRefresh] = useState(false);
-	const [timesheetData, setTimesheetData] = useState([]);
-	const [filter, setFilter] = useState(null);
-	const { closestRecord } = usePaygroup(company, false);
-	const [startDate, setStartDate] = useState(null);
-	const [endDate, setEndDate] = useState(null);
-	const loggedInUser = LocalStorageService.getItem("user");
-	const deptName = loggedInUser?.role === ROLES.MANAGER ? loggedInUser?.department : null;
-
 	const cols = [
 		"Worked Date",
 		"Start Time",
@@ -40,7 +29,6 @@ const EmployeeTimeCard = ({ selectedUser, company, isMobile }) => {
 		// "Break/Lunch",
 		"Total Hours",
 	];
-
 	const CLOCK_TYPES = {
 		row_1: [
 			{
@@ -70,7 +58,19 @@ const EmployeeTimeCard = ({ selectedUser, company, isMobile }) => {
 			},
 		],
 	};
-
+	const loggedInUser = LocalStorageService.getItem("user");
+	const deptName = loggedInUser?.role === ROLES.MANAGER ? loggedInUser?.department : null;
+	const [time, setTime] = useState(new Date());
+	const [showAddEntry, setShowAddEntry] = useState(false);
+	const [refresh, setRefresh] = useState(false);
+	const [timesheetData, setTimesheetData] = useState([]);
+	const [filter, setFilter] = useState(null);
+	const [selectedPayGroupOption, setSelectedPayGroupOption] = useState(
+		company === COMPANIES.BUSINESSN_ORG ? "Monthly" : null,
+	);
+	const { closestRecord } = usePaygroup(company, selectedPayGroupOption, false);
+	const [startDate, setStartDate] = useState(null);
+	const [endDate, setEndDate] = useState(null);
 	const toast = useToast();
 
 	useEffect(() => {

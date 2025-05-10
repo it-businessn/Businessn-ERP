@@ -2,7 +2,7 @@ import { Flex, HStack, IconButton, useToast } from "@chakra-ui/react";
 import PrimaryButton from "components/ui/button/PrimaryButton";
 import DeletePopUp from "components/ui/modal/DeletePopUp";
 import TabsButtonGroup from "components/ui/tab/TabsButtonGroup";
-import { ROLES } from "constant";
+import { COMPANIES, ROLES } from "constant";
 import useCompany from "hooks/useCompany";
 import useCostCenter from "hooks/useCostCenter";
 import useDepartment from "hooks/useDepartment";
@@ -28,17 +28,21 @@ const Timesheets = () => {
 	const loggedInUser = LocalStorageService.getItem("user");
 	const deptName = loggedInUser?.role === ROLES.MANAGER ? loggedInUser?.department : null;
 	const isManagerView = isManager(loggedInUser?.role);
-
 	const { id } = useParams();
 	const userId = id ? id : isManagerView ? null : loggedInUser._id;
-
 	const toast = useToast();
 	const { company } = useCompany(LocalStorageService.getItem("selectedCompany"));
 	const { employees } = useEmployees(false, company, false, true, null, deptName);
 	const departments = useDepartment(company);
 	const cc = useCostCenter(company);
-
-	const { payGroupSchedule, closestRecord, closestRecordIndex } = usePaygroup(company, false);
+	const [selectedPayGroupOption, setSelectedPayGroupOption] = useState(
+		company === COMPANIES.BUSINESSN_ORG ? "Monthly" : null,
+	);
+	const { payGroupSchedule, closestRecord, closestRecordIndex } = usePaygroup(
+		company,
+		selectedPayGroupOption,
+		false,
+	);
 	const lastRecord = payGroupSchedule?.length > 0 && payGroupSchedule[closestRecordIndex - 1];
 
 	const [dataRefresh, setDataRefresh] = useState(false);

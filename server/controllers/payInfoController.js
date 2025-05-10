@@ -1,6 +1,10 @@
 const EmployeeEmploymentInfo = require("../models/EmployeeEmploymentInfo");
 const EmployeePayInfo = require("../models/EmployeePayInfo");
+const Group = require("../models/Group");
+const { ALERTS_TYPE } = require("../services/data");
 const { getPayrollActiveEmployees } = require("./appController");
+const { deleteAlerts } = require("./payrollController");
+const { getRecordId } = require("./payStubController");
 const { findEmpPayStubDetail } = require("./payStubHelper");
 const { findGroupEmployees } = require("./setUpController");
 const { getEmployeeId } = require("./userController");
@@ -10,14 +14,19 @@ const getAllPayInfo = async (req, res) => {
 	try {
 		const isExtraPayRun = isExtraRun === "true";
 		const employees = isExtraPayRun && (await findGroupEmployees(groupId, payDate));
-
+		const group = await Group.findById(groupId).select("scheduleFrequency");
 		const activeEmployees = isExtraPayRun
 			? await getEmployeeId(employees)
 			: await getPayrollActiveEmployees(companyName);
 
 		const aggregatedResult = [];
 		for (const employee of activeEmployees) {
-			const result = await buildAmountAllocationEmpDetails(payDate, employee, companyName);
+			const result = await buildAmountAllocationEmpDetails(
+				payDate,
+				employee,
+				companyName,
+				group?.scheduleFrequency,
+			);
 			aggregatedResult.push(result);
 		}
 
@@ -27,13 +36,24 @@ const getAllPayInfo = async (req, res) => {
 	}
 };
 
-const buildAmountAllocationEmpDetails = async (payDate, employee, companyName) => {
+const buildAmountAllocationEmpDetails = async (
+	payDate,
+	employee,
+	companyName,
+	scheduleFrequency,
+) => {
 	const employeeId = employee?.empId?._id;
 	const fullName = employee?.empId?.fullName;
 
 	const empPayStubResult = await findEmpPayStubDetail(employeeId, payDate, companyName);
 
-	const recordId = await getRecordId(empPayStubResult, employeeId, companyName, payDate);
+	const recordId = await getRecordId(
+		empPayStubResult,
+		employeeId,
+		companyName,
+		payDate,
+		scheduleFrequency,
+	);
 
 	const result = {
 		_id: recordId,
@@ -84,6 +104,9 @@ const addEmployeePayInfo = async (req, res) => {
 					role.vacationPay = regPay;
 				}
 			});
+			if (roles?.every((_) => parseFloat(_?.payRate) > 17.85)) {
+				await deleteAlerts(empId, ALERTS_TYPE.WAGE);
+			}
 		}
 		const existingPayInfo = await findEmployeePayInfoDetails(empId, companyName);
 		if (existingPayInfo) {
