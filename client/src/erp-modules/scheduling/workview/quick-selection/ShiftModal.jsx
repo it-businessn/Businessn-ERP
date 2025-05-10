@@ -28,13 +28,10 @@ const ShiftModal = ({
 	location,
 	currentDate,
 	shift,
+	crew,
 }) => {
 	const { onClose } = useDisclosure();
 
-	const handleClose = () => {
-		onClose();
-		setShowModal(false);
-	};
 	const [showAddNewRole, setShowAddNewRole] = useState(false);
 	const [showAddNewLocation, setShowAddNewLocation] = useState(false);
 
@@ -51,8 +48,8 @@ const ShiftModal = ({
 		duration: shift?.duration || "1 week",
 		companyName: shift?.companyName || company,
 		hours: parseInt(shift?.duration) || 0,
+		crew,
 	};
-
 	const [formData, setFormData] = useState(defaultShiftInfo);
 
 	useEffect(() => {
@@ -72,6 +69,11 @@ const ShiftModal = ({
 		}));
 	}, [formData?.shiftStart, formData?.shiftEnd]);
 
+	const handleClose = () => {
+		onClose();
+		setShowModal(false);
+	};
+
 	const handleChange = (e) => {
 		const { name, value, type, checked } = e.target;
 		setFormData((prev) => ({
@@ -81,7 +83,7 @@ const ShiftModal = ({
 	};
 
 	const handleSubmit = async () => {
-		const { data } = shift
+		const { data } = shift?._id
 			? await SchedulerService.updateShift(formData, shift._id)
 			: await SchedulerService.addWorkShifts(formData);
 		handleClose();

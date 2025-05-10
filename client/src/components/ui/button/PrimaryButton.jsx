@@ -26,6 +26,7 @@ const PrimaryButton = ({
 	textTransform,
 	fontWeight,
 	fontSize,
+	whiteSpace,
 }) => {
 	return (
 		<Button
@@ -51,6 +52,7 @@ const PrimaryButton = ({
 			cursor={cursor}
 			w={w}
 			fontWeight={fontWeight}
+			whiteSpace={whiteSpace}
 		>
 			{name}
 		</Button>

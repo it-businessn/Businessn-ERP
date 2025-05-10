@@ -43,8 +43,12 @@ const getWorkWeekEmpShifts = async (req, res) => {
 
 	try {
 		const crew = await Crew.findOne({ name });
-		const locationIds = crew?.config?.department?.map((_) => _.name) || [];
-		const crewEmps = crew?.config?.employee?.map((_) => _.fullName) || [];
+		const crewEmps =
+			crew?.config?.employee?.map((_) => {
+				return { name: _?.fullName, role: _?.positions[0]?.title };
+			}) || [];
+
+		// const locationIds = crew?.config?.department?.map((_) => _.name) || [];
 		const shifts = await WorkShift.aggregate([
 			{
 				$match: {
@@ -53,7 +57,7 @@ const getWorkWeekEmpShifts = async (req, res) => {
 						$lte: end,
 					},
 					companyName,
-					location: { $in: locationIds },
+					// location: { $in: locationIds },
 				},
 			},
 			{
@@ -83,7 +87,10 @@ const getWorkWeekEmpShifts = async (req, res) => {
 					shifts: {
 						$push: {
 							k: { $toString: "$dayOfWeek" },
-							v: "$shift",
+							v: {
+								shift: "$shift",
+								shiftId: "$_id",
+							},
 						},
 					},
 				},
@@ -93,7 +100,6 @@ const getWorkWeekEmpShifts = async (req, res) => {
 					name: "$_id.name",
 					role: "$_id.role",
 					location: "$_id.location",
-					_id: 0,
 					shiftsObj: { $arrayToObject: "$shifts" },
 				},
 			},
@@ -106,7 +112,7 @@ const getWorkWeekEmpShifts = async (req, res) => {
 							in: {
 								$ifNull: [
 									{ $getField: { field: { $toString: "$$day" }, input: "$shiftsObj" } },
-									"Off",
+									{ shift: "Off", shiftId: null },
 								],
 							},
 						},
@@ -122,14 +128,27 @@ const getWorkWeekEmpShifts = async (req, res) => {
 				},
 			},
 		]);
-		if (shifts?.length) {
-			return res.status(200).json(shifts);
-		}
-		const emptyShift = [];
 		for (const emp of crewEmps) {
-			emptyShift.push({ name: emp, shifts: ["", "", "", "", "", "", ""] });
+			const { name, role } = emp;
+			const empShiftExists = shifts?.find((_) => _.name === name);
+			if (!empShiftExists) {
+				shifts.push({
+					name,
+					role,
+					shifts: [
+						{ shift: "Off" },
+						{ shift: "Off" },
+						{ shift: "Off" },
+						{ shift: "Off" },
+						{ shift: "Off" },
+						{ shift: "Off" },
+						{ shift: "Off" },
+					],
+				});
+			}
 		}
-		return res.status(200).json(emptyShift);
+
+		return res.status(200).json(shifts.sort((a, b) => a.name.localeCompare(b.name)));
 	} catch (error) {
 		res.status(404).json({ error: error.message });
 	}
@@ -261,6 +280,7 @@ const addWorkShifts = async (req, res) => {
 		repeatSchedule,
 		hours,
 		companyName,
+		crew,
 	} = req.body;
 
 	try {
@@ -283,6 +303,7 @@ const addWorkShifts = async (req, res) => {
 						repeatDuration: "1 week",
 						breakDuration: 0.5,
 						companyName,
+						crew,
 					});
 				});
 			} else {
@@ -298,6 +319,7 @@ const addWorkShifts = async (req, res) => {
 					repeatDuration: "1 week",
 					breakDuration: 0,
 					companyName,
+					crew,
 				});
 			}
 		}

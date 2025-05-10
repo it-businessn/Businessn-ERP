@@ -19,6 +19,7 @@ import PrimaryButton from "components/ui/button/PrimaryButton";
 import TextTitle from "components/ui/text/TextTitle";
 import { addDays, format, startOfWeek } from "date-fns";
 import usePositionRoles from "hooks/usePositionRoles";
+import useWorkLocations from "hooks/useWorkLocations";
 import PageLayout from "layouts/PageLayout";
 import moment from "moment";
 import { useEffect, useState } from "react";
@@ -50,16 +51,18 @@ const ScheduleWorkView = () => {
 	const [shift, setShift] = useState(null);
 	const [employeeShifts, setEmployeeShifts] = useState(null);
 	const [employeesList, setEmployeesList] = useState(null);
-	const roles = usePositionRoles(company, refresh);
 	const [crews, setCrews] = useState(null);
 	const [location, setLocation] = useState(null);
 	const [configCC, setConfigCC] = useState(null);
-	const [locations, setLocations] = useState(null);
+	// const [locations, setLocations] = useState(null);
 	const [selectedFilter, setSelectedFilter] = useState(null);
 	const [selectedCC, setSelectedCC] = useState(null);
 	const [isLoading, setIsLoading] = useState(false);
 	const [weekStart, setWeekStart] = useState(startOfWeek(new Date(), { weekStartsOn: 0 }));
+
 	const weekDays = [...Array(7)].map((_, i) => addDays(weekStart, i));
+	const locations = useWorkLocations(company, refresh);
+	const roles = usePositionRoles(company, refresh);
 
 	useEffect(() => {
 		const fetchAllCrews = async () => {
@@ -68,7 +71,7 @@ const ScheduleWorkView = () => {
 				setCrews(data);
 				setSelectedCrew(data[0]?.name);
 				setConfigCC(data[0]?.config?.costCenter);
-				setLocations(data[0]?.config?.department);
+				// setLocations(data[0]?.config?.department);
 				setEmployeesList(data[0]?.config?.employee);
 			} catch (error) {
 				console.error(error);
@@ -80,7 +83,7 @@ const ScheduleWorkView = () => {
 	useEffect(() => {
 		const record = crews?.find((crew) => crew.name === selectedCrew);
 		setConfigCC(record?.config?.costCenter);
-		setLocations(record?.config?.department);
+		// setLocations(record?.config?.department);
 		setEmployeesList(record?.config?.employee);
 	}, [selectedCrew]);
 
@@ -107,10 +110,23 @@ const ScheduleWorkView = () => {
 		setWeekStart((prev) => (direction === "prev" ? addDays(prev, -7) : addDays(prev, 7)));
 	};
 
-	const handleItemClick = (shiftDetail, shiftTime) => {
+	const handleItemClick = (emp, shiftTime, shiftDate) => {
 		setShowAddShiftModal(true);
-		console.log("item", shiftDetail, shiftTime);
-		// if (item) setShift(item);
+		let newShift = null;
+		if (emp) {
+			const { name, role } = emp;
+			newShift = { empName: name, role, location: emp?.location };
+		}
+		if (shiftTime) {
+			newShift._id = shiftTime?.shiftId;
+			const [shiftStart, shiftEnd] = shiftTime?.shift.split("-");
+			newShift.shiftStart = shiftStart;
+			newShift.shiftEnd = shiftEnd;
+		}
+		if (shiftDate) {
+			newShift.shiftDate = moment(shiftDate).toISOString();
+		}
+		if (newShift) setShift(newShift);
 	};
 	return (
 		<PageLayout title="WorkView">
@@ -176,54 +192,62 @@ const ScheduleWorkView = () => {
 										<TextTitle title="CUSTOM" />
 									</Th>
 									{weekDays.map((day, i) => (
-										<Th py={2} key={i}>
+										<Th py={2} key={`day_${i}`}>
 											{format(day, "EEE dd")}
 										</Th>
 									))}
 								</Tr>
 							</Thead>
 							<Tbody>
-								{employeeShifts?.map((shiftRec) => (
-									<Tr key={shiftRec?.name}>
-										<Td py={2}>{shiftRec?.name}</Td>
-										{shiftRec?.shifts?.map((shift, j) => (
-											<Td py={0} key={j}>
+								{employeeShifts?.map((emp) => (
+									<Tr key={emp?.name}>
+										<Td w="200px" py={2}>
+											{emp?.name}
+										</Td>
+										{emp?.shifts?.map((entry, j) => (
+											<Td w="200px" py={0} key={`${emp?.name}_${j}`}>
 												<HStack
 													bg={"var(--bg_color_1)"}
 													// bgColor={shift.color}
-													px={"1"}
-													py={0}
+													p={0}
 													spacing={0}
 													justify={"space-between"}
+													w="200px"
 												>
 													<PrimaryButton
+														whiteSpace="wrap"
 														hover={{
 															color: "var(--main_color_black)",
-															bg: !shift
+															bg: entry
 																? "transparent"
-																: shift === "Off"
+																: entry?.shift === "Off"
 																? "var(--bg_color_1)"
 																: "var(--empName_bg)",
 														}}
 														color={
-															shift === "Off" ? "var(--main_color_black)" : "var(--empName_bg)"
+															entry?.shift === "Off"
+																? "var(--main_color_black)"
+																: "var(--empName_bg)"
 														}
-														bg={shift === "Off" ? "var(--bg_color_1)" : "transparent"}
+														bg={entry?.shift === "Off" ? "var(--bg_color_1)" : "transparent"}
 														name={
-															!shift
-																? ""
-																: shift === "Off"
+															entry?.shift === "Off"
 																? "Off"
-																: `${shift} ${shiftRec?.role} @ ${shiftRec?.location}`
+																: `${entry?.shift} ${emp?.role} @ ${emp?.location}`
 														}
 													/>
 													<IconButton
+														color={
+															entry?.shift === "Off"
+																? "var(--main_color_black)"
+																: "var(--empName_bg)"
+														}
 														size={"xs"}
 														icon={<SmallAddIcon />}
 														aria-label="Open Sidebar"
 														_hover={{ bg: "transparent" }}
 														onClick={() => {
-															handleItemClick(shiftRec, shift);
+															handleItemClick(emp, entry, weekDays[j]);
 														}}
 													/>
 												</HStack>
@@ -231,7 +255,7 @@ const ScheduleWorkView = () => {
 										))}
 									</Tr>
 								))}
-								<Tr fontWeight="bold" bg="gray.100">
+								{/* <Tr fontWeight="bold" bg="gray.100">
 									<Td py={0}>Total Hours</Td>
 									{weekDays.map((_, dayIdx) => {
 										const total =
@@ -262,7 +286,7 @@ const ScheduleWorkView = () => {
 											</Td>
 										);
 									})}
-								</Tr>
+								</Tr> */}
 							</Tbody>
 						</Table>
 					</Box>
@@ -287,6 +311,7 @@ const ScheduleWorkView = () => {
 						empName={empName}
 						empRole={empRole}
 						shift={shift}
+						crew={selectedCrew}
 					/>
 				)}
 			</Box>

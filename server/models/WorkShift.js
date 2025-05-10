@@ -13,6 +13,7 @@ const shiftSchema = new mongoose.Schema({
 	createdOn: { type: Date, default: Date.now },
 	breakStart: Date,
 	breakDuration: String,
+	crew: String,
 	breakEnd: Date,
 	companyName: { type: String, ref: "Company" },
 });
