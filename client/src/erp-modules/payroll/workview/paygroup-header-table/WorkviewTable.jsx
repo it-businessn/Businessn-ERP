@@ -83,12 +83,15 @@ const WorkviewTable = ({
 							isDisabledAction,
 							isExtraRun,
 							payPeriodNum,
+							scheduleFrequency,
 						},
 						index,
 					) => (
 						<Tr key={`${payPeriod}_${index}`} ref={(el) => (rowRefs.current[index] = el)}>
 							<Td p={1} pl={8}>
-								{isExtraPay(payPeriodNum || payPeriod, isExtraRun)}
+								{`${isExtraPay(payPeriodNum || payPeriod, isExtraRun)} ${
+									isEarningTable && scheduleFrequency ? `- ${scheduleFrequency}` : ""
+								}`}
 							</Td>
 							<Td p={1} textAlign={textAlign}>
 								{dayMonthYear(payPeriodPayDate)}
