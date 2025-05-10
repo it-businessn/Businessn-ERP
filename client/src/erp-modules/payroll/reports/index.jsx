@@ -23,7 +23,7 @@ const Reports = () => {
 	const { isMobile } = useBreakpointValue();
 	const { company } = useCompany(LocalStorageService.getItem("selectedCompany"));
 	const [showReport, setShowReport] = useState(undefined);
-	const REPORT_COLS = ["Pay number", "Paygroup", "Pay date", "Pay period", "Status", "Action"];
+	const REPORT_COLS = ["Frequency", "Pay number", "Pay date", "Pay period", "Status", "Action"];
 	const [payStub, setPayStub] = useState(null);
 
 	const loggedInUser = LocalStorageService.getItem("user");
@@ -113,10 +113,12 @@ const Reports = () => {
 							index,
 						) => (
 							<Tr key={`${payPeriod}_${index}`}>
+								<Td p={0} pl={5}>
+									{scheduleFrequency || ""}
+								</Td>
 								<Td p={1} pl={8}>
 									{isExtraPay(payPeriodNum, isExtraRun)}
 								</Td>
-								<Td p={0}> {scheduleFrequency || ""}</Td>
 								<Td p={1}>{dayMonthYear(payPeriodPayDate)}</Td>
 								<Td p={1}>{formatDateRange(payPeriodStartDate, payPeriodEndDate)}</Td>
 								<Td p={1}>

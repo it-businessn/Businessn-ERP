@@ -32,7 +32,6 @@ const PayrunSetup = ({
 					companyName: company,
 					currentPayPeriod: closestRecord,
 					deptName,
-					scheduleFrequency: selectedPayGroup?.scheduleFrequency,
 				});
 				if (response) {
 					handleClick();

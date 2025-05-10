@@ -12,6 +12,7 @@ const usePaygroup = (
 ) => {
 	const [payGroups, setPayGroups] = useState(null);
 	const [selectedPayGroup, setSelectedPayGroup] = useState(null);
+	const [allPayGroupSchedule, setAllPayGroupSchedule] = useState(null);
 	const [payGroupSchedule, setPayGroupSchedule] = useState(null);
 	const [closestRecord, setClosestRecord] = useState(null);
 	const [closestRecordIndex, setClosestRecordIndex] = useState(0);
@@ -32,10 +33,16 @@ const usePaygroup = (
 		const closestPayPeriod = schedules?.find(({ isProcessed }) => !isProcessed);
 
 		const closestPayPeriodIndex = schedules.findIndex(
-			({ payPeriod }) => payPeriod === closestPayPeriod?.payPeriod,
+			({ payPeriod, isExtraRun }) =>
+				payPeriod === closestPayPeriod?.payPeriod && isExtraRun === true,
 		);
+		const fallbackIndex =
+			closestPayPeriodIndex === -1
+				? schedules.findIndex(({ payPeriod }) => payPeriod === closestPayPeriod?.payPeriod)
+				: closestPayPeriodIndex;
+
 		setClosestRecord(closestPayPeriod);
-		setClosestRecordIndex(closestPayPeriodIndex);
+		setClosestRecordIndex(fallbackIndex);
 	};
 
 	useEffect(() => {
@@ -73,7 +80,7 @@ const usePaygroup = (
 				true,
 				selectedPayGroup.scheduleFrequency,
 			);
-			setPayGroupSchedule(sortedResult);
+			setAllPayGroupSchedule(sortedResult);
 			const schedules = selectedPayGroup?.yearSchedules[yearIndex]?.payPeriods;
 			const closestPayPeriod = schedules?.find(({ isProcessed }) => !isProcessed);
 
@@ -99,6 +106,23 @@ const usePaygroup = (
 			}
 		}
 	}, [selectedPayGroup, year]);
+
+	useEffect(() => {
+		if (
+			closestRecordIndex &&
+			selectedPayGroup &&
+			!allPayGroupSchedule[closestRecordIndex].isDisabledAction
+		) {
+			allPayGroupSchedule.map((_, index) => {
+				if (index > closestRecordIndex) {
+					_.isDisabledAction = true;
+					return _;
+				}
+			});
+		}
+		setPayGroupSchedule(allPayGroupSchedule);
+	}, [selectedPayGroup, closestRecordIndex, allPayGroupSchedule]);
+
 	return {
 		payGroups,
 		selectedPayGroup,

@@ -9,7 +9,7 @@ import { COMPANIES, ROLES } from "constant";
 import useCompany from "hooks/useCompany";
 import usePaygroup from "hooks/usePaygroup";
 import PageLayout from "layouts/PageLayout";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { MdOutlineChevronRight } from "react-icons/md";
 import { useNavigate, useParams } from "react-router-dom";
 import { workViewPath } from "routes";
@@ -39,7 +39,7 @@ const ProcessPayroll = () => {
 		loggedInUser?.role === ROLES.AUTH_ADMINISTRATOR || loggedInUser?.role === ROLES.SHADOW_ADMIN;
 	const deptName = loggedInUser?.role === ROLES.MANAGER ? loggedInUser?.department : null;
 	const { company } = useCompany(LocalStorageService.getItem("selectedCompany"));
-	const { payNo, year, stepNum } = useParams();
+	const { payNo, year, stepNum, paygroup } = useParams();
 	const activeStep = stepNum ? parseInt(stepNum) : 0;
 	const [currentStep, setCurrentStep] = useState(activeStep);
 	const [showConfirmationPopUp, setShowConfirmationPopUp] = useState(false);
@@ -61,6 +61,10 @@ const ProcessPayroll = () => {
 	const isPayPeriodInactive = selectedPayPeriod?.isDisabledAction;
 	const isPayrollSubmitDisabled =
 		currentStep !== 5 || selectedPayPeriod?.isProcessed || isPayPeriodInactive;
+
+	useEffect(() => {
+		if (paygroup) setSelectedPayGroupOption(paygroup);
+	}, [paygroup]);
 
 	const goToNextStep = (index) => {
 		setCurrentStep(index);
