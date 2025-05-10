@@ -21,9 +21,7 @@ const useEmployeePayInfo = (company, refresh, empId, payPeriod, groupId) => {
 				console.error(error);
 			}
 		};
-		if (empId || payPeriod) {
-			fetchEmployeePayInfo();
-		}
+		if (company && (empId || payPeriod)) fetchEmployeePayInfo();
 	}, [company, empId, refresh, payPeriod]);
 	return payInfo;
 };
