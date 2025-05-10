@@ -6,7 +6,7 @@ import SelectFormControl from "components/ui/form/SelectFormControl";
 import NormalTextTitle from "components/ui/NormalTextTitle";
 import TextTitle from "components/ui/text/TextTitle";
 import VerticalStepper from "components/ui/VerticalStepper";
-import { REASON_CODE, RECALL_OPTIONS } from "constant";
+import { COMPANIES, REASON_CODE, RECALL_OPTIONS } from "constant";
 import useEmployeeEmploymentInfo from "hooks/useEmployeeEmploymentInfo";
 import usePaygroup from "hooks/usePaygroup";
 import moment from "moment";
@@ -18,10 +18,26 @@ import { getDefaultDate } from "utils/convertDate";
 import StepContent from "../employees/pageview/step-content";
 
 const EmploymentInfo = ({ company, handleNext, tabId }) => {
-	const toast = useToast();
-	const { payGroupSchedule } = usePaygroup(company, true);
+	const initialFormData = {
+		empId: roeEmpId,
+		employmentStartDate: "",
+		employmentLeaveDate: new Date(),
+		finalPayPeriodEndDate: "",
+		recallDate: "",
+		expectedRecallDate: "",
+		reasonCode: "",
+		positions: [],
+		companyName: company,
+	};
 	const roeEmpId = LocalStorageService.getItem("roeEmpId");
+	const toast = useToast();
+	const [selectedPayGroupOption, setSelectedPayGroupOption] = useState(
+		company === COMPANIES.BUSINESSN_ORG ? "Monthly" : null,
+	);
+	const { payGroupSchedule } = usePaygroup(company, selectedPayGroupOption, true);
 	const [roeInfo, setRoeInfo] = useState(null);
+	const [formData, setFormData] = useState(initialFormData);
+	const employmentInfo = useEmployeeEmploymentInfo(company, roeEmpId);
 
 	useEffect(() => {
 		const fetchEmployeeROEEmploymentInfo = async () => {
@@ -34,22 +50,6 @@ const EmploymentInfo = ({ company, handleNext, tabId }) => {
 		};
 		fetchEmployeeROEEmploymentInfo();
 	}, [company]);
-
-	const initialFormData = {
-		empId: roeEmpId,
-		employmentStartDate: "",
-		employmentLeaveDate: new Date(),
-		finalPayPeriodEndDate: "",
-		recallDate: "",
-		expectedRecallDate: "",
-		reasonCode: "",
-		positions: [],
-		companyName: company,
-	};
-
-	const [formData, setFormData] = useState(initialFormData);
-
-	const employmentInfo = useEmployeeEmploymentInfo(company, roeEmpId);
 
 	useEffect(() => {
 		if (employmentInfo) {
@@ -180,7 +180,7 @@ const EmploymentInfo = ({ company, handleNext, tabId }) => {
 								valueParam="name"
 								name="expectedRecallDate"
 								label="Expected Date of Recall"
-								valueText={formData.expectedRecallDate || RECALL_OPTIONS[0]?.name}
+								valueText={formData?.expectedRecallDate || RECALL_OPTIONS[0]?.name}
 								handleChange={(e) =>
 									setFormData((prevData) => ({
 										...prevData,
@@ -189,7 +189,7 @@ const EmploymentInfo = ({ company, handleNext, tabId }) => {
 								}
 								options={RECALL_OPTIONS}
 							/>
-							{formData.expectedRecallDate === "Return Date" && (
+							{formData?.expectedRecallDate === "Return Date" && (
 								<DateTimeFormControl
 									required
 									label="Recall Date"
@@ -210,7 +210,7 @@ const EmploymentInfo = ({ company, handleNext, tabId }) => {
 							name="reasonCode"
 							label="Reason Code"
 							placeholder="Select reason"
-							valueText={formData.reasonCode || ""}
+							valueText={formData?.reasonCode || ""}
 							handleChange={(e) =>
 								setFormData((prevData) => ({
 									...prevData,

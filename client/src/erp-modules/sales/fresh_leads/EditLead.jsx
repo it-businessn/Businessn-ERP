@@ -8,14 +8,7 @@ import LeadsService from "services/LeadsService";
 import { isValidPhoneNumber } from "utils";
 import { LEAD_STAGES } from "../opportunities/data";
 
-const EditLead = ({
-	defaultLeadInfo,
-	formData,
-	isOpen,
-	onClose,
-	setFormData,
-	setIsUpdated,
-}) => {
+const EditLead = ({ defaultLeadInfo, formData, isOpen, onClose, setFormData, setIsUpdated }) => {
 	const [error, setError] = useState(false);
 	const [isSubmitting, setSubmitting] = useState(false);
 	const [phoneNumberError, setPhoneNumberError] = useState("");
@@ -38,7 +31,7 @@ const EditLead = ({
 		setSubmitting(true);
 
 		try {
-			await LeadsService.updateLeadInfo(formData, formData._id);
+			await LeadsService.updateLeadInfo(formData, formData?._id);
 			setIsUpdated((prev) => !prev);
 			onClose();
 			setFormData(defaultLeadInfo);
@@ -51,19 +44,13 @@ const EditLead = ({
 	};
 
 	return (
-		<ModalLayout
-			title={"Edit Lead"}
-			size="md"
-			isOpen={isOpen}
-			onClose={onClose}
-			error={error}
-		>
+		<ModalLayout title={"Edit Lead"} size="md" isOpen={isOpen} onClose={onClose} error={error}>
 			<form onSubmit={handleSubmit}>
 				<Stack spacing={4}>
 					<InputFormControl
 						label={"Name of Company"}
 						name="name"
-						valueText={formData.name}
+						valueText={formData?.name}
 						handleChange={handleChange}
 						required
 					/>
@@ -71,7 +58,7 @@ const EditLead = ({
 						label={"Email"}
 						type="email"
 						name="email"
-						valueText={formData.email}
+						valueText={formData?.email}
 						handleChange={handleChange}
 						required
 					/>
@@ -79,7 +66,7 @@ const EditLead = ({
 						isInvalid={!!phoneNumberError}
 						label={"Phone"}
 						name="phone"
-						valueText={formData.phone}
+						valueText={formData?.phone}
 						handleChange={handleChange}
 						error={phoneNumberError}
 						required
@@ -93,7 +80,7 @@ const EditLead = ({
 							size="sm"
 							placeholder="Select Stage"
 							name="stage"
-							value={formData.stage}
+							value={formData?.stage}
 							onChange={handleChange}
 						>
 							{LEAD_STAGES.map(({ abbr, name }) => (

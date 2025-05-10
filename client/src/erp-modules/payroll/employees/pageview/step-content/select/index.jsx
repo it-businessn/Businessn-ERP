@@ -4,7 +4,7 @@ import { FaCaretDown } from "react-icons/fa";
 
 const SelectTypeRecord = ({ param, formData, setFormData, handleConfirm, size = "sm" }) => {
 	const newCostCenter =
-		formData.employmentCostCenter === "Golf Operations" ? "Golf" : formData.employmentCostCenter;
+		formData?.employmentCostCenter === "Golf Operations" ? "Golf" : formData?.employmentCostCenter;
 	const [provinces, setProvinces] = useState([]);
 
 	useEffect(() => {
@@ -32,7 +32,7 @@ const SelectTypeRecord = ({ param, formData, setFormData, handleConfirm, size = 
 					handleConfirm();
 				}}
 			>
-				{param.name === "Department" && formData.employmentCostCenter !== ""
+				{param.name === "Department" && formData?.employmentCostCenter !== ""
 					? param.options
 							?.filter((_) => _.type?.includes(newCostCenter) || _.name)
 							?.map((item) => (

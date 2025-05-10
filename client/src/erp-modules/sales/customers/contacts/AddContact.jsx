@@ -114,7 +114,7 @@ const AddContact = () => {
 							<Input
 								type="text"
 								name="companyName"
-								value={formData.companyName}
+								value={formData?.companyName}
 								onChange={handleChange}
 								placeholder="Company Name"
 							/>
@@ -122,7 +122,7 @@ const AddContact = () => {
 						<Flex direction="row" align="center">
 							<FormControl>
 								<FormLabel>Type Of Industry </FormLabel>
-								<Select name="industryType" value={formData.industryType} onChange={handleChange}>
+								<Select name="industryType" value={formData?.industryType} onChange={handleChange}>
 									{industryTypeOptions?.map((type) => (
 										<option value={type.name} key={type._id}>
 											{type.name}
@@ -162,7 +162,7 @@ const AddContact = () => {
 							<Input
 								type="text"
 								name="companyAddress"
-								value={formData.companyAddress}
+								value={formData?.companyAddress}
 								onChange={handleChange}
 								placeholder="Company Address"
 							/>
@@ -172,7 +172,7 @@ const AddContact = () => {
 							<Input
 								type="url"
 								name="revenue"
-								value={formData.revenue}
+								value={formData?.revenue}
 								onChange={handleChange}
 								placeholder="Website URL"
 							/>
@@ -182,7 +182,7 @@ const AddContact = () => {
 							<Input
 								type="number"
 								name="employees"
-								value={formData.employees}
+								value={formData?.employees}
 								onChange={handleChange}
 								placeholder="Number of employees"
 							/>
@@ -205,7 +205,7 @@ const AddContact = () => {
 							<Input
 								type="text"
 								name="firstName"
-								value={formData.firstName}
+								value={formData?.firstName}
 								onChange={handleChange}
 								placeholder="First Name"
 							/>
@@ -215,7 +215,7 @@ const AddContact = () => {
 							<Input
 								type="text"
 								name="lastName"
-								value={formData.lastName}
+								value={formData?.lastName}
 								onChange={handleChange}
 								placeholder="Last Name"
 							/>
@@ -225,7 +225,7 @@ const AddContact = () => {
 							<Input
 								type="email"
 								name="email"
-								value={formData.email}
+								value={formData?.email}
 								onChange={handleChange}
 								placeholder="Email"
 							/>
@@ -235,7 +235,7 @@ const AddContact = () => {
 							<Input
 								type="text"
 								name="phone"
-								value={formData.phone}
+								value={formData?.phone}
 								onChange={handleChange}
 								placeholder="phone"
 							/>
@@ -245,14 +245,14 @@ const AddContact = () => {
 							<Input
 								type="text"
 								name="primaryContactAddress"
-								value={formData.primaryContactAddress}
+								value={formData?.primaryContactAddress}
 								onChange={handleChange}
 								placeholder="Primary Contact"
 							/>
 						</FormControl>
 					</Stack>
 				</HStack>
-				<Button type="submit" bg="var(--logo_bg)" isDisabled={formData.companyName === ""}>
+				<Button type="submit" bg="var(--logo_bg)" isDisabled={formData?.companyName === ""}>
 					Add Contact
 				</Button>
 			</form>

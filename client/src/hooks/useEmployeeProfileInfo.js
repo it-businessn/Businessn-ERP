@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import PayrollService from "services/PayrollService";
 
-const useEmployeeProfileInfo = (company, empId, isOnboarding) => {
+const useEmployeeProfileInfo = (company, empId) => {
 	const [profileInfo, setProfileInfo] = useState(null);
 	useEffect(() => {
 		const fetchEmployeeProfileInfo = async () => {
@@ -15,7 +15,7 @@ const useEmployeeProfileInfo = (company, empId, isOnboarding) => {
 		if (empId) {
 			fetchEmployeeProfileInfo();
 		}
-	}, [company, empId, isOnboarding]);
+	}, [company, empId]);
 	return profileInfo;
 };
 

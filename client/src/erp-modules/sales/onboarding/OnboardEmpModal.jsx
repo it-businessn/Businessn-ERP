@@ -1,17 +1,17 @@
-import { useDisclosure } from "@chakra-ui/react";
-import ModalLayout from "components/ui/modal/ModalLayout";
+import {
+	Flex,
+	Modal,
+	ModalBody,
+	ModalCloseButton,
+	ModalContent,
+	ModalHeader,
+	Stack,
+	useDisclosure,
+} from "@chakra-ui/react";
 import Employees from "erp-modules/payroll/employees/pageview";
-import SalesOnboardUser from "erp-modules/sales/customers/onboard/SalesOnboardUser";
-import AddUser from "../../payroll/workview/paygroup-header-table/AddUser";
+import OnboardEmployee from "erp-modules/payroll/employees/pageview/OnboardEmployee";
 
-const OnboardEmpModal = ({
-	showOnboard,
-	setShowOnboard,
-	selectedPayGroupName,
-	title,
-	company,
-	isSalesOnboard,
-}) => {
+const OnboardEmpModal = ({ showOnboard, setShowOnboard, selectedPayGroupName, title }) => {
 	const { onClose } = useDisclosure();
 
 	const handleClose = () => {
@@ -20,19 +20,24 @@ const OnboardEmpModal = ({
 	};
 
 	return (
-		<ModalLayout title={title} size="7xl" isOpen={showOnboard} onClose={handleClose}>
-			{selectedPayGroupName ? (
-				<Employees
-					isOnboarding
-					selectedPayGroupName={selectedPayGroupName}
-					handleClose={handleClose}
-				/>
-			) : isSalesOnboard ? (
-				<SalesOnboardUser title={title} company={company} handleClose={handleClose} />
-			) : (
-				<AddUser title={title} company={company} handleClose={handleClose} />
-			)}
-		</ModalLayout>
+		<Modal isCentered={true} size={"7xl"} isOpen={showOnboard} onClose={handleClose} m={0}>
+			<ModalContent>
+				<ModalHeader position="sticky" zIndex="1" top={0} bg={"var(--main_color)"}>
+					<Flex justify="space-between">
+						{title}
+						<ModalCloseButton />
+					</Flex>
+				</ModalHeader>
+				<ModalBody zIndex="0" bg={"#fff"} height={"100vh"} m={0}>
+					<Stack w="100%" spacing={5}>
+						<OnboardEmployee
+							selectedPayGroupName={selectedPayGroupName}
+							handleClose={handleClose}
+						/>
+					</Stack>
+				</ModalBody>
+			</ModalContent>
+		</Modal>
 	);
 };
 

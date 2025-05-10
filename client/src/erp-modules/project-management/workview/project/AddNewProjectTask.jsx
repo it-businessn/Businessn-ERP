@@ -77,7 +77,7 @@ const AddNewProjectTask = ({
 		<Modal isCentered size={"4xl"} isOpen={isOpen} onClose={onClose}>
 			<ModalOverlay />
 			<ModalContent>
-				<ModalHeader>Add New Task for Project - {formData.projectName}</ModalHeader>
+				<ModalHeader>Add New Task for Project - {formData?.projectName}</ModalHeader>
 				<ModalCloseButton />
 				<ModalBody>
 					<Stack spacing="5">
@@ -89,7 +89,7 @@ const AddNewProjectTask = ({
 										<Input
 											type="text"
 											name="taskName"
-											value={formData.taskName ?? ""}
+											value={formData?.taskName ?? ""}
 											onChange={(e) =>
 												setFormData((prevData) => ({
 													...prevData,
@@ -106,7 +106,7 @@ const AddNewProjectTask = ({
 
 										<MultiSelectButton
 											handleMenuToggle={handleMenuToggle}
-											assignees={formData.selectedAssignees}
+											assignees={formData?.selectedAssignees}
 											openAssigneeMenu={openAssigneeMenu}
 											data={managers}
 											handleCloseMenu={handleCloseMenu}
@@ -115,7 +115,7 @@ const AddNewProjectTask = ({
 										/>
 
 										{formData?.selectedAssignees?.length > 0 &&
-											formData.selectedAssignees.map((name) => (
+											formData?.selectedAssignees.map((name) => (
 												<Avatar size={"sm"} name={name} src={name} key={name} />
 											))}
 									</FormControl>
@@ -128,7 +128,7 @@ const AddNewProjectTask = ({
 											type="date"
 											id="dueDate"
 											name="dueDate"
-											value={formData.dueDate ?? ""}
+											value={formData?.dueDate ?? ""}
 											onChange={(e) =>
 												setFormData((prevData) => ({
 													...prevData,
@@ -143,7 +143,7 @@ const AddNewProjectTask = ({
 										<Input
 											type="text"
 											name="timeToComplete"
-											value={formData.timeToComplete ?? ""}
+											value={formData?.timeToComplete ?? ""}
 											onChange={(e) =>
 												setFormData((prevData) => ({
 													...prevData,
@@ -160,7 +160,7 @@ const AddNewProjectTask = ({
 										isLoading={isSubmitting}
 										type="submit"
 										bg="var(--logo_bg)"
-										isDisabled={formData.taskName === ""}
+										isDisabled={formData?.taskName === ""}
 									>
 										Add
 									</Button>

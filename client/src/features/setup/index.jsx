@@ -19,7 +19,6 @@ const Setup = () => {
 		company,
 		null,
 		null,
-		null,
 		deptName,
 	);
 

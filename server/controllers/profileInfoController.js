@@ -4,6 +4,7 @@ const EmployeeProfileInfo = require("../models/EmployeeProfileInfo");
 const { addEmployee, findCompany } = require("./appController");
 const { deleteAlerts } = require("./payrollController");
 const { decryptData, encryptData } = require("../services/encryptDataService");
+const { ALERTS_TYPE } = require("../services/data");
 
 const getAllProfileInfo = async (req, res) => {
 	const { companyName } = req.params;
@@ -111,7 +112,6 @@ const updateEmployee = async (empId, data) => {
 
 const addEmployeeProfileInfo = async (req, res) => {
 	const {
-		empId,
 		companyName,
 		firstName,
 		middleName,
@@ -154,74 +154,26 @@ const addEmployeeProfileInfo = async (req, res) => {
 			lastName,
 			companyName,
 		};
-		if (!empId && firstName && companyName && lastName) {
-			const existingProfileInfo = await EmployeeProfileInfo.findOne({
-				firstName,
-				companyName,
-				lastName,
-			});
+		const existingProfileInfo = await EmployeeProfileInfo.findOne({
+			firstName,
+			companyName,
+			lastName,
+			personalEmail,
+		});
 
-			if (existingProfileInfo) {
-				const updatedProfileInfo = await updateProfileInfo(existingProfileInfo._id, {
-					streetAddress: `${streetAddressSuite ?? ""} ${streetAddress}`,
-					city,
-					province,
-					postalCode,
-					country,
-					personalEmail,
-					personalPhoneNum,
-					emergencyFirstName,
-					emergencyLastName,
-					birthDate,
-					SIN,
-					maritalStatus,
-					citizenship,
-					workPermitNo,
-					workPermitExpiryNo,
-					personalEmail,
-					personalPhoneNum,
-					businessEmail,
-					businessPhoneNum,
-					emergencyPersonalEmail,
-					emergencyPersonalPhoneNum,
-					password,
-					firstName,
-					middleName,
-					lastName,
-				});
-				await updateEmployee(existingProfileInfo?.empId, data);
-				return res.status(201).json(updatedProfileInfo);
-			}
-			const existingEmp = await Employee.findOne({
-				firstName,
-				lastName,
-			});
-			let profileInfoEmpId = existingEmp?._id;
-			if (!existingEmp) {
-				const newRecord = {
-					firstName,
-					middleName,
-					lastName,
-					email: personalEmail || businessEmail,
-					fullName: `${firstName} ${middleName} ${lastName}`,
-				};
-				if (password) {
-					newRecord.password = password;
-				}
-				const newEmployee = await addEmployee(companyName, newRecord);
-				profileInfoEmpId = newEmployee._id;
-			}
-
-			const newProfileInfo = await EmployeeProfileInfo.create({
-				empId: profileInfoEmpId,
-				companyName,
-				firstName,
-				middleName,
-				lastName,
+		if (existingProfileInfo) {
+			const updatedProfileInfo = await updateProfileInfo(existingProfileInfo._id, {
+				streetAddress: `${streetAddressSuite ?? ""} ${streetAddress}`,
+				city,
+				province,
+				postalCode,
+				country,
+				personalEmail,
+				personalPhoneNum,
 				emergencyFirstName,
 				emergencyLastName,
 				birthDate,
-				SIN: req.body?.SIN || "",
+				SIN,
 				maritalStatus,
 				citizenship,
 				workPermitNo,
@@ -232,35 +184,32 @@ const addEmployeeProfileInfo = async (req, res) => {
 				businessPhoneNum,
 				emergencyPersonalEmail,
 				emergencyPersonalPhoneNum,
-				streetAddress,
-				city,
-				province,
-				country,
-				postalCode,
 				password,
+				firstName,
+				middleName,
+				lastName,
 			});
-			return res.status(201).json(newProfileInfo);
-		}
-		const existingProfileInfo = await findEmployeeProfileInfo(empId, companyName);
-
-		if (SIN && SIN !== "") {
-			await deleteAlerts(empId);
-		}
-		await updateEmployee(empId, data);
-
-		if (existingProfileInfo) {
-			req.body.updatedOn = moment();
-
-			if (SIN && SIN !== existingProfileInfo?.SIN) {
-				const ENCRYPTION_KEY = Buffer.from(process.env.SIN_ENCRYPTION_KEY, "hex");
-				const sinEncrypted = encryptData(SIN, ENCRYPTION_KEY);
-				req.body.SIN = sinEncrypted.encryptedData;
-				req.body.SINIv = sinEncrypted.iv;
-			}
-			if (req.body?._id) delete req.body._id;
-
-			const updatedProfileInfo = await updateProfileInfo(existingProfileInfo._id, req.body);
+			await updateEmployee(existingProfileInfo?.empId, data);
 			return res.status(201).json(updatedProfileInfo);
+		}
+		const existingEmp = await Employee.findOne({
+			firstName,
+			lastName,
+		});
+		let profileInfoEmpId = existingEmp?._id;
+		if (!existingEmp) {
+			const newRecord = {
+				firstName,
+				middleName,
+				lastName,
+				email: personalEmail || businessEmail,
+				fullName: `${firstName} ${middleName} ${lastName}`,
+			};
+			if (password) {
+				newRecord.password = password;
+			}
+			const newEmployee = await addEmployee(companyName, newRecord);
+			profileInfoEmpId = newEmployee._id;
 		}
 		if (SIN) {
 			const ENCRYPTION_KEY = Buffer.from(process.env.SIN_ENCRYPTION_KEY, "hex");
@@ -269,7 +218,7 @@ const addEmployeeProfileInfo = async (req, res) => {
 			req.body.SINIv = sinEncrypted.iv;
 		}
 		const newProfileInfo = await EmployeeProfileInfo.create({
-			empId,
+			empId: profileInfoEmpId,
 			companyName,
 			firstName,
 			middleName,
@@ -304,9 +253,57 @@ const addEmployeeProfileInfo = async (req, res) => {
 const updateEmployeeProfileInfo = async (req, res) => {
 	const { id } = req.params;
 	try {
-		if (req.body?._id) delete req.body._id;
-		const updatedInfo = await updateProfileInfo(id, req.body);
-		res.status(201).json(updatedInfo);
+		const {
+			empId,
+			companyName,
+			firstName,
+			middleName,
+			lastName,
+			SIN,
+			personalEmail,
+			businessEmail,
+			streetAddress,
+			streetAddressSuite,
+			city,
+			province,
+			country,
+			postalCode,
+			password,
+		} = req.body;
+
+		const data = {
+			personalEmail,
+			businessEmail,
+			streetAddressSuite,
+			streetAddress,
+			city,
+			province,
+			postalCode,
+			country,
+			password,
+			firstName,
+			middleName,
+			lastName,
+			companyName,
+		};
+
+		const existingProfileInfo = await EmployeeProfileInfo.findById(id);
+		if (SIN && SIN !== "") {
+			await deleteAlerts(empId, ALERTS_TYPE.SIN);
+		}
+		await updateEmployee(empId, data);
+		if (existingProfileInfo) {
+			req.body.updatedOn = moment();
+			if (SIN && SIN !== existingProfileInfo?.SIN) {
+				const ENCRYPTION_KEY = Buffer.from(process.env.SIN_ENCRYPTION_KEY, "hex");
+				const sinEncrypted = encryptData(SIN, ENCRYPTION_KEY);
+				req.body.SIN = sinEncrypted.encryptedData;
+				req.body.SINIv = sinEncrypted.iv;
+			}
+			if (req.body?._id) delete req.body._id;
+			const updatedProfileInfo = await updateProfileInfo(existingProfileInfo._id, req.body);
+			return res.status(201).json(updatedProfileInfo);
+		}
 	} catch (error) {
 		res.status(400).json({ message: error.message });
 	}

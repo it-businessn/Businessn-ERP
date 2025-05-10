@@ -190,6 +190,8 @@ const PUNCH_CODE = {
 	CLOCK_OUT: "1",
 };
 
+const ALERTS_TYPE = { BANK: "bank", SIN: "SIN", WAGE: "wage" };
+
 const EARNING_TYPE = { FT: "Full Time Salaried", PT: "Part Time Salaried", HOURLY: "Hourly" };
 
 const PAY_TYPES_TITLE = {
@@ -255,6 +257,7 @@ const calcTotalHours = (data) => {
 
 module.exports = {
 	EARNING_TYPE,
+	ALERTS_TYPE,
 	PAY_TYPES_TITLE,
 	CURRENT_TIME_HHMM,
 	NEXT_DAY,

@@ -121,7 +121,7 @@ const AddNewProjectTask = ({ isOpen, onClose, task, projectId, setRefresh }) => 
 									<Input
 										type="text"
 										name="taskName"
-										value={formData.taskName}
+										value={formData?.taskName}
 										onChange={(e) =>
 											setFormData((prevData) => ({
 												...prevData,
@@ -139,7 +139,7 @@ const AddNewProjectTask = ({ isOpen, onClose, task, projectId, setRefresh }) => 
 											type="date"
 											id="dueDate"
 											name="dueDate"
-											value={formData.dueDate}
+											value={formData?.dueDate}
 											onChange={(e) =>
 												setFormData((prevData) => ({
 													...prevData,
@@ -154,7 +154,7 @@ const AddNewProjectTask = ({ isOpen, onClose, task, projectId, setRefresh }) => 
 										<Input
 											type="text"
 											name="timeToComplete"
-											value={formData.timeToComplete}
+											value={formData?.timeToComplete}
 											onChange={(e) =>
 												setFormData((prevData) => ({
 													...prevData,
@@ -189,7 +189,7 @@ const AddNewProjectTask = ({ isOpen, onClose, task, projectId, setRefresh }) => 
 
 									<IconButton
 										icon={<AddIcon />}
-										isDisabled={formData.taskName === ""}
+										isDisabled={formData?.taskName === ""}
 										onClick={(e) => {
 											e.preventDefault();
 											setSubTaskAdded(true);

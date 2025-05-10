@@ -1,4 +1,5 @@
 const EmployeeBankingInfo = require("../models/EmployeeBankingInfo");
+const { ALERTS_TYPE } = require("../services/data");
 const { encryptData, decryptData } = require("../services/encryptDataService");
 // const { saveKeyToEnv } = require("../services/fileService");
 const { deleteAlerts } = require("./payrollController");
@@ -104,7 +105,7 @@ const addEmployeeBankingInfo = async (req, res) => {
 			bankDetails.transitNum !== "" &&
 			bankDetails.accountNum !== ""
 		) {
-			await deleteAlerts(empId);
+			await deleteAlerts(empId, ALERTS_TYPE.BANK);
 		}
 
 		const existingBankingInfo = await findEmployeeBankingInfo(empId, companyName);
@@ -156,6 +157,7 @@ const addEmployeeBankingInfo = async (req, res) => {
 const updateEmployeeBankingInfo = async (req, res) => {
 	const { id } = req.params;
 	try {
+		if (req.body?._id) delete req.body._id;
 		const updatedInfo = await updateBankingInfo(id, req.body);
 		res.status(201).json(updatedInfo);
 	} catch (error) {

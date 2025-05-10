@@ -63,7 +63,7 @@ const AddProject = ({ isOpen, onClose, setRefresh, managers, company }) => {
 								<InputFormControl
 									label={"Project name"}
 									name="projectName"
-									valueText={formData.projectName}
+									valueText={formData?.projectName}
 									handleChange={(e) =>
 										setFormData((prevData) => ({
 											...prevData,
@@ -104,7 +104,7 @@ const AddProject = ({ isOpen, onClose, setRefresh, managers, company }) => {
 									<DateTimeFormControl
 										label={"Start date"}
 										className="date_picker"
-										valueText1={formData.startDate}
+										valueText1={formData?.startDate}
 										name1="startDate"
 										handleChange={(e) =>
 											setFormData((prevData) => ({
@@ -117,7 +117,7 @@ const AddProject = ({ isOpen, onClose, setRefresh, managers, company }) => {
 									<DateTimeFormControl
 										label={"Due date"}
 										className="date_picker"
-										valueText1={formData.dueDate}
+										valueText1={formData?.dueDate}
 										name1="dueDate"
 										handleChange={(e) =>
 											setFormData((prevData) => ({
@@ -130,7 +130,7 @@ const AddProject = ({ isOpen, onClose, setRefresh, managers, company }) => {
 									<InputFormControl
 										label={"Time to complete (in hours)"}
 										name="timeToComplete"
-										valueText={formData.timeToComplete}
+										valueText={formData?.timeToComplete}
 										handleChange={(e) =>
 											setFormData((prevData) => ({
 												...prevData,
@@ -146,7 +146,7 @@ const AddProject = ({ isOpen, onClose, setRefresh, managers, company }) => {
 										isLoading={isSubmitting}
 										type="submit"
 										bg="var(--logo_bg)"
-										isDisabled={formData.projectName === ""}
+										isDisabled={formData?.projectName === ""}
 									>
 										Add
 									</Button>

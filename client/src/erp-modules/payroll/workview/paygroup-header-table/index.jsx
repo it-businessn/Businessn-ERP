@@ -96,6 +96,7 @@ const PaygroupTable = ({
 						/>
 					)}
 					<WorkviewTable
+						selectedPayGroupName={selectedPayGroup?.name}
 						payGroupSchedule={payGroupSchedule}
 						closestRecordIndex={closestRecordIndex}
 						autoScroll

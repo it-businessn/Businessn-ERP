@@ -4,11 +4,11 @@ import NormalTextTitle from "components/ui/NormalTextTitle";
 import TextTitle from "components/ui/text/TextTitle";
 import ActionAll from "erp-modules/payroll/timesheets/ActionAll";
 import { ACTION_STATUS } from "erp-modules/payroll/timesheets/data";
-import OnboardEmpModal from "erp-modules/sales/onboarding/OnboardEmpModal";
 import PageLayout from "layouts/PageLayout";
 import { useEffect, useState } from "react";
 import ContactService from "services/ContactService";
 import LocalStorageService from "services/LocalStorageService";
+import OnboardUserModal from "./OnboardUserModal";
 
 const Onboarding = () => {
 	const company = LocalStorageService.getItem("selectedCompany");
@@ -284,7 +284,7 @@ const Onboarding = () => {
 				</Table>
 			</Box>
 			{showAddUser && (
-				<OnboardEmpModal
+				<OnboardUserModal
 					title="Add User"
 					showOnboard={showAddUser}
 					setShowOnboard={setShowAddUser}

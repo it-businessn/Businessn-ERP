@@ -9,7 +9,7 @@ const AddTimesheet = ({ isOpen, onClose, editFormData, setRefresh }) => {
 	const handleSubmit = async (e) => {
 		e.preventDefault();
 		try {
-			await PayrollService.updateEmployeePayInfo(formData, formData._id);
+			await PayrollService.updateEmployeePayInfo(formData, formData?._id);
 			onClose();
 			setRefresh((prev) => !prev);
 		} catch (error) {}
@@ -31,7 +31,7 @@ const AddTimesheet = ({ isOpen, onClose, editFormData, setRefresh }) => {
 					type="number"
 					label={"Commission $"}
 					name="commission"
-					valueText={formData.commission}
+					valueText={formData?.commission}
 					handleChange={handleInputChange}
 					required
 				/>
@@ -39,7 +39,7 @@ const AddTimesheet = ({ isOpen, onClose, editFormData, setRefresh }) => {
 					type="number"
 					label={"Retroactive $"}
 					name="retroactive"
-					valueText={formData.retroactive}
+					valueText={formData?.retroactive}
 					handleChange={handleInputChange}
 					required
 				/>
@@ -49,7 +49,7 @@ const AddTimesheet = ({ isOpen, onClose, editFormData, setRefresh }) => {
 					type="number"
 					label={"Reimbursement $"}
 					name="reimbursement"
-					valueText={formData.reimbursement}
+					valueText={formData?.reimbursement}
 					handleChange={handleInputChange}
 					required
 				/>
@@ -57,7 +57,7 @@ const AddTimesheet = ({ isOpen, onClose, editFormData, setRefresh }) => {
 					type="number"
 					label={"Vacation Payout $"}
 					name="vacationPayout"
-					valueText={formData.vacationPayout}
+					valueText={formData?.vacationPayout}
 					handleChange={handleInputChange}
 					required
 				/>
@@ -67,7 +67,7 @@ const AddTimesheet = ({ isOpen, onClose, editFormData, setRefresh }) => {
 					type="number"
 					label={"Bonus $"}
 					name="bonus"
-					valueText={formData.bonus}
+					valueText={formData?.bonus}
 					handleChange={handleInputChange}
 					required
 				/>
@@ -75,7 +75,7 @@ const AddTimesheet = ({ isOpen, onClose, editFormData, setRefresh }) => {
 					type="number"
 					label={"Termination Payout $"}
 					name="terminationPayout"
-					valueText={formData.terminationPayout}
+					valueText={formData?.terminationPayout}
 					handleChange={handleInputChange}
 					required
 				/>

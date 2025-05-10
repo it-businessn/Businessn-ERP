@@ -19,7 +19,6 @@ import HighlightButton from "components/ui/button/HighlightButton";
 import LeftIconButton from "components/ui/button/LeftIconButton";
 import PrimaryButton from "components/ui/button/PrimaryButton";
 import TextTitle from "components/ui/text/TextTitle";
-import OnboardEmpModal from "erp-modules/sales/onboarding/OnboardEmpModal";
 import useManager from "hooks/useManager";
 import useSalesAgentData from "hooks/useSalesAgentData";
 import PageLayout from "layouts/PageLayout";
@@ -31,6 +30,7 @@ import ContactService from "services/ContactService";
 import LeadsService from "services/LeadsService";
 import { generateLighterShade, isManager } from "utils";
 import SearchFilter from "../lead docket/SearchFilter";
+import OnboardCustomerModal from "../onboarding/OnboardCustomerModal";
 import AddNewOpportunity from "../opportunities/AddNewOpportunity";
 
 const CustomersList = ({ user, handleProfileView, icons, company }) => {
@@ -241,11 +241,10 @@ const CustomersList = ({ user, handleProfileView, icons, company }) => {
 				/>
 			)}
 			{showOnboard && (
-				<OnboardEmpModal
+				<OnboardCustomerModal
 					title="Onboard employee"
 					showOnboard={showOnboard}
 					setShowOnboard={setShowOnboard}
-					isSalesOnboard
 				/>
 			)}
 		</PageLayout>

@@ -146,7 +146,7 @@ const AccountingWorkview = () => {
 								size="sm"
 								label="Date"
 								valueText1={
-									formData.transactionDate ? getDefaultDate(formData.transactionDate) : ""
+									formData?.transactionDate ? getDefaultDate(formData?.transactionDate) : ""
 								}
 								name1="transactionDate"
 								handleChange={handleChange}
@@ -156,7 +156,7 @@ const AccountingWorkview = () => {
 								label="Description"
 								name="description"
 								placeholder="Enter Description"
-								valueText={formData.description}
+								valueText={formData?.description}
 								handleChange={handleChange}
 							/>
 						</HStack>

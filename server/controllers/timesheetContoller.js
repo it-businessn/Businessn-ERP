@@ -446,6 +446,7 @@ const updateTimesheetPayType = async (req, res) => {
 	const { id } = req.params;
 
 	try {
+		if (req.body?._id) delete req.body._id;
 		const timesheet = await updateTimesheetData(id, req.body);
 		return res.status(201).json(timesheet);
 	} catch (error) {
@@ -551,6 +552,7 @@ const updateTimesheetData = async (id, data) =>
 const deleteTimesheet = async (req, res) => {
 	const { id } = req.params;
 	try {
+		if (req.body?._id) delete req.body._id;
 		const timesheet = await updateTimesheetData(id, req.body);
 
 		// const resource = await Timesheet.findByIdAndDelete({

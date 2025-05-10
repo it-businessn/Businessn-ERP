@@ -20,25 +20,22 @@ import {
 } from "config/payroll/employees/bankingInfo";
 import { Field, Form, Formik } from "formik";
 import useEmployeeBankingInfo from "hooks/useEmployeeBankingInfo";
-import useSelectedEmp from "hooks/useSelectedEmp";
 import React, { useEffect, useState } from "react";
 import LocalStorageService from "services/LocalStorageService";
 import PayrollService from "services/PayrollService";
 import { BankingFormSchema } from "validation/BankDetails";
-import StepContent from "../step-content";
-import RadioTypeRecord from "../step-content/radio";
-import Record from "../step-content/Record";
+import StepContent from "../../step-content";
+import RadioTypeRecord from "../../step-content/radio";
+import Record from "../../step-content/Record";
 
-const BankingInfo = ({ company, isOnboarding, handlePrev, id, handleClose }) => {
-	const { empId } = useSelectedEmp(LocalStorageService.getItem("empId"));
+const AddBankingInfo = ({ company, handlePrev, id, handleClose }) => {
+	const toast = useToast();
 	const onboardingEmpId = LocalStorageService.getItem("onboardingEmpId");
-	const userId = isOnboarding ? onboardingEmpId : empId;
-	const bankingInfo = useEmployeeBankingInfo(company, userId, isOnboarding);
-	const setBankingInfo = () => getInitialBankingInfo(userId, company);
+	const bankingInfo = useEmployeeBankingInfo(company, onboardingEmpId);
+	const setBankingInfo = () => getInitialBankingInfo(onboardingEmpId, company);
 	const [formData, setFormData] = useState(setBankingInfo);
 	const [isDisabled, setIsDisabled] = useState(true);
-	const [isSave1Disabled, setIsSave1Disabled] = useState(false);
-	const [isLoading, setIsLoading] = useState(false);
+	const [currentStep, setCurrentStep] = useState(0);
 
 	useEffect(() => {
 		if (bankingInfo) {
@@ -46,17 +43,14 @@ const BankingInfo = ({ company, isOnboarding, handlePrev, id, handleClose }) => 
 		} else {
 			setFormData(setBankingInfo);
 		}
-	}, [bankingInfo, userId]);
-
-	const toast = useToast();
+	}, [bankingInfo]);
 
 	const handleSubmit = async (values) => {
-		setIsLoading(true);
 		try {
 			if (values) {
 				formData.bankDetails = values;
 			}
-			formData.empId = userId;
+			formData.empId = onboardingEmpId;
 			formData.companyName = company;
 			await PayrollService.addEmployeeBankingInfo(formData);
 			toast({
@@ -69,15 +63,13 @@ const BankingInfo = ({ company, isOnboarding, handlePrev, id, handleClose }) => 
 		} catch (error) {
 			console.error("Error:", error);
 			alert("Failed to submit banking information.");
-		} finally {
-			setIsLoading(false);
 		}
 	};
 
-	const [currentStep, setCurrentStep] = useState(0);
 	const goToNextStep = (index) => {
 		setCurrentStep(index);
 	};
+
 	const steps = [
 		{
 			title: "Payment Notification",
@@ -116,7 +108,7 @@ const BankingInfo = ({ company, isOnboarding, handlePrev, id, handleClose }) => 
 														param={param}
 														setFormData={setFormData}
 														handleConfirm={() => ""}
-														isOnboarding={isOnboarding}
+														isOnboarding={true}
 													/>
 												) : (
 													<React.Fragment key={param.name}>
@@ -185,11 +177,13 @@ const BankingInfo = ({ company, isOnboarding, handlePrev, id, handleClose }) => 
 					steps={steps}
 					currentStep={currentStep}
 					handleClick={goToNextStep}
-					isOnboarding={isOnboarding}
+					isOnboarding={true}
 					handlePrev={handlePrev}
 					id={id}
-					handleNextEnabled={!isDisabled}
-					handleClose={handleClose}
+					handleClose={() => {
+						LocalStorageService.removeItem("onboardingEmpId");
+						handleClose();
+					}}
 				/>
 			</BoxCard>
 			<StepContent currentStep={currentStep} steps={steps} />
@@ -197,4 +191,4 @@ const BankingInfo = ({ company, isOnboarding, handlePrev, id, handleClose }) => 
 	);
 };
 
-export default BankingInfo;
+export default AddBankingInfo;

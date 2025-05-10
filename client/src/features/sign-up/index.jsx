@@ -55,11 +55,11 @@ const SignUp = ({ isModal, setRefresh, onClose, hideCompany }) => {
 	const [showAddManagers, setShowAddManagers] = useState(false);
 
 	const isInvalid =
-		formData.firstName === "" ||
-		formData.email === "" ||
-		formData.role === "" ||
-		// formData.employmentType === "" ||
-		formData.phoneNumber === "";
+		formData?.firstName === "" ||
+		formData?.email === "" ||
+		formData?.role === "" ||
+		// formData?.employmentType === "" ||
+		formData?.phoneNumber === "";
 
 	const handleSubmit = async (e) => {
 		e.preventDefault();
@@ -96,7 +96,7 @@ const SignUp = ({ isModal, setRefresh, onClose, hideCompany }) => {
 		// 	name: "Type of Employment",
 		// 	data: empTypes,
 		// 	param_key: "employmentType",
-		// 	param_value: formData.employmentType,
+		// 	param_value: formData?.employmentType,
 		// 	handleChange,
 		// 	setShowAdd: setShowAddEmpTypes,
 		// 	showAdd: showAddEmpTypes,
@@ -106,7 +106,7 @@ const SignUp = ({ isModal, setRefresh, onClose, hideCompany }) => {
 		// 			showAddEmpTypes={showAddEmpTypes}
 		// 			setOptionDataRefresh={setOptionDataRefresh}
 		// 			setShowAddEmpTypes={setShowAddEmpTypes}
-		// 			companyName={formData.company}
+		// 			companyName={formData?.company}
 		// 		/>
 		// 	),
 		// },
@@ -114,7 +114,7 @@ const SignUp = ({ isModal, setRefresh, onClose, hideCompany }) => {
 			name: "Type of Role",
 			data: roles,
 			param_key: "role",
-			param_value: formData.role,
+			param_value: formData?.role,
 			handleChange,
 			setShowAdd: setShowAddRoles,
 			showAdd: showAddRoles,
@@ -124,7 +124,7 @@ const SignUp = ({ isModal, setRefresh, onClose, hideCompany }) => {
 					showAddRoles={showAddRoles}
 					setOptionDataRefresh={setDataRefresh}
 					setShowAddRoles={setShowAddRoles}
-					companyName={formData.company}
+					companyName={formData?.company}
 				/>
 			),
 		},
@@ -132,7 +132,7 @@ const SignUp = ({ isModal, setRefresh, onClose, hideCompany }) => {
 			name: "Type of Department",
 			data: departments,
 			param_key: "department",
-			param_value: formData.department,
+			param_value: formData?.department,
 			handleChange,
 			setShowAdd: setShowAddDepartments,
 			showAdd: showAddDepartments,
@@ -142,7 +142,7 @@ const SignUp = ({ isModal, setRefresh, onClose, hideCompany }) => {
 					showAddDepartments={showAddDepartments}
 					setOptionDataRefresh={setDataRefresh}
 					setShowAddDepartments={setShowAddDepartments}
-					companyName={formData.company}
+					companyName={formData?.company}
 				/>
 			),
 			// content: <CompaniesPanel setOpenCompanyForm={true} />,
@@ -151,7 +151,7 @@ const SignUp = ({ isModal, setRefresh, onClose, hideCompany }) => {
 			name: "Type of Base module",
 			data: modules,
 			param_key: "baseModule",
-			param_value: formData.baseModule,
+			param_value: formData?.baseModule,
 			handleChange,
 			setShowAdd: setShowAddModules,
 			showAdd: showAddModules,
@@ -161,7 +161,7 @@ const SignUp = ({ isModal, setRefresh, onClose, hideCompany }) => {
 					showAddModules={showAddModules}
 					setOptionDataRefresh={setDataRefresh}
 					setShowAddModules={setShowAddModules}
-					companyName={formData.company}
+					companyName={formData?.company}
 				/>
 			),
 		},
@@ -169,7 +169,7 @@ const SignUp = ({ isModal, setRefresh, onClose, hideCompany }) => {
 			name: "Manager",
 			data: managers,
 			param_key: "manager",
-			param_value: formData.manager,
+			param_value: formData?.manager,
 			handleChange,
 			setShowAdd: setShowAddManagers,
 			showAdd: showAddManagers,
@@ -215,7 +215,7 @@ const SignUp = ({ isModal, setRefresh, onClose, hideCompany }) => {
 								<FormLabel>Select Company</FormLabel>
 								<Select
 									name="company"
-									value={formData.company}
+									value={formData?.company}
 									bg={"var(--main_color)"}
 									onChange={handleChange}
 									placeholder="Select Company"
@@ -231,14 +231,14 @@ const SignUp = ({ isModal, setRefresh, onClose, hideCompany }) => {
 						<InputFormControl
 							label={"Company Id"}
 							name="companyId"
-							valueText={formData.companyId}
+							valueText={formData?.companyId}
 							handleChange={handleChange}
 							placeholder="Company Id"
 						/>
 						<InputFormControl
 							label={"First Name"}
 							name="firstName"
-							valueText={formData.firstName}
+							valueText={formData?.firstName}
 							handleChange={handleChange}
 							placeholder="First Name"
 							required
@@ -246,14 +246,14 @@ const SignUp = ({ isModal, setRefresh, onClose, hideCompany }) => {
 						<InputFormControl
 							label={"Middle Name"}
 							name="middleName"
-							valueText={formData.middleName}
+							valueText={formData?.middleName}
 							handleChange={handleChange}
 							placeholder="Middle Name"
 						/>
 						<InputFormControl
 							label={"Last Name"}
 							name="lastName"
-							valueText={formData.lastName}
+							valueText={formData?.lastName}
 							handleChange={handleChange}
 							placeholder="Last Name"
 						/>
@@ -261,7 +261,7 @@ const SignUp = ({ isModal, setRefresh, onClose, hideCompany }) => {
 							label={"Email"}
 							name="email"
 							type="email"
-							valueText={formData.email}
+							valueText={formData?.email}
 							handleChange={handleChange}
 							placeholder="Enter email address"
 							required
@@ -272,7 +272,7 @@ const SignUp = ({ isModal, setRefresh, onClose, hideCompany }) => {
 								<Input
 									type={showPassword ? "text" : "password"}
 									name="password"
-									value={formData.password}
+									value={formData?.password}
 									onChange={handleChange}
 									placeholder="Enter password"
 									required
@@ -288,7 +288,7 @@ const SignUp = ({ isModal, setRefresh, onClose, hideCompany }) => {
 						<InputFormControl
 							label={"Phone Number"}
 							name="phoneNumber"
-							valueText={formData.phoneNumber}
+							valueText={formData?.phoneNumber}
 							handleChange={handleChange}
 							placeholder="Phone Number"
 							required
@@ -299,12 +299,12 @@ const SignUp = ({ isModal, setRefresh, onClose, hideCompany }) => {
 								<Input
 									type="text"
 									name="streetNumber"
-									value={formData.primaryAddress.streetNumber}
+									value={formData?.primaryAddress.streetNumber}
 									onChange={(e) => {
 										setFormData({
 											...formData,
 											primaryAddress: {
-												...formData.primaryAddress,
+												...formData?.primaryAddress,
 												streetNumber: e.target.value,
 											},
 										});
@@ -315,12 +315,12 @@ const SignUp = ({ isModal, setRefresh, onClose, hideCompany }) => {
 								<Input
 									type="text"
 									name="city"
-									value={formData.primaryAddress.city}
+									value={formData?.primaryAddress.city}
 									onChange={(e) => {
 										setFormData({
 											...formData,
 											primaryAddress: {
-												...formData.primaryAddress,
+												...formData?.primaryAddress,
 												city: e.target.value,
 											},
 										});
@@ -332,12 +332,12 @@ const SignUp = ({ isModal, setRefresh, onClose, hideCompany }) => {
 								<Input
 									type="text"
 									name="state"
-									value={formData.primaryAddress.state}
+									value={formData?.primaryAddress.state}
 									onChange={(e) => {
 										setFormData({
 											...formData,
 											primaryAddress: {
-												...formData.primaryAddress,
+												...formData?.primaryAddress,
 												state: e.target.value,
 											},
 										});
@@ -347,12 +347,12 @@ const SignUp = ({ isModal, setRefresh, onClose, hideCompany }) => {
 								<Input
 									type="text"
 									name="postalCode"
-									value={formData.primaryAddress.postalCode}
+									value={formData?.primaryAddress.postalCode}
 									onChange={(e) => {
 										setFormData({
 											...formData,
 											primaryAddress: {
-												...formData.primaryAddress,
+												...formData?.primaryAddress,
 												postalCode: e.target.value,
 											},
 										});
@@ -362,12 +362,12 @@ const SignUp = ({ isModal, setRefresh, onClose, hideCompany }) => {
 								<Input
 									type="text"
 									name="country"
-									value={formData.primaryAddress.country}
+									value={formData?.primaryAddress.country}
 									onChange={(e) => {
 										setFormData({
 											...formData,
 											primaryAddress: {
-												...formData.primaryAddress,
+												...formData?.primaryAddress,
 												country: e.target.value,
 											},
 										});

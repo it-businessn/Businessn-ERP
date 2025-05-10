@@ -4,7 +4,7 @@ const EmployeeBankingInfo = require("../models/EmployeeBankingInfo");
 const EmployeeProfileInfo = require("../models/EmployeeProfileInfo");
 const Group = require("../models/Group");
 
-const { PAYRUN_TYPE, TIMESHEET_STATUS, PAY_TYPES_TITLE } = require("../services/data");
+const { PAYRUN_TYPE, TIMESHEET_STATUS, PAY_TYPES_TITLE, ALERTS_TYPE } = require("../services/data");
 const { fetchActiveEmployees } = require("./userController");
 const Timesheet = require("../models/Timesheet");
 const { getHourlyAggregatedResult } = require("./payrunHourlyAllocatedCalc");
@@ -299,6 +299,7 @@ const getAlertsAndViolationsInfo = async (req, res) => {
 // 	try {
 // 		const existingPayInfo = await findEmployeePayInfoDetails(empId, companyName);
 // 		if (existingPayInfo) {
+// 		if (req.body?._id) delete req.body._id;
 // 			const updatedPayInfo = await updatePayInfo(existingPayInfo._id, req.body);
 // 			return res.status(201).json(updatedPayInfo);
 // 		}
@@ -350,25 +351,20 @@ const addAlertsAndViolations = async (req, res) => {
 				empId: data?.empId?._id,
 			}).select("empId SIN");
 
-			const empPayRate = await EmployeePayInfo.findOne({
+			const empPayInfo = await EmployeePayInfo.findOne({
 				companyName,
 				empId: data?.empId?._id,
 			}).select("empId roles");
 
 			const missingBankInfo =
-				!empBankResult ||
-				!empBankResult.bankNum ||
-				!empBankResult.transitNum ||
-				!empBankResult.accountNum ||
-				empBankResult.bankNum === "" ||
-				empBankResult.transitNum === "" ||
-				empBankResult.accountNum === "";
+				!empBankResult?.bankNum || !empBankResult?.transitNum || !empBankResult?.accountNum;
 			if (missingBankInfo) {
 				const alertInfo = {
 					empId: data?.empId?._id,
 					companyName,
 					description: "Banking information missing",
 					actionRequired: true,
+					type: ALERTS_TYPE.BANK,
 				};
 				const bankingInfoAlertExists = await findAlertInfo(alertInfo);
 				if (!bankingInfoAlertExists) {
@@ -378,14 +374,15 @@ const addAlertsAndViolations = async (req, res) => {
 			}
 
 			const belowMinimumWage =
-				!empPayRate?.roles?.length ||
-				empPayRate?.roles?.find((_) => parseFloat(_?.payRate) < 17.85);
+				!empPayInfo?.roles?.length ||
+				empPayInfo?.roles?.find((_) => parseFloat(_?.payRate) < 17.85);
 			if (belowMinimumWage) {
 				const alertInfo = {
 					empId: data?.empId?._id,
 					companyName,
 					description: "Minimum wage is below $17.85.",
 					actionRequired: true,
+					type: ALERTS_TYPE.WAGE,
 				};
 				const wageAlertExists = await findAlertInfo(alertInfo);
 				if (!wageAlertExists) {
@@ -401,6 +398,7 @@ const addAlertsAndViolations = async (req, res) => {
 					companyName,
 					actionRequired: false,
 					description: "SIN missing",
+					type: ALERTS_TYPE.SIN,
 				};
 				const SINViolationExists = await findAlertInfo(alertInfo);
 				if (!SINViolationExists) {
@@ -415,20 +413,24 @@ const addAlertsAndViolations = async (req, res) => {
 	}
 };
 
-const deleteAlerts = async (empId) => {
-	const existingAlert = await findAlertInfo({
+const deleteAlerts = async (empId, type) => {
+	const existingAlert = await EmployeeAlertsViolationInfo.deleteMany({
 		empId,
+		type,
 	});
-	if (existingAlert) {
-		const deleted = await EmployeeAlertsViolationInfo.findByIdAndDelete({
-			_id: existingAlert._id,
-		});
-		if (deleted) {
-			console.log(`Alert  with id ${existingAlert._id} deleted successfully.`);
-		} else {
-			console.log("Alert Details not found.");
-		}
-	}
+	// const existingAlert = await findAlertInfo({
+	// 		empId,
+	// 	});
+	// 	if (existingAlert) {
+	// 		const deleted = await EmployeeAlertsViolationInfo.findByIdAndDelete({
+	// 			_id: existingAlert._id,
+	// 		});
+	// 		if (deleted) {
+	// 			console.log(`Alert  with id ${existingAlert._id} deleted successfully.`);
+	// 		} else {
+	// 			console.log("Alert Details not found.");
+	// 		}
+	// 	}
 };
 
 module.exports = {

@@ -74,25 +74,25 @@ const CompaniesPanel = ({ setOpenCompanyForm }) => {
 						type="text"
 						name="name"
 						placeholder="Enter Company Name"
-						value={formData.name}
+						value={formData?.name}
 						onChange={handleChange}
 					/>
 					<Input
 						name="founding_year"
 						placeholder="Enter Founding Year"
-						value={formData.founding_year}
+						value={formData?.founding_year}
 						onChange={handleChange}
 					/>
 					<Input
 						name="registration_number"
 						placeholder="Enter Registration Number"
-						value={formData.registration_number}
+						value={formData?.registration_number}
 						onChange={handleChange}
 					/>
 					<Input
 						name="industry_type"
 						placeholder="Enter Type of Industry"
-						value={formData.industry_type}
+						value={formData?.industry_type}
 						onChange={handleChange}
 					/>
 				</HStack>
@@ -101,12 +101,12 @@ const CompaniesPanel = ({ setOpenCompanyForm }) => {
 					<Input
 						type="text"
 						name="streetNumber"
-						value={formData.address.streetNumber}
+						value={formData?.address.streetNumber}
 						onChange={(e) => {
 							setFormData({
 								...formData,
 								address: {
-									...formData.address,
+									...formData?.address,
 									streetNumber: e.target.value,
 								},
 							});
@@ -117,12 +117,12 @@ const CompaniesPanel = ({ setOpenCompanyForm }) => {
 					<Input
 						type="text"
 						name="city"
-						value={formData.address.city}
+						value={formData?.address.city}
 						onChange={(e) => {
 							setFormData({
 								...formData,
 								address: {
-									...formData.address,
+									...formData?.address,
 									city: e.target.value,
 								},
 							});
@@ -134,12 +134,12 @@ const CompaniesPanel = ({ setOpenCompanyForm }) => {
 					<Input
 						type="text"
 						name="state"
-						value={formData.address.state}
+						value={formData?.address.state}
 						onChange={(e) => {
 							setFormData({
 								...formData,
 								address: {
-									...formData.address,
+									...formData?.address,
 									state: e.target.value,
 								},
 							});
@@ -149,12 +149,12 @@ const CompaniesPanel = ({ setOpenCompanyForm }) => {
 					<Input
 						type="text"
 						name="postalCode"
-						value={formData.address.postalCode}
+						value={formData?.address.postalCode}
 						onChange={(e) => {
 							setFormData({
 								...formData,
 								address: {
-									...formData.address,
+									...formData?.address,
 									postalCode: e.target.value,
 								},
 							});
@@ -164,12 +164,12 @@ const CompaniesPanel = ({ setOpenCompanyForm }) => {
 					<Input
 						type="text"
 						name="country"
-						value={formData.address.country}
+						value={formData?.address.country}
 						onChange={(e) => {
 							setFormData({
 								...formData,
 								address: {
-									...formData.address,
+									...formData?.address,
 									country: e.target.value,
 								},
 							});
@@ -179,7 +179,7 @@ const CompaniesPanel = ({ setOpenCompanyForm }) => {
 				</HStack>
 				<ActionButton
 					mt={2}
-					isDisabled={formData.name === ""}
+					isDisabled={formData?.name === ""}
 					isLoading={isSubmitting}
 					name="Add Company"
 					onClick={handleSubmit}

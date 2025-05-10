@@ -48,7 +48,7 @@ const AddOpportunity = () => {
 					<Input
 						type="text"
 						name="name"
-						value={formData.name}
+						value={formData?.name}
 						onChange={handleChange}
 						placeholder="Opportunity Name"
 					/>
@@ -58,7 +58,7 @@ const AddOpportunity = () => {
 					<Input
 						type="text"
 						name="clientName"
-						value={formData.clientName}
+						value={formData?.clientName}
 						onChange={handleChange}
 						placeholder="Client Name"
 					/>
@@ -67,7 +67,7 @@ const AddOpportunity = () => {
 					<FormLabel>Stage</FormLabel>
 					<Select
 						name="stage"
-						value={formData.stage}
+						value={formData?.stage}
 						onChange={handleChange}
 						placeholder="Select stage"
 					>
@@ -83,7 +83,7 @@ const AddOpportunity = () => {
 					<Input
 						type="number"
 						name="probability"
-						value={formData.probability}
+						value={formData?.probability}
 						onChange={handleChange}
 						placeholder="Probability of success"
 					/>
@@ -93,7 +93,7 @@ const AddOpportunity = () => {
 					<Input
 						type="number"
 						name="dealAmount"
-						value={formData.dealAmount}
+						value={formData?.dealAmount}
 						onChange={handleChange}
 						placeholder="Deal Amount"
 					/>
@@ -103,7 +103,7 @@ const AddOpportunity = () => {
           <Input
             type="date"
             name="closingDate"
-            value={formData.closingDate}
+            value={formData?.closingDate}
             onChange={handleChange}
           />
         </FormControl> */}

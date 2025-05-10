@@ -14,15 +14,14 @@ import useSelectedEmp from "hooks/useSelectedEmp";
 import { useEffect, useState } from "react";
 import LocalStorageService from "services/LocalStorageService";
 import PayrollService from "services/PayrollService";
-import StepContent from "../step-content";
-import Record from "../step-content/Record";
+import StepContent from "../../step-content";
+import Record from "../../step-content/Record";
 
-const BenefitsInfo = ({ company, id, isOnboarding, handleNext }) => {
+const BenefitsInfo = ({ company, id, handleNext }) => {
 	const { empId } = useSelectedEmp(LocalStorageService.getItem("empId"));
-	const onboardingEmpId = LocalStorageService.getItem("onboardingEmpId");
-	const userId = isOnboarding ? onboardingEmpId : empId;
-	const balanceInfo = useEmployeeBalanceInfo(company, userId);
-	const initialBalanceInfo = getInitialBalanceInfo(userId, company);
+
+	const balanceInfo = useEmployeeBalanceInfo(company, empId);
+	const initialBalanceInfo = getInitialBalanceInfo(empId, company);
 	const [formData, setFormData] = useState(initialBalanceInfo);
 	const [isDisabled, setIsDisabled] = useState(true);
 	const [isLoading, setIsLoading] = useState(false);
@@ -38,22 +37,20 @@ const BenefitsInfo = ({ company, id, isOnboarding, handleNext }) => {
 	}, [balanceInfo]);
 
 	useEffect(() => {
-		if (formData.typeOfVacationTreatment && formData.vacationPayPercent) setIsDisabled(false);
+		if (formData?.typeOfVacationTreatment && formData?.vacationPayPercent) setIsDisabled(false);
 		else setIsDisabled(true);
-	}, [formData.typeOfVacationTreatment, formData.vacationPayPercent, userId]);
+	}, [formData?.typeOfVacationTreatment, formData?.vacationPayPercent, empId]);
 
 	const handleSubmit = async () => {
 		setIsLoading(true);
 		const updatedBenefit = formData;
 
 		updatedBenefit.carryFwd = carryFwd !== undefined ? !carryFwd : false;
-		updatedBenefit.empId = userId;
+		updatedBenefit.empId = empId;
 		updatedBenefit.companyName = company;
-
 		try {
 			await PayrollService.addEmployeeBalanceInfo(updatedBenefit);
 			setIsLoading(false);
-			setIsDisabled(true);
 		} catch (error) {}
 	};
 
@@ -141,10 +138,8 @@ const BenefitsInfo = ({ company, id, isOnboarding, handleNext }) => {
 					hideProgress
 					steps={steps}
 					id={id}
-					isOnboarding={isOnboarding}
 					currentStep={currentStep}
 					handleClick={goToNextStep}
-					handleNextEnabled={true}
 					handleNext={handleNext}
 					isLoading={isLoading}
 					isDisabled={isDisabled}

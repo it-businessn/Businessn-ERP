@@ -28,7 +28,6 @@ const VerticalStepper = ({
 	handleClose,
 	id,
 	handleLinkClick,
-	handleNextEnabled,
 	indicatorStyle,
 	circleSize,
 	top = "25%",

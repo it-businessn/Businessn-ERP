@@ -13,12 +13,12 @@ import { FaCheckCircle } from "react-icons/fa";
 import { useParams } from "react-router-dom";
 import LocalStorageService from "services/LocalStorageService";
 import EmpProfileSearch from "../EmpProfileSearch";
-import BankingInfo from "./employee-tabs/BankingInfo";
-import BenefitsInfo from "./employee-tabs/BenefitsInfo";
-import CorporateInfo from "./employee-tabs/CorporateInfo";
-import GovernmentInfo from "./employee-tabs/GovernmentContribution";
-import PayInfo from "./employee-tabs/PayInfo";
-import PersonalInfo from "./employee-tabs/PersonalInfo";
+import BankingInfo from "./employee-tabs/bank-info/BankingInfo";
+import BenefitsInfo from "./employee-tabs/benefit-info/BenefitsInfo";
+import CorporateInfo from "./employee-tabs/employment-info/CorporateInfo";
+import GovernmentInfo from "./employee-tabs/govt-info/GovernmentContribution";
+import PayInfo from "./employee-tabs/pay-info/PayInfo";
+import PersonalInfo from "./employee-tabs/personal-info/PersonalInfo";
 
 const Employees = ({ isOnboarding, selectedPayGroupName, handleClose }) => {
 	const { id, stepNo } = useParams();

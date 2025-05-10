@@ -18,6 +18,7 @@ const PayrunSetup = ({
 	closestRecord,
 	isPayPeriodInactive,
 	deptName,
+	setSelectedPayGroupOption,
 }) => {
 	const [isLoading, setIsLoading] = useState(false);
 	const { company } = useCompany(LocalStorageService.getItem("selectedCompany"));
@@ -82,7 +83,11 @@ const PayrunSetup = ({
 						</Th>
 						<Th>
 							<SelectBox
-								handleChange={(value) => console.log(value)}
+								handleChange={(value) => {
+									if (value !== "") {
+										setSelectedPayGroupOption(value);
+									}
+								}}
 								data={payGroups}
 								name="name"
 								border="1px solid var(--primary_button_bg)"

@@ -5,11 +5,11 @@ import ActionButtonGroup from "components/ui/form/ActionButtonGroup";
 import ModalLayout from "components/ui/modal/ModalLayout";
 import NormalTextTitle from "components/ui/NormalTextTitle";
 import TextTitle from "components/ui/text/TextTitle";
-import { ROLES } from "constant";
+import { COMPANIES, ROLES } from "constant";
 import useCompany from "hooks/useCompany";
 import usePaygroup from "hooks/usePaygroup";
 import PageLayout from "layouts/PageLayout";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { MdOutlineChevronRight } from "react-icons/md";
 import { useNavigate, useParams } from "react-router-dom";
 import { workViewPath } from "routes";
@@ -26,32 +26,6 @@ import PayrunSetup from "./PayrunSetup";
 import ReportsPreview from "./ReportsPreview";
 
 const ProcessPayroll = () => {
-	const { payNo, year, stepNum } = useParams();
-	const activeStep = stepNum ? parseInt(stepNum) : 0;
-	const [currentStep, setCurrentStep] = useState(activeStep);
-	const isExtra = payNo?.includes("E");
-	const loggedInUser = LocalStorageService.getItem("user");
-	const hasAccessRole =
-		loggedInUser?.role === ROLES.AUTH_ADMINISTRATOR || loggedInUser?.role === ROLES.SHADOW_ADMIN;
-	const deptName = loggedInUser?.role === ROLES.MANAGER ? loggedInUser?.department : null;
-
-	const { company } = useCompany(LocalStorageService.getItem("selectedCompany"));
-	const { payGroupSchedule, closestRecord, payGroups, selectedPayGroup } = usePaygroup(
-		company,
-		false,
-		year,
-	);
-
-	const selectedPayPeriod = getClosestRecord(payNo, isExtra, payGroupSchedule, closestRecord);
-
-	const isPayPeriodInactive = selectedPayPeriod?.isDisabledAction;
-	const isPayrollSubmitDisabled =
-		currentStep !== 5 || selectedPayPeriod?.isProcessed || isPayPeriodInactive;
-
-	const goToNextStep = (index) => {
-		setCurrentStep(index);
-	};
-
 	const steps = [
 		{ title: "Payrun Setup", content: <PayrunSetup /> },
 		{ title: "Inputs Review", content: <InputsReview /> },
@@ -60,16 +34,45 @@ const ProcessPayroll = () => {
 		{ title: "Finalize", content: <Finalize /> },
 		{ title: "Payroll Complete", content: <PayrollComplete /> },
 	];
+	const loggedInUser = LocalStorageService.getItem("user");
+	const hasAccessRole =
+		loggedInUser?.role === ROLES.AUTH_ADMINISTRATOR || loggedInUser?.role === ROLES.SHADOW_ADMIN;
+	const deptName = loggedInUser?.role === ROLES.MANAGER ? loggedInUser?.department : null;
+	const { company } = useCompany(LocalStorageService.getItem("selectedCompany"));
+	const { payNo, year, stepNum, paygroup } = useParams();
+	const activeStep = stepNum ? parseInt(stepNum) : 0;
+	const [currentStep, setCurrentStep] = useState(activeStep);
 	const [showConfirmationPopUp, setShowConfirmationPopUp] = useState(false);
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [reportData, setReportData] = useState(null);
+	const toast = useToast();
+	const navigate = useNavigate();
+	const isExtra = payNo?.includes("E");
+	const [selectedPayGroupOption, setSelectedPayGroupOption] = useState(
+		company === COMPANIES.BUSINESSN_ORG ? "Monthly" : null,
+	);
+	const { payGroupSchedule, closestRecord, payGroups, selectedPayGroup } = usePaygroup(
+		company,
+		selectedPayGroupOption,
+		false,
+		year,
+	);
+	const selectedPayPeriod = getClosestRecord(payNo, isExtra, payGroupSchedule, closestRecord);
+	const isPayPeriodInactive = selectedPayPeriod?.isDisabledAction;
+	const isPayrollSubmitDisabled =
+		currentStep !== 5 || selectedPayPeriod?.isProcessed || isPayPeriodInactive;
+
+	useEffect(() => {
+		if (paygroup) setSelectedPayGroupOption(paygroup);
+	}, [paygroup]);
+
+	const goToNextStep = (index) => {
+		setCurrentStep(index);
+	};
 
 	const handleClick = () => {
 		setShowConfirmationPopUp((prev) => !prev);
 	};
-
-	const toast = useToast();
-	const navigate = useNavigate();
 
 	const handleSubmit = async () => {
 		selectedPayPeriod.isProcessed = true;
@@ -147,6 +150,7 @@ const ProcessPayroll = () => {
 					</VStack>
 				</BoxCard>
 				<PayrollStageContent
+					setSelectedPayGroupOption={setSelectedPayGroupOption}
 					currentStep={currentStep}
 					steps={steps}
 					handleConfirm={goToNextStep}

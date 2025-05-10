@@ -59,6 +59,10 @@ const PayrollService = {
 		return apiService.post("/payroll/profileInfo", data);
 	},
 
+	async updateEmployeeProfileInfo(data, id) {
+		return apiService.put(`/payroll/profileInfo/${id}`, data, id);
+	},
+
 	async getAllEmployeeEmploymentInfo(
 		company,
 		startDate,
@@ -85,12 +89,20 @@ const PayrollService = {
 		return apiService.post("/payroll/employmentInfo", data);
 	},
 
+	async updateEmployeeEmploymentInfo(data, id) {
+		return apiService.put(`/payroll/employmentInfo/${id}`, data, id);
+	},
+
 	async getEmployeeGovernmentInfo(company, empId) {
 		return apiService.get(`/payroll/governmentInfo/${company}/${empId}`);
 	},
 
 	async addEmployeeGovernmentInfo(data) {
 		return apiService.post("/payroll/governmentInfo", data);
+	},
+
+	async updateEmployeeGovernmentInfo(data, id) {
+		return apiService.put(`/payroll/governmentInfo/${id}`, data, id);
 	},
 
 	async getEmployeeBankingInfo(company, empId) {
@@ -107,6 +119,10 @@ const PayrollService = {
 
 	async addEmployeeBalanceInfo(data) {
 		return apiService.post("/payroll/balanceInfo", data);
+	},
+
+	async updateEmployeeBalanceInfo(data, id) {
+		return apiService.put(`/payroll/balanceInfo/${id}`, data, id);
 	},
 
 	async getHoursWorkedAllocationByType(

@@ -24,10 +24,10 @@ const MasterUserInfo = ({ company, handleNext }) => {
 	const [formData, setFormData] = useState(defaultUserInfo);
 
 	useEffect(() => {
-		if (formData.firstName && formData.lastName && formData.email && formData.phoneNumber) {
+		if (formData?.firstName && formData?.lastName && formData?.email && formData?.phoneNumber) {
 			setIsDisabled(false);
 		}
-	}, [formData.firstName, formData.lastName, formData.email, formData.phoneNumber]);
+	}, [formData?.firstName, formData?.lastName, formData?.email, formData?.phoneNumber]);
 
 	const handleChange = (e) => {
 		const { name, value } = e.target;
@@ -51,7 +51,7 @@ const MasterUserInfo = ({ company, handleNext }) => {
 					label="First Name"
 					name="firstName"
 					placeholder="Enter First Name"
-					valueText={formData.firstName}
+					valueText={formData?.firstName || ""}
 					handleChange={handleChange}
 				/>
 
@@ -59,7 +59,7 @@ const MasterUserInfo = ({ company, handleNext }) => {
 					label="Middle Name"
 					name="middleName"
 					placeholder="Enter Middle Name"
-					valueText={formData.middleName}
+					valueText={formData?.middleName}
 					handleChange={handleChange}
 				/>
 				<InputFormControl
@@ -67,7 +67,7 @@ const MasterUserInfo = ({ company, handleNext }) => {
 					label="Last Name"
 					name="lastName"
 					placeholder="Enter Last Name"
-					valueText={formData.lastName}
+					valueText={formData?.lastName}
 					handleChange={handleChange}
 				/>
 			</HStack>
@@ -78,7 +78,7 @@ const MasterUserInfo = ({ company, handleNext }) => {
 					label="Email"
 					name="email"
 					placeholder="Enter Email"
-					valueText={formData.email}
+					valueText={formData?.email}
 					handleChange={handleChange}
 				/>
 				<InputFormControl
@@ -87,7 +87,7 @@ const MasterUserInfo = ({ company, handleNext }) => {
 					label="Phone"
 					name="phoneNumber"
 					placeholder="Enter Phone"
-					valueText={formData.phoneNumber}
+					valueText={formData?.phoneNumber}
 					handleChange={handleChange}
 				/>
 			</HStack>
@@ -96,12 +96,12 @@ const MasterUserInfo = ({ company, handleNext }) => {
 					label="Role / Position"
 					name="position"
 					placeholder="Enter Position"
-					valueText={formData.position}
+					valueText={formData?.position}
 					handleChange={handleChange}
 				/>
 				<DateTimeFormControl
 					label="Start Date"
-					valueText1={formData.startDate ? getDefaultDate(formData.startDate) : ""}
+					valueText1={formData?.startDate ? getDefaultDate(formData?.startDate) : ""}
 					name1="startDate"
 					handleChange={handleChange}
 				/>

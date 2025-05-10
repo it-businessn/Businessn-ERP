@@ -8,7 +8,7 @@ import {
 	VStack,
 } from "@chakra-ui/react";
 import PrimaryButton from "components/ui/button/PrimaryButton";
-import { ROLES } from "constant";
+import { COMPANIES, ROLES } from "constant";
 import PayrollActions from "erp-modules/payroll/workview/paygroup-header-table/PayrollActions";
 import OnboardEmpModal from "erp-modules/sales/onboarding/OnboardEmpModal";
 import useCompany from "hooks/useCompany";
@@ -23,21 +23,18 @@ import LocalStorageService from "services/LocalStorageService";
 import EmployeeList from "./EmployeeList";
 
 const EmployeeListView = () => {
-	const { company } = useCompany(LocalStorageService.getItem("selectedCompany"));
 	const loggedInUser = LocalStorageService.getItem("user");
+	const { company } = useCompany(LocalStorageService.getItem("selectedCompany"));
 
 	const [formData, setFormData] = useState({
 		isPayrollActive: true,
 		isPayrollInactive: false,
 	});
-
 	const [isRefresh, setIsRefresh] = useState(false);
 	const deptName = loggedInUser?.role === ROLES.MANAGER ? loggedInUser?.department : null;
-
 	const { employees, filteredEmployees, setFilteredEmployees } = useEmployees(
 		isRefresh,
 		company,
-		false,
 		formData,
 		null,
 		deptName,
@@ -53,16 +50,16 @@ const EmployeeListView = () => {
 	// const { departments, roles } = useSignup(false, company);
 	const [filteredDept, setFilteredDept] = useState([]);
 	const [filteredCC, setFilteredCC] = useState([]);
-
 	const [showOnboard, setShowOnboard] = useState(false);
-
+	const [selectedPayGroupOption, setSelectedPayGroupOption] = useState(
+		company === COMPANIES.BUSINESSN_ORG ? "Monthly" : null,
+	);
+	const { selectedPayGroup } = usePaygroup(company, selectedPayGroupOption, false);
 	const navigate = useNavigate();
 
 	useEffect(() => {
 		setIsRefresh(showOnboard);
 	}, [showOnboard]);
-
-	const { selectedPayGroup } = usePaygroup(company, false);
 
 	const handleClick = (val) => {
 		if (val === "terminate") {
@@ -139,7 +136,7 @@ const EmployeeListView = () => {
 						<HStack spacing={2}>
 							<Checkbox
 								colorScheme={"facebook"}
-								isChecked={formData.isPayrollActive}
+								isChecked={formData?.isPayrollActive}
 								onChange={(e) =>
 									setFormData((prevData) => ({
 										...prevData,
@@ -151,7 +148,7 @@ const EmployeeListView = () => {
 							</Checkbox>
 							<Checkbox
 								colorScheme={"facebook"}
-								isChecked={formData.isPayrollInactive}
+								isChecked={formData?.isPayrollInactive}
 								onChange={(e) =>
 									setFormData((prevData) => ({
 										...prevData,
