@@ -447,14 +447,15 @@ export const router = createBrowserRouter([
 		element: <Login />,
 	},
 	{ path: "/support", element: <Support /> },
-	{ path: "/info", element: <CustomerInfo /> },
+	// { path: "/info", element: <CustomerInfo /> },
 	{
 		path: ROUTE_PATH.FORGOT_PWD,
 		element: <ForgotPassword />,
 	},
 	{
 		path: ROUTE_PATH.SIGNUP,
-		element: <SignUp />,
+		// element: <SignUp />,
+		element: <CustomerInfo />,
 	},
 	{
 		path: ROUTE_PATH.VERIFY_EMAIL,
