@@ -14,6 +14,7 @@ const employeeEmploymentInfoSchema = new mongoose.Schema({
 	employmentRegion: String,
 	employmentCountry: String,
 	positions: { type: Array, default: [] },
+	timeManagementBadgeID: String,
 });
 
 const EmployeeEmploymentInfo = mongoose.model(
