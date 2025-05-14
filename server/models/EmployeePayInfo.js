@@ -10,6 +10,7 @@ const employeePayInfoSchema = new mongoose.Schema({
 	statPay: String,
 	sickPay: String,
 	vacationPay: String,
+	bereavementPay: String,
 	salaryRate: String,
 	dailyHours: String,
 	typeOfEarning: { type: String, default: "Hourly" },

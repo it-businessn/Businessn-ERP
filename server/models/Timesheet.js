@@ -36,6 +36,7 @@ const timesheetSchema = new mongoose.Schema({
 	statPay: String,
 	sickPay: String,
 	vacationPay: String,
+	bereavementPay: String,
 	statPayHours: Number,
 	sickHoursWorked: Number,
 	regHoursWorked: { type: Number, default: 0 },
@@ -46,6 +47,7 @@ const timesheetSchema = new mongoose.Schema({
 	statDayHours: { type: Number, default: 0 },
 	sickPayHours: { type: Number, default: 0 },
 	vacationPayHours: { type: Number, default: 0 },
+	bereavementPayHours: { type: Number, default: 0 },
 
 	regBreakHoursWorked: { type: Number, default: 0 },
 	OTbreakHoursWorked: { type: Number, default: 0 },
