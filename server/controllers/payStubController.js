@@ -901,7 +901,7 @@ const getFundingPayDetailsReportInfo = async (req, res) => {
 };
 
 const getPayDetailsReportInfo = async (req, res) => {
-	const { companyName, payPeriodNum, isExtraRun, year } = req.params;
+	const { companyName, payPeriodNum, isExtraRun, scheduleFrequency, year } = req.params;
 
 	try {
 		const startOfYear = moment().year(year).startOf("year").toDate();
@@ -916,6 +916,7 @@ const getPayDetailsReportInfo = async (req, res) => {
 				$gte: startOfYear,
 				$lt: endOfYear,
 			},
+			scheduleFrequency,
 		}).populate(EMP_INFO);
 
 		payStubs = payStubs?.filter((a) => a?.empId);

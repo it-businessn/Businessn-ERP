@@ -21,7 +21,7 @@ router.get(
 router.get("/:companyName/:empId", payStubController.getEmployeePayDetailsReportInfo);
 
 router.get(
-	"/:companyName/:payPeriodNum/:isExtraRun/:year",
+	"/:companyName/:payPeriodNum/:isExtraRun/:scheduleFrequency/:year",
 	payStubController.getPayDetailsReportInfo,
 );
 
