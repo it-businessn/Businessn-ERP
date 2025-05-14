@@ -378,8 +378,8 @@ const buildPayStubDetails = async (currentPayPeriod, companyName, empTimesheetDa
 		prevPayPayInfo,
 	);
 
-	if (currentPayInfo) {
-		currentPayStub.scheduleFrequency = frequency;
+	if (currentPayInfo?.scheduleFrequency) {
+		currentPayStub.scheduleFrequency = currentPayInfo.scheduleFrequency;
 		await updatePayStub(currentPayInfo._id, currentPayStub);
 		return currentPayStub;
 	}
@@ -901,21 +901,23 @@ const getFundingPayDetailsReportInfo = async (req, res) => {
 };
 
 const getPayDetailsReportInfo = async (req, res) => {
-	const { companyName, payPeriodNum, isExtraRun, scheduleFrequency, year } = req.params;
+	const { companyName, payPeriodNum, isExtraRun, payPeriodPayDate, scheduleFrequency, year } =
+		req.params;
 
 	try {
-		const startOfYear = moment().year(year).startOf("year").toDate();
-		const endOfYear = moment().year(year).endOf("year").toDate();
+		// const startOfYear = moment().year(year).startOf("year").toDate();
+		// const endOfYear = moment().year(year).endOf("year").toDate();
 
 		const isExtraPayRun = isExtraRun === "true";
 		let payStubs = await EmployeePayStub.find({
 			companyName,
 			payPeriodNum,
 			isExtraRun: isExtraPayRun,
-			payPeriodPayDate: {
-				$gte: startOfYear,
-				$lt: endOfYear,
-			},
+			payPeriodPayDate: moment.utc(payPeriodPayDate).startOf("day").toDate(),
+			// payPeriodPayDate: {
+			// 	$gte: startOfYear,
+			// 	$lt: endOfYear,
+			// },
 			scheduleFrequency,
 		}).populate(EMP_INFO);
 

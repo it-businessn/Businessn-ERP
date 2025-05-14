@@ -41,8 +41,8 @@ const ReportListView = () => {
 	}, [selectedPayGroup]);
 
 	useEffect(() => {
-		const payNum = selectedPayPeriod?.payPeriod ?? selectedPayPeriod;
-		const extraRun = selectedPayPeriod?.isExtraRun ?? false;
+		const payNum = selectedPayPeriod?.payPeriod || selectedPayPeriod;
+		const extraRun = selectedPayPeriod?.isExtraRun || false;
 
 		setHasLoaded(false);
 		const fetchJournalInfo = async () => {
@@ -78,6 +78,8 @@ const ReportListView = () => {
 					company,
 					payNum,
 					extraRun,
+					selectedPayPeriod?.payPeriodPayDate,
+					selectedPayPeriod?.frequency,
 					selectedYear,
 				);
 				setReport(data);

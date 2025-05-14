@@ -13,6 +13,7 @@ const useEmployeePayReport = (company, payPeriodNum, isOpen, year = "2025") => {
 					company,
 					payPeriodNum?.payPeriod,
 					extraRun,
+					payPeriodNum?.payPeriodPayDate,
 					payPeriodNum?.frequency,
 					year,
 				);
