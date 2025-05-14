@@ -6,7 +6,7 @@ import SelectFormControl from "components/ui/form/SelectFormControl";
 import NormalTextTitle from "components/ui/NormalTextTitle";
 import TextTitle from "components/ui/text/TextTitle";
 import VerticalStepper from "components/ui/VerticalStepper";
-import { COMPANIES, REASON_CODE, RECALL_OPTIONS } from "constant";
+import { REASON_CODE, RECALL_OPTIONS } from "constant";
 import useEmployeeEmploymentInfo from "hooks/useEmployeeEmploymentInfo";
 import usePaygroup from "hooks/usePaygroup";
 import moment from "moment";
@@ -31,10 +31,7 @@ const EmploymentInfo = ({ company, handleNext, tabId }) => {
 	};
 	const roeEmpId = LocalStorageService.getItem("roeEmpId");
 	const toast = useToast();
-	const [selectedPayGroupOption, setSelectedPayGroupOption] = useState(
-		company === COMPANIES.BUSINESSN_ORG ? "Monthly" : null,
-	);
-	const { payGroupSchedule } = usePaygroup(company, selectedPayGroupOption, true);
+	const { payGroupSchedule } = usePaygroup(company, true);
 	const [roeInfo, setRoeInfo] = useState(null);
 	const [formData, setFormData] = useState(initialFormData);
 	const employmentInfo = useEmployeeEmploymentInfo(company, roeEmpId);

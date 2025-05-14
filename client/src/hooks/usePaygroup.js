@@ -1,15 +1,10 @@
+import { COMPANIES } from "constant";
 import { useEffect, useState } from "react";
 import PayrollService from "services/PayrollService";
 import { sortRecordsByDate } from "utils";
 import { CURRENT_YEAR } from "utils/convertDate";
 
-const usePaygroup = (
-	company,
-	selectedPayGroupOption,
-	refresh,
-	year = CURRENT_YEAR,
-	isReport = false,
-) => {
+const usePaygroup = (company, refresh, year = CURRENT_YEAR, isReport = false) => {
 	const [payGroups, setPayGroups] = useState(null);
 	const [selectedPayGroup, setSelectedPayGroup] = useState(null);
 	const [allPayGroupSchedule, setAllPayGroupSchedule] = useState(null);
@@ -51,12 +46,10 @@ const usePaygroup = (
 				const { data } = await PayrollService.getAllPaygroups(company);
 				setPayGroups(data);
 				if (data.length) {
-					const payGroup = selectedPayGroupOption
-						? data.find(
-								({ scheduleFrequency, name }) =>
-									scheduleFrequency === selectedPayGroupOption || name === selectedPayGroupOption,
-						  )
-						: data[0];
+					const payGroup =
+						company === COMPANIES.BUSINESSN_ORG
+							? data.find(({ scheduleFrequency }) => scheduleFrequency === "Monthly")
+							: data[0];
 					setSelectedPayGroup(payGroup);
 				}
 			} catch (error) {
@@ -67,7 +60,7 @@ const usePaygroup = (
 		if (refresh !== undefined) {
 			fetchAllPaygroups();
 		}
-	}, [company, refresh, selectedPayGroupOption]);
+	}, [company, refresh]);
 
 	useEffect(() => {
 		if (selectedPayGroup) {

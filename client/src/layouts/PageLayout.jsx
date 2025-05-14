@@ -21,6 +21,7 @@ const PageLayout = ({
 	position = "sticky",
 	pb = 0,
 	isMobile,
+	showPayGroup,
 }) => (
 	<Box
 		p={{ base: "1em" }}
@@ -34,6 +35,7 @@ const PageLayout = ({
 			size={size}
 			valueText1={valueText1}
 			showSelectBox={showSelectBox}
+			showPayGroup={showPayGroup}
 			title={title}
 			handleChange={handleChange}
 			data={data}

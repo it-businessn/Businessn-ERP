@@ -5,11 +5,11 @@ import ActionButtonGroup from "components/ui/form/ActionButtonGroup";
 import ModalLayout from "components/ui/modal/ModalLayout";
 import NormalTextTitle from "components/ui/NormalTextTitle";
 import TextTitle from "components/ui/text/TextTitle";
-import { COMPANIES, ROLES } from "constant";
+import { ROLES } from "constant";
 import useCompany from "hooks/useCompany";
 import usePaygroup from "hooks/usePaygroup";
 import PageLayout from "layouts/PageLayout";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { MdOutlineChevronRight } from "react-icons/md";
 import { useNavigate, useParams } from "react-router-dom";
 import { workViewPath } from "routes";
@@ -48,12 +48,8 @@ const ProcessPayroll = () => {
 	const toast = useToast();
 	const navigate = useNavigate();
 	const isExtra = payNo?.includes("E");
-	const [selectedPayGroupOption, setSelectedPayGroupOption] = useState(
-		company === COMPANIES.BUSINESSN_ORG ? "Monthly" : null,
-	);
 	const { payGroupSchedule, closestRecord, payGroups, selectedPayGroup } = usePaygroup(
 		company,
-		selectedPayGroupOption,
 		false,
 		year,
 	);
@@ -61,10 +57,6 @@ const ProcessPayroll = () => {
 	const isPayPeriodInactive = selectedPayPeriod?.isDisabledAction;
 	const isPayrollSubmitDisabled =
 		currentStep !== 5 || selectedPayPeriod?.isProcessed || isPayPeriodInactive;
-
-	useEffect(() => {
-		if (paygroup) setSelectedPayGroupOption(paygroup);
-	}, [paygroup]);
 
 	const goToNextStep = (index) => {
 		setCurrentStep(index);
@@ -150,7 +142,6 @@ const ProcessPayroll = () => {
 					</VStack>
 				</BoxCard>
 				<PayrollStageContent
-					setSelectedPayGroupOption={setSelectedPayGroupOption}
 					currentStep={currentStep}
 					steps={steps}
 					handleConfirm={goToNextStep}

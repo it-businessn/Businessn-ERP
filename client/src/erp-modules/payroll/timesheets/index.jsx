@@ -2,7 +2,7 @@ import { Flex, HStack, IconButton, useToast } from "@chakra-ui/react";
 import PrimaryButton from "components/ui/button/PrimaryButton";
 import DeletePopUp from "components/ui/modal/DeletePopUp";
 import TabsButtonGroup from "components/ui/tab/TabsButtonGroup";
-import { COMPANIES, ROLES } from "constant";
+import { ROLES } from "constant";
 import useCompany from "hooks/useCompany";
 import useCostCenter from "hooks/useCostCenter";
 import useDepartment from "hooks/useDepartment";
@@ -35,14 +35,7 @@ const Timesheets = () => {
 	const { employees } = useEmployees(false, company, false, true, null, deptName);
 	const departments = useDepartment(company);
 	const cc = useCostCenter(company);
-	const [selectedPayGroupOption, setSelectedPayGroupOption] = useState(
-		company === COMPANIES.BUSINESSN_ORG ? "Monthly" : null,
-	);
-	const { payGroupSchedule, closestRecord, closestRecordIndex } = usePaygroup(
-		company,
-		selectedPayGroupOption,
-		false,
-	);
+	const { payGroupSchedule, closestRecord, closestRecordIndex } = usePaygroup(company, false);
 	const lastRecord = payGroupSchedule?.length > 0 && payGroupSchedule[closestRecordIndex - 1];
 
 	const [dataRefresh, setDataRefresh] = useState(false);

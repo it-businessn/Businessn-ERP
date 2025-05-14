@@ -8,12 +8,11 @@ import {
 	VStack,
 } from "@chakra-ui/react";
 import PrimaryButton from "components/ui/button/PrimaryButton";
-import { COMPANIES, ROLES } from "constant";
+import { ROLES } from "constant";
 import PayrollActions from "erp-modules/payroll/workview/paygroup-header-table/PayrollActions";
 import OnboardEmpModal from "erp-modules/sales/onboarding/OnboardEmpModal";
 import useCompany from "hooks/useCompany";
 import useEmployees from "hooks/useEmployees";
-import usePaygroup from "hooks/usePaygroup";
 import PageLayout from "layouts/PageLayout";
 import { useEffect, useState } from "react";
 import { FaSearch } from "react-icons/fa";
@@ -51,10 +50,6 @@ const EmployeeListView = () => {
 	const [filteredDept, setFilteredDept] = useState([]);
 	const [filteredCC, setFilteredCC] = useState([]);
 	const [showOnboard, setShowOnboard] = useState(false);
-	const [selectedPayGroupOption, setSelectedPayGroupOption] = useState(
-		company === COMPANIES.BUSINESSN_ORG ? "Monthly" : null,
-	);
-	const { selectedPayGroup } = usePaygroup(company, selectedPayGroupOption, false);
 	const navigate = useNavigate();
 
 	useEffect(() => {
@@ -201,12 +196,11 @@ const EmployeeListView = () => {
 				/>
 			</SimpleGrid>
 			<EmployeeList employees={filteredEmployees} />
-			{showOnboard && selectedPayGroup && (
+			{showOnboard && (
 				<OnboardEmpModal
 					title="Onboard employee"
 					showOnboard={showOnboard}
 					setShowOnboard={setShowOnboard}
-					selectedPayGroupName={selectedPayGroup?.name}
 				/>
 			)}
 		</PageLayout>

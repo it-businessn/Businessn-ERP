@@ -14,7 +14,7 @@ const PositionInfo = ({
 	setIsOpen,
 	isDisabled,
 	setIsDisabled,
-	payGroups,
+	selectedPayGroup,
 	department,
 	costCentres,
 	currentRoleInfo,
@@ -27,7 +27,7 @@ const PositionInfo = ({
 }) => {
 	const defaultRoleInfo = {
 		title: "",
-		employmentPayGroup: "",
+		employmentPayGroup: selectedPayGroup,
 		employmentCostCenter: "",
 		employmentDepartment: "",
 		timeManagementBadgeID: "",
@@ -66,6 +66,12 @@ const PositionInfo = ({
 			setFilteredDept(department);
 		}
 	}, [roleInfo.employmentCostCenter, department]);
+
+	useEffect(() => {
+		if (selectedPayGroup && roleInfo?.employmentPayGroup !== selectedPayGroup) {
+			setRoleInfo((prevData) => ({ ...prevData, employmentPayGroup: selectedPayGroup }));
+		}
+	}, [roleInfo.employmentPayGroup, selectedPayGroup]);
 
 	const handleChange = (e) => {
 		const { name, value } = e.target;
@@ -130,17 +136,13 @@ const PositionInfo = ({
 						// )} */}
 					</Stack>
 					<Stack>
-						<SelectFormControl
-							required={(isOpen || !roleInfo.employmentPayGroup) && true}
-							valueParam="name"
-							name="employmentPayGroup"
+						<InputFormControl
+							readOnly
+							autoComplete="off"
 							label="Pay Group"
-							valueText={roleInfo.employmentPayGroup || ""}
-							handleChange={handleChange}
-							options={payGroups}
-							placeholder="Select Pay Group"
+							name="employmentPayGroup"
+							valueText={roleInfo?.employmentPayGroup}
 						/>
-
 						<SelectFormControl
 							required={(isOpen || !roleInfo.employmentCostCenter) && true}
 							valueParam="name"

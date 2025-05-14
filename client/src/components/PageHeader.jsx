@@ -1,7 +1,6 @@
-import { Flex, useColorModeValue } from "@chakra-ui/react";
+import { Flex, FormControl, useColorModeValue } from "@chakra-ui/react";
 import SelectBox from "./ui/form/select/SelectBox";
 import TextTitle from "./ui/text/TextTitle";
-
 const PageHeader = ({
 	showSelectBox,
 	title,
@@ -14,6 +13,7 @@ const PageHeader = ({
 	isTimesheet,
 	showCheckBox,
 	size,
+	showPayGroup,
 }) => {
 	const themeMode = useColorModeValue("var(--primary_button_bg)", "var(--primary_button_bg_dark)");
 	return (
@@ -23,6 +23,19 @@ const PageHeader = ({
 			)}
 			{isTimesheet ? showCheckBox : <></>}
 
+			{showPayGroup && (
+				<FormControl>
+					<TextTitle
+						p={1}
+						width="200px"
+						size="sm"
+						borderRadius="10px"
+						border="1px solid var(--primary_button_bg)"
+						title={value}
+						weight="normal"
+					/>
+				</FormControl>
+			)}
 			{showSelectBox ? (
 				<SelectBox
 					handleChange={handleChange}

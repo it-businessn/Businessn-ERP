@@ -21,7 +21,6 @@ const PayrollStageContent = ({
 	reportData,
 	company,
 	deptName,
-	setSelectedPayGroupOption,
 }) => {
 	const { isOpen: isPayrollStepupOpen, onToggle: onPayrollStepupToggle } = useDisclosure({
 		defaultIsOpen: false,
@@ -71,7 +70,6 @@ const PayrollStageContent = ({
 				title={"Payrun Setup"}
 				content={
 					<PayrunSetup
-						setSelectedPayGroupOption={setSelectedPayGroupOption}
 						deptName={deptName}
 						handleClick={() => {
 							handleConfirm(1);

@@ -1,6 +1,5 @@
 import { Flex, Select } from "@chakra-ui/react";
-import SelectBox from "components/ui/form/select/SelectBox";
-import { COMPANIES } from "constant";
+import TextTitle from "components/ui/text/TextTitle";
 import useCompany from "hooks/useCompany";
 import usePaygroup from "hooks/usePaygroup";
 import PageLayout from "layouts/PageLayout";
@@ -21,12 +20,8 @@ const ReportListView = () => {
 	const [yearsList, setYearsList] = useState([CURRENT_YEAR]);
 	const [selectedYear, setSelectedYear] = useState(year ?? CURRENT_YEAR);
 	const { isMobile } = useBreakpointValue();
-	const [selectedPayGroupOption, setSelectedPayGroupOption] = useState(
-		company === COMPANIES.BUSINESSN_ORG ? "Monthly" : null,
-	);
 	const { payGroups, payGroupSchedule, closestRecordIndex, selectedPayGroup } = usePaygroup(
 		company,
-		selectedPayGroupOption,
 		false,
 		selectedYear,
 		true,
@@ -43,10 +38,6 @@ const ReportListView = () => {
 
 	useEffect(() => {
 		if (selectedPayGroup) setYearsList(selectedPayGroup?.yearSchedules?.map(({ year }) => year));
-	}, [selectedPayGroup]);
-
-	useEffect(() => {
-		if (!selectedPayGroupOption) setSelectedPayGroupOption(selectedPayGroup?.name);
 	}, [selectedPayGroup]);
 
 	useEffect(() => {
@@ -145,20 +136,14 @@ const ReportListView = () => {
 	return (
 		<PageLayout title="Payrun Reports">
 			<Flex gap={3}>
-				<SelectBox
-					width={"10%"}
-					handleChange={(value) => {
-						if (value !== "") {
-							setSelectedPayGroupOption(value);
-						}
-					}}
-					data={payGroups}
-					name="name"
+				<TextTitle
+					weight="normal"
+					p={1}
+					width="200px"
+					size="sm"
+					borderRadius="10px"
 					border="1px solid var(--primary_button_bg)"
-					color={"var(--primary_button_bg)"}
-					value={selectedPayGroup?.name}
-					placeholder="Select Paygroup"
-					size={"sm"}
+					title={selectedPayGroup?.name}
 				/>
 				<Select
 					w={"10%"}

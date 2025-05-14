@@ -9,7 +9,6 @@ import {
 	EMP_TENURE_CONFIG,
 	getInitialCorporateInfo,
 } from "config/payroll/employees/employmentInfo";
-import { COMPANIES } from "constant";
 import useCostCenter from "hooks/useCostCenter";
 import useDepartment from "hooks/useDepartment";
 import useEmployeeEmploymentInfo from "hooks/useEmployeeEmploymentInfo";
@@ -35,10 +34,7 @@ const AddCorporateInfo = ({ company, id, handleNext, handlePrev }) => {
 	const [isDisabled, setIsDisabled] = useState(true);
 	const [isLoading, setIsLoading] = useState(false);
 	const [currentStep, setCurrentStep] = useState(0);
-	const [selectedPayGroupOption, setSelectedPayGroupOption] = useState(
-		company === COMPANIES.BUSINESSN_ORG ? "Monthly" : null,
-	);
-	const { payGroups } = usePaygroup(company, selectedPayGroupOption, false);
+	const { payGroups } = usePaygroup(company, false);
 	const department = useDepartment(company);
 	const costCentres = useCostCenter(company);
 	const roles = useRoles(company);

@@ -92,7 +92,6 @@ const PaygroupTable = ({
 							title="Onboard employee"
 							showOnboard={showOnboard}
 							setShowOnboard={setShowOnboard}
-							selectedPayGroupName={selectedPayGroup?.name}
 						/>
 					)}
 					<WorkviewTable

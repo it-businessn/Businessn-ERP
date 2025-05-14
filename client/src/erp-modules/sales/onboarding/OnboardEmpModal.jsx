@@ -8,10 +8,9 @@ import {
 	Stack,
 	useDisclosure,
 } from "@chakra-ui/react";
-import Employees from "erp-modules/payroll/employees/pageview";
 import OnboardEmployee from "erp-modules/payroll/employees/pageview/OnboardEmployee";
 
-const OnboardEmpModal = ({ showOnboard, setShowOnboard, selectedPayGroupName, title }) => {
+const OnboardEmpModal = ({ showOnboard, setShowOnboard, title }) => {
 	const { onClose } = useDisclosure();
 
 	const handleClose = () => {
@@ -30,10 +29,7 @@ const OnboardEmpModal = ({ showOnboard, setShowOnboard, selectedPayGroupName, ti
 				</ModalHeader>
 				<ModalBody zIndex="0" bg={"#fff"} height={"100vh"} m={0}>
 					<Stack w="100%" spacing={5}>
-						<OnboardEmployee
-							selectedPayGroupName={selectedPayGroupName}
-							handleClose={handleClose}
-						/>
+						<OnboardEmployee handleClose={handleClose} />
 					</Stack>
 				</ModalBody>
 			</ModalContent>

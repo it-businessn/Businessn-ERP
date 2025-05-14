@@ -6,7 +6,7 @@ import EmptyRowRecord from "components/ui/EmptyRowRecord";
 import NormalTextTitle from "components/ui/NormalTextTitle";
 import TableLayout from "components/ui/table/TableLayout";
 import TextTitle from "components/ui/text/TextTitle";
-import { COMPANIES, ROLES } from "constant";
+import { ROLES } from "constant";
 import { getParamKey, TIMESHEET_SOURCE } from "erp-modules/payroll/timesheets/data";
 import ExtraTimeEntryModal from "erp-modules/payroll/timesheets/ExtraTimeEntryModal";
 import usePaygroup from "hooks/usePaygroup";
@@ -65,10 +65,7 @@ const EmployeeTimeCard = ({ selectedUser, company, isMobile }) => {
 	const [refresh, setRefresh] = useState(false);
 	const [timesheetData, setTimesheetData] = useState([]);
 	const [filter, setFilter] = useState(null);
-	const [selectedPayGroupOption, setSelectedPayGroupOption] = useState(
-		company === COMPANIES.BUSINESSN_ORG ? "Monthly" : null,
-	);
-	const { closestRecord } = usePaygroup(company, selectedPayGroupOption, false);
+	const { closestRecord } = usePaygroup(company, false);
 	const [startDate, setStartDate] = useState(null);
 	const [endDate, setEndDate] = useState(null);
 	const toast = useToast();

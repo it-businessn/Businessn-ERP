@@ -13,7 +13,7 @@ import AddGovernmentContribution from "./employee-tabs/govt-info/AddGovernmentCo
 import AddPayInfo from "./employee-tabs/pay-info/AddPayInfo";
 import AddPersonalInfo from "./employee-tabs/personal-info/AddPersonalInfo";
 
-const OnboardEmployee = ({ selectedPayGroupName, handleClose }) => {
+const OnboardEmployee = ({ handleClose }) => {
 	const { id, stepNo } = useParams();
 	const { company } = useCompany(LocalStorageService.getItem("selectedCompany"));
 
@@ -33,7 +33,6 @@ const OnboardEmployee = ({ selectedPayGroupName, handleClose }) => {
 				<AddCorporateInfo
 					id={2}
 					company={company}
-					selectedPayGroupName={selectedPayGroupName}
 					handleNext={handleNext}
 					handlePrev={handlePrev}
 				/>

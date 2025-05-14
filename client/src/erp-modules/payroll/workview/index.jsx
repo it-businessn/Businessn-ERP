@@ -1,4 +1,3 @@
-import { COMPANIES } from "constant";
 import useCompany from "hooks/useCompany";
 import usePaygroup from "hooks/usePaygroup";
 import PageLayout from "layouts/PageLayout";
@@ -16,33 +15,22 @@ const PayrollWorkview = () => {
 	const [selectedYear, setSelectedYear] = useState(CURRENT_YEAR);
 	const [yearsList, setYearsList] = useState([CURRENT_YEAR]);
 	const loggedInUser = LocalStorageService.getItem("user");
-	const [selectedPayGroupOption, setSelectedPayGroupOption] = useState(
-		company === COMPANIES.BUSINESSN_ORG ? "Monthly" : null,
-	);
 	const { payGroups, selectedPayGroup, payGroupSchedule, closestRecord, closestRecordIndex } =
-		usePaygroup(company, selectedPayGroupOption, refresh, selectedYear);
+		usePaygroup(company, refresh, selectedYear);
 
 	useEffect(() => {
 		if (selectedPayGroup) {
-			setSelectedPayGroupOption(selectedPayGroup?.name);
 			setYearsList(selectedPayGroup?.yearSchedules.map(({ year }) => year));
 		}
 	}, [selectedPayGroup]);
-
-	const handleChange = (value) => {
-		if (value !== "") {
-			setSelectedPayGroupOption(value);
-		}
-	};
 
 	return (
 		<PageLayout
 			width={"35%"}
 			title={"Workview"}
-			showSelectBox={true}
-			handleChange={handleChange}
+			showPayGroup={true}
+			selectedValue={selectedPayGroup?.name}
 			data={payGroups}
-			selectedValue={selectedPayGroupOption}
 			selectPlaceholder="Select Paygroup"
 			selectAttr="name"
 		>
