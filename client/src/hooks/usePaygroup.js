@@ -102,9 +102,10 @@ const usePaygroup = (company, refresh, year = CURRENT_YEAR, isReport = false) =>
 
 	useEffect(() => {
 		if (
-			closestRecordIndex &&
+			allPayGroupSchedule &&
+			closestRecordIndex >= 0 &&
 			selectedPayGroup &&
-			!allPayGroupSchedule[closestRecordIndex].isDisabledAction
+			!allPayGroupSchedule[closestRecordIndex]?.isDisabledAction
 		) {
 			allPayGroupSchedule.map((_, index) => {
 				if (index > closestRecordIndex) {
@@ -112,8 +113,8 @@ const usePaygroup = (company, refresh, year = CURRENT_YEAR, isReport = false) =>
 					return _;
 				}
 			});
+			setPayGroupSchedule(allPayGroupSchedule);
 		}
-		setPayGroupSchedule(allPayGroupSchedule);
 	}, [selectedPayGroup, closestRecordIndex, allPayGroupSchedule]);
 
 	return {

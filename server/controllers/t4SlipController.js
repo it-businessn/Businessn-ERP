@@ -24,9 +24,12 @@ const buildRecord = async (record) => {
 	}).select("streetAddress city province postalCode country SIN SINIv");
 
 	const sin_key = Buffer.from(process.env.SIN_ENCRYPTION_KEY, "hex");
-	empProfileInfo.SIN =
-		empProfileInfo?.SIN && decryptData(empProfileInfo?.SIN, sin_key, empProfileInfo?.SINIv);
+	const sinExists =
+		empProfileInfo?.SIN && !empProfileInfo?.SIN?.startsWith("*") && empProfileInfo?.SINIv;
 
+	empProfileInfo.SIN = sinExists
+		? decryptData(empProfileInfo?.SIN, sin_key, empProfileInfo?.SINIv)
+		: "";
 	const empEmploymentInfo = await EmployeeEmploymentInfo.findOne({
 		empId: record?.empId._id,
 	}).select("employeeNo employmentRegion");

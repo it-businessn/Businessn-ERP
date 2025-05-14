@@ -39,7 +39,7 @@ const ProcessPayroll = () => {
 		loggedInUser?.role === ROLES.AUTH_ADMINISTRATOR || loggedInUser?.role === ROLES.SHADOW_ADMIN;
 	const deptName = loggedInUser?.role === ROLES.MANAGER ? loggedInUser?.department : null;
 	const { company } = useCompany(LocalStorageService.getItem("selectedCompany"));
-	const { payNo, year, stepNum, paygroup } = useParams();
+	const { payNo, year, stepNum } = useParams();
 	const activeStep = stepNum ? parseInt(stepNum) : 0;
 	const [currentStep, setCurrentStep] = useState(activeStep);
 	const [showConfirmationPopUp, setShowConfirmationPopUp] = useState(false);
