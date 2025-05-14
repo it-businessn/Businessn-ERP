@@ -110,6 +110,27 @@ const NewTicket = ({
 					options={employees}
 					placeholder="Select assignee"
 				/>
+				{/* <FormControl>
+					<FormLabel>Assignee</FormLabel>
+					<Select
+						name="fullName"
+						label="Assignee"
+						value={formData?.assignee}
+						onChange={(e) => {
+							setFormData((prevData) => ({
+								...prevData,
+								assignee: e.target.value,
+							}));
+						}}
+						placeholder="Select assignee"
+					>
+						{employees?.map((_) => (
+							<option key={_.fullName} value={_?.fullName}>
+								{_?.fullName}
+							</option>
+						))}
+					</Select>
+				</FormControl> */}
 				<InputFormControl
 					maxLength={100}
 					label="Topic"

@@ -553,13 +553,14 @@ const addCompany = async (req, res) => {
 		const adminEmployees = await EmployeeEmploymentInfo.find({
 			employmentRole: ROLES.SHADOW_ADMIN,
 		}).select("empId");
+		const filteredEmps = adminEmployees?.filter((emp) => emp?.empId);
 		const newCompany = await Company.create({
 			name,
 			founding_year,
 			registration_number,
 			industry_type,
 			address: { streetNumber, city, state, postalCode, country },
-			employees: adminEmployees,
+			employees: filteredEmps,
 		});
 
 		res.status(201).json(newCompany);

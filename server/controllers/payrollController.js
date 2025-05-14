@@ -248,7 +248,9 @@ const getAlertsAndViolationsInfo = async (req, res) => {
 			payrollStatus: "Payroll Active",
 			companyName,
 		}).select("empId");
-		const payrollActiveIds = payrollActiveEmps.map((emp) => emp.empId);
+		const payrollActiveIds = payrollActiveEmps
+			?.filter((emp) => emp?.empId)
+			?.map((emp) => emp.empId);
 
 		const alerts = await EmployeeAlertsViolationInfo.find({
 			companyName,

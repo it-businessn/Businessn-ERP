@@ -53,12 +53,14 @@ const getEmploymentResult = async (companyName) => {
 		companyName,
 	}).select("empId positions");
 	const empInfoMap = new Map(
-		empInfoResult.map((empInfo) => [
-			empInfo?.empId?.toString(),
-			{
-				positions: empInfo.positions,
-			},
-		]),
+		empInfoResult
+			?.filter((emp) => emp?.empId)
+			?.map((empInfo) => [
+				empInfo?.empId?.toString(),
+				{
+					positions: empInfo.positions,
+				},
+			]),
 	);
 	return empInfoMap;
 };
