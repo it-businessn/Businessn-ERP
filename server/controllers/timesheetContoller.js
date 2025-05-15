@@ -12,6 +12,7 @@ const {
 	getPayType,
 	EARNING_TYPE,
 	TIMESHEET_ORIGIN,
+	ROLES,
 } = require("../services/data");
 const EmployeeEmploymentInfo = require("../models/EmployeeEmploymentInfo");
 const { findEmpPayInfo } = require("./employmentInfoController");
@@ -51,6 +52,8 @@ const getTimesheetResult = async (companyName) => {
 const getEmploymentResult = async (companyName) => {
 	const empInfoResult = await EmployeeEmploymentInfo.find({
 		companyName,
+		payrollStatus: "Payroll Active",
+		employmentRole: { $ne: ROLES.SHADOW_ADMIN },
 	}).select("empId positions");
 	const empInfoMap = new Map(
 		empInfoResult
@@ -94,7 +97,9 @@ const mapTimesheet = (payInfos, timesheets, empInfos) => {
 			}
 		}
 	});
-	return timesheets?.filter(({ typeOfEarning }) => typeOfEarning !== EARNING_TYPE.FT);
+	return timesheets?.filter(
+		({ typeOfEarning, positions }) => typeOfEarning !== EARNING_TYPE.FT && positions.length > 0,
+	);
 };
 
 const getTimeFormat = (timestamp) => {
