@@ -14,6 +14,7 @@ const {
 	PARAM_HOURS,
 	TIMESHEET_ORIGIN,
 	COMPANIES,
+	ROLES,
 } = require("../services/data");
 const moment = require("moment");
 const { getHolidays } = require("./setUpController");
@@ -228,38 +229,41 @@ const addTimecardEntry = async (entry, isBreak) => {
 	// const updatedTimecard = await Timecard.updateMany({}, { $set: { processedForTimesheet: true } });
 	const { badge_id, clockIn, notDevice } = entry;
 	const empRec = await findEmployeeTAD(badge_id);
-	entry.notDevice = notDevice;
-	entry.companyName = empRec?.companyName;
-	entry.employeeName = empRec?.empId?.fullName;
-	entry.employeeId = empRec?.empId?._id;
-	const newTimecard = await Timecard.create(entry);
+	if (empRec) {
+		entry.notDevice = notDevice;
+		entry.companyName = empRec?.companyName;
+		entry.employeeName = empRec?.empId?.fullName;
+		entry.employeeId = empRec?.empId?._id;
+		const newTimecard = await Timecard.create(entry);
 
-	if (newTimecard) {
-		const currentYrSTAT_HOLIDAYS = await getHolidays({
-			companyName: empRec?.companyName,
-		});
-		const isStatHoliday = currentYrSTAT_HOLIDAYS.find(
-			({ date }) => moment.utc(date).format("YYYY-MM-DD") === moment(clockIn).format("YYYY-MM-DD"),
-		);
-		const newTimesheetRecord = {
-			employeeId: entry.employeeId,
-			companyName: entry.companyName,
-			payType: isBreak
-				? PAY_TYPES_TITLE.REG_PAY_BRK
-				: isStatHoliday
-				? PAY_TYPES_TITLE.STAT_WORK_PAY
-				: getPayType(),
-			clockIn,
-			notDevice,
-			source: TIMESHEET_ORIGIN.TAD,
-		};
-		const timesheetRecord = await findTimesheet(newTimesheetRecord);
-
-		if (!timesheetRecord) {
-			await addTimesheetEntry(newTimesheetRecord);
-			await updateTimecardData(newTimecard._id, {
-				processedForTimesheet: true,
+		if (newTimecard) {
+			const currentYrSTAT_HOLIDAYS = await getHolidays({
+				companyName: empRec?.companyName,
 			});
+			const isStatHoliday = currentYrSTAT_HOLIDAYS.find(
+				({ date }) =>
+					moment.utc(date).format("YYYY-MM-DD") === moment(clockIn).format("YYYY-MM-DD"),
+			);
+			const newTimesheetRecord = {
+				employeeId: entry.employeeId,
+				companyName: entry.companyName,
+				payType: isBreak
+					? PAY_TYPES_TITLE.REG_PAY_BRK
+					: isStatHoliday
+					? PAY_TYPES_TITLE.STAT_WORK_PAY
+					: getPayType(),
+				clockIn,
+				notDevice,
+				source: TIMESHEET_ORIGIN.TAD,
+			};
+			const timesheetRecord = await findTimesheet(newTimesheetRecord);
+
+			if (!timesheetRecord) {
+				await addTimesheetEntry(newTimesheetRecord);
+				await updateTimecardData(newTimecard._id, {
+					processedForTimesheet: true,
+				});
+			}
 		}
 	}
 };
@@ -309,6 +313,8 @@ const updateTimecardEntry = async (entry, isBreakType) => {
 
 const findEmployeeTAD = async (timeManagementBadgeID) =>
 	await EmployeeEmploymentInfo.findOne({
+		payrollStatus: "Payroll Active",
+		employmentRole: { $ne: ROLES.SHADOW_ADMIN },
 		$or: [
 			{ "positions.timeManagementBadgeID": timeManagementBadgeID },
 			{ timeManagementBadgeID },
