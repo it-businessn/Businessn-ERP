@@ -91,7 +91,12 @@ const ShiftModal = ({
 	};
 
 	return (
-		<ModalLayout title="Add New Shift" size="lg" isOpen={showModal} onClose={handleClose}>
+		<ModalLayout
+			title={`${shift?._id ? "Edit" : "Add New"}  Shift`}
+			size="lg"
+			isOpen={showModal}
+			onClose={handleClose}
+		>
 			<VStack alignItems="flex-start">
 				<FormControlMain>
 					<RequiredLabel label="Employee Name" />
@@ -198,14 +203,16 @@ const ShiftModal = ({
 				{formData?.shiftDuration && (
 					<TextTitle size="sm" title={`Shift duration: ${formData?.shiftDuration}`} />
 				)}
-				<Checkbox
-					colorScheme="facebook"
-					name="repeatSchedule"
-					isChecked={formData?.repeatSchedule}
-					onChange={handleChange}
-				>
-					Repeat for 1 week
-				</Checkbox>
+				{!shift?._id && (
+					<Checkbox
+						colorScheme="facebook"
+						name="repeatSchedule"
+						isChecked={formData?.repeatSchedule}
+						onChange={handleChange}
+					>
+						Repeat for 1 week
+					</Checkbox>
+				)}
 			</VStack>
 			<ActionButtonGroup
 				submitBtnName="Add"
