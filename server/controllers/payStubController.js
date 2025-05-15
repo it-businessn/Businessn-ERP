@@ -19,7 +19,6 @@ const { getPayrollActiveEmployees } = require("./appController");
 const FundingTotalsPay = require("../models/FundingTotalsPay");
 const Order = require("../models/Order");
 const JournalEntry = require("../models/JournalEntry");
-const { findEmployeeEmploymentInfo } = require("./employmentInfoController");
 const EmployeePayInfo = require("../models/EmployeePayInfo");
 const EmployeeEmploymentInfo = require("../models/EmployeeEmploymentInfo");
 
@@ -323,7 +322,13 @@ const buildPayStub = (
 	return newPayStub;
 };
 
-const buildPayStubDetails = async (currentPayPeriod, companyName, empTimesheetData, empId) => {
+const buildPayStubDetails = async (
+	currentPayPeriod,
+	companyName,
+	empTimesheetData,
+	empId,
+	scheduleFrequency,
+) => {
 	const {
 		payPeriodStartDate,
 		payPeriodEndDate,
@@ -331,7 +336,6 @@ const buildPayStubDetails = async (currentPayPeriod, companyName, empTimesheetDa
 		payPeriodProcessingDate,
 		payPeriod,
 		isExtraRun,
-		frequency,
 	} = currentPayPeriod;
 
 	const empPayInfoResult = await EmployeePayInfo.findOne({
@@ -352,17 +356,23 @@ const buildPayStubDetails = async (currentPayPeriod, companyName, empTimesheetDa
 		empBenefitInfoResult,
 		empTaxCreditResult,
 		isExtraRun,
-		frequency,
+		scheduleFrequency,
 	);
 
 	const prevPayPeriodNum = isExtraRun ? payPeriod : payPeriod - 1;
-	let prevPayPayInfo = await findPayStub(prevPayPeriodNum, companyName, empId, false, frequency);
+	let prevPayPayInfo = await findPayStub(
+		prevPayPeriodNum,
+		companyName,
+		empId,
+		false,
+		scheduleFrequency,
+	);
 	const currentPayInfo = await findPayStub(
 		payPeriod,
 		companyName,
 		empId,
 		isExtraRun ? isExtraRun : false,
-		frequency,
+		scheduleFrequency,
 	);
 
 	const currentPayStub = buildPayStub(
@@ -432,7 +442,7 @@ const buildPayStubDetails = async (currentPayPeriod, companyName, empTimesheetDa
 				newPayStub.reportType = PAYRUN_TYPE.PAYOUT;
 			}
 			if (newPayStub) {
-				newPayStub.scheduleFrequency = frequency;
+				newPayStub.scheduleFrequency = scheduleFrequency;
 				await addPayStub(newPayStub);
 				prevPayPayInfo = appendPrevPayInfoBalance(prevPayPayInfo, newPayStub);
 			}
@@ -454,7 +464,7 @@ const buildPayStubDetails = async (currentPayPeriod, companyName, empTimesheetDa
 			payStubInfoData,
 			prevPayPayInfo,
 		);
-		updatedPayStub.scheduleFrequency = frequency;
+		updatedPayStub.scheduleFrequency = scheduleFrequency;
 		await addPayStub(updatedPayStub);
 		return updatedPayStub;
 	}
@@ -507,6 +517,13 @@ const addEmployeePayStubInfo = async (req, res) => {
 		// });
 		// console.log("del", y, k);
 		// return;
+
+		// const k = await EmployeePayStub.updateMany(
+		// 	{ companyName: COMPANIES.NW },
+		// 	{ $set: { scheduleFrequency: "Biweekly" } },
+		// );
+		// console.log("upd", k);
+
 		const {
 			payPeriodStartDate,
 			payPeriodEndDate,
@@ -517,6 +534,7 @@ const addEmployeePayStubInfo = async (req, res) => {
 			payPeriodProcessingDate,
 			frequency,
 		} = currentPayPeriod;
+		const scheduleFrequency = frequency === "bi-weekly" ? "Biweekly" : frequency;
 
 		const activeEmployees = isExtraRun
 			? await getEmployeeId(selectedEmp)
@@ -528,7 +546,7 @@ const addEmployeePayStubInfo = async (req, res) => {
 		const isCornerStone = companyName === COMPANIES.CORNERSTONE;
 		const fundingTotal = {
 			companyName,
-			scheduleFrequency: frequency,
+			scheduleFrequency,
 			payPeriodStartDate,
 			payPeriodEndDate,
 			payPeriodPayDate,
@@ -564,6 +582,7 @@ const addEmployeePayStubInfo = async (req, res) => {
 				companyName,
 				empTimesheetData || null,
 				employee?.empId?._id,
+				scheduleFrequency,
 			);
 			fundingTotal.totalIncomeTaxContr += payStubResult?.currentIncomeTaxDeductions || 0;
 			fundingTotal.totalCPP_EE_Contr += payStubResult?.currentCPPDeductions || 0;
@@ -578,7 +597,7 @@ const addEmployeePayStubInfo = async (req, res) => {
 			activeEmployees?.length,
 			isExtraRun,
 			isCornerStone,
-			frequency,
+			scheduleFrequency,
 		);
 		if (!isExtraRun) generateT4Slip(companyName, payPeriod);
 		res.status(200).json({ message: "Paystub created successfully" });
@@ -592,7 +611,7 @@ const buildFundingTotalsReport = async (
 	totalEmployees,
 	isExtraRun = false,
 	isCornerStone,
-	frequency,
+	scheduleFrequency,
 ) => {
 	fundingTotal.totalCPP_Contr =
 		fundingTotal?.totalCPP_EE_Contr + fundingTotal?.totalCPP_ER_Contr || 0;
@@ -624,7 +643,7 @@ const buildFundingTotalsReport = async (
 		companyName: fundingTotal.companyName,
 		payPeriodNum: fundingTotal.payPeriodNum,
 		isExtraRun,
-		scheduleFrequency: frequency,
+		scheduleFrequency,
 	});
 	if (existsFundDetails) {
 		fundingTotal.updatedOn = moment();

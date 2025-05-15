@@ -6,6 +6,8 @@ const useEmployeePayReport = (company, payPeriodNum, isOpen, year = "2025") => {
 
 	useEffect(() => {
 		const extraRun = payPeriodNum?.isExtraRun || false;
+		const frequency =
+			payPeriodNum?.frequency === "bi-weekly" ? "Biweekly" : payPeriodNum?.frequency;
 
 		const fetchHoursWorkedInfo = async () => {
 			try {
@@ -14,7 +16,7 @@ const useEmployeePayReport = (company, payPeriodNum, isOpen, year = "2025") => {
 					payPeriodNum?.payPeriod,
 					extraRun,
 					payPeriodNum?.payPeriodPayDate,
-					payPeriodNum?.frequency,
+					frequency,
 					year,
 				);
 				setReport(data);

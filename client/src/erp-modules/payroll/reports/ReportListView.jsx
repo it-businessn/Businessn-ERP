@@ -3,7 +3,7 @@ import TextTitle from "components/ui/text/TextTitle";
 import useCompany from "hooks/useCompany";
 import usePaygroup from "hooks/usePaygroup";
 import PageLayout from "layouts/PageLayout";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useBreakpointValue } from "services/Breakpoint";
 import LocalStorageService from "services/LocalStorageService";
@@ -20,20 +20,20 @@ const ReportListView = () => {
 	const [yearsList, setYearsList] = useState([CURRENT_YEAR]);
 	const [selectedYear, setSelectedYear] = useState(year ?? CURRENT_YEAR);
 	const { isMobile } = useBreakpointValue();
-	const { payGroups, payGroupSchedule, closestRecordIndex, selectedPayGroup } = usePaygroup(
+	const { payGroupSchedule, closestRecordIndex, selectedPayGroup } = usePaygroup(
 		company,
 		false,
 		selectedYear,
 		true,
 	);
 
+	const selectedPayPeriodDetails = useRef(null);
 	const [showReport, setShowReport] = useState(undefined);
 	const [showTotalsReport, setShowTotalsReport] = useState(false);
 	const [showJournalsReport, setShowJournalsReport] = useState(false);
 	const [hasLoaded, setHasLoaded] = useState(false);
 	const [totalsReport, setTotalsReport] = useState(null);
 	const [journalReport, setJournalReport] = useState(null);
-	const [selectedPayPeriod, setSelectedPayPeriod] = useState(null);
 	const [reportData, setReport] = useState(null);
 
 	useEffect(() => {
@@ -41,10 +41,18 @@ const ReportListView = () => {
 	}, [selectedPayGroup]);
 
 	useEffect(() => {
-		const payNum = selectedPayPeriod?.payPeriod || selectedPayPeriod;
-		const extraRun = selectedPayPeriod?.isExtraRun || false;
-
+		if (!selectedPayPeriodDetails?.current) {
+			return;
+		}
 		setHasLoaded(false);
+		const { isExtra, payNum, payPeriodPayDate } = selectedPayPeriodDetails?.current;
+		const extraRun = isExtra || false;
+
+		const scheduleFrequency =
+			selectedPayGroup?.scheduleFrequency === "bi-weekly"
+				? "Biweekly"
+				: selectedPayGroup?.scheduleFrequency;
+
 		const fetchJournalInfo = async () => {
 			try {
 				setJournalReport(null);
@@ -78,8 +86,8 @@ const ReportListView = () => {
 					company,
 					payNum,
 					extraRun,
-					selectedPayPeriod?.payPeriodPayDate,
-					selectedPayPeriod?.frequency,
+					payPeriodPayDate,
+					scheduleFrequency,
 					selectedYear,
 				);
 				setReport(data);
@@ -88,14 +96,15 @@ const ReportListView = () => {
 				console.error(error);
 			}
 		};
-		if (selectedPayPeriod && showTotalsReport) {
+
+		if (payNum && showTotalsReport) {
 			fetchFundTotalsInfo();
-		} else if (selectedPayPeriod && showReport) {
+		} else if (payNum && showReport) {
 			fetchHoursWorkedInfo();
-		} else if (selectedPayPeriod && showJournalsReport) {
+		} else if (payNum && showJournalsReport) {
 			fetchJournalInfo();
 		}
-	}, [selectedPayPeriod, showReport, year, showTotalsReport, showJournalsReport]);
+	}, [selectedPayPeriodDetails?.current, showReport, year, showTotalsReport, showJournalsReport]);
 
 	const getPayNum = (payNo, isExtra) =>
 		isExtra
@@ -103,25 +112,26 @@ const ReportListView = () => {
 					({ payPeriod, isExtraRun }) => payPeriod === parseInt(payNo) && isExtraRun === isExtra,
 			  )
 			: payNo;
-	const handleRegister = (payNo, isExtra) => {
+
+	const handleRegister = (payNo, isExtra, payPeriodPayDate) => {
 		const payNum = getPayNum(payNo, isExtra);
-		setSelectedPayPeriod(payNum);
+		selectedPayPeriodDetails.current = { payNum, isExtra, payPeriodPayDate };
 		setShowReport(true);
 		setShowTotalsReport(false);
 		setShowJournalsReport(false);
 	};
 
-	const handleTotalsReport = (payNo, isExtra) => {
+	const handleTotalsReport = (payNo, isExtra, payPeriodPayDate) => {
 		const payNum = getPayNum(payNo, isExtra);
-		setSelectedPayPeriod(payNum);
+		selectedPayPeriodDetails.current = { payNum, isExtra, payPeriodPayDate };
 		setShowTotalsReport(true);
 		setShowReport(false);
 		setShowJournalsReport(false);
 	};
 
-	const handleJournalsReport = (payNo, isExtra) => {
+	const handleJournalsReport = (payNo, isExtra, payPeriodPayDate) => {
 		const payNum = getPayNum(payNo, isExtra);
-		setSelectedPayPeriod(payNum);
+		selectedPayPeriodDetails.current = { payNum, isExtra, payPeriodPayDate };
 		setShowTotalsReport(false);
 		setShowReport(false);
 		setShowJournalsReport(true);

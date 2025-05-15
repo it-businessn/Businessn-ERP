@@ -86,9 +86,7 @@ const WorkviewTable = ({
 					) => (
 						<Tr key={`${payPeriod}_${index}`} ref={(el) => (rowRefs.current[index] = el)}>
 							<Td p={1} pl={8}>
-								{`${isExtraPay(payPeriodNum || payPeriod, isExtraRun)} ${
-									isEarningTable && scheduleFrequency ? `- ${scheduleFrequency}` : ""
-								}`}
+								{`${isExtraPay(payPeriodNum || payPeriod, isExtraRun)}`}
 							</Td>
 							<Td p={1} textAlign={textAlign}>
 								{dayMonthYear(payPeriodPayDate)}
@@ -144,6 +142,7 @@ const WorkviewTable = ({
 													handleRegister(
 														isExtraPay(payPeriodNum || payPeriod, isExtraRun),
 														isExtraRun,
+														payPeriodPayDate,
 													);
 												}}
 											/>
@@ -175,6 +174,7 @@ const WorkviewTable = ({
 														handleTotalsReport(
 															isExtraPay(payPeriodNum || payPeriod, isExtraRun),
 															isExtraRun,
+															payPeriodPayDate,
 														)
 													}
 												/>
@@ -184,8 +184,9 @@ const WorkviewTable = ({
 													size="xs"
 													onClick={() =>
 														handleJournalsReport(
-															isExtraPay(payPeriodNum || payPeriod, isExtraRun),
+															isExtraPay(payPeriod, isExtraRun),
 															isExtraRun,
+															payPeriodPayDate,
 														)
 													}
 												/>
