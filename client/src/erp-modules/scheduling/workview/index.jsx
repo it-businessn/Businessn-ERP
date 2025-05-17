@@ -1,4 +1,4 @@
-import { Box, Flex, HStack, Icon, Select, Text } from "@chakra-ui/react";
+import { Box, Flex, FormLabel, HStack, Icon, Select } from "@chakra-ui/react";
 import ComingSoon from "components/ComingSoon";
 import PrimaryButton from "components/ui/button/PrimaryButton";
 import TextTitle from "components/ui/text/TextTitle";
@@ -21,6 +21,7 @@ const ScheduleWorkView = () => {
 	const isUserManager = isManager(loggedInUser.role);
 
 	const [selectedCrew, setSelectedCrew] = useState(null);
+	const [timeFormat, setTimeFormat] = useState("12");
 	const [view, setView] = useState("weekly");
 	const [newShiftAdded, setNewShiftAdded] = useState(null);
 	const [refresh, setRefresh] = useState(null);
@@ -70,20 +71,33 @@ const ScheduleWorkView = () => {
 	return (
 		<PageLayout title="WorkView">
 			<Flex justify="space-between" align="center" mb={4}>
-				<Flex align="center" gap={2}>
-					<Text fontWeight="bold">Crew:</Text>
-					<Select
-						value={selectedCrew}
-						onChange={(e) => setSelectedCrew(e.target.value)}
-						width="150px"
-					>
-						{crews?.map(({ _id, name }) => (
-							<option key={_id} value={name}>
-								{name}
-							</option>
-						))}
-					</Select>
-				</Flex>
+				<HStack justify="space-between">
+					<HStack>
+						<FormLabel>
+							<TextTitle title="Crew" />
+						</FormLabel>
+						<Select value={selectedCrew} onChange={(e) => setSelectedCrew(e.target.value)}>
+							{crews?.map(({ _id, name }) => (
+								<option key={_id} value={name}>
+									{name}
+								</option>
+							))}
+						</Select>
+					</HStack>
+					<HStack>
+						<FormLabel>
+							<TextTitle title="Time Format" />
+						</FormLabel>
+						<Select
+							value={timeFormat}
+							onChange={(e) => setTimeFormat(e.target.value)}
+							placeholder="Select time format"
+						>
+							<option value="12">12-hour</option>
+							<option value="24">24-hour</option>
+						</Select>
+					</HStack>
+				</HStack>
 
 				<HStack spacing={0}>
 					<Icon
@@ -124,6 +138,7 @@ const ScheduleWorkView = () => {
 
 			{view === "weekly" && (
 				<WeeklyCalendarView
+					timeFormat={timeFormat}
 					weekStart={weekStart}
 					company={company}
 					selectedCrew={selectedCrew}

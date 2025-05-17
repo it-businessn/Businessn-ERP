@@ -1,6 +1,5 @@
 import { SmallAddIcon } from "@chakra-ui/icons";
-import { Box, HStack, IconButton, Table, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
-import PrimaryButton from "components/ui/button/PrimaryButton";
+import { Box, Button, HStack, IconButton, Table, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
 import NormalTextTitle from "components/ui/NormalTextTitle";
 import TextTitle from "components/ui/text/TextTitle";
 
@@ -16,6 +15,7 @@ const WeeklyCalendarView = ({
 	newShiftAdded,
 	setShowAddShiftModal,
 	setShift,
+	timeFormat,
 }) => {
 	const weekDays = [...Array(7)].map((_, i) => addDays(weekStart, i));
 	const [employeeShifts, setEmployeeShifts] = useState(null);
@@ -78,6 +78,14 @@ const WeeklyCalendarView = ({
 		}
 		if (newShift) setShift(newShift);
 	};
+
+	const convertTo12HourFormatRange = (timeRange) => {
+		const [start, end] = timeRange.split("-");
+		const startFormatted = moment(start, "HH:mm").format("hh:mm A");
+		const endFormatted = moment(end, "HH:mm").format("hh:mm A");
+		return `${startFormatted} - ${endFormatted}`;
+	};
+
 	return (
 		<Box overflow="auto" h="calc(100vh - 205px)">
 			<Table variant="simple">
@@ -99,51 +107,58 @@ const WeeklyCalendarView = ({
 							<Td w="100px" px={1}>
 								<NormalTextTitle whiteSpace="wrap" size="sm" width="100px" title={emp?.name} />
 							</Td>
-							{emp?.shifts?.map((entry, j) => (
-								<Td w="200px" py={1} key={`${emp?.name}_${j}`} px={1}>
-									<HStack
-										bg={"var(--bg_color_1)"}
-										// bgColor={shift.color}
-										p={0}
-										spacing={0}
-										justify={"space-between"}
-										w="200px"
-									>
-										<PrimaryButton
-											whiteSpace="wrap"
-											hover={{
-												color: "var(--main_color_black)",
-												bg: entry
-													? "transparent"
-													: entry?.shift === "Off"
-													? "var(--bg_color_1)"
-													: "var(--empName_bg)",
-											}}
-											color={
-												entry?.shift === "Off" ? "var(--main_color_black)" : "var(--empName_bg)"
-											}
-											bg={entry?.shift === "Off" ? "var(--bg_color_1)" : "transparent"}
-											name={
-												entry?.shift === "Off"
+							{emp?.shifts?.map((entry, j) => {
+								const entryShiftTime =
+									timeFormat === "12" && entry?.shift !== "Off"
+										? convertTo12HourFormatRange(entry?.shift)
+										: entry?.shift;
+								return (
+									<Td w="200px" py={1} key={`${emp?.name}_${j}`} px={1}>
+										<HStack
+											bg={"var(--bg_color_1)"}
+											// bgColor={shift.color}
+											p={0}
+											spacing={0}
+											justify={"space-between"}
+											w="200px"
+										>
+											<Button
+												bg={entry?.shift === "Off" ? "var(--bg_color_1)" : "transparent"}
+												p={0}
+												color={
+													entry?.shift === "Off" ? "var(--main_color_black)" : "var(--empName_bg)"
+												}
+												_hover={{
+													color: "var(--main_color_black)",
+													bg: entry
+														? "transparent"
+														: entry?.shift === "Off"
+														? "var(--bg_color_1)"
+														: "var(--empName_bg)",
+												}}
+												borderRadius={"10px"}
+												whiteSpace="wrap"
+											>
+												{entry?.shift === "Off"
 													? "Off"
-													: `${entry?.shift} ${emp?.role} @ ${emp?.location}`
-											}
-										/>
-										<IconButton
-											color={
-												entry?.shift === "Off" ? "var(--main_color_black)" : "var(--empName_bg)"
-											}
-											size={"xs"}
-											icon={<SmallAddIcon />}
-											aria-label="Open Sidebar"
-											_hover={{ bg: "transparent" }}
-											onClick={() => {
-												handleItemClick(emp, entry, weekDays[j]);
-											}}
-										/>
-									</HStack>
-								</Td>
-							))}
+													: `${entryShiftTime} ${emp?.role} @ ${emp?.location}`}
+											</Button>
+											<IconButton
+												color={
+													entry?.shift === "Off" ? "var(--main_color_black)" : "var(--empName_bg)"
+												}
+												size={"xs"}
+												icon={<SmallAddIcon />}
+												aria-label="Open Sidebar"
+												_hover={{ bg: "transparent" }}
+												onClick={() => {
+													handleItemClick(emp, entry, weekDays[j]);
+												}}
+											/>
+										</HStack>
+									</Td>
+								);
+							})}
 						</Tr>
 					))}
 					<Tr fontWeight="bold" bg="gray.100" position="sticky" bottom="0" zIndex="1">
@@ -158,7 +173,7 @@ const WeeklyCalendarView = ({
 								}, 0) ?? 0;
 
 							return (
-								<Td py={2} key={dayIdx}>
+								<Td py={2} key={`day_${dayIdx}`}>
 									<TextTitle align="center" title={total.toFixed(2)} />
 								</Td>
 							);
