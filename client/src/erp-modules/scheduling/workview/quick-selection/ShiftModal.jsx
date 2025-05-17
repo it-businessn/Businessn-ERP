@@ -215,7 +215,7 @@ const ShiftModal = ({
 				)}
 			</VStack>
 			<ActionButtonGroup
-				submitBtnName="Add"
+				submitBtnName={`${shift?._id ? "Save" : "Add"}`}
 				onClose={handleClose}
 				onOpen={handleSubmit}
 				size="sm"

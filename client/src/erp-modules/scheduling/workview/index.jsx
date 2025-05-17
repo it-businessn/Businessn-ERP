@@ -69,50 +69,49 @@ const ScheduleWorkView = () => {
 
 	return (
 		<PageLayout title="WorkView">
-			<Box p={4}>
-				<Flex justify="space-between" align="center" mb={4}>
-					<Flex align="center" gap={2}>
-						<Text fontWeight="bold">Crew:</Text>
-						<Select
-							value={selectedCrew}
-							onChange={(e) => setSelectedCrew(e.target.value)}
-							width="150px"
-						>
-							{crews?.map(({ _id, name }) => (
-								<option key={_id} value={name}>
-									{name}
-								</option>
-							))}
-						</Select>
-					</Flex>
+			<Flex justify="space-between" align="center" mb={4}>
+				<Flex align="center" gap={2}>
+					<Text fontWeight="bold">Crew:</Text>
+					<Select
+						value={selectedCrew}
+						onChange={(e) => setSelectedCrew(e.target.value)}
+						width="150px"
+					>
+						{crews?.map(({ _id, name }) => (
+							<option key={_id} value={name}>
+								{name}
+							</option>
+						))}
+					</Select>
+				</Flex>
 
-					<HStack spacing={0}>
-						<Icon
-							cursor="pointer"
-							as={MdOutlineChevronLeft}
-							onClick={() => handleChangeDate("prev")}
-							boxSize="5"
-							color="fg.muted"
-						/>
-						<TextTitle
-							size="lg"
-							title={`
+				<HStack spacing={0}>
+					<Icon
+						cursor="pointer"
+						as={MdOutlineChevronLeft}
+						onClick={() => handleChangeDate("prev")}
+						boxSize="5"
+						color="fg.muted"
+					/>
+					<TextTitle
+						size="lg"
+						title={`
 						${format(weekStart, "MMM d")} - ${format(addDays(weekStart, 6), "MMM d")}`}
-						/>
-						<Icon
-							cursor="pointer"
-							as={MdOutlineChevronRight}
-							onClick={() => handleChangeDate("next")}
-							boxSize="5"
-							color="fg.muted"
-						/>
-					</HStack>
+					/>
+					<Icon
+						cursor="pointer"
+						as={MdOutlineChevronRight}
+						onClick={() => handleChangeDate("next")}
+						boxSize="5"
+						color="fg.muted"
+					/>
+				</HStack>
 
-					{/* <Tabs variant="enclosed" onChange={(i) => setView(i === 0 ? "weekly" : "daily")}>
+				{/* <Tabs variant="enclosed" onChange={(i) => setView(i === 0 ? "weekly" : "daily")}>
 						<TabList>
 							<Tab> */}
-					<PrimaryButton name="Weekly View" />
-					{/* </Tab>
+				<PrimaryButton name="Weekly View" />
+				{/* </Tab>
 							<Tab>
 								<PrimaryButton
 									name="
@@ -120,42 +119,42 @@ const ScheduleWorkView = () => {
 								/>
 							</Tab>
 						</TabList> */}
-					{/* </Tabs> */}
-				</Flex>
-				{view === "weekly" && (
-					<WeeklyCalendarView
-						weekStart={weekStart}
-						company={company}
-						selectedCrew={selectedCrew}
-						newShiftAdded={newShiftAdded}
-						setShowAddShiftModal={setShowAddShiftModal}
-						setShift={setShift}
-					/>
-				)}
-				{view === "daily" && (
-					<Box mt={4} textAlign="center">
-						<ComingSoon message="Daily view coming soon" />
-					</Box>
-				)}
-				{showAddShiftModal && (
-					<ShiftModal
-						currentDate={moment().format("YYYY-MM-DD")}
-						roles={roles}
-						employees={employeesList}
-						locations={locations}
-						location={location}
-						company={company}
-						showModal={showAddShiftModal}
-						setShowModal={setShowAddShiftModal}
-						setIsRefresh={setRefresh}
-						setNewShiftAdded={setNewShiftAdded}
-						empName={empName}
-						empRole={empRole}
-						shift={shift}
-						crew={selectedCrew}
-					/>
-				)}
-			</Box>
+				{/* </Tabs> */}
+			</Flex>
+
+			{view === "weekly" && (
+				<WeeklyCalendarView
+					weekStart={weekStart}
+					company={company}
+					selectedCrew={selectedCrew}
+					newShiftAdded={newShiftAdded}
+					setShowAddShiftModal={setShowAddShiftModal}
+					setShift={setShift}
+				/>
+			)}
+			{view === "daily" && (
+				<Box mt={4} textAlign="center">
+					<ComingSoon message="Daily view coming soon" />
+				</Box>
+			)}
+			{showAddShiftModal && (
+				<ShiftModal
+					currentDate={moment().format("YYYY-MM-DD")}
+					roles={roles}
+					employees={employeesList}
+					locations={locations}
+					location={location}
+					company={company}
+					showModal={showAddShiftModal}
+					setShowModal={setShowAddShiftModal}
+					setIsRefresh={setRefresh}
+					setNewShiftAdded={setNewShiftAdded}
+					empName={empName}
+					empRole={empRole}
+					shift={shift}
+					crew={selectedCrew}
+				/>
+			)}
 		</PageLayout>
 	);
 };

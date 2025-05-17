@@ -1,6 +1,7 @@
 import { SmallAddIcon } from "@chakra-ui/icons";
 import { Box, HStack, IconButton, Table, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
 import PrimaryButton from "components/ui/button/PrimaryButton";
+import NormalTextTitle from "components/ui/NormalTextTitle";
 import TextTitle from "components/ui/text/TextTitle";
 
 import { addDays, format } from "date-fns";
@@ -39,11 +40,24 @@ const WeeklyCalendarView = ({
 		if (selectedCrew) fetchShifts();
 	}, [newShiftAdded, weekStart, selectedCrew]);
 
-	const calculateHours = (shift) => {
+	const calculateHours = (data) => {
+		const { shift } = data;
 		if (shift === "Off") return 0;
-		const [start, end] = shift.split("-").map(Number);
-		return end - start;
+		const [start, end] = shift.split("-");
+		const [startH, startM] = start.split(":").map(Number);
+		const [endH, endM] = end.split(":").map(Number);
+		const startMinutes = startH * 60 + startM;
+		const endMinutes = endH * 60 + endM;
+		return (endMinutes - startMinutes) / 60;
 	};
+
+	// const minutesToHoursAndMinutes = (mins) => {
+	// 	const hours = mins.toFixed(2);
+	// 	const h = Math.floor(mins / 60);
+	// 	const m = mins % 60;
+	// 	console.log(hours);
+	// 	return hours; //`${h}h ${m}m`;
+	// };
 
 	const handleItemClick = (emp, shiftTime, shiftDate) => {
 		setShowAddShiftModal(true);
@@ -65,7 +79,7 @@ const WeeklyCalendarView = ({
 		if (newShift) setShift(newShift);
 	};
 	return (
-		<Box>
+		<Box overflow="auto" h="calc(100vh - 205px)">
 			<Table variant="simple">
 				<Thead>
 					<Tr>
@@ -82,11 +96,11 @@ const WeeklyCalendarView = ({
 				<Tbody>
 					{employeeShifts?.map((emp) => (
 						<Tr key={emp?.name}>
-							<Td w="200px" py={2}>
-								{emp?.name}
+							<Td w="100px" px={1}>
+								<NormalTextTitle whiteSpace="wrap" size="sm" width="100px" title={emp?.name} />
 							</Td>
 							{emp?.shifts?.map((entry, j) => (
-								<Td w="200px" py={0} key={`${emp?.name}_${j}`}>
+								<Td w="200px" py={1} key={`${emp?.name}_${j}`} px={1}>
 									<HStack
 										bg={"var(--bg_color_1)"}
 										// bgColor={shift.color}
@@ -132,23 +146,25 @@ const WeeklyCalendarView = ({
 							))}
 						</Tr>
 					))}
-					{/* <Tr fontWeight="bold" bg="gray.100">
-									<Td py={0}>Total Hours</Td>
-									{weekDays.map((_, dayIdx) => {
-										const total =
-											employeeShifts?.reduce((sum, emp) => {
-												if (!emp.shifts || !emp.shifts[0]) return sum;
-												return sum + calculateHours(emp.shifts[dayIdx]);
-											}, 0) ?? 0;
+					<Tr fontWeight="bold" bg="gray.100" position="sticky" bottom="0" zIndex="1">
+						<Td py={0} px={1}>
+							Total Hours
+						</Td>
+						{weekDays.map((_, dayIdx) => {
+							const total =
+								employeeShifts?.reduce((sum, emp) => {
+									if (!emp.shifts || !emp.shifts[0]) return sum;
+									return sum + calculateHours(emp.shifts[dayIdx]);
+								}, 0) ?? 0;
 
-										return (
-											<Td py={2} key={dayIdx}>
-												{total}
-											</Td>
-										);
-									})}
-								</Tr>
-								<Tr fontWeight="bold" bg="gray.100">
+							return (
+								<Td py={2} key={dayIdx}>
+									<TextTitle align="center" title={total.toFixed(2)} />
+								</Td>
+							);
+						})}
+					</Tr>
+					{/*<Tr fontWeight="bold" bg="gray.100">
 									<Td py={0}>Total Wages</Td>
 									{weekDays.map((_, dayIdx) => {
 										const total =
