@@ -101,18 +101,15 @@ const usePaygroup = (company, refresh, year = CURRENT_YEAR, isReport = false) =>
 	}, [selectedPayGroup, year]);
 
 	useEffect(() => {
-		if (
-			allPayGroupSchedule &&
-			closestRecordIndex >= 0 &&
-			selectedPayGroup &&
-			!allPayGroupSchedule[closestRecordIndex]?.isDisabledAction
-		) {
-			allPayGroupSchedule.map((_, index) => {
-				if (index > closestRecordIndex) {
-					_.isDisabledAction = true;
-					return _;
-				}
-			});
+		if (allPayGroupSchedule && closestRecordIndex >= 0 && selectedPayGroup) {
+			if (!allPayGroupSchedule[closestRecordIndex]?.isDisabledAction) {
+				allPayGroupSchedule.map((_, index) => {
+					if (index > closestRecordIndex) {
+						_.isDisabledAction = true;
+						return _;
+					}
+				});
+			}
 			setPayGroupSchedule(allPayGroupSchedule);
 		}
 	}, [selectedPayGroup, closestRecordIndex, allPayGroupSchedule]);
