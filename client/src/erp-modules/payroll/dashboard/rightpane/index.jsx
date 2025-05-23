@@ -1,10 +1,13 @@
 import BoxCard from "components/ui/card";
+import TabsButtonGroup from "components/ui/tab/TabsButtonGroup";
+import ChatMessages from "erp-modules/sales/dashboard/rightpane/ChatMessages";
 import MiniCalendar from "erp-modules/sales/dashboard/rightpane/MiniCalendar";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import "react-big-calendar/lib/css/react-big-calendar.css";
-import TaskService from "services/TaskService";
-import AlertActivity from "./AlertActivity";
+import AppointmentHistory from "./AppointmentHistory";
 import PayrollUserStatInfo from "./PayrollUserStatInfo";
+import TasksHistory from "./TasksHistory";
+import TicketHistory from "./TicketHistory";
 
 const RightPane = ({
 	selectedUser,
@@ -14,65 +17,32 @@ const RightPane = ({
 	closestRecord,
 	closestRecordIndex,
 }) => {
-	const [tickets, setTickets] = useState(null);
-	const [chat, setChat] = useState(null);
-	const [tasks, setTasks] = useState(null);
-	const [appointments, setAppointments] = useState(null);
+	const TABS = [
+		{
+			id: 0,
+			type: "Tickets",
+			name: <TicketHistory userId={selectedUser?.fullName} company={company} />,
+		},
+		{
+			id: 1,
+			type: "Messages",
+			name: <ChatMessages userId={selectedPayGroup?._id} company={company} />,
+		},
+		{
+			id: 2,
+			type: "Tasks",
+			name: <TasksHistory title="ASFASF" />,
+		},
+		{
+			id: 3,
+			type: "Appointments",
+			name: <AppointmentHistory title="ASFAASFSAFSF" />,
+		},
+	];
 
-	useEffect(() => {
-		const fetchAllUserTasks = async () => {
-			try {
-				const { data } = await TaskService.getTaskByAssignee({
-					name: selectedUser?.fullName,
-					company,
-				});
-				setTasks(data);
-			} catch (error) {
-				console.error(error);
-			}
-		};
-		const fetchAllUserChat = async () => {
-			try {
-				// const { data } = await CommunicationService.getUserConversations({
-				// 	name: selectedUser?.fullName,
-				// 	company,
-				// });
-				const { data } = await TaskService.getTaskByAssignee({
-					name: selectedUser?.fullName,
-					company,
-				});
-				setChat(data);
-			} catch (error) {
-				console.error(error);
-			}
-		};
-		const fetchAllUserAppointment = async () => {
-			try {
-				const { data } = await TaskService.getTaskByAssignee({
-					name: selectedUser?.fullName,
-					company,
-				});
-				setAppointments(data);
-			} catch (error) {
-				console.error(error);
-			}
-		};
-		const fetchAllUserTickets = async () => {
-			try {
-				const { data } = await TaskService.getTaskByAssignee({
-					name: selectedUser?.fullName,
-					company,
-				});
-				setTickets(data);
-			} catch (error) {
-				console.error(error);
-			}
-		};
-		fetchAllUserTickets();
-		fetchAllUserAppointment();
-		fetchAllUserChat();
-		fetchAllUserTasks();
-	}, [selectedUser]);
+	const [viewMode, setViewMode] = useState(TABS[0].type);
+
+	const showComponent = (viewMode) => TABS.find(({ type }) => type === viewMode)?.name;
 
 	return (
 		<BoxCard>
@@ -84,8 +54,8 @@ const RightPane = ({
 				closestRecordIndex={closestRecordIndex}
 			/>
 			<MiniCalendar user={selectedUser} company={company} isPayrollDashboard />
-			{/* <ChatMessages userId={selectedPayGroup?._id} company={company} /> */}
-			<AlertActivity tickets={tickets} chat={chat} tasks={tasks} appointments={appointments} />
+			<TabsButtonGroup tabs={TABS} setViewMode={setViewMode} viewMode={viewMode} />
+			{showComponent(viewMode)}
 		</BoxCard>
 	);
 };
