@@ -148,7 +148,7 @@ const AddBenefitsInfo = ({ company, id, handleNext }) => {
 					handleSubmit={handleSubmit}
 				/>
 			</BoxCard>
-			<StepContent currentStep={currentStep} steps={steps} />
+			<StepContent currentStep={currentStep} steps={steps} h="calc(100vh - 190px)" />
 		</SimpleGrid>
 	);
 };
