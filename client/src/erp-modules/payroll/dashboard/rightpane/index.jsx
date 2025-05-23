@@ -26,22 +26,21 @@ const RightPane = ({
 		{
 			id: 1,
 			type: "Messages",
-			name: <ChatMessages userId={selectedPayGroup?._id} company={company} />,
+			name: <ChatMessages userId={selectedUser?._id} company={company} />,
 		},
 		{
 			id: 2,
 			type: "Tasks",
-			name: <TasksHistory title="ASFASF" />,
+			name: <TasksHistory userId={selectedUser?._id} company={company} />,
 		},
 		{
 			id: 3,
 			type: "Appointments",
-			name: <AppointmentHistory title="ASFAASFSAFSF" />,
+			name: <AppointmentHistory userId={selectedUser?._id} company={company} />,
 		},
 	];
 
 	const [viewMode, setViewMode] = useState(TABS[0].type);
-
 	const showComponent = (viewMode) => TABS.find(({ type }) => type === viewMode)?.name;
 
 	return (
