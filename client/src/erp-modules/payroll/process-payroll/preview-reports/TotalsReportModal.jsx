@@ -7,6 +7,7 @@ import { COMPANIES } from "constant";
 import React from "react";
 import { isExtraPay } from "utils";
 import { getAmount } from "utils/convertAmt";
+import { formatDateBar } from "utils/convertDate";
 
 const TotalsReportModal = ({
 	isOpen,
@@ -145,6 +146,8 @@ const TotalsReportModal = ({
 				<HStack justifyContent="start">
 					<VStack spacing={0}>
 						<TextTitle size="sm" title="Pay Period#:" />
+						<TextTitle size="sm" title="Pay Start Date:" />
+						<TextTitle size="sm" title="Pay End Date:" />
 						<TextTitle size="sm" title="Total Government Remittance:" />
 						<TextTitle size="sm" title="Total Employee Remittance:" />
 						<TextTitle size="sm" title="Total Withdrawals:" />
@@ -154,6 +157,8 @@ const TotalsReportModal = ({
 							size="sm"
 							title={isExtraPay(reportData?.payPeriodNum, reportData?.isExtraRun)}
 						/>
+						<NormalTextTitle size="sm" title={formatDateBar(reportData?.payPeriodStartDate)} />
+						<NormalTextTitle size="sm" title={formatDateBar(reportData?.payPeriodEndDate)} />
 						<NormalTextTitle size="sm" title={getAmount(reportData?.totalGovtContr)} />
 						<NormalTextTitle size="sm" title={getAmount(reportData?.totalEmpPaymentRemitCost)} />
 						<NormalTextTitle size="sm" title={getAmount(reportData?.totalFundingWithDrawals)} />
