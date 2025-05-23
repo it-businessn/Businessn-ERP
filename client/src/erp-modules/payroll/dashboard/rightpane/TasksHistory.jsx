@@ -1,9 +1,10 @@
+import BoxCard from "components/ui/card";
 import NormalTextTitle from "components/ui/NormalTextTitle";
 
 const TasksHistory = () => {
 	return (
-		<>
-			<NormalTextTitle title="Coming soon" />
+		<BoxCard p="0.5em">
+			<NormalTextTitle size="sm" title="Coming soon" />
 			{/* <List spacing={2}>
 				<ListItem>
 					<BoxCard>
@@ -11,7 +12,7 @@ const TasksHistory = () => {
 					</BoxCard>
 				</ListItem>
 			</List> */}
-		</>
+		</BoxCard>
 	);
 };
 

@@ -61,7 +61,9 @@ const TicketHistory = ({ userId, company }) => {
 						),
 					)
 				) : (
-					<NormalTextTitle title="No record found" />
+					<BoxCard p="0.5em">
+						<NormalTextTitle size="sm" title="No record found" />
+					</BoxCard>
 				)}
 			</List>
 			{openNote && (
