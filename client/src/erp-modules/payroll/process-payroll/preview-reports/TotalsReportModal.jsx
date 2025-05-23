@@ -1,9 +1,12 @@
-import { HStack, Stack } from "@chakra-ui/react";
+import { Divider, HStack, Stack, VStack } from "@chakra-ui/react";
 import Loader from "components/Loader";
 import ModalLayout from "components/ui/modal/ModalLayout";
 import NormalTextTitle from "components/ui/NormalTextTitle";
 import TextTitle from "components/ui/text/TextTitle";
 import { COMPANIES } from "constant";
+import React from "react";
+import { isExtraPay } from "utils";
+import { getAmount } from "utils/convertAmt";
 
 const TotalsReportModal = ({
 	isOpen,
@@ -38,6 +41,94 @@ const TotalsReportModal = ({
 
 	const totalServiceCharges = reportData?.totalServiceCharges?.toFixed(2);
 	const totalFundingWithDrawals = reportData?.totalFundingWithDrawals?.toFixed(2);
+	const totalsReportDetails = [
+		{
+			top: 0,
+			title: "Totals withdrawn to remit to the CRA",
+			details: [
+				{ subtitle: "Total Income Tax Contribution", value: totalIncomeTaxContr, mt: 3 },
+				{
+					subtitle: "Total Income Tax Contribution",
+					value: totalIncomeTaxContr,
+					mt: 0,
+					fontStyle: "italic",
+				},
+				{ subtitle: "Total CPP - Employee Contribution", value: totalCPP_EE_Contr, mt: 3 },
+				{
+					subtitle: "Total CPP - Employer Contribution",
+					value: totalCPP_ER_Contr,
+					mt: 0,
+				},
+				{
+					subtitle: "Total CPP Contribution",
+					value: totalCPP_Contr,
+					mt: 0,
+					fontStyle: "italic",
+				},
+				{ subtitle: "Total EI - Employee Contribution", value: totalEI_EE_Contr, mt: 3 },
+				{ subtitle: "Total EI - Employer Contribution", value: totalEI_ER_Contr, mt: 0 },
+				{
+					subtitle: "Total EI Contribution",
+					value: totalEI_Contr,
+					mt: 0,
+					fontStyle: "italic",
+				},
+			],
+			sumTotal: { title: "ALL GOVERNMENT CONTRIBUTIONS TO REMIT", value: totalGovtContr },
+		},
+		{
+			top: 3,
+			title: "Totals withdrawn to remit to Employees",
+			details: [
+				{ subtitle: "All Employees Net Pay", value: totalNetPay, mt: 3 },
+				{
+					subtitle: "Total Net Pay",
+					value: totalNetPay,
+					mt: 0,
+					fontStyle: "italic",
+				},
+			],
+			sumTotal: { title: "ALL EMPLOYEE PAYMENTS TO REMIT", value: totalEmpPaymentRemitCost },
+		},
+		{
+			top: 3,
+			title: "Totals withdrawn for services",
+			details: [
+				{ subtitle: "Core Payroll - Batch", value: totalBatchCharges, mt: 3 },
+				{
+					subtitle: "Core Payroll - Employees",
+					value: totalEmpPayrollCost,
+					mt: 0,
+				},
+				{
+					subtitle: "Total Core Payroll",
+					value: totalCorePayrollCost,
+					mt: 0,
+					fontStyle: "italic",
+				},
+				{
+					subtitle: "Time Clock Device Maintenance",
+					value: timeClockMaintenanceCost,
+					mt: 4,
+					hide: isCornerStone,
+				},
+				{
+					subtitle: "Time Management",
+					value: totalTimeManagementEmpCost,
+					mt: 0,
+					hide: isCornerStone,
+				},
+				{
+					subtitle: "Total Time Management",
+					value: totalTimeManagementPayrollCost,
+					mt: 0,
+					fontStyle: "italic",
+					hide: isCornerStone,
+				},
+			],
+			sumTotal: { title: "ALL SERVICE CHARGES", value: totalServiceCharges },
+		},
+	];
 
 	return (
 		<ModalLayout
@@ -49,117 +140,64 @@ const TotalsReportModal = ({
 			fontSize="2xl"
 			isReport={true}
 		>
-			{!reportData && <Loader />}
+			{!reportData && <Loader />}Company Name: Acme Corporation Prepared By: Jane Doe Date Prepared:
+			<Stack mt={3}>
+				<HStack justifyContent="start">
+					<VStack spacing={0}>
+						<TextTitle size="sm" title="Pay Period#:" />
+						<TextTitle size="sm" title="Total Government Remittance:" />
+						<TextTitle size="sm" title="Total Employee Remittance:" />
+						<TextTitle size="sm" title="Total Withdrawals:" />
+					</VStack>
+					<VStack spacing={0}>
+						<NormalTextTitle
+							size="sm"
+							title={isExtraPay(reportData?.payPeriodNum, reportData?.isExtraRun)}
+						/>
+						<NormalTextTitle size="sm" title={getAmount(reportData?.totalGovtContr)} />
+						<NormalTextTitle size="sm" title={getAmount(reportData?.totalEmpPaymentRemitCost)} />
+						<NormalTextTitle size="sm" title={getAmount(reportData?.totalFundingWithDrawals)} />
+					</VStack>
+				</HStack>
+				<Divider />
+			</Stack>
 			{reportData && (
 				<Stack padding={0}>
-					<Stack mt={2} spacing={0}>
-						<TextTitle title="Totals withdrawn to remit to the CRA" />
-						<HStack borderBottom="1px solid var(--main_color_black)" mt={5}>
-							<NormalTextTitle title="Total Income Tax Contribution" />
-							<NormalTextTitle align="right" title={totalIncomeTaxContr} />
-						</HStack>
-						<HStack borderBottom="1px solid var(--main_color_black)">
-							<NormalTextTitle title="Total Income Tax Contribution" fontStyle="italic" />
-							<NormalTextTitle align="right" title={totalIncomeTaxContr} fontStyle="italic" />
-						</HStack>
-						<HStack mt={5}>
-							<NormalTextTitle title="Total CPP - Employee Contribution" />
-							<NormalTextTitle align="right" title={totalCPP_EE_Contr} />
-						</HStack>
-						<HStack borderBottom="1px solid var(--main_color_black)">
-							<NormalTextTitle title="Total CPP - Employer Contribution" />
-							<NormalTextTitle align="right" title={totalCPP_ER_Contr} />
-						</HStack>
-						<HStack borderBottom="1px solid var(--main_color_black)">
-							<NormalTextTitle title="Total CPP Contribution" fontStyle="italic" />
-							<NormalTextTitle align="right" title={totalCPP_Contr} fontStyle="italic" />
-						</HStack>
-
-						<HStack mt={5}>
-							<NormalTextTitle title="Total EI - Employee Contribution" />
-							<NormalTextTitle align="right" title={totalEI_EE_Contr} />
-						</HStack>
-						<HStack borderBottom="1px solid var(--main_color_black)">
-							<NormalTextTitle title="Total EI - Employer Contribution" />
-							<NormalTextTitle align="right" title={totalEI_ER_Contr} />
-						</HStack>
-						<HStack borderBottom="1px solid var(--main_color_black)">
-							<NormalTextTitle title="Total EI Contribution" fontStyle="italic" />
-							<NormalTextTitle align="right" title={totalEI_Contr} fontStyle="italic" />
-						</HStack>
-					</Stack>
-
-					<HStack mt={5}>
-						<TextTitle title="ALL GOVERNMENT CONTRIBUTIONS TO REMIT" whiteSpace="wrap" />
-						<TextTitle title={totalGovtContr} align="right" />
+					{totalsReportDetails?.map(({ top, title, details, sumTotal }, i) => (
+						<React.Fragment key={`${title}_${i}`}>
+							<Stack mt={top} spacing={0}>
+								<TextTitle title={title} />
+								{details?.map(
+									({ subtitle, value, mt, fontStyle, hide }, idx) =>
+										!hide && (
+											<HStack
+												key={`${subtitle}_${idx}`}
+												borderBottom="1px solid var(--main_color_black)"
+												mt={mt}
+											>
+												<NormalTextTitle size="sm" title={subtitle} fontStyle={fontStyle} />
+												<NormalTextTitle
+													size="sm"
+													align="right"
+													title={value}
+													fontStyle={fontStyle}
+												/>
+											</HStack>
+										),
+								)}
+							</Stack>
+							<Stack mt={1} size="xs">
+								<HStack>
+									<TextTitle title={sumTotal.title} whiteSpace="wrap" />
+									<TextTitle title={sumTotal.value} align="right" />
+								</HStack>
+							</Stack>
+						</React.Fragment>
+					))}
+					<HStack mt={2} borderTop="1px solid var(--main_color_black)">
+						<TextTitle title="ALL FUNDING WITHDRAWALS" />
+						<TextTitle align="right" title={totalFundingWithDrawals} />
 					</HStack>
-
-					<Stack mt={3} size="xs" spacing={0}>
-						<TextTitle title="Totals withdrawn to remit to Employees" />
-						<HStack borderBottom="1px solid var(--main_color_black)" mt={5}>
-							<NormalTextTitle title="All Employees Net Pay" />
-							<NormalTextTitle align="right" title={totalNetPay} />
-						</HStack>
-						<HStack borderBottom="1px solid var(--main_color_black)">
-							<NormalTextTitle title="Total Net Pay" fontStyle="italic" />
-							<NormalTextTitle align="right" title={totalNetPay} fontStyle="italic" />
-						</HStack>
-					</Stack>
-
-					<Stack mt={5} size="xs">
-						<HStack>
-							<TextTitle title="ALL EMPLOYEE PAYMENTS TO REMIT" />
-							<TextTitle align="right" title={totalEmpPaymentRemitCost} />
-						</HStack>
-					</Stack>
-
-					<Stack mt={3} size="xs" spacing={0}>
-						<TextTitle title="Totals withdrawn for services" />
-						<HStack mt={5}>
-							<NormalTextTitle title="Core Payroll - Batch" />
-							<NormalTextTitle align="right" title={totalBatchCharges} />
-						</HStack>
-						<HStack borderBottom="1px solid var(--main_color_black)">
-							<NormalTextTitle title="Core Payroll - Employees" />
-							<NormalTextTitle align="right" title={totalEmpPayrollCost} />
-						</HStack>
-						<HStack borderBottom="1px solid var(--main_color_black)">
-							<NormalTextTitle title="Total Core Payroll" fontStyle="italic" />
-							<NormalTextTitle align="right" title={totalCorePayrollCost} fontStyle="italic" />
-						</HStack>
-
-						{!isCornerStone && (
-							<>
-								<HStack mt={5}>
-									<NormalTextTitle title="Time Clock Device Maintenance" />
-									<NormalTextTitle align="right" title={timeClockMaintenanceCost} />
-								</HStack>
-								<HStack borderBottom="1px solid var(--main_color_black)">
-									<NormalTextTitle title="Time Management" />
-									<NormalTextTitle align="right" title={totalTimeManagementEmpCost} />
-								</HStack>
-								<HStack borderBottom="1px solid var(--main_color_black)">
-									<NormalTextTitle title="Total Time Management" fontStyle="italic" />
-									<NormalTextTitle
-										align="right"
-										title={totalTimeManagementPayrollCost}
-										fontStyle="italic"
-									/>
-								</HStack>
-							</>
-						)}
-					</Stack>
-
-					<Stack mt={5} size="xs" spacing={2}>
-						<HStack>
-							<TextTitle title="ALL SERVICE CHARGES" />
-							<TextTitle align="right" title={totalServiceCharges} />
-						</HStack>
-						<HStack mt={2} borderTop="1px solid var(--main_color_black)">
-							<TextTitle title="ALL FUNDING WITHDRAWALS" />
-							<TextTitle align="right" title={totalFundingWithDrawals} />
-						</HStack>
-					</Stack>
 				</Stack>
 			)}
 		</ModalLayout>
