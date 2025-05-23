@@ -20,14 +20,14 @@ const OnboardEmpModal = ({ showOnboard, setShowOnboard, title }) => {
 
 	return (
 		<Modal isCentered={true} size={"7xl"} isOpen={showOnboard} onClose={handleClose} m={0}>
-			<ModalContent>
+			<ModalContent height="99vh">
 				<ModalHeader position="sticky" zIndex="1" top={0} bg={"var(--main_color)"}>
 					<Flex justify="space-between">
 						{title}
 						<ModalCloseButton />
 					</Flex>
 				</ModalHeader>
-				<ModalBody zIndex="0" bg={"#fff"} height={"100vh"} m={0}>
+				<ModalBody zIndex="0" bg={"#fff"} m={0}>
 					<Stack w="100%" spacing={5}>
 						<OnboardEmployee handleClose={handleClose} />
 					</Stack>

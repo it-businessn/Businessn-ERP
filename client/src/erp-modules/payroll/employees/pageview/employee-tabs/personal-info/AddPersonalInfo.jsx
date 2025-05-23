@@ -137,7 +137,12 @@ const AddPersonalInfo = ({ company, id, handleNext }) => {
 					isDisabled={isDisabled}
 				/>
 			</BoxCard>
-			<StepContent currentStep={currentStep} steps={steps} isOnboarding={true} />
+			<StepContent
+				currentStep={currentStep}
+				steps={steps}
+				isOnboarding={true}
+				h="calc(100vh - 190px)"
+			/>
 		</SimpleGrid>
 	);
 };

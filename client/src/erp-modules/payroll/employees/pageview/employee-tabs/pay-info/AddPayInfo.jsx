@@ -99,7 +99,12 @@ const AddPayInfo = ({ company, id, handleNext, handlePrev }) => {
 					handlePrev={handlePrev}
 				/>
 			</BoxCard>
-			<StepContent currentStep={currentStep} steps={steps} isOnboarding={true} />
+			<StepContent
+				currentStep={currentStep}
+				steps={steps}
+				isOnboarding={true}
+				h="calc(100vh - 190px)"
+			/>
 		</SimpleGrid>
 	);
 };

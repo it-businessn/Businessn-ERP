@@ -34,7 +34,7 @@ const AddCorporateInfo = ({ company, id, handleNext, handlePrev }) => {
 	const [isDisabled, setIsDisabled] = useState(true);
 	const [isLoading, setIsLoading] = useState(false);
 	const [currentStep, setCurrentStep] = useState(0);
-	const { payGroups } = usePaygroup(company, false);
+	const { selectedPayGroup, payGroups } = usePaygroup(company, false);
 	const department = useDepartment(company);
 	const costCentres = useCostCenter(company);
 	const roles = useRoles(company);
@@ -138,6 +138,7 @@ const AddCorporateInfo = ({ company, id, handleNext, handlePrev }) => {
 							handleSubmit={handleSubmit}
 							positionRoles={positionRoles}
 							setPositionAdded={setPositionAdded}
+							selectedPayGroup={selectedPayGroup?.name}
 						/>
 					) : (
 						<>
@@ -170,6 +171,7 @@ const AddCorporateInfo = ({ company, id, handleNext, handlePrev }) => {
 										company={company}
 										positionRoles={positionRoles}
 										setPositionAdded={setPositionAdded}
+										selectedPayGroup={selectedPayGroup?.name}
 									/>
 								</BoxCard>
 							))}
@@ -218,7 +220,7 @@ const AddCorporateInfo = ({ company, id, handleNext, handlePrev }) => {
 					isDisabled={isDisabled}
 				/>
 			</BoxCard>
-			<StepContent currentStep={currentStep} steps={steps} />
+			<StepContent currentStep={currentStep} steps={steps} h="calc(100vh - 190px)" />
 		</SimpleGrid>
 	);
 };
