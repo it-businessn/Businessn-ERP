@@ -2,6 +2,7 @@ import { Box, HStack, List, ListItem, VStack } from "@chakra-ui/react";
 import SkeletonLoader from "components/SkeletonLoader";
 import LinkButton from "components/ui/button/LinkButton";
 import BoxCard from "components/ui/card";
+import NormalTextTitle from "components/ui/NormalTextTitle";
 import TextTitle from "components/ui/text/TextTitle";
 import NoteDetails from "erp-modules/project-management/tickets/NoteDetails";
 import { useEffect, useRef, useState } from "react";
@@ -12,6 +13,7 @@ const TicketHistory = ({ userId, company }) => {
 	const [isLoading, setIsLoading] = useState(false);
 	const [openNote, setOpenNote] = useState(false);
 	const ticketDetails = useRef(null);
+
 	useEffect(() => {
 		const fetchAllUserTickets = async () => {
 			try {
@@ -59,7 +61,7 @@ const TicketHistory = ({ userId, company }) => {
 						),
 					)
 				) : (
-					<span>asfsa</span>
+					<NormalTextTitle title="No record found" />
 				)}
 			</List>
 			{openNote && (
