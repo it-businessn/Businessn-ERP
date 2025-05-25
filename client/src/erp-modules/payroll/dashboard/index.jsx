@@ -41,13 +41,14 @@ const Dashboard = () => {
         spacing="4"
         mt="4"
         templateColumns={{ lg: "70% 30%" }}
-        bg="#f4f5f7"
       >
         <LeftPane
           company={company}
           closestRecord={closestRecord}
           payGroupSchedule={payGroupSchedule}
           closestRecordIndex={closestRecordIndex}
+          selectedUser={loggedInUser}
+
         />
         <RightPane
           selectedUser={loggedInUser}

@@ -14,9 +14,9 @@ const RightPane = ({
   closestRecordIndex,
 }) => {
   return (
-    <BoxCard borderWidth="0" bg="#fff">
+    <BoxCard borderWidth="0" bg="#faf9f5">
       <VStack spacing={6} align="stretch">
-        <Box bg="white" p={4} borderRadius="lg" boxShadow="sm">
+       {/* <Box bg="white" p={4} borderRadius="lg" boxShadow="sm">
           <PayrollUserStatInfo
             name={selectedUser?.fullName}
             email={selectedUser?.email}
@@ -24,7 +24,7 @@ const RightPane = ({
             closestRecord={closestRecord}
             closestRecordIndex={closestRecordIndex}
           />
-        </Box>
+        </Box>*/}
 
         <Box bg="white" p={4} borderRadius="lg" boxShadow="sm">
           <MiniCalendar user={selectedUser} company={company} isPayrollDashboard />

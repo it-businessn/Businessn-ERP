@@ -1,4 +1,4 @@
-import { HStack, VStack } from "@chakra-ui/react";
+import { HStack, VStack, Box, Center, Text } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { daysAgo, formatDateMMDDYY } from "utils/convertDate";
 import NormalTextTitle from "../../../../components/ui/NormalTextTitle";
@@ -29,22 +29,19 @@ const PayrollUserStatInfo = ({
             payGroupSchedule?.[closestRecordIndex + 1]?.payPeriodProcessingDate
           )} days`,
           icon: RepeatIcon,
-          bg: "blue.50",
-          iconColor: "blue.500",
+          iconColor: "gray.600",
         },
         approvalDate: {
           name: "Approval Date",
           value: formatDateMMDDYY(closestRecord?.payPeriodProcessingDate),
           icon: TimeIcon,
-          bg: "purple.50",
-          iconColor: "purple.500",
+          iconColor: "gray.600",
         },
         payDate: {
           name: "Payment Date",
           value: formatDateMMDDYY(closestRecord?.payPeriodPayDate),
           icon: CalendarIcon,
-          bg: "green.50",
-          iconColor: "green.500",
+          iconColor: "gray.600",
         },
       });
     }
@@ -56,22 +53,39 @@ const PayrollUserStatInfo = ({
         <TextTitle title={name} />
         <NormalTextTitle size="sm" title={email} color="gray.500" />
       </VStack>
-      <HStack spacing={4} justify="space-between" bg="white" p={4} borderRadius="lg">
+      <HStack spacing={8} justify="space-between" p={2}>
         {stats.approvalDate &&
-          Object.values(stats)?.map(({ name, value, icon: Icon, bg, iconColor }) => (
-            <VStack
+          Object.values(stats)?.map(({ name, value, icon: Icon, iconColor }) => (
+            <Box
               key={name}
-              spacing={1}
-              flex={1}
+              borderWidth="1px"
+              borderRadius="lg"
               p={4}
-              borderRadius="md"
-              bg={bg}
-              _hover={{ transform: "translateY(-2px)", transition: "all 0.2s" }}
+              flex={1}
+              boxShadow="sm"
+              display="flex"
+              alignItems="center"
+              justifyContent="center"
+              textAlign="center"
             >
-              <Icon boxSize={6} color={iconColor} mb={2} />
-              <NormalTextTitle size="sm" title={name} color="gray.700" />
-              <TextTitle title={value} />
-            </VStack>
+              <VStack spacing={3} align="center" justify="center" width="100%" textAlign="center">
+                <Center width="100%">
+                  <Icon boxSize={6} color={iconColor} />
+                </Center>
+                <Center width="100%">
+                  <NormalTextTitle
+                    size="sm"
+                    title={name}
+                    color="gray.700"
+                    textAlign="center"
+                    width="100%"
+                  />
+                </Center>
+                <Center width="100%">
+                  <TextTitle title={value} textAlign="center" width="100%" />
+                </Center>
+              </VStack>
+            </Box>
           ))}
       </HStack>
     </>
