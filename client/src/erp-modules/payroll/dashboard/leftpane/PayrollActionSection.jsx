@@ -89,8 +89,7 @@ const PayrollActionSection = ({ company, filter, handleClick, activeUsers, total
 				border="3px solid var(--bg_color_1)"
 				borderRadius="10px"
 			>
-				<VStack>
-					<TextTitle size={"sm"} title={"Overview of payroll process"} />
+				<VStack alignItems="start">
 					<NormalTextTitle size={"sm"} title={`Task progress of ${activeUsers} employees`} />
 				</VStack>
 				<TextTitle title={`${progressPercent}%`} align="end" color={"var(--primary_button_bg)"} />

@@ -24,6 +24,7 @@ const Dashboard = () => {
 			setSelectedPayGroupOption(value);
 		}
 	};
+
 	return (
 		<PageLayout
 			width={"35%"}
@@ -46,6 +47,7 @@ const Dashboard = () => {
 					closestRecord={closestRecord}
 					payGroupSchedule={payGroupSchedule}
 					closestRecordIndex={closestRecordIndex}
+					selectedUser={loggedInUser}
 				/>
 				<RightPane
 					selectedUser={loggedInUser}

@@ -1,5 +1,6 @@
 import { AttachmentIcon, TriangleDownIcon, TriangleUpIcon } from "@chakra-ui/icons";
 import {
+	Badge,
 	Box,
 	Flex,
 	HStack,
@@ -26,7 +27,6 @@ import { longTimeFormat } from "utils/convertDate";
 import CategoryFilter from "./CategoryFilter";
 import NewTicket from "./NewTicket";
 import NoteDetails from "./NoteDetails";
-import StatusCol from "./StatusCol";
 
 const OpenTicket = ({ company, setShowAddEntry, showAddEntry, userId, employees }) => {
 	const TICKET_TABLE_COLS = [
@@ -220,8 +220,8 @@ const OpenTicket = ({ company, setShowAddEntry, showAddEntry, userId, employees 
 				</HStack>
 			)}
 			<Box overflow="auto" height="calc(100vh - 475px)">
-				<Table variant="simple">
-					<Thead position={"sticky"} zIndex={3} top={-1}>
+				<Table variant="simple" size="sm">
+					<Thead position={"sticky"} zIndex={3} top={-1} bg="var(--primary_bg)">
 						<Tr>
 							{TICKET_TABLE_COLS?.map((col) => (
 								<Th
@@ -229,6 +229,9 @@ const OpenTicket = ({ company, setShowAddEntry, showAddEntry, userId, employees 
 									key={col.name}
 									onClick={() => requestSort(col.key)}
 									cursor="pointer"
+									py={3}
+									borderBottom="2px solid"
+									borderColor="var(--filter_border_color)"
 								>
 									<HStack spacing={0}>
 										<TextTitle width="auto" title={col.name} />
@@ -260,26 +263,45 @@ const OpenTicket = ({ company, setShowAddEntry, showAddEntry, userId, employees 
 								bg,
 							}) => {
 								return (
-									<Tr key={_id} _hover={{ bg: "var(--phoneCall_bg_light)" }}>
-										<Td py={0}>
+									<Tr
+										key={_id}
+										_hover={{ bg: "var(--phoneCall_bg_light)" }}
+										borderBottom="1px solid"
+										borderColor="var(--filter_border_color)"
+									>
+										<Td py={3}>
 											<TextTitle title={ticketNumber} />
 										</Td>
-										<Td py={0} px={1}>
+										<Td py={3} px={2}>
 											<TextTitle title={category} />
 										</Td>
-										<Td py={0}>
-											<NormalTextTitle size="sm" title={priority} />
+										<Td py={3}>
+											<Badge
+												colorScheme={
+													(priority?.toString()?.toLowerCase() || "") === "high"
+														? "red"
+														: (priority?.toString()?.toLowerCase() || "") === "medium"
+														? "orange"
+														: "green"
+												}
+												variant="subtle"
+												px={2}
+												py={1}
+												borderRadius="md"
+											>
+												{priority || "Low"}
+											</Badge>
 										</Td>
-										<Td py={0}>
+										<Td py={3}>
 											<NormalTextTitle size="sm" title={assignee} />
 										</Td>
-										<Td py={0}>
+										<Td py={3}>
 											<NormalTextTitle size="sm" title={originator} />
 										</Td>
-										<Td py={0} px={1}>
+										<Td py={3} px={2}>
 											<NormalTextTitle whiteSpace="nowrap" size="sm" title={topic} />
 										</Td>
-										<Td py={0} maxW="150px" px={1}>
+										<Td py={3} maxW="150px" px={2}>
 											<Tooltip label={issue}>
 												<HStack spacing={1}>
 													<NormalTextTitle maxW="150px" size="sm" title={issue} />
@@ -297,21 +319,23 @@ const OpenTicket = ({ company, setShowAddEntry, showAddEntry, userId, employees 
 												</HStack>
 											</Tooltip>
 										</Td>
-										<Td py={0}>
+										<Td py={3}>
 											<NormalTextTitle size="sm" title={longTimeFormat(createdOn)} />
 										</Td>
-										<Td py={0}>
+										<Td py={3}>
 											<NormalTextTitle size="sm" title={ticketDaysOpened} />
 										</Td>
-										<Td py={0}>
-											<StatusCol
-												id={_id}
+										<Td py={3}>
+											<Badge
 												bg={bg}
-												isRowAction
-												status={status}
-												handleButtonClick={(action) => handleUpdate(action, _id)}
-												actions={TICKET_ACTION_STATUS}
-											/>
+												color="white"
+												px={3}
+												py={1}
+												borderRadius="md"
+												fontWeight="medium"
+											>
+												{status}
+											</Badge>
 										</Td>
 									</Tr>
 								);

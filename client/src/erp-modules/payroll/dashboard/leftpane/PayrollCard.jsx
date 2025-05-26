@@ -1,28 +1,28 @@
+import { Box, Text } from "@chakra-ui/react";
 import SkeletonLoader from "components/SkeletonLoader";
 import { config } from "react-spring";
 import VerticalCarousel from "./VerticalCarousel";
 
 const PayrollCard = ({ payGroupSchedule, closestRecordIndex }) => {
 	const state = {
-		goToSlide: 0,
-		offsetRadius: 4,
-		showNavigation: false,
 		config: config.gentle,
+		showNavigation: true,
 	};
 
 	return (
-		<>
+		<Box width="100%">
 			{!payGroupSchedule && <SkeletonLoader />}
-			{payGroupSchedule && (
+			{payGroupSchedule && payGroupSchedule.length > 0 ? (
 				<VerticalCarousel
 					slides={payGroupSchedule}
-					offsetRadius={state.offsetRadius}
 					showNavigation={state.showNavigation}
 					animationConfig={state.config}
-					closestRecordIndex={closestRecordIndex}
+					closestRecordIndex={closestRecordIndex || 0}
 				/>
+			) : (
+				<Text>No pay periods available</Text>
 			)}
-		</>
+		</Box>
 	);
 };
 

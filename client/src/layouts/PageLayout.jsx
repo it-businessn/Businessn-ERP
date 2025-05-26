@@ -21,6 +21,7 @@ const PageLayout = ({
 	position = "sticky",
 	pb = 0,
 	isMobile,
+	bg = "#faf9f5",
 	showPayGroup,
 }) => (
 	<Box
@@ -30,6 +31,7 @@ const PageLayout = ({
 		zIndex={zIndex}
 		position={position}
 		pb={pb}
+		bg={bg}
 	>
 		<PageHeader
 			size={size}

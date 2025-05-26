@@ -1,13 +1,14 @@
 import {
+	Box,
 	Checkbox,
+	Flex,
 	HStack,
 	Input,
 	InputGroup,
 	InputRightElement,
 	SimpleGrid,
-	VStack,
 } from "@chakra-ui/react";
-import PrimaryButton from "components/ui/button/PrimaryButton";
+import LeftIconButton from "components/ui/button/LeftIconButton";
 import { ROLES } from "constant";
 import PayrollActions from "erp-modules/payroll/workview/paygroup-header-table/PayrollActions";
 import OnboardEmpModal from "erp-modules/sales/onboarding/OnboardEmpModal";
@@ -15,7 +16,7 @@ import useCompany from "hooks/useCompany";
 import useEmployees from "hooks/useEmployees";
 import PageLayout from "layouts/PageLayout";
 import { useEffect, useState } from "react";
-import { FaSearch } from "react-icons/fa";
+import { FaPlus, FaSearch } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { payrollEmployeePath } from "routes";
 import LocalStorageService from "services/LocalStorageService";
@@ -29,8 +30,10 @@ const EmployeeListView = () => {
 		isPayrollActive: true,
 		isPayrollInactive: false,
 	});
+
 	const [isRefresh, setIsRefresh] = useState(false);
 	const deptName = loggedInUser?.role === ROLES.MANAGER ? loggedInUser?.department : null;
+
 	const { employees, filteredEmployees, setFilteredEmployees } = useEmployees(
 		isRefresh,
 		company,
@@ -46,10 +49,11 @@ const EmployeeListView = () => {
 	const toggleDeptFilter = () => setShowDeptFilter((prev) => !prev);
 	const toggleCCFilter = () => setShowCCFilter((prev) => !prev);
 	const handleFilter = () => console.log(filteredEmployees);
-	// const { departments, roles } = useSignup(false, company);
 	const [filteredDept, setFilteredDept] = useState([]);
 	const [filteredCC, setFilteredCC] = useState([]);
+	const [empName, setEmpName] = useState("");
 	const [showOnboard, setShowOnboard] = useState(false);
+
 	const navigate = useNavigate();
 
 	useEffect(() => {
@@ -62,12 +66,12 @@ const EmployeeListView = () => {
 			navigate(empPath);
 		}
 	};
-	const [empName, setEmpName] = useState("");
 	const handleInputChange = (value) => {
 		setEmpName(value);
-		setFilteredEmployees(
-			employees.filter((emp) => emp?.empId?.fullName?.toLowerCase().includes(value.toLowerCase())),
+		const selectedEmp = employees?.filter((emp) =>
+			emp?.empId?.fullName?.toLowerCase().includes(value.toLowerCase()),
 		);
+		setFilteredEmployees(selectedEmp);
 	};
 
 	return (
@@ -84,54 +88,72 @@ const EmployeeListView = () => {
 				mr="4"
 				templateColumns={{ lg: "70% 30%" }}
 			>
-				<VStack>
-					<HStack w={"100%"} spacing={2} justifyContent={"space-between"}>
-						<VStack spacing={1} w={"30%"} align={"start"} zIndex={2}>
-							<InputGroup
-								borderRadius={"10px"}
-								border={"1px solid var(--filter_border_color)"}
-								fontSize="xs"
-								fontWeight="bold"
-								size="xs"
-							>
-								<Input
-									_placeholder={{
-										color: "var(--nav_color)",
-										fontSize: "sm",
-									}}
-									size="xs"
-									name="empName"
-									value={empName}
-									onChange={(e) => handleInputChange(e.target.value)}
-									color={"var(--nav_color)"}
-									bg={"var(--primary_bg)"}
-									type="text"
-									placeholder="Search employee"
-									pr="4.5rem"
-									py="1.1em"
-								/>
-								<InputRightElement size="xs" children={<FaSearch />} />
-							</InputGroup>
+				<Box>
+					<Flex direction="column" gap={6}>
+						{/* Search Section */}
+						<InputGroup
+							maxW="300px"
+							borderRadius={"10px"}
+							border={"1px solid var(--filter_border_color)"}
+							fontSize="xs"
+							fontWeight="bold"
+							size="sm"
+						>
+							<Input
+								_placeholder={{
+									color: "var(--nav_color)",
+									fontSize: "sm",
+								}}
+								name="empName"
+								value={empName}
+								onChange={(e) => handleInputChange(e.target.value)}
+								color={"var(--nav_color)"}
+								bg={"var(--primary_bg)"}
+								type="text"
+								placeholder="Search employee"
+								pr="4.5rem"
+							/>
+							<InputRightElement children={<FaSearch />} />
+						</InputGroup>
+					</Flex>
+				</Box>
+
+				{/* Actions Section */}
+				<Box>
+					<PayrollActions
+						handleClick={handleClick}
+						actions={[
+							{ key: "terminate", name: "Terminate" },
+							{ key: "form", name: "Issue Forms" },
+							{ key: "extra", name: "Send Login" },
+						]}
+					/>
+				</Box>
+			</SimpleGrid>
+
+			{/* Employee List Section */}
+			<Box mt={8}>
+				{/* Action Bar */}
+				<Flex mb={6} gap={8} align="center">
+					<LeftIconButton
+						name="Add Employee"
+						size="sm"
+						icon={<FaPlus color="#fff" fontSize="14px" />}
+						handleClick={() => setShowOnboard(true)}
+						bg="#381c34"
+						color="white"
+						_hover={{
+							bg: "#4e2847",
+							transform: "scale(1.02)",
+							transition: "all 0.2s ease-in-out",
+						}}
+						px={4}
+					/>
+					<HStack spacing={6} divider={<Box w="1px" h="20px" bg="gray.200" />}>
+						<HStack spacing={4}>
 							<Checkbox
 								colorScheme={"facebook"}
-								// isChecked={hasChecklist}
-								// onChange={() => setHasChecklist(!hasChecklist)}
-							>
-								Terminated
-							</Checkbox>
-						</VStack>
-						<PrimaryButton
-							name={"Add Employee"}
-							size="xs"
-							px={0}
-							onOpen={() => setShowOnboard(true)}
-						/>
-					</HStack>
-					<HStack w={"100%"} pt={"5em"} spacing={"3em"} justifyContent={"start"}>
-						<HStack spacing={2}>
-							<Checkbox
-								colorScheme={"facebook"}
-								isChecked={formData?.isPayrollActive}
+								isChecked={formData.isPayrollActive}
 								onChange={(e) =>
 									setFormData((prevData) => ({
 										...prevData,
@@ -139,11 +161,11 @@ const EmployeeListView = () => {
 									}))
 								}
 							>
-								Active
+								Active Employees
 							</Checkbox>
 							<Checkbox
 								colorScheme={"facebook"}
-								isChecked={formData?.isPayrollInactive}
+								isChecked={formData.isPayrollInactive}
 								onChange={(e) =>
 									setFormData((prevData) => ({
 										...prevData,
@@ -151,51 +173,16 @@ const EmployeeListView = () => {
 									}))
 								}
 							>
-								Inactive
+								Inactive Employees
 							</Checkbox>
 						</HStack>
-						{/* <HStack>
-							<OtherFilter
-								showOtherFilter={showEmpFilter}
-								toggleOtherFilter={toggleEmpFilter}
-								handleFilter={handleFilter}
-								data={employees}
-								filteredData={filteredEmployees}
-								setFilteredData={setFilteredEmployees}
-								helperText="employee"
-							/>
-							<OtherFilter
-								showOtherFilter={showDeptFilter}
-								toggleOtherFilter={toggleDeptFilter}
-								handleFilter={handleFilter}
-								data={departments}
-								filteredData={filteredDept}
-								setFilteredData={setFilteredDept}
-								helperText="department"
-							/>
-							<OtherFilter
-								showOtherFilter={showCCFilter}
-								toggleOtherFilter={toggleCCFilter}
-								handleFilter={handleFilter}
-								data={roles}
-								filteredData={filteredCC}
-								setFilteredData={setFilteredCC}
-								helperText="cost center"
-							/>
-						</HStack> */}
+						<Checkbox colorScheme={"facebook"}>Show Terminated Employees</Checkbox>
 					</HStack>
-				</VStack>
+				</Flex>
+				<EmployeeList employees={filteredEmployees} />
+			</Box>
 
-				<PayrollActions
-					handleClick={handleClick}
-					actions={[
-						{ key: "terminate", name: "Terminate" },
-						{ key: "form", name: "Issue Forms" },
-						{ key: "extra", name: "Send Login" },
-					]}
-				/>
-			</SimpleGrid>
-			<EmployeeList employees={filteredEmployees} />
+			{/* Onboarding Modal */}
 			{showOnboard && (
 				<OnboardEmpModal
 					title="Onboard employee"

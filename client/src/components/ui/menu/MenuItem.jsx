@@ -1,4 +1,4 @@
-import { Box, Button, Flex, HStack, IconButton, Stack, VStack } from "@chakra-ui/react";
+import { Box, Button, Flex, HStack, IconButton, Stack, Tooltip, VStack } from "@chakra-ui/react";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import { payrollEmployeePath, payrollReportPath } from "routes";
 
@@ -8,6 +8,7 @@ const MenuItem = ({
 	textTransform,
 	handleMenuItemClick,
 	navigatePath = `/${parent}/${menu.path}`,
+	isCollapsed = false,
 }) => {
 	const location = useLocation();
 	const navigate = useNavigate();
@@ -16,18 +17,9 @@ const MenuItem = ({
 		location.pathname.includes(payrollEmployeePath) ||
 		location.pathname.includes(payrollReportPath);
 
-	// const [isOpen, setIsOpen] = useState(true);
-
-	// const handleToggle = () => {
-	// 	setIsOpen(!isOpen);
-	// };
 	return (
 		<VStack align="stretch" spacing={0}>
-			<HStack
-				spacing={0}
-				cursor="pointer"
-				// onClick={menu?.children ? handleToggle : undefined}
-			>
+			<HStack spacing={0} cursor="pointer">
 				<Flex align="center" w={"100%"}>
 					<NavLink
 						to={navigatePath}
@@ -39,21 +31,46 @@ const MenuItem = ({
 						className="sidebarMenu"
 						activeclassname="active"
 					>
-						<IconButton variant="ghost" icon={menu?.icon ?? ""} color="var(--nav_color)" />
+						<Tooltip label={isCollapsed ? menu?.name : ""} placement="right" hasArrow>
+							<IconButton
+								variant="ghost"
+								icon={menu?.icon ?? ""}
+								color="var(--primary_button_bg)"
+								aria-label={menu?.name}
+								fontSize={isCollapsed ? "24px" : "16px"}
+								p={isCollapsed ? "1.5rem" : "0.5rem"}
+								_hover={{
+									bg: "rgba(0, 0, 0, 0.04)",
+									p: isCollapsed ? "1.5rem" : "0.5rem",
+									m: 0,
+								}}
+								_active={{
+									bg: "var(--banner_bg)",
+									color: "var(--main_color)",
+								}}
+							/>
+						</Tooltip>
 
-						<Button
-							justifyContent={"space-between"}
-							p={0}
-							variant="ghost"
-							color="var(--menu_item_color)"
-							textTransform={textTransform}
-						>
-							{menu?.name === "Approvals" ? "Attendance" : menu?.name}
-						</Button>
+						{!isCollapsed && (
+							<Button
+								justifyContent={"space-between"}
+								p={0}
+								variant="ghost"
+								color="var(--menu_item_color)"
+								textTransform={textTransform}
+								_hover={{
+									bg: "rgba(0, 0, 0, 0.04)",
+									p: 0,
+									m: 0,
+								}}
+							>
+								{menu?.name === "Approvals" ? "Attendance" : menu?.name}
+							</Button>
+						)}
 					</NavLink>
 				</Flex>
 			</HStack>
-			{empPath && (
+			{empPath && !isCollapsed && (
 				<Stack justify="start" width="full" my={0} spacing={0}>
 					{menu?.children?.map(
 						(menu) =>
@@ -65,7 +82,17 @@ const MenuItem = ({
 									}}
 									className={location.pathname.endsWith(menu.path) ? "isSubChild active" : ""}
 								>
-									<IconButton variant="ghost" icon={menu?.icon ?? ""} color="var(--nav_color)" />
+									<IconButton
+										variant="ghost"
+										icon={menu?.icon ?? ""}
+										color="var(--nav_color)"
+										aria-label={menu?.name}
+										_hover={{
+											bg: "rgba(0, 0, 0, 0.04)",
+											p: 0,
+											m: 0,
+										}}
+									/>
 
 									<Button
 										className={navigatePath.includes(menu?.name) ? "isActive" : "notActive"}
@@ -74,6 +101,11 @@ const MenuItem = ({
 										variant="ghost"
 										color="var(--banner_bg)"
 										textTransform={textTransform}
+										_hover={{
+											bg: "rgba(0, 0, 0, 0.04)",
+											p: 0,
+											m: 0,
+										}}
 									>
 										{menu?.name}
 									</Button>
@@ -85,4 +117,5 @@ const MenuItem = ({
 		</VStack>
 	);
 };
+
 export default MenuItem;

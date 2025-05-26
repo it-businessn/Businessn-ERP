@@ -212,14 +212,13 @@ body {
 }
 
 .sidebarMenu.active {
-	/* background: linear-gradient(103deg, #1f5189 0%, #114e5e 65%, #13bcc1 100%); */
-	/* background-image: url("./assets/navbar_bg.png"); */
-	/* background-size: cover; */
-	padding: 0 2px;
 	width: 100%;
-	border-radius: 10px;
-	background: var(--main_color);
-	color: var(--primary_button_bg);
+	background: var(--banner_bg);
+	color: var(--main_color);
+}
+
+.sidebarMenu.active button {
+	color: var(--main_color);
 }
 
 .sidebarMenu button {
@@ -230,15 +229,20 @@ body {
 	font-weight: bold;
 }
 .navbarMenu.active button {
-	color: var(--main_color);
-	font-weight: normal;
-	border: 1px solid var(--action_status_bg);
+	color: white;
+	font-weight: bold;
+	background-color: rgba(255, 255, 255, 0.3);
+	border: none;
+	font-size: 0.95em;
+	box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
 }
 .navbarMenu p {
 	font-weight: normal;
+	font-size: 0.95em;
 }
 .navbarMenu.active p {
 	font-weight: bold;
+	color: white;
 }
 button:active {
 	background: transparent !important;

@@ -1,10 +1,23 @@
-import { HStack, Tbody, Td, Tr } from "@chakra-ui/react";
+import {
+	HStack,
+	IconButton,
+	Menu,
+	MenuButton,
+	MenuItem,
+	MenuList,
+	Tbody,
+	Td,
+	Text,
+	Tooltip,
+	Tr,
+} from "@chakra-ui/react";
 import OutlineButton from "components/ui/button/OutlineButton";
 import PrimaryButton from "components/ui/button/PrimaryButton";
 import EmptyRowRecord from "components/ui/EmptyRowRecord";
 import TableLayout from "components/ui/table/TableLayout";
 import TextTitle from "components/ui/text/TextTitle";
 import { useEffect, useRef } from "react";
+import { FaBook, FaEye, FaFileAlt, FaMoneyBillWave } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { payrollReportPath, ROUTE_PATH } from "routes";
 import { isExtraPay } from "utils";
@@ -47,6 +60,92 @@ const WorkviewTable = ({
 
 	const handlePay = (payPeriod) =>
 		navigate(`${ROUTE_PATH.PAYROLL}${ROUTE_PATH.PROCESS}/${payPeriod}/${selectedYear}`);
+
+	const renderActionButtons = (
+		payPeriodNum,
+		payPeriod,
+		isExtraRun,
+		isViewAction,
+		isDisabledAction,
+		payPeriodPayDate,
+	) => {
+		const mainAction =
+			isViewAction || isEarningTable ? (
+				<OutlineButton
+					label={viewLabel}
+					size="xs"
+					onClick={() => {
+						handleRegister(
+							isExtraPay(payPeriodNum || payPeriod, isExtraRun),
+							isExtraRun,
+							payPeriodPayDate,
+						);
+					}}
+					leftIcon={<FaFileAlt />}
+				/>
+			) : (
+				<PrimaryButton
+					bg={isDisabledAction ? "var(--calendar_border)" : "var(--primary_button_bg)"}
+					hover={{
+						bg: isDisabledAction ? "var(--calendar_border)" : "var(--primary_button_bg)",
+					}}
+					isDisabled={isDisabledAction}
+					name={"Pay now"}
+					size="xs"
+					leftIcon={<FaMoneyBillWave />}
+					onOpen={() => handlePay(payPeriodNum || payPeriod)}
+				/>
+			);
+
+		if (isEarningTable) {
+			return mainAction;
+		}
+
+		return (
+			<HStack spacing={2}>
+				{mainAction}
+				<Menu>
+					<Tooltip label="View Reports" hasArrow>
+						<MenuButton
+							as={IconButton}
+							icon={<FaEye />}
+							variant="ghost"
+							size="sm"
+							isDisabled={isDisabledAction}
+							_hover={{ bg: "gray.100" }}
+							color="gray.600"
+						/>
+					</Tooltip>
+					<MenuList>
+						<MenuItem
+							icon={<FaFileAlt />}
+							onClick={() =>
+								handleTotalsReport(
+									isExtraPay(payPeriodNum || payPeriod, isExtraRun),
+									isExtraRun,
+									payPeriodPayDate,
+								)
+							}
+						>
+							View Funding Totals
+						</MenuItem>
+						<MenuItem
+							icon={<FaBook />}
+							onClick={() =>
+								handleJournalsReport(
+									isExtraPay(payPeriod, isExtraRun),
+									isExtraRun,
+									payPeriodPayDate,
+								)
+							}
+						>
+							View Journal
+						</MenuItem>
+					</MenuList>
+				</Menu>
+			</HStack>
+		);
+	};
 
 	return (
 		<TableLayout
@@ -101,7 +200,7 @@ const WorkviewTable = ({
 							)}
 							{!isEarningTable && (
 								<Td p={1} w={autoScroll && "120px"} textAlign={autoScroll ? "center" : textAlign}>
-									<PrimaryButton
+									{/* <PrimaryButton
 										color={color}
 										bg={bg}
 										name={name}
@@ -113,13 +212,22 @@ const WorkviewTable = ({
 											color,
 										}}
 										w={"92px"}
-									/>
+									/> */}
+									<Text color={bg} fontWeight="medium" opacity={isDisabledStatus ? 0.5 : 1}>
+										{name}
+									</Text>
 								</Td>
 							)}
 							<Td p={1} w={autoScroll && "150px"} textAlign={autoScroll ? "center" : textAlign}>
 								{autoScroll ? (
 									isViewAction ? (
-										<OutlineButton label={"View"} size="xs" onClick={handleView} w={"95px"} />
+										<OutlineButton
+											label={"View"}
+											size="xs"
+											onClick={handleView}
+											w={"95px"}
+											leftIcon={<FaFileAlt />}
+										/>
 									) : (
 										<PrimaryButton
 											bg={isDisabledAction ? "var(--calendar_border)" : "var(--primary_button_bg)"}
@@ -129,70 +237,19 @@ const WorkviewTable = ({
 											isDisabled={isDisabledAction}
 											name={"Pay now"}
 											size="xs"
+											leftIcon={<FaMoneyBillWave />}
 											onOpen={() => handlePay(isExtraPay(payPeriodNum || payPeriod, isExtraRun))}
 										/>
 									)
 								) : (
-									<HStack justifyContent={"left"}>
-										{isViewAction || isEarningTable ? (
-											<OutlineButton
-												label={viewLabel}
-												size="xs"
-												onClick={() => {
-													handleRegister(
-														isExtraPay(payPeriodNum || payPeriod, isExtraRun),
-														isExtraRun,
-														payPeriodPayDate,
-													);
-												}}
-											/>
-										) : (
-											<PrimaryButton
-												bg={
-													isDisabledAction ? "var(--calendar_border)" : "var(--primary_button_bg)"
-												}
-												hover={{
-													bg: isDisabledAction
-														? "var(--calendar_border)"
-														: "var(--primary_button_bg)",
-												}}
-												isDisabled={isDisabledAction}
-												name={"Pay now"}
-												minW={"105px"}
-												size="xs"
-												onOpen={() => handlePay(payPeriodNum || payPeriod)}
-											/>
-										)}
-
-										{!isEarningTable && (
-											<>
-												<OutlineButton
-													isDisabled={isDisabledAction}
-													label="View Funding Totals"
-													size="xs"
-													onClick={() =>
-														handleTotalsReport(
-															isExtraPay(payPeriodNum || payPeriod, isExtraRun),
-															isExtraRun,
-															payPeriodPayDate,
-														)
-													}
-												/>
-												<OutlineButton
-													isDisabled={isDisabledAction}
-													label={"View Journal"}
-													size="xs"
-													onClick={() =>
-														handleJournalsReport(
-															isExtraPay(payPeriod, isExtraRun),
-															isExtraRun,
-															payPeriodPayDate,
-														)
-													}
-												/>
-											</>
-										)}
-									</HStack>
+									renderActionButtons(
+										payPeriodNum,
+										payPeriod,
+										isExtraRun,
+										isViewAction,
+										isDisabledAction,
+										payPeriodPayDate,
+									)
 								)}
 							</Td>
 						</Tr>

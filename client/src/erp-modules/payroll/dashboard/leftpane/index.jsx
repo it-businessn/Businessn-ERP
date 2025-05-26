@@ -6,12 +6,18 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import PayrollService from "services/PayrollService";
 import UserService from "services/UserService";
+import PayrollUserStatInfo from "../rightpane/PayrollUserStatInfo";
 import NotificationCard from "./NotificationCard";
-import PayPeriodDetails from "./PayPeriodDetails";
 import PayrollActionSection from "./PayrollActionSection";
 import PayrollCard from "./PayrollCard";
 
-const LeftPane = ({ setStats, company, closestRecord, payGroupSchedule, closestRecordIndex }) => {
+const LeftPane = ({
+	company,
+	closestRecord,
+	payGroupSchedule,
+	closestRecordIndex,
+	selectedUser,
+}) => {
 	const prevSchedule = payGroupSchedule?.[closestRecordIndex - 1];
 	const nextSchedule = payGroupSchedule?.[closestRecordIndex + 1];
 	const activeUsers = useActiveEmployees(company);
@@ -58,6 +64,18 @@ const LeftPane = ({ setStats, company, closestRecord, payGroupSchedule, closestR
 	const runType = closestRecord?.isExtraRun ? "Extra" : "Regular";
 	const sections = [
 		{
+			name: "",
+			content: (
+				<PayrollUserStatInfo
+					name={selectedUser?.fullName}
+					email={selectedUser?.email}
+					payGroupSchedule={payGroupSchedule}
+					closestRecord={closestRecord}
+					closestRecordIndex={closestRecordIndex}
+				/>
+			),
+		},
+		{
 			name: "Payroll",
 			content: (
 				<PayrollCard
@@ -85,17 +103,18 @@ const LeftPane = ({ setStats, company, closestRecord, payGroupSchedule, closestR
 				/>
 			),
 		},
-		{
-			name: "",
-			content: (
-				<PayPeriodDetails
-					handleClick={handleClick}
-					company={company}
-					activeUsers={activeUsers}
-					employees={totalEmployees}
-				/>
-			),
-		},
+
+		/* {
+      name: "",
+      content: (
+        <PayPeriodDetails
+          handleClick={handleClick}
+          company={company}
+          activeUsers={activeUsers}
+          employees={totalEmployees}
+        />
+      ),
+    },*/
 		{
 			name: "Notifications",
 			content: <NotificationCard />,
@@ -113,7 +132,17 @@ const LeftPane = ({ setStats, company, closestRecord, payGroupSchedule, closestR
 				{/* <TimeCard selectedUser={selectedUser} company={company} /> */}
 
 				{sections.map(({ name, content }, index) => (
-					<BoxCard key={name} overflowY={index === 3 && "hidden"}>
+					<BoxCard
+						key={name}
+						overflowY={index === 3 && "hidden"}
+						bg="white"
+						boxShadow="0px 4px 12px rgba(0, 0, 0, 0.1)"
+						_hover={{
+							transform: "translateY(-4px)",
+							boxShadow: "0px 8px 16px rgba(0, 0, 0, 0.15)",
+							transition: "all 0.3s ease",
+						}}
+					>
 						{index === 0 ? (
 							<HStack>
 								{/* <TextTitle title={name} mt={2} mb={"1em"} />

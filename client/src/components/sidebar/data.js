@@ -2,7 +2,7 @@ import { BiNotepad, BiTask } from "react-icons/bi";
 import { CiViewTimeline } from "react-icons/ci";
 import { FaAddressBook, FaDashcube, FaRProject, FaSalesforce } from "react-icons/fa";
 import {
-	FaCalendar,
+	FaCalendarDays,
 	FaChartGantt,
 	FaPeopleArrows,
 	FaPeopleGroup,
@@ -11,13 +11,13 @@ import {
 } from "react-icons/fa6";
 import { FiSettings } from "react-icons/fi";
 import { GoTasklist } from "react-icons/go";
-import { HiOutlineBadgeCheck, HiOutlineCalendar } from "react-icons/hi";
-import { IoBagRemoveOutline, IoDocumentTextOutline } from "react-icons/io5";
+import { HiBadgeCheck, HiCalendar } from "react-icons/hi";
+import { IoBag, IoDocumentText, IoDocumentTextOutline } from "react-icons/io5";
 import { LiaSearchLocationSolid } from "react-icons/lia";
 import { LuLayoutDashboard } from "react-icons/lu";
-import { MdCleanHands, MdOutlineSettingsApplications, MdPayments } from "react-icons/md";
-import { PiBooks, PiListMagnifyingGlassFill } from "react-icons/pi";
-import { RiUserSearchLine, RiUserStarLine } from "react-icons/ri";
+import { MdCleaningServices, MdPayments, MdSettings } from "react-icons/md";
+import { PiBooksFill, PiListMagnifyingGlassFill } from "react-icons/pi";
+import { RiUserSearchFill, RiUserStarFill } from "react-icons/ri";
 import { RxDashboard } from "react-icons/rx";
 import { TbChartDots, TbFileInvoice, TbShoppingBag, TbUsersPlus } from "react-icons/tb";
 
@@ -42,7 +42,7 @@ export const SIDEBAR_MENU = [
 			{
 				path: "calendar",
 				name: "Calendar",
-				icon: <HiOutlineCalendar />,
+				icon: <HiCalendar />,
 				children: [
 					// {
 					// 	path: "/view-tasks",
@@ -89,25 +89,25 @@ export const SIDEBAR_MENU = [
 				path: "leads-docket",
 				name: "Lead Docket",
 				children: [],
-				icon: <IoDocumentTextOutline />,
+				icon: <IoDocumentText />,
 			},
 			{
 				path: "leads-disburse",
 				name: "Lead Disbursement",
 				children: [],
-				icon: <MdCleanHands />,
+				icon: <MdCleaningServices />,
 			},
 			{
 				path: "fresh-leads",
 				name: "Fresh Leads",
 				children: [],
-				icon: <RiUserStarLine />,
+				icon: <RiUserStarFill />,
 			},
 			{
 				path: "pipeline",
 				name: "Target Leads Pipeline",
 				children: [],
-				icon: <RiUserSearchLine />,
+				icon: <RiUserSearchFill />,
 			},
 			{
 				path: "onboarding",
@@ -119,12 +119,12 @@ export const SIDEBAR_MENU = [
 				path: "products",
 				name: "Products",
 				children: [],
-				icon: <IoBagRemoveOutline />,
+				icon: <IoBag />,
 			},
 			{
 				path: "resources",
 				name: "Resources",
-				icon: <PiBooks />,
+				icon: <PiBooksFill />,
 				children: [
 					// {
 					// 	path: "access-learning",
@@ -162,7 +162,7 @@ export const SIDEBAR_MENU = [
 			{
 				path: "set-up",
 				name: "Setup",
-				icon: <MdOutlineSettingsApplications />,
+				icon: <MdSettings />,
 				children: [],
 			},
 		],
@@ -220,13 +220,13 @@ export const SIDEBAR_MENU = [
 				path: "tickets",
 				name: "Tickets",
 				children: [],
-				icon: <IoDocumentTextOutline />,
+				icon: <IoDocumentText />,
 			},
 			{
 				path: "set-up",
 				name: "Setup",
 				children: [],
-				icon: <MdOutlineSettingsApplications />,
+				icon: <MdSettings />,
 			},
 		],
 	},
@@ -252,13 +252,13 @@ export const SIDEBAR_MENU = [
 				path: "process",
 				name: "Process Payroll",
 				children: [],
-				icon: <IoDocumentTextOutline />,
+				icon: <IoDocumentText />,
 			},
 			{
 				path: "attendance",
 				name: "Approvals",
 				children: [],
-				icon: <HiOutlineBadgeCheck />,
+				icon: <HiBadgeCheck />,
 			},
 			{
 				path: "timesheets",
@@ -284,7 +284,7 @@ export const SIDEBAR_MENU = [
 			{
 				path: "reports",
 				name: "Reports",
-				icon: <IoDocumentTextOutline />,
+				icon: <IoDocumentText />,
 				children: [
 					{
 						path: "reports",
@@ -318,7 +318,7 @@ export const SIDEBAR_MENU = [
 				path: "set-up",
 				name: "Setup",
 				children: [],
-				icon: <MdOutlineSettingsApplications />,
+				icon: <MdSettings />,
 			},
 		],
 	},
@@ -326,7 +326,7 @@ export const SIDEBAR_MENU = [
 		path: "scheduling",
 		name: "Scheduling",
 		id: "scheduling",
-		icon: <FaCalendar />,
+		icon: <FaCalendarDays />,
 		children: [
 			{
 				path: "",
@@ -362,12 +362,12 @@ export const SIDEBAR_MENU = [
 				path: "set-up",
 				name: "Setup",
 				children: [],
-				icon: <MdOutlineSettingsApplications />,
+				icon: <MdSettings />,
 			},
 			{
 				path: "shift-assign",
 				name: "Shift Assignment",
-				icon: <MdOutlineSettingsApplications />,
+				icon: <MdSettings />,
 			},
 		],
 	},
@@ -375,7 +375,7 @@ export const SIDEBAR_MENU = [
 		path: "hr",
 		name: "HR",
 		id: "hr",
-		icon: <FaCalendar />,
+		icon: <FaCalendarDays />,
 		children: [
 			{
 				path: "",
@@ -387,7 +387,7 @@ export const SIDEBAR_MENU = [
 				path: "resources",
 				name: "Resources",
 				children: [],
-				icon: <PiBooks />,
+				icon: <PiBooksFill />,
 			},
 		],
 	},

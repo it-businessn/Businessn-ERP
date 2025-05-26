@@ -1,11 +1,19 @@
-import { Flex, Stack } from "@chakra-ui/react";
+import { Flex, IconButton, Stack } from "@chakra-ui/react";
 import TextTitle from "components/ui/text/TextTitle";
+import { useState } from "react";
 import { IoDocumentTextOutline } from "react-icons/io5";
+import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from "react-icons/md";
 import MenuItem from "../ui/menu/MenuItem";
 import MobileSidebar from "./MobileSidebar";
 
 const Sidebar = ({ activeMenu, handleMenuItemClick, isMobile, isOpen, onClose }) => {
-	const menuList = activeMenu?.children?.filter((item) => item.permissions);
+	const menuList = activeMenu?.children?.filter((item) => item?.permissions);
+	const [isCollapsed, setIsCollapsed] = useState(false);
+
+	const handleToggleCollapse = () => {
+		setIsCollapsed(!isCollapsed);
+	};
+
 	return isMobile ? (
 		<MobileSidebar
 			isOpen={isOpen}
@@ -17,21 +25,49 @@ const Sidebar = ({ activeMenu, handleMenuItemClick, isMobile, isOpen, onClose })
 	) : (
 		<Flex
 			boxShadow="md"
-			maxW={{ md: "24vw", lg: "18vw", xl: "12vw" }}
+			maxW={isCollapsed ? "4rem" : { md: "24vw", lg: "18vw", xl: "12vw" }}
 			p={0}
-			minW={{ md: "24vw", lg: "18vw", xl: "12vw" }}
+			minW={isCollapsed ? "4rem" : { md: "24vw", lg: "18vw", xl: "12vw" }}
 			mt="6.5em"
 			maxHeight={`calc(var(--custom_height))`}
 			overflowY="auto"
+			position="relative"
+			transition="all 0.3s ease"
 		>
+			<IconButton
+				icon={
+					isCollapsed ? (
+						<MdKeyboardArrowRight color="var(--primary_button_bg)" />
+					) : (
+						<MdKeyboardArrowLeft color="var(--primary_button_bg)" />
+					)
+				}
+				onClick={handleToggleCollapse}
+				position="absolute"
+				right="-12px"
+				top="1rem"
+				size="sm"
+				borderRadius="50%"
+				bg="white"
+				boxShadow="md"
+				zIndex="1"
+				_hover={{ bg: "gray.100" }}
+			/>
 			<Stack justify="start" width="full" my={0} spacing={0}>
 				{menuList?.map(
 					(menu, index) =>
 						menu?.permissions?.canAccessModule && (
-							<MenuItem key={`${menu.path}_${index}`} menu={menu} parent={activeMenu.id} />
+							<MenuItem
+								key={`${menu.path}_${index}`}
+								menu={menu}
+								parent={activeMenu.id}
+								isCollapsed={isCollapsed}
+							/>
 						),
 				)}
-				<TextTitle mt={5} title="Tools" color="var(--primary_button_bg)" p="0 1em" />
+				{!isCollapsed && (
+					<TextTitle mt={5} title="Tools" color="var(--primary_button_bg)" p="0 1em" />
+				)}
 				<MenuItem
 					navigatePath={"/tickets"}
 					menu={{
@@ -40,6 +76,7 @@ const Sidebar = ({ activeMenu, handleMenuItemClick, isMobile, isOpen, onClose })
 						children: [],
 						icon: <IoDocumentTextOutline />,
 					}}
+					isCollapsed={isCollapsed}
 				/>
 			</Stack>
 		</Flex>

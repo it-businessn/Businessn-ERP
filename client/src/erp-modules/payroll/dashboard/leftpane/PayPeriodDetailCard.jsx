@@ -1,4 +1,4 @@
-import { Box, HStack, VStack } from "@chakra-ui/react";
+import { Box, Flex, HStack, Spacer } from "@chakra-ui/react";
 import OutlineButton from "components/ui/button/OutlineButton";
 import PrimaryButton from "components/ui/button/PrimaryButton";
 import TextTitle from "components/ui/text/TextTitle";
@@ -30,12 +30,18 @@ const PayPeriodDetailCard = ({
 		{payNum && (
 			<TextTitle size="sm" align={"right"} p={"0 2em 0 0 "} title={`Pay Period ${payNum}`} />
 		)}
-		<HStack justifyContent={"space-between"} p="0.8em" pb={pb}>
-			<VStack spacing={0} alignItems={"start"} justifyContent={"center"}>
-				<TextTitle size="sm" color={"var(--filter_border_color)"} title={header} />
-				<TextTitle size="sm" title={text1} />
-				{text2 && <TextTitle size="sm" title={text2} />}
-			</VStack>
+		<HStack p="0.8em" pb={pb} w="100%" justifyContent="start">
+			<Flex gap={1}>
+				<TextTitle
+					width="auto"
+					size="sm"
+					color={"var(--filter_border_color)"}
+					title={`${header} :`}
+				/>
+				<TextTitle width="auto" size="sm" title={text1} />
+				{text2 && <TextTitle width="auto" size="sm" title={text2} />}
+			</Flex>
+			<Spacer />
 			{isOutlineButton ? (
 				<OutlineButton
 					label={"View Register"}

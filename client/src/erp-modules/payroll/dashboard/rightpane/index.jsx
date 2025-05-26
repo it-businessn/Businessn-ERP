@@ -1,3 +1,4 @@
+import { Box, VStack } from "@chakra-ui/react";
 import BoxCard from "components/ui/card";
 import TabsButtonGroup from "components/ui/tab/TabsButtonGroup";
 import ChatMessages from "erp-modules/sales/dashboard/rightpane/ChatMessages";
@@ -11,7 +12,6 @@ import TicketHistory from "./TicketHistory";
 
 const RightPane = ({
 	selectedUser,
-	selectedPayGroup,
 	company,
 	payGroupSchedule,
 	closestRecord,
@@ -39,21 +39,28 @@ const RightPane = ({
 			name: <AppointmentHistory userId={selectedUser?._id} company={company} />,
 		},
 	];
-
 	const [viewMode, setViewMode] = useState(TABS[0].type);
 	const showComponent = (viewMode) => TABS.find(({ type }) => type === viewMode)?.name;
 
 	return (
-		<BoxCard>
-			<PayrollUserStatInfo
-				name={selectedUser?.fullName}
-				email={selectedUser?.email}
-				payGroupSchedule={payGroupSchedule}
-				closestRecord={closestRecord}
-				closestRecordIndex={closestRecordIndex}
-			/>
-			<MiniCalendar user={selectedUser} company={company} isPayrollDashboard />
-			<TabsButtonGroup tabs={TABS} setViewMode={setViewMode} viewMode={viewMode} />
+		<BoxCard borderWidth="0" bg="#faf9f5">
+			<VStack spacing={6} align="stretch">
+				<PayrollUserStatInfo
+					name={selectedUser?.fullName}
+					email={selectedUser?.email}
+					payGroupSchedule={payGroupSchedule}
+					closestRecord={closestRecord}
+					closestRecordIndex={closestRecordIndex}
+				/>
+
+				<Box bg="white" p={4} borderRadius="lg" boxShadow="sm">
+					<MiniCalendar user={selectedUser} company={company} isPayrollDashboard />
+				</Box>
+
+				<Box bg="white" p={4} borderRadius="lg" boxShadow="sm">
+					<TabsButtonGroup tabs={TABS} setViewMode={setViewMode} viewMode={viewMode} />
+				</Box>
+			</VStack>
 			{showComponent(viewMode)}
 		</BoxCard>
 	);

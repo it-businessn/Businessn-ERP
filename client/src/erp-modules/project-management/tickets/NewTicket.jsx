@@ -1,10 +1,31 @@
-import { Stack, useDisclosure } from "@chakra-ui/react";
-import ActionButtonGroup from "components/ui/form/ActionButtonGroup";
+import { AttachmentIcon } from "@chakra-ui/icons";
+import {
+	Badge,
+	Box,
+	Divider,
+	Flex,
+	FormControl,
+	FormHelperText,
+	FormLabel,
+	Grid,
+	GridItem,
+	HStack,
+	Icon,
+	Input,
+	Text,
+	useColorModeValue,
+	useDisclosure,
+	VStack,
+} from "@chakra-ui/react";
+import CancelButton from "components/ui/button/CancelButton";
+import PrimaryButton from "components/ui/button/PrimaryButton";
 import InputFormControl from "components/ui/form/InputFormControl";
 import SelectFormControl from "components/ui/form/SelectFormControl";
 import TextAreaFormControl from "components/ui/form/TextAreaFormControl";
 import ModalLayout from "components/ui/modal/ModalLayout";
 import { useState } from "react";
+import { BsFileEarmarkText, BsPersonFill } from "react-icons/bs";
+import { FaTicketAlt } from "react-icons/fa";
 import TicketService from "services/TicketService";
 
 const NewTicket = ({
@@ -16,12 +37,19 @@ const NewTicket = ({
 	employees,
 	depts,
 }) => {
-	const PRIORITY_LIST = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 	const [isSubmitting, setIsSubmitting] = useState(false);
+	const [fileError, setFileError] = useState("");
+	const accentColor = useColorModeValue(
+		"var(--primary_button_bg)",
+		"var(--primary_button_bg_dark)",
+	);
+	// Using an extremely light shade of #371f37 (deep purple), almost white
+	const leftColumnBg = useColorModeValue("#fdfbfd", "#4a2d4a");
+	const labelFontWeight = "bold";
 
 	const initialFormData = {
 		category: "",
-		priority: 0,
+		priority: "medium", // Default to medium priority
 		companyName: company,
 		assignee: "",
 		topic: "",
@@ -38,7 +66,19 @@ const NewTicket = ({
 	};
 
 	const handleFileChange = (e) => {
-		setFormData((prevData) => ({ ...prevData, file: e.target.files[0] }));
+		const file = e.target.files[0];
+
+		// Basic file validation
+		if (file) {
+			if (file.size > 10 * 1024 * 1024) {
+				// 10MB limit
+				setFileError("File size must be less than 10MB");
+				return;
+			}
+			setFileError("");
+		}
+
+		setFormData((prevData) => ({ ...prevData, file }));
 	};
 
 	const { onClose } = useDisclosure();
@@ -51,9 +91,12 @@ const NewTicket = ({
 	const reset = () => {
 		setShowAddEntry(false);
 		setFormData(initialFormData);
+		setFileError("");
 	};
 
 	const handleSubmit = async () => {
+		if (fileError) return;
+
 		const { category, priority, companyName, assignee, topic, issue, originator, file } = formData;
 		const ticketData = new FormData();
 		ticketData.append("category", category);
@@ -76,96 +119,233 @@ const NewTicket = ({
 			setIsSubmitting(false);
 		}
 	};
+
 	return (
-		<ModalLayout title={"New ticket"} size="lg" isOpen={showAddEntry} onClose={handleClose}>
-			<Stack spacing={3}>
-				<SelectFormControl
-					valueParam="name"
-					name="category"
-					label="Category"
-					valueText={formData?.category}
-					handleChange={handleChange}
-					options={depts}
-					placeholder="Select category"
-				/>
-				<SelectFormControl
+		<ModalLayout
+			title={
+				<HStack spacing={2}>
+					<Icon as={FaTicketAlt} color={accentColor} />
+					<Text>Create New Ticket</Text>
+				</HStack>
+			}
+			size="3xl"
+			isOpen={showAddEntry}
+			onClose={handleClose}
+		>
+			<Box mb={4}>
+				<Text fontSize="sm" color="gray.600">
+					Create a new support ticket to track issues, bugs, or feature requests.
+				</Text>
+			</Box>
+			<Divider mb={4} />
+
+			<Grid templateColumns={{ base: "1fr", md: "1fr 4fr" }} gap={6}>
+				<GridItem
+					bg={leftColumnBg}
+					p={4}
+					borderRadius="md"
+					boxShadow="0 4px 12px rgba(55, 31, 55, 0.15)"
+					position="relative"
+					zIndex="1"
+					borderWidth="1px"
+					borderColor="purple.100"
+				>
+					<VStack align="stretch" spacing={4}>
+						<Box>
+							<HStack mb={3}>
+								<Icon as={BsPersonFill} color={accentColor} />
+								<Text fontWeight="bold" fontSize="md">
+									Assignment Information
+								</Text>
+							</HStack>
+
+							<SelectFormControl
+								valueParam="name"
+								name="category"
+								label="Department/Category"
+								valueText={formData?.category}
+								handleChange={handleChange}
+								options={depts}
+								placeholder="Select department"
+								required
+							/>
+
+							<Box mt={5}>
+								<FormControl>
+									<FormLabel htmlFor="priority" fontWeight={labelFontWeight}>
+										Priority Level
+									</FormLabel>
+									<HStack spacing={3} mt={2}>
+										<Badge
+											colorScheme="green"
+											px={3}
+											py={1}
+											borderRadius="full"
+											cursor="pointer"
+											onClick={() => setFormData((prev) => ({ ...prev, priority: "low" }))}
+											boxShadow={formData.priority === "low" ? "0 0 0 1px green" : "none"}
+											opacity={formData.priority === "low" ? 1 : 0.7}
+											fontWeight="normal"
+											fontSize="xs"
+											textTransform="lowercase"
+											letterSpacing="0.2px"
+											border="1px solid"
+											borderColor={formData.priority === "low" ? "green.300" : "transparent"}
+										>
+											low
+										</Badge>
+										<Badge
+											colorScheme="orange"
+											px={3}
+											py={1}
+											borderRadius="full"
+											cursor="pointer"
+											onClick={() => setFormData((prev) => ({ ...prev, priority: "medium" }))}
+											boxShadow={formData.priority === "medium" ? "0 0 0 1px orange" : "none"}
+											opacity={formData.priority === "medium" ? 1 : 0.7}
+											fontWeight="normal"
+											fontSize="xs"
+											textTransform="lowercase"
+											letterSpacing="0.2px"
+											border="1px solid"
+											borderColor={formData.priority === "medium" ? "orange.300" : "transparent"}
+										>
+											medium
+										</Badge>
+										<Badge
+											colorScheme="red"
+											px={3}
+											py={1}
+											borderRadius="full"
+											cursor="pointer"
+											onClick={() => setFormData((prev) => ({ ...prev, priority: "high" }))}
+											boxShadow={formData.priority === "high" ? "0 0 0 1px red" : "none"}
+											opacity={formData.priority === "high" ? 1 : 0.7}
+											fontWeight="normal"
+											fontSize="xs"
+											textTransform="lowercase"
+											letterSpacing="0.2px"
+											border="1px solid"
+											borderColor={formData.priority === "high" ? "red.300" : "transparent"}
+										>
+											high
+										</Badge>
+									</HStack>
+								</FormControl>
+							</Box>
+							{/* <SelectFormControl
 					name="priority"
 					label="Priority"
 					valueText={formData?.priority}
 					handleChange={handleChange}
 					options={PRIORITY_LIST}
 					placeholder="Select priority"
-				/>
-				<SelectFormControl
-					valueParam="fullName"
-					name="fullName"
-					label="Assignee"
-					valueText={formData?.assignee}
-					handleChange={(e) =>
-						setFormData((prevData) => ({
-							...prevData,
-							assignee: e.target.value,
-						}))
-					}
-					options={employees}
-					placeholder="Select assignee"
-				/>
-				{/* <FormControl>
-					<FormLabel>Assignee</FormLabel>
-					<Select
-						name="fullName"
-						label="Assignee"
-						value={formData?.assignee}
-						onChange={(e) => {
-							setFormData((prevData) => ({
-								...prevData,
-								assignee: e.target.value,
-							}));
-						}}
-						placeholder="Select assignee"
-					>
-						{employees?.map((_) => (
-							<option key={_.fullName} value={_?.fullName}>
-								{_?.fullName}
-							</option>
-						))}
-					</Select>
-				</FormControl> */}
-				<InputFormControl
-					maxLength={100}
-					label="Topic"
-					name="topic"
-					valueText={formData?.topic}
-					handleChange={handleChange}
-					required
-				/>
-				<TextAreaFormControl
-					maxLength={500}
-					label="Description"
-					name="issue"
-					valueText={formData?.issue}
-					handleChange={handleChange}
-					required
-				/>
-				<InputFormControl
-					label="File/Attachment"
-					name="file"
-					type="file"
-					handleChange={handleFileChange}
-				/>
-				<ActionButtonGroup
-					submitBtnName={"Add"}
+				/> */}
+							<Box mt={5}>
+								<SelectFormControl
+									valueParam="fullName"
+									name="fullName"
+									label="Assignee"
+									valueText={formData?.assignee}
+									handleChange={(e) =>
+										setFormData((prevData) => ({
+											...prevData,
+											assignee: e.target.value,
+										}))
+									}
+									options={employees}
+									placeholder="Select assignee"
+									required
+								/>
+							</Box>
+						</Box>
+					</VStack>
+				</GridItem>
+
+				<GridItem>
+					<VStack align="stretch" spacing={4}>
+						<Box>
+							<HStack mb={3}>
+								<Icon as={BsFileEarmarkText} color={accentColor} />
+								<Text fontWeight="bold" fontSize="md">
+									Ticket Details
+								</Text>
+							</HStack>
+
+							<InputFormControl
+								maxLength={100}
+								label="Topic/Subject"
+								name="topic"
+								valueText={formData?.topic}
+								handleChange={handleChange}
+								required
+								placeholder="Brief summary of the issue"
+								size="md"
+							/>
+
+							<TextAreaFormControl
+								maxLength={500}
+								label="Description"
+								name="issue"
+								valueText={formData?.issue}
+								handleChange={handleChange}
+								required
+								rows={6}
+							/>
+
+							<Box mt={5}>
+								<FormControl>
+									<FormLabel fontWeight={labelFontWeight}>File/Attachment</FormLabel>
+									<Flex
+										borderWidth="1px"
+										borderRadius="md"
+										p={2}
+										borderColor={formData.file ? "green.400" : "gray.200"}
+										direction="column"
+									>
+										<Input
+											type="file"
+											name="file"
+											onChange={handleFileChange}
+											p={1}
+											border="none"
+										/>
+										{formData.file && (
+											<HStack mt={2} fontSize="sm" color="green.600">
+												<AttachmentIcon />
+												<Text>{formData.file.name}</Text>
+											</HStack>
+										)}
+										{fileError && <FormHelperText color="red.500">{fileError}</FormHelperText>}
+										<FormHelperText>Attach any relevant files (max 10MB)</FormHelperText>
+									</Flex>
+								</FormControl>
+							</Box>
+						</Box>
+					</VStack>
+				</GridItem>
+			</Grid>
+
+			<Divider my={6} />
+
+			<HStack justifyContent="center" spacing={4}>
+				<PrimaryButton
+					size="md"
 					isDisabled={
-						formData?.assignee === "" ||
-						formData?.topic === "" ||
-						formData?.issue === "" ||
-						formData?.category === ""
+						formData.assignee === "" ||
+						formData.topic === "" ||
+						formData.issue === "" ||
+						formData.category === "" ||
+						fileError !== ""
 					}
+					name="Create Ticket"
 					isLoading={isSubmitting}
-					onClose={handleClose}
+					loadingText="Loading"
 					onOpen={handleSubmit}
+					bg="#371f37"
 				/>
-			</Stack>
+				<CancelButton name="Cancel" onClick={handleClose} size="md" />
+			</HStack>
 		</ModalLayout>
 	);
 };
