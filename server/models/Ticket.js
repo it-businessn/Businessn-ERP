@@ -20,7 +20,7 @@ const supportTicketSchema = new mongoose.Schema({
 	issue: String,
 	ticketNumber: String,
 	category: String,
-	priority: { type: Number, default: 1 },
+	priority: { type: String, default: "low" },
 	assignee: { type: String, ref: "Employee" },
 	originator: { type: String, ref: "Employee" },
 	ticketClosedDate: Date,
