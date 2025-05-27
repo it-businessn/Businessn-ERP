@@ -1,5 +1,5 @@
 import { Box, Flex, Icon } from "@chakra-ui/react";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import { MdOutlineChevronLeft, MdOutlineChevronRight } from "react-icons/md";
 import Slide from "./Slide";
 
@@ -19,19 +19,32 @@ const VerticalCarousel = ({ slides, animationConfig, closestRecordIndex }) => {
 		[modBySlidesLength],
 	);
 
-	// Function to handle keyboard navigation
-	useEffect(() => {
-		const handleKeyDown = (event) => {
-			if (event.isComposing || event.keyCode === 229) return;
-			if (event.keyCode === 37) moveSlide(-1); // Left arrow
-			if (event.keyCode === 39) moveSlide(1); // Right arrow
-		};
-		document.addEventListener("keydown", handleKeyDown);
+	const getSurroundingSlides = useCallback(() => {
+		const surroundingSlides = [];
 
-		return () => {
-			document.removeEventListener("keydown", handleKeyDown);
-		};
-	}, [moveSlide]);
+		for (let offset = -6; offset <= 6; offset++) {
+			const i = modBySlidesLength(index + offset);
+			surroundingSlides.push(slides[i]);
+		}
+
+		return surroundingSlides;
+	}, [index, slides, modBySlidesLength]);
+
+	const visibleSlides = getSurroundingSlides();
+
+	// Function to handle keyboard navigation
+	// useEffect(() => {
+	// 	const handleKeyDown = (event) => {
+	// 		if (event.isComposing || event.keyCode === 229) return;
+	// 		if (event.keyCode === 37) moveSlide(-1); // Left arrow
+	// 		if (event.keyCode === 39) moveSlide(1); // Right arrow
+	// 	};
+	// 	document.addEventListener("keydown", handleKeyDown);
+
+	// 	return () => {
+	// 		document.removeEventListener("keydown", handleKeyDown);
+	// 	};
+	// }, [moveSlide]);
 
 	// If no slides, return null
 	if (!slides || slides.length === 0) {
@@ -50,7 +63,7 @@ const VerticalCarousel = ({ slides, animationConfig, closestRecordIndex }) => {
 				<Slide content={slides[index]} moveSlide={moveSlide} animationConfig={animationConfig} />
 
 				{/* Navigation Chevrons */}
-				{slides.length > 1 && (
+				{visibleSlides.length > 1 && (
 					<Flex
 						position="absolute"
 						width="100%"
@@ -61,6 +74,7 @@ const VerticalCarousel = ({ slides, animationConfig, closestRecordIndex }) => {
 						pointerEvents="none"
 					>
 						<Icon
+							visibility={index === 0 && "hidden"}
 							as={MdOutlineChevronLeft}
 							boxSize="40px"
 							color="gray.600"
@@ -74,6 +88,7 @@ const VerticalCarousel = ({ slides, animationConfig, closestRecordIndex }) => {
 							padding="8px"
 						/>
 						<Icon
+							visibility={index === visibleSlides?.length - 1 && "hidden"}
 							as={MdOutlineChevronRight}
 							boxSize="40px"
 							color="gray.600"
@@ -91,9 +106,9 @@ const VerticalCarousel = ({ slides, animationConfig, closestRecordIndex }) => {
 			</Flex>
 
 			{/* Slide Indicator */}
-			{slides.length > 1 && (
+			{visibleSlides?.length > 1 && (
 				<Flex justify="center" mt="3" gap="2">
-					{slides.map((_, i) => (
+					{visibleSlides.map((_, i) => (
 						<Box
 							key={i}
 							h="2"

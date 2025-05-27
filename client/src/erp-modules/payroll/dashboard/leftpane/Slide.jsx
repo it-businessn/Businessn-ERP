@@ -3,7 +3,6 @@ import { BsCalendarCheck, BsCalendarWeek, BsCashCoin } from "react-icons/bs";
 import { useNavigate } from "react-router-dom";
 import { workViewPath } from "routes";
 import { isExtraPay } from "utils";
-import { mmmDayYearFormat } from "utils/convertDate";
 import currentImg from "../../../../assets/card_bg.png";
 import PayPeriodDetailCard from "./PayPeriodDetailCard";
 import { formatDateBar } from "../../../../utils/convertDate";
