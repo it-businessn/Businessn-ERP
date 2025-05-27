@@ -6,6 +6,7 @@ import { isExtraPay } from "utils";
 import { mmmDayYearFormat } from "utils/convertDate";
 import currentImg from "../../../../assets/card_bg.png";
 import PayPeriodDetailCard from "./PayPeriodDetailCard";
+import { formatDateBar } from "../../../../utils/convertDate";
 
 function Slide({ content, animationConfig, moveSlide }) {
 	const navigate = useNavigate();
@@ -27,8 +28,8 @@ function Slide({ content, animationConfig, moveSlide }) {
 				borderTopLeftRadius={"10px"}
 				borderTopRightRadius={"10px"}
 				header={"Pay Period"}
-				text1={`${mmmDayYearFormat(content?.payPeriodStartDate)} -`}
-				text2={mmmDayYearFormat(content?.payPeriodEndDate)}
+				text1={`${formatDateBar(content?.payPeriodStartDate)} -`}
+				text2={formatDateBar(content?.payPeriodEndDate)}
 				actionText="Manage Payroll"
 				pb={0}
 				icon={BsCalendarWeek}
@@ -38,7 +39,7 @@ function Slide({ content, animationConfig, moveSlide }) {
 			{content && (
 				<PayPeriodDetailCard
 					header={"Processing"}
-					text1={mmmDayYearFormat(content?.payPeriodProcessingDate)}
+					text1={formatDateBar(content?.payPeriodProcessingDate)}
 					actionText={content?.name}
 					pb={0}
 					bg={content?.bg}
@@ -50,7 +51,7 @@ function Slide({ content, animationConfig, moveSlide }) {
 			)}
 			<PayPeriodDetailCard
 				header={"Pay Date"}
-				text1={mmmDayYearFormat(content?.payPeriodPayDate)}
+				text1={formatDateBar(content?.payPeriodPayDate)}
 				isOutlineButton
 				icon={BsCashCoin}
 				iconSize="2em"
