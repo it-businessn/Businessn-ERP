@@ -1,6 +1,6 @@
 import { Box, Button, ButtonGroup, Icon } from "@chakra-ui/react";
 
-const TabsButtonGroup = ({ isOutlineTab, tabs, setViewMode, viewMode, mt, w }) => {
+const TabsButtonGroup = ({ isOutlineTab, tabs, setViewMode, viewMode, mt, w, mb = 4 }) => {
 	const getColor = (type) =>
 		viewMode === type
 			? isOutlineTab
@@ -17,7 +17,7 @@ const TabsButtonGroup = ({ isOutlineTab, tabs, setViewMode, viewMode, mt, w }) =
 		isOutlineTab && viewMode === type && "2px solid var(--primary_button_bg)";
 
 	return (
-		<Box mb={4} mt={mt} bg={"var(--main_color)"} borderRadius={"1em"} px="5px" w={w}>
+		<Box mb={mb} mt={mt} bg={"var(--main_color)"} borderRadius={"1em"} px="5px" w={w}>
 			<ButtonGroup variant="solid" p={0} m={0}>
 				{tabs?.map(({ type, icon, highlightColor }) => (
 					<Button

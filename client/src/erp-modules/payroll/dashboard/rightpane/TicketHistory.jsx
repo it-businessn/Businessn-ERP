@@ -30,7 +30,7 @@ const TicketHistory = ({ userId, company }) => {
 	}, [userId]);
 
 	return (
-		<Box height={"285px"} overflowY={"auto"}>
+		<Box height={"275px"} overflowY={"auto"}>
 			<List spacing={2}>
 				{isLoading ? (
 					<SkeletonLoader />
