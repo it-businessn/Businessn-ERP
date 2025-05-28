@@ -18,9 +18,8 @@ export const isFutureDate = (date) => TODAY_DATE.isAfter(date, "day");
 export const getMomentDate = (date) => moment.utc(date);
 
 export const daysAgo = (date) => {
-	const numDays = TODAY_DATE?.diff(date, "days");
-	const days = numDays < 0 ? Math.abs(numDays) : numDays;
-	return days;
+	const numDays = moment(date)?.diff(TODAY_DATE, "days");
+	return numDays;
 };
 
 export const getMomentDateISO = (date) => moment(date).toISOString();

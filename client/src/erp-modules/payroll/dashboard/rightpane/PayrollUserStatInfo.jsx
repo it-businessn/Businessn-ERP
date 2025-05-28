@@ -22,12 +22,17 @@ const PayrollUserStatInfo = ({
 
 	useEffect(() => {
 		if (payGroupSchedule && closestRecord) {
+			const isCurrentProcessed = payGroupSchedule?.[closestRecordIndex]?.isProcessed;
+			const nextPayrun = isCurrentProcessed
+				? payGroupSchedule?.[closestRecordIndex + 1]
+				: payGroupSchedule?.[closestRecordIndex];
+
+			const daysTillNextPayrun = daysAgo(nextPayrun?.payPeriodProcessingDate);
+
 			setStats({
 				dayTill: {
-					name: "Next Payroll in",
-					value: `${daysAgo(
-						payGroupSchedule?.[closestRecordIndex + 1]?.payPeriodProcessingDate,
-					)} days`,
+					name: `Next Payroll ${daysTillNextPayrun < 0 ? "overdue by" : "in"}`,
+					value: `${daysTillNextPayrun} days`,
 					icon: RepeatIcon,
 					iconColor: "gray.600",
 				},
