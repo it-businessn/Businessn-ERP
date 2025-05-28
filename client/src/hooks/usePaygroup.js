@@ -11,6 +11,8 @@ const usePaygroup = (company, refresh, year = CURRENT_YEAR, isReport = false) =>
 	const [payGroupSchedule, setPayGroupSchedule] = useState(null);
 	const [closestRecord, setClosestRecord] = useState(null);
 	const [closestRecordIndex, setClosestRecordIndex] = useState(0);
+	const [hasMultiPaygroups, setHasMultiPaygroups] = useState(false);
+	const [selectedPayGroupOption, setSelectedPayGroupOption] = useState(null);
 
 	const getClosestScheduleByProcessingDate = (schedules) => {
 		// const closestPayPeriod = schedules
@@ -46,10 +48,12 @@ const usePaygroup = (company, refresh, year = CURRENT_YEAR, isReport = false) =>
 				const { data } = await PayrollService.getAllPaygroups(company);
 				setPayGroups(data);
 				if (data.length) {
-					const payGroup =
-						company === COMPANIES.BUSINESSN_ORG
-							? data.find(({ scheduleFrequency }) => scheduleFrequency === "Monthly")
-							: data[0];
+					setHasMultiPaygroups(data?.length > 1);
+					const payGroup = selectedPayGroupOption
+						? data.find(({ name }) => name === selectedPayGroupOption)
+						: company === COMPANIES.BUSINESSN_ORG
+						? data.find(({ scheduleFrequency }) => scheduleFrequency === "Monthly")
+						: data[0];
 					setSelectedPayGroup(payGroup);
 				}
 			} catch (error) {
@@ -60,7 +64,7 @@ const usePaygroup = (company, refresh, year = CURRENT_YEAR, isReport = false) =>
 		if (refresh !== undefined) {
 			fetchAllPaygroups();
 		}
-	}, [company, refresh]);
+	}, [company, refresh, selectedPayGroupOption]);
 
 	useEffect(() => {
 		if (selectedPayGroup) {
@@ -121,6 +125,9 @@ const usePaygroup = (company, refresh, year = CURRENT_YEAR, isReport = false) =>
 		payGroupSchedule,
 		closestRecord,
 		closestRecordIndex,
+		hasMultiPaygroups,
+		selectedPayGroupOption,
+		setSelectedPayGroupOption,
 	};
 };
 

@@ -35,9 +35,18 @@ const Timesheets = () => {
 	const { employees } = useEmployees(false, company, false, true, null, deptName);
 	const departments = useDepartment(company);
 	const cc = useCostCenter(company);
-	const { payGroupSchedule, closestRecord, closestRecordIndex } = usePaygroup(company, false);
-	const lastRecord = payGroupSchedule?.length > 0 && payGroupSchedule[closestRecordIndex - 1];
+	const {
+		hasMultiPaygroups,
+		selectedPayGroupOption,
+		setSelectedPayGroupOption,
+		payGroups,
+		selectedPayGroup,
+		payGroupSchedule,
+		closestRecord,
+		closestRecordIndex,
+	} = usePaygroup(company, false);
 
+	const lastRecord = payGroupSchedule?.length > 0 && payGroupSchedule[closestRecordIndex - 1];
 	const [dataRefresh, setDataRefresh] = useState(false);
 	const [filter, setFilter] = useState(null);
 	const [date, setDate] = useState(getDefaultDate);
@@ -71,6 +80,12 @@ const Timesheets = () => {
 	// 		setEndDate(todayDate);
 	// 	}
 	// }, [closestRecord]);
+
+	useEffect(() => {
+		if (selectedPayGroup) {
+			setSelectedPayGroupOption(selectedPayGroup?.name);
+		}
+	}, [selectedPayGroup]);
 
 	useEffect(() => {
 		if (timesheets?.length) {
@@ -275,13 +290,24 @@ const Timesheets = () => {
 		setCheckedRows([]);
 	};
 
+	const handleChange = (value) => {
+		if (value !== "") {
+			setSelectedPayGroupOption(value);
+		}
+	};
+
 	return (
 		<PageLayout
-			width="full"
+			width="35%"
 			title={"Timesheets"}
-			showDate
-			valueText1={date}
-			handleChange={(value) => setDate(value)}
+			handleChange={handleChange}
+			hasMultiPaygroups={hasMultiPaygroups}
+			showPayGroup={true}
+			selectedValue={selectedPayGroupOption}
+			data={payGroups}
+			selectPlaceholder="Select Paygroup"
+			selectAttr="name"
+			// handleChange={(value) => setDate(value)}
 			isTimesheet
 			// showCheckBox={
 			// 	<VStack ml={5} alignItems="self-start">

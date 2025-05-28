@@ -9,6 +9,7 @@ import TextTitle from "components/ui/text/TextTitle";
 import { ROLES } from "constant";
 import useCompany from "hooks/useCompany";
 import useCompanyEmployees from "hooks/useCompanyEmployees";
+import usePaygroup from "hooks/usePaygroup";
 import PageLayout from "layouts/PageLayout";
 import { useEffect, useState } from "react";
 import { useBreakpointValue } from "services/Breakpoint";
@@ -33,6 +34,19 @@ const Reports = () => {
 	const employees = useCompanyEmployees(company, deptName);
 
 	const [filteredEmployees, setFilteredEmployees] = useState(null);
+	const {
+		hasMultiPaygroups,
+		selectedPayGroupOption,
+		setSelectedPayGroupOption,
+		payGroups,
+		selectedPayGroup,
+	} = usePaygroup(company, false);
+
+	useState(() => {
+		if (selectedPayGroup) {
+			setSelectedPayGroupOption(selectedPayGroup?.name);
+		}
+	}, [selectedPayGroup]);
 
 	useEffect(() => {
 		setFilteredEmployees(employees);
@@ -61,8 +75,24 @@ const Reports = () => {
 		setShowReport(true);
 	};
 
+	const handleChange = (value) => {
+		if (value !== "") {
+			setSelectedPayGroupOption(value);
+		}
+	};
+
 	return (
-		<PageLayout title="Individual Reports">
+		<PageLayout
+			title="Individual Reports"
+			handleChange={handleChange}
+			hasMultiPaygroups={hasMultiPaygroups}
+			width={"35%"}
+			showPayGroup={true}
+			selectedValue={selectedPayGroupOption}
+			data={payGroups}
+			selectPlaceholder="Select Paygroup"
+			selectAttr="name"
+		>
 			<HStack mb={5} spacing="1em" justifyContent={"space-between"}>
 				<HStack spacing="1em" justifyContent={"space-between"}>
 					<Avatar

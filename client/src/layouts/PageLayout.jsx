@@ -13,7 +13,6 @@ const PageLayout = ({
 	showBgLayer,
 	selectAttr,
 	selectPlaceholder,
-	valueText1,
 	isTimesheet,
 	showCheckBox,
 	size,
@@ -23,6 +22,7 @@ const PageLayout = ({
 	isMobile,
 	bg = "#faf9f5",
 	showPayGroup,
+	hasMultiPaygroups,
 }) => (
 	<Box
 		p={{ base: "1em" }}
@@ -34,8 +34,8 @@ const PageLayout = ({
 		bg={bg}
 	>
 		<PageHeader
+			hasMultiPaygroups={hasMultiPaygroups}
 			size={size}
-			valueText1={valueText1}
 			showSelectBox={showSelectBox}
 			showPayGroup={showPayGroup}
 			title={title}

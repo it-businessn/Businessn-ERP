@@ -3,7 +3,7 @@ import { SimpleGrid } from "@chakra-ui/react";
 import useCompany from "hooks/useCompany";
 import usePaygroup from "hooks/usePaygroup";
 import PageLayout from "layouts/PageLayout";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import LocalStorageService from "services/LocalStorageService";
 import LeftPane from "./leftpane";
 import RightPane from "./rightpane";
@@ -11,9 +11,16 @@ import RightPane from "./rightpane";
 const Dashboard = () => {
 	const loggedInUser = LocalStorageService.getItem("user");
 	const { company } = useCompany(LocalStorageService.getItem("selectedCompany"));
-	const [selectedPayGroupOption, setSelectedPayGroupOption] = useState(null);
-	const { payGroups, selectedPayGroup, closestRecord, payGroupSchedule, closestRecordIndex } =
-		usePaygroup(company, false);
+	const {
+		hasMultiPaygroups,
+		payGroups,
+		selectedPayGroup,
+		closestRecord,
+		payGroupSchedule,
+		closestRecordIndex,
+		selectedPayGroupOption,
+		setSelectedPayGroupOption,
+	} = usePaygroup(company, false);
 
 	useEffect(() => {
 		if (selectedPayGroup) setSelectedPayGroupOption(selectedPayGroup?.name);
@@ -27,6 +34,7 @@ const Dashboard = () => {
 
 	return (
 		<PageLayout
+			hasMultiPaygroups={hasMultiPaygroups}
 			width={"35%"}
 			title="Dashboard"
 			showPayGroup={true}

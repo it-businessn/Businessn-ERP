@@ -1,5 +1,4 @@
-import { Box, Flex, Select } from "@chakra-ui/react";
-import TextTitle from "components/ui/text/TextTitle";
+import { Box, Select } from "@chakra-ui/react";
 import useCompany from "hooks/useCompany";
 import usePaygroup from "hooks/usePaygroup";
 import PageLayout from "layouts/PageLayout";
@@ -19,12 +18,15 @@ const ReportListView = () => {
 	const [selectedYear, setSelectedYear] = useState(year || CURRENT_YEAR);
 	const { isMobile } = useBreakpointValue();
 
-	const { payGroupSchedule, closestRecordIndex, selectedPayGroup } = usePaygroup(
-		company,
-		false,
-		selectedYear,
-		true,
-	);
+	const {
+		hasMultiPaygroups,
+		selectedPayGroupOption,
+		setSelectedPayGroupOption,
+		payGroupSchedule,
+		payGroups,
+		closestRecordIndex,
+		selectedPayGroup,
+	} = usePaygroup(company, false, selectedYear, true);
 
 	const {
 		showReport,
@@ -43,6 +45,7 @@ const ReportListView = () => {
 	// Update years list when paygroup changes
 	useState(() => {
 		if (selectedPayGroup) {
+			setSelectedPayGroupOption(selectedPayGroup?.name);
 			setYearsList(selectedPayGroup?.yearSchedules.map(({ year }) => year));
 		}
 	}, [selectedPayGroup]);
@@ -54,35 +57,40 @@ const ReportListView = () => {
 			: payGroupSchedule
 	)?.sort((a, b) => new Date(b.payPeriodPayDate) - new Date(a.payPeriodPayDate));
 
-	return (
-		<PageLayout title="Payrun Reports">
-			<Box bg="white" p={4} borderRadius="md" boxShadow="sm">
-				<Flex gap={3} mb={4}>
-					<TextTitle
-						weight="normal"
-						p={1}
-						width="200px"
-						size="sm"
-						borderRadius="10px"
-						border="1px solid var(--primary_button_bg)"
-						title={selectedPayGroup?.name}
-					/>
-					<Select
-						w={"10%"}
-						size={"sm"}
-						border="1px solid var(--primary_button_bg)"
-						borderRadius="10px"
-						value={selectedYear}
-						onChange={(e) => setSelectedYear(e.target.value)}
-					>
-						{yearsList?.map((year) => (
-							<option value={year} key={year}>
-								{year}
-							</option>
-						))}
-					</Select>
-				</Flex>
+	const handleChange = (value) => {
+		if (value !== "") {
+			setSelectedPayGroupOption(value);
+		}
+	};
 
+	return (
+		<PageLayout
+			title="Payrun Reports"
+			handleChange={handleChange}
+			hasMultiPaygroups={hasMultiPaygroups}
+			width={"35%"}
+			showPayGroup={true}
+			selectedValue={selectedPayGroupOption}
+			data={payGroups}
+			selectPlaceholder="Select Paygroup"
+			selectAttr="name"
+		>
+			<Select
+				float="right"
+				w={"10%"}
+				size={"sm"}
+				border="1px solid var(--primary_button_bg)"
+				borderRadius="10px"
+				value={selectedYear}
+				onChange={(e) => setSelectedYear(e.target.value)}
+			>
+				{yearsList?.map((year) => (
+					<option value={year} key={year}>
+						{year}
+					</option>
+				))}
+			</Select>
+			<Box bg="white" p={4} borderRadius="md" boxShadow="sm">
 				{filteredPayPeriods && (
 					<WorkviewTable
 						payGroupSchedule={filteredPayPeriods}

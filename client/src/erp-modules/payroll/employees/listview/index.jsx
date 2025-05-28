@@ -14,6 +14,7 @@ import PayrollActions from "erp-modules/payroll/workview/paygroup-header-table/P
 import OnboardEmpModal from "erp-modules/sales/onboarding/OnboardEmpModal";
 import useCompany from "hooks/useCompany";
 import useEmployees from "hooks/useEmployees";
+import usePaygroup from "hooks/usePaygroup";
 import PageLayout from "layouts/PageLayout";
 import { useEffect, useState } from "react";
 import { FaPlus, FaSearch } from "react-icons/fa";
@@ -30,6 +31,14 @@ const EmployeeListView = () => {
 		isPayrollActive: true,
 		isPayrollInactive: false,
 	});
+
+	const {
+		hasMultiPaygroups,
+		selectedPayGroupOption,
+		setSelectedPayGroupOption,
+		payGroups,
+		selectedPayGroup,
+	} = usePaygroup(company, false);
 
 	const [isRefresh, setIsRefresh] = useState(false);
 	const deptName = loggedInUser?.role === ROLES.MANAGER ? loggedInUser?.department : null;
@@ -57,6 +66,12 @@ const EmployeeListView = () => {
 	const navigate = useNavigate();
 
 	useEffect(() => {
+		if (selectedPayGroup) {
+			setSelectedPayGroupOption(selectedPayGroup?.name);
+		}
+	}, [selectedPayGroup]);
+
+	useEffect(() => {
 		setIsRefresh(showOnboard);
 	}, [showOnboard]);
 
@@ -74,12 +89,23 @@ const EmployeeListView = () => {
 		setFilteredEmployees(selectedEmp);
 	};
 
+	const handleChange = (value) => {
+		if (value !== "") {
+			setSelectedPayGroupOption(value);
+		}
+	};
+
 	return (
 		<PageLayout
 			width={"35%"}
 			title={"Employees"}
 			selectPlaceholder="Select Paygroup"
 			selectAttr="name"
+			handleChange={handleChange}
+			hasMultiPaygroups={hasMultiPaygroups}
+			showPayGroup={true}
+			selectedValue={selectedPayGroupOption}
+			data={payGroups}
 		>
 			<SimpleGrid
 				columns={{ base: 1, md: 1, lg: 2 }}

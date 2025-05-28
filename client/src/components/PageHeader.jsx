@@ -1,6 +1,7 @@
 import { Flex, FormControl, useColorModeValue } from "@chakra-ui/react";
 import SelectBox from "./ui/form/select/SelectBox";
 import TextTitle from "./ui/text/TextTitle";
+
 const PageHeader = ({
 	showSelectBox,
 	title,
@@ -14,28 +15,51 @@ const PageHeader = ({
 	showCheckBox,
 	size,
 	showPayGroup,
+	hasMultiPaygroups,
 }) => {
 	const themeMode = useColorModeValue("var(--primary_button_bg)", "var(--primary_button_bg_dark)");
 	return (
 		<Flex width={{ base: "100%", md: width }}>
 			{title && (
-				<TextTitle title={title} mb={"0.5em"} size={size} width={isTimesheet ? "auto" : width} />
+				<TextTitle
+					title={title}
+					mb={"0.5em"}
+					size={size}
+					width={width}
+					// width={isTimesheet ? "auto" : width}
+				/>
 			)}
-			{isTimesheet ? showCheckBox : <></>}
-
+			{/* {isTimesheet ? showCheckBox : <></>} */}
 			{showPayGroup && (
-				<FormControl>
-					<TextTitle
-						p={1}
-						width="200px"
-						size="sm"
-						borderRadius="10px"
-						border="1px solid var(--primary_button_bg)"
-						title={value}
-						weight="normal"
-					/>
-				</FormControl>
+				<>
+					{hasMultiPaygroups ? (
+						<SelectBox
+							handleChange={handleChange}
+							data={data}
+							name={selectAttr || "fullName"}
+							border="1px solid var(--primary_button_bg)"
+							color={themeMode}
+							value={value || ""}
+							placeholder={selectPlaceholder || "Select"}
+							size={"sm"}
+						/>
+					) : (
+						<FormControl>
+							<TextTitle
+								p={1}
+								width="200px"
+								size="sm"
+								align="center"
+								borderRadius="5px"
+								border="1px solid var(--calendar_border)"
+								title={value}
+								weight="normal"
+							/>
+						</FormControl>
+					)}
+				</>
 			)}
+
 			{showSelectBox ? (
 				<SelectBox
 					handleChange={handleChange}
