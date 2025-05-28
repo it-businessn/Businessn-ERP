@@ -17,20 +17,11 @@ router.get(
 	payrollController.getTotalAlertsAndViolationsInfo,
 );
 
-router.get(
-	"/hoursTimesheet/:companyName/:startDate/:endDate/:payDate/:isExtraRun/:groupId/:payrunType/:deptName",
-	payrollController.getGroupedTimesheet,
-);
+router.post("/hoursTimesheet", payrollController.getGroupedTimesheet);
 
-router.get(
-	"/EEContribution/:companyName/:startDate/:endDate/:payDate/:isExtraRun/:groupId/:payrunType/:deptName",
-	payrollController.getEEContribution,
-);
+router.post("/EEContribution", payrollController.getEEContribution);
 
-router.get(
-	"/ERContribution/:companyName/:startDate/:endDate/:payDate/:isExtraRun/:groupId/:payrunType/:deptName",
-	payrollController.getERContribution,
-);
+router.post("/ERContribution", payrollController.getERContribution);
 
 router.post("/payGroups", payrollController.addPayGroup);
 

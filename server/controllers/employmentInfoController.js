@@ -9,16 +9,7 @@ const EmployeeProfileInfo = require("../models/EmployeeProfileInfo");
 const EmployeeTADProfileInfo = require("../models/EmployeeTADProfile");
 
 const getAllEmploymentInfo = async (req, res) => {
-	const {
-		companyName,
-		startDate,
-		endDate,
-		payDate,
-		isExtraRun,
-		groupId,
-		deptName,
-		selectedPayGroupOption,
-	} = req.body;
+	const { companyName, payDate, isExtraRun, groupId, deptName, selectedPayGroupOption } = req.body;
 	try {
 		const isExtraPayRun = isExtraRun === "true";
 

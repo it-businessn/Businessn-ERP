@@ -34,7 +34,7 @@ const useEmployeeEmploymentInfo = (
 			}
 		};
 		if (company && (payPeriod || empId)) fetchEmployeeEmploymentInfo();
-	}, [company, empId, payPeriod, refresh]);
+	}, [company, empId, payPeriod, refresh, selectedPayGroupOption]);
 	return employmentInfo;
 };
 
