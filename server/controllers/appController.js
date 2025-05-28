@@ -37,7 +37,7 @@ const getPayrollActiveEmployees = async (companyName, deptName, selectedPayGroup
 
 	if (selectedPayGroupOption) {
 		result = result?.filter((emp) =>
-			emp?.positions.find((_) => _.employmentPayGroup === selectedPayGroupOption),
+			emp?.positions?.find((_) => _.employmentPayGroup === selectedPayGroupOption),
 		);
 	}
 	if (deptName && deptName !== "null") {

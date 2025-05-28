@@ -23,7 +23,7 @@ const getPayrollInActiveEmployees = async (companyName, deptName, selectedPayGro
 	});
 	if (selectedPayGroupOption) {
 		result = result?.filter((emp) =>
-			emp?.positions.find((_) => _.employmentPayGroup === selectedPayGroupOption),
+			emp?.positions?.find((_) => _.employmentPayGroup === selectedPayGroupOption),
 		);
 	}
 	if (deptName && deptName !== "null") {
@@ -203,7 +203,7 @@ const getCompanyEmployees = async (req, res) => {
 		);
 		if (payGroup) {
 			updatedResult = updatedResult?.filter((emp) =>
-				emp?.positions.find((_) => _.employmentPayGroup === payGroup),
+				emp?.positions?.find((_) => _.employmentPayGroup === payGroup),
 			);
 		}
 		if (deptName && deptName !== "null") {
