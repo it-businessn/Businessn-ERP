@@ -31,6 +31,7 @@ const Sidebar = ({ activeMenu, handleMenuItemClick, isMobile, isOpen, onClose })
 			mt="6.5em"
 			maxHeight={`calc(var(--custom_height))`}
 			overflowY="auto"
+			overflowX="hidden"
 			position="relative"
 			transition="all 0.3s ease"
 		>

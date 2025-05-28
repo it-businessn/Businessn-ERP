@@ -257,10 +257,11 @@ button:active {
   top: 3px;
 } */
 .main_content {
-	width: 88vw;
+	min-width: 88vw;
 	margin-top: 6em;
 	max-height: calc(var(--base));
 	overflow: auto;
+	width: 100vw;
 }
 
 .tab-form {

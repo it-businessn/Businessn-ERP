@@ -57,7 +57,7 @@ const ReportListView = () => {
 	return (
 		<PageLayout title="Payrun Reports">
 			<Box bg="white" p={4} borderRadius="md" boxShadow="sm">
-				<Flex gap={3}>
+				<Flex gap={3} mb={4}>
 					<TextTitle
 						weight="normal"
 						p={1}
@@ -74,7 +74,6 @@ const ReportListView = () => {
 						borderRadius="10px"
 						value={selectedYear}
 						onChange={(e) => setSelectedYear(e.target.value)}
-						mb={4}
 					>
 						{yearsList?.map((year) => (
 							<option value={year} key={year}>
@@ -88,7 +87,7 @@ const ReportListView = () => {
 					<WorkviewTable
 						payGroupSchedule={filteredPayPeriods}
 						closestRecordIndex={closestRecordIndex}
-						height="calc(100vh - 192px)"
+						height="calc(100vh - 225px)"
 						handleRegister={handleRegister}
 						selectedYear={selectedYear}
 						handleTotalsReport={handleTotalsReport}

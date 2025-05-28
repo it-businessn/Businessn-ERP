@@ -88,7 +88,13 @@ const Reports = () => {
 				/>
 			</HStack>
 			<TextTitle title="Reports" />
-			<TableLayout cols={REPORT_COLS} w={"100%"} top={-1} textAlign="center" height={"66vh"}>
+			<TableLayout
+				cols={REPORT_COLS}
+				w={"100%"}
+				top={-1}
+				textAlign="center"
+				height={"calc(100vh - 250px)"}
+			>
 				<Tbody>
 					{(!empPayStub || empPayStub?.length === 0) && (
 						<EmptyRowRecord data={empPayStub} colSpan={REPORT_COLS.length} />

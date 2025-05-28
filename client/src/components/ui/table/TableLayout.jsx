@@ -31,7 +31,7 @@ const TableLayout = ({
 	specifyPaddingCols,
 }) => {
 	return (
-		<Box overflow="auto" height={height} w={w}>
+		<Box overflow="auto" maxH={height} w={w}>
 			<Table variant={variant} bg={bg} size={tableSize}>
 				<Thead position={position} top={top} zIndex={zIndex}>
 					<Tr display={inVisible && "none"}>

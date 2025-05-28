@@ -6,7 +6,6 @@ import MiniCalendar from "erp-modules/sales/dashboard/rightpane/MiniCalendar";
 import { useState } from "react";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import AppointmentHistory from "./AppointmentHistory";
-import PayrollUserStatInfo from "./PayrollUserStatInfo";
 import TasksHistory from "./TasksHistory";
 import TicketHistory from "./TicketHistory";
 
@@ -43,21 +42,13 @@ const RightPane = ({
 	const showComponent = (viewMode) => TABS.find(({ type }) => type === viewMode)?.name;
 
 	return (
-		<BoxCard borderWidth="0" bg="#faf9f5">
-			<VStack spacing={2} align="stretch">
-				<PayrollUserStatInfo
-					name={selectedUser?.fullName}
-					email={selectedUser?.email}
-					payGroupSchedule={payGroupSchedule}
-					closestRecord={closestRecord}
-					closestRecordIndex={closestRecordIndex}
-				/>
-
-				<Box bg="white" borderRadius="lg" boxShadow="sm">
+		<BoxCard borderWidth="0" bg="#faf9f5" p={0}>
+			<VStack spacing={"1em"} align="stretch">
+				<Box bg="white" borderRadius="lg" p={4} boxShadow="sm">
 					<MiniCalendar user={selectedUser} company={company} isPayrollDashboard />
 				</Box>
 
-				<Box bg="white" px={4} borderRadius="lg" boxShadow="sm">
+				<Box bg="white" py={2} px={4} borderRadius="lg" boxShadow="sm">
 					<TabsButtonGroup
 						mb={1}
 						mt={1}

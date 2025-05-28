@@ -27,7 +27,7 @@ import { PAYGROUP_COLS } from "../data";
 const WorkviewTable = ({
 	payGroupSchedule,
 	closestRecordIndex,
-	height = "26vh",
+	height = "calc(100vh - 615px)",
 	autoScroll = false,
 	handleRegister,
 	handleTotalsReport,

@@ -1,7 +1,6 @@
 import BoxCard from "components/ui/card";
 import TabsButtonGroup from "components/ui/tab/TabsButtonGroup";
 import AppointmentHistory from "erp-modules/payroll/dashboard/rightpane/AppointmentHistory";
-import PayrollUserStatInfo from "erp-modules/payroll/dashboard/rightpane/PayrollUserStatInfo";
 import TasksHistory from "erp-modules/payroll/dashboard/rightpane/TasksHistory";
 import TicketHistory from "erp-modules/payroll/dashboard/rightpane/TicketHistory";
 import ChatMessages from "erp-modules/sales/dashboard/rightpane/ChatMessages";
@@ -44,13 +43,13 @@ const RightPane = ({
 
 	return (
 		<BoxCard>
-			<PayrollUserStatInfo
+			{/* <PayrollUserStatInfo
 				name={selectedUser?.fullName}
 				email={selectedUser?.email}
 				payGroupSchedule={payGroupSchedule}
 				closestRecord={closestRecord}
 				closestRecordIndex={closestRecordIndex}
-			/>
+			/> */}
 			<MiniCalendar user={selectedUser} company={company} isPayrollDashboard />{" "}
 			<TabsButtonGroup tabs={TABS} setViewMode={setViewMode} viewMode={viewMode} />
 			{showComponent(viewMode)}
