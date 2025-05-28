@@ -63,18 +63,8 @@ const PayrollService = {
 		return apiService.put(`/payroll/profileInfo/${id}`, data, id);
 	},
 
-	async getAllEmployeeEmploymentInfo(
-		company,
-		startDate,
-		endDate,
-		payDate,
-		isExtraRun,
-		groupId,
-		deptName,
-	) {
-		return apiService.get(
-			`/payroll/employmentInfo/${company}/${startDate}/${endDate}/${payDate}/${isExtraRun}/${groupId}/${deptName}`,
-		);
+	async getAllEmployeeEmploymentInfo(data) {
+		return apiService.post(`/payroll/employmentInfo/details`, data);
 	},
 
 	async getEmployeeEmploymentInfo(company, empId) {

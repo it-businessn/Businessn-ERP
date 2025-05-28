@@ -1,7 +1,15 @@
 import { useEffect, useState } from "react";
 import PayrollService from "services/PayrollService";
 
-const useEmployeeEmploymentInfo = (company, empId, payPeriod, groupId, refresh, deptName) => {
+const useEmployeeEmploymentInfo = (
+	company,
+	empId,
+	payPeriod,
+	groupId,
+	refresh,
+	deptName,
+	selectedPayGroupOption,
+) => {
 	const [employmentInfo, setEmploymentInfo] = useState(null);
 
 	useEffect(() => {
@@ -10,15 +18,16 @@ const useEmployeeEmploymentInfo = (company, empId, payPeriod, groupId, refresh, 
 			try {
 				const { data } = empId
 					? await PayrollService.getEmployeeEmploymentInfo(company, empId)
-					: await PayrollService.getAllEmployeeEmploymentInfo(
-							company,
-							payPeriod?.payPeriodStartDate,
-							payPeriod?.payPeriodEndDate,
-							payPeriod?.payPeriodPayDate,
-							extraRun,
+					: await PayrollService.getAllEmployeeEmploymentInfo({
+							companyName: company,
+							startDate: payPeriod?.payPeriodStartDate,
+							endDate: payPeriod?.payPeriodEndDate,
+							payDate: payPeriod?.payPeriodPayDate,
+							isExtraRun: extraRun,
 							groupId,
 							deptName,
-					  );
+							selectedPayGroupOption,
+					  });
 				setEmploymentInfo(data);
 			} catch (error) {
 				console.error(error);

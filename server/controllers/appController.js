@@ -20,7 +20,7 @@ const EmployeeEmploymentInfo = require("../models/EmployeeEmploymentInfo");
 
 const findCompany = async (key, value) => await Company.findOne({ [key]: value });
 
-const getPayrollActiveEmployees = async (companyName, deptName) => {
+const getPayrollActiveEmployees = async (companyName, deptName, selectedPayGroupOption) => {
 	let result = await EmployeeEmploymentInfo.find({
 		payrollStatus: "Payroll Active",
 		companyName,
@@ -34,6 +34,12 @@ const getPayrollActiveEmployees = async (companyName, deptName) => {
 		.select("payrollStatus employeeNo positions employmentRole");
 
 	result = result?.filter((a) => a.empId);
+
+	if (selectedPayGroupOption) {
+		result = result?.filter((emp) =>
+			emp?.positions.find((_) => _.employmentPayGroup === selectedPayGroupOption),
+		);
+	}
 	if (deptName && deptName !== "null") {
 		result = result?.filter((emp) => emp?.positions?.[0]?.employmentDepartment === deptName);
 	}

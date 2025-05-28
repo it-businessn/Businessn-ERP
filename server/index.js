@@ -1,13 +1,11 @@
 console.log("NODE_ENV", process.env.NODE_ENV);
 
-if(process.env.NODE_ENV === "development") {
+if (process.env.NODE_ENV === "development") {
 	require("dotenv").config({ path: ".env.local" });
 	console.log("Using .env.local file");
 } else {
 	require("dotenv").config();
 }
-
-
 
 const express = require("express");
 const crypto = require("crypto");
@@ -41,11 +39,11 @@ const payStubRoutes = require("./routes/payStubRoutes");
 const payInfoRoutes = require("./routes/payInfoRoutes");
 const profileInfoRoutes = require("./routes/profileInfoRoutes");
 const roeRoutes = require("./routes/roeRoutes");
-const employmentInfo = require("./routes/employmentInfo");
-const governmentInfo = require("./routes/governmentInfo");
-const bankingInfo = require("./routes/bankingInfo");
-const additionalAllocationInfo = require("./routes/additionalAllocationInfo");
-const balanceInfo = require("./routes/balanceInfo");
+const employmentInfo = require("./routes/employmentInfoRoutes");
+const governmentInfo = require("./routes/governmentInfoRoutes");
+const bankingInfo = require("./routes/bankingInfoRoutes");
+const additionalAllocationInfo = require("./routes/additionalAllocationInfoRoutes");
+const balanceInfo = require("./routes/balanceInfoRoutes");
 const permissionsRoutes = require("./routes/permissionRoutes");
 const projectRoutes = require("./routes/projectRoutes");
 const questionnaireRoutes = require("./routes/questionnaireRoutes");

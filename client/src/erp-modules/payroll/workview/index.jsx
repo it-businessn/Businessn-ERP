@@ -72,6 +72,7 @@ const PayrollWorkview = () => {
 				closestRecord={closestRecord}
 				empPath={empPath}
 				selectedPayGroup={selectedPayGroup}
+				selectedPayGroupOption={selectedPayGroupOption}
 				groupId={selectedPayGroup?._id}
 				loggedInUser={loggedInUser}
 			/>

@@ -483,12 +483,19 @@ const getEmployeeId = async (empList) => {
 	return list;
 };
 
-const fetchActiveEmployees = async (isExtraPayRun, groupId, payDate, companyName, deptName) => {
+const fetchActiveEmployees = async (
+	isExtraPayRun,
+	groupId,
+	payDate,
+	companyName,
+	deptName,
+	selectedPayGroupOption,
+) => {
 	const employees = isExtraPayRun ? await findGroupEmployees(groupId, payDate) : null;
 
 	return isExtraPayRun
 		? await getEmployeeId(employees)
-		: await getPayrollActiveEmployees(companyName, deptName);
+		: await getPayrollActiveEmployees(companyName, deptName, selectedPayGroupOption);
 };
 
 module.exports = {
