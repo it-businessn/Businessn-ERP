@@ -76,7 +76,7 @@ const PayrollStageContent = ({
 							onPayrollStepupToggle();
 						}}
 						payGroups={payGroups}
-						selectedPayGroup={selectedPayGroup}
+						selectedPayGroup={selectedPayGroup?.name}
 						payGroupSchedule={payGroupSchedule}
 						closestRecord={closestRecord}
 						isPayPeriodInactive={isPayPeriodInactive}
@@ -129,6 +129,7 @@ const PayrollStageContent = ({
 						payGroupSchedule={payGroupSchedule}
 						closestRecord={closestRecord}
 						isPayPeriodInactive={isPayPeriodInactive}
+						selectedPayGroup={selectedPayGroup?.name}
 					/>
 				}
 			/>

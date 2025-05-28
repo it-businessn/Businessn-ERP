@@ -271,15 +271,19 @@ const getTotalAlertsAndViolationsInfo = async (req, res) => {
 };
 
 const getAlertsAndViolationsInfo = async (req, res) => {
-	const { companyName, payPeriodNum } = req.params;
+	const { companyName, payPeriodNum, selectedPayGroup } = req.params;
 
 	try {
 		const payrollActiveEmps = await EmployeeEmploymentInfo.find({
 			payrollStatus: "Payroll Active",
 			companyName,
 		}).select("empId");
+
 		const payrollActiveIds = payrollActiveEmps
-			?.filter((emp) => emp?.empId)
+			?.filter(
+				(emp) =>
+					emp?.empId && emp?.positions?.find((_) => _.employmentPayGroup === selectedPayGroup),
+			)
 			?.map((emp) => emp.empId);
 
 		const alerts = await EmployeeAlertsViolationInfo.find({

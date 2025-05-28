@@ -504,7 +504,7 @@ const updatePayStub = async (id, data) =>
 	});
 
 const addEmployeePayStubInfo = async (req, res) => {
-	const { companyName, currentPayPeriod } = req.body;
+	const { companyName, currentPayPeriod, selectedPayGroupOption } = req.body;
 	try {
 		// const y = await EmployeePayStub.deleteMany({
 		// 	payPeriodNum: "6",
@@ -538,7 +538,7 @@ const addEmployeePayStubInfo = async (req, res) => {
 
 		const activeEmployees = isExtraRun
 			? await getEmployeeId(selectedEmp)
-			: await getPayrollActiveEmployees(companyName, req.body?.deptName);
+			: await getPayrollActiveEmployees(companyName, req.body?.deptName, selectedPayGroupOption);
 
 		const result = isExtraRun
 			? null

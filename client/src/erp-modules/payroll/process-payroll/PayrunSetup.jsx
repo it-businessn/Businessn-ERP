@@ -31,6 +31,7 @@ const PayrunSetup = ({
 					companyName: company,
 					currentPayPeriod: closestRecord,
 					deptName,
+					selectedPayGroupOption: selectedPayGroup,
 				});
 				if (response) {
 					handleClick();
@@ -85,7 +86,7 @@ const PayrunSetup = ({
 								readOnly
 								autoComplete="off"
 								name="employmentPayGroup"
-								valueText={selectedPayGroup?.name}
+								valueText={selectedPayGroup}
 							/>
 						</Th>
 					</Tr>

@@ -21,6 +21,7 @@ const AlertsViolation = ({
 	payGroupSchedule,
 	closestRecord,
 	isPayPeriodInactive,
+	selectedPayGroup,
 }) => {
 	const { payNo } = useParams();
 	const isExtra = payNo?.includes("E");
@@ -34,6 +35,7 @@ const AlertsViolation = ({
 		selectedPayPeriod,
 		isAlertsOpen,
 		currentStep,
+		selectedPayGroup,
 	);
 	const COLS = ["Description", "Employee name", "Status", "Action"];
 

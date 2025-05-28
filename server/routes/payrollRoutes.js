@@ -8,7 +8,7 @@ router.get("/payGroups/:companyName", payrollController.getAllPayGroups);
 router.get("/payGroups/:companyName/:id", payrollController.getPayGroup);
 
 router.get(
-	"/alertsReport/:companyName/:payPeriodNum",
+	"/alertsReport/:companyName/:payPeriodNum/:selectedPayGroup",
 	payrollController.getAlertsAndViolationsInfo,
 );
 
