@@ -15,12 +15,17 @@ const {
 } = require("./appController");
 const { findGroupEmployees } = require("./setUpController");
 
-const getPayrollInActiveEmployees = async (companyName, deptName) => {
+const getPayrollInActiveEmployees = async (companyName, deptName, selectedPayGroupOption) => {
 	let result = await findEmployee({
 		payrollStatus: { $ne: "Payroll Active" },
 		companyName,
 		employmentRole: { $ne: ROLES.SHADOW_ADMIN },
 	});
+	if (selectedPayGroupOption) {
+		result = result?.filter((emp) =>
+			emp?.positions.find((_) => _.employmentPayGroup === selectedPayGroupOption),
+		);
+	}
 	if (deptName && deptName !== "null") {
 		result = result?.filter((emp) => emp?.positions?.[0]?.employmentDepartment === deptName);
 	}
@@ -95,9 +100,9 @@ const getPayrollActiveCompanyEmployeesCount = async (req, res) => {
 };
 
 const getPayrollActiveCompanyEmployees = async (req, res) => {
-	const { companyName, deptName } = req.params;
+	const { companyName, deptName, payGroup } = req.params;
 	try {
-		const result = await getPayrollActiveEmployees(companyName, deptName);
+		const result = await getPayrollActiveEmployees(companyName, deptName, payGroup);
 
 		res.status(200).json(result);
 	} catch (error) {
@@ -106,9 +111,9 @@ const getPayrollActiveCompanyEmployees = async (req, res) => {
 };
 
 const getPayrollInActiveCompanyEmployees = async (req, res) => {
-	const { companyName, deptName } = req.params;
+	const { companyName, deptName, payGroup } = req.params;
 	try {
-		const result = await getPayrollInActiveEmployees(companyName, deptName);
+		const result = await getPayrollInActiveEmployees(companyName, deptName, payGroup);
 		res.status(200).json(result);
 	} catch (error) {
 		res.status(404).json({ error: error.message });
@@ -170,7 +175,7 @@ const getCompanyEmpEmployees = async (req, res) => {
 };
 
 const getCompanyEmployees = async (req, res) => {
-	const { companyName, deptName } = req.params;
+	const { companyName, deptName, payGroup } = req.params;
 	try {
 		const result = await EmployeeProfileInfo.find({
 			companyName,
@@ -196,6 +201,11 @@ const getCompanyEmployees = async (req, res) => {
 				};
 			}),
 		);
+		if (payGroup) {
+			updatedResult = updatedResult?.filter((emp) =>
+				emp?.positions.find((_) => _.employmentPayGroup === payGroup),
+			);
+		}
 		if (deptName && deptName !== "null") {
 			updatedResult = updatedResult?.filter(
 				(emp) => emp?.positions?.[0]?.employmentDepartment === deptName,

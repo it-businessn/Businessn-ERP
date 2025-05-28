@@ -1,5 +1,6 @@
 import { HStack, SimpleGrid } from "@chakra-ui/react";
 import RadioButtonGroup from "components/ui/tab/RadioButtonGroup";
+import { ROLES } from "constant";
 import useCompany from "hooks/useCompany";
 import PageLayout from "layouts/PageLayout";
 import { useState } from "react";
@@ -9,7 +10,6 @@ import EmployeeInfo from "./EmployeeInfo";
 import EmployerInfo from "./EmployerInfo";
 import EmploymentInfo from "./EmploymentInfo";
 import ReviewInfo from "./ReviewInfo";
-import { ROLES } from "constant";
 
 const ROE = () => {
 	const { company } = useCompany(LocalStorageService.getItem("selectedCompany"));

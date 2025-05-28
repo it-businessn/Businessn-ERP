@@ -32,13 +32,8 @@ const EmployeeListView = () => {
 		isPayrollInactive: false,
 	});
 
-	const {
-		hasMultiPaygroups,
-		selectedPayGroupOption,
-		setSelectedPayGroupOption,
-		payGroups,
-		selectedPayGroup,
-	} = usePaygroup(company, false);
+	const { hasMultiPaygroups, selectedPayGroupOption, setSelectedPayGroupOption, payGroups } =
+		usePaygroup(company, false);
 
 	const [isRefresh, setIsRefresh] = useState(false);
 	const deptName = loggedInUser?.role === ROLES.MANAGER ? loggedInUser?.department : null;
@@ -49,6 +44,7 @@ const EmployeeListView = () => {
 		formData,
 		null,
 		deptName,
+		selectedPayGroupOption,
 	);
 	const [showEmpFilter, setShowEmpFilter] = useState(false);
 	const [showDeptFilter, setShowDeptFilter] = useState(false);
@@ -64,12 +60,6 @@ const EmployeeListView = () => {
 	const [showOnboard, setShowOnboard] = useState(false);
 
 	const navigate = useNavigate();
-
-	useEffect(() => {
-		if (selectedPayGroup) {
-			setSelectedPayGroupOption(selectedPayGroup?.name);
-		}
-	}, [selectedPayGroup]);
 
 	useEffect(() => {
 		setIsRefresh(showOnboard);

@@ -17,6 +17,7 @@ const ExtraPayrunModal = ({
 	company,
 	selectedPayGroup,
 	closestRecord,
+	selectedPayGroupOption,
 }) => {
 	const loggedInUser = LocalStorageService.getItem("user");
 	const deptName = loggedInUser?.role === ROLES.MANAGER ? loggedInUser?.department : null;
@@ -53,7 +54,11 @@ const ExtraPayrunModal = ({
 	useEffect(() => {
 		const fetchAllEmployees = async () => {
 			try {
-				const { data } = await UserService.getAllCompanyUsers(company, deptName);
+				const { data } = await UserService.getAllCompanyUsers(
+					company,
+					deptName,
+					selectedPayGroupOption,
+				);
 				data?.map((emp) => {
 					emp.fullName = emp?.empId?.fullName;
 					emp._id = emp?.empId?._id;

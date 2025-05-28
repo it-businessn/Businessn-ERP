@@ -68,6 +68,7 @@ const usePaygroup = (company, refresh, year = CURRENT_YEAR, isReport = false) =>
 
 	useEffect(() => {
 		if (selectedPayGroup) {
+			setSelectedPayGroupOption(selectedPayGroup?.name);
 			const parsedYr = parseInt(year);
 			const yearIndex = selectedPayGroup?.yearSchedules.findIndex(({ year }) => year === parsedYr);
 			const sortedResult = sortRecordsByDate(

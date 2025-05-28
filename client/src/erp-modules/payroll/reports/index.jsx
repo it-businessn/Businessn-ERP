@@ -31,22 +31,12 @@ const Reports = () => {
 	const deptName = loggedInUser?.role === ROLES.MANAGER ? loggedInUser?.department : null;
 	const [employee, setEmployee] = useState(null);
 	const isActivePayroll = employee?.payrollStatus?.includes("Active");
-	const employees = useCompanyEmployees(company, deptName);
 
 	const [filteredEmployees, setFilteredEmployees] = useState(null);
-	const {
-		hasMultiPaygroups,
-		selectedPayGroupOption,
-		setSelectedPayGroupOption,
-		payGroups,
-		selectedPayGroup,
-	} = usePaygroup(company, false);
+	const { hasMultiPaygroups, selectedPayGroupOption, setSelectedPayGroupOption, payGroups } =
+		usePaygroup(company, false);
 
-	useState(() => {
-		if (selectedPayGroup) {
-			setSelectedPayGroupOption(selectedPayGroup?.name);
-		}
-	}, [selectedPayGroup]);
+	const employees = useCompanyEmployees(company, deptName, selectedPayGroupOption);
 
 	useEffect(() => {
 		setFilteredEmployees(employees);

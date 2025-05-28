@@ -29,12 +29,12 @@ const UserService = {
 		return apiService.get(`/user/payroll-active-count/${id}`);
 	},
 
-	async getPayrollActiveCompanyUsers(id, deptName) {
-		return apiService.get(`/user/payroll-active/${id}/${deptName}`);
+	async getPayrollActiveCompanyUsers(id, deptName, payGroup) {
+		return apiService.get(`/user/payroll-active/${id}/${deptName}/${payGroup}`);
 	},
 
-	async getPayrollInActiveCompanyUsers(id, deptName) {
-		return apiService.get(`/user/payroll-inactive/${id}/${deptName}`);
+	async getPayrollInActiveCompanyUsers(id, deptName, payGroup) {
+		return apiService.get(`/user/payroll-inactive/${id}/${deptName}/${payGroup}`);
 	},
 
 	async getAllCompanyUsersCount(id) {
@@ -49,8 +49,8 @@ const UserService = {
 		return apiService.get(`/user/emp/${id}`);
 	},
 
-	async getAllCompanyUsers(id, deptName) {
-		return apiService.get(`/user/${id}/${deptName}`);
+	async getAllCompanyUsers(id, deptName, payGroup) {
+		return apiService.get(`/user/${id}/${deptName}/${payGroup}`);
 	},
 
 	async getAllCompManagers(id) {

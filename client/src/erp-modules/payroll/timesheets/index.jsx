@@ -32,19 +32,19 @@ const Timesheets = () => {
 	const userId = id ? id : isManagerView ? null : loggedInUser._id;
 	const toast = useToast();
 	const { company } = useCompany(LocalStorageService.getItem("selectedCompany"));
-	const { employees } = useEmployees(false, company, false, true, null, deptName);
-	const departments = useDepartment(company);
-	const cc = useCostCenter(company);
 	const {
 		hasMultiPaygroups,
 		selectedPayGroupOption,
 		setSelectedPayGroupOption,
 		payGroups,
-		selectedPayGroup,
 		payGroupSchedule,
 		closestRecord,
 		closestRecordIndex,
 	} = usePaygroup(company, false);
+
+	const { employees } = useEmployees(false, company, false, true, deptName, selectedPayGroupOption);
+	const departments = useDepartment(company);
+	const cc = useCostCenter(company);
 
 	const lastRecord = payGroupSchedule?.length > 0 && payGroupSchedule[closestRecordIndex - 1];
 	const [dataRefresh, setDataRefresh] = useState(false);
@@ -80,12 +80,6 @@ const Timesheets = () => {
 	// 		setEndDate(todayDate);
 	// 	}
 	// }, [closestRecord]);
-
-	useEffect(() => {
-		if (selectedPayGroup) {
-			setSelectedPayGroupOption(selectedPayGroup?.name);
-		}
-	}, [selectedPayGroup]);
 
 	useEffect(() => {
 		if (timesheets?.length) {

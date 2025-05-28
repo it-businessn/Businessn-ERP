@@ -28,7 +28,6 @@ const PayrollWorkview = () => {
 
 	useEffect(() => {
 		if (selectedPayGroup) {
-			setSelectedPayGroupOption(selectedPayGroup?.name);
 			setYearsList(selectedPayGroup?.yearSchedules.map(({ year }) => year));
 		}
 	}, [selectedPayGroup]);
@@ -65,6 +64,7 @@ const PayrollWorkview = () => {
 					closestRecord={closestRecord}
 					closestRecordIndex={closestRecordIndex}
 					loggedInUser={loggedInUser}
+					selectedPayGroupOption={selectedPayGroupOption}
 				/>
 			)}
 			<PaygroupDetailTable

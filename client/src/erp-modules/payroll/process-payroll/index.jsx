@@ -8,7 +8,7 @@ import { ROLES } from "constant";
 import useCompany from "hooks/useCompany";
 import usePaygroup from "hooks/usePaygroup";
 import PageLayout from "layouts/PageLayout";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { MdOutlineChevronRight } from "react-icons/md";
 import { useNavigate, useParams } from "react-router-dom";
 import { workViewPath } from "routes";
@@ -61,12 +61,6 @@ const ProcessPayroll = () => {
 	const isPayPeriodInactive = selectedPayPeriod?.isDisabledAction;
 	const isPayrollSubmitDisabled =
 		currentStep !== 5 || selectedPayPeriod?.isProcessed || isPayPeriodInactive;
-
-	useEffect(() => {
-		if (selectedPayGroup) {
-			setSelectedPayGroupOption(selectedPayGroup?.name);
-		}
-	}, [selectedPayGroup]);
 
 	const handleChange = (value) => {
 		if (value !== "") {

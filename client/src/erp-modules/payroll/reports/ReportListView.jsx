@@ -45,7 +45,6 @@ const ReportListView = () => {
 	// Update years list when paygroup changes
 	useState(() => {
 		if (selectedPayGroup) {
-			setSelectedPayGroupOption(selectedPayGroup?.name);
 			setYearsList(selectedPayGroup?.yearSchedules.map(({ year }) => year));
 		}
 	}, [selectedPayGroup]);
