@@ -24,10 +24,12 @@ const PositionInfo = ({
 	positionRoles,
 	setPositionAdded,
 	updateRecordIndex,
+	hasMultiPaygroups,
+	payGroups,
 }) => {
 	const defaultRoleInfo = {
 		title: "",
-		employmentPayGroup: selectedPayGroup,
+		employmentPayGroup: "",
 		employmentCostCenter: "",
 		employmentDepartment: "",
 		timeManagementBadgeID: "",
@@ -66,12 +68,6 @@ const PositionInfo = ({
 			setFilteredDept(department);
 		}
 	}, [roleInfo.employmentCostCenter, department]);
-
-	useEffect(() => {
-		if (selectedPayGroup && roleInfo?.employmentPayGroup !== selectedPayGroup) {
-			setRoleInfo((prevData) => ({ ...prevData, employmentPayGroup: selectedPayGroup }));
-		}
-	}, [roleInfo.employmentPayGroup, selectedPayGroup]);
 
 	const handleChange = (e) => {
 		const { name, value } = e.target;
@@ -136,13 +132,30 @@ const PositionInfo = ({
 						// )} */}
 					</Stack>
 					<Stack>
-						<InputFormControl
-							readOnly
-							autoComplete="off"
-							label="Pay Group"
-							name="employmentPayGroup"
-							valueText={roleInfo?.employmentPayGroup}
-						/>
+						{hasMultiPaygroups ? (
+							<SelectFormControl
+								valueParam="name"
+								name="name"
+								label="Pay Group"
+								valueText={roleInfo.employmentPayGroup || ""}
+								handleChange={(e) => {
+									setRoleInfo((prevData) => ({
+										...prevData,
+										employmentPayGroup: e.target.value,
+									}));
+								}}
+								options={payGroups}
+								placeholder="Select Paygroup"
+							/>
+						) : (
+							<InputFormControl
+								readOnly
+								autoComplete="off"
+								label="Pay Group"
+								name="employmentPayGroup"
+								valueText={roleInfo?.employmentPayGroup}
+							/>
+						)}
 						<SelectFormControl
 							required={(isOpen || !roleInfo.employmentCostCenter) && true}
 							valueParam="name"

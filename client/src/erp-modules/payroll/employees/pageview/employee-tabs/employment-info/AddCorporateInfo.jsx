@@ -34,7 +34,8 @@ const AddCorporateInfo = ({ company, id, handleNext, handlePrev }) => {
 	const [isDisabled, setIsDisabled] = useState(true);
 	const [isLoading, setIsLoading] = useState(false);
 	const [currentStep, setCurrentStep] = useState(0);
-	const { selectedPayGroup, payGroups } = usePaygroup(company, false);
+	const { hasMultiPaygroups, selectedPayGroup, payGroups } = usePaygroup(company, false);
+
 	const department = useDepartment(company);
 	const costCentres = useCostCenter(company);
 	const roles = useRoles(company);
@@ -139,6 +140,7 @@ const AddCorporateInfo = ({ company, id, handleNext, handlePrev }) => {
 							positionRoles={positionRoles}
 							setPositionAdded={setPositionAdded}
 							selectedPayGroup={selectedPayGroup?.name}
+							hasMultiPaygroups={hasMultiPaygroups}
 						/>
 					) : (
 						<>
@@ -172,6 +174,7 @@ const AddCorporateInfo = ({ company, id, handleNext, handlePrev }) => {
 										positionRoles={positionRoles}
 										setPositionAdded={setPositionAdded}
 										selectedPayGroup={selectedPayGroup?.name}
+										hasMultiPaygroups={hasMultiPaygroups}
 									/>
 								</BoxCard>
 							))}

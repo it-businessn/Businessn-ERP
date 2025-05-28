@@ -35,7 +35,7 @@ const CorporateInfo = ({ company, id, handleNext, handlePrev }) => {
 	const [isOpen, setIsOpen] = useState(false);
 	const [isDisabled, setIsDisabled] = useState(true);
 	const [isLoading, setIsLoading] = useState(false);
-	const { selectedPayGroup } = usePaygroup(company, false);
+	const { hasMultiPaygroups, selectedPayGroup, payGroups } = usePaygroup(company, false);
 	const department = useDepartment(company);
 	const costCentres = useCostCenter(company);
 	const roles = useRoles(company);
@@ -133,6 +133,8 @@ const CorporateInfo = ({ company, id, handleNext, handlePrev }) => {
 							setIsOpen={setIsOpen}
 							isDisabled={isDisabled}
 							setIsDisabled={setIsDisabled}
+							payGroups={payGroups}
+							hasMultiPaygroups={hasMultiPaygroups}
 							selectedPayGroup={selectedPayGroup?.name}
 							department={department}
 							costCentres={costCentres}
@@ -164,6 +166,8 @@ const CorporateInfo = ({ company, id, handleNext, handlePrev }) => {
 										setIsOpen={setIsOpen}
 										isDisabled={isDisabled}
 										setIsDisabled={setIsDisabled}
+										payGroups={payGroups}
+										hasMultiPaygroups={hasMultiPaygroups}
 										selectedPayGroup={selectedPayGroup?.name}
 										department={department}
 										costCentres={costCentres}
