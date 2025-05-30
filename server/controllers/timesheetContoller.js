@@ -266,13 +266,20 @@ const calcTotalWorkedHours = (clockIn, clockOut) => {
 
 	const startDate = new Date(clockIn);
 	const endDate = new Date(clockOut);
+
+	const sameHourAndMinute =
+		startDate.getUTCHours() === endDate.getUTCHours() &&
+		startDate.getUTCMinutes() === endDate.getUTCMinutes();
+
+	if (sameHourAndMinute) return 8;
+
 	const totalTime = (endDate - startDate) / (1000 * 60 * 60); // convert ms to hours
-	const roundedTime = totalTime.toFixed(2).includes(".99")
-		? Math.round(totalTime)
-		: totalTime.toFixed(2).includes(".01")
-		? Math.ceil(totalTime)
-		: totalTime.toFixed(2);
-	return roundedTime;
+	const fixedTime = totalTime.toFixed(2);
+
+	if (fixedTime.endsWith(".99")) return Math.round(totalTime);
+	if (fixedTime.endsWith(".01")) return Math.ceil(totalTime);
+
+	return fixedTime;
 };
 
 const addOvertimeRecord = async (clockIn, clockOut, employeeId, company, source) => {

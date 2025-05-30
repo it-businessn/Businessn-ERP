@@ -70,6 +70,7 @@ const Timesheet = ({
 	checkOverlaps,
 	timesheetData,
 	setTimesheetData,
+	selectedPayGroupOption,
 }) => {
 	const cols = [
 		COLS.EMP_NAME,
@@ -930,6 +931,7 @@ const Timesheet = ({
 					setShowAddEntry={setShowAddEntry}
 					source={TIMESHEET_SOURCE.MANAGER}
 					deptName={deptName}
+					selectedPayGroupOption={selectedPayGroupOption}
 				/>
 			)}
 

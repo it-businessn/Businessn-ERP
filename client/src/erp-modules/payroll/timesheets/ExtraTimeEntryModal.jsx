@@ -17,6 +17,7 @@ const ExtraTimeEntryModal = ({
 	userId,
 	source,
 	deptName,
+	selectedPayGroupOption,
 }) => {
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const initialFormData = {
@@ -35,7 +36,11 @@ const ExtraTimeEntryModal = ({
 	useEffect(() => {
 		const fetchAllEmployees = async () => {
 			try {
-				const { data } = await UserService.getPayrollActiveCompanyUsers(company, deptName);
+				const { data } = await UserService.getPayrollActiveCompanyUsers(
+					company,
+					deptName,
+					selectedPayGroupOption,
+				);
 				data.map((emp) => {
 					emp.fullName = emp?.empId?.fullName;
 					emp._id = emp?.empId?._id;

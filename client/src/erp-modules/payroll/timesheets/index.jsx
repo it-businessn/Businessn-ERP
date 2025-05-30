@@ -146,6 +146,7 @@ const Timesheets = () => {
 			type: "Timesheet",
 			name: (
 				<Timesheet
+					selectedPayGroupOption={selectedPayGroupOption}
 					deptName={deptName}
 					setTimesheetRefresh={setDataRefresh}
 					company={company}
@@ -186,6 +187,7 @@ const Timesheets = () => {
 						startDate: getMomentDate(closestRecord?.payPeriodStartDate).format("YYYY-MM-DD"),
 						endDate: getMomentDate(closestRecord?.payPeriodEndDate).format("YYYY-MM-DD"),
 					}}
+					selectedPayGroupOption={selectedPayGroupOption}
 					startDate
 				/>
 			),
