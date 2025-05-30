@@ -51,8 +51,8 @@ const ExtraTimeEntryModal = ({
 				console.error(error);
 			}
 		};
-		fetchAllEmployees();
-	}, []);
+		if (selectedPayGroupOption) fetchAllEmployees();
+	}, [selectedPayGroupOption]);
 
 	const handleChange = (e) => {
 		const { name, value } = e.target;
