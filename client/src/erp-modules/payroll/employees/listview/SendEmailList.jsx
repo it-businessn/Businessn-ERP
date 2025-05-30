@@ -17,7 +17,7 @@ const SendEmailList = ({ emailType, company, isOpen, onClose, selectedPayGroupOp
 	const [openMenu, setOpenMenu] = useState(false);
 	const [selectedEmp, setSelectedEmp] = useState(null);
 	const [selectedOptions, setSelectedOptions] = useState([]);
-	const [isLoading, setIsLoading] = useStsate(false);
+	const [isLoading, setIsLoading] = useState(false);
 
 	const [employees, setEmployees] = useState(null);
 	const isCreds = emailType === "creds";
