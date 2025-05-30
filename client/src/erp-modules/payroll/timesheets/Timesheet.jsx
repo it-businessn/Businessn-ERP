@@ -185,6 +185,7 @@ const Timesheet = ({
 		filter?.endDate,
 		filter?.filteredEmployees,
 		filter?.filteredDept,
+		filter?.selectedPayGroupOption,
 		refresh,
 	]);
 

@@ -68,7 +68,7 @@ const getEmploymentResult = async (companyName) => {
 	return empInfoMap;
 };
 
-const mapTimesheet = (payInfos, timesheets, empInfos) => {
+const mapTimesheet = (payInfos, timesheets, empInfos, selectedPayGroupOption) => {
 	timesheets.forEach((timesheet) => {
 		const empIdStr = timesheet?.employeeId?._id?.toString();
 		if (empInfos?.has(empIdStr)) {
@@ -98,7 +98,9 @@ const mapTimesheet = (payInfos, timesheets, empInfos) => {
 		}
 	});
 	return timesheets?.filter(
-		({ typeOfEarning, positions }) => typeOfEarning !== EARNING_TYPE.FT && positions.length > 0,
+		({ typeOfEarning, positions }) =>
+			typeOfEarning !== EARNING_TYPE.FT &&
+			positions?.find((_) => _?.employmentPayGroup === selectedPayGroupOption),
 	);
 };
 
@@ -182,6 +184,7 @@ const getFilteredTimesheets = async (req, res) => {
 	try {
 		const filteredData = JSON.parse(filter.split("=")[1]);
 		const { startDate, endDate } = filteredData;
+		const selectedPayGroupOption = filteredData?.selectedPayGroupOption;
 
 		let { page, limit } = req.query;
 		page = parseInt(page) || 1;
@@ -203,7 +206,7 @@ const getFilteredTimesheets = async (req, res) => {
 		const payInfo = await getTimesheetResult(companyName);
 		const employmentInfo = await getEmploymentResult(companyName);
 
-		let result = mapTimesheet(payInfo, timesheets, employmentInfo);
+		let result = mapTimesheet(payInfo, timesheets, employmentInfo, selectedPayGroupOption);
 
 		// const total = await findByRecordTimesheets(filterRecordCriteria);
 

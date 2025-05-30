@@ -204,11 +204,20 @@ const Timesheets = () => {
 			startDate,
 			filteredEmployees,
 			filteredDept,
+			selectedPayGroupOption,
 		}));
 		setShowEmpFilter(false);
 		setShowDeptFilter(false);
 		setShowCCFilter(false);
-	}, [startDate, endDate, filteredEmployees, filteredDept, filteredCC, viewMode]);
+	}, [
+		startDate,
+		endDate,
+		filteredEmployees,
+		filteredDept,
+		filteredCC,
+		viewMode,
+		selectedPayGroupOption,
+	]);
 
 	const showComponent = (viewMode) => TABS.find(({ type }) => type === viewMode)?.name;
 
