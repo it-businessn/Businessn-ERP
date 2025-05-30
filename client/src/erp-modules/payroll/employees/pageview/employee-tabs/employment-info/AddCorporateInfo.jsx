@@ -34,13 +34,21 @@ const AddCorporateInfo = ({ company, id, handleNext, handlePrev }) => {
 	const [isDisabled, setIsDisabled] = useState(true);
 	const [isLoading, setIsLoading] = useState(false);
 	const [currentStep, setCurrentStep] = useState(0);
-	const { hasMultiPaygroups, selectedPayGroup, payGroups } = usePaygroup(company, false);
+	const { selectedPayGroupOption, hasMultiPaygroups, payGroups } = usePaygroup(company, false);
 
 	const department = useDepartment(company);
 	const costCentres = useCostCenter(company);
 	const roles = useRoles(company);
 	const positionRoles = usePositionRoles(company, positionAdded);
-	const employmentInfo = useEmployeeEmploymentInfo(company, onboardingEmpId, true, false, refresh);
+	const employmentInfo = useEmployeeEmploymentInfo(
+		company,
+		onboardingEmpId,
+		true,
+		false,
+		refresh,
+		null,
+		selectedPayGroupOption,
+	);
 
 	useEffect(() => {
 		if (employmentInfo) {
@@ -139,7 +147,7 @@ const AddCorporateInfo = ({ company, id, handleNext, handlePrev }) => {
 							handleSubmit={handleSubmit}
 							positionRoles={positionRoles}
 							setPositionAdded={setPositionAdded}
-							selectedPayGroup={selectedPayGroup?.name}
+							selectedPayGroup={selectedPayGroupOption}
 							hasMultiPaygroups={hasMultiPaygroups}
 						/>
 					) : (
@@ -173,7 +181,7 @@ const AddCorporateInfo = ({ company, id, handleNext, handlePrev }) => {
 										company={company}
 										positionRoles={positionRoles}
 										setPositionAdded={setPositionAdded}
-										selectedPayGroup={selectedPayGroup?.name}
+										selectedPayGroup={selectedPayGroupOption}
 										hasMultiPaygroups={hasMultiPaygroups}
 									/>
 								</BoxCard>

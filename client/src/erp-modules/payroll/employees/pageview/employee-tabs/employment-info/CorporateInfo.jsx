@@ -28,14 +28,22 @@ const CorporateInfo = ({ company, id, handleNext, handlePrev }) => {
 	const { empId } = useSelectedEmp(LocalStorageService.getItem("empId"));
 	const [refresh, setRefresh] = useState(false);
 	const [positionAdded, setPositionAdded] = useState(false);
+	const { selectedPayGroupOption, hasMultiPaygroups, payGroups } = usePaygroup(company, false);
 
-	const employmentInfo = useEmployeeEmploymentInfo(company, empId, true, false, refresh);
+	const employmentInfo = useEmployeeEmploymentInfo(
+		company,
+		empId,
+		true,
+		false,
+		refresh,
+		null,
+		selectedPayGroupOption,
+	);
 	const initialCorporateInfo = getInitialCorporateInfo(empId, company);
 	const [formData, setFormData] = useState(initialCorporateInfo);
 	const [isOpen, setIsOpen] = useState(false);
 	const [isDisabled, setIsDisabled] = useState(true);
 	const [isLoading, setIsLoading] = useState(false);
-	const { hasMultiPaygroups, selectedPayGroup, payGroups } = usePaygroup(company, false);
 	const department = useDepartment(company);
 	const costCentres = useCostCenter(company);
 	const roles = useRoles(company);
@@ -135,7 +143,7 @@ const CorporateInfo = ({ company, id, handleNext, handlePrev }) => {
 							setIsDisabled={setIsDisabled}
 							payGroups={payGroups}
 							hasMultiPaygroups={hasMultiPaygroups}
-							selectedPayGroup={selectedPayGroup?.name}
+							selectedPayGroup={selectedPayGroupOption}
 							department={department}
 							costCentres={costCentres}
 							handleSubmit={handleSubmit}
@@ -168,7 +176,7 @@ const CorporateInfo = ({ company, id, handleNext, handlePrev }) => {
 										setIsDisabled={setIsDisabled}
 										payGroups={payGroups}
 										hasMultiPaygroups={hasMultiPaygroups}
-										selectedPayGroup={selectedPayGroup?.name}
+										selectedPayGroup={selectedPayGroupOption}
 										department={department}
 										costCentres={costCentres}
 										handleSubmit={handleSubmit}
