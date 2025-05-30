@@ -31,7 +31,7 @@ const useEmployeeEEContribution = (
 				console.error(error);
 			}
 		};
-		if (payPeriod) {
+		if (payPeriod && selectedPayGroupOption) {
 			fetchEEContribution();
 		}
 	}, [company, payPeriod, payrunOption, selectedPayGroupOption]);

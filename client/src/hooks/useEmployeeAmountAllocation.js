@@ -30,7 +30,7 @@ const useEmployeeAmountAllocation = (
 				console.error(error);
 			}
 		};
-		fetchEmployeeAmountInfo();
+		if (selectedPayGroupOption) fetchEmployeeAmountInfo();
 	}, [company, refresh, payPeriod, payrunOption, selectedPayGroupOption]);
 	return amountInfo;
 };

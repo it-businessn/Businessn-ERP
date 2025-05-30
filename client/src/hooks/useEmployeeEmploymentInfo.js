@@ -33,7 +33,7 @@ const useEmployeeEmploymentInfo = (
 				console.error(error);
 			}
 		};
-		if (company && (payPeriod || empId)) fetchEmployeeEmploymentInfo();
+		if (company && selectedPayGroupOption && (payPeriod || empId)) fetchEmployeeEmploymentInfo();
 	}, [company, empId, payPeriod, refresh, selectedPayGroupOption]);
 	return employmentInfo;
 };

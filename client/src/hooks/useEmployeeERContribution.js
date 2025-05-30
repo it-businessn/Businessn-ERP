@@ -31,7 +31,7 @@ const useEmployeeERContribution = (
 				console.error(error);
 			}
 		};
-		if (payPeriod) {
+		if (payPeriod && selectedPayGroupOption) {
 			fetchERContribution();
 		}
 	}, [company, payPeriod, payrunOption, selectedPayGroupOption]);

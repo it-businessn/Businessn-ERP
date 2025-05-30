@@ -176,7 +176,7 @@ const Timesheet = ({
 				setLoading(false);
 			}
 		};
-		if (filter?.startDate) {
+		if (filter?.selectedPayGroupOption) {
 			fetchAllEmployeeTimesheet();
 		}
 	}, [

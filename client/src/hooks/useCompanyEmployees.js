@@ -22,7 +22,7 @@ const useCompanyEmployees = (company, deptName, selectedPayGroupName) => {
 				console.error(error);
 			}
 		};
-		fetchAllEmployees();
+		if (selectedPayGroupName) fetchAllEmployees();
 	}, [company, selectedPayGroupName]);
 
 	return employees;
