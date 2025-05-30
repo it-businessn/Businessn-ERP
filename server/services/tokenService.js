@@ -3,7 +3,8 @@ const moment = require("moment");
 
 const getResetPasswordLink = (user) => {
 	try {
-		const expiresIn = moment().add(3, "days").unix();
+		// const expiresIn = moment().add(3, "days").unix();
+		const expiresIn = moment().add(15, "minutes").unix();
 		const payload = {
 			...user,
 			exp: expiresIn,

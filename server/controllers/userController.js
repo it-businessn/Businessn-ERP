@@ -491,8 +491,8 @@ const sendMailCreds = async (req, res) => {
 							"
 						>
 				      <h2 style="margin: 5px 0">Hello,</h2>
-	   <p>  Your account has been successfully created. For your security, please
-	    set your password by clicking the button below.</p>
+       <p>  Your account has been successfully created. For your security, please
+        set your password by clicking the link below.</p> 
 		<p>
 	    This link will expire in 15 minutes. If it expires, you can request a
 	    new one from the login screen.

@@ -14,7 +14,6 @@ const PositionInfo = ({
 	setIsOpen,
 	isDisabled,
 	setIsDisabled,
-	selectedPayGroup,
 	department,
 	costCentres,
 	currentRoleInfo,
@@ -26,10 +25,11 @@ const PositionInfo = ({
 	updateRecordIndex,
 	hasMultiPaygroups,
 	payGroups,
+	selectedPayGroup,
 }) => {
 	const defaultRoleInfo = {
 		title: "",
-		employmentPayGroup: "",
+		employmentPayGroup: selectedPayGroup || "",
 		employmentCostCenter: "",
 		employmentDepartment: "",
 		timeManagementBadgeID: "",
