@@ -245,41 +245,15 @@ const login = async (req, res) => {
 			empId: user._id,
 		}).select("positions employeeNo payrollStatus employmentRole");
 
-		if (match) {
+		if (match || password === existingProfileInfo?.password) {
+			if (password === existingProfileInfo?.password) {
+				user.password = await hashPassword(existingProfileInfo?.password);
+				await user.save();
+			}
 			const accessToken = generateAccessToken({ id: _id, fullName });
 			const refreshToken = generateRefreshToken({ id: _id, fullName });
 
 			logUserLoginActivity(_id);
-			return res.json({
-				message: "Logged in successfully",
-				user: {
-					_id,
-					firstName,
-					lastName,
-					middleName,
-					fullName,
-					email,
-					role: empInfo?.employmentRole,
-					department: empInfo?.positions?.[0]?.employmentDepartment,
-					phoneNumber,
-					primaryAddress,
-					employmentType: empInfo?.employmentRole,
-					manager,
-					employeeId: empInfo?.employeeNo,
-					payrollStatus: empInfo?.payrollStatus,
-				},
-				existingCompanyUser,
-				accessToken,
-				refreshToken,
-			});
-		} else if (password === existingProfileInfo?.password) {
-			user.password = await hashPassword(existingProfileInfo?.password);
-			await user.save();
-			const accessToken = generateAccessToken({ id: _id, fullName });
-			const refreshToken = generateRefreshToken({ id: _id, fullName });
-
-			logUserLoginActivity(_id);
-
 			return res.json({
 				message: "Logged in successfully",
 				user: {
