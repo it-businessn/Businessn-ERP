@@ -22,6 +22,7 @@ import { useNavigate } from "react-router-dom";
 import { payrollEmployeePath } from "routes";
 import LocalStorageService from "services/LocalStorageService";
 import EmployeeList from "./EmployeeList";
+import SendEmailList from "./SendEmailList";
 
 const EmployeeListView = () => {
 	const loggedInUser = LocalStorageService.getItem("user");
@@ -58,6 +59,7 @@ const EmployeeListView = () => {
 	const [filteredCC, setFilteredCC] = useState([]);
 	const [empName, setEmpName] = useState("");
 	const [showOnboard, setShowOnboard] = useState(false);
+	const [selectEmpList, setSelectEmpList] = useState(false);
 
 	const navigate = useNavigate();
 
@@ -69,6 +71,9 @@ const EmployeeListView = () => {
 		if (val === "terminate") {
 			const empPath = `${payrollEmployeePath}/info/${loggedInUser._id}/3`;
 			navigate(empPath);
+		}
+		if (val === "send-login") {
+			setSelectEmpList(true);
 		}
 	};
 	const handleInputChange = (value) => {
@@ -141,7 +146,7 @@ const EmployeeListView = () => {
 						actions={[
 							{ key: "terminate", name: "Terminate" },
 							{ key: "form", name: "Issue Forms" },
-							{ key: "extra", name: "Send Login" },
+							{ key: "send-login", name: "Send Login" },
 						]}
 					/>
 				</Box>
@@ -204,6 +209,15 @@ const EmployeeListView = () => {
 					title="Onboard employee"
 					showOnboard={showOnboard}
 					setShowOnboard={setShowOnboard}
+				/>
+			)}
+			{selectEmpList && (
+				<SendEmailList
+					isOpen={selectEmpList}
+					onClose={() => setSelectEmpList(false)}
+					employees={filteredEmployees}
+					selectedPayGroupOption={selectedPayGroupOption}
+					company={company}
 				/>
 			)}
 		</PageLayout>

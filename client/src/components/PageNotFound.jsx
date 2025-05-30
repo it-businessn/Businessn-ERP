@@ -9,7 +9,7 @@ export default function PageNotFound() {
 			alignItems="center"
 			justifyContent="center"
 			flexDirection="column"
-			minH="calc(100vh - 225px)"
+			className="page_not_found"
 		>
 			<Heading>404</Heading>
 			<Text fontSize="18px" mt={3} mb={2}>

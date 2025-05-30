@@ -44,6 +44,8 @@ router.get("/:companyName/:deptName/:payGroup", userController.getCompanyEmploye
 
 router.post("/create", userController.createMasterUser);
 
+router.post("/send-email", userController.sendMailCreds);
+
 router.put("/master/:userId", userController.updateMasterUser);
 
 router.put("/:userId", userController.updateUser);
