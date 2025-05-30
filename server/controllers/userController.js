@@ -410,7 +410,7 @@ const sendMailCreds = async (req, res) => {
 									class="topic"
 									style="font-weight: bold; font-size: larger; margin: 5px 0"
 								>
-									Reset Password
+									Set Password
 								</p>
 							</div>
 						</div><div
@@ -426,10 +426,14 @@ const sendMailCreds = async (req, res) => {
 								font-size: 14px;
 							"
 						>
-				      <p style="margin: 5px 0">Hello,</p>
-				      <p>You requested a password reset. Click the link below to reset your password:</p>
-				      <p><a href="${resetLink}" target="_blank">Reset Password</a></p>
-				      <p>Thanks,</p>
+				      <h2 style="margin: 5px 0">Hello,</h2>
+       <p>  Your account has been successfully created. For your security, please
+        set your password by clicking the button below.</p> 
+		<p>
+        This link will expire in 15 minutes. If it expires, you can request a
+        new one from the login screen.
+      </p>
+				      <p><a class="button" href="${resetLink}" target="_blank">Set Your Password</a></p>
 				   </div>
 						<div
 							class="footer"
