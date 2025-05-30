@@ -1,104 +1,112 @@
 <!DOCTYPE html>
 <html lang="en">
-	<head>
-		<meta charset="UTF-8" />
-		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<style>
-			* {
-				font-family: "Inter Variable", -apple-system, system-ui, sans-serif;
-				margin: 0;
-				padding: 0;
-				box-sizing: border-box;
-			}
-			.flex-container {
-				display: flex;
-				justify-content: center;
-				height: 100vh;
-				background-color: #01193d;
-				align-items: center;
-			}
-			.form-div {
-				padding: 2em;
-				padding-top: 3em;
-				background-color: white;
-				width: 28rem;
-				border-radius: 1em;
-			}
-			h1 {
-				font-size: 1.875em;
-				line-height: 2.375rem;
-				font-weight: 600;
-				margin: 1em 0;
-			}
-			.form-content {
-				display: flex;
-				flex-direction: column;
-				width: 100%;
-			}
-			input,
-			button,
-			label {
-				font-size: 0.875rem;
-			}
-			input,
-			button {
-				height: 2.5rem;
-				border-radius: 0.5rem;
-				border: 1px solid #e2e8f0;
-			}
-			input,
-			label {
-				padding-inline-start: 1em;
-				color: black;
-				margin-top: 0.5rem;
-				padding-inline-end: 1em;
-			}
-			button {
-				color: white;
-				background: #01193d;
-				cursor: pointer;
-			}
-			.center {
-				text-align: center;
-			}
-			img {
-				width: 7em;
-			}
-		</style>
-		<title>Create Your Password</title>
-		<script>
-			var status = `<%- JSON.stringify(status) %>`;
 
-			if (JSON.parse(status) == "Verified") {
-				if (confirm("Do u want to login?")) {
-					window.location.href = "https://businessn-erp.com/";
-				}
+<head>
+	<meta charset="UTF-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<style>
+		* {
+			font-family: "Inter Variable", -apple-system, system-ui, sans-serif;
+			margin: 0;
+			padding: 0;
+			box-sizing: border-box;
+		}
+
+		.flex-container {
+			display: flex;
+			justify-content: center;
+			height: 100vh;
+			background-color: #01193d;
+			align-items: center;
+		}
+
+		.form-div {
+			padding: 2em;
+			padding-top: 3em;
+			background-color: white;
+			width: 28rem;
+			border-radius: 1em;
+		}
+
+		h1 {
+			font-size: 1.875em;
+			line-height: 2.375rem;
+			font-weight: 600;
+			margin: 1em 0;
+		}
+
+		.form-content {
+			display: flex;
+			flex-direction: column;
+			width: 100%;
+		}
+
+		input,
+		button,
+		label {
+			font-size: 0.875rem;
+		}
+
+		input,
+		button {
+			height: 2.5rem;
+			border-radius: 0.5rem;
+			border: 1px solid #e2e8f0;
+		}
+
+		input,
+		label {
+			padding-inline-start: 1em;
+			color: black;
+			margin-top: 0.5rem;
+			padding-inline-end: 1em;
+		}
+
+		button {
+			color: white;
+			background: #01193d;
+			cursor: pointer;
+		}
+
+		.center {
+			text-align: center;
+		}
+
+		img {
+			width: 7em;
+		}
+	</style>
+	<title>Create Your Password</title>
+	<script>
+		var status = `<%- JSON.stringify(status) %>`;
+
+		if (JSON.parse(status) == "Verified") {
+			if (confirm("Do u want to login?")) {
+				window.location.href = "https://businessn-erp.com/";
 			}
-		</script>
-	</head>
-	<body>
-		<section class="flex-container">
-			<section class="form-div">
-				<section class="center">
-					<img alt="logo" src="/assets/logos/logoCover.jpg" />
-					<h1>Create New Password</h1>
-				</section>
+		}
+	</script>
+</head>
 
-				<form class="form-content" action="" method="post">
-					<label>Email Address : <%= email%></label>
-
-					<input type="password" name="password" id="password" placeholder="Enter new password" />
-					<input
-						type="text"
-						name="confirmPassword"
-						id="confirmPassword"
-						placeholder="Confirm your password"
-					/>
-					<br />
-					<button>Reset password</button>
-				</form>
+<body>
+	<section class="flex-container">
+		<section class="form-div">
+			<section class="center">
+				<img alt="logo" src="/assets/logos/logoCover.jpg" />
+				<h1>Create New Password</h1>
 			</section>
+
+			<form class="form-content" action="" method="post">
+				<label>Email Address : <%= email%></label>
+
+				<input type="text" name="password" id="password" placeholder="Enter new password" />
+				<input type="text" name="confirmPassword" id="confirmPassword" placeholder="Confirm your password" />
+				<br />
+				<button>Reset password</button>
+			</form>
 		</section>
-	</body>
+	</section>
+</body>
+
 </html>
