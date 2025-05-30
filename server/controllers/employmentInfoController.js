@@ -9,7 +9,7 @@ const EmployeeProfileInfo = require("../models/EmployeeProfileInfo");
 const EmployeeTADProfileInfo = require("../models/EmployeeTADProfile");
 
 const getAllEmploymentInfo = async (req, res) => {
-	const { companyName, startDate, endDate, payDate, isExtraRun, groupId, deptName } = req.params;
+	const { companyName, payDate, isExtraRun, groupId, deptName, selectedPayGroupOption } = req.body;
 	try {
 		const isExtraPayRun = isExtraRun === "true";
 
@@ -19,6 +19,7 @@ const getAllEmploymentInfo = async (req, res) => {
 			payDate,
 			companyName,
 			deptName,
+			selectedPayGroupOption,
 		);
 
 		const aggregatedResult = [];
@@ -109,14 +110,17 @@ const updateEmploymentInfo = async (id, data) =>
 	});
 
 const updateEmployee = async (empId, data) => {
-	const { payrollStatus, employeeNo } = data;
+	const { payrollStatus, employeeNo, employmentRole } = data;
 	const employee = await Employee.findById(empId);
 
 	if (employee?.payrollStatus !== payrollStatus) {
 		employee.payrollStatus = payrollStatus;
 	}
-	if (employeeNo && employeeNo !== "") {
+	if (employeeNo && employeeNo !== "" && employee?.employeeNo !== employeeNo) {
 		employee.employeeNo = employeeNo;
+	}
+	if (employmentRole && employee?.role !== employmentRole) {
+		employee.role = employmentRole;
 	}
 
 	await employee.save();
@@ -129,23 +133,22 @@ const updateTADEmployee = async (empId, companyName, positionData) => {
 	}).select("firstName middleName lastName");
 
 	const { firstName, middleName, lastName } = empProfileInfo;
-	const { cardNum, timeManagementBadgeID } = positionData;
 
 	const tadUserExists = await EmployeeTADProfileInfo.findOne({ empId });
 	if (tadUserExists) {
-		tadUserExists.cardNum = cardNum;
-		tadUserExists.timeManagementBadgeID = timeManagementBadgeID;
+		tadUserExists.cardNum = positionData?.cardNum;
+		tadUserExists.timeManagementBadgeID = positionData?.timeManagementBadgeID;
 		return await tadUserExists.save();
 	}
-	if ((!tadUserExists && cardNum, timeManagementBadgeID)) {
+	if (!tadUserExists && positionData?.timeManagementBadgeID) {
 		return await EmployeeTADProfileInfo.create({
 			empId,
 			companyName,
 			firstName,
 			middleName,
 			lastName,
-			cardNum,
-			timeManagementBadgeID,
+			cardNum: positionData?.cardNum,
+			timeManagementBadgeID: positionData?.timeManagementBadgeID,
 		});
 	}
 };
@@ -169,7 +172,8 @@ const addEmployeeEmploymentInfo = async (req, res) => {
 			employeeNo,
 			employmentRole,
 		};
-		if (positions?.length) {
+		const positionExists = positions?.find((_) => _.title);
+		if (positionExists) {
 			const roles = [...positions];
 			const existingPayInfo = await EmployeePayInfo.findOne({ empId, companyName });
 			if (existingPayInfo) {
@@ -195,7 +199,9 @@ const addEmployeeEmploymentInfo = async (req, res) => {
 				employmentRegion,
 			});
 			await updateEmployee(existingEmploymentInfo.empId, data);
-			await updateTADEmployee(existingEmploymentInfo.empId, companyName, positions[0]);
+			if (positions?.length && positions[0]) {
+				await updateTADEmployee(existingEmploymentInfo.empId, companyName, positions[0]);
+			}
 			if (
 				employmentRole !== existingEmploymentInfo?.employmentRole &&
 				companyName !== existingEmploymentInfo?.companyName
@@ -217,7 +223,9 @@ const addEmployeeEmploymentInfo = async (req, res) => {
 			employmentRegion,
 		});
 		await updateEmployee(empId, data);
-		await updateTADEmployee(empId, companyName, positions[0]);
+		if (positionExists && positions[0]) {
+			await updateTADEmployee(empId, companyName, positions[0]);
+		}
 		await setInitialPermissions(empId, employmentRole, companyName);
 		return res.status(201).json(newEmploymentInfo);
 	} catch (error) {

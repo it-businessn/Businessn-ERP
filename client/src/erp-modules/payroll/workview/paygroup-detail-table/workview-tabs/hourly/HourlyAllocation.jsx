@@ -3,6 +3,7 @@ import useEmployeeHoursWorked from "hooks/useEmployeeHoursWorked";
 import { useEffect, useState } from "react";
 import { timesheetPath } from "routes";
 import PayrollService from "services/PayrollService";
+import { convertDecimal } from "utils/convertAmt";
 import WorkviewTab from "../WorkviewTab";
 import {
 	MANUAL_PAYOUT_HOURLY_ALLOCATE_COLS,
@@ -11,8 +12,22 @@ import {
 	SUPERFICIAL_HOURLY_ALLOCATE_COLS,
 } from "./payrunHourlyAllocationCols";
 
-const HourlyAllocation = ({ company, closestRecord, groupId, payrunOption, deptName }) => {
-	const data = useEmployeeHoursWorked(company, closestRecord, groupId, payrunOption, deptName);
+const HourlyAllocation = ({
+	company,
+	closestRecord,
+	groupId,
+	payrunOption,
+	deptName,
+	selectedPayGroupOption,
+}) => {
+	const hourlyAllocationData = useEmployeeHoursWorked(
+		company,
+		closestRecord,
+		groupId,
+		payrunOption,
+		deptName,
+		selectedPayGroupOption,
+	);
 
 	const PAYRUN_HOURS_DATA = {
 		1: REGULAR_HOURLY_ALLOCATE_COLS,
@@ -43,13 +58,38 @@ const HourlyAllocation = ({ company, closestRecord, groupId, payrunOption, deptN
 	}, [payrunHoursData]);
 
 	useEffect(() => {
-		if (data) {
-			setHourlyAllocatedHours(data);
+		if (hourlyAllocationData) {
+			hourlyAllocationData.map((hrs) => {
+				hrs.totalRegHoursWorked = convertDecimal(hrs?.totalRegHoursWorked);
+				hrs.totalSickHoursWorked = convertDecimal(hrs?.totalSickHoursWorked);
+				hrs.totalStatDayHoursWorked = convertDecimal(hrs?.totalStatDayHoursWorked);
+				hrs.totalStatHours = convertDecimal(hrs?.totalStatHours);
+				hrs.totalVacationHoursWorked = convertDecimal(hrs?.totalVacationHoursWorked);
+				hrs.additionalDblOvertimeHoursWorked = convertDecimal(
+					hrs?.additionalDblOvertimeHoursWorked,
+				);
+				hrs.additionalRegHoursWorked = convertDecimal(hrs?.additionalRegHoursWorked);
+				hrs.additionalRegHoursWorked2 = convertDecimal(hrs?.additionalRegHoursWorked2);
+				hrs.additionalSickHoursWorked = convertDecimal(hrs?.additionalSickHoursWorked);
+				hrs.additionalStatDayHoursWorked = convertDecimal(hrs?.additionalStatDayHoursWorked);
+				hrs.additionalStatHoursWorked = convertDecimal(hrs?.additionalStatHoursWorked);
+				hrs.additionalVacationHoursWorked = convertDecimal(hrs?.additionalVacationHoursWorked);
+				hrs.totalDblOvertimeHoursWorked = convertDecimal(hrs?.totalDblOvertimeHoursWorked);
+				hrs.totalOvertimeHoursWorked = convertDecimal(hrs?.totalOvertimeHoursWorked);
+
+				hrs.totalHoursWorked = convertDecimal(hrs?.totalHoursWorked);
+				hrs.totalSuperficialHoursWorked = convertDecimal(hrs?.totalSuperficialHoursWorked);
+				hrs.totalManualHoursWorked = convertDecimal(hrs?.totalManualHoursWorked);
+				hrs.totalPayoutHoursWorked = convertDecimal(hrs?.totalPayoutHoursWorked);
+
+				return hrs;
+			});
+			setHourlyAllocatedHours(hourlyAllocationData);
 		}
-	}, [data]);
+	}, [hourlyAllocationData]);
 
 	const cellClick = (row) => {
-		const item = data?.find((record) => record.empId._id === row.empId._id);
+		const item = hourlyAllocationData?.find((record) => record.empId._id === row.empId._id);
 		setFormData(item);
 	};
 
@@ -63,7 +103,7 @@ const HourlyAllocation = ({ company, closestRecord, groupId, payrunOption, deptN
 	const handleSave = async () => {
 		try {
 			const updatedRec = hourlyAllocatedHours?.find(
-				(record) => record.empId._id === formData.empId._id,
+				(record) => record.empId._id === formData?.empId._id,
 			);
 			if (updatedRec) {
 				updatedRec[totalColumnKey] = 0;

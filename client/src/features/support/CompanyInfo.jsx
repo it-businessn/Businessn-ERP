@@ -27,7 +27,7 @@ const CompanyInfo = ({ id, handleNext }) => {
 	const [isSaveDisabled, setIsSaveDisabled] = useState(true);
 
 	useEffect(() => {
-		if (formData.companyName !== "" && formData.clientId !== "") {
+		if (formData?.companyName !== "" && formData?.clientId !== "") {
 			setIsSaveDisabled(false);
 		}
 	}, [formData]);

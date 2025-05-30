@@ -1,7 +1,7 @@
 import { HStack, Table, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
 import PrimaryButton from "components/ui/button/PrimaryButton";
 import EmptyRowRecord from "components/ui/EmptyRowRecord";
-import SelectBox from "components/ui/form/select/SelectBox";
+import InputFormControl from "components/ui/form/InputFormControl";
 import TextTitle from "components/ui/text/TextTitle";
 import useCompany from "hooks/useCompany";
 import { useState } from "react";
@@ -31,6 +31,7 @@ const PayrunSetup = ({
 					companyName: company,
 					currentPayPeriod: closestRecord,
 					deptName,
+					selectedPayGroupOption: selectedPayGroup,
 				});
 				if (response) {
 					handleClick();
@@ -81,15 +82,11 @@ const PayrunSetup = ({
 							<TextTitle size={"md"} title={"Payroll group"} />
 						</Th>
 						<Th>
-							<SelectBox
-								// handleChange={handleChange}
-								data={payGroups}
-								name="name"
-								border="1px solid var(--primary_button_bg)"
-								color={"var(--primary_button_bg)"}
-								value={selectedPayGroup?.name}
-								placeholder="Select Paygroup"
-								size={"sm"}
+							<InputFormControl
+								readOnly
+								autoComplete="off"
+								name="employmentPayGroup"
+								valueText={selectedPayGroup}
 							/>
 						</Th>
 					</Tr>

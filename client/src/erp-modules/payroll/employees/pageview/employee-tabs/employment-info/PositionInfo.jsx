@@ -1,24 +1,31 @@
-import { Button, FormLabel, HStack, Stack } from "@chakra-ui/react";
+import { Button, FormLabel, HStack, Stack, Tooltip } from "@chakra-ui/react";
 
 import PrimaryButton from "components/ui/button/PrimaryButton";
 import InputFormControl from "components/ui/form/InputFormControl";
 import SelectFormControl from "components/ui/form/SelectFormControl";
 import TextTitle from "components/ui/text/TextTitle";
 import { COMPANIES } from "constant";
+import AddNewShiftRole from "erp-modules/scheduling/workview/quick-selection/AddNewShiftRole";
 import { useEffect, useState } from "react";
+import { FaPlus } from "react-icons/fa";
 
 const PositionInfo = ({
 	isOpen,
 	setIsOpen,
 	isDisabled,
 	setIsDisabled,
-	payGroups,
+	selectedPayGroup,
 	department,
 	costCentres,
 	currentRoleInfo,
 	handleSubmit,
 	rolePos,
 	company,
+	positionRoles,
+	setPositionAdded,
+	updateRecordIndex,
+	hasMultiPaygroups,
+	payGroups,
 }) => {
 	const defaultRoleInfo = {
 		title: "",
@@ -29,7 +36,7 @@ const PositionInfo = ({
 		cardNum: "",
 		positions: [],
 	};
-
+	const [showAddNewRole, setShowAddNewRole] = useState(false);
 	const [roleInfo, setRoleInfo] = useState(currentRoleInfo || defaultRoleInfo);
 	const [filteredDept, setFilteredDept] = useState(department);
 
@@ -73,16 +80,28 @@ const PositionInfo = ({
 				{rolePos ? <TextTitle title={rolePos} /> : <FormLabel>New Role Details</FormLabel>}
 				<HStack alignItems="self-start" spacing={5} w="70%">
 					<Stack>
-						<InputFormControl
-							autoComplete="off"
-							required={(isOpen || !roleInfo.title) && true}
-							label="Role title"
-							name="title"
-							placeholder="Enter title"
-							valueText={roleInfo.title}
-							handleChange={handleChange}
-						/>
-
+						<HStack w="100%" justify={"space-between"}>
+							<SelectFormControl
+								valueParam="name"
+								required={true}
+								name="name"
+								label="Role title"
+								valueText={roleInfo.title || ""}
+								handleChange={(e) =>
+									setRoleInfo((prevData) => ({
+										...prevData,
+										title: e.target.value,
+									}))
+								}
+								options={positionRoles}
+								placeholder="Select Role"
+							/>
+							<Tooltip label="Add new role">
+								<span style={{ marginTop: "1em" }}>
+									<FaPlus cursor="pointer" onClick={() => setShowAddNewRole(true)} />
+								</span>
+							</Tooltip>
+						</HStack>
 						{/* {isOpen ? ( */}
 						<>
 							<InputFormControl
@@ -113,17 +132,30 @@ const PositionInfo = ({
 						// )} */}
 					</Stack>
 					<Stack>
-						<SelectFormControl
-							required={(isOpen || !roleInfo.employmentPayGroup) && true}
-							valueParam="name"
-							name="employmentPayGroup"
-							label="Pay Group"
-							valueText={roleInfo.employmentPayGroup || ""}
-							handleChange={handleChange}
-							options={payGroups}
-							placeholder="Select Pay Group"
-						/>
-
+						{hasMultiPaygroups ? (
+							<SelectFormControl
+								valueParam="name"
+								name="name"
+								label="Pay Group"
+								valueText={roleInfo.employmentPayGroup || ""}
+								handleChange={(e) => {
+									setRoleInfo((prevData) => ({
+										...prevData,
+										employmentPayGroup: e.target.value,
+									}));
+								}}
+								options={payGroups}
+								placeholder="Select Paygroup"
+							/>
+						) : (
+							<InputFormControl
+								readOnly
+								autoComplete="off"
+								label="Pay Group"
+								name="employmentPayGroup"
+								valueText={roleInfo?.employmentPayGroup}
+							/>
+						)}
 						<SelectFormControl
 							required={(isOpen || !roleInfo.employmentCostCenter) && true}
 							valueParam="name"
@@ -162,7 +194,14 @@ const PositionInfo = ({
 					</HStack>
 				)}
 			</Stack>
-
+			{showAddNewRole && (
+				<AddNewShiftRole
+					showAddNewRole={showAddNewRole}
+					setRefresh={setPositionAdded}
+					setShowAddNewRole={setShowAddNewRole}
+					company={company}
+				/>
+			)}
 			{!isOpen && (
 				<PrimaryButton
 					w="100px"
@@ -175,7 +214,7 @@ const PositionInfo = ({
 					}
 					onOpen={() => {
 						if (roleInfo.title) {
-							handleSubmit(roleInfo);
+							handleSubmit(roleInfo, updateRecordIndex);
 						}
 					}}
 				/>

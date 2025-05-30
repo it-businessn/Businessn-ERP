@@ -1,9 +1,11 @@
 const Company = require("../models/Company");
 const CostCenter = require("../models/CostCenter");
+const Crew = require("../models/Crew");
 const Department = require("../models/Department");
 const Employee = require("../models/Employee");
 const EmployeeEmploymentInfo = require("../models/EmployeeEmploymentInfo");
 const EmployeeRole = require("../models/EmployeeRole");
+const EmploymentPositionRole = require("../models/EmploymentPositionRole");
 const EmploymentType = require("../models/EmploymentType");
 const Group = require("../models/Group");
 const Holiday = require("../models/Holiday");
@@ -31,6 +33,34 @@ const getLocations = async (req, res) => {
 			name: 1,
 		});
 		res.status(200).json(locations);
+	} catch (error) {
+		res.status(404).json({ error: error.message });
+	}
+};
+
+const getPositionRoles = async (req, res) => {
+	const { companyName } = req.params;
+	try {
+		const roles = await EmploymentPositionRole.find({
+			companyName,
+		}).sort({
+			name: 1,
+		});
+		res.status(200).json(roles);
+	} catch (error) {
+		res.status(404).json({ error: error.message });
+	}
+};
+
+const getCrews = async (req, res) => {
+	const { companyName } = req.params;
+	try {
+		const crews = await Crew.find({
+			companyName,
+		}).sort({
+			createdOn: -1,
+		});
+		res.status(200).json(crews);
 	} catch (error) {
 		res.status(404).json({ error: error.message });
 	}
@@ -65,11 +95,76 @@ const addLocation = async (req, res) => {
 	}
 };
 
+const addCrew = async (req, res) => {
+	const { createdBy, crewName, companyName, include } = req.body;
+
+	try {
+		const newCrew = await Crew.create({
+			name: crewName,
+			createdBy,
+			config: include,
+			companyName,
+		});
+		res.status(201).json(newCrew);
+	} catch (error) {
+		res.status(400).json({ message: error.message });
+	}
+};
+
 const addRole = async (req, res) => {
 	const { name, description, companyName } = req.body;
 
 	try {
 		const newRole = await EmployeeRole.create({
+			name,
+			description,
+			companyName,
+		});
+		res.status(201).json(newRole);
+	} catch (error) {
+		res.status(400).json({ message: error.message });
+	}
+};
+
+const addPositionRole = async (req, res) => {
+	const { name, description, companyName } = req.body;
+
+	try {
+		// ******move from emplomntpositions to EmploymentPositionRole
+		// const distinctTitles = await EmployeeEmploymentInfo.aggregate([
+		// 	{
+		// 		$match: { companyName },
+		// 	},
+		// 	{
+		// 		$unwind: "$positions",
+		// 	},
+		// 	{
+		// 		$match: {
+		// 			"positions.title": { $exists: true, $ne: null },
+		// 		},
+		// 	},
+		// 	{
+		// 		$group: {
+		// 			_id: null,
+		// 			titles: { $addToSet: "$positions.title" },
+		// 		},
+		// 	},
+		// 	{
+		// 		$project: {
+		// 			_id: 0,
+		// 			titles: 1,
+		// 		},
+		// 	},
+		// ]);
+		// let roles = distinctTitles[0]?.titles || [];
+		// roles = roles?.map((role) => ({
+		// 	name: role,
+		// 	companyName,
+		// })); const k = await EmploymentPositionRole.insertMany(roles);
+
+		// *************************
+
+		const newRole = await EmploymentPositionRole.create({
 			name,
 			description,
 			companyName,
@@ -203,9 +298,10 @@ const addGroup = async (req, res) => {
 			admin,
 			companyName: company,
 			payrollActivated,
+			scheduleFrequency: req.body?.payFrequency,
 		});
 		if (payrollActivated) {
-			await addPaygroupSchedules(newModule._id);
+			await addPaygroupSchedules(newModule._id, req.body?.payFrequency);
 		}
 
 		res.status(201).json(newModule);
@@ -214,49 +310,137 @@ const addGroup = async (req, res) => {
 	}
 };
 
+const START_DATES = {
+	2024: "2023-12-18",
+	2025: "2024-12-16",
+	2026: "2025-12-08",
+};
+
+const getStartDate = (year) => new Date(START_DATES[year] || "2023-12-18");
+
+function addDays(date, days) {
+	const result = new Date(date);
+	result.setDate(result.getDate() + days);
+	return result;
+}
+
+function addMonths(date, months) {
+	const result = new Date(date);
+	result.setMonth(result.getMonth() + months);
+	return result;
+}
+
 const groupPaySchedules = async (groupID) => await Group.findById(groupID).select("yearSchedules");
 
-const addPaygroupSchedules = async (groupID) => {
+const addPaygroupSchedules = async (groupID, frequency) => {
 	try {
 		const groupSchedules = await groupPaySchedules(groupID);
-		const yearSchedules = groupSchedules.yearSchedules;
-		const numberOfPayPeriods = 26;
+		const yearSchedules = groupSchedules.yearSchedules || [];
+
+		const startDate = getStartDate(CURRENT_YEAR);
 		const payPeriods = [];
-		let newStartDate = "2023-12-18";
 
-		if (CURRENT_YEAR === 2024) {
-			newStartDate = "2023-12-18";
-		} else if (CURRENT_YEAR === 2025) {
-			newStartDate = "2024-12-16";
-		} else if (CURRENT_YEAR === 2026) {
-			newStartDate = "2025-12-08";
+		let numberOfPeriods = 0;
+		let getPeriodEndDate;
+
+		switch (frequency) {
+			case "Daily":
+				numberOfPeriods = 365;
+				getPeriodEndDate = (start) => start;
+				break;
+			case "Weekly":
+				numberOfPeriods = 52;
+				getPeriodEndDate = (start) => addDays(start, 6);
+				break;
+			case "Biweekly":
+				numberOfPeriods = 26;
+				getPeriodEndDate = (start) => addDays(start, 13);
+				break;
+			case "Semimonthly":
+				numberOfPeriods = 24;
+				break;
+			case "Monthly":
+				numberOfPeriods = 12;
+				break;
+			case "Quarterly":
+				numberOfPeriods = 4;
+				break;
+			case "Annually":
+				numberOfPeriods = 1;
+				break;
+			default:
+				throw new Error("Unsupported frequency: " + frequency);
 		}
-		const startDate = new Date(newStartDate);
+		let currentStart = new Date(startDate);
 
-		for (let i = 0; i < numberOfPayPeriods; i++) {
-			const payPeriodStartDate = new Date(startDate);
-			payPeriodStartDate.setDate(startDate.getDate() + i * 14);
+		for (let i = 0; i < numberOfPeriods; i++) {
+			let endDate;
+			if (frequency === "Semimonthly") {
+				const isFirstHalf = i % 2 === 0;
+				endDate = new Date(currentStart);
+				endDate.setDate(
+					isFirstHalf
+						? 14
+						: new Date(currentStart.getFullYear(), currentStart.getMonth() + 1, 0).getDate(),
+				);
+			} else if (["Monthly", "Quarterly", "Annually"].includes(frequency)) {
+				const monthsToAdd = frequency === "Monthly" ? 1 : frequency === "Quarterly" ? 3 : 12;
+				endDate = addDays(addMonths(currentStart, monthsToAdd), -1);
+			} else {
+				endDate = getPeriodEndDate(currentStart);
+			}
+			const processingDate = addDays(endDate, 2);
+			const payDate = addDays(processingDate, 3);
 
-			const payPeriodEndDate = new Date(payPeriodStartDate);
-			payPeriodEndDate.setDate(payPeriodStartDate.getDate() + 13);
+			// const payPeriodStartDate = new Date(startDate);
+			// payPeriodStartDate.setDate(startDate.getDate() + i * 14);
 
-			const payPeriodProcessingDate = new Date(payPeriodEndDate);
-			payPeriodProcessingDate.setDate(payPeriodEndDate.getDate() + 2);
+			// const payPeriodEndDate = new Date(payPeriodStartDate);
+			// payPeriodEndDate.setDate(payPeriodStartDate.getDate() + 13);
 
-			const payPeriodPayDate = new Date(payPeriodProcessingDate);
-			payPeriodPayDate.setDate(payPeriodProcessingDate.getDate() + 3);
+			// const payPeriodProcessingDate = new Date(payPeriodEndDate);
+			// payPeriodProcessingDate.setDate(payPeriodEndDate.getDate() + 2);
+
+			// const payPeriodPayDate = new Date(payPeriodProcessingDate);
+			// payPeriodPayDate.setDate(payPeriodProcessingDate.getDate() + 3);
 
 			payPeriods.push({
 				payPeriod: i + 1,
-				payPeriodStartDate,
-				payPeriodEndDate,
-				payPeriodProcessingDate,
-				payPeriodPayDate,
+				payPeriodStartDate: new Date(currentStart),
+				payPeriodEndDate: new Date(endDate),
+				payPeriodProcessingDate: new Date(processingDate),
+				payPeriodPayDate: new Date(payDate),
 				year: CURRENT_YEAR,
 			});
+
+			if (["Monthly", "Quarterly", "Annually"].includes(frequency)) {
+				currentStart = addMonths(
+					currentStart,
+					frequency === "Monthly" ? 1 : frequency === "Quarterly" ? 3 : 12,
+				);
+			} else if (frequency === "Semimonthly") {
+				const nextDate = new Date(currentStart);
+				if (i % 2 === 0) {
+					nextDate.setDate(15);
+				} else {
+					nextDate.setMonth(nextDate.getMonth() + 1);
+					nextDate.setDate(1);
+				}
+				currentStart = nextDate;
+			} else {
+				currentStart = addDays(
+					currentStart,
+					frequency === "Daily" ? 1 : frequency === "Weekly" ? 7 : 14,
+				);
+			}
 		}
+
 		const recordExists = yearSchedules.findIndex((rec) => rec.year === CURRENT_YEAR);
-		if (recordExists === -1) yearSchedules.push({ year: CURRENT_YEAR, payPeriods });
+		if (recordExists === -1) {
+			yearSchedules.push({ year: CURRENT_YEAR, payPeriods });
+		} else {
+			yearSchedules[recordExists].payPeriods = payPeriods;
+		}
 
 		await updatePayGroup(groupID, {
 			scheduleSettings: payPeriods,
@@ -288,6 +472,8 @@ const updateGroup = async (req, res) => {
 		// 		await addPaygroupSchedules(id);
 		// 		return res.status(200).json("Added schedules");
 		// 	}
+
+		if (req.body?._id) delete req.body._id;
 		const setup = await updatePayGroup(id, req.body);
 		res.status(200).json(setup);
 	} catch (error) {
@@ -367,13 +553,14 @@ const addCompany = async (req, res) => {
 		const adminEmployees = await EmployeeEmploymentInfo.find({
 			employmentRole: ROLES.SHADOW_ADMIN,
 		}).select("empId");
+		const filteredEmps = adminEmployees?.filter((emp) => emp?.empId);
 		const newCompany = await Company.create({
 			name,
 			founding_year,
 			registration_number,
 			industry_type,
 			address: { streetNumber, city, state, postalCode, country },
-			employees: adminEmployees,
+			employees: filteredEmps,
 		});
 
 		res.status(201).json(newCompany);
@@ -490,8 +677,12 @@ module.exports = {
 	addSetUpRule,
 	getAllSetup,
 	updateSetUp,
+	addCrew,
 	addRole,
+	addPositionRole,
 	getRoles,
+	getCrews,
+	getPositionRoles,
 	getDepartments,
 	addDepartment,
 	getEmpTypes,

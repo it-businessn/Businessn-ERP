@@ -14,14 +14,14 @@ const EarningsInfo = ({ role, handleSubmit }) => {
 		partTimeStandardHours: role?.partTimeStandardHours,
 	});
 
-	const isFTSalaried = formData.typeOfEarning === "Full Time Salaried";
-	const isPTSalaried = formData.typeOfEarning === "Part Time Salaried";
+	const isFTSalaried = formData?.typeOfEarning === "Full Time Salaried";
+	const isPTSalaried = formData?.typeOfEarning === "Part Time Salaried";
 	return (
 		<Stack>
 			<HStack mt={2}>
 				<FormLabel>Select earning type</FormLabel>
 				<RadioGroup
-					value={formData.typeOfEarning || ""}
+					value={formData?.typeOfEarning || ""}
 					onChange={(value) => {
 						setFormData((prev) => ({
 							...prev,
@@ -44,7 +44,7 @@ const EarningsInfo = ({ role, handleSubmit }) => {
 				label="Regular Pay"
 				name="payRate"
 				placeholder="Enter Payrate"
-				valueText={formData.payRate || ""}
+				valueText={formData?.payRate || ""}
 				handleChange={(e) => {
 					setFormData((prev) => ({
 						...prev,
@@ -59,7 +59,7 @@ const EarningsInfo = ({ role, handleSubmit }) => {
 					label="Standard Hours (FT)"
 					name="fullTimeStandardHours"
 					placeholder="Enter Full Time Hours"
-					valueText={formData.fullTimeStandardHours || ""}
+					valueText={formData?.fullTimeStandardHours || ""}
 					handleChange={(e) => {
 						setFormData((prev) => ({
 							...prev,
@@ -74,7 +74,7 @@ const EarningsInfo = ({ role, handleSubmit }) => {
 					label="Standard Hours (PT)"
 					name="partTimeStandardHours"
 					placeholder="Enter Part Time Hours"
-					valueText={formData.partTimeStandardHours || ""}
+					valueText={formData?.partTimeStandardHours || ""}
 					handleChange={(e) => {
 						setFormData((prev) => ({
 							...prev,

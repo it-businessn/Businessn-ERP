@@ -67,6 +67,9 @@ const Timesheet = ({
 	checkedRows,
 	setCheckedRows,
 	deptName,
+	checkOverlaps,
+	timesheetData,
+	setTimesheetData,
 }) => {
 	const cols = [
 		COLS.EMP_NAME,
@@ -84,17 +87,43 @@ const Timesheet = ({
 		"",
 		"Action",
 	];
+	const limit = 20;
+	const initialFormData = {
+		clockIn: null,
+		clockOut: null,
+		regBreakHoursWorked: "",
+		approve: undefined,
+		company,
+		recordId: null,
+		empId: null,
+		payType: "",
+		source: TIMESHEET_SOURCE.MANAGER,
+	};
 	const toast = useToast();
 
 	const [totalPage, setTotalPages] = useState(1);
-	const limit = 20;
 	const [progress, setProgress] = useState(0);
 	const [loading, setLoading] = useState(false);
-
 	const [deleteRecordId, setDeleteRecordId] = useState(false);
 	const [showDeletePopUp, setShowDeletePopUp] = useState(false);
 	const [rowAction, setRowAction] = useState(ACTION_STATUS[0].title);
 	const [rowId, setRowId] = useState("");
+	const [formData, setFormData] = useState(initialFormData);
+	const [isPayTypeChanged, setIsPayTypeChanged] = useState(false);
+
+	useEffect(() => {
+		const fetchAllTimecards = async () => {
+			try {
+				const post = await TimesheetService.addTimecard([]);
+				if (post.data) {
+					// setRefresh(true);
+				}
+			} catch (error) {
+				console.error(error);
+			}
+		};
+		fetchAllTimecards();
+	}, []);
 
 	useEffect(() => {
 		const fetchAllEmployeeTimesheet = async () => {
@@ -159,36 +188,6 @@ const Timesheet = ({
 	]);
 
 	useEffect(() => {
-		const fetchAllTimecards = async () => {
-			try {
-				const post = await TimesheetService.addTimecard([]);
-				if (post.data) {
-					// setRefresh(true);
-				}
-			} catch (error) {
-				console.error(error);
-			}
-		};
-		fetchAllTimecards();
-	}, []);
-
-	const initialFormData = {
-		clockIn: null,
-		clockOut: null,
-		regBreakHoursWorked: "",
-		approve: undefined,
-		company,
-		recordId: null,
-		empId: null,
-		payType: "",
-		source: TIMESHEET_SOURCE.MANAGER,
-	};
-
-	const [formData, setFormData] = useState(initialFormData);
-	const [isPayTypeChanged, setIsPayTypeChanged] = useState(false);
-	const [timesheetData, setTimesheetData] = useState([]);
-
-	useEffect(() => {
 		if (timesheets) {
 			setTimesheetData(timesheets);
 			setTimesheetRefresh(false);
@@ -197,43 +196,6 @@ const Timesheet = ({
 			setTimeout(() => setLoading(false), 500);
 		}
 	}, [timesheets]);
-
-	useEffect(() => {
-		if (formData.approve !== undefined) {
-			handleSubmit();
-		}
-	}, [formData.approve, formData.recordId]);
-
-	useEffect(() => {
-		if (formData.role) {
-			handleRoleChangeSubmit();
-		}
-	}, [formData.role]);
-
-	useEffect(() => {
-		if (formData.clockIn) {
-			handleTimeChange("clockIn", formData.clockIn);
-		}
-	}, [formData.clockIn]);
-
-	useEffect(() => {
-		if (formData.clockOut) {
-			handleTimeChange("clockOut", formData.clockOut);
-		}
-	}, [formData.clockOut]);
-
-	useEffect(() => {
-		if (isPayTypeChanged) {
-			handlePayTypeSubmit();
-		}
-	}, [isPayTypeChanged]);
-
-	const showPicker = (className) => {
-		const timeInput = document.getElementsByClassName(className);
-		if (timeInput) {
-			timeInput[0].showPicker();
-		}
-	};
 
 	useEffect(() => {
 		if (timesheetData?.length) {
@@ -297,10 +259,69 @@ const Timesheet = ({
 	}, [timesheetData, isActioned]);
 
 	useEffect(() => {
+		if (formData?.approve !== undefined) {
+			if (formData?.approve) {
+				const currentRecord = timesheetData.find((record) => record._id === formData?.recordId);
+				const hasOverlap = checkOverlaps(currentRecord);
+				if (hasOverlap) {
+					toast({
+						title: "Time overlaps with another entry.",
+						description:
+							"Please adjust your timesheet. Records cannot overlap for the same employee on the same date.",
+						status: "error",
+						duration: 3000,
+						isClosable: true,
+						position: "top-right",
+					});
+					return;
+				}
+			}
+			handleSubmit();
+		}
+	}, [formData?.approve, formData?.recordId]);
+
+	useEffect(() => {
+		if (formData?.role) {
+			handleRoleChangeSubmit();
+		}
+	}, [formData?.role]);
+
+	useEffect(() => {
+		if (formData?.clockIn) {
+			handleTimeChange("clockIn", formData?.clockIn);
+		}
+	}, [formData?.clockIn]);
+
+	useEffect(() => {
+		if (formData?.clockOut) {
+			handleTimeChange("clockOut", formData?.clockOut);
+		}
+	}, [formData?.clockOut]);
+
+	useEffect(() => {
+		if (isPayTypeChanged) {
+			handlePayTypeSubmit();
+		}
+	}, [isPayTypeChanged]);
+
+	useEffect(() => {
 		if (checkedRows.length === timesheetData?.length) {
 			setIsAllChecked(true);
 		}
 	}, [checkedRows]);
+
+	useEffect(() => {
+		if (rowId && !checkedRows.includes(rowId)) {
+			setCheckedRows([...checkedRows, rowId]);
+		}
+	}, [rowId]);
+
+	const showPicker = (className) => {
+		const timeInput = document.getElementsByClassName(className);
+		if (timeInput) {
+			timeInput[0].showPicker();
+		}
+	};
 
 	const getHourDifference = (start, end) => {
 		const [startHour, startMinute] = start.split(":").map(Number);
@@ -334,15 +355,9 @@ const Timesheet = ({
 		}
 	};
 
-	useEffect(() => {
-		if (rowId && !checkedRows.includes(rowId)) {
-			setCheckedRows([...checkedRows, rowId]);
-		}
-	}, [rowId]);
-
 	const handleTimeChange = (key, value) => {
 		const updatedData = timesheetData?.map((record) =>
-			record._id === formData.recordId
+			record._id === formData?.recordId
 				? {
 						...record,
 						[key]: value,
@@ -434,13 +449,13 @@ const Timesheet = ({
 
 	const handleRoleChangeSubmit = async () => {
 		try {
-			const updatedRec = timesheetData.find((record) => record._id === formData.recordId);
+			const updatedRec = timesheetData.find((record) => record._id === formData?.recordId);
 			formData.role = updatedRec.role;
 			formData.company = updatedRec.companyName;
 			formData.positions = updatedRec.positions;
 
-			if (formData.recordId) {
-				const { data } = await TimesheetService.updateRoleTimesheet(formData, formData.recordId);
+			if (formData?.recordId) {
+				const { data } = await TimesheetService.updateRoleTimesheet(formData, formData?.recordId);
 
 				if (data.message) {
 					toast({
@@ -452,7 +467,7 @@ const Timesheet = ({
 				}
 				if (data) {
 					const updatedData = timesheetData?.map((record) =>
-						record._id === formData.recordId
+						record._id === formData?.recordId
 							? {
 									...record,
 									role: data?.role,
@@ -476,16 +491,17 @@ const Timesheet = ({
 
 	const handleSubmit = async () => {
 		try {
-			const updatedRec = timesheetData.find((record) => record._id === formData.recordId);
-			formData.clockIn = updatedRec.clockIn;
-			formData.clockOut = updatedRec.clockOut;
-			formData.company = updatedRec.companyName;
-			formData.empId = updatedRec.employeeId?._id;
-			formData.payType = updatedRec.payType;
-			formData.source = updatedRec?.source || TIMESHEET_SOURCE.MANAGER;
+			const currentRecord = timesheetData.find((record) => record._id === formData?.recordId);
+			if (!currentRecord) return;
+			formData.clockIn = currentRecord.clockIn;
+			formData.clockOut = currentRecord.clockOut;
+			formData.company = currentRecord.companyName;
+			formData.empId = currentRecord.employeeId?._id;
+			formData.payType = currentRecord.payType;
+			formData.source = currentRecord?.source || TIMESHEET_SOURCE.MANAGER;
 
-			if (formData.recordId) {
-				const { data } = await TimesheetService.updateTimesheet(formData, formData.recordId);
+			if (formData?.recordId) {
+				const { data } = await TimesheetService.updateTimesheet(formData, formData?.recordId);
 				// setRefresh((prev) => !prev);
 
 				if (data.message) {
@@ -497,11 +513,11 @@ const Timesheet = ({
 					});
 				}
 				const updatedRecordIndex = timesheetData?.findIndex(
-					(record) => record._id === formData.recordId,
+					(record) => record._id === formData?.recordId,
 				);
 				if (updatedRecordIndex > -1) {
 					const updatedData = timesheetData?.map((record) =>
-						record._id === formData.recordId
+						record._id === formData?.recordId
 							? {
 									...record,
 									clockIn: data?.clockIn,
@@ -531,7 +547,7 @@ const Timesheet = ({
 
 	const handlePayTypeSubmit = async () => {
 		try {
-			const updatedRec = timesheetData.find((record) => record._id === formData.recordId);
+			const updatedRec = timesheetData.find((record) => record._id === formData?.recordId);
 			formData.clockIn = updatedRec.clockIn;
 			formData.clockOut = updatedRec.clockOut;
 			formData.company = updatedRec.companyName;
@@ -546,12 +562,15 @@ const Timesheet = ({
 			formData.breakHoursWorked = updatedRec?.breakHoursWorked;
 			formData.vacationPayHours = updatedRec?.vacationPayHours;
 
-			if (formData.recordId) {
-				const { data } = await TimesheetService.updateTimesheetPayType(formData, formData.recordId);
+			if (formData?.recordId) {
+				const { data } = await TimesheetService.updateTimesheetPayType(
+					formData,
+					formData?.recordId,
+				);
 				// setRefresh((prev) => !prev);
 				if (data) {
 					const updatedData = timesheetData?.map((record) =>
-						record._id === formData.recordId
+						record._id === formData?.recordId
 							? {
 									...record,
 									clockIn: data?.clockIn,
@@ -847,6 +866,7 @@ const Timesheet = ({
 												<NormalTextTitle
 													size="sm"
 													title={totalHours ? totalHours?.toFixed(2) : ""}
+													// title={param_hours_worked ? param_hours_worked?.toFixed(2) : ""}
 												/>
 												{/* )} */}
 											</Td>

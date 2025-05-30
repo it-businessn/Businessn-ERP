@@ -42,7 +42,7 @@ const AddAccountModal = ({ company, setShowOnboard, showOnboard, setIsRefresh })
 					label="Account Code"
 					name="accCode"
 					placeholder="Enter Account Code"
-					valueText={formData.accCode}
+					valueText={formData?.accCode}
 					handleChange={handleChange}
 				/>
 				<InputFormControl
@@ -50,7 +50,7 @@ const AddAccountModal = ({ company, setShowOnboard, showOnboard, setIsRefresh })
 					label="Account Name"
 					name="accountName"
 					placeholder="Enter Account Name"
-					valueText={formData.accountName}
+					valueText={formData?.accountName}
 					handleChange={handleChange}
 				/>
 			</VStack>

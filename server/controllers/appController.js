@@ -1,4 +1,3 @@
-const jwt = require("jsonwebtoken");
 const path = require("path");
 const Company = require("../models/Company");
 const Employee = require("../models/Employee");
@@ -14,14 +13,14 @@ const {
 	CLIENT_ORG_EMP_PERMISSION,
 	ROLES,
 } = require("../services/data");
-const { generateAccessToken, generateRefreshToken } = require("../middleware/auth");
+const { generateAccessToken, generateRefreshToken, verifyToken } = require("../middleware/auth");
 const { findPermission } = require("./permissionController");
 const EmployeeProfileInfo = require("../models/EmployeeProfileInfo");
 const EmployeeEmploymentInfo = require("../models/EmployeeEmploymentInfo");
 
 const findCompany = async (key, value) => await Company.findOne({ [key]: value });
 
-const getPayrollActiveEmployees = async (companyName, deptName) => {
+const getPayrollActiveEmployees = async (companyName, deptName, selectedPayGroupOption) => {
 	let result = await EmployeeEmploymentInfo.find({
 		payrollStatus: "Payroll Active",
 		companyName,
@@ -35,6 +34,12 @@ const getPayrollActiveEmployees = async (companyName, deptName) => {
 		.select("payrollStatus employeeNo positions employmentRole");
 
 	result = result?.filter((a) => a.empId);
+
+	if (selectedPayGroupOption) {
+		result = result?.filter((emp) =>
+			emp?.positions?.find((_) => _.employmentPayGroup === selectedPayGroupOption),
+		);
+	}
 	if (deptName && deptName !== "null") {
 		result = result?.filter((emp) => emp?.positions?.[0]?.employmentDepartment === deptName);
 	}
@@ -182,18 +187,18 @@ const refreshToken = async (req, res) => {
 				.status(401)
 				.json({ error: "Refresh token is required", message: "Refresh token is required" });
 		}
-		jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
-			if (err) {
-				return res.status(403).json({ error: "Invalid or expired refresh token" });
-			}
-			const newAccessToken = generateAccessToken({
-				id: user._id,
-				username: user.username,
-			});
-			res.json({ accessToken: newAccessToken });
+		const user = verifyToken(refreshToken, process.env.REFRESH_TOKEN_SECRET);
+
+		const newAccessToken = generateAccessToken({
+			id: user._id,
+			username: user.username,
 		});
+		res.json({ accessToken: newAccessToken });
 	} catch (error) {
-		console.error("Error checking password:", error);
+		if (error.name === "TokenExpiredError" || error.name === "JsonWebTokenError") {
+			return res.status(403).json({ error: "Invalid or expired refresh token" });
+		}
+		console.error("Error verifying refresh token:", error);
 		return res.status(500).json({ error: "Internal server error" });
 	}
 };

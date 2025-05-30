@@ -14,12 +14,24 @@ export const ROLES = {
 	ENROLLER: "Enroller",
 };
 
+export const ALERTS_TYPE = { BANK: "bank", SIN: "SIN", WAGE: "wage" };
+
 export const COMPANIES = {
 	FD: "Fractional Departments Inc.",
 	NW: "The Owners Of Strata Plan NW1378",
 	BUSINESSN_ORG: "BusinessN Corporate",
 	CORNERSTONE: "Cornerstone Maintenance Group Ltd.",
 };
+
+export const PAY_FREQUENCIES = [
+	{ name: "Daily" },
+	{ name: "Weekly" },
+	{ name: "Biweekly" },
+	{ name: "Semimonthly" },
+	{ name: "Monthly" },
+	{ name: "Quarterly" },
+	{ name: "Annually" },
+];
 
 export const CONTRIBUTION = {
 	EI: "Employment Insurance",

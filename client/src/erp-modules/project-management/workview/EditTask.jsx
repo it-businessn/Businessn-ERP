@@ -93,9 +93,9 @@ const EditTask = ({ isOpen, onClose, setRefresh, isFiltered, task }) => {
 		formData.subtasks = subTasks;
 		formData.hasChecklist = hasChecklist;
 		formData.action = todoItems;
-		if (formData.taskId) {
+		if (formData?.taskId) {
 			try {
-				await ProjectService.addTaskActivity(formData, formData.taskId);
+				await ProjectService.addTaskActivity(formData, formData?.taskId);
 				onClose();
 				setFormData(defaultTask);
 				setSubTasks([]);
@@ -107,7 +107,7 @@ const EditTask = ({ isOpen, onClose, setRefresh, isFiltered, task }) => {
 			}
 		} else {
 			try {
-				await ProjectService.addProjectTask(formData, formData.projectId);
+				await ProjectService.addProjectTask(formData, formData?.projectId);
 				onClose();
 				setFormData(defaultTask);
 				setSubTasks([]);
@@ -138,7 +138,7 @@ const EditTask = ({ isOpen, onClose, setRefresh, isFiltered, task }) => {
 									<Input
 										type="text"
 										name="taskName"
-										value={formData.taskName}
+										value={formData?.taskName}
 										onChange={(e) =>
 											setFormData((prevData) => ({
 												...prevData,
@@ -156,7 +156,7 @@ const EditTask = ({ isOpen, onClose, setRefresh, isFiltered, task }) => {
 											type="date"
 											id="dueDate"
 											name="dueDate"
-											value={formData.dueDate}
+											value={formData?.dueDate}
 											onChange={(e) =>
 												setFormData((prevData) => ({
 													...prevData,
@@ -171,7 +171,7 @@ const EditTask = ({ isOpen, onClose, setRefresh, isFiltered, task }) => {
 										<Input
 											type="text"
 											name="timeToComplete"
-											value={formData.timeToComplete}
+											value={formData?.timeToComplete}
 											onChange={(e) =>
 												setFormData((prevData) => ({
 													...prevData,
@@ -206,7 +206,7 @@ const EditTask = ({ isOpen, onClose, setRefresh, isFiltered, task }) => {
 
 										<IconButton
 											icon={<AddIcon />}
-											isDisabled={formData.taskName === ""}
+											isDisabled={formData?.taskName === ""}
 											onClick={(e) => {
 												e.preventDefault();
 												setSubTaskAdded(true);
@@ -350,7 +350,7 @@ const EditTask = ({ isOpen, onClose, setRefresh, isFiltered, task }) => {
 										isLoading={isSubmitting}
 										type="submit"
 										bg="var(--logo_bg)"
-										isDisabled={formData.taskName === ""}
+										isDisabled={formData?.taskName === ""}
 									>
 										Add
 									</Button>

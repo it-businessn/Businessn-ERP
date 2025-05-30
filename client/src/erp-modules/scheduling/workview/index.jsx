@@ -1,159 +1,160 @@
-import { Avatar, Button, HStack, Icon, SimpleGrid, VStack } from "@chakra-ui/react";
-import BoxCard from "components/ui/card";
+import { Box, Flex, FormLabel, HStack, Icon, Select } from "@chakra-ui/react";
+import ComingSoon from "components/ComingSoon";
+import PrimaryButton from "components/ui/button/PrimaryButton";
 import TextTitle from "components/ui/text/TextTitle";
-import useCompany from "hooks/useCompany";
-import useRoles from "hooks/useRoles";
+import { addDays, format, startOfWeek } from "date-fns";
+import usePositionRoles from "hooks/usePositionRoles";
 import useWorkLocations from "hooks/useWorkLocations";
 import PageLayout from "layouts/PageLayout";
 import moment from "moment";
 import { useEffect, useState } from "react";
-import { RxDragHandleDots2 } from "react-icons/rx";
+import { MdOutlineChevronLeft, MdOutlineChevronRight } from "react-icons/md";
 import LocalStorageService from "services/LocalStorageService";
-import UserService from "services/UserService";
-import { getRoleColor, isManager } from "utils";
-import HeaderCards from "./HeaderCards";
-import Scheduler from "./scheduler";
-import ShiftModal from "./ShiftModal";
+import SettingService from "services/SettingService";
+import { isManager } from "utils";
+import ShiftModal from "./quick-selection/ShiftModal";
+import WeeklyCalendarView from "./WeeklyCalendarView";
 
 const ScheduleWorkView = () => {
-	const { company } = useCompany(LocalStorageService.getItem("selectedCompany"));
+	const company = LocalStorageService.getItem("selectedCompany");
 	const loggedInUser = LocalStorageService.getItem("user");
 	const isUserManager = isManager(loggedInUser.role);
+
+	const [selectedCrew, setSelectedCrew] = useState(null);
+	const [timeFormat, setTimeFormat] = useState("12");
+	const [view, setView] = useState("weekly");
 	const [newShiftAdded, setNewShiftAdded] = useState(null);
-	const [employees, setEmployees] = useState(null);
 	const [refresh, setRefresh] = useState(null);
 	const [showAddShiftModal, setShowAddShiftModal] = useState(false);
 	const [empName, setEmpName] = useState(null);
-	const [selectedEmp, setSelectedEmp] = useState(null);
 	const [empRole, setEmpRole] = useState(null);
-	const locations = useWorkLocations(company, refresh);
+	const [shift, setShift] = useState(null);
 	const [employeesList, setEmployeesList] = useState(null);
-	const roles = useRoles(company, refresh);
+	const [crews, setCrews] = useState(null);
 	const [location, setLocation] = useState(null);
-	const [currentDate, setCurrentDate] = useState(new Date());
-	currentDate.setHours(6, 0, 0, 0);
+	const [configCC, setConfigCC] = useState(null);
+	// const [locations, setLocations] = useState(null);
+	const [selectedFilter, setSelectedFilter] = useState(null);
+	const [selectedCC, setSelectedCC] = useState(null);
+	const [weekStart, setWeekStart] = useState(startOfWeek(new Date(), { weekStartsOn: 0 }));
+
+	const locations = useWorkLocations(company, refresh);
+	const roles = usePositionRoles(company, refresh);
 
 	useEffect(() => {
-		const fetchAllEmployees = async () => {
+		const fetchAllCrews = async () => {
 			try {
-				const { data } = await UserService.getAllEmpCompanyUsers(company);
-				data.map((emp) => {
-					emp.fullName = emp?.empId?.fullName;
-					emp._id = emp?.empId?._id;
-					return emp;
-				});
-				setEmployeesList(data);
+				const { data } = await SettingService.getAllCrews(company);
+				setCrews(data);
+				setSelectedCrew(data[0]?.name);
+				setConfigCC(data[0]?.config?.costCenter);
+				// setLocations(data[0]?.config?.department);
+				setEmployeesList(data[0]?.config?.employee);
 			} catch (error) {
 				console.error(error);
 			}
 		};
-		fetchAllEmployees();
-	}, []);
+		fetchAllCrews();
+	}, [company]);
 
 	useEffect(() => {
-		const fetchAllEmployeeByRole = async () => {
-			try {
-				const { data } = await UserService.getAllEmployeesByRole(company);
+		const record = crews?.find((crew) => crew.name === selectedCrew);
+		setConfigCC(record?.config?.costCenter);
+		// setLocations(record?.config?.department);
+		setEmployeesList(record?.config?.employee);
+	}, [selectedCrew]);
 
-				const newData = Object.keys(data)?.map((role) => {
-					return { roleName: role, color: getRoleColor(role), employees: data[role] };
-				});
-
-				setEmployees(newData);
-			} catch (error) {
-				console.error(error);
-			}
-		};
-		if (isUserManager) fetchAllEmployeeByRole();
-	}, [refresh, company]);
-
-	const handleShift = (empId, name, color, role) => {
-		setShowAddShiftModal(true);
-		setEmpName(name);
-		setEmpRole(role);
+	const handleChangeDate = (direction) => {
+		setWeekStart((prev) => (direction === "prev" ? addDays(prev, -7) : addDays(prev, 7)));
 	};
 
 	return (
 		<PageLayout title="WorkView">
-			<SimpleGrid
-				mb={"1em"}
-				columns={{ base: 1, md: 3 }}
-				spacing="1em"
-				color={"var(--menu_item_color)"}
-			>
-				<HeaderCards />
-			</SimpleGrid>
-			{isUserManager ? (
-				<SimpleGrid
-					columns={{ base: 1, md: 1, lg: 2 }}
-					spacing="4"
-					mt="4"
-					templateColumns={{ lg: "20% 80%" }}
-				>
-					<BoxCard fontWeight="bold">
-						<TextTitle title="Role" />
-						{employees?.map((record) => (
-							<VStack spacing={1} key={record.roleName} w={"100%"} alignItems={"self-start"}>
-								<TextTitle size="sm" title={record.roleName} />
-								{record?.employees?.map(({ empId, name }) => (
-									<HStack key={empId} w={"100%"}>
-										<HStack
-											w={"90%"}
-											bgColor={record.color}
-											borderRadius={"50px"}
-											px={"1"}
-											spacing={0}
-											cursor={"pointer"}
-										>
-											<Avatar size={"xs"} name={name} />
-											<Button
-												onClick={() => setSelectedEmp(name)}
-												variant="ghost"
-												size="xs"
-												color={"var(--bg_color_1)"}
-											>
-												{name}
-											</Button>
-										</HStack>
-										<Icon
-											cursor="pointer"
-											as={RxDragHandleDots2}
-											onClick={() => handleShift(empId, name, record.color, record.roleName)}
-											boxSize={5}
-										/>
-									</HStack>
-								))}
-							</VStack>
-						))}
-					</BoxCard>
-					<Scheduler
-						company={company}
-						newShiftAdded={newShiftAdded}
-						setRefresh={setRefresh}
-						locations={locations}
-						empName={selectedEmp}
-						location={location}
-						setLocation={setLocation}
-						currentDate={currentDate}
-						setCurrentDate={setCurrentDate}
+			<Flex justify="space-between" align="center" mb={4}>
+				<HStack justify="space-between">
+					<HStack>
+						<FormLabel>
+							<TextTitle title="Crew" />
+						</FormLabel>
+						<Select value={selectedCrew} onChange={(e) => setSelectedCrew(e.target.value)}>
+							{crews?.map(({ _id, name }) => (
+								<option key={_id} value={name}>
+									{name}
+								</option>
+							))}
+						</Select>
+					</HStack>
+					<HStack>
+						<FormLabel>
+							<TextTitle title="Time Format" />
+						</FormLabel>
+						<Select
+							value={timeFormat}
+							onChange={(e) => setTimeFormat(e.target.value)}
+							placeholder="Select time format"
+						>
+							<option value="12">12-hour</option>
+							<option value="24">24-hour</option>
+						</Select>
+					</HStack>
+				</HStack>
+
+				<HStack spacing={0}>
+					<Icon
+						cursor="pointer"
+						as={MdOutlineChevronLeft}
+						onClick={() => handleChangeDate("prev")}
+						boxSize="5"
+						color="fg.muted"
 					/>
-				</SimpleGrid>
-			) : (
-				<Scheduler
+					<TextTitle
+						size="lg"
+						title={`
+						${format(weekStart, "MMM d")} - ${format(addDays(weekStart, 6), "MMM d")}`}
+					/>
+					<Icon
+						cursor="pointer"
+						as={MdOutlineChevronRight}
+						onClick={() => handleChangeDate("next")}
+						boxSize="5"
+						color="fg.muted"
+					/>
+				</HStack>
+
+				{/* <Tabs variant="enclosed" onChange={(i) => setView(i === 0 ? "weekly" : "daily")}>
+						<TabList>
+							<Tab> */}
+				<PrimaryButton name="Weekly View" />
+				{/* </Tab>
+							<Tab>
+								<PrimaryButton
+									name="
+									Daily View"
+								/>
+							</Tab>
+						</TabList> */}
+				{/* </Tabs> */}
+			</Flex>
+
+			{view === "weekly" && (
+				<WeeklyCalendarView
+					timeFormat={timeFormat}
+					weekStart={weekStart}
 					company={company}
-					setRefresh={setRefresh}
-					locations={locations}
+					selectedCrew={selectedCrew}
 					newShiftAdded={newShiftAdded}
-					empName={selectedEmp}
-					location={location}
-					setLocation={setLocation}
-					currentDate={currentDate}
-					setCurrentDate={setCurrentDate}
+					setShowAddShiftModal={setShowAddShiftModal}
+					setShift={setShift}
 				/>
+			)}
+			{view === "daily" && (
+				<Box mt={4} textAlign="center">
+					<ComingSoon message="Daily view coming soon" />
+				</Box>
 			)}
 			{showAddShiftModal && (
 				<ShiftModal
-					currentDate={moment(currentDate).format("YYYY-MM-DD")}
+					currentDate={moment().format("YYYY-MM-DD")}
 					roles={roles}
 					employees={employeesList}
 					locations={locations}
@@ -165,6 +166,8 @@ const ScheduleWorkView = () => {
 					setNewShiftAdded={setNewShiftAdded}
 					empName={empName}
 					empRole={empRole}
+					shift={shift}
+					crew={selectedCrew}
 				/>
 			)}
 		</PageLayout>

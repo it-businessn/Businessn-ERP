@@ -10,23 +10,21 @@ import {
 	getInitialBalanceInfo,
 } from "config/payroll/employees/balanceInfo";
 import useEmployeeBalanceInfo from "hooks/useEmployeeBalanceInfo";
-import useSelectedEmp from "hooks/useSelectedEmp";
 import { useEffect, useState } from "react";
 import LocalStorageService from "services/LocalStorageService";
 import PayrollService from "services/PayrollService";
-import StepContent from "../step-content";
-import Record from "../step-content/Record";
+import StepContent from "../../step-content";
+import Record from "../../step-content/Record";
 
-const BenefitsInfo = ({ company, id, isOnboarding, handleNext }) => {
-	const { empId } = useSelectedEmp(LocalStorageService.getItem("empId"));
+const AddBenefitsInfo = ({ company, id, handleNext }) => {
 	const onboardingEmpId = LocalStorageService.getItem("onboardingEmpId");
-	const userId = isOnboarding ? onboardingEmpId : empId;
-	const balanceInfo = useEmployeeBalanceInfo(company, userId);
-	const initialBalanceInfo = getInitialBalanceInfo(empId, company);
+	const balanceInfo = useEmployeeBalanceInfo(company, onboardingEmpId);
+	const initialBalanceInfo = getInitialBalanceInfo(onboardingEmpId, company);
 	const [formData, setFormData] = useState(initialBalanceInfo);
 	const [isDisabled, setIsDisabled] = useState(true);
 	const [isLoading, setIsLoading] = useState(false);
 	const [carryFwd, setCarryFwd] = useState(false);
+	const [currentStep, setCurrentStep] = useState(0);
 
 	useEffect(() => {
 		if (balanceInfo) {
@@ -38,16 +36,16 @@ const BenefitsInfo = ({ company, id, isOnboarding, handleNext }) => {
 	}, [balanceInfo]);
 
 	useEffect(() => {
-		if (formData.typeOfVacationTreatment && formData.vacationPayPercent) setIsDisabled(false);
+		if (formData?.typeOfVacationTreatment && formData?.vacationPayPercent) setIsDisabled(false);
 		else setIsDisabled(true);
-	}, [formData.typeOfVacationTreatment, formData.vacationPayPercent, empId]);
+	}, [formData?.typeOfVacationTreatment, formData?.vacationPayPercent, onboardingEmpId]);
 
 	const handleSubmit = async () => {
 		setIsLoading(true);
 		const updatedBenefit = formData;
 
 		updatedBenefit.carryFwd = carryFwd !== undefined ? !carryFwd : false;
-		updatedBenefit.empId = empId;
+		updatedBenefit.empId = onboardingEmpId;
 		updatedBenefit.companyName = company;
 
 		try {
@@ -67,9 +65,6 @@ const BenefitsInfo = ({ company, id, isOnboarding, handleNext }) => {
 					setFormData={setFormData}
 					title="Vacation"
 					config={EMP_PAY_INFO_ACCRUALS_CONFIG}
-					isLoading={isLoading}
-					handleSubmit={handleSubmit}
-					isDisabled={isDisabled}
 				/>
 			),
 		},
@@ -84,9 +79,6 @@ const BenefitsInfo = ({ company, id, isOnboarding, handleNext }) => {
 						setFormData={setFormData}
 						title="Vacation Balances"
 						config={EMP_VACATION_BALANCE_CONFIG}
-						isLoading={isLoading}
-						isDisabled={isDisabled}
-						handleSubmit={handleSubmit}
 						readOnly={true}
 					/>
 					<HStack justifyContent="space-between">
@@ -113,8 +105,6 @@ const BenefitsInfo = ({ company, id, isOnboarding, handleNext }) => {
 					setFormData={setFormData}
 					title="Employer Contributions"
 					config={ER_PAID_BENEFITS_CONFIG}
-					isLoading={isLoading}
-					handleSubmit={handleSubmit}
 					isContribution
 				/>
 			),
@@ -128,14 +118,12 @@ const BenefitsInfo = ({ company, id, isOnboarding, handleNext }) => {
 					setFormData={setFormData}
 					title="Employee Contributions"
 					config={EE_PAID_BENEFITS_CONFIG}
-					isLoading={isLoading}
-					handleSubmit={handleSubmit}
 					isContribution
 				/>
 			),
 		},
 	];
-	const [currentStep, setCurrentStep] = useState(0);
+
 	const goToNextStep = (index) => {
 		setCurrentStep(index);
 	};
@@ -151,16 +139,18 @@ const BenefitsInfo = ({ company, id, isOnboarding, handleNext }) => {
 					hideProgress
 					steps={steps}
 					id={id}
-					isOnboarding={isOnboarding}
+					isOnboarding={true}
 					currentStep={currentStep}
 					handleClick={goToNextStep}
-					handleNextEnabled={true}
 					handleNext={handleNext}
+					isLoading={isLoading}
+					isDisabled={isDisabled}
+					handleSubmit={handleSubmit}
 				/>
 			</BoxCard>
-			<StepContent currentStep={currentStep} steps={steps} />
+			<StepContent currentStep={currentStep} steps={steps} h="calc(100vh - 190px)" />
 		</SimpleGrid>
 	);
 };
 
-export default BenefitsInfo;
+export default AddBenefitsInfo;

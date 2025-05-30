@@ -1,16 +1,14 @@
 import {
-  Box,
-  Checkbox,
-  Flex,
-  HStack,
-  Input,
-  InputGroup,
-  InputRightElement,
-  SimpleGrid,
-  VStack,
+	Box,
+	Checkbox,
+	Flex,
+	HStack,
+	Input,
+	InputGroup,
+	InputRightElement,
+	SimpleGrid,
 } from "@chakra-ui/react";
 import LeftIconButton from "components/ui/button/LeftIconButton";
-import TextTitle from "components/ui/text/TextTitle";
 import { ROLES } from "constant";
 import PayrollActions from "erp-modules/payroll/workview/paygroup-header-table/PayrollActions";
 import OnboardEmpModal from "erp-modules/sales/onboarding/OnboardEmpModal";
@@ -19,186 +17,197 @@ import useEmployees from "hooks/useEmployees";
 import usePaygroup from "hooks/usePaygroup";
 import PageLayout from "layouts/PageLayout";
 import { useEffect, useState } from "react";
-import { FaSearch, FaPlus } from "react-icons/fa";
+import { FaPlus, FaSearch } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { payrollEmployeePath } from "routes";
 import LocalStorageService from "services/LocalStorageService";
 import EmployeeList from "./EmployeeList";
 
 const EmployeeListView = () => {
-  const { company } = useCompany(LocalStorageService.getItem("selectedCompany"));
-  const loggedInUser = LocalStorageService.getItem("user");
+	const loggedInUser = LocalStorageService.getItem("user");
+	const { company } = useCompany(LocalStorageService.getItem("selectedCompany"));
 
-  const [formData, setFormData] = useState({
-    isPayrollActive: true,
-    isPayrollInactive: false,
-  });
+	const [formData, setFormData] = useState({
+		isPayrollActive: true,
+		isPayrollInactive: false,
+	});
 
-  const [isRefresh, setIsRefresh] = useState(false);
-  const deptName = loggedInUser?.role === ROLES.MANAGER ? loggedInUser?.department : null;
+	const { hasMultiPaygroups, selectedPayGroupOption, setSelectedPayGroupOption, payGroups } =
+		usePaygroup(company, false);
 
-  const { employees, filteredEmployees, setFilteredEmployees } = useEmployees(
-    isRefresh,
-    company,
-    false,
-    formData,
-    null,
-    deptName
-  );
-  const [showEmpFilter, setShowEmpFilter] = useState(false);
-  const [showDeptFilter, setShowDeptFilter] = useState(false);
-  const [showCCFilter, setShowCCFilter] = useState(false);
+	const [isRefresh, setIsRefresh] = useState(false);
+	const deptName = loggedInUser?.role === ROLES.MANAGER ? loggedInUser?.department : null;
 
-  const toggleEmpFilter = () => setShowEmpFilter((prev) => !prev);
-  const toggleDeptFilter = () => setShowDeptFilter((prev) => !prev);
-  const toggleCCFilter = () => setShowCCFilter((prev) => !prev);
-  const handleFilter = () => console.log(filteredEmployees);
-  const [filteredDept, setFilteredDept] = useState([]);
-  const [filteredCC, setFilteredCC] = useState([]);
+	const { employees, filteredEmployees, setFilteredEmployees } = useEmployees(
+		isRefresh,
+		company,
+		formData,
+		null,
+		deptName,
+		selectedPayGroupOption,
+	);
+	const [showEmpFilter, setShowEmpFilter] = useState(false);
+	const [showDeptFilter, setShowDeptFilter] = useState(false);
+	const [showCCFilter, setShowCCFilter] = useState(false);
 
-  const [showOnboard, setShowOnboard] = useState(false);
+	const toggleEmpFilter = () => setShowEmpFilter((prev) => !prev);
+	const toggleDeptFilter = () => setShowDeptFilter((prev) => !prev);
+	const toggleCCFilter = () => setShowCCFilter((prev) => !prev);
+	const handleFilter = () => console.log(filteredEmployees);
+	const [filteredDept, setFilteredDept] = useState([]);
+	const [filteredCC, setFilteredCC] = useState([]);
+	const [empName, setEmpName] = useState("");
+	const [showOnboard, setShowOnboard] = useState(false);
 
-  const navigate = useNavigate();
+	const navigate = useNavigate();
 
-  useEffect(() => {
-    setIsRefresh(showOnboard);
-  }, [showOnboard]);
+	useEffect(() => {
+		setIsRefresh(showOnboard);
+	}, [showOnboard]);
 
-  const { selectedPayGroup } = usePaygroup(company, false);
+	const handleClick = (val) => {
+		if (val === "terminate") {
+			const empPath = `${payrollEmployeePath}/info/${loggedInUser._id}/3`;
+			navigate(empPath);
+		}
+	};
+	const handleInputChange = (value) => {
+		setEmpName(value);
+		const selectedEmp = employees?.filter((emp) =>
+			emp?.empId?.fullName?.toLowerCase().includes(value.toLowerCase()),
+		);
+		setFilteredEmployees(selectedEmp);
+	};
 
-  const handleClick = (val) => {
-    if (val === "terminate") {
-      const empPath = `${payrollEmployeePath}/info/${loggedInUser._id}/3`;
-      navigate(empPath);
-    }
-  };
-  const [empName, setEmpName] = useState("");
-  const handleInputChange = (value) => {
-    setEmpName(value);
-    setFilteredEmployees(
-      employees.filter((emp) => emp?.empId?.fullName?.toLowerCase().includes(value.toLowerCase()))
-    );
-  };
+	const handleChange = (value) => {
+		if (value !== "") {
+			setSelectedPayGroupOption(value);
+		}
+	};
 
-  return (
-    <PageLayout
-      width={"35%"}
-      title={"Employees"}
-      selectPlaceholder="Select Paygroup"
-      selectAttr="name"
-    >
-      <SimpleGrid
-        columns={{ base: 1, md: 1, lg: 2 }}
-        spacing="4"
-        my="4"
-        mr="4"
-        templateColumns={{ lg: "70% 30%" }}
-      >
-        <Box>
-          <Flex direction="column" gap={6}>
-            {/* Search Section */}
-            <InputGroup
-              maxW="300px"
-              borderRadius={"10px"}
-              border={"1px solid var(--filter_border_color)"}
-              fontSize="xs"
-              fontWeight="bold"
-              size="sm"
-            >
-              <Input
-                _placeholder={{
-                  color: "var(--nav_color)",
-                  fontSize: "sm",
-                }}
-                name="empName"
-                value={empName}
-                onChange={(e) => handleInputChange(e.target.value)}
-                color={"var(--nav_color)"}
-                bg={"var(--primary_bg)"}
-                type="text"
-                placeholder="Search employee"
-                pr="4.5rem"
-              />
-              <InputRightElement children={<FaSearch />} />
-            </InputGroup>
-          </Flex>
-        </Box>
+	return (
+		<PageLayout
+			width={"35%"}
+			title={"Employees"}
+			selectPlaceholder="Select Paygroup"
+			selectAttr="name"
+			handleChange={handleChange}
+			hasMultiPaygroups={hasMultiPaygroups}
+			showPayGroup={true}
+			selectedValue={selectedPayGroupOption}
+			data={payGroups}
+		>
+			<SimpleGrid
+				columns={{ base: 1, md: 1, lg: 2 }}
+				spacing="4"
+				my="4"
+				mr="4"
+				templateColumns={{ lg: "70% 30%" }}
+			>
+				<Box>
+					<Flex direction="column" gap={6}>
+						{/* Search Section */}
+						<InputGroup
+							maxW="300px"
+							borderRadius={"10px"}
+							border={"1px solid var(--filter_border_color)"}
+							fontSize="xs"
+							fontWeight="bold"
+							size="sm"
+						>
+							<Input
+								_placeholder={{
+									color: "var(--nav_color)",
+									fontSize: "sm",
+								}}
+								name="empName"
+								value={empName}
+								onChange={(e) => handleInputChange(e.target.value)}
+								color={"var(--nav_color)"}
+								bg={"var(--primary_bg)"}
+								type="text"
+								placeholder="Search employee"
+								pr="4.5rem"
+							/>
+							<InputRightElement children={<FaSearch />} />
+						</InputGroup>
+					</Flex>
+				</Box>
 
-        {/* Actions Section */}
-        <Box>
-          <PayrollActions
-            handleClick={handleClick}
-            actions={[
-              { key: "terminate", name: "Terminate" },
-              { key: "form", name: "Issue Forms" },
-              { key: "extra", name: "Send Login" },
-            ]}
-          />
-        </Box>
-      </SimpleGrid>
+				{/* Actions Section */}
+				<Box>
+					<PayrollActions
+						handleClick={handleClick}
+						actions={[
+							{ key: "terminate", name: "Terminate" },
+							{ key: "form", name: "Issue Forms" },
+							{ key: "extra", name: "Send Login" },
+						]}
+					/>
+				</Box>
+			</SimpleGrid>
 
-      {/* Employee List Section */}
-      <Box mt={8}>
-        {/* Action Bar */}
-        <Flex mb={6} gap={8} align="center">
-          <LeftIconButton
-            name="Add Employee"
-            size="sm"
-            icon={<FaPlus color="#fff" fontSize="14px" />}
-            handleClick={() => setShowOnboard(true)}
-            bg="#381c34"
-            color="white"
-            _hover={{
-              bg: "#4e2847",
-              transform: "scale(1.02)",
-              transition: "all 0.2s ease-in-out",
-            }}
-            px={4}
-          />
-          <HStack spacing={6} divider={<Box w="1px" h="20px" bg="gray.200" />}>
-            <HStack spacing={4}>
-              <Checkbox
-                colorScheme={"facebook"}
-                isChecked={formData.isPayrollActive}
-                onChange={(e) =>
-                  setFormData((prevData) => ({
-                    ...prevData,
-                    isPayrollActive: e.target.checked,
-                  }))
-                }
-              >
-                Active Employees
-              </Checkbox>
-              <Checkbox
-                colorScheme={"facebook"}
-                isChecked={formData.isPayrollInactive}
-                onChange={(e) =>
-                  setFormData((prevData) => ({
-                    ...prevData,
-                    isPayrollInactive: e.target.checked,
-                  }))
-                }
-              >
-                Inactive Employees
-              </Checkbox>
-            </HStack>
-            <Checkbox colorScheme={"facebook"}>Show Terminated Employees</Checkbox>
-          </HStack>
-        </Flex>
-        <EmployeeList employees={filteredEmployees} />
-      </Box>
+			{/* Employee List Section */}
+			<Box mt={8}>
+				{/* Action Bar */}
+				<Flex mb={6} gap={8} align="center">
+					<LeftIconButton
+						name="Add Employee"
+						size="sm"
+						icon={<FaPlus color="#fff" fontSize="14px" />}
+						handleClick={() => setShowOnboard(true)}
+						bg="#381c34"
+						color="white"
+						_hover={{
+							bg: "#4e2847",
+							transform: "scale(1.02)",
+							transition: "all 0.2s ease-in-out",
+						}}
+						px={4}
+					/>
+					<HStack spacing={6} divider={<Box w="1px" h="20px" bg="gray.200" />}>
+						<HStack spacing={4}>
+							<Checkbox
+								colorScheme={"facebook"}
+								isChecked={formData.isPayrollActive}
+								onChange={(e) =>
+									setFormData((prevData) => ({
+										...prevData,
+										isPayrollActive: e.target.checked,
+									}))
+								}
+							>
+								Active Employees
+							</Checkbox>
+							<Checkbox
+								colorScheme={"facebook"}
+								isChecked={formData.isPayrollInactive}
+								onChange={(e) =>
+									setFormData((prevData) => ({
+										...prevData,
+										isPayrollInactive: e.target.checked,
+									}))
+								}
+							>
+								Inactive Employees
+							</Checkbox>
+						</HStack>
+						<Checkbox colorScheme={"facebook"}>Show Terminated Employees</Checkbox>
+					</HStack>
+				</Flex>
+				<EmployeeList employees={filteredEmployees} />
+			</Box>
 
-      {/* Onboarding Modal */}
-      {showOnboard && selectedPayGroup && (
-        <OnboardEmpModal
-          title="Onboard employee"
-          showOnboard={showOnboard}
-          setShowOnboard={setShowOnboard}
-          selectedPayGroupName={selectedPayGroup?.name}
-        />
-      )}
-    </PageLayout>
-  );
+			{/* Onboarding Modal */}
+			{showOnboard && (
+				<OnboardEmpModal
+					title="Onboard employee"
+					showOnboard={showOnboard}
+					setShowOnboard={setShowOnboard}
+				/>
+			)}
+		</PageLayout>
+	);
 };
 
 export default EmployeeListView;

@@ -23,6 +23,13 @@ const BUSINESSN_SHADOW_ADMIN_EMAILS = [
 	// auth admin authadmin@mail.com  authadmin
 ];
 
+const COMPANIES = {
+	FD: "Fractional Departments Inc.",
+	NW: "The Owners Of Strata Plan NW1378",
+	BUSINESSN_ORG: "BusinessN Corporate",
+	CORNERSTONE: "Cornerstone Maintenance Group Ltd.",
+};
+
 const ADMIN_PERMISSION = [
 	{ name: "Sales" },
 	{ name: "Sales Dashboard" },
@@ -116,6 +123,7 @@ const ROLES = {
 
 const PARAM_HOURS = {
 	REGULAR: "regHoursWorked",
+	REGULAR2: "regHoursWorked2",
 	STAT: "statDayHoursWorked",
 	BREAK: "regBreakHoursWorked",
 };
@@ -135,7 +143,10 @@ const TICKET_STATUS = {
 };
 
 const isRoleManager = (role) =>
-	role?.includes(ROLES.ADMINISTRATOR) || role?.includes(ROLES.MANAGER);
+	role === ROLES.SHADOW_ADMIN ||
+	role === ROLES.AUTH_ADMINISTRATOR ||
+	role === ROLES.ADMINISTRATOR ||
+	role === ROLES.MANAGER;
 
 const NEXT_DAY = moment().add(1, "days");
 const CURRENT_TIME_HHMM = NEXT_DAY.format("HH:mm");
@@ -178,6 +189,8 @@ const PUNCH_CODE = {
 	BREAK_OUT: "2",
 	CLOCK_OUT: "1",
 };
+
+const ALERTS_TYPE = { BANK: "bank", SIN: "SIN", WAGE: "wage" };
 
 const EARNING_TYPE = { FT: "Full Time Salaried", PT: "Part Time Salaried", HOURLY: "Hourly" };
 
@@ -244,6 +257,7 @@ const calcTotalHours = (data) => {
 
 module.exports = {
 	EARNING_TYPE,
+	ALERTS_TYPE,
 	PAY_TYPES_TITLE,
 	CURRENT_TIME_HHMM,
 	NEXT_DAY,
@@ -273,4 +287,5 @@ module.exports = {
 	TIMESHEET_ORIGIN,
 	ROLES,
 	TICKET_STATUS,
+	COMPANIES,
 };

@@ -158,14 +158,14 @@ const Calendar = () => {
 
 	const handleChange = (e) => {
 		const { name, value } = e.target;
-		if (formData.meetingFromDate !== "" && formData.meetingFromTime !== "") {
+		if (formData?.meetingFromDate !== "" && formData?.meetingFromTime !== "") {
 			setFormData((prevData) => ({
 				...prevData,
-				meetingToDate: formData.meetingFromDate,
+				meetingToDate: formData?.meetingFromDate,
 			}));
 			setFormData((prevData) => ({
 				...prevData,
-				meetingToTime: formData.meetingFromTime,
+				meetingToTime: formData?.meetingFromTime,
 			}));
 		}
 		setFormData((prevData) => ({ ...prevData, [name]: value }));
@@ -255,7 +255,7 @@ const Calendar = () => {
 						<ModalBody>
 							<FormControl>
 								<FormLabel>Type of Event</FormLabel>
-								<Select name="eventType" value={formData.eventType} onChange={handleTypeChange}>
+								<Select name="eventType" value={formData?.eventType} onChange={handleTypeChange}>
 									<option value="meeting">Meeting</option>
 									<option value="task">Task</option>
 									<option value="phoneCall">Phone Call</option>
@@ -266,7 +266,7 @@ const Calendar = () => {
 								<FormLabel>Description</FormLabel>
 								<Textarea
 									name="description"
-									value={formData.description}
+									value={formData?.description}
 									onChange={handleChange}
 									required
 								/>
@@ -277,7 +277,7 @@ const Calendar = () => {
 									<Input
 										type="text"
 										name="phoneNo"
-										value={formData.phoneNo}
+										value={formData?.phoneNo}
 										onChange={handleChange}
 										required
 									/>
@@ -291,7 +291,7 @@ const Calendar = () => {
 											<Input
 												type="date"
 												name="meetingFromDate"
-												value={formData.meetingFromDate}
+												value={formData?.meetingFromDate}
 												onChange={handleChange}
 												required
 											/>
@@ -301,7 +301,7 @@ const Calendar = () => {
 											<Input
 												type="time"
 												name="meetingFromTime"
-												value={formData.meetingFromTime}
+												value={formData?.meetingFromTime}
 												onChange={handleChange}
 												required
 											/>
@@ -313,7 +313,7 @@ const Calendar = () => {
 											<Input
 												type="date"
 												name="meetingToDate"
-												value={formData.meetingToDate}
+												value={formData?.meetingToDate}
 												onChange={handleChange}
 												required
 											/>
@@ -323,7 +323,7 @@ const Calendar = () => {
 											<Input
 												type="time"
 												name="meetingToTime"
-												value={formData.meetingToTime}
+												value={formData?.meetingToTime}
 												onChange={handleChange}
 												required
 											/>
@@ -349,7 +349,7 @@ const Calendar = () => {
 												<Input
 													type="date"
 													name="taskDueDate"
-													value={formData.taskDueDate}
+													value={formData?.taskDueDate}
 													onChange={handleChange}
 													required
 												/>
@@ -359,7 +359,7 @@ const Calendar = () => {
 												<Input
 													type="text"
 													name="taskAssignee"
-													value={formData.taskAssignee}
+													value={formData?.taskAssignee}
 													onChange={handleChange}
 													required
 												/>
@@ -371,7 +371,7 @@ const Calendar = () => {
 											<Input
 												type="number"
 												name="taskDuration"
-												value={formData.taskDuration}
+												value={formData?.taskDuration}
 												onChange={handleChange}
 												required
 											/>
@@ -386,7 +386,7 @@ const Calendar = () => {
 										<Input
 											type="text"
 											name="meetingAttendees"
-											value={formData.meetingAttendees}
+											value={formData?.meetingAttendees}
 											onChange={handleChange}
 											required
 										/>
@@ -396,7 +396,7 @@ const Calendar = () => {
 										<Input
 											type="text"
 											name="meetingLocation"
-											value={formData.meetingLocation}
+											value={formData?.meetingLocation}
 											onChange={handleChange}
 											required
 										/>
@@ -405,7 +405,7 @@ const Calendar = () => {
 										<FormLabel>Meeting Link</FormLabel>
 										<Textarea
 											name="meetingLink"
-											value={formData.meetingLink}
+											value={formData?.meetingLink}
 											onChange={handleChange}
 											required
 										/>
@@ -415,7 +415,7 @@ const Calendar = () => {
 						</ModalBody>
 						<ModalFooter>
 							<Button
-								isDisabled={formData.description === ""}
+								isDisabled={formData?.description === ""}
 								onClick={handleSubmit}
 								bg="var(--logo_bg)"
 								isLoading={isLoading}

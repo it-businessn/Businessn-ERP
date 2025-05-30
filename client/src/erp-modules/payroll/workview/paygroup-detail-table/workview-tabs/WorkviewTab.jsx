@@ -8,7 +8,7 @@ import WorkviewTable from "components/ui/table/WorkviewTable";
 import TextTitle from "components/ui/text/TextTitle";
 import { COLS, HRS_DECIMAL_COLS, TOTAL_AMT_HRS_COLS } from "constant";
 import { useNavigate } from "react-router-dom";
-import { convertDecimal, getAmount } from "utils/convertAmt";
+import { getAmount } from "utils/convertAmt";
 
 const WorkviewTab = ({
 	cols,
@@ -47,7 +47,7 @@ const WorkviewTab = ({
 			<WorkviewTable
 				cols={cols.map((_) => _.key)}
 				isSmall
-				height="calc(100vh - 630px)"
+				height="calc(100vh - 715px)"
 				whiteSpace="wrap"
 				textAlign={"center"}
 				overflowX={overflowX}
@@ -68,7 +68,7 @@ const WorkviewTab = ({
 													color="var(--main_color)"
 													borderRadius="6px"
 													p="7px"
-													title={<>{row?.empId?.[col.pair_key] ? row?.empId[col.pair_key] : ""}</>}
+													title={row?.empId?.[col.pair_key] || ""}
 													whiteSpace="wrap"
 													width="150px"
 													mr={"0.5em"}
@@ -106,9 +106,9 @@ const WorkviewTab = ({
 										row[col.main_key][col.pair]
 									) : col.nearest ? (
 										HRS_DECIMAL_COLS.includes(col.pair) ? (
-											<TextTitle title={convertDecimal(row[col.pair])} />
+											<TextTitle title={row[col.pair]} />
 										) : (
-											<NormalTextTitle size="sm" title={convertDecimal(row[col.pair])} />
+											row[col.pair]
 										)
 									) : (
 										row[col.pair]

@@ -28,13 +28,16 @@ const VerticalStepper = ({
 	handleClose,
 	id,
 	handleLinkClick,
-	handleNextEnabled,
 	indicatorStyle,
 	circleSize,
 	top = "25%",
+	handleSubmit,
+	isDisabled,
+	isLoading,
 }) => {
 	const handleSubmitClick = () => {
 		if (handleNext) {
+			if (handleSubmit) handleSubmit();
 			handleNext(id);
 		} else {
 			handleClose();
@@ -89,7 +92,7 @@ const VerticalStepper = ({
 					</Step>
 				))}
 			</Stepper>
-			{isOnboarding && (
+			{isOnboarding ? (
 				<HStack>
 					<CancelButton
 						name={
@@ -104,11 +107,23 @@ const VerticalStepper = ({
 					/>
 					<PrimaryButton
 						size={"sm"}
-						isDisabled={!handleNextEnabled && true}
+						isDisabled={isDisabled}
 						name={handleNext ? "Next" : "Submit"}
 						onOpen={handleSubmitClick}
 					/>
 				</HStack>
+			) : (
+				handleSubmit && (
+					<HStack justifyContent="end">
+						<PrimaryButton
+							isDisabled={isDisabled}
+							isLoading={isLoading}
+							name={"Save"}
+							onOpen={handleSubmit}
+							loadingText="Loading"
+						/>
+					</HStack>
+				)
 			)}
 		</VStack>
 	);

@@ -53,7 +53,6 @@ const ReportsPreview = ({
 					isOpen={showReport}
 					onClose={() => setShowReport(false)}
 					reportData={reportData}
-					payPeriodNum={payPeriodNum}
 				/>
 			)}
 			{showTotalsReport && fundingTotalsData && (

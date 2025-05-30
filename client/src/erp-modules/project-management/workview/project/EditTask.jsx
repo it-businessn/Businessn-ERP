@@ -56,7 +56,7 @@ const EditTask = ({ isOpen, onClose, setRefresh, currentTask, managers }) => {
 		e.preventDefault();
 		setSubmitting(true);
 		try {
-			await ProjectService.updateProjectTask(formData, formData.taskId);
+			await ProjectService.updateProjectTask(formData, formData?.taskId);
 			onClose();
 			setFormData(defaultTask);
 			setRefresh((prev) => !prev);
@@ -86,7 +86,7 @@ const EditTask = ({ isOpen, onClose, setRefresh, currentTask, managers }) => {
 									<Input
 										type="text"
 										name="taskName"
-										value={formData.taskName}
+										value={formData?.taskName}
 										onChange={(e) =>
 											setFormData((prevData) => ({
 												...prevData,
@@ -104,7 +104,7 @@ const EditTask = ({ isOpen, onClose, setRefresh, currentTask, managers }) => {
 											type="date"
 											id="dueDate"
 											name="dueDate"
-											value={formData.dueDate}
+											value={formData?.dueDate}
 											onChange={(e) =>
 												setFormData((prevData) => ({
 													...prevData,
@@ -119,7 +119,7 @@ const EditTask = ({ isOpen, onClose, setRefresh, currentTask, managers }) => {
 										<Input
 											type="text"
 											name="timeToComplete"
-											value={formData.timeToComplete}
+											value={formData?.timeToComplete}
 											onChange={(e) =>
 												setFormData((prevData) => ({
 													...prevData,
@@ -136,7 +136,7 @@ const EditTask = ({ isOpen, onClose, setRefresh, currentTask, managers }) => {
 										<Select
 											icon={<FaCaretDown />}
 											borderRadius="10px"
-											value={formData.priority}
+											value={formData?.priority}
 											placeholder="Select Priority"
 											onChange={(e) =>
 												setFormData((prevData) => ({
@@ -159,7 +159,7 @@ const EditTask = ({ isOpen, onClose, setRefresh, currentTask, managers }) => {
 
 										<MultiSelectButton
 											handleMenuToggle={handleMenuToggle}
-											assignees={formData.selectedAssignees}
+											assignees={formData?.selectedAssignees}
 											openAssigneeMenu={openAssigneeMenu}
 											handleCloseMenu={handleCloseMenu}
 											selectedOptions={selectedOptions}
@@ -168,7 +168,7 @@ const EditTask = ({ isOpen, onClose, setRefresh, currentTask, managers }) => {
 										/>
 
 										{formData?.selectedAssignees?.length > 0 &&
-											formData.selectedAssignees.map((name) => (
+											formData?.selectedAssignees.map((name) => (
 												<Avatar size={"sm"} name={name} src={name} key={name} />
 											))}
 									</FormControl>
@@ -178,7 +178,7 @@ const EditTask = ({ isOpen, onClose, setRefresh, currentTask, managers }) => {
 										isLoading={isSubmitting}
 										type="submit"
 										bg="var(--logo_bg)"
-										isDisabled={formData.taskName === ""}
+										isDisabled={formData?.taskName === ""}
 									>
 										Save
 									</Button>

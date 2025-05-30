@@ -13,6 +13,7 @@ import {
 	Text,
 } from "@chakra-ui/react";
 import { UserProfile } from "components";
+import { ALERTS_TYPE } from "constant";
 import { useAuthContext } from "hooks/useAuthContext";
 import { DashboardLayout, ProfileContainer } from "layouts";
 import { useEffect } from "react";
@@ -21,7 +22,7 @@ import LocalStorageService from "services/LocalStorageService";
 const Profile = () => {
 	const { user } = useAuthContext();
 
-	const bank = LocalStorageService.getItem("bank");
+	const bank = LocalStorageService.getItem(ALERTS_TYPE.BANK);
 
 	useEffect(() => {}, [user]);
 	return (
@@ -42,12 +43,7 @@ const Profile = () => {
 										sm: "6",
 									}}
 								>
-									{user && (
-										<UserProfile
-											user={user?.user}
-											image="https://tinyurl.com/yhkm2ek8"
-										/>
-									)}
+									{user && <UserProfile user={user?.user} image="https://tinyurl.com/yhkm2ek8" />}
 								</Stack>
 								<Spacer />
 								{/* <IconButton

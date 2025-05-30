@@ -24,7 +24,7 @@ const MultiSelectRecord = ({ param, formData, setFormData, handleConfirm }) => {
 		}
 	}, [formData[param.param_key]]);
 
-	const showDepartment = formData.employmentRole !== "Employee";
+	const showDepartment = formData?.employmentRole !== "Employee";
 
 	return (
 		showDepartment && (

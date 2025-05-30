@@ -91,11 +91,11 @@ const LeadsDisbursed = () => {
 	useEffect(() => {
 		const updateUserProfile = async () => {
 			try {
-				await UserService.updateUserProfile(formData, formData._id);
+				await UserService.updateUserProfile(formData, formData?._id);
 				setRefresh((prev) => !prev);
 			} catch (error) {}
 		};
-		if (formData._id) {
+		if (formData?._id) {
 			updateUserProfile(formData);
 		}
 	}, [formData]);
@@ -103,14 +103,14 @@ const LeadsDisbursed = () => {
 	useEffect(() => {
 		const updateUserAssignedLeads = async () => {
 			try {
-				await UserService.updateUserAssignedLeads(formData, formData._id);
+				await UserService.updateUserAssignedLeads(formData, formData?._id);
 				setRefresh((prev) => !prev);
 			} catch (error) {}
 		};
-		if (formData._id && formData.assignedWeight) {
+		if (formData?._id && formData?.assignedWeight) {
 			updateUserAssignedLeads(formData);
 		}
-	}, [formData.assignedWeight]);
+	}, [formData?.assignedWeight]);
 
 	const handleSelect = (type, value, rowId) => {
 		const user = agents.find((agent) => agent._id === rowId);

@@ -15,7 +15,7 @@ const Setup = lazy(() => import("./features/setup"));
 const SignUp = lazy(() => import("./features/sign-up"));
 
 const Configuration = lazy(() => import("./features/configuration"));
-const UserProfileDetails = lazy(() => import("./features/user/UserProfileDetails"));
+const UserProfileDetails = lazy(() => import("./features/user/profile/UserProfileDetails"));
 const VerifyEmail = lazy(() => import("./features/verify-user"));
 
 // accounting
@@ -76,6 +76,8 @@ const Settings = lazy(() => import("erp-modules/payroll/Settings"));
 const SchedulingDashboard = lazy(() => import("erp-modules/scheduling/dashboard"));
 const ScheduleReports = lazy(() => import("./erp-modules/scheduling/Reports"));
 const ScheduleWorkView = lazy(() => import("./erp-modules/scheduling/workview"));
+const Crew = lazy(() => import("./erp-modules/scheduling/crew"));
+const LocationSite = lazy(() => import("./erp-modules/scheduling/location-site"));
 const ShiftAssignment = lazy(() => import("./erp-modules/scheduling/ShiftAssignment"));
 
 // projectmanagement
@@ -380,6 +382,14 @@ export const router = createBrowserRouter([
 				element: <ScheduleWorkView />,
 			},
 			{
+				path: `${ROUTE_PATH.SCHEDULING}/crew`,
+				element: <Crew />,
+			},
+			{
+				path: `${ROUTE_PATH.SCHEDULING}/sites`,
+				element: <LocationSite />,
+			},
+			{
 				path: `${ROUTE_PATH.SCHEDULING}${ROUTE_PATH.REPORT}`,
 				element: <ScheduleReports />,
 			},
@@ -437,14 +447,15 @@ export const router = createBrowserRouter([
 		element: <Login />,
 	},
 	{ path: "/support", element: <Support /> },
-	{ path: "/info", element: <CustomerInfo /> },
+	// { path: "/info", element: <CustomerInfo /> },
 	{
 		path: ROUTE_PATH.FORGOT_PWD,
 		element: <ForgotPassword />,
 	},
 	{
 		path: ROUTE_PATH.SIGNUP,
-		element: <SignUp />,
+		// element: <SignUp />,
+		element: <CustomerInfo />,
 	},
 	{
 		path: ROUTE_PATH.VERIFY_EMAIL,

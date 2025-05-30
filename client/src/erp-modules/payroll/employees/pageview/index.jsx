@@ -6,6 +6,7 @@ import TextTitle from "components/ui/text/TextTitle";
 import { ROLES } from "constant";
 import useCompany from "hooks/useCompany";
 import useCompanyEmployees from "hooks/useCompanyEmployees";
+import usePaygroup from "hooks/usePaygroup";
 import useSelectedEmp from "hooks/useSelectedEmp";
 import PageLayout from "layouts/PageLayout";
 import { useEffect, useState } from "react";
@@ -13,14 +14,14 @@ import { FaCheckCircle } from "react-icons/fa";
 import { useParams } from "react-router-dom";
 import LocalStorageService from "services/LocalStorageService";
 import EmpProfileSearch from "../EmpProfileSearch";
-import BankingInfo from "./employee-tabs/BankingInfo";
-import BenefitsInfo from "./employee-tabs/BenefitsInfo";
-import CorporateInfo from "./employee-tabs/CorporateInfo";
-import GovernmentInfo from "./employee-tabs/GovernmentContribution";
-import PayInfo from "./employee-tabs/PayInfo";
-import PersonalInfo from "./employee-tabs/PersonalInfo";
+import BankingInfo from "./employee-tabs/bank-info/BankingInfo";
+import BenefitsInfo from "./employee-tabs/benefit-info/BenefitsInfo";
+import CorporateInfo from "./employee-tabs/employment-info/CorporateInfo";
+import GovernmentInfo from "./employee-tabs/govt-info/GovernmentContribution";
+import PayInfo from "./employee-tabs/pay-info/PayInfo";
+import PersonalInfo from "./employee-tabs/personal-info/PersonalInfo";
 
-const Employees = ({ isOnboarding, selectedPayGroupName, handleClose }) => {
+const Employees = ({ isOnboarding, handleClose }) => {
 	const { id, stepNo } = useParams();
 	const { company } = useCompany(LocalStorageService.getItem("selectedCompany"));
 	const loggedInUser = LocalStorageService.getItem("user");
@@ -28,8 +29,8 @@ const Employees = ({ isOnboarding, selectedPayGroupName, handleClose }) => {
 	const [employee, setEmployee] = useState(null);
 	const [userId, setUserId] = useState(id ? id : loggedInUser._id);
 	const { setEmpId } = useSelectedEmp(userId);
-
-	const employees = useCompanyEmployees(company, deptName);
+	const { selectedPayGroupOption } = usePaygroup(company, false);
+	const employees = useCompanyEmployees(company, deptName, selectedPayGroupOption);
 	const [filteredEmployees, setFilteredEmployees] = useState(null);
 
 	useEffect(() => {
@@ -85,7 +86,6 @@ const Employees = ({ isOnboarding, selectedPayGroupName, handleClose }) => {
 					id={2}
 					company={company}
 					isOnboarding={isOnboarding}
-					selectedPayGroupName={selectedPayGroupName}
 					handleNext={handleNext}
 					handlePrev={handlePrev}
 				/>

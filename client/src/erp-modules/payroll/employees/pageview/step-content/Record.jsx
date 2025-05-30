@@ -1,5 +1,4 @@
 import { Checkbox, FormLabel, HStack, Textarea, VStack } from "@chakra-ui/react";
-import PrimaryButton from "components/ui/button/PrimaryButton";
 import FormControlMain from "components/ui/form";
 import RequiredLabel from "components/ui/form/RequiredLabel";
 import TextTitle from "components/ui/text/TextTitle";
@@ -18,8 +17,6 @@ const Record = ({
 	formData,
 	setFormData,
 	handleConfirm,
-	isDisabled,
-	isLoading,
 	handleSubmit,
 	isOnboarding,
 	readOnly,
@@ -151,16 +148,6 @@ const Record = ({
 					</VStack>
 				))}
 			</HStack>
-			{!readOnly && (
-				<PrimaryButton
-					size="xs"
-					isDisabled={isDisabled}
-					name={"Save"}
-					isLoading={isLoading}
-					loadingText="Loading"
-					onOpen={() => handleSubmit()}
-				/>
-			)}
 		</>
 	);
 };

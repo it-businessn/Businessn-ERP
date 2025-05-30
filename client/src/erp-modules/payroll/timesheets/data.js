@@ -11,6 +11,14 @@ export const PAY_TYPES_TITLE = {
 	STAT_PAY: "Statutory Pay",
 	SICK_PAY: "Sick Pay",
 	VACATION_PAY: "Vacation Pay",
+	// BEREAVEMENT_PAY: "Bereavement Pay",
+	// PERSONAL_DAY_PAY: "Personal Day Pay",
+};
+
+export const convertToMinutes = (time) => {
+	if (!time || typeof time !== "string") return null;
+	const [h, m] = time.split(":").map(Number);
+	return h * 60 + m;
 };
 
 export const BREAK_TYPES_TITLE = {
@@ -121,6 +129,13 @@ export const PAY_TYPES = [
 		param_hours: "vacationPayHours",
 		color: "var(--event_color1)",
 	},
+	// {
+	// 	type: PAY_TYPES_TITLE.BEREAVEMENT_PAY,
+	// 	value: PAY_TYPES_TITLE.BEREAVEMENT_PAY,
+	// 	param_key: "bereavementPay",
+	// 	param_hours: "bereavementPayHours",
+	// 	color: "var(--event_color1)",
+	// },
 	// {
 	// 	type: BREAK_TYPES_TITLE.VACATION_PAY_BRK,
 	// 	value: BREAK_TYPES_TITLE.VACATION_PAY_BRK,

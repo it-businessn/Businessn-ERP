@@ -137,7 +137,7 @@ const AccountingLedger = () => {
 								<HStack spacing={2}>
 									<Checkbox
 										colorScheme={"facebook"}
-										isChecked={formData.isPayrollActive}
+										isChecked={formData?.isPayrollActive}
 										onChange={(e) =>
 											setFormData((prevData) => ({
 												...prevData,
@@ -149,7 +149,7 @@ const AccountingLedger = () => {
 									</Checkbox>
 									<Checkbox
 										colorScheme={"facebook"}
-										isChecked={formData.isPayrollInactive}
+										isChecked={formData?.isPayrollInactive}
 										onChange={(e) =>
 											setFormData((prevData) => ({
 												...prevData,

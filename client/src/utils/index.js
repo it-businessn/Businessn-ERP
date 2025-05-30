@@ -385,7 +385,7 @@ export const getPayNum = (payNo, isExtra, payStubs) => {
 		: payStubs?.find(({ payPeriodNum, isExtraRun }) => payPeriodNum === payNo && !isExtraRun);
 };
 
-export const sortRecordsByDate = (records, key, isDate = true, sort = true) => {
+export const sortRecordsByDate = (records, key, isDate = true, sort = true, frequency) => {
 	const sortedList = sort
 		? records?.sort((a, b) => (isDate ? new Date(a[key]) - new Date(b[key]) : a[key] - b[key]))
 		: records;
@@ -399,6 +399,7 @@ export const sortRecordsByDate = (records, key, isDate = true, sort = true) => {
 		record.isDisabledStatus = isDisabledStatus;
 		record.isViewAction = isViewAction;
 		record.isDisabledAction = isDisabledAction;
+		record.frequency = frequency;
 		return record;
 	});
 	return sortedList;

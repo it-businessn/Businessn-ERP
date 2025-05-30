@@ -1,3 +1,5 @@
+import { ALERTS_TYPE } from "constant";
+
 export const COUNTRIES = [
 	{
 		type: "Canada",
@@ -155,7 +157,7 @@ export const EMP_PERSONAL_INFO_CONFIG = [
 			},
 			{
 				name: "Social Insurance Number",
-				param_key: "SIN",
+				param_key: ALERTS_TYPE.SIN,
 				submandatory: true,
 			},
 

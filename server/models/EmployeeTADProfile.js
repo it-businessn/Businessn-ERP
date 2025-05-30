@@ -10,6 +10,7 @@ const employeeTADProfileInfoSchema = new mongoose.Schema({
 	timeManagementBadgeID: String,
 	createdOn: { type: Date, default: Date.now },
 	updatedOn: { type: Date, default: Date.now },
+	isNewUser: { type: Boolean, default: true },
 });
 
 const EmployeeTADProfileInfo = mongoose.model(

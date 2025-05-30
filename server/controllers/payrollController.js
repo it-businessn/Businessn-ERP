@@ -4,7 +4,7 @@ const EmployeeBankingInfo = require("../models/EmployeeBankingInfo");
 const EmployeeProfileInfo = require("../models/EmployeeProfileInfo");
 const Group = require("../models/Group");
 
-const { PAYRUN_TYPE, TIMESHEET_STATUS, PAY_TYPES_TITLE } = require("../services/data");
+const { PAYRUN_TYPE, TIMESHEET_STATUS, PAY_TYPES_TITLE, ALERTS_TYPE } = require("../services/data");
 const { fetchActiveEmployees } = require("./userController");
 const Timesheet = require("../models/Timesheet");
 const { getHourlyAggregatedResult } = require("./payrunHourlyAllocatedCalc");
@@ -36,7 +36,7 @@ const getAllPayGroups = async (req, res) => {
 		const groups = await Group.find({
 			companyName,
 			payrollActivated: true,
-		}).select("scheduleSettings yearSchedules name");
+		}).select("scheduleSettings yearSchedules name scheduleFrequency");
 		res.status(200).json(groups);
 	} catch (error) {
 		res.status(404).json({ error: error.message });
@@ -44,8 +44,17 @@ const getAllPayGroups = async (req, res) => {
 };
 
 const getGroupedTimesheet = async (req, res) => {
-	const { companyName, startDate, endDate, payDate, isExtraRun, groupId, payrunType, deptName } =
-		req.params;
+	const {
+		companyName,
+		startDate,
+		endDate,
+		payDate,
+		isExtraRun,
+		groupId,
+		payrunType,
+		deptName,
+		selectedPayGroupOption,
+	} = req.body;
 
 	try {
 		const isExtraPayRun = isExtraRun === "true";
@@ -56,6 +65,7 @@ const getGroupedTimesheet = async (req, res) => {
 			payDate,
 			companyName,
 			deptName,
+			selectedPayGroupOption,
 		);
 
 		const currentPeriodEmployees = isExtraPayRun
@@ -112,7 +122,7 @@ const calculateTimesheetApprovedHours = async (startDate, endDate, companyName) 
 					totalVacationHoursWorked: 0,
 				};
 			}
-
+			// timesheet.regHoursWorked = timesheet.regHoursWorked.toFixed(2);
 			if (timesheet.payType === PAY_TYPES_TITLE.REG_PAY)
 				acc[timesheet.employeeId].totalRegHoursWorked +=
 					getSumRegHrs(timesheet.regHoursWorked, timesheet.regHoursWorked2) || 0;
@@ -143,8 +153,17 @@ const calculateTimesheetApprovedHours = async (startDate, endDate, companyName) 
 };
 
 const getEEContribution = async (req, res) => {
-	const { companyName, startDate, endDate, payDate, isExtraRun, groupId, payrunType, deptName } =
-		req.params;
+	const {
+		companyName,
+		startDate,
+		endDate,
+		payDate,
+		isExtraRun,
+		groupId,
+		payrunType,
+		deptName,
+		selectedPayGroupOption,
+	} = req.body;
 
 	try {
 		const isExtraPayRun = isExtraRun === "true";
@@ -155,6 +174,7 @@ const getEEContribution = async (req, res) => {
 			payDate,
 			companyName,
 			deptName,
+			selectedPayGroupOption,
 		);
 
 		const currentPeriodEmployees = isExtraPayRun
@@ -182,8 +202,17 @@ const getEEContribution = async (req, res) => {
 };
 
 const getERContribution = async (req, res) => {
-	const { companyName, startDate, endDate, payDate, isExtraRun, groupId, payrunType, deptName } =
-		req.params;
+	const {
+		companyName,
+		startDate,
+		endDate,
+		payDate,
+		isExtraRun,
+		groupId,
+		payrunType,
+		deptName,
+		selectedPayGroupOption,
+	} = req.body;
 
 	try {
 		const isExtraPayRun = isExtraRun === "true";
@@ -194,6 +223,7 @@ const getERContribution = async (req, res) => {
 			payDate,
 			companyName,
 			deptName,
+			selectedPayGroupOption,
 		);
 
 		const currentPeriodEmployees = isExtraPayRun
@@ -241,14 +271,20 @@ const getTotalAlertsAndViolationsInfo = async (req, res) => {
 };
 
 const getAlertsAndViolationsInfo = async (req, res) => {
-	const { companyName, payPeriodNum } = req.params;
+	const { companyName, payPeriodNum, selectedPayGroup } = req.params;
 
 	try {
 		const payrollActiveEmps = await EmployeeEmploymentInfo.find({
 			payrollStatus: "Payroll Active",
 			companyName,
 		}).select("empId");
-		const payrollActiveIds = payrollActiveEmps.map((emp) => emp.empId);
+
+		const payrollActiveIds = payrollActiveEmps
+			?.filter(
+				(emp) =>
+					emp?.empId && emp?.positions?.find((_) => _.employmentPayGroup === selectedPayGroup),
+			)
+			?.map((emp) => emp.empId);
 
 		const alerts = await EmployeeAlertsViolationInfo.find({
 			companyName,
@@ -299,6 +335,7 @@ const getAlertsAndViolationsInfo = async (req, res) => {
 // 	try {
 // 		const existingPayInfo = await findEmployeePayInfoDetails(empId, companyName);
 // 		if (existingPayInfo) {
+// 		if (req.body?._id) delete req.body._id;
 // 			const updatedPayInfo = await updatePayInfo(existingPayInfo._id, req.body);
 // 			return res.status(201).json(updatedPayInfo);
 // 		}
@@ -350,25 +387,20 @@ const addAlertsAndViolations = async (req, res) => {
 				empId: data?.empId?._id,
 			}).select("empId SIN");
 
-			const empPayRate = await EmployeePayInfo.findOne({
+			const empPayInfo = await EmployeePayInfo.findOne({
 				companyName,
 				empId: data?.empId?._id,
 			}).select("empId roles");
 
 			const missingBankInfo =
-				!empBankResult ||
-				!empBankResult.bankNum ||
-				!empBankResult.transitNum ||
-				!empBankResult.accountNum ||
-				empBankResult.bankNum === "" ||
-				empBankResult.transitNum === "" ||
-				empBankResult.accountNum === "";
+				!empBankResult?.bankNum || !empBankResult?.transitNum || !empBankResult?.accountNum;
 			if (missingBankInfo) {
 				const alertInfo = {
 					empId: data?.empId?._id,
 					companyName,
 					description: "Banking information missing",
 					actionRequired: true,
+					type: ALERTS_TYPE.BANK,
 				};
 				const bankingInfoAlertExists = await findAlertInfo(alertInfo);
 				if (!bankingInfoAlertExists) {
@@ -378,14 +410,15 @@ const addAlertsAndViolations = async (req, res) => {
 			}
 
 			const belowMinimumWage =
-				!empPayRate?.roles?.length ||
-				empPayRate?.roles?.find((_) => parseFloat(_?.payRate) < 17.85);
+				!empPayInfo?.roles?.length ||
+				empPayInfo?.roles?.find((_) => parseFloat(_?.payRate) < 17.85);
 			if (belowMinimumWage) {
 				const alertInfo = {
 					empId: data?.empId?._id,
 					companyName,
 					description: "Minimum wage is below $17.85.",
 					actionRequired: true,
+					type: ALERTS_TYPE.WAGE,
 				};
 				const wageAlertExists = await findAlertInfo(alertInfo);
 				if (!wageAlertExists) {
@@ -401,6 +434,7 @@ const addAlertsAndViolations = async (req, res) => {
 					companyName,
 					actionRequired: false,
 					description: "SIN missing",
+					type: ALERTS_TYPE.SIN,
 				};
 				const SINViolationExists = await findAlertInfo(alertInfo);
 				if (!SINViolationExists) {
@@ -415,20 +449,24 @@ const addAlertsAndViolations = async (req, res) => {
 	}
 };
 
-const deleteAlerts = async (empId) => {
-	const existingAlert = await findAlertInfo({
+const deleteAlerts = async (empId, type) => {
+	const existingAlert = await EmployeeAlertsViolationInfo.deleteMany({
 		empId,
+		type,
 	});
-	if (existingAlert) {
-		const deleted = await EmployeeAlertsViolationInfo.findByIdAndDelete({
-			_id: existingAlert._id,
-		});
-		if (deleted) {
-			console.log(`Alert  with id ${existingAlert._id} deleted successfully.`);
-		} else {
-			console.log("Alert Details not found.");
-		}
-	}
+	// const existingAlert = await findAlertInfo({
+	// 		empId,
+	// 	});
+	// 	if (existingAlert) {
+	// 		const deleted = await EmployeeAlertsViolationInfo.findByIdAndDelete({
+	// 			_id: existingAlert._id,
+	// 		});
+	// 		if (deleted) {
+	// 			console.log(`Alert  with id ${existingAlert._id} deleted successfully.`);
+	// 		} else {
+	// 			console.log("Alert Details not found.");
+	// 		}
+	// 	}
 };
 
 module.exports = {

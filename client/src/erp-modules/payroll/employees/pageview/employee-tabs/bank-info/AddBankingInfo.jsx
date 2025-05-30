@@ -20,23 +20,22 @@ import {
 } from "config/payroll/employees/bankingInfo";
 import { Field, Form, Formik } from "formik";
 import useEmployeeBankingInfo from "hooks/useEmployeeBankingInfo";
-import useSelectedEmp from "hooks/useSelectedEmp";
 import React, { useEffect, useState } from "react";
 import LocalStorageService from "services/LocalStorageService";
 import PayrollService from "services/PayrollService";
 import { BankingFormSchema } from "validation/BankDetails";
-import StepContent from "../step-content";
-import RadioTypeRecord from "../step-content/radio";
-import Record from "../step-content/Record";
+import StepContent from "../../step-content";
+import RadioTypeRecord from "../../step-content/radio";
+import Record from "../../step-content/Record";
 
-const BankingInfo = ({ company, isOnboarding, handlePrev, id, handleClose }) => {
-	const { empId } = useSelectedEmp(LocalStorageService.getItem("empId"));
-	const bankingInfo = useEmployeeBankingInfo(company, empId, isOnboarding);
-	const setBankingInfo = () => getInitialBankingInfo(empId, company);
+const AddBankingInfo = ({ company, handlePrev, id, handleClose }) => {
+	const toast = useToast();
+	const onboardingEmpId = LocalStorageService.getItem("onboardingEmpId");
+	const bankingInfo = useEmployeeBankingInfo(company, onboardingEmpId);
+	const setBankingInfo = () => getInitialBankingInfo(onboardingEmpId, company);
 	const [formData, setFormData] = useState(setBankingInfo);
 	const [isDisabled, setIsDisabled] = useState(true);
-	const [isSave1Disabled, setIsSave1Disabled] = useState(false);
-	const [isLoading, setIsLoading] = useState(false);
+	const [currentStep, setCurrentStep] = useState(0);
 
 	useEffect(() => {
 		if (bankingInfo) {
@@ -44,23 +43,14 @@ const BankingInfo = ({ company, isOnboarding, handlePrev, id, handleClose }) => 
 		} else {
 			setFormData(setBankingInfo);
 		}
-	}, [bankingInfo, empId]);
-
-	useEffect(() => {
-		if (formData.paymentEmail) {
-			setIsSave1Disabled(false);
-		}
-	}, [formData.paymentEmail]);
-
-	const toast = useToast();
+	}, [bankingInfo]);
 
 	const handleSubmit = async (values) => {
-		setIsLoading(true);
 		try {
 			if (values) {
 				formData.bankDetails = values;
 			}
-			formData.empId = empId;
+			formData.empId = onboardingEmpId;
 			formData.companyName = company;
 			await PayrollService.addEmployeeBankingInfo(formData);
 			toast({
@@ -73,16 +63,26 @@ const BankingInfo = ({ company, isOnboarding, handlePrev, id, handleClose }) => 
 		} catch (error) {
 			console.error("Error:", error);
 			alert("Failed to submit banking information.");
-		} finally {
-			setIsLoading(false);
 		}
 	};
 
-	const [currentStep, setCurrentStep] = useState(0);
 	const goToNextStep = (index) => {
 		setCurrentStep(index);
 	};
+
 	const steps = [
+		{
+			title: "Payment Notification",
+			content: (
+				<Record
+					handleConfirm={() => ""}
+					formData={formData}
+					setFormData={setFormData}
+					title="Payment Notification"
+					config={EMP_PAYMENT_NOTIFICATION_CONFIG}
+				/>
+			),
+		},
 		{
 			title: "Banking Info",
 			content: (
@@ -95,7 +95,7 @@ const BankingInfo = ({ company, isOnboarding, handlePrev, id, handleClose }) => 
 						onSubmit={handleSubmit}
 						enableReinitialize
 					>
-						{({ isSubmitting, errors, touched }) => (
+						{({ isSubmitting, values, errors, touched }) => (
 							<Form autoComplete="off">
 								<HStack align={"start"} justify={"start"} mb={2}>
 									{EMP_BANKING_CONFIG.map((field, index) => (
@@ -108,12 +108,16 @@ const BankingInfo = ({ company, isOnboarding, handlePrev, id, handleClose }) => 
 														param={param}
 														setFormData={setFormData}
 														handleConfirm={() => ""}
-														isOnboarding={isOnboarding}
+														isOnboarding={true}
 													/>
 												) : (
 													<React.Fragment key={param.name}>
 														<FormControl
-															isInvalid={!!errors[param.param_key] && touched[param.param_key]}
+															isInvalid={
+																!!errors[param.param_key] &&
+																touched[param.param_key] &&
+																!values[param.param_key]?.includes("*")
+															}
 															mb={4}
 														>
 															<FormLabel htmlFor={param.param_key}>
@@ -159,21 +163,6 @@ const BankingInfo = ({ company, isOnboarding, handlePrev, id, handleClose }) => 
 				</>
 			),
 		},
-		{
-			title: "Payment Notification",
-			content: (
-				<Record
-					handleConfirm={() => ""}
-					formData={formData}
-					setFormData={setFormData}
-					title="Payment Notification"
-					config={EMP_PAYMENT_NOTIFICATION_CONFIG}
-					isLoading={isLoading}
-					isDisabled={isSave1Disabled}
-					handleSubmit={handleSubmit}
-				/>
-			),
-		},
 	];
 	return (
 		<SimpleGrid
@@ -188,11 +177,13 @@ const BankingInfo = ({ company, isOnboarding, handlePrev, id, handleClose }) => 
 					steps={steps}
 					currentStep={currentStep}
 					handleClick={goToNextStep}
-					isOnboarding={isOnboarding}
+					isOnboarding={true}
 					handlePrev={handlePrev}
 					id={id}
-					handleNextEnabled={!isDisabled}
-					handleClose={handleClose}
+					handleClose={() => {
+						LocalStorageService.removeItem("onboardingEmpId");
+						handleClose();
+					}}
 				/>
 			</BoxCard>
 			<StepContent currentStep={currentStep} steps={steps} />
@@ -200,4 +191,4 @@ const BankingInfo = ({ company, isOnboarding, handlePrev, id, handleClose }) => 
 	);
 };
 
-export default BankingInfo;
+export default AddBankingInfo;

@@ -17,9 +17,17 @@ const EmployeeContribution = ({
 	payrunOption,
 	path,
 	deptName,
+	selectedPayGroupOption,
 }) => {
 	const [refresh, setRefresh] = useState(false);
-	const data = useEmployeeEEContribution(company, closestRecord, groupId, payrunOption, deptName);
+	const data = useEmployeeEEContribution(
+		company,
+		closestRecord,
+		groupId,
+		payrunOption,
+		deptName,
+		selectedPayGroupOption,
+	);
 
 	const EE_CONTRIBUTION_COL_DATA = {
 		1: REGULAR_EE_COLS,

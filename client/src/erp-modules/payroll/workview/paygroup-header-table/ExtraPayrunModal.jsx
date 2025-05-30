@@ -4,10 +4,10 @@ import DateTimeFormControl from "components/ui/form/DateTimeFormControl";
 import MultiSelectFormControl from "components/ui/form/MultiSelectFormControl";
 import ModalLayout from "components/ui/modal/ModalLayout";
 import { ROLES } from "constant";
-import useEmployees from "hooks/useEmployees";
 import { useEffect, useState } from "react";
 import LocalStorageService from "services/LocalStorageService";
 import SettingService from "services/SettingService";
+import UserService from "services/UserService";
 import { addBusinessDays, getDefaultDate } from "utils/convertDate";
 
 const ExtraPayrunModal = ({
@@ -17,6 +17,7 @@ const ExtraPayrunModal = ({
 	company,
 	selectedPayGroup,
 	closestRecord,
+	selectedPayGroupOption,
 }) => {
 	const loggedInUser = LocalStorageService.getItem("user");
 	const deptName = loggedInUser?.role === ROLES.MANAGER ? loggedInUser?.department : null;
@@ -43,11 +44,33 @@ const ExtraPayrunModal = ({
 	);
 
 	const [selectedEmp, setSelectedEmp] = useState([]);
-	const { employees } = useEmployees(false, company, false, true, null, deptName);
+
+	const [employees, setEmployees] = useState(null);
 	const [openMenu, setOpenMenu] = useState(false);
 	const [selectedOptions, setSelectedOptions] = useState([]);
 
 	const { onClose } = useDisclosure();
+
+	useEffect(() => {
+		const fetchAllEmployees = async () => {
+			try {
+				const { data } = await UserService.getAllCompanyUsers(
+					company,
+					deptName,
+					selectedPayGroupOption,
+				);
+				data?.map((emp) => {
+					emp.fullName = emp?.empId?.fullName;
+					emp._id = emp?.empId?._id;
+					return emp;
+				});
+				setEmployees(data);
+			} catch (error) {
+				console.error(error);
+			}
+		};
+		fetchAllEmployees();
+	}, [deptName]);
 
 	const handleClose = () => {
 		onClose();
@@ -78,7 +101,7 @@ const ExtraPayrunModal = ({
 			? closestRecord.payPeriod
 			: closestRecord.payPeriod - 1;
 		try {
-			selectedPayGroup.yearSchedules[0]?.payPeriods.push({
+			selectedPayGroup?.yearSchedules[0]?.payPeriods.push({
 				payPeriod: payPeriodNum,
 				selectedEmp,
 				payPeriodPayDate,
@@ -88,8 +111,8 @@ const ExtraPayrunModal = ({
 				isExtraRun: true,
 			});
 			await SettingService.updateGroup(
-				{ yearSchedules: selectedPayGroup.yearSchedules },
-				selectedPayGroup._id,
+				{ yearSchedules: selectedPayGroup?.yearSchedules },
+				selectedPayGroup?._id,
 			);
 			setRefresh((prev) => !prev);
 			handleClose();

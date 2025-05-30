@@ -49,7 +49,7 @@ const QueryInfo = ({ id, handleNext, handlePrev }) => {
 	const [isSaveDisabled, setIsSaveDisabled] = useState(true);
 
 	useEffect(() => {
-		if (formData.inquiryType !== "" && formData.issue !== "") {
+		if (formData?.inquiryType !== "" && formData?.issue !== "") {
 			setIsSaveDisabled(false);
 		}
 	}, [formData]);
@@ -59,7 +59,7 @@ const QueryInfo = ({ id, handleNext, handlePrev }) => {
 	const handleSubmit = async () => {
 		setIsLoading(true);
 		try {
-			await TicketService.updateInfo(formData, formData._id);
+			await TicketService.updateInfo(formData, formData?._id);
 			setIsLoading(false);
 			toast({
 				title: "Query info added successfully.",

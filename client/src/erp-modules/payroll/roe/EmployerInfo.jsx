@@ -122,7 +122,7 @@ const EmployerInfo = ({ company, handleNext, tabId }) => {
 										valueParam="fullName"
 										name="fullName"
 										label=""
-										valueText={formData.contactName || loggedInUser?.fullName}
+										valueText={formData?.contactName || loggedInUser?.fullName}
 										handleChange={(e) =>
 											setFormData((prevData) => ({
 												...prevData,
@@ -141,7 +141,7 @@ const EmployerInfo = ({ company, handleNext, tabId }) => {
 										label=""
 										name="contactTelNumber"
 										placeholder="Enter Telephone Number"
-										valueText={formData.contactTelNumber || ""}
+										valueText={formData?.contactTelNumber || ""}
 										handleChange={(e) => {
 											setFormData((prev) => ({
 												...prev,
@@ -153,7 +153,7 @@ const EmployerInfo = ({ company, handleNext, tabId }) => {
 										label=""
 										name="contactExtNumber"
 										placeholder="Enter Ext Number"
-										valueText={formData.contactExtNumber || ""}
+										valueText={formData?.contactExtNumber || ""}
 										handleChange={(e) => {
 											setFormData((prev) => ({
 												...prev,
@@ -172,7 +172,7 @@ const EmployerInfo = ({ company, handleNext, tabId }) => {
 										valueParam="fullName"
 										name="fullName"
 										label=""
-										valueText={formData.issuerName || loggedInUser?.fullName}
+										valueText={formData?.issuerName || loggedInUser?.fullName}
 										handleChange={(e) =>
 											setFormData((prevData) => ({
 												...prevData,
@@ -191,7 +191,7 @@ const EmployerInfo = ({ company, handleNext, tabId }) => {
 										label=""
 										name="issuerTelNumber"
 										placeholder="Enter Tel Number"
-										valueText={formData.issuerTelNumber || ""}
+										valueText={formData?.issuerTelNumber || ""}
 										handleChange={(e) => {
 											setFormData((prev) => ({
 												...prev,
@@ -203,7 +203,7 @@ const EmployerInfo = ({ company, handleNext, tabId }) => {
 										label=""
 										name="issuerExtNumber"
 										placeholder="Enter Ext Number"
-										valueText={formData.issuerExtNumber || ""}
+										valueText={formData?.issuerExtNumber || ""}
 										handleChange={(e) => {
 											setFormData((prev) => ({
 												...prev,

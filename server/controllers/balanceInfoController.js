@@ -39,6 +39,7 @@ const findEmployeeBalanceInfo = async (empId, companyName, isUpdate) => {
 	const empPayStub = await findEmployeePayStub(empId, companyName);
 
 	return {
+		_id: empBalanceInfo?._id,
 		typeOfVacationTreatment: empBalanceInfo?.typeOfVacationTreatment,
 		vacationPayPercent: empBalanceInfo?.vacationPayPercent,
 		carryFwd: empBalanceInfo?.carryFwd,
@@ -77,7 +78,8 @@ const updateBalanceInfo = async (id, data) =>
 const getPercent = (value) => {
 	const input = value === "" ? 0 : parseFloat(value);
 	// return convertedFloatValue;
-	return Number.isInteger(input) ? input / 100 : input;
+	// return Number.isInteger(input) ? input / 100 : input;
+	return input;
 };
 
 const addEmployeeBalanceInfo = async (req, res) => {
@@ -153,6 +155,7 @@ const addEmployeeBalanceInfo = async (req, res) => {
 const updateEmployeeBalanceInfo = async (req, res) => {
 	const { id } = req.params;
 	try {
+		if (req.body?._id) delete req.body._id;
 		const updatedInfo = await updateBalanceInfo(id, req.body);
 		res.status(201).json(updatedInfo);
 	} catch (error) {

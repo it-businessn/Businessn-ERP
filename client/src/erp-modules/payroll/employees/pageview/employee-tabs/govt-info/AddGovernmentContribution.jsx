@@ -1,5 +1,4 @@
 import { Checkbox, FormLabel, HStack, SimpleGrid, Stack, useToast } from "@chakra-ui/react";
-import PrimaryButton from "components/ui/button/PrimaryButton";
 import BoxCard from "components/ui/card";
 import TextTitle from "components/ui/text/TextTitle";
 import VerticalStepper from "components/ui/VerticalStepper";
@@ -10,27 +9,24 @@ import {
 	getInitialGovernmentInfo,
 } from "config/payroll/employees/governmentInfo";
 import useEmployeeGovernment from "hooks/useEmployeeGovernment";
-import useSelectedEmp from "hooks/useSelectedEmp";
 import { useEffect, useState } from "react";
 import LocalStorageService from "services/LocalStorageService";
 import PayrollService from "services/PayrollService";
-import StepContent from "../step-content";
-import Record from "../step-content/Record";
+import StepContent from "../../step-content";
+import Record from "../../step-content/Record";
 
-const GovernmentContribution = ({ company, isOnboarding, handleNext, handlePrev, id }) => {
-	const { empId } = useSelectedEmp(LocalStorageService.getItem("empId"));
+const AddGovernmentContribution = ({ company, handleNext, handlePrev, id }) => {
+	const toast = useToast();
 	const onboardingEmpId = LocalStorageService.getItem("onboardingEmpId");
-	const userId = isOnboarding ? onboardingEmpId : empId;
 	const [refresh, setIsRefresh] = useState(true);
-	const governmentInfo = useEmployeeGovernment(company, userId, isOnboarding, refresh);
-	const setGovernmentInfo = () => getInitialGovernmentInfo(userId, company);
+	const governmentInfo = useEmployeeGovernment(company, onboardingEmpId, refresh);
+	const setGovernmentInfo = () => getInitialGovernmentInfo(onboardingEmpId, company);
 	const [formData, setFormData] = useState(setGovernmentInfo);
-	const [isDisabled, setIsDisabled] = useState(true);
+	const [isDisabled, setIsDisabled] = useState(false);
 	const [isLoading, setIsLoading] = useState(false);
 	const [isCPPExempt, setIsCPPExempt] = useState(false);
 	const [isEIExempt, setIsEIExempt] = useState(false);
-
-	const toast = useToast();
+	const [currentStep, setCurrentStep] = useState(0);
 
 	useEffect(() => {
 		if (governmentInfo) {
@@ -40,11 +36,7 @@ const GovernmentContribution = ({ company, isOnboarding, handleNext, handlePrev,
 		} else {
 			setFormData(setGovernmentInfo);
 		}
-	}, [governmentInfo, empId]);
-
-	const handleConfirm = () => {
-		setIsDisabled(false);
-	};
+	}, [governmentInfo, onboardingEmpId]);
 
 	useEffect(() => {
 		setFormData((prev) => ({
@@ -93,14 +85,6 @@ const GovernmentContribution = ({ company, isOnboarding, handleNext, handlePrev,
 							<FormLabel>Is EI Exempt</FormLabel>
 						</Checkbox>
 					</HStack>
-					<PrimaryButton
-						w="100px"
-						size="xs"
-						name="Save"
-						onOpen={() => {
-							handleSubmit();
-						}}
-					/>
 				</Stack>
 			),
 		},
@@ -113,8 +97,6 @@ const GovernmentContribution = ({ company, isOnboarding, handleNext, handlePrev,
 					setFormData={setFormData}
 					title="Income Tax"
 					config={EMP_INCOME_TAX_CONFIG}
-					isLoading={isLoading}
-					handleSubmit={handleSubmit}
 				/>
 			),
 		},
@@ -127,8 +109,6 @@ const GovernmentContribution = ({ company, isOnboarding, handleNext, handlePrev,
 					setFormData={setFormData}
 					title="Federal Government Contributions"
 					config={EMP_FED_GOVT_CONFIG}
-					isLoading={isLoading}
-					handleSubmit={handleSubmit}
 				/>
 			),
 		},
@@ -142,13 +122,11 @@ const GovernmentContribution = ({ company, isOnboarding, handleNext, handlePrev,
 					setFormData={setFormData}
 					title="Regional Government Deductions"
 					config={EMP_REGN_GOVT_CONFIG}
-					isLoading={isLoading}
-					handleSubmit={handleSubmit}
 				/>
 			),
 		},
 	];
-	const [currentStep, setCurrentStep] = useState(0);
+
 	const goToNextStep = (index) => {
 		setCurrentStep(index);
 	};
@@ -165,16 +143,23 @@ const GovernmentContribution = ({ company, isOnboarding, handleNext, handlePrev,
 					steps={steps}
 					currentStep={currentStep}
 					handleClick={goToNextStep}
-					isOnboarding={isOnboarding}
+					isOnboarding={true}
 					handleNext={handleNext}
 					handlePrev={handlePrev}
 					id={id}
-					handleNextEnabled={true}
+					isLoading={isLoading}
+					handleSubmit={handleSubmit}
+					isDisabled={isDisabled}
 				/>
 			</BoxCard>
-			<StepContent currentStep={currentStep} steps={steps} isOnboarding={isOnboarding} />
+			<StepContent
+				currentStep={currentStep}
+				steps={steps}
+				isOnboarding={true}
+				h="calc(100vh - 190px)"
+			/>
 		</SimpleGrid>
 	);
 };
 
-export default GovernmentContribution;
+export default AddGovernmentContribution;

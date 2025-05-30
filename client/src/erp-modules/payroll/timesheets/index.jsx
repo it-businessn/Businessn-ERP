@@ -22,50 +22,48 @@ import DateFilterPopup from "./DateFilterPopup";
 import OtherFilter from "./OtherFilter";
 import Timecard from "./Timecard";
 import Timesheet from "./Timesheet";
-import { TIMESHEET_STATUS, TIMESHEET_STATUS_LABEL } from "./data";
+import { convertToMinutes, TIMESHEET_STATUS, TIMESHEET_STATUS_LABEL } from "./data";
 
 const Timesheets = () => {
-	const { id } = useParams();
-	const toast = useToast();
-	const { company } = useCompany(LocalStorageService.getItem("selectedCompany"));
 	const loggedInUser = LocalStorageService.getItem("user");
 	const deptName = loggedInUser?.role === ROLES.MANAGER ? loggedInUser?.department : null;
 	const isManagerView = isManager(loggedInUser?.role);
+	const { id } = useParams();
 	const userId = id ? id : isManagerView ? null : loggedInUser._id;
+	const toast = useToast();
+	const { company } = useCompany(LocalStorageService.getItem("selectedCompany"));
+	const {
+		hasMultiPaygroups,
+		selectedPayGroupOption,
+		setSelectedPayGroupOption,
+		payGroups,
+		payGroupSchedule,
+		closestRecord,
+		closestRecordIndex,
+	} = usePaygroup(company, false);
 
-	const { payGroupSchedule, closestRecord, closestRecordIndex } = usePaygroup(company, false);
-	const lastRecord = payGroupSchedule?.length > 0 && payGroupSchedule[closestRecordIndex - 1];
-
-	const [dataRefresh, setDataRefresh] = useState(false);
-	const [filter, setFilter] = useState(null);
-	const { employees } = useEmployees(false, company, false, true, null, deptName);
+	const { employees } = useEmployees(false, company, false, true, deptName, selectedPayGroupOption);
 	const departments = useDepartment(company);
 	const cc = useCostCenter(company);
 
+	const lastRecord = payGroupSchedule?.length > 0 && payGroupSchedule[closestRecordIndex - 1];
+	const [dataRefresh, setDataRefresh] = useState(false);
+	const [filter, setFilter] = useState(null);
 	const [date, setDate] = useState(getDefaultDate);
-
 	const [timesheets, setTimesheets] = useState(null);
+	const [timesheetData, setTimesheetData] = useState([]);
 	// const [selectedFilter, setSelectedFilter] = useState("This pay period");
 	const [pageNum, setPageNum] = useState(1);
 	const [startDate, setStartDate] = useState(null);
 	const [endDate, setEndDate] = useState(null);
-
 	const [showDateFilter, setShowDateFilter] = useState(false);
 	const [showEmpFilter, setShowEmpFilter] = useState(false);
 	const [showDeptFilter, setShowDeptFilter] = useState(false);
 	const [showCCFilter, setShowCCFilter] = useState(false);
 	const [showAddEntry, setShowAddEntry] = useState(false);
-
 	const [filteredEmployees, setFilteredEmployees] = useState([]);
 	const [filteredDept, setFilteredDept] = useState(deptName ? [deptName] : []);
 	const [filteredCC, setFilteredCC] = useState([]);
-
-	const toggleDateFilter = () => setShowDateFilter(!showDateFilter);
-	const toggleEmpFilter = () => setShowEmpFilter((prev) => (employees?.length ? !prev : prev));
-	const toggleDeptFilter = () => setShowDeptFilter((prev) => (departments?.length ? !prev : prev));
-	const toggleCCFilter = () => setShowCCFilter((prev) => !prev);
-	const handleFilter = () => console.log(filteredEmployees);
-
 	const [refresh, setRefresh] = useState(false);
 	const [isAllChecked, setIsAllChecked] = useState(true);
 	const [isActioned, setIsActioned] = useState(false);
@@ -103,6 +101,44 @@ const Timesheets = () => {
 	}, [id, closestRecord]);
 
 	const handleRefresh = () => setDataRefresh(!dataRefresh);
+	const toggleDateFilter = () => setShowDateFilter(!showDateFilter);
+	const toggleEmpFilter = () => setShowEmpFilter((prev) => (employees?.length ? !prev : prev));
+	const toggleDeptFilter = () => setShowDeptFilter((prev) => (departments?.length ? !prev : prev));
+	const toggleCCFilter = () => setShowCCFilter((prev) => !prev);
+	const handleFilter = () => console.log(filteredEmployees);
+
+	const checkOverlaps = (currentRecord) => {
+		if (!currentRecord) return;
+
+		const newStart = convertToMinutes(currentRecord.startTime);
+		const newEnd = convertToMinutes(currentRecord.endTime);
+
+		if (newStart === null || newEnd === null || newStart >= newEnd) {
+			toast({
+				title: "Invalid time range.",
+				description: "Please make sure the start time is earlier than the end time.",
+				status: "error",
+				duration: 3000,
+				isClosable: true,
+				position: "top-right",
+			});
+			return;
+		}
+		const currentDate = moment(currentRecord.clockIn).format("YYYY-MM-DD");
+		const sameDayRecords = timesheetData.filter(
+			(record) =>
+				record._id !== currentRecord._id &&
+				record.employeeId._id === currentRecord.employeeId._id &&
+				moment(record.clockIn).format("YYYY-MM-DD") === currentDate,
+		);
+		if (sameDayRecords.length <= 1) return false;
+		const hasOverlap = sameDayRecords.some((record) => {
+			const otherStart = convertToMinutes(record.startTime);
+			const otherEnd = convertToMinutes(record.endTime);
+			return newStart < otherEnd && newEnd > otherStart;
+		});
+		return hasOverlap;
+	};
 
 	const TABS = [
 		{
@@ -120,6 +156,8 @@ const Timesheets = () => {
 					setShowAddEntry={setShowAddEntry}
 					timesheets={timesheets}
 					setTimesheets={setTimesheets}
+					timesheetData={timesheetData}
+					setTimesheetData={setTimesheetData}
 					isAllChecked={isAllChecked}
 					setIsAllChecked={setIsAllChecked}
 					setIsActioned={setIsActioned}
@@ -130,6 +168,7 @@ const Timesheets = () => {
 					setRefresh={setRefresh}
 					checkedRows={checkedRows}
 					setCheckedRows={setCheckedRows}
+					checkOverlaps={checkOverlaps}
 				/>
 			),
 		},
@@ -154,8 +193,6 @@ const Timesheets = () => {
 	];
 
 	const [viewMode, setViewMode] = useState(TABS[0].type);
-	const showComponent = (viewMode) => TABS.find(({ type }) => type === viewMode)?.name;
-
 	useEffect(() => {
 		setPageNum(1);
 		setFilter((prev) => ({
@@ -169,6 +206,8 @@ const Timesheets = () => {
 		setShowDeptFilter(false);
 		setShowCCFilter(false);
 	}, [startDate, endDate, filteredEmployees, filteredDept, filteredCC, viewMode]);
+
+	const showComponent = (viewMode) => TABS.find(({ type }) => type === viewMode)?.name;
 
 	const CHECK_FILTER = [
 		{
@@ -204,31 +243,65 @@ const Timesheets = () => {
 	};
 
 	const handleActionAll = async () => {
-		handleClose();
-		const { data } = await TimesheetService.actionAllTimesheets({
-			timesheetIDs: checkedRows,
-			approveStatus: actionName,
-		});
-		if (data) {
-			toast({
-				title: "Action successful!",
-				description: "Your action was completed successfully.",
-				status: "success",
-				duration: 1500,
-				isClosable: true,
+		const getValidIDs = () => {
+			if (actionName !== TIMESHEET_STATUS_LABEL.APPROVED) return checkedRows;
+			return checkedRows.filter((id) => {
+				const record = timesheetData.find((row) => row._id === id);
+				return !checkOverlaps(record);
 			});
-			setRefresh((prev) => !prev);
-			setCheckedRows([]);
+		};
+
+		const validIDs = getValidIDs();
+		handleClose();
+		try {
+			const { data } = await TimesheetService.actionAllTimesheets({
+				timesheetIDs: validIDs,
+				approveStatus: actionName,
+			});
+			const isErrorMsg = Boolean(data?.message);
+
+			toast({
+				title: data?.message || "Action successful!",
+				description: isErrorMsg
+					? "Please make sure the start time is earlier than the end time."
+					: "Your action was completed successfully.",
+				status: isErrorMsg ? "error" : "success",
+				duration: 3000,
+				isClosable: true,
+				position: "top-right",
+			});
+		} catch (error) {
+			toast({
+				title: "Something went wrong.",
+				description: "Unable to perform the action.",
+				status: "error",
+				duration: 3000,
+				isClosable: true,
+				position: "top-right",
+			});
+		}
+		setRefresh((prev) => !prev);
+		setCheckedRows([]);
+	};
+
+	const handleChange = (value) => {
+		if (value !== "") {
+			setSelectedPayGroupOption(value);
 		}
 	};
 
 	return (
 		<PageLayout
-			width="full"
+			width="35%"
 			title={"Timesheets"}
-			showDate
-			valueText1={date}
-			handleChange={(value) => setDate(value)}
+			handleChange={handleChange}
+			hasMultiPaygroups={hasMultiPaygroups}
+			showPayGroup={true}
+			selectedValue={selectedPayGroupOption}
+			data={payGroups}
+			selectPlaceholder="Select Paygroup"
+			selectAttr="name"
+			// handleChange={(value) => setDate(value)}
 			isTimesheet
 			// showCheckBox={
 			// 	<VStack ml={5} alignItems="self-start">

@@ -36,11 +36,11 @@ const EditQuestionnaire = ({
 		e.preventDefault();
 		setSubmitting(true);
 
-		if (typeof formData.options === "string") {
-			formData.options = formData.options.split(",");
+		if (typeof formData?.options === "string") {
+			formData.options = formData?.options.split(",");
 		}
 		try {
-			await QuestionnaireService.updateQuestionnaire(formData, formData._id);
+			await QuestionnaireService.updateQuestionnaire(formData, formData?._id);
 			setRefresh((prev) => !prev);
 			setSubmitting(false);
 			onClose();
@@ -72,7 +72,7 @@ const EditQuestionnaire = ({
 								<TextAreaFormControl
 									label={"Question"}
 									name="question"
-									valueText={formData.question}
+									valueText={formData?.question}
 									handleChange={(e) =>
 										setFormData((prevData) => ({
 											...prevData,
@@ -82,12 +82,12 @@ const EditQuestionnaire = ({
 									required
 								/>
 
-								{/* {console.log(formData.options)}{formData.options.map(option=>)} */}
+								{/* {console.log(formData?.options)}{formData?.options.map(option=>)} */}
 								<TextAreaFormControl
 									label={"Options"}
 									name="options"
 									rows={4}
-									valueText={formData.options}
+									valueText={formData?.options}
 									handleChange={(e) =>
 										setFormData((prevData) => ({
 											...prevData,
@@ -102,7 +102,7 @@ const EditQuestionnaire = ({
 										type="text"
 										name="
 										options"
-										value={formData.options}
+										value={formData?.options}
 										onChange={(e) =>
 											setFormData((prevData) => ({
 												...prevData,
@@ -118,7 +118,7 @@ const EditQuestionnaire = ({
 										type="text"
 										name="
 										correctAnswer"
-										value={formData.correctAnswer}
+										value={formData?.correctAnswer}
 										onChange={(e) =>
 											setFormData((prevData) => ({
 												...prevData,
@@ -132,7 +132,7 @@ const EditQuestionnaire = ({
 									label={"Explanation"}
 									name="explanation"
 									rows={5}
-									valueText={formData.explanation}
+									valueText={formData?.explanation}
 									handleChange={(e) =>
 										setFormData((prevData) => ({
 											...prevData,
@@ -143,11 +143,7 @@ const EditQuestionnaire = ({
 								/>
 
 								<HStack justifyContent={"end"}>
-									<PrimaryButton
-										name="Save"
-										isLoading={isSubmitting}
-										px="2em"
-									/>
+									<PrimaryButton name="Save" isLoading={isSubmitting} px="2em" />
 
 									<Button
 										onClick={() => {

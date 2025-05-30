@@ -69,7 +69,7 @@ const AddNewSale = ({ isOpen, onClose, setIsAdded, company }) => {
 								size="sm"
 								placeholder="Select Lead"
 								name="saleId"
-								value={formData.saleId}
+								value={formData?.saleId}
 								onChange={handleChange}
 							>
 								{leads?.map(({ _id, opportunityName }) => (
@@ -87,7 +87,7 @@ const AddNewSale = ({ isOpen, onClose, setIsAdded, company }) => {
 								size="sm"
 								placeholder="Select Agent"
 								name="fullName"
-								value={formData.fullName}
+								value={formData?.fullName}
 								onChange={handleChange}
 							>
 								{reps?.map(({ _id, fullName }) => (
@@ -101,7 +101,7 @@ const AddNewSale = ({ isOpen, onClose, setIsAdded, company }) => {
 					<InputFormControl
 						label={"Amount"}
 						name="amount"
-						valueText={formData.amount}
+						valueText={formData?.amount}
 						handleChange={handleChange}
 						required
 						type="number"

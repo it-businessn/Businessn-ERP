@@ -56,33 +56,33 @@ const ContactForm = ({ showContactForm, handleClose }) => {
 					<InputFormControl
 						label={"Your first name"}
 						name="firstName"
-						valueText={formData.firstName}
+						valueText={formData?.firstName}
 						handleChange={handleChange}
 					/>
 					<InputFormControl
 						label={"Your last name"}
 						name="lastName"
-						valueText={formData.lastName}
+						valueText={formData?.lastName}
 						handleChange={handleChange}
 					/>
 					<InputFormControl
 						type="email"
 						label={"Your email"}
 						name="contactEmail"
-						valueText={formData.contactEmail}
+						valueText={formData?.contactEmail}
 						handleChange={handleChange}
 						required
 					/>
 					<TextAreaFormControl
 						label={"Please enter your query"}
 						name="query"
-						valueText={formData.query}
+						valueText={formData?.query}
 						handleChange={handleChange}
 						required
 					/>
 					<ActionButtonGroup
 						size="xs"
-						isDisabled={formData.email === "" || formData.query === ""}
+						isDisabled={formData?.email === "" || formData?.query === ""}
 						submitBtnName={"Submit"}
 						onClose={handleClose}
 						onOpen={handleSubmit}

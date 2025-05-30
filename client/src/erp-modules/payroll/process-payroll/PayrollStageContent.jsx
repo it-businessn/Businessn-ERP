@@ -76,7 +76,7 @@ const PayrollStageContent = ({
 							onPayrollStepupToggle();
 						}}
 						payGroups={payGroups}
-						selectedPayGroup={selectedPayGroup}
+						selectedPayGroup={selectedPayGroup?.name}
 						payGroupSchedule={payGroupSchedule}
 						closestRecord={closestRecord}
 						isPayPeriodInactive={isPayPeriodInactive}
@@ -129,6 +129,7 @@ const PayrollStageContent = ({
 						payGroupSchedule={payGroupSchedule}
 						closestRecord={closestRecord}
 						isPayPeriodInactive={isPayPeriodInactive}
+						selectedPayGroup={selectedPayGroup?.name}
 					/>
 				}
 			/>
@@ -149,7 +150,7 @@ const PayrollStageContent = ({
 							onReportsToggle();
 						}}
 						company={company}
-						payPeriodNum={closestRecord?.payPeriod}
+						payPeriodNum={closestRecord}
 						isPayPeriodInactive={isPayPeriodInactive}
 					/>
 				}

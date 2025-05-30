@@ -13,38 +13,33 @@ import useCostCenter from "hooks/useCostCenter";
 import useDepartment from "hooks/useDepartment";
 import useEmployeeEmploymentInfo from "hooks/useEmployeeEmploymentInfo";
 import usePaygroup from "hooks/usePaygroup";
+import usePositionRoles from "hooks/usePositionRoles";
 import useRoles from "hooks/useRoles";
 import useSelectedEmp from "hooks/useSelectedEmp";
 import { useEffect, useState } from "react";
 import LocalStorageService from "services/LocalStorageService";
 import PayrollService from "services/PayrollService";
-import StepContent from "../step-content";
-import Record from "../step-content/Record";
+import StepContent from "../../step-content";
+import Record from "../../step-content/Record";
 import PositionInfo from "./PositionInfo";
 
-const CorporateInfo = ({ company, isOnboarding, id, handleNext, handlePrev }) => {
+const CorporateInfo = ({ company, id, handleNext, handlePrev }) => {
 	const toast = useToast();
 	const { empId } = useSelectedEmp(LocalStorageService.getItem("empId"));
 	const [refresh, setRefresh] = useState(false);
-	const onboardingEmpId = LocalStorageService.getItem("onboardingEmpId");
-	const userId = isOnboarding ? onboardingEmpId : empId;
-	const employmentInfo = useEmployeeEmploymentInfo(
-		company,
-		userId,
-		true,
-		false,
-		refresh,
-		isOnboarding,
-	);
-	const initialCorporateInfo = getInitialCorporateInfo(userId, company);
+	const [positionAdded, setPositionAdded] = useState(false);
+
+	const employmentInfo = useEmployeeEmploymentInfo(company, empId, true, false, refresh);
+	const initialCorporateInfo = getInitialCorporateInfo(empId, company);
 	const [formData, setFormData] = useState(initialCorporateInfo);
 	const [isOpen, setIsOpen] = useState(false);
 	const [isDisabled, setIsDisabled] = useState(true);
 	const [isLoading, setIsLoading] = useState(false);
-	const { payGroups } = usePaygroup(company, false);
+	const { hasMultiPaygroups, selectedPayGroup, payGroups } = usePaygroup(company, false);
 	const department = useDepartment(company);
 	const costCentres = useCostCenter(company);
 	const roles = useRoles(company);
+	const positionRoles = usePositionRoles(company, positionAdded);
 
 	useEffect(() => {
 		if (employmentInfo) {
@@ -61,21 +56,23 @@ const CorporateInfo = ({ company, isOnboarding, id, handleNext, handlePrev }) =>
 	}, [employmentInfo?._id, empId]);
 
 	useEffect(() => {
-		if (formData.employeeNo) {
+		if (formData?.employeeNo) {
 			setIsDisabled(false);
 		} else {
 			setIsDisabled(true);
 		}
-	}, [formData.employeeNo, formData.payrollStatus]);
+	}, [formData?.employeeNo, formData?.payrollStatus]);
 
-	const handleSubmit = async (position) => {
+	const handleSubmit = async (position, updateRecordIndex) => {
 		setIsLoading(true);
 		try {
 			if (position) {
-				const existingPositions = formData.positions;
-				const positionIndex = formData.positions?.findIndex(
-					({ title }) => title === position?.title,
-				);
+				const existingPositions = formData?.positions;
+				const positionIndex =
+					updateRecordIndex > -1
+						? updateRecordIndex
+						: formData?.positions?.findIndex(({ title }) => title === position?.title);
+
 				if (positionIndex === -1) {
 					existingPositions.push(position);
 					formData.positions = existingPositions;
@@ -84,9 +81,8 @@ const CorporateInfo = ({ company, isOnboarding, id, handleNext, handlePrev }) =>
 				}
 			}
 			formData.companyName = company;
-			await PayrollService.addEmployeeEmploymentInfo(formData);
+			await PayrollService.addEmployeeEmploymentInfo(formData, formData._id);
 			setIsLoading(false);
-			setIsDisabled(true);
 			setIsOpen(false);
 			setRefresh((prev) => !prev);
 			toast({
@@ -108,9 +104,7 @@ const CorporateInfo = ({ company, isOnboarding, id, handleNext, handlePrev }) =>
 					setFormData={setFormData}
 					title="Identification and Status"
 					config={EMP_IDENTIFICATION_STATUS_CONFIG(roles)}
-					isLoading={isLoading}
 					handleSubmit={handleSubmit}
-					isDisabled={isDisabled}
 				/>
 			),
 		},
@@ -118,13 +112,11 @@ const CorporateInfo = ({ company, isOnboarding, id, handleNext, handlePrev }) =>
 			title: "Tenure",
 			content: (
 				<Record
-					isOnboarding={isOnboarding}
 					handleConfirm={() => ""}
 					formData={formData}
 					setFormData={setFormData}
 					title="Tenure"
 					config={EMP_TENURE_CONFIG}
-					isLoading={isLoading}
 					handleSubmit={handleSubmit}
 				/>
 			),
@@ -142,9 +134,13 @@ const CorporateInfo = ({ company, isOnboarding, id, handleNext, handlePrev }) =>
 							isDisabled={isDisabled}
 							setIsDisabled={setIsDisabled}
 							payGroups={payGroups}
+							hasMultiPaygroups={hasMultiPaygroups}
+							selectedPayGroup={selectedPayGroup?.name}
 							department={department}
 							costCentres={costCentres}
 							handleSubmit={handleSubmit}
+							positionRoles={positionRoles}
+							setPositionAdded={setPositionAdded}
 						/>
 					) : (
 						<>
@@ -156,13 +152,14 @@ const CorporateInfo = ({ company, isOnboarding, id, handleNext, handlePrev }) =>
 								loadingText="Loading"
 								onOpen={() => setIsOpen(true)}
 							/>
-							{formData.positions?.map((position, index) => (
+							{formData?.positions?.map((position, index) => (
 								<BoxCard
 									mt={2}
 									border="1px solid var(--lead_cards_border)"
 									key={`${position?.title}_${index}`}
 								>
 									<PositionInfo
+										updateRecordIndex={index}
 										rolePos={`Position ${index + 1}`}
 										currentRoleInfo={position}
 										isOpen={isOpen}
@@ -170,10 +167,14 @@ const CorporateInfo = ({ company, isOnboarding, id, handleNext, handlePrev }) =>
 										isDisabled={isDisabled}
 										setIsDisabled={setIsDisabled}
 										payGroups={payGroups}
+										hasMultiPaygroups={hasMultiPaygroups}
+										selectedPayGroup={selectedPayGroup?.name}
 										department={department}
 										costCentres={costCentres}
 										handleSubmit={handleSubmit}
 										company={company}
+										positionRoles={positionRoles}
+										setPositionAdded={setPositionAdded}
 									/>
 								</BoxCard>
 							))}
@@ -191,7 +192,6 @@ const CorporateInfo = ({ company, isOnboarding, id, handleNext, handlePrev }) =>
 					setFormData={setFormData}
 					title="Region"
 					config={EMP_REGION_CONFIG}
-					isLoading={isLoading}
 					handleSubmit={handleSubmit}
 				/>
 			),
@@ -214,11 +214,12 @@ const CorporateInfo = ({ company, isOnboarding, id, handleNext, handlePrev }) =>
 					steps={steps}
 					currentStep={currentStep}
 					handleClick={goToNextStep}
-					isOnboarding={isOnboarding}
 					id={id}
 					handleNext={handleNext}
 					handlePrev={handlePrev}
-					handleNextEnabled={true}
+					handleSubmit={() => handleSubmit()}
+					isLoading={isLoading}
+					isDisabled={isDisabled}
 				/>
 			</BoxCard>
 			<StepContent currentStep={currentStep} steps={steps} />

@@ -113,13 +113,13 @@ const Meetings = ({ contactId, user, company, currentTab }) => {
 				<TextAreaFormControl
 					label={"Meeting Description"}
 					name="description"
-					valueText={formData.description}
+					valueText={formData?.description}
 					handleChange={handleChange}
 					required
 				/>
 				<FormControlMain>
 					<FormLabel>Select Group</FormLabel>
-					<Select name={"group"} value={formData.group} onChange={handleGroupChange}>
+					<Select name={"group"} value={formData?.group} onChange={handleGroupChange}>
 						{groups?.map(({ name, _id }) => (
 							<option key={_id} value={_id}>
 								{name}
@@ -136,20 +136,20 @@ const Meetings = ({ contactId, user, company, currentTab }) => {
 					selectedOptions={selectedOptions}
 					setSelectedOptions={setSelectedOptions}
 					handleMenuToggle={handleMenuToggle}
-					list={formData.attendees}
+					list={formData?.attendees}
 				/>
 				<InputFormControl
 					label={"Location"}
 					name="location"
-					valueText={formData.location}
+					valueText={formData?.location}
 					handleChange={handleChange}
 					required
 				/>
 				<Flex>
 					<DateTimeFormControl
 						label={"From"}
-						valueText1={formData.fromDate}
-						valueText2={formData.fromTime}
+						valueText1={formData?.fromDate}
+						valueText2={formData?.fromTime}
 						name1="fromDate"
 						name2="fromTime"
 						handleChange={handleChange}
@@ -159,8 +159,8 @@ const Meetings = ({ contactId, user, company, currentTab }) => {
 				<Flex>
 					<DateTimeFormControl
 						label={"To"}
-						valueText1={formData.toDate}
-						valueText2={formData.toTime}
+						valueText1={formData?.toDate}
+						valueText2={formData?.toTime}
 						name1="toDate"
 						name2="toTime"
 						handleChange={handleChange}
@@ -170,7 +170,7 @@ const Meetings = ({ contactId, user, company, currentTab }) => {
 				<TextAreaFormControl
 					label={"Meeting Link"}
 					name="meetingLink"
-					valueText={formData.meetingLink}
+					valueText={formData?.meetingLink}
 					handleChange={handleChange}
 					required
 				/>
@@ -178,7 +178,7 @@ const Meetings = ({ contactId, user, company, currentTab }) => {
 					name={"Add Meeting"}
 					size={"sm"}
 					mt={4}
-					isDisabled={formData.description === ""}
+					isDisabled={formData?.description === ""}
 					onOpen={(e) => {
 						e.preventDefault();
 						handleSubmit();

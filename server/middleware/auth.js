@@ -1,29 +1,54 @@
-const jwt = require("jsonwebtoken");
+const jwt = require("jwt-simple");
+const moment = require("moment");
 
 const SECRET_KEY = process.env.ACCESS_TOKEN_SECRET;
 const REFRESH_TOKEN_SECRET = process.env.REFRESH_TOKEN_SECRET;
+const refreshTokens = [];
 
 function generateAccessToken(user) {
-	return jwt.sign(user, SECRET_KEY, { expiresIn: "2h" });
+	const expiresIn = moment().add(2, "hours").unix();
+	const payload = {
+		...user,
+		exp: expiresIn,
+	};
+	const token = jwt.encode(payload, SECRET_KEY);
+	return token;
 }
 
-const refreshTokens = [];
 function generateRefreshToken(user) {
-	const refreshToken = jwt.sign(user, REFRESH_TOKEN_SECRET, { expiresIn: "5h" });
+	const expiresIn = moment().add(5, "hours").unix();
+	const payload = {
+		...user,
+		exp: expiresIn,
+	};
+	const refreshToken = jwt.encode(payload, REFRESH_TOKEN_SECRET);
 	refreshTokens.push(refreshToken);
 	return refreshToken;
 }
+
+const verifyToken = (token, secret) => {
+	try {
+		const decoded = jwt.decode(token, secret);
+		if (decoded.exp && decoded.exp < moment().unix()) {
+			throw new Error("Token has expired");
+		}
+	} catch (error) {
+		throw new Error("Invalid token");
+	}
+};
 
 const authenticateToken = async (req, res, next) => {
 	const authHeader = req.headers["authorization"];
 	const token = authHeader && authHeader.split(" ")[1]; // Bearer <token>
 	if (!token) return res.status(401).json({ message: "Access token is required" });
 
-	jwt.verify(token, SECRET_KEY, (err, user) => {
-		if (err) return res.status(403).json({ message: "Invalid or expired token" });
+	try {
+		const user = verifyToken(token, SECRET_KEY);
 		req.user = user;
 		next();
-	});
+	} catch (err) {
+		return res.status(403).json({ message: "Invalid or expired token" });
+	}
 };
 
-module.exports = { authenticateToken, generateAccessToken, generateRefreshToken };
+module.exports = { authenticateToken, generateAccessToken, generateRefreshToken, verifyToken };

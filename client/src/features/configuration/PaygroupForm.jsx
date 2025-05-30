@@ -17,7 +17,9 @@ import EmptyRowRecord from "components/ui/EmptyRowRecord";
 import ActionButtonGroup from "components/ui/form/ActionButtonGroup";
 import InputFormControl from "components/ui/form/InputFormControl";
 import MultiSelectButton from "components/ui/form/MultiSelectButton";
+import SelectFormControl from "components/ui/form/SelectFormControl";
 import TextTitle from "components/ui/text/TextTitle";
+import { PAY_FREQUENCIES } from "constant";
 import { useState } from "react";
 import SettingService from "services/SettingService";
 
@@ -38,6 +40,7 @@ const PaygroupForm = ({
 		admin: [],
 		company,
 		payrollActivated: false,
+		payFrequency: "",
 	};
 
 	const [isSubmitting, setSubmitting] = useState(false);
@@ -99,7 +102,7 @@ const PaygroupForm = ({
 				<InputFormControl
 					label={"Group Name"}
 					name="name"
-					valueText={formData.name}
+					valueText={formData?.name}
 					handleChange={(e) =>
 						setFormData((prevData) => ({
 							...prevData,
@@ -114,7 +117,7 @@ const PaygroupForm = ({
 
 						<MultiSelectButton
 							handleMenuToggle={handleModuleMenuToggle}
-							assignees={formData.baseModule}
+							assignees={formData?.baseModule}
 							data={modules}
 							openAssigneeMenu={openModuleMenu}
 							handleCloseMenu={handleCloseModuleMenu}
@@ -128,7 +131,7 @@ const PaygroupForm = ({
 						<FormLabel visibility={openTeamMenu ? "" : "hidden"}>Select Admin(s)</FormLabel>
 						<MultiSelectButton
 							handleMenuToggle={handleTeamMenuToggle}
-							assignees={formData.admin}
+							assignees={formData?.admin}
 							data={managers}
 							openAssigneeMenu={openTeamMenu}
 							handleCloseMenu={handleCloseTeamMenu}
@@ -141,19 +144,38 @@ const PaygroupForm = ({
 				</HStack>
 				<Checkbox
 					colorScheme={"facebook"}
-					isChecked={formData.payrollActivated}
+					isChecked={formData?.payrollActivated}
 					onChange={() =>
 						setFormData((prevData) => ({
 							...prevData,
-							payrollActivated: !formData.payrollActivated,
+							payrollActivated: !formData?.payrollActivated,
 						}))
 					}
 				>
 					Is Payroll Activated?
 				</Checkbox>
+				{formData?.payrollActivated && (
+					<SelectFormControl
+						valueParam="name"
+						required={true}
+						name="name"
+						label="Pay Frequency"
+						valueText={formData?.payFrequency || ""}
+						handleChange={(e) =>
+							setFormData((prevData) => ({
+								...prevData,
+								payFrequency: e.target.value,
+							}))
+						}
+						options={PAY_FREQUENCIES}
+						placeholder="Select pay frequency"
+					/>
+				)}
 				<ActionButtonGroup
 					submitBtnName={"Add"}
-					isDisabled={formData.name === ""}
+					isDisabled={
+						formData?.name === "" || (formData?.payrollActivated && !formData?.payFrequency)
+					}
 					isLoading={isSubmitting}
 					onClose={onClose}
 					onOpen={handleSubmit}
@@ -173,10 +195,10 @@ const PaygroupForm = ({
 							{(!paygroup || paygroup?.length === 0) && (
 								<EmptyRowRecord data={paygroup} colSpan={2} />
 							)}
-							{paygroup?.map(({ _id, name, isActive }) => (
+							{paygroup?.map(({ _id, name, payrollActivated }) => (
 								<Tr key={_id}>
 									<Td>{name}</Td>
-									<Td>{isActive ? "Yes" : "No"}</Td>
+									<Td>{payrollActivated ? "Yes" : "No"}</Td>
 								</Tr>
 							))}
 						</Tbody>

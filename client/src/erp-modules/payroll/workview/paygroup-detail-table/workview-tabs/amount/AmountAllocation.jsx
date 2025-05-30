@@ -10,7 +10,14 @@ import {
 	SUPERFICIAL_AMT_ALLOCATE_COLS,
 } from "./payrunAmountAllocationCols.jsx";
 
-const AmountAllocation = ({ company, closestRecord, groupId, payrunOption, deptName }) => {
+const AmountAllocation = ({
+	company,
+	closestRecord,
+	groupId,
+	payrunOption,
+	deptName,
+	selectedPayGroupOption,
+}) => {
 	const [refresh, setRefresh] = useState(false);
 	const data = useEmployeeAmountAllocation(
 		company,
@@ -19,6 +26,7 @@ const AmountAllocation = ({ company, closestRecord, groupId, payrunOption, deptN
 		groupId,
 		payrunOption,
 		deptName,
+		selectedPayGroupOption,
 	);
 
 	const PAYRUN_AMT_ALLOCATE_DATA = {

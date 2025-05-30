@@ -29,6 +29,7 @@ const fundingTotalsPaySchema = new mongoose.Schema({
 	totalServiceCharges: { type: Number, default: 0 },
 	totalFundingWithDrawals: { type: Number, default: 0 },
 	totalEmpPaymentRemitCost: { type: Number, default: 0 },
+	scheduleFrequency: String,
 });
 
 const FundingTotalsPay = mongoose.model("FundingTotalsPay", fundingTotalsPaySchema);

@@ -21,6 +21,7 @@ const PaygroupTable = ({
 	setSelectedYear,
 	yearsList,
 	loggedInUser,
+	selectedPayGroupOption,
 }) => {
 	const [showExtraPayrun, setShowExtraPayrun] = useState(false);
 	const [showOnboard, setShowOnboard] = useState(false);
@@ -85,6 +86,7 @@ const PaygroupTable = ({
 							setShowExtraPayrun={setShowExtraPayrun}
 							selectedPayGroup={selectedPayGroup}
 							closestRecord={closestRecord}
+							selectedPayGroupOption={selectedPayGroupOption}
 						/>
 					)}
 					{showOnboard && (
@@ -92,7 +94,6 @@ const PaygroupTable = ({
 							title="Onboard employee"
 							showOnboard={showOnboard}
 							setShowOnboard={setShowOnboard}
-							selectedPayGroupName={selectedPayGroup?.name}
 						/>
 					)}
 					<WorkviewTable

@@ -88,7 +88,7 @@ const LeftPane = ({ selectedUser, company, isMobile }) => {
 							isEarningTable
 							cols={EARNING_TABLE_COLS}
 							payGroupSchedule={empPayStub}
-							height="30vh"
+							height="calc(100vh - 743px)"
 							viewLabel="View Paystub"
 							handleRegister={handleRegister}
 							textAlign={"center"}

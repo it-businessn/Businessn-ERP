@@ -6,15 +6,18 @@ import SelectFormControl from "components/ui/form/SelectFormControl";
 import TextTitle from "components/ui/text/TextTitle";
 import VerticalStepper from "components/ui/VerticalStepper";
 import { COUNTRIES } from "config/payroll/employees/profileInfo";
+import { ALERTS_TYPE } from "constant";
 import useCompanyEmployees from "hooks/useCompanyEmployees";
 import useEmployeeProfileInfo from "hooks/useEmployeeProfileInfo";
+import usePaygroup from "hooks/usePaygroup";
 import { useEffect, useState } from "react";
 import LocalStorageService from "services/LocalStorageService";
 import PayrollService from "services/PayrollService";
 import StepContent from "../employees/pageview/step-content";
 
 const EmployeeInfo = ({ company, handleNext, tabId, deptName }) => {
-	const employees = useCompanyEmployees(company, deptName);
+	const { selectedPayGroupOption } = usePaygroup(company, false);
+	const employees = useCompanyEmployees(company, deptName, selectedPayGroupOption);
 	const initialFormData = {
 		empId: "",
 		employee: "",
@@ -33,7 +36,7 @@ const EmployeeInfo = ({ company, handleNext, tabId, deptName }) => {
 
 	const [formData, setFormData] = useState(initialFormData);
 
-	const empInfo = useEmployeeProfileInfo(company, formData.empId);
+	const empInfo = useEmployeeProfileInfo(company, formData?.empId);
 	const [provinces, setProvinces] = useState([]);
 
 	useEffect(() => {
@@ -78,7 +81,7 @@ const EmployeeInfo = ({ company, handleNext, tabId, deptName }) => {
 						name="fullName"
 						label=""
 						placeholder="Select Employee"
-						valueText={formData.employee || ""}
+						valueText={formData?.employee || ""}
 						handleChange={(e) => {
 							const val = e.target.value;
 							setFormData(() => ({
@@ -111,7 +114,7 @@ const EmployeeInfo = ({ company, handleNext, tabId, deptName }) => {
 								label="First Name"
 								name="firstName"
 								placeholder="Enter First Name"
-								valueText={formData.firstName || ""}
+								valueText={formData?.firstName || ""}
 								handleChange={(e) => {
 									setFormData((prev) => ({
 										...prev,
@@ -123,7 +126,7 @@ const EmployeeInfo = ({ company, handleNext, tabId, deptName }) => {
 								label="Middle Name"
 								name="middleName"
 								placeholder="Enter Middle Name"
-								valueText={formData.middleName || ""}
+								valueText={formData?.middleName || ""}
 								handleChange={(e) => {
 									setFormData((prev) => ({
 										...prev,
@@ -135,7 +138,7 @@ const EmployeeInfo = ({ company, handleNext, tabId, deptName }) => {
 								label="Last Name"
 								name="lastName"
 								placeholder="Enter Last Name"
-								valueText={formData.lastName || ""}
+								valueText={formData?.lastName || ""}
 								handleChange={(e) => {
 									setFormData((prev) => ({
 										...prev,
@@ -148,9 +151,9 @@ const EmployeeInfo = ({ company, handleNext, tabId, deptName }) => {
 							w="40%"
 							label="Social Insurance Number"
 							subRequired
-							name="SIN"
+							name={ALERTS_TYPE.SIN}
 							placeholder="Enter SIN"
-							valueText={formData.SIN || ""}
+							valueText={formData?.SIN || ""}
 							handleChange={(e) => {
 								setFormData((prev) => ({
 									...prev,
@@ -164,7 +167,7 @@ const EmployeeInfo = ({ company, handleNext, tabId, deptName }) => {
 							label="Street Address"
 							name="streetAddress"
 							placeholder="Enter Street Address"
-							valueText={formData.streetAddress || ""}
+							valueText={formData?.streetAddress || ""}
 							handleChange={(e) => {
 								setFormData((prev) => ({
 									...prev,
@@ -177,7 +180,7 @@ const EmployeeInfo = ({ company, handleNext, tabId, deptName }) => {
 							w="40%"
 							name="streetAddressSuite"
 							placeholder="Enter Suite"
-							valueText={formData.streetAddressSuite || ""}
+							valueText={formData?.streetAddressSuite || ""}
 							handleChange={(e) => {
 								setFormData((prev) => ({
 									...prev,
@@ -190,7 +193,7 @@ const EmployeeInfo = ({ company, handleNext, tabId, deptName }) => {
 							w="40%"
 							name="city"
 							placeholder="Enter City"
-							valueText={formData.city || ""}
+							valueText={formData?.city || ""}
 							handleChange={(e) => {
 								setFormData((prev) => ({
 									...prev,
@@ -203,7 +206,7 @@ const EmployeeInfo = ({ company, handleNext, tabId, deptName }) => {
 							valueParam="type"
 							name="type"
 							label="Country"
-							valueText={formData.country || ""}
+							valueText={formData?.country || ""}
 							handleChange={(e) =>
 								setFormData((prevData) => ({
 									...prevData,
@@ -217,7 +220,7 @@ const EmployeeInfo = ({ company, handleNext, tabId, deptName }) => {
 							valueParam="name"
 							name="province"
 							label="Province / State"
-							valueText={formData.province || ""}
+							valueText={formData?.province || ""}
 							handleChange={(e) =>
 								setFormData((prevData) => ({
 									...prevData,
@@ -232,7 +235,7 @@ const EmployeeInfo = ({ company, handleNext, tabId, deptName }) => {
 							w="40%"
 							name="postalCode"
 							placeholder="Enter Postal Code"
-							valueText={formData.postalCode || ""}
+							valueText={formData?.postalCode || ""}
 							handleChange={(e) => {
 								setFormData((prev) => ({
 									...prev,

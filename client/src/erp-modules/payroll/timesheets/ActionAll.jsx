@@ -20,10 +20,11 @@ const ActionAll = ({
 	minW = "105px",
 	size = "sm",
 	menuW = "150px",
+	defaultAction = actions[0],
 }) => {
-	const [actionName, setActionName] = useState(actions[0].title);
-	const [actionIcon, setActionIcon] = useState(actions[0].icon);
-	const [color, setColor] = useState(actions[0].color);
+	const [actionName, setActionName] = useState(defaultAction.title);
+	const [actionIcon, setActionIcon] = useState(defaultAction.icon);
+	const [color, setColor] = useState(defaultAction.color);
 
 	return (
 		<Flex

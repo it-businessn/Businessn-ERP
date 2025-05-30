@@ -96,14 +96,14 @@ const AddEvent = ({
 	};
 	const handleChange = (e) => {
 		const { name, value } = e.target;
-		// if (formData.fromDate !== "" && formData.fromTime !== "") {
+		// if (formData?.fromDate !== "" && formData?.fromTime !== "") {
 		// 	setFormData((prevData) => ({
 		// 		...prevData,
-		// 		toDate: formData.fromDate,
+		// 		toDate: formData?.fromDate,
 		// 	}));
 		// 	setFormData((prevData) => ({
 		// 		...prevData,
-		// 		toTime: formData.fromTime,
+		// 		toTime: formData?.fromTime,
 		// 	}));
 		// }
 		setFormData((prevData) => ({ ...prevData, [name]: value }));
@@ -173,7 +173,7 @@ const AddEvent = ({
 					<SelectFormControl
 						name="eventType"
 						label={"Type of Event"}
-						valueText={formData.eventType}
+						valueText={formData?.eventType}
 						handleChange={handleTypeChange}
 						options={[
 							{
@@ -197,7 +197,7 @@ const AddEvent = ({
 					<TextAreaFormControl
 						label={"Description"}
 						name="description"
-						valueText={formData.description}
+						valueText={formData?.description}
 						handleChange={handleChange}
 						required
 					/>
@@ -205,7 +205,7 @@ const AddEvent = ({
 						<InputFormControl
 							label={"Phone Number"}
 							name="phoneNo"
-							valueText={formData.phoneNo}
+							valueText={formData?.phoneNo}
 							handleChange={handleChange}
 							required
 						/>
@@ -213,8 +213,8 @@ const AddEvent = ({
 					<Flex>
 						<DateTimeFormControl
 							label={"From"}
-							valueText1={formData.fromDate}
-							valueText2={formData.fromTime}
+							valueText1={formData?.fromDate}
+							valueText2={formData?.fromTime}
 							name1="fromDate"
 							name2="fromTime"
 							handleChange={handleChange}
@@ -224,8 +224,8 @@ const AddEvent = ({
 					<Flex>
 						<DateTimeFormControl
 							label={"To"}
-							valueText1={formData.toDate}
-							valueText2={formData.toTime}
+							valueText1={formData?.toDate}
+							valueText2={formData?.toTime}
 							name1="toDate"
 							name2="toTime"
 							handleChange={handleChange}
@@ -236,7 +236,7 @@ const AddEvent = ({
 						<>
 							<FormControlMain>
 								<FormLabel>Select Group</FormLabel>
-								<Select name={"group"} value={formData.group} onChange={handleGroupChange}>
+								<Select name={"group"} value={formData?.group} onChange={handleGroupChange}>
 									{groups?.map(({ name, _id }) => (
 										<option key={_id} value={_id}>
 											{name}
@@ -253,19 +253,19 @@ const AddEvent = ({
 								selectedOptions={selectedOptions}
 								setSelectedOptions={setSelectedOptions}
 								handleMenuToggle={handleMenuToggle}
-								list={formData.meetingAttendees}
+								list={formData?.meetingAttendees}
 							/>
 							<InputFormControl
 								label={"Location"}
 								name="location"
-								valueText={formData.location}
+								valueText={formData?.location}
 								handleChange={handleChange}
 								required
 							/>
 							<TextAreaFormControl
 								label={"Meeting Link"}
 								name="eventLink"
-								valueText={formData.eventLink}
+								valueText={formData?.eventLink}
 								handleChange={handleChange}
 								required
 							/>
@@ -275,7 +275,7 @@ const AddEvent = ({
 				<ModalFooter px={1}>
 					<ActionButtonGroup
 						submitBtnName={"Add Event"}
-						isDisabled={formData.description === ""}
+						isDisabled={formData?.description === ""}
 						isLoading={isLoading}
 						onClose={onClose}
 					/>

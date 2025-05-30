@@ -39,7 +39,7 @@ export const useSignup = (refresh) => {
 	useEffect(() => {
 		const fetchAllEmpTypes = async () => {
 			try {
-				const { data } = await SettingService.getAllEmploymentTypes(formData.company);
+				const { data } = await SettingService.getAllEmploymentTypes(formData?.company);
 				setEmpTypes(data);
 			} catch (error) {
 				console.error(error);
@@ -47,7 +47,7 @@ export const useSignup = (refresh) => {
 		};
 		const fetchAllRoles = async () => {
 			try {
-				const { data } = await SettingService.getAllRoles(formData.company);
+				const { data } = await SettingService.getAllRoles(formData?.company);
 				setRoles(data);
 			} catch (error) {
 				console.error(error);
@@ -55,7 +55,7 @@ export const useSignup = (refresh) => {
 		};
 		const fetchAllManagers = async () => {
 			try {
-				const { data } = await UserService.getAllManagers(formData.company);
+				const { data } = await UserService.getAllManagers(formData?.company);
 				setManagers(data);
 			} catch (error) {
 				console.error(error);
@@ -63,20 +63,20 @@ export const useSignup = (refresh) => {
 		};
 		const fetchAllModules = async () => {
 			try {
-				const { data } = await SettingService.getAllModules(formData.company);
+				const { data } = await SettingService.getAllModules(formData?.company);
 				setModules(data);
 			} catch (error) {
 				console.error(error);
 			}
 		};
-		if (formData.company === "") {
+		if (formData?.company === "") {
 			return;
 		}
 		fetchAllModules();
 		fetchAllManagers();
 		fetchAllRoles();
 		fetchAllEmpTypes();
-	}, [formData.company, refresh]);
+	}, [formData?.company, refresh]);
 
 	return {
 		formData,

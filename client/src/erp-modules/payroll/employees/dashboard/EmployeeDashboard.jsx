@@ -9,9 +9,9 @@ import LeftPane from "./leftpane";
 import RightPane from "./rightpane";
 
 const EmployeeDashboard = () => {
+	const selectedUser = LocalStorageService.getItem("user");
 	const { isMobile } = useBreakpointValue();
 	const { company } = useCompany(LocalStorageService.getItem("selectedCompany"));
-	const selectedUser = LocalStorageService.getItem("user");
 	const { selectedPayGroup, closestRecord, payGroupSchedule, closestRecordIndex } = usePaygroup(
 		company,
 		false,

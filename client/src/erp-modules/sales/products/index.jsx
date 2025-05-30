@@ -25,7 +25,7 @@ import { MdOutlineFilterList } from "react-icons/md";
 import { useBreakpointValue } from "services/Breakpoint";
 import ContactService from "services/ContactService";
 import { calcTotal } from "utils";
-import { productsInfo } from "../../../data";
+import { productsInfo } from "../../../components/sidebar/data";
 import "./products.css";
 
 const Products = () => {

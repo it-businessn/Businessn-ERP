@@ -18,6 +18,7 @@ const EmployeeDetails = ({
 	selectedPayGroup,
 	payrunOption,
 	deptName,
+	selectedPayGroupOption,
 }) => {
 	const [showConfirmationPopUp, setShowConfirmationPopUp] = useState(false);
 	const [refresh, setRefresh] = useState(false);
@@ -28,6 +29,7 @@ const EmployeeDetails = ({
 		groupId,
 		refresh,
 		deptName,
+		selectedPayGroupOption,
 	);
 	const [deletedEmp, setDeletedEmp] = useState(null);
 
@@ -47,7 +49,7 @@ const EmployeeDetails = ({
 
 	const handleSubmit = async () => {
 		try {
-			await SettingService.updateGroup({ yearSchedules: selectedPayGroup.yearSchedules }, groupId);
+			await SettingService.updateGroup({ yearSchedules: selectedPayGroup?.yearSchedules }, groupId);
 			setRefresh((prev) => !prev);
 			handleClose();
 		} catch (error) {

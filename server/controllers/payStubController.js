@@ -3,7 +3,7 @@ const { getSumTotal } = require("../services/payrollService");
 const { findAllAdditionalHoursAllocatedInfo } = require("./payrunExtraAllocationInfoController");
 const { getEmployeeId } = require("./userController");
 const moment = require("moment");
-// const { generateT4Slip } = require("./t4SlipController");
+const { generateT4Slip } = require("./t4SlipController");
 const {
 	buildNewEmpPayStubInfo,
 	findEmployeeBenefitInfo,
@@ -19,8 +19,8 @@ const { getPayrollActiveEmployees } = require("./appController");
 const FundingTotalsPay = require("../models/FundingTotalsPay");
 const Order = require("../models/Order");
 const JournalEntry = require("../models/JournalEntry");
-const { findEmployeeEmploymentInfo } = require("./employmentInfoController");
 const EmployeePayInfo = require("../models/EmployeePayInfo");
+const EmployeeEmploymentInfo = require("../models/EmployeeEmploymentInfo");
 
 const buildPayStub = (
 	empId,
@@ -322,7 +322,13 @@ const buildPayStub = (
 	return newPayStub;
 };
 
-const buildPayStubDetails = async (currentPayPeriod, companyName, empTimesheetData, empId) => {
+const buildPayStubDetails = async (
+	currentPayPeriod,
+	companyName,
+	empTimesheetData,
+	empId,
+	scheduleFrequency,
+) => {
 	const {
 		payPeriodStartDate,
 		payPeriodEndDate,
@@ -350,15 +356,23 @@ const buildPayStubDetails = async (currentPayPeriod, companyName, empTimesheetDa
 		empBenefitInfoResult,
 		empTaxCreditResult,
 		isExtraRun,
+		scheduleFrequency,
 	);
 
 	const prevPayPeriodNum = isExtraRun ? payPeriod : payPeriod - 1;
-	let prevPayPayInfo = await findPayStub(prevPayPeriodNum, companyName, empId, false);
+	let prevPayPayInfo = await findPayStub(
+		prevPayPeriodNum,
+		companyName,
+		empId,
+		false,
+		scheduleFrequency,
+	);
 	const currentPayInfo = await findPayStub(
 		payPeriod,
 		companyName,
 		empId,
 		isExtraRun ? isExtraRun : false,
+		scheduleFrequency,
 	);
 
 	const currentPayStub = buildPayStub(
@@ -374,7 +388,8 @@ const buildPayStubDetails = async (currentPayPeriod, companyName, empTimesheetDa
 		prevPayPayInfo,
 	);
 
-	if (currentPayInfo) {
+	if (currentPayInfo?.scheduleFrequency) {
+		currentPayStub.scheduleFrequency = currentPayInfo.scheduleFrequency;
 		await updatePayStub(currentPayInfo._id, currentPayStub);
 		return currentPayStub;
 	}
@@ -427,6 +442,7 @@ const buildPayStubDetails = async (currentPayPeriod, companyName, empTimesheetDa
 				newPayStub.reportType = PAYRUN_TYPE.PAYOUT;
 			}
 			if (newPayStub) {
+				newPayStub.scheduleFrequency = scheduleFrequency;
 				await addPayStub(newPayStub);
 				prevPayPayInfo = appendPrevPayInfoBalance(prevPayPayInfo, newPayStub);
 			}
@@ -448,12 +464,13 @@ const buildPayStubDetails = async (currentPayPeriod, companyName, empTimesheetDa
 			payStubInfoData,
 			prevPayPayInfo,
 		);
+		updatedPayStub.scheduleFrequency = scheduleFrequency;
 		await addPayStub(updatedPayStub);
 		return updatedPayStub;
 	}
 };
 
-const findPayStub = async (payPeriodNum, companyName, empId, isExtra) => {
+const findPayStub = async (payPeriodNum, companyName, empId, isExtra, scheduleFrequency) => {
 	const searchObj = isExtra
 		? {
 				payPeriodNum,
@@ -461,12 +478,14 @@ const findPayStub = async (payPeriodNum, companyName, empId, isExtra) => {
 				empId,
 				isProcessed: true,
 				isExtraRun: isExtra,
+				scheduleFrequency,
 		  }
 		: {
 				payPeriodNum,
 				companyName,
 				empId,
 				isProcessed: true,
+				scheduleFrequency,
 		  };
 	return await EmployeePayStub.findOne(searchObj).sort({ createdOn: -1 });
 };
@@ -485,7 +504,7 @@ const updatePayStub = async (id, data) =>
 	});
 
 const addEmployeePayStubInfo = async (req, res) => {
-	const { companyName, currentPayPeriod } = req.body;
+	const { companyName, currentPayPeriod, selectedPayGroupOption } = req.body;
 	try {
 		// const y = await EmployeePayStub.deleteMany({
 		// 	payPeriodNum: "6",
@@ -498,6 +517,13 @@ const addEmployeePayStubInfo = async (req, res) => {
 		// });
 		// console.log("del", y, k);
 		// return;
+
+		// const k = await EmployeePayStub.updateMany(
+		// 	{ companyName: COMPANIES.NW },
+		// 	{ $set: { scheduleFrequency: "Biweekly" } },
+		// );
+		// console.log("upd", k);
+
 		const {
 			payPeriodStartDate,
 			payPeriodEndDate,
@@ -506,11 +532,13 @@ const addEmployeePayStubInfo = async (req, res) => {
 			payPeriod,
 			payPeriodPayDate,
 			payPeriodProcessingDate,
+			frequency,
 		} = currentPayPeriod;
+		const scheduleFrequency = frequency === "bi-weekly" ? "Biweekly" : frequency;
 
 		const activeEmployees = isExtraRun
 			? await getEmployeeId(selectedEmp)
-			: await getPayrollActiveEmployees(companyName, req.body?.deptName);
+			: await getPayrollActiveEmployees(companyName, req.body?.deptName, selectedPayGroupOption);
 
 		const result = isExtraRun
 			? null
@@ -518,6 +546,7 @@ const addEmployeePayStubInfo = async (req, res) => {
 		const isCornerStone = companyName === COMPANIES.CORNERSTONE;
 		const fundingTotal = {
 			companyName,
+			scheduleFrequency,
 			payPeriodStartDate,
 			payPeriodEndDate,
 			payPeriodPayDate,
@@ -553,7 +582,7 @@ const addEmployeePayStubInfo = async (req, res) => {
 				companyName,
 				empTimesheetData || null,
 				employee?.empId?._id,
-				isExtraRun,
+				scheduleFrequency,
 			);
 			fundingTotal.totalIncomeTaxContr += payStubResult?.currentIncomeTaxDeductions || 0;
 			fundingTotal.totalCPP_EE_Contr += payStubResult?.currentCPPDeductions || 0;
@@ -568,10 +597,9 @@ const addEmployeePayStubInfo = async (req, res) => {
 			activeEmployees?.length,
 			isExtraRun,
 			isCornerStone,
+			scheduleFrequency,
 		);
-		// generateT4Slip(companyName, payPeriod);
-		//if payroll processed successful
-		//alerts violation generate independently based on emp data, on process payroll will run again to check alerts or violations.
+		if (!isExtraRun) generateT4Slip(companyName, payPeriod);
 		res.status(200).json({ message: "Paystub created successfully" });
 	} catch (error) {
 		res.status(400).json({ message: error.message });
@@ -583,6 +611,7 @@ const buildFundingTotalsReport = async (
 	totalEmployees,
 	isExtraRun = false,
 	isCornerStone,
+	scheduleFrequency,
 ) => {
 	fundingTotal.totalCPP_Contr =
 		fundingTotal?.totalCPP_EE_Contr + fundingTotal?.totalCPP_ER_Contr || 0;
@@ -614,6 +643,7 @@ const buildFundingTotalsReport = async (
 		companyName: fundingTotal.companyName,
 		payPeriodNum: fundingTotal.payPeriodNum,
 		isExtraRun,
+		scheduleFrequency,
 	});
 	if (existsFundDetails) {
 		fundingTotal.updatedOn = moment();
@@ -673,53 +703,60 @@ const createJournalEntry = async (fundingTotalReportId, companyName) => {
 		}).select(
 			"empId currentGrossPay currentCPPDeductions currentRegPayTotal2 currentEmployerCPPDeductions currentEmployerEIDeductions currentEmployeeEIDeductions currentIncomeTaxDeductions",
 		);
-		const deptPromises = currentPayStubs.map(async (empPayStub) => {
-			const empDeptInfoResult = await findEmployeeEmploymentInfo(empPayStub?.empId, companyName);
-			const departments =
-				empDeptInfoResult?.positions?.map((pos) => pos?.employmentDepartment).filter(Boolean) || [];
-			if (empDeptInfoResult) {
-				const originalPayStub = empPayStub.toObject();
-				originalPayStub.currentEmployerCPPDeductions = originalPayStub.currentCPPDeductions;
-				const grossPay = originalPayStub.currentGrossPay || 0;
-				const cppDeductions = originalPayStub.currentCPPDeductions || 0;
-				const eiEmployee = originalPayStub.currentEmployeeEIDeductions || 0;
-				const eiEmployer = originalPayStub.currentEmployerEIDeductions || 0;
-				const cppEmployer = originalPayStub.currentEmployerCPPDeductions || 0;
-				const incomeTax = originalPayStub.currentIncomeTaxDeductions || 0;
-				const regPay2 = originalPayStub.currentRegPayTotal2 || 0;
+		const deptPromises = await Promise.all(
+			currentPayStubs.map(async (empPayStub) => {
+				const empDeptInfoResult = await EmployeeEmploymentInfo.findOne({
+					empId: empPayStub?.empId,
+					companyName,
+				});
+				const departments =
+					empDeptInfoResult?.positions?.map((pos) => pos?.employmentDepartment).filter(Boolean) ||
+					[];
+				if (empDeptInfoResult) {
+					const originalPayStub = empPayStub.toObject();
+					originalPayStub.currentEmployerCPPDeductions = originalPayStub.currentCPPDeductions;
+					const grossPay = originalPayStub.currentGrossPay || 0;
+					const cppDeductions = originalPayStub.currentCPPDeductions || 0;
+					const eiEmployee = originalPayStub.currentEmployeeEIDeductions || 0;
+					const eiEmployer = originalPayStub.currentEmployerEIDeductions || 0;
+					const cppEmployer = originalPayStub.currentEmployerCPPDeductions || 0;
+					const incomeTax = originalPayStub.currentIncomeTaxDeductions || 0;
+					const regPay2 = originalPayStub.currentRegPayTotal2 || 0;
 
-				if (departments.length > 1) {
-					const dept1Stub = {
-						currentGrossPay: grossPay - regPay2,
-						currentCPPDeductions: cppDeductions,
-						currentEmployerCPPDeductions: cppDeductions - (regPay2 / grossPay) * cppDeductions || 0,
-						currentEmployeeEIDeductions: eiEmployee,
-						currentEmployerEIDeductions: eiEmployer - (regPay2 / grossPay) * eiEmployer || 0,
-						currentIncomeTaxDeductions: incomeTax,
-						currentRegPayTotal2: regPay2,
-					};
+					if (departments.length > 1) {
+						const dept1Stub = {
+							currentGrossPay: grossPay - regPay2,
+							currentCPPDeductions: cppDeductions,
+							currentEmployerCPPDeductions:
+								cppDeductions - (regPay2 / grossPay) * cppDeductions || 0,
+							currentEmployeeEIDeductions: eiEmployee,
+							currentEmployerEIDeductions: eiEmployer - (regPay2 / grossPay) * eiEmployer || 0,
+							currentIncomeTaxDeductions: incomeTax,
+							currentRegPayTotal2: regPay2,
+						};
 
-					const dept2Stub = {
-						currentGrossPay: regPay2,
-						currentCPPDeductions: 0,
-						currentEmployerCPPDeductions: (regPay2 / grossPay) * cppDeductions || 0,
-						currentEmployeeEIDeductions: 0,
-						currentEmployerEIDeductions: (regPay2 / grossPay) * eiEmployer || 0,
-						currentIncomeTaxDeductions: 0,
-						currentRegPayTotal2: regPay2,
-					};
+						const dept2Stub = {
+							currentGrossPay: regPay2,
+							currentCPPDeductions: 0,
+							currentEmployerCPPDeductions: (regPay2 / grossPay) * cppDeductions || 0,
+							currentEmployeeEIDeductions: 0,
+							currentEmployerEIDeductions: (regPay2 / grossPay) * eiEmployer || 0,
+							currentIncomeTaxDeductions: 0,
+							currentRegPayTotal2: regPay2,
+						};
+						return {
+							records: [dept1Stub, dept2Stub],
+							departments,
+						};
+					}
+
 					return {
-						records: [dept1Stub, dept2Stub],
+						records: [originalPayStub],
 						departments,
 					};
 				}
-
-				return {
-					records: [originalPayStub],
-					departments,
-				};
-			}
-		});
+			}),
+		);
 
 		const allDepartmentBreakDown = await Promise.all(deptPromises);
 		const departmentBreakdown = allDepartmentBreakDown.reduce((acc, { records, departments }) => {
@@ -883,21 +920,24 @@ const getFundingPayDetailsReportInfo = async (req, res) => {
 };
 
 const getPayDetailsReportInfo = async (req, res) => {
-	const { companyName, payPeriodNum, isExtraRun, year } = req.params;
+	const { companyName, payPeriodNum, isExtraRun, payPeriodPayDate, scheduleFrequency, year } =
+		req.params;
 
 	try {
-		const startOfYear = moment().year(year).startOf("year").toDate();
-		const endOfYear = moment().year(year).endOf("year").toDate();
+		// const startOfYear = moment().year(year).startOf("year").toDate();
+		// const endOfYear = moment().year(year).endOf("year").toDate();
 
 		const isExtraPayRun = isExtraRun === "true";
 		let payStubs = await EmployeePayStub.find({
 			companyName,
 			payPeriodNum,
 			isExtraRun: isExtraPayRun,
-			payPeriodPayDate: {
-				$gte: startOfYear,
-				$lt: endOfYear,
-			},
+			payPeriodPayDate: moment.utc(payPeriodPayDate).startOf("day").toDate(),
+			// payPeriodPayDate: {
+			// 	$gte: startOfYear,
+			// 	$lt: endOfYear,
+			// },
+			scheduleFrequency,
 		}).populate(EMP_INFO);
 
 		payStubs = payStubs?.filter((a) => a?.empId);
@@ -933,7 +973,13 @@ const getEmployeePayDetailsReportInfo = async (req, res) => {
 	}
 };
 
-const getRecordId = async (empPayStubResult, empId, companyName, payPeriodPayDate) => {
+const getRecordId = async (
+	empPayStubResult,
+	empId,
+	companyName,
+	payPeriodPayDate,
+	scheduleFrequency,
+) => {
 	if (empPayStubResult) {
 		return empPayStubResult._id;
 	}
@@ -947,6 +993,7 @@ const getRecordId = async (empPayStubResult, empId, companyName, payPeriodPayDat
 		bonus: 0,
 		terminationPayout: 0,
 		reimbursement: 0,
+		scheduleFrequency,
 	};
 	const newPayStub = await addPayStub(payStub);
 	return newPayStub._id;

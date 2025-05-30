@@ -16,7 +16,7 @@ const AddNewShiftRole = ({ showAddNewRole, setShowAddNewRole, setRefresh, compan
 		setSubmitting(true);
 
 		try {
-			await SettingService.addRole({
+			await SettingService.addPositionRole({
 				name: roleName,
 				description: roleDescription,
 				companyName: company,

@@ -56,7 +56,7 @@ const EditInnerSubTask = ({ isOpen, onClose, setRefresh, currentTask, managers }
 		e.preventDefault();
 		setSubmitting(true);
 		try {
-			await ProjectService.updateInnerSubTask(formData, formData.subTaskId);
+			await ProjectService.updateInnerSubTask(formData, formData?.subTaskId);
 			onClose();
 			setFormData(defaultTask);
 			setRefresh((prev) => !prev);
@@ -86,7 +86,7 @@ const EditInnerSubTask = ({ isOpen, onClose, setRefresh, currentTask, managers }
 									<Input
 										type="text"
 										name="subTaskName"
-										value={formData.subTaskName}
+										value={formData?.subTaskName}
 										onChange={(e) =>
 											setFormData((prevData) => ({
 												...prevData,
@@ -105,7 +105,7 @@ const EditInnerSubTask = ({ isOpen, onClose, setRefresh, currentTask, managers }
 											type="date"
 											id="subTaskDueDate"
 											name="subTaskDueDate"
-											value={formData.subTaskDueDate}
+											value={formData?.subTaskDueDate}
 											onChange={(e) =>
 												setFormData((prevData) => ({
 													...prevData,
@@ -120,7 +120,7 @@ const EditInnerSubTask = ({ isOpen, onClose, setRefresh, currentTask, managers }
 										<Input
 											type="text"
 											name="subTaskTimeToComplete"
-											value={formData.subTaskTimeToComplete}
+											value={formData?.subTaskTimeToComplete}
 											onChange={(e) =>
 												setFormData((prevData) => ({
 													...prevData,
@@ -137,7 +137,7 @@ const EditInnerSubTask = ({ isOpen, onClose, setRefresh, currentTask, managers }
 										<Select
 											icon={<FaCaretDown />}
 											borderRadius="10px"
-											value={formData.priority}
+											value={formData?.priority}
 											placeholder="Select Priority"
 											onChange={(e) =>
 												setFormData((prevData) => ({
@@ -160,7 +160,7 @@ const EditInnerSubTask = ({ isOpen, onClose, setRefresh, currentTask, managers }
 
 										<MultiSelectButton
 											handleMenuToggle={handleMenuToggle}
-											assignees={formData.selectedAssignees}
+											assignees={formData?.selectedAssignees}
 											openAssigneeMenu={openAssigneeMenu}
 											handleCloseMenu={handleCloseMenu}
 											selectedOptions={selectedOptions}
@@ -169,7 +169,7 @@ const EditInnerSubTask = ({ isOpen, onClose, setRefresh, currentTask, managers }
 										/>
 
 										{formData?.selectedAssignees?.length > 0 &&
-											formData.selectedAssignees.map((name) => (
+											formData?.selectedAssignees.map((name) => (
 												<Avatar size={"sm"} name={name} src={name} key={name} />
 											))}
 									</FormControl>
@@ -180,7 +180,7 @@ const EditInnerSubTask = ({ isOpen, onClose, setRefresh, currentTask, managers }
 										isLoading={isSubmitting}
 										type="submit"
 										bg="var(--logo_bg)"
-										isDisabled={formData.taskName === ""}
+										isDisabled={formData?.taskName === ""}
 									>
 										Save
 									</Button>

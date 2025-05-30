@@ -292,6 +292,7 @@ const buildNewEmpPayStubInfo = (
 	empBenefitInfoResult,
 	empTaxCreditResult,
 	isExtraRun,
+	frequency,
 ) => {
 	const newEmpData = empTimesheetData ? empTimesheetData : {};
 	newEmpData.regPay = empPayInfoResult?.roles[0]?.payRate || 0;
@@ -312,7 +313,7 @@ const buildNewEmpPayStubInfo = (
 	calcCurrentGrossPay(newEmpData);
 
 	if (empTaxCreditResult) {
-		calcEmpContributions(newEmpData, empTaxCreditResult, empAdditionalDataAllocated);
+		calcEmpContributions(newEmpData, empTaxCreditResult, empAdditionalDataAllocated, frequency);
 	}
 	calcContrDeductions(newEmpData);
 	calcVacBalance(newEmpData, empBenefitInfoResult, empAdditionalDataAllocated);
@@ -379,14 +380,14 @@ const calcCurrentDeductionsTotal = (newEmpData) => {
 	return newEmpData;
 };
 
-const calcEmpContributions = (newEmpData, empTaxCreditResult, amtAllocated) => {
+const calcEmpContributions = (newEmpData, empTaxCreditResult, amtAllocated, frequency) => {
 	const {
 		CPPContribution,
 		totalProvincialTaxDeduction,
 		federalTaxDeductionByPayPeriod,
 		EmployeeEIContribution,
 		EmployerEIContribution,
-	} = getTaxDetails(newEmpData?.regPay, newEmpData?.currentGrossPay, empTaxCreditResult);
+	} = getTaxDetails(newEmpData?.regPay, newEmpData?.currentGrossPay, empTaxCreditResult, frequency);
 
 	// const employeeContribution = calcEmployeeContribution(
 	// 	newEmpData.currentGrossPay,

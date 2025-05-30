@@ -73,6 +73,7 @@ const employeePayStubSchema = new mongoose.Schema({
 	YTDSickHoursWorked: { type: Number, default: 0 },
 
 	vacationPay: String,
+	bereavementPay: String,
 	currentVacationPayTotal: { type: Number, default: 0 },
 	YTDVacationPayTotal: { type: Number, default: 0 },
 	totalVacationHoursWorked: { type: Number, default: 0 },
@@ -204,6 +205,7 @@ const employeePayStubSchema = new mongoose.Schema({
 
 	totalAmountAllocated: { type: Number, default: 0 },
 	reportType: String,
+	scheduleFrequency: String,
 });
 
 const EmployeePayStub = mongoose.model("EmployeePayStub", employeePayStubSchema);

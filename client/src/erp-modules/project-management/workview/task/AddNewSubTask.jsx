@@ -114,9 +114,9 @@ const AddNewSubTask = ({
 		formData.subtasks = subTasks;
 		formData.activities = todoItems;
 
-		// if (formData.taskId) {
+		// if (formData?.taskId) {
 		// 	try {
-		// 		await ProjectService.addTaskActivity(formData, formData.taskId);
+		// 		await ProjectService.addTaskActivity(formData, formData?.taskId);
 		// 		onClose();
 		// 		setFormData(defaultTask);
 		// 		setSubTasks([]);
@@ -160,7 +160,7 @@ const AddNewSubTask = ({
 										<Input
 											type="text"
 											name="taskName"
-											value={formData.taskName}
+											value={formData?.taskName}
 											onChange={(e) =>
 												setFormData((prevData) => ({
 													...prevData,
@@ -174,7 +174,7 @@ const AddNewSubTask = ({
 										<FormLabel>Task Assignees</FormLabel>
 
 										{formData?.selectedAssignees?.length > 0 &&
-											formData.selectedAssignees.map((name) => (
+											formData?.selectedAssignees.map((name) => (
 												<Avatar size={"sm"} name={name} src={name} mr={2} key={name} />
 											))}
 									</FormControl>
@@ -187,7 +187,7 @@ const AddNewSubTask = ({
 											type="date"
 											id="dueDate"
 											name="dueDate"
-											value={formData.dueDate}
+											value={formData?.dueDate}
 											onChange={(e) =>
 												setFormData((prevData) => ({
 													...prevData,
@@ -202,7 +202,7 @@ const AddNewSubTask = ({
 										<Input
 											type="text"
 											name="timeToComplete"
-											value={formData.timeToComplete}
+											value={formData?.timeToComplete}
 											onChange={(e) =>
 												setFormData((prevData) => ({
 													...prevData,
@@ -473,7 +473,7 @@ const AddNewSubTask = ({
 										isLoading={isSubmitting}
 										type="submit"
 										bg="var(--logo_bg)"
-										isDisabled={formData.taskName === ""}
+										isDisabled={formData?.taskName === ""}
 									>
 										Add
 									</Button>

@@ -285,7 +285,7 @@ const AddNewActivity = ({ isOpen, onClose, setRefresh, allProjects, allProjectTa
 										isLoading={isSubmitting}
 										type="submit"
 										bg="var(--logo_bg)"
-										isDisabled={formData.taskName === ""}
+										isDisabled={formData?.taskName === ""}
 									>
 										Add
 									</Button>

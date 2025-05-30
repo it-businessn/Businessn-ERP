@@ -2,6 +2,7 @@ import TabsButtonGroup from "components/ui/tab/TabsButtonGroup";
 import { ROLES } from "constant";
 import useCompany from "hooks/useCompany";
 import useEmployees from "hooks/useEmployees";
+import usePaygroup from "hooks/usePaygroup";
 import PageLayout from "layouts/PageLayout";
 import { useState } from "react";
 import LocalStorageService from "services/LocalStorageService";
@@ -14,13 +15,15 @@ const Setup = () => {
 	const deptName = loggedInUser?.role === ROLES.MANAGER ? loggedInUser?.department : null;
 	const [isRefresh, setIsRefresh] = useState(false);
 	const { company } = useCompany(LocalStorageService.getItem("selectedCompany"));
+	const { selectedPayGroupOption } = usePaygroup(company, false);
+
 	const { employees, filteredEmployees, setFilteredEmployees } = useEmployees(
 		isRefresh,
 		company,
 		null,
 		null,
-		null,
 		deptName,
+		selectedPayGroupOption,
 	);
 
 	const SETUP_LIST = [

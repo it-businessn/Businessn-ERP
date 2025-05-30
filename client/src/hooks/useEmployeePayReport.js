@@ -5,12 +5,20 @@ const useEmployeePayReport = (company, payPeriodNum, isOpen, year = "2025") => {
 	const [report, setReport] = useState(null);
 
 	useEffect(() => {
-		const payNum = payPeriodNum?.payPeriod ?? payPeriodNum;
-		const extraRun = payPeriodNum?.isExtraRun ?? false;
+		const extraRun = payPeriodNum?.isExtraRun || false;
+		const frequency =
+			payPeriodNum?.frequency === "bi-weekly" ? "Biweekly" : payPeriodNum?.frequency;
 
 		const fetchHoursWorkedInfo = async () => {
 			try {
-				const { data } = await PayrollService.getPayReportDetails(company, payNum, extraRun, year);
+				const { data } = await PayrollService.getPayReportDetails(
+					company,
+					payPeriodNum?.payPeriod,
+					extraRun,
+					payPeriodNum?.payPeriodPayDate,
+					frequency,
+					year,
+				);
 				setReport(data);
 			} catch (error) {
 				console.error(error);

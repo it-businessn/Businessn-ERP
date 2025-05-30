@@ -24,25 +24,16 @@ const SchedulingCalendar = ({
 	empName,
 	currentDate,
 	setCurrentDate,
+	isUserManager,
+	handleItemClick,
 }) => {
-	const eventInitialStartTime = new Date(currentDate);
-	eventInitialStartTime.setHours(9, 0, 0, 0);
-	const eventInitialEndTime = new Date(currentDate);
-	eventInitialEndTime.setHours(17, 0, 0, 0);
-
-	const eventPrevStartTime = new Date(currentDate);
-	eventPrevStartTime.setHours(7, 0, 0, 0);
-	const eventPrevEndTime = new Date(currentDate);
-	eventPrevEndTime.setHours(8, 0, 0, 0);
-
-	const yesterdayDate = new Date(currentDate);
-	yesterdayDate.setDate(currentDate.getDate() - 1);
-	const tomorrowDate = new Date(currentDate);
-	tomorrowDate.setDate(currentDate.getDate() + 1);
-
 	const [isLoading, setIsLoading] = useState(false);
 	const [groups, setGroups] = useState([]);
 	const [items, setItems] = useState([]);
+
+	useEffect(() => {
+		setIsLoading(false);
+	}, [items, groups]);
 
 	useEffect(() => {
 		const fetchShifts = async () => {
@@ -79,16 +70,66 @@ const SchedulingCalendar = ({
 					shift.end_time = end_time;
 					shift.canResize = false;
 					shift.color = getRoleColor(shift.role);
-					shift.duration = end_time.diff(start_time, "hours", true);
+					shift.duration = end_time.diff(start_time, "hours", true).toFixed(2);
 					return shift;
 				});
 				setItems(mappedItems);
-				setIsLoading(false);
 			} catch (error) {
 				console.error(error);
 			}
 		};
-		fetchShifts();
+
+		const fetchEmpShifts = async () => {
+			try {
+				setIsLoading(true);
+				const { data } = await SchedulerService.getEmpWorkShiftsByDate({
+					// date: currentDate,
+					location,
+					company,
+					empName,
+				});
+				const groupMap = new Map();
+				data?.forEach(({ _id, empName, shiftDate, role }) => {
+					const dateStr = shiftDate.split("T")[0];
+					const groupKey = `${empName}-${dateStr}`;
+
+					if (!groupMap.has(groupKey)) {
+						groupMap.set(groupKey, {
+							id: groupKey,
+							title: dateStr,
+							color: getRoleColor(role),
+						});
+					}
+				});
+				const mappedGroups = Array.from(groupMap.values());
+				setGroups(mappedGroups);
+
+				const mappedItems = data?.map((shift, index) => {
+					const dateStr = shift.shiftDate.split("T")[0];
+					const groupKey = `${shift.empName}-${dateStr}`;
+
+					const start_time = moment(`${dateStr}T${shift.shiftStart}:00`);
+					const end_time = moment(`${dateStr}T${shift.shiftEnd}:00`);
+
+					shift.id = shift._id;
+					shift.group = groupKey;
+					shift.title = shift.empName.trim();
+					shift.start_time = start_time;
+					shift.end_time = end_time;
+					shift.color = getRoleColor(shift.role);
+					shift.duration = end_time.diff(start_time, "hours", true).toFixed(2);
+					return shift;
+				});
+				setItems(mappedItems);
+			} catch (error) {
+				console.error(error);
+			}
+		};
+		if (location && isUserManager) {
+			fetchShifts();
+		} else {
+			fetchEmpShifts();
+		}
 	}, [currentDate, company, newShiftAdded, location, empName]);
 
 	const groupRenderer = ({ group }) => <Group group={group} />;
@@ -100,6 +141,7 @@ const SchedulingCalendar = ({
 				item={item}
 				itemContext={itemContext}
 				setRefresh={setRefresh}
+				handleItemClick={handleItemClick}
 			/>
 		);
 	};
@@ -126,33 +168,35 @@ const SchedulingCalendar = ({
 				mb={"0.5em"}
 			>
 				<Text>Schedule</Text>
-				<HStack spacing={0}>
-					<Icon
-						cursor="pointer"
-						as={MdOutlineChevronLeft}
-						onClick={() => handleChangeDate("prev")}
-						boxSize="5"
-						color="fg.muted"
-					/>
-					<HStack cursor={"pointer"}>
-						<Icon as={CiCalendar} boxSize="5" color="fg.muted" />
-						<DatePicker
-							style={{ bg: "red" }}
-							selected={currentDate}
-							onChange={(date) => {
-								setCurrentDate(date);
-							}}
-							dateFormat="dd, MMMM yyyy"
+				{isUserManager && (
+					<HStack spacing={0}>
+						<Icon
+							cursor="pointer"
+							as={MdOutlineChevronLeft}
+							onClick={() => handleChangeDate("prev")}
+							boxSize="5"
+							color="fg.muted"
+						/>
+						<HStack cursor={"pointer"}>
+							<Icon as={CiCalendar} boxSize="5" color="fg.muted" />
+							<DatePicker
+								style={{ bg: "red" }}
+								selected={currentDate}
+								onChange={(date) => {
+									setCurrentDate(date);
+								}}
+								dateFormat="dd, MMMM yyyy"
+							/>
+						</HStack>
+						<Icon
+							cursor="pointer"
+							as={MdOutlineChevronRight}
+							onClick={() => handleChangeDate("next")}
+							boxSize="5"
+							color="fg.muted"
 						/>
 					</HStack>
-					<Icon
-						cursor="pointer"
-						as={MdOutlineChevronRight}
-						onClick={() => handleChangeDate("next")}
-						boxSize="5"
-						color="fg.muted"
-					/>
-				</HStack>
+				)}
 
 				<Text fontWeight={"normal"}>
 					Default duration:{" "}
@@ -162,7 +206,7 @@ const SchedulingCalendar = ({
 				</Text>
 			</HStack>
 			{isLoading && <SkeletonLoader />}
-			{!isLoading && groups?.length ? (
+			{!isLoading && groups?.length && items?.length ? (
 				<Timeline
 					style={{
 						zIndex: 0,
@@ -180,6 +224,11 @@ const SchedulingCalendar = ({
 					itemRenderer={itemRenderer}
 					viewMode="day"
 					groupRenderer={groupRenderer}
+					itemTimeStartField="start_time"
+					itemTimeEndField="end_time"
+					itemHeightRatio={0.75}
+					canResize={false}
+					stackItems
 				>
 					<TimelineHeaders>
 						<SidebarHeader>
@@ -201,9 +250,9 @@ const SchedulingCalendar = ({
 						<CustomHeader unit="hour">
 							{({ headerContext: { intervals }, getRootProps, getIntervalProps, showPeriod }) => (
 								<Box {...getRootProps()}>
-									{intervals.map((interval) => (
+									{intervals.map((interval, index) => (
 										<Text
-											key={interval.startTime}
+											key={`${interval.startTime}_${index}`}
 											textAlign={"center"}
 											borderLeft={"1px solid var(--calendar_border)"}
 											borderTop={"1px solid var(--calendar_border)"}

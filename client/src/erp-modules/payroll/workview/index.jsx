@@ -15,34 +15,38 @@ const PayrollWorkview = () => {
 	const [selectedYear, setSelectedYear] = useState(CURRENT_YEAR);
 	const [yearsList, setYearsList] = useState([CURRENT_YEAR]);
 	const loggedInUser = LocalStorageService.getItem("user");
-
 	const {
+		hasMultiPaygroups,
+		selectedPayGroupOption,
+		setSelectedPayGroupOption,
 		payGroups,
 		selectedPayGroup,
-		setSelectedPayGroup,
 		payGroupSchedule,
 		closestRecord,
 		closestRecordIndex,
 	} = usePaygroup(company, refresh, selectedYear);
 
 	useEffect(() => {
-		if (selectedPayGroup) setYearsList(selectedPayGroup?.yearSchedules.map(({ year }) => year));
+		if (selectedPayGroup) {
+			setYearsList(selectedPayGroup?.yearSchedules.map(({ year }) => year));
+		}
 	}, [selectedPayGroup]);
 
 	const handleChange = (value) => {
 		if (value !== "") {
-			setSelectedPayGroup(value);
+			setSelectedPayGroupOption(value);
 		}
 	};
 
 	return (
 		<PageLayout
+			handleChange={handleChange}
+			hasMultiPaygroups={hasMultiPaygroups}
 			width={"35%"}
 			title={"Workview"}
-			showSelectBox={true}
-			handleChange={handleChange}
+			showPayGroup={true}
+			selectedValue={selectedPayGroupOption}
 			data={payGroups}
-			selectedValue={selectedPayGroup?.name}
 			selectPlaceholder="Select Paygroup"
 			selectAttr="name"
 		>
@@ -60,6 +64,7 @@ const PayrollWorkview = () => {
 					closestRecord={closestRecord}
 					closestRecordIndex={closestRecordIndex}
 					loggedInUser={loggedInUser}
+					selectedPayGroupOption={selectedPayGroupOption}
 				/>
 			)}
 			<PaygroupDetailTable
@@ -67,6 +72,7 @@ const PayrollWorkview = () => {
 				closestRecord={closestRecord}
 				empPath={empPath}
 				selectedPayGroup={selectedPayGroup}
+				selectedPayGroupOption={selectedPayGroupOption}
 				groupId={selectedPayGroup?._id}
 				loggedInUser={loggedInUser}
 			/>

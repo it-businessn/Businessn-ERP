@@ -5,7 +5,7 @@ import TextTitle from "../text/TextTitle";
 const WorkviewTable = ({ cols, isSmall, height, whiteSpace, children, overflowX }) => {
 	const hideLabel = (text, label) => text.startsWith(label);
 	return (
-		<Box overflow="auto" height={height} overflowX={overflowX} width={"80vw"}>
+		<Box overflow="auto" maxH={height} overflowX={overflowX}>
 			<Table variant={"simple"}>
 				<Thead position="sticky" zIndex="docked" top={-1} textAlign="center">
 					<Tr>

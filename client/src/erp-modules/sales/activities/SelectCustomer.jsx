@@ -74,8 +74,8 @@ const SelectCustomer = ({
 	const [isSubmitting, setSubmitting] = useState(false);
 	const handleSubmit = async (e) => {
 		e.preventDefault();
-		formData.abbreviation = `${formData.name.replace(" ", "_").toUpperCase()}${today}`;
-		formData.opportunityName = formData.abbreviation;
+		formData.abbreviation = `${formData?.name.replace(" ", "_").toUpperCase()}${today}`;
+		formData.opportunityName = formData?.abbreviation;
 
 		setSubmitting(true);
 
@@ -83,8 +83,8 @@ const SelectCustomer = ({
 			const result = await LeadsService.createOpportunity(formData);
 			await ActivityService.addActivity({
 				type: logType,
-				email: formData.email,
-				phone: formData.phone,
+				email: formData?.email,
+				phone: formData?.phone,
 				duration: 0,
 				description: "",
 				linkedInContact: "",
@@ -121,14 +121,14 @@ const SelectCustomer = ({
 					<InputFormControl
 						label={"Name of company"}
 						name="name"
-						valueText={formData.name}
+						valueText={formData?.name}
 						handleChange={handleChange}
 						required
 					/>
 					<InputFormControl
 						label={"Phone"}
 						name="phone"
-						valueText={formData.phone}
+						valueText={formData?.phone}
 						handleChange={handleChange}
 						required
 					/>
@@ -136,7 +136,7 @@ const SelectCustomer = ({
 						label={"Email"}
 						name="email"
 						type="email"
-						valueText={formData.email}
+						valueText={formData?.email}
 						handleChange={handleChange}
 						required
 					/>

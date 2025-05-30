@@ -6,99 +6,105 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import PayrollService from "services/PayrollService";
 import UserService from "services/UserService";
+import PayrollUserStatInfo from "../rightpane/PayrollUserStatInfo";
 import NotificationCard from "./NotificationCard";
-import PayPeriodDetails from "./PayPeriodDetails";
 import PayrollActionSection from "./PayrollActionSection";
 import PayrollCard from "./PayrollCard";
-import PayrollUserStatInfo from "../rightpane/PayrollUserStatInfo";
-const LeftPane = ({ setStats, company, closestRecord, payGroupSchedule, closestRecordIndex, selectedUser }) => {
-  const prevSchedule = payGroupSchedule?.[closestRecordIndex - 1];
-  const nextSchedule = payGroupSchedule?.[closestRecordIndex + 1];
-  const activeUsers = useActiveEmployees(company);
 
-  const [totalEmployees, setTotalEmployees] = useState(null);
-  const [filter, setFilter] = useState(null);
-  const [totalAlerts, setTotalAlerts] = useState(null);
+const LeftPane = ({
+	company,
+	closestRecord,
+	payGroupSchedule,
+	closestRecordIndex,
+	selectedUser,
+}) => {
+	const prevSchedule = payGroupSchedule?.[closestRecordIndex - 1];
+	const nextSchedule = payGroupSchedule?.[closestRecordIndex + 1];
+	const activeUsers = useActiveEmployees(company);
 
-  const navigate = useNavigate();
+	const [totalEmployees, setTotalEmployees] = useState(null);
+	const [filter, setFilter] = useState(null);
+	const [totalAlerts, setTotalAlerts] = useState(null);
 
-  const handleClick = (path) => navigate(path);
+	const navigate = useNavigate();
 
-  useEffect(() => {
-    const fetchAllEmployees = async () => {
-      try {
-        const { data } = await UserService.getAllCompanyUsersCount(company);
-        setTotalEmployees(data);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-    fetchAllEmployees();
-  }, []);
+	const handleClick = (path) => navigate(path);
 
-  useEffect(() => {
-    if (closestRecord) {
-      const { payPeriodStartDate, payPeriodEndDate, payPeriod } = closestRecord;
-      setFilter({
-        startDate: payPeriodStartDate,
-        endDate: payPeriodEndDate,
-      });
-      const fetchAlerts = async () => {
-        try {
-          const { data } = await PayrollService.getTotalAlerts(company, payPeriod);
-          setTotalAlerts(data);
-        } catch (error) {
-          console.error(error);
-        }
-      };
-      fetchAlerts();
-    }
-  }, [closestRecord]);
+	useEffect(() => {
+		const fetchAllEmployees = async () => {
+			try {
+				const { data } = await UserService.getAllCompanyUsersCount(company);
+				setTotalEmployees(data);
+			} catch (error) {
+				console.error(error);
+			}
+		};
+		fetchAllEmployees();
+	}, []);
 
-  const runType = closestRecord?.isExtraRun ? "Extra" : "Regular";
-  const sections = [
-    {
-      name: "",
-      content: (
-        <PayrollUserStatInfo
-          name={selectedUser?.fullName}
-          email={selectedUser?.email}
-          payGroupSchedule={payGroupSchedule}
-          closestRecord={closestRecord}
-          closestRecordIndex={closestRecordIndex}
-        />
-      ),
-    },
-    {
-      name: "Payroll",
-      content: (
-        <PayrollCard
-          payGroupSchedule={payGroupSchedule}
-          prevSchedule={prevSchedule}
-          closestRecord={closestRecord}
-          closestRecordIndex={closestRecordIndex}
-          runType={runType}
-          nextSchedule={nextSchedule}
-          handleClick={handleClick}
-          company={company}
-        />
-      ),
-    },
-    {
-      name: "Payroll actions",
-      content: (
-        <PayrollActionSection
-          company={company}
-          filter={filter}
-          selectedPayPeriod={closestRecord}
-          handleClick={handleClick}
-          activeUsers={activeUsers}
-          totalAlerts={totalAlerts}
-        />
-      ),
-    },
-    
-    /* {
+	useEffect(() => {
+		if (closestRecord) {
+			const { payPeriodStartDate, payPeriodEndDate, payPeriod } = closestRecord;
+			setFilter({
+				startDate: payPeriodStartDate,
+				endDate: payPeriodEndDate,
+			});
+			const fetchAlerts = async () => {
+				try {
+					const { data } = await PayrollService.getTotalAlerts(company, payPeriod);
+					setTotalAlerts(data);
+				} catch (error) {
+					console.error(error);
+				}
+			};
+			fetchAlerts();
+		}
+	}, [closestRecord]);
+
+	const runType = closestRecord?.isExtraRun ? "Extra" : "Regular";
+	const sections = [
+		{
+			name: "",
+			content: (
+				<PayrollUserStatInfo
+					name={selectedUser?.fullName}
+					email={selectedUser?.email}
+					payGroupSchedule={payGroupSchedule}
+					closestRecord={closestRecord}
+					closestRecordIndex={closestRecordIndex}
+				/>
+			),
+		},
+		{
+			name: "Payroll",
+			content: (
+				<PayrollCard
+					payGroupSchedule={payGroupSchedule}
+					prevSchedule={prevSchedule}
+					closestRecord={closestRecord}
+					closestRecordIndex={closestRecordIndex}
+					runType={runType}
+					nextSchedule={nextSchedule}
+					handleClick={handleClick}
+					company={company}
+				/>
+			),
+		},
+		{
+			name: "Payroll actions",
+			content: (
+				<PayrollActionSection
+					company={company}
+					filter={filter}
+					selectedPayPeriod={closestRecord}
+					handleClick={handleClick}
+					activeUsers={activeUsers}
+					totalAlerts={totalAlerts}
+				/>
+			),
+		},
+
+		/* {
       name: "",
       content: (
         <PayPeriodDetails
@@ -109,37 +115,37 @@ const LeftPane = ({ setStats, company, closestRecord, payGroupSchedule, closestR
         />
       ),
     },*/
-    {
-      name: "Notifications",
-      content: <NotificationCard />,
-    },
-  ];
-  return (
-    <Box>
-      <SimpleGrid
-        mb={"1em"}
-        columns={{ base: 2 }}
-        spacing="1em"
-        color={"var(--menu_item_color)"}
-        templateRows={{ lg: "50% 50%" }}
-      >
-        {/* <TimeCard selectedUser={selectedUser} company={company} /> */}
+		{
+			name: "Notifications",
+			content: <NotificationCard />,
+		},
+	];
+	return (
+		<Box>
+			<SimpleGrid
+				mb={"1em"}
+				columns={{ base: 2 }}
+				spacing="1em"
+				color={"var(--menu_item_color)"}
+				templateRows={{ lg: "50% 50%" }}
+			>
+				{/* <TimeCard selectedUser={selectedUser} company={company} /> */}
 
-        {sections.map(({ name, content }, index) => (
-          <BoxCard
-            key={name}
-            overflowY={index === 3 && "hidden"}
-            bg={"white"}
-            boxShadow="0px 4px 12px rgba(0, 0, 0, 0.1)"
-            _hover={{
-              transform: "translateY(-4px)",
-              boxShadow: "0px 8px 16px rgba(0, 0, 0, 0.15)",
-              transition: "all 0.3s ease",
-            }}
-          >
-            {index === 0 ? (
-              <HStack>
-                {/* <TextTitle title={name} mt={2} mb={"1em"} />
+				{sections.map(({ name, content }, index) => (
+					<BoxCard
+						key={name}
+						overflowY={index === 3 && "hidden"}
+						bg="white"
+						boxShadow="0px 4px 12px rgba(0, 0, 0, 0.1)"
+						_hover={{
+							transform: "translateY(-4px)",
+							boxShadow: "0px 8px 16px rgba(0, 0, 0, 0.15)",
+							transition: "all 0.3s ease",
+						}}
+					>
+						{index === 0 ? (
+							<HStack>
+								{/* <TextTitle title={name} mt={2} mb={"1em"} />
 								<HStack spacing={0}>
 									<Icon
 										borderRadius={"50%"}
@@ -156,17 +162,17 @@ const LeftPane = ({ setStats, company, closestRecord, payGroupSchedule, closestR
 										color="fg.muted"
 									/>
 								</HStack> */}
-              </HStack>
-            ) : (
-              <TextTitle title={name} mt={2} mb={"1em"} />
-            )}
+							</HStack>
+						) : (
+							<TextTitle title={name} mt={2} mb={"1em"} />
+						)}
 
-            {content}
-          </BoxCard>
-        ))}
-      </SimpleGrid>
-    </Box>
-  );
+						{content}
+					</BoxCard>
+				))}
+			</SimpleGrid>
+		</Box>
+	);
 };
 
 export default LeftPane;
