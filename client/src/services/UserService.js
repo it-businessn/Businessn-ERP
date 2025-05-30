@@ -77,6 +77,10 @@ const UserService = {
 		return apiService.post("/user/send-email", data);
 	},
 
+	async sendEmailPaystubs(data) {
+		return apiService.post("/user/send-paystub", data);
+	},
+
 	async addMasterUser(data) {
 		return apiService.post("/user/create", data);
 	},

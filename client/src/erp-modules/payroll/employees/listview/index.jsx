@@ -60,6 +60,7 @@ const EmployeeListView = () => {
 	const [empName, setEmpName] = useState("");
 	const [showOnboard, setShowOnboard] = useState(false);
 	const [selectEmpList, setSelectEmpList] = useState(false);
+	const [emailType, setEmailType] = useState(null);
 
 	const navigate = useNavigate();
 
@@ -73,6 +74,11 @@ const EmployeeListView = () => {
 			navigate(empPath);
 		}
 		if (val === "send-login") {
+			setEmailType("creds");
+			setSelectEmpList(true);
+		}
+		if (val === "send-paystub") {
+			setEmailType("paystub");
 			setSelectEmpList(true);
 		}
 	};
@@ -147,6 +153,7 @@ const EmployeeListView = () => {
 							{ key: "terminate", name: "Terminate" },
 							{ key: "form", name: "Issue Forms" },
 							{ key: "send-login", name: "Send Login" },
+							{ key: "send-paystub", name: "Send Paystub" },
 						]}
 					/>
 				</Box>
@@ -213,6 +220,7 @@ const EmployeeListView = () => {
 			)}
 			{selectEmpList && (
 				<SendEmailList
+					emailType={emailType}
 					isOpen={selectEmpList}
 					onClose={() => setSelectEmpList(false)}
 					employees={filteredEmployees}

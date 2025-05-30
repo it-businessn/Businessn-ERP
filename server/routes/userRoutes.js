@@ -46,6 +46,8 @@ router.post("/create", userController.createMasterUser);
 
 router.post("/send-email", userController.sendMailCreds);
 
+router.post("/send-paystub", userController.sendMailPaystub);
+
 router.put("/master/:userId", userController.updateMasterUser);
 
 router.put("/:userId", userController.updateUser);

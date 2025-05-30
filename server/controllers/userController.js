@@ -362,9 +362,73 @@ const getAllSalesAgents = async (req, res) => {
 	}
 };
 
-const sendMailCreds = async (req, res) => {
+const sendMailPaystub = async (req, res) => {
 	const { employees } = req.body;
 
+	try {
+		for (const fullName of employees) {
+			const user = await Employee.findOne({ fullName })
+				.sort({
+					createdOn: -1,
+				})
+				?.select("email fullName");
+			if (user) {
+				const { email, fullName } = user;
+
+				await sendEmail(
+					email,
+					"View Your Recent Paystub",
+					"",
+					`<body style="margin: 0; font-family: Arial, Helvetica, sans-serif;height:'auto">
+		<div class="container" style="
+								background: #fdfdfd;
+								color: #371f37;
+								display: flex;
+								flex-direction: column;
+								align-items: self-start;
+								padding: 2em 3em;
+								gap: 1em;
+								font-size: 14px;
+							">
+			<p> Dear ${fullName},
+			</p>
+			<p>
+				Your most recent paystub is now available.</p>
+			<p>
+				Please log in to your employee portal to view or download your paystub:
+			</p>
+			<p><a class="button" href="https://businessn-erp.com/login" target="_blank">Login Here</a></p>
+		</div>
+		<div class="footer" style="
+								background-color: #371f37;
+								color: white;
+									text-align: center;
+								height: 150px;
+								display: flex;
+								align-items: center;
+							">
+			<img src="cid:footerLogo" style="margin: 0 auto;width:300px" alt="Footer Logo" />
+
+		</div>
+	</body>`,
+					[
+						{
+							filename: "BusinessN_dark1.png",
+							path: path.join(__dirname, "../", "assets/logos/BusinessN_dark1.png"),
+							cid: "footerLogo",
+						},
+					],
+				);
+			}
+		}
+		res.status(201).json({ message: "Email sent successfully" });
+	} catch (error) {
+		res.status(400).json({ message: error.message });
+	}
+};
+
+const sendMailCreds = async (req, res) => {
+	const { employees } = req.body;
 	try {
 		for (const fullName of employees) {
 			const user = await Employee.findOne({ fullName })
@@ -378,7 +442,7 @@ const sendMailCreds = async (req, res) => {
 				if (resetLink)
 					await sendEmail(
 						email,
-						"Reset Password",
+						"Set Login Password",
 						resetLink,
 						`<body style="margin: 0; font-family: Arial, Helvetica, sans-serif;height:'auto">
 						<div
@@ -427,12 +491,12 @@ const sendMailCreds = async (req, res) => {
 							"
 						>
 				      <h2 style="margin: 5px 0">Hello,</h2>
-       <p>  Your account has been successfully created. For your security, please
-        set your password by clicking the button below.</p> 
+	   <p>  Your account has been successfully created. For your security, please
+	    set your password by clicking the button below.</p>
 		<p>
-        This link will expire in 15 minutes. If it expires, you can request a
-        new one from the login screen.
-      </p>
+	    This link will expire in 15 minutes. If it expires, you can request a
+	    new one from the login screen.
+	  </p>
 				      <p><a class="button" href="${resetLink}" target="_blank">Set Your Password</a></p>
 				   </div>
 						<div
@@ -635,6 +699,7 @@ module.exports = {
 	getPayrollInActiveCompanyEmployees,
 	getAllSalesAgentsList,
 	sendMailCreds,
+	sendMailPaystub,
 	getAllCompManagers,
 	getEmployeeId,
 	fetchActiveEmployees,
