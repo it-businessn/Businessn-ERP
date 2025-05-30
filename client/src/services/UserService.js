@@ -73,6 +73,10 @@ const UserService = {
 		return apiService.post("/user/register", data);
 	},
 
+	async sendEmailLoginCreds(data) {
+		return apiService.post("/user/send-email", data);
+	},
+
 	async addMasterUser(data) {
 		return apiService.post("/user/create", data);
 	},

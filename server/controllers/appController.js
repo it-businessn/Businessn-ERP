@@ -368,12 +368,13 @@ const forgotPassword = async (req, res) => {
 			});
 		}
 
-		const resetLink = getResetPasswordLink(user._id);
-		await sendEmail(
-			user.email,
-			"Reset Password",
-			resetLink,
-			`<body style="margin: 0; font-family: Arial, Helvetica, sans-serif;height:'auto">
+		const resetLink = getResetPasswordLink({ _id: user._id });
+		if (resetLink)
+			await sendEmail(
+				user.email,
+				"Reset Password",
+				resetLink,
+				`<body style="margin: 0; font-family: Arial, Helvetica, sans-serif;height:'auto">
 		<div
 			class="header"
 			style="
@@ -441,14 +442,14 @@ const forgotPassword = async (req, res) => {
 			
 		</div>
 	</body> `,
-			[
-				{
-					filename: "BusinessN_dark1.png",
-					path: path.join(__dirname, "../", "assets/logos/BusinessN_dark1.png"),
-					cid: "footerLogo",
-				},
-			],
-		);
+				[
+					{
+						filename: "BusinessN_dark1.png",
+						path: path.join(__dirname, "../", "assets/logos/BusinessN_dark1.png"),
+						cid: "footerLogo",
+					},
+				],
+			);
 
 		return res.status(200).json({
 			message: "A password reset link has been sent to your email account",

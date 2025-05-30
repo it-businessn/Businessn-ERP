@@ -219,7 +219,7 @@ const OpenTicket = ({ company, setShowAddEntry, showAddEntry, userId, employees 
 					/>
 				</HStack>
 			)}
-			<Box overflow="auto" height="calc(100vh - 475px)">
+			<Box overflow="auto" className="ticket_container">
 				<Table variant="simple" size="sm">
 					<Thead position={"sticky"} zIndex={3} top={-1} bg="var(--primary_bg)">
 						<Tr>

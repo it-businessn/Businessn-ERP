@@ -7,6 +7,9 @@ const Lead = require("../models/Lead");
 const Task = require("../models/Task");
 const UserActivity = require("../models/UserActivity");
 const { isRoleManager, ROLES } = require("../services/data");
+const { sendEmail } = require("../services/emailService");
+const path = require("path");
+const { getResetPasswordLink } = require("../services/tokenService");
 const {
 	setInitialPermissions,
 	findCompany,
@@ -359,6 +362,108 @@ const getAllSalesAgents = async (req, res) => {
 	}
 };
 
+const sendMailCreds = async (req, res) => {
+	const { employees } = req.body;
+
+	try {
+		for (const fullName of employees) {
+			const user = await Employee.findOne({ fullName })
+				.sort({
+					createdOn: -1,
+				})
+				?.select("email fullName");
+			if (user) {
+				const { _id, email } = user;
+				const resetLink = getResetPasswordLink({ _id });
+				if (resetLink)
+					await sendEmail(
+						email,
+						"Reset Password",
+						resetLink,
+						`<body style="margin: 0; font-family: Arial, Helvetica, sans-serif;height:'auto">
+						<div
+							class="header"
+							style="
+								background-color: #371f37;
+								color: white;
+								text-align: center;
+								height: 150px;
+								display: flex;
+								align-items: center;
+							"
+						>
+							<div
+								id="header_content"
+								style="
+									display: flex;
+									flex-direction: column;
+									align-items: self-start;
+									background: #4c364b;
+									border-radius: 10px;
+									gap: 1em;
+									width: 80%;
+									margin: 0 auto;
+									padding: 1.5em;
+								"
+							>
+								<p
+									class="topic"
+									style="font-weight: bold; font-size: larger; margin: 5px 0"
+								>
+									Reset Password
+								</p>
+							</div>
+						</div><div
+							class="container"
+							style="
+								background: #fdfdfd;
+								color: #371f37;
+								display: flex;
+								flex-direction: column;
+								align-items: self-start;
+								padding: 2em 3em;
+								gap: 1em;
+								font-size: 14px;
+							"
+						>
+				      <p style="margin: 5px 0">Hello,</p>
+				      <p>You requested a password reset. Click the link below to reset your password:</p>
+				      <p><a href="${resetLink}" target="_blank">Reset Password</a></p>
+				      <p>Thanks,</p>
+				   </div>
+						<div
+							class="footer"
+							style="
+								background-color: #371f37;
+								color: white;
+								text-align: center;
+								height: 150px;
+								display: flex;
+								align-items: center;
+							"
+						>
+				      <img src="cid:footerLogo"
+								style="margin: 0 auto;width:300px" alt="Footer Logo"/>
+
+						</div>
+					</body> `,
+						[
+							{
+								filename: "BusinessN_dark1.png",
+								path: path.join(__dirname, "../", "assets/logos/BusinessN_dark1.png"),
+								cid: "footerLogo",
+							},
+						],
+					);
+			}
+		}
+
+		res.status(201).json({ message: "Email sent successfully" });
+	} catch (error) {
+		res.status(400).json({ message: error.message });
+	}
+};
+
 const createMasterUser = async (req, res) => {
 	const { company, firstName, middleName, lastName, email, phoneNumber, position, startDate } =
 		req.body;
@@ -525,6 +630,7 @@ module.exports = {
 	getPayrollActiveCompanyEmployeesCount,
 	getPayrollInActiveCompanyEmployees,
 	getAllSalesAgentsList,
+	sendMailCreds,
 	getAllCompManagers,
 	getEmployeeId,
 	fetchActiveEmployees,
