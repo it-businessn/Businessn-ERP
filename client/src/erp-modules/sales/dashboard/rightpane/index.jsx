@@ -10,11 +10,13 @@ import ChatMessages from "./ChatMessages";
 import MiniCalendar from "./MiniCalendar";
 
 const RightPane = ({ selectedUser, stats, company }) => {
+	const [count, setCount] = useState(0);
 	const TABS = [
 		{
 			id: 0,
 			type: "Tickets",
-			name: <TicketHistory userId={selectedUser?.fullName} company={company} />,
+			count,
+			name: <TicketHistory setCount={setCount} userId={selectedUser?.fullName} company={company} />,
 		},
 		{
 			id: 1,

@@ -31,6 +31,7 @@ const EmployeeListView = () => {
 	const [formData, setFormData] = useState({
 		isPayrollActive: true,
 		isPayrollInactive: false,
+		isPayrollTerminated: false,
 	});
 
 	const { hasMultiPaygroups, selectedPayGroupOption, setSelectedPayGroupOption, payGroups } =
@@ -204,7 +205,18 @@ const EmployeeListView = () => {
 								Inactive Employees
 							</Checkbox>
 						</HStack>
-						<Checkbox colorScheme={"facebook"}>Show Terminated Employees</Checkbox>
+						<Checkbox
+							colorScheme={"facebook"}
+							isChecked={formData.isPayrollTerminated}
+							onChange={(e) =>
+								setFormData((prevData) => ({
+									...prevData,
+									isPayrollTerminated: e.target.checked,
+								}))
+							}
+						>
+							Show Terminated Employees
+						</Checkbox>
 					</HStack>
 				</Flex>
 				<EmployeeList employees={filteredEmployees} />

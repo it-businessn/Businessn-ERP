@@ -52,11 +52,12 @@ const AddCorporateInfo = ({ company, id, handleNext, handlePrev }) => {
 
 	useEffect(() => {
 		if (employmentInfo) {
-			employmentInfo.positions = employmentInfo?.positions?.filter((_) => _.title);
 			if (employmentInfo.email) {
 				employmentInfo.empId = employmentInfo._id;
-				employmentInfo.positions = [{ title: employmentInfo?.position }];
 				employmentInfo.employmentStartDate = employmentInfo?.dateOfJoining;
+			}
+			if (employmentInfo.positions) {
+				employmentInfo.positions = employmentInfo?.positions?.filter((_) => _.title);
 			}
 			setFormData(employmentInfo);
 		} else {

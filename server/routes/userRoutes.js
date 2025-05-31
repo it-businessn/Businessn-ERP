@@ -36,6 +36,11 @@ router.get(
 	userController.getPayrollInActiveCompanyEmployees,
 );
 
+// router.get(
+// 	"/payroll-terminated/:companyName/:deptName/:payGroup",
+// 	userController.getPayrollTerminatedCompanyEmployees,
+// );
+
 router.get("/all/:companyName", userController.getCompanyUsers);
 
 router.get("/count/:companyName", userController.getCompanyEmployeesCount);

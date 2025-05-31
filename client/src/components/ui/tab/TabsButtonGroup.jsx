@@ -21,9 +21,8 @@ const TabsButtonGroup = ({ isOutlineTab, tabs, setViewMode, viewMode, mt, w, mb 
 			<ButtonGroup variant="solid" p={0} m={0}>
 				{tabs?.map(({ type, count, icon, highlightColor }) =>
 					type === "Tickets" ? (
-						<Box display="flex" alignItems="center" gap="0">
+						<Box key={type} display="flex" alignItems="center" gap="0">
 							<Button
-								key={type}
 								size={"sm"}
 								onClick={() => setViewMode(type)}
 								color={getColor(type)}
