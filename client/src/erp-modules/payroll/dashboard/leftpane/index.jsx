@@ -4,7 +4,6 @@ import TextTitle from "components/ui/text/TextTitle";
 import useActiveEmployees from "hooks/useActiveEmployees";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import PayrollService from "services/PayrollService";
 import UserService from "services/UserService";
 import PayrollUserStatInfo from "../rightpane/PayrollUserStatInfo";
 import NotificationCard from "./NotificationCard";
@@ -23,8 +22,6 @@ const LeftPane = ({
 	const activeUsers = useActiveEmployees(company);
 
 	const [totalEmployees, setTotalEmployees] = useState(null);
-	const [filter, setFilter] = useState(null);
-	const [totalAlerts, setTotalAlerts] = useState(null);
 
 	const navigate = useNavigate();
 
@@ -41,25 +38,6 @@ const LeftPane = ({
 		};
 		fetchAllEmployees();
 	}, []);
-
-	useEffect(() => {
-		if (closestRecord) {
-			const { payPeriodStartDate, payPeriodEndDate, payPeriod } = closestRecord;
-			setFilter({
-				startDate: payPeriodStartDate,
-				endDate: payPeriodEndDate,
-			});
-			const fetchAlerts = async () => {
-				try {
-					const { data } = await PayrollService.getTotalAlerts(company, payPeriod);
-					setTotalAlerts(data);
-				} catch (error) {
-					console.error(error);
-				}
-			};
-			fetchAlerts();
-		}
-	}, [closestRecord]);
 
 	const runType = closestRecord?.isExtraRun ? "Extra" : "Regular";
 
@@ -155,11 +133,9 @@ const LeftPane = ({
 					<TextTitle size="lg" color="var(--banner_bg)" title="Payroll actions" mt={2} mb={"1em"} />
 					<PayrollActionSection
 						company={company}
-						filter={filter}
-						selectedPayPeriod={closestRecord}
+						selectedPayPeriod={closestRecord?.payPeriod}
 						handleClick={handleClick}
 						activeUsers={activeUsers}
-						totalAlerts={totalAlerts}
 					/>
 				</BoxCard>
 			</VStack>

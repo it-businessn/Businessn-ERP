@@ -4,8 +4,9 @@ import TextTitle from "components/ui/text/TextTitle";
 import VerticalStepper from "components/ui/VerticalStepper";
 import { useEffect, useState } from "react";
 import { processPayrollPath, timesheetPath } from "routes";
+import PayrollService from "services/PayrollService";
 
-const PayrollActionSection = ({ company, filter, handleClick, activeUsers, totalAlerts }) => {
+const PayrollActionSection = ({ company, selectedPayPeriod, handleClick, activeUsers }) => {
 	const [approvalPercent, setApprovalPercent] = useState(0);
 	const [violationPercent, setViolationPercent] = useState(100);
 	const [reviewPercent, setReviewPercent] = useState(null);
@@ -15,6 +16,21 @@ const PayrollActionSection = ({ company, filter, handleClick, activeUsers, total
 	const [progressPercent, setProgressPercent] = useState(0);
 
 	const [timesheets, setTimesheets] = useState(null);
+	const [totalAlerts, setTotalAlerts] = useState(null);
+
+	useEffect(() => {
+		if (selectedPayPeriod) {
+			const fetchAlerts = async () => {
+				try {
+					const { data } = await PayrollService.getTotalAlerts(company, selectedPayPeriod);
+					setTotalAlerts(data);
+				} catch (error) {
+					console.error(error);
+				}
+			};
+			fetchAlerts();
+		}
+	}, [selectedPayPeriod]);
 
 	useEffect(() => {
 		if (!timesheets?.length) {
