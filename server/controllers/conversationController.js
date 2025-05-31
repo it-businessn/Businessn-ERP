@@ -1,3 +1,4 @@
+const Announcement = require("../models/Announcement");
 const Conversation = require("../models/Conversation");
 const Employee = require("../models/Employee");
 const Message = require("../models/Message");
@@ -44,6 +45,22 @@ const createConversationTwoUsers = async (req, res) => {
 	}
 };
 
+const createAnnouncement = async (req, res) => {
+	const { title, message, companyName } = req.body;
+	try {
+		const newAnnouncement = new Announcement({
+			title,
+			message,
+			companyName,
+		});
+		await newAnnouncement.save();
+		res.status(201).json(newAnnouncement);
+	} catch (err) {
+		console.error(err);
+		res.status(500).json({ error: "Server error" });
+	}
+};
+
 const createConversation = async (req, res) => {
 	const { participants, conversationType, groupName, companyName } = req.body;
 	try {
@@ -81,6 +98,18 @@ const createGroupConversation = async (req, res) => {
 	} catch (err) {
 		console.error(err);
 		res.status(500).json({ error: "Server error" });
+	}
+};
+const getAnnouncement = async (req, res) => {
+	const { companyName } = req.params;
+	try {
+		const announcements = await Announcement.find({
+			companyName,
+		}).sort({ createdOn: -1 });
+
+		res.status(200).json(announcements);
+	} catch (error) {
+		res.status(404).json({ error: error.message });
 	}
 };
 
@@ -328,6 +357,8 @@ const createGroupMessages = async (req, res) => {
 
 module.exports = {
 	createConversation,
+	createAnnouncement,
+	getAnnouncement,
 	getMessage,
 	getGroupMessages,
 	getOneToOneConversation,

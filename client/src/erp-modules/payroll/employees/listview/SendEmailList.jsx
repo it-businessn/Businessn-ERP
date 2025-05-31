@@ -10,7 +10,7 @@ import {
 import ActionButtonGroup from "components/ui/form/ActionButtonGroup";
 import MultiSelectFormControl from "components/ui/form/MultiSelectFormControl";
 import { useEffect, useState } from "react";
-import { BiMailSend } from "react-icons/bi";
+import { BsFillSendFill } from "react-icons/bs";
 import UserService from "services/UserService";
 
 const SendEmailList = ({ emailType, company, isOpen, onClose, selectedPayGroupOption }) => {
@@ -103,7 +103,7 @@ const SendEmailList = ({ emailType, company, isOpen, onClose, selectedPayGroupOp
 						onClose={onClose}
 						onOpen={handleSubmit}
 						size="sm"
-						rightIcon={<BiMailSend />}
+						rightIcon={<BsFillSendFill />}
 						isLoading={isLoading}
 					/>
 				</ModalBody>
