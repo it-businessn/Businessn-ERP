@@ -75,7 +75,7 @@ const AddCorporateInfo = ({ company, id, handleNext, handlePrev }) => {
 		setIsLoading(true);
 		try {
 			if (position) {
-				const existingPositions = formData?.positions;
+				const existingPositions = formData?.positions || [];
 				const positionIndex =
 					updateRecordIndex > -1
 						? updateRecordIndex
@@ -84,8 +84,10 @@ const AddCorporateInfo = ({ company, id, handleNext, handlePrev }) => {
 				if (positionIndex === -1) {
 					existingPositions.push(position);
 					formData.positions = existingPositions;
-				} else {
+				} else if (positionIndex > -1) {
 					formData.positions[positionIndex] = position;
+				} else {
+					formData.positions = [position];
 				}
 			}
 			formData.companyName = company;
