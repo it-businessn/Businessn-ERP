@@ -655,7 +655,7 @@ const buildFundingTotalsReport = async (
 		if (newTotals) {
 			const { companyName } = fundingTotal;
 			createNewOrder(newTotals._id, companyName, totalEmployees);
-			createJournalEntry(newTotals._id, companyName);
+			createJournalEntry(newTotals._id, companyName, scheduleFrequency);
 		}
 	}
 };
@@ -694,12 +694,14 @@ const createJournalEntry = async (fundingTotalReportId, companyName) => {
 			payPeriodNum,
 			isExtraRun,
 			payPeriodProcessingDate,
+			scheduleFrequency,
 		} = existsFundDetails;
 
 		const currentPayStubs = await EmployeePayStub.find({
 			companyName,
 			payPeriodNum,
 			isExtraRun,
+			scheduleFrequency,
 		}).select(
 			"empId currentGrossPay currentCPPDeductions currentRegPayTotal2 currentEmployerCPPDeductions currentEmployerEIDeductions currentEmployeeEIDeductions currentIncomeTaxDeductions",
 		);
@@ -805,6 +807,7 @@ const createJournalEntry = async (fundingTotalReportId, companyName) => {
 			payPeriodProcessingDate,
 			payPeriodNum,
 			isExtraRun,
+			scheduleFrequency,
 		};
 		const newEntry = await JournalEntry.create(journalEntry);
 	}
@@ -817,7 +820,7 @@ const EMP_INFO = {
 };
 
 const getFundPayDetailsReportInfo = async (req, res) => {
-	const { companyName, payPeriodNum, isExtraRun } = req.params;
+	const { companyName, payPeriodNum, isExtraRun, scheduleFrequency } = req.params;
 	try {
 		const isExtraPayRun = isExtraRun === "true";
 		const payStubs = await FundingTotalsPay.findOne({
@@ -828,6 +831,7 @@ const getFundPayDetailsReportInfo = async (req, res) => {
 				$gte: moment().startOf("year").toDate(),
 				$lt: moment().endOf("year").toDate(),
 			},
+			scheduleFrequency,
 		}).sort({
 			createdOn: -1,
 		});
@@ -838,7 +842,7 @@ const getFundPayDetailsReportInfo = async (req, res) => {
 };
 
 const getJournalEntryReportInfo = async (req, res) => {
-	const { companyName, payPeriodNum, isExtraRun } = req.params;
+	const { companyName, payPeriodNum, isExtraRun, scheduleFrequency } = req.params;
 
 	try {
 		const isExtraPayRun = isExtraRun === "true";
@@ -850,6 +854,7 @@ const getJournalEntryReportInfo = async (req, res) => {
 				$gte: moment().startOf("year").toDate(),
 				$lt: moment().endOf("year").toDate(),
 			},
+			scheduleFrequency,
 		});
 		// if (entries)
 		res.status(200).json(entries);
@@ -879,7 +884,7 @@ const getJournalEntryReportInfo = async (req, res) => {
 };
 
 const getFundingPayDetailsReportInfo = async (req, res) => {
-	const { companyName, payPeriodNum, isExtraRun } = req.params;
+	const { companyName, payPeriodNum, isExtraRun, scheduleFrequency } = req.params;
 
 	try {
 		const isExtraPayRun = isExtraRun === "true";
@@ -891,6 +896,7 @@ const getFundingPayDetailsReportInfo = async (req, res) => {
 				$gte: moment().startOf("year").toDate(),
 				$lt: moment().endOf("year").toDate(),
 			},
+			scheduleFrequency,
 		});
 		if (totals) return res.status(200).json(totals);
 

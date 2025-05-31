@@ -35,7 +35,12 @@ export const usePayrollReports = (company, selectedYear, payGroupSchedule, selec
 		const fetchFundTotalsInfo = async () => {
 			try {
 				setTotalsReport(null);
-				const { data } = await PayrollService.getTotalsPayReportDetails(company, payNum, extraRun);
+				const { data } = await PayrollService.getTotalsPayReportDetails(
+					company,
+					payNum,
+					extraRun,
+					scheduleFrequency,
+				);
 				setHasLoaded(true);
 				setTotalsReport(data);
 			} catch (error) {
@@ -68,6 +73,7 @@ export const usePayrollReports = (company, selectedYear, payGroupSchedule, selec
 					company,
 					payNum,
 					extraRun,
+					scheduleFrequency,
 				);
 				setHasLoaded(true);
 				setJournalReport(data);

@@ -1,12 +1,15 @@
 import { useEffect, useState } from "react";
 import PayrollService from "services/PayrollService";
 
-const useFundingTotalsReport = (company, payPeriodNum, isOpen) => {
+const useFundingTotalsReport = (company, closestRecord, isOpen) => {
 	const [report, setReport] = useState(null);
 
+	const scheduleFrequency =
+		closestRecord?.frequency === "bi-weekly" ? "Biweekly" : closestRecord?.frequency;
+
 	useEffect(() => {
-		const payNum = payPeriodNum?.payPeriod;
-		const extraRun = payPeriodNum?.isExtraRun || false;
+		const payNum = closestRecord?.payPeriod;
+		const extraRun = closestRecord?.isExtraRun || false;
 
 		const fetchTotalsReportInfo = async () => {
 			try {
@@ -14,16 +17,17 @@ const useFundingTotalsReport = (company, payPeriodNum, isOpen) => {
 					company,
 					payNum,
 					extraRun,
+					scheduleFrequency,
 				);
 				setReport(data);
 			} catch (error) {
 				console.error(error);
 			}
 		};
-		if (payPeriodNum && isOpen) {
+		if (closestRecord && isOpen) {
 			fetchTotalsReportInfo();
 		}
-	}, [company, payPeriodNum, isOpen]);
+	}, [company, closestRecord, isOpen]);
 	return report;
 };
 

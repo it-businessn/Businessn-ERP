@@ -16,6 +16,7 @@ const journalEntrySchema = new mongoose.Schema({
 	payPeriodProcessingDate: Date,
 	payPeriodNum: String,
 	isExtraRun: { type: Boolean, default: false },
+	scheduleFrequency: String,
 });
 
 const JournalEntry = mongoose.model("JournalEntry", journalEntrySchema);
