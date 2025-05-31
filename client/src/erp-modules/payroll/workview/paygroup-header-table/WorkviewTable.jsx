@@ -213,7 +213,16 @@ const WorkviewTable = ({
 										}}
 										w={"92px"}
 									/> */}
-									<Text color={bg} fontWeight="medium" opacity={isDisabledStatus ? 0.5 : 1}>
+
+									<Text
+										py={1}
+										borderRadius="full"
+										fontSize="sm"
+										fontWeight="medium"
+										color={color}
+										bg={bg}
+										opacity={isDisabledStatus ? 0.5 : 1}
+									>
 										{name}
 									</Text>
 								</Td>
