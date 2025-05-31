@@ -124,7 +124,7 @@ const LeftPane = ({
 				</BoxCard>
 
 				<BoxCard
-					h={"360px"}
+					h={"calc(100vh - 585px)"}
 					width="100%"
 					bg="white"
 					overflowY="hidden"
