@@ -215,6 +215,7 @@ const WorkviewTable = ({
 									/> */}
 
 									<Text
+										align="center"
 										py={1}
 										borderRadius="full"
 										fontSize="sm"

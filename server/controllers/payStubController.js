@@ -930,19 +930,19 @@ const getPayDetailsReportInfo = async (req, res) => {
 		req.params;
 
 	try {
-		// const startOfYear = moment().year(year).startOf("year").toDate();
-		// const endOfYear = moment().year(year).endOf("year").toDate();
+		const startOfYear = moment().year(year).startOf("year").toDate();
+		const endOfYear = moment().year(year).endOf("year").toDate();
 
 		const isExtraPayRun = isExtraRun === "true";
 		let payStubs = await EmployeePayStub.find({
 			companyName,
 			payPeriodNum,
 			isExtraRun: isExtraPayRun,
-			payPeriodPayDate: moment.utc(payPeriodPayDate).startOf("day").toDate(),
-			// payPeriodPayDate: {
-			// 	$gte: startOfYear,
-			// 	$lt: endOfYear,
-			// },
+			// payPeriodPayDate: moment.utc(payPeriodPayDate).startOf("day").toDate(),
+			payPeriodPayDate: {
+				$gte: startOfYear,
+				$lt: endOfYear,
+			},
 			scheduleFrequency,
 		}).populate(EMP_INFO);
 
