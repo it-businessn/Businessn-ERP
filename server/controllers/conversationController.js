@@ -104,7 +104,7 @@ const getAnnouncement = async (req, res) => {
 	const { companyName } = req.params;
 	try {
 		const announcements = await Announcement.find({
-			companyName,
+			// companyName,
 		}).sort({ createdOn: -1 });
 
 		res.status(200).json(announcements);
