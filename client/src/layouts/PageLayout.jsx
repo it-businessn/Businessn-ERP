@@ -20,7 +20,7 @@ const PageLayout = ({
 	position = "sticky",
 	pb = 0,
 	isMobile,
-	bg = "#faf9f5",
+	bg = "var(--primary_bg)",
 	showPayGroup,
 	hasMultiPaygroups,
 }) => (

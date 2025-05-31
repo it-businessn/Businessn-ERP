@@ -52,7 +52,7 @@ const VerticalCarousel = ({ slides, animationConfig, closestRecordIndex }) => {
 	}
 
 	return (
-		<Box position="relative" width="100%" height="250px">
+		<Box position="relative" width="100%" height="260px">
 			<Flex
 				position="relative"
 				height="100%"
@@ -69,7 +69,6 @@ const VerticalCarousel = ({ slides, animationConfig, closestRecordIndex }) => {
 						width="100%"
 						justifyContent="space-between"
 						alignItems="center"
-						px="2"
 						zIndex="10"
 						pointerEvents="none"
 					>

@@ -12,7 +12,7 @@ const PayrollCard = ({ payGroupSchedule, closestRecordIndex }) => {
 	return (
 		<Box width="100%">
 			{!payGroupSchedule && <SkeletonLoader />}
-			{payGroupSchedule && payGroupSchedule.length > 0 ? (
+			{payGroupSchedule?.length > 0 ? (
 				<VerticalCarousel
 					slides={payGroupSchedule}
 					showNavigation={state.showNavigation}

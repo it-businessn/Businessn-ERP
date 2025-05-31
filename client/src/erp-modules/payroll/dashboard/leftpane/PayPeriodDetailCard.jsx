@@ -21,25 +21,25 @@ const PayPeriodDetailCard = ({
 }) => (
 	<Box
 		w={"100%"}
-		ml={"0.5em"}
 		borderTopLeftRadius={borderTopLeftRadius}
 		borderTopRightRadius={borderTopRightRadius}
 		borderBottomLeftRadius={borderBottomLeftRadius}
 		borderBottomRightRadius={borderBottomRightRadius}
 	>
 		{payNum && (
-			<TextTitle size="sm" align={"right"} p={"0 2em 0 0 "} title={`Pay Period ${payNum}`} />
+			<TextTitle
+				color="var(--banner_bg)"
+				size="sm"
+				align={"right"}
+				p={"0 2em 0 0 "}
+				title={`Pay Period ${payNum}`}
+			/>
 		)}
 		<HStack p="0.8em" pb={pb} w="100%" justifyContent="start">
 			<Flex gap={1}>
-				<TextTitle
-					width="auto"
-					size="sm"
-					color={"var(--filter_border_color)"}
-					title={`${header} :`}
-				/>
-				<TextTitle width="auto" size="sm" title={text1} />
-				{text2 && <TextTitle width="auto" size="sm" title={text2} />}
+				<TextTitle width="auto" size="sm" color={"var(--banner_bg)"} title={`${header} :`} />
+				<TextTitle width="auto" size="sm" color={"gray.700"} title={text1} />
+				{text2 && <TextTitle width="auto" color={"gray.700"} size="sm" title={text2} />}
 			</Flex>
 			<Spacer />
 			{isOutlineButton ? (
