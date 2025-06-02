@@ -1,22 +1,17 @@
-import { Box, Button, Flex } from "@chakra-ui/react";
-import React, { useCallback, useEffect, useState } from "react";
+import { Box, Flex, Icon } from "@chakra-ui/react";
+import { useCallback, useState } from "react";
+import { MdOutlineChevronLeft, MdOutlineChevronRight } from "react-icons/md";
 import Slide from "./Slide";
 
 const mod = (a, b) => ((a % b) + b) % b;
 
-const VerticalCarousel = ({
-	slides,
-	animationConfig,
-	offsetRadius,
-	showNavigation,
-	closestRecordIndex,
-}) => {
-	const [index, setIndex] = useState(closestRecordIndex);
+const VerticalCarousel = ({ slides, animationConfig, closestRecordIndex }) => {
+	const [index, setIndex] = useState(closestRecordIndex || 0);
 
 	// index wraps around slide length
 	const modBySlidesLength = useCallback((i) => mod(i, slides.length), [slides.length]);
 
-	// Moves the slide by a certain direction (up/down)
+	// Moves the slide by a certain direction (prev/next)
 	const moveSlide = useCallback(
 		(direction) => {
 			setIndex((prevIndex) => modBySlidesLength(prevIndex + direction));
@@ -24,76 +19,108 @@ const VerticalCarousel = ({
 		[modBySlidesLength],
 	);
 
-	const clampOffsetRadius = useCallback(
-		(offsetRadius) => {
-			const upperBound = Math.floor((slides.length - 1) / 2);
-			if (offsetRadius < 0) return 0;
-			if (offsetRadius > upperBound) return upperBound;
-			return offsetRadius;
-		},
-		[slides.length],
-	);
+	const getSurroundingSlides = useCallback(() => {
+		const surroundingSlides = [];
 
-	// Computes the currently visible slides based on the index and offset
-	const getPresentableSlides = useCallback(() => {
-		const clampedOffset = clampOffsetRadius(offsetRadius);
-		const presentableSlides = [];
-
-		for (let i = -clampedOffset; i <= clampedOffset; i++) {
-			presentableSlides.push(slides[modBySlidesLength(index + i)]);
+		for (let offset = -5; offset <= 5; offset++) {
+			const i = modBySlidesLength(closestRecordIndex + offset);
+			surroundingSlides.push(slides[i]);
 		}
 
-		return presentableSlides;
-	}, [clampOffsetRadius, offsetRadius, slides, index, modBySlidesLength]);
+		return surroundingSlides;
+	}, [closestRecordIndex, slides, modBySlidesLength]);
 
-	useEffect(() => {
-		const handleKeyDown = (event) => {
-			if (event.isComposing || event.keyCode === 229) return;
-			if (event.keyCode === 38) moveSlide(-1);
-			if (event.keyCode === 40) moveSlide(1);
-		};
-		document.addEventListener("keydown", handleKeyDown);
+	const visibleSlides = getSurroundingSlides();
 
-		return () => {
-			document.removeEventListener("keydown", handleKeyDown);
-		};
-	}, [moveSlide]);
+	// Function to handle keyboard navigation
+	// useEffect(() => {
+	// 	const handleKeyDown = (event) => {
+	// 		if (event.isComposing || event.keyCode === 229) return;
+	// 		if (event.keyCode === 37) moveSlide(-1); // Left arrow
+	// 		if (event.keyCode === 39) moveSlide(1); // Right arrow
+	// 	};
+	// 	document.addEventListener("keydown", handleKeyDown);
 
-	const navigationButtons = showNavigation ? (
-		<Flex
-			position="relative"
-			height="60px"
-			mt="1rem"
-			width="20%"
-			margin="0 auto"
-			justify="space-between"
-			zIndex="1000"
-		>
-			<Button bg="white" p="15px" mb="10px" borderRadius="3px" onClick={() => moveSlide(1)}>
-				&#8593;
-			</Button>
-			<Button bg="white" p="15px" mb="10px" borderRadius="3px" onClick={() => moveSlide(-1)}>
-				&#8595;
-			</Button>
-		</Flex>
-	) : null;
+	// 	return () => {
+	// 		document.removeEventListener("keydown", handleKeyDown);
+	// 	};
+	// }, [moveSlide]);
+
+	// If no slides, return null
+	if (!slides || slides.length === 0) {
+		return null;
+	}
 
 	return (
-		<React.Fragment>
-			<Box position="relative" display="flex" justifyContent="center" height="300px">
-				{getPresentableSlides().map((slide, presentableIndex) => (
-					<Slide
-						key={`${slide.payPeriod}_${presentableIndex}`}
-						content={slide}
-						moveSlide={moveSlide}
-						offsetRadius={clampOffsetRadius(offsetRadius)}
-						index={presentableIndex}
-						animationConfig={animationConfig}
-					/>
-				))}
-			</Box>
-			{navigationButtons}
-		</React.Fragment>
+		<Box position="relative" width="100%" height="260px">
+			<Flex
+				position="relative"
+				height="100%"
+				width="100%"
+				alignItems="center"
+				justifyContent="center"
+			>
+				<Slide content={slides[index]} moveSlide={moveSlide} animationConfig={animationConfig} />
+
+				{/* Navigation Chevrons */}
+				{visibleSlides.length > 1 && (
+					<Flex
+						position="absolute"
+						width="100%"
+						justifyContent="space-between"
+						alignItems="center"
+						zIndex="10"
+						pointerEvents="none"
+					>
+						<Icon
+							visibility={index === 0 && "hidden"}
+							as={MdOutlineChevronLeft}
+							boxSize="40px"
+							color="gray.600"
+							cursor="pointer"
+							bg="white"
+							opacity="0.8"
+							borderRadius="full"
+							_hover={{ opacity: 1 }}
+							onClick={() => moveSlide(-1)}
+							pointerEvents="auto"
+							padding="8px"
+						/>
+						<Icon
+							visibility={index === visibleSlides?.length - 1 && "hidden"}
+							as={MdOutlineChevronRight}
+							boxSize="40px"
+							color="gray.600"
+							cursor="pointer"
+							bg="white"
+							opacity="0.8"
+							borderRadius="full"
+							_hover={{ opacity: 1 }}
+							onClick={() => moveSlide(1)}
+							pointerEvents="auto"
+							padding="8px"
+						/>
+					</Flex>
+				)}
+			</Flex>
+
+			{/* Slide Indicator */}
+			{visibleSlides?.length > 1 && (
+				<Flex justify="center" mt="3" gap="2">
+					{visibleSlides.map((_, i) => (
+						<Box
+							key={i}
+							h="2"
+							w="2"
+							borderRadius="full"
+							bg={i === index ? "blue.500" : "gray.300"}
+							cursor="pointer"
+							onClick={() => setIndex(i)}
+						/>
+					))}
+				</Flex>
+			)}
+		</Box>
 	);
 };
 

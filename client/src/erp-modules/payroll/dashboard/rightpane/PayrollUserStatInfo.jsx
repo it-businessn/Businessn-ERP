@@ -1,4 +1,5 @@
-import { Avatar, HStack, VStack } from "@chakra-ui/react";
+import { CalendarIcon, RepeatIcon, TimeIcon } from "@chakra-ui/icons";
+import { Box, Center, HStack, VStack } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { daysAgo, formatDateMMDDYY } from "utils/convertDate";
 import NormalTextTitle from "../../../../components/ui/NormalTextTitle";
@@ -21,18 +22,31 @@ const PayrollUserStatInfo = ({
 
 	useEffect(() => {
 		if (payGroupSchedule && closestRecord) {
+			const isCurrentProcessed = payGroupSchedule?.[closestRecordIndex]?.isProcessed;
+			const nextPayrun = isCurrentProcessed
+				? payGroupSchedule?.[closestRecordIndex + 1]
+				: payGroupSchedule?.[closestRecordIndex];
+
+			const daysTillNextPayrun = daysAgo(nextPayrun?.payPeriodProcessingDate);
+
 			setStats({
 				dayTill: {
-					name: "Days till next",
-					value: `${daysAgo(payGroupSchedule?.[closestRecordIndex + 1]?.payPeriodProcessingDate)}`,
+					name: `Next Payroll ${daysTillNextPayrun < 0 ? "overdue by" : "in"}`,
+					value: `${daysTillNextPayrun} days`,
+					icon: RepeatIcon,
+					iconColor: "gray.600",
 				},
 				approvalDate: {
 					name: "Approval Date",
 					value: formatDateMMDDYY(closestRecord?.payPeriodProcessingDate),
+					icon: TimeIcon,
+					iconColor: "gray.600",
 				},
 				payDate: {
 					name: "Payment Date",
 					value: formatDateMMDDYY(closestRecord?.payPeriodPayDate),
+					icon: CalendarIcon,
+					iconColor: "gray.600",
 				},
 			});
 		}
@@ -40,18 +54,43 @@ const PayrollUserStatInfo = ({
 
 	return (
 		<>
-			<VStack justify="center" align="center" mb="1" w={{ base: "auto", md: "106%" }} spacing={0}>
-				<Avatar name={name} src={name} borderRadius="10%" />
+			{/* <VStack justify="center" align="center">
 				<TextTitle title={name} />
-				<NormalTextTitle size="xs" title={email} />
-			</VStack>
-			<HStack my={"3"} spacing={2} justify={"space-between"}>
+				<NormalTextTitle size="sm" title={email} color="gray.500" />
+			</VStack> */}
+			<HStack justify="space-between">
 				{stats.approvalDate &&
-					Object.values(stats)?.map(({ name, value }) => (
-						<VStack spacing={0} key={name}>
-							<NormalTextTitle size="sm" title={name} />
-							<TextTitle title={value} />
-						</VStack>
+					Object.values(stats)?.map(({ name, value, icon: Icon, iconColor }) => (
+						<Box
+							key={name}
+							borderWidth="1px"
+							borderRadius="lg"
+							p={4}
+							flex={1}
+							boxShadow="sm"
+							display="flex"
+							alignItems="center"
+							justifyContent="center"
+							textAlign="center"
+						>
+							<VStack spacing={3} align="center" justify="center" width="100%" textAlign="center">
+								<Center width="100%">
+									<Icon boxSize={6} color={iconColor} />
+								</Center>
+								<Center width="100%">
+									<NormalTextTitle
+										size="sm"
+										title={name}
+										color="gray.700"
+										textAlign="center"
+										width="100%"
+									/>
+								</Center>
+								<Center width="100%">
+									<TextTitle title={value} textAlign="center" width="100%" />
+								</Center>
+							</VStack>
+						</Box>
 					))}
 			</HStack>
 		</>

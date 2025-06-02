@@ -12,13 +12,21 @@ import {
 	SUPERFICIAL_HOURLY_ALLOCATE_COLS,
 } from "./payrunHourlyAllocationCols";
 
-const HourlyAllocation = ({ company, closestRecord, groupId, payrunOption, deptName }) => {
+const HourlyAllocation = ({
+	company,
+	closestRecord,
+	groupId,
+	payrunOption,
+	deptName,
+	selectedPayGroupOption,
+}) => {
 	const hourlyAllocationData = useEmployeeHoursWorked(
 		company,
 		closestRecord,
 		groupId,
 		payrunOption,
 		deptName,
+		selectedPayGroupOption,
 	);
 
 	const PAYRUN_HOURS_DATA = {

@@ -1,7 +1,7 @@
 import { Image } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
 import { useBreakpointValue } from "services/Breakpoint";
-import logoImg from "../../assets/logos/logo1.jpg";
+import logoImg from "../../assets/logos/logo1.png";
 import signInLogoImg from "../../assets/logos/logoCover.jpg";
 
 const Logo = ({

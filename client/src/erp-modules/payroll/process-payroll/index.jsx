@@ -4,7 +4,6 @@ import BoxCard from "components/ui/card";
 import ActionButtonGroup from "components/ui/form/ActionButtonGroup";
 import ModalLayout from "components/ui/modal/ModalLayout";
 import NormalTextTitle from "components/ui/NormalTextTitle";
-import TextTitle from "components/ui/text/TextTitle";
 import { ROLES } from "constant";
 import useCompany from "hooks/useCompany";
 import usePaygroup from "hooks/usePaygroup";
@@ -48,15 +47,26 @@ const ProcessPayroll = () => {
 	const toast = useToast();
 	const navigate = useNavigate();
 	const isExtra = payNo?.includes("E");
-	const { payGroupSchedule, closestRecord, payGroups, selectedPayGroup } = usePaygroup(
-		company,
-		false,
-		year,
-	);
+	const {
+		hasMultiPaygroups,
+		selectedPayGroupOption,
+		setSelectedPayGroupOption,
+		payGroupSchedule,
+		closestRecord,
+		payGroups,
+		selectedPayGroup,
+	} = usePaygroup(company, false, year);
+
 	const selectedPayPeriod = getClosestRecord(payNo, isExtra, payGroupSchedule, closestRecord);
 	const isPayPeriodInactive = selectedPayPeriod?.isDisabledAction;
 	const isPayrollSubmitDisabled =
 		currentStep !== 5 || selectedPayPeriod?.isProcessed || isPayPeriodInactive;
+
+	const handleChange = (value) => {
+		if (value !== "") {
+			setSelectedPayGroupOption(value);
+		}
+	};
 
 	const goToNextStep = (index) => {
 		setCurrentStep(index);
@@ -97,7 +107,17 @@ const ProcessPayroll = () => {
 	};
 
 	return (
-		<PageLayout>
+		<PageLayout
+			handleChange={handleChange}
+			hasMultiPaygroups={hasMultiPaygroups}
+			width={"35%"}
+			title={"Process payroll"}
+			showPayGroup={true}
+			selectedValue={selectedPayGroupOption}
+			data={payGroups}
+			selectPlaceholder="Select Paygroup"
+			selectAttr="name"
+		>
 			<SimpleGrid
 				columns={{ base: 1, md: 1, lg: 2 }}
 				spacing="4"
@@ -106,7 +126,6 @@ const ProcessPayroll = () => {
 				templateColumns={{ lg: "20% 80%" }}
 			>
 				<BoxCard>
-					<TextTitle title={"Process payroll"} mt={2} mb={"1em"} />
 					<VStack spacing={3} align={"start"}>
 						<HStack spacing={2}>
 							<NormalTextTitle

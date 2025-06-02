@@ -44,8 +44,17 @@ const getAllPayGroups = async (req, res) => {
 };
 
 const getGroupedTimesheet = async (req, res) => {
-	const { companyName, startDate, endDate, payDate, isExtraRun, groupId, payrunType, deptName } =
-		req.params;
+	const {
+		companyName,
+		startDate,
+		endDate,
+		payDate,
+		isExtraRun,
+		groupId,
+		payrunType,
+		deptName,
+		selectedPayGroupOption,
+	} = req.body;
 
 	try {
 		const isExtraPayRun = isExtraRun === "true";
@@ -56,6 +65,7 @@ const getGroupedTimesheet = async (req, res) => {
 			payDate,
 			companyName,
 			deptName,
+			selectedPayGroupOption,
 		);
 
 		const currentPeriodEmployees = isExtraPayRun
@@ -143,8 +153,17 @@ const calculateTimesheetApprovedHours = async (startDate, endDate, companyName) 
 };
 
 const getEEContribution = async (req, res) => {
-	const { companyName, startDate, endDate, payDate, isExtraRun, groupId, payrunType, deptName } =
-		req.params;
+	const {
+		companyName,
+		startDate,
+		endDate,
+		payDate,
+		isExtraRun,
+		groupId,
+		payrunType,
+		deptName,
+		selectedPayGroupOption,
+	} = req.body;
 
 	try {
 		const isExtraPayRun = isExtraRun === "true";
@@ -155,6 +174,7 @@ const getEEContribution = async (req, res) => {
 			payDate,
 			companyName,
 			deptName,
+			selectedPayGroupOption,
 		);
 
 		const currentPeriodEmployees = isExtraPayRun
@@ -182,8 +202,17 @@ const getEEContribution = async (req, res) => {
 };
 
 const getERContribution = async (req, res) => {
-	const { companyName, startDate, endDate, payDate, isExtraRun, groupId, payrunType, deptName } =
-		req.params;
+	const {
+		companyName,
+		startDate,
+		endDate,
+		payDate,
+		isExtraRun,
+		groupId,
+		payrunType,
+		deptName,
+		selectedPayGroupOption,
+	} = req.body;
 
 	try {
 		const isExtraPayRun = isExtraRun === "true";
@@ -194,6 +223,7 @@ const getERContribution = async (req, res) => {
 			payDate,
 			companyName,
 			deptName,
+			selectedPayGroupOption,
 		);
 
 		const currentPeriodEmployees = isExtraPayRun
@@ -241,15 +271,19 @@ const getTotalAlertsAndViolationsInfo = async (req, res) => {
 };
 
 const getAlertsAndViolationsInfo = async (req, res) => {
-	const { companyName, payPeriodNum } = req.params;
+	const { companyName, payPeriodNum, selectedPayGroup } = req.params;
 
 	try {
 		const payrollActiveEmps = await EmployeeEmploymentInfo.find({
 			payrollStatus: "Payroll Active",
 			companyName,
 		}).select("empId");
+
 		const payrollActiveIds = payrollActiveEmps
-			?.filter((emp) => emp?.empId)
+			?.filter(
+				(emp) =>
+					emp?.empId && emp?.positions?.find((_) => _.employmentPayGroup === selectedPayGroup),
+			)
 			?.map((emp) => emp.empId);
 
 		const alerts = await EmployeeAlertsViolationInfo.find({

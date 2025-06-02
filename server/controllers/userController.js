@@ -7,6 +7,9 @@ const Lead = require("../models/Lead");
 const Task = require("../models/Task");
 const UserActivity = require("../models/UserActivity");
 const { isRoleManager, ROLES } = require("../services/data");
+const { sendEmail } = require("../services/emailService");
+const path = require("path");
+const { getResetPasswordLink } = require("../services/tokenService");
 const {
 	setInitialPermissions,
 	findCompany,
@@ -15,12 +18,17 @@ const {
 } = require("./appController");
 const { findGroupEmployees } = require("./setUpController");
 
-const getPayrollInActiveEmployees = async (companyName, deptName) => {
+const getPayrollInActiveEmployees = async (companyName, deptName, selectedPayGroupOption) => {
 	let result = await findEmployee({
 		payrollStatus: { $ne: "Payroll Active" },
 		companyName,
 		employmentRole: { $ne: ROLES.SHADOW_ADMIN },
 	});
+	if (selectedPayGroupOption) {
+		result = result?.filter((emp) =>
+			emp?.positions?.find((_) => _.employmentPayGroup === selectedPayGroupOption),
+		);
+	}
 	if (deptName && deptName !== "null") {
 		result = result?.filter((emp) => emp?.positions?.[0]?.employmentDepartment === deptName);
 	}
@@ -95,9 +103,9 @@ const getPayrollActiveCompanyEmployeesCount = async (req, res) => {
 };
 
 const getPayrollActiveCompanyEmployees = async (req, res) => {
-	const { companyName, deptName } = req.params;
+	const { companyName, deptName, payGroup } = req.params;
 	try {
-		const result = await getPayrollActiveEmployees(companyName, deptName);
+		const result = await getPayrollActiveEmployees(companyName, deptName, payGroup);
 
 		res.status(200).json(result);
 	} catch (error) {
@@ -106,14 +114,28 @@ const getPayrollActiveCompanyEmployees = async (req, res) => {
 };
 
 const getPayrollInActiveCompanyEmployees = async (req, res) => {
-	const { companyName, deptName } = req.params;
+	const { companyName, deptName, payGroup } = req.params;
 	try {
-		const result = await getPayrollInActiveEmployees(companyName, deptName);
+		const result = await getPayrollInActiveEmployees(companyName, deptName, payGroup);
 		res.status(200).json(result);
 	} catch (error) {
 		res.status(404).json({ error: error.message });
 	}
 };
+
+// const getPayrollTerminatedCompanyEmployees = async (req, res) => {
+// 	const { companyName, deptName, payGroup } = req.params;
+// 	try {
+// 		const result = await findEmployee({
+// 			payrollStatus: { $ne: "Payroll Active" },
+// 			companyName,
+// 			employmentRole: { $ne: ROLES.SHADOW_ADMIN },
+// 		});
+// 		res.status(200).json(result);
+// 	} catch (error) {
+// 		res.status(404).json({ error: error.message });
+// 	}
+// };
 
 const getCompanyUsers = async (req, res) => {
 	const { companyName } = req.params;
@@ -170,7 +192,7 @@ const getCompanyEmpEmployees = async (req, res) => {
 };
 
 const getCompanyEmployees = async (req, res) => {
-	const { companyName, deptName } = req.params;
+	const { companyName, deptName, payGroup } = req.params;
 	try {
 		const result = await EmployeeProfileInfo.find({
 			companyName,
@@ -196,6 +218,11 @@ const getCompanyEmployees = async (req, res) => {
 				};
 			}),
 		);
+		if (payGroup) {
+			updatedResult = updatedResult?.filter((emp) =>
+				emp?.positions?.find((_) => _.employmentPayGroup === payGroup),
+			);
+		}
 		if (deptName && deptName !== "null") {
 			updatedResult = updatedResult?.filter(
 				(emp) => emp?.positions?.[0]?.employmentDepartment === deptName,
@@ -349,6 +376,176 @@ const getAllSalesAgents = async (req, res) => {
 	}
 };
 
+const sendMailPaystub = async (req, res) => {
+	const { employees } = req.body;
+
+	try {
+		for (const fullName of employees) {
+			const user = await Employee.findOne({ fullName })
+				.sort({
+					createdOn: -1,
+				})
+				?.select("email fullName");
+			if (user) {
+				const { email, fullName } = user;
+
+				await sendEmail(
+					email,
+					"View Your Recent Paystub",
+					"",
+					`<body style="margin: 0; font-family: Arial, Helvetica, sans-serif;height:'auto">
+		<div class="container" style="
+								background: #fdfdfd;
+								color: #371f37;
+								display: flex;
+								flex-direction: column;
+								align-items: self-start;
+								padding: 2em 3em;
+								gap: 1em;
+								font-size: 14px;
+							">
+			<p> Dear ${fullName},
+			</p>
+			<p>
+				Your most recent paystub is now available.</p>
+			<p>
+				Please log in to your employee portal to view or download your paystub:
+			</p>
+			<p><a class="button" href="https://businessn-erp.com/login" target="_blank">Login Here</a></p>
+		</div>
+		<div class="footer" style="
+								background-color: #371f37;
+								color: white;
+									text-align: center;
+								height: 150px;
+								display: flex;
+								align-items: center;
+							">
+			<img src="cid:footerLogo" style="margin: 0 auto;width:300px" alt="Footer Logo" />
+
+		</div>
+	</body>`,
+					[
+						{
+							filename: "BusinessN_dark1.png",
+							path: path.join(__dirname, "../", "assets/logos/BusinessN_dark1.png"),
+							cid: "footerLogo",
+						},
+					],
+				);
+			}
+		}
+		res.status(201).json({ message: "Email sent successfully" });
+	} catch (error) {
+		res.status(400).json({ message: error.message });
+	}
+};
+
+const sendMailCreds = async (req, res) => {
+	const { employees } = req.body;
+	try {
+		for (const fullName of employees) {
+			const user = await Employee.findOne({ fullName })
+				.sort({
+					createdOn: -1,
+				})
+				?.select("email fullName");
+			if (user) {
+				const { _id, email } = user;
+				const resetLink = getResetPasswordLink({ _id });
+				if (resetLink)
+					await sendEmail(
+						email,
+						"Set Login Password",
+						resetLink,
+						`<body style="margin: 0; font-family: Arial, Helvetica, sans-serif;height:'auto">
+						<div
+							class="header"
+							style="
+								background-color: #371f37;
+								color: white;
+								text-align: center;
+								height: 150px;
+								display: flex;
+								align-items: center;
+							"
+						>
+							<div
+								id="header_content"
+								style="
+									display: flex;
+									flex-direction: column;
+									align-items: self-start;
+									background: #4c364b;
+									border-radius: 10px;
+									gap: 1em;
+									width: 80%;
+									margin: 0 auto;
+									padding: 1.5em;
+								"
+							>
+								<p
+									class="topic"
+									style="font-weight: bold; font-size: larger; margin: 5px 0"
+								>
+									Set Password
+								</p>
+							</div>
+						</div><div
+							class="container"
+							style="
+								background: #fdfdfd;
+								color: #371f37;
+								display: flex;
+								flex-direction: column;
+								align-items: self-start;
+								padding: 2em 3em;
+								gap: 1em;
+								font-size: 14px;
+							"
+						>
+				      <h2 style="margin: 5px 0">Hello,</h2>
+       <p>  Your account has been successfully created. For your security, please
+        set your password by clicking the link below.</p> 
+		<p>
+	    This link will expire in 15 minutes. If it expires, you can request a
+	    new one from the login screen.
+	  </p>
+				      <p><a class="button" href="${resetLink}" target="_blank">Set Your Password</a></p>
+				   </div>
+						<div
+							class="footer"
+							style="
+								background-color: #371f37;
+								color: white;
+								text-align: center;
+								height: 150px;
+								display: flex;
+								align-items: center;
+							"
+						>
+				      <img src="cid:footerLogo"
+								style="margin: 0 auto;width:300px" alt="Footer Logo"/>
+
+						</div>
+					</body> `,
+						[
+							{
+								filename: "BusinessN_dark1.png",
+								path: path.join(__dirname, "../", "assets/logos/BusinessN_dark1.png"),
+								cid: "footerLogo",
+							},
+						],
+					);
+			}
+		}
+
+		res.status(201).json({ message: "Email sent successfully" });
+	} catch (error) {
+		res.status(400).json({ message: error.message });
+	}
+};
+
 const createMasterUser = async (req, res) => {
 	const { company, firstName, middleName, lastName, email, phoneNumber, position, startDate } =
 		req.body;
@@ -483,12 +680,19 @@ const getEmployeeId = async (empList) => {
 	return list;
 };
 
-const fetchActiveEmployees = async (isExtraPayRun, groupId, payDate, companyName, deptName) => {
+const fetchActiveEmployees = async (
+	isExtraPayRun,
+	groupId,
+	payDate,
+	companyName,
+	deptName,
+	selectedPayGroupOption,
+) => {
 	const employees = isExtraPayRun ? await findGroupEmployees(groupId, payDate) : null;
 
 	return isExtraPayRun
 		? await getEmployeeId(employees)
-		: await getPayrollActiveEmployees(companyName, deptName);
+		: await getPayrollActiveEmployees(companyName, deptName, selectedPayGroupOption);
 };
 
 module.exports = {
@@ -507,7 +711,10 @@ module.exports = {
 	getPayrollActiveCompanyEmployees,
 	getPayrollActiveCompanyEmployeesCount,
 	getPayrollInActiveCompanyEmployees,
+	// getPayrollTerminatedCompanyEmployees,
 	getAllSalesAgentsList,
+	sendMailCreds,
+	sendMailPaystub,
 	getAllCompManagers,
 	getEmployeeId,
 	fetchActiveEmployees,

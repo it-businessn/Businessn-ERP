@@ -504,7 +504,7 @@ const updatePayStub = async (id, data) =>
 	});
 
 const addEmployeePayStubInfo = async (req, res) => {
-	const { companyName, currentPayPeriod } = req.body;
+	const { companyName, currentPayPeriod, selectedPayGroupOption } = req.body;
 	try {
 		// const y = await EmployeePayStub.deleteMany({
 		// 	payPeriodNum: "6",
@@ -538,7 +538,7 @@ const addEmployeePayStubInfo = async (req, res) => {
 
 		const activeEmployees = isExtraRun
 			? await getEmployeeId(selectedEmp)
-			: await getPayrollActiveEmployees(companyName, req.body?.deptName);
+			: await getPayrollActiveEmployees(companyName, req.body?.deptName, selectedPayGroupOption);
 
 		const result = isExtraRun
 			? null
@@ -655,7 +655,7 @@ const buildFundingTotalsReport = async (
 		if (newTotals) {
 			const { companyName } = fundingTotal;
 			createNewOrder(newTotals._id, companyName, totalEmployees);
-			createJournalEntry(newTotals._id, companyName);
+			createJournalEntry(newTotals._id, companyName, scheduleFrequency);
 		}
 	}
 };
@@ -694,12 +694,14 @@ const createJournalEntry = async (fundingTotalReportId, companyName) => {
 			payPeriodNum,
 			isExtraRun,
 			payPeriodProcessingDate,
+			scheduleFrequency,
 		} = existsFundDetails;
 
 		const currentPayStubs = await EmployeePayStub.find({
 			companyName,
 			payPeriodNum,
 			isExtraRun,
+			scheduleFrequency,
 		}).select(
 			"empId currentGrossPay currentCPPDeductions currentRegPayTotal2 currentEmployerCPPDeductions currentEmployerEIDeductions currentEmployeeEIDeductions currentIncomeTaxDeductions",
 		);
@@ -805,6 +807,7 @@ const createJournalEntry = async (fundingTotalReportId, companyName) => {
 			payPeriodProcessingDate,
 			payPeriodNum,
 			isExtraRun,
+			scheduleFrequency,
 		};
 		const newEntry = await JournalEntry.create(journalEntry);
 	}
@@ -817,7 +820,7 @@ const EMP_INFO = {
 };
 
 const getFundPayDetailsReportInfo = async (req, res) => {
-	const { companyName, payPeriodNum, isExtraRun } = req.params;
+	const { companyName, payPeriodNum, isExtraRun, scheduleFrequency } = req.params;
 	try {
 		const isExtraPayRun = isExtraRun === "true";
 		const payStubs = await FundingTotalsPay.findOne({
@@ -828,6 +831,7 @@ const getFundPayDetailsReportInfo = async (req, res) => {
 				$gte: moment().startOf("year").toDate(),
 				$lt: moment().endOf("year").toDate(),
 			},
+			scheduleFrequency,
 		}).sort({
 			createdOn: -1,
 		});
@@ -838,7 +842,7 @@ const getFundPayDetailsReportInfo = async (req, res) => {
 };
 
 const getJournalEntryReportInfo = async (req, res) => {
-	const { companyName, payPeriodNum, isExtraRun } = req.params;
+	const { companyName, payPeriodNum, isExtraRun, scheduleFrequency } = req.params;
 
 	try {
 		const isExtraPayRun = isExtraRun === "true";
@@ -850,6 +854,7 @@ const getJournalEntryReportInfo = async (req, res) => {
 				$gte: moment().startOf("year").toDate(),
 				$lt: moment().endOf("year").toDate(),
 			},
+			scheduleFrequency,
 		});
 		// if (entries)
 		res.status(200).json(entries);
@@ -879,7 +884,7 @@ const getJournalEntryReportInfo = async (req, res) => {
 };
 
 const getFundingPayDetailsReportInfo = async (req, res) => {
-	const { companyName, payPeriodNum, isExtraRun } = req.params;
+	const { companyName, payPeriodNum, isExtraRun, scheduleFrequency } = req.params;
 
 	try {
 		const isExtraPayRun = isExtraRun === "true";
@@ -891,6 +896,7 @@ const getFundingPayDetailsReportInfo = async (req, res) => {
 				$gte: moment().startOf("year").toDate(),
 				$lt: moment().endOf("year").toDate(),
 			},
+			scheduleFrequency,
 		});
 		if (totals) return res.status(200).json(totals);
 
@@ -924,19 +930,19 @@ const getPayDetailsReportInfo = async (req, res) => {
 		req.params;
 
 	try {
-		// const startOfYear = moment().year(year).startOf("year").toDate();
-		// const endOfYear = moment().year(year).endOf("year").toDate();
+		const startOfYear = moment().year(year).startOf("year").toDate();
+		const endOfYear = moment().year(year).endOf("year").toDate();
 
 		const isExtraPayRun = isExtraRun === "true";
 		let payStubs = await EmployeePayStub.find({
 			companyName,
 			payPeriodNum,
 			isExtraRun: isExtraPayRun,
-			payPeriodPayDate: moment.utc(payPeriodPayDate).startOf("day").toDate(),
-			// payPeriodPayDate: {
-			// 	$gte: startOfYear,
-			// 	$lt: endOfYear,
-			// },
+			// payPeriodPayDate: moment.utc(payPeriodPayDate).startOf("day").toDate(),
+			payPeriodPayDate: {
+				$gte: startOfYear,
+				$lt: endOfYear,
+			},
 			scheduleFrequency,
 		}).populate(EMP_INFO);
 

@@ -8,6 +8,7 @@ const corsOptions = {
 		"http://localhost:3000",
 		"http://localhost:3001",
 		"https://businessn-erp.onrender.com",
+		"http://localhost:5001",
 		"https://crm-backend-874t.onrender.com",
 		"https://test-crm-staging.netlify.app",
 	],

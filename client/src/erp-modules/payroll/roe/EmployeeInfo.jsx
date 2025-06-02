@@ -9,13 +9,15 @@ import { COUNTRIES } from "config/payroll/employees/profileInfo";
 import { ALERTS_TYPE } from "constant";
 import useCompanyEmployees from "hooks/useCompanyEmployees";
 import useEmployeeProfileInfo from "hooks/useEmployeeProfileInfo";
+import usePaygroup from "hooks/usePaygroup";
 import { useEffect, useState } from "react";
 import LocalStorageService from "services/LocalStorageService";
 import PayrollService from "services/PayrollService";
 import StepContent from "../employees/pageview/step-content";
 
 const EmployeeInfo = ({ company, handleNext, tabId, deptName }) => {
-	const employees = useCompanyEmployees(company, deptName);
+	const { selectedPayGroupOption } = usePaygroup(company, false);
+	const employees = useCompanyEmployees(company, deptName, selectedPayGroupOption);
 	const initialFormData = {
 		empId: "",
 		employee: "",

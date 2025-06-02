@@ -60,7 +60,7 @@ const ModalLayout = ({
 
 	return (
 		<Modal isCentered={isCentered} size={size} isOpen={isOpen} onClose={onClose}>
-			{!hideOverlay && <ModalOverlay />}
+			{!hideOverlay && <ModalOverlay bg="blackAlpha.300" backdropFilter="blur(5px)" />}
 			<ModalContent>
 				{!hideOverlay && (
 					<ModalHeader

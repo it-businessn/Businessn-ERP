@@ -9,6 +9,7 @@ import TextTitle from "components/ui/text/TextTitle";
 import { ROLES } from "constant";
 import useCompany from "hooks/useCompany";
 import useCompanyEmployees from "hooks/useCompanyEmployees";
+import usePaygroup from "hooks/usePaygroup";
 import PageLayout from "layouts/PageLayout";
 import { useEffect, useState } from "react";
 import { useBreakpointValue } from "services/Breakpoint";
@@ -30,9 +31,12 @@ const Reports = () => {
 	const deptName = loggedInUser?.role === ROLES.MANAGER ? loggedInUser?.department : null;
 	const [employee, setEmployee] = useState(null);
 	const isActivePayroll = employee?.payrollStatus?.includes("Active");
-	const employees = useCompanyEmployees(company, deptName);
 
 	const [filteredEmployees, setFilteredEmployees] = useState(null);
+	const { hasMultiPaygroups, selectedPayGroupOption, setSelectedPayGroupOption, payGroups } =
+		usePaygroup(company, false);
+
+	const employees = useCompanyEmployees(company, deptName, selectedPayGroupOption);
 
 	useEffect(() => {
 		setFilteredEmployees(employees);
@@ -61,8 +65,24 @@ const Reports = () => {
 		setShowReport(true);
 	};
 
+	const handleChange = (value) => {
+		if (value !== "") {
+			setSelectedPayGroupOption(value);
+		}
+	};
+
 	return (
-		<PageLayout title="Individual Reports">
+		<PageLayout
+			title="Individual Reports"
+			handleChange={handleChange}
+			hasMultiPaygroups={hasMultiPaygroups}
+			width={"35%"}
+			showPayGroup={true}
+			selectedValue={selectedPayGroupOption}
+			data={payGroups}
+			selectPlaceholder="Select Paygroup"
+			selectAttr="name"
+		>
 			<HStack mb={5} spacing="1em" justifyContent={"space-between"}>
 				<HStack spacing="1em" justifyContent={"space-between"}>
 					<Avatar
@@ -88,7 +108,13 @@ const Reports = () => {
 				/>
 			</HStack>
 			<TextTitle title="Reports" />
-			<TableLayout cols={REPORT_COLS} w={"100%"} top={-1} textAlign="center" height={"66vh"}>
+			<TableLayout
+				cols={REPORT_COLS}
+				w={"100%"}
+				top={-1}
+				textAlign="center"
+				height={"calc(100vh - 250px)"}
+			>
 				<Tbody>
 					{(!empPayStub || empPayStub?.length === 0) && (
 						<EmptyRowRecord data={empPayStub} colSpan={REPORT_COLS.length} />

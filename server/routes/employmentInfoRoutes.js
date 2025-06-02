@@ -5,13 +5,8 @@ const employmentInfoController = require("../controllers/employmentInfoControlle
 
 router.get("/:companyName/:empId", employmentInfoController.getEmployeeEmploymentInfo);
 
-router.get(
-	"/:companyName/:startDate/:endDate/:payDate/:isExtraRun/:groupId/:deptName",
-	employmentInfoController.getAllEmploymentInfo,
-);
-
 router.post("/", employmentInfoController.addEmployeeEmploymentInfo);
-
+router.post("/details", employmentInfoController.getAllEmploymentInfo);
 router.put("/:id", employmentInfoController.updateEmployeeEmploymentInfo);
 
 module.exports = router;

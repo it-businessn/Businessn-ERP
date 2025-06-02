@@ -1,13 +1,11 @@
 console.log("NODE_ENV", process.env.NODE_ENV);
 
-if(process.env.NODE_ENV === "development") {
+if (process.env.NODE_ENV === "development") {
 	require("dotenv").config({ path: ".env.local" });
 	console.log("Using .env.local file");
 } else {
 	require("dotenv").config();
 }
-
-
 
 const express = require("express");
 const crypto = require("crypto");
@@ -25,6 +23,7 @@ const activityRoutes = require("./routes/activityRoutes");
 const appRoutes = require("./routes/appRoutes");
 const assessmentRoutes = require("./routes/assessmentRoutes");
 const contactRoutes = require("./routes/contactRoutes");
+const announcementRoutes = require("./routes/announcementRoutes");
 const conversationRoutes = require("./routes/conversationRoutes");
 const eventRoutes = require("./routes/eventRoutes");
 const industryRoutes = require("./routes/industryRoutes");
@@ -41,11 +40,11 @@ const payStubRoutes = require("./routes/payStubRoutes");
 const payInfoRoutes = require("./routes/payInfoRoutes");
 const profileInfoRoutes = require("./routes/profileInfoRoutes");
 const roeRoutes = require("./routes/roeRoutes");
-const employmentInfo = require("./routes/employmentInfo");
-const governmentInfo = require("./routes/governmentInfo");
-const bankingInfo = require("./routes/bankingInfo");
-const additionalAllocationInfo = require("./routes/additionalAllocationInfo");
-const balanceInfo = require("./routes/balanceInfo");
+const employmentInfo = require("./routes/employmentInfoRoutes");
+const governmentInfo = require("./routes/governmentInfoRoutes");
+const bankingInfo = require("./routes/bankingInfoRoutes");
+const additionalAllocationInfo = require("./routes/additionalAllocationInfoRoutes");
+const balanceInfo = require("./routes/balanceInfoRoutes");
 const permissionsRoutes = require("./routes/permissionRoutes");
 const projectRoutes = require("./routes/projectRoutes");
 const questionnaireRoutes = require("./routes/questionnaireRoutes");
@@ -135,6 +134,7 @@ app.use("/api/activities", activityRoutes);
 app.use("/api/assessment", assessmentRoutes);
 app.use("/api/contacts", contactRoutes);
 app.use("/api/conversations", conversationRoutes);
+app.use("/api/announcements", announcementRoutes);
 app.use("/api/events", eventRoutes);
 app.use("/api/industry", industryRoutes);
 app.use("/api/leads", leadRoutes);

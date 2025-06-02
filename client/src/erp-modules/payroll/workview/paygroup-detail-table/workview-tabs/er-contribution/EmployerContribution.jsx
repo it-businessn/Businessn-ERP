@@ -17,9 +17,17 @@ const EmployerContribution = ({
 	payrunOption,
 	path,
 	deptName,
+	selectedPayGroupOption,
 }) => {
 	const [refresh, setRefresh] = useState(false);
-	const data = useEmployeeERContribution(company, closestRecord, groupId, payrunOption, deptName);
+	const data = useEmployeeERContribution(
+		company,
+		closestRecord,
+		groupId,
+		payrunOption,
+		deptName,
+		selectedPayGroupOption,
+	);
 	const ER_CONTRIBUTION_COL_DATA = {
 		1: REGULAR_ER_COLS,
 		2: PAYOUT_ER_COLS,

@@ -9,10 +9,8 @@ const PayrollService = {
 		return apiService.get(`/payroll/payInfo/${company}/${payDate}/${isExtraRun}/${groupId}`);
 	},
 
-	async getAllEmployeeAmountInfo(company, payDate, extraRun, groupId, payrunOption, deptName) {
-		return apiService.get(
-			`/payroll/additionalAllocation/${company}/${payDate}/${extraRun}/${groupId}/${payrunOption}/${deptName}`,
-		);
+	async getAllEmployeeAmountInfo(data) {
+		return apiService.post(`/payroll/additionalAllocation`, data);
 	},
 
 	async getEmployeeROEEmploymentInfo(company, empId) {
@@ -63,18 +61,8 @@ const PayrollService = {
 		return apiService.put(`/payroll/profileInfo/${id}`, data, id);
 	},
 
-	async getAllEmployeeEmploymentInfo(
-		company,
-		startDate,
-		endDate,
-		payDate,
-		isExtraRun,
-		groupId,
-		deptName,
-	) {
-		return apiService.get(
-			`/payroll/employmentInfo/${company}/${startDate}/${endDate}/${payDate}/${isExtraRun}/${groupId}/${deptName}`,
-		);
+	async getAllEmployeeEmploymentInfo(data) {
+		return apiService.post(`/payroll/employmentInfo/details`, data);
 	},
 
 	async getEmployeeEmploymentInfo(company, empId) {
@@ -125,49 +113,16 @@ const PayrollService = {
 		return apiService.put(`/payroll/balanceInfo/${id}`, data, id);
 	},
 
-	async getHoursWorkedAllocationByType(
-		company,
-		startDate,
-		endDate,
-		payDate,
-		isExtraRun,
-		groupId,
-		payrunOption,
-		deptName,
-	) {
-		return apiService.get(
-			`/payroll/hoursTimesheet/${company}/${startDate}/${endDate}/${payDate}/${isExtraRun}/${groupId}/${payrunOption}/${deptName}`,
-		);
+	async getHoursWorkedAllocationByType(data) {
+		return apiService.post(`/payroll/hoursTimesheet/`, data);
 	},
 
-	async getEEContribution(
-		company,
-		startDate,
-		endDate,
-		payDate,
-		isExtraRun,
-		groupId,
-		payrunOption,
-		deptName,
-	) {
-		return apiService.get(
-			`/payroll/EEContribution/${company}/${startDate}/${endDate}/${payDate}/${isExtraRun}/${groupId}/${payrunOption}/${deptName}`,
-		);
+	async getEEContribution(data) {
+		return apiService.post(`/payroll/EEContribution`, data);
 	},
 
-	async getERContribution(
-		company,
-		startDate,
-		endDate,
-		payDate,
-		isExtraRun,
-		groupId,
-		payrunOption,
-		deptName,
-	) {
-		return apiService.get(
-			`/payroll/ERContribution/${company}/${startDate}/${endDate}/${payDate}/${isExtraRun}/${groupId}/${payrunOption}/${deptName}`,
-		);
+	async getERContribution(data) {
+		return apiService.post(`/payroll/ERContribution`, data);
 	},
 
 	async getEmpPayReportDetails(company, empId) {
@@ -180,21 +135,21 @@ const PayrollService = {
 		);
 	},
 
-	async getTotalFundingPayReportDetails(company, payNum, isExtraRun) {
+	async getTotalFundingPayReportDetails(company, payNum, isExtraRun, frequency) {
 		return apiService.get(
-			`/payroll/payDetailsReport/funds/report/${company}/${payNum}/${isExtraRun}`,
+			`/payroll/payDetailsReport/funds/report/${company}/${payNum}/${isExtraRun}/${frequency}`,
 		);
 	},
 
-	async getTotalsPayReportDetails(company, payNum, isExtraRun) {
+	async getTotalsPayReportDetails(company, payNum, isExtraRun, frequency) {
 		return apiService.get(
-			`/payroll/payDetailsReport/funds/totals/${company}/${payNum}/${isExtraRun}`,
+			`/payroll/payDetailsReport/funds/totals/${company}/${payNum}/${isExtraRun}/${frequency}`,
 		);
 	},
 
-	async getJournalEntryReportDetails(company, payNum, isExtraRun) {
+	async getJournalEntryReportDetails(company, payNum, isExtraRun, frequency) {
 		return apiService.get(
-			`/payroll/payDetailsReport/funds/journals/${company}/${payNum}/${isExtraRun}`,
+			`/payroll/payDetailsReport/funds/journals/${company}/${payNum}/${isExtraRun}/${frequency}`,
 		);
 	},
 
@@ -206,8 +161,8 @@ const PayrollService = {
 		return apiService.get(`/payroll/total-alerts/${company}/${payNum}`);
 	},
 
-	async getAlertsDetails(company, payNum) {
-		return apiService.get(`/payroll/alertsReport/${company}/${payNum}`);
+	async getAlertsDetails(company, payNum, selectedPayGroup) {
+		return apiService.get(`/payroll/alertsReport/${company}/${payNum}/${selectedPayGroup}`);
 	},
 
 	async addAlertsAndViolations(data) {

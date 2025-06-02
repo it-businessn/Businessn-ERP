@@ -29,12 +29,12 @@ const UserService = {
 		return apiService.get(`/user/payroll-active-count/${id}`);
 	},
 
-	async getPayrollActiveCompanyUsers(id, deptName) {
-		return apiService.get(`/user/payroll-active/${id}/${deptName}`);
+	async getPayrollActiveCompanyUsers(id, deptName, payGroup) {
+		return apiService.get(`/user/payroll-active/${id}/${deptName}/${payGroup}`);
 	},
 
-	async getPayrollInActiveCompanyUsers(id, deptName) {
-		return apiService.get(`/user/payroll-inactive/${id}/${deptName}`);
+	async getPayrollInActiveCompanyUsers(id, deptName, payGroup) {
+		return apiService.get(`/user/payroll-inactive/${id}/${deptName}/${payGroup}`);
 	},
 
 	async getAllCompanyUsersCount(id) {
@@ -49,8 +49,8 @@ const UserService = {
 		return apiService.get(`/user/emp/${id}`);
 	},
 
-	async getAllCompanyUsers(id, deptName) {
-		return apiService.get(`/user/${id}/${deptName}`);
+	async getAllCompanyUsers(id, deptName, payGroup) {
+		return apiService.get(`/user/${id}/${deptName}/${payGroup}`);
 	},
 
 	async getAllCompManagers(id) {
@@ -71,6 +71,14 @@ const UserService = {
 
 	async signUp(data) {
 		return apiService.post("/user/register", data);
+	},
+
+	async sendEmailLoginCreds(data) {
+		return apiService.post("/user/send-email", data);
+	},
+
+	async sendEmailPaystubs(data) {
+		return apiService.post("/user/send-paystub", data);
 	},
 
 	async addMasterUser(data) {

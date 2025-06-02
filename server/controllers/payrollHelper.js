@@ -55,8 +55,8 @@ const calculateTimesheetApprovedHours = async (startDate, endDate, companyName) 
 			acc[timesheet.employeeId].totalRegHoursWorked +=
 				getSumRegHrs(timesheet.regHoursWorked, timesheet.regHoursWorked2) || 0;
 
-		if (timesheet.payType === PAY_TYPES_TITLE.REG_PAY)
-			acc[timesheet.employeeId].totalRegHoursWorked2 += timesheet.regHoursWorked2 || 0;
+		// if (timesheet.payType === PAY_TYPES_TITLE.REG_PAY)
+		// acc[timesheet.employeeId].totalRegHoursWorked2 += timesheet.regHoursWorked2 || 0;
 
 		if (timesheet.payType === PAY_TYPES_TITLE.OVERTIME_PAY)
 			acc[timesheet.employeeId].totalOvertimeHoursWorked += timesheet.overtimeHoursWorked || 0;

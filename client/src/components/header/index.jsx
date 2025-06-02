@@ -23,20 +23,11 @@ const Navbar = ({ handleClick, companyName, companyId, user, setUser, isMobile }
 	const menuList = SIDEBAR_MENU?.filter((tab) => tab.permissions);
 
 	return (
-		<Box
-			pl={{ base: 0, md: 3 }}
-			pt={isMobile ? 0 : 3}
-			position="fixed"
-			width="100%"
-			color="var(--nav_color)"
-			zIndex={1}
-			bg="var(--main_color)"
-		>
+		<Box position="fixed" width="100%" zIndex={1} bg="var(--banner_bg)">
 			<HStack spacing={0} alignItems="center" pr={{ base: "0em", md: "1em" }}>
 				<Logo />
 				<Flex
 					w="100%"
-					bg="var(--banner_bg)"
 					// backgroundImage={navBarImg}
 					p={3}
 					borderRadius={isMobile ? 0 : "10px"}

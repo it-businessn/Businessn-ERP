@@ -70,6 +70,7 @@ const Timesheet = ({
 	checkOverlaps,
 	timesheetData,
 	setTimesheetData,
+	selectedPayGroupOption,
 }) => {
 	const cols = [
 		COLS.EMP_NAME,
@@ -175,7 +176,7 @@ const Timesheet = ({
 				setLoading(false);
 			}
 		};
-		if (filter?.startDate) {
+		if (filter?.selectedPayGroupOption) {
 			fetchAllEmployeeTimesheet();
 		}
 	}, [
@@ -184,6 +185,7 @@ const Timesheet = ({
 		filter?.endDate,
 		filter?.filteredEmployees,
 		filter?.filteredDept,
+		filter?.selectedPayGroupOption,
 		refresh,
 	]);
 
@@ -930,6 +932,7 @@ const Timesheet = ({
 					setShowAddEntry={setShowAddEntry}
 					source={TIMESHEET_SOURCE.MANAGER}
 					deptName={deptName}
+					selectedPayGroupOption={selectedPayGroupOption}
 				/>
 			)}
 

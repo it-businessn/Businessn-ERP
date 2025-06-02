@@ -408,8 +408,8 @@ export const sortRecordsByDate = (records, key, isDate = true, sort = true, freq
 export const getPayrollStatus = (data, prevRecordEndDate) => {
 	const defaultStatus = {
 		name: "Pending",
-		color: "var(--primary_bg)",
-		bg: "var(--calendar_border)",
+		color: "var(--calendar_border)",
+		bg: generateLighterShade("#bbbbbb", 0.8),
 		isDisabledStatus: true,
 		isViewAction: false,
 		isDisabledAction: true,
@@ -433,8 +433,8 @@ export const getPayrollStatus = (data, prevRecordEndDate) => {
 	if (!data?.isProcessed && isOverdue) {
 		return {
 			name: "Overdue",
-			color: "var(--primary_bg)",
-			bg: "var(--incorrect_ans)",
+			color: "var(--incorrect_ans)",
+			bg: generateLighterShade("#f62f29", 0.8),
 			isViewAction: false,
 			isDisabledStatus: false,
 		};
@@ -444,8 +444,8 @@ export const getPayrollStatus = (data, prevRecordEndDate) => {
 	) {
 		return {
 			name: "Pending",
-			color: "var(--primary_bg)",
-			bg: "var(--pending)",
+			color: "var(--pending)",
+			bg: generateLighterShade("#d68e67", 0.8),
 			isDisabledStatus: false,
 			isViewAction: false,
 			isDisabledAction: !isEndDatePassed,
@@ -453,16 +453,16 @@ export const getPayrollStatus = (data, prevRecordEndDate) => {
 	} else if (data?.isProcessed && isPayDateToday) {
 		return {
 			name: "Paid",
-			color: "var(--primary_bg)",
-			bg: "var(--action_status_approve)",
+			color: "var(--action_status_approve)",
+			bg: generateLighterShade("#498b8f", 0.8),
 			isDisabledStatus: false,
 			isViewAction: true,
 		};
 	} else if (data?.isProcessed && isPayDateInFuture) {
 		return {
 			name: "Submitted",
-			color: "var(--primary_bg)",
-			bg: "var(--action_status_approve)",
+			color: "var(--action_status_approve)",
+			bg: generateLighterShade("#498b8f", 0.8),
 			isDisabledStatus: false,
 			isViewAction: true,
 		};

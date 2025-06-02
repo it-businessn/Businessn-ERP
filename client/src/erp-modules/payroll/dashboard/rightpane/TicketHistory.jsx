@@ -8,7 +8,7 @@ import NoteDetails from "erp-modules/project-management/tickets/NoteDetails";
 import { useEffect, useRef, useState } from "react";
 import TicketService from "services/TicketService";
 
-const TicketHistory = ({ userId, company }) => {
+const TicketHistory = ({ userId, company, setCount }) => {
 	const [ticketData, setTicketData] = useState(null);
 	const [isLoading, setIsLoading] = useState(false);
 	const [openNote, setOpenNote] = useState(false);
@@ -21,6 +21,7 @@ const TicketHistory = ({ userId, company }) => {
 				const { data } = await TicketService.getOpenTicket(userId, company);
 
 				setTicketData(data);
+				setCount(data?.length);
 				setIsLoading(false);
 			} catch (error) {
 				console.error(error);
@@ -30,7 +31,7 @@ const TicketHistory = ({ userId, company }) => {
 	}, [userId]);
 
 	return (
-		<Box height={"285px"} overflowY={"auto"}>
+		<Box maxH={"calc(100vh - 500px)"} overflowY={"auto"}>
 			<List spacing={2}>
 				{isLoading ? (
 					<SkeletonLoader />
@@ -38,7 +39,7 @@ const TicketHistory = ({ userId, company }) => {
 					ticketData?.map(
 						({ _id, ticketNumber, category, priority, topic, issue, file, originalname }) => (
 							<ListItem key={_id}>
-								<BoxCard p="0.5em">
+								<BoxCard>
 									<HStack justifyContent="space-between" alignItems="end" spacing={0}>
 										<VStack spacing={0}>
 											<TextTitle size="xs" title={`Ticket#: ${ticketNumber}`} />

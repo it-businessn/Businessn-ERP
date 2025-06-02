@@ -27,22 +27,31 @@ router.get(
 );
 
 router.get(
-	"/payroll-active/:companyName/:deptName",
+	"/payroll-active/:companyName/:deptName/:payGroup",
 	userController.getPayrollActiveCompanyEmployees,
 );
 
 router.get(
-	"/payroll-inactive/:companyName/:deptName",
+	"/payroll-inactive/:companyName/:deptName/:payGroup",
 	userController.getPayrollInActiveCompanyEmployees,
 );
+
+// router.get(
+// 	"/payroll-terminated/:companyName/:deptName/:payGroup",
+// 	userController.getPayrollTerminatedCompanyEmployees,
+// );
 
 router.get("/all/:companyName", userController.getCompanyUsers);
 
 router.get("/count/:companyName", userController.getCompanyEmployeesCount);
 
-router.get("/:companyName/:deptName", userController.getCompanyEmployees);
+router.get("/:companyName/:deptName/:payGroup", userController.getCompanyEmployees);
 
 router.post("/create", userController.createMasterUser);
+
+router.post("/send-email", userController.sendMailCreds);
+
+router.post("/send-paystub", userController.sendMailPaystub);
 
 router.put("/master/:userId", userController.updateMasterUser);
 

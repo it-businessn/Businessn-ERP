@@ -18,9 +18,8 @@ export const isFutureDate = (date) => TODAY_DATE.isAfter(date, "day");
 export const getMomentDate = (date) => moment.utc(date);
 
 export const daysAgo = (date) => {
-	const numDays = TODAY_DATE?.diff(date, "days");
-	const days = numDays < 0 ? Math.abs(numDays) : numDays;
-	return days;
+	const numDays = moment(date)?.diff(TODAY_DATE, "days");
+	return numDays;
 };
 
 export const getMomentDateISO = (date) => moment(date).toISOString();
@@ -35,13 +34,17 @@ export const longFormat = (date) => moment.utc(date).format("dddd, D MMMM YYYY")
 
 export const monthDayYearFormat = (date) => moment.utc(date).format("MMMM, DD, YYYY");
 
-export const mmmDayYearFormat = (date) => moment(date).format("MMM, DD, YYYY");
+export const monthDayYearShortFormat = (date) => moment.utc(date).format("MMMM DD YYYY");
+
+export const mmmDayYearFormat = (date) => moment.utc(date).format("ddd, D MMMM YYYY");
 
 export const monthDayYear = TODAY_DATE.format("MMM DD, YYYY");
 
 export const today = TODAY_DATE.format("MMDDYY");
 
 export const formatDateMMDDYY = (date) => moment.utc(date).format("MM/DD/YYYY");
+
+export const formatDateMMDDYYShort = (date) => moment.utc(date).format("MM/DD/YY");
 
 export const formatDateBar = (date) => moment.utc(date).format("DD/MM/YYYY");
 

@@ -13,7 +13,7 @@ import {
 	VStack,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
-import { IoMdHelp } from "react-icons/io";
+import { IoMdHelpCircle } from "react-icons/io";
 import { useNavigate } from "react-router-dom";
 import { adminConsolePath, userProfilePath } from "routes";
 // import { styleConsole } from "utils";
@@ -68,7 +68,7 @@ const UserProfile = ({ user, handleLogout }) => {
 						name={user?.fullName}
 						src=""
 						boxSize="12"
-						borderRadius="10%"
+						borderRadius="50%"
 					/>
 				</PopoverTrigger>
 				<PopoverContent maxW="xs" w="12rem" border="none" position="sticky" zIndex={5}>
@@ -102,8 +102,7 @@ const UserProfile = ({ user, handleLogout }) => {
 				</PopoverContent>
 			</Popover>
 			<IconButton
-				size="lg"
-				icon={<IoMdHelp />}
+				icon={<IoMdHelpCircle style={{ width: "25px", height: "25px" }} />}
 				onClick={() => navigate("/support")}
 				aria-label="Support"
 			/>

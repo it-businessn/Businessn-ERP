@@ -22,6 +22,7 @@ const PaygroupDetailTable = ({
 	selectedPayGroup,
 	company,
 	loggedInUser,
+	selectedPayGroupOption,
 }) => {
 	const deptName = loggedInUser?.role === ROLES.MANAGER ? loggedInUser?.department : null;
 	const [highlightColor, setHighlightColor] = useState("var(--primary_button_bg)");
@@ -41,6 +42,7 @@ const PaygroupDetailTable = ({
 					closestRecord={closestRecord}
 					groupId={groupId}
 					selectedPayGroup={selectedPayGroup}
+					selectedPayGroupOption={selectedPayGroupOption}
 					payrunOption={payrunOption}
 					deptName={deptName}
 				/>
@@ -57,6 +59,7 @@ const PaygroupDetailTable = ({
 					groupId={groupId}
 					payrunOption={payrunOption}
 					deptName={deptName}
+					selectedPayGroupOption={selectedPayGroupOption}
 				/>
 			),
 		},
@@ -71,6 +74,7 @@ const PaygroupDetailTable = ({
 					groupId={groupId}
 					payrunOption={payrunOption}
 					deptName={deptName}
+					selectedPayGroupOption={selectedPayGroupOption}
 				/>
 			),
 		},
@@ -86,6 +90,7 @@ const PaygroupDetailTable = ({
 					groupId={groupId}
 					payrunOption={payrunOption}
 					deptName={deptName}
+					selectedPayGroupOption={selectedPayGroupOption}
 				/>
 			),
 		},
@@ -101,6 +106,7 @@ const PaygroupDetailTable = ({
 					groupId={groupId}
 					payrunOption={payrunOption}
 					deptName={deptName}
+					selectedPayGroupOption={selectedPayGroupOption}
 				/>
 			),
 		},

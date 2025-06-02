@@ -1,9 +1,10 @@
 import { HStack } from "@chakra-ui/react";
-import PrimaryButton from "components/ui/button/PrimaryButton";
+import LeftIconButton from "components/ui/button/LeftIconButton";
 import TabsButtonGroup from "components/ui/tab/TabsButtonGroup";
 import useCompany from "hooks/useCompany";
 import PageLayout from "layouts/PageLayout";
 import { useEffect, useState } from "react";
+import { FaPlus } from "react-icons/fa";
 import LocalStorageService from "services/LocalStorageService";
 import UserService from "services/UserService";
 import ClosedTicket from "./ClosedTicket";
@@ -62,9 +63,22 @@ const Tickets = () => {
 	const [viewMode, setViewMode] = useState(TABS[0].type);
 	const showComponent = (viewMode) => TABS.find(({ type }) => type === viewMode)?.name;
 	return (
-		<PageLayout width="full" title={"Tickets"} showDate isTimesheet>
+		<PageLayout width="full" title={"Tickets"} showDate isTimesheet bg="#f9f9fb">
 			<HStack spacing={3} justify={"flex-end"} mt={-8}>
-				<PrimaryButton size={"sm"} name="Add ticket" onOpen={() => setShowAddEntry(true)} />
+				<LeftIconButton
+					name="New Ticket"
+					size="sm"
+					icon={<FaPlus color="#fff" fontSize="14px" />}
+					handleClick={() => setShowAddEntry(true)}
+					bg="#371f37"
+					color="white"
+					_hover={{
+						bg: "#4e2847",
+						transform: "scale(1.02)",
+						transition: "all 0.2s ease-in-out",
+					}}
+					px={4}
+				/>
 			</HStack>
 
 			<HStack w={"90%"} justifyContent={"start"} gap={5} position="sticky" zIndex={4}>

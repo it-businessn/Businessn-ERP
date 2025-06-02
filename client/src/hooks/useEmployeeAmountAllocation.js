@@ -8,6 +8,7 @@ const useEmployeeAmountAllocation = (
 	groupId,
 	payrunOption,
 	deptName,
+	selectedPayGroupOption,
 ) => {
 	const [amountInfo, setAmountInfo] = useState(null);
 
@@ -15,21 +16,22 @@ const useEmployeeAmountAllocation = (
 		const extraRun = payPeriod?.isExtraRun ?? false;
 		const fetchEmployeeAmountInfo = async () => {
 			try {
-				const { data } = await PayrollService.getAllEmployeeAmountInfo(
-					company,
-					payPeriod.payPeriodPayDate,
-					extraRun,
+				const { data } = await PayrollService.getAllEmployeeAmountInfo({
+					companyName: company,
+					payDate: payPeriod.payPeriodPayDate,
+					isExtraRun: extraRun,
 					groupId,
-					payrunOption,
+					payrunType: payrunOption,
 					deptName,
-				);
+					selectedPayGroupOption,
+				});
 				setAmountInfo(data);
 			} catch (error) {
 				console.error(error);
 			}
 		};
-		fetchEmployeeAmountInfo();
-	}, [company, refresh, payPeriod, payrunOption]);
+		if (selectedPayGroupOption) fetchEmployeeAmountInfo();
+	}, [company, refresh, payPeriod, payrunOption, selectedPayGroupOption]);
 	return amountInfo;
 };
 
