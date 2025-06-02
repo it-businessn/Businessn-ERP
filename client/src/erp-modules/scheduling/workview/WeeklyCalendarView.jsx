@@ -108,12 +108,8 @@ const WeeklyCalendarView = ({
 								<NormalTextTitle whiteSpace="wrap" size="sm" width="100px" title={emp?.name} />
 							</Td>
 							{emp?.shifts?.map((entry, j) => {
-								const entryShiftTime =
-									timeFormat === "12" && entry?.shift !== "Off"
-										? convertTo12HourFormatRange(entry?.shift)
-										: entry?.shift;
 								return (
-									<Td w="200px" py={1} key={`${emp?.name}_${j}`} px={1}>
+									<Td w="200px" p={0} key={`${emp?.name}_${j}`} px={1}>
 										<HStack
 											bg={"var(--bg_color_1)"}
 											// bgColor={shift.color}
@@ -123,6 +119,7 @@ const WeeklyCalendarView = ({
 											w="200px"
 										>
 											<Button
+												isDisabled={j === 0 || j === 6}
 												bg={entry?.shift === "Off" ? "var(--bg_color_1)" : "transparent"}
 												p={0}
 												color={
@@ -141,7 +138,11 @@ const WeeklyCalendarView = ({
 											>
 												{entry?.shift === "Off"
 													? "Off"
-													: `${entryShiftTime} ${emp?.role} @ ${emp?.location}`}
+													: `${
+															timeFormat === "12"
+																? convertTo12HourFormatRange(entry?.shift)
+																: entry?.shift
+													  } ${emp?.role} @ ${emp?.location}`}
 											</Button>
 											<IconButton
 												color={
@@ -154,6 +155,7 @@ const WeeklyCalendarView = ({
 												onClick={() => {
 													handleItemClick(emp, entry, weekDays[j]);
 												}}
+												isDisabled={j === 0 || j === 6}
 											/>
 										</HStack>
 									</Td>
@@ -161,6 +163,7 @@ const WeeklyCalendarView = ({
 							})}
 						</Tr>
 					))}
+
 					<Tr fontWeight="bold" bg="gray.100" position="sticky" bottom="0" zIndex="1">
 						<Td py={0} px={1}>
 							Total Hours

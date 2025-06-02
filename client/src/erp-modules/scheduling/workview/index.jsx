@@ -80,7 +80,10 @@ const ScheduleWorkView = () => {
 						</FormLabel>
 						<Select
 							value={timeFormat}
-							onChange={(e) => setTimeFormat(e.target.value)}
+							onChange={(e) => {
+								const { value } = e.target;
+								if (value) setTimeFormat(value);
+							}}
 							placeholder="Select time format"
 						>
 							<option value="12">12-hour</option>
