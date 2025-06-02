@@ -7,11 +7,12 @@ import {
 	InputGroup,
 	InputRightElement,
 	SimpleGrid,
+	useDisclosure,
 } from "@chakra-ui/react";
 import LeftIconButton from "components/ui/button/LeftIconButton";
 import { ROLES } from "constant";
+import NewEmployeeOnboardingModal from "erp-modules/payroll/employees/NewEmployeeOnboardingModal";
 import PayrollActions from "erp-modules/payroll/workview/paygroup-header-table/PayrollActions";
-import OnboardEmpModal from "erp-modules/sales/onboarding/OnboardEmpModal";
 import useCompany from "hooks/useCompany";
 import useEmployees from "hooks/useEmployees";
 import usePaygroup from "hooks/usePaygroup";
@@ -27,6 +28,7 @@ import SendEmailList from "./SendEmailList";
 const EmployeeListView = () => {
 	const loggedInUser = LocalStorageService.getItem("user");
 	const { company } = useCompany(LocalStorageService.getItem("selectedCompany"));
+	const { isOpen: showOnboard, onOpen: openOnboard, onClose: closeOnboard } = useDisclosure();
 
 	const [formData, setFormData] = useState({
 		isPayrollActive: true,
@@ -59,7 +61,7 @@ const EmployeeListView = () => {
 	const [filteredDept, setFilteredDept] = useState([]);
 	const [filteredCC, setFilteredCC] = useState([]);
 	const [empName, setEmpName] = useState("");
-	const [showOnboard, setShowOnboard] = useState(false);
+	// const [showOnboard, setShowOnboard] = useState(false);
 	const [selectEmpList, setSelectEmpList] = useState(false);
 	const [emailType, setEmailType] = useState(null);
 
@@ -95,6 +97,11 @@ const EmployeeListView = () => {
 		if (value !== "") {
 			setSelectedPayGroupOption(value);
 		}
+	};
+
+	const handleCloseModal = () => {
+		closeOnboard();
+		setIsRefresh(true); // Trigger a refresh when the modal is closed
 	};
 
 	return (
@@ -159,7 +166,6 @@ const EmployeeListView = () => {
 					/>
 				</Box>
 			</SimpleGrid>
-
 			{/* Employee List Section */}
 			<Box>
 				{/* Action Bar */}
@@ -168,7 +174,7 @@ const EmployeeListView = () => {
 						name="Add Employee"
 						size="sm"
 						icon={<FaPlus color="#fff" fontSize="14px" />}
-						handleClick={() => setShowOnboard(true)}
+						handleClick={openOnboard}
 						bg="#381c34"
 						color="white"
 						_hover={{
@@ -221,15 +227,8 @@ const EmployeeListView = () => {
 				</Flex>
 				<EmployeeList employees={filteredEmployees} />
 			</Box>
-
-			{/* Onboarding Modal */}
-			{showOnboard && (
-				<OnboardEmpModal
-					title="Onboard employee"
-					showOnboard={showOnboard}
-					setShowOnboard={setShowOnboard}
-				/>
-			)}
+			{/* New Onboarding Modal */}
+			<NewEmployeeOnboardingModal isOpen={showOnboard} onClose={handleCloseModal} />
 			{selectEmpList && (
 				<SendEmailList
 					emailType={emailType}
