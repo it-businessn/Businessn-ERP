@@ -3,6 +3,7 @@ import ComingSoon from "components/ComingSoon";
 import PrimaryButton from "components/ui/button/PrimaryButton";
 import TextTitle from "components/ui/text/TextTitle";
 import { addDays, format, startOfWeek } from "date-fns";
+import useCrews from "hooks/useCrews";
 import usePositionRoles from "hooks/usePositionRoles";
 import useWorkLocations from "hooks/useWorkLocations";
 import PageLayout from "layouts/PageLayout";
@@ -10,7 +11,6 @@ import moment from "moment";
 import { useEffect, useState } from "react";
 import { MdOutlineChevronLeft, MdOutlineChevronRight } from "react-icons/md";
 import LocalStorageService from "services/LocalStorageService";
-import SettingService from "services/SettingService";
 import { isManager } from "utils";
 import ShiftModal from "./quick-selection/ShiftModal";
 import WeeklyCalendarView from "./WeeklyCalendarView";
@@ -20,7 +20,6 @@ const ScheduleWorkView = () => {
 	const loggedInUser = LocalStorageService.getItem("user");
 	const isUserManager = isManager(loggedInUser.role);
 
-	const [selectedCrew, setSelectedCrew] = useState(null);
 	const [timeFormat, setTimeFormat] = useState("12");
 	const [view, setView] = useState("weekly");
 	const [newShiftAdded, setNewShiftAdded] = useState(null);
@@ -30,7 +29,7 @@ const ScheduleWorkView = () => {
 	const [empRole, setEmpRole] = useState(null);
 	const [shift, setShift] = useState(null);
 	const [employeesList, setEmployeesList] = useState(null);
-	const [crews, setCrews] = useState(null);
+	const { crews, selectedCrew, setSelectedCrew } = useCrews(company);
 	const [location, setLocation] = useState(null);
 	const [configCC, setConfigCC] = useState(null);
 	// const [locations, setLocations] = useState(null);
@@ -42,26 +41,17 @@ const ScheduleWorkView = () => {
 	const roles = usePositionRoles(company, refresh);
 
 	useEffect(() => {
-		const fetchAllCrews = async () => {
-			try {
-				const { data } = await SettingService.getAllCrews(company);
-				setCrews(data);
-				setSelectedCrew(data[0]?.name);
-				setConfigCC(data[0]?.config?.costCenter);
-				// setLocations(data[0]?.config?.department);
-				setEmployeesList(data[0]?.config?.employee);
-			} catch (error) {
-				console.error(error);
-			}
-		};
-		fetchAllCrews();
-	}, [company]);
-
-	useEffect(() => {
-		const record = crews?.find((crew) => crew.name === selectedCrew);
-		setConfigCC(record?.config?.costCenter);
-		// setLocations(record?.config?.department);
-		setEmployeesList(record?.config?.employee);
+		if (selectedCrew) {
+			const record = crews?.find((crew) => crew.name === selectedCrew);
+			setConfigCC(record?.config?.costCenter);
+			// setLocations(record?.config?.department);
+			setEmployeesList(record?.config?.employee);
+		}
+		// else {
+		// setLocations(data[0]?.config?.department);
+		// setEmployeesList(data[0]?.config?.employee);
+		// setConfigCC(data[0]?.config?.costCenter);
+		// }
 	}, [selectedCrew]);
 
 	const handleChangeDate = (direction) => {
@@ -76,7 +66,7 @@ const ScheduleWorkView = () => {
 						<FormLabel>
 							<TextTitle title="Crew" />
 						</FormLabel>
-						<Select value={selectedCrew} onChange={(e) => setSelectedCrew(e.target.value)}>
+						<Select value={selectedCrew || ""} onChange={(e) => setSelectedCrew(e.target.value)}>
 							{crews?.map(({ _id, name }) => (
 								<option key={_id} value={name}>
 									{name}

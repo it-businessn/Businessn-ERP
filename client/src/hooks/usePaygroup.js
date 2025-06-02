@@ -14,34 +14,6 @@ const usePaygroup = (company, refresh, year = CURRENT_YEAR, isReport = false) =>
 	const [hasMultiPaygroups, setHasMultiPaygroups] = useState(false);
 	const [selectedPayGroupOption, setSelectedPayGroupOption] = useState(null);
 
-	const getClosestScheduleByProcessingDate = (schedules) => {
-		// const closestPayPeriod = schedules
-		// 	?.filter(({ isProcessed }) => !isProcessed)
-		// 	?.reduce((closest, record) => {
-		// 		const recordEndDate = getMomentDate(record.payPeriodProcessingDate);
-		// 		const closestEndDate = getMomentDate(closest.payPeriodProcessingDate);
-		// 		return Math.abs(recordEndDate.diff(today)) <
-		// 			Math.abs(closestEndDate.diff(today))
-		// 			? record
-		// 			: closest;
-		// 	}, schedules[0]);
-
-		// const closestPayPeriod = schedules[22];
-		const closestPayPeriod = schedules?.find(({ isProcessed }) => !isProcessed);
-
-		const closestPayPeriodIndex = schedules.findIndex(
-			({ payPeriod, isExtraRun }) =>
-				payPeriod === closestPayPeriod?.payPeriod && isExtraRun === true,
-		);
-		const fallbackIndex =
-			closestPayPeriodIndex === -1
-				? schedules.findIndex(({ payPeriod }) => payPeriod === closestPayPeriod?.payPeriod)
-				: closestPayPeriodIndex;
-
-		setClosestRecord(closestPayPeriod);
-		setClosestRecordIndex(fallbackIndex);
-	};
-
 	useEffect(() => {
 		const fetchAllPaygroups = async () => {
 			try {
@@ -61,7 +33,7 @@ const usePaygroup = (company, refresh, year = CURRENT_YEAR, isReport = false) =>
 			}
 		};
 
-		if (refresh !== undefined) {
+		if (refresh || refresh === false) {
 			fetchAllPaygroups();
 		}
 	}, [company, refresh, selectedPayGroupOption]);
@@ -91,6 +63,33 @@ const usePaygroup = (company, refresh, year = CURRENT_YEAR, isReport = false) =>
 				setClosestRecord(closestPayPeriod || schedules[lastIndex]);
 				setClosestRecordIndex(closestPayPeriodIndex);
 			}
+			const getClosestScheduleByProcessingDate = (schedules) => {
+				// const closestPayPeriod = schedules
+				// 	?.filter(({ isProcessed }) => !isProcessed)
+				// 	?.reduce((closest, record) => {
+				// 		const recordEndDate = getMomentDate(record.payPeriodProcessingDate);
+				// 		const closestEndDate = getMomentDate(closest.payPeriodProcessingDate);
+				// 		return Math.abs(recordEndDate.diff(today)) <
+				// 			Math.abs(closestEndDate.diff(today))
+				// 			? record
+				// 			: closest;
+				// 	}, schedules[0]);
+
+				// const closestPayPeriod = schedules[22];
+				const closestPayPeriod = schedules?.find(({ isProcessed }) => !isProcessed);
+
+				const closestPayPeriodIndex = schedules.findIndex(
+					({ payPeriod, isExtraRun }) =>
+						payPeriod === closestPayPeriod?.payPeriod && isExtraRun === true,
+				);
+				const fallbackIndex =
+					closestPayPeriodIndex === -1
+						? schedules.findIndex(({ payPeriod }) => payPeriod === closestPayPeriod?.payPeriod)
+						: closestPayPeriodIndex;
+
+				setClosestRecord(closestPayPeriod);
+				setClosestRecordIndex(fallbackIndex);
+			};
 
 			if (closestPayPeriod) {
 				getClosestScheduleByProcessingDate(schedules, isReport);

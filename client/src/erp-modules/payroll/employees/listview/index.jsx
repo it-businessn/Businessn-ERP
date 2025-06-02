@@ -112,7 +112,7 @@ const EmployeeListView = () => {
 			<SimpleGrid
 				columns={{ base: 1, md: 1, lg: 2 }}
 				spacing="4"
-				my="4"
+				mt="4"
 				mr="4"
 				templateColumns={{ lg: "70% 30%" }}
 			>
@@ -161,9 +161,9 @@ const EmployeeListView = () => {
 			</SimpleGrid>
 
 			{/* Employee List Section */}
-			<Box mt={8}>
+			<Box>
 				{/* Action Bar */}
-				<Flex mb={6} gap={8} align="center">
+				<Flex mb={1} gap={6} align="center">
 					<LeftIconButton
 						name="Add Employee"
 						size="sm"
