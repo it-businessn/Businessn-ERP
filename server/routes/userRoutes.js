@@ -36,6 +36,11 @@ router.get(
 	userController.getPayrollInActiveCompanyEmployees,
 );
 
+// router.get(
+// 	"/payroll-terminated/:companyName/:deptName/:payGroup",
+// 	userController.getPayrollTerminatedCompanyEmployees,
+// );
+
 router.get("/all/:companyName", userController.getCompanyUsers);
 
 router.get("/count/:companyName", userController.getCompanyEmployeesCount);
@@ -43,6 +48,10 @@ router.get("/count/:companyName", userController.getCompanyEmployeesCount);
 router.get("/:companyName/:deptName/:payGroup", userController.getCompanyEmployees);
 
 router.post("/create", userController.createMasterUser);
+
+router.post("/send-email", userController.sendMailCreds);
+
+router.post("/send-paystub", userController.sendMailPaystub);
 
 router.put("/master/:userId", userController.updateMasterUser);
 

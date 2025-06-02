@@ -4,17 +4,17 @@ const router = express.Router();
 const payStubController = require("../controllers/payStubController");
 
 router.get(
-	"/funds/totals/:companyName/:payPeriodNum/:isExtraRun",
+	"/funds/totals/:companyName/:payPeriodNum/:isExtraRun/:scheduleFrequency",
 	payStubController.getFundingPayDetailsReportInfo,
 );
 
 router.get(
-	"/funds/report/:companyName/:payPeriodNum/:isExtraRun",
+	"/funds/report/:companyName/:payPeriodNum/:isExtraRun/:scheduleFrequency",
 	payStubController.getFundPayDetailsReportInfo,
 );
 
 router.get(
-	"/funds/journals/:companyName/:payPeriodNum/:isExtraRun",
+	"/funds/journals/:companyName/:payPeriodNum/:isExtraRun/:scheduleFrequency",
 	payStubController.getJournalEntryReportInfo,
 );
 

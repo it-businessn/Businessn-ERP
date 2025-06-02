@@ -16,11 +16,13 @@ const RightPane = ({
 	closestRecord,
 	closestRecordIndex,
 }) => {
+	const [count, setCount] = useState(0);
 	const TABS = [
 		{
 			id: 0,
 			type: "Tickets",
-			name: <TicketHistory userId={selectedUser?.fullName} company={company} />,
+			count,
+			name: <TicketHistory setCount={setCount} userId={selectedUser?.fullName} company={company} />,
 		},
 		{
 			id: 1,
@@ -42,7 +44,7 @@ const RightPane = ({
 	const showComponent = (viewMode) => TABS.find(({ type }) => type === viewMode)?.name;
 
 	return (
-		<BoxCard borderWidth="0" bg="#faf9f5" p={0}>
+		<BoxCard borderWidth="0" bg="var(--primary_bg)" p={0}>
 			<VStack spacing={"1em"} align="stretch">
 				<Box bg="white" borderRadius="lg" p={4} boxShadow="sm">
 					<MiniCalendar user={selectedUser} company={company} isPayrollDashboard />

@@ -8,7 +8,7 @@ import NoteDetails from "erp-modules/project-management/tickets/NoteDetails";
 import { useEffect, useRef, useState } from "react";
 import TicketService from "services/TicketService";
 
-const TicketHistory = ({ userId, company }) => {
+const TicketHistory = ({ userId, company, setCount }) => {
 	const [ticketData, setTicketData] = useState(null);
 	const [isLoading, setIsLoading] = useState(false);
 	const [openNote, setOpenNote] = useState(false);
@@ -21,6 +21,7 @@ const TicketHistory = ({ userId, company }) => {
 				const { data } = await TicketService.getOpenTicket(userId, company);
 
 				setTicketData(data);
+				setCount(data?.length);
 				setIsLoading(false);
 			} catch (error) {
 				console.error(error);

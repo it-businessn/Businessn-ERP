@@ -9,6 +9,7 @@ import {
 	useDisclosure,
 } from "@chakra-ui/react";
 import OnboardEmployee from "erp-modules/payroll/employees/pageview/OnboardEmployee";
+import LocalStorageService from "services/LocalStorageService";
 
 const OnboardEmpModal = ({ showOnboard, setShowOnboard, title }) => {
 	const { onClose } = useDisclosure();
@@ -16,6 +17,7 @@ const OnboardEmpModal = ({ showOnboard, setShowOnboard, title }) => {
 	const handleClose = () => {
 		onClose();
 		setShowOnboard(false);
+		LocalStorageService.removeItem("onboardingEmpId");
 	};
 
 	return (

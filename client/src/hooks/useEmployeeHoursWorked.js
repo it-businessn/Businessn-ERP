@@ -31,7 +31,7 @@ const useEmployeeHoursWorked = (
 				console.error(error);
 			}
 		};
-		if (payPeriod) {
+		if (payPeriod && selectedPayGroupOption) {
 			fetchHoursWorkedInfo();
 		}
 	}, [company, payPeriod, payrunOption, selectedPayGroupOption]);

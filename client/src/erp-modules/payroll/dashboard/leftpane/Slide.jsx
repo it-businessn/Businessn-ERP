@@ -3,9 +3,9 @@ import { BsCalendarCheck, BsCalendarWeek, BsCashCoin } from "react-icons/bs";
 import { useNavigate } from "react-router-dom";
 import { workViewPath } from "routes";
 import { isExtraPay } from "utils";
-import currentImg from "../../../../assets/card_bg.png";
-import PayPeriodDetailCard from "./PayPeriodDetailCard";
+// import currentImg from "../../../../assets/card_bg.png";
 import { formatDateBar } from "../../../../utils/convertDate";
+import PayPeriodDetailCard from "./PayPeriodDetailCard";
 
 function Slide({ content, animationConfig, moveSlide }) {
 	const navigate = useNavigate();
@@ -16,7 +16,8 @@ function Slide({ content, animationConfig, moveSlide }) {
 			borderRadius="10px"
 			width="100%"
 			p="0.5em 0.8em"
-			backgroundImage={currentImg}
+			// backgroundImage={currentImg}
+			bg="#faf9f5"
 			backgroundSize="cover"
 			color="var(--main_color)"
 			boxShadow="md"

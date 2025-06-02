@@ -146,6 +146,7 @@ const Timesheets = () => {
 			type: "Timesheet",
 			name: (
 				<Timesheet
+					selectedPayGroupOption={selectedPayGroupOption}
 					deptName={deptName}
 					setTimesheetRefresh={setDataRefresh}
 					company={company}
@@ -186,13 +187,15 @@ const Timesheets = () => {
 						startDate: getMomentDate(closestRecord?.payPeriodStartDate).format("YYYY-MM-DD"),
 						endDate: getMomentDate(closestRecord?.payPeriodEndDate).format("YYYY-MM-DD"),
 					}}
+					selectedPayGroupOption={selectedPayGroupOption}
 					startDate
 				/>
 			),
 		},
 	];
+	const timeSheetTab = TABS[0].type;
+	const [viewMode, setViewMode] = useState(timeSheetTab);
 
-	const [viewMode, setViewMode] = useState(TABS[0].type);
 	useEffect(() => {
 		setPageNum(1);
 		setFilter((prev) => ({
@@ -201,11 +204,20 @@ const Timesheets = () => {
 			startDate,
 			filteredEmployees,
 			filteredDept,
+			selectedPayGroupOption,
 		}));
 		setShowEmpFilter(false);
 		setShowDeptFilter(false);
 		setShowCCFilter(false);
-	}, [startDate, endDate, filteredEmployees, filteredDept, filteredCC, viewMode]);
+	}, [
+		startDate,
+		endDate,
+		filteredEmployees,
+		filteredDept,
+		filteredCC,
+		viewMode,
+		selectedPayGroupOption,
+	]);
 
 	const showComponent = (viewMode) => TABS.find(({ type }) => type === viewMode)?.name;
 
@@ -314,15 +326,20 @@ const Timesheets = () => {
 			// }
 		>
 			<HStack spacing={3} justify={"flex-end"} mt={-8}>
-				<IconButton
-					size={"sm"}
-					bg={"var(--primary_button_bg)"}
-					color={"var(--main_color)"}
-					icon={<IoRefresh style={{ fontSize: "20px" }} />}
-					variant={"solid"}
-					onClick={handleRefresh}
-				/>
-				<PrimaryButton size={"sm"} name={"Add record"} onOpen={() => setShowAddEntry(true)} />
+				{viewMode !== timeSheetTab && (
+					<IconButton
+						size={"sm"}
+						bg={"var(--primary_button_bg)"}
+						color={"var(--main_color)"}
+						icon={<IoRefresh style={{ fontSize: "20px" }} />}
+						variant={"solid"}
+						// onClick={handleRefresh}
+					/>
+				)}
+
+				{viewMode === timeSheetTab && (
+					<PrimaryButton size={"sm"} name={"Add record"} onOpen={() => setShowAddEntry(true)} />
+				)}
 			</HStack>
 
 			<HStack justifyContent="space-between">
@@ -334,45 +351,49 @@ const Timesheets = () => {
 						setViewMode={setViewMode}
 						viewMode={viewMode}
 					/>
-					<DateFilterPopup
-						toggleDateFilter={toggleDateFilter}
-						setEndDate={setEndDate}
-						setStartDate={setStartDate}
-						closestRecord={closestRecord}
-						lastRecord={lastRecord}
-						startDate={startDate}
-						endDate={endDate}
-					/>
-					<OtherFilter
-						showOtherFilter={timesheets && showEmpFilter}
-						toggleOtherFilter={toggleEmpFilter}
-						handleFilter={handleFilter}
-						data={employees}
-						filteredData={filteredEmployees}
-						setFilteredData={setFilteredEmployees}
-						helperText="employee"
-					/>
-					<OtherFilter
-						showOtherFilter={timesheets && showDeptFilter}
-						toggleOtherFilter={toggleDeptFilter}
-						handleFilter={handleFilter}
-						data={deptName ? departments?.filter((_) => _?.name === deptName) : departments}
-						filteredData={filteredDept}
-						setFilteredData={setFilteredDept}
-						helperText="department"
-					/>
-					<OtherFilter
-						isDisabled={deptName}
-						showOtherFilter={timesheets && showCCFilter}
-						toggleOtherFilter={toggleCCFilter}
-						handleFilter={handleFilter}
-						data={cc}
-						filteredData={filteredCC}
-						setFilteredData={setFilteredCC}
-						helperText="cost center"
-					/>
+					{viewMode === timeSheetTab && (
+						<>
+							<DateFilterPopup
+								toggleDateFilter={toggleDateFilter}
+								setEndDate={setEndDate}
+								setStartDate={setStartDate}
+								closestRecord={closestRecord}
+								lastRecord={lastRecord}
+								startDate={startDate}
+								endDate={endDate}
+							/>
+							<OtherFilter
+								showOtherFilter={timesheets && showEmpFilter}
+								toggleOtherFilter={toggleEmpFilter}
+								handleFilter={handleFilter}
+								data={employees}
+								filteredData={filteredEmployees}
+								setFilteredData={setFilteredEmployees}
+								helperText="employee"
+							/>
+							<OtherFilter
+								showOtherFilter={timesheets && showDeptFilter}
+								toggleOtherFilter={toggleDeptFilter}
+								handleFilter={handleFilter}
+								data={deptName ? departments?.filter((_) => _?.name === deptName) : departments}
+								filteredData={filteredDept}
+								setFilteredData={setFilteredDept}
+								helperText="department"
+							/>
+							<OtherFilter
+								isDisabled={deptName}
+								showOtherFilter={timesheets && showCCFilter}
+								toggleOtherFilter={toggleCCFilter}
+								handleFilter={handleFilter}
+								data={cc}
+								filteredData={filteredCC}
+								setFilteredData={setFilteredCC}
+								helperText="cost center"
+							/>
+						</>
+					)}
 				</Flex>
-				{viewMode === "Timesheet" && (
+				{viewMode === timeSheetTab && (
 					<ActionAll
 						isDisabled={isAllSameStatus}
 						handleButtonClick={(action) => {

@@ -263,7 +263,12 @@ button:active {
 	overflow: auto;
 	width: 100vw;
 }
-
+.ticket_container {
+	max-height: calc(100vh - 475px);
+}
+.page_not_found {
+	min-height: (100vh - 225px);
+}
 .tab-form {
 	width: 100%;
 }

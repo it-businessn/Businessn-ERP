@@ -5,6 +5,14 @@ const CommunicationService = {
 		return apiService.post("/conversations", data);
 	},
 
+	async getAnnouncement(id) {
+		return apiService.get(`/announcements/${id}`);
+	},
+
+	async addAnnouncement(data) {
+		return apiService.post("/announcements", data);
+	},
+
 	async getUserConversations(data) {
 		return apiService.get(`/conversations/${data.userId}/${data.company}`);
 	},

@@ -92,11 +92,11 @@ const EmployeeList = ({ employees }) => {
 							cursor="pointer"
 							onClick={() => handleClick(empId._id)}
 						>
-							<Td borderBottomColor={borderColor}>
+							<Td py={0} borderBottomColor={borderColor}>
 								<HStack spacing={4}>
 									<Avatar
 										name={empId?.fullName}
-										size="md"
+										size={"sm"}
 										src=""
 										borderRadius="lg"
 										bg={nameBoxBg}
@@ -112,23 +112,23 @@ const EmployeeList = ({ employees }) => {
 									</Box>
 								</HStack>
 							</Td>
-							<Td borderBottomColor={borderColor}>
+							<Td py={0} borderBottomColor={borderColor}>
 								<Text fontSize="sm">{positions?.[0]?.employmentDepartment || ""}</Text>
 							</Td>
-							<Td borderBottomColor={borderColor}>
+							<Td py={0} borderBottomColor={borderColor}>
 								<Text fontSize="sm">{employmentRole}</Text>
 							</Td>
-							<Td borderBottomColor={borderColor}>
+							<Td py={0} borderBottomColor={borderColor}>
 								<Text fontSize="sm" fontFamily="mono">
 									{employeeNo}
 								</Text>
 							</Td>
-							<Td borderBottomColor={borderColor}>
+							<Td py={0} borderBottomColor={borderColor}>
 								<Text fontSize="sm" fontFamily="mono">
 									{positions?.[0]?.timeManagementBadgeID || "-"}
 								</Text>
 							</Td>
-							<Td borderBottomColor={borderColor}>
+							<Td py={0} borderBottomColor={borderColor}>
 								<StatusBadge status={payrollStatus} />
 							</Td>
 							<Td borderBottomColor={borderColor}>

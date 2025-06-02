@@ -69,8 +69,8 @@ const ExtraPayrunModal = ({
 				console.error(error);
 			}
 		};
-		fetchAllEmployees();
-	}, [deptName]);
+		if (selectedPayGroupOption) fetchAllEmployees();
+	}, [selectedPayGroupOption]);
 
 	const handleClose = () => {
 		onClose();

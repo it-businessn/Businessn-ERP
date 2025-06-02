@@ -15,20 +15,22 @@ const ReportsPreview = ({
 	company,
 	handleClick,
 	reportData,
-	payPeriodNum,
+	closestRecord,
 	isPayPeriodInactive,
 }) => {
 	const { isMobile } = useBreakpointValue();
 	const [showReport, setShowReport] = useState(false);
 	const [showTotalsReport, setShowTotalsReport] = useState(false);
 	const [showJournalReport, setShowJournalReport] = useState(false);
+
 	const REPORTS = [
 		{ name: "Payroll Register", handleClick: () => setShowReport(true) },
 		{ name: "Funding Totals Report", handleClick: () => setShowTotalsReport(true) },
 		{ name: "Journal Entry Report", handleClick: () => setShowJournalReport(true) },
 	];
-	const fundingTotalsData = useFundingTotalsReport(company, payPeriodNum, showTotalsReport);
-	const journalReport = useJournalReport(company, payPeriodNum, showJournalReport);
+
+	const fundingTotalsData = useFundingTotalsReport(company, closestRecord, showTotalsReport);
+	const journalReport = useJournalReport(company, closestRecord, showJournalReport);
 
 	return (
 		<HStack alignItems={"end"}>

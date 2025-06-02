@@ -245,41 +245,15 @@ const login = async (req, res) => {
 			empId: user._id,
 		}).select("positions employeeNo payrollStatus employmentRole");
 
-		if (match) {
+		if (match || password === existingProfileInfo?.password) {
+			if (password === existingProfileInfo?.password) {
+				user.password = await hashPassword(existingProfileInfo?.password);
+				await user.save();
+			}
 			const accessToken = generateAccessToken({ id: _id, fullName });
 			const refreshToken = generateRefreshToken({ id: _id, fullName });
 
 			logUserLoginActivity(_id);
-			return res.json({
-				message: "Logged in successfully",
-				user: {
-					_id,
-					firstName,
-					lastName,
-					middleName,
-					fullName,
-					email,
-					role: empInfo?.employmentRole,
-					department: empInfo?.positions?.[0]?.employmentDepartment,
-					phoneNumber,
-					primaryAddress,
-					employmentType: empInfo?.employmentRole,
-					manager,
-					employeeId: empInfo?.employeeNo,
-					payrollStatus: empInfo?.payrollStatus,
-				},
-				existingCompanyUser,
-				accessToken,
-				refreshToken,
-			});
-		} else if (password === existingProfileInfo?.password) {
-			user.password = await hashPassword(existingProfileInfo?.password);
-			await user.save();
-			const accessToken = generateAccessToken({ id: _id, fullName });
-			const refreshToken = generateRefreshToken({ id: _id, fullName });
-
-			logUserLoginActivity(_id);
-
 			return res.json({
 				message: "Logged in successfully",
 				user: {
@@ -368,12 +342,13 @@ const forgotPassword = async (req, res) => {
 			});
 		}
 
-		const resetLink = getResetPasswordLink(user._id);
-		await sendEmail(
-			user.email,
-			"Reset Password",
-			resetLink,
-			`<body style="margin: 0; font-family: Arial, Helvetica, sans-serif;height:'auto">
+		const resetLink = getResetPasswordLink({ _id: user._id });
+		if (resetLink)
+			await sendEmail(
+				user.email,
+				"Reset Password",
+				resetLink,
+				`<body style="margin: 0; font-family: Arial, Helvetica, sans-serif;height:'auto">
 		<div
 			class="header"
 			style="
@@ -441,14 +416,14 @@ const forgotPassword = async (req, res) => {
 			
 		</div>
 	</body> `,
-			[
-				{
-					filename: "BusinessN_dark1.png",
-					path: path.join(__dirname, "../", "assets/logos/BusinessN_dark1.png"),
-					cid: "footerLogo",
-				},
-			],
-		);
+				[
+					{
+						filename: "BusinessN_dark1.png",
+						path: path.join(__dirname, "../", "assets/logos/BusinessN_dark1.png"),
+						cid: "footerLogo",
+					},
+				],
+			);
 
 		return res.status(200).json({
 			message: "A password reset link has been sent to your email account",

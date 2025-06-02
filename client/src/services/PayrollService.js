@@ -135,21 +135,21 @@ const PayrollService = {
 		);
 	},
 
-	async getTotalFundingPayReportDetails(company, payNum, isExtraRun) {
+	async getTotalFundingPayReportDetails(company, payNum, isExtraRun, frequency) {
 		return apiService.get(
-			`/payroll/payDetailsReport/funds/report/${company}/${payNum}/${isExtraRun}`,
+			`/payroll/payDetailsReport/funds/report/${company}/${payNum}/${isExtraRun}/${frequency}`,
 		);
 	},
 
-	async getTotalsPayReportDetails(company, payNum, isExtraRun) {
+	async getTotalsPayReportDetails(company, payNum, isExtraRun, frequency) {
 		return apiService.get(
-			`/payroll/payDetailsReport/funds/totals/${company}/${payNum}/${isExtraRun}`,
+			`/payroll/payDetailsReport/funds/totals/${company}/${payNum}/${isExtraRun}/${frequency}`,
 		);
 	},
 
-	async getJournalEntryReportDetails(company, payNum, isExtraRun) {
+	async getJournalEntryReportDetails(company, payNum, isExtraRun, frequency) {
 		return apiService.get(
-			`/payroll/payDetailsReport/funds/journals/${company}/${payNum}/${isExtraRun}`,
+			`/payroll/payDetailsReport/funds/journals/${company}/${payNum}/${isExtraRun}/${frequency}`,
 		);
 	},
 

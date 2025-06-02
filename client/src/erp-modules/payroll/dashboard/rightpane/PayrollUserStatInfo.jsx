@@ -54,10 +54,10 @@ const PayrollUserStatInfo = ({
 
 	return (
 		<>
-			<VStack justify="center" align="center">
+			{/* <VStack justify="center" align="center">
 				<TextTitle title={name} />
 				<NormalTextTitle size="sm" title={email} color="gray.500" />
-			</VStack>
+			</VStack> */}
 			<HStack justify="space-between">
 				{stats.approvalDate &&
 					Object.values(stats)?.map(({ name, value, icon: Icon, iconColor }) => (

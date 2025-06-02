@@ -75,7 +75,7 @@ const ChatMessages = ({ userId, company }) => {
 		setCurrentChat(isPersonal ? conversation.messages : conversation.groupMessages);
 	};
 
-	const NoMessage = ({ title }) => <TextTitle p="10px" title={title} />;
+	const NoMessage = ({ title }) => <TextTitle color="var(--banner_bg)" p="10px" title={title} />;
 
 	return (
 		<Box mt={2} fontWeight="bold">

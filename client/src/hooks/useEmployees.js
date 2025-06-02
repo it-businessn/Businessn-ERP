@@ -11,14 +11,10 @@ const useEmployees = (
 ) => {
 	const [employees, setEmployees] = useState(null);
 	const [filteredEmployees, setFilteredEmployees] = useState(null);
+	const isPayrollActiveState = isPayrollState === true || isPayrollState?.isPayrollActive;
 
-	const isPayrollActiveState =
-		isPayrollState === true
-			? isPayrollState
-			: isPayrollState?.isPayrollActive && !isPayrollState?.isPayrollInactive;
-
-	const isPayrollInActiveState =
-		!isPayrollState?.isPayrollActive && isPayrollState?.isPayrollInactive;
+	const isPayrollInActiveState = isPayrollState?.isPayrollInactive;
+	const isPayrollTerminatedState = isPayrollState?.isPayrollTerminated;
 
 	useEffect(() => {
 		const fetchAllEmployees = async () => {
@@ -29,7 +25,7 @@ const useEmployees = (
 							deptName,
 							selectedPayGroupOption,
 					  )
-					: isPayrollInActiveState
+					: isPayrollTerminatedState
 					? await UserService.getPayrollInActiveCompanyUsers(
 							company,
 							deptName,
