@@ -7,17 +7,33 @@ import { useEffect, useState } from "react";
 import SettingService from "services/SettingService";
 import CrewMultiSelectDropdown from "./CrewMultiSelectDropdown";
 
-const AddCrew = ({ company, isOpen, onClose, costCenters, departments, setRefresh, employees }) => {
+const EditCrew = ({
+	crew,
+	company,
+	isOpen,
+	costCenters,
+	employees,
+	departments,
+	onClose,
+	setRefresh,
+}) => {
 	const toast = useToast();
-	const [publisher, setPublisher] = useState("");
-	const [crewName, setCrewName] = useState("");
-	const [isSubmitting, setIsSubmitting] = useState(false);
+	const [publisher, setPublisher] = useState(crew?.createdBy);
+	const [crewName, setCrewName] = useState(crew?.name);
 	const [selectedCostCenters, setSelectedCostCenters] = useState([]);
-	const [filteredDepartments, setFilteredDepartments] = useState(null);
-	const [filteredEmployees, setFilteredEmployees] = useState([]);
 	const [selectedDepartments, setSelectedDepartments] = useState([]);
 	const [selectedEmployees, setSelectedEmployees] = useState([]);
+	const [filteredDepartments, setFilteredDepartments] = useState(null);
+	const [filteredEmployees, setFilteredEmployees] = useState([]);
 	const [openMenu, setOpenMenu] = useState(null);
+
+	useEffect(() => {
+		if (crew) {
+			setSelectedCostCenters(crew?.config?.costCenter);
+			setSelectedDepartments(crew?.config?.department);
+			setSelectedEmployees(crew?.config?.employee);
+		}
+	}, [crew]);
 
 	useEffect(() => {
 		if (departments && selectedCostCenters?.length) {
@@ -42,6 +58,7 @@ const AddCrew = ({ company, isOpen, onClose, costCenters, departments, setRefres
 				),
 			);
 			setFilteredEmployees(selectedEmps);
+			if (!selectedEmps?.length) setSelectedEmployees(selectedEmps);
 		}
 	}, [selectedDepartments?.length, employees]);
 
@@ -53,8 +70,7 @@ const AddCrew = ({ company, isOpen, onClose, costCenters, departments, setRefres
 		if (openMenu === menu) setOpenMenu(null);
 	};
 
-	const handleCreateCrew = async () => {
-		setIsSubmitting(true);
+	const handleUpdateCrew = async () => {
 		const result = {
 			createdBy: publisher,
 			crewName,
@@ -63,7 +79,7 @@ const AddCrew = ({ company, isOpen, onClose, costCenters, departments, setRefres
 				department: selectedDepartments,
 				employee: selectedEmployees,
 			},
-			companyName: company,
+			companyName: crew.companyName,
 			// exclude: {
 			// 	costCenter: excludeCostCenter,
 			// 	department: excludeDepartment,
@@ -71,25 +87,21 @@ const AddCrew = ({ company, isOpen, onClose, costCenters, departments, setRefres
 			// },
 		};
 		try {
-			await SettingService.addCrew(result);
+			await SettingService.updateCrew(result, crew._id);
 			toast({
-				title: "Crew added successfully",
+				title: "Crew updated successfully",
 				status: "success",
 				duration: 1500,
 				isClosable: true,
-				position: "top-right",
 			});
-			setRefresh((prev) => !prev);
-			setCrewName("");
 			onClose();
+			setRefresh((prev) => !prev);
 		} catch (error) {
 			console.log("An error occurred. Please try again.", error);
-		} finally {
-			setIsSubmitting(false);
 		}
 	};
 	return (
-		<ModalForm title="Setup New Crew" isOpen={isOpen} onClose={onClose}>
+		<ModalForm title="Edit Crew" isOpen={isOpen} onClose={onClose}>
 			{/* <Box maxW="600px" mx="auto" p={5}> */}
 			<Stack spacing={3}>
 				<Card>
@@ -173,13 +185,12 @@ const AddCrew = ({ company, isOpen, onClose, costCenters, departments, setRefres
 				<PrimaryButton
 					size="sm"
 					isDisabled={!crewName}
-					name="Create Crew"
-					onOpen={() => handleCreateCrew()}
-					isLoading={isSubmitting}
+					name="Submit"
+					onOpen={() => handleUpdateCrew()}
 				/>
 			</Stack>
 			{/* </Box> */}
 		</ModalForm>
 	);
 };
-export default AddCrew;
+export default EditCrew;

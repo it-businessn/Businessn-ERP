@@ -54,6 +54,10 @@ const SettingService = {
 		return apiService.post("/setup/crews", data);
 	},
 
+	async updateCrew(data, id) {
+		return apiService.put(`/setup/crews/${id}`, data, id);
+	},
+
 	async addPositionRole(data) {
 		return apiService.post("/setup/position-roles", data);
 	},

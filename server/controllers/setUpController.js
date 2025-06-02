@@ -111,6 +111,23 @@ const addCrew = async (req, res) => {
 	}
 };
 
+const updateCrew = async (req, res) => {
+	const { id } = req.params;
+	try {
+		const { createdBy, crewName, companyName, include } = req.body;
+		const updatedData = {
+			name: crewName,
+			createdBy,
+			config: include,
+			companyName,
+		};
+		const crew = await Crew.findByIdAndUpdate(id, { $set: updatedData }, { new: true });
+		res.status(200).json(crew);
+	} catch (error) {
+		console.log(error, "Error in updating");
+	}
+};
+
 const addRole = async (req, res) => {
 	const { name, description, companyName } = req.body;
 
@@ -696,6 +713,7 @@ module.exports = {
 	getModules,
 	updateModule,
 	updateGroup,
+	updateCrew,
 	getGroups,
 	addGroup,
 	findGroupEmployees,

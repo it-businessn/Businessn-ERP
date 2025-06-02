@@ -18,7 +18,7 @@ const useCrews = (company, refresh) => {
 		fetchAllCrews();
 	}, [company, refresh]);
 
-	return { crews, selectedCrew, setSelectedCrew };
+	return { crews, setCrews, selectedCrew, setSelectedCrew };
 };
 
 export default useCrews;

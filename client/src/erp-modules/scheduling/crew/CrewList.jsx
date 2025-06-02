@@ -15,16 +15,26 @@ import LeftIconButton from "components/ui/button/LeftIconButton";
 import NormalTextTitle from "components/ui/NormalTextTitle";
 import TextTitle from "components/ui/text/TextTitle";
 import useCrews from "hooks/useCrews";
+import { useState } from "react";
 import { HiPencil } from "react-icons/hi";
+import EditCrew from "./EditCrew";
 
-const CrewList = ({ company, refresh }) => {
+const CrewList = ({ company, refresh, setRefresh, employees, costCenters, departments }) => {
 	const TABLE_COL_COLOR = {
 		hoverBg: useColorModeValue("gray.50", "gray.700"),
 		borderColor: useColorModeValue("gray.200", "gray.600"),
 		nameBoxBg: useColorModeValue("blue.50", "blue.900"),
 		nameColor: useColorModeValue("blue.600", "blue.200"),
 	};
-	const { crews } = useCrews(company, refresh);
+	const { crews, setCrews } = useCrews(company, refresh);
+	const [editRecord, setEditRecord] = useState(null);
+
+	// const handleEdit = () => {
+	// 	setCrews((prev) => prev.map((record) => (record._id === editRecord._id ? editRecord : record)));
+	// 	handleClose();
+	// };
+
+	const handleClose = () => setEditRecord(null);
 
 	return (
 		<Box overflow="auto">
@@ -51,19 +61,19 @@ const CrewList = ({ company, refresh }) => {
 							</Td>
 						</Tr>
 					)}
-					{crews?.map(({ _id, createdBy, name }) => {
+					{crews?.map((crew) => {
 						return (
 							<Tr
-								key={_id}
+								key={crew._id}
 								_hover={{ bg: TABLE_COL_COLOR.hoverBg }}
 								transition="all 0.2s"
 								cursor="pointer"
 							>
 								<Td py={1} borderBottomColor={TABLE_COL_COLOR.borderColor}>
-									<NormalTextTitle size="sm" title={name} />
+									<NormalTextTitle size="sm" title={crew.name} />
 								</Td>
 								<Td py={0} borderBottomColor={TABLE_COL_COLOR.borderColor}>
-									<NormalTextTitle size="sm" title={createdBy} />
+									<NormalTextTitle size="sm" title={crew.createdBy} />
 								</Td>
 								<Td py={0} borderBottomColor={TABLE_COL_COLOR.borderColor}>
 									<HStack spacing={2}>
@@ -71,7 +81,7 @@ const CrewList = ({ company, refresh }) => {
 											name="Edit Configuration"
 											size="xs"
 											icon={<HiPencil color="#4e2847" />}
-											// handleClick={() => setShowAdd(true)}
+											handleClick={() => setEditRecord(crew)}
 											color="#4e2847"
 											_hover={{
 												bg: "transparent",
@@ -80,7 +90,7 @@ const CrewList = ({ company, refresh }) => {
 											}}
 											px={4}
 											variant="ghost"
-											bg={"#fff"}
+											bg="transparent"
 										/>
 									</HStack>
 								</Td>
@@ -89,6 +99,18 @@ const CrewList = ({ company, refresh }) => {
 					})}
 				</Tbody>
 			</Table>
+			{editRecord && (
+				<EditCrew
+					employees={employees}
+					company={company}
+					crew={editRecord}
+					isOpen={editRecord}
+					onClose={handleClose}
+					costCenters={costCenters}
+					departments={departments}
+					setRefresh={setRefresh}
+				/>
+			)}
 		</Box>
 	);
 };
