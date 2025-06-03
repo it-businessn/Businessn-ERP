@@ -21,16 +21,9 @@ import {
 import TextTitle from "components/ui/text/TextTitle";
 import { useState } from "react";
 import { BankingFormSchema } from "validation/BankDetails";
-import { bankingSubSteps } from "./userInfoDetails";
+import { bankingSubSteps, tabPanelStyleCss, tabScrollCss } from "./customInfo";
 
-const BankingInfo = ({
-	bankingSubStep,
-	setBankingSubStep,
-	tabPanelStyleCss,
-	tabScrollCss,
-	formData,
-	handleChange,
-}) => {
+const BankingInfo = ({ bankingSubStep, setBankingSubStep, formData, handleChange }) => {
 	// State for form validation errors
 	const [bankingErrors, setBankingErrors] = useState({
 		bankNum: "",

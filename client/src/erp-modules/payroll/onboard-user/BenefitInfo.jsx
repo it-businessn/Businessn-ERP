@@ -21,16 +21,9 @@ import {
 } from "@chakra-ui/react";
 import TextTitle from "components/ui/text/TextTitle";
 import { FaPlus } from "react-icons/fa";
-import { benefitsSubSteps } from "./userInfoDetails";
+import { benefitsSubSteps, tabPanelStyleCss, tabScrollCss } from "./customInfo";
 
-const BenefitInfo = ({
-	benefitsSubStep,
-	setBenefitsSubStep,
-	tabPanelStyleCss,
-	tabScrollCss,
-	formData,
-	handleChange,
-}) => {
+const BenefitInfo = ({ benefitsSubStep, setBenefitsSubStep, formData, handleChange }) => {
 	return (
 		<Flex height="100%">
 			<Box

@@ -1,7 +1,8 @@
 import { Box, Flex, FormControl, FormLabel, Input, Select, Stack } from "@chakra-ui/react";
 import TextTitle from "components/ui/text/TextTitle";
+import { tabScrollCss } from "./customInfo";
 
-const PayInfo = ({ tabScrollCss, formData, handleChange }) => {
+const PayInfo = ({ formData, handleChange }) => {
 	return (
 		<Box height="100%" overflowY="auto" css={tabScrollCss}>
 			<Stack spacing={4} p={5}>

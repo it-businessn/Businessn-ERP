@@ -20,13 +20,11 @@ import {
 } from "@chakra-ui/react";
 import TextTitle from "components/ui/text/TextTitle";
 import { FaInfoCircle } from "react-icons/fa";
-import { governmentSubSteps } from "./userInfoDetails";
+import { governmentSubSteps, tabPanelStyleCss, tabScrollCss } from "./customInfo";
 
 const GovernmentInfo = ({
 	governmentSubStep,
 	setGovernmentSubStep,
-	tabPanelStyleCss,
-	tabScrollCss,
 	formData,
 	handleChange,
 	governmentProvinces,

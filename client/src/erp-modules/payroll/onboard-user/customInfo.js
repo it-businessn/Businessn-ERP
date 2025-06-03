@@ -1,3 +1,5 @@
+import { generateLighterShade } from "utils";
+
 export const COUNTRIES = [
 	{
 		type: "Canada",
@@ -250,3 +252,69 @@ export const bankingSubSteps = [
 ];
 
 export const trimText = (str) => str.replace(/\s+/g, " ").trim();
+
+export const tabStyleCss = {
+	".chakra-tabs__tab-panel": {
+		padding: 0,
+		height: "100%",
+		overflow: "hidden",
+		display: "flex",
+		flexDirection: "column",
+	},
+	".chakra-tabs__tablist": {
+		borderColor: "gray.200",
+		flexShrink: 0,
+	},
+	".chakra-tabs__tab[aria-selected=true]": {
+		color: "white",
+		bg: "var(--banner_bg)",
+		borderColor: "transparent",
+	},
+	".chakra-tabs__tab[aria-selected=true]:focus": {
+		boxShadow: "none",
+	},
+	".chakra-tabs__tab:hover": {
+		bg: generateLighterShade("#371f37", 0.8),
+	},
+};
+
+export const tabPanelStyleCss = {
+	".chakra-step__separator": {
+		minHeight: "40px",
+	},
+	".chakra-step__separator[data-status=active]": {
+		bg: "var(--banner_bg)",
+	},
+	".chakra-step__separator[data-status=complete]": {
+		bg: "var(--banner_bg)",
+	},
+	".chakra-step__indicator[data-status=complete]": {
+		bg: "var(--banner_bg)",
+		borderColor: "var(--banner_bg)",
+	},
+	".chakra-step__indicator[data-status=active]": {
+		bg: "var(--banner_bg)",
+		borderColor: "var(--banner_bg)",
+	},
+	".chakra-step__indicator": {
+		width: "36px",
+		height: "36px",
+	},
+};
+
+export const tabScrollCss = {
+	"&::-webkit-scrollbar": {
+		width: "8px",
+	},
+	"&::-webkit-scrollbar-track": {
+		background: "#f1f1f1",
+		borderRadius: "4px",
+	},
+	"&::-webkit-scrollbar-thumb": {
+		background: "#c5c5c5",
+		borderRadius: "4px",
+	},
+	"&::-webkit-scrollbar-thumb:hover": {
+		background: "#a8a8a8",
+	},
+};

@@ -17,7 +17,12 @@ import {
 	StepTitle,
 } from "@chakra-ui/react";
 import TextTitle from "components/ui/text/TextTitle";
-import { COUNTRIES, personalSubSteps, tabPanelStyleCss, tabScrollCss } from "./customInfo";
+import {
+	COUNTRIES,
+	personalSubSteps,
+	tabPanelStyleCss,
+	tabScrollCss,
+} from "erp-modules/payroll/onboard-user/customInfo";
 
 const PersonalInfo = ({
 	personalSubStep,

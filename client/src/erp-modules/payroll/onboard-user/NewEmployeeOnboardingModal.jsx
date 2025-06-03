@@ -21,7 +21,6 @@ import {
 import { useEffect, useState } from "react";
 import { FaChevronLeft, FaChevronRight, FaSave, FaUserPlus } from "react-icons/fa";
 import LocalStorageService from "services/LocalStorageService";
-import { generateLighterShade } from "utils";
 
 import PayrollService from "services/PayrollService";
 import BankingInfo from "./BankingInfo";
@@ -30,77 +29,11 @@ import EmploymentInfo from "./EmploymentInfo";
 import GovernmentInfo from "./GovernmentInfo";
 import PayInfo from "./PayInfo";
 import PersonalInfo from "./PersonalInfo";
-import { COUNTRIES, trimText, userInfoDetails } from "./userInfoDetails";
+import { COUNTRIES, tabStyleCss, trimText, userInfoDetails } from "./customInfo";
 
 const NewEmployeeOnboardingModal = ({ isOpen, onClose }) => {
 	const company = LocalStorageService.getItem("selectedCompany");
 	const toast = useToast();
-
-	const tabStyleCss = {
-		".chakra-tabs__tab-panel": {
-			padding: 0,
-			height: "100%",
-			overflow: "hidden",
-			display: "flex",
-			flexDirection: "column",
-		},
-		".chakra-tabs__tablist": {
-			borderColor: "gray.200",
-			flexShrink: 0,
-		},
-		".chakra-tabs__tab[aria-selected=true]": {
-			color: "white",
-			bg: "var(--banner_bg)",
-			borderColor: "transparent",
-		},
-		".chakra-tabs__tab[aria-selected=true]:focus": {
-			boxShadow: "none",
-		},
-		".chakra-tabs__tab:hover": {
-			bg: generateLighterShade("#371f37", 0.8),
-		},
-	};
-
-	const tabPanelStyleCss = {
-		".chakra-step__separator": {
-			minHeight: "40px",
-		},
-		".chakra-step__separator[data-status=active]": {
-			bg: "var(--banner_bg)",
-		},
-		".chakra-step__separator[data-status=complete]": {
-			bg: "var(--banner_bg)",
-		},
-		".chakra-step__indicator[data-status=complete]": {
-			bg: "var(--banner_bg)",
-			borderColor: "var(--banner_bg)",
-		},
-		".chakra-step__indicator[data-status=active]": {
-			bg: "var(--banner_bg)",
-			borderColor: "var(--banner_bg)",
-		},
-		".chakra-step__indicator": {
-			width: "36px",
-			height: "36px",
-		},
-	};
-
-	const tabScrollCss = {
-		"&::-webkit-scrollbar": {
-			width: "8px",
-		},
-		"&::-webkit-scrollbar-track": {
-			background: "#f1f1f1",
-			borderRadius: "4px",
-		},
-		"&::-webkit-scrollbar-thumb": {
-			background: "#c5c5c5",
-			borderRadius: "4px",
-		},
-		"&::-webkit-scrollbar-thumb:hover": {
-			background: "#a8a8a8",
-		},
-	};
 
 	const [tabIndex, setTabIndex] = useState(0);
 	const [personalSubStep, setPersonalSubStep] = useState(0);
@@ -131,8 +64,6 @@ const NewEmployeeOnboardingModal = ({ isOpen, onClose }) => {
 				<PersonalInfo
 					personalSubStep={personalSubStep}
 					setPersonalSubStep={setPersonalSubStep}
-					tabPanelStyleCss={tabPanelStyleCss}
-					tabScrollCss={tabScrollCss}
 					formData={formData}
 					handleChange={handleChange}
 					availableProvinces={availableProvinces}
@@ -145,8 +76,6 @@ const NewEmployeeOnboardingModal = ({ isOpen, onClose }) => {
 				<EmploymentInfo
 					employmentSubStep={employmentSubStep}
 					setEmploymentSubStep={setEmploymentSubStep}
-					tabPanelStyleCss={tabPanelStyleCss}
-					tabScrollCss={tabScrollCss}
 					formData={formData}
 					handleChange={handleChange}
 					employmentProvinces={employmentProvinces}
@@ -157,16 +86,12 @@ const NewEmployeeOnboardingModal = ({ isOpen, onClose }) => {
 		},
 		{
 			name: "Pay",
-			content: (
-				<PayInfo tabScrollCss={tabScrollCss} formData={formData} handleChange={handleChange} />
-			),
+			content: <PayInfo formData={formData} handleChange={handleChange} />,
 		},
 		{
 			name: "Benefits",
 			content: (
 				<BenefitInfo
-					tabPanelStyleCss={tabPanelStyleCss}
-					tabScrollCss={tabScrollCss}
 					formData={formData}
 					handleChange={handleChange}
 					benefitsSubStep={benefitsSubStep}
@@ -180,8 +105,6 @@ const NewEmployeeOnboardingModal = ({ isOpen, onClose }) => {
 				<GovernmentInfo
 					governmentSubStep={governmentSubStep}
 					setGovernmentSubStep={setGovernmentSubStep}
-					tabPanelStyleCss={tabPanelStyleCss}
-					tabScrollCss={tabScrollCss}
 					formData={formData}
 					handleChange={handleChange}
 					governmentProvinces={governmentProvinces}
@@ -194,8 +117,6 @@ const NewEmployeeOnboardingModal = ({ isOpen, onClose }) => {
 				<BankingInfo
 					bankingSubStep={bankingSubStep}
 					setBankingSubStep={setBankingSubStep}
-					tabPanelStyleCss={tabPanelStyleCss}
-					tabScrollCss={tabScrollCss}
 					formData={formData}
 					handleChange={handleChange}
 				/>

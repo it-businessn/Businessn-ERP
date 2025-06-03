@@ -24,13 +24,17 @@ import useDepartment from "hooks/useDepartment";
 import usePaygroup from "hooks/usePaygroup";
 import usePositionRoles from "hooks/usePositionRoles";
 import useRoles from "hooks/useRoles";
-import { COUNTRIES, employmentSubSteps, PAYROLL_STATUS } from "./userInfoDetails";
+import {
+	COUNTRIES,
+	employmentSubSteps,
+	PAYROLL_STATUS,
+	tabPanelStyleCss,
+	tabScrollCss,
+} from "./customInfo";
 
 const EmploymentInfo = ({
 	employmentSubStep,
 	setEmploymentSubStep,
-	tabPanelStyleCss,
-	tabScrollCss,
 	formData,
 	handleChange,
 	company,

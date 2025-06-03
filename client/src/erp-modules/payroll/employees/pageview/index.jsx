@@ -10,7 +10,6 @@ import usePaygroup from "hooks/usePaygroup";
 import useSelectedEmp from "hooks/useSelectedEmp";
 import PageLayout from "layouts/PageLayout";
 import { useEffect, useState } from "react";
-import { FaCheckCircle } from "react-icons/fa";
 import { useParams } from "react-router-dom";
 import LocalStorageService from "services/LocalStorageService";
 import EmpProfileSearch from "../EmpProfileSearch";
@@ -21,7 +20,7 @@ import GovernmentInfo from "./employee-tabs/govt-info/GovernmentContribution";
 import PayInfo from "./employee-tabs/pay-info/PayInfo";
 import PersonalInfo from "./employee-tabs/personal-info/PersonalInfo";
 
-const Employees = ({ isOnboarding, handleClose }) => {
+const Employees = () => {
 	const { id, stepNo } = useParams();
 	const { company } = useCompany(LocalStorageService.getItem("selectedCompany"));
 	const loggedInUser = LocalStorageService.getItem("user");
@@ -38,14 +37,6 @@ const Employees = ({ isOnboarding, handleClose }) => {
 	}, [employees]);
 
 	useEffect(() => {
-		if (isOnboarding) {
-			// setTabs((prev) => prev.filter((item, index) => index < 5));
-			setEmployee(null);
-			setUserId(null);
-		}
-	}, [isOnboarding]);
-
-	useEffect(() => {
 		if (id && employees) {
 			const user = employees?.find(({ empId }) => empId?._id === id);
 			setEmployee(user);
@@ -59,136 +50,87 @@ const Employees = ({ isOnboarding, handleClose }) => {
 	const isActivePayroll =
 		employee?.payrollStatus?.includes("Active") ||
 		(!id && !employee && loggedInUser?.payrollStatus?.includes("Active"));
+
 	const employeeID = employee?.employeeNo || (!id && !employee && loggedInUser?.employeeId);
 	const employeeName = employee?.empId?.fullName || (!id && !employee && loggedInUser?.fullName);
 
-	const handleNext = (id) => setViewMode(SETUP_LIST[id]?.type);
-	const handlePrev = (id) => setViewMode(SETUP_LIST[id - 2]?.type);
-	const SETUP_LIST = [
+	const handleNext = (id) => setViewMode(EMP_INFO_TABS[id]?.type);
+	const handlePrev = (id) => setViewMode(EMP_INFO_TABS[id - 2]?.type);
+
+	const EMP_INFO_TABS = [
 		{
 			id: 0,
 			type: "Personal Info",
-
-			name: (
-				<PersonalInfo
-					id={1}
-					company={company}
-					isOnboarding={isOnboarding}
-					handleNext={handleNext}
-				/>
-			),
+			name: <PersonalInfo id={1} company={company} handleNext={handleNext} />,
 		},
 		{
 			id: 1,
 			type: "Employment",
 			name: (
-				<CorporateInfo
-					id={2}
-					company={company}
-					isOnboarding={isOnboarding}
-					handleNext={handleNext}
-					handlePrev={handlePrev}
-				/>
+				<CorporateInfo id={2} company={company} handleNext={handleNext} handlePrev={handlePrev} />
 			),
 		},
 		{
 			id: 2,
 			type: "Pay",
-			name: (
-				<PayInfo
-					id={3}
-					company={company}
-					isOnboarding={isOnboarding}
-					handleNext={handleNext}
-					handlePrev={handlePrev}
-				/>
-			),
+			name: <PayInfo id={3} company={company} handleNext={handleNext} handlePrev={handlePrev} />,
 		},
 		{
 			id: 3,
 			type: "Benefits",
 			name: (
-				<BenefitsInfo
-					id={4}
-					company={company}
-					isOnboarding={isOnboarding}
-					handleNext={handleNext}
-					handlePrev={handlePrev}
-				/>
+				<BenefitsInfo id={4} company={company} handleNext={handleNext} handlePrev={handlePrev} />
 			),
 		},
 		{
 			id: 4,
 			type: "Government",
 			name: (
-				<GovernmentInfo
-					id={5}
-					company={company}
-					isOnboarding={isOnboarding}
-					handleNext={handleNext}
-					handleClose={handleClose}
-					handlePrev={handlePrev}
-				/>
+				<GovernmentInfo id={5} company={company} handleNext={handleNext} handlePrev={handlePrev} />
 			),
 		},
 		{
 			id: 5,
 			type: "Banking",
-			name: (
-				<BankingInfo
-					id={6}
-					company={company}
-					handlePrev={handlePrev}
-					isOnboarding={isOnboarding}
-					handleClose={handleClose}
-				/>
-			),
+			name: <BankingInfo id={6} company={company} handlePrev={handlePrev} />,
 		},
 	];
 
-	const [tabs, setTabs] = useState(SETUP_LIST);
-	const tabContent = id ? SETUP_LIST[stepNo]?.type : SETUP_LIST[0]?.type;
+	const tabContent = id ? EMP_INFO_TABS[stepNo]?.type : EMP_INFO_TABS[0]?.type;
 	const [viewMode, setViewMode] = useState(tabContent);
 
-	const currentTab = tabs.find(({ type }) => type === viewMode)?.id;
+	const currentTab = EMP_INFO_TABS.find(({ type }) => type === viewMode)?.id;
 
-	const showComponent = (viewMode) => tabs.find(({ type }) => type === viewMode)?.name;
+	const showComponent = (viewMode) => EMP_INFO_TABS.find(({ type }) => type === viewMode)?.name;
 
 	return (
-		<PageLayout title={isOnboarding ? "" : "Employees"}>
-			{!isOnboarding && (
-				<HStack spacing="1em" mt="1em" justifyContent={"space-between"}>
-					<HStack spacing="1em" justifyContent={"space-between"}>
-						<Avatar
-							borderRadius="10%"
-							// onClick={handleToggle}
-							name={employeeName}
-							src=""
-							boxSize="15"
-						/>
-						<VStack spacing={0} align={"start"}>
-							<TextTitle size="sm" title={employeeName} />
-							<NormalTextTitle size="xs" title={employeeID} />
-							{isActivePayroll && <ActiveBadge title={"Payroll Activated"} />}
-						</VStack>
-					</HStack>
-					<Spacer />
-					<EmpProfileSearch
-						filteredEmployees={filteredEmployees}
-						setFilteredEmployees={setFilteredEmployees}
-						setUserId={setUserId}
-						setEmployee={setEmployee}
-						employees={employees}
+		<PageLayout title={"Employees"}>
+			<HStack spacing="1em" mt="1em" justifyContent={"space-between"}>
+				<HStack spacing="1em" justifyContent={"space-between"}>
+					<Avatar
+						borderRadius="10%"
+						// onClick={handleToggle}
+						name={employeeName}
+						src=""
+						boxSize="15"
 					/>
+					<VStack spacing={0} align={"start"}>
+						<TextTitle size="sm" title={employeeName} />
+						<NormalTextTitle size="xs" title={employeeID} />
+						{isActivePayroll && <ActiveBadge title={"Payroll Activated"} />}
+					</VStack>
 				</HStack>
-			)}
+				<Spacer />
+				<EmpProfileSearch
+					filteredEmployees={filteredEmployees}
+					setFilteredEmployees={setFilteredEmployees}
+					setUserId={setUserId}
+					setEmployee={setEmployee}
+					employees={employees}
+				/>
+			</HStack>
 
-			<HStack
-				spacing="1em"
-				mt={isOnboarding ? 0 : "1em"}
-				justifyContent={"space-between"}
-				w={"100%"}
-			>
+			<HStack spacing="1em" mt={"1em"} justifyContent={"space-between"} w={"100%"}>
 				<SimpleGrid
 					columns={{ base: 4, lg: 6 }}
 					spacing="1em"
@@ -198,16 +140,13 @@ const Employees = ({ isOnboarding, handleClose }) => {
 					p={"8px"}
 					w={"100%"}
 				>
-					{tabs?.map((_) => (
+					{EMP_INFO_TABS?.map((_) => (
 						<RadioButtonGroup
 							key={_?.id}
 							name={_?.type}
 							selectedFilter={viewMode}
 							handleFilterClick={(name) => setViewMode(name)}
 							fontSize={"1em"}
-							rightIcon={
-								isOnboarding && <FaCheckCircle color={_?.id <= currentTab ? "green" : "grey"} />
-							}
 						/>
 					))}
 				</SimpleGrid>
