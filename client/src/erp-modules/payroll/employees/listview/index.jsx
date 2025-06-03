@@ -11,7 +11,7 @@ import {
 } from "@chakra-ui/react";
 import LeftIconButton from "components/ui/button/LeftIconButton";
 import { ROLES } from "constant";
-import NewEmployeeOnboardingModal from "erp-modules/payroll/employees/NewEmployeeOnboardingModal";
+import NewEmployeeOnboardingModal from "erp-modules/payroll/onboard-user/NewEmployeeOnboardingModal";
 import PayrollActions from "erp-modules/payroll/workview/paygroup-header-table/PayrollActions";
 import useCompany from "hooks/useCompany";
 import useEmployees from "hooks/useEmployees";
