@@ -25,6 +25,7 @@ const PersonalInfo = ({
 	formData,
 	handleChange,
 	availableProvinces,
+	isEditMode,
 }) => {
 	return (
 		<Flex height="100%">
@@ -60,7 +61,7 @@ const PersonalInfo = ({
 				</Stepper>
 			</Box>
 
-			<Box flex="1" overflowY="auto" css={tabScrollCss}>
+			<Box flex={isEditMode ? 0.7 : 1} overflowY="auto" css={tabScrollCss}>
 				{personalSubStep === 0 && (
 					<Stack spacing={4} p={5}>
 						<TextTitle size="xl" title="Basic Information" />

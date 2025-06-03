@@ -40,6 +40,7 @@ const EmploymentInfo = ({
 	company,
 	dataRefresh,
 	employmentProvinces,
+	isEditMode,
 }) => {
 	const roles = useRoles(company, dataRefresh);
 	const costCentres = useCostCenter(company, dataRefresh);
@@ -81,7 +82,7 @@ const EmploymentInfo = ({
 				</Stepper>
 			</Box>
 
-			<Box flex="1" overflowY="auto" css={tabScrollCss}>
+			<Box flex={isEditMode ? 0.7 : 1} overflowY="auto" css={tabScrollCss}>
 				{/* Identification & Status Sub-step */}
 				{employmentSubStep === 0 && (
 					<Stack spacing={4} p={5}>

@@ -28,6 +28,7 @@ const GovernmentInfo = ({
 	formData,
 	handleChange,
 	governmentProvinces,
+	isEditMode,
 }) => {
 	return (
 		<Flex height="100%">
@@ -63,7 +64,7 @@ const GovernmentInfo = ({
 				</Stepper>
 			</Box>
 
-			<Box flex="1" overflowY="auto" css={tabScrollCss}>
+			<Box flex={isEditMode ? 0.7 : 1} overflowY="auto" css={tabScrollCss}>
 				{governmentSubStep === 0 && (
 					<Stack spacing={4} p={5}>
 						<TextTitle size="xl" title="Exemption" />

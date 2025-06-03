@@ -23,7 +23,13 @@ import TextTitle from "components/ui/text/TextTitle";
 import { FaPlus } from "react-icons/fa";
 import { benefitsSubSteps, tabPanelStyleCss, tabScrollCss } from "./customInfo";
 
-const BenefitInfo = ({ benefitsSubStep, setBenefitsSubStep, formData, handleChange }) => {
+const BenefitInfo = ({
+	benefitsSubStep,
+	setBenefitsSubStep,
+	formData,
+	handleChange,
+	isEditMode,
+}) => {
 	return (
 		<Flex height="100%">
 			<Box
@@ -58,7 +64,7 @@ const BenefitInfo = ({ benefitsSubStep, setBenefitsSubStep, formData, handleChan
 				</Stepper>
 			</Box>
 
-			<Box flex="1" overflowY="auto" css={tabScrollCss}>
+			<Box flex={isEditMode ? 0.7 : 1} overflowY="auto" css={tabScrollCss}>
 				{/* Vacation Sub-step */}
 				{benefitsSubStep === 0 && (
 					<Stack spacing={2} p={5}>

@@ -4,7 +4,7 @@ import { tabScrollCss } from "./customInfo";
 
 const PayInfo = ({ formData, handleChange }) => {
 	return (
-		<Box height="100%" overflowY="auto" css={tabScrollCss}>
+		<Box height="100%" w="70%" overflowY="auto" css={tabScrollCss}>
 			<Stack spacing={4} p={5}>
 				<TextTitle size="xl" title="Compensation Information" />
 

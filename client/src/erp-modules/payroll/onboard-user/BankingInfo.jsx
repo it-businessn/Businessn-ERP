@@ -23,7 +23,7 @@ import { useState } from "react";
 import { BankingFormSchema } from "validation/BankDetails";
 import { bankingSubSteps, tabPanelStyleCss, tabScrollCss } from "./customInfo";
 
-const BankingInfo = ({ bankingSubStep, setBankingSubStep, formData, handleChange }) => {
+const BankingInfo = ({ bankingSubStep, setBankingSubStep, formData, handleChange, isEditMode }) => {
 	// State for form validation errors
 	const [bankingErrors, setBankingErrors] = useState({
 		bankNum: "",
@@ -147,7 +147,7 @@ const BankingInfo = ({ bankingSubStep, setBankingSubStep, formData, handleChange
 				</Stepper>
 			</Box>
 
-			<Box flex="1" overflowY="auto" css={tabScrollCss}>
+			<Box flex={isEditMode ? 0.7 : 1} overflowY="auto" css={tabScrollCss}>
 				{/* Payment Notification Sub-step */}
 				{bankingSubStep === 0 && (
 					<Stack spacing={4} p={5}>

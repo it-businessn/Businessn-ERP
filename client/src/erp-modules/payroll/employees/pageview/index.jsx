@@ -1,9 +1,29 @@
-import { Avatar, HStack, SimpleGrid, Spacer, VStack } from "@chakra-ui/react";
+import {
+	Avatar,
+	HStack,
+	Spacer,
+	Tab,
+	TabList,
+	TabPanel,
+	TabPanels,
+	Tabs,
+	VStack,
+} from "@chakra-ui/react";
 import ActiveBadge from "components/ActiveBadge";
 import NormalTextTitle from "components/ui/NormalTextTitle";
-import RadioButtonGroup from "components/ui/tab/RadioButtonGroup";
 import TextTitle from "components/ui/text/TextTitle";
 import { ROLES } from "constant";
+import BankingInfo from "erp-modules/payroll/onboard-user/BankingInfo";
+import BenefitInfo from "erp-modules/payroll/onboard-user/BenefitInfo";
+import {
+	COUNTRIES,
+	tabStyleCss,
+	userInfoDetails,
+} from "erp-modules/payroll/onboard-user/customInfo";
+import EmploymentInfo from "erp-modules/payroll/onboard-user/EmploymentInfo";
+import GovernmentInfo from "erp-modules/payroll/onboard-user/GovernmentInfo";
+import PayInfo from "erp-modules/payroll/onboard-user/PayInfo";
+import PersonalInfo from "erp-modules/payroll/onboard-user/PersonalInfo";
 import useCompany from "hooks/useCompany";
 import useCompanyEmployees from "hooks/useCompanyEmployees";
 import usePaygroup from "hooks/usePaygroup";
@@ -13,12 +33,6 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import LocalStorageService from "services/LocalStorageService";
 import EmpProfileSearch from "../EmpProfileSearch";
-import BankingInfo from "./employee-tabs/bank-info/BankingInfo";
-import BenefitsInfo from "./employee-tabs/benefit-info/BenefitsInfo";
-import CorporateInfo from "./employee-tabs/employment-info/CorporateInfo";
-import GovernmentInfo from "./employee-tabs/govt-info/GovernmentContribution";
-import PayInfo from "./employee-tabs/pay-info/PayInfo";
-import PersonalInfo from "./employee-tabs/personal-info/PersonalInfo";
 
 const Employees = () => {
 	const { id, stepNo } = useParams();
@@ -31,6 +45,7 @@ const Employees = () => {
 	const { selectedPayGroupOption } = usePaygroup(company, false);
 	const employees = useCompanyEmployees(company, deptName, selectedPayGroupOption);
 	const [filteredEmployees, setFilteredEmployees] = useState(null);
+	const [tabIndex, setTabIndex] = useState(parseInt(stepNo) || 0);
 
 	useEffect(() => {
 		setFilteredEmployees(employees);
@@ -54,57 +69,161 @@ const Employees = () => {
 	const employeeID = employee?.employeeNo || (!id && !employee && loggedInUser?.employeeId);
 	const employeeName = employee?.empId?.fullName || (!id && !employee && loggedInUser?.fullName);
 
-	const handleNext = (id) => setViewMode(EMP_INFO_TABS[id]?.type);
-	const handlePrev = (id) => setViewMode(EMP_INFO_TABS[id - 2]?.type);
+	const [personalSubStep, setPersonalSubStep] = useState(0);
+	const [employmentSubStep, setEmploymentSubStep] = useState(0);
+	const [benefitsSubStep, setBenefitsSubStep] = useState(0);
+	const [governmentSubStep, setGovernmentSubStep] = useState(0);
+	const [bankingSubStep, setBankingSubStep] = useState(0);
+	const [formData, setFormData] = useState(userInfoDetails);
+	const [availableProvinces, setAvailableProvinces] = useState([]);
+	const [employmentProvinces, setEmploymentProvinces] = useState([]);
+	const [governmentProvinces, setGovernmentProvinces] = useState([]);
+	const [dataRefresh, setDataRefresh] = useState(false);
+
+	useEffect(() => {
+		const selectedCountry = COUNTRIES.find(
+			(country) => country.type === formData.contactInfo.country,
+		);
+		if (selectedCountry) {
+			setAvailableProvinces(selectedCountry?.provinces);
+			if (!selectedCountry.provinces.includes(formData.contactInfo.province)) {
+				setFormData({
+					...formData,
+					contactInfo: {
+						...formData.contactInfo,
+						province: selectedCountry.provinces[0],
+					},
+				});
+			}
+		}
+	}, [formData.contactInfo.country]);
+
+	useEffect(() => {
+		const selectedCountry = COUNTRIES.find(
+			(country) => country.type === formData.employmentInfo.employmentCountry,
+		);
+		if (selectedCountry) {
+			setEmploymentProvinces(selectedCountry.provinces);
+			if (!selectedCountry.provinces.includes(formData.employmentInfo.employmentRegion)) {
+				setFormData({
+					...formData,
+					employmentInfo: {
+						...formData.employmentInfo,
+						province: selectedCountry.provinces[0],
+					},
+				});
+			}
+		}
+	}, [formData.employmentInfo.employmentCountry]);
+
+	useEffect(() => {
+		const selectedCountry = COUNTRIES.find(
+			(country) => country.type === formData.governmentInfo.federalTax,
+		);
+		if (selectedCountry) {
+			setGovernmentProvinces(selectedCountry.provinces);
+			if (!selectedCountry.provinces.includes(formData.governmentInfo.regionalTax)) {
+				setFormData({
+					...formData,
+					governmentInfo: {
+						...formData.governmentInfo,
+						regionalTax: selectedCountry.provinces[0],
+					},
+				});
+			}
+		}
+	}, [formData.governmentInfo.federalTax]);
+
+	const handleChange = (section, field, value) => {
+		setFormData({
+			...formData,
+			[section]: {
+				...formData[section],
+				[field]: value,
+			},
+		});
+	};
 
 	const EMP_INFO_TABS = [
 		{
 			id: 0,
-			type: "Personal Info",
-			name: <PersonalInfo id={1} company={company} handleNext={handleNext} />,
+			name: "Personal Info",
+			content: (
+				<PersonalInfo
+					personalSubStep={personalSubStep}
+					setPersonalSubStep={setPersonalSubStep}
+					formData={formData}
+					handleChange={handleChange}
+					availableProvinces={availableProvinces}
+					isEditMode
+				/>
+			),
 		},
 		{
 			id: 1,
-			type: "Employment",
-			name: (
-				<CorporateInfo id={2} company={company} handleNext={handleNext} handlePrev={handlePrev} />
+			name: "Employment",
+			content: (
+				<EmploymentInfo
+					employmentSubStep={employmentSubStep}
+					setEmploymentSubStep={setEmploymentSubStep}
+					formData={formData}
+					handleChange={handleChange}
+					employmentProvinces={employmentProvinces}
+					company={company}
+					dataRefresh={dataRefresh}
+					isEditMode
+				/>
 			),
 		},
 		{
 			id: 2,
-			type: "Pay",
-			name: <PayInfo id={3} company={company} handleNext={handleNext} handlePrev={handlePrev} />,
+			name: "Pay",
+			content: <PayInfo formData={formData} handleChange={handleChange} isEditMode />,
 		},
 		{
 			id: 3,
-			type: "Benefits",
-			name: (
-				<BenefitsInfo id={4} company={company} handleNext={handleNext} handlePrev={handlePrev} />
+			name: "Benefits",
+			content: (
+				<BenefitInfo
+					formData={formData}
+					handleChange={handleChange}
+					benefitsSubStep={benefitsSubStep}
+					setBenefitsSubStep={setBenefitsSubStep}
+					isEditMode
+				/>
 			),
 		},
 		{
 			id: 4,
-			type: "Government",
-			name: (
-				<GovernmentInfo id={5} company={company} handleNext={handleNext} handlePrev={handlePrev} />
+			name: "Government",
+			content: (
+				<GovernmentInfo
+					governmentSubStep={governmentSubStep}
+					setGovernmentSubStep={setGovernmentSubStep}
+					formData={formData}
+					handleChange={handleChange}
+					governmentProvinces={governmentProvinces}
+					isEditMode
+				/>
 			),
 		},
 		{
 			id: 5,
-			type: "Banking",
-			name: <BankingInfo id={6} company={company} handlePrev={handlePrev} />,
+			name: "Banking",
+			content: (
+				<BankingInfo
+					bankingSubStep={bankingSubStep}
+					setBankingSubStep={setBankingSubStep}
+					formData={formData}
+					handleChange={handleChange}
+					isEditMode
+				/>
+			),
 		},
 	];
 
-	const tabContent = id ? EMP_INFO_TABS[stepNo]?.type : EMP_INFO_TABS[0]?.type;
-	const [viewMode, setViewMode] = useState(tabContent);
-
-	const currentTab = EMP_INFO_TABS.find(({ type }) => type === viewMode)?.id;
-
-	const showComponent = (viewMode) => EMP_INFO_TABS.find(({ type }) => type === viewMode)?.name;
-
 	return (
-		<PageLayout title={"Employees"}>
+		<PageLayout title="Employee Info">
 			<HStack spacing="1em" mt="1em" justifyContent={"space-between"}>
 				<HStack spacing="1em" justifyContent={"space-between"}>
 					<Avatar
@@ -129,42 +248,36 @@ const Employees = () => {
 					employees={employees}
 				/>
 			</HStack>
-
-			<HStack spacing="1em" mt={"1em"} justifyContent={"space-between"} w={"100%"}>
-				<SimpleGrid
-					columns={{ base: 4, lg: 6 }}
-					spacing="1em"
-					my="5"
-					bg={"var(--primary_bg)"}
-					borderRadius={"20px"}
-					p={"8px"}
-					w={"100%"}
-				>
-					{EMP_INFO_TABS?.map((_) => (
-						<RadioButtonGroup
-							key={_?.id}
-							name={_?.type}
-							selectedFilter={viewMode}
-							handleFilterClick={(name) => setViewMode(name)}
-							fontSize={"1em"}
-						/>
+			<Tabs
+				index={tabIndex}
+				onChange={setTabIndex}
+				variant="enclosed"
+				colorScheme="purple"
+				display="flex"
+				flexDirection="column"
+				height="100%"
+				sx={tabStyleCss}
+			>
+				<TabList bg="gray.50" px={6} pt={5} pb={2} justifyContent="space-between">
+					{EMP_INFO_TABS.map(({ name }) => (
+						<Tab
+							w="100%"
+							key={name}
+							fontWeight="semibold"
+							px={8}
+							_selected={{ color: "white", bg: "var(--banner_bg)" }}
+						>
+							{name}
+						</Tab>
 					))}
-				</SimpleGrid>
+				</TabList>
 
-				{/* <Button
-					borderRadius={"50px"}
-					border={"1px"}
-					w={"17%"}
-					color={"var(--tab_radio)"}
-					bgColor={generateLighterShade("#537eee", 0.8)}
-					// onClick={() => handleFilterClick(name)}
-					variant={"outline"}
-					leftIcon={<FaSearch />}
-				>
-					Search here
-				</Button> */}
-			</HStack>
-			{showComponent(viewMode)}
+				<TabPanels flex="1" overflow="hidden">
+					{EMP_INFO_TABS.map(({ name, content }, i) => (
+						<TabPanel key={`${name}_content_${i}`}>{content}</TabPanel>
+					))}
+				</TabPanels>
+			</Tabs>
 		</PageLayout>
 	);
 };
