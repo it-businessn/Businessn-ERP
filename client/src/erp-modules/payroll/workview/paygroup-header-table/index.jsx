@@ -1,10 +1,10 @@
 import { HStack, Select, SimpleGrid, VStack } from "@chakra-ui/react";
 import PrimaryButton from "components/ui/button/PrimaryButton";
 import BoxCard from "components/ui/card";
+import NewEmployeeOnboardingModal from "erp-modules/payroll/onboard-user/NewEmployeeOnboardingModal";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { payrollROEPath } from "routes";
-import OnboardEmpModal from "../../../sales/onboarding/OnboardEmpModal";
 import ExtraPayrunModal from "./ExtraPayrunModal";
 import PayrollActions from "./PayrollActions";
 import WorkviewTable from "./WorkviewTable";
@@ -90,10 +90,9 @@ const PaygroupTable = ({
 						/>
 					)}
 					{showOnboard && (
-						<OnboardEmpModal
-							title="Onboard employee"
-							showOnboard={showOnboard}
-							setShowOnboard={setShowOnboard}
+						<NewEmployeeOnboardingModal
+							isOpen={showOnboard}
+							onClose={() => setShowOnboard(false)}
 						/>
 					)}
 					<WorkviewTable
