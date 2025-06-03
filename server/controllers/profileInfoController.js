@@ -76,7 +76,6 @@ const updateEmployee = async (empId, data) => {
 		province,
 		postalCode,
 		country,
-		password,
 		companyName,
 		firstName,
 		middleName,
@@ -99,9 +98,7 @@ const updateEmployee = async (empId, data) => {
 	const empEmail = personalEmail || businessEmail;
 	const email = empEmail && empEmail !== "" ? empEmail : employee?.email;
 
-	const empPassword = password && password !== "" ? password : employee?.password;
 	const updatedObj = {
-		password: empPassword,
 		primaryAddress,
 		updatedOn: moment(),
 		firstName,
@@ -313,7 +310,6 @@ const updateEmployeeProfileInfo = async (req, res) => {
 			province,
 			country,
 			postalCode,
-			password,
 		} = req.body;
 
 		const data = {
@@ -325,7 +321,6 @@ const updateEmployeeProfileInfo = async (req, res) => {
 			province,
 			postalCode,
 			country,
-			password,
 			firstName,
 			middleName,
 			lastName,
