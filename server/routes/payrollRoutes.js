@@ -19,8 +19,6 @@ router.get(
 
 router.post("/hoursTimesheet", payrollController.getGroupedTimesheet);
 
-router.post("/onboard", payrollController.onBoardNewUser);
-
 router.post("/EEContribution", payrollController.getEEContribution);
 
 router.post("/ERContribution", payrollController.getERContribution);

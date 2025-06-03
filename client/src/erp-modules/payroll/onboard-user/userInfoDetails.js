@@ -248,3 +248,5 @@ export const bankingSubSteps = [
 	{ title: "Payment Notification", description: "Paystub delivery" },
 	{ title: "Banking Info", description: "Direct deposit details" },
 ];
+
+export const trimText = (str) => str.replace(/\s+/g, " ").trim();

@@ -30,7 +30,7 @@ import EmploymentInfo from "./EmploymentInfo";
 import GovernmentInfo from "./GovernmentInfo";
 import PayInfo from "./PayInfo";
 import PersonalInfo from "./PersonalInfo";
-import { COUNTRIES, userInfoDetails } from "./userInfoDetails";
+import { COUNTRIES, trimText, userInfoDetails } from "./userInfoDetails";
 
 const NewEmployeeOnboardingModal = ({ isOpen, onClose }) => {
 	const company = LocalStorageService.getItem("selectedCompany");
@@ -203,6 +203,42 @@ const NewEmployeeOnboardingModal = ({ isOpen, onClose }) => {
 		},
 	];
 
+	useEffect(() => {
+		if (formData.personalInfo.firstName) {
+			setFormData({
+				...formData,
+				personalInfo: {
+					...formData.personalInfo,
+					firstName: trimText(formData.personalInfo.firstName),
+				},
+			});
+		}
+	}, [formData.personalInfo.firstName]);
+
+	useEffect(() => {
+		if (formData.personalInfo.middleName) {
+			setFormData({
+				...formData,
+				personalInfo: {
+					...formData.personalInfo,
+					middleName: trimText(formData.personalInfo.middleName),
+				},
+			});
+		}
+	}, [formData.personalInfo.middleName]);
+
+	useEffect(() => {
+		if (formData.personalInfo.lastName) {
+			setFormData({
+				...formData,
+				personalInfo: {
+					...formData.personalInfo,
+					lastName: trimText(formData.personalInfo.lastName),
+				},
+			});
+		}
+	}, [formData.personalInfo.lastName]);
+
 	// Update provinces when country changes
 	useEffect(() => {
 		const selectedCountry = COUNTRIES.find(
@@ -336,7 +372,7 @@ const NewEmployeeOnboardingModal = ({ isOpen, onClose }) => {
 		try {
 			formData.companyName = company;
 			const { data } = await PayrollService.onboardUser(formData);
-
+			console.log("newEmpDetails=", data);
 			toast({
 				title: "Employee added successfully",
 				status: "success",

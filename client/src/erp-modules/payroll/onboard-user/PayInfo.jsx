@@ -26,7 +26,7 @@ const PayInfo = ({ tabScrollCss, formData, handleChange }) => {
 							value={formData.payInfo.payType}
 							onChange={(e) => handleChange("payInfo", "payType", e.target.value)}
 						>
-							<option value="hourly">Hourly</option>
+							<option value="Hourly">Hourly</option>
 							<option value="FTsalary">Full Time Salaried</option>
 							<option value="PTsalary">Part Time Salaried</option>
 							{/* <option value="commission">Commission</option> */}

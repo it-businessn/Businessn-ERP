@@ -5,6 +5,14 @@ const { addEmployee, findCompany } = require("./appController");
 const { deleteAlerts } = require("./payrollController");
 const { decryptData, encryptData } = require("../services/encryptDataService");
 const { ALERTS_TYPE } = require("../services/data");
+const {
+	addNewUser,
+	addUserEmploymentInfo,
+	addUserPayInfo,
+	addUserGovtInfo,
+	addUserBenefitInfo,
+	addUserBankInfo,
+} = require("./empDataController");
 
 const getAllProfileInfo = async (req, res) => {
 	const { companyName } = req.params;
@@ -250,6 +258,43 @@ const addEmployeeProfileInfo = async (req, res) => {
 	}
 };
 
+const onBoardNewUser = async (req, res) => {
+	const {
+		companyName,
+		bankingInfo,
+		benefitsInfo,
+		contactInfo,
+		emergencyContact,
+		employmentInfo,
+		governmentInfo,
+		payInfo,
+		personalInfo,
+	} = req.body;
+	try {
+		const newUserID = await addNewUser(companyName, personalInfo, contactInfo, emergencyContact);
+		const newEmpPosition = await addUserEmploymentInfo(newUserID, companyName, employmentInfo);
+		const newPayInfo = await addUserPayInfo(newUserID, companyName, payInfo, newEmpPosition);
+		const newGovtContributionInfo = await addUserGovtInfo(newUserID, companyName, governmentInfo);
+		const newBenefitContributionInfo = await addUserBenefitInfo(
+			newUserID,
+			companyName,
+			benefitsInfo,
+		);
+		const newUserBankingInfo = await addUserBankInfo(newUserID, companyName, bankingInfo);
+
+		res.status(201).json({
+			newUserID,
+			newEmpPosition,
+			newPayInfo,
+			newGovtContributionInfo,
+			newBenefitContributionInfo,
+			newUserBankingInfo,
+		});
+	} catch (error) {
+		res.status(400).json({ message: error.message });
+	}
+};
+
 const updateEmployeeProfileInfo = async (req, res) => {
 	const { id } = req.params;
 	try {
@@ -313,6 +358,7 @@ module.exports = {
 	getAllProfileInfo,
 	getEmployeeProfileInfo,
 	addEmployeeProfileInfo,
+	onBoardNewUser,
 	updateEmployeeProfileInfo,
 	findEmployeeProfileInfo,
 };
