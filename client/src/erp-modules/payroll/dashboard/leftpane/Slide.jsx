@@ -34,7 +34,7 @@ function Slide({ content, animationConfig, moveSlide }) {
 				pb={0}
 				icon={BsCalendarWeek}
 				iconSize="2em"
-				handleClic={() => navigate(workViewPath)}
+				handleClick={() => navigate(workViewPath)}
 			/>
 			{content && (
 				<PayPeriodDetailCard
