@@ -27,14 +27,40 @@ const PayInfo = ({ tabScrollCss, formData, handleChange }) => {
 							onChange={(e) => handleChange("payInfo", "payType", e.target.value)}
 						>
 							<option value="hourly">Hourly</option>
-							<option value="salary">Salary</option>
-							<option value="commission">Commission</option>
+							<option value="FTsalary">Full Time Salaried</option>
+							<option value="PTsalary">Part Time Salaried</option>
+							{/* <option value="commission">Commission</option> */}
 						</Select>
 					</FormControl>
 				</Flex>
 
 				<Flex gap={4}>
-					<FormControl isRequired>
+					{formData.payInfo.payType === "FTsalary" ? (
+						<FormControl>
+							<FormLabel size="sm">Standard Hours (FT)</FormLabel>
+							<Input
+								size="sm"
+								type="number"
+								value={formData.payInfo.fullTimeStandardHours}
+								onChange={(e) => handleChange("payInfo", "fullTimeStandardHours", e.target.value)}
+								placeholder="Enter Full Time Hours"
+							/>
+						</FormControl>
+					) : formData.payInfo.payType === "PTsalary" ? (
+						<FormControl>
+							<FormLabel size="sm">Standard Hours (PT)</FormLabel>
+							<Input
+								type="number"
+								size="sm"
+								value={formData.payInfo.partTimeStandardHours}
+								onChange={(e) => handleChange("payInfo", "partTimeStandardHours", e.target.value)}
+								placeholder="Enter Part Time Hours"
+							/>
+						</FormControl>
+					) : (
+						<></>
+					)}
+					{/* <FormControl isRequired>
 						<FormLabel size="sm">Pay Frequency</FormLabel>
 						<Select
 							size="sm"
@@ -45,9 +71,9 @@ const PayInfo = ({ tabScrollCss, formData, handleChange }) => {
 							<option value="biweekly">Bi-weekly</option>
 							<option value="monthly">Monthly</option>
 						</Select>
-					</FormControl>
+					</FormControl> */}
 
-					<FormControl>
+					{/* <FormControl>
 						<FormLabel size="sm">Tax Withholding</FormLabel>
 						<Input
 							size="sm"
@@ -55,7 +81,7 @@ const PayInfo = ({ tabScrollCss, formData, handleChange }) => {
 							onChange={(e) => handleChange("payInfo", "taxWithholding", e.target.value)}
 							placeholder="Tax Withholding"
 						/>
-					</FormControl>
+					</FormControl> */}
 				</Flex>
 			</Stack>
 		</Box>

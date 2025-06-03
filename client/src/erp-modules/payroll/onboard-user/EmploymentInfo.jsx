@@ -86,8 +86,8 @@ const EmploymentInfo = ({
 							<FormLabel size="sm">Status</FormLabel>
 							<Select
 								size="sm"
-								value={formData.employmentInfo.status}
-								onChange={(e) => handleChange("employmentInfo", "status", e.target.value)}
+								value={formData.employmentInfo.payrollStatus}
+								onChange={(e) => handleChange("employmentInfo", "payrollStatus", e.target.value)}
 							>
 								{PAYROLL_STATUS.map((status) => (
 									<option key={status.type} value={status.type}>
@@ -112,10 +112,8 @@ const EmploymentInfo = ({
 							{roles ? (
 								<Select
 									size="sm"
-									value={formData.employmentInfo.systemAccessLevel}
-									onChange={(e) =>
-										handleChange("employmentInfo", "systemAccessLevel", e.target.value)
-									}
+									value={formData.employmentInfo.employmentRole}
+									onChange={(e) => handleChange("employmentInfo", "employmentRole", e.target.value)}
 								>
 									{roles.map((role) => (
 										<option key={role.name} value={role.name}>
@@ -264,8 +262,10 @@ const EmploymentInfo = ({
 								<Input
 									size="sm"
 									type="date"
-									value={formData.employmentInfo.startDate}
-									onChange={(e) => handleChange("employmentInfo", "startDate", e.target.value)}
+									value={formData.employmentInfo.employmentStartDate}
+									onChange={(e) =>
+										handleChange("employmentInfo", "employmentStartDate", e.target.value)
+									}
 								/>
 							</FormControl>
 						</SimpleGrid>
@@ -281,8 +281,10 @@ const EmploymentInfo = ({
 								<FormLabel size="sm">Country</FormLabel>
 								<Select
 									size="sm"
-									value={formData.employmentInfo.country}
-									onChange={(e) => handleChange("employmentInfo", "country", e.target.value)}
+									value={formData.employmentInfo.employmentCountry}
+									onChange={(e) =>
+										handleChange("employmentInfo", "employmentCountry", e.target.value)
+									}
 								>
 									{COUNTRIES.map((country) => (
 										<option key={country.type} value={country.type}>
@@ -296,8 +298,10 @@ const EmploymentInfo = ({
 								<FormLabel size="sm">Province/State</FormLabel>
 								<Select
 									size="sm"
-									value={formData.employmentInfo.province}
-									onChange={(e) => handleChange("employmentInfo", "province", e.target.value)}
+									value={formData.employmentInfo.employmentRegion}
+									onChange={(e) =>
+										handleChange("employmentInfo", "employmentRegion", e.target.value)
+									}
 								>
 									{employmentProvinces.map((province) => (
 										<option key={province} value={province}>

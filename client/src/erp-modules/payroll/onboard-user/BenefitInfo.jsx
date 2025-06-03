@@ -72,7 +72,7 @@ const BenefitInfo = ({
 						<TextTitle size="xl" title="Vacation" />
 
 						<FormControl isRequired>
-							<FormLabel size="sm">Vacation </FormLabel>
+							<FormLabel size="sm">Vacation Treatment</FormLabel>
 							<HStack spacing={4}>
 								<label>
 									<input
@@ -138,8 +138,9 @@ const BenefitInfo = ({
 							/>
 						</FormControl>
 
-						<HStack justifyContent="space-between" mt={2}>
+						<HStack justifyContent="start" mt={2}>
 							<Button
+								size="sm"
 								leftIcon={<FaPlus />}
 								bg={"var(--banner_bg)"}
 								color="white"
@@ -163,6 +164,7 @@ const BenefitInfo = ({
 							<FormControl maxWidth="250px">
 								<Input
 									size="sm"
+									type="number"
 									placeholder="Enter amount to adjust"
 									value={formData.benefitsInfo.vacationAdjustment || ""}
 									onChange={(e) =>

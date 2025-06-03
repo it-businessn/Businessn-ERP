@@ -120,8 +120,8 @@ const PersonalInfo = ({
 								<Input
 									size="sm"
 									type="date"
-									value={formData.personalInfo.dateOfBirth}
-									onChange={(e) => handleChange("personalInfo", "dateOfBirth", e.target.value)}
+									value={formData.personalInfo.birthDate}
+									onChange={(e) => handleChange("personalInfo", "birthDate", e.target.value)}
 								/>
 							</FormControl>
 
@@ -145,8 +145,8 @@ const PersonalInfo = ({
 							<FormLabel size="sm">SSN / National ID</FormLabel>
 							<Input
 								size="sm"
-								value={formData.personalInfo.ssn}
-								onChange={(e) => handleChange("personalInfo", "ssn", e.target.value)}
+								value={formData.personalInfo.SIN}
+								onChange={(e) => handleChange("personalInfo", "SIN", e.target.value)}
 								placeholder="Social Security Number"
 							/>
 						</FormControl>
@@ -156,8 +156,8 @@ const PersonalInfo = ({
 								<FormLabel size="sm">Work Permit Number</FormLabel>
 								<Input
 									size="sm"
-									value={formData.personalInfo.workPermitNumber}
-									onChange={(e) => handleChange("personalInfo", "workPermitNumber", e.target.value)}
+									value={formData.personalInfo.workPermitNo}
+									onChange={(e) => handleChange("personalInfo", "workPermitNo", e.target.value)}
 									placeholder="Work Permit Number"
 								/>
 							</FormControl>
@@ -167,8 +167,10 @@ const PersonalInfo = ({
 								<Input
 									size="sm"
 									type="date"
-									value={formData.personalInfo.workPermitExpiry}
-									onChange={(e) => handleChange("personalInfo", "workPermitExpiry", e.target.value)}
+									value={formData.personalInfo.workPermitExpiryNo}
+									onChange={(e) =>
+										handleChange("personalInfo", "workPermitExpiryNo", e.target.value)
+									}
 								/>
 							</FormControl>
 						</Flex>
@@ -208,8 +210,8 @@ const PersonalInfo = ({
 								<Input
 									size="sm"
 									type="email"
-									value={formData.contactInfo.email}
-									onChange={(e) => handleChange("contactInfo", "email", e.target.value)}
+									value={formData.contactInfo.personalEmail}
+									onChange={(e) => handleChange("contactInfo", "personalEmail", e.target.value)}
 									placeholder="Personal Email Address"
 								/>
 							</FormControl>
@@ -219,8 +221,8 @@ const PersonalInfo = ({
 								<Input
 									size="sm"
 									type="email"
-									value={formData.contactInfo.workEmail}
-									onChange={(e) => handleChange("contactInfo", "workEmail", e.target.value)}
+									value={formData.contactInfo.businessEmail}
+									onChange={(e) => handleChange("contactInfo", "businessEmail", e.target.value)}
 									placeholder="Work Email Address"
 								/>
 							</FormControl>
@@ -231,8 +233,8 @@ const PersonalInfo = ({
 								<FormLabel size="sm">Personal Phone</FormLabel>
 								<Input
 									size="sm"
-									value={formData.contactInfo.personalPhone}
-									onChange={(e) => handleChange("contactInfo", "personalPhone", e.target.value)}
+									value={formData.contactInfo.personalPhoneNum}
+									onChange={(e) => handleChange("contactInfo", "personalPhoneNum", e.target.value)}
 									placeholder="Personal Phone Number"
 								/>
 							</FormControl>
@@ -241,23 +243,57 @@ const PersonalInfo = ({
 								<FormLabel size="sm">Work Phone</FormLabel>
 								<Input
 									size="sm"
-									value={formData.contactInfo.workPhone}
-									onChange={(e) => handleChange("contactInfo", "workPhone", e.target.value)}
+									value={formData.contactInfo.businessPhoneNum}
+									onChange={(e) => handleChange("contactInfo", "businessPhoneNum", e.target.value)}
 									placeholder="Work Phone Number"
 								/>
 							</FormControl>
 						</Flex>
+						<TextTitle size="sm" title="Address" />
+						<Flex gap={4} mb={2}>
+							<FormControl>
+								<FormLabel size="sm">Suite</FormLabel>
+								<Input
+									size="sm"
+									value={formData.contactInfo.streetAddressSuite}
+									onChange={(e) =>
+										handleChange("contactInfo", "streetAddressSuite", e.target.value)
+									}
+									placeholder="Street Address"
+								/>
+							</FormControl>
+							<FormControl isRequired>
+								<FormLabel size="sm">Street Address</FormLabel>
+								<Input
+									size="sm"
+									value={formData.contactInfo.streetAddress}
+									onChange={(e) => handleChange("contactInfo", "streetAddress", e.target.value)}
+									placeholder="Street Address"
+								/>
+							</FormControl>
+						</Flex>
 
-						<FormControl isRequired>
-							<FormLabel size="sm">Street Address</FormLabel>
-							<Input
-								size="sm"
-								value={formData.contactInfo.address}
-								onChange={(e) => handleChange("contactInfo", "address", e.target.value)}
-								placeholder="Street Address"
-							/>
-						</FormControl>
+						<Flex gap={4}>
+							<FormControl isRequired>
+								<FormLabel size="sm">City</FormLabel>
+								<Input
+									size="sm"
+									value={formData.contactInfo.city}
+									onChange={(e) => handleChange("contactInfo", "city", e.target.value)}
+									placeholder="City"
+								/>
+							</FormControl>
 
+							<FormControl isRequired>
+								<FormLabel size="sm">ZIP/Postal Code</FormLabel>
+								<Input
+									size="sm"
+									value={formData.contactInfo.postalCode}
+									onChange={(e) => handleChange("contactInfo", "postalCode", e.target.value)}
+									placeholder="ZIP/Postal Code"
+								/>
+							</FormControl>
+						</Flex>
 						<Flex gap={4} mb={2}>
 							<FormControl isRequired>
 								<FormLabel size="sm">Country</FormLabel>
@@ -287,28 +323,6 @@ const PersonalInfo = ({
 								</Select>
 							</FormControl>
 						</Flex>
-
-						<Flex gap={4}>
-							<FormControl isRequired>
-								<FormLabel size="sm">City</FormLabel>
-								<Input
-									size="sm"
-									value={formData.contactInfo.city}
-									onChange={(e) => handleChange("contactInfo", "city", e.target.value)}
-									placeholder="City"
-								/>
-							</FormControl>
-
-							<FormControl isRequired>
-								<FormLabel size="sm">ZIP/Postal Code</FormLabel>
-								<Input
-									size="sm"
-									value={formData.contactInfo.zipCode}
-									onChange={(e) => handleChange("contactInfo", "zipCode", e.target.value)}
-									placeholder="ZIP/Postal Code"
-								/>
-							</FormControl>
-						</Flex>
 					</Stack>
 				)}
 
@@ -321,8 +335,10 @@ const PersonalInfo = ({
 								<FormLabel size="sm">First Name</FormLabel>
 								<Input
 									size="sm"
-									value={formData.emergencyContact.firstName}
-									onChange={(e) => handleChange("emergencyContact", "firstName", e.target.value)}
+									value={formData.emergencyContact.emergencyFirstName}
+									onChange={(e) =>
+										handleChange("emergencyContact", "emergencyFirstName", e.target.value)
+									}
 									placeholder="First Name"
 								/>
 							</FormControl>
@@ -331,8 +347,10 @@ const PersonalInfo = ({
 								<FormLabel size="sm">Last Name</FormLabel>
 								<Input
 									size="sm"
-									value={formData.emergencyContact.lastName}
-									onChange={(e) => handleChange("emergencyContact", "lastName", e.target.value)}
+									value={formData.emergencyContact.emergencyLastName}
+									onChange={(e) =>
+										handleChange("emergencyContact", "emergencyLastName", e.target.value)
+									}
 									placeholder="Last Name"
 								/>
 							</FormControl>
@@ -343,8 +361,10 @@ const PersonalInfo = ({
 							<Input
 								size="sm"
 								type="email"
-								value={formData.emergencyContact.email}
-								onChange={(e) => handleChange("emergencyContact", "email", e.target.value)}
+								value={formData.emergencyContact.emergencyPersonalEmail}
+								onChange={(e) =>
+									handleChange("emergencyContact", "emergencyPersonalEmail", e.target.value)
+								}
 								placeholder="Email Address"
 							/>
 						</FormControl>
@@ -353,8 +373,10 @@ const PersonalInfo = ({
 							<FormLabel size="sm">Personal Phone</FormLabel>
 							<Input
 								size="sm"
-								value={formData.emergencyContact.phone}
-								onChange={(e) => handleChange("emergencyContact", "phone", e.target.value)}
+								value={formData.emergencyContact.emergencyPersonalPhoneNum}
+								onChange={(e) =>
+									handleChange("emergencyContact", "emergencyPersonalPhoneNum", e.target.value)
+								}
 								placeholder="Phone Number"
 							/>
 						</FormControl>
@@ -362,8 +384,10 @@ const PersonalInfo = ({
 						<FormControl isRequired>
 							<FormLabel size="sm">Relationship</FormLabel>
 							<Select
-								value={formData.emergencyContact.relationship}
-								onChange={(e) => handleChange("emergencyContact", "relationship", e.target.value)}
+								value={formData.emergencyContact.emergencyContactRelationship}
+								onChange={(e) =>
+									handleChange("emergencyContact", "emergencyContactRelationship", e.target.value)
+								}
 								placeholder="Select Relationship"
 							>
 								<option value="spouse">Spouse</option>
