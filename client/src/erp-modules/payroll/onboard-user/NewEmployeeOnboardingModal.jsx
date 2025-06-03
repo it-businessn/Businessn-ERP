@@ -23,6 +23,7 @@ import { FaChevronLeft, FaChevronRight, FaSave, FaUserPlus } from "react-icons/f
 import LocalStorageService from "services/LocalStorageService";
 import { generateLighterShade } from "utils";
 
+import PayrollService from "services/PayrollService";
 import BankingInfo from "./BankingInfo";
 import BenefitInfo from "./BenefitInfo";
 import EmploymentInfo from "./EmploymentInfo";
@@ -225,12 +226,12 @@ const NewEmployeeOnboardingModal = ({ isOpen, onClose }) => {
 	// Update provinces when employment country changes
 	useEffect(() => {
 		const selectedCountry = COUNTRIES.find(
-			(country) => country.type === formData.employmentInfo.country,
+			(country) => country.type === formData.employmentInfo.employmentCountry,
 		);
 		if (selectedCountry) {
 			setEmploymentProvinces(selectedCountry.provinces);
 			// Reset province if changing country
-			if (!selectedCountry.provinces.includes(formData.employmentInfo.province)) {
+			if (!selectedCountry.provinces.includes(formData.employmentInfo.employmentRegion)) {
 				setFormData({
 					...formData,
 					employmentInfo: {
@@ -240,7 +241,7 @@ const NewEmployeeOnboardingModal = ({ isOpen, onClose }) => {
 				});
 			}
 		}
-	}, [formData.employmentInfo.country]);
+	}, [formData.employmentInfo.employmentCountry]);
 
 	// Update government provinces when federal tax changes
 	useEffect(() => {
@@ -331,19 +332,28 @@ const NewEmployeeOnboardingModal = ({ isOpen, onClose }) => {
 		}
 	};
 
-	const handleSubmit = () => {
-		// Here you would typically send the data to your API
-		console.log("Submitting employee data:", formData);
+	const handleSubmit = async () => {
+		try {
+			formData.companyName = company;
+			const { data } = await PayrollService.onboardUser(formData);
 
-		toast({
-			title: "Employee added successfully",
-			status: "success",
-			duration: 3000,
-			isClosable: true,
-		});
-
-		// Call the onClose function from props
-		onClose();
+			toast({
+				title: "Employee added successfully",
+				status: "success",
+				duration: 3000,
+				isClosable: true,
+			});
+		} catch (error) {
+			toast({
+				title: "Something went wrong.",
+				description: "Please try again.",
+				status: "error",
+				duration: 3000,
+				isClosable: true,
+			});
+		} finally {
+			onClose();
+		}
 	};
 
 	// Get button text based on current tab and sub-step

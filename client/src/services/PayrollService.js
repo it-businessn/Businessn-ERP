@@ -53,6 +53,10 @@ const PayrollService = {
 		return apiService.get(`/payroll/profileInfo/${company}/${empId}`);
 	},
 
+	async onboardUser(data) {
+		return apiService.post("/payroll/onboard", data);
+	},
+
 	async addEmployeeProfileInfo(data) {
 		return apiService.post("/payroll/profileInfo", data);
 	},
