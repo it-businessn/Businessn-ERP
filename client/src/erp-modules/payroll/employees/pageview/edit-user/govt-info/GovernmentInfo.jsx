@@ -26,18 +26,20 @@ import {
 	governmentSubSteps,
 	tabPanelStyleCss,
 	tabScrollCss,
+	userInfoDetails,
 } from "erp-modules/payroll/onboard-user/customInfo";
 import useEmployeeGovernment from "hooks/useEmployeeGovernment";
 import { useEffect, useState } from "react";
 import { FaInfoCircle } from "react-icons/fa";
 import PayrollService from "services/PayrollService";
 
-const GovernmentInfo = ({ formData, handleChange, company, userId, setFormData }) => {
+const GovernmentInfo = ({ company, userId }) => {
 	const toast = useToast();
 	const [governmentSubStep, setGovernmentSubStep] = useState(0);
 	const [governmentProvinces, setGovernmentProvinces] = useState([]);
 	const [moreDetails, setMoreDetails] = useState(null);
 	const [isLoading, setIsLoading] = useState(false);
+	const [formData, setFormData] = useState(userInfoDetails);
 	const governmentInfo = useEmployeeGovernment(company, userId);
 
 	useEffect(() => {
@@ -61,9 +63,7 @@ const GovernmentInfo = ({ formData, handleChange, company, userId, setFormData }
 			} = governmentInfo;
 
 			setFormData({
-				...formData,
 				governmentInfo: {
-					...formData.governmentInfo,
 					isCPPExempt,
 					isEIExempt,
 					federalTax,
@@ -100,6 +100,16 @@ const GovernmentInfo = ({ formData, handleChange, company, userId, setFormData }
 			}
 		}
 	}, [formData.governmentInfo.federalTax]);
+
+	const handleChange = (section, field, value) => {
+		setFormData({
+			...formData,
+			[section]: {
+				...formData[section],
+				[field]: value,
+			},
+		});
+	};
 
 	const handleSave = async () => {
 		setIsLoading(true);

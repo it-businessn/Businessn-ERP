@@ -13,7 +13,7 @@ import ActiveBadge from "components/ActiveBadge";
 import NormalTextTitle from "components/ui/NormalTextTitle";
 import TextTitle from "components/ui/text/TextTitle";
 import { ROLES } from "constant";
-import { tabStyleCss, userInfoDetails } from "erp-modules/payroll/onboard-user/customInfo";
+import { tabStyleCss } from "erp-modules/payroll/onboard-user/customInfo";
 import useCompany from "hooks/useCompany";
 import useCompanyEmployees from "hooks/useCompanyEmployees";
 import usePaygroup from "hooks/usePaygroup";
@@ -39,7 +39,6 @@ const Employees = () => {
 	const [userId, setUserId] = useState(id || loggedInUser._id);
 	const [filteredEmployees, setFilteredEmployees] = useState(null);
 	const [tabIndex, setTabIndex] = useState(parseInt(stepNo) || 0);
-	const [formData, setFormData] = useState(userInfoDetails);
 
 	const { payGroups, selectedPayGroupOption } = usePaygroup(company, false);
 	const employees = useCompanyEmployees(company, deptName, selectedPayGroupOption);
@@ -62,89 +61,30 @@ const Employees = () => {
 	const employeeID = employee?.employeeNo || (!id && !employee && loggedInUser?.employeeId);
 	const employeeName = employee?.empId?.fullName || (!id && !employee && loggedInUser?.fullName);
 
-	const handleChange = (section, field, value) => {
-		setFormData({
-			...formData,
-			[section]: {
-				...formData[section],
-				[field]: value,
-			},
-		});
-	};
-
 	const EMP_INFO_TABS = [
 		{
 			name: "Personal Info",
-			content: (
-				<PersonalInfo
-					company={company}
-					userId={userId}
-					formData={formData}
-					setFormData={setFormData}
-					handleChange={handleChange}
-				/>
-			),
+			content: <PersonalInfo company={company} userId={userId} />,
 		},
 		{
 			name: "Employment",
-			content: (
-				<EmploymentInfo
-					company={company}
-					userId={userId}
-					formData={formData}
-					setFormData={setFormData}
-					handleChange={handleChange}
-					payGroups={payGroups}
-				/>
-			),
+			content: <EmploymentInfo company={company} userId={userId} payGroups={payGroups} />,
 		},
 		{
 			name: "Pay",
-			content: (
-				<PayInfo
-					company={company}
-					userId={userId}
-					formData={formData}
-					setFormData={setFormData}
-					handleChange={handleChange}
-				/>
-			),
+			content: <PayInfo company={company} userId={userId} />,
 		},
 		{
 			name: "Benefits",
-			content: (
-				<BenefitInfo
-					company={company}
-					userId={userId}
-					formData={formData}
-					setFormData={setFormData}
-					handleChange={handleChange}
-				/>
-			),
+			content: <BenefitInfo company={company} userId={userId} />,
 		},
 		{
 			name: "Government",
-			content: (
-				<GovernmentInfo
-					company={company}
-					userId={userId}
-					formData={formData}
-					setFormData={setFormData}
-					handleChange={handleChange}
-				/>
-			),
+			content: <GovernmentInfo company={company} userId={userId} />,
 		},
 		{
 			name: "Banking",
-			content: (
-				<BankingInfo
-					company={company}
-					userId={userId}
-					formData={formData}
-					setFormData={setFormData}
-					handleChange={handleChange}
-				/>
-			),
+			content: <BankingInfo company={company} userId={userId} />,
 		},
 	];
 

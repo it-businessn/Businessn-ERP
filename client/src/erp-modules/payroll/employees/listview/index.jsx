@@ -123,48 +123,44 @@ const EmployeeListView = () => {
 				mr="4"
 				templateColumns={{ lg: "70% 30%" }}
 			>
-				<Box>
-					<Flex direction="column" gap={6}>
-						{/* Search Section */}
-						<InputGroup
-							maxW="300px"
-							borderRadius={"10px"}
-							border={"1px solid var(--filter_border_color)"}
-							fontSize="xs"
-							fontWeight="bold"
-							size="sm"
-						>
-							<Input
-								_placeholder={{
-									color: "var(--nav_color)",
-									fontSize: "sm",
-								}}
-								name="empName"
-								value={empName}
-								onChange={(e) => handleInputChange(e.target.value)}
-								color={"var(--nav_color)"}
-								bg={"var(--primary_bg)"}
-								type="text"
-								placeholder="Search employee"
-								pr="4.5rem"
-							/>
-							<InputRightElement children={<FaSearch />} />
-						</InputGroup>
-					</Flex>
-				</Box>
+				<Flex direction="column" gap={6}>
+					{/* Search Section */}
+					<InputGroup
+						maxW="300px"
+						borderRadius={"10px"}
+						border={"1px solid var(--filter_border_color)"}
+						fontSize="xs"
+						fontWeight="bold"
+						size="sm"
+					>
+						<Input
+							_placeholder={{
+								color: "var(--nav_color)",
+								fontSize: "sm",
+							}}
+							name="empName"
+							value={empName}
+							onChange={(e) => handleInputChange(e.target.value)}
+							color={"var(--nav_color)"}
+							bg={"var(--primary_bg)"}
+							type="text"
+							placeholder="Search employee"
+							pr="4.5rem"
+						/>
+						<InputRightElement children={<FaSearch />} />
+					</InputGroup>
+				</Flex>
 
 				{/* Actions Section */}
-				<Box>
-					<PayrollActions
-						handleClick={handleClick}
-						actions={[
-							{ key: "terminate", name: "Terminate" },
-							{ key: "form", name: "Issue Forms" },
-							{ key: "send-login", name: "Send Login" },
-							{ key: "send-paystub", name: "Send Paystub" },
-						]}
-					/>
-				</Box>
+				<PayrollActions
+					handleClick={handleClick}
+					actions={[
+						{ key: "terminate", name: "Terminate" },
+						{ key: "form", name: "Issue Forms" },
+						{ key: "send-login", name: "Send Login" },
+						{ key: "send-paystub", name: "Send Paystub" },
+					]}
+				/>
 			</SimpleGrid>
 			{/* Employee List Section */}
 			<Box>

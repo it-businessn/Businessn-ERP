@@ -16,10 +16,10 @@ const PayrollActions = ({ handleClick, actions = PAYGROUP_ACTIONS, title = "Payr
 
 	return (
 		<BoxCard>
-			<VStack spacing={4} align="stretch">
+			<VStack spacing={0.5} align="stretch">
 				<TextTitle size="lg" title={title} />
 				<Divider />
-				<VStack spacing={2} align="stretch">
+				<VStack spacing={0.5} align="stretch">
 					{actions?.map(({ key, name }) => (
 						<Flex
 							key={key}

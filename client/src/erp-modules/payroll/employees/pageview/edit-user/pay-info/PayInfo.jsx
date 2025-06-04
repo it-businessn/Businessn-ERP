@@ -23,15 +23,17 @@ import {
 	payInfoSubSteps,
 	tabPanelStyleCss,
 	tabScrollCss,
+	userInfoDetails,
 } from "erp-modules/payroll/onboard-user/customInfo";
 import { useEffect, useState } from "react";
 import PayrollService from "services/PayrollService";
 
-const PayInfo = ({ formData, handleChange, company, userId, setFormData }) => {
+const PayInfo = ({ company, userId }) => {
 	const toast = useToast();
 	const [payInfo, setPayInfo] = useState(null);
 	const [moreDetails, setMoreDetails] = useState(null);
 	const [isLoading, setIsLoading] = useState(false);
+	const [formData, setFormData] = useState(userInfoDetails);
 
 	useEffect(() => {
 		const fetchEmployeePayInfo = async () => {
@@ -50,9 +52,7 @@ const PayInfo = ({ formData, handleChange, company, userId, setFormData }) => {
 			const { roles, empId, _id } = payInfo;
 
 			setFormData({
-				...formData,
 				payInfo: {
-					...formData.payInfo,
 					payFrequency: roles[0]?.payFrequency,
 					salary: roles[0]?.payRate,
 					payType: roles[0]?.typeOfEarning,
@@ -63,6 +63,16 @@ const PayInfo = ({ formData, handleChange, company, userId, setFormData }) => {
 			setMoreDetails({ empId, _id });
 		}
 	}, [payInfo]);
+
+	const handleChange = (section, field, value) => {
+		setFormData({
+			...formData,
+			[section]: {
+				...formData[section],
+				[field]: value,
+			},
+		});
+	};
 
 	const handleSave = async () => {
 		setIsLoading(true);

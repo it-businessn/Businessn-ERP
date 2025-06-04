@@ -24,18 +24,20 @@ import {
 	bankingSubSteps,
 	tabPanelStyleCss,
 	tabScrollCss,
+	userInfoDetails,
 } from "erp-modules/payroll/onboard-user/customInfo";
 import useEmployeeBankingInfo from "hooks/useEmployeeBankingInfo";
 import { useEffect, useState } from "react";
 import PayrollService from "services/PayrollService";
 import { BankingFormSchema } from "validation/BankDetails";
 
-const BankingInfo = ({ formData, handleChange, company, userId, setFormData }) => {
+const BankingInfo = ({ company, userId }) => {
 	const toast = useToast();
 	const [bankingSubStep, setBankingSubStep] = useState(0);
 	const bankingInfo = useEmployeeBankingInfo(company, userId);
 	const [moreDetails, setMoreDetails] = useState(null);
 	const [isLoading, setIsLoading] = useState(false);
+	const [formData, setFormData] = useState(userInfoDetails);
 
 	useEffect(() => {
 		if (bankingInfo) {
@@ -51,9 +53,7 @@ const BankingInfo = ({ formData, handleChange, company, userId, setFormData }) =
 			} = bankingInfo;
 
 			setFormData({
-				...formData,
 				bankingInfo: {
-					...formData.bankingInfo,
 					payStubSendByEmail,
 					directDeposit,
 					paymentEmail,
@@ -136,6 +136,16 @@ const BankingInfo = ({ formData, handleChange, company, userId, setFormData }) =
 		});
 
 		validateBankingField(field, formData.bankingInfo[field]);
+	};
+
+	const handleChange = (section, field, value) => {
+		setFormData({
+			...formData,
+			[section]: {
+				...formData[section],
+				[field]: value,
+			},
+		});
 	};
 
 	const handleSave = async () => {

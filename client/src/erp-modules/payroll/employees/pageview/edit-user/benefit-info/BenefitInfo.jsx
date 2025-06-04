@@ -26,18 +26,20 @@ import {
 	benefitsSubSteps,
 	tabPanelStyleCss,
 	tabScrollCss,
+	userInfoDetails,
 } from "erp-modules/payroll/onboard-user/customInfo";
 import useEmployeeBalanceInfo from "hooks/useEmployeeBalanceInfo";
 import { useEffect, useState } from "react";
 import { FaPlus } from "react-icons/fa";
 import PayrollService from "services/PayrollService";
 
-const BenefitInfo = ({ formData, handleChange, company, userId, setFormData }) => {
+const BenefitInfo = ({ company, userId }) => {
 	const toast = useToast();
 	const [benefitsSubStep, setBenefitsSubStep] = useState(0);
 	const balanceInfo = useEmployeeBalanceInfo(company, userId);
 	const [moreDetails, setMoreDetails] = useState(null);
 	const [isLoading, setIsLoading] = useState(false);
+	const [formData, setFormData] = useState(userInfoDetails);
 
 	useEffect(() => {
 		if (balanceInfo) {
@@ -66,9 +68,7 @@ const BenefitInfo = ({ formData, handleChange, company, userId, setFormData }) =
 			} = balanceInfo;
 
 			setFormData({
-				...formData,
 				benefitsInfo: {
-					...formData.benefitsInfo,
 					typeOfVacationTreatment,
 					vacationPayPercent,
 					YTDVacationAccrued,
@@ -93,6 +93,16 @@ const BenefitInfo = ({ formData, handleChange, company, userId, setFormData }) =
 			setMoreDetails({ empId, _id });
 		}
 	}, [balanceInfo]);
+
+	const handleChange = (section, field, value) => {
+		setFormData({
+			...formData,
+			[section]: {
+				...formData[section],
+				[field]: value,
+			},
+		});
+	};
 
 	const handleSave = async () => {
 		setIsLoading(true);
@@ -322,19 +332,20 @@ const BenefitInfo = ({ formData, handleChange, company, userId, setFormData }) =
 								</option>
 							</Select>
 						</FormControl>
-						{formData.benefitsInfo.typeOfPensionERTreatment !== "No Pension Contributions" && (
-							<FormControl>
-								<FormLabel size="sm">Pension - ER</FormLabel>
-								<Input
-									size="sm"
-									value={formData.benefitsInfo.pensionERContribution || ""}
-									onChange={(e) =>
-										handleChange("benefitsInfo", "pensionERContribution", e.target.value)
-									}
-									placeholder="Enter value"
-								/>
-							</FormControl>
-						)}
+						{formData.benefitsInfo.typeOfPensionERTreatment &&
+							formData.benefitsInfo.typeOfPensionERTreatment !== "No Pension Contributions" && (
+								<FormControl>
+									<FormLabel size="sm">Pension - ER</FormLabel>
+									<Input
+										size="sm"
+										value={formData.benefitsInfo.pensionERContribution || ""}
+										onChange={(e) =>
+											handleChange("benefitsInfo", "pensionERContribution", e.target.value)
+										}
+										placeholder="Enter value"
+									/>
+								</FormControl>
+							)}
 
 						<FormControl>
 							<FormLabel size="sm">Dental - ER Treatment</FormLabel>
@@ -353,19 +364,20 @@ const BenefitInfo = ({ formData, handleChange, company, userId, setFormData }) =
 								</option>
 							</Select>
 						</FormControl>
-						{formData.benefitsInfo.typeOfDentalERTreatment !== "No Dental Contributions" && (
-							<FormControl>
-								<FormLabel size="sm">Dental - ER</FormLabel>
-								<Input
-									size="sm"
-									value={formData.benefitsInfo.dentalERContribution || ""}
-									onChange={(e) =>
-										handleChange("benefitsInfo", "dentalERContribution", e.target.value)
-									}
-									placeholder="Enter value"
-								/>
-							</FormControl>
-						)}
+						{formData.benefitsInfo.typeOfDentalERTreatment &&
+							formData.benefitsInfo.typeOfDentalERTreatment !== "No Dental Contributions" && (
+								<FormControl>
+									<FormLabel size="sm">Dental - ER</FormLabel>
+									<Input
+										size="sm"
+										value={formData.benefitsInfo.dentalERContribution || ""}
+										onChange={(e) =>
+											handleChange("benefitsInfo", "dentalERContribution", e.target.value)
+										}
+										placeholder="Enter value"
+									/>
+								</FormControl>
+							)}
 
 						<FormControl>
 							<FormLabel size="sm">Extended Health - ER Treatment</FormLabel>
@@ -390,20 +402,21 @@ const BenefitInfo = ({ formData, handleChange, company, userId, setFormData }) =
 								</option>
 							</Select>
 						</FormControl>
-						{formData.benefitsInfo.typeOfExtendedHealthERTreatment !==
-							"No Extended Health Contributions" && (
-							<FormControl>
-								<FormLabel size="sm">Extended Health - ER</FormLabel>
-								<Input
-									size="sm"
-									value={formData.benefitsInfo.extendedHealthERContribution || ""}
-									onChange={(e) =>
-										handleChange("benefitsInfo", "extendedHealthERContribution", e.target.value)
-									}
-									placeholder="Enter value"
-								/>
-							</FormControl>
-						)}
+						{formData.benefitsInfo.typeOfExtendedHealthERTreatment &&
+							formData.benefitsInfo.typeOfExtendedHealthERTreatment !==
+								"No Extended Health Contributions" && (
+								<FormControl>
+									<FormLabel size="sm">Extended Health - ER</FormLabel>
+									<Input
+										size="sm"
+										value={formData.benefitsInfo.extendedHealthERContribution || ""}
+										onChange={(e) =>
+											handleChange("benefitsInfo", "extendedHealthERContribution", e.target.value)
+										}
+										placeholder="Enter value"
+									/>
+								</FormControl>
+							)}
 					</Stack>
 				)}
 				{/* Employee Contributions Sub-step */}
@@ -429,19 +442,20 @@ const BenefitInfo = ({ formData, handleChange, company, userId, setFormData }) =
 							</Select>
 						</FormControl>
 
-						{formData.benefitsInfo.typeOfPensionEETreatment !== "No Pension Contributions" && (
-							<FormControl>
-								<FormLabel size="sm">Pension - EE</FormLabel>
-								<Input
-									size="sm"
-									value={formData.benefitsInfo.pensionEEContribution || ""}
-									onChange={(e) =>
-										handleChange("benefitsInfo", "pensionEEContribution", e.target.value)
-									}
-									placeholder="Enter value"
-								/>
-							</FormControl>
-						)}
+						{formData.benefitsInfo.typeOfPensionEETreatment &&
+							formData.benefitsInfo.typeOfPensionEETreatment !== "No Pension Contributions" && (
+								<FormControl>
+									<FormLabel size="sm">Pension - EE</FormLabel>
+									<Input
+										size="sm"
+										value={formData.benefitsInfo.pensionEEContribution || ""}
+										onChange={(e) =>
+											handleChange("benefitsInfo", "pensionEEContribution", e.target.value)
+										}
+										placeholder="Enter value"
+									/>
+								</FormControl>
+							)}
 
 						<FormControl>
 							<FormLabel size="sm">Dental - EE Treatment</FormLabel>
@@ -461,19 +475,20 @@ const BenefitInfo = ({ formData, handleChange, company, userId, setFormData }) =
 							</Select>
 						</FormControl>
 
-						{formData.benefitsInfo.typeOfDentalEETreatment !== "No Dental Contributions" && (
-							<FormControl>
-								<FormLabel size="sm">Dental - EE</FormLabel>
-								<Input
-									size="sm"
-									value={formData.benefitsInfo.dentalEEContribution || ""}
-									onChange={(e) =>
-										handleChange("benefitsInfo", "dentalEEContribution", e.target.value)
-									}
-									placeholder="Enter value"
-								/>
-							</FormControl>
-						)}
+						{formData.benefitsInfo.typeOfDentalEETreatment &&
+							formData.benefitsInfo.typeOfDentalEETreatment !== "No Dental Contributions" && (
+								<FormControl>
+									<FormLabel size="sm">Dental - EE</FormLabel>
+									<Input
+										size="sm"
+										value={formData.benefitsInfo.dentalEEContribution || ""}
+										onChange={(e) =>
+											handleChange("benefitsInfo", "dentalEEContribution", e.target.value)
+										}
+										placeholder="Enter value"
+									/>
+								</FormControl>
+							)}
 
 						<FormControl>
 							<FormLabel size="sm">Extended Health - EE Treatment</FormLabel>
@@ -499,20 +514,21 @@ const BenefitInfo = ({ formData, handleChange, company, userId, setFormData }) =
 							</Select>
 						</FormControl>
 
-						{formData.benefitsInfo.typeOfExtendedHealthEETreatment !==
-							"No Extended Health Contributions" && (
-							<FormControl>
-								<FormLabel size="sm">Extended Health - EE</FormLabel>
-								<Input
-									size="sm"
-									value={formData.benefitsInfo.extendedHealthEEContribution || ""}
-									onChange={(e) =>
-										handleChange("benefitsInfo", "extendedHealthEEContribution", e.target.value)
-									}
-									placeholder="Enter value"
-								/>
-							</FormControl>
-						)}
+						{formData.benefitsInfo.typeOfExtendedHealthEETreatment &&
+							formData.benefitsInfo.typeOfExtendedHealthEETreatment !==
+								"No Extended Health Contributions" && (
+								<FormControl>
+									<FormLabel size="sm">Extended Health - EE</FormLabel>
+									<Input
+										size="sm"
+										value={formData.benefitsInfo.extendedHealthEEContribution || ""}
+										onChange={(e) =>
+											handleChange("benefitsInfo", "extendedHealthEEContribution", e.target.value)
+										}
+										placeholder="Enter value"
+									/>
+								</FormControl>
+							)}
 
 						<FormControl>
 							<FormLabel size="sm">Union Dues Treatment</FormLabel>
@@ -532,19 +548,20 @@ const BenefitInfo = ({ formData, handleChange, company, userId, setFormData }) =
 							</Select>
 						</FormControl>
 
-						{formData.benefitsInfo.typeOfUnionDuesTreatment !== "No Union Contributions" && (
-							<FormControl>
-								<FormLabel size="sm">Union Dues</FormLabel>
-								<Input
-									size="sm"
-									value={formData.benefitsInfo.unionDuesContribution || ""}
-									onChange={(e) =>
-										handleChange("benefitsInfo", "unionDuesContribution", e.target.value)
-									}
-									placeholder="Enter value"
-								/>
-							</FormControl>
-						)}
+						{formData.benefitsInfo.typeOfUnionDuesTreatment &&
+							formData.benefitsInfo.typeOfUnionDuesTreatment !== "No Union Contributions" && (
+								<FormControl>
+									<FormLabel size="sm">Union Dues</FormLabel>
+									<Input
+										size="sm"
+										value={formData.benefitsInfo.unionDuesContribution || ""}
+										onChange={(e) =>
+											handleChange("benefitsInfo", "unionDuesContribution", e.target.value)
+										}
+										placeholder="Enter value"
+									/>
+								</FormControl>
+							)}
 					</Stack>
 				)}
 				<PrimaryButton

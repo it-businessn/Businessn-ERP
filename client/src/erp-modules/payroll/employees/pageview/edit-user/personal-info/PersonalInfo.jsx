@@ -24,17 +24,19 @@ import {
 	personalSubSteps,
 	tabPanelStyleCss,
 	tabScrollCss,
+	userInfoDetails,
 } from "erp-modules/payroll/onboard-user/customInfo";
 import useEmployeeProfileInfo from "hooks/useEmployeeProfileInfo";
 import { useEffect, useState } from "react";
 import PayrollService from "services/PayrollService";
 import { getDefaultDate } from "utils/convertDate";
 
-const PersonalInfo = ({ formData, handleChange, company, userId, setFormData }) => {
+const PersonalInfo = ({ company, userId }) => {
 	const [personalSubStep, setPersonalSubStep] = useState(0);
 	const [moreDetails, setMoreDetails] = useState(null);
 	const [availableProvinces, setAvailableProvinces] = useState([]);
 	const [isLoading, setIsLoading] = useState(false);
+	const [formData, setFormData] = useState(userInfoDetails);
 
 	const toast = useToast();
 	const profileInfo = useEmployeeProfileInfo(company, userId);
@@ -71,9 +73,7 @@ const PersonalInfo = ({ formData, handleChange, company, userId, setFormData }) 
 			} = profileInfo;
 
 			setFormData({
-				...formData,
 				personalInfo: {
-					...formData.personalInfo,
 					firstName,
 					middleName,
 					lastName,
@@ -85,7 +85,6 @@ const PersonalInfo = ({ formData, handleChange, company, userId, setFormData }) 
 					citizenship,
 				},
 				contactInfo: {
-					...formData.contactInfo,
 					personalEmail,
 					businessEmail,
 					personalPhoneNum,
@@ -98,7 +97,6 @@ const PersonalInfo = ({ formData, handleChange, company, userId, setFormData }) 
 					postalCode,
 				},
 				emergencyContact: {
-					...formData.emergencyContact,
 					emergencyFirstName,
 					emergencyLastName,
 					emergencyPersonalEmail,
@@ -127,6 +125,16 @@ const PersonalInfo = ({ formData, handleChange, company, userId, setFormData }) 
 			}
 		}
 	}, [formData.contactInfo.country]);
+
+	const handleChange = (section, field, value) => {
+		setFormData({
+			...formData,
+			[section]: {
+				...formData[section],
+				[field]: value,
+			},
+		});
+	};
 
 	const handleSave = async () => {
 		setIsLoading(true);
