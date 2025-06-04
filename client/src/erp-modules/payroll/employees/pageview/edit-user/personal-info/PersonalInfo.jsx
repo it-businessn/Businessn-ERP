@@ -32,11 +32,12 @@ import { getDefaultDate } from "utils/convertDate";
 
 const PersonalInfo = ({ formData, handleChange, company, userId, setFormData }) => {
 	const [personalSubStep, setPersonalSubStep] = useState(0);
-	const profileInfo = useEmployeeProfileInfo(company, userId);
 	const [moreDetails, setMoreDetails] = useState(null);
 	const [availableProvinces, setAvailableProvinces] = useState([]);
 	const [isLoading, setIsLoading] = useState(false);
+
 	const toast = useToast();
+	const profileInfo = useEmployeeProfileInfo(company, userId);
 
 	useEffect(() => {
 		if (profileInfo) {
@@ -374,7 +375,7 @@ const PersonalInfo = ({ formData, handleChange, company, userId, setFormData }) 
 								<Input
 									size="sm"
 									type="email"
-									value={formData.contactInfo.personalEmail}
+									value={formData.contactInfo.personalEmail || ""}
 									onChange={(e) => handleChange("contactInfo", "personalEmail", e.target.value)}
 									placeholder="Personal Email Address"
 								/>
@@ -385,7 +386,7 @@ const PersonalInfo = ({ formData, handleChange, company, userId, setFormData }) 
 								<Input
 									size="sm"
 									type="email"
-									value={formData.contactInfo.businessEmail}
+									value={formData.contactInfo.businessEmail || ""}
 									onChange={(e) => handleChange("contactInfo", "businessEmail", e.target.value)}
 									placeholder="Work Email Address"
 								/>
@@ -397,7 +398,7 @@ const PersonalInfo = ({ formData, handleChange, company, userId, setFormData }) 
 								<FormLabel size="sm">Personal Phone</FormLabel>
 								<Input
 									size="sm"
-									value={formData.contactInfo.personalPhoneNum}
+									value={formData.contactInfo.personalPhoneNum || ""}
 									onChange={(e) => handleChange("contactInfo", "personalPhoneNum", e.target.value)}
 									placeholder="Personal Phone Number"
 								/>
@@ -407,7 +408,7 @@ const PersonalInfo = ({ formData, handleChange, company, userId, setFormData }) 
 								<FormLabel size="sm">Work Phone</FormLabel>
 								<Input
 									size="sm"
-									value={formData.contactInfo.businessPhoneNum}
+									value={formData.contactInfo.businessPhoneNum || ""}
 									onChange={(e) => handleChange("contactInfo", "businessPhoneNum", e.target.value)}
 									placeholder="Work Phone Number"
 								/>
@@ -430,7 +431,7 @@ const PersonalInfo = ({ formData, handleChange, company, userId, setFormData }) 
 								<FormLabel size="sm">Street Address</FormLabel>
 								<Input
 									size="sm"
-									value={formData.contactInfo.streetAddress}
+									value={formData.contactInfo.streetAddress || ""}
 									onChange={(e) => handleChange("contactInfo", "streetAddress", e.target.value)}
 									placeholder="Street Address"
 								/>
@@ -442,7 +443,7 @@ const PersonalInfo = ({ formData, handleChange, company, userId, setFormData }) 
 								<FormLabel size="sm">City</FormLabel>
 								<Input
 									size="sm"
-									value={formData.contactInfo.city}
+									value={formData.contactInfo.city || ""}
 									onChange={(e) => handleChange("contactInfo", "city", e.target.value)}
 									placeholder="City"
 								/>
@@ -452,7 +453,7 @@ const PersonalInfo = ({ formData, handleChange, company, userId, setFormData }) 
 								<FormLabel size="sm">ZIP/Postal Code</FormLabel>
 								<Input
 									size="sm"
-									value={formData.contactInfo.postalCode}
+									value={formData.contactInfo.postalCode || ""}
 									onChange={(e) => handleChange("contactInfo", "postalCode", e.target.value)}
 									placeholder="ZIP/Postal Code"
 								/>
@@ -476,7 +477,7 @@ const PersonalInfo = ({ formData, handleChange, company, userId, setFormData }) 
 							<FormControl isRequired>
 								<FormLabel size="sm">Province/State</FormLabel>
 								<Select
-									value={formData.contactInfo.province}
+									value={formData.contactInfo.province || ""}
 									onChange={(e) => handleChange("contactInfo", "province", e.target.value)}
 								>
 									{availableProvinces.map((province) => (
@@ -498,7 +499,7 @@ const PersonalInfo = ({ formData, handleChange, company, userId, setFormData }) 
 								<FormLabel size="sm">First Name</FormLabel>
 								<Input
 									size="sm"
-									value={formData.emergencyContact.emergencyFirstName}
+									value={formData.emergencyContact.emergencyFirstName || ""}
 									onChange={(e) =>
 										handleChange("emergencyContact", "emergencyFirstName", e.target.value)
 									}
@@ -524,7 +525,7 @@ const PersonalInfo = ({ formData, handleChange, company, userId, setFormData }) 
 							<Input
 								size="sm"
 								type="email"
-								value={formData.emergencyContact.emergencyPersonalEmail}
+								value={formData.emergencyContact.emergencyPersonalEmail || ""}
 								onChange={(e) =>
 									handleChange("emergencyContact", "emergencyPersonalEmail", e.target.value)
 								}
@@ -536,7 +537,7 @@ const PersonalInfo = ({ formData, handleChange, company, userId, setFormData }) 
 							<FormLabel size="sm">Personal Phone</FormLabel>
 							<Input
 								size="sm"
-								value={formData.emergencyContact.emergencyPersonalPhoneNum}
+								value={formData.emergencyContact.emergencyPersonalPhoneNum || ""}
 								onChange={(e) =>
 									handleChange("emergencyContact", "emergencyPersonalPhoneNum", e.target.value)
 								}
@@ -547,7 +548,7 @@ const PersonalInfo = ({ formData, handleChange, company, userId, setFormData }) 
 						<FormControl isRequired>
 							<FormLabel size="sm">Relationship</FormLabel>
 							<Select
-								value={formData.emergencyContact.emergencyContactRelationship}
+								value={formData.emergencyContact.emergencyContactRelationship || ""}
 								onChange={(e) =>
 									handleChange("emergencyContact", "emergencyContactRelationship", e.target.value)
 								}

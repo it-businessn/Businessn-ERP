@@ -26,6 +26,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import LocalStorageService from "services/LocalStorageService";
 import EmpProfileSearch from "../EmpProfileSearch";
+import EmploymentInfo from "./edit-user/employment-info/EmploymentInfo";
 import PersonalInfo from "./edit-user/personal-info/PersonalInfo";
 
 const Employees = () => {
@@ -58,32 +59,11 @@ const Employees = () => {
 	const employeeID = employee?.employeeNo || (!id && !employee && loggedInUser?.employeeId);
 	const employeeName = employee?.empId?.fullName || (!id && !employee && loggedInUser?.fullName);
 
-	const [employmentSubStep, setEmploymentSubStep] = useState(0);
 	const [benefitsSubStep, setBenefitsSubStep] = useState(0);
 	const [governmentSubStep, setGovernmentSubStep] = useState(0);
 	const [bankingSubStep, setBankingSubStep] = useState(0);
 	const [formData, setFormData] = useState(userInfoDetails);
-	const [employmentProvinces, setEmploymentProvinces] = useState([]);
 	const [governmentProvinces, setGovernmentProvinces] = useState([]);
-	const [dataRefresh, setDataRefresh] = useState(false);
-
-	useEffect(() => {
-		const selectedCountry = COUNTRIES.find(
-			(country) => country.type === formData.employmentInfo.employmentCountry,
-		);
-		if (selectedCountry) {
-			setEmploymentProvinces(selectedCountry.provinces);
-			if (!selectedCountry.provinces.includes(formData.employmentInfo.employmentRegion)) {
-				setFormData({
-					...formData,
-					employmentInfo: {
-						...formData.employmentInfo,
-						province: selectedCountry.provinces[0],
-					},
-				});
-			}
-		}
-	}, [formData.employmentInfo.employmentCountry]);
 
 	useEffect(() => {
 		const selectedCountry = COUNTRIES.find(
@@ -127,23 +107,19 @@ const Employees = () => {
 				/>
 			),
 		},
-		// {
-		// 	id: 1,
-		// 	name: "Employment",
-		// 	content: (
-		// 		<EmploymentInfo
-		// 			employmentSubStep={employmentSubStep}
-		// 			setEmploymentSubStep={setEmploymentSubStep}
-		// 			formData={formData}
-		// 			handleChange={handleChange}
-		// 			employmentProvinces={employmentProvinces}
-		// 			company={company}
-		// 			dataRefresh={dataRefresh}
-		// 			isEditMode
-		// 			handleSave={handleSave}
-		// 		/>
-		// 	),
-		// },
+		{
+			id: 1,
+			name: "Employment",
+			content: (
+				<EmploymentInfo
+					company={company}
+					userId={userId}
+					formData={formData}
+					handleChange={handleChange}
+					setFormData={setFormData}
+				/>
+			),
+		},
 		// {
 		// 	id: 2,
 		// 	name: "Pay",

@@ -120,6 +120,7 @@ export const userInfoDetails = {
 		employeeCardNumber: "",
 		department: "",
 		employmentStartDate: "",
+		employmentLeaveDate: "",
 		employmentCountry: "Canada",
 		employmentRegion: "British Columbia",
 		branch: "",

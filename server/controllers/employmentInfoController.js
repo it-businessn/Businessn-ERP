@@ -236,29 +236,46 @@ const addEmployeeEmploymentInfo = async (req, res) => {
 const updateEmployeeEmploymentInfo = async (req, res) => {
 	const { id } = req.params;
 	const {
+		companyName,
 		payrollStatus,
 		employeeNo,
-		companyName,
-		employmentStartDate,
-		employmentLeaveDate,
 		employmentRole,
-		positions,
+		jobTitle,
+		payGroup,
+		timeManagementBadgeID,
+		costCenter,
+		employeeCardNumber,
+		department,
+		employmentStartDate,
 		employmentCountry,
 		employmentRegion,
+		employmentLeaveDate,
 	} = req.body;
 	try {
-		const updatedInfo = await updateEmploymentInfo(id, {
-			payrollStatus,
-			employeeNo,
-			companyName,
-			employmentStartDate,
-			employmentLeaveDate,
-			employmentRole,
-			positions,
-			employmentCountry,
-			employmentRegion,
-		});
-		res.status(201).json(updatedInfo);
+		const existingRecord = await EmployeeEmploymentInfo.findById(id);
+		if (existingRecord) {
+			const positions = existingRecord.positions;
+			positions[0].title = jobTitle;
+			positions[0].employmentPayGroup = payGroup;
+			positions[0].timeManagementBadgeID = timeManagementBadgeID;
+			positions[0].employmentCostCenter = costCenter;
+			positions[0].employeeCardNumber = employeeCardNumber;
+			positions[0].employmentDepartment = department;
+
+			const updatedInfo = await updateEmploymentInfo(id, {
+				payrollStatus,
+				employeeNo,
+				companyName,
+				employmentStartDate,
+				employmentLeaveDate,
+				employmentRole,
+				positions,
+				employmentCountry,
+				employmentRegion,
+			});
+			return res.status(201).json(updatedInfo);
+		}
+		return res.status(201).json("Record does not exist");
 	} catch (error) {
 		res.status(400).json({ message: error.message });
 	}
