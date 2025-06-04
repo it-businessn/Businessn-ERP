@@ -101,7 +101,7 @@ const Assessment = () => {
 							{showExplanation && (
 								<VStack align={"self-start"} ml={4}>
 									<Box fontSize={"sm"}>
-										Results:{" "}
+										Results:
 										<Text
 											fontWeight="bold"
 											color={

@@ -52,7 +52,7 @@ const RightPane = ({
 				closestRecord={closestRecord}
 				closestRecordIndex={closestRecordIndex}
 			/> */}
-			<MiniCalendar user={selectedUser} company={company} isPayrollDashboard />{" "}
+			<MiniCalendar user={selectedUser} company={company} isPayrollDashboard />
 			<TabsButtonGroup tabs={TABS} setViewMode={setViewMode} viewMode={viewMode} />
 			{showComponent(viewMode)}
 		</BoxCard>

@@ -17,18 +17,141 @@ import {
 	StepStatus,
 	StepTitle,
 	Tooltip,
+	useToast,
 } from "@chakra-ui/react";
+import PrimaryButton from "components/ui/button/PrimaryButton";
 import TextTitle from "components/ui/text/TextTitle";
+import {
+	COUNTRIES,
+	governmentSubSteps,
+	tabPanelStyleCss,
+	tabScrollCss,
+} from "erp-modules/payroll/onboard-user/customInfo";
+import useEmployeeGovernment from "hooks/useEmployeeGovernment";
+import { useEffect, useState } from "react";
 import { FaInfoCircle } from "react-icons/fa";
-import { governmentSubSteps, tabPanelStyleCss, tabScrollCss } from "./customInfo";
+import PayrollService from "services/PayrollService";
 
-const GovernmentInfo = ({
-	governmentSubStep,
-	setGovernmentSubStep,
-	formData,
-	handleChange,
-	governmentProvinces,
-}) => {
+const GovernmentInfo = ({ formData, handleChange, company, userId, setFormData }) => {
+	const toast = useToast();
+	const [governmentSubStep, setGovernmentSubStep] = useState(0);
+	const [governmentProvinces, setGovernmentProvinces] = useState([]);
+	const [moreDetails, setMoreDetails] = useState(null);
+	const [isLoading, setIsLoading] = useState(false);
+	const governmentInfo = useEmployeeGovernment(company, userId);
+
+	useEffect(() => {
+		if (governmentInfo) {
+			const {
+				isCPPExempt,
+				isEIExempt,
+				federalTax,
+				regionalTax,
+				regionalTaxCredit,
+				federalTaxCredit,
+				federalPensionEE,
+				federalEmploymentInsuranceEE,
+				federalEmploymentInsuranceER,
+				federalPensionER,
+				regionalEmployeeInjury,
+				regionalEmployeeHealth,
+				regionalEmployerHealth,
+				empId,
+				_id,
+			} = governmentInfo;
+
+			setFormData({
+				...formData,
+				governmentInfo: {
+					...formData.governmentInfo,
+					isCPPExempt,
+					isEIExempt,
+					federalTax,
+					regionalTax,
+					regionalTaxCredit,
+					federalTaxCredit,
+					federalPensionEE,
+					federalEmploymentInsuranceEE,
+					federalEmploymentInsuranceER,
+					federalPensionER,
+					regionalEmployeeInjury,
+					regionalEmployeeHealth,
+					regionalEmployerHealth,
+				},
+			});
+			setMoreDetails({ empId, _id });
+		}
+	}, [governmentInfo]);
+
+	useEffect(() => {
+		const selectedCountry = COUNTRIES.find(
+			(country) => country.type === formData.governmentInfo.federalTax,
+		);
+		if (selectedCountry) {
+			setGovernmentProvinces(selectedCountry.provinces);
+			if (!selectedCountry.provinces.includes(formData.governmentInfo.regionalTax)) {
+				setFormData({
+					...formData,
+					governmentInfo: {
+						...formData.governmentInfo,
+						regionalTax: selectedCountry.provinces[0],
+					},
+				});
+			}
+		}
+	}, [formData.governmentInfo.federalTax]);
+
+	const handleSave = async () => {
+		setIsLoading(true);
+		try {
+			const {
+				isCPPExempt,
+				isEIExempt,
+				federalTax,
+				regionalTax,
+				regionalTaxCredit,
+				federalTaxCredit,
+				federalPensionEE,
+				federalEmploymentInsuranceEE,
+				federalEmploymentInsuranceER,
+				federalPensionER,
+				regionalEmployeeInjury,
+				regionalEmployeeHealth,
+				regionalEmployerHealth,
+			} = formData.governmentInfo;
+
+			const govtContrInfo = {
+				empId: moreDetails.empId,
+				companyName: company,
+				isCPPExempt,
+				isEIExempt,
+				federalTax,
+				regionalTax,
+				regionalTaxCredit,
+				federalTaxCredit,
+				federalPensionEE,
+				federalEmploymentInsuranceEE,
+				federalEmploymentInsuranceER,
+				federalPensionER,
+				regionalEmployeeInjury,
+				regionalEmployeeHealth,
+				regionalEmployerHealth,
+			};
+
+			const { data } = await PayrollService.updateEmployeeGovernmentInfo(
+				govtContrInfo,
+				moreDetails?._id,
+			);
+			setIsLoading(false);
+			toast({
+				title: "Government info updated successfully.",
+				status: "success",
+				duration: 1000,
+				isClosable: true,
+			});
+		} catch (error) {}
+	};
+
 	return (
 		<Flex height="100%">
 			<Box
@@ -63,7 +186,7 @@ const GovernmentInfo = ({
 				</Stepper>
 			</Box>
 
-			<Box flex={1} overflowY="auto" css={tabScrollCss}>
+			<Box flex={0.7} overflowY="auto" css={tabScrollCss}>
 				{governmentSubStep === 0 && (
 					<Stack spacing={4} p={5}>
 						<TextTitle size="xl" title="Exemption" />
@@ -147,7 +270,7 @@ const GovernmentInfo = ({
 							<FormLabel size="sm">Federal Tax</FormLabel>
 							<Select
 								size="sm"
-								value={formData.governmentInfo.federalTax}
+								value={formData.governmentInfo.federalTax || ""}
 								onChange={(e) => handleChange("governmentInfo", "federalTax", e.target.value)}
 							>
 								{["Canada", "US"].map((country) => (
@@ -162,7 +285,7 @@ const GovernmentInfo = ({
 							<FormLabel size="sm">Regional Tax</FormLabel>
 							<Select
 								size="sm"
-								value={formData.governmentInfo.regionalTax}
+								value={formData.governmentInfo.regionalTax || ""}
 								onChange={(e) => handleChange("governmentInfo", "regionalTax", e.target.value)}
 							>
 								{governmentProvinces.map((province) => (
@@ -179,7 +302,7 @@ const GovernmentInfo = ({
 								<Input
 									size="sm"
 									type="number"
-									value={formData.governmentInfo.federalTaxCredit}
+									value={formData.governmentInfo.federalTaxCredit || ""}
 									onChange={(e) =>
 										handleChange("governmentInfo", "federalTaxCredit", e.target.value)
 									}
@@ -192,7 +315,7 @@ const GovernmentInfo = ({
 								<Input
 									size="sm"
 									type="number"
-									value={formData.governmentInfo.regionalTaxCredit}
+									value={formData.governmentInfo.regionalTaxCredit || ""}
 									onChange={(e) =>
 										handleChange("governmentInfo", "regionalTaxCredit", e.target.value)
 									}
@@ -221,7 +344,7 @@ const GovernmentInfo = ({
 								</Tooltip>
 								<Input
 									size="sm"
-									value={formData.governmentInfo.federalPensionEE}
+									value={formData.governmentInfo.federalPensionEE || ""}
 									onChange={(e) =>
 										handleChange("governmentInfo", "federalPensionEE", e.target.value)
 									}
@@ -246,7 +369,7 @@ const GovernmentInfo = ({
 								</Tooltip>
 								<Input
 									size="sm"
-									value={formData.governmentInfo.federalEmploymentInsuranceEE}
+									value={formData.governmentInfo.federalEmploymentInsuranceEE || ""}
 									onChange={(e) =>
 										handleChange("governmentInfo", "federalEmploymentInsuranceEE", e.target.value)
 									}
@@ -269,7 +392,7 @@ const GovernmentInfo = ({
 								</Tooltip>
 								<Input
 									size="sm"
-									value={formData.governmentInfo.federalPensionER}
+									value={formData.governmentInfo.federalPensionER || ""}
 									onChange={(e) =>
 										handleChange("governmentInfo", "federalPensionER", e.target.value)
 									}
@@ -294,7 +417,7 @@ const GovernmentInfo = ({
 								</Tooltip>
 								<Input
 									size="sm"
-									value={formData.governmentInfo.federalEmploymentInsuranceER}
+									value={formData.governmentInfo.federalEmploymentInsuranceER || ""}
 									onChange={(e) =>
 										handleChange("governmentInfo", "federalEmploymentInsuranceER", e.target.value)
 									}
@@ -323,7 +446,7 @@ const GovernmentInfo = ({
 								</Tooltip>
 								<Input
 									size="sm"
-									value={formData.governmentInfo.regionalEmployeeInjury}
+									value={formData.governmentInfo.regionalEmployeeInjury || ""}
 									onChange={(e) =>
 										handleChange("governmentInfo", "regionalEmployeeInjury", e.target.value)
 									}
@@ -344,7 +467,7 @@ const GovernmentInfo = ({
 								</Tooltip>
 								<Input
 									size="sm"
-									value={formData.governmentInfo.regionalEmployeeHealth}
+									value={formData.governmentInfo.regionalEmployeeHealth || ""}
 									onChange={(e) =>
 										handleChange("governmentInfo", "regionalEmployeeHealth", e.target.value)
 									}
@@ -371,7 +494,7 @@ const GovernmentInfo = ({
 								</Tooltip>
 								<Input
 									size="sm"
-									value={formData.governmentInfo.regionalEmployerInjury}
+									value={formData.governmentInfo.regionalEmployerInjury || ""}
 									onChange={(e) =>
 										handleChange("governmentInfo", "regionalEmployerInjury", e.target.value)
 									}
@@ -396,7 +519,7 @@ const GovernmentInfo = ({
 								</Tooltip>
 								<Input
 									size="sm"
-									value={formData.governmentInfo.regionalEmployerHealth}
+									value={formData.governmentInfo.regionalEmployerHealth || ""}
 									onChange={(e) =>
 										handleChange("governmentInfo", "regionalEmployerHealth", e.target.value)
 									}
@@ -406,6 +529,14 @@ const GovernmentInfo = ({
 						</SimpleGrid>
 					</Stack>
 				)}
+				<PrimaryButton
+					bg="var(--banner_bg)"
+					size="sm"
+					onOpen={handleSave}
+					ml={6}
+					name="Save"
+					isLoading={isLoading}
+				/>
 			</Box>
 		</Flex>
 	);
