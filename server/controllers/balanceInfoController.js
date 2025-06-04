@@ -155,9 +155,15 @@ const addEmployeeBalanceInfo = async (req, res) => {
 const updateEmployeeBalanceInfo = async (req, res) => {
 	const { id } = req.params;
 	try {
-		if (req.body?._id) delete req.body._id;
-		const updatedInfo = await updateBalanceInfo(id, req.body);
-		res.status(201).json(updatedInfo);
+		// const { empId, companyName } = req.body;
+		// const existingBalanceInfo = await findEmployeeBalanceInfo(empId, companyName);
+		const existingBalanceInfo = await EmployeeBalanceInfo.findById(id);
+		if (existingBalanceInfo) {
+			if (req.body?._id) delete req.body._id;
+			const updatedInfo = await updateBalanceInfo(id, req.body);
+			return res.status(201).json(updatedInfo);
+		}
+		return res.status(201).json("Record does not exist");
 	} catch (error) {
 		res.status(400).json({ message: error.message });
 	}
