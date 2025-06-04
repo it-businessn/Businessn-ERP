@@ -214,7 +214,9 @@ const PayInfo = ({ formData, handleChange, company, userId, setFormData }) => {
 					bg="var(--banner_bg)"
 					size="sm"
 					onOpen={handleSave}
-					ml={6}
+					ml={5}
+					mt={4}
+					borderRadius={6}
 					name="Save"
 					isLoading={isLoading}
 				/>

@@ -27,6 +27,7 @@ const PrimaryButton = ({
 	fontWeight,
 	fontSize,
 	whiteSpace,
+	borderRadius = "10px",
 }) => {
 	return (
 		<Button
@@ -46,7 +47,7 @@ const PrimaryButton = ({
 			my={my}
 			size={size}
 			type="submit"
-			borderRadius={"10px"}
+			borderRadius={borderRadius}
 			loadingText={loadingText}
 			rightIcon={rightIcon}
 			cursor={cursor}

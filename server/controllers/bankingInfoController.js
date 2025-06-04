@@ -157,9 +157,34 @@ const addEmployeeBankingInfo = async (req, res) => {
 const updateEmployeeBankingInfo = async (req, res) => {
 	const { id } = req.params;
 	try {
-		if (req.body?._id) delete req.body._id;
-		const updatedInfo = await updateBankingInfo(id, req.body);
-		res.status(201).json(updatedInfo);
+		const { bankNum, transitNum, accountNum, paymentEmail, payStubSendByEmail, directDeposit } =
+			req.body;
+
+		const existingInfo = await EmployeeBankingInfo.findById(id);
+		const updatedData = {
+			directDeposit,
+			payStubSendByEmail,
+			paymentEmail,
+		};
+		if (existingInfo) {
+			const ENCRYPTION_KEY = Buffer.from(process.env.BANKING_ENCRYPTION_KEY, "hex");
+			const bankEncrypted = encryptData(bankNum, ENCRYPTION_KEY);
+			const transitEncrypted = encryptData(transitNum, ENCRYPTION_KEY);
+			const accountEncrypted = encryptData(accountNum, ENCRYPTION_KEY);
+
+			updatedData.bankNum = bankEncrypted.encryptedData;
+			updatedData.bankIv = bankEncrypted.iv;
+
+			updatedData.transitNum = transitEncrypted.encryptedData;
+			updatedData.transitIv = transitEncrypted.iv;
+
+			updatedData.accountNum = accountEncrypted.encryptedData;
+			updatedData.accountIv = accountEncrypted.iv;
+
+			const updatedInfo = await updateBankingInfo(id, updatedData);
+			return res.status(201).json(updatedInfo);
+		}
+		return res.status(201).json("Record does not exist");
 	} catch (error) {
 		res.status(400).json({ message: error.message });
 	}
