@@ -335,7 +335,7 @@ const EmploymentInfo = ({ company, userId, setFormData, formData, handleChange, 
 								{costCentres ? (
 									<Select
 										size="sm"
-										value={formData.employmentInfo.costCenter}
+										value={formData.employmentInfo.costCenter || ""}
 										onChange={(e) => handleChange("employmentInfo", "costCenter", e.target.value)}
 										placeholder="Select cost center"
 									>

@@ -210,7 +210,7 @@ const BankingInfo = ({ formData, handleChange, company, userId, setFormData }) =
 							<FormLabel size="sm">Send Paystub by Email on Pay Day</FormLabel>
 							<Select
 								size="sm"
-								value={formData.bankingInfo.payStubSendByEmail}
+								value={formData.bankingInfo.payStubSendByEmail || ""}
 								onChange={(e) =>
 									handleBankInfoChange("bankingInfo", "payStubSendByEmail", e.target.value)
 								}
@@ -226,7 +226,7 @@ const BankingInfo = ({ formData, handleChange, company, userId, setFormData }) =
 								<Input
 									size="sm"
 									type="email"
-									value={formData.bankingInfo.paymentEmail}
+									value={formData.bankingInfo.paymentEmail || ""}
 									onChange={(e) =>
 										handleBankInfoChange("bankingInfo", "paymentEmail", e.target.value)
 									}
@@ -245,7 +245,7 @@ const BankingInfo = ({ formData, handleChange, company, userId, setFormData }) =
 							<FormLabel size="sm">Deposit Paycheque via Direct Deposit</FormLabel>
 							<Select
 								size="sm"
-								value={formData.bankingInfo.directDeposit}
+								value={formData.bankingInfo.directDeposit || ""}
 								onChange={(e) =>
 									handleBankInfoChange("bankingInfo", "directDeposit", e.target.value)
 								}
@@ -261,7 +261,7 @@ const BankingInfo = ({ formData, handleChange, company, userId, setFormData }) =
 									<FormLabel size="sm">Bank Number</FormLabel>
 									<Input
 										size="sm"
-										value={formData.bankingInfo.bankNum}
+										value={formData.bankingInfo.bankNum || ""}
 										onChange={(e) => handleBankInfoChange("bankingInfo", "bankNum", e.target.value)}
 										onBlur={() => handleBankingBlur("bankNum")}
 										placeholder="Enter bank number (3 digits)"
@@ -276,7 +276,7 @@ const BankingInfo = ({ formData, handleChange, company, userId, setFormData }) =
 									<FormLabel size="sm">Transit Number</FormLabel>
 									<Input
 										size="sm"
-										value={formData.bankingInfo.transitNum}
+										value={formData.bankingInfo.transitNum || ""}
 										onChange={(e) =>
 											handleBankInfoChange("bankingInfo", "transitNum", e.target.value)
 										}
@@ -293,7 +293,7 @@ const BankingInfo = ({ formData, handleChange, company, userId, setFormData }) =
 									<FormLabel size="sm">Account Number</FormLabel>
 									<Input
 										size="sm"
-										value={formData.bankingInfo.accountNum}
+										value={formData.bankingInfo.accountNum || ""}
 										onChange={(e) =>
 											handleBankInfoChange("bankingInfo", "accountNum", e.target.value)
 										}
