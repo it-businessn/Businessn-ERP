@@ -42,7 +42,6 @@ const NewEmployeeOnboardingModal = ({ isOpen, onClose }) => {
 	const [governmentSubStep, setGovernmentSubStep] = useState(0);
 	const [bankingSubStep, setBankingSubStep] = useState(0);
 	const [formData, setFormData] = useState(userInfoDetails);
-	const [dataRefresh, setDataRefresh] = useState(false);
 	const [availableProvinces, setAvailableProvinces] = useState([]);
 	const [employmentProvinces, setEmploymentProvinces] = useState([]);
 	const [governmentProvinces, setGovernmentProvinces] = useState([]);
@@ -80,7 +79,6 @@ const NewEmployeeOnboardingModal = ({ isOpen, onClose }) => {
 					handleChange={handleChange}
 					employmentProvinces={employmentProvinces}
 					company={company}
-					dataRefresh={dataRefresh}
 				/>
 			),
 		},

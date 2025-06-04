@@ -38,15 +38,13 @@ const EmploymentInfo = ({
 	formData,
 	handleChange,
 	company,
-	dataRefresh,
 	employmentProvinces,
-	isEditMode,
 }) => {
-	const roles = useRoles(company, dataRefresh);
-	const costCentres = useCostCenter(company, dataRefresh);
-	const departments = useDepartment(company, dataRefresh);
-	const positionRoles = usePositionRoles(company, dataRefresh);
-	const { payGroups } = usePaygroup(company, dataRefresh);
+	const roles = useRoles(company);
+	const costCentres = useCostCenter(company);
+	const departments = useDepartment(company);
+	const positionRoles = usePositionRoles(company);
+	const { payGroups } = usePaygroup(company);
 
 	return (
 		<Flex height="100%">
@@ -82,7 +80,7 @@ const EmploymentInfo = ({
 				</Stepper>
 			</Box>
 
-			<Box flex={isEditMode ? 0.7 : 1} overflowY="auto" css={tabScrollCss}>
+			<Box flex={1} overflowY="auto" css={tabScrollCss}>
 				{/* Identification & Status Sub-step */}
 				{employmentSubStep === 0 && (
 					<Stack spacing={4} p={5}>
