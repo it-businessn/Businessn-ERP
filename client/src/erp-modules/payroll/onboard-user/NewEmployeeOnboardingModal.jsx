@@ -29,7 +29,17 @@ import EmploymentInfo from "./EmploymentInfo";
 import GovernmentInfo from "./GovernmentInfo";
 import PayInfo from "./PayInfo";
 import PersonalInfo from "./PersonalInfo";
-import { COUNTRIES, tabStyleCss, trimText, userInfoDetails } from "./customInfo";
+import {
+	bankingSubSteps,
+	benefitsSubSteps,
+	COUNTRIES,
+	employmentSubSteps,
+	governmentSubSteps,
+	personalSubSteps,
+	tabStyleCss,
+	trimText,
+	userInfoDetails,
+} from "./customInfo";
 
 const NewEmployeeOnboardingModal = ({ isOpen, onClose }) => {
 	const company = LocalStorageService.getItem("selectedCompany");
@@ -219,22 +229,22 @@ const NewEmployeeOnboardingModal = ({ isOpen, onClose }) => {
 	}, [formData.governmentInfo.federalTax]);
 
 	const handleNextTab = () => {
-		if (tabIndex === 0 && personalSubStep < 2) {
+		if (tabIndex === 0 && personalSubStep < personalSubSteps.length - 1) {
 			// Handle personal info sub-steps
 			setPersonalSubStep(personalSubStep + 1);
-		} else if (tabIndex === 1 && employmentSubStep < 2) {
+		} else if (tabIndex === 1 && employmentSubStep < employmentSubSteps?.length - 1) {
 			// Handle employment info sub-steps
 			setEmploymentSubStep(employmentSubStep + 1);
-		} else if (tabIndex === 3 && benefitsSubStep < 2) {
+		} else if (tabIndex === 3 && benefitsSubStep < benefitsSubSteps.length - 1) {
 			// Handle benefits sub-steps
 			setBenefitsSubStep(benefitsSubStep + 1);
-		} else if (tabIndex === 4 && governmentSubStep < 3) {
+		} else if (tabIndex === 4 && governmentSubStep < governmentSubSteps.length - 1) {
 			// Handle government sub-steps
 			setGovernmentSubStep(governmentSubStep + 1);
-		} else if (tabIndex === 5 && bankingSubStep < 1) {
+		} else if (tabIndex === 5 && bankingSubStep < bankingSubSteps.length - 1) {
 			// Handle banking sub-steps
 			setBankingSubStep(bankingSubStep + 1);
-		} else if (tabIndex < 5) {
+		} else if (tabIndex < ONBOARD_TABS.length - 1) {
 			// Move to next main tab
 			setTabIndex(tabIndex + 1);
 			// Reset sub-steps when leaving tabs
@@ -314,15 +324,15 @@ const NewEmployeeOnboardingModal = ({ isOpen, onClose }) => {
 	// Get button text based on current tab and sub-step
 	const getNextButtonText = () => {
 		if (tabIndex === 0) {
-			return personalSubStep < 2 ? "Continue" : "Next: Employment";
+			return personalSubStep < personalSubSteps.length - 1 ? "Continue" : "Next: Employment";
 		} else if (tabIndex === 1) {
-			return employmentSubStep < 2 ? "Continue" : "Next: Pay";
+			return employmentSubStep < employmentSubSteps.length - 1 ? "Continue" : "Next: Pay";
 		} else if (tabIndex === 2) {
 			return "Next: Benefits";
 		} else if (tabIndex === 3) {
-			return benefitsSubStep < 2 ? "Continue" : "Next: Government";
+			return benefitsSubStep < benefitsSubSteps.length - 1 ? "Continue" : "Next: Government";
 		} else if (tabIndex === 4) {
-			return governmentSubStep < 3 ? "Continue" : "Next: Banking";
+			return governmentSubStep < governmentSubSteps.length - 1 ? "Continue" : "Next: Banking";
 		} else if (tabIndex === 5) {
 			return bankingSubStep < 1 ? "Continue" : "Save Employee";
 		}
@@ -331,14 +341,14 @@ const NewEmployeeOnboardingModal = ({ isOpen, onClose }) => {
 
 	// Get button icon based on current tab and sub-step
 	const getNextButtonIcon = () => {
-		if (tabIndex === 5 && bankingSubStep === 1) {
+		if (tabIndex === ONBOARD_TABS.length - 1 && bankingSubStep === 1) {
 			return <FaSave />;
 		}
 		return <FaChevronRight />;
 	};
 
 	// Determine if we're on the last step of the entire form
-	const isLastStep = tabIndex === 5 && bankingSubStep === 1;
+	const isLastStep = tabIndex === ONBOARD_TABS.length - 1 && bankingSubStep === 1;
 
 	// Determine button action based on current tab and sub-step
 	const getNextButtonAction = () => {
@@ -401,12 +411,19 @@ const NewEmployeeOnboardingModal = ({ isOpen, onClose }) => {
 						height="100%"
 						sx={tabStyleCss}
 					>
-						<TabList bg="gray.50" px={6} pt={5} pb={2} flexShrink={0}>
+						<TabList
+							bg="gray.50"
+							px={6}
+							pt={5}
+							pb={2}
+							flexShrink={0}
+							justifyContent="space-between"
+						>
 							{ONBOARD_TABS.map(({ name }) => (
 								<Tab
+									w="100%"
 									key={name}
 									fontWeight="semibold"
-									px={8}
 									_selected={{ color: "white", bg: "var(--banner_bg)" }}
 								>
 									{name}

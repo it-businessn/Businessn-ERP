@@ -44,7 +44,7 @@ const EmploymentInfo = ({
 	const costCentres = useCostCenter(company);
 	const departments = useDepartment(company);
 	const positionRoles = usePositionRoles(company);
-	const { payGroups } = usePaygroup(company);
+	const { payGroups } = usePaygroup(company, false);
 
 	return (
 		<Flex height="100%">
@@ -133,9 +133,25 @@ const EmploymentInfo = ({
 						</FormControl>
 					</Stack>
 				)}
+				{employmentSubStep === 1 && (
+					<Stack spacing={4} p={5}>
+						<TextTitle size="xl" title="Tenure" />
+						<FormControl isRequired>
+							<FormLabel size="sm">Start Date</FormLabel>
+							<Input
+								size="sm"
+								type="date"
+								value={formData.employmentInfo.employmentStartDate}
+								onChange={(e) =>
+									handleChange("employmentInfo", "employmentStartDate", e.target.value)
+								}
+							/>
+						</FormControl>
+					</Stack>
+				)}
 
 				{/* Position Sub-step */}
-				{employmentSubStep === 1 && (
+				{employmentSubStep === 2 && (
 					<Stack spacing={4} p={5}>
 						<TextTitle size="xl" title="Position" />
 
@@ -187,17 +203,30 @@ const EmploymentInfo = ({
 							</FormControl>
 						</SimpleGrid>
 
-						<FormControl>
-							<FormLabel size="sm">Time Management Badge ID</FormLabel>
-							<Input
-								size="sm"
-								value={formData.employmentInfo.timeManagementBadgeID}
-								onChange={(e) =>
-									handleChange("employmentInfo", "timeManagementBadgeID", e.target.value)
-								}
-								placeholder="Enter badge ID"
-							/>
-						</FormControl>
+						<SimpleGrid columns={2} spacing={6}>
+							<FormControl>
+								<FormLabel size="sm">Time Management Badge ID</FormLabel>
+								<Input
+									size="sm"
+									value={formData.employmentInfo.timeManagementBadgeID}
+									onChange={(e) =>
+										handleChange("employmentInfo", "timeManagementBadgeID", e.target.value)
+									}
+									placeholder="Enter badge ID"
+								/>
+							</FormControl>
+							<FormControl>
+								<FormLabel size="sm">Employee Card Number</FormLabel>
+								<Input
+									size="sm"
+									value={formData.employmentInfo.employeeCardNumber}
+									onChange={(e) =>
+										handleChange("employmentInfo", "employeeCardNumber", e.target.value)
+									}
+									placeholder="Enter card number"
+								/>
+							</FormControl>
+						</SimpleGrid>
 
 						<SimpleGrid columns={2} spacing={6}>
 							<FormControl isRequired>
@@ -222,21 +251,6 @@ const EmploymentInfo = ({
 									</Flex>
 								)}
 							</FormControl>
-
-							<FormControl>
-								<FormLabel size="sm">Employee Card Number</FormLabel>
-								<Input
-									size="sm"
-									value={formData.employmentInfo.employeeCardNumber}
-									onChange={(e) =>
-										handleChange("employmentInfo", "employeeCardNumber", e.target.value)
-									}
-									placeholder="Enter card number"
-								/>
-							</FormControl>
-						</SimpleGrid>
-
-						<SimpleGrid columns={2} spacing={6}>
 							<FormControl isRequired>
 								<FormLabel size="sm">Department</FormLabel>
 								{departments ? (
@@ -259,24 +273,12 @@ const EmploymentInfo = ({
 									</Flex>
 								)}
 							</FormControl>
-
-							<FormControl isRequired>
-								<FormLabel size="sm">Start Date</FormLabel>
-								<Input
-									size="sm"
-									type="date"
-									value={formData.employmentInfo.employmentStartDate}
-									onChange={(e) =>
-										handleChange("employmentInfo", "employmentStartDate", e.target.value)
-									}
-								/>
-							</FormControl>
 						</SimpleGrid>
 					</Stack>
 				)}
 
 				{/* Region Sub-step */}
-				{employmentSubStep === 2 && (
+				{employmentSubStep === 3 && (
 					<Stack spacing={4} p={5}>
 						<TextTitle size="xl" title="Region" />
 						<SimpleGrid columns={2} spacing={6}>

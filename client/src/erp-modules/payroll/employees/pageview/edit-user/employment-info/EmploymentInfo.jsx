@@ -264,6 +264,44 @@ const EmploymentInfo = ({ company, userId, payGroups }) => {
 
 				{employmentSubStep === 1 && (
 					<Stack spacing={4} p={5}>
+						<TextTitle size="xl" title="Tenure" />
+						<SimpleGrid columns={2} spacing={6}>
+							<FormControl isRequired>
+								<FormLabel size="sm">Start Date</FormLabel>
+								<Input
+									size="sm"
+									type="date"
+									value={
+										formData.employmentInfo.employmentStartDate
+											? getDefaultDate(formData.employmentInfo.employmentStartDate)
+											: ""
+									}
+									onChange={(e) =>
+										handleChange("employmentInfo", "employmentStartDate", e.target.value)
+									}
+								/>
+							</FormControl>
+							<FormControl isRequired>
+								<FormLabel size="sm">Leave Date</FormLabel>
+								<Input
+									size="sm"
+									type="date"
+									value={
+										formData.employmentInfo.employmentLeaveDate
+											? getDefaultDate(formData.employmentInfo.employmentLeaveDate)
+											: ""
+									}
+									onChange={(e) =>
+										handleChange("employmentInfo", "employmentLeaveDate", e.target.value)
+									}
+								/>
+							</FormControl>
+						</SimpleGrid>
+					</Stack>
+				)}
+
+				{employmentSubStep === 2 && (
+					<Stack spacing={4} p={5}>
 						<TextTitle size="xl" title="Position" />
 
 						<SimpleGrid columns={2} spacing={6}>
@@ -385,43 +423,10 @@ const EmploymentInfo = ({ company, userId, payGroups }) => {
 								)}
 							</FormControl>
 						</SimpleGrid>
-
-						<SimpleGrid columns={2} spacing={6}>
-							<FormControl isRequired>
-								<FormLabel size="sm">Start Date</FormLabel>
-								<Input
-									size="sm"
-									type="date"
-									value={
-										formData.employmentInfo.employmentStartDate
-											? getDefaultDate(formData.employmentInfo.employmentStartDate)
-											: ""
-									}
-									onChange={(e) =>
-										handleChange("employmentInfo", "employmentStartDate", e.target.value)
-									}
-								/>
-							</FormControl>
-							<FormControl isRequired>
-								<FormLabel size="sm">Leave Date</FormLabel>
-								<Input
-									size="sm"
-									type="date"
-									value={
-										formData.employmentInfo.employmentLeaveDate
-											? getDefaultDate(formData.employmentInfo.employmentLeaveDate)
-											: ""
-									}
-									onChange={(e) =>
-										handleChange("employmentInfo", "employmentLeaveDate", e.target.value)
-									}
-								/>
-							</FormControl>
-						</SimpleGrid>
 					</Stack>
 				)}
 
-				{employmentSubStep === 2 && (
+				{employmentSubStep === 3 && (
 					<Stack spacing={4} p={5}>
 						<TextTitle size="xl" title="Region" />
 						<SimpleGrid columns={2} spacing={6}>

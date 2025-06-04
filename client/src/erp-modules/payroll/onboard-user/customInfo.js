@@ -227,6 +227,7 @@ export const personalSubSteps = [
 // Labels for the employment info sub-steps
 export const employmentSubSteps = [
 	{ title: "Identification & Status", description: "Basic employment details" },
+	{ title: "Tenure", description: "Joining details" },
 	{ title: "Position", description: "Job details" },
 	{ title: "Region", description: "Location info" },
 ];
