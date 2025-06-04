@@ -273,7 +273,7 @@ const BenefitInfo = ({ company, userId }) => {
 							/>
 						</FormControl>
 
-						<HStack justifyContent="start" mt={2}>
+						<HStack display="none" justifyContent="start" mt={2}>
 							<Button
 								size="sm"
 								leftIcon={<FaPlus />}
