@@ -41,7 +41,7 @@ const Employees = () => {
 	const [tabIndex, setTabIndex] = useState(parseInt(stepNo) || 0);
 	const [formData, setFormData] = useState(userInfoDetails);
 
-	const { selectedPayGroupOption } = usePaygroup(company, false);
+	const { payGroups, selectedPayGroupOption } = usePaygroup(company, false);
 	const employees = useCompanyEmployees(company, deptName, selectedPayGroupOption);
 
 	useEffect(() => {
@@ -94,6 +94,7 @@ const Employees = () => {
 					formData={formData}
 					setFormData={setFormData}
 					handleChange={handleChange}
+					payGroups={payGroups}
 				/>
 			),
 		},

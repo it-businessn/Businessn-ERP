@@ -22,7 +22,6 @@ import {
 import TextTitle from "components/ui/text/TextTitle";
 import useCostCenter from "hooks/useCostCenter";
 import useDepartment from "hooks/useDepartment";
-import usePaygroup from "hooks/usePaygroup";
 import usePositionRoles from "hooks/usePositionRoles";
 import useRoles from "hooks/useRoles";
 
@@ -38,13 +37,12 @@ import { useEffect, useState } from "react";
 import PayrollService from "services/PayrollService";
 import { getDefaultDate } from "utils/convertDate";
 
-const EmploymentInfo = ({ company, userId, setFormData, formData, handleChange }) => {
+const EmploymentInfo = ({ company, userId, setFormData, formData, handleChange, payGroups }) => {
 	const toast = useToast();
 	const roles = useRoles(company);
 	const costCentres = useCostCenter(company);
 	const departments = useDepartment(company);
 	const positionRoles = usePositionRoles(company);
-	const { payGroups } = usePaygroup(company, false);
 	const [isLoading, setIsLoading] = useState(false);
 	const [moreDetails, setMoreDetails] = useState(null);
 	const [employmentSubStep, setEmploymentSubStep] = useState(0);

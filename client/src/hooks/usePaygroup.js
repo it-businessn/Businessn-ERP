@@ -21,11 +21,10 @@ const usePaygroup = (company, refresh, year = CURRENT_YEAR, isReport = false) =>
 				setPayGroups(data);
 				if (data.length) {
 					setHasMultiPaygroups(data?.length > 1);
-					const payGroup = selectedPayGroupOption
-						? data.find(({ name }) => name === selectedPayGroupOption)
-						: company === COMPANIES.BUSINESSN_ORG
-						? data.find(({ scheduleFrequency }) => scheduleFrequency === "Monthly")
-						: data[0];
+					const payGroup =
+						company === COMPANIES.BUSINESSN_ORG
+							? data.find(({ scheduleFrequency }) => scheduleFrequency === "Monthly")
+							: data[0];
 					setSelectedPayGroup(payGroup);
 				}
 			} catch (error) {
@@ -36,7 +35,14 @@ const usePaygroup = (company, refresh, year = CURRENT_YEAR, isReport = false) =>
 		if (refresh || refresh === false) {
 			fetchAllPaygroups();
 		}
-	}, [company, refresh, selectedPayGroupOption]);
+	}, [company, refresh]);
+
+	useEffect(() => {
+		if (selectedPayGroupOption) {
+			const payGroup = payGroups?.find(({ name }) => name === selectedPayGroupOption);
+			setSelectedPayGroup(payGroup);
+		}
+	}, [selectedPayGroupOption]);
 
 	useEffect(() => {
 		if (selectedPayGroup) {
