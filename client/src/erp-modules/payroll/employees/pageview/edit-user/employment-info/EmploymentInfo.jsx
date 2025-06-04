@@ -42,12 +42,13 @@ import { getDefaultDate } from "utils/convertDate";
 import NewPositionModal from "./NewPositionModal";
 import PositionInfo from "./PositionInfo";
 
-const EmploymentInfo = ({ company, userId, payGroups }) => {
+const EmploymentInfo = ({ company, userId, payGroups, selectedPayGroupOption }) => {
 	const toast = useToast();
+	const [newRoleAdded, setNewRoleAdded] = useState(false);
 	const roles = useRoles(company);
 	const costCentres = useCostCenter(company);
 	const departments = useDepartment(company);
-	const positionRoles = usePositionRoles(company);
+	const positionRoles = usePositionRoles(company, newRoleAdded);
 	const [isLoading, setIsLoading] = useState(false);
 	const [moreDetails, setMoreDetails] = useState(null);
 	const [employmentSubStep, setEmploymentSubStep] = useState(0);
@@ -56,6 +57,10 @@ const EmploymentInfo = ({ company, userId, payGroups }) => {
 	const [formData, setFormData] = useState(userInfoDetails);
 	const [showModal, setShowModal] = useState(false);
 	const [editedIndices, setEditedIndices] = useState({});
+
+	useEffect(() => {
+		setEditedIndices({});
+	}, [employmentSubStep]);
 
 	useEffect(() => {
 		const fetchEmployeeEmploymentInfo = async () => {
@@ -138,7 +143,13 @@ const EmploymentInfo = ({ company, userId, payGroups }) => {
 
 			if (positionIndex === -1) {
 				existingPositions.push(position);
-				formData.employmentInfo.positions = existingPositions;
+				setFormData({
+					...formData,
+					employmentInfo: {
+						...formData.employmentInfo,
+						positions: existingPositions,
+					},
+				});
 			} else {
 				formData.employmentInfo.positions[positionIndex] = position;
 			}
@@ -177,6 +188,7 @@ const EmploymentInfo = ({ company, userId, payGroups }) => {
 				employmentInfoData,
 				moreDetails?._id,
 			);
+			setShowModal(false);
 			setIsLoading(false);
 			toast({
 				title: "Employment info updated successfully.",
@@ -314,39 +326,54 @@ const EmploymentInfo = ({ company, userId, payGroups }) => {
 				)}
 
 				{employmentSubStep === 2 && (
-					<VStack p={5} w={"100%"} alignItems="end">
-						<PrimaryButton
-							bg="var(--banner_bg)"
-							size="sm"
-							borderRadius={6}
-							name="Add New Role / Position"
-							isLoading={isLoading}
-							onOpen={() => setShowModal(true)}
-						/>
-
-						<Box w="100%" maxH={"calc(100vh - 355px)"} overflowY="auto">
-							{formData.employmentInfo.positions?.map((position, index) => (
-								<BoxCard
-									border="1px solid var(--lead_cards_border)"
-									key={`${position?.title}_${index}`}
-								>
-									<TextTitle title={`Position ${index + 1}`} />
-									<PositionInfo
-										updateRecordIndex={index}
-										position={position}
-										departments={departments}
-										costCentres={costCentres}
-										positionRoles={positionRoles}
-										payGroups={payGroups}
-										handleUpdate={handleUpdate}
-										editedIndices={editedIndices}
-										setEditedIndices={setEditedIndices}
-									/>
-								</BoxCard>
-							))}
-						</Box>
-						{showModal && <NewPositionModal />}
-					</VStack>
+					<>
+						{showModal ? (
+							<NewPositionModal
+								company={company}
+								onClose={() => setShowModal(false)}
+								selectedPayGroup={selectedPayGroupOption}
+								departments={departments}
+								costCentres={costCentres}
+								positionRoles={positionRoles}
+								payGroups={payGroups}
+								handleUpdate={handleUpdate}
+								setNewRoleAdded={setNewRoleAdded}
+							/>
+						) : (
+							<VStack p={5} w={"100%"} spacing={3} alignItems="end">
+								<PrimaryButton
+									bg="var(--banner_bg)"
+									size="sm"
+									borderRadius={6}
+									name="Add New Position"
+									isLoading={isLoading}
+									onOpen={() => setShowModal(true)}
+								/>
+								<Box maxH={"calc(100vh - 355px)"} w={"100%"} overflowY="auto">
+									{formData.employmentInfo.positions?.map((position, index) => (
+										<BoxCard
+											p={2}
+											key={`${position?.title}_${index}`}
+											border="1px solid var(--lead_cards_border)"
+										>
+											<TextTitle title={position.title} />
+											<PositionInfo
+												updateRecordIndex={index}
+												position={position}
+												departments={departments}
+												costCentres={costCentres}
+												positionRoles={positionRoles}
+												payGroups={payGroups}
+												handleUpdate={handleUpdate}
+												editedIndices={editedIndices}
+												setEditedIndices={setEditedIndices}
+											/>
+										</BoxCard>
+									))}
+								</Box>
+							</VStack>
+						)}
+					</>
 				)}
 
 				{employmentSubStep === 3 && (

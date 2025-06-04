@@ -12,10 +12,12 @@ const ActionButtonGroup = ({
 	size,
 	justifyContent,
 	rightIcon,
+	bg,
 }) => {
 	return (
 		<HStack justifyContent={justifyContent ? justifyContent : !closeLabel && "end"}>
 			<PrimaryButton
+				bg={bg}
 				size={size}
 				isDisabled={isDisabled}
 				name={submitBtnName}

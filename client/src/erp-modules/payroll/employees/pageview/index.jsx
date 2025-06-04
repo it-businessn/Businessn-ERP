@@ -68,7 +68,14 @@ const Employees = () => {
 		},
 		{
 			name: "Employment",
-			content: <EmploymentInfo company={company} userId={userId} payGroups={payGroups} />,
+			content: (
+				<EmploymentInfo
+					company={company}
+					userId={userId}
+					payGroups={payGroups}
+					selectedPayGroupOption={selectedPayGroupOption}
+				/>
+			),
 		},
 		{
 			name: "Pay",

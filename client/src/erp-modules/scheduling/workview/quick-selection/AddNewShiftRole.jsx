@@ -36,17 +36,19 @@ const AddNewShiftRole = ({ showAddNewRole, setShowAddNewRole, setRefresh, compan
 		setShowAddNewRole(false);
 	};
 	return (
-		<ModalLayout title="Add New Role" size="md" isOpen={showAddNewRole} onClose={handleClose}>
+		<ModalLayout title="Role Info" size="md" isOpen={showAddNewRole} onClose={handleClose}>
 			<form onSubmit={handleSubmit}>
 				<Stack spacing={4}>
 					<InputFormControl
-						label={"Role Name"}
+						size="sm"
+						label={"Name"}
 						name="name"
 						valueText={roleName}
 						handleChange={(e) => setRoleName(e.target.value)}
 						required
 					/>
 					<InputFormControl
+						size="sm"
 						label={"Description"}
 						name="roleDescription"
 						valueText={roleDescription}
@@ -55,6 +57,7 @@ const AddNewShiftRole = ({ showAddNewRole, setShowAddNewRole, setRefresh, compan
 						placeholder="Enter Role Description"
 					/>
 					<ActionButtonGroup
+						size="sm"
 						submitBtnName={"Add"}
 						isDisabled={roleName === ""}
 						isLoading={isSubmitting}

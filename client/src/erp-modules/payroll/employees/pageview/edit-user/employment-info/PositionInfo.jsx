@@ -1,4 +1,4 @@
-import { FormLabel } from "@chakra-ui/react";
+import { FormLabel, Stack } from "@chakra-ui/react";
 
 import { Flex, FormControl, Input, Select, SimpleGrid, Spinner } from "@chakra-ui/react";
 import PrimaryButton from "components/ui/button/PrimaryButton";
@@ -40,7 +40,7 @@ const PositionInfo = ({
 	};
 
 	return (
-		<Flex alignItems="end">
+		<Stack spacing={4}>
 			<SimpleGrid columns={4} spacing={3}>
 				<FormControl isRequired>
 					<FormLabel size="sm">Role Title</FormLabel>
@@ -172,17 +172,19 @@ const PositionInfo = ({
 					/>
 				</FormControl>
 			</SimpleGrid>
-			{editedIndices[updateRecordIndex] && (
-				<PrimaryButton
-					bg="var(--banner_bg)"
-					onOpen={() => handleUpdate(roleInfo, updateRecordIndex)}
-					size="sm"
-					borderRadius={6}
-					name="Save"
-					rightIcon={<FaSave />}
-				/>
-			)}
-		</Flex>
+			<Stack w={"10%"} justifyContent={"end"}>
+				{editedIndices[updateRecordIndex] && (
+					<PrimaryButton
+						bg="var(--banner_bg)"
+						onOpen={() => handleUpdate(roleInfo, updateRecordIndex)}
+						size="sm"
+						borderRadius={6}
+						name="Save"
+						rightIcon={<FaSave />}
+					/>
+				)}
+			</Stack>
+		</Stack>
 	);
 };
 
