@@ -13,11 +13,7 @@ import ActiveBadge from "components/ActiveBadge";
 import NormalTextTitle from "components/ui/NormalTextTitle";
 import TextTitle from "components/ui/text/TextTitle";
 import { ROLES } from "constant";
-import {
-	COUNTRIES,
-	tabStyleCss,
-	userInfoDetails,
-} from "erp-modules/payroll/onboard-user/customInfo";
+import { tabStyleCss, userInfoDetails } from "erp-modules/payroll/onboard-user/customInfo";
 import useCompany from "hooks/useCompany";
 import useCompanyEmployees from "hooks/useCompanyEmployees";
 import usePaygroup from "hooks/usePaygroup";
@@ -26,20 +22,27 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import LocalStorageService from "services/LocalStorageService";
 import EmpProfileSearch from "../EmpProfileSearch";
+import BankingInfo from "./edit-user/bank-info/BankingInfo";
+import BenefitInfo from "./edit-user/benefit-info/BenefitInfo";
 import EmploymentInfo from "./edit-user/employment-info/EmploymentInfo";
+import GovernmentInfo from "./edit-user/govt-info/GovernmentInfo";
+import PayInfo from "./edit-user/pay-info/PayInfo";
 import PersonalInfo from "./edit-user/personal-info/PersonalInfo";
 
 const Employees = () => {
-	const { id, stepNo } = useParams();
-	const { company } = useCompany(LocalStorageService.getItem("selectedCompany"));
 	const loggedInUser = LocalStorageService.getItem("user");
 	const deptName = loggedInUser?.role === ROLES.MANAGER ? loggedInUser?.department : null;
+
+	const { id, stepNo } = useParams();
+	const { company } = useCompany(LocalStorageService.getItem("selectedCompany"));
 	const [employee, setEmployee] = useState(null);
 	const [userId, setUserId] = useState(id || loggedInUser._id);
-	const { selectedPayGroupOption } = usePaygroup(company, false);
-	const employees = useCompanyEmployees(company, deptName, selectedPayGroupOption);
 	const [filteredEmployees, setFilteredEmployees] = useState(null);
 	const [tabIndex, setTabIndex] = useState(parseInt(stepNo) || 0);
+	const [formData, setFormData] = useState(userInfoDetails);
+
+	const { selectedPayGroupOption } = usePaygroup(company, false);
+	const employees = useCompanyEmployees(company, deptName, selectedPayGroupOption);
 
 	useEffect(() => {
 		setFilteredEmployees(employees);
@@ -59,30 +62,6 @@ const Employees = () => {
 	const employeeID = employee?.employeeNo || (!id && !employee && loggedInUser?.employeeId);
 	const employeeName = employee?.empId?.fullName || (!id && !employee && loggedInUser?.fullName);
 
-	const [benefitsSubStep, setBenefitsSubStep] = useState(0);
-	const [governmentSubStep, setGovernmentSubStep] = useState(0);
-	const [bankingSubStep, setBankingSubStep] = useState(0);
-	const [formData, setFormData] = useState(userInfoDetails);
-	const [governmentProvinces, setGovernmentProvinces] = useState([]);
-
-	useEffect(() => {
-		const selectedCountry = COUNTRIES.find(
-			(country) => country.type === formData.governmentInfo.federalTax,
-		);
-		if (selectedCountry) {
-			setGovernmentProvinces(selectedCountry.provinces);
-			if (!selectedCountry.provinces.includes(formData.governmentInfo.regionalTax)) {
-				setFormData({
-					...formData,
-					governmentInfo: {
-						...formData.governmentInfo,
-						regionalTax: selectedCountry.provinces[0],
-					},
-				});
-			}
-		}
-	}, [formData.governmentInfo.federalTax]);
-
 	const handleChange = (section, field, value) => {
 		setFormData({
 			...formData,
@@ -95,7 +74,6 @@ const Employees = () => {
 
 	const EMP_INFO_TABS = [
 		{
-			id: 0,
 			name: "Personal Info",
 			content: (
 				<PersonalInfo
@@ -108,73 +86,65 @@ const Employees = () => {
 			),
 		},
 		{
-			id: 1,
 			name: "Employment",
 			content: (
 				<EmploymentInfo
 					company={company}
 					userId={userId}
 					formData={formData}
-					handleChange={handleChange}
 					setFormData={setFormData}
+					handleChange={handleChange}
 				/>
 			),
 		},
-		// {
-		// 	id: 2,
-		// 	name: "Pay",
-		// 	content: (
-		// 		<PayInfo
-		// 			formData={formData}
-		// 			handleChange={handleChange}
-		// 			isEditMode
-		// 			handleSave={handleSave}
-		// 		/>
-		// 	),
-		// },
-		// {
-		// 	id: 3,
-		// 	name: "Benefits",
-		// 	content: (
-		// 		<BenefitInfo
-		// 			formData={formData}
-		// 			handleChange={handleChange}
-		// 			benefitsSubStep={benefitsSubStep}
-		// 			setBenefitsSubStep={setBenefitsSubStep}
-		// 			isEditMode
-		// 			handleSave={handleSave}
-		// 		/>
-		// 	),
-		// },
-		// {
-		// 	id: 4,
-		// 	name: "Government",
-		// 	content: (
-		// 		<GovernmentInfo
-		// 			governmentSubStep={governmentSubStep}
-		// 			setGovernmentSubStep={setGovernmentSubStep}
-		// 			formData={formData}
-		// 			handleChange={handleChange}
-		// 			governmentProvinces={governmentProvinces}
-		// 			isEditMode
-		// 			handleSave={handleSave}
-		// 		/>
-		// 	),
-		// },
-		// {
-		// 	id: 5,
-		// 	name: "Banking",
-		// 	content: (
-		// 		<BankingInfo
-		// 			bankingSubStep={bankingSubStep}
-		// 			setBankingSubStep={setBankingSubStep}
-		// 			formData={formData}
-		// 			handleChange={handleChange}
-		// 			isEditMode
-		// 			handleSave={handleSave}
-		// 		/>
-		// 	),
-		// },
+		{
+			name: "Pay",
+			content: (
+				<PayInfo
+					company={company}
+					userId={userId}
+					formData={formData}
+					setFormData={setFormData}
+					handleChange={handleChange}
+				/>
+			),
+		},
+		{
+			name: "Benefits",
+			content: (
+				<BenefitInfo
+					company={company}
+					userId={userId}
+					formData={formData}
+					setFormData={setFormData}
+					handleChange={handleChange}
+				/>
+			),
+		},
+		{
+			name: "Government",
+			content: (
+				<GovernmentInfo
+					company={company}
+					userId={userId}
+					formData={formData}
+					setFormData={setFormData}
+					handleChange={handleChange}
+				/>
+			),
+		},
+		{
+			name: "Banking",
+			content: (
+				<BankingInfo
+					company={company}
+					userId={userId}
+					formData={formData}
+					setFormData={setFormData}
+					handleChange={handleChange}
+				/>
+			),
+		},
 	];
 
 	return (

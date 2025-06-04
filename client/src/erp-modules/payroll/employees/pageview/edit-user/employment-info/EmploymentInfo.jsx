@@ -74,6 +74,8 @@ const EmploymentInfo = ({ company, userId, setFormData, formData, handleChange }
 				employmentCountry,
 				employmentRegion,
 				positions,
+				empId,
+				_id,
 			} = employmentInfo;
 
 			setFormData({
@@ -95,7 +97,7 @@ const EmploymentInfo = ({ company, userId, setFormData, formData, handleChange }
 					employmentRegion,
 				},
 			});
-			setMoreDetails({ empId: employmentInfo.empId, _id: employmentInfo._id });
+			setMoreDetails({ empId, _id });
 		}
 	}, [employmentInfo]);
 

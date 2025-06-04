@@ -231,6 +231,8 @@ export const employmentSubSteps = [
 	{ title: "Region", description: "Location info" },
 ];
 
+export const payInfoSubSteps = [{ title: "Earning", description: "Basic compensation details" }];
+
 // Labels for the benefits sub-steps
 export const benefitsSubSteps = [
 	{ title: "Vacation", description: "Vacation settings" },

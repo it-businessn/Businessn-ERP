@@ -66,6 +66,8 @@ const PersonalInfo = ({ formData, handleChange, company, userId, setFormData }) 
 				emergencyPersonalEmail,
 				emergencyPersonalPhoneNum,
 				emergencyContactRelationship,
+				empId,
+				_id,
 			} = profileInfo;
 
 			setFormData({
@@ -104,7 +106,7 @@ const PersonalInfo = ({ formData, handleChange, company, userId, setFormData }) 
 					emergencyContactRelationship,
 				},
 			});
-			setMoreDetails({ empId: profileInfo.empId, _id: profileInfo._id });
+			setMoreDetails({ empId, _id });
 		}
 	}, [profileInfo]);
 
