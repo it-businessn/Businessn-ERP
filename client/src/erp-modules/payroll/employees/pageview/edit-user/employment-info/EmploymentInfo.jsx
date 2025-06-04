@@ -18,6 +18,7 @@ import {
 	StepStatus,
 	StepTitle,
 	useToast,
+	VStack,
 } from "@chakra-ui/react";
 import TextTitle from "components/ui/text/TextTitle";
 import useCostCenter from "hooks/useCostCenter";
@@ -26,6 +27,7 @@ import usePositionRoles from "hooks/usePositionRoles";
 import useRoles from "hooks/useRoles";
 
 import PrimaryButton from "components/ui/button/PrimaryButton";
+import BoxCard from "components/ui/card";
 import {
 	COUNTRIES,
 	employmentSubSteps,
@@ -37,6 +39,8 @@ import {
 import { useEffect, useState } from "react";
 import PayrollService from "services/PayrollService";
 import { getDefaultDate } from "utils/convertDate";
+import NewPositionModal from "./NewPositionModal";
+import PositionInfo from "./PositionInfo";
 
 const EmploymentInfo = ({ company, userId, payGroups }) => {
 	const toast = useToast();
@@ -50,6 +54,8 @@ const EmploymentInfo = ({ company, userId, payGroups }) => {
 	const [employmentProvinces, setEmploymentProvinces] = useState([]);
 	const [employmentInfo, setEmploymentInfo] = useState(null);
 	const [formData, setFormData] = useState(userInfoDetails);
+	const [showModal, setShowModal] = useState(false);
+	const [editedIndices, setEditedIndices] = useState({});
 
 	useEffect(() => {
 		const fetchEmployeeEmploymentInfo = async () => {
@@ -83,16 +89,11 @@ const EmploymentInfo = ({ company, userId, payGroups }) => {
 					payrollStatus,
 					employeeNo,
 					employmentRole,
-					jobTitle: positions[0]?.title,
-					payGroup: positions[0]?.employmentPayGroup,
-					timeManagementBadgeID: positions[0]?.timeManagementBadgeID,
-					costCenter: positions[0]?.employmentCostCenter,
-					employeeCardNumber: positions[0]?.employeeCardNumber,
-					department: positions[0]?.employmentDepartment,
 					employmentStartDate,
 					employmentLeaveDate,
 					employmentCountry,
 					employmentRegion,
+					positions,
 				},
 			});
 			setMoreDetails({ empId, _id });
@@ -127,6 +128,25 @@ const EmploymentInfo = ({ company, userId, payGroups }) => {
 		});
 	};
 
+	const handleUpdate = (position, updateRecordIndex) => {
+		if (position) {
+			const existingPositions = formData?.employmentInfo.positions;
+			const positionIndex =
+				updateRecordIndex > -1
+					? updateRecordIndex
+					: formData?.employmentInfo.positions?.findIndex(({ title }) => title === position?.title);
+
+			if (positionIndex === -1) {
+				existingPositions.push(position);
+				formData.employmentInfo.positions = existingPositions;
+			} else {
+				formData.employmentInfo.positions[positionIndex] = position;
+			}
+			setEditedIndices((prev) => ({ ...prev, [positionIndex]: false }));
+		}
+		handleSave();
+	};
+
 	const handleSave = async () => {
 		setIsLoading(true);
 		try {
@@ -134,36 +154,29 @@ const EmploymentInfo = ({ company, userId, payGroups }) => {
 				payrollStatus,
 				employeeNo,
 				employmentRole,
-				jobTitle,
-				payGroup,
-				timeManagementBadgeID,
-				costCenter,
-				employeeCardNumber,
-				department,
 				employmentStartDate,
 				employmentLeaveDate,
 				employmentCountry,
 				employmentRegion,
+				positions,
 			} = formData.employmentInfo;
 
-			const empData = {
+			const employmentInfoData = {
 				empId: moreDetails.empId,
 				companyName: company,
 				payrollStatus,
 				employeeNo,
 				employmentRole,
-				jobTitle,
-				payGroup,
-				timeManagementBadgeID,
-				costCenter,
-				employeeCardNumber,
-				department,
 				employmentStartDate,
 				employmentLeaveDate,
 				employmentCountry,
 				employmentRegion,
+				positions,
 			};
-			const { data } = await PayrollService.updateEmployeeEmploymentInfo(empData, moreDetails?._id);
+			const { data } = await PayrollService.updateEmployeeEmploymentInfo(
+				employmentInfoData,
+				moreDetails?._id,
+			);
 			setIsLoading(false);
 			toast({
 				title: "Employment info updated successfully.",
@@ -208,7 +221,7 @@ const EmploymentInfo = ({ company, userId, payGroups }) => {
 				</Stepper>
 			</Box>
 
-			<Box flex={0.7} overflowY="auto" css={tabScrollCss}>
+			<Box flex={1} css={tabScrollCss}>
 				{/* Identification & Status Sub-step */}
 				{employmentSubStep === 0 && (
 					<Stack spacing={4} p={5}>
@@ -301,129 +314,39 @@ const EmploymentInfo = ({ company, userId, payGroups }) => {
 				)}
 
 				{employmentSubStep === 2 && (
-					<Stack spacing={4} p={5}>
-						<TextTitle size="xl" title="Position" />
+					<VStack p={5} w={"100%"} alignItems="end">
+						<PrimaryButton
+							bg="var(--banner_bg)"
+							size="sm"
+							borderRadius={6}
+							name="Add New Role / Position"
+							isLoading={isLoading}
+							onOpen={() => setShowModal(true)}
+						/>
 
-						<SimpleGrid columns={2} spacing={6}>
-							<FormControl isRequired>
-								<FormLabel size="sm">Role Title</FormLabel>
-								{positionRoles ? (
-									<Select
-										size="sm"
-										value={formData.employmentInfo.jobTitle || ""}
-										onChange={(e) => handleChange("employmentInfo", "jobTitle", e.target.value)}
-										placeholder="Select Role title"
-									>
-										{positionRoles.map((role) => (
-											<option key={role.name} value={role.name}>
-												{role.name}
-											</option>
-										))}
-									</Select>
-								) : (
-									<Flex align="center" justify="center" py={2}>
-										<Spinner size="sm" mr={2} />
-										<TextTitle size="sm" title="Loading job titles..." />
-									</Flex>
-								)}
-							</FormControl>
-
-							<FormControl>
-								<FormLabel size="sm">Pay Group</FormLabel>
-								{payGroups ? (
-									<Select
-										size="sm"
-										value={formData.employmentInfo.payGroup || ""}
-										onChange={(e) => handleChange("employmentInfo", "payGroup", e.target.value)}
-										placeholder="Select pay group"
-									>
-										{payGroups.map((group) => (
-											<option key={group.name} value={group.name}>
-												{group.name}
-											</option>
-										))}
-									</Select>
-								) : (
-									<Flex align="center" justify="center" py={2}>
-										<Spinner size="sm" mr={2} />
-										<TextTitle size="sm" title="Loading pay groups..." />
-									</Flex>
-								)}
-							</FormControl>
-						</SimpleGrid>
-
-						<SimpleGrid columns={2} spacing={6}>
-							<FormControl>
-								<FormLabel size="sm">Time Management Badge ID</FormLabel>
-								<Input
-									size="sm"
-									value={formData.employmentInfo.timeManagementBadgeID || ""}
-									onChange={(e) =>
-										handleChange("employmentInfo", "timeManagementBadgeID", e.target.value)
-									}
-									placeholder="Enter badge ID"
-								/>
-							</FormControl>
-							<FormControl>
-								<FormLabel size="sm">Employee Card Number</FormLabel>
-								<Input
-									size="sm"
-									value={formData.employmentInfo.employeeCardNumber || ""}
-									onChange={(e) =>
-										handleChange("employmentInfo", "employeeCardNumber", e.target.value)
-									}
-									placeholder="Enter card number"
-								/>
-							</FormControl>
-						</SimpleGrid>
-
-						<SimpleGrid columns={2} spacing={6}>
-							<FormControl isRequired>
-								<FormLabel size="sm">Cost Center</FormLabel>
-								{costCentres ? (
-									<Select
-										size="sm"
-										value={formData.employmentInfo.costCenter || ""}
-										onChange={(e) => handleChange("employmentInfo", "costCenter", e.target.value)}
-										placeholder="Select cost center"
-									>
-										{costCentres.map((center) => (
-											<option key={center.name} value={center.name}>
-												{center.name}
-											</option>
-										))}
-									</Select>
-								) : (
-									<Flex align="center" justify="center" py={2}>
-										<Spinner size="sm" mr={2} />
-										<TextTitle size="sm" title="Loading cost centers..." />
-									</Flex>
-								)}
-							</FormControl>
-							<FormControl isRequired>
-								<FormLabel size="sm">Department</FormLabel>
-								{departments ? (
-									<Select
-										size="sm"
-										value={formData.employmentInfo.department || ""}
-										onChange={(e) => handleChange("employmentInfo", "department", e.target.value)}
-										placeholder="Select department"
-									>
-										{departments.map((dept) => (
-											<option key={dept.name} value={dept.name}>
-												{dept.name}
-											</option>
-										))}
-									</Select>
-								) : (
-									<Flex align="center" justify="center" py={2}>
-										<Spinner size="sm" mr={2} />
-										<TextTitle size="sm" title="Loading departments..." />
-									</Flex>
-								)}
-							</FormControl>
-						</SimpleGrid>
-					</Stack>
+						<Box w="100%" maxH={"calc(100vh - 355px)"} overflowY="auto">
+							{formData.employmentInfo.positions?.map((position, index) => (
+								<BoxCard
+									border="1px solid var(--lead_cards_border)"
+									key={`${position?.title}_${index}`}
+								>
+									<TextTitle title={`Position ${index + 1}`} />
+									<PositionInfo
+										updateRecordIndex={index}
+										position={position}
+										departments={departments}
+										costCentres={costCentres}
+										positionRoles={positionRoles}
+										payGroups={payGroups}
+										handleUpdate={handleUpdate}
+										editedIndices={editedIndices}
+										setEditedIndices={setEditedIndices}
+									/>
+								</BoxCard>
+							))}
+						</Box>
+						{showModal && <NewPositionModal />}
+					</VStack>
 				)}
 
 				{employmentSubStep === 3 && (
@@ -466,16 +389,18 @@ const EmploymentInfo = ({ company, userId, payGroups }) => {
 						</SimpleGrid>
 					</Stack>
 				)}
-				<PrimaryButton
-					bg="var(--banner_bg)"
-					size="sm"
-					onOpen={handleSave}
-					ml={5}
-					mt={4}
-					borderRadius={6}
-					name="Save"
-					isLoading={isLoading}
-				/>
+				{employmentSubStep !== 2 && (
+					<PrimaryButton
+						bg="var(--banner_bg)"
+						size="sm"
+						onOpen={handleSave}
+						ml={5}
+						mt={4}
+						borderRadius={6}
+						name="Save"
+						isLoading={isLoading}
+					/>
+				)}
 			</Box>
 		</Flex>
 	);

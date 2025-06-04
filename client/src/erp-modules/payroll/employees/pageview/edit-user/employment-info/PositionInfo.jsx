@@ -1,225 +1,188 @@
-import { Button, FormLabel, HStack, Stack, Tooltip } from "@chakra-ui/react";
+import { FormLabel } from "@chakra-ui/react";
 
+import { Flex, FormControl, Input, Select, SimpleGrid, Spinner } from "@chakra-ui/react";
 import PrimaryButton from "components/ui/button/PrimaryButton";
-import InputFormControl from "components/ui/form/InputFormControl";
-import SelectFormControl from "components/ui/form/SelectFormControl";
 import TextTitle from "components/ui/text/TextTitle";
 import { COMPANIES } from "constant";
-import AddNewShiftRole from "erp-modules/scheduling/workview/quick-selection/AddNewShiftRole";
 import { useEffect, useState } from "react";
-import { FaPlus } from "react-icons/fa";
+import { FaSave } from "react-icons/fa";
 
 const PositionInfo = ({
-	isOpen,
-	setIsOpen,
-	isDisabled,
-	setIsDisabled,
-	department,
 	costCentres,
-	currentRoleInfo,
-	handleSubmit,
-	rolePos,
+	position,
+	handleUpdate,
 	company,
 	positionRoles,
-	setPositionAdded,
 	updateRecordIndex,
-	hasMultiPaygroups,
 	payGroups,
-	selectedPayGroup,
+	departments,
+	setEditedIndices,
+	editedIndices,
 }) => {
-	const defaultRoleInfo = {
-		title: "",
-		employmentPayGroup: selectedPayGroup || "",
-		employmentCostCenter: "",
-		employmentDepartment: "",
-		timeManagementBadgeID: "",
-		cardNum: "",
-		positions: [],
-	};
-	const [showAddNewRole, setShowAddNewRole] = useState(false);
-	const [roleInfo, setRoleInfo] = useState(currentRoleInfo || defaultRoleInfo);
-	const [filteredDept, setFilteredDept] = useState(department);
+	const [roleInfo, setRoleInfo] = useState(position);
+	const [filteredDept, setFilteredDept] = useState(departments);
 
 	useEffect(() => {
-		if (
-			roleInfo.title &&
-			roleInfo.employmentCostCenter &&
-			roleInfo.employmentPayGroup &&
-			roleInfo.employmentDepartment
-		) {
-			setIsDisabled(false);
-		} else {
-			setIsDisabled(true);
-		}
-	}, [
-		roleInfo.title,
-		roleInfo.employmentCostCenter,
-		roleInfo.employmentPayGroup,
-		roleInfo.employmentDepartment,
-	]);
-
-	useEffect(() => {
-		if (company === COMPANIES.NW && department && roleInfo.employmentCostCenter) {
-			const selectedDepts = department?.filter((_) =>
+		if (company === COMPANIES.NW && departments && roleInfo.employmentCostCenter) {
+			const selectedDepts = departments?.filter((_) =>
 				_.name.includes(roleInfo.employmentCostCenter.slice(0, 4)),
 			);
 			setFilteredDept(selectedDepts);
 		} else {
-			setFilteredDept(department);
+			setFilteredDept(departments);
 		}
-	}, [roleInfo.employmentCostCenter, department]);
+	}, [roleInfo.employmentCostCenter, departments]);
 
-	const handleChange = (e) => {
+	const handleChange = (index, e) => {
 		const { name, value } = e.target;
 		setRoleInfo((prevData) => ({ ...prevData, [name]: value }));
+		setEditedIndices((prev) => ({ ...prev, [index]: true }));
 	};
 
 	return (
-		<Stack>
-			<Stack>
-				{rolePos ? <TextTitle title={rolePos} /> : <FormLabel>New Role Details</FormLabel>}
-				<HStack alignItems="self-start" spacing={5} w="70%">
-					<Stack>
-						<HStack w="100%" justify={"space-between"}>
-							<SelectFormControl
-								valueParam="name"
-								required={true}
-								name="name"
-								label="Role title"
-								valueText={roleInfo.title || ""}
-								handleChange={(e) =>
-									setRoleInfo((prevData) => ({
-										...prevData,
-										title: e.target.value,
-									}))
-								}
-								options={positionRoles}
-								placeholder="Select Role"
-							/>
-							<Tooltip label="Add new role">
-								<span style={{ marginTop: "1em" }}>
-									<FaPlus cursor="pointer" onClick={() => setShowAddNewRole(true)} />
-								</span>
-							</Tooltip>
-						</HStack>
-						{/* {isOpen ? ( */}
-						<>
-							<InputFormControl
-								autoComplete="off"
-								label="Time Management Badge ID"
-								name="timeManagementBadgeID"
-								placeholder="Enter new Badge ID"
-								valueText={roleInfo.timeManagementBadgeID}
-								handleChange={handleChange}
-								type="number"
-							/>
-							<InputFormControl
-								autoComplete="off"
-								label="Employee Card Number"
-								name="cardNum"
-								placeholder="Enter Card Number"
-								valueText={roleInfo.cardNum}
-								handleChange={handleChange}
-							/>
-						</>
-						{/* // ) : (
-						// 	<Stack>
-						// 		<FormLabel>Linked Time Management Badge ID</FormLabel>
-						// 		<NormalTextTitle title={roleInfo.timeManagementBadgeID || "NA"} />
-						// 		<FormLabel>Employee Card Number</FormLabel>
-						// 		<NormalTextTitle title={roleInfo.cardNum || "NA"} />
-						// 	</Stack>
-						// )} */}
-					</Stack>
-					<Stack>
-						{hasMultiPaygroups ? (
-							<SelectFormControl
-								valueParam="name"
-								name="name"
-								label="Pay Group"
-								valueText={roleInfo.employmentPayGroup || ""}
-								handleChange={(e) => {
-									setRoleInfo((prevData) => ({
-										...prevData,
-										employmentPayGroup: e.target.value,
-									}));
-								}}
-								options={payGroups}
-								placeholder="Select Paygroup"
-							/>
-						) : (
-							<InputFormControl
-								readOnly
-								autoComplete="off"
-								label="Pay Group"
-								name="employmentPayGroup"
-								valueText={roleInfo?.employmentPayGroup}
-							/>
-						)}
-						<SelectFormControl
-							required={(isOpen || !roleInfo.employmentCostCenter) && true}
-							valueParam="name"
-							name="employmentCostCenter"
-							label="Cost Center"
-							valueText={roleInfo.employmentCostCenter || ""}
-							handleChange={handleChange}
-							options={costCentres}
-							placeholder="Select Cost Center"
-						/>
-						<SelectFormControl
-							required={(isOpen || !roleInfo.employmentDepartment) && true}
-							valueParam="name"
-							name="employmentDepartment"
-							label="Department"
-							valueText={roleInfo.employmentDepartment || ""}
-							handleChange={handleChange}
-							options={filteredDept}
-							placeholder="Select Department"
-						/>
-					</Stack>
-				</HStack>
-				{isOpen && (
-					<HStack>
-						<PrimaryButton
-							w="100px"
-							size="xs"
-							isDisabled={isDisabled}
-							name="Add"
-							onOpen={() => handleSubmit(roleInfo)}
-						/>
-
-						<Button size="xs" onClick={() => setIsOpen(false)} colorScheme="gray">
-							Cancel
-						</Button>
-					</HStack>
-				)}
-			</Stack>
-			{showAddNewRole && (
-				<AddNewShiftRole
-					showAddNewRole={showAddNewRole}
-					setRefresh={setPositionAdded}
-					setShowAddNewRole={setShowAddNewRole}
-					company={company}
-				/>
-			)}
-			{!isOpen && (
+		<Flex alignItems="end">
+			<SimpleGrid columns={4} spacing={3}>
+				<FormControl isRequired>
+					<FormLabel size="sm">Role Title</FormLabel>
+					{positionRoles ? (
+						<Select
+							size="sm"
+							value={roleInfo.title || ""}
+							onChange={(e) => {
+								setEditedIndices((prev) => ({ ...prev, [updateRecordIndex]: true }));
+								setRoleInfo((prevData) => ({
+									...prevData,
+									title: e.target.value,
+								}));
+							}}
+						>
+							{positionRoles.map((role) => (
+								<option key={role.name} value={role.name}>
+									{role.name}
+								</option>
+							))}
+						</Select>
+					) : (
+						<Flex align="center" justify="center" py={2}>
+							<Spinner size="sm" mr={2} />
+							<TextTitle size="sm" title="Loading job titles..." />
+						</Flex>
+					)}
+				</FormControl>
+				<FormControl>
+					<FormLabel size="sm">Pay Group</FormLabel>
+					{payGroups ? (
+						<Select
+							size="sm"
+							value={roleInfo.employmentPayGroup || ""}
+							onChange={(e) => {
+								setEditedIndices((prev) => ({ ...prev, [updateRecordIndex]: true }));
+								setRoleInfo((prevData) => ({
+									...prevData,
+									employmentPayGroup: e.target.value,
+								}));
+							}}
+						>
+							{payGroups.map((group) => (
+								<option key={group.name} value={group.name}>
+									{group.name}
+								</option>
+							))}
+						</Select>
+					) : (
+						<Flex align="center" justify="center" py={2}>
+							<Spinner size="sm" mr={2} />
+							<TextTitle size="sm" title="Loading pay groups..." />
+						</Flex>
+					)}
+				</FormControl>
+				<FormControl isRequired>
+					<FormLabel size="sm">Cost Center</FormLabel>
+					{costCentres ? (
+						<Select
+							size="sm"
+							value={roleInfo.employmentCostCenter || ""}
+							onChange={(e) => {
+								setEditedIndices((prev) => ({ ...prev, [updateRecordIndex]: true }));
+								setRoleInfo((prevData) => ({
+									...prevData,
+									employmentCostCenter: e.target.value,
+								}));
+							}}
+						>
+							{costCentres.map((center) => (
+								<option key={center.name} value={center.name}>
+									{center.name}
+								</option>
+							))}
+						</Select>
+					) : (
+						<Flex align="center" justify="center" py={2}>
+							<Spinner size="sm" mr={2} />
+							<TextTitle size="sm" title="Loading cost centers..." />
+						</Flex>
+					)}
+				</FormControl>
+				<FormControl isRequired>
+					<FormLabel size="sm">Department</FormLabel>
+					{filteredDept ? (
+						<Select
+							size="sm"
+							value={roleInfo.employmentDepartment || ""}
+							onChange={(e) => {
+								setRoleInfo((prevData) => ({
+									...prevData,
+									employmentDepartment: e.target.value,
+								}));
+								setEditedIndices((prev) => ({ ...prev, [updateRecordIndex]: true }));
+							}}
+							placeholder="Select department"
+						>
+							{filteredDept?.map((dept) => (
+								<option key={dept.name} value={dept.name}>
+									{dept.name}
+								</option>
+							))}
+						</Select>
+					) : (
+						<Flex align="center" justify="center" py={2}>
+							<Spinner size="sm" mr={2} />
+							<TextTitle size="sm" title="Loading departments..." />
+						</Flex>
+					)}
+				</FormControl>
+				<FormControl>
+					<FormLabel size="sm">Time Management Badge ID</FormLabel>
+					<Input
+						size="sm"
+						name="timeManagementBadgeID"
+						value={roleInfo.timeManagementBadgeID || ""}
+						onChange={(e) => handleChange(updateRecordIndex, e)}
+						placeholder="Enter badge ID"
+					/>
+				</FormControl>
+				<FormControl>
+					<FormLabel size="sm">Employee Card Number</FormLabel>
+					<Input
+						size="sm"
+						name="employeeCardNumber"
+						value={roleInfo.employeeCardNumber || ""}
+						onChange={(e) => handleChange(updateRecordIndex, e)}
+						placeholder="Enter card number"
+					/>
+				</FormControl>
+			</SimpleGrid>
+			{editedIndices[updateRecordIndex] && (
 				<PrimaryButton
-					w="100px"
-					size="xs"
+					bg="var(--banner_bg)"
+					onOpen={() => handleUpdate(roleInfo, updateRecordIndex)}
+					size="sm"
+					borderRadius={6}
 					name="Save"
-					isDisabled={
-						!roleInfo.employmentCostCenter ||
-						!roleInfo.employmentPayGroup ||
-						!roleInfo.employmentDepartment
-					}
-					onOpen={() => {
-						if (roleInfo.title) {
-							handleSubmit(roleInfo, updateRecordIndex);
-						}
-					}}
+					rightIcon={<FaSave />}
 				/>
 			)}
-		</Stack>
+		</Flex>
 	);
 };
 

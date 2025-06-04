@@ -126,7 +126,8 @@ export const userInfoDetails = {
 		branch: "",
 		branchAddress: "",
 		branchCity: "",
-		branchZipCode: "", //positions
+		branchZipCode: "",
+		positions: [],
 	},
 	payInfo: {
 		salary: "",

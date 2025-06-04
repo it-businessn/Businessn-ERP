@@ -240,28 +240,15 @@ const updateEmployeeEmploymentInfo = async (req, res) => {
 		payrollStatus,
 		employeeNo,
 		employmentRole,
-		jobTitle,
-		payGroup,
-		timeManagementBadgeID,
-		costCenter,
-		employeeCardNumber,
-		department,
 		employmentStartDate,
 		employmentCountry,
 		employmentRegion,
 		employmentLeaveDate,
+		positions,
 	} = req.body;
 	try {
 		const existingRecord = await EmployeeEmploymentInfo.findById(id);
 		if (existingRecord) {
-			const positions = existingRecord.positions;
-			positions[0].title = jobTitle;
-			positions[0].employmentPayGroup = payGroup;
-			positions[0].timeManagementBadgeID = timeManagementBadgeID;
-			positions[0].employmentCostCenter = costCenter;
-			positions[0].employeeCardNumber = employeeCardNumber;
-			positions[0].employmentDepartment = department;
-
 			const updatedInfo = await updateEmploymentInfo(id, {
 				payrollStatus,
 				employeeNo,
