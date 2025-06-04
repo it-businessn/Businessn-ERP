@@ -40,6 +40,7 @@ const Dashboard = () => {
 			handleChange={handleChange}
 		>
 			<SimpleGrid
+				h={"100%"}
 				columns={{ base: 1, md: 1, lg: 2 }}
 				spacing="4"
 				mt="4"

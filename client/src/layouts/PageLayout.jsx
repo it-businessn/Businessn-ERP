@@ -32,6 +32,7 @@ const PageLayout = ({
 		position={position}
 		pb={pb}
 		bg={bg}
+		height={"calc(100vh - 100px)"}
 	>
 		<PageHeader
 			hasMultiPaygroups={hasMultiPaygroups}

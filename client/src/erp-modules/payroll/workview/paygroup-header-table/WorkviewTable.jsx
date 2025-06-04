@@ -27,7 +27,7 @@ import { PAYGROUP_COLS } from "../data";
 const WorkviewTable = ({
 	payGroupSchedule,
 	closestRecordIndex,
-	height = "calc(100vh - 615px)",
+	height = "calc(100vh - 670px)",
 	autoScroll = false,
 	handleRegister,
 	handleTotalsReport,
@@ -72,6 +72,7 @@ const WorkviewTable = ({
 		const mainAction =
 			isViewAction || isEarningTable ? (
 				<OutlineButton
+					w="100px"
 					label={viewLabel}
 					size="xs"
 					onClick={() => {
@@ -85,6 +86,7 @@ const WorkviewTable = ({
 				/>
 			) : (
 				<PrimaryButton
+					minW="100px"
 					bg={isDisabledAction ? "var(--calendar_border)" : "var(--primary_button_bg)"}
 					hover={{
 						bg: isDisabledAction ? "var(--calendar_border)" : "var(--primary_button_bg)",
@@ -240,6 +242,7 @@ const WorkviewTable = ({
 										/>
 									) : (
 										<PrimaryButton
+											minW="100px"
 											bg={isDisabledAction ? "var(--calendar_border)" : "var(--primary_button_bg)"}
 											hover={{
 												bg: isDisabledAction && "var(--calendar_border)",

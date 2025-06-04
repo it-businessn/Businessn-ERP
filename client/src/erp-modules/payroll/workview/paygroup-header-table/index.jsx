@@ -4,7 +4,6 @@ import BoxCard from "components/ui/card";
 import NewEmployeeOnboardingModal from "erp-modules/payroll/onboard-user/NewEmployeeOnboardingModal";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { payrollROEPath } from "routes";
 import ExtraPayrunModal from "./ExtraPayrunModal";
 import PayrollActions from "./PayrollActions";
 import WorkviewTable from "./WorkviewTable";
@@ -41,7 +40,7 @@ const PaygroupTable = ({
 			navigate(`${empPath}/${loggedInUser._id}/3`);
 		}
 		if (val === "roe") {
-			navigate(payrollROEPath);
+			// navigate(payrollROEPath);
 		}
 	};
 
@@ -54,7 +53,7 @@ const PaygroupTable = ({
 			templateColumns={{ lg: "70% 30%" }}
 		>
 			<BoxCard>
-				<VStack w={"100%"} alignItems={"end"} spacing={2}>
+				<VStack spacing={1} w={"100%"} alignItems={"end"}>
 					<HStack justifyContent="end" alignItems="center">
 						<Select
 							size={"sm"}

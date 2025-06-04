@@ -31,7 +31,7 @@ const TicketHistory = ({ userId, company, setCount }) => {
 	}, [userId]);
 
 	return (
-		<Box maxH={"calc(100vh - 500px)"} overflowY={"auto"}>
+		<Box maxH={"calc(100vh - 533px)"} mt={3} overflowY={"auto"}>
 			<List spacing={2}>
 				{isLoading ? (
 					<SkeletonLoader />
@@ -39,7 +39,7 @@ const TicketHistory = ({ userId, company, setCount }) => {
 					ticketData?.map(
 						({ _id, ticketNumber, category, priority, topic, issue, file, originalname }) => (
 							<ListItem key={_id}>
-								<BoxCard>
+								<BoxCard p={" 0.5em 1em"} boxShadow="sm">
 									<HStack justifyContent="space-between" alignItems="end" spacing={0}>
 										<VStack spacing={0}>
 											<TextTitle size="xs" title={`Ticket#: ${ticketNumber}`} />

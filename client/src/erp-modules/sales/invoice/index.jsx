@@ -91,7 +91,7 @@ const Invoice = () => {
 	return (
 		<Box
 			p={{ base: "1em", md: "2em" }}
-			h={{ base: "auto", md: "calc(100vh - 278px)", lg: "auto" }}
+			h={{ base: "auto", md: "calc(100vh - 245px)", lg: "auto" }}
 			overflow={"auto"}
 		>
 			<Text fontWeight="bold" mb={"1em"}>

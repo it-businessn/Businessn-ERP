@@ -47,7 +47,7 @@ const WorkviewTab = ({
 			<WorkviewTable
 				cols={cols.map((_) => _.key)}
 				isSmall
-				height="calc(100vh - 715px)"
+				height="calc(100vh - 650px)"
 				whiteSpace="wrap"
 				textAlign={"center"}
 				overflowX={overflowX}

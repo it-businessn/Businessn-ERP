@@ -64,7 +64,7 @@ const EmployeeList = ({ employees }) => {
 	return (
 		<TableLayout
 			cols={cols}
-			height="calc(100vh - 460px)"
+			height="calc(100vh - 455px)"
 			position="sticky"
 			top={-1}
 			zIndex={1}
