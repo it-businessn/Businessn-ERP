@@ -1,10 +1,6 @@
 import {
 	Box,
 	Flex,
-	FormControl,
-	FormLabel,
-	Input,
-	Select,
 	Stack,
 	Step,
 	StepDescription,
@@ -17,7 +13,7 @@ import {
 	StepTitle,
 	useToast,
 } from "@chakra-ui/react";
-import PrimaryButton from "components/ui/button/PrimaryButton";
+import BoxCard from "components/ui/card";
 import TextTitle from "components/ui/text/TextTitle";
 import {
 	payInfoSubSteps,
@@ -27,6 +23,7 @@ import {
 } from "erp-modules/payroll/onboard-user/customInfo";
 import { useEffect, useState } from "react";
 import PayrollService from "services/PayrollService";
+import EarningInfo from "./EarningInfo";
 
 const PayInfo = ({ company, userId }) => {
 	const toast = useToast();
@@ -34,6 +31,7 @@ const PayInfo = ({ company, userId }) => {
 	const [moreDetails, setMoreDetails] = useState(null);
 	const [isLoading, setIsLoading] = useState(false);
 	const [formData, setFormData] = useState(userInfoDetails);
+	const [editedIndices, setEditedIndices] = useState({});
 
 	useEffect(() => {
 		const fetchEmployeePayInfo = async () => {
@@ -53,48 +51,47 @@ const PayInfo = ({ company, userId }) => {
 
 			setFormData({
 				payInfo: {
-					payFrequency: roles[0]?.payFrequency,
-					salary: roles[0]?.payRate,
-					payType: roles[0]?.typeOfEarning,
-					partTimeStandardHours: roles[0]?.partTimeStandardHours,
-					fullTimeStandardHours: roles[0]?.fullTimeStandardHours,
+					roles,
 				},
 			});
 			setMoreDetails({ empId, _id });
 		}
 	}, [payInfo]);
 
-	const handleChange = (section, field, value) => {
-		setFormData({
-			...formData,
-			[section]: {
-				...formData[section],
-				[field]: value,
-			},
-		});
+	const handleUpdate = (role, updateRecordIndex) => {
+		if (role) {
+			const existingPositions = formData?.payInfo?.roles;
+			const positionIndex =
+				updateRecordIndex > -1
+					? updateRecordIndex
+					: formData?.payInfo.roles?.findIndex(({ title }) => title === role?.title);
+
+			if (positionIndex === -1) {
+				existingPositions.push(role);
+				setFormData({
+					...formData,
+					payInfo: {
+						...formData.payInfo,
+						roles: existingPositions,
+					},
+				});
+			} else {
+				formData.payInfo.roles[positionIndex] = role;
+			}
+			setEditedIndices((prev) => ({ ...prev, [positionIndex]: false }));
+		}
+		handleSave();
 	};
 
 	const handleSave = async () => {
 		setIsLoading(true);
 		try {
-			const {
-				salary,
-				payType,
-				payFrequency,
-				taxWithholding,
-				fullTimeStandardHours,
-				partTimeStandardHours,
-			} = formData.payInfo;
+			const { roles } = formData.payInfo;
 
 			const payInfoData = {
 				empId: moreDetails.empId,
 				companyName: company,
-				salary,
-				payType,
-				payFrequency,
-				taxWithholding,
-				fullTimeStandardHours,
-				partTimeStandardHours,
+				roles,
 			};
 			const { data } = await PayrollService.updateEmployeePayInfo(payInfoData, moreDetails?._id);
 			setIsLoading(false);
@@ -140,96 +137,26 @@ const PayInfo = ({ company, userId }) => {
 					))}
 				</Stepper>
 			</Box>
-			<Box flex={0.7} overflowY="auto" css={tabScrollCss}>
+			<Box maxH={"100%"} flex={1} overflowY="auto" css={tabScrollCss}>
 				<Stack spacing={4} p={5}>
 					<TextTitle size="xl" title="Compensation Information" />
-					<Flex gap={4}>
-						<FormControl isRequired>
-							<FormLabel size="sm">Pay Rate</FormLabel>
-							<Input
-								size="sm"
-								type="number"
-								value={formData.payInfo.salary || ""}
-								onChange={(e) => handleChange("payInfo", "salary", e.target.value)}
-								placeholder="Pay Rate"
-							/>
-						</FormControl>
-
-						<FormControl isRequired>
-							<FormLabel size="sm">Pay Type</FormLabel>
-							<Select
-								size="sm"
-								value={formData.payInfo.payType || ""}
-								onChange={(e) => handleChange("payInfo", "payType", e.target.value)}
-							>
-								<option value="Hourly">Hourly</option>
-								<option value="FTsalary">Full Time Salaried</option>
-								<option value="PTsalary">Part Time Salaried</option>
-								{/* <option value="commission">Commission</option> */}
-							</Select>
-						</FormControl>
-					</Flex>
-
-					<Flex gap={4}>
-						{formData.payInfo.payType === "FTsalary" ? (
-							<FormControl>
-								<FormLabel size="sm">Standard Hours (FT)</FormLabel>
-								<Input
-									size="sm"
-									type="number"
-									value={formData.payInfo.fullTimeStandardHours || ""}
-									onChange={(e) => handleChange("payInfo", "fullTimeStandardHours", e.target.value)}
-									placeholder="Enter Full Time Hours"
-								/>
-							</FormControl>
-						) : formData.payInfo.payType === "PTsalary" ? (
-							<FormControl>
-								<FormLabel size="sm">Standard Hours (PT)</FormLabel>
-								<Input
-									type="number"
-									size="sm"
-									value={formData.payInfo.partTimeStandardHours || ""}
-									onChange={(e) => handleChange("payInfo", "partTimeStandardHours", e.target.value)}
-									placeholder="Enter Part Time Hours"
-								/>
-							</FormControl>
-						) : (
-							<></>
-						)}
-						{/* <FormControl isRequired>
-						<FormLabel size="sm">Pay Frequency</FormLabel>
-						<Select
-							size="sm"
-							value={formData.payInfo.payFrequency}
-							onChange={(e) => handleChange("payInfo", "payFrequency", e.target.value)}
+					{formData.payInfo.roles?.map((role, index) => (
+						<BoxCard
+							p={2}
+							key={`${role?.title}_${index}`}
+							border="1px solid var(--lead_cards_border)"
 						>
-							<option value="weekly">Weekly</option>
-							<option value="biweekly">Bi-weekly</option>
-							<option value="monthly">Monthly</option>
-						</Select>
-					</FormControl> */}
-
-						{/* <FormControl>
-						<FormLabel size="sm">Tax Withholding</FormLabel>
-						<Input
-							size="sm"
-							value={formData.payInfo.taxWithholding}
-							onChange={(e) => handleChange("payInfo", "taxWithholding", e.target.value)}
-							placeholder="Tax Withholding"
-						/>
-					</FormControl> */}
-					</Flex>
+							{formData.payInfo.roles?.length > 1 && <TextTitle title={role.title} />}
+							<EarningInfo
+								role={role}
+								handleUpdate={handleUpdate}
+								updateRecordIndex={index}
+								setEditedIndices={setEditedIndices}
+								editedIndices={editedIndices}
+							/>
+						</BoxCard>
+					))}
 				</Stack>
-				<PrimaryButton
-					bg="var(--banner_bg)"
-					size="sm"
-					onOpen={handleSave}
-					ml={5}
-					mt={4}
-					borderRadius={6}
-					name="Save"
-					isLoading={isLoading}
-				/>
 			</Box>
 		</Flex>
 	);

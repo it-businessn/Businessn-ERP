@@ -78,6 +78,12 @@ export const COUNTRIES = [
 	},
 ];
 
+export const EARNING_TYPE = {
+	FT: "Full Time Salaried",
+	PT: "Part Time Salaried",
+	HOURLY: "Hourly",
+};
+
 export const userInfoDetails = {
 	personalInfo: {
 		firstName: "",
@@ -131,11 +137,12 @@ export const userInfoDetails = {
 	},
 	payInfo: {
 		salary: "",
-		payType: "hourly",
+		payType: EARNING_TYPE.HOURLY,
 		payFrequency: "biweekly",
-		taxWithholding: "", //roles
+		taxWithholding: "",
 		fullTimeStandardHours: 80,
 		partTimeStandardHours: 40,
+		roles: [],
 	},
 	benefitsInfo: {
 		// Vacation

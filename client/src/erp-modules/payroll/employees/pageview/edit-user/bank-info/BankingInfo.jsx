@@ -221,9 +221,11 @@ const BankingInfo = ({ company, userId }) => {
 							<Select
 								size="sm"
 								value={formData.bankingInfo.payStubSendByEmail || ""}
-								onChange={(e) =>
-									handleBankInfoChange("bankingInfo", "payStubSendByEmail", e.target.value)
-								}
+								onChange={(e) => {
+									const { value } = e.target;
+									if (value) handleBankInfoChange("bankingInfo", "payStubSendByEmail", value);
+								}}
+								placeholder="Choose option"
 							>
 								<option value="Yes">Yes</option>
 								<option value="No">No</option>
@@ -256,9 +258,11 @@ const BankingInfo = ({ company, userId }) => {
 							<Select
 								size="sm"
 								value={formData.bankingInfo.directDeposit || ""}
-								onChange={(e) =>
-									handleBankInfoChange("bankingInfo", "directDeposit", e.target.value)
-								}
+								onChange={(e) => {
+									const { value } = e.target;
+									if (value) handleBankInfoChange("bankingInfo", "directDeposit", value);
+								}}
+								placeholder="Choose option"
 							>
 								<option value="Yes">Yes</option>
 								<option value="No">No</option>

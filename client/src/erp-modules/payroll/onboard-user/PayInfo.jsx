@@ -18,6 +18,7 @@ import {
 } from "@chakra-ui/react";
 import TextTitle from "components/ui/text/TextTitle";
 import {
+	EARNING_TYPE,
 	payInfoSubSteps,
 	tabPanelStyleCss,
 	tabScrollCss,
@@ -80,16 +81,16 @@ const PayInfo = ({ formData, handleChange }) => {
 								value={formData.payInfo.payType}
 								onChange={(e) => handleChange("payInfo", "payType", e.target.value)}
 							>
-								<option value="Hourly">Hourly</option>
-								<option value="FTsalary">Full Time Salaried</option>
-								<option value="PTsalary">Part Time Salaried</option>
+								<option value={EARNING_TYPE.HOURLY}>Hourly</option>
+								<option value={EARNING_TYPE.FT}>Full Time Salaried</option>
+								<option value={EARNING_TYPE.PT}>Part Time Salaried</option>
 								{/* <option value="commission">Commission</option> */}
 							</Select>
 						</FormControl>
 					</Flex>
 
 					<Flex gap={4}>
-						{formData.payInfo.payType === "FTsalary" ? (
+						{formData.payInfo.payType === EARNING_TYPE.FT ? (
 							<FormControl>
 								<FormLabel size="sm">Standard Hours (FT)</FormLabel>
 								<Input
@@ -100,7 +101,7 @@ const PayInfo = ({ formData, handleChange }) => {
 									placeholder="Enter Full Time Hours"
 								/>
 							</FormControl>
-						) : formData.payInfo.payType === "PTsalary" ? (
+						) : formData.payInfo.payType === EARNING_TYPE.PT ? (
 							<FormControl>
 								<FormLabel size="sm">Standard Hours (PT)</FormLabel>
 								<Input

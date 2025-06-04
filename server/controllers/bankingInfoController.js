@@ -97,17 +97,6 @@ const addEmployeeBankingInfo = async (req, res) => {
 		paymentEmail,
 	};
 	try {
-		if (
-			bankDetails.bankNum &&
-			bankDetails.transitNum &&
-			bankDetails.accountNum &&
-			bankDetails.bankNum !== "" &&
-			bankDetails.transitNum !== "" &&
-			bankDetails.accountNum !== ""
-		) {
-			await deleteAlerts(empId, ALERTS_TYPE.BANK);
-		}
-
 		const existingBankingInfo = await findEmployeeBankingInfo(empId, companyName);
 
 		if (existingBankingInfo) {
@@ -157,8 +146,15 @@ const addEmployeeBankingInfo = async (req, res) => {
 const updateEmployeeBankingInfo = async (req, res) => {
 	const { id } = req.params;
 	try {
-		const { bankNum, transitNum, accountNum, paymentEmail, payStubSendByEmail, directDeposit } =
-			req.body;
+		const {
+			empId,
+			bankNum,
+			transitNum,
+			accountNum,
+			paymentEmail,
+			payStubSendByEmail,
+			directDeposit,
+		} = req.body;
 
 		const existingInfo = await EmployeeBankingInfo.findById(id);
 		const updatedData = {
@@ -167,6 +163,16 @@ const updateEmployeeBankingInfo = async (req, res) => {
 			paymentEmail,
 		};
 		if (existingInfo) {
+			if (
+				bankNum &&
+				transitNum &&
+				accountNum &&
+				bankNum !== "" &&
+				transitNum !== "" &&
+				accountNum !== ""
+			) {
+				await deleteAlerts(empId, ALERTS_TYPE.BANK);
+			}
 			const ENCRYPTION_KEY = Buffer.from(process.env.BANKING_ENCRYPTION_KEY, "hex");
 			const bankEncrypted = encryptData(bankNum, ENCRYPTION_KEY);
 			const transitEncrypted = encryptData(transitNum, ENCRYPTION_KEY);

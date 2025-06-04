@@ -140,44 +140,24 @@ const addEmployeePayInfo = async (req, res) => {
 const updateEmployeePayInfo = async (req, res) => {
 	const { id } = req.params;
 	try {
-		const {
-			salary,
-			payType,
-			payFrequency,
-			taxWithholding,
-			fullTimeStandardHours,
-			partTimeStandardHours,
-		} = req.body;
+		const { payFrequency, taxWithholding, roles } = req.body;
 
 		const existingRecord = await EmployeePayInfo.findById(id);
 		if (existingRecord) {
-			const roles = existingRecord.roles;
-			roles[0].payRate = salary;
-			roles[0].typeOfEarning = payType;
-			roles[0].partTimeStandardHours = partTimeStandardHours;
-			roles[0].fullTimeStandardHours = fullTimeStandardHours;
-			roles[0].overTimePay = 1.5 * salary;
-			roles[0].dblOverTimePay = 2 * salary;
-			roles[0].statWorkPay = 1.5 * salary;
-			roles[0].statPay = salary;
-			roles[0].sickPay = salary;
-			roles[0].vacationPay = salary;
-			// if (roles) {
-			// 	roles.forEach((role) => {
-			// 		const regPay = role?.payRate;
-			// 		if (regPay) {
-			// 			role.overTimePay = 1.5 * regPay;
-			// 			role.dblOverTimePay = 2 * regPay;
-			// 			role.statWorkPay = 1.5 * regPay;
-			// 			role.statPay = regPay;
-			// 			role.sickPay = regPay;
-			// 			role.vacationPay = regPay;
-			// 		}
-			// 	});
-			// 	if (roles?.every((_) => parseFloat(_?.payRate) > 17.85)) {
-			// 		await deleteAlerts(empId, ALERTS_TYPE.WAGE);
-			// 	}
-			// }
+			roles?.forEach((role) => {
+				const regPay = role?.payRate;
+				if (regPay) {
+					role.overTimePay = 1.5 * regPay;
+					role.dblOverTimePay = 2 * regPay;
+					role.statWorkPay = 1.5 * regPay;
+					role.statPay = regPay;
+					role.sickPay = regPay;
+					role.vacationPay = regPay;
+				}
+			});
+			if (roles?.every((_) => parseFloat(_?.payRate) > 17.85)) {
+				await deleteAlerts(empId, ALERTS_TYPE.WAGE);
+			}
 
 			if (req.body?._id) delete req.body._id;
 			const updatedPayInfo = await updatePayInfo(id, { roles });

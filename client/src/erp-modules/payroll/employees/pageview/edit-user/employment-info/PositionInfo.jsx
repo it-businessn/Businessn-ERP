@@ -181,6 +181,7 @@ const PositionInfo = ({
 						borderRadius={6}
 						name="Save"
 						rightIcon={<FaSave />}
+						w={"100px"}
 					/>
 				)}
 			</Stack>
