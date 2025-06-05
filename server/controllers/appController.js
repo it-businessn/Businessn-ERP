@@ -346,7 +346,7 @@ const forgotPassword = async (req, res) => {
 		if (resetLink)
 			await sendEmail(
 				user.email,
-				"Reset Password",
+				"Reset Password for Businessᴺ",
 				resetLink,
 				`<body style="margin: 0; font-family: Arial, Helvetica, sans-serif;height:'auto">
 		<div
@@ -378,7 +378,7 @@ const forgotPassword = async (req, res) => {
 					class="topic"
 					style="font-weight: bold; font-size: larger; margin: 5px 0"
 				>
-					Reset Password
+				Reset Password
 				</p>
 			</div>
 		</div><div
@@ -394,11 +394,14 @@ const forgotPassword = async (req, res) => {
 				font-size: 14px;
 			"
 		>
-      <p style="margin: 5px 0">Hello,</p>
-      <p>You requested a password reset. Click the link below to reset your password:</p>
+      <p style="margin: 5px 0">Hello ${user.firstName}</p>
+      <p>You requested a password reset.</p>
+	  <p>If you would still like to reset your password, please click the following link. </p>
       <p><a href="${resetLink}" target="_blank">Reset Password</a></p>
-      <p>If you did not request this, please ignore this email.</p>
-      <p>Thanks,<br>Your Company Name</p>
+      <p>If you did not request this, you can safely ignore this email.</p>
+      <p>Kind Regards,</p>
+	   <p>Administrator
+	  <br>Businessᴺ</p>
    </div>
 		<div
 			class="footer"

@@ -50,7 +50,7 @@ const LoginCover = () => {
 					<Flex h="24">
 						<VStack align="flex-start">
 							<Text color="fg.accent.subtle" textStyle="sm">
-								© {CURRENT_YEAR} BusinessN. All rights reserved.
+								© {CURRENT_YEAR} Businessᴺ. All rights reserved.
 							</Text>
 						</VStack>
 					</Flex>

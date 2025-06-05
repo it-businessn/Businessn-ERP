@@ -74,7 +74,9 @@
 		}
 
 		img {
-			width: 7em;
+			width: 50px;
+			height: 50px;
+			object-fit: cover;
 		}
 	</style>
 	<title>Create Your Password</title>
@@ -93,15 +95,15 @@
 	<section class="flex-container">
 		<section class="form-div">
 			<section class="center">
-				<img alt="logo" src="/assets/logos/logo1.jpg" />
+				<img alt="logo" src="/assets/logos/logoCover.jpg" />
 				<h1>Set Your Password</h1>
 			</section>
 
 			<form class="form-content" action="" method="post">
-				<label>Email Address : <%= email%></label>
+				<label>Email : <%= email%></label>
 
-				<input type="text" name="password" id="password" placeholder="Enter new password" />
-				<input type="text" name="confirmPassword" id="confirmPassword" placeholder="Confirm your password" />
+				<input type="text" name="password" id="password" placeholder="New Password" />
+				<!-- <input type="text" name="confirmPassword" id="confirmPassword" placeholder="Confirm Password" /> -->
 				<br />
 				<button>Reset password</button>
 			</form>
