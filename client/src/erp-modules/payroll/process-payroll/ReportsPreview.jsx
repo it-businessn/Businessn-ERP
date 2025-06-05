@@ -7,6 +7,7 @@ import useJournalReport from "hooks/useJournalReport";
 import { useState } from "react";
 import { MdCheckCircle } from "react-icons/md";
 import { useBreakpointValue } from "services/Breakpoint";
+import LocalStorageService from "services/LocalStorageService";
 import JournalsReportModal from "../reports/JournalsReportModal";
 import PreviewReportsModal from "../reports/PreviewReportsModal";
 import TotalsReportModal from "../reports/TotalsReportModal";
@@ -18,6 +19,7 @@ const ReportsPreview = ({
 	closestRecord,
 	isPayPeriodInactive,
 }) => {
+	const companyDetails = LocalStorageService.getItem("user")?.companyId;
 	const { isMobile } = useBreakpointValue();
 	const [showReport, setShowReport] = useState(false);
 	const [showTotalsReport, setShowTotalsReport] = useState(false);
@@ -51,6 +53,7 @@ const ReportsPreview = ({
 			</Table>
 			{showReport && reportData && (
 				<PreviewReportsModal
+					companyDetails={companyDetails}
 					isMobile={isMobile}
 					isOpen={showReport}
 					onClose={() => setShowReport(false)}
@@ -59,6 +62,7 @@ const ReportsPreview = ({
 			)}
 			{showTotalsReport && fundingTotalsData && (
 				<TotalsReportModal
+					companyDetails={companyDetails}
 					isOpen={showTotalsReport}
 					onClose={() => setShowTotalsReport(false)}
 					reportData={fundingTotalsData}
@@ -66,6 +70,7 @@ const ReportsPreview = ({
 			)}
 			{showJournalReport && journalReport && (
 				<JournalsReportModal
+					companyDetails={companyDetails}
 					isOpen={showJournalReport}
 					onClose={() => setShowJournalReport(false)}
 					reportData={journalReport}

@@ -1,10 +1,11 @@
-import { Table, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
+import { Divider, HStack, Image, Table, Tbody, Td, Th, Thead, Tr, VStack } from "@chakra-ui/react";
 import Loader from "components/Loader";
 import ModalLayout from "components/ui/modal/ModalLayout";
 import NormalTextTitle from "components/ui/NormalTextTitle";
 import TextTitle from "components/ui/text/TextTitle";
 import React from "react";
-import { formatDateBar } from "utils/convertDate";
+import { dayMonthYear, formatDateBar } from "utils/convertDate";
+import payStubLogo from "../../../assets/logos/BusinessN_lightLogo.jpg";
 
 const JournalsReportModal = ({
 	isOpen,
@@ -13,6 +14,7 @@ const JournalsReportModal = ({
 	size = "6xl",
 	title = "Journal Entry Report",
 	isReport,
+	companyDetails,
 }) => {
 	const JOURNAL_TABLE_COLS = [
 		{ name: "Client Account Code" },
@@ -73,6 +75,28 @@ const JournalsReportModal = ({
 			mx="auto"
 		>
 			{!reportData && <Loader />}
+			<Image
+				objectFit="cover"
+				height={"50px"}
+				w={"450px"}
+				mx="auto"
+				src={payStubLogo}
+				alt="Company logo"
+			/>
+
+			<HStack justifyContent="start" w="60%">
+				<VStack flex={0.4} spacing={0}>
+					<TextTitle title="Company Name:" />
+					<TextTitle title="Company#:" />
+					<TextTitle title="Date Pulled:" />
+				</VStack>
+				<VStack flex={0.6} spacing={0}>
+					<NormalTextTitle title={companyDetails.name} />
+					<NormalTextTitle title={companyDetails.registration_number} />
+					<NormalTextTitle title={dayMonthYear(reportData?.updatedOn)} />
+				</VStack>
+			</HStack>
+			<Divider />
 			{reportData && (
 				<Table variant="simple" size="small">
 					<Thead>

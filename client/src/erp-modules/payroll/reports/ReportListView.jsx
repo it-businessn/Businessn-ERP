@@ -14,6 +14,7 @@ import { usePayrollReports } from "./hooks/usePayrollReports";
 
 const ReportListView = () => {
 	const { year } = useParams();
+	const companyDetails = LocalStorageService.getItem("user")?.companyId;
 	const { company } = useCompany(LocalStorageService.getItem("selectedCompany"));
 	const [yearsList, setYearsList] = useState([CURRENT_YEAR]);
 	const [selectedYear, setSelectedYear] = useState(year || CURRENT_YEAR);
@@ -104,6 +105,7 @@ const ReportListView = () => {
 					/>
 				)}
 				<ReportModals
+					companyDetails={companyDetails}
 					hasLoaded={hasLoaded}
 					showReport={showReport}
 					showTotalsReport={showTotalsReport}

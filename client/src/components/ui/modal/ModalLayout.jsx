@@ -12,7 +12,6 @@ import {
 	ModalContent,
 	ModalHeader,
 	ModalOverlay,
-	Spacer,
 	Stack,
 } from "@chakra-ui/react";
 import { tabScrollCss } from "erp-modules/payroll/onboard-user/customInfo";
@@ -87,7 +86,7 @@ const ModalLayout = ({
 						fontSize={fontSize}
 					>
 						<Flex justify="space-between">
-							{isReport && <Spacer />}
+							{isReport && <Box w={"70px"} />}
 							{title}
 							{isReport ? (
 								<HStack alignItems="center" gap={"1em"}>

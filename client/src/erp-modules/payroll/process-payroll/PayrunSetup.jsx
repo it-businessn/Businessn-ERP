@@ -25,19 +25,19 @@ const PayrunSetup = ({
 
 	const handleConfirm = async () => {
 		try {
-			// if (!closestRecord.isProcessed) {
-			setIsLoading(true);
-			const response = await PayrollService.addPayPeriodPayStub({
-				companyName: company,
-				currentPayPeriod: closestRecord,
-				deptName,
-				selectedPayGroupOption: selectedPayGroup,
-			});
-			if (response) {
-				handleClick();
-				setIsLoading(false);
+			if (!closestRecord.isProcessed) {
+				setIsLoading(true);
+				const response = await PayrollService.addPayPeriodPayStub({
+					companyName: company,
+					currentPayPeriod: closestRecord,
+					deptName,
+					selectedPayGroupOption: selectedPayGroup,
+				});
+				if (response) {
+					handleClick();
+					setIsLoading(false);
+				}
 			}
-			// }
 		} catch (error) {
 			console.error(error);
 		}

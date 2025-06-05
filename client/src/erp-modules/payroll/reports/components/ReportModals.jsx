@@ -13,6 +13,7 @@ export const ReportModals = ({
 	company,
 	isMobile,
 	onClose,
+	companyDetails,
 }) => {
 	if (!hasLoaded) return null;
 
@@ -20,6 +21,7 @@ export const ReportModals = ({
 		<>
 			{showReport && reportData && (
 				<PreviewReportsModal
+					companyDetails={companyDetails}
 					isMobile={isMobile}
 					isReport
 					isOpen={showReport}
@@ -29,6 +31,7 @@ export const ReportModals = ({
 			)}
 			{showTotalsReport && totalsReport && (
 				<TotalsReportModal
+					companyDetails={companyDetails}
 					isReport
 					company={company}
 					isOpen={showTotalsReport}
@@ -38,6 +41,7 @@ export const ReportModals = ({
 			)}
 			{showJournalsReport && journalReport && (
 				<JournalsReportModal
+					companyDetails={companyDetails}
 					isReport
 					isOpen={showJournalsReport}
 					onClose={onClose}

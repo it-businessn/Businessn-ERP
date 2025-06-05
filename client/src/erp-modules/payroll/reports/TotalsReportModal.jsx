@@ -1,4 +1,4 @@
-import { Divider, HStack, Stack, VStack } from "@chakra-ui/react";
+import { Divider, HStack, Image, Stack, VStack } from "@chakra-ui/react";
 import Loader from "components/Loader";
 import ModalLayout from "components/ui/modal/ModalLayout";
 import NormalTextTitle from "components/ui/NormalTextTitle";
@@ -7,7 +7,8 @@ import { COMPANIES } from "constant";
 import React from "react";
 import { isExtraPay } from "utils";
 import { getAmount } from "utils/convertAmt";
-import { formatDateBar } from "utils/convertDate";
+import { dayMonthYear, formatDateBar } from "utils/convertDate";
+import payStubLogo from "../../../assets/logos/BusinessN_lightLogo.jpg";
 
 const TotalsReportModal = ({
 	isOpen,
@@ -17,6 +18,7 @@ const TotalsReportModal = ({
 	title = "Funding Totals Report",
 	company,
 	isReport,
+	companyDetails,
 }) => {
 	const isCornerStone = company === COMPANIES.CORNERSTONE;
 	const totalIncomeTaxContr = reportData?.totalIncomeTaxContr?.toFixed(2);
@@ -147,10 +149,31 @@ const TotalsReportModal = ({
 			w="90%"
 			mx="auto"
 		>
-			{!reportData && <Loader />}Company Name: Acme Corporation Prepared By: Jane Doe Date Prepared:
-			<Stack mt={3}>
-				<HStack justifyContent="start">
-					<VStack spacing={0}>
+			{!reportData && <Loader />}
+			<Stack>
+				<Image
+					objectFit="cover"
+					height={"50px"}
+					w={"450px"}
+					mx="auto"
+					src={payStubLogo}
+					alt="Company logo"
+				/>
+				<HStack justifyContent="start" w="60%">
+					<VStack flex={0.4} spacing={0}>
+						<TextTitle title="Company Name:" />
+						<TextTitle title="Company#:" />
+						<TextTitle title="Date Pulled:" />
+					</VStack>
+					<VStack flex={0.6} spacing={0}>
+						<NormalTextTitle title={company} />
+						<NormalTextTitle title={companyDetails.registration_number} />
+						<NormalTextTitle title={dayMonthYear(reportData?.updatedOn)} />
+					</VStack>
+				</HStack>
+				<Divider />
+				<HStack mt={5} justifyContent="start" w="60%">
+					<VStack flex={0.4} spacing={0}>
 						<TextTitle size="sm" title="Pay Period#:" />
 						<TextTitle size="sm" title="Pay Start Date:" />
 						<TextTitle size="sm" title="Pay End Date:" />
@@ -158,7 +181,7 @@ const TotalsReportModal = ({
 						<TextTitle size="sm" title="Total Employee Remittance:" />
 						<TextTitle size="sm" title="Total Withdrawals:" />
 					</VStack>
-					<VStack spacing={0}>
+					<VStack flex={0.6} spacing={0}>
 						<NormalTextTitle
 							size="sm"
 							title={isExtraPay(reportData?.payPeriodNum, reportData?.isExtraRun)}
