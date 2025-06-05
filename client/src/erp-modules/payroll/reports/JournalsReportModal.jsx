@@ -12,6 +12,7 @@ const JournalsReportModal = ({
 	reportData,
 	size = "6xl",
 	title = "Journal Entry Report",
+	isReport,
 }) => {
 	const JOURNAL_TABLE_COLS = [
 		{ name: "Client Account Code" },
@@ -64,7 +65,7 @@ const JournalsReportModal = ({
 			onClose={onClose}
 			textAlign={"center"}
 			fontSize="2xl"
-			isReport={true}
+			isReport={isReport}
 			fileName={`${formatDateBar(reportData?.payPeriodEndDate)} PayPeriod#${
 				reportData?.payPeriodNum
 			} Journal Entry Report`}

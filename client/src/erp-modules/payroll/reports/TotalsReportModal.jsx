@@ -16,6 +16,7 @@ const TotalsReportModal = ({
 	size = "5xl",
 	title = "Funding Totals Report",
 	company,
+	isReport,
 }) => {
 	const isCornerStone = company === COMPANIES.CORNERSTONE;
 	const totalIncomeTaxContr = reportData?.totalIncomeTaxContr?.toFixed(2);
@@ -139,7 +140,7 @@ const TotalsReportModal = ({
 			onClose={onClose}
 			textAlign={"center"}
 			fontSize="2xl"
-			isReport={true}
+			isReport={isReport}
 			fileName={`${formatDateBar(reportData?.payPeriodEndDate)} PayPeriod#${
 				reportData?.payPeriodNum
 			} Funding Report`}

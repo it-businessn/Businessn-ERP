@@ -1,6 +1,6 @@
-import JournalsReportModal from "../../process-payroll/preview-reports/JournalsReportModal";
-import PreviewReportsModal from "../../process-payroll/preview-reports/PreviewReportsModal";
-import TotalsReportModal from "../../process-payroll/preview-reports/TotalsReportModal";
+import JournalsReportModal from "../JournalsReportModal";
+import PreviewReportsModal from "../PreviewReportsModal";
+import TotalsReportModal from "../TotalsReportModal";
 
 export const ReportModals = ({
 	hasLoaded,
@@ -29,6 +29,7 @@ export const ReportModals = ({
 			)}
 			{showTotalsReport && totalsReport && (
 				<TotalsReportModal
+					isReport
 					company={company}
 					isOpen={showTotalsReport}
 					onClose={onClose}
@@ -37,6 +38,7 @@ export const ReportModals = ({
 			)}
 			{showJournalsReport && journalReport && (
 				<JournalsReportModal
+					isReport
 					isOpen={showJournalsReport}
 					onClose={onClose}
 					reportData={journalReport}

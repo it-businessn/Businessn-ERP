@@ -4,7 +4,7 @@ import PrimaryButton from "components/ui/button/PrimaryButton";
 import BoxCard from "components/ui/card";
 import TextTitle from "components/ui/text/TextTitle";
 import { tabScrollCss } from "erp-modules/payroll/onboard-user/customInfo";
-import PreviewReportsModal from "erp-modules/payroll/process-payroll/preview-reports/PreviewReportsModal";
+import PreviewReportsModal from "erp-modules/payroll/reports/PreviewReportsModal";
 import { EARNING_TABLE_COLS } from "erp-modules/payroll/workview/data";
 import WorkviewTable from "erp-modules/payroll/workview/paygroup-header-table/WorkviewTable";
 import { useEffect, useState } from "react";

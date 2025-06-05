@@ -32,7 +32,7 @@ export const EMP_PAYMENT_NOTIFICATION_CONFIG = [
 		type: "sfsgdsgdsgdsg10",
 		params: [
 			{
-				name: "Send Paystub by email on pay day",
+				name: "Send Notification by email on pay day",
 				param_key: "payStubSendByEmail",
 				control: "radio",
 				options: ["Yes", "No"],

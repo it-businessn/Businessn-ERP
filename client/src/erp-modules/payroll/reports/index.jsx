@@ -19,7 +19,7 @@ import { getPayNum, isExtraPay, sortRecordsByDate } from "utils";
 import { dayMonthYear, formatDateRange } from "utils/convertDate";
 import EmpProfileSearch from "../employees/EmpProfileSearch";
 import { tabScrollCss } from "../onboard-user/customInfo";
-import PreviewReportsModal from "../process-payroll/preview-reports/PreviewReportsModal";
+import PreviewReportsModal from "./PreviewReportsModal";
 
 const Reports = () => {
 	const { isMobile } = useBreakpointValue();

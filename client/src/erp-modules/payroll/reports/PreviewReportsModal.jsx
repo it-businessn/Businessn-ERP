@@ -3,8 +3,8 @@ import Loader from "components/Loader";
 import ModalLayout from "components/ui/modal/ModalLayout";
 import NormalTextTitle from "components/ui/NormalTextTitle";
 import TextTitle from "components/ui/text/TextTitle";
-import MobilePayStub from "../statement/MobilePayStub";
-import PayStubStatement from "../statement/PayStubStatement";
+import MobilePayStub from "../process-payroll/statement/MobilePayStub";
+import PayStubStatement from "../process-payroll/statement/PayStubStatement";
 
 const PreviewReportsModal = ({
 	isOpen,

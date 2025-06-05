@@ -7,9 +7,9 @@ import useJournalReport from "hooks/useJournalReport";
 import { useState } from "react";
 import { MdCheckCircle } from "react-icons/md";
 import { useBreakpointValue } from "services/Breakpoint";
-import JournalsReportModal from "./preview-reports/JournalsReportModal";
-import PreviewReportsModal from "./preview-reports/PreviewReportsModal";
-import TotalsReportModal from "./preview-reports/TotalsReportModal";
+import JournalsReportModal from "../reports/JournalsReportModal";
+import PreviewReportsModal from "../reports/PreviewReportsModal";
+import TotalsReportModal from "../reports/TotalsReportModal";
 
 const ReportsPreview = ({
 	company,

@@ -22,8 +22,8 @@ import { useNavigate, useParams } from "react-router-dom";
 import LocalStorageService from "services/LocalStorageService";
 import PayrollService from "services/PayrollService";
 import { convertDecimal, getAmount } from "utils/convertAmt";
+import EmpPayStatement from "../reports/EmpPayStatement";
 import { getClosestRecord } from "../workview/data";
-import EmpPayStatement from "./EmpPayStatement";
 
 const InputsReview = ({
 	handleClick,

@@ -154,7 +154,7 @@ const BankingInfo = ({ bankingSubStep, setBankingSubStep, formData, handleChange
 						<TextTitle size="xl" title="Payment Notification" />
 
 						<FormControl>
-							<FormLabel size="sm">Send Paystub by Email on Pay Day</FormLabel>
+							<FormLabel size="sm">Send Notification by Email on Pay Day</FormLabel>
 							<Select
 								size="sm"
 								value={formData.bankingInfo.payStubSendByEmail}

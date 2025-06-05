@@ -11,8 +11,9 @@ import {
 import { useRef, useState } from "react";
 import { FaPrint } from "react-icons/fa";
 import { useReactToPrint } from "react-to-print";
+import { formatDateBar } from "utils/convertDate";
 import { tabScrollCss } from "../onboard-user/customInfo";
-import PayStubStatement from "./statement/PayStubStatement";
+import PayStubStatement from "../process-payroll/statement/PayStubStatement";
 
 const EmpPayStatement = ({ record, isOpen, onClose }) => {
 	const componentRef = useRef();
@@ -20,6 +21,11 @@ const EmpPayStatement = ({ record, isOpen, onClose }) => {
 
 	const handlePrint = useReactToPrint({
 		content: () => componentRef.current,
+		onBeforeGetContent: () => {
+			document.title = `${formatDateBar(record?.payPeriodEndDate)} PayPeriod#${
+				record?.payPeriodNum
+			} ${record?.empId?.fullName.replace(/\s+/g, "")} Review Payslip`;
+		},
 	});
 
 	const handleClick = () => {
