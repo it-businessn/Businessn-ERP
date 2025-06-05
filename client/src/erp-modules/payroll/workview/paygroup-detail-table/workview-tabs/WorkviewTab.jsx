@@ -7,6 +7,7 @@ import NormalTextTitle from "components/ui/NormalTextTitle";
 import WorkviewTable from "components/ui/table/WorkviewTable";
 import TextTitle from "components/ui/text/TextTitle";
 import { COLS, HRS_DECIMAL_COLS, TOTAL_AMT_HRS_COLS } from "constant";
+import { tabScrollCss } from "erp-modules/payroll/onboard-user/customInfo";
 import { useNavigate } from "react-router-dom";
 import { getAmount } from "utils/convertAmt";
 
@@ -51,6 +52,7 @@ const WorkviewTab = ({
 				whiteSpace="wrap"
 				textAlign={"center"}
 				overflowX={overflowX}
+				css={tabScrollCss}
 			>
 				<Tbody>
 					{(!data || data?.length === 0) && <EmptyRowRecord data={data} colSpan={cols.length} />}

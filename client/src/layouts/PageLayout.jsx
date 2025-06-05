@@ -1,6 +1,7 @@
 import { Box } from "@chakra-ui/react";
 import PageHeader from "components/PageHeader";
 import BoxCard from "components/ui/card";
+import { tabScrollCss } from "erp-modules/payroll/onboard-user/customInfo";
 
 const PageLayout = ({
 	children,
@@ -33,6 +34,7 @@ const PageLayout = ({
 		pb={pb}
 		bg={bg}
 		height={"calc(100vh - 100px)"}
+		css={tabScrollCss}
 	>
 		<PageHeader
 			hasMultiPaygroups={hasMultiPaygroups}

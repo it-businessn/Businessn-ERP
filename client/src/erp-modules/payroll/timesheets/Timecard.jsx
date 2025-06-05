@@ -8,6 +8,7 @@ import { COLS } from "constant";
 import { useEffect, useState } from "react";
 import TimesheetService from "services/TimesheetService";
 import { getTimeCardFormat } from "utils/convertDate";
+import { tabScrollCss } from "../onboard-user/customInfo";
 
 const Timecard = ({ company, timecardRefresh, filter, pageNum, setPageNum }) => {
 	const [totalPage, setTotalPages] = useState(1);
@@ -49,7 +50,14 @@ const Timecard = ({ company, timecardRefresh, filter, pageNum, setPageNum }) => 
 
 	return (
 		<>
-			<TableLayout cols={cols} height="calc(100vh - 260px)" position="sticky" zIndex={3} top={-1}>
+			<TableLayout
+				cols={cols}
+				height="calc(100vh - 260px)"
+				position="sticky"
+				zIndex={3}
+				top={-1}
+				css={tabScrollCss}
+			>
 				<Tbody>
 					{(!timeRecords || timeRecords?.length === 0) && (
 						<EmptyRowRecord data={timeRecords} colSpan={cols.length} />

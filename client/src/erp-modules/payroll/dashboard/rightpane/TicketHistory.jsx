@@ -4,6 +4,7 @@ import LinkButton from "components/ui/button/LinkButton";
 import BoxCard from "components/ui/card";
 import NormalTextTitle from "components/ui/NormalTextTitle";
 import TextTitle from "components/ui/text/TextTitle";
+import { tabScrollCss } from "erp-modules/payroll/onboard-user/customInfo";
 import NoteDetails from "erp-modules/project-management/tickets/NoteDetails";
 import { useEffect, useRef, useState } from "react";
 import TicketService from "services/TicketService";
@@ -31,7 +32,7 @@ const TicketHistory = ({ userId, company, setCount }) => {
 	}, [userId]);
 
 	return (
-		<Box maxH={"calc(100vh - 533px)"} mt={3} overflowY={"auto"}>
+		<Box maxH={"calc(100vh - 533px)"} mt={3} overflowY={"auto"} css={tabScrollCss}>
 			<List spacing={2}>
 				{isLoading ? (
 					<SkeletonLoader />
@@ -45,7 +46,7 @@ const TicketHistory = ({ userId, company, setCount }) => {
 											<TextTitle size="xs" title={`Ticket#: ${ticketNumber}`} />
 											<TextTitle size="xs" title={`Category: ${category}`} />
 											<TextTitle size="xs" title={`Priority: ${priority}`} />
-											<TextTitle size="xs" title={`Topic: ${topic}`} />
+											<TextTitle size="xs" whiteSpace="wrap" title={`Topic: ${topic}`} />
 										</VStack>
 										<LinkButton
 											onClick={() => {

@@ -1,4 +1,5 @@
 import {
+	Box,
 	HStack,
 	IconButton,
 	Menu,
@@ -37,6 +38,7 @@ const WorkviewTable = ({
 	viewLabel = "View Register",
 	textAlign,
 	selectedYear,
+	css,
 }) => {
 	const rowRefs = useRef([]);
 	const scrollToRow = (index) => {
@@ -104,53 +106,56 @@ const WorkviewTable = ({
 		}
 
 		return (
-			<HStack spacing={2}>
-				{mainAction}
-				<Menu>
-					<Tooltip label="View Reports" hasArrow>
-						<MenuButton
-							as={IconButton}
-							icon={<FaEye />}
-							variant="ghost"
-							size="sm"
-							isDisabled={isDisabledAction}
-							_hover={{ bg: "gray.100" }}
-							color="gray.600"
-						/>
-					</Tooltip>
-					<MenuList>
-						<MenuItem
-							icon={<FaFileAlt />}
-							onClick={() =>
-								handleTotalsReport(
-									isExtraPay(payPeriodNum || payPeriod, isExtraRun),
-									isExtraRun,
-									payPeriodPayDate,
-								)
-							}
-						>
-							View Funding Totals
-						</MenuItem>
-						<MenuItem
-							icon={<FaBook />}
-							onClick={() =>
-								handleJournalsReport(
-									isExtraPay(payPeriod, isExtraRun),
-									isExtraRun,
-									payPeriodPayDate,
-								)
-							}
-						>
-							View Journal
-						</MenuItem>
-					</MenuList>
-				</Menu>
-			</HStack>
+			<Box>
+				<HStack spacing={2}>
+					{mainAction}
+					<Menu>
+						<Tooltip label="View Reports" hasArrow>
+							<MenuButton
+								as={IconButton}
+								icon={<FaEye />}
+								variant="ghost"
+								size="sm"
+								isDisabled={isDisabledAction}
+								_hover={{ bg: "gray.100" }}
+								color="gray.600"
+							/>
+						</Tooltip>
+						<MenuList>
+							<MenuItem
+								icon={<FaFileAlt />}
+								onClick={() =>
+									handleTotalsReport(
+										isExtraPay(payPeriodNum || payPeriod, isExtraRun),
+										isExtraRun,
+										payPeriodPayDate,
+									)
+								}
+							>
+								View Funding Totals
+							</MenuItem>
+							<MenuItem
+								icon={<FaBook />}
+								onClick={() =>
+									handleJournalsReport(
+										isExtraPay(payPeriod, isExtraRun),
+										isExtraRun,
+										payPeriodPayDate,
+									)
+								}
+							>
+								View Journal
+							</MenuItem>
+						</MenuList>
+					</Menu>
+				</HStack>
+			</Box>
 		);
 	};
 
 	return (
 		<TableLayout
+			css={css}
 			cols={cols}
 			w={"100%"}
 			height={height}

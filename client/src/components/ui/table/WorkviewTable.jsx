@@ -2,10 +2,11 @@ import { Box, Table, Th, Thead, Tr } from "@chakra-ui/react";
 import { ALIGN_COLS, COLS, TITLE_COLS } from "constant";
 import TextTitle from "../text/TextTitle";
 
-const WorkviewTable = ({ cols, isSmall, height, whiteSpace, children, overflowX }) => {
+const WorkviewTable = ({ cols, isSmall, height, whiteSpace, children, overflowX, css }) => {
 	const hideLabel = (text, label) => text.startsWith(label);
+
 	return (
-		<Box overflow="auto" maxH={height} overflowX={overflowX}>
+		<Box overflow="auto" maxH={height} overflowX={overflowX} css={css}>
 			<Table variant={"simple"}>
 				<Thead position="sticky" zIndex="docked" top={-1} textAlign="center">
 					<Tr>

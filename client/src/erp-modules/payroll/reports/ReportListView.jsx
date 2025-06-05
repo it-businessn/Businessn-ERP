@@ -7,6 +7,7 @@ import { useParams } from "react-router-dom";
 import { useBreakpointValue } from "services/Breakpoint";
 import LocalStorageService from "services/LocalStorageService";
 import { CURRENT_YEAR } from "utils/convertDate";
+import { tabScrollCss } from "../onboard-user/customInfo";
 import WorkviewTable from "../workview/paygroup-header-table/WorkviewTable";
 import { ReportModals } from "./components/ReportModals";
 import { usePayrollReports } from "./hooks/usePayrollReports";
@@ -92,6 +93,7 @@ const ReportListView = () => {
 			<Box bg="white" p={4} borderRadius="md" boxShadow="sm">
 				{filteredPayPeriods && (
 					<WorkviewTable
+						css={tabScrollCss}
 						payGroupSchedule={filteredPayPeriods}
 						closestRecordIndex={closestRecordIndex}
 						height="calc(100vh - 225px)"

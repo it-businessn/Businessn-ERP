@@ -18,6 +18,7 @@ import PayrollService from "services/PayrollService";
 import { getPayNum, isExtraPay, sortRecordsByDate } from "utils";
 import { dayMonthYear, formatDateRange } from "utils/convertDate";
 import EmpProfileSearch from "../employees/EmpProfileSearch";
+import { tabScrollCss } from "../onboard-user/customInfo";
 import PreviewReportsModal from "../process-payroll/preview-reports/PreviewReportsModal";
 
 const Reports = () => {
@@ -113,7 +114,8 @@ const Reports = () => {
 				w={"100%"}
 				top={-1}
 				textAlign="center"
-				height={"calc(100vh - 250px)"}
+				height={"calc(100vh - 255px)"}
+				css={tabScrollCss}
 			>
 				<Tbody>
 					{(!empPayStub || empPayStub?.length === 0) && (

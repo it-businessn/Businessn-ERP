@@ -11,6 +11,7 @@ import {
 import { useRef, useState } from "react";
 import { FaPrint } from "react-icons/fa";
 import { useReactToPrint } from "react-to-print";
+import { tabScrollCss } from "../onboard-user/customInfo";
 import PayStubStatement from "./statement/PayStubStatement";
 
 const EmpPayStatement = ({ record, isOpen, onClose }) => {
@@ -43,7 +44,13 @@ const EmpPayStatement = ({ record, isOpen, onClose }) => {
 					</Flex>
 				</DrawerHeader>
 
-				<DrawerBody ref={componentRef} bg={"var(--main_color)"} minH="100vh" p="5px">
+				<DrawerBody
+					ref={componentRef}
+					bg={"var(--main_color)"}
+					minH="100vh"
+					p="5px"
+					css={tabScrollCss}
+				>
 					{record && <PayStubStatement data={record} height="98vh" />}
 				</DrawerBody>
 			</DrawerContent>

@@ -1,6 +1,7 @@
 import { HStack, VStack } from "@chakra-ui/react";
 import BoxCard from "components/ui/card";
 import TextTitle from "components/ui/text/TextTitle";
+import { tabScrollCss } from "erp-modules/payroll/onboard-user/customInfo";
 import useActiveEmployees from "hooks/useActiveEmployees";
 import { useEffect, useState } from "react";
 import { FaBullhorn } from "react-icons/fa";
@@ -81,6 +82,7 @@ const LeftPane = ({
 				</BoxCard>
 				<BoxCard
 					h={"calc(100vh - 370px)"}
+					css={tabScrollCss}
 					width="100%"
 					bg="white"
 					boxShadow="0px 4px 12px rgba(0, 0, 0, 0.1)"
@@ -125,6 +127,7 @@ const LeftPane = ({
 
 				<BoxCard
 					h={"calc(100vh - 585px)"}
+					css={tabScrollCss}
 					width="100%"
 					bg="white"
 					overflowY="hidden"

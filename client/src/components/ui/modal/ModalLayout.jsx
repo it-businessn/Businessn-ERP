@@ -14,6 +14,7 @@ import {
 	Spacer,
 	Stack,
 } from "@chakra-ui/react";
+import { tabScrollCss } from "erp-modules/payroll/onboard-user/customInfo";
 import { useEffect, useRef, useState } from "react";
 import { FaPrint } from "react-icons/fa";
 import { useReactToPrint } from "react-to-print";
@@ -94,7 +95,14 @@ const ModalLayout = ({
 						</Flex>
 					</ModalHeader>
 				)}
-				<ModalBody p={hideOverlay && 0} zIndex="0" ref={componentRef} bg={"#fff"} height={"100vh"}>
+				<ModalBody
+					p={hideOverlay && 0}
+					zIndex="0"
+					ref={componentRef}
+					bg={"#fff"}
+					height={"100vh"}
+					css={tabScrollCss}
+				>
 					<Stack w="100%" px={px} p={p} spacing={spacing}>
 						{children}
 						{error && (

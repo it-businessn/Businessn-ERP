@@ -3,6 +3,7 @@ import { Box, SimpleGrid, VStack } from "@chakra-ui/react";
 import PrimaryButton from "components/ui/button/PrimaryButton";
 import BoxCard from "components/ui/card";
 import TextTitle from "components/ui/text/TextTitle";
+import { tabScrollCss } from "erp-modules/payroll/onboard-user/customInfo";
 import PreviewReportsModal from "erp-modules/payroll/process-payroll/preview-reports/PreviewReportsModal";
 import { EARNING_TABLE_COLS } from "erp-modules/payroll/workview/data";
 import WorkviewTable from "erp-modules/payroll/workview/paygroup-header-table/WorkviewTable";
@@ -89,6 +90,7 @@ const LeftPane = ({ selectedUser, company, isMobile }) => {
 							cols={EARNING_TABLE_COLS}
 							payGroupSchedule={empPayStub}
 							height="calc(100vh - 743px)"
+							css={tabScrollCss}
 							viewLabel="View Paystub"
 							handleRegister={handleRegister}
 							textAlign={"center"}

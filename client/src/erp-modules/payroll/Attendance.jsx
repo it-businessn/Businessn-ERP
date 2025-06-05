@@ -1,11 +1,18 @@
 import { TimeIcon } from "@chakra-ui/icons";
 import { Box, Flex, Icon, Text, VStack } from "@chakra-ui/react";
 import PageLayout from "layouts/PageLayout";
+import { tabScrollCss } from "./onboard-user/customInfo";
 
 const Attendance = () => {
 	return (
 		<PageLayout title="Attendance">
-			<Flex width="100%" height="calc(100vh - 200px)" align="center" justify="center">
+			<Flex
+				width="100%"
+				height="calc(100vh - 200px)"
+				align="center"
+				justify="center"
+				css={tabScrollCss}
+			>
 				<Box maxWidth="600px" p="6" borderWidth="1px" borderRadius="lg" boxShadow="lg" bg="white">
 					<VStack spacing={6} align="center" p={4}>
 						<Icon as={TimeIcon} w={12} h={12} color="blue.500" />

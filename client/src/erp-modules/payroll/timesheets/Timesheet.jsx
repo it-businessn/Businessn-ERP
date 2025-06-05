@@ -30,6 +30,7 @@ import {
 	getUTCTime,
 	isSameAsToday,
 } from "utils/convertDate";
+import { tabScrollCss } from "../onboard-user/customInfo";
 import ActionAll from "./ActionAll";
 import {
 	ACTION_STATUS,
@@ -659,7 +660,7 @@ const Timesheet = ({
 
 	return (
 		<>
-			<Box overflow="auto" height="calc(100vh - 215px)" w={"100%"}>
+			<Box overflow="auto" height="calc(100vh - 215px)" w={"100%"} css={tabScrollCss}>
 				<Table bg="var(--lead_cards_bg)" variant="simple">
 					<Thead position="sticky" top={-1} zIndex={3}>
 						<Tr>

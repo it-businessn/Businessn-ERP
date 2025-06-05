@@ -349,7 +349,7 @@ const EmploymentInfo = ({ company, userId, payGroups, selectedPayGroupOption }) 
 									isLoading={isLoading}
 									onOpen={() => setShowModal(true)}
 								/>
-								<Box maxH={"calc(100vh - 355px)"} w={"100%"} overflowY="auto">
+								<Box maxH={"calc(100vh - 355px)"} w={"100%"} overflowY="auto" css={tabScrollCss}>
 									{formData.employmentInfo.positions?.map((position, index) => (
 										<BoxCard
 											p={2}

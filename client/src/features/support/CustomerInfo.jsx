@@ -14,6 +14,7 @@ import SelectFormControl from "components/ui/form/SelectFormControl";
 import NormalTextTitle from "components/ui/NormalTextTitle";
 import TextTitle from "components/ui/text/TextTitle";
 import { COUNTRIES } from "config/payroll/employees/profileInfo";
+import { tabScrollCss } from "erp-modules/payroll/onboard-user/customInfo";
 import { useEffect, useState } from "react";
 import { FaCaretDown } from "react-icons/fa";
 import TicketService from "services/TicketService";
@@ -98,6 +99,7 @@ export default function CustomerInfo() {
 						justifyContent="center"
 						flexDirection="column"
 						minH="calc(100vh - 192px)"
+						css={tabScrollCss}
 					>
 						<TextTitle
 							align="center"

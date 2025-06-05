@@ -12,6 +12,7 @@ import {
 } from "@chakra-ui/react";
 import TableLayout from "components/ui/table/TableLayout";
 import { COLS } from "constant";
+import { tabScrollCss } from "erp-modules/payroll/onboard-user/customInfo";
 import { HiEye, HiPencil } from "react-icons/hi";
 import { useNavigate } from "react-router-dom";
 import { ROUTE_PATH } from "routes";
@@ -64,6 +65,7 @@ const EmployeeList = ({ employees }) => {
 	return (
 		<TableLayout
 			cols={cols}
+			css={tabScrollCss}
 			height="calc(100vh - 455px)"
 			position="sticky"
 			top={-1}

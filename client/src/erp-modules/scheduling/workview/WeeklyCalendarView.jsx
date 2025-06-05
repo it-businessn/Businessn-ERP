@@ -4,6 +4,7 @@ import NormalTextTitle from "components/ui/NormalTextTitle";
 import TextTitle from "components/ui/text/TextTitle";
 
 import { addDays, format } from "date-fns";
+import { tabScrollCss } from "erp-modules/payroll/onboard-user/customInfo";
 import moment from "moment";
 import { useEffect, useState } from "react";
 import SchedulerService from "services/SchedulerService";
@@ -87,7 +88,7 @@ const WeeklyCalendarView = ({
 	};
 
 	return (
-		<Box overflow="auto" h="calc(100vh - 205px)">
+		<Box overflow="auto" h="calc(100vh - 205px)" css={tabScrollCss}>
 			<Table variant="simple">
 				<Thead>
 					<Tr>

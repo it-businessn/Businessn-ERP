@@ -22,8 +22,10 @@ const BoxCard = ({
 	borderRadius = "10px",
 	minW,
 	borderColor = "var(--main_color)",
+	css,
 }) => (
 	<Box
+		css={css}
 		minW={minW}
 		flexWrap={flexWrap}
 		boxShadow={boxShadow}
