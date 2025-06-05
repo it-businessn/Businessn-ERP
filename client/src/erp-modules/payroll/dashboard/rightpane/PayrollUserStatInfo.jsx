@@ -28,11 +28,16 @@ const PayrollUserStatInfo = ({
 				: payGroupSchedule?.[closestRecordIndex];
 
 			const daysTillNextPayrun = daysAgo(nextPayrun?.payPeriodProcessingDate);
+			const absoluteDaysNum = Math.abs(daysTillNextPayrun);
+
+			const payRollDueDays = `${daysTillNextPayrun < 0 ? absoluteDaysNum : daysTillNextPayrun} day${
+				absoluteDaysNum > 1 ? "s" : ""
+			}`;
 
 			setStats({
 				dayTill: {
 					name: `Next Payroll ${daysTillNextPayrun < 0 ? "overdue by" : "in"}`,
-					value: `${daysTillNextPayrun} days`,
+					value: payRollDueDays,
 					icon: RepeatIcon,
 					iconColor: "gray.600",
 				},
