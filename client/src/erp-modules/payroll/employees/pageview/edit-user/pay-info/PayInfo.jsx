@@ -137,8 +137,8 @@ const PayInfo = ({ company, userId }) => {
 					))}
 				</Stepper>
 			</Box>
-			<Box maxH={"100%"} flex={1} overflowY="auto" css={tabScrollCss}>
-				<Stack spacing={4} p={5}>
+			<Box maxH={"calc(100vh - 300px)"} flex={1} overflowY="auto" css={tabScrollCss}>
+				<Stack spacing={3} p={5}>
 					<TextTitle size="xl" title="Compensation Information" />
 					{formData.payInfo.roles?.map((role, index) => (
 						<BoxCard

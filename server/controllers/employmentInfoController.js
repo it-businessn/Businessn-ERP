@@ -236,6 +236,7 @@ const addEmployeeEmploymentInfo = async (req, res) => {
 const updateEmployeeEmploymentInfo = async (req, res) => {
 	const { id } = req.params;
 	const {
+		empId,
 		companyName,
 		payrollStatus,
 		employeeNo,
@@ -249,6 +250,21 @@ const updateEmployeeEmploymentInfo = async (req, res) => {
 	try {
 		const existingRecord = await EmployeeEmploymentInfo.findById(id);
 		if (existingRecord) {
+			const positionExists = positions?.find((_) => _.title);
+			if (positionExists) {
+				const roles = [...positions];
+				const existingPayInfo = await EmployeePayInfo.findOne({ empId, companyName });
+				if (existingPayInfo) {
+					await updatePayInfo(existingPayInfo._id, { roles });
+				} else {
+					await EmployeePayInfo.create({
+						empId,
+						companyName,
+						roles,
+					});
+				}
+			}
+
 			const updatedInfo = await updateEmploymentInfo(id, {
 				payrollStatus,
 				employeeNo,
