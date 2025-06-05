@@ -112,7 +112,7 @@ const LeftPane = ({ selectedUser, company, isMobile }) => {
 					onClose={() => setShowReport(false)}
 					reportData={payStub}
 					isEarningTable
-					title={""}
+					title={"PaySlip"}
 				/>
 			)}
 		</Box>

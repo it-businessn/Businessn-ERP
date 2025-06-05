@@ -11,7 +11,7 @@ const PayStubStatement = ({ data, height, overflow = "hidden" }) => {
 	const companyInfo = LocalStorageService.getItem("user")?.companyId;
 	return (
 		<Box
-			w={"100%"}
+			w="auto"
 			flexDir="column"
 			display="flex"
 			overflow={overflow}

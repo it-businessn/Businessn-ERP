@@ -17,8 +17,8 @@ const PreviewReportsModal = ({
 	isMobile,
 }) => {
 	const Statement = ({ data }) => (
-		<Box borderBottom="1px solid var(--calendar_border)" mx="auto">
-			<PayStubStatement data={data} height="98vh" />
+		<Box borderBottom={!isEarningTable && "1px solid var(--calendar_border)"} mx="auto">
+			<PayStubStatement data={data} height="calc(100vh - 20px)" />
 		</Box>
 	);
 
@@ -39,8 +39,7 @@ const PreviewReportsModal = ({
 			fontSize="2xl"
 			overflow={"hidden"}
 			isReport={isReport}
-			p="1em"
-			px={0}
+			p="0"
 			empName={isEarningTable ? reportData?.empId?.fullName : null}
 			reportData={isEarningTable ? reportData : reportData?.[0]}
 		>

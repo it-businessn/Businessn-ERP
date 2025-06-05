@@ -68,7 +68,7 @@ const ChequeDetails = ({ data, companyInfo, flex, isMobile }) => {
 			/>
 		</Box>
 	) : (
-		<Stack w={"100%"} justifyContent={"center"} flex={flex} minH="15em" mt={"0.5em"}>
+		<Stack w={"100%"} justifyContent={"center"} flex={flex} minH="15em">
 			<PayStubHeader companyInfo={companyInfo} />
 			<VStack w="100%" mx="auto" spacing={"2em"}>
 				<Box w="98%">

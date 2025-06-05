@@ -69,6 +69,8 @@ const JournalsReportModal = ({
 			fileName={`${formatDateBar(reportData?.payPeriodEndDate)} PayPeriod#${
 				reportData?.payPeriodNum
 			} Journal Entry Report`}
+			w="95%"
+			mx="auto"
 		>
 			{!reportData && <Loader />}
 			{reportData && (
@@ -77,7 +79,7 @@ const JournalsReportModal = ({
 						<Tr>
 							<Th />
 							{JOURNAL_TABLE_COLS.map((col) => (
-								<Th key={col.name} isNumeric={col?.isNumeric}>
+								<Th py={3} key={col.name} isNumeric={col?.isNumeric}>
 									<TextTitle size="sm" title={col.name} />
 								</Th>
 							))}
@@ -243,15 +245,24 @@ const JournalsReportModal = ({
 						))}
 
 						<Tr>
-							<Td pt={3}>
-								<TextTitle title="IN BALANCE" />
+							<Td colSpan={4}>
+								<TextTitle p={3} borderTop="1px solid var(--main_color_black)" title="IN BALANCE" />
 							</Td>
-							<Td /> <Td /> <Td />
-							<Td pt={3} isNumeric>
-								<TextTitle title={reportData.totalDebit?.toFixed(2)} />
+							<Td isNumeric>
+								<TextTitle
+									p={3}
+									borderTop="1px solid var(--main_color_black)"
+									align="right"
+									title={reportData.totalDebit?.toFixed(2)}
+								/>
 							</Td>
-							<Td pt={3} isNumeric>
-								<TextTitle title={reportData.totalCredit?.toFixed(2)} />
+							<Td isNumeric>
+								<TextTitle
+									p={3}
+									borderTop="1px solid var(--main_color_black)"
+									align="right"
+									title={reportData.totalCredit?.toFixed(2)}
+								/>
 							</Td>
 						</Tr>
 					</Tbody>

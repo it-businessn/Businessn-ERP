@@ -144,6 +144,8 @@ const TotalsReportModal = ({
 			fileName={`${formatDateBar(reportData?.payPeriodEndDate)} PayPeriod#${
 				reportData?.payPeriodNum
 			} Funding Report`}
+			w="90%"
+			mx="auto"
 		>
 			{!reportData && <Loader />}Company Name: Acme Corporation Prepared By: Jane Doe Date Prepared:
 			<Stack mt={3}>
@@ -181,7 +183,7 @@ const TotalsReportModal = ({
 										!hide && (
 											<HStack
 												key={`${subtitle}_${idx}`}
-												borderBottom="1px solid var(--main_color_black)"
+												borderBottom="1px solid var(--filter_border_color)"
 												mt={mt}
 											>
 												<NormalTextTitle size="sm" title={subtitle} fontStyle={fontStyle} />
@@ -197,15 +199,16 @@ const TotalsReportModal = ({
 							</Stack>
 							<Stack mt={1} size="xs">
 								<HStack>
-									<TextTitle title={sumTotal.title} whiteSpace="wrap" />
-									<TextTitle title={sumTotal.value} align="right" />
+									<TextTitle flex={0.7} title={sumTotal.title} whiteSpace="wrap" />
+									<TextTitle flex={0.3} title={sumTotal.value} align="right" />
 								</HStack>
 							</Stack>
+							<Divider borderBottom="1px solid var(--main_color_black)" />
 						</React.Fragment>
 					))}
-					<HStack mt={2} borderTop="1px solid var(--main_color_black)">
-						<TextTitle title="ALL FUNDING WITHDRAWALS" />
-						<TextTitle align="right" title={totalFundingWithDrawals} />
+					<HStack mt={2}>
+						<TextTitle size="lg" title="ALL FUNDING WITHDRAWALS" />
+						<TextTitle size="lg" align="right" title={totalFundingWithDrawals} />
 					</HStack>
 				</Stack>
 			)}

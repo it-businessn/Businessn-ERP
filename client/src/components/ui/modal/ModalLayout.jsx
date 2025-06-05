@@ -2,6 +2,7 @@ import {
 	Alert,
 	AlertIcon,
 	Box,
+	Divider,
 	Flex,
 	HStack,
 	IconButton,
@@ -34,10 +35,11 @@ const ModalLayout = ({
 	isReport,
 	spacing = "5",
 	reportData,
-	px,
 	empName,
 	p,
 	fileName,
+	w = "100%",
+	mx,
 }) => {
 	const componentRef = useRef();
 	const [isPrintDisabled, setIsPrintDisabled] = useState(true);
@@ -105,17 +107,18 @@ const ModalLayout = ({
 								<ModalCloseButton />
 							)}
 						</Flex>
+						<Divider />
 					</ModalHeader>
 				)}
 				<ModalBody
-					p={hideOverlay && 0}
+					p={(hideOverlay || isReport) && 0}
 					zIndex="0"
 					ref={componentRef}
 					bg={"#fff"}
 					height={"100vh"}
 					css={tabScrollCss}
 				>
-					<Stack w="100%" px={px} p={p} spacing={spacing}>
+					<Stack w={w} mx={mx} p={p} spacing={spacing}>
 						{children}
 						{error && (
 							<Alert status="error" mt={4}>
