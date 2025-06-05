@@ -37,20 +37,32 @@ const ModalLayout = ({
 	px,
 	empName,
 	p,
+	fileName,
 }) => {
 	const componentRef = useRef();
 	const [isPrintDisabled, setIsPrintDisabled] = useState(true);
+	const [reportFileName, setReportFileName] = useState(null);
 
 	useEffect(() => {
-		setIsPrintDisabled(isReport && children);
+		if (isReport) {
+			setIsPrintDisabled(children);
+			setReportFileName(
+				empName
+					? `${formatDateBar(reportData?.payPeriodEndDate)} PayPeriod#${
+							reportData?.payPeriodNum
+					  } ${empName.replace(/\s+/g, "")} Paystub`
+					: fileName ||
+							`${formatDateBar(reportData?.payPeriodEndDate)} PayPeriod#${
+								reportData?.payPeriodNum
+							} Register Report`,
+			);
+		}
 	}, [isReport]);
 
 	const handlePrint = useReactToPrint({
 		content: () => componentRef.current,
 		onBeforeGetContent: () => {
-			document.title = empName
-				? `${formatDateBar(reportData)}${empName.replace(/\s+/g, "")}_Paystub.pdf`
-				: `${formatDateBar(reportData)}_Paystub`;
+			document.title = reportFileName;
 		},
 	});
 

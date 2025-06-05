@@ -42,11 +42,7 @@ const PreviewReportsModal = ({
 			p="1em"
 			px={0}
 			empName={isEarningTable ? reportData?.empId?.fullName : null}
-			reportData={
-				isEarningTable
-					? reportData?.payPeriodProcessingDate
-					: reportData?.[0]?.payPeriodProcessingDate
-			}
+			reportData={isEarningTable ? reportData : reportData?.[0]}
 		>
 			{isReport && !reportData && <Loader />}
 			{!isEarningTable && !reportData?.length && (

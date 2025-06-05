@@ -140,6 +140,9 @@ const TotalsReportModal = ({
 			textAlign={"center"}
 			fontSize="2xl"
 			isReport={true}
+			fileName={`${formatDateBar(reportData?.payPeriodEndDate)} PayPeriod#${
+				reportData?.payPeriodNum
+			} Funding Report`}
 		>
 			{!reportData && <Loader />}Company Name: Acme Corporation Prepared By: Jane Doe Date Prepared:
 			<Stack mt={3}>

@@ -4,6 +4,7 @@ import ModalLayout from "components/ui/modal/ModalLayout";
 import NormalTextTitle from "components/ui/NormalTextTitle";
 import TextTitle from "components/ui/text/TextTitle";
 import React from "react";
+import { formatDateBar } from "utils/convertDate";
 
 const JournalsReportModal = ({
 	isOpen,
@@ -64,6 +65,9 @@ const JournalsReportModal = ({
 			textAlign={"center"}
 			fontSize="2xl"
 			isReport={true}
+			fileName={`${formatDateBar(reportData?.payPeriodEndDate)} PayPeriod#${
+				reportData?.payPeriodNum
+			} Journal Entry Report`}
 		>
 			{!reportData && <Loader />}
 			{reportData && (
