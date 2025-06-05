@@ -1,6 +1,6 @@
 import { Box, Container, Stack } from "@chakra-ui/react";
 
-const CenterBoxLayout = (props) => {
+const CenterBoxLayout = ({ spacing = "8", children }) => {
 	return (
 		<Box
 			bg={"var(--logo_bg)"}
@@ -32,7 +32,7 @@ const CenterBoxLayout = (props) => {
 					sm: "xl",
 				}}
 			>
-				<Stack spacing="8">{props.children}</Stack>
+				<Stack spacing={spacing}>{children}</Stack>
 			</Container>
 		</Box>
 	);

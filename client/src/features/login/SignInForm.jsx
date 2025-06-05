@@ -163,14 +163,15 @@ const SignInForm = ({ title, isMobile }) => {
 								</InputRightElement>
 							</InputGroup>
 						</FormControl>
+						{/* //checkbox rememberme */}
 						<Button isLoading={isLoading} type="submit" bg="var(--banner_bg)">
 							Login
 						</Button>
 					</Stack>
 				</form>
 				{!isMobile && (
-					<Button variant={"link"} textDecor={"underline"} onClick={showForgotPasswordPage}>
-						Forgot Password
+					<Button variant={"link"} onClick={showForgotPasswordPage}>
+						Forgot Password?
 					</Button>
 				)}
 				{error && (

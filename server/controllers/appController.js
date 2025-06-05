@@ -338,7 +338,7 @@ const forgotPassword = async (req, res) => {
 		});
 		if (!user) {
 			return res.status(404).json({
-				error: "Email not found! Please enter your registered email address.",
+				error: "Please enter the email you used to register.",
 			});
 		}
 
@@ -426,7 +426,7 @@ const forgotPassword = async (req, res) => {
 			);
 
 		return res.status(200).json({
-			message: "A password reset link has been sent to your email account",
+			message: "Please check your email inbox for a link to reset your password.",
 		});
 	} catch (error) {
 		res.status(400).json({ message: error.message });
