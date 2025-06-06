@@ -30,7 +30,7 @@ const MobilePayStub = ({ reportData, isOpen, onClose, title }) => {
 					/>
 					<ModalCloseButton sx={{ marginTop: "14px" }} />
 				</ModalHeader>
-				<ModalBody>
+				<ModalBody px={3} pt={0}>
 					<Box borderBottom="1px solid var(--calendar_border)">
 						<VStack align="start" spacing={4} w="full">
 							<EmployeeInfo

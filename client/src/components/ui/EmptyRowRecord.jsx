@@ -2,9 +2,9 @@ import { Progress, Td, Tr } from "@chakra-ui/react";
 import SkeletonLoader from "components/SkeletonLoader";
 import NormalTextTitle from "./NormalTextTitle";
 
-const EmptyRowRecord = ({ title = "No record found", data, colSpan, progress }) => (
+const EmptyRowRecord = ({ title = "No record found", px, data, colSpan, progress }) => (
 	<Tr>
-		<Td colSpan={colSpan}>
+		<Td px={px} colSpan={colSpan}>
 			{data?.length === 0 ? (
 				<NormalTextTitle size="sm" title={title} />
 			) : progress ? (

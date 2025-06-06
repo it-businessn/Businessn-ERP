@@ -30,9 +30,10 @@ const TableLayout = ({
 	autoScroll,
 	specifyPaddingCols,
 	css,
+	minH,
 }) => {
 	return (
-		<Box overflow="auto" maxH={height} w={w} css={css}>
+		<Box overflow="auto" minH={minH} maxH={height} w={w} css={css}>
 			<Table variant={variant} bg={bg} size={tableSize}>
 				<Thead position={position} top={top} zIndex={zIndex}>
 					<Tr display={inVisible && "none"}>

@@ -1,4 +1,4 @@
-import { Box, SimpleGrid, VStack } from "@chakra-ui/react";
+import { Box, HStack, SimpleGrid } from "@chakra-ui/react";
 
 import PrimaryButton from "components/ui/button/PrimaryButton";
 import BoxCard from "components/ui/card";
@@ -10,7 +10,7 @@ import WorkviewTable from "erp-modules/payroll/workview/paygroup-header-table/Wo
 import { useEffect, useState } from "react";
 import PayrollService from "services/PayrollService";
 import { getPayNum, isExtraPay, sortRecordsByDate } from "utils";
-import { dayMonthYear, formatDateRange } from "utils/convertDate";
+import { dayMonthYear, formatDateBar } from "utils/convertDate";
 import EmployeeTimeCard from "./EmployeeTimeCard";
 
 const LeftPane = ({ selectedUser, company, isMobile }) => {
@@ -39,20 +39,19 @@ const LeftPane = ({ selectedUser, company, isMobile }) => {
 
 	return (
 		<Box>
-			<SimpleGrid mb="1em" columns={{ base: 1 }} spacing="1em" color="var(--menu_item_color)">
+			<SimpleGrid
+				mb={{ base: "0.5em", md: "1em" }}
+				columns={{ base: 1 }}
+				spacing="1em"
+				color="var(--menu_item_color)"
+			>
 				<EmployeeTimeCard isMobile={isMobile} selectedUser={selectedUser} company={company} />
 			</SimpleGrid>
-			<SimpleGrid
-				mb={"1em"}
-				columns={{ base: 1, md: 1, lg: 2 }}
-				spacing="1em"
-				color={"var(--menu_item_color)"}
-				templateColumns={{ lg: "60% 40%" }}
-			>
-				<BoxCard>
+			{isMobile ? (
+				<>
 					<TextTitle title={"Earning Statement"} />
-					{isMobile ? (
-						empPayStub?.map(
+					<Box mt={"0.5em"} overflow="auto" height={"calc(100vh - 600px)"}>
+						{empPayStub?.map(
 							({
 								payPeriodNum,
 								_id,
@@ -62,14 +61,24 @@ const LeftPane = ({ selectedUser, company, isMobile }) => {
 								payPeriodStartDate,
 								payPeriodEndDate,
 							}) => (
-								<BoxCard mt={3} key={_id}>
-									<VStack alignItems="start">
-										<TextTitle
-											title={`Pay number: ${isExtraPay(payPeriodNum || payPeriod, isExtraRun)}`}
-										/>
-										<TextTitle title={`Pay date: ${dayMonthYear(payPeriodPayDate)}`} />
-										<TextTitle title={`Pay period-`} />
-										<TextTitle title={formatDateRange(payPeriodStartDate, payPeriodEndDate)} />
+								<BoxCard p="0.5em 1em" key={_id}>
+									<HStack alignItems="start" justify="space-between" spacing={0}>
+										<Box>
+											<TextTitle
+												size={"xs"}
+												title={`Pay number: ${isExtraPay(payPeriodNum || payPeriod, isExtraRun)}`}
+											/>
+											<TextTitle
+												size={"xs"}
+												title={`Pay date: ${dayMonthYear(payPeriodPayDate)}`}
+											/>
+											<TextTitle
+												size={"xs"}
+												title={`Pay period- ${formatDateBar(payPeriodStartDate)} - ${formatDateBar(
+													payPeriodEndDate,
+												)}`}
+											/>
+										</Box>
 										<PrimaryButton
 											size="xs"
 											name="View"
@@ -80,29 +89,39 @@ const LeftPane = ({ selectedUser, company, isMobile }) => {
 												)
 											}
 										/>
-									</VStack>
+									</HStack>
 								</BoxCard>
 							),
-						)
-					) : (
+						)}
+					</Box>
+				</>
+			) : (
+				<SimpleGrid
+					mb={"1em"}
+					mr={"1em"}
+					columns={{ base: 1, md: 1, lg: 2 }}
+					spacing="1em"
+					color={"var(--menu_item_color)"}
+					templateColumns={{ lg: "60% 40%" }}
+				>
+					<BoxCard>
+						<TextTitle title={"Earning Statement"} />
 						<WorkviewTable
 							isEarningTable
 							cols={EARNING_TABLE_COLS}
 							payGroupSchedule={empPayStub}
-							height="calc(100vh - 743px)"
+							height="calc(100vh - 715px)"
 							css={tabScrollCss}
 							viewLabel="View Paystub"
 							handleRegister={handleRegister}
 							textAlign={"center"}
 						/>
-					)}
-				</BoxCard>
-				{!isMobile && (
+					</BoxCard>
 					<BoxCard>
 						<TextTitle title="Year End Forms" />
 					</BoxCard>
-				)}
-			</SimpleGrid>
+				</SimpleGrid>
+			)}
 			{showReport && (
 				<PreviewReportsModal
 					isMobile={isMobile}

@@ -21,7 +21,14 @@ const RightPane = ({
 			id: 0,
 			type: "Tickets",
 			count,
-			name: <TicketHistory setCount={setCount} userId={selectedUser?.fullName} company={company} />,
+			name: (
+				<TicketHistory
+					height={"calc(100vh - 470px)"}
+					setCount={setCount}
+					userId={selectedUser?.fullName}
+					company={company}
+				/>
+			),
 		},
 		{
 			id: 1,

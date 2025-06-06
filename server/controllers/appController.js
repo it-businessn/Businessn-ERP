@@ -234,7 +234,6 @@ const login = async (req, res) => {
 		if (!existingCompanyUser) {
 			return res.status(500).json({ error: "User does not exist for the company" });
 		}
-		const match = await comparePassword(password, user.password);
 		const existingCompany = await findCompany("registration_number", companyId);
 		const empInfo = await EmployeeEmploymentInfo.findOne({
 			companyName: existingCompany.name,
@@ -245,8 +244,39 @@ const login = async (req, res) => {
 			password,
 			companyName: existingCompanyUser.name,
 		});
-		const profilePwdMatch = password === existingProfileInfo.password;
-		if (profilePwdMatch && !match) {
+		const profilePwdMatch = password === existingProfileInfo?.password;
+		if (user?.password) {
+			const match = await comparePassword(password, user?.password);
+			if (match) {
+				const accessToken = generateAccessToken({ id: _id, fullName });
+				const refreshToken = generateRefreshToken({ id: _id, fullName });
+
+				logUserLoginActivity(_id);
+				return res.json({
+					message: "Logged in successfully",
+					user: {
+						_id,
+						firstName,
+						lastName,
+						middleName,
+						fullName,
+						email,
+						role: empInfo?.employmentRole,
+						department: empInfo?.positions?.[0]?.employmentDepartment,
+						phoneNumber,
+						primaryAddress,
+						employmentType: empInfo?.employmentRole,
+						manager,
+						employeeId: empInfo?.employeeNo,
+						payrollStatus: empInfo?.payrollStatus,
+					},
+					existingCompanyUser,
+					accessToken,
+					refreshToken,
+				});
+			}
+		}
+		if (profilePwdMatch) {
 			const hashedPassword = await hashPassword(password);
 			await Employee.findByIdAndUpdate(
 				{ _id: user._id },
@@ -254,8 +284,6 @@ const login = async (req, res) => {
 					$set: { password: hashedPassword },
 				},
 			);
-		}
-		if (match || profilePwdMatch) {
 			const accessToken = generateAccessToken({ id: _id, fullName });
 			const refreshToken = generateRefreshToken({ id: _id, fullName });
 

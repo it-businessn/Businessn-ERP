@@ -9,7 +9,7 @@ import NoteDetails from "erp-modules/project-management/tickets/NoteDetails";
 import { useEffect, useRef, useState } from "react";
 import TicketService from "services/TicketService";
 
-const TicketHistory = ({ userId, company, setCount }) => {
+const TicketHistory = ({ userId, company, setCount, height = "calc(100vh - 533px)" }) => {
 	const [ticketData, setTicketData] = useState(null);
 	const [isLoading, setIsLoading] = useState(false);
 	const [openNote, setOpenNote] = useState(false);
@@ -32,7 +32,7 @@ const TicketHistory = ({ userId, company, setCount }) => {
 	}, [userId]);
 
 	return (
-		<Box maxH={"calc(100vh - 533px)"} mt={3} overflowY={"auto"} css={tabScrollCss}>
+		<Box maxH={height} mt={3} overflowY={"auto"} css={tabScrollCss}>
 			<List spacing={2}>
 				{isLoading ? (
 					<SkeletonLoader />
