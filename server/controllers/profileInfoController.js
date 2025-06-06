@@ -141,7 +141,6 @@ const addEmployeeProfileInfo = async (req, res) => {
 		province,
 		country,
 		postalCode,
-		password,
 	} = req.body;
 	try {
 		const data = {
@@ -153,7 +152,6 @@ const addEmployeeProfileInfo = async (req, res) => {
 			province,
 			postalCode,
 			country,
-			password,
 			firstName,
 			middleName,
 			lastName,
@@ -189,7 +187,6 @@ const addEmployeeProfileInfo = async (req, res) => {
 				businessPhoneNum,
 				emergencyPersonalEmail,
 				emergencyPersonalPhoneNum,
-				password,
 				firstName,
 				middleName,
 				lastName,
@@ -210,9 +207,6 @@ const addEmployeeProfileInfo = async (req, res) => {
 				email: personalEmail || businessEmail,
 				fullName: `${firstName} ${middleName} ${lastName}`,
 			};
-			if (password) {
-				newRecord.password = password;
-			}
 			const newEmployee = await addEmployee(companyName, newRecord);
 			profileInfoEmpId = newEmployee._id;
 		}
@@ -247,7 +241,6 @@ const addEmployeeProfileInfo = async (req, res) => {
 			province,
 			country,
 			postalCode,
-			password,
 		});
 		return res.status(201).json(newProfileInfo);
 	} catch (error) {
