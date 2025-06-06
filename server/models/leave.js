@@ -32,9 +32,7 @@ const employeeLeaveSchema = new Schema(
 		approverComment: String,
 		duration: Number,
 		leaveBalance: LeaveUtilization,
-		leaveType: {
-			type: String,
-		},
+		leaveType: String,
 		accruedLeaves: Number,
 		usedLeaves: Number,
 		remainingLeaves: Number,

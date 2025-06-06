@@ -23,16 +23,12 @@ const employeeSchema = new mongoose.Schema({
 		postalCode: String,
 		country: String,
 	},
-	firstName: {
-		type: String,
-	},
+	firstName: String,
 	middleName: String,
 	lastName: String,
 	fullName: String,
 	email: { type: String, unique: true },
-	password: {
-		type: String,
-	},
+	password: String,
 	position: String,
 	isActive: Boolean,
 	lastLogin: String,

@@ -7,9 +7,7 @@ const payrollEmployeeSchema = new Schema(
 			type: String,
 			ref: "Employee",
 		},
-		employeeName: {
-			type: String,
-		},
+		employeeName: String,
 		employeeDepartment: {
 			type: String,
 			required: false,
