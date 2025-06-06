@@ -15,7 +15,6 @@ const {
 } = require("../services/data");
 const { generateAccessToken, generateRefreshToken, verifyToken } = require("../middleware/auth");
 const { findPermission } = require("./permissionController");
-const EmployeeProfileInfo = require("../models/EmployeeProfileInfo");
 const EmployeeEmploymentInfo = require("../models/EmployeeEmploymentInfo");
 
 const findCompany = async (key, value) => await Company.findOne({ [key]: value });
@@ -235,21 +234,13 @@ const login = async (req, res) => {
 			return res.status(500).json({ error: "User does not exist for the company" });
 		}
 		const match = await comparePassword(password, user.password);
-		const existingProfileInfo = await EmployeeProfileInfo.findOne({
-			password,
-			companyName: existingCompanyUser.name,
-		});
 		const existingCompany = await findCompany("registration_number", companyId);
 		const empInfo = await EmployeeEmploymentInfo.findOne({
 			companyName: existingCompany.name,
 			empId: user._id,
 		}).select("positions employeeNo payrollStatus employmentRole");
 
-		if (match || password === existingProfileInfo?.password) {
-			if (password === existingProfileInfo?.password) {
-				user.password = await hashPassword(existingProfileInfo?.password);
-				await user.save();
-			}
+		if (match) {
 			const accessToken = generateAccessToken({ id: _id, fullName });
 			const refreshToken = generateRefreshToken({ id: _id, fullName });
 

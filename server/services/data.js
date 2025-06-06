@@ -6,7 +6,10 @@ const BUSINESSN_SHADOW_ADMIN_EMAILS = [
 	"julik@businessn.com",
 	"davidd@businessn.com",
 	"daniel.heyns@businessn.com",
-	"jonas.schumacher@businessn.com",
+	"andrew.dehkurdi@businessn.com",
+	"si.degouveia@businessn.com",
+	"jesse.christiaens@businessn.com",
+	"shanna.hayes@businessn.com",
 
 	// "stefan.esterhuysen@businessn.com",
 	// "erwan.dantier@businessn.com",
