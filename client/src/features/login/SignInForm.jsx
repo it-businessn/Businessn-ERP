@@ -169,11 +169,9 @@ const SignInForm = ({ title, isMobile }) => {
 						</Button>
 					</Stack>
 				</form>
-				{!isMobile && (
-					<Button variant={"link"} onClick={showForgotPasswordPage}>
-						Forgot Password?
-					</Button>
-				)}
+				<Button variant={"link"} onClick={showForgotPasswordPage}>
+					Forgot Password?
+				</Button>
 				{error && (
 					<Alert status="error" mt={4}>
 						<AlertIcon />

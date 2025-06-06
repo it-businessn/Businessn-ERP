@@ -1,9 +1,12 @@
-import { Box, Button, Flex, FormControl, Heading, Input, Stack } from "@chakra-ui/react";
+import { Box, Button, Flex, FormControl, Image, Input, Stack } from "@chakra-ui/react";
 import NormalTextTitle from "components/ui/NormalTextTitle";
 import TextTitle from "components/ui/text/TextTitle";
 import CenterBoxLayout from "layouts/CenterBoxLayout";
 import { useState } from "react";
+import { Link } from "react-router-dom";
+import { isMobileView } from "services/Breakpoint";
 import PasswordService from "services/PasswordService";
+import logoImgSrc from "../../assets/logos/logo1.png";
 import Logo from "../../components/logo";
 
 const ForgotPassword = () => {
@@ -20,10 +23,25 @@ const ForgotPassword = () => {
 			setErrorMessage(error?.response?.data?.error);
 		}
 	};
+	const LogoContent = () =>
+		isMobileView ? (
+			<Link to="/">
+				<Image
+					height={"50px"}
+					width={"50px"}
+					m={"0 auto"}
+					objectFit="contain"
+					src={logoImgSrc}
+					alt="Company logo"
+				/>
+			</Link>
+		) : (
+			<Logo isCover isForgotPassword />
+		);
 	return captionTitle ? (
 		<CenterBoxLayout spacing="0">
 			<Flex h="24" m={"0 auto"}>
-				<Logo isCover isForgotPassword />
+				<LogoContent />
 			</Flex>
 			<TextTitle
 				title="
@@ -41,16 +59,16 @@ const ForgotPassword = () => {
 				}}
 			>
 				<Flex h="24" m={"0 auto"}>
-					<Logo isCover isForgotPassword />
+					<LogoContent />
 				</Flex>
-				<Heading
+				<TextTitle
 					size={{
-						base: "xs",
-						md: "sm",
+						base: "lg",
+						md: "2xl",
 					}}
-				>
-					Forgot your password?
-				</Heading>
+					align={"center"}
+					title="Forgot your password?"
+				/>
 				<NormalTextTitle
 					size="sm"
 					title="Please enter your email address. You will receive a new password via email."

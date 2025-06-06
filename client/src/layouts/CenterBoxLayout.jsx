@@ -15,8 +15,9 @@ const CenterBoxLayout = ({ spacing = "8", children }) => {
 			<Container
 				bg={"var(--main_color)"}
 				maxW="md"
+				mx={{ base: "3em", md: "auto" }}
 				py={{
-					base: "0",
+					base: "10",
 					sm: "8",
 				}}
 				px={{
@@ -27,10 +28,7 @@ const CenterBoxLayout = ({ spacing = "8", children }) => {
 					base: "none",
 					sm: "xl",
 				}}
-				borderRadius={{
-					base: "none",
-					sm: "xl",
-				}}
+				borderRadius={"lg"}
 			>
 				<Stack spacing={spacing}>{children}</Stack>
 			</Container>

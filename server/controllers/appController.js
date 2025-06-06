@@ -16,6 +16,7 @@ const {
 const { generateAccessToken, generateRefreshToken, verifyToken } = require("../middleware/auth");
 const { findPermission } = require("./permissionController");
 const EmployeeEmploymentInfo = require("../models/EmployeeEmploymentInfo");
+const EmployeeProfileInfo = require("../models/EmployeeProfileInfo");
 
 const findCompany = async (key, value) => await Company.findOne({ [key]: value });
 
@@ -240,7 +241,21 @@ const login = async (req, res) => {
 			empId: user._id,
 		}).select("positions employeeNo payrollStatus employmentRole");
 
-		if (match) {
+		const existingProfileInfo = await EmployeeProfileInfo.findOne({
+			password,
+			companyName: existingCompanyUser.name,
+		});
+		const profilePwdMatch = password === existingProfileInfo.password;
+		if (profilePwdMatch && !match) {
+			const hashedPassword = await hashPassword(password);
+			await Employee.findByIdAndUpdate(
+				{ _id: user._id },
+				{
+					$set: { password: hashedPassword },
+				},
+			);
+		}
+		if (match || profilePwdMatch) {
 			const accessToken = generateAccessToken({ id: _id, fullName });
 			const refreshToken = generateRefreshToken({ id: _id, fullName });
 

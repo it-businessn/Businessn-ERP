@@ -27,7 +27,7 @@ const Logo = ({
 			<Image ml={ml} pl={pl} objectFit="cover" src={logoImgSrc} alt="Company logo" width={width} />
 		</Link>
 	) : (
-		!isMobile && (
+		(!isMobile || isForgotPassword) && (
 			<Link to="/" style={linkStyle}>
 				<Image
 					height={imageHeight}
