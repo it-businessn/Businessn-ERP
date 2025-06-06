@@ -16,7 +16,7 @@ import { CgNotes } from "react-icons/cg";
 import { FaChevronDown, FaChevronUp } from "react-icons/fa";
 import { GoTasklist } from "react-icons/go";
 import { ToWords } from "to-words";
-import { getMomentDate, isFutureDate, TODAY_DATE } from "./convertDate";
+import { getMomentDate, isFutureDate, TODAY_DATE, TOMORROW } from "./convertDate";
 
 export const isSettled = (status) => status === "Settled";
 
@@ -422,11 +422,8 @@ export const getPayrollStatus = (data, prevRecordEndDate) => {
 	const isEndDatePassed = targetEndDate.isBefore(TODAY_DATE, "day");
 	const isPayDateInFuture = targetPayDate.isAfter(TODAY_DATE, "day");
 	const isPayDateToday = targetPayDate.isSameOrBefore(TODAY_DATE, "day");
-
-	// const isProcessingDateTomorrow = targetProcessingDate.isBefore(
-	// 	today.clone().add(1, "day"),
-	// 	"day",
-	// );
+	const isDueToday = targetProcessingDate.isSame(TODAY_DATE, "day");
+	const isDueTomorrow = targetProcessingDate.isSame(TOMORROW, "day");
 
 	const isOverdue = isFutureDate(targetProcessingDate);
 
@@ -438,12 +435,30 @@ export const getPayrollStatus = (data, prevRecordEndDate) => {
 			isViewAction: false,
 			isDisabledStatus: false,
 		};
+	} else if (!data?.isProcessed && isDueToday) {
+		return {
+			name: "Due Today",
+			color: "var(--incorrect_ans)",
+			bg: generateLighterShade("#a9201b", 0.8),
+			isViewAction: false,
+			isDisabledStatus: false,
+			isDisabledAction: !isEndDatePassed,
+		};
+	} else if (!data?.isProcessed && isDueTomorrow) {
+		return {
+			name: "Due Tomorrow",
+			color: "var(--incorrect_ans)",
+			bg: generateLighterShade("#a9201b", 0.8),
+			isViewAction: false,
+			isDisabledStatus: false,
+			isDisabledAction: !isEndDatePassed,
+		};
 	} else if (
 		!data?.isProcessed &&
 		(isEndDatePassed || moment.utc().isBetween(targetStartDate, targetEndDate, "day", "[]"))
 	) {
 		return {
-			name: "Pending",
+			name: "In Progress",
 			color: "var(--pending)",
 			bg: generateLighterShade("#d68e67", 0.8),
 			isDisabledStatus: false,

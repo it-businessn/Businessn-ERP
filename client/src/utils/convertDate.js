@@ -12,6 +12,7 @@ export const timeSpan = (time) => {
 };
 
 export const TODAY_DATE = moment();
+export const TOMORROW = moment().add(1, "day");
 export const CURRENT_YEAR = moment().year();
 
 export const isFutureDate = (date) => TODAY_DATE.isAfter(date, "day");
