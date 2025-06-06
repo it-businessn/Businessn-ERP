@@ -46,7 +46,7 @@ const useEmployees = (
 				console.error(error);
 			}
 		};
-		if (selectedPayGroupOption) fetchAllEmployees();
+		if (selectedPayGroupOption || isRefresh) fetchAllEmployees();
 	}, [isRefresh, company, isPayrollState, selectedPayGroupOption]);
 
 	useEffect(() => {

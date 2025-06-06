@@ -67,10 +67,6 @@ const EmployeeListView = () => {
 
 	const navigate = useNavigate();
 
-	useEffect(() => {
-		setIsRefresh(showOnboard);
-	}, [showOnboard]);
-
 	const handleClick = (val) => {
 		if (val === "terminate") {
 			const empPath = `${payrollEmployeePath}/info/${loggedInUser._id}/3`;
@@ -97,11 +93,6 @@ const EmployeeListView = () => {
 		if (value !== "") {
 			setSelectedPayGroupOption(value);
 		}
-	};
-
-	const handleCloseModal = () => {
-		closeOnboard();
-		setIsRefresh(true); // Trigger a refresh when the modal is closed
 	};
 
 	return (
@@ -239,7 +230,13 @@ const EmployeeListView = () => {
 				<EmployeeList employees={filteredEmployees} />
 			</Box>
 			{/* New Onboarding Modal */}
-			<NewEmployeeOnboardingModal isOpen={showOnboard} onClose={handleCloseModal} />
+			{showOnboard && (
+				<NewEmployeeOnboardingModal
+					setIsRefresh={setIsRefresh}
+					isOpen={showOnboard}
+					onClose={closeOnboard}
+				/>
+			)}
 			{selectEmpList && (
 				<SendEmailList
 					emailType={emailType}
