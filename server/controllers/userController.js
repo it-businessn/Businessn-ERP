@@ -35,6 +35,23 @@ const getPayrollInActiveEmployees = async (companyName, deptName, selectedPayGro
 	return result;
 };
 
+const getPayrollTerminatedEmployees = async (companyName, deptName, selectedPayGroupOption) => {
+	let result = await findEmployee({
+		payrollStatus: "Payroll Terminated",
+		companyName,
+		employmentRole: { $ne: ROLES.SHADOW_ADMIN },
+	});
+	if (selectedPayGroupOption) {
+		result = result?.filter((emp) =>
+			emp?.positions?.find((_) => _.employmentPayGroup === selectedPayGroupOption),
+		);
+	}
+	if (deptName && deptName !== "null") {
+		result = result?.filter((emp) => emp?.positions?.[0]?.employmentDepartment === deptName);
+	}
+	return result;
+};
+
 const findEmployee = async (data) => {
 	let result = await EmployeeEmploymentInfo.find(data)
 		.populate({
@@ -123,19 +140,15 @@ const getPayrollInActiveCompanyEmployees = async (req, res) => {
 	}
 };
 
-// const getPayrollTerminatedCompanyEmployees = async (req, res) => {
-// 	const { companyName, deptName, payGroup } = req.params;
-// 	try {
-// 		const result = await findEmployee({
-// 			payrollStatus: { $ne: "Payroll Active" },
-// 			companyName,
-// 			employmentRole: { $ne: ROLES.SHADOW_ADMIN },
-// 		});
-// 		res.status(200).json(result);
-// 	} catch (error) {
-// 		res.status(404).json({ error: error.message });
-// 	}
-// };
+const getPayrollTerminatedCompanyEmployees = async (req, res) => {
+	const { companyName, deptName, payGroup } = req.params;
+	try {
+		const result = await getPayrollTerminatedEmployees(companyName, deptName, payGroup);
+		res.status(200).json(result);
+	} catch (error) {
+		res.status(404).json({ error: error.message });
+	}
+};
 
 const getCompanyUsers = async (req, res) => {
 	const { companyName } = req.params;
@@ -711,7 +724,7 @@ module.exports = {
 	getPayrollActiveCompanyEmployees,
 	getPayrollActiveCompanyEmployeesCount,
 	getPayrollInActiveCompanyEmployees,
-	// getPayrollTerminatedCompanyEmployees,
+	getPayrollTerminatedCompanyEmployees,
 	getAllSalesAgentsList,
 	sendMailCreds,
 	sendMailPaystub,

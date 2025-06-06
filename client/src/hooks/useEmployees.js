@@ -11,10 +11,12 @@ const useEmployees = (
 ) => {
 	const [employees, setEmployees] = useState(null);
 	const [filteredEmployees, setFilteredEmployees] = useState(null);
-	const isPayrollActiveState = isPayrollState === true || isPayrollState?.isPayrollActive;
 
-	const isPayrollInActiveState = isPayrollState?.isPayrollInactive;
-	const isPayrollTerminatedState = isPayrollState?.isPayrollTerminated;
+	const isPayrollActiveState =
+		isPayrollState === "Active" || isPayrollState === true || isPayrollState?.isPayrollActive;
+	const isPayrollInActiveState = isPayrollState === "Inactive" || isPayrollState?.isPayrollInactive;
+	const isPayrollTerminatedState =
+		isPayrollState === "Terminated" || isPayrollState?.isPayrollTerminated;
 
 	useEffect(() => {
 		const fetchAllEmployees = async () => {
@@ -25,14 +27,19 @@ const useEmployees = (
 							deptName,
 							selectedPayGroupOption,
 					  )
-					: isPayrollTerminatedState
+					: isPayrollInActiveState
 					? await UserService.getPayrollInActiveCompanyUsers(
 							company,
 							deptName,
 							selectedPayGroupOption,
 					  )
+					: isPayrollTerminatedState
+					? await UserService.getPayrollTerminatedCompanyUsers(
+							company,
+							deptName,
+							selectedPayGroupOption,
+					  )
 					: await UserService.getAllCompanyUsers(company, deptName, selectedPayGroupOption);
-
 				setEmployees(data);
 				setFilteredEmployees(data);
 			} catch (error) {

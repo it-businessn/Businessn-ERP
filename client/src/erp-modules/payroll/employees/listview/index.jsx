@@ -1,6 +1,5 @@
 import {
 	Box,
-	Checkbox,
 	Flex,
 	HStack,
 	Input,
@@ -10,6 +9,7 @@ import {
 	useDisclosure,
 } from "@chakra-ui/react";
 import LeftIconButton from "components/ui/button/LeftIconButton";
+import RadioFormControl from "components/ui/form/RadioFormControl";
 import { ROLES } from "constant";
 import NewEmployeeOnboardingModal from "erp-modules/payroll/onboard-user/NewEmployeeOnboardingModal";
 import PayrollActions from "erp-modules/payroll/workview/paygroup-header-table/PayrollActions";
@@ -30,12 +30,12 @@ const EmployeeListView = () => {
 	const { company } = useCompany(LocalStorageService.getItem("selectedCompany"));
 	const { isOpen: showOnboard, onOpen: openOnboard, onClose: closeOnboard } = useDisclosure();
 
-	const [formData, setFormData] = useState({
+	const [payrollState, setPayrollState] = useState({
 		isPayrollActive: true,
 		isPayrollInactive: false,
 		isPayrollTerminated: false,
 	});
-
+	const [payrollStatus, setPayrollStatus] = useState("Active");
 	const { hasMultiPaygroups, selectedPayGroupOption, setSelectedPayGroupOption, payGroups } =
 		usePaygroup(company, false);
 
@@ -45,7 +45,7 @@ const EmployeeListView = () => {
 	const { employees, filteredEmployees, setFilteredEmployees } = useEmployees(
 		isRefresh,
 		company,
-		formData,
+		payrollStatus,
 		null,
 		deptName,
 		selectedPayGroupOption,
@@ -181,12 +181,12 @@ const EmployeeListView = () => {
 						px={4}
 					/>
 					<HStack spacing={6} divider={<Box w="1px" h="20px" bg="gray.200" />}>
-						<HStack spacing={4}>
+						{/* <HStack spacing={4}>
 							<Checkbox
 								colorScheme={"facebook"}
-								isChecked={formData.isPayrollActive}
+								isChecked={payrollState.isPayrollActive}
 								onChange={(e) =>
-									setFormData((prevData) => ({
+									setPayrollState((prevData) => ({
 										...prevData,
 										isPayrollActive: e.target.checked,
 									}))
@@ -196,9 +196,9 @@ const EmployeeListView = () => {
 							</Checkbox>
 							<Checkbox
 								colorScheme={"facebook"}
-								isChecked={formData.isPayrollInactive}
+								isChecked={payrollState.isPayrollInactive}
 								onChange={(e) =>
-									setFormData((prevData) => ({
+									setPayrollState((prevData) => ({
 										...prevData,
 										isPayrollInactive: e.target.checked,
 									}))
@@ -206,19 +206,34 @@ const EmployeeListView = () => {
 							>
 								Inactive Employees
 							</Checkbox>
+							<Checkbox
+								colorScheme={"facebook"}
+								isChecked={payrollState.isPayrollTerminated}
+								onChange={(e) =>
+									setPayrollState((prevData) => ({
+										...prevData,
+										isPayrollTerminated: e.target.checked,
+									}))
+								}
+							>
+								Terminated Employees
+							</Checkbox>
+						</HStack> */}
+						<HStack spacing={4}>
+							<RadioFormControl
+								size="sm"
+								handleChange={(value) => {
+									setPayrollStatus(value);
+								}}
+								defaultVal="Active"
+								options={[
+									{ name: "Active Employees", value: "Active" },
+									{ name: "Inactive Employees", value: "Inactive" },
+									{ name: "Terminated Employees", value: "Terminated" },
+									{ name: "All", value: "All" },
+								]}
+							/>
 						</HStack>
-						<Checkbox
-							colorScheme={"facebook"}
-							isChecked={formData.isPayrollTerminated}
-							onChange={(e) =>
-								setFormData((prevData) => ({
-									...prevData,
-									isPayrollTerminated: e.target.checked,
-								}))
-							}
-						>
-							Show Terminated Employees
-						</Checkbox>
 					</HStack>
 				</Flex>
 				<EmployeeList employees={filteredEmployees} />

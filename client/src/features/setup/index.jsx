@@ -1,30 +1,30 @@
 import TabsButtonGroup from "components/ui/tab/TabsButtonGroup";
-import { ROLES } from "constant";
 import useCompany from "hooks/useCompany";
-import useEmployees from "hooks/useEmployees";
-import usePaygroup from "hooks/usePaygroup";
 import PageLayout from "layouts/PageLayout";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import LocalStorageService from "services/LocalStorageService";
+import UserService from "services/UserService";
 import CompanyPanel from "./company/CompanyPanel";
 import PermissionsPanel from "./permisssions/PermissionsPanel";
 import UsersPanel from "./users/UsersPanel";
 
 const Setup = () => {
-	const loggedInUser = LocalStorageService.getItem("user");
-	const deptName = loggedInUser?.role === ROLES.MANAGER ? loggedInUser?.department : null;
-	const [isRefresh, setIsRefresh] = useState(false);
 	const { company } = useCompany(LocalStorageService.getItem("selectedCompany"));
-	const { selectedPayGroupOption } = usePaygroup(company, false);
+	const [employees, setEmployees] = useState(null);
+	const [filteredEmployees, setFilteredEmployees] = useState(null);
 
-	const { employees, filteredEmployees, setFilteredEmployees } = useEmployees(
-		isRefresh,
-		company,
-		null,
-		null,
-		deptName,
-		selectedPayGroupOption,
-	);
+	useEffect(() => {
+		const fetchAllEmployees = async () => {
+			try {
+				const { data } = await UserService.getCompanyUsers(company);
+				setEmployees(data);
+				setFilteredEmployees(data);
+			} catch (error) {
+				console.error(error);
+			}
+		};
+		fetchAllEmployees();
+	}, [company]);
 
 	const SETUP_LIST = [
 		{
@@ -36,7 +36,7 @@ const Setup = () => {
 					employees={employees}
 					setFilteredEmployees={setFilteredEmployees}
 					filteredEmployees={filteredEmployees}
-					setIsRefresh={setIsRefresh}
+					// setIsRefresh={setIsRefresh}
 				/>
 			),
 		},

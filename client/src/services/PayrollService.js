@@ -49,6 +49,10 @@ const PayrollService = {
 		return apiService.post("/payroll/payInfo", data);
 	},
 
+	async getEmpProfileUsers(company) {
+		return apiService.get(`/payroll/profileInfo/${company}`);
+	},
+
 	async getEmployeeProfileInfo(company, empId) {
 		return apiService.get(`/payroll/profileInfo/${company}/${empId}`);
 	},
