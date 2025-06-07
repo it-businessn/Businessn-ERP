@@ -122,7 +122,7 @@ export const getClockInTimeFormat = (timestamp) => {
 };
 
 export const getTimeFormat = (timestamp, notDevice) => {
-	let time = moment(timestamp);
+	const time = moment.utc(timestamp);
 
 	if (time.format("HH") <= "16") {
 		// console.log("here", timestamp, time.format("HH"), time.format("HH:mm"));
