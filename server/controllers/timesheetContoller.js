@@ -280,7 +280,7 @@ const calcTotalWorkedHours = (clockIn, clockOut) => {
 	const fixedTime = totalTime.toFixed(2);
 
 	if (fixedTime.endsWith(".99")) return Math.round(totalTime);
-	if (fixedTime.endsWith(".01")) return Math.ceil(totalTime);
+	if (fixedTime.endsWith(".01")) return Math.floor(totalTime);
 
 	return fixedTime;
 };
