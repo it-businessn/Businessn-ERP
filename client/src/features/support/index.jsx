@@ -54,12 +54,15 @@ const Support = () => {
 		try {
 			const { data } = await TicketService.addSupportTicket(formData);
 			toast({
-				title: "Support ticket created successfully!",
+				title: "Ticket submitted!",
+				description: "Your support request has been sent successfully.",
 				status: "success",
-				duration: 1000,
+				duration: 2000,
 				isClosable: true,
 			});
-			handleRedirect();
+			setTimeout(() => {
+				handleRedirect();
+			}, 2000);
 		} catch (error) {
 			toast({
 				title: "Something went wrong.",
