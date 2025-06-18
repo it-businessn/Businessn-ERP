@@ -1,100 +1,80 @@
-import { SimpleGrid, useToast } from "@chakra-ui/react";
+import {
+	Box,
+	Flex,
+	FormControl,
+	FormLabel,
+	Input,
+	Stack,
+	Step,
+	StepIcon,
+	StepIndicator,
+	StepNumber,
+	Stepper,
+	StepSeparator,
+	StepStatus,
+	StepTitle,
+} from "@chakra-ui/react";
 import BoxCard from "components/ui/card";
-import VerticalStepper from "components/ui/VerticalStepper";
-import StepContent from "erp-modules/payroll/employees/pageview/step-content";
-import Record from "erp-modules/payroll/employees/pageview/step-content/Record";
-import { useEffect, useState } from "react";
-import { useBreakpointValue } from "services/Breakpoint";
-import LocalStorageService from "services/LocalStorageService";
-import TicketService from "services/TicketService";
+import TextTitle from "components/ui/text/TextTitle";
+import { tabPanelStyleCss, tabScrollCss } from "erp-modules/payroll/onboard-user/customInfo";
 
-const CompanyInfo = ({ id, handleNext }) => {
-	const { isMobile, isIpad } = useBreakpointValue();
-	const COMPANY_INFO = [
-		{
-			type: "sfsgdsgdsgdsg26",
-			params: [
-				{ name: "Company Name", param_key: "companyName", mandatory: true },
-				{ name: "Client ID", param_key: "clientId", mandatory: true },
-			],
-		},
-	];
-	const [formData, setFormData] = useState({
-		companyName: "",
-		clientId: "",
-	});
-	const [isLoading, setIsLoading] = useState(false);
-	const [isSaveDisabled, setIsSaveDisabled] = useState(true);
-
-	useEffect(() => {
-		if (formData?.companyName !== "" && formData?.clientId !== "") {
-			setIsSaveDisabled(false);
-		}
-	}, [formData]);
-
-	const toast = useToast();
-
-	const handleSubmit = async () => {
-		setIsLoading(true);
-		try {
-			const { data } = await TicketService.addSupportTicket(formData);
-			LocalStorageService.setItem("ticketId", data._id);
-			setIsLoading(false);
-			toast({
-				title: "Company info added successfully.",
-				status: "success",
-				duration: 1000,
-				isClosable: true,
-			});
-		} catch (error) {}
+const CompanyInfo = ({ formData, setFormData }) => {
+	const handleChange = (section, field, value) => {
+		setFormData({
+			...formData,
+			[section]: {
+				...formData[section],
+				[field]: value,
+			},
+		});
 	};
-
-	const steps = [
-		{
-			title: "Company Information",
-			content: (
-				<Record
-					handleConfirm={() => ""}
-					formData={formData}
-					setFormData={setFormData}
-					title="Company Information"
-					config={COMPANY_INFO}
-					isLoading={isLoading}
-					handleSubmit={handleSubmit}
-					isDisabled={isSaveDisabled}
-				/>
-			),
-		},
-	];
-	const [currentStep, setCurrentStep] = useState(0);
-	const goToNextStep = (index) => {
-		setCurrentStep(index);
-	};
-
 	return (
-		<SimpleGrid
-			columns={{ base: 1, md: 1, lg: 2 }}
-			spacing="4"
-			mr="4"
-			templateColumns={{ lg: "20% 80%" }}
-		>
-			{isMobile || isIpad ? (
-				<></>
-			) : (
-				<BoxCard>
-					<VerticalStepper
-						hideProgress
-						steps={steps}
-						currentStep={currentStep}
-						handleClick={goToNextStep}
-						id={id}
-						handleNext={handleNext}
-					/>
-				</BoxCard>
-			)}
-
-			<StepContent currentStep={currentStep} steps={steps} h={(isMobile || isIpad) && "auto"} />
-		</SimpleGrid>
+		<Flex height="100%">
+			<Box p={6} borderRight="1px solid" borderColor="gray.200" flex={0.2} bg="gray.50">
+				<Stepper index={0} orientation="vertical" gap={8} sx={tabPanelStyleCss}>
+					<Step cursor="pointer" py={2}>
+						<StepIndicator>
+							<StepStatus
+								complete={<StepIcon fontSize="1.2em" color="white" bg={"var(--banner_bg)"} />}
+								incomplete={<StepNumber fontSize="1.1em" color={"var(--banner_bg)"} />}
+								active={<StepNumber fontSize="1.1em" color="white" bg={"var(--banner_bg)"} />}
+							/>
+						</StepIndicator>
+						<Box ml={3} whiteSpace="wrap">
+							<StepTitle fontWeight={"bold"} mb={1}>
+								Company Info
+							</StepTitle>
+						</Box>
+						<StepSeparator />
+					</Step>
+				</Stepper>
+			</Box>
+			<Box flex={0.5} overflowY="auto" css={tabScrollCss}>
+				<Stack spacing={3} p={5}>
+					<TextTitle size="xl" title="Company Information" />
+					<BoxCard p={2} border="1px solid var(--lead_cards_border)">
+						<FormControl isRequired>
+							<FormLabel size="sm">Company Name</FormLabel>
+							<Input
+								size="sm"
+								value={formData.companyInfo.companyName || ""}
+								onChange={(e) => handleChange("companyInfo", "companyName", e.target.value)}
+								placeholder="Please enter company name"
+							/>
+						</FormControl>
+						<FormControl isRequired>
+							<FormLabel size="sm">Client ID</FormLabel>
+							<Input
+								size="sm"
+								value={formData.companyInfo.clientId || ""}
+								onChange={(e) => handleChange("companyInfo", "clientId", e.target.value)}
+								placeholder="Enter client ID"
+							/>
+						</FormControl>
+					</BoxCard>
+				</Stack>
+			</Box>
+		</Flex>
 	);
 };
 

@@ -1,119 +1,124 @@
-import { SimpleGrid, useToast } from "@chakra-ui/react";
+import {
+	Box,
+	Flex,
+	FormControl,
+	FormLabel,
+	Input,
+	Stack,
+	Step,
+	StepIcon,
+	StepIndicator,
+	StepNumber,
+	Stepper,
+	StepSeparator,
+	StepStatus,
+	StepTitle,
+} from "@chakra-ui/react";
 import BoxCard from "components/ui/card";
-import VerticalStepper from "components/ui/VerticalStepper";
-import StepContent from "erp-modules/payroll/employees/pageview/step-content";
-import Record from "erp-modules/payroll/employees/pageview/step-content/Record";
-import { useEffect, useState } from "react";
-import { useBreakpointValue } from "services/Breakpoint";
-import LocalStorageService from "services/LocalStorageService";
-import TicketService from "services/TicketService";
+import TextTitle from "components/ui/text/TextTitle";
+import { tabPanelStyleCss, tabScrollCss } from "erp-modules/payroll/onboard-user/customInfo";
 
-const ContactInfo = ({ id, handleNext, handlePrev }) => {
-	const { isMobile, isIpad } = useBreakpointValue();
-	const CONTACT_INFO = [
-		{
-			type: "sfsgdsgdsgdsg26",
-			params: [
-				{ name: "Your First Name", param_key: "clientFirstName", mandatory: true },
-				{ name: "Your Last Name", param_key: "clientLastName", mandatory: true },
-				{ name: "Email", param_key: "clientEmail", mandatory: true },
-				{ name: "Phone Number", param_key: "clientPhoneNumber", mandatory: true },
-				{
-					name: "Preferred method of contact",
-					param_key: "clientModeOfContact",
-					control: "radio",
-					options: ["Email", "Phone Number"],
-					mandatory: true,
-				},
-			],
-		},
-	];
-	const ticketId = LocalStorageService.getItem("ticketId");
-
-	const [formData, setFormData] = useState({
-		_id: ticketId,
-		clientFirstName: "",
-		clientLastName: "",
-		clientEmail: "",
-		clientPhoneNumber: "",
-		clientModeOfContact: "",
-	});
-	const [isLoading, setIsLoading] = useState(false);
-	const [isSaveDisabled, setIsSaveDisabled] = useState(true);
-
-	useEffect(() => {
-		if (
-			formData?.clientFirstName !== "" &&
-			formData?.clientLastName !== "" &&
-			formData?.clientEmail !== "" &&
-			formData?.clientPhoneNumber !== "" &&
-			formData?.clientModeOfContact !== ""
-		) {
-			setIsSaveDisabled(false);
-		}
-	}, [formData]);
-
-	const toast = useToast();
-
-	const handleSubmit = async () => {
-		setIsLoading(true);
-		try {
-			await TicketService.updateInfo(formData, formData?._id);
-			setIsLoading(false);
-			toast({
-				title: "Contact info added successfully.",
-				status: "success",
-				duration: 1000,
-				isClosable: true,
-			});
-		} catch (error) {}
-	};
-
-	const steps = [
-		{
-			title: "Contact Information",
-			content: (
-				<Record
-					handleConfirm={() => ""}
-					formData={formData}
-					setFormData={setFormData}
-					title="Contact Information"
-					config={CONTACT_INFO}
-					isLoading={isLoading}
-					handleSubmit={handleSubmit}
-					isDisabled={isSaveDisabled}
-				/>
-			),
-		},
-	];
-	const [currentStep, setCurrentStep] = useState(0);
-	const goToNextStep = (index) => {
-		setCurrentStep(index);
+const ContactInfo = ({ formData, setFormData }) => {
+	const handleChange = (section, field, value) => {
+		setFormData({
+			...formData,
+			[section]: {
+				...formData[section],
+				[field]: value,
+			},
+		});
 	};
 	return (
-		<SimpleGrid
-			columns={{ base: 1, md: 1, lg: 2 }}
-			spacing="4"
-			mr="4"
-			templateColumns={{ lg: "20% 80%" }}
-		>
-			{isMobile || isIpad ? (
-				<></>
-			) : (
-				<BoxCard>
-					<VerticalStepper
-						hideProgress
-						steps={steps}
-						currentStep={currentStep}
-						handleClick={goToNextStep}
-						id={id}
-						handleNext={handleNext}
-						handlePrev={handlePrev}
-					/>
-				</BoxCard>
-			)}
-			<StepContent currentStep={currentStep} steps={steps} h={(isMobile || isIpad) && "auto"} />
-		</SimpleGrid>
+		<Flex height="100%">
+			<Box p={6} borderRight="1px solid" borderColor="gray.200" flex={0.2} bg="gray.50">
+				<Stepper index={0} orientation="vertical" gap={8} sx={tabPanelStyleCss}>
+					<Step cursor="pointer" py={2}>
+						<StepIndicator>
+							<StepStatus
+								complete={<StepIcon fontSize="1.2em" color="white" bg={"var(--banner_bg)"} />}
+								incomplete={<StepNumber fontSize="1.1em" color={"var(--banner_bg)"} />}
+								active={<StepNumber fontSize="1.1em" color="white" bg={"var(--banner_bg)"} />}
+							/>
+						</StepIndicator>
+						<Box whiteSpace="wrap" ml={3}>
+							<StepTitle fontWeight={"bold"} mb={1}>
+								Contact Info
+							</StepTitle>
+						</Box>
+						<StepSeparator />
+					</Step>
+				</Stepper>
+			</Box>
+			<Box flex={0.5} overflowY="auto" css={tabScrollCss}>
+				<Stack spacing={3} p={5}>
+					<TextTitle size="xl" title="Contact Information" />
+					<BoxCard p={2} border="1px solid var(--lead_cards_border)">
+						<FormControl isRequired>
+							<FormLabel size="sm">Your First Name</FormLabel>
+							<Input
+								size="sm"
+								value={formData.contactInfo.clientFirstName || ""}
+								onChange={(e) => handleChange("contactInfo", "clientFirstName", e.target.value)}
+								placeholder="Please enter first name"
+							/>
+						</FormControl>
+						<FormControl isRequired>
+							<FormLabel size="sm">Your Last Name</FormLabel>
+							<Input
+								size="sm"
+								value={formData.contactInfo.clientLastName || ""}
+								onChange={(e) => handleChange("contactInfo", "clientLastName", e.target.value)}
+								placeholder="Please enter last name"
+							/>
+						</FormControl>
+						<FormControl isRequired>
+							<FormLabel size="sm">Email </FormLabel>
+							<Input
+								size="sm"
+								type="email"
+								value={formData.contactInfo.clientEmail || ""}
+								onChange={(e) => handleChange("contactInfo", "clientEmail", e.target.value)}
+								placeholder="Please enter email address"
+							/>
+						</FormControl>
+						<FormControl isRequired>
+							<FormLabel size="sm">Phone Number </FormLabel>
+							<Input
+								size="sm"
+								value={formData.contactInfo.clientPhoneNumber || ""}
+								onChange={(e) => handleChange("contactInfo", "clientPhoneNumber", e.target.value)}
+								placeholder="Please enter phone number"
+							/>
+						</FormControl>
+						<FormControl isRequired>
+							<FormLabel size="sm">Preferred method of contact</FormLabel>
+							<Flex gap={4} mt={2}>
+								<label>
+									<input
+										type="radio"
+										checked={formData.contactInfo.clientModeOfContact === "Email"}
+										onChange={() => handleChange("contactInfo", "clientModeOfContact", "Email")}
+										style={{ marginRight: "8px", cursor: "pointer" }}
+									/>
+									Email
+								</label>
+								<label>
+									<input
+										type="radio"
+										checked={formData.contactInfo.clientModeOfContact === "Phone Number"}
+										onChange={() =>
+											handleChange("contactInfo", "clientModeOfContact", "Phone Number")
+										}
+										style={{ marginRight: "8px", cursor: "pointer" }}
+									/>
+									Phone Number
+								</label>
+							</Flex>
+						</FormControl>
+					</BoxCard>
+				</Stack>
+			</Box>
+		</Flex>
 	);
 };
 

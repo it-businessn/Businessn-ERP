@@ -5,7 +5,7 @@ const Employee = require("../models/Employee");
 const { sendEmail } = require("../services/emailService");
 const path = require("path");
 const { filePath, fileContentType } = require("../services/fileService");
-const { TICKET_STATUS, BUSINESSN_ORG } = require("../services/data");
+const { TICKET_STATUS, BUSINESSN_ORG, COMPANIES } = require("../services/data");
 const Lead = require("../models/Lead");
 
 const getAllTickets = async (req, res) => {
@@ -325,6 +325,12 @@ const createLeadTicket = async (req, res) => {
 const createSupportTicket = async (req, res) => {
 	try {
 		const newTicket = req.body;
+		const { companyInfo, contactInfo, queryInfo } = newTicket;
+
+		const { companyName, clientId } = companyInfo;
+		const { clientFirstName, clientLastName, clientEmail, clientPhoneNumber, clientModeOfContact } =
+			contactInfo;
+		const { inquiryType, issue } = queryInfo;
 		const attachments = [
 			{
 				filename: "BusinessN_dark1.png",
@@ -333,13 +339,26 @@ const createSupportTicket = async (req, res) => {
 			},
 		];
 
-		const companyNamePrefix = newTicket.companyName.split(" ")[0];
+		const companyNamePrefix = companyName.split(" ")[0];
 
-		newTicket.ticketNumber = generateTicketNumber(companyNamePrefix);
-		newTicket.category = "Support";
-		newTicket.priority = 4;
-		const ticket = await SupportTicket.create(newTicket);
+		const ticketNumber = generateTicketNumber(companyNamePrefix);
+		const category = "Support";
 		const assigneeEmail = await Employee.findOne({ email: "jesse.christiaens@businessn.com" });
+
+		const ticket = await SupportTicket.create({
+			companyName: COMPANIES.BUSINESSN_ORG,
+			assignee: assigneeEmail?.fullName,
+			clientFirstName,
+			clientLastName,
+			clientEmail,
+			clientPhoneNumber,
+			clientModeOfContact,
+			clientId,
+			inquiryType,
+			issue,
+			ticketNumber,
+			category,
+		});
 
 		if (assigneeEmail?.email) {
 			await sendEmail(
@@ -410,7 +429,7 @@ const createSupportTicket = async (req, res) => {
 				<p>You’ve got a new support ticket! Here are the basic details:</p>
 
 				<p style="font-weight: bold; margin: 0">Company Name:</p>
-				<p>${newTicket?.companyName}</p>
+				<p>${companyName}</p>
 				
 				<p style="font-weight: bold; margin: 0">View Ticket:</p>
 				<p style="margin: 5px 0">

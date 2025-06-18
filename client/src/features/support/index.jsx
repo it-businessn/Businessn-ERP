@@ -1,65 +1,93 @@
-import { Box, Center, Circle, Flex, HStack, SimpleGrid, Text } from "@chakra-ui/react";
+import { Center, HStack, Stack } from "@chakra-ui/react";
 
-import PrimaryButton from "components/ui/button/PrimaryButton";
-import RadioButtonGroup from "components/ui/tab/RadioButtonGroup";
-import TextTitle from "components/ui/text/TextTitle";
+import { Button, Tab, TabList, TabPanel, TabPanels, Tabs, useToast } from "@chakra-ui/react";
+import { tabStyleCss } from "erp-modules/payroll/onboard-user/customInfo";
 import PageLayout from "layouts/PageLayout";
-import { useEffect, useState } from "react";
-import { FaCheckCircle } from "react-icons/fa";
-import { useBreakpointValue } from "services/Breakpoint";
+import { useState } from "react";
 import CompanyInfo from "./CompanyInfo";
 import ContactInfo from "./ContactInfo";
 import QueryInfo from "./QueryInfo";
 
+import BoxCard from "components/ui/card";
+import TextTitle from "components/ui/text/TextTitle";
+import { FaChevronLeft, FaChevronRight, FaSave } from "react-icons/fa";
+import TicketService from "services/TicketService";
+
 const Support = () => {
-	const handleNext = (id) => setViewMode(SETUP_LIST[id]?.type);
-	const handlePrev = (id) => setViewMode(SETUP_LIST[id - 2]?.type);
-	const { isMobile, isIpad } = useBreakpointValue();
-	const SETUP_LIST = [
+	const toast = useToast();
+	const ticketBasicInfo = {
+		companyInfo: {
+			companyName: "",
+			clientId: "",
+		},
+		contactInfo: {
+			clientFirstName: "",
+			clientLastName: "",
+			clientEmail: "",
+			clientPhoneNumber: "",
+			clientModeOfContact: "",
+		},
+		queryInfo: { inquiryType: "", issue: "" },
+	};
+	const [tabIndex, setTabIndex] = useState(0);
+	const [formData, setFormData] = useState(ticketBasicInfo);
+
+	const SUPPORT_TABS = [
 		{
-			id: 0,
-			type: "Company Details",
-			name: <CompanyInfo isIpad={isIpad} id={1} handleNext={handleNext} />,
+			name: "Company Details",
+			content: <CompanyInfo formData={formData} setFormData={setFormData} />,
 		},
 		{
-			id: 1,
-			type: "Contact Details",
-			name: <ContactInfo id={2} handleNext={handleNext} handlePrev={handlePrev} />,
+			name: "Contact Details",
+			content: <ContactInfo formData={formData} setFormData={setFormData} />,
 		},
 		{
-			id: 2,
-			type: "Explain the Issue",
-			name: <QueryInfo id={3} handleNext={handleNext} handlePrev={handlePrev} />,
+			name: "Explain the Issue",
+			content: <QueryInfo formData={formData} setFormData={setFormData} />,
 		},
 	];
-	const [tabs, setTabs] = useState(SETUP_LIST);
-	const tabContent = SETUP_LIST[0]?.type;
-	const [viewMode, setViewMode] = useState(tabContent);
+	const isLastStep = tabIndex === SUPPORT_TABS.length - 1;
 
-	const currentTab = tabs.find(({ type }) => type === viewMode)?.id;
-
-	const showComponent = (viewMode) => tabs.find(({ type }) => type === viewMode)?.name;
-
-	const [activeStep, setActiveStep] = useState(0);
-
-	const handleNextS = () => {
-		if (activeStep < SETUP_LIST.length - 1) {
-			setActiveStep(activeStep + 1);
+	const WEB = "https://www.businessn.com";
+	const handleRedirect = () => (window.location.href = WEB);
+	const handleSubmit = async () => {
+		try {
+			const { data } = await TicketService.addSupportTicket(formData);
+			toast({
+				title: "Support ticket created successfully!",
+				status: "success",
+				duration: 1000,
+				isClosable: true,
+			});
+			handleRedirect();
+		} catch (error) {
+			toast({
+				title: "Something went wrong.",
+				description: "Please try again.",
+				status: "error",
+				duration: 3000,
+				isClosable: true,
+			});
+		}
+	};
+	const getNextButtonIcon = () => {
+		if (tabIndex === SUPPORT_TABS.length - 1) {
+			return <FaSave />;
+		}
+		return <FaChevronRight />;
+	};
+	const getNextButtonAction = () => {
+		if (isLastStep) {
+			handleSubmit();
+		} else {
+			setTabIndex(tabIndex + 1);
 		}
 	};
 
-	const handleBack = () => {
-		if (activeStep > 0) setActiveStep(activeStep - 1);
-	};
-
-	useEffect(() => {
-		setViewMode(SETUP_LIST[activeStep].type);
-	}, [activeStep]);
-
 	return (
-		<Box h={"100vh"} overflow="auto">
-			<Center pos="sticky" background="white" top={0} zIndex={1}>
-				<a href="/" aria-current="page" className="main-logo w-inline-block w--current">
+		<Stack w={{ base: "100%", lg: "60%" }} m="auto" spacing={10}>
+			<Center pos="sticky" top={30} zIndex={1}>
+				<a href={WEB} aria-current="page" className="main-logo w-inline-block w--current">
 					<img
 						src="https://cdn.prod.website-files.com/66d2b99c721c32f423762484/66dade9174eaeb438087f3ff_logo.png"
 						loading="lazy"
@@ -69,108 +97,69 @@ const Support = () => {
 					/>
 				</a>
 			</Center>
-			{isMobile ? (
-				<Box
-					pos="relative"
-					zIndex={0}
-					w="100%"
-					maxW="800px"
-					mx="auto"
-					py={6}
-					padding={"24px"}
-					backgroundColor="var(--main_color)"
-				>
-					<TextTitle align="center" title="Need Support? Let Us Help" />
-					<Flex
-						pt={6}
-						px={4}
-						direction={isMobile ? "column" : "row"}
-						gap={isMobile ? 4 : 8}
-						align={isMobile ? "flex-start" : "center"}
-						justify="space-between"
+			<PageLayout title="">
+				<BoxCard>
+					<TextTitle size={"lg"} title="Need Support? Let Us Help" />
+					<Tabs
+						index={tabIndex}
+						onChange={setTabIndex}
+						variant="enclosed"
+						colorScheme="purple"
+						display="flex"
+						flexDirection="column"
+						sx={tabStyleCss}
+						height="100%"
 					>
-						{SETUP_LIST.map((label, index) => (
-							<Flex
-								key={index}
-								direction="column"
-								align="center"
-								position="relative"
-								w={isMobile ? "100%" : "auto"}
-								onClick={() => {
-									setActiveStep(label?.id);
-								}}
-							>
-								<Circle
-									size="2.3em"
-									bg={index === activeStep ? "var(--banner_bg)" : "var(--calendar_border)"}
-									color={"white"}
-									fontWeight="bold"
-									zIndex={1}
+						<TabList bg="gray.50" px={6} pt={5} pb={2} justifyContent="space-between">
+							{SUPPORT_TABS.map(({ name }) => (
+								<Tab
+									w="100%"
+									key={name}
+									fontWeight="semibold"
+									_selected={{ color: "white", bg: "var(--banner_bg)" }}
 								>
-									{index + 1}
-								</Circle>
-								<Text
-									mt={2}
-									textAlign="center"
-									fontSize="sm"
-									fontWeight={index === activeStep ? "semibold" : "normal"}
-								>
-									{label?.type}
-								</Text>
-							</Flex>
-						))}
-					</Flex>
-					{showComponent(viewMode)}
-					<Flex gap={3} justify="end">
-						<PrimaryButton
-							name="Back"
-							onOpen={handleBack}
-							isDisabled={activeStep === 0}
-							bg="var(--lead_cards_border)"
-						/>
-						<PrimaryButton
-							name="Next"
-							onOpen={handleNextS}
-							isDisabled={activeStep === SETUP_LIST.length - 1}
-							bg="var(--banner_bg)"
-						/>
-					</Flex>
-				</Box>
-			) : (
-				<Box
-					w={{ base: "100%", md: "80%", lg: "70%" }}
-					py="2em"
-					m="0 auto"
-					padding={"24px"}
-					backgroundColor="var(--main_color)"
-				>
-					<PageLayout title="Need Support? Let Us Help">
-						<HStack spacing="1em" justifyContent={"space-between"}>
-							<SimpleGrid
-								columns={{ base: 3 }}
-								spacing="1em"
-								bg={"var(--primary_bg)"}
-								borderRadius={"20px"}
-								w={"100%"}
-								my="5"
+									{name}
+								</Tab>
+							))}
+						</TabList>
+
+						<TabPanels flex="1" overflow="hidden">
+							{SUPPORT_TABS.map(({ name, content }, i) => (
+								<TabPanel key={`${name}_content_${i}`}>{content}</TabPanel>
+							))}
+						</TabPanels>
+					</Tabs>
+					<HStack spacing={4} justify="end">
+						{tabIndex > 0 && (
+							<Button
+								leftIcon={<FaChevronLeft />}
+								onClick={() => setTabIndex(tabIndex - 1)}
+								colorScheme="gray"
+								variant="outline"
+								px={6}
 							>
-								{tabs?.map((_) => (
-									<RadioButtonGroup
-										key={_?.id}
-										name={_?.type}
-										selectedFilter={viewMode}
-										handleFilterClick={(name) => setViewMode(name)}
-										fontSize={"1em"}
-										rightIcon={<FaCheckCircle color={_?.id <= currentTab ? "green" : "grey"} />}
-									/>
-								))}
-							</SimpleGrid>
-						</HStack>
-						{showComponent(viewMode)}
-					</PageLayout>
-				</Box>
-			)}
-		</Box>
+								Back
+							</Button>
+						)}
+
+						<Button
+							rightIcon={getNextButtonIcon()}
+							onClick={() => getNextButtonAction()}
+							bg={"var(--banner_bg)"}
+							color="white"
+							_hover={{ bg: "#4a2b4a" }}
+							px={6}
+						>
+							{isLastStep ? "Submit" : "Next"}
+						</Button>
+
+						<Button onClick={handleRedirect} variant="outline" px={6} colorScheme="gray">
+							Cancel
+						</Button>
+					</HStack>
+				</BoxCard>
+			</PageLayout>
+		</Stack>
 	);
 };
 

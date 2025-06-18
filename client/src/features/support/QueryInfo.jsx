@@ -1,16 +1,25 @@
-import { SimpleGrid, useToast } from "@chakra-ui/react";
+import {
+	Box,
+	Flex,
+	FormControl,
+	FormLabel,
+	Select,
+	Stack,
+	Step,
+	StepIcon,
+	StepIndicator,
+	StepNumber,
+	Stepper,
+	StepSeparator,
+	StepStatus,
+	StepTitle,
+	Textarea,
+} from "@chakra-ui/react";
 import BoxCard from "components/ui/card";
-import VerticalStepper from "components/ui/VerticalStepper";
-import StepContent from "erp-modules/payroll/employees/pageview/step-content";
-import Record from "erp-modules/payroll/employees/pageview/step-content/Record";
-import { useEffect, useState } from "react";
-import { useBreakpointValue } from "services/Breakpoint";
-import LocalStorageService from "services/LocalStorageService";
-import TicketService from "services/TicketService";
+import TextTitle from "components/ui/text/TextTitle";
+import { tabPanelStyleCss, tabScrollCss } from "erp-modules/payroll/onboard-user/customInfo";
 
-const QueryInfo = ({ id, handleNext, handlePrev }) => {
-	const ticketId = LocalStorageService.getItem("ticketId");
-	const { isMobile, isIpad } = useBreakpointValue();
+const QueryInfo = ({ formData, setFormData }) => {
 	const INQUIRIES = [
 		{ name: "Price related inquiry", id: "price" },
 		{ name: "Client Experience or Support Inquiry", id: "support" },
@@ -18,103 +27,68 @@ const QueryInfo = ({ id, handleNext, handlePrev }) => {
 		{ name: "Delivery", id: "delivery" },
 		{ name: "New Client or product onboarding", id: "onboard" },
 		{ name: "Tax inquiry", id: "tax" },
+		{ name: "Other", id: "other" },
 	];
-
-	const QUERY_INFO = [
-		{
-			type: "sfsgdsgdsgdsg26",
-			params: [
-				{
-					name: "Type of Inquiry",
-					param_key: "inquiryType",
-					mandatory: true,
-					control: "select",
-					options: INQUIRIES,
-				},
-				{
-					name: "Describe the issue",
-					control: "textarea",
-					param_key: "issue",
-					mandatory: true,
-				},
-			],
-		},
-	];
-	const [formData, setFormData] = useState({
-		_id: ticketId,
-		inquiryType: "",
-		issue: "",
-	});
-	const [isLoading, setIsLoading] = useState(false);
-	const [isSaveDisabled, setIsSaveDisabled] = useState(true);
-
-	useEffect(() => {
-		if (formData?.inquiryType !== "" && formData?.issue !== "") {
-			setIsSaveDisabled(false);
-		}
-	}, [formData]);
-
-	const toast = useToast();
-
-	const handleSubmit = async () => {
-		setIsLoading(true);
-		try {
-			await TicketService.updateInfo(formData, formData?._id);
-			setIsLoading(false);
-			toast({
-				title: "Query info added successfully.",
-				status: "success",
-				duration: 1000,
-				isClosable: true,
-			});
-		} catch (error) {}
-	};
-
-	const steps = [
-		{
-			title: "Your Query",
-			content: (
-				<Record
-					handleConfirm={() => ""}
-					formData={formData}
-					setFormData={setFormData}
-					title="Your Query"
-					config={QUERY_INFO}
-					isLoading={isLoading}
-					handleSubmit={handleSubmit}
-					isDisabled={isSaveDisabled}
-				/>
-			),
-		},
-	];
-	const [currentStep, setCurrentStep] = useState(0);
-	const goToNextStep = (index) => {
-		setCurrentStep(index);
+	const handleChange = (section, field, value) => {
+		setFormData({
+			...formData,
+			[section]: {
+				...formData[section],
+				[field]: value,
+			},
+		});
 	};
 	return (
-		<SimpleGrid
-			columns={{ base: 1, md: 1, lg: 2 }}
-			spacing="4"
-			mr="4"
-			templateColumns={{ lg: "20% 80%" }}
-		>
-			{isMobile || isIpad ? (
-				<></>
-			) : (
-				<BoxCard>
-					<VerticalStepper
-						hideProgress
-						steps={steps}
-						currentStep={currentStep}
-						handleClick={goToNextStep}
-						id={id}
-						handleNext={handleNext}
-						handlePrev={handlePrev}
-					/>
-				</BoxCard>
-			)}
-			<StepContent currentStep={currentStep} steps={steps} h={(isMobile || isIpad) && "auto"} />
-		</SimpleGrid>
+		<Flex height="100%">
+			<Box p={6} borderRight="1px solid" borderColor="gray.200" flex={0.2} bg="gray.50">
+				<Stepper index={0} orientation="vertical" gap={8} sx={tabPanelStyleCss}>
+					<Step cursor="pointer" py={2}>
+						<StepIndicator>
+							<StepStatus
+								complete={<StepIcon fontSize="1.2em" color="white" bg={"var(--banner_bg)"} />}
+								incomplete={<StepNumber fontSize="1.1em" color={"var(--banner_bg)"} />}
+								active={<StepNumber fontSize="1.1em" color="white" bg={"var(--banner_bg)"} />}
+							/>
+						</StepIndicator>
+						<Box flexShrink="0" ml={3}>
+							<StepTitle fontWeight={"bold"} mb={1}>
+								Query
+							</StepTitle>
+						</Box>
+						<StepSeparator />
+					</Step>
+				</Stepper>
+			</Box>
+			<Box flex={0.5} overflowY="auto" css={tabScrollCss}>
+				<Stack spacing={3} p={5}>
+					<TextTitle size="xl" title="Query" />
+					<BoxCard p={2} border="1px solid var(--lead_cards_border)">
+						<FormControl isRequired>
+							<FormLabel size="sm">Type of Inquiry</FormLabel>
+							<Select
+								value={formData.queryInfo.inquiryType || ""}
+								onChange={(e) => handleChange("queryInfo", "inquiryType", e.target.value)}
+								placeholder="Select type of inquiry"
+							>
+								{INQUIRIES.map(({ name, id }) => (
+									<option key={id} value={id}>
+										{name}
+									</option>
+								))}
+							</Select>
+						</FormControl>
+						<FormControl isRequired>
+							<FormLabel size="sm">Describe the issue</FormLabel>
+							<Textarea
+								size="sm"
+								value={formData.queryInfo.issue || ""}
+								onChange={(e) => handleChange("queryInfo", "issue", e.target.value)}
+							/>
+						</FormControl>
+					</BoxCard>
+				</Stack>
+			</Box>
+		</Flex>
 	);
 };
 

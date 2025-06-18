@@ -182,7 +182,7 @@ const UserList = ({ employees }) => {
 							<HStack spacing="3">
 								<Avatar
 									name={value.name}
-									src=""
+									src={null}
 									w="2.5rem"
 									h="2.5rem"
 									fontSize="1rem"
