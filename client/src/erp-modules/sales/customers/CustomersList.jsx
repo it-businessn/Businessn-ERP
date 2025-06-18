@@ -30,7 +30,6 @@ import ContactService from "services/ContactService";
 import LeadsService from "services/LeadsService";
 import { generateLighterShade, isManager } from "utils";
 import SearchFilter from "../lead docket/SearchFilter";
-import OnboardCustomerModal from "../onboarding/OnboardCustomerModal";
 import AddNewOpportunity from "../opportunities/AddNewOpportunity";
 
 const CustomersList = ({ user, handleProfileView, icons, company }) => {
@@ -42,7 +41,6 @@ const CustomersList = ({ user, handleProfileView, icons, company }) => {
 	const assignees = useSalesAgentData(company, false, true);
 	const managers = useManager(company);
 	const [companies, setCompanies] = useState(null);
-	const [showOnboard, setShowOnboard] = useState(false);
 
 	useEffect(() => {
 		const fetchAllCompanies = async () => {
@@ -59,10 +57,6 @@ const CustomersList = ({ user, handleProfileView, icons, company }) => {
 
 	const handleEdit = (id) => {
 		console.log(id);
-	};
-
-	const handleClick = () => {
-		setShowOnboard(true);
 	};
 
 	const { isOpen, onOpen, onClose } = useDisclosure();
@@ -238,13 +232,6 @@ const CustomersList = ({ user, handleProfileView, icons, company }) => {
 					managers={managers}
 					companies={companies}
 					setRefresh={setRefresh}
-				/>
-			)}
-			{showOnboard && (
-				<OnboardCustomerModal
-					title="Onboard employee"
-					showOnboard={showOnboard}
-					setShowOnboard={setShowOnboard}
 				/>
 			)}
 		</PageLayout>

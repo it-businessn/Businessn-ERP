@@ -5,7 +5,12 @@ const Employee = require("../models/Employee");
 const { sendEmail } = require("../services/emailService");
 const path = require("path");
 const { filePath, fileContentType } = require("../services/fileService");
-const { TICKET_STATUS, BUSINESSN_ORG, COMPANIES } = require("../services/data");
+const {
+	TICKET_STATUS,
+	BUSINESSN_ORG,
+	COMPANIES,
+	SUPPORT_ADMIN_CONTACT,
+} = require("../services/data");
 const Lead = require("../models/Lead");
 
 const getAllTickets = async (req, res) => {
@@ -204,7 +209,7 @@ const createLeadTicket = async (req, res) => {
 		const companyNamePrefix = data.companyName.split(" ")[0];
 		data.ticketNumber = generateTicketNumber(companyNamePrefix);
 		const ticket = await SupportTicket.create(data);
-		const assigneeEmail = await Employee.findOne({ email: "jesse.christiaens@businessn.com" });
+		const assigneeEmail = await Employee.findOne({ email: SUPPORT_ADMIN_CONTACT });
 
 		if (assigneeEmail?.email) {
 			await sendEmail(
@@ -343,7 +348,7 @@ const createSupportTicket = async (req, res) => {
 
 		const ticketNumber = generateTicketNumber(companyNamePrefix);
 		const category = "Support";
-		const assigneeEmail = await Employee.findOne({ email: "jesse.christiaens@businessn.com" });
+		const assigneeEmail = await Employee.findOne({ email: SUPPORT_ADMIN_CONTACT });
 
 		const ticket = await SupportTicket.create({
 			companyName: COMPANIES.BUSINESSN_ORG,
