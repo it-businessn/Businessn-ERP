@@ -115,7 +115,7 @@ const Meetings = () => {
 										<Flex align="center">
 											<Avatar
 												size="sm"
-												src=""
+												src={null}
 												// src={item.profilePic}
 												name={fullName}
 											/>

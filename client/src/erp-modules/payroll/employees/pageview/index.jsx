@@ -103,7 +103,7 @@ const Employees = () => {
 						borderRadius="10%"
 						// onClick={handleToggle}
 						name={employeeName}
-						src=""
+						src={null}
 						boxSize="15"
 					/>
 					<VStack spacing={0} align={"start"}>

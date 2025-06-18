@@ -90,7 +90,7 @@ const Reports = () => {
 						borderRadius="10%"
 						// onClick={handleToggle}
 						name={employee?.fullName}
-						src=""
+						src={null}
 						boxSize="15"
 					/>
 					<VStack spacing={0} align={"start"}>

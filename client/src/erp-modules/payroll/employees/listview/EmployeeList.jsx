@@ -99,7 +99,7 @@ const EmployeeList = ({ employees }) => {
 									<Avatar
 										name={empId?.fullName}
 										size={"sm"}
-										src=""
+										src={null}
 										borderRadius="lg"
 										bg={nameBoxBg}
 										color={nameColor}

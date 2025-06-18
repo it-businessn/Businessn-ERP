@@ -66,7 +66,7 @@ const UserProfile = ({ user, handleLogout }) => {
 					<Avatar
 						onClick={handleToggle}
 						name={user?.fullName}
-						src=""
+						src={null}
 						boxSize="12"
 						borderRadius="50%"
 					/>
