@@ -208,8 +208,13 @@ const createLeadTicket = async (req, res) => {
 
 		const companyNamePrefix = data.companyName.split(" ")[0];
 		data.ticketNumber = generateTicketNumber(companyNamePrefix);
-		const ticket = await SupportTicket.create(data);
 		const assigneeEmail = await Employee.findOne({ email: SUPPORT_ADMIN_CONTACT });
+		data.assignee = assigneeEmail?.fullName;
+
+		const newInfo = data;
+		newInfo.companyName = BUSINESSN_ORG;
+
+		const ticket = await SupportTicket.create(newInfo);
 
 		if (assigneeEmail?.email) {
 			await sendEmail(

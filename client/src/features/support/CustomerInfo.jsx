@@ -7,6 +7,7 @@ import {
 	FormLabel,
 	HStack,
 	Stack,
+	useToast,
 } from "@chakra-ui/react";
 import ActionButtonGroup from "components/ui/form/ActionButtonGroup";
 import InputFormControl from "components/ui/form/InputFormControl";
@@ -24,6 +25,9 @@ export default function CustomerInfo() {
 		set1: ["Payroll", "Time management", "Scheduling", "Accounting"],
 		set2: ["Project Management", "CRM", "HR"],
 	};
+	const WEB = "https://www.businessn.com";
+
+	const toast = useToast();
 	const [formData, setFormData] = useState({
 		firstName: "",
 		lastName: "",
@@ -38,7 +42,6 @@ export default function CustomerInfo() {
 		companyName: "",
 	});
 	const [provinces, setProvinces] = useState([]);
-
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [showPopup, setShowPopup] = useState(false);
 	const [selectedCheckboxes, setSelectedCheckboxes] = useState([]);
@@ -60,6 +63,7 @@ export default function CustomerInfo() {
 	const handleInputChange = (e) => {
 		setFormData({ ...formData, [e.target.name]: e.target.value });
 	};
+	const handleRedirect = () => (window.location.href = WEB);
 
 	const handleSubmit = async (e) => {
 		e.preventDefault();
@@ -70,12 +74,26 @@ export default function CustomerInfo() {
 			setIsSubmitting(false);
 			if (data) {
 				setShowPopup(true);
+				toast({
+					title: "Action successful!",
+					status: "success",
+					duration: 2000,
+					isClosable: true,
+				});
+
 				setTimeout(() => {
-					window.location.href = "https://www.businessn.com";
+					handleRedirect();
 				}, 2000);
 			}
 		} catch (error) {
 			console.error("Error saving info:", error);
+			toast({
+				title: "Something went wrong.",
+				description: "Please try again.",
+				status: "error",
+				duration: 3000,
+				isClosable: true,
+			});
 		}
 	};
 
