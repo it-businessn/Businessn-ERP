@@ -113,7 +113,13 @@ const Support = () => {
 						sx={tabStyleCss}
 						height="100%"
 					>
-						<TabList bg="gray.50" px={6} pt={5} pb={2} justifyContent="space-between">
+						<TabList
+							bg="gray.50"
+							px={{ base: 0, md: 6 }}
+							pt={5}
+							pb={2}
+							justifyContent="space-between"
+						>
 							{SUPPORT_TABS.map(({ name }) => (
 								<Tab
 									w="100%"
