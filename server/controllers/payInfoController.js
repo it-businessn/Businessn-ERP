@@ -140,7 +140,7 @@ const addEmployeePayInfo = async (req, res) => {
 const updateEmployeePayInfo = async (req, res) => {
 	const { id } = req.params;
 	try {
-		const { payFrequency, taxWithholding, roles } = req.body;
+		const { empId, roles } = req.body;
 
 		const existingRecord = await EmployeePayInfo.findById(id);
 		if (existingRecord) {
