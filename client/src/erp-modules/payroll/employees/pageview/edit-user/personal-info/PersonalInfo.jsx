@@ -226,7 +226,12 @@ const PersonalInfo = ({ company, userId }) => {
 			>
 				<Stepper index={personalSubStep} orientation="vertical" gap={8} sx={tabPanelStyleCss}>
 					{personalSubSteps.map((step, index) => (
-						<Step key={index} onClick={() => setPersonalSubStep(index)} cursor="pointer" py={2}>
+						<Step
+							key={`step_num_${step.title}_${index}`}
+							onClick={() => setPersonalSubStep(index)}
+							cursor="pointer"
+							py={2}
+						>
 							<StepIndicator>
 								<StepStatus
 									complete={<StepIcon fontSize="1.2em" color="white" bg={"var(--banner_bg)"} />}

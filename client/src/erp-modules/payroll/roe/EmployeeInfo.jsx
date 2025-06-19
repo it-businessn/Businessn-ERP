@@ -1,283 +1,182 @@
-import { HStack, SimpleGrid, Stack } from "@chakra-ui/react";
-import PrimaryButton from "components/ui/button/PrimaryButton";
-import BoxCard from "components/ui/card";
+import {
+	Box,
+	Flex,
+	FormControl,
+	FormLabel,
+	HStack,
+	Input,
+	Stack,
+	Step,
+	StepIcon,
+	StepIndicator,
+	StepNumber,
+	Stepper,
+	StepSeparator,
+	StepStatus,
+	StepTitle,
+} from "@chakra-ui/react";
 import InputFormControl from "components/ui/form/InputFormControl";
 import SelectFormControl from "components/ui/form/SelectFormControl";
 import TextTitle from "components/ui/text/TextTitle";
-import VerticalStepper from "components/ui/VerticalStepper";
 import { COUNTRIES } from "config/payroll/employees/profileInfo";
-import { ALERTS_TYPE } from "constant";
-import useCompanyEmployees from "hooks/useCompanyEmployees";
-import useEmployeeProfileInfo from "hooks/useEmployeeProfileInfo";
-import usePaygroup from "hooks/usePaygroup";
+import { tabPanelStyleCss, tabScrollCss } from "erp-modules/payroll/onboard-user/customInfo";
 import { useEffect, useState } from "react";
-import LocalStorageService from "services/LocalStorageService";
-import PayrollService from "services/PayrollService";
-import StepContent from "../employees/pageview/step-content";
 
-const EmployeeInfo = ({ company, handleNext, tabId, deptName }) => {
-	const { selectedPayGroupOption } = usePaygroup(company, false);
-	const employees = useCompanyEmployees(company, deptName, selectedPayGroupOption);
-	const initialFormData = {
-		empId: "",
-		employee: "",
-		firstName: "",
-		lastName: "",
-		middleName: "",
-		SIN: "",
-		streetAddress: "",
-		streetAddressSuite: "",
-		city: "",
-		province: "",
-		country: "",
-		postalCode: "",
-		companyName: company,
-	};
-
-	const [formData, setFormData] = useState(initialFormData);
-
-	const empInfo = useEmployeeProfileInfo(company, formData?.empId);
+const EmployeeInfo = ({ formData, setFormData }) => {
 	const [provinces, setProvinces] = useState([]);
 
 	useEffect(() => {
-		if (formData?.country) {
-			setProvinces(COUNTRIES.find(({ type }) => type === formData?.country)?.provinces);
+		if (formData?.empInfo?.country) {
+			setProvinces(COUNTRIES.find(({ type }) => type === formData?.empInfo?.country)?.provinces);
 		}
-	}, [formData?.country]);
+	}, [formData?.empInfo?.country]);
 
-	const populateEmpInfo = () => {
-		setFormData((prevData) => ({
-			...prevData,
-			firstName: empInfo?.firstName,
-			lastName: empInfo?.lastName,
-			middleName: empInfo?.middleName,
-			SIN: empInfo?.SIN,
-			streetAddress: empInfo?.streetAddress,
-			streetAddressSuite: empInfo?.streetAddressSuite,
-			city: empInfo?.city,
-			province: empInfo?.province,
-			country: empInfo?.country,
-			postalCode: empInfo?.postalCode,
-		}));
+	const handleFieldChange = (section, field, value) => {
+		setFormData({
+			...formData,
+			[section]: {
+				...formData[section],
+				[field]: value,
+			},
+		});
 	};
 
-	const handleConfirm = async () => {
-		try {
-			const { data } = await PayrollService.addEmployeeProfileInfo(formData);
-			LocalStorageService.setItem("roeEmpId", data?.empId);
-			handleNext(tabId);
-		} catch (error) {}
-	};
+	return (
+		<Flex height="100%">
+			<Box
+				display={{ base: "none", md: "flex" }}
+				p={6}
+				borderRight="1px solid"
+				borderColor="gray.200"
+				flex={0.2}
+				bg="gray.50"
+			>
+				<Stepper orientation="vertical" gap={8} sx={tabPanelStyleCss}>
+					<Step cursor="pointer" py={2}>
+						<StepIndicator>
+							<StepStatus
+								complete={<StepIcon fontSize="1.2em" color="white" bg={"var(--banner_bg)"} />}
+								incomplete={<StepNumber fontSize="1.1em" color={"var(--banner_bg)"} />}
+								active={<StepNumber fontSize="1.1em" color="white" bg={"var(--banner_bg)"} />}
+							/>
+						</StepIndicator>
+						<Box flexShrink="0" ml={3} whiteSpace="wrap">
+							<StepTitle fontWeight={"bold"} mb={1}>
+								Personal Information
+							</StepTitle>
+						</Box>
+						<StepSeparator />
+					</Step>
+				</Stepper>
+			</Box>
+			<Box flex={{ base: 1, md: 0.7 }} overflowY="auto" css={tabScrollCss}>
+				<Stack spacing={3} p={5}>
+					<TextTitle size="xl" title="Personal Information" />
+					<Stack>
+						<HStack>
+							<FormControl isRequired>
+								<FormLabel size="sm">First Name</FormLabel>
+								<Input
+									size="sm"
+									value={formData.empInfo?.firstName || ""}
+									onChange={(e) => handleFieldChange("empInfo", "firstName", e.target.value)}
+									placeholder="Please enter first name"
+								/>
+							</FormControl>
+							<FormControl>
+								<FormLabel size="sm">Middle Name</FormLabel>
+								<Input
+									size="sm"
+									value={formData.empInfo?.middleName || ""}
+									onChange={(e) => handleFieldChange("empInfo", "middleName", e.target.value)}
+									placeholder="Please enter middle name"
+								/>
+							</FormControl>
+							<FormControl isRequired>
+								<FormLabel size="sm">Last Name </FormLabel>
+								<Input
+									size="sm"
+									value={formData.empInfo?.lastName || ""}
+									onChange={(e) => handleFieldChange("empInfo", "lastName", e.target.value)}
+									placeholder="Please enter last name"
+								/>
+							</FormControl>
+						</HStack>
+						<FormControl isRequired>
+							<FormLabel size="sm">Social Insurance Number </FormLabel>
+							<Input
+								size="sm"
+								value={formData.empInfo?.SIN || ""}
+								onChange={(e) => handleFieldChange("empInfo", "SIN", e.target.value)}
+								placeholder="Please enter SSN"
+							/>
+						</FormControl>
+						<TextTitle title="Address" />
+						<HStack>
+							<FormControl isRequired>
+								<FormLabel size="sm">Street Address </FormLabel>
+								<Input
+									size="sm"
+									value={formData.empInfo?.streetAddress || ""}
+									onChange={(e) => handleFieldChange("empInfo", "streetAddress", e.target.value)}
+									placeholder="Please enter street address"
+								/>
+							</FormControl>
+							<FormControl>
+								<FormLabel size="sm"> Suite </FormLabel>
+								<Input
+									size="sm"
+									value={formData.empInfo?.streetAddressSuite || ""}
+									onChange={(e) =>
+										handleFieldChange("empInfo", "streetAddressSuite", e.target.value)
+									}
+									placeholder="Please enter suite no"
+								/>
+							</FormControl>
+							<FormControl isRequired>
+								<FormLabel size="sm">City</FormLabel>
+								<Input
+									size="sm"
+									value={formData.empInfo?.city || ""}
+									onChange={(e) => handleFieldChange("empInfo", "city", e.target.value)}
+									placeholder="Please enter city"
+								/>
+							</FormControl>
+						</HStack>
 
-	const steps = [
-		{
-			title: "Choose Employee",
-			content: (
-				<>
-					<TextTitle title="Choose Employee" />
-					<SelectFormControl
-						w="20%"
-						valueParam="fullName"
-						name="fullName"
-						label=""
-						placeholder="Select Employee"
-						valueText={formData?.employee || ""}
-						handleChange={(e) => {
-							const val = e.target.value;
-							setFormData(() => ({
-								employee: val,
-								empId: employees?.find((_) => _.fullName === val)?._id,
-								companyName: company,
-							}));
-						}}
-						options={employees}
-					/>
-					<PrimaryButton
-						my={3}
-						size="sm"
-						name="Confirm"
-						loadingText="Loading"
-						onOpen={populateEmpInfo}
-					/>
-				</>
-			),
-		},
-		{
-			title: "Personal Information",
-			mt: 4,
-			content: (
-				<>
-					<Stack w="50%">
-						<TextTitle title="Personal Information" />
-						<HStack mt={2}>
-							<InputFormControl
-								label="First Name"
-								name="firstName"
-								placeholder="Enter First Name"
-								valueText={formData?.firstName || ""}
-								handleChange={(e) => {
-									setFormData((prev) => ({
-										...prev,
-										firstName: e.target.value,
-									}));
-								}}
+						<HStack>
+							<SelectFormControl
+								required
+								valueParam="type"
+								name="type"
+								label="Country"
+								valueText={formData?.empInfo?.country || ""}
+								handleChange={(e) => handleFieldChange("empInfo", "country", e.target.value)}
+								options={COUNTRIES}
+							/>
+							<SelectFormControl
+								required
+								valueParam="name"
+								name="province"
+								label="Province / State"
+								valueText={formData?.empInfo?.province || ""}
+								handleChange={(e) => handleFieldChange("empInfo", "province", e.target.value)}
+								options={provinces}
 							/>
 							<InputFormControl
-								label="Middle Name"
-								name="middleName"
-								placeholder="Enter Middle Name"
-								valueText={formData?.middleName || ""}
-								handleChange={(e) => {
-									setFormData((prev) => ({
-										...prev,
-										middleName: e.target.value,
-									}));
-								}}
-							/>
-							<InputFormControl
-								label="Last Name"
-								name="lastName"
-								placeholder="Enter Last Name"
-								valueText={formData?.lastName || ""}
-								handleChange={(e) => {
-									setFormData((prev) => ({
-										...prev,
-										lastName: e.target.value,
-									}));
-								}}
+								size="sm"
+								label="Postal Code"
+								required
+								name="postalCode"
+								placeholder="Enter Postal Code"
+								valueText={formData?.empInfo?.postalCode || ""}
+								handleChange={(e) => handleFieldChange("empInfo", "postalCode", e.target.value)}
 							/>
 						</HStack>
-						<InputFormControl
-							w="40%"
-							label="Social Insurance Number"
-							subRequired
-							name={ALERTS_TYPE.SIN}
-							placeholder="Enter SIN"
-							valueText={formData?.SIN || ""}
-							handleChange={(e) => {
-								setFormData((prev) => ({
-									...prev,
-									SIN: e.target.value,
-								}));
-							}}
-						/>
-						<TextTitle title="Address" />
-						<InputFormControl
-							w="40%"
-							label="Street Address"
-							name="streetAddress"
-							placeholder="Enter Street Address"
-							valueText={formData?.streetAddress || ""}
-							handleChange={(e) => {
-								setFormData((prev) => ({
-									...prev,
-									streetAddress: e.target.value,
-								}));
-							}}
-						/>
-						<InputFormControl
-							label="Suite"
-							w="40%"
-							name="streetAddressSuite"
-							placeholder="Enter Suite"
-							valueText={formData?.streetAddressSuite || ""}
-							handleChange={(e) => {
-								setFormData((prev) => ({
-									...prev,
-									streetAddressSuite: e.target.value,
-								}));
-							}}
-						/>
-						<InputFormControl
-							label="City"
-							w="40%"
-							name="city"
-							placeholder="Enter City"
-							valueText={formData?.city || ""}
-							handleChange={(e) => {
-								setFormData((prev) => ({
-									...prev,
-									city: e.target.value,
-								}));
-							}}
-						/>
-						<SelectFormControl
-							w="40%"
-							valueParam="type"
-							name="type"
-							label="Country"
-							valueText={formData?.country || ""}
-							handleChange={(e) =>
-								setFormData((prevData) => ({
-									...prevData,
-									country: e.target.value,
-								}))
-							}
-							options={COUNTRIES}
-						/>
-						<SelectFormControl
-							w="40%"
-							valueParam="name"
-							name="province"
-							label="Province / State"
-							valueText={formData?.province || ""}
-							handleChange={(e) =>
-								setFormData((prevData) => ({
-									...prevData,
-									province: e.target.value,
-								}))
-							}
-							options={provinces}
-						/>
-						<InputFormControl
-							label="Postal Code"
-							required
-							w="40%"
-							name="postalCode"
-							placeholder="Enter Postal Code"
-							valueText={formData?.postalCode || ""}
-							handleChange={(e) => {
-								setFormData((prev) => ({
-									...prev,
-									postalCode: e.target.value,
-								}));
-							}}
-						/>
 					</Stack>
-					<PrimaryButton
-						my={3}
-						size="sm"
-						name="Confirm"
-						loadingText="Loading"
-						onOpen={handleConfirm}
-					/>
-				</>
-			),
-		},
-	];
-	const [currentStep, setCurrentStep] = useState(0);
-	const goToNextStep = (index) => {
-		setCurrentStep(index);
-	};
-	return (
-		<SimpleGrid
-			columns={{ base: 1, md: 1, lg: 2 }}
-			spacing="4"
-			mr="4"
-			templateColumns={{ lg: "20% 80%" }}
-		>
-			<BoxCard>
-				<VerticalStepper
-					hideProgress
-					steps={steps}
-					currentStep={currentStep}
-					handleClick={goToNextStep}
-					// handleNext={()=>handleNext(id)}
-					// isOnboarding={true}
-				/>
-			</BoxCard>
-			<StepContent currentStep={currentStep} steps={steps} h="74vh" />
-		</SimpleGrid>
+				</Stack>
+			</Box>
+		</Flex>
 	);
 };
 

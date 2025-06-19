@@ -1,256 +1,211 @@
-import { FormLabel, HStack, SimpleGrid, Stack, useToast } from "@chakra-ui/react";
-import PrimaryButton from "components/ui/button/PrimaryButton";
+import {
+	Box,
+	Flex,
+	FormLabel,
+	HStack,
+	Stack,
+	Step,
+	StepIcon,
+	StepIndicator,
+	StepNumber,
+	Stepper,
+	StepSeparator,
+	StepStatus,
+	StepTitle,
+} from "@chakra-ui/react";
 import BoxCard from "components/ui/card";
 import DateTimeFormControl from "components/ui/form/DateTimeFormControl";
 import SelectFormControl from "components/ui/form/SelectFormControl";
 import NormalTextTitle from "components/ui/NormalTextTitle";
 import TextTitle from "components/ui/text/TextTitle";
-import VerticalStepper from "components/ui/VerticalStepper";
 import { REASON_CODE, RECALL_OPTIONS } from "constant";
-import useEmployeeEmploymentInfo from "hooks/useEmployeeEmploymentInfo";
-import usePaygroup from "hooks/usePaygroup";
+import { tabPanelStyleCss, tabScrollCss } from "erp-modules/payroll/onboard-user/customInfo";
 import moment from "moment";
 import { useEffect, useState } from "react";
-import LocalStorageService from "services/LocalStorageService";
-import PayrollService from "services/PayrollService";
 import { getAmount } from "utils/convertAmt";
 import { getDefaultDate } from "utils/convertDate";
-import StepContent from "../employees/pageview/step-content";
 
-const EmploymentInfo = ({ company, handleNext, tabId }) => {
-	const initialFormData = {
-		empId: roeEmpId,
-		employmentStartDate: "",
-		employmentLeaveDate: new Date(),
-		finalPayPeriodEndDate: "",
-		recallDate: "",
-		expectedRecallDate: "",
-		reasonCode: "",
-		positions: [],
-		companyName: company,
-	};
-	const roeEmpId = LocalStorageService.getItem("roeEmpId");
-	const toast = useToast();
-	const { payGroupSchedule } = usePaygroup(company, true);
-	const [roeInfo, setRoeInfo] = useState(null);
-	const [formData, setFormData] = useState(initialFormData);
-	const employmentInfo = useEmployeeEmploymentInfo(company, roeEmpId);
-
-	useEffect(() => {
-		const fetchEmployeeROEEmploymentInfo = async () => {
-			try {
-				const { data } = await PayrollService.getEmployeeROEEmploymentInfo(company, roeEmpId);
-				setRoeInfo(data);
-			} catch (error) {
-				console.error(error);
-			}
-		};
-		fetchEmployeeROEEmploymentInfo();
-	}, [company]);
-
-	useEffect(() => {
-		if (employmentInfo) {
-			setFormData((prevData) => ({
-				...prevData,
-				positions: employmentInfo?.positions,
-				employmentStartDate: employmentInfo?.employmentStartDate,
-				employmentLeaveDate: employmentInfo?.employmentLeaveDate,
-			}));
-		}
-		if (roeInfo) {
-			setFormData(roeInfo);
-		}
-	}, [employmentInfo, roeInfo]);
+const EmploymentInfo = ({ formData, setFormData, payGroupSchedule }) => {
+	const [subStep, setSubStep] = useState(0);
 
 	useEffect(() => {
 		const finalPayPeriodRecord = payGroupSchedule?.find(
 			({ payPeriodStartDate, payPeriodEndDate }) =>
-				moment(formData?.employmentLeaveDate).isBetween(
+				moment(formData?.employmentInfo?.employmentLeaveDate).isBetween(
 					payPeriodStartDate,
 					payPeriodEndDate,
 					null,
 					"[]",
 				),
 		);
-		setFormData((prevData) => ({
-			...prevData,
-			finalPayPeriodEndDate: finalPayPeriodRecord?.payPeriodEndDate,
-		}));
-	}, [formData?.employmentLeaveDate]);
+		if (finalPayPeriodRecord)
+			handleFieldChange(
+				"employmentInfo",
+				"finalPayPeriodEndDate",
+				finalPayPeriodRecord?.payPeriodEndDate,
+			);
+	}, [formData?.employmentInfo?.employmentLeaveDate]);
 
-	const handleEmpROEInfo = async () => {
-		try {
-			if (!formData?.expectedRecallDate) {
-				formData.expectedRecallDate = "Unknown";
-			}
-			await PayrollService.addEmployeeROEEmploymentInfo(formData);
-			handleNext(tabId);
-			toast({
-				title: "Employment info updated successfully.",
-				status: "success",
-				duration: 1000,
-				isClosable: true,
-			});
-		} catch (error) {}
+	const handleFieldChange = (section, field, value) => {
+		setFormData({
+			...formData,
+			[section]: {
+				...formData[section],
+				[field]: value,
+			},
+		});
 	};
 
-	const steps = [
-		{
-			title: "Tenure",
-			content: (
-				<>
-					<Stack spacing={3}>
-						<HStack alignItems="baseline" spacing={5}>
-							<Stack w="50%">
-								<TextTitle title="Tenure" />
-								<HStack>
-									<DateTimeFormControl
-										label="Start Date"
-										valueText1={getDefaultDate(formData?.employmentStartDate)}
-										name1="employmentStartDate"
-										handleChange={(e) => {
-											setFormData((prev) => ({
-												...prev,
-												employmentStartDate: e.target.value,
-											}));
-										}}
-									/>
-									<DateTimeFormControl
-										required
-										label="Last Day Worked"
-										valueText1={
-											formData?.employmentLeaveDate
-												? getDefaultDate(formData?.employmentLeaveDate)
-												: ""
-										}
-										name1="employmentLeaveDate"
-										handleChange={(e) => {
-											setFormData((prev) => ({
-												...prev,
-												employmentLeaveDate: e.target.value,
-											}));
-										}}
-									/>
-								</HStack>
-							</Stack>
-							<Stack>
-								<TextTitle title="Occupation" />
-								{formData?.positions?.map((position, index) => (
-									<Stack key={`${position?.title}_${index}`} spacing={2}>
-										<HStack>
-											<FormLabel w="100%">
-												Position:
-												<NormalTextTitle title={position?.title || ""} />
-											</FormLabel>
-											<FormLabel w="100%">
-												Payrate:
-												<NormalTextTitle title={getAmount(position?.payRate) || ""} />
-											</FormLabel>
-										</HStack>
-
-										<FormLabel>
-											Linked Time Management Badge ID:
-											<NormalTextTitle title={position?.timeManagementBadgeID || "NA"} />
-										</FormLabel>
-									</Stack>
-								))}
-							</Stack>
+	const subSteps = [
+		{ title: "Tenure", description: "Personal Information" },
+		{ title: "Occupation", description: "Emergency details" },
+		{ title: "Final Pay", description: "Emergency details" },
+	];
+	return (
+		<Flex height="100%">
+			<Box
+				display={{ base: "none", md: "flex" }}
+				p={6}
+				borderRight="1px solid"
+				borderColor="gray.200"
+				flex={0.2}
+				bg="gray.50"
+			>
+				<Stepper index={subStep} orientation="vertical" gap={8} sx={tabPanelStyleCss}>
+					{subSteps.map(({ title }, index) => (
+						<Step
+							key={`step_num_${title}`}
+							cursor="pointer"
+							onClick={() => setSubStep(index)}
+							py={2}
+						>
+							<StepIndicator>
+								<StepStatus
+									complete={<StepIcon fontSize="1.2em" color="white" bg={"var(--banner_bg)"} />}
+									incomplete={<StepNumber fontSize="1.1em" color={"var(--banner_bg)"} />}
+									active={<StepNumber fontSize="1.1em" color="white" bg={"var(--banner_bg)"} />}
+								/>
+							</StepIndicator>
+							<Box flexShrink="0" ml={3} whiteSpace="wrap">
+								<StepTitle fontWeight={"bold"} mb={1}>
+									{title}
+								</StepTitle>
+							</Box>
+							<StepSeparator />
+						</Step>
+					))}
+				</Stepper>
+			</Box>
+			<Box flex={{ base: 1, md: 0.7 }} overflowY="auto" css={tabScrollCss}>
+				{subStep === 0 && (
+					<Stack spacing={3} p={5}>
+						<TextTitle size="xl" title={subSteps[subStep]?.title} />
+						<HStack>
+							<DateTimeFormControl
+								label="Start Date"
+								valueText1={getDefaultDate(formData?.employmentInfo?.employmentStartDate)}
+								name1="employmentStartDate"
+								handleChange={(e) =>
+									handleFieldChange("employmentInfo", "employmentStartDate", e.target.value)
+								}
+							/>
+							<DateTimeFormControl
+								required
+								label="Last Day Worked"
+								valueText1={
+									formData?.employmentInfo?.employmentLeaveDate
+										? getDefaultDate(formData?.employmentInfo?.employmentLeaveDate)
+										: ""
+								}
+								name1="employmentLeaveDate"
+								handleChange={(e) =>
+									handleFieldChange("employmentInfo", "employmentLeaveDate", e.target.value)
+								}
+							/>
 						</HStack>
+					</Stack>
+				)}
+				{subStep === 1 && (
+					<Stack spacing={3} p={5}>
+						<TextTitle size="xl" title={subSteps[subStep]?.title} />
+						{formData?.employmentInfo?.positions?.map((position, index) => (
+							<BoxCard key={`${position?.title}_${index}`} spacing={2}>
+								<HStack>
+									<FormLabel w="100%" fontWeight="bold">
+										Position:
+										<NormalTextTitle title={position?.title || ""} />
+									</FormLabel>
+									<FormLabel w="100%" fontWeight="bold">
+										Payrate:
+										<NormalTextTitle title={getAmount(position?.payRate) || ""} />
+									</FormLabel>
+								</HStack>
 
-						<HStack w="50%">
+								<FormLabel>
+									Linked Time Management Badge ID:
+									<NormalTextTitle title={position?.timeManagementBadgeID || "NA"} />
+								</FormLabel>
+							</BoxCard>
+						))}
+					</Stack>
+				)}
+				{subStep === 2 && (
+					<Stack spacing={3} p={5}>
+						<TextTitle size="xl" title={subSteps[subStep]?.title} />
+						<HStack>
 							<DateTimeFormControl
 								label="Final Pay Period End Date"
 								valueText1={
-									formData?.finalPayPeriodEndDate
-										? getDefaultDate(formData?.finalPayPeriodEndDate)
+									formData?.employmentInfo?.finalPayPeriodEndDate
+										? getDefaultDate(formData?.employmentInfo?.finalPayPeriodEndDate)
 										: ""
 								}
 								name1="finalPayPeriodEndDate"
-								handleChange={(e) => {
-									setFormData((prev) => ({
-										...prev,
-										finalPayPeriodEndDate: e.target.value,
-									}));
-								}}
+								handleChange={(e) =>
+									handleFieldChange("employmentInfo", "finalPayPeriodEndDate", e.target.value)
+								}
 							/>
 							<SelectFormControl
 								valueParam="name"
 								name="expectedRecallDate"
 								label="Expected Date of Recall"
-								valueText={formData?.expectedRecallDate || RECALL_OPTIONS[0]?.name}
+								valueText={formData?.employmentInfo?.expectedRecallDate || ""}
 								handleChange={(e) =>
-									setFormData((prevData) => ({
-										...prevData,
-										expectedRecallDate: e.target.value,
-									}))
+									handleFieldChange("employmentInfo", "expectedRecallDate", e.target.value)
 								}
 								options={RECALL_OPTIONS}
 							/>
-							{formData?.expectedRecallDate === "Return Date" && (
+							{formData?.employmentInfo?.expectedRecallDate === "Return Date" && (
 								<DateTimeFormControl
 									required
 									label="Recall Date"
-									valueText1={formData?.recallDate ? getDefaultDate(formData?.recallDate) : ""}
+									valueText1={
+										formData?.employmentInfo?.recallDate
+											? getDefaultDate(formData?.employmentInfo?.recallDate)
+											: ""
+									}
 									name1="recallDate"
-									handleChange={(e) => {
-										setFormData((prev) => ({
-											...prev,
-											recallDate: e.target.value,
-										}));
-									}}
+									handleChange={(e) =>
+										handleFieldChange("employmentInfo", "recallDate", e.target.value)
+									}
 								/>
 							)}
 						</HStack>
 						<SelectFormControl
-							w="50%"
 							valueParam="name"
 							name="reasonCode"
 							label="Reason Code"
 							placeholder="Select reason"
-							valueText={formData?.reasonCode || ""}
+							valueText={formData?.employmentInfo?.reasonCode || ""}
 							handleChange={(e) =>
-								setFormData((prevData) => ({
-									...prevData,
-									reasonCode: e.target.value,
-								}))
+								e.target.value && handleFieldChange("employmentInfo", "reasonCode", e.target.value)
 							}
 							options={REASON_CODE}
 						/>
 					</Stack>
-					<PrimaryButton
-						my={3}
-						size="sm"
-						name="Save"
-						loadingText="Loading"
-						onOpen={handleEmpROEInfo}
-					/>
-				</>
-			),
-		},
-	];
-	const [currentStep, setCurrentStep] = useState(0);
-	const goToNextStep = (index) => {
-		setCurrentStep(index);
-	};
-	return (
-		<SimpleGrid
-			columns={{ base: 1, md: 1, lg: 2 }}
-			spacing="4"
-			mr="4"
-			templateColumns={{ lg: "20% 80%" }}
-		>
-			<BoxCard>
-				<VerticalStepper
-					hideProgress
-					steps={steps}
-					currentStep={currentStep}
-					handleClick={goToNextStep}
-					// handleNext={()=>handleNext(id)}
-					// isOnboarding={true}
-				/>
-			</BoxCard>
-			<StepContent currentStep={currentStep} steps={steps} h="74vh" />
-		</SimpleGrid>
+				)}
+			</Box>
+		</Flex>
 	);
 };
 

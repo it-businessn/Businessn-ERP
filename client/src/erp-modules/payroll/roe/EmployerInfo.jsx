@@ -1,268 +1,182 @@
-import { Box, HStack, SimpleGrid, Stack } from "@chakra-ui/react";
-import PrimaryButton from "components/ui/button/PrimaryButton";
-import BoxCard from "components/ui/card";
+import {
+	Box,
+	Flex,
+	HStack,
+	Stack,
+	Step,
+	StepIcon,
+	StepIndicator,
+	StepNumber,
+	Stepper,
+	StepSeparator,
+	StepStatus,
+	StepTitle,
+} from "@chakra-ui/react";
 import InputFormControl from "components/ui/form/InputFormControl";
 import RadioFormControl from "components/ui/form/RadioFormControl";
 import SelectFormControl from "components/ui/form/SelectFormControl";
 import NormalTextTitle from "components/ui/NormalTextTitle";
 import TextTitle from "components/ui/text/TextTitle";
-import VerticalStepper from "components/ui/VerticalStepper";
-import useSelectedCompanyInfo from "hooks/useSelectedCompanyInfo";
-import { useEffect, useState } from "react";
-import LocalStorageService from "services/LocalStorageService";
-import PayrollService from "services/PayrollService";
-import UserService from "services/UserService";
-import StepContent from "../employees/pageview/step-content";
+import { tabPanelStyleCss, tabScrollCss } from "erp-modules/payroll/onboard-user/customInfo";
 
-const EmployerInfo = ({ company, handleNext, tabId }) => {
-	const roeEmpId = LocalStorageService.getItem("roeEmpId");
-	const loggedInUser = LocalStorageService.getItem("user");
-	const [roeInfo, setRoeInfo] = useState(null);
-	const [admins, setAdmins] = useState(null);
-	const companyInfo = useSelectedCompanyInfo(company);
-
-	const initialFormData = {
-		empId: roeEmpId,
-		name: "",
-		registration_number: "",
-		address: "",
-		contactName: loggedInUser?.fullName,
-		issuerName: loggedInUser?.fullName,
-		contactTelNumber: "",
-		contactExtNumber: "",
-		issuerTelNumber: "",
-		issuerExtNumber: "",
-		preferredCommunication: "English",
-		companyName: company,
+const EmployerInfo = ({ formData, setFormData, admins }) => {
+	const handleFieldChange = (section, field, value) => {
+		setFormData({
+			...formData,
+			[section]: {
+				...formData[section],
+				[field]: value,
+			},
+		});
 	};
 
-	const [formData, setFormData] = useState(initialFormData);
-
-	useEffect(() => {
-		const fetchEmployeeROEEmploymentInfo = async () => {
-			try {
-				const { data } = await PayrollService.getEmployeeROEEmploymentInfo(company, roeEmpId);
-				setRoeInfo(data);
-			} catch (error) {
-				console.error(error);
-			}
-		};
-		const fetchAllAdmins = async () => {
-			try {
-				const { data } = await UserService.getAllManagers(company);
-				data?.map((emp) => (emp.fullName = emp?.empId?.fullName));
-				setAdmins(data);
-			} catch (error) {
-				console.error(error);
-			}
-		};
-		fetchAllAdmins();
-		fetchEmployeeROEEmploymentInfo();
-	}, []);
-
-	useEffect(() => {
-		if (companyInfo)
-			setFormData((prevData) => ({
-				...prevData,
-				name: companyInfo?.name,
-				registration_number: companyInfo?.registration_number,
-				address: companyInfo?.address,
-			}));
-		if (roeInfo) {
-			setFormData((prevData) => ({
-				...prevData,
-				contactName: roeInfo?.contactName || prevData.contactName,
-				issuerName: roeInfo?.issuerName || prevData.issuerName,
-				contactTelNumber: roeInfo?.contactTelNumber,
-				contactExtNumber: roeInfo?.contactExtNumber,
-				issuerTelNumber: roeInfo?.issuerTelNumber,
-				issuerExtNumber: roeInfo?.issuerExtNumber,
-				preferredCommunication: roeInfo?.preferredCommunication || prevData.preferredCommunication,
-			}));
-		}
-	}, [companyInfo, roeInfo]);
-
-	const handleConfirm = async () => {
-		try {
-			await PayrollService.addEmployeeROEEmploymentInfo(formData);
-			handleNext(tabId);
-		} catch (error) {}
-	};
-	const steps = [
-		{
-			title: "Employer Details",
-			content: (
-				<>
-					<Stack spacing={3}>
-						<HStack alignItems="baseline" justifyContent="space-between">
-							<Box>
-								<TextTitle title="Employer Name" />
-								<NormalTextTitle title={formData?.name} />
-							</Box>
-							<Box>
-								<TextTitle title="Employer Address" />
-								<NormalTextTitle title={formData?.address?.streetNumber} />
-								<NormalTextTitle title={formData?.address?.city} />
-								<NormalTextTitle
-									title={`${formData?.address?.state} ${formData?.address?.country}`}
-								/>
-								<NormalTextTitle title={formData?.address?.postalCode} />
-							</Box>
-							<Box>
-								<TextTitle title="CRA Payroll Account Number" />
-								<NormalTextTitle title={formData?.registration_number} />
-							</Box>
-						</HStack>
-
-						<HStack>
-							{admins && (
-								<Stack>
-									<TextTitle title="Contact Name" />
-									<SelectFormControl
-										valueParam="fullName"
-										name="fullName"
-										label=""
-										valueText={formData?.contactName || loggedInUser?.fullName}
-										handleChange={(e) =>
-											setFormData((prevData) => ({
-												...prevData,
-												contactName: e.target.value,
-											}))
-										}
-										options={admins}
-									/>
-								</Stack>
-							)}
-							<Stack>
-								<TextTitle title="Contact Telephone Number" />
-								<HStack>
-									<InputFormControl
-										type="tel"
-										label=""
-										name="contactTelNumber"
-										placeholder="Enter Telephone Number"
-										valueText={formData?.contactTelNumber || ""}
-										handleChange={(e) => {
-											setFormData((prev) => ({
-												...prev,
-												contactTelNumber: e.target.value,
-											}));
-										}}
-									/>
-									<InputFormControl
-										label=""
-										name="contactExtNumber"
-										placeholder="Enter Ext Number"
-										valueText={formData?.contactExtNumber || ""}
-										handleChange={(e) => {
-											setFormData((prev) => ({
-												...prev,
-												contactExtNumber: e.target.value,
-											}));
-										}}
-									/>
-								</HStack>
-							</Stack>
-						</HStack>
-						<HStack>
-							<Stack>
-								<TextTitle title="Issuer Name" />
-								{admins && (
-									<SelectFormControl
-										valueParam="fullName"
-										name="fullName"
-										label=""
-										valueText={formData?.issuerName || loggedInUser?.fullName}
-										handleChange={(e) =>
-											setFormData((prevData) => ({
-												...prevData,
-												issuerName: e.target.value,
-											}))
-										}
-										options={admins}
-									/>
-								)}
-							</Stack>
-							<Stack>
-								<TextTitle title="Issuer Telephone Number" />
-								<HStack>
-									<InputFormControl
-										type="tel"
-										label=""
-										name="issuerTelNumber"
-										placeholder="Enter Tel Number"
-										valueText={formData?.issuerTelNumber || ""}
-										handleChange={(e) => {
-											setFormData((prev) => ({
-												...prev,
-												issuerTelNumber: e.target.value,
-											}));
-										}}
-									/>
-									<InputFormControl
-										label=""
-										name="issuerExtNumber"
-										placeholder="Enter Ext Number"
-										valueText={formData?.issuerExtNumber || ""}
-										handleChange={(e) => {
-											setFormData((prev) => ({
-												...prev,
-												issuerExtNumber: e.target.value,
-											}));
-										}}
-									/>
-								</HStack>
-							</Stack>
-						</HStack>
-						<RadioFormControl
-							label="Preferred Communication"
-							handleChange={(value) => {
-								setFormData((prev) => ({
-									...prev,
-									preferredCommunication: value,
-								}));
-							}}
-							defaultVal="English"
-							options={[
-								{ name: "English", value: "English" },
-								{ name: "French", value: "French" },
-							]}
-						/>
-					</Stack>
-					<PrimaryButton
-						my={3}
-						size="sm"
-						name="Confirm"
-						loadingText="Loading"
-						onOpen={handleConfirm}
-					/>
-				</>
-			),
-		},
-	];
-	const [currentStep, setCurrentStep] = useState(0);
-	const goToNextStep = (index) => {
-		setCurrentStep(index);
-	};
 	return (
-		<SimpleGrid
-			columns={{ base: 1, md: 1, lg: 2 }}
-			spacing="4"
-			mr="4"
-			templateColumns={{ lg: "20% 80%" }}
-		>
-			<BoxCard>
-				<VerticalStepper
-					hideProgress
-					steps={steps}
-					currentStep={currentStep}
-					handleClick={goToNextStep}
-					// handleNext={()=>handleNext(id)}
-					// isOnboarding={true}
-				/>
-			</BoxCard>
-			<StepContent currentStep={currentStep} steps={steps} h="74vh" />
-		</SimpleGrid>
+		<Flex height="100%">
+			<Box
+				display={{ base: "none", md: "flex" }}
+				p={6}
+				borderRight="1px solid"
+				borderColor="gray.200"
+				flex={0.2}
+				bg="gray.50"
+			>
+				<Stepper orientation="vertical" gap={8} sx={tabPanelStyleCss}>
+					<Step cursor="pointer" py={2}>
+						<StepIndicator>
+							<StepStatus
+								complete={<StepIcon fontSize="1.2em" color="white" bg={"var(--banner_bg)"} />}
+								incomplete={<StepNumber fontSize="1.1em" color={"var(--banner_bg)"} />}
+								active={<StepNumber fontSize="1.1em" color="white" bg={"var(--banner_bg)"} />}
+							/>
+						</StepIndicator>
+						<Box flexShrink="0" ml={3} whiteSpace="wrap">
+							<StepTitle fontWeight={"bold"} mb={1}>
+								Employer Details
+							</StepTitle>
+						</Box>
+						<StepSeparator />
+					</Step>
+				</Stepper>
+			</Box>
+			<Box flex={{ base: 1, md: 0.7 }} overflowY="auto" css={tabScrollCss}>
+				<Stack spacing={3} p={5}>
+					<TextTitle size="xl" title="Personal Information" />
+					<HStack alignItems="baseline" justifyContent="space-between">
+						<Box>
+							<TextTitle title="Employer Name" />
+							<NormalTextTitle title={formData?.employerInfo?.name} />
+						</Box>
+						<Box>
+							<TextTitle title="Employer Address" />
+							<NormalTextTitle title={formData?.employerInfo?.address?.streetNumber} />
+							<NormalTextTitle title={formData?.employerInfo?.address?.city} />
+							<NormalTextTitle
+								title={`${formData?.employerInfo?.address?.state} ${formData?.employerInfo?.address?.country}`}
+							/>
+							<NormalTextTitle title={formData?.employerInfo?.address?.postalCode} />
+						</Box>
+						<Box>
+							<TextTitle title="CRA Payroll Account Number" />
+							<NormalTextTitle title={formData?.employerInfo?.registration_number} />
+						</Box>
+					</HStack>
+
+					<HStack>
+						{admins && (
+							<Stack>
+								<TextTitle title="Contact Name" />
+								<SelectFormControl
+									valueParam="fullName"
+									name="fullName"
+									label=""
+									valueText={formData?.employerInfo?.contactName}
+									handleChange={(e) =>
+										handleFieldChange("employerInfo", "contactName", e.target.value)
+									}
+									options={admins}
+								/>
+							</Stack>
+						)}
+						<Stack>
+							<TextTitle title="Contact Telephone Number" />
+							<HStack>
+								<InputFormControl
+									type="tel"
+									label=""
+									name="contactTelNumber"
+									placeholder="Enter Telephone Number"
+									valueText={formData?.employerInfo?.contactTelNumber || ""}
+									handleChange={(e) =>
+										handleFieldChange("employerInfo", "contactTelNumber", e.target.value)
+									}
+								/>
+								<InputFormControl
+									label=""
+									name="contactExtNumber"
+									placeholder="Enter Ext Number"
+									valueText={formData?.employerInfo?.contactExtNumber || ""}
+									handleChange={(e) =>
+										handleFieldChange("employerInfo", "contactExtNumber", e.target.value)
+									}
+								/>
+							</HStack>
+						</Stack>
+					</HStack>
+					<HStack>
+						<Stack>
+							<TextTitle title="Issuer Name" />
+							{admins && (
+								<SelectFormControl
+									valueParam="fullName"
+									name="fullName"
+									label=""
+									valueText={formData?.employerInfo?.issuerName}
+									handleChange={(e) =>
+										handleFieldChange("employerInfo", "issuerName", e.target.value)
+									}
+									options={admins}
+								/>
+							)}
+						</Stack>
+						<Stack>
+							<TextTitle title="Issuer Telephone Number" />
+							<HStack>
+								<InputFormControl
+									type="tel"
+									label=""
+									name="issuerTelNumber"
+									placeholder="Enter Tel Number"
+									valueText={formData?.employerInfo?.issuerTelNumber || ""}
+									handleChange={(e) =>
+										handleFieldChange("employerInfo", "issuerTelNumber", e.target.value)
+									}
+								/>
+								<InputFormControl
+									label=""
+									name="issuerExtNumber"
+									placeholder="Enter Ext Number"
+									valueText={formData?.employerInfo?.issuerExtNumber || ""}
+									handleChange={(e) =>
+										handleFieldChange("employerInfo", "issuerExtNumber", e.target.value)
+									}
+								/>
+							</HStack>
+						</Stack>
+					</HStack>
+					<RadioFormControl
+						label="Preferred Communication"
+						handleChange={(value) =>
+							handleFieldChange("employerInfo", "preferredCommunication", value)
+						}
+						defaultVal="English"
+						options={[
+							{ name: "English", value: "English" },
+							{ name: "French", value: "French" },
+						]}
+					/>
+				</Stack>
+			</Box>
+		</Flex>
 	);
 };
 

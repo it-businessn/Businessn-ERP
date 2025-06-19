@@ -24,7 +24,6 @@ const EmployeeDetails = ({
 	const [refresh, setRefresh] = useState(false);
 	const empData = useEmployeeEmploymentInfo(
 		company,
-		null,
 		closestRecord,
 		groupId,
 		refresh,

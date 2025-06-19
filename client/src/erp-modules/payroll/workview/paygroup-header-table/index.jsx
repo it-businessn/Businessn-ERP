@@ -4,6 +4,7 @@ import BoxCard from "components/ui/card";
 import NewEmployeeOnboardingModal from "erp-modules/payroll/onboard-user/NewEmployeeOnboardingModal";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { payrollROEPath } from "routes";
 import ExtraPayrunModal from "./ExtraPayrunModal";
 import PayrollActions from "./PayrollActions";
 import WorkviewTable from "./WorkviewTable";
@@ -40,7 +41,7 @@ const PaygroupTable = ({
 			navigate(`${empPath}/${loggedInUser._id}/3`);
 		}
 		if (val === "roe") {
-			// navigate(payrollROEPath);
+			navigate(payrollROEPath);
 		}
 	};
 
