@@ -288,6 +288,7 @@ const SignUp = ({ isModal, setRefresh, onClose, hideCompany }) => {
 						<InputFormControl
 							label={"Phone Number"}
 							name="phoneNumber"
+							type="tel"
 							valueText={formData?.phoneNumber}
 							handleChange={handleChange}
 							placeholder="Phone Number"

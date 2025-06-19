@@ -120,7 +120,7 @@ const EditUserInfo = ({ setEditMode, setError, error, company }) => {
 				<InputFormControl
 					label={"Phone Number"}
 					name="phoneNumber"
-					type="number"
+					type="tel"
 					valueText={userData.phoneNumber || ""}
 					handleChange={handleChange}
 					placeholder="Phone Number"

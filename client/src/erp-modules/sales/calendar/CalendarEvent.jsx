@@ -275,7 +275,7 @@ const Calendar = () => {
 								<FormControl>
 									<FormLabel>Phone Number</FormLabel>
 									<Input
-										type="text"
+										type="tel"
 										name="phoneNo"
 										value={formData?.phoneNo}
 										onChange={handleChange}

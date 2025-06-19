@@ -204,6 +204,7 @@ const AddEvent = ({
 					{eventType === "phoneCall" && (
 						<InputFormControl
 							label={"Phone Number"}
+							type="tel"
 							name="phoneNo"
 							valueText={formData?.phoneNo}
 							handleChange={handleChange}

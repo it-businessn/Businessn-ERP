@@ -233,7 +233,7 @@ const AddContact = () => {
 						<FormControl mb={4}>
 							<FormLabel>Phone Number</FormLabel>
 							<Input
-								type="text"
+								type="tel"
 								name="phone"
 								value={formData?.phone}
 								onChange={handleChange}

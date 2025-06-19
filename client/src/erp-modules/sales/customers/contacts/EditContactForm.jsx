@@ -161,7 +161,7 @@ const EditContactForm = ({ selectedContact, onSave, onCancel }) => {
 							<FormControl mb={4}>
 								<FormLabel>Phone Number</FormLabel>
 								<Input
-									type="text"
+									type="tel"
 									name="phone"
 									value={formData?.phone}
 									onChange={handleChange}

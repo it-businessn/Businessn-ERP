@@ -216,6 +216,7 @@ const PersonalInfo = ({
 								<FormLabel size="sm">Personal Phone</FormLabel>
 								<Input
 									size="sm"
+									type="tel"
 									value={formData.contactInfo.personalPhoneNum}
 									onChange={(e) => handleChange("contactInfo", "personalPhoneNum", e.target.value)}
 									placeholder="Personal Phone Number"
@@ -226,6 +227,7 @@ const PersonalInfo = ({
 								<FormLabel size="sm">Work Phone</FormLabel>
 								<Input
 									size="sm"
+									type="tel"
 									value={formData.contactInfo.businessPhoneNum}
 									onChange={(e) => handleChange("contactInfo", "businessPhoneNum", e.target.value)}
 									placeholder="Work Phone Number"
@@ -355,6 +357,7 @@ const PersonalInfo = ({
 							<FormLabel size="sm">Personal Phone</FormLabel>
 							<Input
 								size="sm"
+								type="tel"
 								value={formData.emergencyContact.emergencyPersonalPhoneNum}
 								onChange={(e) =>
 									handleChange("emergencyContact", "emergencyPersonalPhoneNum", e.target.value)

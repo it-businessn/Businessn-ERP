@@ -194,7 +194,7 @@ export default function CustomerInfo() {
 										name="phone"
 										placeholder="Enter Phone"
 										valueText={formData?.phone || ""}
-										type="number"
+										type="tel"
 										handleChange={handleInputChange}
 									/>
 								</HStack>

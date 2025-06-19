@@ -137,7 +137,7 @@ const EmployerInfo = ({ company, handleNext, tabId }) => {
 								<TextTitle title="Contact Telephone Number" />
 								<HStack>
 									<InputFormControl
-										type="number"
+										type="tel"
 										label=""
 										name="contactTelNumber"
 										placeholder="Enter Telephone Number"
@@ -187,7 +187,7 @@ const EmployerInfo = ({ company, handleNext, tabId }) => {
 								<TextTitle title="Issuer Telephone Number" />
 								<HStack>
 									<InputFormControl
-										type="number"
+										type="tel"
 										label=""
 										name="issuerTelNumber"
 										placeholder="Enter Tel Number"

@@ -92,6 +92,7 @@ const ContactInfo = ({ formData, setFormData }) => {
 							<FormLabel size="sm">Phone Number </FormLabel>
 							<Input
 								size="sm"
+								type="tel"
 								value={formData.contactInfo.clientPhoneNumber || ""}
 								onChange={(e) => handleChange("contactInfo", "clientPhoneNumber", e.target.value)}
 								placeholder="Please enter phone number"
