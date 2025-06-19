@@ -560,10 +560,14 @@ const sendMailCreds = async (req, res) => {
 };
 
 const createMasterUser = async (req, res) => {
+	const { personalInfo, moduleInfo } = req.body;
 	const { company, firstName, middleName, lastName, email, phoneNumber, position, startDate } =
-		req.body;
-
+		personalInfo;
+	const { selectedPermissions } = moduleInfo;
 	try {
+		const approvedModules = Object.keys(selectedPermissions)?.filter(
+			(key) => selectedPermissions[key]["Section Access"] === true,
+		);
 		const employee = await addEmployee(company, {
 			firstName,
 			middleName,
@@ -582,6 +586,7 @@ const createMasterUser = async (req, res) => {
 			empId: employee?._id,
 			businessEmail: email,
 			personalPhoneNum: phoneNumber,
+			baseModule: approvedModules,
 		});
 		res.status(201).json(employee);
 	} catch (error) {
