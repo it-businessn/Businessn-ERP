@@ -130,7 +130,7 @@ const BenefitInfo = ({ company, userId }) => {
 			} = formData.benefitsInfo;
 
 			const benefitData = {
-				empId: moreDetails.empId,
+				empId: moreDetails?.empId || userId,
 				companyName: company,
 				typeOfVacationTreatment,
 				vacationPayPercent,
@@ -153,10 +153,32 @@ const BenefitInfo = ({ company, userId }) => {
 				unionDuesContribution,
 			};
 			// updatedBenefit.carryFwd = carryFwd !== undefined ? !carryFwd : false;
-			const { data } = await PayrollService.updateEmployeeBalanceInfo(
-				benefitData,
-				moreDetails?._id,
-			);
+			const { data } = moreDetails?._id
+				? await PayrollService.updateEmployeeBalanceInfo(benefitData, moreDetails?._id)
+				: await PayrollService.addEmployeeBalanceInfo(benefitData);
+			setFormData({
+				benefitsInfo: {
+					typeOfVacationTreatment,
+					vacationPayPercent,
+					YTDVacationAccrued,
+					YTDVacationUsed,
+					vacationAdjustment,
+					typeOfPensionERTreatment,
+					pensionERContribution: data?.pensionERContribution,
+					typeOfDentalERTreatment,
+					dentalERContribution: data?.dentalERContribution,
+					typeOfExtendedHealthERTreatment,
+					extendedHealthERContribution: data?.extendedHealthERContribution,
+					typeOfPensionEETreatment,
+					pensionEEContribution: data?.pensionEEContribution,
+					typeOfDentalEETreatment,
+					dentalEEContribution: data?.dentalEEContribution,
+					typeOfExtendedHealthEETreatment,
+					extendedHealthEEContribution: data?.extendedHealthEEContribution,
+					typeOfUnionDuesTreatment,
+					unionDuesContribution: data?.unionDuesContribution,
+				},
+			});
 			setIsLoading(false);
 			toast({
 				title: "Benefits info updated successfully.",

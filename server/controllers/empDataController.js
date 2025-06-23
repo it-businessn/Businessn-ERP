@@ -20,9 +20,8 @@ const encryptSSN = (SIN) => {
 
 const getPercent = (value) => {
 	const input = value === "" ? 0 : parseFloat(value);
-	// return convertedFloatValue;
-	// return Number.isInteger(input) ? input / 100 : input;
-	return input;
+	// return input;
+	return Number.isInteger(input) ? input / 100 : input;
 };
 
 const addNewUser = async (companyName, personalInfo, contactInfo, emergencyContact) => {

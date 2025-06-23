@@ -19,7 +19,7 @@ const getAllBalanceInfo = async (req, res) => {
 const getEmployeeBalanceInfo = async (req, res) => {
 	const { companyName, empId } = req.params;
 	try {
-		const result = await findEmployeeBalanceInfo(empId, companyName);
+		const result = await findEmployeeBalanceInfo(empId, companyName, true);
 
 		res.status(200).json(result);
 	} catch (error) {
@@ -77,11 +77,9 @@ const updateBalanceInfo = async (id, data) =>
 
 const getPercent = (value) => {
 	const input = value === "" ? 0 : parseFloat(value);
-	// return convertedFloatValue;
-	// return Number.isInteger(input) ? input / 100 : input;
-	return input;
+	// return input;
+	return Number.isInteger(input) ? input / 100 : input;
 };
-
 const addEmployeeBalanceInfo = async (req, res) => {
 	const {
 		empId,
@@ -114,39 +112,41 @@ const addEmployeeBalanceInfo = async (req, res) => {
 			typeOfUnionDuesTreatment,
 			unionDuesContribution: typeOfUnionDuesTreatment?.includes("%")
 				? getPercent(unionDuesContribution)
-				: unionDuesContribution ?? 0,
+				: unionDuesContribution || 0,
 			typeOfExtendedHealthEETreatment,
 			extendedHealthEEContribution: typeOfExtendedHealthEETreatment?.includes("%")
 				? getPercent(extendedHealthEEContribution)
-				: extendedHealthEEContribution ?? 0,
+				: extendedHealthEEContribution || 0,
 			typeOfDentalEETreatment,
 			dentalEEContribution: typeOfDentalEETreatment?.includes("%")
 				? getPercent(dentalEEContribution)
-				: dentalEEContribution ?? 0,
+				: dentalEEContribution || 0,
 			typeOfPensionEETreatment,
 			pensionEEContribution: typeOfPensionEETreatment?.includes("%")
 				? getPercent(pensionEEContribution)
-				: pensionEEContribution ?? 0,
+				: pensionEEContribution || 0,
 			typeOfExtendedHealthERTreatment,
 			extendedHealthERContribution: typeOfExtendedHealthERTreatment?.includes("%")
 				? getPercent(extendedHealthERContribution)
-				: extendedHealthERContribution ?? 0,
+				: extendedHealthERContribution || 0,
 			typeOfDentalERTreatment,
 			dentalERContribution: typeOfDentalERTreatment?.includes("%")
 				? getPercent(dentalERContribution)
-				: dentalERContribution ?? 0,
+				: dentalERContribution || 0,
 			typeOfPensionERTreatment,
 			pensionERContribution: typeOfPensionERTreatment?.includes("%")
 				? getPercent(pensionERContribution)
-				: pensionERContribution ?? 0,
+				: pensionERContribution || 0,
 		};
 		const existingBalanceInfo = await findEmployeeBalanceInfo(empId, companyName, true);
-		if (existingBalanceInfo) {
-			const updatedBalanceInfo = await updateBalanceInfo(existingBalanceInfo._id, data);
-			return res.status(201).json(updatedBalanceInfo);
+		// if (existingBalanceInfo) {
+		// 	const updatedBalanceInfo = await updateBalanceInfo(existingBalanceInfo._id, data);
+		// 	return res.status(201).json(updatedBalanceInfo);
+		// }
+		if (!existingBalanceInfo) {
+			const newBalanceInfo = await EmployeeBalanceInfo.create(data);
+			res.status(201).json(newBalanceInfo);
 		}
-		const newBalanceInfo = await EmployeeBalanceInfo.create(data);
-		return res.status(201).json(newBalanceInfo);
 	} catch (error) {
 		res.status(400).json({ message: error.message });
 	}
@@ -160,7 +160,63 @@ const updateEmployeeBalanceInfo = async (req, res) => {
 		const existingBalanceInfo = await EmployeeBalanceInfo.findById(id);
 		if (existingBalanceInfo) {
 			if (req.body?._id) delete req.body._id;
-			const updatedInfo = await updateBalanceInfo(id, req.body);
+			const {
+				empId,
+				companyName,
+				carryFwd,
+				typeOfVacationTreatment,
+				vacationPayPercent,
+				typeOfUnionDuesTreatment,
+				unionDuesContribution,
+				typeOfExtendedHealthEETreatment,
+				extendedHealthEEContribution,
+				typeOfDentalEETreatment,
+				dentalEEContribution,
+				typeOfPensionEETreatment,
+				pensionEEContribution,
+				typeOfExtendedHealthERTreatment,
+				extendedHealthERContribution,
+				typeOfDentalERTreatment,
+				dentalERContribution,
+				typeOfPensionERTreatment,
+				pensionERContribution,
+			} = req.body;
+			const data = {
+				empId,
+				companyName,
+				// carryFwd,
+				typeOfVacationTreatment,
+				vacationPayPercent: getPercent(vacationPayPercent),
+				typeOfUnionDuesTreatment,
+				unionDuesContribution: typeOfUnionDuesTreatment?.includes("%")
+					? getPercent(unionDuesContribution)
+					: unionDuesContribution || 0,
+				typeOfExtendedHealthEETreatment,
+				extendedHealthEEContribution: typeOfExtendedHealthEETreatment?.includes("%")
+					? getPercent(extendedHealthEEContribution)
+					: extendedHealthEEContribution || 0,
+				typeOfDentalEETreatment,
+				dentalEEContribution: typeOfDentalEETreatment?.includes("%")
+					? getPercent(dentalEEContribution)
+					: dentalEEContribution || 0,
+				typeOfPensionEETreatment,
+				pensionEEContribution: typeOfPensionEETreatment?.includes("%")
+					? getPercent(pensionEEContribution)
+					: pensionEEContribution || 0,
+				typeOfExtendedHealthERTreatment,
+				extendedHealthERContribution: typeOfExtendedHealthERTreatment?.includes("%")
+					? getPercent(extendedHealthERContribution)
+					: extendedHealthERContribution || 0,
+				typeOfDentalERTreatment,
+				dentalERContribution: typeOfDentalERTreatment?.includes("%")
+					? getPercent(dentalERContribution)
+					: dentalERContribution || 0,
+				typeOfPensionERTreatment,
+				pensionERContribution: typeOfPensionERTreatment?.includes("%")
+					? getPercent(pensionERContribution)
+					: pensionERContribution || 0,
+			};
+			const updatedInfo = await updateBalanceInfo(id, data);
 			return res.status(201).json(updatedInfo);
 		}
 		return res.status(201).json("Record does not exist");
