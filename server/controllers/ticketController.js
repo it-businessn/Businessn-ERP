@@ -127,11 +127,12 @@ const getOpenTickets = async (req, res) => {
 const getClosedTickets = async (req, res) => {
 	const { id, companyName } = req.params;
 	try {
+		const name = id.replace("  ", " ");
 		const tickets = await SupportTicket.find({
 			companyName,
 			status: "Close",
-			$or: [{ originator: id }, { assignee: id }],
-		}).sort({ priority: 1 });
+			$or: [{ originator: name }, { assignee: name }],
+		});
 		res.status(200).json(tickets);
 	} catch (error) {
 		res.status(404).json({ error: error.message });
