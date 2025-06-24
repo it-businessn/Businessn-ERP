@@ -462,10 +462,11 @@ const sendMailCreds = async (req, res) => {
 				.sort({
 					createdOn: -1,
 				})
-				?.select("email fullName");
+				?.select("email firstName fullName");
 			if (user) {
 				const { _id, email } = user;
 				const resetLink = getResetPasswordLink({ _id });
+
 				if (resetLink)
 					await sendEmail(
 						email,
@@ -517,7 +518,7 @@ const sendMailCreds = async (req, res) => {
 								font-size: 14px;
 							"
 						>
-				      <h2 style="margin: 5px 0">Hello,</h2>
+				      <h2 style="margin: 5px 0">Hello ${user.firstName},</h2>
        <p>  Your account has been successfully created. For your security, please
         set your password by clicking the link below.</p> 
 		<p>

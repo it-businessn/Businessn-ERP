@@ -218,11 +218,9 @@ const login = async (req, res) => {
 		// existingCompany.employees.push(user._id);
 		// await existingCompany.save();
 		// }
-
 		if (!user) {
 			return res.status(500).json({ error: "User does not exist" });
 		}
-
 		const { _id, firstName, lastName, middleName, fullName, phoneNumber, primaryAddress, manager } =
 			user;
 
@@ -230,11 +228,11 @@ const login = async (req, res) => {
 			registration_number: companyId,
 			employees: user._id,
 		}).select("name registration_number address");
-
 		if (!existingCompanyUser) {
 			return res.status(500).json({ error: "User does not exist for the company" });
 		}
 		const existingCompany = await findCompany("registration_number", companyId);
+
 		const empInfo = await EmployeeEmploymentInfo.findOne({
 			companyName: existingCompany.name,
 			empId: user._id,
@@ -244,46 +242,11 @@ const login = async (req, res) => {
 			password,
 			companyName: existingCompanyUser.name,
 		});
-		const profilePwdMatch = password === existingProfileInfo?.password;
-		if (user?.password) {
-			const match = await comparePassword(password, user?.password);
-			if (match) {
-				const accessToken = generateAccessToken({ id: _id, fullName });
-				const refreshToken = generateRefreshToken({ id: _id, fullName });
 
-				logUserLoginActivity(_id);
-				return res.json({
-					message: "Logged in successfully",
-					user: {
-						_id,
-						firstName,
-						lastName,
-						middleName,
-						fullName,
-						email,
-						role: empInfo?.employmentRole,
-						department: empInfo?.positions?.[0]?.employmentDepartment,
-						phoneNumber,
-						primaryAddress,
-						employmentType: empInfo?.employmentRole,
-						manager,
-						employeeId: empInfo?.employeeNo,
-						payrollStatus: empInfo?.payrollStatus,
-					},
-					existingCompanyUser,
-					accessToken,
-					refreshToken,
-				});
-			}
-		}
-		if (profilePwdMatch) {
-			const hashedPassword = await hashPassword(password);
-			await Employee.findByIdAndUpdate(
-				{ _id: user._id },
-				{
-					$set: { password: hashedPassword },
-				},
-			);
+		const profilePwdMatch = password === existingProfileInfo?.password;
+		const match = await comparePassword(password, user?.password);
+
+		if (match || profilePwdMatch) {
 			const accessToken = generateAccessToken({ id: _id, fullName });
 			const refreshToken = generateRefreshToken({ id: _id, fullName });
 
@@ -428,7 +391,7 @@ const forgotPassword = async (req, res) => {
 				font-size: 14px;
 			"
 		>
-      <p style="margin: 5px 0">Hello ${user.firstName}</p>
+      <p style="margin: 5px 0">Hello ${user.firstName},</p>
       <p>You requested a password reset.</p>
 	  <p>If you would still like to reset your password, please click the following link. </p>
       <p><a href="${resetLink}" target="_blank">Reset Password</a></p>
@@ -503,6 +466,7 @@ const setNewPassword = async (req, res) => {
 				$set: { password: hashedPassword },
 			},
 		);
+		await EmployeeProfileInfo.updateMany({ empId: user._id }, { $set: { password } });
 		res.render("index", { email: user.email, status: "Verified" });
 	} catch (error) {
 		res.status(500).json({ message: "Something Went Wrong" });

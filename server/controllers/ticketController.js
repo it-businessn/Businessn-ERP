@@ -573,7 +573,7 @@ const createTicket = async (req, res) => {
 				font-size: 14px;
 			"
 		>
-			<h3 style="margin: 0; margin-bottom: 1em">Hello ${newTask?.assignee}</h3>
+			<h3 style="margin: 0; margin-bottom: 1em">Hello ${newTask?.assignee},</h3>
 			<p style="margin: 5px 0">
 				We are confirming that we have received ticket <span style="
 				background: #d5efe2;">${newTask?.ticketNumber}</span> assigned to
