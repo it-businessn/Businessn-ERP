@@ -65,7 +65,7 @@ export const EARNINGS_TYPES = [
 		isEarning: true,
 	},
 	{
-		name: "Sick Pay",
+		name: PAY_TYPES_TITLE.SICK_PAY,
 		rate: "sickPay",
 		totalHours: "totalSickHoursWorked",
 		currentTotal: "currentSickPayTotal",
@@ -107,6 +107,24 @@ export const EARNINGS_TYPES = [
 		currentTotal: "currentVacationPayTotal",
 		YTDTotal: "YTDVacationPayTotal",
 		YTDHoursTotal: "YTDVacationHoursWorked",
+		isEarning: true,
+	},
+	{
+		name: PAY_TYPES_TITLE.BEREAVEMENT_PAY,
+		rate: "bereavementPay",
+		totalHours: "totalBereavementHoursWorked",
+		currentTotal: "currentBereavementPayTotal",
+		YTDTotal: "YTDBereavementPayTotal",
+		YTDHoursTotal: "YTDBereavementHoursWorked",
+		isEarning: true,
+	},
+	{
+		name: PAY_TYPES_TITLE.PERSONAL_DAY_PAY,
+		rate: "personalDayPay",
+		totalHours: "totalPersonalDayHoursWorked",
+		currentTotal: "currentPersonalDayPayTotal",
+		YTDTotal: "YTDPersonalDayPayTotal",
+		YTDHoursTotal: "YTDPersonalDayHoursWorked",
 		isEarning: true,
 	},
 	{

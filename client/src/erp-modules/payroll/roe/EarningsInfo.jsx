@@ -42,6 +42,8 @@ const EarningsInfo = ({ formData, setFormData, company, roeEmpId }) => {
 							_?.totalStatDayHoursWorked +
 							_?.totalStatHours +
 							_?.totalVacationHoursWorked +
+							_?.totalBereavementHoursWorked +
+							_?.totalPersonalDayHoursWorked +
 							_?.totalFirstAidHoursWorked),
 				);
 				const totalHours = data?.reduce((acc, item) => {

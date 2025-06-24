@@ -63,6 +63,20 @@ export const REGULAR_HOURLY_ALLOCATE_COLS = [
 		isEditable: true,
 		nearest: true,
 	},
+	{ key: "Bereavement Hrs", pair: "totalBereavementHoursWorked", align: "center", nearest: true },
+	{
+		key: "Add Bereavement",
+		pair: "additionalBereavementHoursWorked",
+		isEditable: true,
+		nearest: true,
+	},
+	{ key: "Personal Day Hrs", pair: "totalPersonalDayHoursWorked", align: "center", nearest: true },
+	{
+		key: "Add Personal Day",
+		pair: "additionalPersonalDayHoursWorked",
+		isEditable: true,
+		nearest: true,
+	},
 	{
 		key: "Sick Pay Hrs",
 		pair: "totalSickHoursWorked",

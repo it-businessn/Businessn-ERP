@@ -246,6 +246,8 @@ const addAmountAllocation = async (req, res) => {
 			statPayAmt,
 			statWorkPayAmt,
 			vacationPayAmt,
+			bereavementPayAmt,
+			personalDayPayAmt,
 			sickPayAmt,
 
 			commissionPayout,
@@ -334,6 +336,8 @@ const addAmountAllocation = async (req, res) => {
 			statPayAmt,
 			statWorkPayAmt,
 			vacationPayAmt,
+			bereavementPayAmt,
+			personalDayPayAmt,
 			sickPayAmt,
 
 			commissionPayout,

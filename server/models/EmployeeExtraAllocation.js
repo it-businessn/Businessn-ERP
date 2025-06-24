@@ -35,6 +35,16 @@ const employeeExtraAllocationSchema = new mongoose.Schema({
 	additionalManualVacationHoursWorked: { type: Number, default: 0 },
 	additionalSuperficialVacationHoursWorked: { type: Number, default: 0 },
 
+	additionalBereavementHoursWorked: { type: Number, default: 0 },
+	additionalPayoutBereavementHoursWorked: { type: Number, default: 0 },
+	additionalManualBereavementHoursWorked: { type: Number, default: 0 },
+	additionalSuperficialBereavementHoursWorked: { type: Number, default: 0 },
+
+	additionalPersonalDayHoursWorked: { type: Number, default: 0 },
+	additionalPayoutPersonalDayHoursWorked: { type: Number, default: 0 },
+	additionalManualPersonalDayHoursWorked: { type: Number, default: 0 },
+	additionalSuperficialPersonalDayHoursWorked: { type: Number, default: 0 },
+
 	additionalSickHoursWorked: { type: Number, default: 0 },
 	additionalPayoutSickHoursWorked: { type: Number, default: 0 },
 	additionalManualSickHoursWorked: { type: Number, default: 0 },
@@ -68,6 +78,8 @@ const employeeExtraAllocationSchema = new mongoose.Schema({
 	statPayAmt: { type: Number, default: 0 },
 	statWorkPayAmt: { type: Number, default: 0 },
 	vacationPayAmt: { type: Number, default: 0 },
+	bereavementPayAmt: { type: Number, default: 0 },
+	personalDayPayAmt: { type: Number, default: 0 },
 	sickPayAmt: { type: Number, default: 0 },
 
 	commissionPayout: { type: Number, default: 0 },
@@ -89,6 +101,8 @@ const employeeExtraAllocationSchema = new mongoose.Schema({
 	statPayAmtPayout: { type: Number, default: 0 },
 	statWorkPayAmtPayout: { type: Number, default: 0 },
 	vacationPayAmtPayout: { type: Number, default: 0 },
+	bereavementPayAmtPayout: { type: Number, default: 0 },
+	personalPayAmtPayout: { type: Number, default: 0 },
 	sickPayAmtPayout: { type: Number, default: 0 },
 
 	commissionManual: { type: Number, default: 0 },
@@ -110,6 +124,8 @@ const employeeExtraAllocationSchema = new mongoose.Schema({
 	statPayAmtManual: { type: Number, default: 0 },
 	statWorkPayAmtManual: { type: Number, default: 0 },
 	vacationPayAmtManual: { type: Number, default: 0 },
+	bereavementPayAmtManual: { type: Number, default: 0 },
+	personalPayAmtManual: { type: Number, default: 0 },
 	sickPayAmtManual: { type: Number, default: 0 },
 
 	commissionSuperficial: { type: Number, default: 0 },
@@ -131,6 +147,8 @@ const employeeExtraAllocationSchema = new mongoose.Schema({
 	statPayAmtSuperficial: { type: Number, default: 0 },
 	statWorkPayAmtSuperficial: { type: Number, default: 0 },
 	vacationPayAmtSuperficial: { type: Number, default: 0 },
+	bereavementPayAmtSuperficial: { type: Number, default: 0 },
+	personalPayAmtSuperficial: { type: Number, default: 0 },
 	sickPayAmtSuperficial: { type: Number, default: 0 },
 
 	totalAmountAllocated: { type: Number, default: 0 },

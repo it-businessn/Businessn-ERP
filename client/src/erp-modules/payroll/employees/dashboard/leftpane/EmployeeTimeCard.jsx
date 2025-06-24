@@ -242,6 +242,8 @@ const EmployeeTimeCard = ({ selectedUser, company, isMobile }) => {
 								clockOut,
 								totalBreakHours,
 								totalWorkedHours,
+								bereavementPayHours,
+								personalPayHours,
 								notDevice,
 							}) => {
 								const { param_hours } = getParamKey(payType);
@@ -261,6 +263,10 @@ const EmployeeTimeCard = ({ selectedUser, company, isMobile }) => {
 										? sickPayHours
 										: param_hours === "vacationPayHours"
 										? vacationPayHours
+										: param_hours === "personalPayHours"
+										? personalPayHours
+										: param_hours === "bereavementPayHours"
+										? bereavementPayHours
 										: param_hours === "breakHoursWorked"
 										? breakHoursWorked
 										: 0;

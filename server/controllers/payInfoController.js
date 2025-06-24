@@ -102,6 +102,8 @@ const addEmployeePayInfo = async (req, res) => {
 					role.statPay = regPay;
 					role.sickPay = regPay;
 					role.vacationPay = regPay;
+					role.bereavementPay = regPay;
+					role.personalDayPay = regPay;
 				}
 			});
 			if (roles?.every((_) => parseFloat(_?.payRate) > 17.85)) {
@@ -153,6 +155,8 @@ const updateEmployeePayInfo = async (req, res) => {
 					role.statPay = regPay;
 					role.sickPay = regPay;
 					role.vacationPay = regPay;
+					role.bereavementPay = regPay;
+					role.personalDayPay = regPay;
 				}
 			});
 			if (roles?.every((_) => parseFloat(_?.payRate) > 17.85)) {

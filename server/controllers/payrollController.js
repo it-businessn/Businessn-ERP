@@ -120,6 +120,8 @@ const calculateTimesheetApprovedHours = async (startDate, endDate, companyName) 
 					totalStatHours: 0,
 					totalSickHoursWorked: 0,
 					totalVacationHoursWorked: 0,
+					totalBereavementHoursWorked: 0,
+					totalPersonalDayHoursWorked: 0,
 				};
 			}
 			// timesheet.regHoursWorked = timesheet.regHoursWorked.toFixed(2);
@@ -133,6 +135,7 @@ const calculateTimesheetApprovedHours = async (startDate, endDate, companyName) 
 			if (timesheet.payType === PAY_TYPES_TITLE.DBL_OVERTIME_PAY)
 				acc[timesheet.employeeId].totalDblOvertimeHoursWorked +=
 					timesheet.dblOvertimeHoursWorked || 0;
+
 			if (timesheet.payType === PAY_TYPES_TITLE.STAT_PAY)
 				acc[timesheet.employeeId].totalStatHours += timesheet.statDayHours || 0;
 
@@ -144,6 +147,12 @@ const calculateTimesheetApprovedHours = async (startDate, endDate, companyName) 
 
 			if (timesheet.payType === PAY_TYPES_TITLE.VACATION_PAY)
 				acc[timesheet.employeeId].totalVacationHoursWorked += timesheet.vacationPayHours || 0;
+
+			if (timesheet.payType === PAY_TYPES_TITLE.BEREAVEMENT_PAY)
+				acc[timesheet.employeeId].totalBereavementHoursWorked += timesheet.bereavementPayHours || 0;
+
+			if (timesheet.payType === PAY_TYPES_TITLE.PERSONAL_DAY_PAY)
+				acc[timesheet.employeeId].totalPersonalDayHoursWorked += timesheet.personalPayHours || 0;
 
 			return acc;
 		}, {});

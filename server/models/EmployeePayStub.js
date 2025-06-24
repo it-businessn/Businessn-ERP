@@ -73,7 +73,6 @@ const employeePayStubSchema = new mongoose.Schema({
 	YTDSickHoursWorked: { type: Number, default: 0 },
 
 	vacationPay: String,
-	bereavementPay: String,
 	currentVacationPayTotal: { type: Number, default: 0 },
 	YTDVacationPayTotal: { type: Number, default: 0 },
 	totalVacationHoursWorked: { type: Number, default: 0 },
@@ -81,6 +80,18 @@ const employeePayStubSchema = new mongoose.Schema({
 	// totalManualVacationHoursWorked: Number,
 	// totalSuperficialVacationHoursWorked: Number,
 	YTDVacationHoursWorked: { type: Number, default: 0 },
+
+	bereavementPay: String,
+	currentBereavementPayTotal: { type: Number, default: 0 },
+	YTDBereavementPayTotal: { type: Number, default: 0 },
+	totalBereavementHoursWorked: { type: Number, default: 0 },
+	YTDBereavementHoursWorked: { type: Number, default: 0 },
+
+	personalDayPay: String,
+	currentPersonalDayPayTotal: { type: Number, default: 0 },
+	YTDPersonalDayPayTotal: { type: Number, default: 0 },
+	totalPersonalDayHoursWorked: { type: Number, default: 0 },
+	YTDPersonalDayHoursWorked: { type: Number, default: 0 },
 
 	sprayPay: { type: String, default: "1" },
 	YTDSprayPayTotal: { type: Number, default: 0 },

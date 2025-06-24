@@ -185,6 +185,8 @@ const addUserPayInfo = async (empId, companyName, payInfo, roleDetails) => {
 		newRole.statPay = salary;
 		newRole.sickPay = salary;
 		newRole.vacationPay = salary;
+		newRole.bereavementPay = salary;
+		newRole.personalDayPay = salary;
 	}
 
 	const newPayInfo = await EmployeePayInfo.create({

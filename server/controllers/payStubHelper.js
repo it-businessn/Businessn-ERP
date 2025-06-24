@@ -27,6 +27,8 @@ const appendPrevPayInfoBalance = (prevPayPayInfo, newPayStub) => {
 		YTDStatHoursWorked,
 		YTDSickHoursWorked,
 		YTDVacationHoursWorked,
+		YTDBereavementHoursWorked,
+		YTDPersonalDayHoursWorked,
 		YTDSprayHoursWorked,
 		YTDFirstAidHoursWorked,
 		YTDRegPayTotal,
@@ -36,6 +38,8 @@ const appendPrevPayInfoBalance = (prevPayPayInfo, newPayStub) => {
 		YTDStatPayTotal,
 		YTDSickPayTotal,
 		YTDVacationPayTotal,
+		YTDBereavementPayTotal,
+		YTDPersonalDayPayTotal,
 		YTD_FDTaxDeductions,
 		YTDStateTaxDeductions,
 		YTD_IncomeTaxDeductions,
@@ -110,6 +114,14 @@ const appendPrevPayInfoBalance = (prevPayPayInfo, newPayStub) => {
 		prevPayPayInfo.YTDVacationHoursWorked,
 		YTDVacationHoursWorked,
 	);
+	prevPayPayInfo.YTDBereavementHoursWorked = getSumTotal(
+		prevPayPayInfo.YTDBereavementHoursWorked,
+		YTDBereavementHoursWorked,
+	);
+	prevPayPayInfo.YTDPersonalDayHoursWorked = getSumTotal(
+		prevPayPayInfo.YTDPersonalDayHoursWorked,
+		YTDPersonalDayHoursWorked,
+	);
 	prevPayPayInfo.YTDSprayHoursWorked = getSumTotal(
 		prevPayPayInfo.YTDSprayHoursWorked,
 		YTDSprayHoursWorked,
@@ -135,6 +147,15 @@ const appendPrevPayInfoBalance = (prevPayPayInfo, newPayStub) => {
 		prevPayPayInfo.YTDVacationPayTotal,
 		YTDVacationPayTotal,
 	);
+	prevPayPayInfo.YTDBereavementPayTotal = getSumTotal(
+		prevPayPayInfo.YTDBereavementPayTotal,
+		YTDBereavementPayTotal,
+	);
+	prevPayPayInfo.YTDPersonalDayPayTotal = getSumTotal(
+		prevPayPayInfo.YTDPersonalDayPayTotal,
+		YTDPersonalDayPayTotal,
+	);
+
 	prevPayPayInfo.YTD_FDTaxDeductions = getSumTotal(
 		prevPayPayInfo.YTD_FDTaxDeductions,
 		YTD_FDTaxDeductions,

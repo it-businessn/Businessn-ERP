@@ -100,6 +100,8 @@ const calcRegularAggregatedHours = async (
 		totalStatDayHoursWorked,
 		totalStatHours,
 		totalVacationHoursWorked,
+		totalBereavementHoursWorked,
+		totalPersonalDayHoursWorked,
 		additionalRegHoursWorked,
 		additionalOvertimeHoursWorked,
 		additionalDblOvertimeHoursWorked,
@@ -117,7 +119,9 @@ const calcRegularAggregatedHours = async (
 		totalSickHoursWorked +
 		totalStatDayHoursWorked +
 		totalStatHours +
-		totalVacationHoursWorked;
+		totalVacationHoursWorked +
+		totalBereavementHoursWorked +
+		totalPersonalDayHoursWorked;
 
 	const additionalSumHrs =
 		additionalRegHoursWorked +
@@ -343,6 +347,8 @@ const buildEmpHourlyDetails = async (empTimesheetData, employee, companyName, is
 		totalStatHours,
 		totalSickHoursWorked,
 		totalVacationHoursWorked,
+		totalBereavementHoursWorked,
+		totalPersonalDayHoursWorked,
 	} = await getGroupedData(empTimesheetData, employee, companyName, isExtraPayRun);
 	return {
 		_id: employeeId,
@@ -354,6 +360,8 @@ const buildEmpHourlyDetails = async (empTimesheetData, employee, companyName, is
 		totalStatHours,
 		totalSickHoursWorked,
 		totalVacationHoursWorked,
+		totalBereavementHoursWorked,
+		totalPersonalDayHoursWorked,
 	};
 };
 
@@ -386,6 +394,12 @@ const getGroupedData = async (empTimesheetData, employee, companyName, isExtraPa
 	const totalStatHours = empTimesheetData ? empTimesheetData.totalStatHours : 0;
 	const totalSickHoursWorked = empTimesheetData ? empTimesheetData.totalSickHoursWorked : 0;
 	const totalVacationHoursWorked = empTimesheetData ? empTimesheetData.totalVacationHoursWorked : 0;
+	const totalBereavementHoursWorked = empTimesheetData
+		? empTimesheetData.totalBereavementHoursWorked
+		: 0;
+	const totalPersonalDayHoursWorked = empTimesheetData
+		? empTimesheetData.totalPersonalDayHoursWorked
+		: 0;
 	return {
 		employeeId,
 		recordId,
@@ -397,6 +411,8 @@ const getGroupedData = async (empTimesheetData, employee, companyName, isExtraPa
 		totalStatHours: parseFloat(totalStatHours || 0),
 		totalSickHoursWorked: parseFloat(totalSickHoursWorked || 0),
 		totalVacationHoursWorked: parseFloat(totalVacationHoursWorked || 0),
+		totalBereavementHoursWorked: parseFloat(totalBereavementHoursWorked || 0),
+		totalPersonalDayHoursWorked: parseFloat(totalPersonalDayHoursWorked || 0),
 	};
 };
 

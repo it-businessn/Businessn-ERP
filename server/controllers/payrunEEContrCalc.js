@@ -231,7 +231,7 @@ const findAdditionalRegularAmountAllocatedInfo = async (record) =>
 			select: ["fullName"],
 		})
 		.select(
-			"empId regPayAmt OTPayAmt dblOTPayAmt statPayAmt statWorkPayAmt vacationPayAmt sickPayAmt totalAmountAllocated commission bonus retroactive reimbursement terminationPayout vacationPayout vacationBalAdjust vacationAccrual vacationUsed federalTax provTax incomeTax",
+			"empId regPayAmt OTPayAmt dblOTPayAmt statPayAmt statWorkPayAmt vacationPayAmt bereavementPayAmt personalDayPayAmt sickPayAmt totalAmountAllocated commission bonus retroactive reimbursement terminationPayout vacationPayout vacationBalAdjust vacationAccrual vacationUsed federalTax provTax incomeTax",
 		);
 
 const findAdditionalPayoutAmountAllocatedInfo = async (record) =>

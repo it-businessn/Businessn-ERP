@@ -65,6 +65,8 @@ const HourlyAllocation = ({
 				hrs.totalStatDayHoursWorked = convertDecimal(hrs?.totalStatDayHoursWorked);
 				hrs.totalStatHours = convertDecimal(hrs?.totalStatHours);
 				hrs.totalVacationHoursWorked = convertDecimal(hrs?.totalVacationHoursWorked);
+				hrs.totalBereavementHoursWorked = convertDecimal(hrs?.totalBereavementHoursWorked);
+				hrs.totalPersonalDayHoursWorked = convertDecimal(hrs?.totalPersonalDayHoursWorked);
 				hrs.additionalDblOvertimeHoursWorked = convertDecimal(
 					hrs?.additionalDblOvertimeHoursWorked,
 				);

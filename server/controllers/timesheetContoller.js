@@ -92,7 +92,8 @@ const mapTimesheet = (payInfos, timesheets, empInfos, selectedPayGroupOption) =>
 				timesheet.statPay = empRoleRates?.statPay;
 				timesheet.sickPay = empRoleRates?.sickPay;
 				timesheet.vacationPay = empRoleRates?.vacationPay;
-
+				timesheet.bereavementPay = empRoleRates?.bereavementPay;
+				timesheet.personalDayPay = empRoleRates?.personalDayPay;
 				timesheet.typeOfEarning = empRole?.typeOfEarning;
 			}
 		}
@@ -451,6 +452,8 @@ const updateTimesheetRole = async (req, res) => {
 		updatedData.statPay = updatedRole?.payRate || 0;
 		updatedData.sickPay = updatedRole?.payRate || 0;
 		updatedData.vacationPay = updatedRole?.payRate || 0;
+		updatedData.personalDayPay = updatedRole?.payRate || 0;
+		updatedData.bereavementPay = updatedRole?.payRate || 0;
 
 		const timesheet = await updateTimesheetData(id, updatedData);
 		return res.status(201).json(timesheet);
@@ -666,7 +669,9 @@ const findStatPayMonthlyEarning = async (employeeId, companyName) => {
 				item?.statDayHoursWorked * empPayInfoResult?.roles?.[0]?.statWorkPay +
 				item?.statDayHours * empPayInfoResult?.roles?.[0]?.statPay +
 				item?.sickPayHours * empPayInfoResult?.roles?.[0]?.sickPay +
-				item?.vacationPayHours * empPayInfoResult?.roles?.[0]?.vacationPay)
+				item?.vacationPayHours * empPayInfoResult?.roles?.[0]?.vacationPay +
+				item?.bereavementPayHours * empPayInfoResult?.roles?.[0]?.bereavementPay +
+				item?.personalPayHours * empPayInfoResult?.roles?.[0]?.personalDayPay)
 		);
 	}, 0);
 

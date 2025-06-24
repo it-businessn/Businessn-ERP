@@ -33,7 +33,7 @@ const getEmployeeEarningsInfo = async (req, res) => {
 				payPeriodEndDate: -1,
 			})
 			.select(
-				"payPeriodNum payPeriodEndDate currentGrossPay totalRegHoursWorked totalOvertimeHoursWorked totalDblOvertimeHoursWorked totalSickHoursWorked totalSprayHoursWorked totalStatDayHoursWorked totalStatHours totalVacationHoursWorked totalFirstAidHoursWorked",
+				"payPeriodNum payPeriodEndDate currentGrossPay totalRegHoursWorked totalOvertimeHoursWorked totalDblOvertimeHoursWorked totalSickHoursWorked totalSprayHoursWorked totalStatDayHoursWorked totalStatHours totalVacationHoursWorked totalFirstAidHoursWorked totalBereavementHoursWorked totalPersonalDayHoursWorked",
 			);
 		res.status(200).json(payStubs);
 	} catch (error) {

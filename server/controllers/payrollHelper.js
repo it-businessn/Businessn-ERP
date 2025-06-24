@@ -48,6 +48,8 @@ const calculateTimesheetApprovedHours = async (startDate, endDate, companyName) 
 				totalStatHours: 0,
 				totalSickHoursWorked: 0,
 				totalVacationHoursWorked: 0,
+				totalBereavementHoursWorked: 0,
+				totalPersonalDayHoursWorked: 0,
 			};
 		}
 
@@ -76,6 +78,11 @@ const calculateTimesheetApprovedHours = async (startDate, endDate, companyName) 
 		if (timesheet.payType === PAY_TYPES_TITLE.VACATION_PAY)
 			acc[timesheet.employeeId].totalVacationHoursWorked += timesheet.vacationPayHours || 0;
 
+		if (timesheet.payType === PAY_TYPES_TITLE.BEREAVEMENT_PAY)
+			acc[timesheet.employeeId].totalBereavementHoursWorked += timesheet.bereavementPayHours || 0;
+
+		if (timesheet.payType === PAY_TYPES_TITLE.PERSONAL_DAY_PAY)
+			acc[timesheet.employeeId].totalPersonalDayHoursWorked += timesheet.personalPayHours || 0;
 		return acc;
 	}, {});
 
@@ -98,6 +105,8 @@ const calcPayRates = (newEmpDataPay) => {
 	newEmpDataPay.statWorkPay = 1.5 * regPay;
 	newEmpDataPay.sickPay = regPay;
 	newEmpDataPay.vacationPay = regPay;
+	newEmpDataPay.bereavementPay = regPay;
+	newEmpDataPay.personalDayPay = regPay;
 	newEmpDataPay.sprayPay = 1;
 	newEmpDataPay.firstAidPay = 0.5;
 	return newEmpDataPay;
@@ -152,6 +161,14 @@ const calcHoursWorkedTotals = (
 		convertHrsToFloat(empTimesheetData?.totalVacationHoursWorked) +
 		convertHrsToFloat(amtAllocated?.additionalVacationHoursWorked);
 
+	newEmpData.totalBereavementHoursWorked =
+		convertHrsToFloat(empTimesheetData?.totalBereavementHoursWorked) +
+		convertHrsToFloat(amtAllocated?.additionalBereavementHoursWorked);
+
+	newEmpData.totalPersonalDayHoursWorked =
+		convertHrsToFloat(empTimesheetData?.totalPersonalDayHoursWorked) +
+		convertHrsToFloat(amtAllocated?.additionalPersonalDayHoursWorked);
+
 	newEmpData.totalSprayHoursWorked = convertHrsToFloat(empTimesheetData?.totalSprayHoursWorked);
 
 	newEmpData.totalFirstAidHoursWorked = convertHrsToFloat(
@@ -166,7 +183,9 @@ const calcHoursWorkedTotals = (
 		newEmpData.totalStatHours +
 		newEmpData.totalStatDayHoursWorked +
 		newEmpData.totalSickHoursWorked +
-		newEmpData.totalVacationHoursWorked;
+		newEmpData.totalVacationHoursWorked +
+		newEmpData.totalBereavementHoursWorked +
+		newEmpData.totalPersonalDayHoursWorked;
 	return newEmpData;
 };
 
@@ -202,6 +221,14 @@ const calcSalaryByEarningType = (newEmpData, amtAllocated) => {
 	newEmpData.currentVacationPayTotal =
 		calcSalary(newEmpData?.totalVacationHoursWorked || 0, newEmpData.vacationPay || 0) +
 		convertHrsToFloat(amtAllocated?.vacationPayAmt);
+
+	newEmpData.currentBereavementPayTotal =
+		calcSalary(newEmpData?.totalBereavementHoursWorked || 0, newEmpData.bereavementPay || 0) +
+		convertHrsToFloat(amtAllocated?.bereavementPayAmt);
+
+	newEmpData.currentPersonalDayPayTotal =
+		calcSalary(newEmpData?.totalPersonalDayHoursWorked || 0, newEmpData.personalDayPay || 0) +
+		convertHrsToFloat(amtAllocated?.personalDayPayAmt);
 
 	newEmpData.currentSprayPayTotal = calcSalary(
 		newEmpData?.totalSprayHoursWorked || 0,
@@ -271,6 +298,8 @@ const calcCurrentGrossPay = (newEmpData) => {
 		newEmpData.currentStatPayTotal +
 		newEmpData.currentSickPayTotal +
 		newEmpData.currentVacationPayTotal +
+		newEmpData.currentBereavementPayTotal +
+		newEmpData.currentPersonalDayPayTotal +
 		newEmpData.currentSprayPayTotal +
 		newEmpData.currentFirstAidPayTotal +
 		newEmpData.payInLieuPay +

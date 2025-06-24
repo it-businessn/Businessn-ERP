@@ -294,6 +294,8 @@ const calcRegularAggregatedAmount = async (
 			statPayAmt,
 			statWorkPayAmt,
 			vacationPayAmt,
+			bereavementPayAmt,
+			personalDayPayAmt,
 			sickPayAmt,
 		} = result;
 
@@ -318,6 +320,8 @@ const calcRegularAggregatedAmount = async (
 				statPayAmt +
 				statWorkPayAmt +
 				vacationPayAmt +
+				bereavementPayAmt +
+				personalDayPayAmt +
 				sickPayAmt;
 			result.totalAmountAllocated = regSumHrs;
 		}
@@ -341,7 +345,7 @@ const findAdditionalRegularAmountAllocatedInfo = async (record) =>
 			select: ["fullName"],
 		})
 		.select(
-			"empId regPayAmt regPayAmt2 OTPayAmt dblOTPayAmt statPayAmt statWorkPayAmt vacationPayAmt sickPayAmt totalAmountAllocated commission bonus retroactive reimbursement terminationPayout vacationPayout vacationBalAdjust vacationAccrual vacationUsed federalTax provTax incomeTax",
+			"empId regPayAmt regPayAmt2 OTPayAmt dblOTPayAmt statPayAmt statWorkPayAmt vacationPayAmt personalDayPayAmt bereavementPayAmt sickPayAmt totalAmountAllocated commission bonus retroactive reimbursement terminationPayout vacationPayout vacationBalAdjust vacationAccrual vacationUsed federalTax provTax incomeTax",
 		);
 
 const findAdditionalPayoutAmountAllocatedInfo = async (record) =>

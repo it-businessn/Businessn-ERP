@@ -43,6 +43,8 @@ const buildPayStub = (
 		statWorkPay,
 		sickPay,
 		vacationPay,
+		bereavementPay,
+		personalDayPay,
 		sprayPay,
 		firstAidPay,
 
@@ -71,6 +73,8 @@ const buildPayStub = (
 		totalStatHours,
 		totalSickHoursWorked,
 		totalVacationHoursWorked,
+		totalBereavementHoursWorked,
+		totalPersonalDayHoursWorked,
 		totalSprayHoursWorked,
 		totalFirstAidHoursWorked,
 		totalHoursWorked,
@@ -82,6 +86,8 @@ const buildPayStub = (
 		currentStatPayTotal,
 		currentSickPayTotal,
 		currentVacationPayTotal,
+		currentBereavementPayTotal,
+		currentPersonalDayPayTotal,
 		currentSprayPayTotal,
 		currentFirstAidPayTotal,
 		currentGrossPay,
@@ -128,6 +134,8 @@ const buildPayStub = (
 		statWorkPay,
 		sickPay,
 		vacationPay,
+		bereavementPay,
+		personalDayPay,
 		sprayPay,
 		firstAidPay,
 
@@ -157,6 +165,8 @@ const buildPayStub = (
 		totalStatHours,
 		totalSickHoursWorked,
 		totalVacationHoursWorked,
+		totalBereavementHoursWorked,
+		totalPersonalDayHoursWorked,
 		totalSprayHoursWorked,
 		totalFirstAidHoursWorked,
 		totalHoursWorked,
@@ -181,6 +191,14 @@ const buildPayStub = (
 			prevPayPayInfo?.YTDVacationHoursWorked,
 			totalVacationHoursWorked,
 		),
+		YTDPersonalDayHoursWorked: getSumTotal(
+			prevPayPayInfo?.YTDPersonalDayHoursWorked,
+			totalPersonalDayHoursWorked,
+		),
+		YTDBereavementHoursWorked: getSumTotal(
+			prevPayPayInfo?.YTDBereavementHoursWorked,
+			totalBereavementHoursWorked,
+		),
 		YTDSprayHoursWorked: getSumTotal(prevPayPayInfo?.YTDSprayHoursWorked, totalSprayHoursWorked),
 		YTDFirstAidHoursWorked: getSumTotal(
 			prevPayPayInfo?.YTDFirstAidHoursWorked,
@@ -195,6 +213,8 @@ const buildPayStub = (
 		currentStatPayTotal,
 		currentSickPayTotal,
 		currentVacationPayTotal,
+		currentBereavementPayTotal,
+		currentPersonalDayPayTotal,
 		currentSprayPayTotal,
 		currentFirstAidPayTotal,
 		currentGrossPay,
@@ -233,6 +253,14 @@ const buildPayStub = (
 		YTDStatPayTotal: getSumTotal(prevPayPayInfo?.YTDStatPayTotal, currentStatPayTotal),
 		YTDSickPayTotal: getSumTotal(prevPayPayInfo?.YTDSickPayTotal, currentSickPayTotal),
 		YTDVacationPayTotal: getSumTotal(prevPayPayInfo?.YTDVacationPayTotal, currentVacationPayTotal),
+		YTDBereavementPayTotal: getSumTotal(
+			prevPayPayInfo?.YTDBereavementPayTotal,
+			currentBereavementPayTotal,
+		),
+		YTDPersonalDayPayTotal: getSumTotal(
+			prevPayPayInfo?.YTDPersonalDayPayTotal,
+			currentPersonalDayPayTotal,
+		),
 		YTDSprayPayTotal: getSumTotal(prevPayPayInfo?.YTDSprayPayTotal, currentSprayPayTotal),
 		YTDFirstAidPayTotal: getSumTotal(prevPayPayInfo?.YTDFirstAidPayTotal, currentFirstAidPayTotal),
 		YTDPayInLieuPay: getSumTotal(prevPayPayInfo?.YTDPayInLieuPay, payInLieuPay),
@@ -539,7 +567,6 @@ const addEmployeePayStubInfo = async (req, res) => {
 		const activeEmployees = isExtraRun
 			? await getEmployeeId(selectedEmp)
 			: await getPayrollActiveEmployees(companyName, req.body?.deptName, selectedPayGroupOption);
-
 		const result = isExtraRun
 			? null
 			: await calculateTimesheetApprovedHours(payPeriodStartDate, payPeriodEndDate, companyName);

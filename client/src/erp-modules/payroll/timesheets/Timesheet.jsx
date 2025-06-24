@@ -235,6 +235,10 @@ const Timesheet = ({
 						? rec.statPay
 						: rec.param_pay_key === "sickPay"
 						? rec.sickPay
+						: rec.param_pay_key === "bereavementPay"
+						? rec.bereavementPay
+						: rec.param_pay_key === "personalDayPay"
+						? rec.personalDayPay
 						: rec.vacationPay;
 				rec.param_hours_worked =
 					rec.param_hours === "regHoursWorked"
@@ -251,6 +255,10 @@ const Timesheet = ({
 						? rec.sickPayHours
 						: rec.param_hours === "vacationPayHours"
 						? rec.vacationPayHours
+						: rec.param_hours === "bereavementPayHours"
+						? rec.bereavementPayHours
+						: rec.param_hours === "personalPayHours"
+						? rec.personalPayHours
 						: rec.param_hours === "regBreakHoursWorked"
 						? rec.regBreakHoursWorked
 						: 0;
@@ -482,6 +490,8 @@ const Timesheet = ({
 									vacationPay: data?.vacationPay,
 									dblOverTimePay: data?.dblOverTimePay,
 									overTimePay: data?.overTimePay,
+									personalDayPay: data?.personalDayPay,
+									bereavementPay: data?.bereavementPay,
 							  }
 							: record,
 					);
@@ -536,6 +546,8 @@ const Timesheet = ({
 									statDayHours: data?.statDayHours,
 									sickPayHours: data?.sickPayHours,
 									vacationPayHours: data?.vacationPayHours,
+									bereavementPayHours: data?.bereavementPayHours,
+									personalPayHours: data?.personalPayHours,
 									breakHoursWorked: data?.breakHoursWorked,
 									approveStatus: data?.approveStatus,
 							  }
@@ -564,6 +576,8 @@ const Timesheet = ({
 			formData.statDayHours = updatedRec?.statDayHours;
 			formData.breakHoursWorked = updatedRec?.breakHoursWorked;
 			formData.vacationPayHours = updatedRec?.vacationPayHours;
+			formData.bereavementPayHours = updatedRec?.bereavementPayHours;
+			formData.personalPayHours = updatedRec?.personalPayHours;
 
 			if (formData?.recordId) {
 				const { data } = await TimesheetService.updateTimesheetPayType(
@@ -585,6 +599,8 @@ const Timesheet = ({
 									statDayHours: data?.statDayHours,
 									sickPayHours: data?.sickPayHours,
 									vacationPayHours: data?.vacationPayHours,
+									bereavementPayHours: data?.bereavementPayHours,
+									personalPayHours: data?.personalPayHours,
 									breakHoursWorked: data?.breakHoursWorked,
 									approveStatus: data?.approveStatus,
 							  }

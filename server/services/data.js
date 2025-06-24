@@ -207,6 +207,8 @@ const PAY_TYPES_TITLE = {
 	STAT_PAY: "Statutory Pay",
 	SICK_PAY: "Sick Pay",
 	VACATION_PAY: "Vacation Pay",
+	BEREAVEMENT_PAY: "Bereavement Pay",
+	PERSONAL_DAY_PAY: "Personal Day Pay",
 };
 
 const TIMESHEET_ORIGIN = {
