@@ -122,6 +122,7 @@ export const userInfoDetails = {
 		jobTitle: "",
 		payGroup: "",
 		timeManagementBadgeID: "",
+		lastBadgeId: 1,
 		costCenter: "",
 		employeeCardNumber: "",
 		department: "",

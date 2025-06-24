@@ -85,6 +85,7 @@ const EmploymentInfo = ({ company, userId, payGroups, selectedPayGroupOption }) 
 				employmentCountry,
 				employmentRegion,
 				positions,
+				lastBadgeId,
 				empId,
 				_id,
 			} = employmentInfo;
@@ -92,6 +93,7 @@ const EmploymentInfo = ({ company, userId, payGroups, selectedPayGroupOption }) 
 			setFormData({
 				employmentInfo: {
 					payrollStatus,
+					lastBadgeId,
 					employeeNo,
 					employmentRole,
 					employmentStartDate,
@@ -329,6 +331,7 @@ const EmploymentInfo = ({ company, userId, payGroups, selectedPayGroupOption }) 
 					<>
 						{showModal ? (
 							<NewPositionModal
+								lastBadgeId={formData.employmentInfo.lastBadgeId}
 								company={company}
 								onClose={() => setShowModal(false)}
 								selectedPayGroup={selectedPayGroupOption}
@@ -367,6 +370,7 @@ const EmploymentInfo = ({ company, userId, payGroups, selectedPayGroupOption }) 
 												handleUpdate={handleUpdate}
 												editedIndices={editedIndices}
 												setEditedIndices={setEditedIndices}
+												lastBadgeId={formData.employmentInfo.lastBadgeId}
 											/>
 										</BoxCard>
 									))}

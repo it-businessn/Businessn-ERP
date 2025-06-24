@@ -1,4 +1,4 @@
-import { FormLabel, Stack } from "@chakra-ui/react";
+import { Checkbox, FormLabel, Stack } from "@chakra-ui/react";
 
 import { Flex, FormControl, Input, Select, SimpleGrid, Spinner } from "@chakra-ui/react";
 import PrimaryButton from "components/ui/button/PrimaryButton";
@@ -18,9 +18,11 @@ const PositionInfo = ({
 	departments,
 	setEditedIndices,
 	editedIndices,
+	lastBadgeId,
 }) => {
 	const [roleInfo, setRoleInfo] = useState(position);
 	const [filteredDept, setFilteredDept] = useState(departments);
+	const [autoGenerate, setAutoGenerate] = useState(false);
 
 	useEffect(() => {
 		if (company === COMPANIES.NW && departments && roleInfo.employmentCostCenter) {
@@ -32,6 +34,14 @@ const PositionInfo = ({
 			setFilteredDept(departments);
 		}
 	}, [roleInfo.employmentCostCenter, departments]);
+
+	useEffect(() => {
+		if (autoGenerate) {
+			const newID = String(lastBadgeId + 1).padStart(4, "0");
+			setRoleInfo((prevData) => ({ ...prevData, timeManagementBadgeID: newID }));
+			setEditedIndices((prev) => ({ ...prev, [updateRecordIndex]: true }));
+		}
+	}, [autoGenerate, lastBadgeId]);
 
 	const handleChange = (index, e) => {
 		const { name, value } = e.target;
@@ -159,7 +169,17 @@ const PositionInfo = ({
 						value={roleInfo.timeManagementBadgeID || ""}
 						onChange={(e) => handleChange(updateRecordIndex, e)}
 						placeholder="Enter badge ID"
+						mb={1}
 					/>
+					{!roleInfo.timeManagementBadgeID && (
+						<Checkbox
+							isChecked={autoGenerate}
+							colorScheme="facebook"
+							onChange={(e) => setAutoGenerate(e.target.checked)}
+						>
+							Auto-generate Badge ID
+						</Checkbox>
+					)}
 				</FormControl>
 				<FormControl>
 					<FormLabel size="sm">Employee Card Number</FormLabel>

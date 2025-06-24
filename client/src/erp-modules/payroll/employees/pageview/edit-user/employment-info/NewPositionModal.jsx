@@ -1,5 +1,6 @@
 import {
 	Box,
+	Checkbox,
 	Flex,
 	FormControl,
 	FormLabel,
@@ -30,7 +31,9 @@ const NewPositionModal = ({
 	selectedPayGroup,
 	company,
 	setNewRoleAdded,
+	lastBadgeId,
 }) => {
+	const [autoGenerate, setAutoGenerate] = useState(false);
 	const defaultRoleInfo = {
 		title: "",
 		employmentPayGroup: selectedPayGroup,
@@ -53,6 +56,13 @@ const NewPositionModal = ({
 			setFilteredDept(departments);
 		}
 	}, [roleInfo.employmentCostCenter, departments]);
+
+	useEffect(() => {
+		if (autoGenerate) {
+			const newID = String(lastBadgeId + 1).padStart(4, "0");
+			setRoleInfo((prevData) => ({ ...prevData, timeManagementBadgeID: newID }));
+		}
+	}, [autoGenerate, lastBadgeId]);
 
 	const handleChange = (e) => {
 		const { name, value } = e.target;
@@ -196,7 +206,16 @@ const NewPositionModal = ({
 									value={roleInfo?.timeManagementBadgeID}
 									onChange={handleChange}
 									placeholder="Enter badge ID"
+									isDisabled={autoGenerate}
+									mb={1}
 								/>
+								<Checkbox
+									isChecked={autoGenerate}
+									colorScheme="facebook"
+									onChange={(e) => setAutoGenerate(e.target.checked)}
+								>
+									Auto-generate Badge ID
+								</Checkbox>
 							</FormControl>
 							<FormControl>
 								<FormLabel size="sm">Employee Card Number</FormLabel>

@@ -79,6 +79,7 @@ const getEmployeeEmploymentInfo = async (req, res) => {
 	const { companyName, empId } = req.params;
 	try {
 		const result = await findEmployeeEmploymentInfo(empId, companyName);
+
 		if (!result) {
 			const user = await Employee.findById(empId).select("email position dateOfJoining").sort({
 				createdOn: -1,
@@ -92,6 +93,16 @@ const getEmployeeEmploymentInfo = async (req, res) => {
 				Math.floor(Math.random() * 10) + 10
 			}`;
 		}
+		const allBadgeIds = await EmployeeEmploymentInfo.find({
+			positions: { $exists: true, $not: { $size: 0 } },
+			companyName,
+		}).select("positions");
+		const mappedBadgeIds = allBadgeIds
+			?.map((rec) => rec.positions?.filter((pos) => pos.timeManagementBadgeID))
+			?.filter((record) => record.length);
+		const allTimeManagementBadgeID = mappedBadgeIds.flat()?.map((r) => r.timeManagementBadgeID);
+		result.lastBadgeId = Math.max(...allTimeManagementBadgeID);
+
 		return res.status(200).json(result);
 	} catch (error) {
 		res.status(404).json({ error: error.message });
