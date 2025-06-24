@@ -222,7 +222,7 @@ const BenefitInfo = ({ company, userId }) => {
 				</Stepper>
 			</Box>
 
-			<Box flex={0.7} overflowY="auto" css={tabScrollCss}>
+			<Box flex={0.7} overflowY="auto" css={tabScrollCss} height={"80%"}>
 				{/* Vacation Sub-step */}
 				{benefitsSubStep === 0 && (
 					<Stack spacing={2} p={5}>
