@@ -67,7 +67,7 @@ const ManagerViewCard = ({ company }) => {
 				{assessments?.map((assessment) => (
 					<Box
 						key={assessment._id}
-						p={{ base: "1em", lg: "1em 5px" }}
+						p={"1em"}
 						my={"auto"}
 						bg={"var(--logo_bg)"}
 						border="3px solid var(--main_color)"

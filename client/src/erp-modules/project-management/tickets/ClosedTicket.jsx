@@ -4,6 +4,7 @@ import EmptyRowRecord from "components/ui/EmptyRowRecord";
 import NormalTextTitle from "components/ui/NormalTextTitle";
 import TableLayout from "components/ui/table/TableLayout";
 import TextTitle from "components/ui/text/TextTitle";
+import { tabScrollCss } from "erp-modules/payroll/onboard-user/customInfo";
 import ActionAll from "erp-modules/payroll/timesheets/ActionAll";
 import { TICKET_ACTION_STATUS } from "erp-modules/payroll/timesheets/data";
 import { useEffect, useState } from "react";
@@ -70,8 +71,9 @@ const ClosedTicket = ({ company, setShowAddEntry, showAddEntry, userId, employee
 				position="sticky"
 				zIndex={3}
 				top={-1}
-				height="calc(100vh - 233px)"
+				height="calc(100vh - 230px)"
 				specifyPaddingCols={["Category", "Topic", "Description"]}
+				css={tabScrollCss}
 			>
 				<Tbody>
 					{(!ticketData || ticketData?.length === 0) && (

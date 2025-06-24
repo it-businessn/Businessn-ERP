@@ -18,6 +18,7 @@ import {
 	Tr,
 } from "@chakra-ui/react";
 import { activityChartData, doughnutOptions } from "constant";
+import { tabScrollCss } from "erp-modules/payroll/onboard-user/customInfo";
 import { useEffect, useState } from "react";
 import { Doughnut } from "react-chartjs-2";
 import { FaSearch } from "react-icons/fa";
@@ -93,6 +94,7 @@ const Invoice = () => {
 			p={{ base: "1em", md: "2em" }}
 			h={{ base: "auto", md: "calc(100vh - 245px)", lg: "auto" }}
 			overflow={"auto"}
+			css={tabScrollCss}
 		>
 			<Text fontWeight="bold" mb={"1em"}>
 				Invoices
@@ -105,6 +107,7 @@ const Invoice = () => {
 				borderRadius="10px"
 				fontWeight="bold"
 				mb="1em"
+				css={tabScrollCss}
 			>
 				<Text fontWeight="bold" mb="1em" color={"var(--nav_color)"}>
 					Invoice Categories
@@ -236,7 +239,7 @@ const Invoice = () => {
 					</Flex>
 				)}
 				{contacts && (
-					<Box overflow="auto" h={"50vh"}>
+					<Box overflow="auto" h={"50vh"} css={tabScrollCss}>
 						<Table color={"var(--nav_color)"} bg={"var(--primary_bg)"}>
 							<Thead>
 								<Tr>

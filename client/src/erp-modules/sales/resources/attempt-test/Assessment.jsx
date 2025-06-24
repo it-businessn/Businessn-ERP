@@ -9,6 +9,7 @@ import {
 	VStack,
 } from "@chakra-ui/react";
 import ActionButtonGroup from "components/ui/form/ActionButtonGroup";
+import { tabScrollCss } from "erp-modules/payroll/onboard-user/customInfo";
 import useCompany from "hooks/useCompany";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
@@ -74,7 +75,7 @@ const Assessment = () => {
 	};
 
 	return (
-		<Box p={{ base: "1em", md: "2em" }} overflow={"auto"}>
+		<Box p={{ base: "1em", md: "2em" }} overflow={"auto"} css={tabScrollCss}>
 			<Text fontWeight="bold" mb={"1em"}>
 				Quiz Name : {category}
 			</Text>

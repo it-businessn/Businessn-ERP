@@ -17,6 +17,7 @@ import {
 import EmptyRowRecord from "components/ui/EmptyRowRecord";
 import NormalTextTitle from "components/ui/NormalTextTitle";
 import TextTitle from "components/ui/text/TextTitle";
+import { tabScrollCss } from "erp-modules/payroll/onboard-user/customInfo";
 import { TICKET_ACTION_STATUS } from "erp-modules/payroll/timesheets/data";
 import useDepartment from "hooks/useDepartment";
 import { useEffect, useRef, useState } from "react";
@@ -219,7 +220,7 @@ const OpenTicket = ({ company, setShowAddEntry, showAddEntry, userId, employees 
 					/>
 				</HStack>
 			)}
-			<Box overflow="auto" className="ticket_container">
+			<Box overflow="auto" className="ticket_container" css={tabScrollCss}>
 				<Table variant="simple" size="sm">
 					<Thead position={"sticky"} zIndex={3} top={-1} bg="var(--primary_bg)">
 						<Tr>

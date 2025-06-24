@@ -1,12 +1,13 @@
 import { Box, Flex, HStack, Icon, Text } from "@chakra-ui/react";
+import SkeletonLoader from "components/SkeletonLoader";
+import NormalTextTitle from "components/ui/NormalTextTitle";
+import TextTitle from "components/ui/text/TextTitle";
+import { tabScrollCss } from "erp-modules/payroll/onboard-user/customInfo";
+import moment from "moment";
 import { useEffect, useState } from "react";
 import Timeline, { CustomHeader, SidebarHeader, TimelineHeaders } from "react-calendar-timeline";
 import "react-calendar-timeline/lib/Timeline.css";
 import "react-datepicker/dist/react-datepicker.css";
-import SkeletonLoader from "components/SkeletonLoader";
-import NormalTextTitle from "components/ui/NormalTextTitle";
-import TextTitle from "components/ui/text/TextTitle";
-import moment from "moment";
 import { MdOutlineChevronLeft, MdOutlineChevronRight } from "react-icons/md";
 import SchedulerService from "services/SchedulerService";
 import { getRoleColor } from "utils";
@@ -113,7 +114,7 @@ const SchedulingWeeklyCalendar = ({
 	};
 
 	return (
-		<Box overflow={"auto"} w={"100%"}>
+		<Box overflow={"auto"} w={"100%"} css={tabScrollCss}>
 			<HStack
 				justifyContent={"space-between"}
 				fontWeight="bold"

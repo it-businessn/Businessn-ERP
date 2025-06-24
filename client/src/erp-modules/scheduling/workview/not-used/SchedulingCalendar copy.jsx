@@ -1,4 +1,5 @@
 import { Box, Table, Tbody, Td, Text, Th, Thead, Tr } from "@chakra-ui/react";
+import { tabScrollCss } from "erp-modules/payroll/onboard-user/customInfo";
 import { useEffect, useState } from "react";
 import EmployeeDropToHourSlot from "./EmployeeDropToHourSlot";
 
@@ -101,7 +102,7 @@ const SchedulingCalendar = () => {
 		setShifts(updatedShifts);
 	};
 	return (
-		<Box overflow={"auto"} w={"100%"}>
+		<Box overflow={"auto"} w={"100%"} css={tabScrollCss}>
 			<Table>
 				<Thead fontSize={"xs"}>
 					<Th>Area 1</Th>

@@ -8,6 +8,7 @@ import {
 	Stack,
 	useDisclosure,
 } from "@chakra-ui/react";
+import { tabScrollCss } from "erp-modules/payroll/onboard-user/customInfo";
 import ActionButtonGroup from "../ActionButtonGroup";
 
 const PayrollMultiSelectBox = ({
@@ -63,7 +64,7 @@ const PayrollMultiSelectBox = ({
 					/>
 					<CloseButton onClick={handleClose} position={"sticky"} top={0} />
 				</MenuItem>
-				<Stack spacing={1} overflow={"auto"} maxHeight={"33vh"} w={w}>
+				<Stack spacing={1} overflow={"auto"} maxHeight={"33vh"} w={w} css={tabScrollCss}>
 					{data?.map((assignee) => (
 						<MenuItem key={assignee?._id || assignee?.empId?._id}>
 							<Checkbox

@@ -1,5 +1,6 @@
 import { Box, Center, Flex, Grid, HStack, Icon, Text } from "@chakra-ui/react";
 import BoxCard from "components/ui/card";
+import { tabScrollCss } from "erp-modules/payroll/onboard-user/customInfo";
 import { FiAlertCircle, FiCalendar, FiChevronRight, FiClock, FiUsers } from "react-icons/fi";
 import { leaveApprovalPath, payrollEmployeePath, timesheetPath } from "routes";
 
@@ -48,7 +49,12 @@ const PayPeriodDetails = ({ employees, activeUsers, handleClick }) => {
 	];
 
 	return (
-		<BoxCard p={{ base: "0 1rem 1rem", md: "0 1.25rem 1.25rem" }} overflowY="hidden" bg={"white"}>
+		<BoxCard
+			p={{ base: "0 1rem 1rem", md: "0 1.25rem 1.25rem" }}
+			overflowY="hidden"
+			bg={"white"}
+			css={tabScrollCss}
+		>
 			<Grid templateColumns={{ base: "1fr", md: "repeat(2, 1fr)" }} gap={{ base: 4, md: 5 }}>
 				{items?.map((item) => (
 					<Box

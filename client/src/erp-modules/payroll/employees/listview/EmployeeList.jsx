@@ -66,7 +66,7 @@ const EmployeeList = ({ employees }) => {
 		<TableLayout
 			cols={cols}
 			css={tabScrollCss}
-			height="calc(100vh - 455px)"
+			height="calc(100vh - 470px)"
 			position="sticky"
 			top={-1}
 			zIndex={1}

@@ -19,6 +19,7 @@ import HighlightButton from "components/ui/button/HighlightButton";
 import LeftIconButton from "components/ui/button/LeftIconButton";
 import PrimaryButton from "components/ui/button/PrimaryButton";
 import TextTitle from "components/ui/text/TextTitle";
+import { tabScrollCss } from "erp-modules/payroll/onboard-user/customInfo";
 import useManager from "hooks/useManager";
 import useSalesAgentData from "hooks/useSalesAgentData";
 import PageLayout from "layouts/PageLayout";
@@ -137,7 +138,7 @@ const CustomersList = ({ user, handleProfileView, icons, company }) => {
 				</Flex>
 			)}
 			{contacts && (
-				<Box overflow="auto">
+				<Box overflow="auto" css={tabScrollCss}>
 					<Table color={"var(--nav_color)"} bg={"var(--primary_bg)"}>
 						<Thead>
 							<Tr>

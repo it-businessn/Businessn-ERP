@@ -1,6 +1,7 @@
 import { Box, Table, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
 import SelectList from "components/ui/form/select/SelectList";
 import NormalTextTitle from "components/ui/NormalTextTitle";
+import { tabScrollCss } from "erp-modules/payroll/onboard-user/customInfo";
 import PageLayout from "layouts/PageLayout";
 import moment from "moment";
 import { useEffect, useState } from "react";
@@ -133,7 +134,7 @@ const Orders = () => {
 			>
 				<CustomFilter isMobile={isMobile} />
 				{orders && (
-					<Box overflow="auto">
+					<Box overflow="auto" css={tabScrollCss} height={"calc(100vh - 210px)"}>
 						<Table color={"var(--nav_color)"} bg={"var(--primary_bg)"} variant="small">
 							<Thead>
 								<Tr fontSize="xs">

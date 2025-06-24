@@ -3,6 +3,7 @@ import TableLayout from "components/ui/table/TableLayout";
 
 import EmptyRowRecord from "components/ui/EmptyRowRecord";
 import NormalTextTitle from "components/ui/NormalTextTitle";
+import { tabScrollCss } from "erp-modules/payroll/onboard-user/customInfo";
 import { useState } from "react";
 import { FaRegTrashAlt } from "react-icons/fa";
 import LocalStorageService from "services/LocalStorageService";
@@ -78,7 +79,7 @@ const ListView = ({
 					company={company}
 				/>
 			) : (
-				<TableLayout cols={LEADS_COLS} height="calc(100vh - 212px)">
+				<TableLayout css={tabScrollCss} cols={LEADS_COLS} height="calc(100vh - 210px)">
 					<Tbody>
 						{(!leadList || leadList?.length === 0) && (
 							<EmptyRowRecord data={leadList} colSpan={LEADS_COLS?.length} />

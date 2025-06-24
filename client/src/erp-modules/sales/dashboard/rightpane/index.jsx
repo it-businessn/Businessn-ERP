@@ -4,6 +4,7 @@ import UserStatInfo from "components/ui/UserStatInfo";
 import AppointmentHistory from "erp-modules/payroll/dashboard/rightpane/AppointmentHistory";
 import TasksHistory from "erp-modules/payroll/dashboard/rightpane/TasksHistory";
 import TicketHistory from "erp-modules/payroll/dashboard/rightpane/TicketHistory";
+import { tabScrollCss } from "erp-modules/payroll/onboard-user/customInfo";
 import { useState } from "react";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import ChatMessages from "./ChatMessages";
@@ -46,6 +47,7 @@ const RightPane = ({ selectedUser, stats, company }) => {
 			bg={"var(--primary_bg)"}
 			border="3px solid var(--main_color)"
 			borderRadius="10px"
+			css={tabScrollCss}
 		>
 			<UserStatInfo name={selectedUser?.fullName} email={selectedUser?.email} stats={stats} />
 			<MiniCalendar user={selectedUser} company={company} />

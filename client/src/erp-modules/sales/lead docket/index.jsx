@@ -18,6 +18,7 @@ import LeftIconButton from "components/ui/button/LeftIconButton";
 import SelectList from "components/ui/form/select/SelectList";
 import DeletePopUp from "components/ui/modal/DeletePopUp";
 import TableLayout from "components/ui/table/TableLayout";
+import { tabScrollCss } from "erp-modules/payroll/onboard-user/customInfo";
 import {
 	INDUSTRIES,
 	LEAD_SOURCES,
@@ -252,6 +253,7 @@ const LeadsDocket = () => {
 				isAllChecked={isAllChecked}
 				handleHeaderCheckboxChange={handleHeaderCheckboxChange}
 				height="calc(100vh - 238px)"
+				css={tabScrollCss}
 			>
 				<Tbody>
 					{(!leads || leads?.length === 0) && (
@@ -288,7 +290,7 @@ const LeadsDocket = () => {
 								<Td p={0.5}>
 									<NormalTextTitle
 										width="250px"
-										size="sm"
+										size="xs"
 										whiteSpace="wrap"
 										textTransform={"capitalize"}
 										title={opportunityName}

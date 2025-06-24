@@ -2,6 +2,7 @@ import { Box, Button, HStack, Input, VStack } from "@chakra-ui/react";
 import BoxCard from "components/ui/card";
 import NormalTextTitle from "components/ui/NormalTextTitle";
 import TextTitle from "components/ui/text/TextTitle";
+import { tabScrollCss } from "erp-modules/payroll/onboard-user/customInfo";
 import moment from "moment";
 import { useEffect, useState } from "react";
 import { BsFillSendFill } from "react-icons/bs";
@@ -44,7 +45,7 @@ const Announcements = ({ company }) => {
 		}
 	};
 	return (
-		<BoxCard bg={"white"} pb={0} h={"93%"}>
+		<BoxCard bg={"white"} pb={0} h={"93%"} css={tabScrollCss}>
 			<VStack w={"100%"} h={"100%"} justifyContent="space-between" alignItems="start">
 				{announcements?.map(({ title, message, createdOn, _id }) => (
 					<Box key={_id} w={"70%"}>

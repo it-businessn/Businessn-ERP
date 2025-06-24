@@ -11,6 +11,7 @@ import PayrollMultiSelectBox from "components/ui/form/select/PayrollMultiSelectB
 import { useEffect, useState } from "react";
 import { FaCaretDown } from "react-icons/fa";
 import { MdOutlineFilterList } from "react-icons/md";
+import { tabScrollCss } from "../onboard-user/customInfo";
 
 const OtherFilter = ({
 	showOtherFilter,
@@ -39,7 +40,7 @@ const OtherFilter = ({
 	};
 
 	return (
-		<Popover isOpen={showOtherFilter && !isDisabled} overflow="auto">
+		<Popover isOpen={showOtherFilter && !isDisabled} overflow="auto" css={tabScrollCss}>
 			<PopoverTrigger>
 				<HStack cursor="pointer" borderRadius="md" onClick={toggleOtherFilter} p={0} spacing={1}>
 					<MdOutlineFilterList />
@@ -55,7 +56,7 @@ const OtherFilter = ({
 					/>
 				</HStack>
 			</PopoverTrigger>
-			<PopoverContent minH={"40vh"} overflow={"auto"}>
+			<PopoverContent minH={"40vh"} overflow={"auto"} css={tabScrollCss}>
 				<PopoverBody>
 					{showOtherFilter && (
 						<Stack spacing={3} justifyContent={"end"}>

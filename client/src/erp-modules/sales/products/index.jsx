@@ -17,6 +17,7 @@ import {
 	Tr,
 } from "@chakra-ui/react";
 import { doughnutOptions } from "constant";
+import { tabScrollCss } from "erp-modules/payroll/onboard-user/customInfo";
 import PageLayout from "layouts/PageLayout";
 import { useEffect, useState } from "react";
 import { Doughnut } from "react-chartjs-2";
@@ -104,6 +105,7 @@ const Products = () => {
 
 			<Box
 				overflow="auto"
+				css={tabScrollCss}
 				p="1em"
 				bg={"var(--primary_bg)"}
 				border="3px solid var(--main_color)"
@@ -245,6 +247,7 @@ const Products = () => {
 				border="2px solid var(--main_color)"
 				borderRadius="10px"
 				color={"var(--nav_color)"}
+				css={tabScrollCss}
 			>
 				{isMobile ? (
 					<Flex flexDir="column">
@@ -339,7 +342,7 @@ const Products = () => {
 					</Flex>
 				)}
 				{/* {contacts && ( */}
-				<Box overflow="auto" h="450px">
+				<Box overflow="auto" h="calc(100vh - 710px)" css={tabScrollCss}>
 					<Table color={"var(--nav_color)"} bg={"var(--primary_bg)"}>
 						<Thead>
 							<Tr fontSize="xs">

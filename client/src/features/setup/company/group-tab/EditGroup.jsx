@@ -1,9 +1,10 @@
-import { Select, Tbody, Td, Tr } from "@chakra-ui/react";
+import { Select, Stack, Tbody, Td, Tr } from "@chakra-ui/react";
 import EmptyRowRecord from "components/ui/EmptyRowRecord";
 import ActionButtonGroup from "components/ui/form/ActionButtonGroup";
 import DateTimeFormControl from "components/ui/form/DateTimeFormControl";
 import ModalLayout from "components/ui/modal/ModalLayout";
 import TableLayout from "components/ui/table/TableLayout";
+import { tabScrollCss } from "erp-modules/payroll/onboard-user/customInfo";
 import { useEffect, useState } from "react";
 import SettingService from "services/SettingService";
 import { CURRENT_YEAR, dayMonthYear, getDefaultDate } from "utils/convertDate";
@@ -77,108 +78,114 @@ const EditGroup = ({ isOpen, onClose, selectedGroup, yearsList }) => {
 			onClose={onClose}
 			spacing="0"
 		>
-			<Select
-				w={"10%"}
-				size={"sm"}
-				border="1px solid var(--primary_button_bg)"
-				borderRadius="10px"
-				value={selectedYear}
-				placeholder="Select Year"
-				// onChange={(e) => setSelectedYear(e.target.value)}
-				onChange={(e) => console.log(e.target.value)}
-			>
-				{yearsList?.map((year) => (
-					<option value={year} key={year}>
-						{year}
-					</option>
-				))}
-			</Select>
-			<TableLayout cols={COLS} isSmall height="calc(100vh - 162px)">
-				<Tbody>
-					{(!schedules || schedules?.length === 0) && (
-						<EmptyRowRecord data={schedules} colSpan={COLS.length} />
-					)}
-					{schedules?.map((item, index) => (
-						<Tr key={item.payPeriod}>
-							<Td p={1}>{item.payPeriod}</Td>
-							<Td
-								p={1}
-								onClick={() => {
-									setEdit(true);
-									setRecord(item);
-									setRecordKey("payPeriodStartDate");
-								}}
-							>
-								{edit &&
-								record.payPeriod === item.payPeriod &&
-								recordKey === "payPeriodStartDate" ? (
-									<EditDate
-										date={item.payPeriodStartDate}
-										index={index}
-										_key="payPeriodStartDate"
-									/>
-								) : (
-									dayMonthYear(item.payPeriodStartDate)
-								)}
-							</Td>
-							<Td
-								p={1}
-								onClick={() => {
-									setEdit(true);
-									setRecord(item);
-									setRecordKey("payPeriodEndDate");
-								}}
-							>
-								{edit && record.payPeriod === item.payPeriod && recordKey === "payPeriodEndDate" ? (
-									<EditDate date={item.payPeriodEndDate} index={index} _key="payPeriodEndDate" />
-								) : (
-									dayMonthYear(item.payPeriodEndDate)
-								)}
-							</Td>
-							<Td
-								p={1}
-								onClick={() => {
-									setEdit(true);
-									setRecord(item);
-									setRecordKey("payPeriodProcessingDate");
-								}}
-							>
-								{edit &&
-								record.payPeriod === item.payPeriod &&
-								recordKey === "payPeriodProcessingDate" ? (
-									<EditDate
-										date={item.payPeriodProcessingDate}
-										index={index}
-										_key="payPeriodProcessingDate"
-									/>
-								) : (
-									dayMonthYear(item.payPeriodProcessingDate)
-								)}
-							</Td>
-							<Td
-								onClick={() => {
-									setEdit(true);
-									setRecord(item);
-									setRecordKey("payPeriodPayDate");
-								}}
-								p={1}
-							>
-								{edit && record.payPeriod === item.payPeriod && recordKey === "payPeriodPayDate" ? (
-									<EditDate date={item.payPeriodPayDate} index={index} _key="payPeriodPayDate" />
-								) : (
-									dayMonthYear(item.payPeriodPayDate)
-								)}
-							</Td>
-						</Tr>
+			<Stack>
+				<Select
+					w={"10%"}
+					size={"sm"}
+					border="1px solid var(--primary_button_bg)"
+					borderRadius="10px"
+					value={selectedYear}
+					placeholder="Select Year"
+					// onChange={(e) => setSelectedYear(e.target.value)}
+					onChange={(e) => console.log(e.target.value)}
+				>
+					{yearsList?.map((year) => (
+						<option value={year} key={year}>
+							{year}
+						</option>
 					))}
-				</Tbody>
-			</TableLayout>
-			<ActionButtonGroup
-				submitBtnName={"Save"}
-				isLoading={isSubmitting}
-				onClose={onClose}
-				onOpen={handleSubmit}
-			/>
+				</Select>
+				<TableLayout css={tabScrollCss} cols={COLS} isSmall height="calc(100vh - 170px)">
+					<Tbody>
+						{(!schedules || schedules?.length === 0) && (
+							<EmptyRowRecord data={schedules} colSpan={COLS.length} />
+						)}
+						{schedules?.map((item, index) => (
+							<Tr key={item.payPeriod}>
+								<Td p={1}>{item.payPeriod}</Td>
+								<Td
+									p={1}
+									onClick={() => {
+										setEdit(true);
+										setRecord(item);
+										setRecordKey("payPeriodStartDate");
+									}}
+								>
+									{edit &&
+									record.payPeriod === item.payPeriod &&
+									recordKey === "payPeriodStartDate" ? (
+										<EditDate
+											date={item.payPeriodStartDate}
+											index={index}
+											_key="payPeriodStartDate"
+										/>
+									) : (
+										dayMonthYear(item.payPeriodStartDate)
+									)}
+								</Td>
+								<Td
+									p={1}
+									onClick={() => {
+										setEdit(true);
+										setRecord(item);
+										setRecordKey("payPeriodEndDate");
+									}}
+								>
+									{edit &&
+									record.payPeriod === item.payPeriod &&
+									recordKey === "payPeriodEndDate" ? (
+										<EditDate date={item.payPeriodEndDate} index={index} _key="payPeriodEndDate" />
+									) : (
+										dayMonthYear(item.payPeriodEndDate)
+									)}
+								</Td>
+								<Td
+									p={1}
+									onClick={() => {
+										setEdit(true);
+										setRecord(item);
+										setRecordKey("payPeriodProcessingDate");
+									}}
+								>
+									{edit &&
+									record.payPeriod === item.payPeriod &&
+									recordKey === "payPeriodProcessingDate" ? (
+										<EditDate
+											date={item.payPeriodProcessingDate}
+											index={index}
+											_key="payPeriodProcessingDate"
+										/>
+									) : (
+										dayMonthYear(item.payPeriodProcessingDate)
+									)}
+								</Td>
+								<Td
+									onClick={() => {
+										setEdit(true);
+										setRecord(item);
+										setRecordKey("payPeriodPayDate");
+									}}
+									p={1}
+								>
+									{edit &&
+									record.payPeriod === item.payPeriod &&
+									recordKey === "payPeriodPayDate" ? (
+										<EditDate date={item.payPeriodPayDate} index={index} _key="payPeriodPayDate" />
+									) : (
+										dayMonthYear(item.payPeriodPayDate)
+									)}
+								</Td>
+							</Tr>
+						))}
+					</Tbody>
+				</TableLayout>
+				<ActionButtonGroup
+					submitBtnName={"Save"}
+					isLoading={isSubmitting}
+					onClose={onClose}
+					onOpen={handleSubmit}
+				/>
+			</Stack>
 		</ModalLayout>
 	);
 };

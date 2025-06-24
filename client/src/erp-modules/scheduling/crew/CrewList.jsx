@@ -14,6 +14,7 @@ import {
 import LeftIconButton from "components/ui/button/LeftIconButton";
 import NormalTextTitle from "components/ui/NormalTextTitle";
 import TextTitle from "components/ui/text/TextTitle";
+import { tabScrollCss } from "erp-modules/payroll/onboard-user/customInfo";
 import useCrews from "hooks/useCrews";
 import { useState } from "react";
 import { HiPencil } from "react-icons/hi";
@@ -37,7 +38,7 @@ const CrewList = ({ company, refresh, setRefresh, employees, costCenters, depart
 	const handleClose = () => setEditRecord(null);
 
 	return (
-		<Box overflow="auto">
+		<Box overflow="auto" css={tabScrollCss}>
 			<Table>
 				<Thead position="sticky" top={-1} zIndex={1}>
 					<Tr>

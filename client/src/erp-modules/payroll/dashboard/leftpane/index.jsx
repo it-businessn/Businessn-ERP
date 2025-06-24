@@ -81,7 +81,7 @@ const LeftPane = ({
 					/>
 				</BoxCard>
 				<BoxCard
-					h={"calc(100vh - 370px)"}
+					h={"calc(100vh - 365px)"}
 					css={tabScrollCss}
 					width="100%"
 					bg="white"
@@ -105,6 +105,7 @@ const LeftPane = ({
 					width="100%"
 					bg="white"
 					overflowY="hidden"
+					css={tabScrollCss}
 					boxShadow="0px 4px 12px rgba(0, 0, 0, 0.1)"
 					_hover={{
 						transform: "translateY(-4px)",
@@ -126,7 +127,7 @@ const LeftPane = ({
 				</BoxCard>
 
 				<BoxCard
-					h={"calc(100vh - 585px)"}
+					h={"calc(100vh - 580px)"}
 					css={tabScrollCss}
 					width="100%"
 					bg="white"

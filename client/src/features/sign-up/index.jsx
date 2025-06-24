@@ -31,6 +31,7 @@ import useDepartment from "hooks/useDepartment";
 import LocalStorageService from "services/LocalStorageService";
 import MultiSelectControl from "./MultiSelectControl";
 import RolesPanel from "./RolesPanel";
+import { tabScrollCss } from "erp-modules/payroll/onboard-user/customInfo";
 // import CompaniesPanel from "features/setup/company/CompaniesPanel";
 // import signUpImg from "../../assets/logos/BusinessN_dark.jpg";
 
@@ -178,7 +179,7 @@ const SignUp = ({ isModal, setRefresh, onClose, hideCompany }) => {
 		},
 	];
 	return (
-		<Box overflow="auto" height={isModal ? "90vh" : "100vh"}>
+		<Box overflow="auto" height={isModal ? "90vh" : "100vh"} css={tabScrollCss}>
 			<Container
 				py={{
 					base: "3",

@@ -19,6 +19,7 @@ import {
 	VStack,
 } from "@chakra-ui/react";
 import Logo from "components/logo";
+import { tabScrollCss } from "erp-modules/payroll/onboard-user/customInfo";
 import fd_logo from "../../../assets/fd_blue.png";
 
 const InvoiceReceipt = ({ invoice, isOpen, onClose, isMobileView }) => {
@@ -28,7 +29,7 @@ const InvoiceReceipt = ({ invoice, isOpen, onClose, isMobileView }) => {
 			<DrawerContent>
 				<DrawerCloseButton />
 				<DrawerHeader>Invoice Receipt</DrawerHeader>
-				<DrawerBody overflowX={"hidden"}>
+				<DrawerBody overflowX={"hidden"} css={tabScrollCss}>
 					<Box p={4}>
 						<SimpleGrid columns={2}>
 							<VStack fontSize={"sm"} spacing={0} alignItems={"flex-start"}>
@@ -133,12 +134,7 @@ const InvoiceReceipt = ({ invoice, isOpen, onClose, isMobileView }) => {
 										<Th pl={0} fontSize={"sm"} bg={"transparent"}>
 											Subtotal
 										</Th>
-										<Th
-											pr={0}
-											textAlign={"right"}
-											fontSize={"sm"}
-											bg={"transparent"}
-										>
+										<Th pr={0} textAlign={"right"} fontSize={"sm"} bg={"transparent"}>
 											USD 8000.00
 										</Th>
 									</Tr>
@@ -183,13 +179,7 @@ const InvoiceReceipt = ({ invoice, isOpen, onClose, isMobileView }) => {
 										<Td fontSize={"lg"} fontWeight={"bold"} pb={0} px={0}>
 											Balance Due:
 										</Td>
-										<Td
-											textAlign={"right"}
-											fontSize={"lg"}
-											fontWeight={"bold"}
-											pb={0}
-											px={0}
-										>
+										<Td textAlign={"right"} fontSize={"lg"} fontWeight={"bold"} pb={0} px={0}>
 											USD 8,480.00
 										</Td>
 									</Tr>

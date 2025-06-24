@@ -98,7 +98,13 @@ export default function CustomerInfo() {
 	};
 
 	return (
-		<Box padding={"24px"} backgroundColor="var(--main_color)" h={"100vh"} overflow={"auto"}>
+		<Box
+			padding={"24px"}
+			backgroundColor="var(--main_color)"
+			h={"100vh"}
+			overflow={"auto"}
+			css={tabScrollCss}
+		>
 			<Center>
 				<a href="/" aria-current="page" className="main-logo w-inline-block w--current">
 					<img

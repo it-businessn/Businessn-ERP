@@ -50,7 +50,7 @@ const LeftPane = ({ selectedUser, company, isMobile }) => {
 			{isMobile ? (
 				<>
 					<TextTitle title={"Earning Statement"} />
-					<Box mt={"0.5em"} overflow="auto" height={"calc(100vh - 600px)"}>
+					<Box mt={"0.5em"} overflow="auto" height={"calc(100vh - 600px)"} css={tabScrollCss}>
 						{empPayStub?.map(
 							({
 								payPeriodNum,
@@ -110,7 +110,7 @@ const LeftPane = ({ selectedUser, company, isMobile }) => {
 							isEarningTable
 							cols={EARNING_TABLE_COLS}
 							payGroupSchedule={empPayStub}
-							height="calc(100vh - 715px)"
+							height="calc(100vh - 700px)"
 							css={tabScrollCss}
 							viewLabel="View Paystub"
 							handleRegister={handleRegister}

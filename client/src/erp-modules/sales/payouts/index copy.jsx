@@ -20,6 +20,7 @@ import {
 	VStack,
 } from "@chakra-ui/react";
 import RightIconButton from "components/ui/button/RightIconButton";
+import { tabScrollCss } from "erp-modules/payroll/onboard-user/customInfo";
 import { COLORS } from "erp-modules/project-management/workview/project/data";
 import { useEffect, useState } from "react";
 import { Bar } from "react-chartjs-2";
@@ -312,7 +313,7 @@ const Payouts = () => {
 
 				{/* {!contacts && <Loader />} */}
 				{payouts && (
-					<Box overflow="auto" h={"50vh"}>
+					<Box overflow="auto" h={"50vh"} css={tabScrollCss}>
 						<Table color={"var(--nav_color)"} bg={"var(--primary_bg)"}>
 							<Thead>
 								<Tr fontSize="xs">

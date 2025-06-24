@@ -19,6 +19,7 @@ import EmptyRowRecord from "components/ui/EmptyRowRecord";
 import NormalTextTitle from "components/ui/NormalTextTitle";
 import Pagination from "components/ui/Pagination";
 import DeletePopUp from "components/ui/modal/DeletePopUp";
+import { tabScrollCss } from "erp-modules/payroll/onboard-user/customInfo";
 import useCompany from "hooks/useCompany";
 import useManager from "hooks/useManager";
 import useSalesAgentData from "hooks/useSalesAgentData";
@@ -257,7 +258,12 @@ const Opportunities = () => {
 				</Flex>
 			)}
 
-			<TableLayout isOpportunity cols={OPPORTUNITY_COLUMNS} height="calc(100vh - 240px)">
+			<TableLayout
+				isOpportunity
+				cols={OPPORTUNITY_COLUMNS}
+				height="calc(100vh - 240px)"
+				css={tabScrollCss}
+			>
 				<Tbody>
 					{(!opportunities || opportunities?.length === 0) && (
 						<EmptyRowRecord data={opportunities} colSpan={OPPORTUNITY_COLUMNS?.length} />
@@ -268,7 +274,7 @@ const Opportunities = () => {
 								<Td py={"0.5em"}>
 									<NormalTextTitle
 										width="200px"
-										size="sm"
+										size="xs"
 										whiteSpace="wrap"
 										textTransform={"capitalize"}
 										title={_.opportunityName}

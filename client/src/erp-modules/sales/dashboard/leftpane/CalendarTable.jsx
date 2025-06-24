@@ -1,6 +1,7 @@
 import { Box, Table, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
 import LeftIconButton from "components/ui/button/LeftIconButton";
 import EmptyRowRecord from "components/ui/EmptyRowRecord";
+import { tabScrollCss } from "erp-modules/payroll/onboard-user/customInfo";
 import useGroup from "hooks/useGroup";
 import useSelectUser from "hooks/useSelectUser";
 import { useEffect, useState } from "react";
@@ -58,7 +59,7 @@ const CalendarTable = ({ cols, setIsRefresh, filterText, filter, setStats, user,
 		);
 
 	return (
-		<Box overflow="auto" fontWeight={"normal"} height="30vh">
+		<Box overflow="auto" fontWeight={"normal"} height="30vh" css={tabScrollCss}>
 			<LeftIconButton name={"New"} handleClick={() => setShowEventForm(true)} icon={<BsPlus />} />
 
 			{showEventForm && (

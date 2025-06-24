@@ -8,6 +8,7 @@ import { CiCalendar } from "react-icons/ci";
 // import { FaChevronDown } from "react-icons/fa";
 import SkeletonLoader from "components/SkeletonLoader";
 import NormalTextTitle from "components/ui/NormalTextTitle";
+import { tabScrollCss } from "erp-modules/payroll/onboard-user/customInfo";
 import moment from "moment";
 import { MdOutlineChevronLeft, MdOutlineChevronRight } from "react-icons/md";
 import SchedulerService from "services/SchedulerService";
@@ -159,7 +160,7 @@ const SchedulingCalendar = ({
 	};
 
 	return (
-		<Box overflow={"auto"} w={"100%"}>
+		<Box overflow={"auto"} w={"100%"} css={tabScrollCss}>
 			<HStack
 				justifyContent={"space-between"}
 				fontWeight="bold"

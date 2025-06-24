@@ -19,6 +19,7 @@ import {
 import BoxCard from "components/ui/card";
 import TextTitle from "components/ui/text/TextTitle";
 import { activityChartData, doughnutOptions, leaderBoardData } from "constant";
+import { tabScrollCss } from "erp-modules/payroll/onboard-user/customInfo";
 import { useEffect, useState } from "react";
 import { Doughnut } from "react-chartjs-2";
 import UserService from "services/UserService";
@@ -47,7 +48,7 @@ const Meetings = () => {
 						<option>Last Month</option>
 					</Select>
 				</Flex>
-				<Box overflow="auto" h="85%">
+				<Box overflow="auto" h="85%" css={tabScrollCss}>
 					<Table size="sm" color={"var(--nav_color)"} bg={"var(--primary_bg)"}>
 						<Thead>
 							<Tr>
@@ -95,7 +96,7 @@ const Meetings = () => {
 				<Text mt={2} mb={3} fontWeight="bold">
 					Contacts Added
 				</Text>
-				<Box overflow="auto" h="85%">
+				<Box overflow="auto" h="85%" css={tabScrollCss}>
 					<Table size="sm" color={"var(--nav_color)"} bg={"var(--primary_bg)"}>
 						<Thead>
 							<Tr>

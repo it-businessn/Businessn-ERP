@@ -1,5 +1,6 @@
 import { Box, Table, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
 import EmptyRowRecord from "components/ui/EmptyRowRecord";
+import { tabScrollCss } from "erp-modules/payroll/onboard-user/customInfo";
 import { FaRegTrashAlt } from "react-icons/fa";
 
 const UserList = ({
@@ -11,7 +12,7 @@ const UserList = ({
 	height,
 }) => {
 	return (
-		<Box overflow="auto" height={height} fontWeight={"normal"}>
+		<Box css={tabScrollCss} overflow="auto" height={height} fontWeight={"normal"}>
 			<Table variant={"simple"} width="100%" position="sticky" top={-1} zIndex={0}>
 				<Thead>
 					<Tr>

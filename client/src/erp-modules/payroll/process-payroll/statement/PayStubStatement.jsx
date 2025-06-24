@@ -1,5 +1,6 @@
 import { Box, HStack, Stack } from "@chakra-ui/react";
 
+import { tabScrollCss } from "erp-modules/payroll/onboard-user/customInfo";
 import LocalStorageService from "services/LocalStorageService";
 import payStubImg from "../../../../assets/coverImgPaystub.png";
 import EmployeeInfo from "../preview-reports/EmployeeInfo";
@@ -17,6 +18,7 @@ const PayStubStatement = ({ data, height, overflow = "hidden" }) => {
 			overflow={overflow}
 			height={height}
 			justifyContent="space-between"
+			css={tabScrollCss}
 		>
 			<PayStubHeader flex={0.1} companyInfo={companyInfo} />
 			<Stack alignItems="center" flex={1} position={"relative"}>

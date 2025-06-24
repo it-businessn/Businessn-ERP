@@ -18,6 +18,7 @@ import {
 } from "@chakra-ui/react";
 import PrimaryButton from "components/ui/button/PrimaryButton";
 
+import { tabScrollCss } from "erp-modules/payroll/onboard-user/customInfo";
 import useCompany from "hooks/useCompany";
 import PageLayout from "layouts/PageLayout";
 import { useEffect, useState } from "react";
@@ -144,7 +145,7 @@ const Payouts = () => {
 			)}
 
 			{payouts && (
-				<Box overflow="auto" h={"50vh"}>
+				<Box overflow="auto" h={"50vh"} css={tabScrollCss}>
 					<Table color={"var(--nav_color)"} bg={"var(--primary_bg)"}>
 						<Thead>
 							<Tr fontSize="xs">

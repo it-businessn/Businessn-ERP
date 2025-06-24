@@ -17,6 +17,7 @@ import BoxCard from "components/ui/card";
 import ActionButtonGroup from "components/ui/form/ActionButtonGroup";
 import DeletePopUp from "components/ui/modal/DeletePopUp";
 import TextTitle from "components/ui/text/TextTitle";
+import { tabScrollCss } from "erp-modules/payroll/onboard-user/customInfo";
 import useCompany from "hooks/useCompany";
 import { useEffect, useState } from "react";
 import { FaRegTrashCan } from "react-icons/fa6";
@@ -140,7 +141,7 @@ const AddQuestionForm = () => {
 	};
 
 	return (
-		<Box p={{ base: "1em", md: "2em" }} overflow={"auto"}>
+		<Box p={{ base: "1em", md: "2em" }} overflow={"auto"} css={tabScrollCss}>
 			<HStack justify={"space-between"}>
 				<TextTitle title="Resources" />
 
@@ -158,6 +159,7 @@ const AddQuestionForm = () => {
 					h={"calc(100vh - 603px)"}
 					p={0}
 					overflow={"auto"}
+					css={tabScrollCss}
 				>
 					{questionnaires?.map((questionnaire, index) => (
 						<Box

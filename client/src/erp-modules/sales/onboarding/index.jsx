@@ -2,6 +2,7 @@ import { Box, HStack, Table, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
 import PrimaryButton from "components/ui/button/PrimaryButton";
 import NormalTextTitle from "components/ui/NormalTextTitle";
 import TextTitle from "components/ui/text/TextTitle";
+import { tabScrollCss } from "erp-modules/payroll/onboard-user/customInfo";
 import ActionAll from "erp-modules/payroll/timesheets/ActionAll";
 import { ACTION_STATUS } from "erp-modules/payroll/timesheets/data";
 import PageLayout from "layouts/PageLayout";
@@ -52,7 +53,7 @@ const Onboarding = () => {
 			<HStack spacing={3} justify={"flex-end"} mt={-8}>
 				<PrimaryButton size={"sm"} name="Add User" onOpen={() => setShowAddUser(true)} />
 			</HStack>
-			<Box overflow="auto" height="calc(100vh - 164px)">
+			<Box overflow="auto" height="calc(100vh - 164px)" css={tabScrollCss}>
 				<Table bg="var(--lead_cards_bg)" variant="simple">
 					<Thead position="sticky" top={-1} zIndex={3}>
 						<Tr>

@@ -1,5 +1,6 @@
 import { Box, HStack, Table, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
 import EmptyRowRecord from "components/ui/EmptyRowRecord";
+import { tabScrollCss } from "erp-modules/payroll/onboard-user/customInfo";
 import useSelectUser from "hooks/useSelectUser";
 import { useEffect, useState } from "react";
 import TaskService from "services/TaskService";
@@ -27,7 +28,7 @@ const TaskTable = ({ cols, user, company }) => {
 	}, [selectedUser]);
 
 	return (
-		<Box overflow="auto" height="30vh">
+		<Box overflow="auto" height="30vh" css={tabScrollCss}>
 			<Table variant="simple" size={"small"}>
 				<Thead>
 					<Tr>

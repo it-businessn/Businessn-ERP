@@ -88,7 +88,7 @@ const WeeklyCalendarView = ({
 	};
 
 	return (
-		<Box overflow="auto" h="calc(100vh - 205px)" css={tabScrollCss}>
+		<Box overflow="auto" h="calc(100vh - 200px)" css={tabScrollCss}>
 			<Table variant="simple">
 				<Thead>
 					<Tr>

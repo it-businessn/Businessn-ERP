@@ -13,6 +13,7 @@ import {
 import EmptyRowRecord from "components/ui/EmptyRowRecord";
 import SelectList from "components/ui/form/select/SelectList";
 import TableLayout from "components/ui/table/TableLayout";
+import { tabScrollCss } from "erp-modules/payroll/onboard-user/customInfo";
 import {
 	AREAS,
 	COLORS,
@@ -228,7 +229,7 @@ const LeadsDisbursed = () => {
 				</HStack>
 			)}
 
-			<TableLayout cols={columns} isSmall height="calc(100vh - 308px)">
+			<TableLayout css={tabScrollCss} cols={columns} isSmall height="calc(100vh - 308px)">
 				<Tbody>
 					{(!activity || activity?.length === 0) && (
 						<EmptyRowRecord data={activity} colSpan={columns?.length} />

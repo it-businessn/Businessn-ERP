@@ -9,7 +9,7 @@ import NoteDetails from "erp-modules/project-management/tickets/NoteDetails";
 import { useEffect, useRef, useState } from "react";
 import TicketService from "services/TicketService";
 
-const TicketHistory = ({ userId, company, setCount, height = "calc(100vh - 533px)" }) => {
+const TicketHistory = ({ userId, company, setCount, height = "calc(100vh - 528px)" }) => {
 	const [ticketData, setTicketData] = useState(null);
 	const [isLoading, setIsLoading] = useState(false);
 	const [openNote, setOpenNote] = useState(false);

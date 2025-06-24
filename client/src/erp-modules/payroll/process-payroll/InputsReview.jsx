@@ -22,6 +22,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import LocalStorageService from "services/LocalStorageService";
 import PayrollService from "services/PayrollService";
 import { convertDecimal, getAmount } from "utils/convertAmt";
+import { tabScrollCss } from "../onboard-user/customInfo";
 import EmpPayStatement from "../reports/EmpPayStatement";
 import { getClosestRecord } from "../workview/data";
 
@@ -82,7 +83,7 @@ const InputsReview = ({
 
 	return (
 		<HStack alignItems={"end"}>
-			<Box overflow="auto" height={"50vh"} w={"100%"}>
+			<Box overflow="auto" height={"50vh"} w={"100%"} css={tabScrollCss}>
 				<Table>
 					<Thead position="sticky" top={-1} zIndex="docked">
 						<Tr>

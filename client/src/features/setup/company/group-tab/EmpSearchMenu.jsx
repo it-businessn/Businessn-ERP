@@ -8,6 +8,7 @@ import {
 	MenuList,
 	Text,
 } from "@chakra-ui/react";
+import { tabScrollCss } from "erp-modules/payroll/onboard-user/customInfo";
 import { FaSearch } from "react-icons/fa";
 
 const EmpSearchMenu = ({ filteredEmployees, empName, handleInputChange, handleSelect, width }) => {
@@ -40,7 +41,7 @@ const EmpSearchMenu = ({ filteredEmployees, empName, handleInputChange, handleSe
 					<InputRightElement size="xs" children={<FaSearch />} />
 				</InputGroup>
 			</MenuButton>
-			<MenuList maxH="75vh" overflowY={"auto"}>
+			<MenuList maxH="75vh" overflowY={"auto"} css={tabScrollCss}>
 				<Input
 					size="xs"
 					placeholder="Enter Manager Name"

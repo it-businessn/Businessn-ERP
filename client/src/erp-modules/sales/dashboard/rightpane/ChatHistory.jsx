@@ -1,4 +1,5 @@
 import { Box, Button, HStack, Input, Text, VStack } from "@chakra-ui/react";
+import { tabScrollCss } from "erp-modules/payroll/onboard-user/customInfo";
 import MessageBubble from "erp-modules/project-management/communication/MessageBubble";
 import { useEffect, useState } from "react";
 import "react-big-calendar/lib/css/react-big-calendar.css";
@@ -75,7 +76,7 @@ const ChatHistory = ({ currentConversation, userId, isRefresh, setIsRefresh, com
 					? currentConversation?.participant?.fullName
 					: currentConversation?.groupName}
 			</Text>
-			<Box pr={3} w={"100%"} overflowY={"auto"}>
+			<Box pr={3} w={"100%"} overflowY={"auto"} css={tabScrollCss}>
 				{messages?.map((msg) => (
 					<MessageBubble
 						isDashboard

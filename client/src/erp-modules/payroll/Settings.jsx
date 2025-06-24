@@ -24,6 +24,7 @@ import BoxCard from "components/ui/card";
 import PageLayout from "layouts/PageLayout";
 import { useEffect, useState } from "react";
 import SettingService from "services/SettingService";
+import { tabScrollCss } from "./onboard-user/customInfo";
 
 const Settings = ({ company }) => {
 	const [holidays, setHolidays] = useState([]);
@@ -197,7 +198,7 @@ const Settings = ({ company }) => {
 							</Text>
 						</Flex>
 
-						<Box overflowX="auto">
+						<Box overflowX="auto" css={tabScrollCss}>
 							<Table variant="simple">
 								<Thead>
 									<Tr>

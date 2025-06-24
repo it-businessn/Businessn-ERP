@@ -19,6 +19,7 @@ import {
 } from "@chakra-ui/react";
 import RightIconButton from "components/ui/button/RightIconButton";
 import { callsMadeBarData } from "constant";
+import { tabScrollCss } from "erp-modules/payroll/onboard-user/customInfo";
 import PageLayout from "layouts/PageLayout";
 import { useEffect, useState } from "react";
 import { Bar } from "react-chartjs-2";
@@ -131,6 +132,7 @@ const SalesReport = () => {
 						border="3px solid var(--main_color)"
 						borderRadius="10px"
 						fontWeight="bold"
+						css={tabScrollCss}
 					>
 						<Flex justify="space-between" align="center" mb="2" color={"var(--nav_color)"}>
 							<Text fontWeight="bold">Sales Metrics Summary</Text>
@@ -315,7 +317,7 @@ const SalesReport = () => {
 						</Flex>
 					)}
 
-					<Box overflow="auto" height={"450px"}>
+					<Box overflow="auto" height={"450px"} css={tabScrollCss}>
 						<Table color={"var(--nav_color)"} bg={"var(--primary_bg)"} variant="small">
 							<Thead>
 								<Tr fontSize="xs">

@@ -1,6 +1,7 @@
 import { HStack, Select, SimpleGrid, VStack } from "@chakra-ui/react";
 import PrimaryButton from "components/ui/button/PrimaryButton";
 import BoxCard from "components/ui/card";
+import { tabScrollCss } from "erp-modules/payroll/onboard-user/customInfo";
 import NewEmployeeOnboardingModal from "erp-modules/payroll/onboard-user/NewEmployeeOnboardingModal";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -100,6 +101,7 @@ const PaygroupTable = ({
 						closestRecordIndex={closestRecordIndex}
 						autoScroll
 						selectedYear={selectedYear}
+						css={tabScrollCss}
 					/>
 				</VStack>
 			</BoxCard>

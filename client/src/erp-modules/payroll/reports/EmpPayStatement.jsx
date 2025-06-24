@@ -35,7 +35,7 @@ const EmpPayStatement = ({ record, isOpen, onClose }) => {
 	return (
 		<Drawer isOpen={isOpen} onClose={onClose}>
 			<DrawerOverlay />
-			<DrawerContent sx={{ maxWidth: "850px", overflow: "auto" }}>
+			<DrawerContent sx={{ maxWidth: "850px", overflow: "auto" }} css={tabScrollCss}>
 				<DrawerHeader p={0}>
 					<DrawerCloseButton />
 					<Flex w={"95%"} justify={"end"} alignItems={"center"}>

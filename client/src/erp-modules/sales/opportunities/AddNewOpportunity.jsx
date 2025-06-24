@@ -15,6 +15,7 @@ import RequiredLabel from "components/ui/form/RequiredLabel";
 import SelectFormControl from "components/ui/form/SelectFormControl";
 import ModalLayout from "components/ui/modal/ModalLayout";
 import { COUNTRIES } from "config/payroll/employees/profileInfo";
+import { tabScrollCss } from "erp-modules/payroll/onboard-user/customInfo";
 import {
 	INDUSTRIES,
 	LEAD_SOURCES,
@@ -182,7 +183,13 @@ const AddNewOpportunity = ({
 			px="0"
 		>
 			<form onSubmit={handleSubmit}>
-				<Stack spacing={2} overflow="auto" height="calc(100vh - 80px)" justifyContent="start">
+				<Stack
+					spacing={2}
+					overflow="auto"
+					height="calc(100vh - 80px)"
+					css={tabScrollCss}
+					justifyContent="start"
+				>
 					<HStack>
 						<FormControl>
 							<FormLabel>Company Name</FormLabel>

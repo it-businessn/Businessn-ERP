@@ -14,6 +14,7 @@ import {
 import SkeletonLoader from "components/SkeletonLoader";
 import NormalTextTitle from "components/ui/NormalTextTitle";
 import TextTitle from "components/ui/text/TextTitle";
+import { tabScrollCss } from "erp-modules/payroll/onboard-user/customInfo";
 import { useState } from "react";
 import { FaRegTrashAlt } from "react-icons/fa";
 import { RiEditLine } from "react-icons/ri";
@@ -113,7 +114,7 @@ const AgentsView = ({
 								</Text> */}
 							</Flex>
 						</Box>
-						<Box overflow="auto" height={height}>
+						<Box overflow="auto" height={height} css={tabScrollCss}>
 							{!leadList && <SkeletonLoader />}
 							{leadList
 								?.filter((lead) => lead.stage === category.abbr)

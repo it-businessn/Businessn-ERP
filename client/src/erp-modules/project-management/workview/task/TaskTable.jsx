@@ -21,6 +21,7 @@ import {
 	useDisclosure,
 } from "@chakra-ui/react";
 import EmptyRowRecord from "components/ui/EmptyRowRecord";
+import { tabScrollCss } from "erp-modules/payroll/onboard-user/customInfo";
 import Caption from "erp-modules/sales/lead docket/Caption";
 import React, { useEffect, useState } from "react";
 import { FaChevronDown, FaSort } from "react-icons/fa";
@@ -272,7 +273,7 @@ const TaskTable = ({
 				setRefresh={setRefresh}
 				task={task}
 			/>
-			<Box overflow="auto">
+			<Box overflow="auto" css={tabScrollCss}>
 				<Table color={"var(--nav_color)"} bg={"var(--primary_bg)"} size={"small"}>
 					<Thead>
 						<Tr>

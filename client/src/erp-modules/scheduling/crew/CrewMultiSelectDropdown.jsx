@@ -14,6 +14,7 @@ import {
 	WrapItem,
 } from "@chakra-ui/react";
 import FormControlMain from "components/ui/form";
+import { tabScrollCss } from "erp-modules/payroll/onboard-user/customInfo";
 import { useMemo, useState } from "react";
 import { FaCaretDown } from "react-icons/fa";
 
@@ -64,7 +65,7 @@ const CrewMultiSelectDropdown = ({
 					{selectedOptions.length} {tag}
 				</MenuButton>
 
-				<MenuList minH="200px" maxH="300px" overflowY="auto" p={2}>
+				<MenuList minH="200px" maxH="300px" overflowY="auto" p={2} css={tabScrollCss}>
 					{isEmp && (
 						<Box pos="fixed" top={0} p={0} zIndex={2} bg={"var(--primary_bg)"}>
 							<Input
