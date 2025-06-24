@@ -290,7 +290,7 @@ const NewEmployeeOnboardingModal = ({ isOpen, onClose }) => {
 			} else if (tabIndex === 4) {
 				setBenefitsSubStep(2);
 			} else if (tabIndex === 5) {
-				setGovernmentSubStep(3);
+				setGovernmentSubStep(1);
 			} else if (tabIndex === 6) {
 				setBankingSubStep(1);
 			}

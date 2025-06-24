@@ -1,7 +1,6 @@
 import {
 	Box,
 	Button,
-	Divider,
 	Flex,
 	FormControl,
 	FormLabel,
@@ -100,34 +99,6 @@ const BenefitInfo = ({ benefitsSubStep, setBenefitsSubStep, formData, handleChan
 								value={formData.benefitsInfo.vacationPayPercent}
 								onChange={(e) => handleChange("benefitsInfo", "vacationPayPercent", e.target.value)}
 								placeholder="Enter percentage"
-							/>
-						</FormControl>
-
-						<Divider />
-
-						<TextTitle title="Vacation Balances" />
-
-						<FormControl>
-							<FormLabel size="sm">Accrued This Year</FormLabel>
-							<Input
-								size="sm"
-								type="number"
-								value={formData.benefitsInfo.YTDVacationAccrued || ""}
-								onChange={(e) => handleChange("benefitsInfo", "YTDVacationAccrued", e.target.value)}
-								placeholder="0.00"
-								readOnly
-							/>
-						</FormControl>
-
-						<FormControl>
-							<FormLabel size="sm">Used This Year</FormLabel>
-							<Input
-								size="sm"
-								type="number"
-								value={formData.benefitsInfo.YTDVacationUsed || ""}
-								onChange={(e) => handleChange("benefitsInfo", "YTDVacationUsed", e.target.value)}
-								placeholder="0.00"
-								readOnly
 							/>
 						</FormControl>
 

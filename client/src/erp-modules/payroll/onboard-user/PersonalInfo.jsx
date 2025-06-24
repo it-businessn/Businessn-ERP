@@ -315,7 +315,7 @@ const PersonalInfo = ({
 						<TextTitle size="xl" title="Emergency Contact" />
 
 						<Flex gap={4}>
-							<FormControl isRequired>
+							<FormControl>
 								<FormLabel size="sm">First Name</FormLabel>
 								<Input
 									size="sm"
@@ -327,7 +327,7 @@ const PersonalInfo = ({
 								/>
 							</FormControl>
 
-							<FormControl isRequired>
+							<FormControl>
 								<FormLabel size="sm">Last Name</FormLabel>
 								<Input
 									size="sm"
@@ -340,7 +340,7 @@ const PersonalInfo = ({
 							</FormControl>
 						</Flex>
 
-						<FormControl isRequired>
+						<FormControl>
 							<FormLabel size="sm">Personal Email</FormLabel>
 							<Input
 								size="sm"
@@ -353,7 +353,7 @@ const PersonalInfo = ({
 							/>
 						</FormControl>
 
-						<FormControl isRequired>
+						<FormControl>
 							<FormLabel size="sm">Personal Phone</FormLabel>
 							<Input
 								size="sm"
@@ -366,7 +366,7 @@ const PersonalInfo = ({
 							/>
 						</FormControl>
 
-						<FormControl isRequired>
+						<FormControl>
 							<FormLabel size="sm">Relationship</FormLabel>
 							<Select
 								value={formData.emergencyContact.emergencyContactRelationship}
