@@ -19,7 +19,7 @@ const getAllBalanceInfo = async (req, res) => {
 const getEmployeeBalanceInfo = async (req, res) => {
 	const { companyName, empId } = req.params;
 	try {
-		const result = await findEmployeeBalanceInfo(empId, companyName, true);
+		const result = await findEmployeeBalanceInfo(empId, companyName);
 
 		res.status(200).json(result);
 	} catch (error) {
@@ -40,6 +40,7 @@ const findEmployeeBalanceInfo = async (empId, companyName, isUpdate) => {
 
 	return {
 		_id: empBalanceInfo?._id,
+		empId: empBalanceInfo?.empId,
 		typeOfVacationTreatment: empBalanceInfo?.typeOfVacationTreatment,
 		vacationPayPercent: empBalanceInfo?.vacationPayPercent,
 		carryFwd: empBalanceInfo?.carryFwd,
@@ -57,18 +58,12 @@ const findEmployeeBalanceInfo = async (empId, companyName, isUpdate) => {
 		dentalERContribution: empBalanceInfo?.dentalERContribution,
 		typeOfPensionERTreatment: empBalanceInfo?.typeOfPensionERTreatment,
 		pensionERContribution: empBalanceInfo?.pensionERContribution,
-		empPayStub: empPayStub[0],
+		empPayStub,
 	};
 };
 
 const findEmployeePayStub = async (empId, companyName) =>
-	await EmployeePayStub.aggregate([
-		{
-			$match: { empId, companyName },
-		},
-		{ $sort: { _id: -1 } },
-		{ $limit: 1 },
-	]);
+	await EmployeePayStub.findOne({ empId, companyName }).sort({ payPeriodProcessingDate: -1 });
 
 const updateBalanceInfo = async (id, data) =>
 	await EmployeeBalanceInfo.findByIdAndUpdate(id, data, {

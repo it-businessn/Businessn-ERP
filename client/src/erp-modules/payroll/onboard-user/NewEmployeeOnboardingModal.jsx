@@ -382,7 +382,6 @@ const NewEmployeeOnboardingModal = ({ isOpen, onClose }) => {
 						<Text fontWeight="bold">Add New Employee</Text>
 					</Flex>
 					<ModalCloseButton
-						color="#000"
 						top="16px"
 						right="16px"
 						bg="rgba(255, 255, 255, 0.1)"

@@ -23,7 +23,6 @@ import PrimaryButton from "components/ui/button/PrimaryButton";
 import TextTitle from "components/ui/text/TextTitle";
 import {
 	COUNTRIES,
-	governmentSubSteps,
 	tabPanelStyleCss,
 	tabScrollCss,
 	userInfoDetails,
@@ -34,6 +33,12 @@ import { FaInfoCircle } from "react-icons/fa";
 import PayrollService from "services/PayrollService";
 
 const GovernmentInfo = ({ company, userId }) => {
+	const governmentSubSteps = [
+		{ title: "Exemption", description: "CPP/EI exemptions" },
+		{ title: "Income Tax", description: "Tax settings" },
+		{ title: "Federal Contributions", description: "Federal deductions" },
+		{ title: "Regional Deductions", description: "Provincial deductions" },
+	];
 	const toast = useToast();
 	const [governmentSubStep, setGovernmentSubStep] = useState(0);
 	const [governmentProvinces, setGovernmentProvinces] = useState([]);

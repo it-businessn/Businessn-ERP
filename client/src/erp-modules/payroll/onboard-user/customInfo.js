@@ -253,8 +253,8 @@ export const benefitsSubSteps = [
 export const governmentSubSteps = [
 	{ title: "Exemption", description: "CPP/EI exemptions" },
 	{ title: "Income Tax", description: "Tax settings" },
-	{ title: "Federal Contributions", description: "Federal deductions" },
-	{ title: "Regional Deductions", description: "Provincial deductions" },
+	// { title: "Federal Contributions", description: "Federal deductions" },
+	// { title: "Regional Deductions", description: "Provincial deductions" },
 ];
 
 // Labels for the banking sub-steps

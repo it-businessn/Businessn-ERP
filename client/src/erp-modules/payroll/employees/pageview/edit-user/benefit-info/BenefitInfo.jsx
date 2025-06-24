@@ -46,8 +46,7 @@ const BenefitInfo = ({ company, userId }) => {
 			const {
 				typeOfVacationTreatment,
 				vacationPayPercent,
-				YTDVacationAccrued,
-				YTDVacationUsed,
+				empPayStub,
 				vacationAdjustment,
 				typeOfPensionERTreatment,
 				pensionERContribution,
@@ -71,8 +70,8 @@ const BenefitInfo = ({ company, userId }) => {
 				benefitsInfo: {
 					typeOfVacationTreatment,
 					vacationPayPercent,
-					YTDVacationAccrued,
-					YTDVacationUsed,
+					YTDVacationAccrued: empPayStub?.YTDVacationAccrued.toFixed(2),
+					YTDVacationUsed: empPayStub?.YTDVacationUsed.toFixed(2),
 					vacationAdjustment,
 					typeOfPensionERTreatment,
 					pensionERContribution,
@@ -276,7 +275,7 @@ const BenefitInfo = ({ company, userId }) => {
 							<Input
 								size="sm"
 								type="number"
-								value={formData.benefitsInfo.YTDVacationAccrued || ""}
+								value={formData.benefitsInfo?.YTDVacationAccrued || ""}
 								onChange={(e) => handleChange("benefitsInfo", "YTDVacationAccrued", e.target.value)}
 								placeholder="0.00"
 								readOnly
@@ -288,7 +287,7 @@ const BenefitInfo = ({ company, userId }) => {
 							<Input
 								size="sm"
 								type="number"
-								value={formData.benefitsInfo.YTDVacationUsed || ""}
+								value={formData.benefitsInfo?.YTDVacationUsed || ""}
 								onChange={(e) => handleChange("benefitsInfo", "YTDVacationUsed", e.target.value)}
 								placeholder="0.00"
 								readOnly

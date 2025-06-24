@@ -515,7 +515,7 @@ const findPayStub = async (payPeriodNum, companyName, empId, isExtra, scheduleFr
 				isProcessed: true,
 				scheduleFrequency,
 		  };
-	return await EmployeePayStub.findOne(searchObj).sort({ createdOn: -1 });
+	return await EmployeePayStub.findOne(searchObj).sort({ payPeriodProcessingDate: -1 });
 };
 
 const findEmployeePayStub = async (empId, payPeriodNum) =>
