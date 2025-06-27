@@ -1,4 +1,5 @@
 const xml = require("xmlbuilder");
+const moment = require("moment");
 const fs = require("fs");
 const path = require("path");
 const EmployeePayStub = require("../models/EmployeePayStub");
@@ -51,11 +52,15 @@ const buildT4PayrollData = async (companyName, payPeriodNum) => {
 	const payrollData = await EmployeePayStub.find({
 		companyName,
 		payPeriodNum,
-	}).populate({
-		path: "empId",
-		model: "Employee",
-		select: ["fullName"],
-	});
+	})
+		.populate({
+			path: "empId",
+			model: "Employee",
+			select: ["fullName"],
+		})
+		.sort({
+			payPeriodProcessingDate: -1,
+		});
 	const t4Data = [];
 	for (const record of payrollData) {
 		const {
@@ -111,7 +116,7 @@ if (!fs.existsSync(outputDir)) {
 	fs.mkdirSync(outputDir, { recursive: true });
 }
 
-const generateT4Slip = async (companyName, payPeriodNum) => {
+const generateT4Slip = async (companyName, payPeriodNum, payPeriodEndDate) => {
 	const root = xml.create("Return"); // Create root node
 
 	// const xml = create("T4SlipType");
@@ -296,7 +301,9 @@ const generateT4Slip = async (companyName, payPeriodNum) => {
 	// });
 
 	// File path for the XML file
-	const fileName = `T4_${companyRegdNum}_${Date.now()}.xml`;
+	const fileName = `T4_${companyRegdNum}_${moment
+		.utc(payPeriodEndDate)
+		.format("DD_MM_YYYY")}_PayPeriod#${payPeriodNum}.xml`;
 	const filePath = path.join(outputDir, fileName);
 
 	fs.writeFileSync(filePath, xmlT4Data, (err) => {
