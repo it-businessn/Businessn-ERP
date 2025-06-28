@@ -1,5 +1,7 @@
 const xml = require("xmlbuilder");
 const moment = require("moment");
+const xml2js = require("xml2js");
+const parser = new xml2js.Parser();
 const fs = require("fs");
 const path = require("path");
 const EmployeePayStub = require("../models/EmployeePayStub");
@@ -22,11 +24,13 @@ const getEmployeeT4Slip = async (req, res) => {
 const buildRecord = async (record) => {
 	const empProfileInfo = await EmployeeProfileInfo.findOne({
 		empId: record?.empId._id,
-	}).select("streetAddress city province postalCode country SIN SINIv");
+	}).select(
+		"streetAddressSuite streetAddress city province postalCode country SIN SINIv firstName middleName lastName",
+	);
 
 	const sin_key = Buffer.from(process.env.SIN_ENCRYPTION_KEY, "hex");
 	const sinExists =
-		empProfileInfo?.SIN && !empProfileInfo?.SIN?.startsWith("*") && empProfileInfo?.SINIv;
+		empProfileInfo?.SIN && empProfileInfo?.SINIv && !empProfileInfo?.SIN?.startsWith("*");
 
 	empProfileInfo.SIN = sinExists
 		? decryptData(empProfileInfo?.SIN, sin_key, empProfileInfo?.SINIv)
@@ -37,7 +41,7 @@ const buildRecord = async (record) => {
 
 	const companyInfo = await Company.findOne({
 		name: record?.companyName,
-	}).select("cra_business_number registration_number name");
+	}).select("cra_business_number registration_number name address");
 	const empGovtInfo = await EmployeeGovernmentInfo.findOne({
 		empId: record?.empId._id,
 	}).select("pensionPlanNumber isCPPExempt isEIExempt isPIPExempt employmentCode");
@@ -117,7 +121,7 @@ if (!fs.existsSync(outputDir)) {
 }
 
 const generateT4Slip = async (companyName, payPeriodNum, payPeriodEndDate) => {
-	const root = xml.create("Return"); // Create root node
+	const root = xml.create("T4"); // Create root node
 
 	// const xml = create("T4SlipType");
 	// 	.ele("Company", {
@@ -125,8 +129,6 @@ const generateT4Slip = async (companyName, payPeriodNum, payPeriodEndDate) => {
 	// 		year: moment().format("YYYY"),
 	// 	}
 	// );
-
-	const T4Node = root.ele("T4");
 
 	const payrollData = await buildT4PayrollData(companyName, payPeriodNum);
 
@@ -144,48 +146,54 @@ const generateT4Slip = async (companyName, payPeriodNum, payPeriodEndDate) => {
 
 		const { empProfileInfo, empEmploymentInfo, empGovtInfo, empT4Info, name } = employeeInfo;
 
-		const T4SlipNode = T4Node.ele("T4Slip");
+		const T4SlipNode = root.ele("T4Slip");
 		const employeeNode = T4SlipNode.ele("EMPE_NM");
-		employeeNode.ele("snm", name).up();
-		employeeNode.ele("gvn_nm", name).up();
-		employeeNode.ele("init", name).up();
+		employeeNode.ele("snm", empProfileInfo.lastName).up();
+		employeeNode.ele("gvn_nm", empProfileInfo.firstName).up();
+		employeeNode.ele("init").up();
 		employeeNode.up();
 
 		const addressNode = T4SlipNode.ele("EMPE_ADDR");
 		addressNode.ele("addr_l1_txt", empProfileInfo?.streetAddress).up();
-		addressNode.ele("addr_l2_txt", empProfileInfo?.streetAddress).up();
+		addressNode.ele("addr_l2_txt", empProfileInfo?.streetAddressSuite).up();
 		addressNode.ele("cty_nm", empProfileInfo?.city).up();
-		addressNode.ele("prov_cd", empProfileInfo?.province).up();
-		addressNode.ele("cntry_cd", empProfileInfo?.country).up();
+		// addressNode.ele("prov_cd", empProfileInfo?.province).up();
+		addressNode.ele("prov_cd", "BC").up();
+		addressNode.ele("cntry_cd", "CAN").up();
+		// addressNode.ele("cntry_cd", empProfileInfo?.country).up();
 		addressNode.ele("pstl_cd", empProfileInfo?.postalCode).up();
 		addressNode.up(); // Close EMPE_ADDR
 
 		T4SlipNode.ele("sin", empProfileInfo?.SIN).up();
 		T4SlipNode.ele("empe_nbr", empEmploymentInfo?.employeeNo).up();
-		T4SlipNode.ele("bn", companyInfo?.cra_business_number).up();
+		T4SlipNode.ele("bn", companyRegdNum).up();
 		T4SlipNode.ele("rpp_dpsp_rgst_nbr", empGovtInfo?.pensionPlanNumber).up();
 		T4SlipNode.ele("cpp_qpp_xmpt_cd", empGovtInfo?.isCPPExempt ? 1 : 0).up();
 		T4SlipNode.ele("ei_xmpt_cd", empGovtInfo?.isEIExempt ? 1 : 0).up();
 		T4SlipNode.ele("prov_pip_xmpt_cd", empGovtInfo?.isPIPExempt ? 1 : 0).up();
 		T4SlipNode.ele("empt_cd", empGovtInfo?.employmentCode).up();
-		T4SlipNode.ele("rpt_tcd", empT4Info?.slipDataType ?? "T4").up();
-		T4SlipNode.ele("empt_prov_cd", empEmploymentInfo?.employmentRegion).up();
-		T4SlipNode.ele("empr_dntl_ben_rpt_cd", 0).up();
+		// - originals = O
+		// - amendments = A
+		// - cancel = C
+		T4SlipNode.ele("rpt_tcd", "O").up();
+		T4SlipNode.ele("empt_prov_cd", "BC").up();
+		// T4SlipNode.ele("empt_prov_cd", empEmploymentInfo?.employmentRegion).up();
+		T4SlipNode.ele("empr_dntl_ben_rpt_cd").up();
 
 		const t4AmtNode = T4SlipNode.ele("T4_AMT");
 		t4AmtNode.ele("empt_incamt", employeeInfo?.currentGrossPay).up();
 		t4AmtNode.ele("cpp_cntrb_amt", employeeInfo?.currentCPPDeductions).up();
-		t4AmtNode.ele("cppe_cntrb_amt", 0).up();
-		t4AmtNode.ele("qpp_cntrb_amt", 0).up();
-		t4AmtNode.ele("qppe_cntrb_amt", 0).up();
+		t4AmtNode.ele("cppe_cntrb_amt").up();
+		t4AmtNode.ele("qpp_cntrb_amt").up();
+		t4AmtNode.ele("qppe_cntrb_amt").up();
 		t4AmtNode.ele("empe_eip_amt", employeeInfo?.currentEmployeeEIDeductions).up();
-		t4AmtNode.ele("rpp_cntrb_amt", 0).up();
+		t4AmtNode.ele("rpp_cntrb_amt").up();
 		t4AmtNode.ele("itx_ddct_amt", employeeInfo?.totalTaxDeductions).up();
 		t4AmtNode.ele("ei_insu_ern_amt", employeeInfo?.currentEmployeeEIDeductions).up();
-		t4AmtNode.ele("cpp_qpp_ern_amt", 0).up();
+		t4AmtNode.ele("cpp_qpp_ern_amt").up();
 		t4AmtNode.ele("unn_dues_amt", employeeInfo?.currentUnionDuesDeductions).up();
-		t4AmtNode.ele("chrty_dons_amt", 0).up();
-		t4AmtNode.ele("padj_amt", 0).up();
+		t4AmtNode.ele("chrty_dons_amt").up();
+		t4AmtNode.ele("padj_amt").up();
 		t4AmtNode.ele("prov_pip_amt", employeeInfo?.currentEmployeeHealthContributions).up();
 		t4AmtNode.ele("prov_insu_ern_amt", employeeInfo?.currentEmployeePensionContributions).up();
 		t4AmtNode.up();
@@ -208,13 +216,11 @@ const generateT4Slip = async (companyName, payPeriodNum, payPeriodEndDate) => {
 		otherInfoNode.ele("empt_cmsn_amt", 0).up();
 		otherInfoNode.ele("cfppa_amt", 0).up();
 		otherInfoNode.ele("dfr_sob_amt", 0).up();
-		otherInfoNode.ele("empt_inc_amt_covid_prd1", 0).up();
-		otherInfoNode.ele("empt_inc_amt_covid_prd2", 0).up();
-		otherInfoNode.ele("empt_inc_amt_covid_prd3", 0).up();
-		otherInfoNode.ele("empt_inc_amt_covid_prd4", 0).up();
 		otherInfoNode.ele("elg_rtir_amt", 0).up();
 		otherInfoNode.ele("nelg_rtir_amt", 0).up();
+		otherInfoNode.ele("indn_elg_rtir_amt", 0).up();
 		otherInfoNode.ele("indn_nelg_rtir_amt", 0).up();
+		otherInfoNode.ele("mun_ofcr_examt", 0).up();
 		otherInfoNode.ele("indn_empe_amt", 0).up();
 		otherInfoNode.ele("oc_incamt", 0).up();
 		otherInfoNode.ele("oc_dy_cnt", 0).up();
@@ -231,6 +237,17 @@ const generateT4Slip = async (companyName, payPeriodNum, payPeriodEndDate) => {
 		otherInfoNode.ele("epaid_hlth_pln_amt", 0).up();
 		otherInfoNode.ele("stok_opt_csh_out_eamt", 0).up();
 		otherInfoNode.ele("vlntr_emergencyworker_xmpt_amt", 0).up();
+		otherInfoNode.ele("indn_txmpt_sei_amt", 0).up();
+		otherInfoNode.ele("lv_supp_top_up_amt", 0).up();
+		otherInfoNode.ele("empt_inc_amt_covid_prd1", 0).up();
+		otherInfoNode.ele("empt_inc_amt_covid_prd2", 0).up();
+		otherInfoNode.ele("empt_inc_amt_covid_prd3", 0).up();
+		otherInfoNode.ele("empt_inc_amt_covid_prd4", 0).up();
+		otherInfoNode.ele("indn_xmpt_rpp_amt", 0).up();
+		otherInfoNode.ele("indn_xmpt_unn_amt", 0).up();
+		otherInfoNode.ele("sob_after_jun2024_amt", 0).up();
+		otherInfoNode.ele("sod_d_after_jun2024_amt", 0).up();
+		otherInfoNode.ele("sod_d1_after_jun2024_amt", 0).up();
 		otherInfoNode.up();
 		T4SlipNode.up();
 
@@ -239,41 +256,52 @@ const generateT4Slip = async (companyName, payPeriodNum, payPeriodEndDate) => {
 		tot_empe_eip_amt += employeeInfo?.currentEmployeeEIDeductions;
 		tot_itx_ddct_amt += employeeInfo?.totalTaxDeductions;
 	});
-	const t4summaryNode = T4Node.ele("T4Summary");
+	const totalSlips = payrollData?.length;
+	const t4summaryNode = root.ele("T4Summary");
 	t4summaryNode.ele("bn", companyRegdNum).up();
 
 	const emprNameNode = t4summaryNode.ele("EMPR_NM");
 	emprNameNode.ele("l1_nm", companyInfo?.name).up();
-	emprNameNode.ele("l2_nm", companyInfo?.name).up();
-	emprNameNode.ele("l3_nm", companyInfo?.name).up();
+	emprNameNode.ele("l2_nm").up();
+	emprNameNode.ele("l3_nm").up();
 	emprNameNode.up();
 
 	const emprAddressNode = t4summaryNode.ele("EMPR_ADDR");
-	emprAddressNode.ele("addr_l1_txt").up();
-	emprAddressNode.ele("addr_l2_txt").up();
-	emprAddressNode.ele("cty_nm").up();
-	emprAddressNode.ele("prov_cd").up();
-	emprAddressNode.ele("cntry_cd").up();
-	emprAddressNode.ele("pstl_cd").up();
+	const street = companyInfo?.address?.streetNumber;
+	const firstSpaceIndex = street.indexOf(" ");
+	const houseNumber = street.substring(0, firstSpaceIndex);
+	const streetName = street.substring(firstSpaceIndex + 1);
+
+	emprAddressNode.ele("addr_l1_txt", houseNumber).up();
+	emprAddressNode.ele("addr_l2_txt", streetName).up();
+	emprAddressNode.ele("cty_nm", companyInfo?.address?.city).up();
+	emprAddressNode.ele("prov_cd", "BC").up();
+	emprAddressNode.ele("cntry_cd", "CAN").up();
+	// emprAddressNode.ele("prov_cd", companyInfo?.address?.state).up();
+	// emprAddressNode.ele("cntry_cd", companyInfo?.address?.country).up();
+	emprAddressNode.ele("pstl_cd", companyInfo?.address?.postalCode).up();
 	emprAddressNode.up();
 
 	const cntcNode = t4summaryNode.ele("CNTC");
-	cntcNode.ele("cntc_nm").up();
-	cntcNode.ele("cntc_area_cd").up();
-	cntcNode.ele("cntc_phn_nbr").up();
+	cntcNode.ele("cntc_nm", "ABC").up();
+	cntcNode.ele("cntc_area_cd", "234").up();
+	cntcNode.ele("cntc_phn_nbr", "3455").up();
 	cntcNode.ele("cntc_extn_nbr").up();
 	cntcNode.up();
 
 	t4summaryNode.ele("tx_yr", CURRENT_YEAR).up();
-	t4summaryNode.ele("slp_cnt", CURRENT_YEAR).up();
+	t4summaryNode.ele("slp_cnt", totalSlips).up();
 
 	const pptrNode = t4summaryNode.ele("PPRTR_SIN");
-	pptrNode.ele("pprtr_1_sin", CURRENT_YEAR).up();
-	pptrNode.ele("pprtr_2_sin", CURRENT_YEAR).up();
+	pptrNode.ele("pprtr_1_sin").up();
+	pptrNode.ele("pprtr_2_sin").up();
 	pptrNode.up();
 
-	t4summaryNode.ele("rpt_tcd", CURRENT_YEAR).up();
-	t4summaryNode.ele("fileramendmentnote", CURRENT_YEAR).up();
+	// - originals = O
+	// - amendments = A
+	// - cancel = C
+	t4summaryNode.ele("rpt_tcd", "O").up();
+	t4summaryNode.ele("fileramendmentnote").up();
 
 	const T4TotalNode = t4summaryNode.ele("T4_TAMT");
 	T4TotalNode.ele("tot_empt_incamt", tot_empt_incamt).up();
@@ -289,7 +317,6 @@ const generateT4Slip = async (companyName, payPeriodNum, payPeriodEndDate) => {
 	T4TotalNode.up();
 
 	t4summaryNode.up();
-	T4Node.up();
 	// t4summaryNode.ele("ReturnType", "T4").up();
 	let xmlT4Data = root.end({ pretty: true });
 
@@ -300,18 +327,27 @@ const generateT4Slip = async (companyName, payPeriodNum, payPeriodEndDate) => {
 	// 	xmlT4Data = xmlT4Data.replace(regex, `</${tag}>\n`);
 	// });
 
-	// File path for the XML file
+	// Testing filename
+	// const fileName = `T4_${companyRegdNum}_PayPeriod#${payPeriodNum}.xml`;
+
 	const fileName = `T4_${companyRegdNum}_${moment
 		.utc(payPeriodEndDate)
 		.format("DD_MM_YYYY")}_PayPeriod#${payPeriodNum}.xml`;
+
 	const filePath = path.join(outputDir, fileName);
 
-	fs.writeFileSync(filePath, xmlT4Data, (err) => {
+	//check if xml file is parsed properly
+	parser.parseString(xmlT4Data, (err, result) => {
 		if (err) {
-			console.error("Error writing XML file:", err);
-			return res.status(500).send("Error generating T4 XML");
+			console.error("Parsing failed:", err);
+		} else {
+			console.log("Parsed successful:");
+			fs.writeFileSync(filePath, xmlT4Data, "utf8", (err) => {
+				if (err) {
+					console.log("Error writing XML file:", err);
+				}
+			});
 		}
-		console.log(`XML file saved at ${filePath}`);
 	});
 };
 
