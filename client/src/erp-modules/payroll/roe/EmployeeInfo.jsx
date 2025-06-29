@@ -5,6 +5,7 @@ import {
 	FormLabel,
 	HStack,
 	Input,
+	Select,
 	Stack,
 	Step,
 	StepIcon,
@@ -16,10 +17,12 @@ import {
 	StepTitle,
 } from "@chakra-ui/react";
 import InputFormControl from "components/ui/form/InputFormControl";
-import SelectFormControl from "components/ui/form/SelectFormControl";
 import TextTitle from "components/ui/text/TextTitle";
-import { COUNTRIES } from "config/payroll/employees/profileInfo";
-import { tabPanelStyleCss, tabScrollCss } from "erp-modules/payroll/onboard-user/customInfo";
+import {
+	COUNTRIES,
+	tabPanelStyleCss,
+	tabScrollCss,
+} from "erp-modules/payroll/onboard-user/customInfo";
 import { useEffect, useState } from "react";
 
 const EmployeeInfo = ({ formData, setFormData }) => {
@@ -27,7 +30,7 @@ const EmployeeInfo = ({ formData, setFormData }) => {
 
 	useEffect(() => {
 		if (formData?.empInfo?.country) {
-			setProvinces(COUNTRIES.find(({ type }) => type === formData?.empInfo?.country)?.provinces);
+			setProvinces(COUNTRIES.find(({ code }) => code === formData?.empInfo?.country)?.provinces);
 		}
 	}, [formData?.empInfo?.country]);
 
@@ -143,26 +146,35 @@ const EmployeeInfo = ({ formData, setFormData }) => {
 								/>
 							</FormControl>
 						</HStack>
-
 						<HStack>
-							<SelectFormControl
-								required
-								valueParam="type"
-								name="type"
-								label="Country"
-								valueText={formData?.empInfo?.country || ""}
-								handleChange={(e) => handleFieldChange("empInfo", "country", e.target.value)}
-								options={COUNTRIES}
-							/>
-							<SelectFormControl
-								required
-								valueParam="name"
-								name="province"
-								label="Province / State"
-								valueText={formData?.empInfo?.province || ""}
-								handleChange={(e) => handleFieldChange("empInfo", "province", e.target.value)}
-								options={provinces}
-							/>
+							<FormControl>
+								<FormLabel size="sm">Country</FormLabel>
+								<Select
+									placeholder="Select Country"
+									value={formData?.empInfo?.country || ""}
+									onChange={(e) => handleFieldChange("empInfo", "country", e.target.value)}
+								>
+									{COUNTRIES.map(({ type, code }) => (
+										<option key={type} value={code}>
+											{type}
+										</option>
+									))}
+								</Select>
+							</FormControl>
+							<FormControl>
+								<FormLabel size="sm">Province / State</FormLabel>
+								<Select
+									placeholder="Select Province / State"
+									value={formData?.empInfo?.province || ""}
+									onChange={(e) => handleFieldChange("empInfo", "province", e.target.value)}
+								>
+									{provinces.map(({ name, id }) => (
+										<option key={name} value={id}>
+											{name}
+										</option>
+									))}
+								</Select>
+							</FormControl>
 							<InputFormControl
 								size="sm"
 								label="Postal Code"

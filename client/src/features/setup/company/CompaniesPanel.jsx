@@ -3,6 +3,7 @@ import {
 	FormLabel,
 	HStack,
 	Input,
+	Select,
 	Table,
 	Tbody,
 	Td,
@@ -14,8 +15,9 @@ import {
 import ActionButton from "components/ui/button/ActionButton";
 import EmptyRowRecord from "components/ui/EmptyRowRecord";
 import TextTitle from "components/ui/text/TextTitle";
+import { COUNTRIES } from "erp-modules/payroll/onboard-user/customInfo";
 import useCompanies from "hooks/useCompanies";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import SettingService from "services/SettingService";
 
 const CompaniesPanel = ({ setOpenCompanyForm }) => {
@@ -36,8 +38,15 @@ const CompaniesPanel = ({ setOpenCompanyForm }) => {
 	const [formData, setFormData] = useState(defaultFormData);
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [isRefresh, setIsRefresh] = useState(false);
-
+	const [availableProvinces, setAvailableProvinces] = useState([]);
 	const companies = useCompanies(isRefresh);
+
+	useEffect(() => {
+		const selectedCountry = COUNTRIES.find(({ code }) => code === formData.address.country);
+		if (selectedCountry) {
+			setAvailableProvinces(selectedCountry?.provinces);
+		}
+	}, [formData.address.country]);
 
 	const resetForm = () => setFormData(defaultFormData);
 
@@ -133,21 +142,6 @@ const CompaniesPanel = ({ setOpenCompanyForm }) => {
 				<HStack mt={3}>
 					<Input
 						type="text"
-						name="state"
-						value={formData?.address.state}
-						onChange={(e) => {
-							setFormData({
-								...formData,
-								address: {
-									...formData?.address,
-									state: e.target.value,
-								},
-							});
-						}}
-						placeholder="State"
-					/>
-					<Input
-						type="text"
 						name="postalCode"
 						value={formData?.address.postalCode}
 						onChange={(e) => {
@@ -161,10 +155,9 @@ const CompaniesPanel = ({ setOpenCompanyForm }) => {
 						}}
 						placeholder="Postal Code"
 					/>
-					<Input
-						type="text"
-						name="country"
-						value={formData?.address.country}
+					<Select
+						placeholder="Select Country"
+						value={formData.address.country}
 						onChange={(e) => {
 							setFormData({
 								...formData,
@@ -174,8 +167,32 @@ const CompaniesPanel = ({ setOpenCompanyForm }) => {
 								},
 							});
 						}}
-						placeholder="Country"
-					/>
+					>
+						{COUNTRIES.map(({ type, code }) => (
+							<option key={type} value={code}>
+								{type}
+							</option>
+						))}
+					</Select>
+					<Select
+						placeholder="Select Province/State"
+						value={formData.address.state}
+						onChange={(e) => {
+							setFormData({
+								...formData,
+								address: {
+									...formData?.address,
+									state: e.target.value,
+								},
+							});
+						}}
+					>
+						{availableProvinces.map(({ name, id }) => (
+							<option key={name} value={id}>
+								{name}
+							</option>
+						))}
+					</Select>
 				</HStack>
 				<ActionButton
 					mt={2}

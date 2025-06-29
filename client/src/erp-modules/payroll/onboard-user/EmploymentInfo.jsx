@@ -286,14 +286,15 @@ const EmploymentInfo = ({
 								<FormLabel size="sm">Country</FormLabel>
 								<Select
 									size="sm"
-									value={formData.employmentInfo.employmentCountry}
+									value={formData.employmentInfo.employmentCountry || ""}
 									onChange={(e) =>
 										handleChange("employmentInfo", "employmentCountry", e.target.value)
 									}
+									placeholder="Select Country"
 								>
-									{COUNTRIES.map((country) => (
-										<option key={country.type} value={country.type}>
-											{country.type}
+									{COUNTRIES.map(({ type, code }) => (
+										<option key={type} value={code}>
+											{type}
 										</option>
 									))}
 								</Select>
@@ -303,14 +304,15 @@ const EmploymentInfo = ({
 								<FormLabel size="sm">Province/State</FormLabel>
 								<Select
 									size="sm"
-									value={formData.employmentInfo.employmentRegion}
+									value={formData.employmentInfo.employmentRegion || ""}
 									onChange={(e) =>
 										handleChange("employmentInfo", "employmentRegion", e.target.value)
 									}
+									placeholder="Select Region"
 								>
-									{employmentProvinces.map((province) => (
-										<option key={province} value={province}>
-											{province}
+									{employmentProvinces.map(({ name, id }) => (
+										<option key={name} value={id}>
+											{name}
 										</option>
 									))}
 								</Select>

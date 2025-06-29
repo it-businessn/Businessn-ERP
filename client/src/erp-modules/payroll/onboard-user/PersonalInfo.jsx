@@ -285,10 +285,11 @@ const PersonalInfo = ({
 								<Select
 									value={formData.contactInfo.country}
 									onChange={(e) => handleChange("contactInfo", "country", e.target.value)}
+									placeholder="Select Country"
 								>
-									{COUNTRIES.map((country) => (
-										<option key={country.type} value={country.type}>
-											{country.type}
+									{COUNTRIES.map(({ type, code }) => (
+										<option key={type} value={code}>
+											{type}
 										</option>
 									))}
 								</Select>
@@ -299,10 +300,11 @@ const PersonalInfo = ({
 								<Select
 									value={formData.contactInfo.province}
 									onChange={(e) => handleChange("contactInfo", "province", e.target.value)}
+									placeholder="Select Region"
 								>
-									{availableProvinces.map((province) => (
-										<option key={province} value={province}>
-											{province}
+									{availableProvinces.map(({ name, id }) => (
+										<option key={name} value={id}>
+											{name}
 										</option>
 									))}
 								</Select>

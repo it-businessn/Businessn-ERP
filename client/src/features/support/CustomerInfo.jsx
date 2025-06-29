@@ -6,16 +6,16 @@ import {
 	FormControl,
 	FormLabel,
 	HStack,
+	Select,
 	Stack,
 	useToast,
 } from "@chakra-ui/react";
 import ActionButtonGroup from "components/ui/form/ActionButtonGroup";
 import InputFormControl from "components/ui/form/InputFormControl";
-import SelectFormControl from "components/ui/form/SelectFormControl";
+import RequiredLabel from "components/ui/form/RequiredLabel";
 import NormalTextTitle from "components/ui/NormalTextTitle";
 import TextTitle from "components/ui/text/TextTitle";
-import { COUNTRIES } from "config/payroll/employees/profileInfo";
-import { tabScrollCss } from "erp-modules/payroll/onboard-user/customInfo";
+import { COUNTRIES, tabScrollCss } from "erp-modules/payroll/onboard-user/customInfo";
 import { useEffect, useState } from "react";
 import { FaCaretDown } from "react-icons/fa";
 import TicketService from "services/TicketService";
@@ -48,7 +48,7 @@ export default function CustomerInfo() {
 
 	useEffect(() => {
 		if (formData?.country) {
-			setProvinces(COUNTRIES.find(({ type }) => type === formData?.country)?.provinces);
+			setProvinces(COUNTRIES.find(({ code }) => code === formData?.country)?.provinces);
 		}
 	}, [formData?.country]);
 
@@ -205,40 +205,46 @@ export default function CustomerInfo() {
 									/>
 								</HStack>
 								<HStack spacing={5} flexDir={{ base: "column", md: "row" }}>
-									<SelectFormControl
-										valueParam="type"
-										name="type"
-										label="Country"
-										placeholder="Select Country"
-										size="sm"
-										valueText={formData?.country || ""}
-										handleChange={(e) =>
-											setFormData((prevData) => ({
-												...prevData,
-												country: e.target.value,
-											}))
-										}
-										required
-										options={COUNTRIES}
-										icon={<FaCaretDown />}
-									/>
-									<SelectFormControl
-										icon={<FaCaretDown />}
-										required
-										size="sm"
-										valueParam="name"
-										name="province"
-										label="Province / State"
-										valueText={formData?.province || ""}
-										handleChange={(e) =>
-											setFormData((prevData) => ({
-												...prevData,
-												province: e.target.value,
-											}))
-										}
-										options={provinces}
-										placeholder="Select Province / State"
-									/>
+									<FormControl>
+										<RequiredLabel required label="Country" />
+										<Select
+											icon={<FaCaretDown />}
+											placeholder="Select Country"
+											value={formData?.country || ""}
+											onChange={(e) =>
+												setFormData((prevData) => ({
+													...prevData,
+													country: e.target.value,
+												}))
+											}
+										>
+											{COUNTRIES.map(({ type, code }) => (
+												<option key={type} value={code}>
+													{type}
+												</option>
+											))}
+										</Select>
+									</FormControl>
+									<FormControl>
+										<RequiredLabel required label="Province / State" />
+										<Select
+											icon={<FaCaretDown />}
+											placeholder="Select Province / State"
+											value={formData?.province || ""}
+											onChange={(e) =>
+												setFormData((prevData) => ({
+													...prevData,
+													province: e.target.value,
+												}))
+											}
+										>
+											{provinces.map(({ name, id }) => (
+												<option key={name} value={id}>
+													{name}
+												</option>
+											))}
+										</Select>
+									</FormControl>
 								</HStack>
 								<InputFormControl
 									fontSize="md"

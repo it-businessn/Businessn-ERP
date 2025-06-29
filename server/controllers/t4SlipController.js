@@ -157,10 +157,8 @@ const generateT4Slip = async (companyName, payPeriodNum, payPeriodEndDate) => {
 		addressNode.ele("addr_l1_txt", empProfileInfo?.streetAddress).up();
 		addressNode.ele("addr_l2_txt", empProfileInfo?.streetAddressSuite).up();
 		addressNode.ele("cty_nm", empProfileInfo?.city).up();
-		// addressNode.ele("prov_cd", empProfileInfo?.province).up();
-		addressNode.ele("prov_cd", "BC").up();
-		addressNode.ele("cntry_cd", "CAN").up();
-		// addressNode.ele("cntry_cd", empProfileInfo?.country).up();
+		addressNode.ele("prov_cd", empProfileInfo?.province).up();
+		addressNode.ele("cntry_cd", empProfileInfo?.country).up();
 		addressNode.ele("pstl_cd", empProfileInfo?.postalCode).up();
 		addressNode.up(); // Close EMPE_ADDR
 
@@ -275,10 +273,8 @@ const generateT4Slip = async (companyName, payPeriodNum, payPeriodEndDate) => {
 	emprAddressNode.ele("addr_l1_txt", houseNumber).up();
 	emprAddressNode.ele("addr_l2_txt", streetName).up();
 	emprAddressNode.ele("cty_nm", companyInfo?.address?.city).up();
-	emprAddressNode.ele("prov_cd", "BC").up();
-	emprAddressNode.ele("cntry_cd", "CAN").up();
-	// emprAddressNode.ele("prov_cd", companyInfo?.address?.state).up();
-	// emprAddressNode.ele("cntry_cd", companyInfo?.address?.country).up();
+	emprAddressNode.ele("prov_cd", companyInfo?.address?.state).up();
+	emprAddressNode.ele("cntry_cd", companyInfo?.address?.country).up();
 	emprAddressNode.ele("pstl_cd", companyInfo?.address?.postalCode).up();
 	emprAddressNode.up();
 

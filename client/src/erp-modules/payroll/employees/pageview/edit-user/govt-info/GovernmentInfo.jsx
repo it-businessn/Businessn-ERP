@@ -90,19 +90,10 @@ const GovernmentInfo = ({ company, userId }) => {
 
 	useEffect(() => {
 		const selectedCountry = COUNTRIES.find(
-			(country) => country.type === formData.governmentInfo.federalTax,
+			({ code }) => code === formData.governmentInfo.federalTax,
 		);
 		if (selectedCountry) {
 			setGovernmentProvinces(selectedCountry.provinces);
-			if (!selectedCountry.provinces.includes(formData.governmentInfo.regionalTax)) {
-				setFormData({
-					...formData,
-					governmentInfo: {
-						...formData.governmentInfo,
-						regionalTax: selectedCountry.provinces[0],
-					},
-				});
-			}
 		}
 	}, [formData.governmentInfo.federalTax]);
 
@@ -287,10 +278,11 @@ const GovernmentInfo = ({ company, userId }) => {
 								size="sm"
 								value={formData.governmentInfo.federalTax || ""}
 								onChange={(e) => handleChange("governmentInfo", "federalTax", e.target.value)}
+								placeholder="Select Country"
 							>
-								{["Canada", "US"].map((country) => (
-									<option key={country} value={country}>
-										{country}
+								{COUNTRIES.map(({ type, code }) => (
+									<option key={type} value={code}>
+										{type}
 									</option>
 								))}
 							</Select>
@@ -302,10 +294,11 @@ const GovernmentInfo = ({ company, userId }) => {
 								size="sm"
 								value={formData.governmentInfo.regionalTax || ""}
 								onChange={(e) => handleChange("governmentInfo", "regionalTax", e.target.value)}
+								placeholder="Select Region"
 							>
-								{governmentProvinces.map((province) => (
-									<option key={province} value={province}>
-										{province}
+								{governmentProvinces.map(({ name, id }) => (
+									<option key={name} value={id}>
+										{name}
 									</option>
 								))}
 							</Select>

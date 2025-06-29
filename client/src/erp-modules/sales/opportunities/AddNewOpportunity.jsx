@@ -14,8 +14,7 @@ import InputFormControl from "components/ui/form/InputFormControl";
 import RequiredLabel from "components/ui/form/RequiredLabel";
 import SelectFormControl from "components/ui/form/SelectFormControl";
 import ModalLayout from "components/ui/modal/ModalLayout";
-import { COUNTRIES } from "config/payroll/employees/profileInfo";
-import { tabScrollCss } from "erp-modules/payroll/onboard-user/customInfo";
+import { COUNTRIES, tabScrollCss } from "erp-modules/payroll/onboard-user/customInfo";
 import {
 	INDUSTRIES,
 	LEAD_SOURCES,
@@ -112,7 +111,7 @@ const AddNewOpportunity = ({
 
 	useEffect(() => {
 		if (formData?.address?.country) {
-			setProvinces(COUNTRIES.find(({ type }) => type === formData?.address?.country)?.provinces);
+			setProvinces(COUNTRIES.find(({ code }) => code === formData?.address?.country)?.provinces);
 		}
 	}, [formData?.address?.country]);
 
@@ -289,49 +288,55 @@ const AddNewOpportunity = ({
 							/>
 						</HStack>
 						<HStack mt={3}>
-							<SelectFormControl
-								valueParam="type"
-								name="type"
-								placeholder="Select Country"
-								size="sm"
-								valueText={formData?.address.country || ""}
-								handleChange={(e) =>
-									setFormData((prevData) => ({
-										...prevData,
-										address: {
-											...formData?.address,
-											country: e.target.value,
-										},
-									}))
-								}
-								required
-								options={COUNTRIES}
-								icon={<FaCaretDown />}
-							/>
-							<SelectFormControl
-								icon={<FaCaretDown />}
-								size="sm"
-								required
-								valueParam="name"
-								name="province"
-								placeholder="Select Province / State"
-								valueText={formData?.address.state || ""}
-								handleChange={(e) =>
-									setFormData((prevData) => ({
-										...prevData,
-										address: {
-											...formData?.address,
-											state: e.target.value,
-										},
-									}))
-								}
-								options={provinces}
-							/>
+							<FormControl>
+								<Select
+									icon={<FaCaretDown />}
+									placeholder="Select Country"
+									value={formData?.address?.country || ""}
+									onChange={(e) =>
+										setFormData({
+											...formData,
+											address: {
+												...formData?.address,
+												country: e.target.value,
+											},
+										})
+									}
+								>
+									{COUNTRIES.map(({ type, code }) => (
+										<option key={type} value={code}>
+											{type}
+										</option>
+									))}
+								</Select>
+							</FormControl>
+							<FormControl>
+								<Select
+									icon={<FaCaretDown />}
+									placeholder="Select Province / State"
+									value={formData?.address?.state || ""}
+									onChange={(e) =>
+										setFormData({
+											...formData,
+											address: {
+												...formData?.address,
+												state: e.target.value,
+											},
+										})
+									}
+								>
+									{provinces.map(({ name, id }) => (
+										<option key={name} value={id}>
+											{name}
+										</option>
+									))}
+								</Select>
+							</FormControl>
 							<Input
 								type="text"
 								name="postalCode"
 								size="sm"
-								value={formData?.address.postalCode}
+								value={formData?.address.postalCode || ""}
 								onChange={(e) => {
 									setFormData({
 										...formData,

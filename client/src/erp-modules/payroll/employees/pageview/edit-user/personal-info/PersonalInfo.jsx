@@ -109,20 +109,9 @@ const PersonalInfo = ({ company, userId }) => {
 	}, [profileInfo]);
 
 	useEffect(() => {
-		const selectedCountry = COUNTRIES.find(
-			(country) => country.type === formData.contactInfo.country,
-		);
+		const selectedCountry = COUNTRIES.find(({ code }) => code === formData.contactInfo.country);
 		if (selectedCountry) {
 			setAvailableProvinces(selectedCountry?.provinces);
-			if (!selectedCountry.provinces.includes(formData.contactInfo.province)) {
-				setFormData({
-					...formData,
-					contactInfo: {
-						...formData.contactInfo,
-						province: selectedCountry.provinces[0],
-					},
-				});
-			}
 		}
 	}, [formData.contactInfo.country]);
 
@@ -482,10 +471,11 @@ const PersonalInfo = ({ company, userId }) => {
 								<Select
 									value={formData.contactInfo.country}
 									onChange={(e) => handleChange("contactInfo", "country", e.target.value)}
+									placeholder="Select Country"
 								>
-									{COUNTRIES.map((country) => (
-										<option key={country.type} value={country.type}>
-											{country.type}
+									{COUNTRIES.map(({ type, code }) => (
+										<option key={type} value={code}>
+											{type}
 										</option>
 									))}
 								</Select>
@@ -496,10 +486,11 @@ const PersonalInfo = ({ company, userId }) => {
 								<Select
 									value={formData.contactInfo.province || ""}
 									onChange={(e) => handleChange("contactInfo", "province", e.target.value)}
+									placeholder="Select Region"
 								>
-									{availableProvinces.map((province) => (
-										<option key={province} value={province}>
-											{province}
+									{availableProvinces.map(({ name, id }) => (
+										<option key={name} value={id}>
+											{name}
 										</option>
 									))}
 								</Select>

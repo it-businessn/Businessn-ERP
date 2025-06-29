@@ -1,5 +1,3 @@
-import { COUNTRIES } from "./profileInfo";
-
 export const PAYROLL_STATUS = [
 	{
 		type: "Payroll Active",
@@ -56,31 +54,6 @@ export const EMP_TENURE_CONFIG = [
 	{
 		type: "",
 		params: [{ name: "Leave Date", param_key: "employmentLeaveDate", control: "date" }],
-	},
-];
-
-export const EMP_REGION_CONFIG = [
-	{
-		type: "",
-		params: [
-			{
-				name: "Country",
-				param_key: "employmentCountry",
-				control: "select",
-				options: COUNTRIES,
-			},
-		],
-	},
-	{
-		type: "",
-		params: [
-			{
-				name: "Region",
-				param_key: "employmentRegion",
-				control: "select",
-				options: COUNTRIES,
-			},
-		],
 	},
 ];
 

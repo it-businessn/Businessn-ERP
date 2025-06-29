@@ -170,61 +170,29 @@ const NewEmployeeOnboardingModal = ({ isOpen, onClose }) => {
 
 	// Update provinces when country changes
 	useEffect(() => {
-		const selectedCountry = COUNTRIES.find(
-			(country) => country.type === formData.contactInfo.country,
-		);
+		const selectedCountry = COUNTRIES.find(({ code }) => code === formData.contactInfo.country);
 		if (selectedCountry) {
 			setAvailableProvinces(selectedCountry?.provinces);
-			// Reset province if changing country
-			if (!selectedCountry.provinces.includes(formData.contactInfo.province)) {
-				setFormData({
-					...formData,
-					contactInfo: {
-						...formData.contactInfo,
-						province: selectedCountry.provinces[0],
-					},
-				});
-			}
 		}
 	}, [formData.contactInfo.country]);
 
 	// Update provinces when employment country changes
 	useEffect(() => {
 		const selectedCountry = COUNTRIES.find(
-			(country) => country.type === formData.employmentInfo.employmentCountry,
+			({ code }) => code === formData.employmentInfo.employmentCountry,
 		);
 		if (selectedCountry) {
 			setEmploymentProvinces(selectedCountry.provinces);
-			// Reset province if changing country
-			if (!selectedCountry.provinces.includes(formData.employmentInfo.employmentRegion)) {
-				setFormData({
-					...formData,
-					employmentInfo: {
-						...formData.employmentInfo,
-						province: selectedCountry.provinces[0],
-					},
-				});
-			}
 		}
 	}, [formData.employmentInfo.employmentCountry]);
 
 	// Update government provinces when federal tax changes
 	useEffect(() => {
 		const selectedCountry = COUNTRIES.find(
-			(country) => country.type === formData.governmentInfo.federalTax,
+			({ code }) => code === formData.governmentInfo.federalTax,
 		);
 		if (selectedCountry) {
 			setGovernmentProvinces(selectedCountry.provinces);
-			// Reset regional tax if changing federal tax country
-			if (!selectedCountry.provinces.includes(formData.governmentInfo.regionalTax)) {
-				setFormData({
-					...formData,
-					governmentInfo: {
-						...formData.governmentInfo,
-						regionalTax: selectedCountry.provinces[0],
-					},
-				});
-			}
 		}
 	}, [formData.governmentInfo.federalTax]);
 

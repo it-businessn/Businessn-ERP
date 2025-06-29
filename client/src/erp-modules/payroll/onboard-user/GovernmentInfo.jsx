@@ -20,7 +20,7 @@ import {
 } from "@chakra-ui/react";
 import TextTitle from "components/ui/text/TextTitle";
 import { FaInfoCircle } from "react-icons/fa";
-import { governmentSubSteps, tabPanelStyleCss, tabScrollCss } from "./customInfo";
+import { COUNTRIES, governmentSubSteps, tabPanelStyleCss, tabScrollCss } from "./customInfo";
 
 const GovernmentInfo = ({
 	governmentSubStep,
@@ -149,10 +149,11 @@ const GovernmentInfo = ({
 								size="sm"
 								value={formData.governmentInfo.federalTax}
 								onChange={(e) => handleChange("governmentInfo", "federalTax", e.target.value)}
+								placeholder="Select Country"
 							>
-								{["Canada", "US"].map((country) => (
-									<option key={country} value={country}>
-										{country}
+								{COUNTRIES.map(({ type, code }) => (
+									<option key={type} value={code}>
+										{type}
 									</option>
 								))}
 							</Select>
@@ -164,10 +165,11 @@ const GovernmentInfo = ({
 								size="sm"
 								value={formData.governmentInfo.regionalTax}
 								onChange={(e) => handleChange("governmentInfo", "regionalTax", e.target.value)}
+								placeholder="Select Region"
 							>
-								{governmentProvinces.map((province) => (
-									<option key={province} value={province}>
-										{province}
+								{governmentProvinces.map(({ name, id }) => (
+									<option key={name} value={id}>
+										{name}
 									</option>
 								))}
 							</Select>

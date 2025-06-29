@@ -1,38 +1,4 @@
 import { CONTRIBUTION } from "constant";
-import { COUNTRIES } from "./profileInfo";
-
-export const EMP_INCOME_TAX_CONFIG = [
-	{
-		type: "sfsgdsgdsgdsg14",
-		params: [
-			{
-				name: "Federal Tax",
-				param_key: "federalTax",
-				control: "select",
-				options: COUNTRIES,
-			},
-			{
-				name: "Regional Tax",
-				param_key: "regionalTax",
-				control: "select",
-				options: COUNTRIES,
-			},
-		],
-	},
-	{
-		type: "sfsgdsgdsgdsg15",
-		params: [
-			{
-				name: "Personal Federal Tax Credit",
-				param_key: "federalTaxCredit",
-			},
-			{
-				name: "Personal Regional Tax Credit",
-				param_key: "regionalTaxCredit",
-			},
-		],
-	},
-];
 
 export const EMP_FED_GOVT_CONFIG = [
 	{
