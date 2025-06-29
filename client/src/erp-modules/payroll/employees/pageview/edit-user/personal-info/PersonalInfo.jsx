@@ -162,7 +162,7 @@ const PersonalInfo = ({ company, userId }) => {
 			} = formData.emergencyContact;
 
 			const profileData = {
-				empId: moreDetails.empId,
+				empId: moreDetails?.empId || userId,
 				companyName: company,
 				firstName,
 				middleName,
@@ -189,10 +189,9 @@ const PersonalInfo = ({ company, userId }) => {
 				emergencyPersonalPhoneNum,
 				emergencyContactRelationship,
 			};
-			const { data } = await PayrollService.updateEmployeeProfileInfo(
-				profileData,
-				moreDetails?._id,
-			);
+			const { data } = moreDetails?._id
+				? await PayrollService.updateEmployeeProfileInfo(profileData, moreDetails?._id)
+				: await PayrollService.addEmployeeProfileInfo(profileData);
 			setIsLoading(false);
 			toast({
 				title: "Personal info updated successfully.",

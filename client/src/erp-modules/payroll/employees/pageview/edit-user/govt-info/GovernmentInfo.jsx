@@ -127,7 +127,7 @@ const GovernmentInfo = ({ company, userId }) => {
 			} = formData.governmentInfo;
 
 			const govtContrInfo = {
-				empId: moreDetails.empId,
+				empId: moreDetails?.empId || userId,
 				companyName: company,
 				isCPPExempt,
 				isEIExempt,
@@ -144,10 +144,9 @@ const GovernmentInfo = ({ company, userId }) => {
 				regionalEmployerHealth,
 			};
 
-			const { data } = await PayrollService.updateEmployeeGovernmentInfo(
-				govtContrInfo,
-				moreDetails?._id,
-			);
+			const { data } = moreDetails?._id
+				? await PayrollService.updateEmployeeGovernmentInfo(govtContrInfo, moreDetails?._id)
+				: await PayrollService.addEmployeeGovernmentInfo(govtContrInfo);
 			setIsLoading(false);
 			toast({
 				title: "Government info updated successfully.",

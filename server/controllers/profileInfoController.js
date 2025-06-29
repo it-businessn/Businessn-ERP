@@ -36,8 +36,10 @@ const getEmployeeProfileInfo = async (req, res) => {
 
 		const result = await findEmployeeProfileInfo(empId, companyName);
 		if (result) {
-			if (!result?.SIN?.startsWith("*") && result?.SIN && result?.SINIv) {
+			if (!result?.SIN?.startsWith("*") && result?.SINIv && isNaN(Number(result?.SIN))) {
 				result.SIN = decryptData(result?.SIN, sin_key, result?.SINIv).replace(/.(?=.{3})/g, "*");
+			} else {
+				result.SIN = result.SIN?.replace(/.(?=.{3})/g, "*") || "";
 			}
 			return res.status(200).json(result);
 		}
@@ -165,7 +167,7 @@ const addEmployeeProfileInfo = async (req, res) => {
 		});
 
 		if (existingProfileInfo) {
-			const updatedProfileInfo = await updateProfileInfo(existingProfileInfo._id, {
+			const updatedData = {
 				streetAddress: `${streetAddressSuite ?? ""} ${streetAddress}`,
 				city,
 				province,
@@ -176,7 +178,6 @@ const addEmployeeProfileInfo = async (req, res) => {
 				emergencyFirstName,
 				emergencyLastName,
 				birthDate,
-				SIN,
 				maritalStatus,
 				citizenship,
 				workPermitNo,
@@ -190,7 +191,11 @@ const addEmployeeProfileInfo = async (req, res) => {
 				firstName,
 				middleName,
 				lastName,
-			});
+			};
+			if (!SIN.startsWith("*")) {
+				updatedData.SIN = SIN;
+			}
+			const updatedProfileInfo = await updateProfileInfo(existingProfileInfo._id, updatedData);
 			await updateEmployee(existingProfileInfo?.empId, data);
 			return res.status(201).json(updatedProfileInfo);
 		}
@@ -327,11 +332,13 @@ const updateEmployeeProfileInfo = async (req, res) => {
 		await updateEmployee(empId, data);
 		if (existingProfileInfo) {
 			req.body.updatedOn = moment();
-			if (SIN && SIN !== existingProfileInfo?.SIN) {
+			if (SIN && !SIN.startsWith("*")) {
 				const ENCRYPTION_KEY = Buffer.from(process.env.SIN_ENCRYPTION_KEY, "hex");
 				const sinEncrypted = encryptData(SIN, ENCRYPTION_KEY);
 				req.body.SIN = sinEncrypted.encryptedData;
 				req.body.SINIv = sinEncrypted.iv;
+			} else if (SIN.startsWith("*")) {
+				delete req.body.SIN;
 			}
 			if (req.body?._id) delete req.body._id;
 			const updatedProfileInfo = await updateProfileInfo(existingProfileInfo._id, req.body);

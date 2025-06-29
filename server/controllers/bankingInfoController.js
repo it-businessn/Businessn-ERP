@@ -49,17 +49,20 @@ const getEmployeeBankingInfo = async (req, res) => {
 			return res.status(200).json(newData);
 		}
 
-		const accountNumber = result?.accountNum
-			? decryptData(result.accountNum, banking_key, result.accountIv).replace(/.(?=.{3})/g, "*")
-			: "";
+		const accountNumber =
+			!result?.accountNum?.startsWith("*") && isNaN(Number(result?.accountNum))
+				? decryptData(result.accountNum, banking_key, result.accountIv).replace(/.(?=.{3})/g, "*")
+				: "";
 
-		const bankNumber = result?.bankNum
-			? `**${decryptData(result.bankNum, banking_key, result.bankIv).slice(-1)}`
-			: "";
+		const bankNumber =
+			!result?.bankNum?.startsWith("*") && isNaN(Number(result?.bankNum))
+				? `**${decryptData(result.bankNum, banking_key, result.bankIv).slice(-1)}`
+				: "";
 
-		const transitNumber = result?.transitNum
-			? `***${decryptData(result.transitNum, banking_key, result.transitIv).slice(-2)}`
-			: "";
+		const transitNumber =
+			!result?.transitNum?.startsWith("*") && isNaN(Number(result?.transitNum))
+				? `***${decryptData(result.transitNum, banking_key, result.transitIv).slice(-2)}`
+				: "";
 
 		newData.accountNum = accountNumber;
 		newData.bankNum = bankNumber;
@@ -102,18 +105,14 @@ const addEmployeeBankingInfo = async (req, res) => {
 		if (existingBankingInfo) {
 			const { bankNum, transitNum, accountNum } = bankDetails;
 
-			if (bankNum && existingBankingInfo?.bankNum !== bankNum) {
+			if (!bankNum.startsWith("*") && !transitNum.startsWith("*") && !accountNum.startsWith("*")) {
 				const bankEncrypted = encryptData(bankNum, ENCRYPTION_KEY);
+				const transitEncrypted = encryptData(transitNum, ENCRYPTION_KEY);
+				const accountEncrypted = encryptData(accountNum, ENCRYPTION_KEY);
 				updatedData.bankNum = bankEncrypted.encryptedData;
 				updatedData.bankIv = bankEncrypted.iv;
-			}
-			if (transitNum && existingBankingInfo?.transitNum !== transitNum) {
-				const transitEncrypted = encryptData(transitNum, ENCRYPTION_KEY);
 				updatedData.transitNum = transitEncrypted.encryptedData;
 				updatedData.transitIv = transitEncrypted.iv;
-			}
-			if (accountNum && existingBankingInfo?.accountNum !== accountNum) {
-				const accountEncrypted = encryptData(accountNum, ENCRYPTION_KEY);
 				updatedData.accountNum = accountEncrypted.encryptedData;
 				updatedData.accountIv = accountEncrypted.iv;
 			}
@@ -173,19 +172,21 @@ const updateEmployeeBankingInfo = async (req, res) => {
 			) {
 				await deleteAlerts(empId, ALERTS_TYPE.BANK);
 			}
-			const ENCRYPTION_KEY = Buffer.from(process.env.BANKING_ENCRYPTION_KEY, "hex");
-			const bankEncrypted = encryptData(bankNum, ENCRYPTION_KEY);
-			const transitEncrypted = encryptData(transitNum, ENCRYPTION_KEY);
-			const accountEncrypted = encryptData(accountNum, ENCRYPTION_KEY);
+			if (!bankNum.startsWith("*") && !transitNum.startsWith("*") && !accountNum.startsWith("*")) {
+				const ENCRYPTION_KEY = Buffer.from(process.env.BANKING_ENCRYPTION_KEY, "hex");
+				const bankEncrypted = encryptData(bankNum, ENCRYPTION_KEY);
+				const transitEncrypted = encryptData(transitNum, ENCRYPTION_KEY);
+				const accountEncrypted = encryptData(accountNum, ENCRYPTION_KEY);
 
-			updatedData.bankNum = bankEncrypted.encryptedData;
-			updatedData.bankIv = bankEncrypted.iv;
+				updatedData.bankNum = bankEncrypted.encryptedData;
+				updatedData.bankIv = bankEncrypted.iv;
 
-			updatedData.transitNum = transitEncrypted.encryptedData;
-			updatedData.transitIv = transitEncrypted.iv;
+				updatedData.transitNum = transitEncrypted.encryptedData;
+				updatedData.transitIv = transitEncrypted.iv;
 
-			updatedData.accountNum = accountEncrypted.encryptedData;
-			updatedData.accountIv = accountEncrypted.iv;
+				updatedData.accountNum = accountEncrypted.encryptedData;
+				updatedData.accountIv = accountEncrypted.iv;
+			}
 
 			const updatedInfo = await updateBankingInfo(id, updatedData);
 			return res.status(201).json(updatedInfo);

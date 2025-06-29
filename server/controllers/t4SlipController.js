@@ -30,14 +30,20 @@ const buildRecord = async (record) => {
 
 	const sin_key = Buffer.from(process.env.SIN_ENCRYPTION_KEY, "hex");
 	const sinExists =
-		empProfileInfo?.SIN && empProfileInfo?.SINIv && !empProfileInfo?.SIN?.startsWith("*");
+		empProfileInfo?.SIN &&
+		empProfileInfo?.SINIv &&
+		!empProfileInfo?.SIN?.startsWith("*") &&
+		isNaN(empProfileInfo?.SIN);
 
 	empProfileInfo.SIN = sinExists
 		? decryptData(empProfileInfo?.SIN, sin_key, empProfileInfo?.SINIv)
-		: "";
+		: (!empProfileInfo?.SIN?.startsWith("*") && isNaN(Number(empProfileInfo?.SIN))) ||
+		  !empProfileInfo?.SIN
+		? ""
+		: empProfileInfo?.SIN;
 	const empEmploymentInfo = await EmployeeEmploymentInfo.findOne({
 		empId: record?.empId._id,
-	}).select("employeeNo employmentRegion");
+	}).select("employeeNo employmentRegion employmentCountry");
 
 	const companyInfo = await Company.findOne({
 		name: record?.companyName,
@@ -157,7 +163,9 @@ const generateT4Slip = async (companyName, payPeriodNum, payPeriodEndDate) => {
 		addressNode.ele("addr_l1_txt", empProfileInfo?.streetAddress).up();
 		addressNode.ele("addr_l2_txt", empProfileInfo?.streetAddressSuite).up();
 		addressNode.ele("cty_nm", empProfileInfo?.city).up();
-		addressNode.ele("prov_cd", empProfileInfo?.province).up();
+		addressNode
+			.ele("prov_cd", empProfileInfo?.country === "CAN" ? empProfileInfo?.province : "ZZ")
+			.up();
 		addressNode.ele("cntry_cd", empProfileInfo?.country).up();
 		addressNode.ele("pstl_cd", empProfileInfo?.postalCode).up();
 		addressNode.up(); // Close EMPE_ADDR
@@ -174,8 +182,10 @@ const generateT4Slip = async (companyName, payPeriodNum, payPeriodEndDate) => {
 		// - amendments = A
 		// - cancel = C
 		T4SlipNode.ele("rpt_tcd", "O").up();
-		T4SlipNode.ele("empt_prov_cd", "BC").up();
-		// T4SlipNode.ele("empt_prov_cd", empEmploymentInfo?.employmentRegion).up();
+		T4SlipNode.ele(
+			"empt_prov_cd",
+			empEmploymentInfo?.employmentCountry === "CAN" ? empEmploymentInfo?.employmentRegion : "ZZ",
+		).up();
 		T4SlipNode.ele("empr_dntl_ben_rpt_cd").up();
 
 		const t4AmtNode = T4SlipNode.ele("T4_AMT");
@@ -273,7 +283,9 @@ const generateT4Slip = async (companyName, payPeriodNum, payPeriodEndDate) => {
 	emprAddressNode.ele("addr_l1_txt", houseNumber).up();
 	emprAddressNode.ele("addr_l2_txt", streetName).up();
 	emprAddressNode.ele("cty_nm", companyInfo?.address?.city).up();
-	emprAddressNode.ele("prov_cd", companyInfo?.address?.state).up();
+	emprAddressNode
+		.ele("prov_cd", companyInfo?.address?.country === "CAN" ? companyInfo?.address?.state : "ZZ")
+		.up();
 	emprAddressNode.ele("cntry_cd", companyInfo?.address?.country).up();
 	emprAddressNode.ele("pstl_cd", companyInfo?.address?.postalCode).up();
 	emprAddressNode.up();

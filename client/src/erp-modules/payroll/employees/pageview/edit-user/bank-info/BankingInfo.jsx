@@ -154,7 +154,7 @@ const BankingInfo = ({ company, userId }) => {
 			const { payStubSendByEmail, directDeposit, paymentEmail, bankNum, transitNum, accountNum } =
 				formData.bankingInfo;
 			const bankInfoData = {
-				empId: moreDetails.empId,
+				empId: moreDetails?.empId || userId,
 				companyName: company,
 				payStubSendByEmail,
 				directDeposit,
@@ -163,10 +163,9 @@ const BankingInfo = ({ company, userId }) => {
 				transitNum,
 				accountNum,
 			};
-			const { data } = await PayrollService.updateEmployeeBankingInfo(
-				bankInfoData,
-				moreDetails?._id,
-			);
+			const { data } = moreDetails?._id
+				? await PayrollService.updateEmployeeBankingInfo(bankInfoData, moreDetails?._id)
+				: await PayrollService.addEmployeeBankingInfo(bankInfoData);
 			setIsLoading(false);
 			toast({
 				title: "Banking info updated successfully.",

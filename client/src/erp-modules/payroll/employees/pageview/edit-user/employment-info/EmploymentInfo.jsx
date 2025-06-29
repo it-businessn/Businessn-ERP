@@ -166,7 +166,7 @@ const EmploymentInfo = ({ company, userId, payGroups, selectedPayGroupOption }) 
 			} = formData.employmentInfo;
 
 			const employmentInfoData = {
-				empId: moreDetails.empId,
+				empId: moreDetails?.empId || userId,
 				companyName: company,
 				payrollStatus,
 				employeeNo,
@@ -177,10 +177,9 @@ const EmploymentInfo = ({ company, userId, payGroups, selectedPayGroupOption }) 
 				employmentRegion,
 				positions,
 			};
-			const { data } = await PayrollService.updateEmployeeEmploymentInfo(
-				employmentInfoData,
-				moreDetails?._id,
-			);
+			const { data } = moreDetails?._id
+				? await PayrollService.updateEmployeeEmploymentInfo(employmentInfoData, moreDetails?._id)
+				: await PayrollService.addEmployeeEmploymentInfo(employmentInfoData);
 			setShowModal(false);
 			setIsLoading(false);
 			toast({
