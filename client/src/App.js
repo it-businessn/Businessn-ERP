@@ -19,6 +19,14 @@ const App = ({ theme }) => {
 		setupAxiosInterceptors(setSessionExpired);
 		checkVersionPeriodically();
 	}, []);
+	// index.js or App.js
+	if (process.env.NODE_ENV === "production") {
+		console.log = () => {};
+		console.warn = () => {};
+		console.error = () => {};
+	} else {
+		console.log("asf");
+	}
 
 	return (
 		<DataProvider>

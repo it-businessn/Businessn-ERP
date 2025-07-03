@@ -316,6 +316,7 @@ const PersonalInfo = ({ company, userId }) => {
 								value={formData.personalInfo.SIN || ""}
 								onChange={(e) => handleChange("personalInfo", "SIN", e.target.value)}
 								placeholder="Social Security Number"
+								onCopy={(e) => e.preventDefault()}
 							/>
 						</FormControl>
 

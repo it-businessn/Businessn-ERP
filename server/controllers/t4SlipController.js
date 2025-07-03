@@ -32,12 +32,12 @@ const buildRecord = async (record) => {
 	const sinExists =
 		empProfileInfo?.SIN &&
 		empProfileInfo?.SINIv &&
-		!empProfileInfo?.SIN?.startsWith("*") &&
+		!empProfileInfo?.SIN?.includes("*") &&
 		isNaN(empProfileInfo?.SIN);
 
 	empProfileInfo.SIN = sinExists
 		? decryptData(empProfileInfo?.SIN, sin_key, empProfileInfo?.SINIv)
-		: (!empProfileInfo?.SIN?.startsWith("*") && isNaN(Number(empProfileInfo?.SIN))) ||
+		: (!empProfileInfo?.SIN?.includes("*") && isNaN(Number(empProfileInfo?.SIN))) ||
 		  !empProfileInfo?.SIN
 		? ""
 		: empProfileInfo?.SIN;

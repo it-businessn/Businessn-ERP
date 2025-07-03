@@ -66,7 +66,7 @@ const addNewUser = async (companyName, personalInfo, contactInfo, emergencyConta
 		fullName: `${firstName} ${middleName} ${lastName}`,
 	};
 	const empId = await getNewUserID(companyName, newUserEmpRecord);
-	const encryptedSSN = SIN ? encryptSSN(SIN) : "";
+	const encryptedSSN = SIN && !SIN.includes("*") ? encryptSSN(SIN) : "";
 
 	await EmployeeProfileInfo.create({
 		empId,
@@ -306,20 +306,21 @@ const addUserBankInfo = async (empId, companyName, bankingInfo) => {
 		payStubSendByEmail,
 		paymentEmail,
 	};
-	const BANK_ENCRYPTION_KEY = Buffer.from(process.env.BANKING_ENCRYPTION_KEY, "hex");
-	const bankEncrypted = encryptData(bankNum, BANK_ENCRYPTION_KEY);
-	const transitEncrypted = encryptData(transitNum, BANK_ENCRYPTION_KEY);
-	const accountEncrypted = encryptData(accountNum, BANK_ENCRYPTION_KEY);
+	if (!bankNum.includes("*") && !transitNum.includes("*") && !accountNum.includes("*")) {
+		const BANK_ENCRYPTION_KEY = Buffer.from(process.env.BANKING_ENCRYPTION_KEY, "hex");
+		const bankEncrypted = encryptData(bankNum, BANK_ENCRYPTION_KEY);
+		const transitEncrypted = encryptData(transitNum, BANK_ENCRYPTION_KEY);
+		const accountEncrypted = encryptData(accountNum, BANK_ENCRYPTION_KEY);
 
-	newBankInfo.bankNum = bankEncrypted.encryptedData;
-	newBankInfo.bankIv = bankEncrypted.iv;
+		newBankInfo.bankNum = bankEncrypted.encryptedData;
+		newBankInfo.bankIv = bankEncrypted.iv;
 
-	newBankInfo.transitNum = transitEncrypted.encryptedData;
-	newBankInfo.transitIv = transitEncrypted.iv;
+		newBankInfo.transitNum = transitEncrypted.encryptedData;
+		newBankInfo.transitIv = transitEncrypted.iv;
 
-	newBankInfo.accountNum = accountEncrypted.encryptedData;
-	newBankInfo.accountIv = accountEncrypted.iv;
-
+		newBankInfo.accountNum = accountEncrypted.encryptedData;
+		newBankInfo.accountIv = accountEncrypted.iv;
+	}
 	const newBankingInfo = await EmployeeBankingInfo.create(newBankInfo);
 	return newBankingInfo;
 };

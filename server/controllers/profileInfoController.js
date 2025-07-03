@@ -36,7 +36,7 @@ const getEmployeeProfileInfo = async (req, res) => {
 
 		const result = await findEmployeeProfileInfo(empId, companyName);
 		if (result) {
-			if (!result?.SIN?.startsWith("*") && result?.SINIv && isNaN(Number(result?.SIN))) {
+			if (!result?.SIN?.includes("*") && result?.SINIv && isNaN(Number(result?.SIN))) {
 				result.SIN = decryptData(result?.SIN, sin_key, result?.SINIv).replace(/.(?=.{3})/g, "*");
 			} else {
 				result.SIN = result.SIN?.replace(/.(?=.{3})/g, "*") || "";
@@ -165,36 +165,36 @@ const addEmployeeProfileInfo = async (req, res) => {
 			lastName,
 			personalEmail,
 		});
-
+		const updatedData = {
+			streetAddress: `${streetAddressSuite ?? ""} ${streetAddress}`,
+			city,
+			province,
+			postalCode,
+			country,
+			emergencyFirstName,
+			emergencyLastName,
+			birthDate,
+			maritalStatus,
+			citizenship,
+			workPermitNo,
+			workPermitExpiryNo,
+			personalEmail,
+			personalPhoneNum,
+			businessEmail,
+			businessPhoneNum,
+			emergencyPersonalEmail,
+			emergencyPersonalPhoneNum,
+			firstName,
+			middleName,
+			lastName,
+		};
+		if (SIN && !SIN.includes("*")) {
+			const ENCRYPTION_KEY = Buffer.from(process.env.SIN_ENCRYPTION_KEY, "hex");
+			const sinEncrypted = encryptData(SIN, ENCRYPTION_KEY);
+			updatedData.SIN = sinEncrypted.encryptedData;
+			updatedData.SINIv = sinEncrypted.iv;
+		}
 		if (existingProfileInfo) {
-			const updatedData = {
-				streetAddress: `${streetAddressSuite ?? ""} ${streetAddress}`,
-				city,
-				province,
-				postalCode,
-				country,
-				personalEmail,
-				personalPhoneNum,
-				emergencyFirstName,
-				emergencyLastName,
-				birthDate,
-				maritalStatus,
-				citizenship,
-				workPermitNo,
-				workPermitExpiryNo,
-				personalEmail,
-				personalPhoneNum,
-				businessEmail,
-				businessPhoneNum,
-				emergencyPersonalEmail,
-				emergencyPersonalPhoneNum,
-				firstName,
-				middleName,
-				lastName,
-			};
-			if (!SIN.startsWith("*")) {
-				updatedData.SIN = SIN;
-			}
 			const updatedProfileInfo = await updateProfileInfo(existingProfileInfo._id, updatedData);
 			await updateEmployee(existingProfileInfo?.empId, data);
 			return res.status(201).json(updatedProfileInfo);
@@ -215,38 +215,8 @@ const addEmployeeProfileInfo = async (req, res) => {
 			const newEmployee = await addEmployee(companyName, newRecord);
 			profileInfoEmpId = newEmployee._id;
 		}
-		if (SIN) {
-			const ENCRYPTION_KEY = Buffer.from(process.env.SIN_ENCRYPTION_KEY, "hex");
-			const sinEncrypted = encryptData(SIN, ENCRYPTION_KEY);
-			req.body.SIN = sinEncrypted.encryptedData;
-			req.body.SINIv = sinEncrypted.iv;
-		}
-		const newProfileInfo = await EmployeeProfileInfo.create({
-			empId: profileInfoEmpId,
-			companyName,
-			firstName,
-			middleName,
-			lastName,
-			emergencyFirstName,
-			emergencyLastName,
-			birthDate,
-			SIN: req.body?.SIN || "",
-			maritalStatus,
-			citizenship,
-			workPermitNo,
-			workPermitExpiryNo,
-			personalEmail,
-			personalPhoneNum,
-			businessEmail,
-			businessPhoneNum,
-			emergencyPersonalEmail,
-			emergencyPersonalPhoneNum,
-			streetAddress,
-			city,
-			province,
-			country,
-			postalCode,
-		});
+		updatedData.empId = profileInfoEmpId;
+		const newProfileInfo = await EmployeeProfileInfo.create(updatedData);
 		return res.status(201).json(newProfileInfo);
 	} catch (error) {
 		res.status(400).json({ message: error.message });
@@ -332,13 +302,11 @@ const updateEmployeeProfileInfo = async (req, res) => {
 		await updateEmployee(empId, data);
 		if (existingProfileInfo) {
 			req.body.updatedOn = moment();
-			if (SIN && !SIN.startsWith("*")) {
+			if (SIN && !SIN.includes("*")) {
 				const ENCRYPTION_KEY = Buffer.from(process.env.SIN_ENCRYPTION_KEY, "hex");
 				const sinEncrypted = encryptData(SIN, ENCRYPTION_KEY);
 				req.body.SIN = sinEncrypted.encryptedData;
 				req.body.SINIv = sinEncrypted.iv;
-			} else if (SIN.startsWith("*")) {
-				delete req.body.SIN;
 			}
 			if (req.body?._id) delete req.body._id;
 			const updatedProfileInfo = await updateProfileInfo(existingProfileInfo._id, req.body);

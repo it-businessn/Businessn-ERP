@@ -278,6 +278,7 @@ const BankingInfo = ({ company, userId }) => {
 										onChange={(e) => handleBankInfoChange("bankingInfo", "bankNum", e.target.value)}
 										onBlur={() => handleBankingBlur("bankNum")}
 										placeholder="Enter bank number (3 digits)"
+										onCopy={(e) => e.preventDefault()}
 									/>
 									<FormErrorMessage>{bankingErrors.bankNum}</FormErrorMessage>
 								</FormControl>
@@ -295,6 +296,7 @@ const BankingInfo = ({ company, userId }) => {
 										}
 										onBlur={() => handleBankingBlur("transitNum")}
 										placeholder="Enter transit number (5 digits)"
+										onCopy={(e) => e.preventDefault()}
 									/>
 									<FormErrorMessage>{bankingErrors.transitNum}</FormErrorMessage>
 								</FormControl>
@@ -312,6 +314,7 @@ const BankingInfo = ({ company, userId }) => {
 										}
 										onBlur={() => handleBankingBlur("accountNum")}
 										placeholder="Enter account number (7-16 digits)"
+										onCopy={(e) => e.preventDefault()}
 									/>
 									<FormErrorMessage>{bankingErrors.accountNum}</FormErrorMessage>
 								</FormControl>

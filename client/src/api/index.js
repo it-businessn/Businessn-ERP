@@ -15,7 +15,13 @@ API.interceptors.request.use(
 		}
 		return config;
 	},
-	(error) => Promise.reject(error),
+	(error) => {
+		if (error.response?.status === 429) {
+			alert("Too many requests — you have been logged out for security.");
+			redirectLogin();
+		}
+		Promise.reject(error);
+	},
 );
 
 export const setupAxiosInterceptors = (setSessionExpired) => {
