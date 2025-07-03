@@ -44,7 +44,7 @@ export const setupAxiosInterceptors = (setSessionExpired) => {
 					originalRequest.headers.Authorization = `Bearer ${accessToken}`;
 					return API(originalRequest);
 				} catch (refreshError) {
-					console.error("Refresh token invalid or expired", refreshError);
+					console.error("Refresh refreshError", refreshError);
 					// setSessionExpired(true);
 					redirectLogin();
 				}

@@ -68,7 +68,7 @@ const { getAllCompanies, getHolidays } = require("./controllers/setUpController"
 const PORT = process.env.PORT;
 const MONGO_URI = process.env.DB_CONNECTION_URL_STAGING_CRM;
 const limiter = rateLimit({
-	windowMs: 15 * 60 * 1000, // 15 minutes
+	windowMs: 60 * 1000, // 1 minutes
 	max: 100, // Limit each IP to 100 requests per windowMs
 	message: "Too many requests, please try again later.",
 });

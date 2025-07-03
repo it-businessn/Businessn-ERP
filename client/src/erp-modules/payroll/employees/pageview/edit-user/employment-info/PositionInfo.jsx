@@ -186,7 +186,7 @@ const PositionInfo = ({
 					<Input
 						size="sm"
 						name="employeeCardNumber"
-						value={roleInfo.employeeCardNumber || ""}
+						value={roleInfo.employeeCardNumber || roleInfo?.cardNum || ""}
 						onChange={(e) => handleChange(updateRecordIndex, e)}
 						placeholder="Enter card number"
 					/>
