@@ -158,6 +158,14 @@ const mapTimecardRawToTimecard = async () => {
 		const yesterday = new Date(today);
 		yesterday.setDate(today.getDate() - 1);
 
+		// const entries = await TimecardRaw.find({
+		// 	user_id: "5597",
+		// 	timestamp: {
+		// 		$gte: new Date("2025-01-01T00:00:00Z"),
+		// 		$lt: new Date("2026-01-01T00:00:00Z"),
+		// 	},
+		// }).sort({ timestamp: 1 });
+
 		const entries = await TimecardRaw.find({
 			timestamp: {
 				$gte: moment(yesterday).startOf("day").toDate(),

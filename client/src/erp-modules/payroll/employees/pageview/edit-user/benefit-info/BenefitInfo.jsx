@@ -74,19 +74,33 @@ const BenefitInfo = ({ company, userId }) => {
 					YTDVacationUsed: empPayStub?.YTDVacationUsed.toFixed(2),
 					vacationAdjustment,
 					typeOfPensionERTreatment,
-					pensionERContribution,
+					pensionERContribution: typeOfPensionERTreatment?.includes("%")
+						? pensionERContribution * 100
+						: pensionERContribution,
 					typeOfDentalERTreatment,
-					dentalERContribution,
+					dentalERContribution: typeOfDentalERTreatment?.includes("%")
+						? dentalERContribution * 100
+						: dentalERContribution,
 					typeOfExtendedHealthERTreatment,
-					extendedHealthERContribution,
+					extendedHealthERContribution: typeOfExtendedHealthERTreatment?.includes("%")
+						? extendedHealthERContribution * 100
+						: extendedHealthERContribution,
 					typeOfPensionEETreatment,
-					pensionEEContribution,
+					pensionEEContribution: typeOfPensionEETreatment?.includes("%")
+						? pensionEEContribution * 100
+						: pensionEEContribution,
 					typeOfDentalEETreatment,
-					dentalEEContribution,
+					dentalEEContribution: typeOfDentalEETreatment?.includes("%")
+						? dentalEEContribution * 100
+						: dentalEEContribution,
 					typeOfExtendedHealthEETreatment,
-					extendedHealthEEContribution,
+					extendedHealthEEContribution: typeOfExtendedHealthEETreatment?.includes("%")
+						? extendedHealthEEContribution * 100
+						: extendedHealthEEContribution,
 					typeOfUnionDuesTreatment,
-					unionDuesContribution,
+					unionDuesContribution: typeOfUnionDuesTreatment?.includes("%")
+						? unionDuesContribution * 100
+						: unionDuesContribution,
 				},
 			});
 			setMoreDetails({ empId, _id });
