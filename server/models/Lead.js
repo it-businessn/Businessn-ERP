@@ -32,6 +32,8 @@ const leadSchema = new mongoose.Schema({
 	country: String,
 	annualRevenue: String,
 	totalEmployees: String,
+	referrals: { type: Boolean, default: false },
+	marketingComms: { type: Boolean, default: false },
 });
 
 const Lead = mongoose.model("Lead", leadSchema);

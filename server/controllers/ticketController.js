@@ -187,15 +187,17 @@ const createNewFreshLead = async (lead) => {
 		country: lead?.country,
 		annualRevenue: lead?.annualRevenue,
 		totalEmployees: lead?.totalEmployees,
+		referrals: lead?.referrals,
+		marketingComms: lead?.marketingComms,
 	};
-
-	await Lead.create(newLeadOpportunity);
+	const newLead = await Lead.create(newLeadOpportunity);
+	return newLead;
 };
 
 const createLeadTicket = async (req, res) => {
 	try {
 		const data = req.body;
-		createNewFreshLead(data);
+		const lead = await createNewFreshLead(data);
 
 		const attachments = [
 			{
@@ -207,7 +209,7 @@ const createLeadTicket = async (req, res) => {
 		data.category = "Support";
 		data.priority = 1;
 
-		const companyNamePrefix = data.companyName.split(" ")[0];
+		const companyNamePrefix = data?.companyName?.split(" ")[0];
 		data.ticketNumber = generateTicketNumber(companyNamePrefix);
 		const assigneeEmail = await Employee.findOne({ email: SUPPORT_ADMIN_CONTACT });
 		data.assignee = assigneeEmail?.fullName;
@@ -286,7 +288,7 @@ const createLeadTicket = async (req, res) => {
 				<p>You’ve got a new lead! Here are the basic details:</p>
 
 				<p style="font-weight: bold; margin: 0">Company Name:</p>
-				<p>${data?.companyName}</p>
+				<p>${lead?.opportunityName}</p>
 				<p style="font-weight: bold; margin: 0">Customer Name:</p>
 				<p>${data?.firstName} ${data?.lastName}</p>
 				<p style="font-weight: bold; margin: 0">Email:</p>
