@@ -216,6 +216,8 @@ const createLeadTicket = async (req, res) => {
 
 		const newInfo = data;
 		newInfo.companyName = BUSINESSN_ORG;
+		newInfo.topic = "New Lead: Website Contact Form Submission";
+		newInfo.issue = "A new lead has been generated from the website contact form.";
 
 		const ticket = await SupportTicket.create(newInfo);
 
