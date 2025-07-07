@@ -4,7 +4,7 @@ const corsOptions = {
 		"https://businessn-erp.com",
 		"https:businessn-nwg.ddns.net",
 		"http:businessn-nwg.ddns.net",
-		"https://www.businessn.com/",
+		"https://www.businessn.com",
 		"http://10.0.0.79:3000",
 		"http://localhost:3000",
 		"http://localhost:3001",
