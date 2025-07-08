@@ -240,6 +240,7 @@ const EmployeeTimeCard = ({ selectedUser, company, isMobile }) => {
 					company={company}
 					userId={selectedUser?._id}
 					source={TIMESHEET_SOURCE.EMP}
+					setRefresh={setRefresh}
 				/>
 			)}
 			<HStack justifyContent="space-between" flexDirection={{ base: "column", md: "row" }}>

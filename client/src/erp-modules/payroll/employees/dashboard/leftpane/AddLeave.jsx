@@ -20,7 +20,7 @@ import moment from "moment";
 import { useEffect, useState } from "react";
 import TimesheetService from "services/TimesheetService";
 
-const AddLeave = ({ isOpen, handleClose, company, userId, source }) => {
+const AddLeave = ({ isOpen, handleClose, company, userId, source, setRefresh }) => {
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const initialFormData = {
 		type: "",
@@ -90,6 +90,7 @@ const AddLeave = ({ isOpen, handleClose, company, userId, source }) => {
 				duration: 1500,
 				isClosable: true,
 			});
+			setRefresh((prev) => !prev);
 			handleClose();
 		} catch (error) {
 			console.log("An error occurred. Please try again.", error);
