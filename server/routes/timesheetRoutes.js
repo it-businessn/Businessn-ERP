@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 
-const timesheetController = require("../controllers/timesheetContoller");
+const timesheetController = require("../controllers/timesheetController");
 
 router.get("/:companyName", timesheetController.getTimesheets);
 

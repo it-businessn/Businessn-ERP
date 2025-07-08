@@ -15,6 +15,15 @@ export const PAY_TYPES_TITLE = {
 	PERSONAL_DAY_PAY: "Personal Day Pay",
 };
 
+export const LEAVE_TYPES = [
+	"Unpaid Leave",
+	"Sick",
+	"Vacation",
+	"Bereavement",
+	"Personal Day",
+	"Other",
+];
+
 export const convertToMinutes = (time) => {
 	if (!time || typeof time !== "string") return null;
 	const [h, m] = time.split(":").map(Number);
@@ -265,7 +274,7 @@ export const ACTION_STATUS = [
 	},
 ];
 
-export const getParamKey = (type) => (type ? PAY_TYPES.find((_) => _.type === type) : "");
+export const getParamKey = (type) => (type ? PAY_TYPES.find((_) => _.type.includes(type)) : "");
 
 export const getSourceStyle = (sourceName) =>
 	TIMESHEET_SOURCES.find(({ origin }) => origin === sourceName);

@@ -21,6 +21,7 @@ import {
 	getTimeFormat,
 	monthDayYear,
 } from "utils/convertDate";
+import AddLeave from "./AddLeave";
 
 const EmployeeTimeCard = ({ selectedUser, company, isMobile }) => {
 	const cols = [
@@ -63,6 +64,7 @@ const EmployeeTimeCard = ({ selectedUser, company, isMobile }) => {
 	const deptName = loggedInUser?.role === ROLES.MANAGER ? loggedInUser?.department : null;
 	const [time, setTime] = useState(new Date());
 	const [showAddEntry, setShowAddEntry] = useState(false);
+	const [showLeaveForm, setShowLeaveForm] = useState(false);
 	const [refresh, setRefresh] = useState(false);
 	const [timesheetData, setTimesheetData] = useState([]);
 	const [filter, setFilter] = useState(null);
@@ -199,8 +201,26 @@ const EmployeeTimeCard = ({ selectedUser, company, isMobile }) => {
 							/>
 						))}
 					</HStack>
+					{isMobile && (
+						<PrimaryButton
+							w="100%"
+							name="Request Leave"
+							bg="var(--request_leave)"
+							onOpen={() => setShowLeaveForm(true)}
+							borderRadius="md"
+						/>
+					)}
 				</VStack>
 			</BoxCard>
+			{showLeaveForm && (
+				<AddLeave
+					isOpen={showLeaveForm}
+					handleClose={() => setShowLeaveForm(false)}
+					company={company}
+					userId={selectedUser?._id}
+					source={TIMESHEET_SOURCE.EMP}
+				/>
+			)}
 			<BoxCard p={{ base: "0.5em 1em", md: "1em" }}>
 				<HStack justify={"space-between"}>
 					<Box>

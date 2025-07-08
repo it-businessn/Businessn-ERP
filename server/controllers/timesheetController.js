@@ -698,4 +698,5 @@ module.exports = {
 	addOvertimeRecord,
 	addTimesheetEntry,
 	updateTimesheetRole,
+	setTime,
 };

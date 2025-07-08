@@ -38,6 +38,10 @@ const TimesheetService = {
 		return apiService.post("/timesheet", data);
 	},
 
+	async addLeave(data) {
+		return apiService.post("/leave-requests", data);
+	},
+
 	async addTimecard(data) {
 		return apiService.post("/timecard", data);
 	},

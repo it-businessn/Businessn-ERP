@@ -22,7 +22,7 @@ const {
 	calcTotalWorkedHours,
 	addOvertimeRecord,
 	addTimesheetEntry,
-} = require("./timesheetContoller");
+} = require("./timesheetController");
 const EmployeeTADProfileInfo = require("../models/EmployeeTADProfile");
 
 const getTADUsers = async (req, res) => {

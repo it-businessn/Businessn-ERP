@@ -17,7 +17,7 @@ const moment = require("moment");
 const helmet = require("helmet");
 const cookieParser = require("cookie-parser");
 
-const { addStatHolidayTimesheet } = require("./controllers/timesheetContoller");
+const { addStatHolidayTimesheet } = require("./controllers/timesheetController");
 const accountingRoutes = require("./routes/accountingRoutes");
 const activityRoutes = require("./routes/activityRoutes");
 const appRoutes = require("./routes/appRoutes");
@@ -28,6 +28,7 @@ const conversationRoutes = require("./routes/conversationRoutes");
 const eventRoutes = require("./routes/eventRoutes");
 const industryRoutes = require("./routes/industryRoutes");
 const leadRoutes = require("./routes/leadRoutes");
+const leaveRequestRoutes = require("./routes/leaveRequestRoutes");
 const logTaskRoutes = require("./routes/logTaskRoutes");
 const meetingRoutes = require("./routes/meetingRoutes");
 const noteRoutes = require("./routes/noteRoutes");
@@ -138,6 +139,7 @@ app.use("/api/announcements", announcementRoutes);
 app.use("/api/events", eventRoutes);
 app.use("/api/industry", industryRoutes);
 app.use("/api/leads", leadRoutes);
+app.use("/api/leave-requests", leaveRequestRoutes);
 app.use("/api/log-tasks", logTaskRoutes);
 app.use("/api/meetings", meetingRoutes);
 app.use("/api/notes", noteRoutes);
@@ -176,7 +178,6 @@ app.use("/api/generate-t4", t4SlipRoutes);
 // app.use("/api/configuration", configurationRoutes);
 // app.use("/api/dashboard", dashboardRoutes);
 // app.use("/api/leave-balances", leaveBalanceRoutes);
-// app.use("/api/leave-requests", leaveRequestRoutes);
 
 // Connect to MongoDB
 mongoose.connect(MONGO_URI, {

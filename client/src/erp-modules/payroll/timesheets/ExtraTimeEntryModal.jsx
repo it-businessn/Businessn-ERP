@@ -156,6 +156,7 @@ const ExtraTimeEntryModal = ({
 					/>
 				</HStack>
 				<ActionButtonGroup
+					bg="var(--banner_bg)"
 					submitBtnName={"Add"}
 					isDisabled={formData?.fullName === ""}
 					isLoading={isSubmitting}
