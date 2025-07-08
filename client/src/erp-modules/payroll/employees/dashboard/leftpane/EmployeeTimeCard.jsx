@@ -32,14 +32,7 @@ const EmployeeTimeCard = ({ selectedUser, company, isMobile }) => {
 		// "Break/Lunch",
 		"Total Hours",
 	];
-	const leaveRequestCols = [
-		"Type",
-		"Start Date",
-		"End Date",
-		"Status",
-		"Total Days",
-		"Total Hours",
-	];
+	const leaveRequestCols = ["Type", "Start Date", "End Date", "Status", "Total Days"];
 	const CLOCK_TYPES = {
 		row_1: [
 			{
@@ -52,6 +45,7 @@ const EmployeeTimeCard = ({ selectedUser, company, isMobile }) => {
 				name: "Break START",
 				isClicked: false,
 				onClick: () => updateSubmit("3", `Break Started!`),
+				isDisabled: true,
 			},
 		],
 		row_2: [
@@ -66,6 +60,7 @@ const EmployeeTimeCard = ({ selectedUser, company, isMobile }) => {
 				bg: "var(--event_color)",
 				isClicked: false,
 				onClick: () => updateSubmit("2", `Break Ended!`),
+				isDisabled: true,
 			},
 		],
 	};
@@ -193,8 +188,9 @@ const EmployeeTimeCard = ({ selectedUser, company, isMobile }) => {
 						/>
 					)}
 					<HStack justify="space-between" w="100%">
-						{CLOCK_TYPES.row_1.map(({ name, onClick, bg, isClicked }) => (
+						{CLOCK_TYPES.row_1.map(({ name, onClick, bg, isClicked, isDisabled }) => (
 							<LeftIconButton
+								isDisabled={isDisabled}
 								key={name}
 								isLoading={isClicked}
 								size={{ base: "sm", md: "xl" }}
@@ -208,9 +204,10 @@ const EmployeeTimeCard = ({ selectedUser, company, isMobile }) => {
 						))}
 					</HStack>
 					<HStack justify="space-between" w="100%">
-						{CLOCK_TYPES.row_2.map(({ name, onClick, bg, isClicked }) => (
+						{CLOCK_TYPES.row_2.map(({ name, onClick, bg, isClicked, isDisabled }) => (
 							<LeftIconButton
 								key={name}
+								isDisabled={isDisabled}
 								isLoading={isClicked}
 								size={{ base: "sm", md: "xl" }}
 								name={name}
@@ -265,8 +262,8 @@ const EmployeeTimeCard = ({ selectedUser, company, isMobile }) => {
 						zIndex={3}
 						top={-1}
 						textAlign="center"
-						minH="15vh"
-						height="15vh"
+						minH={{ base: "auto", md: "15vh" }}
+						height={{ base: "200px", md: "15vh" }}
 						css={tabScrollCss}
 					>
 						<Tbody>
@@ -277,7 +274,7 @@ const EmployeeTimeCard = ({ selectedUser, company, isMobile }) => {
 								({ type, startDate, endDate, status, totalLeaveHrs, totalLeaveDays, _id }) => (
 									<Tr key={_id} _hover={{ bg: "var(--phoneCall_bg_light)" }}>
 										<Td p={0.5}>
-											<TextTitle size={{ base: "xs", md: "sm" }} title={type} />
+											<TextTitle whiteSpace="wrap" size={{ base: "xs", md: "sm" }} title={type} />
 										</Td>
 										<Td p={0.5}>
 											<NormalTextTitle
@@ -300,9 +297,6 @@ const EmployeeTimeCard = ({ selectedUser, company, isMobile }) => {
 												size={{ base: "xs", md: "sm" }}
 												title={totalLeaveDays}
 											/>
-										</Td>
-										<Td p={0.5}>
-											<NormalTextTitle size={{ base: "xs", md: "sm" }} title={totalLeaveHrs} />
 										</Td>
 									</Tr>
 								),
@@ -343,8 +337,8 @@ const EmployeeTimeCard = ({ selectedUser, company, isMobile }) => {
 						zIndex={3}
 						top={-1}
 						textAlign="center"
-						minH="15vh"
-						height="15vh"
+						minH={{ base: "auto", md: "15vh" }}
+						height={{ base: "200px", md: "15vh" }}
 						css={tabScrollCss}
 					>
 						<Tbody>

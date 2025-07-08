@@ -50,7 +50,7 @@ const LeftPane = ({ selectedUser, company, isMobile }) => {
 			{isMobile ? (
 				<>
 					<TextTitle title={"Earning Statement"} />
-					<Box mt={"0.5em"} overflow="auto" height={"calc(100vh - 600px)"} css={tabScrollCss}>
+					<Box mt={"0.5em"} overflow="auto" css={tabScrollCss}>
 						{empPayStub?.map(
 							({
 								payPeriodNum,

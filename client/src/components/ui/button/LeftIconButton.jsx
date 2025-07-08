@@ -18,10 +18,12 @@ const LeftIconButton = ({
 	_hover,
 	px,
 	isLoading,
+	isDisabled,
 }) => {
 	return (
 		<Button
 			isLoading={isLoading}
+			isDisabled={isDisabled}
 			px={px}
 			type={type}
 			w={w}
