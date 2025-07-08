@@ -64,7 +64,7 @@ const ShiftModal = ({
 
 		setFormData((prev) => ({
 			...prev,
-			shiftDuration: `${hours}h ${minutes}m`,
+			shiftDuration: `${hours || 0}h ${minutes || 0}m`,
 			hours,
 		}));
 	}, [formData?.shiftStart, formData?.shiftEnd]);
