@@ -4,17 +4,16 @@ const TabsButtonGroup = ({ isOutlineTab, tabs, setViewMode, viewMode, mt, w, mb 
 	const getColor = (type) =>
 		viewMode === type
 			? isOutlineTab
-				? "var(--primary_button_bg)"
+				? "var(--banner_bg)"
 				: "var(--main_color)"
 			: "var(--nav_color)";
 	const getBgColor = (type, highlightColor = null) =>
 		viewMode === type
 			? isOutlineTab
 				? "var(--main_color)"
-				: highlightColor || "var(--primary_button_bg)"
+				: highlightColor || "var(--banner_bg)"
 			: "var(--main_color)";
-	const border = (type) =>
-		isOutlineTab && viewMode === type && "2px solid var(--primary_button_bg)";
+	const border = (type) => isOutlineTab && viewMode === type && "2px solid var(--banner_bg)";
 
 	return (
 		<Box mb={mb} mt={mt} bg={"var(--main_color)"} borderRadius={"1em"} px="5px" w={w}>

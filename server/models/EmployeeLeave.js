@@ -13,6 +13,7 @@ const employeeLeaveSchema = new mongoose.Schema({
 	companyName: { type: String, ref: "Company" },
 	totalLeaveHrs: Number,
 	totalLeaveDays: Number,
+	status: { type: String, default: "Pending" },
 });
 
 module.exports = mongoose.model("EmployeeLeave", employeeLeaveSchema);

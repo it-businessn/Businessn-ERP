@@ -13,6 +13,19 @@ const calculateLeaveDays = (clockIn, clockOut) => {
 	return { leaveDays: inclusiveDays, leaveHrs: inclusiveDays * 8 };
 };
 
+const getEmployeeLeaveRequest = async (req, res) => {
+	const { companyName, employeeId } = req.params;
+	try {
+		const leaveRequests = await EmployeeLeave.find({
+			companyName,
+			employeeId,
+		}).sort({ startDate: -1 });
+		res.status(200).json(leaveRequests);
+	} catch (error) {
+		res.status(404).json({ error: error.message });
+	}
+};
+
 const createLeaveRequest = async (req, res) => {
 	let { company, type, leaveType, startDate, endDate, employeeId, param_hours, source } = req.body;
 
@@ -55,4 +68,4 @@ const createLeaveRequest = async (req, res) => {
 	}
 };
 
-module.exports = { createLeaveRequest };
+module.exports = { createLeaveRequest, getEmployeeLeaveRequest };

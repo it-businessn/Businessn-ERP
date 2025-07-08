@@ -5,6 +5,10 @@ const TimesheetService = {
 		return apiService.get(`/timesheet/${company}`);
 	},
 
+	async getEmployeeLeave(company, id) {
+		return apiService.get(`/leave-requests/${company}/${id}`);
+	},
+
 	async getTimecards(companyName, filter, queryParams) {
 		return apiService.get(`/timecard/${companyName}/filter=${JSON.stringify(filter)}`, queryParams);
 	},

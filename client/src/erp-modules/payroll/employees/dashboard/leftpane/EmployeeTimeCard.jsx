@@ -7,6 +7,7 @@ import NormalTextTitle from "components/ui/NormalTextTitle";
 import TableLayout from "components/ui/table/TableLayout";
 import TextTitle from "components/ui/text/TextTitle";
 import { ROLES } from "constant";
+import { tabScrollCss } from "erp-modules/payroll/onboard-user/customInfo";
 import { getParamKey, TIMESHEET_SOURCE } from "erp-modules/payroll/timesheets/data";
 import ExtraTimeEntryModal from "erp-modules/payroll/timesheets/ExtraTimeEntryModal";
 import usePaygroup from "hooks/usePaygroup";
@@ -29,6 +30,14 @@ const EmployeeTimeCard = ({ selectedUser, company, isMobile }) => {
 		"Start Time",
 		"End Time",
 		// "Break/Lunch",
+		"Total Hours",
+	];
+	const leaveRequestCols = [
+		"Type",
+		"Start Date",
+		"End Date",
+		"Status",
+		"Total Days",
 		"Total Hours",
 	];
 	const CLOCK_TYPES = {
@@ -67,6 +76,7 @@ const EmployeeTimeCard = ({ selectedUser, company, isMobile }) => {
 	const [showLeaveForm, setShowLeaveForm] = useState(false);
 	const [refresh, setRefresh] = useState(false);
 	const [timesheetData, setTimesheetData] = useState([]);
+	const [leaveRequests, setLeaveRequests] = useState([]);
 	const [filter, setFilter] = useState(null);
 	const { closestRecord } = usePaygroup(company, false);
 	const [startDate, setStartDate] = useState(null);
@@ -105,7 +115,18 @@ const EmployeeTimeCard = ({ selectedUser, company, isMobile }) => {
 				console.error(error);
 			}
 		};
-		if (filter) fetchAllEmployeeTimesheet();
+		const fetchEmployeeLeaveRequests = async () => {
+			try {
+				const { data } = await TimesheetService.getEmployeeLeave(company, selectedUser?._id);
+				setLeaveRequests(data);
+			} catch (error) {
+				console.error(error);
+			}
+		};
+		if (filter) {
+			fetchAllEmployeeTimesheet();
+			fetchEmployeeLeaveRequests();
+		}
 	}, [refresh, filter]);
 
 	useEffect(() => {
@@ -221,123 +242,208 @@ const EmployeeTimeCard = ({ selectedUser, company, isMobile }) => {
 					source={TIMESHEET_SOURCE.EMP}
 				/>
 			)}
-			<BoxCard p={{ base: "0.5em 1em", md: "1em" }}>
-				<HStack justify={"space-between"}>
-					<Box>
-						<TextTitle size={"sm"} whiteSpace="wrap" title={`Time Entries `} />
-						<TextTitle size={"sm"} whiteSpace="wrap" title={`${startDate} - ${endDate}`} />
-					</Box>
-					<PrimaryButton size={"xs"} name="Add ENTRY" onOpen={() => setShowAddEntry(true)} />
-				</HStack>
-
-				<TableLayout
-					cols={cols}
-					isSmall
-					w="100%"
-					position="sticky"
-					zIndex={3}
-					top={-1}
-					textAlign="center"
-					minH="15vh"
-					height="15vh"
-				>
-					<Tbody>
-						{(!timesheetData || timesheetData?.length === 0) && (
-							<EmptyRowRecord px={0} data={timesheetData} colSpan={cols.length} />
+			<HStack justifyContent="space-between" flexDirection={{ base: "column", md: "row" }}>
+				<BoxCard p={{ base: "0.5em 1em", md: "1em" }} width="100%">
+					<HStack justify={"space-between"}>
+						<TextTitle size={"sm"} whiteSpace="wrap" title="Leave Requests" />
+						{!isMobile && (
+							<PrimaryButton
+								bg="var(--request_leave)"
+								size={"sm"}
+								name="Request Leave"
+								onOpen={() => setShowLeaveForm(true)}
+							/>
 						)}
-						{timesheetData?.map(
-							({
-								_id,
-								payType,
-								regHoursWorked,
-								breakHoursWorked,
-								overtimeHoursWorked,
-								dblOvertimeHoursWorked,
-								statDayHoursWorked,
-								statDayHours,
-								sickPayHours,
-								vacationPayHours,
-								totalBreaks,
-								clockIn,
-								clockOut,
-								totalBreakHours,
-								totalWorkedHours,
-								bereavementPayHours,
-								personalPayHours,
-								notDevice,
-							}) => {
-								const { param_hours } = getParamKey(payType);
+					</HStack>
 
-								const param_hours_worked =
-									param_hours === "regHoursWorked"
-										? regHoursWorked
-										: param_hours === "overtimeHoursWorked"
-										? overtimeHoursWorked
-										: param_hours === "dblOvertimeHoursWorked"
-										? dblOvertimeHoursWorked
-										: param_hours === "statDayHoursWorked"
-										? statDayHoursWorked
-										: param_hours === "statDayHours"
-										? statDayHours
-										: param_hours === "sickPayHours"
-										? sickPayHours
-										: param_hours === "vacationPayHours"
-										? vacationPayHours
-										: param_hours === "personalPayHours"
-										? personalPayHours
-										: param_hours === "bereavementPayHours"
-										? bereavementPayHours
-										: param_hours === "breakHoursWorked"
-										? breakHoursWorked
-										: 0;
-
-								return (
+					<TableLayout
+						cols={leaveRequestCols}
+						isSmall
+						w="100%"
+						position="sticky"
+						zIndex={3}
+						top={-1}
+						textAlign="center"
+						minH="15vh"
+						height="15vh"
+						css={tabScrollCss}
+					>
+						<Tbody>
+							{(!leaveRequests || leaveRequests?.length === 0) && (
+								<EmptyRowRecord px={0} data={leaveRequests} colSpan={leaveRequestCols.length} />
+							)}
+							{leaveRequests?.map(
+								({ type, startDate, endDate, status, totalLeaveHrs, totalLeaveDays, _id }) => (
 									<Tr key={_id} _hover={{ bg: "var(--phoneCall_bg_light)" }}>
 										<Td p={0.5}>
-											<TextTitle
-												size={isMobile ? "xs" : "sm"}
-												title={clockIn && getTimeCardFormat(clockIn, notDevice, true)}
-											/>
+											<TextTitle size={{ base: "xs", md: "sm" }} title={type} />
 										</Td>
-
 										<Td p={0.5}>
 											<NormalTextTitle
-												size="sm"
-												title={clockIn ? getTimeFormat(clockIn, notDevice) : ""}
+												size={{ base: "xs", md: "sm" }}
+												title={formatDateBar(startDate)}
 											/>
 										</Td>
 										<Td p={0.5}>
 											<NormalTextTitle
-												size="sm"
-												title={clockOut ? getTimeFormat(clockOut, notDevice) : ""}
+												size={{ base: "xs", md: "sm" }}
+												title={formatDateBar(endDate)}
 											/>
 										</Td>
-
+										<Td p={0.5}>
+											<NormalTextTitle size={{ base: "xs", md: "sm" }} title={status} />
+										</Td>
 										<Td p={0.5}>
 											<NormalTextTitle
-												align={isMobile && "center"}
-												size="sm"
-												title={param_hours_worked}
+												align="center"
+												size={{ base: "xs", md: "sm" }}
+												title={totalLeaveDays}
 											/>
+										</Td>
+										<Td p={0.5}>
+											<NormalTextTitle size={{ base: "xs", md: "sm" }} title={totalLeaveHrs} />
 										</Td>
 									</Tr>
-								);
-							},
-						)}
-					</Tbody>
-				</TableLayout>
-				{showAddEntry && (
-					<ExtraTimeEntryModal
-						company={company}
-						showAddEntry={showAddEntry}
-						setRefresh={setRefresh}
-						setShowAddEntry={setShowAddEntry}
-						userId={selectedUser?._id}
-						source={TIMESHEET_SOURCE.EMP}
-						deptName={deptName}
-					/>
-				)}
-			</BoxCard>
+								),
+							)}
+						</Tbody>
+					</TableLayout>
+					{showAddEntry && (
+						<ExtraTimeEntryModal
+							company={company}
+							showAddEntry={showAddEntry}
+							setRefresh={setRefresh}
+							setShowAddEntry={setShowAddEntry}
+							userId={selectedUser?._id}
+							source={TIMESHEET_SOURCE.EMP}
+							deptName={deptName}
+						/>
+					)}
+				</BoxCard>
+				<BoxCard p={{ base: "0.5em 1em", md: "1em" }} width="100%">
+					<HStack justify={"space-between"} w="100%">
+						<Box>
+							<TextTitle size={"sm"} whiteSpace="wrap" title={`Time Entries `} />
+							<TextTitle size={"sm"} whiteSpace="wrap" title={`${startDate} - ${endDate}`} />
+						</Box>
+						<PrimaryButton
+							bg="var(--banner_bg)"
+							size={"sm"}
+							name="Add ENTRY"
+							onOpen={() => setShowAddEntry(true)}
+						/>
+					</HStack>
+
+					<TableLayout
+						cols={cols}
+						isSmall
+						w="100%"
+						position="sticky"
+						zIndex={3}
+						top={-1}
+						textAlign="center"
+						minH="15vh"
+						height="15vh"
+						css={tabScrollCss}
+					>
+						<Tbody>
+							{(!timesheetData || timesheetData?.length === 0) && (
+								<EmptyRowRecord px={0} data={timesheetData} colSpan={cols.length} />
+							)}
+							{timesheetData?.map(
+								({
+									_id,
+									payType,
+									regHoursWorked,
+									breakHoursWorked,
+									overtimeHoursWorked,
+									dblOvertimeHoursWorked,
+									statDayHoursWorked,
+									statDayHours,
+									sickPayHours,
+									vacationPayHours,
+									totalBreaks,
+									clockIn,
+									clockOut,
+									totalBreakHours,
+									totalWorkedHours,
+									bereavementPayHours,
+									personalPayHours,
+									notDevice,
+								}) => {
+									const { param_hours } = getParamKey(payType);
+
+									const param_hours_worked =
+										param_hours === "regHoursWorked"
+											? regHoursWorked
+											: param_hours === "overtimeHoursWorked"
+											? overtimeHoursWorked
+											: param_hours === "dblOvertimeHoursWorked"
+											? dblOvertimeHoursWorked
+											: param_hours === "statDayHoursWorked"
+											? statDayHoursWorked
+											: param_hours === "statDayHours"
+											? statDayHours
+											: param_hours === "sickPayHours"
+											? sickPayHours
+											: param_hours === "vacationPayHours"
+											? vacationPayHours
+											: param_hours === "personalPayHours"
+											? personalPayHours
+											: param_hours === "bereavementPayHours"
+											? bereavementPayHours
+											: param_hours === "breakHoursWorked"
+											? breakHoursWorked
+											: 0;
+
+									return (
+										<Tr key={_id} _hover={{ bg: "var(--phoneCall_bg_light)" }}>
+											<Td p={0.5}>
+												<TextTitle
+													size={{ base: "xs", md: "sm" }}
+													title={clockIn && getTimeCardFormat(clockIn, notDevice, true)}
+												/>
+											</Td>
+
+											<Td p={0.5}>
+												<NormalTextTitle
+													size={{ base: "xs", md: "sm" }}
+													title={clockIn ? getTimeFormat(clockIn, notDevice) : ""}
+												/>
+											</Td>
+											<Td p={0.5}>
+												<NormalTextTitle
+													size={{ base: "xs", md: "sm" }}
+													title={clockOut ? getTimeFormat(clockOut, notDevice) : ""}
+												/>
+											</Td>
+
+											<Td p={0.5}>
+												<NormalTextTitle
+													align={isMobile && "center"}
+													size={{ base: "xs", md: "sm" }}
+													title={param_hours_worked}
+												/>
+											</Td>
+										</Tr>
+									);
+								},
+							)}
+						</Tbody>
+					</TableLayout>
+					{showAddEntry && (
+						<ExtraTimeEntryModal
+							company={company}
+							showAddEntry={showAddEntry}
+							setRefresh={setRefresh}
+							setShowAddEntry={setShowAddEntry}
+							userId={selectedUser?._id}
+							source={TIMESHEET_SOURCE.EMP}
+							deptName={deptName}
+						/>
+					)}
+				</BoxCard>
+			</HStack>
 		</>
 	);
 };

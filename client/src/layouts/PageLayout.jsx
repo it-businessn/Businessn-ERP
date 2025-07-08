@@ -33,7 +33,7 @@ const PageLayout = ({
 		position={position}
 		pb={pb}
 		bg={bg}
-		height={"calc(100vh - 100px)"}
+		height={{ base: "auto", md: "calc(100vh - 100px)" }}
 		css={tabScrollCss}
 	>
 		<PageHeader
