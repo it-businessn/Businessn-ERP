@@ -25,7 +25,6 @@ import {
 	COUNTRIES,
 	tabPanelStyleCss,
 	tabScrollCss,
-	userInfoDetails,
 } from "erp-modules/payroll/onboard-user/customInfo";
 import useEmployeeGovernment from "hooks/useEmployeeGovernment";
 import { useEffect, useState } from "react";
@@ -44,7 +43,31 @@ const GovernmentInfo = ({ company, userId }) => {
 	const [governmentProvinces, setGovernmentProvinces] = useState([]);
 	const [moreDetails, setMoreDetails] = useState(null);
 	const [isLoading, setIsLoading] = useState(false);
-	const [formData, setFormData] = useState(userInfoDetails);
+	const [formData, setFormData] = useState({
+		governmentInfo: {
+			// Exemptions
+			isCPPExempt: false,
+			isEIExempt: false,
+
+			// Income Tax
+			federalTax: "Canada",
+			regionalTax: "British Columbia",
+			federalTaxCredit: "0",
+			regionalTaxCredit: "0",
+
+			// Federal Government Contributions
+			federalPensionEE: "",
+			federalEmploymentInsuranceEE: "",
+			federalPensionER: "",
+			federalEmploymentInsuranceER: "",
+
+			// Regional Government Deductions
+			regionalEmployeeInjury: "",
+			regionalEmployeeHealth: "",
+			regionalEmployerInjury: "",
+			regionalEmployerHealth: "",
+		},
+	});
 	const governmentInfo = useEmployeeGovernment(company, userId);
 
 	useEffect(() => {

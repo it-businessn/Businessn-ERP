@@ -24,7 +24,6 @@ import {
 	bankingSubSteps,
 	tabPanelStyleCss,
 	tabScrollCss,
-	userInfoDetails,
 } from "erp-modules/payroll/onboard-user/customInfo";
 import useEmployeeBankingInfo from "hooks/useEmployeeBankingInfo";
 import { useEffect, useState } from "react";
@@ -37,7 +36,19 @@ const BankingInfo = ({ company, userId }) => {
 	const bankingInfo = useEmployeeBankingInfo(company, userId);
 	const [moreDetails, setMoreDetails] = useState(null);
 	const [isLoading, setIsLoading] = useState(false);
-	const [formData, setFormData] = useState(userInfoDetails);
+	const [formData, setFormData] = useState({
+		bankingInfo: {
+			// Payment Notification
+			payStubSendByEmail: "Yes",
+			paymentEmail: "",
+
+			// Banking Info
+			directDeposit: "Yes",
+			bankNum: "",
+			transitNum: "",
+			accountNum: "",
+		},
+	});
 
 	useEffect(() => {
 		if (bankingInfo) {

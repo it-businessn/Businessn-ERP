@@ -130,6 +130,8 @@ const Employees = () => {
 				flexDirection="column"
 				height="100%"
 				sx={tabStyleCss}
+				isLazy
+				lazyBehavior="unmount"
 			>
 				<TabList bg="gray.50" px={6} pt={5} pb={2} justifyContent="space-between">
 					{EMP_INFO_TABS.map(({ name }) => (

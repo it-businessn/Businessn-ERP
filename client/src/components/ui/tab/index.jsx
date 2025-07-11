@@ -1,13 +1,6 @@
 import { Tab, TabList, TabPanel, TabPanels, Tabs } from "@chakra-ui/react";
 
-const TabGroup = ({
-	currentTab,
-	handleTabChange,
-	data,
-	isCompanyPanel,
-	colorScheme,
-	id,
-}) => {
+const TabGroup = ({ currentTab, handleTabChange, data, isCompanyPanel, colorScheme, id }) => {
 	return (
 		<Tabs
 			isFitted={!isCompanyPanel}
@@ -16,6 +9,8 @@ const TabGroup = ({
 			onChange={handleTabChange}
 			colorScheme={colorScheme}
 			size={isCompanyPanel && "sm"}
+			isLazy
+			lazyBehavior="unmount"
 		>
 			<TabList>
 				{data.map((tab, index) => (
@@ -31,9 +26,7 @@ const TabGroup = ({
 			<TabPanels>
 				{data.map((tab) =>
 					isCompanyPanel ? (
-						<TabPanel key={tab.id}>
-							{currentTab === tab.id && tab.name}
-						</TabPanel>
+						<TabPanel key={tab.id}>{currentTab === tab.id && tab.name}</TabPanel>
 					) : (
 						<TabPanel p={0} key={tab.name}>
 							{tab.component}

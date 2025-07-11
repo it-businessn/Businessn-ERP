@@ -26,7 +26,6 @@ import {
 	benefitsSubSteps,
 	tabPanelStyleCss,
 	tabScrollCss,
-	userInfoDetails,
 } from "erp-modules/payroll/onboard-user/customInfo";
 import useEmployeeBalanceInfo from "hooks/useEmployeeBalanceInfo";
 import { useEffect, useState } from "react";
@@ -39,7 +38,34 @@ const BenefitInfo = ({ company, userId }) => {
 	const balanceInfo = useEmployeeBalanceInfo(company, userId);
 	const [moreDetails, setMoreDetails] = useState(null);
 	const [isLoading, setIsLoading] = useState(false);
-	const [formData, setFormData] = useState(userInfoDetails);
+	const [formData, setFormData] = useState({
+		benefitsInfo: {
+			// Vacation
+			typeOfVacationTreatment: "Accrued",
+			vacationPayPercent: "",
+			YTDVacationAccrued: "0.00",
+			YTDVacationUsed: "0.00",
+			vacationAdjustment: "",
+
+			// Employer Contributions
+			typeOfPensionERTreatment: "No Pension Contributions",
+			pensionERContribution: "",
+			typeOfDentalERTreatment: "No Dental Contributions",
+			dentalERContribution: "",
+			typeOfExtendedHealthERTreatment: "No Extended Health Contributions",
+			extendedHealthERContribution: "",
+
+			// Employee Contributions
+			typeOfPensionEETreatment: "No Pension Contributions",
+			pensionEEContribution: "",
+			typeOfDentalEETreatment: "No Dental Contributions",
+			dentalEEContribution: "",
+			typeOfExtendedHealthEETreatment: "No Extended Health Contributions",
+			extendedHealthEEContribution: "",
+			typeOfUnionDuesTreatment: "No Union Contributions",
+			unionDuesContribution: "",
+		},
+	});
 
 	useEffect(() => {
 		if (balanceInfo) {
@@ -169,29 +195,6 @@ const BenefitInfo = ({ company, userId }) => {
 			const { data } = moreDetails?._id
 				? await PayrollService.updateEmployeeBalanceInfo(benefitData, moreDetails?._id)
 				: await PayrollService.addEmployeeBalanceInfo(benefitData);
-			setFormData({
-				benefitsInfo: {
-					typeOfVacationTreatment,
-					vacationPayPercent,
-					YTDVacationAccrued,
-					YTDVacationUsed,
-					vacationAdjustment,
-					typeOfPensionERTreatment,
-					pensionERContribution: data?.pensionERContribution,
-					typeOfDentalERTreatment,
-					dentalERContribution: data?.dentalERContribution,
-					typeOfExtendedHealthERTreatment,
-					extendedHealthERContribution: data?.extendedHealthERContribution,
-					typeOfPensionEETreatment,
-					pensionEEContribution: data?.pensionEEContribution,
-					typeOfDentalEETreatment,
-					dentalEEContribution: data?.dentalEEContribution,
-					typeOfExtendedHealthEETreatment,
-					extendedHealthEEContribution: data?.extendedHealthEEContribution,
-					typeOfUnionDuesTreatment,
-					unionDuesContribution: data?.unionDuesContribution,
-				},
-			});
 			setIsLoading(false);
 			toast({
 				title: "Benefits info updated successfully.",

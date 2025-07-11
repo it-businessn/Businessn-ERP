@@ -154,6 +154,8 @@ const OnboardUserModal = ({ showOnboard, setShowOnboard, title, company }) => {
 						flexDirection="column"
 						sx={tabStyleCss}
 						height="100%"
+						isLazy
+						lazyBehavior="unmount"
 					>
 						<TabList bg="gray.50" px={{ base: 0, md: 6 }} pt={5} pb={2} flexShrink={0}>
 							{ONBOARD_TABS.map(({ name }) => (

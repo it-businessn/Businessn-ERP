@@ -57,7 +57,13 @@ const CategoryFilter = ({ name, data, isMyChannel, presentTitle, filterTicket, f
 			}}
 		>
 			<Stack spacing={4}>
-				<Tabs variant="unstyled" onChange={handleTabChange} index={selectedTab}>
+				<Tabs
+					variant="unstyled"
+					onChange={handleTabChange}
+					index={selectedTab}
+					isLazy
+					lazyBehavior="unmount"
+				>
 					<TabList>
 						<Tab
 							_selected={{

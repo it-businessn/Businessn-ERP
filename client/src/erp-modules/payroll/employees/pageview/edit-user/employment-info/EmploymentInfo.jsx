@@ -34,7 +34,6 @@ import {
 	PAYROLL_STATUS,
 	tabPanelStyleCss,
 	tabScrollCss,
-	userInfoDetails,
 } from "erp-modules/payroll/onboard-user/customInfo";
 import { useEffect, useState } from "react";
 import PayrollService from "services/PayrollService";
@@ -54,7 +53,29 @@ const EmploymentInfo = ({ company, userId, payGroups, selectedPayGroupOption }) 
 	const [employmentSubStep, setEmploymentSubStep] = useState(0);
 	const [employmentProvinces, setEmploymentProvinces] = useState([]);
 	const [employmentInfo, setEmploymentInfo] = useState(null);
-	const [formData, setFormData] = useState(userInfoDetails);
+	const [formData, setFormData] = useState({
+		employmentInfo: {
+			payrollStatus: "Payroll Active",
+			employeeNo: "",
+			employmentRole: "Employee",
+			jobTitle: "",
+			payGroup: "",
+			timeManagementBadgeID: "",
+			lastBadgeId: 1,
+			costCenter: "",
+			employeeCardNumber: "",
+			department: "",
+			employmentStartDate: "",
+			employmentLeaveDate: "",
+			employmentCountry: "Canada",
+			employmentRegion: "British Columbia",
+			branch: "",
+			branchAddress: "",
+			branchCity: "",
+			branchZipCode: "",
+			positions: [],
+		},
+	});
 	const [showModal, setShowModal] = useState(false);
 	const [editedIndices, setEditedIndices] = useState({});
 

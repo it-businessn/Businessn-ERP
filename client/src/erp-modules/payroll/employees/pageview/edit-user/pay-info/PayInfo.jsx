@@ -16,10 +16,10 @@ import {
 import BoxCard from "components/ui/card";
 import TextTitle from "components/ui/text/TextTitle";
 import {
+	EARNING_TYPE,
 	payInfoSubSteps,
 	tabPanelStyleCss,
 	tabScrollCss,
-	userInfoDetails,
 } from "erp-modules/payroll/onboard-user/customInfo";
 import { useEffect, useState } from "react";
 import PayrollService from "services/PayrollService";
@@ -30,7 +30,17 @@ const PayInfo = ({ company, userId }) => {
 	const [payInfo, setPayInfo] = useState(null);
 	const [moreDetails, setMoreDetails] = useState(null);
 	const [isLoading, setIsLoading] = useState(false);
-	const [formData, setFormData] = useState(userInfoDetails);
+	const [formData, setFormData] = useState({
+		payInfo: {
+			salary: "",
+			payType: EARNING_TYPE.HOURLY,
+			payFrequency: "biweekly",
+			taxWithholding: "",
+			fullTimeStandardHours: 80,
+			partTimeStandardHours: 40,
+			roles: [],
+		},
+	});
 	const [editedIndices, setEditedIndices] = useState({});
 
 	useEffect(() => {

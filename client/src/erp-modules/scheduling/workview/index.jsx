@@ -114,7 +114,7 @@ const ScheduleWorkView = () => {
 					/>
 				</HStack>
 
-				{/* <Tabs variant="enclosed" onChange={(i) => setView(i === 0 ? "weekly" : "daily")}>
+				{/* <Tabs variant="enclosed" onChange={(i) => setView(i === 0 ? "weekly" : "daily")} isLazy lazyBehavior="unmount">
 						<TabList>
 							<Tab> */}
 				<PrimaryButton name="Weekly View" />

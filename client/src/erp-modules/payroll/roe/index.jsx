@@ -260,6 +260,8 @@ const ROE = () => {
 				display="flex"
 				flexDirection="column"
 				sx={tabStyleCss}
+				isLazy
+				lazyBehavior="unmount"
 			>
 				<TabList bg="gray.50" px={6} pt={5} pb={2}>
 					{ROE_TABS.map(({ name }) => (

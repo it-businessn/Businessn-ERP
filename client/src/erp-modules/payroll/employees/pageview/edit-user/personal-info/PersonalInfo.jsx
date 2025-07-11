@@ -24,7 +24,6 @@ import {
 	personalSubSteps,
 	tabPanelStyleCss,
 	tabScrollCss,
-	userInfoDetails,
 } from "erp-modules/payroll/onboard-user/customInfo";
 import useEmployeeProfileInfo from "hooks/useEmployeeProfileInfo";
 import { useEffect, useState } from "react";
@@ -36,7 +35,38 @@ const PersonalInfo = ({ company, userId }) => {
 	const [moreDetails, setMoreDetails] = useState(null);
 	const [availableProvinces, setAvailableProvinces] = useState([]);
 	const [isLoading, setIsLoading] = useState(false);
-	const [formData, setFormData] = useState(userInfoDetails);
+	const [formData, setFormData] = useState({
+		personalInfo: {
+			firstName: "",
+			middleName: "",
+			lastName: "",
+			birthDate: "",
+			gender: "",
+			SIN: "",
+			workPermitNo: "",
+			workPermitExpiryNo: "",
+			citizenship: "Yes",
+		},
+		contactInfo: {
+			personalEmail: "",
+			businessEmail: "",
+			personalPhoneNum: "",
+			businessPhoneNum: "",
+			streetAddress: "",
+			city: "",
+			streetAddressSuite: "",
+			country: "Canada",
+			province: "British Columbia",
+			postalCode: "",
+		},
+		emergencyContact: {
+			emergencyFirstName: "",
+			emergencyLastName: "",
+			emergencyPersonalEmail: "",
+			emergencyPersonalPhoneNum: "",
+			emergencyContactRelationship: "",
+		},
+	});
 
 	const toast = useToast();
 	const profileInfo = useEmployeeProfileInfo(company, userId);

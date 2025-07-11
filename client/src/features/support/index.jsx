@@ -112,6 +112,8 @@ const Support = () => {
 						flexDirection="column"
 						sx={tabStyleCss}
 						height="100%"
+						isLazy
+						lazyBehavior="unmount"
 					>
 						<TabList
 							bg="gray.50"
