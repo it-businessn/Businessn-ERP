@@ -144,7 +144,7 @@ const EmployeeTimeCard = ({ selectedUser, company, isMobile }) => {
 				punch,
 				company,
 				employeeId: selectedUser?._id,
-				source: TIMESHEET_SOURCE.EMPLOYEE,
+				source: TIMESHEET_SOURCE.APP,
 			});
 			setRefresh((prev) => !prev);
 			toast({

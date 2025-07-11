@@ -168,6 +168,7 @@ export const TIMESHEET_SOURCE = {
 	TAD: "TAD",
 	ADMINISTRATOR: "Admin",
 	SYSTEM: "SYSTEM",
+	APP: "APP",
 };
 
 export const TIMESHEET_SOURCES = [
@@ -193,6 +194,11 @@ export const TIMESHEET_SOURCES = [
 	},
 	{
 		origin: TIMESHEET_SOURCE.SYSTEM,
+		color: "var(--primary_bg)",
+		bg: "var(--ticket_hold)",
+	},
+	{
+		origin: TIMESHEET_SOURCE.APP,
 		color: "var(--primary_bg)",
 		bg: "var(--ticket_hold)",
 	},
