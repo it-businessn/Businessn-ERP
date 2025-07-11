@@ -139,7 +139,7 @@ app.use("/api/announcements", announcementRoutes);
 app.use("/api/events", eventRoutes);
 app.use("/api/industry", industryRoutes);
 app.use("/api/leads", leadRoutes);
-app.use("/api/leave-requests", leaveRequestRoutes);
+app.use("/api/leaves", leaveRequestRoutes);
 app.use("/api/log-tasks", logTaskRoutes);
 app.use("/api/meetings", meetingRoutes);
 app.use("/api/notes", noteRoutes);

@@ -19,6 +19,7 @@ import { getParamKey, LEAVE_TYPES } from "erp-modules/payroll/timesheets/data";
 import moment from "moment";
 import { useEffect, useState } from "react";
 import TimesheetService from "services/TimesheetService";
+import MandatoryField from "../../../../../components/ui/form/MandatoryField";
 
 const AddLeave = ({ isOpen, handleClose, company, userId, source, setRefresh }) => {
 	const [isSubmitting, setIsSubmitting] = useState(false);
@@ -83,7 +84,7 @@ const AddLeave = ({ isOpen, handleClose, company, userId, source, setRefresh }) 
 	const handleSubmit = async () => {
 		setIsSubmitting(true);
 		try {
-			await TimesheetService.addLeave(formData);
+			await TimesheetService.requestLeave(formData);
 			toast({
 				title: "Time-off request sent!",
 				status: "success",
@@ -106,8 +107,9 @@ const AddLeave = ({ isOpen, handleClose, company, userId, source, setRefresh }) 
 				<ModalBody>
 					<Stack spacing={3}>
 						<FormControl>
-							<FormLabel>Start Date</FormLabel>
-
+							<FormLabel>
+								Start Date <MandatoryField color="red" />
+							</FormLabel>
 							<Input
 								type="date"
 								name="startDate"
@@ -116,11 +118,17 @@ const AddLeave = ({ isOpen, handleClose, company, userId, source, setRefresh }) 
 							/>
 						</FormControl>
 						<FormControl>
-							<FormLabel>End Date</FormLabel>
+							<FormLabel>
+								End Date
+								<MandatoryField color="red" />
+							</FormLabel>
 							<Input type="date" name="endDate" value={formData.endDate} onChange={handleChange} />
 						</FormControl>
 						<FormControl>
-							<FormLabel>Leave Type</FormLabel>
+							<FormLabel>
+								Leave Type
+								<MandatoryField color="red" />
+							</FormLabel>
 							<Select
 								name="leaveType"
 								placeholder="Select leave type"

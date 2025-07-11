@@ -255,7 +255,7 @@ export const SIDEBAR_MENU = [
 				icon: <IoDocumentText />,
 			},
 			{
-				path: "attendance",
+				path: "leave-approvals",
 				name: "Approvals",
 				children: [],
 				icon: <HiBadgeCheck />,

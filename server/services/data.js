@@ -103,7 +103,7 @@ const CLIENT_ORG_ADMIN_PERMISSION = [
 	{ name: "Payroll Dashboard" },
 	{ name: "Payroll Workview" },
 	{ name: "Payroll Process Payroll" },
-	// { name: "Payroll Approvals" },
+	{ name: "Payroll Approvals" },
 	{ name: "Payroll Timesheets" },
 	{ name: "Payroll Employees" },
 	{ name: "Payroll Reports" },

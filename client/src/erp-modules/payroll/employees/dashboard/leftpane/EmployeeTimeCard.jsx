@@ -112,7 +112,7 @@ const EmployeeTimeCard = ({ selectedUser, company, isMobile }) => {
 		};
 		const fetchEmployeeLeaveRequests = async () => {
 			try {
-				const { data } = await TimesheetService.getEmployeeLeave(company, selectedUser?._id);
+				const { data } = await TimesheetService.getEmployeeLeaveRequest(company, selectedUser?._id);
 				setLeaveRequests(data);
 			} catch (error) {
 				console.error(error);

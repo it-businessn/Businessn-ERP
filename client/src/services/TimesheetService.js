@@ -5,8 +5,12 @@ const TimesheetService = {
 		return apiService.get(`/timesheet/${company}`);
 	},
 
-	async getEmployeeLeave(company, id) {
-		return apiService.get(`/leave-requests/${company}/${id}`);
+	async getAllEmployeeLeaveRequests(company) {
+		return apiService.get(`/leaves/${company}`);
+	},
+
+	async getEmployeeLeaveRequest(company, id) {
+		return apiService.get(`/leaves/${company}/${id}`);
 	},
 
 	async getTimecards(companyName, filter, queryParams) {
@@ -42,8 +46,8 @@ const TimesheetService = {
 		return apiService.post("/timesheet", data);
 	},
 
-	async addLeave(data) {
-		return apiService.post("/leave-requests", data);
+	async requestLeave(data) {
+		return apiService.post("/leaves", data);
 	},
 
 	async addTimecard(data) {
@@ -52,6 +56,10 @@ const TimesheetService = {
 
 	async addTimecardManual(data) {
 		return apiService.post("/timecard/manual", data);
+	},
+
+	async updateLeave(data, id) {
+		return apiService.put(`/leaves/${id}`, data, id);
 	},
 
 	async updateTimesheet(data, id) {
