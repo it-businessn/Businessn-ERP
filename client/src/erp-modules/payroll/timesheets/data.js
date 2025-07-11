@@ -164,31 +164,37 @@ export const PAY_TYPES = [
 
 export const TIMESHEET_SOURCE = {
 	MANAGER: "Manager",
-	EMP: "Employee",
+	EMPLOYEE: "Employee",
 	TAD: "TAD",
-	APP: "APP",
+	ADMINISTRATOR: "Admin",
+	SYSTEM: "SYSTEM",
 };
 
 export const TIMESHEET_SOURCES = [
 	{
 		origin: TIMESHEET_SOURCE.MANAGER,
 		color: "var(--primary_bg)",
-		bg: "var(--primary_button_bg)",
+		bg: "var(--action_status_approve)",
 	},
 	{
-		origin: TIMESHEET_SOURCE.EMP,
+		origin: TIMESHEET_SOURCE.ADMINISTRATOR,
 		color: "var(--primary_bg)",
-		bg: "var(--stat_worked)",
+		bg: "var(--action_status_approve)",
+	},
+	{
+		origin: TIMESHEET_SOURCE.EMPLOYEE,
+		color: "var(--primary_bg)",
+		bg: "var(--primary_button_bg1)",
 	},
 	{
 		origin: TIMESHEET_SOURCE.TAD,
 		color: "var(--primary_bg)",
-		bg: "var(--event_color)",
+		bg: "var(--request_leave)",
 	},
 	{
-		origin: TIMESHEET_SOURCE.APP,
+		origin: TIMESHEET_SOURCE.SYSTEM,
 		color: "var(--primary_bg)",
-		bg: "var(--gauge_needle)",
+		bg: "var(--ticket_hold)",
 	},
 ];
 

@@ -211,11 +211,12 @@ const PAY_TYPES_TITLE = {
 	PERSONAL_DAY_PAY: "Personal Day Pay",
 };
 
-const TIMESHEET_ORIGIN = {
+const TIMESHEET_SOURCE = {
 	MANAGER: "Manager",
-	EMP: "Employee",
+	EMPLOYEE: "Employee",
 	TAD: "TAD",
-	APP: "APP",
+	ADMINISTRATOR: "Admin",
+	SYSTEM: "SYSTEM",
 };
 
 const PAYRUN_TYPE = { REGULAR: "1", PAYOUT: "2", MANUAL: "3", SUPERFICIAL: "4" };
@@ -290,7 +291,7 @@ module.exports = {
 	PARAM_HOURS,
 	// LOCAL_TIME,
 	PAYRUN_TYPE,
-	TIMESHEET_ORIGIN,
+	TIMESHEET_SOURCE,
 	ROLES,
 	TICKET_STATUS,
 	COMPANIES,

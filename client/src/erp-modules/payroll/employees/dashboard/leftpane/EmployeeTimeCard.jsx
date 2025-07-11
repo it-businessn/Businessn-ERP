@@ -144,7 +144,7 @@ const EmployeeTimeCard = ({ selectedUser, company, isMobile }) => {
 				punch,
 				company,
 				employeeId: selectedUser?._id,
-				source: TIMESHEET_SOURCE.APP,
+				source: TIMESHEET_SOURCE.EMPLOYEE,
 			});
 			setRefresh((prev) => !prev);
 			toast({
@@ -236,7 +236,7 @@ const EmployeeTimeCard = ({ selectedUser, company, isMobile }) => {
 					handleClose={() => setShowLeaveForm(false)}
 					company={company}
 					userId={selectedUser?._id}
-					source={TIMESHEET_SOURCE.EMP}
+					source={TIMESHEET_SOURCE.EMPLOYEE}
 					setRefresh={setRefresh}
 				/>
 			)}
@@ -253,7 +253,6 @@ const EmployeeTimeCard = ({ selectedUser, company, isMobile }) => {
 							/>
 						)}
 					</HStack>
-
 					<TableLayout
 						cols={leaveRequestCols}
 						isSmall
@@ -303,17 +302,6 @@ const EmployeeTimeCard = ({ selectedUser, company, isMobile }) => {
 							)}
 						</Tbody>
 					</TableLayout>
-					{showAddEntry && (
-						<ExtraTimeEntryModal
-							company={company}
-							showAddEntry={showAddEntry}
-							setRefresh={setRefresh}
-							setShowAddEntry={setShowAddEntry}
-							userId={selectedUser?._id}
-							source={TIMESHEET_SOURCE.EMP}
-							deptName={deptName}
-						/>
-					)}
 				</BoxCard>
 				<BoxCard p={{ base: "0.5em 1em", md: "1em" }} width="100%">
 					<HStack justify={"space-between"} w="100%">
@@ -328,7 +316,17 @@ const EmployeeTimeCard = ({ selectedUser, company, isMobile }) => {
 							onOpen={() => setShowAddEntry(true)}
 						/>
 					</HStack>
-
+					{showAddEntry && (
+						<ExtraTimeEntryModal
+							company={company}
+							showAddEntry={showAddEntry}
+							setRefresh={setRefresh}
+							setShowAddEntry={setShowAddEntry}
+							userId={selectedUser?._id}
+							source={TIMESHEET_SOURCE.EMPLOYEE}
+							deptName={deptName}
+						/>
+					)}
 					<TableLayout
 						cols={cols}
 						isSmall
@@ -426,17 +424,6 @@ const EmployeeTimeCard = ({ selectedUser, company, isMobile }) => {
 							)}
 						</Tbody>
 					</TableLayout>
-					{showAddEntry && (
-						<ExtraTimeEntryModal
-							company={company}
-							showAddEntry={showAddEntry}
-							setRefresh={setRefresh}
-							setShowAddEntry={setShowAddEntry}
-							userId={selectedUser?._id}
-							source={TIMESHEET_SOURCE.EMP}
-							deptName={deptName}
-						/>
-					)}
 				</BoxCard>
 			</HStack>
 		</>

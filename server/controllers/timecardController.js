@@ -12,7 +12,7 @@ const {
 	PAY_TYPES_TITLE,
 	PUNCH_CODE,
 	PARAM_HOURS,
-	TIMESHEET_ORIGIN,
+	TIMESHEET_SOURCE,
 	COMPANIES,
 	ROLES,
 } = require("../services/data");
@@ -262,7 +262,7 @@ const addTimecardEntry = async (entry, isBreak) => {
 					: getPayType(),
 				clockIn,
 				notDevice,
-				source: TIMESHEET_ORIGIN.TAD,
+				source: TIMESHEET_SOURCE.TAD,
 			};
 			const timesheetRecord = await findTimesheet(newTimesheetRecord);
 

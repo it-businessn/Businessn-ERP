@@ -11,7 +11,7 @@ const {
 	PUNCH_CODE,
 	getPayType,
 	EARNING_TYPE,
-	TIMESHEET_ORIGIN,
+	TIMESHEET_SOURCE,
 	ROLES,
 } = require("../services/data");
 const EmployeeEmploymentInfo = require("../models/EmployeeEmploymentInfo");
@@ -627,7 +627,7 @@ const addStatHolidayDefaultTimesheet = async (employeeId, companyName) => {
 		clockIn: startTime,
 		clockOut: endTime,
 		statDayHours: statHours.toFixed(2),
-		source: TIMESHEET_ORIGIN.APP,
+		source: TIMESHEET_SOURCE.SYSTEM,
 	};
 	const newRecord = await addTimesheetEntry(newStatTimeSheetRecord);
 	return newRecord;

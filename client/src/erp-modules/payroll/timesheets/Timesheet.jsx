@@ -37,6 +37,7 @@ import {
 	// BREAK_TYPES_TITLE,
 	getParamKey,
 	getPayTypeStyle,
+	getSourceStyle,
 	// getSourceStyle,
 	getStatusStyle,
 	PAY_TYPES,
@@ -78,7 +79,7 @@ const Timesheet = ({
 		"Worked Date",
 		"Role",
 		"Department",
-		// "Source",
+		"Origin",
 		"Pay Rate",
 		"Pay Type",
 		"Start Time",
@@ -145,27 +146,27 @@ const Timesheet = ({
 
 				const { totalPages, page, items } = data;
 				clearInterval(interval);
-				items?.map((_) => {
-					_.approveStatusAction = _.approveStatus;
-					const isOvertime = _.payType === PAY_TYPES_TITLE.OVERTIME_PAY;
+				items?.map((timeEntry) => {
+					timeEntry.approveStatusAction = timeEntry.approveStatus;
+					const isOvertime = timeEntry.payType === PAY_TYPES_TITLE.OVERTIME_PAY;
 					if (isOvertime) {
-						_.startTime = getUTCTime(_.clockIn);
-						_.endTime = getUTCTime(_.clockOut);
+						timeEntry.startTime = getUTCTime(timeEntry.clockIn);
+						timeEntry.endTime = getUTCTime(timeEntry.clockOut);
 					} else {
-						_.startTime = getClockInTimeFormat(_.clockIn);
-						_.endTime = _.clockOut ? getTimeFormat(_.clockOut) : "";
+						timeEntry.startTime = getClockInTimeFormat(timeEntry.clockIn);
+						timeEntry.endTime = timeEntry.clockOut ? getTimeFormat(timeEntry.clockOut) : "";
 					}
-					_.totalHours = getHourDifference(_.startTime, _.endTime);
-					_.isEditable = _.source !== TIMESHEET_SOURCE.EMP;
-					_.isAppOrTad = _.manualAdded || _.source === TIMESHEET_SOURCE.TAD;
-					if (_.isEditable && _.isAppOrTad) {
-						_.isEditable = !isSameAsToday(_.clockIn);
+					timeEntry.totalHours = getHourDifference(timeEntry.startTime, timeEntry.endTime);
+					timeEntry.isEditable = timeEntry.source !== TIMESHEET_SOURCE.EMPLOYEE;
+					timeEntry.isAppOrTad = timeEntry.manualAdded || timeEntry.source === TIMESHEET_SOURCE.TAD;
+					if (timeEntry.isEditable && timeEntry.isAppOrTad) {
+						timeEntry.isEditable = !isSameAsToday(timeEntry.clockIn);
 					}
-					_.isActionDisabled = _.startTime === "" || _.endTime === "";
-					_.showAddBreak = _.payType.includes("Break")
-						? _.approveStatus === TIMESHEET_STATUS_LABEL.APPROVED
-						: _.isEditable;
-					return _;
+					timeEntry.isActionDisabled = timeEntry.startTime === "" || timeEntry.endTime === "";
+					timeEntry.showAddBreak = timeEntry.payType.includes("Break")
+						? timeEntry.approveStatus === TIMESHEET_STATUS_LABEL.APPROVED
+						: timeEntry.isEditable;
+					return timeEntry;
 				});
 				setTimesheets(items);
 				setTotalPages(totalPages > 0 ? totalPages : 1);
@@ -213,7 +214,7 @@ const Timesheet = ({
 				setIsAllChecked(true);
 			}
 			timesheetData?.map((rec) => {
-				// rec.sourceBtnCss = getSourceStyle(rec.source);
+				rec.sourceBtnCss = getSourceStyle(rec?.source);
 				rec.approveStatusBtnCss = getStatusStyle(rec?.approveStatus);
 				rec.payTypeCss = getPayTypeStyle(rec.payType);
 				rec.type = rec.payTypeCss?.type;
@@ -731,6 +732,7 @@ const Timesheet = ({
 									startTime,
 									endTime,
 									totalHours,
+									sourceBtnCss,
 									regBreakHoursWorked,
 									source,
 									isEditable,
@@ -790,22 +792,23 @@ const Timesheet = ({
 											<Td py={0}>
 												<NormalTextTitle maxW="120px" size="sm" title={department} />
 											</Td>
-											{/* <Td p={0} position={"sticky"} right={"0"} zIndex="1">
+											<Td p={0}>
 												{source && (
-													<PrimaryButton
+													<TextTitle
+														align="center"
+														size="sm"
+														textTransform="capitalize"
 														cursor="text"
-														color={sourceBtnCss?.color}
-														bg={sourceBtnCss?.bg}
-														name={source}
-														size="xs"
+														color={sourceBtnCss?.bg}
+														title={source}
 														px={0}
 														hover={{
-															bg: sourceBtnCss.bg,
-															color: sourceBtnCss.color,
+															bg: sourceBtnCss?.bg,
+															color: sourceBtnCss?.color,
 														}}
 													/>
 												)}
-											</Td> */}
+											</Td>
 											<Td textAlign={"right"} py={0} w={"90px"}>
 												{getAmount(param_pay_type)}
 											</Td>
