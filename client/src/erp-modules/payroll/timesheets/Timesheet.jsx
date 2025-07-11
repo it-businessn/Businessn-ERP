@@ -682,7 +682,7 @@ const Timesheet = ({
 					<Thead position="sticky" top={-1} zIndex={3}>
 						<Tr>
 							{cols?.map((col, colIndex) =>
-								colIndex === 10 ? (
+								colIndex === cols.length - 2 ? (
 									<Th key={`action_${col}_${colIndex}`} bg="var(--th_bg)">
 										<Checkbox
 											isChecked={isAllChecked}
