@@ -1,7 +1,7 @@
 import {
 	Box,
 	Checkbox,
-	// IconButton,
+	IconButton,
 	Input,
 	Table,
 	Tbody,
@@ -19,8 +19,8 @@ import NormalTextTitle from "components/ui/NormalTextTitle";
 import TextTitle from "components/ui/text/TextTitle";
 import { COLS } from "constant";
 import { useEffect, useState } from "react";
-// import { GoPlusCircle } from "react-icons/go";
-// import { TbCornerRightUp } from "react-icons/tb";
+import { GoPlusCircle } from "react-icons/go";
+import { TbCornerRightUp } from "react-icons/tb";
 import TimesheetService from "services/TimesheetService";
 import { getAmount } from "utils/convertAmt";
 import {
@@ -34,11 +34,10 @@ import { tabScrollCss } from "../onboard-user/customInfo";
 import ActionAll from "./ActionAll";
 import {
 	ACTION_STATUS,
-	// BREAK_TYPES_TITLE,
+	BREAK_TYPES_TITLE,
 	getParamKey,
 	getPayTypeStyle,
 	getSourceStyle,
-	// getSourceStyle,
 	getStatusStyle,
 	PAY_TYPES,
 	PAY_TYPES_TITLE,
@@ -715,46 +714,45 @@ const Timesheet = ({
 						)}
 						{!loading &&
 							timesheetData?.map(
-								({
-									_id,
-									approveStatus,
-									rowBg,
-									param_hours,
-									type,
-									approveStatusBtnCss,
-									isDisabled,
-									param_hours_worked,
-									param_pay_type,
-									clockIn,
-									clockOut,
-									notDevice,
-									employeeId,
-									startTime,
-									endTime,
-									totalHours,
-									sourceBtnCss,
-									regBreakHoursWorked,
-									source,
-									isEditable,
-									isActionDisabled,
-									showAddBreak,
-									positions,
-									approveStatusAction,
-									role = positions[0]?.title,
-									department = positions[0]?.employmentDepartment,
-								}) => {
+								(
+									{
+										_id,
+										approveStatus,
+										rowBg,
+										param_hours,
+										type,
+										approveStatusBtnCss,
+										isDisabled,
+										param_hours_worked,
+										param_pay_type,
+										clockIn,
+										notDevice,
+										employeeId,
+										startTime,
+										endTime,
+										totalHours,
+										sourceBtnCss,
+										regBreakHoursWorked,
+										source,
+										isEditable,
+										showAddBreak,
+										positions,
+										role = positions?.[0]?.title,
+										department = positions?.[0]?.employmentDepartment,
+									},
+									index,
+								) => {
 									return (
 										<Tr
 											key={_id}
-											// bg={rowBg ?? ""}
-											_hover={{ bg: rowBg ?? "var(--phoneCall_bg_light)" }}
+											// bg={rowBg || ""}
+											_hover={{ bg: rowBg || "var(--phoneCall_bg_light)" }}
 										>
 											{cols?.map(
 												(col, colIndex) =>
 													colIndex === 0 && (
 														<Td
 															key={`${col}_${_id}`}
-															bg="var(--lead_cards_bg)"
 															position={colIndex === 0 && "sticky"}
 															left={colIndex === 0 && "0"}
 															zIndex={colIndex === 0 && 1}
@@ -861,7 +859,7 @@ const Timesheet = ({
 												/>
 											</Td>
 											{/* <Td p={0} pl={5}>
-												{regBreakHoursWorked && payType === BREAK_TYPES_TITLE.REG_PAY_BRK ? (
+												{regBreakHoursWorked && type === BREAK_TYPES_TITLE.REG_PAY_BRK ? (
 													<NormalTextTitle size="sm" p="0 1em" title={regBreakHoursWorked} />
 												) : (
 													showAddBreak && (
@@ -876,19 +874,18 @@ const Timesheet = ({
 											</Td> */}
 
 											<Td py={0} w={"80px"}>
-												{/* {regBreakHoursWorked && payType.includes("Break") ? (
+												{/* {regBreakHoursWorked && type.includes("Break") ? (
 													<IconButton
 														isDisabled={!isEditable}
 														icon={<TbCornerRightUp />}
 														fontSize="1.8em"
-														ml="-1em"
+														ml="-0.5em"
 														onClick={() => addRow(index)}
 													/>
 												) : ( */}
 												<NormalTextTitle
 													size="sm"
 													title={totalHours ? totalHours?.toFixed(2) : ""}
-													// title={param_hours_worked ? param_hours_worked?.toFixed(2) : ""}
 												/>
 												{/* )} */}
 											</Td>

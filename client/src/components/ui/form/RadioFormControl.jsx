@@ -8,12 +8,13 @@ const RadioFormControl = ({
 	isRequired,
 	defaultVal = "virtual",
 	size,
+	direction = "row",
 }) => {
 	return (
 		<FormControlMain isRequired={isRequired}>
 			<FormLabel>{label}</FormLabel>
 			<RadioGroup defaultValue={defaultVal} onChange={handleChange} name="type" size={size}>
-				<Stack direction="row">
+				<Stack direction={direction}>
 					{options.map(({ name, value }) => (
 						<Radio key={value} value={value}>
 							{name}
