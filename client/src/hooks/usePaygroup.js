@@ -22,7 +22,7 @@ const usePaygroup = (company, refresh, year = CURRENT_YEAR, isReport = false) =>
 				if (data.length) {
 					setHasMultiPaygroups(data?.length > 1);
 					const payGroup =
-						company === COMPANIES.BUSINESSN_ORG
+						company === process.env.DEFAULT_ORG
 							? data.find(({ scheduleFrequency }) => scheduleFrequency === "Monthly")
 							: data[0];
 					setSelectedPayGroup(payGroup);

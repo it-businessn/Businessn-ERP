@@ -361,7 +361,7 @@ const createSupportTicket = async (req, res) => {
 		const assigneeEmail = await Employee.findOne({ email: SUPPORT_ADMIN_CONTACT });
 
 		const ticket = await SupportTicket.create({
-			companyName: COMPANIES.BUSINESSN_ORG,
+			companyName: process.env.DEFAULT_ORG,
 			assignee: assigneeEmail?.fullName,
 			clientFirstName,
 			clientLastName,

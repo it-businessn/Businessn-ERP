@@ -133,14 +133,16 @@ const addAffiliateProfileInfo = async (req, res) => {
 		country,
 	} = req.body;
 	try {
+		const defaultCompany = process.env.DEFAULT_ORG;
 		const existingProfileInfo = await EmployeeProfileInfo.findOne({
-			companyName: COMPANIES.BUSINESSN_ORG,
+			companyName: defaultCompany,
 			firstName,
 			lastName,
 			personalEmail: email,
 			isAffiliate: true,
 		});
 		const updatedData = {
+			companyName: defaultCompany,
 			personalEmail: email,
 			firstName,
 			lastName,
@@ -169,7 +171,7 @@ const addAffiliateProfileInfo = async (req, res) => {
 		const existingEmp = await Employee.findOne({
 			firstName,
 			lastName,
-			companyName: COMPANIES.BUSINESSN_ORG,
+			companyName: defaultCompany,
 		});
 		let profileInfoEmpId = existingEmp?._id;
 		if (!existingEmp) {
@@ -179,7 +181,7 @@ const addAffiliateProfileInfo = async (req, res) => {
 				email,
 				fullName: `${firstName} ${lastName}`,
 			};
-			const newEmployee = await addEmployee(COMPANIES.BUSINESSN_ORG, newRecord);
+			const newEmployee = await addEmployee(defaultCompany, newRecord);
 			profileInfoEmpId = newEmployee._id;
 		}
 		updatedData.empId = profileInfoEmpId;
