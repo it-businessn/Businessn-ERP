@@ -1,20 +1,17 @@
-import { CloseIcon, ViewOffIcon } from "@chakra-ui/icons";
+import { CloseIcon } from "@chakra-ui/icons";
 import {
 	Box,
 	Button,
 	Checkbox,
-	Circle,
 	Flex,
 	FormControl,
 	FormLabel,
 	HStack,
-	Image,
 	Input,
 	InputGroup,
 	InputLeftElement,
 	Stack,
 	useToast,
-	VStack,
 } from "@chakra-ui/react";
 import PrimaryButton from "components/ui/button/PrimaryButton";
 import InputFormControl from "components/ui/form/InputFormControl";
@@ -24,19 +21,13 @@ import TextAreaFormControl from "components/ui/form/TextAreaFormControl";
 import NormalTextTitle from "components/ui/NormalTextTitle";
 import TextTitle from "components/ui/text/TextTitle";
 import { COUNTRIES, tabScrollCss } from "erp-modules/payroll/onboard-user/customInfo";
-import { AnimatePresence, motion } from "framer-motion";
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { FaInstagram, FaLinkedin, FaTiktok, FaYoutube } from "react-icons/fa";
 import PayrollService from "services/PayrollService";
-import affImg1 from "../../assets/affiliate/1.jpg";
-import affImg2 from "../../assets/affiliate/2.jpg";
-import affImg3 from "../../assets/affiliate/3.jpg";
-import affImg4 from "../../assets/affiliate/4.jpg";
-import logoSrc from "../../assets/logos/logoCover.png";
+import MotionCover from "./MotionCover";
 
 export default function AffiliateSignup() {
 	const WEB = "https://www.businessn.com";
-	const MotionImage = motion(Image);
-	const AFFILIATE_IMG = [affImg1, affImg2, affImg3, affImg4];
 	const toast = useToast();
 	const [formData, setFormData] = useState({
 		firstName: "",
@@ -47,50 +38,41 @@ export default function AffiliateSignup() {
 		country: "CA",
 		province: "",
 		insta: "",
-		tiktik: "",
+		tiktok: "",
 		youtube: [],
-		content: "",
+		contentToShare: "",
 		marketingComms: false,
 	});
 	const provinces = COUNTRIES[0].provinces;
-	const [index, setIndex] = useState(0);
-	const total = AFFILIATE_IMG.length;
 
 	const [isSubmitting, setIsSubmitting] = useState(false);
-	const [showPopup, setShowPopup] = useState(false);
-	const [selectedCheckboxes, setSelectedCheckboxes] = useState([]);
-
-	useEffect(() => {
-		const interval = setInterval(() => {
-			setIndex((i) => (i + 1) % total);
-		}, 2000);
-
-		return () => clearInterval(interval);
-	}, []);
 
 	const handleInputChange = (e) => {
-		setFormData({ ...formData, [e.target.name]: e.target.value });
+		const { name, value, type, checked } = e.target;
+		setFormData({ ...formData, [name]: type === "checkbox" ? checked : value });
 	};
-	const handleRedirect = () => (window.location.href = WEB);
+
+	const goToHome = () => {
+		window.location.href = WEB;
+	};
 
 	const handleSubmit = async (e) => {
 		e.preventDefault();
 		setIsSubmitting(true);
-		formData.interests = selectedCheckboxes;
 		try {
 			const { data } = await PayrollService.addAffiliateProfileInfo(formData);
 			setIsSubmitting(false);
 			if (data) {
-				setShowPopup(true);
 				toast({
-					title: "Action successful!",
+					title: "Registration Successful!",
+					description: "Welcome to our affiliate program 🎉",
 					status: "success",
 					duration: 2000,
 					isClosable: true,
 				});
 
 				setTimeout(() => {
-					handleRedirect();
+					goToHome();
 				}, 2000);
 			}
 		} catch (error) {
@@ -104,68 +86,94 @@ export default function AffiliateSignup() {
 			});
 		}
 	};
-	const handleChange = () => {};
 
 	return (
-		<Flex backgroundColor="var(--main_color)" h={"100vh"} overflow={"auto"}>
-			<Box w="70%" p={40} css={tabScrollCss} overflow={"auto"} borderRadius={"xl"}>
+		<Flex
+			backgroundColor="var(--main_color)"
+			h={"100vh"}
+			flexDirection={{ base: "column", md: "row" }}
+			overflow={"hidden"}
+		>
+			<Box
+				w={{ base: "100%", md: "50%", lg: "70%" }}
+				p={{ base: "3em", xl: "8em" }}
+				css={tabScrollCss}
+				overflow={"auto"}
+				borderRadius={"xl"}
+			>
 				<Stack gap={4}>
 					<HStack>
-						<TextTitle size="xl" title="Interested in joining our ambassdor program?" />
-						<CloseIcon cursor="pointer" onClick={handleRedirect} />
+						<TextTitle
+							size="xl"
+							whiteSpace="wrap"
+							title="Interested in joining our ambassador program?"
+						/>
+						<CloseIcon cursor="pointer" onClick={goToHome} />
 					</HStack>
 					<NormalTextTitle
-						title={`We're thrilled that you're ready to join our ever-growing community of Businessᴺ ambassadors. You'll be rewarded with products and earn commission in exchange for sharing our products with your audience. Sound good? Apply below!`}
+						whiteSpace="wrap"
+						size="sm"
+						title={`We're thrilled that you're ready to join our ever-growing community of Businessᴺ ambassadors. You'll be rewarded with products and earn commission in exchange for sharing our products with your audience.`}
 					/>
-					<HStack gap={4}>
+					<HStack gap={4} flexDirection={{ base: "column", lg: "row" }}>
 						<InputFormControl
+							size="sm"
 							required
 							label="What's your first name?"
 							name="firstName"
 							placeholder="Enter First Name"
-							valueText={formData?.firstName || ""}
+							valueText={formData?.firstName}
 							handleChange={handleInputChange}
 						/>
 						<InputFormControl
+							size="sm"
 							required
 							label="What's your last  name?"
-							name="firstName"
-							placeholder="Enter last  Name"
-							valueText={formData?.lastName || ""}
+							name="lastName"
+							placeholder="Enter Last Name"
+							valueText={formData?.lastName}
 							handleChange={handleInputChange}
 						/>
 
 						<InputFormControl
+							size="sm"
 							required
 							label="What's your email?"
-							name="firstName"
+							name="email"
 							placeholder="Enter Email"
-							valueText={formData?.email || ""}
+							type="email"
+							valueText={formData?.email}
 							handleChange={handleInputChange}
 						/>
 					</HStack>
 					<RadioFormControl
 						direction="column"
 						label="Which province are you located in?"
-						handleChange={(value) =>
-							handleInputChange("employerInfo", "preferredCommunication", value)
-						}
-						defaultVal="English"
+						handleChange={(value) => setFormData({ ...formData, province: value })}
+						defaultVal="BC"
+						name="province"
 						options={provinces}
 					/>
-					<HStack gap={4}>
+					<HStack gap={4} flexDirection={{ base: "column", lg: "row" }}>
 						<FormControl>
 							<FormLabel>Instagram</FormLabel>
 							<InputGroup>
 								<InputLeftElement>
-									<Button size="sm" variant="unstyled" aria-label="Toggle Password Visibility">
-										<ViewOffIcon />
+									<Button
+										display="flex"
+										bg={"var(--banner_bg)"}
+										color={"var(--main_color)"}
+										variant="unstyled"
+										aria-label="Toggle Password Visibility"
+									>
+										<FaInstagram />
 									</Button>
 								</InputLeftElement>
 								<Input
-									name="firstName"
-									value={formData?.password}
-									onChange={handleChange}
+									ml={3}
+									name="insta"
+									value={formData?.insta}
+									onChange={handleInputChange}
 									required
 								/>
 							</InputGroup>
@@ -174,32 +182,46 @@ export default function AffiliateSignup() {
 							<FormLabel>TikTok</FormLabel>
 							<InputGroup>
 								<InputLeftElement>
-									<Button size="sm" variant="unstyled" aria-label="Toggle Password Visibility">
-										<ViewOffIcon />
+									<Button
+										display="flex"
+										bg={"var(--banner_bg)"}
+										color={"var(--main_color)"}
+										variant="unstyled"
+										aria-label="Toggle Password Visibility"
+									>
+										<FaTiktok />
 									</Button>
 								</InputLeftElement>
 								<Input
-									name="firstName"
-									value={formData?.password}
-									onChange={handleChange}
+									ml={3}
+									name="tiktok"
+									value={formData?.tiktok}
+									onChange={handleInputChange}
 									required
 								/>
 							</InputGroup>
 						</FormControl>
 					</HStack>
-					<HStack gap={4}>
+					<HStack gap={4} flexDirection={{ base: "column", lg: "row" }}>
 						<FormControl>
 							<FormLabel>Youtube</FormLabel>
 							<InputGroup>
 								<InputLeftElement>
-									<Button size="sm" variant="unstyled" aria-label="Toggle Password Visibility">
-										<ViewOffIcon />
+									<Button
+										display="flex"
+										bg={"var(--banner_bg)"}
+										color={"var(--main_color)"}
+										variant="unstyled"
+										aria-label="Toggle Password Visibility"
+									>
+										<FaYoutube />
 									</Button>
 								</InputLeftElement>
 								<Input
-									name="firstName"
-									value={formData?.password}
-									onChange={handleChange}
+									ml={3}
+									name="youtube"
+									value={formData?.youtube}
+									onChange={handleInputChange}
 									required
 								/>
 							</InputGroup>
@@ -210,14 +232,21 @@ export default function AffiliateSignup() {
 							</FormLabel>
 							<InputGroup>
 								<InputLeftElement>
-									<Button size="sm" variant="unstyled" aria-label="Toggle Password Visibility">
-										<ViewOffIcon />
+									<Button
+										display="flex"
+										bg={"var(--banner_bg)"}
+										color={"var(--main_color)"}
+										variant="unstyled"
+										aria-label="Toggle Password Visibility"
+									>
+										<FaLinkedin />
 									</Button>
 								</InputLeftElement>
 								<Input
-									name="firstName"
-									value={formData?.password}
-									onChange={handleChange}
+									ml={3}
+									name="linkedIn"
+									value={formData?.linkedIn}
+									onChange={handleInputChange}
 									required
 								/>
 							</InputGroup>
@@ -226,27 +255,28 @@ export default function AffiliateSignup() {
 					<TextAreaFormControl
 						maxLength={500}
 						label="What kind of content do you share?"
-						name="issue"
-						valueText={formData?.content}
-						// handleChange={handleChange}
+						name="contentToShare"
+						valueText={formData?.contentToShare}
+						handleChange={handleInputChange}
 						required
 						rows={3}
 					/>
-					<InputFormControl
-						w={"50%"}
+					{/* <InputFormControl
+						w={{ base: "100%", lg: "50%" }}
 						label="Please enter your first name + space + the first letter of your last name"
 						name="firstName"
 						placeholder="Enter last  Name"
-						valueText={formData?.lastName || ""}
+						valueText={formData?.lastName}
 						handleChange={handleInputChange}
-					/>
+					/> */}
 					<Box bg={"var(--payStub_bg)"} borderRadius="lg" p={4}>
 						<Checkbox
 							colorScheme={"facebook"}
-							isChecked={!formData.marketingComms}
-							// onChange={() => setHasChecklist(!hasChecklist)}
+							name="marketingComms"
+							isChecked={formData.marketingComms}
+							onChange={handleInputChange}
 						>
-							<TextTitle title="Receive Marketing communication and updates" />
+							<TextTitle whiteSpace="wrap" title="Receive Marketing communication and updates" />
 						</Checkbox>
 
 						<NormalTextTitle
@@ -258,6 +288,7 @@ export default function AffiliateSignup() {
 					</Box>
 					<Box bg={"var(--payStub_bg)"} borderRadius="lg" p={4}>
 						<NormalTextTitle
+							whiteSpace="wrap"
 							size="sm"
 							title={
 								"By submitting this form I agree to Superfiliate handling my personal information in line with its privacy policy and Terms of Use."
@@ -265,56 +296,16 @@ export default function AffiliateSignup() {
 						/>
 					</Box>
 					<PrimaryButton
+						isLoading={isSubmitting}
 						w="full"
 						name={"Submit"}
 						bg="var(--banner_bg)"
 						hover="none"
-						// onOpen={() => setShowModal(true)}
+						onOpen={handleSubmit}
 					/>
 				</Stack>
 			</Box>
-
-			<Box bg="var(--banner_bg)" w="30%" p={6} display="flex" justifyContent="space-between">
-				<VStack w="100%" gap={8} h="100%" justifyContent="center">
-					<a href="/" aria-current="page" className="w-inline-block w--current">
-						<img src={logoSrc} loading="lazy" className="affiliate-logo " alt="main-logo" />
-					</a>
-					<Box h={"500px"} w={"300px"}>
-						<AnimatePresence mode="wait">
-							<MotionImage
-								key={AFFILIATE_IMG[index]}
-								src={AFFILIATE_IMG[index]}
-								alt={`Slide ${index}`}
-								objectFit="cover"
-								width="100%"
-								height="100%"
-								initial={{ opacity: 0.5, x: 100 }}
-								animate={{ opacity: 1, x: 0 }}
-								exit={{ opacity: 0.5, x: -100 }}
-								transition={{ duration: 0.2 }}
-								borderRadius="lg"
-							/>
-						</AnimatePresence>
-					</Box>
-					<NormalTextTitle
-						align="center"
-						color="var(--main_color)"
-						title="Get early access to services, free products and more!"
-					/>
-					<HStack spacing={3}>
-						{AFFILIATE_IMG.map((_, i) => (
-							<Circle
-								key={i}
-								size="10px"
-								bg={i === index ? "blue.500" : "gray.300"}
-								cursor="pointer"
-								onClick={() => setIndex(i)}
-								transition="background-color 0.3s"
-							/>
-						))}
-					</HStack>
-				</VStack>
-			</Box>
+			<MotionCover />
 		</Flex>
 	);
 }

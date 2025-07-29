@@ -32,6 +32,13 @@ const employeeProfileInfoSchema = new mongoose.Schema({
 	password: String,
 	createdOn: { type: Date, default: Date.now },
 	updatedOn: { type: Date, default: Date.now },
+	isAffiliate: Boolean,
+	contentToShare: String,
+	marketingComms: Boolean,
+	insta: String,
+	linkedIn: String,
+	tiktok: String,
+	youtube: String,
 });
 
 const EmployeeProfileInfo = mongoose.model("EmployeeProfileInfo", employeeProfileInfoSchema);

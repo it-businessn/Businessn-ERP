@@ -62,7 +62,7 @@ const PayrollService = {
 	},
 
 	async addAffiliateProfileInfo(data) {
-		return apiService.post("/payroll/affiliate/profileInfo", data);
+		return apiService.post("/payroll/affiliate", data);
 	},
 
 	async onboardUser(data) {
