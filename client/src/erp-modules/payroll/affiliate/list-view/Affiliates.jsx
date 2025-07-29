@@ -18,7 +18,7 @@ import { useNavigate } from "react-router-dom";
 import { ROUTE_PATH } from "routes";
 
 const Affiliates = ({ employees }) => {
-	const empPath = `${ROUTE_PATH.PAYROLL}${ROUTE_PATH.EMPLOYEES}/info`;
+	const empPath = `${ROUTE_PATH.PAYROLL}${ROUTE_PATH.AFFILIATE}/info`;
 	const navigate = useNavigate();
 
 	// Color mode values for better theming
@@ -85,83 +85,96 @@ const Affiliates = ({ employees }) => {
 						</Td>
 					</Tr>
 				)}
-				{employees?.map(({ _id, empId, payrollStatus, employmentRole, employeeNo, positions }) => {
-					return (
-						<Tr
-							key={empId?._id || _id}
-							_hover={{ bg: hoverBg }}
-							transition="all 0.2s"
-							cursor="pointer"
-							onClick={() => handleClick(empId._id)}
-						>
-							<Td py={0} borderBottomColor={borderColor}>
-								<HStack spacing={4}>
-									<Avatar
-										name={empId?.fullName}
-										size={"sm"}
-										src={null}
-										borderRadius="lg"
-										bg={nameBoxBg}
-										color={nameColor}
-									/>
-									<Box>
-										<Text fontWeight="medium" fontSize="sm" color={nameColor}>
-											{empId?.fullName}
-										</Text>
-										<Text fontSize="xs" color="gray.500">
-											{positions?.[0]?.employmentDepartment || ""}
-										</Text>
-									</Box>
-								</HStack>
-							</Td>
-							<Td py={0} borderBottomColor={borderColor}>
-								<Text fontSize="sm">{positions?.[0]?.employmentDepartment || ""}</Text>
-							</Td>
-							<Td py={0} borderBottomColor={borderColor}>
-								<Text fontSize="sm">{employmentRole}</Text>
-							</Td>
-							<Td py={0} borderBottomColor={borderColor}>
-								<Text fontSize="sm" fontFamily="mono">
-									{employeeNo}
-								</Text>
-							</Td>
-							<Td py={0} borderBottomColor={borderColor}>
-								<Text fontSize="sm" fontFamily="mono">
-									{positions?.[0]?.timeManagementBadgeID || "-"}
-								</Text>
-							</Td>
-							<Td py={0} borderBottomColor={borderColor}>
-								<StatusBadge status={payrollStatus} />
-							</Td>
-							<Td borderBottomColor={borderColor}>
-								<HStack spacing={2}>
-									<IconButton
-										size="sm"
-										icon={<HiEye />}
-										variant="ghost"
-										colorScheme="blue"
-										aria-label="View details"
-										onClick={(e) => {
-											e.stopPropagation();
-											handleClick(empId._id);
-										}}
-									/>
-									<IconButton
-										size="sm"
-										icon={<HiPencil />}
-										variant="ghost"
-										colorScheme="blue"
-										aria-label="Edit employee"
-										onClick={(e) => {
-											e.stopPropagation();
-											handleClick(empId._id);
-										}}
-									/>
-								</HStack>
-							</Td>
-						</Tr>
-					);
-				})}
+				{employees?.map(
+					({
+						_id,
+						firstName,
+						lastName,
+						middleName,
+						empId,
+						payrollStatus,
+						employmentRole,
+						employeeNo,
+						positions,
+					}) => {
+						const fullName = `${firstName} ${middleName || ""} ${lastName}`;
+						return (
+							<Tr
+								key={_id}
+								_hover={{ bg: hoverBg }}
+								transition="all 0.2s"
+								cursor="pointer"
+								onClick={() => handleClick(empId)}
+							>
+								<Td py={0} borderBottomColor={borderColor}>
+									<HStack spacing={4}>
+										<Avatar
+											name={fullName}
+											size={"sm"}
+											src={null}
+											borderRadius="lg"
+											bg={nameBoxBg}
+											color={nameColor}
+										/>
+										<Box>
+											<Text fontWeight="medium" fontSize="sm" color={nameColor}>
+												{fullName}
+											</Text>
+											<Text fontSize="xs" color="gray.500">
+												{positions?.[0]?.employmentDepartment || ""}
+											</Text>
+										</Box>
+									</HStack>
+								</Td>
+								<Td py={0} borderBottomColor={borderColor}>
+									<Text fontSize="sm">{positions?.[0]?.employmentDepartment || ""}</Text>
+								</Td>
+								<Td py={0} borderBottomColor={borderColor}>
+									<Text fontSize="sm">{employmentRole}</Text>
+								</Td>
+								<Td py={0} borderBottomColor={borderColor}>
+									<Text fontSize="sm" fontFamily="mono">
+										{employeeNo}
+									</Text>
+								</Td>
+								<Td py={0} borderBottomColor={borderColor}>
+									<Text fontSize="sm" fontFamily="mono">
+										{positions?.[0]?.timeManagementBadgeID || "-"}
+									</Text>
+								</Td>
+								<Td py={0} borderBottomColor={borderColor}>
+									<StatusBadge status={payrollStatus} />
+								</Td>
+								<Td borderBottomColor={borderColor}>
+									<HStack spacing={2}>
+										<IconButton
+											size="sm"
+											icon={<HiEye />}
+											variant="ghost"
+											colorScheme="blue"
+											aria-label="View details"
+											onClick={(e) => {
+												e.stopPropagation();
+												handleClick(empId._id);
+											}}
+										/>
+										<IconButton
+											size="sm"
+											icon={<HiPencil />}
+											variant="ghost"
+											colorScheme="blue"
+											aria-label="Edit employee"
+											onClick={(e) => {
+												e.stopPropagation();
+												handleClick(empId._id);
+											}}
+										/>
+									</HStack>
+								</Td>
+							</Tr>
+						);
+					},
+				)}
 			</Tbody>
 		</TableLayout>
 	);
