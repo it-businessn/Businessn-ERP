@@ -38,19 +38,21 @@ export default function MotionCover() {
 					<AnimatePresence mode="wait">
 						<MotionImage
 							key={AFFILIATE_IMG[index]}
-							src={AFFILIATE_IMG[index]}
+							src={AFFILIATE_IMG[2]}
+							// src={AFFILIATE_IMG[index]}
 							alt={`Slide ${index}`}
 							objectFit="cover"
 							width="100%"
 							height="100%"
-							// initial={{ opacity: 0.5, x: 100 }}
-							// animate={{ opacity: 1, x: 0 }}
-							// exit={{ opacity: 0.5, x: -100 }}
-							// transition={{ duration: 0.2 }}
 							initial={false}
 							animate={{}}
 							exit={false}
 							transition={false}
+							fill
+							// initial={{ opacity: 0 }}
+							// animate={{ opacity: 1 }}
+							// exit={{ opacity: 0 }}
+							// transition={{ duration: 1, ease: "easeInOut" }}
 							borderRadius="lg"
 						/>
 					</AnimatePresence>
@@ -60,7 +62,7 @@ export default function MotionCover() {
 					color="var(--main_color)"
 					title="Get early access to services, free products and more!"
 				/>
-				<HStack spacing={3}>
+				{/* <HStack spacing={3}>
 					{AFFILIATE_IMG.map((_, i) => (
 						<Circle
 							key={i}
@@ -71,7 +73,7 @@ export default function MotionCover() {
 							transition="background-color 0.3s"
 						/>
 					))}
-				</HStack>
+				</HStack> */}
 			</VStack>
 		</Box>
 	);
