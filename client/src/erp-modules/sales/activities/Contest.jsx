@@ -1,13 +1,4 @@
-import {
-	Box,
-	Flex,
-	HStack,
-	Icon,
-	Progress,
-	SimpleGrid,
-	Text,
-	VStack,
-} from "@chakra-ui/react";
+import { Box, Flex, HStack, Icon, Progress, SimpleGrid, Text, VStack } from "@chakra-ui/react";
 import HighlightButton from "components/ui/button/HighlightButton";
 // import RightIconButton from "components/ui/button/RightIconButton";
 import BoxCard from "components/ui/card";
@@ -43,25 +34,12 @@ const Contest = () => {
 									</VStack>
 								</HStack>
 								<Box>
-									<Text
-										mt={"2em"}
-										fontSize={"xs"}
-										display={"flex"}
-										justifyContent={"end"}
-									>
+									<Text mt={"2em"} fontSize={"xs"} display={"flex"} justifyContent={"end"}>
 										$500
 									</Text>
-									<Progress
-										colorScheme="green"
-										size="sm"
-										bg={"var(--main_color)"}
-										value={2}
-									/>
-									<Flex mt={"2em"} borderTop="2px solid #e8ebf4">
-										<HighlightButton
-											name={"More details"}
-											onClick={() => setShowDetails(true)}
-										/>
+									<Progress colorScheme="green" size="sm" bg={"var(--main_color)"} value={2} />
+									<Flex mt={"2em"} borderTop="var(--highlight_border)">
+										<HighlightButton name={"More details"} onClick={() => setShowDetails(true)} />
 									</Flex>
 								</Box>
 							</BoxCard>
@@ -93,9 +71,9 @@ const Contest = () => {
 								bg={"var(--main_color)"}
 								value={50}
 							/>
-							<Flex mt={"2em"} borderTop="2px solid #e8ebf4">
+							<Flex mt={"2em"} borderTop="var(--highlight_border)">
 								<Button
-									bgGradient="linear-gradient(58deg, rgb(115 70 236) 0%, rgb(136 107 217) 43%, rgb(50 240 218) 100%)"
+									bgGradient="var(--highlight_gradient)"
 									bgClip="text"
 									size={"xxs"}
 								>
@@ -130,9 +108,9 @@ const Contest = () => {
 								bg={"var(--main_color)"}
 								value={50}
 							/>
-							<Flex mt={"2em"} borderTop="2px solid #e8ebf4">
+							<Flex mt={"2em"} borderTop="var(--highlight_border)">
 								<Button
-									bgGradient="linear-gradient(58deg, rgb(115 70 236) 0%, rgb(136 107 217) 43%, rgb(50 240 218) 100%)"
+									bgGradient="var(--highlight_gradient)"
 									bgClip="text"
 									size={"xxs"}
 								>

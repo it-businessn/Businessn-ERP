@@ -14,7 +14,7 @@ const NotificationCard = () => {
 						minW={"20%"}
 						name={"New Feature"}
 						loadingText="Loading"
-						bg="linear-gradient(58deg, rgb(115 70 236) 0%, rgb(136 107 217) 43%, rgb(50 240 218) 100%)"
+						bg="var(--highlight_gradient)"
 					/>
 					<Box>
 						<TextTitle

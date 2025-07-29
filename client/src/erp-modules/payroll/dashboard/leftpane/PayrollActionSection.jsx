@@ -2,6 +2,7 @@ import { HStack, VStack } from "@chakra-ui/react";
 import NormalTextTitle from "components/ui/NormalTextTitle";
 import TextTitle from "components/ui/text/TextTitle";
 import VerticalStepper from "components/ui/VerticalStepper";
+import { TIMESHEET_STATUS_LABEL } from "erp-modules/payroll/timesheets/data";
 import { useEffect, useState } from "react";
 import { processPayrollPath, timesheetPath } from "routes";
 import PayrollService from "services/PayrollService";
@@ -37,10 +38,10 @@ const PayrollActionSection = ({ company, selectedPayPeriod, handleClick, activeU
 			return;
 		}
 		const approvedTimesheet = timesheets.filter(
-			({ approveStatus }) => approveStatus === "Approved",
+			({ approveStatus }) => approveStatus === TIMESHEET_STATUS_LABEL.APPROVED,
 		).length;
 		const rejectedTimesheet = timesheets.filter(
-			({ approveStatus }) => approveStatus === "Rejected",
+			({ approveStatus }) => approveStatus === TIMESHEET_STATUS_LABEL.REJECTED,
 		).length;
 
 		const calcApprovedPercent = ((approvedTimesheet + rejectedTimesheet) / timesheets.length) * 100;

@@ -82,6 +82,13 @@
 	--product4: #cadc52;
 	--product5: #adebc6;
 	--product6: #eea462;
+	--highlight_border: 2px solid #e8ebf4;
+	--highlight_gradient: linear-gradient(
+		58deg,
+		rgb(115 70 236) 0%,
+		rgb(136 107 217) 43%,
+		rgb(50 240 218) 100%
+	);
 }
 
 html {

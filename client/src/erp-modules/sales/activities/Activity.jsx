@@ -6,12 +6,7 @@ import HorizontalBarChart from "./HorizontalBarChart";
 
 const Activity = ({ activity, onClick, width, target }) => {
 	return (
-		<BoxCard
-			overflowY="hidden"
-			justifyContent="space-between"
-			display="flex"
-			flexDir={"column"}
-		>
+		<BoxCard overflowY="hidden" justifyContent="space-between" display="flex" flexDir={"column"}>
 			<HStack>
 				<VStack alignItems="self-start" spacing={0}>
 					<Icon as={activity.icon} color={activity.color} boxSize={8} />
@@ -29,7 +24,7 @@ const Activity = ({ activity, onClick, width, target }) => {
 				</Box>
 			</HStack>
 
-			<Flex p={0} borderTop="2px solid #e8ebf4" gap={0}>
+			<Flex p={0} borderTop="var(--highlight_border)" gap={0}>
 				<HighlightButton name={activity.action} onClick={onClick} />
 			</Flex>
 		</BoxCard>

@@ -3,7 +3,6 @@ import { createBrowserRouter } from "react-router-dom";
 
 import Home from "components/Home";
 import Loader from "components/Loader";
-import Payouts from "erp-modules/sales/payouts/Payouts";
 import Login from "features/login";
 import Support from "features/support";
 import AffiliateSignup from "features/support/AffiliateSignup";
@@ -47,7 +46,7 @@ const FreshLeads = lazy(() => import("./erp-modules/sales/fresh_leads"));
 const LeadsDisburse = lazy(() => import("./erp-modules/sales/lead disburse"));
 const LeadsDocket = lazy(() => import("./erp-modules/sales/lead docket"));
 const Opportunities = lazy(() => import("./erp-modules/sales/opportunities"));
-// const Payouts = lazy(() => import("./erp-modules/sales/payouts"));
+const Payouts = lazy(() => import("./erp-modules/sales/payouts"));
 
 const Pipeline = lazy(() => import("./erp-modules/sales/target-leads-pipeline"));
 const Onboarding = lazy(() => import("./erp-modules/sales/onboarding"));

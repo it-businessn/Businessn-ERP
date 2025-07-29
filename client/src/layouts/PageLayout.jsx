@@ -24,11 +24,12 @@ const PageLayout = ({
 	bg = "var(--primary_bg)",
 	showPayGroup,
 	hasMultiPaygroups,
+	overflow = "hidden",
 }) => (
 	<Box
 		p={{ base: "1em" }}
 		mt={isMobile && "1em"}
-		overflow={"hidden"}
+		overflow={overflow}
 		zIndex={zIndex}
 		position={position}
 		pb={pb}

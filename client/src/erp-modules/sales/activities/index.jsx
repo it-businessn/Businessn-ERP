@@ -113,6 +113,7 @@ const Activities = () => {
 	};
 	return (
 		<PageLayout
+			overflow="auto"
 			selectPlaceholder="Select Agent"
 			showSelectBox={isManagerRole && employees}
 			handleChange={handleChange}

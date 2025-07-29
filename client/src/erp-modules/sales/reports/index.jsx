@@ -341,11 +341,7 @@ const SalesReport = () => {
 										<Td fontSize={"xs"}>Product1</Td>
 										<Td fontSize={"xs"} p={0}>
 											<HStack>
-												<Button
-													bgGradient="linear-gradient(58deg, rgb(115 70 236) 0%, rgb(136 107 217) 43%, rgb(50 240 218) 100%)"
-													bgClip="text"
-													size={"xxs"}
-												>
+												<Button bgGradient="var(--highlight_gradient)" bgClip="text" size={"xxs"}>
 													See details
 													<RightIconButton />
 												</Button>
