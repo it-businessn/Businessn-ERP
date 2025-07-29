@@ -72,6 +72,8 @@ const Timesheets = lazy(() => import("./erp-modules/payroll/timesheets"));
 const Dashboard = lazy(() => import("erp-modules/payroll/dashboard"));
 const Employees = lazy(() => import("erp-modules/payroll/employees/pageview"));
 const ROE = lazy(() => import("erp-modules/payroll/roe"));
+const AffiliateListView = lazy(() => import("erp-modules/payroll/affiliate/list-view"));
+const Affiliates = lazy(() => import("erp-modules/payroll/affiliate/page-view"));
 const EmployeeListView = lazy(() => import("erp-modules/payroll/employees/listview"));
 const Settings = lazy(() => import("erp-modules/payroll/Settings"));
 
@@ -134,6 +136,7 @@ export const ROUTE_PATH = {
 	LEAVE_APPROVALS: "/leave-approvals",
 	TIMESHEETS: "/timesheets",
 	EMPLOYEES: "/employees",
+	AFFILIATE: "/affiliates",
 	EMP_DASHBOARD: "/employee-details",
 	EMP_RECORD: "/emp-records",
 	SETTINGS: "/settings",
@@ -161,6 +164,7 @@ export const processPayrollPath = `${ROUTE_PATH.PAYROLL}${ROUTE_PATH.PROCESS}`;
 export const timesheetPath = `${ROUTE_PATH.PAYROLL}${ROUTE_PATH.TIMESHEETS}`;
 export const leaveApprovalPath = `${ROUTE_PATH.PAYROLL}${ROUTE_PATH.LEAVE_APPROVALS}`;
 export const payrollEmployeePath = `${ROUTE_PATH.PAYROLL}${ROUTE_PATH.EMPLOYEES}`;
+export const payrollAffiliatePath = `${ROUTE_PATH.PAYROLL}${ROUTE_PATH.AFFILIATE}`;
 export const payrollROEPath = `${ROUTE_PATH.PAYROLL}/roe`;
 export const payrollReportPath = `${ROUTE_PATH.PAYROLL}${ROUTE_PATH.REPORT}`;
 export const payrollEmpDashboardPath = `${ROUTE_PATH.PAYROLL}${ROUTE_PATH.EMP_DASHBOARD}`;
@@ -345,6 +349,18 @@ export const router = createBrowserRouter([
 			{
 				path: `${payrollEmployeePath}/info/:id/:stepNo`,
 				element: <Employees />,
+			},
+			{
+				path: payrollAffiliatePath,
+				element: <AffiliateListView />,
+			},
+			{
+				path: `${payrollAffiliatePath}/info`,
+				element: <Affiliates />,
+			},
+			{
+				path: `${payrollAffiliatePath}/info/:id/:stepNo`,
+				element: <Affiliates />,
 			},
 			{
 				path: payrollROEPath,

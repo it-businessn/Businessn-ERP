@@ -282,6 +282,21 @@ export const SIDEBAR_MENU = [
 				],
 			},
 			{
+				path: "affiliates",
+				name: "Affiliates",
+				icon: <FaPeopleGroup />,
+				children: [
+					{
+						path: "affiliates",
+						name: "List View",
+					},
+					{
+						path: "affiliates/info",
+						name: "Individual View",
+					},
+				],
+			},
+			{
 				path: "reports",
 				name: "Reports",
 				icon: <IoDocumentText />,

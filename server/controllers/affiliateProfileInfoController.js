@@ -19,6 +19,7 @@ const getAllProfileInfo = async (req, res) => {
 	try {
 		const result = await EmployeeProfileInfo.find({
 			companyName,
+			isAffiliate: true,
 		}).sort({
 			createdOn: -1,
 		});

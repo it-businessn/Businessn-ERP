@@ -236,7 +236,13 @@ const onBoardNewUser = async (req, res) => {
 		personalInfo,
 	} = req.body;
 	try {
-		const newUserID = await addNewUser(companyName, personalInfo, contactInfo, emergencyContact);
+		const newUserID = await addNewUser(
+			companyName,
+			personalInfo,
+			contactInfo,
+			emergencyContact,
+			req.body?.isAffiliate,
+		);
 		const newEmpPosition = await addUserEmploymentInfo(newUserID, companyName, employmentInfo);
 		const newPayInfo = await addUserPayInfo(newUserID, companyName, payInfo, newEmpPosition);
 		const newGovtContributionInfo = await addUserGovtInfo(newUserID, companyName, governmentInfo);

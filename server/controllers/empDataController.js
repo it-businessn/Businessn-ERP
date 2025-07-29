@@ -24,7 +24,13 @@ const getPercent = (value) => {
 	return Number.isInteger(input) ? input / 100 : input;
 };
 
-const addNewUser = async (companyName, personalInfo, contactInfo, emergencyContact) => {
+const addNewUser = async (
+	companyName,
+	personalInfo,
+	contactInfo,
+	emergencyContact,
+	isAffiliate,
+) => {
 	const {
 		firstName,
 		middleName,
@@ -67,8 +73,9 @@ const addNewUser = async (companyName, personalInfo, contactInfo, emergencyConta
 	};
 	const empId = await getNewUserID(companyName, newUserEmpRecord);
 	const encryptedSSN = SIN && !SIN.includes("*") ? encryptSSN(SIN) : "";
-
+	const isAffiliateMember = isAffiliate ? true : false;
 	await EmployeeProfileInfo.create({
+		isAffiliate: isAffiliateMember,
 		empId,
 		companyName,
 		firstName,

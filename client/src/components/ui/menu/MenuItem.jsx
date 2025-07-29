@@ -1,6 +1,6 @@
 import { Box, Button, Flex, HStack, IconButton, Stack, Tooltip, VStack } from "@chakra-ui/react";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
-import { payrollEmployeePath, payrollReportPath } from "routes";
+import { payrollAffiliatePath, payrollEmployeePath, payrollReportPath } from "routes";
 
 const MenuItem = ({
 	menu,
@@ -15,6 +15,7 @@ const MenuItem = ({
 
 	const empPath =
 		location.pathname.includes(payrollEmployeePath) ||
+		location.pathname.includes(payrollAffiliatePath) ||
 		location.pathname.includes(payrollReportPath);
 
 	return (

@@ -41,7 +41,7 @@ import {
 	userInfoDetails,
 } from "./customInfo";
 
-const NewEmployeeOnboardingModal = ({ isOpen, onClose }) => {
+const NewEmployeeOnboardingModal = ({ isOpen, onClose, title = "Employee", isAffiliate }) => {
 	const company = LocalStorageService.getItem("selectedCompany");
 	const toast = useToast();
 
@@ -268,6 +268,7 @@ const NewEmployeeOnboardingModal = ({ isOpen, onClose }) => {
 	const handleSubmit = async () => {
 		try {
 			formData.companyName = company;
+			if (isAffiliate) formData.isAffiliate = true;
 			const { data } = await PayrollService.onboardUser(formData);
 			console.log("newEmpDetails=", data);
 			toast({
@@ -347,7 +348,7 @@ const NewEmployeeOnboardingModal = ({ isOpen, onClose }) => {
 				>
 					<Flex align="center" gap={3} fontSize="xl">
 						<FaUserPlus />
-						<Text fontWeight="bold">Add New Employee</Text>
+						<Text fontWeight="bold">Add New {title}</Text>
 					</Flex>
 					<ModalCloseButton
 						top="16px"
