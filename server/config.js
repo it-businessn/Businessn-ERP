@@ -1,6 +1,7 @@
 // Allow only specific domains
 const corsOptions = {
 	origin: [
+		"https://businessn.com",
 		"https://businessn-erp.com",
 		"https:businessn-nwg.ddns.net",
 		"http:businessn-nwg.ddns.net",
