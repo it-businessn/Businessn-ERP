@@ -5,7 +5,7 @@ const EmployeeProfileInfo = require("../models/EmployeeProfileInfo");
 const { addEmployee, findCompany } = require("./appController");
 const { deleteAlerts } = require("./payrollController");
 const { decryptData, encryptData } = require("../services/encryptDataService");
-const { ALERTS_TYPE } = require("../services/data");
+const { ALERTS_TYPE, COMPANIES } = require("../services/data");
 const Payout = require("../models/Payout");
 
 const getAllProfileInfo = async (req, res) => {
@@ -127,7 +127,7 @@ const addAffiliateProfileInfo = async (req, res) => {
 		country,
 	} = req.body;
 	try {
-		const defaultCompany = process.env.DEFAULT_ORG;
+		const defaultCompany = COMPANIES.BUSINESSN_ORG;
 		const existingProfileInfo = await EmployeeProfileInfo.findOne({
 			companyName: defaultCompany,
 			firstName,
