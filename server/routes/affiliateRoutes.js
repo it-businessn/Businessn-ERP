@@ -9,7 +9,7 @@ router.get("/:companyName/:empId", affiliateProfileInfoController.getEmployeePro
 
 router.post("/", affiliateProfileInfoController.addAffiliateProfileInfo);
 
-router.post("/onboard", affiliateProfileInfoController.onBoardNewUser);
+router.post("/sale", affiliateProfileInfoController.addAffiliateSale);
 
 router.put("/:id", affiliateProfileInfoController.updateEmployeeProfileInfo);
 

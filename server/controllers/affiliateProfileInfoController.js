@@ -1,18 +1,12 @@
 const moment = require("moment");
+const { nanoid } = require("nanoid");
 const Employee = require("../models/Employee");
 const EmployeeProfileInfo = require("../models/EmployeeProfileInfo");
 const { addEmployee, findCompany } = require("./appController");
 const { deleteAlerts } = require("./payrollController");
 const { decryptData, encryptData } = require("../services/encryptDataService");
-const { ALERTS_TYPE, COMPANIES } = require("../services/data");
-const {
-	addNewUser,
-	addUserEmploymentInfo,
-	addUserPayInfo,
-	addUserGovtInfo,
-	addUserBenefitInfo,
-	addUserBankInfo,
-} = require("./empDataController");
+const { ALERTS_TYPE } = require("../services/data");
+const Payout = require("../models/Payout");
 
 const getAllProfileInfo = async (req, res) => {
 	const { companyName } = req.params;
@@ -185,45 +179,33 @@ const addAffiliateProfileInfo = async (req, res) => {
 			profileInfoEmpId = newEmployee._id;
 		}
 		updatedData.empId = profileInfoEmpId;
+		updatedData.affiliateCode = nanoid(8);
 		const newProfileInfo = await EmployeeProfileInfo.create(updatedData);
-		return res.status(201).json(newProfileInfo);
+		const referralLink = `${process.env.BASE_URL_LIVE}/ref=${newProfileInfo.affiliateCode}`;
+		return res.status(201).json({ newProfileInfo, referralLink });
 	} catch (error) {
 		res.status(400).json({ message: error.message });
 	}
 };
 
-const onBoardNewUser = async (req, res) => {
-	const {
-		companyName,
-		bankingInfo,
-		benefitsInfo,
-		contactInfo,
-		emergencyContact,
-		employmentInfo,
-		governmentInfo,
-		payInfo,
-		personalInfo,
-	} = req.body;
+const addAffiliateSale = async (req, res) => {
+	const { companyName, affiliate, amount, customerName, customerCode, saleId, status } = req.body;
 	try {
-		const newUserID = await addNewUser(companyName, personalInfo, contactInfo, emergencyContact);
-		const newEmpPosition = await addUserEmploymentInfo(newUserID, companyName, employmentInfo);
-		const newPayInfo = await addUserPayInfo(newUserID, companyName, payInfo, newEmpPosition);
-		const newGovtContributionInfo = await addUserGovtInfo(newUserID, companyName, governmentInfo);
-		const newBenefitContributionInfo = await addUserBenefitInfo(
-			newUserID,
-			companyName,
-			benefitsInfo,
-		);
-		const newUserBankingInfo = await addUserBankInfo(newUserID, companyName, bankingInfo);
-
-		res.status(201).json({
-			newUserID,
-			newEmpPosition,
-			newPayInfo,
-			newGovtContributionInfo,
-			newBenefitContributionInfo,
-			newUserBankingInfo,
-		});
+		const affiliateCodeExists = await EmployeeProfileInfo.findOne({ affiliateCode: saleId });
+		if (affiliateCodeExists) {
+			const newPayout = await Payout.create({
+				amount,
+				saleId,
+				companyName,
+				affiliate,
+				customerName,
+				customerCode,
+				status,
+			});
+			return res.status(201).json(newPayout);
+		} else {
+			return res.status(404).json({ error: "Affiliate not found" });
+		}
 	} catch (error) {
 		res.status(400).json({ message: error.message });
 	}
@@ -290,7 +272,7 @@ module.exports = {
 	getAllProfileInfo,
 	getEmployeeProfileInfo,
 	addAffiliateProfileInfo,
-	onBoardNewUser,
+	addAffiliateSale,
 	updateEmployeeProfileInfo,
 	findEmployeeProfileInfo,
 };

@@ -8,7 +8,7 @@ import { FaCaretDown } from "react-icons/fa";
 import PayrollService from "services/PayrollService";
 
 const AddNewSale = ({ isOpen, onClose, setIsAdded, company }) => {
-	const defaultPayout = {
+	const initialSale = {
 		amount: 0,
 		affiliate: "",
 		customerName: "",
@@ -18,7 +18,7 @@ const AddNewSale = ({ isOpen, onClose, setIsAdded, company }) => {
 		status: TIMESHEET_STATUS_LABEL.PENDING,
 	};
 	const [isSubmitting, setSubmitting] = useState(false);
-	const [formData, setFormData] = useState(defaultPayout);
+	const [formData, setFormData] = useState(initialSale);
 	const [affiliates, setAffiliates] = useState(null);
 
 	useEffect(() => {
@@ -45,19 +45,20 @@ const AddNewSale = ({ isOpen, onClose, setIsAdded, company }) => {
 
 	const handleSubmit = async (e) => {
 		e.preventDefault();
-		// setSubmitting(true);
-		console.log(formData);
-		// try {
-		// 	await PayoutService.addPayout(formData);
-		// 	setIsAdded(true);
-		// 	onClose();
-		// 	setFormData(defaultPayout);
-		// 	setSubmitting(false);
-		// } catch (error) {
-		// 	console.log(error);
-		// } finally {
-		// 	setSubmitting(false);
-		// }
+		setSubmitting(true);
+		formData.saleId = affiliates.find(
+			({ fullName }) => fullName === formData.affiliate,
+		).affiliateCode;
+		try {
+			await PayrollService.addAffiliateSale(formData);
+			setIsAdded(true);
+			onClose();
+			setFormData(initialSale);
+		} catch (error) {
+			console.log(error);
+		} finally {
+			setSubmitting(false);
+		}
 	};
 
 	return (
@@ -107,7 +108,12 @@ const AddNewSale = ({ isOpen, onClose, setIsAdded, company }) => {
 							</Select>
 						</FormControl>
 					</HStack>
-					<ActionButtonGroup submitBtnName={"Add"} isLoading={isSubmitting} onClose={onClose} />
+					<ActionButtonGroup
+						bg={"var(--banner_bg)"}
+						submitBtnName={"Add"}
+						isLoading={isSubmitting}
+						onClose={onClose}
+					/>
 				</Stack>
 			</form>
 		</ModalLayout>

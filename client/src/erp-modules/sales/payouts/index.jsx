@@ -298,10 +298,10 @@ const Payouts = () => {
 								</Tr>
 							</Thead>
 							<Tbody color={"var(--nav_color)"}>
-								{payouts.map((payout) => (
-									<Tr key={payout.salesId}>
+								{payouts?.map((payout) => (
+									<Tr key={payout._id}>
 										<Td fontSize={"xs"} p={0}>
-											{payout.salesId}
+											{payout.saleId}
 										</Td>
 										<Td fontSize={"xs"} p={0}>
 											{formatDate(payout.createdOn)}

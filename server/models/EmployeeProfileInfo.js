@@ -39,6 +39,7 @@ const employeeProfileInfoSchema = new mongoose.Schema({
 	linkedIn: String,
 	tiktok: String,
 	youtube: String,
+	affiliateCode: { type: String, unique: true },
 });
 
 const EmployeeProfileInfo = mongoose.model("EmployeeProfileInfo", employeeProfileInfoSchema);
