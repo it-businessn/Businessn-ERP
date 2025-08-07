@@ -126,10 +126,6 @@ const TaskTable = ({
 					</Td>
 					<Td fontSize={"xs"} cursor={task?.subtasks?.length > 0 ? "pointer" : "default"}>
 						<HStack spacing={3}>
-							<CircularProgressBarCell
-								// completionPercentage={task.completionPercent}
-								completionPercentage={calculateTaskCompletion(task).completionPercentage}
-							/>
 							<Text>{task.taskName}</Text>
 							<HStack
 								spacing={0}

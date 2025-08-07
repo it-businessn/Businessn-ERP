@@ -3,14 +3,7 @@ import { Avatar, Checkbox, Collapse, HStack, IconButton, Td, Text, Tr } from "@c
 import React, { useState } from "react";
 import { FaChevronDown } from "react-icons/fa";
 import TaskService from "services/TaskService";
-import {
-	AddTaskButton,
-	CircularProgressBarCell,
-	TaskButton,
-	calculateTaskCompletion,
-	renderPriorityBars,
-	statusColor,
-} from "utils";
+import { AddTaskButton, TaskButton, renderPriorityBars, statusColor } from "utils";
 import { formatDate } from "utils/convertDate";
 import AddNewSubTasks from "./AddNewSubTasks";
 import EditSubTask from "./EditSubTask";
@@ -65,10 +58,6 @@ const Subtask = ({ id, task, subtask, managerName, setRefresh, managers, isInner
 							onChange={(e) => handleTaskStatus(e, _id)}
 						/>
 
-						<CircularProgressBarCell
-							// completionPercentage={task.completionPercent}
-							completionPercentage={calculateTaskCompletion(task).completionPercentage}
-						/>
 						<Text>{taskName}</Text>
 						<HStack
 							spacing={0}

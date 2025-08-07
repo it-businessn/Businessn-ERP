@@ -13,7 +13,7 @@ import {
 import EmptyRowRecord from "components/ui/EmptyRowRecord";
 import { useState } from "react";
 import { FaSort } from "react-icons/fa";
-import AddProject from "./AddProject";
+import AddFile from "./AddFile";
 import AssigneeCell from "./cell/AssigneeCell";
 import DateCell from "./cell/DateCell";
 import ManagerCell from "./cell/ManagerCell";
@@ -51,7 +51,7 @@ const ProjectTable = ({ projects, setRefresh, managers, company }) => {
 	return (
 		<>
 			<Flex>
-				<Text fontWeight="bold">Projects</Text>
+				<Text fontWeight="bold">Files</Text>
 				<Spacer />
 				<Button
 					onClick={handleAddProject}
@@ -61,12 +61,12 @@ const ProjectTable = ({ projects, setRefresh, managers, company }) => {
 					size={"sm"}
 					px={"2em"}
 				>
-					Add new project
+					Add new file
 				</Button>
 			</Flex>
 
 			{isOpen && (
-				<AddProject
+				<AddFile
 					managers={managers}
 					isOpen={isOpen}
 					onClose={onClose}

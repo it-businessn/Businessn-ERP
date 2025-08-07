@@ -1,7 +1,6 @@
-import { Box, HStack, Td, VStack } from "@chakra-ui/react";
+import { HStack, Image, Td, VStack } from "@chakra-ui/react";
 import { useState } from "react";
-import { CircularProgressBarCell } from "utils";
-import { convertDecimal } from "utils/convertAmt";
+import fileImg from "../../../../../assets/file.png";
 import AddNewProjectTask from "../AddNewProjectTask";
 import EditProject from "../EditProject";
 import ActionItem from "./ActionItem";
@@ -38,23 +37,11 @@ const ProjectActionCell = ({
 		setProjectId(projectId);
 	};
 
-	// const handleDelete = (index) => {};
 	return (
 		<Td p={"0.5em"} fontSize={"xs"} w={"400px"} py={0}>
 			<VStack alignItems={"start"} spacing={0} w={"100%"} ml={"-1.5em"}>
 				<HStack spacing={2}>
-					<Box position="relative" width="100px" height="100px">
-						<CircularProgressBarCell
-							size="100px"
-							completionPercentage={
-								project.completionPercent
-									? Number.isInteger(project.completionPercent)
-										? project.completionPercent
-										: convertDecimal(project.completionPercent)
-									: 0
-							}
-						/>
-					</Box>
+					<Image height={"20px"} width={"20px"} objectFit="cover" src={fileImg} alt="file" />
 					<ActionItem
 						data={project}
 						name={project.name}

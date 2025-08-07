@@ -2,8 +2,6 @@ import { Checkbox, HStack } from "@chakra-ui/react";
 import { useState } from "react";
 import ProjectService from "services/ProjectService";
 import TaskService from "services/TaskService";
-import { CircularProgressBarCell } from "utils";
-import { convertDecimal } from "utils/convertAmt";
 import EditInnerSubTask from "../EditInnerSubTask";
 import ActionItem from "./ActionItem";
 import AddActualHours from "./AddActualHours";
@@ -86,30 +84,12 @@ const InnerSubTaskActionCell = ({ task, setRefresh, managers, index }) => {
 				handleClose={handleClose}
 				handleConfirm={handleConfirm}
 			/>
-			<HStack
-				spacing={3}
-				mt={"-0.5em"}
-				className={`inner_subtask_div_${index}`}
-				whiteSpace={"pre-wrap"}
-			>
+			<HStack spacing={3} className={`inner_subtask_div_${index}`} whiteSpace={"pre-wrap"}>
 				<Checkbox
 					sx={{ verticalAlign: "middle" }}
 					colorScheme="facebook"
 					isChecked={isOpenTask}
 					onChange={(e) => handleTaskStatus(e, _id)}
-				/>
-				<CircularProgressBarCell
-					// completionPercentage={
-					// 	calculateTaskCompletion(task).completionPercentage
-					// }
-
-					completionPercentage={
-						task.completionPercent
-							? Number.isInteger(task.completionPercent)
-								? task.completionPercent
-								: convertDecimal(task.completionPercent)
-							: 0
-					}
 				/>
 				<ActionItem
 					isInner={true}

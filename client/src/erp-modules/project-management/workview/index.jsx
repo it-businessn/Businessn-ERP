@@ -8,7 +8,6 @@ import { FaSort } from "react-icons/fa";
 import LocalStorageService from "services/LocalStorageService";
 import ProjectService from "services/ProjectService";
 import { isManager } from "utils";
-import WorkviewToolbar from "./WorkviewToolbar";
 import ProjectTable from "./project";
 
 export const headerCell = (key, weight, w) => (
@@ -67,8 +66,8 @@ const WorkView = () => {
 	// 	(task) => task?.activities?.length > 0,
 	// );
 	return (
-		<PageLayout title={"Projects Overview"} showBgLayer>
-			<WorkviewToolbar />
+		<PageLayout title={"File Overview"} showBgLayer>
+			{/* <WorkviewToolbar /> */}
 			<Box
 				p="1em"
 				bg={"var(--primary_bg)"}

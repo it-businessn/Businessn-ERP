@@ -145,7 +145,7 @@ export const VIEW_MODE = [
 ];
 
 export const PROJECT_TABLE_CELLS = [
-	{ name: "Project name", width: "400px" },
+	{ name: "File name", width: "400px" },
 	{ name: "Assignee(s)", width: "130px" },
 	{ name: "Priority", width: "100px" },
 	{ name: "Start Date", width: "110px" },

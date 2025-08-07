@@ -181,8 +181,8 @@ export const SIDEBAR_MENU = [
 				icon: <RxDashboard />,
 			},
 			{
-				path: "workview",
-				name: "Workview",
+				path: "overview",
+				name: "Overview",
 				children: [],
 				icon: <BiNotepad />,
 			},

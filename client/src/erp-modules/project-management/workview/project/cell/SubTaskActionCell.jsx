@@ -3,8 +3,6 @@ import DeletePopUp from "components/ui/modal/DeletePopUp";
 import { useState } from "react";
 import ProjectService from "services/ProjectService";
 import TaskService from "services/TaskService";
-import { CircularProgressBarCell } from "utils";
-import { convertDecimal } from "utils/convertAmt";
 import AddNewSubTasks from "../AddNewSubTasks";
 import EditSubTask from "../EditSubTask";
 import ActionItem from "./ActionItem";
@@ -97,21 +95,12 @@ const SubTaskActionCell = ({
 				handleClose={handleClose}
 				handleConfirm={handleConfirm}
 			/>
-			<HStack spacing={3} mt={"-0.5em"} className={`subtask_div_${index}`} whiteSpace={"pre-wrap"}>
+			<HStack spacing={3} className={`subtask_div_${index}`} whiteSpace={"pre-wrap"}>
 				<Checkbox
 					sx={{ verticalAlign: "middle" }}
 					colorScheme="facebook"
 					isChecked={isTaskCompleted}
 					onChange={(e) => handleTaskStatus(e, _id)}
-				/>
-				<CircularProgressBarCell
-					completionPercentage={
-						task.completionPercent
-							? Number.isInteger(task.completionPercent)
-								? task.completionPercent
-								: convertDecimal(task.completionPercent)
-							: 0
-					}
 				/>
 				<ActionItem
 					isInner={isInner}

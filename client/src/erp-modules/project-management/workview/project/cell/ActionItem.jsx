@@ -20,28 +20,14 @@ const ActionItem = ({
 	return (
 		<>
 			<Tooltip label={name} fontSize="xs" hasArrow>
-				<Text
-					overflow={"hidden"}
-					whiteSpace={"nowrap"}
-					textOverflow={"ellipsis"}
-					w={"160px"}
-					mt={"-1em"}
-				>
+				<Text overflow={"hidden"} whiteSpace={"nowrap"} textOverflow={"ellipsis"} w={"160px"}>
 					{name}
 				</Text>
 			</Tooltip>
 
-			<HStack
-				mt={"-1em"}
-				spacing={2}
-				cursor={totalTask?.length > 0 ? "pointer" : "default"}
-			>
+			<HStack spacing={2} cursor={totalTask?.length > 0 ? "pointer" : "default"}>
 				{totalTask?.length > 0 && (
-					<TaskButton
-						isExpanded={isExpanded}
-						totalTasks={totalTasks}
-						onClick={handleToggle}
-					/>
+					<TaskButton isExpanded={isExpanded} totalTasks={totalTasks} onClick={handleToggle} />
 				)}
 				<AddTaskButton
 					onClick={handleAddTask}
@@ -51,9 +37,7 @@ const ActionItem = ({
 					type={type}
 					setRefresh={setRefresh}
 				/>
-				{!isProject && (
-					<FaRegTrashAlt cursor={"pointer"} onClick={handleDelete} />
-				)}
+				{!isProject && <FaRegTrashAlt cursor={"pointer"} onClick={handleDelete} />}
 			</HStack>
 		</>
 	);

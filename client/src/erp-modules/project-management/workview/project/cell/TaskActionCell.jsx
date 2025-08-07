@@ -1,10 +1,9 @@
-import { Checkbox, HStack, VStack } from "@chakra-ui/react";
+import { HStack, Image, VStack } from "@chakra-ui/react";
 import DeletePopUp from "components/ui/modal/DeletePopUp";
 import { useState } from "react";
 import ProjectService from "services/ProjectService";
 import TaskService from "services/TaskService";
-import { CircularProgressBarCell } from "utils";
-import { convertDecimal } from "utils/convertAmt";
+import projectImg from "../../../../../assets/project.png";
 import AddNewSubTask from "../AddNewSubTask";
 import EditTask from "../EditTask";
 import ActionItem from "./ActionItem";
@@ -86,27 +85,8 @@ const TaskActionCell = ({
 	};
 	return (
 		<>
-			<HStack
-				spacing={2}
-				mt={taskIndex === 0 ? "-1.3em" : "0"}
-				className={`task_div_${taskIndex}`}
-				whiteSpace={"pre-wrap"}
-			>
-				<Checkbox
-					sx={{ verticalAlign: "middle" }}
-					colorScheme="facebook"
-					isChecked={isTaskCompleted}
-					onChange={(e) => handleTaskStatus(e, task._id)}
-				/>
-				<CircularProgressBarCell
-					completionPercentage={
-						task.completionPercent
-							? Number.isInteger(task.completionPercent)
-								? task.completionPercent
-								: convertDecimal(task.completionPercent)
-							: 0
-					}
-				/>
+			<HStack spacing={2} className={`task_div_${taskIndex}`} whiteSpace={"pre-wrap"}>
+				<Image height={"20px"} width={"20px"} objectFit="cover" src={projectImg} alt="file" />
 				<ActionItem
 					name={task.taskName}
 					totalTask={task?.subtasks}

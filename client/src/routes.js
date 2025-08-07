@@ -272,7 +272,7 @@ export const router = createBrowserRouter([
 				element: <WorkView />,
 			},
 			{
-				path: `${ROUTE_PATH.PROJECT}${ROUTE_PATH.WORKVIEW}`,
+				path: `${ROUTE_PATH.PROJECT}/overview`,
 				element: <WorkView />,
 			},
 			{

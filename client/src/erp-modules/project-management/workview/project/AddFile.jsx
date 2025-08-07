@@ -21,9 +21,9 @@ import { FaCaretDown } from "react-icons/fa";
 import ProjectService from "services/ProjectService";
 import { getDefaultDate } from "utils/convertDate";
 
-const AddProject = ({ isOpen, onClose, setRefresh, managers, company }) => {
-	const defaultProject = {
-		projectName: "",
+const AddFile = ({ isOpen, onClose, setRefresh, managers, company }) => {
+	const defaultFile = {
+		fileName: "",
 		startDate: getDefaultDate(),
 		dueDate: getDefaultDate(),
 		timeToComplete: 0,
@@ -33,7 +33,7 @@ const AddProject = ({ isOpen, onClose, setRefresh, managers, company }) => {
 	};
 	const [isSubmitting, setSubmitting] = useState(false);
 	const [error, setError] = useState(false);
-	const [formData, setFormData] = useState(defaultProject);
+	const [formData, setFormData] = useState(defaultFile);
 
 	const handleSubmit = async (e) => {
 		e.preventDefault();
@@ -41,7 +41,7 @@ const AddProject = ({ isOpen, onClose, setRefresh, managers, company }) => {
 		try {
 			await ProjectService.addProject(formData);
 			onClose();
-			setFormData(defaultProject);
+			setFormData(defaultFile);
 			setRefresh((prev) => !prev);
 		} catch (error) {
 			setError("An error occurred. Please try again.", error);
@@ -54,26 +54,26 @@ const AddProject = ({ isOpen, onClose, setRefresh, managers, company }) => {
 		<Modal isCentered size={"3xl"} isOpen={isOpen} onClose={onClose}>
 			<ModalOverlay />
 			<ModalContent>
-				<ModalHeader>Add New Project</ModalHeader>
+				<ModalHeader>Add New File</ModalHeader>
 				<ModalCloseButton />
 				<ModalBody>
 					<Stack spacing="5">
 						<form onSubmit={handleSubmit}>
 							<Stack spacing={4}>
 								<InputFormControl
-									label={"Project name"}
-									name="projectName"
-									valueText={formData?.projectName}
+									label={"File name"}
+									name="fileName"
+									valueText={formData?.fileName}
 									handleChange={(e) =>
 										setFormData((prevData) => ({
 											...prevData,
-											projectName: e.target.value,
+											fileName: e.target.value,
 										}))
 									}
 									required
 								/>
 								<FormControl>
-									<FormLabel> Project Manager</FormLabel>
+									<FormLabel>Project Manager</FormLabel>
 									<Select
 										icon={<FaCaretDown />}
 										borderRadius="10px"
@@ -146,7 +146,7 @@ const AddProject = ({ isOpen, onClose, setRefresh, managers, company }) => {
 										isLoading={isSubmitting}
 										type="submit"
 										bg="var(--logo_bg)"
-										isDisabled={formData?.projectName === ""}
+										isDisabled={formData?.fileName === ""}
 									>
 										Add
 									</Button>
@@ -169,4 +169,4 @@ const AddProject = ({ isOpen, onClose, setRefresh, managers, company }) => {
 	);
 };
 
-export default AddProject;
+export default AddFile;

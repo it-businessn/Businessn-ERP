@@ -3,18 +3,11 @@ import { Avatar, Checkbox, Collapse, HStack, IconButton, Td, Text, Tr } from "@c
 import React, { useState } from "react";
 import { FaChevronDown } from "react-icons/fa";
 import TaskService from "services/TaskService";
-import {
-	AddTaskButton,
-	CircularProgressBarCell,
-	TaskButton,
-	calculateTaskCompletion,
-	renderPriorityBars,
-	statusColor,
-} from "utils";
+import { AddTaskButton, TaskButton, renderPriorityBars, statusColor } from "utils";
+import { formatDate } from "utils/convertDate";
 import AddNewSubTask from "./project/AddNewSubTask";
 import EditTask from "./project/EditTask";
 import Subtask from "./project/Subtask";
-import { formatDate } from "utils/convertDate";
 
 const ProjectChild = ({ task, projectId, setRefresh, managers, managerName }) => {
 	const [isExpanded, setExpanded] = useState(null);
@@ -60,9 +53,6 @@ const ProjectChild = ({ task, projectId, setRefresh, managers, managerName }) =>
 							colorScheme="facebook"
 							isChecked={isTaskCompleted}
 							onChange={(e) => handleTaskStatus(e, task._id)}
-						/>
-						<CircularProgressBarCell
-							completionPercentage={calculateTaskCompletion(task).completionPercentage}
 						/>
 						<Text>{task.taskName}</Text>
 						<HStack
