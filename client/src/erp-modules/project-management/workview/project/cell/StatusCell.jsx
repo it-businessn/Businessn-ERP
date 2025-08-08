@@ -2,26 +2,24 @@ import { HStack, Td, Text, VStack } from "@chakra-ui/react";
 import { statusColor } from "utils";
 
 const StatusCell = ({ project, index, expandedIndex, isExpanded, isSubExpanded }) => {
-	const TaskStatus = ({ status, main }) => (
-		<HStack
-			gap={0}
-			marginTop={main ? "2.8em" : "2em"}
-			// top={main ? "2.5em" : "5em"}
-			// pos={"relative"}
-			justifyContent={"space-around"}
-			spacing={0}
-			fontWeight={"bold"}
-			color={statusColor(status).color}
-			bgColor={statusColor(status).bg}
-			p={"5px"}
-			pt={0}
-			borderRadius={"8px"}
-		>
-			<Text> {status || 0}d</Text>
-		</HStack>
-	);
+	const TaskStatus = ({ status, main }) =>
+		status && (
+			<HStack
+				gap={0}
+				justifyContent={"space-around"}
+				spacing={0}
+				fontWeight={"bold"}
+				color={statusColor(status).color}
+				bgColor={statusColor(status).bg}
+				p={"5px"}
+				pt={0}
+				borderRadius={"8px"}
+			>
+				<Text> {status}d</Text>
+			</HStack>
+		);
 	return (
-		<Td fontSize={"12px"} display={"flex"} py={0} w={"120px"} px={0}>
+		<Td fontSize={"12px"} w="100%" display={"flex"} py={0} px={0}>
 			<VStack alignItems={"start"} gap={0} w={"100%"}>
 				<TaskStatus status={project.status} main />
 				{expandedIndex === index &&

@@ -12,7 +12,7 @@ const DateCell = ({ date, project, index, expandedIndex, isExpanded, isSubExpand
 		</Text>
 	);
 	return (
-		<Td fontSize={"xs"} p={"1em"} w={"110px"} display={"flex"} py={0}>
+		<Td fontSize={"xs"} w="100%" p={"1em"} display={"flex"} py={0}>
 			<VStack alignItems="start" w={"100%"}>
 				{project[date] && <FormattedDate date={project[date]} main />}
 				{expandedIndex === index &&

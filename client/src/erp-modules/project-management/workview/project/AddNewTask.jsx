@@ -19,22 +19,15 @@ import MultiSelectButton from "components/ui/form/MultiSelectButton";
 import { useState } from "react";
 import ProjectService from "services/ProjectService";
 
-const AddNewProjectTask = ({
-	isOpen,
-	onClose,
-	setRefresh,
-	project,
-	projectId,
-	managers,
-	company,
-}) => {
+const AddNewTask = ({ isOpen, onClose, setRefresh, currentTask, managers, company }) => {
 	const defaultTask = {
-		projectId,
-		projectName: project?.name,
-		taskName: "",
+		fileId: currentTask?.fileId,
+		projectId: currentTask?._id,
+		projectName: currentTask?.projectName,
 		selectedAssignees: [],
 		dueDate: null,
 		timeToComplete: 0,
+		taskName: "",
 		companyName: company,
 	};
 
@@ -62,7 +55,7 @@ const AddNewProjectTask = ({
 		e.preventDefault();
 		setSubmitting(true);
 		try {
-			await ProjectService.addProjectTask(formData, projectId);
+			await ProjectService.addTask(formData, currentTask._id);
 			onClose();
 			setFormData(defaultTask);
 			setRefresh((prev) => !prev);
@@ -77,7 +70,7 @@ const AddNewProjectTask = ({
 		<Modal isCentered size={"4xl"} isOpen={isOpen} onClose={onClose}>
 			<ModalOverlay />
 			<ModalContent>
-				<ModalHeader>Add New Task for Project - {formData?.projectName}</ModalHeader>
+				<ModalHeader>Add Task - {formData?.projectName}</ModalHeader>
 				<ModalCloseButton />
 				<ModalBody>
 					<Stack spacing="5">
@@ -99,6 +92,7 @@ const AddNewProjectTask = ({
 											required
 										/>
 									</FormControl>
+
 									<FormControl>
 										<FormLabel visibility={openAssigneeMenu ? "" : "hidden"}>
 											Select Assignee
@@ -108,10 +102,10 @@ const AddNewProjectTask = ({
 											handleMenuToggle={handleMenuToggle}
 											assignees={formData?.selectedAssignees}
 											openAssigneeMenu={openAssigneeMenu}
-											data={managers}
 											handleCloseMenu={handleCloseMenu}
 											selectedOptions={selectedOptions}
 											setSelectedOptions={setSelectedOptions}
+											data={managers}
 										/>
 
 										{formData?.selectedAssignees?.length > 0 &&
@@ -135,7 +129,6 @@ const AddNewProjectTask = ({
 													dueDate: e.target.value,
 												}))
 											}
-											required
 										/>
 									</FormControl>
 									<FormControl>
@@ -150,11 +143,9 @@ const AddNewProjectTask = ({
 													timeToComplete: e.target.value,
 												}))
 											}
-											required
 										/>
 									</FormControl>
 								</HStack>
-
 								<HStack justifyContent={"end"}>
 									<Button
 										isLoading={isSubmitting}
@@ -183,4 +174,4 @@ const AddNewProjectTask = ({
 	);
 };
 
-export default AddNewProjectTask;
+export default AddNewTask;

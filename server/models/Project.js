@@ -1,32 +1,24 @@
 const mongoose = require("mongoose");
 
 const projectSchema = new mongoose.Schema({
+	fileId: { type: mongoose.Schema.Types.ObjectId, ref: "ProjectFile" },
 	createdOn: { type: Date, default: Date.now },
-	updatedOn: { type: Date, default: Date.now },
-	timeToComplete: Number, // estimatedHours
-	actualHours: { type: Number, default: 0 },
-	startDate: Date,
 	dueDate: Date,
+	projectName: String,
 	status: String,
-	name: String,
-	notes: String,
-	selectedAssignees: { type: Array, default: [] },
-	managerName: String,
-	createdBy: { type: mongoose.Schema.Types.ObjectId, ref: "Employee" },
-	managerId: { type: mongoose.Schema.Types.ObjectId, ref: "Employee" },
+	isOpen: Boolean,
 	tasks: [{ type: mongoose.Schema.Types.ObjectId, ref: "Task" }],
+	selectedAssigneesId: [{ type: mongoose.Schema.Types.ObjectId, ref: "Employee" }],
+	notes: String,
 	completed: { type: Boolean, default: false },
+	selectedAssignees: { type: Array, default: [] },
+	updatedOn: { type: Date, default: Date.now },
+	timeToComplete: Number,
+	actualHours: { type: Number, default: 0 },
 	totalTasks: { type: Number, default: 0 },
 	priority: { type: String, default: "low" },
 	totalEstimatedHours: Number,
 	completionPercent: Number,
-
-	clockIns: [Date],
-	clockOuts: [Date],
-	startBreaks: [Date],
-	endBreaks: [Date],
-	totalHours: Number,
-	totalTimeCardHours: Number,
 	companyName: { type: String, ref: "Company" },
 });
 

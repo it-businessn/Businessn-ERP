@@ -55,7 +55,7 @@ const AddNewTask = ({ isOpen, onClose, setRefresh, allProjects, isFiltered, allP
 		e.preventDefault();
 		setSubmitting(true);
 		try {
-			await ProjectService.addProjectTask(formData, formData?.projectId);
+			await ProjectService.addProject(formData, formData?.projectId);
 			onClose();
 			setFormData(defaultTask);
 			setRefresh((prev) => !prev);

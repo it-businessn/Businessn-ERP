@@ -32,7 +32,7 @@ const AssigneeCell = ({ project, index, expandedIndex, isExpanded, isSubExpanded
 	);
 
 	return (
-		<Td fontSize={"xs"} p={"0.5em"} w={"130px"} display={"flex"} py={0}>
+		<Td fontSize={"xs"} w="100%" p={"0.5em"} display={"flex"} py={0}>
 			<VStack w={"100%"} spacing={0}>
 				<AssigneeList assignees={project?.selectedAssignees} main />
 				{expandedIndex === index &&

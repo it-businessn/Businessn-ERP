@@ -13,7 +13,7 @@ const ProjectService = {
 		return apiService.get(`/projects/${id}/${company}`);
 	},
 
-	async addProject(data) {
+	async addProjectFile(data) {
 		return apiService.post("/projects", data);
 	},
 
@@ -29,7 +29,11 @@ const ProjectService = {
 		return apiService.put(`/projects/${id}`, data, id);
 	},
 
-	async addProjectTask(data, id) {
+	async addProject(data, id) {
+		return apiService.put(`/projects/file-project/${id}`, data, id);
+	},
+
+	async addTask(data, id) {
 		return apiService.put(`/projects/task/${id}`, data, id);
 	},
 

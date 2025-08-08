@@ -4,12 +4,12 @@ import { renderPriorityBars } from "utils";
 const PriorityCell = ({ project, index, expandedIndex, isExpanded, isSubExpanded }) => {
 	// top={main ? "0" : "3.5em"} pos={"relative"}
 	const PriorityBar = ({ priority, main, task }) => (
-		<HStack spacing="1" marginTop={main ? "3em" : "1.4em"}>
+		<HStack spacing="1" visibility={"hidden"}>
 			{renderPriorityBars(priority)}
 		</HStack>
 	);
 	return (
-		<Td fontSize={"xs"} p={"1em"} w={"100px"} display={"flex"} py={0}>
+		<Td fontSize={"xs"} w="100%" p={"1em"} py={0}>
 			<VStack alignItems={"start"} w={"100%"}>
 				<PriorityBar priority={project.priority} main />
 				{expandedIndex === index &&

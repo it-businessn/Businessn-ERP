@@ -17,23 +17,25 @@ import {
 	Stack,
 } from "@chakra-ui/react";
 import MultiSelectButton from "components/ui/form/MultiSelectButton";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FaCaretDown } from "react-icons/fa";
-import ProjectService from "services/ProjectService";
 import { getDefaultDate } from "utils/convertDate";
 import { PRIORITY } from "./data";
 
-const EditProject = ({ isOpen, onClose, project, projectId, setRefresh, managers }) => {
-	const defaultProject = {
-		projectName: project.name,
-		startDate: project?.startDate && getDefaultDate(project.startDate),
-		dueDate: project?.dueDate && getDefaultDate(project.dueDate),
-		timeToComplete: project.timeToComplete || 0,
-		managerName: project.managerName,
-		managerId: project.managerId,
-		priority: project.priority,
-		selectedAssignees: project?.selectedAssignees || [],
+const EditProject = ({ isOpen, onClose, setRefresh, currentTask, managers }) => {
+	const defaultTask = {
+		projectName: currentTask?.projectName,
+		taskId: currentTask?._id,
+		selectedAssignees: currentTask?.selectedAssignees || [],
+		dueDate: currentTask?.dueDate && getDefaultDate(currentTask?.dueDate),
+		timeToComplete: currentTask?.timeToComplete || 0,
+		priority: currentTask.priority,
+		projectId: currentTask?.projectId,
 	};
+	const [isSubmitting, setSubmitting] = useState(false);
+	const [message, setMessage] = useState(false);
+	const [formData, setFormData] = useState(defaultTask);
+
 	const [selectedOptions, setSelectedOptions] = useState([]);
 	const [openAssigneeMenu, setOpenAssigneeMenu] = useState(false);
 
@@ -49,30 +51,30 @@ const EditProject = ({ isOpen, onClose, project, projectId, setRefresh, managers
 		}));
 	};
 
-	const [isSubmitting, setSubmitting] = useState(false);
-	const [message, setMessage] = useState(false);
-	const [formData, setFormData] = useState(defaultProject);
-
 	const handleSubmit = async (e) => {
 		e.preventDefault();
-		setSubmitting(true);
-		try {
-			await ProjectService.updateProject(formData, projectId);
-			onClose();
-			setFormData(defaultProject);
-			setRefresh((prev) => !prev);
-		} catch (error) {
-			setMessage("An error occurred. Please try again.", error);
-		} finally {
-			setSubmitting(false);
-		}
+		// setSubmitting(true);
+		// try {
+		// 	await ProjectService.updateProjectTask(formData, formData?.taskId);
+		// 	onClose();
+		// 	setFormData(defaultTask);
+		// 	setRefresh((prev) => !prev);
+		// } catch (error) {
+		// 	setMessage("An error occurred. Please try again.", error);
+		// } finally {
+		// 	setSubmitting(false);
+		// }
 	};
 
+	useEffect(() => {
+		setFormData(defaultTask);
+	}, [currentTask]);
+
 	return (
-		<Modal isCentered size={"3xl"} isOpen={isOpen} onClose={onClose}>
+		<Modal isCentered size={"4xl"} isOpen={isOpen} onClose={onClose}>
 			<ModalOverlay />
 			<ModalContent>
-				<ModalHeader>Edit New Project</ModalHeader>
+				<ModalHeader>Edit Project</ModalHeader>
 				<ModalCloseButton />
 				<ModalBody>
 					<Stack spacing="5">
@@ -93,52 +95,7 @@ const EditProject = ({ isOpen, onClose, project, projectId, setRefresh, managers
 										required
 									/>
 								</FormControl>
-								<FormControl>
-									<FormLabel> Project Manager</FormLabel>
-									<Select
-										icon={<FaCaretDown />}
-										borderRadius="10px"
-										value={formData?.managerId || ""}
-										placeholder="Select Project Manager"
-										onChange={(e) => {
-											const selectedValue = e.target.value;
-											if (selectedValue !== "") {
-												const { _id, fullName } = managers.find(
-													(manager) => manager._id === selectedValue,
-												);
-												setFormData((prevData) => ({
-													...prevData,
-													managerName: fullName,
-													managerId: _id,
-												}));
-											}
-										}}
-									>
-										{managers?.map(({ _id, fullName }) => (
-											<option value={_id} key={_id}>
-												{fullName}
-											</option>
-										))}
-									</Select>
-								</FormControl>
 								<HStack>
-									<FormControl>
-										<FormLabel>Start date</FormLabel>
-										<input
-											className="date_picker"
-											type="date"
-											id="startDate"
-											name="startDate"
-											value={formData?.startDate}
-											onChange={(e) =>
-												setFormData((prevData) => ({
-													...prevData,
-													startDate: e.target.value,
-												}))
-											}
-											required
-										/>
-									</FormControl>
 									<FormControl>
 										<FormLabel>Due date</FormLabel>
 										<input
@@ -216,7 +173,12 @@ const EditProject = ({ isOpen, onClose, project, projectId, setRefresh, managers
 									</FormControl>
 								</HStack>
 								<HStack justifyContent={"end"}>
-									<Button isLoading={isSubmitting} type="submit" bg="var(--logo_bg)">
+									<Button
+										isLoading={isSubmitting}
+										type="submit"
+										bg="var(--logo_bg)"
+										isDisabled={formData?.taskName === ""}
+									>
 										Save
 									</Button>
 									<Button onClick={onClose} colorScheme="gray">

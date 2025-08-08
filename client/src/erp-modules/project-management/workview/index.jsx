@@ -22,7 +22,7 @@ export const headerCell = (key, weight, w) => (
 const WorkView = () => {
 	const { company } = useCompany(LocalStorageService.getItem("selectedCompany"));
 	const loggedInUser = LocalStorageService.getItem("user");
-	const [projects, setProjects] = useState(null);
+	const [fileProjects, setFileProjects] = useState(null);
 	const [refresh, setRefresh] = useState(false);
 
 	const managers = useManager(company, refresh, true);
@@ -31,14 +31,14 @@ const WorkView = () => {
 	useEffect(() => {
 		const fetchAllProjectInfo = async () => {
 			try {
-				setProjects(null);
+				setFileProjects(null);
 				const { data } = isManagerView
 					? await ProjectService.getAllCompanyProjects(company)
 					: await ProjectService.getAllCompanyProjectsByUser(loggedInUser?.fullName, company);
-				setProjects(data);
+				setFileProjects(data);
 			} catch (error) {
 				console.error(error);
-				setProjects(null);
+				setFileProjects(null);
 			}
 		};
 		fetchAllProjectInfo();
@@ -75,10 +75,10 @@ const WorkView = () => {
 				borderRadius="10px"
 				color={"var(--nav_color)"}
 			>
-				{projects && (
+				{fileProjects && (
 					<ProjectTable
 						setRefresh={setRefresh}
-						projects={projects}
+						files={fileProjects}
 						managers={managers}
 						company={company}
 					/>

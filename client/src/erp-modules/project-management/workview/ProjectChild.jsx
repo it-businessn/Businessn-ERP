@@ -6,7 +6,7 @@ import TaskService from "services/TaskService";
 import { AddTaskButton, TaskButton, renderPriorityBars, statusColor } from "utils";
 import { formatDate } from "utils/convertDate";
 import AddNewSubTask from "./project/AddNewSubTask";
-import EditTask from "./project/EditTask";
+import EditProject from "./project/EditProject";
 import Subtask from "./project/Subtask";
 
 const ProjectChild = ({ task, projectId, setRefresh, managers, managerName }) => {
@@ -143,7 +143,7 @@ const ProjectChild = ({ task, projectId, setRefresh, managers, managerName }) =>
 				</Td>
 			</Tr>
 			{openEditTask && (
-				<EditTask
+				<EditProject
 					isOpen={openEditTask}
 					onClose={() => setOpenEditTask(false)}
 					currentTask={currentTask}

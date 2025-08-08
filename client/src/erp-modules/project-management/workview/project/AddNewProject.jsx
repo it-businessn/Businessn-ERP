@@ -19,15 +19,14 @@ import MultiSelectButton from "components/ui/form/MultiSelectButton";
 import { useState } from "react";
 import ProjectService from "services/ProjectService";
 
-const AddNewSubTask = ({ isOpen, onClose, setRefresh, currentTask, managers, company }) => {
-	const defaultTask = {
-		projectId: currentTask?.projectId,
-		taskId: currentTask?._id,
-		taskName: currentTask?.taskName,
-		subTaskSelectedAssignees: [],
-		subTaskDueDate: null,
-		subTaskTimeToComplete: 0,
-		subTaskName: "",
+const AddNewProject = ({ isOpen, onClose, setRefresh, file, fileId, managers, company }) => {
+	const defaultProject = {
+		fileId,
+		fileName: file?.fileName,
+		projectName: "",
+		selectedAssignees: [],
+		dueDate: null,
+		timeToComplete: 0,
 		companyName: company,
 	};
 
@@ -35,7 +34,7 @@ const AddNewSubTask = ({ isOpen, onClose, setRefresh, currentTask, managers, com
 
 	const [isSubmitting, setSubmitting] = useState(false);
 	const [message, setMessage] = useState(false);
-	const [formData, setFormData] = useState(defaultTask);
+	const [formData, setFormData] = useState(defaultProject);
 
 	const [openAssigneeMenu, setOpenAssigneeMenu] = useState(false);
 
@@ -47,7 +46,7 @@ const AddNewSubTask = ({ isOpen, onClose, setRefresh, currentTask, managers, com
 		setOpenAssigneeMenu(false);
 		setFormData((prevTask) => ({
 			...prevTask,
-			subTaskSelectedAssignees: selectedOptions,
+			selectedAssignees: selectedOptions,
 		}));
 	};
 
@@ -55,9 +54,9 @@ const AddNewSubTask = ({ isOpen, onClose, setRefresh, currentTask, managers, com
 		e.preventDefault();
 		setSubmitting(true);
 		try {
-			await ProjectService.addSubTask(formData, currentTask._id);
+			await ProjectService.addProject(formData, fileId);
 			onClose();
-			setFormData(defaultTask);
+			setFormData(defaultProject);
 			setRefresh((prev) => !prev);
 		} catch (error) {
 			setMessage("An error occurred. Please try again.", error);
@@ -70,7 +69,7 @@ const AddNewSubTask = ({ isOpen, onClose, setRefresh, currentTask, managers, com
 		<Modal isCentered size={"4xl"} isOpen={isOpen} onClose={onClose}>
 			<ModalOverlay />
 			<ModalContent>
-				<ModalHeader>Add subtask - {formData?.taskName}</ModalHeader>
+				<ModalHeader>Add Project - {formData?.fileName.toUpperCase()}</ModalHeader>
 				<ModalCloseButton />
 				<ModalBody>
 					<Stack spacing="5">
@@ -78,21 +77,20 @@ const AddNewSubTask = ({ isOpen, onClose, setRefresh, currentTask, managers, com
 							<Stack spacing={4}>
 								<HStack>
 									<FormControl>
-										<FormLabel>Task name</FormLabel>
+										<FormLabel>Project name</FormLabel>
 										<Input
 											type="text"
-											name="subTaskName"
-											value={formData?.subTaskName ?? ""}
+											name="projectName"
+											value={formData?.projectName || ""}
 											onChange={(e) =>
 												setFormData((prevData) => ({
 													...prevData,
-													subTaskName: e.target.value,
+													projectName: e.target.value,
 												}))
 											}
 											required
 										/>
 									</FormControl>
-
 									<FormControl>
 										<FormLabel visibility={openAssigneeMenu ? "" : "hidden"}>
 											Select Assignee
@@ -100,16 +98,16 @@ const AddNewSubTask = ({ isOpen, onClose, setRefresh, currentTask, managers, com
 
 										<MultiSelectButton
 											handleMenuToggle={handleMenuToggle}
-											assignees={formData?.subTaskSelectedAssignees}
+											assignees={formData?.selectedAssignees}
 											openAssigneeMenu={openAssigneeMenu}
+											data={managers}
 											handleCloseMenu={handleCloseMenu}
 											selectedOptions={selectedOptions}
 											setSelectedOptions={setSelectedOptions}
-											data={managers}
 										/>
 
-										{formData?.subTaskSelectedAssignees?.length > 0 &&
-											formData?.subTaskSelectedAssignees.map((name) => (
+										{formData?.selectedAssignees?.length > 0 &&
+											formData?.selectedAssignees.map((name) => (
 												<Avatar size={"sm"} name={name} src={name} key={name} />
 											))}
 									</FormControl>
@@ -120,13 +118,13 @@ const AddNewSubTask = ({ isOpen, onClose, setRefresh, currentTask, managers, com
 										<input
 											className="date_picker"
 											type="date"
-											id="subTaskDueDate"
-											name="subTaskDueDate"
-											value={formData?.subTaskDueDate ?? ""}
+											id="dueDate"
+											name="dueDate"
+											value={formData?.dueDate || ""}
 											onChange={(e) =>
 												setFormData((prevData) => ({
 													...prevData,
-													subTaskDueDate: e.target.value,
+													dueDate: e.target.value,
 												}))
 											}
 										/>
@@ -135,23 +133,24 @@ const AddNewSubTask = ({ isOpen, onClose, setRefresh, currentTask, managers, com
 										<FormLabel>Time to complete (in hours)</FormLabel>
 										<Input
 											type="text"
-											name="subTaskTimeToComplete"
-											value={formData?.subTaskTimeToComplete ?? ""}
+											name="timeToComplete"
+											value={formData?.timeToComplete ?? ""}
 											onChange={(e) =>
 												setFormData((prevData) => ({
 													...prevData,
-													subTaskTimeToComplete: e.target.value,
+													timeToComplete: e.target.value,
 												}))
 											}
 										/>
 									</FormControl>
 								</HStack>
+
 								<HStack justifyContent={"end"}>
 									<Button
 										isLoading={isSubmitting}
 										type="submit"
 										bg="var(--logo_bg)"
-										isDisabled={formData?.subTaskName === ""}
+										isDisabled={formData?.projectName === ""}
 									>
 										Add
 									</Button>
@@ -174,4 +173,4 @@ const AddNewSubTask = ({ isOpen, onClose, setRefresh, currentTask, managers, com
 	);
 };
 
-export default AddNewSubTask;
+export default AddNewProject;

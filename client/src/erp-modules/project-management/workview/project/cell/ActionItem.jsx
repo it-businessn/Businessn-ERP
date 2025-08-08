@@ -20,7 +20,7 @@ const ActionItem = ({
 	return (
 		<>
 			<Tooltip label={name} fontSize="xs" hasArrow>
-				<Text overflow={"hidden"} whiteSpace={"nowrap"} textOverflow={"ellipsis"} w={"160px"}>
+				<Text overflow={"hidden"} whiteSpace={"nowrap"} textOverflow={"ellipsis"} w={"100%"}>
 					{name}
 				</Text>
 			</Tooltip>

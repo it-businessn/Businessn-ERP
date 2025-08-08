@@ -25,7 +25,7 @@ const AddFile = ({ isOpen, onClose, setRefresh, managers, company }) => {
 	const defaultFile = {
 		fileName: "",
 		startDate: getDefaultDate(),
-		dueDate: getDefaultDate(),
+		dueDate: null,
 		timeToComplete: 0,
 		managerName: "",
 		managerId: "",
@@ -39,7 +39,7 @@ const AddFile = ({ isOpen, onClose, setRefresh, managers, company }) => {
 		e.preventDefault();
 		setSubmitting(true);
 		try {
-			await ProjectService.addProject(formData);
+			await ProjectService.addProjectFile(formData);
 			onClose();
 			setFormData(defaultFile);
 			setRefresh((prev) => !prev);
@@ -77,12 +77,12 @@ const AddFile = ({ isOpen, onClose, setRefresh, managers, company }) => {
 									<Select
 										icon={<FaCaretDown />}
 										borderRadius="10px"
-										value={formData?.managerId ?? ""}
+										value={formData?.managerId || ""}
 										placeholder="Select Project Manager"
 										onChange={(e) => {
 											const selectedValue = e.target.value;
 											if (selectedValue !== "") {
-												const { _id, fullName } = managers.find(
+												const { _id, fullName } = managers?.find(
 													(manager) => manager._id === selectedValue,
 												);
 												setFormData((prevData) => ({
@@ -112,7 +112,6 @@ const AddFile = ({ isOpen, onClose, setRefresh, managers, company }) => {
 												startDate: e.target.value,
 											}))
 										}
-										required
 									/>
 									<DateTimeFormControl
 										label={"Due date"}
@@ -125,7 +124,6 @@ const AddFile = ({ isOpen, onClose, setRefresh, managers, company }) => {
 												dueDate: e.target.value,
 											}))
 										}
-										required
 									/>
 									<InputFormControl
 										label={"Time to complete (in hours)"}
@@ -137,7 +135,6 @@ const AddFile = ({ isOpen, onClose, setRefresh, managers, company }) => {
 												timeToComplete: e.target.value,
 											}))
 										}
-										required
 									/>
 								</HStack>
 

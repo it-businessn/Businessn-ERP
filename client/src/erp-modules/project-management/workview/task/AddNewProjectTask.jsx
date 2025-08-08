@@ -95,7 +95,7 @@ const AddNewProjectTask = ({ isOpen, onClose, task, projectId, setRefresh }) => 
 		formData.hasChecklist = hasChecklist;
 		formData.action = todoItems;
 		try {
-			await ProjectService.addProjectTask(formData, projectId);
+			await ProjectService.addProject(formData, projectId);
 			onClose();
 			setFormData(defaultTask);
 			setSubTasks([]);

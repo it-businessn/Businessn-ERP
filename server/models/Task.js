@@ -9,9 +9,7 @@ const taskSchema = new mongoose.Schema({
 	isOpen: Boolean,
 	subtasks: [{ type: mongoose.Schema.Types.ObjectId, ref: "SubTask" }],
 	// activities: [{ type: mongoose.Schema.Types.ObjectId, ref: "Activity" }],
-	selectedAssigneesId: [
-		{ type: mongoose.Schema.Types.ObjectId, ref: "Employee" },
-	],
+	selectedAssigneesId: [{ type: mongoose.Schema.Types.ObjectId, ref: "Employee" }],
 	notes: String,
 	completed: { type: Boolean, default: false },
 	selectedAssignees: { type: Array, default: [] },

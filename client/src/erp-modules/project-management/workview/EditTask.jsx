@@ -107,7 +107,7 @@ const EditTask = ({ isOpen, onClose, setRefresh, isFiltered, task }) => {
 			}
 		} else {
 			try {
-				await ProjectService.addProjectTask(formData, formData?.projectId);
+				await ProjectService.addProject(formData, formData?.projectId);
 				onClose();
 				setFormData(defaultTask);
 				setSubTasks([]);

@@ -130,7 +130,7 @@ const SubTaskActionCell = ({
 							key={`subtasks_action_${rec._id}*78${index}`}
 							w={"100%"}
 							alignItems={"flex-start"}
-							ml={"2em"}
+							ml={"1em"}
 						>
 							<InnerSubTaskActionCell
 								task={rec}

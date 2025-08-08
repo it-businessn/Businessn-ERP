@@ -1,9 +1,8 @@
-import { HStack, Image, VStack } from "@chakra-ui/react";
+import { Checkbox, HStack, VStack } from "@chakra-ui/react";
 import DeletePopUp from "components/ui/modal/DeletePopUp";
 import { useState } from "react";
 import ProjectService from "services/ProjectService";
 import TaskService from "services/TaskService";
-import projectImg from "../../../../../assets/project.png";
 import AddNewSubTask from "../AddNewSubTask";
 import EditTask from "../EditTask";
 import ActionItem from "./ActionItem";
@@ -21,6 +20,7 @@ const TaskActionCell = ({
 	isSubExpanded,
 	company,
 }) => {
+	const { _id, taskName, selectedAssignees, completed } = task;
 	const [isTaskCompleted, setIsTaskCompleted] = useState(task.completed);
 	const [openEditTask, setOpenEditTask] = useState(false);
 	const [openAddTask, setOpenAddTask] = useState(false);
@@ -86,7 +86,12 @@ const TaskActionCell = ({
 	return (
 		<>
 			<HStack spacing={2} className={`task_div_${taskIndex}`} whiteSpace={"pre-wrap"}>
-				<Image height={"20px"} width={"20px"} objectFit="cover" src={projectImg} alt="file" />
+				<Checkbox
+					sx={{ verticalAlign: "middle" }}
+					colorScheme="facebook"
+					isChecked={isTaskCompleted}
+					onChange={(e) => handleTaskStatus(e, _id)}
+				/>
 				<ActionItem
 					name={task.taskName}
 					totalTask={task?.subtasks}
@@ -110,13 +115,7 @@ const TaskActionCell = ({
 				task?.subtasks?.length > 0 &&
 				task?.subtasks?.map((subtask, subtask_index) => {
 					return (
-						<VStack
-							key={subtask._id}
-							w={"100%"}
-							alignItems={"flex-start"}
-							ml={"1.5em"}
-							mt={subtask_index === 0 ? "-0.5em" : "0"}
-						>
+						<VStack key={subtask._id} w={"100%"} alignItems={"flex-start"} ml={"1em"}>
 							<SubTaskActionCell
 								index={subtask_index}
 								isSubExpanded={isSubExpanded}

@@ -7,18 +7,15 @@ router.get("/", projectController.getProjects);
 
 router.get("/:companyName", projectController.getCompanyProjects);
 
-router.get(
-	"/:selectedAssignees/:companyName",
-	projectController.getAssigneeProjects,
-);
+router.get("/:selectedAssignees/:companyName", projectController.getAssigneeProjects);
 
-router.post("/", projectController.createProject);
+router.post("/", projectController.createFileProject);
 
 router.post("/activity", projectController.createActivity);
 
 router.put("/:id", projectController.updateProject);
 
-router.put("/task/:projectId", projectController.addProjectTask);
+router.put("/file-project/:fileId", projectController.addProject);
 
 router.post("/scheduling", projectController.scheduleTask);
 
@@ -28,7 +25,9 @@ router.delete("/subtask/:id", projectController.deleteSubTask);
 
 router.put("/subtask-child/:id", projectController.deleteSubTaskChild);
 
-router.put("/task-subtask/:id", projectController.addSubTask);
+router.put("/task/:projectId", projectController.addTask);
+
+router.put("/task-subtask/:taskId", projectController.addSubTask);
 
 router.put("/task-add-subtask/:id", projectController.addTaskSubTasks);
 

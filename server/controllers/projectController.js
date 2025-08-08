@@ -3,33 +3,31 @@ const Task = require("../models/Task");
 const SubTask = require("../models/SubTask");
 const Activity = require("../models/Activity");
 const { TIMESHEET_STATUS } = require("../services/data");
+const ProjectFile = require("../models/ProjectFile");
 
 const findProject = async (projects) =>
 	await Promise.all(
 		projects.map(
 			async (project) =>
-				await Project.findById(project._id)
+				await ProjectFile.findById(project._id)
 					.populate({
-						path: "tasks",
+						path: "projects",
 						populate: {
-							path: "subtasks",
-							model: "SubTask",
+							path: "tasks",
+							model: "Task",
+							populate: {
+								path: "subtasks",
+								model: "SubTask",
+							},
 						},
 					})
-					// .populate({
-					// 	path: "tasks",
-					// 	populate: {
-					// 		path: "activities",
-					// 		model: "Activity",
-					// 	},
-					// })
 					.exec(),
 		),
 	);
 
 const getProjects = async (req, res) => {
 	try {
-		const projects = (await Project.find({})).sort((a, b) => b.createdOn - a.createdOn);
+		const projects = await Project.find({}).sort({ createdOn: -1 });
 		const populatedProjects = await findProject(projects);
 		res.status(200).json(populatedProjects);
 	} catch (error) {
@@ -40,9 +38,7 @@ const getProjects = async (req, res) => {
 const getCompanyProjects = async (req, res) => {
 	const { companyName } = req.params;
 	try {
-		const projects = (await Project.find({ companyName })).sort(
-			(a, b) => b.createdOn - a.createdOn,
-		);
+		const projects = await ProjectFile.find({ companyName }).sort({ createdOn: -1 });
 		const populatedProjects = await findProject(projects);
 		res.status(200).json(populatedProjects);
 	} catch (error) {
@@ -53,9 +49,7 @@ const getCompanyProjects = async (req, res) => {
 const getAssigneeProjects = async (req, res) => {
 	const { selectedAssignees, companyName } = req.params;
 	try {
-		const projects = (await Project.find({ selectedAssignees, companyName })).sort(
-			(a, b) => b.createdOn - a.createdOn,
-		);
+		const projects = await Project.find({ selectedAssignees, companyName }).sort({ createdOn: -1 });
 		if (projects.length) {
 			const populatedProjects = await findProject(projects);
 			res.status(200).json(populatedProjects);
@@ -67,8 +61,49 @@ const getAssigneeProjects = async (req, res) => {
 	}
 };
 
+const addTask = async (req, res) => {
+	const { projectId } = req.params;
+	const { timeToComplete, dueDate, taskName, selectedAssignees, companyName } = req.body;
+
+	try {
+		const status = getProjectStatus(dueDate);
+		const newTask = await Task.create({
+			projectId,
+			dueDate,
+			taskName,
+			status,
+			isOpen: true,
+			selectedAssignees,
+			timeToComplete,
+			companyName,
+		});
+
+		const savedProject = await Project.findById(projectId);
+
+		if (savedProject?.selectedAssignees?.length === 0) {
+			savedProject.selectedAssignees = newTask.selectedAssignees;
+		} else {
+			const concatenatedProjectArray = savedProject?.selectedAssignees?.concat(
+				newTask.selectedAssignees,
+			);
+			const uniqueProjectSet = new Set(concatenatedProjectArray);
+			const uniqueArray = Array.from(uniqueProjectSet);
+
+			savedProject.selectedAssignees = uniqueArray;
+		}
+		savedProject.totalTasks += 1;
+		savedProject.tasks.push(newTask._id);
+
+		await savedProject.save();
+
+		res.status(201).json(savedProject);
+	} catch (error) {
+		res.status(400).json({ message: error.message });
+	}
+};
+
 const addSubTask = async (req, res) => {
-	const { id } = req.params;
+	const { taskId } = req.params;
 	const {
 		projectId,
 		subTaskSelectedAssignees,
@@ -81,7 +116,7 @@ const addSubTask = async (req, res) => {
 	try {
 		const newSubtask = await SubTask.create({
 			projectId,
-			taskId: id,
+			taskId,
 			taskName: subTaskName,
 			selectedAssignees: subTaskSelectedAssignees,
 			dueDate: subTaskDueDate,
@@ -90,7 +125,7 @@ const addSubTask = async (req, res) => {
 			companyName,
 		});
 
-		const savedTask = await Task.findById(id);
+		const savedTask = await Task.findById(taskId);
 
 		savedTask.subtasks = savedTask.subtasks.concat(newSubtask._id);
 		savedTask.totalTasks += 1;
@@ -120,6 +155,7 @@ const addSubTask = async (req, res) => {
 		res.status(400).json({ message: error.message });
 	}
 };
+
 const addTaskSubTasks = async (req, res) => {
 	const { id } = req.params;
 	const {
@@ -374,17 +410,17 @@ const scheduleTask = async (req, res) => {
 	}
 };
 
-const addProjectTask = async (req, res) => {
-	const { projectId } = req.params;
+const addProject = async (req, res) => {
+	const { fileId } = req.params;
 
-	const { timeToComplete, dueDate, taskName, selectedAssignees, companyName } = req.body;
+	const { timeToComplete, dueDate, projectName, selectedAssignees, companyName } = req.body;
 
 	try {
 		const status = getProjectStatus(dueDate);
-		const newTask = await Task.create({
-			projectId,
+		const newProject = await Project.create({
+			fileId,
 			dueDate,
-			taskName,
+			projectName,
 			status,
 			isOpen: true,
 			selectedAssignees,
@@ -392,25 +428,25 @@ const addProjectTask = async (req, res) => {
 			companyName,
 		});
 
-		const savedProject = await Project.findById(projectId);
+		const existingFile = await ProjectFile.findById(fileId);
 
-		if (savedProject?.selectedAssignees?.length === 0) {
-			savedProject.selectedAssignees = newTask.selectedAssignees;
+		if (existingFile?.selectedAssignees?.length === 0) {
+			existingFile.selectedAssignees = newProject.selectedAssignees;
 		} else {
-			const concatenatedProjectArray = savedProject?.selectedAssignees?.concat(
-				newTask.selectedAssignees,
+			const concatenatedProjectArray = existingFile?.selectedAssignees?.concat(
+				newProject.selectedAssignees,
 			);
 			const uniqueProjectSet = new Set(concatenatedProjectArray);
 			const uniqueArray = Array.from(uniqueProjectSet);
 
-			savedProject.selectedAssignees = uniqueArray;
+			existingFile.selectedAssignees = uniqueArray;
 		}
-		savedProject.totalTasks += 1;
-		savedProject.tasks.push(newTask._id);
+		existingFile.totalProjects += 1;
+		existingFile.projects.push(newProject._id);
 
-		await savedProject.save();
+		await existingFile.save();
 
-		res.status(201).json(savedProject);
+		res.status(201).json(existingFile);
 	} catch (error) {
 		res.status(400).json({ message: error.message });
 	}
@@ -686,14 +722,14 @@ const updateProject = async (req, res) => {
 	}
 };
 
-const createProject = async (req, res) => {
-	const { projectName, timeToComplete, startDate, dueDate, managerId, managerName, companyName } =
+const createFileProject = async (req, res) => {
+	const { fileName, timeToComplete, startDate, dueDate, managerId, managerName, companyName } =
 		req.body;
 
 	try {
-		const status = getProjectStatus(dueDate);
-		const newProject = await Project.create({
-			name: projectName,
+		const status = dueDate ? getProjectStatus(dueDate) : "";
+		const newFileProject = await ProjectFile.create({
+			fileName,
 			timeToComplete,
 			startDate,
 			dueDate,
@@ -703,21 +739,22 @@ const createProject = async (req, res) => {
 			companyName,
 		});
 
-		res.status(201).json(newProject);
+		res.status(201).json(newFileProject);
 	} catch (error) {
 		res.status(400).json({ message: error.message });
 	}
 };
 
 module.exports = {
-	createProject,
+	createFileProject,
 	getProjects,
 	updateProjectTask,
 	updateProject,
 	updateTaskActivity,
 	updateProjectSubTask,
 	createActivity,
-	addProjectTask,
+	addProject,
+	addTask,
 	addSubTask,
 	updateTaskSubTask,
 	addTaskSubTasks,
