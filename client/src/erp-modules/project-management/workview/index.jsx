@@ -1,26 +1,15 @@
-import { Box, Flex, Th } from "@chakra-ui/react";
+import { Box } from "@chakra-ui/react";
 
-import useCompany from "hooks/useCompany";
 import useManager from "hooks/useManager";
 import PageLayout from "layouts/PageLayout";
 import { useEffect, useState } from "react";
-import { FaSort } from "react-icons/fa";
 import LocalStorageService from "services/LocalStorageService";
 import ProjectService from "services/ProjectService";
 import { isManager } from "utils";
-import ProjectTable from "./project";
-
-export const headerCell = (key, weight, w) => (
-	<Th w={w} fontWeight={weight ? weight : "bolder"} key={key} fontSize={"xs"} p={"0.5em 1em"}>
-		<Flex alignItems={"center"} gap={0.5}>
-			{key}
-			<FaSort sx={{ width: "5px" }} />
-		</Flex>
-	</Th>
-);
+import FilesList from "./project";
 
 const WorkView = () => {
-	const { company } = useCompany(LocalStorageService.getItem("selectedCompany"));
+	const company = LocalStorageService.getItem("selectedCompany");
 	const loggedInUser = LocalStorageService.getItem("user");
 	const [fileProjects, setFileProjects] = useState(null);
 	const [refresh, setRefresh] = useState(false);
@@ -31,40 +20,17 @@ const WorkView = () => {
 	useEffect(() => {
 		const fetchAllProjectInfo = async () => {
 			try {
-				setFileProjects(null);
 				const { data } = isManagerView
 					? await ProjectService.getAllCompanyProjects(company)
 					: await ProjectService.getAllCompanyProjectsByUser(loggedInUser?.fullName, company);
 				setFileProjects(data);
 			} catch (error) {
 				console.error(error);
-				setFileProjects(null);
 			}
 		};
 		fetchAllProjectInfo();
 	}, [refresh, company]);
 
-	// const allProjects = projects?.map((project) => ({
-	// 	projectName: project.name,
-	// 	id: project._id,
-	// }));
-
-	// const allTasks = projects?.flatMap(
-	// 	(project) =>
-	// 		project?.tasks?.map((task) => ({
-	// 			...task,
-	// 			projectName: project.name,
-	// 		})) || [],
-	// );
-
-	// const allProjectTasks = allTasks.map((task) => ({
-	// 	taskName: task.taskName,
-	// 	id: task._id,
-	// }));
-
-	// const allActivities = allTasks?.filter(
-	// 	(task) => task?.activities?.length > 0,
-	// );
 	return (
 		<PageLayout title={"File Overview"} showBgLayer>
 			{/* <WorkviewToolbar /> */}
@@ -76,7 +42,7 @@ const WorkView = () => {
 				color={"var(--nav_color)"}
 			>
 				{fileProjects && (
-					<ProjectTable
+					<FilesList
 						setRefresh={setRefresh}
 						files={fileProjects}
 						managers={managers}
@@ -84,7 +50,7 @@ const WorkView = () => {
 					/>
 				)}
 				{/* {projects && viewMode === "Projects" ? (
-					<ProjectTable
+					<FilesList
 						setRefresh={setRefresh}
 						data={projects}
 						managers={managers}

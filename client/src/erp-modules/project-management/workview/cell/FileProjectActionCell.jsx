@@ -1,8 +1,8 @@
 import { HStack, Image, Td, VStack } from "@chakra-ui/react";
 import { useState } from "react";
-import fileImg from "../../../../../assets/file.png";
-import AddNewProject from "../AddNewProject";
-import EditProjectFile from "../EditProjectFile";
+import fileImg from "../../../../assets/file.png";
+import AddNewProject from "../project/AddNewProject";
+import EditProjectFile from "../project/EditProjectFile";
 import ActionItem from "./ActionItem";
 import ProjectActionCell from "./ProjectActionCell";
 

@@ -8,7 +8,7 @@ import {
 	Icon,
 } from "@chakra-ui/react";
 import { ROLES } from "constant";
-import AddNotes from "erp-modules/project-management/workview/project/cell/AddNotes";
+import AddNotes from "erp-modules/project-management/workview/cell/AddNotes";
 import { COLORS } from "erp-modules/project-management/workview/project/data";
 import moment from "moment";
 import { useState } from "react";

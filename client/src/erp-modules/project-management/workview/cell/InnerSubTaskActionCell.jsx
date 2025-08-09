@@ -2,7 +2,7 @@ import { Checkbox, HStack } from "@chakra-ui/react";
 import { useState } from "react";
 import ProjectService from "services/ProjectService";
 import TaskService from "services/TaskService";
-import EditInnerSubTask from "../EditInnerSubTask";
+import EditInnerSubTask from "../project/EditInnerSubTask";
 import ActionItem from "./ActionItem";
 import AddActualHours from "./AddActualHours";
 

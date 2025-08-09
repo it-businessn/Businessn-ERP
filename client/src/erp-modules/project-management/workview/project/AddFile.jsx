@@ -16,6 +16,7 @@ import {
 } from "@chakra-ui/react";
 import DateTimeFormControl from "components/ui/form/DateTimeFormControl";
 import InputFormControl from "components/ui/form/InputFormControl";
+import MandatoryField from "components/ui/form/MandatoryField";
 import { useState } from "react";
 import { FaCaretDown } from "react-icons/fa";
 import ProjectService from "services/ProjectService";
@@ -54,7 +55,7 @@ const AddFile = ({ isOpen, onClose, setRefresh, managers, company }) => {
 		<Modal isCentered size={"3xl"} isOpen={isOpen} onClose={onClose}>
 			<ModalOverlay />
 			<ModalContent>
-				<ModalHeader>Add New File</ModalHeader>
+				<ModalHeader>Add File</ModalHeader>
 				<ModalCloseButton />
 				<ModalBody>
 					<Stack spacing="5">
@@ -73,12 +74,15 @@ const AddFile = ({ isOpen, onClose, setRefresh, managers, company }) => {
 									required
 								/>
 								<FormControl>
-									<FormLabel>Project Manager</FormLabel>
+									<FormLabel>
+										Manager
+										<MandatoryField color={"red"} />
+									</FormLabel>
 									<Select
 										icon={<FaCaretDown />}
 										borderRadius="10px"
 										value={formData?.managerId || ""}
-										placeholder="Select Project Manager"
+										placeholder="Select Manager"
 										onChange={(e) => {
 											const selectedValue = e.target.value;
 											if (selectedValue !== "") {
@@ -143,7 +147,7 @@ const AddFile = ({ isOpen, onClose, setRefresh, managers, company }) => {
 										isLoading={isSubmitting}
 										type="submit"
 										bg="var(--logo_bg)"
-										isDisabled={formData?.fileName === ""}
+										isDisabled={formData?.fileName === "" || !formData.managerId}
 									>
 										Add
 									</Button>

@@ -1,42 +1,40 @@
-import { Checkbox, HStack, VStack } from "@chakra-ui/react";
+import { HStack, Image, VStack } from "@chakra-ui/react";
 import DeletePopUp from "components/ui/modal/DeletePopUp";
 import { useState } from "react";
 import ProjectService from "services/ProjectService";
 import TaskService from "services/TaskService";
-import AddNewSubTasks from "../AddNewSubTasks";
-import EditSubTask from "../EditSubTask";
+import projectImg from "../../../../assets/project.png";
+import AddNewTask from "../project/AddNewTask";
+import EditProject from "../project/EditProject";
 import ActionItem from "./ActionItem";
 import AddActualHours from "./AddActualHours";
-import InnerSubTaskActionCell from "./InnerSubTaskActionCell";
+import TaskActionCell from "./TaskActionCell";
 
-const SubTaskActionCell = ({
-	task,
+const ProjectActionCell = ({
+	project,
+	taskIndex,
 	setRefresh,
 	managers,
-	isInner,
-	isSubExpanded,
 	handleSubTaskToggle,
-	index,
+	handleTaskToggle,
+	isExpanded,
+	isSubExpanded,
 	company,
 }) => {
-	const { _id, taskName, selectedAssignees, completed } = task;
-
-	const [isTaskCompleted, setIsTaskCompleted] = useState(task.completed);
-
-	const [isOpenTask, setIsOpenTask] = useState(completed);
+	const [isTaskCompleted, setIsTaskCompleted] = useState(project.completed);
 	const [openEditTask, setOpenEditTask] = useState(false);
 	const [openAddTask, setOpenAddTask] = useState(false);
 	const [currentTask, setCurrentTask] = useState(null);
+	const [taskId, setTaskId] = useState(null);
 	const [isOpen, setIsOpen] = useState(false);
 	const [isChecked, setIsChecked] = useState(false);
 	const [modalPosition, setModalPosition] = useState({ top: 0, left: 0 });
-	const [taskId, setTaskId] = useState(null);
 	const [actualHours, setActualHours] = useState(0);
 	const [deleteRecord, setDeleteRecord] = useState(false);
 	const [deleteRecordTask, setDeleteRecordTask] = useState(false);
 	const [showConfirmationPopUp, setShowConfirmationPopUp] = useState(false);
 
-	const handleTaskStatus = async (e, taskId) => {
+	const handleTaskStatus = (e, taskId) => {
 		setTaskId(taskId);
 		const isOpen = e.target.checked;
 		if (isOpen) {
@@ -46,9 +44,8 @@ const SubTaskActionCell = ({
 		}
 		setIsTaskCompleted(isOpen);
 		setIsChecked(!isChecked);
-
-		setIsOpenTask(isOpen);
 	};
+
 	const handleClose = () => {
 		setIsOpen(false);
 		setActualHours(0);
@@ -58,18 +55,20 @@ const SubTaskActionCell = ({
 	const handleConfirm = async () => {
 		setIsOpen(false);
 		try {
-			await TaskService.updateSubTaskStatus({ isOpen: isTaskCompleted, actualHours }, taskId);
+			await TaskService.updateTaskStatus({ isOpen: isTaskCompleted, actualHours }, taskId);
+			setRefresh((prev) => !prev);
 		} catch (error) {
 			console.error("Error updating task status:", error);
 		}
 	};
-	const handleEditSubtask = (task, taskId) => {
+
+	const handleEditTask = (task, taskId) => {
 		setOpenEditTask(true);
 		setCurrentTask(task);
 		setTaskId(taskId);
 	};
 
-	const handleAddSubTask = (task, taskId) => {
+	const handleAddTask = (task, taskId) => {
 		setOpenAddTask(true);
 		setCurrentTask(task);
 		setTaskId(taskId);
@@ -77,7 +76,7 @@ const SubTaskActionCell = ({
 
 	const handleDelete = async () => {
 		try {
-			await ProjectService.deleteSubTask(deleteRecordTask, deleteRecord);
+			await ProjectService.deleteTask(deleteRecordTask, deleteRecord);
 			setRefresh((prev) => !prev);
 			setShowConfirmationPopUp((prev) => !prev);
 		} catch (error) {
@@ -86,63 +85,49 @@ const SubTaskActionCell = ({
 	};
 	return (
 		<>
-			<AddActualHours
-				isOpen={isOpen}
-				setIsOpen={setIsOpen}
-				modalPosition={modalPosition}
-				setActualHours={setActualHours}
-				actualHours={actualHours}
-				handleClose={handleClose}
-				handleConfirm={handleConfirm}
-			/>
-			<HStack spacing={3} className={`subtask_div_${index}`} whiteSpace={"pre-wrap"}>
-				<Checkbox
-					sx={{ verticalAlign: "middle" }}
-					colorScheme="facebook"
-					isChecked={isTaskCompleted}
-					onChange={(e) => handleTaskStatus(e, _id)}
-				/>
+			<HStack spacing={2} mt={2} className={`task_div_${taskIndex}`} whiteSpace={"pre-wrap"}>
+				<Image height={"20px"} width={"20px"} objectFit="cover" src={projectImg} alt="file" />
 				<ActionItem
-					isInner={isInner}
-					name={taskName}
-					totalTask={task?.subtasks}
-					totalTasks={task?.subtasks?.length}
-					handleEditProject={() => handleEditSubtask(task, task._id)}
-					handleAddTask={() => handleAddSubTask(task, task._id)}
-					handleToggle={() => handleSubTaskToggle(index)}
-					isExpanded={isSubExpanded === index}
+					name={project.projectName}
+					totalTask={project?.tasks}
+					totalTasks={project?.totalTasks}
+					handleEditProject={() => handleEditTask(project, project._id)}
+					handleAddTask={() => handleAddTask(project, project._id)}
+					handleToggle={() => handleTaskToggle(taskIndex)}
+					isExpanded={isExpanded === taskIndex}
 					handleDelete={() => {
-						console.log("ss");
-						setShowConfirmationPopUp((prev) => !prev);
-						setDeleteRecordTask(task);
-						setDeleteRecord(task._id);
+						setShowConfirmationPopUp(true);
+						setDeleteRecordTask(project);
+						setDeleteRecord(project._id);
 					}}
-					data={task}
-					type={"subtask"}
+					type={"task"}
+					data={project}
 					setRefresh={setRefresh}
 				/>
 			</HStack>
-			{isSubExpanded === index &&
-				task?.subtasks?.length > 0 &&
-				task?.subtasks?.map((rec, index) => {
+
+			{isExpanded === taskIndex &&
+				project?.tasks?.length > 0 &&
+				project?.tasks?.map((task, task_index) => {
 					return (
-						<VStack
-							key={`subtasks_action_${rec._id}*78${index}`}
-							w={"100%"}
-							alignItems={"flex-start"}
-							ml={"1em"}
-						>
-							<InnerSubTaskActionCell
-								task={rec}
-								index={index}
+						<VStack key={task._id} w={"100%"} alignItems={"flex-start"} ml={"1em"}>
+							<TaskActionCell
+								taskIndex={task_index}
+								isSubExpanded={isSubExpanded}
+								task={task}
+								handleAddTask={() => handleAddTask(task, task._id)}
+								isExpanded={isExpanded}
+								handleTaskToggle={handleTaskToggle}
+								handleSubTaskToggle={handleSubTaskToggle}
 								setRefresh={setRefresh}
 								managers={managers}
+								company={company}
 							/>
 						</VStack>
 					);
 				})}
 			{openEditTask && (
-				<EditSubTask
+				<EditProject
 					isOpen={openEditTask}
 					onClose={() => setOpenEditTask(false)}
 					currentTask={currentTask}
@@ -151,7 +136,7 @@ const SubTaskActionCell = ({
 				/>
 			)}
 			{openAddTask && (
-				<AddNewSubTasks
+				<AddNewTask
 					isOpen={openAddTask}
 					onClose={() => setOpenAddTask(false)}
 					currentTask={currentTask}
@@ -160,9 +145,20 @@ const SubTaskActionCell = ({
 					company={company}
 				/>
 			)}
+			{isOpen && (
+				<AddActualHours
+					isOpen={isOpen}
+					setIsOpen={setIsOpen}
+					modalPosition={modalPosition}
+					setActualHours={setActualHours}
+					actualHours={actualHours}
+					handleClose={handleClose}
+					handleConfirm={handleConfirm}
+				/>
+			)}
 			{showConfirmationPopUp && (
 				<DeletePopUp
-					headerTitle={"Delete Sub Task"}
+					headerTitle={"Delete Project"}
 					textTitle={"Are you sure you want to delete the task?"}
 					isOpen={showConfirmationPopUp}
 					onClose={handleClose}
@@ -173,4 +169,4 @@ const SubTaskActionCell = ({
 	);
 };
 
-export default SubTaskActionCell;
+export default ProjectActionCell;

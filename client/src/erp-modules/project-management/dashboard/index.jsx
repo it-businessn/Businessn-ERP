@@ -1,5 +1,5 @@
 import { Box, Text } from "@chakra-ui/react";
-import ProjectTable from "../workview/project";
+import FilesList from "../workview/project";
 
 const ProjectDashboard = () => {
 	return (
@@ -7,7 +7,7 @@ const ProjectDashboard = () => {
 			<Text fontWeight="bold" mb={"0.5em"}>
 				Project Dashboard
 			</Text>
-			<ProjectTable />
+			<FilesList />
 		</Box>
 	);
 };
