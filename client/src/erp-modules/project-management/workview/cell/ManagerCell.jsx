@@ -17,7 +17,12 @@ const ManagerCell = ({ project, index, expandedIndex, isExpanded, isSubExpanded 
 				<Manager main />
 				{expandedIndex === index &&
 					project?.tasks?.map((task, task_index) => (
-						<VStack alignItems={"start"} w={"100%"} key={task._id}>
+						<VStack
+							alignItems={"start"}
+							w={"100%"}
+							key={task._id}
+							_hover={{ bg: "var(--phoneCall_bg_light)" }}
+						>
 							<Manager task />
 							{isExpanded === task_index &&
 								task?.subtasks?.length > 0 &&

@@ -37,7 +37,12 @@ const AssigneeCell = ({ project, index, expandedIndex, isExpanded, isSubExpanded
 				<AssigneeList assignees={project?.selectedAssignees} main />
 				{expandedIndex === index &&
 					project?.tasks?.map((task, index) => (
-						<VStack spacing={0} w={"100%"} key={task._id}>
+						<VStack
+							spacing={0}
+							w={"100%"}
+							key={task._id}
+							_hover={{ bg: "var(--phoneCall_bg_light)" }}
+						>
 							<AssigneeList assignees={task.selectedAssignees} task />
 							{isExpanded === index &&
 								task?.subtasks?.length > 0 &&

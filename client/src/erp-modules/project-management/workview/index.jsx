@@ -11,24 +11,24 @@ import FilesList from "./project";
 const WorkView = () => {
 	const company = LocalStorageService.getItem("selectedCompany");
 	const loggedInUser = LocalStorageService.getItem("user");
-	const [fileProjects, setFileProjects] = useState(null);
+	const [files, setFiles] = useState(null);
 	const [refresh, setRefresh] = useState(false);
 
 	const managers = useManager(company, refresh, true);
 	const isManagerView = isManager(loggedInUser?.role);
 
 	useEffect(() => {
-		const fetchAllProjectInfo = async () => {
+		const fetchAllFiles = async () => {
 			try {
 				const { data } = isManagerView
-					? await ProjectService.getAllCompanyProjects(company)
-					: await ProjectService.getAllCompanyProjectsByUser(loggedInUser?.fullName, company);
-				setFileProjects(data);
+					? await ProjectService.getAllCompanyFiles(company)
+					: await ProjectService.getAllCompanyFilesByAssignee(loggedInUser?.fullName, company);
+				setFiles(data);
 			} catch (error) {
 				console.error(error);
 			}
 		};
-		fetchAllProjectInfo();
+		fetchAllFiles();
 	}, [refresh, company]);
 
 	return (
@@ -41,13 +41,8 @@ const WorkView = () => {
 				borderRadius="10px"
 				color={"var(--nav_color)"}
 			>
-				{fileProjects && (
-					<FilesList
-						setRefresh={setRefresh}
-						files={fileProjects}
-						managers={managers}
-						company={company}
-					/>
+				{files && (
+					<FilesList setRefresh={setRefresh} files={files} managers={managers} company={company} />
 				)}
 				{/* {projects && viewMode === "Projects" ? (
 					<FilesList

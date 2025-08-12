@@ -210,11 +210,11 @@ export const calculateProjectCompletion = (project) => {
 	// return totalTasks > 0 ? Math.floor((completedTasks / totalTasks) * 100) : 0;
 };
 
-export const TaskButton = ({ totalTasks, onClick, isTask, isExpanded }) => {
+export const TaskButton = ({ totalTasks, isTopLevel, onClick, isExpanded }) => {
 	return (
 		<Button
 			onClick={onClick}
-			size="xxs"
+			size={isTopLevel ? "xs" : "xxs"}
 			display={"flex"}
 			p={"2px"}
 			fontSize={"12px"}
@@ -240,7 +240,7 @@ export const TaskButton = ({ totalTasks, onClick, isTask, isExpanded }) => {
 
 export const AddTaskButton = ({
 	onClick,
-	isTask,
+	isTopLevel,
 	handleClick,
 	isInner,
 	data,
@@ -250,15 +250,15 @@ export const AddTaskButton = ({
 	const [isOpen, setIsOpen] = useState(false);
 	return (
 		<>
-			<HStack spacing={1}>
+			<HStack spacing={isTopLevel ? 0 : 1}>
 				{!isInner && (
 					<>
 						<Button
 							onClick={onClick}
-							size="xxs"
+							size={isTopLevel ? "xs" : "xxs"}
 							display={"flex"}
 							variant="solid"
-							p={"3px"}
+							p={isTopLevel ? 0 : "3px"}
 							bg="var(--lead_cards_bg)"
 							fontWeight={"bold"}
 							color="var(--primary_button_bg)"
@@ -272,34 +272,29 @@ export const AddTaskButton = ({
 						</Button>
 						<Button
 							onClick={() => setIsOpen(true)}
-							size="xxs"
+							size={isTopLevel ? "sm" : "xxs"}
 							display={"flex"}
 							variant="ghost"
 							fontWeight={"bold"}
 							color="var(--nav_color)"
-							_hover={{
-								bg: generateLighterShade(COLORS.primary, 0.8),
-								color: "var(--nav_color)",
-							}}
+							_hover={"unset"}
 						>
-							<CgNotes />
+							<CgNotes size={isTopLevel && "1.5em"} />
 						</Button>
 					</>
 				)}
 
 				<Button
 					onClick={handleClick}
-					size="xxs"
+					size={isTopLevel ? "md" : "xxs"}
 					display={"flex"}
 					variant="ghost"
 					fontWeight={"bold"}
 					color="var(--nav_color)"
-					_hover={{
-						bg: generateLighterShade(COLORS.primary, 0.8),
-						color: "var(--nav_color)",
-					}}
+					ml={isTopLevel && -5}
+					_hover={"unset"}
 				>
-					<SettingsIcon />
+					<SettingsIcon size={isTopLevel && "2em"} />
 				</Button>
 			</HStack>
 			{isOpen && (

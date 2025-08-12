@@ -40,9 +40,11 @@ const FileProjectActionCell = ({
 	return (
 		<Td w="100%" fontSize={"xs"} py={0}>
 			<VStack alignItems={"start"} spacing={0} w={"100%"} ml={"-1.5em"}>
-				<HStack spacing={2} alignItems={"start"}>
-					<Image height={"20px"} width={"20px"} objectFit="cover" src={fileImg} alt="file" />
+				<HStack spacing={2} alignItems={"center"}>
+					<Image height={"2em"} width={"2em"} objectFit="cover" src={fileImg} alt="file" />
 					<ActionItem
+						textSize="lg"
+						width="25em"
 						data={file}
 						name={file.fileName}
 						totalTask={file?.projects}
@@ -54,7 +56,7 @@ const FileProjectActionCell = ({
 						expandedIndex={expandedIndex}
 						isExpanded={expandedIndex === index}
 						// handleDelete={() => handleDelete(project, project._id)}
-						isProject
+						isTopLevel
 						type={"file"}
 						setRefresh={setRefresh}
 					/>
@@ -62,7 +64,12 @@ const FileProjectActionCell = ({
 				{expandedIndex === index &&
 					file?.projects?.map((project, taskIndex) => {
 						return (
-							<VStack key={project._id} w={"100%"} alignItems={"flex-start"} ml={"1em"}>
+							<VStack
+								key={project._id}
+								w={"100%"}
+								alignItems={"flex-start"}
+								_hover={{ bg: "var(--phoneCall_bg_light)" }}
+							>
 								<ProjectActionCell
 									taskIndex={taskIndex}
 									isSubExpanded={isSubExpanded}

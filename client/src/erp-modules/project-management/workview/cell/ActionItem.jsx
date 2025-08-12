@@ -1,4 +1,5 @@
-import { HStack, Text, Tooltip } from "@chakra-ui/react";
+import { Flex, HStack, Tooltip } from "@chakra-ui/react";
+import NormalTextTitle from "components/ui/NormalTextTitle";
 import { FaRegTrashAlt } from "react-icons/fa";
 import { AddTaskButton, TaskButton } from "utils";
 
@@ -12,24 +13,32 @@ const ActionItem = ({
 	isInner,
 	isExpanded,
 	handleDelete,
-	isProject,
+	isTopLevel,
 	data,
 	type,
 	setRefresh,
+	textSize = "sm",
+	width = "100%",
 }) => {
 	return (
 		<>
-			<Tooltip label={name} fontSize="xs" hasArrow>
-				<Text overflow={"hidden"} whiteSpace={"nowrap"} textOverflow={"ellipsis"} w={"100%"}>
-					{name}
-				</Text>
+			<Tooltip label={name} fontSize="xs" hasArrow placement="bottom-start">
+				<Flex alignItems={"center"}>
+					<NormalTextTitle width={width} size={textSize} title={name} whiteSpace={"nowrap"} />{" "}
+				</Flex>
 			</Tooltip>
 
 			<HStack spacing={2} cursor={totalTask?.length > 0 ? "pointer" : "default"}>
 				{totalTask?.length > 0 && (
-					<TaskButton isExpanded={isExpanded} totalTasks={totalTasks} onClick={handleToggle} />
+					<TaskButton
+						isTopLevel={isTopLevel}
+						isExpanded={isExpanded}
+						totalTasks={totalTasks}
+						onClick={handleToggle}
+					/>
 				)}
 				<AddTaskButton
+					isTopLevel={isTopLevel}
 					onClick={handleAddTask}
 					handleClick={handleEditProject}
 					isInner={isInner}
@@ -37,7 +46,7 @@ const ActionItem = ({
 					type={type}
 					setRefresh={setRefresh}
 				/>
-				{!isProject && <FaRegTrashAlt cursor={"pointer"} onClick={handleDelete} />}
+				{!isTopLevel && <FaRegTrashAlt cursor={"pointer"} onClick={handleDelete} />}
 			</HStack>
 		</>
 	);

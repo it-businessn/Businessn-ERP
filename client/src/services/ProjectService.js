@@ -5,11 +5,11 @@ const ProjectService = {
 		return apiService.get("/projects");
 	},
 
-	async getAllCompanyProjects(id) {
+	async getAllCompanyFiles(id) {
 		return apiService.get(`/projects/${id}`);
 	},
 
-	async getAllCompanyProjectsByUser(id, company) {
+	async getAllCompanyFilesByAssignee(id, company) {
 		return apiService.get(`/projects/${id}/${company}`);
 	},
 

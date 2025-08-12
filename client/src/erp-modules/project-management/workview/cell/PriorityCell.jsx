@@ -14,7 +14,12 @@ const PriorityCell = ({ project, index, expandedIndex, isExpanded, isSubExpanded
 				<PriorityBar priority={project.priority} main />
 				{expandedIndex === index &&
 					project?.tasks?.map((task, index) => (
-						<VStack alignItems={"start"} w={"100%"} key={task._id}>
+						<VStack
+							alignItems={"start"}
+							w={"100%"}
+							key={task._id}
+							_hover={{ bg: "var(--phoneCall_bg_light)" }}
+						>
 							<PriorityBar priority={task.priority} task />
 							{isExpanded === index &&
 								task?.subtasks?.length > 0 &&

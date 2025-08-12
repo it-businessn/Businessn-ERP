@@ -24,7 +24,13 @@ const StatusCell = ({ project, index, expandedIndex, isExpanded, isSubExpanded }
 				<TaskStatus status={project.status} main />
 				{expandedIndex === index &&
 					project?.tasks?.map((task, task_index) => (
-						<VStack alignItems={"start"} gap={0} w={"100%"} key={task._id}>
+						<VStack
+							alignItems={"start"}
+							gap={0}
+							w={"100%"}
+							key={task._id}
+							_hover={{ bg: "var(--phoneCall_bg_light)" }}
+						>
 							<TaskStatus status={task.status} />
 							{isExpanded === task_index &&
 								task?.subtasks?.length > 0 &&

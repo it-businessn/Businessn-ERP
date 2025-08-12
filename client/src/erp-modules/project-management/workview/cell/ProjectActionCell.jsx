@@ -85,9 +85,16 @@ const ProjectActionCell = ({
 	};
 	return (
 		<>
-			<HStack spacing={2} mt={2} className={`task_div_${taskIndex}`} whiteSpace={"pre-wrap"}>
+			<HStack
+				spacing={2}
+				mt={2}
+				className={`task_div_${taskIndex}`}
+				whiteSpace={"pre-wrap"}
+				alignItems={"center"}
+			>
 				<Image height={"20px"} width={"20px"} objectFit="cover" src={projectImg} alt="file" />
 				<ActionItem
+					width="33em"
 					name={project.projectName}
 					totalTask={project?.tasks}
 					totalTasks={project?.totalTasks}
