@@ -42,7 +42,7 @@ const Timesheets = () => {
 		closestRecordIndex,
 	} = usePaygroup(company, false);
 
-	const { employees } = useEmployees(false, company, false, true, deptName, selectedPayGroupOption);
+	const { employees } = useEmployees(false, company, true, true, deptName, selectedPayGroupOption);
 	const departments = useDepartment(company);
 	const cc = useCostCenter(company);
 
