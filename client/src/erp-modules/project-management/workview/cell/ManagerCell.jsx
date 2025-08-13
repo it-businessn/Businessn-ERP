@@ -21,7 +21,7 @@ const ManagerCell = ({ project, index, expandedIndex, isExpanded, isSubExpanded 
 							alignItems={"start"}
 							w={"100%"}
 							key={task._id}
-							_hover={{ bg: "var(--phoneCall_bg_light)" }}
+							// _hover={{ bg: "var(--phoneCall_bg_light)" }}
 						>
 							<Manager task />
 							{isExpanded === task_index &&

@@ -103,6 +103,7 @@ const SubTaskActionCell = ({
 					onChange={(e) => handleTaskStatus(e, _id)}
 				/>
 				<ActionItem
+					width="36em"
 					isInner={isInner}
 					name={taskName}
 					totalTask={task?.subtasks}

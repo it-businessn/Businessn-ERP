@@ -17,7 +17,7 @@ const DateCell = ({ date, project, index, expandedIndex, isExpanded, isSubExpand
 							alignItems="start"
 							w={"100%"}
 							key={task._id}
-							_hover={{ bg: "var(--phoneCall_bg_light)" }}
+							// _hover={{ bg: "var(--phoneCall_bg_light)" }}
 						>
 							{task[date] ? <FormattedDate date={task[date]} task /> : formatDate(new Date())}
 							{isExpanded === task_index &&

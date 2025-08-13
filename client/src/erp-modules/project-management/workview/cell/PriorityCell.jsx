@@ -9,7 +9,7 @@ const PriorityCell = ({ project, index, expandedIndex, isExpanded, isSubExpanded
 		</HStack>
 	);
 	return (
-		<Td fontSize={"xs"} w="100%" p={"1em"} py={0}>
+		<Td fontSize={"xs"} w="120%" p={"1em"} py={0}>
 			<VStack alignItems={"start"} w={"100%"}>
 				<PriorityBar priority={project.priority} main />
 				{expandedIndex === index &&
@@ -18,7 +18,7 @@ const PriorityCell = ({ project, index, expandedIndex, isExpanded, isSubExpanded
 							alignItems={"start"}
 							w={"100%"}
 							key={task._id}
-							_hover={{ bg: "var(--phoneCall_bg_light)" }}
+							// _hover={{ bg: "var(--phoneCall_bg_light)" }}
 						>
 							<PriorityBar priority={task.priority} task />
 							{isExpanded === index &&

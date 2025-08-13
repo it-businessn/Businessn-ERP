@@ -43,9 +43,9 @@ const FilesOverView = ({ files, managers, company, setRefresh }) => {
 		<Table color={"var(--nav_color)"} bg={"var(--primary_bg)"}>
 			<Thead>
 				<Tr display={"flex"} alignItems={"center"}>
-					{FILE_OVERVIEW_COLS.map(({ name }) => (
-						<Th w={"100%"} key={name} fontWeight={"bolder"} fontSize={"xs"} p={"10px"} pl={"1em"}>
-							<Flex alignItems={"center"} gap={0.5}>
+					{FILE_OVERVIEW_COLS.map(({ name }, index) => (
+						<Th w={"100%"} key={name} fontWeight={"bolder"} fontSize={"xs"} p={"10px"}>
+							<Flex alignItems={"center"} gap={0.5} w={index === 0 ? "55em" : "100%"}>
 								{name}
 								<FaSort sx={{ width: "5px" }} />
 							</Flex>
@@ -63,11 +63,12 @@ const FilesOverView = ({ files, managers, company, setRefresh }) => {
 						<FileProjectActionCell
 							expandedIndex={fileExpandedIndex}
 							handleSubTaskToggle={handleSubTaskToggle}
+							handleProjectToggle={handleProjectToggle}
 							handleTaskToggle={handleTaskToggle}
 							handleToggle={handleFileToggle}
 							index={fileIndex}
 							isExpanded={projectExpandedIndex}
-							isSubExpanded={subTaskExpandedIndex}
+							isSubExpanded={taskExpandedIndex}
 							managers={managers}
 							file={file}
 							fileId={fileId}
@@ -80,14 +81,14 @@ const FilesOverView = ({ files, managers, company, setRefresh }) => {
 							expandedIndex={fileExpandedIndex}
 							index={fileIndex}
 							isExpanded={projectExpandedIndex}
-							isSubExpanded={subTaskExpandedIndex}
+							isSubExpanded={taskExpandedIndex}
 							project={file}
 						/>
 						<PriorityCell
 							expandedIndex={fileExpandedIndex}
 							index={fileIndex}
 							isExpanded={projectExpandedIndex}
-							isSubExpanded={subTaskExpandedIndex}
+							isSubExpanded={taskExpandedIndex}
 							project={file}
 						/>
 						<DateCell
@@ -95,14 +96,14 @@ const FilesOverView = ({ files, managers, company, setRefresh }) => {
 							expandedIndex={fileExpandedIndex}
 							index={fileIndex}
 							isExpanded={projectExpandedIndex}
-							isSubExpanded={subTaskExpandedIndex}
+							isSubExpanded={taskExpandedIndex}
 							project={file}
 						/>
 						<StatusCell
 							expandedIndex={fileExpandedIndex}
 							index={fileIndex}
 							isExpanded={projectExpandedIndex}
-							isSubExpanded={subTaskExpandedIndex}
+							isSubExpanded={taskExpandedIndex}
 							project={file}
 						/>
 					</Tr>

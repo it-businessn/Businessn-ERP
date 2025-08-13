@@ -15,6 +15,7 @@ const FileProjectActionCell = ({
 	isSubExpanded,
 	handleTaskToggle,
 	handleSubTaskToggle,
+	handleProjectToggle,
 	setFile,
 	setFileId,
 	fileId,
@@ -62,20 +63,21 @@ const FileProjectActionCell = ({
 					/>
 				</HStack>
 				{expandedIndex === index &&
-					file?.projects?.map((project, taskIndex) => {
+					file?.projects?.map((project, project_index) => {
 						return (
 							<VStack
 								key={project._id}
 								w={"100%"}
 								alignItems={"flex-start"}
-								_hover={{ bg: "var(--phoneCall_bg_light)" }}
+								// _hover={{ bg: "var(--phoneCall_bg_light)" }}
 							>
 								<ProjectActionCell
-									taskIndex={taskIndex}
+									taskIndex={project_index}
 									isSubExpanded={isSubExpanded}
 									project={project}
 									handleAddTask={() => handleAddTask(project, project._id)}
 									isExpanded={isExpanded}
+									handleProjectToggle={handleProjectToggle}
 									handleTaskToggle={handleTaskToggle}
 									handleSubTaskToggle={handleSubTaskToggle}
 									setRefresh={setRefresh}

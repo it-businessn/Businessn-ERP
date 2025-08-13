@@ -15,6 +15,7 @@ const ProjectActionCell = ({
 	taskIndex,
 	setRefresh,
 	managers,
+	handleProjectToggle,
 	handleSubTaskToggle,
 	handleTaskToggle,
 	isExpanded,
@@ -100,7 +101,7 @@ const ProjectActionCell = ({
 					totalTasks={project?.totalTasks}
 					handleEditProject={() => handleEditTask(project, project._id)}
 					handleAddTask={() => handleAddTask(project, project._id)}
-					handleToggle={() => handleTaskToggle(taskIndex)}
+					handleToggle={() => handleProjectToggle(taskIndex)}
 					isExpanded={isExpanded === taskIndex}
 					handleDelete={() => {
 						setShowConfirmationPopUp(true);
