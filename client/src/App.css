@@ -273,6 +273,9 @@ button:active {
 	max-height: calc(var(--base));
 	overflow: auto;
 	width: 100vw;
+	display: flex;
+	flex-direction: column;
+	height: 100vh;
 }
 .ticket_container {
 	max-height: calc(100vh - 475px);

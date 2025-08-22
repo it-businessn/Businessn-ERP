@@ -88,7 +88,7 @@ const Support = () => {
 	};
 
 	return (
-		<Stack w={{ base: "100%", lg: "60%" }} m="auto" spacing={10}>
+		<Stack w={{ base: "100%", lg: "60%" }} m="auto" spacing={10} height="100vh">
 			<Center pos="sticky" top={30} zIndex={1}>
 				<a href={WEB} aria-current="page" className="main-logo w-inline-block w--current">
 					<img

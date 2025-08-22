@@ -34,7 +34,8 @@ const PageLayout = ({
 		position={position}
 		pb={pb}
 		bg={bg}
-		height={{ base: "auto", md: "calc(100vh - 100px)" }}
+		flex={1}
+		overflowY={"auto"}
 		css={tabScrollCss}
 	>
 		<PageHeader
