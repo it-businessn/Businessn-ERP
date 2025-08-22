@@ -210,7 +210,7 @@ const getCompanyEmployees = async (req, res) => {
 		const result = await EmployeeProfileInfo.find({
 			companyName,
 			empId: { $exists: true },
-		}).select("empId firstName middleName lastName personalEmail");
+		}).select("empId firstName middleName lastName");
 		let updatedResult = await Promise.all(
 			result.map(async (emp) => {
 				const empInfo = await EmployeeEmploymentInfo.findOne({
@@ -614,6 +614,25 @@ const updateMasterUser = async (req, res) => {
 	}
 };
 
+const updateCompanyEmployee = async (companyName, userId, role) => {
+	const existingCompany = await findCompany("name", companyName);
+	if (!existingCompany) {
+		return;
+	}
+	await setInitialPermissions(userId, role, companyName);
+
+	if (!existingCompany.employees.includes(userId)) {
+		await EmployeeEmploymentInfo.create({
+			empId: userId,
+			companyName,
+			employmentRole: role,
+		});
+		existingCompany.employees.push(userId);
+	}
+	await existingCompany.save();
+	return existingCompany._id;
+};
+
 const updateUser = async (req, res) => {
 	const { userId } = req.params;
 	const { role, companyId, companies } = req.body;
@@ -624,30 +643,14 @@ const updateUser = async (req, res) => {
 
 		if (companies?.length) {
 			for (const name of companies) {
-				if (isManager) {
-					const existingCompany = await findCompany("name", name);
-					if (existingCompany) {
-						await setInitialPermissions(userId, role, name);
-						if (!existingCompany.employees.includes(userId)) {
-							await EmployeeEmploymentInfo.create({
-								empId: userId,
-								companyName: name,
-								employmentRole: role,
-							});
-							existingCompany.employees.push(userId);
-						}
-						await existingCompany.save();
-						compArr.push(existingCompany._id);
-					}
-				}
+				const result = await updateCompanyEmployee(name, userId, role);
+				compArr.push(result);
 			}
-			req.body.companyId = compArr;
 		} else {
-			const existingCompany = await findCompany("name", companyId?.name);
-			if (existingCompany) {
-				await setInitialPermissions(userId, role, existingCompany.name);
-			}
+			const result = await updateCompanyEmployee(companyId.name, userId, role);
+			compArr.push(result);
 		}
+		req.body.companyId = compArr;
 		const updatedUser = await Employee.findByIdAndUpdate(userId, req.body, {
 			new: true,
 		});
