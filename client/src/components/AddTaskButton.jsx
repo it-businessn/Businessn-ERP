@@ -8,25 +8,25 @@ import { generateLighterShade } from "utils";
 
 export const AddTaskButton = ({
 	onClick,
-	isTopLevel,
 	handleClick,
 	isInner,
 	data,
 	type,
 	setRefresh,
+	isFile,
 }) => {
 	const [isOpen, setIsOpen] = useState(false);
 	return (
 		<>
-			<HStack spacing={isTopLevel ? 0 : 1}>
+			<HStack spacing={isFile ? 0 : 1}>
 				{!isInner && (
 					<>
 						<Button
 							onClick={onClick}
-							size={isTopLevel ? "xs" : "xxs"}
+							size={isFile ? "xs" : "xxs"}
 							display={"flex"}
 							variant="solid"
-							p={isTopLevel ? 0 : "3px"}
+							p={isFile ? 0 : "3px"}
 							bg="var(--lead_cards_bg)"
 							fontWeight={"bold"}
 							color="var(--primary_button_bg)"
@@ -40,29 +40,29 @@ export const AddTaskButton = ({
 						</Button>
 						<Button
 							onClick={() => setIsOpen(true)}
-							size={isTopLevel ? "sm" : "xxs"}
+							size={isFile ? "sm" : "xxs"}
 							display={"flex"}
 							variant="ghost"
 							fontWeight={"bold"}
 							color="var(--nav_color)"
 							_hover={"unset"}
 						>
-							<CgNotes size={isTopLevel && "1.5em"} />
+							<CgNotes size={isFile && "1.5em"} />
 						</Button>
 					</>
 				)}
 
 				<Button
 					onClick={handleClick}
-					size={isTopLevel ? "md" : "xxs"}
+					size={isFile ? "md" : "xxs"}
 					display={"flex"}
 					variant="ghost"
 					fontWeight={"bold"}
 					color="var(--nav_color)"
-					ml={isTopLevel && -5}
+					ml={isFile && -5}
 					_hover={"unset"}
 				>
-					<SettingsIcon size={isTopLevel && "2em"} />
+					<SettingsIcon size={isFile && "2em"} />
 				</Button>
 			</HStack>
 			{isOpen && (

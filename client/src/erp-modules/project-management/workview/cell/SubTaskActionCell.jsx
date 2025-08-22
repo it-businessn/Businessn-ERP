@@ -6,7 +6,7 @@ import TaskService from "services/TaskService";
 import { getTaskCheckboxCss } from "utils/common";
 import AddNewSubTasks from "../project/AddNewSubTasks";
 import EditSubTask from "../project/EditSubTask";
-import ActionItem from "./ActionItem";
+import CellAction from "./CellAction";
 import InnerSubTaskActionCell from "./InnerSubTaskActionCell";
 
 const SubTaskActionCell = ({
@@ -105,14 +105,14 @@ const SubTaskActionCell = ({
 					isChecked={isTaskCompleted}
 					onChange={(e) => handleTaskStatus(e, _id)}
 				/>
-				<ActionItem
+				<CellAction
 					width="36em"
 					isInner={isInner}
 					name={taskName}
 					totalTask={task?.subtasks}
 					totalTasks={task?.subtasks?.length}
-					handleEditProject={() => handleEditSubtask(task, task._id)}
-					handleAddTask={() => handleAddSubTask(task, task._id)}
+					handleEdit={() => handleEditSubtask(task, task._id)}
+					handleAdd={() => handleAddSubTask(task, task._id)}
 					handleToggle={() => handleSubTaskToggle(index)}
 					isExpanded={isSubExpanded === index}
 					handleDelete={() => {
@@ -128,17 +128,17 @@ const SubTaskActionCell = ({
 			</HStack>
 			{isSubExpanded === index &&
 				task?.subtasks?.length > 0 &&
-				task?.subtasks?.map((rec, index) => {
+				task?.subtasks?.map((rec, sub_index) => {
 					return (
 						<VStack
-							key={`subtasks_action_${rec._id}*78${index}`}
+							key={`subtasks_action_${rec._id}*78${sub_index}`}
 							w={"100%"}
 							alignItems={"flex-start"}
 							ml={"1em"}
 						>
 							<InnerSubTaskActionCell
 								task={rec}
-								index={index}
+								index={sub_index}
 								setRefresh={setRefresh}
 								managers={managers}
 							/>

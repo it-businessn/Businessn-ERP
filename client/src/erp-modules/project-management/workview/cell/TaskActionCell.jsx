@@ -6,7 +6,7 @@ import TaskService from "services/TaskService";
 import { getTaskCheckboxCss } from "utils/common";
 import AddNewSubTask from "../project/AddNewSubTask";
 import EditTask from "../project/EditTask";
-import ActionItem from "./ActionItem";
+import CellAction from "./CellAction";
 import SubTaskActionCell from "./SubTaskActionCell";
 
 const TaskActionCell = ({
@@ -16,7 +16,7 @@ const TaskActionCell = ({
 	managers,
 	handleSubTaskToggle,
 	handleTaskToggle,
-	isExpanded,
+	isTaskExpanded,
 	isSubExpanded,
 	company,
 }) => {
@@ -94,15 +94,15 @@ const TaskActionCell = ({
 					isChecked={isTaskCompleted}
 					onChange={(e) => handleTaskStatus(e, _id)}
 				/>
-				<ActionItem
+				<CellAction
 					width="33em"
 					name={task.taskName}
 					totalTask={task?.subtasks}
 					totalTasks={task?.totalTasks}
-					handleEditProject={() => handleEditTask(task, task._id)}
-					handleAddTask={() => handleAddTask(task, task._id)}
+					handleEdit={() => handleEditTask(task, task._id)}
+					handleAdd={() => handleAddTask(task, task._id)}
 					handleToggle={() => handleTaskToggle(taskIndex)}
-					isExpanded={isExpanded === taskIndex}
+					isExpanded={isTaskExpanded === taskIndex}
 					handleDelete={() => {
 						setShowConfirmationPopUp(true);
 						setDeleteRecordTask(task);
@@ -114,13 +114,14 @@ const TaskActionCell = ({
 				/>
 			</HStack>
 
-			{isExpanded === taskIndex &&
+			{isTaskExpanded === taskIndex &&
 				task?.subtasks?.length > 0 &&
 				task?.subtasks?.map((subtask, subtask_index) => {
 					return (
 						<VStack key={subtask._id} w={"100%"} alignItems={"flex-start"} ml={"1em"}>
 							<SubTaskActionCell
 								index={subtask_index}
+								isTaskExpanded={isTaskExpanded}
 								isSubExpanded={isSubExpanded}
 								task={subtask}
 								handleSubTaskToggle={handleSubTaskToggle}

@@ -3,15 +3,16 @@ import { useState } from "react";
 import fileImg from "../../../../assets/file.png";
 import AddNewProject from "../project/AddNewProject";
 import EditProjectFile from "../project/EditProjectFile";
-import ActionItem from "./ActionItem";
+import CellAction from "./CellAction";
 import ProjectActionCell from "./ProjectActionCell";
 
-const FileProjectActionCell = ({
+const FileActionCell = ({
 	file,
 	index,
 	handleToggle,
 	expandedIndex,
 	isExpanded,
+	isTaskExpanded,
 	isSubExpanded,
 	handleTaskToggle,
 	handleSubTaskToggle,
@@ -23,17 +24,17 @@ const FileProjectActionCell = ({
 	managers,
 	company,
 }) => {
-	const [openEditProject, setOpenEditProject] = useState(false);
-	const [openAddProject, setOpenAddProject] = useState(false);
+	const [openEditFile, setOpenEditFile] = useState(false);
+	const [openAddFile, setOpenAddFile] = useState(false);
 
-	const handleEditProject = (project, projectId) => {
-		setOpenEditProject(true);
+	const handleEditFile = (project, projectId) => {
+		setOpenEditFile(true);
 		setFile(project);
 		setFileId(projectId);
 	};
 
 	const handleAddTask = (project, projectId) => {
-		setOpenAddProject(true);
+		setOpenAddFile(true);
 		setFile(project);
 		setFileId(projectId);
 	};
@@ -43,22 +44,22 @@ const FileProjectActionCell = ({
 			<VStack alignItems={"start"} spacing={0} w={"100%"} ml={"-1.5em"}>
 				<HStack spacing={2} alignItems={"center"}>
 					<Image height={"2em"} width={"2em"} objectFit="cover" src={fileImg} alt="file" />
-					<ActionItem
+					<CellAction
 						textSize="lg"
 						width="25em"
 						data={file}
 						name={file.fileName}
 						totalTask={file?.projects}
 						totalTasks={file?.totalProjects}
-						handleEditProject={() => handleEditProject(file, file._id)}
-						handleAddTask={() => handleAddTask(file, file._id)}
+						handleEdit={() => handleEditFile(file, file._id)}
+						handleAdd={() => handleAddTask(file, file._id)}
 						handleToggle={() => handleToggle(index)}
 						index={index}
 						expandedIndex={expandedIndex}
 						isExpanded={expandedIndex === index}
 						// handleDelete={() => handleDelete(project, project._id)}
-						isTopLevel
 						type={"file"}
+						isFile
 						setRefresh={setRefresh}
 					/>
 				</HStack>
@@ -72,11 +73,12 @@ const FileProjectActionCell = ({
 								// _hover={{ bg: "var(--phoneCall_bg_light)" }}
 							>
 								<ProjectActionCell
-									taskIndex={project_index}
-									isSubExpanded={isSubExpanded}
+									index={project_index}
 									project={project}
 									handleAddTask={() => handleAddTask(project, project._id)}
 									isExpanded={isExpanded}
+									isTaskExpanded={isTaskExpanded}
+									isSubExpanded={isSubExpanded}
 									handleProjectToggle={handleProjectToggle}
 									handleTaskToggle={handleTaskToggle}
 									handleSubTaskToggle={handleSubTaskToggle}
@@ -88,20 +90,20 @@ const FileProjectActionCell = ({
 						);
 					})}
 			</VStack>
-			{openEditProject && (
+			{openEditFile && (
 				<EditProjectFile
-					isOpen={openEditProject}
-					onClose={() => setOpenEditProject(false)}
+					isOpen={openEditFile}
+					onClose={() => setOpenEditFile(false)}
 					project={file}
 					projectId={fileId}
 					setRefresh={setRefresh}
 					managers={managers}
 				/>
 			)}
-			{openAddProject && (
+			{openAddFile && (
 				<AddNewProject
-					isOpen={openAddProject}
-					onClose={() => setOpenAddProject(false)}
+					isOpen={openAddFile}
+					onClose={() => setOpenAddFile(false)}
 					file={file}
 					fileId={fileId}
 					setRefresh={setRefresh}
@@ -113,4 +115,4 @@ const FileProjectActionCell = ({
 	);
 };
 
-export default FileProjectActionCell;
+export default FileActionCell;

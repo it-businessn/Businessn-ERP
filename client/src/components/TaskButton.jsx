@@ -4,7 +4,7 @@ import { FaChevronDown, FaChevronUp } from "react-icons/fa";
 import { GoTasklist } from "react-icons/go";
 import { generateLighterShade } from "utils";
 
-export const TaskButton = ({ totalTasks, isTopLevel, onClick, isExpanded, type }) => {
+export const TaskButton = ({ totalTasks, onClick, isExpanded, type, isFile }) => {
 	const TASK_TYPE = {
 		file: "P",
 		project: "T",
@@ -13,7 +13,7 @@ export const TaskButton = ({ totalTasks, isTopLevel, onClick, isExpanded, type }
 	return (
 		<Button
 			onClick={onClick}
-			size={isTopLevel ? "xs" : "xxs"}
+			size={isFile ? "xs" : "xxs"}
 			display={"flex"}
 			p={"2px"}
 			fontSize={"12px"}

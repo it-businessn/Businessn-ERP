@@ -4,7 +4,7 @@ import ProjectService from "services/ProjectService";
 import TaskService from "services/TaskService";
 import { getTaskCheckboxCss } from "utils/common";
 import EditInnerSubTask from "../project/EditInnerSubTask";
-import ActionItem from "./ActionItem";
+import CellAction from "./CellAction";
 
 const InnerSubTaskActionCell = ({ task, setRefresh, managers, index }) => {
 	const { _id, taskName, subTaskId, completed } = task;
@@ -90,7 +90,7 @@ const InnerSubTaskActionCell = ({ task, setRefresh, managers, index }) => {
 					isChecked={isTaskCompleted}
 					onChange={(e) => handleTaskStatus(e, _id)}
 				/>
-				<ActionItem
+				<CellAction
 					isInner={true}
 					name={taskName}
 					handleEditProject={() => handleEditSubtask(task, task._id)}

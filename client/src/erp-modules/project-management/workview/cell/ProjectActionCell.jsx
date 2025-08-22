@@ -6,18 +6,19 @@ import TaskService from "services/TaskService";
 import projectImg from "../../../../assets/project.png";
 import AddNewTask from "../project/AddNewTask";
 import EditProject from "../project/EditProject";
-import ActionItem from "./ActionItem";
+import CellAction from "./CellAction";
 import TaskActionCell from "./TaskActionCell";
 
 const ProjectActionCell = ({
 	project,
-	taskIndex,
+	index,
 	setRefresh,
 	managers,
 	handleProjectToggle,
 	handleSubTaskToggle,
 	handleTaskToggle,
 	isExpanded,
+	isTaskExpanded,
 	isSubExpanded,
 	company,
 }) => {
@@ -88,20 +89,20 @@ const ProjectActionCell = ({
 			<HStack
 				spacing={2}
 				mt={2}
-				className={`task_div_${taskIndex}`}
+				className={`task_div_${index}`}
 				whiteSpace={"pre-wrap"}
 				alignItems={"center"}
 			>
 				<Image height={"20px"} width={"20px"} objectFit="cover" src={projectImg} alt="file" />
-				<ActionItem
+				<CellAction
 					width="33em"
 					name={project.projectName}
 					totalTask={project?.tasks}
 					totalTasks={project?.totalTasks}
-					handleEditProject={() => handleEditTask(project, project._id)}
-					handleAddTask={() => handleAddTask(project, project._id)}
-					handleToggle={() => handleProjectToggle(taskIndex)}
-					isExpanded={isExpanded === taskIndex}
+					handleEdit={() => handleEditTask(project, project._id)}
+					handleAdd={() => handleAddTask(project, project._id)}
+					handleToggle={() => handleProjectToggle(index)}
+					isExpanded={isExpanded === index}
 					handleDelete={() => {
 						setShowConfirmationPopUp(true);
 						setDeleteRecordTask(project);
@@ -113,13 +114,14 @@ const ProjectActionCell = ({
 				/>
 			</HStack>
 
-			{isExpanded === taskIndex &&
+			{isExpanded === index &&
 				project?.tasks?.length > 0 &&
 				project?.tasks?.map((task, task_index) => {
 					return (
 						<VStack key={task._id} w={"100%"} alignItems={"flex-start"} ml={"1em"}>
 							<TaskActionCell
 								taskIndex={task_index}
+								isTaskExpanded={isTaskExpanded}
 								isSubExpanded={isSubExpanded}
 								task={task}
 								handleAddTask={() => handleAddTask(task, task._id)}

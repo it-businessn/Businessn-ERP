@@ -4,22 +4,22 @@ import { TaskButton } from "components/TaskButton";
 import NormalTextTitle from "components/ui/NormalTextTitle";
 import { FaRegTrashAlt } from "react-icons/fa";
 
-const ActionItem = ({
+const CellAction = ({
 	name,
 	totalTasks,
-	handleEditProject,
-	handleAddTask,
+	handleEdit,
+	handleAdd,
 	handleToggle,
 	totalTask,
 	isInner,
 	isExpanded,
 	handleDelete,
-	isTopLevel,
 	data,
 	type,
 	setRefresh,
 	textSize = "sm",
 	width = "100%",
+	isFile,
 }) => {
 	return (
 		<>
@@ -32,26 +32,26 @@ const ActionItem = ({
 			<HStack spacing={2} cursor={totalTask?.length > 0 ? "pointer" : "default"}>
 				{totalTask?.length > 0 && (
 					<TaskButton
-						isTopLevel={isTopLevel}
 						isExpanded={isExpanded}
 						totalTasks={totalTasks}
 						onClick={handleToggle}
 						type={type}
+						isFile={isFile}
 					/>
 				)}
 				<AddTaskButton
-					isTopLevel={isTopLevel}
-					onClick={handleAddTask}
-					handleClick={handleEditProject}
+					onClick={handleAdd}
+					handleClick={handleEdit}
 					isInner={isInner}
 					data={data}
 					type={type}
 					setRefresh={setRefresh}
+					isFile={isFile}
 				/>
-				{!isTopLevel && <FaRegTrashAlt cursor={"pointer"} onClick={handleDelete} />}
+				{type !== "file" && <FaRegTrashAlt cursor={"pointer"} onClick={handleDelete} />}
 			</HStack>
 		</>
 	);
 };
 
-export default ActionItem;
+export default CellAction;
