@@ -54,13 +54,19 @@ const getPayrollActiveEmployees = async (companyName, deptName, selectedPayGroup
 const addEmployee = async (name, data) => {
 	const existingCompany = await findCompany("name", name);
 	data.companyId = existingCompany._id;
-	const newEmployee = await Employee.create(data);
+	try {
+		const employeeRecord = await Employee.findOne({ email: data.email });
+		if (employeeRecord) {
+			return employeeRecord;
+		}
+		const newEmployee = await Employee.create(data);
 
-	if (newEmployee && existingCompany) {
-		existingCompany.employees.push(newEmployee._id);
-		await existingCompany.save();
-	}
-	return newEmployee;
+		if (newEmployee && existingCompany) {
+			existingCompany.employees.push(newEmployee._id);
+			await existingCompany.save();
+		}
+		return newEmployee;
+	} catch (error) {}
 };
 
 const hashedPassword = async (pwd) => await hashPassword(pwd);

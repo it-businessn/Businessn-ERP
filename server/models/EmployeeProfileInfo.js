@@ -16,6 +16,7 @@ const employeeProfileInfoSchema = new mongoose.Schema({
 	citizenship: String,
 	workPermitNo: String,
 	workPermitExpiryNo: String,
+	userEmail: String,
 	personalEmail: String,
 	personalPhoneNum: String,
 	businessEmail: String,

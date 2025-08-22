@@ -36,6 +36,7 @@ const addNewUser = async (
 		middleName,
 		lastName,
 		gender,
+		userEmail,
 		SIN,
 		birthDate,
 		citizenship,
@@ -68,12 +69,13 @@ const addNewUser = async (
 		firstName,
 		middleName,
 		lastName,
-		email: personalEmail || businessEmail,
+		email: userEmail,
 		fullName: `${firstName} ${middleName} ${lastName}`,
 	};
 	const empId = await getNewUserID(companyName, newUserEmpRecord);
 	const encryptedSSN = SIN && !SIN.includes("*") ? encryptSSN(SIN) : "";
 	const isAffiliateMember = isAffiliate ? true : false;
+
 	await EmployeeProfileInfo.create({
 		isAffiliate: isAffiliateMember,
 		empId,
@@ -90,6 +92,7 @@ const addNewUser = async (
 		citizenship,
 		workPermitNo,
 		workPermitExpiryNo,
+		userEmail,
 		personalEmail,
 		personalPhoneNum,
 		businessEmail,

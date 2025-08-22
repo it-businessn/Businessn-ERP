@@ -98,6 +98,7 @@ export const userInfoDetails = {
 		firstName: "",
 		middleName: "",
 		lastName: "",
+		userEmail: "",
 		birthDate: "",
 		gender: "",
 		SIN: "",

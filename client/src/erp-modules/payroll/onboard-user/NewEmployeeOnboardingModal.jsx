@@ -37,7 +37,6 @@ import {
 	governmentSubSteps,
 	personalSubSteps,
 	tabStyleCss,
-	trimText,
 	userInfoDetails,
 } from "./customInfo";
 
@@ -45,6 +44,7 @@ const NewEmployeeOnboardingModal = ({ isOpen, onClose, title = "Employee", isAff
 	const company = LocalStorageService.getItem("selectedCompany");
 	const toast = useToast();
 
+	const [showSave, setShowSave] = useState(false);
 	const [tabIndex, setTabIndex] = useState(0);
 	const [personalSubStep, setPersonalSubStep] = useState(0);
 	const [employmentSubStep, setEmploymentSubStep] = useState(0);
@@ -133,40 +133,18 @@ const NewEmployeeOnboardingModal = ({ isOpen, onClose, title = "Employee", isAff
 	];
 
 	useEffect(() => {
-		if (formData.personalInfo.firstName) {
-			setFormData({
-				...formData,
-				personalInfo: {
-					...formData.personalInfo,
-					firstName: trimText(formData.personalInfo.firstName),
-				},
-			});
+		if (
+			formData.personalInfo.firstName &&
+			formData.personalInfo.lastName &&
+			formData.personalInfo.userEmail
+		) {
+			setShowSave(true);
 		}
-	}, [formData.personalInfo.firstName]);
-
-	useEffect(() => {
-		if (formData.personalInfo.middleName) {
-			setFormData({
-				...formData,
-				personalInfo: {
-					...formData.personalInfo,
-					middleName: trimText(formData.personalInfo.middleName),
-				},
-			});
-		}
-	}, [formData.personalInfo.middleName]);
-
-	useEffect(() => {
-		if (formData.personalInfo.lastName) {
-			setFormData({
-				...formData,
-				personalInfo: {
-					...formData.personalInfo,
-					lastName: trimText(formData.personalInfo.lastName),
-				},
-			});
-		}
-	}, [formData.personalInfo.lastName]);
+	}, [
+		formData.personalInfo.firstName,
+		formData.personalInfo.lastName,
+		formData.personalInfo.userEmail,
+	]);
 
 	// Update provinces when country changes
 	useEffect(() => {
@@ -433,6 +411,19 @@ const NewEmployeeOnboardingModal = ({ isOpen, onClose, title = "Employee", isAff
 							{getNextButtonText()}
 						</Button>
 
+						{showSave && (
+							<Button
+								rightIcon={<FaSave />}
+								onClick={handleSubmit}
+								variant="ghost"
+								bg={"var(--banner_bg)"}
+								_hover="none"
+								px={6}
+								color="white"
+							>
+								Save
+							</Button>
+						)}
 						<Button
 							onClick={onClose}
 							variant="ghost"

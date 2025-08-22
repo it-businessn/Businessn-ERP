@@ -70,6 +70,7 @@ const updateProfileInfo = async (id, data) =>
 
 const updateEmployee = async (empId, data) => {
 	const {
+		userEmail,
 		businessEmail,
 		personalEmail,
 		streetAddressSuite,
@@ -97,7 +98,7 @@ const updateEmployee = async (empId, data) => {
 					country,
 			  }
 			: employee?.primaryAddress;
-	const empEmail = personalEmail || businessEmail;
+	const empEmail = userEmail || personalEmail || businessEmail;
 	const email = empEmail && empEmail !== "" ? empEmail : employee?.email;
 
 	const updatedObj = {
@@ -131,6 +132,7 @@ const addEmployeeProfileInfo = async (req, res) => {
 		citizenship,
 		workPermitNo,
 		workPermitExpiryNo,
+		userEmail,
 		personalEmail,
 		personalPhoneNum,
 		businessEmail,
@@ -146,6 +148,7 @@ const addEmployeeProfileInfo = async (req, res) => {
 	} = req.body;
 	try {
 		const data = {
+			userEmail,
 			personalEmail,
 			businessEmail,
 			streetAddressSuite,
@@ -163,7 +166,7 @@ const addEmployeeProfileInfo = async (req, res) => {
 			firstName,
 			companyName,
 			lastName,
-			personalEmail,
+			userEmail,
 		});
 		const updatedData = {
 			streetAddress: `${streetAddressSuite ?? ""} ${streetAddress}`,
@@ -178,6 +181,7 @@ const addEmployeeProfileInfo = async (req, res) => {
 			citizenship,
 			workPermitNo,
 			workPermitExpiryNo,
+			userEmail,
 			personalEmail,
 			personalPhoneNum,
 			businessEmail,
@@ -209,7 +213,7 @@ const addEmployeeProfileInfo = async (req, res) => {
 				firstName,
 				middleName,
 				lastName,
-				email: personalEmail || businessEmail,
+				email: userEmail || personalEmail || businessEmail,
 				fullName: `${firstName} ${middleName} ${lastName}`,
 			};
 			const newEmployee = await addEmployee(companyName, newRecord);
@@ -276,6 +280,7 @@ const updateEmployeeProfileInfo = async (req, res) => {
 			middleName,
 			lastName,
 			SIN,
+			userEmail,
 			personalEmail,
 			businessEmail,
 			streetAddress,
@@ -287,6 +292,7 @@ const updateEmployeeProfileInfo = async (req, res) => {
 		} = req.body;
 
 		const data = {
+			userEmail,
 			personalEmail,
 			businessEmail,
 			streetAddressSuite,

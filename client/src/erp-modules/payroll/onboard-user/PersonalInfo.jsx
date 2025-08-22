@@ -1,5 +1,6 @@
 import {
 	Box,
+	Checkbox,
 	Flex,
 	FormControl,
 	FormLabel,
@@ -17,7 +18,14 @@ import {
 	StepTitle,
 } from "@chakra-ui/react";
 import TextTitle from "components/ui/text/TextTitle";
-import { COUNTRIES, personalSubSteps, tabPanelStyleCss, tabScrollCss } from "./customInfo";
+import { useState } from "react";
+import {
+	COUNTRIES,
+	personalSubSteps,
+	tabPanelStyleCss,
+	tabScrollCss,
+	trimText,
+} from "./customInfo";
 
 const PersonalInfo = ({
 	personalSubStep,
@@ -26,6 +34,16 @@ const PersonalInfo = ({
 	handleChange,
 	availableProvinces,
 }) => {
+	const [sameAsUser, setSameAsUser] = useState(false);
+
+	const handleCheckboxChange = (e) => {
+		const checked = e.target.checked;
+		setSameAsUser(checked);
+		if (checked) {
+			handleChange("contactInfo", "personalEmail", formData.personalInfo.userEmail);
+		}
+	};
+
 	return (
 		<Flex height="100%">
 			<Box
@@ -71,7 +89,9 @@ const PersonalInfo = ({
 								<Input
 									size="sm"
 									value={formData.personalInfo.firstName}
-									onChange={(e) => handleChange("personalInfo", "firstName", e.target.value)}
+									onChange={(e) =>
+										handleChange("personalInfo", "firstName", trimText(e.target.value))
+									}
 									placeholder="First Name"
 								/>
 							</FormControl>
@@ -81,7 +101,9 @@ const PersonalInfo = ({
 								<Input
 									size="sm"
 									value={formData.personalInfo.middleName}
-									onChange={(e) => handleChange("personalInfo", "middleName", e.target.value)}
+									onChange={(e) =>
+										handleChange("personalInfo", "middleName", trimText(e.target.value))
+									}
 									placeholder="Middle Name"
 								/>
 							</FormControl>
@@ -91,13 +113,25 @@ const PersonalInfo = ({
 								<Input
 									size="sm"
 									value={formData.personalInfo.lastName}
-									onChange={(e) => handleChange("personalInfo", "lastName", e.target.value)}
+									onChange={(e) =>
+										handleChange("personalInfo", "lastName", trimText(e.target.value))
+									}
 									placeholder="Last Name"
 								/>
 							</FormControl>
 						</Flex>
 
 						<Flex gap={4}>
+							<FormControl isRequired>
+								<FormLabel size="sm">User Email</FormLabel>
+								<Input
+									size="sm"
+									type="email"
+									value={formData.personalInfo.userEmail}
+									onChange={(e) => handleChange("personalInfo", "userEmail", e.target.value)}
+									placeholder="Personal Email Address"
+								/>
+							</FormControl>
 							<FormControl>
 								<FormLabel size="sm">Date of Birth</FormLabel>
 								<Input
@@ -189,7 +223,16 @@ const PersonalInfo = ({
 
 						<Flex gap={4}>
 							<FormControl isRequired>
-								<FormLabel size="sm">Personal Email</FormLabel>
+								<Flex alignItems={"start"}>
+									<FormLabel size="sm">Personal Email</FormLabel>
+									<Checkbox
+										checked={sameAsUser}
+										colorScheme="facebook"
+										onChange={handleCheckboxChange}
+									>
+										Same as user email
+									</Checkbox>
+								</Flex>
 								<Input
 									size="sm"
 									type="email"
