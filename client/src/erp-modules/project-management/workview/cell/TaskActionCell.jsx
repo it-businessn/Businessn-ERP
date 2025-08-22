@@ -1,8 +1,9 @@
-import { Checkbox, HStack, VStack } from "@chakra-ui/react";
+import { Checkbox, HStack, useToast, VStack } from "@chakra-ui/react";
 import DeletePopUp from "components/ui/modal/DeletePopUp";
 import { useState } from "react";
 import ProjectService from "services/ProjectService";
 import TaskService from "services/TaskService";
+import { getTaskCheckboxCss } from "utils/common";
 import AddNewSubTask from "../project/AddNewSubTask";
 import EditTask from "../project/EditTask";
 import ActionItem from "./ActionItem";
@@ -33,17 +34,14 @@ const TaskActionCell = ({
 	const [deleteRecord, setDeleteRecord] = useState(false);
 	const [deleteRecordTask, setDeleteRecordTask] = useState(false);
 	const [showConfirmationPopUp, setShowConfirmationPopUp] = useState(false);
+	const toast = useToast();
 
 	const handleTaskStatus = (e, taskId) => {
 		setTaskId(taskId);
 		const isOpen = e.target.checked;
-		if (isOpen) {
-			const { top, left, height } = e.target.getBoundingClientRect();
-			setModalPosition({ top: top + height, left });
-			setIsOpen(true);
-		}
 		setIsTaskCompleted(isOpen);
 		setIsChecked(!isChecked);
+		handleConfirm();
 	};
 	const handleClose = () => {
 		setIsOpen(false);
@@ -54,8 +52,14 @@ const TaskActionCell = ({
 	const handleConfirm = async () => {
 		setIsOpen(false);
 		try {
-			await TaskService.updateTaskStatus({ isOpen: isTaskCompleted, actualHours }, taskId);
+			await TaskService.updateTaskStatus({ isOpen: isTaskCompleted }, taskId);
 			setRefresh((prev) => !prev);
+			toast({
+				title: "Task updated successfully!",
+				status: "success",
+				duration: 1000,
+				isClosable: true,
+			});
 		} catch (error) {
 			console.error("Error updating task status:", error);
 		}
@@ -86,8 +90,7 @@ const TaskActionCell = ({
 		<>
 			<HStack spacing={2} className={`task_div_${taskIndex}`} whiteSpace={"pre-wrap"}>
 				<Checkbox
-					sx={{ verticalAlign: "middle" }}
-					colorScheme="facebook"
+					sx={getTaskCheckboxCss(isTaskCompleted)}
 					isChecked={isTaskCompleted}
 					onChange={(e) => handleTaskStatus(e, _id)}
 				/>

@@ -1,11 +1,11 @@
 import { HStack, Td, VStack } from "@chakra-ui/react";
-import { renderPriorityBars } from "utils";
+import { RenderPriorityBars } from "components/RenderPriorityBars";
 
 const PriorityCell = ({ project, index, expandedIndex, isExpanded, isSubExpanded }) => {
 	// top={main ? "0" : "3.5em"} pos={"relative"}
 	const PriorityBar = ({ priority, main, task }) => (
 		<HStack spacing="1" visibility={"hidden"}>
-			{renderPriorityBars(priority)}
+			{RenderPriorityBars(priority)}
 		</HStack>
 	);
 	return (

@@ -1,9 +1,12 @@
 import { SettingsIcon } from "@chakra-ui/icons";
 import { Avatar, Checkbox, Collapse, HStack, IconButton, Td, Text, Tr } from "@chakra-ui/react";
+import { AddTaskButton } from "components/AddTaskButton";
+import { RenderPriorityBars } from "components/RenderPriorityBars";
+import { TaskButton } from "components/TaskButton";
 import React, { useState } from "react";
 import { FaChevronDown } from "react-icons/fa";
 import TaskService from "services/TaskService";
-import { AddTaskButton, TaskButton, renderPriorityBars, statusColor } from "utils";
+import { statusColor } from "utils";
 import { formatDate } from "utils/convertDate";
 import AddNewSubTask from "./project/AddNewSubTask";
 import EditProject from "./project/EditProject";
@@ -94,7 +97,7 @@ const ProjectChild = ({ task, projectId, setRefresh, managers, managerName }) =>
 					</HStack>
 				</Td>
 				<Td fontSize={"xs"} pl={"1em"} w={"100px"}>
-					<HStack spacing="1">{renderPriorityBars(task.priority)}</HStack>
+					<HStack spacing="1">{RenderPriorityBars(task.priority)}</HStack>
 				</Td>
 				<Td fontSize={"xs"} pl={"1em"} w={"150px"}>
 					{task?.createdOn && formatDate(task?.createdOn)}

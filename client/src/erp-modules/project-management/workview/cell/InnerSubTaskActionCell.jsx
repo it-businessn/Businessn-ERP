@@ -1,31 +1,28 @@
-import { Checkbox, HStack } from "@chakra-ui/react";
+import { Checkbox, HStack, useToast } from "@chakra-ui/react";
 import { useState } from "react";
 import ProjectService from "services/ProjectService";
 import TaskService from "services/TaskService";
+import { getTaskCheckboxCss } from "utils/common";
 import EditInnerSubTask from "../project/EditInnerSubTask";
 import ActionItem from "./ActionItem";
 
 const InnerSubTaskActionCell = ({ task, setRefresh, managers, index }) => {
 	const { _id, taskName, subTaskId, completed } = task;
 
-	const [isOpenTask, setIsOpenTask] = useState(completed);
+	const [isTaskCompleted, setIsTaskCompleted] = useState(completed);
 	const [isOpen, setIsOpen] = useState(false);
 	const [isChecked, setIsChecked] = useState(false);
 	const [modalPosition, setModalPosition] = useState({ top: 0, left: 0 });
 	const [innertaskId, setTaskId] = useState(null);
 	const [actualHours, setActualHours] = useState(0);
+	const toast = useToast();
 
 	const handleTaskStatus = async (e, taskId) => {
 		setTaskId(taskId);
 		const isOpen = e.target.checked;
-		if (isOpen) {
-			const { top, left, height } = e.target.getBoundingClientRect();
-			setModalPosition({ top: top + height, left });
-			setIsOpen(true);
-		}
 		setIsChecked(!isChecked);
-
-		setIsOpenTask(isOpen);
+		setIsTaskCompleted(isOpen);
+		handleConfirm();
 	};
 
 	const handleClose = () => {
@@ -36,10 +33,13 @@ const InnerSubTaskActionCell = ({ task, setRefresh, managers, index }) => {
 	const handleConfirm = async () => {
 		setIsOpen(false);
 		try {
-			await TaskService.updateInnerSubTaskStatus(
-				{ isOpen: isOpenTask, actualHours, taskName },
-				subTaskId,
-			);
+			await TaskService.updateInnerSubTaskStatus({ isOpen: isTaskCompleted, taskName }, subTaskId);
+			toast({
+				title: "Task updated successfully!",
+				status: "success",
+				duration: 1000,
+				isClosable: true,
+			});
 			setRefresh((prev) => !prev);
 		} catch (error) {
 			console.error("Error updating task status:", error);
@@ -85,9 +85,9 @@ const InnerSubTaskActionCell = ({ task, setRefresh, managers, index }) => {
 			/> */}
 			<HStack spacing={3} className={`inner_subtask_div_${index}`} whiteSpace={"pre-wrap"}>
 				<Checkbox
-					sx={{ verticalAlign: "middle" }}
+					sx={getTaskCheckboxCss(isTaskCompleted)}
 					colorScheme="facebook"
-					isChecked={isOpenTask}
+					isChecked={isTaskCompleted}
 					onChange={(e) => handleTaskStatus(e, _id)}
 				/>
 				<ActionItem

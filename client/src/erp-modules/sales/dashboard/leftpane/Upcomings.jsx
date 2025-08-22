@@ -1,7 +1,7 @@
 import TabsButtonGroup from "components/ui/tab/TabsButtonGroup";
 import { useEffect, useState } from "react";
 import CalendarTable from "./CalendarTable";
-import TaskTable from "./TaskTable";
+import UpcomingTaskTable from "./UpcomingTaskTable";
 
 const UpcomingList = ({ selectedUser, company, setIsRefresh, setStats }) => {
 	const CALENDAR_COLS = ["Description", "From", "To", "Event Link", "Location"];
@@ -9,7 +9,11 @@ const UpcomingList = ({ selectedUser, company, setIsRefresh, setStats }) => {
 		{
 			type: "Tasks",
 			name: (
-				<TaskTable cols={["Name", "Priority", "Due date"]} user={selectedUser} company={company} />
+				<UpcomingTaskTable
+					cols={["Name", "Priority", "Due date"]}
+					user={selectedUser}
+					company={company}
+				/>
 			),
 		},
 		{

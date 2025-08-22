@@ -1,8 +1,9 @@
-import { Checkbox, HStack, VStack } from "@chakra-ui/react";
+import { Checkbox, HStack, useToast, VStack } from "@chakra-ui/react";
 import DeletePopUp from "components/ui/modal/DeletePopUp";
 import { useState } from "react";
 import ProjectService from "services/ProjectService";
 import TaskService from "services/TaskService";
+import { getTaskCheckboxCss } from "utils/common";
 import AddNewSubTasks from "../project/AddNewSubTasks";
 import EditSubTask from "../project/EditSubTask";
 import ActionItem from "./ActionItem";
@@ -34,17 +35,14 @@ const SubTaskActionCell = ({
 	const [deleteRecord, setDeleteRecord] = useState(false);
 	const [deleteRecordTask, setDeleteRecordTask] = useState(false);
 	const [showConfirmationPopUp, setShowConfirmationPopUp] = useState(false);
+	const toast = useToast();
 
 	const handleTaskStatus = async (e, taskId) => {
 		setTaskId(taskId);
 		const isOpen = e.target.checked;
-		if (isOpen) {
-			const { top, left, height } = e.target.getBoundingClientRect();
-			setModalPosition({ top: top + height, left });
-			setIsOpen(true);
-		}
 		setIsTaskCompleted(isOpen);
 		setIsChecked(!isChecked);
+		handleConfirm();
 
 		setIsOpenTask(isOpen);
 	};
@@ -57,7 +55,13 @@ const SubTaskActionCell = ({
 	const handleConfirm = async () => {
 		setIsOpen(false);
 		try {
-			await TaskService.updateSubTaskStatus({ isOpen: isTaskCompleted, actualHours }, taskId);
+			await TaskService.updateSubTaskStatus({ isOpen: isTaskCompleted }, taskId);
+			toast({
+				title: "Task updated successfully!",
+				status: "success",
+				duration: 1000,
+				isClosable: true,
+			});
 		} catch (error) {
 			console.error("Error updating task status:", error);
 		}
@@ -96,7 +100,7 @@ const SubTaskActionCell = ({
 			/> */}
 			<HStack spacing={3} className={`subtask_div_${index}`} whiteSpace={"pre-wrap"}>
 				<Checkbox
-					sx={{ verticalAlign: "middle" }}
+					sx={getTaskCheckboxCss(isTaskCompleted)}
 					colorScheme="facebook"
 					isChecked={isTaskCompleted}
 					onChange={(e) => handleTaskStatus(e, _id)}

@@ -9,9 +9,9 @@ import {
 	Stepper,
 	VStack,
 } from "@chakra-ui/react";
+import { CircularProgressBarCell } from "components/CircularProgressBarCell";
 import { FaArrowLeft } from "react-icons/fa";
 import { FaCheck } from "react-icons/fa6";
-import { CircularProgressBarCell } from "utils";
 import CancelButton from "./button/CancelButton";
 import PrimaryButton from "./button/PrimaryButton";
 import NormalTextTitle from "./NormalTextTitle";

@@ -51,3 +51,20 @@ export const getAddress = (address) =>
 		: "";
 
 export const isEmptyOrNullOrUndefined = (value) => !value || value === "";
+
+export const getTaskCheckboxCss = (isTaskComplete) => {
+	const bg = isTaskComplete ? "var(--action_status_approve)" : "var(--calendar_border)";
+	return {
+		verticalAlign: "middle",
+		".chakra-checkbox__control": {
+			borderColor: "gray.400",
+			_checked: {
+				bg,
+				borderColor: bg,
+			},
+		},
+		".chakra-checkbox__icon": {
+			color: "var(--action_status_bg)",
+		},
+	};
+};

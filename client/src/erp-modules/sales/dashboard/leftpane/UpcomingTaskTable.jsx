@@ -1,13 +1,13 @@
 import { Box, HStack, Table, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
+import { RenderPriorityBars } from "components/RenderPriorityBars";
 import EmptyRowRecord from "components/ui/EmptyRowRecord";
 import { tabScrollCss } from "erp-modules/payroll/onboard-user/customInfo";
 import useSelectUser from "hooks/useSelectUser";
 import { useEffect, useState } from "react";
 import TaskService from "services/TaskService";
-import { renderPriorityBars } from "utils";
 import { formatDate } from "utils/convertDate";
 
-const TaskTable = ({ cols, user, company }) => {
+const UpcomingTaskTable = ({ cols, user, company }) => {
 	const [tasks, setTasks] = useState(null);
 	const { selectedUser } = useSelectUser(user);
 
@@ -47,7 +47,7 @@ const TaskTable = ({ cols, user, company }) => {
 						<Tr key={_id}>
 							<Td fontSize={"xs"}>{taskName}</Td>
 							<Td fontSize={"xs"}>
-								<HStack spacing="1">{renderPriorityBars(priority)}</HStack>
+								<HStack spacing="1">{RenderPriorityBars(priority)}</HStack>
 							</Td>
 							<Td fontSize={"xs"}>{dueDate && formatDate(dueDate)}</Td>
 						</Tr>
@@ -58,4 +58,4 @@ const TaskTable = ({ cols, user, company }) => {
 	);
 };
 
-export default TaskTable;
+export default UpcomingTaskTable;

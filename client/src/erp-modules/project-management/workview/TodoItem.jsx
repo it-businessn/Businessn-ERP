@@ -1,8 +1,9 @@
 import { SettingsIcon, SmallAddIcon } from "@chakra-ui/icons";
 import { Avatar, Checkbox, HStack, IconButton, Td, Text, Tr } from "@chakra-ui/react";
+import { RenderPriorityBars } from "components/RenderPriorityBars";
 import React, { useState } from "react";
 import TaskService from "services/TaskService";
-import { generateLighterShade, renderPriorityBars, statusColor } from "utils";
+import { generateLighterShade, statusColor } from "utils";
 import { formatDate } from "utils/convertDate";
 import { COLORS } from "./project/data";
 
@@ -80,7 +81,7 @@ const TodoItem = ({ task }) => {
 					<Avatar name={selectedAssignees} size={"sm"} src={selectedAssignees} />
 				</Td>
 				<Td fontSize={"xs"} w={"200px"}>
-					<HStack spacing="1">{renderPriorityBars(task.priority)}</HStack>
+					<HStack spacing="1">{RenderPriorityBars(task.priority)}</HStack>
 				</Td>
 				<Td fontSize={"xs"} w={"180px"}>
 					{task?.updatedOn && formatDate(task?.updatedOn)}

@@ -20,19 +20,14 @@ import {
 	VStack,
 	useDisclosure,
 } from "@chakra-ui/react";
+import { RenderPriorityBars } from "components/RenderPriorityBars";
 import EmptyRowRecord from "components/ui/EmptyRowRecord";
 import { tabScrollCss } from "erp-modules/payroll/onboard-user/customInfo";
 import Caption from "erp-modules/sales/lead docket/Caption";
 import React, { useEffect, useState } from "react";
 import { FaChevronDown, FaSort } from "react-icons/fa";
 import TaskService from "services/TaskService";
-import {
-	CircularProgressBarCell,
-	TaskButton,
-	calculateTaskCompletion,
-	renderPriorityBars,
-	statusColor,
-} from "utils";
+import { TaskButton, statusColor } from "utils";
 import { formatDate } from "utils/convertDate";
 import EditTask from "../EditTask";
 import TodoItem from "../TodoItem";
@@ -156,7 +151,7 @@ const TaskTable = ({
 						</HStack>
 					</Td>
 					<Td fontSize={"xs"}>
-						<HStack spacing="1">{renderPriorityBars(task.priority)}</HStack>
+						<HStack spacing="1">{RenderPriorityBars(task.priority)}</HStack>
 					</Td>
 					<Td fontSize={"xs"}>{task.projectName}</Td>
 					<Td fontSize={"xs"}>{task?.updatedOn && formatDate(task.updatedOn)}</Td>

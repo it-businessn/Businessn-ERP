@@ -1,7 +1,8 @@
 import { Flex, HStack, Tooltip } from "@chakra-ui/react";
+import { AddTaskButton } from "components/AddTaskButton";
+import { TaskButton } from "components/TaskButton";
 import NormalTextTitle from "components/ui/NormalTextTitle";
 import { FaRegTrashAlt } from "react-icons/fa";
-import { AddTaskButton, TaskButton } from "utils";
 
 const ActionItem = ({
 	name,
