@@ -24,7 +24,7 @@ const ActionItem = ({
 		<>
 			<Tooltip label={name} fontSize="xs" hasArrow placement="bottom-start">
 				<Flex alignItems={"center"}>
-					<NormalTextTitle width={width} size={textSize} title={name} whiteSpace={"nowrap"} />{" "}
+					<NormalTextTitle width={width} size={textSize} title={name} whiteSpace={"nowrap"} />
 				</Flex>
 			</Tooltip>
 
@@ -35,6 +35,7 @@ const ActionItem = ({
 						isExpanded={isExpanded}
 						totalTasks={totalTasks}
 						onClick={handleToggle}
+						type={type}
 					/>
 				)}
 				<AddTaskButton

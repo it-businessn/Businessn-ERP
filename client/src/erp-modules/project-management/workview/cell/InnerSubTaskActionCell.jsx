@@ -4,7 +4,6 @@ import ProjectService from "services/ProjectService";
 import TaskService from "services/TaskService";
 import EditInnerSubTask from "../project/EditInnerSubTask";
 import ActionItem from "./ActionItem";
-import AddActualHours from "./AddActualHours";
 
 const InnerSubTaskActionCell = ({ task, setRefresh, managers, index }) => {
 	const { _id, taskName, subTaskId, completed } = task;
@@ -75,7 +74,7 @@ const InnerSubTaskActionCell = ({ task, setRefresh, managers, index }) => {
 					managers={managers}
 				/>
 			)}
-			<AddActualHours
+			{/* <AddActualHours
 				isOpen={isOpen}
 				setIsOpen={setIsOpen}
 				modalPosition={modalPosition}
@@ -83,7 +82,7 @@ const InnerSubTaskActionCell = ({ task, setRefresh, managers, index }) => {
 				actualHours={actualHours}
 				handleClose={handleClose}
 				handleConfirm={handleConfirm}
-			/>
+			/> */}
 			<HStack spacing={3} className={`inner_subtask_div_${index}`} whiteSpace={"pre-wrap"}>
 				<Checkbox
 					sx={{ verticalAlign: "middle" }}

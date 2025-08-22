@@ -210,7 +210,13 @@ export const calculateProjectCompletion = (project) => {
 	// return totalTasks > 0 ? Math.floor((completedTasks / totalTasks) * 100) : 0;
 };
 
-export const TaskButton = ({ totalTasks, isTopLevel, onClick, isExpanded }) => {
+const TASK_TYPE = {
+	file: "P",
+	project: "T",
+	task: "S",
+};
+
+export const TaskButton = ({ totalTasks, isTopLevel, onClick, isExpanded, type }) => {
 	return (
 		<Button
 			onClick={onClick}
@@ -233,7 +239,7 @@ export const TaskButton = ({ totalTasks, isTopLevel, onClick, isExpanded }) => {
 				color: "var(--primary_button_bg)",
 			}}
 		>
-			{`${totalTasks} T`}
+			{`${totalTasks} ${TASK_TYPE[type] || "S"}`}
 		</Button>
 	);
 };

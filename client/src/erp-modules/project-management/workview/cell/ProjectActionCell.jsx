@@ -7,7 +7,6 @@ import projectImg from "../../../../assets/project.png";
 import AddNewTask from "../project/AddNewTask";
 import EditProject from "../project/EditProject";
 import ActionItem from "./ActionItem";
-import AddActualHours from "./AddActualHours";
 import TaskActionCell from "./TaskActionCell";
 
 const ProjectActionCell = ({
@@ -108,7 +107,7 @@ const ProjectActionCell = ({
 						setDeleteRecordTask(project);
 						setDeleteRecord(project._id);
 					}}
-					type={"task"}
+					type={"project"}
 					data={project}
 					setRefresh={setRefresh}
 				/>
@@ -153,7 +152,7 @@ const ProjectActionCell = ({
 					company={company}
 				/>
 			)}
-			{isOpen && (
+			{/* {isOpen && (
 				<AddActualHours
 					isOpen={isOpen}
 					setIsOpen={setIsOpen}
@@ -163,7 +162,7 @@ const ProjectActionCell = ({
 					handleClose={handleClose}
 					handleConfirm={handleConfirm}
 				/>
-			)}
+			)} */}
 			{showConfirmationPopUp && (
 				<DeletePopUp
 					headerTitle={"Delete Project"}

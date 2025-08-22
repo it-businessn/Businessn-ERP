@@ -6,7 +6,6 @@ import TaskService from "services/TaskService";
 import AddNewSubTask from "../project/AddNewSubTask";
 import EditTask from "../project/EditTask";
 import ActionItem from "./ActionItem";
-import AddActualHours from "./AddActualHours";
 import SubTaskActionCell from "./SubTaskActionCell";
 
 const TaskActionCell = ({
@@ -148,7 +147,7 @@ const TaskActionCell = ({
 					company={company}
 				/>
 			)}
-			{isOpen && (
+			{/* {isOpen && (
 				<AddActualHours
 					isOpen={isOpen}
 					setIsOpen={setIsOpen}
@@ -158,7 +157,7 @@ const TaskActionCell = ({
 					handleClose={handleClose}
 					handleConfirm={handleConfirm}
 				/>
-			)}
+			)} */}
 			{showConfirmationPopUp && (
 				<DeletePopUp
 					headerTitle={"Delete Task"}
