@@ -7,6 +7,7 @@ const { fetchActiveEmployees } = require("./userController");
 const { updatePayInfo } = require("./payInfoController");
 const EmployeeProfileInfo = require("../models/EmployeeProfileInfo");
 const EmployeeTADProfileInfo = require("../models/EmployeeTADProfile");
+const { addUserEmploymentInfo } = require("./empDataController");
 
 const getAllEmploymentInfo = async (req, res) => {
 	const { companyName, payDate, isExtraRun, groupId, deptName, selectedPayGroupOption } = req.body;
@@ -259,7 +260,7 @@ const updateEmployeeEmploymentInfo = async (req, res) => {
 		positions,
 	} = req.body;
 	try {
-		const existingRecord = await EmployeeEmploymentInfo.findById(id);
+		const existingRecord = await EmployeeEmploymentInfo.findOne({ empId });
 		if (existingRecord) {
 			const positionExists = positions?.find((_) => _.title);
 			if (positionExists) {
@@ -276,7 +277,7 @@ const updateEmployeeEmploymentInfo = async (req, res) => {
 				}
 			}
 
-			const updatedInfo = await updateEmploymentInfo(id, {
+			const updatedInfo = await updateEmploymentInfo(existingRecord._id, {
 				payrollStatus,
 				employeeNo,
 				companyName,
@@ -289,7 +290,8 @@ const updateEmployeeEmploymentInfo = async (req, res) => {
 			});
 			return res.status(201).json(updatedInfo);
 		}
-		return res.status(201).json("Record does not exist");
+		addUserEmploymentInfo(empId, companyName, req.body);
+		return res.status(201).json("Employment info added");
 	} catch (error) {
 		res.status(400).json({ message: error.message });
 	}

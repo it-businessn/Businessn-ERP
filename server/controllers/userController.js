@@ -153,12 +153,16 @@ const getPayrollTerminatedCompanyEmployees = async (req, res) => {
 const getCompanyUsers = async (req, res) => {
 	const { companyName } = req.params;
 	try {
-		let result = await EmployeeEmploymentInfo.find({
+		const employmentRecords = await EmployeeEmploymentInfo.find({
 			companyName,
-			employmentRole: {
-				$ne: ROLES.SHADOW_ADMIN,
-			},
-		}).populate({
+			employmentRole: ROLES.SHADOW_ADMIN,
+		}).select("empId");
+		const shadowEmpIds = employmentRecords.map((emp) => emp.empId);
+		const filter = {
+			companyName,
+			...(shadowEmpIds.length > 0 && { empId: { $nin: shadowEmpIds } }),
+		};
+		let result = await EmployeeProfileInfo.find(filter).populate({
 			path: "empId",
 			model: "Employee",
 			select: ["empId", "fullName"],

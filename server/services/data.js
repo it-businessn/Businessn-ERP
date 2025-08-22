@@ -53,7 +53,7 @@ const ADMIN_PERMISSION = [
 	{ name: "Sales Setup" },
 	{ name: "Project Management" },
 	{ name: "Project Management Dashboard" },
-	{ name: "Project Management Workview" },
+	{ name: "Project Management Overview" },
 	{ name: "Project Management Communication" },
 	{ name: "Project Management Taskboard" },
 	{ name: "Project Management Agenda" },
@@ -94,7 +94,7 @@ const EMPLOYEE_PERMISSION = [
 	{ name: "Sales Resources" },
 	{ name: "Project Management" },
 	{ name: "Project Management Dashboard" },
-	{ name: "Project Management Work view" },
+	{ name: "Project Management Overview" },
 	{ name: "Project Management Communication" },
 ];
 
@@ -111,6 +111,8 @@ const CLIENT_ORG_ADMIN_PERMISSION = [
 	{ name: "Payroll Employee Dashboard" },
 	// { name: "Payroll Employee Records" },
 	// { name: "Payroll Setup" },
+	{ name: "Project Management" },
+	{ name: "Project Management Overview" },
 ];
 
 const CLIENT_ORG_EMP_PERMISSION = [{ name: "Payroll" }, { name: "Payroll Employee Dashboard" }];
