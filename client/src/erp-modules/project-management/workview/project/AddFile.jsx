@@ -129,7 +129,7 @@ const AddFile = ({ isOpen, onClose, setRefresh, managers, company }) => {
 											}))
 										}
 									/>
-									<InputFormControl
+									{/* <InputFormControl
 										label={"Time to complete (in hours)"}
 										name="timeToComplete"
 										valueText={formData?.timeToComplete}
@@ -139,7 +139,7 @@ const AddFile = ({ isOpen, onClose, setRefresh, managers, company }) => {
 												timeToComplete: e.target.value,
 											}))
 										}
-									/>
+									/> */}
 								</HStack>
 
 								<HStack justifyContent={"end"}>

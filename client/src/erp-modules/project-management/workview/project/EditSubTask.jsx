@@ -115,7 +115,7 @@ const EditSubTask = ({ isOpen, onClose, setRefresh, currentTask, managers }) => 
 											required
 										/>
 									</FormControl>
-									<FormControl>
+									{/* <FormControl>
 										<FormLabel>Time to complete (in hours)</FormLabel>
 										<Input
 											type="text"
@@ -129,7 +129,7 @@ const EditSubTask = ({ isOpen, onClose, setRefresh, currentTask, managers }) => 
 											}
 											required
 										/>
-									</FormControl>
+									</FormControl> */}
 								</HStack>
 								<HStack>
 									<FormControl>

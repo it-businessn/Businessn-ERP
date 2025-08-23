@@ -155,7 +155,7 @@ const EditProjectFile = ({ isOpen, onClose, project, projectId, setRefresh, mana
 											required
 										/>
 									</FormControl>
-									<FormControl>
+									{/* <FormControl>
 										<FormLabel>Time to complete (in hours)</FormLabel>
 										<Input
 											type="text"
@@ -169,7 +169,7 @@ const EditProjectFile = ({ isOpen, onClose, project, projectId, setRefresh, mana
 											}
 											required
 										/>
-									</FormControl>
+									</FormControl> */}
 								</HStack>
 								<HStack>
 									<FormControl>

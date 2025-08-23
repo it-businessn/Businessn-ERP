@@ -149,7 +149,7 @@ const AddNewProjectTask = ({ isOpen, onClose, task, projectId, setRefresh }) => 
 											required
 										/>
 									</FormControl>
-									<FormControl>
+									{/* <FormControl>
 										<FormLabel>Time to complete (in hours)</FormLabel>
 										<Input
 											type="text"
@@ -163,7 +163,7 @@ const AddNewProjectTask = ({ isOpen, onClose, task, projectId, setRefresh }) => 
 											}
 											required
 										/>
-									</FormControl>
+									</FormControl> */}
 								</HStack>
 								<HStack spacing={4}>
 									<FormControl>

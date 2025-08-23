@@ -197,7 +197,7 @@ const AddNewSubTask = ({
 											required
 										/>
 									</FormControl>
-									<FormControl>
+									{/* <FormControl>
 										<FormLabel>Time to complete (in hours)</FormLabel>
 										<Input
 											type="text"
@@ -211,7 +211,7 @@ const AddNewSubTask = ({
 											}
 											required
 										/>
-									</FormControl>
+									</FormControl> */}
 								</HStack>
 								{!isFiltered && (
 									<>

@@ -190,7 +190,7 @@ const AddNewTask = ({ isOpen, onClose, setRefresh, allProjects, isFiltered, allP
 											required
 										/>
 									</FormControl>
-									<FormControl>
+									{/* <FormControl>
 										<FormLabel>Time to complete (in hours)</FormLabel>
 										<Input
 											type="text"
@@ -204,7 +204,7 @@ const AddNewTask = ({ isOpen, onClose, setRefresh, allProjects, isFiltered, allP
 											}
 											required
 										/>
-									</FormControl>
+									</FormControl> */}
 								</HStack>
 								{/* {!isFiltered && (
 									<HStack spacing={4}>

@@ -129,7 +129,7 @@ const AddNewProject = ({ isOpen, onClose, setRefresh, file, fileId, managers, co
 											}
 										/>
 									</FormControl>
-									<FormControl>
+									{/* <FormControl>
 										<FormLabel>Time to complete (in hours)</FormLabel>
 										<Input
 											type="text"
@@ -142,7 +142,7 @@ const AddNewProject = ({ isOpen, onClose, setRefresh, file, fileId, managers, co
 												}))
 											}
 										/>
-									</FormControl>
+									</FormControl> */}
 								</HStack>
 
 								<HStack justifyContent={"end"}>

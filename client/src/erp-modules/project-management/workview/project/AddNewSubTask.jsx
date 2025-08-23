@@ -131,7 +131,7 @@ const AddNewSubTask = ({ isOpen, onClose, setRefresh, currentTask, managers, com
 											}
 										/>
 									</FormControl>
-									<FormControl>
+									{/* <FormControl>
 										<FormLabel>Time to complete (in hours)</FormLabel>
 										<Input
 											type="text"
@@ -144,7 +144,7 @@ const AddNewSubTask = ({ isOpen, onClose, setRefresh, currentTask, managers, com
 												}))
 											}
 										/>
-									</FormControl>
+									</FormControl> */}
 								</HStack>
 								<HStack justifyContent={"end"}>
 									<Button
