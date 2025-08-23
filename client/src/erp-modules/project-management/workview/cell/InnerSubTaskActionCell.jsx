@@ -98,6 +98,7 @@ const InnerSubTaskActionCell = ({ task, setRefresh, managers, index }) => {
 					onChange={(e) => handleTaskStatus(e, _id)}
 				/>
 				<CellAction
+					width="44em"
 					isInner={true}
 					name={taskName}
 					handleEditProject={() => handleEditSubtask(task, task._id)}

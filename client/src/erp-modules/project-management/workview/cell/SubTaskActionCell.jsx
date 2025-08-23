@@ -89,6 +89,7 @@ const SubTaskActionCell = ({
 		}
 	};
 
+	const width = task?.subtasks?.length ? "36.5em" : "42em";
 	return (
 		<>
 			{/* <AddActualHours
@@ -108,7 +109,7 @@ const SubTaskActionCell = ({
 					onChange={handleTaskStatus}
 				/>
 				<CellAction
-					width="36em"
+					width={width}
 					isInner={isInner}
 					name={taskName}
 					totalTask={task?.subtasks}

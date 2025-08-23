@@ -87,6 +87,7 @@ const TaskActionCell = ({
 		}
 	};
 
+	const width = task?.subtasks?.length ? "38em" : "43.1em";
 	return (
 		<>
 			<HStack spacing={2} className={`task_div_${taskIndex}`} whiteSpace={"pre-wrap"}>
@@ -96,7 +97,7 @@ const TaskActionCell = ({
 					onChange={handleTaskStatus}
 				/>
 				<CellAction
-					width="33em"
+					width={width}
 					name={task.taskName}
 					totalTask={task?.subtasks}
 					totalTasks={task?.totalTasks}

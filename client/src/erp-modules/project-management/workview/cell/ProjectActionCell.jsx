@@ -92,6 +92,8 @@ const ProjectActionCell = ({
 			console.log("An error occurred. Please try again.", error);
 		}
 	};
+	const width = project?.tasks?.length ? "38.5em" : "44em";
+
 	return (
 		<>
 			<HStack
@@ -103,7 +105,7 @@ const ProjectActionCell = ({
 			>
 				<Image height={"20px"} width={"20px"} objectFit="cover" src={projectImg} alt="file" />
 				<CellAction
-					width="33em"
+					width={width}
 					name={project.projectName}
 					totalTask={project?.tasks}
 					totalTasks={project?.totalTasks}
