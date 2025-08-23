@@ -90,7 +90,12 @@ const TaskActionCell = ({
 	const width = task?.subtasks?.length ? "38em" : "43.1em";
 	return (
 		<>
-			<HStack spacing={2} className={`task_div_${taskIndex}`} whiteSpace={"pre-wrap"}>
+			<HStack
+				spacing={2}
+				className={`task_div_${taskIndex}`}
+				whiteSpace={"pre-wrap"}
+				_hover={{ bg: "var(--phoneCall_bg_light)" }}
+			>
 				<Checkbox
 					sx={getTaskCheckboxCss(isTaskCompleted)}
 					isChecked={isTaskCompleted}

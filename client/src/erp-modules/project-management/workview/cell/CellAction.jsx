@@ -29,14 +29,18 @@ const CellAction = ({
 					{isFile ? (
 						<NormalTextTitle width={width} size={textSize} title={name} whiteSpace={"nowrap"} />
 					) : (
-						<Editable defaultValue={name} onSubmit={(nextValue) => onSave(nextValue)}>
+						<Editable
+							defaultValue={name}
+							onSubmit={(nextValue) => {
+								if (nextValue !== name) onSave(nextValue);
+							}}
+						>
 							<EditablePreview
 								cursor="pointer"
 								width={width}
 								size={textSize}
 								whiteSpace={"nowrap"}
 								padding="0"
-								_hover={{ bg: "gray.100" }}
 							/>
 							<EditableInput width={width} />
 						</Editable>

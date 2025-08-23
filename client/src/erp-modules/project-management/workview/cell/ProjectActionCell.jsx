@@ -102,6 +102,7 @@ const ProjectActionCell = ({
 				className={`task_div_${index}`}
 				whiteSpace={"pre-wrap"}
 				alignItems={"center"}
+				_hover={{ bg: "var(--phoneCall_bg_light)" }}
 			>
 				<Image height={"20px"} width={"20px"} objectFit="cover" src={projectImg} alt="file" />
 				<CellAction

@@ -101,7 +101,12 @@ const SubTaskActionCell = ({
 				handleClose={handleClose}
 				handleConfirm={handleConfirm}
 			/> */}
-			<HStack spacing={3} className={`subtask_div_${index}`} whiteSpace={"pre-wrap"}>
+			<HStack
+				spacing={3}
+				className={`subtask_div_${index}`}
+				whiteSpace={"pre-wrap"}
+				_hover={{ bg: "var(--phoneCall_bg_light)" }}
+			>
 				<Checkbox
 					sx={getTaskCheckboxCss(isTaskCompleted)}
 					colorScheme="facebook"

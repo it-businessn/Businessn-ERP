@@ -22,7 +22,7 @@ const InnerSubTaskActionCell = ({ task, setRefresh, managers, index }) => {
 		const isOpen = e.target.checked;
 		setIsChecked(!isChecked);
 		setIsTaskCompleted(isOpen);
-		handleConfirm();
+		handleCheckboxChange();
 	};
 
 	const handleClose = () => {
@@ -30,7 +30,7 @@ const InnerSubTaskActionCell = ({ task, setRefresh, managers, index }) => {
 		setActualHours(0);
 	};
 
-	const handleConfirm = async () => {
+	const handleCheckboxChange = async () => {
 		setIsOpen(false);
 		try {
 			await TaskService.updateInnerSubTaskStatus({ isOpen: isTaskCompleted, taskName }, subTaskId);
@@ -63,9 +63,13 @@ const InnerSubTaskActionCell = ({ task, setRefresh, managers, index }) => {
 			console.error("Error updating task status:", error);
 		}
 	};
+
 	const handleSave = async (updatedData) => {
 		try {
-			await ProjectService.updateInnerSubTaskName({ projectName: updatedData }, task._id);
+			await ProjectService.updateInnerSubTaskName(
+				{ taskName: updatedData, recordIndex: index },
+				subTaskId,
+			);
 		} catch (error) {
 			console.log("An error occurred. Please try again.", error);
 		}
@@ -90,7 +94,12 @@ const InnerSubTaskActionCell = ({ task, setRefresh, managers, index }) => {
 				handleClose={handleClose}
 				handleConfirm={handleConfirm}
 			/> */}
-			<HStack spacing={3} className={`inner_subtask_div_${index}`} whiteSpace={"pre-wrap"}>
+			<HStack
+				spacing={3}
+				className={`inner_subtask_div_${index}`}
+				whiteSpace={"pre-wrap"}
+				_hover={{ bg: "var(--phoneCall_bg_light)" }}
+			>
 				<Checkbox
 					sx={getTaskCheckboxCss(isTaskCompleted)}
 					colorScheme="facebook"
