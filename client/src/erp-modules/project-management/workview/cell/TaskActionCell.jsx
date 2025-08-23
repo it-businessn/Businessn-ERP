@@ -41,7 +41,7 @@ const TaskActionCell = ({
 		const isOpen = e.target.checked;
 		setIsTaskCompleted(isOpen);
 		setIsChecked(!isChecked);
-		handleConfirm();
+		handleCheckboxChange();
 	};
 	const handleClose = () => {
 		setIsOpen(false);
@@ -49,7 +49,7 @@ const TaskActionCell = ({
 		setShowConfirmationPopUp((prev) => !prev);
 	};
 
-	const handleConfirm = async () => {
+	const handleCheckboxChange = async () => {
 		setIsOpen(false);
 		try {
 			await TaskService.updateTaskStatus({ isOpen: isTaskCompleted }, taskId);

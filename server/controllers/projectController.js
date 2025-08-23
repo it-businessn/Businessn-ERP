@@ -1,3 +1,4 @@
+const moment = require("moment");
 const Project = require("../models/Project");
 const Task = require("../models/Task");
 const SubTask = require("../models/SubTask");
@@ -5,24 +6,42 @@ const Activity = require("../models/Activity");
 const { TIMESHEET_STATUS } = require("../services/data");
 const ProjectFile = require("../models/ProjectFile");
 
+const PREV_DAY = moment.utc().subtract(1, "days");
+
 const findProject = async (projects) =>
 	await Promise.all(
-		projects.map(
-			async (project) =>
-				await ProjectFile.findById(project._id)
-					.populate({
-						path: "projects",
+		projects.map(async (project) => {
+			const projectFile = await ProjectFile.findById(project._id)
+				.populate({
+					path: "projects",
+					populate: {
+						path: "tasks",
+						model: "Task",
 						populate: {
-							path: "tasks",
-							model: "Task",
-							populate: {
-								path: "subtasks",
-								model: "SubTask",
-							},
+							path: "subtasks",
+							model: "SubTask",
 						},
-					})
-					.exec(),
-		),
+					},
+				})
+				.exec();
+			if (!projectFile?.projects) return projectFile;
+
+			// Filter tasks and subtasks
+			projectFile.projects.forEach((proj) => {
+				proj.tasks = proj.tasks.filter((task) => {
+					const keepTask = !task.completed || moment(task.updatedOn).isAfter(PREV_DAY);
+
+					// filter subtasks inside each task
+					task.subtasks = task.subtasks.filter((subtask) => {
+						return !subtask.completed || moment(subtask.updatedOn).isAfter(PREV_DAY);
+					});
+
+					return keepTask;
+				});
+			});
+
+			return projectFile;
+		}),
 	);
 
 const getProjects = async (req, res) => {

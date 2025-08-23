@@ -1,5 +1,6 @@
+const moment = require("moment");
+
 const Activity = require("../models/Activity");
-const Project = require("../models/Project");
 const SubTask = require("../models/SubTask");
 const Task = require("../models/Task");
 
@@ -28,9 +29,8 @@ const getTaskById = async (req, res) => {
 const createTask = async (req, res) => {
 	const { contactId, dueDate, name, status } = req.body;
 
-	const task = new Task({ contactId, date: Date.now(), dueDate, name, status });
-
 	try {
+		const task = new Task({ contactId, date: moment(), dueDate, name, status });
 		const newTask = await task.save();
 		res.status(201).json(newTask);
 	} catch (error) {
@@ -65,7 +65,7 @@ const updateTask = async (req, res) => {
 	try {
 		const updatedTask = await Task.findByIdAndUpdate(
 			taskId,
-			{ isOpen, completed: isOpen },
+			{ isOpen, completed: isOpen, updatedOn: moment() },
 			{
 				new: true,
 			},
@@ -92,11 +92,13 @@ const updateInnerSubTask = async (req, res) => {
 		if (matchingInnerSubtaskIndex > -1) {
 			matchingInnerSubtask.isOpen = isOpen;
 			matchingInnerSubtask.completed = isOpen;
+			matchingInnerSubtask.updatedOn = moment();
 		} else {
 			console.log("InnerSubtask not found.");
 		}
 
 		savedSubtask.subtasks[matchingInnerSubtaskIndex] = matchingInnerSubtask;
+		savedSubtask.updatedOn = moment();
 		await savedSubtask.save();
 
 		res.status(201).json(savedSubtask);
@@ -111,7 +113,7 @@ const updateSubTask = async (req, res) => {
 	try {
 		const updatedSubtask = await SubTask.findByIdAndUpdate(
 			id,
-			{ isOpen, completed: isOpen },
+			{ isOpen, completed: isOpen, updatedOn: moment() },
 			{
 				new: true,
 			},
@@ -128,7 +130,7 @@ const updateActivity = async (req, res) => {
 	try {
 		const updatedActivity = await Activity.findByIdAndUpdate(
 			id,
-			{ isOpen, completed: isOpen },
+			{ isOpen, completed: isOpen, updatedOn: moment() },
 			{
 				new: true,
 			},
