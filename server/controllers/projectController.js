@@ -509,8 +509,13 @@ const updateProjectTask = async (req, res) => {
 
 const updateInnerSubTaskName = async (req, res) => {
 	const { id } = req.params;
+	const { taskName, recordIndex } = req.body;
 	try {
-		const updatedTask = await Project.findByIdAndUpdate(id, req.body, { new: true });
+		const updatedTask = await SubTask.findOneAndUpdate(
+			{ _id: id },
+			{ $set: { [`subtasks.${recordIndex}.taskName`]: taskName } },
+			{ new: true },
+		);
 		res.status(201).json(updatedTask);
 	} catch (error) {
 		res.status(400).json({ message: error.message });
