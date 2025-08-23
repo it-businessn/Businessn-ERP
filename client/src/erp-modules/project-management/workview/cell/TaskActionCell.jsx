@@ -20,12 +20,9 @@ const TaskActionCell = ({
 	isSubExpanded,
 	company,
 }) => {
-	const { _id, taskName, selectedAssignees, completed } = task;
 	const [isTaskCompleted, setIsTaskCompleted] = useState(task.completed);
 	const [openEditTask, setOpenEditTask] = useState(false);
 	const [openAddTask, setOpenAddTask] = useState(false);
-	const [currentTask, setCurrentTask] = useState(null);
-	const [taskId, setTaskId] = useState(null);
 
 	const [isOpen, setIsOpen] = useState(false);
 	const [isChecked, setIsChecked] = useState(false);
@@ -36,8 +33,7 @@ const TaskActionCell = ({
 	const [showConfirmationPopUp, setShowConfirmationPopUp] = useState(false);
 	const toast = useToast();
 
-	const handleTaskStatus = (e, taskId) => {
-		setTaskId(taskId);
+	const handleTaskStatus = (e) => {
 		const isOpen = e.target.checked;
 		setIsTaskCompleted(isOpen);
 		setIsChecked(!isChecked);
@@ -52,7 +48,7 @@ const TaskActionCell = ({
 	const handleCheckboxChange = async () => {
 		setIsOpen(false);
 		try {
-			await TaskService.updateTaskStatus({ isOpen: isTaskCompleted }, taskId);
+			await TaskService.updateTaskStatus({ isOpen: isTaskCompleted }, task._id);
 			setRefresh((prev) => !prev);
 			toast({
 				title: "Task updated successfully!",
@@ -65,16 +61,12 @@ const TaskActionCell = ({
 		}
 	};
 
-	const handleEditTask = (task, taskId) => {
+	const handleEditTask = () => {
 		setOpenEditTask(true);
-		setCurrentTask(task);
-		setTaskId(taskId);
 	};
 
-	const handleAddTask = (task, taskId) => {
+	const handleAddTask = () => {
 		setOpenAddTask(true);
-		setCurrentTask(task);
-		setTaskId(taskId);
 	};
 
 	const handleDelete = async () => {
@@ -86,21 +78,31 @@ const TaskActionCell = ({
 			console.error("Error updating task status:", error);
 		}
 	};
+
+	const handleSave = async (updatedData) => {
+		try {
+			await ProjectService.updateTaskName({ taskName: updatedData }, task._id);
+		} catch (error) {
+			console.log("An error occurred. Please try again.", error);
+		}
+	};
+
 	return (
 		<>
 			<HStack spacing={2} className={`task_div_${taskIndex}`} whiteSpace={"pre-wrap"}>
 				<Checkbox
 					sx={getTaskCheckboxCss(isTaskCompleted)}
 					isChecked={isTaskCompleted}
-					onChange={(e) => handleTaskStatus(e, _id)}
+					onChange={handleTaskStatus}
 				/>
 				<CellAction
 					width="33em"
 					name={task.taskName}
 					totalTask={task?.subtasks}
 					totalTasks={task?.totalTasks}
-					handleEdit={() => handleEditTask(task, task._id)}
-					handleAdd={() => handleAddTask(task, task._id)}
+					handleEdit={handleEditTask}
+					handleAdd={handleAddTask}
+					onSave={handleSave}
 					handleToggle={() => handleTaskToggle(taskIndex)}
 					isExpanded={isTaskExpanded === taskIndex}
 					handleDelete={() => {
@@ -136,7 +138,7 @@ const TaskActionCell = ({
 				<EditTask
 					isOpen={openEditTask}
 					onClose={() => setOpenEditTask(false)}
-					currentTask={currentTask}
+					currentTask={task}
 					setRefresh={setRefresh}
 					managers={managers}
 				/>
@@ -145,7 +147,7 @@ const TaskActionCell = ({
 				<AddNewSubTask
 					isOpen={openAddTask}
 					onClose={() => setOpenAddTask(false)}
-					currentTask={currentTask}
+					currentTask={task}
 					setRefresh={setRefresh}
 					managers={managers}
 					company={company}

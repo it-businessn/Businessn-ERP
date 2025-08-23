@@ -35,6 +35,14 @@ router.put("/update-subtask/:id", projectController.updateTaskSubTask);
 
 router.put("/update-task/:id", projectController.updateProjectTask);
 
+router.put("/update-inner-subtask/name/:id", projectController.updateInnerSubTaskName);
+
+router.put("/update-subtask/name/:id", projectController.updateSubTaskName);
+
+router.put("/update-task/name/:id", projectController.updateTaskName);
+
+router.put("/update-project/name/:id", projectController.updateProjectTaskName);
+
 router.put("/subtask/:projectId", projectController.updateProjectSubTask);
 
 router.put("/task/activity/:id", projectController.updateTaskActivity);

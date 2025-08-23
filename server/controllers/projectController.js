@@ -507,6 +507,46 @@ const updateProjectTask = async (req, res) => {
 	}
 };
 
+const updateInnerSubTaskName = async (req, res) => {
+	const { id } = req.params;
+	try {
+		const updatedTask = await Project.findByIdAndUpdate(id, req.body, { new: true });
+		res.status(201).json(updatedTask);
+	} catch (error) {
+		res.status(400).json({ message: error.message });
+	}
+};
+
+const updateSubTaskName = async (req, res) => {
+	const { id } = req.params;
+	try {
+		const updatedTask = await SubTask.findByIdAndUpdate(id, req.body, { new: true });
+		res.status(201).json(updatedTask);
+	} catch (error) {
+		res.status(400).json({ message: error.message });
+	}
+};
+
+const updateTaskName = async (req, res) => {
+	const { id } = req.params;
+	try {
+		const updatedTask = await Task.findByIdAndUpdate(id, req.body, { new: true });
+		res.status(201).json(updatedTask);
+	} catch (error) {
+		res.status(400).json({ message: error.message });
+	}
+};
+
+const updateProjectTaskName = async (req, res) => {
+	const { id } = req.params;
+	try {
+		const updatedTask = await Project.findByIdAndUpdate(id, req.body, { new: true });
+		res.status(201).json(updatedTask);
+	} catch (error) {
+		res.status(400).json({ message: error.message });
+	}
+};
+
 const updateTaskSubTask = async (req, res) => {
 	const { id } = req.params;
 	const {
@@ -785,4 +825,8 @@ module.exports = {
 	scheduleTask,
 	getAssigneeProjects,
 	getCompanyProjects,
+	updateProjectTaskName,
+	updateInnerSubTaskName,
+	updateSubTaskName,
+	updateTaskName,
 };

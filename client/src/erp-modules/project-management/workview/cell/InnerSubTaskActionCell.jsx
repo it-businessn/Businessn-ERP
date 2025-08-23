@@ -63,6 +63,13 @@ const InnerSubTaskActionCell = ({ task, setRefresh, managers, index }) => {
 			console.error("Error updating task status:", error);
 		}
 	};
+	const handleSave = async (updatedData) => {
+		try {
+			await ProjectService.updateInnerSubTaskName({ projectName: updatedData }, task._id);
+		} catch (error) {
+			console.log("An error occurred. Please try again.", error);
+		}
+	};
 	return (
 		<>
 			{openEditTask && (
@@ -95,6 +102,7 @@ const InnerSubTaskActionCell = ({ task, setRefresh, managers, index }) => {
 					name={taskName}
 					handleEditProject={() => handleEditSubtask(task, task._id)}
 					handleDelete={() => handleDelete(task)}
+					onSave={handleSave}
 				/>
 			</HStack>
 		</>

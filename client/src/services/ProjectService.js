@@ -53,6 +53,22 @@ const ProjectService = {
 		return apiService.put(`/projects/update-task/${id}`, data, id);
 	},
 
+	async updateInnerSubTaskName(data, id) {
+		return apiService.put(`/projects/update-inner-subtask/name/${id}`, data, id);
+	},
+
+	async updateSubTaskName(data, id) {
+		return apiService.put(`/projects/update-subtask/name/${id}`, data, id);
+	},
+
+	async updateTaskName(data, id) {
+		return apiService.put(`/projects/update-task/name/${id}`, data, id);
+	},
+
+	async updateProjectName(data, id) {
+		return apiService.put(`/projects/update-project/name/${id}`, data, id);
+	},
+
 	async addProjectSubTask(data, id) {
 		return apiService.put(`/projects/subtask/${id}`, data, id);
 	},

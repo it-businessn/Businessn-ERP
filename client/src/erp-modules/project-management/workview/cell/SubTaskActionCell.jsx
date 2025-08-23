@@ -26,19 +26,16 @@ const SubTaskActionCell = ({
 	const [isOpenTask, setIsOpenTask] = useState(completed);
 	const [openEditTask, setOpenEditTask] = useState(false);
 	const [openAddTask, setOpenAddTask] = useState(false);
-	const [currentTask, setCurrentTask] = useState(null);
 	const [isOpen, setIsOpen] = useState(false);
 	const [isChecked, setIsChecked] = useState(false);
 	const [modalPosition, setModalPosition] = useState({ top: 0, left: 0 });
-	const [taskId, setTaskId] = useState(null);
 	const [actualHours, setActualHours] = useState(0);
 	const [deleteRecord, setDeleteRecord] = useState(false);
 	const [deleteRecordTask, setDeleteRecordTask] = useState(false);
 	const [showConfirmationPopUp, setShowConfirmationPopUp] = useState(false);
 	const toast = useToast();
 
-	const handleTaskStatus = async (e, taskId) => {
-		setTaskId(taskId);
+	const handleTaskStatus = async (e) => {
 		const isOpen = e.target.checked;
 		setIsTaskCompleted(isOpen);
 		setIsChecked(!isChecked);
@@ -55,7 +52,7 @@ const SubTaskActionCell = ({
 	const handleCheckboxChange = async () => {
 		setIsOpen(false);
 		try {
-			await TaskService.updateSubTaskStatus({ isOpen: isTaskCompleted }, taskId);
+			await TaskService.updateSubTaskStatus({ isOpen: isTaskCompleted }, task._id);
 			toast({
 				title: "Task updated successfully!",
 				status: "success",
@@ -66,16 +63,12 @@ const SubTaskActionCell = ({
 			console.error("Error updating task status:", error);
 		}
 	};
-	const handleEditSubtask = (task, taskId) => {
+	const handleEditSubtask = () => {
 		setOpenEditTask(true);
-		setCurrentTask(task);
-		setTaskId(taskId);
 	};
 
-	const handleAddSubTask = (task, taskId) => {
+	const handleAddSubTask = () => {
 		setOpenAddTask(true);
-		setCurrentTask(task);
-		setTaskId(taskId);
 	};
 
 	const handleDelete = async () => {
@@ -87,6 +80,15 @@ const SubTaskActionCell = ({
 			console.error("Error updating task status:", error);
 		}
 	};
+
+	const handleSave = async (updatedData) => {
+		try {
+			await ProjectService.updateSubTaskName({ taskName: updatedData }, task._id);
+		} catch (error) {
+			console.log("An error occurred. Please try again.", error);
+		}
+	};
+
 	return (
 		<>
 			{/* <AddActualHours
@@ -103,7 +105,7 @@ const SubTaskActionCell = ({
 					sx={getTaskCheckboxCss(isTaskCompleted)}
 					colorScheme="facebook"
 					isChecked={isTaskCompleted}
-					onChange={(e) => handleTaskStatus(e, _id)}
+					onChange={handleTaskStatus}
 				/>
 				<CellAction
 					width="36em"
@@ -111,8 +113,9 @@ const SubTaskActionCell = ({
 					name={taskName}
 					totalTask={task?.subtasks}
 					totalTasks={task?.subtasks?.length}
-					handleEdit={() => handleEditSubtask(task, task._id)}
-					handleAdd={() => handleAddSubTask(task, task._id)}
+					handleEdit={handleEditSubtask}
+					handleAdd={handleAddSubTask}
+					onSave={handleSave}
 					handleToggle={() => handleSubTaskToggle(index)}
 					isExpanded={isSubExpanded === index}
 					handleDelete={() => {
@@ -149,7 +152,7 @@ const SubTaskActionCell = ({
 				<EditSubTask
 					isOpen={openEditTask}
 					onClose={() => setOpenEditTask(false)}
-					currentTask={currentTask}
+					currentTask={task}
 					setRefresh={setRefresh}
 					managers={managers}
 				/>
@@ -158,7 +161,7 @@ const SubTaskActionCell = ({
 				<AddNewSubTasks
 					isOpen={openAddTask}
 					onClose={() => setOpenAddTask(false)}
-					currentTask={currentTask}
+					currentTask={task}
 					setRefresh={setRefresh}
 					managers={managers}
 					company={company}

@@ -1,4 +1,4 @@
-import { Flex, HStack, Tooltip } from "@chakra-ui/react";
+import { Editable, EditableInput, EditablePreview, Flex, HStack, Tooltip } from "@chakra-ui/react";
 import { AddTaskButton } from "components/AddTaskButton";
 import { TaskButton } from "components/TaskButton";
 import NormalTextTitle from "components/ui/NormalTextTitle";
@@ -20,12 +20,27 @@ const CellAction = ({
 	textSize = "sm",
 	width = "100%",
 	isFile,
+	onSave,
 }) => {
 	return (
 		<>
 			<Tooltip label={name} fontSize="xs" hasArrow placement="bottom-start">
 				<Flex alignItems={"center"}>
-					<NormalTextTitle width={width} size={textSize} title={name} whiteSpace={"nowrap"} />
+					{isFile ? (
+						<NormalTextTitle width={width} size={textSize} title={name} whiteSpace={"nowrap"} />
+					) : (
+						<Editable defaultValue={name} onSubmit={(nextValue) => onSave(nextValue)}>
+							<EditablePreview
+								cursor="pointer"
+								width={width}
+								size={textSize}
+								whiteSpace={"nowrap"}
+								padding="0"
+								_hover={{ bg: "gray.100" }}
+							/>
+							<EditableInput width={width} />
+						</Editable>
+					)}
 				</Flex>
 			</Tooltip>
 

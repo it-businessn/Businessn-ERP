@@ -84,6 +84,14 @@ const ProjectActionCell = ({
 			console.error("Error updating task status:", error);
 		}
 	};
+
+	const handleSave = async (updatedData) => {
+		try {
+			await ProjectService.updateProjectName({ projectName: updatedData }, project._id);
+		} catch (error) {
+			console.log("An error occurred. Please try again.", error);
+		}
+	};
 	return (
 		<>
 			<HStack
@@ -101,6 +109,7 @@ const ProjectActionCell = ({
 					totalTasks={project?.totalTasks}
 					handleEdit={() => handleEditTask(project, project._id)}
 					handleAdd={() => handleAddTask(project, project._id)}
+					onSave={handleSave}
 					handleToggle={() => handleProjectToggle(index)}
 					isExpanded={isExpanded === index}
 					handleDelete={() => {
