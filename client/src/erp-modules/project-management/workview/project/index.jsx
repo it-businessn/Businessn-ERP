@@ -1,7 +1,7 @@
 import { Button, Flex, Spacer, useDisclosure } from "@chakra-ui/react";
 import TextTitle from "components/ui/text/TextTitle";
-import FilesOverView from "../files/FilesOverView";
 import AddFile from "../files/AddFile";
+import FilesOverView from "../files/FilesOverView";
 
 const FilesList = ({ files, setRefresh, managers, company }) => {
 	const { isOpen, onOpen, onClose } = useDisclosure();
