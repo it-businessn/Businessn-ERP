@@ -21,6 +21,8 @@ router.put("/file-project/:fileId", projectController.addProject);
 
 router.post("/scheduling", projectController.scheduleTask);
 
+router.delete("/:id", projectController.deleteProject);
+
 router.delete("/task/:id", projectController.deleteTask);
 
 router.delete("/subtask/:id", projectController.deleteSubTask);

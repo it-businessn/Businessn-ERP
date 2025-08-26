@@ -19,18 +19,18 @@ import {
 import MultiSelectButton from "components/ui/form/MultiSelectButton";
 import { useEffect, useState } from "react";
 import { FaCaretDown } from "react-icons/fa";
+import ProjectService from "services/ProjectService";
 import { getDefaultDate } from "utils/convertDate";
 import { PRIORITY } from "./data";
 
-const EditProject = ({ isOpen, onClose, setRefresh, currentTask, managers }) => {
+const EditProject = ({ isOpen, onClose, setRefresh, project, managers }) => {
 	const defaultTask = {
-		projectName: currentTask?.projectName,
-		taskId: currentTask?._id,
-		selectedAssignees: currentTask?.selectedAssignees || [],
-		dueDate: currentTask?.dueDate && getDefaultDate(currentTask?.dueDate),
-		timeToComplete: currentTask?.timeToComplete || 0,
-		priority: currentTask.priority,
-		projectId: currentTask?.projectId,
+		projectName: project?.projectName,
+		projectId: project?._id,
+		selectedAssignees: project?.selectedAssignees || [],
+		dueDate: project?.dueDate && getDefaultDate(project?.dueDate),
+		timeToComplete: project?.timeToComplete || 0,
+		priority: project.priority,
 	};
 	const [isSubmitting, setSubmitting] = useState(false);
 	const [message, setMessage] = useState(false);
@@ -53,22 +53,22 @@ const EditProject = ({ isOpen, onClose, setRefresh, currentTask, managers }) => 
 
 	const handleSubmit = async (e) => {
 		e.preventDefault();
-		// setSubmitting(true);
-		// try {
-		// 	await ProjectService.updateProjectTask(formData, formData?.taskId);
-		// 	onClose();
-		// 	setFormData(defaultTask);
-		// 	setRefresh((prev) => !prev);
-		// } catch (error) {
-		// 	setMessage("An error occurred. Please try again.", error);
-		// } finally {
-		// 	setSubmitting(false);
-		// }
+		setSubmitting(true);
+		try {
+			await ProjectService.updateProject(formData, project?._id);
+			onClose();
+			setFormData(defaultTask);
+			setRefresh((prev) => !prev);
+		} catch (error) {
+			setMessage("An error occurred. Please try again.", error);
+		} finally {
+			setSubmitting(false);
+		}
 	};
 
 	useEffect(() => {
 		setFormData(defaultTask);
-	}, [currentTask]);
+	}, [project]);
 
 	return (
 		<Modal isCentered size={"4xl"} isOpen={isOpen} onClose={onClose}>
@@ -92,7 +92,6 @@ const EditProject = ({ isOpen, onClose, setRefresh, currentTask, managers }) => 
 												projectName: e.target.value,
 											}))
 										}
-										required
 									/>
 								</FormControl>
 								<HStack>
@@ -110,7 +109,6 @@ const EditProject = ({ isOpen, onClose, setRefresh, currentTask, managers }) => 
 													dueDate: e.target.value,
 												}))
 											}
-											required
 										/>
 									</FormControl>
 									{/* <FormControl>

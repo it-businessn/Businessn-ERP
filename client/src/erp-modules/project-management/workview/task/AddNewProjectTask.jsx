@@ -128,7 +128,6 @@ const AddNewProjectTask = ({ isOpen, onClose, task, projectId, setRefresh }) => 
 												taskName: e.target.value,
 											}))
 										}
-										required
 									/>
 								</FormControl>
 								<HStack>
@@ -146,7 +145,6 @@ const AddNewProjectTask = ({ isOpen, onClose, task, projectId, setRefresh }) => 
 													dueDate: e.target.value,
 												}))
 											}
-											required
 										/>
 									</FormControl>
 									{/* <FormControl>
@@ -161,7 +159,7 @@ const AddNewProjectTask = ({ isOpen, onClose, task, projectId, setRefresh }) => 
 													timeToComplete: e.target.value,
 												}))
 											}
-											required
+											
 										/>
 									</FormControl> */}
 								</HStack>

@@ -23,20 +23,18 @@ const ProjectActionCell = ({
 	company,
 }) => {
 	const [isTaskCompleted, setIsTaskCompleted] = useState(project.completed);
-	const [openEditTask, setOpenEditTask] = useState(false);
+	const [openEditProject, setOpenEditProject] = useState(false);
 	const [openAddTask, setOpenAddTask] = useState(false);
 	const [currentTask, setCurrentTask] = useState(null);
-	const [taskId, setTaskId] = useState(null);
+	const [projectId, setProjectId] = useState(null);
 	const [isOpen, setIsOpen] = useState(false);
 	const [isChecked, setIsChecked] = useState(false);
 	const [modalPosition, setModalPosition] = useState({ top: 0, left: 0 });
 	const [actualHours, setActualHours] = useState(0);
-	const [deleteRecord, setDeleteRecord] = useState(false);
-	const [deleteRecordTask, setDeleteRecordTask] = useState(false);
 	const [showConfirmationPopUp, setShowConfirmationPopUp] = useState(false);
 
 	const handleTaskStatus = (e, taskId) => {
-		setTaskId(taskId);
+		setProjectId(taskId);
 		const isOpen = e.target.checked;
 		if (isOpen) {
 			const { top, left, height } = e.target.getBoundingClientRect();
@@ -56,28 +54,26 @@ const ProjectActionCell = ({
 	const handleConfirm = async () => {
 		setIsOpen(false);
 		try {
-			await TaskService.updateTaskStatus({ isOpen: isTaskCompleted, actualHours }, taskId);
+			await TaskService.updateTaskStatus({ isOpen: isTaskCompleted, actualHours }, projectId);
 			setRefresh((prev) => !prev);
 		} catch (error) {
 			console.error("Error updating task status:", error);
 		}
 	};
 
-	const handleEditTask = (task, taskId) => {
-		setOpenEditTask(true);
-		setCurrentTask(task);
-		setTaskId(taskId);
+	const handleEditProject = () => {
+		setOpenEditProject(true);
 	};
 
 	const handleAddTask = (task, taskId) => {
 		setOpenAddTask(true);
 		setCurrentTask(task);
-		setTaskId(taskId);
+		setProjectId(taskId);
 	};
 
 	const handleDelete = async () => {
 		try {
-			await ProjectService.deleteTask(deleteRecordTask, deleteRecord);
+			await ProjectService.deleteProject(project, project._id);
 			setRefresh((prev) => !prev);
 			setShowConfirmationPopUp((prev) => !prev);
 		} catch (error) {
@@ -109,16 +105,14 @@ const ProjectActionCell = ({
 					width={width}
 					name={project.projectName}
 					totalTask={project?.tasks}
-					totalTasks={project?.totalTasks}
-					handleEdit={() => handleEditTask(project, project._id)}
+					totalTasks={project?.tasks?.length}
+					handleEdit={handleEditProject}
 					handleAdd={() => handleAddTask(project, project._id)}
 					onSave={handleSave}
 					handleToggle={() => handleProjectToggle(index)}
 					isExpanded={isExpanded === index}
 					handleDelete={() => {
 						setShowConfirmationPopUp(true);
-						setDeleteRecordTask(project);
-						setDeleteRecord(project._id);
 					}}
 					type={"project"}
 					data={project}
@@ -147,11 +141,12 @@ const ProjectActionCell = ({
 						</VStack>
 					);
 				})}
-			{openEditTask && (
+
+			{openEditProject && (
 				<EditProject
-					isOpen={openEditTask}
-					onClose={() => setOpenEditTask(false)}
-					currentTask={currentTask}
+					isOpen={openEditProject}
+					onClose={() => setOpenEditProject(false)}
+					project={project}
 					setRefresh={setRefresh}
 					managers={managers}
 				/>
@@ -180,7 +175,7 @@ const ProjectActionCell = ({
 			{showConfirmationPopUp && (
 				<DeletePopUp
 					headerTitle={"Delete Project"}
-					textTitle={"Are you sure you want to delete the task?"}
+					textTitle={"Are you sure you want to delete the project?"}
 					isOpen={showConfirmationPopUp}
 					onClose={handleClose}
 					onOpen={handleDelete}

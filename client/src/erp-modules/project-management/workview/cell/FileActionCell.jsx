@@ -38,6 +38,7 @@ const FileActionCell = ({
 		setFile(project);
 		setFileId(projectId);
 	};
+	const width = file?.projects?.length ? "25em" : "29em";
 
 	return (
 		<Td w="100%" fontSize={"xs"} py={0}>
@@ -46,11 +47,11 @@ const FileActionCell = ({
 					<Image height={"2em"} width={"2em"} objectFit="cover" src={fileImg} alt="file" />
 					<CellAction
 						textSize="lg"
-						width="25em"
+						width={width}
 						data={file}
 						name={file.fileName}
 						totalTask={file?.projects}
-						totalTasks={file?.totalProjects}
+						totalTasks={file?.projects?.length}
 						handleEdit={() => handleEditFile(file, file._id)}
 						handleAdd={() => handleAddTask(file, file._id)}
 						handleToggle={() => handleToggle(index)}

@@ -81,6 +81,10 @@ const ProjectService = {
 		return apiService.put(`/projects/task/activity/${id}`, data, id);
 	},
 
+	async deleteProject(data, id) {
+		return apiService.delete(`/projects/${id}`, data, id);
+	},
+
 	async deleteTask(data, id) {
 		return apiService.delete(`/projects/task/${id}`, data, id);
 	},

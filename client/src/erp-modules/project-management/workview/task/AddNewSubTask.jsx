@@ -194,7 +194,6 @@ const AddNewSubTask = ({
 													dueDate: e.target.value,
 												}))
 											}
-											required
 										/>
 									</FormControl>
 									{/* <FormControl>
@@ -209,7 +208,7 @@ const AddNewSubTask = ({
 													timeToComplete: e.target.value,
 												}))
 											}
-											required
+											
 										/>
 									</FormControl> */}
 								</HStack>
@@ -259,7 +258,6 @@ const AddNewSubTask = ({
 															dueDate: e.target.value,
 														}))
 													}
-													required
 												/>
 											</FormControl>
 											<FormControl>
@@ -274,7 +272,6 @@ const AddNewSubTask = ({
 															timeToComplete: e.target.value,
 														}))
 													}
-													required
 												/>
 											</FormControl>
 											<Button

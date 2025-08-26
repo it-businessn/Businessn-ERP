@@ -17,7 +17,7 @@ import NotesService from "services/NotesService";
 const AddNotes = ({ data, type, setIsOpen, isOpen, setRefresh }) => {
 	const [formData, setFormData] = useState({
 		type,
-		name: data?.fileName || data?.taskName,
+		name: data?.fileName || data?.projectName || data?.taskName,
 		notes: data?.notes,
 	});
 

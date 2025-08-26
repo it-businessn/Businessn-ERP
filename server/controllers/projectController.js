@@ -350,6 +350,23 @@ const createActivity = async (req, res) => {
 		res.status(400).json({ message: error.message });
 	}
 };
+
+const deleteProject = async (req, res) => {
+	const { id } = req.params;
+	try {
+		const project = await Project.findByIdAndDelete({
+			_id: id,
+		});
+		if (project) {
+			res.status(200).json(`Project with id ${id} deleted successfully.`);
+		} else {
+			res.status(200).json("Task Details not found.");
+		}
+	} catch (error) {
+		res.status(404).json({ error: "Error deleting Task:", error });
+	}
+};
+
 const deleteTask = async (req, res) => {
 	const { id } = req.params;
 	try {
@@ -800,19 +817,20 @@ const updateProject = async (req, res) => {
 		selectedAssignees,
 	} = req.body;
 	try {
-		const status = getProjectStatus(dueDate);
 		const updatedData = {
-			name: projectName,
+			projectName,
 			timeToComplete,
-			status,
 			startDate,
-			dueDate,
 			managerId,
 			managerName,
 			priority,
 			selectedAssignees,
 		};
 
+		if (dueDate) {
+			updatedData.dueDate = dueDate;
+			updatedData.status = getProjectStatus(dueDate);
+		}
 		const updatedProject = await Project.findByIdAndUpdate(
 			id,
 			{ $set: updatedData },
@@ -873,4 +891,5 @@ module.exports = {
 	updateSubTaskName,
 	updateTaskName,
 	updateFile,
+	deleteProject,
 };

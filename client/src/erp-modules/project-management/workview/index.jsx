@@ -1,5 +1,6 @@
 import { Box } from "@chakra-ui/react";
 
+import SkeletonLoader from "components/SkeletonLoader";
 import useManager from "hooks/useManager";
 import PageLayout from "layouts/PageLayout";
 import { useEffect, useState } from "react";
@@ -13,11 +14,13 @@ const WorkView = () => {
 	const loggedInUser = LocalStorageService.getItem("user");
 	const [files, setFiles] = useState(null);
 	const [refresh, setRefresh] = useState(false);
+	const [isDataLoaded, setIsDataLoaded] = useState(false);
 
 	const managers = useManager(company, refresh, true);
 	const isManagerView = isManager(loggedInUser?.role);
 
 	useEffect(() => {
+		setIsDataLoaded(false);
 		const fetchAllFiles = async () => {
 			try {
 				const { data } = isManagerView
@@ -27,6 +30,7 @@ const WorkView = () => {
 			} catch (error) {
 				console.error(error);
 			}
+			setIsDataLoaded(true);
 		};
 		fetchAllFiles();
 	}, [refresh, company]);
@@ -41,8 +45,10 @@ const WorkView = () => {
 				borderRadius="10px"
 				color={"var(--nav_color)"}
 			>
-				{files && (
+				{isDataLoaded ? (
 					<FilesList setRefresh={setRefresh} files={files} managers={managers} company={company} />
+				) : (
+					<SkeletonLoader />
 				)}
 				{/* {projects && viewMode === "Projects" ? (
 					<FilesList

@@ -92,7 +92,6 @@ const EditTask = ({ isOpen, onClose, setRefresh, currentTask, managers }) => {
 												taskName: e.target.value,
 											}))
 										}
-										required
 									/>
 								</FormControl>
 								<HStack>
@@ -110,7 +109,6 @@ const EditTask = ({ isOpen, onClose, setRefresh, currentTask, managers }) => {
 													dueDate: e.target.value,
 												}))
 											}
-											required
 										/>
 									</FormControl>
 									{/* <FormControl>
@@ -125,7 +123,7 @@ const EditTask = ({ isOpen, onClose, setRefresh, currentTask, managers }) => {
 													timeToComplete: e.target.value,
 												}))
 											}
-											required
+											
 										/>
 									</FormControl> */}
 								</HStack>

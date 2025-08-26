@@ -187,7 +187,6 @@ const AddNewTask = ({ isOpen, onClose, setRefresh, allProjects, isFiltered, allP
 													dueDate: e.target.value,
 												}))
 											}
-											required
 										/>
 									</FormControl>
 									{/* <FormControl>
