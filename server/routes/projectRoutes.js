@@ -15,6 +15,8 @@ router.post("/activity", projectController.createActivity);
 
 router.put("/:id", projectController.updateProject);
 
+router.put("/file/:id", projectController.updateFile);
+
 router.put("/file-project/:fileId", projectController.addProject);
 
 router.post("/scheduling", projectController.scheduleTask);

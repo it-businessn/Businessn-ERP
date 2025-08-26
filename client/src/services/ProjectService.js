@@ -29,6 +29,10 @@ const ProjectService = {
 		return apiService.put(`/projects/${id}`, data, id);
 	},
 
+	async updateProjectFile(data, id) {
+		return apiService.put(`/projects/file/${id}`, data, id);
+	},
+
 	async addProject(data, id) {
 		return apiService.put(`/projects/file-project/${id}`, data, id);
 	},

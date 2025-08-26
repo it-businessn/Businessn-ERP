@@ -1,7 +1,6 @@
 import {
 	Alert,
 	AlertIcon,
-	Avatar,
 	Button,
 	FormControl,
 	FormLabel,
@@ -16,23 +15,25 @@ import {
 	Select,
 	Stack,
 } from "@chakra-ui/react";
-import MultiSelectButton from "components/ui/form/MultiSelectButton";
+// import MultiSelectButton from "components/ui/form/MultiSelectButton";
 import { useState } from "react";
 import { FaCaretDown } from "react-icons/fa";
+import ProjectService from "services/ProjectService";
 import { getDefaultDate } from "utils/convertDate";
-import { PRIORITY } from "./data";
+import { PRIORITY } from "../project/data";
 
-const EditProjectFile = ({ isOpen, onClose, project, projectId, setRefresh, managers }) => {
+const EditFile = ({ isOpen, onClose, file, fileId, setRefresh, managers }) => {
 	const defaultProjectFile = {
-		fileName: project.fileName,
-		startDate: project?.startDate && getDefaultDate(project.startDate),
-		dueDate: project?.dueDate && getDefaultDate(project.dueDate),
-		timeToComplete: project.timeToComplete || 0,
-		managerName: project.managerName,
-		managerId: project.managerId,
-		priority: project.priority,
-		selectedAssignees: project?.selectedAssignees || [],
+		fileName: file.fileName,
+		startDate: file?.startDate && getDefaultDate(file.startDate),
+		dueDate: file?.dueDate && getDefaultDate(file.dueDate),
+		timeToComplete: file.timeToComplete || 0,
+		managerName: file.managerName,
+		managerId: file.managerId,
+		priority: file.priority,
+		selectedAssignees: file?.selectedAssignees || [],
 	};
+
 	const [selectedOptions, setSelectedOptions] = useState([]);
 	const [openAssigneeMenu, setOpenAssigneeMenu] = useState(false);
 
@@ -54,17 +55,17 @@ const EditProjectFile = ({ isOpen, onClose, project, projectId, setRefresh, mana
 
 	const handleSubmit = async (e) => {
 		e.preventDefault();
-		// setSubmitting(true);
-		// try {
-		// 	await ProjectService.updateProject(formData, projectId);
-		// 	onClose();
-		// 	setFormData(defaultProjectFile);
-		// 	setRefresh((prev) => !prev);
-		// } catch (error) {
-		// 	setMessage("An error occurred. Please try again.", error);
-		// } finally {
-		// 	setSubmitting(false);
-		// }
+		setSubmitting(true);
+		try {
+			await ProjectService.updateProjectFile(formData, fileId);
+			onClose();
+			setFormData(defaultProjectFile);
+			setRefresh((prev) => !prev);
+		} catch (error) {
+			setMessage("An error occurred. Please try again.", error);
+		} finally {
+			setSubmitting(false);
+		}
 	};
 
 	return (
@@ -93,7 +94,7 @@ const EditProjectFile = ({ isOpen, onClose, project, projectId, setRefresh, mana
 									/>
 								</FormControl>
 								<FormControl>
-									<FormLabel> Project Manager</FormLabel>
+									<FormLabel>Project Manager</FormLabel>
 									<Select
 										icon={<FaCaretDown />}
 										borderRadius="10px"
@@ -135,7 +136,6 @@ const EditProjectFile = ({ isOpen, onClose, project, projectId, setRefresh, mana
 													startDate: e.target.value,
 												}))
 											}
-											required
 										/>
 									</FormControl>
 									<FormControl>
@@ -152,7 +152,6 @@ const EditProjectFile = ({ isOpen, onClose, project, projectId, setRefresh, mana
 													dueDate: e.target.value,
 												}))
 											}
-											required
 										/>
 									</FormControl>
 									{/* <FormControl>
@@ -193,7 +192,7 @@ const EditProjectFile = ({ isOpen, onClose, project, projectId, setRefresh, mana
 											))}
 										</Select>
 									</FormControl>
-									<FormControl>
+									{/* <FormControl>
 										<FormLabel visibility={openAssigneeMenu ? "" : "hidden"}>
 											Select Assignee
 										</FormLabel>
@@ -212,7 +211,7 @@ const EditProjectFile = ({ isOpen, onClose, project, projectId, setRefresh, mana
 											formData?.selectedAssignees.map((name) => (
 												<Avatar size={"sm"} name={name} src={name} key={name} />
 											))}
-									</FormControl>
+									</FormControl> */}
 								</HStack>
 								<HStack justifyContent={"end"}>
 									<Button isLoading={isSubmitting} type="submit" bg="var(--logo_bg)">
@@ -237,4 +236,4 @@ const EditProjectFile = ({ isOpen, onClose, project, projectId, setRefresh, mana
 	);
 };
 
-export default EditProjectFile;
+export default EditFile;

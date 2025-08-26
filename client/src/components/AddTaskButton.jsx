@@ -22,7 +22,7 @@ export const AddTaskButton = ({
 				{!isInner && (
 					<>
 						<Button
-							onClick={onClick}
+							padding={!isFile && 0}
 							size={isFile ? "xs" : "xxs"}
 							display={"flex"}
 							variant="solid"
@@ -36,25 +36,25 @@ export const AddTaskButton = ({
 								color: "var(--nav_color)",
 							}}
 						>
-							<AddIcon />
+							<AddIcon onClick={onClick} />
 						</Button>
 						<Button
-							onClick={() => setIsOpen(true)}
-							size={isFile ? "sm" : "xxs"}
+							padding={!isFile && 0}
+							minW={"unset"}
 							display={"flex"}
 							variant="ghost"
 							fontWeight={"bold"}
 							color="var(--nav_color)"
 							_hover={"unset"}
 						>
-							<CgNotes size={isFile && "1.5em"} />
+							<CgNotes onClick={() => setIsOpen(true)} fontSize={isFile && "1.5em"} />
 						</Button>
 					</>
 				)}
 
 				<Button
-					onClick={handleClick}
-					size={isFile ? "md" : "xxs"}
+					padding={!isFile && 0}
+					minW={"unset"}
 					display={"flex"}
 					variant="ghost"
 					fontWeight={"bold"}
@@ -62,7 +62,7 @@ export const AddTaskButton = ({
 					ml={isFile && -5}
 					_hover={"unset"}
 				>
-					<SettingsIcon size={isFile && "2em"} />
+					<SettingsIcon onClick={handleClick} fontSize={isFile ? "1.5em" : "xxs"} />
 				</Button>
 			</HStack>
 			{isOpen && (

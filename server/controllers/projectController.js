@@ -749,6 +749,44 @@ const getProjectStatus = (dueDate) => {
 	}
 };
 
+const updateFile = async (req, res) => {
+	const { id } = req.params;
+	const {
+		fileName,
+		timeToComplete,
+		startDate,
+		dueDate,
+		managerId,
+		managerName,
+		priority,
+		selectedAssignees,
+	} = req.body;
+	try {
+		const updatedData = {
+			fileName,
+			timeToComplete,
+			startDate,
+			managerId,
+			managerName,
+			priority,
+			selectedAssignees,
+		};
+		if (dueDate) {
+			updatedData.dueDate = dueDate;
+			updatedData.status = getProjectStatus(dueDate);
+		}
+
+		const updatedFile = await ProjectFile.findByIdAndUpdate(
+			id,
+			{ $set: updatedData },
+			{ new: true },
+		);
+		res.status(201).json(updatedFile);
+	} catch (error) {
+		res.status(400).json({ message: error.message });
+	}
+};
+
 const updateProject = async (req, res) => {
 	const { id } = req.params;
 	const {
@@ -834,4 +872,5 @@ module.exports = {
 	updateInnerSubTaskName,
 	updateSubTaskName,
 	updateTaskName,
+	updateFile,
 };

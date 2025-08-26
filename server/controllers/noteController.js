@@ -1,6 +1,7 @@
 const Contact = require("../models/Contact");
 const Note = require("../models/Note");
 const Project = require("../models/Project");
+const ProjectFile = require("../models/ProjectFile");
 const SubTask = require("../models/SubTask");
 const Task = require("../models/Task");
 
@@ -17,9 +18,7 @@ const getNote = async (req, res) => {
 	const { contactId } = req.params;
 
 	try {
-		const notes = (await Note.find({ contactId })).sort(
-			(a, b) => b.createdOn - a.createdOn,
-		);
+		const notes = (await Note.find({ contactId })).sort((a, b) => b.createdOn - a.createdOn);
 		res.status(200).json(notes);
 	} catch (error) {
 		res.status(404).json({ error: error.message });
@@ -53,29 +52,29 @@ const updateNotes = async (req, res) => {
 	const { type, notes } = req.body;
 	try {
 		const updatedData = { notes };
+		if (type === "file") {
+			const updatedProject = await ProjectFile.findByIdAndUpdate(
+				id,
+				{ $set: updatedData },
+				{ new: true },
+			);
+			return res.status(201).json(updatedProject);
+		}
 		if (type === "project") {
 			const updatedProject = await Project.findByIdAndUpdate(
 				id,
 				{ $set: updatedData },
 				{ new: true },
 			);
-			res.status(201).json(updatedProject);
+			return res.status(201).json(updatedProject);
 		}
 		if (type === "task") {
-			const updatedTask = await Task.findByIdAndUpdate(
-				id,
-				{ $set: updatedData },
-				{ new: true },
-			);
-			res.status(201).json(updatedTask);
+			const updatedTask = await Task.findByIdAndUpdate(id, { $set: updatedData }, { new: true });
+			return res.status(201).json(updatedTask);
 		}
 		if (type === "subtask") {
-			const updatedTask = await SubTask.findByIdAndUpdate(
-				id,
-				{ $set: updatedData },
-				{ new: true },
-			);
-			res.status(201).json(updatedTask);
+			const updatedTask = await SubTask.findByIdAndUpdate(id, { $set: updatedData }, { new: true });
+			return res.status(201).json(updatedTask);
 		}
 	} catch (error) {
 		res.status(400).json({ message: error.message });

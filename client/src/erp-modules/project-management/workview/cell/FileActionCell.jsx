@@ -1,8 +1,8 @@
 import { HStack, Image, Td, VStack } from "@chakra-ui/react";
 import { useState } from "react";
 import fileImg from "../../../../assets/file.png";
+import EditFile from "../files/EditFile";
 import AddNewProject from "../project/AddNewProject";
-import EditProjectFile from "../project/EditProjectFile";
 import CellAction from "./CellAction";
 import ProjectActionCell from "./ProjectActionCell";
 
@@ -91,11 +91,11 @@ const FileActionCell = ({
 					})}
 			</VStack>
 			{openEditFile && (
-				<EditProjectFile
+				<EditFile
 					isOpen={openEditFile}
 					onClose={() => setOpenEditFile(false)}
-					project={file}
-					projectId={fileId}
+					file={file}
+					fileId={fileId}
 					setRefresh={setRefresh}
 					managers={managers}
 				/>
