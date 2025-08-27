@@ -23,7 +23,7 @@ import ProjectService from "services/ProjectService";
 import { getDefaultDate } from "utils/convertDate";
 import { PRIORITY } from "./data";
 
-const EditInnerSubTask = ({ isOpen, onClose, setRefresh, currentTask, managers }) => {
+const EditInnerSubTask = ({ isOpen, onClose, currentTask, managers }) => {
 	const defaultTask = {
 		subTaskName: currentTask?.taskName,
 		subTaskId: currentTask?.subTaskId,

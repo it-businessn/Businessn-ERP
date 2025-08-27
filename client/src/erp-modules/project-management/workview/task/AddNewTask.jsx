@@ -21,7 +21,7 @@ import { useState } from "react";
 import { FaCaretDown } from "react-icons/fa";
 import ProjectService from "services/ProjectService";
 
-const AddNewTask = ({ isOpen, onClose, setRefresh, allProjects, isFiltered, allProjectTasks }) => {
+const AddNewTask = ({ isOpen, onClose, allProjects, isFiltered, allProjectTasks }) => {
 	const defaultTask = {
 		projectId: "",
 		projectName: "",

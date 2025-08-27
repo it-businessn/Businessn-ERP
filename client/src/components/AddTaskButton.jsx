@@ -4,7 +4,7 @@ import { COLORS } from "erp-modules/project-management/workview/project/data";
 import { CgNotes } from "react-icons/cg";
 import { generateLighterShade } from "utils";
 
-export const AddTaskButton = ({ onClick, handleEdit, isInner, onNoteIconClick, isFile }) => {
+export const AddTaskButton = ({ handleAdd, handleEdit, isInner, onNoteIconClick, isFile }) => {
 	return (
 		<HStack spacing={isFile ? 0 : 1}>
 			{!isInner && (
@@ -23,7 +23,7 @@ export const AddTaskButton = ({ onClick, handleEdit, isInner, onNoteIconClick, i
 							color: "var(--nav_color)",
 						}}
 					>
-						<AddIcon onClick={onClick} />
+						<AddIcon onClick={handleAdd} />
 					</Button>
 					<Button
 						minW={"unset"}

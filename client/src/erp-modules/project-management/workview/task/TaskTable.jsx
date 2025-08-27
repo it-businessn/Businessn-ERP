@@ -37,15 +37,7 @@ import AddNewActivity from "./AddNewActivity";
 import AddNewSubTask from "./AddNewSubTask";
 import AddNewTask from "./AddNewTask";
 
-const TaskTable = ({
-	data,
-	isFiltered,
-	setRefresh,
-	allProjects,
-	allTasks,
-	allProjectTasks,
-	allActivities,
-}) => {
+const TaskTable = ({ data, isFiltered, allProjects, allTasks, allProjectTasks, allActivities }) => {
 	const { isOpen, onOpen, onClose } = useDisclosure();
 	const [expandedIndex, setExpandedIndex] = useState(null);
 	const [filteredData, setFilteredData] = useState(data);
@@ -238,7 +230,6 @@ const TaskTable = ({
 				isOpen={isOpen}
 				isFiltered={isFiltered}
 				onClose={onClose}
-				setRefresh={setRefresh}
 				allProjects={allProjects}
 				allProjectTasks={allProjectTasks}
 			/>
@@ -246,7 +237,6 @@ const TaskTable = ({
 				isOpen={openActivity}
 				isFiltered={isFiltered}
 				onClose={() => setOpenActivity(false)}
-				setRefresh={setRefresh}
 				allProjects={allProjects}
 				allProjectTasks={allProjectTasks}
 			/>
@@ -254,14 +244,12 @@ const TaskTable = ({
 				isOpen={openSubTask}
 				isFiltered={isFiltered}
 				onClose={() => setOpenSubTask(false)}
-				setRefresh={setRefresh}
 				task={task}
 			/>
 			<EditTask
 				isOpen={openEditTask}
 				isFiltered={isFiltered}
 				onClose={() => setOpenEditTask(false)}
-				setRefresh={setRefresh}
 				task={task}
 			/>
 			<Box overflow="auto" css={tabScrollCss}>

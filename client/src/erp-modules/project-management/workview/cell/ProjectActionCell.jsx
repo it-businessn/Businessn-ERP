@@ -11,7 +11,6 @@ import TaskActionCell from "./TaskActionCell";
 const ProjectActionCell = ({
 	project,
 	index,
-	setRefresh,
 	managers,
 	handleProjectToggle,
 	handleSubTaskToggle,
@@ -20,9 +19,11 @@ const ProjectActionCell = ({
 	isTaskExpanded,
 	isSubExpanded,
 	company,
-	handleProjectUpdate,
 	handleFileToggle,
 	noteIconClicked,
+	handleProjectUpdate,
+	handleSubTaskUpdate,
+	handleTaskUpdate,
 }) => {
 	const [openEditProject, setOpenEditProject] = useState(false);
 	const [openAddTask, setOpenAddTask] = useState(false);
@@ -89,7 +90,6 @@ const ProjectActionCell = ({
 						setShowConfirmationPopUp(true);
 					}}
 					type={"project"}
-					setRefresh={setRefresh}
 					noteIconClicked={noteIconClicked}
 				/>
 			</HStack>
@@ -108,10 +108,11 @@ const ProjectActionCell = ({
 								isExpanded={isExpanded}
 								handleTaskToggle={handleTaskToggle}
 								handleSubTaskToggle={handleSubTaskToggle}
-								setRefresh={setRefresh}
 								managers={managers}
 								company={company}
 								noteIconClicked={noteIconClicked}
+								handleSubTaskUpdate={handleSubTaskUpdate}
+								handleTaskUpdate={handleTaskUpdate}
 							/>
 						</VStack>
 					);
@@ -122,7 +123,6 @@ const ProjectActionCell = ({
 					isOpen={openEditProject}
 					onClose={() => setOpenEditProject(false)}
 					project={project}
-					setRefresh={setRefresh}
 					managers={managers}
 					handleProjectUpdate={(data) => {
 						handleFileToggle();
@@ -135,7 +135,6 @@ const ProjectActionCell = ({
 					isOpen={openAddTask}
 					onClose={() => setOpenAddTask(false)}
 					currentTask={currentTask}
-					setRefresh={setRefresh}
 					managers={managers}
 					company={company}
 				/>

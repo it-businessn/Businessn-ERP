@@ -11,7 +11,6 @@ import InnerSubTaskActionCell from "./InnerSubTaskActionCell";
 
 const SubTaskActionCell = ({
 	task,
-	setRefresh,
 	managers,
 	isInner,
 	isSubExpanded,
@@ -19,6 +18,7 @@ const SubTaskActionCell = ({
 	index,
 	company,
 	noteIconClicked,
+	handleSubTaskUpdate,
 }) => {
 	const { _id, taskName, selectedAssignees, completed } = task;
 
@@ -105,7 +105,6 @@ const SubTaskActionCell = ({
 					isExpanded={isSubExpanded === index}
 					handleDelete={() => setShowConfirmationPopUp(true)}
 					type={"subtask"}
-					setRefresh={setRefresh}
 					noteIconClicked={noteIconClicked}
 				/>
 			</HStack>
@@ -122,9 +121,9 @@ const SubTaskActionCell = ({
 							<InnerSubTaskActionCell
 								task={rec}
 								index={sub_index}
-								setRefresh={setRefresh}
 								managers={managers}
 								noteIconClicked={noteIconClicked}
+								handleSubTaskUpdate={handleSubTaskUpdate}
 							/>
 						</VStack>
 					);
@@ -134,7 +133,6 @@ const SubTaskActionCell = ({
 					isOpen={openEditTask}
 					onClose={() => setOpenEditTask(false)}
 					currentTask={task}
-					setRefresh={setRefresh}
 					managers={managers}
 				/>
 			)}
@@ -143,7 +141,6 @@ const SubTaskActionCell = ({
 					isOpen={openAddTask}
 					onClose={() => setOpenAddTask(false)}
 					currentTask={task}
-					setRefresh={setRefresh}
 					managers={managers}
 					company={company}
 				/>

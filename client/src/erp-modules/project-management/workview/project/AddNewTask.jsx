@@ -18,8 +18,9 @@ import {
 import MultiSelectButton from "components/ui/form/MultiSelectButton";
 import { useState } from "react";
 import ProjectService from "services/ProjectService";
+import { FileTitle } from "../cell/FileTitle";
 
-const AddNewTask = ({ isOpen, onClose, setRefresh, currentTask, managers, company }) => {
+const AddNewTask = ({ isOpen, onClose, currentTask, managers, company }) => {
 	const defaultTask = {
 		fileId: currentTask?.fileId,
 		projectId: currentTask?._id,
@@ -69,7 +70,9 @@ const AddNewTask = ({ isOpen, onClose, setRefresh, currentTask, managers, compan
 		<Modal isCentered size={"4xl"} isOpen={isOpen} onClose={onClose}>
 			<ModalOverlay />
 			<ModalContent>
-				<ModalHeader>Add Task - {formData?.projectName}</ModalHeader>
+				<ModalHeader>
+					<FileTitle title={`Add Task - ${formData?.projectName}`} />
+				</ModalHeader>
 				<ModalCloseButton />
 				<ModalBody>
 					<Stack spacing="5">

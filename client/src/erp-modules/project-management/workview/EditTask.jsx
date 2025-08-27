@@ -35,7 +35,7 @@ import ProjectService from "services/ProjectService";
 import { getDefaultDate } from "utils/convertDate";
 import { PROJECT_ASSIGNEES } from "./project/data";
 
-const EditTask = ({ isOpen, onClose, setRefresh, isFiltered, task }) => {
+const EditTask = ({ isOpen, onClose, isFiltered, task }) => {
 	const defaultTask = {
 		taskName: task?.name,
 		taskId: task?._id,

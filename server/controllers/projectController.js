@@ -482,7 +482,7 @@ const addProject = async (req, res) => {
 
 		await existingFile.save();
 
-		res.status(201).json(existingFile);
+		res.status(201).json(newProject);
 	} catch (error) {
 		res.status(400).json({ message: error.message });
 	}

@@ -7,7 +7,13 @@ import { getTaskCheckboxCss } from "utils/common";
 import EditInnerSubTask from "../project/EditInnerSubTask";
 import CellAction from "./CellAction";
 
-const InnerSubTaskActionCell = ({ task, setRefresh, managers, index, noteIconClicked }) => {
+const InnerSubTaskActionCell = ({
+	task,
+	managers,
+	index,
+	noteIconClicked,
+	handleSubTaskUpdate,
+}) => {
 	const { _id, taskName, subTaskId, completed } = task;
 	const toast = useToast();
 
@@ -94,7 +100,6 @@ const InnerSubTaskActionCell = ({ task, setRefresh, managers, index, noteIconCli
 					isOpen={openEditTask}
 					onClose={() => setOpenEditTask(false)}
 					currentTask={currentTask}
-					setRefresh={setRefresh}
 					managers={managers}
 				/>
 			)}

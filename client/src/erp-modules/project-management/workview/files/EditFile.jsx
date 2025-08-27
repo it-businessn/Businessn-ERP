@@ -22,7 +22,7 @@ import ProjectService from "services/ProjectService";
 import { getDefaultDate } from "utils/convertDate";
 import { PRIORITY } from "../project/data";
 
-const EditFile = ({ isOpen, onClose, file, fileId, handleFileUpdate, managers }) => {
+const EditFile = ({ isOpen, onClose, file, handleFileUpdate, managers }) => {
 	const defaultProjectFile = {
 		fileName: file.fileName,
 		startDate: file?.startDate && getDefaultDate(file.startDate),
@@ -57,7 +57,7 @@ const EditFile = ({ isOpen, onClose, file, fileId, handleFileUpdate, managers })
 		e.preventDefault();
 		setSubmitting(true);
 		try {
-			const { data } = await ProjectService.updateProjectFile(formData, fileId);
+			const { data } = await ProjectService.updateProjectFile(formData, file._id);
 			handleFileUpdate(data);
 			onClose();
 			setFormData(defaultProjectFile);

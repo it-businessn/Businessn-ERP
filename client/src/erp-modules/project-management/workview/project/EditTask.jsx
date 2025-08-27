@@ -22,7 +22,7 @@ import { FaCaretDown } from "react-icons/fa";
 import { getDefaultDate } from "utils/convertDate";
 import { PRIORITY } from "./data";
 
-const EditTask = ({ isOpen, onClose, setRefresh, currentTask, managers }) => {
+const EditTask = ({ isOpen, onClose, currentTask, managers }) => {
 	const defaultTask = {
 		taskName: currentTask?.taskName,
 		taskId: currentTask?._id,

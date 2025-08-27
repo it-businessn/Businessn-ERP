@@ -1,8 +1,8 @@
 import { HStack, Image, Td, VStack } from "@chakra-ui/react";
 import { useState } from "react";
 import fileImg from "../../../../assets/file.png";
+import AddFileProject from "../files/AddFileProject";
 import EditFile from "../files/EditFile";
-import AddNewProject from "../project/AddNewProject";
 import AddNotes from "./AddNotes";
 import CellAction from "./CellAction";
 import ProjectActionCell from "./ProjectActionCell";
@@ -18,12 +18,12 @@ const FileActionCell = ({
 	handleTaskToggle,
 	handleSubTaskToggle,
 	handleProjectToggle,
-	setFileId,
-	fileId,
 	managers,
 	company,
 	handleFileUpdate,
 	handleProjectUpdate,
+	handleSubTaskUpdate,
+	handleTaskUpdate,
 }) => {
 	const [openEditFile, setOpenEditFile] = useState(false);
 	const [openAddFile, setOpenAddFile] = useState(false);
@@ -31,12 +31,12 @@ const FileActionCell = ({
 
 	const handleEditFile = () => {
 		setOpenEditFile(true);
-		setFileId(file._id);
 	};
-	const handleAddTask = (projectId) => {
+
+	const handleAddItem = () => {
 		setOpenAddFile(true);
-		setFileId(projectId);
 	};
+
 	const width = file?.projects?.length ? "25em" : "29em";
 
 	const noteIconClicked = () => {
@@ -54,7 +54,7 @@ const FileActionCell = ({
 						totalTask={file?.projects}
 						totalTasks={file?.projects?.length}
 						handleEdit={handleEditFile}
-						handleAdd={() => handleAddTask(file._id)}
+						handleAdd={handleAddItem}
 						handleToggle={() => handleFileToggle(index)}
 						noteIconClicked={noteIconClicked}
 						index={index}
@@ -68,16 +68,11 @@ const FileActionCell = ({
 				{expandedIndex === index &&
 					file?.projects?.map((project, project_index) => {
 						return (
-							<VStack
-								key={project._id}
-								w={"100%"}
-								alignItems={"flex-start"}
-								// _hover={{ bg: "var(--phoneCall_bg_light)" }}
-							>
+							<VStack key={project._id} w={"100%"} alignItems={"start"}>
 								<ProjectActionCell
 									index={project_index}
 									project={project}
-									handleAddTask={() => handleAddTask(project._id)}
+									handleAddTask={handleAddItem}
 									noteIconClicked={noteIconClicked}
 									isExpanded={isExpanded}
 									isTaskExpanded={isTaskExpanded}
@@ -89,6 +84,8 @@ const FileActionCell = ({
 									company={company}
 									handleFileToggle={handleFileToggle}
 									handleProjectUpdate={handleProjectUpdate}
+									handleSubTaskUpdate={handleSubTaskUpdate}
+									handleTaskUpdate={handleTaskUpdate}
 								/>
 							</VStack>
 						);
@@ -99,19 +96,18 @@ const FileActionCell = ({
 					isOpen={openEditFile}
 					onClose={() => setOpenEditFile(false)}
 					file={file}
-					fileId={fileId}
 					managers={managers}
 					handleFileUpdate={handleFileUpdate}
 				/>
 			)}
 			{openAddFile && (
-				<AddNewProject
+				<AddFileProject
 					isOpen={openAddFile}
 					onClose={() => setOpenAddFile(false)}
 					file={file}
-					fileId={fileId}
 					managers={managers}
 					company={company}
+					handleProjectUpdate={handleProjectUpdate}
 				/>
 			)}
 

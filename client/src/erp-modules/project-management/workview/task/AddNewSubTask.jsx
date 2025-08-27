@@ -34,15 +34,7 @@ import ProjectService from "services/ProjectService";
 import { getDefaultDate } from "utils/convertDate";
 import { PROJECT_ASSIGNEES } from "../project/data";
 
-const AddNewSubTask = ({
-	isOpen,
-	onClose,
-	setRefresh,
-	allProjects,
-	isFiltered,
-	allProjectTasks,
-	task,
-}) => {
+const AddNewSubTask = ({ isOpen, onClose, allProjects, isFiltered, allProjectTasks, task }) => {
 	const defaultTask = {
 		activities: task?.activities,
 		dueDate: task?.dueDate && getDefaultDate(task?.dueDate),
@@ -120,7 +112,6 @@ const AddNewSubTask = ({
 		// 		onClose();
 		// 		setFormData(defaultTask);
 		// 		setSubTasks([]);
-		// 		setRefresh(true);
 		// 	} catch (error) {
 		// 		setMessage("An error occurred. Please try again.", error);
 		// 	} finally {

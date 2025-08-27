@@ -2,7 +2,7 @@ import { SettingsIcon } from "@chakra-ui/icons";
 import { Avatar, Checkbox, Collapse, HStack, IconButton, Td, Text, Tr } from "@chakra-ui/react";
 import { AddTaskButton } from "components/AddTaskButton";
 import { RenderPriorityBars } from "components/RenderPriorityBars";
-import { TaskButton } from "components/TaskButton";
+import { TaskDropdown } from "components/TaskDropdown";
 import React, { useState } from "react";
 import { FaChevronDown } from "react-icons/fa";
 import TaskService from "services/TaskService";
@@ -12,7 +12,7 @@ import AddNewSubTask from "./project/AddNewSubTask";
 import EditProject from "./project/EditProject";
 import Subtask from "./project/Subtask";
 
-const ProjectChild = ({ task, projectId, setRefresh, managers, managerName }) => {
+const ProjectChild = ({ task, projectId, managers, managerName }) => {
 	const [isExpanded, setExpanded] = useState(null);
 	const handleToggle = () => {
 		setExpanded((prev) => !prev);
@@ -62,7 +62,7 @@ const ProjectChild = ({ task, projectId, setRefresh, managers, managerName }) =>
 							spacing={0}
 							// cursor={project?.tasks?.length > 0 ? "pointer" : "default"}
 						>
-							{task?.subtasks?.length > 0 && <TaskButton totalTasks={task?.totalTasks} />}
+							{task?.subtasks?.length > 0 && <TaskDropdown totalTasks={task?.totalTasks} />}
 
 							<IconButton
 								variant="ghost"
@@ -71,7 +71,7 @@ const ProjectChild = ({ task, projectId, setRefresh, managers, managerName }) =>
 								aria-label="Settings Icon"
 								onClick={() => handleEditTask(task, task._id)}
 							/>
-							<AddTaskButton onClick={() => handleAddTask(task, task._id)} />
+							<AddTaskButton handleAdd={() => handleAddTask(task, task._id)} />
 							{task?.subtasks?.length > 0 && (
 								<IconButton
 									onClick={handleToggle}
@@ -132,7 +132,6 @@ const ProjectChild = ({ task, projectId, setRefresh, managers, managerName }) =>
 							task?.subtasks?.map((subtask) => {
 								return (
 									<Subtask
-										setRefresh={setRefresh}
 										managerName={managerName}
 										id={task._id}
 										key={subtask._id}
@@ -150,7 +149,6 @@ const ProjectChild = ({ task, projectId, setRefresh, managers, managerName }) =>
 					isOpen={openEditTask}
 					onClose={() => setOpenEditTask(false)}
 					currentTask={currentTask}
-					setRefresh={setRefresh}
 					managers={managers}
 				/>
 			)}
@@ -159,7 +157,6 @@ const ProjectChild = ({ task, projectId, setRefresh, managers, managerName }) =>
 					isOpen={openAddTask}
 					onClose={() => setOpenAddTask(false)}
 					currentTask={currentTask}
-					setRefresh={setRefresh}
 					managers={managers}
 				/>
 			)}

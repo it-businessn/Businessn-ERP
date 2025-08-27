@@ -1,11 +1,10 @@
-import { Editable, EditableInput, EditablePreview, Flex, HStack, Tooltip } from "@chakra-ui/react";
+import { HStack } from "@chakra-ui/react";
 import { AddTaskButton } from "components/AddTaskButton";
-import { TaskButton } from "components/TaskButton";
-import NormalTextTitle from "components/ui/NormalTextTitle";
+import { TaskDropdown } from "components/TaskDropdown";
 import { FaRegTrashAlt } from "react-icons/fa";
+import { FileDescription } from "./FileDescription";
 
 const CellAction = ({
-	name,
 	totalTasks,
 	handleEdit,
 	handleAdd,
@@ -15,41 +14,26 @@ const CellAction = ({
 	isExpanded,
 	handleDelete,
 	type,
-	textSize = "sm",
-	width = "100%",
 	isFile,
-	onSave,
 	noteIconClicked,
+	name,
+	textSize,
+	width,
+	onSave,
 }) => {
 	return (
 		<>
-			<Tooltip label={name} fontSize="xs" hasArrow placement="bottom-start">
-				<Flex alignItems={"center"}>
-					{isFile ? (
-						<NormalTextTitle width={width} size={textSize} title={name} whiteSpace={"nowrap"} />
-					) : (
-						<Editable
-							defaultValue={name}
-							onSubmit={(nextValue) => {
-								if (nextValue !== name) onSave(nextValue);
-							}}
-						>
-							<EditablePreview
-								cursor="pointer"
-								width={width}
-								size={textSize}
-								whiteSpace={"nowrap"}
-								padding="0"
-							/>
-							<EditableInput width={width} />
-						</Editable>
-					)}
-				</Flex>
-			</Tooltip>
+			<FileDescription
+				name={name}
+				textSize={textSize}
+				width={width}
+				onSave={onSave}
+				isFile={isFile}
+			/>
 
-			<HStack spacing={2} cursor={totalTask?.length > 0 ? "pointer" : "default"}>
+			<HStack spacing={2}>
 				{totalTask?.length > 0 && (
-					<TaskButton
+					<TaskDropdown
 						isExpanded={isExpanded}
 						totalTasks={totalTasks}
 						onClick={handleToggle}
@@ -58,7 +42,7 @@ const CellAction = ({
 					/>
 				)}
 				<AddTaskButton
-					onClick={handleAdd}
+					handleAdd={handleAdd}
 					handleEdit={handleEdit}
 					isInner={isInner}
 					onNoteIconClick={noteIconClicked}

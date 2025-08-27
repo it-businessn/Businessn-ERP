@@ -2,7 +2,7 @@ import { SettingsIcon } from "@chakra-ui/icons";
 import { Avatar, Checkbox, Collapse, HStack, IconButton, Td, Text, Tr } from "@chakra-ui/react";
 import { AddTaskButton } from "components/AddTaskButton";
 import { RenderPriorityBars } from "components/RenderPriorityBars";
-import { TaskButton } from "components/TaskButton";
+import { TaskDropdown } from "components/TaskDropdown";
 import React, { useState } from "react";
 import { FaChevronDown } from "react-icons/fa";
 import TaskService from "services/TaskService";
@@ -11,7 +11,7 @@ import { formatDate } from "utils/convertDate";
 import AddNewSubTasks from "./AddNewSubTasks";
 import EditSubTask from "./EditSubTask";
 
-const Subtask = ({ id, task, subtask, managerName, setRefresh, managers, isInner }) => {
+const Subtask = ({ id, task, subtask, managerName, managers, isInner }) => {
 	const { _id, taskName, selectedAssignees, completed } = task;
 
 	const [isOpenTask, setIsOpenTask] = useState(completed);
@@ -70,7 +70,7 @@ const Subtask = ({ id, task, subtask, managerName, setRefresh, managers, isInner
 							{!isInner && (
 								<>
 									{task?.subtasks?.length > 0 && (
-										<TaskButton isTask totalTasks={task?.totalTasks || task?.subtasks?.length} />
+										<TaskDropdown isTask totalTasks={task?.totalTasks || task?.subtasks?.length} />
 									)}
 
 									<IconButton
@@ -80,7 +80,7 @@ const Subtask = ({ id, task, subtask, managerName, setRefresh, managers, isInner
 										aria-label="Settings Icon"
 										onClick={() => handleEditSubtask(task, task._id)}
 									/>
-									<AddTaskButton onClick={() => handleAddSubTask(task, task._id)} />
+									<AddTaskButton handleAdd={() => handleAddSubTask(task, task._id)} />
 									{task?.subtasks?.length > 0 && (
 										<IconButton
 											onClick={handleToggle}
@@ -147,7 +147,6 @@ const Subtask = ({ id, task, subtask, managerName, setRefresh, managers, isInner
 										id={subtasks._id}
 										key={subtasks._id}
 										task={subtasks}
-										setRefresh={setRefresh}
 										managerName={managerName}
 										subtask={subtasks?.subtasks}
 										managers={managers}
@@ -162,7 +161,6 @@ const Subtask = ({ id, task, subtask, managerName, setRefresh, managers, isInner
 					isOpen={openEditTask}
 					onClose={() => setOpenEditTask(false)}
 					currentTask={currentTask}
-					setRefresh={setRefresh}
 					managers={managers}
 				/>
 			)}
@@ -171,7 +169,6 @@ const Subtask = ({ id, task, subtask, managerName, setRefresh, managers, isInner
 					isOpen={openAddTask}
 					onClose={() => setOpenAddTask(false)}
 					currentTask={currentTask}
-					setRefresh={setRefresh}
 					managers={managers}
 				/>
 			)}

@@ -12,7 +12,6 @@ import SubTaskActionCell from "./SubTaskActionCell";
 const TaskActionCell = ({
 	task,
 	taskIndex,
-	setRefresh,
 	managers,
 	handleSubTaskToggle,
 	handleTaskToggle,
@@ -20,6 +19,8 @@ const TaskActionCell = ({
 	isSubExpanded,
 	company,
 	noteIconClicked,
+	handleSubTaskUpdate,
+	handleTaskUpdate,
 }) => {
 	const [isTaskCompleted, setIsTaskCompleted] = useState(task.completed);
 	const [openEditTask, setOpenEditTask] = useState(false);
@@ -104,7 +105,6 @@ const TaskActionCell = ({
 						setShowConfirmationPopUp(true);
 					}}
 					type={"task"}
-					setRefresh={setRefresh}
 					noteIconClicked={noteIconClicked}
 				/>
 			</HStack>
@@ -120,10 +120,10 @@ const TaskActionCell = ({
 								isSubExpanded={isSubExpanded}
 								task={subtask}
 								handleSubTaskToggle={handleSubTaskToggle}
-								setRefresh={setRefresh}
 								managers={managers}
 								company={company}
 								noteIconClicked={noteIconClicked}
+								handleSubTaskUpdate={handleSubTaskUpdate}
 							/>
 						</VStack>
 					);
@@ -133,7 +133,6 @@ const TaskActionCell = ({
 					isOpen={openEditTask}
 					onClose={() => setOpenEditTask(false)}
 					currentTask={task}
-					setRefresh={setRefresh}
 					managers={managers}
 				/>
 			)}
@@ -142,7 +141,6 @@ const TaskActionCell = ({
 					isOpen={openAddTask}
 					onClose={() => setOpenAddTask(false)}
 					currentTask={task}
-					setRefresh={setRefresh}
 					managers={managers}
 					company={company}
 				/>

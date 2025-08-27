@@ -16,12 +16,19 @@ const FILE_OVERVIEW_COLS = [
 	{ name: "Status" },
 ];
 
-const FilesOverView = ({ files, setFiles, managers, company }) => {
-	const [fileId, setFileId] = useState(null);
+const FilesOverView = ({
+	files,
+	handleFileUpdate,
+	handleProjectUpdate,
+	handleSubTaskUpdate,
+	handleTaskUpdate,
+	managers,
+	company,
+}) => {
 	const [fileExpandedIndex, setFileExpandedIndex] = useState(null);
 	const [projectExpandedIndex, setProjectExpandedIndex] = useState(null);
-	const [taskExpandedIndex, setTaskExpandedIndex] = useState(null);
 	const [subTaskExpandedIndex, setSubTaskExpandedIndex] = useState(null);
+	const [taskExpandedIndex, setTaskExpandedIndex] = useState(null);
 
 	const handleFileToggle = (index) => {
 		setFileExpandedIndex(fileExpandedIndex === index ? null : index);
@@ -39,74 +46,6 @@ const FilesOverView = ({ files, setFiles, managers, company }) => {
 		setSubTaskExpandedIndex(subTaskExpandedIndex === index ? null : index);
 	};
 
-	const handleProjectUpdate = (projectData) => {
-		const {
-			projectName,
-			selectedAssigneesId,
-			notes,
-			priority,
-			selectedAssignees,
-			startDate,
-			dueDate,
-			status,
-		} = projectData;
-
-		const updatedData = files?.map((file) =>
-			file._id === projectData.fileId
-				? {
-						...file,
-						projects: file.projects?.map((project) => {
-							return project._id === projectData._id
-								? {
-										...project,
-										projectName,
-										selectedAssignees,
-										selectedAssigneesId,
-										priority,
-										dueDate,
-										notes,
-										startDate,
-										status,
-								  }
-								: project;
-						}),
-				  }
-				: file,
-		);
-		setFiles(updatedData);
-	};
-
-	const handleFileUpdate = (fileData) => {
-		const {
-			fileName,
-			managerId,
-			managerName,
-			notes,
-			priority,
-			selectedAssignees,
-			startDate,
-			dueDate,
-			status,
-			_id,
-		} = fileData;
-		const updatedData = files?.map((file) =>
-			file._id === _id
-				? {
-						...file,
-						fileName,
-						managerId,
-						managerName,
-						notes,
-						priority,
-						selectedAssignees,
-						startDate,
-						status,
-						dueDate,
-				  }
-				: file,
-		);
-		setFiles(updatedData);
-	};
 	return (
 		<Table color={"var(--nav_color)"} bg={"var(--primary_bg)"}>
 			<Thead>
@@ -130,21 +69,21 @@ const FilesOverView = ({ files, setFiles, managers, company }) => {
 					<Tr key={file._id} display={"flex"} justifyContent={"start"} alignItems={"start"} mb={1}>
 						<FileActionCell
 							expandedIndex={fileExpandedIndex}
-							handleSubTaskToggle={handleSubTaskToggle}
-							handleProjectToggle={handleProjectToggle}
-							handleTaskToggle={handleTaskToggle}
-							handleFileToggle={handleFileToggle}
 							index={fileIndex}
 							isExpanded={projectExpandedIndex}
 							isTaskExpanded={taskExpandedIndex}
 							isSubExpanded={subTaskExpandedIndex}
 							managers={managers}
 							file={file}
-							fileId={fileId}
-							setFileId={setFileId}
 							company={company}
 							handleFileUpdate={handleFileUpdate}
 							handleProjectUpdate={handleProjectUpdate}
+							handleSubTaskUpdate={handleSubTaskUpdate}
+							handleTaskUpdate={handleTaskUpdate}
+							handleFileToggle={handleFileToggle}
+							handleProjectToggle={handleProjectToggle}
+							handleSubTaskToggle={handleSubTaskToggle}
+							handleTaskToggle={handleTaskToggle}
 						/>
 						<AssigneeCell
 							expandedIndex={fileExpandedIndex}

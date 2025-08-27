@@ -18,10 +18,11 @@ import {
 import MultiSelectButton from "components/ui/form/MultiSelectButton";
 import { useState } from "react";
 import ProjectService from "services/ProjectService";
+import { FileTitle } from "../cell/FileTitle";
 
-const AddNewProject = ({ isOpen, onClose, setRefresh, file, fileId, managers, company }) => {
+const AddFileProject = ({ isOpen, onClose, file, managers, company, handleProjectUpdate }) => {
 	const defaultProject = {
-		fileId,
+		fileId: file._id,
 		fileName: file?.fileName,
 		projectName: "",
 		selectedAssignees: [],
@@ -54,9 +55,10 @@ const AddNewProject = ({ isOpen, onClose, setRefresh, file, fileId, managers, co
 		e.preventDefault();
 		setSubmitting(true);
 		try {
-			await ProjectService.addProject(formData, fileId);
+			const { data } = await ProjectService.addProject(formData, file._id);
 			onClose();
 			setFormData(defaultProject);
+			handleProjectUpdate(data, false);
 		} catch (error) {
 			setMessage("An error occurred. Please try again.", error);
 		} finally {
@@ -68,7 +70,9 @@ const AddNewProject = ({ isOpen, onClose, setRefresh, file, fileId, managers, co
 		<Modal isCentered size={"4xl"} isOpen={isOpen} onClose={onClose}>
 			<ModalOverlay />
 			<ModalContent>
-				<ModalHeader>Add Project - {formData?.fileName.toUpperCase()}</ModalHeader>
+				<ModalHeader>
+					<FileTitle title={`Add Project - ${formData?.fileName.toUpperCase()}`} />
+				</ModalHeader>
 				<ModalCloseButton />
 				<ModalBody>
 					<Stack spacing="5">
@@ -172,4 +176,4 @@ const AddNewProject = ({ isOpen, onClose, setRefresh, file, fileId, managers, co
 	);
 };
 
-export default AddNewProject;
+export default AddFileProject;
