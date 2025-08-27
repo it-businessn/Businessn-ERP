@@ -4,6 +4,7 @@ import { useState } from "react";
 import ProjectService from "services/ProjectService";
 import TaskService from "services/TaskService";
 import { getTaskCheckboxCss } from "utils/common";
+import { ACTION } from "../files";
 import EditInnerSubTask from "../project/EditInnerSubTask";
 import CellAction from "./CellAction";
 
@@ -12,7 +13,9 @@ const InnerSubTaskActionCell = ({
 	managers,
 	index,
 	noteIconClicked,
-	handleSubTaskUpdate,
+	handleInnerSubTaskUpdate,
+	fileId,
+	handleSubTaskToggle,
 }) => {
 	const { _id, taskName, subTaskId, completed } = task;
 	const toast = useToast();
@@ -45,17 +48,17 @@ const InnerSubTaskActionCell = ({
 	};
 
 	const [openEditTask, setOpenEditTask] = useState(false);
-	const [currentTask, setCurrentTask] = useState(null);
 
 	const handleEditSubtask = () => {
 		setOpenEditTask(true);
-		setCurrentTask(task);
 	};
 
 	const handleDelete = async () => {
 		try {
 			await ProjectService.deleteInnerSubTask(task, subTaskId);
 			setShowConfirmationPopUp(false);
+			handleInnerSubTaskUpdate(task, fileId, ACTION.DELETE, subTaskId, index);
+			handleSubTaskToggle();
 		} catch (error) {
 			console.error("Error updating task status:", error);
 		}
@@ -63,10 +66,11 @@ const InnerSubTaskActionCell = ({
 
 	const handleSave = async (updatedData) => {
 		try {
-			await ProjectService.updateInnerSubTaskName(
+			const { data } = await ProjectService.updateInnerSubTaskName(
 				{ taskName: updatedData, recordIndex: index },
 				subTaskId,
 			);
+			handleInnerSubTaskUpdate(data, fileId, ACTION.EDIT, subTaskId);
 		} catch (error) {
 			console.log("An error occurred. Please try again.", error);
 		}
@@ -99,7 +103,7 @@ const InnerSubTaskActionCell = ({
 				<EditInnerSubTask
 					isOpen={openEditTask}
 					onClose={() => setOpenEditTask(false)}
-					currentTask={currentTask}
+					currentTask={task}
 					managers={managers}
 				/>
 			)}

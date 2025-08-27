@@ -39,7 +39,7 @@ const FilesList = ({ managers, company }) => {
 		fetchAllFiles();
 	}, []);
 
-	const handleInnerSubTaskUpdate = (subTaskData, fileId, action) => {
+	const handleInnerSubTaskUpdate = (subTaskData, fileId, action, subTaskId, deleteIndex) => {
 		const updatedData = files?.map((file) =>
 			file._id === fileId
 				? {
@@ -53,10 +53,15 @@ const FilesList = ({ managers, company }) => {
 												? {
 														...task,
 														subtasks: task.subtasks?.map((subtask) =>
-															subtask._id === subTaskData._id
+															subtask._id === subTaskId
 																? {
 																		...subtask,
-																		subtasks: subTaskData.subtasks,
+																		subtasks:
+																			action === ACTION.DELETE
+																				? subtask.subtasks?.filter(
+																						(subtask, index) => index !== deleteIndex,
+																				  )
+																				: subTaskData.subtasks,
 																  }
 																: subtask,
 														),

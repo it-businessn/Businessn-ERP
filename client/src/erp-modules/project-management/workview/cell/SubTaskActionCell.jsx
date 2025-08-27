@@ -92,7 +92,7 @@ const SubTaskActionCell = ({
 	};
 
 	const subTaskAdded = (data) => {
-		handleInnerSubTaskUpdate(data, fileId, ACTION.ADD);
+		handleInnerSubTaskUpdate(data, fileId, ACTION.ADD, data._id);
 	};
 
 	const taskUpdated = (data, action) => {
@@ -146,7 +146,9 @@ const SubTaskActionCell = ({
 								index={sub_index}
 								managers={managers}
 								noteIconClicked={noteIconClicked}
-								handleSubTaskUpdate={handleSubTaskUpdate}
+								handleInnerSubTaskUpdate={handleInnerSubTaskUpdate}
+								fileId={fileId}
+								handleSubTaskToggle={handleSubTaskToggle}
 							/>
 						</VStack>
 					);
