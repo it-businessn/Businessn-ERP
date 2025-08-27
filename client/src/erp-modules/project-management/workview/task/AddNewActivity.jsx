@@ -211,7 +211,6 @@ const AddNewActivity = ({ isOpen, onClose, setRefresh, allProjects, allProjectTa
 															dueDate: e.target.value,
 														}))
 													}
-													required
 												/>
 											</FormControl>
 											<FormControl>

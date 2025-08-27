@@ -25,7 +25,6 @@ const TaskActionCell = ({
 	const [openAddTask, setOpenAddTask] = useState(false);
 
 	const [isOpen, setIsOpen] = useState(false);
-	const [isChecked, setIsChecked] = useState(false);
 	const [modalPosition, setModalPosition] = useState({ top: 0, left: 0 });
 	const [actualHours, setActualHours] = useState(0);
 	const [deleteRecord, setDeleteRecord] = useState(false);
@@ -36,19 +35,19 @@ const TaskActionCell = ({
 	const handleTaskStatus = (e) => {
 		const isOpen = e.target.checked;
 		setIsTaskCompleted(isOpen);
-		setIsChecked(!isChecked);
-		handleCheckboxChange();
+		handleCheckboxChange(isOpen);
 	};
+
 	const handleClose = () => {
 		setIsOpen(false);
 		setActualHours(0);
 		setShowConfirmationPopUp((prev) => !prev);
 	};
 
-	const handleCheckboxChange = async () => {
+	const handleCheckboxChange = async (isOpen) => {
 		setIsOpen(false);
 		try {
-			await TaskService.updateTaskStatus({ isOpen: isTaskCompleted }, task._id);
+			await TaskService.updateTaskStatus({ isOpen }, task._id);
 			setRefresh((prev) => !prev);
 			toast({
 				title: "Task updated successfully!",

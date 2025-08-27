@@ -37,10 +37,9 @@ const getEmployeeProfileInfo = async (req, res) => {
 		const result = await findEmployeeProfileInfo(empId, companyName);
 		if (result) {
 			if (!result?.SIN?.includes("*") && result?.SINIv && isNaN(Number(result?.SIN))) {
-				result.SIN = decryptData(result?.SIN, sin_key, result?.SINIv).replace(/.(?=.{3})/g, "*");
-			} else {
-				result.SIN = result.SIN?.replace(/.(?=.{3})/g, "*") || "";
+				result.SIN = decryptData(result?.SIN, sin_key, result?.SINIv);
 			}
+			result.SIN = result.SIN?.replace(/.(?=.{3})/g, "*") || "";
 			return res.status(200).json(result);
 		}
 

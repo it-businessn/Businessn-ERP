@@ -21,13 +21,11 @@ const SubTaskActionCell = ({
 }) => {
 	const { _id, taskName, selectedAssignees, completed } = task;
 
-	const [isTaskCompleted, setIsTaskCompleted] = useState(task.completed);
+	const [isTaskCompleted, setIsTaskCompleted] = useState(completed);
 
-	const [isOpenTask, setIsOpenTask] = useState(completed);
 	const [openEditTask, setOpenEditTask] = useState(false);
 	const [openAddTask, setOpenAddTask] = useState(false);
 	const [isOpen, setIsOpen] = useState(false);
-	const [isChecked, setIsChecked] = useState(false);
 	const [modalPosition, setModalPosition] = useState({ top: 0, left: 0 });
 	const [actualHours, setActualHours] = useState(0);
 	const [deleteRecord, setDeleteRecord] = useState(false);
@@ -38,21 +36,19 @@ const SubTaskActionCell = ({
 	const handleTaskStatus = async (e) => {
 		const isOpen = e.target.checked;
 		setIsTaskCompleted(isOpen);
-		setIsChecked(!isChecked);
-		handleCheckboxChange();
-
-		setIsOpenTask(isOpen);
+		handleCheckboxChange(isOpen);
 	};
+
 	const handleClose = () => {
 		setIsOpen(false);
 		setActualHours(0);
 		setShowConfirmationPopUp((prev) => !prev);
 	};
 
-	const handleCheckboxChange = async () => {
+	const handleCheckboxChange = async (isOpen) => {
 		setIsOpen(false);
 		try {
-			await TaskService.updateSubTaskStatus({ isOpen: isTaskCompleted }, task._id);
+			await TaskService.updateSubTaskStatus({ isOpen }, task._id);
 			toast({
 				title: "Task updated successfully!",
 				status: "success",
@@ -125,7 +121,6 @@ const SubTaskActionCell = ({
 					handleToggle={() => handleSubTaskToggle(index)}
 					isExpanded={isSubExpanded === index}
 					handleDelete={() => {
-						console.log("ss");
 						setShowConfirmationPopUp((prev) => !prev);
 						setDeleteRecordTask(task);
 						setDeleteRecord(task._id);

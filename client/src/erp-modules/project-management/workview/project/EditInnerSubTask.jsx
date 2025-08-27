@@ -112,7 +112,6 @@ const EditInnerSubTask = ({ isOpen, onClose, setRefresh, currentTask, managers }
 													subTaskDueDate: e.target.value,
 												}))
 											}
-											required
 										/>
 									</FormControl>
 									{/* <FormControl>

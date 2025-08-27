@@ -396,7 +396,6 @@ const AddNewSubTask = ({
 															dueDate: e.target.value,
 														}))
 													}
-													required
 												/>
 											</FormControl>
 											<FormControl>

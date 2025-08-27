@@ -85,7 +85,7 @@ const FilesOverView = ({ files, managers, company, setRefresh }) => {
 							isExpanded={projectExpandedIndex}
 							isTaskExpanded={taskExpandedIndex}
 							isSubExpanded={subTaskExpandedIndex}
-							project={file}
+							// project={file}
 						/>
 						<PriorityCell
 							expandedIndex={fileExpandedIndex}

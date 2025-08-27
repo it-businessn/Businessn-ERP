@@ -129,7 +129,6 @@ const AddNewSubTasks = ({ isOpen, onClose, setRefresh, currentTask, managers, co
 													subTaskDueDate: e.target.value,
 												}))
 											}
-											required
 										/>
 									</FormControl>
 									{/* <FormControl>
