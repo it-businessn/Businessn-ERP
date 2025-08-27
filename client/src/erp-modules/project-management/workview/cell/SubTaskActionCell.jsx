@@ -47,13 +47,14 @@ const SubTaskActionCell = ({
 
 	const handleCheckboxChange = async (isOpen) => {
 		try {
-			await TaskService.updateSubTaskStatus({ isOpen }, _id);
+			const { data } = await TaskService.updateSubTaskStatus({ isOpen }, _id);
 			toast({
 				title: "Task updated successfully!",
 				status: "success",
 				duration: 1000,
 				isClosable: true,
 			});
+			handleSubTaskUpdate(data, fileId, ACTION.EDIT);
 		} catch (error) {
 			console.error("Error updating task status:", error);
 		}
