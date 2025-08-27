@@ -19,8 +19,9 @@ import MultiSelectButton from "components/ui/form/MultiSelectButton";
 import { useState } from "react";
 import ProjectService from "services/ProjectService";
 import { FileTitle } from "../cell/FileTitle";
+import { ACTION } from "../files";
 
-const AddNewTask = ({ isOpen, onClose, currentTask, managers, company }) => {
+const AddNewTask = ({ isOpen, onClose, currentTask, managers, company, handleTaskUpdate }) => {
 	const defaultTask = {
 		fileId: currentTask?.fileId,
 		projectId: currentTask?._id,
@@ -56,9 +57,10 @@ const AddNewTask = ({ isOpen, onClose, currentTask, managers, company }) => {
 		e.preventDefault();
 		setSubmitting(true);
 		try {
-			await ProjectService.addTask(formData, currentTask._id);
+			const { data } = await ProjectService.addTask(formData, currentTask._id);
 			onClose();
 			setFormData(defaultTask);
+			handleTaskUpdate(data, formData.fileId, ACTION.ADD);
 		} catch (error) {
 			setMessage("An error occurred. Please try again.", error);
 		} finally {

@@ -3,8 +3,10 @@ import DeletePopUp from "components/ui/modal/DeletePopUp";
 import { useState } from "react";
 import ProjectService from "services/ProjectService";
 import projectImg from "../../../../assets/project.png";
+import { ACTION } from "../files";
 import AddNewTask from "../project/AddNewTask";
 import EditProject from "../project/EditProject";
+import AddNotes from "./AddNotes";
 import CellAction from "./CellAction";
 import TaskActionCell from "./TaskActionCell";
 
@@ -20,7 +22,6 @@ const ProjectActionCell = ({
 	isSubExpanded,
 	company,
 	handleFileToggle,
-	noteIconClicked,
 	handleProjectUpdate,
 	handleSubTaskUpdate,
 	handleTaskUpdate,
@@ -29,6 +30,7 @@ const ProjectActionCell = ({
 	const [openAddTask, setOpenAddTask] = useState(false);
 	const [currentTask, setCurrentTask] = useState(null);
 	const [showConfirmationPopUp, setShowConfirmationPopUp] = useState(false);
+	const [showNote, setShowNote] = useState(false);
 
 	const handleClose = () => {
 		setShowConfirmationPopUp(false);
@@ -38,15 +40,21 @@ const ProjectActionCell = ({
 		setOpenEditProject(true);
 	};
 
-	const handleAddTask = (task, taskId) => {
+	const handleAddItem = (task) => {
 		setOpenAddTask(true);
 		setCurrentTask(task);
+	};
+
+	const noteIconClicked = () => {
+		setShowNote(true);
 	};
 
 	const handleDelete = async () => {
 		try {
 			await ProjectService.deleteProject(project, project._id);
 			setShowConfirmationPopUp(false);
+			handleProjectUpdate(project, ACTION.DELETE);
+			handleFileToggle();
 		} catch (error) {
 			console.error("Error updating task status:", error);
 		}
@@ -58,7 +66,7 @@ const ProjectActionCell = ({
 				{ projectName: updatedData },
 				project._id,
 			);
-			handleProjectUpdate(data);
+			handleProjectUpdate(data, ACTION.EDIT);
 		} catch (error) {
 			console.log("An error occurred. Please try again.", error);
 		}
@@ -82,7 +90,7 @@ const ProjectActionCell = ({
 					totalTask={project?.tasks}
 					totalTasks={project?.tasks?.length}
 					handleEdit={handleEditProject}
-					handleAdd={() => handleAddTask(project, project._id)}
+					handleAdd={() => handleAddItem(project)}
 					onSave={handleSave}
 					handleToggle={() => handleProjectToggle(index)}
 					isExpanded={isExpanded === index}
@@ -94,6 +102,15 @@ const ProjectActionCell = ({
 				/>
 			</HStack>
 
+			{showNote && (
+				<AddNotes
+					type={"project"}
+					content={project}
+					isOpen={showNote}
+					setIsOpen={setShowNote}
+					handleActionUpdate={(data) => handleProjectUpdate(data, ACTION.EDIT)}
+				/>
+			)}
 			{isExpanded === index &&
 				project?.tasks?.length > 0 &&
 				project?.tasks?.map((task, task_index) => {
@@ -104,7 +121,7 @@ const ProjectActionCell = ({
 								isTaskExpanded={isTaskExpanded}
 								isSubExpanded={isSubExpanded}
 								task={task}
-								handleAddTask={() => handleAddTask(task, task._id)}
+								handleAddTask={() => handleAddItem(task)}
 								isExpanded={isExpanded}
 								handleTaskToggle={handleTaskToggle}
 								handleSubTaskToggle={handleSubTaskToggle}
@@ -126,7 +143,7 @@ const ProjectActionCell = ({
 					managers={managers}
 					handleProjectUpdate={(data) => {
 						handleFileToggle();
-						handleProjectUpdate(data);
+						handleProjectUpdate(data, ACTION.EDIT);
 					}}
 				/>
 			)}
@@ -137,6 +154,7 @@ const ProjectActionCell = ({
 					currentTask={currentTask}
 					managers={managers}
 					company={company}
+					handleTaskUpdate={handleTaskUpdate}
 				/>
 			)}
 			{showConfirmationPopUp && (

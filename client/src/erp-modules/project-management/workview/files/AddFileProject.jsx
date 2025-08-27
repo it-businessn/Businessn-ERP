@@ -18,6 +18,7 @@ import {
 import MultiSelectButton from "components/ui/form/MultiSelectButton";
 import { useState } from "react";
 import ProjectService from "services/ProjectService";
+import { ACTION } from ".";
 import { FileTitle } from "../cell/FileTitle";
 
 const AddFileProject = ({ isOpen, onClose, file, managers, company, handleProjectUpdate }) => {
@@ -58,7 +59,7 @@ const AddFileProject = ({ isOpen, onClose, file, managers, company, handleProjec
 			const { data } = await ProjectService.addProject(formData, file._id);
 			onClose();
 			setFormData(defaultProject);
-			handleProjectUpdate(data, false);
+			handleProjectUpdate(data, ACTION.ADD);
 		} catch (error) {
 			setMessage("An error occurred. Please try again.", error);
 		} finally {

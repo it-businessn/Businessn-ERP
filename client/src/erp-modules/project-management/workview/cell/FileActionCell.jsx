@@ -117,7 +117,7 @@ const FileActionCell = ({
 					content={file}
 					isOpen={showNote}
 					setIsOpen={setShowNote}
-					handleFileUpdate={handleFileUpdate}
+					handleActionUpdate={handleFileUpdate}
 				/>
 			)}
 		</Td>

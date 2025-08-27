@@ -8,6 +8,12 @@ import { isManager } from "utils";
 import AddFile from "./AddFile";
 import FilesOverView from "./FilesOverView";
 
+export const ACTION = {
+	ADD: "A",
+	EDIT: "E",
+	DELETE: "D",
+};
+
 const FilesList = ({ managers, company }) => {
 	const loggedInUser = LocalStorageService.getItem("user");
 	const isManagerView = isManager(loggedInUser?.role);
@@ -33,7 +39,7 @@ const FilesList = ({ managers, company }) => {
 		fetchAllFiles();
 	}, [company]);
 
-	const handleSubTaskUpdate = (projectData) => {
+	const handleSubTaskUpdate = (projectData, action) => {
 		const {
 			projectName,
 			selectedAssigneesId,
@@ -70,34 +76,48 @@ const FilesList = ({ managers, company }) => {
 		setFiles(updatedData);
 	};
 
-	const handleTaskUpdate = (projectData) => {
+	const handleTaskUpdate = (taskData, fileId, action) => {
 		const {
-			projectName,
-			selectedAssigneesId,
-			notes,
+			taskName,
+			completed,
+			dueDate,
+			isOpen,
 			priority,
 			selectedAssignees,
-			startDate,
-			dueDate,
+			selectedAssigneesId,
 			status,
-		} = projectData;
+		} = taskData;
 
 		const updatedData = files?.map((file) =>
-			file._id === projectData.fileId
+			file._id === fileId
 				? {
 						...file,
 						projects: file.projects?.map((project) => {
-							return project._id === projectData._id
+							return project._id === taskData.projectId
 								? {
 										...project,
-										projectName,
-										selectedAssignees,
-										selectedAssigneesId,
-										priority,
-										dueDate,
-										notes,
-										startDate,
-										status,
+										tasks:
+											action === ACTION.ADD
+												? [...(project.tasks || []), taskData]
+												: action === ACTION.EDIT
+												? project.tasks?.map((task) =>
+														task._id === taskData._id
+															? {
+																	...task,
+																	taskName,
+																	completed,
+																	dueDate,
+																	isOpen,
+																	priority,
+																	selectedAssignees,
+																	selectedAssigneesId,
+																	status,
+															  }
+															: task,
+												  )
+												: action === ACTION.DELETE
+												? project.tasks?.filter((task) => task._id !== taskData._id)
+												: project.tasks,
 								  }
 								: project;
 						}),
@@ -107,7 +127,7 @@ const FilesList = ({ managers, company }) => {
 		setFiles(updatedData);
 	};
 
-	const handleProjectUpdate = (projectData, isEdit = true) => {
+	const handleProjectUpdate = (projectData, action) => {
 		const {
 			projectName,
 			selectedAssigneesId,
@@ -118,35 +138,37 @@ const FilesList = ({ managers, company }) => {
 			dueDate,
 			status,
 		} = projectData;
-
 		const updatedData = files?.map((file) =>
 			file._id === projectData.fileId
 				? {
 						...file,
-						projects: isEdit
-							? file.projects?.map((project) => {
-									return project._id === projectData._id
-										? {
-												...project,
-												projectName,
-												selectedAssignees,
-												selectedAssigneesId,
-												priority,
-												dueDate,
-												notes,
-												startDate,
-												status,
-										  }
-										: project;
-							  })
-							: [...(file.projects || []), projectData],
+						projects:
+							action == ACTION.ADD
+								? [...(file.projects || []), projectData]
+								: action == ACTION.DELETE
+								? file.projects?.filter((project) => project._id !== projectData._id)
+								: file.projects?.map((project) => {
+										return project._id === projectData._id
+											? {
+													...project,
+													projectName,
+													selectedAssignees,
+													selectedAssigneesId,
+													priority,
+													dueDate,
+													notes,
+													startDate,
+													status,
+											  }
+											: project;
+								  }),
 				  }
 				: file,
 		);
 		setFiles(updatedData);
 	};
 
-	const handleFileUpdate = (fileData, isEdit = true) => {
+	const handleFileUpdate = (fileData) => {
 		const {
 			fileName,
 			managerId,

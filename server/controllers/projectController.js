@@ -115,7 +115,7 @@ const addTask = async (req, res) => {
 
 		await savedProject.save();
 
-		res.status(201).json(savedProject);
+		res.status(201).json(newTask);
 	} catch (error) {
 		res.status(400).json({ message: error.message });
 	}

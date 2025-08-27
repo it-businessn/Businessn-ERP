@@ -21,6 +21,7 @@ import { useEffect, useState } from "react";
 import { FaCaretDown } from "react-icons/fa";
 import ProjectService from "services/ProjectService";
 import { getDefaultDate } from "utils/convertDate";
+import { ACTION } from "../files";
 import { PRIORITY } from "./data";
 
 const EditProject = ({ isOpen, onClose, handleProjectUpdate, project, managers }) => {
@@ -57,7 +58,7 @@ const EditProject = ({ isOpen, onClose, handleProjectUpdate, project, managers }
 		try {
 			const { data } = await ProjectService.updateProject(formData, project?._id);
 			onClose();
-			handleProjectUpdate(data);
+			handleProjectUpdate(data, ACTION.EDIT);
 			setFormData(defaultTask);
 		} catch (error) {
 			setMessage("An error occurred. Please try again.", error);

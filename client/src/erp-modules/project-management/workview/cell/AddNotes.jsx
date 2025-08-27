@@ -14,7 +14,7 @@ import ActionButton from "components/ui/button/ActionButton";
 import { useState } from "react";
 import NotesService from "services/NotesService";
 
-const AddNotes = ({ content, type, setIsOpen, isOpen, handleFileUpdate }) => {
+const AddNotes = ({ content, type, setIsOpen, isOpen, handleActionUpdate }) => {
 	const [formData, setFormData] = useState({
 		type,
 		name: content?.fileName || content?.projectName || content?.taskName,
@@ -28,7 +28,7 @@ const AddNotes = ({ content, type, setIsOpen, isOpen, handleFileUpdate }) => {
 		setIsSubmitting(true);
 		try {
 			const { data } = await NotesService.updateNotes(formData, content._id);
-			handleFileUpdate(data);
+			handleActionUpdate(data);
 			setIsOpen(false);
 			setIsSubmitting(false);
 			setIsEdit(false);
