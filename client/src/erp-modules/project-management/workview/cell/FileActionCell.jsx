@@ -60,7 +60,6 @@ const FileActionCell = ({
 						index={index}
 						expandedIndex={expandedIndex}
 						isExpanded={expandedIndex === index}
-						// handleDelete={() => handleDelete(project, project._id)}
 						type={"file"}
 						isFile
 					/>

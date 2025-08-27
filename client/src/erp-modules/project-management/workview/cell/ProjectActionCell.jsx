@@ -94,9 +94,7 @@ const ProjectActionCell = ({
 					onSave={handleSave}
 					handleToggle={() => handleProjectToggle(index)}
 					isExpanded={isExpanded === index}
-					handleDelete={() => {
-						setShowConfirmationPopUp(true);
-					}}
+					handleDelete={() => setShowConfirmationPopUp(true)}
 					type={"project"}
 					noteIconClicked={noteIconClicked}
 				/>
@@ -130,6 +128,8 @@ const ProjectActionCell = ({
 								noteIconClicked={noteIconClicked}
 								handleSubTaskUpdate={handleSubTaskUpdate}
 								handleTaskUpdate={handleTaskUpdate}
+								handleProjectToggle={handleProjectToggle}
+								fileId={project.fileId}
 							/>
 						</VStack>
 					);

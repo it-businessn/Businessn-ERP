@@ -20,7 +20,7 @@ import { useState } from "react";
 import ProjectService from "services/ProjectService";
 import { FileTitle } from "../cell/FileTitle";
 
-const AddNewSubTask = ({ isOpen, onClose, currentTask, managers, company }) => {
+const AddNewSubTask = ({ isOpen, onClose, currentTask, managers, company, subTaskAdded }) => {
 	const defaultTask = {
 		projectId: currentTask?.projectId,
 		taskId: currentTask?._id,
@@ -56,9 +56,10 @@ const AddNewSubTask = ({ isOpen, onClose, currentTask, managers, company }) => {
 		e.preventDefault();
 		setSubmitting(true);
 		try {
-			await ProjectService.addSubTask(formData, currentTask._id);
+			const { data } = await ProjectService.addSubTask(formData, currentTask._id);
 			onClose();
 			setFormData(defaultTask);
+			subTaskAdded(data);
 		} catch (error) {
 			setMessage("An error occurred. Please try again.", error);
 		} finally {

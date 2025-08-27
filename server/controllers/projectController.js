@@ -169,7 +169,7 @@ const addSubTask = async (req, res) => {
 		savedProject.totalTasks += 1;
 		await savedProject.save();
 
-		res.status(201).json(savedProject);
+		res.status(201).json(newSubtask);
 	} catch (error) {
 		res.status(400).json({ message: error.message });
 	}
@@ -493,16 +493,16 @@ const updateProjectTask = async (req, res) => {
 	const { timeToComplete, dueDate, taskName, priority, selectedAssignees, projectId } = req.body;
 
 	try {
-		const status = getProjectStatus(dueDate);
 		const updatedData = {
 			timeToComplete,
-			dueDate,
 			taskName,
-			status,
 			priority,
 			selectedAssignees,
 		};
-
+		if (dueDate) {
+			updatedData.dueDate = dueDate;
+			updatedData.status = getProjectStatus(dueDate);
+		}
 		const updatedTask = await Task.findByIdAndUpdate(id, { $set: updatedData }, { new: true });
 		const savedProject = await Project.findById(projectId);
 
@@ -518,7 +518,7 @@ const updateProjectTask = async (req, res) => {
 			savedProject.selectedAssignees = uniqueArray;
 		}
 		await savedProject.save();
-		res.status(201).json(savedProject);
+		res.status(201).json(updatedTask);
 	} catch (error) {
 		res.status(400).json({ message: error.message });
 	}

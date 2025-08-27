@@ -4,8 +4,10 @@ import { useState } from "react";
 import ProjectService from "services/ProjectService";
 import TaskService from "services/TaskService";
 import { getTaskCheckboxCss } from "utils/common";
+import { ACTION } from "../files";
 import AddNewSubTask from "../project/AddNewSubTask";
 import EditTask from "../project/EditTask";
+import AddNotes from "./AddNotes";
 import CellAction from "./CellAction";
 import SubTaskActionCell from "./SubTaskActionCell";
 
@@ -18,14 +20,16 @@ const TaskActionCell = ({
 	isTaskExpanded,
 	isSubExpanded,
 	company,
-	noteIconClicked,
 	handleSubTaskUpdate,
 	handleTaskUpdate,
+	handleProjectToggle,
+	fileId,
 }) => {
 	const [isTaskCompleted, setIsTaskCompleted] = useState(task.completed);
 	const [openEditTask, setOpenEditTask] = useState(false);
 	const [openAddTask, setOpenAddTask] = useState(false);
 	const [showConfirmationPopUp, setShowConfirmationPopUp] = useState(false);
+	const [showNote, setShowNote] = useState(false);
 	const toast = useToast();
 
 	const handleTaskStatus = (e) => {
@@ -62,8 +66,10 @@ const TaskActionCell = ({
 
 	const handleDelete = async () => {
 		try {
-			await ProjectService.deleteTask(task, task._id);
+			const { data } = await ProjectService.deleteTask(task, task._id);
 			setShowConfirmationPopUp(false);
+			handleTaskUpdate(data, fileId, ACTION.DELETE);
+			handleProjectToggle();
 		} catch (error) {
 			console.error("Error updating task status:", error);
 		}
@@ -71,10 +77,24 @@ const TaskActionCell = ({
 
 	const handleSave = async (updatedData) => {
 		try {
-			await ProjectService.updateTaskName({ taskName: updatedData }, task._id);
+			const { data } = await ProjectService.updateTaskName({ taskName: updatedData }, task._id);
+			handleTaskUpdate(data, fileId, ACTION.EDIT);
 		} catch (error) {
 			console.log("An error occurred. Please try again.", error);
 		}
+	};
+
+	const noteIconClicked = () => {
+		setShowNote(true);
+	};
+
+	const subTaskAdded = (data) => {
+		handleSubTaskUpdate(data, fileId, ACTION.ADD);
+	};
+
+	const taskUpdated = (data, action) => {
+		handleTaskUpdate(data, fileId, action);
+		handleProjectToggle();
 	};
 
 	const width = task?.subtasks?.length ? "38em" : "43.1em";
@@ -101,9 +121,7 @@ const TaskActionCell = ({
 					onSave={handleSave}
 					handleToggle={() => handleTaskToggle(taskIndex)}
 					isExpanded={isTaskExpanded === taskIndex}
-					handleDelete={() => {
-						setShowConfirmationPopUp(true);
-					}}
+					handleDelete={() => setShowConfirmationPopUp(true)}
 					type={"task"}
 					noteIconClicked={noteIconClicked}
 				/>
@@ -134,6 +152,16 @@ const TaskActionCell = ({
 					onClose={() => setOpenEditTask(false)}
 					currentTask={task}
 					managers={managers}
+					handleTaskUpdate={taskUpdated}
+				/>
+			)}
+			{showNote && (
+				<AddNotes
+					type={"task"}
+					content={task}
+					isOpen={showNote}
+					setIsOpen={setShowNote}
+					handleActionUpdate={(data) => handleTaskUpdate(data, fileId, ACTION.EDIT)}
 				/>
 			)}
 			{openAddTask && (
@@ -143,6 +171,7 @@ const TaskActionCell = ({
 					currentTask={task}
 					managers={managers}
 					company={company}
+					subTaskAdded={subTaskAdded}
 				/>
 			)}
 			{showConfirmationPopUp && (

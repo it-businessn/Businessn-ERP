@@ -39,34 +39,59 @@ const FilesList = ({ managers, company }) => {
 		fetchAllFiles();
 	}, [company]);
 
-	const handleSubTaskUpdate = (projectData, action) => {
+	const handleSubTaskUpdate = (subTaskData, fileId, action) => {
 		const {
-			projectName,
-			selectedAssigneesId,
-			notes,
+			taskName,
+			completed,
+			dueDate,
+			isOpen,
 			priority,
 			selectedAssignees,
-			startDate,
-			dueDate,
+			selectedAssigneesId,
 			status,
-		} = projectData;
+			notes,
+		} = subTaskData;
 
 		const updatedData = files?.map((file) =>
-			file._id === projectData.fileId
+			file._id === fileId
 				? {
 						...file,
 						projects: file.projects?.map((project) => {
-							return project._id === projectData._id
+							return project._id === subTaskData.projectId
 								? {
 										...project,
-										projectName,
-										selectedAssignees,
-										selectedAssigneesId,
-										priority,
-										dueDate,
-										notes,
-										startDate,
-										status,
+										tasks: project.tasks?.map((task) =>
+											task._id === subTaskData.taskId
+												? {
+														...task,
+														subtasks:
+															action === ACTION.ADD
+																? [...(task.subtasks || []), subTaskData]
+																: action === ACTION.EDIT
+																? task.subtasks?.map((subtask) =>
+																		subtask._id === subTaskData._id
+																			? {
+																					...subtask,
+																					taskName,
+																					completed,
+																					dueDate,
+																					isOpen,
+																					priority,
+																					selectedAssignees,
+																					selectedAssigneesId,
+																					status,
+																					notes,
+																			  }
+																			: subtask,
+																  )
+																: action === ACTION.DELETE
+																? task.subtasks?.filter(
+																		(subtask) => subtask._id !== subTaskData._id,
+																  )
+																: task.subtasks,
+												  }
+												: task,
+										),
 								  }
 								: project;
 						}),
@@ -86,6 +111,7 @@ const FilesList = ({ managers, company }) => {
 			selectedAssignees,
 			selectedAssigneesId,
 			status,
+			notes,
 		} = taskData;
 
 		const updatedData = files?.map((file) =>
@@ -112,6 +138,7 @@ const FilesList = ({ managers, company }) => {
 																	selectedAssignees,
 																	selectedAssigneesId,
 																	status,
+																	notes,
 															  }
 															: task,
 												  )

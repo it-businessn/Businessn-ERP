@@ -19,10 +19,12 @@ import {
 import MultiSelectButton from "components/ui/form/MultiSelectButton";
 import { useEffect, useState } from "react";
 import { FaCaretDown } from "react-icons/fa";
+import ProjectService from "services/ProjectService";
 import { getDefaultDate } from "utils/convertDate";
+import { ACTION } from "../files";
 import { PRIORITY } from "./data";
 
-const EditTask = ({ isOpen, onClose, currentTask, managers }) => {
+const EditTask = ({ isOpen, onClose, currentTask, managers, handleTaskUpdate }) => {
 	const defaultTask = {
 		taskName: currentTask?.taskName,
 		taskId: currentTask?._id,
@@ -53,16 +55,17 @@ const EditTask = ({ isOpen, onClose, currentTask, managers }) => {
 
 	const handleSubmit = async (e) => {
 		e.preventDefault();
-		// setSubmitting(true);
-		// try {
-		// 	await ProjectService.updateProjectTask(formData, formData?.taskId);
-		// 	onClose();
-		// 	setFormData(defaultTask);
-		// } catch (error) {
-		// 	setMessage("An error occurred. Please try again.", error);
-		// } finally {
-		// 	setSubmitting(false);
-		// }
+		setSubmitting(true);
+		try {
+			const { data } = await ProjectService.updateProjectTask(formData, formData?.taskId);
+			onClose();
+			setFormData(defaultTask);
+			handleTaskUpdate(data, ACTION.EDIT);
+		} catch (error) {
+			setMessage("An error occurred. Please try again.", error);
+		} finally {
+			setSubmitting(false);
+		}
 	};
 
 	useEffect(() => {
