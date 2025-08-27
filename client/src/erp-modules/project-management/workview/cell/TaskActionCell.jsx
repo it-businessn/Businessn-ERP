@@ -66,9 +66,9 @@ const TaskActionCell = ({
 
 	const handleDelete = async () => {
 		try {
-			const { data } = await ProjectService.deleteTask(task, task._id);
+			await ProjectService.deleteTask(task, task._id);
 			setShowConfirmationPopUp(false);
-			handleTaskUpdate(data, fileId, ACTION.DELETE);
+			handleTaskUpdate(task, fileId, ACTION.DELETE);
 			handleProjectToggle();
 		} catch (error) {
 			console.error("Error updating task status:", error);
