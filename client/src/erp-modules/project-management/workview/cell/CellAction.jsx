@@ -2,9 +2,7 @@ import { Editable, EditableInput, EditablePreview, Flex, HStack, Tooltip } from 
 import { AddTaskButton } from "components/AddTaskButton";
 import { TaskButton } from "components/TaskButton";
 import NormalTextTitle from "components/ui/NormalTextTitle";
-import { useState } from "react";
 import { FaRegTrashAlt } from "react-icons/fa";
-import AddNotes from "./AddNotes";
 
 const CellAction = ({
 	name,
@@ -16,19 +14,13 @@ const CellAction = ({
 	isInner,
 	isExpanded,
 	handleDelete,
-	data,
 	type,
 	textSize = "sm",
 	width = "100%",
 	isFile,
 	onSave,
+	noteIconClicked,
 }) => {
-	const [showNote, setShowNote] = useState(false);
-
-	const noteIconClicked = () => {
-		setShowNote(true);
-	};
-
 	return (
 		<>
 			<Tooltip label={name} fontSize="xs" hasArrow placement="bottom-start">
@@ -67,15 +59,13 @@ const CellAction = ({
 				)}
 				<AddTaskButton
 					onClick={handleAdd}
-					handleClick={handleEdit}
+					handleEdit={handleEdit}
 					isInner={isInner}
 					onNoteIconClick={noteIconClicked}
 					isFile={isFile}
 				/>
 				{type !== "file" && <FaRegTrashAlt cursor={"pointer"} onClick={handleDelete} />}
 			</HStack>
-
-			{showNote && <AddNotes type={type} data={data} isOpen={showNote} setIsOpen={setShowNote} />}
 		</>
 	);
 };

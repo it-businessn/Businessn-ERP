@@ -13,10 +13,9 @@ const WorkView = () => {
 	const company = LocalStorageService.getItem("selectedCompany");
 	const loggedInUser = LocalStorageService.getItem("user");
 	const [files, setFiles] = useState(null);
-	const [refresh, setRefresh] = useState(false);
 	const [isDataLoaded, setIsDataLoaded] = useState(false);
 
-	const managers = useManager(company, refresh, true);
+	const managers = useManager(company);
 	const isManagerView = isManager(loggedInUser?.role);
 
 	useEffect(() => {
@@ -33,7 +32,7 @@ const WorkView = () => {
 			setIsDataLoaded(true);
 		};
 		fetchAllFiles();
-	}, [refresh, company]);
+	}, [company]);
 
 	return (
 		<PageLayout title={"File Overview"} showBgLayer>
@@ -45,7 +44,7 @@ const WorkView = () => {
 				color={"var(--nav_color)"}
 			>
 				{isDataLoaded ? (
-					<FilesList setRefresh={setRefresh} files={files} managers={managers} company={company} />
+					<FilesList files={files} setFiles={setFiles} managers={managers} company={company} />
 				) : (
 					<SkeletonLoader />
 				)}

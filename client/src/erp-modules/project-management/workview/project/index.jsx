@@ -3,7 +3,7 @@ import TextTitle from "components/ui/text/TextTitle";
 import AddFile from "../files/AddFile";
 import FilesOverView from "../files/FilesOverView";
 
-const FilesList = ({ files, setRefresh, managers, company }) => {
+const FilesList = ({ files, setFiles, managers, company }) => {
 	const { isOpen, onOpen, onClose } = useDisclosure();
 
 	return (
@@ -23,15 +23,9 @@ const FilesList = ({ files, setRefresh, managers, company }) => {
 				</Button>
 			</Flex>
 			{isOpen && (
-				<AddFile
-					managers={managers}
-					isOpen={isOpen}
-					onClose={onClose}
-					setRefresh={setRefresh}
-					company={company}
-				/>
+				<AddFile managers={managers} isOpen={isOpen} onClose={onClose} company={company} />
 			)}
-			<FilesOverView files={files} managers={managers} company={company} setRefresh={setRefresh} />
+			<FilesOverView files={files} setFiles={setFiles} managers={managers} company={company} />
 		</>
 	);
 };

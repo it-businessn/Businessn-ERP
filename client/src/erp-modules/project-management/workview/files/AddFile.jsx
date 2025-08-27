@@ -22,7 +22,7 @@ import { FaCaretDown } from "react-icons/fa";
 import ProjectService from "services/ProjectService";
 import { getDefaultDate } from "utils/convertDate";
 
-const AddFile = ({ isOpen, onClose, setRefresh, managers, company }) => {
+const AddFile = ({ isOpen, onClose, managers, company }) => {
 	const defaultFile = {
 		fileName: "",
 		startDate: getDefaultDate(),

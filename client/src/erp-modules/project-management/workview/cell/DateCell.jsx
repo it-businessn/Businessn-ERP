@@ -4,9 +4,8 @@ import React from "react";
 import { formatDate } from "utils/convertDate";
 
 const DateCell = ({ date, project, index, expandedIndex, isExpanded, isSubExpanded }) => {
-	const FormattedDate = ({ date, main, task, last }) => (
-		<NormalTextTitle title={formatDate(date)} />
-	);
+	const FormattedDate = ({ date, main, task, last }) =>
+		date && <NormalTextTitle title={formatDate(date)} />;
 	return (
 		<Td fontSize={"xs"} w="100%" p={"1em"} display={"flex"} py={0}>
 			<VStack alignItems="start" w={"100%"}>

@@ -3,6 +3,7 @@ import { useState } from "react";
 import fileImg from "../../../../assets/file.png";
 import EditFile from "../files/EditFile";
 import AddNewProject from "../project/AddNewProject";
+import AddNotes from "./AddNotes";
 import CellAction from "./CellAction";
 import ProjectActionCell from "./ProjectActionCell";
 
@@ -19,24 +20,28 @@ const FileActionCell = ({
 	handleProjectToggle,
 	setFileId,
 	fileId,
-	setRefresh,
 	managers,
 	company,
+	handleFileUpdate,
+	handleProjectUpdate,
 }) => {
 	const [openEditFile, setOpenEditFile] = useState(false);
 	const [openAddFile, setOpenAddFile] = useState(false);
+	const [showNote, setShowNote] = useState(false);
 
 	const handleEditFile = () => {
 		setOpenEditFile(true);
 		setFileId(file._id);
 	};
-
 	const handleAddTask = (projectId) => {
 		setOpenAddFile(true);
 		setFileId(projectId);
 	};
 	const width = file?.projects?.length ? "25em" : "29em";
 
+	const noteIconClicked = () => {
+		setShowNote(true);
+	};
 	return (
 		<Td w="100%" fontSize={"xs"} py={0}>
 			<VStack alignItems={"start"} spacing={0} w={"100%"} ml={"-1.5em"}>
@@ -45,20 +50,19 @@ const FileActionCell = ({
 					<CellAction
 						textSize="lg"
 						width={width}
-						data={file}
 						name={file.fileName}
 						totalTask={file?.projects}
 						totalTasks={file?.projects?.length}
 						handleEdit={handleEditFile}
 						handleAdd={() => handleAddTask(file._id)}
 						handleToggle={() => handleFileToggle(index)}
+						noteIconClicked={noteIconClicked}
 						index={index}
 						expandedIndex={expandedIndex}
 						isExpanded={expandedIndex === index}
 						// handleDelete={() => handleDelete(project, project._id)}
 						type={"file"}
 						isFile
-						setRefresh={setRefresh}
 					/>
 				</HStack>
 				{expandedIndex === index &&
@@ -74,15 +78,17 @@ const FileActionCell = ({
 									index={project_index}
 									project={project}
 									handleAddTask={() => handleAddTask(project._id)}
+									noteIconClicked={noteIconClicked}
 									isExpanded={isExpanded}
 									isTaskExpanded={isTaskExpanded}
 									isSubExpanded={isSubExpanded}
 									handleProjectToggle={handleProjectToggle}
 									handleTaskToggle={handleTaskToggle}
 									handleSubTaskToggle={handleSubTaskToggle}
-									setRefresh={setRefresh}
 									managers={managers}
 									company={company}
+									handleFileToggle={handleFileToggle}
+									handleProjectUpdate={handleProjectUpdate}
 								/>
 							</VStack>
 						);
@@ -94,8 +100,8 @@ const FileActionCell = ({
 					onClose={() => setOpenEditFile(false)}
 					file={file}
 					fileId={fileId}
-					setRefresh={setRefresh}
 					managers={managers}
+					handleFileUpdate={handleFileUpdate}
 				/>
 			)}
 			{openAddFile && (
@@ -104,9 +110,18 @@ const FileActionCell = ({
 					onClose={() => setOpenAddFile(false)}
 					file={file}
 					fileId={fileId}
-					setRefresh={setRefresh}
 					managers={managers}
 					company={company}
+				/>
+			)}
+
+			{showNote && (
+				<AddNotes
+					type={"file"}
+					content={file}
+					isOpen={showNote}
+					setIsOpen={setShowNote}
+					handleFileUpdate={handleFileUpdate}
 				/>
 			)}
 		</Td>

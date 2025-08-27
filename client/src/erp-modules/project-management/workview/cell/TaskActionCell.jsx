@@ -19,6 +19,7 @@ const TaskActionCell = ({
 	isTaskExpanded,
 	isSubExpanded,
 	company,
+	noteIconClicked,
 }) => {
 	const [isTaskCompleted, setIsTaskCompleted] = useState(task.completed);
 	const [openEditTask, setOpenEditTask] = useState(false);
@@ -103,8 +104,8 @@ const TaskActionCell = ({
 						setShowConfirmationPopUp(true);
 					}}
 					type={"task"}
-					data={task}
 					setRefresh={setRefresh}
+					noteIconClicked={noteIconClicked}
 				/>
 			</HStack>
 
@@ -122,6 +123,7 @@ const TaskActionCell = ({
 								setRefresh={setRefresh}
 								managers={managers}
 								company={company}
+								noteIconClicked={noteIconClicked}
 							/>
 						</VStack>
 					);

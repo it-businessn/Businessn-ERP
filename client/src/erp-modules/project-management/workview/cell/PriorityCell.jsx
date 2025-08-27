@@ -3,15 +3,16 @@ import { RenderPriorityBars } from "components/RenderPriorityBars";
 
 const PriorityCell = ({ project, index, expandedIndex, isExpanded, isSubExpanded }) => {
 	// top={main ? "0" : "3.5em"} pos={"relative"}
-	const PriorityBar = ({ priority, main, task }) => (
-		<HStack spacing="1" visibility={"hidden"}>
-			{RenderPriorityBars(priority)}
-		</HStack>
-	);
+	const PriorityBar = ({ priority, main, task }) =>
+		priority && (
+			<HStack spacing="1" visibility={"hidden"}>
+				{RenderPriorityBars(priority)}
+			</HStack>
+		);
 	return (
 		<Td fontSize={"xs"} w="120%" p={"1em"} py={0}>
 			<VStack alignItems={"start"} w={"100%"}>
-				<PriorityBar priority={project.priority} main />
+				<PriorityBar priority={project?.priority} main />
 				{expandedIndex === index &&
 					project?.tasks?.map((task, index) => (
 						<VStack

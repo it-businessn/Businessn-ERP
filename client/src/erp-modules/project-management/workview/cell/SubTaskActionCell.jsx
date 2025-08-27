@@ -18,6 +18,7 @@ const SubTaskActionCell = ({
 	handleSubTaskToggle,
 	index,
 	company,
+	noteIconClicked,
 }) => {
 	const { _id, taskName, selectedAssignees, completed } = task;
 
@@ -103,9 +104,9 @@ const SubTaskActionCell = ({
 					handleToggle={() => handleSubTaskToggle(index)}
 					isExpanded={isSubExpanded === index}
 					handleDelete={() => setShowConfirmationPopUp(true)}
-					data={task}
 					type={"subtask"}
 					setRefresh={setRefresh}
+					noteIconClicked={noteIconClicked}
 				/>
 			</HStack>
 			{isSubExpanded === index &&
@@ -123,6 +124,7 @@ const SubTaskActionCell = ({
 								index={sub_index}
 								setRefresh={setRefresh}
 								managers={managers}
+								noteIconClicked={noteIconClicked}
 							/>
 						</VStack>
 					);

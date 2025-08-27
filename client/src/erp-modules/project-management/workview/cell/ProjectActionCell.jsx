@@ -20,6 +20,9 @@ const ProjectActionCell = ({
 	isTaskExpanded,
 	isSubExpanded,
 	company,
+	handleProjectUpdate,
+	handleFileToggle,
+	noteIconClicked,
 }) => {
 	const [openEditProject, setOpenEditProject] = useState(false);
 	const [openAddTask, setOpenAddTask] = useState(false);
@@ -50,7 +53,11 @@ const ProjectActionCell = ({
 
 	const handleSave = async (updatedData) => {
 		try {
-			await ProjectService.updateProjectName({ projectName: updatedData }, project._id);
+			const { data } = await ProjectService.updateProjectName(
+				{ projectName: updatedData },
+				project._id,
+			);
+			handleProjectUpdate(data);
 		} catch (error) {
 			console.log("An error occurred. Please try again.", error);
 		}
@@ -82,8 +89,8 @@ const ProjectActionCell = ({
 						setShowConfirmationPopUp(true);
 					}}
 					type={"project"}
-					data={project}
 					setRefresh={setRefresh}
+					noteIconClicked={noteIconClicked}
 				/>
 			</HStack>
 
@@ -104,6 +111,7 @@ const ProjectActionCell = ({
 								setRefresh={setRefresh}
 								managers={managers}
 								company={company}
+								noteIconClicked={noteIconClicked}
 							/>
 						</VStack>
 					);
@@ -116,6 +124,10 @@ const ProjectActionCell = ({
 					project={project}
 					setRefresh={setRefresh}
 					managers={managers}
+					handleProjectUpdate={(data) => {
+						handleFileToggle();
+						handleProjectUpdate(data);
+					}}
 				/>
 			)}
 			{openAddTask && (

@@ -16,7 +16,7 @@ const FILE_OVERVIEW_COLS = [
 	{ name: "Status" },
 ];
 
-const FilesOverView = ({ files, managers, company, setRefresh }) => {
+const FilesOverView = ({ files, setFiles, managers, company }) => {
 	const [fileId, setFileId] = useState(null);
 	const [fileExpandedIndex, setFileExpandedIndex] = useState(null);
 	const [projectExpandedIndex, setProjectExpandedIndex] = useState(null);
@@ -39,6 +39,74 @@ const FilesOverView = ({ files, managers, company, setRefresh }) => {
 		setSubTaskExpandedIndex(subTaskExpandedIndex === index ? null : index);
 	};
 
+	const handleProjectUpdate = (projectData) => {
+		const {
+			projectName,
+			selectedAssigneesId,
+			notes,
+			priority,
+			selectedAssignees,
+			startDate,
+			dueDate,
+			status,
+		} = projectData;
+
+		const updatedData = files?.map((file) =>
+			file._id === projectData.fileId
+				? {
+						...file,
+						projects: file.projects?.map((project) => {
+							return project._id === projectData._id
+								? {
+										...project,
+										projectName,
+										selectedAssignees,
+										selectedAssigneesId,
+										priority,
+										dueDate,
+										notes,
+										startDate,
+										status,
+								  }
+								: project;
+						}),
+				  }
+				: file,
+		);
+		setFiles(updatedData);
+	};
+
+	const handleFileUpdate = (fileData) => {
+		const {
+			fileName,
+			managerId,
+			managerName,
+			notes,
+			priority,
+			selectedAssignees,
+			startDate,
+			dueDate,
+			status,
+			_id,
+		} = fileData;
+		const updatedData = files?.map((file) =>
+			file._id === _id
+				? {
+						...file,
+						fileName,
+						managerId,
+						managerName,
+						notes,
+						priority,
+						selectedAssignees,
+						startDate,
+						status,
+						dueDate,
+				  }
+				: file,
+		);
+		setFiles(updatedData);
+	};
 	return (
 		<Table color={"var(--nav_color)"} bg={"var(--primary_bg)"}>
 			<Thead>
@@ -74,8 +142,9 @@ const FilesOverView = ({ files, managers, company, setRefresh }) => {
 							file={file}
 							fileId={fileId}
 							setFileId={setFileId}
-							setRefresh={setRefresh}
 							company={company}
+							handleFileUpdate={handleFileUpdate}
+							handleProjectUpdate={handleProjectUpdate}
 						/>
 						<AssigneeCell
 							expandedIndex={fileExpandedIndex}
@@ -90,7 +159,7 @@ const FilesOverView = ({ files, managers, company, setRefresh }) => {
 							index={fileIndex}
 							isExpanded={projectExpandedIndex}
 							isSubExpanded={taskExpandedIndex}
-							project={file}
+							// project={file}
 						/>
 						<DateCell
 							date={"dueDate"}
@@ -107,7 +176,7 @@ const FilesOverView = ({ files, managers, company, setRefresh }) => {
 							isExpanded={projectExpandedIndex}
 							isTaskExpanded={taskExpandedIndex}
 							isSubExpanded={subTaskExpandedIndex}
-							project={file}
+							// project={file}
 						/>
 					</Tr>
 				))}

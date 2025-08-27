@@ -21,7 +21,7 @@ const StatusCell = ({ project, index, expandedIndex, isExpanded, isSubExpanded }
 	return (
 		<Td fontSize={"12px"} w="100%" display={"flex"} py={0} px={0}>
 			<VStack alignItems={"start"} gap={0} w={"100%"}>
-				<TaskStatus status={project.status} main />
+				<TaskStatus status={project?.status} main />
 				{expandedIndex === index &&
 					project?.tasks?.map((task, task_index) => (
 						<VStack

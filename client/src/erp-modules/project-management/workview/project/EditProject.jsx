@@ -23,7 +23,7 @@ import ProjectService from "services/ProjectService";
 import { getDefaultDate } from "utils/convertDate";
 import { PRIORITY } from "./data";
 
-const EditProject = ({ isOpen, onClose, setRefresh, project, managers }) => {
+const EditProject = ({ isOpen, onClose, handleProjectUpdate, project, managers }) => {
 	const defaultTask = {
 		projectName: project?.projectName,
 		projectId: project?._id,
@@ -55,8 +55,9 @@ const EditProject = ({ isOpen, onClose, setRefresh, project, managers }) => {
 		e.preventDefault();
 		setSubmitting(true);
 		try {
-			await ProjectService.updateProject(formData, project?._id);
+			const { data } = await ProjectService.updateProject(formData, project?._id);
 			onClose();
+			handleProjectUpdate(data);
 			setFormData(defaultTask);
 		} catch (error) {
 			setMessage("An error occurred. Please try again.", error);

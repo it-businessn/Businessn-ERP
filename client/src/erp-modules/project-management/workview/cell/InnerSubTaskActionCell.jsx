@@ -7,7 +7,7 @@ import { getTaskCheckboxCss } from "utils/common";
 import EditInnerSubTask from "../project/EditInnerSubTask";
 import CellAction from "./CellAction";
 
-const InnerSubTaskActionCell = ({ task, setRefresh, managers, index }) => {
+const InnerSubTaskActionCell = ({ task, setRefresh, managers, index, noteIconClicked }) => {
 	const { _id, taskName, subTaskId, completed } = task;
 	const toast = useToast();
 
@@ -86,6 +86,7 @@ const InnerSubTaskActionCell = ({ task, setRefresh, managers, index }) => {
 					handleEditProject={handleEditSubtask}
 					handleDelete={() => setShowConfirmationPopUp(true)}
 					onSave={handleSave}
+					noteIconClicked={noteIconClicked}
 				/>
 			</HStack>
 			{openEditTask && (
