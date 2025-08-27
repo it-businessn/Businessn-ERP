@@ -4,8 +4,10 @@ import { useState } from "react";
 import ProjectService from "services/ProjectService";
 import TaskService from "services/TaskService";
 import { getTaskCheckboxCss } from "utils/common";
+import { ACTION } from "../files";
 import AddNewSubTasks from "../project/AddNewSubTasks";
 import EditSubTask from "../project/EditSubTask";
+import AddNotes from "./AddNotes";
 import CellAction from "./CellAction";
 import InnerSubTaskActionCell from "./InnerSubTaskActionCell";
 
@@ -17,8 +19,10 @@ const SubTaskActionCell = ({
 	handleSubTaskToggle,
 	index,
 	company,
-	noteIconClicked,
 	handleSubTaskUpdate,
+	fileId,
+	handleTaskToggle,
+	handleInnerSubTaskUpdate,
 }) => {
 	const { _id, taskName, selectedAssignees, completed } = task;
 
@@ -27,6 +31,8 @@ const SubTaskActionCell = ({
 	const [openEditTask, setOpenEditTask] = useState(false);
 	const [openAddTask, setOpenAddTask] = useState(false);
 	const [showConfirmationPopUp, setShowConfirmationPopUp] = useState(false);
+	const [showNote, setShowNote] = useState(false);
+
 	const toast = useToast();
 
 	const handleTaskStatus = async (e) => {
@@ -63,7 +69,9 @@ const SubTaskActionCell = ({
 	const handleDelete = async () => {
 		try {
 			await ProjectService.deleteSubTask(task, _id);
-			setShowConfirmationPopUp((prev) => !prev);
+			setShowConfirmationPopUp(false);
+			handleSubTaskUpdate(task, fileId, ACTION.DELETE);
+			handleTaskToggle();
 		} catch (error) {
 			console.error("Error updating task status:", error);
 		}
@@ -71,10 +79,24 @@ const SubTaskActionCell = ({
 
 	const handleSave = async (updatedData) => {
 		try {
-			await ProjectService.updateSubTaskName({ taskName: updatedData }, task._id);
+			const { data } = await ProjectService.updateSubTaskName({ taskName: updatedData }, task._id);
+			handleSubTaskUpdate(data, fileId, ACTION.EDIT);
 		} catch (error) {
 			console.log("An error occurred. Please try again.", error);
 		}
+	};
+
+	const noteIconClicked = () => {
+		setShowNote(true);
+	};
+
+	const subTaskAdded = (data) => {
+		handleInnerSubTaskUpdate(data, fileId, ACTION.ADD);
+	};
+
+	const taskUpdated = (data, action) => {
+		handleSubTaskUpdate(data, fileId, action);
+		handleTaskToggle();
 	};
 
 	const width = task?.subtasks?.length ? "36.5em" : "42em";
@@ -134,6 +156,7 @@ const SubTaskActionCell = ({
 					onClose={() => setOpenEditTask(false)}
 					currentTask={task}
 					managers={managers}
+					handleSubTaskUpdate={taskUpdated}
 				/>
 			)}
 			{openAddTask && (
@@ -143,6 +166,16 @@ const SubTaskActionCell = ({
 					currentTask={task}
 					managers={managers}
 					company={company}
+					subTaskAdded={subTaskAdded}
+				/>
+			)}
+			{showNote && (
+				<AddNotes
+					type={"subtask"}
+					content={task}
+					isOpen={showNote}
+					setIsOpen={setShowNote}
+					handleActionUpdate={(data) => handleSubTaskUpdate(data, fileId, ACTION.EDIT)}
 				/>
 			)}
 			{showConfirmationPopUp && (

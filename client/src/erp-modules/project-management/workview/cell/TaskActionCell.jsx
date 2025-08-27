@@ -24,6 +24,7 @@ const TaskActionCell = ({
 	handleTaskUpdate,
 	handleProjectToggle,
 	fileId,
+	handleInnerSubTaskUpdate,
 }) => {
 	const [isTaskCompleted, setIsTaskCompleted] = useState(task.completed);
 	const [openEditTask, setOpenEditTask] = useState(false);
@@ -142,6 +143,9 @@ const TaskActionCell = ({
 								company={company}
 								noteIconClicked={noteIconClicked}
 								handleSubTaskUpdate={handleSubTaskUpdate}
+								handleInnerSubTaskUpdate={handleInnerSubTaskUpdate}
+								handleTaskToggle={handleTaskToggle}
+								fileId={fileId}
 							/>
 						</VStack>
 					);

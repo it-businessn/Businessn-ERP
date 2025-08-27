@@ -24,6 +24,7 @@ const FileActionCell = ({
 	handleProjectUpdate,
 	handleSubTaskUpdate,
 	handleTaskUpdate,
+	handleInnerSubTaskUpdate,
 }) => {
 	const [openEditFile, setOpenEditFile] = useState(false);
 	const [openAddFile, setOpenAddFile] = useState(false);
@@ -85,6 +86,7 @@ const FileActionCell = ({
 									handleProjectUpdate={handleProjectUpdate}
 									handleSubTaskUpdate={handleSubTaskUpdate}
 									handleTaskUpdate={handleTaskUpdate}
+									handleInnerSubTaskUpdate={handleInnerSubTaskUpdate}
 								/>
 							</VStack>
 						);

@@ -21,6 +21,7 @@ const FilesOverView = ({
 	handleFileUpdate,
 	handleProjectUpdate,
 	handleSubTaskUpdate,
+	handleInnerSubTaskUpdate,
 	handleTaskUpdate,
 	managers,
 	company,
@@ -84,6 +85,7 @@ const FilesOverView = ({
 							handleProjectToggle={handleProjectToggle}
 							handleSubTaskToggle={handleSubTaskToggle}
 							handleTaskToggle={handleTaskToggle}
+							handleInnerSubTaskUpdate={handleInnerSubTaskUpdate}
 						/>
 						<AssigneeCell
 							expandedIndex={fileExpandedIndex}

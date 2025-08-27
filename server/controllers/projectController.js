@@ -189,8 +189,8 @@ const addTaskSubTasks = async (req, res) => {
 	} = req.body;
 
 	try {
-		const status = getProjectStatus(subTaskDueDate);
 		const savedSubtask = await SubTask.findById(id);
+
 		const updatedData = {
 			projectId,
 			taskId,
@@ -201,13 +201,15 @@ const addTaskSubTasks = async (req, res) => {
 			selectedAssignees: subTaskSelectedAssignees,
 			updatedOn: Date.now,
 			timeToComplete: parseInt(Math.ceil(subTaskTimeToComplete)),
-			dueDate: subTaskDueDate,
 			taskName: subTaskName,
-			status,
 			totalTasks: 0,
 			subtasks: [],
 			companyName,
 		};
+		if (subTaskDueDate) {
+			updatedData.status = getProjectStatus(subTaskDueDate);
+			updatedData.dueDate = subTaskDueDate;
+		}
 		savedSubtask.subtasks.push(updatedData);
 		await savedSubtask.save();
 		res.status(201).json(savedSubtask);
@@ -624,7 +626,7 @@ const updateTaskSubTask = async (req, res) => {
 			savedProject.selectedAssignees = uniqueArray;
 		}
 		await savedProject.save();
-		res.status(201).json(savedProject);
+		res.status(201).json(updatedSubTask);
 	} catch (error) {
 		res.status(400).json({ message: error.message });
 	}

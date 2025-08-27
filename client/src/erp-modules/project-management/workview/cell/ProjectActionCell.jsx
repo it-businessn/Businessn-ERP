@@ -25,6 +25,7 @@ const ProjectActionCell = ({
 	handleProjectUpdate,
 	handleSubTaskUpdate,
 	handleTaskUpdate,
+	handleInnerSubTaskUpdate,
 }) => {
 	const [openEditProject, setOpenEditProject] = useState(false);
 	const [openAddTask, setOpenAddTask] = useState(false);
@@ -129,6 +130,7 @@ const ProjectActionCell = ({
 								handleSubTaskUpdate={handleSubTaskUpdate}
 								handleTaskUpdate={handleTaskUpdate}
 								handleProjectToggle={handleProjectToggle}
+								handleInnerSubTaskUpdate={handleInnerSubTaskUpdate}
 								fileId={project.fileId}
 							/>
 						</VStack>

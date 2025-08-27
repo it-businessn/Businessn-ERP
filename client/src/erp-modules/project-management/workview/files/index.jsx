@@ -39,6 +39,67 @@ const FilesList = ({ managers, company }) => {
 		fetchAllFiles();
 	}, [company]);
 
+	const handleInnerSubTaskUpdate = (subTaskData, fileId, action) => {
+		const {
+			taskName,
+			completed,
+			dueDate,
+			isOpen,
+			priority,
+			selectedAssignees,
+			selectedAssigneesId,
+			status,
+			notes,
+		} = subTaskData;
+
+		// const updatedData = files?.map((file) =>
+		// 	file._id === fileId
+		// 		? {
+		// 				...file,
+		// 				projects: file.projects?.map((project) => {
+		// 					return project._id === subTaskData.projectId
+		// 						? {
+		// 								...project,
+		// 								tasks: project.tasks?.map((task) =>
+		// 									task._id === subTaskData.taskId
+		// 										? {
+		// 												...task,
+		// 												subtasks:
+		// 													action === ACTION.ADD
+		// 														? [...(task.subtasks || []), subTaskData]
+		// 														: action === ACTION.EDIT
+		// 														? task.subtasks?.map((subtask) =>
+		// 																subtask._id === subTaskData._id
+		// 																	? {
+		// 																			...subtask,
+		// 																			taskName,
+		// 																			completed,
+		// 																			dueDate,
+		// 																			isOpen,
+		// 																			priority,
+		// 																			selectedAssignees,
+		// 																			selectedAssigneesId,
+		// 																			status,
+		// 																			notes,
+		// 																	  }
+		// 																	: subtask,
+		// 														  )
+		// 														: action === ACTION.DELETE
+		// 														? task.subtasks?.filter(
+		// 																(subtask) => subtask._id !== subTaskData._id,
+		// 														  )
+		// 														: task.subtasks,
+		// 										  }
+		// 										: task,
+		// 								),
+		// 						  }
+		// 						: project;
+		// 				}),
+		// 		  }
+		// 		: file,
+		// );
+		// setFiles(updatedData);
+	};
 	const handleSubTaskUpdate = (subTaskData, fileId, action) => {
 		const {
 			taskName,
@@ -254,6 +315,7 @@ const FilesList = ({ managers, company }) => {
 				handleProjectUpdate={handleProjectUpdate}
 				handleSubTaskUpdate={handleSubTaskUpdate}
 				handleTaskUpdate={handleTaskUpdate}
+				handleInnerSubTaskUpdate={handleInnerSubTaskUpdate}
 			/>
 		</>
 	) : (
