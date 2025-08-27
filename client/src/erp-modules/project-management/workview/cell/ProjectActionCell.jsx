@@ -37,7 +37,6 @@ const ProjectActionCell = ({
 	const handleAddTask = (task, taskId) => {
 		setOpenAddTask(true);
 		setCurrentTask(task);
-		setProjectId(taskId);
 	};
 
 	const handleDelete = async () => {

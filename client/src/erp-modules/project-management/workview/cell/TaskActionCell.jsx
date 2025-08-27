@@ -37,7 +37,6 @@ const TaskActionCell = ({
 	};
 
 	const handleCheckboxChange = async (isOpen) => {
-		setIsOpen(false);
 		try {
 			await TaskService.updateTaskStatus({ isOpen }, task._id);
 			setRefresh((prev) => !prev);
