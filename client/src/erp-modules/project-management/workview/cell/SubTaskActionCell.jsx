@@ -25,11 +25,6 @@ const SubTaskActionCell = ({
 
 	const [openEditTask, setOpenEditTask] = useState(false);
 	const [openAddTask, setOpenAddTask] = useState(false);
-	const [isOpen, setIsOpen] = useState(false);
-	const [modalPosition, setModalPosition] = useState({ top: 0, left: 0 });
-	const [actualHours, setActualHours] = useState(0);
-	const [deleteRecord, setDeleteRecord] = useState(false);
-	const [deleteRecordTask, setDeleteRecordTask] = useState(false);
 	const [showConfirmationPopUp, setShowConfirmationPopUp] = useState(false);
 	const toast = useToast();
 
@@ -40,15 +35,12 @@ const SubTaskActionCell = ({
 	};
 
 	const handleClose = () => {
-		setIsOpen(false);
-		setActualHours(0);
 		setShowConfirmationPopUp((prev) => !prev);
 	};
 
 	const handleCheckboxChange = async (isOpen) => {
-		setIsOpen(false);
 		try {
-			await TaskService.updateSubTaskStatus({ isOpen }, task._id);
+			await TaskService.updateSubTaskStatus({ isOpen }, _id);
 			toast({
 				title: "Task updated successfully!",
 				status: "success",
@@ -69,7 +61,7 @@ const SubTaskActionCell = ({
 
 	const handleDelete = async () => {
 		try {
-			await ProjectService.deleteSubTask(deleteRecordTask, deleteRecord);
+			await ProjectService.deleteSubTask(task, _id);
 			setRefresh((prev) => !prev);
 			setShowConfirmationPopUp((prev) => !prev);
 		} catch (error) {
@@ -88,15 +80,6 @@ const SubTaskActionCell = ({
 	const width = task?.subtasks?.length ? "36.5em" : "42em";
 	return (
 		<>
-			{/* <AddActualHours
-				isOpen={isOpen}
-				setIsOpen={setIsOpen}
-				modalPosition={modalPosition}
-				setActualHours={setActualHours}
-				actualHours={actualHours}
-				handleClose={handleClose}
-				handleConfirm={handleConfirm}
-			/> */}
 			<HStack
 				spacing={3}
 				className={`subtask_div_${index}`}
@@ -120,11 +103,7 @@ const SubTaskActionCell = ({
 					onSave={handleSave}
 					handleToggle={() => handleSubTaskToggle(index)}
 					isExpanded={isSubExpanded === index}
-					handleDelete={() => {
-						setShowConfirmationPopUp((prev) => !prev);
-						setDeleteRecordTask(task);
-						setDeleteRecord(task._id);
-					}}
+					handleDelete={() => setShowConfirmationPopUp(true)}
 					data={task}
 					type={"subtask"}
 					setRefresh={setRefresh}

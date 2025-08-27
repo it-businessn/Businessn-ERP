@@ -23,12 +23,6 @@ const TaskActionCell = ({
 	const [isTaskCompleted, setIsTaskCompleted] = useState(task.completed);
 	const [openEditTask, setOpenEditTask] = useState(false);
 	const [openAddTask, setOpenAddTask] = useState(false);
-
-	const [isOpen, setIsOpen] = useState(false);
-	const [modalPosition, setModalPosition] = useState({ top: 0, left: 0 });
-	const [actualHours, setActualHours] = useState(0);
-	const [deleteRecord, setDeleteRecord] = useState(false);
-	const [deleteRecordTask, setDeleteRecordTask] = useState(false);
 	const [showConfirmationPopUp, setShowConfirmationPopUp] = useState(false);
 	const toast = useToast();
 
@@ -39,8 +33,6 @@ const TaskActionCell = ({
 	};
 
 	const handleClose = () => {
-		setIsOpen(false);
-		setActualHours(0);
 		setShowConfirmationPopUp((prev) => !prev);
 	};
 
@@ -70,9 +62,9 @@ const TaskActionCell = ({
 
 	const handleDelete = async () => {
 		try {
-			await ProjectService.deleteTask(deleteRecordTask, deleteRecord);
+			await ProjectService.deleteTask(task, task._id);
 			setRefresh((prev) => !prev);
-			setShowConfirmationPopUp((prev) => !prev);
+			setShowConfirmationPopUp(false);
 		} catch (error) {
 			console.error("Error updating task status:", error);
 		}
@@ -112,8 +104,6 @@ const TaskActionCell = ({
 					isExpanded={isTaskExpanded === taskIndex}
 					handleDelete={() => {
 						setShowConfirmationPopUp(true);
-						setDeleteRecordTask(task);
-						setDeleteRecord(task._id);
 					}}
 					type={"task"}
 					data={task}
@@ -158,17 +148,6 @@ const TaskActionCell = ({
 					company={company}
 				/>
 			)}
-			{/* {isOpen && (
-				<AddActualHours
-					isOpen={isOpen}
-					setIsOpen={setIsOpen}
-					modalPosition={modalPosition}
-					setActualHours={setActualHours}
-					actualHours={actualHours}
-					handleClose={handleClose}
-					handleConfirm={handleConfirm}
-				/>
-			)} */}
 			{showConfirmationPopUp && (
 				<DeletePopUp
 					headerTitle={"Delete Task"}

@@ -37,7 +37,6 @@ const WorkView = () => {
 
 	return (
 		<PageLayout title={"File Overview"} showBgLayer>
-			{/* <WorkviewToolbar /> */}
 			<Box
 				p="1em"
 				bg={"var(--primary_bg)"}
@@ -50,34 +49,6 @@ const WorkView = () => {
 				) : (
 					<SkeletonLoader />
 				)}
-				{/* {projects && viewMode === "Projects" ? (
-					<FilesList
-						setRefresh={setRefresh}
-						data={projects}
-						managers={managers}
-					/>
-				) : viewMode === "Tasks" ? (
-					<TaskTable
-						allProjects={allProjects}
-						allTasks={allTasks}
-						allProjectTasks={allProjectTasks}
-						allActivities={allActivities}
-						setRefresh={setRefresh}
-						data={projects}
-					/>
-				) : (
-					// ) : viewMode === "Activities" ? (
-					// 	<TaskTable
-					// 		allProjects={allProjects}
-					// 		allTasks={allTasks}
-					// 		allProjectTasks={allProjectTasks}
-					// 		allActivities={allActivities}
-					// 		setRefresh={setRefresh}
-					// 		isFiltered
-					// 		data={projects}
-					// 	/>
-					<></>
-				)} */}
 			</Box>
 		</PageLayout>
 	);

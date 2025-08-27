@@ -9,30 +9,22 @@ import CellAction from "./CellAction";
 
 const InnerSubTaskActionCell = ({ task, setRefresh, managers, index }) => {
 	const { _id, taskName, subTaskId, completed } = task;
+	const toast = useToast();
 
 	const [isTaskCompleted, setIsTaskCompleted] = useState(completed);
-	const [isOpen, setIsOpen] = useState(false);
-	const [modalPosition, setModalPosition] = useState({ top: 0, left: 0 });
-	const [innertaskId, setTaskId] = useState(null);
-	const [actualHours, setActualHours] = useState(0);
-	const toast = useToast();
 	const [showConfirmationPopUp, setShowConfirmationPopUp] = useState(false);
 
 	const handleTaskStatus = async (e) => {
-		setTaskId(_id);
 		const isOpen = e.target.checked;
 		setIsTaskCompleted(isOpen);
 		handleCheckboxChange(isOpen);
 	};
 
 	const handleClose = () => {
-		setIsOpen(false);
-		setActualHours(0);
 		setShowConfirmationPopUp(false);
 	};
 
 	const handleCheckboxChange = async (isOpen) => {
-		setIsOpen(false);
 		try {
 			await TaskService.updateInnerSubTaskStatus({ isOpen, taskName }, subTaskId);
 			toast({
@@ -53,7 +45,6 @@ const InnerSubTaskActionCell = ({ task, setRefresh, managers, index }) => {
 	const handleEditSubtask = () => {
 		setOpenEditTask(true);
 		setCurrentTask(task);
-		setTaskId(_id);
 	};
 
 	const handleDelete = async () => {
@@ -107,15 +98,6 @@ const InnerSubTaskActionCell = ({ task, setRefresh, managers, index }) => {
 					managers={managers}
 				/>
 			)}
-			{/* <AddActualHours
-				isOpen={isOpen}
-				setIsOpen={setIsOpen}
-				modalPosition={modalPosition}
-				setActualHours={setActualHours}
-				actualHours={actualHours}
-				handleClose={handleClose}
-				handleConfirm={handleConfirm}
-			/> */}
 			{showConfirmationPopUp && (
 				<DeletePopUp
 					headerTitle={"Delete Sub Task"}
