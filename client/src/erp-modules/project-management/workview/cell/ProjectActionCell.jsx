@@ -42,7 +42,6 @@ const ProjectActionCell = ({
 	const handleDelete = async () => {
 		try {
 			await ProjectService.deleteProject(project, project._id);
-			setRefresh((prev) => !prev);
 			setShowConfirmationPopUp(false);
 		} catch (error) {
 			console.error("Error updating task status:", error);
@@ -62,7 +61,7 @@ const ProjectActionCell = ({
 		<>
 			<HStack
 				spacing={2}
-				mt={2}
+				mt={1}
 				className={`task_div_${index}`}
 				whiteSpace={"pre-wrap"}
 				alignItems={"center"}

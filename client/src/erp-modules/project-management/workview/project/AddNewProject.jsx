@@ -57,7 +57,6 @@ const AddNewProject = ({ isOpen, onClose, setRefresh, file, fileId, managers, co
 			await ProjectService.addProject(formData, fileId);
 			onClose();
 			setFormData(defaultProject);
-			setRefresh((prev) => !prev);
 		} catch (error) {
 			setMessage("An error occurred. Please try again.", error);
 		} finally {

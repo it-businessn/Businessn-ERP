@@ -58,7 +58,6 @@ const EditProject = ({ isOpen, onClose, setRefresh, project, managers }) => {
 			await ProjectService.updateProject(formData, project?._id);
 			onClose();
 			setFormData(defaultTask);
-			setRefresh((prev) => !prev);
 		} catch (error) {
 			setMessage("An error occurred. Please try again.", error);
 		} finally {

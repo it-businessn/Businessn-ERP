@@ -33,7 +33,6 @@ const InnerSubTaskActionCell = ({ task, setRefresh, managers, index }) => {
 				duration: 1000,
 				isClosable: true,
 			});
-			setRefresh((prev) => !prev);
 		} catch (error) {
 			console.error("Error updating task status:", error);
 		}

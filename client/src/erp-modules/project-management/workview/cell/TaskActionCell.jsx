@@ -39,7 +39,6 @@ const TaskActionCell = ({
 	const handleCheckboxChange = async (isOpen) => {
 		try {
 			await TaskService.updateTaskStatus({ isOpen }, task._id);
-			setRefresh((prev) => !prev);
 			toast({
 				title: "Task updated successfully!",
 				status: "success",
@@ -62,7 +61,6 @@ const TaskActionCell = ({
 	const handleDelete = async () => {
 		try {
 			await ProjectService.deleteTask(task, task._id);
-			setRefresh((prev) => !prev);
 			setShowConfirmationPopUp(false);
 		} catch (error) {
 			console.error("Error updating task status:", error);

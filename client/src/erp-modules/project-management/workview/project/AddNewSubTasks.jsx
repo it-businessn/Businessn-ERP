@@ -59,7 +59,6 @@ const AddNewSubTasks = ({ isOpen, onClose, setRefresh, currentTask, managers, co
 			await ProjectService.addSubTasks(formData, currentTask._id);
 			onClose();
 			setFormData(defaultTask);
-			setRefresh((prev) => !prev);
 		} catch (error) {
 			setMessage("An error occurred. Please try again.", error);
 		} finally {

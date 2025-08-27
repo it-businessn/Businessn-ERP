@@ -1,28 +1,16 @@
 import { AddIcon, SettingsIcon } from "@chakra-ui/icons";
 import { Button, HStack } from "@chakra-ui/react";
-import AddNotes from "erp-modules/project-management/workview/cell/AddNotes";
 import { COLORS } from "erp-modules/project-management/workview/project/data";
-import { useState } from "react";
 import { CgNotes } from "react-icons/cg";
 import { generateLighterShade } from "utils";
 
-export const AddTaskButton = ({
-	onClick,
-	handleClick,
-	isInner,
-	data,
-	type,
-	setRefresh,
-	isFile,
-}) => {
-	const [isOpen, setIsOpen] = useState(false);
+export const AddTaskButton = ({ onClick, handleClick, isInner, onNoteIconClick, isFile }) => {
 	return (
 		<>
 			<HStack spacing={isFile ? 0 : 1}>
 				{!isInner && (
 					<>
 						<Button
-							padding={!isFile && 0}
 							size={isFile ? "xs" : "xxs"}
 							display={"flex"}
 							variant="solid"
@@ -39,15 +27,15 @@ export const AddTaskButton = ({
 							<AddIcon onClick={onClick} />
 						</Button>
 						<Button
-							padding={!isFile && 0}
 							minW={"unset"}
 							display={"flex"}
 							variant="ghost"
 							fontWeight={"bold"}
 							color="var(--nav_color)"
 							_hover={"unset"}
+							size={isFile ? "sm" : "xxs"}
 						>
-							<CgNotes onClick={() => setIsOpen(true)} fontSize={isFile && "1.5em"} />
+							<CgNotes onClick={onNoteIconClick} fontSize={isFile && "1.5em"} />
 						</Button>
 					</>
 				)}
@@ -61,19 +49,11 @@ export const AddTaskButton = ({
 					color="var(--nav_color)"
 					ml={isFile && -5}
 					_hover={"unset"}
+					size={isFile ? "sm" : "xxs"}
 				>
-					<SettingsIcon onClick={handleClick} fontSize={isFile ? "1.5em" : "xxs"} />
+					<SettingsIcon onClick={handleClick} fontSize={isFile && "1.5em"} />
 				</Button>
 			</HStack>
-			{isOpen && (
-				<AddNotes
-					type={type}
-					data={data}
-					isOpen={isOpen}
-					setIsOpen={setIsOpen}
-					setRefresh={setRefresh}
-				/>
-			)}
 		</>
 	);
 };

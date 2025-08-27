@@ -17,7 +17,6 @@ const FILE_OVERVIEW_COLS = [
 ];
 
 const FilesOverView = ({ files, managers, company, setRefresh }) => {
-	const [file, setFile] = useState(null);
 	const [fileId, setFileId] = useState(null);
 	const [fileExpandedIndex, setFileExpandedIndex] = useState(null);
 	const [projectExpandedIndex, setProjectExpandedIndex] = useState(null);
@@ -66,7 +65,7 @@ const FilesOverView = ({ files, managers, company, setRefresh }) => {
 							handleSubTaskToggle={handleSubTaskToggle}
 							handleProjectToggle={handleProjectToggle}
 							handleTaskToggle={handleTaskToggle}
-							handleToggle={handleFileToggle}
+							handleFileToggle={handleFileToggle}
 							index={fileIndex}
 							isExpanded={projectExpandedIndex}
 							isTaskExpanded={taskExpandedIndex}
@@ -74,7 +73,6 @@ const FilesOverView = ({ files, managers, company, setRefresh }) => {
 							managers={managers}
 							file={file}
 							fileId={fileId}
-							setFile={setFile}
 							setFileId={setFileId}
 							setRefresh={setRefresh}
 							company={company}

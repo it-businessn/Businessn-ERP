@@ -58,7 +58,6 @@ const AddNewTask = ({ isOpen, onClose, setRefresh, allProjects, isFiltered, allP
 			await ProjectService.addProject(formData, formData?.projectId);
 			onClose();
 			setFormData(defaultTask);
-			setRefresh((prev) => !prev);
 		} catch (error) {
 			setMessage("An error occurred. Please try again.", error);
 		} finally {

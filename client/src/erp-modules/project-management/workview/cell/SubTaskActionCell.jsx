@@ -62,7 +62,6 @@ const SubTaskActionCell = ({
 	const handleDelete = async () => {
 		try {
 			await ProjectService.deleteSubTask(task, _id);
-			setRefresh((prev) => !prev);
 			setShowConfirmationPopUp((prev) => !prev);
 		} catch (error) {
 			console.error("Error updating task status:", error);

@@ -60,7 +60,6 @@ const EditFile = ({ isOpen, onClose, file, fileId, setRefresh, managers }) => {
 			await ProjectService.updateProjectFile(formData, fileId);
 			onClose();
 			setFormData(defaultProjectFile);
-			setRefresh((prev) => !prev);
 		} catch (error) {
 			setMessage("An error occurred. Please try again.", error);
 		} finally {

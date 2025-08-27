@@ -43,7 +43,6 @@ const AddFile = ({ isOpen, onClose, setRefresh, managers, company }) => {
 			await ProjectService.addProjectFile(formData);
 			onClose();
 			setFormData(defaultFile);
-			setRefresh((prev) => !prev);
 		} catch (error) {
 			setError("An error occurred. Please try again.", error);
 		} finally {

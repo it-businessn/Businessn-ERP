@@ -9,7 +9,7 @@ import ProjectActionCell from "./ProjectActionCell";
 const FileActionCell = ({
 	file,
 	index,
-	handleToggle,
+	handleFileToggle,
 	expandedIndex,
 	isExpanded,
 	isTaskExpanded,
@@ -17,7 +17,6 @@ const FileActionCell = ({
 	handleTaskToggle,
 	handleSubTaskToggle,
 	handleProjectToggle,
-	setFile,
 	setFileId,
 	fileId,
 	setRefresh,
@@ -27,15 +26,13 @@ const FileActionCell = ({
 	const [openEditFile, setOpenEditFile] = useState(false);
 	const [openAddFile, setOpenAddFile] = useState(false);
 
-	const handleEditFile = (project, projectId) => {
+	const handleEditFile = () => {
 		setOpenEditFile(true);
-		setFile(project);
-		setFileId(projectId);
+		setFileId(file._id);
 	};
 
-	const handleAddTask = (project, projectId) => {
+	const handleAddTask = (projectId) => {
 		setOpenAddFile(true);
-		setFile(project);
 		setFileId(projectId);
 	};
 	const width = file?.projects?.length ? "25em" : "29em";
@@ -52,9 +49,9 @@ const FileActionCell = ({
 						name={file.fileName}
 						totalTask={file?.projects}
 						totalTasks={file?.projects?.length}
-						handleEdit={() => handleEditFile(file, file._id)}
-						handleAdd={() => handleAddTask(file, file._id)}
-						handleToggle={() => handleToggle(index)}
+						handleEdit={handleEditFile}
+						handleAdd={() => handleAddTask(file._id)}
+						handleToggle={() => handleFileToggle(index)}
 						index={index}
 						expandedIndex={expandedIndex}
 						isExpanded={expandedIndex === index}
@@ -76,7 +73,7 @@ const FileActionCell = ({
 								<ProjectActionCell
 									index={project_index}
 									project={project}
-									handleAddTask={() => handleAddTask(project, project._id)}
+									handleAddTask={() => handleAddTask(project._id)}
 									isExpanded={isExpanded}
 									isTaskExpanded={isTaskExpanded}
 									isSubExpanded={isSubExpanded}

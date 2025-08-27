@@ -132,7 +132,6 @@ const AddNewSubTask = ({
 			onClose();
 			// setFormData(defaultTask);
 			// setSubTasks([]);
-			setRefresh((prev) => !prev);
 		} catch (error) {
 			setMessage("An error occurred. Please try again.", error);
 		} finally {

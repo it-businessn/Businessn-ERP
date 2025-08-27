@@ -70,7 +70,6 @@ const AddNewActivity = ({ isOpen, onClose, setRefresh, allProjects, allProjectTa
 			onClose();
 			setFormData(defaultTask);
 			setTodoItems([]);
-			setRefresh((prev) => !prev);
 		} catch (error) {
 			setMessage("An error occurred. Please try again.", error);
 		} finally {

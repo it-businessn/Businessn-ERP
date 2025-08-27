@@ -60,7 +60,6 @@ const EditSubTask = ({ isOpen, onClose, setRefresh, currentTask, managers }) => 
 			await ProjectService.updateSubTask(formData, formData?.subTaskId);
 			onClose();
 			setFormData(defaultTask);
-			setRefresh((prev) => !prev);
 		} catch (error) {
 			setMessage("An error occurred. Please try again.", error);
 		} finally {
