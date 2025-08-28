@@ -78,29 +78,19 @@ const updateTask = async (req, res) => {
 
 const updateInnerSubTask = async (req, res) => {
 	const { id } = req.params;
-	const { isOpen, taskName } = req.body;
+	const { isOpen, index } = req.body;
 	try {
-		const savedSubtask = await SubTask.findById(id);
-
-		const matchingInnerSubtaskIndex = savedSubtask.subtasks.findIndex(
-			(innerSubtask) => innerSubtask.taskName === taskName,
+		const savedSubtask = await SubTask.findOneAndUpdate(
+			{ _id: id },
+			{
+				$set: {
+					[`subtasks.${index}.isOpen`]: isOpen,
+					[`subtasks.${index}.completed`]: isOpen,
+					[`subtasks.${index}.updatedOn`]: moment(),
+				},
+			},
+			{ new: true },
 		);
-		const matchingInnerSubtask = savedSubtask.subtasks.find(
-			(innerSubtask) => innerSubtask.taskName === taskName,
-		);
-
-		if (matchingInnerSubtaskIndex > -1) {
-			matchingInnerSubtask.isOpen = isOpen;
-			matchingInnerSubtask.completed = isOpen;
-			matchingInnerSubtask.updatedOn = moment();
-		} else {
-			console.log("InnerSubtask not found.");
-		}
-
-		savedSubtask.subtasks[matchingInnerSubtaskIndex] = matchingInnerSubtask;
-		savedSubtask.updatedOn = moment();
-		await savedSubtask.save();
-
 		res.status(201).json(savedSubtask);
 	} catch (error) {
 		res.status(400).json({ message: error.message });

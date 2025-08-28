@@ -35,13 +35,14 @@ const InnerSubTaskActionCell = ({
 
 	const handleCheckboxChange = async (isOpen) => {
 		try {
-			await TaskService.updateInnerSubTaskStatus({ isOpen, taskName }, subTaskId);
+			const { data } = await TaskService.updateInnerSubTaskStatus({ isOpen, index }, subTaskId);
 			toast({
 				title: "Task updated successfully!",
 				status: "success",
 				duration: 1000,
 				isClosable: true,
 			});
+			handleInnerSubTaskUpdate(data, fileId, ACTION.EDIT, subTaskId);
 		} catch (error) {
 			console.error("Error updating task status:", error);
 		}
@@ -55,7 +56,7 @@ const InnerSubTaskActionCell = ({
 
 	const handleDelete = async () => {
 		try {
-			await ProjectService.deleteInnerSubTask(task, subTaskId);
+			await ProjectService.deleteInnerSubTask({ index }, subTaskId);
 			setShowConfirmationPopUp(false);
 			handleInnerSubTaskUpdate(task, fileId, ACTION.DELETE, subTaskId, index);
 			handleSubTaskToggle();
