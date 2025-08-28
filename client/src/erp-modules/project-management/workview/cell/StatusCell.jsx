@@ -1,4 +1,4 @@
-import { HStack, Td, Text, VStack } from "@chakra-ui/react";
+import { Box, HStack, Td, Text, VStack } from "@chakra-ui/react";
 import { statusColor } from "utils";
 
 const StatusCell = ({ file, index, expandedIndex, isExpanded, isTaskExpanded, isSubExpanded }) => {
@@ -13,7 +13,7 @@ const StatusCell = ({ file, index, expandedIndex, isExpanded, isTaskExpanded, is
 			pt={0}
 			borderRadius={"8px"}
 		>
-			<Text> {status}d</Text>
+			{status ? <Text> {status}d</Text> : <Box height={"24px"} />}
 		</HStack>
 	);
 	return (

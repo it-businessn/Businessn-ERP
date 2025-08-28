@@ -20,6 +20,7 @@ const NormalTextTitle = ({
 	maxW,
 	fontStyle,
 	flex,
+	h,
 }) => (
 	<TextTitle
 		em={fontStyle}
@@ -41,6 +42,7 @@ const NormalTextTitle = ({
 		textDecoration={textDecoration}
 		cursor={cursor}
 		maxW={maxW}
+		h={h}
 	/>
 );
 

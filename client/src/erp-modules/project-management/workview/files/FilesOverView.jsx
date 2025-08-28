@@ -67,7 +67,7 @@ const FilesOverView = ({
 					<EmptyRowRecord data={files} colSpan={FILE_OVERVIEW_COLS.length} />
 				)}
 				{files?.map((file, fileIndex) => (
-					<Tr key={file._id} display={"flex"} justifyContent={"start"} alignItems={"start"} mb={1}>
+					<Tr key={file._id} display={"flex"} justifyContent={"start"} alignItems={"center"}>
 						<FileActionCell
 							index={fileIndex}
 							expandedIndex={fileExpandedIndex}
