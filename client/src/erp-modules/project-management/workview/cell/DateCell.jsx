@@ -1,41 +1,53 @@
 import { Td, VStack } from "@chakra-ui/react";
 import NormalTextTitle from "components/ui/NormalTextTitle";
-import React from "react";
-import { formatDate } from "utils/convertDate";
+import { getDefaultDate } from "utils/convertDate";
 
-const DateCell = ({ date, project, index, expandedIndex, isExpanded, isSubExpanded }) => {
-	const FormattedDate = ({ date, main, task, last }) =>
-		date && <NormalTextTitle title={formatDate(date)} />;
+const FormattedDateCell = ({ date }) => <NormalTextTitle mt={0.5} title={getDefaultDate(date)} />;
+
+const DateCell = ({
+	file,
+	index,
+	date,
+	expandedIndex,
+	isExpanded,
+	isTaskExpanded,
+	isSubExpanded,
+}) => {
 	return (
 		<Td fontSize={"xs"} w="100%" p={"1em"} display={"flex"} py={0}>
-			<VStack alignItems="start" w={"100%"}>
-				{project[date] && <FormattedDate date={project[date]} main />}
+			<VStack alignItems="start">
+				{file[date] && <FormattedDateCell date={file[date]} />}
+
 				{expandedIndex === index &&
-					project?.tasks?.map((task, task_index) => (
-						<VStack
-							alignItems="start"
-							w={"100%"}
-							key={task._id}
-							// _hover={{ bg: "var(--phoneCall_bg_light)" }}
-						>
-							{task[date] ? <FormattedDate date={task[date]} task /> : formatDate(new Date())}
-							{isExpanded === task_index &&
-								task?.subtasks?.length > 0 &&
-								task?.subtasks?.map((subtask, subtask_index) => (
-									<VStack alignItems="start" w={"100%"} key={subtask._id}>
-										{subtask[date] ? (
-											<FormattedDate date={subtask[date]} sub />
-										) : (
-											formatDate(new Date())
-										)}
-										{isSubExpanded === subtask_index &&
-											subtask?.subtasks?.length > 0 &&
-											subtask?.subtasks?.map((item, index) => (
-												<React.Fragment key={`start_date_subtask_${item}**${index}`}>
-													{/* {item[date]
-														? formatDateTime(item[date])
-														: formatDate(new Date())} */}
-												</React.Fragment>
+					file?.projects?.map((project, project_index) => (
+						<VStack alignItems="start" key={project._id}>
+							{project[date] && <FormattedDateCell date={project[date]} />}
+
+							{isExpanded === project_index &&
+								project?.tasks?.length > 0 &&
+								project?.tasks?.map((task, task_index) => (
+									<VStack alignItems="start" key={task._id}>
+										{task[date] && <FormattedDateCell date={task[date]} />}
+
+										{isTaskExpanded === task_index &&
+											task?.subtasks?.length > 0 &&
+											task?.subtasks?.map((subtask, subtask_index) => (
+												<VStack alignItems="start" key={subtask._id}>
+													{subtask[date] && <FormattedDateCell date={subtask[date]} />}
+
+													{isSubExpanded === subtask_index &&
+														subtask?.subtasks?.length > 0 &&
+														subtask?.subtasks?.map((grandSubtask, grand_subtask_index) => (
+															<VStack
+																alignItems="start"
+																key={`grand_subtask_id_*${grand_subtask_index}_${subtask._id}`}
+															>
+																{grandSubtask[date] && (
+																	<FormattedDateCell date={grandSubtask[date]} />
+																)}
+															</VStack>
+														))}
+												</VStack>
 											))}
 									</VStack>
 								))}

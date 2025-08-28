@@ -1,39 +1,54 @@
 import { HStack, Td, VStack } from "@chakra-ui/react";
 import { RenderPriorityBars } from "components/RenderPriorityBars";
 
-const PriorityCell = ({ project, index, expandedIndex, isExpanded, isSubExpanded }) => {
-	// top={main ? "0" : "3.5em"} pos={"relative"}
-	const PriorityBar = ({ priority, main, task }) =>
-		priority && (
-			<HStack spacing="1" visibility={"hidden"}>
-				{RenderPriorityBars(priority)}
-			</HStack>
-		);
+const PriorityBar = ({ priority }) => (
+	<HStack _hover={{ bg: "var(--phoneCall_bg_light)" }} spacing="1">
+		{RenderPriorityBars(priority)}
+	</HStack>
+);
+
+const PriorityCell = ({
+	file,
+	index,
+	expandedIndex,
+	isExpanded,
+	isTaskExpanded,
+	isSubExpanded,
+}) => {
 	return (
-		<Td fontSize={"xs"} w="120%" p={"1em"} py={0}>
-			<VStack alignItems={"start"} w={"100%"}>
-				<PriorityBar priority={project?.priority} main />
+		<Td fontSize={"xs"} w="100%" p={"1em"} py={0}>
+			<VStack alignItems={"start"}>
+				<PriorityBar priority={file?.priority} />
+
 				{expandedIndex === index &&
-					project?.tasks?.map((task, index) => (
-						<VStack
-							alignItems={"start"}
-							w={"100%"}
-							key={task._id}
-							// _hover={{ bg: "var(--phoneCall_bg_light)" }}
-						>
-							<PriorityBar priority={task.priority} task />
-							{isExpanded === index &&
-								task?.subtasks?.length > 0 &&
-								task?.subtasks?.map((subtask, index) => (
-									<VStack alignItems={"start"} w={"100%"} key={subtask._id}>
-										<PriorityBar priority={subtask.priority} sub />
-										{isSubExpanded === index &&
-											subtask?.subtasks?.length > 0 &&
-											subtask?.subtasks?.map((item, index) => (
-												<PriorityBar
-													key={`subtasks_id_${item}**${index}`}
-													priority={item?.priority || "low"}
-												/>
+					file?.projects?.map((project, project_index) => (
+						<VStack alignItems={"start"} w={"100%"} key={project._id}>
+							<PriorityBar priority={project.priority} />
+
+							{isExpanded === project_index &&
+								project?.tasks?.length > 0 &&
+								project?.tasks?.map((task, task_index) => (
+									<VStack alignItems={"start"} w={"100%"} key={task._id}>
+										<PriorityBar priority={task.priority} />
+
+										{isTaskExpanded === task_index &&
+											task?.subtasks?.length > 0 &&
+											task?.subtasks?.map((subtask, subtask_index) => (
+												<VStack alignItems={"start"} w={"100%"} key={subtask._id}>
+													<PriorityBar priority={subtask?.priority} />
+
+													{isSubExpanded === subtask_index &&
+														subtask?.subtasks?.length > 0 &&
+														subtask?.subtasks?.map((grandSubtask, grand_subtask_index) => (
+															<VStack
+																alignItems={"start"}
+																w={"100%"}
+																key={`grand_subtask_id_*${grand_subtask_index}`}
+															>
+																<PriorityBar priority={grandSubtask?.priority} />
+															</VStack>
+														))}
+												</VStack>
 											))}
 									</VStack>
 								))}

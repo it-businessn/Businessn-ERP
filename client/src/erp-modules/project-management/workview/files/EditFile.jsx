@@ -1,6 +1,7 @@
 import {
 	Alert,
 	AlertIcon,
+	Avatar,
 	Button,
 	FormControl,
 	FormLabel,
@@ -15,7 +16,7 @@ import {
 	Select,
 	Stack,
 } from "@chakra-ui/react";
-// import MultiSelectButton from "components/ui/form/MultiSelectButton";
+import MultiSelectButton from "components/ui/form/MultiSelectButton";
 import { useState } from "react";
 import { FaCaretDown } from "react-icons/fa";
 import ProjectService from "services/ProjectService";
@@ -192,7 +193,7 @@ const EditFile = ({ isOpen, onClose, file, handleFileUpdate, managers }) => {
 											))}
 										</Select>
 									</FormControl>
-									{/* <FormControl>
+									<FormControl>
 										<FormLabel visibility={openAssigneeMenu ? "" : "hidden"}>
 											Select Assignee
 										</FormLabel>
@@ -211,7 +212,7 @@ const EditFile = ({ isOpen, onClose, file, handleFileUpdate, managers }) => {
 											formData?.selectedAssignees.map((name) => (
 												<Avatar size={"sm"} name={name} src={name} key={name} />
 											))}
-									</FormControl> */}
+									</FormControl>
 								</HStack>
 								<HStack justifyContent={"end"}>
 									<Button isLoading={isSubmitting} type="submit" bg="var(--logo_bg)">

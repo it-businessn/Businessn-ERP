@@ -40,7 +40,6 @@ const FilesList = ({ managers, company }) => {
 	}, []);
 
 	const handleInnerSubTaskUpdate = (subTaskData, fileId, action, subTaskId, deleteIndex) => {
-		// console.log(subTaskData, fileId, action, subTaskId);
 		const updatedData = files?.map((file) =>
 			file._id === fileId
 				? {

@@ -69,8 +69,8 @@ const FilesOverView = ({
 				{files?.map((file, fileIndex) => (
 					<Tr key={file._id} display={"flex"} justifyContent={"start"} alignItems={"start"} mb={1}>
 						<FileActionCell
-							expandedIndex={fileExpandedIndex}
 							index={fileIndex}
+							expandedIndex={fileExpandedIndex}
 							isExpanded={projectExpandedIndex}
 							isTaskExpanded={taskExpandedIndex}
 							isSubExpanded={subTaskExpandedIndex}
@@ -88,36 +88,37 @@ const FilesOverView = ({
 							handleInnerSubTaskUpdate={handleInnerSubTaskUpdate}
 						/>
 						<AssigneeCell
-							expandedIndex={fileExpandedIndex}
 							index={fileIndex}
+							expandedIndex={fileExpandedIndex}
 							isExpanded={projectExpandedIndex}
 							isTaskExpanded={taskExpandedIndex}
 							isSubExpanded={subTaskExpandedIndex}
-							// project={file}
+							file={file}
 						/>
 						<PriorityCell
-							expandedIndex={fileExpandedIndex}
 							index={fileIndex}
+							expandedIndex={fileExpandedIndex}
 							isExpanded={projectExpandedIndex}
-							isSubExpanded={taskExpandedIndex}
-							// project={file}
+							isTaskExpanded={taskExpandedIndex}
+							isSubExpanded={subTaskExpandedIndex}
+							file={file}
 						/>
 						<DateCell
 							date={"dueDate"}
-							expandedIndex={fileExpandedIndex}
 							index={fileIndex}
+							expandedIndex={fileExpandedIndex}
 							isExpanded={projectExpandedIndex}
 							isTaskExpanded={taskExpandedIndex}
 							isSubExpanded={subTaskExpandedIndex}
-							project={file}
+							file={file}
 						/>
 						<StatusCell
-							expandedIndex={fileExpandedIndex}
 							index={fileIndex}
+							expandedIndex={fileExpandedIndex}
 							isExpanded={projectExpandedIndex}
 							isTaskExpanded={taskExpandedIndex}
 							isSubExpanded={subTaskExpandedIndex}
-							// project={file}
+							file={file}
 						/>
 					</Tr>
 				))}
