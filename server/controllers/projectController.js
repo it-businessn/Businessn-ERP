@@ -642,30 +642,27 @@ const updateInnerSubTasks = async (req, res) => {
 		subTaskName,
 		taskId,
 		projectId,
+		recordIndex,
 	} = req.body;
 
 	try {
 		const savedSubtask = await SubTask.findById(id);
 
-		const matchingInnerSubtaskIndex = savedSubtask.subtasks.findIndex(
-			(innerSubtask) => innerSubtask.taskName === subTaskName,
-		);
-		const matchingInnerSubtask = savedSubtask.subtasks.find(
-			(innerSubtask) => innerSubtask.taskName === subTaskName,
-		);
-
-		if (matchingInnerSubtaskIndex > -1) {
-			matchingInnerSubtask.selectedAssignees = selectedAssignees;
-			matchingInnerSubtask.priority = priority;
+		const matchingInnerSubtask = savedSubtask.subtasks[recordIndex];
+		if (!matchingInnerSubtask) {
+			throw new Error("Inner subtask not found");
+		}
+		if (subTaskDueDate) {
 			matchingInnerSubtask.subTaskDueDate = subTaskDueDate;
 			matchingInnerSubtask.subTaskTimeToComplete = subTaskTimeToComplete;
 			matchingInnerSubtask.status = getProjectStatus(subTaskDueDate);
-		} else {
-			console.log("InnerSubtask not found.");
 		}
-
-		savedSubtask.subtasks[matchingInnerSubtaskIndex] = matchingInnerSubtask;
-
+		Object.assign(matchingInnerSubtask, {
+			taskName: subTaskName,
+			selectedAssignees,
+			priority,
+		});
+		savedSubtask.subtasks[recordIndex] = matchingInnerSubtask;
 		await savedSubtask.save();
 
 		const updatedTask = await Task.findById(taskId);
@@ -695,7 +692,7 @@ const updateInnerSubTasks = async (req, res) => {
 			savedProject.selectedAssignees = uniqueArray;
 		}
 		await savedProject.save();
-		res.status(201).json(savedProject);
+		res.status(201).json(savedSubtask);
 	} catch (error) {
 		res.status(400).json({ message: error.message });
 	}

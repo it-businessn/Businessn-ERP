@@ -23,7 +23,7 @@ import ProjectService from "services/ProjectService";
 import { getDefaultDate } from "utils/convertDate";
 import { PRIORITY } from "./data";
 
-const EditInnerSubTask = ({ isOpen, onClose, currentTask, managers }) => {
+const EditInnerSubTask = ({ isOpen, onClose, currentTask, managers, subTaskUpdated, index }) => {
 	const defaultTask = {
 		subTaskName: currentTask?.taskName,
 		subTaskId: currentTask?.subTaskId,
@@ -56,9 +56,11 @@ const EditInnerSubTask = ({ isOpen, onClose, currentTask, managers }) => {
 		e.preventDefault();
 		setSubmitting(true);
 		try {
-			await ProjectService.updateInnerSubTask(formData, formData?.subTaskId);
+			formData.recordIndex = index;
+			const { data } = await ProjectService.updateInnerSubTask(formData, currentTask?.subTaskId);
 			onClose();
 			setFormData(defaultTask);
+			subTaskUpdated(data);
 		} catch (error) {
 			setMessage("An error occurred. Please try again.", error);
 		} finally {
@@ -93,7 +95,6 @@ const EditInnerSubTask = ({ isOpen, onClose, currentTask, managers }) => {
 											}))
 										}
 										border={"none"}
-										readOnly
 									/>
 								</FormControl>
 								<HStack>

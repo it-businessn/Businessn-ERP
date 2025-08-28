@@ -95,8 +95,8 @@ const SubTaskActionCell = ({
 		handleInnerSubTaskUpdate(data, fileId, ACTION.ADD, data._id);
 	};
 
-	const taskUpdated = (data, action) => {
-		handleSubTaskUpdate(data, fileId, action);
+	const taskUpdated = (data) => {
+		handleSubTaskUpdate(data, fileId, ACTION.EDIT);
 		handleTaskToggle();
 	};
 

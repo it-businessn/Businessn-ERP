@@ -94,8 +94,8 @@ const TaskActionCell = ({
 		handleSubTaskUpdate(data, fileId, ACTION.ADD);
 	};
 
-	const taskUpdated = (data, action) => {
-		handleTaskUpdate(data, fileId, action);
+	const taskUpdated = (data) => {
+		handleTaskUpdate(data, fileId, ACTION.EDIT);
 		handleProjectToggle();
 	};
 

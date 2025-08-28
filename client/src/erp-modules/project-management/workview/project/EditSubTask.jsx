@@ -21,7 +21,6 @@ import { useEffect, useState } from "react";
 import { FaCaretDown } from "react-icons/fa";
 import ProjectService from "services/ProjectService";
 import { getDefaultDate } from "utils/convertDate";
-import { ACTION } from "../files";
 import { PRIORITY } from "./data";
 
 const EditSubTask = ({ isOpen, onClose, currentTask, managers, handleSubTaskUpdate }) => {
@@ -61,7 +60,7 @@ const EditSubTask = ({ isOpen, onClose, currentTask, managers, handleSubTaskUpda
 			const { data } = await ProjectService.updateSubTask(formData, formData?.subTaskId);
 			onClose();
 			setFormData(defaultTask);
-			handleSubTaskUpdate(data, ACTION.EDIT);
+			handleSubTaskUpdate(data);
 		} catch (error) {
 			setMessage("An error occurred. Please try again.", error);
 		} finally {

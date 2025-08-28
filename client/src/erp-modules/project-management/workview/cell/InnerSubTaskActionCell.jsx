@@ -75,6 +75,12 @@ const InnerSubTaskActionCell = ({
 			console.log("An error occurred. Please try again.", error);
 		}
 	};
+
+	const subTaskUpdated = (data) => {
+		handleInnerSubTaskUpdate(data, fileId, ACTION.EDIT, subTaskId);
+		handleSubTaskToggle();
+	};
+
 	return (
 		<>
 			<HStack
@@ -93,7 +99,7 @@ const InnerSubTaskActionCell = ({
 					width="44em"
 					isInner={true}
 					name={taskName}
-					handleEditProject={handleEditSubtask}
+					handleEdit={handleEditSubtask}
 					handleDelete={() => setShowConfirmationPopUp(true)}
 					onSave={handleSave}
 					noteIconClicked={noteIconClicked}
@@ -101,10 +107,12 @@ const InnerSubTaskActionCell = ({
 			</HStack>
 			{openEditTask && (
 				<EditInnerSubTask
+					index={index}
 					isOpen={openEditTask}
 					onClose={() => setOpenEditTask(false)}
 					currentTask={task}
 					managers={managers}
+					subTaskUpdated={subTaskUpdated}
 				/>
 			)}
 			{showConfirmationPopUp && (
