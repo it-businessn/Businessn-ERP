@@ -96,6 +96,7 @@ const EMPLOYEE_PERMISSION = [
 	{ name: "Project Management Dashboard" },
 	{ name: "Project Management Overview" },
 	{ name: "Project Management Communication" },
+	{ name: "Project Management Setup" },
 ];
 
 const CLIENT_ORG_ADMIN_PERMISSION = [
