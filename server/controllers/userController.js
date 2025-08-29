@@ -1,12 +1,11 @@
-// const User = require("../models/User");
+const Company = require("../models/Company");
 const Employee = require("../models/Employee");
 const EmployeeEmploymentInfo = require("../models/EmployeeEmploymentInfo");
 const EmployeeProfileInfo = require("../models/EmployeeProfileInfo");
 const Group = require("../models/Group");
 const Lead = require("../models/Lead");
-const Task = require("../models/Task");
 const UserActivity = require("../models/UserActivity");
-const { isRoleManager, ROLES } = require("../services/data");
+const { ROLES } = require("../services/data");
 const { sendEmail } = require("../services/emailService");
 const path = require("path");
 const { getResetPasswordLink } = require("../services/tokenService");
@@ -625,7 +624,13 @@ const updateCompanyEmployee = async (companyName, userId, role) => {
 	}
 	await setInitialPermissions(userId, role, companyName);
 
-	if (!existingCompany.employees.includes(userId)) {
+	if (existingCompany.employees.includes(userId)) {
+		await EmployeeEmploymentInfo.findOneAndUpdate(
+			{ empId: userId, companyName },
+			{ employmentRole: role },
+			{ upsert: true, new: true },
+		);
+	} else {
 		await EmployeeEmploymentInfo.create({
 			empId: userId,
 			companyName,
@@ -639,22 +644,40 @@ const updateCompanyEmployee = async (companyName, userId, role) => {
 
 const updateUser = async (req, res) => {
 	const { userId } = req.params;
-	const { role, companyId, companies } = req.body;
-	const isManager = isRoleManager(role);
+	const { role, companyId, assignedCompanies, unassignedCompanies } = req.body;
 
 	try {
 		const compArr = [];
 
-		if (companies?.length) {
-			for (const name of companies) {
-				const result = await updateCompanyEmployee(name, userId, role);
-				compArr.push(result);
-			}
+		if (Array.isArray(assignedCompanies) && assignedCompanies.length > 0) {
+			await Promise.all(
+				assignedCompanies.map(async (name) => {
+					const result = await updateCompanyEmployee(name, userId, role);
+					compArr.push(result);
+				}),
+			);
+		}
+
+		if (Array.isArray(unassignedCompanies) && unassignedCompanies.length > 0) {
+			await Promise.all(
+				unassignedCompanies.map(async (id) => {
+					const existingCompany = await Company.findById(id);
+					if (!existingCompany) return;
+
+					existingCompany.employees = existingCompany.employees.filter(
+						(emp) => emp.toString() !== userId,
+					);
+					return existingCompany.save();
+				}),
+			);
 		} else {
 			const result = await updateCompanyEmployee(companyId.name, userId, role);
 			compArr.push(result);
 		}
+
 		req.body.companyId = compArr;
+
+		if (req.body?._id) delete req.body._id;
 		const updatedUser = await Employee.findByIdAndUpdate(userId, req.body, {
 			new: true,
 		});

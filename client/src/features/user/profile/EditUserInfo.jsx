@@ -51,7 +51,13 @@ const EditUserInfo = ({ setEditMode, setError, error, company }) => {
 	const handleSaveClick = async (e) => {
 		e.preventDefault();
 		try {
-			userData.companies = userData.companyId;
+			userData.assignedCompanies = userData.companyId;
+			if (userData.assignedCompanies.length > 0) {
+				const unassignedCompanies = allCompanies
+					.filter(({ name }) => !userData.companyId.includes(name))
+					?.map((_) => _._id);
+				userData.unassignedCompanies = unassignedCompanies;
+			}
 			const { data } = await UserService.updateUserProfile(userData, userData._id);
 			setEditMode(false);
 			setUserData(data);
@@ -68,6 +74,17 @@ const EditUserInfo = ({ setEditMode, setError, error, company }) => {
 			...prevData,
 			[name]: value,
 		}));
+	};
+
+	const handleAddressChange = (e) => {
+		const { name, value } = e.target;
+		setUserData({
+			...userData,
+			primaryAddress: {
+				...userData.primaryAddress,
+				[name]: value,
+			},
+		});
 	};
 
 	const handleCloseMenu = (selectedOptions) => {
@@ -132,15 +149,7 @@ const EditUserInfo = ({ setEditMode, setError, error, company }) => {
 							type="text"
 							name="streetNumber"
 							value={userData?.primaryAddress?.streetNumber || ""}
-							onChange={(e) => {
-								setUserData({
-									...userData,
-									primaryAddress: {
-										...userData.primaryAddress,
-										streetNumber: e.target.value,
-									},
-								});
-							}}
+							onChange={handleAddressChange}
 							placeholder="Street Number"
 						/>
 
@@ -148,15 +157,7 @@ const EditUserInfo = ({ setEditMode, setError, error, company }) => {
 							type="text"
 							name="city"
 							value={userData?.primaryAddress?.city || ""}
-							onChange={(e) => {
-								setUserData({
-									...userData,
-									primaryAddress: {
-										...userData.primaryAddress,
-										city: e.target.value,
-									},
-								});
-							}}
+							onChange={handleAddressChange}
 							placeholder="City"
 						/>
 					</HStack>
@@ -165,45 +166,21 @@ const EditUserInfo = ({ setEditMode, setError, error, company }) => {
 							type="text"
 							name="state"
 							value={userData?.primaryAddress?.state || ""}
-							onChange={(e) => {
-								setUserData({
-									...userData,
-									primaryAddress: {
-										...userData.primaryAddress,
-										state: e.target.value,
-									},
-								});
-							}}
+							onChange={handleAddressChange}
 							placeholder="State"
 						/>
 						<Input
 							type="text"
 							name="postalCode"
 							value={userData?.primaryAddress?.postalCode || ""}
-							onChange={(e) => {
-								setUserData({
-									...userData,
-									primaryAddress: {
-										...userData.primaryAddress,
-										postalCode: e.target.value,
-									},
-								});
-							}}
+							onChange={handleAddressChange}
 							placeholder="Postal Code"
 						/>
 						<Input
 							type="text"
 							name="country"
 							value={userData?.primaryAddress?.country || ""}
-							onChange={(e) => {
-								setUserData({
-									...userData,
-									primaryAddress: {
-										...userData.primaryAddress,
-										country: e.target.value,
-									},
-								});
-							}}
+							onChange={handleAddressChange}
 							placeholder="Country"
 						/>
 					</HStack>
@@ -246,7 +223,7 @@ const EditUserInfo = ({ setEditMode, setError, error, company }) => {
 						</FormControl>
 					)}
 				</HStack>
-				{managers && (
+				{/* {managers && (
 					<FormControl mb={4}>
 						<FormLabel>Manager</FormLabel>
 						<Select
@@ -257,26 +234,12 @@ const EditUserInfo = ({ setEditMode, setError, error, company }) => {
 							placeholder="Select manager"
 						>
 							{managers?.map((manager) => (
-								<option key={manager._id} value={manager.fullName}>
+								<option key={manager.id} value={manager.fullName}>
 									{manager.fullName}
 								</option>
 							))}
 						</Select>
 					</FormControl>
-				)}
-				{/* {userAssociatedCompanies && (
-					<MultiSelectFormControl
-						label="Assigned Companies"
-						tag={"companies(s) assigned"}
-						showMultiSelect={openMenu}
-						data={userAssociatedCompanies}
-						handleCloseMenu={handleCloseMenu}
-						selectedOptions={selectedOptions}
-						setSelectedOptions={setSelectedOptions}
-						handleMenuToggle={handleMenuToggle}
-						list={userAssociatedCompanies}
-						hideAvatar
-					/>
 				)} */}
 				<HStack>
 					{allCompanies && (
@@ -286,7 +249,7 @@ const EditUserInfo = ({ setEditMode, setError, error, company }) => {
 							tag="selected"
 							titleLabelText="Companies"
 							showMultiSelect={openAssigneeMenu}
-							height="10vh"
+							height="15vh"
 							data={allCompanies}
 							handleCloseMenu={handleCloseMenu}
 							selectedOptions={companies}
@@ -333,7 +296,7 @@ const EditUserInfo = ({ setEditMode, setError, error, company }) => {
 						</FormControl>
 					)} */}
 				</HStack>
-				<PrimaryButton name="Save" size="sm" />
+				<PrimaryButton mt={3} hover="none" name="Save" size="sm" />
 				{error && (
 					<Alert status="error" mt={4}>
 						<AlertIcon />

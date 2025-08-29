@@ -21,7 +21,7 @@ const MultiSelectButton = ({
 		<Menu>
 			<MenuButton
 				as={Button}
-				bg={"var(--primary_bg)"}
+				border={"1px solid var(--filter_border_color)"}
 				color={"var(--primary_button_bg)"}
 				_hover={{
 					bg: "var(--primary_bg)",

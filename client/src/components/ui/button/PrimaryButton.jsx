@@ -11,7 +11,7 @@ const PrimaryButton = ({
 	minW,
 	flex,
 	rightIcon,
-	bg = "var(--primary_button_bg)",
+	bg = "var(--nav_menu)",
 	color = "var(--primary_bg)",
 	hover = {
 		color: "var(--main_color_black)",

@@ -216,14 +216,6 @@ const login = async (req, res) => {
 		const user = await Employee.findOne({ email }).select(
 			"firstName lastName middleName fullName email password phoneNumber primaryAddress manager",
 		);
-		// if (!user.companyId) {
-		// 	user.companyId = [];
-		// user.companyId.push("669c3a69b52384bab5035425");
-		// await user.save();
-		// const existingCompany = await Company.findById("669c3a69b52384bab5035425");
-		// existingCompany.employees.push(user._id);
-		// await existingCompany.save();
-		// }
 		if (!user) {
 			return res.status(500).json({ error: "User does not exist" });
 		}

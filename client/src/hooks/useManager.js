@@ -11,6 +11,7 @@ const useManager = (company) => {
 				data.map((emp) => {
 					emp.fullName = emp?.empId?.fullName;
 					emp._id = emp?.empId?._id;
+					emp.id = emp._id;
 					return emp;
 				});
 				setManagers(data);

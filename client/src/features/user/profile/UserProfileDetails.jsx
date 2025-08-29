@@ -68,6 +68,7 @@ const UserProfileDetails = () => {
 	const showActionButton = () => (
 		<HStack p={"1em"}>
 			<PrimaryButton
+				hover="none"
 				isDisabled={editMode}
 				name="Edit"
 				type="submit"
@@ -75,6 +76,7 @@ const UserProfileDetails = () => {
 				onOpen={handleEditClick}
 			/>
 			<PrimaryButton
+				hover="none"
 				isDisabled={changePasswordMode}
 				name="Change Password"
 				ml={2}
@@ -131,12 +133,15 @@ const UserProfileDetails = () => {
 						))}
 					</VStack>
 					<VStack align="flex-start" color={"var(--menu_item_color)"} p={"1em"}>
-						{SECTION2.map(({ name, value }) => (
-							<React.Fragment key={name}>
-								<TextTitle title={name} />
-								<Text color={"var(--main_color_black)"}>{value}</Text>
-							</React.Fragment>
-						))}
+						{SECTION2.map(({ name, value }) => {
+							console.log(name, value);
+							return (
+								<React.Fragment key={name}>
+									<TextTitle title={name} />
+									<Text color={"var(--main_color_black)"}>{value}</Text>
+								</React.Fragment>
+							);
+						})}
 					</VStack>
 					{showActionButton()}
 				</Card>
