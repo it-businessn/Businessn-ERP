@@ -1,12 +1,33 @@
-import { Box, Stack, VStack } from "@chakra-ui/react";
+import { Box, HStack, Stack, VStack } from "@chakra-ui/react";
 import BoxCard from "components/ui/card";
 import { getReportName } from "constant";
 import React from "react";
 import { getAmount } from "utils/convertAmt";
 import { formatDateBar } from "utils/convertDate";
-import BasicInfo from "../statement/BasicInfo";
 import InformationSection from "../statement/InformationSection";
 import { ACCRUAL_TYPES } from "./data";
+
+const BasicInfo = ({ title1, title2, mt, border, weight, whiteSpace }) => (
+	<HStack w={"100%"} mt={mt} spacing={border && 0}>
+		<TextTitle
+			title={title1}
+			size="xs"
+			border={border}
+			align={!title2 && "center"}
+			weight={weight}
+		/>
+		{title2 && (
+			<TextTitle
+				color={"var(--main_color_black)"}
+				whiteSpace={whiteSpace}
+				align="left"
+				title={title2}
+				size="xs"
+				border={border}
+			/>
+		)}
+	</HStack>
+);
 
 const EmployeeInfo = ({ data, companyNum, isMobile }) => {
 	return (

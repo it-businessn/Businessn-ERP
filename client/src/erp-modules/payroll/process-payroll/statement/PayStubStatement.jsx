@@ -8,6 +8,7 @@ import EmployeePayDetails from "../preview-reports/EmployeePayDetails";
 import ChequeDetails from "./ChequeDetails";
 import PayStubHeader from "./PayStubHeader";
 
+// *****DO NOT CHANGE CSS OR DESIGN STYLE ****
 const PayStubStatement = ({ data, height, overflow = "hidden" }) => {
 	const companyInfo = LocalStorageService.getItem("user")?.companyId;
 	return (
