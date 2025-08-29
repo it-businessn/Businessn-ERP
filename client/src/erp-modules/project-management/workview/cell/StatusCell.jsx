@@ -1,19 +1,27 @@
 import { Box, HStack, Td, Text, VStack } from "@chakra-ui/react";
 import { statusColor } from "utils";
 
-const StatusCell = ({ file, index, expandedIndex, isExpanded, isTaskExpanded, isSubExpanded }) => {
+const StatusCell = ({
+	file,
+	index,
+	expandedIndex,
+	isExpanded,
+	isTaskExpanded,
+	isSubExpanded,
+	isDashboard,
+}) => {
 	const TaskStatus = ({ status }) => (
 		<HStack
 			justifyContent={"space-around"}
 			spacing={0}
 			fontWeight={"bold"}
-			color={statusColor(status).color}
-			bgColor={statusColor(status).bg}
+			// color={statusColor(status).color}
+			// bgColor={statusColor(status).bg}
 			p={"5px"}
 			pt={0}
 			borderRadius={"8px"}
 		>
-			{status ? <Text> {status}d</Text> : <Box height={"24px"} />}
+			{/* {status ? <Text> {status}d</Text> : <Box height={"24px"} />} */}
 		</HStack>
 	);
 	return (
@@ -21,24 +29,24 @@ const StatusCell = ({ file, index, expandedIndex, isExpanded, isTaskExpanded, is
 			<VStack alignItems={"start"}>
 				<TaskStatus status={file?.status} />
 
-				{expandedIndex === index &&
+				{(!isDashboard || expandedIndex === index) &&
 					file?.projects?.map((project, project_index) => (
 						<VStack alignItems={"start"} key={project._id}>
 							<TaskStatus status={project.status} />
 
-							{isExpanded === project_index &&
+							{(!isDashboard || isExpanded === project_index) &&
 								project?.tasks?.length > 0 &&
 								project?.tasks?.map((task, task_index) => (
 									<VStack alignItems={"start"} key={task._id}>
 										<TaskStatus status={task.status} />
 
-										{isTaskExpanded === task_index &&
+										{(!isDashboard || isTaskExpanded === task_index) &&
 											task?.subtasks?.length > 0 &&
 											task?.subtasks?.map((subtask, subtask_index) => (
 												<VStack alignItems={"start"} key={subtask._id}>
 													<TaskStatus status={subtask.status} />
 
-													{isSubExpanded === subtask_index &&
+													{(!isDashboard || isSubExpanded === subtask_index) &&
 														subtask?.subtasks?.length > 0 &&
 														subtask?.subtasks?.map((grandSubtask, grand_subtask_index) => (
 															<VStack

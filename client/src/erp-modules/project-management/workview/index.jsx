@@ -5,20 +5,20 @@ import PageLayout from "layouts/PageLayout";
 import LocalStorageService from "services/LocalStorageService";
 import FilesList from "./files";
 
-const WorkView = () => {
+const WorkView = ({ isDashboard = false }) => {
 	const company = LocalStorageService.getItem("selectedCompany");
 	const managers = useManager(company);
 
 	return (
-		<PageLayout title={"File Overview"} showBgLayer>
+		<PageLayout pr={0} title={"File Overview"} showBgLayer overflowY="hidden">
 			<Box
-				p="1em"
+				p={0}
 				bg={"var(--primary_bg)"}
 				border="2px solid var(--main_color)"
 				borderRadius="10px"
 				color={"var(--nav_color)"}
 			>
-				<FilesList managers={managers} company={company} />
+				<FilesList isDashboard={isDashboard} managers={managers} company={company} />
 			</Box>
 		</PageLayout>
 	);

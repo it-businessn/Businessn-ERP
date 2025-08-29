@@ -14,7 +14,7 @@ export const ACTION = {
 	DELETE: "D",
 };
 
-const FilesList = ({ managers, company }) => {
+const FilesList = ({ managers, company, isDashboard }) => {
 	const loggedInUser = LocalStorageService.getItem("user");
 	const isManagerView = isManager(loggedInUser?.role);
 
@@ -267,7 +267,7 @@ const FilesList = ({ managers, company }) => {
 
 	return isDataLoaded ? (
 		<>
-			<Flex>
+			<Flex mb={3} p={0}>
 				<TextTitle title={"Files"} />
 				<Spacer />
 				<Button
@@ -285,6 +285,7 @@ const FilesList = ({ managers, company }) => {
 				<AddFile managers={managers} isOpen={isOpen} onClose={onClose} company={company} />
 			)}
 			<FilesOverView
+				isDashboard={isDashboard}
 				files={files}
 				managers={managers}
 				company={company}

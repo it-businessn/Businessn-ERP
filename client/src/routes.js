@@ -92,6 +92,7 @@ const Tickets = lazy(() => import("./erp-modules/project-management/tickets"));
 const Gantt = lazy(() => import("./erp-modules/project-management/Gantt"));
 const WorkView = lazy(() => import("./erp-modules/project-management/workview"));
 const Taskboard = lazy(() => import("./erp-modules/project-management/Taskboard"));
+const ProjectDashboard = lazy(() => import("erp-modules/project-management/dashboard"));
 
 export const ROUTE_PATH = {
 	// login
@@ -268,8 +269,7 @@ export const router = createBrowserRouter([
 			/* Project Management*/
 			{
 				path: ROUTE_PATH.PROJECT,
-				// element: <ProjectDashboard />,
-				element: <WorkView />,
+				element: <ProjectDashboard />,
 			},
 			{
 				path: `${ROUTE_PATH.PROJECT}/overview`,

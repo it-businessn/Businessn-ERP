@@ -38,30 +38,31 @@ const AssigneeCell = ({
 	isExpanded,
 	isTaskExpanded,
 	isSubExpanded,
+	isDashboard,
 }) => {
 	return (
 		<Td fontSize={"xs"} w="100%" p={"0.5em"} display={"flex"} py={0}>
 			<VStack w="50%">
 				<AssigneeList assignees={file?.selectedAssignees} />
 
-				{expandedIndex === index &&
+				{(!isDashboard || expandedIndex === index) &&
 					file?.projects?.map((project, project_index) => (
 						<VStack key={project._id}>
 							<AssigneeList assignees={project.selectedAssignees} />
 
-							{isExpanded === project_index &&
+							{(!isDashboard || isExpanded === project_index) &&
 								project?.tasks?.length > 0 &&
 								project?.tasks?.map((task, task_index) => (
 									<VStack key={task._id}>
 										<AssigneeList assignees={task.selectedAssignees} />
 
-										{isTaskExpanded === task_index &&
+										{(!isDashboard || isTaskExpanded === task_index) &&
 											task?.subtasks?.length > 0 &&
 											task?.subtasks?.map((subtask, subtask_index) => (
 												<VStack key={subtask._id}>
 													<AssigneeList sub assignees={subtask.selectedAssignees} />
 
-													{isSubExpanded === subtask_index &&
+													{(!isDashboard || isSubExpanded === subtask_index) &&
 														subtask?.subtasks?.length > 0 &&
 														subtask?.subtasks?.map((grand_subtask, grand_subtask_index) => (
 															<VStack

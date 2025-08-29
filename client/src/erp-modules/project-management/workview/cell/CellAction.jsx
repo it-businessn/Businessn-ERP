@@ -20,6 +20,7 @@ const CellAction = ({
 	textSize,
 	width,
 	onSave,
+	isDashboard,
 }) => {
 	return (
 		<>
@@ -34,6 +35,7 @@ const CellAction = ({
 			<HStack spacing={2}>
 				{totalTask?.length > 0 && (
 					<TaskDropdown
+						isDashboard={isDashboard}
 						isExpanded={isExpanded}
 						totalTasks={totalTasks}
 						onClick={handleToggle}

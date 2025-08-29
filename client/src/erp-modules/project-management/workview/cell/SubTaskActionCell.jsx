@@ -23,6 +23,7 @@ const SubTaskActionCell = ({
 	fileId,
 	handleTaskToggle,
 	handleInnerSubTaskUpdate,
+	isDashboard,
 }) => {
 	const { _id, taskName, selectedAssignees, completed } = task;
 
@@ -116,6 +117,7 @@ const SubTaskActionCell = ({
 					onChange={handleTaskStatus}
 				/>
 				<CellAction
+					isDashboard={isDashboard}
 					width={width}
 					isInner={isInner}
 					name={taskName}
@@ -131,7 +133,7 @@ const SubTaskActionCell = ({
 					noteIconClicked={noteIconClicked}
 				/>
 			</HStack>
-			{isSubExpanded === index &&
+			{(!isDashboard || isSubExpanded === index) &&
 				task?.subtasks?.length > 0 &&
 				task?.subtasks?.map((rec, sub_index) => {
 					return (
@@ -142,6 +144,7 @@ const SubTaskActionCell = ({
 							ml={"1em"}
 						>
 							<InnerSubTaskActionCell
+								isDashboard={isDashboard}
 								task={rec}
 								index={sub_index}
 								managers={managers}

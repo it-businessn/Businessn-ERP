@@ -26,6 +26,7 @@ const ProjectActionCell = ({
 	handleSubTaskUpdate,
 	handleTaskUpdate,
 	handleInnerSubTaskUpdate,
+	isDashboard,
 }) => {
 	const [openEditProject, setOpenEditProject] = useState(false);
 	const [openAddTask, setOpenAddTask] = useState(false);
@@ -86,6 +87,7 @@ const ProjectActionCell = ({
 			>
 				<Image height={"20px"} width={"20px"} objectFit="cover" src={projectImg} alt="file" />
 				<CellAction
+					isDashboard={isDashboard}
 					width={width}
 					name={project.projectName}
 					totalTask={project?.tasks}
@@ -110,12 +112,13 @@ const ProjectActionCell = ({
 					handleActionUpdate={(data) => handleProjectUpdate(data, ACTION.EDIT)}
 				/>
 			)}
-			{isExpanded === index &&
+			{(!isDashboard || isExpanded === index) &&
 				project?.tasks?.length > 0 &&
 				project?.tasks?.map((task, task_index) => {
 					return (
 						<VStack key={task._id} w={"100%"} alignItems={"flex-start"} ml={"1em"}>
 							<TaskActionCell
+								isDashboard={isDashboard}
 								taskIndex={task_index}
 								isTaskExpanded={isTaskExpanded}
 								isSubExpanded={isSubExpanded}

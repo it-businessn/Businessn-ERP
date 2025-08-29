@@ -25,6 +25,7 @@ const FileActionCell = ({
 	handleSubTaskUpdate,
 	handleTaskUpdate,
 	handleInnerSubTaskUpdate,
+	isDashboard,
 }) => {
 	const [openEditFile, setOpenEditFile] = useState(false);
 	const [openAddFile, setOpenAddFile] = useState(false);
@@ -49,6 +50,7 @@ const FileActionCell = ({
 				<HStack spacing={2} alignItems={"center"}>
 					<Image height={"2em"} width={"2em"} objectFit="cover" src={fileImg} alt="file" />
 					<CellAction
+						isDashboard={isDashboard}
 						textSize="lg"
 						width={width}
 						name={file.fileName}
@@ -65,11 +67,12 @@ const FileActionCell = ({
 						isFile
 					/>
 				</HStack>
-				{expandedIndex === index &&
+				{(!isDashboard || expandedIndex === index) &&
 					file?.projects?.map((project, project_index) => {
 						return (
 							<VStack key={project._id} w={"100%"} alignItems={"start"}>
 								<ProjectActionCell
+									isDashboard={isDashboard}
 									index={project_index}
 									project={project}
 									handleAddTask={handleAddItem}

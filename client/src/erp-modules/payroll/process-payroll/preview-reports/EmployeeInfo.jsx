@@ -1,5 +1,6 @@
 import { Box, HStack, Stack, VStack } from "@chakra-ui/react";
 import BoxCard from "components/ui/card";
+import TextTitle from "components/ui/text/TextTitle";
 import { getReportName } from "constant";
 import React from "react";
 import { getAmount } from "utils/convertAmt";

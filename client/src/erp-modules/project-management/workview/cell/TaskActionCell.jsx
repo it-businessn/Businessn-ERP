@@ -25,6 +25,7 @@ const TaskActionCell = ({
 	handleProjectToggle,
 	fileId,
 	handleInnerSubTaskUpdate,
+	isDashboard,
 }) => {
 	const [isTaskCompleted, setIsTaskCompleted] = useState(task.completed);
 	const [openEditTask, setOpenEditTask] = useState(false);
@@ -114,6 +115,7 @@ const TaskActionCell = ({
 					onChange={handleTaskStatus}
 				/>
 				<CellAction
+					isDashboard={isDashboard}
 					width={width}
 					name={task.taskName}
 					totalTask={task?.subtasks}
@@ -129,12 +131,13 @@ const TaskActionCell = ({
 				/>
 			</HStack>
 
-			{isTaskExpanded === taskIndex &&
+			{(!isDashboard || isTaskExpanded === taskIndex) &&
 				task?.subtasks?.length > 0 &&
 				task?.subtasks?.map((subtask, subtask_index) => {
 					return (
 						<VStack key={subtask._id} w={"100%"} alignItems={"flex-start"} ml={"1em"}>
 							<SubTaskActionCell
+								isDashboard={isDashboard}
 								index={subtask_index}
 								isTaskExpanded={isTaskExpanded}
 								isSubExpanded={isSubExpanded}

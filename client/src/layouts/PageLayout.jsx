@@ -25,9 +25,13 @@ const PageLayout = ({
 	showPayGroup,
 	hasMultiPaygroups,
 	overflow = "hidden",
+	overflowY = "auto",
+	p = "1em",
+	pr,
 }) => (
 	<Box
-		p={{ base: "1em" }}
+		p={p}
+		pr={pr}
 		mt={isMobile && "1em"}
 		overflow={overflow}
 		zIndex={zIndex}
@@ -35,7 +39,7 @@ const PageLayout = ({
 		pb={pb}
 		bg={bg}
 		flex={1}
-		overflowY={"auto"}
+		overflowY={overflowY}
 		css={tabScrollCss}
 	>
 		<PageHeader

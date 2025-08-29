@@ -4,7 +4,7 @@ import { FaChevronDown, FaChevronUp } from "react-icons/fa";
 import { GoTasklist } from "react-icons/go";
 import { generateLighterShade } from "utils";
 
-export const TaskDropdown = ({ totalTasks, onClick, isExpanded, type, isFile }) => {
+export const TaskDropdown = ({ totalTasks, onClick, isExpanded, type, isFile, isDashboard }) => {
 	const TASK_TYPE = {
 		file: "P",
 		project: "T",
@@ -22,7 +22,7 @@ export const TaskDropdown = ({ totalTasks, onClick, isExpanded, type, isFile }) 
 			leftIcon={<Icon as={GoTasklist} sx={{ marginRight: "-4px", fontsize: "10px" }} />}
 			rightIcon={
 				<Icon
-					as={isExpanded ? FaChevronUp : FaChevronDown}
+					as={isExpanded || !isDashboard ? FaChevronUp : FaChevronDown}
 					sx={{ marginLeft: "-4px", fontsize: "10px" }}
 				/>
 			}

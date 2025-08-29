@@ -113,6 +113,7 @@ const CLIENT_ORG_ADMIN_PERMISSION = [
 	// { name: "Payroll Employee Records" },
 	{ name: "Payroll Setup" },
 	{ name: "Project Management" },
+	{ name: "Project Management Dashboard" },
 	{ name: "Project Management Overview" },
 ];
 

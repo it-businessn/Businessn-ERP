@@ -16,6 +16,7 @@ const InnerSubTaskActionCell = ({
 	handleInnerSubTaskUpdate,
 	fileId,
 	handleSubTaskToggle,
+	isDashboard,
 }) => {
 	const { _id, taskName, subTaskId, completed } = task;
 	const toast = useToast();
@@ -97,6 +98,7 @@ const InnerSubTaskActionCell = ({
 					onChange={handleTaskStatus}
 				/>
 				<CellAction
+					isDashboard={isDashboard}
 					width="44em"
 					isInner={true}
 					name={taskName}
