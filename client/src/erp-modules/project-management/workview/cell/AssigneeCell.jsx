@@ -1,35 +1,37 @@
-import { Avatar, Box, Button, HStack, Td, VStack } from "@chakra-ui/react";
+import { Avatar, Box, Button, HStack, Td, Text, VStack } from "@chakra-ui/react";
 
-const AssigneeList = ({ assignees, showAllAssignees = false }) => (
-	<HStack justifyContent={"center"}>
-		{assignees.length < 1 && <Box height={"24px"} />}
-		{assignees?.map(
-			(assignee, index) =>
-				index < 1 &&
-				!showAllAssignees && (
-					<Avatar
-						key={`${assignee}_io${index}`}
-						name={assignee}
-						size={{ base: "xs", md: "xs" }}
-						src={assignee}
-					/>
-				),
-		)}
-		{assignees && assignees.length > 1 && !showAllAssignees && (
-			<Button
-				w={"24px"}
-				minW={"unset"}
-				h={"24px"}
-				fontSize={"1em"}
-				p={0}
-				bg={"var(--primary_button_bg)"}
-				borderRadius={"100%"}
-			>
-				+{assignees.length - 1}
-			</Button>
-		)}
-	</HStack>
-);
+const AssigneeList = ({ main, assignees, showAllAssignees = false }) =>
+	assignees.length < 1 ? (
+		<Box height={main ? "36px" : "20px"} />
+	) : (
+		<HStack justifyContent={"center"}>
+			{assignees?.map(
+				(assignee, index) =>
+					index < 1 &&
+					!showAllAssignees && (
+						<Avatar
+							key={`${assignee}_io${index}`}
+							name={assignee}
+							size={{ base: "xs", md: "xs" }}
+							src={assignee}
+						/>
+					),
+			)}
+			{assignees && assignees.length > 1 && !showAllAssignees && (
+				<Button
+					w={"24px"}
+					minW={"unset"}
+					h={"20px"}
+					fontSize={"1em"}
+					p={0}
+					bg={"var(--primary_button_bg)"}
+					borderRadius={"100%"}
+				>
+					+{assignees.length - 1}
+				</Button>
+			)}
+		</HStack>
+	);
 
 const AssigneeCell = ({
 	file,
@@ -42,8 +44,8 @@ const AssigneeCell = ({
 }) => {
 	return (
 		<Td fontSize={"xs"} w="100%" p={"0.5em"} display={"flex"} py={0}>
-			<VStack w="50%">
-				<AssigneeList assignees={file?.selectedAssignees} />
+			<VStack w="50%" alignItems={"start"} spacing={0}>
+				<AssigneeList assignees={file?.selectedAssignees} main />
 
 				{(!isDashboard || expandedIndex === index) &&
 					file?.projects?.map((project, project_index) => (

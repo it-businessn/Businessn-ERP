@@ -15,13 +15,13 @@ const PriorityCell = ({
 	isDashboard,
 }) => {
 	return (
-		<Td fontSize={"xs"} w="100%" p={"1em"} py={0}>
+		<Td fontSize={"xs"} w="100%" p={"1em"} py={0.5}>
 			<VStack alignItems={"start"}>
 				<PriorityBar priority={file?.priority} />
 
 				{(!isDashboard || expandedIndex === index) &&
 					file?.projects?.map((project, project_index) => (
-						<VStack alignItems={"start"} key={project._id}>
+						<VStack alignItems={"start"} key={project._id} spacing={1}>
 							<PriorityBar priority={project.priority} />
 
 							{(!isDashboard || isExpanded === project_index) &&

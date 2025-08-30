@@ -51,7 +51,7 @@ const FilesOverView = ({
 
 	return (
 		<Box overflow="auto" p={0} css={tabScrollCss} w="100%" h={"calc(100vh - 220px)"}>
-			<Table color={"var(--nav_color)"} bg={"var(--primary_bg)"}>
+			<Table color={"var(--nav_color)"} className="pm-overview" bg={"var(--primary_bg)"}>
 				<Thead position="sticky" zIndex={3} top={-1}>
 					<Tr display={"flex"} alignItems={"center"}>
 						{FILE_OVERVIEW_COLS.map(({ name }, index) => (
@@ -71,11 +71,11 @@ const FilesOverView = ({
 					)}
 					{files?.map((file, fileIndex) => (
 						<Tr
-							mb={1}
 							key={file._id}
 							display={"flex"}
 							justifyContent={"start"}
-							alignItems={"center"}
+							alignItems={"start"}
+							bg={"var(--main_color)"}
 						>
 							<FileActionCell
 								isDashboard={isDashboard}

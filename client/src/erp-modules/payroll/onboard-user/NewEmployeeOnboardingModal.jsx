@@ -249,6 +249,7 @@ const NewEmployeeOnboardingModal = ({ isOpen, onClose, title = "Employee", isAff
 			if (isAffiliate) formData.isAffiliate = true;
 			const { data } = await PayrollService.onboardUser(formData);
 			console.log("newEmpDetails=", data);
+			setShowSave(false);
 			toast({
 				title: "Employee added successfully",
 				status: "success",

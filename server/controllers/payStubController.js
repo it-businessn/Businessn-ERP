@@ -546,11 +546,11 @@ const addEmployeePayStubInfo = async (req, res) => {
 		// console.log("del", y, k);
 		// return;
 
-		// const k = await EmployeePayStub.updateMany(
+		// const kg = await EmployeePayStub.updateMany(
 		// 	{ companyName: COMPANIES.NW },
 		// 	{ $set: { scheduleFrequency: "Biweekly" } },
 		// );
-		// console.log("upd", k);
+		// console.log("upd", kg);
 
 		const {
 			payPeriodStartDate,

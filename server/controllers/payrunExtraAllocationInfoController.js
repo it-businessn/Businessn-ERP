@@ -220,12 +220,6 @@ const addNewAllocationRecord = async (data) => await EmployeeExtraAllocation.cre
 const addAmountAllocation = async (req, res) => {
 	const { empId, companyName, updatedRec, payPeriodPayDate } = req.body;
 	try {
-		const existingInfo = await findAdditionalHoursAllocatedInfo({
-			empId: empId._id,
-			companyName,
-			payPeriodPayDate,
-		});
-
 		const {
 			commission,
 			bonus,
@@ -405,6 +399,11 @@ const addAmountAllocation = async (req, res) => {
 			totalManualAmountAllocated,
 			totalPayoutAmountAllocated,
 		};
+		const existingInfo = await findAdditionalHoursAllocatedInfo({
+			empId: empId._id,
+			companyName,
+			payPeriodPayDate,
+		});
 
 		if (existingInfo) {
 			if (totalSuperficialAmountAllocated) {

@@ -2,8 +2,12 @@ import { Box, Td, VStack } from "@chakra-ui/react";
 import NormalTextTitle from "components/ui/NormalTextTitle";
 import { getDefaultDate } from "utils/convertDate";
 
-const FormattedDateCell = ({ date }) =>
-	date ? <NormalTextTitle h="24px" title={getDefaultDate(date)} /> : <Box height={"24px"} />;
+const FormattedDateCell = ({ date, main }) =>
+	date ? (
+		<NormalTextTitle h="24px" title={getDefaultDate(date)} />
+	) : (
+		<Box height={main ? "36px" : "24px"} />
+	);
 
 const DateCell = ({
 	file,
@@ -18,7 +22,7 @@ const DateCell = ({
 	return (
 		<Td fontSize={"xs"} w="100%" p={"1em"} display={"flex"} py={0}>
 			<VStack alignItems="start">
-				{file[date] && <FormattedDateCell date={file[date]} />}
+				{file[date] && <FormattedDateCell date={file[date]} main />}
 
 				{(!isDashboard || expandedIndex === index) &&
 					file?.projects?.map((project, project_index) => (

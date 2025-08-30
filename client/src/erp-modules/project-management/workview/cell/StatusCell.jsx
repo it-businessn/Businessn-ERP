@@ -1,5 +1,4 @@
-import { Box, HStack, Td, Text, VStack } from "@chakra-ui/react";
-import { statusColor } from "utils";
+import { Box, HStack, Td, VStack } from "@chakra-ui/react";
 
 const StatusCell = ({
 	file,
@@ -10,7 +9,7 @@ const StatusCell = ({
 	isSubExpanded,
 	isDashboard,
 }) => {
-	const TaskStatus = ({ status }) => (
+	const TaskStatus = ({ status, main }) => (
 		<HStack
 			justifyContent={"space-around"}
 			spacing={0}
@@ -21,13 +20,14 @@ const StatusCell = ({
 			pt={0}
 			borderRadius={"8px"}
 		>
-			{/* {status ? <Text> {status}d</Text> : <Box height={"24px"} />} */}
+			{/* {status ? <Text> {status}d</Text> : <Box height={main ? "36px" : "20px"} />} */}
+			<Box height={main ? "36px" : "20px"} />
 		</HStack>
 	);
 	return (
 		<Td fontSize={"12px"} w="100%" display={"flex"} py={0} px={0}>
 			<VStack alignItems={"start"}>
-				<TaskStatus status={file?.status} />
+				<TaskStatus status={file?.status} main />
 
 				{(!isDashboard || expandedIndex === index) &&
 					file?.projects?.map((project, project_index) => (
