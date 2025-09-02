@@ -3,7 +3,7 @@ const moment = require("moment");
 const xml2js = require("xml2js");
 const parser = new xml2js.Parser({ explicitArray: false });
 const fs = require("fs");
-const PDFDocument = require("pdfkit");
+// const PDFDocument = require("pdfkit");/
 const path = require("path");
 const EmployeePayStub = require("../models/EmployeePayStub");
 const EmployeeProfileInfo = require("../models/EmployeeProfileInfo");
@@ -392,82 +392,82 @@ const convertxmltopdf = () => {
 		const phone = `(${roe.B16?.AC || ""}) ${roe.B16?.TEL || ""}`;
 
 		// Create PDF
-		const doc = new PDFDocument({ size: "LETTER", margin: 20 });
-		doc.pipe(fs.createWriteStream(pdfPath));
+		// const doc = new PDFDocument({ size: "LETTER", margin: 20 });
+		// doc.pipe(fs.createWriteStream(pdfPath));
 
-		doc.font("Helvetica");
+		// doc.font("Helvetica");
 
-		// Title
-		doc.fontSize(16).text("Record of Employment (ROE)", { align: "center" });
-		doc.moveDown(1);
+		// // Title
+		// doc.fontSize(16).text("Record of Employment (ROE)", { align: "center" });
+		// doc.moveDown(1);
 
-		let y = 60;
+		// let y = 60;
 
-		// Function to draw labeled box (with optional multi-line)
-		const drawBox = (x, y, w, h, label, value, fontSize = 10) => {
-			doc.rect(x, y, w, h).stroke();
-			doc.fontSize(8).text(label, x + 2, y + 2);
-			doc.fontSize(fontSize).text(value, x + 2, y + 12, { width: w - 4 });
-		};
+		// // Function to draw labeled box (with optional multi-line)
+		// const drawBox = (x, y, w, h, label, value, fontSize = 10) => {
+		// 	doc.rect(x, y, w, h).stroke();
+		// 	doc.fontSize(8).text(label, x + 2, y + 2);
+		// 	doc.fontSize(fontSize).text(value, x + 2, y + 12, { width: w - 4 });
+		// };
 
-		// --- Employer Info ---
-		drawBox(30, y, 180, 25, "Employer BN", employerBN);
-		drawBox(220, y, 120, 25, "Pay Period Code", payPeriodCode);
-		y += 30;
+		// // --- Employer Info ---
+		// drawBox(30, y, 180, 25, "Employer BN", employerBN);
+		// drawBox(220, y, 120, 25, "Pay Period Code", payPeriodCode);
+		// y += 30;
 
-		// --- Employee Info ---
-		drawBox(30, y, 180, 25, "Employee SIN", employeeSIN);
-		drawBox(220, y, 300, 25, "Employee Name", employeeName);
-		y += 30;
+		// // --- Employee Info ---
+		// drawBox(30, y, 180, 25, "Employee SIN", employeeSIN);
+		// drawBox(220, y, 300, 25, "Employee Name", employeeName);
+		// y += 30;
 
-		drawBox(30, y, 490, 50, "Address", address);
-		y += 60;
+		// drawBox(30, y, 490, 50, "Address", address);
+		// y += 60;
 
-		// --- Dates & Occupation ---
-		drawBox(30, y, 150, 25, "Last Day Paid", lastDayPaid);
-		drawBox(190, y, 150, 25, "Final Pay Period End", finalPayEnd);
-		drawBox(350, y, 150, 25, "Expected Recall Date", expectedRecall);
-		y += 30;
+		// // --- Dates & Occupation ---
+		// drawBox(30, y, 150, 25, "Last Day Paid", lastDayPaid);
+		// drawBox(190, y, 150, 25, "Final Pay Period End", finalPayEnd);
+		// drawBox(350, y, 150, 25, "Expected Recall Date", expectedRecall);
+		// y += 30;
 
-		drawBox(30, y, 180, 25, "Occupation", occupation);
-		drawBox(220, y, 100, 25, "Reason Code", reasonCode);
-		drawBox(330, y, 150, 25, "Total Insurable Earnings", totalEarnings);
-		y += 35;
+		// drawBox(30, y, 180, 25, "Occupation", occupation);
+		// drawBox(220, y, 100, 25, "Reason Code", reasonCode);
+		// drawBox(330, y, 150, 25, "Total Insurable Earnings", totalEarnings);
+		// y += 35;
 
-		// --- Pay Period Table ---
-		doc.fontSize(12).text("Pay Periods", 30, y);
-		y += 15;
+		// // --- Pay Period Table ---
+		// doc.fontSize(12).text("Pay Periods", 30, y);
+		// y += 15;
 
-		const rowHeight = 20;
-		const col1X = 30;
-		const col2X = 130;
-		const colWidth = 100;
+		// const rowHeight = 20;
+		// const col1X = 30;
+		// const col2X = 130;
+		// const colWidth = 100;
 
-		// Table header
-		doc.rect(col1X, y, colWidth, rowHeight).stroke();
-		doc.text("Period #", col1X + 5, y + 5);
-		doc.rect(col2X, y, colWidth, rowHeight).stroke();
-		doc.text("Amount", col2X + 5, y + 5);
-		y += rowHeight;
+		// // Table header
+		// doc.rect(col1X, y, colWidth, rowHeight).stroke();
+		// doc.text("Period #", col1X + 5, y + 5);
+		// doc.rect(col2X, y, colWidth, rowHeight).stroke();
+		// doc.text("Amount", col2X + 5, y + 5);
+		// y += rowHeight;
 
-		// Table rows
-		payPeriods.forEach((pp) => {
-			if (!pp) return;
-			const nbr = pp.$?.nbr || "";
-			const amt = pp.AMT || "";
-			doc.rect(col1X, y, colWidth, rowHeight).stroke();
-			doc.text(nbr, col1X + 5, y + 5);
-			doc.rect(col2X, y, colWidth, rowHeight).stroke();
-			doc.text(amt, col2X + 5, y + 5);
-			y += rowHeight;
-		});
+		// // Table rows
+		// payPeriods.forEach((pp) => {
+		// 	if (!pp) return;
+		// 	const nbr = pp.$?.nbr || "";
+		// 	const amt = pp.AMT || "";
+		// 	doc.rect(col1X, y, colWidth, rowHeight).stroke();
+		// 	doc.text(nbr, col1X + 5, y + 5);
+		// 	doc.rect(col2X, y, colWidth, rowHeight).stroke();
+		// 	doc.text(amt, col2X + 5, y + 5);
+		// 	y += rowHeight;
+		// });
 
-		y += 10;
-		drawBox(30, y, 490, 25, "Issue Reason", issueReason);
-		y += 30;
-		drawBox(30, y, 200, 25, "Phone", phone);
+		// y += 10;
+		// drawBox(30, y, 490, 25, "Issue Reason", issueReason);
+		// y += 30;
+		// drawBox(30, y, 200, 25, "Phone", phone);
 
-		doc.end();
+		// doc.end();
 		console.log("PDF generated: ROE_Jane_Doe.pdf");
 	});
 };
