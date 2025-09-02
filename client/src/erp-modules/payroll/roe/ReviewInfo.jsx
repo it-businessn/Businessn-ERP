@@ -4,7 +4,7 @@ const ReviewInfo = () => {
 	return (
 		<div>
 			ReviewInfo
-			<ROEFromXML />
+			{/* <ROEFromXML /> */}
 		</div>
 	);
 };

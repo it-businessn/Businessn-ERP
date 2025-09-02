@@ -25,6 +25,7 @@ import PageLayout from "layouts/PageLayout";
 import { useEffect, useState } from "react";
 import LocalStorageService from "services/LocalStorageService";
 import SettingService from "services/SettingService";
+import { dayMonthYear } from "utils/convertDate";
 import { tabScrollCss } from "./onboard-user/customInfo";
 
 const Settings = ({ company }) => {
@@ -220,7 +221,7 @@ const Settings = ({ company }) => {
 										holidays.map((holiday) => (
 											<Tr key={holiday._id}>
 												<Td>{holiday.name}</Td>
-												<Td>{new Date(holiday.date).toLocaleDateString()}</Td>
+												<Td>{dayMonthYear(holiday.date)}</Td>
 												<Td>
 													<HStack spacing={2}>
 														<IconButton
