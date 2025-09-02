@@ -13,7 +13,6 @@ import { tabStyleCss } from "erp-modules/payroll/onboard-user/customInfo";
 import useCompany from "hooks/useCompany";
 import useCompanyEmployees from "hooks/useCompanyEmployees";
 import usePaygroup from "hooks/usePaygroup";
-import useSelectedCompanyInfo from "hooks/useSelectedCompanyInfo";
 import PageLayout from "layouts/PageLayout";
 import { useEffect, useState } from "react";
 import { FaChevronLeft, FaChevronRight, FaSave } from "react-icons/fa";
@@ -34,7 +33,6 @@ const ROE = () => {
 	const { selectedPayGroupOption } = usePaygroup(company, false);
 	const employees = useCompanyEmployees(company, null, selectedPayGroupOption);
 	const { payGroupSchedule } = usePaygroup(company, false);
-	const companyInfo = useSelectedCompanyInfo(company);
 	const [admins, setAdmins] = useState(null);
 
 	const initialFormData = {
@@ -74,6 +72,7 @@ const ROE = () => {
 			issuerExtNumber: "",
 			preferredCommunication: "English",
 		},
+		earningsInfo: { totalInsurableHours: 0, totalInsurableEarnings: 0, earningsData: null },
 	};
 	const [formData, setFormData] = useState(initialFormData);
 	const [tabIndex, setTabIndex] = useState(0);
@@ -81,10 +80,11 @@ const ROE = () => {
 	useEffect(() => {
 		const fetchEmployeeInfo = async () => {
 			try {
-				const [profileRes, employmentRes, companyInfo] = await Promise.all([
+				const [profileRes, employmentRes, companyInfo, earningsInfo] = await Promise.all([
 					PayrollService.getEmployeeProfileInfo(company, formData?.empId),
 					PayrollService.getEmployeeEmploymentInfo(company, formData?.empId),
 					SettingService.getCompanyInfo(company),
+					PayrollService.getEmpEarningInfo(company, formData?.empId),
 				]);
 				//for emp saved roe info
 				// const { data } = await PayrollService.getEmployeeROEEmploymentInfo(company, roeEmpId);
@@ -115,6 +115,10 @@ const ROE = () => {
 						name: companyInfo?.data?.name,
 						registration_number: companyInfo?.data?.registration_number,
 						address: companyInfo?.data?.address,
+					},
+					earningsInfo: {
+						...prev.earningsInfo,
+						earningsData: earningsInfo,
 					},
 				}));
 			} catch (error) {
@@ -158,14 +162,7 @@ const ROE = () => {
 		},
 		{
 			name: "Earnings Info",
-			content: (
-				<EarningsInfo
-					formData={formData}
-					setFormData={setFormData}
-					company={company}
-					roeEmpId={formData?.empId}
-				/>
-			),
+			content: <EarningsInfo formData={formData} setFormData={setFormData} />,
 		},
 		{
 			name: "Review",

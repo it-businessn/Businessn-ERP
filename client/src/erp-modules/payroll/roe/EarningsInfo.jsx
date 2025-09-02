@@ -20,7 +20,7 @@ import { BiMerge } from "react-icons/bi";
 import PayrollService from "services/PayrollService";
 import { convertDecimal, getAmount } from "utils/convertAmt";
 
-const EarningsInfo = ({ formData, setFormData, company, roeEmpId }) => {
+const EarningsInfo = ({ formData, setFormData }) => {
 	const cols = ["ROE PP", "Payroll PP", "PP End Date", "Insurable Earnings", "Insurable Hours"];
 	const [earningsData, setEarningsData] = useState([]);
 	const [set1, setSet1] = useState([]);
@@ -28,40 +28,47 @@ const EarningsInfo = ({ formData, setFormData, company, roeEmpId }) => {
 	const [totalInsurableHours, setTotalInsurableHours] = useState(0);
 	const [totalInsurableEarnings, setTotalInsurableEarnings] = useState(0);
 	useEffect(() => {
-		const fetchEmpPayStubs = async () => {
-			try {
-				const { data } = await PayrollService.getEmpEarningInfo(company, roeEmpId);
-				data?.map(
-					(_) =>
-						(_.insurableHours =
-							_?.totalRegHoursWorked +
-							_?.totalOvertimeHoursWorked +
-							_?.totalDblOvertimeHoursWorked +
-							_?.totalSickHoursWorked +
-							_?.totalSprayHoursWorked +
-							_?.totalStatDayHoursWorked +
-							_?.totalStatHours +
-							_?.totalVacationHoursWorked +
-							_?.totalBereavementHoursWorked +
-							_?.totalPersonalDayHoursWorked +
-							_?.totalFirstAidHoursWorked),
-				);
-				const totalHours = data?.reduce((acc, item) => {
-					return acc + item?.insurableHours;
-				}, 0);
-				setTotalInsurableHours(totalHours);
+		if (!formData.earningsInfo?.earningsData) {
+			return;
+		}
+		formData.earningsInfo?.earningsData?.map(
+			(_) =>
+				(_.insurableHours =
+					_?.totalRegHoursWorked +
+					_?.totalOvertimeHoursWorked +
+					_?.totalDblOvertimeHoursWorked +
+					_?.totalSickHoursWorked +
+					_?.totalSprayHoursWorked +
+					_?.totalStatDayHoursWorked +
+					_?.totalStatHours +
+					_?.totalVacationHoursWorked +
+					_?.totalBereavementHoursWorked +
+					_?.totalPersonalDayHoursWorked +
+					_?.totalFirstAidHoursWorked),
+		);
+		const totalHours = formData.earningsInfo?.earningsData?.reduce((acc, item) => {
+			return acc + item?.insurableHours;
+		}, 0);
+		setTotalInsurableHours(totalHours);
 
-				const totalEarnings = data?.reduce((acc, item) => {
-					return acc + item?.currentGrossPay;
-				}, 0);
-				setTotalInsurableEarnings(totalEarnings);
-				setEarningsData(data);
-			} catch (error) {
-				console.error(error);
-			}
-		};
-		if (roeEmpId) fetchEmpPayStubs();
-	}, [roeEmpId]);
+		const totalEarnings = formData.earningsInfo?.earningsData?.reduce((acc, item) => {
+			return acc + item?.currentGrossPay;
+		}, 0);
+		setTotalInsurableEarnings(totalEarnings);
+		setEarningsData(formData.earningsInfo?.earningsData);
+	}, [formData.earningsInfo?.earningsData]);
+
+	useEffect(() => {
+		if (totalInsurableEarnings || totalInsurableHours)
+			setFormData({
+				...formData,
+				earningsInfo: {
+					...formData.earningsInfo,
+					totalInsurableEarnings,
+					totalInsurableHours,
+				}, ////Total Insurable Hours -between 1 and 8904 - Note: (53 weeks x 7 days) x 24 hours = 8904(max)
+			});
+	}, [totalInsurableEarnings, totalInsurableHours]);
 
 	useEffect(() => {
 		if (earningsData.length) {
@@ -82,16 +89,6 @@ const EarningsInfo = ({ formData, setFormData, company, roeEmpId }) => {
 			setSet2(oddRecords);
 		}
 	}, [earningsData]);
-
-	const handleFieldChange = (section, field, value) => {
-		setFormData({
-			...formData,
-			[section]: {
-				...formData[section],
-				[field]: value,
-			},
-		});
-	};
 
 	return (
 		<Flex height="100%">

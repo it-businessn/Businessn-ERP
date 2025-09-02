@@ -122,9 +122,9 @@ const buildT4PayrollData = async (companyName, payPeriodNum) => {
 };
 
 // Directory to save XML files
-const outputDir = path.join(__dirname, "../", "generated-T4-xml");
-if (!fs.existsSync(outputDir)) {
-	fs.mkdirSync(outputDir, { recursive: true });
+const SAVE_FILE_OUTPUT_DIR = path.join(__dirname, "../", "generated-T4-xml");
+if (!fs.existsSync(SAVE_FILE_OUTPUT_DIR)) {
+	fs.mkdirSync(SAVE_FILE_OUTPUT_DIR, { recursive: true });
 }
 
 const generateT4Slip = async (companyName, payPeriodNum, payPeriodEndDate) => {
@@ -343,7 +343,7 @@ const generateT4Slip = async (companyName, payPeriodNum, payPeriodEndDate) => {
 		.utc(payPeriodEndDate)
 		.format("DD_MM_YYYY")}_PayPeriod#${payPeriodNum}.xml`;
 
-	const filePath = path.join(outputDir, fileName);
+	const filePath = path.join(SAVE_FILE_OUTPUT_DIR, fileName);
 
 	//check if xml file is parsed properly
 	parser.parseString(xmlT4Data, (err, result) => {
@@ -486,7 +486,7 @@ const readSecureXML = () => {
 	const encryptedXMLDataIV = encryptData(xmlString, ENCRYPTION_KEY).iv;
 
 	const fileName = `T4_BE6743_1734417913367.encrypted`;
-	const filePath = path.join(outputDir, fileName);
+	const filePath = path.join(SAVE_FILE_OUTPUT_DIR, fileName);
 	fs.writeFileSync(filePath, encryptedXMLData, { mode: 0o600 });
 	console.log("Encrypted XML file created securely.");
 
@@ -496,4 +496,10 @@ const readSecureXML = () => {
 	console.log("Decrypted XML:", decryptedXML);
 };
 
-module.exports = { getT4Slips, generateT4Slip, getEmployeeT4Slip, convertxmltopdf };
+module.exports = {
+	getT4Slips,
+	generateT4Slip,
+	getEmployeeT4Slip,
+	convertxmltopdf,
+	SAVE_FILE_OUTPUT_DIR,
+};

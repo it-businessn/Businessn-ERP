@@ -65,13 +65,13 @@ export const CATEGORY_LIST = [
 
 export const RECALL_OPTIONS = [
 	{
-		name: "Unknown",
+		name: "N - Not Returning",
 	},
 	{
-		name: "Not Returning",
+		name: "U - Unknown",
 	},
 	{
-		name: "Return Date",
+		name: "Y - Return Date",
 	},
 ];
 

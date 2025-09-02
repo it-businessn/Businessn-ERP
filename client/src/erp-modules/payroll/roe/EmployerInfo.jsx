@@ -145,7 +145,7 @@ const EmployerInfo = ({ formData, setFormData, admins }) => {
 									type="tel"
 									label=""
 									name="issuerTelNumber"
-									placeholder="Enter Tel Number"
+									placeholder="Enter Telephone Number"
 									valueText={formData?.employerInfo?.issuerTelNumber || ""}
 									handleChange={(e) =>
 										handleFieldChange("employerInfo", "issuerTelNumber", e.target.value)
@@ -168,10 +168,10 @@ const EmployerInfo = ({ formData, setFormData, admins }) => {
 						handleChange={(value) =>
 							handleFieldChange("employerInfo", "preferredCommunication", value)
 						}
-						defaultVal="English"
+						defaultVal="E"
 						options={[
-							{ name: "English", value: "English" },
-							{ name: "French", value: "French" },
+							{ name: "English", value: "E" },
+							{ name: "French", value: "F" },
 						]}
 					/>
 				</Stack>
