@@ -23,10 +23,12 @@ import {
 import BoxCard from "components/ui/card";
 import PageLayout from "layouts/PageLayout";
 import { useEffect, useState } from "react";
+import LocalStorageService from "services/LocalStorageService";
 import SettingService from "services/SettingService";
 import { tabScrollCss } from "./onboard-user/customInfo";
 
 const Settings = ({ company }) => {
+	const currentCompany = company || LocalStorageService.getItem("selectedCompany");
 	const [holidays, setHolidays] = useState([]);
 	const [name, setName] = useState("");
 	const [date, setDate] = useState("");
@@ -41,7 +43,7 @@ const Settings = ({ company }) => {
 	const fetchStatHolidays = async () => {
 		try {
 			setIsLoading(true);
-			const { data } = await SettingService.getStatHolidays(company);
+			const { data } = await SettingService.getStatHolidays(currentCompany);
 			setHolidays(data);
 		} catch (error) {
 			toast({

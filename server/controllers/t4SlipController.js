@@ -1,8 +1,9 @@
 const xml = require("xmlbuilder");
 const moment = require("moment");
 const xml2js = require("xml2js");
-const parser = new xml2js.Parser();
+const parser = new xml2js.Parser({ explicitArray: false });
 const fs = require("fs");
+const PDFDocument = require("pdfkit");
 const path = require("path");
 const EmployeePayStub = require("../models/EmployeePayStub");
 const EmployeeProfileInfo = require("../models/EmployeeProfileInfo");
@@ -359,6 +360,117 @@ const generateT4Slip = async (companyName, payPeriodNum, payPeriodEndDate) => {
 	});
 };
 
+const convertxmltopdf = () => {
+	const envFilePath = path.join(__dirname, "../", "generated-T4-xml/sample1.xml");
+
+	const xmlData = fs.readFileSync(envFilePath, "utf8");
+
+	const xmlDir = path.dirname(envFilePath);
+	const pdfPath = path.join(xmlDir, "ROE_Jane_Doe.pdf");
+	parser.parseString(xmlData, (err, result) => {
+		if (err) {
+			console.error("Parsing failed:", err);
+			return;
+		}
+		const roe = result.ROEHEADER.ROE;
+
+		// Extract fields safely
+		const employerBN = roe.B5 || "";
+		const payPeriodCode = roe.B6 || "";
+		const employeeSIN = roe.B8 || "";
+		const B9 = roe.B9 || {};
+		const employeeName = `${B9.FN || ""} ${B9.LN || ""}`;
+		const address = `${B9.A1 || ""}, ${B9.A2 || ""}, ${B9.PC || ""}`;
+		const lastDayPaid = roe.B10 || "";
+		const finalPayEnd = roe.B11 || "";
+		const expectedRecall = roe.B12 || "";
+		const occupation = roe.B13 || "";
+		const reasonCode = roe.B14?.CD || "";
+		const totalEarnings = roe.B15A || "";
+		const payPeriods = Array.isArray(roe.B15C?.PP) ? roe.B15C.PP : [roe.B15C?.PP || []];
+		const issueReason = roe.B18 || "";
+		const phone = `(${roe.B16?.AC || ""}) ${roe.B16?.TEL || ""}`;
+
+		// Create PDF
+		const doc = new PDFDocument({ size: "LETTER", margin: 20 });
+		doc.pipe(fs.createWriteStream(pdfPath));
+
+		doc.font("Helvetica");
+
+		// Title
+		doc.fontSize(16).text("Record of Employment (ROE)", { align: "center" });
+		doc.moveDown(1);
+
+		let y = 60;
+
+		// Function to draw labeled box (with optional multi-line)
+		const drawBox = (x, y, w, h, label, value, fontSize = 10) => {
+			doc.rect(x, y, w, h).stroke();
+			doc.fontSize(8).text(label, x + 2, y + 2);
+			doc.fontSize(fontSize).text(value, x + 2, y + 12, { width: w - 4 });
+		};
+
+		// --- Employer Info ---
+		drawBox(30, y, 180, 25, "Employer BN", employerBN);
+		drawBox(220, y, 120, 25, "Pay Period Code", payPeriodCode);
+		y += 30;
+
+		// --- Employee Info ---
+		drawBox(30, y, 180, 25, "Employee SIN", employeeSIN);
+		drawBox(220, y, 300, 25, "Employee Name", employeeName);
+		y += 30;
+
+		drawBox(30, y, 490, 50, "Address", address);
+		y += 60;
+
+		// --- Dates & Occupation ---
+		drawBox(30, y, 150, 25, "Last Day Paid", lastDayPaid);
+		drawBox(190, y, 150, 25, "Final Pay Period End", finalPayEnd);
+		drawBox(350, y, 150, 25, "Expected Recall Date", expectedRecall);
+		y += 30;
+
+		drawBox(30, y, 180, 25, "Occupation", occupation);
+		drawBox(220, y, 100, 25, "Reason Code", reasonCode);
+		drawBox(330, y, 150, 25, "Total Insurable Earnings", totalEarnings);
+		y += 35;
+
+		// --- Pay Period Table ---
+		doc.fontSize(12).text("Pay Periods", 30, y);
+		y += 15;
+
+		const rowHeight = 20;
+		const col1X = 30;
+		const col2X = 130;
+		const colWidth = 100;
+
+		// Table header
+		doc.rect(col1X, y, colWidth, rowHeight).stroke();
+		doc.text("Period #", col1X + 5, y + 5);
+		doc.rect(col2X, y, colWidth, rowHeight).stroke();
+		doc.text("Amount", col2X + 5, y + 5);
+		y += rowHeight;
+
+		// Table rows
+		payPeriods.forEach((pp) => {
+			if (!pp) return;
+			const nbr = pp.$?.nbr || "";
+			const amt = pp.AMT || "";
+			doc.rect(col1X, y, colWidth, rowHeight).stroke();
+			doc.text(nbr, col1X + 5, y + 5);
+			doc.rect(col2X, y, colWidth, rowHeight).stroke();
+			doc.text(amt, col2X + 5, y + 5);
+			y += rowHeight;
+		});
+
+		y += 10;
+		drawBox(30, y, 490, 25, "Issue Reason", issueReason);
+		y += 30;
+		drawBox(30, y, 200, 25, "Phone", phone);
+
+		doc.end();
+		console.log("PDF generated: ROE_Jane_Doe.pdf");
+	});
+};
 const readSecureXML = () => {
 	//Encrypt the XML file before sharing
 	const envFilePath = path.join(__dirname, "../", "generated-T4-xml/T4_BE6743_1734417913367.xml");
@@ -384,4 +496,4 @@ const readSecureXML = () => {
 	console.log("Decrypted XML:", decryptedXML);
 };
 
-module.exports = { getT4Slips, generateT4Slip, getEmployeeT4Slip };
+module.exports = { getT4Slips, generateT4Slip, getEmployeeT4Slip, convertxmltopdf };
