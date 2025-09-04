@@ -8,22 +8,25 @@ import { getDefaultDate } from "utils/convertDate";
 
 export const TenureInfo = ({ isReadOnly, payGroupSchedule, formData, handleFieldChange }) => {
 	useEffect(() => {
-		const finalPayPeriodRecord = payGroupSchedule?.find(
-			({ payPeriodStartDate, payPeriodEndDate }) =>
-				moment(formData?.employmentInfo?.employmentLeaveDate).isBetween(
-					payPeriodStartDate,
-					payPeriodEndDate,
-					null,
-					"[]",
-				),
-		);
-		if (finalPayPeriodRecord)
-			handleFieldChange(
-				"employmentInfo",
-				"finalPayPeriodEndDate",
-				finalPayPeriodRecord?.payPeriodEndDate,
+		if (payGroupSchedule && formData?.employmentInfo?.employmentLeaveDate) {
+			const finalPayPeriodRecord = payGroupSchedule?.find(
+				({ payPeriodStartDate, payPeriodEndDate }) =>
+					moment(formData?.employmentInfo?.employmentLeaveDate).isBetween(
+						payPeriodStartDate,
+						payPeriodEndDate,
+						null,
+						"[]",
+					),
 			);
-	}, [formData?.employmentInfo?.employmentLeaveDate]);
+			if (finalPayPeriodRecord) {
+				handleFieldChange(
+					"employmentInfo",
+					"finalPayPeriodEndDate",
+					finalPayPeriodRecord?.payPeriodEndDate,
+				);
+			}
+		}
+	}, [payGroupSchedule, formData?.employmentInfo?.employmentLeaveDate]);
 
 	return (
 		<Stack spacing={3} p={!isReadOnly && 5}>

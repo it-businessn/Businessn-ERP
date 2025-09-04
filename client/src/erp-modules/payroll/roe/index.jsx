@@ -20,6 +20,7 @@ import LocalStorageService from "services/LocalStorageService";
 import PayrollService from "services/PayrollService";
 import SettingService from "services/SettingService";
 import UserService from "services/UserService";
+import { generatePayPeriodId } from "utils/convertDate";
 import EarningsInfo from "./EarningsInfo";
 import EmployeeInfo from "./employee-info/EmployeeInfo";
 import EmployerInfo from "./employer-info/EmployerInfo";
@@ -30,20 +31,22 @@ const ROE = () => {
 	const toast = useToast();
 	const { company } = useCompany(LocalStorageService.getItem("selectedCompany"));
 	const loggedInUser = LocalStorageService.getItem("user");
-	const { selectedPayGroupOption } = usePaygroup(company, false);
+	const { closestRecord, payGroupSchedule, selectedPayGroupOption } = usePaygroup(company, false);
 	const employees = useCompanyEmployees(company, null, selectedPayGroupOption);
-	const { payGroupSchedule } = usePaygroup(company, false);
 	const [admins, setAdmins] = useState(null);
 
 	const initialFormData = {
 		companyName: company,
 		empId: "",
 		employee: "",
+		payPeriodType: "",
+		payPeriodId: "",
 		empInfo: {
 			firstName: "",
 			lastName: "",
 			middleName: "",
 			SIN: "",
+			SINIv: "",
 			streetAddress: "",
 			streetAddressSuite: "",
 			city: "",
@@ -53,7 +56,7 @@ const ROE = () => {
 		},
 		employmentInfo: {
 			employmentStartDate: "",
-			employmentLeaveDate: new Date(),
+			employmentLeaveDate: "",
 			finalPayPeriodEndDate: "",
 			recallDate: "",
 			expectedRecallDate: "Unknown",
@@ -105,6 +108,7 @@ const ROE = () => {
 						lastName: profileRes?.data?.lastName,
 						middleName: profileRes?.data?.middleName,
 						SIN: profileRes?.data?.SIN,
+						SINIv: profileRes?.data?.SINIv,
 						streetAddress: profileRes?.data?.streetAddress,
 						streetAddressSuite: profileRes?.data?.streetAddressSuite,
 						city: profileRes?.data?.city,
@@ -209,45 +213,23 @@ const ROE = () => {
 	const isLastStep = tabIndex === ROE_TABS.length - 1;
 
 	const handleSubmit = async () => {
-		// try {
-		// const { data } = await PayrollService.addEmployeeProfileInfo(formData);
-		// 		const handleEmpROEInfo = async () => {
-		// 	try {
-		// 		if (!formData?.expectedRecallDate) {
-		// 			formData.expectedRecallDate = "Unknown";
-		// 		}
-		// 		await PayrollService.addEmployeeROEEmploymentInfo(formData);
-		// 		handleNext(tabId);
-		// 		toast({
-		// 			title: "Employment info updated successfully.",
-		// 			status: "success",
-		// 			duration: 1000,
-		// 			isClosable: true,
-		// 		});
-		// 	} catch (error) {}
-		// };	try {
-		// 	await PayrollService.addEmployeeROEEmploymentInfo(formData);
-		// 	handleNext(tabId);
-		// } catch (error) {}
-		// 	toast({
-		// 		title: "Ticket submitted!",
-		// 		description: "Your support request has been sent successfully.",
-		// 		status: "success",
-		// 		duration: 2000,
-		// 		isClosable: true,
-		// 	});
-		// 	setTimeout(() => {
-		// 		handleRedirect();
-		// 	}, 2000);
-		// } catch (error) {
-		// 	toast({
-		// 		title: "Something went wrong.",
-		// 		description: "Please try again.",
-		// 		status: "error",
-		// 		duration: 3000,
-		// 		isClosable: true,
-		// 	});
-		// }
+		try {
+			await PayrollService.addEmployeeROEEmploymentInfo(formData);
+			toast({
+				title: "Employee ROE created successfully.",
+				status: "success",
+				duration: 1000,
+				isClosable: true,
+			});
+		} catch (error) {
+			toast({
+				title: "Something went wrong.",
+				description: "Please try again.",
+				status: "error",
+				duration: 3000,
+				isClosable: true,
+			});
+		}
 	};
 
 	const getNextButtonIcon = () => {
@@ -282,6 +264,11 @@ const ROE = () => {
 							employee: value,
 							empId: employees?.find((_) => _.fullName === value)?._id,
 							companyName: company,
+							payPeriodType: closestRecord?.frequency,
+							payPeriodId: generatePayPeriodId(
+								closestRecord?.payPeriodStartDate,
+								closestRecord?.payPeriodEndDate,
+							),
 						});
 					}
 				}}

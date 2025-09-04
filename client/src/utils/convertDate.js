@@ -184,6 +184,12 @@ export const formatDate = (date) =>
 		day: "2-digit",
 	});
 
+export const generatePayPeriodId = (startDate, endDate) => {
+	const start = moment.utc(startDate).format("YYYY-MM-DD");
+	const end = moment.utc(endDate).format("YYYY-MM-DD");
+	return `${start}_${end}`;
+};
+
 export const formatDateTime = (date) =>
 	`${formatDate(date)} ${new Date(date).toLocaleTimeString()}`;
 
