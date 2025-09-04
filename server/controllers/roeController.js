@@ -129,7 +129,7 @@ const generateROEXML = async (companyName, payPeriodNum, payPeriodEndDate) => {
 
 	for (const roeRecord of roeEmployeeList) {
 		const {
-			totalInsurableHours,
+			insurableHours,
 			insurableEarnings,
 			contactExtNumber,
 			contactName,
@@ -198,8 +198,36 @@ const generateROEXML = async (companyName, payPeriodNum, payPeriodEndDate) => {
 		b14.ele("CD", expectedRecallDate.split("-")[0]);
 		b14.ele("DT", recallDate);
 
-		roe.ele("B15A", totalInsurableHours);
+		const b15a = roe.ele("B15A");
+
+		// 		Table 8: 15A.1 – Maximum Insurable Hours to enter in Block 15A
+		// Pay Period type code (Block 6)	Description	Maximum number of Pay Periods to include for Total Insurable Hours (Block 15A)
+		// B	Bi-weekly	Last 27
+		// M	Monthly	Last 13
+		// O	Monthly non-standard	Last 13
+		// S	Semi-monthly	Last 25
+		// E	Semi-monthly non-standard	Last 25
+		// H	13 Pay Periods per year	Last 14
+		// W	Weekly	Last 53
+
+		for (let i = 1; i <= 53; i++) {
+			// Up to 53 Pay Periods
+			const pp = b15a.ele("PP").att("nbr", i);
+			pp.ele("AMT", insurableHours[i]); //Insurable Hours Information
+		}
+		//The number of Insurable Hours must be less than or equal to (Last Day for Which Paid – First day worked + 1) x 24 according to table 15A.1.
 		const b15c = roe.ele("B15C");
+
+		// 		Table 9: 15C.1 – Maximum number of Pay Periods to enter in Block 15C
+		// Pay Period type code (Block 6)	Description	Maximum number of Pay Periods to enter in Block 15C
+		// B	Bi-weekly	Last 27
+		// M	Monthly	Last 13
+		// O	Monthly non-standard	Last 13
+		// S	Semi-monthly	Last 25
+		// E	Semi-monthly non-standard	Last 25
+		// H	13 Pay Periods per year	Last 14
+		// W	Weekly	Last 53
+
 		for (let i = 1; i <= 53; i++) {
 			// Up to 53 Pay Periods
 			const pp = b15c.ele("PP").att("nbr", i);

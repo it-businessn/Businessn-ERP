@@ -21,10 +21,10 @@ import PayrollService from "services/PayrollService";
 import SettingService from "services/SettingService";
 import UserService from "services/UserService";
 import EarningsInfo from "./EarningsInfo";
-import EmployeeInfo from "./EmployeeInfo";
-import EmployerInfo from "./EmployerInfo";
-import EmploymentInfo from "./EmploymentInfo";
-import ReviewInfo from "./ReviewInfo";
+import EmployeeInfo from "./employee-info/EmployeeInfo";
+import EmployerInfo from "./employer-info/EmployerInfo";
+import EmploymentInfo from "./employment-info/EmploymentInfo";
+import ReviewInfo from "./review/ReviewInfo";
 
 const ROE = () => {
 	const toast = useToast();
@@ -59,6 +59,13 @@ const ROE = () => {
 			expectedRecallDate: "Unknown",
 			reasonCode: "",
 			positions: [],
+			vacationPayCode: "",
+			vacationPayStartDate: null,
+			vacationPayEndDate: null,
+			vacationPayAmount: 0,
+			statHolidays: [],
+			otherMonies: [],
+			specialPayments: [],
 		},
 		employerInfo: {
 			name: "",
@@ -73,6 +80,7 @@ const ROE = () => {
 			preferredCommunication: "English",
 		},
 		earningsInfo: { totalInsurableHours: 0, totalInsurableEarnings: 0, earningsData: null },
+		comments: { message: "" },
 	};
 	const [formData, setFormData] = useState(initialFormData);
 	const [tabIndex, setTabIndex] = useState(0);
@@ -118,7 +126,7 @@ const ROE = () => {
 					},
 					earningsInfo: {
 						...prev.earningsInfo,
-						earningsData: earningsInfo,
+						earningsData: earningsInfo?.data,
 					},
 				}));
 			} catch (error) {
@@ -141,24 +149,47 @@ const ROE = () => {
 		fetchAllAdmins();
 	}, [formData?.empId]);
 
+	const handleFieldChange = (section, field, value) => {
+		if (field === "reasonCode") {
+			setFormData({
+				...formData,
+				[section]: {
+					...formData[section],
+					expectedRecallDate: "",
+					reasonCode: value,
+				},
+			});
+		} else {
+			setFormData({
+				...formData,
+				[section]: {
+					...formData[section],
+					[field]: value,
+				},
+			});
+		}
+	};
+
 	const ROE_TABS = [
 		{
 			name: "Employee Info",
-			content: <EmployeeInfo formData={formData} setFormData={setFormData} />,
+			content: <EmployeeInfo formData={formData} handleFieldChange={handleFieldChange} />,
 		},
 		{
 			name: "Employment Info",
 			content: (
 				<EmploymentInfo
 					formData={formData}
-					setFormData={setFormData}
 					payGroupSchedule={payGroupSchedule}
+					handleFieldChange={handleFieldChange}
 				/>
 			),
 		},
 		{
 			name: "Employer Info",
-			content: <EmployerInfo formData={formData} setFormData={setFormData} admins={admins} />,
+			content: (
+				<EmployerInfo formData={formData} admins={admins} handleFieldChange={handleFieldChange} />
+			),
 		},
 		{
 			name: "Earnings Info",
@@ -166,7 +197,13 @@ const ROE = () => {
 		},
 		{
 			name: "Review",
-			content: <ReviewInfo formData={formData} setFormData={setFormData} />,
+			content: (
+				<ReviewInfo
+					formData={formData}
+					setFormData={setFormData}
+					handleFieldChange={handleFieldChange}
+				/>
+			),
 		},
 	];
 	const isLastStep = tabIndex === ROE_TABS.length - 1;
@@ -239,12 +276,14 @@ const ROE = () => {
 				valueText={formData?.employee || ""}
 				handleChange={(e) => {
 					const { value } = e.target;
-					if (value)
-						setFormData(() => ({
+					if (value) {
+						setFormData({
+							...formData,
 							employee: value,
 							empId: employees?.find((_) => _.fullName === value)?._id,
 							companyName: company,
-						}));
+						});
+					}
 				}}
 				options={employees}
 			/>
@@ -280,7 +319,7 @@ const ROE = () => {
 					))}
 				</TabPanels>
 			</Tabs>
-			<HStack spacing={4} justify="end" w={0.89}>
+			<HStack spacing={4} justify="end">
 				{tabIndex > 0 && (
 					<Button
 						leftIcon={<FaChevronLeft />}

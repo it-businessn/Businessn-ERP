@@ -17,7 +17,6 @@ import { tabScrollCss } from "erp-modules/payroll/onboard-user/customInfo";
 import moment from "moment";
 import { useEffect, useState } from "react";
 import { BiMerge } from "react-icons/bi";
-import PayrollService from "services/PayrollService";
 import { convertDecimal, getAmount } from "utils/convertAmt";
 
 const EarningsInfo = ({ formData, setFormData }) => {
@@ -27,11 +26,12 @@ const EarningsInfo = ({ formData, setFormData }) => {
 	const [set2, setSet2] = useState([]);
 	const [totalInsurableHours, setTotalInsurableHours] = useState(0);
 	const [totalInsurableEarnings, setTotalInsurableEarnings] = useState(0);
+
 	useEffect(() => {
-		if (!formData.earningsInfo?.earningsData) {
+		if (!formData?.earningsInfo?.earningsData) {
 			return;
 		}
-		formData.earningsInfo?.earningsData?.map(
+		formData?.earningsInfo?.earningsData?.map(
 			(_) =>
 				(_.insurableHours =
 					_?.totalRegHoursWorked +
@@ -56,7 +56,7 @@ const EarningsInfo = ({ formData, setFormData }) => {
 		}, 0);
 		setTotalInsurableEarnings(totalEarnings);
 		setEarningsData(formData.earningsInfo?.earningsData);
-	}, [formData.earningsInfo?.earningsData]);
+	}, [formData?.earningsInfo?.earningsData]);
 
 	useEffect(() => {
 		if (totalInsurableEarnings || totalInsurableHours)
@@ -94,7 +94,7 @@ const EarningsInfo = ({ formData, setFormData }) => {
 		<Flex height="100%">
 			<Box overflowY="auto" css={tabScrollCss}>
 				<Stack spacing={3} p={5}>
-					<TextTitle size="xl" title="Period Information" />
+					<TextTitle size="xl" title="Earnings Information" />
 					<HStack
 						spacing={3}
 						justifyContent="space-between"
