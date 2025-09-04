@@ -35,6 +35,7 @@ const SelectFormControl = ({
 							key={_?.value || _[valueParam] || _}
 							value={_[valueParam] || _}
 							style={{ color: isPayType && getPayTypeStyle(_[name]).color }}
+							disabled={_?.disabled}
 						>
 							{_?.name || _[name] || _}
 						</option>

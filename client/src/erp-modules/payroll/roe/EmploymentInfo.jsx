@@ -27,6 +27,15 @@ import { getDefaultDate } from "utils/convertDate";
 
 const EmploymentInfo = ({ formData, setFormData, payGroupSchedule }) => {
 	const [subStep, setSubStep] = useState(0);
+	const RECALL_OPTIONS_WITH_DISABLED = RECALL_OPTIONS.map((opt) => {
+		if (
+			opt.name?.startsWith("Y") &&
+			["E", "G", "M"].some((prefix) => formData?.employmentInfo?.reasonCode?.startsWith(prefix))
+		) {
+			return { ...opt, disabled: true };
+		}
+		return opt;
+	});
 
 	useEffect(() => {
 		const finalPayPeriodRecord = payGroupSchedule?.find(
@@ -47,13 +56,24 @@ const EmploymentInfo = ({ formData, setFormData, payGroupSchedule }) => {
 	}, [formData?.employmentInfo?.employmentLeaveDate]);
 
 	const handleFieldChange = (section, field, value) => {
-		setFormData({
-			...formData,
-			[section]: {
-				...formData[section],
-				[field]: value,
-			},
-		});
+		if (field === "reasonCode") {
+			setFormData({
+				...formData,
+				[section]: {
+					...formData[section],
+					expectedRecallDate: "",
+					reasonCode: value,
+				},
+			});
+		} else {
+			setFormData({
+				...formData,
+				[section]: {
+					...formData[section],
+					[field]: value,
+				},
+			});
+		}
 	};
 
 	const subSteps = [
@@ -167,15 +187,29 @@ const EmploymentInfo = ({ formData, setFormData, payGroupSchedule }) => {
 							/>
 							<SelectFormControl
 								valueParam="name"
+								name="reasonCode"
+								label="Reason Code"
+								placeholder="Select reason"
+								valueText={formData?.employmentInfo?.reasonCode || ""}
+								handleChange={(e) =>
+									e.target.value &&
+									handleFieldChange("employmentInfo", "reasonCode", e.target.value)
+								}
+								options={REASON_CODE}
+							/>
+						</HStack>
+						<HStack>
+							<SelectFormControl
+								valueParam="name"
 								name="expectedRecallDate"
 								label="Expected Date of Recall"
 								valueText={formData?.employmentInfo?.expectedRecallDate || ""}
 								handleChange={(e) =>
 									handleFieldChange("employmentInfo", "expectedRecallDate", e.target.value)
 								}
-								options={RECALL_OPTIONS}
+								options={RECALL_OPTIONS_WITH_DISABLED}
 							/>
-							{formData?.employmentInfo?.expectedRecallDate === "Return Date" && (
+							{formData?.employmentInfo?.expectedRecallDate?.startsWith("Y") && (
 								<DateTimeFormControl
 									required
 									label="Recall Date"
@@ -191,17 +225,6 @@ const EmploymentInfo = ({ formData, setFormData, payGroupSchedule }) => {
 								/>
 							)}
 						</HStack>
-						<SelectFormControl
-							valueParam="name"
-							name="reasonCode"
-							label="Reason Code"
-							placeholder="Select reason"
-							valueText={formData?.employmentInfo?.reasonCode || ""}
-							handleChange={(e) =>
-								e.target.value && handleFieldChange("employmentInfo", "reasonCode", e.target.value)
-							}
-							options={REASON_CODE}
-						/>
 					</Stack>
 				)}
 			</Box>
