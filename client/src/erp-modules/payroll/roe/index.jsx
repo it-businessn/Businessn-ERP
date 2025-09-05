@@ -24,7 +24,7 @@ import { generatePayPeriodId } from "utils/convertDate";
 import EarningsInfo from "./EarningsInfo";
 import EmployeeInfo from "./employee-info/EmployeeInfo";
 import EmployerInfo from "./employer-info/EmployerInfo";
-import EmploymentInfo from "./employment-info/EmploymentInfo";
+import EmploymentInfo, { employeeSubSteps } from "./employment-info/EmploymentInfo";
 import ReviewInfo from "./review/ReviewInfo";
 
 const ROE = () => {
@@ -34,6 +34,7 @@ const ROE = () => {
 	const { closestRecord, payGroupSchedule, selectedPayGroupOption } = usePaygroup(company, false);
 	const employees = useCompanyEmployees(company, null, selectedPayGroupOption);
 	const [admins, setAdmins] = useState(null);
+	const [employmentSubStep, setEmploymentSubStep] = useState(0);
 
 	const initialFormData = {
 		companyName: company,
@@ -80,7 +81,7 @@ const ROE = () => {
 			contactExtNumber: "",
 			issuerTelNumber: "",
 			issuerExtNumber: "",
-			preferredCommunication: "English",
+			preferredCommunication: "E",
 		},
 		earningsInfo: { totalInsurableHours: 0, totalInsurableEarnings: 0, earningsData: null },
 		comments: { message: "" },
@@ -89,58 +90,6 @@ const ROE = () => {
 	const [tabIndex, setTabIndex] = useState(0);
 
 	useEffect(() => {
-		const fetchEmployeeInfo = async () => {
-			try {
-				const [profileRes, employmentRes, companyInfo, earningsInfo] = await Promise.all([
-					PayrollService.getEmployeeProfileInfo(company, formData?.empId),
-					PayrollService.getEmployeeEmploymentInfo(company, formData?.empId),
-					SettingService.getCompanyInfo(company),
-					PayrollService.getEmpEarningInfo(company, formData?.empId),
-				]);
-				//for emp saved roe info
-				// const { data } = await PayrollService.getEmployeeROEEmploymentInfo(company, roeEmpId);
-
-				setFormData((prev) => ({
-					...prev,
-					empInfo: {
-						...prev.empInfo,
-						firstName: profileRes?.data?.firstName,
-						lastName: profileRes?.data?.lastName,
-						middleName: profileRes?.data?.middleName,
-						SIN: profileRes?.data?.SIN,
-						SINIv: profileRes?.data?.SINIv,
-						streetAddress: profileRes?.data?.streetAddress,
-						streetAddressSuite: profileRes?.data?.streetAddressSuite,
-						city: profileRes?.data?.city,
-						province: profileRes?.data?.province,
-						country: profileRes?.data?.country,
-						postalCode: profileRes?.data?.postalCode,
-					},
-					employmentInfo: {
-						...prev.employmentInfo,
-						positions: employmentRes?.data?.positions,
-						employmentStartDate: employmentRes?.data?.employmentStartDate,
-						employmentLeaveDate: employmentRes?.data?.employmentLeaveDate,
-					},
-					employerInfo: {
-						...prev.employerInfo,
-						name: companyInfo?.data?.name,
-						registration_number: companyInfo?.data?.registration_number,
-						address: companyInfo?.data?.address,
-					},
-					earningsInfo: {
-						...prev.earningsInfo,
-						earningsData: earningsInfo?.data,
-					},
-				}));
-			} catch (error) {
-				console.error(error);
-			}
-		};
-
-		if (formData?.empId) {
-			fetchEmployeeInfo();
-		}
 		const fetchAllAdmins = async () => {
 			try {
 				const { data } = await UserService.getAllManagers(company);
@@ -151,6 +100,115 @@ const ROE = () => {
 			}
 		};
 		fetchAllAdmins();
+	}, []);
+
+	useEffect(() => {
+		const fetchEmployeeInfo = async () => {
+			try {
+				const { data } = await PayrollService.getEmployeeROEEmploymentInfo(
+					company,
+					formData?.empId,
+				);
+				if (data) {
+					setFormData({
+						...formData,
+						companyName: data?.companyName,
+						empId: data?.empId,
+						payPeriodType: data?.payPeriodType,
+						payPeriodId: data?.payPeriodId,
+						empInfo: {
+							firstName: data?.firstName,
+							lastName: data?.lastName,
+							middleName: data?.middleName,
+							SIN: data?.SIN,
+							SINIv: data?.SINIv,
+							streetAddress: data?.streetAddress,
+							streetAddressSuite: data?.streetAddressSuite,
+							city: data?.city,
+							province: data?.province,
+							country: data?.country,
+							postalCode: data?.postalCode,
+						},
+						employmentInfo: {
+							positions: data?.occupation,
+							employmentStartDate: data?.employmentStartDate,
+							employmentLeaveDate: data?.employmentLeaveDate,
+							finalPayPeriodEndDate: data?.finalPayPeriodEndDate,
+							recallDate: data?.recallDate,
+							expectedRecallDate: data?.expectedRecallDate,
+							reasonCode: data?.reasonCode,
+							vacationPayCode: data?.vacationPayCode,
+							vacationPayStartDate: data?.vacationPayStartDate,
+							vacationPayEndDate: data?.vacationPayEndDate,
+							vacationPayAmount: data?.vacationPayAmount,
+							statHolidays: data?.statHolidayPay,
+							otherMonies: data?.otherMoney,
+							specialPayments: data?.specialPayments,
+						},
+						employerInfo: {
+							name: data?.companyName,
+							registration_number: data?.registration_number,
+							address: data?.address,
+							contactName: data?.contactName,
+							issuerName: data?.issuerName,
+							contactTelNumber: data?.contactTelNumber,
+							contactExtNumber: data?.contactExtNumber,
+							issuerTelNumber: data?.issuerTelNumber,
+							issuerExtNumber: data?.issuerExtNumber,
+							preferredCommunication: data?.preferredCommunication,
+						},
+						earningsInfo: {
+							earningsData: data?.insurableEarnings,
+							totalInsurableHours: data?.totalInsurableHours,
+							totalInsurableEarnings: data?.totalInsurableEarnings,
+						},
+						comments: { message: data?.reviewComments },
+					});
+				} else {
+					const [profileRes, employmentRes, companyInfo, earningsInfo] = await Promise.all([
+						PayrollService.getEmployeeProfileInfo(company, formData?.empId),
+						PayrollService.getEmployeeEmploymentInfo(company, formData?.empId),
+						SettingService.getCompanyInfo(company),
+						PayrollService.getEmpEarningInfo(company, formData?.empId),
+					]);
+					setFormData({
+						...formData,
+						empInfo: {
+							firstName: profileRes?.data?.firstName,
+							lastName: profileRes?.data?.lastName,
+							middleName: profileRes?.data?.middleName,
+							SIN: profileRes?.data?.SIN,
+							SINIv: profileRes?.data?.SINIv,
+							streetAddress: profileRes?.data?.streetAddress,
+							streetAddressSuite: profileRes?.data?.streetAddressSuite,
+							city: profileRes?.data?.city,
+							province: profileRes?.data?.province,
+							country: profileRes?.data?.country,
+							postalCode: profileRes?.data?.postalCode,
+						},
+						employmentInfo: {
+							positions: employmentRes?.data?.positions,
+							employmentStartDate: employmentRes?.data?.employmentStartDate,
+							employmentLeaveDate: employmentRes?.data?.employmentLeaveDate,
+						},
+						employerInfo: {
+							name: companyInfo?.data?.name,
+							registration_number: companyInfo?.data?.registration_number,
+							address: companyInfo?.data?.address,
+						},
+						earningsInfo: {
+							earningsData: earningsInfo?.data,
+						},
+					});
+				}
+			} catch (error) {
+				console.error(error);
+			}
+		};
+
+		if (formData?.empId) {
+			fetchEmployeeInfo();
+		}
 	}, [formData?.empId]);
 
 	const handleFieldChange = (section, field, value) => {
@@ -183,6 +241,8 @@ const ROE = () => {
 			name: "Employment Info",
 			content: (
 				<EmploymentInfo
+					employmentSubStep={employmentSubStep}
+					setEmploymentSubStep={setEmploymentSubStep}
 					formData={formData}
 					payGroupSchedule={payGroupSchedule}
 					handleFieldChange={handleFieldChange}
@@ -239,12 +299,21 @@ const ROE = () => {
 		return <FaChevronRight />;
 	};
 
-	const getNextButtonAction = () => {
-		if (isLastStep) {
-			handleSubmit();
+	const handleNextTab = () => {
+		if (tabIndex === 0) {
+			setTabIndex(tabIndex + 1);
+		} else if (tabIndex === 1 && employmentSubStep < employeeSubSteps?.length - 1) {
+			setEmploymentSubStep(employmentSubStep + 1);
 		} else {
 			setTabIndex(tabIndex + 1);
 		}
+	};
+
+	const getNextButtonAction = () => {
+		if (isLastStep) {
+			return handleSubmit();
+		}
+		handleNextTab();
 	};
 
 	return (

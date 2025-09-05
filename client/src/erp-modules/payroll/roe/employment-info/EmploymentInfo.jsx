@@ -21,14 +21,19 @@ import { StatPayInfo } from "./StatPayInfo";
 import { TenureInfo } from "./TenureInfo";
 import { VacationPayInfo } from "./VacationPayInfo";
 
-const subSteps = [
+export const employeeSubSteps = [
 	{ title: "Tenure", description: "Personal Information" },
 	{ title: "Occupation", description: "Emergency details" },
 	{ title: "Final Pay", description: "Emergency details" },
 ];
 
-const EmploymentInfo = ({ formData, payGroupSchedule, handleFieldChange }) => {
-	const [subStep, setSubStep] = useState(0);
+const EmploymentInfo = ({
+	formData,
+	payGroupSchedule,
+	handleFieldChange,
+	employmentSubStep,
+	setEmploymentSubStep,
+}) => {
 	const [roeData, setRoeData] = useState({
 		statHolidays: [{ date: "", amount: "" }],
 		otherMonies: [{ code: "", startDate: "", endDate: "", amount: "" }],
@@ -83,12 +88,12 @@ const EmploymentInfo = ({ formData, payGroupSchedule, handleFieldChange }) => {
 				flex={0.2}
 				bg="gray.50"
 			>
-				<Stepper index={subStep} orientation="vertical" gap={8} sx={tabPanelStyleCss}>
-					{subSteps.map(({ title }, index) => (
+				<Stepper index={employmentSubStep} orientation="vertical" gap={8} sx={tabPanelStyleCss}>
+					{employeeSubSteps.map(({ title }, index) => (
 						<Step
 							key={`step_num_${title}`}
 							cursor="pointer"
-							onClick={() => setSubStep(index)}
+							onClick={() => setEmploymentSubStep(index)}
 							py={2}
 						>
 							<StepIndicator>
@@ -109,15 +114,15 @@ const EmploymentInfo = ({ formData, payGroupSchedule, handleFieldChange }) => {
 				</Stepper>
 			</Box>
 			<Box flex={{ base: 1, md: 0.7 }} overflowY="auto" css={tabScrollCss}>
-				{subStep === 0 && (
+				{employmentSubStep === 0 && (
 					<TenureInfo
 						payGroupSchedule={payGroupSchedule}
 						handleFieldChange={handleFieldChange}
 						formData={formData}
 					/>
 				)}
-				{subStep === 1 && <OccupationInfo formData={formData} />}
-				{subStep === 2 && (
+				{employmentSubStep === 1 && <OccupationInfo formData={formData} />}
+				{employmentSubStep === 2 && (
 					<Stack spacing={3} p={5}>
 						<FinalPayInfo handleFieldChange={handleFieldChange} formData={formData} />
 						<VacationPayInfo handleFieldChange={handleFieldChange} formData={formData} />
