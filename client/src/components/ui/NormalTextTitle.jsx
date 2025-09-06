@@ -21,8 +21,10 @@ const NormalTextTitle = ({
 	fontStyle,
 	flex,
 	h,
+	ml,
 }) => (
 	<TextTitle
+		ml={ml}
 		em={fontStyle}
 		textTransform={textTransform}
 		onClick={onClick}

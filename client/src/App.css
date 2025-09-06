@@ -104,7 +104,9 @@ html {
 table.pm-overview td {
 	border-color: #fff;
 }
-
+.roe-15c td {
+	padding: 5px;
+}
 .file-title {
 	width: 75%;
 	display: block;

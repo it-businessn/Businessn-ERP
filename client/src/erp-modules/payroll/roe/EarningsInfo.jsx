@@ -132,7 +132,7 @@ const EarningsInfo = ({ formData, setFormData }) => {
 											<Td py={1}>
 												<NormalTextTitle
 													align="center"
-													title={moment(payPeriodEndDate).format("YYYY-MM-DD")}
+													title={moment.utc(payPeriodEndDate).format("YYYY-MM-DD")}
 												/>
 											</Td>
 											<Td py={1}>

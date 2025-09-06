@@ -26,12 +26,14 @@ const TextTitle = ({
 	maxW,
 	h,
 	borderTop,
+	ml,
 }) => (
 	<Text
 		borderTop={borderTop}
 		textTransform={textTransform}
 		cursor={cursor}
 		mr={mr}
+		ml={ml}
 		onClick={onClick}
 		borderRadius={borderRadius}
 		bg={bg}

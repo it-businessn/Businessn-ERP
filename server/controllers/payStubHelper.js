@@ -33,6 +33,7 @@ const appendPrevPayInfoBalance = (prevPayPayInfo, newPayStub) => {
 		YTDFirstAidHoursWorked,
 		YTDRegPayTotal,
 		YTDRegPayTotal2,
+		YTDOverTimePayTotal,
 		YTDDblOverTimePayTotal,
 		YTDStatWorkPayTotal,
 		YTDStatPayTotal,
@@ -133,6 +134,10 @@ const appendPrevPayInfoBalance = (prevPayPayInfo, newPayStub) => {
 
 	prevPayPayInfo.YTDRegPayTotal = getSumTotal(prevPayPayInfo.YTDRegPayTotal, YTDRegPayTotal);
 	prevPayPayInfo.YTDRegPayTotal2 = getSumTotal(prevPayPayInfo.YTDRegPayTotal, YTDRegPayTotal2);
+	prevPayPayInfo.YTDOverTimePayTotal = getSumTotal(
+		prevPayPayInfo.YTDOverTimePayTotal,
+		YTDOverTimePayTotal,
+	);
 	prevPayPayInfo.YTDDblOverTimePayTotal = getSumTotal(
 		prevPayPayInfo.YTDDblOverTimePayTotal,
 		YTDDblOverTimePayTotal,
