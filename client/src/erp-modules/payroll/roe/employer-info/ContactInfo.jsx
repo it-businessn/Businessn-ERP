@@ -69,6 +69,7 @@ export const ContactInfo = ({ isReadOnly, handleFieldChange, formData, admins })
 								<Stack>
 									<TextTitle title="Contact Name" />
 									<SelectFormControl
+										placeholder={"Select Contact"}
 										valueParam="fullName"
 										name="fullName"
 										label=""
@@ -137,6 +138,7 @@ export const ContactInfo = ({ isReadOnly, handleFieldChange, formData, admins })
 								<TextTitle title="Issuer Name" />
 								{admins && (
 									<SelectFormControl
+										placeholder={"Select Issuer"}
 										valueParam="fullName"
 										name="fullName"
 										label=""

@@ -37,11 +37,24 @@ const PAGE_SIZES = {
 	a4: { label: "A4 ~794×1123", w: 794, h: 1123 },
 };
 
+const PAY_FREQUENCY_CODE = [
+	{ name: "Bi-weekly", code: "B" },
+	{ name: "Monthly", code: "M" },
+	{ name: "Monthly non-standard", code: "O" },
+	{ name: "Semi-monthly", code: "S" },
+	{ name: "Semi-monthly non-standard", code: "E" },
+	{ name: "Thirteen Pay Periods per year", code: "H" },
+	{ name: "Weekly", code: "W" },
+];
+
 const ReviewInfo = ({ formData, handleFieldChange, setFormData }) => {
 	const componentRef = useRef();
 	const [isPrintDisabled, setIsPrintDisabled] = useState(false);
 	const [reportFileName, setReportFileName] = useState(null);
-
+	// console.log("formData=", formData);
+	const PAY_PERIOD_TYPE = PAY_FREQUENCY_CODE?.find(
+		(_) => _.name?.toLocaleLowerCase() === formData?.payPeriodType?.toLocaleLowerCase(),
+	);
 	useEffect(() => {
 		setReportFileName("asf");
 	}, []);
@@ -114,23 +127,23 @@ const ReviewInfo = ({ formData, handleFieldChange, setFormData }) => {
 					<HStack>
 						<TextTitle size={"md"} align={"left"} title={"RECORD OF EMPLOYMENT (ROE)"} />
 						<Box w={"400px"} border={"1px solid"} pl={2}>
-							<NormalTextTitle size="xs" title={"UNIQUE IDENTIFIER"} />
+							<NormalTextTitle size="11px" title={"UNIQUE IDENTIFIER"} />
 						</Box>
-						<Box w={"120px"} border={"1px solid"} pl={2}>
-							<NormalTextTitle size="xs" title={"sad"} />
+						<Box w={"120px"} h={"18px"} border={"1px solid"} pl={2}>
+							{/* //<NormalTextTitle size="xs" title={" "} /> */}
 						</Box>
 					</HStack>
 					<HStack w={"100%"} spacing={0} alignItems={"self-start"} justifyContent={"space-between"}>
 						<Block1 />
 						<Block2 />
-						<Block3 />
+						<Block3 refNum="" />
 					</HStack>
 					<HStack spacing={0} alignItems={"self-start"} borderLeft={"1px solid"}>
 						<VStack flex={1} alignItems={"start"}>
-							<Block4 />
+							<Block4 companyInfo={formData?.employerInfo} />
 							<HStack w={"100%"} justifyContent={"space-between"}>
 								<Spacer />
-								<Block7 />
+								<Block7 companyInfo={formData?.employerInfo} />
 							</HStack>
 						</VStack>
 						<VStack
@@ -141,36 +154,54 @@ const ReviewInfo = ({ formData, handleFieldChange, setFormData }) => {
 							borderBottom={"0"}
 						>
 							<Box h={"17px"} w={"130px"} mt={"-17px"} ml={"-1px"} borderLeft={"1px solid"} />
-							<Block5 />
-							<Block6 />
-							<Block14 />
+							<Block5 accNum="" />
+							<Block6 payPeriod={PAY_PERIOD_TYPE} />
+							<Block14
+								recallDate={formData?.employmentInfo?.recallDate}
+								expectedRecallDate={formData?.employmentInfo?.expectedRecallDate}
+							/>
 						</VStack>
 						<VStack flex={0.5} borderRight="1px solid" alignItems={"self-start"}>
-							<Block8 />
-							<Block10 />
-							<Block11 />
-							<Block12 />
+							<Block8 sin={formData?.empInfo?.SIN} />
+							<Block10 firstDayWorked={formData?.employmentInfo?.employmentStartDate} />
+							<Block11 lastDayWorked={formData?.employmentInfo?.employmentLeaveDate} />
+							<Block12 finalPayPeriodEndDate={formData?.employmentInfo?.finalPayPeriodEndDate} />
 							<Block13 />
 						</VStack>
 					</HStack>
 
 					<HStack alignItems={"self-start"} spacing={0}>
 						<VStack border="1px solid" flex={1} alignItems={"self-start"}>
-							<Block9 />
-							<Block16 />
-							<Block17 />
-							<Block18 />
-							<Block19 />
+							<Block9 empInfo={formData?.empInfo} />
+							<Block16
+								reasonCode={formData?.employmentInfo?.reasonCode}
+								contactName={formData?.employerInfo?.contactName}
+								contactNumber={formData?.employerInfo?.contactTelNumber}
+							/>
+							<Block17
+								vacationPayCode={formData?.employmentInfo?.vacationPayCode}
+								vacationPayAmount={formData?.employmentInfo?.vacationPayAmount}
+								vacationPayStartDate={formData?.employmentInfo?.vacationPayStartDate}
+								vacationPayEndDate={formData?.employmentInfo?.vacationPayEndDate}
+								statHolidays={formData?.employmentInfo?.statHolidays}
+								otherMonies={formData?.employmentInfo?.otherMonies}
+							/>
+							<Block18 comments={formData?.comments?.message} />
+							<Block19 specialPayments={formData?.employmentInfo?.specialPayments} />
 							<HStack borderTop="1px solid" w={"100%"}>
-								<Block20 /> <Block21 />
+								<Block20 preferredCommunication={formData?.employerInfo?.preferredCommunication} />{" "}
+								<Block21 issuerTelNumber={formData?.employerInfo?.issuerTelNumber} />
 							</HStack>
 
-							<Block22 />
+							<Block22
+								issuerName={formData?.employerInfo?.issuerName}
+								dateIssued={formData?.dateIssued}
+							/>
 						</VStack>
 						<VStack flex={1} border="1px solid" borderLeft={0} alignItems={"self-start"}>
-							<Block15a />
-							<Block15b />
-							<Block15c />
+							<Block15a hours={formData?.earningsInfo?.totalInsurableHours} />
+							<Block15b amt={formData?.earningsInfo?.totalInsurableEarnings} />
+							<Block15c earningsInfo={formData?.earningsInfo?.earningsData} />
 						</VStack>
 					</HStack>
 					{/* </Flex> */}

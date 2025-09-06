@@ -18,7 +18,6 @@ import { useEffect, useState } from "react";
 import { FaChevronLeft, FaChevronRight, FaSave } from "react-icons/fa";
 import LocalStorageService from "services/LocalStorageService";
 import PayrollService from "services/PayrollService";
-import SettingService from "services/SettingService";
 import UserService from "services/UserService";
 import { generatePayPeriodId } from "utils/convertDate";
 import EarningsInfo from "./EarningsInfo";
@@ -60,7 +59,7 @@ const ROE = () => {
 			employmentLeaveDate: "",
 			finalPayPeriodEndDate: "",
 			recallDate: "",
-			expectedRecallDate: "Unknown",
+			expectedRecallDate: "",
 			reasonCode: "",
 			positions: [],
 			vacationPayCode: "",
@@ -72,11 +71,9 @@ const ROE = () => {
 			specialPayments: [],
 		},
 		employerInfo: {
-			name: "",
-			registration_number: "",
-			address: "",
-			contactName: loggedInUser?.fullName,
-			issuerName: loggedInUser?.fullName,
+			name: loggedInUser?.companyId?.name,
+			registration_number: loggedInUser?.companyId?.registration_number,
+			address: loggedInUser?.companyId?.address,
 			contactTelNumber: "",
 			contactExtNumber: "",
 			issuerTelNumber: "",
@@ -85,6 +82,7 @@ const ROE = () => {
 		},
 		earningsInfo: { totalInsurableHours: 0, totalInsurableEarnings: 0, earningsData: null },
 		comments: { message: "" },
+		dateIssued: "",
 	};
 	const [formData, setFormData] = useState(initialFormData);
 	const [tabIndex, setTabIndex] = useState(0);
@@ -92,7 +90,7 @@ const ROE = () => {
 	useEffect(() => {
 		const fetchAllAdmins = async () => {
 			try {
-				const { data } = await UserService.getAllManagers(company);
+				const { data } = await UserService.getAllAdmin(company);
 				data?.map((emp) => (emp.fullName = emp?.empId?.fullName));
 				setAdmins(data);
 			} catch (error) {
@@ -112,6 +110,7 @@ const ROE = () => {
 				if (data) {
 					setFormData({
 						...formData,
+						dateIssued: data?.createdOn,
 						companyName: data?.companyName,
 						empId: data?.empId,
 						payPeriodType: data?.payPeriodType,
@@ -146,9 +145,7 @@ const ROE = () => {
 							specialPayments: data?.specialPayments,
 						},
 						employerInfo: {
-							name: data?.companyName,
-							registration_number: data?.registration_number,
-							address: data?.address,
+							...formData.employerInfo,
 							contactName: data?.contactName,
 							issuerName: data?.issuerName,
 							contactTelNumber: data?.contactTelNumber,
@@ -165,14 +162,12 @@ const ROE = () => {
 						comments: { message: data?.reviewComments },
 					});
 				} else {
-					const [profileRes, employmentRes, companyInfo, earningsInfo] = await Promise.all([
+					const [profileRes, employmentRes, earningsInfo] = await Promise.all([
 						PayrollService.getEmployeeProfileInfo(company, formData?.empId),
 						PayrollService.getEmployeeEmploymentInfo(company, formData?.empId),
-						SettingService.getCompanyInfo(company),
 						PayrollService.getEmpEarningInfo(company, formData?.empId),
 					]);
 					setFormData({
-						...formData,
 						empInfo: {
 							firstName: profileRes?.data?.firstName,
 							lastName: profileRes?.data?.lastName,
@@ -192,9 +187,9 @@ const ROE = () => {
 							employmentLeaveDate: employmentRes?.data?.employmentLeaveDate,
 						},
 						employerInfo: {
-							name: companyInfo?.data?.name,
-							registration_number: companyInfo?.data?.registration_number,
-							address: companyInfo?.data?.address,
+							name: loggedInUser?.companyId?.name,
+							registration_number: loggedInUser?.companyId?.registration_number,
+							address: loggedInUser?.companyId?.address,
 						},
 						earningsInfo: {
 							earningsData: earningsInfo?.data,

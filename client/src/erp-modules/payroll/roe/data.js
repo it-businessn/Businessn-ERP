@@ -212,16 +212,6 @@ export const OTHER_MONIES_OPTIONS = [
 	},
 ];
 
-const PAY_FREQUENCY_CODE = [
-	{ name: "Bi-weekly", code: "B" },
-	{ name: "Monthly", code: "M" },
-	{ name: "Monthly non-standard", code: "O" },
-	{ name: "Semi-monthly", code: "S" },
-	{ name: "Semi-monthly non-standard", code: "E" },
-	{ name: "Thirteen Pay Periods per year", code: "H" },
-	{ name: "Weekly", code: "W" },
-];
-
 export const REASON_CODE = [
 	{
 		name: "AOO - Shortage of Work / End of Contract or Season",

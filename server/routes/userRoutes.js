@@ -15,6 +15,8 @@ router.get("/not-managers-list/:companyName", userController.getAllSalesAgentsLi
 
 router.get("/comp-managers/:companyName", userController.getAllCompManagers);
 
+router.get("/admin/:companyName", userController.getAllAdmin);
+
 router.get("/managers/:companyName", userController.getAllManagers);
 
 router.get("/emp/:companyName", userController.getCompanyEmpEmployees);

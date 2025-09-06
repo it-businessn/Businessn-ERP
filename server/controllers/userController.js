@@ -332,7 +332,20 @@ const getAllCompManagers = async (req, res) => {
 		res.status(404).json({ error: error.message });
 	}
 };
-
+const getAllAdmin = async (req, res) => {
+	const { companyName } = req.params;
+	try {
+		const result = await findEmployee({
+			companyName,
+			employmentRole: {
+				$in: [ROLES.AUTH_ADMINISTRATOR, ROLES.ADMINISTRATOR],
+			},
+		});
+		res.status(200).json(result);
+	} catch (error) {
+		res.status(404).json({ error: error.message });
+	}
+};
 const getAllManagers = async (req, res) => {
 	const { companyName } = req.params;
 	try {
@@ -752,6 +765,7 @@ module.exports = {
 	groupEmployeesByRole,
 	getAllGroupMembers,
 	getAllManagers,
+	getAllAdmin,
 	getAllSalesAgents,
 	updateUser,
 	updateUserAssignedLeads,
