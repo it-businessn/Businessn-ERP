@@ -264,7 +264,7 @@ const findAdditionalSuperficialAmountAllocatedInfo = async (record) =>
 			select: ["fullName"],
 		})
 		.select(
-			"empId regPayAmtSuperficial OTPayAmtSuperficial dblOTPayAmtSuperficial statPayAmtSuperficial statWorkPayAmtSuperficial vacationPayAmtSuperficial sickPayAmtSuperficial totalSuperficialAmountAllocated commissionSuperficial bonusSuperficial retroactiveSuperficial reimbursementSuperficial terminationPayoutSuperficial vacationPayoutSuperficial vacationBalAdjustSuperficial vacationAccrualSuperficial vacationUsedSuperficial federalTaxSuperficial provTaxSuperficial incomeTaxSuperficial",
+			"empId regPayAmtSuperficial OTPayAmtSuperficial dblOTPayAmtSuperficial statPayAmtSuperficial statWorkPayAmtSuperficial vacationPayAmtSuperficial sickPayAmtSuperficial totalSuperficialAmountAllocated pILBenefitPaySuperficial commissionSuperficial bonusSuperficial retroactiveSuperficial reimbursementSuperficial terminationPayoutSuperficial vacationPayoutSuperficial vacationBalAdjustSuperficial vacationAccrualSuperficial vacationUsedSuperficial federalTaxSuperficial provTaxSuperficial incomeTaxSuperficial",
 		);
 
 module.exports = {

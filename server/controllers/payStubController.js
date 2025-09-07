@@ -395,13 +395,6 @@ const buildPayStubDetails = async (
 		false,
 		scheduleFrequency,
 	);
-	const currentPayInfo = await findPayStub(
-		payPeriod,
-		companyName,
-		empId,
-		isExtraRun ? isExtraRun : false,
-		scheduleFrequency,
-	);
 
 	const runBalances = async () => {
 		for (const chequeType of empAdditionalDataAllocated?.chequesType || []) {
@@ -452,8 +445,21 @@ const buildPayStubDetails = async (
 			}
 
 			if (newPayStub) {
-				newPayStub.scheduleFrequency = scheduleFrequency;
-				await addPayStub(newPayStub);
+				const separateChequeExists = await EmployeePayStub.findOne({
+					payPeriodNum: payPeriod,
+					companyName,
+					empId,
+					// isExtraRun:,
+					scheduleFrequency,
+					reportType: newPayStub.reportType,
+				});
+				if (separateChequeExists?.scheduleFrequency) {
+					newPayStub.scheduleFrequency = separateChequeExists.scheduleFrequency;
+					await updatePayStub(separateChequeExists._id, newPayStub);
+				} else {
+					newPayStub.scheduleFrequency = scheduleFrequency;
+					await addPayStub(newPayStub);
+				}
 				prevPayPayInfo = appendPrevPayInfoBalance(prevPayPayInfo, newPayStub);
 			}
 		}
@@ -474,6 +480,13 @@ const buildPayStubDetails = async (
 			isExtraRun,
 			payStubInfoData,
 			prevPayPayInfo,
+		);
+		const currentPayInfo = await findPayStub(
+			payPeriod,
+			companyName,
+			empId,
+			isExtraRun ? isExtraRun : false,
+			scheduleFrequency,
 		);
 		if (currentPayInfo?.scheduleFrequency) {
 			updatedPayStub.scheduleFrequency = currentPayInfo.scheduleFrequency;

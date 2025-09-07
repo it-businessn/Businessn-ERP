@@ -391,6 +391,11 @@ export const SUPERFICIAL_AMT_ALLOCATE_COLS = [
 		pair: "incomeTaxSuperficial",
 		isEditable: true,
 	},
+	{
+		key: "PIL Benefit $",
+		pair: "pILBenefitPaySuperficial",
+		isEditable: true,
+	},
 	// {
 	// 	key: "",
 	// 	pair: <OutlineButton size="xs" name="setup" label="View Balances" mr={3} />,

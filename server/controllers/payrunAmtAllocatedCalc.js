@@ -205,6 +205,7 @@ const calcSuperficialAggregatedAmount = async (
 	if (result) {
 		const {
 			commissionSuperficial,
+			pILBenefitPaySuperficial,
 			bonusSuperficial,
 			retroactiveSuperficial,
 			reimbursementSuperficial,
@@ -226,8 +227,9 @@ const calcSuperficialAggregatedAmount = async (
 		} = result;
 
 		if (!result.totalSuperficialAmountAllocated) {
-			const regSumHrs =
+			const regSumAmt =
 				commissionSuperficial +
+				pILBenefitPaySuperficial +
 				bonusSuperficial +
 				retroactiveSuperficial +
 				reimbursementSuperficial +
@@ -246,7 +248,7 @@ const calcSuperficialAggregatedAmount = async (
 				statWorkPayAmtSuperficial +
 				vacationPayAmtSuperficial +
 				sickPayAmtSuperficial;
-			result.totalSuperficialAmountAllocated = regSumHrs;
+			result.totalSuperficialAmountAllocated = regSumAmt;
 		}
 		aggregatedResult.push(result);
 	} else {
@@ -378,7 +380,7 @@ const findAdditionalSuperficialAmountAllocatedInfo = async (record) =>
 			select: ["fullName"],
 		})
 		.select(
-			"empId regPayAmtSuperficial OTPayAmtSuperficial dblOTPayAmtSuperficial statPayAmtSuperficial statWorkPayAmtSuperficial vacationPayAmtSuperficial sickPayAmtSuperficial totalSuperficialAmountAllocated commissionSuperficial bonusSuperficial retroactiveSuperficial reimbursementSuperficial terminationPayoutSuperficial vacationPayoutSuperficial vacationBalAdjustSuperficial vacationAccrualSuperficial vacationUsedSuperficial federalTaxSuperficial provTaxSuperficial incomeTaxSuperficial",
+			"empId regPayAmtSuperficial OTPayAmtSuperficial dblOTPayAmtSuperficial statPayAmtSuperficial statWorkPayAmtSuperficial vacationPayAmtSuperficial sickPayAmtSuperficial totalSuperficialAmountAllocated pILBenefitPaySuperficial commissionSuperficial bonusSuperficial retroactiveSuperficial reimbursementSuperficial terminationPayoutSuperficial vacationPayoutSuperficial vacationBalAdjustSuperficial vacationAccrualSuperficial vacationUsedSuperficial federalTaxSuperficial provTaxSuperficial incomeTaxSuperficial",
 		);
 
 module.exports = {

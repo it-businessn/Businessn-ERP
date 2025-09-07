@@ -13,6 +13,7 @@ import {
 	VStack,
 } from "@chakra-ui/react";
 import moment from "moment";
+import { useEffect, useState } from "react";
 
 export const Block1 = () => {
 	return (
@@ -21,6 +22,7 @@ export const Block1 = () => {
 		</Box>
 	);
 };
+
 export const Block2 = () => {
 	return (
 		<Box flex={1} pl={1} border="1px solid" borderRight={0}>
@@ -28,6 +30,7 @@ export const Block2 = () => {
 		</Box>
 	);
 };
+
 export const Block3 = ({ refNum }) => {
 	return (
 		<VStack alignItems={"start"} spacing={0.5} pl={1} flex={1} border="1px solid">
@@ -39,6 +42,7 @@ export const Block3 = ({ refNum }) => {
 		</VStack>
 	);
 };
+
 export const Block4 = ({ companyInfo }) => {
 	return (
 		<Box>
@@ -60,6 +64,7 @@ export const Block4 = ({ companyInfo }) => {
 		</Box>
 	);
 };
+
 export const Block5 = ({ accNum }) => {
 	return (
 		<Box pl={1} pt={1} pb={0.95}>
@@ -70,6 +75,7 @@ export const Block5 = ({ accNum }) => {
 		</Box>
 	);
 };
+
 export const Block6 = ({ payPeriod }) => {
 	return (
 		<Box p={1} w={"100%"} borderTop={"1px solid"}>
@@ -80,6 +86,7 @@ export const Block6 = ({ payPeriod }) => {
 		</Box>
 	);
 };
+
 export const Block7 = ({ companyInfo }) => {
 	return (
 		<Box flex={0.7} borderTop="1px solid" p={1} pt={0.8} pb={0} borderLeft="1px solid">
@@ -87,6 +94,7 @@ export const Block7 = ({ companyInfo }) => {
 		</Box>
 	);
 };
+
 export const Block8 = ({ sin }) => {
 	return (
 		<Box w={"100%"} pl={1}>
@@ -97,6 +105,7 @@ export const Block8 = ({ sin }) => {
 		</Box>
 	);
 };
+
 export const Block9 = ({ empInfo }) => {
 	return (
 		<Box pl={1}>
@@ -118,6 +127,7 @@ export const Block9 = ({ empInfo }) => {
 		</Box>
 	);
 };
+
 export const Block10 = ({ firstDayWorked }) => {
 	const day = moment.utc(firstDayWorked).date();
 	const month = moment.utc(firstDayWorked).month();
@@ -144,6 +154,7 @@ export const Block10 = ({ firstDayWorked }) => {
 		</Box>
 	);
 };
+
 export const Block11 = ({ lastDayWorked }) => {
 	const day = moment.utc(lastDayWorked).date();
 	const month = moment.utc(lastDayWorked).month();
@@ -170,6 +181,7 @@ export const Block11 = ({ lastDayWorked }) => {
 		</Box>
 	);
 };
+
 export const Block12 = ({ finalPayPeriodEndDate }) => {
 	const day = moment.utc(finalPayPeriodEndDate).date();
 	const month = moment.utc(finalPayPeriodEndDate).month();
@@ -196,6 +208,7 @@ export const Block12 = ({ finalPayPeriodEndDate }) => {
 		</Box>
 	);
 };
+
 export const Block13 = () => {
 	return (
 		<Box borderTop="1px solid" w={"100%"} pl={1}>
@@ -203,6 +216,7 @@ export const Block13 = () => {
 		</Box>
 	);
 };
+
 export const Block14 = ({ recallDate, expectedRecallDate }) => {
 	const day = moment.utc(recallDate).date();
 	const month = moment.utc(recallDate).month();
@@ -229,6 +243,7 @@ export const Block14 = ({ recallDate, expectedRecallDate }) => {
 		</Box>
 	);
 };
+
 export const Block15a = ({ hours }) => {
 	return (
 		<Box pl={1} w={"100%"}>
@@ -239,6 +254,7 @@ export const Block15a = ({ hours }) => {
 		</Box>
 	);
 };
+
 export const Block15b = ({ amt }) => {
 	return (
 		<Box borderTop="1px solid" w={"100%"} pl={1}>
@@ -249,7 +265,61 @@ export const Block15b = ({ amt }) => {
 		</Box>
 	);
 };
-export const Block15c = ({ earningsInfo }) => {
+
+export const Block15c = ({ earningsData, payPeriod }) => {
+	const [set1, setSet1] = useState([]);
+	const [set2, setSet2] = useState([]);
+
+	useEffect(() => {
+		if (earningsData?.length) {
+			const evenRecords = [];
+			const oddRecords = [];
+			let evenIndex = 1;
+			let oddIndex = 2;
+			// earningsData.forEach((record, index) => {
+			// 	if (index % 2 === 0) {
+			// 		evenRecords.push({ ...record, newIndex: evenIndex });
+			// 		evenIndex += 2;
+			// 	} else {
+			// 		oddRecords.push({ ...record, newIndex: oddIndex });
+			// 		oddIndex += 2;
+			// 	}
+			// });
+			// const totalPayPeriod = payPeriod.totalPayPeriod;
+			const totalPayPeriod = 53;
+			const createBlankRecord = (index) => {
+				return {
+					insurableHours: null,
+					payPeriodNum: null,
+					payPeriodEndDate: null,
+					currentGrossPay: null,
+					newIndex: index,
+				};
+			};
+			for (let i = 0; i < totalPayPeriod; i++) {
+				const record = earningsData[i];
+
+				if (i % 2 === 0) {
+					if (record) {
+						evenRecords.push({ ...record, newIndex: evenIndex });
+					} else {
+						evenRecords.push(createBlankRecord(evenIndex));
+					}
+					evenIndex += 2;
+				} else {
+					if (record) {
+						oddRecords.push({ ...record, newIndex: oddIndex });
+					} else {
+						oddRecords.push(createBlankRecord(oddIndex));
+					}
+					oddIndex += 2;
+				}
+			}
+			setSet1(evenRecords);
+			setSet2(oddRecords);
+		}
+	}, [earningsData]);
+
 	return (
 		<HStack w={"100%"} border="1px solid" spacing={1}>
 			<Table
@@ -307,400 +377,24 @@ export const Block15c = ({ earningsInfo }) => {
 					</Tr>
 				</Thead>
 				<Tbody>
-					<Tr>
-						<Td w={"30px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td w={"100px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td w={"80px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td w={"50px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-					</Tr>
-					{/* /delete */}
-					<Tr>
-						<Td w={"30px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td w={"100px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td w={"80px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td w={"50px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-					</Tr>
-					<Tr>
-						<Td w={"30px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td w={"100px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td w={"80px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td w={"50px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-					</Tr>
-					<Tr>
-						<Td w={"30px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td w={"100px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td w={"80px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td w={"50px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-					</Tr>
-					<Tr>
-						<Td w={"30px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td w={"100px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td w={"80px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td w={"50px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-					</Tr>
-					<Tr>
-						<Td w={"30px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td w={"100px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td w={"80px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td w={"50px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-					</Tr>
-					<Tr>
-						<Td w={"30px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td w={"100px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td w={"80px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td w={"50px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-					</Tr>
-					<Tr>
-						<Td w={"30px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td w={"100px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td w={"80px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td w={"50px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-					</Tr>
-					<Tr>
-						<Td w={"30px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td w={"100px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td w={"80px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td w={"50px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-					</Tr>
-					<Tr>
-						<Td w={"30px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td w={"100px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td w={"80px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td w={"50px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-					</Tr>
-					<Tr>
-						<Td w={"30px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td w={"100px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td w={"80px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td w={"50px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-					</Tr>
-					<Tr>
-						<Td w={"30px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td w={"100px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td w={"80px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td w={"50px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-					</Tr>
-					<Tr>
-						<Td w={"30px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td w={"100px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td w={"80px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td w={"50px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-					</Tr>
-					<Tr>
-						<Td w={"30px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td w={"100px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td w={"80px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td w={"50px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-					</Tr>
-					<Tr>
-						<Td w={"30px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td w={"100px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td w={"80px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td w={"50px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-					</Tr>
-					<Tr>
-						<Td w={"30px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td w={"100px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td w={"80px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td w={"50px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-					</Tr>
-					<Tr>
-						<Td w={"30px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td w={"100px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td w={"80px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td w={"50px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-					</Tr>
-					<Tr>
-						<Td w={"30px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td w={"100px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td w={"80px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td w={"50px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-					</Tr>
-					<Tr>
-						<Td w={"30px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td w={"100px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td w={"80px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td w={"50px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-					</Tr>
-					<Tr>
-						<Td w={"30px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td w={"100px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td w={"80px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td w={"50px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-					</Tr>
-					<Tr>
-						<Td w={"30px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td w={"100px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td w={"80px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td w={"50px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-					</Tr>
-					<Tr>
-						<Td w={"30px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td w={"100px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td w={"80px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td w={"50px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-					</Tr>
-					<Tr>
-						<Td w={"30px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td w={"100px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td w={"80px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td w={"50px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-					</Tr>
-					<Tr>
-						<Td w={"30px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td w={"100px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td w={"80px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td w={"50px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-					</Tr>
-					<Tr>
-						<Td w={"30px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td w={"100px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td w={"80px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td w={"50px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-					</Tr>
-					<Tr>
-						<Td w={"30px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td w={"100px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td w={"80px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td w={"50px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-					</Tr>
-					<Tr>
-						<Td w={"30px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td w={"100px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td w={"80px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td w={"50px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-					</Tr>
-					<Tr>
-						<Td w={"30px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td w={"100px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td w={"80px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td w={"50px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-					</Tr>
-					{/* /delete/ */}
+					{set1?.map(
+						({ payPeriodNum, payPeriodEndDate, currentGrossPay, insurableHours, newIndex }) => (
+							<Tr key={`${payPeriodNum}_${newIndex}`}>
+								<Td w={"30px"} border="1px solid black" textAlign="center">
+									{newIndex}
+								</Td>
+								<Td w={"100px"} border="1px solid black" textAlign="center">
+									{payPeriodEndDate && moment.utc(payPeriodEndDate).format("YYYY-MM-DD")}
+								</Td>
+								<Td w={"80px"} border="1px solid black" textAlign="center">
+									{currentGrossPay}
+								</Td>
+								<Td w={"50px"} border="1px solid black" textAlign="center">
+									{insurableHours}
+								</Td>
+							</Tr>
+						),
+					)}
 				</Tbody>
 			</Table>
 			<Table
@@ -758,405 +452,30 @@ export const Block15c = ({ earningsInfo }) => {
 					</Tr>
 				</Thead>
 				<Tbody>
-					<Tr>
-						<Td w={"30px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td w={"100px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td w={"80px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td w={"50px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-					</Tr>
-					{/* /delete */}
-					<Tr>
-						<Td w={"30px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td w={"100px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td w={"80px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td w={"50px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-					</Tr>
-					<Tr>
-						<Td w={"30px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td w={"100px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td w={"80px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td w={"50px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-					</Tr>
-					<Tr>
-						<Td w={"30px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td w={"100px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td w={"80px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td w={"50px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-					</Tr>
-					<Tr>
-						<Td w={"30px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td w={"100px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td w={"80px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td w={"50px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-					</Tr>
-					<Tr>
-						<Td w={"30px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td w={"100px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td w={"80px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td w={"50px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-					</Tr>
-					<Tr>
-						<Td w={"30px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td w={"100px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td w={"80px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td w={"50px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-					</Tr>
-					<Tr>
-						<Td w={"30px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td w={"100px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td w={"80px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td w={"50px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-					</Tr>
-					<Tr>
-						<Td w={"30px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td w={"100px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td w={"80px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td w={"50px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-					</Tr>
-					<Tr>
-						<Td w={"30px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td w={"100px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td w={"80px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td w={"50px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-					</Tr>
-					<Tr>
-						<Td w={"30px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td w={"100px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td w={"80px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td w={"50px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-					</Tr>
-					<Tr>
-						<Td w={"30px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td w={"100px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td w={"80px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td w={"50px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-					</Tr>
-					<Tr>
-						<Td w={"30px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td w={"100px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td w={"80px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td w={"50px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-					</Tr>
-					<Tr>
-						<Td w={"30px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td w={"100px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td w={"80px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td w={"50px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-					</Tr>
-					<Tr>
-						<Td w={"30px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td w={"100px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td w={"80px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td w={"50px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-					</Tr>
-					<Tr>
-						<Td w={"30px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td w={"100px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td w={"80px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td w={"50px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-					</Tr>
-					<Tr>
-						<Td w={"30px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td w={"100px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td w={"80px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td w={"50px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-					</Tr>
-					<Tr>
-						<Td w={"30px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td w={"100px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td w={"80px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td w={"50px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-					</Tr>
-					<Tr>
-						<Td w={"30px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td w={"100px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td w={"80px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td w={"50px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-					</Tr>
-					<Tr>
-						<Td w={"30px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td w={"100px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td w={"80px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td w={"50px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-					</Tr>
-					<Tr>
-						<Td w={"30px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td w={"100px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td w={"80px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td w={"50px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-					</Tr>
-					<Tr>
-						<Td w={"30px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td w={"100px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td w={"80px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td w={"50px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-					</Tr>
-					<Tr>
-						<Td w={"30px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td w={"100px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td w={"80px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td w={"50px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-					</Tr>
-					<Tr>
-						<Td w={"30px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td w={"100px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td w={"80px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td w={"50px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-					</Tr>
-					<Tr>
-						<Td w={"30px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td w={"100px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td w={"80px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td w={"50px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-					</Tr>
-					<Tr>
-						<Td w={"30px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td w={"100px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td w={"80px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td w={"50px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-					</Tr>
-					<Tr>
-						<Td w={"30px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td w={"100px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td w={"80px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td w={"50px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-					</Tr>
-					<Tr>
-						<Td p={0.5} w={"30px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td p={0.5} w={"100px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td p={0.5} w={"80px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-						<Td p={0.5} w={"50px"} border="1px solid black" textAlign="center">
-							1
-						</Td>
-					</Tr>
-					{/* /delete/ */}
+					{set2?.map(
+						({ payPeriodNum, payPeriodEndDate, currentGrossPay, insurableHours, newIndex }) => (
+							<Tr key={`${payPeriodNum}_${newIndex}`}>
+								<Td w={"30px"} border="1px solid black" textAlign="center">
+									{newIndex}
+								</Td>
+								<Td w={"100px"} border="1px solid black" textAlign="center">
+									{payPeriodEndDate && moment.utc(payPeriodEndDate).format("YYYY-MM-DD")}
+								</Td>
+								<Td w={"80px"} border="1px solid black" textAlign="center">
+									{currentGrossPay}
+								</Td>
+								<Td w={"50px"} border="1px solid black" textAlign="center">
+									{insurableHours}
+								</Td>
+							</Tr>
+						),
+					)}
 				</Tbody>
 			</Table>
 		</HStack>
 	);
 };
+
 export const Block16 = ({ reasonCode, contactName, contactNumber }) => {
 	return (
 		<Box borderTop="1px solid" w={"100%"} pl={1}>
@@ -1168,6 +487,7 @@ export const Block16 = ({ reasonCode, contactName, contactNumber }) => {
 		</Box>
 	);
 };
+
 export const Block17 = ({
 	vacationPayCode,
 	vacationPayAmount,
@@ -1246,6 +566,7 @@ export const Block18 = ({ comments }) => {
 		</Box>
 	);
 };
+
 export const Block19 = ({ specialPayments }) => {
 	return (
 		<Box borderTop="1px solid" w={"100%"} pl={1}>
@@ -1345,6 +666,7 @@ export const Block19 = ({ specialPayments }) => {
 		</Box>
 	);
 };
+
 export const Block20 = ({ preferredCommunication }) => {
 	return (
 		<Box flex={0.5} pl={1}>
@@ -1360,6 +682,7 @@ export const Block20 = ({ preferredCommunication }) => {
 		</Box>
 	);
 };
+
 export const Block21 = ({ issuerTelNumber }) => {
 	return (
 		<Box flex={0.5} borderLeft="1px solid" pl={1}>
@@ -1368,6 +691,7 @@ export const Block21 = ({ issuerTelNumber }) => {
 		</Box>
 	);
 };
+
 export const Block22 = ({ issuerName, dateIssued }) => {
 	return (
 		<Box borderTop="1px solid" w={"100%"} pl={1}>

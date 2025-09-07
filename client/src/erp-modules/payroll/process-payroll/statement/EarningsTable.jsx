@@ -25,6 +25,7 @@ const EarningsTable = ({ cols, rows, data, colBg, isNetSummary, isMobile }) => {
 							!name.includes("Provincial") &&
 							(name === "Regular" ||
 								name === "Net Pay" ||
+								data?.reportType == "4" ||
 								name.includes("Gross ") ||
 								data[currentTotal] > 0 ||
 								data[YTDHoursTotal] > 0 ||

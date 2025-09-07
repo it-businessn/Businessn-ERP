@@ -53,6 +53,7 @@ const addSeparateSuperficialCheque = async (
 		sickPayAmtSuperficial,
 		totalSuperficialAmountAllocated,
 		commissionSuperficial,
+		pILBenefitPaySuperficial,
 		bonusSuperficial,
 		retroactiveSuperficial,
 		reimbursementSuperficial,
@@ -87,6 +88,7 @@ const addSeparateSuperficialCheque = async (
 		sickPayAmtSuperficial +
 		vacationPayAmtSuperficial +
 		commissionSuperficial +
+		pILBenefitPaySuperficial +
 		retroactiveSuperficial +
 		vacationPayoutSuperficial +
 		bonusSuperficial +
@@ -130,10 +132,10 @@ const addSeparateSuperficialCheque = async (
 		sprayPay: 0,
 		firstAidPay: 0,
 		payInLieuPay: 0,
-		pILBenefitPay: 0,
 		bankedTimePay: 0,
 		regularByAmount: 0,
 
+		pILBenefitPay: pILBenefitPaySuperficial,
 		commission: commissionSuperficial,
 		retroactive: retroactiveSuperficial,
 		vacationPayout: vacationPayoutSuperficial,
@@ -148,6 +150,7 @@ const addSeparateSuperficialCheque = async (
 		incomeTax: incomeTaxSuperficial,
 		totalAmountAllocated: totalSuperficialAmountAllocated,
 
+		YTDBenefitPay: pILBenefitPaySuperficial,
 		YTDCommission: commissionSuperficial,
 		YTDRetroactive: retroactiveSuperficial,
 		YTDVacationPayout: vacationPayoutSuperficial,
@@ -246,7 +249,6 @@ const addSeparateSuperficialCheque = async (
 		YTDSprayPayTotal: 0,
 		YTDFirstAidPayTotal: 0,
 		YTDPayInLieuPay: 0,
-		YTDBenefitPay: 0,
 		YTDBankedTimePay: 0,
 		YTDRegularByAmount: 0,
 

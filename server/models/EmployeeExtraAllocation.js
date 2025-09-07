@@ -129,6 +129,7 @@ const employeeExtraAllocationSchema = new mongoose.Schema({
 	sickPayAmtManual: { type: Number, default: 0 },
 
 	commissionSuperficial: { type: Number, default: 0 },
+	pILBenefitPaySuperficial: { type: Number, default: 0 },
 	retroactiveSuperficial: { type: Number, default: 0 },
 	reimbursementSuperficial: { type: Number, default: 0 },
 	bonusSuperficial: { type: Number, default: 0 },

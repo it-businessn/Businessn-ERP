@@ -285,6 +285,7 @@ const addAmountAllocation = async (req, res) => {
 			sickPayAmtManual,
 
 			commissionSuperficial,
+			pILBenefitPaySuperficial,
 			bonusSuperficial,
 			retroactiveSuperficial,
 			reimbursementSuperficial,
@@ -375,6 +376,7 @@ const addAmountAllocation = async (req, res) => {
 			sickPayAmtManual,
 
 			commissionSuperficial,
+			pILBenefitPaySuperficial,
 			bonusSuperficial,
 			retroactiveSuperficial,
 			reimbursementSuperficial,

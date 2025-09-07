@@ -38,13 +38,13 @@ const PAGE_SIZES = {
 };
 
 const PAY_FREQUENCY_CODE = [
-	{ name: "Bi-weekly", code: "B" },
-	{ name: "Monthly", code: "M" },
-	{ name: "Monthly non-standard", code: "O" },
-	{ name: "Semi-monthly", code: "S" },
-	{ name: "Semi-monthly non-standard", code: "E" },
-	{ name: "Thirteen Pay Periods per year", code: "H" },
-	{ name: "Weekly", code: "W" },
+	{ name: "Bi-weekly", code: "B", totalPayPeriod: 27 },
+	{ name: "Monthly", code: "M", totalPayPeriod: 13 },
+	{ name: "Monthly non-standard", code: "O", totalPayPeriod: 13 },
+	{ name: "Semi-monthly", code: "S", totalPayPeriod: 25 },
+	{ name: "Semi-monthly non-standard", code: "E", totalPayPeriod: 25 },
+	{ name: "Thirteen Pay Periods per year", code: "H", totalPayPeriod: 14 },
+	{ name: "Weekly", code: "W", totalPayPeriod: 53 },
 ];
 
 const ReviewInfo = ({ formData, handleFieldChange, setFormData }) => {
@@ -201,7 +201,10 @@ const ReviewInfo = ({ formData, handleFieldChange, setFormData }) => {
 						<VStack flex={1} border="1px solid" borderLeft={0} alignItems={"self-start"}>
 							<Block15a hours={formData?.earningsInfo?.totalInsurableHours} />
 							<Block15b amt={formData?.earningsInfo?.totalInsurableEarnings} />
-							<Block15c earningsInfo={formData?.earningsInfo?.earningsData} />
+							<Block15c
+								earningsData={formData?.earningsInfo?.earningsData}
+								payPeriod={PAY_PERIOD_TYPE}
+							/>
 						</VStack>
 					</HStack>
 					{/* </Flex> */}
