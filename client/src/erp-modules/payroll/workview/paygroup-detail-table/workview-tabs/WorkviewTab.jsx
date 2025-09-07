@@ -57,7 +57,7 @@ const WorkviewTab = ({
 				<Tbody>
 					{(!data || data?.length === 0) && <EmptyRowRecord data={data} colSpan={cols.length} />}
 					{data?.map((row, index) => (
-						<Tr key={`${row?.empId?._id}_${index}`}>
+						<Tr key={`${row?.empId?._id}_${index}`} _hover={{ bg: "var(--phoneCall_bg_light)" }}>
 							{cols.map((col, colindex) => {
 								const fieldValue =
 									col.key === "" ? (
