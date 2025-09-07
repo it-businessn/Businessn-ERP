@@ -269,9 +269,9 @@ const calcEmpBenefits = (newEmpData, empBenefitInfoResult) => {
 
 const calcEmpAmtAllocation = (newEmpData, amtAllocated) => {
 	newEmpData.payInLieuPay = 0;
-	newEmpData.pILBenefitPay = 0;
 	newEmpData.bankedTimePay = 0;
 	newEmpData.regularByAmount = 0;
+	newEmpData.pILBenefitPay = convertHrsToFloat(amtAllocated?.pILBenefitPay);
 	newEmpData.commission = convertHrsToFloat(amtAllocated?.commission);
 	newEmpData.retroactive = convertHrsToFloat(amtAllocated?.retroactive);
 	newEmpData.vacationPayout = convertHrsToFloat(amtAllocated?.vacationPayout);

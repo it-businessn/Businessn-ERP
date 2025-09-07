@@ -58,6 +58,7 @@ const employeeExtraAllocationSchema = new mongoose.Schema({
 	createdOn: { type: Date, default: Date.now },
 	updatedOn: { type: Date, default: Date.now },
 
+	pILBenefitPay: { type: Number, default: 0 },
 	commission: { type: Number, default: 0 },
 	retroactive: { type: Number, default: 0 },
 	reimbursement: { type: Number, default: 0 },

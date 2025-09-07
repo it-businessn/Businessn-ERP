@@ -280,6 +280,7 @@ const calcRegularAggregatedAmount = async (
 			commission,
 			bonus,
 			retroactive,
+			pILBenefitPay,
 			reimbursement,
 			terminationPayout,
 			vacationPayout,
@@ -306,6 +307,7 @@ const calcRegularAggregatedAmount = async (
 				commission +
 				bonus +
 				retroactive +
+				pILBenefitPay +
 				reimbursement +
 				terminationPayout +
 				vacationPayout +
@@ -347,7 +349,7 @@ const findAdditionalRegularAmountAllocatedInfo = async (record) =>
 			select: ["fullName"],
 		})
 		.select(
-			"empId regPayAmt regPayAmt2 OTPayAmt dblOTPayAmt statPayAmt statWorkPayAmt vacationPayAmt personalDayPayAmt bereavementPayAmt sickPayAmt totalAmountAllocated commission bonus retroactive reimbursement terminationPayout vacationPayout vacationBalAdjust vacationAccrual vacationUsed federalTax provTax incomeTax",
+			"empId regPayAmt regPayAmt2 OTPayAmt dblOTPayAmt statPayAmt statWorkPayAmt pILBenefitPay vacationPayAmt personalDayPayAmt bereavementPayAmt sickPayAmt totalAmountAllocated commission bonus retroactive reimbursement terminationPayout vacationPayout vacationBalAdjust vacationAccrual vacationUsed federalTax provTax incomeTax",
 		);
 
 const findAdditionalPayoutAmountAllocatedInfo = async (record) =>
