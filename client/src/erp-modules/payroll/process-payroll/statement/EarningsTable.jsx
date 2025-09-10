@@ -1,9 +1,7 @@
 import { Tbody } from "@chakra-ui/react";
 import TableLayout from "components/ui/table/TableLayout";
 import React from "react";
-import { roundUpNumber } from "utils/convertAmt";
 import ItemRow from "../preview-reports/ItemRow";
-import { SUM_TOTALS } from "../preview-reports/data";
 
 const EarningsTable = ({ cols, rows, data, colBg, isNetSummary, isMobile }) => {
 	return (
@@ -20,49 +18,35 @@ const EarningsTable = ({ cols, rows, data, colBg, isNetSummary, isMobile }) => {
 			whiteSpace="wrap"
 		>
 			<Tbody>
-				{rows.map((lineItem) => {
-					const { isEarning, name, rate, totalHours, currentTotal, YTDTotal, YTDHoursTotal } =
-						lineItem;
-
-					lineItem.isTotals =
-						(!isNetSummary && SUM_TOTALS.find((_) => name.includes(_))) ||
-						(isNetSummary && name.includes("Net Pay")) ||
-						name.includes("Gross Earnings") ||
-						name.includes("Total Deductions");
-
-					lineItem.rate = roundUpNumber(data[rate]);
-					lineItem.totalHours = roundUpNumber(data[totalHours]);
-					lineItem.currentTotal = roundUpNumber(data[currentTotal]);
-					lineItem.YTDHoursTotal = roundUpNumber(data[YTDHoursTotal]);
-					lineItem.YTDTotal = roundUpNumber(data[YTDTotal]);
-
-					lineItem.isValid =
-						!name.includes("Federal") &&
-						!name.includes("Provincial") &&
-						(name === "Regular" ||
-							name === "Net Pay" ||
-							name.includes("Gross ") ||
-							lineItem.currentTotal > 0 ||
-							lineItem.YTDHoursTotal > 0 ||
-							lineItem.YTDTotal > 0);
-
-					return (
-						<React.Fragment key={name}>
-							{lineItem.isValid && (
-								<ItemRow
-									isTotals={lineItem.isTotals}
-									title={name}
-									isEarning={isEarning}
-									rate={lineItem.rate}
-									totalHours={lineItem.totalHours}
-									currentTotal={lineItem.currentTotal}
-									YTDTotal={lineItem.YTDTotal}
-									YTDHoursTotal={lineItem.YTDHoursTotal}
-								/>
-							)}
-						</React.Fragment>
-					);
-				})}
+				{rows.map(
+					({ name, rate, totalHours, currentTotal, YTDTotal, YTDHoursTotal, isEarning }) => {
+						const isValid =
+							!name.includes("Federal") &&
+							!name.includes("Provincial") &&
+							(name === "Regular" ||
+								name === "Net Pay" ||
+								name.includes("Gross ") ||
+								data[currentTotal] > 0 ||
+								data[YTDHoursTotal] > 0 ||
+								data[YTDTotal] > 0);
+						return (
+							<React.Fragment key={name}>
+								{isValid && (
+									<ItemRow
+										isNetSummary={isNetSummary}
+										title={name}
+										isEarning={isEarning}
+										rate={data[rate] ?? 0}
+										totalHours={data[totalHours] ?? 0}
+										currentTotal={data[currentTotal] ?? 0}
+										YTDTotal={data[YTDTotal] ?? 0}
+										YTDHoursTotal={data[YTDHoursTotal] ?? 0}
+									/>
+								)}
+							</React.Fragment>
+						);
+					},
+				)}
 			</Tbody>
 		</TableLayout>
 	);

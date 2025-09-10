@@ -239,8 +239,6 @@ const addSeparateManualCheque = async (
 		currentSickUsed: 0,
 		sickBalance: 0,
 
-		YTDVacationAccrued: getSumTotal(prevPayPayInfo?.YTDVacationAccrued, vacationAccrualManual),
-		YTDVacationUsed: getSumTotal(prevPayPayInfo?.YTDVacationUsed, vacationUsedManual),
 		YTDVacationBalanceFwd: getSumTotal(
 			prevPayPayInfo?.YTDVacationBalanceFwd,
 			vacationBalAdjustManual,
@@ -257,12 +255,39 @@ const addSeparateManualCheque = async (
 		YTDPrimaryDeposit: getSumTotal(prevPayPayInfo?.YTDPrimaryDeposit, 0),
 		YTDOtherDeductions: getSumTotal(prevPayPayInfo?.YTDOtherDeductions, 0),
 		YTDGrossPay: getSumTotal(prevPayPayInfo?.YTDGrossPay, grossSum),
-		YTDDeductionsTotal: getSumTotal(prevPayPayInfo?.YTDDeductionsTotal, deductionSum),
-		YTDNetPay: getSumTotal(prevPayPayInfo?.YTDNetPay, netPay),
 		YTDSickAccrued: getSumTotal(prevPayPayInfo?.YTDSickAccrued, 0),
 		YTDSickUsed: getSumTotal(prevPayPayInfo?.YTDSickUsed, 0),
 		YTDSickBalance: getSumTotal(prevPayPayInfo?.YTDSickBalance, 0),
 	};
+	const {
+		YTDEmployeePensionContributions,
+		YTDPrimaryDeposit,
+		YTDEmployeeHealthContributions,
+		YTDUnionDuesDeductions,
+		YTD_CPPDeductions,
+		YTD_EmployeeEIDeductions,
+		YTD_IncomeTaxDeductions,
+		YTDGrossPay,
+		YTDVacationPayout,
+		YTDVacationPayTotal,
+		YTDVacationBalance,
+	} = manualPayStub;
+
+	// YTDVacationAccrued: getSumTotal(prevPayPayInfo?.YTDVacationAccrued, vacationAccrualManual),
+	// YTDVacationUsed: getSumTotal(prevPayPayInfo?.YTDVacationUsed, vacationUsedManual),
+	manualPayStub.YTDVacationUsed = YTDVacationPayout + YTDVacationPayTotal;
+	manualPayStub.YTDVacationAccrued = YTDVacationBalance - manualPayStub.YTDVacationUsed;
+
+	manualPayStub.YTDDeductionsTotal =
+		YTDEmployeePensionContributions +
+		YTDPrimaryDeposit +
+		YTDEmployeeHealthContributions +
+		YTDUnionDuesDeductions +
+		YTD_CPPDeductions +
+		YTD_EmployeeEIDeductions +
+		YTD_IncomeTaxDeductions;
+	manualPayStub.YTDNetPay = YTDGrossPay - manualPayStub.YTDDeductionsTotal;
+
 	return manualPayStub;
 };
 

@@ -320,13 +320,6 @@ const buildPayStub = (
 
 		YTDGrossPay: getSumTotal(prevPayPayInfo?.YTDGrossPay || 0, currentGrossPay || 0),
 
-		YTDDeductionsTotal: getSumTotal(
-			prevPayPayInfo?.YTDDeductionsTotal || 0,
-			currentDeductionsTotal || 0,
-		),
-
-		YTDNetPay: getSumTotal(prevPayPayInfo?.YTDNetPay || 0, currentNetPay || 0),
-
 		YTDEmployerPensionContributions: getSumTotal(
 			prevPayPayInfo?.YTDEmployerPensionContributions,
 			currentEmployerPensionContributions,
@@ -339,14 +332,42 @@ const buildPayStub = (
 			prevPayPayInfo?.YTDEmployerContributions,
 			currentEmployerContributions,
 		),
-		YTDVacationAccrued: getSumTotal(prevPayPayInfo?.YTDVacationAccrued, currentVacationAccrued),
-		YTDVacationUsed: getSumTotal(prevPayPayInfo?.YTDVacationUsed, currentVacationUsed),
+		YTDVacationAccrued: getSumTotal(prevPayPayInfo?.YTDVacationAccrued, 0),
 		YTDVacationBalanceFwd: currentVacationBalanceFwd,
-		YTDVacationBalance: getSumTotal(prevPayPayInfo?.YTDVacationBalance, vacationBalance),
 		YTDSickAccrued: getSumTotal(prevPayPayInfo?.YTDSickAccrued, currentSickAccrued),
 		YTDSickUsed: getSumTotal(prevPayPayInfo?.YTDSickUsed, currentSickUsed),
 		YTDSickBalance: getSumTotal(prevPayPayInfo?.YTDSickBalance, sickBalance),
 	};
+	const {
+		YTDEmployeePensionContributions,
+		YTDPrimaryDeposit,
+		YTDEmployeeHealthContributions,
+		YTDUnionDuesDeductions,
+		YTD_CPPDeductions,
+		YTD_EmployeeEIDeductions,
+		YTD_IncomeTaxDeductions,
+		YTDGrossPay,
+		YTDVacationPayout,
+		YTDVacationPayTotal,
+		YTDVacationAccrued,
+	} = newPayStub;
+
+	// YTDVacationAccrued: getSumTotal(prevPayPayInfo?.YTDVacationAccrued, currentVacationAccrued),
+	// YTDVacationUsed: getSumTotal(prevPayPayInfo?.YTDVacationUsed, currentVacationUsed),
+	// YTDVacationBalance: getSumTotal(prevPayPayInfo?.YTDVacationBalance, vacationBalance),
+	newPayStub.YTDVacationUsed = YTDVacationPayout + YTDVacationPayTotal;
+	newPayStub.YTDVacationBalance = YTDVacationAccrued - newPayStub.YTDVacationUsed;
+
+	newPayStub.YTDDeductionsTotal =
+		YTDEmployeePensionContributions +
+		YTDPrimaryDeposit +
+		YTDEmployeeHealthContributions +
+		YTDUnionDuesDeductions +
+		YTD_CPPDeductions +
+		YTD_EmployeeEIDeductions +
+		YTD_IncomeTaxDeductions;
+	newPayStub.YTDNetPay = YTDGrossPay - newPayStub.YTDDeductionsTotal;
+
 	return newPayStub;
 };
 

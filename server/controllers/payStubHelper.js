@@ -213,10 +213,11 @@ const appendPrevPayInfoBalance = (prevPayPayInfo, newPayStub) => {
 		prevPayPayInfo.YTDEmployerContributions,
 		YTDEmployerContributions,
 	);
-	prevPayPayInfo.YTDVacationAccrued = getSumTotal(
-		prevPayPayInfo.YTDVacationAccrued,
-		YTDVacationAccrued,
-	);
+	// prevPayPayInfo.YTDVacationAccrued = getSumTotal(
+	// 	prevPayPayInfo.YTDVacationAccrued,
+	// 	YTDVacationAccrued,
+	// );
+	prevPayPayInfo.YTDVacationAccrued = YTDVacationAccrued;
 	prevPayPayInfo.YTDVacationUsed = getSumTotal(prevPayPayInfo.YTDVacationUsed, YTDVacationUsed);
 	prevPayPayInfo.YTDVacationBalanceFwd = getSumTotal(
 		prevPayPayInfo.YTDVacationBalanceFwd,
