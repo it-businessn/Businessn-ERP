@@ -41,7 +41,7 @@ import { getDefaultDate } from "utils/convertDate";
 import NewPositionModal from "./NewPositionModal";
 import PositionInfo from "./PositionInfo";
 
-const EmploymentInfo = ({ company, userId, payGroups, selectedPayGroupOption }) => {
+const EmploymentInfo = ({ company, userId, payGroups, selectedPayGroupOption, lastBadgeId }) => {
 	const toast = useToast();
 	const [newRoleAdded, setNewRoleAdded] = useState(false);
 	const roles = useRoles(company);
@@ -61,7 +61,6 @@ const EmploymentInfo = ({ company, userId, payGroups, selectedPayGroupOption }) 
 			jobTitle: "",
 			payGroup: "",
 			timeManagementBadgeID: "",
-			lastBadgeId: 1,
 			costCenter: "",
 			employeeCardNumber: "",
 			department: "",
@@ -106,7 +105,6 @@ const EmploymentInfo = ({ company, userId, payGroups, selectedPayGroupOption }) 
 				employmentCountry,
 				employmentRegion,
 				positions,
-				lastBadgeId,
 				empId,
 				_id,
 			} = employmentInfo;
@@ -114,7 +112,6 @@ const EmploymentInfo = ({ company, userId, payGroups, selectedPayGroupOption }) 
 			setFormData({
 				employmentInfo: {
 					payrollStatus,
-					lastBadgeId,
 					employeeNo,
 					employmentRole,
 					employmentStartDate,
@@ -342,7 +339,7 @@ const EmploymentInfo = ({ company, userId, payGroups, selectedPayGroupOption }) 
 					<>
 						{showModal ? (
 							<NewPositionModal
-								lastBadgeId={formData.employmentInfo.lastBadgeId}
+								lastBadgeId={lastBadgeId}
 								company={company}
 								onClose={() => setShowModal(false)}
 								selectedPayGroup={selectedPayGroupOption}
@@ -381,7 +378,7 @@ const EmploymentInfo = ({ company, userId, payGroups, selectedPayGroupOption }) 
 												handleUpdate={handleUpdate}
 												editedIndices={editedIndices}
 												setEditedIndices={setEditedIndices}
-												lastBadgeId={formData.employmentInfo.lastBadgeId}
+												lastBadgeId={lastBadgeId}
 											/>
 										</BoxCard>
 									))}

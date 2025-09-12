@@ -85,6 +85,10 @@ const PayrollService = {
 		return apiService.post(`/payroll/employmentInfo/details`, data);
 	},
 
+	async getCompanyLastBadgeID(company) {
+		return apiService.get(`/payroll/employmentInfo/lastBadgeID/${company}`);
+	},
+
 	async getEmployeeEmploymentInfo(company, empId) {
 		return apiService.get(`/payroll/employmentInfo/${company}/${empId}`);
 	},

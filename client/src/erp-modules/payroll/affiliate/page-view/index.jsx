@@ -21,27 +21,40 @@ import GovernmentInfo from "erp-modules/payroll/employees/pageview/edit-user/gov
 import PayInfo from "erp-modules/payroll/employees/pageview/edit-user/pay-info/PayInfo";
 import PersonalInfo from "erp-modules/payroll/employees/pageview/edit-user/personal-info/PersonalInfo";
 import { tabStyleCss } from "erp-modules/payroll/onboard-user/customInfo";
-import useCompany from "hooks/useCompany";
 import useCompanyEmployees from "hooks/useCompanyEmployees";
 import usePaygroup from "hooks/usePaygroup";
 import PageLayout from "layouts/PageLayout";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import LocalStorageService from "services/LocalStorageService";
+import PayrollService from "services/PayrollService";
 
 const Affiliates = () => {
 	const loggedInUser = LocalStorageService.getItem("user");
+	const company = LocalStorageService.getItem("selectedCompany");
 	const deptName = loggedInUser?.role === ROLES.MANAGER ? loggedInUser?.department : null;
 
 	const { id, stepNo } = useParams();
-	const { company } = useCompany(LocalStorageService.getItem("selectedCompany"));
 	const [employee, setEmployee] = useState(null);
+	const [lastBadgeId, setLastBadgeId] = useState(null);
 	const [userId, setUserId] = useState(id || loggedInUser._id);
 	const [filteredEmployees, setFilteredEmployees] = useState(null);
 	const [tabIndex, setTabIndex] = useState(parseInt(stepNo) || 0);
 
 	const { payGroups, selectedPayGroupOption } = usePaygroup(company, false);
 	const employees = useCompanyEmployees(company, deptName, selectedPayGroupOption);
+
+	useEffect(() => {
+		const fetchCompanyLastBadgeID = async () => {
+			try {
+				const { data } = await PayrollService.getCompanyLastBadgeID(company);
+				setLastBadgeId(data);
+			} catch (error) {
+				console.error(error);
+			}
+		};
+		fetchCompanyLastBadgeID();
+	}, [company]);
 
 	useEffect(() => {
 		setFilteredEmployees(employees);
@@ -74,6 +87,7 @@ const Affiliates = () => {
 					userId={userId}
 					payGroups={payGroups}
 					selectedPayGroupOption={selectedPayGroupOption}
+					lastBadgeId={lastBadgeId}
 				/>
 			),
 		},

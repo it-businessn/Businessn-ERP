@@ -1,5 +1,6 @@
 import {
 	Box,
+	Checkbox,
 	Flex,
 	FormControl,
 	FormLabel,
@@ -24,6 +25,7 @@ import useDepartment from "hooks/useDepartment";
 import usePaygroup from "hooks/usePaygroup";
 import usePositionRoles from "hooks/usePositionRoles";
 import useRoles from "hooks/useRoles";
+import { useEffect, useState } from "react";
 import {
 	COUNTRIES,
 	employmentSubSteps,
@@ -39,12 +41,22 @@ const EmploymentInfo = ({
 	handleChange,
 	company,
 	employmentProvinces,
+	lastBadgeId,
 }) => {
 	const roles = useRoles(company);
 	const costCentres = useCostCenter(company);
 	const departments = useDepartment(company);
 	const positionRoles = usePositionRoles(company);
 	const { payGroups } = usePaygroup(company, false);
+
+	const [autoGenerate, setAutoGenerate] = useState(false);
+
+	useEffect(() => {
+		if (autoGenerate) {
+			const newID = String(lastBadgeId + 1).padStart(4, "0");
+			handleChange("employmentInfo", "timeManagementBadgeID", newID);
+		}
+	}, [autoGenerate, lastBadgeId]);
 
 	return (
 		<Flex height="100%">
@@ -213,7 +225,16 @@ const EmploymentInfo = ({
 										handleChange("employmentInfo", "timeManagementBadgeID", e.target.value)
 									}
 									placeholder="Enter badge ID"
+									isDisabled={autoGenerate}
+									mb={1}
 								/>
+								<Checkbox
+									isChecked={autoGenerate}
+									colorScheme="facebook"
+									onChange={(e) => setAutoGenerate(e.target.checked)}
+								>
+									Auto-generate Badge ID
+								</Checkbox>
 							</FormControl>
 							<FormControl>
 								<FormLabel size="sm">Employee Card Number</FormLabel>

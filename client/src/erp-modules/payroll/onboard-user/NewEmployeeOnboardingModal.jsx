@@ -55,6 +55,19 @@ const NewEmployeeOnboardingModal = ({ isOpen, onClose, title = "Employee", isAff
 	const [availableProvinces, setAvailableProvinces] = useState([]);
 	const [employmentProvinces, setEmploymentProvinces] = useState([]);
 	const [governmentProvinces, setGovernmentProvinces] = useState([]);
+	const [lastBadgeId, setLastBadgeId] = useState(null);
+
+	useEffect(() => {
+		const fetchCompanyLastBadgeID = async () => {
+			try {
+				const { data } = await PayrollService.getCompanyLastBadgeID(company);
+				setLastBadgeId(data);
+			} catch (error) {
+				console.error(error);
+			}
+		};
+		fetchCompanyLastBadgeID();
+	}, [company]);
 
 	const handleChange = (section, field, value) => {
 		setFormData({
@@ -89,6 +102,7 @@ const NewEmployeeOnboardingModal = ({ isOpen, onClose, title = "Employee", isAff
 					handleChange={handleChange}
 					employmentProvinces={employmentProvinces}
 					company={company}
+					lastBadgeId={lastBadgeId}
 				/>
 			),
 		},

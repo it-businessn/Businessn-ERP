@@ -76,6 +76,25 @@ const buildPayPeriodEmpDetails = async (companyName, employeeId) => {
 	if (empPayStubResult) return { empPayStubResult, payInfoMapResult };
 };
 
+const getCompanyLastBadgeID = async (req, res) => {
+	const { companyName } = req.params;
+	try {
+		const allBadgeIds = await EmployeeEmploymentInfo.find({
+			positions: { $exists: true, $not: { $size: 0 } },
+			companyName,
+		}).select("positions");
+		const mappedBadgeIds = allBadgeIds
+			?.map((rec) => rec.positions?.filter((pos) => pos.timeManagementBadgeID))
+			?.filter((record) => record.length);
+		const allTimeManagementBadgeID = mappedBadgeIds.flat()?.map((r) => r.timeManagementBadgeID);
+		const lastTimeManagementBadgeID = Math.max(...allTimeManagementBadgeID);
+
+		return res.status(200).json(lastTimeManagementBadgeID);
+	} catch (error) {
+		res.status(404).json({ error: error.message });
+	}
+};
+
 const getEmployeeEmploymentInfo = async (req, res) => {
 	const { companyName, empId } = req.params;
 	try {
@@ -94,16 +113,6 @@ const getEmployeeEmploymentInfo = async (req, res) => {
 				Math.floor(Math.random() * 10) + 10
 			}`;
 		}
-		const allBadgeIds = await EmployeeEmploymentInfo.find({
-			positions: { $exists: true, $not: { $size: 0 } },
-			companyName,
-		}).select("positions");
-		const mappedBadgeIds = allBadgeIds
-			?.map((rec) => rec.positions?.filter((pos) => pos.timeManagementBadgeID))
-			?.filter((record) => record.length);
-		const allTimeManagementBadgeID = mappedBadgeIds.flat()?.map((r) => r.timeManagementBadgeID);
-		result.lastBadgeId = Math.max(...allTimeManagementBadgeID);
-
 		return res.status(200).json(result);
 	} catch (error) {
 		res.status(404).json({ error: error.message });
@@ -146,7 +155,7 @@ const updateTADEmployee = async (empId, companyName, positionData) => {
 
 	const { firstName, middleName, lastName } = empProfileInfo;
 
-	const tadUserExists = await EmployeeTADProfileInfo.findOne({ empId });
+	const tadUserExists = await EmployeeTADProfileInfo.findOne({ empId, companyName });
 	if (tadUserExists) {
 		tadUserExists.cardNum = positionData?.cardNum;
 		tadUserExists.timeManagementBadgeID = positionData?.timeManagementBadgeID;
@@ -260,8 +269,8 @@ const updateEmployeeEmploymentInfo = async (req, res) => {
 		positions,
 	} = req.body;
 	try {
-		const existingRecord = await EmployeeEmploymentInfo.findOne({ empId });
-		if (existingRecord) {
+		const existingEmploymentInfo = await EmployeeEmploymentInfo.findOne({ empId, companyName });
+		if (existingEmploymentInfo) {
 			const positionExists = positions?.find((_) => _.title);
 			if (positionExists) {
 				const roles = [...positions];
@@ -277,7 +286,7 @@ const updateEmployeeEmploymentInfo = async (req, res) => {
 				}
 			}
 
-			const updatedInfo = await updateEmploymentInfo(existingRecord._id, {
+			const updatedInfo = await updateEmploymentInfo(existingEmploymentInfo._id, {
 				payrollStatus,
 				employeeNo,
 				companyName,
@@ -288,6 +297,9 @@ const updateEmployeeEmploymentInfo = async (req, res) => {
 				employmentCountry,
 				employmentRegion,
 			});
+			if (positions?.length && positions[0]) {
+				await updateTADEmployee(existingEmploymentInfo.empId, companyName, positions[0]);
+			}
 			return res.status(201).json(updatedInfo);
 		}
 		addUserEmploymentInfo(empId, companyName, req.body);
@@ -300,6 +312,7 @@ const updateEmployeeEmploymentInfo = async (req, res) => {
 module.exports = {
 	getAllEmploymentInfo,
 	getEmployeeEmploymentInfo,
+	getCompanyLastBadgeID,
 	addEmployeeEmploymentInfo,
 	updateEmployeeEmploymentInfo,
 	findEmployeeEmploymentInfo,

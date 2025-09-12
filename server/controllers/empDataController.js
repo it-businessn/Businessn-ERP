@@ -145,9 +145,9 @@ const addUserEmploymentInfo = async (empId, companyName, employmentInfo) => {
 		employmentRegion,
 		employmentCountry,
 	});
-	// if (newEmploymentInfo) {
-	// updateTADEmployee;
-	// }
+	if (newEmploymentInfo) {
+		await updateTADEmployee(newEmploymentInfo.empId, companyName, positions[0]);
+	}
 	return newEmpPosition;
 };
 // const calcPayRates = (salary) => {

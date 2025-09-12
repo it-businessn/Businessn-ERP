@@ -3,6 +3,7 @@ const router = express.Router();
 
 const employmentInfoController = require("../controllers/employmentInfoController");
 
+router.get("/lastBadgeID/:companyName", employmentInfoController.getCompanyLastBadgeID);
 router.get("/:companyName/:empId", employmentInfoController.getEmployeeEmploymentInfo);
 
 router.post("/", employmentInfoController.addEmployeeEmploymentInfo);
