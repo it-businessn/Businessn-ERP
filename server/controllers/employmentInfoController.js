@@ -157,7 +157,7 @@ const updateTADEmployee = async (empId, companyName, positionData) => {
 
 	const tadUserExists = await EmployeeTADProfileInfo.findOne({ empId, companyName });
 	if (tadUserExists) {
-		tadUserExists.cardNum = positionData?.cardNum;
+		tadUserExists.cardNum = positionData?.employeeCardNumber;
 		tadUserExists.timeManagementBadgeID = positionData?.timeManagementBadgeID;
 		return await tadUserExists.save();
 	}
@@ -168,7 +168,7 @@ const updateTADEmployee = async (empId, companyName, positionData) => {
 			firstName,
 			middleName,
 			lastName,
-			cardNum: positionData?.cardNum,
+			cardNum: positionData?.employeeCardNumber,
 			timeManagementBadgeID: positionData?.timeManagementBadgeID,
 		});
 	}
