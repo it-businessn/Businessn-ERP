@@ -65,6 +65,7 @@ const PositionInfo = ({
 									title: e.target.value,
 								}));
 							}}
+							placeholder="Select role"
 						>
 							{positionRoles.map((role) => (
 								<option key={role.name} value={role.name}>
@@ -92,6 +93,7 @@ const PositionInfo = ({
 									employmentPayGroup: e.target.value,
 								}));
 							}}
+							placeholder="Select pay group"
 						>
 							{payGroups.map((group) => (
 								<option key={group.name} value={group.name}>
@@ -119,6 +121,7 @@ const PositionInfo = ({
 									employmentCostCenter: e.target.value,
 								}));
 							}}
+							placeholder="Select cost center"
 						>
 							{costCentres.map((center) => (
 								<option key={center.name} value={center.name}>
