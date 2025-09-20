@@ -223,7 +223,7 @@ const BankingInfo = ({ bankingSubStep, setBankingSubStep, formData, handleChange
 						{formData.bankingInfo.directDeposit === "Yes" && (
 							<>
 								<FormControl isRequired isInvalid={bankingTouched.bankNum && bankingErrors.bankNum}>
-									<FormLabel size="sm">Bank Number</FormLabel>
+									<FormLabel size="sm">Bank / Institution Number</FormLabel>
 									<Input
 										size="sm"
 										value={formData.bankingInfo.bankNum}
@@ -238,7 +238,7 @@ const BankingInfo = ({ bankingSubStep, setBankingSubStep, formData, handleChange
 									isRequired
 									isInvalid={bankingTouched.transitNum && bankingErrors.transitNum}
 								>
-									<FormLabel size="sm">Transit Number</FormLabel>
+									<FormLabel size="sm">Transit / Branch Number</FormLabel>
 									<Input
 										size="sm"
 										value={formData.bankingInfo.transitNum}
@@ -263,7 +263,7 @@ const BankingInfo = ({ bankingSubStep, setBankingSubStep, formData, handleChange
 											handleBankInfoChange("bankingInfo", "accountNum", e.target.value)
 										}
 										onBlur={() => handleBankingBlur("accountNum")}
-										placeholder="Enter account number (7-16 digits)"
+										placeholder="Enter account number (7 digits)"
 									/>
 									<FormErrorMessage>{bankingErrors.accountNum}</FormErrorMessage>
 								</FormControl>
