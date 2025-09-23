@@ -1,16 +1,4 @@
-import {
-	Box,
-	Checkbox,
-	IconButton,
-	Input,
-	Table,
-	Tbody,
-	Td,
-	Th,
-	Thead,
-	Tr,
-	useToast,
-} from "@chakra-ui/react";
+import { Box, Checkbox, Input, Table, Tbody, Td, Th, Thead, Tr, useToast } from "@chakra-ui/react";
 import PrimaryButton from "components/ui/button/PrimaryButton";
 import EmptyRowRecord from "components/ui/EmptyRowRecord";
 import SelectList from "components/ui/form/select/SelectList";
@@ -19,8 +7,8 @@ import NormalTextTitle from "components/ui/NormalTextTitle";
 import TextTitle from "components/ui/text/TextTitle";
 import { COLS } from "constant";
 import { useEffect, useState } from "react";
-import { GoPlusCircle } from "react-icons/go";
-import { TbCornerRightUp } from "react-icons/tb";
+// import { GoPlusCircle } from "react-icons/go";
+// import { TbCornerRightUp } from "react-icons/tb";
 import TimesheetService from "services/TimesheetService";
 import { getAmount } from "utils/convertAmt";
 import {
@@ -28,13 +16,11 @@ import {
 	getTimeCardFormat,
 	getTimeFormat,
 	getUTCTime,
-	isSameAsToday,
 } from "utils/convertDate";
 import { tabScrollCss } from "../onboard-user/customInfo";
 import ActionAll from "./ActionAll";
 import {
 	ACTION_STATUS,
-	BREAK_TYPES_TITLE,
 	getParamKey,
 	getPayTypeStyle,
 	getSourceStyle,
@@ -146,7 +132,6 @@ const Timesheet = ({
 				const { totalPages, page, items } = data;
 				clearInterval(interval);
 				items?.map((timeEntry) => {
-					timeEntry.approveStatusAction = timeEntry.approveStatus;
 					const isOvertime = timeEntry.payType === PAY_TYPES_TITLE.OVERTIME_PAY;
 					if (isOvertime) {
 						timeEntry.startTime = getUTCTime(timeEntry.clockIn);
@@ -156,15 +141,7 @@ const Timesheet = ({
 						timeEntry.endTime = timeEntry.clockOut ? getTimeFormat(timeEntry.clockOut) : "";
 					}
 					timeEntry.totalHours = getHourDifference(timeEntry.startTime, timeEntry.endTime);
-					timeEntry.isEditable = timeEntry.source !== TIMESHEET_SOURCE.EMPLOYEE;
-					timeEntry.isAppOrTad = timeEntry.manualAdded || timeEntry.source === TIMESHEET_SOURCE.TAD;
-					if (timeEntry.isEditable && timeEntry.isAppOrTad) {
-						timeEntry.isEditable = !isSameAsToday(timeEntry.clockIn);
-					}
 					timeEntry.isActionDisabled = timeEntry.startTime === "" || timeEntry.endTime === "";
-					timeEntry.showAddBreak = timeEntry.payType.includes("Break")
-						? timeEntry.approveStatus === TIMESHEET_STATUS_LABEL.APPROVED
-						: timeEntry.isEditable;
 					return timeEntry;
 				});
 				setTimesheets(items);
@@ -262,7 +239,6 @@ const Timesheet = ({
 						: rec.param_hours === "regBreakHoursWorked"
 						? rec.regBreakHoursWorked
 						: 0;
-				rec.isDisabled = !rec?.clockIn || !rec?.clockOut;
 				rec.isStatPay = rec?.payType === PAY_TYPES_TITLE.STAT_PAY;
 				return rec;
 			});
@@ -735,7 +711,7 @@ const Timesheet = ({
 										regBreakHoursWorked,
 										source,
 										isEditable,
-										showAddBreak,
+										showBreak,
 										positions,
 										role = positions?.[0]?.title,
 										department = positions?.[0]?.employmentDepartment,
@@ -862,7 +838,7 @@ const Timesheet = ({
 												{regBreakHoursWorked && type === BREAK_TYPES_TITLE.REG_PAY_BRK ? (
 													<NormalTextTitle size="sm" p="0 1em" title={regBreakHoursWorked} />
 												) : (
-													showAddBreak && (
+													showBreak && (
 														<IconButton
 															icon={<GoPlusCircle />}
 															fontSize="1.8em"

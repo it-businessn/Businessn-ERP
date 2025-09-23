@@ -98,11 +98,30 @@ const mapTimesheet = (payInfos, timesheets, empInfos, selectedPayGroupOption) =>
 			}
 		}
 	});
-	return timesheets?.filter(
-		({ typeOfEarning, positions }) =>
-			typeOfEarning !== EARNING_TYPE.FT &&
-			positions?.find((_) => _?.employmentPayGroup === selectedPayGroupOption),
-	);
+	const nonFullTimeEmpTimeEntries = timesheets
+		?.filter(
+			({ typeOfEarning, positions }) =>
+				typeOfEarning !== EARNING_TYPE.FT &&
+				positions?.some((position) => position?.employmentPayGroup === selectedPayGroupOption),
+		)
+		?.map((timesheet) => {
+			const isEditableBase = timesheet.source !== TIMESHEET_SOURCE.EMPLOYEE;
+			const isAppOrTad = timesheet.manualAdded || timesheet.source === TIMESHEET_SOURCE.TAD;
+			const isEditable =
+				isEditableBase && isAppOrTad
+					? !moment.utc(timesheet.clockIn).isSame(moment.utc(), "day")
+					: isEditableBase;
+			const showBreak = timesheet.payType.includes("Break")
+				? timesheet.approveStatus === TIMESHEET_STATUS.APPROVED
+				: isEditable;
+
+			timesheet.isEditable = isEditable;
+			timesheet.showBreak = showBreak;
+			timesheet.isDisabled = !timesheet?.clockIn || !timesheet?.clockOut || !timesheet.isEditable;
+
+			return timesheet;
+		});
+	return nonFullTimeEmpTimeEntries;
 };
 
 const getTimeFormat = (timestamp) => {
