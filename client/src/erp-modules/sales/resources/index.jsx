@@ -1,8 +1,8 @@
 import { SimpleGrid } from "@chakra-ui/react";
 
-import useCompany from "hooks/useCompany";
 import PageLayout from "layouts/PageLayout";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import AssessmentService from "services/AssessmentService";
 import LocalStorageService from "services/LocalStorageService";
 import { isManager } from "utils";
 import EmployeeViewCard from "./EmployeeViewCard";
@@ -10,11 +10,6 @@ import ManagerViewCard from "./ManagerViewCard";
 import ResourceFile from "./ResourceFile";
 
 const Resources = ({ isHRType = false }) => {
-	const { company } = useCompany(LocalStorageService.getItem("selectedCompany"));
-	const loggedInUser = LocalStorageService.getItem("user");
-	const { fullName, role } = loggedInUser;
-	const isUserManager = isManager(role);
-
 	const FILE_TYPES = [
 		{ type: "Training", show: isHRType },
 		{ type: "Sales Scripts", show: true },
@@ -25,16 +20,35 @@ const Resources = ({ isHRType = false }) => {
 		{ type: "Associates", show: true },
 		{ type: "Training resources", show: true },
 	];
+
+	const company = LocalStorageService.getItem("selectedCompany");
+	const loggedInUser = LocalStorageService.getItem("user");
+	const isUserManager = isManager(loggedInUser.role);
+
+	const [isDeleted, setIsDeleted] = useState(false);
+	const [assessments, setAssessments] = useState(null);
 	const [selectedFilter, setSelectedFilter] = useState(
 		FILE_TYPES?.find(({ show }) => show === true)?.type,
 	);
+
+	useEffect(() => {
+		const fetchAllAssessmentTypes = async () => {
+			try {
+				const { data } = await AssessmentService.getAssessmentTypes(company);
+				setAssessments(data);
+			} catch (error) {
+				console.error(error);
+			}
+		};
+		if (selectedFilter === "Training") fetchAllAssessmentTypes();
+	}, [selectedFilter, isDeleted]);
 
 	return (
 		<PageLayout title="Resources">
 			<ResourceFile
 				fileTypes={FILE_TYPES?.filter(({ show }) => show)}
 				isUserManager={isUserManager}
-				fullName={fullName}
+				fullName={loggedInUser.fullName}
 				company={company}
 				selectedFilter={selectedFilter}
 				setSelectedFilter={setSelectedFilter}
@@ -43,9 +57,9 @@ const Resources = ({ isHRType = false }) => {
 			{selectedFilter === "Training" && (
 				<SimpleGrid spacing="1em" mt={"0.5em"}>
 					{isUserManager ? (
-						<ManagerViewCard company={company} />
+						<ManagerViewCard assessments={assessments} setIsDeleted={setIsDeleted} />
 					) : (
-						<EmployeeViewCard company={company} />
+						<EmployeeViewCard assessments={assessments} loggedInUser={loggedInUser} />
 					)}
 				</SimpleGrid>
 			)}

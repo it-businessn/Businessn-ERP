@@ -1,12 +1,17 @@
-import { Box, Flex, Input, Select } from "@chakra-ui/react";
+import { Box, Flex, Input } from "@chakra-ui/react";
 import PrimaryButton from "components/ui/button/PrimaryButton";
 import TextTitle from "components/ui/text/TextTitle";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import ResourceService from "services/ResourceService";
 
-const FileUploader = ({ fileTypes, userName, setNewUpload, company }) => {
+const FileUploader = ({ fileTypes, userName, setNewUpload, company, selectedFileType }) => {
+	const fileInputRef = useRef(null);
 	const [file, setFile] = useState(null);
-	const [fileType, setFileType] = useState(fileTypes[1].type);
+	const [fileType, setFileType] = useState("");
+
+	useEffect(() => {
+		setFileType(selectedFileType);
+	}, [selectedFileType]);
 
 	const handleFileChange = (e) => {
 		setFile(e.target.files[0]);
@@ -22,6 +27,7 @@ const FileUploader = ({ fileTypes, userName, setNewUpload, company }) => {
 		try {
 			await ResourceService.upload(formData);
 			setNewUpload((prev) => !prev);
+			fileInputRef.current.value = "";
 		} catch (error) {
 			console.error("Error uploading file:", error);
 		}
@@ -42,13 +48,14 @@ const FileUploader = ({ fileTypes, userName, setNewUpload, company }) => {
 				fontWeight="bold"
 			>
 				<Input
+					ref={fileInputRef}
 					type="file"
 					border={"none"}
 					bg={"transparent"}
 					onChange={handleFileChange}
 					alignItems={"center"}
 				/>
-				<Select value={fileType} onChange={handleFileTypeChange} mt={2} mb={4}>
+				{/* <Select value={fileType} onChange={handleFileTypeChange} mt={2} mb={4}>
 					{fileTypes
 						.filter(({ type }) => type !== "Training")
 						.map(({ type }) => (
@@ -56,7 +63,7 @@ const FileUploader = ({ fileTypes, userName, setNewUpload, company }) => {
 								{type}
 							</option>
 						))}
-				</Select>
+				</Select> */}
 				<Flex>
 					{/* <Spacer /> */}
 					<PrimaryButton name="Upload" isDisabled={!file} onOpen={handleUpload} />

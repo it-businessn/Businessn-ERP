@@ -2,30 +2,15 @@ import { Box, HStack, SimpleGrid, VStack } from "@chakra-ui/react";
 import PrimaryButton from "components/ui/button/PrimaryButton";
 import DeletePopUp from "components/ui/modal/DeletePopUp";
 import TextTitle from "components/ui/text/TextTitle";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { questionnairePath } from "routes";
 import AssessmentService from "services/AssessmentService";
 
-const ManagerViewCard = ({ company }) => {
+const ManagerViewCard = ({ assessments, setIsDeleted }) => {
 	const navigate = useNavigate();
-	const [assessments, setAssessments] = useState(null);
-	const [isDeleted, setIsDeleted] = useState(false);
 	const [deleteRecord, setDeleteRecord] = useState(false);
 	const [showConfirmationPopUp, setShowConfirmationPopUp] = useState(false);
-
-	useEffect(() => {
-		const fetchAllAssessmentTypes = async () => {
-			try {
-				const { data } = await AssessmentService.getAssessmentTypes(company);
-				setAssessments(data);
-			} catch (error) {
-				console.error(error);
-			}
-		};
-		fetchAllAssessmentTypes();
-	}, [company, isDeleted]);
-
 	const handleDelete = async () => {
 		try {
 			await AssessmentService.deleteAssessment({}, deleteRecord);

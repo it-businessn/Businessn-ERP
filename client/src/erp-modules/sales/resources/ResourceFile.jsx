@@ -22,9 +22,17 @@ const ResourceFile = ({
 	selectedFilter,
 	setSelectedFilter,
 }) => {
+	const { isMobile, isIpad } = useBreakpointValue();
+
 	const [resources, setResources] = useState(null);
 	// const [editResource, setEditResource] = useState(false);
 	const [newUpload, setNewUpload] = useState(null);
+	const [isEditable, setIsEditable] = useState(false);
+	const [resourceId, setResourceId] = useState(null);
+	const [fileName, setFileName] = useState("");
+	const [deleteRecord, setDeleteRecord] = useState(false);
+	const [showConfirmationPopUp, setShowConfirmationPopUp] = useState(false);
+	const [selectedFileType, setSelectedFileType] = useState(selectedFilter);
 
 	useEffect(() => {
 		const fetchResourceByType = async () => {
@@ -34,6 +42,12 @@ const ResourceFile = ({
 					company,
 				});
 
+				data?.map(
+					(resource) =>
+						(resource.title = `${
+							resource.originalname.trim().replace(".pdf", "").split("(")[0]
+						} \n${resource.fileType}`),
+				);
 				setResources(data);
 			} catch (error) {
 				console.error(error);
@@ -42,7 +56,7 @@ const ResourceFile = ({
 		if (selectedFilter) {
 			fetchResourceByType();
 		}
-	}, [selectedFilter, company]);
+	}, [selectedFilter, newUpload, company]);
 
 	useEffect(() => {
 		const fetchAllResources = async () => {
@@ -56,17 +70,12 @@ const ResourceFile = ({
 		if (!selectedFilter) {
 			fetchAllResources();
 		}
-	}, [newUpload, company]);
-
-	const [isEditable, setIsEditable] = useState(false);
-	const [resourceId, setResourceId] = useState(null);
-	const [fileName, setFileName] = useState("");
-	const { isMobile, isIpad } = useBreakpointValue();
-	const [deleteRecord, setDeleteRecord] = useState(false);
-	const [showConfirmationPopUp, setShowConfirmationPopUp] = useState(false);
+	}, [selectedFilter, company]);
 
 	const handleFilterClick = (filter) => {
 		setSelectedFilter(filter);
+		const fileType = fileTypes.find((r) => r.type == filter)?.type;
+		setSelectedFileType(fileType);
 	};
 
 	const handleDownload = (fileName) => {
@@ -87,6 +96,8 @@ const ResourceFile = ({
 	const handleClose = () => {
 		setShowConfirmationPopUp((prev) => !prev);
 	};
+
+	const getBgColor = () => COVER_COLORS[Math.floor(Math.random() * COVER_COLORS.length)];
 
 	const saveInput = async () => {
 		if (fileName !== "") {
@@ -110,9 +121,11 @@ const ResourceFile = ({
 	};
 
 	const { permissionData } = useData();
-	const hasDeleteAccess = permissionData
-		.find((record) => record.id === "sales")
-		?.children?.find((item) => item.path === "resources").permissions?.canDeleteModule;
+	const hasDeleteAccess =
+		isUserManager &&
+		permissionData
+			.find((record) => record.id === "sales")
+			?.children?.find((item) => item.path === "resources").permissions?.canDeleteModule;
 
 	const hasEditAccess = permissionData
 		.find((record) => record.id === "sales")
@@ -168,6 +181,7 @@ const ResourceFile = ({
 							fileTypes={fileTypes}
 							userName={fullName}
 							company={company}
+							selectedFileType={selectedFileType}
 						/>
 					)}
 					<SimpleGrid columns={{ base: 1, md: 2, lg: 5 }} spacing="1em" my="5">
@@ -185,17 +199,16 @@ const ResourceFile = ({
 										borderRadius="0"
 										overflow="hidden"
 										p={4}
+										h={"120px"}
 										// color={"var(--primary_bg)"}
-										bg={COVER_COLORS[Math.floor(Math.random() * COVER_COLORS.length)]}
+										bg={getBgColor()}
 									>
 										<TextTitle
 											p={"0 1em"}
 											size={"xl"}
 											weight="normal"
 											whiteSpace="pre-wrap"
-											title={`${resource.originalname.trim().replace(".pdf", "").split("(")[0]} \n${
-												resource.fileType
-											}`}
+											title={resource.title}
 										/>
 									</Box>
 

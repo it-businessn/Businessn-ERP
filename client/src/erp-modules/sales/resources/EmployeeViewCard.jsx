@@ -6,31 +6,15 @@ import { BADGES } from "erp-modules/project-management/workview/project/data";
 import { useEffect, useState } from "react";
 import { Doughnut } from "react-chartjs-2";
 import AssessmentService from "services/AssessmentService";
-import LocalStorageService from "services/LocalStorageService";
 import AttemptedTestScore from "./AttemptedTestScore";
 
-const EmployeeViewCard = ({ company }) => {
-	const loggedInUser = LocalStorageService.getItem("user");
-	const [assessments, setAssessments] = useState(null);
+const EmployeeViewCard = ({ assessments, loggedInUser }) => {
 	const [assessmentsTaken, setAssessmentsTaken] = useState(null);
-
 	const [dataLoaded, setDataLoaded] = useState(false);
 	const [completed, setCompleted] = useState(null);
 	const [notComplete, setNotComplete] = useState(null);
 	const [certificationBadges, setCertificationBadges] = useState(null);
 	const [totalBadges, setTotalBadges] = useState(null);
-
-	useEffect(() => {
-		const fetchAllAssessmentTypes = async () => {
-			try {
-				const { data } = await AssessmentService.getAssessmentTypes(company);
-				setAssessments(data);
-			} catch (error) {
-				console.error(error);
-			}
-		};
-		fetchAllAssessmentTypes();
-	}, [company]);
 
 	useEffect(() => {
 		const fetchAssessmentsTaken = async () => {
