@@ -5,9 +5,8 @@ const EmployeePayInfo = require("../models/EmployeePayInfo");
 const { setInitialPermissions } = require("./appController");
 const { fetchActiveEmployees } = require("./userController");
 const { updatePayInfo } = require("./payInfoController");
-const EmployeeProfileInfo = require("../models/EmployeeProfileInfo");
-const EmployeeTADProfileInfo = require("../models/EmployeeTADProfile");
 const { addUserEmploymentInfo } = require("./empDataController");
+const { updateTADEmployee } = require("./timecardController");
 
 const getAllEmploymentInfo = async (req, res) => {
 	const { companyName, payDate, isExtraRun, groupId, deptName, selectedPayGroupOption } = req.body;
@@ -145,33 +144,6 @@ const updateEmployee = async (empId, data) => {
 	}
 
 	await employee.save();
-};
-
-const updateTADEmployee = async (empId, companyName, positionData) => {
-	const empProfileInfo = await EmployeeProfileInfo.findOne({
-		empId,
-		companyName,
-	}).select("firstName middleName lastName");
-
-	const { firstName, middleName, lastName } = empProfileInfo;
-
-	const tadUserExists = await EmployeeTADProfileInfo.findOne({ empId, companyName });
-	if (tadUserExists) {
-		tadUserExists.cardNum = positionData?.employeeCardNumber;
-		tadUserExists.timeManagementBadgeID = positionData?.timeManagementBadgeID;
-		return await tadUserExists.save();
-	}
-	if (!tadUserExists && positionData?.timeManagementBadgeID) {
-		return await EmployeeTADProfileInfo.create({
-			empId,
-			companyName,
-			firstName,
-			middleName,
-			lastName,
-			cardNum: positionData?.employeeCardNumber,
-			timeManagementBadgeID: positionData?.timeManagementBadgeID,
-		});
-	}
 };
 
 const addEmployeeEmploymentInfo = async (req, res) => {

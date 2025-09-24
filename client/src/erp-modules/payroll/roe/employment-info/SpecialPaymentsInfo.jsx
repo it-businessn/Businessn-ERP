@@ -57,7 +57,11 @@ export const SpecialPaymentsInfo = ({
 								<FormLabel>Code</FormLabel>
 								<Select
 									value={p.code}
-									onChange={(e) => handleArrayChange("specialPayments", i, "code", e.target.value)}
+									onChange={(e) => {
+										if (e.target.value) {
+											handleArrayChange("specialPayments", i, "code", e.target.value);
+										}
+									}}
 									placeholder="Select Code"
 								>
 									{SPECIAL_PAYMENT_OPTIONS.map((o) => (
@@ -114,9 +118,11 @@ export const SpecialPaymentsInfo = ({
 								<FormLabel>Period</FormLabel>
 								<Input
 									value={p.period}
-									onChange={(e) =>
-										handleArrayChange("specialPayments", i, "period", e.target.value)
-									}
+									onChange={(e) => {
+										if (e.target.value) {
+											handleArrayChange("specialPayments", i, "period", e.target.value);
+										}
+									}}
 									placeholder="D=Day, W=Week"
 								/>
 								<FormErrorMessage>{errors[i]?.period}</FormErrorMessage>

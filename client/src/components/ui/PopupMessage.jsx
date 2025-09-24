@@ -42,7 +42,7 @@ export default function PopupMessage({
 	}, [payrunOption]);
 
 	const handlePayrun = (e) => {
-		if (e.target.value !== "") setPayrunOption(e.target.value);
+		if (e.target.value) setPayrunOption(e.target.value);
 	};
 
 	return (

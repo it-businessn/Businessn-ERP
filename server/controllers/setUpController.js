@@ -298,6 +298,7 @@ const updateModule = async (req, res) => {
 const getGroups = async (req, res) => {
 	const { companyName } = req.params;
 	try {
+		//filter shadow admin members
 		const group = await Group.find({ companyName });
 		res.status(200).json(group);
 	} catch (error) {

@@ -96,7 +96,7 @@ const AddNewActivity = ({ isOpen, onClose, allProjects, allProjectTasks }) => {
 										placeholder="Select Project"
 										onChange={(e) => {
 											const selectedValue = e.target.value;
-											if (selectedValue !== "") {
+											if (selectedValue) {
 												const { id, projectName } = allProjects.find(
 													(project) => project.id === selectedValue,
 												);
@@ -125,7 +125,7 @@ const AddNewActivity = ({ isOpen, onClose, allProjects, allProjectTasks }) => {
 										placeholder="Select Task"
 										onChange={(e) => {
 											const selectedValue = e.target.value;
-											if (selectedValue !== "") {
+											if (selectedValue) {
 												const { id, taskName } = allProjectTasks.find(
 													(task) => task.id === selectedValue,
 												);
@@ -178,7 +178,7 @@ const AddNewActivity = ({ isOpen, onClose, allProjects, allProjectTasks }) => {
 													borderRadius="10px"
 													value={todoItem.selectedAssignee}
 													onChange={(e) => {
-														if (e.target.value !== "") {
+														if (e.target.value) {
 															setTodoItem((prev) => ({
 																...prev,
 																selectedAssignee: e.target.value,

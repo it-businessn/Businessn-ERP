@@ -9,7 +9,7 @@ const EditOpportunityForm = ({ selectedOpportunity, onSave, onCancel }) => {
 
 	const handleChange = (e) => {
 		const { name, value } = e.target;
-		setFormData((prevData) => ({ ...prevData, [name]: value }));
+		if (value) setFormData((prevData) => ({ ...prevData, [name]: value }));
 	};
 
 	const handleSave = () => {

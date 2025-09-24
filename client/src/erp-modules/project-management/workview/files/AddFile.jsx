@@ -84,7 +84,7 @@ const AddFile = ({ isOpen, onClose, managers, company }) => {
 										placeholder="Select Manager"
 										onChange={(e) => {
 											const selectedValue = e.target.value;
-											if (selectedValue !== "") {
+											if (selectedValue) {
 												const { _id, fullName } = managers?.find(
 													(manager) => manager._id === selectedValue,
 												);

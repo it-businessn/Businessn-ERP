@@ -3,7 +3,9 @@ import BoxCard from "components/ui/card";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 
 const SalesCard = ({ headerCards, setMonth, currentMonth }) => {
-	const handleMonth = (e) => setMonth(e.target.value);
+	const handleMonth = (e) => {
+		if (e.target.value) setMonth(e.target.value);
+	};
 
 	return (
 		<>
@@ -16,12 +18,7 @@ const SalesCard = ({ headerCards, setMonth, currentMonth }) => {
 					flexDir={"column"}
 					justifyContent={"space-between"}
 				>
-					<Flex
-						justify="space-between"
-						align="center"
-						mb="1"
-						w={{ base: "auto", md: "106%" }}
-					>
+					<Flex justify="space-between" align="center" mb="1" w={{ base: "auto", md: "106%" }}>
 						<Icon as={card.icon} color={card.color} boxSize={5} />
 
 						<Select

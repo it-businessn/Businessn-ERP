@@ -89,13 +89,15 @@ const Meetings = ({ contactId, user, company, currentTab }) => {
 	}, [groups]);
 
 	const handleGroupChange = (e) => {
-		setFormData((prevData) => ({
-			...prevData,
-			group: e.target.value,
-		}));
-		formData.attendees = [];
-		setSelectedOptions([]);
-		setGroupMembers(groups.find(({ _id }) => _id === e.target.value).members);
+		if (e.target.value) {
+			setFormData((prevData) => ({
+				...prevData,
+				group: e.target.value,
+			}));
+			formData.attendees = [];
+			setSelectedOptions([]);
+			setGroupMembers(groups.find(({ _id }) => _id === e.target.value).members);
+		}
 	};
 
 	return (

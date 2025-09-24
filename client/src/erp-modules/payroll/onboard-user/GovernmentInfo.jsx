@@ -148,7 +148,11 @@ const GovernmentInfo = ({
 							<Select
 								size="sm"
 								value={formData.governmentInfo.federalTax}
-								onChange={(e) => handleChange("governmentInfo", "federalTax", e.target.value)}
+								onChange={(e) => {
+									if (e.target.value) {
+										handleChange("governmentInfo", "federalTax", e.target.value);
+									}
+								}}
 								placeholder="Select Country"
 							>
 								{COUNTRIES.map(({ type, code }) => (
@@ -164,7 +168,11 @@ const GovernmentInfo = ({
 							<Select
 								size="sm"
 								value={formData.governmentInfo.regionalTax}
-								onChange={(e) => handleChange("governmentInfo", "regionalTax", e.target.value)}
+								onChange={(e) => {
+									if (e.target.value) {
+										handleChange("governmentInfo", "regionalTax", e.target.value);
+									}
+								}}
 								placeholder="Select Region"
 							>
 								{governmentProvinces.map(({ name, id }) => (

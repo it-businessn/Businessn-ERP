@@ -80,19 +80,21 @@ const AddEvent = ({
 		}));
 	};
 	const handleTypeChange = (e) => {
-		setEventType(e.target.value);
-		setFormData((prevData) => ({
-			...prevData,
-			eventType: e.target.value,
-			description: "",
-			eventLink: "",
-			fromDate: "",
-			fromTime: "",
-			location: "",
-			meetingAttendees: [],
-			toDate: "",
-			toTime: "",
-		}));
+		if (e.target.value) {
+			setEventType(e.target.value);
+			setFormData((prevData) => ({
+				...prevData,
+				eventType: e.target.value,
+				description: "",
+				eventLink: "",
+				fromDate: "",
+				fromTime: "",
+				location: "",
+				meetingAttendees: [],
+				toDate: "",
+				toTime: "",
+			}));
+		}
 	};
 	const handleChange = (e) => {
 		const { name, value } = e.target;
@@ -110,14 +112,16 @@ const AddEvent = ({
 	};
 
 	const handleGroupChange = (e) => {
-		setFormData((prevData) => ({
-			...prevData,
-			group: e.target.value,
-		}));
+		if (e.target.value) {
+			setFormData((prevData) => ({
+				...prevData,
+				group: e.target.value,
+			}));
 
-		formData.meetingAttendees = [];
-		setSelectedOptions([]);
-		setGroupMembers(groups.find(({ _id }) => _id === e.target.value).members);
+			formData.meetingAttendees = [];
+			setSelectedOptions([]);
+			setGroupMembers(groups.find(({ _id }) => _id === e.target.value).members);
+		}
 	};
 
 	const handleSubmit = async (e) => {

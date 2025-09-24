@@ -41,11 +41,13 @@ const EarningInfo = ({
 						size="sm"
 						value={roleInfo?.typeOfEarning || ""}
 						onChange={(e) => {
-							setEditedIndices((prev) => ({ ...prev, [updateRecordIndex]: true }));
-							setRoleInfo((prevData) => ({
-								...prevData,
-								typeOfEarning: e.target.value,
-							}));
+							if (e.target.value) {
+								setEditedIndices((prev) => ({ ...prev, [updateRecordIndex]: true }));
+								setRoleInfo((prevData) => ({
+									...prevData,
+									typeOfEarning: e.target.value,
+								}));
+							}
 						}}
 					>
 						<option value={EARNING_TYPE.HOURLY}>Hourly</option>

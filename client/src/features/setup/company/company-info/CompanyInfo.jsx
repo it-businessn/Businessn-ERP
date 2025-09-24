@@ -57,11 +57,13 @@ const CompanyInfo = ({ companyInfo, modules }) => {
 						<Text color={"var(--main_color_black)"}>{getAddress(companyInfo.address)}</Text>
 					</HStack>
 				</VStack>
-				<Table variant="simple" size={"small"}>
+				<Table size={"small"}>
 					<Thead>
 						<Tr>
-							<Th px={"1em"}>Module Name</Th>
-							<Th>Admin</Th>
+							<Th fontWeight={"bold"} px={"1em"}>
+								Module Name
+							</Th>
+							<Th fontWeight={"bold"}>Admin</Th>
 						</Tr>
 					</Thead>
 					<Tbody>

@@ -18,26 +18,25 @@ const AssigneeSelector = ({
 	required,
 }) => {
 	const [selectedValue, setSelectedValue] = useState("");
-	const handleMultiAssigneesChange = (event) => {
-		if (event.target.value === "") {
-			return;
-		}
 
-		const selectedAssignee = { name: event.target.value };
+	const handleMultiAssigneesChange = (e) => {
+		if (e.target.value) {
+			const selectedAssignee = { name: e.target.value };
 
-		if (
-			selectedAssignees?.length === 0 ||
-			!selectedAssignees.some((assignee) => assignee.name === selectedAssignee.name)
-		) {
-			onAssigneeChange((prevAssignees) => [...prevAssignees, selectedAssignee]);
-			if (assigneeError) {
-				setAssigneeError(null);
+			if (
+				selectedAssignees?.length === 0 ||
+				!selectedAssignees.some((assignee) => assignee.name === selectedAssignee.name)
+			) {
+				onAssigneeChange((prevAssignees) => [...prevAssignees, selectedAssignee]);
+				if (assigneeError) {
+					setAssigneeError(null);
+				}
+				if (isDisabled) {
+					setIsDisabled(false);
+				}
 			}
-			if (isDisabled) {
-				setIsDisabled(false);
-			}
+			setSelectedValue(selectedAssignee.name);
 		}
-		setSelectedValue(selectedAssignee.name);
 	};
 
 	const handleRemoveAssignee = (assigneeToRemove) => {

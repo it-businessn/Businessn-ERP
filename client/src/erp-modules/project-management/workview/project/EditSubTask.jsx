@@ -138,12 +138,14 @@ const EditSubTask = ({ isOpen, onClose, currentTask, managers, handleSubTaskUpda
 											borderRadius="10px"
 											value={formData?.priority}
 											placeholder="Select Priority"
-											onChange={(e) =>
-												setFormData((prevData) => ({
-													...prevData,
-													priority: e.target.value,
-												}))
-											}
+											onChange={(e) => {
+												if (e.target.value) {
+													setFormData((prevData) => ({
+														...prevData,
+														priority: e.target.value,
+													}));
+												}
+											}}
 										>
 											{PRIORITY?.map((item, index) => (
 												<option value={item} key={item + index}>

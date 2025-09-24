@@ -27,8 +27,8 @@ const FileUploader = ({ fileTypes, userName, setNewUpload, company }) => {
 		}
 	};
 
-	const handleFileTypeChange = (event) => {
-		setFileType(event.target.value);
+	const handleFileTypeChange = (e) => {
+		if (e.target.value) setFileType(e.target.value);
 	};
 
 	return (

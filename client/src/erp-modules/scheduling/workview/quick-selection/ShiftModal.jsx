@@ -103,12 +103,14 @@ const ShiftModal = ({
 					<Select
 						name="fullName"
 						value={formData?.employeeName}
-						onChange={(e) =>
-							setFormData((prevData) => ({
-								...prevData,
-								employeeName: e.target.value,
-							}))
-						}
+						onChange={(e) => {
+							if (e.target.value) {
+								setFormData((prevData) => ({
+									...prevData,
+									employeeName: e.target.value,
+								}));
+							}
+						}}
 						placeholder="Select Employee"
 					>
 						{employees?.map((_) => (
@@ -124,12 +126,14 @@ const ShiftModal = ({
 						name="name"
 						label="Role"
 						valueText={formData?.role || ""}
-						handleChange={(e) =>
-							setFormData((prevData) => ({
-								...prevData,
-								role: e.target.value,
-							}))
-						}
+						handleChange={(e) => {
+							if (e.target.value) {
+								setFormData((prevData) => ({
+									...prevData,
+									role: e.target.value,
+								}));
+							}
+						}}
 						options={roles}
 						placeholder="Select Role"
 					/>
@@ -145,12 +149,13 @@ const ShiftModal = ({
 						name="name"
 						label="Location"
 						valueText={formData?.location || ""}
-						handleChange={(e) =>
-							setFormData((prevData) => ({
-								...prevData,
-								location: e.target.value,
-							}))
-						}
+						handleChange={(e) => {
+							if (e.target.value)
+								setFormData((prevData) => ({
+									...prevData,
+									location: e.target.value,
+								}));
+						}}
 						options={locations}
 						placeholder="Select Location"
 					/>

@@ -117,7 +117,9 @@ const AddNewOpportunity = ({
 
 	const handleChange = (e) => {
 		const { name, value } = e.target;
-		setFormData((prevData) => ({ ...prevData, [name]: value }));
+		if (value) {
+			setFormData((prevData) => ({ ...prevData, [name]: value }));
+		}
 		if (name === "stage") {
 			setStageError(null);
 		}
@@ -257,13 +259,15 @@ const AddNewOpportunity = ({
 								size={"sm"}
 								value={formData?.address.streetNumber}
 								onChange={(e) => {
-									setFormData({
-										...formData,
-										address: {
-											...formData?.address,
-											streetNumber: e.target.value,
-										},
-									});
+									if (e.target.value) {
+										setFormData({
+											...formData,
+											address: {
+												...formData?.address,
+												streetNumber: e.target.value,
+											},
+										});
+									}
 								}}
 								placeholder="Street Number"
 								required
@@ -293,15 +297,17 @@ const AddNewOpportunity = ({
 									icon={<FaCaretDown />}
 									placeholder="Select Country"
 									value={formData?.address?.country || ""}
-									onChange={(e) =>
-										setFormData({
-											...formData,
-											address: {
-												...formData?.address,
-												country: e.target.value,
-											},
-										})
-									}
+									onChange={(e) => {
+										if (e.target.value) {
+											setFormData({
+												...formData,
+												address: {
+													...formData?.address,
+													country: e.target.value,
+												},
+											});
+										}
+									}}
 								>
 									{COUNTRIES.map(({ type, code }) => (
 										<option key={type} value={code}>
@@ -315,15 +321,17 @@ const AddNewOpportunity = ({
 									icon={<FaCaretDown />}
 									placeholder="Select Province / State"
 									value={formData?.address?.state || ""}
-									onChange={(e) =>
-										setFormData({
-											...formData,
-											address: {
-												...formData?.address,
-												state: e.target.value,
-											},
-										})
-									}
+									onChange={(e) => {
+										if (e.target.value) {
+											setFormData({
+												...formData,
+												address: {
+													...formData?.address,
+													state: e.target.value,
+												},
+											});
+										}
+									}}
 								>
 									{provinces.map(({ name, id }) => (
 										<option key={name} value={id}>
@@ -360,12 +368,14 @@ const AddNewOpportunity = ({
 							name="province"
 							label="Region"
 							valueText={formData?.region || ""}
-							handleChange={(e) =>
-								setFormData((prevData) => ({
-									...prevData,
-									region: e.target.value,
-								}))
-							}
+							handleChange={(e) => {
+								if (e.target.value) {
+									setFormData((prevData) => ({
+										...prevData,
+										region: e.target.value,
+									}));
+								}
+							}}
 							options={provinces}
 							placeholder="Select Region"
 						/>

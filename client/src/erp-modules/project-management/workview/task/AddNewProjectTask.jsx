@@ -231,7 +231,7 @@ const AddNewProjectTask = ({ isOpen, onClose, task, projectId }) => {
 												borderRadius="10px"
 												value={todoItem.selectedAssignee}
 												onChange={(e) => {
-													if (e.target.value !== "") {
+													if (e.target.value) {
 														setTodoItem((prev) => ({
 															...prev,
 															selectedAssignee: e.target.value,

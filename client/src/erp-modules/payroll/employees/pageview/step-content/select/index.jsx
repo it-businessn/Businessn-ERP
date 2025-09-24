@@ -25,11 +25,13 @@ const SelectTypeRecord = ({ param, formData, setFormData, handleConfirm, size = 
 				name={param.param_key}
 				value={formData[param.param_key] || ""}
 				onChange={(e) => {
-					setFormData((prev) => ({
-						...prev,
-						[param.param_key]: e.target.value,
-					}));
-					handleConfirm();
+					if (e.target.value) {
+						setFormData((prev) => ({
+							...prev,
+							[param.param_key]: e.target.value,
+						}));
+						handleConfirm();
+					}
 				}}
 			>
 				{param.name === "Department" && formData?.employmentCostCenter !== ""

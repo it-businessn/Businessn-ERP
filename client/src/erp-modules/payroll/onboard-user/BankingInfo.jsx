@@ -158,9 +158,10 @@ const BankingInfo = ({ bankingSubStep, setBankingSubStep, formData, handleChange
 							<Select
 								size="sm"
 								value={formData.bankingInfo.payStubSendByEmail}
-								onChange={(e) =>
-									handleBankInfoChange("bankingInfo", "payStubSendByEmail", e.target.value)
-								}
+								onChange={(e) => {
+									if (e.target.value)
+										handleBankInfoChange("bankingInfo", "payStubSendByEmail", e.target.value);
+								}}
 							>
 								<option value="Yes">Yes</option>
 								<option value="No">No</option>
@@ -211,9 +212,10 @@ const BankingInfo = ({ bankingSubStep, setBankingSubStep, formData, handleChange
 							<Select
 								size="sm"
 								value={formData.bankingInfo.directDeposit}
-								onChange={(e) =>
-									handleBankInfoChange("bankingInfo", "directDeposit", e.target.value)
-								}
+								onChange={(e) => {
+									if (e.target.value)
+										handleBankInfoChange("bankingInfo", "directDeposit", e.target.value);
+								}}
 							>
 								<option value="Yes">Yes</option>
 								<option value="No">No</option>

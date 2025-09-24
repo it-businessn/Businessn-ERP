@@ -31,18 +31,34 @@ import PayrollService from "services/PayrollService";
 
 const Affiliates = () => {
 	const loggedInUser = LocalStorageService.getItem("user");
-	const company = LocalStorageService.getItem("selectedCompany");
-	const deptName = loggedInUser?.role === ROLES.MANAGER ? loggedInUser?.department : null;
-
 	const { id, stepNo } = useParams();
+
+	const company = LocalStorageService.getItem("selectedCompany");
 	const [employee, setEmployee] = useState(null);
-	const [lastBadgeId, setLastBadgeId] = useState(null);
-	const [userId, setUserId] = useState(id || loggedInUser._id);
+	const [defaultDept, setDefaultDept] = useState(null);
+	const [defaultUser, setDefaultUser] = useState(null);
+	const [userId, setUserId] = useState(null);
 	const [filteredEmployees, setFilteredEmployees] = useState(null);
 	const [tabIndex, setTabIndex] = useState(parseInt(stepNo) || 0);
+	const [lastBadgeId, setLastBadgeId] = useState(null);
 
 	const { payGroups, selectedPayGroupOption } = usePaygroup(company, false);
-	const employees = useCompanyEmployees(company, deptName, selectedPayGroupOption);
+	const employees = useCompanyEmployees(company, defaultDept, selectedPayGroupOption);
+
+	useEffect(() => {
+		const getUserId = () => {
+			if (id) {
+				setUserId(id);
+				return;
+			}
+			if (loggedInUser.role !== ROLES.SHADOW_ADMIN) {
+				setUserId(loggedInUser._id);
+				setDefaultUser(loggedInUser);
+				setDefaultDept(loggedInUser?.role === ROLES.MANAGER ? loggedInUser?.department : null);
+			}
+		};
+		getUserId();
+	}, [id]);
 
 	useEffect(() => {
 		const fetchCompanyLastBadgeID = async () => {
@@ -69,10 +85,10 @@ const Affiliates = () => {
 
 	const isActivePayroll =
 		employee?.payrollStatus?.includes("Active") ||
-		(!id && !employee && loggedInUser?.payrollStatus?.includes("Active"));
+		(!id && !employee && defaultUser?.payrollStatus?.includes("Active"));
 
-	const employeeID = employee?.employeeNo || (!id && !employee && loggedInUser?.employeeId);
-	const employeeName = employee?.empId?.fullName || (!id && !employee && loggedInUser?.fullName);
+	const employeeID = employee?.employeeNo || (!id && !employee && defaultUser?.employeeId);
+	const employeeName = employee?.empId?.fullName || (!id && !employee && defaultUser?.fullName);
 
 	const EMP_INFO_TABS = [
 		{

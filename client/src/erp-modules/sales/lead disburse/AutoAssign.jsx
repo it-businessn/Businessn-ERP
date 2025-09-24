@@ -41,15 +41,17 @@ const AutoAssign = () => {
 	const handleChange = (e) => {
 		const { name, value } = e.target;
 
-		setSetUpConfigData((prevData) => ({
-			...prevData,
-			[name]: value,
-		}));
+		if (value) {
+			setSetUpConfigData((prevData) => ({
+				...prevData,
+				[name]: value,
+			}));
 
-		setSetUpConfigData((prevData) => ({
-			...prevData,
-			AssignLeadTo: setUpConfigData.isIdleLeadReassignment === "Disable",
-		}));
+			setSetUpConfigData((prevData) => ({
+				...prevData,
+				AssignLeadTo: setUpConfigData.isIdleLeadReassignment === "Disable",
+			}));
+		}
 		handleSubmit();
 	};
 	const handleSubmit = async () => {

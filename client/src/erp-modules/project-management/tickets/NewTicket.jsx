@@ -62,7 +62,7 @@ const NewTicket = ({
 
 	const handleChange = (e) => {
 		const { name, value } = e.target;
-		setFormData((prevData) => ({ ...prevData, [name]: value }));
+		if (value) setFormData((prevData) => ({ ...prevData, [name]: value }));
 	};
 
 	const handleFileChange = (e) => {
@@ -247,12 +247,14 @@ const NewTicket = ({
 									name="fullName"
 									label="Assignee"
 									valueText={formData?.assignee}
-									handleChange={(e) =>
-										setFormData((prevData) => ({
-											...prevData,
-											assignee: e.target.value,
-										}))
-									}
+									handleChange={(e) => {
+										if (e.target.value) {
+											setFormData((prevData) => ({
+												...prevData,
+												assignee: e.target.value,
+											}));
+										}
+									}}
 									options={employees}
 									placeholder="Select assignee"
 									required

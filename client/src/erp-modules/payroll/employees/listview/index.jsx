@@ -17,7 +17,7 @@ import useCompany from "hooks/useCompany";
 import useEmployees from "hooks/useEmployees";
 import usePaygroup from "hooks/usePaygroup";
 import PageLayout from "layouts/PageLayout";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { FaPlus, FaSearch } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { payrollEmployeePath } from "routes";
@@ -61,7 +61,6 @@ const EmployeeListView = () => {
 	const [filteredDept, setFilteredDept] = useState([]);
 	const [filteredCC, setFilteredCC] = useState([]);
 	const [empName, setEmpName] = useState("");
-	// const [showOnboard, setShowOnboard] = useState(false);
 	const [selectEmpList, setSelectEmpList] = useState(false);
 	const [emailType, setEmailType] = useState(null);
 
@@ -70,7 +69,7 @@ const EmployeeListView = () => {
 	const handleClick = (val) => {
 		if (val === "terminate") {
 			const empPath = `${payrollEmployeePath}/info/${loggedInUser._id}/3`;
-			navigate(empPath);
+			navigate(payrollEmployeePath);
 		}
 		if (val === "send-login") {
 			setEmailType("creds");

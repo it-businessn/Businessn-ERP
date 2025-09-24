@@ -52,7 +52,7 @@ const UserList = ({
 							email,
 							role,
 						}) => (
-							<Tr key={empId?._id}>
+							<Tr key={_id || empId?._id}>
 								<Td w={"200px"} whiteSpace={"pre-wrap"} py={1} px={1.5} fontSize={"xs"}>
 									{empId?.fullName || fullName}
 								</Td>

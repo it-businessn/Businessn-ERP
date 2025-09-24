@@ -25,7 +25,11 @@ const SelectBox = ({
 			color={color}
 			value={value}
 			placeholder={placeholder}
-			onChange={(e) => handleChange(e.target.value)}
+			onChange={(e) => {
+				if (e.target.value) {
+					handleChange(e.target.value);
+				}
+			}}
 		>
 			{data?.map((_) => (
 				<option value={_[name]} key={_._id}>

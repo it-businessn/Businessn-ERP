@@ -149,7 +149,11 @@ const PersonalInfo = ({
 								<Select
 									size="sm"
 									value={formData.personalInfo.gender}
-									onChange={(e) => handleChange("personalInfo", "gender", e.target.value)}
+									onChange={(e) => {
+										if (e.target.value) {
+											handleChange("personalInfo", "gender", e.target.value);
+										}
+									}}
 									placeholder="Select Gender"
 								>
 									<option value="male">Male</option>
@@ -327,7 +331,11 @@ const PersonalInfo = ({
 								<FormLabel size="sm">Country</FormLabel>
 								<Select
 									value={formData.contactInfo.country}
-									onChange={(e) => handleChange("contactInfo", "country", e.target.value)}
+									onChange={(e) => {
+										if (e.target.value) {
+											handleChange("contactInfo", "country", e.target.value);
+										}
+									}}
 									placeholder="Select Country"
 								>
 									{COUNTRIES.map(({ type, code }) => (
@@ -342,7 +350,11 @@ const PersonalInfo = ({
 								<FormLabel size="sm">Province/State</FormLabel>
 								<Select
 									value={formData.contactInfo.province}
-									onChange={(e) => handleChange("contactInfo", "province", e.target.value)}
+									onChange={(e) => {
+										if (e.target.value) {
+											handleChange("contactInfo", "province", e.target.value);
+										}
+									}}
 									placeholder="Select Region"
 								>
 									{availableProvinces.map(({ name, id }) => (
@@ -415,9 +427,15 @@ const PersonalInfo = ({
 							<FormLabel size="sm">Relationship</FormLabel>
 							<Select
 								value={formData.emergencyContact.emergencyContactRelationship}
-								onChange={(e) =>
-									handleChange("emergencyContact", "emergencyContactRelationship", e.target.value)
-								}
+								onChange={(e) => {
+									if (e.target.value) {
+										handleChange(
+											"emergencyContact",
+											"emergencyContactRelationship",
+											e.target.value,
+										);
+									}
+								}}
 								placeholder="Select Relationship"
 							>
 								<option value="spouse">Spouse</option>

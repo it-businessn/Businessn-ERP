@@ -53,7 +53,11 @@ export const OtherMoniesInfo = ({ roeData, handleArrayChange, removeArrayRow, ad
 								<Select
 									placeholder="Select Code"
 									value={om.code}
-									onChange={(e) => handleArrayChange("otherMonies", i, "code", e.target.value)}
+									onChange={(e) => {
+										if (e.target.value) {
+											handleArrayChange("otherMonies", i, "code", e.target.value);
+										}
+									}}
 								>
 									{OTHER_MONIES_OPTIONS.map((o) => (
 										<option key={o.code} value={o.code}>

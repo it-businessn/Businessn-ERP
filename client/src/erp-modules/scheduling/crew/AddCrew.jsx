@@ -103,7 +103,9 @@ const AddCrew = ({ company, isOpen, onClose, costCenters, departments, setRefres
 							name="fullName"
 							label=""
 							valueText={publisher || ""}
-							handleChange={(e) => setPublisher(e.target.value)}
+							handleChange={(e) => {
+								if (e.target.value) setPublisher(e.target.value);
+							}}
 							options={employees}
 							placeholder="Select user"
 						/>

@@ -56,7 +56,7 @@ const ExtraTimeEntryModal = ({
 
 	const handleChange = (e) => {
 		const { name, value } = e.target;
-		setFormData((prevData) => ({ ...prevData, [name]: value }));
+		if (value) setFormData((prevData) => ({ ...prevData, [name]: value }));
 	};
 	const { onClose } = useDisclosure();
 
@@ -103,12 +103,14 @@ const ExtraTimeEntryModal = ({
 						name="fullName"
 						label="Select employee"
 						valueText={formData?.employeeId}
-						handleChange={(e) =>
-							setFormData((prevData) => ({
-								...prevData,
-								employeeId: e.target.value,
-							}))
-						}
+						handleChange={(e) => {
+							if (e.target.value) {
+								setFormData((prevData) => ({
+									...prevData,
+									employeeId: e.target.value,
+								}));
+							}
+						}}
 						options={employees}
 						placeholder="Select employee"
 					/>
