@@ -122,7 +122,7 @@ const EmployeeList = ({ employees }) => {
 							</Td>
 							<Td py={0} borderBottomColor={borderColor}>
 								<Text fontSize="sm" fontFamily="mono">
-									{employeeNo}
+									{positions?.[0]?.cardNum || positions?.[0]?.employeeCardNumber || employeeNo}
 								</Text>
 							</Td>
 							<Td py={0} borderBottomColor={borderColor}>
