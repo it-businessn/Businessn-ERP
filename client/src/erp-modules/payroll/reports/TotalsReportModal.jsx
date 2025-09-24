@@ -165,8 +165,9 @@ const TotalsReportModal = ({
 						<TextTitle title="Company#:" />
 						<TextTitle title="Date Pulled:" />
 					</VStack>
+
 					<VStack flex={0.6} spacing={0}>
-						<NormalTextTitle title={company} />
+						<NormalTextTitle title={companyDetails.name} />
 						<NormalTextTitle title={companyDetails.registration_number} />
 						<NormalTextTitle title={dayMonthYear(reportData?.updatedOn)} />
 					</VStack>

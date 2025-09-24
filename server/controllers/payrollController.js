@@ -1,18 +1,20 @@
 const moment = require("moment");
+
 const EmployeeAlertsViolationInfo = require("../models/EmployeeAlertsViolationInfo");
 const EmployeeBankingInfo = require("../models/EmployeeBankingInfo");
 const EmployeeProfileInfo = require("../models/EmployeeProfileInfo");
 const Group = require("../models/Group");
+const EmployeeEmploymentInfo = require("../models/EmployeeEmploymentInfo");
+const EmployeePayInfo = require("../models/EmployeePayInfo");
+const Timesheet = require("../models/Timesheet");
 
 const { PAYRUN_TYPE, TIMESHEET_STATUS, PAY_TYPES_TITLE, ALERTS_TYPE } = require("../services/data");
 const { fetchActiveEmployees } = require("./userController");
-const Timesheet = require("../models/Timesheet");
 const { getHourlyAggregatedResult } = require("./payrunHourlyAllocatedCalc");
 const { getPayrunEEContributionResult } = require("./payrunEEContrCalc");
 const { getPayrunERContributionResult } = require("./payrunERContrCalc");
 const { getSumRegHrs } = require("../services/payrollService");
-const EmployeeEmploymentInfo = require("../models/EmployeeEmploymentInfo");
-const EmployeePayInfo = require("../models/EmployeePayInfo");
+const { addPayStub } = require("./payStubController");
 
 //update roles-
 
@@ -478,6 +480,32 @@ const deleteAlerts = async (empId, type) => {
 	// 	}
 };
 
+const getRecordId = async (
+	empPayStubResult,
+	empId,
+	companyName,
+	payPeriodPayDate,
+	scheduleFrequency,
+) => {
+	if (empPayStubResult) {
+		return empPayStubResult._id;
+	}
+	const payStub = {
+		empId,
+		companyName,
+		payPeriodPayDate,
+		commission: 0,
+		retroactive: 0,
+		vacationPayout: 0,
+		bonus: 0,
+		terminationPayout: 0,
+		reimbursement: 0,
+		scheduleFrequency,
+	};
+	const newPayStub = await addPayStub(payStub);
+	return newPayStub._id;
+};
+
 module.exports = {
 	getAllPayGroups,
 	getPayGroup,
@@ -491,4 +519,5 @@ module.exports = {
 	getERContribution,
 	getTotalAlertsAndViolationsInfo,
 	getSumRegHrs,
+	getRecordId,
 };

@@ -41,10 +41,10 @@ export const usePayrollReports = (company, selectedYear, payGroupSchedule, selec
 			}
 		};
 
-		const fetchReportData = async () => {
+		const fetchRegisterReportData = async () => {
 			try {
 				setReport(null);
-				const { data } = await PayrollService.getPayReportDetails(
+				const { data } = await PayrollService.getRegisterDetails(
 					company,
 					payNum,
 					extraRun,
@@ -78,7 +78,7 @@ export const usePayrollReports = (company, selectedYear, payGroupSchedule, selec
 		if (payNum && showTotalsReport) {
 			fetchFundTotalsInfo();
 		} else if (payNum && showReport) {
-			fetchReportData();
+			fetchRegisterReportData();
 		} else if (payNum && showJournalsReport) {
 			fetchJournalInfo();
 		}

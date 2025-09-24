@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 
 const payrollController = require("../controllers/payrollController");
+const payStubController = require("../controllers/payStubController");
 
 router.get("/payGroups/:companyName", payrollController.getAllPayGroups);
 
@@ -28,5 +29,7 @@ router.post("/payGroups", payrollController.addPayGroup);
 router.put("/payGroups/:id", payrollController.updatePayGroup);
 
 router.post("/generate-alerts", payrollController.addAlertsAndViolations);
+
+router.post("/process", payStubController.addEmployeePayStubInfo);
 
 module.exports = router;

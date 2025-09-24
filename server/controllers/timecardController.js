@@ -21,11 +21,8 @@ const {
 	ROLES,
 } = require("../services/data");
 const { getHolidays } = require("./setUpController");
-const {
-	calcTotalWorkedHours,
-	addOvertimeRecord,
-	addTimesheetEntry,
-} = require("./timesheetController");
+const { addOvertimeRecord, addTimesheetEntry } = require("./timesheetController");
+const { calcTotalWorkedHours } = require("./timecardHelper");
 
 const getTADUsers = async (req, res) => {
 	try {

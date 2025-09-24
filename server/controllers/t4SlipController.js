@@ -24,7 +24,7 @@ const getEmployeeT4Slip = async (req, res) => {
 
 const buildRecord = async (record) => {
 	const empProfileInfo = await EmployeeProfileInfo.findOne({
-		empId: record?.empId._id,
+		empId: record?.empId?._id,
 	}).select(
 		"streetAddressSuite streetAddress city province postalCode country SIN SINIv firstName middleName lastName",
 	);
@@ -72,8 +72,11 @@ const buildT4PayrollData = async (companyName, payPeriodNum) => {
 		.sort({
 			payPeriodProcessingDate: -1,
 		});
+
+	const filteredPayrollData = payrollData.filter((item) => item.empId !== null);
+
 	const t4Data = [];
-	for (const record of payrollData) {
+	for (const record of filteredPayrollData) {
 		const {
 			empId,
 			currentGrossPay,

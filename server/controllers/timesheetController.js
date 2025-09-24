@@ -17,6 +17,7 @@ const {
 const EmployeeEmploymentInfo = require("../models/EmployeeEmploymentInfo");
 const { findEmpPayInfo } = require("./employmentInfoController");
 const { calcPayRates } = require("./payrollHelper");
+const { calcTotalWorkedHours } = require("./timecardHelper");
 
 const findByRecordTimesheets = async (record, skip, limit) => {
 	// const y = await Timesheet.deleteMany({
@@ -280,30 +281,6 @@ const getEmployeeTimesheet = async (req, res) => {
 };
 
 const addTimesheetEntry = async (record) => await Timesheet.create(record);
-
-const calcTotalWorkedHours = (clockIn, clockOut) => {
-	// const hoursWorked = moment.duration(moment(clockOut).diff(moment(clockIn))).asHours();
-	// const totalTime = Math.round(hoursWorked * 100) / 100;
-	// const roundedTime = totalTime.toFixed(2).includes(".99") ? Math.round(totalTime) : totalTime;
-	// return roundedTime;
-
-	const startDate = new Date(clockIn);
-	const endDate = new Date(clockOut);
-
-	const sameHourAndMinute =
-		startDate.getUTCHours() === endDate.getUTCHours() &&
-		startDate.getUTCMinutes() === endDate.getUTCMinutes();
-
-	if (sameHourAndMinute) return 8;
-
-	const totalTime = (endDate - startDate) / (1000 * 60 * 60); // convert ms to hours
-	const fixedTime = totalTime.toFixed(2);
-
-	if (fixedTime.endsWith(".99")) return Math.round(totalTime);
-	if (fixedTime.endsWith(".01")) return Math.floor(totalTime);
-
-	return fixedTime;
-};
 
 const addOvertimeRecord = async (clockIn, clockOut, employeeId, company, source) => {
 	const adjustedClockOut = moment(clockIn).add(8, "hours");
@@ -715,7 +692,6 @@ module.exports = {
 	createManualTimesheet,
 	actionAllTimesheets,
 	updateTimesheetPayType,
-	calcTotalWorkedHours,
 	addOvertimeRecord,
 	addTimesheetEntry,
 	updateTimesheetRole,

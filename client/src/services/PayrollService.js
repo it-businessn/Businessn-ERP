@@ -154,35 +154,35 @@ const PayrollService = {
 	},
 
 	async getEmpPayReportDetails(company, empId) {
-		return apiService.get(`/payroll/payDetailsReport/${company}/${empId}`);
+		return apiService.get(`/payroll/report/${company}/${empId}`);
 	},
 
-	async getPayReportDetails(company, payNum, isExtraRun, payPeriodPayDate, frequency, year) {
+	async getRegisterDetails(company, payNum, isExtraRun, payPeriodPayDate, frequency, year) {
 		return apiService.get(
-			`/payroll/payDetailsReport/${company}/${payNum}/${isExtraRun}/${payPeriodPayDate}/${frequency}/${year}`,
+			`/payroll/report/${company}/${payNum}/${isExtraRun}/${payPeriodPayDate}/${frequency}/${year}`,
 		);
 	},
 
 	async getTotalFundingPayReportDetails(company, payNum, isExtraRun, frequency) {
 		return apiService.get(
-			`/payroll/payDetailsReport/funds/report/${company}/${payNum}/${isExtraRun}/${frequency}`,
+			`/payroll/report/funds/report/${company}/${payNum}/${isExtraRun}/${frequency}`,
 		);
 	},
 
 	async getTotalsPayReportDetails(company, payNum, isExtraRun, frequency) {
 		return apiService.get(
-			`/payroll/payDetailsReport/funds/totals/${company}/${payNum}/${isExtraRun}/${frequency}`,
+			`/payroll/report/funds/totals/${company}/${payNum}/${isExtraRun}/${frequency}`,
 		);
 	},
 
 	async getJournalEntryReportDetails(company, payNum, isExtraRun, frequency) {
 		return apiService.get(
-			`/payroll/payDetailsReport/funds/journals/${company}/${payNum}/${isExtraRun}/${frequency}`,
+			`/payroll/report/funds/journals/${company}/${payNum}/${isExtraRun}/${frequency}`,
 		);
 	},
 
 	async addPayPeriodPayStub(data) {
-		return apiService.post("/payroll/payDetailsReport", data);
+		return apiService.post("/payroll/process", data);
 	},
 
 	async getTotalAlerts(company, payNum) {

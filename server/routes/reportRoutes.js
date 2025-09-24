@@ -1,30 +1,28 @@
 const express = require("express");
 const router = express.Router();
 
-const payStubController = require("../controllers/payStubController");
+const reportController = require("../controllers/reportController");
 
 router.get(
 	"/funds/totals/:companyName/:payPeriodNum/:isExtraRun/:scheduleFrequency",
-	payStubController.getFundingPayDetailsReportInfo,
+	reportController.getFundingReportInfo,
 );
 
 router.get(
 	"/funds/report/:companyName/:payPeriodNum/:isExtraRun/:scheduleFrequency",
-	payStubController.getFundPayDetailsReportInfo,
+	reportController.getFundReportInfo,
 );
 
 router.get(
 	"/funds/journals/:companyName/:payPeriodNum/:isExtraRun/:scheduleFrequency",
-	payStubController.getJournalEntryReportInfo,
+	reportController.getJournalEntryReportInfo,
 );
 
-router.get("/:companyName/:empId", payStubController.getEmployeePayDetailsReportInfo);
+router.get("/:companyName/:empId", reportController.getEmployeeReportInfo);
 
 router.get(
 	"/:companyName/:payPeriodNum/:isExtraRun/:payPeriodPayDate/:scheduleFrequency/:year",
-	payStubController.getPayDetailsReportInfo,
+	reportController.getReportInfo,
 );
-
-router.post("/", payStubController.addEmployeePayStubInfo);
 
 module.exports = router;

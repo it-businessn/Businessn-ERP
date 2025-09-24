@@ -11,7 +11,7 @@ const useEmployeePayReport = (company, payPeriodNum, isOpen, year = "2025") => {
 
 		const fetchHoursWorkedInfo = async () => {
 			try {
-				const { data } = await PayrollService.getPayReportDetails(
+				const { data } = await PayrollService.getRegisterDetails(
 					company,
 					payPeriodNum?.payPeriod,
 					extraRun,

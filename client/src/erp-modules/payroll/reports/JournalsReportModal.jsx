@@ -4,6 +4,7 @@ import ModalLayout from "components/ui/modal/ModalLayout";
 import NormalTextTitle from "components/ui/NormalTextTitle";
 import TextTitle from "components/ui/text/TextTitle";
 import React from "react";
+import { roundUpNumber } from "utils/convertAmt";
 import { dayMonthYear, formatDateBar } from "utils/convertDate";
 import payStubLogo from "../../../assets/logos/BusinessN_lightLogo.jpg";
 
@@ -27,35 +28,46 @@ const JournalsReportModal = ({
 	const JOURNAL_TABLE_ROW_DATA = [
 		// ["", "", "Employee Disbursements", "-6107.89", ""],
 		// ["", "", "Government Remittances", "-3035.56", ""],
-		["", "00000", "Bank", "Funding Withdrawal", "", reportData?.netFundingWithdrawals.toFixed(2)],
+		[
+			"",
+			"00000",
+			"Bank",
+			"Funding Withdrawal",
+			"",
+			roundUpNumber(reportData?.netFundingWithdrawals),
+		],
 		["", "", "", "Net Payroll Payable", "", ""],
-		["", "00000", "EI Payable", "EI Payable", reportData?.totalEIPayable?.toFixed(2), ""],
-		["", "00000", "CPP Payable", "CPP Payable", reportData?.totalCPPPayable?.toFixed(2), ""],
+		["", "00000", "EI Payable", "EI Payable", roundUpNumber(reportData?.totalEIPayable), ""],
+		["", "00000", "CPP Payable", "CPP Payable", roundUpNumber(reportData?.totalCPPPayable), ""],
 		[
 			"",
 			"00000",
 			"Income Tax Payable",
 			"Income Tax Payable",
-			reportData?.totalIncomeTaxPayable?.toFixed(2),
+			roundUpNumber(reportData?.totalIncomeTaxPayable),
 			"",
 		],
 		["", "00000", "Payroll Expense", "Service Charges", "0", ""],
 	];
 
+	const REPORT_FILE_NAME = `${formatDateBar(reportData?.payPeriodEndDate)} PayPeriod#${
+		reportData?.payPeriodNum
+	} Journal Entry Report`;
+
 	let counter = 10;
 	reportData.totalCredit = reportData?.netFundingWithdrawals;
 	reportData.totalDebit =
-		reportData?.totalEIPayable + reportData?.totalCPPPayable + reportData.totalIncomeTaxPayable;
-	reportData?.departmentBreakDown?.map((dept, index) => {
-		dept.code = `${index + 1 * counter}${counter++}`;
+		reportData?.totalEIPayable + reportData?.totalCPPPayable + reportData?.totalIncomeTaxPayable;
+	reportData?.departmentBreakDown?.map((dept, deptIndex) => {
+		dept.code = `${deptIndex + 1 * counter}${counter++}`;
 		reportData.totalCredit +=
 			dept?.CPPPayable +
-			dept.EIPayable +
-			dept.employeeCPPContribution +
-			dept.employeeEIContribution +
-			dept.incomeTaxContribution;
+			dept?.EIPayable +
+			dept?.employeeCPPContribution +
+			dept?.employeeEIContribution +
+			dept?.incomeTaxContribution;
 		reportData.totalDebit +=
-			dept?.grossWageExpense + dept.employerCPPBenefitExpense + dept.employerEIBenefitExpense;
+			dept?.grossWageExpense + dept?.employerCPPBenefitExpense + dept?.employerEIBenefitExpense;
 		return dept;
 	});
 
@@ -68,9 +80,7 @@ const JournalsReportModal = ({
 			textAlign={"center"}
 			fontSize="2xl"
 			isReport={isReport}
-			fileName={`${formatDateBar(reportData?.payPeriodEndDate)} PayPeriod#${
-				reportData?.payPeriodNum
-			} Journal Entry Report`}
+			fileName={REPORT_FILE_NAME}
 			w="95%"
 			mx="auto"
 		>
@@ -149,7 +159,7 @@ const JournalsReportModal = ({
 										<NormalTextTitle size="sm" title={"Gross Wage Expense"} />
 									</Td>
 									<Td isNumeric>
-										<TextTitle size="sm" title={dept.grossWageExpense?.toFixed(2)} />
+										<TextTitle size="sm" title={roundUpNumber(dept.grossWageExpense)} />
 									</Td>
 									<Td isNumeric />
 								</Tr>
@@ -165,7 +175,7 @@ const JournalsReportModal = ({
 										<NormalTextTitle size="sm" title={"CPP Benefits Expense"} />
 									</Td>
 									<Td isNumeric>
-										<TextTitle size="sm" title={dept.employerCPPBenefitExpense?.toFixed(2)} />
+										<TextTitle size="sm" title={roundUpNumber(dept.employerCPPBenefitExpense)} />
 									</Td>
 									<Td isNumeric />
 								</Tr>
@@ -181,7 +191,7 @@ const JournalsReportModal = ({
 										<NormalTextTitle size="sm" title={"EI Benefits Expense"} />
 									</Td>
 									<Td isNumeric>
-										<TextTitle size="sm" title={dept.employerEIBenefitExpense?.toFixed(2)} />
+										<TextTitle size="sm" title={roundUpNumber(dept.employerEIBenefitExpense)} />
 									</Td>
 									<Td isNumeric />
 								</Tr>
@@ -198,7 +208,7 @@ const JournalsReportModal = ({
 									</Td>
 									<Td isNumeric />
 									<Td isNumeric>
-										<TextTitle size="sm" title={dept.CPPPayable?.toFixed(2)} />
+										<TextTitle size="sm" title={roundUpNumber(dept.CPPPayable)} />
 									</Td>
 								</Tr>
 								<Tr>
@@ -214,7 +224,7 @@ const JournalsReportModal = ({
 									</Td>
 									<Td isNumeric />
 									<Td isNumeric>
-										<TextTitle size="sm" title={dept.EIPayable?.toFixed(2)} />
+										<TextTitle size="sm" title={roundUpNumber(dept.EIPayable)} />
 									</Td>
 								</Tr>
 								<Tr>
@@ -230,7 +240,7 @@ const JournalsReportModal = ({
 									</Td>
 									<Td isNumeric />
 									<Td isNumeric>
-										<TextTitle size="sm" title={dept.employeeEIContribution?.toFixed(2)} />
+										<TextTitle size="sm" title={roundUpNumber(dept.employeeEIContribution)} />
 									</Td>
 								</Tr>
 								<Tr>
@@ -246,7 +256,7 @@ const JournalsReportModal = ({
 									</Td>
 									<Td isNumeric />
 									<Td isNumeric>
-										<TextTitle size="sm" title={dept.employeeCPPContribution?.toFixed(2)} />
+										<TextTitle size="sm" title={roundUpNumber(dept.employeeCPPContribution)} />
 									</Td>
 								</Tr>
 								<Tr>
@@ -262,7 +272,7 @@ const JournalsReportModal = ({
 									</Td>
 									<Td isNumeric />
 									<Td isNumeric>
-										<TextTitle size="sm" title={dept.incomeTaxContribution?.toFixed(2)} />
+										<TextTitle size="sm" title={roundUpNumber(dept.incomeTaxContribution)} />
 									</Td>
 								</Tr>
 							</React.Fragment>
@@ -277,7 +287,7 @@ const JournalsReportModal = ({
 									p={3}
 									borderTop="1px solid var(--main_color_black)"
 									align="right"
-									title={reportData.totalDebit?.toFixed(2)}
+									title={roundUpNumber(reportData.totalDebit)}
 								/>
 							</Td>
 							<Td isNumeric>
@@ -285,7 +295,7 @@ const JournalsReportModal = ({
 									p={3}
 									borderTop="1px solid var(--main_color_black)"
 									align="right"
-									title={reportData.totalCredit?.toFixed(2)}
+									title={roundUpNumber(reportData.totalCredit)}
 								/>
 							</Td>
 						</Tr>

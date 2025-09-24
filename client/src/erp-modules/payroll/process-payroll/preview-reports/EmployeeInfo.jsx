@@ -8,6 +8,11 @@ import { formatDateBar } from "utils/convertDate";
 import InformationSection from "../statement/InformationSection";
 import { ACCRUAL_TYPES } from "./data";
 
+const buildAddress = (address) =>
+	`${address?.city || ""}${address?.city ? "," : ""}  ${address?.state || ""} ${
+		address?.postalCode || ""
+	}`;
+
 const BasicInfo = ({ title1, title2, mt, border, weight, whiteSpace }) => (
 	<HStack w={"100%"} mt={mt} spacing={border && 0}>
 		<TextTitle
@@ -48,16 +53,12 @@ const EmployeeInfo = ({ data, companyNum, isMobile }) => {
 						<BasicInfo
 							whiteSpace="wrap"
 							title1={"Address:"}
-							title2={
-								data?.empId?.primaryAddress?.streetNumber === ""
-									? "NA"
-									: data?.empId?.primaryAddress?.streetNumber
-							}
+							title2={data?.empId?.primaryAddress?.streetNumber || "NA"}
 						/>
 						<BasicInfo
 							title1={""}
 							whiteSpace="wrap"
-							title2={`${data?.empId?.primaryAddress?.city}, ${data?.empId?.primaryAddress?.state} ${data?.empId?.primaryAddress?.postalCode}`}
+							title2={buildAddress(data?.empId?.primaryAddress)}
 						/>
 						<BasicInfo mt={4} title1={"Employee#:"} title2={data?.empId?.employeeNo} />
 						<BasicInfo title1={"Company#:"} title2={companyNum} />
