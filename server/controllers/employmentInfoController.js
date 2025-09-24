@@ -318,4 +318,5 @@ module.exports = {
 	findEmployeeEmploymentInfo,
 	updateEmploymentInfo,
 	findEmpPayInfo,
+	updateTADEmployee,
 };

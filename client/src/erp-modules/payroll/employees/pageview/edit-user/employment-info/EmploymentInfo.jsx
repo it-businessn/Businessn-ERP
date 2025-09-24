@@ -326,7 +326,7 @@ const EmploymentInfo = ({ company, userId, payGroups, selectedPayGroupOption, la
 									}
 								/>
 							</FormControl>
-							<FormControl isRequired>
+							<FormControl>
 								<FormLabel size="sm">Leave Date</FormLabel>
 								<Input
 									size="sm"

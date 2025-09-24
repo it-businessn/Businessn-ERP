@@ -6,6 +6,7 @@ const EmployeePayInfo = require("../models/EmployeePayInfo");
 const EmployeeProfileInfo = require("../models/EmployeeProfileInfo");
 const { encryptData } = require("../services/encryptDataService");
 const { addEmployee } = require("./appController");
+const { updateTADEmployee } = require("./employmentInfoController");
 
 const getNewUserID = async (companyName, data) => {
 	const newEmployee = await addEmployee(companyName, data);
