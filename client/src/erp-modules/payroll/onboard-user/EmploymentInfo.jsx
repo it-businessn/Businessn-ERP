@@ -20,6 +20,7 @@ import {
 	StepTitle,
 } from "@chakra-ui/react";
 import TextTitle from "components/ui/text/TextTitle";
+import { COMPANIES } from "constant";
 import useCostCenter from "hooks/useCostCenter";
 import useDepartment from "hooks/useDepartment";
 import usePaygroup from "hooks/usePaygroup";
@@ -50,6 +51,7 @@ const EmploymentInfo = ({
 	const { payGroups } = usePaygroup(company, false);
 
 	const [autoGenerate, setAutoGenerate] = useState(false);
+	const [filteredDept, setFilteredDept] = useState(departments);
 
 	useEffect(() => {
 		if (autoGenerate) {
@@ -57,6 +59,17 @@ const EmploymentInfo = ({
 			handleChange("employmentInfo", "timeManagementBadgeID", newID);
 		}
 	}, [autoGenerate, lastBadgeId]);
+
+	useEffect(() => {
+		if (company === COMPANIES.NW && departments && formData.employmentInfo.costCenter) {
+			const selectedDepts = departments?.filter((_) =>
+				_.name.includes(formData.employmentInfo.costCenter.slice(0, 4)),
+			);
+			setFilteredDept(selectedDepts);
+		} else {
+			setFilteredDept(departments);
+		}
+	}, [formData.employmentInfo.costCenter, departments]);
 
 	return (
 		<Flex height="100%">
@@ -274,14 +287,14 @@ const EmploymentInfo = ({
 							</FormControl>
 							<FormControl isRequired>
 								<FormLabel size="sm">Department</FormLabel>
-								{departments ? (
+								{filteredDept ? (
 									<Select
 										size="sm"
 										value={formData.employmentInfo.department}
 										onChange={(e) => handleChange("employmentInfo", "department", e.target.value)}
 										placeholder="Select department"
 									>
-										{departments.map((dept) => (
+										{filteredDept.map((dept) => (
 											<option key={dept.name} value={dept.name}>
 												{dept.name}
 											</option>
