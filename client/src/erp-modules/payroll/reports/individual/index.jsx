@@ -17,9 +17,9 @@ import LocalStorageService from "services/LocalStorageService";
 import PayrollService from "services/PayrollService";
 import { getPayNum, isExtraPay, sortRecordsByDate } from "utils";
 import { dayMonthYear, formatDateRange } from "utils/convertDate";
-import EmpProfileSearch from "../employees/EmpProfileSearch";
-import { tabScrollCss } from "../onboard-user/customInfo";
-import PreviewReportsModal from "./PreviewReportsModal";
+import EmpProfileSearch from "../../employees/EmpProfileSearch";
+import { tabScrollCss } from "../../onboard-user/customInfo";
+import PreviewReportsModal from "../PreviewReportsModal";
 
 const Reports = () => {
 	const { isMobile } = useBreakpointValue();
@@ -29,35 +29,41 @@ const Reports = () => {
 	const [payStub, setPayStub] = useState(null);
 
 	const loggedInUser = LocalStorageService.getItem("user");
-	const deptName = loggedInUser?.role === ROLES.MANAGER ? loggedInUser?.department : null;
 	const [employee, setEmployee] = useState(null);
-	const isActivePayroll = employee?.payrollStatus?.includes("Active");
-
+	const [userId, setUserId] = useState(null);
+	const [defaultDept, setDefaultDept] = useState(null);
+	const [empPayStub, setEmpPayStub] = useState(null);
 	const [filteredEmployees, setFilteredEmployees] = useState(null);
+
 	const { hasMultiPaygroups, selectedPayGroupOption, setSelectedPayGroupOption, payGroups } =
 		usePaygroup(company, false);
 
-	const employees = useCompanyEmployees(company, deptName, selectedPayGroupOption);
+	const employees = useCompanyEmployees(company, defaultDept, selectedPayGroupOption);
+
+	const isActivePayroll = employee?.payrollStatus?.includes("Active");
 
 	useEffect(() => {
 		setFilteredEmployees(employees);
 	}, [employees]);
 
-	const [userId, setUserId] = useState(loggedInUser._id);
-	const [empPayStub, setEmpPayStub] = useState(null);
+	useEffect(() => {
+		if (loggedInUser.role !== ROLES.SHADOW_ADMIN) {
+			setUserId(loggedInUser._id);
+			setDefaultDept(loggedInUser?.role === ROLES.MANAGER ? loggedInUser?.department : null);
+		}
+	}, []);
 
 	useEffect(() => {
 		const fetchEmpPayStubs = async () => {
 			try {
 				const { data } = await PayrollService.getEmpPayReportDetails(company, userId);
-
 				const sortedResult = sortRecordsByDate(data, "payPeriodNum", false, false);
 				setEmpPayStub(sortedResult);
 			} catch (error) {
 				console.error(error);
 			}
 		};
-		fetchEmpPayStubs();
+		if (userId) fetchEmpPayStubs();
 	}, [userId]);
 
 	const handleRegister = (payNo, isExtra) => {
@@ -118,7 +124,7 @@ const Reports = () => {
 				css={tabScrollCss}
 			>
 				<Tbody>
-					{(!empPayStub || empPayStub?.length === 0) && (
+					{empPayStub?.length === 0 && (
 						<EmptyRowRecord data={empPayStub} colSpan={REPORT_COLS.length} />
 					)}
 					{empPayStub?.map(

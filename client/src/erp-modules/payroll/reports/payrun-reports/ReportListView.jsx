@@ -2,22 +2,24 @@ import { Box, Select } from "@chakra-ui/react";
 import useCompany from "hooks/useCompany";
 import usePaygroup from "hooks/usePaygroup";
 import PageLayout from "layouts/PageLayout";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useBreakpointValue } from "services/Breakpoint";
 import LocalStorageService from "services/LocalStorageService";
 import { CURRENT_YEAR } from "utils/convertDate";
-import { tabScrollCss } from "../onboard-user/customInfo";
-import WorkviewTable from "../workview/paygroup-header-table/WorkviewTable";
-import { ReportModals } from "./components/ReportModals";
-import { usePayrollReports } from "./hooks/usePayrollReports";
+import { usePayrollReports } from "../../../../hooks/usePayrollReports";
+import { tabScrollCss } from "../../onboard-user/customInfo";
+import WorkviewTable from "../../workview/paygroup-header-table/WorkviewTable";
+import { ReportModals } from "../components/ReportModals";
 
 const ReportListView = () => {
 	const { year } = useParams();
 	const companyDetails = LocalStorageService.getItem("user")?.companyId;
 	const { company } = useCompany(LocalStorageService.getItem("selectedCompany"));
+
 	const [yearsList, setYearsList] = useState([CURRENT_YEAR]);
 	const [selectedYear, setSelectedYear] = useState(year || CURRENT_YEAR);
+
 	const { isMobile } = useBreakpointValue();
 
 	const {
@@ -45,7 +47,7 @@ const ReportListView = () => {
 	} = usePayrollReports(company, selectedYear, payGroupSchedule, selectedPayGroup);
 
 	// Update years list when paygroup changes
-	useState(() => {
+	useEffect(() => {
 		if (selectedPayGroup) {
 			setYearsList(selectedPayGroup?.yearSchedules.map(({ year }) => year));
 		}

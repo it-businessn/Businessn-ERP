@@ -55,6 +55,7 @@ const AddAccountModal = ({ company, setShowOnboard, showOnboard, setIsRefresh })
 				/>
 			</VStack>
 			<ActionButtonGroup
+				isDisabled={!formData?.accCode || !formData?.accountName}
 				submitBtnName={"Add"}
 				onClose={handleClose}
 				onOpen={handleSubmit}

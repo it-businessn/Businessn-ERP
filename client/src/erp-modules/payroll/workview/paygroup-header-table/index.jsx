@@ -5,7 +5,7 @@ import { tabScrollCss } from "erp-modules/payroll/onboard-user/customInfo";
 import NewEmployeeOnboardingModal from "erp-modules/payroll/onboard-user/NewEmployeeOnboardingModal";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { payrollROEPath } from "routes";
+import { payrollEmployeePath, payrollROEPath } from "routes";
 import ExtraPayrunModal from "./ExtraPayrunModal";
 import PayrollActions from "./PayrollActions";
 import WorkviewTable from "./WorkviewTable";
@@ -26,6 +26,7 @@ const PaygroupTable = ({
 }) => {
 	const [showExtraPayrun, setShowExtraPayrun] = useState(false);
 	const [showOnboard, setShowOnboard] = useState(false);
+
 	const navigate = useNavigate();
 
 	const handleClick = (val) => {
@@ -33,13 +34,14 @@ const PaygroupTable = ({
 			setShowExtraPayrun(true);
 		}
 		if (val === "empUpdate") {
-			navigate(empPath);
+			navigate(payrollEmployeePath);
 		}
 		if (val === "onboard") {
 			setShowOnboard(true);
 		}
 		if (val === "terminate") {
-			navigate(`${empPath}/${loggedInUser._id}/3`);
+			navigate(payrollEmployeePath);
+			// navigate(`${empPath}/${loggedInUser._id}/3`);
 		}
 		if (val === "roe") {
 			navigate(payrollROEPath);

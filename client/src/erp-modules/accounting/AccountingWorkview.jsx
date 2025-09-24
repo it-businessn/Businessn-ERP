@@ -248,6 +248,7 @@ const AccountingWorkview = () => {
 						<PrimaryButton
 							bg="var(--primary_button_bg1)"
 							w="100px"
+							isDisabled={!rows[0].accountName}
 							size="xs"
 							name="Post"
 							onOpen={handleSubmit}

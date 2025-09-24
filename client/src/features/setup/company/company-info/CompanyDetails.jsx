@@ -24,7 +24,7 @@ const CompanyDetails = ({ company, modules }) => {
 					<LeftIconButton
 						color="var(--nav_color)"
 						border="2px solid var(--filter_border_color)"
-						name="Update"
+						name="Update CRA#"
 						borderRadius="10px"
 						variant="ghost"
 						isFilter

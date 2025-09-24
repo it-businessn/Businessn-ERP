@@ -322,7 +322,11 @@ const AddQuestionForm = () => {
 							</FormControl>
 						</>
 					)}
-					<ActionButtonGroup submitBtnName={"Add Question"} onClose={() => navigate(-1)} />
+					<ActionButtonGroup
+						isDisabled={!assessmentType}
+						submitBtnName={"Add Question"}
+						onClose={() => navigate(-1)}
+					/>
 				</form>
 			</BoxCard>
 		</Box>

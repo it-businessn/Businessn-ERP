@@ -15,8 +15,7 @@ import { IoRefresh } from "react-icons/io5";
 import { useParams } from "react-router-dom";
 import LocalStorageService from "services/LocalStorageService";
 import TimesheetService from "services/TimesheetService";
-import { isManager } from "utils";
-import { getDefaultDate, getMomentDate } from "utils/convertDate";
+import { getMomentDate } from "utils/convertDate";
 import ActionAll from "./ActionAll";
 import DateFilterPopup from "./DateFilterPopup";
 import OtherFilter from "./OtherFilter";
@@ -27,9 +26,7 @@ import { convertToMinutes, TIMESHEET_STATUS, TIMESHEET_STATUS_LABEL } from "./da
 const Timesheets = () => {
 	const loggedInUser = LocalStorageService.getItem("user");
 	const deptName = loggedInUser?.role === ROLES.MANAGER ? loggedInUser?.department : null;
-	const isManagerView = isManager(loggedInUser?.role);
 	const { id } = useParams();
-	const userId = id ? id : isManagerView ? null : loggedInUser._id;
 	const toast = useToast();
 	const { company } = useCompany(LocalStorageService.getItem("selectedCompany"));
 	const {
@@ -49,7 +46,6 @@ const Timesheets = () => {
 	const lastRecord = payGroupSchedule?.length > 0 && payGroupSchedule[closestRecordIndex - 1];
 	const [dataRefresh, setDataRefresh] = useState(false);
 	const [filter, setFilter] = useState(null);
-	const [date, setDate] = useState(getDefaultDate);
 	const [timesheets, setTimesheets] = useState(null);
 	const [timesheetData, setTimesheetData] = useState([]);
 	// const [selectedFilter, setSelectedFilter] = useState("This pay period");

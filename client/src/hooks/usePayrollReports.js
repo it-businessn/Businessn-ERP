@@ -11,13 +11,6 @@ export const usePayrollReports = (company, selectedYear, payGroupSchedule, selec
 	const [journalReport, setJournalReport] = useState(null);
 	const [reportData, setReport] = useState(null);
 
-	const getPayNum = (payNo, isExtra) =>
-		isExtra
-			? payGroupSchedule?.find(
-					({ payPeriod, isExtraRun }) => payPeriod === parseInt(payNo) && isExtraRun === isExtra,
-			  )
-			: payNo;
-
 	useEffect(() => {
 		if (!selectedPayPeriodDetails?.current) {
 			return;
@@ -96,6 +89,13 @@ export const usePayrollReports = (company, selectedYear, payGroupSchedule, selec
 		showJournalsReport,
 		selectedYear,
 	]);
+
+	const getPayNum = (payNo, isExtra) =>
+		isExtra
+			? payGroupSchedule?.find(
+					({ payPeriod, isExtraRun }) => payPeriod === parseInt(payNo) && isExtraRun === isExtra,
+			  )
+			: payNo;
 
 	const handleRegister = (payNo, isExtra, payPeriodPayDate) => {
 		const payNum = getPayNum(payNo, isExtra);
