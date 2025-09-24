@@ -174,18 +174,16 @@ const EmployeeTimeCard = ({ selectedUser, company, isMobile }) => {
 							<TextTitle align={"center"} size={isMobile ? "sm" : "md"} title={monthDayYear} />
 						</Box>
 					) : (
-						<LeftIconButton
-							size="3em"
-							name={
-								<VStack p={3}>
-									<TextTitle size="2xl" title={formattedTime} />
-									<TextTitle title={monthDayYear} />
-								</VStack>
-							}
-							variant="outline"
-							colorScheme="blue"
+						<VStack
+							borderRadius="10px"
+							p={2}
+							spacing={0}
 							w="full"
-						/>
+							border="1px solid var(--primary_button_bg)"
+						>
+							<TextTitle align={"center"} size="2xl" title={formattedTime} />
+							<TextTitle align={"center"} title={monthDayYear} />
+						</VStack>
 					)}
 					<HStack justify="space-between" w="100%">
 						{CLOCK_TYPES.row_1.map(({ name, onClick, bg, isClicked, isDisabled }) => (
@@ -307,7 +305,11 @@ const EmployeeTimeCard = ({ selectedUser, company, isMobile }) => {
 					<HStack justify={"space-between"} w="100%">
 						<Box>
 							<TextTitle size={"sm"} whiteSpace="wrap" title={`Time Entries `} />
-							<TextTitle size={"sm"} whiteSpace="wrap" title={`${startDate} - ${endDate}`} />
+							<TextTitle
+								size={"sm"}
+								whiteSpace="wrap"
+								title={`${startDate || ""} - ${endDate || ""}`}
+							/>
 						</Box>
 						<PrimaryButton
 							bg="var(--banner_bg)"

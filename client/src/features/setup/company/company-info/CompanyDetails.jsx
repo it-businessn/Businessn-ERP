@@ -1,5 +1,4 @@
 import { HStack } from "@chakra-ui/react";
-import PrimaryButton from "components/ui/button/PrimaryButton";
 
 import LeftIconButton from "components/ui/button/LeftIconButton";
 import useSelectedCompanyInfo from "hooks/useSelectedCompanyInfo";
@@ -24,7 +23,7 @@ const CompanyDetails = ({ company, modules }) => {
 					<LeftIconButton
 						color="var(--nav_color)"
 						border="2px solid var(--filter_border_color)"
-						name="Update CRA#"
+						name="Update CRA Number"
 						borderRadius="10px"
 						variant="ghost"
 						isFilter
@@ -32,7 +31,7 @@ const CompanyDetails = ({ company, modules }) => {
 						handleClick={() => setShowEditDialog(true)}
 						icon={<MdSettingsSuggest />}
 					/>
-					<PrimaryButton name="View / Add Company" onOpen={() => setOpenCompanyForm(true)} />
+					{/* <PrimaryButton name="View / Add Company" onOpen={() => setOpenCompanyForm(true)} /> */}
 				</HStack>
 			)}
 			{openCompanyForm && <CompaniesPanel setOpenCompanyForm={setOpenCompanyForm} />}
