@@ -40,7 +40,13 @@ import {
 	userInfoDetails,
 } from "./customInfo";
 
-const NewEmployeeOnboardingModal = ({ isOpen, onClose, title = "Employee", isAffiliate }) => {
+const NewEmployeeOnboardingModal = ({
+	isOpen,
+	onClose,
+	title = "Employee",
+	isAffiliate,
+	setIsRefresh,
+}) => {
 	const company = LocalStorageService.getItem("selectedCompany");
 	const toast = useToast();
 
@@ -261,8 +267,7 @@ const NewEmployeeOnboardingModal = ({ isOpen, onClose, title = "Employee", isAff
 		try {
 			formData.companyName = company;
 			if (isAffiliate) formData.isAffiliate = true;
-			const { data } = await PayrollService.onboardUser(formData);
-			console.log("newEmpDetails=", data);
+			await PayrollService.onboardUser(formData);
 			setShowSave(false);
 			toast({
 				title: "Employee added successfully",
@@ -270,6 +275,7 @@ const NewEmployeeOnboardingModal = ({ isOpen, onClose, title = "Employee", isAff
 				duration: 3000,
 				isClosable: true,
 			});
+			if (setIsRefresh) setIsRefresh((prev) => !prev);
 		} catch (error) {
 			toast({
 				title: "Something went wrong.",

@@ -6,7 +6,7 @@ const EmployeePayInfo = require("../models/EmployeePayInfo");
 const EmployeeProfileInfo = require("../models/EmployeeProfileInfo");
 const { encryptData } = require("../services/encryptDataService");
 const { addEmployee } = require("./appController");
-const { updateTADEmployee } = require("./employmentInfoController");
+const { updateTADEmployee } = require("./timecardController");
 
 const getNewUserID = async (companyName, data) => {
 	const newEmployee = await addEmployee(companyName, data);
@@ -147,7 +147,7 @@ const addUserEmploymentInfo = async (empId, companyName, employmentInfo) => {
 		employmentCountry,
 	});
 	if (newEmploymentInfo) {
-		await updateTADEmployee(newEmploymentInfo.empId, companyName, positions[0]);
+		await updateTADEmployee(newEmploymentInfo.empId, companyName, newEmpPosition[0]);
 	}
 	return newEmpPosition;
 };

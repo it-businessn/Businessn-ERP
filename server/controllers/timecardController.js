@@ -1,3 +1,7 @@
+const moment = require("moment");
+
+const EmployeeTADProfileInfo = require("../models/EmployeeTADProfile");
+const EmployeeProfileInfo = require("../models/EmployeeProfileInfo");
 const EmployeeEmploymentInfo = require("../models/EmployeeEmploymentInfo");
 const Timecard = require("../models/Timecard");
 const TimecardRaw = require("../models/TimecardRaw");
@@ -16,14 +20,12 @@ const {
 	COMPANIES,
 	ROLES,
 } = require("../services/data");
-const moment = require("moment");
 const { getHolidays } = require("./setUpController");
 const {
 	calcTotalWorkedHours,
 	addOvertimeRecord,
 	addTimesheetEntry,
 } = require("./timesheetController");
-const EmployeeTADProfileInfo = require("../models/EmployeeTADProfile");
 
 const getTADUsers = async (req, res) => {
 	try {
@@ -441,10 +443,38 @@ const createTimecardManual = async (req, res) => {
 	}
 };
 
+const updateTADEmployee = async (empId, companyName, positionData) => {
+	const empProfileInfo = await EmployeeProfileInfo.findOne({
+		empId,
+		companyName,
+	}).select("firstName middleName lastName");
+
+	const { firstName, middleName, lastName } = empProfileInfo;
+
+	const tadUserExists = await EmployeeTADProfileInfo.findOne({ empId, companyName });
+	if (tadUserExists) {
+		tadUserExists.cardNum = positionData?.employeeCardNumber;
+		tadUserExists.timeManagementBadgeID = positionData?.timeManagementBadgeID;
+		return await tadUserExists.save();
+	}
+	if (!tadUserExists && positionData?.timeManagementBadgeID) {
+		return await EmployeeTADProfileInfo.create({
+			empId,
+			companyName,
+			firstName,
+			middleName,
+			lastName,
+			cardNum: positionData?.employeeCardNumber,
+			timeManagementBadgeID: positionData?.timeManagementBadgeID,
+		});
+	}
+};
+
 module.exports = {
 	getTimecard,
 	createTimecard,
 	createTimecardManual,
 	getTADUsers,
 	getFilteredTADUsers,
+	updateTADEmployee,
 };

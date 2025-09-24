@@ -31,44 +31,48 @@ const getEmployeeBankingInfo = async (req, res) => {
 
 		const result = await findEmployeeBankingInfo(employeeId, company);
 
-		const newData = {
-			_id: result?._id,
-			empId: result?.empId,
-			companyName: result?.companyName,
-			directDeposit: result?.directDeposit,
-			payStubSendByEmail: result?.payStubSendByEmail,
-			paymentEmail: result?.paymentEmail,
-		};
+		if (result) {
+			const newData = {
+				_id: result?._id,
+				empId: result?.empId,
+				companyName: result?.companyName,
+				directDeposit: result?.directDeposit,
+				payStubSendByEmail: result?.payStubSendByEmail,
+				paymentEmail: result?.paymentEmail,
+			};
 
-		const banking_key = Buffer.from(process.env.BANKING_ENCRYPTION_KEY, "hex");
+			const banking_key = Buffer.from(process.env.BANKING_ENCRYPTION_KEY, "hex");
 
-		if (!banking_key) {
-			newData.accountNum = "";
-			newData.bankNum = "";
-			newData.transitNum = "";
+			if (!banking_key) {
+				newData.accountNum = "";
+				newData.bankNum = "";
+				newData.transitNum = "";
+				return res.status(200).json(newData);
+			}
+			const accountNumber =
+				!result?.accountNum?.includes("*") && isNaN(Number(result?.accountNum))
+					? decryptData(result?.accountNum, banking_key, result?.accountIv).replace(
+							/.(?=.{3})/g,
+							"*",
+					  )
+					: "";
+
+			const bankNumber =
+				!result?.bankNum?.includes("*") && isNaN(Number(result?.bankNum))
+					? `**${decryptData(result?.bankNum, banking_key, result?.bankIv).slice(-1)}`
+					: "";
+
+			const transitNumber =
+				!result?.transitNum?.includes("*") && isNaN(Number(result?.transitNum))
+					? `***${decryptData(result?.transitNum, banking_key, result?.transitIv).slice(-2)}`
+					: "";
+
+			newData.accountNum = accountNumber;
+			newData.bankNum = bankNumber;
+			newData.transitNum = transitNumber;
 			return res.status(200).json(newData);
 		}
-
-		const accountNumber =
-			!result?.accountNum?.includes("*") && isNaN(Number(result?.accountNum))
-				? decryptData(result.accountNum, banking_key, result.accountIv).replace(/.(?=.{3})/g, "*")
-				: "";
-
-		const bankNumber =
-			!result?.bankNum?.includes("*") && isNaN(Number(result?.bankNum))
-				? `**${decryptData(result.bankNum, banking_key, result.bankIv).slice(-1)}`
-				: "";
-
-		const transitNumber =
-			!result?.transitNum?.includes("*") && isNaN(Number(result?.transitNum))
-				? `***${decryptData(result.transitNum, banking_key, result.transitIv).slice(-2)}`
-				: "";
-
-		newData.accountNum = accountNumber;
-		newData.bankNum = bankNumber;
-		newData.transitNum = transitNumber;
-
-		return res.status(200).json(newData);
+		return res.status(201).json("Record not found!");
 	} catch (error) {
 		res.status(404).json({ error: error.message });
 	}
@@ -104,7 +108,7 @@ const addEmployeeBankingInfo = async (req, res) => {
 		if (bankDetails) {
 			const { bankNum, transitNum, accountNum } = bankDetails;
 
-			if (!bankNum.includes("*") && !transitNum.includes("*") && !accountNum.includes("*")) {
+			if (!bankNum.includes("*") && !transitNum.includes("*") && !accountNum?.includes("*")) {
 				const bankEncrypted = encryptData(bankNum, ENCRYPTION_KEY);
 				const transitEncrypted = encryptData(transitNum, ENCRYPTION_KEY);
 				const accountEncrypted = encryptData(accountNum, ENCRYPTION_KEY);
@@ -157,7 +161,7 @@ const updateEmployeeBankingInfo = async (req, res) => {
 			) {
 				await deleteAlerts(empId, ALERTS_TYPE.BANK);
 			}
-			if (!bankNum.includes("*") && !transitNum.includes("*") && !accountNum.includes("*")) {
+			if (!bankNum.includes("*") && !transitNum.includes("*") && !accountNum?.includes("*")) {
 				const ENCRYPTION_KEY = Buffer.from(process.env.BANKING_ENCRYPTION_KEY, "hex");
 				const bankEncrypted = encryptData(bankNum, ENCRYPTION_KEY);
 				const transitEncrypted = encryptData(transitNum, ENCRYPTION_KEY);
