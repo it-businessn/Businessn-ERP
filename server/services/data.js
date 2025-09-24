@@ -120,7 +120,7 @@ const CLIENT_ORG_ADMIN_PERMISSION = [
 const CLIENT_ORG_EMP_PERMISSION = [{ name: "Payroll" }, { name: "Payroll Employee Dashboard" }];
 
 const ROLES = {
-	SUPER_SHADOW_ADMIN: "Super Shadow Admin",
+	SUPER_ADMIN: "Super Admin",
 	SHADOW_ADMIN: "Shadow Admin",
 	AUTH_ADMINISTRATOR: "Authorizing Admin",
 	ADMINISTRATOR: "Administrator",

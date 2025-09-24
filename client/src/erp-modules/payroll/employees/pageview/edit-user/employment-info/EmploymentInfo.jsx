@@ -369,6 +369,7 @@ const EmploymentInfo = ({ company, userId, payGroups, selectedPayGroupOption, la
 										>
 											<TextTitle title={position.title} />
 											<PositionInfo
+												company={company}
 												updateRecordIndex={index}
 												position={position}
 												departments={departments}
