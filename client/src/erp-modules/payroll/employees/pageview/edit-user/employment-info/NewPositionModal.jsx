@@ -91,10 +91,12 @@ const NewPositionModal = ({
 											size="sm"
 											value={roleInfo?.title}
 											onChange={(e) => {
-												setRoleInfo((prevData) => ({
-													...prevData,
-													title: e.target.value,
-												}));
+												if (e.target.value) {
+													setRoleInfo((prevData) => ({
+														...prevData,
+														title: e.target.value,
+													}));
+												}
 											}}
 											placeholder="Select title"
 										>
@@ -124,10 +126,12 @@ const NewPositionModal = ({
 										size="sm"
 										value={roleInfo?.employmentPayGroup}
 										onChange={(e) => {
-											setRoleInfo((prevData) => ({
-												...prevData,
-												employmentPayGroup: e.target.value,
-											}));
+											if (e.target.value) {
+												setRoleInfo((prevData) => ({
+													...prevData,
+													employmentPayGroup: e.target.value,
+												}));
+											}
 										}}
 										placeholder="Select paygroup"
 									>
@@ -151,10 +155,12 @@ const NewPositionModal = ({
 										size="sm"
 										value={roleInfo?.employmentCostCenter}
 										onChange={(e) => {
-											setRoleInfo((prevData) => ({
-												...prevData,
-												employmentCostCenter: e.target.value,
-											}));
+											if (e.target.value) {
+												setRoleInfo((prevData) => ({
+													...prevData,
+													employmentCostCenter: e.target.value,
+												}));
+											}
 										}}
 										placeholder="Select cost center"
 									>
@@ -178,10 +184,12 @@ const NewPositionModal = ({
 										size="sm"
 										value={roleInfo?.employmentDepartment}
 										onChange={(e) => {
-											setRoleInfo((prevData) => ({
-												...prevData,
-												employmentDepartment: e.target.value,
-											}));
+											if (e.target.value) {
+												setRoleInfo((prevData) => ({
+													...prevData,
+													employmentDepartment: e.target.value,
+												}));
+											}
 										}}
 										placeholder="Select department"
 									>

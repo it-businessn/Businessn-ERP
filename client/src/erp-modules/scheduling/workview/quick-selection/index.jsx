@@ -18,7 +18,9 @@ const QuickSelection = ({
 					name="name"
 					label="Crew"
 					valueText={selectedFilter || ""}
-					handleChange={(e) => setSelectedFilter(e.target.value)}
+					handleChange={(e) => {
+						if (e.target.value) setSelectedFilter(e.target.value);
+					}}
 					options={crews}
 					placeholder="Select crew"
 				/>
@@ -27,7 +29,9 @@ const QuickSelection = ({
 					name="name"
 					label="Cost Center"
 					valueText={selectedCC || ""}
-					handleChange={(e) => setSelectedCC(e.target.value)}
+					handleChange={(e) => {
+						if (e.target.value) setSelectedCC(e.target.value);
+					}}
 					options={configCC}
 					placeholder="Select CC"
 				/>

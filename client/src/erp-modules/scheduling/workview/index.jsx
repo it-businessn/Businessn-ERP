@@ -66,7 +66,12 @@ const ScheduleWorkView = () => {
 						<FormLabel>
 							<TextTitle title="Crew" />
 						</FormLabel>
-						<Select value={selectedCrew || ""} onChange={(e) => setSelectedCrew(e.target.value)}>
+						<Select
+							value={selectedCrew || ""}
+							onChange={(e) => {
+								if (e.target.value) setSelectedCrew(e.target.value);
+							}}
+						>
 							{crews?.map(({ _id, name }) => (
 								<option key={_id} value={name}>
 									{name}

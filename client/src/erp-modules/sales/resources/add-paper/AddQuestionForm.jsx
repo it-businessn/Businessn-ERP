@@ -263,7 +263,9 @@ const AddQuestionForm = () => {
 									name="assessmentType"
 									value={assessmentType}
 									bg={"var(--main_color)"}
-									onChange={(e) => setAssessmentType(e.target.value)}
+									onChange={(e) => {
+										if (e.target.value) setAssessmentType(e.target.value);
+									}}
 									placeholder="Select Assessment"
 								>
 									{assessmentTypes?.map((assessment) => (

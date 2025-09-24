@@ -32,19 +32,21 @@ const SelectCustomer = ({
 
 	const handleChange = (e) => {
 		const { name, value } = e.target;
-		setFormData((prevData) => ({ ...prevData, [name]: value }));
+		if (value) setFormData((prevData) => ({ ...prevData, [name]: value }));
 	};
 	const handleLead = (e) => {
 		const { value } = e.target;
-		setLead(value);
-		if (isQuickAdd) {
-			navigate(
-				`${ROUTE_PATH.SALES}${ROUTE_PATH.FRESH_LEADS}${ROUTE_PATH.PROFILE}/${value}/${company}`,
-			);
-		} else {
-			navigate(
-				`${ROUTE_PATH.SALES}${ROUTE_PATH.CUSTOMERS}${ROUTE_PATH.PROFILE}/${value}/${company}`,
-			);
+		if (value) {
+			setLead(value);
+			if (isQuickAdd) {
+				navigate(
+					`${ROUTE_PATH.SALES}${ROUTE_PATH.FRESH_LEADS}${ROUTE_PATH.PROFILE}/${value}/${company}`,
+				);
+			} else {
+				navigate(
+					`${ROUTE_PATH.SALES}${ROUTE_PATH.CUSTOMERS}${ROUTE_PATH.PROFILE}/${value}/${company}`,
+				);
+			}
 		}
 	};
 	const handleClose = () => {

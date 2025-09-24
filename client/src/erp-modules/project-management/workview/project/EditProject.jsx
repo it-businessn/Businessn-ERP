@@ -136,12 +136,14 @@ const EditProject = ({ isOpen, onClose, handleProjectUpdate, project, managers }
 											borderRadius="10px"
 											value={formData?.priority}
 											placeholder="Select Priority"
-											onChange={(e) =>
-												setFormData((prevData) => ({
-													...prevData,
-													priority: e.target.value,
-												}))
-											}
+											onChange={(e) => {
+												if (e.target.value) {
+													setFormData((prevData) => ({
+														...prevData,
+														priority: e.target.value,
+													}));
+												}
+											}}
 										>
 											{PRIORITY?.map((item) => (
 												<option value={item} key={item}>

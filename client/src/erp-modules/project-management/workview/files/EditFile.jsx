@@ -103,7 +103,7 @@ const EditFile = ({ isOpen, onClose, file, handleFileUpdate, managers }) => {
 										placeholder="Select Project Manager"
 										onChange={(e) => {
 											const selectedValue = e.target.value;
-											if (selectedValue !== "") {
+											if (selectedValue) {
 												const { _id, fullName } = managers.find(
 													(manager) => manager._id === selectedValue,
 												);
@@ -179,12 +179,14 @@ const EditFile = ({ isOpen, onClose, file, handleFileUpdate, managers }) => {
 											borderRadius="10px"
 											value={formData?.priority}
 											placeholder="Select Priority"
-											onChange={(e) =>
-												setFormData((prevData) => ({
-													...prevData,
-													priority: e.target.value,
-												}))
-											}
+											onChange={(e) => {
+												if (e.target.value) {
+													setFormData((prevData) => ({
+														...prevData,
+														priority: e.target.value,
+													}));
+												}
+											}}
 										>
 											{PRIORITY?.map((item) => (
 												<option value={item} key={item}>

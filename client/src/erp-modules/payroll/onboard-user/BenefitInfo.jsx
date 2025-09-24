@@ -150,9 +150,11 @@ const BenefitInfo = ({ benefitsSubStep, setBenefitsSubStep, formData, handleChan
 							<Select
 								size="sm"
 								value={formData.benefitsInfo.typeOfPensionERTreatment}
-								onChange={(e) =>
-									handleChange("benefitsInfo", "typeOfPensionERTreatment", e.target.value)
-								}
+								onChange={(e) => {
+									if (e.target.value) {
+										handleChange("benefitsInfo", "typeOfPensionERTreatment", e.target.value);
+									}
+								}}
 							>
 								<option value="No Pension Contributions">No Pension Contributions</option>
 								<option value="Pension Contributions (%)">Pension Contributions (%)</option>
@@ -181,9 +183,11 @@ const BenefitInfo = ({ benefitsSubStep, setBenefitsSubStep, formData, handleChan
 							<Select
 								size="sm"
 								value={formData.benefitsInfo.typeOfDentalERTreatment}
-								onChange={(e) =>
-									handleChange("benefitsInfo", "typeOfDentalERTreatment", e.target.value)
-								}
+								onChange={(e) => {
+									if (e.target.value) {
+										handleChange("benefitsInfo", "typeOfDentalERTreatment", e.target.value);
+									}
+								}}
 							>
 								<option value="No Dental Contributions">No Dental Contributions</option>
 								<option value="Dental Contributions (%)">Dental Contributions (%)</option>
@@ -212,9 +216,11 @@ const BenefitInfo = ({ benefitsSubStep, setBenefitsSubStep, formData, handleChan
 							<Select
 								size="sm"
 								value={formData.benefitsInfo.typeOfExtendedHealthERTreatment}
-								onChange={(e) =>
-									handleChange("benefitsInfo", "typeOfExtendedHealthERTreatment", e.target.value)
-								}
+								onChange={(e) => {
+									if (e.target.value) {
+										handleChange("benefitsInfo", "typeOfExtendedHealthERTreatment", e.target.value);
+									}
+								}}
 							>
 								<option value="No Extended Health Contributions">
 									No Extended Health Contributions
@@ -257,9 +263,11 @@ const BenefitInfo = ({ benefitsSubStep, setBenefitsSubStep, formData, handleChan
 							<Select
 								size="sm"
 								value={formData.benefitsInfo.typeOfPensionEETreatment}
-								onChange={(e) =>
-									handleChange("benefitsInfo", "typeOfPensionEETreatment", e.target.value)
-								}
+								onChange={(e) => {
+									if (e.target.value) {
+										handleChange("benefitsInfo", "typeOfPensionEETreatment", e.target.value);
+									}
+								}}
 							>
 								<option value="No Pension Contributions">No Pension Contributions</option>
 								<option value="Pension Contributions (%)">Pension Contributions (%)</option>
@@ -289,9 +297,11 @@ const BenefitInfo = ({ benefitsSubStep, setBenefitsSubStep, formData, handleChan
 							<Select
 								size="sm"
 								value={formData.benefitsInfo.typeOfDentalEETreatment}
-								onChange={(e) =>
-									handleChange("benefitsInfo", "typeOfDentalEETreatment", e.target.value)
-								}
+								onChange={(e) => {
+									if (e.target.value) {
+										handleChange("benefitsInfo", "typeOfDentalEETreatment", e.target.value);
+									}
+								}}
 							>
 								<option value="No Dental Contributions">No Dental Contributions</option>
 								<option value="Dental Contributions (%)">Dental Contributions (%)</option>
@@ -321,9 +331,11 @@ const BenefitInfo = ({ benefitsSubStep, setBenefitsSubStep, formData, handleChan
 							<Select
 								size="sm"
 								value={formData.benefitsInfo.typeOfExtendedHealthEETreatment}
-								onChange={(e) =>
-									handleChange("benefitsInfo", "typeOfExtendedHealthEETreatment", e.target.value)
-								}
+								onChange={(e) => {
+									if (e.target.value) {
+										handleChange("benefitsInfo", "typeOfExtendedHealthEETreatment", e.target.value);
+									}
+								}}
 							>
 								<option value="No Extended Health Contributions">
 									No Extended Health Contributions
@@ -360,9 +372,11 @@ const BenefitInfo = ({ benefitsSubStep, setBenefitsSubStep, formData, handleChan
 							<Select
 								size="sm"
 								value={formData.benefitsInfo.typeOfUnionDuesTreatment}
-								onChange={(e) =>
-									handleChange("benefitsInfo", "typeOfUnionDuesTreatment", e.target.value)
-								}
+								onChange={(e) => {
+									if (e.target.value) {
+										handleChange("benefitsInfo", "typeOfUnionDuesTreatment", e.target.value);
+									}
+								}}
 							>
 								<option value="No Union Contributions">No Union Contributions</option>
 								<option value="Union Contributions (%)">Union Contributions (%)</option>

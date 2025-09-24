@@ -137,23 +137,25 @@ const Calendar = () => {
 	};
 
 	const handleTypeChange = (e) => {
-		setEventType((prev) => e.target.value);
-		setFormData({
-			eventType: e.target.value,
-			description: "",
-			meetingFromDate: "",
-			meetingFromTime: "",
-			meetingToDate: "",
-			meetingToTime: "",
-			meetingAttendees: "",
-			meetingLocation: "",
-			meetingLink: "",
-			taskType: "",
-			taskDueDate: "",
-			taskAssignee: "",
-			taskDuration: "",
-			phoneNo: "",
-		});
+		if (e.target.value) {
+			setEventType(e.target.value);
+			setFormData({
+				eventType: e.target.value,
+				description: "",
+				meetingFromDate: "",
+				meetingFromTime: "",
+				meetingToDate: "",
+				meetingToTime: "",
+				meetingAttendees: "",
+				meetingLocation: "",
+				meetingLink: "",
+				taskType: "",
+				taskDueDate: "",
+				taskAssignee: "",
+				taskDuration: "",
+				phoneNo: "",
+			});
+		}
 	};
 
 	const handleChange = (e) => {

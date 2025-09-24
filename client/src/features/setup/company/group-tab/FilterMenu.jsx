@@ -49,19 +49,21 @@ const FilterMenu = ({
 		setSelectedAdmins(selectedOptions);
 	};
 	const handleGroup = (e) => {
-		const item = groups.find((name) => name.name === e.target.value);
-		if (!item) {
-			return;
-		}
+		if (e.target.value) {
+			const item = groups.find((name) => name.name === e.target.value);
+			if (!item) {
+				return;
+			}
 
-		setSelectedGroup(item);
-		setSelectedModules(item.modules);
-		setSelectedAdmins(item.admin);
-		item.members.forEach((member) => {
-			member.baseModule = item.modules;
-			member.group = item.name;
-		});
-		setGroupMembers(item.members);
+			setSelectedGroup(item);
+			setSelectedModules(item.modules);
+			setSelectedAdmins(item.admin);
+			item.members.forEach((member) => {
+				member.baseModule = item.modules;
+				member.group = item.name;
+			});
+			setGroupMembers(item.members);
+		}
 	};
 	return (
 		<>

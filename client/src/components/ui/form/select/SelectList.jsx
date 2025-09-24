@@ -19,9 +19,9 @@ const SelectList = ({
 	isUnsettled,
 	size = "sm",
 }) => {
-	const handleChange = (event) => {
-		if (handleSelect && type) {
-			handleSelect(type, event.target.value, id);
+	const handleChange = (e) => {
+		if (handleSelect && type && e.target.value) {
+			handleSelect(type, e.target.value, id);
 		}
 	};
 

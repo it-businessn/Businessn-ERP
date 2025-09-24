@@ -253,7 +253,10 @@ const EmploymentInfo = ({ company, userId, payGroups, selectedPayGroupOption, la
 							<Select
 								size="sm"
 								value={formData.employmentInfo.payrollStatus || ""}
-								onChange={(e) => handleChange("employmentInfo", "payrollStatus", e.target.value)}
+								onChange={(e) => {
+									if (e.target.value)
+										handleChange("employmentInfo", "payrollStatus", e.target.value);
+								}}
 							>
 								{PAYROLL_STATUS.map((status) => (
 									<option key={status.type} value={status.type}>
@@ -268,7 +271,11 @@ const EmploymentInfo = ({ company, userId, payGroups, selectedPayGroupOption, la
 							<Input
 								size="sm"
 								value={formData.employmentInfo.employeeNo || ""}
-								onChange={(e) => handleChange("employmentInfo", "employeeNo", e.target.value)}
+								onChange={(e) => {
+									if (e.target.value) {
+										handleChange("employmentInfo", "employeeNo", e.target.value);
+									}
+								}}
 								placeholder="Enter employee number"
 							/>
 						</FormControl>
@@ -279,7 +286,10 @@ const EmploymentInfo = ({ company, userId, payGroups, selectedPayGroupOption, la
 								<Select
 									size="sm"
 									value={formData.employmentInfo.employmentRole || ""}
-									onChange={(e) => handleChange("employmentInfo", "employmentRole", e.target.value)}
+									onChange={(e) => {
+										if (e.target.value)
+											handleChange("employmentInfo", "employmentRole", e.target.value);
+									}}
 								>
 									{roles.map((role) => (
 										<option key={role.name} value={role.name}>
@@ -398,9 +408,11 @@ const EmploymentInfo = ({ company, userId, payGroups, selectedPayGroupOption, la
 								<Select
 									size="sm"
 									value={formData.employmentInfo.employmentCountry || ""}
-									onChange={(e) =>
-										handleChange("employmentInfo", "employmentCountry", e.target.value)
-									}
+									onChange={(e) => {
+										if (e.target.value) {
+											handleChange("employmentInfo", "employmentCountry", e.target.value);
+										}
+									}}
 									placeholder="Select Country"
 								>
 									{COUNTRIES.map(({ type, code }) => (
@@ -416,9 +428,11 @@ const EmploymentInfo = ({ company, userId, payGroups, selectedPayGroupOption, la
 								<Select
 									size="sm"
 									value={formData.employmentInfo.employmentRegion || ""}
-									onChange={(e) =>
-										handleChange("employmentInfo", "employmentRegion", e.target.value)
-									}
+									onChange={(e) => {
+										if (e.target.value) {
+											handleChange("employmentInfo", "employmentRegion", e.target.value);
+										}
+									}}
 									placeholder="Select Province"
 								>
 									{employmentProvinces.map(({ name, id }) => (

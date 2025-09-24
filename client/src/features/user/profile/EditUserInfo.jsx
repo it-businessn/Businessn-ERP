@@ -70,10 +70,11 @@ const EditUserInfo = ({ setEditMode, setError, error, company }) => {
 
 	const handleChange = (e) => {
 		const { name, value } = e.target;
-		setUserData((prevData) => ({
-			...prevData,
-			[name]: value,
-		}));
+		if (value)
+			setUserData((prevData) => ({
+				...prevData,
+				[name]: value,
+			}));
 	};
 
 	const handleAddressChange = (e) => {

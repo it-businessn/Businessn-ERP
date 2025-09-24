@@ -115,7 +115,10 @@ const EmploymentInfo = ({
 							<Select
 								size="sm"
 								value={formData.employmentInfo.payrollStatus}
-								onChange={(e) => handleChange("employmentInfo", "payrollStatus", e.target.value)}
+								onChange={(e) => {
+									if (e.target.value)
+										handleChange("employmentInfo", "payrollStatus", e.target.value);
+								}}
 							>
 								{PAYROLL_STATUS.map((status) => (
 									<option key={status.type} value={status.type}>
@@ -141,7 +144,11 @@ const EmploymentInfo = ({
 								<Select
 									size="sm"
 									value={formData.employmentInfo.employmentRole}
-									onChange={(e) => handleChange("employmentInfo", "employmentRole", e.target.value)}
+									onChange={(e) => {
+										if (e.target.value) {
+											handleChange("employmentInfo", "employmentRole", e.target.value);
+										}
+									}}
 								>
 									{roles.map((role) => (
 										<option key={role.name} value={role.name}>
@@ -187,7 +194,11 @@ const EmploymentInfo = ({
 									<Select
 										size="sm"
 										value={formData.employmentInfo.jobTitle}
-										onChange={(e) => handleChange("employmentInfo", "jobTitle", e.target.value)}
+										onChange={(e) => {
+											if (e.target.value) {
+												handleChange("employmentInfo", "jobTitle", e.target.value);
+											}
+										}}
 										placeholder="Select Role title"
 									>
 										{positionRoles.map((role) => (
@@ -210,7 +221,11 @@ const EmploymentInfo = ({
 									<Select
 										size="sm"
 										value={formData.employmentInfo.payGroup}
-										onChange={(e) => handleChange("employmentInfo", "payGroup", e.target.value)}
+										onChange={(e) => {
+											if (e.target.value) {
+												handleChange("employmentInfo", "payGroup", e.target.value);
+											}
+										}}
 										placeholder="Select pay group"
 									>
 										{payGroups.map((group) => (
@@ -269,7 +284,11 @@ const EmploymentInfo = ({
 									<Select
 										size="sm"
 										value={formData.employmentInfo.costCenter}
-										onChange={(e) => handleChange("employmentInfo", "costCenter", e.target.value)}
+										onChange={(e) => {
+											if (e.target.value) {
+												handleChange("employmentInfo", "costCenter", e.target.value);
+											}
+										}}
 										placeholder="Select cost center"
 									>
 										{costCentres.map((center) => (
@@ -291,7 +310,11 @@ const EmploymentInfo = ({
 									<Select
 										size="sm"
 										value={formData.employmentInfo.department}
-										onChange={(e) => handleChange("employmentInfo", "department", e.target.value)}
+										onChange={(e) => {
+											if (e.target.value) {
+												handleChange("employmentInfo", "department", e.target.value);
+											}
+										}}
 										placeholder="Select department"
 									>
 										{filteredDept.map((dept) => (
@@ -321,9 +344,11 @@ const EmploymentInfo = ({
 								<Select
 									size="sm"
 									value={formData.employmentInfo.employmentCountry || ""}
-									onChange={(e) =>
-										handleChange("employmentInfo", "employmentCountry", e.target.value)
-									}
+									onChange={(e) => {
+										if (e.target.value) {
+											handleChange("employmentInfo", "employmentCountry", e.target.value);
+										}
+									}}
 									placeholder="Select Country"
 								>
 									{COUNTRIES.map(({ type, code }) => (
@@ -339,9 +364,11 @@ const EmploymentInfo = ({
 								<Select
 									size="sm"
 									value={formData.employmentInfo.employmentRegion || ""}
-									onChange={(e) =>
-										handleChange("employmentInfo", "employmentRegion", e.target.value)
-									}
+									onChange={(e) => {
+										if (e.target.value) {
+											handleChange("employmentInfo", "employmentRegion", e.target.value);
+										}
+									}}
 									placeholder="Select Region"
 								>
 									{employmentProvinces.map(({ name, id }) => (

@@ -78,8 +78,7 @@ const AddLeave = ({ isOpen, handleClose, company, userId, source, setRefresh }) 
 	const handleChange = (e) => {
 		const { name, value } = e.target;
 
-		if (!value) return;
-		setFormData((prevData) => ({ ...prevData, [name]: value }));
+		if (value) setFormData((prevData) => ({ ...prevData, [name]: value }));
 	};
 	const handleSubmit = async () => {
 		setIsSubmitting(true);

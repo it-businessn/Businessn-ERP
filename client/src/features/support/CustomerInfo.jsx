@@ -211,12 +211,14 @@ export default function CustomerInfo() {
 											icon={<FaCaretDown />}
 											placeholder="Select Country"
 											value={formData?.country || ""}
-											onChange={(e) =>
-												setFormData((prevData) => ({
-													...prevData,
-													country: e.target.value,
-												}))
-											}
+											onChange={(e) => {
+												if (e.target.value) {
+													setFormData((prevData) => ({
+														...prevData,
+														country: e.target.value,
+													}));
+												}
+											}}
 										>
 											{COUNTRIES.map(({ type, code }) => (
 												<option key={type} value={code}>
@@ -231,12 +233,14 @@ export default function CustomerInfo() {
 											icon={<FaCaretDown />}
 											placeholder="Select Province / State"
 											value={formData?.province || ""}
-											onChange={(e) =>
-												setFormData((prevData) => ({
-													...prevData,
-													province: e.target.value,
-												}))
-											}
+											onChange={(e) => {
+												if (e.target.value) {
+													setFormData((prevData) => ({
+														...prevData,
+														province: e.target.value,
+													}));
+												}
+											}}
 										>
 											{provinces.map(({ name, id }) => (
 												<option key={name} value={id}>

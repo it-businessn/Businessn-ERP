@@ -182,7 +182,11 @@ const AccountingWorkview = () => {
 												size="sm"
 												placeholder="Select account"
 												value={row.accountName}
-												onChange={(e) => handleInputChange(index, "accountName", e.target.value)}
+												onChange={(e) => {
+													if (e.target.value) {
+														handleInputChange(index, "accountName", e.target.value);
+													}
+												}}
 											>
 												{accounts?.map(({ _id, accountName }) => (
 													<option key={`${_id}_${index}_********${index}`} value={accountName}>

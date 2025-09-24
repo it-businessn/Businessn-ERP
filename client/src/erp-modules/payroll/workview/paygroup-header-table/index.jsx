@@ -63,7 +63,11 @@ const PaygroupTable = ({
 							borderRadius="10px"
 							value={selectedYear}
 							placeholder="Select Year"
-							onChange={(e) => setSelectedYear(e.target.value)}
+							onChange={(e) => {
+								if (e.target.value) {
+									setSelectedYear(e.target.value);
+								}
+							}}
 						>
 							{yearsList?.map((year) => (
 								<option value={year} key={year}>

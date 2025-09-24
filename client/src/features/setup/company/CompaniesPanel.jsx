@@ -159,13 +159,15 @@ const CompaniesPanel = ({ setOpenCompanyForm }) => {
 						placeholder="Select Country"
 						value={formData.address.country}
 						onChange={(e) => {
-							setFormData({
-								...formData,
-								address: {
-									...formData?.address,
-									country: e.target.value,
-								},
-							});
+							if (e.target.value) {
+								setFormData({
+									...formData,
+									address: {
+										...formData?.address,
+										country: e.target.value,
+									},
+								});
+							}
 						}}
 					>
 						{COUNTRIES.map(({ type, code }) => (
@@ -178,13 +180,15 @@ const CompaniesPanel = ({ setOpenCompanyForm }) => {
 						placeholder="Select Province/State"
 						value={formData.address.state}
 						onChange={(e) => {
-							setFormData({
-								...formData,
-								address: {
-									...formData?.address,
-									state: e.target.value,
-								},
-							});
+							if (e.target.value) {
+								setFormData({
+									...formData,
+									address: {
+										...formData?.address,
+										state: e.target.value,
+									},
+								});
+							}
 						}}
 					>
 						{availableProvinces.map(({ name, id }) => (

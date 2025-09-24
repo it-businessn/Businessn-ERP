@@ -74,9 +74,11 @@ export const ContactInfo = ({ isReadOnly, handleFieldChange, formData, admins })
 										name="fullName"
 										label=""
 										valueText={formData?.employerInfo?.contactName}
-										handleChange={(e) =>
-											handleFieldChange("employerInfo", "contactName", e.target.value)
-										}
+										handleChange={(e) => {
+											if (e.target.value) {
+												handleFieldChange("employerInfo", "contactName", e.target.value);
+											}
+										}}
 										options={admins}
 									/>
 								</Stack>
@@ -143,9 +145,11 @@ export const ContactInfo = ({ isReadOnly, handleFieldChange, formData, admins })
 										name="fullName"
 										label=""
 										valueText={formData?.employerInfo?.issuerName}
-										handleChange={(e) =>
-											handleFieldChange("employerInfo", "issuerName", e.target.value)
-										}
+										handleChange={(e) => {
+											if (e.target.value) {
+												handleFieldChange("employerInfo", "issuerName", e.target.value);
+											}
+										}}
 										options={admins}
 									/>
 								)}

@@ -106,7 +106,11 @@ export const PersonalInfo = ({ isReadOnly, formData, handleFieldChange }) => {
 							<Select
 								placeholder="Select Country"
 								value={formData?.empInfo?.country || ""}
-								onChange={(e) => handleFieldChange("empInfo", "country", e.target.value)}
+								onChange={(e) => {
+									if (e.target.value) {
+										handleFieldChange("empInfo", "country", e.target.value);
+									}
+								}}
 							>
 								{COUNTRIES.map(({ type, code }) => (
 									<option key={type} value={code}>
@@ -129,7 +133,11 @@ export const PersonalInfo = ({ isReadOnly, formData, handleFieldChange }) => {
 							<Select
 								placeholder="Select Province / State"
 								value={formData?.empInfo?.province || ""}
-								onChange={(e) => handleFieldChange("empInfo", "province", e.target.value)}
+								onChange={(e) => {
+									if (e.target.value) {
+										handleFieldChange("empInfo", "province", e.target.value);
+									}
+								}}
 							>
 								{provinces.map(({ name, id }) => (
 									<option key={name} value={id}>

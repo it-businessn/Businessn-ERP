@@ -10,7 +10,9 @@ const Scheduler = ({ locations, setLocation, location }) => {
 				name="name"
 				label="Location"
 				valueText={location || ""}
-				handleChange={(e) => setLocation(e.target.value)}
+				handleChange={(e) => {
+					if (e.target.value) setLocation(e.target.value);
+				}}
 				options={locations}
 				placeholder="Select location"
 			/>

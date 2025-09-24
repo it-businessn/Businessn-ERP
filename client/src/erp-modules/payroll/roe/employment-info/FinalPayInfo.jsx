@@ -91,6 +91,7 @@ export const FinalPayInfo = ({ isReadOnly, formData, handleFieldChange }) => {
 							valueText={formData?.employmentInfo?.expectedRecallDate || ""}
 							handleChange={(e) =>
 								!isReadOnly &&
+								e.target.value &&
 								handleFieldChange("employmentInfo", "expectedRecallDate", e.target.value)
 							}
 							options={RECALL_OPTIONS_WITH_DISABLED}

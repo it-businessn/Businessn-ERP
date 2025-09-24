@@ -74,7 +74,9 @@ const QueryInfo = ({ formData, setFormData }) => {
 							<FormLabel size="sm">Type of Inquiry</FormLabel>
 							<Select
 								value={formData.queryInfo.inquiryType || ""}
-								onChange={(e) => handleChange("queryInfo", "inquiryType", e.target.value)}
+								onChange={(e) => {
+									if (e.target.value) handleChange("queryInfo", "inquiryType", e.target.value);
+								}}
 								placeholder="Select type of inquiry"
 							>
 								{INQUIRIES.map(({ name, id }) => (

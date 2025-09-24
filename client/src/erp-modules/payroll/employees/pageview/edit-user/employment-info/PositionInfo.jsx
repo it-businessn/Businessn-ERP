@@ -59,11 +59,13 @@ const PositionInfo = ({
 							size="sm"
 							value={roleInfo.title || ""}
 							onChange={(e) => {
-								setEditedIndices((prev) => ({ ...prev, [updateRecordIndex]: true }));
-								setRoleInfo((prevData) => ({
-									...prevData,
-									title: e.target.value,
-								}));
+								if (e.target.value) {
+									setEditedIndices((prev) => ({ ...prev, [updateRecordIndex]: true }));
+									setRoleInfo((prevData) => ({
+										...prevData,
+										title: e.target.value,
+									}));
+								}
 							}}
 							placeholder="Select role"
 						>
@@ -87,11 +89,13 @@ const PositionInfo = ({
 							size="sm"
 							value={roleInfo.employmentPayGroup || ""}
 							onChange={(e) => {
-								setEditedIndices((prev) => ({ ...prev, [updateRecordIndex]: true }));
-								setRoleInfo((prevData) => ({
-									...prevData,
-									employmentPayGroup: e.target.value,
-								}));
+								if (e.target.value) {
+									setEditedIndices((prev) => ({ ...prev, [updateRecordIndex]: true }));
+									setRoleInfo((prevData) => ({
+										...prevData,
+										employmentPayGroup: e.target.value,
+									}));
+								}
 							}}
 							placeholder="Select pay group"
 						>
@@ -115,11 +119,13 @@ const PositionInfo = ({
 							size="sm"
 							value={roleInfo.employmentCostCenter || ""}
 							onChange={(e) => {
-								setEditedIndices((prev) => ({ ...prev, [updateRecordIndex]: true }));
-								setRoleInfo((prevData) => ({
-									...prevData,
-									employmentCostCenter: e.target.value,
-								}));
+								if (e.target.value) {
+									setEditedIndices((prev) => ({ ...prev, [updateRecordIndex]: true }));
+									setRoleInfo((prevData) => ({
+										...prevData,
+										employmentCostCenter: e.target.value,
+									}));
+								}
 							}}
 							placeholder="Select cost center"
 						>
@@ -143,11 +149,13 @@ const PositionInfo = ({
 							size="sm"
 							value={roleInfo.employmentDepartment || ""}
 							onChange={(e) => {
-								setRoleInfo((prevData) => ({
-									...prevData,
-									employmentDepartment: e.target.value,
-								}));
-								setEditedIndices((prev) => ({ ...prev, [updateRecordIndex]: true }));
+								if (e.target.value) {
+									setEditedIndices((prev) => ({ ...prev, [updateRecordIndex]: true }));
+									setRoleInfo((prevData) => ({
+										...prevData,
+										employmentDepartment: e.target.value,
+									}));
+								}
 							}}
 							placeholder="Select department"
 						>

@@ -79,7 +79,9 @@ const PayInfo = ({ formData, handleChange }) => {
 							<Select
 								size="sm"
 								value={formData.payInfo.payType}
-								onChange={(e) => handleChange("payInfo", "payType", e.target.value)}
+								onChange={(e) => {
+									if (e.target.value) handleChange("payInfo", "payType", e.target.value);
+								}}
 							>
 								<option value={EARNING_TYPE.HOURLY}>Hourly</option>
 								<option value={EARNING_TYPE.FT}>Full Time Salaried</option>

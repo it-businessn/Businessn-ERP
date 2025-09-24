@@ -161,12 +161,13 @@ const PaygroupForm = ({
 						name="name"
 						label="Pay Frequency"
 						valueText={formData?.payFrequency || ""}
-						handleChange={(e) =>
-							setFormData((prevData) => ({
-								...prevData,
-								payFrequency: e.target.value,
-							}))
-						}
+						handleChange={(e) => {
+							if (e.target.value)
+								setFormData((prevData) => ({
+									...prevData,
+									payFrequency: e.target.value,
+								}));
+						}}
 						options={PAY_FREQUENCIES}
 						placeholder="Select pay frequency"
 					/>

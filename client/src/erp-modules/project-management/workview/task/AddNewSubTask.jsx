@@ -354,7 +354,7 @@ const AddNewSubTask = ({ isOpen, onClose, allProjects, isFiltered, allProjectTas
 													borderRadius="10px"
 													value={todoItem.selectedAssignee}
 													onChange={(e) => {
-														if (e.target.value !== "") {
+														if (e.target.value) {
 															setTodoItem((prev) => ({
 																...prev,
 																selectedAssignee: e.target.value,
