@@ -1,5 +1,6 @@
 import {
 	Box,
+	Checkbox,
 	Flex,
 	FormControl,
 	FormLabel,
@@ -35,12 +36,15 @@ const PersonalInfo = ({ company, userId }) => {
 	const [moreDetails, setMoreDetails] = useState(null);
 	const [availableProvinces, setAvailableProvinces] = useState([]);
 	const [isLoading, setIsLoading] = useState(false);
+	const [sameAsUserEmail, setSameAsUserEmail] = useState(false);
+
 	const [formData, setFormData] = useState({
 		personalInfo: {
 			firstName: "",
 			middleName: "",
 			lastName: "",
 			birthDate: "",
+			userEmail: "",
 			gender: "",
 			SIN: "",
 			workPermitNo: "",
@@ -78,6 +82,7 @@ const PersonalInfo = ({ company, userId }) => {
 				middleName,
 				lastName,
 				birthDate,
+				userEmail,
 				gender,
 				SIN,
 				workPermitNo,
@@ -108,6 +113,7 @@ const PersonalInfo = ({ company, userId }) => {
 					middleName,
 					lastName,
 					birthDate,
+					userEmail,
 					gender,
 					SIN,
 					workPermitNo,
@@ -153,6 +159,16 @@ const PersonalInfo = ({ company, userId }) => {
 				[field]: value,
 			},
 		});
+	};
+
+	const handleCheckboxChange = (e) => {
+		const checked = e.target.checked;
+		setSameAsUserEmail(checked);
+		if (checked && formData.personalInfo.userEmail) {
+			handleChange("contactInfo", "personalEmail", formData.personalInfo.userEmail);
+		} else {
+			handleChange("contactInfo", "personalEmail", formData.contactInfo.personalEmail);
+		}
 	};
 
 	const handleSave = async () => {
@@ -309,6 +325,16 @@ const PersonalInfo = ({ company, userId }) => {
 						</Flex>
 
 						<Flex gap={4}>
+							<FormControl isRequired>
+								<FormLabel size="sm">User Email</FormLabel>
+								<Input
+									size="sm"
+									type="email"
+									value={formData.personalInfo.userEmail}
+									onChange={(e) => handleChange("personalInfo", "userEmail", e.target.value)}
+									placeholder="Personal Email Address"
+								/>
+							</FormControl>
 							<FormControl>
 								<FormLabel size="sm">Date of Birth</FormLabel>
 								<Input
@@ -417,6 +443,13 @@ const PersonalInfo = ({ company, userId }) => {
 									onChange={(e) => handleChange("contactInfo", "personalEmail", e.target.value)}
 									placeholder="Personal Email Address"
 								/>
+								<Checkbox
+									checked={sameAsUserEmail}
+									colorScheme="facebook"
+									onChange={handleCheckboxChange}
+								>
+									Same as user email
+								</Checkbox>
 							</FormControl>
 
 							<FormControl>

@@ -34,13 +34,15 @@ const PersonalInfo = ({
 	handleChange,
 	availableProvinces,
 }) => {
-	const [sameAsUser, setSameAsUser] = useState(false);
+	const [sameAsUserEmail, setSameAsUserEmail] = useState(false);
 
 	const handleCheckboxChange = (e) => {
 		const checked = e.target.checked;
-		setSameAsUser(checked);
-		if (checked) {
+		setSameAsUserEmail(checked);
+		if (checked && formData.personalInfo.userEmail) {
 			handleChange("contactInfo", "personalEmail", formData.personalInfo.userEmail);
+		} else {
+			handleChange("contactInfo", "personalEmail", formData.contactInfo.personalEmail);
 		}
 	};
 
@@ -227,16 +229,7 @@ const PersonalInfo = ({
 
 						<Flex gap={4}>
 							<FormControl isRequired>
-								<Flex alignItems={"start"}>
-									<FormLabel size="sm">Personal Email</FormLabel>
-									<Checkbox
-										checked={sameAsUser}
-										colorScheme="facebook"
-										onChange={handleCheckboxChange}
-									>
-										Same as user email
-									</Checkbox>
-								</Flex>
+								<FormLabel size="sm">Personal Email</FormLabel>
 								<Input
 									size="sm"
 									type="email"
@@ -244,6 +237,13 @@ const PersonalInfo = ({
 									onChange={(e) => handleChange("contactInfo", "personalEmail", e.target.value)}
 									placeholder="Personal Email Address"
 								/>
+								<Checkbox
+									checked={sameAsUserEmail}
+									colorScheme="facebook"
+									onChange={handleCheckboxChange}
+								>
+									Same as user email
+								</Checkbox>
 							</FormControl>
 
 							<FormControl>
