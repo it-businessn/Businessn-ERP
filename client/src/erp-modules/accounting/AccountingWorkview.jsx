@@ -25,11 +25,20 @@ import useCompany from "hooks/useCompany";
 import PageLayout from "layouts/PageLayout";
 import { useEffect, useState } from "react";
 import { FaPlusCircle } from "react-icons/fa";
+import { FiFilePlus, FiFileText, FiPlusCircle, FiUpload, FiUserPlus } from "react-icons/fi";
 import AccountService from "services/AccountService";
 import LocalStorageService from "services/LocalStorageService";
 import { getAmount } from "utils/convertAmt";
 import { getDefaultDate } from "utils/convertDate";
 import AddAccountModal from "./AddAccountModal";
+
+const ACTIONS = [
+	{ key: "entry", name: "Add Entry", icon: FiPlusCircle },
+	{ key: "add", name: "Add Account", icon: FiUserPlus },
+	{ key: "Invoice", name: "Add Invoice", icon: FiFilePlus },
+	{ key: "Bill", name: "Add Bill", icon: FiFileText },
+	{ key: "remove", name: "Import Bank Statement", icon: FiUpload },
+];
 
 const AccountingWorkview = () => {
 	const { company } = useCompany(LocalStorageService.getItem("selectedCompany"));
@@ -255,17 +264,7 @@ const AccountingWorkview = () => {
 						/>
 					</Stack>
 				</BoxCard>
-				<PayrollActions
-					title="Accounting Actions"
-					handleClick={handleClick}
-					actions={[
-						{ key: "entry", name: "Add Entry" },
-						{ key: "add", name: "Add Account" },
-						{ key: "Invoice", name: "Add Invoice" },
-						{ key: "Bill", name: "Add Bill" },
-						{ key: "remove", name: "Import Bank Statement" },
-					]}
-				/>
+				<PayrollActions title="Accounting Actions" handleClick={handleClick} actions={ACTIONS} />
 			</SimpleGrid>
 			{showModal && (
 				<AddAccountModal company={company} showOnboard={showModal} setShowOnboard={setShowModal} />

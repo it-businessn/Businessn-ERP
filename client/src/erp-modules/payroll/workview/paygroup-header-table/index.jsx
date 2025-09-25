@@ -4,11 +4,24 @@ import BoxCard from "components/ui/card";
 import { tabScrollCss } from "erp-modules/payroll/onboard-user/customInfo";
 import NewEmployeeOnboardingModal from "erp-modules/payroll/onboard-user/NewEmployeeOnboardingModal";
 import { useState } from "react";
+import { AiOutlineFileDone } from "react-icons/ai";
+import { FaMoneyCheckAlt, FaWpforms } from "react-icons/fa";
+import { MdUpdate } from "react-icons/md";
+import { RiUserAddLine, RiUserUnfollowLine } from "react-icons/ri";
 import { useNavigate } from "react-router-dom";
 import { payrollEmployeePath, payrollROEPath } from "routes";
 import ExtraPayrunModal from "./ExtraPayrunModal";
 import PayrollActions from "./PayrollActions";
 import WorkviewTable from "./WorkviewTable";
+
+const PAYGROUP_ACTIONS = [
+	{ key: "roe", name: "Issue Roes", icon: FaWpforms },
+	{ key: "form", name: "Issue Forms", icon: AiOutlineFileDone },
+	{ key: "extra", name: "Extra Pay Run", icon: FaMoneyCheckAlt },
+	{ key: "terminate", name: "Terminate", icon: RiUserUnfollowLine },
+	{ key: "empUpdate", name: "Update Employees", icon: MdUpdate },
+	{ key: "onboard", name: "Onboard Employee", icon: RiUserAddLine },
+];
 
 const PaygroupTable = ({
 	selectedPayGroup,
@@ -111,7 +124,7 @@ const PaygroupTable = ({
 					/>
 				</VStack>
 			</BoxCard>
-			<PayrollActions handleClick={handleClick} />
+			<PayrollActions actions={PAYGROUP_ACTIONS} handleClick={handleClick} />
 		</SimpleGrid>
 	);
 };

@@ -16,11 +16,18 @@ import useCompany from "hooks/useCompany";
 import PageLayout from "layouts/PageLayout";
 import { useEffect, useState } from "react";
 import { FaArrowLeft, FaSearch } from "react-icons/fa";
+import { FiUserCheck, FiUserPlus, FiUserX } from "react-icons/fi";
 import AccountService from "services/AccountService";
 import LocalStorageService from "services/LocalStorageService";
 import AccountJournalDetail from "./AccountJournalDetail";
 import AddAccountModal from "./AddAccountModal";
 import LedgerList from "./LedgerList";
+
+const ACTIONS = [
+	{ key: "add", name: "Add Account", icon: FiUserPlus },
+	{ key: "change", name: "Change Account", icon: FiUserCheck },
+	{ key: "remove", name: "Remove Account", icon: FiUserX },
+];
 
 const AccountingLedger = () => {
 	const { company } = useCompany(LocalStorageService.getItem("selectedCompany"));
@@ -205,14 +212,11 @@ const AccountingLedger = () => {
 						</HStack>
 					</HStack>
 				</VStack>
+
 				<PayrollActions
 					title="Chart of Account Actions"
 					handleClick={handleClick}
-					actions={[
-						{ key: "add", name: "Add Account" },
-						{ key: "change", name: "Change Account" },
-						{ key: "remove", name: "Remove Account" },
-					]}
+					actions={ACTIONS}
 				/>
 			</SimpleGrid>
 			{showAccDetail ? (

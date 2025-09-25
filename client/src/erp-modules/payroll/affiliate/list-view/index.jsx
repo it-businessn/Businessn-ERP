@@ -16,11 +16,20 @@ import useCompany from "hooks/useCompany";
 import usePaygroup from "hooks/usePaygroup";
 import PageLayout from "layouts/PageLayout";
 import { useEffect, useState } from "react";
-import { FaPlus, FaSearch } from "react-icons/fa";
+import { AiOutlineFileDone, AiOutlineSend } from "react-icons/ai";
+import { FaFileInvoiceDollar, FaPlus, FaSearch } from "react-icons/fa";
+import { RiUserUnfollowLine } from "react-icons/ri";
 import { useNavigate } from "react-router-dom";
 import LocalStorageService from "services/LocalStorageService";
 import PayrollService from "services/PayrollService";
 import Affiliates from "./Affiliates";
+
+const PAYGROUP_ACTIONS = [
+	{ key: "form", name: "Issue Forms", icon: AiOutlineFileDone },
+	{ key: "terminate", name: "Terminate", icon: RiUserUnfollowLine },
+	{ key: "send-login", name: "Send Login", icon: AiOutlineSend },
+	{ key: "send-paystub", name: "Send Paystub", icon: FaFileInvoiceDollar },
+];
 
 const AffiliateListView = () => {
 	const loggedInUser = LocalStorageService.getItem("user");
@@ -129,15 +138,7 @@ const AffiliateListView = () => {
 				</Flex>
 
 				{/* Actions Section */}
-				<PayrollActions
-					handleClick={handleClick}
-					actions={[
-						{ key: "terminate", name: "Terminate" },
-						{ key: "form", name: "Issue Forms" },
-						{ key: "send-login", name: "Send Login" },
-						{ key: "send-paystub", name: "Send Paystub" },
-					]}
-				/>
+				<PayrollActions handleClick={handleClick} actions={PAYGROUP_ACTIONS} />
 			</SimpleGrid>
 			<Box>
 				<Flex mb={1} gap={6} align="center">

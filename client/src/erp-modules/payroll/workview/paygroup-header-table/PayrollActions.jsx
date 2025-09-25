@@ -1,27 +1,10 @@
 import { Divider, Flex, Icon, Text, VStack } from "@chakra-ui/react";
 import BoxCard from "components/ui/card";
 import TextTitle from "components/ui/text/TextTitle";
-import { IoDocumentTextOutline } from "react-icons/io5";
-import { MdLogout, MdOutlineChevronRight } from "react-icons/md";
-import { RiLoginBoxLine } from "react-icons/ri";
+import { MdOutlineChevronRight } from "react-icons/md";
 
-const PAYGROUP_ACTIONS = [
-	{ key: "roe", name: "Issue Roes" },
-	{ key: "form", name: "Issue Forms" },
-	{ key: "extra", name: "Extra Pay Run" },
-	{ key: "terminate", name: "Terminate" },
-	{ key: "empUpdate", name: "Update Employees" },
-	{ key: "onboard", name: "Onboard Employee" },
-];
-
-const PayrollActions = ({ handleClick, actions = PAYGROUP_ACTIONS, title = "Payroll actions" }) => {
+const PayrollActions = ({ handleClick, actions, title = "Payroll actions" }) => {
 	// Map of action keys to their corresponding icons
-	const actionIcons = {
-		roe: IoDocumentTextOutline,
-		form: IoDocumentTextOutline,
-		extra: RiLoginBoxLine,
-		terminate: MdLogout,
-	};
 
 	return (
 		<BoxCard>
@@ -29,7 +12,7 @@ const PayrollActions = ({ handleClick, actions = PAYGROUP_ACTIONS, title = "Payr
 				<TextTitle size="lg" title={title} />
 				<Divider />
 				<VStack spacing={0.5} align="stretch">
-					{actions?.map(({ key, name }) => (
+					{actions?.map(({ key, name, icon }) => (
 						<Flex
 							key={key}
 							p={3}
@@ -45,9 +28,8 @@ const PayrollActions = ({ handleClick, actions = PAYGROUP_ACTIONS, title = "Payr
 							onClick={() => handleClick(key)}
 						>
 							<Flex align="center" gap={2}>
-								{actionIcons[key] && (
-									<Icon as={actionIcons[key]} boxSize={5} color="var(--nav_color)" />
-								)}
+								<Icon as={icon} boxSize={5} color="var(--nav_color)" />
+
 								<Text fontSize="sm" fontWeight="medium" color="var(--nav_color)">
 									{name}
 								</Text>
