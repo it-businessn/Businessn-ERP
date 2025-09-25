@@ -376,16 +376,17 @@ const Timesheets = () => {
 								setFilteredData={setFilteredDept}
 								helperText="department"
 							/>
-							<OtherFilter
-								isDisabled={deptName}
-								showOtherFilter={timesheets && showCCFilter}
-								toggleOtherFilter={toggleCCFilter}
-								handleFilter={handleFilter}
-								data={cc}
-								filteredData={filteredCC}
-								setFilteredData={setFilteredCC}
-								helperText="cost center"
-							/>
+							{!deptName && (
+								<OtherFilter
+									showOtherFilter={timesheets && showCCFilter}
+									toggleOtherFilter={toggleCCFilter}
+									handleFilter={handleFilter}
+									data={cc}
+									filteredData={filteredCC}
+									setFilteredData={setFilteredCC}
+									helperText="cost center"
+								/>
+							)}
 						</>
 					)}
 				</Flex>

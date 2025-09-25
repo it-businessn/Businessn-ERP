@@ -21,7 +21,6 @@ const OtherFilter = ({
 	filteredData,
 	setFilteredData,
 	helperText,
-	isDisabled,
 	type,
 }) => {
 	const [openMenu, setOpenMenu] = useState(true);
@@ -40,7 +39,7 @@ const OtherFilter = ({
 	};
 
 	return (
-		<Popover isOpen={showOtherFilter && !isDisabled} overflow="auto" css={tabScrollCss}>
+		<Popover isOpen={showOtherFilter} overflow="auto" css={tabScrollCss}>
 			<PopoverTrigger>
 				<HStack cursor="pointer" borderRadius="md" onClick={toggleOtherFilter} p={0} spacing={1}>
 					<MdOutlineFilterList />

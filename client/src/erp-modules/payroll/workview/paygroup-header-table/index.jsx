@@ -1,9 +1,10 @@
 import { HStack, Select, SimpleGrid, VStack } from "@chakra-ui/react";
 import PrimaryButton from "components/ui/button/PrimaryButton";
 import BoxCard from "components/ui/card";
+import { ROLES } from "constant";
 import { tabScrollCss } from "erp-modules/payroll/onboard-user/customInfo";
 import NewEmployeeOnboardingModal from "erp-modules/payroll/onboard-user/NewEmployeeOnboardingModal";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AiOutlineFileDone } from "react-icons/ai";
 import { FaMoneyCheckAlt, FaWpforms } from "react-icons/fa";
 import { MdUpdate } from "react-icons/md";
@@ -39,6 +40,13 @@ const PaygroupTable = ({
 }) => {
 	const [showExtraPayrun, setShowExtraPayrun] = useState(false);
 	const [showOnboard, setShowOnboard] = useState(false);
+	const [payrollActions, setPayrollActions] = useState(PAYGROUP_ACTIONS);
+
+	useEffect(() => {
+		if (loggedInUser?.role === ROLES.MANAGER) {
+			setPayrollActions(payrollActions.filter(({ key }) => key !== "roe"));
+		}
+	}, [loggedInUser]);
 
 	const navigate = useNavigate();
 
@@ -124,7 +132,7 @@ const PaygroupTable = ({
 					/>
 				</VStack>
 			</BoxCard>
-			<PayrollActions actions={PAYGROUP_ACTIONS} handleClick={handleClick} />
+			<PayrollActions actions={payrollActions} handleClick={handleClick} />
 		</SimpleGrid>
 	);
 };

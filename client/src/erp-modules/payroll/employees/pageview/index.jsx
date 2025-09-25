@@ -44,19 +44,21 @@ const Employees = () => {
 
 	const { payGroups, selectedPayGroupOption } = usePaygroup(company, false);
 	const employees = useCompanyEmployees(company, defaultDept, selectedPayGroupOption);
+	const notShadowUser = loggedInUser.role !== ROLES.SHADOW_ADMIN;
+
 	useEffect(() => {
-		const getUserId = () => {
-			if (id) {
-				setUserId(id);
-				return;
-			}
-			if (loggedInUser.role !== ROLES.SHADOW_ADMIN) {
-				setUserId(loggedInUser._id);
-				setDefaultUser(loggedInUser);
-				setDefaultDept(loggedInUser?.role === ROLES.MANAGER ? loggedInUser?.department : null);
-			}
-		};
-		getUserId();
+		if (notShadowUser) {
+			setDefaultUser(loggedInUser);
+			setDefaultDept(loggedInUser?.role === ROLES.MANAGER ? loggedInUser?.department : null);
+		}
+	}, []);
+
+	useEffect(() => {
+		if (id) {
+			setUserId(id);
+		} else if (notShadowUser) {
+			setUserId(loggedInUser._id);
+		}
 	}, [id]);
 
 	useEffect(() => {

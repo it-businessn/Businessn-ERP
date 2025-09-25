@@ -23,7 +23,7 @@ const useCompanyEmployees = (company, deptName, selectedPayGroupName) => {
 			}
 		};
 		if (selectedPayGroupName) fetchAllEmployees();
-	}, [company, selectedPayGroupName]);
+	}, [company, deptName, selectedPayGroupName]);
 
 	return employees;
 };
