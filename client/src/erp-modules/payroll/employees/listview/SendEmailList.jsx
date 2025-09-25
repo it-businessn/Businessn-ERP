@@ -9,19 +9,18 @@ import {
 } from "@chakra-ui/react";
 import ActionButtonGroup from "components/ui/form/ActionButtonGroup";
 import MultiSelectFormControl from "components/ui/form/MultiSelectFormControl";
+import { EMAIL_TYPE } from "constant";
 import { useEffect, useState } from "react";
 import { BsFillSendFill } from "react-icons/bs";
 import UserService from "services/UserService";
 
-const SendEmailList = ({ emailType, company, isOpen, onClose, selectedPayGroupOption }) => {
+const SendEmailList = ({ title, company, isOpen, onClose, selectedPayGroupOption }) => {
 	const [openMenu, setOpenMenu] = useState(false);
 	const [selectedEmp, setSelectedEmp] = useState(null);
 	const [selectedOptions, setSelectedOptions] = useState([]);
 	const [isLoading, setIsLoading] = useState(false);
 
 	const [employees, setEmployees] = useState(null);
-	const isCreds = emailType === "creds";
-	const title = isCreds ? "Send Login Credentials" : "Send Paystubs";
 	const toast = useToast();
 
 	useEffect(() => {
@@ -53,12 +52,14 @@ const SendEmailList = ({ emailType, company, isOpen, onClose, selectedPayGroupOp
 	const handleMenuToggle = () => {
 		setOpenMenu((prev) => !prev);
 	};
+
 	const handleSubmit = async () => {
 		setIsLoading(true);
 		try {
-			const { data } = isCreds
-				? await UserService.sendEmailLoginCreds({ employees: selectedOptions })
-				: await UserService.sendEmailPaystubs({ employees: selectedOptions });
+			const payStubEmail = title.includes(EMAIL_TYPE.PAYSTUB);
+			const { data } = payStubEmail
+				? await UserService.sendEmailPaystubs({ employees: selectedOptions })
+				: await UserService.sendEmailLoginCreds({ employees: selectedOptions });
 			toast({
 				title: "Success",
 				description: data.message,
@@ -78,6 +79,7 @@ const SendEmailList = ({ emailType, company, isOpen, onClose, selectedPayGroupOp
 			});
 		}
 	};
+
 	return (
 		<Modal isCentered isOpen={isOpen} onClose={onClose}>
 			<ModalOverlay bg="blackAlpha.300" backdropFilter="blur(5px)" />

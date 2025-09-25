@@ -71,7 +71,7 @@ const EmployeeListView = () => {
 	const [filteredCC, setFilteredCC] = useState([]);
 	const [empName, setEmpName] = useState("");
 	const [selectEmpList, setSelectEmpList] = useState(false);
-	const [emailType, setEmailType] = useState(null);
+	const [title, setTitle] = useState(null);
 
 	const navigate = useNavigate();
 
@@ -81,11 +81,11 @@ const EmployeeListView = () => {
 			navigate(payrollEmployeePath);
 		}
 		if (val === "send-login") {
-			setEmailType("creds");
+			setTitle("Send Login Credentials");
 			setSelectEmpList(true);
 		}
 		if (val === "send-paystub") {
-			setEmailType("paystub");
+			setTitle("Send Paystub");
 			setSelectEmpList(true);
 		}
 	};
@@ -239,7 +239,7 @@ const EmployeeListView = () => {
 			)}
 			{selectEmpList && (
 				<SendEmailList
-					emailType={emailType}
+					title={title}
 					isOpen={selectEmpList}
 					onClose={() => setSelectEmpList(false)}
 					employees={filteredEmployees}

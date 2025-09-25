@@ -19,7 +19,6 @@ import { useEffect, useState } from "react";
 import { AiOutlineFileDone, AiOutlineSend } from "react-icons/ai";
 import { FaFileInvoiceDollar, FaPlus, FaSearch } from "react-icons/fa";
 import { RiUserUnfollowLine } from "react-icons/ri";
-import { useNavigate } from "react-router-dom";
 import LocalStorageService from "services/LocalStorageService";
 import PayrollService from "services/PayrollService";
 import Affiliates from "./Affiliates";
@@ -59,22 +58,7 @@ const AffiliateListView = () => {
 		fetchAllAffiliates();
 	}, [company]);
 
-	const navigate = useNavigate();
-
-	const handleClick = (val) => {
-		// if (val === "terminate") {
-		// 	const empPath = `${payrollEmployeePath}/info/${loggedInUser._id}/3`;
-		// 	navigate(empPath);
-		// }
-		// if (val === "send-login") {
-		// 	setEmailType("creds");
-		// 	setSelectEmpList(true);
-		// }
-		// if (val === "send-paystub") {
-		// 	setEmailType("paystub");
-		// 	setSelectEmpList(true);
-		// }
-	};
+	const handleClick = (val) => {};
 
 	const handleInputChange = (value) => {
 		setEmpName(value);
@@ -187,7 +171,7 @@ const AffiliateListView = () => {
 			)}
 			{selectEmpList && (
 				<SendEmailList
-					emailType={emailType}
+					title={""}
 					isOpen={selectEmpList}
 					onClose={() => setSelectEmpList(false)}
 					employees={filteredAffiliates}

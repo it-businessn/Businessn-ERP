@@ -15,6 +15,7 @@ export const ROLES = {
 };
 
 export const ALERTS_TYPE = { BANK: "bank", SIN: "SIN", WAGE: "wage" };
+export const EMAIL_TYPE = { LOGIN_CREDENTIAL: "CREDS", PAYSTUB: "Paystub" };
 
 export const COMPANIES = {
 	FD: "Fractional Departments Inc.",
