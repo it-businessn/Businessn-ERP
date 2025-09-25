@@ -6,6 +6,11 @@ const EmployeeEmploymentInfo = require("../models/EmployeeEmploymentInfo");
 const Timecard = require("../models/Timecard");
 const TimecardRaw = require("../models/TimecardRaw");
 const Timesheet = require("../models/Timesheet");
+const {
+	addOvertimeRecord,
+	addTimesheetEntry,
+	calcTotalWorkedHours,
+} = require("../helpers/timecardHelper");
 
 const {
 	getUTCTime,
@@ -21,7 +26,6 @@ const {
 	ROLES,
 } = require("../services/data");
 const { getHolidays } = require("./setUpController");
-const { addOvertimeRecord, addTimesheetEntry, calcTotalWorkedHours } = require("./timecardHelper");
 
 const getTADUsers = async (req, res) => {
 	try {

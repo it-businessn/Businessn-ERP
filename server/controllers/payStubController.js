@@ -9,9 +9,9 @@ const {
 	calculateTimesheetApprovedHours,
 	findEmployeeBenefitInfo,
 	buildNewEmpPayStubInfo,
-} = require("./payrollHelper");
+} = require("../helpers/payrollHelper");
+const { appendPrevPayInfoBalance } = require("../helpers/payStubHelper");
 const { findAllAdditionalHoursAllocatedInfo } = require("./payrunExtraAllocationInfoController");
-const { appendPrevPayInfoBalance } = require("./payStubHelper");
 const { addSeparateManualCheque } = require("./payStubManualCalc");
 const { addSeparatePayoutCheque } = require("./payStubPayoutCalc");
 const { addSeparateSuperficialCheque } = require("./payStubSuperficialCalc");

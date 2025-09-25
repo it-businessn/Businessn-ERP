@@ -2,9 +2,9 @@ const EmployeeEmploymentInfo = require("../models/EmployeeEmploymentInfo");
 const EmployeePayInfo = require("../models/EmployeePayInfo");
 const Group = require("../models/Group");
 const { ALERTS_TYPE } = require("../services/data");
+const { findEmpPayStubDetail } = require("../helpers/payStubHelper");
 const { getPayrollActiveEmployees } = require("./appController");
 const { deleteAlerts, getRecordId } = require("./payrollController");
-const { findEmpPayStubDetail } = require("./payStubHelper");
 const { findGroupEmployees } = require("./setUpController");
 const { getEmployeeId } = require("./userController");
 

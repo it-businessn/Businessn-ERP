@@ -1,6 +1,5 @@
 const moment = require("moment");
 const Timesheet = require("../models/Timesheet");
-const { TIMESHEET_STATUS, PAY_TYPES_TITLE, EARNING_TYPE } = require("../services/data");
 const EmployeeBalanceInfo = require("../models/EmployeeBalanceInfo");
 const {
 	calcSalary,
@@ -8,6 +7,7 @@ const {
 	getTaxDetails,
 	getSumRegHrs,
 } = require("../services/payrollService");
+const { TIMESHEET_STATUS, PAY_TYPES_TITLE, EARNING_TYPE } = require("../services/data");
 
 const getApprovedTimesheets = async (record) =>
 	await Timesheet.find(record)

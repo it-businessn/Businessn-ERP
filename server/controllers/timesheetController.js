@@ -2,6 +2,14 @@ const EmployeePayInfo = require("../models/EmployeePayInfo");
 const Timesheet = require("../models/Timesheet");
 const moment = require("moment");
 const momentTz = require("moment-timezone");
+
+const { calcPayRates } = require("../helpers/payrollHelper");
+const {
+	addOvertimeRecord,
+	addTimesheetEntry,
+	calcTotalWorkedHours,
+} = require("../helpers/timecardHelper");
+
 const { getPayrollActiveEmployees } = require("./appController");
 const {
 	PAY_TYPES_TITLE,
@@ -16,8 +24,6 @@ const {
 } = require("../services/data");
 const EmployeeEmploymentInfo = require("../models/EmployeeEmploymentInfo");
 const { findEmpPayInfo } = require("./employmentInfoController");
-const { calcPayRates } = require("./payrollHelper");
-const { addOvertimeRecord, addTimesheetEntry, calcTotalWorkedHours } = require("./timecardHelper");
 
 const findByRecordTimesheets = async (record, skip, limit) => {
 	// const y = await Timesheet.deleteMany({

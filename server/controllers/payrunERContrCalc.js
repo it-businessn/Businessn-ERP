@@ -5,7 +5,7 @@ const {
 	calcHoursWorkedTotals,
 	calcPayRates,
 	calcEmpBenefits,
-} = require("./payrollHelper");
+} = require("../helpers/payrollHelper");
 const {
 	findAdditionalHoursAllocatedInfo,
 	findEESuperficialContribution,

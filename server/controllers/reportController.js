@@ -6,7 +6,6 @@ const Order = require("../models/Order");
 const JournalEntry = require("../models/JournalEntry");
 const EmployeeEmploymentInfo = require("../models/EmployeeEmploymentInfo");
 
-const { calculateTimesheetApprovedHours } = require("./payrollHelper");
 const { PAYRUN_TYPE, BUSINESSN_ORG } = require("../services/data");
 
 const buildFundingTotalsReport = async (
@@ -391,7 +390,6 @@ const getEmployeeReportInfo = async (req, res) => {
 module.exports = {
 	getReportInfo,
 	getEmployeeReportInfo,
-	calculateTimesheetApprovedHours,
 	getFundReportInfo,
 	getFundingReportInfo,
 	getJournalEntryReportInfo,
