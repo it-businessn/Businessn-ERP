@@ -62,6 +62,7 @@ const NewEmployeeOnboardingModal = ({
 	const [employmentProvinces, setEmploymentProvinces] = useState([]);
 	const [governmentProvinces, setGovernmentProvinces] = useState([]);
 	const [lastBadgeId, setLastBadgeId] = useState(null);
+	const [isDisabled, setIsDisabled] = useState(true);
 
 	useEffect(() => {
 		const fetchCompanyLastBadgeID = async () => {
@@ -74,6 +75,17 @@ const NewEmployeeOnboardingModal = ({
 		};
 		fetchCompanyLastBadgeID();
 	}, [company]);
+
+	useEffect(() => {
+		const { firstName, lastName, userEmail } = formData.personalInfo;
+		if (firstName && lastName && userEmail) {
+			setIsDisabled(false);
+			setShowSave(true);
+		} else {
+			setIsDisabled(true);
+			setShowSave(false);
+		}
+	}, [formData.personalInfo]);
 
 	const handleChange = (section, field, value) => {
 		setFormData({
@@ -151,20 +163,6 @@ const NewEmployeeOnboardingModal = ({
 			),
 		},
 	];
-
-	useEffect(() => {
-		if (
-			formData.personalInfo.firstName &&
-			formData.personalInfo.lastName &&
-			formData.personalInfo.userEmail
-		) {
-			setShowSave(true);
-		}
-	}, [
-		formData.personalInfo.firstName,
-		formData.personalInfo.lastName,
-		formData.personalInfo.userEmail,
-	]);
 
 	// Update provinces when country changes
 	useEffect(() => {
@@ -270,7 +268,7 @@ const NewEmployeeOnboardingModal = ({
 			await PayrollService.onboardUser(formData);
 			setShowSave(false);
 			toast({
-				title: "Employee added successfully",
+				title: "User created successfully. Send login credentials!",
 				status: "success",
 				duration: 3000,
 				isClosable: true,
@@ -422,6 +420,7 @@ const NewEmployeeOnboardingModal = ({
 						)}
 
 						<Button
+							isDisabled={isDisabled}
 							rightIcon={getNextButtonIcon()}
 							onClick={getNextButtonAction()}
 							bg={isLastStep ? "var(--banner_bg)" : "var(--banner_bg)"}
