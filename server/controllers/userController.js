@@ -589,12 +589,14 @@ const createMasterUser = async (req, res) => {
 			firstName,
 			middleName,
 			lastName,
-			fullName: `${firstName} ${middleName} ${lastName}`,
+			fullName: `${firstName} ${middleName || ""} ${lastName}`,
 			email,
 			phoneNumber,
 			position,
 			dateOfJoining: startDate,
+			baseModule: approvedModules,
 		});
+
 		await EmployeeProfileInfo.create({
 			companyName: company,
 			firstName,
@@ -603,7 +605,6 @@ const createMasterUser = async (req, res) => {
 			empId: employee?._id,
 			businessEmail: email,
 			personalPhoneNum: phoneNumber,
-			baseModule: approvedModules,
 		});
 		res.status(201).json(employee);
 	} catch (error) {

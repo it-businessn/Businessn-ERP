@@ -2,7 +2,7 @@ import { HStack, useDisclosure } from "@chakra-ui/react";
 
 import { Button, Tab, TabList, TabPanel, TabPanels, Tabs, useToast } from "@chakra-ui/react";
 import { tabStyleCss } from "erp-modules/payroll/onboard-user/customInfo";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import {
 	Flex,
@@ -42,6 +42,7 @@ const OnboardUserModal = ({ showOnboard, setShowOnboard, title, company }) => {
 	};
 	const [tabIndex, setTabIndex] = useState(0);
 	const [formData, setFormData] = useState(defaultInfo);
+	const [isDisabled, setIsDisabled] = useState(true);
 
 	const handleClose = () => {
 		onClose();
@@ -61,11 +62,20 @@ const OnboardUserModal = ({ showOnboard, setShowOnboard, title, company }) => {
 		},
 	];
 
+	useEffect(() => {
+		const { firstName, lastName, email, phoneNumber, position, startDate } = formData.personalInfo;
+		if (firstName && lastName && email && phoneNumber && position && startDate) {
+			setIsDisabled(false);
+		} else {
+			setIsDisabled(true);
+		}
+	}, [formData.personalInfo]);
+
 	const isLastStep = tabIndex === ONBOARD_TABS.length - 1;
 
 	const handleSubmit = async () => {
 		try {
-			const { data } = await UserService.addMasterUser(formData);
+			await UserService.addMasterUser(formData);
 			toast({
 				title: "Action successful!",
 				description: "New user created successfully.",
@@ -191,6 +201,7 @@ const OnboardUserModal = ({ showOnboard, setShowOnboard, title, company }) => {
 						)}
 
 						<Button
+							isDisabled={isDisabled}
 							rightIcon={getNextButtonIcon()}
 							onClick={getNextButtonAction}
 							bg={"var(--banner_bg)"}

@@ -70,7 +70,7 @@ const MasterUserInfo = ({ formData, setFormData }) => {
 									placeholder="Enter first name"
 								/>
 							</FormControl>
-							<FormControl isRequired>
+							<FormControl>
 								<FormLabel size="sm">Middle Name</FormLabel>
 								<Input
 									size="sm"
