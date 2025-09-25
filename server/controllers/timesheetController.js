@@ -1,7 +1,6 @@
 const EmployeePayInfo = require("../models/EmployeePayInfo");
 const Timesheet = require("../models/Timesheet");
 const moment = require("moment");
-const momentTz = require("moment-timezone");
 
 const { calcPayRates } = require("../helpers/payrollHelper");
 const {
@@ -10,7 +9,6 @@ const {
 	calcTotalWorkedHours,
 } = require("../helpers/timecardHelper");
 
-const { getPayrollActiveEmployees } = require("./appController");
 const {
 	PAY_TYPES_TITLE,
 	TIMESHEET_STATUS,
@@ -24,6 +22,7 @@ const {
 } = require("../services/data");
 const EmployeeEmploymentInfo = require("../models/EmployeeEmploymentInfo");
 const { findEmpPayInfo } = require("./employmentInfoController");
+const { getPayrollActiveEmployees } = require("./appController");
 
 const findByRecordTimesheets = async (record, skip, limit) => {
 	// const y = await Timesheet.deleteMany({
@@ -105,10 +104,12 @@ const mapTimesheet = (payInfos, timesheets, empInfos, selectedPayGroupOption) =>
 			}
 		}
 	});
-	const nonFullTimeEmpTimeEntries = timesheets
+
+	const nonSalariedTimeEntries = timesheets
 		?.filter(
 			({ typeOfEarning, positions }) =>
-				typeOfEarning === EARNING_TYPE.HOURLY &&
+				typeOfEarning !== EARNING_TYPE.FT &&
+				typeOfEarning !== EARNING_TYPE.PT &&
 				positions?.some((position) => position?.employmentPayGroup === selectedPayGroupOption),
 		)
 		?.map((timesheet) => {
@@ -128,43 +129,8 @@ const mapTimesheet = (payInfos, timesheets, empInfos, selectedPayGroupOption) =>
 
 			return timesheet;
 		});
-	return nonFullTimeEmpTimeEntries;
+	return nonSalariedTimeEntries;
 };
-
-const getTimeFormat = (timestamp) => {
-	let time = moment(timestamp);
-
-	// const date = notDevice ? moment(timestamp) : moment.utc(timestamp);
-	// return date.format("HH:mm");
-
-	if (time.format("HH") <= "12") {
-		return time.utc().format("HH:mm");
-	} else {
-		return time.format("HH:mm");
-	}
-};
-const getClockInTimeFormat = (timestamp) => {
-	// const date = notDevice ? moment(timestamp) : moment.utc(timestamp);
-	// return timeSheet ? date.format("YYYY-MM-DD") : date.format("YYYY-MM-DD  hh:mm A");
-
-	let time = moment(timestamp);
-	if (time.format("HH:mm") < "05:00" || time.format("HH:mm") > "17:00") {
-		return time.utc().format("HH:mm");
-	} else {
-		return time.format("HH:mm");
-	}
-
-	// const utcHours = new Date(timestamp).getUTCHours();
-	// const utcMinutes = new Date(timestamp).getUTCMinutes();
-	// const formattedUTC = `${(utcHours % 24).toString().padStart(2, "0") || 12}:${utcMinutes
-	// 	.toString()
-	// 	.padStart(2, "0")}`;
-
-	// return formattedUTC;
-};
-
-const convertMomentTzDate = (timestamp) =>
-	momentTz(timestamp).utc().format("YYYY-MM-DDTHH:mm:ss.SSS[Z]");
 
 const getTimesheets = async (req, res) => {
 	const { companyName } = req.params;

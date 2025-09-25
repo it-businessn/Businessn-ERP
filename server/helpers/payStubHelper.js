@@ -1,3 +1,4 @@
+const EmployeePayStub = require("../models/EmployeePayStub");
 const { getSumTotal } = require("../services/payrollService");
 
 const findEmpPayStubDetail = async (empId, payPeriodPayDate, companyName) =>

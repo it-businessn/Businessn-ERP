@@ -1,5 +1,43 @@
 const moment = require("moment");
+const momentTz = require("moment-timezone");
+
 const Timesheet = require("../models/Timesheet");
+const { PAY_TYPES_TITLE } = require("../services/data");
+
+const getTimeFormat = (timestamp) => {
+	let time = moment(timestamp);
+
+	// const date = notDevice ? moment(timestamp) : moment.utc(timestamp);
+	// return date.format("HH:mm");
+
+	if (time.format("HH") <= "12") {
+		return time.utc().format("HH:mm");
+	} else {
+		return time.format("HH:mm");
+	}
+};
+const getClockInTimeFormat = (timestamp) => {
+	// const date = notDevice ? moment(timestamp) : moment.utc(timestamp);
+	// return timeSheet ? date.format("YYYY-MM-DD") : date.format("YYYY-MM-DD  hh:mm A");
+
+	let time = moment(timestamp);
+	if (time.format("HH:mm") < "05:00" || time.format("HH:mm") > "17:00") {
+		return time.utc().format("HH:mm");
+	} else {
+		return time.format("HH:mm");
+	}
+
+	// const utcHours = new Date(timestamp).getUTCHours();
+	// const utcMinutes = new Date(timestamp).getUTCMinutes();
+	// const formattedUTC = `${(utcHours % 24).toString().padStart(2, "0") || 12}:${utcMinutes
+	// 	.toString()
+	// 	.padStart(2, "0")}`;
+
+	// return formattedUTC;
+};
+
+const convertMomentTzDate = (timestamp) =>
+	momentTz(timestamp).utc().format("YYYY-MM-DDTHH:mm:ss.SSS[Z]");
 
 const calcTotalWorkedHours = (clockIn, clockOut) => {
 	// const hoursWorked = moment.duration(moment(clockOut).diff(moment(clockIn))).asHours();
