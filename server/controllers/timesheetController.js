@@ -108,7 +108,7 @@ const mapTimesheet = (payInfos, timesheets, empInfos, selectedPayGroupOption) =>
 	const nonFullTimeEmpTimeEntries = timesheets
 		?.filter(
 			({ typeOfEarning, positions }) =>
-				typeOfEarning !== EARNING_TYPE.FT &&
+				typeOfEarning === EARNING_TYPE.HOURLY &&
 				positions?.some((position) => position?.employmentPayGroup === selectedPayGroupOption),
 		)
 		?.map((timesheet) => {
@@ -116,7 +116,7 @@ const mapTimesheet = (payInfos, timesheets, empInfos, selectedPayGroupOption) =>
 			const isAppOrTad = timesheet.manualAdded || timesheet.source === TIMESHEET_SOURCE.TAD;
 			const isEditable =
 				isEditableBase && isAppOrTad
-					? !moment.utc(timesheet.clockIn).isSame(moment.utc(), "day")
+					? !moment(timesheet.clockIn).isSame(moment(), "day")
 					: isEditableBase;
 			const showBreak = timesheet.payType.includes("Break")
 				? timesheet.approveStatus === TIMESHEET_STATUS.APPROVED
