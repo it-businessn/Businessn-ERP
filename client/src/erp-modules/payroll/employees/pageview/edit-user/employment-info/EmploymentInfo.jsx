@@ -28,6 +28,7 @@ import useRoles from "hooks/useRoles";
 
 import PrimaryButton from "components/ui/button/PrimaryButton";
 import BoxCard from "components/ui/card";
+import { EmployeeNumberControl } from "erp-modules/payroll/controls/EmployeeNumberControl";
 import {
 	COUNTRIES,
 	employmentSubSteps,
@@ -266,19 +267,11 @@ const EmploymentInfo = ({ company, userId, payGroups, selectedPayGroupOption, la
 							</Select>
 						</FormControl>
 
-						<FormControl isRequired>
-							<FormLabel size="sm">Employee Number</FormLabel>
-							<Input
-								size="sm"
-								value={formData.employmentInfo.employeeNo || ""}
-								onChange={(e) => {
-									if (e.target.value) {
-										handleChange("employmentInfo", "employeeNo", e.target.value);
-									}
-								}}
-								placeholder="Enter employee number"
-							/>
-						</FormControl>
+						<EmployeeNumberControl
+							company={company}
+							formData={formData}
+							handleChange={handleChange}
+						/>
 
 						<FormControl>
 							<FormLabel size="sm">System Access Level</FormLabel>

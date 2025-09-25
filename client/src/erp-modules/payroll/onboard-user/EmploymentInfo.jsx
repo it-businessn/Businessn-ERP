@@ -27,6 +27,7 @@ import usePaygroup from "hooks/usePaygroup";
 import usePositionRoles from "hooks/usePositionRoles";
 import useRoles from "hooks/useRoles";
 import { useEffect, useState } from "react";
+import { EmployeeNumberControl } from "../controls/EmployeeNumberControl";
 import {
 	COUNTRIES,
 	employmentSubSteps,
@@ -128,15 +129,11 @@ const EmploymentInfo = ({
 							</Select>
 						</FormControl>
 
-						<FormControl isRequired>
-							<FormLabel size="sm">Employee Number</FormLabel>
-							<Input
-								size="sm"
-								value={formData.employmentInfo.employeeNo}
-								onChange={(e) => handleChange("employmentInfo", "employeeNo", e.target.value)}
-								placeholder="Enter employee number"
-							/>
-						</FormControl>
+						<EmployeeNumberControl
+							company={company}
+							formData={formData}
+							handleChange={handleChange}
+						/>
 
 						<FormControl>
 							<FormLabel size="sm">System Access Level</FormLabel>
