@@ -1,3 +1,4 @@
+const Company = require("../models/Company");
 const Employee = require("../models/Employee");
 const EmployeeEmploymentInfo = require("../models/EmployeeEmploymentInfo");
 
