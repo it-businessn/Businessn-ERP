@@ -17,7 +17,7 @@ const {
 const EmployeeEmploymentInfo = require("../models/EmployeeEmploymentInfo");
 const { findEmpPayInfo } = require("./employmentInfoController");
 const { calcPayRates } = require("./payrollHelper");
-const { calcTotalWorkedHours } = require("./timecardHelper");
+const { addOvertimeRecord, addTimesheetEntry, calcTotalWorkedHours } = require("./timecardHelper");
 
 const findByRecordTimesheets = async (record, skip, limit) => {
 	// const y = await Timesheet.deleteMany({
@@ -278,28 +278,6 @@ const getEmployeeTimesheet = async (req, res) => {
 	} catch (error) {
 		res.status(404).json({ error: error.message });
 	}
-};
-
-const addTimesheetEntry = async (record) => await Timesheet.create(record);
-
-const addOvertimeRecord = async (clockIn, clockOut, employeeId, company, source) => {
-	const adjustedClockOut = moment(clockIn).add(8, "hours");
-	const overtimeClockIn = moment(adjustedClockOut);
-	const overtimeClockOut = moment(clockOut);
-	const overtimeHoursWorked = calcTotalWorkedHours(overtimeClockIn, overtimeClockOut);
-
-	const newEntry = {
-		employeeId,
-		companyName: company,
-		clockIn: overtimeClockIn.toISOString(),
-		clockOut: overtimeClockOut.toISOString(),
-		payType: PAY_TYPES_TITLE.OVERTIME_PAY,
-		overtimeHoursWorked,
-		source,
-	};
-
-	await addTimesheetEntry(newEntry);
-	return adjustedClockOut.toISOString();
 };
 
 const createManualTimesheet = async (req, res) => {
@@ -692,8 +670,6 @@ module.exports = {
 	createManualTimesheet,
 	actionAllTimesheets,
 	updateTimesheetPayType,
-	addOvertimeRecord,
-	addTimesheetEntry,
 	updateTimesheetRole,
 	setTime,
 };
