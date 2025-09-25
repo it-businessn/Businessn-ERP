@@ -1,6 +1,8 @@
+const moment = require("moment");
+
 const EmployeePayInfo = require("../models/EmployeePayInfo");
 const Timesheet = require("../models/Timesheet");
-const moment = require("moment");
+const EmployeeEmploymentInfo = require("../models/EmployeeEmploymentInfo");
 
 const { calcPayRates } = require("../helpers/payrollHelper");
 const {
@@ -20,7 +22,6 @@ const {
 	TIMESHEET_SOURCE,
 	ROLES,
 } = require("../services/data");
-const EmployeeEmploymentInfo = require("../models/EmployeeEmploymentInfo");
 const { findEmpPayInfo } = require("./employmentInfoController");
 const { getPayrollActiveEmployees } = require("./appController");
 
@@ -60,16 +61,15 @@ const getEmploymentResult = async (companyName) => {
 		companyName,
 		payrollStatus: "Payroll Active",
 		employmentRole: { $ne: ROLES.SHADOW_ADMIN },
+		empId: { $exists: true },
 	}).select("empId positions");
 	const empInfoMap = new Map(
-		empInfoResult
-			?.filter((emp) => emp?.empId)
-			?.map((empInfo) => [
-				empInfo?.empId?.toString(),
-				{
-					positions: empInfo.positions,
-				},
-			]),
+		empInfoResult?.map((empInfo) => [
+			empInfo?.empId?.toString(),
+			{
+				positions: empInfo.positions,
+			},
+		]),
 	);
 	return empInfoMap;
 };

@@ -1,6 +1,7 @@
 const fs = require("fs");
 
 const Resource = require("../models/CompanyResource");
+
 const { filePath, fileContentType } = require("../services/fileService");
 
 const getResources = async (req, res) => {
@@ -39,9 +40,7 @@ const getResource = async (req, res) => {
 	const { fileType } = req.params;
 
 	try {
-		const files = (await Resource.find({ fileType })).sort(
-			(a, b) => b.uploadedOn - a.uploadedOn,
-		);
+		const files = (await Resource.find({ fileType })).sort((a, b) => b.uploadedOn - a.uploadedOn);
 		res.status(200).json(files);
 	} catch (error) {
 		res.status(404).json({ error: error.message });

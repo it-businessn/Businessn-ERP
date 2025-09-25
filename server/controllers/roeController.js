@@ -2,14 +2,16 @@ const xml = require("xmlbuilder");
 const path = require("path");
 const moment = require("moment");
 const xml2js = require("xml2js");
-const parser = new xml2js.Parser({ explicitArray: false });
 const fs = require("fs");
 
 const EmployeeROE = require("../models/EmployeeROE");
 const { findEmployeeEmploymentInfo, updateEmploymentInfo } = require("./employmentInfoController");
 const EmployeePayStub = require("../models/EmployeePayStub");
-const { SAVE_FILE_OUTPUT_DIR } = require("./t4SlipController");
 const Company = require("../models/Company");
+
+const { SAVE_FILE_OUTPUT_DIR } = require("./t4SlipController");
+
+const parser = new xml2js.Parser({ explicitArray: false });
 
 const findEmployeeROEInfoDetails = async (empId, companyName) =>
 	await EmployeeROE.findOne({

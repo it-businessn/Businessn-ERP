@@ -1,9 +1,12 @@
-const fs = require("fs");
-const SupportTicket = require("../models/Ticket");
 const moment = require("moment");
-const Employee = require("../models/Employee");
-const { sendEmail } = require("../services/emailService");
 const path = require("path");
+const fs = require("fs");
+
+const SupportTicket = require("../models/Ticket");
+const Employee = require("../models/Employee");
+const Lead = require("../models/Lead");
+
+const { sendEmail } = require("../services/emailService");
 const { filePath, fileContentType } = require("../services/fileService");
 const {
 	TICKET_STATUS,
@@ -11,7 +14,6 @@ const {
 	COMPANIES,
 	SUPPORT_ADMIN_CONTACT,
 } = require("../services/data");
-const Lead = require("../models/Lead");
 
 const getAllTickets = async (req, res) => {
 	const { id } = req.params;

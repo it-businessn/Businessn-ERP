@@ -39,7 +39,7 @@ const useEmployees = (
 							deptName,
 							selectedPayGroupOption,
 					  )
-					: await UserService.getCompanyUsers(company);
+					: await UserService.getAllCompanyUsers(company, deptName, selectedPayGroupOption);
 				setEmployees(data);
 				setFilteredEmployees(data);
 			} catch (error) {

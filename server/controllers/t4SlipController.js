@@ -1,18 +1,21 @@
 const xml = require("xmlbuilder");
 const moment = require("moment");
 const xml2js = require("xml2js");
-const parser = new xml2js.Parser({ explicitArray: false });
 const fs = require("fs");
 // const PDFDocument = require("pdfkit");/
 const path = require("path");
+
 const EmployeePayStub = require("../models/EmployeePayStub");
 const EmployeeProfileInfo = require("../models/EmployeeProfileInfo");
 const EmployeeEmploymentInfo = require("../models/EmployeeEmploymentInfo");
 const Company = require("../models/Company");
 const EmployeeGovernmentInfo = require("../models/EmployeeGovernmentInfo");
 const EmployeeT4 = require("../models/EmployeeT4");
+
 const { encryptData, decryptData } = require("../services/encryptDataService");
 const { CURRENT_YEAR } = require("../services/data");
+
+const parser = new xml2js.Parser({ explicitArray: false });
 
 const getT4Slips = async (req, res) => {
 	const { companyName } = req.params;

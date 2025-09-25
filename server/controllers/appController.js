@@ -1,8 +1,11 @@
 const path = require("path");
+
 const Company = require("../models/Company");
 const Employee = require("../models/Employee");
 const UserActivity = require("../models/UserActivity");
 const UserPermissions = require("../models/permissions");
+const EmployeeEmploymentInfo = require("../models/EmployeeEmploymentInfo");
+const EmployeeProfileInfo = require("../models/EmployeeProfileInfo");
 
 const { hashPassword, comparePassword, hashSyncPassword } = require("../services/passwordService");
 const { getResetPasswordLink } = require("../services/tokenService");
@@ -13,60 +16,33 @@ const {
 	CLIENT_ORG_EMP_PERMISSION,
 	ROLES,
 } = require("../services/data");
+const {
+	filterResultByPaygroupOption,
+	filterResultByDepartment,
+	findEmployee,
+	findCompany,
+	addEmployee,
+} = require("../helpers/userHelper");
 const { generateAccessToken, generateRefreshToken, verifyToken } = require("../middleware/auth");
 const { findPermission } = require("./permissionController");
-const EmployeeEmploymentInfo = require("../models/EmployeeEmploymentInfo");
-const EmployeeProfileInfo = require("../models/EmployeeProfileInfo");
-
-const findCompany = async (key, value) => await Company.findOne({ [key]: value });
 
 const getPayrollActiveEmployees = async (companyName, deptName, selectedPayGroupOption) => {
-	let result = await EmployeeEmploymentInfo.find({
+	let result = await findEmployee({
 		payrollStatus: "Payroll Active",
 		companyName,
 		employmentRole: { $ne: ROLES.SHADOW_ADMIN },
-	})
-		.populate({
-			path: "empId",
-			model: "Employee",
-			select: ["fullName", "email"],
-		})
-		.select("payrollStatus employeeNo positions employmentRole");
-
-	result = result?.filter((a) => a.empId);
+		empId: { $exists: true },
+	});
 
 	if (selectedPayGroupOption) {
-		result = result?.filter((emp) =>
-			emp?.positions?.find((_) => _.employmentPayGroup === selectedPayGroupOption),
-		);
+		result = filterResultByPaygroupOption(result, selectedPayGroupOption);
 	}
+
 	if (deptName && deptName !== "null") {
-		result = result?.filter((emp) => emp?.positions?.[0]?.employmentDepartment === deptName);
+		result = filterResultByDepartment(result, deptName);
 	}
-	result?.sort((a, b) => {
-		if (a.empId?.fullName < b.empId?.fullName) return -1;
-		if (a.empId?.fullName > b.empId?.fullName) return 1;
-		return a.createdOn - b.createdOn;
-	});
+
 	return result;
-};
-
-const addEmployee = async (name, data) => {
-	const existingCompany = await findCompany("name", name);
-	data.companyId = existingCompany._id;
-	try {
-		const employeeRecord = await Employee.findOne({ email: data.email });
-		if (employeeRecord) {
-			return employeeRecord;
-		}
-		const newEmployee = await Employee.create(data);
-
-		if (newEmployee && existingCompany) {
-			existingCompany.employees.push(newEmployee._id);
-			await existingCompany.save();
-		}
-		return newEmployee;
-	} catch (error) {}
 };
 
 const hashedPassword = async (pwd) => await hashPassword(pwd);
@@ -504,8 +480,6 @@ module.exports = {
 	setNewPassword,
 	changePassword,
 	setInitialPermissions,
-	addEmployee,
-	findCompany,
 	hashedPassword,
 	getPayrollActiveEmployees,
 	refreshToken,

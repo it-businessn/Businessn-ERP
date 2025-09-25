@@ -1,12 +1,13 @@
 const moment = require("moment");
 const { nanoid } = require("nanoid");
+
 const Employee = require("../models/Employee");
 const EmployeeProfileInfo = require("../models/EmployeeProfileInfo");
-const { addEmployee, findCompany } = require("./appController");
-const { deleteAlerts } = require("./payrollController");
+const Payout = require("../models/Payout");
 const { decryptData, encryptData } = require("../services/encryptDataService");
 const { ALERTS_TYPE, COMPANIES } = require("../services/data");
-const Payout = require("../models/Payout");
+const { findCompany, addEmployee } = require("../helpers/userHelper");
+const { deleteAlerts } = require("./payrollController");
 
 const getAllProfileInfo = async (req, res) => {
 	const { companyName } = req.params;

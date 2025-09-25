@@ -1,3 +1,5 @@
+const moment = require("moment");
+
 const Company = require("../models/Company");
 const CostCenter = require("../models/CostCenter");
 const Crew = require("../models/Crew");
@@ -12,8 +14,8 @@ const Holiday = require("../models/Holiday");
 const Location = require("../models/Location");
 const Module = require("../models/Module");
 const Setup = require("../models/Setup");
+
 const { CURRENT_YEAR, ROLES } = require("../services/data");
-const moment = require("moment");
 
 const getAllSetup = async (req, res) => {
 	try {
@@ -570,15 +572,15 @@ const addCompany = async (req, res) => {
 	try {
 		const adminEmployees = await EmployeeEmploymentInfo.find({
 			employmentRole: ROLES.SHADOW_ADMIN,
+			empId: { $exists: true },
 		}).select("empId");
-		const filteredEmps = adminEmployees?.filter((emp) => emp?.empId);
 		const newCompany = await Company.create({
 			name,
 			founding_year,
 			registration_number,
 			industry_type,
 			address: { streetNumber, city, state, postalCode, country },
-			employees: filteredEmps,
+			employees: adminEmployees,
 		});
 
 		res.status(201).json(newCompany);

@@ -4,8 +4,9 @@ const EmployeeEmploymentInfo = require("../models/EmployeeEmploymentInfo");
 const EmployeeGovernmentInfo = require("../models/EmployeeGovernmentInfo");
 const EmployeePayInfo = require("../models/EmployeePayInfo");
 const EmployeeProfileInfo = require("../models/EmployeeProfileInfo");
+
 const { encryptData } = require("../services/encryptDataService");
-const { addEmployee } = require("./appController");
+const { addEmployee } = require("../helpers/userHelper");
 const { updateTADEmployee } = require("./timecardController");
 
 const getNewUserID = async (companyName, data) => {

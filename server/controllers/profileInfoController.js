@@ -1,8 +1,8 @@
 const moment = require("moment");
+
 const Employee = require("../models/Employee");
 const EmployeeProfileInfo = require("../models/EmployeeProfileInfo");
-const EmployeeTADProfileInfo = require("../models/EmployeeTADProfile");
-const { addEmployee, findCompany } = require("./appController");
+
 const { deleteAlerts } = require("./payrollController");
 const { decryptData, encryptData } = require("../services/encryptDataService");
 const { ALERTS_TYPE } = require("../services/data");
@@ -14,6 +14,7 @@ const {
 	addUserBenefitInfo,
 	addUserBankInfo,
 } = require("./empDataController");
+const { findCompany, addEmployee } = require("../helpers/userHelper");
 
 const getAllProfileInfo = async (req, res) => {
 	const { companyName } = req.params;
