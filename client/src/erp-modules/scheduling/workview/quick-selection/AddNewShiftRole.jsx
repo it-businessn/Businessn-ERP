@@ -1,4 +1,4 @@
-import { Stack, useDisclosure } from "@chakra-ui/react";
+import { Stack, useDisclosure, useToast } from "@chakra-ui/react";
 import ActionButtonGroup from "components/ui/form/ActionButtonGroup";
 import InputFormControl from "components/ui/form/InputFormControl";
 import ModalLayout from "components/ui/modal/ModalLayout";
@@ -10,6 +10,7 @@ const AddNewShiftRole = ({ showAddNewRole, setShowAddNewRole, setRefresh, compan
 	const [roleDescription, setRoleDescription] = useState("");
 	const [isSubmitting, setSubmitting] = useState(false);
 	const { onClose } = useDisclosure();
+	const toast = useToast();
 
 	const handleSubmit = async (e) => {
 		e.preventDefault();
@@ -26,6 +27,13 @@ const AddNewShiftRole = ({ showAddNewRole, setShowAddNewRole, setRefresh, compan
 			onClose();
 			setShowAddNewRole(false);
 		} catch (error) {
+			toast({
+				title: "Error",
+				description: error?.response?.data?.error,
+				status: "error",
+				duration: 3000,
+				isClosable: true,
+			});
 			setSubmitting(false);
 			onClose();
 			setShowAddNewRole(false);

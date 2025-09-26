@@ -177,12 +177,17 @@ const addPositionRole = async (req, res) => {
 
 		// *************************
 
-		const newRole = await EmploymentPositionRole.create({
-			name,
-			description,
+		const roleData = {
+			name: name.trim(),
 			companyName,
-		});
-		res.status(201).json(newRole);
+		};
+		const checkRoleExists = await EmploymentPositionRole.findOne(roleData);
+		if (!checkRoleExists) {
+			roleData.description = description;
+			const newRole = await EmploymentPositionRole.create(roleData);
+			return res.status(201).json(newRole);
+		}
+		res.status(400).json({ error: "Role already exists!" });
 	} catch (error) {
 		res.status(400).json({ message: error.message });
 	}
