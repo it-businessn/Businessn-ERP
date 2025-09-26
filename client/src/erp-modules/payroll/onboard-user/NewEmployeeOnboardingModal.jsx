@@ -78,14 +78,14 @@ const NewEmployeeOnboardingModal = ({
 
 	useEffect(() => {
 		const { firstName, lastName, userEmail } = formData.personalInfo;
-		if (firstName && lastName && userEmail) {
+		if (firstName && lastName && userEmail && parseFloat(formData?.payInfo?.salary) > 17.85) {
 			setIsDisabled(false);
 			setShowSave(true);
 		} else {
 			setIsDisabled(true);
 			setShowSave(false);
 		}
-	}, [formData.personalInfo]);
+	}, [formData.personalInfo, formData?.payInfo?.salary]);
 
 	const handleChange = (section, field, value) => {
 		setFormData({

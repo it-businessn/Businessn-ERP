@@ -1,10 +1,10 @@
-import { FormLabel, Stack } from "@chakra-ui/react";
-
-import { Flex, FormControl, Input, Select, SimpleGrid } from "@chakra-ui/react";
-import PrimaryButton from "components/ui/button/PrimaryButton";
-import { EARNING_TYPE } from "erp-modules/payroll/onboard-user/customInfo";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FaSave } from "react-icons/fa";
+
+import { Flex, FormControl, FormLabel, Input, Select, SimpleGrid, Stack } from "@chakra-ui/react";
+import PrimaryButton from "components/ui/button/PrimaryButton";
+import RequiredLabel from "components/ui/form/RequiredLabel";
+import { EARNING_TYPE } from "erp-modules/payroll/onboard-user/customInfo";
 
 const EarningInfo = ({
 	role,
@@ -14,6 +14,11 @@ const EarningInfo = ({
 	editedIndices,
 }) => {
 	const [roleInfo, setRoleInfo] = useState(role);
+	const [isError, setIsError] = useState(false);
+
+	useEffect(() => {
+		setIsError(parseFloat(roleInfo?.payRate) < 17.85);
+	}, [roleInfo?.payRate]);
 
 	const handleChange = (index, e) => {
 		const { name, value } = e.target;
@@ -24,8 +29,8 @@ const EarningInfo = ({
 	return (
 		<Stack spacing={4}>
 			<SimpleGrid columns={4} spacing={3}>
-				<FormControl isRequired>
-					<FormLabel size="sm">Pay Rate</FormLabel>
+				<FormControl>
+					<RequiredLabel required label="Pay Rate" />
 					<Input
 						size="sm"
 						type="number"
@@ -34,6 +39,7 @@ const EarningInfo = ({
 						onChange={(e) => handleChange(updateRecordIndex, e)}
 						placeholder="Pay Rate"
 					/>
+					{isError && <FormLabel color={"red"}>Pay rate must be at least $17.85</FormLabel>}
 				</FormControl>
 				<FormControl isRequired>
 					<FormLabel size="sm">Pay Type</FormLabel>
@@ -107,7 +113,7 @@ const EarningInfo = ({
 				</Flex>
 			</SimpleGrid>
 			<Stack w={"10%"} justifyContent={"end"}>
-				{editedIndices[updateRecordIndex] && (
+				{editedIndices[updateRecordIndex] && !isError && (
 					<PrimaryButton
 						w={"100px"}
 						bg="var(--banner_bg)"

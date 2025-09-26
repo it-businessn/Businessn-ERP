@@ -16,6 +16,7 @@ import {
 	StepStatus,
 	StepTitle,
 } from "@chakra-ui/react";
+import RequiredLabel from "components/ui/form/RequiredLabel";
 import TextTitle from "components/ui/text/TextTitle";
 import {
 	EARNING_TYPE,
@@ -23,8 +24,15 @@ import {
 	tabPanelStyleCss,
 	tabScrollCss,
 } from "erp-modules/payroll/onboard-user/customInfo";
+import { useEffect, useState } from "react";
 
 const PayInfo = ({ formData, handleChange }) => {
+	const [isError, setIsError] = useState(false);
+
+	useEffect(() => {
+		setIsError(parseFloat(formData?.payInfo?.salary) < 17.85);
+	}, [formData?.payInfo?.salary]);
+
 	return (
 		<Flex height="100%">
 			<Box
@@ -63,8 +71,8 @@ const PayInfo = ({ formData, handleChange }) => {
 					<TextTitle size="xl" title="Compensation Information" />
 
 					<Flex gap={4}>
-						<FormControl isRequired>
-							<FormLabel size="sm">Pay Rate</FormLabel>
+						<FormControl>
+							<RequiredLabel required label="Pay Rate" />
 							<Input
 								size="sm"
 								type="number"
@@ -72,6 +80,7 @@ const PayInfo = ({ formData, handleChange }) => {
 								onChange={(e) => handleChange("payInfo", "salary", e.target.value)}
 								placeholder="Pay Rate"
 							/>
+							{isError && <FormLabel color={"red"}>Pay rate must be at least $17.85</FormLabel>}
 						</FormControl>
 
 						<FormControl isRequired>
