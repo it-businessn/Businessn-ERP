@@ -166,7 +166,7 @@ const EmployeeTimeCard = ({ selectedUser, company, isMobile }) => {
 
 	return (
 		<>
-			<BoxCard>
+			<BoxCard p={{ base: "0 0.5em", md: "1em" }} width="100%">
 				<VStack w="100%" spacing={2}>
 					{isMobile ? (
 						<Box borderRadius="10px" py={1} w="100%" border="1px solid var(--primary_button_bg)">
@@ -239,7 +239,7 @@ const EmployeeTimeCard = ({ selectedUser, company, isMobile }) => {
 				/>
 			)}
 			<HStack justifyContent="space-between" flexDirection={{ base: "column", md: "row" }}>
-				<BoxCard p={{ base: "0.5em 1em", md: "1em" }} width="100%">
+				<BoxCard p={{ base: "0 0.5em", md: "1em" }} width="100%">
 					<HStack justify={"space-between"}>
 						<TextTitle size={"sm"} whiteSpace="wrap" title="Leave Requests" />
 						{!isMobile && (
@@ -301,7 +301,7 @@ const EmployeeTimeCard = ({ selectedUser, company, isMobile }) => {
 						</Tbody>
 					</TableLayout>
 				</BoxCard>
-				<BoxCard p={{ base: "0.5em 1em", md: "1em" }} width="100%">
+				<BoxCard p={{ base: "0 0.5em", md: "1em" }} width="100%">
 					<HStack justify={"space-between"} w="100%">
 						<Box>
 							<TextTitle size={"sm"} whiteSpace="wrap" title={`Time Entries `} />

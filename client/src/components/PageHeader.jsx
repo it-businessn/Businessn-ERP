@@ -24,7 +24,7 @@ const PageHeader = ({
 			{title && (
 				<TextTitle
 					title={title}
-					mb={"0.5em"}
+					mb={mobileTitlePadding ? 0 : "0.5em"}
 					size={size}
 					width={width}
 					p={mobileTitlePadding}

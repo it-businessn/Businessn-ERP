@@ -14,6 +14,8 @@ const OutlineButton = ({
 	bg,
 	w,
 	isDisabled,
+	h,
+	minH,
 }) => (
 	<Button
 		isDisabled={isDisabled}
@@ -23,11 +25,13 @@ const OutlineButton = ({
 		onClick={onClick}
 		size={size}
 		px={"1em"}
+		h={h}
 		type="submit"
 		color={!colorScheme && color}
 		colorScheme={colorScheme}
 		ml={ml}
 		mr={mr}
+		minH={minH}
 		name={name}
 		w={w}
 		borderColor={borderColor}

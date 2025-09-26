@@ -23,6 +23,7 @@ const BoxCard = ({
 	minW,
 	borderColor = "var(--main_color)",
 	css,
+	pt,
 }) => (
 	<Box
 		css={css}
@@ -45,6 +46,7 @@ const BoxCard = ({
 		p={p}
 		pb={pb}
 		px={px}
+		pt={pt}
 		minH={minH}
 		w={width}
 	>
