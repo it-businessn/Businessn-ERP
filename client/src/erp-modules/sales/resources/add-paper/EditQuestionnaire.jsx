@@ -16,8 +16,9 @@ import {
 	useDisclosure,
 } from "@chakra-ui/react";
 import PrimaryButton from "components/ui/button/PrimaryButton";
+import RadioFormControl from "components/ui/form/RadioFormControl";
 import TextAreaFormControl from "components/ui/form/TextAreaFormControl";
-import { useState } from "react";
+import React, { useState } from "react";
 import QuestionnaireService from "services/QuestionnaireService";
 
 const EditQuestionnaire = ({
@@ -51,6 +52,29 @@ const EditQuestionnaire = ({
 			setShowEditQuestion(false);
 		}
 	};
+
+	const handleOptionChange = (index, value) => {
+		setFormData((prev) => {
+			const updated = [...prev.options];
+			updated[index] = value;
+			return { ...prev, options: updated };
+		});
+	};
+
+	const addOption = () => {
+		setFormData((prev) => ({
+			...prev,
+			options: [...prev.options, ""],
+		}));
+	};
+
+	const removeOption = (index) => {
+		setFormData((prev) => ({
+			...prev,
+			options: prev.options.filter((_, i) => i !== index),
+		}));
+	};
+
 	return (
 		<Modal
 			isCentered
@@ -82,50 +106,36 @@ const EditQuestionnaire = ({
 									required
 								/>
 
-								{/* {console.log(formData?.options)}{formData?.options.map(option=>)} */}
-								<TextAreaFormControl
-									label={"Options"}
-									name="options"
-									rows={4}
-									valueText={formData?.options}
-									handleChange={(e) =>
-										setFormData((prevData) => ({
-											...prevData,
-											options: e.target.value,
-										}))
-									}
-									required
-								/>
-								{/* <FormControl>
+								<FormControl>
 									<FormLabel>Options</FormLabel>
-									<Input
-										type="text"
-										name="
-										options"
-										value={formData?.options}
-										onChange={(e) =>
-											setFormData((prevData) => ({
-												...prevData,
-												options: e.target.value,
-											}))
-										}
-										required
-									/>
-								</FormControl> */}
+									<Stack>
+										{formData.options.map((option, index) => (
+											<React.Fragment key={`{QUEST_OPTION_${index}}`}>
+												<Input
+													type="text"
+													value={option}
+													placeholder={`Option ${index + 1}`}
+													onChange={(e) => handleOptionChange(index, e.target.value)}
+												/>
+											</React.Fragment>
+										))}
+									</Stack>
+								</FormControl>
 								<FormControl>
 									<FormLabel>Best Answer</FormLabel>
-									<Input
-										type="text"
-										name="
-										correctAnswer"
-										value={formData?.correctAnswer}
-										onChange={(e) =>
+									<RadioFormControl
+										direction="column"
+										size="sm"
+										handleChange={(value) => {
 											setFormData((prevData) => ({
 												...prevData,
-												correctAnswer: e.target.value,
-											}))
-										}
-										required
+												correctAnswer: value,
+											}));
+										}}
+										defaultVal={formData?.correctAnswer}
+										options={formData?.options.map((option) => {
+											return { name: option, value: option };
+										})}
 									/>
 								</FormControl>
 								<TextAreaFormControl
