@@ -54,6 +54,12 @@ const EmploymentInfo = ({
 	const [filteredDept, setFilteredDept] = useState(departments);
 
 	useEffect(() => {
+		if (payGroups?.length) {
+			handleChange("employmentInfo", "payGroup", payGroups[0].name);
+		}
+	}, [payGroups]);
+
+	useEffect(() => {
 		if (autoGenerate) {
 			const newID = String(lastBadgeId + 1).padStart(4, "0");
 			handleChange("employmentInfo", "timeManagementBadgeID", newID);
