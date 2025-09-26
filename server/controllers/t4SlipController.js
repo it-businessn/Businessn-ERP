@@ -66,6 +66,7 @@ const buildT4PayrollData = async (companyName, payPeriodNum) => {
 	const payrollData = await EmployeePayStub.find({
 		companyName,
 		payPeriodNum,
+		empId: { $exists: true },
 	})
 		.populate({
 			path: "empId",
