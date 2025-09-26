@@ -8,7 +8,11 @@ import TableLayout from "components/ui/table/TableLayout";
 import TextTitle from "components/ui/text/TextTitle";
 import { ROLES } from "constant";
 import { tabScrollCss } from "erp-modules/payroll/onboard-user/customInfo";
-import { getParamKey, TIMESHEET_SOURCE } from "erp-modules/payroll/timesheets/data";
+import {
+	getParamKey,
+	LEAVE_REQUEST_STATUS_COLOR,
+	TIMESHEET_SOURCE,
+} from "erp-modules/payroll/timesheets/data";
 import ExtraTimeEntryModal from "erp-modules/payroll/timesheets/ExtraTimeEntryModal";
 import usePaygroup from "hooks/usePaygroup";
 import { useEffect, useState } from "react";
@@ -112,7 +116,12 @@ const EmployeeTimeCard = ({ selectedUser, company, isMobile }) => {
 		};
 		const fetchEmployeeLeaveRequests = async () => {
 			try {
+				const leaveStatusColor = (leaveStatus) =>
+					LEAVE_REQUEST_STATUS_COLOR.find(({ status }) => status === leaveStatus).color;
+
 				const { data } = await TimesheetService.getEmployeeLeaveRequest(company, selectedUser?._id);
+				data.map((record) => (record.statusColor = leaveStatusColor(record.status)));
+
 				setLeaveRequests(data);
 			} catch (error) {
 				console.error(error);
@@ -220,7 +229,7 @@ const EmployeeTimeCard = ({ selectedUser, company, isMobile }) => {
 					{isMobile && (
 						<PrimaryButton
 							w="100%"
-							name="Request Leave"
+							name="Apply Leave"
 							bg="var(--request_leave)"
 							onOpen={() => setShowLeaveForm(true)}
 							borderRadius="md"
@@ -246,7 +255,7 @@ const EmployeeTimeCard = ({ selectedUser, company, isMobile }) => {
 							<PrimaryButton
 								bg="var(--request_leave)"
 								size={"sm"}
-								name="Request Leave"
+								name="Apply Leave"
 								onOpen={() => setShowLeaveForm(true)}
 							/>
 						)}
@@ -268,7 +277,16 @@ const EmployeeTimeCard = ({ selectedUser, company, isMobile }) => {
 								<EmptyRowRecord px={0} data={leaveRequests} colSpan={leaveRequestCols.length} />
 							)}
 							{leaveRequests?.map(
-								({ type, startDate, endDate, status, totalLeaveHrs, totalLeaveDays, _id }) => (
+								({
+									type,
+									startDate,
+									endDate,
+									status,
+									totalLeaveHrs,
+									statusColor,
+									totalLeaveDays,
+									_id,
+								}) => (
 									<Tr key={_id} _hover={{ bg: "var(--phoneCall_bg_light)" }}>
 										<Td p={0.5}>
 											<TextTitle whiteSpace="wrap" size={{ base: "xs", md: "sm" }} title={type} />
@@ -286,7 +304,11 @@ const EmployeeTimeCard = ({ selectedUser, company, isMobile }) => {
 											/>
 										</Td>
 										<Td p={0.5}>
-											<NormalTextTitle size={{ base: "xs", md: "sm" }} title={status} />
+											<TextTitle
+												size={{ base: "xs", md: "sm" }}
+												color={statusColor}
+												title={status}
+											/>
 										</Td>
 										<Td p={0.5}>
 											<NormalTextTitle
@@ -306,7 +328,7 @@ const EmployeeTimeCard = ({ selectedUser, company, isMobile }) => {
 						<Box>
 							<TextTitle size={"sm"} whiteSpace="wrap" title={`Time Entries `} />
 							<TextTitle
-								size={"sm"}
+								size={{ base: "xs", md: "sm" }}
 								whiteSpace="wrap"
 								title={`${startDate || ""} - ${endDate || ""}`}
 							/>

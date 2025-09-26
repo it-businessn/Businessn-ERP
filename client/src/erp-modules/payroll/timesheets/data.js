@@ -211,6 +211,21 @@ export const TIMESHEET_STATUS_LABEL = {
 	DELETE: "Delete",
 };
 
+export const LEAVE_REQUEST_STATUS_COLOR = [
+	{
+		status: TIMESHEET_STATUS_LABEL.APPROVED,
+		color: "var(--action_status_approve)",
+	},
+	{
+		status: TIMESHEET_STATUS_LABEL.REJECTED,
+		color: "var(--action_status_reject)",
+	},
+	{
+		status: TIMESHEET_STATUS_LABEL.PENDING,
+		color: "var(--pending)",
+	},
+];
+
 export const TIMESHEET_STATUS = [
 	{
 		value: TIMESHEET_STATUS_LABEL.APPROVED,
