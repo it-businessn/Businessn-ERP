@@ -25,7 +25,7 @@ const {
 	COMPANIES,
 	ROLES,
 } = require("../services/data");
-const { getHolidays } = require("./setUpController");
+const { getHolidays } = require("./statHolidayController");
 
 const getTADUsers = async (req, res) => {
 	try {

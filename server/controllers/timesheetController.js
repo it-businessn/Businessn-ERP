@@ -23,7 +23,6 @@ const {
 	ROLES,
 } = require("../services/data");
 const { findEmpPayInfo } = require("./employmentInfoController");
-const { getPayrollActiveEmployees } = require("./appController");
 
 const findByRecordTimesheets = async (record, skip, limit) => {
 	// const y = await Timesheet.deleteMany({
@@ -536,100 +535,6 @@ const deleteTimesheet = async (req, res) => {
 	}
 };
 
-const addStatHolidayDefaultTimesheet = async (employeeId, companyName) => {
-	const startOfToday = moment().startOf("day");
-	const endOfToday = moment().endOf("day");
-
-	const existingStatTimesheetInfo = await Timesheet.findOne({
-		deleted: false,
-		employeeId,
-		companyName,
-		payType: PAY_TYPES_TITLE.STAT_PAY,
-		clockIn: {
-			$gte: startOfToday.toDate(),
-			$lt: endOfToday.toDate(),
-		},
-	});
-
-	if (existingStatTimesheetInfo) {
-		return existingStatTimesheetInfo;
-	}
-	const { employeeEarnings, numberOfDaysWorked, statPayRate } = await findStatPayMonthlyEarning(
-		employeeId,
-		companyName,
-	);
-	const statPayAmount = numberOfDaysWorked ? employeeEarnings / numberOfDaysWorked : 0;
-	const statHours = statPayAmount / statPayRate;
-
-	const startTime = moment().set({
-		hour: 13,
-		minute: 0,
-		second: 0,
-		millisecond: 0,
-	});
-	const endTime = startTime.clone().add(statHours, "hours");
-	const newStatTimeSheetRecord = {
-		employeeId,
-		companyName,
-		payType: PAY_TYPES_TITLE.STAT_PAY,
-		clockIn: startTime,
-		clockOut: endTime,
-		statDayHours: statHours.toFixed(2),
-		source: TIMESHEET_SOURCE.SYSTEM,
-	};
-	const newRecord = await addTimesheetEntry(newStatTimeSheetRecord);
-	return newRecord;
-};
-
-const addStatHolidayTimesheet = async (companyName) => {
-	try {
-		const payrollActiveEmployees = await getPayrollActiveEmployees(companyName);
-		await Promise.all(
-			payrollActiveEmployees.map((emp) => addStatHolidayDefaultTimesheet(emp._id, companyName)),
-		);
-		console.log("StatHolidayDefaultTimesheet added");
-	} catch (error) {
-		console.error("Error adding record:", error);
-	}
-};
-
-const findStatPayMonthlyEarning = async (employeeId, companyName) => {
-	const currentDate = moment.utc();
-	const past30Days = moment.utc().subtract(30, "days");
-	const timesheets = await Timesheet.find({
-		deleted: false,
-		employeeId,
-		companyName,
-		clockIn: {
-			$gte: past30Days.toDate(), // 30 days ago
-			$lte: currentDate.toDate(), // Up to the current date
-		},
-	});
-
-	const empPayInfoResult = await EmployeePayInfo.find({ empId: employeeId, companyName });
-	const statPayRate = empPayInfoResult?.roles?.[0]?.sickPay || 0;
-	const employeeEarnings = timesheets?.reduce((acc, item) => {
-		return (
-			acc +
-			(item?.[PARAM_HOURS.REGULAR] * empPayInfoResult?.roles?.[0]?.payRate +
-				item?.overtimeHoursWorked * empPayInfoResult?.roles?.[0]?.overTimePay +
-				item?.dblOvertimeHoursWorked * empPayInfoResult?.roles?.[0]?.dblOverTimePay +
-				item?.statDayHoursWorked * empPayInfoResult?.roles?.[0]?.statWorkPay +
-				item?.statDayHours * empPayInfoResult?.roles?.[0]?.statPay +
-				item?.sickPayHours * empPayInfoResult?.roles?.[0]?.sickPay +
-				item?.vacationPayHours * empPayInfoResult?.roles?.[0]?.vacationPay +
-				item?.bereavementPayHours * empPayInfoResult?.roles?.[0]?.bereavementPay +
-				item?.personalPayHours * empPayInfoResult?.roles?.[0]?.personalDayPay)
-		);
-	}, 0);
-
-	return {
-		employeeEarnings,
-		numberOfDaysWorked: timesheets?.length || 0,
-		statPayRate,
-	};
-};
-
 module.exports = {
 	getTimesheets,
 	getEmployeeTimesheet,
@@ -637,7 +542,6 @@ module.exports = {
 	getFilteredTimesheetsByStatus,
 	createTimesheet,
 	updateTimesheet,
-	addStatHolidayTimesheet,
 	deleteTimesheet,
 	createManualTimesheet,
 	actionAllTimesheets,

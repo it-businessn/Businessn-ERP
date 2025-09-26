@@ -171,9 +171,6 @@ const getConfirmedDisbursedLeads = async (req, res) => {
 		// const leads = (await Lead.find({ isDisbursedConfirmed: true })).sort(
 		// 	(a, b) => b.createdOn - a.createdOn,
 		// );
-		// const leads = (await Lead.find({ isDisbursedConfirmed: true })).sort(
-		// 	(a, b) => b.createdOn - a.createdOn,
-		// );
 		const leads = await Lead.find({
 			companyName,
 			stage: { $in: ["L1", "L2", "L3", "L4"] },
@@ -318,9 +315,9 @@ const createMultipleLeadOpportunity = async (req, res) => {
 			leadsCreated++;
 		}
 
-		const leads = (await Lead.find({ isDisbursed: false })).sort(
-			(a, b) => b.createdOn - a.createdOn,
-		);
+		const leads = await Lead.find({ isDisbursed: false }).sort({
+			createdOn: -1,
+		});
 		res.status(200).json(leads);
 	} catch (error) {
 		res.status(400).json({ message: error.message });

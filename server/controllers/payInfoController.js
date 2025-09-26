@@ -1,12 +1,12 @@
-const EmployeeEmploymentInfo = require("../models/EmployeeEmploymentInfo");
 const EmployeePayInfo = require("../models/EmployeePayInfo");
 const Group = require("../models/Group");
 const { ALERTS_TYPE } = require("../services/data");
 const { findEmpPayStubDetail } = require("../helpers/payStubHelper");
-const { getPayrollActiveEmployees } = require("./appController");
-const { deleteAlerts, getRecordId } = require("./payrollController");
+const { getPayrollActiveEmployees } = require("../helpers/userHelper");
 const { findGroupEmployees } = require("./setUpController");
 const { getEmployeeId } = require("./userController");
+const { deleteAlerts } = require("./alertsController");
+const { getRecordId } = require("./payStubController");
 
 const getAllPayInfo = async (req, res) => {
 	const { companyName, payDate, isExtraRun, groupId } = req.params;

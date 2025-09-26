@@ -5,9 +5,9 @@ const LogActivity = require("../models/LogActivity");
 const getActivity = async (req, res) => {
 	const { createdBy, companyName } = req.params;
 	try {
-		const activities = (await LogActivity.find({ createdBy, companyName })).sort(
-			(a, b) => b.createdOn - a.createdOn,
-		);
+		const activities = await LogActivity.find({ createdBy, companyName }).sort({
+			createdOn: -1,
+		});
 		res.status(200).json(activities);
 	} catch (error) {
 		res.status(404).json({ error: error.message });
@@ -18,7 +18,10 @@ const getActivityById = async (req, res) => {
 	const { contactId } = req.params;
 
 	try {
-		const notes = (await LogActivity.find({ contactId })).sort((a, b) => b.createdOn - a.createdOn);
+		// const notes = (await LogActivity.find({ contactId })).sort((a, b) => b.createdOn - a.createdOn);
+		const notes = await LogActivity.find({ contactId }).sort({
+			createdOn: -1,
+		});
 		res.status(200).json(notes);
 	} catch (error) {
 		res.status(404).json({ error: error.message });

@@ -4,9 +4,9 @@ const AssessmentType = require("../models/AssessmentType");
 const getAssessment = async (req, res) => {
 	const { empId } = req.params;
 	try {
-		const assessments = (await Assessment.find({ empId })).sort(
-			(a, b) => b.createdOn - a.createdOn,
-		);
+		const assessments = await Assessment.find({ empId }).sort({
+			createdOn: -1,
+		});
 		res.status(200).json(assessments);
 	} catch (error) {
 		res.status(404).json({ error: error.message });
@@ -14,8 +14,7 @@ const getAssessment = async (req, res) => {
 };
 
 const createAssessment = async (req, res) => {
-	const { subject, score, category, result, empId, total, companyName } =
-		req.body;
+	const { subject, score, category, result, empId, total, companyName } = req.body;
 
 	try {
 		const existingUserAssessment = await Assessment.findOne({

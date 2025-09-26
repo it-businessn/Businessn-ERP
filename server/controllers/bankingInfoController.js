@@ -1,8 +1,8 @@
 const EmployeeBankingInfo = require("../models/EmployeeBankingInfo");
 const { ALERTS_TYPE } = require("../services/data");
 const { encryptData, decryptData } = require("../services/encryptDataService");
+const { deleteAlerts } = require("./alertsController");
 // const { saveKeyToEnv } = require("../services/fileService");
-const { deleteAlerts } = require("./payrollController");
 
 const getAllBankingInfo = async (req, res) => {
 	const { companyName } = req.params;

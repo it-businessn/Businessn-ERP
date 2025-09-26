@@ -1,4 +1,10 @@
 const UserPermissions = require("../models/permissions");
+const {
+	ADMIN_PERMISSION,
+	CLIENT_ORG_ADMIN_PERMISSION,
+	CLIENT_ORG_EMP_PERMISSION,
+	ROLES,
+} = require("../services/data");
 
 const getUserPermissions = async (req, res) => {
 	try {
@@ -80,6 +86,75 @@ const addPermission = async (req, res) => {
 	}
 };
 
+const getPermissionsList = (role) => {
+	const isEmployee = role === ROLES.EMPLOYEE;
+	const isEnroller = role === ROLES.ENROLLER;
+	const isShadowAdmin = role === ROLES.SHADOW_ADMIN;
+
+	const permissionName = isEmployee
+		? CLIENT_ORG_EMP_PERMISSION
+		: isShadowAdmin
+		? ADMIN_PERMISSION
+		: CLIENT_ORG_ADMIN_PERMISSION;
+
+	const permissionType = [];
+
+	if (isEmployee) {
+		permissionName.forEach((_) => {
+			permissionType.push({
+				name: _.name,
+				canAccessModule: true,
+				canAccessUserData: true,
+				canAccessGroupData: false,
+				canAccessRegionData: false,
+				canAccessAllData: false,
+				canViewModule: true,
+				canEditModule: true,
+				canDeleteModule: false,
+			});
+		});
+	} else if (isEnroller) {
+	} else {
+		permissionName.forEach((_) => {
+			permissionType.push({
+				name: _.name,
+				canAccessModule: true,
+				canAccessUserData: true,
+				canAccessGroupData: true,
+				canAccessRegionData: true,
+				canAccessAllData: true,
+				canViewModule: true,
+				canEditModule: true,
+				canDeleteModule: true,
+			});
+		});
+	}
+	return permissionType;
+};
+
+const setInitialPermissions = async (empId, role, companyName) => {
+	try {
+		const permissionExists = await findPermission({
+			empId,
+			companyName,
+		});
+		const newPermissions = getPermissionsList(role);
+		if (permissionExists) {
+			await UserPermissions.findByIdAndUpdate(permissionExists._id, {
+				permissionType: newPermissions,
+			});
+		} else {
+			await UserPermissions.create({
+				empId,
+				companyName,
+				permissionType: newPermissions,
+			});
+		}
+	} catch (error) {
+		console.log(error);
+	}
+};
+
 const updatePermission = async (req, res) => {
 	const { empId } = req.params;
 	let { name, accessName, companyName } = req.body;
@@ -118,6 +193,7 @@ const updatePermission = async (req, res) => {
 module.exports = {
 	addPermission,
 	getUserPermissions,
+	setInitialPermissions,
 	updatePermission,
 	getPermission,
 	findPermission,

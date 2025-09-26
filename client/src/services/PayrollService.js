@@ -62,15 +62,15 @@ const PayrollService = {
 	},
 
 	async getAllAffiliateMembers(id) {
-		return apiService.get(`/payroll/affiliate/${id}`);
+		return apiService.get(`/affiliate/${id}`);
 	},
 
 	async addAffiliateProfileInfo(data) {
-		return apiService.post("/payroll/affiliate", data);
+		return apiService.post("/affiliate", data);
 	},
 
 	async addAffiliateSale(data) {
-		return apiService.post("/payroll/affiliate/sale", data);
+		return apiService.post("/affiliate/sale", data);
 	},
 
 	async onboardUser(data) {

@@ -2,11 +2,11 @@ const moment = require("moment");
 const Employee = require("../models/Employee");
 const EmployeeEmploymentInfo = require("../models/EmployeeEmploymentInfo");
 const EmployeePayInfo = require("../models/EmployeePayInfo");
-const { setInitialPermissions } = require("./appController");
 const { fetchActiveEmployees } = require("./userController");
 const { updatePayInfo } = require("./payInfoController");
 const { addUserEmploymentInfo } = require("./empDataController");
 const { updateTADEmployee } = require("./timecardController");
+const { setInitialPermissions } = require("./permissionController");
 
 const getAllEmploymentInfo = async (req, res) => {
 	const { companyName, payDate, isExtraRun, groupId, deptName, selectedPayGroupOption } = req.body;

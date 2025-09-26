@@ -2,7 +2,9 @@ const Opportunity = require("../models/Opportunity");
 
 const getOpportunities = async (req, res) => {
 	try {
-		const opportunities = (await Opportunity.find({})).sort();
+		const opportunities = await Opportunity.find({}).sort({
+			createdOn: -1,
+		});
 		res.status(200).json(opportunities);
 	} catch (error) {
 		res.status(404).json({ error: error.message });
@@ -60,11 +62,9 @@ const updateOpportunity = async (req, res) => {
 	const { opportunityId } = req.params;
 
 	try {
-		const updatedOpportunity = await Opportunity.findByIdAndUpdate(
-			opportunityId,
-			req.body,
-			{ new: true },
-		);
+		const updatedOpportunity = await Opportunity.findByIdAndUpdate(opportunityId, req.body, {
+			new: true,
+		});
 
 		res.status(201).json(updatedOpportunity);
 	} catch (error) {

@@ -35,15 +35,15 @@ const SettingService = {
 	},
 
 	async getStatHolidays(id) {
-		return apiService.get(`/setup/stat-holidays/${id}/${CURRENT_YEAR}`);
+		return apiService.get(`/holiday/${id}/${CURRENT_YEAR}`);
 	},
 
 	async addStatHoliday(data) {
-		return apiService.post("/setup/stat-holidays", data);
+		return apiService.post("/holiday", data);
 	},
 
 	async deleteHoliday(data, id) {
-		return apiService.delete(`/setup/stat-holidays/${id}`, data, id);
+		return apiService.delete(`/holiday/${id}`, data, id);
 	},
 
 	async addRole(data) {
@@ -107,23 +107,23 @@ const SettingService = {
 	},
 
 	async getAllCompanies() {
-		return apiService.get(`/setup/companies`);
+		return apiService.get(`/company`);
 	},
 
 	async getAllCompaniesByUser(id) {
-		return apiService.get(`/setup/companies/employees/${id}`);
+		return apiService.get(`/company/employees/${id}`);
 	},
 
 	async getCompanyInfo(id) {
-		return apiService.get(`/setup/companies/${id}`);
+		return apiService.get(`/company/${id}`);
 	},
 
 	async addCompany(data) {
-		return apiService.post("/setup/companies", data);
+		return apiService.post("/company", data);
 	},
 
 	async updateCompany(data, id) {
-		return apiService.put(`/setup/companies/${id}`, data, id);
+		return apiService.put(`/company/${id}`, data, id);
 	},
 
 	async getAllEmploymentTypes(id) {

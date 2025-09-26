@@ -7,7 +7,9 @@ const Task = require("../models/Task");
 
 const getNotes = async (req, res) => {
 	try {
-		const notes = (await Note.find()).sort((a, b) => b.createdOn - a.createdOn);
+		const notes = await Note.find({}).sort({
+			createdOn: -1,
+		});
 		res.status(200).json(notes);
 	} catch (error) {
 		res.status(404).json({ error: error.message });
@@ -18,7 +20,9 @@ const getNote = async (req, res) => {
 	const { contactId } = req.params;
 
 	try {
-		const notes = (await Note.find({ contactId })).sort((a, b) => b.createdOn - a.createdOn);
+		const notes = await Note.find({ contactId }).sort({
+			createdOn: -1,
+		});
 		res.status(200).json(notes);
 	} catch (error) {
 		res.status(404).json({ error: error.message });

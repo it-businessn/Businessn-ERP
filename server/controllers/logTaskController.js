@@ -3,9 +3,9 @@ const LogTask = require("../models/LogTask");
 
 const getTasks = async (req, res) => {
 	try {
-		const tasks = (await LogTask.find()).sort(
-			(a, b) => b.createdOn - a.createdOn,
-		);
+		const tasks = await LogTask.find({}).sort({
+			createdOn: -1,
+		});
 		res.status(200).json(tasks);
 	} catch (error) {
 		res.status(404).json({ error: error.message });
@@ -15,9 +15,9 @@ const getTasks = async (req, res) => {
 const getTask = async (req, res) => {
 	const { contactId } = req.params;
 	try {
-		const tasks = (await LogTask.find({ contactId })).sort(
-			(a, b) => b.createdOn - a.createdOn,
-		);
+		const tasks = await LogTask.find({ contactId }).sort({
+			createdOn: -1,
+		});
 		res.status(200).json(tasks);
 	} catch (error) {
 		res.status(404).json({ error: error.message });
@@ -51,11 +51,7 @@ const updateTask = async (req, res) => {
 	const { checked } = req.body;
 	try {
 		const updatedData = { status: checked ? "Closed" : "Open" };
-		const task = await LogTask.findByIdAndUpdate(
-			id,
-			{ $set: updatedData },
-			{ new: true },
-		);
+		const task = await LogTask.findByIdAndUpdate(id, { $set: updatedData }, { new: true });
 		res.status(201).json(task);
 	} catch (error) {
 		res.status(400).json({ message: error.message });

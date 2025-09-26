@@ -1,5 +1,9 @@
 const EmployeePayStub = require("../models/EmployeePayStub");
+
 const { getSumTotal } = require("../services/payrollService");
+
+const findEmployeePayStub = async (empId, companyName) =>
+	await EmployeePayStub.findOne({ empId, companyName }).sort({ payPeriodProcessingDate: -1 });
 
 const findEmpPayStubDetail = async (empId, payPeriodPayDate, companyName) =>
 	await EmployeePayStub.findOne({
@@ -260,4 +264,4 @@ const appendPrevPayInfoBalance = (prevPayPayInfo, newPayStub) => {
 	return prevPayPayInfo;
 };
 
-module.exports = { findEmpPayStubDetail, appendPrevPayInfoBalance };
+module.exports = { findEmployeePayStub, findEmpPayStubDetail, appendPrevPayInfoBalance };

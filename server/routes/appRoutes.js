@@ -4,16 +4,18 @@ const router = express.Router();
 // const authMiddleware = require("../middleware/auth");
 
 const appController = require("../controllers/appController");
+const passwordController = require("../controllers/passwordController");
 const { authenticateToken } = require("../middleware/auth");
 
 router.post("/signup", appController.signUp);
 router.post("/refresh-token", appController.refreshToken);
 router.post("/login", appController.login);
 router.get("/logout/:id", authenticateToken, appController.logOut);
-router.get("/reset-password/:id/:token", appController.resetPassword);
-router.post("/forgot-password", appController.forgotPassword);
-router.post("/reset-password/:id/:token", appController.setNewPassword);
-router.put("/change-password/:id", appController.changePassword);
+
+router.get("/reset-password/:id/:token", passwordController.resetPassword);
+router.post("/forgot-password", passwordController.forgotPassword);
+router.post("/reset-password/:id/:token", passwordController.setNewPassword);
+router.put("/change-password/:id", passwordController.changePassword);
 
 // const userController = require("../controllers/userController");
 // router.get("/", userController.getUsers);
@@ -21,7 +23,7 @@ router.put("/change-password/:id", appController.changePassword);
 // router.post("/register", userController.createUser);
 // router.post("/send-verification-email", sendVerificationCode);
 // router.post("/verify-email", verifyUser);
-// router.put( "/change-password/:userId", authMiddleware.authenticate,userController.changePassword);
+// router.put( "/change-password/:userId", authMiddleware.authenticate,passwordController.changePassword);
 // router.put("/:id", userController.updateUser);
 // router.put("/lead/:id", userController.updateUserAssignedLeads);
 

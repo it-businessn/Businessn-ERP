@@ -460,52 +460,6 @@ const addAlertsAndViolations = async (req, res) => {
 	}
 };
 
-const deleteAlerts = async (empId, type) => {
-	const existingAlert = await EmployeeAlertsViolationInfo.deleteMany({
-		empId,
-		type,
-	});
-	// const existingAlert = await findAlertInfo({
-	// 		empId,
-	// 	});
-	// 	if (existingAlert) {
-	// 		const deleted = await EmployeeAlertsViolationInfo.findByIdAndDelete({
-	// 			_id: existingAlert._id,
-	// 		});
-	// 		if (deleted) {
-	// 			console.log(`Alert  with id ${existingAlert._id} deleted successfully.`);
-	// 		} else {
-	// 			console.log("Alert Details not found.");
-	// 		}
-	// 	}
-};
-
-const getRecordId = async (
-	empPayStubResult,
-	empId,
-	companyName,
-	payPeriodPayDate,
-	scheduleFrequency,
-) => {
-	if (empPayStubResult) {
-		return empPayStubResult._id;
-	}
-	const payStub = {
-		empId,
-		companyName,
-		payPeriodPayDate,
-		commission: 0,
-		retroactive: 0,
-		vacationPayout: 0,
-		bonus: 0,
-		terminationPayout: 0,
-		reimbursement: 0,
-		scheduleFrequency,
-	};
-	const newPayStub = await addPayStub(payStub);
-	return newPayStub._id;
-};
-
 module.exports = {
 	getAllPayGroups,
 	getPayGroup,
@@ -514,10 +468,8 @@ module.exports = {
 	getGroupedTimesheet,
 	addAlertsAndViolations,
 	getAlertsAndViolationsInfo,
-	deleteAlerts,
 	getEEContribution,
 	getERContribution,
 	getTotalAlertsAndViolationsInfo,
 	getSumRegHrs,
-	getRecordId,
 };

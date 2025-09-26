@@ -3,13 +3,13 @@ const EmployeePayStub = require("../models/EmployeePayStub");
 
 const { COMPANIES } = require("../services/data");
 const { getSumTotal } = require("../services/payrollService");
-const { getPayrollActiveEmployees } = require("./appController");
 const { findEmployeeGovernmentInfoDetails } = require("./governmentInfoController");
 const {
 	calculateTimesheetApprovedHours,
 	findEmployeeBenefitInfo,
 	buildNewEmpPayStubInfo,
 } = require("../helpers/payrollHelper");
+const { getPayrollActiveEmployees } = require("../helpers/userHelper");
 const { appendPrevPayInfoBalance } = require("../helpers/payStubHelper");
 const { findAllAdditionalHoursAllocatedInfo } = require("./payrunExtraAllocationInfoController");
 const { addSeparateManualCheque } = require("./payStubManualCalc");
@@ -536,6 +536,32 @@ const findPayStub = async (payPeriodNum, companyName, empId, isExtra, scheduleFr
 		  };
 	return await EmployeePayStub.findOne(searchObj).sort({ payPeriodProcessingDate: -1 });
 };
+
+const getRecordId = async (
+	empPayStubResult,
+	empId,
+	companyName,
+	payPeriodPayDate,
+	scheduleFrequency,
+) => {
+	if (empPayStubResult) {
+		return empPayStubResult._id;
+	}
+	const payStub = {
+		empId,
+		companyName,
+		payPeriodPayDate,
+		commission: 0,
+		retroactive: 0,
+		vacationPayout: 0,
+		bonus: 0,
+		terminationPayout: 0,
+		reimbursement: 0,
+		scheduleFrequency,
+	};
+	const newPayStub = await addPayStub(payStub);
+	return newPayStub._id;
+};
 const addPayStub = async (data) => await EmployeePayStub.create(data);
 
 const updatePayStub = async (id, data) =>
@@ -645,4 +671,4 @@ const addEmployeePayStubInfo = async (req, res) => {
 	}
 };
 
-module.exports = { addPayStub, addEmployeePayStubInfo };
+module.exports = { addPayStub, addEmployeePayStubInfo, getRecordId };

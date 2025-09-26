@@ -27,9 +27,9 @@ const getCompanyResources = async (req, res) => {
 	const { fileType, companyName } = req.params;
 
 	try {
-		const files = (await Resource.find({ fileType, companyName })).sort(
-			(a, b) => b.uploadedOn - a.uploadedOn,
-		);
+		const files = await Resource.find({ fileType, companyName }).sort({
+			uploadedOn: -1,
+		});
 		res.status(200).json(files);
 	} catch (error) {
 		res.status(404).json({ error: error.message });
@@ -40,7 +40,9 @@ const getResource = async (req, res) => {
 	const { fileType } = req.params;
 
 	try {
-		const files = (await Resource.find({ fileType })).sort((a, b) => b.uploadedOn - a.uploadedOn);
+		const files = await Resource.find({ fileType }).sort({
+			uploadedOn: -1,
+		});
 		res.status(200).json(files);
 	} catch (error) {
 		res.status(404).json({ error: error.message });

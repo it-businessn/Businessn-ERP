@@ -45,6 +45,25 @@ const filterResultByDepartment = (result, deptName) => {
 const filterResultByPaygroupOption = (result, payGroupOption) =>
 	result?.filter((emp) => emp?.positions?.find((_) => _.employmentPayGroup === payGroupOption));
 
+const getPayrollActiveEmployees = async (companyName, deptName, selectedPayGroupOption) => {
+	let result = await findEmployee({
+		payrollStatus: "Payroll Active",
+		companyName,
+		employmentRole: { $ne: ROLES.SHADOW_ADMIN },
+		empId: { $exists: true },
+	});
+
+	if (selectedPayGroupOption) {
+		result = filterResultByPaygroupOption(result, selectedPayGroupOption);
+	}
+
+	if (deptName && deptName !== "null") {
+		result = filterResultByDepartment(result, deptName);
+	}
+
+	return result;
+};
+
 const getUserEmploymentRoleInfo = async (companyName) => {
 	const result = await EmployeeEmploymentInfo.find({
 		companyName,
@@ -73,6 +92,7 @@ module.exports = {
 	findEmployee,
 	filterResultByPaygroupOption,
 	filterResultByDepartment,
+	getPayrollActiveEmployees,
 	getUserEmploymentRoleInfo,
 	sortByEmpFullName,
 };

@@ -3,7 +3,9 @@ const Meeting = require("../models/Meeting");
 
 const getMeetings = async (req, res) => {
 	try {
-		const meetings = (await Meeting.find()).sort((a, b) => b.date - a.date);
+		const meetings = await Meeting.find({}).sort({
+			createdOn: -1,
+		});
 		res.status(200).json(meetings);
 	} catch (error) {
 		res.status(404).json({ error: error.message });
@@ -14,9 +16,9 @@ const getMeeting = async (req, res) => {
 	const { contactId } = req.params;
 
 	try {
-		const meeting = (await Meeting.find({ contactId })).sort(
-			(a, b) => b.date - a.date,
-		);
+		const meeting = await Meeting.find({ contactId }).sort({
+			createdOn: -1,
+		});
 		res.status(200).json(meeting);
 	} catch (error) {
 		res.status(404).json({ error: error.message });
@@ -68,13 +70,9 @@ const updateMeeting = async (req, res) => {
 	const { meetingId } = req.params;
 
 	try {
-		const updatedMeeting = await Meeting.findByIdAndUpdate(
-			meetingId,
-			req.body,
-			{
-				new: true,
-			},
-		);
+		const updatedMeeting = await Meeting.findByIdAndUpdate(meetingId, req.body, {
+			new: true,
+		});
 
 		res.status(201).json(updatedMeeting);
 	} catch (error) {

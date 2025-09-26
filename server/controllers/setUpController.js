@@ -1,21 +1,15 @@
-const moment = require("moment");
-
-const Company = require("../models/Company");
 const CostCenter = require("../models/CostCenter");
 const Crew = require("../models/Crew");
 const Department = require("../models/Department");
-const Employee = require("../models/Employee");
-const EmployeeEmploymentInfo = require("../models/EmployeeEmploymentInfo");
 const EmployeeRole = require("../models/EmployeeRole");
 const EmploymentPositionRole = require("../models/EmploymentPositionRole");
 const EmploymentType = require("../models/EmploymentType");
 const Group = require("../models/Group");
-const Holiday = require("../models/Holiday");
 const Location = require("../models/Location");
 const Module = require("../models/Module");
 const Setup = require("../models/Setup");
 
-const { CURRENT_YEAR, ROLES } = require("../services/data");
+const { CURRENT_YEAR } = require("../services/data");
 
 const getAllSetup = async (req, res) => {
 	try {
@@ -501,94 +495,6 @@ const updateGroup = async (req, res) => {
 	}
 };
 
-const getAllCompanies = async () =>
-	await Company.find({}).sort({
-		createdOn: -1,
-	});
-
-const getCompanies = async (req, res) => {
-	try {
-		const companies = await getAllCompanies();
-		res.status(200).json(companies);
-	} catch (error) {
-		res.status(404).json({ error: error.message });
-	}
-};
-
-const getCompany = async (req, res) => {
-	const { name } = req.params;
-	try {
-		const company = await Company.findOne({ name }).select(
-			"address industry_type founding_year registration_number name cra_business_number",
-		);
-		res.status(200).json(company);
-	} catch (error) {
-		res.status(404).json({ error: error.message });
-	}
-};
-
-const getCompanyEmployees = async (req, res) => {
-	const { employees } = req.params;
-	try {
-		// const company = "6646b03e96dcdc0583fb5dca";
-		// const existingCompany = await Company.findById(company);
-		// existingCompany.employees.push(id);
-		// await existingCompany.save();
-
-		const result = await Company.find({ employees });
-
-		// const updatedLeads = await Company.findByIdAndUpdate(
-		// 	"6646b03e96dcdc0583fb5dca",
-		// 	{
-		// 		employees,
-		// 	},
-		// 	{ new: true },
-		// );
-		res.status(200).json(result);
-	} catch (error) {
-		res.status(404).json({ error: error.message });
-	}
-};
-
-const updateCompany = async (req, res) => {
-	const { id } = req.params;
-	try {
-		const { CRABusinessNo } = req.body;
-		const updatedCompany = await Company.findByIdAndUpdate(
-			id,
-			{ $set: { cra_business_number: CRABusinessNo } },
-			{ new: true },
-		);
-		res.status(200).json(updatedCompany);
-	} catch (error) {
-		console.log(error, "Error in updating");
-	}
-};
-
-const addCompany = async (req, res) => {
-	const { name, founding_year, registration_number, address, industry_type } = req.body;
-	const { streetNumber, city, state, postalCode, country } = address;
-
-	try {
-		const adminEmployees = await EmployeeEmploymentInfo.find({
-			employmentRole: ROLES.SHADOW_ADMIN,
-			empId: { $exists: true },
-		}).select("empId");
-		const newCompany = await Company.create({
-			name,
-			founding_year,
-			registration_number,
-			industry_type,
-			address: { streetNumber, city, state, postalCode, country },
-			employees: adminEmployees,
-		});
-
-		res.status(201).json(newCompany);
-	} catch (error) {
-		res.status(400).json({ message: error.message });
-	}
-};
-
 const getEmpTypes = async (req, res) => {
 	const { companyName } = req.params;
 	try {
@@ -643,57 +549,9 @@ const addSetUpRule = async (req, res) => {
 	}
 };
 
-const getHolidays = async (record) =>
-	await Holiday.find(record).sort({
-		date: 1,
-	});
-
-const getStatHoliday = async (req, res) => {
-	const { companyName, year } = req.params;
-	try {
-		const holidays = await getHolidays({ companyName, year });
-		res.status(200).json(holidays);
-	} catch (error) {
-		res.status(404).json({ error: error.message });
-	}
-};
-
-const addStatHoliday = async (req, res) => {
-	const { name, date, company } = req.body;
-
-	try {
-		const newHoliday = await Holiday.create({
-			name,
-			date,
-			companyName: company,
-			year: moment(date).format("YYYY"),
-		});
-		res.status(201).json(newHoliday);
-	} catch (error) {
-		res.status(400).json({ message: error.message });
-	}
-};
-
-const deleteStatHoliday = async (req, res) => {
-	const { id } = req.params;
-	try {
-		const resource = await Holiday.findByIdAndDelete(id);
-		if (resource) {
-			res.status(200).json(`Holiday with id ${id} deleted successfully.`);
-		} else {
-			res.status(200).json("Holiday Details not found.");
-		}
-	} catch (error) {
-		res.status(404).json({ error: "Error deleting Holiday:", error });
-	}
-};
-
 module.exports = {
 	addLocation,
 	getLocations,
-	getStatHoliday,
-	deleteStatHoliday,
-	addStatHoliday,
 	addSetUpRule,
 	getAllSetup,
 	updateSetUp,
@@ -707,11 +565,6 @@ module.exports = {
 	addDepartment,
 	getEmpTypes,
 	addEmpType,
-	getCompanies,
-	addCompany,
-	updateCompany,
-	getCompany,
-	getCompanyEmployees,
 	addModule,
 	getModules,
 	updateModule,
@@ -720,8 +573,6 @@ module.exports = {
 	getGroups,
 	addGroup,
 	findGroupEmployees,
-	getHolidays,
-	getAllCompanies,
 	addCC,
 	getCC,
 };

@@ -3,15 +3,15 @@ const router = express.Router();
 
 const accountingController = require("../controllers/accountingController");
 
-router.get("/:companyName", accountingController.getAccounts);
+router.get("/:companyName", accountingController.getAccountLedgers);
 
 router.get(
 	"/general-journal/:companyName/:accountName",
 	accountingController.getAccountJournalEntries,
 );
 
-router.post("/", accountingController.createAccount);
+router.post("/", accountingController.addAccountLedger);
 
-router.post("/general-journal", accountingController.addGeneralJournalEntry);
+router.post("/general-journal", accountingController.addAccountsJournalEntry);
 
 module.exports = router;

@@ -19,9 +19,10 @@ const {
 	addEmployee,
 	sortByEmpFullName,
 	getUserEmploymentRoleInfo,
+	getPayrollActiveEmployees,
 } = require("../helpers/userHelper");
-const { setInitialPermissions, getPayrollActiveEmployees } = require("./appController");
 const { findGroupEmployees } = require("./setUpController");
+const { setInitialPermissions } = require("./permissionController");
 
 const getPayrollInActiveEmployees = async (companyName, deptName, selectedPayGroupOption) => {
 	let result = await findEmployee({

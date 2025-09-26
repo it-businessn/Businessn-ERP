@@ -8,6 +8,7 @@ const EmployeeProfileInfo = require("../models/EmployeeProfileInfo");
 const { encryptData } = require("../services/encryptDataService");
 const { addEmployee } = require("../helpers/userHelper");
 const { updateTADEmployee } = require("./timecardController");
+const { getPercent } = require("../services/util");
 
 const getNewUserID = async (companyName, data) => {
 	const newEmployee = await addEmployee(companyName, data);
@@ -18,12 +19,6 @@ const encryptSSN = (SIN) => {
 	const ENCRYPTION_KEY = Buffer.from(process.env.SIN_ENCRYPTION_KEY, "hex");
 	const sinEncrypted = encryptData(SIN, ENCRYPTION_KEY);
 	return { SIN: sinEncrypted.encryptedData, SINIv: sinEncrypted.iv };
-};
-
-const getPercent = (value) => {
-	const input = value === "" ? 0 : parseFloat(value);
-	// return input;
-	return Number.isInteger(input) ? input / 100 : input;
 };
 
 const addNewUser = async (

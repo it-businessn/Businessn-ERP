@@ -7,7 +7,7 @@ const Crew = require("../models/Crew");
 
 const getShifts = async (req, res) => {
 	try {
-		const shifts = (await EmployeeShift.find({})).sort({ createdOn: -1 });
+		const shifts = await EmployeeShift.find({}).sort({ createdOn: -1 });
 		res.status(200).json(shifts);
 	} catch (error) {
 		res.status(404).json({ error: error.message });

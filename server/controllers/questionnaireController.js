@@ -13,9 +13,9 @@ const getQuestionnaire = async (req, res) => {
 	const { contactId } = req.params;
 
 	try {
-		const notes = (await Questionnaire.find({ contactId })).sort(
-			(a, b) => b.date - a.date,
-		);
+		const notes = await Questionnaire.find({ contactId }).sort({
+			createdOn: -1,
+		});
 		res.status(200).json(notes);
 	} catch (error) {
 		res.status(404).json({ error: error.message });
@@ -23,14 +23,7 @@ const getQuestionnaire = async (req, res) => {
 };
 
 const createQuestionnaire = async (req, res) => {
-	const {
-		assessmentType,
-		company,
-		correctAnswer,
-		explanation,
-		options,
-		question,
-	} = req.body;
+	const { assessmentType, company, correctAnswer, explanation, options, question } = req.body;
 
 	try {
 		const newQuestionnaire = await Questionnaire.create({

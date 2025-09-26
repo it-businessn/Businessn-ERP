@@ -1,31 +1,6 @@
+const { findEmployeePayStub } = require("../helpers/payStubHelper");
 const EmployeeBalanceInfo = require("../models/EmployeeBalanceInfo");
-const EmployeePayStub = require("../models/EmployeePayStub");
-
-const getAllBalanceInfo = async (req, res) => {
-	const { companyName } = req.params;
-	try {
-		const result = await EmployeeBalanceInfo.find({
-			companyName,
-		}).sort({
-			createdOn: -1,
-		});
-
-		res.status(200).json(result);
-	} catch (error) {
-		res.status(500).json({ message: error.message });
-	}
-};
-
-const getEmployeeBalanceInfo = async (req, res) => {
-	const { companyName, empId } = req.params;
-	try {
-		const result = await findEmployeeBalanceInfo(empId, companyName);
-
-		res.status(200).json(result);
-	} catch (error) {
-		res.status(404).json({ error: error.message });
-	}
-};
+const { getPercent } = require("../services/util");
 
 const findEmployeeBalanceInfo = async (empId, companyName, isUpdate) => {
 	const empBalanceInfo = await EmployeeBalanceInfo.findOne({
@@ -62,19 +37,37 @@ const findEmployeeBalanceInfo = async (empId, companyName, isUpdate) => {
 	};
 };
 
-const findEmployeePayStub = async (empId, companyName) =>
-	await EmployeePayStub.findOne({ empId, companyName }).sort({ payPeriodProcessingDate: -1 });
+const getAllBalanceInfo = async (req, res) => {
+	const { companyName } = req.params;
+	try {
+		const result = await EmployeeBalanceInfo.find({
+			companyName,
+		}).sort({
+			createdOn: -1,
+		});
+
+		res.status(200).json(result);
+	} catch (error) {
+		res.status(500).json({ message: error.message });
+	}
+};
+
+const getEmployeeBalanceInfo = async (req, res) => {
+	const { companyName, empId } = req.params;
+	try {
+		const result = await findEmployeeBalanceInfo(empId, companyName);
+
+		res.status(200).json(result);
+	} catch (error) {
+		res.status(404).json({ error: error.message });
+	}
+};
 
 const updateBalanceInfo = async (id, data) =>
 	await EmployeeBalanceInfo.findByIdAndUpdate(id, data, {
 		new: true,
 	});
 
-const getPercent = (value) => {
-	const input = value === "" ? 0 : parseFloat(value);
-	// return input;
-	return Number.isInteger(input) ? input / 100 : input;
-};
 const addEmployeeBalanceInfo = async (req, res) => {
 	const {
 		empId,

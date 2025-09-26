@@ -1,7 +1,55 @@
 const AccountLedger = require("../models/AccountLedger");
 const GeneralJournal = require("../models/GeneralJournal");
 
-const getAccounts = async (req, res) => {
+const addAccountsJournalEntry = async (req, res) => {
+	// const { companyName } = req.body;
+	// const recentJournalEntryNum = await AccountLedger.findOne({ companyName })
+	// 	.sort({
+	// 		createdOn: -1,
+	// 	})
+	// 	.select("journalEntryNum");
+
+	// req.body.journalEntryNum = recentJournalEntryNum ? recentJournalEntryNum?.journalEntryNum + 1 : 1;
+
+	try {
+		const newEntry = await GeneralJournal.create(req.body);
+		res.status(201).json(newEntry);
+	} catch (error) {
+		res.status(400).json({ message: error.message });
+	}
+};
+
+const getAccountJournalEntries = async (req, res) => {
+	const { companyName, accountName } = req.params;
+	try {
+		const accounts = await GeneralJournal.find({
+			companyName,
+			"entries.accountName": accountName,
+		}).select("transactionDate entries");
+
+		const allEntries = accounts.flatMap((doc) =>
+			(doc.entries || []).map((entry) => ({
+				...(entry.toObject?.() ?? entry),
+				transactionDate: doc.transactionDate,
+			})),
+		);
+
+		res.status(200).json(allEntries);
+	} catch (error) {
+		res.status(404).json({ error: error.message });
+	}
+};
+
+const addAccountLedger = async (req, res) => {
+	try {
+		const newAcc = await AccountLedger.create(req.body);
+		res.status(201).json(newAcc);
+	} catch (error) {
+		res.status(400).json({ message: error.message });
+	}
+};
+
+const getAccountLedgers = async (req, res) => {
 	const { companyName } = req.params;
 	try {
 		const accounts = await AccountLedger.find({ companyName }).sort({
@@ -40,54 +88,6 @@ const getAccounts = async (req, res) => {
 	}
 };
 
-const getAccountJournalEntries = async (req, res) => {
-	const { companyName, accountName } = req.params;
-	try {
-		const accounts = await GeneralJournal.find({
-			companyName,
-			"entries.accountName": accountName,
-		}).select("transactionDate entries");
-
-		const allEntries = accounts.flatMap((doc) =>
-			(doc.entries || []).map((entry) => ({
-				...(entry.toObject?.() ?? entry),
-				transactionDate: doc.transactionDate,
-			})),
-		);
-
-		res.status(200).json(allEntries);
-	} catch (error) {
-		res.status(404).json({ error: error.message });
-	}
-};
-
-const createAccount = async (req, res) => {
-	try {
-		const newAcc = await AccountLedger.create(req.body);
-		res.status(201).json(newAcc);
-	} catch (error) {
-		res.status(400).json({ message: error.message });
-	}
-};
-
-const addGeneralJournalEntry = async (req, res) => {
-	// const { companyName } = req.body;
-	// const recentJournalEntryNum = await AccountLedger.findOne({ companyName })
-	// 	.sort({
-	// 		createdOn: -1,
-	// 	})
-	// 	.select("journalEntryNum");
-
-	// req.body.journalEntryNum = recentJournalEntryNum ? recentJournalEntryNum?.journalEntryNum + 1 : 1;
-
-	try {
-		const newEntry = await GeneralJournal.create(req.body);
-		res.status(201).json(newEntry);
-	} catch (error) {
-		res.status(400).json({ message: error.message });
-	}
-};
-
 // const updateTask = async (req, res) => {
 // 	const { id } = req.params;
 // 	const { checked } = req.body;
@@ -101,10 +101,8 @@ const addGeneralJournalEntry = async (req, res) => {
 // };
 
 module.exports = {
-	createAccount,
-	getAccounts,
-	addGeneralJournalEntry,
+	addAccountsJournalEntry,
 	getAccountJournalEntries,
-	// getTasks,
-	// updateTask,
+	addAccountLedger,
+	getAccountLedgers,
 };
