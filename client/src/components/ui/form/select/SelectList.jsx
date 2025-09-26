@@ -46,7 +46,7 @@ const SelectList = ({
 			}
 			value={value}
 			onChange={handleChange}
-			placeholder={!isTimesheetAction && !isOrderAction && "Select"}
+			placeholder={!(isTimesheetPayType || isTimesheetAction) && !isOrderAction && "Select"}
 			w={w}
 		>
 			{data?.map((item) => (

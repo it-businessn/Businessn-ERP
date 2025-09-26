@@ -53,13 +53,13 @@ const Calendar = () => {
 					company,
 				});
 				data.map((event) => {
-					event.fromDate = getTimezone(event.fromDate);
-					event.toDate = getTimezone(event.toDate);
+					event.fromDate = event.fromDate;
+					event.toDate = event.toDate;
 					const fromDateTimeString = getDefaultDateTime(event.fromDate, event.fromTime);
 					const toDateTimeString = getDefaultDateTime(event.toDate, event.toTime);
 					event.title = event.description;
-					event.start = getTimezone(fromDateTimeString);
-					event.end = getTimezone(toDateTimeString);
+					event.start = fromDateTimeString;
+					event.end = toDateTimeString;
 					event.color =
 						event.eventType === "phoneCall"
 							? "var(--status_button_border)"
@@ -168,7 +168,7 @@ const Calendar = () => {
 				variant={"ghost"}
 				_hover={{ color: "var(--main_color_black)", bg: "transparent" }}
 			>
-				{moment(event.start).format("h:mm A")} -{moment(event.end).format("h:mm A")}
+				{moment(event.start).format("h:mm A")} - {moment(event.end).format("h:mm A")}
 			</Button>
 		</Box>
 	);

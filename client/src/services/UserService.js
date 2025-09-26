@@ -77,10 +77,6 @@ const UserService = {
 		return apiService.get(`/user/not-managers-list/${id}`);
 	},
 
-	async signUp(data) {
-		return apiService.post("/user/register", data);
-	},
-
 	async sendEmailLoginCreds(data) {
 		return apiService.post("/user/send-email", data);
 	},

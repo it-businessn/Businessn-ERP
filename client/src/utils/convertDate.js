@@ -193,7 +193,7 @@ export const generatePayPeriodId = (startDate, endDate) => {
 export const formatDateTime = (date) =>
 	`${formatDate(date)} ${new Date(date).toLocaleTimeString()}`;
 
-export const getDefaultDateTime = (date, time) => `${date.split("T")[0]}T${time}`;
+export const getDefaultDateTime = (date, time) => `${date?.split("T")[0]}T${time}`;
 
 export const getDefaultDate = (isoDate = null) => {
 	const dateObject = isoDate ? new Date(isoDate) : new Date();
