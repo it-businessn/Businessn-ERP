@@ -1,14 +1,16 @@
-import { Box, Card, Divider, HStack, Icon, Text, VStack } from "@chakra-ui/react";
+import { Box, Card, HStack, Icon, Text, VStack } from "@chakra-ui/react";
 import OutlineButton from "components/ui/button/OutlineButton";
 import PrimaryButton from "components/ui/button/PrimaryButton";
+import BoxCard from "components/ui/card";
+import NormalTextTitle from "components/ui/NormalTextTitle";
 import TextTitle from "components/ui/text/TextTitle";
 import useCompany from "hooks/useCompany";
 import PageLayout from "layouts/PageLayout";
-import React, { useState } from "react";
+import { useState } from "react";
 import { FaAddressCard, FaUndoAlt } from "react-icons/fa";
 import { useBreakpointValue } from "services/Breakpoint";
 import LocalStorageService from "services/LocalStorageService";
-import { toCapitalize } from "utils";
+import { getFormattedAddress } from "utils/common";
 import ChangePassword from "../ChangePassword";
 import EditUserInfo from "./EditUserInfo";
 
@@ -46,17 +48,9 @@ const UserProfileDetails = () => {
 		manager,
 	} = userData || {};
 
-	const { streetNumber, city, state, country, postalCode } = (userData && primaryAddress) || {};
-
-	const getAddress = primaryAddress
-		? toCapitalize(
-				`${streetNumber || ""} ${city || ""} ${state || ""} ${country || ""} ${postalCode || ""}`,
-		  )
-		: "";
-
 	const SECTION1 = [
 		{ name: "Phone Number", value: phoneNumber },
-		{ name: "Address", value: getAddress },
+		{ name: "Address", value: getFormattedAddress(primaryAddress) },
 	];
 
 	const SECTION2 = [
@@ -99,16 +93,11 @@ const UserProfileDetails = () => {
 				flexDir={{ base: "column", md: "row" }}
 				borderRadius="10px"
 				border="3px solid var(--main_color)"
-				m="1em"
+				p="1em"
 				justifyContent="space-between"
 				alignItems="flex-start"
 			>
-				<Card
-					flex={1}
-					m="1em"
-					bg={"var(--lead_cards_bg)"}
-					border={"1px solid var(--lead_cards_bg)"}
-				>
+				<Card flex={1} p="1em" bg={"var(--primary_bg)"}>
 					<Box
 						fontWeight="bold"
 						p="1em"
@@ -124,57 +113,38 @@ const UserProfileDetails = () => {
 							<Text mr="3">{email}</Text>
 						</VStack>
 					</Box>
-					<VStack align="flex-start" color={"var(--menu_item_color)"} p={"1em"}>
+					<BoxCard>
 						{SECTION1.map(({ name, value }) => (
-							<React.Fragment key={name}>
-								<TextTitle title={name} />
-								<Text color={"var(--main_color_black)"}>{value}</Text>
-							</React.Fragment>
+							<HStack mt={3} key={name}>
+								<TextTitle title={name} width="150px" />
+								<NormalTextTitle title={value} />
+							</HStack>
 						))}
-					</VStack>
-					<VStack align="flex-start" color={"var(--menu_item_color)"} p={"1em"}>
-						{SECTION2.map(({ name, value }) => {
-							console.log(name, value);
-							return (
-								<React.Fragment key={name}>
-									<TextTitle title={name} />
-									<Text color={"var(--main_color_black)"}>{value}</Text>
-								</React.Fragment>
-							);
-						})}
-					</VStack>
+
+						{SECTION2.map(({ name, value }) => (
+							<HStack mt={3} key={name}>
+								<TextTitle title={name} width="150px" />
+								<NormalTextTitle title={value} />
+							</HStack>
+						))}
+					</BoxCard>
+
 					{showActionButton()}
 				</Card>
 				{editMode && (
-					<>
-						{!isMobile && (
-							<Divider
-								orientation="vertical"
-								height="600px"
-								borderWidth="1px"
-								borderColor="gray.200"
-							/>
-						)}
+					<BoxCard>
 						<EditUserInfo
 							company={company}
 							setEditMode={setEditMode}
 							setError={setError}
 							error={error}
 						/>
-					</>
+					</BoxCard>
 				)}
 				{changePasswordMode && (
-					<>
-						{!isMobile && (
-							<Divider
-								orientation="vertical"
-								height="600px"
-								borderWidth="1px"
-								borderColor="gray.200"
-							/>
-						)}
+					<BoxCard>
 						<ChangePassword setPasswordMode={setPasswordMode} setError={setError} error={error} />
-					</>
+					</BoxCard>
 				)}
 			</HStack>
 		</PageLayout>

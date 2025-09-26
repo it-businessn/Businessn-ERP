@@ -43,10 +43,13 @@ export const buildUserInfo = (user) => {
 		payrollStatus,
 	);
 };
-export const getAddress = (address) =>
+
+export const getFormattedAddress = (address) =>
 	address
 		? toCapitalize(
-				`${address.streetNumber} ${address.city} ${address.state} ${address.country} ${address.postalCode}`,
+				`${address?.streetNumber || ""} ${address?.city || ""}, ${address?.state || ""} ${
+					address?.country || ""
+				} ${address?.postalCode || ""}`,
 		  )
 		: "";
 

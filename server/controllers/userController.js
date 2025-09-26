@@ -351,7 +351,7 @@ const getAllSalesAgents = async (req, res) => {
 				select: ["fullName", "email", "baseModule", "group", "primaryAddress"],
 			})
 			.select("payrollStatus employeeNo positions employmentRole");
-
+		result = result.filter(({ empId }) => empId);
 		res.status(200).json(sortByEmpFullName(result));
 	} catch (error) {
 		res.status(404).json({ error: error.message });

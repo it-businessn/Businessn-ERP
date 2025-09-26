@@ -30,6 +30,7 @@ import LeadsService from "services/LeadsService";
 import LocalStorageService from "services/LocalStorageService";
 import UserService from "services/UserService";
 import { generateLighterShade } from "utils";
+import { getFormattedAddress } from "utils/common";
 import { timeSpan } from "utils/convertDate";
 import AutoAssign from "./AutoAssign";
 import Disburse from "./Disburse";
@@ -231,95 +232,92 @@ const LeadsDisbursed = () => {
 
 			<TableLayout css={tabScrollCss} cols={columns} isSmall height="calc(100vh - 308px)">
 				<Tbody>
-					{(!activity || activity?.length === 0) && (
-						<EmptyRowRecord data={activity} colSpan={columns?.length} />
+					{(!agents || agents?.length === 0) && (
+						<EmptyRowRecord data={agents} colSpan={columns?.length} />
 					)}
-					{activity &&
-						agents?.map(
-							({
-								_id,
-								isActive,
-								lastLogin,
-								fullName,
-								lastLoginStatus,
-								assignedLeads,
-								role,
-								primaryAddress,
-								assignedAreas,
-								assignedProducts,
-								assignedWeight,
-							}) => (
-								<Tr key={_id}>
-									<Td p={1}>
-										<Checkbox
-											colorScheme="facebook"
-											isChecked={isActive || checkedRows?.includes(_id)}
-											onChange={(e) => handleCheckboxChange(_id, e.target.checked)}
-										/>
-									</Td>
-									<Td p={1}>{fullName}</Td>
-									<Td p={1}>
-										<Button
-											borderRadius={"10px"}
-											h={"2.25em"}
-											w={"10em"}
-											_hover={{ bg: "transparent" }}
-											px={3}
-											variant={"outline"}
-											justifyContent={"space-between"}
-											color={"var(--primary_button_bg)"}
-											rightIcon={<FaCaretRight />}
-											bg={generateLighterShade(COLORS.primary, 0.9)}
-											border={`1px solid var(--primary_button_bg)`}
-										>{`${assignedLeads || 0} leads`}</Button>
-									</Td>
-									<Td p={1}>
-										{lastLoginStatus ? (
-											<Text color={"green"}>{lastLoginStatus}</Text>
-										) : lastLogin ? (
-											timeSpan(lastLogin)
-										) : (
-											"Not logged in"
-										)}
-									</Td>
+					{agents?.map(
+						({
+							_id,
+							isActive,
+							lastLogin,
+							fullName,
+							lastLoginStatus,
+							assignedLeads,
+							role,
+							primaryAddress,
+							assignedAreas,
+							assignedProducts,
+							assignedWeight,
+						}) => (
+							<Tr key={_id}>
+								<Td p={1}>
+									<Checkbox
+										colorScheme="facebook"
+										isChecked={isActive || checkedRows?.includes(_id)}
+										onChange={(e) => handleCheckboxChange(_id, e.target.checked)}
+									/>
+								</Td>
+								<Td p={1}>{fullName}</Td>
+								<Td p={1}>
+									<Button
+										borderRadius={"10px"}
+										h={"2.25em"}
+										w={"10em"}
+										_hover={{ bg: "transparent" }}
+										px={3}
+										variant={"outline"}
+										justifyContent={"space-between"}
+										color={"var(--primary_button_bg)"}
+										rightIcon={<FaCaretRight />}
+										bg={generateLighterShade(COLORS.primary, 0.9)}
+										border={`1px solid var(--primary_button_bg)`}
+									>{`${assignedLeads || 0} leads`}</Button>
+								</Td>
+								<Td p={1}>
+									{lastLoginStatus ? (
+										<Text color={"green"}>{lastLoginStatus}</Text>
+									) : lastLogin ? (
+										timeSpan(lastLogin)
+									) : (
+										"Not logged in"
+									)}
+								</Td>
 
-									<Td p={1}>{role}</Td>
-									<Td
-										p={1}
-									>{`${primaryAddress?.streetNumber} ${primaryAddress?.city} ${primaryAddress?.state} ${primaryAddress?.country} ${primaryAddress?.postalCode}`}</Td>
-									<Td p={1}>
-										<SelectList
-											id={_id}
-											type="areas"
-											handleSelect={handleSelect}
-											code="name"
-											selectedValue={assignedAreas}
-											data={AREAS}
-										/>
-									</Td>
-									<Td p={1}>
-										<SelectList
-											id={_id}
-											type="product_service"
-											handleSelect={handleSelect}
-											code="name"
-											selectedValue={assignedProducts}
-											data={PRODUCTS_SERVICES}
-										/>
-									</Td>
-									<Td p={1}>
-										<SelectList
-											id={_id}
-											type="weight"
-											handleSelect={handleSelect}
-											code="name"
-											selectedValue={assignedWeight}
-											data={WEIGHTING}
-										/>
-									</Td>
-								</Tr>
-							),
-						)}
+								<Td p={1}>{role}</Td>
+								<Td p={1}>{getFormattedAddress(primaryAddress)}</Td>
+								<Td p={1}>
+									<SelectList
+										id={_id}
+										type="areas"
+										handleSelect={handleSelect}
+										code="name"
+										selectedValue={assignedAreas}
+										data={AREAS}
+									/>
+								</Td>
+								<Td p={1}>
+									<SelectList
+										id={_id}
+										type="product_service"
+										handleSelect={handleSelect}
+										code="name"
+										selectedValue={assignedProducts}
+										data={PRODUCTS_SERVICES}
+									/>
+								</Td>
+								<Td p={1}>
+									<SelectList
+										id={_id}
+										type="weight"
+										handleSelect={handleSelect}
+										code="name"
+										selectedValue={assignedWeight}
+										data={WEIGHTING}
+									/>
+								</Td>
+							</Tr>
+						),
+					)}
 				</Tbody>
 			</TableLayout>
 		</PageLayout>

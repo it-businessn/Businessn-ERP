@@ -21,6 +21,7 @@ import NormalTextTitle from "components/ui/NormalTextTitle";
 import TextTitle from "components/ui/text/TextTitle";
 import React from "react";
 import { FaBuilding } from "react-icons/fa";
+import { getFormattedAddress } from "utils/common";
 
 const ContactDetailsInfo = ({ contact, showLogForm }) => {
 	const { isOpen: isProfileOpen, onToggle: onProfileToggle } = useDisclosure({
@@ -77,9 +78,7 @@ const ContactDetailsInfo = ({ contact, showLogForm }) => {
 		},
 		{
 			title: "Address",
-			value: `${address?.streetNumber || ""} ${address?.city || ""} ${
-				address?.state || ""
-			} ${address?.country || ""} ${address?.postalCode || ""}`,
+			value: getFormattedAddress(address),
 		},
 	];
 	const DETAILS2 = [
@@ -99,20 +98,12 @@ const ContactDetailsInfo = ({ contact, showLogForm }) => {
 	return (
 		<>
 			<VStack align="center" justify="center" mb={3}>
-				<Avatar
-					name=" "
-					size="lg"
-					bg="var(--primary_button_bg)"
-					position="relative"
-				>
+				<Avatar name=" " size="lg" bg="var(--primary_button_bg)" position="relative">
 					<FaBuilding className="header-logo" />
 				</Avatar>
 				<Box textAlign="center">
 					<TextTitle size="xl" title={name} />
-					<TextTitle
-						size="sm"
-						title={`Primary Contact: ${primaryAssignee[0].name}`}
-					/>
+					<TextTitle size="sm" title={`Primary Contact: ${primaryAssignee[0].name}`} />
 				</Box>
 			</VStack>
 			<HStack spacing="5" justifyContent="center">
@@ -137,11 +128,7 @@ const ContactDetailsInfo = ({ contact, showLogForm }) => {
 			</HStack>
 			<Box>
 				<Button onClick={onCompanyToggle} variant="link">
-					{isCompanyOpen ? (
-						<ChevronDownIcon fontSize="md" />
-					) : (
-						<ChevronRightIcon fontSize="md" />
-					)}
+					{isCompanyOpen ? <ChevronDownIcon fontSize="md" /> : <ChevronRightIcon fontSize="md" />}
 					Company Information
 				</Button>
 				<Collapse in={isCompanyOpen}>
@@ -149,7 +136,13 @@ const ContactDetailsInfo = ({ contact, showLogForm }) => {
 						{DETAILS.map(({ title, value }) => (
 							<React.Fragment key={title}>
 								<TextTitle size={"sm"} title={title} />
-								<NormalTextTitle size={"sm"} mb="2" title={value} />
+								<NormalTextTitle
+									width={"150px"}
+									size={"sm"}
+									mb="2"
+									title={value}
+									whiteSpace="wrap"
+								/>
 							</React.Fragment>
 						))}
 
@@ -163,11 +156,7 @@ const ContactDetailsInfo = ({ contact, showLogForm }) => {
 
 			<Box>
 				<Button onClick={onProfileToggle} variant="link">
-					{isProfileOpen ? (
-						<ChevronDownIcon fontSize="md" />
-					) : (
-						<ChevronRightIcon fontSize="md" />
-					)}
+					{isProfileOpen ? <ChevronDownIcon fontSize="md" /> : <ChevronRightIcon fontSize="md" />}
 					Primary Contact Information
 				</Button>
 				<Collapse in={isProfileOpen}>

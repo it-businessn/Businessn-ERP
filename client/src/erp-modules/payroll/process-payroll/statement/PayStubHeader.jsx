@@ -1,6 +1,7 @@
 import { HStack, Image, VStack } from "@chakra-ui/react";
 import TextTitle from "components/ui/text/TextTitle";
 import LocalStorageService from "services/LocalStorageService";
+import { getFormattedAddress } from "utils/common";
 import payStubLogo from "../../../../assets/logos/BusinessN_lightLogo.jpg";
 
 const PayStubHeader = ({ companyInfo, flex, isMobile }) => {
@@ -15,7 +16,8 @@ const PayStubHeader = ({ companyInfo, flex, isMobile }) => {
 						<TextTitle
 							color={"var(--main_color_black)"}
 							size={"xs"}
-							title={`${companyDetails?.address?.streetNumber} ${companyDetails?.address?.city} ${companyDetails?.address?.state} ${companyDetails?.address?.country} ${companyDetails?.address?.postalCode}`}
+							whiteSpace="wrap"
+							title={getFormattedAddress(companyDetails?.address)}
 						/>
 					</VStack>
 					<TextTitle

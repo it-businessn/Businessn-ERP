@@ -34,6 +34,7 @@ import { useNavigate } from "react-router";
 import { useBreakpointValue } from "services/Breakpoint";
 import LeadsService from "services/LeadsService";
 import LocalStorageService from "services/LocalStorageService";
+import { getFormattedAddress } from "utils/common";
 import { formatDate } from "utils/convertDate";
 import AddOpportunity from "./AddOpportunity";
 import Caption from "./Caption";
@@ -317,9 +318,13 @@ const LeadsDocket = () => {
 								<Td p={0.5}>
 									<SelectList code="name" selectedValue={source} data={LEAD_SOURCES} />
 								</Td>
-								<Td p={0.5}>{`${address?.streetNumber || ""} ${address?.city || ""} ${
-									address?.state || ""
-								} ${address?.country || ""} ${address?.postalCode || ""}`}</Td>
+								<Td p={0.5}>
+									<NormalTextTitle
+										whiteSpace={"wrap"}
+										size="sm"
+										title={getFormattedAddress(address)}
+									/>
+								</Td>
 								<Td p={0.5}>{formatDate(createdOn)}</Td>
 								<Td textAlign={"center"}>
 									<FaRegTrashAlt

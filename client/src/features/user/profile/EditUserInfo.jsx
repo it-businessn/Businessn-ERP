@@ -15,6 +15,7 @@ import InputFormControl from "components/ui/form/InputFormControl";
 import MultiSelectFormControl from "components/ui/form/MultiSelectFormControl";
 // import MultiSelectFormControl from "components/ui/form/MultiSelectFormControl";
 import TextTitle from "components/ui/text/TextTitle";
+import { COUNTRIES } from "erp-modules/payroll/onboard-user/customInfo";
 import useCompanies from "hooks/useCompanies";
 import useDepartment from "hooks/useDepartment";
 import useManager from "hooks/useManager";
@@ -25,14 +26,15 @@ import UserService from "services/UserService";
 // import { isManager } from "utils";
 
 const EditUserInfo = ({ setEditMode, setError, error, company }) => {
+	const loggedInUser = LocalStorageService.getItem("user");
 	const departments = useDepartment(company);
-	const [userData, setUserData] = useState(LocalStorageService.getItem("user"));
-
 	const allCompanies = useCompanies();
-	const [companies, setCompanies] = useState(company);
-
 	const managers = useManager(company);
 	const roles = useRoles(company);
+
+	const [companies, setCompanies] = useState(company);
+	const [userData, setUserData] = useState(loggedInUser);
+	const [availableProvinces, setAvailableProvinces] = useState([]);
 	const [openAssigneeMenu, setOpenAssigneeMenu] = useState(false);
 
 	useEffect(() => {
@@ -43,6 +45,15 @@ const EditUserInfo = ({ setEditMode, setError, error, company }) => {
 			setCompanies(assignedCompanies);
 		}
 	}, [allCompanies]);
+
+	useEffect(() => {
+		const selectedCountry = COUNTRIES.find(
+			({ code }) => code === userData?.primaryAddress?.country,
+		);
+		if (selectedCountry) {
+			setAvailableProvinces(selectedCountry?.provinces);
+		}
+	}, [userData?.primaryAddress?.country]);
 
 	const handleMenuToggle = () => {
 		setOpenAssigneeMenu((prev) => !prev);
@@ -79,13 +90,14 @@ const EditUserInfo = ({ setEditMode, setError, error, company }) => {
 
 	const handleAddressChange = (e) => {
 		const { name, value } = e.target;
-		setUserData({
-			...userData,
-			primaryAddress: {
-				...userData.primaryAddress,
-				[name]: value,
-			},
-		});
+		if (value)
+			setUserData({
+				...userData,
+				primaryAddress: {
+					...userData.primaryAddress,
+					[name]: value,
+				},
+			});
 	};
 
 	const handleCloseMenu = (selectedOptions) => {
@@ -161,15 +173,6 @@ const EditUserInfo = ({ setEditMode, setError, error, company }) => {
 							onChange={handleAddressChange}
 							placeholder="City"
 						/>
-					</HStack>
-					<HStack mt={3}>
-						<Input
-							type="text"
-							name="state"
-							value={userData?.primaryAddress?.state || ""}
-							onChange={handleAddressChange}
-							placeholder="State"
-						/>
 						<Input
 							type="text"
 							name="postalCode"
@@ -177,13 +180,32 @@ const EditUserInfo = ({ setEditMode, setError, error, company }) => {
 							onChange={handleAddressChange}
 							placeholder="Postal Code"
 						/>
-						<Input
-							type="text"
+					</HStack>
+					<HStack mt={2}>
+						<Select
 							name="country"
-							value={userData?.primaryAddress?.country || ""}
+							value={userData?.primaryAddress?.country}
 							onChange={handleAddressChange}
-							placeholder="Country"
-						/>
+							placeholder="Select Country"
+						>
+							{COUNTRIES.map(({ type, code }) => (
+								<option key={type} value={code}>
+									{type}
+								</option>
+							))}
+						</Select>
+						<Select
+							name="state"
+							value={userData?.primaryAddress?.state || ""}
+							onChange={handleAddressChange}
+							placeholder="Select Province"
+						>
+							{availableProvinces.map(({ name, id }) => (
+								<option key={name} value={id}>
+									{name}
+								</option>
+							))}
+						</Select>
 					</HStack>
 				</FormControl>
 				<HStack>

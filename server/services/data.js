@@ -221,6 +221,7 @@ const TIMESHEET_SOURCE = {
 	TAD: "TAD",
 	ADMINISTRATOR: "Admin",
 	SYSTEM: "SYSTEM",
+	APP: "APP",
 };
 
 const PAYRUN_TYPE = { REGULAR: "1", PAYOUT: "2", MANUAL: "3", SUPERFICIAL: "4" };
