@@ -19,6 +19,7 @@ export const usePayrollReports = (company, selectedYear, payGroupSchedule, selec
 		setHasLoaded(false);
 		const { isExtra, payNum, payPeriodPayDate } = selectedPayPeriodDetails?.current;
 		const extraRun = isExtra || false;
+		const payNumber = payNum?.payPeriod || payNum;
 
 		const scheduleFrequency =
 			selectedPayGroup?.scheduleFrequency === "bi-weekly"
@@ -30,7 +31,7 @@ export const usePayrollReports = (company, selectedYear, payGroupSchedule, selec
 				setTotalsReport(null);
 				const { data } = await PayrollService.getTotalsPayReportDetails(
 					company,
-					payNum,
+					payNumber,
 					extraRun,
 					scheduleFrequency,
 				);
@@ -46,7 +47,7 @@ export const usePayrollReports = (company, selectedYear, payGroupSchedule, selec
 				setReport(null);
 				const { data } = await PayrollService.getRegisterDetails(
 					company,
-					payNum,
+					payNumber,
 					extraRun,
 					payPeriodPayDate,
 					scheduleFrequency,
@@ -64,7 +65,7 @@ export const usePayrollReports = (company, selectedYear, payGroupSchedule, selec
 				setJournalReport(null);
 				const { data } = await PayrollService.getJournalEntryReportDetails(
 					company,
-					payNum,
+					payNumber,
 					extraRun,
 					scheduleFrequency,
 				);
@@ -75,11 +76,11 @@ export const usePayrollReports = (company, selectedYear, payGroupSchedule, selec
 			}
 		};
 
-		if (payNum && showTotalsReport) {
+		if (payNumber && showTotalsReport) {
 			fetchFundTotalsInfo();
-		} else if (payNum && showReport) {
+		} else if (payNumber && showReport) {
 			fetchRegisterReportData();
-		} else if (payNum && showJournalsReport) {
+		} else if (payNumber && showJournalsReport) {
 			fetchJournalInfo();
 		}
 	}, [

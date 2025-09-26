@@ -108,7 +108,7 @@ const LeftPane = ({ selectedUser, company, isMobile }) => {
 												label="View"
 												h={"22px"}
 												minH={"auto"}
-												OnClick={() =>
+												onClick={() =>
 													handleRegister(
 														isExtraPay(payPeriodNum || payPeriod, isExtraRun),
 														isExtraRun,
