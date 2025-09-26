@@ -32,7 +32,7 @@ const AddEmployeeModal = ({
 	useEffect(() => {
 		const fetchAllEmployees = async () => {
 			try {
-				const { data } = await UserService.getAllCompanyUsers(
+				const { data } = await UserService.getExtraPayrunEmployees(
 					company,
 					deptName,
 					selectedPayGroup?.name,

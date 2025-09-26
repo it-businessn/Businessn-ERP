@@ -53,6 +53,10 @@ const UserService = {
 		return apiService.get(`/user/emp/${id}`);
 	},
 
+	async getExtraPayrunEmployees(id, deptName, payGroup) {
+		return apiService.get(`/user/non-salaried/${id}/${deptName}/${payGroup}`);
+	},
+
 	async getAllCompanyUsers(id, deptName, payGroup) {
 		return apiService.get(`/user/${id}/${deptName}/${payGroup}`);
 	},

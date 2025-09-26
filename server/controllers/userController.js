@@ -20,6 +20,8 @@ const {
 	sortByEmpFullName,
 	getUserEmploymentRoleInfo,
 	getPayrollActiveEmployees,
+	getShadowUserIds,
+	getSalariedIds,
 } = require("../helpers/userHelper");
 const { findGroupEmployees } = require("./setUpController");
 const { setInitialPermissions } = require("./permissionController");
@@ -146,12 +148,7 @@ const getPayrollTerminatedCompanyEmployees = async (req, res) => {
 const getCompanyUsers = async (req, res) => {
 	const { companyName } = req.params;
 	try {
-		const employmentRecords = await EmployeeEmploymentInfo.find({
-			companyName,
-			employmentRole: ROLES.SHADOW_ADMIN,
-			empId: { $exists: true },
-		}).select("empId");
-		const shadowEmpIds = employmentRecords.map((emp) => emp.empId);
+		const shadowEmpIds = getShadowUserIds(companyName);
 
 		const filter = {
 			companyName,
@@ -174,6 +171,54 @@ const getCompanyEmpEmployees = async (req, res) => {
 	try {
 		const result = await getUserEmploymentRoleInfo(companyName);
 		res.status(200).json(result);
+	} catch (error) {
+		res.status(404).json({ error: error.message });
+	}
+};
+
+const getCompanyNonSalariedEmployees = async (req, res) => {
+	const { companyName, deptName, payGroup } = req.params;
+	try {
+		const shadowEmpIds = await getShadowUserIds(companyName);
+		const salariedIds = await getSalariedIds(companyName);
+
+		const filter = {
+			companyName,
+			empId: { $exists: true },
+			...((shadowEmpIds.length > 0 || salariedIds.length > 0) && {
+				empId: { $nin: [...shadowEmpIds, ...salariedIds] },
+			}),
+		};
+		const result = await EmployeeProfileInfo.find(filter).populate({
+			path: "empId",
+			model: "Employee",
+			select: ["empId", "fullName"],
+		});
+
+		let updatedResult = await Promise.all(
+			result.map(async (emp) => {
+				const empInfo = await EmployeeEmploymentInfo.findOne({
+					companyName,
+					empId: emp?.empId?._id,
+					payrollStatus: "Payroll Active",
+				}).select("positions");
+
+				return {
+					empId: emp?.empId,
+					positions: empInfo?.positions,
+				};
+			}),
+		);
+
+		if (payGroup) {
+			updatedResult = filterResultByPaygroupOption(updatedResult, payGroup);
+		}
+
+		if (deptName && deptName !== "null") {
+			updatedResult = filterResultByDepartment(updatedResult, deptName);
+		}
+
+		res.status(200).json(sortByEmpFullName(updatedResult));
 	} catch (error) {
 		res.status(404).json({ error: error.message });
 	}
@@ -715,6 +760,7 @@ module.exports = {
 	getAllEmployees,
 	getUserActivity,
 	getCompanyEmployees,
+	getCompanyNonSalariedEmployees,
 	getCompanyEmployeesCount,
 	groupEmployeesByRole,
 	getAllGroupMembers,

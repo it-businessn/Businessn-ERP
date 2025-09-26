@@ -47,6 +47,11 @@ router.get("/all/:companyName", userController.getCompanyUsers);
 
 router.get("/count/:companyName", userController.getCompanyEmployeesCount);
 
+router.get(
+	"/non-salaried/:companyName/:deptName/:payGroup",
+	userController.getCompanyNonSalariedEmployees,
+);
+
 router.get("/:companyName/:deptName/:payGroup", userController.getCompanyEmployees);
 
 router.post("/create", userController.createMasterUser);

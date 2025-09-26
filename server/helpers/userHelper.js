@@ -1,8 +1,9 @@
 const Company = require("../models/Company");
 const Employee = require("../models/Employee");
 const EmployeeEmploymentInfo = require("../models/EmployeeEmploymentInfo");
+const EmployeePayInfo = require("../models/EmployeePayInfo");
 
-const { ROLES } = require("../services/data");
+const { ROLES, EARNING_TYPE } = require("../services/data");
 
 const addEmployee = async (name, data) => {
 	const existingCompany = await findCompany("name", name);
@@ -44,6 +45,34 @@ const filterResultByDepartment = (result, deptName) => {
 
 const filterResultByPaygroupOption = (result, payGroupOption) =>
 	result?.filter((emp) => emp?.positions?.find((_) => _.employmentPayGroup === payGroupOption));
+
+const getShadowUserIds = async (companyName) => {
+	const shadowEmpIds = await EmployeeEmploymentInfo.find({
+		companyName,
+		employmentRole: ROLES.SHADOW_ADMIN,
+		empId: { $exists: true },
+	}).select("empId");
+
+	return shadowEmpIds.map((emp) => emp.empId);
+};
+
+const getSalariedIds = async (companyName) => {
+	let result = await EmployeePayInfo.find({
+		companyName,
+		empId: { $exists: true },
+	}).select("roles empId");
+
+	result = result.filter((emp) => {
+		const nonSalaried =
+			emp.empId &&
+			emp?.roles.some(
+				(role) => role.typeOfEarning == EARNING_TYPE.FT || role.typeOfEarning == EARNING_TYPE.PT,
+			);
+		if (nonSalaried) return emp;
+	});
+
+	return result?.map((emp) => emp.empId);
+};
 
 const getPayrollActiveEmployees = async (companyName, deptName, selectedPayGroupOption) => {
 	let result = await findEmployee({
@@ -92,6 +121,8 @@ module.exports = {
 	findEmployee,
 	filterResultByPaygroupOption,
 	filterResultByDepartment,
+	getShadowUserIds,
+	getSalariedIds,
 	getPayrollActiveEmployees,
 	getUserEmploymentRoleInfo,
 	sortByEmpFullName,
