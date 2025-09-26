@@ -186,15 +186,15 @@ const PayrollService = {
 	},
 
 	async getTotalAlerts(company, payNum) {
-		return apiService.get(`/payroll/total-alerts/${company}/${payNum}`);
+		return apiService.get(`/alert/${company}/${payNum}`);
 	},
 
 	async getAlertsDetails(company, payNum, selectedPayGroup) {
-		return apiService.get(`/payroll/alertsReport/${company}/${payNum}/${selectedPayGroup}`);
+		return apiService.get(`/alert/detail/${company}/${payNum}/${selectedPayGroup}`);
 	},
 
 	async addAlertsAndViolations(data) {
-		return apiService.post("/payroll/generate-alerts", data);
+		return apiService.post("/alert", data);
 	},
 };
 

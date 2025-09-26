@@ -103,9 +103,11 @@ const PayInfo = ({ company, userId }) => {
 				companyName: company,
 				roles,
 			};
-			const { data } = moreDetails?._id
-				? await PayrollService.updateEmployeePayInfo(payInfoData, moreDetails?._id)
-				: await PayrollService.addEmployeePayInfo(payInfoData);
+			if (moreDetails?._id) {
+				await PayrollService.updateEmployeePayInfo(payInfoData, moreDetails?._id);
+			} else {
+				await PayrollService.addEmployeePayInfo(payInfoData);
+			}
 			setIsLoading(false);
 			toast({
 				title: "Payment info updated successfully.",
