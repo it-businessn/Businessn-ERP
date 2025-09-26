@@ -3,14 +3,14 @@ const router = express.Router();
 
 const companyController = require("../controllers/companyController");
 
-router.get("/companies", companyController.getCompanies);
+router.get("/", companyController.getCompanies);
 
-router.post("/companies", companyController.addCompany);
+router.post("/", companyController.addCompany);
 
-router.put("/companies/:id", companyController.updateCompany);
+router.put("/:id", companyController.updateCompany);
 
-router.get("/companies/employees/:employees", companyController.getCompanyEmployees);
+router.get("/employees/:employees", companyController.getCompanyEmployees);
 
-router.get("/companies/:name", companyController.getCompany);
+router.get("/:name", companyController.getCompany);
 
 module.exports = router;
