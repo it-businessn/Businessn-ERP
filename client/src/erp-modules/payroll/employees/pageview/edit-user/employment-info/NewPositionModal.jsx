@@ -10,19 +10,15 @@ import {
 	SimpleGrid,
 	Spinner,
 	Stack,
-	Tooltip,
 } from "@chakra-ui/react";
-import PrimaryButton from "components/ui/button/PrimaryButton";
 import BoxCard from "components/ui/card";
 import ActionButtonGroup from "components/ui/form/ActionButtonGroup";
 import TextTitle from "components/ui/text/TextTitle";
 import { COMPANIES } from "constant";
-import AddNewShiftRole from "erp-modules/scheduling/workview/quick-selection/AddNewShiftRole";
+import { RoleInfoControl } from "erp-modules/payroll/controls/RoleInfoControl";
 import { useEffect, useState } from "react";
-import { FaPlus } from "react-icons/fa";
 
 const NewPositionModal = ({
-	positionRoles,
 	onClose,
 	handleUpdate,
 	payGroups,
@@ -30,7 +26,6 @@ const NewPositionModal = ({
 	departments,
 	selectedPayGroup,
 	company,
-	setNewRoleAdded,
 	lastBadgeId,
 }) => {
 	const [autoGenerate, setAutoGenerate] = useState(false);
@@ -44,7 +39,6 @@ const NewPositionModal = ({
 	};
 	const [filteredDept, setFilteredDept] = useState(departments);
 	const [roleInfo, setRoleInfo] = useState(defaultRoleInfo);
-	const [showAddNewRole, setShowAddNewRole] = useState(false);
 
 	useEffect(() => {
 		if (company === COMPANIES.NW && departments && roleInfo.employmentCostCenter) {
@@ -78,47 +72,23 @@ const NewPositionModal = ({
 			<BoxCard border="1px solid var(--lead_cards_border)">
 				<HStack justify={"start"}>
 					<TextTitle size="lg" title="New Role Details" />
-					<PrimaryButton size="sm" name="Add Role Title" onOpen={() => setShowAddNewRole(true)} />
+					{/* <PrimaryButton size="sm" name="Add Role Title" onOpen={() => setShowAddNewRole(true)} /> */}
 				</HStack>
 				<form onSubmit={handleSubmit}>
 					<Stack spacing={4}>
 						<SimpleGrid columns={2} spacing={6}>
-							<HStack w="100%" justify={"space-between"}>
-								<FormControl isRequired>
-									<FormLabel size="sm">Role Title</FormLabel>
-									{positionRoles ? (
-										<Select
-											size="sm"
-											value={roleInfo?.title}
-											onChange={(e) => {
-												if (e.target.value) {
-													setRoleInfo((prevData) => ({
-														...prevData,
-														title: e.target.value,
-													}));
-												}
-											}}
-											placeholder="Select title"
-										>
-											{positionRoles.map((role) => (
-												<option key={role.name} value={role.name}>
-													{role.name}
-												</option>
-											))}
-										</Select>
-									) : (
-										<Flex align="center" justify="center" py={2}>
-											<Spinner size="sm" mr={2} />
-											<TextTitle size="sm" title="Loading job titles..." />
-										</Flex>
-									)}
-								</FormControl>
-								<Tooltip label="Add new role">
-									<span style={{ marginTop: "1em" }}>
-										<FaPlus cursor="pointer" onClick={() => setShowAddNewRole(true)} />
-									</span>
-								</Tooltip>
-							</HStack>
+							<RoleInfoControl
+								company={company}
+								title={roleInfo?.title}
+								handleChange={(e) => {
+									if (e.target.value) {
+										setRoleInfo((prevData) => ({
+											...prevData,
+											title: e.target.value,
+										}));
+									}
+								}}
+							/>
 							<FormControl>
 								<FormLabel size="sm">Pay Group</FormLabel>
 								{payGroups ? (
@@ -250,14 +220,6 @@ const NewPositionModal = ({
 						/>
 					</Stack>
 				</form>
-				{showAddNewRole && (
-					<AddNewShiftRole
-						showAddNewRole={showAddNewRole}
-						setRefresh={setNewRoleAdded}
-						setShowAddNewRole={setShowAddNewRole}
-						company={company}
-					/>
-				)}
 			</BoxCard>
 		</Box>
 	);

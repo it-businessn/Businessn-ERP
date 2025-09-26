@@ -24,10 +24,10 @@ import { COMPANIES } from "constant";
 import useCostCenter from "hooks/useCostCenter";
 import useDepartment from "hooks/useDepartment";
 import usePaygroup from "hooks/usePaygroup";
-import usePositionRoles from "hooks/usePositionRoles";
 import useRoles from "hooks/useRoles";
 import { useEffect, useState } from "react";
 import { EmployeeNumberControl } from "../controls/EmployeeNumberControl";
+import { RoleInfoControl } from "../controls/RoleInfoControl";
 import {
 	COUNTRIES,
 	employmentSubSteps,
@@ -48,7 +48,6 @@ const EmploymentInfo = ({
 	const roles = useRoles(company);
 	const costCentres = useCostCenter(company);
 	const departments = useDepartment(company);
-	const positionRoles = usePositionRoles(company);
 	const { payGroups } = usePaygroup(company, false);
 
 	const [autoGenerate, setAutoGenerate] = useState(false);
@@ -185,32 +184,15 @@ const EmploymentInfo = ({
 						<TextTitle size="xl" title="Position" />
 
 						<SimpleGrid columns={2} spacing={6}>
-							<FormControl isRequired>
-								<FormLabel size="sm">Role Title</FormLabel>
-								{positionRoles ? (
-									<Select
-										size="sm"
-										value={formData.employmentInfo.jobTitle}
-										onChange={(e) => {
-											if (e.target.value) {
-												handleChange("employmentInfo", "jobTitle", e.target.value);
-											}
-										}}
-										placeholder="Select Role title"
-									>
-										{positionRoles.map((role) => (
-											<option key={role.name} value={role.name}>
-												{role.name}
-											</option>
-										))}
-									</Select>
-								) : (
-									<Flex align="center" justify="center" py={2}>
-										<Spinner size="sm" mr={2} />
-										<TextTitle size="sm" title="Loading job titles..." />
-									</Flex>
-								)}
-							</FormControl>
+							<RoleInfoControl
+								company={company}
+								title={formData.employmentInfo.jobTitle}
+								handleChange={(e) => {
+									if (e.target.value) {
+										handleChange("employmentInfo", "jobTitle", e.target.value);
+									}
+								}}
+							/>
 
 							<FormControl>
 								<FormLabel size="sm">Pay Group</FormLabel>

@@ -4,6 +4,7 @@ import { Flex, FormControl, Input, Select, SimpleGrid, Spinner } from "@chakra-u
 import PrimaryButton from "components/ui/button/PrimaryButton";
 import TextTitle from "components/ui/text/TextTitle";
 import { COMPANIES } from "constant";
+import { RoleInfoControl } from "erp-modules/payroll/controls/RoleInfoControl";
 import { useEffect, useState } from "react";
 import { FaSave } from "react-icons/fa";
 
@@ -12,7 +13,6 @@ const PositionInfo = ({
 	position,
 	handleUpdate,
 	company,
-	positionRoles,
 	updateRecordIndex,
 	payGroups,
 	departments,
@@ -52,36 +52,19 @@ const PositionInfo = ({
 	return (
 		<Stack spacing={4}>
 			<SimpleGrid columns={4} spacing={3}>
-				<FormControl isRequired>
-					<FormLabel size="sm">Role Title</FormLabel>
-					{positionRoles ? (
-						<Select
-							size="sm"
-							value={roleInfo.title || ""}
-							onChange={(e) => {
-								if (e.target.value) {
-									setEditedIndices((prev) => ({ ...prev, [updateRecordIndex]: true }));
-									setRoleInfo((prevData) => ({
-										...prevData,
-										title: e.target.value,
-									}));
-								}
-							}}
-							placeholder="Select role"
-						>
-							{positionRoles.map((role) => (
-								<option key={role.name} value={role.name}>
-									{role.name}
-								</option>
-							))}
-						</Select>
-					) : (
-						<Flex align="center" justify="center" py={2}>
-							<Spinner size="sm" mr={2} />
-							<TextTitle size="sm" title="Loading job titles..." />
-						</Flex>
-					)}
-				</FormControl>
+				<RoleInfoControl
+					company={company}
+					title={roleInfo?.title}
+					handleChange={(e) => {
+						if (e.target.value) {
+							setEditedIndices((prev) => ({ ...prev, [updateRecordIndex]: true }));
+							setRoleInfo((prevData) => ({
+								...prevData,
+								title: e.target.value,
+							}));
+						}
+					}}
+				/>
 				<FormControl>
 					<FormLabel size="sm">Pay Group</FormLabel>
 					{payGroups ? (

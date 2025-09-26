@@ -23,7 +23,6 @@ import {
 import TextTitle from "components/ui/text/TextTitle";
 import useCostCenter from "hooks/useCostCenter";
 import useDepartment from "hooks/useDepartment";
-import usePositionRoles from "hooks/usePositionRoles";
 import useRoles from "hooks/useRoles";
 
 import PrimaryButton from "components/ui/button/PrimaryButton";
@@ -44,11 +43,9 @@ import PositionInfo from "./PositionInfo";
 
 const EmploymentInfo = ({ company, userId, payGroups, selectedPayGroupOption, lastBadgeId }) => {
 	const toast = useToast();
-	const [newRoleAdded, setNewRoleAdded] = useState(false);
 	const roles = useRoles(company);
 	const costCentres = useCostCenter(company);
 	const departments = useDepartment(company);
-	const positionRoles = usePositionRoles(company, newRoleAdded);
 	const [isLoading, setIsLoading] = useState(false);
 	const [moreDetails, setMoreDetails] = useState(null);
 	const [employmentSubStep, setEmploymentSubStep] = useState(0);
@@ -348,10 +345,8 @@ const EmploymentInfo = ({ company, userId, payGroups, selectedPayGroupOption, la
 								selectedPayGroup={selectedPayGroupOption}
 								departments={departments}
 								costCentres={costCentres}
-								positionRoles={positionRoles}
 								payGroups={payGroups}
 								handleUpdate={handleUpdate}
-								setNewRoleAdded={setNewRoleAdded}
 							/>
 						) : (
 							<VStack p={5} w={"100%"} spacing={3} alignItems="end">
@@ -377,7 +372,6 @@ const EmploymentInfo = ({ company, userId, payGroups, selectedPayGroupOption, la
 												position={position}
 												departments={departments}
 												costCentres={costCentres}
-												positionRoles={positionRoles}
 												payGroups={payGroups}
 												handleUpdate={handleUpdate}
 												editedIndices={editedIndices}
