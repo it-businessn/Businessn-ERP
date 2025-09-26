@@ -367,13 +367,14 @@ const getAllManagers = async (req, res) => {
 const getAllSalesAgentsList = async (req, res) => {
 	const { companyName } = req.params;
 	try {
-		const result = await findEmployee({
+		let result = await findEmployee({
 			companyName,
 			empId: { $exists: true },
 			employmentRole: {
 				$nin: [ROLES.SHADOW_ADMIN, ROLES.AUTH_ADMINISTRATOR, ROLES.ADMINISTRATOR, ROLES.MANAGER],
 			},
 		});
+		result = result?.filter((emp) => emp?.empId);
 		res.status(200).json(result);
 	} catch (error) {
 		res.status(404).json({ error: error.message });

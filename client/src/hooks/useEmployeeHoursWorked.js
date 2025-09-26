@@ -12,7 +12,7 @@ const useEmployeeHoursWorked = (
 	const [hours, setHours] = useState(null);
 
 	useEffect(() => {
-		const extraRun = payPeriod?.isExtraRun ?? false;
+		const extraRun = payPeriod?.isExtraRun || false;
 		const fetchHoursWorkedInfo = async () => {
 			try {
 				const { data } = await PayrollService.getHoursWorkedAllocationByType({

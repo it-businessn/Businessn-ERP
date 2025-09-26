@@ -9,6 +9,7 @@ import { useBreakpointValue } from "services/Breakpoint";
 import LocalStorageService from "services/LocalStorageService";
 import OrderService from "services/OrderService";
 import { isSettled } from "utils";
+import { payrunType } from "utils/common";
 import { getAmount } from "utils/convertAmt";
 import CustomFilter from "./CustomFilter";
 
@@ -58,7 +59,7 @@ const Orders = () => {
 			try {
 				const { data } = await OrderService.getCompOrders(company);
 				data?.map((record) => {
-					record.type = record.fundingTotalsId?.isExtraRun ? "Extra" : "Regular";
+					record.type = payrunType(record.fundingTotalsId);
 					record.totalsRemitted = getAmount(record.fundingTotalsId?.totalFundingWithDrawals);
 					record.totalEmpRemitted = getAmount(record.fundingTotalsId?.totalEmpPaymentRemitCost);
 					record.totalCRARemitted = getAmount(record.fundingTotalsId?.totalGovtContr);

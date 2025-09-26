@@ -7,6 +7,7 @@ const JournalEntry = require("../models/JournalEntry");
 const EmployeeEmploymentInfo = require("../models/EmployeeEmploymentInfo");
 
 const { PAYRUN_TYPE, BUSINESSN_ORG } = require("../services/data");
+const { checkExtraRun } = require("../services/util");
 
 const buildFundingTotalsReport = async (
 	fundingTotal,
@@ -230,7 +231,7 @@ const EMP_INFO = {
 const getFundReportInfo = async (req, res) => {
 	const { companyName, payPeriodNum, isExtraRun, scheduleFrequency } = req.params;
 	try {
-		const isExtraPayRun = isExtraRun === "true";
+		const isExtraPayRun = checkExtraRun(isExtraRun);
 		const payStubs = await FundingTotalsPay.findOne({
 			companyName,
 			payPeriodNum,
@@ -253,7 +254,7 @@ const getJournalEntryReportInfo = async (req, res) => {
 	const { companyName, payPeriodNum, isExtraRun, scheduleFrequency } = req.params;
 
 	try {
-		const isExtraPayRun = isExtraRun === "true";
+		const isExtraPayRun = checkExtraRun(isExtraRun);
 		const entries = await JournalEntry.findOne({
 			companyName,
 			payPeriodNum,
@@ -295,7 +296,7 @@ const getFundingReportInfo = async (req, res) => {
 	const { companyName, payPeriodNum, isExtraRun, scheduleFrequency } = req.params;
 
 	try {
-		const isExtraPayRun = isExtraRun === "true";
+		const isExtraPayRun = checkExtraRun(isExtraRun);
 		const totals = await FundingTotalsPay.findOne({
 			companyName,
 			payPeriodNum,
@@ -341,7 +342,7 @@ const getReportInfo = async (req, res) => {
 		const startOfYear = moment().year(year).startOf("year").toDate();
 		const endOfYear = moment().year(year).endOf("year").toDate();
 
-		const isExtraPayRun = isExtraRun === "true";
+		const isExtraPayRun = checkExtraRun(isExtraRun);
 		let payStubs = await EmployeePayStub.find({
 			companyName,
 			payPeriodNum,

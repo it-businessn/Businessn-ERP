@@ -6,7 +6,7 @@ const useJournalReport = (company, payPeriodNum, isOpen) => {
 
 	useEffect(() => {
 		const payNum = payPeriodNum?.payPeriod ?? payPeriodNum;
-		const extraRun = payPeriodNum?.isExtraRun ?? false;
+		const extraRun = payPeriodNum?.isExtraRun || false;
 		const scheduleFrequency =
 			payPeriodNum?.frequency === "bi-weekly" ? "Biweekly" : payPeriodNum?.frequency;
 

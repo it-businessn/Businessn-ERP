@@ -12,7 +12,7 @@ const useEmployeeEmploymentInfo = (
 	const [employmentInfo, setEmploymentInfo] = useState(null);
 
 	useEffect(() => {
-		const extraRun = payPeriod?.isExtraRun ?? false;
+		const extraRun = payPeriod?.isExtraRun || false;
 		const fetchEmployeeEmploymentInfo = async () => {
 			try {
 				const { data } = await PayrollService.getAllEmployeeEmploymentInfo({

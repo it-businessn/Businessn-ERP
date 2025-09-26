@@ -9,6 +9,7 @@ const { getHourlyAggregatedResult } = require("./payrunHourlyAllocatedCalc");
 const { getPayrunEEContributionResult } = require("./payrunEEContrCalc");
 const { getPayrunERContributionResult } = require("./payrunERContrCalc");
 const { getSumRegHrs } = require("../services/payrollService");
+const { checkExtraRun } = require("../services/util");
 
 //update roles-
 
@@ -53,7 +54,7 @@ const getGroupedTimesheet = async (req, res) => {
 	} = req.body;
 
 	try {
-		const isExtraPayRun = isExtraRun === "true";
+		const isExtraPayRun = checkExtraRun(isExtraRun);
 
 		const activeEmployees = await fetchActiveEmployees(
 			isExtraPayRun,
@@ -171,7 +172,7 @@ const getEEContribution = async (req, res) => {
 	} = req.body;
 
 	try {
-		const isExtraPayRun = isExtraRun === "true";
+		const isExtraPayRun = checkExtraRun(isExtraRun);
 
 		const activeEmployees = await fetchActiveEmployees(
 			isExtraPayRun,
@@ -220,7 +221,7 @@ const getERContribution = async (req, res) => {
 	} = req.body;
 
 	try {
-		const isExtraPayRun = isExtraRun === "true";
+		const isExtraPayRun = checkExtraRun(isExtraRun);
 
 		const activeEmployees = await fetchActiveEmployees(
 			isExtraPayRun,

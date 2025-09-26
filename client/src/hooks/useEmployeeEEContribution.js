@@ -12,7 +12,7 @@ const useEmployeeEEContribution = (
 	const [hours, setHours] = useState(null);
 
 	useEffect(() => {
-		const extraRun = payPeriod?.isExtraRun ?? false;
+		const extraRun = payPeriod?.isExtraRun || false;
 		const fetchEEContribution = async () => {
 			try {
 				const { data } = await PayrollService.getEEContribution({

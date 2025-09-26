@@ -9,6 +9,7 @@ import { MdCheckCircle } from "react-icons/md";
 import LocalStorageService from "services/LocalStorageService";
 import PayrollService from "services/PayrollService";
 import { isExtraPay } from "utils";
+import { payrunType } from "utils/common";
 import { dayMonthYear } from "utils/convertDate";
 
 const PayrunSetup = ({
@@ -21,7 +22,6 @@ const PayrunSetup = ({
 }) => {
 	const [isLoading, setIsLoading] = useState(false);
 	const { company } = useCompany(LocalStorageService.getItem("selectedCompany"));
-	const runType = closestRecord?.isExtraRun ? "Extra" : "Regular";
 
 	const handleConfirm = async () => {
 		try {
@@ -49,7 +49,7 @@ const PayrunSetup = ({
 		},
 		{
 			detail1: "Run Type",
-			detail2: runType?.toLocaleUpperCase(),
+			detail2: payrunType(closestRecord)?.toLocaleUpperCase(),
 		},
 		{
 			detail1: "Payment Date",

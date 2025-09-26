@@ -4,4 +4,8 @@ const getPercent = (value) => {
 	return Number.isInteger(input) ? input / 100 : input;
 };
 
-module.exports = { getPercent };
+const checkExtraRun = (isExtraRun) => {
+	return isExtraRun === "true" || isExtraRun;
+};
+
+module.exports = { getPercent, checkExtraRun };

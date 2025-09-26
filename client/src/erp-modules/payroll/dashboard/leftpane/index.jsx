@@ -41,8 +41,6 @@ const LeftPane = ({
 		fetchAllEmployees();
 	}, []);
 
-	const runType = closestRecord?.isExtraRun ? "Extra" : "Regular";
-
 	return (
 		<HStack w="100%" spacing={"1em"} justifyContent="space-between" alignItems="center">
 			<VStack w="50%" spacing={"1em"} alignItems="start" justifyContent="start" h="100%">
@@ -119,7 +117,6 @@ const LeftPane = ({
 						prevSchedule={prevSchedule}
 						closestRecord={closestRecord}
 						closestRecordIndex={closestRecordIndex}
-						runType={runType}
 						nextSchedule={nextSchedule}
 						handleClick={handleClick}
 						company={company}

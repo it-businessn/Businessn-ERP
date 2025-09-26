@@ -53,6 +53,8 @@ export const getFormattedAddress = (address) =>
 		  )
 		: "";
 
+export const payrunType = (payroll) => (payroll?.isExtraRun ? "Extra" : "Regular");
+
 export const isEmptyOrNullOrUndefined = (value) => !value || value === "";
 
 export const getTaskCheckboxCss = (isTaskComplete) => {

@@ -7,11 +7,13 @@ const { updatePayInfo } = require("./payInfoController");
 const { addUserEmploymentInfo } = require("./empDataController");
 const { updateTADEmployee } = require("./timecardController");
 const { setInitialPermissions } = require("./permissionController");
+const { checkExtraRun } = require("../services/util");
 
 const getAllEmploymentInfo = async (req, res) => {
 	const { companyName, payDate, isExtraRun, groupId, deptName, selectedPayGroupOption } = req.body;
+
 	try {
-		const isExtraPayRun = isExtraRun === "true";
+		const isExtraPayRun = checkExtraRun(isExtraRun);
 
 		const activeEmployees = await fetchActiveEmployees(
 			isExtraPayRun,

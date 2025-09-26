@@ -7,11 +7,12 @@ const { findGroupEmployees } = require("./setUpController");
 const { getEmployeeId } = require("./userController");
 const { deleteAlerts } = require("./alertsController");
 const { getRecordId } = require("./payStubController");
+const { checkExtraRun } = require("../services/util");
 
 const getAllPayInfo = async (req, res) => {
 	const { companyName, payDate, isExtraRun, groupId } = req.params;
 	try {
-		const isExtraPayRun = isExtraRun === "true";
+		const isExtraPayRun = checkExtraRun(isExtraRun);
 		const employees = isExtraPayRun && (await findGroupEmployees(groupId, payDate));
 		const group = await Group.findById(groupId).select("scheduleFrequency");
 		const activeEmployees = isExtraPayRun

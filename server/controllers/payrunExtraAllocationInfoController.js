@@ -1,5 +1,6 @@
 const EmployeeExtraAllocation = require("../models/EmployeeExtraAllocation");
 const { PAYRUN_TYPE } = require("../services/data");
+const { checkExtraRun } = require("../services/util");
 const { getPayrunAmtAllocatedResult } = require("./payrunAmtAllocatedCalc");
 const { fetchActiveEmployees } = require("./userController");
 
@@ -15,7 +16,7 @@ const getAmountAllocation = async (req, res) => {
 	} = req.body;
 
 	try {
-		const isExtraPayRun = isExtraRun === "true";
+		const isExtraPayRun = checkExtraRun(isExtraRun);
 
 		const activeEmployees = await fetchActiveEmployees(
 			isExtraPayRun,
