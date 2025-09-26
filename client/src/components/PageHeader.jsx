@@ -16,6 +16,7 @@ const PageHeader = ({
 	size,
 	showPayGroup,
 	hasMultiPaygroups,
+	mobileTitlePadding,
 }) => {
 	const themeMode = useColorModeValue("var(--primary_button_bg)", "var(--primary_button_bg_dark)");
 	return (
@@ -26,6 +27,7 @@ const PageHeader = ({
 					mb={"0.5em"}
 					size={size}
 					width={width}
+					p={mobileTitlePadding}
 					// width={isTimesheet ? "auto" : width}
 				/>
 			)}

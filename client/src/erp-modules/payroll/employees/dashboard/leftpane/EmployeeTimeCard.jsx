@@ -32,7 +32,7 @@ const EmployeeTimeCard = ({ selectedUser, company, isMobile }) => {
 		// "Break/Lunch",
 		"Total Hours",
 	];
-	const leaveRequestCols = ["Type", "Start Date", "End Date", "Status", "Total Days"];
+	const leaveRequestCols = ["Type", "Start Date", "End Date", "Status", "Days"];
 	const CLOCK_TYPES = {
 		row_1: [
 			{

@@ -13,7 +13,7 @@ import { getPayNum, isExtraPay, sortRecordsByDate } from "utils";
 import { dayMonthYear, formatDateBar } from "utils/convertDate";
 import EmployeeTimeCard from "./EmployeeTimeCard";
 
-const LeftPane = ({ selectedUser, company, isMobile }) => {
+const LeftPane = ({ selectedUser, company, isMobile, mobileTitlePadding }) => {
 	const [empPayStub, setEmpPayStub] = useState(null);
 	const [showReport, setShowReport] = useState(false);
 	const [payStub, setPayStub] = useState(null);
@@ -49,7 +49,7 @@ const LeftPane = ({ selectedUser, company, isMobile }) => {
 			</SimpleGrid>
 			{isMobile ? (
 				<>
-					<TextTitle title={"Earning Statement"} />
+					<TextTitle p={mobileTitlePadding} title={"Earning Statement"} />
 					<Box mt={"0.5em"} overflow="auto" css={tabScrollCss}>
 						{empPayStub?.map(
 							({

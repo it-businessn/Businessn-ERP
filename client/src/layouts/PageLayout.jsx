@@ -21,6 +21,7 @@ const PageLayout = ({
 	position = "sticky",
 	pb = 0,
 	isMobile,
+	mobileTitlePadding,
 	bg = "var(--primary_bg)",
 	showPayGroup,
 	hasMultiPaygroups,
@@ -56,6 +57,7 @@ const PageLayout = ({
 			selectPlaceholder={selectPlaceholder}
 			isTimesheet={isTimesheet}
 			showCheckBox={showCheckBox}
+			mobileTitlePadding={mobileTitlePadding}
 		/>
 		{showBgLayer ? (
 			<BoxCard pb={pb} borderWidth={"2px"}>

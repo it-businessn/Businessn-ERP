@@ -46,26 +46,21 @@ const ChequeDetails = ({ data, companyInfo, flex, isMobile }) => {
 	const amountInWords = toWords.convert(data?.currentNetPay);
 
 	return isMobile ? (
-		<Box
-			w="full"
-			mt={6}
-			p={4}
-			border="2px dashed red"
-			borderRadius="md"
-			bg="gray.50"
-			textAlign="center"
-		>
+		<Box w="full" p={4} border="2px dashed red" borderRadius="md" bg="gray.50" textAlign="center">
 			<PayStubHeader isMobile companyInfo={companyInfo} />
-			<TextTitle title={`Payable by Cheque to:`} />
-			<TextTitle size="md" title={`${name}`} />
-			<TextTitle size="md" title={`${netPay}`} />
-			{/* <TextTitle title={`${paymentType}`} /> */}
-			<TextTitle
-				mt={"2em"}
-				color={"var(--filter_border_color)"}
-				whiteSpace="wrap"
-				title={"***THIS IS NOT A CHEQUE. DO NOT DEPOSIT.***"}
-			/>
+			<VStack spacing={5} justifyContent={"space-between"}>
+				<Box mt={3}>
+					<TextTitle title={`Payable by Cheque to:`} />
+					<TextTitle size="md" title={`${name}`} />
+					<TextTitle size="md" title={`${netPay}`} />
+					{/* <TextTitle title={`${paymentType}`} /> */}{" "}
+				</Box>
+				<TextTitle
+					color={"var(--filter_border_color)"}
+					whiteSpace="wrap"
+					title={"***THIS IS NOT A CHEQUE. DO NOT DEPOSIT.***"}
+				/>
+			</VStack>
 		</Box>
 	) : (
 		<Stack w={"100%"} justifyContent={"center"} flex={flex} minH="15em">

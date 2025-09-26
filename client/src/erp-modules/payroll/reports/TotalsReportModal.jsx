@@ -20,6 +20,9 @@ const TotalsReportModal = ({
 	isReport,
 	companyDetails,
 }) => {
+	const fileName = `${formatDateBar(reportData?.payPeriodEndDate)}_PayPeriod#${
+		reportData?.payPeriodNum
+	}_Funding Report`;
 	const isCornerStone = company === COMPANIES.CORNERSTONE;
 	const totalIncomeTaxContr = reportData?.totalIncomeTaxContr?.toFixed(2);
 	const totalCPP_EE_Contr = reportData?.totalCPP_EE_Contr?.toFixed(2);
@@ -143,9 +146,7 @@ const TotalsReportModal = ({
 			textAlign={"center"}
 			fontSize="2xl"
 			isReport={isReport}
-			fileName={`${formatDateBar(reportData?.payPeriodEndDate)} PayPeriod#${
-				reportData?.payPeriodNum
-			} Funding Report`}
+			fileName={fileName}
 			w="90%"
 			mx="auto"
 		>
