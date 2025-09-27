@@ -17,8 +17,8 @@ const UserSection = ({
 	selectedGroup,
 	selectedModules,
 	setFilteredEmployees,
-	setIsRefresh,
 	setIsSubmitting,
+	setGroupMembers,
 }) => {
 	const [empName, setEmpName] = useState(null);
 	const [deleteRecord, setDeleteRecord] = useState(false);
@@ -28,10 +28,10 @@ const UserSection = ({
 	};
 
 	const handleDelete = async () => {
-		selectedGroup.members = selectedGroup.members.filter((_) => _._id !== deleteRecord);
+		selectedGroup.members = selectedGroup.members.filter((_) => _?.empId?._id !== deleteRecord);
 		try {
 			await SettingService.updateGroup(selectedGroup, selectedGroup._id);
-			setIsRefresh((prev) => !prev);
+			setGroupMembers(selectedGroup.members);
 			setShowConfirmationPopUp((prev) => !prev);
 		} catch (error) {
 			console.log("An error occurred. Please try again.", error);

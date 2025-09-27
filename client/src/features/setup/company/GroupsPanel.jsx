@@ -94,11 +94,11 @@ const GroupsPanel = ({ employees, setFilteredEmployees, filteredEmployees, compa
 				employees={employees}
 				filteredEmployees={filteredEmployees}
 				groupMembers={groupMembers}
+				setGroupMembers={setGroupMembers}
 				selectedAdmins={selectedAdmins}
 				selectedGroup={selectedGroup}
 				selectedModules={selectedModules}
 				setFilteredEmployees={setFilteredEmployees}
-				setIsRefresh={setIsRefresh}
 				setIsSubmitting={setIsSubmitting}
 			/>
 		</BoxCard>
