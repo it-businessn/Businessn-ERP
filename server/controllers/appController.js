@@ -135,8 +135,8 @@ const refreshToken = async (req, res) => {
 		const user = verifyToken(refreshToken, process.env.REFRESH_TOKEN_SECRET);
 
 		const newAccessToken = generateAccessToken({
-			id: user._id,
-			username: user.username,
+			id: user?._id,
+			username: user?.username,
 		});
 		res.json({ accessToken: newAccessToken });
 	} catch (error) {
