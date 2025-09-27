@@ -1,3 +1,4 @@
+const { getShadowUserIds } = require("../helpers/userHelper");
 const CostCenter = require("../models/CostCenter");
 const Crew = require("../models/Crew");
 const Department = require("../models/Department");
@@ -299,9 +300,16 @@ const updateModule = async (req, res) => {
 const getGroups = async (req, res) => {
 	const { companyName } = req.params;
 	try {
-		//filter shadow admin members
-		const group = await Group.find({ companyName });
-		res.status(200).json(group);
+		const shadowEmpIds = await getShadowUserIds(companyName);
+
+		let groups = await Group.find({ companyName });
+		groups = groups.map((group) => {
+			group.members = group.members.filter(
+				(member) => member?.empId && !shadowEmpIds.includes(member.empId._id),
+			);
+			return group;
+		});
+		res.status(200).json(groups);
 	} catch (error) {
 		res.status(404).json({ error: error.message });
 	}

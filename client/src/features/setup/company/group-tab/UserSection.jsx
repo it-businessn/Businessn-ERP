@@ -1,5 +1,5 @@
 import { SmallAddIcon } from "@chakra-ui/icons";
-import { HStack, Spacer } from "@chakra-ui/react";
+import { HStack } from "@chakra-ui/react";
 import LeftIconButton from "components/ui/button/LeftIconButton";
 import BoxCard from "components/ui/card";
 import DeletePopUp from "components/ui/modal/DeletePopUp";
@@ -26,6 +26,7 @@ const UserSection = ({
 	const handleClose = () => {
 		setShowConfirmationPopUp((prev) => !prev);
 	};
+
 	const handleDelete = async () => {
 		selectedGroup.members = selectedGroup.members.filter((_) => _._id !== deleteRecord);
 		try {
@@ -36,6 +37,7 @@ const UserSection = ({
 			console.log("An error occurred. Please try again.", error);
 		}
 	};
+
 	const handleConfirm = async (e) => {
 		e.preventDefault();
 		if (!selectedGroup) {
@@ -79,15 +81,13 @@ const UserSection = ({
 	};
 
 	return (
-		<>
-			<BoxCard>
-				<HStack justify={"space-between"}>
-					<TextTitle title={`${groupMembers?.length || 0} User(s)` ?? ""} />
-
-					<Spacer />
+		<BoxCard>
+			<HStack justify={"space-between"}>
+				<TextTitle title={`${groupMembers?.length || 0} User(s)` ?? ""} />
+				<HStack>
 					<EmpSearchMenu
 						filteredEmployees={filteredEmployees}
-						empName={empName ?? ""}
+						empName={empName}
 						handleInputChange={handleInputChange}
 						handleSelect={handleSelect}
 					/>
@@ -99,16 +99,16 @@ const UserSection = ({
 						type="submit"
 					/>
 				</HStack>
-				{groupMembers?.length > 0 && (
-					<UserList
-						isGroup
-						filteredEmployees={groupMembers}
-						group={selectedGroup}
-						setShowConfirmationPopUp={setShowConfirmationPopUp}
-						setDeleteRecord={setDeleteRecord}
-					/>
-				)}
-			</BoxCard>
+			</HStack>
+			{groupMembers?.length > 0 && (
+				<UserList
+					isGroup
+					filteredEmployees={groupMembers}
+					group={selectedGroup}
+					setShowConfirmationPopUp={setShowConfirmationPopUp}
+					setDeleteRecord={setDeleteRecord}
+				/>
+			)}
 			{showConfirmationPopUp && (
 				<DeletePopUp
 					headerTitle={"Remove User"}
@@ -118,7 +118,7 @@ const UserSection = ({
 					onOpen={handleDelete}
 				/>
 			)}
-		</>
+		</BoxCard>
 	);
 };
 

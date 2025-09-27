@@ -17,6 +17,7 @@ const Setup = () => {
 		const fetchAllEmployees = async () => {
 			try {
 				const { data } = await UserService.getCompanyUsers(company);
+				data.map((emp) => (emp.fullName = emp?.empId?.fullName));
 				setEmployees(data);
 				setFilteredEmployees(data);
 			} catch (error) {

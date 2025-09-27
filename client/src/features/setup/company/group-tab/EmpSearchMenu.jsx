@@ -41,7 +41,7 @@ const EmpSearchMenu = ({ filteredEmployees, empName, handleInputChange, handleSe
 					<InputRightElement size="xs" children={<FaSearch />} />
 				</InputGroup>
 			</MenuButton>
-			<MenuList maxH="75vh" overflowY={"auto"} css={tabScrollCss}>
+			<MenuList css={tabScrollCss}>
 				<Input
 					size="xs"
 					placeholder="Enter Manager Name"

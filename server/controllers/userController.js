@@ -148,7 +148,7 @@ const getPayrollTerminatedCompanyEmployees = async (req, res) => {
 const getCompanyUsers = async (req, res) => {
 	const { companyName } = req.params;
 	try {
-		const shadowEmpIds = getShadowUserIds(companyName);
+		const shadowEmpIds = await getShadowUserIds(companyName);
 
 		const filter = {
 			companyName,
@@ -320,13 +320,14 @@ const getAllGroupMembers = async (req, res) => {
 const getAllCompManagers = async (req, res) => {
 	const { companyName } = req.params;
 	try {
-		const result = await findEmployee({
+		let result = await findEmployee({
 			companyName,
 			empId: { $exists: true },
 			employmentRole: {
 				$in: [ROLES.AUTH_ADMINISTRATOR, ROLES.ADMINISTRATOR, ROLES.MANAGER],
 			},
 		});
+		result = result?.filter((emp) => emp?.empId);
 
 		res.status(200).json(result);
 	} catch (error) {
