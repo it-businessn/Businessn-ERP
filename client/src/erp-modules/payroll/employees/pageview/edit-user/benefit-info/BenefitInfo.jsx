@@ -1,11 +1,8 @@
 import {
 	Box,
-	Button,
-	Divider,
 	Flex,
 	FormControl,
 	FormLabel,
-	HStack,
 	Input,
 	Select,
 	Stack,
@@ -29,43 +26,45 @@ import {
 } from "erp-modules/payroll/onboard-user/customInfo";
 import useEmployeeBalanceInfo from "hooks/useEmployeeBalanceInfo";
 import { useEffect, useState } from "react";
-import { FaPlus } from "react-icons/fa";
 import PayrollService from "services/PayrollService";
+import { VacationBenefit } from "./VacationBenefit";
 
+const defaultBenefitInfo = {
+	benefitsInfo: {
+		// Vacation
+		typeOfVacationTreatment: "Accrued",
+		vacationPayPercent: "",
+		YTDVacationAccrued: "0.00",
+		YTDVacationUsed: "0.00",
+		vacationAdjustment: "",
+
+		// Employer Contributions
+		typeOfPensionERTreatment: "No Pension Contributions",
+		pensionERContribution: "",
+		typeOfDentalERTreatment: "No Dental Contributions",
+		dentalERContribution: "",
+		typeOfExtendedHealthERTreatment: "No Extended Health Contributions",
+		extendedHealthERContribution: "",
+
+		// Employee Contributions
+		typeOfPensionEETreatment: "No Pension Contributions",
+		pensionEEContribution: "",
+		typeOfDentalEETreatment: "No Dental Contributions",
+		dentalEEContribution: "",
+		typeOfExtendedHealthEETreatment: "No Extended Health Contributions",
+		extendedHealthEEContribution: "",
+		typeOfUnionDuesTreatment: "No Union Contributions",
+		unionDuesContribution: "",
+	},
+};
 const BenefitInfo = ({ company, userId }) => {
 	const toast = useToast();
 	const [benefitsSubStep, setBenefitsSubStep] = useState(0);
 	const balanceInfo = useEmployeeBalanceInfo(company, userId);
 	const [moreDetails, setMoreDetails] = useState(null);
 	const [isLoading, setIsLoading] = useState(false);
-	const [formData, setFormData] = useState({
-		benefitsInfo: {
-			// Vacation
-			typeOfVacationTreatment: "Accrued",
-			vacationPayPercent: "",
-			YTDVacationAccrued: "0.00",
-			YTDVacationUsed: "0.00",
-			vacationAdjustment: "",
-
-			// Employer Contributions
-			typeOfPensionERTreatment: "No Pension Contributions",
-			pensionERContribution: "",
-			typeOfDentalERTreatment: "No Dental Contributions",
-			dentalERContribution: "",
-			typeOfExtendedHealthERTreatment: "No Extended Health Contributions",
-			extendedHealthERContribution: "",
-
-			// Employee Contributions
-			typeOfPensionEETreatment: "No Pension Contributions",
-			pensionEEContribution: "",
-			typeOfDentalEETreatment: "No Dental Contributions",
-			dentalEEContribution: "",
-			typeOfExtendedHealthEETreatment: "No Extended Health Contributions",
-			extendedHealthEEContribution: "",
-			typeOfUnionDuesTreatment: "No Union Contributions",
-			unionDuesContribution: "",
-		},
-	});
+	const [isDisabled, setIsDisabled] = useState(false);
+	const [formData, setFormData] = useState(defaultBenefitInfo);
 
 	useEffect(() => {
 		if (balanceInfo) {
@@ -100,38 +99,35 @@ const BenefitInfo = ({ company, userId }) => {
 					YTDVacationUsed: empPayStub?.YTDVacationUsed.toFixed(2),
 					vacationAdjustment,
 					typeOfPensionERTreatment,
-					pensionERContribution: typeOfPensionERTreatment?.includes("%")
-						? pensionERContribution * 100
-						: pensionERContribution,
+					pensionERContribution,
 					typeOfDentalERTreatment,
-					dentalERContribution: typeOfDentalERTreatment?.includes("%")
-						? dentalERContribution * 100
-						: dentalERContribution,
+					dentalERContribution,
 					typeOfExtendedHealthERTreatment,
-					extendedHealthERContribution: typeOfExtendedHealthERTreatment?.includes("%")
-						? extendedHealthERContribution * 100
-						: extendedHealthERContribution,
+					extendedHealthERContribution,
 					typeOfPensionEETreatment,
-					pensionEEContribution: typeOfPensionEETreatment?.includes("%")
-						? pensionEEContribution * 100
-						: pensionEEContribution,
+					pensionEEContribution,
 					typeOfDentalEETreatment,
-					dentalEEContribution: typeOfDentalEETreatment?.includes("%")
-						? dentalEEContribution * 100
-						: dentalEEContribution,
+					dentalEEContribution,
 					typeOfExtendedHealthEETreatment,
-					extendedHealthEEContribution: typeOfExtendedHealthEETreatment?.includes("%")
-						? extendedHealthEEContribution * 100
-						: extendedHealthEEContribution,
+					extendedHealthEEContribution,
 					typeOfUnionDuesTreatment,
-					unionDuesContribution: typeOfUnionDuesTreatment?.includes("%")
-						? unionDuesContribution * 100
-						: unionDuesContribution,
+					unionDuesContribution,
 				},
 			});
 			setMoreDetails({ empId, _id });
 		}
 	}, [balanceInfo]);
+
+	useEffect(() => {
+		if (
+			!formData?.benefitsInfo?.typeOfVacationTreatment ||
+			!formData?.benefitsInfo?.vacationPayPercent
+		) {
+			setIsDisabled(true);
+		} else {
+			setIsDisabled(false);
+		}
+	}, [formData?.benefitsInfo?.typeOfVacationTreatment, formData?.benefitsInfo?.vacationPayPercent]);
 
 	const handleChange = (section, field, value) => {
 		setFormData({
@@ -204,6 +200,7 @@ const BenefitInfo = ({ company, userId }) => {
 			});
 		} catch (error) {}
 	};
+
 	return (
 		<Flex height="100%">
 			<Box
@@ -241,112 +238,11 @@ const BenefitInfo = ({ company, userId }) => {
 			<Box flex={0.7} overflowY="auto" css={tabScrollCss} height={"84%"}>
 				{/* Vacation Sub-step */}
 				{benefitsSubStep === 0 && (
-					<Stack spacing={2} p={5}>
-						<TextTitle size="xl" title="Vacation" />
-
-						<FormControl isRequired>
-							<FormLabel size="sm">Vacation Treatment</FormLabel>
-							<HStack spacing={4}>
-								<label>
-									<input
-										type="radio"
-										checked={formData.benefitsInfo.typeOfVacationTreatment === "Payout"}
-										onChange={() =>
-											handleChange("benefitsInfo", "typeOfVacationTreatment", "Payout")
-										}
-										style={{ marginRight: "8px" }}
-									/>
-									Payout
-								</label>
-								<label>
-									<input
-										type="radio"
-										checked={formData.benefitsInfo.typeOfVacationTreatment === "Accrued"}
-										onChange={() =>
-											handleChange("benefitsInfo", "typeOfVacationTreatment", "Accrued")
-										}
-										style={{ marginRight: "8px" }}
-									/>
-									Accrued
-								</label>
-							</HStack>
-						</FormControl>
-
-						<FormControl isRequired>
-							<FormLabel size="sm">Vacation Pay Percentage (%)</FormLabel>
-							<Input
-								size="sm"
-								type="number"
-								value={formData.benefitsInfo.vacationPayPercent || ""}
-								onChange={(e) => handleChange("benefitsInfo", "vacationPayPercent", e.target.value)}
-								placeholder="Enter percentage"
-							/>
-						</FormControl>
-
-						<Divider />
-
-						<TextTitle title="Vacation Balances" />
-
-						<FormControl>
-							<FormLabel size="sm">Accrued This Year</FormLabel>
-							<Input
-								size="sm"
-								type="number"
-								value={formData.benefitsInfo?.YTDVacationAccrued || ""}
-								onChange={(e) => handleChange("benefitsInfo", "YTDVacationAccrued", e.target.value)}
-								placeholder="0.00"
-								readOnly
-							/>
-						</FormControl>
-
-						<FormControl>
-							<FormLabel size="sm">Used This Year</FormLabel>
-							<Input
-								size="sm"
-								type="number"
-								value={formData.benefitsInfo?.YTDVacationUsed || ""}
-								onChange={(e) => handleChange("benefitsInfo", "YTDVacationUsed", e.target.value)}
-								placeholder="0.00"
-								readOnly
-							/>
-						</FormControl>
-
-						<HStack display="none" justifyContent="start" mt={2}>
-							<Button
-								size="sm"
-								leftIcon={<FaPlus />}
-								bg={"var(--banner_bg)"}
-								color="white"
-								_hover={{ bg: "#4a2b4a" }}
-								onClick={() => {
-									// This would typically call an API to add the adjustment
-									console.log("Adding adjustment:", formData.benefitsInfo.vacationAdjustment);
-									// Reset the adjustment value after submission
-									handleChange("benefitsInfo", "vacationAdjustment", "");
-									// toast({
-									// 	title: "Adjustment Added",
-									// 	description: "Vacation balance adjustment has been recorded",
-									// 	status: "success",
-									// 	duration: 3000,
-									// 	isClosable: true,
-									// });
-								}}
-							>
-								Add Adjustment
-							</Button>
-							<FormControl maxWidth="250px">
-								<Input
-									size="sm"
-									type="number"
-									placeholder="Enter amount to adjust"
-									value={formData.benefitsInfo.vacationAdjustment || ""}
-									onChange={(e) =>
-										handleChange("benefitsInfo", "vacationAdjustment", e.target.value)
-									}
-								/>
-							</FormControl>
-						</HStack>
-					</Stack>
+					<VacationBenefit
+						formData={formData}
+						handleChange={handleChange}
+						setIsDisabled={setIsDisabled}
+					/>
 				)}
 				{/* Employer Contributions Sub-step */}
 				{benefitsSubStep === 1 && (
@@ -618,6 +514,7 @@ const BenefitInfo = ({ company, userId }) => {
 					bg="var(--banner_bg)"
 					size="sm"
 					onOpen={handleSave}
+					isDisabled={isDisabled}
 					ml={5}
 					mt={4}
 					borderRadius={6}

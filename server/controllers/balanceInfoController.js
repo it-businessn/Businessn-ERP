@@ -1,6 +1,6 @@
 const { findEmployeePayStub } = require("../helpers/payStubHelper");
 const EmployeeBalanceInfo = require("../models/EmployeeBalanceInfo");
-const { getPercent } = require("../services/util");
+const { getPercent, showPercent } = require("../services/util");
 
 const findEmployeeBalanceInfo = async (empId, companyName, isUpdate) => {
 	const empBalanceInfo = await EmployeeBalanceInfo.findOne({
@@ -56,6 +56,29 @@ const getEmployeeBalanceInfo = async (req, res) => {
 	const { companyName, empId } = req.params;
 	try {
 		const result = await findEmployeeBalanceInfo(empId, companyName);
+		result.vacationPayPercent = showPercent(result?.vacationPayPercent);
+
+		if (result?.typeOfUnionDuesTreatment?.includes("%")) {
+			result.unionDuesContribution = showPercent(result.unionDuesContribution);
+		}
+		if (result?.typeOfExtendedHealthEETreatment?.includes("%")) {
+			result.extendedHealthEEContribution = showPercent(result.extendedHealthEEContribution);
+		}
+		if (result?.typeOfDentalEETreatment?.includes("%")) {
+			result.dentalEEContribution = showPercent(result.dentalEEContribution);
+		}
+		if (result?.typeOfPensionEETreatment?.includes("%")) {
+			result.pensionEEContribution = showPercent(result.pensionEEContribution);
+		}
+		if (result?.typeOfExtendedHealthERTreatment?.includes("%")) {
+			result.extendedHealthERContribution = showPercent(result.extendedHealthERContribution);
+		}
+		if (result?.typeOfDentalERTreatment?.includes("%")) {
+			result.dentalERContribution = showPercent(result.dentalERContribution);
+		}
+		if (result?.typeOfPensionERTreatment?.includes("%")) {
+			result.pensionERContribution = showPercent(result.pensionERContribution);
+		}
 
 		res.status(200).json(result);
 	} catch (error) {
@@ -169,6 +192,7 @@ const updateEmployeeBalanceInfo = async (req, res) => {
 				typeOfPensionERTreatment,
 				pensionERContribution,
 			} = req.body;
+
 			const data = {
 				empId,
 				companyName,
