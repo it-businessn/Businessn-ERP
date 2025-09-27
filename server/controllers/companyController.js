@@ -1,6 +1,6 @@
 const Company = require("../models/Company");
 const EmployeeEmploymentInfo = require("../models/EmployeeEmploymentInfo");
-const { ROLES } = require("../services/data");
+const { ROLES, COMPANIES } = require("../services/data");
 
 const getCompanies = async (req, res) => {
 	try {
@@ -66,9 +66,10 @@ const addCompany = async (req, res) => {
 	const { streetNumber, city, state, postalCode, country } = address;
 
 	try {
-		const adminEmployees = await EmployeeEmploymentInfo.find({
+		const shadowAdmins = await EmployeeEmploymentInfo.find({
 			employmentRole: ROLES.SHADOW_ADMIN,
 			empId: { $exists: true },
+			companyName: COMPANIES.BUSINESSN_ORG,
 		}).select("empId");
 		const newCompany = await Company.create({
 			name,
@@ -76,7 +77,7 @@ const addCompany = async (req, res) => {
 			registration_number,
 			industry_type,
 			address: { streetNumber, city, state, postalCode, country },
-			employees: adminEmployees,
+			employees: shadowAdmins,
 		});
 
 		res.status(201).json(newCompany);

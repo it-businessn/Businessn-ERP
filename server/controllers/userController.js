@@ -227,10 +227,14 @@ const getCompanyNonSalariedEmployees = async (req, res) => {
 const getCompanyEmployees = async (req, res) => {
 	const { companyName, deptName, payGroup } = req.params;
 	try {
-		const result = await EmployeeProfileInfo.find({
+		const shadowEmpIds = await getShadowUserIds(companyName);
+		const filter = {
 			companyName,
 			empId: { $exists: true },
-		}).populate({
+			...(shadowEmpIds.length > 0 && { empId: { $nin: shadowEmpIds } }),
+		};
+
+		const result = await EmployeeProfileInfo.find(filter).populate({
 			path: "empId",
 			model: "Employee",
 			select: ["fullName", "email", "baseModule", "group"],
@@ -240,7 +244,6 @@ const getCompanyEmployees = async (req, res) => {
 				const empInfo = await EmployeeEmploymentInfo.findOne({
 					companyName,
 					empId: emp?.empId?._id,
-					employmentRole: { $ne: ROLES.SHADOW_ADMIN },
 				}).select("employeeNo employmentRole payrollStatus positions");
 
 				return {
@@ -352,13 +355,14 @@ const getAllAdmin = async (req, res) => {
 const getAllManagers = async (req, res) => {
 	const { companyName } = req.params;
 	try {
-		const result = await findEmployee({
+		let result = await findEmployee({
 			companyName,
 			empId: { $exists: true },
 			employmentRole: {
 				$in: [ROLES.SHADOW_ADMIN, ROLES.AUTH_ADMINISTRATOR, ROLES.ADMINISTRATOR, ROLES.MANAGER],
 			},
 		});
+		result = result?.filter((emp) => emp?.empId);
 		res.status(200).json(result);
 	} catch (error) {
 		res.status(404).json({ error: error.message });
@@ -398,7 +402,8 @@ const getAllSalesAgents = async (req, res) => {
 				select: ["fullName", "email", "baseModule", "group", "primaryAddress"],
 			})
 			.select("payrollStatus employeeNo positions employmentRole");
-		result = result.filter(({ empId }) => empId);
+
+		result = result?.filter((emp) => emp?.empId);
 		res.status(200).json(sortByEmpFullName(result));
 	} catch (error) {
 		res.status(404).json({ error: error.message });
