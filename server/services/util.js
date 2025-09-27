@@ -5,8 +5,8 @@ const getPercent = (value) => {
 };
 
 const showPercent = (stored) => {
-	const val = stored < 1 ? stored * 100 : stored;
-	return Number.isInteger(val) ? val : stored;
+	const value = parseFloat(stored).toFixed(2);
+	return value < 1 ? value * 100 : stored;
 };
 
 const checkExtraRun = (isExtraRun) => {
