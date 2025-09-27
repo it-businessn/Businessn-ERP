@@ -56,7 +56,7 @@ const EmployeeList = ({ employees }) => {
 			);
 		}
 		return (
-			<Text {...props} bg="gray.100" color="gray.700">
+			<Text {...props} bg="gray.100" color="gray.700" whiteSpace={"wrap"}>
 				{status}
 			</Text>
 		);
@@ -114,11 +114,15 @@ const EmployeeList = ({ employees }) => {
 									</Box>
 								</HStack>
 							</Td>
-							<Td py={0} borderBottomColor={borderColor}>
-								<Text fontSize="sm">{positions?.[0]?.employmentDepartment || ""}</Text>
+							<Td w={"200px"} py={0} borderBottomColor={borderColor}>
+								<Text whiteSpace={"wrap"} fontSize="sm">
+									{positions?.[0]?.employmentDepartment || ""}
+								</Text>
 							</Td>
 							<Td py={0} borderBottomColor={borderColor}>
-								<Text fontSize="sm">{employmentRole}</Text>
+								<Text whiteSpace={"wrap"} fontSize="sm">
+									{employmentRole}
+								</Text>
 							</Td>
 							<Td py={0} borderBottomColor={borderColor}>
 								<Text fontSize="sm" fontFamily="mono">
@@ -130,7 +134,7 @@ const EmployeeList = ({ employees }) => {
 									{positions?.[0]?.timeManagementBadgeID || "-"}
 								</Text>
 							</Td>
-							<Td py={0} borderBottomColor={borderColor}>
+							<Td w={"200px"} py={0} borderBottomColor={borderColor}>
 								<StatusBadge status={payrollStatus} />
 							</Td>
 							<Td borderBottomColor={borderColor}>
