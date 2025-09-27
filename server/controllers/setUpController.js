@@ -129,12 +129,17 @@ const addRole = async (req, res) => {
 	const { name, description, companyName } = req.body;
 
 	try {
-		const newRole = await EmployeeRole.create({
+		const data = {
 			name,
-			description,
 			companyName,
-		});
-		res.status(201).json(newRole);
+		};
+		const checkRoleExists = await EmployeeRole.findOne(data);
+		if (!checkRoleExists) {
+			data.description = description;
+			const newRole = await EmployeeRole.create(data);
+			return res.status(201).json(newRole);
+		}
+		res.status(400).json({ error: "Role already exists!" });
 	} catch (error) {
 		res.status(400).json({ message: error.message });
 	}
@@ -234,12 +239,17 @@ const addCC = async (req, res) => {
 	const { name, description, companyName } = req.body;
 
 	try {
-		const newCC = await CostCenter.create({
+		const data = {
 			name,
-			description,
 			companyName,
-		});
-		res.status(201).json(newCC);
+		};
+		const checkCCExists = await CostCenter.findOne(data);
+		if (!checkCCExists) {
+			data.description = description;
+			const newCC = await CostCenter.create(data);
+			return res.status(201).json(newCC);
+		}
+		res.status(400).json({ error: "Cost Center of same name already exists!" });
 	} catch (error) {
 		res.status(400).json({ message: error.message });
 	}
@@ -276,12 +286,19 @@ const addModule = async (req, res) => {
 	const { name, description, companyName } = req.body;
 
 	try {
-		const newModule = await Module.create({
+		const checkModuleExists = await Module.findOne({
 			name,
-			description,
 			companyName,
 		});
-		res.status(201).json(newModule);
+		if (!checkModuleExists) {
+			const newModule = await Module.create({
+				name,
+				description,
+				companyName,
+			});
+			return res.status(201).json(newModule);
+		}
+		res.status(400).json({ error: "Module of same name already exists!" });
 	} catch (error) {
 		res.status(400).json({ message: error.message });
 	}
@@ -319,19 +336,25 @@ const addGroup = async (req, res) => {
 	const { name, baseModule, admin, company, payrollActivated } = req.body;
 
 	try {
-		const newModule = await Group.create({
+		const checkGroupExists = await Group.findOne({
 			name,
-			modules: baseModule,
-			admin,
 			companyName: company,
-			payrollActivated,
-			scheduleFrequency: req.body?.payFrequency,
 		});
-		if (payrollActivated) {
-			await addPaygroupSchedules(newModule._id, req.body?.payFrequency);
+		if (!checkGroupExists) {
+			const newModule = await Group.create({
+				name,
+				modules: baseModule,
+				admin,
+				companyName: company,
+				payrollActivated,
+				scheduleFrequency: req.body?.payFrequency,
+			});
+			if (payrollActivated) {
+				await addPaygroupSchedules(newModule._id, req.body?.payFrequency);
+			}
+			return res.status(201).json(newModule);
 		}
-
-		res.status(201).json(newModule);
+		res.status(400).json({ error: "Paygroup of same name already exists!" });
 	} catch (error) {
 		res.status(400).json({ message: error.message });
 	}

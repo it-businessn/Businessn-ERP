@@ -1,19 +1,13 @@
 import { Button } from "@chakra-ui/react";
 
-const ActionButton = ({
-	name,
-	isLoading,
-	onClick,
-	px,
-	mt,
-	isDisabled = false,
-}) => {
+const ActionButton = ({ name, isLoading, onClick, px, mt, isDisabled = false, size }) => {
 	return (
 		<Button
+			size={size}
 			isDisabled={isDisabled}
 			isLoading={isLoading}
 			onClick={onClick}
-			bg={"var(--primary_button_bg)"}
+			bg={"var(--nav_menu)"}
 			mt={mt}
 			px={{ base: px ? px : "2em" }}
 			color={"var(--primary_bg)"}

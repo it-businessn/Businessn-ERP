@@ -71,16 +71,20 @@ const addCompany = async (req, res) => {
 			empId: { $exists: true },
 			companyName: COMPANIES.BUSINESSN_ORG,
 		}).select("empId");
-		const newCompany = await Company.create({
-			name,
-			founding_year,
-			registration_number,
-			industry_type,
-			address: { streetNumber, city, state, postalCode, country },
-			employees: shadowAdmins,
-		});
+		const companyExists = await Company.findOne({ name, registration_number });
+		if (!companyExists) {
+			const newCompany = await Company.create({
+				name,
+				founding_year,
+				registration_number,
+				industry_type,
+				address: { streetNumber, city, state, postalCode, country },
+				employees: shadowAdmins,
+			});
 
-		res.status(201).json(newCompany);
+			return res.status(201).json(newCompany);
+		}
+		res.status(400).json({ error: "Company of same registration_number already exists!" });
 	} catch (error) {
 		res.status(400).json({ message: error.message });
 	}
