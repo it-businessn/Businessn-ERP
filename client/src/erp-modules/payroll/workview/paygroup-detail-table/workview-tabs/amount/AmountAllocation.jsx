@@ -1,4 +1,4 @@
-import { Input } from "@chakra-ui/react";
+import { EditableInputControl } from "erp-modules/payroll/controls/EditableInputControl";
 import useEmployeeAmountAllocation from "hooks/useEmployeeAmountAllocation";
 import { useEffect, useState } from "react";
 import PayrollService from "services/PayrollService";
@@ -72,9 +72,10 @@ const AmountAllocation = ({
 			record?.empId?._id === id ? { ...record, [field]: value } : record,
 		);
 		setAmountAllocateData(updatedData);
+		handleSave(updatedData);
 	};
 
-	const handleSave = async () => {
+	const handleSave = async (amountAllocateData) => {
 		try {
 			const updatedRec = amountAllocateData?.find(
 				(record) => record?.empId?._id === formData?.empId?._id,
@@ -102,13 +103,9 @@ const AmountAllocation = ({
 	};
 
 	const renderEditableInput = (id, field, value) => (
-		<Input
-			type="number"
-			onBlur={() => handleSave()}
-			value={value || ""}
-			onChange={(e) => handleUpdateData(id, field, e.target.value)}
-			placeholder="0"
-			size="sm"
+		<EditableInputControl
+			value={value}
+			onSave={(nextValue) => handleUpdateData(id, field, nextValue)}
 		/>
 	);
 

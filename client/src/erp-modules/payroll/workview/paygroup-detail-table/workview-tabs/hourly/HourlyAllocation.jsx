@@ -1,4 +1,4 @@
-import { Input } from "@chakra-ui/react";
+import { EditableInputControl } from "erp-modules/payroll/controls/EditableInputControl";
 import useEmployeeHoursWorked from "hooks/useEmployeeHoursWorked";
 import { useEffect, useState } from "react";
 import { timesheetPath } from "routes";
@@ -100,9 +100,10 @@ const HourlyAllocation = ({
 			record.empId._id === id ? { ...record, [field]: value } : record,
 		);
 		setHourlyAllocatedHours(updatedData);
+		handleSave(updatedData);
 	};
 
-	const handleSave = async () => {
+	const handleSave = async (hourlyAllocatedHours) => {
 		try {
 			const updatedRec = hourlyAllocatedHours?.find(
 				(record) => record.empId._id === formData?.empId._id,
@@ -122,18 +123,13 @@ const HourlyAllocation = ({
 		} catch (error) {}
 	};
 
-	const renderEditableInput = (id, field, value) => {
-		return (
-			<Input
-				type="number"
-				onBlur={() => handleSave()}
-				value={value || ""}
-				onChange={(e) => handleUpdateData(id, field, e.target.value)}
-				width={"80px"}
-				size="sm"
-			/>
-		);
-	};
+	const renderEditableInput = (id, field, value) => (
+		<EditableInputControl
+			value={value}
+			onSave={(nextValue) => handleUpdateData(id, field, nextValue)}
+		/>
+	);
+
 	return (
 		payrunHoursData && (
 			<WorkviewTab
