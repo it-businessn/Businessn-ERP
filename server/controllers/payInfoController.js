@@ -30,9 +30,9 @@ const getAllPayInfo = async (req, res) => {
 			aggregatedResult.push(result);
 		}
 
-		res.status(200).json(aggregatedResult);
+		return res.status(200).json(aggregatedResult);
 	} catch (error) {
-		res.status(500).json({ message: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -74,7 +74,7 @@ const getEmployeePayInfo = async (req, res) => {
 		const result = await findEmployeePayInfoDetails(empId, companyName);
 		return res.status(200).json(result);
 	} catch (error) {
-		res.status(404).json({ error: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -135,7 +135,7 @@ const addEmployeePayInfo = async (req, res) => {
 		});
 		return res.status(201).json(newPayInfo);
 	} catch (error) {
-		res.status(400).json({ message: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -167,9 +167,9 @@ const updateEmployeePayInfo = async (req, res) => {
 			const updatedPayInfo = await updatePayInfo(id, { roles });
 			return res.status(201).json(updatedPayInfo);
 		}
-		return res.status(201).json("Record does not exist");
+		return res.status(404).json({ message: "Record does not exist" });
 	} catch (error) {
-		res.status(400).json({ message: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 

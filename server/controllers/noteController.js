@@ -10,9 +10,9 @@ const getNotes = async (req, res) => {
 		const notes = await Note.find({}).sort({
 			createdOn: -1,
 		});
-		res.status(200).json(notes);
+		return res.status(200).json(notes);
 	} catch (error) {
-		res.status(404).json({ error: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -23,9 +23,9 @@ const getNote = async (req, res) => {
 		const notes = await Note.find({ contactId }).sort({
 			createdOn: -1,
 		});
-		res.status(200).json(notes);
+		return res.status(200).json(notes);
 	} catch (error) {
-		res.status(404).json({ error: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -33,20 +33,24 @@ const createNote = async (req, res) => {
 	const { contactId, createdBy, description, companyName } = req.body;
 
 	try {
-		const newNote = await Note.create({
+		const data = {
 			contactId,
 			createdBy,
 			description,
 			companyName,
-		});
+		};
+		const existingRecord = await Note.findOne(data);
+		if (existingRecord) {
+			return res.status(409).json({ message: "Note already exists" });
+		}
+		const newNote = await Note.create(data);
 		const contact = await Contact.findById(contactId);
 		contact.notes.push(newNote._id);
-
 		await contact.save();
 
-		res.status(201).json(newNote);
+		return res.status(201).json(newNote);
 	} catch (error) {
-		res.status(400).json({ message: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -81,7 +85,7 @@ const updateNotes = async (req, res) => {
 			return res.status(201).json(updatedTask);
 		}
 	} catch (error) {
-		res.status(400).json({ message: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 

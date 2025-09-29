@@ -26,7 +26,7 @@ const getEmployeeROEEmploymentInfo = async (req, res) => {
 
 		return res.status(200).json(existingROEInfo);
 	} catch (error) {
-		res.status(404).json({ error: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -45,9 +45,9 @@ const getEmployeeEarningsInfo = async (req, res) => {
 			.select(
 				"payPeriodNum payPeriodEndDate currentGrossPay totalRegHoursWorked totalOvertimeHoursWorked totalDblOvertimeHoursWorked totalSickHoursWorked totalSprayHoursWorked totalStatDayHoursWorked totalStatHours totalVacationHoursWorked totalFirstAidHoursWorked totalBereavementHoursWorked totalPersonalDayHoursWorked",
 			);
-		res.status(200).json(payStubs);
+		return res.status(200).json(payStubs);
 	} catch (error) {
-		res.status(404).json({ error: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -171,7 +171,7 @@ const addEmployeeROEEmploymentInfo = async (req, res) => {
 		const newROEInfo = await EmployeeROE.create(newData);
 		return res.status(201).json(newROEInfo);
 	} catch (error) {
-		res.status(400).json({ message: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 

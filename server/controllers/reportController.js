@@ -48,20 +48,19 @@ const buildFundingTotalsReport = async (
 		isExtraRun,
 		scheduleFrequency,
 	});
+	fundingTotal.updatedOn = moment();
 	if (existsFundDetails) {
-		fundingTotal.updatedOn = moment();
 		await FundingTotalsPay.findByIdAndUpdate(existsFundDetails._id, fundingTotal, {
 			new: true,
 		});
-	} else {
-		fundingTotal.updatedOn = moment();
-		fundingTotal.createdOn = moment();
-		const newTotals = await FundingTotalsPay.create(fundingTotal);
-		if (newTotals) {
-			const { companyName } = fundingTotal;
-			createNewOrder(newTotals._id, companyName, totalEmployees);
-			createJournalEntry(newTotals._id, companyName, scheduleFrequency);
-		}
+		return;
+	}
+	fundingTotal.createdOn = moment();
+	const newTotals = await FundingTotalsPay.create(fundingTotal);
+	if (newTotals) {
+		const { companyName } = fundingTotal;
+		createNewOrder(newTotals._id, companyName, totalEmployees);
+		createJournalEntry(newTotals._id, companyName, scheduleFrequency);
 	}
 };
 
@@ -218,7 +217,7 @@ const createJournalEntry = async (fundingTotalReportId, companyName) => {
 			isExtraRun,
 			scheduleFrequency,
 		};
-		const newEntry = await JournalEntry.create(journalEntry);
+		await JournalEntry.create(journalEntry);
 	}
 };
 
@@ -244,9 +243,9 @@ const getFundReportInfo = async (req, res) => {
 		}).sort({
 			createdOn: -1,
 		});
-		res.status(200).json(payStubs);
+		return res.status(200).json(payStubs);
 	} catch (error) {
-		res.status(404).json({ error: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -266,7 +265,7 @@ const getJournalEntryReportInfo = async (req, res) => {
 			scheduleFrequency,
 		});
 		// if (entries)
-		res.status(200).json(entries);
+		return res.status(200).json(entries);
 		// return res.status(200).json({
 		// 	totalIncomeTaxContr: 0,
 		// 	totalCPP_EE_Contr: 0,
@@ -288,7 +287,7 @@ const getJournalEntryReportInfo = async (req, res) => {
 		// 	totalTimeManagementPayrollCost: 0,
 		// });
 	} catch (error) {
-		res.status(404).json({ error: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -330,7 +329,7 @@ const getFundingReportInfo = async (req, res) => {
 			totalTimeManagementPayrollCost: 0,
 		});
 	} catch (error) {
-		res.status(404).json({ error: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -361,9 +360,9 @@ const getReportInfo = async (req, res) => {
 			const nameB = b.empId?.fullName?.toLowerCase();
 			return nameA < nameB ? -1 : nameA > nameB ? 1 : 0;
 		});
-		res.status(200).json(payStubs);
+		return res.status(200).json(payStubs);
 	} catch (error) {
-		res.status(404).json({ error: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -382,9 +381,9 @@ const getEmployeeReportInfo = async (req, res) => {
 			.sort({
 				payPeriodPayDate: -1,
 			});
-		res.status(200).json(payStubs);
+		return res.status(200).json(payStubs);
 	} catch (error) {
-		res.status(404).json({ error: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 

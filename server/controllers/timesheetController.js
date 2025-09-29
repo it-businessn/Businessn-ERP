@@ -143,9 +143,9 @@ const getTimesheets = async (req, res) => {
 
 		const result = mapTimesheet(payInfo, timesheets);
 
-		res.status(200).json(result);
+		return res.status(200).json(result);
 	} catch (error) {
-		res.status(404).json({ error: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -164,9 +164,9 @@ const getFilteredTimesheetsByStatus = async (req, res) => {
 			},
 		}).select("approveStatus");
 
-		res.status(200).json(timesheets);
+		return res.status(200).json(timesheets);
 	} catch (error) {
-		res.status(404).json({ error: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -217,7 +217,7 @@ const getFilteredTimesheets = async (req, res) => {
 				filteredData?.filteredCC?.includes(item?.positions?.[0]?.employmentCostCenter),
 			);
 		}
-		res.status(200).json({
+		return res.status(200).json({
 			page,
 			limit,
 			total: timesheets?.length,
@@ -225,7 +225,7 @@ const getFilteredTimesheets = async (req, res) => {
 			items: result,
 		});
 	} catch (error) {
-		res.status(404).json({ error: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -245,9 +245,9 @@ const getEmployeeTimesheet = async (req, res) => {
 				$lte: moment(endDate).endOf("day").toDate(),
 			},
 		}).sort({ createdOn: -1 });
-		res.status(200).json(timesheets);
+		return res.status(200).json(timesheets);
 	} catch (error) {
-		res.status(404).json({ error: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -298,12 +298,12 @@ const createManualTimesheet = async (req, res) => {
 				findEmployeeTimesheetExists[param_hours] = totalWorkedHours;
 			}
 			await findEmployeeTimesheetExists.save();
-			return res.status(201).json(findEmployeeTimesheetExists);
+			return res.status(200).json(findEmployeeTimesheetExists);
 		} else {
-			return res.status(201).json("Record not found");
+			return res.status(404).json({ message: "Record not found" });
 		}
 	} catch (error) {
-		res.status(400).json({ message: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -347,9 +347,9 @@ const createTimesheet = async (req, res) => {
 		};
 
 		const newTimesheet = await addTimesheetEntry(newEntry);
-		res.status(201).json(newTimesheet);
+		return res.status(201).json(newTimesheet);
 	} catch (error) {
-		res.status(400).json({ message: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -381,7 +381,7 @@ const actionAllTimesheets = async (req, res) => {
 		);
 		return res.status(201).json(updatedIDs);
 	} catch (error) {
-		res.status(400).json({ message: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -405,7 +405,7 @@ const updateTimesheetRole = async (req, res) => {
 		const timesheet = await updateTimesheetData(id, updatedData);
 		return res.status(201).json(timesheet);
 	} catch (error) {
-		res.status(400).json({ message: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -417,7 +417,7 @@ const updateTimesheetPayType = async (req, res) => {
 		const timesheet = await updateTimesheetData(id, req.body);
 		return res.status(201).json(timesheet);
 	} catch (error) {
-		res.status(400).json({ message: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -507,7 +507,7 @@ const updateTimesheet = async (req, res) => {
 		const timesheet = await updateTimesheetData(id, updatedData);
 		return res.status(201).json(timesheet);
 	} catch (error) {
-		res.status(400).json({ message: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -526,12 +526,12 @@ const deleteTimesheet = async (req, res) => {
 		// 	_id: id,
 		// });
 		if (timesheet) {
-			res.status(200).json(`Timesheet with id ${id} deleted successfully.`);
+			return res.status(200).json(`Timesheet with id ${id} deleted successfully.`);
 		} else {
-			res.status(200).json("Timesheet Details not found.");
+			return res.status(404).json({ message: "Timesheet Details not found." });
 		}
 	} catch (error) {
-		res.status(404).json({ error: "Error deleting Timesheet:", error });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 

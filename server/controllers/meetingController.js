@@ -6,9 +6,9 @@ const getMeetings = async (req, res) => {
 		const meetings = await Meeting.find({}).sort({
 			createdOn: -1,
 		});
-		res.status(200).json(meetings);
+		return res.status(200).json(meetings);
 	} catch (error) {
-		res.status(404).json({ error: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -19,9 +19,9 @@ const getMeeting = async (req, res) => {
 		const meeting = await Meeting.find({ contactId }).sort({
 			createdOn: -1,
 		});
-		res.status(200).json(meeting);
+		return res.status(200).json(meeting);
 	} catch (error) {
-		res.status(404).json({ error: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -42,7 +42,7 @@ const addMeeting = async (req, res) => {
 	} = req.body;
 
 	try {
-		const newMeeting = await Meeting.create({
+		const data = {
 			attendees,
 			contactId,
 			description,
@@ -55,14 +55,19 @@ const addMeeting = async (req, res) => {
 			type,
 			createdBy,
 			companyName,
-		});
+		};
+		const existingRecord = await Meeting.findOne(data);
+		if (existingRecord) {
+			return res.status(409).json({ message: "Meeting already exists" });
+		}
+		const newMeeting = await Meeting.create(data);
 		const contact = await Contact.findById(contactId);
 		contact.meetings.push(newMeeting._id);
 
 		await contact.save();
-		res.status(201).json(newMeeting);
+		return res.status(201).json(newMeeting);
 	} catch (error) {
-		res.status(400).json({ message: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -74,9 +79,9 @@ const updateMeeting = async (req, res) => {
 			new: true,
 		});
 
-		res.status(201).json(updatedMeeting);
+		return res.status(201).json(updatedMeeting);
 	} catch (error) {
-		res.status(400).json({ message: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 

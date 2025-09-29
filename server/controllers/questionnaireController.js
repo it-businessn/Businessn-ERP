@@ -3,9 +3,9 @@ const Questionnaire = require("../models/Questionnaire");
 const getQuestionnaires = async (req, res) => {
 	try {
 		const questionnaires = await Questionnaire.find({}).sort({ createdOn: -1 });
-		res.status(200).json(questionnaires);
+		return res.status(200).json(questionnaires);
 	} catch (error) {
-		res.status(500).json({ message: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -16,27 +16,31 @@ const getQuestionnaire = async (req, res) => {
 		const notes = await Questionnaire.find({ contactId }).sort({
 			createdOn: -1,
 		});
-		res.status(200).json(notes);
+		return res.status(200).json(notes);
 	} catch (error) {
-		res.status(404).json({ error: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
 const createQuestionnaire = async (req, res) => {
 	const { assessmentType, company, correctAnswer, explanation, options, question } = req.body;
-
+	const data = {
+		correctAnswer,
+		explanation,
+		options,
+		question,
+		subject: assessmentType,
+		companyName: company,
+	};
 	try {
-		const newQuestionnaire = await Questionnaire.create({
-			correctAnswer,
-			explanation,
-			options,
-			question,
-			subject: assessmentType,
-			companyName: company,
-		});
-		res.status(201).json(newQuestionnaire);
+		const existingRecord = await Questionnaire.findOne(data);
+		if (existingRecord) {
+			return res.status(409).json({ message: "Questionnaire already exists" });
+		}
+		const newQuestionnaire = await Questionnaire.create(data);
+		return res.status(201).json(newQuestionnaire);
 	} catch (error) {
-		res.status(400).json({ message: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -46,10 +50,9 @@ const updateQuestionnaire = async (req, res) => {
 		const updatedContact = await Questionnaire.findByIdAndUpdate(id, req.body, {
 			new: true,
 		});
-
-		res.status(201).json(updatedContact);
+		return res.status(201).json(updatedContact);
 	} catch (error) {
-		res.status(400).json({ message: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -59,10 +62,9 @@ const deleteQuestionnaire = async (req, res) => {
 		const updatedContact = await Questionnaire.findByIdAndDelete(id, req.body, {
 			new: true,
 		});
-
-		res.status(201).json(updatedContact);
+		return res.status(201).json(updatedContact);
 	} catch (error) {
-		res.status(400).json({ message: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -74,9 +76,9 @@ const getSubjectQuestionnaire = async (req, res) => {
 			subject,
 			companyName,
 		});
-		res.status(200).json(questions);
+		return res.status(200).json(questions);
 	} catch (error) {
-		res.status(404).json({ error: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 

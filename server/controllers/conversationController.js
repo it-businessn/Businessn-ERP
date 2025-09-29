@@ -9,7 +9,7 @@ const getMessage = async (req, res) => {
 	try {
 		const conversation = await Conversation.findById(id).populate("messages");
 		if (!conversation) {
-			return res.status(404).json({ error: "Conversation not found" });
+			return res.status(404).json({ message: "Conversation not found" });
 		}
 		const messages =
 			conversation.type === "one-on-one"
@@ -129,7 +129,7 @@ const getGroupMessages = async (req, res) => {
 			.populate("groupMessages")
 			.select("groupMessages");
 		if (!conversation) {
-			return res.status(404).json({ error: "Conversation not found" });
+			return res.status(404).json({ message: "Conversation not found" });
 		}
 		return res.status(200).json(conversation);
 	} catch (error) {
@@ -278,7 +278,7 @@ const createOneToOneMessages = async (req, res) => {
 		const sender = await Employee.findById(senderId);
 		const receiver = await Employee.findById(receiverId);
 		if (!sender || !receiver) {
-			return res.status(404).json({ error: "Sender or receiver not found" });
+			return res.status(404).json({ message: "Sender or receiver not found" });
 		}
 		let conversation = await Conversation.findOne({
 			participants: { $all: [senderId, receiverId], $size: 2 },
@@ -319,11 +319,11 @@ const createGroupMessages = async (req, res) => {
 		const conversation = await Conversation.findById(id);
 
 		if (!sender || !conversation) {
-			return res.status(404).json({ error: "Sender or conversation group not found" });
+			return res.status(404).json({ message: "Sender or conversation group not found" });
 		}
 
 		if (conversation.conversationType !== "group") {
-			return res.status(400).json({ error: "Conversation is not a group" });
+			return res.status(409).json({ message: "Conversation is not a group" });
 		}
 
 		const message = new Message({

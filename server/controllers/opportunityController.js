@@ -5,9 +5,9 @@ const getOpportunities = async (req, res) => {
 		const opportunities = await Opportunity.find({}).sort({
 			createdOn: -1,
 		});
-		res.status(200).json(opportunities);
+		return res.status(200).json(opportunities);
 	} catch (error) {
-		res.status(404).json({ error: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -35,7 +35,7 @@ const getGroupedOpportunities = async (req, res) => {
 		const groupedOpportunities = groupOpportunitiesByCategory(opportunities);
 		res.json(groupedOpportunities);
 	} catch (error) {
-		res.status(500).json({ message: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -43,18 +43,23 @@ const createOpportunity = async (req, res) => {
 	const { name, clientName, stage, probability, dealAmount } = req.body;
 
 	try {
-		const newOpportunity = await Opportunity.create({
+		const data = {
 			clientName,
-			createdOn: Date.now(),
 			dealAmount,
 			name,
 			probability,
 			stage,
-		});
+		};
 
-		res.status(201).json(newOpportunity);
+		const existingRecord = await Opportunity.findOne(data);
+		if (existingRecord) {
+			return res.status(409).json({ message: "Opportunity already exists" });
+		}
+
+		const newOpportunity = await Opportunity.create(data);
+		return res.status(201).json(newOpportunity);
 	} catch (error) {
-		res.status(400).json({ message: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -66,9 +71,9 @@ const updateOpportunity = async (req, res) => {
 			new: true,
 		});
 
-		res.status(201).json(updatedOpportunity);
+		return res.status(201).json(updatedOpportunity);
 	} catch (error) {
-		res.status(400).json({ message: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 

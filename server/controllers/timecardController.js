@@ -34,9 +34,9 @@ const getTADUsers = async (req, res) => {
 		}).select(
 			"companyName firstName middleName lastName cardNum timeManagementBadgeID createdOn isNewUser",
 		);
-		res.status(200).json(result);
+		return res.status(200).json(result);
 	} catch (error) {
-		res.status(404).json({ error: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -60,9 +60,9 @@ const getFilteredTADUsers = async (req, res) => {
 		}).select(
 			"companyName firstName middleName lastName cardNum timeManagementBadgeID createdOn isNewUser",
 		);
-		res.status(200).json(result);
+		return res.status(200).json(result);
 	} catch (error) {
-		res.status(404).json({ error: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -103,7 +103,7 @@ const getTimecard = async (req, res) => {
 			return _;
 		});
 
-		res.status(200).json({
+		return res.status(200).json({
 			page,
 			limit,
 			total: uniqueEntries?.length,
@@ -111,7 +111,7 @@ const getTimecard = async (req, res) => {
 			items: uniqueEntries,
 		});
 	} catch (error) {
-		res.status(404).json({ error: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -148,9 +148,9 @@ const createTimecard = async (req, res) => {
 			}
 		});
 		await mapTimecardRawToTimecard();
-		res.status(201).json("Timecard entries added successfully");
+		return res.status(201).json("Timecard entries added successfully");
 	} catch (error) {
-		res.status(400).json({ message: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -436,10 +436,10 @@ const createTimecardManual = async (req, res) => {
 			// 	companyName: "Cornerstone Maintenance Group Ltd.",
 			// });
 			// console.log(k, s);
-			res.status(201).json("Timecard entries added manually");
+			return res.status(201).json("Timecard entries added manually");
 		});
 	} catch (error) {
-		res.status(400).json({ message: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 

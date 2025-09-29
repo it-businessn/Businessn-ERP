@@ -21,9 +21,9 @@ const getAllTickets = async (req, res) => {
 		const tickets = await SupportTicket.find({
 			$or: [{ originator: id }, { assignee: id }],
 		}).sort({ priority: 1 });
-		res.status(200).json(tickets);
+		return res.status(200).json(tickets);
 	} catch (error) {
-		res.status(404).json({ error: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -70,9 +70,9 @@ const getAggregateTicketCount = async (req, res) => {
 			},
 		]);
 
-		res.status(200).json({ openTicketsByCategory, myTicketsCount });
+		return res.status(200).json({ openTicketsByCategory, myTicketsCount });
 	} catch (error) {
-		res.status(404).json({ error: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -99,9 +99,9 @@ const getFilteredTickets = async (req, res) => {
 			);
 			return task;
 		});
-		res.status(200).json({ tickets, category });
+		return res.status(200).json({ tickets, category });
 	} catch (error) {
-		res.status(404).json({ error: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -120,9 +120,9 @@ const getOpenTickets = async (req, res) => {
 			);
 			return task;
 		});
-		res.status(200).json(tickets);
+		return res.status(200).json(tickets);
 	} catch (error) {
-		res.status(404).json({ error: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -135,9 +135,9 @@ const getClosedTickets = async (req, res) => {
 			status: "Close",
 			$or: [{ originator: name }, { assignee: name }],
 		});
-		res.status(200).json(tickets);
+		return res.status(200).json(tickets);
 	} catch (error) {
-		res.status(404).json({ error: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -153,7 +153,7 @@ const downloadResource = async (req, res) => {
 		const { filename } = req.params;
 		const resource = await SupportTicket.find({ originalname: filename });
 		if (!resource) {
-			return res.status(404).json({ error: "Resource not found" });
+			return res.status(404).json({ message: "Resource not found" });
 		}
 		const file = filePath(filename);
 		fs.writeFileSync(file, resource[0].file.data);
@@ -164,11 +164,11 @@ const downloadResource = async (req, res) => {
 			fs.unlinkSync(file);
 			if (err) {
 				console.error("Error downloading file:", err);
-				res.status(404).json({ error: "File not found" });
+				return res.status(404).json({ message: "File not found" });
 			}
 		});
 	} catch (error) {
-		res.status(404).json({ error: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -333,9 +333,9 @@ const createLeadTicket = async (req, res) => {
 				attachments,
 			);
 		}
-		res.status(201).json(ticket);
+		return res.status(201).json(ticket);
 	} catch (error) {
-		res.status(400).json({ message: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -482,9 +482,9 @@ const createSupportTicket = async (req, res) => {
 				attachments,
 			);
 		}
-		res.status(201).json(ticket);
+		return res.status(201).json(ticket);
 	} catch (error) {
-		res.status(400).json({ message: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -641,7 +641,7 @@ const createTicket = async (req, res) => {
 		const newTask = await SupportTicket.create(newTicket);
 		return res.status(201).json(newTask);
 	} catch (error) {
-		res.status(400).json({ message: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -663,9 +663,9 @@ const updateTicket = async (req, res) => {
 		}
 
 		const setup = await SupportTicket.findByIdAndUpdate(id, { $set: updatedTicket }, { new: true });
-		res.status(200).json(setup);
+		return res.status(200).json(setup);
 	} catch (error) {
-		console.log(error, "Error in updating");
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 

@@ -9,9 +9,9 @@ const getAllPayouts = async (req, res) => {
 			createdOn: -1,
 		});
 
-		res.status(200).json(payouts);
+		return res.status(200).json(payouts);
 	} catch (error) {
-		res.status(500).json({ message: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -19,15 +19,20 @@ const addPayout = async (req, res) => {
 	const { amount, fullName, saleId, companyName } = req.body;
 
 	try {
-		const newPayout = await Payout.create({
+		const data = {
 			amount,
 			fullName,
 			saleId,
 			companyName,
-		});
-		res.status(201).json(newPayout);
+		};
+		const existingRecord = await Payout.findOne(data);
+		if (existingRecord) {
+			return res.status(409).json({ message: "Payout already exists" });
+		}
+		const newPayout = await Payout.create(data);
+		return res.status(201).json(newPayout);
 	} catch (error) {
-		res.status(400).json({ message: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -38,9 +43,9 @@ const updatePayout = async (req, res) => {
 			new: true,
 		});
 
-		res.status(201).json(payout);
+		return res.status(201).json(payout);
 	} catch (error) {
-		res.status(400).json({ message: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 // const deleteQuestion = async (req, res) => {
@@ -50,9 +55,9 @@ const updatePayout = async (req, res) => {
 // 			new: true,
 // 		});
 
-// 		res.status(201).json(updatedContact);
+// 		return res.status(201).json(updatedContact);
 // 	} catch (error) {
-// 		res.status(400).json({ message: error.message });
+// 		return res.status(500).json({ message: "Internal Server Error", error });
 // 	}
 // };
 

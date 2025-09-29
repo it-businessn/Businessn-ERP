@@ -9,9 +9,9 @@ const getAllGovernmentInfo = async (req, res) => {
 			createdOn: -1,
 		});
 
-		res.status(200).json(result);
+		return res.status(200).json(result);
 	} catch (error) {
-		res.status(500).json({ message: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -19,9 +19,9 @@ const getEmployeeGovernmentInfo = async (req, res) => {
 	const { companyName, empId } = req.params;
 	try {
 		const result = await findEmployeeGovernmentInfo(empId, companyName);
-		res.status(200).json(result);
+		return res.status(200).json(result);
 	} catch (error) {
-		res.status(404).json({ error: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -84,7 +84,7 @@ const addEmployeeGovernmentInfo = async (req, res) => {
 		});
 		return res.status(201).json(newGovernmentInfo);
 	} catch (error) {
-		res.status(400).json({ message: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -97,9 +97,9 @@ const updateEmployeeGovernmentInfo = async (req, res) => {
 			const updatedInfo = await updateGovernmentInfo(id, req.body);
 			return res.status(201).json(updatedInfo);
 		}
-		return res.status(201).json("Record does not exist");
+		return res.status(404).json({ message: "Record does not exist" });
 	} catch (error) {
-		res.status(400).json({ message: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 

@@ -9,9 +9,9 @@ const getTasks = async (req, res) => {
 		const tasks = await Task.find({}).sort({
 			createdOn: -1,
 		});
-		res.status(200).json(tasks);
+		return res.status(200).json(tasks);
 	} catch (error) {
-		res.status(404).json({ error: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -22,9 +22,9 @@ const getTaskById = async (req, res) => {
 			selectedAssignees: id,
 			companyName: company,
 		});
-		res.status(200).json(tasks);
+		return res.status(200).json(tasks);
 	} catch (error) {
-		res.status(404).json({ error: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -34,9 +34,9 @@ const createTask = async (req, res) => {
 	try {
 		const task = new Task({ contactId, date: moment(), dueDate, name, status });
 		const newTask = await task.save();
-		res.status(201).json(newTask);
+		return res.status(201).json(newTask);
 	} catch (error) {
-		res.status(400).json({ message: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -72,9 +72,9 @@ const updateTask = async (req, res) => {
 				new: true,
 			},
 		);
-		res.status(201).json(updatedTask);
+		return res.status(201).json(updatedTask);
 	} catch (error) {
-		res.status(400).json({ message: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -93,9 +93,9 @@ const updateInnerSubTask = async (req, res) => {
 			},
 			{ new: true },
 		);
-		res.status(201).json(savedSubtask);
+		return res.status(201).json(savedSubtask);
 	} catch (error) {
-		res.status(400).json({ message: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -110,9 +110,9 @@ const updateSubTask = async (req, res) => {
 				new: true,
 			},
 		);
-		res.status(201).json(updatedSubtask);
+		return res.status(201).json(updatedSubtask);
 	} catch (error) {
-		res.status(400).json({ message: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -128,9 +128,9 @@ const updateActivity = async (req, res) => {
 			},
 		);
 
-		res.status(201).json(updatedActivity);
+		return res.status(201).json(updatedActivity);
 	} catch (error) {
-		res.status(400).json({ message: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 

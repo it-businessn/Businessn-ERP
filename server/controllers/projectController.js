@@ -50,9 +50,9 @@ const getProjects = async (req, res) => {
 	try {
 		const projects = await Project.find({}).sort({ createdOn: -1 });
 		const populatedProjects = await findProject(projects);
-		res.status(200).json(populatedProjects);
+		return res.status(200).json(populatedProjects);
 	} catch (error) {
-		res.status(404).json({ error: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -61,9 +61,9 @@ const getCompanyProjects = async (req, res) => {
 	try {
 		const projects = await ProjectFile.find({ companyName }).sort({ createdOn: -1 });
 		const populatedProjects = await findProject(projects);
-		res.status(200).json(populatedProjects);
+		return res.status(200).json(populatedProjects);
 	} catch (error) {
-		res.status(404).json({ error: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -73,12 +73,12 @@ const getAssigneeProjects = async (req, res) => {
 		const projects = await Project.find({ selectedAssignees, companyName }).sort({ createdOn: -1 });
 		if (projects.length) {
 			const populatedProjects = await findProject(projects);
-			res.status(200).json(populatedProjects);
+			return res.status(200).json(populatedProjects);
 		} else {
-			res.status(200).json(projects);
+			return res.status(200).json(projects);
 		}
 	} catch (error) {
-		res.status(404).json({ error: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -117,9 +117,9 @@ const addTask = async (req, res) => {
 
 		await savedProject.save();
 
-		res.status(201).json(newTask);
+		return res.status(201).json(newTask);
 	} catch (error) {
-		res.status(400).json({ message: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -171,9 +171,9 @@ const addSubTask = async (req, res) => {
 		savedProject.totalTasks += 1;
 		await savedProject.save();
 
-		res.status(201).json(newSubtask);
+		return res.status(201).json(newSubtask);
 	} catch (error) {
-		res.status(400).json({ message: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -214,9 +214,9 @@ const addTaskSubTasks = async (req, res) => {
 		}
 		savedSubtask.subtasks.push(updatedData);
 		await savedSubtask.save();
-		res.status(201).json(savedSubtask);
+		return res.status(201).json(savedSubtask);
 	} catch (error) {
-		res.status(400).json({ message: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -300,9 +300,9 @@ const updateProjectSubTask = async (req, res) => {
 
 		await savedProject.save();
 
-		res.status(201).json(savedTask);
+		return res.status(201).json(savedTask);
 	} catch (error) {
-		res.status(400).json({ message: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -349,9 +349,9 @@ const createActivity = async (req, res) => {
 
 		await project.save();
 
-		res.status(201).json(project);
+		return res.status(201).json(project);
 	} catch (error) {
-		res.status(400).json({ message: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -362,12 +362,12 @@ const deleteProject = async (req, res) => {
 			_id: id,
 		});
 		if (project) {
-			res.status(200).json(`Project with id ${id} deleted successfully.`);
+			return res.status(200).json(`Project with id ${id} deleted successfully.`);
 		} else {
-			res.status(200).json("Task Details not found.");
+			return res.status(404).json("Task Details not found.");
 		}
 	} catch (error) {
-		res.status(404).json({ error: "Error deleting Task:", error });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -378,12 +378,12 @@ const deleteTask = async (req, res) => {
 			_id: id,
 		});
 		if (task) {
-			res.status(200).json(`Task with id ${id} deleted successfully.`);
+			return res.status(200).json(`Task with id ${id} deleted successfully.`);
 		} else {
-			res.status(200).json("Task Details not found.");
+			return res.status(404).json({ message: "Task Details not found." });
 		}
 	} catch (error) {
-		res.status(404).json({ error: "Error deleting Task:", error });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -400,9 +400,9 @@ const deleteSubTaskChild = async (req, res) => {
 			{ new: true },
 		);
 		await SubTask.updateOne({ _id: id }, { $pull: { subtasks: null } });
-		res.status(201).json(savedSubtask);
+		return res.status(201).json(savedSubtask);
 	} catch (error) {
-		res.status(400).json({ message: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -413,12 +413,12 @@ const deleteSubTask = async (req, res) => {
 			_id: id,
 		});
 		if (task) {
-			res.status(200).json(`SubTask with id ${id} deleted successfully.`);
+			return res.status(200).json(`SubTask with id ${id} deleted successfully.`);
 		} else {
-			res.status(200).json("SubTask Details not found.");
+			return res.status(404).json({ message: "SubTask Details not found." });
 		}
 	} catch (error) {
-		res.status(404).json({ error: "Error deleting SubTask:", error });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -441,9 +441,9 @@ const scheduleTask = async (req, res) => {
 
 		await savedProject.save();
 
-		res.status(201).json(newTask);
+		return res.status(201).json(newTask);
 	} catch (error) {
-		res.status(400).json({ message: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -483,9 +483,9 @@ const addProject = async (req, res) => {
 
 		await existingFile.save();
 
-		res.status(201).json(newProject);
+		return res.status(201).json(newProject);
 	} catch (error) {
-		res.status(400).json({ message: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -519,9 +519,9 @@ const updateProjectTask = async (req, res) => {
 			savedProject.selectedAssignees = uniqueArray;
 		}
 		await savedProject.save();
-		res.status(201).json(updatedTask);
+		return res.status(201).json(updatedTask);
 	} catch (error) {
-		res.status(400).json({ message: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -534,9 +534,9 @@ const updateInnerSubTaskName = async (req, res) => {
 			{ $set: { [`subtasks.${recordIndex}.taskName`]: taskName } },
 			{ new: true },
 		);
-		res.status(201).json(updatedTask);
+		return res.status(201).json(updatedTask);
 	} catch (error) {
-		res.status(400).json({ message: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -544,9 +544,9 @@ const updateSubTaskName = async (req, res) => {
 	const { id } = req.params;
 	try {
 		const updatedTask = await SubTask.findByIdAndUpdate(id, req.body, { new: true });
-		res.status(201).json(updatedTask);
+		return res.status(201).json(updatedTask);
 	} catch (error) {
-		res.status(400).json({ message: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -554,9 +554,9 @@ const updateTaskName = async (req, res) => {
 	const { id } = req.params;
 	try {
 		const updatedTask = await Task.findByIdAndUpdate(id, req.body, { new: true });
-		res.status(201).json(updatedTask);
+		return res.status(201).json(updatedTask);
 	} catch (error) {
-		res.status(400).json({ message: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -564,9 +564,9 @@ const updateProjectTaskName = async (req, res) => {
 	const { id } = req.params;
 	try {
 		const updatedTask = await Project.findByIdAndUpdate(id, req.body, { new: true });
-		res.status(201).json(updatedTask);
+		return res.status(201).json(updatedTask);
 	} catch (error) {
-		res.status(400).json({ message: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -628,9 +628,9 @@ const updateTaskSubTask = async (req, res) => {
 			}
 			await savedProject.save();
 		}
-		res.status(201).json(updatedSubTask);
+		return res.status(201).json(updatedSubTask);
 	} catch (error) {
-		res.status(400).json({ message: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -691,9 +691,9 @@ const updateInnerSubTasks = async (req, res) => {
 			}
 			await savedProject.save();
 		}
-		res.status(201).json(savedSubtask);
+		return res.status(201).json(savedSubtask);
 	} catch (error) {
-		res.status(400).json({ message: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -742,9 +742,9 @@ const updateTaskActivity = async (req, res) => {
 		savedTask.activities = savedActivities.map((activity) => activity._id);
 		await savedTask.save();
 
-		res.status(201).json(savedTask);
+		return res.status(201).json(savedTask);
 	} catch (error) {
-		res.status(400).json({ message: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -796,9 +796,9 @@ const updateFile = async (req, res) => {
 			{ $set: updatedData },
 			{ new: true },
 		);
-		res.status(201).json(updatedFile);
+		return res.status(201).json(updatedFile);
 	} catch (error) {
-		res.status(400).json({ message: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -834,9 +834,9 @@ const updateProject = async (req, res) => {
 			{ $set: updatedData },
 			{ new: true },
 		);
-		res.status(201).json(updatedProject);
+		return res.status(201).json(updatedProject);
 	} catch (error) {
-		res.status(400).json({ message: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -857,9 +857,9 @@ const createFileProject = async (req, res) => {
 			companyName,
 		});
 
-		res.status(201).json(newFileProject);
+		return res.status(201).json(newFileProject);
 	} catch (error) {
-		res.status(400).json({ message: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 

@@ -7,9 +7,9 @@ const { filePath, fileContentType } = require("../services/fileService");
 const getResources = async (req, res) => {
 	try {
 		const resources = await Resource.find();
-		res.status(200).json(resources);
+		return res.status(200).json(resources);
 	} catch (error) {
-		res.status(404).json({ error: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -17,9 +17,9 @@ const getResourcesByCompany = () => async (req, res) => {
 	const { companyName } = req.params;
 	try {
 		const resources = await Resource.find({ companyName });
-		res.status(200).json(resources);
+		return res.status(200).json(resources);
 	} catch (error) {
-		res.status(404).json({ error: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -30,9 +30,9 @@ const getCompanyResources = async (req, res) => {
 		const files = await Resource.find({ fileType, companyName }).sort({
 			uploadedOn: -1,
 		});
-		res.status(200).json(files);
+		return res.status(200).json(files);
 	} catch (error) {
-		res.status(404).json({ error: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -43,9 +43,9 @@ const getResource = async (req, res) => {
 		const files = await Resource.find({ fileType }).sort({
 			uploadedOn: -1,
 		});
-		res.status(200).json(files);
+		return res.status(200).json(files);
 	} catch (error) {
-		res.status(404).json({ error: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 const updateResourceCover = () => async (req, res) => {
@@ -67,9 +67,9 @@ const updateResourceCover = () => async (req, res) => {
 	// 		uploadedBy,
 	// 	});
 	// 	const file = await newResource.save();
-	// 	res.status(201).json({ file, message: "File uploaded successfully!" });
+	// 	return 	res.status(201).json({ file, message: "File uploaded successfully!" });
 	// } catch (error) {
-	// 	res.status(400).json({ message: error.message });
+	// 	return res.status(500).json({ message: "Internal Server Error", error });
 	// }
 };
 const updateResource = async (req, res) => {
@@ -88,9 +88,9 @@ const updateResource = async (req, res) => {
 			},
 		);
 
-		res.status(201).json(resource);
+		return res.status(201).json(resource);
 	} catch (error) {
-		res.status(400).json({ message: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -114,9 +114,9 @@ const createResource = async (req, res) => {
 			companyName: company,
 		});
 		const file = await newResource.save();
-		res.status(201).json({ file, message: "File uploaded successfully!" });
+		return res.status(201).json({ file, message: "File uploaded successfully!" });
 	} catch (error) {
-		res.status(400).json({ message: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -125,7 +125,7 @@ const downloadResource = async (req, res) => {
 		const { filename } = req.params;
 		const resource = await Resource.find({ originalname: filename });
 		if (!resource) {
-			return res.status(404).json({ error: "Resource not found" });
+			return res.status(404).json({ message: "Resource not found" });
 		}
 		const file = filePath(filename);
 		fs.writeFileSync(file, resource[0].file.data);
@@ -136,11 +136,11 @@ const downloadResource = async (req, res) => {
 			fs.unlinkSync(file);
 			if (err) {
 				console.error("Error downloading file:", err);
-				res.status(404).json({ error: "File not found" });
+				return res.status(404).json({ message: "File not found" });
 			}
 		});
 	} catch (error) {
-		res.status(404).json({ error: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -151,12 +151,12 @@ const deleteResource = async (req, res) => {
 			_id: id,
 		});
 		if (resource) {
-			res.status(200).json(`Resource with id ${id} deleted successfully.`);
+			return res.status(200).json(`Resource with id ${id} deleted successfully.`);
 		} else {
-			res.status(200).json("Resource Details not found.");
+			return res.status(404).json({ message: "Resource Details not found." });
 		}
 	} catch (error) {
-		res.status(404).json({ error: "Error deleting Resource:", error });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 

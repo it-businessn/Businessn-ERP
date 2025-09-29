@@ -159,12 +159,12 @@ const deleteStatHoliday = async (req, res) => {
 	try {
 		const resource = await Holiday.findByIdAndDelete(id);
 		if (resource) {
-			res.status(200).json(`Holiday with id ${id} deleted successfully.`);
+			return res.status(200).json(`Holiday with id ${id} deleted successfully.`);
 		} else {
-			res.status(404).json("Holiday Details not found.");
+			return res.status(404).json({ message: "Holiday Details not found." });
 		}
 	} catch (error) {
-		res.status(404).json({ error: "Error deleting Holiday:", error });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 

@@ -81,11 +81,8 @@ const addAffiliateProfileInfo = async (req, res) => {
 		const existingProfileInfo = await EmployeeProfileInfo.findOne(updatedData);
 		if (!existingProfileInfo) {
 			const existingEmp = await Employee.findOne({
-				firstName,
-				lastName,
-				companyName: defaultCompany,
+				email,
 			});
-			let profileInfoEmpId = existingEmp?._id;
 			if (!existingEmp) {
 				const newRecord = {
 					firstName,
@@ -96,6 +93,7 @@ const addAffiliateProfileInfo = async (req, res) => {
 				const newEmployee = await addEmployee(defaultCompany, newRecord);
 				profileInfoEmpId = newEmployee._id;
 			}
+			let profileInfoEmpId = existingEmp?._id;
 			updatedData.empId = profileInfoEmpId;
 			updatedData.affiliateCode = nanoid(8);
 			const newProfileInfo = await EmployeeProfileInfo.create(updatedData);
@@ -131,16 +129,21 @@ const addAffiliateSale = async (req, res) => {
 	const { companyName, affiliate, amount, customerName, customerCode, saleId, status } = req.body;
 	try {
 		const affiliateCodeExists = await EmployeeProfileInfo.findOne({ affiliateCode: saleId });
+		const data = {
+			amount,
+			saleId,
+			companyName,
+			affiliate,
+			customerName,
+			customerCode,
+			status,
+		};
 		if (affiliateCodeExists) {
-			const newPayout = await Payout.create({
-				amount,
-				saleId,
-				companyName,
-				affiliate,
-				customerName,
-				customerCode,
-				status,
-			});
+			const existingRecord = await Payout.findOne(data);
+			if (existingRecord) {
+				return res.status(409).json({ message: "Payout already exists" });
+			}
+			const newPayout = await Payout.create(data);
 			return res.status(201).json(newPayout);
 		} else {
 			return res.status(404).json({ message: "Affiliate not found" });

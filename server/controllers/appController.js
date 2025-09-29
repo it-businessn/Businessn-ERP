@@ -71,10 +71,10 @@ const login = async (req, res) => {
 				refreshToken,
 			});
 		}
-		return res.status(401).json({ error: "Invalid credentials. Please reset your password!" });
+		return res.status(401).json({ message: "Invalid credentials. Please reset your password!" });
 	} catch (error) {
 		console.error("Error checking password:", error);
-		return res.status(500).json({ error: "Internal server error" });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -107,7 +107,7 @@ const logOut = async (req, res) => {
 		}
 		return res.json({ message: "Logged out successfully", activity });
 	} catch (error) {
-		return res.status(500).json({ error: "Internal server error" });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -128,9 +128,7 @@ const refreshToken = async (req, res) => {
 	const { refreshToken } = req.body;
 	try {
 		if (!refreshToken) {
-			return res
-				.status(401)
-				.json({ error: "Refresh token is required", message: "Refresh token is required" });
+			return res.status(401).json({ message: "Refresh token is required", error });
 		}
 		const user = verifyToken(refreshToken, process.env.REFRESH_TOKEN_SECRET);
 
@@ -141,10 +139,10 @@ const refreshToken = async (req, res) => {
 		res.json({ accessToken: newAccessToken });
 	} catch (error) {
 		if (error.name === "TokenExpiredError" || error.name === "JsonWebTokenError") {
-			return res.status(403).json({ error: "Invalid or expired refresh token" });
+			return res.status(403).json({ message: "Invalid or expired refresh token" });
 		}
 		console.error("Error verifying refresh token:", error);
-		return res.status(500).json({ error: "Internal server error" });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 

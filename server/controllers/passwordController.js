@@ -15,7 +15,7 @@ const forgotPassword = async (req, res) => {
 		});
 		if (!user) {
 			return res.status(404).json({
-				error: "Please enter the email you used to register.",
+				message: "Please enter the email you used to register.",
 			});
 		}
 
@@ -109,7 +109,7 @@ const forgotPassword = async (req, res) => {
 			message: "Please check your email inbox for a link to reset your password.",
 		});
 	} catch (error) {
-		res.status(400).json({ message: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -118,14 +118,14 @@ const resetPassword = async (req, res) => {
 	try {
 		const user = await Employee.findById(id);
 		if (!user) {
-			return res.status(404).json({ error: "User does not exist" });
+			return res.status(404).json({ message: "User does not exist" });
 		}
 		res.render("index", {
 			email: user.email,
 			status: "Not verified",
 		});
 	} catch (error) {
-		res.status(500).json({ message: "User not verified!" });
+		return res.status(500).json({ message: "User not verified!", error });
 	}
 };
 
@@ -135,7 +135,7 @@ const setNewPassword = async (req, res) => {
 
 	const user = await Employee.findOne({ _id: id });
 	if (!user) {
-		return res.status(400).json({ status: "User Not Exist!" });
+		return res.status(400).json({ message: "User Not Exist!" });
 	}
 
 	try {
@@ -147,9 +147,9 @@ const setNewPassword = async (req, res) => {
 			},
 		);
 		await EmployeeProfileInfo.updateMany({ empId: user._id }, { $set: { password } });
-		res.render("index", { email: user.email, status: "Verified" });
+		return res.render("index", { email: user.email, status: "Verified" });
 	} catch (error) {
-		res.status(500).json({ message: "Something Went Wrong" });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -168,12 +168,12 @@ const changePassword = async (req, res) => {
 				new: true,
 			},
 		);
-		res.status(201).json({
+		return res.status(201).json({
 			message: "Password changed successfully",
 			result,
 		});
 	} catch (error) {
-		res.status(400).json({ message: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 

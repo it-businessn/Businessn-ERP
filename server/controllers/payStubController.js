@@ -665,9 +665,9 @@ const addEmployeePayStubInfo = async (req, res) => {
 			scheduleFrequency,
 		);
 		if (!isExtraRun) generateT4Slip(companyName, payPeriod, payPeriodEndDate);
-		res.status(200).json({ message: "Paystub created successfully" });
+		return res.status(200).json({ message: "Paystub created successfully" });
 	} catch (error) {
-		res.status(400).json({ message: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 

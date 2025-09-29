@@ -14,9 +14,9 @@ const getCompanyOrders = async (req, res) => {
 				"totalGovtContr",
 			],
 		});
-		res.status(200).json(orders);
+		return res.status(200).json(orders);
 	} catch (error) {
-		res.status(404).json({ error: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -50,7 +50,7 @@ const updateOrder = async (req, res) => {
 			return res.status(201).json(order);
 		}
 	} catch (error) {
-		res.status(400).json({ message: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 module.exports = { getCompanyOrders, updateOrder };

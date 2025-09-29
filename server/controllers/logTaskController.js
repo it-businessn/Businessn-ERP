@@ -6,9 +6,9 @@ const getTasks = async (req, res) => {
 		const tasks = await LogTask.find({}).sort({
 			createdOn: -1,
 		});
-		res.status(200).json(tasks);
+		return res.status(200).json(tasks);
 	} catch (error) {
-		res.status(404).json({ error: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -18,9 +18,9 @@ const getTask = async (req, res) => {
 		const tasks = await LogTask.find({ contactId }).sort({
 			createdOn: -1,
 		});
-		res.status(200).json(tasks);
+		return res.status(200).json(tasks);
 	} catch (error) {
-		res.status(404).json({ error: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -28,6 +28,11 @@ const createTask = async (req, res) => {
 	const { contactId, dueDate, description, createdBy, companyName } = req.body;
 
 	try {
+		const data = { contactId, dueDate, description, createdBy, companyName };
+		const existingRecord = await LogTask.findOne(data);
+		if (existingRecord) {
+			return res.status(409).json({ message: "Task already exists" });
+		}
 		const newContactTask = await LogTask.create({
 			contactId,
 			dueDate,
@@ -40,9 +45,9 @@ const createTask = async (req, res) => {
 
 		await contact.save();
 
-		res.status(201).json(newContactTask);
+		return res.status(201).json(newContactTask);
 	} catch (error) {
-		res.status(400).json({ message: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -52,9 +57,9 @@ const updateTask = async (req, res) => {
 	try {
 		const updatedData = { status: checked ? "Closed" : "Open" };
 		const task = await LogTask.findByIdAndUpdate(id, { $set: updatedData }, { new: true });
-		res.status(201).json(task);
+		return res.status(201).json(task);
 	} catch (error) {
-		res.status(400).json({ message: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 

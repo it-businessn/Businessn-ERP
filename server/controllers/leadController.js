@@ -29,9 +29,9 @@ const getGroupedOpportunities = async (req, res) => {
 			pipeline: pipelineLeads.length,
 			salesMade: salesMade.length,
 		}));
-		res.status(200).json(leadCounts);
+		return res.status(200).json(leadCounts);
 	} catch (error) {
-		res.status(404).json({ error: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -68,9 +68,9 @@ const getGroupedOpportunitiesByCompany = async (req, res) => {
 			pipeline: pipelineLeads.length,
 			salesMade: salesMade.length,
 		}));
-		res.status(200).json(leadCounts);
+		return res.status(200).json(leadCounts);
 	} catch (error) {
-		res.status(404).json({ error: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -80,9 +80,9 @@ const getOpportunityNames = async (req, res) => {
 		const leads = await Lead.find({ companyName })
 			.select("opportunityName")
 			.sort({ createdOn: -1 });
-		res.status(200).json(leads);
+		return res.status(200).json(leads);
 	} catch (error) {
-		res.status(404).json({ error: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -100,7 +100,7 @@ const getOpportunities = async (req, res) => {
 		const leads = await Lead.find({ companyName }).skip(skip).limit(limit).sort({ createdOn: -1 });
 		const totalLeads = await Lead.countDocuments({ companyName });
 
-		res.status(200).json({
+		return res.status(200).json({
 			page,
 			limit,
 			total: totalLeads,
@@ -108,7 +108,7 @@ const getOpportunities = async (req, res) => {
 			items: leads,
 		});
 	} catch (error) {
-		res.status(404).json({ error: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -121,10 +121,10 @@ const getDisbursedLeads = async (req, res) => {
 				isDisbursed: true,
 				isDisbursedConfirmed: false,
 			}).select("_id")
-		).sort((a, b) => b.createdOn - a.createdOn);
-		res.status(200).json(leads);
+		).sort({ createdOn: -1 });
+		return res.status(200).json(leads);
 	} catch (error) {
-		res.status(404).json({ error: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -143,7 +143,7 @@ const getLeadsNotDisbursed = async (req, res) => {
 			.limit(limit)
 			.sort({ createdOn: -1 });
 
-		res.status(200).json({
+		return res.status(200).json({
 			page,
 			limit,
 			total: totalLeads,
@@ -151,7 +151,7 @@ const getLeadsNotDisbursed = async (req, res) => {
 			items: leads,
 		});
 	} catch (error) {
-		res.status(404).json({ error: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -159,9 +159,9 @@ const getLeadCompanies = async (req, res) => {
 	const { companyName } = req.params;
 	try {
 		const leadCompanies = await LeadCompany.find({ companyName }).select("name");
-		res.status(200).json(leadCompanies);
+		return res.status(200).json(leadCompanies);
 	} catch (error) {
-		res.status(404).json({ error: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -175,9 +175,9 @@ const getConfirmedDisbursedLeads = async (req, res) => {
 			companyName,
 			stage: { $in: ["L1", "L2", "L3", "L4"] },
 		});
-		res.status(200).json(leads);
+		return res.status(200).json(leads);
 	} catch (error) {
-		res.status(404).json({ error: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -188,9 +188,9 @@ const getTargetLeads = async (req, res) => {
 			companyName,
 			stage: { $in: ["T1", "T2", "T3", "T4"] },
 		});
-		res.status(200).json(leads);
+		return res.status(200).json(leads);
 	} catch (error) {
-		res.status(404).json({ error: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -201,12 +201,25 @@ const getLead = async (req, res) => {
 			_id: id,
 			companyName,
 		});
-		res.status(200).json(lead);
+		return res.status(200).json(lead);
 	} catch (error) {
-		res.status(404).json({ error: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
+const updateLeadCompany = async (name, companyName) => {
+	const existingRecord = await LeadCompany.findOne({
+		name,
+	});
 
+	if (!existingRecord) {
+		const newLeadCompany = await LeadCompany.create({
+			name,
+			companyName,
+		});
+		return newLeadCompany;
+	}
+	return existingRecord;
+};
 const createLeadOpportunity = async (req, res) => {
 	const {
 		abbreviation,
@@ -226,7 +239,7 @@ const createLeadOpportunity = async (req, res) => {
 	} = req.body;
 
 	try {
-		const newLeadOpportunity = await Lead.create({
+		const data = {
 			abbreviation,
 			name,
 			companyName,
@@ -240,87 +253,79 @@ const createLeadOpportunity = async (req, res) => {
 			source,
 			stage,
 			supervisorAssignee,
-			address: {
-				streetNumber: address?.streetNumber,
-				city: address?.city,
-				state: address?.state,
-				postalCode: address?.postalCode,
-				country: address?.country,
-			},
-		});
-		const existingLeadCompany = await LeadCompany.find({
-			name,
-		});
-		if (!existingLeadCompany.length) {
-			await LeadCompany.create({
-				name,
-				companyName,
-			});
+		};
+		const existingRecord = await Lead.findOne(data);
+		if (existingRecord) {
+			return res.status(409).json({ message: "Lead already exists" });
 		}
-		const existingContact = await Contact.find({
+		data.address = {
+			streetNumber: address?.streetNumber,
+			city: address?.city,
+			state: address?.state,
+			postalCode: address?.postalCode,
+			country: address?.country,
+		};
+		const newLeadOpportunity = await Lead.create(data);
+
+		updateLeadCompany(name, companyName);
+
+		const existingContact = await Contact.findOne({
 			leadId: newLeadOpportunity._id,
 		});
 
-		if (!existingContact.length) {
+		if (!existingContact) {
 			await Contact.create({
 				leadId: newLeadOpportunity._id,
 				companyName,
 			});
 		}
-		res.status(201).json(newLeadOpportunity);
+		return res.status(201).json(newLeadOpportunity);
 	} catch (error) {
-		res.status(400).json({ message: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 const createLeadCompany = async (req, res) => {
 	const { name, companyName } = req.body;
 
 	try {
-		const newLeadCompany = await LeadCompany.create({
-			name,
-			companyName,
-		});
-
-		res.status(201).json(newLeadCompany);
+		const newLeadCompany = await updateLeadCompany(name, companyName);
+		return res.status(201).json(newLeadCompany);
 	} catch (error) {
-		res.status(400).json({ message: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
 const createMultipleLeadOpportunity = async (req, res) => {
 	const { newRecord, companyName } = req.body;
-
 	let leadsCreated = 0;
+
 	try {
 		for (const rowData of newRecord) {
 			const { abbreviation, address, name, email, industry, opportunityName, phone } = rowData;
 
+			const data = { abbreviation, name, companyName, email, industry, opportunityName, phone };
+			const existingLead = await Lead.findOne(data);
+
 			const { streetNumber, city, state, postalCode, country } = address;
-			await Lead.create({
-				abbreviation,
-				name,
-				companyName,
-				email,
-				industry,
-				opportunityName,
-				phone,
-				primaryAssignee: [],
-				productService: [],
-				region: "",
-				source: "",
-				stage: "",
-				supervisorAssignee: [],
-				address: { streetNumber, city, state, postalCode, country },
-			});
-			leadsCreated++;
+			if (!existingLead) {
+				data.address = { streetNumber, city, state, postalCode, country };
+				data.primaryAssignee = [];
+				data.productService = [];
+				data.region = "";
+				data.source = "";
+				data.stage = "";
+				data.supervisorAssignee = [];
+				await Lead.create(data);
+				leadsCreated++;
+			}
 		}
 
 		const leads = await Lead.find({ isDisbursed: false }).sort({
 			createdOn: -1,
 		});
-		res.status(200).json(leads);
+		return res.status(200).json(leads);
 	} catch (error) {
-		res.status(400).json({ message: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 const updateLeadDisburseStatus = async (id, salesperson) => {
@@ -328,7 +333,7 @@ const updateLeadDisburseStatus = async (id, salesperson) => {
 		const updatedData = { isDisbursed: true, disbursedTo: salesperson };
 		return await Lead.findByIdAndUpdate(id, { $set: updatedData }, { new: true });
 	} catch (error) {
-		console.log(error, "Error in updating");
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -362,9 +367,9 @@ const disburseLeads = async (req, res) => {
 			createdOn: -1,
 		});
 
-		res.status(201).json(updatedLeads);
+		return res.status(201).json(updatedLeads);
 	} catch (error) {
-		res.status(400).json({ message: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 
 	// try {
@@ -375,7 +380,7 @@ const disburseLeads = async (req, res) => {
 	// 	// const distributedLeads = distributeLeadsAmongTeamMembers(leads);
 	// 	res.status(201).json(distributedLeads);
 	// } catch (error) {
-	// 	res.status(400).json({ message: error.message });
+	// return res.status(500).json({ message: "Internal Server Error", error });
 	// }
 };
 
@@ -402,9 +407,9 @@ const confirmDisburseLeads = async (req, res) => {
 				await lead.save();
 			}
 		}
-		res.status(201).json("Disbursement confirmed successfully");
+		return res.status(200).json("Disbursement confirmed successfully");
 	} catch (error) {
-		res.status(400).json({ message: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -413,18 +418,17 @@ const updateLead = async (req, res) => {
 
 	try {
 		const updatedLead = await Lead.findByIdAndUpdate(id, { $set: req.body }, { new: true });
-		const existingContact = await Contact.find({ leadId: updatedLead._id });
-
-		if (!existingContact.length) {
+		const existingContact = await Contact.findOne({ leadId: updatedLead._id });
+		if (!existingContact) {
 			await Contact.create({
 				leadId: updatedLead._id,
 				companyName: req.body.companyName,
 			});
 		}
 
-		res.status(201).json(updatedLead);
+		return res.status(201).json(updatedLead);
 	} catch (error) {
-		res.status(400).json({ message: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 const deleteLead = async (req, res) => {
@@ -434,12 +438,12 @@ const deleteLead = async (req, res) => {
 			_id: id,
 		});
 		if (lead) {
-			res.status(200).json(`lead with id ${id} deleted successfully.`);
+			return res.status(200).json(`lead with id ${id} deleted successfully.`);
 		} else {
-			res.status(200).json("lead Details not found.");
+			return res.status(404).json({ message: "lead Details not found." });
 		}
 	} catch (error) {
-		res.status(404).json({ error: "Error deleting lead:", error });
+		return res.status(404).json({ message: "Error deleting lead:", error });
 	}
 };
 

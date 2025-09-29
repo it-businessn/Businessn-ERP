@@ -6,15 +6,11 @@ const EmployeePayInfo = require("../models/EmployeePayInfo");
 const { ROLES, EARNING_TYPE } = require("../services/data");
 
 const addEmployee = async (name, data) => {
-	const existingCompany = await findCompany("name", name);
-	data.companyId = existingCompany._id;
 	try {
-		const employeeRecord = await Employee.findOne({ email: data.email });
-		if (employeeRecord) {
-			return employeeRecord;
-		}
-		const newEmployee = await Employee.create(data);
+		const existingCompany = await findCompany("name", name);
+		data.companyId = existingCompany._id;
 
+		const newEmployee = await Employee.create(data);
 		if (newEmployee && existingCompany) {
 			existingCompany.employees.push(newEmployee._id);
 			await existingCompany.save();

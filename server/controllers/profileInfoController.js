@@ -25,9 +25,9 @@ const getAllProfileInfo = async (req, res) => {
 			createdOn: -1,
 		});
 
-		res.status(200).json(result);
+		return res.status(200).json(result);
 	} catch (error) {
-		res.status(500).json({ message: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -54,7 +54,7 @@ const getEmployeeProfileInfo = async (req, res) => {
 			return res.status(200).json(user);
 		}
 	} catch (error) {
-		res.status(404).json({ error: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -206,7 +206,9 @@ const addEmployeeProfileInfo = async (req, res) => {
 		}
 		const existingEmp = await Employee.findOne({
 			firstName,
+			middleName,
 			lastName,
+			email: userEmail || personalEmail || businessEmail,
 		});
 		let profileInfoEmpId = existingEmp?._id;
 		if (!existingEmp) {
@@ -224,7 +226,7 @@ const addEmployeeProfileInfo = async (req, res) => {
 		const newProfileInfo = await EmployeeProfileInfo.create(updatedData);
 		return res.status(201).json(newProfileInfo);
 	} catch (error) {
-		res.status(400).json({ message: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -258,7 +260,7 @@ const onBoardNewUser = async (req, res) => {
 		);
 		const newUserBankingInfo = await addUserBankInfo(newUserID, companyName, bankingInfo);
 
-		res.status(201).json({
+		return res.status(201).json({
 			newUserID,
 			newEmpPosition,
 			newPayInfo,
@@ -267,7 +269,7 @@ const onBoardNewUser = async (req, res) => {
 			newUserBankingInfo,
 		});
 	} catch (error) {
-		res.status(400).json({ message: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -326,7 +328,7 @@ const updateEmployeeProfileInfo = async (req, res) => {
 			return res.status(201).json(updatedProfileInfo);
 		}
 	} catch (error) {
-		res.status(400).json({ message: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 

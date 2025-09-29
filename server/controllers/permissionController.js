@@ -9,9 +9,9 @@ const {
 const getUserPermissions = async (req, res) => {
 	try {
 		const allPermissions = await UserPermissions.find();
-		res.status(200).json(allPermissions);
+		return res.status(200).json(allPermissions);
 	} catch (error) {
-		res.status(404).json({ error: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -47,7 +47,7 @@ const getPermission = async (req, res) => {
 		// 	console.log("deleted", deleteDuplicates);
 		// }
 	} catch (error) {
-		res.status(404).json({ error: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -79,10 +79,10 @@ const addPermission = async (req, res) => {
 
 			user.permissionType.push(item);
 			const newPermissions = await user.save();
-			res.status(201).json(newPermissions);
+			return res.status(201).json(newPermissions);
 		}
 	} catch (error) {
-		res.status(400).json({ message: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -184,9 +184,9 @@ const updatePermission = async (req, res) => {
 			user.permissionType.push(item);
 		}
 		const newPermissions = await user.save();
-		res.status(201).json(newPermissions);
+		return res.status(201).json(newPermissions);
 	} catch (error) {
-		res.status(400).json({ message: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 

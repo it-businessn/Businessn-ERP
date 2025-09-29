@@ -76,7 +76,7 @@ const getEmployeeBankingInfo = async (req, res) => {
 			newData.transitNum = transitNumber;
 			return res.status(200).json(newData);
 		}
-		return res.status(409).json("Record not found!");
+		return res.status(404).json({ message: "Record not found!" });
 	} catch (error) {
 		return res.status(500).json({ message: "Internal Server Error", error });
 	}
@@ -184,7 +184,7 @@ const updateEmployeeBankingInfo = async (req, res) => {
 			const updatedInfo = await updateBankingInfo(id, updatedData);
 			return res.status(201).json(updatedInfo);
 		}
-		return res.status(409).json("Record does not exist");
+		return res.status(404).json({ message: "Record does not exist" });
 	} catch (error) {
 		return res.status(500).json({ message: "Internal Server Error", error });
 	}

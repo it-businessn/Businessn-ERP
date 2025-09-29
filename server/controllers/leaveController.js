@@ -24,9 +24,9 @@ const getAllEmployeeLeaveRequests = async (req, res) => {
 			model: "Employee",
 			select: ["fullName", "email"],
 		});
-		res.status(200).json(leaveRequests);
+		return res.status(200).json(leaveRequests);
 	} catch (error) {
-		res.status(404).json({ error: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -37,9 +37,9 @@ const getEmployeeLeaveRequest = async (req, res) => {
 			companyName,
 			employeeId,
 		}).sort({ startDate: -1 });
-		res.status(200).json(leaveRequests);
+		return res.status(200).json(leaveRequests);
 	} catch (error) {
-		res.status(404).json({ error: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -58,7 +58,7 @@ const updateLeaveRequest = async (req, res) => {
 		);
 		return res.status(201).json(updatedRequest);
 	} catch (error) {
-		res.status(400).json({ message: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -66,17 +66,20 @@ const createLeaveRequest = async (req, res) => {
 	let { company, type, leaveType, startDate, endDate, employeeId, param_hours, source } = req.body;
 
 	try {
-		const { leaveHrs, leaveDays } = calculateLeaveDays(startDate, endDate);
-
 		const newRequest = {
 			employeeId,
 			startDate,
 			endDate,
 			companyName: company,
 			type: leaveType,
-			totalLeaveHrs: leaveHrs,
-			totalLeaveDays: leaveDays,
 		};
+		const existingRecord = await EmployeeLeave.findOne(newRequest);
+		if (existingRecord) {
+			return res.status(409).json({ message: "Request already exists" });
+		}
+		const { leaveHrs, leaveDays } = calculateLeaveDays(startDate, endDate);
+		newRequest.totalLeaveHrs = leaveHrs;
+		newRequest.totalLeaveDays = leaveDays;
 		const result = await EmployeeLeave.create(newRequest);
 
 		if (param_hours !== "Unpaid") {
@@ -98,9 +101,9 @@ const createLeaveRequest = async (req, res) => {
 			}
 			await Timesheet.insertMany(timesheetEntries);
 		}
-		res.status(201).json(result);
+		return res.status(201).json(result);
 	} catch (error) {
-		res.status(400).json({ message: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 

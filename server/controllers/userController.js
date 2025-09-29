@@ -70,9 +70,9 @@ const getAllEmployees = async (req, res) => {
 		}).sort({
 			firstName: 1,
 		});
-		res.status(200).json(result);
+		return res.status(200).json(result);
 	} catch (err) {
-		res.status(404).json({ error: err.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -92,9 +92,9 @@ const getUserActivity = async (req, res) => {
 				$lt: today,
 			},
 		});
-		res.status(200).json(result);
+		return res.status(200).json(result);
 	} catch (error) {
-		res.status(404).json({ error: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -108,9 +108,9 @@ const getPayrollActiveCompanyEmployeesCount = async (req, res) => {
 			empId: { $exists: true },
 		});
 
-		res.status(200).json(result);
+		return res.status(200).json(result);
 	} catch (error) {
-		res.status(404).json({ error: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -119,9 +119,9 @@ const getPayrollActiveCompanyEmployees = async (req, res) => {
 	try {
 		const result = await getPayrollActiveEmployees(companyName, deptName, payGroup);
 
-		res.status(200).json(result);
+		return res.status(200).json(result);
 	} catch (error) {
-		res.status(404).json({ error: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -129,9 +129,9 @@ const getPayrollInActiveCompanyEmployees = async (req, res) => {
 	const { companyName, deptName, payGroup } = req.params;
 	try {
 		const result = await getPayrollInActiveEmployees(companyName, deptName, payGroup);
-		res.status(200).json(result);
+		return res.status(200).json(result);
 	} catch (error) {
-		res.status(404).json({ error: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -139,9 +139,9 @@ const getPayrollTerminatedCompanyEmployees = async (req, res) => {
 	const { companyName, deptName, payGroup } = req.params;
 	try {
 		const result = await getPayrollTerminatedEmployees(companyName, deptName, payGroup);
-		res.status(200).json(result);
+		return res.status(200).json(result);
 	} catch (error) {
-		res.status(404).json({ error: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -160,9 +160,9 @@ const getCompanyUsers = async (req, res) => {
 			model: "Employee",
 			select: ["empId", "fullName"],
 		});
-		res.status(200).json(sortByEmpFullName(result));
+		return res.status(200).json(sortByEmpFullName(result));
 	} catch (error) {
-		res.status(404).json({ error: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -170,9 +170,9 @@ const getCompanyEmpEmployees = async (req, res) => {
 	const { companyName } = req.params;
 	try {
 		const result = await getUserEmploymentRoleInfo(companyName);
-		res.status(200).json(result);
+		return res.status(200).json(result);
 	} catch (error) {
-		res.status(404).json({ error: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -218,9 +218,9 @@ const getCompanyNonSalariedEmployees = async (req, res) => {
 			updatedResult = filterResultByDepartment(updatedResult, deptName);
 		}
 
-		res.status(200).json(sortByEmpFullName(updatedResult));
+		return res.status(200).json(sortByEmpFullName(updatedResult));
 	} catch (error) {
-		res.status(404).json({ error: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -264,9 +264,9 @@ const getCompanyEmployees = async (req, res) => {
 			updatedResult = filterResultByDepartment(updatedResult, deptName);
 		}
 
-		res.status(200).json(sortByEmpFullName(updatedResult));
+		return res.status(200).json(sortByEmpFullName(updatedResult));
 	} catch (error) {
-		res.status(404).json({ error: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -279,9 +279,9 @@ const getCompanyEmployeesCount = async (req, res) => {
 			empId: { $exists: true },
 		});
 
-		res.status(200).json(result);
+		return res.status(200).json(result);
 	} catch (error) {
-		res.status(404).json({ error: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -301,9 +301,9 @@ const groupEmployeesByRole = async (req, res) => {
 			acc[role].push({ name, empId });
 			return acc;
 		}, {});
-		res.status(200).json(grouped);
+		return res.status(200).json(grouped);
 	} catch (error) {
-		res.status(404).json({ error: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -314,9 +314,9 @@ const getAllGroupMembers = async (req, res) => {
 			"members._id": memberId,
 			companyName,
 		}).select("name modules members");
-		res.status(200).json(group);
+		return res.status(200).json(group);
 	} catch (error) {
-		res.status(404).json({ error: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -332,9 +332,9 @@ const getAllCompManagers = async (req, res) => {
 		});
 		result = result?.filter((emp) => emp?.empId);
 
-		res.status(200).json(result);
+		return res.status(200).json(result);
 	} catch (error) {
-		res.status(404).json({ error: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 const getAllAdmin = async (req, res) => {
@@ -347,9 +347,9 @@ const getAllAdmin = async (req, res) => {
 				$in: [ROLES.AUTH_ADMINISTRATOR, ROLES.ADMINISTRATOR],
 			},
 		});
-		res.status(200).json(result);
+		return res.status(200).json(result);
 	} catch (error) {
-		res.status(404).json({ error: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 const getAllManagers = async (req, res) => {
@@ -363,9 +363,9 @@ const getAllManagers = async (req, res) => {
 			},
 		});
 		result = result?.filter((emp) => emp?.empId);
-		res.status(200).json(result);
+		return res.status(200).json(result);
 	} catch (error) {
-		res.status(404).json({ error: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -380,9 +380,9 @@ const getAllSalesAgentsList = async (req, res) => {
 			},
 		});
 		result = result?.filter((emp) => emp?.empId);
-		res.status(200).json(result);
+		return res.status(200).json(result);
 	} catch (error) {
-		res.status(404).json({ error: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -404,9 +404,9 @@ const getAllSalesAgents = async (req, res) => {
 			.select("payrollStatus employeeNo positions employmentRole");
 
 		result = result?.filter((emp) => emp?.empId);
-		res.status(200).json(sortByEmpFullName(result));
+		return res.status(200).json(sortByEmpFullName(result));
 	} catch (error) {
-		res.status(404).json({ error: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -469,9 +469,9 @@ const sendMailPaystub = async (req, res) => {
 				);
 			}
 		}
-		res.status(201).json({ message: "Email sent successfully" });
+		return res.status(201).json({ message: "Email sent successfully" });
 	} catch (error) {
-		res.status(400).json({ message: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -575,9 +575,9 @@ const sendMailCreds = async (req, res) => {
 			}
 		}
 
-		res.status(201).json({ message: "Email sent successfully" });
+		return res.status(201).json({ message: "Email sent successfully" });
 	} catch (error) {
-		res.status(400).json({ message: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -590,6 +590,10 @@ const createMasterUser = async (req, res) => {
 		const approvedModules = Object.keys(selectedPermissions)?.filter(
 			(key) => selectedPermissions[key]["Section Access"] === true,
 		);
+		const existingUser = await Employee.findOne({ email });
+		if (existingUser) {
+			return res.status(409).json({ message: "User already exists" });
+		}
 		const employee = await addEmployee(company, {
 			firstName,
 			middleName,
@@ -611,9 +615,9 @@ const createMasterUser = async (req, res) => {
 			businessEmail: email,
 			personalPhoneNum: phoneNumber,
 		});
-		res.status(201).json(employee);
+		return res.status(201).json(employee);
 	} catch (error) {
-		res.status(400).json({ message: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -629,10 +633,10 @@ const updateMasterUser = async (req, res) => {
 					new: true,
 				},
 			);
-			res.status(201).json(updatedUser);
+			return res.status(201).json(updatedUser);
 		}
 	} catch (error) {
-		res.status(400).json({ message: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -701,9 +705,9 @@ const updateUser = async (req, res) => {
 			new: true,
 		});
 
-		res.status(201).json(updatedUser);
+		return res.status(201).json(updatedUser);
 	} catch (error) {
-		res.status(400).json({ message: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -723,9 +727,9 @@ const updateUserAssignedLeads = async (req, res) => {
 			);
 			await Employee.findByIdAndUpdate(user._id, { $set: { assignedLeads } }, { new: true });
 		}
-		res.status(200).json({ message: "Leads assignee updated successfully" });
+		return res.status(200).json({ message: "Leads assignee updated successfully" });
 	} catch (error) {
-		res.status(404).json({ error: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 

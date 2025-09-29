@@ -15,9 +15,9 @@ const { CURRENT_YEAR } = require("../services/data");
 const getAllSetup = async (req, res) => {
 	try {
 		const rule = await Setup.find({});
-		res.status(200).json(rule);
+		return res.status(200).json(rule);
 	} catch (error) {
-		res.status(404).json({ error: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -29,9 +29,9 @@ const getLocations = async (req, res) => {
 		}).sort({
 			name: 1,
 		});
-		res.status(200).json(locations);
+		return res.status(200).json(locations);
 	} catch (error) {
-		res.status(404).json({ error: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -43,9 +43,9 @@ const getPositionRoles = async (req, res) => {
 		}).sort({
 			name: 1,
 		});
-		res.status(200).json(roles);
+		return res.status(200).json(roles);
 	} catch (error) {
-		res.status(404).json({ error: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -57,9 +57,9 @@ const getCrews = async (req, res) => {
 		}).sort({
 			createdOn: -1,
 		});
-		res.status(200).json(crews);
+		return res.status(200).json(crews);
 	} catch (error) {
-		res.status(404).json({ error: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -72,9 +72,9 @@ const getRoles = async (req, res) => {
 		}).sort({
 			createdOn: -1,
 		});
-		res.status(200).json(roles);
+		return res.status(200).json(roles);
 	} catch (error) {
-		res.status(404).json({ error: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -82,13 +82,18 @@ const addLocation = async (req, res) => {
 	const { name, companyName } = req.body;
 
 	try {
-		const location = await Location.create({
+		const data = {
 			name,
 			companyName,
-		});
-		res.status(201).json(location);
+		};
+		const existingRecord = await Location.findOne(data);
+		if (existingRecord) {
+			return res.status(409).json({ message: "Location already exists" });
+		}
+		const location = await Location.create(data);
+		return res.status(201).json(location);
 	} catch (error) {
-		res.status(400).json({ message: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -96,15 +101,20 @@ const addCrew = async (req, res) => {
 	const { createdBy, crewName, companyName, include } = req.body;
 
 	try {
-		const newCrew = await Crew.create({
+		const data = {
 			name: crewName,
 			createdBy,
 			config: include,
 			companyName,
-		});
-		res.status(201).json(newCrew);
+		};
+		const existingRecord = await Crew.findOne(data);
+		if (existingRecord) {
+			return res.status(409).json({ message: "Crew already exists" });
+		}
+		const newCrew = await Crew.create(data);
+		return res.status(201).json(newCrew);
 	} catch (error) {
-		res.status(400).json({ message: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -119,9 +129,9 @@ const updateCrew = async (req, res) => {
 			companyName,
 		};
 		const crew = await Crew.findByIdAndUpdate(id, { $set: updatedData }, { new: true });
-		res.status(200).json(crew);
+		return res.status(200).json(crew);
 	} catch (error) {
-		console.log(error, "Error in updating");
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -139,9 +149,9 @@ const addRole = async (req, res) => {
 			const newRole = await EmployeeRole.create(data);
 			return res.status(201).json(newRole);
 		}
-		res.status(400).json({ error: "Role already exists!" });
+		return res.status(409).json({ message: "Role already exists!" });
 	} catch (error) {
-		res.status(400).json({ message: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -193,9 +203,9 @@ const addPositionRole = async (req, res) => {
 			const newRole = await EmploymentPositionRole.create(roleData);
 			return res.status(201).json(newRole);
 		}
-		res.status(400).json({ error: "Role already exists!" });
+		return res.status(409).json({ message: "Role already exists!" });
 	} catch (error) {
-		res.status(400).json({ message: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -213,7 +223,7 @@ const getCC = async (req, res) => {
 		}
 		return res.status(200).json(cc);
 	} catch (error) {
-		res.status(404).json({ error: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -231,7 +241,7 @@ const getDepartments = async (req, res) => {
 		}
 		return res.status(200).json(department);
 	} catch (error) {
-		res.status(404).json({ error: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -249,9 +259,9 @@ const addCC = async (req, res) => {
 			const newCC = await CostCenter.create(data);
 			return res.status(201).json(newCC);
 		}
-		res.status(400).json({ error: "Cost Center of same name already exists!" });
+		return res.status(409).json({ message: "Cost Center of same name already exists!" });
 	} catch (error) {
-		res.status(400).json({ message: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -259,14 +269,19 @@ const addDepartment = async (req, res) => {
 	const { name, description, companyName } = req.body;
 
 	try {
-		const newDepartment = await Department.create({
+		const data = {
 			name,
 			description,
 			companyName,
-		});
-		res.status(201).json(newDepartment);
+		};
+		const existingRecord = await Department.findOne(data);
+		if (existingRecord) {
+			return res.status(409).json({ message: "Department already exists" });
+		}
+		const newDepartment = await Department.create(data);
+		return res.status(201).json(newDepartment);
 	} catch (error) {
-		res.status(400).json({ message: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -276,9 +291,9 @@ const getModules = async (req, res) => {
 		const module = await Module.find({ companyName }).sort({
 			createdOn: -1,
 		});
-		res.status(200).json(module);
+		return res.status(200).json(module);
 	} catch (error) {
-		res.status(404).json({ error: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -286,21 +301,19 @@ const addModule = async (req, res) => {
 	const { name, description, companyName } = req.body;
 
 	try {
-		const checkModuleExists = await Module.findOne({
+		const data = {
 			name,
 			companyName,
-		});
+			description,
+		};
+		const checkModuleExists = await Module.findOne(data);
 		if (!checkModuleExists) {
-			const newModule = await Module.create({
-				name,
-				description,
-				companyName,
-			});
+			const newModule = await Module.create(data);
 			return res.status(201).json(newModule);
 		}
-		res.status(400).json({ error: "Module of same name already exists!" });
+		return res.status(409).json({ message: "Module of same name already exists!" });
 	} catch (error) {
-		res.status(400).json({ message: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -308,9 +321,9 @@ const updateModule = async (req, res) => {
 	const { id } = req.params;
 	try {
 		const setup = await Module.findByIdAndUpdate(id, { $set: req.body }, { new: true });
-		res.status(200).json(setup);
+		return res.status(200).json(setup);
 	} catch (error) {
-		console.log(error, "Error in updating");
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -326,9 +339,9 @@ const getGroups = async (req, res) => {
 			);
 			return group;
 		});
-		res.status(200).json(groups);
+		return res.status(200).json(groups);
 	} catch (error) {
-		res.status(404).json({ error: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -343,9 +356,9 @@ const addGroup = async (req, res) => {
 		if (!checkGroupExists) {
 			const newModule = await Group.create({
 				name,
+				companyName: company,
 				modules: baseModule,
 				admin,
-				companyName: company,
 				payrollActivated,
 				scheduleFrequency: req.body?.payFrequency,
 			});
@@ -354,9 +367,9 @@ const addGroup = async (req, res) => {
 			}
 			return res.status(201).json(newModule);
 		}
-		res.status(400).json({ error: "Paygroup of same name already exists!" });
+		return res.status(409).json({ message: "Paygroup of same name already exists!" });
 	} catch (error) {
-		res.status(400).json({ message: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -520,14 +533,14 @@ const updateGroup = async (req, res) => {
 	try {
 		// 	if (scheduleSettings && !scheduleSettings.length && payrollActivated) {
 		// 		await addPaygroupSchedules(id);
-		// 		return res.status(200).json("Added schedules");
+		// 		return res.status(201).json("Added schedules");
 		// 	}
 
 		if (req.body?._id) delete req.body._id;
 		const setup = await updatePayGroup(id, req.body);
-		res.status(200).json(setup);
+		return res.status(200).json(setup);
 	} catch (error) {
-		console.log(error, "Error in updating");
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -537,9 +550,9 @@ const getEmpTypes = async (req, res) => {
 		const empTypes = await EmploymentType.find({ companyName }).sort({
 			createdOn: -1,
 		});
-		res.status(200).json(empTypes);
+		return res.status(200).json(empTypes);
 	} catch (error) {
-		res.status(404).json({ error: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -547,14 +560,19 @@ const addEmpType = async (req, res) => {
 	const { name, description, companyName } = req.body;
 
 	try {
-		const newEmpType = await EmploymentType.create({
+		const data = {
 			name,
 			description,
 			companyName,
-		});
-		res.status(201).json(newEmpType);
+		};
+		const existingRecord = await EmploymentType.findOne(data);
+		if (existingRecord) {
+			return res.status(409).json({ message: "Employment Type already exists" });
+		}
+		const newEmpType = await EmploymentType.create(data);
+		return res.status(201).json(newEmpType);
 	} catch (error) {
-		res.status(400).json({ message: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -563,9 +581,9 @@ const updateSetUp = async (req, res) => {
 	try {
 		const updatedData = req.body;
 		const setup = await Setup.findByIdAndUpdate(id, { $set: updatedData }, { new: true });
-		res.status(200).json(setup);
+		return res.status(200).json(setup);
 	} catch (error) {
-		console.log(error, "Error in updating");
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -573,15 +591,20 @@ const addSetUpRule = async (req, res) => {
 	const { isIdleLeadReassignment, idleTimeHours, idleTimeMinutes, AssignLeadTo } = req.body;
 
 	try {
-		const newSetup = await Setup.create({
+		const data = {
 			isIdleLeadReassignment,
 			idleTimeHours,
 			idleTimeMinutes,
 			AssignLeadTo,
-		});
-		res.status(201).json(newSetup);
+		};
+		const existingRecord = await Setup.findOne(data);
+		if (existingRecord) {
+			return res.status(409).json({ message: "Setup rule already exists" });
+		}
+		const newSetup = await Setup.create(data);
+		return res.status(201).json(newSetup);
 	} catch (error) {
-		res.status(400).json({ message: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 

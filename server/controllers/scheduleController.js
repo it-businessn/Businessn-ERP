@@ -8,9 +8,9 @@ const Crew = require("../models/Crew");
 const getShifts = async (req, res) => {
 	try {
 		const shifts = await EmployeeShift.find({}).sort({ createdOn: -1 });
-		res.status(200).json(shifts);
+		return res.status(200).json(shifts);
 	} catch (error) {
-		res.status(404).json({ error: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -28,9 +28,9 @@ const getShiftByDate = async (req, res) => {
 				$lt: today,
 			},
 		});
-		res.status(200).json(shifts);
+		return res.status(200).json(shifts);
 	} catch (error) {
-		res.status(404).json({ error: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -155,7 +155,7 @@ const getWorkWeekEmpShifts = async (req, res) => {
 
 		return res.status(200).json(shifts.sort((a, b) => a.name.localeCompare(b.name)));
 	} catch (error) {
-		res.status(404).json({ error: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -173,9 +173,9 @@ const getWorkShiftByWeek = async (req, res) => {
 				$lte: endOfWeek,
 			},
 		});
-		res.status(200).json(shifts);
+		return res.status(200).json(shifts);
 	} catch (error) {
-		res.status(404).json({ error: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -202,9 +202,9 @@ const getWorkShiftByDate = async (req, res) => {
 						},
 						empName,
 				  });
-		res.status(200).json(shifts);
+		return res.status(200).json(shifts);
 	} catch (error) {
-		res.status(404).json({ error: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -221,9 +221,9 @@ const getEmpWorkShiftByDate = async (req, res) => {
 			// },
 			empName,
 		});
-		res.status(200).json(shifts);
+		return res.status(200).json(shifts);
 	} catch (error) {
-		res.status(404).json({ error: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -329,9 +329,9 @@ const addWorkShifts = async (req, res) => {
 		}
 		// }
 		await WorkShift.insertMany(shiftsToSave);
-		res.status(201).json(shiftsToSave);
+		return res.status(201).json(shiftsToSave);
 	} catch (error) {
-		res.status(400).json({ message: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -350,9 +350,9 @@ const addShifts = async (req, res) => {
 	});
 	try {
 		const shift = await newShift.save();
-		res.status(201).json(shift);
+		return res.status(201).json(shift);
 	} catch (error) {
-		res.status(400).json({ message: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -439,7 +439,7 @@ const updateShift = async (req, res) => {
 
 		// return res.status(201).json({ message: "Shifts upserted or updated successfully" });
 	} catch (error) {
-		res.status(400).json({ message: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 

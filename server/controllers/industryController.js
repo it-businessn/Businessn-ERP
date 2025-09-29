@@ -5,7 +5,7 @@ const getIndustry = async (req, res) => {
 		const industry = await IndustryType.find({}).sort({ date: -1 });
 		res.json(industry);
 	} catch (error) {
-		res.status(500).json({ message: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -13,13 +13,17 @@ const createIndustry = async (req, res) => {
 	const { name } = req.body;
 
 	try {
+		const existingRecord = await IndustryType.findOne({ name });
+		if (existingRecord) {
+			return res.status(409).json({ message: "Industry Type already exists" });
+		}
 		const newIndustryType = await IndustryType.create({
 			name,
 			date: Date.now(),
 		});
-		res.status(201).json(newIndustryType);
+		return res.status(201).json(newIndustryType);
 	} catch (error) {
-		res.status(400).json({ message: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
