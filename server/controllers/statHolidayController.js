@@ -111,9 +111,9 @@ const getStatHoliday = async (req, res) => {
 	const { companyName, year } = req.params;
 	try {
 		const holidays = await getHolidays({ companyName, year });
-		res.status(200).json(holidays);
+		return res.status(200).json(holidays);
 	} catch (error) {
-		res.status(404).json({ error: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -121,15 +121,36 @@ const addStatHoliday = async (req, res) => {
 	const { name, date, company } = req.body;
 
 	try {
-		const newHoliday = await Holiday.create({
+		const data = {
 			name,
 			date,
 			companyName: company,
-			year: moment(date).format("YYYY"),
-		});
-		res.status(201).json(newHoliday);
+		};
+		const existingRecord = await Holiday.findOne(data);
+		if (existingRecord) {
+			return res.status(409).json({ message: "Record already exists" });
+		}
+
+		data.year = moment(date).format("YYYY");
+		const newHoliday = await Holiday.create(data);
+		return res.status(201).json(newHoliday);
 	} catch (error) {
-		res.status(400).json({ message: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
+	}
+};
+
+const updateStatHoliday = async (req, res) => {
+	const { id } = req.params;
+	try {
+		const existingInfo = await Holiday.findById(id);
+		if (existingInfo) {
+			if (req.body?._id) delete req.body._id;
+			const updatedInfo = await updateHolidayRecord(id, req.body);
+			return res.status(201).json(updatedInfo);
+		}
+		return res.status(404).json({ message: "Record not found." });
+	} catch (error) {
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -140,15 +161,21 @@ const deleteStatHoliday = async (req, res) => {
 		if (resource) {
 			res.status(200).json(`Holiday with id ${id} deleted successfully.`);
 		} else {
-			res.status(200).json("Holiday Details not found.");
+			res.status(404).json("Holiday Details not found.");
 		}
 	} catch (error) {
 		res.status(404).json({ error: "Error deleting Holiday:", error });
 	}
 };
 
+const updateHolidayRecord = async (id, data) =>
+	await Holiday.findByIdAndUpdate(id, data, {
+		new: true,
+	});
+
 module.exports = {
 	addStatHoliday,
+	updateStatHoliday,
 	addStatHolidayTimesheet,
 	getHolidays,
 	getStatHoliday,

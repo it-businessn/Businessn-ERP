@@ -46,6 +46,10 @@ const SettingService = {
 		return apiService.delete(`/holiday/${id}`, data, id);
 	},
 
+	async updateHoliday(data, id) {
+		return apiService.put(`/holiday/${id}`, data, id);
+	},
+
 	async addRole(data) {
 		return apiService.post("/setup/roles", data);
 	},
