@@ -67,7 +67,7 @@ export const MemberTable = (props) => {
 			onClose();
 		} catch (error) {
 			// toast(TOAST.ERROR);
-			// setError(error.response.data.error);
+			// setError(error.response.data.message);
 			console.log(error);
 		}
 	};

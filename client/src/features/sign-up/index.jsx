@@ -26,12 +26,12 @@ import BaseModulePanel from "./BaseModulePanel";
 import DepartmentsPanel from "./DepartmentsPanel";
 // import EmploymentPanel from "./EmploymentPanel";
 import { redirectLogin } from "api";
+import { tabScrollCss } from "erp-modules/payroll/onboard-user/customInfo";
 import useCompanies from "hooks/useCompanies";
 import useDepartment from "hooks/useDepartment";
 import LocalStorageService from "services/LocalStorageService";
 import MultiSelectControl from "./MultiSelectControl";
 import RolesPanel from "./RolesPanel";
-import { tabScrollCss } from "erp-modules/payroll/onboard-user/customInfo";
 // import CompaniesPanel from "features/setup/company/CompaniesPanel";
 // import signUpImg from "../../assets/logos/BusinessN_dark.jpg";
 
@@ -79,7 +79,7 @@ const SignUp = ({ isModal, setRefresh, onClose, hideCompany }) => {
 		} catch (error) {
 			setIsLoading(false);
 			console.error("Error adding user:", error?.response?.data);
-			setError(error?.response?.data?.error);
+			setError(error?.response?.data?.message);
 		}
 	};
 

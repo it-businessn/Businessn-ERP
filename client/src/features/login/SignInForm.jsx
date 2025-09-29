@@ -60,7 +60,7 @@ const SignInForm = ({ title, isMobile }) => {
 
 			resetForm();
 		} catch (error) {
-			setError(error?.response?.data?.error);
+			setError(error?.response?.data?.message);
 		} finally {
 			setIsLoading(false);
 		}

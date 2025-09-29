@@ -34,7 +34,7 @@ const ModuleForm = ({ companyName, setOptionDataRefresh, handleClose, modules })
 		} catch (error) {
 			toast({
 				title: "Error",
-				description: error?.response?.data?.error,
+				description: error?.response?.data?.message,
 				status: "error",
 				duration: 3000,
 				isClosable: true,

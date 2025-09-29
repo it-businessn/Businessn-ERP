@@ -48,7 +48,7 @@ const UserList = ({ employees }) => {
 			onClose();
 		} catch (error) {
 			toast(TOAST.ERROR);
-			// setError(error.response.data.error);
+			// setError(error.response.data.message);
 			console.log(error);
 		}
 	};
@@ -64,7 +64,7 @@ const UserList = ({ employees }) => {
 			// onClose();
 		} catch (error) {
 			toast(TOAST.ERROR);
-			// setError(error.data.error);
+			// setError(error.data.message);
 			console.log(error);
 		}
 	};

@@ -60,7 +60,7 @@ const ChangePassword = ({ setPasswordMode, setError, error }) => {
 			setPasswordMode(false);
 		} catch (error) {
 			console.error("Error changing password:", error?.response?.data);
-			setError(error?.response?.data?.error);
+			setError(error?.response?.data?.message);
 		}
 	};
 	return (

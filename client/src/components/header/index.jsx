@@ -16,7 +16,7 @@ const Navbar = ({ handleClick, companyName, companyId, user, setUser, isMobile }
 			redirectLogin();
 			setUser(null);
 		} catch (error) {
-			console.log(error?.response?.data?.error);
+			console.log(error?.response?.data?.message);
 		}
 	};
 

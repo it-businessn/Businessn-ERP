@@ -20,7 +20,7 @@ const ForgotPassword = () => {
 			const { data } = await PasswordService.sendPassword({ email });
 			setCaptionTitle(data.message);
 		} catch (error) {
-			setErrorMessage(error?.response?.data?.error);
+			setErrorMessage(error?.response?.data?.message);
 		}
 	};
 	const LogoContent = () =>
