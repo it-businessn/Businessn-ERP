@@ -19,9 +19,9 @@ const getAffiliateProfileInfo = async (req, res) => {
 			createdOn: -1,
 		});
 
-		res.status(200).json(result);
+		return res.status(200).json(result);
 	} catch (error) {
-		res.status(500).json({ message: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -31,14 +31,6 @@ const getEmployeeProfileInfo = async (req, res) => {
 		const sin_key = Buffer.from(process.env.SIN_ENCRYPTION_KEY, "hex");
 
 		const result = await findEmployeeProfileInfo(empId, companyName);
-		if (result) {
-			if (!result?.SIN?.includes("*") && result?.SINIv && isNaN(Number(result?.SIN))) {
-				result.SIN = decryptData(result?.SIN, sin_key, result?.SINIv).replace(/.(?=.{3})/g, "*");
-			} else {
-				result.SIN = result.SIN?.replace(/.(?=.{3})/g, "*") || "";
-			}
-			return res.status(200).json(result);
-		}
 
 		if (!result) {
 			const user = await Employee.findById(empId)
@@ -46,10 +38,20 @@ const getEmployeeProfileInfo = async (req, res) => {
 				.sort({
 					createdOn: -1,
 				});
+			if (!user) {
+				return res.status(404).json({ message: "User not found" });
+			}
 			return res.status(200).json(user);
 		}
+		if (result) {
+			result.SIN =
+				!result?.SIN?.includes("*") && result?.SINIv && isNaN(Number(result?.SIN))
+					? decryptData(result?.SIN, sin_key, result?.SINIv).replace(/.(?=.{3})/g, "*")
+					: result.SIN?.replace(/.(?=.{3})/g, "*") || "";
+			return res.status(200).json(result);
+		}
 	} catch (error) {
-		res.status(404).json({ error: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -69,63 +71,59 @@ const addAffiliateProfileInfo = async (req, res) => {
 	} = req.body;
 	try {
 		const defaultCompany = COMPANIES.BUSINESSN_ORG;
-		const existingProfileInfo = await EmployeeProfileInfo.findOne({
-			companyName: defaultCompany,
-			firstName,
-			lastName,
-			personalEmail: email,
-			isAffiliate: true,
-		});
 		const updatedData = {
 			companyName: defaultCompany,
+			firstName,
+			lastName,
 			personalEmail: email,
-			firstName,
-			lastName,
-			province,
-			country,
 			isAffiliate: true,
-			contentToShare,
-			marketingComms,
-			insta,
-			linkedIn,
-			tiktok,
-			youtube,
 		};
-		if (existingProfileInfo) {
-			const updatedProfileInfo = await updateProfileInfo(existingProfileInfo._id, updatedData);
-			// const data = {
-			// 	personalEmail: email,
-			// 	province,
-			// 	country,
-			// 	firstName,
-			// 	lastName,
-			// };
-			// await updateEmployee(existingProfileInfo?.empId, data);
-			return res.status(201).json(updatedProfileInfo);
-		}
-		const existingEmp = await Employee.findOne({
-			firstName,
-			lastName,
-			companyName: defaultCompany,
-		});
-		let profileInfoEmpId = existingEmp?._id;
-		if (!existingEmp) {
-			const newRecord = {
+		const existingProfileInfo = await EmployeeProfileInfo.findOne(updatedData);
+		if (!existingProfileInfo) {
+			const existingEmp = await Employee.findOne({
 				firstName,
 				lastName,
-				email,
-				fullName: `${firstName} ${lastName}`,
-			};
-			const newEmployee = await addEmployee(defaultCompany, newRecord);
-			profileInfoEmpId = newEmployee._id;
+				companyName: defaultCompany,
+			});
+			let profileInfoEmpId = existingEmp?._id;
+			if (!existingEmp) {
+				const newRecord = {
+					firstName,
+					lastName,
+					email,
+					fullName: `${firstName} ${lastName}`,
+				};
+				const newEmployee = await addEmployee(defaultCompany, newRecord);
+				profileInfoEmpId = newEmployee._id;
+			}
+			updatedData.empId = profileInfoEmpId;
+			updatedData.affiliateCode = nanoid(8);
+			const newProfileInfo = await EmployeeProfileInfo.create(updatedData);
+			const referralLink = `${process.env.BASE_URL_LIVE}/ref=${newProfileInfo.affiliateCode}`;
+			return res.status(201).json({ newProfileInfo, referralLink });
 		}
-		updatedData.empId = profileInfoEmpId;
-		updatedData.affiliateCode = nanoid(8);
-		const newProfileInfo = await EmployeeProfileInfo.create(updatedData);
-		const referralLink = `${process.env.BASE_URL_LIVE}/ref=${newProfileInfo.affiliateCode}`;
-		return res.status(201).json({ newProfileInfo, referralLink });
+
+		updatedData.province = province;
+		updatedData.country = country;
+		updatedData.contentToShare = contentToShare;
+		updatedData.marketingComms = marketingComms;
+		updatedData.insta = insta;
+		updatedData.linkedIn = linkedIn;
+		updatedData.tiktok = tiktok;
+		updatedData.youtube = youtube;
+
+		const updatedProfileInfo = await updateProfileInfo(existingProfileInfo._id, updatedData);
+		// const data = {
+		// 	personalEmail: email,
+		// 	province,
+		// 	country,
+		// 	firstName,
+		// 	lastName,
+		// };
+		// await updateEmployee(existingProfileInfo?.empId, data);
+		return res.status(201).json(updatedProfileInfo);
 	} catch (error) {
-		res.status(400).json({ message: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -145,10 +143,10 @@ const addAffiliateSale = async (req, res) => {
 			});
 			return res.status(201).json(newPayout);
 		} else {
-			return res.status(404).json({ error: "Affiliate not found" });
+			return res.status(404).json({ message: "Affiliate not found" });
 		}
 	} catch (error) {
-		res.status(400).json({ message: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 

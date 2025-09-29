@@ -6,7 +6,7 @@ const getContacts = async (req, res) => {
 		const contacts = await Contact.find({}).populate("leadId");
 		res.json(contacts);
 	} catch (error) {
-		res.status(500).json({ message: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -20,9 +20,9 @@ const getContact = async (req, res) => {
 				{ leadId: id, companyName },
 			],
 		}).populate("leadId");
-		res.status(200).json(contact);
+		return res.status(200).json(contact);
 	} catch (error) {
-		res.status(404).json({ error: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -36,10 +36,10 @@ const getOnboardedCompanyContact = async (req, res) => {
 				match: { stage: "T4" },
 			})
 			.select("leadId");
-		const filteredContacts = contacts.filter((contact) => contact.leadId);
-		res.status(200).json(filteredContacts);
+		const filteredContacts = contacts.filter((contact) => contact?.leadId);
+		return res.status(200).json(filteredContacts);
 	} catch (error) {
-		res.status(404).json({ error: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -48,9 +48,9 @@ const getCompanyContact = async (req, res) => {
 
 	try {
 		const contact = await Contact.find({ companyName }).populate("leadId");
-		res.status(200).json(contact);
+		return res.status(200).json(contact);
 	} catch (error) {
-		res.status(404).json({ error: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -69,7 +69,11 @@ const createContact = async (req, res) => {
 	} = req.body;
 
 	try {
-		const newContact = await Contact.create({
+		const existData = await Contact.findOne(req.body);
+		if (existData) {
+			return res.status(409).json({ message: "Contact already exists" });
+		}
+		const data = {
 			companyAddress,
 			companyName,
 			date: Date.now(),
@@ -81,10 +85,11 @@ const createContact = async (req, res) => {
 			phone,
 			primaryContactAddress,
 			revenue,
-		});
-		res.status(201).json(newContact);
+		};
+		const newContact = await Contact.create(data);
+		return res.status(201).json(newContact);
 	} catch (error) {
-		res.status(400).json({ message: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -94,9 +99,9 @@ const updateContact = async (req, res) => {
 	try {
 		const updatedContact = await Contact.findByIdAndUpdate(contactId, req.body, { new: true });
 
-		res.status(201).json(updatedContact);
+		return res.status(201).json(updatedContact);
 	} catch (error) {
-		res.status(400).json({ message: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -113,7 +118,7 @@ const followUpContact = async (req, res) => {
 			message: "A followup email has been sent to your email address!",
 		});
 	} catch (error) {
-		res.status(400).json({ message: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 

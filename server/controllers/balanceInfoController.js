@@ -46,9 +46,9 @@ const getAllBalanceInfo = async (req, res) => {
 			createdOn: -1,
 		});
 
-		res.status(200).json(result);
+		return res.status(200).json(result);
 	} catch (error) {
-		res.status(500).json({ message: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -80,9 +80,9 @@ const getEmployeeBalanceInfo = async (req, res) => {
 			result.pensionERContribution = showPercent(result.pensionERContribution);
 		}
 
-		res.status(200).json(result);
+		return res.status(200).json(result);
 	} catch (error) {
-		res.status(404).json({ error: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -156,10 +156,10 @@ const addEmployeeBalanceInfo = async (req, res) => {
 		// }
 		if (!existingBalanceInfo) {
 			const newBalanceInfo = await EmployeeBalanceInfo.create(data);
-			res.status(201).json(newBalanceInfo);
+			return res.status(201).json(newBalanceInfo);
 		}
 	} catch (error) {
-		res.status(400).json({ message: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -169,71 +169,71 @@ const updateEmployeeBalanceInfo = async (req, res) => {
 		// const { empId, companyName } = req.body;
 		// const existingBalanceInfo = await findEmployeeBalanceInfo(empId, companyName);
 		const existingBalanceInfo = await EmployeeBalanceInfo.findById(id);
-		if (existingBalanceInfo) {
-			if (req.body?._id) delete req.body._id;
-			const {
-				empId,
-				companyName,
-				carryFwd,
-				typeOfVacationTreatment,
-				vacationPayPercent,
-				typeOfUnionDuesTreatment,
-				unionDuesContribution,
-				typeOfExtendedHealthEETreatment,
-				extendedHealthEEContribution,
-				typeOfDentalEETreatment,
-				dentalEEContribution,
-				typeOfPensionEETreatment,
-				pensionEEContribution,
-				typeOfExtendedHealthERTreatment,
-				extendedHealthERContribution,
-				typeOfDentalERTreatment,
-				dentalERContribution,
-				typeOfPensionERTreatment,
-				pensionERContribution,
-			} = req.body;
-
-			const data = {
-				empId,
-				companyName,
-				// carryFwd,
-				typeOfVacationTreatment,
-				vacationPayPercent: getPercent(vacationPayPercent),
-				typeOfUnionDuesTreatment,
-				unionDuesContribution: typeOfUnionDuesTreatment?.includes("%")
-					? getPercent(unionDuesContribution)
-					: unionDuesContribution || 0,
-				typeOfExtendedHealthEETreatment,
-				extendedHealthEEContribution: typeOfExtendedHealthEETreatment?.includes("%")
-					? getPercent(extendedHealthEEContribution)
-					: extendedHealthEEContribution || 0,
-				typeOfDentalEETreatment,
-				dentalEEContribution: typeOfDentalEETreatment?.includes("%")
-					? getPercent(dentalEEContribution)
-					: dentalEEContribution || 0,
-				typeOfPensionEETreatment,
-				pensionEEContribution: typeOfPensionEETreatment?.includes("%")
-					? getPercent(pensionEEContribution)
-					: pensionEEContribution || 0,
-				typeOfExtendedHealthERTreatment,
-				extendedHealthERContribution: typeOfExtendedHealthERTreatment?.includes("%")
-					? getPercent(extendedHealthERContribution)
-					: extendedHealthERContribution || 0,
-				typeOfDentalERTreatment,
-				dentalERContribution: typeOfDentalERTreatment?.includes("%")
-					? getPercent(dentalERContribution)
-					: dentalERContribution || 0,
-				typeOfPensionERTreatment,
-				pensionERContribution: typeOfPensionERTreatment?.includes("%")
-					? getPercent(pensionERContribution)
-					: pensionERContribution || 0,
-			};
-			const updatedInfo = await updateBalanceInfo(id, data);
-			return res.status(201).json(updatedInfo);
+		if (!existingBalanceInfo) {
+			return res.status(404).json({ message: "Record does not exist" });
 		}
-		return res.status(201).json("Record does not exist");
+		if (req.body?._id) delete req.body._id;
+		const {
+			empId,
+			companyName,
+			carryFwd,
+			typeOfVacationTreatment,
+			vacationPayPercent,
+			typeOfUnionDuesTreatment,
+			unionDuesContribution,
+			typeOfExtendedHealthEETreatment,
+			extendedHealthEEContribution,
+			typeOfDentalEETreatment,
+			dentalEEContribution,
+			typeOfPensionEETreatment,
+			pensionEEContribution,
+			typeOfExtendedHealthERTreatment,
+			extendedHealthERContribution,
+			typeOfDentalERTreatment,
+			dentalERContribution,
+			typeOfPensionERTreatment,
+			pensionERContribution,
+		} = req.body;
+
+		const data = {
+			empId,
+			companyName,
+			// carryFwd,
+			typeOfVacationTreatment,
+			vacationPayPercent: getPercent(vacationPayPercent),
+			typeOfUnionDuesTreatment,
+			unionDuesContribution: typeOfUnionDuesTreatment?.includes("%")
+				? getPercent(unionDuesContribution)
+				: unionDuesContribution || 0,
+			typeOfExtendedHealthEETreatment,
+			extendedHealthEEContribution: typeOfExtendedHealthEETreatment?.includes("%")
+				? getPercent(extendedHealthEEContribution)
+				: extendedHealthEEContribution || 0,
+			typeOfDentalEETreatment,
+			dentalEEContribution: typeOfDentalEETreatment?.includes("%")
+				? getPercent(dentalEEContribution)
+				: dentalEEContribution || 0,
+			typeOfPensionEETreatment,
+			pensionEEContribution: typeOfPensionEETreatment?.includes("%")
+				? getPercent(pensionEEContribution)
+				: pensionEEContribution || 0,
+			typeOfExtendedHealthERTreatment,
+			extendedHealthERContribution: typeOfExtendedHealthERTreatment?.includes("%")
+				? getPercent(extendedHealthERContribution)
+				: extendedHealthERContribution || 0,
+			typeOfDentalERTreatment,
+			dentalERContribution: typeOfDentalERTreatment?.includes("%")
+				? getPercent(dentalERContribution)
+				: dentalERContribution || 0,
+			typeOfPensionERTreatment,
+			pensionERContribution: typeOfPensionERTreatment?.includes("%")
+				? getPercent(pensionERContribution)
+				: pensionERContribution || 0,
+		};
+		const updatedInfo = await updateBalanceInfo(id, data);
+		return res.status(201).json(updatedInfo);
 	} catch (error) {
-		res.status(400).json({ message: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 

@@ -4,9 +4,9 @@ const Event = require("../models/Event");
 const getEvents = async (req, res) => {
 	try {
 		const events = await Event.find({}).sort({ createdOn: -1 });
-		res.status(200).json(events);
+		return res.status(200).json(events);
 	} catch (error) {
-		res.status(404).json({ error: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -17,14 +17,13 @@ const getCompanyEvents = async (req, res) => {
 		const events = await Event.find({ companyName }).sort({
 			createdOn: -1,
 		});
-		res.status(200).json(events);
+		return res.status(200).json(events);
 	} catch (error) {
-		res.status(404).json({ error: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
-const getUser = async (fullName) =>
-	await Employee.findOne({ fullName }).select("_id");
+const getUser = async (fullName) => await Employee.findOne({ fullName }).select("_id");
 
 const getUserCalendarEvent = async (req, res) => {
 	const { userName, companyName } = req.params;
@@ -36,9 +35,9 @@ const getUserCalendarEvent = async (req, res) => {
 		}).sort({
 			createdOn: -1,
 		});
-		res.status(200).json(events);
+		return res.status(200).json(events);
 	} catch (error) {
-		res.status(404).json({ error: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -53,9 +52,9 @@ const getUserEvent = async (req, res) => {
 		}).sort({
 			createdOn: -1,
 		});
-		res.status(200).json(events);
+		return res.status(200).json(events);
 	} catch (error) {
-		res.status(404).json({ error: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -65,57 +64,32 @@ const getEvent = async (req, res) => {
 		const events = await Event.find({ eventType, companyName }).sort({
 			createdOn: -1,
 		});
-		res.status(200).json(events);
+		return res.status(200).json(events);
 	} catch (error) {
-		res.status(404).json({ error: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
 const createEvent = async (req, res) => {
-	const {
-		description,
-		eventType,
-		meetingAttendees,
-		fromDate,
-		fromTime,
-		toDate,
-		toTime,
-		eventLink,
-		location,
-		companyName,
-		createdBy,
-	} = req.body;
 	try {
-		const newEvent = await Event.create({
-			description,
-			eventType,
-			meetingAttendees,
-			fromDate,
-			fromTime,
-			toDate,
-			toTime,
-			eventLink,
-			location,
-			companyName,
-			createdBy,
-		});
-		res.status(201).json(newEvent);
+		const existData = await Event.findOne(req.body);
+		if (existData) {
+			return res.status(409).json({ message: "Event already exists" });
+		}
+		const newEvent = await Event.create(req.body);
+		return res.status(201).json(newEvent);
 	} catch (error) {
-		res.status(400).json({ message: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
 const updateEvent = async (req, res) => {
 	const { id } = req.params;
 	try {
-		const event = await Event.findByIdAndUpdate(
-			id,
-			{ $set: req.body },
-			{ new: true },
-		);
-		res.status(200).json(event);
+		const event = await Event.findByIdAndUpdate(id, { $set: req.body }, { new: true });
+		return res.status(200).json(event);
 	} catch (error) {
-		console.log(error, "Error in updating");
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 

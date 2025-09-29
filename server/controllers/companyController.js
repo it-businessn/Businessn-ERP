@@ -5,9 +5,9 @@ const { ROLES, COMPANIES } = require("../services/data");
 const getCompanies = async (req, res) => {
 	try {
 		const companies = await getAllCompanies();
-		res.status(200).json(companies);
+		return res.status(200).json(companies);
 	} catch (error) {
-		res.status(404).json({ error: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -17,9 +17,9 @@ const getCompany = async (req, res) => {
 		const company = await Company.findOne({ name }).select(
 			"address industry_type founding_year registration_number name cra_business_number",
 		);
-		res.status(200).json(company);
+		return res.status(200).json(company);
 	} catch (error) {
-		res.status(404).json({ error: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -40,9 +40,9 @@ const getCompanyEmployees = async (req, res) => {
 		// 	},
 		// 	{ new: true },
 		// );
-		res.status(200).json(result);
+		return res.status(200).json(result);
 	} catch (error) {
-		res.status(404).json({ error: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -55,9 +55,9 @@ const updateCompany = async (req, res) => {
 			{ $set: { cra_business_number: CRABusinessNo } },
 			{ new: true },
 		);
-		res.status(200).json(updatedCompany);
+		return res.status(200).json(updatedCompany);
 	} catch (error) {
-		console.log(error, "Error in updating");
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -84,9 +84,9 @@ const addCompany = async (req, res) => {
 
 			return res.status(201).json(newCompany);
 		}
-		res.status(400).json({ error: "Company of same registration_number already exists!" });
+		return res.status(409).json({ message: "Company of same registration_number already exists!" });
 	} catch (error) {
-		res.status(400).json({ message: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 

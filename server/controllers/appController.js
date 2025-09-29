@@ -16,7 +16,7 @@ const login = async (req, res) => {
 			"firstName lastName middleName fullName email password phoneNumber primaryAddress manager",
 		);
 		if (!user) {
-			return res.status(500).json({ error: "User does not exist" });
+			return res.status(404).json({ message: "User does not exist" });
 		}
 		const { _id, firstName, lastName, middleName, fullName, phoneNumber, primaryAddress, manager } =
 			user;
@@ -26,7 +26,7 @@ const login = async (req, res) => {
 			employees: user._id,
 		}).select("name registration_number address");
 		if (!existingCompanyUser) {
-			return res.status(500).json({ error: "User does not exist for the company" });
+			return res.status(404).json({ message: "User does not exist for the company" });
 		}
 		const existingCompany = await findCompany("registration_number", companyId);
 
@@ -171,8 +171,7 @@ const signUp = async (req, res) => {
 	// console.log(updatedLeads);
 
 	try {
-		const hashedPassword = await hashPassword(password);
-		const employee = await addEmployee(company, {
+		const data = {
 			employeeId: companyId,
 			firstName,
 			middleName,
@@ -186,11 +185,17 @@ const signUp = async (req, res) => {
 			employmentType,
 			password: hashedPassword,
 			fullName: `${firstName} ${middleName} ${lastName}`,
-		});
+		};
+		const existingUser = await Employee.findOne({ email: data.email });
+		if (existingUser) {
+			return res.status(409).json({ message: "User already exists" });
+		}
+		const hashedPassword = await hashPassword(password);
+		const employee = await addEmployee(company, data);
 
-		res.status(201).json(employee);
+		return res.status(201).json(employee);
 	} catch (error) {
-		res.status(400).json({ message: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 

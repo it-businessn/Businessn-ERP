@@ -81,9 +81,9 @@ const addAlertsAndViolations = async (req, res) => {
 				}
 			}
 		}
-		res.status(200).json({ message: "Alerts processed successfully" });
+		return res.status(200).json({ message: "Alerts processed successfully" });
 	} catch (error) {
-		res.status(400).json({ message: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -137,9 +137,9 @@ const getAlertsAndViolationsInfo = async (req, res) => {
 			.sort({
 				createdOn: -1,
 			});
-		res.status(200).json(alerts);
+		return res.status(200).json(alerts);
 	} catch (error) {
-		res.status(404).json({ error: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -151,9 +151,9 @@ const getTotalAlertsAndViolationsInfo = async (req, res) => {
 			companyName,
 			// payPeriodNum,
 		});
-		res.status(200).json(alerts);
+		return res.status(200).json(alerts);
 	} catch (error) {
-		res.status(404).json({ error: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 

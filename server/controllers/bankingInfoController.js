@@ -13,9 +13,9 @@ const getAllBankingInfo = async (req, res) => {
 			createdOn: -1,
 		});
 
-		res.status(200).json(result);
+		return res.status(200).json(result);
 	} catch (error) {
-		res.status(500).json({ message: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -76,9 +76,9 @@ const getEmployeeBankingInfo = async (req, res) => {
 			newData.transitNum = transitNumber;
 			return res.status(200).json(newData);
 		}
-		return res.status(201).json("Record not found!");
+		return res.status(409).json("Record not found!");
 	} catch (error) {
-		res.status(404).json({ error: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -131,7 +131,7 @@ const addEmployeeBankingInfo = async (req, res) => {
 		const newBankingInfo = await EmployeeBankingInfo.create(updatedData);
 		return res.status(201).json(newBankingInfo);
 	} catch (error) {
-		res.status(400).json({ message: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -184,9 +184,9 @@ const updateEmployeeBankingInfo = async (req, res) => {
 			const updatedInfo = await updateBankingInfo(id, updatedData);
 			return res.status(201).json(updatedInfo);
 		}
-		return res.status(201).json("Record does not exist");
+		return res.status(409).json("Record does not exist");
 	} catch (error) {
-		res.status(400).json({ message: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 

@@ -12,10 +12,14 @@ const addAccountsJournalEntry = async (req, res) => {
 	// req.body.journalEntryNum = recentJournalEntryNum ? recentJournalEntryNum?.journalEntryNum + 1 : 1;
 
 	try {
+		const existingRecord = await GeneralJournal.findOne(req.body);
+		if (existingRecord) {
+			return res.status(409).json({ message: "Entry already exists" });
+		}
 		const newEntry = await GeneralJournal.create(req.body);
-		res.status(201).json(newEntry);
+		return res.status(201).json(newEntry);
 	} catch (error) {
-		res.status(400).json({ message: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -34,18 +38,22 @@ const getAccountJournalEntries = async (req, res) => {
 			})),
 		);
 
-		res.status(200).json(allEntries);
+		return res.status(200).json(allEntries);
 	} catch (error) {
-		res.status(404).json({ error: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
 const addAccountLedger = async (req, res) => {
 	try {
+		const existingRecord = await AccountLedger.findOne(req.body);
+		if (existingRecord) {
+			return res.status(409).json({ message: "Record already exists" });
+		}
 		const newAcc = await AccountLedger.create(req.body);
-		res.status(201).json(newAcc);
+		return res.status(201).json(newAcc);
 	} catch (error) {
-		res.status(400).json({ message: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -82,9 +90,9 @@ const getAccountLedgers = async (req, res) => {
 			}),
 		);
 
-		res.status(200).json(updatedAccounts);
+		return res.status(200).json(updatedAccounts);
 	} catch (error) {
-		res.status(404).json({ error: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -94,9 +102,9 @@ const getAccountLedgers = async (req, res) => {
 // 	try {
 // 		const updatedData = { status: checked ? "Closed" : "Open" };
 // 		const task = await LogTask.findByIdAndUpdate(id, { $set: updatedData }, { new: true });
-// 		res.status(201).json(task);
+// 		return res.status(201).json(task);
 // 	} catch (error) {
-// 		res.status(400).json({ message: error.message });
+// return res.status(500).json({ message: "Internal Server Error", error });
 // 	}
 // };
 

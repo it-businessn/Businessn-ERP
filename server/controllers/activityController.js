@@ -8,9 +8,9 @@ const getActivity = async (req, res) => {
 		const activities = await LogActivity.find({ createdBy, companyName }).sort({
 			createdOn: -1,
 		});
-		res.status(200).json(activities);
+		return res.status(200).json(activities);
 	} catch (error) {
-		res.status(404).json({ error: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -22,9 +22,9 @@ const getActivityById = async (req, res) => {
 		const notes = await LogActivity.find({ contactId }).sort({
 			createdOn: -1,
 		});
-		res.status(200).json(notes);
+		return res.status(200).json(notes);
 	} catch (error) {
-		res.status(404).json({ error: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -98,9 +98,9 @@ const getActivityRange = async (req, res) => {
 				$lte: endOfDay,
 			},
 		}).select("type");
-		res.status(200).json(result);
+		return res.status(200).json(result);
 	} catch (error) {
-		res.status(404).json({ error: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -108,19 +108,25 @@ const createActivity = async (req, res) => {
 	const { contactId, createdBy, description, duration, type, companyName } = req.body;
 
 	try {
-		const newActivity = await LogActivity.create({
+		const data = {
 			contactId,
 			createdBy,
 			description,
 			duration,
 			type,
 			companyName,
-		});
+		};
+		const existingRecord = await LogActivity.findOne(data);
+
+		if (existingRecord) {
+			return res.status(409).json({ message: "Log Activity already exists" });
+		}
+		const newActivity = await LogActivity.create(data);
 		saveContactActivities(contactId, companyName, newActivity._id);
 
-		res.status(201).json(newActivity);
+		return res.status(201).json(newActivity);
 	} catch (error) {
-		res.status(400).json({ message: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 

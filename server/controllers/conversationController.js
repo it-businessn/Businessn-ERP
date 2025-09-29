@@ -16,9 +16,9 @@ const getMessage = async (req, res) => {
 				? await Message.find({ conversation: id })
 				: await Message.find({ groupConversation: id });
 
-		res.status(200).json(messages);
+		return res.status(200).json(messages);
 	} catch (error) {
-		res.status(404).json({ error: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -38,10 +38,9 @@ const createConversationTwoUsers = async (req, res) => {
 			await existingConversation.save();
 		}
 
-		res.status(201).json(existingConversation);
-	} catch (err) {
-		console.error(err);
-		res.status(500).json({ error: "Server error" });
+		return res.status(201).json(existingConversation);
+	} catch (error) {
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -54,10 +53,9 @@ const createAnnouncement = async (req, res) => {
 			companyName,
 		});
 		await newAnnouncement.save();
-		res.status(201).json(newAnnouncement);
-	} catch (err) {
-		console.error(err);
-		res.status(500).json({ error: "Server error" });
+		return res.status(201).json(newAnnouncement);
+	} catch (error) {
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -70,7 +68,7 @@ const createConversation = async (req, res) => {
 			companyName,
 		});
 		if (existingConversation) {
-			res.status(201).json(existingConversation);
+			return res.status(201).json(existingConversation);
 		}
 		if (!existingConversation) {
 			const conversation = new Conversation({
@@ -80,11 +78,10 @@ const createConversation = async (req, res) => {
 				companyName,
 			});
 			await conversation.save();
-			res.status(201).json(conversation);
+			return res.status(201).json(conversation);
 		}
-	} catch (err) {
-		console.error(err);
-		res.status(500).json({ error: "Server error" });
+	} catch (error) {
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -94,10 +91,9 @@ const createGroupConversation = async (req, res) => {
 	try {
 		const conversation = new Conversation({ participants, groupName });
 		await conversation.save();
-		res.status(201).json(conversation);
-	} catch (err) {
-		console.error(err);
-		res.status(500).json({ error: "Server error" });
+		return res.status(201).json(conversation);
+	} catch (error) {
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 const getAnnouncement = async (req, res) => {
@@ -107,9 +103,9 @@ const getAnnouncement = async (req, res) => {
 			// companyName,
 		}).sort({ createdOn: -1 });
 
-		res.status(200).json(announcements);
+		return res.status(200).json(announcements);
 	} catch (error) {
-		res.status(404).json({ error: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -118,9 +114,9 @@ const getAllGroupMessages = async (req, res) => {
 		const conversations = await Conversation.find({
 			conversationType: "group",
 		}).populate("groupMessages");
-		res.status(200).json(conversations);
+		return res.status(200).json(conversations);
 	} catch (error) {
-		res.status(404).json({ error: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -135,9 +131,9 @@ const getGroupMessages = async (req, res) => {
 		if (!conversation) {
 			return res.status(404).json({ error: "Conversation not found" });
 		}
-		res.status(200).json(conversation);
+		return res.status(200).json(conversation);
 	} catch (error) {
-		res.status(404).json({ error: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -184,7 +180,7 @@ const getConversationHistory = async (req, res) => {
 
 		return res.status(200).json(result);
 	} catch (error) {
-		res.status(404).json({ error: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -250,9 +246,9 @@ const getUserConversations = async (req, res) => {
 
 		const result = userConversations.sort((a, b) => b.createdOn - a.createdOn);
 
-		res.status(200).json(result);
+		return res.status(200).json(result);
 	} catch (error) {
-		res.status(404).json({ error: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -269,9 +265,9 @@ const getOneToOneConversation = async (req, res) => {
 		})
 			.populate("messages")
 			.select("messages");
-		res.status(200).json(oneToOneConversations);
+		return res.status(200).json(oneToOneConversations);
 	} catch (error) {
-		res.status(404).json({ error: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -310,10 +306,9 @@ const createOneToOneMessages = async (req, res) => {
 		conversation.messages.push(message._id);
 		await conversation.save();
 
-		res.status(201).json(message);
-	} catch (err) {
-		console.error(err);
-		res.status(500).json({ error: "Server error" });
+		return res.status(201).json(message);
+	} catch (error) {
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -348,10 +343,9 @@ const createGroupMessages = async (req, res) => {
 		}
 		conversation.groupMessages.push(message._id);
 		await conversation.save();
-		res.status(201).json(message);
-	} catch (err) {
-		console.error(err);
-		res.status(500).json({ error: "Server error" });
+		return res.status(201).json(message);
+	} catch (error) {
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 

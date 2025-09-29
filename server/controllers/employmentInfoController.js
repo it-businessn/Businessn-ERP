@@ -36,9 +36,9 @@ const getAllEmploymentInfo = async (req, res) => {
 			empInfo.employmentCostCenter = position?.employmentDepartment;
 		});
 
-		res.status(200).json(aggregatedResult);
+		return res.status(200).json(aggregatedResult);
 	} catch (error) {
-		res.status(500).json({ message: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -92,7 +92,7 @@ const getCompanyLastBadgeID = async (req, res) => {
 
 		return res.status(200).json(lastTimeManagementBadgeID);
 	} catch (error) {
-		res.status(404).json({ error: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -116,7 +116,7 @@ const getEmployeeEmploymentInfo = async (req, res) => {
 		}
 		return res.status(200).json(result);
 	} catch (error) {
-		res.status(404).json({ error: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -224,7 +224,7 @@ const addEmployeeEmploymentInfo = async (req, res) => {
 		await setInitialPermissions(empId, employmentRole, companyName);
 		return res.status(201).json(newEmploymentInfo);
 	} catch (error) {
-		res.status(400).json({ message: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
@@ -274,12 +274,12 @@ const updateEmployeeEmploymentInfo = async (req, res) => {
 			if (positions?.length && positions[0]) {
 				await updateTADEmployee(existingEmploymentInfo.empId, companyName, positions[0]);
 			}
-			return res.status(201).json(updatedInfo);
+			return res.status(200).json(updatedInfo);
 		}
 		addUserEmploymentInfo(empId, companyName, req.body);
 		return res.status(201).json("Employment info added");
 	} catch (error) {
-		res.status(400).json({ message: error.message });
+		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
