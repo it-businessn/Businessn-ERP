@@ -40,13 +40,14 @@ const EmploymentInfo = ({
 	formData,
 	handleChange,
 	company,
-	employmentProvinces,
 	lastBadgeId,
+	setIsDisabled,
+	tabIndex,
 }) => {
 	const roles = useRoles(company);
 	const costCentres = useCostCenter(company);
 	const { payGroups } = usePaygroup(company, false);
-
+	const [employmentProvinces, setEmploymentProvinces] = useState([]);
 	const [autoGenerate, setAutoGenerate] = useState(false);
 	const [filteredDept, setFilteredDept] = useState(null);
 
@@ -64,6 +65,15 @@ const EmploymentInfo = ({
 	}, [autoGenerate, lastBadgeId]);
 
 	useEffect(() => {
+		const selectedCountry = COUNTRIES.find(
+			({ code }) => code === formData.employmentInfo.employmentCountry,
+		);
+		if (selectedCountry) {
+			setEmploymentProvinces(selectedCountry.provinces);
+		}
+	}, [formData.employmentInfo.employmentCountry]);
+
+	useEffect(() => {
 		if (formData.employmentInfo.costCenter) {
 			const selectedDepts = costCentres?.find((_) =>
 				_.name.includes(formData.employmentInfo.costCenter),
@@ -71,6 +81,39 @@ const EmploymentInfo = ({
 			setFilteredDept(selectedDepts);
 		}
 	}, [formData.employmentInfo.costCenter]);
+
+	useEffect(() => {
+		if (tabIndex == 1) {
+			const {
+				employeeNo,
+				employmentStartDate,
+				jobTitle,
+				costCenter,
+				department,
+				employmentCountry,
+			} = formData.employmentInfo;
+			if (
+				(employmentSubStep === 0 && employeeNo != "") ||
+				(employmentSubStep === 1 && employmentStartDate) ||
+				(employmentSubStep === 2 && jobTitle && costCenter && department) ||
+				(employmentSubStep === 3 && employmentCountry)
+			) {
+				setIsDisabled(false);
+			} else {
+				setIsDisabled(true);
+			}
+		}
+	}, [
+		employmentSubStep,
+		tabIndex,
+		formData.employmentInfo?.employeeNo,
+		formData.employmentInfo?.employmentStartDate,
+		formData.employmentInfo?.jobTitle,
+		formData.employmentInfo?.costCenter,
+		formData.employmentInfo?.department,
+		formData.employmentInfo?.employmentCountry,
+	]);
+
 	return (
 		<Flex height="100%">
 			<Box
@@ -332,7 +375,7 @@ const EmploymentInfo = ({
 								</Select>
 							</FormControl>
 
-							<FormControl isRequired>
+							<FormControl>
 								<FormLabel size="sm">Province/State</FormLabel>
 								<Select
 									size="sm"

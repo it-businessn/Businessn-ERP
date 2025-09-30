@@ -26,11 +26,16 @@ import {
 } from "erp-modules/payroll/onboard-user/customInfo";
 import { useEffect, useState } from "react";
 
-const PayInfo = ({ formData, handleChange }) => {
+const PayInfo = ({ formData, handleChange, setIsDisabled }) => {
 	const [isError, setIsError] = useState(false);
 
 	useEffect(() => {
 		setIsError(parseFloat(formData?.payInfo?.salary) < 17.85);
+		if (formData?.payInfo?.salary && parseFloat(formData?.payInfo?.salary) > 17.85) {
+			setIsDisabled(false);
+		} else {
+			setIsDisabled(true);
+		}
 	}, [formData?.payInfo?.salary]);
 
 	return (

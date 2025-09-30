@@ -18,7 +18,7 @@ import {
 	StepTitle,
 } from "@chakra-ui/react";
 import TextTitle from "components/ui/text/TextTitle";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
 	COUNTRIES,
 	personalSubSteps,
@@ -32,9 +32,64 @@ const PersonalInfo = ({
 	setPersonalSubStep,
 	formData,
 	handleChange,
-	availableProvinces,
+	setIsDisabled,
+	tabIndex,
 }) => {
+	const [availableProvinces, setAvailableProvinces] = useState([]);
 	const [sameAsUserEmail, setSameAsUserEmail] = useState(false);
+
+	useEffect(() => {
+		const { firstName, lastName, userEmail } = formData.personalInfo;
+		if (tabIndex === 0) {
+			if (personalSubStep === 0 && firstName && lastName && userEmail) {
+				setIsDisabled(false);
+			} else if (personalSubStep === 1) {
+				const {
+					personalEmail,
+					streetAddress,
+					personalPhoneNum,
+					city,
+					country,
+					postalCode,
+					province,
+				} = formData.contactInfo;
+				if (
+					personalEmail &&
+					streetAddress &&
+					personalPhoneNum &&
+					city &&
+					country &&
+					postalCode &&
+					province
+				) {
+					setIsDisabled(false);
+				} else {
+					setIsDisabled(true);
+				}
+			} else if (personalSubStep === 2) {
+				setIsDisabled(false);
+			}
+		}
+	}, [
+		formData?.personalInfo?.firstName,
+		formData?.personalInfo?.lastName,
+		formData?.personalInfo?.userEmail,
+		formData?.contactInfo?.personalEmail,
+		formData?.contactInfo?.personalPhoneNum,
+		formData?.contactInfo?.streetAddress,
+		formData?.contactInfo?.city,
+		formData?.contactInfo?.country,
+		formData?.contactInfo?.province,
+		formData?.contactInfo?.postalCode,
+		personalSubStep,
+	]);
+
+	useEffect(() => {
+		const selectedCountry = COUNTRIES.find(({ code }) => code === formData.contactInfo.country);
+		if (selectedCountry) {
+			setAvailableProvinces(selectedCountry?.provinces);
+		}
+	}, [formData.contactInfo.country]);
 
 	const handleCheckboxChange = (e) => {
 		const checked = e.target.checked;

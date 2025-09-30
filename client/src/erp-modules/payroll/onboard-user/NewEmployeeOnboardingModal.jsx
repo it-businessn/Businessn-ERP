@@ -32,7 +32,6 @@ import PersonalInfo from "./PersonalInfo";
 import {
 	bankingSubSteps,
 	benefitsSubSteps,
-	COUNTRIES,
 	employmentSubSteps,
 	governmentSubSteps,
 	personalSubSteps,
@@ -50,7 +49,6 @@ const NewEmployeeOnboardingModal = ({
 	const company = LocalStorageService.getItem("selectedCompany");
 	const toast = useToast();
 
-	const [showSave, setShowSave] = useState(false);
 	const [tabIndex, setTabIndex] = useState(0);
 	const [personalSubStep, setPersonalSubStep] = useState(0);
 	const [employmentSubStep, setEmploymentSubStep] = useState(0);
@@ -58,9 +56,6 @@ const NewEmployeeOnboardingModal = ({
 	const [governmentSubStep, setGovernmentSubStep] = useState(0);
 	const [bankingSubStep, setBankingSubStep] = useState(0);
 	const [formData, setFormData] = useState(userInfoDetails);
-	const [availableProvinces, setAvailableProvinces] = useState([]);
-	const [employmentProvinces, setEmploymentProvinces] = useState([]);
-	const [governmentProvinces, setGovernmentProvinces] = useState([]);
 	const [lastBadgeId, setLastBadgeId] = useState(null);
 	const [isDisabled, setIsDisabled] = useState(true);
 
@@ -75,29 +70,6 @@ const NewEmployeeOnboardingModal = ({
 		};
 		fetchCompanyLastBadgeID();
 	}, [company]);
-
-	useEffect(() => {
-		const { firstName, lastName, userEmail } = formData.personalInfo;
-		if (firstName && lastName && userEmail) {
-			setIsDisabled(false);
-			setShowSave(true);
-		} else {
-			setIsDisabled(true);
-			setShowSave(false);
-		}
-	}, [
-		formData?.personalInfo?.firstName,
-		formData?.personalInfo?.lastName,
-		formData?.personalInfo?.userEmail,
-	]);
-
-	useEffect(() => {
-		if (formData?.payInfo?.salary && parseFloat(formData?.payInfo?.salary) > 17.85) {
-			setIsDisabled(false);
-		} else {
-			setIsDisabled(true);
-		}
-	}, [formData?.payInfo?.salary]);
 
 	const handleChange = (section, field, value) => {
 		setFormData({
@@ -118,7 +90,8 @@ const NewEmployeeOnboardingModal = ({
 					setPersonalSubStep={setPersonalSubStep}
 					formData={formData}
 					handleChange={handleChange}
-					availableProvinces={availableProvinces}
+					setIsDisabled={setIsDisabled}
+					tabIndex={tabIndex}
 				/>
 			),
 		},
@@ -130,15 +103,23 @@ const NewEmployeeOnboardingModal = ({
 					setEmploymentSubStep={setEmploymentSubStep}
 					formData={formData}
 					handleChange={handleChange}
-					employmentProvinces={employmentProvinces}
 					company={company}
 					lastBadgeId={lastBadgeId}
+					setIsDisabled={setIsDisabled}
+					tabIndex={tabIndex}
 				/>
 			),
 		},
 		{
 			name: "Pay",
-			content: <PayInfo formData={formData} handleChange={handleChange} />,
+			content: (
+				<PayInfo
+					formData={formData}
+					handleChange={handleChange}
+					tabIndex={tabIndex}
+					setIsDisabled={setIsDisabled}
+				/>
+			),
 		},
 		{
 			name: "Benefits",
@@ -148,6 +129,8 @@ const NewEmployeeOnboardingModal = ({
 					handleChange={handleChange}
 					benefitsSubStep={benefitsSubStep}
 					setBenefitsSubStep={setBenefitsSubStep}
+					setIsDisabled={setIsDisabled}
+					tabIndex={tabIndex}
 				/>
 			),
 		},
@@ -159,7 +142,7 @@ const NewEmployeeOnboardingModal = ({
 					setGovernmentSubStep={setGovernmentSubStep}
 					formData={formData}
 					handleChange={handleChange}
-					governmentProvinces={governmentProvinces}
+					tabIndex={tabIndex}
 				/>
 			),
 		},
@@ -171,38 +154,12 @@ const NewEmployeeOnboardingModal = ({
 					setBankingSubStep={setBankingSubStep}
 					formData={formData}
 					handleChange={handleChange}
+					setIsDisabled={setIsDisabled}
+					tabIndex={tabIndex}
 				/>
 			),
 		},
 	];
-
-	// Update provinces when country changes
-	useEffect(() => {
-		const selectedCountry = COUNTRIES.find(({ code }) => code === formData.contactInfo.country);
-		if (selectedCountry) {
-			setAvailableProvinces(selectedCountry?.provinces);
-		}
-	}, [formData.contactInfo.country]);
-
-	// Update provinces when employment country changes
-	useEffect(() => {
-		const selectedCountry = COUNTRIES.find(
-			({ code }) => code === formData.employmentInfo.employmentCountry,
-		);
-		if (selectedCountry) {
-			setEmploymentProvinces(selectedCountry.provinces);
-		}
-	}, [formData.employmentInfo.employmentCountry]);
-
-	// Update government provinces when federal tax changes
-	useEffect(() => {
-		const selectedCountry = COUNTRIES.find(
-			({ code }) => code === formData.governmentInfo.federalTax,
-		);
-		if (selectedCountry) {
-			setGovernmentProvinces(selectedCountry.provinces);
-		}
-	}, [formData.governmentInfo.federalTax]);
 
 	const handleNextTab = () => {
 		if (tabIndex === 0 && personalSubStep < personalSubSteps.length - 1) {
@@ -225,7 +182,7 @@ const NewEmployeeOnboardingModal = ({
 			setTabIndex(tabIndex + 1);
 			// Reset sub-steps when leaving tabs
 			if (tabIndex === 0) {
-				setPersonalSubStep(0);
+				setPersonalSubStep(personalSubSteps.length - 1);
 			} else if (tabIndex === 1) {
 				setEmploymentSubStep(0);
 			} else if (tabIndex === 3) {
@@ -278,7 +235,6 @@ const NewEmployeeOnboardingModal = ({
 			formData.companyName = company;
 			if (isAffiliate) formData.isAffiliate = true;
 			await PayrollService.onboardUser(formData);
-			setShowSave(false);
 			toast({
 				title: "User created successfully. Send login credentials!",
 				status: "success",
@@ -443,7 +399,10 @@ const NewEmployeeOnboardingModal = ({
 							{getNextButtonText()}
 						</Button>
 
-						{showSave && (
+						{personalSubStep == 0 &&
+						formData?.personalInfo?.firstName &&
+						formData?.personalInfo?.lastName &&
+						formData?.personalInfo?.userEmail ? (
 							<Button
 								rightIcon={<FaSave />}
 								onClick={handleSubmit}
@@ -455,6 +414,8 @@ const NewEmployeeOnboardingModal = ({
 							>
 								Save
 							</Button>
+						) : (
+							<></>
 						)}
 						<Button
 							onClick={onClose}

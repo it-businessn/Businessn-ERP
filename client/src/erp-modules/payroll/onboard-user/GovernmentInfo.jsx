@@ -19,16 +19,22 @@ import {
 	Tooltip,
 } from "@chakra-ui/react";
 import TextTitle from "components/ui/text/TextTitle";
+import { useEffect, useState } from "react";
 import { FaInfoCircle } from "react-icons/fa";
 import { COUNTRIES, governmentSubSteps, tabPanelStyleCss, tabScrollCss } from "./customInfo";
 
-const GovernmentInfo = ({
-	governmentSubStep,
-	setGovernmentSubStep,
-	formData,
-	handleChange,
-	governmentProvinces,
-}) => {
+const GovernmentInfo = ({ governmentSubStep, setGovernmentSubStep, formData, handleChange }) => {
+	const [governmentProvinces, setGovernmentProvinces] = useState([]);
+
+	useEffect(() => {
+		const selectedCountry = COUNTRIES.find(
+			({ code }) => code === formData.governmentInfo.federalTax,
+		);
+		if (selectedCountry) {
+			setGovernmentProvinces(selectedCountry.provinces);
+		}
+	}, [formData.governmentInfo.federalTax]);
+
 	return (
 		<Flex height="100%">
 			<Box

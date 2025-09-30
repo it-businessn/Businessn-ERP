@@ -22,7 +22,7 @@ const EditGroup = ({ isOpen, onClose, selectedGroup, yearsList, editingId }) => 
 	useEffect(() => {
 		const parsedYear = parseInt(selectedYear);
 
-		setSchedules(selectedGroup?.yearSchedules.find(({ year }) => year === parsedYear)?.payPeriods);
+		setSchedules(selectedGroup?.yearSchedules?.find(({ year }) => year === parsedYear)?.payPeriods);
 		setCurrentYearScheduleIndex(
 			selectedGroup?.yearSchedules?.findIndex(({ year }) => year === parsedYear),
 		);

@@ -48,7 +48,7 @@ const usePaygroup = (company, refresh, year = CURRENT_YEAR, isReport = false) =>
 		if (selectedPayGroup) {
 			setSelectedPayGroupOption(selectedPayGroup?.name);
 			const parsedYr = parseInt(year);
-			const yearIndex = selectedPayGroup?.yearSchedules.findIndex(({ year }) => year === parsedYr);
+			const yearIndex = selectedPayGroup?.yearSchedules?.findIndex(({ year }) => year === parsedYr);
 			const sortedResult = sortRecordsByDate(
 				selectedPayGroup?.yearSchedules[yearIndex]?.payPeriods,
 				"payPeriodPayDate",
@@ -63,7 +63,7 @@ const usePaygroup = (company, refresh, year = CURRENT_YEAR, isReport = false) =>
 			if (isReport) {
 				const lastIndex = schedules.length - 1;
 				const closestPayPeriodIndex = closestPayPeriod
-					? schedules.findIndex(({ payPeriod }) => payPeriod === closestPayPeriod?.payPeriod)
+					? schedules?.findIndex(({ payPeriod }) => payPeriod === closestPayPeriod?.payPeriod)
 					: lastIndex;
 
 				setClosestRecord(closestPayPeriod || schedules[lastIndex]);
@@ -84,13 +84,13 @@ const usePaygroup = (company, refresh, year = CURRENT_YEAR, isReport = false) =>
 				// const closestPayPeriod = schedules[22];
 				const closestPayPeriod = schedules?.find(({ isProcessed }) => !isProcessed);
 
-				const closestPayPeriodIndex = schedules.findIndex(
+				const closestPayPeriodIndex = schedules?.findIndex(
 					({ payPeriod, isExtraRun }) =>
 						payPeriod === closestPayPeriod?.payPeriod && isExtraRun === true,
 				);
 				const fallbackIndex =
 					closestPayPeriodIndex === -1
-						? schedules.findIndex(({ payPeriod }) => payPeriod === closestPayPeriod?.payPeriod)
+						? schedules?.findIndex(({ payPeriod }) => payPeriod === closestPayPeriod?.payPeriod)
 						: closestPayPeriodIndex;
 
 				setClosestRecord(closestPayPeriod);
@@ -102,7 +102,7 @@ const usePaygroup = (company, refresh, year = CURRENT_YEAR, isReport = false) =>
 			} else {
 				const closestYrSchedules =
 					selectedPayGroup?.yearSchedules[
-						selectedPayGroup?.yearSchedules.findIndex(({ year }) => year === 2025)
+						selectedPayGroup?.yearSchedules?.findIndex(({ year }) => year === 2025)
 					]?.payPeriods;
 
 				getClosestScheduleByProcessingDate(closestYrSchedules);
