@@ -212,15 +212,12 @@ const addPositionRole = async (req, res) => {
 const getCC = async (req, res) => {
 	const { companyName } = req.params;
 	try {
-		const cc = await CostCenter.find({ companyName }).select("name").sort({
-			createdOn: -1,
-		});
-		if (!cc.length) {
-			const cc = await CostCenter.find({ companyName: null }).sort({
+		const cc = await CostCenter.find({ companyName })
+			.select("name departments")
+			.sort({
 				createdOn: -1,
-			});
-			return res.status(200).json(cc);
-		}
+			})
+			.populate("departments", "name description");
 		return res.status(200).json(cc);
 	} catch (error) {
 		return res.status(500).json({ message: "Internal Server Error", error });
@@ -240,6 +237,57 @@ const getDepartments = async (req, res) => {
 			return res.status(200).json(department);
 		}
 		return res.status(200).json(department);
+	} catch (error) {
+		return res.status(500).json({ message: "Internal Server Error", error });
+	}
+};
+
+const removeCCDept = async (req, res) => {
+	const { deptId } = req.body;
+	const { id } = req.params;
+	try {
+		const setup = await CostCenter.findByIdAndUpdate(
+			id,
+			{ $pull: { departments: deptId } },
+			{ new: true },
+		);
+		return res.status(200).json(setup);
+	} catch (error) {
+		return res.status(500).json({ message: "Internal Server Error", error });
+	}
+};
+
+const addCCDept = async (req, res) => {
+	const { name, description, companyName } = req.body;
+	const { id } = req.params;
+	try {
+		const data = { name, description, companyName };
+		let deptId;
+		const existingRecord = await Department.findOne(data);
+
+		if (existingRecord) {
+			deptId = existingRecord._id;
+		} else {
+			const newDept = await Department.create(data);
+			deptId = newDept._id;
+		}
+		await CostCenter.findByIdAndUpdate(id, { $addToSet: { departments: deptId } }, { new: true });
+		return res.status(200).json(deptId);
+	} catch (error) {
+		return res.status(500).json({ message: "Internal Server Error", error });
+	}
+};
+
+const deleteCC = async (req, res) => {
+	const { id } = req.params;
+	try {
+		const CC = await CostCenter.findByIdAndDelete({
+			_id: id,
+		});
+		if (CC) {
+			return res.status(200).json(`CostCenter with id ${id} deleted successfully.`);
+		}
+		return res.status(404).json("CostCenter not found.");
 	} catch (error) {
 		return res.status(500).json({ message: "Internal Server Error", error });
 	}
@@ -634,4 +682,7 @@ module.exports = {
 	findGroupEmployees,
 	addCC,
 	getCC,
+	addCCDept,
+	removeCCDept,
+	deleteCC,
 };

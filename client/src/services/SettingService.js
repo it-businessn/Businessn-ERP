@@ -86,6 +86,18 @@ const SettingService = {
 		return apiService.post("/setup/cost-centers", data);
 	},
 
+	async removeCCDept(data, id) {
+		return apiService.put(`/setup/cost-centers/remove-dept/${id}`, data, id);
+	},
+
+	async updateCCDept(data, id) {
+		return apiService.put(`/setup/cost-centers/${id}`, data, id);
+	},
+
+	async deleteCC(data, id) {
+		return apiService.delete(`/setup/cost-centers/${id}`, data, id);
+	},
+
 	async getAllModules(id) {
 		return apiService.get(`/setup/modules/${id}`);
 	},

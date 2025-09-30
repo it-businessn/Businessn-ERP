@@ -41,6 +41,12 @@ router.post("/departments", setUpController.addDepartment);
 
 router.post("/cost-centers", setUpController.addCC);
 
+router.put("/cost-centers/remove-dept/:id", setUpController.removeCCDept);
+
+router.put("/cost-centers/:id", setUpController.addCCDept);
+
+router.delete("/cost-centers/:id", setUpController.deleteCC);
+
 router.post("/modules", setUpController.addModule);
 
 router.put("/modules/:id", setUpController.updateModule);

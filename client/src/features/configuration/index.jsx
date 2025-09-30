@@ -8,10 +8,10 @@ import useRoles from "hooks/useRoles";
 import PageLayout from "layouts/PageLayout";
 import { useState } from "react";
 import LocalStorageService from "services/LocalStorageService";
-import CCForm from "./CCForm";
 import ModuleForm from "./ModuleForm";
 import PaygroupForm from "./PaygroupForm";
 import RoleForm from "./RoleForm";
+import CCForm from "./cost-center";
 
 const Configuration = () => {
 	const company = LocalStorageService.getItem("selectedCompany");

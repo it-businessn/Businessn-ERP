@@ -1,6 +1,6 @@
 import { Button } from "@chakra-ui/react";
 
-const ActionButton = ({ name, isLoading, onClick, px, mt, isDisabled = false, size }) => {
+const ActionButton = ({ name, isLoading, onClick, px, mt, isDisabled = false, size, leftIcon }) => {
 	return (
 		<Button
 			size={size}
@@ -18,6 +18,7 @@ const ActionButton = ({ name, isLoading, onClick, px, mt, isDisabled = false, si
 			}}
 			type="submit"
 			borderRadius={"10px"}
+			leftIcon={leftIcon}
 		>
 			{name}
 		</Button>
