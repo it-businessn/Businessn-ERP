@@ -123,15 +123,15 @@ const addStatHoliday = async (req, res) => {
 	try {
 		const data = {
 			name,
-			date,
 			companyName: company,
 		};
 		const existingRecord = await Holiday.findOne(data);
 		if (existingRecord) {
 			return res.status(409).json({ message: "Record already exists" });
 		}
-
+		data.date = date;
 		data.year = moment(date).format("YYYY");
+
 		const newHoliday = await Holiday.create(data);
 		return res.status(201).json(newHoliday);
 	} catch (error) {
