@@ -4,7 +4,6 @@ import PrimaryButton from "components/ui/button/PrimaryButton";
 import BoxCard from "components/ui/card";
 import NormalTextTitle from "components/ui/NormalTextTitle";
 import TextTitle from "components/ui/text/TextTitle";
-import useCompany from "hooks/useCompany";
 import PageLayout from "layouts/PageLayout";
 import { useState } from "react";
 import { FaAddressCard, FaUndoAlt } from "react-icons/fa";
@@ -15,7 +14,7 @@ import ChangePassword from "../ChangePassword";
 import EditUserInfo from "./EditUserInfo";
 
 const UserProfileDetails = () => {
-	const { company } = useCompany(LocalStorageService.getItem("selectedCompany"));
+	const company = LocalStorageService.getItem("selectedCompany");
 	const userData = LocalStorageService.getItem("user");
 	const { isMobile } = useBreakpointValue();
 	const [editMode, setEditMode] = useState(false);

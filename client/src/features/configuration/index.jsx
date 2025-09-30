@@ -1,10 +1,11 @@
 import TabsButtonGroup from "components/ui/tab/TabsButtonGroup";
+import { COMPANIES } from "constant";
 import Settings from "erp-modules/payroll/settings/Settings";
 import CompaniesPanel from "features/configuration/company";
 import useManager from "hooks/useManager";
 import useModule from "hooks/useModule";
 import PageLayout from "layouts/PageLayout";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import LocalStorageService from "services/LocalStorageService";
 import CostCenterPanel from "./cost-center";
 import ModulePanel from "./modules";
@@ -17,12 +18,7 @@ const Configuration = () => {
 	const modules = useModule(company, refresh);
 	const managers = useManager(company);
 
-	const SETUP_LIST = [
-		{
-			id: 0,
-			type: "Manage Companies",
-			name: <CompaniesPanel />,
-		},
+	let SETUP_LIST = [
 		{
 			id: 1,
 			type: "Setup Modules",
@@ -52,13 +48,35 @@ const Configuration = () => {
 		},
 	];
 
-	const [viewMode, setViewMode] = useState(SETUP_LIST[0].type);
-	const showComponent = (viewMode) => SETUP_LIST.find(({ type }) => type === viewMode)?.name;
+	const [setupList, setSetupList] = useState(SETUP_LIST);
+
+	useEffect(() => {
+		if (company === COMPANIES.BUSINESSN_ORG) {
+			setSetupList((prev) => [
+				{
+					id: 0,
+					type: "Manage Companies",
+					name: <CompaniesPanel />,
+				},
+				...prev,
+			]);
+		}
+	}, []);
+
+	useEffect(() => {
+		setViewMode(setupList[0].type);
+	}, [setupList]);
+
+	const [viewMode, setViewMode] = useState(null);
+	const showComponent = (viewMode) => setupList?.find(({ type }) => type === viewMode)?.name;
+
 	return (
-		<PageLayout width="full" title={`Configuration for ${company}`} size="2em" showBgLayer>
-			<TabsButtonGroup tabs={SETUP_LIST} setViewMode={setViewMode} viewMode={viewMode} />
-			{showComponent(viewMode)}
-		</PageLayout>
+		viewMode && (
+			<PageLayout width="full" title={`Configuration for ${company}`} size="2em" showBgLayer>
+				<TabsButtonGroup tabs={setupList} setViewMode={setViewMode} viewMode={viewMode} />
+				{showComponent(viewMode)}
+			</PageLayout>
+		)
 	);
 };
 
