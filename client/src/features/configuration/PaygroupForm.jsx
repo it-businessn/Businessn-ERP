@@ -1,8 +1,10 @@
+import { DeleteIcon, EditIcon } from "@chakra-ui/icons";
 import {
 	Checkbox,
 	FormControl,
 	FormLabel,
 	HStack,
+	IconButton,
 	Table,
 	Tbody,
 	Td,
@@ -20,7 +22,7 @@ import TextTitle from "components/ui/text/TextTitle";
 import { PAY_FREQUENCIES } from "constant";
 import { useState } from "react";
 import SettingService from "services/SettingService";
-import { ConfigTabLayout } from "./ConfigTabLayout";
+import { ConfigTabLayout } from "../../components/ConfigTabLayout";
 
 const PaygroupForm = ({
 	company,
@@ -110,7 +112,8 @@ const PaygroupForm = ({
 					<Thead>
 						<Tr>
 							<Th>Name</Th>
-							<Th>Is Payroll Active</Th>
+							<Th>Payroll Activated</Th>
+							<Th>Action</Th>
 						</Tr>
 					</Thead>
 					<Tbody>
@@ -121,6 +124,35 @@ const PaygroupForm = ({
 							<Tr key={_id}>
 								<Td>{name}</Td>
 								<Td>{payrollActivated ? "Yes" : "No"}</Td>
+								<Td>
+									<HStack spacing={2}>
+										<IconButton
+											aria-label="Edit holiday"
+											icon={<EditIcon />}
+											size="sm"
+											// onClick={() => handleEdit(holiday)}
+											color="var(--banner_bg)"
+											_hover={{
+												bg: "var(--banner_bg)",
+												color: "white",
+											}}
+										/>
+										<IconButton
+											aria-label="Delete holiday"
+											icon={<DeleteIcon />}
+											size="sm"
+											color="var(--banner_bg)"
+											_hover={{
+												bg: "var(--banner_bg)",
+												color: "white",
+											}}
+											onClick={() => {
+												// setShowConfirmationPopUp(true);
+												// setDeleteRecordId(holiday._id);
+											}}
+										/>
+									</HStack>
+								</Td>
 							</Tr>
 						))}
 					</Tbody>
@@ -128,7 +160,7 @@ const PaygroupForm = ({
 			}
 			leftContent={
 				<>
-					<TextTitle align={"center"} title="New Paygroup" />
+					<TextTitle size="lg" title="Add New Paygroup" />
 					<InputFormControl
 						label={"Group Name"}
 						name="name"

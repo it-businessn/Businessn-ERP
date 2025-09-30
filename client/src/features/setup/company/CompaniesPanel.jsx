@@ -1,6 +1,8 @@
+import { DeleteIcon, EditIcon } from "@chakra-ui/icons";
 import {
 	FormLabel,
 	HStack,
+	IconButton,
 	Input,
 	Select,
 	Table,
@@ -11,11 +13,11 @@ import {
 	Tr,
 	useToast,
 } from "@chakra-ui/react";
+import { ConfigTabLayout } from "components/ConfigTabLayout";
 import ActionButton from "components/ui/button/ActionButton";
 import EmptyRowRecord from "components/ui/EmptyRowRecord";
 import TextTitle from "components/ui/text/TextTitle";
 import { COUNTRIES } from "erp-modules/payroll/onboard-user/customInfo";
-import { ConfigTabLayout } from "features/configuration/ConfigTabLayout";
 import useCompanies from "hooks/useCompanies";
 import { useEffect, useState } from "react";
 import SettingService from "services/SettingService";
@@ -91,6 +93,7 @@ const CompaniesPanel = ({ setOpenCompanyForm }) => {
 						<Tr>
 							<Th>Name</Th>
 							<Th>Registration Number</Th>
+							<Th>Action</Th>
 						</Tr>
 					</Thead>
 					<Tbody>
@@ -101,6 +104,35 @@ const CompaniesPanel = ({ setOpenCompanyForm }) => {
 							<Tr key={company._id}>
 								<Td>{company.name}</Td>
 								<Td>{company.registration_number}</Td>
+								<Td>
+									<HStack spacing={2}>
+										<IconButton
+											aria-label="Edit holiday"
+											icon={<EditIcon />}
+											size="sm"
+											// onClick={() => handleEdit(holiday)}
+											color="var(--banner_bg)"
+											_hover={{
+												bg: "var(--banner_bg)",
+												color: "white",
+											}}
+										/>
+										<IconButton
+											aria-label="Delete holiday"
+											icon={<DeleteIcon />}
+											size="sm"
+											color="var(--banner_bg)"
+											_hover={{
+												bg: "var(--banner_bg)",
+												color: "white",
+											}}
+											onClick={() => {
+												// setShowConfirmationPopUp(true);
+												// setDeleteRecordId(holiday._id);
+											}}
+										/>
+									</HStack>
+								</Td>
 							</Tr>
 						))}
 					</Tbody>
@@ -108,17 +140,17 @@ const CompaniesPanel = ({ setOpenCompanyForm }) => {
 			}
 			leftContent={
 				<>
-					<TextTitle align={"center"} title="New Company" />
+					<TextTitle size="lg" title="Add New Company" />
 					<FormLabel>Company Details</FormLabel>
+					<Input
+						type="text"
+						name="name"
+						placeholder="Enter Company Name"
+						value={formData?.name}
+						onChange={handleChange}
+						size={"sm"}
+					/>
 					<HStack>
-						<Input
-							type="text"
-							name="name"
-							placeholder="Enter Company Name"
-							value={formData?.name}
-							onChange={handleChange}
-							size={"sm"}
-						/>
 						<Input
 							name="founding_year"
 							placeholder="Enter Founding Year"
@@ -126,8 +158,6 @@ const CompaniesPanel = ({ setOpenCompanyForm }) => {
 							onChange={handleChange}
 							size={"sm"}
 						/>
-					</HStack>
-					<HStack>
 						<Input
 							name="registration_number"
 							size={"sm"}
@@ -135,33 +165,32 @@ const CompaniesPanel = ({ setOpenCompanyForm }) => {
 							value={formData?.registration_number}
 							onChange={handleChange}
 						/>
-						<Input
-							name="industry_type"
-							size={"sm"}
-							placeholder="Enter Type of Industry"
-							value={formData?.industry_type}
-							onChange={handleChange}
-						/>
 					</HStack>
+					<Input
+						name="industry_type"
+						size={"sm"}
+						placeholder="Enter Type of Industry"
+						value={formData?.industry_type}
+						onChange={handleChange}
+					/>
 					<FormLabel mt={3}>Company Address</FormLabel>
+					<Input
+						type="text"
+						size={"sm"}
+						name="streetNumber"
+						value={formData?.address.streetNumber}
+						onChange={(e) => {
+							setFormData({
+								...formData,
+								address: {
+									...formData?.address,
+									streetNumber: e.target.value,
+								},
+							});
+						}}
+						placeholder="Street Address"
+					/>
 					<HStack>
-						<Input
-							type="text"
-							size={"sm"}
-							name="streetNumber"
-							value={formData?.address.streetNumber}
-							onChange={(e) => {
-								setFormData({
-									...formData,
-									address: {
-										...formData?.address,
-										streetNumber: e.target.value,
-									},
-								});
-							}}
-							placeholder="Street Number"
-						/>
-
 						<Input
 							type="text"
 							name="city"

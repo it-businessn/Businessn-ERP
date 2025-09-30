@@ -1,5 +1,5 @@
 import TabsButtonGroup from "components/ui/tab/TabsButtonGroup";
-import Settings from "erp-modules/payroll/Settings";
+import Settings from "erp-modules/payroll/settings/Settings";
 import CompaniesPanel from "features/setup/company/CompaniesPanel";
 import useGroup from "hooks/useGroup";
 import useManager from "hooks/useManager";

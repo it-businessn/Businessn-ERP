@@ -15,7 +15,7 @@ import PageLayout from "layouts/PageLayout";
 import { useState } from "react";
 import LocalStorageService from "services/LocalStorageService";
 import SettingService from "services/SettingService";
-import { StatHolidayTable } from "./settings/stat-holiday";
+import { StatHolidayTable } from "./stat-holiday";
 
 const Settings = ({ company }) => {
 	const currentCompany = company || LocalStorageService.getItem("selectedCompany");
@@ -97,10 +97,10 @@ const Settings = ({ company }) => {
 	};
 
 	return (
-		<PageLayout title="Holiday Calendar">
+		<PageLayout title={company ? "" : "Holiday Calendar"}>
 			{currentCompany && (
-				<Grid templateColumns={{ base: "1fr", lg: "300px 1fr" }} gap={6} w="100%">
-					<BoxCard p={6} bg="white" boxShadow="0 4px 6px rgba(0, 0, 0, 0.1)">
+				<Grid templateColumns={{ base: "1fr", lg: "0.3fr 0.7fr" }} gap={6}>
+					<BoxCard bg="white" p={6} boxShadow="0 4px 6px rgba(0, 0, 0, 0.1)">
 						<VStack spacing={4} align="stretch">
 							<Text fontSize="lg" fontWeight="bold">
 								{editingId ? "Edit Holiday" : "Add New Holiday"}

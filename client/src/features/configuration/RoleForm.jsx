@@ -1,11 +1,12 @@
-import { Stack, Table, Tbody, Td, Th, Thead, Tr, useToast } from "@chakra-ui/react";
+import { DeleteIcon, EditIcon } from "@chakra-ui/icons";
+import { HStack, IconButton, Table, Tbody, Td, Th, Thead, Tr, useToast } from "@chakra-ui/react";
 import ActionButton from "components/ui/button/ActionButton";
 import EmptyRowRecord from "components/ui/EmptyRowRecord";
 import InputFormControl from "components/ui/form/InputFormControl";
 import TextTitle from "components/ui/text/TextTitle";
 import { useState } from "react";
 import SettingService from "services/SettingService";
-import { ConfigTabLayout } from "./ConfigTabLayout";
+import { ConfigTabLayout } from "../../components/ConfigTabLayout";
 
 const RoleForm = ({ companyName, setOptionDataRefresh, handleClose, roles }) => {
 	const toast = useToast();
@@ -54,6 +55,7 @@ const RoleForm = ({ companyName, setOptionDataRefresh, handleClose, roles }) => 
 					<Thead>
 						<Tr>
 							<Th>Name</Th>
+							<Th>Action</Th>
 						</Tr>
 					</Thead>
 					<Tbody>
@@ -61,6 +63,35 @@ const RoleForm = ({ companyName, setOptionDataRefresh, handleClose, roles }) => 
 						{roles?.map(({ _id, name, isActive }) => (
 							<Tr key={_id}>
 								<Td>{name}</Td>
+								<Td>
+									<HStack spacing={2}>
+										<IconButton
+											aria-label="Edit holiday"
+											icon={<EditIcon />}
+											size="sm"
+											// onClick={() => handleEdit(holiday)}
+											color="var(--banner_bg)"
+											_hover={{
+												bg: "var(--banner_bg)",
+												color: "white",
+											}}
+										/>
+										<IconButton
+											aria-label="Delete holiday"
+											icon={<DeleteIcon />}
+											size="sm"
+											color="var(--banner_bg)"
+											_hover={{
+												bg: "var(--banner_bg)",
+												color: "white",
+											}}
+											onClick={() => {
+												// setShowConfirmationPopUp(true);
+												// setDeleteRecordId(holiday._id);
+											}}
+										/>
+									</HStack>
+								</Td>
 							</Tr>
 						))}
 					</Tbody>
@@ -68,34 +99,32 @@ const RoleForm = ({ companyName, setOptionDataRefresh, handleClose, roles }) => 
 			}
 			leftContent={
 				<>
-					<TextTitle align={"center"} title="New Role" />
-					<Stack spacing={4}>
-						<InputFormControl
-							label={"Name"}
-							name="roleName"
-							size={"sm"}
-							valueText={roleName}
-							handleChange={(e) => setRoleName(e.target.value)}
-							required
-							placeholder="Enter Role Name"
-						/>
-						<InputFormControl
-							size={"sm"}
-							label={"Description"}
-							name="roleDescription"
-							valueText={roleDescription}
-							handleChange={(e) => setRoleDescription(e.target.value)}
-							required
-							placeholder="Enter Role Description"
-						/>
-						<ActionButton
-							size={"sm"}
-							isDisabled={roleName === "" || roleDescription === ""}
-							isLoading={isSubmitting}
-							name="Add Role"
-							onClick={handleRoleSubmit}
-						/>
-					</Stack>
+					<TextTitle size="lg" title="Add New Role" />
+					<InputFormControl
+						label={"Name"}
+						name="roleName"
+						size={"sm"}
+						valueText={roleName}
+						handleChange={(e) => setRoleName(e.target.value)}
+						required
+						placeholder="Enter Role Name"
+					/>
+					<InputFormControl
+						size={"sm"}
+						label={"Description"}
+						name="roleDescription"
+						valueText={roleDescription}
+						handleChange={(e) => setRoleDescription(e.target.value)}
+						required
+						placeholder="Enter Role Description"
+					/>
+					<ActionButton
+						size={"sm"}
+						isDisabled={roleName === "" || roleDescription === ""}
+						isLoading={isSubmitting}
+						name="Add Role"
+						onClick={handleRoleSubmit}
+					/>
 				</>
 			}
 		/>
