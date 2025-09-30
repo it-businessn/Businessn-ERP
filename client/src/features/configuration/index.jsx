@@ -1,26 +1,23 @@
 import TabsButtonGroup from "components/ui/tab/TabsButtonGroup";
 import Settings from "erp-modules/payroll/settings/Settings";
-import CompaniesPanel from "features/setup/company/CompaniesPanel";
-import useGroup from "hooks/useGroup";
+import CompaniesPanel from "features/configuration/company";
 import useManager from "hooks/useManager";
 import useModule from "hooks/useModule";
 import useRoles from "hooks/useRoles";
 import PageLayout from "layouts/PageLayout";
 import { useState } from "react";
 import LocalStorageService from "services/LocalStorageService";
-import ModuleForm from "./ModuleForm";
-import PaygroupForm from "./PaygroupForm";
-import RoleForm from "./RoleForm";
 import CCForm from "./cost-center";
+import ModuleForm from "./modules/ModuleForm";
+import PaygroupForm from "./paygroup/PaygroupForm";
+import RoleForm from "./system-access-level/RoleForm";
 
 const Configuration = () => {
 	const company = LocalStorageService.getItem("selectedCompany");
 	const [moduleAdded, setModuleAdded] = useState(false);
-	const [paygroupAdded, setPaygroupAdded] = useState(false);
 	const [systemAccessRoleAdded, setSystemAccessRoleAdded] = useState(false);
 	const modules = useModule(company, moduleAdded);
 	const managers = useManager(company);
-	const paygroup = useGroup(company, paygroupAdded);
 	const roles = useRoles(company, systemAccessRoleAdded);
 
 	const SETUP_LIST = [
@@ -50,15 +47,7 @@ const Configuration = () => {
 		{
 			id: 3,
 			type: "Setup Paygroup",
-			name: (
-				<PaygroupForm
-					company={company}
-					modules={modules}
-					managers={managers}
-					paygroup={paygroup}
-					setRefresh={setPaygroupAdded}
-				/>
-			),
+			name: <PaygroupForm company={company} modules={modules} managers={managers} />,
 		},
 		{
 			id: 4,

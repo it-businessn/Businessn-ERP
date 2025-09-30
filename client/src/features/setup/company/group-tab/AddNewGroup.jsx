@@ -1,5 +1,5 @@
 import ModalLayout from "components/ui/modal/ModalLayout";
-import PaygroupForm from "features/configuration/PaygroupForm";
+import PaygroupForm from "features/configuration/paygroup/PaygroupForm";
 import { useState } from "react";
 
 const AddNewGroup = ({ isOpen, onClose, setRefresh, modules, managers, company }) => {

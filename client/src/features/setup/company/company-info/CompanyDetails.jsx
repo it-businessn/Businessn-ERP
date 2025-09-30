@@ -6,7 +6,7 @@ import { useState } from "react";
 import { MdSettingsSuggest } from "react-icons/md";
 import LocalStorageService from "services/LocalStorageService";
 import { isManager } from "utils";
-import CompaniesPanel from "../CompaniesPanel";
+import CompaniesPanel from "../../../configuration/company";
 import CompanyInfo from "./CompanyInfo";
 import EditCompanyInfo from "./EditCompanyInfo";
 

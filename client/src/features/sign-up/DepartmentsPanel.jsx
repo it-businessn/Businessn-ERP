@@ -1,6 +1,6 @@
 import { useDisclosure } from "@chakra-ui/react";
 import ModalLayout from "components/ui/modal/ModalLayout";
-import DeptForm from "features/configuration/DeptForm";
+import DeptForm from "features/configuration/cost-center/DeptForm";
 
 const DepartmentsPanel = ({
 	showAddDepartments,

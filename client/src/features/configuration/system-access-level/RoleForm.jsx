@@ -1,4 +1,4 @@
-import { DeleteIcon, EditIcon } from "@chakra-ui/icons";
+import { EditIcon } from "@chakra-ui/icons";
 import { HStack, IconButton, Table, Tbody, Td, Th, Thead, Tr, useToast } from "@chakra-ui/react";
 import ActionButton from "components/ui/button/ActionButton";
 import EmptyRowRecord from "components/ui/EmptyRowRecord";
@@ -6,32 +6,32 @@ import InputFormControl from "components/ui/form/InputFormControl";
 import TextTitle from "components/ui/text/TextTitle";
 import { useState } from "react";
 import SettingService from "services/SettingService";
-import { ConfigTabLayout } from "../../components/ConfigTabLayout";
+import { ConfigTabLayout } from "../../../components/ConfigTabLayout";
 
-const ModuleForm = ({ companyName, setOptionDataRefresh, handleClose, modules }) => {
+const RoleForm = ({ companyName, setOptionDataRefresh, handleClose, roles }) => {
 	const toast = useToast();
 	const [isSubmitting, setIsSubmitting] = useState(false);
-	const [moduleName, setModuleName] = useState("");
-	const [moduleDesc, setModuleDesc] = useState("");
+	const [roleName, setRoleName] = useState("");
+	const [roleDescription, setRoleDescription] = useState("");
 
-	const handleModuleSubmit = async () => {
+	const handleRoleSubmit = async () => {
 		setIsSubmitting(true);
 		try {
-			await SettingService.addBaseModule({
-				name: moduleName,
-				description: moduleDesc,
+			await SettingService.addRole({
+				name: roleName,
+				description: roleDescription,
 				companyName,
 			});
 			toast({
-				title: "Module added successfully",
+				title: "Role added successfully",
 				status: "success",
 				duration: 1500,
 				isClosable: true,
 			});
-			if (setOptionDataRefresh) setOptionDataRefresh((prev) => !prev);
 			if (handleClose) handleClose();
-			setModuleName("");
-			setModuleDesc("");
+			if (setOptionDataRefresh) setOptionDataRefresh((prev) => !prev);
+			setRoleName("");
+			setRoleDescription("");
 		} catch (error) {
 			toast({
 				title: "Error",
@@ -45,10 +45,11 @@ const ModuleForm = ({ companyName, setOptionDataRefresh, handleClose, modules })
 			setIsSubmitting(false);
 		}
 	};
+
 	return (
 		<ConfigTabLayout
-			tableData={modules}
-			tableTitle="All Modules"
+			tableData={roles}
+			tableTitle="System Access Level Roles"
 			tableContent={
 				<Table variant="simple" size="sm">
 					<Thead>
@@ -58,8 +59,8 @@ const ModuleForm = ({ companyName, setOptionDataRefresh, handleClose, modules })
 						</Tr>
 					</Thead>
 					<Tbody>
-						{(!modules || modules?.length === 0) && <EmptyRowRecord data={modules} colSpan={2} />}
-						{modules?.map(({ _id, name }) => (
+						{(!roles || roles?.length === 0) && <EmptyRowRecord data={roles} colSpan={2} />}
+						{roles?.map(({ _id, name, isActive }) => (
 							<Tr key={_id}>
 								<Td>{name}</Td>
 								<Td>
@@ -75,7 +76,7 @@ const ModuleForm = ({ companyName, setOptionDataRefresh, handleClose, modules })
 												color: "white",
 											}}
 										/>
-										<IconButton
+										{/* <IconButton
 											aria-label="Delete holiday"
 											icon={<DeleteIcon />}
 											size="sm"
@@ -88,7 +89,7 @@ const ModuleForm = ({ companyName, setOptionDataRefresh, handleClose, modules })
 												// setShowConfirmationPopUp(true);
 												// setDeleteRecordId(holiday._id);
 											}}
-										/>
+										/> */}
 									</HStack>
 								</Td>
 							</Tr>
@@ -98,31 +99,31 @@ const ModuleForm = ({ companyName, setOptionDataRefresh, handleClose, modules })
 			}
 			leftContent={
 				<>
-					<TextTitle size="lg" title="Add New Module" />
+					<TextTitle size="lg" title="Add New Role" />
 					<InputFormControl
-						size={"sm"}
 						label={"Name"}
-						name="moduleName"
-						valueText={moduleName}
-						handleChange={(e) => setModuleName(e.target.value)}
+						name="roleName"
+						size={"sm"}
+						valueText={roleName}
+						handleChange={(e) => setRoleName(e.target.value)}
 						required
-						placeholder="Enter Module Name"
+						placeholder="Enter Role Name"
 					/>
 					<InputFormControl
 						size={"sm"}
 						label={"Description"}
-						name="moduleDesc"
-						valueText={moduleDesc}
-						handleChange={(e) => setModuleDesc(e.target.value)}
+						name="roleDescription"
+						valueText={roleDescription}
+						handleChange={(e) => setRoleDescription(e.target.value)}
 						required
-						placeholder="Enter Module Description"
+						placeholder="Enter Role Description"
 					/>
 					<ActionButton
 						size={"sm"}
-						isDisabled={moduleName === "" || moduleDesc === ""}
+						isDisabled={roleName === "" || roleDescription === ""}
 						isLoading={isSubmitting}
-						name="Add Module"
-						onClick={handleModuleSubmit}
+						name="Add Role"
+						onClick={handleRoleSubmit}
 					/>
 				</>
 			}
@@ -130,4 +131,4 @@ const ModuleForm = ({ companyName, setOptionDataRefresh, handleClose, modules })
 	);
 };
 
-export default ModuleForm;
+export default RoleForm;

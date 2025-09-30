@@ -26,7 +26,7 @@ const ActionButtonGroup = ({
 				onOpen={onOpen}
 				rightIcon={rightIcon}
 			/>
-			{onClose && <CancelButton name={closeLabel} onClick={onClose} size={size} />}
+			{onClose && closeLabel && <CancelButton name={closeLabel} onClick={onClose} size={size} />}
 		</HStack>
 	);
 };

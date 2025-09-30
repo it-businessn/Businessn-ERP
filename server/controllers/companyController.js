@@ -49,12 +49,8 @@ const getCompanyEmployees = async (req, res) => {
 const updateCompany = async (req, res) => {
 	const { id } = req.params;
 	try {
-		const { CRABusinessNo } = req.body;
-		const updatedCompany = await Company.findByIdAndUpdate(
-			id,
-			{ $set: { cra_business_number: CRABusinessNo } },
-			{ new: true },
-		);
+		if (req.body?._id) delete req.body._id;
+		const updatedCompany = await Company.findByIdAndUpdate(id, { $set: req.body }, { new: true });
 		return res.status(200).json(updatedCompany);
 	} catch (error) {
 		return res.status(500).json({ message: "Internal Server Error", error });

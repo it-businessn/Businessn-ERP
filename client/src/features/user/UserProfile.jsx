@@ -12,15 +12,18 @@ import {
 	useColorMode,
 	VStack,
 } from "@chakra-ui/react";
+import { ROLES } from "constant";
 import { useEffect, useState } from "react";
 import { IoMdHelpCircle } from "react-icons/io";
+import { IoSettingsOutline } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
 import { adminConsolePath, userProfilePath } from "routes";
+import { isManager } from "utils";
 // import { styleConsole } from "utils";
 
 const UserProfile = ({ user, handleLogout }) => {
 	const navigate = useNavigate();
-
+	const hasConsoleAccess = isManager(user?.role) && user?.role !== ROLES.MANAGER;
 	const [signUp, setSignUp] = useState(false);
 	const [isOpen, setIsOpen] = useState(false);
 	const { colorMode, toggleColorMode } = useColorMode();
@@ -55,15 +58,20 @@ const UserProfile = ({ user, handleLogout }) => {
 	};
 
 	const MENU_OPTIONS = [
-		{ name: "Profile", handleClick: showProfilePage },
-		{ name: "Admin console", handleClick: showConfigPage },
+		{ name: "Profile", handleClick: showProfilePage, hasAccess: true },
+		{
+			name: "Admin console",
+			handleClick: showConfigPage,
+			hasAccess: hasConsoleAccess,
+		},
 	];
 
 	return (
-		<HStack pb={2} spacing={0} _hover={{ cursor: "pointer" }}>
+		<HStack spacing={2}>
 			<Popover isOpen={isOpen} onClose={handleToggle}>
 				<PopoverTrigger>
 					<Avatar
+						_hover={{ cursor: "pointer" }}
 						onClick={handleToggle}
 						name={user?.fullName}
 						src={null}
@@ -77,8 +85,8 @@ const UserProfile = ({ user, handleLogout }) => {
 					<PopoverBody>
 						<VStack w="100%" alignItems="start" color="var(--logo_bg)">
 							{MENU_OPTIONS.map(
-								({ name, handleClick }, index) =>
-									(index === 0 || (index === 1 && user?.role?.includes("Admin"))) && (
+								({ name, handleClick, hasAccess }) =>
+									hasAccess && (
 										<Button key={name} variant="ghost" onClick={handleClick}>
 											{name}
 										</Button>
@@ -106,6 +114,13 @@ const UserProfile = ({ user, handleLogout }) => {
 				onClick={() => navigate("/support")}
 				aria-label="Support"
 			/>
+			{hasConsoleAccess && (
+				<IconButton
+					icon={<IoSettingsOutline style={{ width: "24px", height: "24px" }} />}
+					onClick={() => navigate(adminConsolePath)}
+					aria-label="Admin"
+				/>
+			)}
 		</HStack>
 	);
 };

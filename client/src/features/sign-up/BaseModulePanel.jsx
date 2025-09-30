@@ -1,6 +1,6 @@
 import { useDisclosure } from "@chakra-ui/react";
 import ModalLayout from "components/ui/modal/ModalLayout";
-import ModuleForm from "features/configuration/ModuleForm";
+import ModuleForm from "features/configuration/modules/ModuleForm";
 
 const BaseModulePanel = ({
 	showAddModules,

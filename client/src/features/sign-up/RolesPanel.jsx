@@ -1,6 +1,6 @@
 import { useDisclosure } from "@chakra-ui/react";
 import ModalLayout from "components/ui/modal/ModalLayout";
-import RoleForm from "features/configuration/RoleForm";
+import RoleForm from "features/configuration/system-access-level/RoleForm";
 
 const RolesPanel = ({ showAddRoles, setShowAddRoles, setOptionDataRefresh, companyName }) => {
 	const { onClose } = useDisclosure();

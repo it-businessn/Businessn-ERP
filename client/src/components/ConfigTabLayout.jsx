@@ -15,7 +15,7 @@ export const ConfigTabLayout = ({ leftContent, tableData, tableTitle, tableConte
 				<BoxCard bg="white">
 					<Stack spacing={4}>
 						<TextTitle align={"center"} title={tableTitle} />
-						<Box h={"calc(100vh - 280px)"} overflowY={"auto"}>
+						<Box overflowY={"auto"} h={"calc(100vh - 325px)"}>
 							{tableContent}
 						</Box>
 					</Stack>
