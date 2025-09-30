@@ -8,15 +8,15 @@ import PageLayout from "layouts/PageLayout";
 import { useState } from "react";
 import LocalStorageService from "services/LocalStorageService";
 import CCForm from "./cost-center";
-import ModuleForm from "./modules/ModuleForm";
+import ModulePanel from "./modules";
 import PaygroupForm from "./paygroup/PaygroupForm";
 import RoleForm from "./system-access-level/RoleForm";
 
 const Configuration = () => {
 	const company = LocalStorageService.getItem("selectedCompany");
-	const [moduleAdded, setModuleAdded] = useState(false);
+	const [refresh, setRefresh] = useState(false);
 	const [systemAccessRoleAdded, setSystemAccessRoleAdded] = useState(false);
-	const modules = useModule(company, moduleAdded);
+	const modules = useModule(company, refresh);
 	const managers = useManager(company);
 	const roles = useRoles(company, systemAccessRoleAdded);
 
@@ -30,7 +30,7 @@ const Configuration = () => {
 			id: 1,
 			type: "Setup Modules",
 			name: (
-				<ModuleForm companyName={company} modules={modules} setOptionDataRefresh={setModuleAdded} />
+				<ModulePanel companyName={company} modules={modules} setOptionDataRefresh={setRefresh} />
 			),
 		},
 		{

@@ -368,8 +368,24 @@ const addModule = async (req, res) => {
 const updateModule = async (req, res) => {
 	const { id } = req.params;
 	try {
+		if (req.body?._id) delete req.body._id;
 		const setup = await Module.findByIdAndUpdate(id, { $set: req.body }, { new: true });
 		return res.status(200).json(setup);
+	} catch (error) {
+		return res.status(500).json({ message: "Internal Server Error", error });
+	}
+};
+
+const deleteModule = async (req, res) => {
+	const { id } = req.params;
+	try {
+		const module = await Module.findByIdAndDelete({
+			_id: id,
+		});
+		if (module) {
+			return res.status(200).json(`Module with id ${id} deleted successfully.`);
+		}
+		return res.status(404).json({ message: "Module not found." });
 	} catch (error) {
 		return res.status(500).json({ message: "Internal Server Error", error });
 	}
@@ -685,4 +701,5 @@ module.exports = {
 	addCCDept,
 	removeCCDept,
 	deleteCC,
+	deleteModule,
 };

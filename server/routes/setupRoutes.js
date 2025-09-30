@@ -51,6 +51,8 @@ router.post("/modules", setUpController.addModule);
 
 router.put("/modules/:id", setUpController.updateModule);
 
+router.delete("/modules/:id", setUpController.deleteModule);
+
 router.post("/groups", setUpController.addGroup);
 
 router.put("/groups/:id", setUpController.updateGroup);

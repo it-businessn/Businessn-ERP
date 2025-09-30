@@ -86,6 +86,7 @@ const createEvent = async (req, res) => {
 const updateEvent = async (req, res) => {
 	const { id } = req.params;
 	try {
+		if (req.body?._id) delete req.body._id;
 		const event = await Event.findByIdAndUpdate(id, { $set: req.body }, { new: true });
 		return res.status(200).json(event);
 	} catch (error) {

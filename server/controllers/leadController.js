@@ -417,6 +417,7 @@ const updateLead = async (req, res) => {
 	const { id } = req.params;
 
 	try {
+		if (req.body?._id) delete req.body._id;
 		const updatedLead = await Lead.findByIdAndUpdate(id, { $set: req.body }, { new: true });
 		const existingContact = await Contact.findOne({ leadId: updatedLead._id });
 		if (!existingContact) {

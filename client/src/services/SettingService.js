@@ -106,8 +106,12 @@ const SettingService = {
 		return apiService.post("/setup/modules", data);
 	},
 
-	async updateModuleActiveStatus(data, id) {
+	async updateModule(data, id) {
 		return apiService.put(`/setup/modules/${id}`, data, id);
+	},
+
+	async deleteModule(data, id) {
+		return apiService.delete(`/setup/modules/${id}`, data, id);
 	},
 
 	async getAllGroups(id) {

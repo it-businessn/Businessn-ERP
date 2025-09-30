@@ -1,27 +1,25 @@
-import { DeleteIcon, EditIcon } from "@chakra-ui/icons";
-import { HStack, IconButton, Table, Tbody, Td, Th, Thead, Tr, useToast } from "@chakra-ui/react";
-import ActionButton from "components/ui/button/ActionButton";
-import EmptyRowRecord from "components/ui/EmptyRowRecord";
+import { useToast } from "@chakra-ui/react";
+import ActionButtonGroup from "components/ui/form/ActionButtonGroup";
 import InputFormControl from "components/ui/form/InputFormControl";
 import TextTitle from "components/ui/text/TextTitle";
 import { useState } from "react";
 import SettingService from "services/SettingService";
-import { ConfigTabLayout } from "../../../components/ConfigTabLayout";
 
-const ModuleForm = ({ companyName, setOptionDataRefresh, handleClose, modules }) => {
+const ModuleForm = ({
+	setOptionDataRefresh,
+	handleClose,
+	formData,
+	setFormData,
+	editingId,
+	setModuleList,
+}) => {
 	const toast = useToast();
 	const [isSubmitting, setIsSubmitting] = useState(false);
-	const [moduleName, setModuleName] = useState("");
-	const [moduleDesc, setModuleDesc] = useState("");
 
 	const handleModuleSubmit = async () => {
 		setIsSubmitting(true);
 		try {
-			await SettingService.addBaseModule({
-				name: moduleName,
-				description: moduleDesc,
-				companyName,
-			});
+			await SettingService.addBaseModule(formData);
 			toast({
 				title: "Module added successfully",
 				status: "success",
@@ -30,8 +28,6 @@ const ModuleForm = ({ companyName, setOptionDataRefresh, handleClose, modules })
 			});
 			if (setOptionDataRefresh) setOptionDataRefresh((prev) => !prev);
 			if (handleClose) handleClose();
-			setModuleName("");
-			setModuleDesc("");
 		} catch (error) {
 			toast({
 				title: "Error",
@@ -45,88 +41,76 @@ const ModuleForm = ({ companyName, setOptionDataRefresh, handleClose, modules })
 			setIsSubmitting(false);
 		}
 	};
+
+	const handleChange = (e) => {
+		const { name, value } = e.target;
+		setFormData((prevData) => ({ ...prevData, [name]: value }));
+	};
+
+	const handleUpdate = async () => {
+		try {
+			await SettingService.updateModule(formData, editingId);
+			setModuleList((prev) =>
+				prev.map((cc) =>
+					cc._id === editingId
+						? {
+								...cc,
+								name: formData?.name,
+								description: formData?.description,
+						  }
+						: cc,
+				),
+			);
+			toast({
+				title: "Success",
+				description: "Module updated successfully",
+				status: "success",
+				duration: 3000,
+				isClosable: true,
+			});
+			handleClose();
+		} catch (error) {
+			toast({
+				title: "Error",
+				description: error?.response?.data?.message,
+				status: "error",
+				duration: 3000,
+				isClosable: true,
+			});
+		}
+	};
 	return (
-		<ConfigTabLayout
-			tableData={modules}
-			tableTitle="All Modules"
-			tableContent={
-				<Table variant="simple" size="sm">
-					<Thead>
-						<Tr>
-							<Th>Name</Th>
-							<Th>Action</Th>
-						</Tr>
-					</Thead>
-					<Tbody>
-						{(!modules || modules?.length === 0) && <EmptyRowRecord data={modules} colSpan={2} />}
-						{modules?.map(({ _id, name }) => (
-							<Tr key={_id}>
-								<Td>{name}</Td>
-								<Td>
-									<HStack spacing={2}>
-										<IconButton
-											aria-label="Edit holiday"
-											icon={<EditIcon />}
-											size="sm"
-											// onClick={() => handleEdit(holiday)}
-											color="var(--banner_bg)"
-											_hover={{
-												bg: "var(--banner_bg)",
-												color: "white",
-											}}
-										/>
-										<IconButton
-											aria-label="Delete holiday"
-											icon={<DeleteIcon />}
-											size="sm"
-											color="var(--banner_bg)"
-											_hover={{
-												bg: "var(--banner_bg)",
-												color: "white",
-											}}
-											onClick={() => {
-												// setShowConfirmationPopUp(true);
-												// setDeleteRecordId(holiday._id);
-											}}
-										/>
-									</HStack>
-								</Td>
-							</Tr>
-						))}
-					</Tbody>
-				</Table>
-			}
-			leftContent={
-				<>
-					<TextTitle size="lg" title="Add New Module" />
-					<InputFormControl
-						size={"sm"}
-						label={"Name"}
-						name="moduleName"
-						valueText={moduleName}
-						handleChange={(e) => setModuleName(e.target.value)}
-						required
-						placeholder="Enter Module Name"
-					/>
-					<InputFormControl
-						size={"sm"}
-						label={"Description"}
-						name="moduleDesc"
-						valueText={moduleDesc}
-						handleChange={(e) => setModuleDesc(e.target.value)}
-						required
-						placeholder="Enter Module Description"
-					/>
-					<ActionButton
-						size={"sm"}
-						isDisabled={moduleName === "" || moduleDesc === ""}
-						isLoading={isSubmitting}
-						name="Add Module"
-						onClick={handleModuleSubmit}
-					/>
-				</>
-			}
-		/>
+		<>
+			<TextTitle size="lg" title={`${editingId ? "Update" : "Add New"} Module`} />
+			<InputFormControl
+				size={"sm"}
+				label={"Name"}
+				name="name"
+				valueText={formData?.name}
+				handleChange={handleChange}
+				required
+				placeholder="Enter Module Name"
+			/>
+			<InputFormControl
+				size={"sm"}
+				label={"Description"}
+				name="description"
+				valueText={formData?.description}
+				handleChange={handleChange}
+				required
+				placeholder="Enter Module Description"
+			/>
+			<ActionButtonGroup
+				isDisabled={!formData?.name}
+				submitBtnName={`${editingId ? "Save" : "Add"}`}
+				closeLabel={editingId ? "Cancel" : ""}
+				onClose={handleClose}
+				onOpen={editingId ? handleUpdate : handleModuleSubmit}
+				size="sm"
+				justifyContent="end"
+				isLoading={isSubmitting}
+			/>
+		</>
 	);
 };
 

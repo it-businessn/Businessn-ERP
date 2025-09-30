@@ -5,8 +5,7 @@ import { CompaniesList } from "./CompaniesList";
 import { CompanyForm } from "./CompanyForm";
 
 const CompaniesPanel = ({ setOpenCompanyForm }) => {
-	const [isRefresh, setIsRefresh] = useState(false);
-	const companyList = useCompanies(isRefresh);
+	const companyList = useCompanies();
 	const [editingId, setEditingId] = useState(null);
 	const [companies, setCompanies] = useState(null);
 
@@ -28,6 +27,7 @@ const CompaniesPanel = ({ setOpenCompanyForm }) => {
 		industry_type: "",
 		cra_business_number: "",
 	};
+
 	const [formData, setFormData] = useState(defaultFormData);
 
 	const handleEdit = (company) => {
@@ -63,7 +63,6 @@ const CompaniesPanel = ({ setOpenCompanyForm }) => {
 					setFormData={setFormData}
 					setCompanies={setCompanies}
 					setOpenCompanyForm={setOpenCompanyForm}
-					setIsRefresh={setIsRefresh}
 					resetForm={handleClose}
 				/>
 			}

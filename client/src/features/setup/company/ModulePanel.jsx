@@ -1,19 +1,12 @@
 import { Switch, Table, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
 import EmptyRowRecord from "components/ui/EmptyRowRecord";
-import { useState } from "react";
 import SettingService from "services/SettingService";
 
 const ModulePanel = ({ modules }) => {
-	const [isSubmitting, setIsSubmitting] = useState(false);
-	const [isRefresh, setIsRefresh] = useState(false);
-	const [moduleName, setModuleName] = useState("");
-	const [isModuleActive, setIsModuleActive] = useState(false);
-
 	const handleToggle = async (menu) => {
 		try {
 			menu.isActive = !menu.isActive;
-			await SettingService.updateModuleActiveStatus(menu, menu._id);
-			setIsRefresh((prev) => !prev);
+			await SettingService.updateModule(menu, menu._id);
 		} catch (error) {
 			console.log("An error occurred. Please try again.", error);
 		}

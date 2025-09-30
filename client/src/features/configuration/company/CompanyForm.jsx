@@ -10,7 +10,6 @@ export const CompanyForm = ({
 	formData,
 	setFormData,
 	setOpenCompanyForm,
-	setIsRefresh,
 	resetForm,
 	editingId,
 	handleClose,
@@ -74,7 +73,6 @@ export const CompanyForm = ({
 		setIsSubmitting(true);
 		try {
 			const { data } = await SettingService.addCompany(formData);
-			setIsRefresh((prev) => !prev);
 			toast({
 				title: "Company added successfully",
 				status: "success",
