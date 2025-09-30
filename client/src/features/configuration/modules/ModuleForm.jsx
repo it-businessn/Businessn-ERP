@@ -36,7 +36,6 @@ const ModuleForm = ({
 				duration: 3000,
 				isClosable: true,
 			});
-			console.log("An error occurred. Please try again.", error);
 		} finally {
 			setIsSubmitting(false);
 		}
@@ -97,7 +96,6 @@ const ModuleForm = ({
 				name="description"
 				valueText={formData?.description}
 				handleChange={handleChange}
-				required
 				placeholder="Enter Module Description"
 			/>
 			<ActionButtonGroup

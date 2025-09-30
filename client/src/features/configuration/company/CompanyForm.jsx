@@ -113,6 +113,7 @@ export const CompanyForm = ({
 			<InputFormControl
 				label={"Name"}
 				name="name"
+				required
 				size={"sm"}
 				valueText={formData?.name}
 				handleChange={handleChange}
@@ -126,6 +127,7 @@ export const CompanyForm = ({
 					handleChange={handleChange}
 				/>
 				<InputFormControl
+					required
 					label={"Registration Number"}
 					name="registration_number"
 					size={"sm"}
@@ -206,7 +208,12 @@ export const CompanyForm = ({
 				</FormControl>
 			</HStack>
 			<ActionButtonGroup
-				isDisabled={!formData?.name || !formData?.registration_number}
+				isDisabled={
+					!formData?.name ||
+					!formData?.registration_number ||
+					!formData.address.country ||
+					!formData.address.state
+				}
 				submitBtnName={`${editingId ? "Save" : "Add"}`}
 				closeLabel={editingId ? "Cancel" : ""}
 				onClose={handleClose}

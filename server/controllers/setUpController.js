@@ -135,6 +135,17 @@ const updateCrew = async (req, res) => {
 	}
 };
 
+const updateRole = async (req, res) => {
+	const { id } = req.params;
+	try {
+		if (req.body?._id) delete req.body._id;
+		const setup = await EmployeeRole.findByIdAndUpdate(id, { $set: req.body }, { new: true });
+		return res.status(200).json(setup);
+	} catch (error) {
+		return res.status(500).json({ message: "Internal Server Error", error });
+	}
+};
+
 const addRole = async (req, res) => {
 	const { name, description, companyName } = req.body;
 
@@ -587,13 +598,28 @@ const findGroupEmployees = async (groupID, payDate) => {
 };
 
 const updatePayGroup = async (id, data) =>
-	await Group.findByIdAndUpdate(id, data, {
-		new: true,
-	});
+	await Group.findByIdAndUpdate(
+		id,
+		{ $set: data },
+		{
+			new: true,
+		},
+	);
 
 const updateGroup = async (req, res) => {
 	const { id } = req.params;
-	const { scheduleSettings, payrollActivated } = req.body;
+	const {
+		admin,
+		baseModule,
+		company,
+		payFrequency,
+		yearSchedules,
+		scheduleSettings,
+		payrollActivated,
+		name,
+		isActive,
+		members,
+	} = req.body;
 	try {
 		// 	if (scheduleSettings && !scheduleSettings.length && payrollActivated) {
 		// 		await addPaygroupSchedules(id);
@@ -601,7 +627,19 @@ const updateGroup = async (req, res) => {
 		// 	}
 
 		if (req.body?._id) delete req.body._id;
-		const setup = await updatePayGroup(id, req.body);
+		const setup = await updatePayGroup(id, {
+			modules: baseModule,
+			companyName: company,
+			scheduleFrequency: payFrequency,
+			yearSchedules,
+			scheduleSettings,
+			payrollActivated,
+			name,
+			isActive,
+			members,
+			admin,
+			scheduleSettings,
+		});
 		return res.status(200).json(setup);
 	} catch (error) {
 		return res.status(500).json({ message: "Internal Server Error", error });
@@ -680,6 +718,7 @@ module.exports = {
 	updateSetUp,
 	addCrew,
 	addRole,
+	updateRole,
 	addPositionRole,
 	getRoles,
 	getCrews,

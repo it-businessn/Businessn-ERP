@@ -68,7 +68,7 @@ const ModulePanel = ({ companyName, setOptionDataRefresh, modules }) => {
 	return (
 		<>
 			<ConfigTabLayout
-				tableData={modules}
+				tableData={moduleList}
 				tableTitle="All Modules"
 				tableContent={
 					<ModulesList modules={moduleList} handleEdit={handleEdit} handleDelete={confirmDelete} />

@@ -35,6 +35,8 @@ router.put("/crews/:id", setUpController.updateCrew);
 
 router.post("/roles", setUpController.addRole);
 
+router.put("/roles/:id", setUpController.updateRole);
+
 router.post("/position-roles", setUpController.addPositionRole);
 
 router.post("/departments", setUpController.addDepartment);

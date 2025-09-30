@@ -3,22 +3,19 @@ import Settings from "erp-modules/payroll/settings/Settings";
 import CompaniesPanel from "features/configuration/company";
 import useManager from "hooks/useManager";
 import useModule from "hooks/useModule";
-import useRoles from "hooks/useRoles";
 import PageLayout from "layouts/PageLayout";
 import { useState } from "react";
 import LocalStorageService from "services/LocalStorageService";
-import CCForm from "./cost-center";
+import CostCenterPanel from "./cost-center";
 import ModulePanel from "./modules";
-import PaygroupForm from "./paygroup/PaygroupForm";
-import RoleForm from "./system-access-level/RoleForm";
+import PaygroupPanel from "./paygroup";
+import RolePanel from "./system-access-level";
 
 const Configuration = () => {
 	const company = LocalStorageService.getItem("selectedCompany");
 	const [refresh, setRefresh] = useState(false);
-	const [systemAccessRoleAdded, setSystemAccessRoleAdded] = useState(false);
 	const modules = useModule(company, refresh);
 	const managers = useManager(company);
-	const roles = useRoles(company, systemAccessRoleAdded);
 
 	const SETUP_LIST = [
 		{
@@ -36,23 +33,17 @@ const Configuration = () => {
 		{
 			id: 2,
 			type: "Setup System Access Level",
-			name: (
-				<RoleForm
-					companyName={company}
-					roles={roles}
-					setOptionDataRefresh={setSystemAccessRoleAdded}
-				/>
-			),
+			name: <RolePanel companyName={company} />,
 		},
 		{
 			id: 3,
 			type: "Setup Paygroup",
-			name: <PaygroupForm company={company} modules={modules} managers={managers} />,
+			name: <PaygroupPanel company={company} modules={modules} managers={managers} />,
 		},
 		{
 			id: 4,
 			type: "Setup Cost Center / Department",
-			name: <CCForm companyName={company} />,
+			name: <CostCenterPanel companyName={company} />,
 		},
 		{
 			id: 5,

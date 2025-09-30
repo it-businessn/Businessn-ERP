@@ -26,7 +26,7 @@ import SettingService from "services/SettingService";
 import AddCCDepartment from "./AddCCDepartment";
 import AddCostCenter from "./AddCostCenter";
 
-const CCForm = ({ companyName }) => {
+const CostCenterPanel = ({ companyName }) => {
 	const [ccAdded, setCcAdded] = useState(false);
 	const [openAddCC, setOpenAddCC] = useState(false);
 	const [openEditCC, setOpenEditCC] = useState(false);
@@ -224,4 +224,4 @@ const CCForm = ({ companyName }) => {
 	);
 };
 
-export default CCForm;
+export default CostCenterPanel;

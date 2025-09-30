@@ -9,7 +9,7 @@ import { useEffect, useState } from "react";
 import SettingService from "services/SettingService";
 import { CURRENT_YEAR, dayMonthYear, getDefaultDate } from "utils/convertDate";
 
-const EditGroup = ({ isOpen, onClose, selectedGroup, yearsList }) => {
+const EditGroup = ({ isOpen, onClose, selectedGroup, yearsList, editingId }) => {
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [selectedYear, setSelectedYear] = useState(CURRENT_YEAR);
 	const [schedules, setSchedules] = useState([]);
@@ -36,7 +36,7 @@ const EditGroup = ({ isOpen, onClose, selectedGroup, yearsList }) => {
 		selectedGroup.yearSchedules[currentYearScheduleIndex].payPeriods = schedules;
 		setIsSubmitting(true);
 		try {
-			await SettingService.updateGroup(selectedGroup, selectedGroup._id);
+			await SettingService.updateGroup(selectedGroup, editingId || selectedGroup._id);
 			onClose();
 		} catch (error) {
 		} finally {

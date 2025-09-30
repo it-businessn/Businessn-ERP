@@ -6,7 +6,7 @@ export const ConfigTabLayout = ({ leftContent, tableData, tableTitle, tableConte
 	return (
 		<Grid templateColumns={{ base: "1fr", lg: "0.3fr 0.7fr" }} gap={6}>
 			<BoxCard bg="white">
-				<VStack spacing={4} align="stretch">
+				<VStack spacing={3} align="stretch">
 					{leftContent}
 				</VStack>
 			</BoxCard>
