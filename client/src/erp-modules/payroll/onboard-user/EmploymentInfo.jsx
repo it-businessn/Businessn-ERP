@@ -20,9 +20,7 @@ import {
 	StepTitle,
 } from "@chakra-ui/react";
 import TextTitle from "components/ui/text/TextTitle";
-import { COMPANIES } from "constant";
 import useCostCenter from "hooks/useCostCenter";
-import useDepartment from "hooks/useDepartment";
 import usePaygroup from "hooks/usePaygroup";
 import useRoles from "hooks/useRoles";
 import { useEffect, useState } from "react";
@@ -47,11 +45,10 @@ const EmploymentInfo = ({
 }) => {
 	const roles = useRoles(company);
 	const costCentres = useCostCenter(company);
-	const departments = useDepartment(company);
 	const { payGroups } = usePaygroup(company, false);
 
 	const [autoGenerate, setAutoGenerate] = useState(false);
-	const [filteredDept, setFilteredDept] = useState(departments);
+	const [filteredDept, setFilteredDept] = useState(null);
 
 	useEffect(() => {
 		if (payGroups?.length) {
@@ -67,16 +64,13 @@ const EmploymentInfo = ({
 	}, [autoGenerate, lastBadgeId]);
 
 	useEffect(() => {
-		if (company === COMPANIES.NW && departments && formData.employmentInfo.costCenter) {
-			const selectedDepts = departments?.filter((_) =>
-				_.name.includes(formData.employmentInfo.costCenter.slice(0, 4)),
-			);
+		if (formData.employmentInfo.costCenter) {
+			const selectedDepts = costCentres?.find((_) =>
+				_.name.includes(formData.employmentInfo.costCenter),
+			)?.departments;
 			setFilteredDept(selectedDepts);
-		} else {
-			setFilteredDept(departments);
 		}
-	}, [formData.employmentInfo.costCenter, departments]);
-
+	}, [formData.employmentInfo.costCenter]);
 	return (
 		<Flex height="100%">
 			<Box
@@ -291,29 +285,23 @@ const EmploymentInfo = ({
 							</FormControl>
 							<FormControl isRequired>
 								<FormLabel size="sm">Department</FormLabel>
-								{filteredDept ? (
-									<Select
-										size="sm"
-										value={formData.employmentInfo.department}
-										onChange={(e) => {
-											if (e.target.value) {
-												handleChange("employmentInfo", "department", e.target.value);
-											}
-										}}
-										placeholder="Select department"
-									>
-										{filteredDept.map((dept) => (
-											<option key={dept.name} value={dept.name}>
-												{dept.name}
-											</option>
-										))}
-									</Select>
-								) : (
-									<Flex align="center" justify="center" py={2}>
-										<Spinner size="sm" mr={2} />
-										<TextTitle size="sm" title="Loading departments..." />
-									</Flex>
-								)}
+								<Select
+									size="sm"
+									disabled={filteredDept ? false : true}
+									value={formData.employmentInfo.department}
+									onChange={(e) => {
+										if (e.target.value) {
+											handleChange("employmentInfo", "department", e.target.value);
+										}
+									}}
+									placeholder="Select department"
+								>
+									{filteredDept?.map((dept) => (
+										<option key={dept.name} value={dept.name}>
+											{dept.name}
+										</option>
+									))}
+								</Select>
 							</FormControl>
 						</SimpleGrid>
 					</Stack>

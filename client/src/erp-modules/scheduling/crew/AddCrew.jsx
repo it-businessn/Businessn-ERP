@@ -2,7 +2,6 @@ import { Card, CardBody, Input, Stack, Text, useToast } from "@chakra-ui/react";
 import PrimaryButton from "components/ui/button/PrimaryButton";
 import SelectFormControl from "components/ui/form/SelectFormControl";
 import ModalForm from "components/ui/modal/ModalForm";
-import { COMPANIES } from "constant";
 import { useEffect, useState } from "react";
 import SettingService from "services/SettingService";
 import CrewMultiSelectDropdown from "./CrewMultiSelectDropdown";
@@ -20,19 +19,10 @@ const AddCrew = ({ company, isOpen, onClose, costCenters, departments, setRefres
 	const [openMenu, setOpenMenu] = useState(null);
 
 	useEffect(() => {
-		if (departments && selectedCostCenters?.length) {
-			if (company === COMPANIES.NW) {
-				const selectedDepts = departments?.filter((dept) =>
-					selectedCostCenters.some((center) =>
-						dept.name.toLowerCase().includes(center.name.toLowerCase().slice(0, 4)),
-					),
-				);
-				setFilteredDepartments(selectedDepts);
-			} else {
-				setFilteredDepartments(departments);
-			}
+		if (selectedCostCenters?.length) {
+			setFilteredDepartments(selectedCostCenters?.map((cc) => cc.departments));
 		}
-	}, [selectedCostCenters?.length, departments]);
+	}, [selectedCostCenters?.length]);
 
 	useEffect(() => {
 		if (selectedDepartments?.length) {

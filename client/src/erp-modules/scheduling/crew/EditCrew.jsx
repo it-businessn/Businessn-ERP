@@ -36,19 +36,10 @@ const EditCrew = ({
 	}, [crew]);
 
 	useEffect(() => {
-		if (departments && selectedCostCenters?.length) {
-			if (company === COMPANIES.NW) {
-				const selectedDepts = departments?.filter((dept) =>
-					selectedCostCenters.some((center) =>
-						dept.name.toLowerCase().includes(center.name.toLowerCase().slice(0, 4)),
-					),
-				);
-				setFilteredDepartments(selectedDepts);
-			} else {
-				setFilteredDepartments(departments);
-			}
+		if (selectedCostCenters?.length) {
+			setFilteredDepartments(selectedCostCenters?.map((cc) => cc.departments));
 		}
-	}, [selectedCostCenters?.length, departments]);
+	}, [selectedCostCenters?.length]);
 
 	useEffect(() => {
 		if (selectedDepartments?.length) {

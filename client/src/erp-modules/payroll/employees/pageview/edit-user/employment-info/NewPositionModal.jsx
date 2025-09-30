@@ -14,7 +14,6 @@ import {
 import BoxCard from "components/ui/card";
 import ActionButtonGroup from "components/ui/form/ActionButtonGroup";
 import TextTitle from "components/ui/text/TextTitle";
-import { COMPANIES } from "constant";
 import { RoleInfoControl } from "erp-modules/payroll/controls/RoleInfoControl";
 import { useEffect, useState } from "react";
 
@@ -23,7 +22,6 @@ const NewPositionModal = ({
 	handleUpdate,
 	payGroups,
 	costCentres,
-	departments,
 	selectedPayGroup,
 	company,
 	lastBadgeId,
@@ -37,19 +35,17 @@ const NewPositionModal = ({
 		timeManagementBadgeID: "",
 		cardNum: "",
 	};
-	const [filteredDept, setFilteredDept] = useState(departments);
+	const [filteredDept, setFilteredDept] = useState(null);
 	const [roleInfo, setRoleInfo] = useState(defaultRoleInfo);
 
 	useEffect(() => {
-		if (company === COMPANIES.NW && departments && roleInfo.employmentCostCenter) {
-			const selectedDepts = departments?.filter((_) =>
-				_.name.includes(roleInfo.employmentCostCenter.slice(0, 4)),
-			);
+		if (roleInfo.employmentCostCenter) {
+			const selectedDepts = costCentres?.find((_) =>
+				_.name.includes(roleInfo.employmentCostCenter),
+			)?.departments;
 			setFilteredDept(selectedDepts);
-		} else {
-			setFilteredDept(departments);
 		}
-	}, [roleInfo.employmentCostCenter, departments]);
+	}, [roleInfo.employmentCostCenter]);
 
 	useEffect(() => {
 		if (autoGenerate) {
@@ -149,32 +145,26 @@ const NewPositionModal = ({
 							</FormControl>
 							<FormControl isRequired>
 								<FormLabel size="sm">Department</FormLabel>
-								{filteredDept ? (
-									<Select
-										size="sm"
-										value={roleInfo?.employmentDepartment}
-										onChange={(e) => {
-											if (e.target.value) {
-												setRoleInfo((prevData) => ({
-													...prevData,
-													employmentDepartment: e.target.value,
-												}));
-											}
-										}}
-										placeholder="Select department"
-									>
-										{filteredDept?.map((dept) => (
-											<option key={dept.name} value={dept.name}>
-												{dept.name}
-											</option>
-										))}
-									</Select>
-								) : (
-									<Flex align="center" justify="center" py={2}>
-										<Spinner size="sm" mr={2} />
-										<TextTitle size="sm" title="Loading departments..." />
-									</Flex>
-								)}
+								<Select
+									disabled={filteredDept ? false : true}
+									size="sm"
+									value={roleInfo?.employmentDepartment}
+									onChange={(e) => {
+										if (e.target.value) {
+											setRoleInfo((prevData) => ({
+												...prevData,
+												employmentDepartment: e.target.value,
+											}));
+										}
+									}}
+									placeholder="Select department"
+								>
+									{filteredDept?.map((dept) => (
+										<option key={dept.name} value={dept.name}>
+											{dept.name}
+										</option>
+									))}
+								</Select>
 							</FormControl>
 							<FormControl>
 								<FormLabel size="sm">Time Management Badge ID</FormLabel>

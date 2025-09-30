@@ -22,7 +22,6 @@ import {
 } from "@chakra-ui/react";
 import TextTitle from "components/ui/text/TextTitle";
 import useCostCenter from "hooks/useCostCenter";
-import useDepartment from "hooks/useDepartment";
 import useRoles from "hooks/useRoles";
 
 import PrimaryButton from "components/ui/button/PrimaryButton";
@@ -45,7 +44,6 @@ const EmploymentInfo = ({ company, userId, payGroups, selectedPayGroupOption, la
 	const toast = useToast();
 	const roles = useRoles(company);
 	const costCentres = useCostCenter(company);
-	const departments = useDepartment(company);
 	const [isLoading, setIsLoading] = useState(false);
 	const [moreDetails, setMoreDetails] = useState(null);
 	const [employmentSubStep, setEmploymentSubStep] = useState(0);
@@ -343,7 +341,6 @@ const EmploymentInfo = ({ company, userId, payGroups, selectedPayGroupOption, la
 								company={company}
 								onClose={() => setShowModal(false)}
 								selectedPayGroup={selectedPayGroupOption}
-								departments={departments}
 								costCentres={costCentres}
 								payGroups={payGroups}
 								handleUpdate={handleUpdate}
@@ -370,7 +367,6 @@ const EmploymentInfo = ({ company, userId, payGroups, selectedPayGroupOption, la
 												company={company}
 												updateRecordIndex={index}
 												position={position}
-												departments={departments}
 												costCentres={costCentres}
 												payGroups={payGroups}
 												handleUpdate={handleUpdate}
