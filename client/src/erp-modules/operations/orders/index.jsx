@@ -123,6 +123,7 @@ const Orders = () => {
 			}
 		} catch (error) {}
 	};
+	const handleInputChange = (value) => console.log(value);
 
 	return (
 		<PageLayout title="Orders">
@@ -133,7 +134,7 @@ const Orders = () => {
 				borderRadius="10px"
 				color={"var(--nav_color)"}
 			>
-				<CustomFilter isMobile={isMobile} />
+				<CustomFilter isMobile={isMobile} handleInputChange={handleInputChange} />
 				{orders && (
 					<Box overflow="auto" css={tabScrollCss} height={"calc(100vh - 210px)"}>
 						<Table color={"var(--nav_color)"} bg={"var(--primary_bg)"} variant="small">

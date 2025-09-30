@@ -56,6 +56,15 @@ const CustomersList = ({ user, handleProfileView, icons, company }) => {
 		fetchAllCompanies();
 	}, [refresh]);
 
+	const handleInputChange = (value) => {
+		setContacts(
+			contacts?.filter(
+				(acc) =>
+					acc?.leadId?.opportunityName?.toLowerCase().includes(value?.toLowerCase()) ||
+					acc?.leadId?.name?.toLowerCase().includes(value?.toLowerCase()),
+			),
+		);
+	};
 	const handleEdit = (id) => {
 		console.log(id);
 	};
@@ -131,6 +140,7 @@ const CustomersList = ({ user, handleProfileView, icons, company }) => {
 								placeholder="Search here"
 								pr="4.5rem"
 								py={"1.1em"}
+								onChange={(e) => handleInputChange(e.target.value)}
 							/>
 						</InputGroup>
 						<PrimaryButton onOpen={() => onOpen()} name={"Add new customer"} size={"xs"} />

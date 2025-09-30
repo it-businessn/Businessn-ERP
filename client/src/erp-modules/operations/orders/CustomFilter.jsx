@@ -2,7 +2,7 @@ import { Button, Flex, HStack, Input, InputGroup, InputLeftElement, Text } from 
 import { FaSearch } from "react-icons/fa";
 import { MdOutlineFilterList } from "react-icons/md";
 
-const CustomFilter = ({ isMobile }) => {
+const CustomFilter = ({ isMobile, handleInputChange }) => {
 	return isMobile ? (
 		<Flex flexDir="column">
 			<Flex justify="space-between">
@@ -43,6 +43,7 @@ const CustomFilter = ({ isMobile }) => {
 							color: "var(--nav_color)",
 							fontSize: "xs",
 						}}
+						onChange={(e) => handleInputChange(e.target.value)}
 						color={"var(--nav_color)"}
 						bg={"var(--primary_bg)"}
 						type="text"
@@ -81,6 +82,7 @@ const CustomFilter = ({ isMobile }) => {
 						color: "var(--nav_color)",
 						fontSize: "xs",
 					}}
+					onChange={(e) => handleInputChange(e.target.value)}
 					color={"var(--nav_color)"}
 					bg={"var(--primary_bg)"}
 					type="text"
