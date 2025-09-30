@@ -73,22 +73,16 @@ const createNewOrder = async (fundingTotalsId, customer, totalRecipients) => {
 		fundingTotalsId,
 		totalRecipients,
 		customer,
-		createdOn: moment(),
-		updatedOn: moment(),
 	};
-	await Order.create(newOrder);
+	const existingRecord = await Order.findOne(newOrder);
+	if (!existingRecord) {
+		newOrder.createdOn = moment();
+		newOrder.updatedOn = moment();
+		await Order.create(newOrder);
+	}
 };
 
 const createJournalEntry = async (fundingTotalReportId, companyName) => {
-	let journalEntry = {
-		companyName,
-		departmentBreakDown: [],
-		totalDebit: 0,
-		totalCredit: 0,
-		netFundingWithdrawals: 0,
-		createdOn: moment(),
-		updatedOn: moment(),
-	};
 	const existsFundDetails = await FundingTotalsPay.findById(fundingTotalReportId);
 	if (existsFundDetails) {
 		const {
@@ -201,7 +195,7 @@ const createJournalEntry = async (fundingTotalReportId, companyName) => {
 
 		const groupedDepartmentBreakDown = Object.values(departmentBreakdown);
 
-		journalEntry = {
+		const journalEntry = {
 			companyName,
 			departmentBreakDown: groupedDepartmentBreakDown,
 			totalDebit: 0,
@@ -217,7 +211,12 @@ const createJournalEntry = async (fundingTotalReportId, companyName) => {
 			isExtraRun,
 			scheduleFrequency,
 		};
-		await JournalEntry.create(journalEntry);
+		const existingRecord = await JournalEntry.findOne(journalEntry);
+		if (!existingRecord) {
+			journalEntry.createdOn = moment();
+			journalEntry.updatedOn = moment();
+			await JournalEntry.create(journalEntry);
+		}
 	}
 };
 
