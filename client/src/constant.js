@@ -374,11 +374,13 @@ export const meetingsData = [
 	},
 ];
 
+export const PAYRUN_TYPE_CODE = { REGULAR: "1", PAYOUT: "2", MANUAL: "3", SUPERFICIAL: "4" };
+
 export const PAYRUN_TYPE = [
-	{ name: "Regular", code: "1" },
-	{ name: "Paid out", code: "2" },
-	{ name: "Manual Cheque", code: "3" },
-	{ name: "Superficial Balance", code: "4" },
+	{ name: "Regular", code: PAYRUN_TYPE_CODE.REGULAR },
+	{ name: "Paid out", code: PAYRUN_TYPE_CODE.PAYOUT },
+	{ name: "Manual Cheque", code: PAYRUN_TYPE_CODE.MANUAL },
+	{ name: "Superficial Balance", code: PAYRUN_TYPE_CODE.SUPERFICIAL },
 ];
 
 export const getReportName = (type) =>
