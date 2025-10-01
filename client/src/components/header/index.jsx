@@ -2,12 +2,11 @@ import { Box, Flex, HStack, Spacer, Stack } from "@chakra-ui/react";
 import { redirectLogin } from "api";
 import { Menu, UserProfile } from "components";
 import Logo from "components/logo";
-import { SIDEBAR_MENU } from "components/sidebar/data";
 import TextTitle from "components/ui/text/TextTitle";
 import useCompany from "hooks/useCompany";
 import LoginService from "services/LoginService";
 
-const Navbar = ({ handleClick, companyName, companyId, user, setUser, isMobile }) => {
+const Navbar = ({ handleClick, companyName, companyId, user, setUser, isMobile, menuList }) => {
 	const { company } = useCompany(companyName);
 
 	const handleLogout = async () => {
@@ -20,7 +19,7 @@ const Navbar = ({ handleClick, companyName, companyId, user, setUser, isMobile }
 		}
 	};
 
-	const menuList = SIDEBAR_MENU?.filter((tab) => tab.permissions);
+	const menuListWithPermissions = menuList?.filter((tab) => tab.permissions);
 
 	return (
 		<Box position="fixed" width="100%" zIndex={1} bg="var(--banner_bg)">
@@ -47,7 +46,7 @@ const Navbar = ({ handleClick, companyName, companyId, user, setUser, isMobile }
 						</Stack>
 						<HStack w="100%" h={"30"}>
 							{!isMobile &&
-								menuList?.map((menu) =>
+								menuListWithPermissions?.map((menu) =>
 									menu.permissions?.canAccessModule ? (
 										<Menu key={menu.name} handleClick={handleClick} menu={menu} />
 									) : null,

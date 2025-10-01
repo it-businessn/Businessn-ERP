@@ -30,7 +30,7 @@ const Home = () => {
 
 	const toast = useToast();
 	const [refresh, setRefresh] = useState(false);
-	const { activeMenu, setActiveMenu } = useSidebarMenu(
+	const { activeMenu, setActiveMenu, menuList } = useSidebarMenu(
 		user?._id,
 		company,
 		isManager(user?.role),
@@ -38,6 +38,9 @@ const Home = () => {
 	);
 
 	useEffect(() => {
+		if (activeMenu) {
+			setRefresh(true);
+		}
 		setSelectedCompany(user?.companyId?.name);
 		if (user?.role === ROLES.ENROLLER) {
 			toast({
@@ -47,8 +50,7 @@ const Home = () => {
 				isClosable: true,
 			});
 			redirectLogin();
-		}
-		if (user && Object.keys(user).length > 0) {
+		} else if (user && Object.keys(user).length > 0) {
 			const dashboard = activeMenu?.children?.find((_) => _.permissions?.canAccessModule);
 			if (activeMenu?.path) {
 				navigate(isMobile ? payrollEmpDashboardPath : `/${activeMenu?.path}/${dashboard?.path}`);
@@ -58,16 +60,11 @@ const Home = () => {
 		}
 	}, [user, activeMenu]);
 
-	useEffect(() => {
-		if (activeMenu) {
-			setRefresh(true);
-		}
-	}, [activeMenu]);
-
 	return (
 		<ErrorBoundary>
 			{user && Object.keys(user).length && (
 				<Navbar
+					menuList={menuList}
 					handleClick={(menu) => {
 						setActiveMenu(menu);
 						onOpen();

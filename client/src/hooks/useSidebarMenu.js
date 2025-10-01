@@ -2,13 +2,12 @@ import { redirectLogin } from "api";
 import { SIDEBAR_MENU } from "components/sidebar/data";
 import { COMPANIES } from "constant";
 import { startTransition, useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import LocalStorageService from "services/LocalStorageService";
 import UserService from "services/UserService";
 
 const useSidebarMenu = (userId, company, isManager, isShadowAdmin) => {
 	const [activeMenu, setActiveMenu] = useState(null);
-	const navigate = useNavigate();
+	const [menuList, setMenuList] = useState(SIDEBAR_MENU);
 
 	useEffect(() => {
 		const fetchUserPermissions = async () => {
@@ -38,30 +37,40 @@ const useSidebarMenu = (userId, company, isManager, isShadowAdmin) => {
 					});
 					setActiveMenu(SIDEBAR_MENU.find((_) => _.permissions?.canAccessModule));
 				} else {
+					const newPermissions = [];
 					const { data } = await UserService.getUserPermission({
 						userId,
 						company: companyName,
 					});
 
 					if (data) {
-						SIDEBAR_MENU?.map((menuLink) => {
-							const menu = data?.permissionType?.find((item) => item.name === menuLink.name);
-							if (menu) {
-								menuLink.permissions = menu;
+						SIDEBAR_MENU?.map((menu, index) => {
+							const foundMenu = data?.permissionType?.find((item) => item.name === menu.name);
+							if (foundMenu) {
+								SIDEBAR_MENU[index].permissions = foundMenu;
 							}
-							menuLink?.children?.forEach((child, cIndex) => {
-								const childMenu = data?.permissionType.find(
-									(item) => item.name === `${menuLink.name} ${child.name}`,
+							const updatedChildren = menu.children?.map((child) => {
+								const foundChild = data?.permissionType?.find(
+									(item) => item.name === `${menu.name} ${child.name}`,
 								);
-								if (childMenu?.name?.includes("Setup")) {
-									menuLink.children[cIndex].permissions = isManager ? childMenu : null;
-								} else {
-									menuLink.children[cIndex].permissions = childMenu || null;
-								}
+								return {
+									...child,
+									permissions: foundChild,
+								};
 							});
-							return menuLink;
+							newPermissions.push({
+								...menu,
+								permissions: foundMenu,
+								children: updatedChildren,
+							});
+							return {
+								...menu,
+								permissions: foundMenu,
+								children: updatedChildren,
+							};
 						});
-						setActiveMenu(SIDEBAR_MENU.find((_) => _.permissions?.canAccessModule));
+						setMenuList(newPermissions);
+						setActiveMenu(newPermissions?.find((_) => _.permissions?.canAccessModule));
 					}
 				}
 			} catch (error) {
@@ -74,7 +83,8 @@ const useSidebarMenu = (userId, company, isManager, isShadowAdmin) => {
 			fetchUserPermissions();
 		}
 	}, [company]);
-	return { activeMenu, setActiveMenu };
+
+	return { activeMenu, setActiveMenu, menuList };
 };
 
 export default useSidebarMenu;

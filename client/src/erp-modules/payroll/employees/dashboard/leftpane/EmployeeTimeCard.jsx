@@ -388,8 +388,8 @@ const EmployeeTimeCard = ({ selectedUser, company, isMobile }) => {
 									personalPayHours,
 									notDevice,
 								}) => {
-									const { param_hours } = getParamKey(payType);
-
+									const data = getParamKey(payType);
+									const param_hours = data?.param_hours || "";
 									const param_hours_worked =
 										param_hours === "regHoursWorked"
 											? regHoursWorked
