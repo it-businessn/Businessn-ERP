@@ -104,7 +104,6 @@ const updateEmployee = async (empId, data) => {
 
 	const updatedObj = {
 		primaryAddress,
-		updatedOn: moment(),
 		firstName,
 		middleName,
 		lastName,
@@ -316,7 +315,6 @@ const updateEmployeeProfileInfo = async (req, res) => {
 		}
 		await updateEmployee(empId, data);
 		if (existingProfileInfo) {
-			req.body.updatedOn = moment();
 			if (SIN && !SIN.includes("*")) {
 				const ENCRYPTION_KEY = Buffer.from(process.env.SIN_ENCRYPTION_KEY, "hex");
 				const sinEncrypted = encryptData(SIN, ENCRYPTION_KEY);

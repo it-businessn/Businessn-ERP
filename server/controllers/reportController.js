@@ -48,14 +48,12 @@ const buildFundingTotalsReport = async (
 		isExtraRun,
 		scheduleFrequency,
 	});
-	fundingTotal.updatedOn = moment();
 	if (existsFundDetails) {
 		await FundingTotalsPay.findByIdAndUpdate(existsFundDetails._id, fundingTotal, {
 			new: true,
 		});
 		return;
 	}
-	fundingTotal.createdOn = moment();
 	const newTotals = await FundingTotalsPay.create(fundingTotal);
 	if (newTotals) {
 		const { companyName } = fundingTotal;
@@ -76,8 +74,6 @@ const createNewOrder = async (fundingTotalsId, customer, totalRecipients) => {
 	};
 	const existingRecord = await Order.findOne(newOrder);
 	if (!existingRecord) {
-		newOrder.createdOn = moment();
-		newOrder.updatedOn = moment();
 		await Order.create(newOrder);
 	}
 };
@@ -213,8 +209,6 @@ const createJournalEntry = async (fundingTotalReportId, companyName) => {
 		};
 		const existingRecord = await JournalEntry.findOne(journalEntry);
 		if (!existingRecord) {
-			journalEntry.createdOn = moment();
-			journalEntry.updatedOn = moment();
 			await JournalEntry.create(journalEntry);
 		}
 	}

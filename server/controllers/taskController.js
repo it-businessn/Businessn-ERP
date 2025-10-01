@@ -32,7 +32,7 @@ const createTask = async (req, res) => {
 	const { contactId, dueDate, name, status } = req.body;
 
 	try {
-		const task = new Task({ contactId, date: moment(), dueDate, name, status });
+		const task = new Task({ contactId, dueDate, name, status });
 		const newTask = await task.save();
 		return res.status(201).json(newTask);
 	} catch (error) {
@@ -67,7 +67,7 @@ const updateTask = async (req, res) => {
 	try {
 		const updatedTask = await Task.findByIdAndUpdate(
 			taskId,
-			{ isOpen, completed: isOpen, updatedOn: moment() },
+			{ isOpen, completed: isOpen },
 			{
 				new: true,
 			},
@@ -88,7 +88,6 @@ const updateInnerSubTask = async (req, res) => {
 				$set: {
 					[`subtasks.${index}.isOpen`]: isOpen,
 					[`subtasks.${index}.completed`]: isOpen,
-					[`subtasks.${index}.updatedOn`]: moment(),
 				},
 			},
 			{ new: true },
@@ -105,7 +104,7 @@ const updateSubTask = async (req, res) => {
 	try {
 		const updatedSubtask = await SubTask.findByIdAndUpdate(
 			id,
-			{ isOpen, completed: isOpen, updatedOn: moment() },
+			{ isOpen, completed: isOpen },
 			{
 				new: true,
 			},
@@ -122,7 +121,7 @@ const updateActivity = async (req, res) => {
 	try {
 		const updatedActivity = await Activity.findByIdAndUpdate(
 			id,
-			{ isOpen, completed: isOpen, updatedOn: moment() },
+			{ isOpen, completed: isOpen },
 			{
 				new: true,
 			},

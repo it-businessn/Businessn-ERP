@@ -110,7 +110,6 @@ const addEmployeeROEEmploymentInfo = async (req, res) => {
 		const { totalInsurableHours, totalInsurableEarnings, earningsData } = earningsInfo;
 
 		const empTenureInfo = await findEmployeeEmploymentInfo(empId, companyName);
-		req.body.updatedOn = moment();
 		if (empTenureInfo && employmentStartDate && employmentLeaveDate) {
 			await updateEmploymentInfo(empTenureInfo._id, {
 				employmentStartDate,
