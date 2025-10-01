@@ -1,12 +1,16 @@
 import useGroup from "hooks/useGroup";
+import useManager from "hooks/useManager";
+import useModule from "hooks/useModule";
 import { useEffect, useState } from "react";
 import { CURRENT_YEAR } from "utils/convertDate";
 import { ConfigTabLayout } from "../../../components/ConfigTabLayout";
 import PaygroupForm from "./PaygroupForm";
 import { PaygroupList } from "./PaygroupList";
 
-const PaygroupPanel = ({ company, modules, managers }) => {
+const PaygroupPanel = ({ company }) => {
+	const modules = useModule(company);
 	const paygroup = useGroup(company);
+	const managers = useManager(company);
 	const [allPaygroup, setAllPaygroup] = useState(null);
 	const [editingId, setEditingId] = useState(null);
 

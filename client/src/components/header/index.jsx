@@ -6,7 +6,16 @@ import TextTitle from "components/ui/text/TextTitle";
 import useCompany from "hooks/useCompany";
 import LoginService from "services/LoginService";
 
-const Navbar = ({ handleClick, companyName, companyId, user, setUser, isMobile, menuList }) => {
+const Navbar = ({
+	handleClick,
+	companyName,
+	companyId,
+	user,
+	setUser,
+	isMobile,
+	menuList,
+	consoleAccess,
+}) => {
 	const { company } = useCompany(companyName);
 
 	const handleLogout = async () => {
@@ -53,7 +62,12 @@ const Navbar = ({ handleClick, companyName, companyId, user, setUser, isMobile, 
 								)}
 						</HStack>
 						<Spacer />
-						<UserProfile user={user} isMobile={isMobile} handleLogout={handleLogout} />
+						<UserProfile
+							user={user}
+							isMobile={isMobile}
+							handleLogout={handleLogout}
+							consoleAccess={consoleAccess}
+						/>
 					</HStack>
 				</Flex>
 			</HStack>

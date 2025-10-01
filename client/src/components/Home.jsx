@@ -12,7 +12,7 @@ import { useNavigate } from "react-router-dom";
 import { payrollEmpDashboardPath } from "routes";
 import { useBreakpointValue } from "services/Breakpoint";
 import LocalStorageService from "services/LocalStorageService";
-import { isManager } from "utils";
+import { hasConsoleAccess, isManager } from "utils";
 import ErrorBoundary from "./ErrorBoundary";
 import Loader from "./Loader";
 
@@ -23,6 +23,7 @@ const Home = () => {
 	);
 
 	const [user, setUser] = useState(LocalStorageService.getItem("user"));
+	const consoleAccess = hasConsoleAccess(user?.role);
 
 	const { isMobile } = useBreakpointValue();
 
@@ -64,6 +65,7 @@ const Home = () => {
 		<ErrorBoundary>
 			{user && Object.keys(user).length && (
 				<Navbar
+					consoleAccess={consoleAccess}
 					menuList={menuList}
 					handleClick={(menu) => {
 						setActiveMenu(menu);
@@ -81,6 +83,7 @@ const Home = () => {
 			{user && (activeMenu || refresh) ? (
 				<RootLayout>
 					<Sidebar
+						consoleAccess={consoleAccess}
 						activeMenu={activeMenu}
 						handleMenuItemClick={onClose}
 						isOpen={isOpen}

@@ -1,13 +1,14 @@
 import { useToast } from "@chakra-ui/react";
 import DeletePopUp from "components/ui/modal/DeletePopUp";
+import TextTitle from "components/ui/text/TextTitle";
+import useModule from "hooks/useModule";
 import { useEffect, useState } from "react";
 import SettingService from "services/SettingService";
-import { ConfigTabLayout } from "../../../components/ConfigTabLayout";
-import ModuleForm from "./ModuleForm";
 import { ModulesList } from "./ModulesList";
 
-const ModulePanel = ({ companyName, setOptionDataRefresh, modules }) => {
+const ModulePanel = ({ companyName }) => {
 	const toast = useToast();
+	const modules = useModule(companyName);
 	const [moduleList, setModuleList] = useState(null);
 	const [editingId, setEditingId] = useState(null);
 	const [deletingId, setDeletingId] = useState(null);
@@ -52,7 +53,6 @@ const ModulePanel = ({ companyName, setOptionDataRefresh, modules }) => {
 				duration: 3000,
 				isClosable: true,
 			});
-			setOptionDataRefresh((prev) => !prev);
 			handleClose();
 		} catch (error) {
 			toast({
@@ -67,23 +67,31 @@ const ModulePanel = ({ companyName, setOptionDataRefresh, modules }) => {
 
 	return (
 		<>
-			<ConfigTabLayout
+			{/* <ConfigTabLayout
 				tableData={moduleList}
 				tableTitle="All Modules"
 				tableContent={
-					<ModulesList modules={moduleList} handleEdit={handleEdit} handleDelete={confirmDelete} />
 				}
 				leftContent={
-					<ModuleForm
-						editingId={editingId}
-						handleClose={handleClose}
-						formData={formData}
-						setFormData={setFormData}
-						setModuleList={setModuleList}
-						resetForm={handleClose}
-						setOptionDataRefresh={setOptionDataRefresh}
-					/>
+					<>
+					  <ModuleForm
+							editingId={editingId}
+							handleClose={handleClose}
+							formData={formData}
+							setFormData={setFormData}
+							setModuleList={setModuleList}
+							resetForm={handleClose}
+						/>  
+					</>
 				}
+			/> */}
+
+			<TextTitle title={"All Modules"} />
+			<ModulesList
+				modules={moduleList}
+				handleEdit={handleEdit}
+				handleDelete={confirmDelete}
+				setModuleList={setModuleList}
 			/>
 			{showConfirmationPopUp && (
 				<DeletePopUp

@@ -278,10 +278,11 @@ const addCCDept = async (req, res) => {
 
 		if (existingRecord) {
 			deptId = existingRecord._id;
-		} else {
-			const newDept = await Department.create(data);
-			deptId = newDept._id;
+			return res.status(409).json({ message: "Department of same name already exists!" });
 		}
+		const newDept = await Department.create(data);
+		deptId = newDept._id;
+
 		await CostCenter.findByIdAndUpdate(id, { $addToSet: { departments: deptId } }, { new: true });
 		return res.status(200).json(deptId);
 	} catch (error) {
@@ -348,7 +349,7 @@ const getModules = async (req, res) => {
 	const { companyName } = req.params;
 	try {
 		const module = await Module.find({ companyName }).sort({
-			createdOn: -1,
+			name: 1,
 		});
 		return res.status(200).json(module);
 	} catch (error) {

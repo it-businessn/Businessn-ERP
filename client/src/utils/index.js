@@ -158,6 +158,7 @@ export const getRoleColor = (role) => {
 };
 
 export const isManager = (role) => role !== ROLES.EMPLOYEE && role !== ROLES.ENROLLER;
+export const hasConsoleAccess = (role) => isManager(role) && role !== ROLES.MANAGER;
 
 export const calcTotal = (data, param1, param2) => {
 	return data.reduce((acc, product) => {

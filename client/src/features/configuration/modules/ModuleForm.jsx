@@ -16,7 +16,7 @@ const ModuleForm = ({
 	const toast = useToast();
 	const [isSubmitting, setIsSubmitting] = useState(false);
 
-	const handleModuleSubmit = async () => {
+	const handleSubmit = async () => {
 		setIsSubmitting(true);
 		try {
 			await SettingService.addBaseModule(formData);
@@ -103,7 +103,7 @@ const ModuleForm = ({
 				submitBtnName={`${editingId ? "Save" : "Add"}`}
 				closeLabel={editingId ? "Cancel" : ""}
 				onClose={handleClose}
-				onOpen={editingId ? handleUpdate : handleModuleSubmit}
+				onOpen={editingId ? handleUpdate : handleSubmit}
 				size="sm"
 				justifyContent="end"
 				isLoading={isSubmitting}

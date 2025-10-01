@@ -12,18 +12,14 @@ import {
 	useColorMode,
 	VStack,
 } from "@chakra-ui/react";
-import { ROLES } from "constant";
 import { useEffect, useState } from "react";
 import { IoMdHelpCircle } from "react-icons/io";
-import { IoSettingsOutline } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
 import { adminConsolePath, userProfilePath } from "routes";
-import { isManager } from "utils";
 // import { styleConsole } from "utils";
 
-const UserProfile = ({ user, handleLogout }) => {
+const UserProfile = ({ user, handleLogout, consoleAccess }) => {
 	const navigate = useNavigate();
-	const hasConsoleAccess = isManager(user?.role) && user?.role !== ROLES.MANAGER;
 	const [signUp, setSignUp] = useState(false);
 	const [isOpen, setIsOpen] = useState(false);
 	const { colorMode, toggleColorMode } = useColorMode();
@@ -62,7 +58,7 @@ const UserProfile = ({ user, handleLogout }) => {
 		{
 			name: "Admin console",
 			handleClick: showConfigPage,
-			hasAccess: hasConsoleAccess,
+			hasAccess: consoleAccess,
 		},
 	];
 
@@ -114,13 +110,6 @@ const UserProfile = ({ user, handleLogout }) => {
 				onClick={() => navigate("/support")}
 				aria-label="Support"
 			/>
-			{hasConsoleAccess && (
-				<IconButton
-					icon={<IoSettingsOutline style={{ width: "24px", height: "24px" }} />}
-					onClick={() => navigate(adminConsolePath)}
-					aria-label="Admin"
-				/>
-			)}
 		</HStack>
 	);
 };

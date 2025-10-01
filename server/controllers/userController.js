@@ -257,7 +257,7 @@ const getCompanyEmployees = async (req, res) => {
 			}),
 		);
 
-		if (payGroup) {
+		if (shadowEmpIds?.length > 0 && payGroup) {
 			updatedResult = filterResultByPaygroupOption(updatedResult, payGroup);
 		}
 

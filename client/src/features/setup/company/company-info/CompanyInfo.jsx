@@ -1,70 +1,101 @@
-import {
-	Box,
-	Card,
-	HStack,
-	Icon,
-	Stack,
-	Table,
-	Tbody,
-	Td,
-	Th,
-	Thead,
-	Tr,
-	VStack,
-} from "@chakra-ui/react";
+import { Box, Card, HStack, Icon, Stack, VStack } from "@chakra-ui/react";
+import LeftIconButton from "components/ui/button/LeftIconButton";
 import BoxCard from "components/ui/card";
-import EmptyRowRecord from "components/ui/EmptyRowRecord";
 import NormalTextTitle from "components/ui/NormalTextTitle";
 import TextTitle from "components/ui/text/TextTitle";
+import useSelectedCompanyInfo from "hooks/useSelectedCompanyInfo";
+import { useState } from "react";
 import { HiOfficeBuilding } from "react-icons/hi";
+import { MdSettingsSuggest } from "react-icons/md";
+import LocalStorageService from "services/LocalStorageService";
+import { isManager } from "utils";
 import { getFormattedAddress } from "utils/common";
+import EditCompanyInfo from "./EditCompanyInfo";
 
-const CompanyInfo = ({ companyInfo, modules }) => {
+const CompanyInfo = ({ company, modules }) => {
+	const loggedInUser = LocalStorageService.getItem("user");
+	const [showEditDialog, setShowEditDialog] = useState(false);
+	const [refresh, setRefresh] = useState(false);
+	const companyInfo = useSelectedCompanyInfo(company, refresh);
+
 	return (
-		<HStack
-			flexDir={{ base: "column", md: "row" }}
-			borderRadius="10px"
-			border="3px solid var(--main_color)"
-			m="1em auto"
-			w={"60%"}
-		>
-			<Card flex={1} m="1em" bg={"var(--lead_cards_bg)"} border={"1px solid var(--lead_cards_bg)"}>
-				<Box
-					fontWeight="bold"
-					p="1em"
-					bg="var(--bg_color_1)"
-					borderTopLeftRadius="10px"
-					borderTopRightRadius="10px"
+		<Stack margin={"auto"} m="1em auto" w={"50%"}>
+			{isManager(loggedInUser?.role) && (
+				<HStack justify={"end"}>
+					<LeftIconButton
+						color="var(--nav_color)"
+						border="2px solid var(--filter_border_color)"
+						name="Update CRA Number"
+						borderRadius="10px"
+						variant="ghost"
+						isFilter
+						size="md"
+						handleClick={() => setShowEditDialog(true)}
+						icon={<MdSettingsSuggest />}
+					/>
+					{/* <PrimaryButton name="View / Add Company" onOpen={() => setOpenCompanyForm(true)} /> */}
+				</HStack>
+			)}
+			{showEditDialog && (
+				<EditCompanyInfo
+					setRefresh={setRefresh}
+					isOpen={showEditDialog}
+					companyInfo={companyInfo}
+					onClose={() => setShowEditDialog(false)}
+				/>
+			)}
+			{companyInfo && (
+				<HStack
+					flexDir={{ base: "column", md: "row" }}
+					borderRadius="10px"
+					border="3px solid var(--main_color)"
 				>
-					<VStack spacing={5}>
-						<Icon as={HiOfficeBuilding} boxSize={10} />
-						<TextTitle align={"center"} size="xl" title={companyInfo.name} />
-					</VStack>
-				</Box>
-				<BoxCard>
-					<Stack>
-						<HStack>
-							<TextTitle title="Registration Number" width="200px" />
-							<NormalTextTitle title={companyInfo.registration_number} />
-						</HStack>
-						<HStack>
-							<TextTitle title="Founding Year" width="200px" />
-							<NormalTextTitle title={companyInfo.founding_year} />
-						</HStack>
-						<HStack>
-							<TextTitle title="Industry Type" width="200px" />
-							<NormalTextTitle title={companyInfo.industry_type} />
-						</HStack>
-						<HStack>
-							<TextTitle title="Address" width="200px" />
-							<NormalTextTitle
-								whiteSpace={"wrap"}
-								title={getFormattedAddress(companyInfo?.address)}
-							/>
-						</HStack>
-					</Stack>
-				</BoxCard>
-				<BoxCard>
+					<Card
+						flex={1}
+						m="1em"
+						bg={"var(--lead_cards_bg)"}
+						border={"1px solid var(--lead_cards_bg)"}
+					>
+						<Box
+							fontWeight="bold"
+							p="1em"
+							bg="var(--bg_color_1)"
+							borderTopLeftRadius="10px"
+							borderTopRightRadius="10px"
+						>
+							<VStack spacing={5}>
+								<Icon as={HiOfficeBuilding} boxSize={10} />
+								<TextTitle align={"center"} size="xl" title={companyInfo.name} />
+							</VStack>
+						</Box>
+						<BoxCard>
+							<Stack>
+								<HStack>
+									<TextTitle title="Registration Number" width="280px" />
+									<NormalTextTitle title={companyInfo.registration_number} />
+								</HStack>
+								<HStack>
+									<TextTitle title="CRA Business Number" width="280px" />
+									<NormalTextTitle title={companyInfo.cra_business_number} />
+								</HStack>
+								<HStack>
+									<TextTitle title="Founding Year" width="280px" />
+									<NormalTextTitle title={companyInfo.founding_year} />
+								</HStack>
+								<HStack>
+									<TextTitle title="Industry Type" width="280px" />
+									<NormalTextTitle title={companyInfo.industry_type} />
+								</HStack>
+								<HStack>
+									<TextTitle title="Address" width="280px" />
+									<NormalTextTitle
+										whiteSpace={"wrap"}
+										title={getFormattedAddress(companyInfo?.address)}
+									/>
+								</HStack>
+							</Stack>
+						</BoxCard>
+						{/* <BoxCard>
 					<Table size={"small"}>
 						<Thead>
 							<Tr>
@@ -86,9 +117,11 @@ const CompanyInfo = ({ companyInfo, modules }) => {
 							))}
 						</Tbody>
 					</Table>
-				</BoxCard>
-			</Card>
-		</HStack>
+				</BoxCard> */}
+					</Card>
+				</HStack>
+			)}
+		</Stack>
 	);
 };
 

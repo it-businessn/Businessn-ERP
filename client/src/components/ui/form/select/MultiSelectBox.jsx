@@ -46,13 +46,7 @@ const MultiSelectBox = ({
 				>
 					<CloseButton onClick={handleClose} position={"sticky"} top={0} />
 				</MenuItem>
-				<Stack
-					spacing={1}
-					overflow={"auto"}
-					height={height}
-					maxHeight={"33vh"}
-					w={w}
-				>
+				<Stack spacing={1} overflow={"auto"} height={height} maxHeight={"33vh"} w={w}>
 					{data?.map((assignee) => (
 						<MenuItem key={assignee?._id ?? assignee}>
 							<Checkbox
@@ -60,9 +54,7 @@ const MultiSelectBox = ({
 								isChecked={selectedOptions?.includes(
 									assignee.fullName ?? (assignee.name || assignee),
 								)}
-								onChange={() =>
-									handleCheckboxChange(assignee.fullName ?? assignee.name)
-								}
+								onChange={() => handleCheckboxChange(assignee.fullName || assignee.name)}
 							>
 								{assignee.fullName ?? assignee.name}
 							</Checkbox>

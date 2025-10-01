@@ -5,13 +5,14 @@ import ModalLayout from "components/ui/modal/ModalLayout";
 import { useState } from "react";
 import SettingService from "services/SettingService";
 
-const EditCompanyInfo = ({ isOpen, companyInfo, onClose }) => {
+const EditCompanyInfo = ({ isOpen, companyInfo, onClose, setRefresh }) => {
 	const [CRABusinessNo, setCRABusinessNo] = useState(companyInfo?.cra_business_number || "");
 	const handleSubmit = async (e) => {
 		e.preventDefault();
 		try {
-			await SettingService.updateCompany({ CRABusinessNo }, companyInfo._id);
+			await SettingService.updateCompany({ cra_business_number: CRABusinessNo }, companyInfo._id);
 			onClose();
+			setRefresh((prev) => !prev);
 		} catch (error) {
 			console.log("An error occurred while updating company info");
 		}

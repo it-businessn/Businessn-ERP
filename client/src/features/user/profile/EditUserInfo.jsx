@@ -5,7 +5,6 @@ import {
 	FormControl,
 	FormLabel,
 	HStack,
-	Input,
 	Select,
 	Stack,
 	VStack,
@@ -109,144 +108,156 @@ const EditUserInfo = ({ setEditMode, setError, error, company }) => {
 	};
 
 	return (
-		<Stack flex={1} p={"1em"} color="var(--logo_bg)">
+		<Stack flex={1} p={"1em"} color="var(--logo_bg)" height={"calc(100vh - 190px)"}>
 			<form onSubmit={handleSaveClick}>
 				<VStack align="center" justify="center" mb="4">
 					<Box textAlign="center">
 						<TextTitle size="xl" title="Edit Profile Information" />
 					</Box>
 				</VStack>
-				<HStack>
-					<InputFormControl
-						label={"First Name"}
-						name="firstName"
-						valueText={userData.firstName || ""}
-						handleChange={handleChange}
-						placeholder="First Name"
-					/>
-					<InputFormControl
-						label={"Middle Name"}
-						name="middleName"
-						valueText={userData.middleName || ""}
-						handleChange={handleChange}
-						placeholder="Middle Name"
-					/>
-					<InputFormControl
-						label={"Last Name"}
-						name="lastName"
-						valueText={userData.lastName || ""}
-						handleChange={handleChange}
-						placeholder="Last Name"
-					/>
-				</HStack>
-				<InputFormControl
-					label={"Email"}
-					name="email"
-					type="email"
-					valueText={userData.email || ""}
-					handleChange={handleChange}
-					placeholder="Email"
-				/>
-				<InputFormControl
-					label={"Phone Number"}
-					name="phoneNumber"
-					type="tel"
-					valueText={userData.phoneNumber || ""}
-					handleChange={handleChange}
-					placeholder="Phone Number"
-				/>
-				<FormControl mb={4}>
-					<FormLabel>Address</FormLabel>
+				<Stack spacing={2}>
 					<HStack>
-						<Input
-							type="text"
-							name="streetNumber"
-							value={userData?.primaryAddress?.streetNumber || ""}
-							onChange={handleAddressChange}
-							placeholder="Street Number"
+						<InputFormControl
+							label={"First Name"}
+							name="firstName"
+							valueText={userData.firstName || ""}
+							handleChange={handleChange}
+							placeholder="First Name"
 						/>
-
-						<Input
-							type="text"
-							name="city"
-							value={userData?.primaryAddress?.city || ""}
-							onChange={handleAddressChange}
-							placeholder="City"
+						<InputFormControl
+							label={"Middle Name"}
+							name="middleName"
+							valueText={userData.middleName || ""}
+							handleChange={handleChange}
+							placeholder="Middle Name"
 						/>
-						<Input
-							type="text"
-							name="postalCode"
-							value={userData?.primaryAddress?.postalCode || ""}
-							onChange={handleAddressChange}
-							placeholder="Postal Code"
+						<InputFormControl
+							label={"Last Name"}
+							name="lastName"
+							valueText={userData.lastName || ""}
+							handleChange={handleChange}
+							placeholder="Last Name"
 						/>
 					</HStack>
-					<HStack mt={2}>
-						<Select
-							name="country"
-							value={userData?.primaryAddress?.country}
-							onChange={handleAddressChange}
-							placeholder="Select Country"
-						>
-							{COUNTRIES.map(({ type, code }) => (
-								<option key={type} value={code}>
-									{type}
-								</option>
-							))}
-						</Select>
-						<Select
-							name="state"
-							value={userData?.primaryAddress?.state || ""}
-							onChange={handleAddressChange}
-							placeholder="Select Province"
-						>
-							{availableProvinces.map(({ name, id }) => (
-								<option key={name} value={id}>
-									{name}
-								</option>
-							))}
-						</Select>
+					<HStack>
+						<InputFormControl
+							label={"Email"}
+							name="email"
+							type="email"
+							valueText={userData.email || ""}
+							handleChange={handleChange}
+							placeholder="Email"
+						/>
+						<InputFormControl
+							label={"Phone Number"}
+							name="phoneNumber"
+							type="tel"
+							valueText={userData.phoneNumber || ""}
+							handleChange={handleChange}
+							placeholder="Phone Number"
+						/>
 					</HStack>
-				</FormControl>
-				<HStack>
-					{roles && (
-						<FormControl mb={4}>
-							<FormLabel>Type of Role</FormLabel>
-							<Select
-								name="role"
-								value={userData?.role || ""}
-								bg="var(--main_color)"
-								onChange={handleChange}
-								placeholder="Select role"
-							>
-								{roles?.map((role) => (
-									<option key={role._id} value={role.name}>
-										{role.name}
-									</option>
-								))}
-							</Select>
-						</FormControl>
-					)}
-					{departments && (
-						<FormControl mb={4}>
-							<FormLabel>Type of Department</FormLabel>
-							<Select
-								bg="var(--main_color)"
-								name="department"
-								value={userData?.department || ""}
-								onChange={handleChange}
-								placeholder="Select department"
-							>
-								{departments?.map((dept) => (
-									<option key={dept._id} value={dept.name}>
-										{dept.name}
-									</option>
-								))}
-							</Select>
-						</FormControl>
-					)}
-				</HStack>
-				{/* {managers && (
+					<FormControl mb={4}>
+						<TextTitle size="lg" title={"Address"} />
+						<HStack>
+							<InputFormControl
+								label={"Street Number"}
+								name="streetNumber"
+								valueText={userData?.primaryAddress?.streetNumber || ""}
+								handleChange={handleAddressChange}
+								placeholder="Street Number"
+							/>
+							<InputFormControl
+								label="City"
+								name="city"
+								valueText={userData?.primaryAddress?.city || ""}
+								handleChange={handleAddressChange}
+								placeholder="City"
+							/>
+							<InputFormControl
+								label="Postal Code"
+								name="postalCode"
+								valueText={userData?.primaryAddress?.postalCode || ""}
+								handleChange={handleAddressChange}
+								placeholder="Postal Code"
+							/>
+						</HStack>
+						<HStack mt={2}>
+							<FormControl>
+								<FormLabel size="sm">Country</FormLabel>
+								<Select
+									size={"sm"}
+									name="country"
+									value={userData?.primaryAddress?.country}
+									onChange={handleAddressChange}
+									placeholder="Select Country"
+								>
+									{COUNTRIES.map(({ type, code }) => (
+										<option key={type} value={code}>
+											{type}
+										</option>
+									))}
+								</Select>
+							</FormControl>
+							<FormControl>
+								<FormLabel size="sm">Province / State</FormLabel>
+								<Select
+									size={"sm"}
+									name="state"
+									value={userData?.primaryAddress?.state || ""}
+									onChange={handleAddressChange}
+									placeholder="Select Province"
+								>
+									{availableProvinces.map(({ name, id }) => (
+										<option key={name} value={id}>
+											{name}
+										</option>
+									))}
+								</Select>
+							</FormControl>
+						</HStack>
+					</FormControl>
+					<HStack>
+						{roles && (
+							<FormControl mb={4}>
+								<FormLabel>Type of Role</FormLabel>
+								<Select
+									size={"sm"}
+									name="role"
+									value={userData?.role || ""}
+									bg="var(--main_color)"
+									onChange={handleChange}
+									placeholder="Select role"
+								>
+									{roles?.map((role) => (
+										<option key={role._id} value={role.name}>
+											{role.name}
+										</option>
+									))}
+								</Select>
+							</FormControl>
+						)}
+						{departments && (
+							<FormControl mb={4}>
+								<FormLabel>Type of Department</FormLabel>
+								<Select
+									size={"sm"}
+									bg="var(--main_color)"
+									name="department"
+									value={userData?.department || ""}
+									onChange={handleChange}
+									placeholder="Select department"
+								>
+									{departments?.map((dept) => (
+										<option key={dept._id} value={dept.name}>
+											{dept.name}
+										</option>
+									))}
+								</Select>
+							</FormControl>
+						)}
+					</HStack>
+					{/* {managers && (
 					<FormControl mb={4}>
 						<FormLabel>Manager</FormLabel>
 						<Select
@@ -264,25 +275,25 @@ const EditUserInfo = ({ setEditMode, setError, error, company }) => {
 						</Select>
 					</FormControl>
 				)} */}
-				<HStack>
-					{allCompanies && (
-						<MultiSelectFormControl
-							hideAvatar
-							label="Assign Companies"
-							tag="selected"
-							titleLabelText="Companies"
-							showMultiSelect={openAssigneeMenu}
-							height="15vh"
-							data={allCompanies}
-							handleCloseMenu={handleCloseMenu}
-							selectedOptions={companies}
-							setSelectedOptions={setCompanies}
-							handleMenuToggle={handleMenuToggle}
-							list={userData?.companyId}
-						/>
-					)}
+					<HStack>
+						{allCompanies && (
+							<MultiSelectFormControl
+								hideAvatar
+								label="Assign Companies"
+								tag="selected"
+								titleLabelText="Companies"
+								showMultiSelect={openAssigneeMenu}
+								height="30vh"
+								data={allCompanies}
+								handleCloseMenu={handleCloseMenu}
+								selectedOptions={companies}
+								setSelectedOptions={setCompanies}
+								handleMenuToggle={handleMenuToggle}
+								list={userData?.companyId}
+							/>
+						)}
 
-					{/* {departments && (
+						{/* {departments && (
 						<FormControl mb={4}>
 							<FormLabel>Link Company</FormLabel>
 							<Select
@@ -300,7 +311,7 @@ const EditUserInfo = ({ setEditMode, setError, error, company }) => {
 							</Select>
 						</FormControl>
 					)} */}
-					{/* {empTypes && (
+						{/* {empTypes && (
 						<FormControl mb={4}>
 							<FormLabel>Type of Employment</FormLabel>
 							<Select
@@ -318,14 +329,15 @@ const EditUserInfo = ({ setEditMode, setError, error, company }) => {
 							</Select>
 						</FormControl>
 					)} */}
-				</HStack>
-				<PrimaryButton mt={3} hover="none" name="Save" size="sm" />
-				{error && (
-					<Alert status="error" mt={4}>
-						<AlertIcon />
-						{error}
-					</Alert>
-				)}
+					</HStack>
+					<PrimaryButton hover="none" name="Save" size="sm" w={"100px"} />
+					{error && (
+						<Alert status="error" mt={4}>
+							<AlertIcon />
+							{error}
+						</Alert>
+					)}
+				</Stack>
 			</form>
 		</Stack>
 	);

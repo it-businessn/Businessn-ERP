@@ -1,5 +1,6 @@
 const Company = require("../models/Company");
 const EmployeeEmploymentInfo = require("../models/EmployeeEmploymentInfo");
+const Module = require("../models/Module");
 const { ROLES, COMPANIES } = require("../services/data");
 
 const getCompanies = async (req, res) => {
@@ -57,6 +58,24 @@ const updateCompany = async (req, res) => {
 	}
 };
 
+const addCompanyModules = async (companyName) => {
+	try {
+		const ERP_MODULES = [
+			"Sales",
+			"Project Management",
+			"Payroll",
+			"Scheduling",
+			"HR",
+			"Operations",
+			"Accounting",
+		];
+		const modules = ERP_MODULES.map((module) => {
+			return { name: module, companyName };
+		});
+		await Module.insertMany(modules);
+	} catch (error) {}
+};
+
 const addCompany = async (req, res) => {
 	const { name, founding_year, registration_number, address, industry_type } = req.body;
 	const { streetNumber, city, state, postalCode, country } = address;
@@ -77,7 +96,7 @@ const addCompany = async (req, res) => {
 				address: { streetNumber, city, state, postalCode, country },
 				employees: shadowAdmins,
 			});
-
+			addCompanyModules(name);
 			return res.status(201).json(newCompany);
 		}
 		return res.status(409).json({ message: "Company of same registration_number already exists!" });

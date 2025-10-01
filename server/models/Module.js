@@ -4,7 +4,7 @@ const moduleSchema = new mongoose.Schema(
 	{
 		name: String,
 		description: String,
-		isActive: { type: Boolean, default: false },
+		isActive: Boolean,
 		members: [{ type: mongoose.Schema.Types.ObjectId, ref: "Employee" }],
 		admin: [{ type: mongoose.Schema.Types.ObjectId, ref: "Employee" }],
 		companyName: { type: String, ref: "Company" },

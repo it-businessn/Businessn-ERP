@@ -1,16 +1,16 @@
 import TabGroup from "components/ui/tab";
+import ModulePanel from "features/configuration/modules";
 import useModule from "hooks/useModule";
 import { useState } from "react";
 import CompanyDetails from "./company-info/CompanyDetails";
 import GroupsPanel from "./GroupsPanel";
-import ModulePanel from "./ModulePanel";
 import Naming from "./Naming";
 
 const CompanyPanel = ({ employees, setFilteredEmployees, filteredEmployees, company }) => {
 	const modules = useModule(company);
 
 	const COMPANY_SETUP_TAB = [
-		{ id: 0, type: "Modules", name: <ModulePanel modules={modules} /> },
+		{ id: 0, type: "Modules", name: <ModulePanel companyName={company} /> },
 		{
 			id: 1,
 			type: "Groups",

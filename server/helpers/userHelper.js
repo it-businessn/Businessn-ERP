@@ -40,7 +40,7 @@ const filterResultByDepartment = (result, deptName) => {
 };
 
 const filterResultByPaygroupOption = (result, payGroupOption) =>
-	result?.filter((emp) => emp?.positions?.find((_) => _.employmentPayGroup === payGroupOption));
+	result?.filter((emp) => emp?.positions?.find((_) => _?.employmentPayGroup === payGroupOption));
 
 const getShadowUserIds = async (companyName) => {
 	const shadowEmpIds = await EmployeeEmploymentInfo.find({

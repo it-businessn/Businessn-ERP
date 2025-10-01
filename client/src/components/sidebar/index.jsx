@@ -1,12 +1,13 @@
 import { Flex, IconButton, Stack } from "@chakra-ui/react";
 import TextTitle from "components/ui/text/TextTitle";
 import { useState } from "react";
-import { IoDocumentTextOutline } from "react-icons/io5";
+import { IoDocumentTextOutline, IoSettingsOutline } from "react-icons/io5";
 import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from "react-icons/md";
+import { adminConsolePath } from "routes";
 import MenuItem from "../ui/menu/MenuItem";
 import MobileSidebar from "./MobileSidebar";
 
-const Sidebar = ({ activeMenu, handleMenuItemClick, isMobile, isOpen, onClose }) => {
+const Sidebar = ({ activeMenu, handleMenuItemClick, isMobile, isOpen, onClose, consoleAccess }) => {
 	const menuList = activeMenu?.children?.filter((item) => item?.permissions);
 	const [isCollapsed, setIsCollapsed] = useState(false);
 
@@ -67,7 +68,7 @@ const Sidebar = ({ activeMenu, handleMenuItemClick, isMobile, isOpen, onClose })
 						),
 				)}
 				{!isCollapsed && (
-					<TextTitle mt={5} title="Tools" color="var(--primary_button_bg)" p="0 1em" />
+					<TextTitle mt={"3em"} title="Quick Access" color="var(--primary_button_bg)" p="0 1em" />
 				)}
 				<MenuItem
 					navigatePath={"/tickets"}
@@ -79,6 +80,18 @@ const Sidebar = ({ activeMenu, handleMenuItemClick, isMobile, isOpen, onClose })
 					}}
 					isCollapsed={isCollapsed}
 				/>
+				{consoleAccess && (
+					<MenuItem
+						navigatePath={adminConsolePath}
+						menu={{
+							path: adminConsolePath,
+							name: "Admin Console",
+							children: [],
+							icon: <IoSettingsOutline />,
+						}}
+						isCollapsed={isCollapsed}
+					/>
+				)}
 			</Stack>
 		</Flex>
 	);

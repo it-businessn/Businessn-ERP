@@ -1,5 +1,7 @@
+import ComingSoon from "components/ComingSoon";
+
 const Naming = () => {
-	return <>To be added</>;
+	return <ComingSoon message="" />;
 };
 
 export default Naming;

@@ -49,7 +49,7 @@ const Support = () => {
 	const isLastStep = tabIndex === SUPPORT_TABS.length - 1;
 
 	const WEB = "https://www.businessn.com";
-	const handleRedirect = () => (window.location.href = WEB);
+	const handleRedirect = () => window.history.back() || WEB;
 	const handleSubmit = async () => {
 		try {
 			const { data } = await TicketService.addSupportTicket(formData);

@@ -68,7 +68,7 @@ const FilterMenu = ({
 	return (
 		<>
 			{(!modules || !groups || !managers) && <Loader autoHeight />}
-			<HStack justifyContent={"start"} align={"self-start"}>
+			<HStack justifyContent={"space-between"} alignItems={"center"} w={"50%"}>
 				{groups && (
 					<FormControl>
 						<FormLabel> Groups </FormLabel>
@@ -90,7 +90,7 @@ const FilterMenu = ({
 					</FormControl>
 				)}
 				{modules && (
-					<FormControl>
+					<FormControl textAlign={"center"}>
 						<FormLabel visibility={openModuleMenu ? "" : "hidden"}>Select Base Module</FormLabel>
 						<MultiSelectButton
 							handleMenuToggle={handleMenuToggle}

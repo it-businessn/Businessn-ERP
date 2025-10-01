@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import SettingService from "services/SettingService";
 
-const useSelectedCompanyInfo = (company) => {
+const useSelectedCompanyInfo = (company, refresh) => {
 	const [companyInfo, setCompanyInfo] = useState(null);
 
 	useEffect(() => {
@@ -14,7 +14,7 @@ const useSelectedCompanyInfo = (company) => {
 			}
 		};
 		fetchCompanyInfo();
-	}, [company]);
+	}, [company, refresh]);
 
 	return companyInfo;
 };

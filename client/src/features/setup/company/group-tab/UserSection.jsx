@@ -95,6 +95,7 @@ const UserSection = ({
 						name="Add User"
 						handleClick={handleConfirm}
 						icon={<SmallAddIcon />}
+						bg="var(--banner_bg)"
 						px={{ base: "2em" }}
 						type="submit"
 					/>

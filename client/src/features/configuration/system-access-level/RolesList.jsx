@@ -8,14 +8,16 @@ export const RolesList = ({ roleList, handleEdit }) => {
 			<Thead>
 				<Tr>
 					<Th>Name</Th>
+					<Th>Description</Th>
 					<Th>Action</Th>
 				</Tr>
 			</Thead>
 			<Tbody>
-				{(!roleList || roleList?.length === 0) && <EmptyRowRecord data={roleList} colSpan={2} />}
+				{(!roleList || roleList?.length === 0) && <EmptyRowRecord data={roleList} colSpan={3} />}
 				{roleList?.map((role) => (
 					<Tr key={role?._id}>
 						<Td>{role?.name}</Td>
+						<Td>{role?.description}</Td>
 						<Td>
 							<HStack spacing={2}>
 								<IconButton
