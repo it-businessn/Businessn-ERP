@@ -329,7 +329,7 @@ const buildPayStub = (
 			prevPayPayInfo?.YTDEmployerContributions,
 			currentEmployerContributions,
 		),
-		YTDVacationAccrued: getSumTotal(prevPayPayInfo?.YTDVacationAccrued, 0),
+		YTDVacationAccrued: getSumTotal(prevPayPayInfo?.YTDVacationAccrued, currentVacationAccrued),
 		YTDVacationBalanceFwd: currentVacationBalanceFwd,
 		YTDSickAccrued: getSumTotal(prevPayPayInfo?.YTDSickAccrued, currentSickAccrued),
 		YTDSickUsed: getSumTotal(prevPayPayInfo?.YTDSickUsed, currentSickUsed),
@@ -349,7 +349,6 @@ const buildPayStub = (
 		YTDVacationAccrued,
 	} = newPayStub;
 
-	// YTDVacationAccrued: getSumTotal(prevPayPayInfo?.YTDVacationAccrued, currentVacationAccrued),
 	// YTDVacationUsed: getSumTotal(prevPayPayInfo?.YTDVacationUsed, currentVacationUsed),
 	// YTDVacationBalance: getSumTotal(prevPayPayInfo?.YTDVacationBalance, vacationBalance),
 	newPayStub.YTDVacationUsed = YTDVacationPayout + YTDVacationPayTotal;
