@@ -179,7 +179,7 @@ const PermissionsPanel = ({ employees, setFilteredEmployees, filteredEmployees, 
 					handleSelect={handleSelect}
 				/>
 			</HStack>
-			<Table variant="simple">
+			<Table variant="simple" bg={"var(--payStub_bg)"}>
 				<Thead>
 					<Tr>
 						<Th>Section</Th>

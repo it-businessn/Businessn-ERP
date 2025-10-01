@@ -1,6 +1,5 @@
 import { redirectLogin } from "api";
 import { SIDEBAR_MENU } from "components/sidebar/data";
-import { COMPANIES } from "constant";
 import { startTransition, useEffect, useState } from "react";
 import LocalStorageService from "services/LocalStorageService";
 import UserService from "services/UserService";
@@ -13,7 +12,7 @@ const useSidebarMenu = (userId, company, isManager, isShadowAdmin) => {
 		const fetchUserPermissions = async () => {
 			try {
 				const companyName = company || LocalStorageService.getItem("selectedCompany");
-				if (isShadowAdmin || companyName === COMPANIES.BUSINESSN_ORG) {
+				if (isShadowAdmin) {
 					const permissionMenu = {
 						canAccessAllData: true,
 						canAccessGroupData: true,

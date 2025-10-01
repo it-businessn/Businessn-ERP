@@ -259,6 +259,9 @@ const updateEmployeeEmploymentInfo = async (req, res) => {
 					});
 				}
 			}
+			if (employmentRole !== existingEmploymentInfo?.employmentRole) {
+				await setInitialPermissions(existingEmploymentInfo.empId, employmentRole, companyName);
+			}
 
 			const updatedInfo = await updateEmploymentInfo(existingEmploymentInfo._id, {
 				payrollStatus,
@@ -276,6 +279,7 @@ const updateEmployeeEmploymentInfo = async (req, res) => {
 			}
 			return res.status(200).json(updatedInfo);
 		}
+		await setInitialPermissions(empId, employmentRole, companyName);
 		addUserEmploymentInfo(empId, companyName, req.body);
 		return res.status(201).json("Employment info added");
 	} catch (error) {

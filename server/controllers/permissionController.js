@@ -22,6 +22,7 @@ const getPermission = async (req, res) => {
 	const { empId, companyName } = req.params;
 
 	try {
+		// const k = await UserPermissions.deleteMany({ empId, companyName });
 		const userPermission = await findPermission({
 			empId,
 			companyName,
@@ -140,9 +141,13 @@ const setInitialPermissions = async (empId, role, companyName) => {
 		});
 		const newPermissions = getPermissionsList(role);
 		if (permissionExists) {
-			await UserPermissions.findByIdAndUpdate(permissionExists._id, {
-				permissionType: newPermissions,
-			});
+			await UserPermissions.findByIdAndUpdate(
+				permissionExists._id,
+				{
+					$set: { permissionType: newPermissions },
+				},
+				{ new: true },
+			);
 		} else {
 			await UserPermissions.create({
 				empId,

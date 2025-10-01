@@ -117,8 +117,8 @@ const getPayrollActiveCompanyEmployeesCount = async (req, res) => {
 const getPayrollActiveCompanyEmployees = async (req, res) => {
 	const { companyName, deptName, payGroup } = req.params;
 	try {
-		const result = await getPayrollActiveEmployees(companyName, deptName, payGroup);
-
+		let result = await getPayrollActiveEmployees(companyName, deptName, payGroup);
+		result = result?.filter((_) => _?.empId);
 		return res.status(200).json(result);
 	} catch (error) {
 		return res.status(500).json({ message: "Internal Server Error", error });
@@ -128,7 +128,8 @@ const getPayrollActiveCompanyEmployees = async (req, res) => {
 const getPayrollInActiveCompanyEmployees = async (req, res) => {
 	const { companyName, deptName, payGroup } = req.params;
 	try {
-		const result = await getPayrollInActiveEmployees(companyName, deptName, payGroup);
+		let result = await getPayrollInActiveEmployees(companyName, deptName, payGroup);
+		result = result?.filter((_) => _?.empId);
 		return res.status(200).json(result);
 	} catch (error) {
 		return res.status(500).json({ message: "Internal Server Error", error });
