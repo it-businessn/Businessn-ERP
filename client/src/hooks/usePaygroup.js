@@ -1,7 +1,7 @@
-import { COMPANIES } from "constant";
 import { useEffect, useState } from "react";
 import PayrollService from "services/PayrollService";
 import { sortRecordsByDate } from "utils";
+import { isBusinessN } from "utils/common";
 import { CURRENT_YEAR } from "utils/convertDate";
 
 const usePaygroup = (company, refresh, year = CURRENT_YEAR, isReport = false) => {
@@ -21,10 +21,9 @@ const usePaygroup = (company, refresh, year = CURRENT_YEAR, isReport = false) =>
 				setPayGroups(data);
 				if (data.length) {
 					setHasMultiPaygroups(data?.length > 1);
-					const payGroup =
-						company === COMPANIES.BUSINESSN_ORG
-							? data.find(({ scheduleFrequency }) => scheduleFrequency === "Monthly")
-							: data[0];
+					const payGroup = isBusinessN(company)
+						? data.find(({ scheduleFrequency }) => scheduleFrequency === "Monthly")
+						: data[0];
 					setSelectedPayGroup(payGroup);
 				}
 			} catch (error) {

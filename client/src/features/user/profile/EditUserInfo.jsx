@@ -17,18 +17,18 @@ import TextTitle from "components/ui/text/TextTitle";
 import { COUNTRIES } from "erp-modules/payroll/onboard-user/customInfo";
 import useCompanies from "hooks/useCompanies";
 import useDepartment from "hooks/useDepartment";
-import useManager from "hooks/useManager";
 import useRoles from "hooks/useRoles";
 import { useEffect, useState } from "react";
 import LocalStorageService from "services/LocalStorageService";
 import UserService from "services/UserService";
+import { isBusinessN } from "utils/common";
 // import { isManager } from "utils";
 
-const EditUserInfo = ({ setEditMode, setError, error, company }) => {
+const EditUserInfo = ({ setEditMode, setError, error, company, isManager }) => {
 	const loggedInUser = LocalStorageService.getItem("user");
 	const departments = useDepartment(company);
 	const allCompanies = useCompanies();
-	const managers = useManager(company);
+	// const managers = useManager(company);
 	const roles = useRoles(company);
 
 	const [companies, setCompanies] = useState(company);
@@ -217,46 +217,48 @@ const EditUserInfo = ({ setEditMode, setError, error, company }) => {
 							</FormControl>
 						</HStack>
 					</FormControl>
-					<HStack>
-						{roles && (
-							<FormControl mb={4}>
-								<FormLabel>Type of Role</FormLabel>
-								<Select
-									size={"sm"}
-									name="role"
-									value={userData?.role || ""}
-									bg="var(--main_color)"
-									onChange={handleChange}
-									placeholder="Select role"
-								>
-									{roles?.map((role) => (
-										<option key={role._id} value={role.name}>
-											{role.name}
-										</option>
-									))}
-								</Select>
-							</FormControl>
-						)}
-						{departments && (
-							<FormControl mb={4}>
-								<FormLabel>Type of Department</FormLabel>
-								<Select
-									size={"sm"}
-									bg="var(--main_color)"
-									name="department"
-									value={userData?.department || ""}
-									onChange={handleChange}
-									placeholder="Select department"
-								>
-									{departments?.map((dept) => (
-										<option key={dept._id} value={dept.name}>
-											{dept.name}
-										</option>
-									))}
-								</Select>
-							</FormControl>
-						)}
-					</HStack>
+					{isManager && (
+						<HStack>
+							{roles && (
+								<FormControl mb={4}>
+									<FormLabel>Type of Role</FormLabel>
+									<Select
+										size={"sm"}
+										name="role"
+										value={userData?.role || ""}
+										bg="var(--main_color)"
+										onChange={handleChange}
+										placeholder="Select role"
+									>
+										{roles?.map((role) => (
+											<option key={role._id} value={role.name}>
+												{role.name}
+											</option>
+										))}
+									</Select>
+								</FormControl>
+							)}
+							{departments && (
+								<FormControl mb={4}>
+									<FormLabel>Type of Department</FormLabel>
+									<Select
+										size={"sm"}
+										bg="var(--main_color)"
+										name="department"
+										value={userData?.department || ""}
+										onChange={handleChange}
+										placeholder="Select department"
+									>
+										{departments?.map((dept) => (
+											<option key={dept._id} value={dept.name}>
+												{dept.name}
+											</option>
+										))}
+									</Select>
+								</FormControl>
+							)}
+						</HStack>
+					)}
 					{/* {managers && (
 					<FormControl mb={4}>
 						<FormLabel>Manager</FormLabel>
@@ -276,7 +278,7 @@ const EditUserInfo = ({ setEditMode, setError, error, company }) => {
 					</FormControl>
 				)} */}
 					<HStack>
-						{allCompanies && (
+						{isBusinessN(company) && allCompanies && (
 							<MultiSelectFormControl
 								hideAvatar
 								label="Assign Companies"

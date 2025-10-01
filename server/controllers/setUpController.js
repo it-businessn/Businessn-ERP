@@ -69,6 +69,7 @@ const getRoles = async (req, res) => {
 		const roles = await EmployeeRole.find({
 			inactive: { $ne: true },
 			companyName,
+			name: { $ne: "Shadow Admin" },
 		}).sort({
 			createdOn: -1,
 		});

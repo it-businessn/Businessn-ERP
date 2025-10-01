@@ -38,10 +38,11 @@ const login = async (req, res) => {
 		const existingProfileInfo = await EmployeeProfileInfo.findOne({
 			password,
 			companyName: existingCompanyUser.name,
+			$or: [{ useremail: email }, { businessEmail: email }, { businessemail: email }],
 		});
 
 		const profilePwdMatch = password === existingProfileInfo?.password;
-		const match = await comparePassword(password, user?.password);
+		const match = user?.password ? await comparePassword(password, user?.password) : false;
 
 		if (match || profilePwdMatch) {
 			const accessToken = generateAccessToken({ id: _id, fullName });

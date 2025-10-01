@@ -9,6 +9,7 @@ import { useState } from "react";
 import { FaAddressCard, FaUndoAlt } from "react-icons/fa";
 import { useBreakpointValue } from "services/Breakpoint";
 import LocalStorageService from "services/LocalStorageService";
+import { hasConsoleAccess } from "utils";
 import { getFormattedAddress } from "utils/common";
 import ChangePassword from "../ChangePassword";
 import EditUserInfo from "./EditUserInfo";
@@ -133,6 +134,7 @@ const UserProfileDetails = () => {
 				{editMode && (
 					<BoxCard>
 						<EditUserInfo
+							isManager={hasConsoleAccess(role)}
 							company={company}
 							setEditMode={setEditMode}
 							setError={setError}

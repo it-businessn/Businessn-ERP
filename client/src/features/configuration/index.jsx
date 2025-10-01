@@ -1,10 +1,10 @@
 import TabsButtonGroup from "components/ui/tab/TabsButtonGroup";
-import { COMPANIES } from "constant";
 import Settings from "erp-modules/payroll/settings/Settings";
 import CompaniesPanel from "features/configuration/company";
 import PageLayout from "layouts/PageLayout";
 import { useEffect, useState } from "react";
 import LocalStorageService from "services/LocalStorageService";
+import { isBusinessN } from "utils/common";
 import CostCenterPanel from "./cost-center";
 import ModulePanel from "./modules";
 import PaygroupPanel from "./paygroup";
@@ -29,7 +29,7 @@ const Configuration = () => {
 	const [setupList, setSetupList] = useState(SETUP_LIST);
 
 	useEffect(() => {
-		if (company === COMPANIES.BUSINESSN_ORG) {
+		if (isBusinessN(company)) {
 			setSetupList((prev) => [
 				{
 					id: 0,

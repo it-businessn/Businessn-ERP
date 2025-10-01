@@ -1,3 +1,4 @@
+import { COMPANIES } from "constant";
 import User from "models/User";
 import LocalStorageService from "services/LocalStorageService";
 import { toCapitalize } from "utils";
@@ -73,3 +74,6 @@ export const getTaskCheckboxCss = (isTaskComplete) => {
 		},
 	};
 };
+
+export const isBusinessN = (company) => company === COMPANIES.BUSINESSN_ORG;
+export const isCornerStone = (company) => company === COMPANIES.CORNERSTONE;

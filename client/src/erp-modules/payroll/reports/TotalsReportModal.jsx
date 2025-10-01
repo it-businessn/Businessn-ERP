@@ -3,9 +3,9 @@ import Loader from "components/Loader";
 import ModalLayout from "components/ui/modal/ModalLayout";
 import NormalTextTitle from "components/ui/NormalTextTitle";
 import TextTitle from "components/ui/text/TextTitle";
-import { COMPANIES } from "constant";
 import React from "react";
 import { isExtraPay } from "utils";
+import { isCornerStone } from "utils/common";
 import { getAmount } from "utils/convertAmt";
 import { dayMonthYear, formatDateBar } from "utils/convertDate";
 import payStubLogo from "../../../assets/logos/BusinessN_lightLogo.jpg";
@@ -23,7 +23,7 @@ const TotalsReportModal = ({
 	const fileName = `${formatDateBar(reportData?.payPeriodEndDate)}_PayPeriod#${
 		reportData?.payPeriodNum
 	}_Funding Report`;
-	const isCornerStone = company === COMPANIES.CORNERSTONE;
+	const IS_CORNERSTONE = isCornerStone(company);
 	const totalIncomeTaxContr = reportData?.totalIncomeTaxContr?.toFixed(2);
 	const totalCPP_EE_Contr = reportData?.totalCPP_EE_Contr?.toFixed(2);
 	const totalCPP_ER_Contr = reportData?.totalCPP_ER_Contr?.toFixed(2);
@@ -117,20 +117,20 @@ const TotalsReportModal = ({
 					subtitle: "Time Clock Device Maintenance",
 					value: timeClockMaintenanceCost,
 					mt: 4,
-					hide: isCornerStone,
+					hide: IS_CORNERSTONE,
 				},
 				{
 					subtitle: "Time Management",
 					value: totalTimeManagementEmpCost,
 					mt: 0,
-					hide: isCornerStone,
+					hide: IS_CORNERSTONE,
 				},
 				{
 					subtitle: "Total Time Management",
 					value: totalTimeManagementPayrollCost,
 					mt: 0,
 					fontStyle: "italic",
-					hide: isCornerStone,
+					hide: IS_CORNERSTONE,
 				},
 			],
 			sumTotal: { title: "ALL SERVICE CHARGES", value: totalServiceCharges },
