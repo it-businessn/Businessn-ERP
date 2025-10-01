@@ -113,7 +113,7 @@ const VerticalCarousel = ({ slides, animationConfig, closestRecordIndex }) => {
 							h="2"
 							w="2"
 							borderRadius="full"
-							bg={i === index ? "blue.500" : "gray.300"}
+							bg={i === index ? "var(--banner_bg)" : "gray.300"}
 							cursor="pointer"
 							onClick={() => setIndex(i)}
 						/>

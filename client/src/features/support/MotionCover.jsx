@@ -1,4 +1,4 @@
-import { Box, Circle, HStack, Image, VStack } from "@chakra-ui/react";
+import { Box, Image, VStack } from "@chakra-ui/react";
 import NormalTextTitle from "components/ui/NormalTextTitle";
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useState } from "react";
@@ -67,7 +67,7 @@ export default function MotionCover() {
 						<Circle
 							key={i}
 							size="10px"
-							bg={i === index ? "blue.500" : "gray.300"}
+							bg={i === index ? "var(--banner_bg)" : "gray.300"}
 							cursor="pointer"
 							onClick={() => setIndex(i)}
 							transition="background-color 0.3s"

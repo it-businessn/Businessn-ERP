@@ -46,9 +46,7 @@ const LeadsDocket = () => {
 				try {
 					const workbook = XLSX.read(e.target.result, { type: "binary" });
 					const sheetName = workbook.SheetNames[0];
-					const excelData = XLSX.utils.sheet_to_json(
-						workbook.Sheets[sheetName],
-					);
+					const excelData = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName]);
 					const formattedData = excelData.map((row) => ({
 						...row,
 						selected: false,
@@ -102,13 +100,13 @@ const LeadsDocket = () => {
 							<Checkbox colorScheme="facebook" />
 						</Th>
 						{data.length > 0 &&
-							Object.keys(data[0]).map((header) => (
-								<Th key={header}>{header}</Th>
-							))}
+							Object.keys(data[0]).map((header) => <Th key={header}>{header}</Th>)}
 					</Tr>
 				</Thead>
 				<Tbody>
-					{(!data || data?.length === 0) && <EmptyRowRecord data={data} />}
+					{(!data || data?.length === 0) && (
+						<EmptyRowRecord data={data} colSpan={Object.keys(data[0])?.length + 1} />
+					)}
 					{data?.map((row, rowIndex) => (
 						<Tr key={rowIndex}>
 							<Td>

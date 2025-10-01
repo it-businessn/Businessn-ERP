@@ -8,12 +8,12 @@ import {
 	Table,
 	Tbody,
 	Td,
-	Text,
 	Th,
 	Thead,
 	Tr,
 	useToast,
 } from "@chakra-ui/react";
+import EmptyRowRecord from "components/ui/EmptyRowRecord";
 import DeletePopUp from "components/ui/modal/DeletePopUp";
 import TextTitle from "components/ui/text/TextTitle";
 import { tabScrollCss } from "erp-modules/payroll/onboard-user/customInfo";
@@ -89,49 +89,49 @@ export const StatHolidayTable = ({ holidays, currentCompany, setHolidays, handle
 						</Tr>
 					</Thead>
 					<Tbody>
-						{holidays.length === 0 ? (
-							<Tr>
-								<Td colSpan={3} textAlign="center" py={8}>
-									<Text color="gray.500">No holidays added yet</Text>
+						{(!holidays || holidays?.length === 0) && (
+							<EmptyRowRecord
+								data={holidays}
+								colSpan={3}
+								title="No holidays added yet"
+								description="Add record to see them listed here"
+							/>
+						)}
+						{holidays?.map((holiday) => (
+							<Tr key={holiday._id}>
+								<Td>{holiday.name}</Td>
+								<Td>{dayMonthYear(holiday.date)}</Td>
+								<Td>
+									<HStack spacing={2}>
+										<IconButton
+											aria-label="Edit holiday"
+											icon={<EditIcon />}
+											size="sm"
+											onClick={() => handleEdit(holiday)}
+											color="var(--banner_bg)"
+											_hover={{
+												bg: "var(--banner_bg)",
+												color: "white",
+											}}
+										/>
+										<IconButton
+											aria-label="Delete holiday"
+											icon={<DeleteIcon />}
+											size="sm"
+											color="var(--banner_bg)"
+											_hover={{
+												bg: "var(--banner_bg)",
+												color: "white",
+											}}
+											onClick={() => {
+												setShowConfirmationPopUp(true);
+												setDeleteRecordId(holiday._id);
+											}}
+										/>
+									</HStack>
 								</Td>
 							</Tr>
-						) : (
-							holidays.map((holiday) => (
-								<Tr key={holiday._id}>
-									<Td>{holiday.name}</Td>
-									<Td>{dayMonthYear(holiday.date)}</Td>
-									<Td>
-										<HStack spacing={2}>
-											<IconButton
-												aria-label="Edit holiday"
-												icon={<EditIcon />}
-												size="sm"
-												onClick={() => handleEdit(holiday)}
-												color="var(--banner_bg)"
-												_hover={{
-													bg: "var(--banner_bg)",
-													color: "white",
-												}}
-											/>
-											<IconButton
-												aria-label="Delete holiday"
-												icon={<DeleteIcon />}
-												size="sm"
-												color="var(--banner_bg)"
-												_hover={{
-													bg: "var(--banner_bg)",
-													color: "white",
-												}}
-												onClick={() => {
-													setShowConfirmationPopUp(true);
-													setDeleteRecordId(holiday._id);
-												}}
-											/>
-										</HStack>
-									</Td>
-								</Tr>
-							))
-						)}
+						))}
 					</Tbody>
 				</Table>
 			</Box>

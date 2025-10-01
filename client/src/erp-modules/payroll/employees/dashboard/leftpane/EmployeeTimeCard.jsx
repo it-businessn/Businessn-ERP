@@ -268,8 +268,7 @@ const EmployeeTimeCard = ({ selectedUser, company, isMobile }) => {
 						zIndex={3}
 						top={-1}
 						textAlign="center"
-						minH={{ base: "auto", md: "15vh" }}
-						height={{ base: "200px", md: "15vh" }}
+						height={{ base: "200px", md: "16vh" }}
 						css={tabScrollCss}
 					>
 						<Tbody>
@@ -359,8 +358,7 @@ const EmployeeTimeCard = ({ selectedUser, company, isMobile }) => {
 						zIndex={3}
 						top={-1}
 						textAlign="center"
-						minH={{ base: "auto", md: "15vh" }}
-						height={{ base: "200px", md: "15vh" }}
+						height={{ base: "200px", md: "16vh" }}
 						css={tabScrollCss}
 					>
 						<Tbody>

@@ -290,37 +290,43 @@ const AddNewProjectTask = ({ isOpen, onClose, task, projectId }) => {
 										</Table>
 									</FormControl>
 								)}
-								{todoItems.length > 0 && (
-									<FormControl>
-										<Caption title={"Checklist"} />
-										<Table variant="unstyled" size={"small"} w={"80%"}>
-											<Thead fontSize={"xs"}>
-												<Th>To-do Task </Th>
-												<Th>Assignee</Th>
-											</Thead>
-											<Tbody>
-												{todoItems?.map((todo) => (
-													<Tr key={todo}>
-														<Td>
-															<HStack>
-																<Checkbox isChecked={true} isDisabled colorScheme="facebook" />
-																<Text fontSize={"xs"}>{todo.taskName}</Text>
-															</HStack>
-														</Td>
+								<FormControl>
+									<Caption title={"Checklist"} />
+									<Table variant="unstyled" size={"small"} w={"80%"}>
+										<Thead fontSize={"xs"}>
+											<Th>To-do Task </Th>
+											<Th>Assignee</Th>
+										</Thead>
+										<Tbody>
+											{(!todoItems || todoItems?.length === 0) && (
+												<EmptyRowRecord
+													data={todoItems}
+													colSpan={2}
+													description="Add activity to see them listed here"
+												/>
+											)}
+											{todoItems?.map((todo) => (
+												<Tr key={todo}>
+													<Td>
+														<HStack>
+															<Checkbox isChecked={true} isDisabled colorScheme="facebook" />
+															<Text fontSize={"xs"}>{todo.taskName}</Text>
+														</HStack>
+													</Td>
 
-														<Td>
-															<Avatar
-																name={todo.selectedAssignee}
-																size={"sm"}
-																src={todo.selectedAssignee}
-															/>
-														</Td>
-													</Tr>
-												))}
-											</Tbody>
-										</Table>
-									</FormControl>
-								)}
+													<Td>
+														<Avatar
+															name={todo.selectedAssignee}
+															size={"sm"}
+															src={todo.selectedAssignee}
+														/>
+													</Td>
+												</Tr>
+											))}
+										</Tbody>
+									</Table>
+								</FormControl>
+
 								<HStack justifyContent={"end"}>
 									<Button
 										isLoading={isSubmitting}

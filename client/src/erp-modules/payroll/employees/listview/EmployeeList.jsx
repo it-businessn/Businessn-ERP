@@ -1,7 +1,6 @@
 import {
 	Avatar,
 	Box,
-	Flex,
 	HStack,
 	IconButton,
 	Tbody,
@@ -10,6 +9,7 @@ import {
 	Tr,
 	useColorModeValue,
 } from "@chakra-ui/react";
+import EmptyRowRecord from "components/ui/EmptyRowRecord";
 import TableLayout from "components/ui/table/TableLayout";
 import { COLS } from "constant";
 import { tabScrollCss } from "erp-modules/payroll/onboard-user/customInfo";
@@ -74,17 +74,14 @@ const EmployeeList = ({ employees }) => {
 		>
 			<Tbody>
 				{(!employees || employees?.length === 0) && (
-					<Tr>
-						<Td colSpan={cols.length}>
-							<Flex direction="column" align="center" justify="center" py={10} color="gray.500">
-								<Box fontSize="xl" mb={2}>
-									No employees found
-								</Box>
-								<Text fontSize="sm">Add employees to see them listed here</Text>
-							</Flex>
-						</Td>
-					</Tr>
+					<EmptyRowRecord
+						data={employees}
+						colSpan={cols?.length}
+						title="No employees found"
+						description="Add employees to see them listed here"
+					/>
 				)}
+
 				{employees?.map(({ _id, empId, payrollStatus, employmentRole, employeeNo, positions }) => {
 					return (
 						<Tr

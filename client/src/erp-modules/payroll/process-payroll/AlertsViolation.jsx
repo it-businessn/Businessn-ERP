@@ -75,7 +75,12 @@ const AlertsViolation = ({
 				</Thead>
 				<Tbody>
 					{(!data || data?.length === 0) && (
-						<EmptyRowRecord title="No violations found" data={data} colSpan={COLS.length} />
+						<EmptyRowRecord
+							title="No violations found"
+							description=""
+							data={data}
+							colSpan={COLS.length}
+						/>
 					)}
 					{data?.map((record) => (
 						<Tr key={record._id}>

@@ -18,6 +18,7 @@ import {
 	Thead,
 	Tr,
 } from "@chakra-ui/react";
+import EmptyRowRecord from "components/ui/EmptyRowRecord";
 import TextTitle from "components/ui/text/TextTitle";
 import { tabPanelStyleCss, tabScrollCss } from "erp-modules/payroll/onboard-user/customInfo";
 import { useEffect, useState } from "react";
@@ -103,6 +104,9 @@ const MasterUserModules = ({ formData, setFormData, modules }) => {
 								</Tr>
 							</Thead>
 							<Tbody>
+								{(!modules || modules?.length === 0) && (
+									<EmptyRowRecord data={modules} colSpan={2} />
+								)}
 								{modules?.map(({ name, _id }) => (
 									<Tr key={_id}>
 										<Td py={2}>{name}</Td>

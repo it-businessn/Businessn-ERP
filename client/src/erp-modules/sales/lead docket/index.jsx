@@ -340,8 +340,9 @@ const LeadsDocket = () => {
 					)}
 				</Tbody>
 			</TableLayout>
-			<Pagination pageNum={pageNum} setPageNum={setPageNum} totalPage={totalPage} />
-
+			{leads?.length > 0 && (
+				<Pagination pageNum={pageNum} setPageNum={setPageNum} totalPage={totalPage} />
+			)}
 			{showConfirmationPopUp && (
 				<DeletePopUp
 					headerTitle={"Delete Lead"}

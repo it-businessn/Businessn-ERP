@@ -1,7 +1,6 @@
 import {
 	Avatar,
 	Box,
-	Flex,
 	HStack,
 	IconButton,
 	Tbody,
@@ -10,6 +9,7 @@ import {
 	Tr,
 	useColorModeValue,
 } from "@chakra-ui/react";
+import EmptyRowRecord from "components/ui/EmptyRowRecord";
 import TableLayout from "components/ui/table/TableLayout";
 import { COLS } from "constant";
 import { tabScrollCss } from "erp-modules/payroll/onboard-user/customInfo";
@@ -17,7 +17,7 @@ import { HiEye, HiPencil } from "react-icons/hi";
 import { useNavigate } from "react-router-dom";
 import { ROUTE_PATH } from "routes";
 
-const Affiliates = ({ employees }) => {
+const Affiliates = ({ affiliates }) => {
 	const empPath = `${ROUTE_PATH.PAYROLL}${ROUTE_PATH.AFFILIATE}/info`;
 	const navigate = useNavigate();
 
@@ -73,19 +73,15 @@ const Affiliates = ({ employees }) => {
 			textAlign="left"
 		>
 			<Tbody>
-				{(!employees || employees?.length === 0) && (
-					<Tr>
-						<Td colSpan={cols.length}>
-							<Flex direction="column" align="center" justify="center" py={10} color="gray.500">
-								<Box fontSize="xl" mb={2}>
-									No affiliates found
-								</Box>
-								<Text fontSize="sm">Add member to see them listed here</Text>
-							</Flex>
-						</Td>
-					</Tr>
+				{(!affiliates || affiliates?.length === 0) && (
+					<EmptyRowRecord
+						data={affiliates}
+						colSpan={cols?.length}
+						title="No affiliates found"
+						description="Add member to see them listed here"
+					/>
 				)}
-				{employees?.map(
+				{affiliates?.map(
 					({
 						_id,
 						firstName,

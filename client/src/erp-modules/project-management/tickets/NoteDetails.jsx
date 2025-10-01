@@ -83,7 +83,7 @@ const NoteDetails = ({ setIsOpen, isOpen, data }) => {
 									borderRadius="md"
 									borderColor={borderColor}
 								>
-									<Icon as={FiFileText} mr={3} fontSize="xl" color="blue.500" />
+									<Icon as={FiFileText} mr={3} fontSize="xl" color="var(--banner_bg)" />
 									<Text flex="1" color={textColor} fontWeight="medium" isTruncated>
 										{data?.originalname}
 									</Text>
@@ -95,7 +95,7 @@ const NoteDetails = ({ setIsOpen, isOpen, data }) => {
 											borderRadius="md"
 											_hover={{ bg: hoverBg }}
 										>
-											<Icon as={FiDownload} color="blue.500" />
+											<Icon as={FiDownload} color="var(--banner_bg)" />
 										</Box>
 									</Tooltip>
 								</Flex>

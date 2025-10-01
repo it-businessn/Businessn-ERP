@@ -15,8 +15,8 @@ const Attendance = () => {
 			>
 				<Box maxWidth="600px" p="6" borderWidth="1px" borderRadius="lg" boxShadow="lg" bg="white">
 					<VStack spacing={6} align="center" p={4}>
-						<Icon as={TimeIcon} w={12} h={12} color="blue.500" />
-						<Text fontSize="2xl" fontWeight="bold" color="blue.600">
+						<Icon as={TimeIcon} w={12} h={12} color="var(--banner_bg)" />
+						<Text fontSize="2xl" fontWeight="bold" color="var(--banner_bg)">
 							Coming Soon
 						</Text>
 						<Text fontSize="md" textAlign="center" color="gray.600">

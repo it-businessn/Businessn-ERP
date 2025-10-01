@@ -158,7 +158,7 @@ const AffiliateListView = () => {
 						</HStack> */}
 					</HStack>
 				</Flex>
-				<Affiliates employees={filteredAffiliates} />
+				<Affiliates affiliates={filteredAffiliates} />
 			</Box>
 			{/* New Onboarding Modal */}
 			{showOnboard && (

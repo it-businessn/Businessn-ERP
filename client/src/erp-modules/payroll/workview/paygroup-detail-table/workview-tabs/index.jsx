@@ -25,7 +25,7 @@ const PaygroupDetailTable = ({
 	selectedPayGroupOption,
 }) => {
 	const deptName = loggedInUser?.role === ROLES.MANAGER ? loggedInUser?.department : null;
-	const [highlightColor, setHighlightColor] = useState("var(--primary_button_bg)");
+	const [highlightColor, setHighlightColor] = useState("var(--banner_bg)");
 	const [isOpen, setIsOpen] = useState(true);
 	const [payrunOption, setPayrunOption] = useState(1);
 

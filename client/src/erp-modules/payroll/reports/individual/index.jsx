@@ -125,7 +125,7 @@ const Reports = () => {
 			>
 				<Tbody>
 					{empPayStub?.length === 0 && (
-						<EmptyRowRecord data={empPayStub} colSpan={REPORT_COLS.length} />
+						<EmptyRowRecord description="" data={empPayStub} colSpan={REPORT_COLS.length} />
 					)}
 					{empPayStub?.map(
 						(

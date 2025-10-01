@@ -237,25 +237,12 @@ const AccountingWorkview = () => {
 						</Table>
 
 						<HStack mt={4} spacing={0} onClick={addRow}>
-							<IconButton
-								size="lg"
-								color="var(--primary_button_bg1)"
-								icon={<FaPlusCircle />}
-								aria-label="Print"
-								variant="round"
-							/>
-							<PrimaryButton
-								bg="var(--primary_button_bg1)"
-								w="100px"
-								size="xs"
-								name="Add New Row"
-								onOpen={addRow}
-							/>
+							<IconButton size="lg" icon={<FaPlusCircle />} aria-label="Print" variant="round" />
+							<PrimaryButton w="100px" size="xs" name="Add New Row" onOpen={addRow} />
 						</HStack>
 					</Box>
 					<Stack alignItems="end">
 						<PrimaryButton
-							bg="var(--primary_button_bg1)"
 							w="100px"
 							isDisabled={!rows[0].accountName}
 							size="xs"

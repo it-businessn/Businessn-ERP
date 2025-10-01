@@ -1,5 +1,6 @@
 import { SmallAddIcon } from "@chakra-ui/icons";
 import { Box, Button, HStack, IconButton, Table, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
+import EmptyRowRecord from "components/ui/EmptyRowRecord";
 import NormalTextTitle from "components/ui/NormalTextTitle";
 import TextTitle from "components/ui/text/TextTitle";
 
@@ -103,6 +104,14 @@ const WeeklyCalendarView = ({
 					</Tr>
 				</Thead>
 				<Tbody>
+					{(!employeeShifts || employeeShifts?.length === 0) && (
+						<EmptyRowRecord
+							data={employeeShifts}
+							colSpan={weekDays?.length + 1}
+							title="No shift found"
+							description="Add shift to see them listed here"
+						/>
+					)}
 					{employeeShifts?.map((emp) => (
 						<Tr key={emp?.name}>
 							<Td w="100px" px={1}>

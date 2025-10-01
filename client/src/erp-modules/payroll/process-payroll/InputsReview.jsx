@@ -99,7 +99,7 @@ const InputsReview = ({
 					</Thead>
 					<Tbody>
 						{(!inputsReviewData || inputsReviewData?.length === 0) && (
-							<EmptyRowRecord data={inputsReviewData} colSpan={COLS?.length + 1} />
+							<EmptyRowRecord description="" data={inputsReviewData} colSpan={COLS?.length + 1} />
 						)}
 						{inputsReviewData?.map((data) => (
 							<Tr key={data._id}>

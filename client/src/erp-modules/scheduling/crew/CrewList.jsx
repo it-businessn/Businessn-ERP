@@ -1,17 +1,6 @@
-import {
-	Box,
-	Flex,
-	HStack,
-	Table,
-	Tbody,
-	Td,
-	Text,
-	Th,
-	Thead,
-	Tr,
-	useColorModeValue,
-} from "@chakra-ui/react";
+import { Box, HStack, Table, Tbody, Td, Th, Thead, Tr, useColorModeValue } from "@chakra-ui/react";
 import LeftIconButton from "components/ui/button/LeftIconButton";
+import EmptyRowRecord from "components/ui/EmptyRowRecord";
 import NormalTextTitle from "components/ui/NormalTextTitle";
 import TextTitle from "components/ui/text/TextTitle";
 import { tabScrollCss } from "erp-modules/payroll/onboard-user/customInfo";
@@ -51,16 +40,12 @@ const CrewList = ({ company, refresh, setRefresh, employees, costCenters, depart
 				</Thead>
 				<Tbody>
 					{(!crews || crews?.length === 0) && (
-						<Tr>
-							<Td colSpan={2}>
-								<Flex direction="column" align="center" justify="center" py={10} color="gray.500">
-									<Box fontSize="xl" mb={2}>
-										No crews found
-									</Box>
-									<Text fontSize="sm">Add crew to see them listed here</Text>
-								</Flex>
-							</Td>
-						</Tr>
+						<EmptyRowRecord
+							data={crews}
+							colSpan={3}
+							title="No crews found"
+							description="Add crew to see them listed here"
+						/>
 					)}
 					{crews?.map((crew) => {
 						return (

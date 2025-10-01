@@ -143,11 +143,11 @@ const ResourceFile = ({
 									key={type}
 									borderRadius={"50px"}
 									p={"1em"}
-									color={selectedFilter === type ? "#4c67c3" : "#676e78"}
+									color={selectedFilter === type ? "var(--banner_bg)" : "var(--tab_radio)"}
 									onClick={() => handleFilterClick(type)}
 									variant={"outline"}
 									leftIcon={<Icon as={FaDownload} />}
-									size="xs"
+									size={selectedFilter === type ? "sm" : "xs"}
 								>
 									{type}
 								</Button>
@@ -160,11 +160,11 @@ const ResourceFile = ({
 									key={type}
 									borderRadius={"50px"}
 									p={"1em"}
-									color={selectedFilter === type ? "#4c67c3" : "#676e78"}
+									color={selectedFilter === type ? "var(--banner_bg)" : "var(--tab_radio)"}
 									onClick={() => handleFilterClick(type)}
 									variant={"outline"}
 									leftIcon={<Icon as={FaDownload} />}
-									size="xs"
+									size={selectedFilter === type ? "sm" : "xs"}
 								>
 									{type}
 								</Button>

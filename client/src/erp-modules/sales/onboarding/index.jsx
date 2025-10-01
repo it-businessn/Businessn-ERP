@@ -1,5 +1,6 @@
 import { Box, HStack, Table, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
 import PrimaryButton from "components/ui/button/PrimaryButton";
+import EmptyRowRecord from "components/ui/EmptyRowRecord";
 import NormalTextTitle from "components/ui/NormalTextTitle";
 import TextTitle from "components/ui/text/TextTitle";
 import { tabScrollCss } from "erp-modules/payroll/onboard-user/customInfo";
@@ -65,6 +66,9 @@ const Onboarding = () => {
 						</Tr>
 					</Thead>
 					<Tbody>
+						{(!contacts || contacts?.length === 0) && (
+							<EmptyRowRecord data={contacts} colSpan={cols?.length} />
+						)}
 						{contacts?.map(({ _id, leadId }) => (
 							<Tr key={_id} _hover={{ bg: "var(--phoneCall_bg_light)" }}>
 								<Td py={0}>

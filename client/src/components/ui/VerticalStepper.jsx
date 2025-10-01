@@ -71,7 +71,7 @@ const VerticalStepper = ({
 						</StepTitle>
 						{!hideProgress && (
 							<CircularProgressBarCell
-								completionPercentage={step.description ?? 0}
+								completionPercentage={Math.round(step.description) ?? 0}
 								color="var(--primary_button_bg)"
 								top={top}
 								size={circleSize}
