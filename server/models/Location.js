@@ -1,12 +1,14 @@
 const mongoose = require("mongoose");
 
-const locationSchema = new mongoose.Schema({
-	name: String,
-	instruction: String,
-	createdOn: { type: Date, default: Date.now },
-	companyName: { type: String, ref: "Company" },
-	inactive: Boolean,
-});
+const locationSchema = new mongoose.Schema(
+	{
+		name: String,
+		instruction: String,
+		companyName: { type: String, ref: "Company" },
+		inactive: Boolean,
+	},
+	{ timestamps: { createdAt: "createdOn", updatedAt: "updatedOn" } },
+);
 
 const Location = mongoose.model("Location", locationSchema);
 

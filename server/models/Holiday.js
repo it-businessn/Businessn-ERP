@@ -1,12 +1,14 @@
 const mongoose = require("mongoose");
 
-const holidaySchema = new mongoose.Schema({
-	name: String,
-	date: Date,
-	companyName: { type: String, ref: "Company" },
-	year: Date,
-	createdOn: { type: Date, default: Date.now },
-});
+const holidaySchema = new mongoose.Schema(
+	{
+		name: String,
+		date: Date,
+		companyName: { type: String, ref: "Company" },
+		year: Date,
+	},
+	{ timestamps: { createdAt: "createdOn", updatedAt: "updatedOn" } },
+);
 
 const Holiday = mongoose.model("Holiday", holidaySchema);
 

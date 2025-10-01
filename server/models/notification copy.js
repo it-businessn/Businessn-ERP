@@ -5,11 +5,9 @@ const notificationSchema = new Schema(
 	{
 		message: String,
 		date: Date,
-		createdon,
-		updatdpn,
 		updatedby,
 	},
-	{ timestamps: true },
+	{ timestamps: { createdAt: "createdOn", updatedAt: "updatedOn" } },
 	{ collection: "Notification" },
 );
 

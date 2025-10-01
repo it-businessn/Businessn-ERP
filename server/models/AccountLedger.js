@@ -1,16 +1,17 @@
 const mongoose = require("mongoose");
 
-const accountLedgerSchema = new mongoose.Schema({
-	accCode: String,
-	accountName: String,
-	description: String,
-	createdOn: { type: Date, default: Date.now },
-	updatedOn: { type: Date, default: Date.now },
-	companyName: { type: String, ref: "Company" },
-	totalJournalEntries: Number,
-	totalCredit: Number,
-	totalDebit: Number,
-});
+const accountLedgerSchema = new mongoose.Schema(
+	{
+		accCode: String,
+		accountName: String,
+		description: String,
+		companyName: { type: String, ref: "Company" },
+		totalJournalEntries: Number,
+		totalCredit: Number,
+		totalDebit: Number,
+	},
+	{ timestamps: { createdAt: "createdOn", updatedAt: "updatedOn" } },
+);
 
 const AccountLedger = mongoose.model("AccountLedger", accountLedgerSchema);
 
