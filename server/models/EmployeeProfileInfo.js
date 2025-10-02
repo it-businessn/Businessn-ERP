@@ -4,6 +4,7 @@ const employeeProfileInfoSchema = new mongoose.Schema(
 	{
 		empId: { type: String, ref: "Employee" },
 		companyName: { type: String, ref: "Company" },
+		manager: { type: String, ref: "Employee" },
 		firstName: String,
 		middleName: String,
 		lastName: String,
@@ -19,7 +20,7 @@ const employeeProfileInfoSchema = new mongoose.Schema(
 		workPermitExpiryNo: String,
 		userEmail: String,
 		personalEmail: String,
-		personalPhoneNum: String,
+		personalPhoneNum: { type: String, ref: "Employee" },
 		businessEmail: String,
 		businessPhoneNum: String,
 		emergencyPersonalEmail: String,

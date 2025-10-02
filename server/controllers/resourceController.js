@@ -53,7 +53,7 @@ const updateResourceCover = () => async (req, res) => {
 	// const fileData = req.file;
 	// const { mimetype, originalname, path } = fileData;
 	// try {
-	// 	const resource = await Resource.findByIdAndUpdate(id, req.body, {
+	// 	const resource = await Resource.findByIdAndUpdate(id,  $set:{req.body}, {
 	// 		new: true,
 	// 	});
 	// 	const newResource = new Resource({
@@ -81,7 +81,9 @@ const updateResource = async (req, res) => {
 		const resource = await Resource.findByIdAndUpdate(
 			id,
 			{
-				originalname: name,
+				$set: {
+					originalname: name,
+				},
 			},
 			{
 				new: true,

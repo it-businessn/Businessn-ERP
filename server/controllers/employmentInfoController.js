@@ -127,9 +127,13 @@ const findEmployeeEmploymentInfo = async (empId, companyName) =>
 	});
 
 const updateEmploymentInfo = async (id, data) =>
-	await EmployeeEmploymentInfo.findByIdAndUpdate(id, data, {
-		new: true,
-	});
+	await EmployeeEmploymentInfo.findByIdAndUpdate(
+		id,
+		{ $set: data },
+		{
+			new: true,
+		},
+	);
 
 const updateEmployee = async (empId, data) => {
 	const { payrollStatus, employeeNo, employmentRole } = data;

@@ -218,9 +218,13 @@ const mapTimecardRawToTimecard = async () => {
 };
 
 const updateTimecardData = async (id, data) =>
-	await Timecard.findByIdAndUpdate(id, data, {
-		new: true,
-	});
+	await Timecard.findByIdAndUpdate(
+		id,
+		{ $set: data },
+		{
+			new: true,
+		},
+	);
 
 const findTimecardEntry = async (entry) => await Timecard.findOne(entry);
 

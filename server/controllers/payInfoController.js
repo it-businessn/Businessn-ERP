@@ -85,9 +85,13 @@ const findEmployeePayInfoDetails = async (empId, companyName) =>
 	});
 
 const updatePayInfo = async (id, data) =>
-	await EmployeePayInfo.findByIdAndUpdate(id, data, {
-		new: true,
-	});
+	await EmployeePayInfo.findByIdAndUpdate(
+		id,
+		{ $set: data },
+		{
+			new: true,
+		},
+	);
 
 const addEmployeePayInfo = async (req, res) => {
 	const { empId, companyName, roles } = req.body;
@@ -119,7 +123,7 @@ const addEmployeePayInfo = async (req, res) => {
 			// if (existingEmploymentInfo) {
 			// 	await EmployeeEmploymentInfo.findByIdAndUpdate(
 			// 		existingEmploymentInfo._id,
-			// 		{ positions: roles },
+			// 		{  $set:{positions: roles} },
 			// 		{
 			// 			new: true,
 			// 		},

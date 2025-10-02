@@ -67,7 +67,7 @@ const updateTask = async (req, res) => {
 	try {
 		const updatedTask = await Task.findByIdAndUpdate(
 			taskId,
-			{ isOpen, completed: isOpen },
+			{ $set: { isOpen, completed: isOpen } },
 			{
 				new: true,
 			},
@@ -104,7 +104,7 @@ const updateSubTask = async (req, res) => {
 	try {
 		const updatedSubtask = await SubTask.findByIdAndUpdate(
 			id,
-			{ isOpen, completed: isOpen },
+			{ $set: { isOpen, completed: isOpen } },
 			{
 				new: true,
 			},
@@ -121,7 +121,7 @@ const updateActivity = async (req, res) => {
 	try {
 		const updatedActivity = await Activity.findByIdAndUpdate(
 			id,
-			{ isOpen, completed: isOpen },
+			{ $set: { isOpen, completed: isOpen } },
 			{
 				new: true,
 			},

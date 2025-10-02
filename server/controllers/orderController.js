@@ -26,9 +26,13 @@ const updateOrder = async (req, res) => {
 	const { id } = req.params;
 
 	try {
-		const order = await Order.findByIdAndUpdate(id, req.body, {
-			new: true,
-		});
+		const order = await Order.findByIdAndUpdate(
+			id,
+			{ $set: req.body },
+			{
+				new: true,
+			},
+		);
 		if (order) {
 			const {
 				fundsReceivedStatus,

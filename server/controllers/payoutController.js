@@ -39,9 +39,13 @@ const addPayout = async (req, res) => {
 const updatePayout = async (req, res) => {
 	const { id } = req.params;
 	try {
-		const payout = await Payout.findByIdAndUpdate(id, req.body, {
-			new: true,
-		});
+		const payout = await Payout.findByIdAndUpdate(
+			id,
+			{ $set: req.body },
+			{
+				new: true,
+			},
+		);
 
 		return res.status(201).json(payout);
 	} catch (error) {

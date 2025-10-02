@@ -169,9 +169,13 @@ const deleteStatHoliday = async (req, res) => {
 };
 
 const updateHolidayRecord = async (id, data) =>
-	await Holiday.findByIdAndUpdate(id, data, {
-		new: true,
-	});
+	await Holiday.findByIdAndUpdate(
+		id,
+		{ $set: data },
+		{
+			new: true,
+		},
+	);
 
 module.exports = {
 	addStatHoliday,

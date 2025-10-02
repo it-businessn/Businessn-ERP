@@ -49,9 +49,13 @@ const buildFundingTotalsReport = async (
 		scheduleFrequency,
 	});
 	if (existsFundDetails) {
-		await FundingTotalsPay.findByIdAndUpdate(existsFundDetails._id, fundingTotal, {
-			new: true,
-		});
+		await FundingTotalsPay.findByIdAndUpdate(
+			existsFundDetails._id,
+			{ $set: fundingTotal },
+			{
+				new: true,
+			},
+		);
 		return;
 	}
 	const newTotals = await FundingTotalsPay.create(fundingTotal);

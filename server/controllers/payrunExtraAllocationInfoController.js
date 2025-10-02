@@ -555,9 +555,13 @@ const addEmployerContribution = async (req, res) => {
 };
 
 const updateAdditionalHoursAllocatedInfo = async (id, data) =>
-	await EmployeeExtraAllocation.findByIdAndUpdate(id, data, {
-		new: true,
-	});
+	await EmployeeExtraAllocation.findByIdAndUpdate(
+		id,
+		{ $set: data },
+		{
+			new: true,
+		},
+	);
 
 const findAdditionalSuperficialHoursAllocatedInfo = async (record) =>
 	await EmployeeExtraAllocation.findOne(record).select(

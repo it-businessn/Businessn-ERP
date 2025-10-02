@@ -75,9 +75,13 @@ const updateMeeting = async (req, res) => {
 	const { meetingId } = req.params;
 
 	try {
-		const updatedMeeting = await Meeting.findByIdAndUpdate(meetingId, req.body, {
-			new: true,
-		});
+		const updatedMeeting = await Meeting.findByIdAndUpdate(
+			meetingId,
+			{ $set: req.body },
+			{
+				new: true,
+			},
+		);
 
 		return res.status(201).json(updatedMeeting);
 	} catch (error) {

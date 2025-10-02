@@ -163,7 +163,7 @@ const changePassword = async (req, res) => {
 		const hashedPassword = await hashSyncPassword(newPassword);
 		const result = await Employee.findByIdAndUpdate(
 			id,
-			{ password: hashedPassword },
+			{ $set: { password: hashedPassword } },
 			{
 				new: true,
 			},

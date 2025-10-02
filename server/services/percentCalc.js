@@ -3,10 +3,7 @@ const SubTask = require("../models/SubTask");
 const Task = require("../models/Task");
 
 const getPercent = (totalActualHours, totalEstimatedHours) =>
-	Math.min(
-		Math.max((totalActualHours / totalEstimatedHours) * 100, 0),
-		100,
-	).toFixed(2);
+	Math.min(Math.max((totalActualHours / totalEstimatedHours) * 100, 0), 100).toFixed(2);
 
 const calculateTaskCompletionPercent = (task) => {
 	let totalEstimatedHours = parseInt(task.timeToComplete) || 0;
@@ -82,8 +79,7 @@ const calculateAndSaveTotalEstimatedHours = async (projects) => {
 						let subtaskTotalActualHours = parseInt(subsubtask.actualHours);
 						childTotalActualHours += subtaskTotalActualHours;
 
-						subsubtask.completionPercent =
-							calculateSubSubtaskCompletionPercent(subsubtask);
+						subsubtask.completionPercent = calculateSubSubtaskCompletionPercent(subsubtask);
 
 						const index = subtask.subtasks.findIndex(
 							(item) => item.taskName === subsubtask.taskName,
@@ -95,13 +91,14 @@ const calculateAndSaveTotalEstimatedHours = async (projects) => {
 						}
 					}
 
-					subtask.completionPercent =
-						calculateSubtaskCompletionPercent(subtask);
+					subtask.completionPercent = calculateSubtaskCompletionPercent(subtask);
 
 					await SubTask.findByIdAndUpdate(
 						subtask._id,
 						{
-							completionPercent: subtask.completionPercent,
+							$set: {
+								completionPercent: subtask.completionPercent,
+							},
 						},
 						{ new: true },
 					);
@@ -111,20 +108,21 @@ const calculateAndSaveTotalEstimatedHours = async (projects) => {
 				await Task.findByIdAndUpdate(
 					task._id,
 					{
-						completionPercent: task.completionPercent,
+						$set: {
+							completionPercent: task.completionPercent,
+						},
 					},
 					{ new: true },
 				);
 			}
-			project.completionPercent = calculateProjectCompletionPercent(
-				project,
-				childTotalActualHours,
-			);
+			project.completionPercent = calculateProjectCompletionPercent(project, childTotalActualHours);
 
 			await Project.findByIdAndUpdate(
 				project._id,
 				{
-					completionPercent: project.completionPercent,
+					$set: {
+						completionPercent: project.completionPercent,
+					},
 				},
 				{ new: true },
 			);

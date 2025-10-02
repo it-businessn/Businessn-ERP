@@ -89,9 +89,13 @@ const findEmployeeBankingInfo = async (empId, companyName) =>
 	});
 
 const updateBankingInfo = async (id, data) =>
-	await EmployeeBankingInfo.findByIdAndUpdate(id, data, {
-		new: true,
-	});
+	await EmployeeBankingInfo.findByIdAndUpdate(
+		id,
+		{ $set: data },
+		{
+			new: true,
+		},
+	);
 
 const addEmployeeBankingInfo = async (req, res) => {
 	const { empId, companyName, directDeposit, payStubSendByEmail, paymentEmail, bankDetails } =

@@ -543,7 +543,7 @@ const updateInnerSubTaskName = async (req, res) => {
 const updateSubTaskName = async (req, res) => {
 	const { id } = req.params;
 	try {
-		const updatedTask = await SubTask.findByIdAndUpdate(id, req.body, { new: true });
+		const updatedTask = await SubTask.findByIdAndUpdate(id, { $set: req.body }, { new: true });
 		return res.status(201).json(updatedTask);
 	} catch (error) {
 		return res.status(500).json({ message: "Internal Server Error", error });
@@ -553,7 +553,7 @@ const updateSubTaskName = async (req, res) => {
 const updateTaskName = async (req, res) => {
 	const { id } = req.params;
 	try {
-		const updatedTask = await Task.findByIdAndUpdate(id, req.body, { new: true });
+		const updatedTask = await Task.findByIdAndUpdate(id, { $set: req.body }, { new: true });
 		return res.status(201).json(updatedTask);
 	} catch (error) {
 		return res.status(500).json({ message: "Internal Server Error", error });
@@ -563,7 +563,7 @@ const updateTaskName = async (req, res) => {
 const updateProjectTaskName = async (req, res) => {
 	const { id } = req.params;
 	try {
-		const updatedTask = await Project.findByIdAndUpdate(id, req.body, { new: true });
+		const updatedTask = await Project.findByIdAndUpdate(id, { $set: req.body }, { new: true });
 		return res.status(201).json(updatedTask);
 	} catch (error) {
 		return res.status(500).json({ message: "Internal Server Error", error });

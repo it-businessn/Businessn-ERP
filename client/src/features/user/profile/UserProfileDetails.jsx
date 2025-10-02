@@ -56,7 +56,7 @@ const UserProfileDetails = () => {
 	const SECTION2 = [
 		{ name: "Manager", value: manager },
 		{ name: "Role", value: role },
-		{ name: "Department", value: department?.[0] },
+		{ name: "Department", value: department },
 		// { name: "Employment Type", value: employmentType },
 	];
 	const showActionButton = () => (
@@ -132,7 +132,7 @@ const UserProfileDetails = () => {
 					{showActionButton()}
 				</Card>
 				{editMode && (
-					<BoxCard>
+					<BoxCard flex={1}>
 						<EditUserInfo
 							isManager={hasConsoleAccess(role)}
 							company={company}
@@ -143,7 +143,7 @@ const UserProfileDetails = () => {
 					</BoxCard>
 				)}
 				{changePasswordMode && (
-					<BoxCard>
+					<BoxCard flex={1}>
 						<ChangePassword setPasswordMode={setPasswordMode} setError={setError} error={error} />
 					</BoxCard>
 				)}

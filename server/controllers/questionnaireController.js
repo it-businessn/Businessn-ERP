@@ -47,9 +47,13 @@ const createQuestionnaire = async (req, res) => {
 const updateQuestionnaire = async (req, res) => {
 	const { id } = req.params;
 	try {
-		const updatedContact = await Questionnaire.findByIdAndUpdate(id, req.body, {
-			new: true,
-		});
+		const updatedContact = await Questionnaire.findByIdAndUpdate(
+			id,
+			{ $set: req.body },
+			{
+				new: true,
+			},
+		);
 		return res.status(201).json(updatedContact);
 	} catch (error) {
 		return res.status(500).json({ message: "Internal Server Error", error });
@@ -59,9 +63,13 @@ const updateQuestionnaire = async (req, res) => {
 const deleteQuestionnaire = async (req, res) => {
 	const { id } = req.params;
 	try {
-		const updatedContact = await Questionnaire.findByIdAndDelete(id, req.body, {
-			new: true,
-		});
+		const updatedContact = await Questionnaire.findByIdAndDelete(
+			id,
+			{ $set: req.body },
+			{
+				new: true,
+			},
+		);
 		return res.status(201).json(updatedContact);
 	} catch (error) {
 		return res.status(500).json({ message: "Internal Server Error", error });

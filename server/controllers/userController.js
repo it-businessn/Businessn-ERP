@@ -629,7 +629,7 @@ const updateMasterUser = async (req, res) => {
 		if (userExists) {
 			const updatedUser = await Employee.findByIdAndUpdate(
 				userId,
-				{ baseModule: req.body },
+				{ $set: { baseModule: req.body } },
 				{
 					new: true,
 				},
@@ -702,9 +702,13 @@ const updateUser = async (req, res) => {
 		req.body.companyId = compArr;
 
 		if (req.body?._id) delete req.body._id;
-		const updatedUser = await Employee.findByIdAndUpdate(userId, req.body, {
-			new: true,
-		});
+		const updatedUser = await Employee.findByIdAndUpdate(
+			userId,
+			{ $set: req.body },
+			{
+				new: true,
+			},
+		);
 
 		return res.status(201).json(updatedUser);
 	} catch (error) {

@@ -65,9 +65,13 @@ const findEmployeeProfileInfo = async (empId, companyName) =>
 	});
 
 const updateProfileInfo = async (id, data) =>
-	await EmployeeProfileInfo.findByIdAndUpdate(id, data, {
-		new: true,
-	});
+	await EmployeeProfileInfo.findByIdAndUpdate(
+		id,
+		{ $set: data },
+		{
+			new: true,
+		},
+	);
 
 const updateEmployee = async (empId, data) => {
 	const {
@@ -84,6 +88,8 @@ const updateEmployee = async (empId, data) => {
 		firstName,
 		middleName,
 		lastName,
+		manager,
+		phoneNumber,
 	} = data;
 	const streetNumber = `${streetAddressSuite || ""} ${streetAddress || ""}`;
 
@@ -108,11 +114,17 @@ const updateEmployee = async (empId, data) => {
 		middleName,
 		lastName,
 		fullName: `${firstName} ${middleName} ${lastName}`,
+		manager,
+		phoneNumber,
 	};
 	if (email === employee?.email) updatedObj.email = email;
-	await Employee.findByIdAndUpdate(empId, updatedObj, {
-		new: true,
-	});
+	await Employee.findByIdAndUpdate(
+		empId,
+		{ $set: updatedObj },
+		{
+			new: true,
+		},
+	);
 	const existingCompany = await findCompany("name", companyName);
 	if (!existingCompany.employees.includes(empId)) existingCompany.employees.push(empId);
 	await existingCompany.save();
@@ -145,6 +157,7 @@ const addEmployeeProfileInfo = async (req, res) => {
 		province,
 		country,
 		postalCode,
+		manager,
 	} = req.body;
 	try {
 		const data = {
@@ -161,6 +174,8 @@ const addEmployeeProfileInfo = async (req, res) => {
 			middleName,
 			lastName,
 			companyName,
+			manager,
+			phoneNumber: personalPhoneNum,
 		};
 		const existingProfileInfo = await EmployeeProfileInfo.findOne({
 			firstName,
@@ -171,6 +186,7 @@ const addEmployeeProfileInfo = async (req, res) => {
 		const updatedData = {
 			streetAddress: `${streetAddressSuite ?? ""} ${streetAddress}`,
 			city,
+			manager,
 			province,
 			postalCode,
 			country,
@@ -217,6 +233,8 @@ const addEmployeeProfileInfo = async (req, res) => {
 				lastName,
 				email: userEmail || personalEmail || businessEmail,
 				fullName: `${firstName} ${middleName} ${lastName}`,
+				manager,
+				phoneNumber: personalPhoneNum,
 			};
 			const newEmployee = await addEmployee(companyName, newRecord);
 			profileInfoEmpId = newEmployee._id;
@@ -291,6 +309,8 @@ const updateEmployeeProfileInfo = async (req, res) => {
 			province,
 			country,
 			postalCode,
+			manager,
+			personalPhoneNum,
 		} = req.body;
 
 		const data = {
@@ -307,6 +327,8 @@ const updateEmployeeProfileInfo = async (req, res) => {
 			middleName,
 			lastName,
 			companyName,
+			manager,
+			phoneNumber: personalPhoneNum,
 		};
 
 		const existingProfileInfo = await EmployeeProfileInfo.findById(id);

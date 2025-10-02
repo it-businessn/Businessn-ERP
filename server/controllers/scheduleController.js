@@ -375,13 +375,15 @@ const updateShift = async (req, res) => {
 
 		// if (hours <= 5) {
 		const updatedShift = await WorkShift.findByIdAndUpdate(id, {
-			employeeName,
-			role,
-			location,
-			notes,
-			shiftStart,
-			shiftEnd,
-			hours,
+			$set: {
+				employeeName,
+				role,
+				location,
+				notes,
+				shiftStart,
+				shiftEnd,
+				hours,
+			},
 		});
 		return res.status(201).json(updatedShift);
 		// const updatedShift = await saveOrUpdateShift(
@@ -445,10 +447,14 @@ const updateShift = async (req, res) => {
 
 async function saveOrUpdateShift(shiftId, filter, data) {
 	if (shiftId) {
-		return await WorkShift.findByIdAndUpdate(shiftId, data, {
-			new: true,
-			upsert: true,
-		});
+		return await WorkShift.findByIdAndUpdate(
+			shiftId,
+			{ $set: data },
+			{
+				new: true,
+				upsert: true,
+			},
+		);
 	} else {
 		return await WorkShift.findOneAndUpdate(filter, data, {
 			new: true,

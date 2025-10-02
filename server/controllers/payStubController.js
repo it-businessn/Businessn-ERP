@@ -564,9 +564,13 @@ const getRecordId = async (
 const addPayStub = async (data) => await EmployeePayStub.create(data);
 
 const updatePayStub = async (id, data) =>
-	await EmployeePayStub.findByIdAndUpdate(id, data, {
-		new: true,
-	});
+	await EmployeePayStub.findByIdAndUpdate(
+		id,
+		{ $set: data },
+		{
+			new: true,
+		},
+	);
 
 const addEmployeePayStubInfo = async (req, res) => {
 	const { companyName, currentPayPeriod, selectedPayGroupOption } = req.body;

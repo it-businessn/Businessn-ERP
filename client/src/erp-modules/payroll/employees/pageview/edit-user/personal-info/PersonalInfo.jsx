@@ -27,11 +27,13 @@ import {
 	tabScrollCss,
 } from "erp-modules/payroll/onboard-user/customInfo";
 import useEmployeeProfileInfo from "hooks/useEmployeeProfileInfo";
+import useManager from "hooks/useManager";
 import { useEffect, useState } from "react";
 import PayrollService from "services/PayrollService";
 import { getDefaultDate } from "utils/convertDate";
 
 const PersonalInfo = ({ company, userId }) => {
+	const managers = useManager(company);
 	const [personalSubStep, setPersonalSubStep] = useState(0);
 	const [moreDetails, setMoreDetails] = useState(null);
 	const [availableProvinces, setAvailableProvinces] = useState([]);
@@ -43,6 +45,7 @@ const PersonalInfo = ({ company, userId }) => {
 			firstName: "",
 			middleName: "",
 			lastName: "",
+			manager: "",
 			birthDate: "",
 			userEmail: "",
 			gender: "",
@@ -104,6 +107,7 @@ const PersonalInfo = ({ company, userId }) => {
 				emergencyPersonalPhoneNum,
 				emergencyContactRelationship,
 				empId,
+				manager,
 				_id,
 			} = profileInfo;
 
@@ -119,6 +123,7 @@ const PersonalInfo = ({ company, userId }) => {
 					workPermitNo,
 					workPermitExpiryNo,
 					citizenship,
+					manager,
 				},
 				contactInfo: {
 					personalEmail,
@@ -184,6 +189,7 @@ const PersonalInfo = ({ company, userId }) => {
 				workPermitNo,
 				workPermitExpiryNo,
 				citizenship,
+				manager,
 			} = formData.personalInfo;
 
 			const {
@@ -215,6 +221,7 @@ const PersonalInfo = ({ company, userId }) => {
 				lastName,
 				birthDate,
 				gender,
+				manager,
 				SIN,
 				workPermitNo,
 				workPermitExpiryNo,
@@ -403,30 +410,51 @@ const PersonalInfo = ({ company, userId }) => {
 								/>
 							</FormControl>
 						</Flex>
-
-						<FormControl>
-							<FormLabel size="sm">Citizenship</FormLabel>
-							<Flex gap={4} mt={2}>
-								<label>
-									<input
-										type="radio"
-										checked={formData.personalInfo.citizenship === "Yes"}
-										onChange={() => handleChange("personalInfo", "citizenship", "Yes")}
-										style={{ marginRight: "8px" }}
-									/>
-									Yes
-								</label>
-								<label>
-									<input
-										type="radio"
-										checked={formData.personalInfo.citizenship === "No"}
-										onChange={() => handleChange("personalInfo", "citizenship", "No")}
-										style={{ marginRight: "8px" }}
-									/>
-									No
-								</label>
-							</Flex>
-						</FormControl>
+						<Flex gap={4}>
+							<FormControl>
+								<FormLabel>Manager</FormLabel>
+								{managers && (
+									<Select
+										size="sm"
+										name="manager"
+										value={formData.personalInfo?.manager || ""}
+										onChange={(e) => {
+											if (e.target.value) handleChange("personalInfo", "manager", e.target.value);
+										}}
+										placeholder="Select manager"
+									>
+										{managers?.map((manager) => (
+											<option key={manager.id} value={manager.fullName}>
+												{manager.fullName}
+											</option>
+										))}
+									</Select>
+								)}
+							</FormControl>
+							<FormControl>
+								<FormLabel size="sm">Citizenship</FormLabel>
+								<Flex gap={4} mt={2}>
+									<label>
+										<input
+											type="radio"
+											checked={formData.personalInfo.citizenship === "Yes"}
+											onChange={() => handleChange("personalInfo", "citizenship", "Yes")}
+											style={{ marginRight: "8px" }}
+										/>
+										Yes
+									</label>
+									<label>
+										<input
+											type="radio"
+											checked={formData.personalInfo.citizenship === "No"}
+											onChange={() => handleChange("personalInfo", "citizenship", "No")}
+											style={{ marginRight: "8px" }}
+										/>
+										No
+									</label>
+								</Flex>
+							</FormControl>
+						</Flex>
 					</Stack>
 				)}
 				{personalSubStep === 1 && (

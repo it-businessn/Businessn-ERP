@@ -162,9 +162,13 @@ const addEmployeeROEEmploymentInfo = async (req, res) => {
 		const existingROEInfo = await findEmployeeROEInfoDetails(empId, companyName);
 
 		if (existingROEInfo) {
-			const updatedROEInfo = await EmployeeROE.findByIdAndUpdate(existingROEInfo._id, newData, {
-				new: true,
-			});
+			const updatedROEInfo = await EmployeeROE.findByIdAndUpdate(
+				existingROEInfo._id,
+				{ $set: newData },
+				{
+					new: true,
+				},
+			);
 			return res.status(201).json(updatedROEInfo);
 		}
 		const newROEInfo = await EmployeeROE.create(newData);

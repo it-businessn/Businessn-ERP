@@ -512,9 +512,13 @@ const updateTimesheet = async (req, res) => {
 };
 
 const updateTimesheetData = async (id, data) =>
-	await Timesheet.findByIdAndUpdate(id, data, {
-		new: true,
-	});
+	await Timesheet.findByIdAndUpdate(
+		id,
+		{ $set: data },
+		{
+			new: true,
+		},
+	);
 
 const deleteTimesheet = async (req, res) => {
 	const { id } = req.params;

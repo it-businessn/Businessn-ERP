@@ -67,9 +67,13 @@ const updateOpportunity = async (req, res) => {
 	const { opportunityId } = req.params;
 
 	try {
-		const updatedOpportunity = await Opportunity.findByIdAndUpdate(opportunityId, req.body, {
-			new: true,
-		});
+		const updatedOpportunity = await Opportunity.findByIdAndUpdate(
+			opportunityId,
+			{ $set: req.body },
+			{
+				new: true,
+			},
+		);
 
 		return res.status(201).json(updatedOpportunity);
 	} catch (error) {

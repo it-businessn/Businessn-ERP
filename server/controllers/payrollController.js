@@ -263,7 +263,7 @@ const getERContribution = async (req, res) => {
 // 	});
 
 // const updatePayInfo = async (id, data) =>
-// 	await EmployeePayInfo.findByIdAndUpdate(id, data, {
+// 	await EmployeePayInfo.findByIdAndUpdate(id,  $set:{data}, {
 // 		new: true,
 // 	});
 // const addPayGroup = async (req, res) => {

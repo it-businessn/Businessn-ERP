@@ -24,8 +24,10 @@ const BoxCard = ({
 	borderColor = "var(--main_color)",
 	css,
 	pt,
+	flex,
 }) => (
 	<Box
+		flex={flex}
 		css={css}
 		minW={minW}
 		flexWrap={flexWrap}

@@ -60,9 +60,13 @@ const createAssessment = async (req, res) => {
 const updateAssessment = async (req, res) => {
 	const { id } = req.params;
 	try {
-		const assessment = await Assessment.findByIdAndUpdate(id, req.body, {
-			new: true,
-		});
+		const assessment = await Assessment.findByIdAndUpdate(
+			id,
+			{ $set: req.body },
+			{
+				new: true,
+			},
+		);
 
 		return res.status(201).json(assessment);
 	} catch (error) {

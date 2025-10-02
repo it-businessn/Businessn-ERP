@@ -87,9 +87,13 @@ const getEmployeeBalanceInfo = async (req, res) => {
 };
 
 const updateBalanceInfo = async (id, data) =>
-	await EmployeeBalanceInfo.findByIdAndUpdate(id, data, {
-		new: true,
-	});
+	await EmployeeBalanceInfo.findByIdAndUpdate(
+		id,
+		{ $set: data },
+		{
+			new: true,
+		},
+	);
 
 const addEmployeeBalanceInfo = async (req, res) => {
 	const {

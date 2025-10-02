@@ -32,9 +32,13 @@ const findEmployeeGovernmentInfo = async (empId, companyName) =>
 	});
 
 const updateGovernmentInfo = async (id, data) =>
-	await EmployeeGovernmentInfo.findByIdAndUpdate(id, data, {
-		new: true,
-	});
+	await EmployeeGovernmentInfo.findByIdAndUpdate(
+		id,
+		{ $set: data },
+		{
+			new: true,
+		},
+	);
 
 const addEmployeeGovernmentInfo = async (req, res) => {
 	const {

@@ -28,7 +28,6 @@ const EditUserInfo = ({ setEditMode, setError, error, company, isManager }) => {
 	const loggedInUser = LocalStorageService.getItem("user");
 	const departments = useDepartment(company);
 	const allCompanies = useCompanies();
-	// const managers = useManager(company);
 	const roles = useRoles(company);
 
 	const [companies, setCompanies] = useState(company);
@@ -259,24 +258,6 @@ const EditUserInfo = ({ setEditMode, setError, error, company, isManager }) => {
 							)}
 						</HStack>
 					)}
-					{/* {managers && (
-					<FormControl mb={4}>
-						<FormLabel>Manager</FormLabel>
-						<Select
-							bg="var(--main_color)"
-							name="manager"
-							value={userData?.manager || ""}
-							onChange={handleChange}
-							placeholder="Select manager"
-						>
-							{managers?.map((manager) => (
-								<option key={manager.id} value={manager.fullName}>
-									{manager.fullName}
-								</option>
-							))}
-						</Select>
-					</FormControl>
-				)} */}
 					<HStack>
 						{isBusinessN(company) && allCompanies && (
 							<MultiSelectFormControl
