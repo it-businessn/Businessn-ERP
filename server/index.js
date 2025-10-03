@@ -197,25 +197,22 @@ const db = mongoose.connection;
 // Scheduler
 cron.schedule("0 0 * * *", async () => {
 	// every 15sec
-	// cron.schedule("*/15 * * * * *", async() => {
+	// cron.schedule("*/15 * * * * *", async () => {
 	// const isStatDay = STAT_HOLIDAYS.find(({ date }) => date === moment().format("YYYY-MM-DD"));
 
 	const allCompanies = await getAllCompanies();
 	allCompanies?.forEach(async (company) => {
-		const currentYrSTAT_HOLIDAYS = await getHolidays({
+		const statHolidays = await getHolidays({
 			companyName: company.name,
 		});
-		if (!currentYrSTAT_HOLIDAYS.length) {
-			return;
-		}
-		const isStatDay = currentYrSTAT_HOLIDAYS.find(
+		const isStatDay = statHolidays.find(
 			({ date }) => moment.utc(date).format("YYYY-MM-DD") === moment().format("YYYY-MM-DD"),
 		);
 
-		if (isStatDay) {
+		if (isStatDay && statHolidays?.length > 0) {
 			console.log("Scheduling to add timecard entry to run every day at midnight", company.name);
 			addStatHolidayTimesheet(company.name);
-		} else return;
+		}
 	});
 });
 

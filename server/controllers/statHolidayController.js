@@ -24,14 +24,14 @@ const addStatHolidayDefaultTimesheet = async (employeeId, companyName) => {
 	});
 
 	if (existingStatTimesheetInfo) {
-		return existingStatTimesheetInfo;
+		return;
 	}
 	const { employeeEarnings, numberOfDaysWorked, statPayRate } = await findStatPayMonthlyEarning(
 		employeeId,
 		companyName,
 	);
 	const statPayAmount = numberOfDaysWorked ? employeeEarnings / numberOfDaysWorked : 0;
-	const statHours = statPayAmount / statPayRate;
+	const statHours = statPayAmount / statPayRate || 0;
 
 	const startTime = moment().set({
 		hour: 13,
@@ -49,16 +49,16 @@ const addStatHolidayDefaultTimesheet = async (employeeId, companyName) => {
 		statDayHours: statHours.toFixed(2),
 		source: TIMESHEET_SOURCE.SYSTEM,
 	};
-	const newRecord = await addTimesheetEntry(newStatTimeSheetRecord);
-	return newRecord;
+	await addTimesheetEntry(newStatTimeSheetRecord);
 };
 
 const addStatHolidayTimesheet = async (companyName) => {
 	try {
-		const payrollActiveEmployees = await getPayrollActiveEmployees(companyName);
-		await Promise.all(
-			payrollActiveEmployees.map((emp) => addStatHolidayDefaultTimesheet(emp._id, companyName)),
-		);
+		let result = await getPayrollActiveEmployees(companyName);
+		result = result?.filter((_) => _?.empId);
+		for (const emp of result) {
+			await addStatHolidayDefaultTimesheet(emp?.empId?._id, companyName);
+		}
 		console.log("StatHolidayDefaultTimesheet added");
 	} catch (error) {
 		console.error("Error adding record:", error);
@@ -78,20 +78,21 @@ const findStatPayMonthlyEarning = async (employeeId, companyName) => {
 		},
 	});
 
-	const empPayInfoResult = await EmployeePayInfo.find({ empId: employeeId, companyName });
-	const statPayRate = empPayInfoResult?.roles?.[0]?.sickPay || 0;
+	const empPayInfoResult = await EmployeePayInfo.findOne({ empId: employeeId, companyName });
+	const record = empPayInfoResult?.roles?.[0];
+	const statPayRate = record?.payRate || 0;
 	const employeeEarnings = timesheets?.reduce((acc, item) => {
 		return (
 			acc +
-			(item?.[PARAM_HOURS.REGULAR] * empPayInfoResult?.roles?.[0]?.payRate +
-				item?.overtimeHoursWorked * empPayInfoResult?.roles?.[0]?.overTimePay +
-				item?.dblOvertimeHoursWorked * empPayInfoResult?.roles?.[0]?.dblOverTimePay +
-				item?.statDayHoursWorked * empPayInfoResult?.roles?.[0]?.statWorkPay +
-				item?.statDayHours * empPayInfoResult?.roles?.[0]?.statPay +
-				item?.sickPayHours * empPayInfoResult?.roles?.[0]?.sickPay +
-				item?.vacationPayHours * empPayInfoResult?.roles?.[0]?.vacationPay +
-				item?.bereavementPayHours * empPayInfoResult?.roles?.[0]?.bereavementPay +
-				item?.personalPayHours * empPayInfoResult?.roles?.[0]?.personalDayPay)
+			(item?.[PARAM_HOURS.REGULAR] * (record?.payRate || 0) +
+				item?.overtimeHoursWorked * (record?.overTimePay || 0) +
+				item?.dblOvertimeHoursWorked * (record?.dblOverTimePay || 0) +
+				item?.statDayHoursWorked * (record?.statWorkPay || 0) +
+				item?.statDayHours * (record?.statPay || 0) +
+				item?.sickPayHours * (record?.sickPay || 0) +
+				item?.vacationPayHours * (record?.vacationPay || 0) +
+				item?.bereavementPayHours * (record?.bereavementPay || 0) +
+				item?.personalPayHours * (record?.personalDayPay || 0))
 		);
 	}, 0);
 
