@@ -1,12 +1,10 @@
-import useRoles from "hooks/useRoles";
 import { useEffect, useState } from "react";
+import SettingService from "services/SettingService";
 import { ConfigTabLayout } from "../../../components/ConfigTabLayout";
 import RoleForm from "./RoleForm";
 import { RolesList } from "./RolesList";
 
 const RolePanel = ({ companyName }) => {
-	const roles = useRoles(companyName);
-
 	const [roleList, setRoleList] = useState(null);
 	const [editingId, setEditingId] = useState(null);
 
@@ -14,8 +12,16 @@ const RolePanel = ({ companyName }) => {
 	const [formData, setFormData] = useState(defaultFormData);
 
 	useEffect(() => {
-		setRoleList(roles);
-	}, [roles]);
+		const fetchAllRoles = async () => {
+			try {
+				const { data } = await SettingService.getSystemAccessRoles(companyName);
+				setRoleList(data);
+			} catch (error) {
+				console.error(error);
+			}
+		};
+		if (companyName) fetchAllRoles();
+	}, [companyName]);
 
 	const handleEdit = (company) => {
 		setEditingId(company._id);

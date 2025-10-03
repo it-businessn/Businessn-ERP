@@ -18,6 +18,10 @@ const SettingService = {
 		return apiService.get(`/configuration/${id}`);
 	},
 
+	async getSystemAccessRoles(id) {
+		return apiService.get(`/setup/roles-all/${id}`);
+	},
+
 	async getAllRoles(id) {
 		return apiService.get(`/setup/roles/${id}`);
 	},

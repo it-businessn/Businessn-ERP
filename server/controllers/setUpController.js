@@ -63,15 +63,31 @@ const getCrews = async (req, res) => {
 	}
 };
 
+const getSystemAccessLevel = async (filter) =>
+	await EmployeeRole.find(filter).sort({
+		createdOn: -1,
+	});
+
 const getRoles = async (req, res) => {
 	const { companyName } = req.params;
 	try {
-		const roles = await EmployeeRole.find({
+		const roles = await getSystemAccessLevel({
 			inactive: { $ne: true },
 			companyName,
 			name: { $ne: "Shadow Admin" },
-		}).sort({
-			createdOn: -1,
+		});
+		return res.status(200).json(roles);
+	} catch (error) {
+		return res.status(500).json({ message: "Internal Server Error", error });
+	}
+};
+
+const getAllRoles = async (req, res) => {
+	const { companyName } = req.params;
+	try {
+		const roles = await getSystemAccessLevel({
+			inactive: { $ne: true },
+			companyName,
 		});
 		return res.status(200).json(roles);
 	} catch (error) {
@@ -723,6 +739,7 @@ module.exports = {
 	updateRole,
 	addPositionRole,
 	getRoles,
+	getAllRoles,
 	getCrews,
 	getPositionRoles,
 	getDepartments,

@@ -21,6 +21,8 @@ router.put("/crews/:id", setUpController.updateCrew);
 
 router.get("/roles/:companyName", setUpController.getRoles);
 
+router.get("/roles-all/:companyName", setUpController.getAllRoles);
+
 router.post("/roles", setUpController.addRole);
 
 router.put("/roles/:id", setUpController.updateRole);
