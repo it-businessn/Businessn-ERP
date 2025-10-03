@@ -6,7 +6,7 @@ const Order = require("../models/Order");
 const JournalEntry = require("../models/JournalEntry");
 const EmployeeEmploymentInfo = require("../models/EmployeeEmploymentInfo");
 
-const { PAYRUN_TYPE, BUSINESSN_ORG } = require("../services/data");
+const { PAYRUN_TYPE, COMPANIES } = require("../services/data");
 const { checkExtraRun } = require("../services/util");
 
 const buildFundingTotalsReport = async (
@@ -67,10 +67,10 @@ const buildFundingTotalsReport = async (
 };
 
 const createNewOrder = async (fundingTotalsId, customer, totalRecipients) => {
-	const length = await Order.countDocuments({ companyName: BUSINESSN_ORG });
+	const length = await Order.countDocuments({ companyName: COMPANIES.BUSINESSN_ORG });
 	const orderNumber = `BE100${length + 1}`;
 	const newOrder = {
-		companyName: BUSINESSN_ORG,
+		companyName: COMPANIES.BUSINESSN_ORG,
 		orderNumber,
 		fundingTotalsId,
 		totalRecipients,

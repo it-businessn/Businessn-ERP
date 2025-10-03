@@ -1,7 +1,6 @@
 const moment = require("moment");
 // const momentTz = require("moment-timezone");
 
-const BUSINESSN_ORG = "BusinessN Corporate";
 const SUPPORT_ADMIN_CONTACT = "jesse.christiaens@businessn.com";
 const BUSINESSN_SHADOW_ADMIN_EMAILS = [
 	"julik@businessn.com",
@@ -304,7 +303,6 @@ module.exports = {
 	calcTotalHours,
 	isSameDay,
 	calculateAge,
-	BUSINESSN_ORG,
 	PUNCH_CODE,
 	TIMESHEET_STATUS,
 	PARAM_HOURS,

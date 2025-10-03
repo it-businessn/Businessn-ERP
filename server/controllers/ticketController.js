@@ -8,12 +8,7 @@ const Lead = require("../models/Lead");
 
 const { sendEmail } = require("../services/emailService");
 const { filePath, fileContentType } = require("../services/fileService");
-const {
-	TICKET_STATUS,
-	BUSINESSN_ORG,
-	COMPANIES,
-	SUPPORT_ADMIN_CONTACT,
-} = require("../services/data");
+const { TICKET_STATUS, COMPANIES, SUPPORT_ADMIN_CONTACT } = require("../services/data");
 
 const getAllTickets = async (req, res) => {
 	const { id } = req.params;
@@ -175,7 +170,7 @@ const downloadResource = async (req, res) => {
 const createNewFreshLead = async (lead) => {
 	const newLeadOpportunity = {
 		name: `${lead?.firstName} ${lead?.lastName}`,
-		companyName: BUSINESSN_ORG,
+		companyName: COMPANIES.BUSINESSN_ORG,
 		email: lead?.email,
 		opportunityName: lead?.companyName,
 		phone: lead?.phone,
@@ -217,7 +212,7 @@ const createLeadTicket = async (req, res) => {
 		data.assignee = assigneeEmail?.fullName;
 
 		const newInfo = data;
-		newInfo.companyName = BUSINESSN_ORG;
+		newInfo.companyName = COMPANIES.BUSINESSN_ORG;
 		newInfo.topic = "New Lead: Website Contact Form Submission";
 		newInfo.issue = "A new lead has been generated from the website contact form.";
 

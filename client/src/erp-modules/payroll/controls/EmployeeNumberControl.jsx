@@ -2,6 +2,7 @@ import { Checkbox, FormControl, FormLabel, Input } from "@chakra-ui/react";
 import { COMPANIES } from "constant";
 import moment from "moment";
 import { useEffect, useState } from "react";
+import { isCornerStone } from "utils/common";
 
 export const EmployeeNumberControl = ({ company, formData, handleChange }) => {
 	const [autoGenerate, setAutoGenerate] = useState(false);
@@ -12,7 +13,7 @@ export const EmployeeNumberControl = ({ company, formData, handleChange }) => {
 			const initials =
 				company === COMPANIES.NW
 					? "NW"
-					: company == COMPANIES.CORNERSTONE
+					: isCornerStone(company)
 					? "CR"
 					: company.slice(0, 2).toUpperCase();
 			const newID = `${initials}${currentDate}${Math.floor(Math.random() * 10) + 10}`;
