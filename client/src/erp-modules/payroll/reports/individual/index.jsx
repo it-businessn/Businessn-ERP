@@ -6,7 +6,6 @@ import EmptyRowRecord from "components/ui/EmptyRowRecord";
 import NormalTextTitle from "components/ui/NormalTextTitle";
 import TableLayout from "components/ui/table/TableLayout";
 import TextTitle from "components/ui/text/TextTitle";
-import { ROLES } from "constant";
 import useCompany from "hooks/useCompany";
 import useCompanyEmployees from "hooks/useCompanyEmployees";
 import usePaygroup from "hooks/usePaygroup";
@@ -15,7 +14,7 @@ import { useEffect, useState } from "react";
 import { useBreakpointValue } from "services/Breakpoint";
 import LocalStorageService from "services/LocalStorageService";
 import PayrollService from "services/PayrollService";
-import { getPayNum, isExtraPay, sortRecordsByDate } from "utils";
+import { getDeptName, getPayNum, isExtraPay, isShadowUser, sortRecordsByDate } from "utils";
 import { dayMonthYear, formatDateRange } from "utils/convertDate";
 import EmpProfileSearch from "../../employees/EmpProfileSearch";
 import { tabScrollCss } from "../../onboard-user/customInfo";
@@ -47,9 +46,10 @@ const Reports = () => {
 	}, [employees]);
 
 	useEffect(() => {
-		if (loggedInUser.role !== ROLES.SHADOW_ADMIN) {
+		if (!isShadowUser(loggedInUser?.role)) {
 			setUserId(loggedInUser._id);
-			setDefaultDept(loggedInUser?.role === ROLES.MANAGER ? loggedInUser?.department : null);
+			const deptName = getDeptName(loggedInUser);
+			setDefaultDept(deptName);
 		}
 	}, []);
 

@@ -6,7 +6,7 @@ import PageLayout from "layouts/PageLayout";
 import { useState } from "react";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import LocalStorageService from "services/LocalStorageService";
-import { isManager } from "utils";
+import { isNotEnrollerOrEmployee } from "utils";
 import { STATS } from "./data";
 import LeftPane from "./leftpane";
 import RightPane from "./rightpane";
@@ -19,7 +19,7 @@ const CRMDashboard = () => {
 	const { selectedUser, setSelectedUser } = useSelectUser(loggedInUser);
 
 	const employees = useSalesAgentData(company, false, true);
-	const isManagerRole = isManager(loggedInUser?.role);
+	const isManagerRole = isNotEnrollerOrEmployee(loggedInUser?.role);
 
 	const handleChange = (value) => {
 		if (value === "") {

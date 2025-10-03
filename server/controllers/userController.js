@@ -22,46 +22,11 @@ const {
 	getPayrollActiveEmployees,
 	getShadowUserIds,
 	getSalariedIds,
+	getPayrollInActiveEmployees,
+	getPayrollTerminatedEmployees,
 } = require("../helpers/userHelper");
 const { findGroupEmployees } = require("./setUpController");
 const { setInitialPermissions } = require("./permissionController");
-
-const getPayrollInActiveEmployees = async (companyName, deptName, selectedPayGroupOption) => {
-	let result = await findEmployee({
-		payrollStatus: { $ne: "Payroll Active" },
-		companyName,
-		employmentRole: { $ne: ROLES.SHADOW_ADMIN },
-		empId: { $exists: true },
-	});
-	if (selectedPayGroupOption) {
-		result = filterResultByPaygroupOption(result, selectedPayGroupOption);
-	}
-
-	if (deptName && deptName !== "null") {
-		result = filterResultByDepartment(result, deptName);
-	}
-
-	return result;
-};
-
-const getPayrollTerminatedEmployees = async (companyName, deptName, selectedPayGroupOption) => {
-	let result = await findEmployee({
-		payrollStatus: "Payroll Terminated",
-		companyName,
-		employmentRole: { $ne: ROLES.SHADOW_ADMIN },
-		empId: { $exists: true },
-	});
-
-	if (selectedPayGroupOption) {
-		result = filterResultByPaygroupOption(result, selectedPayGroupOption);
-	}
-
-	if (deptName && deptName !== "null") {
-		result = filterResultByDepartment(result, deptName);
-	}
-
-	return result;
-};
 
 const getAllEmployees = async (req, res) => {
 	try {
@@ -117,8 +82,7 @@ const getPayrollActiveCompanyEmployeesCount = async (req, res) => {
 const getPayrollActiveCompanyEmployees = async (req, res) => {
 	const { companyName, deptName, payGroup } = req.params;
 	try {
-		let result = await getPayrollActiveEmployees(companyName, deptName, payGroup);
-		result = result?.filter((_) => _?.empId);
+		const result = await getPayrollActiveEmployees(companyName, deptName, payGroup);
 		return res.status(200).json(result);
 	} catch (error) {
 		return res.status(500).json({ message: "Internal Server Error", error });
@@ -128,8 +92,7 @@ const getPayrollActiveCompanyEmployees = async (req, res) => {
 const getPayrollInActiveCompanyEmployees = async (req, res) => {
 	const { companyName, deptName, payGroup } = req.params;
 	try {
-		let result = await getPayrollInActiveEmployees(companyName, deptName, payGroup);
-		result = result?.filter((_) => _?.empId);
+		const result = await getPayrollInActiveEmployees(companyName, deptName, payGroup);
 		return res.status(200).json(result);
 	} catch (error) {
 		return res.status(500).json({ message: "Internal Server Error", error });
@@ -190,11 +153,13 @@ const getCompanyNonSalariedEmployees = async (req, res) => {
 				empId: { $nin: [...shadowEmpIds, ...salariedIds] },
 			}),
 		};
-		const result = await EmployeeProfileInfo.find(filter).populate({
+		let result = await EmployeeProfileInfo.find(filter).populate({
 			path: "empId",
 			model: "Employee",
 			select: ["empId", "fullName"],
 		});
+
+		result = result?.filter((_) => _?.empId);
 
 		let updatedResult = await Promise.all(
 			result.map(async (emp) => {
@@ -218,7 +183,6 @@ const getCompanyNonSalariedEmployees = async (req, res) => {
 		if (deptName && deptName !== "null") {
 			updatedResult = filterResultByDepartment(updatedResult, deptName);
 		}
-
 		return res.status(200).json(sortByEmpFullName(updatedResult));
 	} catch (error) {
 		return res.status(500).json({ message: "Internal Server Error", error });
@@ -324,14 +288,13 @@ const getAllGroupMembers = async (req, res) => {
 const getAllCompManagers = async (req, res) => {
 	const { companyName } = req.params;
 	try {
-		let result = await findEmployee({
+		const result = await findEmployee({
 			companyName,
 			empId: { $exists: true },
 			employmentRole: {
 				$in: [ROLES.AUTH_ADMINISTRATOR, ROLES.ADMINISTRATOR, ROLES.MANAGER],
 			},
 		});
-		result = result?.filter((emp) => emp?.empId);
 
 		return res.status(200).json(result);
 	} catch (error) {
@@ -356,14 +319,13 @@ const getAllAdmin = async (req, res) => {
 const getAllManagers = async (req, res) => {
 	const { companyName } = req.params;
 	try {
-		let result = await findEmployee({
+		const result = await findEmployee({
 			companyName,
 			empId: { $exists: true },
 			employmentRole: {
-				$in: [ROLES.SHADOW_ADMIN, ROLES.AUTH_ADMINISTRATOR, ROLES.ADMINISTRATOR, ROLES.MANAGER],
+				$in: [ROLES.AUTH_ADMINISTRATOR, ROLES.ADMINISTRATOR, ROLES.MANAGER],
 			},
 		});
-		result = result?.filter((emp) => emp?.empId);
 		return res.status(200).json(result);
 	} catch (error) {
 		return res.status(500).json({ message: "Internal Server Error", error });
@@ -373,14 +335,13 @@ const getAllManagers = async (req, res) => {
 const getAllSalesAgentsList = async (req, res) => {
 	const { companyName } = req.params;
 	try {
-		let result = await findEmployee({
+		const result = await findEmployee({
 			companyName,
 			empId: { $exists: true },
 			employmentRole: {
-				$nin: [ROLES.SHADOW_ADMIN, ROLES.AUTH_ADMINISTRATOR, ROLES.ADMINISTRATOR, ROLES.MANAGER],
+				$nin: [ROLES.AUTH_ADMINISTRATOR, ROLES.ADMINISTRATOR, ROLES.MANAGER],
 			},
 		});
-		result = result?.filter((emp) => emp?.empId);
 		return res.status(200).json(result);
 	} catch (error) {
 		return res.status(500).json({ message: "Internal Server Error", error });
@@ -394,7 +355,7 @@ const getAllSalesAgents = async (req, res) => {
 			companyName,
 			empId: { $exists: true },
 			employmentRole: {
-				$nin: [ROLES.SHADOW_ADMIN, ROLES.AUTH_ADMINISTRATOR, ROLES.ADMINISTRATOR, ROLES.MANAGER],
+				$nin: [ROLES.AUTH_ADMINISTRATOR, ROLES.ADMINISTRATOR, ROLES.MANAGER],
 			},
 		})
 			.populate({

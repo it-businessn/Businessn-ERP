@@ -8,6 +8,7 @@ const EmployeeEmploymentInfo = require("../models/EmployeeEmploymentInfo");
 
 const { PAYRUN_TYPE, COMPANIES } = require("../services/data");
 const { checkExtraRun } = require("../services/util");
+const { sortByEmpFullName } = require("../helpers/userHelper");
 
 const buildFundingTotalsReport = async (
 	fundingTotal,
@@ -340,6 +341,7 @@ const getReportInfo = async (req, res) => {
 
 		const isExtraPayRun = checkExtraRun(isExtraRun);
 		let payStubs = await EmployeePayStub.find({
+			empId: { $exists: true },
 			companyName,
 			payPeriodNum,
 			isExtraRun: isExtraPayRun,
@@ -351,13 +353,8 @@ const getReportInfo = async (req, res) => {
 			scheduleFrequency,
 		}).populate(EMP_INFO);
 
-		payStubs = payStubs?.filter((a) => a?.empId);
-		payStubs.sort((a, b) => {
-			const nameA = a.empId?.fullName?.toLowerCase();
-			const nameB = b.empId?.fullName?.toLowerCase();
-			return nameA < nameB ? -1 : nameA > nameB ? 1 : 0;
-		});
-		return res.status(200).json(payStubs);
+		payStubs = payStubs?.filter((_) => _?.empId);
+		return res.status(200).json(sortByEmpFullName(payStubs));
 	} catch (error) {
 		return res.status(500).json({ message: "Internal Server Error", error });
 	}

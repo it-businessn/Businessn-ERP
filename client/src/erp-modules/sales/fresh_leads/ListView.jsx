@@ -7,7 +7,7 @@ import { tabScrollCss } from "erp-modules/payroll/onboard-user/customInfo";
 import { useState } from "react";
 import { FaRegTrashAlt } from "react-icons/fa";
 import LocalStorageService from "services/LocalStorageService";
-import { isManager } from "utils";
+import { isNotEnrollerOrEmployee } from "utils";
 import { LEADS_COLS } from "../lead docket/data";
 import LeadContacts from "./LeadContacts";
 
@@ -37,8 +37,7 @@ const ListView = ({
 	};
 	const { fullName, role } = loggedInUser;
 
-	const isUserManager = isManager(role);
-	const leadList = isUserManager
+	const leadList = isNotEnrollerOrEmployee(role)
 		? leads
 		: leads?.filter((lead) => lead.primaryAssignee[0]?.name === fullName);
 

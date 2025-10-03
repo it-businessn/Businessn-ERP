@@ -36,7 +36,7 @@ import { TbCalendarDollar } from "react-icons/tb";
 import { useBreakpointValue } from "services/Breakpoint";
 import LocalStorageService from "services/LocalStorageService";
 import PayoutService from "services/PayoutService";
-import { generateLighterShade, isManager } from "utils";
+import { generateLighterShade, isNotEnrollerOrEmployee } from "utils";
 import { formatDate } from "utils/convertDate";
 import AddNewSale from "./AddNewSale";
 
@@ -47,7 +47,7 @@ const Payouts = () => {
 	const [payouts, setPayouts] = useState(null);
 	const [refresh, setRefresh] = useState(false);
 	const { isOpen, onOpen, onClose } = useDisclosure();
-	const isManagerUser = isManager(loggedInUser.role);
+	const isManagerRole = isNotEnrollerOrEmployee(loggedInUser.role);
 
 	useEffect(() => {
 		const fetchAllPayouts = async () => {
@@ -63,7 +63,7 @@ const Payouts = () => {
 					return payout;
 				});
 				setPayouts(
-					isManagerUser ? data : data.filter(({ fullName }) => fullName === loggedInUser.fullName),
+					isManagerRole ? data : data.filter(({ fullName }) => fullName === loggedInUser.fullName),
 				);
 			} catch (error) {
 				console.error(error);
@@ -203,7 +203,7 @@ const Payouts = () => {
 							<Text fontWeight="bold">All Sales</Text>
 						</Flex>
 						<HStack spacing="1em" mt="1em">
-							{isManagerUser && <PrimaryButton onOpen={onOpen} name={"Add new sale"} size={"xs"} />}
+							{isManagerRole && <PrimaryButton onOpen={onOpen} name={"Add new sale"} size={"xs"} />}
 							<Button
 								color={"var(--nav_color)"}
 								leftIcon={<MdOutlineFilterList />}
@@ -243,7 +243,7 @@ const Payouts = () => {
 						<Text fontWeight="bold">All Sales</Text>
 						<Spacer />
 						<HStack w={{ lg: "50%" }} spacing={3} justify={"flex-end"}>
-							{isManagerUser && <PrimaryButton onOpen={onOpen} name={"Add new sale"} size={"xs"} />}
+							{isManagerRole && <PrimaryButton onOpen={onOpen} name={"Add new sale"} size={"xs"} />}
 							<Button
 								color={"var(--nav_color)"}
 								leftIcon={<MdOutlineFilterList />}

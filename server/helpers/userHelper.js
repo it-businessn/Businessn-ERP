@@ -30,6 +30,7 @@ const findEmployee = async (data) => {
 		})
 		.select("payrollStatus employeeNo positions employmentRole");
 
+	result = result?.filter((emp) => emp?.empId);
 	return sortByEmpFullName(result);
 };
 
@@ -58,16 +59,15 @@ const getSalariedIds = async (companyName) => {
 		empId: { $exists: true },
 	}).select("roles empId");
 
-	result = result.filter((emp) => {
-		const nonSalaried =
-			emp.empId &&
+	result = result.filter(
+		(emp) =>
+			emp?.empId &&
 			emp?.roles.some(
-				(role) => role.typeOfEarning == EARNING_TYPE.FT || role.typeOfEarning == EARNING_TYPE.PT,
-			);
-		if (nonSalaried) return emp;
-	});
+				(role) => role?.typeOfEarning == EARNING_TYPE.FT || role?.typeOfEarning == EARNING_TYPE.PT,
+			),
+	);
 
-	return result?.map((emp) => emp.empId);
+	return result?.map((emp) => emp?.empId);
 };
 
 const getPayrollActiveEmployees = async (companyName, deptName, selectedPayGroupOption) => {
@@ -85,8 +85,43 @@ const getPayrollActiveEmployees = async (companyName, deptName, selectedPayGroup
 	if (deptName && deptName !== "null") {
 		result = filterResultByDepartment(result, deptName);
 	}
+	return sortByEmpFullName(result);
+};
 
-	return result;
+const getPayrollInActiveEmployees = async (companyName, deptName, selectedPayGroupOption) => {
+	let result = await findEmployee({
+		payrollStatus: { $ne: "Payroll Active" },
+		companyName,
+		employmentRole: { $ne: ROLES.SHADOW_ADMIN },
+		empId: { $exists: true },
+	});
+	if (selectedPayGroupOption) {
+		result = filterResultByPaygroupOption(result, selectedPayGroupOption);
+	}
+
+	if (deptName && deptName !== "null") {
+		result = filterResultByDepartment(result, deptName);
+	}
+	return sortByEmpFullName(result);
+};
+
+const getPayrollTerminatedEmployees = async (companyName, deptName, selectedPayGroupOption) => {
+	let result = await findEmployee({
+		payrollStatus: "Payroll Terminated",
+		companyName,
+		employmentRole: { $ne: ROLES.SHADOW_ADMIN },
+		empId: { $exists: true },
+	});
+
+	if (selectedPayGroupOption) {
+		result = filterResultByPaygroupOption(result, selectedPayGroupOption);
+	}
+
+	if (deptName && deptName !== "null") {
+		result = filterResultByDepartment(result, deptName);
+	}
+
+	return sortByEmpFullName(result);
 };
 
 const getUserEmploymentRoleInfo = async (companyName) => {
@@ -120,6 +155,8 @@ module.exports = {
 	getShadowUserIds,
 	getSalariedIds,
 	getPayrollActiveEmployees,
+	getPayrollInActiveEmployees,
+	getPayrollTerminatedEmployees,
 	getUserEmploymentRoleInfo,
 	sortByEmpFullName,
 };

@@ -32,7 +32,7 @@ import { useBreakpointValue } from "services/Breakpoint";
 import LeadsService from "services/LeadsService";
 import LocalStorageService from "services/LocalStorageService";
 import UserService from "services/UserService";
-import { isManager } from "utils";
+import { isNotEnrollerOrEmployee } from "utils";
 import { formatDate } from "utils/convertDate";
 import Caption from "../lead docket/Caption";
 import SearchFilter from "../lead docket/SearchFilter";
@@ -76,7 +76,7 @@ const Opportunities = () => {
 				limit,
 			});
 			const { totalPages, page, items } = data;
-			const leadList = isManager(loggedInUser?.role)
+			const leadList = isNotEnrollerOrEmployee(loggedInUser?.role)
 				? items
 				: items?.filter(
 						(item) =>

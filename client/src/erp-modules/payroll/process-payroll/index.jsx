@@ -4,7 +4,6 @@ import BoxCard from "components/ui/card";
 import ActionButtonGroup from "components/ui/form/ActionButtonGroup";
 import ModalLayout from "components/ui/modal/ModalLayout";
 import NormalTextTitle from "components/ui/NormalTextTitle";
-import { ROLES } from "constant";
 import useCompany from "hooks/useCompany";
 import usePaygroup from "hooks/usePaygroup";
 import PageLayout from "layouts/PageLayout";
@@ -14,6 +13,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { workViewPath } from "routes";
 import LocalStorageService from "services/LocalStorageService";
 import SettingService from "services/SettingService";
+import { getDeptName, hasPayrollSubmitAccess } from "utils";
 import VerticalStepper from "../../../components/ui/VerticalStepper";
 import { getClosestRecord } from "../workview/data";
 import AlertsViolation from "./AlertsViolation";
@@ -34,9 +34,7 @@ const ProcessPayroll = () => {
 		{ title: "Payroll Complete", content: <PayrollComplete /> },
 	];
 	const loggedInUser = LocalStorageService.getItem("user");
-	const hasAccessRole =
-		loggedInUser?.role === ROLES.AUTH_ADMINISTRATOR || loggedInUser?.role === ROLES.SHADOW_ADMIN;
-	const deptName = loggedInUser?.role === ROLES.MANAGER ? loggedInUser?.department : null;
+	const deptName = getDeptName(loggedInUser);
 	const { company } = useCompany(LocalStorageService.getItem("selectedCompany"));
 	const { payNo, year, stepNum } = useParams();
 	const activeStep = stepNum ? parseInt(stepNum) : 0;
@@ -148,7 +146,7 @@ const ProcessPayroll = () => {
 							handleClick={goToNextStep}
 							height="60vh"
 						/>
-						{hasAccessRole && (
+						{hasPayrollSubmitAccess(loggedInUser?.role) && (
 							<PrimaryButton
 								minW={"100%"}
 								isDisabled={isPayrollSubmitDisabled}

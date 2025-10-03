@@ -33,7 +33,7 @@ const COMPANIES = {
 	CORNERSTONE: "Cornerstone Maintenance Group Ltd.",
 };
 
-const ADMIN_PERMISSION = [
+const BUSINESSN_ADMIN_PERMISSION = [
 	{ name: "Sales" },
 	{ name: "Sales Dashboard" },
 	{ name: "Sales Activities" },
@@ -94,24 +94,6 @@ const ADMIN_PERMISSION = [
 	{ name: "Accounting General Ledger" },
 ];
 
-const EMPLOYEE_PERMISSION = [
-	{ name: "Sales" },
-	{ name: "Sales Dashboard" },
-	{ name: "Sales Activities" },
-	{ name: "Sales Calendar" },
-	{ name: "Sales Payouts" },
-	{ name: "Sales Customers" },
-	{ name: "Sales Opportunities" },
-	{ name: "Sales Fresh Leads" },
-	{ name: "Sales Target Leads Pipeline" },
-	{ name: "Sales Resources" },
-	{ name: "Project Management" },
-	{ name: "Project Management Dashboard" },
-	{ name: "Project Management Overview" },
-	{ name: "Project Management Communication" },
-	{ name: "Project Management Setup" },
-];
-
 const CLIENT_ORG_ADMIN_PERMISSION = [
 	{ name: "Payroll" },
 	{ name: "Payroll Dashboard" },
@@ -162,12 +144,6 @@ const TICKET_STATUS = {
 	PROGRESS: "In Progress",
 	ON_HOLD: "On Hold",
 };
-
-const isRoleManager = (role) =>
-	role === ROLES.SHADOW_ADMIN ||
-	role === ROLES.AUTH_ADMINISTRATOR ||
-	role === ROLES.ADMINISTRATOR ||
-	role === ROLES.MANAGER;
 
 const NEXT_DAY = moment().add(1, "days");
 const CURRENT_TIME_HHMM = NEXT_DAY.format("HH:mm");
@@ -286,11 +262,9 @@ module.exports = {
 	PAY_TYPES_TITLE,
 	CURRENT_TIME_HHMM,
 	NEXT_DAY,
-	ADMIN_PERMISSION,
+	BUSINESSN_ADMIN_PERMISSION,
 	CLIENT_ORG_ADMIN_PERMISSION,
 	CLIENT_ORG_EMP_PERMISSION,
-	EMPLOYEE_PERMISSION,
-	isRoleManager,
 	CURRENT_YEAR,
 	getUTCTime,
 	startOfDay,

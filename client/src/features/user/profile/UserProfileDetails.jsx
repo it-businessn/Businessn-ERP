@@ -7,9 +7,8 @@ import TextTitle from "components/ui/text/TextTitle";
 import PageLayout from "layouts/PageLayout";
 import { useState } from "react";
 import { FaAddressCard, FaUndoAlt } from "react-icons/fa";
-import { useBreakpointValue } from "services/Breakpoint";
 import LocalStorageService from "services/LocalStorageService";
-import { hasConsoleAccess } from "utils";
+import { hasAdminConsoleAccess } from "utils";
 import { getFormattedAddress } from "utils/common";
 import ChangePassword from "../ChangePassword";
 import EditUserInfo from "./EditUserInfo";
@@ -17,7 +16,6 @@ import EditUserInfo from "./EditUserInfo";
 const UserProfileDetails = () => {
 	const company = LocalStorageService.getItem("selectedCompany");
 	const userData = LocalStorageService.getItem("user");
-	const { isMobile } = useBreakpointValue();
 	const [editMode, setEditMode] = useState(false);
 
 	const [changePasswordMode, setPasswordMode] = useState(false);
@@ -134,7 +132,7 @@ const UserProfileDetails = () => {
 				{editMode && (
 					<BoxCard flex={1}>
 						<EditUserInfo
-							isManager={hasConsoleAccess(role)}
+							isManager={hasAdminConsoleAccess(role)}
 							company={company}
 							setEditMode={setEditMode}
 							setError={setError}

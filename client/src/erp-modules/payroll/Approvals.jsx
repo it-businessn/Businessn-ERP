@@ -1,19 +1,25 @@
 import { Tbody, Td, Tr } from "@chakra-ui/react";
 import EmptyRowRecord from "components/ui/EmptyRowRecord";
 import TableLayout from "components/ui/table/TableLayout";
-import { ROLES } from "constant";
 import useCompany from "hooks/useCompany";
 import useEmployees from "hooks/useEmployees";
 import usePaygroup from "hooks/usePaygroup";
 import PageLayout from "layouts/PageLayout";
 import LocalStorageService from "services/LocalStorageService";
+import { getDeptName } from "utils";
 
 const Approvals = () => {
 	const { company } = useCompany(LocalStorageService.getItem("selectedCompany"));
 	const loggedInUser = LocalStorageService.getItem("user");
-	const deptName = loggedInUser?.role === ROLES.MANAGER ? loggedInUser?.department : null;
 	const { selectedPayGroup } = usePaygroup(company, false);
-	const { employees } = useEmployees(false, company, null, null, deptName, selectedPayGroup?.name);
+	const { employees } = useEmployees(
+		false,
+		company,
+		null,
+		null,
+		getDeptName(loggedInUser),
+		selectedPayGroup?.name,
+	);
 
 	return (
 		<PageLayout title={"Approvals"}>

@@ -8,7 +8,7 @@ import { useState } from "react";
 import { HiOfficeBuilding } from "react-icons/hi";
 import { MdSettingsSuggest } from "react-icons/md";
 import LocalStorageService from "services/LocalStorageService";
-import { isManager } from "utils";
+import { isNotEnrollerOrEmployee } from "utils";
 import { getFormattedAddress } from "utils/common";
 import EditCompanyInfo from "./EditCompanyInfo";
 
@@ -20,7 +20,7 @@ const CompanyInfo = ({ company, modules }) => {
 
 	return (
 		<Stack margin={"auto"} m="1em auto" w={"50%"}>
-			{isManager(loggedInUser?.role) && (
+			{isNotEnrollerOrEmployee(loggedInUser?.role) && (
 				<HStack justify={"end"}>
 					<LeftIconButton
 						color="var(--nav_color)"

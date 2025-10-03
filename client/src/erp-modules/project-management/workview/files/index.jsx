@@ -4,7 +4,7 @@ import TextTitle from "components/ui/text/TextTitle";
 import { useEffect, useState } from "react";
 import LocalStorageService from "services/LocalStorageService";
 import ProjectService from "services/ProjectService";
-import { isManager } from "utils";
+import { isNotEnrollerOrEmployee } from "utils";
 import AddFile from "./AddFile";
 import FilesOverView from "./FilesOverView";
 
@@ -16,7 +16,6 @@ export const ACTION = {
 
 const FilesList = ({ managers, company, isDashboard }) => {
 	const loggedInUser = LocalStorageService.getItem("user");
-	const isManagerView = isManager(loggedInUser?.role);
 
 	const { isOpen, onOpen, onClose } = useDisclosure();
 
@@ -27,7 +26,7 @@ const FilesList = ({ managers, company, isDashboard }) => {
 		setIsDataLoaded(false);
 		const fetchAllFiles = async () => {
 			try {
-				const { data } = isManagerView
+				const { data } = isNotEnrollerOrEmployee(loggedInUser?.role)
 					? await ProjectService.getAllCompanyFiles(company)
 					: await ProjectService.getAllCompanyFilesByAssignee(loggedInUser?.fullName, company);
 				setFiles(data);

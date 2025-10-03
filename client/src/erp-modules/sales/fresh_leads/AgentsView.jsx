@@ -19,7 +19,7 @@ import { useState } from "react";
 import { FaRegTrashAlt } from "react-icons/fa";
 import { RiEditLine } from "react-icons/ri";
 import LocalStorageService from "services/LocalStorageService";
-import { isManager } from "utils";
+import { isNotEnrollerOrEmployee } from "utils";
 import EditLead from "./EditLead";
 
 export const totalLeads = (name, isManager, leads, userName) => {
@@ -49,8 +49,8 @@ const AgentsView = ({
 	const loggedInUser = LocalStorageService.getItem("user");
 	const { fullName, role } = loggedInUser;
 
-	const isUserManager = isManager(role);
-	const leadList = isUserManager
+	const isManagerRole = isNotEnrollerOrEmployee(role);
+	const leadList = isManagerRole
 		? leads
 		: leads?.filter((lead) => lead.primaryAssignee[0]?.name === fullName);
 
@@ -106,7 +106,7 @@ const AgentsView = ({
 							</Flex>
 							<Flex align="center" color={"var(--main_color_black)"} mt="-2">
 								<Text mr="3">
-									{leads && totalLeads(category.abbr, isUserManager, leads, fullName)}
+									{leads && totalLeads(category.abbr, isManagerRole, leads, fullName)}
 								</Text>
 								{/* <Icon mr="1" as={ArrowUpIcon} color="green.500" />
 								<Text color="green.500" fontSize="xs">

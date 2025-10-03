@@ -189,7 +189,7 @@ const EmploymentInfo = ({
 										}
 									}}
 								>
-									{roles.map((role) => (
+									{roles?.map((role) => (
 										<option key={role.name} value={role.name}>
 											{role.name}
 										</option>

@@ -10,7 +10,6 @@ import {
 } from "@chakra-ui/react";
 import LeftIconButton from "components/ui/button/LeftIconButton";
 import RadioFormControl from "components/ui/form/RadioFormControl";
-import { ROLES } from "constant";
 import NewEmployeeOnboardingModal from "erp-modules/payroll/onboard-user/NewEmployeeOnboardingModal";
 import PayrollActions from "erp-modules/payroll/workview/paygroup-header-table/PayrollActions";
 import useCompany from "hooks/useCompany";
@@ -24,6 +23,7 @@ import { RiUserUnfollowLine } from "react-icons/ri";
 import { useNavigate } from "react-router-dom";
 import { payrollEmployeePath } from "routes";
 import LocalStorageService from "services/LocalStorageService";
+import { getDeptName } from "utils";
 import EmployeeList from "./EmployeeList";
 import SendEmailList from "./SendEmailList";
 
@@ -49,14 +49,13 @@ const EmployeeListView = () => {
 		usePaygroup(company, false);
 
 	const [isRefresh, setIsRefresh] = useState(false);
-	const deptName = loggedInUser?.role === ROLES.MANAGER ? loggedInUser?.department : null;
 
 	const { employees, filteredEmployees, setFilteredEmployees } = useEmployees(
 		isRefresh,
 		company,
 		payrollStatus,
 		null,
-		deptName,
+		getDeptName(loggedInUser),
 		selectedPayGroupOption,
 	);
 	const [showEmpFilter, setShowEmpFilter] = useState(false);

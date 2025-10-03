@@ -3,11 +3,11 @@ import ActionButtonGroup from "components/ui/form/ActionButtonGroup";
 import DateTimeFormControl from "components/ui/form/DateTimeFormControl";
 import MultiSelectFormControl from "components/ui/form/MultiSelectFormControl";
 import ModalLayout from "components/ui/modal/ModalLayout";
-import { ROLES } from "constant";
 import { useEffect, useState } from "react";
 import LocalStorageService from "services/LocalStorageService";
 import SettingService from "services/SettingService";
 import UserService from "services/UserService";
+import { getDeptName } from "utils";
 import { addBusinessDays, getDefaultDate } from "utils/convertDate";
 
 const ExtraPayrunModal = ({
@@ -20,7 +20,6 @@ const ExtraPayrunModal = ({
 	selectedPayGroupOption,
 }) => {
 	const loggedInUser = LocalStorageService.getItem("user");
-	const deptName = loggedInUser?.role === ROLES.MANAGER ? loggedInUser?.department : null;
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const today = getDefaultDate();
 
@@ -56,7 +55,7 @@ const ExtraPayrunModal = ({
 			try {
 				const { data } = await UserService.getExtraPayrunEmployees(
 					company,
-					deptName,
+					getDeptName(loggedInUser),
 					selectedPayGroupOption,
 				);
 				data?.map((emp) => {

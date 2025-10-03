@@ -6,7 +6,6 @@ import EmptyRowRecord from "components/ui/EmptyRowRecord";
 import NormalTextTitle from "components/ui/NormalTextTitle";
 import TableLayout from "components/ui/table/TableLayout";
 import TextTitle from "components/ui/text/TextTitle";
-import { ROLES } from "constant";
 import { tabScrollCss } from "erp-modules/payroll/onboard-user/customInfo";
 import {
 	getParamKey,
@@ -18,6 +17,7 @@ import usePaygroup from "hooks/usePaygroup";
 import { useEffect, useState } from "react";
 import LocalStorageService from "services/LocalStorageService";
 import TimesheetService from "services/TimesheetService";
+import { getDeptName } from "utils";
 import {
 	dayMonthYear,
 	formatDateBar,
@@ -69,7 +69,7 @@ const EmployeeTimeCard = ({ selectedUser, company, isMobile }) => {
 		],
 	};
 	const loggedInUser = LocalStorageService.getItem("user");
-	const deptName = loggedInUser?.role === ROLES.MANAGER ? loggedInUser?.department : null;
+	const deptName = getDeptName(loggedInUser);
 	const [time, setTime] = useState(new Date());
 	const [showAddEntry, setShowAddEntry] = useState(false);
 	const [showLeaveForm, setShowLeaveForm] = useState(false);

@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 import ActivityService from "services/ActivityService";
 import ContactService from "services/ContactService";
 import LocalStorageService from "services/LocalStorageService";
-import { isManager } from "utils";
+import { isNotEnrollerOrEmployee } from "utils";
 import { ACTIVITY_CARDS, SALES_ACTIVITY_CARDS } from "../customers/contacts/logs/data";
 import FilterActivityTab from "./FilterActivityTab";
 import LeftPane from "./LeftPane";
@@ -17,7 +17,7 @@ import SelectCustomer from "./SelectCustomer";
 const Activities = () => {
 	const { company } = useCompany(LocalStorageService.getItem("selectedCompany"));
 	const loggedInUser = LocalStorageService.getItem("user");
-	const isManagerRole = isManager(loggedInUser?.role);
+	const isManagerRole = isNotEnrollerOrEmployee(loggedInUser?.role);
 	const [contacts, setContacts] = useState(null);
 	const [leads, setLeads] = useState(null);
 	const [selectedFilter, setSelectedFilter] = useState("Daily");

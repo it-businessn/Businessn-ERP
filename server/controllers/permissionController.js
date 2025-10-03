@@ -1,6 +1,6 @@
 const UserPermissions = require("../models/permissions");
 const {
-	ADMIN_PERMISSION,
+	BUSINESSN_ADMIN_PERMISSION,
 	CLIENT_ORG_ADMIN_PERMISSION,
 	CLIENT_ORG_EMP_PERMISSION,
 	ROLES,
@@ -95,7 +95,7 @@ const getPermissionsList = (role) => {
 	const permissionName = isEmployee
 		? CLIENT_ORG_EMP_PERMISSION
 		: isShadowAdmin
-		? ADMIN_PERMISSION
+		? BUSINESSN_ADMIN_PERMISSION
 		: CLIENT_ORG_ADMIN_PERMISSION;
 
 	const permissionType = [];

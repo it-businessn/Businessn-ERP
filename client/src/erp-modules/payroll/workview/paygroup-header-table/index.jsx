@@ -1,7 +1,6 @@
 import { HStack, Select, SimpleGrid, VStack } from "@chakra-ui/react";
 import PrimaryButton from "components/ui/button/PrimaryButton";
 import BoxCard from "components/ui/card";
-import { ROLES } from "constant";
 import { tabScrollCss } from "erp-modules/payroll/onboard-user/customInfo";
 import NewEmployeeOnboardingModal from "erp-modules/payroll/onboard-user/NewEmployeeOnboardingModal";
 import { useEffect, useState } from "react";
@@ -11,6 +10,7 @@ import { MdUpdate } from "react-icons/md";
 import { RiUserAddLine, RiUserUnfollowLine } from "react-icons/ri";
 import { useNavigate } from "react-router-dom";
 import { payrollEmployeePath, payrollROEPath } from "routes";
+import { isManager } from "utils";
 import ExtraPayrunModal from "./ExtraPayrunModal";
 import PayrollActions from "./PayrollActions";
 import WorkviewTable from "./WorkviewTable";
@@ -43,7 +43,7 @@ const PaygroupTable = ({
 	const [payrollActions, setPayrollActions] = useState(PAYGROUP_ACTIONS);
 
 	useEffect(() => {
-		if (loggedInUser?.role === ROLES.MANAGER) {
+		if (isManager(loggedInUser?.role)) {
 			setPayrollActions(payrollActions.filter(({ key }) => key !== "roe"));
 		}
 	}, [loggedInUser]);

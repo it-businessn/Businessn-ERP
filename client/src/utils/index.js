@@ -132,8 +132,6 @@ export const calculateProjectCompletion = (project) => {
 	// return totalTasks > 0 ? Math.floor((completedTasks / totalTasks) * 100) : 0;
 };
 
-export const ALL_ROLES = [ROLES.MANAGER, ROLES.EMPLOYEE, ROLES.ADMINISTRATOR, ROLES.ENROLLER];
-
 export const COVER_COLORS = [
 	"var(--product1)",
 	"var(--product2)",
@@ -157,8 +155,17 @@ export const getRoleColor = (role) => {
 	return colors?.find(({ title }) => title === role)?.color;
 };
 
-export const isManager = (role) => role !== ROLES.EMPLOYEE && role !== ROLES.ENROLLER;
-export const hasConsoleAccess = (role) => isManager(role) && role !== ROLES.MANAGER;
+export const isShadowUser = (role) => role === ROLES.SHADOW_ADMIN;
+export const isManager = (role) => role === ROLES.MANAGER;
+export const isEnroller = (role) => role === ROLES.ENROLLER;
+
+export const isNotEnrollerOrEmployee = (role) => role !== ROLES.EMPLOYEE && !isEnroller(role);
+export const getDeptName = (user) => (isManager(user?.role) ? user?.department : null);
+
+export const hasPayrollSubmitAccess = (role) =>
+	role === ROLES.AUTH_ADMINISTRATOR || isShadowUser(role);
+
+export const hasAdminConsoleAccess = (role) => isNotEnrollerOrEmployee(role) && !isManager(role);
 
 export const calcTotal = (data, param1, param2) => {
 	return data.reduce((acc, product) => {

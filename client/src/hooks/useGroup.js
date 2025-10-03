@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import SettingService from "services/SettingService";
-import { isManager } from "utils";
+import { isNotEnrollerOrEmployee } from "utils";
 
 const useGroup = (company, isRefresh, isCalendar) => {
 	const [groups, setGroups] = useState(null);
@@ -13,7 +13,7 @@ const useGroup = (company, isRefresh, isCalendar) => {
 				if (data.length) {
 					if (isCalendar) {
 						data.forEach((data) => {
-							data.members = data.members.filter(({ role }) => isManager(role));
+							data.members = data.members.filter(({ role }) => isNotEnrollerOrEmployee(role));
 						});
 					}
 

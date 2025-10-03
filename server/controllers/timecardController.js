@@ -244,7 +244,8 @@ const findRecentClockInRecord = async (badge_id, timestamp) => {
 const addTimecardEntry = async (entry, isBreak) => {
 	// const updatedTimecard = await Timecard.updateMany({}, { $set: { processedForTimesheet: true } });
 	const { badge_id, clockIn, notDevice } = entry;
-	const empRec = await findEmployeeTAD(badge_id);
+	const empRec = await findEmployeeTADByBadgeId(badge_id);
+
 	if (empRec) {
 		entry.notDevice = notDevice;
 		entry.companyName = empRec?.companyName;
@@ -287,7 +288,7 @@ const addTimecardEntry = async (entry, isBreak) => {
 const findTimesheet = async (record) => Timesheet.findOne(record);
 
 const updateTimecardEntry = async (entry, isBreakType) => {
-	const empRec = await findEmployeeTAD(entry.badge_id);
+	const empRec = await findEmployeeTADByBadgeId(entry.badge_id);
 
 	const timesheetRecord = await findTimesheet({
 		deleted: false,
@@ -327,7 +328,7 @@ const updateTimecardEntry = async (entry, isBreakType) => {
 	}
 };
 
-const findEmployeeTAD = async (timeManagementBadgeID) =>
+const findEmployeeTADByBadgeId = async (timeManagementBadgeID) =>
 	await EmployeeEmploymentInfo.findOne({
 		payrollStatus: "Payroll Active",
 		employmentRole: { $ne: ROLES.SHADOW_ADMIN },

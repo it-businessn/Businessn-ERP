@@ -10,7 +10,7 @@ import PageLayout from "layouts/PageLayout";
 import { useEffect, useState } from "react";
 import LeadsService from "services/LeadsService";
 import LocalStorageService from "services/LocalStorageService";
-import { isManager } from "utils";
+import { isNotEnrollerOrEmployee } from "utils";
 import AgentsView, { totalLeads } from "../fresh_leads/AgentsView";
 import { TARGET_LEADS } from "../opportunities/data";
 import GradientAreaFillColorChart from "./AreaFillColorChart";
@@ -41,24 +41,24 @@ const Pipeline = () => {
 
 	const { fullName, role } = loggedInUser;
 
-	const isUserManager = isManager(role);
+	const isManagerRole = isNotEnrollerOrEmployee(role);
 
 	const opportunityData = [
 		{
 			name: "Meeting Set",
-			total: totalLeads("T1", isUserManager, leads, fullName),
+			total: totalLeads("T1", isManagerRole, leads, fullName),
 		},
 		{
 			name: "Discovery Call",
-			total: totalLeads("T2", isUserManager, leads, fullName),
+			total: totalLeads("T2", isManagerRole, leads, fullName),
 		},
 		{
 			name: "Closing",
-			total: totalLeads("T3", isUserManager, leads, fullName),
+			total: totalLeads("T3", isManagerRole, leads, fullName),
 		},
 		{
 			name: "Onboard",
-			total: totalLeads("T4", isUserManager, leads, fullName),
+			total: totalLeads("T4", isManagerRole, leads, fullName),
 		},
 	];
 

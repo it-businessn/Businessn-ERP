@@ -1,7 +1,7 @@
 import BoxCard from "components/ui/card";
 import TabsButtonGroup from "components/ui/tab/TabsButtonGroup";
 import { useState } from "react";
-import { isExtraPay } from "utils";
+import { getDeptName, isExtraPay } from "utils";
 import AmountAllocation from "./amount/AmountAllocation";
 // import EmployeeContribution fr om "./EmployeeContribution";
 import EmployeeDetails from "./EmployeeDetails";
@@ -9,7 +9,6 @@ import EmployeeDetails from "./EmployeeDetails";
 import { HStack } from "@chakra-ui/react";
 import PopupMessage from "components/ui/PopupMessage";
 import TextTitle from "components/ui/text/TextTitle";
-import { ROLES } from "constant";
 import EmployeeContribution from "./ee-contribution/EmployeeContribution";
 import EmployerContribution from "./er-contribution/EmployerContribution";
 import HourlyAllocation from "./hourly/HourlyAllocation";
@@ -24,7 +23,7 @@ const PaygroupDetailTable = ({
 	loggedInUser,
 	selectedPayGroupOption,
 }) => {
-	const deptName = loggedInUser?.role === ROLES.MANAGER ? loggedInUser?.department : null;
+	const deptName = getDeptName(loggedInUser);
 	const [highlightColor, setHighlightColor] = useState("var(--banner_bg)");
 	const [isOpen, setIsOpen] = useState(true);
 	const [payrunOption, setPayrunOption] = useState(1);

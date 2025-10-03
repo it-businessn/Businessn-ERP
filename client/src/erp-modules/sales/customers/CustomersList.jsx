@@ -29,7 +29,7 @@ import { MdOutlineFilterList } from "react-icons/md";
 import { useBreakpointValue } from "services/Breakpoint";
 import ContactService from "services/ContactService";
 import LeadsService from "services/LeadsService";
-import { generateLighterShade, isManager } from "utils";
+import { generateLighterShade, isNotEnrollerOrEmployee } from "utils";
 import SearchFilter from "../lead docket/SearchFilter";
 import AddNewOpportunity from "../opportunities/AddNewOpportunity";
 
@@ -70,14 +70,14 @@ const CustomersList = ({ user, handleProfileView, icons, company }) => {
 	};
 
 	const { isOpen, onOpen, onClose } = useDisclosure();
-	const isUserManager = isManager(user?.role);
+	const isManagerRole = isNotEnrollerOrEmployee(user?.role);
 
 	const fetchAllContacts = async () => {
 		try {
 			const { data } = await ContactService.getOnboardedContacts(company);
 
 			setContacts(
-				isUserManager
+				isManagerRole
 					? data
 					: data?.filter((lead) => lead.leadId.primaryAssignee[0]?.name === user.fullName),
 			);

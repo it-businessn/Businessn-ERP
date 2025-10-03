@@ -4,7 +4,7 @@ import PageLayout from "layouts/PageLayout";
 import { useEffect, useState } from "react";
 import AssessmentService from "services/AssessmentService";
 import LocalStorageService from "services/LocalStorageService";
-import { isManager } from "utils";
+import { isNotEnrollerOrEmployee } from "utils";
 import EmployeeViewCard from "./EmployeeViewCard";
 import ManagerViewCard from "./ManagerViewCard";
 import ResourceFile from "./ResourceFile";
@@ -23,7 +23,7 @@ const Resources = ({ isHRType = false }) => {
 
 	const company = LocalStorageService.getItem("selectedCompany");
 	const loggedInUser = LocalStorageService.getItem("user");
-	const isUserManager = isManager(loggedInUser.role);
+	const isManagerRole = isNotEnrollerOrEmployee(loggedInUser.role);
 
 	const [isDeleted, setIsDeleted] = useState(false);
 	const [assessments, setAssessments] = useState(null);
@@ -47,7 +47,7 @@ const Resources = ({ isHRType = false }) => {
 		<PageLayout title="Resources">
 			<ResourceFile
 				fileTypes={FILE_TYPES?.filter(({ show }) => show)}
-				isUserManager={isUserManager}
+				isUserManager={isManagerRole}
 				fullName={loggedInUser.fullName}
 				company={company}
 				selectedFilter={selectedFilter}
@@ -56,7 +56,7 @@ const Resources = ({ isHRType = false }) => {
 
 			{selectedFilter === "Training" && (
 				<SimpleGrid spacing="1em" mt={"0.5em"}>
-					{isUserManager ? (
+					{isManagerRole ? (
 						<ManagerViewCard assessments={assessments} setIsDeleted={setIsDeleted} />
 					) : (
 						<EmployeeViewCard assessments={assessments} loggedInUser={loggedInUser} />

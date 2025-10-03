@@ -12,7 +12,6 @@ import {
 import ActiveBadge from "components/ActiveBadge";
 import NormalTextTitle from "components/ui/NormalTextTitle";
 import TextTitle from "components/ui/text/TextTitle";
-import { ROLES } from "constant";
 import EmpProfileSearch from "erp-modules/payroll/employees/EmpProfileSearch";
 import BankingInfo from "erp-modules/payroll/employees/pageview/edit-user/bank-info/BankingInfo";
 import BenefitInfo from "erp-modules/payroll/employees/pageview/edit-user/benefit-info/BenefitInfo";
@@ -28,6 +27,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import LocalStorageService from "services/LocalStorageService";
 import PayrollService from "services/PayrollService";
+import { getDeptName, isShadowUser } from "utils";
 
 const Affiliates = () => {
 	const loggedInUser = LocalStorageService.getItem("user");
@@ -44,12 +44,13 @@ const Affiliates = () => {
 
 	const { payGroups, selectedPayGroupOption } = usePaygroup(company, false);
 	const employees = useCompanyEmployees(company, defaultDept, selectedPayGroupOption);
-	const notShadowUser = loggedInUser.role !== ROLES.SHADOW_ADMIN;
+	const notShadowUser = !isShadowUser(loggedInUser.role);
 
 	useEffect(() => {
 		if (notShadowUser) {
 			setDefaultUser(loggedInUser);
-			setDefaultDept(loggedInUser?.role === ROLES.MANAGER ? loggedInUser?.department : null);
+			const deptName = getDeptName(loggedInUser);
+			setDefaultDept(deptName);
 		}
 	}, []);
 

@@ -7,9 +7,9 @@ import {
 	PopoverTrigger,
 	Select,
 } from "@chakra-ui/react";
-import { PAYRUN_OPTIONS, ROLES } from "constant";
+import { PAYRUN_OPTIONS } from "constant";
 import React, { useEffect, useState } from "react";
-import { generateLighterShade } from "utils";
+import { generateLighterShade, isShadowUser } from "utils";
 import TextTitle from "./text/TextTitle";
 
 export default function PopupMessage({
@@ -27,7 +27,7 @@ export default function PopupMessage({
 
 	useEffect(() => {
 		PAYRUN_OPTIONS.map((option) => {
-			option.show = option.code === 4 ? loggedInUser?.role === ROLES.SHADOW_ADMIN : true;
+			option.show = option.code === 4 ? isShadowUser(loggedInUser?.role) : true;
 			return option;
 		});
 		setPayOptions(PAYRUN_OPTIONS);

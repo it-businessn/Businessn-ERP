@@ -2,7 +2,6 @@ import { Flex, HStack, IconButton, useToast } from "@chakra-ui/react";
 import PrimaryButton from "components/ui/button/PrimaryButton";
 import DeletePopUp from "components/ui/modal/DeletePopUp";
 import TabsButtonGroup from "components/ui/tab/TabsButtonGroup";
-import { ROLES } from "constant";
 import useCompany from "hooks/useCompany";
 import useCostCenter from "hooks/useCostCenter";
 import useDepartment from "hooks/useDepartment";
@@ -15,6 +14,7 @@ import { IoRefresh } from "react-icons/io5";
 import { useParams } from "react-router-dom";
 import LocalStorageService from "services/LocalStorageService";
 import TimesheetService from "services/TimesheetService";
+import { getDeptName } from "utils";
 import { getMomentDate } from "utils/convertDate";
 import ActionAll from "./ActionAll";
 import DateFilterPopup from "./DateFilterPopup";
@@ -25,7 +25,7 @@ import { convertToMinutes, TIMESHEET_STATUS, TIMESHEET_STATUS_LABEL } from "./da
 
 const Timesheets = () => {
 	const loggedInUser = LocalStorageService.getItem("user");
-	const deptName = loggedInUser?.role === ROLES.MANAGER ? loggedInUser?.department : null;
+	const deptName = getDeptName(loggedInUser);
 	const { id } = useParams();
 	const toast = useToast();
 	const { company } = useCompany(LocalStorageService.getItem("selectedCompany"));

@@ -54,8 +54,7 @@ const addStatHolidayDefaultTimesheet = async (employeeId, companyName) => {
 
 const addStatHolidayTimesheet = async (companyName) => {
 	try {
-		let result = await getPayrollActiveEmployees(companyName);
-		result = result?.filter((_) => _?.empId);
+		const result = await getPayrollActiveEmployees(companyName);
 		for (const emp of result) {
 			await addStatHolidayDefaultTimesheet(emp?.empId?._id, companyName);
 		}

@@ -11,14 +11,11 @@ import moment from "moment";
 import { useEffect, useState } from "react";
 import { MdOutlineChevronLeft, MdOutlineChevronRight } from "react-icons/md";
 import LocalStorageService from "services/LocalStorageService";
-import { isManager } from "utils";
 import ShiftModal from "./quick-selection/ShiftModal";
 import WeeklyCalendarView from "./WeeklyCalendarView";
 
 const ScheduleWorkView = () => {
 	const company = LocalStorageService.getItem("selectedCompany");
-	const loggedInUser = LocalStorageService.getItem("user");
-	const isUserManager = isManager(loggedInUser.role);
 
 	const [timeFormat, setTimeFormat] = useState("12");
 	const [view, setView] = useState("weekly");

@@ -2,11 +2,11 @@ import { Stack, useDisclosure } from "@chakra-ui/react";
 import ActionButtonGroup from "components/ui/form/ActionButtonGroup";
 import MultiSelectFormControl from "components/ui/form/MultiSelectFormControl";
 import ModalLayout from "components/ui/modal/ModalLayout";
-import { ROLES } from "constant";
 import { useEffect, useState } from "react";
 import LocalStorageService from "services/LocalStorageService";
 import SettingService from "services/SettingService";
 import UserService from "services/UserService";
+import { getDeptName } from "utils";
 
 const AddEmployeeModal = ({
 	showAddEmp,
@@ -19,7 +19,6 @@ const AddEmployeeModal = ({
 	selectedEmployeeIndex,
 }) => {
 	const loggedInUser = LocalStorageService.getItem("user");
-	const deptName = loggedInUser?.role === ROLES.MANAGER ? loggedInUser?.department : null;
 	const [isSubmitting, setIsSubmitting] = useState(false);
 
 	const [selectedEmp, setSelectedEmp] = useState(selectedEmployee);
@@ -34,7 +33,7 @@ const AddEmployeeModal = ({
 			try {
 				const { data } = await UserService.getExtraPayrunEmployees(
 					company,
-					deptName,
+					getDeptName(loggedInUser),
 					selectedPayGroup?.name,
 				);
 				data?.map((emp) => {
@@ -48,7 +47,7 @@ const AddEmployeeModal = ({
 			}
 		};
 		fetchAllEmployees();
-	}, [deptName]);
+	}, []);
 
 	const handleClose = () => {
 		onClose();

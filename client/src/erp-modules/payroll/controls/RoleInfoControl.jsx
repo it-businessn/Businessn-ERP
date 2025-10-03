@@ -16,7 +16,7 @@ export const RoleInfoControl = ({ title, company, handleChange }) => {
 				<FormLabel size="sm">Role Title</FormLabel>
 				{positionRoles ? (
 					<Select size="sm" value={title} onChange={handleChange} placeholder="Select title">
-						{positionRoles.map((role) => (
+						{positionRoles?.map((role) => (
 							<option key={role.name} value={role.name}>
 								{role.name}
 							</option>

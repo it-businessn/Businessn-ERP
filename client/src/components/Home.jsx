@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import { redirectLogin } from "api";
 import Navbar from "components/header";
 import Sidebar from "components/sidebar";
-import { ROLES } from "constant";
 import useCompany from "hooks/useCompany";
 import useSidebarMenu from "hooks/useSidebarMenu";
 import RootLayout from "layouts/RootLayout";
@@ -12,7 +11,7 @@ import { useNavigate } from "react-router-dom";
 import { payrollEmpDashboardPath } from "routes";
 import { useBreakpointValue } from "services/Breakpoint";
 import LocalStorageService from "services/LocalStorageService";
-import { hasConsoleAccess, isManager } from "utils";
+import { hasAdminConsoleAccess, isEnroller, isNotEnrollerOrEmployee, isShadowUser } from "utils";
 import ErrorBoundary from "./ErrorBoundary";
 import Loader from "./Loader";
 
@@ -23,7 +22,7 @@ const Home = () => {
 	);
 
 	const [user, setUser] = useState(LocalStorageService.getItem("user"));
-	const consoleAccess = hasConsoleAccess(user?.role);
+	const consoleAccess = hasAdminConsoleAccess(user?.role);
 
 	const { isMobile } = useBreakpointValue();
 
@@ -34,8 +33,8 @@ const Home = () => {
 	const { activeMenu, setActiveMenu, menuList } = useSidebarMenu(
 		user?._id,
 		company,
-		isManager(user?.role),
-		user?.role === ROLES.SHADOW_ADMIN,
+		isNotEnrollerOrEmployee(user?.role),
+		isShadowUser(user?.role),
 	);
 
 	useEffect(() => {
@@ -43,7 +42,7 @@ const Home = () => {
 			setRefresh(true);
 		}
 		setSelectedCompany(user?.companyId?.name);
-		if (user?.role === ROLES.ENROLLER) {
+		if (isEnroller(user?.role)) {
 			toast({
 				title: "Kindly contact administrator to provide erp access.",
 				status: "error",

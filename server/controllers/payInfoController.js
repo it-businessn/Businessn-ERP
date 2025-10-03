@@ -97,7 +97,7 @@ const addEmployeePayInfo = async (req, res) => {
 	const { empId, companyName, roles } = req.body;
 	try {
 		if (roles) {
-			roles.forEach((role) => {
+			roles?.forEach((role) => {
 				const regPay = role?.payRate;
 				if (regPay) {
 					role.overTimePay = 1.5 * regPay;
