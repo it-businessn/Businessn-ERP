@@ -4,6 +4,7 @@ const {
 	CLIENT_ORG_ADMIN_PERMISSION,
 	CLIENT_ORG_EMP_PERMISSION,
 	ROLES,
+	CLIENT_ORG_MANAGER_PERMISSION,
 } = require("../services/data");
 
 const getUserPermissions = async (req, res) => {
@@ -90,12 +91,15 @@ const addPermission = async (req, res) => {
 const getPermissionsList = (role) => {
 	const isEmployee = role === ROLES.EMPLOYEE;
 	const isEnroller = role === ROLES.ENROLLER;
+	const isManager = role === ROLES.MANAGER;
 	const isShadowAdmin = role === ROLES.SHADOW_ADMIN;
 
 	const permissionName = isEmployee
 		? CLIENT_ORG_EMP_PERMISSION
 		: isShadowAdmin
 		? BUSINESSN_ADMIN_PERMISSION
+		: isManager
+		? CLIENT_ORG_MANAGER_PERMISSION
 		: CLIENT_ORG_ADMIN_PERMISSION;
 
 	const permissionType = [];

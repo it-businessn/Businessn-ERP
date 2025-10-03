@@ -21,10 +21,10 @@ import useRoles from "hooks/useRoles";
 import { useEffect, useState } from "react";
 import LocalStorageService from "services/LocalStorageService";
 import UserService from "services/UserService";
+import { isAdminLevelRole } from "utils";
 import { isBusinessN } from "utils/common";
-// import { isManager } from "utils";
 
-const EditUserInfo = ({ setEditMode, setError, error, company, isManager }) => {
+const EditUserInfo = ({ setEditMode, setError, error, company }) => {
 	const loggedInUser = LocalStorageService.getItem("user");
 	const departments = useDepartment(company);
 	const allCompanies = useCompanies();
@@ -216,7 +216,7 @@ const EditUserInfo = ({ setEditMode, setError, error, company, isManager }) => {
 							</FormControl>
 						</HStack>
 					</FormControl>
-					{isManager && (
+					{isAdminLevelRole(userData?.role) && (
 						<HStack>
 							{roles && (
 								<FormControl mb={4}>

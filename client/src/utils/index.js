@@ -165,7 +165,7 @@ export const getDeptName = (user) => (isManager(user?.role) ? user?.department :
 export const hasPayrollSubmitAccess = (role) =>
 	role === ROLES.AUTH_ADMINISTRATOR || isShadowUser(role);
 
-export const hasAdminConsoleAccess = (role) => isNotEnrollerOrEmployee(role) && !isManager(role);
+export const isAdminLevelRole = (role) => isNotEnrollerOrEmployee(role) && !isManager(role);
 
 export const calcTotal = (data, param1, param2) => {
 	return data.reduce((acc, product) => {

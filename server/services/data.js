@@ -94,6 +94,21 @@ const BUSINESSN_ADMIN_PERMISSION = [
 	{ name: "Accounting General Ledger" },
 ];
 
+const CLIENT_ORG_MANAGER_PERMISSION = [
+	{ name: "Payroll" },
+	{ name: "Payroll Dashboard" },
+	{ name: "Payroll Workview" },
+	{ name: "Payroll Approvals" },
+	{ name: "Payroll Timesheets" },
+	{ name: "Payroll Employees" },
+	{ name: "Payroll Employee Dashboard" },
+	// { name: "Payroll Employee Records" },
+	// { name: "Payroll Setup" },
+	{ name: "Project Management" },
+	{ name: "Project Management Dashboard" },
+	{ name: "Project Management Overview" },
+];
+
 const CLIENT_ORG_ADMIN_PERMISSION = [
 	{ name: "Payroll" },
 	{ name: "Payroll Dashboard" },
@@ -287,4 +302,5 @@ module.exports = {
 	TICKET_STATUS,
 	COMPANIES,
 	SUPPORT_ADMIN_CONTACT,
+	CLIENT_ORG_MANAGER_PERMISSION,
 };

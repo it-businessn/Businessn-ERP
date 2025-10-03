@@ -4,6 +4,7 @@ import CompaniesPanel from "features/configuration/company";
 import PageLayout from "layouts/PageLayout";
 import { useEffect, useState } from "react";
 import LocalStorageService from "services/LocalStorageService";
+import { isShadowUser } from "utils";
 import { isBusinessN } from "utils/common";
 import CostCenterPanel from "./cost-center";
 import ModulePanel from "./modules";
@@ -12,6 +13,7 @@ import RolePanel from "./system-access-level";
 
 const Configuration = () => {
 	const company = LocalStorageService.getItem("selectedCompany");
+	const user = LocalStorageService.getItem("user");
 
 	let SETUP_LIST = [
 		{
@@ -29,7 +31,7 @@ const Configuration = () => {
 	const [setupList, setSetupList] = useState(SETUP_LIST);
 
 	useEffect(() => {
-		if (isBusinessN(company)) {
+		if (isBusinessN(company) || isShadowUser(user?.role)) {
 			setSetupList((prev) => [
 				{
 					id: 0,

@@ -11,7 +11,7 @@ import { useNavigate } from "react-router-dom";
 import { payrollEmpDashboardPath } from "routes";
 import { useBreakpointValue } from "services/Breakpoint";
 import LocalStorageService from "services/LocalStorageService";
-import { hasAdminConsoleAccess, isEnroller, isNotEnrollerOrEmployee, isShadowUser } from "utils";
+import { isAdminLevelRole, isEnroller, isShadowUser } from "utils";
 import ErrorBoundary from "./ErrorBoundary";
 import Loader from "./Loader";
 
@@ -22,7 +22,7 @@ const Home = () => {
 	);
 
 	const [user, setUser] = useState(LocalStorageService.getItem("user"));
-	const consoleAccess = hasAdminConsoleAccess(user?.role);
+	const consoleAccess = isAdminLevelRole(user?.role);
 
 	const { isMobile } = useBreakpointValue();
 
@@ -33,7 +33,6 @@ const Home = () => {
 	const { activeMenu, setActiveMenu, menuList } = useSidebarMenu(
 		user?._id,
 		company,
-		isNotEnrollerOrEmployee(user?.role),
 		isShadowUser(user?.role),
 	);
 

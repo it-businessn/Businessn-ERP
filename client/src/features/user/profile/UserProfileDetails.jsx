@@ -8,7 +8,6 @@ import PageLayout from "layouts/PageLayout";
 import { useState } from "react";
 import { FaAddressCard, FaUndoAlt } from "react-icons/fa";
 import LocalStorageService from "services/LocalStorageService";
-import { hasAdminConsoleAccess } from "utils";
 import { getFormattedAddress } from "utils/common";
 import ChangePassword from "../ChangePassword";
 import EditUserInfo from "./EditUserInfo";
@@ -132,7 +131,6 @@ const UserProfileDetails = () => {
 				{editMode && (
 					<BoxCard flex={1}>
 						<EditUserInfo
-							isManager={hasAdminConsoleAccess(role)}
 							company={company}
 							setEditMode={setEditMode}
 							setError={setError}

@@ -4,7 +4,7 @@ import { startTransition, useEffect, useState } from "react";
 import LocalStorageService from "services/LocalStorageService";
 import UserService from "services/UserService";
 
-const useSidebarMenu = (userId, company, isManager, isShadowAdmin) => {
+const useSidebarMenu = (userId, company, isShadowAdmin) => {
 	const [activeMenu, setActiveMenu] = useState(null);
 	const [menuList, setMenuList] = useState(SIDEBAR_MENU);
 
