@@ -133,21 +133,19 @@ const createTimecard = async (req, res) => {
 
 		const dateThreshold = moment("2024-10-20");
 
-		let updatedEntries = data
-			.filter((record) => record?.user_id)
-			?.map((_) => (_.timestamp = getUTCTime(_.timestamp, _?.isNotDevice)));
-
-		updatedEntries = updatedEntries.filter((rec) => moment(rec.timestamp).isAfter(dateThreshold));
-
-		await Promise.all(
-			(updatedEntries || [])?.map(async (entry) => {
-				const { user_id, timestamp, punch } = entry;
-				const punchRecordExists = await findPunchEntry({ user_id, timestamp, punch });
-				if (!punchRecordExists) {
-					await addPunchEntry(entry);
+		data?.map(async (entry) => {
+			entry.timestamp = getUTCTime(entry.timestamp, entry?.isNotDevice);
+			const { user_id, timestamp, punch } = entry;
+			if (user_id) {
+				const isAfterThreshold = moment(entry.timestamp).isAfter(dateThreshold);
+				if (isAfterThreshold) {
+					const punchRecordExists = await findPunchEntry({ user_id, timestamp, punch });
+					if (!punchRecordExists) {
+						await addPunchEntry(entry);
+					}
 				}
-			}),
-		);
+			}
+		});
 		await mapTimecardRawToTimecard();
 		return res.status(201).json("Timecard entries added successfully");
 	} catch (error) {
