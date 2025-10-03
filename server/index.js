@@ -198,22 +198,27 @@ const db = mongoose.connection;
 cron.schedule("0 0 * * *", async () => {
 	// every 15sec
 	// cron.schedule("*/15 * * * * *", async () => {
-	// const isStatDay = STAT_HOLIDAYS.find(({ date }) => date === moment().format("YYYY-MM-DD"));
-
 	const allCompanies = await getAllCompanies();
-	allCompanies?.forEach(async (company) => {
-		const statHolidays = await getHolidays({
-			companyName: company.name,
-		});
-		const isStatDay = statHolidays.find(
-			({ date }) => moment.utc(date).format("YYYY-MM-DD") === moment().format("YYYY-MM-DD"),
-		);
+	await Promise.all(
+		(allCompanies || [])?.map(async (company) => {
+			const statHolidays = await getHolidays({ companyName: company.name });
+			if (!statHolidays?.length) return;
 
-		if (isStatDay && statHolidays?.length > 0) {
-			console.log("Scheduling to add timecard entry to run every day at midnight", company.name);
-			addStatHolidayTimesheet(company.name);
-		}
-	});
+			const today = moment().format("YYYY-MM-DD");
+			const isStatDay = statHolidays.find(
+				({ date }) => moment.utc(date).format("YYYY-MM-DD") === today,
+			);
+
+			if (isStatDay) {
+				console.log(
+					`Scheduling to add timecard entry for ${company.name} (holiday: ${
+						isStatDay.name || today
+					})`,
+				);
+				await addStatHolidayTimesheet(company.name);
+			}
+		}),
+	);
 });
 
 db.once("open", () => {

@@ -132,21 +132,23 @@ const createTimecard = async (req, res) => {
 		// });
 
 		const dateThreshold = moment("2024-10-20");
-		data?.map(async (entry) => {
-			entry.timestamp = getUTCTime(entry.timestamp, entry?.isNotDevice);
+		await Promise.all(
+			(data || [])?.map(async (entry) => {
+				entry.timestamp = getUTCTime(entry.timestamp, entry?.isNotDevice);
 
-			const { user_id, timestamp, punch } = entry;
+				const { user_id, timestamp, punch } = entry;
 
-			if (user_id) {
-				const isAfterThreshold = moment(entry.timestamp).isAfter(dateThreshold);
-				if (isAfterThreshold) {
-					const punchRecordExists = await findPunchEntry({ user_id, timestamp, punch });
-					if (!punchRecordExists) {
-						await addPunchEntry(entry);
+				if (user_id) {
+					const isAfterThreshold = moment(entry.timestamp).isAfter(dateThreshold);
+					if (isAfterThreshold) {
+						const punchRecordExists = await findPunchEntry({ user_id, timestamp, punch });
+						if (!punchRecordExists) {
+							await addPunchEntry(entry);
+						}
 					}
 				}
-			}
-		});
+			}),
+		);
 		await mapTimecardRawToTimecard();
 		return res.status(201).json("Timecard entries added successfully");
 	} catch (error) {
@@ -175,7 +177,7 @@ const mapTimecardRawToTimecard = async () => {
 			},
 		}).sort({ timestamp: 1 });
 
-		entries?.forEach(async (record) => {
+		for (const record of entries || []) {
 			const { user_id, timestamp, punch } = record;
 			const date = new Date(timestamp);
 			const targetDate = date.toISOString().split("T")[0];
@@ -213,7 +215,7 @@ const mapTimecardRawToTimecard = async () => {
 					notDevice: record?.notDevice,
 				});
 			}
-		});
+		}
 	} catch (error) {}
 };
 
@@ -350,98 +352,100 @@ const createTimecardManual = async (req, res) => {
 	try {
 		const data = req.body;
 		// console.log("createTimecardManual", data);
-		data?.map(async (entry) => {
-			if (entry?.isNotDevice && entry?.empId) {
-				const { isNotDevice, companyName, empId, punch } = entry;
+		await Promise.all(
+			(data || [])?.map(async (entry) => {
+				if (entry?.isNotDevice && entry?.empId) {
+					const { isNotDevice, companyName, empId, punch } = entry;
 
-				entry.notDevice = isNotDevice;
+					entry.notDevice = isNotDevice;
 
-				const emp_user_id = await EmployeeEmploymentInfo.findOne({
-					empId,
-					companyName,
-				}).select("employeeNo");
+					const emp_user_id = await EmployeeEmploymentInfo.findOne({
+						empId,
+						companyName,
+					}).select("employeeNo");
 
-				entry.user_id = emp_user_id?.employeeNo;
+					entry.user_id = emp_user_id?.employeeNo;
 
-				const targetDate = moment().format("YYYY-MM-DD");
+					const targetDate = moment().format("YYYY-MM-DD");
 
-				const sameClockInTimeEntryExists = await Timecard.findOne({
-					badge_id: entry.user_id,
-					companyName,
-					clockIn: {
-						$ne: null,
-					},
-					clockOut: null,
-				}).sort({ clockIn: 1 });
-				// console.log("sameClockInTimeEntryExists", punch, sameClockInTimeEntryExists);
-				if (punch == PUNCH_CODE.CLOCK_IN && !sameClockInTimeEntryExists) {
-					console.log("CLOCK_IN");
+					const sameClockInTimeEntryExists = await Timecard.findOne({
+						badge_id: entry.user_id,
+						companyName,
+						clockIn: {
+							$ne: null,
+						},
+						clockOut: null,
+					}).sort({ clockIn: 1 });
+					// console.log("sameClockInTimeEntryExists", punch, sameClockInTimeEntryExists);
+					if (punch == PUNCH_CODE.CLOCK_IN && !sameClockInTimeEntryExists) {
+						console.log("CLOCK_IN");
 
-					// addTimecardEntry({
-					// 	badge_id: entry.user_id,
-					// 	clockIn: moment(),
-					// 	startBreaks: [],
-					// 	endBreaks: [],
-					// 	clockOut: null,
-					// 	notDevice: entry?.notDevice,
-					// });
+						// addTimecardEntry({
+						// 	badge_id: entry.user_id,
+						// 	clockIn: moment(),
+						// 	startBreaks: [],
+						// 	endBreaks: [],
+						// 	clockOut: null,
+						// 	notDevice: entry?.notDevice,
+						// });
+					}
+					if (punch === PUNCH_CODE.CLOCK_OUT && sameClockInTimeEntryExists) {
+						console.log("CLOCK_OUT");
+						// const clockOutRecord = await updateTimecardData(sameClockInTimeEntryExists._id, {
+						// 	clockOut: moment(),
+						// 	notDevice: entry?.notDevice,
+						// });
+						// const updatedEntry = {
+						// 	badge_id: entry.user_id,
+						// 	clockIn: sameClockInTimeEntryExists.clockIn,
+						// 	startBreaks: [],
+						// 	endBreaks: [],
+						// 	clockOut: moment(),
+						// 	notDevice: entry?.notDevice,
+						// };
+						// updateTimecardEntry(updatedEntry);
+					}
+					if (punch === PUNCH_CODE.BREAK_IN && !sameClockInTimeEntryExists) {
+						console.log("BREAK_IN");
+						// addTimecardEntry(
+						// 	{
+						// 		badge_id: entry.user_id,
+						// 		clockIn: moment(),
+						// 		startBreaks: [],
+						// 		endBreaks: [],
+						// 		clockOut: null,
+						// 		notDevice: record?.notDevice,
+						// 	},
+						// 	true,
+						// );
+					}
+					if (punch === PUNCH_CODE.BREAK_OUT && sameClockInTimeEntryExists) {
+						console.log("BREAK_OUT");
+						// await updateTimecardData(sameClockInTimeEntryExists._id, {
+						// 	clockOut: moment(),
+						// 	notDevice: record?.notDevice,
+						// });
+						// const updatedEntry = {
+						// 	badge_id: entry.user_id,
+						// 	clockIn: sameClockInTimeEntryExists.clockIn,
+						// 	startBreaks: [],
+						// 	endBreaks: [],
+						// 	clockOut: moment(),
+						// 	notDevice: record?.notDevice,
+						// };
+						// updateTimecardEntry(updatedEntry, true);
+					}
 				}
-				if (punch === PUNCH_CODE.CLOCK_OUT && sameClockInTimeEntryExists) {
-					console.log("CLOCK_OUT");
-					// const clockOutRecord = await updateTimecardData(sameClockInTimeEntryExists._id, {
-					// 	clockOut: moment(),
-					// 	notDevice: entry?.notDevice,
-					// });
-					// const updatedEntry = {
-					// 	badge_id: entry.user_id,
-					// 	clockIn: sameClockInTimeEntryExists.clockIn,
-					// 	startBreaks: [],
-					// 	endBreaks: [],
-					// 	clockOut: moment(),
-					// 	notDevice: entry?.notDevice,
-					// };
-					// updateTimecardEntry(updatedEntry);
-				}
-				if (punch === PUNCH_CODE.BREAK_IN && !sameClockInTimeEntryExists) {
-					console.log("BREAK_IN");
-					// addTimecardEntry(
-					// 	{
-					// 		badge_id: entry.user_id,
-					// 		clockIn: moment(),
-					// 		startBreaks: [],
-					// 		endBreaks: [],
-					// 		clockOut: null,
-					// 		notDevice: record?.notDevice,
-					// 	},
-					// 	true,
-					// );
-				}
-				if (punch === PUNCH_CODE.BREAK_OUT && sameClockInTimeEntryExists) {
-					console.log("BREAK_OUT");
-					// await updateTimecardData(sameClockInTimeEntryExists._id, {
-					// 	clockOut: moment(),
-					// 	notDevice: record?.notDevice,
-					// });
-					// const updatedEntry = {
-					// 	badge_id: entry.user_id,
-					// 	clockIn: sameClockInTimeEntryExists.clockIn,
-					// 	startBreaks: [],
-					// 	endBreaks: [],
-					// 	clockOut: moment(),
-					// 	notDevice: record?.notDevice,
-					// };
-					// updateTimecardEntry(updatedEntry, true);
-				}
-			}
-			// const k = await Timecard.deleteMany({
-			// 	companyName: "Cornerstone Maintenance Group Ltd.",
-			// });
-			// const s = await Timesheet.deleteMany({
-			// 	companyName: "Cornerstone Maintenance Group Ltd.",
-			// });
-			// console.log(k, s);
-			return res.status(201).json("Timecard entries added manually");
-		});
+				// const k = await Timecard.deleteMany({
+				// 	companyName: "Cornerstone Maintenance Group Ltd.",
+				// });
+				// const s = await Timesheet.deleteMany({
+				// 	companyName: "Cornerstone Maintenance Group Ltd.",
+				// });
+				// console.log(k, s);
+				return res.status(201).json("Timecard entries added manually");
+			}),
+		);
 	} catch (error) {
 		return res.status(500).json({ message: "Internal Server Error", error });
 	}
