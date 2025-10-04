@@ -3,7 +3,9 @@ import PageLayout from "layouts/PageLayout";
 import { useState } from "react";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import LocationGraph from "./charts/LocationGraph";
+import ProjectOverview from "./charts/ProjectOverview";
 import StaffOverview from "./charts/StaffOverview";
+import StatsCard from "./charts/StatsCard";
 
 const SchedulingDashboard = () => {
 	// const { company } = useCompany();
@@ -76,21 +78,18 @@ const SchedulingDashboard = () => {
 				templateColumns={{ lg: "70% 30%" }}
 			>
 				<StaffOverview />
-
-				<LocationGraph />
-				{/* <StatsCard /> */}
+				<StatsCard />
 			</SimpleGrid>
-			{/* <SimpleGrid
+			<SimpleGrid
 				columns={{ base: 1, md: 1, lg: 2 }}
 				spacing="4"
 				mt="4"
 				mr="4"
 				templateColumns={{ lg: "70% 30%" }}
 			>
-			  <ProjectOverview />  
-
-				  <LocationGraph />  
-			</SimpleGrid> */}
+				<ProjectOverview />
+				<LocationGraph />
+			</SimpleGrid>
 		</PageLayout>
 	);
 };

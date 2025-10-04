@@ -11,7 +11,7 @@ import { useNavigate } from "react-router-dom";
 import { payrollEmpDashboardPath } from "routes";
 import { useBreakpointValue } from "services/Breakpoint";
 import LocalStorageService from "services/LocalStorageService";
-import { isAdminLevelRole, isEnroller, isShadowUser } from "utils";
+import { isAdminLevelRole, isEnroller, isNotEnrollerOrEmployee, isShadowUser } from "utils";
 import ErrorBoundary from "./ErrorBoundary";
 import Loader from "./Loader";
 
@@ -87,6 +87,7 @@ const Home = () => {
 						isOpen={isOpen}
 						onClose={onClose}
 						isMobile={isMobile}
+						ticketAccess={isNotEnrollerOrEmployee(user?.role)}
 					/>
 				</RootLayout>
 			) : null}

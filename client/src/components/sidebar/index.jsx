@@ -7,7 +7,15 @@ import { adminConsolePath } from "routes";
 import MenuItem from "../ui/menu/MenuItem";
 import MobileSidebar from "./MobileSidebar";
 
-const Sidebar = ({ activeMenu, handleMenuItemClick, isMobile, isOpen, onClose, consoleAccess }) => {
+const Sidebar = ({
+	activeMenu,
+	handleMenuItemClick,
+	isMobile,
+	isOpen,
+	onClose,
+	consoleAccess,
+	ticketAccess,
+}) => {
 	const menuList = activeMenu?.children?.filter((item) => item?.permissions);
 	const [isCollapsed, setIsCollapsed] = useState(false);
 
@@ -67,30 +75,39 @@ const Sidebar = ({ activeMenu, handleMenuItemClick, isMobile, isOpen, onClose, c
 							/>
 						),
 				)}
-				{!isCollapsed && (
-					<TextTitle mt={"3em"} title="Quick Access" color="var(--primary_button_bg)" p="0 1em" />
-				)}
-				<MenuItem
-					navigatePath={"/tickets"}
-					menu={{
-						path: "tickets",
-						name: "Tickets",
-						children: [],
-						icon: <IoDocumentTextOutline />,
-					}}
-					isCollapsed={isCollapsed}
-				/>
-				{consoleAccess && (
-					<MenuItem
-						navigatePath={adminConsolePath}
-						menu={{
-							path: adminConsolePath,
-							name: "Admin Console",
-							children: [],
-							icon: <IoSettingsOutline />,
-						}}
-						isCollapsed={isCollapsed}
-					/>
+				{ticketAccess && (
+					<>
+						{!isCollapsed && (
+							<TextTitle
+								mt={"3em"}
+								title="Quick Access"
+								color="var(--primary_button_bg)"
+								p="0 1em"
+							/>
+						)}
+						<MenuItem
+							navigatePath={"/tickets"}
+							menu={{
+								path: "tickets",
+								name: "Tickets",
+								children: [],
+								icon: <IoDocumentTextOutline />,
+							}}
+							isCollapsed={isCollapsed}
+						/>
+						{consoleAccess && (
+							<MenuItem
+								navigatePath={adminConsolePath}
+								menu={{
+									path: adminConsolePath,
+									name: "Admin Console",
+									children: [],
+									icon: <IoSettingsOutline />,
+								}}
+								isCollapsed={isCollapsed}
+							/>
+						)}{" "}
+					</>
 				)}
 			</Stack>
 		</Flex>
