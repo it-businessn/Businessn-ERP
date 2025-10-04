@@ -92,7 +92,7 @@ const ProjectOverview = () => {
 					{/* <option>Last Month</option> */}
 				</Select>
 			</Flex>
-			<Box w={{ base: "70%" }} mx={"auto"}>
+			<Box w={{ base: "60%" }} mx={"auto"}>
 				<Bar data={data} options={options} />
 			</Box>
 		</Box>

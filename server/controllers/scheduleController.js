@@ -4,11 +4,55 @@ const moment = require("moment");
 const EmployeeShift = require("../models/EmployeeShifts");
 const WorkShift = require("../models/WorkShift");
 const Crew = require("../models/Crew");
+const DailyTotals = require("../models/DailyTotals");
 
 const getShifts = async (req, res) => {
 	try {
 		const shifts = await EmployeeShift.find({}).sort({ createdOn: -1 });
 		return res.status(200).json(shifts);
+	} catch (error) {
+		return res.status(500).json({ message: "Internal Server Error", error });
+	}
+};
+
+const getLocationMonthlyTotals = async (req, res) => {
+	const { companyName } = req.params;
+
+	try {
+		const totals = await DailyTotals.aggregate([
+			{ $match: { companyName } },
+			{
+				$group: {
+					_id: "$crew",
+					totalRunning: { $sum: "$runningTotal" },
+				},
+			},
+			{
+				$sort: { _id: 1 },
+			},
+		]);
+		return res.status(200).json(totals);
+	} catch (error) {
+		return res.status(500).json({ message: "Internal Server Error", error });
+	}
+};
+const getDailyTotals = async (req, res) => {
+	const { companyName } = req.params;
+
+	try {
+		const totals = await DailyTotals.aggregate([
+			{ $match: { companyName } },
+			{
+				$group: {
+					_id: "$month", // group by month (1-12)
+					totalRunning: { $sum: "$runningTotal" },
+				},
+			},
+			{
+				$sort: { _id: 1 }, // sort by month ascending
+			},
+		]);
+		return res.status(200).json(totals);
 	} catch (error) {
 		return res.status(500).json({ message: "Internal Server Error", error });
 	}
@@ -346,6 +390,57 @@ const addWorkShifts = async (req, res) => {
 	}
 };
 
+const updateDailyTotals = async (req, res) => {
+	const { selectedCrew, company, dailyDataWithRunning } = req.body;
+
+	try {
+		dailyDataWithRunning.sort((a, b) => new Date(a.date) - new Date(b.date));
+
+		let currentMonth = null;
+		let runningTotal = 0;
+
+		for (const daily of dailyDataWithRunning) {
+			const dayDate = new Date(daily.date);
+			const dayMonth = dayDate.getMonth() + 1;
+
+			if (currentMonth !== dayMonth) {
+				currentMonth = dayMonth;
+				runningTotal = 0; // reset monthly running total
+			}
+
+			runningTotal += daily.dayWages;
+
+			const existingRecord = await DailyTotals.findOne({
+				date: dayDate,
+				crew: selectedCrew,
+				companyName: company,
+			});
+			const updatedData = {
+				date: dayDate,
+				crew: selectedCrew,
+				companyName: company,
+				dayHours: daily.dayHours,
+				dayWages: daily.dayWages,
+				runningTotal,
+				month: dayMonth,
+				year: dayDate.getFullYear(),
+			};
+			if (existingRecord) {
+				await DailyTotals.findByIdAndUpdate(
+					existingRecord._id,
+					{ $set: updatedData },
+					{ new: true },
+				);
+			} else {
+				await DailyTotals.create(updatedData);
+			}
+		}
+		return res.status(201).json({ message: "DailyTotals updated successfully!" });
+	} catch (error) {
+		return res.status(500).json({ message: "Internal Server Error", error });
+	}
+};
+
 const addShifts = async (req, res) => {
 	const { color, duration, end_time, start_time, id, title, group, startDate, payRate, company } =
 		req.body;
@@ -492,4 +587,7 @@ module.exports = {
 	getWorkShiftByWeek,
 	getEmpWorkShiftByDate,
 	getWorkWeekEmpShifts,
+	updateDailyTotals,
+	getDailyTotals,
+	getLocationMonthlyTotals,
 };

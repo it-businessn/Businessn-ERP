@@ -1,9 +1,13 @@
 import { Box, Flex, Select } from "@chakra-ui/react";
 import TextTitle from "components/ui/text/TextTitle";
+import { useEffect, useState } from "react";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import { Line } from "react-chartjs-2";
+import SchedulerService from "services/SchedulerService";
 
-const StaffOverview = () => {
+const StaffOverview = ({ company }) => {
+	const [dailyTotals, setDailyTotals] = useState(null);
+
 	const options = {
 		scales: {
 			y: {
@@ -35,41 +39,65 @@ const StaffOverview = () => {
 		},
 		plugins: {
 			legend: { position: "bottom" },
+			tooltip: {
+				callbacks: {
+					label: function (context) {
+						const month = context.label; // x-axis label
+						const value = context.dataset.data[context.dataIndex]; // y-axis value
+						return `${month}: $${value}`; // e.g., "Sep: $100"
+					},
+				},
+			},
 		},
 		layout: {
-			padding: {
-				left: 1,
-				right: 1,
-				top: 0,
-				bottom: 0,
-			},
+			padding: { left: 1, right: 1, top: 0, bottom: 0 },
 		},
 	};
-	const data = {
-		labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
-		datasets: [
-			{
-				label: "Assigned",
-				data: [1, 12, 15, 18, 20, 22, 25, 28, 30, 32, 35, 38],
-				backgroundColor: "#537eee",
-				borderColor: "#537eee",
-				borderWidth: 2,
-				fill: false,
-				cubicInterpolationMode: "monotone",
-				pointRadius: 0,
-			},
-			{
-				label: "Revenue",
-				data: [51, 61, 71, 81, 91, 110, 111, 121, 131, 141, 151, 161],
-				backgroundColor: "#f6998b",
-				borderColor: "#f6998b",
-				borderWidth: 2,
-				fill: false,
-				cubicInterpolationMode: "monotone",
-				pointRadius: 0, // Remove dots on the line
-			},
-		],
-	};
+
+	useEffect(() => {
+		const fetchTotals = async () => {
+			try {
+				const { data } = await SchedulerService.getDailyTotals(company);
+
+				const monthlyTotals = Array(12).fill(0);
+				data.forEach((item) => {
+					monthlyTotals[item._id - 1] = item.totalRunning; // month is 1-based
+				});
+
+				const graphData = {
+					labels: [
+						"Jan",
+						"Feb",
+						"Mar",
+						"Apr",
+						"May",
+						"Jun",
+						"Jul",
+						"Aug",
+						"Sep",
+						"Oct",
+						"Nov",
+						"Dec",
+					],
+					datasets: [
+						{
+							label: "Running Total",
+							data: monthlyTotals,
+							backgroundColor: "#537eee",
+							borderColor: "#537eee",
+							borderWidth: 2,
+							fill: false,
+							cubicInterpolationMode: "monotone",
+							pointRadius: 0,
+						},
+					],
+				};
+				setDailyTotals(graphData);
+			} catch (error) {}
+		};
+		fetchTotals();
+	}, []);
+
 	return (
 		<Box
 			color={"var(--nav_color)"}
@@ -80,20 +108,13 @@ const StaffOverview = () => {
 			fontWeight="bold"
 		>
 			<Flex justify="space-between" align="center" mb="1" color={"var(--nav_color)"}>
-				<TextTitle title={"Staffing Overview for all Positions"} />
-				<Select
-					width="auto"
-					border={"none"}
-					fontSize={"xs"}
-					ml={"1em"}
-					// visibility={"hidden"}
-				>
-					<option>Yearly</option>
-					{/* <option>Last Month</option> */}
+				<TextTitle title={"Staffing Overview for Monthly running Total"} />
+				<Select width="200px" size={"sm"}>
+					<option>Crew</option>
 				</Select>
 			</Flex>
-			<Box w={{ base: "70%" }} mx={"auto"}>
-				<Line data={data} options={options} />
+			<Box w={{ base: "60%" }} mx={"auto"}>
+				<Line data={dailyTotals} options={options} />
 			</Box>
 		</Box>
 	);

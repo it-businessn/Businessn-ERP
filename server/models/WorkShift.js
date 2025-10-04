@@ -14,7 +14,7 @@ const shiftSchema = new mongoose.Schema(
 		repeatDuration: String,
 		breakStart: Date,
 		breakDuration: String,
-		crew: String,
+		crew: { type: String, ref: "Crew" },
 		breakEnd: Date,
 		companyName: { type: String, ref: "Company" },
 	},

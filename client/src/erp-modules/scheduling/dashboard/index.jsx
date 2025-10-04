@@ -2,13 +2,14 @@ import { SimpleGrid } from "@chakra-ui/react";
 import PageLayout from "layouts/PageLayout";
 import { useState } from "react";
 import "react-big-calendar/lib/css/react-big-calendar.css";
+import LocalStorageService from "services/LocalStorageService";
 import LocationGraph from "./charts/LocationGraph";
 import ProjectOverview from "./charts/ProjectOverview";
 import StaffOverview from "./charts/StaffOverview";
 import StatsCard from "./charts/StatsCard";
 
 const SchedulingDashboard = () => {
-	// const { company } = useCompany();
+	const company = LocalStorageService.getItem("selectedCompany");
 	// const [events, setEvents] = useState(null);
 	// const [meetings, setMeetings] = useState(null);
 	// const [appointments, setAppointments] = useState(null);
@@ -73,11 +74,10 @@ const SchedulingDashboard = () => {
 			<SimpleGrid
 				columns={{ base: 1, md: 1, lg: 2 }}
 				spacing="4"
-				mt="4"
 				mr="4"
 				templateColumns={{ lg: "70% 30%" }}
 			>
-				<StaffOverview />
+				<StaffOverview company={company} />
 				<StatsCard />
 			</SimpleGrid>
 			<SimpleGrid
@@ -88,7 +88,7 @@ const SchedulingDashboard = () => {
 				templateColumns={{ lg: "70% 30%" }}
 			>
 				<ProjectOverview />
-				<LocationGraph />
+				<LocationGraph company={company} />
 			</SimpleGrid>
 		</PageLayout>
 	);

@@ -9,6 +9,14 @@ const SchedulerService = {
 		return apiService.get(`/schedule/${data.date}/${data.company}`);
 	},
 
+	async getDailyTotals(company) {
+		return apiService.get(`/schedule/dailyTotals/${company}`);
+	},
+
+	async getLocationMonthlyTotals(company) {
+		return apiService.get(`/schedule/location-monthlyTotals/${company}`);
+	},
+
 	async getWorkShiftsByDate(data) {
 		return apiService.get(
 			`/schedule/work/${data.date}/${data.location}/${data.empName}/${data.company}`,
@@ -41,6 +49,10 @@ const SchedulerService = {
 
 	async addWorkShifts(data) {
 		return apiService.post("/schedule/work", data);
+	},
+
+	async updateDailyTotals(data) {
+		return apiService.post("/schedule/dailyTotals", data);
 	},
 
 	async updateShift(data, id) {

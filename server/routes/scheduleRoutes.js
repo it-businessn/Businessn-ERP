@@ -5,6 +5,10 @@ const scheduleController = require("../controllers/scheduleController");
 
 router.get("/", scheduleController.getShifts);
 
+router.get("/dailyTotals/:companyName", scheduleController.getDailyTotals);
+
+router.get("/location-monthlyTotals/:companyName", scheduleController.getLocationMonthlyTotals);
+
 router.get("/:id/:name", scheduleController.getShiftByDate);
 
 router.get("/work/:date/:location/:empName/:name", scheduleController.getWorkShiftByDate);
@@ -20,5 +24,7 @@ router.post("/", scheduleController.addShifts);
 router.post("/work", scheduleController.addWorkShifts);
 
 router.put("/:id", scheduleController.updateShift);
+
+router.post("/dailyTotals", scheduleController.updateDailyTotals);
 
 module.exports = router;

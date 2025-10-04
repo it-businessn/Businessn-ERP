@@ -1,9 +1,12 @@
 import { Box, Flex, Select } from "@chakra-ui/react";
 import TextTitle from "components/ui/text/TextTitle";
+import { useEffect, useState } from "react";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import { Doughnut } from "react-chartjs-2";
+import SchedulerService from "services/SchedulerService";
 
-const LocationGraph = () => {
+const LocationGraph = ({ company }) => {
+	const [dailyTotals, setDailyTotals] = useState(null);
 	const options = {
 		plugins: {
 			legend: {
@@ -13,23 +16,33 @@ const LocationGraph = () => {
 		tooltips: {
 			callbacks: {
 				label(tooltipItem, data) {
-					return `Total Cost: $${
-						data["datasets"][0].data[tooltipItem["index"]]
-					}`;
+					return `Total Cost: $${data["datasets"][0].data[tooltipItem["index"]]}`;
 				},
 			},
 		},
 	};
-	const data = {
-		labels: ["Location 1", "Location 2", "Location 3", "Location 4"],
-		datasets: [
-			{
-				data: [3000, 2500, 4000, 3500],
-				backgroundColor: ["#537eee", "#49a86f", "#f6998b", "#7713c9"],
-				hoverBackgroundColor: ["#537eee", "#49a86f", "#f6998b", "#7713c9"],
-			},
-		],
-	};
+
+	useEffect(() => {
+		const colors = ["#537eee", "#49a86f", "#7713c9"];
+		const fetchTotals = async () => {
+			try {
+				const { data } = await SchedulerService.getLocationMonthlyTotals(company);
+
+				const graphData = {
+					labels: data.map((item) => item._id),
+					datasets: [
+						{
+							data: data.map((item) => item.totalRunning),
+							backgroundColor: colors.slice(0, data.length),
+							hoverBackgroundColor: colors.slice(0, data.length),
+						},
+					],
+				};
+				setDailyTotals(graphData);
+			} catch (error) {}
+		};
+		fetchTotals();
+	}, []);
 
 	return (
 		<Box
@@ -40,26 +53,14 @@ const LocationGraph = () => {
 			borderRadius="1px"
 			fontWeight="bold"
 		>
-			<Flex
-				justify="space-between"
-				align="center"
-				mb="1"
-				color={"var(--nav_color)"}
-			>
-				<TextTitle title={"By location"} />
-				<Select
-					width="auto"
-					border={"none"}
-					fontSize={"xs"}
-					ml={"1em"}
-					visibility={"hidden"}
-				>
-					<option>Yearly</option>
-					{/* <option>Last Month</option> */}
+			<Flex justify="space-between" align="center" mb="1" color={"var(--nav_color)"}>
+				<TextTitle title={"Overview for Location"} />
+				<Select width="200px" size={"sm"}>
+					<option>Month</option>
 				</Select>
 			</Flex>
 			<Box w={{ base: "70%" }} mx={"auto"}>
-				<Doughnut data={data} options={options} />
+				<Doughnut data={dailyTotals} options={options} />
 			</Box>
 		</Box>
 	);

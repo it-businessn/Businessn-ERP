@@ -1,14 +1,39 @@
 import { SmallAddIcon } from "@chakra-ui/icons";
-import { Box, Button, HStack, IconButton, Table, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
+import {
+	Alert,
+	AlertIcon,
+	Box,
+	Button,
+	Flex,
+	HStack,
+	IconButton,
+	Modal,
+	ModalBody,
+	ModalCloseButton,
+	ModalContent,
+	ModalFooter,
+	ModalHeader,
+	ModalOverlay,
+	Table,
+	Tbody,
+	Td,
+	Text,
+	Th,
+	Thead,
+	Tr,
+	useDisclosure,
+} from "@chakra-ui/react";
 import EmptyRowRecord from "components/ui/EmptyRowRecord";
 import NormalTextTitle from "components/ui/NormalTextTitle";
 import TextTitle from "components/ui/text/TextTitle";
 
+import LeftIconButton from "components/ui/button/LeftIconButton";
 import { addDays, format } from "date-fns";
 import { tabScrollCss } from "erp-modules/payroll/onboard-user/customInfo";
 import usePositionRoles from "hooks/usePositionRoles";
 import moment from "moment";
 import { useEffect, useState } from "react";
+import { BsSendCheck } from "react-icons/bs";
 import SchedulerService from "services/SchedulerService";
 import ShiftModal from "./quick-selection/ShiftModal";
 
@@ -23,7 +48,14 @@ const WeeklyCalendarView = ({ weekStart, company, selectedCrew, timeFormat, empl
 	const [employeeShifts, setEmployeeShifts] = useState(null);
 	const [newShiftAdded, setNewShiftAdded] = useState(null);
 	const [showAddShiftModal, setShowAddShiftModal] = useState(false);
+	const [dailyDataWithRunning, setDailyDataWithRunning] = useState(null);
 	const [isLoading, setIsLoading] = useState(false);
+
+	const { isOpen, onOpen, onClose } = useDisclosure();
+	const [openEmployee, setOpenEmployee] = useState(null);
+	const [selectedDays, setSelectedDays] = useState(new Set());
+	const [isSending, setIsSending] = useState(false);
+	const [sentResult, setSentResult] = useState(null);
 
 	useEffect(() => {
 		const fetchShifts = async () => {
@@ -44,42 +76,65 @@ const WeeklyCalendarView = ({ weekStart, company, selectedCrew, timeFormat, empl
 		if (selectedCrew) fetchShifts();
 	}, [newShiftAdded, weekStart, selectedCrew]);
 
-	const calculateHours = (data) => {
-		const { shift } = data;
-		if (shift === "Off") return 0;
-		const [start, end] = shift.split("-");
-		const [startH, startM] = start.split(":").map(Number);
-		const [endH, endM] = end.split(":").map(Number);
-		const startMinutes = startH * 60 + startM;
-		const endMinutes = endH * 60 + endM;
-		return (endMinutes - startMinutes) / 60;
-	};
-	const dailyTotals = weekDays.map((day, dayIdx) => {
-		return (
-			employeeShifts?.reduce((sum, emp) => {
-				if (!emp.shifts || !emp.shifts[dayIdx]) return sum;
-				const hoursWorked = calculateHours(emp.shifts[dayIdx]) || 0;
-				const payRate = parseFloat(emp.payRate || 0);
-				return sum + hoursWorked * payRate;
-			}, 0) ?? 0
-		);
-	});
-	let currentMonth = null;
-	const runningTotals = dailyTotals.reduce((acc, dailyTotal, i) => {
-		const dayDate = weekDays[i].date || weekDays[i];
+	useEffect(() => {
+		let currentMonth = null;
+		let monthlySum = 0;
+		if (employeeShifts) {
+			const calculateHours = (data) => {
+				const { shift } = data;
+				if (shift === "Off") return 0;
+				const [start, end] = shift.split("-");
+				const [startH, startM] = start.split(":").map(Number);
+				const [endH, endM] = end.split(":").map(Number);
+				const startMinutes = startH * 60 + startM;
+				const endMinutes = endH * 60 + endM;
+				return (endMinutes - startMinutes) / 60;
+			};
+			const dailyData = weekDays?.map((day, dayIdx) => {
+				let totalHours = 0;
+				let totalWages = 0;
 
-		const dayMonth = dayDate.getMonth();
+				employeeShifts?.forEach((emp) => {
+					const shift = emp.shifts?.[dayIdx];
+					if (!shift) return;
 
-		if (currentMonth !== dayMonth) {
-			currentMonth = dayMonth;
-			acc.push(dailyTotal);
-		} else {
-			const prevTotal = acc[i - 1] || 0;
-			acc.push(prevTotal + dailyTotal);
+					const hoursWorked = calculateHours(shift) || 0;
+					totalHours += hoursWorked;
+					totalWages += hoursWorked * (parseFloat(emp.payRate) || 0);
+				});
+				const dayDate = day?.date || day;
+				const dayMonth = dayDate.getMonth();
+				if (currentMonth !== dayMonth) {
+					currentMonth = dayMonth;
+					monthlySum = totalWages;
+				} else {
+					monthlySum += totalWages;
+				}
+				return {
+					date: dayDate,
+					dayHours: totalHours,
+					dayWages: totalWages,
+					runningTotal: monthlySum,
+				};
+			});
+			setDailyDataWithRunning(dailyData);
 		}
+	}, [employeeShifts]);
 
-		return acc;
-	}, []);
+	useEffect(() => {
+		if (dailyDataWithRunning) {
+			const saveDailyTotals = async () => {
+				try {
+					await SchedulerService.updateDailyTotals({ selectedCrew, dailyDataWithRunning, company });
+				} catch (error) {}
+			};
+			saveDailyTotals();
+		}
+	}, [dailyDataWithRunning]);
+
+	const dailyHours = dailyDataWithRunning?.map((d) => d.dayHours);
+	const dailyWages = dailyDataWithRunning?.map((d) => d.dayWages);
+	const runningTotals = dailyDataWithRunning?.map((d) => d.runningTotal);
 
 	const getCrewLocation = () => (selectedCrew?.includes("Golf") ? "Golf course" : selectedCrew);
 	// const minutesToHoursAndMinutes = (mins) => {
@@ -117,6 +172,32 @@ const WeeklyCalendarView = ({ weekStart, company, selectedCrew, timeFormat, empl
 		return `${startFormatted} - ${endFormatted}`;
 	};
 
+	async function sendSchedule() {
+		if (!openEmployee) return;
+		setIsSending(true);
+		setSentResult(null);
+		await new Promise((res) => setTimeout(res, 900));
+		const payload = {
+			employeeId: openEmployee.id,
+			days: Array.from(selectedDays),
+			sentAt: new Date().toISOString(),
+			via: "email",
+			type: "paystub",
+		};
+		setIsSending(false);
+		setSentResult({ ok: true, payload });
+	}
+
+	function openSendModal(emp) {
+		// const days = new Set(
+		// weekdays.filter((d) => emp.shifts[d] && emp.shifts[d] !== "OFF")
+		// );
+		// setSelectedDays(days);
+		// setSentResult(null);
+		// setOpenEmployee(emp);
+		// setTabIndex(0);
+		onOpen();
+	}
 	return (
 		<>
 			<Box overflow="auto" h="calc(100vh - 200px)" css={tabScrollCss}>
@@ -124,7 +205,7 @@ const WeeklyCalendarView = ({ weekStart, company, selectedCrew, timeFormat, empl
 					<Thead position="sticky" top={-1} zIndex="2">
 						<Tr>
 							<Th py={2}>
-								<TextTitle size={"sm"} title="Name" />
+								<TextTitle size={"sm"} title="Employee" />
 							</Th>
 							{weekDays.map((day, i) => (
 								<Th py={2} key={`day_${i}`}>
@@ -145,7 +226,18 @@ const WeeklyCalendarView = ({ weekStart, company, selectedCrew, timeFormat, empl
 						{employeeShifts?.map((emp) => (
 							<Tr key={emp?.name}>
 								<Td w="100px" px={1}>
-									<NormalTextTitle whiteSpace="wrap" size="sm" width="100px" title={emp?.name} />
+									<Flex align="center">
+										<NormalTextTitle whiteSpace="wrap" size="sm" width="100px" title={emp?.name} />
+										<LeftIconButton
+											color={"var(--nav_color)"}
+											name={""}
+											variant={"ghost"}
+											isFilter
+											size="xs"
+											handleClick={() => openSendModal(emp)}
+											icon={<BsSendCheck />}
+										/>
+									</Flex>
 								</Td>
 								{emp?.shifts?.map((entry, j) => {
 									return (
@@ -214,45 +306,27 @@ const WeeklyCalendarView = ({ weekStart, company, selectedCrew, timeFormat, empl
 							<Td py={0} px={1}>
 								Total Hours
 							</Td>
-							{weekDays.map((_, dayIdx) => {
-								const total =
-									employeeShifts?.reduce((sum, emp) => {
-										if (!emp.shifts || !emp.shifts[dayIdx]) return sum;
-										return sum + calculateHours(emp.shifts[dayIdx]);
-									}, 0) ?? 0;
-
-								return (
-									<Td py={2} key={`day_${dayIdx}`}>
-										<TextTitle align="center" title={total.toFixed(2)} />
-									</Td>
-								);
-							})}
+							{dailyHours?.map((hours, dayIdx) => (
+								<Td py={2} key={`hours_${dayIdx}`}>
+									<TextTitle align="center" title={hours.toFixed(2)} />
+								</Td>
+							))}
 						</Tr>
 						<Tr fontWeight="bold" bg="gray.100" position="sticky" bottom="40px" zIndex="1">
 							<Td py={0} px={1}>
 								Total Wages
 							</Td>
-							{weekDays.map((_, dayIdx) => {
-								const wages =
-									employeeShifts?.reduce((sum, emp) => {
-										if (!emp.shifts || !emp.shifts[dayIdx]) return sum;
-										const hoursWorked = calculateHours(emp.shifts[dayIdx]) || 0;
-										const payRate = parseFloat(emp.payRate || 0);
-										return sum + hoursWorked * payRate;
-									}, 0) ?? 0;
-
-								return (
-									<Td py={2} key={`WAGES_${dayIdx}`}>
-										<TextTitle align="center" title={wages.toFixed(2)} />
-									</Td>
-								);
-							})}
+							{dailyWages?.map((wages, dayIdx) => (
+								<Td py={2} key={`wages_${dayIdx}`}>
+									<TextTitle align="center" title={wages.toFixed(2)} />
+								</Td>
+							))}
 						</Tr>
 						<Tr fontWeight="bold" bg="gray.100" position="sticky" bottom="0" zIndex="1">
 							<Td py={0} px={1} whiteSpace={"wrap"}>
 								Monthly Running Totals
 							</Td>
-							{runningTotals.map((total, dayIdx) => (
+							{runningTotals?.map((total, dayIdx) => (
 								<Td py={2} key={`monthly_running_${dayIdx}`}>
 									<TextTitle align="center" title={total.toFixed(2)} />
 								</Td>
@@ -261,6 +335,58 @@ const WeeklyCalendarView = ({ weekStart, company, selectedCrew, timeFormat, empl
 					</Tbody>
 				</Table>
 			</Box>
+			{isOpen && (
+				<Modal
+					isOpen={isOpen}
+					onClose={() => {
+						setOpenEmployee(null);
+						onClose();
+					}}
+					size="lg"
+				>
+					<ModalOverlay />
+					<ModalContent>
+						<ModalHeader>Send "Paystub"</ModalHeader>
+						<ModalCloseButton />
+						<ModalBody>
+							{openEmployee && (
+								<Box>
+									<Flex align="center" gap={4} mb={4}>
+										<Box>
+											<Text fontWeight="medium">{openEmployee.name}</Text>
+											<Text fontSize="sm" color="gray.500">
+												{openEmployee.title}
+											</Text>
+										</Box>
+									</Flex>
+
+									{sentResult && (
+										<Alert status="success" mt={4} rounded="md">
+											<AlertIcon />
+											Sent {sentResult.payload.type} —{" "}
+											{new Date(sentResult.payload.sentAt).toLocaleString()}
+										</Alert>
+									)}
+								</Box>
+							)}
+						</ModalBody>
+
+						<ModalFooter>
+							<Button mr={3} onClick={onClose} variant="ghost">
+								Cancel
+							</Button>
+							<Button
+								onClick={sendSchedule}
+								isLoading={isSending}
+								// isDisabled={tabIndex === 0 && selectedDays.size === 0}
+								leftIcon={<BsSendCheck size={16} />}
+							>
+								Send
+							</Button>
+						</ModalFooter>
+					</ModalContent>
+				</Modal>
+			)}
 			{showAddShiftModal && (
 				<ShiftModal
 					currentDate={moment().format("YYYY-MM-DD")}
