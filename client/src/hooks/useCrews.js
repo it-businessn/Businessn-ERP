@@ -10,7 +10,7 @@ const useCrews = (company, refresh) => {
 			try {
 				const { data } = await SettingService.getAllCrews(company);
 				setCrews(data);
-				setSelectedCrew(data[0]?.name);
+				setSelectedCrew("Restaurant");
 			} catch (error) {
 				console.error(error);
 			}

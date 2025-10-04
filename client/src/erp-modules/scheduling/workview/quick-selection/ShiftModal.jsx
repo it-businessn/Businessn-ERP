@@ -1,4 +1,4 @@
-import { Checkbox, HStack, Select, Tooltip, useDisclosure, VStack } from "@chakra-ui/react";
+import { HStack, Select, Tooltip, useDisclosure, VStack } from "@chakra-ui/react";
 import FormControlMain from "components/ui/form";
 import ActionButtonGroup from "components/ui/form/ActionButtonGroup";
 import DateTimeFormControl from "components/ui/form/DateTimeFormControl";
@@ -22,7 +22,7 @@ const ShiftModal = ({
 	showModal,
 	setIsRefresh,
 	setNewShiftAdded,
-	locations,
+	// locations,
 	employees,
 	roles,
 	location,
@@ -120,7 +120,7 @@ const ShiftModal = ({
 						))}
 					</Select>
 				</FormControlMain>
-				<HStack w="100%" justify={"space-between"}>
+				<HStack w="100%" justify={"space-between"} alignItems={"center"}>
 					<SelectFormControl
 						valueParam="name"
 						name="name"
@@ -143,7 +143,8 @@ const ShiftModal = ({
 						</span>
 					</Tooltip>
 				</HStack>
-				<HStack w="100%" justify={"space-between"}>
+				<InputFormControl label="Location" name="notes" readOnly valueText={location} />
+				{/* <HStack w="100%" justify={"space-between"}>
 					<SelectFormControl
 						valueParam="name"
 						name="name"
@@ -164,7 +165,7 @@ const ShiftModal = ({
 							<FaPlus cursor="pointer" onClick={() => setShowAddNewLocation(true)} />
 						</span>
 					</Tooltip>
-				</HStack>
+				</HStack> */}
 				<InputFormControl
 					label="Notes"
 					name="notes"
@@ -208,7 +209,7 @@ const ShiftModal = ({
 				{formData?.shiftDuration && (
 					<TextTitle size="sm" title={`Shift duration: ${formData?.shiftDuration}`} />
 				)}
-				{!shift?._id && (
+				{/* {!shift?._id && (
 					<Checkbox
 						colorScheme="facebook"
 						name="repeatSchedule"
@@ -217,7 +218,7 @@ const ShiftModal = ({
 					>
 						Repeat for 1 week
 					</Checkbox>
-				)}
+				)} */}
 			</VStack>
 			<ActionButtonGroup
 				submitBtnName={`${shift?._id ? "Save" : "Add"}`}
