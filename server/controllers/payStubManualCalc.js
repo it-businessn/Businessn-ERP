@@ -243,7 +243,6 @@ const addSeparateManualCheque = async (
 			prevPayPayInfo?.YTDVacationBalanceFwd,
 			vacationBalAdjustManual,
 		),
-		YTDVacationBalance: getSumTotal(prevPayPayInfo?.YTDVacationBalance, vacBalance),
 
 		YTDSprayPayTotal: getSumTotal(prevPayPayInfo?.YTDSprayPayTotal, 0),
 		YTDFirstAidPayTotal: getSumTotal(prevPayPayInfo?.YTDFirstAidPayTotal, 0),
@@ -258,6 +257,7 @@ const addSeparateManualCheque = async (
 		YTDSickAccrued: getSumTotal(prevPayPayInfo?.YTDSickAccrued, 0),
 		YTDSickUsed: getSumTotal(prevPayPayInfo?.YTDSickUsed, 0),
 		YTDSickBalance: getSumTotal(prevPayPayInfo?.YTDSickBalance, 0),
+		YTDVacationAccrued: getSumTotal(prevPayPayInfo?.YTDVacationAccrued, vacationAccrualManual),
 	};
 	const {
 		YTDEmployeePensionContributions,
@@ -270,13 +270,14 @@ const addSeparateManualCheque = async (
 		YTDGrossPay,
 		YTDVacationPayout,
 		YTDVacationPayTotal,
-		YTDVacationBalance,
+		YTDVacationAccrued,
 	} = manualPayStub;
 
-	// YTDVacationAccrued: getSumTotal(prevPayPayInfo?.YTDVacationAccrued, vacationAccrualManual),
 	// YTDVacationUsed: getSumTotal(prevPayPayInfo?.YTDVacationUsed, vacationUsedManual),
+	// YTDVacationBalance: getSumTotal(prevPayPayInfo?.YTDVacationBalance, vacBalance),
 	manualPayStub.YTDVacationUsed = YTDVacationPayout + YTDVacationPayTotal;
-	manualPayStub.YTDVacationAccrued = YTDVacationBalance - manualPayStub.YTDVacationUsed;
+	manualPayStub.YTDVacationBalance = YTDVacationAccrued - manualPayStub.YTDVacationUsed;
+	// manualPayStub.YTDVacationAccrued = YTDVacationBalance - manualPayStub.YTDVacationUsed;
 
 	manualPayStub.YTDDeductionsTotal =
 		YTDEmployeePensionContributions +

@@ -2,11 +2,13 @@ import { HStack } from "@chakra-ui/react";
 import LeftIconButton from "components/ui/button/LeftIconButton";
 import TabsButtonGroup from "components/ui/tab/TabsButtonGroup";
 import useCompany from "hooks/useCompany";
+import useCompanyEmployees from "hooks/useCompanyEmployees";
+import usePaygroup from "hooks/usePaygroup";
 import PageLayout from "layouts/PageLayout";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { FaPlus } from "react-icons/fa";
 import LocalStorageService from "services/LocalStorageService";
-import UserService from "services/UserService";
+import { getDeptName } from "utils";
 import ClosedTicket from "./ClosedTicket";
 import OpenTicket from "./OpenTicket";
 
@@ -15,24 +17,9 @@ const Tickets = () => {
 	const loggedInUser = LocalStorageService.getItem("user");
 	const userId = loggedInUser.fullName;
 
+	const { selectedPayGroupOption } = usePaygroup(company, false);
+	const employees = useCompanyEmployees(company, getDeptName(loggedInUser), selectedPayGroupOption);
 	const [showAddEntry, setShowAddEntry] = useState(false);
-	const [employees, setEmployees] = useState(null);
-
-	useEffect(() => {
-		const fetchAllEmployees = async () => {
-			try {
-				const { data } = await UserService.getCompanyUsers(company);
-				data.map((emp) => {
-					emp.fullName = emp?.empId?.fullName;
-					emp._id = emp?.empId?._id;
-				});
-				setEmployees(data);
-			} catch (error) {
-				console.error(error);
-			}
-		};
-		fetchAllEmployees();
-	}, []);
 
 	const TABS = [
 		{

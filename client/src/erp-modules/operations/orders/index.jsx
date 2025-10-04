@@ -137,8 +137,8 @@ const Orders = () => {
 				<CustomFilter isMobile={isMobile} handleInputChange={handleInputChange} />
 				{orders && (
 					<Box overflow="auto" css={tabScrollCss} height={"calc(100vh - 210px)"}>
-						<Table color={"var(--nav_color)"} bg={"var(--primary_bg)"} variant="small">
-							<Thead>
+						<Table color={"var(--nav_color)"} variant="small">
+							<Thead position="sticky" zIndex="docked" top={-1} bg="var(--lead_cards_bg)">
 								<Tr fontSize="xs">
 									{ORDER_COLS.map((col) => (
 										<Th key={col} fontWeight={"bolder"} p={col === "Order" && 0} whiteSpace="wrap">

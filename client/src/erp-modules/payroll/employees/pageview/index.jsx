@@ -101,6 +101,7 @@ const Employees = () => {
 			name: "Employment",
 			content: (
 				<EmploymentInfo
+					userRole={loggedInUser.role}
 					company={company}
 					userId={userId}
 					payGroups={payGroups}

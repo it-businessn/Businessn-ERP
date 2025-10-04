@@ -26,6 +26,7 @@ import useRoles from "hooks/useRoles";
 
 import PrimaryButton from "components/ui/button/PrimaryButton";
 import BoxCard from "components/ui/card";
+import { ROLE_ACCESS } from "constant";
 import { EmployeeNumberControl } from "erp-modules/payroll/controls/EmployeeNumberControl";
 import {
 	COUNTRIES,
@@ -40,15 +41,24 @@ import { getDefaultDate } from "utils/convertDate";
 import NewPositionModal from "./NewPositionModal";
 import PositionInfo from "./PositionInfo";
 
-const EmploymentInfo = ({ company, userId, payGroups, selectedPayGroupOption, lastBadgeId }) => {
+const EmploymentInfo = ({
+	company,
+	userId,
+	payGroups,
+	selectedPayGroupOption,
+	lastBadgeId,
+	userRole,
+}) => {
 	const toast = useToast();
 	const roles = useRoles(company);
 	const costCentres = useCostCenter(company);
+
 	const [isLoading, setIsLoading] = useState(false);
 	const [moreDetails, setMoreDetails] = useState(null);
 	const [employmentSubStep, setEmploymentSubStep] = useState(0);
 	const [employmentProvinces, setEmploymentProvinces] = useState([]);
 	const [employmentInfo, setEmploymentInfo] = useState(null);
+	const [rolesDropdown, setRolesDropdown] = useState(null);
 	const [formData, setFormData] = useState({
 		employmentInfo: {
 			payrollStatus: "Payroll Active",
@@ -73,6 +83,17 @@ const EmploymentInfo = ({ company, userId, payGroups, selectedPayGroupOption, la
 	});
 	const [showModal, setShowModal] = useState(false);
 	const [editedIndices, setEditedIndices] = useState({});
+
+	useEffect(() => {
+		function getAccessibleRoles() {
+			const accessibleTitles = ROLE_ACCESS[userRole];
+			return roles.filter((role) => accessibleTitles.includes(role.name));
+		}
+		if (roles) {
+			const allRoles = getAccessibleRoles();
+			setRolesDropdown(allRoles);
+		}
+	}, [roles]);
 
 	useEffect(() => {
 		setEditedIndices({});
@@ -270,7 +291,7 @@ const EmploymentInfo = ({ company, userId, payGroups, selectedPayGroupOption, la
 
 						<FormControl>
 							<FormLabel size="sm">System Access Level</FormLabel>
-							{roles ? (
+							{rolesDropdown ? (
 								<Select
 									size="sm"
 									value={formData.employmentInfo.employmentRole || ""}
@@ -279,8 +300,8 @@ const EmploymentInfo = ({ company, userId, payGroups, selectedPayGroupOption, la
 											handleChange("employmentInfo", "employmentRole", e.target.value);
 									}}
 								>
-									{roles.map((role) => (
-										<option key={role.name} value={role.name}>
+									{rolesDropdown.map((role) => (
+										<option key={role._id} value={role.name}>
 											{role.name}
 										</option>
 									))}

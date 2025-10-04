@@ -14,7 +14,7 @@ const RolePanel = ({ companyName }) => {
 	useEffect(() => {
 		const fetchAllRoles = async () => {
 			try {
-				const { data } = await SettingService.getSystemAccessRoles(companyName);
+				const { data } = await SettingService.getAllRoles(companyName);
 				setRoleList(data);
 			} catch (error) {
 				console.error(error);

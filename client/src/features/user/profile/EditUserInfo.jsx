@@ -21,14 +21,14 @@ import useRoles from "hooks/useRoles";
 import { useEffect, useState } from "react";
 import LocalStorageService from "services/LocalStorageService";
 import UserService from "services/UserService";
-import { isAdminLevelRole } from "utils";
-import { isBusinessN } from "utils/common";
+import { isShadowUser } from "utils";
 
 const EditUserInfo = ({ setEditMode, setError, error, company }) => {
 	const loggedInUser = LocalStorageService.getItem("user");
 	const departments = useDepartment(company);
 	const allCompanies = useCompanies();
 	const roles = useRoles(company);
+	const shadowUser = isShadowUser(loggedInUser?.role);
 
 	const [companies, setCompanies] = useState(company);
 	const [userData, setUserData] = useState(loggedInUser);
@@ -216,7 +216,7 @@ const EditUserInfo = ({ setEditMode, setError, error, company }) => {
 							</FormControl>
 						</HStack>
 					</FormControl>
-					{isAdminLevelRole(userData?.role) && (
+					{shadowUser && (
 						<HStack>
 							{roles && (
 								<FormControl mb={4}>
@@ -259,7 +259,7 @@ const EditUserInfo = ({ setEditMode, setError, error, company }) => {
 						</HStack>
 					)}
 					<HStack>
-						{isBusinessN(company) && allCompanies && (
+						{shadowUser && (
 							<MultiSelectFormControl
 								hideAvatar
 								label="Assign Companies"
