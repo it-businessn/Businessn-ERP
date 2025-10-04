@@ -1,7 +1,7 @@
 import LeftIconButton from "components/ui/button/LeftIconButton";
-import useCompanyEmployees from "hooks/useCompanyEmployees";
 import useCostCenter from "hooks/useCostCenter";
-import useDepartment from "hooks/useDepartment";
+import useEmployees from "hooks/useEmployees";
+import useManager from "hooks/useManager";
 import usePaygroup from "hooks/usePaygroup";
 import PageLayout from "layouts/PageLayout";
 import { useState } from "react";
@@ -14,10 +14,10 @@ const Crew = () => {
 	const company = LocalStorageService.getItem("selectedCompany");
 	const [showAdd, setShowAdd] = useState(false);
 	const [refresh, setRefresh] = useState(false);
-	const { selectedPayGroup } = usePaygroup(company, false);
-	const employees = useCompanyEmployees(company, null, selectedPayGroup?.name);
+	const { selectedPayGroupOption } = usePaygroup(company, false);
+	const { employees } = useEmployees(false, company, true, true, null, selectedPayGroupOption);
 	const costCenters = useCostCenter(company);
-	const departments = useDepartment(company);
+	const managers = useManager(company);
 
 	return (
 		<PageLayout title={"Crews"}>
@@ -40,8 +40,8 @@ const Crew = () => {
 				refresh={refresh}
 				setRefresh={setRefresh}
 				employees={employees}
+				managers={managers}
 				costCenters={costCenters}
-				departments={departments}
 			/>
 			{showAdd && (
 				<AddCrew
@@ -50,8 +50,8 @@ const Crew = () => {
 					company={company}
 					setRefresh={setRefresh}
 					employees={employees}
+					managers={managers}
 					costCenters={costCenters}
-					departments={departments}
 				/>
 			)}
 		</PageLayout>

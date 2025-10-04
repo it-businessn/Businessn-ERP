@@ -9,14 +9,14 @@ import { useState } from "react";
 import { HiPencil } from "react-icons/hi";
 import EditCrew from "./EditCrew";
 
-const CrewList = ({ company, refresh, setRefresh, employees, costCenters, departments }) => {
+const CrewList = ({ company, refresh, setRefresh, employees, managers, costCenters }) => {
 	const TABLE_COL_COLOR = {
 		hoverBg: useColorModeValue("gray.50", "gray.700"),
 		borderColor: useColorModeValue("gray.200", "gray.600"),
 		nameBoxBg: useColorModeValue("blue.50", "blue.900"),
 		nameColor: useColorModeValue("blue.600", "blue.200"),
 	};
-	const { crews, setCrews } = useCrews(company, refresh);
+	const { crews } = useCrews(company, refresh);
 	const [editRecord, setEditRecord] = useState(null);
 
 	// const handleEdit = () => {
@@ -93,8 +93,8 @@ const CrewList = ({ company, refresh, setRefresh, employees, costCenters, depart
 					isOpen={editRecord}
 					onClose={handleClose}
 					costCenters={costCenters}
-					departments={departments}
 					setRefresh={setRefresh}
+					managers={managers}
 				/>
 			)}
 		</Box>

@@ -40,6 +40,11 @@ const useEmployees = (
 							selectedPayGroupOption,
 					  )
 					: await UserService.getAllCompanyUsers(company, deptName, selectedPayGroupOption);
+				data.map((emp) => {
+					emp.fullName = emp?.empId?.fullName;
+					emp._id = emp?.empId?._id;
+					return emp;
+				});
 				setEmployees(data);
 				setFilteredEmployees(data);
 			} catch (error) {

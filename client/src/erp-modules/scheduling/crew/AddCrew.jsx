@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import SettingService from "services/SettingService";
 import CrewMultiSelectDropdown from "./CrewMultiSelectDropdown";
 
-const AddCrew = ({ company, isOpen, onClose, costCenters, departments, setRefresh, employees }) => {
+const AddCrew = ({ company, isOpen, onClose, costCenters, setRefresh, employees, managers }) => {
 	const toast = useToast();
 	const [publisher, setPublisher] = useState("");
 	const [crewName, setCrewName] = useState("");
@@ -20,7 +20,7 @@ const AddCrew = ({ company, isOpen, onClose, costCenters, departments, setRefres
 
 	useEffect(() => {
 		if (selectedCostCenters?.length) {
-			setFilteredDepartments(selectedCostCenters?.map((cc) => cc.departments));
+			setFilteredDepartments(selectedCostCenters?.map((cc) => cc?.departments)?.flat());
 		}
 	}, [selectedCostCenters?.length]);
 
@@ -96,7 +96,7 @@ const AddCrew = ({ company, isOpen, onClose, costCenters, departments, setRefres
 							handleChange={(e) => {
 								if (e.target.value) setPublisher(e.target.value);
 							}}
-							options={employees}
+							options={managers}
 							placeholder="Select user"
 						/>
 

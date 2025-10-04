@@ -55,7 +55,7 @@ const getCrews = async (req, res) => {
 		const crews = await Crew.find({
 			companyName,
 		}).sort({
-			createdOn: -1,
+			name: 1,
 		});
 		return res.status(200).json(crews);
 	} catch (error) {

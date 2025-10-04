@@ -14,7 +14,7 @@ import { IoRefresh } from "react-icons/io5";
 import { useParams } from "react-router-dom";
 import LocalStorageService from "services/LocalStorageService";
 import TimesheetService from "services/TimesheetService";
-import { getDeptName, isAdminLevelRole } from "utils";
+import { getDeptName } from "utils";
 import { getMomentDate } from "utils/convertDate";
 import ActionAll from "./ActionAll";
 import DateFilterPopup from "./DateFilterPopup";
@@ -169,42 +169,29 @@ const Timesheets = () => {
 				/>
 			),
 		},
+		{
+			id: 1,
+			type: "Timecards",
+			name: (
+				<Timecard
+					setTimecardRefresh={setDataRefresh}
+					company={company}
+					timecardRefresh={dataRefresh}
+					pageNum={pageNum}
+					setPageNum={setPageNum}
+					filter={{
+						startDate: getMomentDate(closestRecord?.payPeriodStartDate).format("YYYY-MM-DD"),
+						endDate: getMomentDate(closestRecord?.payPeriodEndDate).format("YYYY-MM-DD"),
+					}}
+					selectedPayGroupOption={selectedPayGroupOption}
+					startDate
+				/>
+			),
+		},
 	];
 
-	const [tabList, setTabList] = useState(TABS);
-	const timeSheetTab = tabList[0].type;
-	const [viewMode, setViewMode] = useState(null);
-
-	useEffect(() => {
-		if (isAdminLevelRole(loggedInUser?.role)) {
-			setTabList([
-				...tabList,
-				{
-					id: 1,
-					type: "Timecards",
-					name: (
-						<Timecard
-							setTimecardRefresh={setDataRefresh}
-							company={company}
-							timecardRefresh={dataRefresh}
-							pageNum={pageNum}
-							setPageNum={setPageNum}
-							filter={{
-								startDate: getMomentDate(closestRecord?.payPeriodStartDate).format("YYYY-MM-DD"),
-								endDate: getMomentDate(closestRecord?.payPeriodEndDate).format("YYYY-MM-DD"),
-							}}
-							selectedPayGroupOption={selectedPayGroupOption}
-							startDate
-						/>
-					),
-				},
-			]);
-		}
-	}, []);
-
-	useEffect(() => {
-		setViewMode(tabList[0].type);
-	}, [tabList]);
+	const timeSheetTab = TABS[0].type;
+	const [viewMode, setViewMode] = useState(TABS[0].type);
 
 	useEffect(() => {
 		setPageNum(1);
@@ -229,7 +216,7 @@ const Timesheets = () => {
 		selectedPayGroupOption,
 	]);
 
-	const showComponent = (viewMode) => tabList?.find(({ type }) => type === viewMode)?.name;
+	const showComponent = (viewMode) => TABS?.find(({ type }) => type === viewMode)?.name;
 
 	const CHECK_FILTER = [
 		{
@@ -357,7 +344,7 @@ const Timesheets = () => {
 					<TabsButtonGroup
 						mt={4}
 						isOutlineTab
-						tabs={tabList}
+						tabs={TABS}
 						setViewMode={setViewMode}
 						viewMode={viewMode}
 					/>

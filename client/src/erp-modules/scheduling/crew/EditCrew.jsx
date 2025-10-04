@@ -2,21 +2,11 @@ import { Card, CardBody, Input, Stack, Text, useToast } from "@chakra-ui/react";
 import PrimaryButton from "components/ui/button/PrimaryButton";
 import SelectFormControl from "components/ui/form/SelectFormControl";
 import ModalForm from "components/ui/modal/ModalForm";
-import { COMPANIES } from "constant";
 import { useEffect, useState } from "react";
 import SettingService from "services/SettingService";
 import CrewMultiSelectDropdown from "./CrewMultiSelectDropdown";
 
-const EditCrew = ({
-	crew,
-	company,
-	isOpen,
-	costCenters,
-	employees,
-	departments,
-	onClose,
-	setRefresh,
-}) => {
+const EditCrew = ({ crew, isOpen, costCenters, employees, managers, onClose, setRefresh }) => {
 	const toast = useToast();
 	const [publisher, setPublisher] = useState(crew?.createdBy);
 	const [crewName, setCrewName] = useState(crew?.name);
@@ -37,7 +27,9 @@ const EditCrew = ({
 
 	useEffect(() => {
 		if (selectedCostCenters?.length) {
-			setFilteredDepartments(selectedCostCenters?.map((cc) => cc.departments));
+			setFilteredDepartments(
+				selectedCostCenters?.flatMap((cc) => (cc?.departments?.length ? cc.departments : [cc])),
+			);
 		}
 	}, [selectedCostCenters?.length]);
 
@@ -91,6 +83,7 @@ const EditCrew = ({
 			console.log("An error occurred. Please try again.", error);
 		}
 	};
+
 	return (
 		<ModalForm title="Edit Crew" isOpen={isOpen} onClose={onClose}>
 			{/* <Box maxW="600px" mx="auto" p={5}> */}
@@ -109,7 +102,7 @@ const EditCrew = ({
 							handleChange={(e) => {
 								if (e.target.value) setPublisher(e.target.value);
 							}}
-							options={employees}
+							options={managers}
 							placeholder="Select user"
 						/>
 
