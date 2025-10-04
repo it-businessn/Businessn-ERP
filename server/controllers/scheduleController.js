@@ -45,7 +45,11 @@ const getWorkWeekEmpShifts = async (req, res) => {
 		const crew = await Crew.findOne({ name });
 		const crewEmps =
 			crew?.config?.employee?.map((_) => {
-				return { name: _?.fullName, role: _?.positions[0]?.title };
+				return {
+					name: _?.fullName,
+					role: _?.positions[0]?.title,
+					payRate: parseFloat(_?.positions[0]?.payRate ?? 0),
+				};
 			}) || [];
 
 		// const locationIds = crew?.config?.department?.map((_) => _.name) || [];
@@ -73,6 +77,7 @@ const getWorkWeekEmpShifts = async (req, res) => {
 					role: 1,
 					location: 1,
 					notes: 1,
+					payRate: 1,
 					shift: {
 						$concat: ["$shiftStart", "-", "$shiftEnd"],
 					},
@@ -85,6 +90,7 @@ const getWorkWeekEmpShifts = async (req, res) => {
 						name: "$empName",
 						role: "$role",
 						location: "$location",
+						payRate: "$payRate",
 					},
 					notes: { $addToSet: "$notes" },
 					shifts: {
@@ -104,6 +110,7 @@ const getWorkWeekEmpShifts = async (req, res) => {
 					name: "$_id.name",
 					role: "$_id.role",
 					location: "$_id.location",
+					payRate: "$_id.payRate",
 					notes: { $arrayElemAt: ["$notes", 0] },
 					shiftsObj: { $arrayToObject: "$shifts" },
 				},
@@ -129,17 +136,19 @@ const getWorkWeekEmpShifts = async (req, res) => {
 					name: "$name",
 					role: "$role",
 					location: "$location",
+					payRate: "$payRate",
 					shifts: 1,
 				},
 			},
 		]);
 		for (const emp of crewEmps) {
-			const { name, role } = emp;
+			const { name, role, payRate } = emp;
 			const empShiftExists = shifts?.find((_) => _.name === name);
 			if (!empShiftExists) {
 				shifts.push({
 					name,
 					role,
+					payRate,
 					shifts: [
 						{ shift: "Off" },
 						{ shift: "Off" },
@@ -286,6 +295,7 @@ const addWorkShifts = async (req, res) => {
 		hours,
 		companyName,
 		crew,
+		payRate,
 	} = req.body;
 
 	try {
@@ -325,6 +335,7 @@ const addWorkShifts = async (req, res) => {
 				breakDuration: 0,
 				companyName,
 				crew,
+				payRate,
 			});
 		}
 		// }
@@ -336,7 +347,8 @@ const addWorkShifts = async (req, res) => {
 };
 
 const addShifts = async (req, res) => {
-	const { color, duration, end_time, start_time, id, title, group, startDate, company } = req.body;
+	const { color, duration, end_time, start_time, id, title, group, startDate, payRate, company } =
+		req.body;
 
 	const newShift = new EmployeeShift({
 		color,
@@ -346,6 +358,7 @@ const addShifts = async (req, res) => {
 		start_time,
 		title,
 		group,
+		payRate,
 		companyName: company,
 	});
 	try {
@@ -371,20 +384,26 @@ const updateShift = async (req, res) => {
 			repeatSchedule,
 			hours,
 			companyName,
+			payRate,
 		} = req.body;
 
 		// if (hours <= 5) {
-		const updatedShift = await WorkShift.findByIdAndUpdate(id, {
-			$set: {
-				employeeName,
-				role,
-				location,
-				notes,
-				shiftStart,
-				shiftEnd,
-				hours,
+		const updatedShift = await WorkShift.findByIdAndUpdate(
+			id,
+			{
+				$set: {
+					employeeName,
+					role,
+					location,
+					notes,
+					shiftStart,
+					shiftEnd,
+					hours,
+					payRate,
+				},
 			},
-		});
+			{ new: true },
+		);
 		return res.status(201).json(updatedShift);
 		// const updatedShift = await saveOrUpdateShift(
 		// 	id,

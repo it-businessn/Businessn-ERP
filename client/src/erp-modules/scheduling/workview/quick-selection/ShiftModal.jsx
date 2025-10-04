@@ -18,6 +18,7 @@ const ShiftModal = ({
 	company,
 	empRole,
 	empName,
+	payRate,
 	setShowModal,
 	showModal,
 	setIsRefresh,
@@ -49,6 +50,7 @@ const ShiftModal = ({
 		companyName: shift?.companyName || company,
 		hours: parseInt(shift?.duration) || 0,
 		crew,
+		payRate: shift?.payRate || payRate || 0,
 	};
 	const [formData, setFormData] = useState(defaultShiftInfo);
 

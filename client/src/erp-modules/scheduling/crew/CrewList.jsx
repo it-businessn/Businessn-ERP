@@ -31,9 +31,9 @@ const CrewList = ({ company, refresh, setRefresh, employees, managers, costCente
 			<Table>
 				<Thead position="sticky" top={-1} zIndex={1}>
 					<Tr>
-						{["Name", "Created By", ""]?.map((col, index) => (
+						{["Name", "Admin", ""]?.map((col, index) => (
 							<Th key={`${col}_${index}`}>
-								<TextTitle title={col} />
+								<TextTitle size={"sm"} title={col} />
 							</Th>
 						))}
 					</Tr>

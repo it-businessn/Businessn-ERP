@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 const shiftSchema = new mongoose.Schema(
 	{
 		empName: String,
+		payRate: String,
 		role: String,
 		notes: String,
 		location: { type: String, ref: "Location" },

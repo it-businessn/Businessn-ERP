@@ -54,6 +54,33 @@ const WeeklyCalendarView = ({ weekStart, company, selectedCrew, timeFormat, empl
 		const endMinutes = endH * 60 + endM;
 		return (endMinutes - startMinutes) / 60;
 	};
+	const dailyTotals = weekDays.map((day, dayIdx) => {
+		return (
+			employeeShifts?.reduce((sum, emp) => {
+				if (!emp.shifts || !emp.shifts[dayIdx]) return sum;
+				const hoursWorked = calculateHours(emp.shifts[dayIdx]) || 0;
+				const payRate = parseFloat(emp.payRate || 0);
+				return sum + hoursWorked * payRate;
+			}, 0) ?? 0
+		);
+	});
+	let currentMonth = null;
+	const runningTotals = dailyTotals.reduce((acc, dailyTotal, i) => {
+		const dayDate = weekDays[i].date || weekDays[i];
+
+		const dayMonth = dayDate.getMonth();
+
+		if (currentMonth !== dayMonth) {
+			currentMonth = dayMonth;
+			acc.push(dailyTotal);
+		} else {
+			const prevTotal = acc[i - 1] || 0;
+			acc.push(prevTotal + dailyTotal);
+		}
+
+		return acc;
+	}, []);
+
 	const getCrewLocation = () => (selectedCrew?.includes("Golf") ? "Golf course" : selectedCrew);
 	// const minutesToHoursAndMinutes = (mins) => {
 	// 	const hours = mins.toFixed(2);
@@ -67,8 +94,8 @@ const WeeklyCalendarView = ({ weekStart, company, selectedCrew, timeFormat, empl
 		setShowAddShiftModal(true);
 		let newShift = null;
 		if (emp) {
-			const { name, role } = emp;
-			newShift = { empName: name, role, location: emp?.location };
+			const { name, role, payRate } = emp;
+			newShift = { empName: name, role, location: emp?.location, payRate: payRate || 0 };
 		}
 		if (shiftTime) {
 			newShift.notes = shiftTime?.notes;
@@ -94,14 +121,14 @@ const WeeklyCalendarView = ({ weekStart, company, selectedCrew, timeFormat, empl
 		<>
 			<Box overflow="auto" h="calc(100vh - 200px)" css={tabScrollCss}>
 				<Table variant="simple">
-					<Thead position="sticky" top="-1" zIndex="2">
+					<Thead position="sticky" top={-1} zIndex="2">
 						<Tr>
 							<Th py={2}>
-								<TextTitle title="CUSTOM" />
+								<TextTitle size={"sm"} title="Name" />
 							</Th>
 							{weekDays.map((day, i) => (
 								<Th py={2} key={`day_${i}`}>
-									{format(day, "EEE dd")}
+									<NormalTextTitle size={"sm"} title={format(day, "EEE dd")} />
 								</Th>
 							))}
 						</Tr>
@@ -190,7 +217,7 @@ const WeeklyCalendarView = ({ weekStart, company, selectedCrew, timeFormat, empl
 							{weekDays.map((_, dayIdx) => {
 								const total =
 									employeeShifts?.reduce((sum, emp) => {
-										if (!emp.shifts || !emp.shifts[0]) return sum;
+										if (!emp.shifts || !emp.shifts[dayIdx]) return sum;
 										return sum + calculateHours(emp.shifts[dayIdx]);
 									}, 0) ?? 0;
 
@@ -206,15 +233,17 @@ const WeeklyCalendarView = ({ weekStart, company, selectedCrew, timeFormat, empl
 								Total Wages
 							</Td>
 							{weekDays.map((_, dayIdx) => {
-								const total =
+								const wages =
 									employeeShifts?.reduce((sum, emp) => {
-										if (!emp.shifts || !emp.shifts[0]) return sum;
-										return sum + calculateHours(emp.shifts[dayIdx]);
+										if (!emp.shifts || !emp.shifts[dayIdx]) return sum;
+										const hoursWorked = calculateHours(emp.shifts[dayIdx]) || 0;
+										const payRate = parseFloat(emp.payRate || 0);
+										return sum + hoursWorked * payRate;
 									}, 0) ?? 0;
 
 								return (
 									<Td py={2} key={`WAGES_${dayIdx}`}>
-										<TextTitle align="center" title={total.toFixed(2)} />
+										<TextTitle align="center" title={wages.toFixed(2)} />
 									</Td>
 								);
 							})}
@@ -223,19 +252,11 @@ const WeeklyCalendarView = ({ weekStart, company, selectedCrew, timeFormat, empl
 							<Td py={0} px={1} whiteSpace={"wrap"}>
 								Monthly Running Totals
 							</Td>
-							{weekDays.map((_, dayIdx) => {
-								const total =
-									employeeShifts?.reduce((sum, emp) => {
-										if (!emp.shifts || !emp.shifts[0]) return sum;
-										return sum + calculateHours(emp.shifts[dayIdx]);
-									}, 0) ?? 0;
-
-								return (
-									<Td py={2} key={`monthly_running_${dayIdx}`}>
-										<TextTitle align="center" title={total.toFixed(2)} />
-									</Td>
-								);
-							})}
+							{runningTotals.map((total, dayIdx) => (
+								<Td py={2} key={`monthly_running_${dayIdx}`}>
+									<TextTitle align="center" title={total.toFixed(2)} />
+								</Td>
+							))}
 						</Tr>
 					</Tbody>
 				</Table>

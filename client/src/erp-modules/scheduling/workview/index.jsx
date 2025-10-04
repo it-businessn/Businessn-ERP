@@ -51,6 +51,7 @@ const ScheduleWorkView = () => {
 							<TextTitle title="Crew" />
 						</FormLabel>
 						<Select
+							size={"sm"}
 							value={selectedCrew || ""}
 							onChange={(e) => {
 								if (e.target.value) setSelectedCrew(e.target.value);
@@ -68,6 +69,7 @@ const ScheduleWorkView = () => {
 							<TextTitle title="Time Format" />
 						</FormLabel>
 						<Select
+							size={"sm"}
 							value={timeFormat}
 							onChange={(e) => {
 								const { value } = e.target;
@@ -90,7 +92,7 @@ const ScheduleWorkView = () => {
 						color="fg.muted"
 					/>
 					<TextTitle
-						size="lg"
+						size="md"
 						title={`
 						${format(weekStart, "MMM d")} - ${format(addDays(weekStart, 6), "MMM d")}`}
 					/>
@@ -106,7 +108,7 @@ const ScheduleWorkView = () => {
 				{/* <Tabs variant="enclosed" onChange={(i) => setView(i === 0 ? "weekly" : "daily")} isLazy lazyBehavior="unmount">
 						<TabList>
 							<Tab> */}
-				<PrimaryButton name="Weekly View" />
+				<PrimaryButton size={"sm"} name="Weekly View" />
 				{/* </Tab>
 							<Tab>
 								<PrimaryButton
