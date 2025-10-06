@@ -513,9 +513,9 @@ const createTicket = async (req, res) => {
 
 			newTicket.ticketNumber = generateTicketNumber(companyNamePrefix);
 			const newTask = await SupportTicket.create(newTicket);
-			const assigneeEmail = await Employee.findOne({ fullName: newTicket.assignee })
-				.select(["email"])
-				.sort({ priority: 1 });
+			const assigneeEmail = await Employee.findOne({ fullName: newTicket.assignee }).select([
+				"email",
+			]);
 			if (assigneeEmail?.email)
 				await sendEmail(
 					assigneeEmail?.email,

@@ -1,6 +1,6 @@
 import { Flex, FormControl, FormLabel, HStack, Select, Spinner, Tooltip } from "@chakra-ui/react";
 import TextTitle from "components/ui/text/TextTitle";
-import AddNewShiftRole from "erp-modules/scheduling/workview/quick-selection/AddNewShiftRole";
+import AddNewShiftRole from "erp-modules/scheduling/workview/modal/AddNewShiftRole";
 import usePositionRoles from "hooks/usePositionRoles";
 import { useState } from "react";
 import { FaPlus } from "react-icons/fa";

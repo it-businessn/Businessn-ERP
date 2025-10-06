@@ -46,11 +46,7 @@ const EmployeeDragFromQuickSelection = ({
 				</Button>
 			</HStack>
 
-			<Icon
-				as={RxDragHandleDots2}
-				onClick={() => sendEmployee(employee, color)}
-				boxSize={5}
-			/>
+			<Icon as={RxDragHandleDots2} onClick={() => sendEmployee(employee, color)} boxSize={5} />
 		</HStack>
 	);
 };

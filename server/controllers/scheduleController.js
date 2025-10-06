@@ -1,10 +1,14 @@
 const { startOfDay, addDays, format } = require("date-fns");
 const moment = require("moment");
+const path = require("path");
+const fs = require("fs");
 
 const EmployeeShift = require("../models/EmployeeShifts");
 const WorkShift = require("../models/WorkShift");
 const Crew = require("../models/Crew");
 const DailyTotals = require("../models/DailyTotals");
+const Employee = require("../models/Employee");
+const { sendEmail } = require("../services/emailService");
 
 const getShifts = async (req, res) => {
 	try {
@@ -326,6 +330,109 @@ const splitShiftEveryFiveHours = (shiftDate, start, end) => {
 	return workSegments?.filter((_) => _.type === "work");
 };
 
+const sendWorkShifts = async (req, res) => {
+	try {
+		const newSchedule = req.body;
+		const attachment = req.file;
+		const attachments = [
+			// {
+			// 	filename: "BusinessN_dark1.png",
+			// 	path: path.join(__dirname, "../", "assets/logos/BusinessN_dark1.png"),
+			// 	cid: "footerLogo",
+			// },
+		];
+		if (attachment) {
+			attachments.push({
+				filename: attachment.filename,
+				path: attachment.path,
+			});
+			newSchedule.file = {
+				data: fs.readFileSync(attachment?.path),
+				contentType: attachment?.mimetype,
+				path: attachment?.path,
+			};
+			newSchedule.originalname = attachment?.originalname;
+			const assigneeEmail = await Employee.findOne({ fullName: newSchedule.fullName }).select([
+				"email",
+			]);
+
+			if (assigneeEmail?.email)
+				await sendEmail(
+					assigneeEmail?.email,
+					`Weekly Schedule ${newSchedule.week}`,
+					"We have received your inquiry. An agent will get in touch with you shortly to discuss your interests and provide more information.",
+					`
+						<body style="margin: 0; font-family: Arial, Helvetica, sans-serif;height:'auto">
+				<div
+					class="header"
+					style="
+						background-color: #371f37;
+						color: white;
+						text-align: center;
+						height: 150px;
+						display: flex;
+						align-items: center;
+					"
+				>
+					<div
+						id="header_content"
+						style="
+							display: flex;
+							flex-direction: column;
+							align-items: self-start;
+							background: #4c364b;
+							border-radius: 10px;
+							gap: 1em;
+							width: 80%;
+							margin: 0 auto;
+							padding: 1.5em;
+						"
+					> 
+						<p
+							class="topic"
+							style="font-weight: bold; font-size: larger; margin: 5px 0"
+						> Your Weekly Schedule
+						</p>
+					</div>
+				</div>
+				<div
+					class="container"
+					style="
+						background: #fdfdfd;
+						color: #371f37;
+						display: flex;
+						flex-direction: column;
+						align-items: self-start;
+						padding: 2em 3em;
+						gap: 1em;
+						font-size: 14px;
+					"
+				>
+					<h3 style="margin: 0; margin-bottom: 1em">Hi ${newSchedule?.fullName},</h3>
+				 
+
+					<p style="font-weight: bold; margin: 5px 0"> ${
+						attachment
+							? `Please see your schedule for the week of ${newSchedule.week}. The attached file contains the details for your reference.`
+							: ""
+					}</p>
+
+			 
+					<p style="margin: 5px 0">
+      					Please contact your manager if you have any questions about your schedule.
+					</p>
+				</div>			 
+			</body>
+					`,
+					attachments,
+				);
+			return res.status(201).json({ date: new Date(), message: "Email sent successfully" });
+		}
+	} catch (error) {
+		return res.status(500).json({ message: "Internal Server Error", error });
+	}
+};
+
 const addWorkShifts = async (req, res) => {
 	const {
 		employeeName,
@@ -590,4 +697,5 @@ module.exports = {
 	updateDailyTotals,
 	getDailyTotals,
 	getLocationMonthlyTotals,
+	sendWorkShifts,
 };

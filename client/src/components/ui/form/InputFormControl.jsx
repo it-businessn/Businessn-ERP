@@ -58,6 +58,7 @@ const InputFormControl = ({
 				size={size}
 				p={p}
 				readOnly={readOnly}
+				cursor={readOnly && "not-allowed"}
 			/>
 			{error && <FormHelperText color="red.500">{error}</FormHelperText>}
 		</FormControlMain>

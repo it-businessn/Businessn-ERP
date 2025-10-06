@@ -22,10 +22,7 @@ const AddNewShiftRole = ({ showAddNewRole, setShowAddNewRole, setRefresh, compan
 				description: roleDescription,
 				companyName: company,
 			});
-			setRefresh((prev) => !prev);
-			setSubmitting(false);
-			onClose();
-			setShowAddNewRole(false);
+			if (setRefresh) setRefresh((prev) => !prev);
 		} catch (error) {
 			toast({
 				title: "Error",
@@ -34,15 +31,18 @@ const AddNewShiftRole = ({ showAddNewRole, setShowAddNewRole, setRefresh, compan
 				duration: 3000,
 				isClosable: true,
 			});
-			setSubmitting(false);
+		} finally {
 			onClose();
+			setSubmitting(false);
 			setShowAddNewRole(false);
 		}
 	};
+
 	const handleClose = () => {
 		onClose();
 		setShowAddNewRole(false);
 	};
+
 	return (
 		<ModalLayout title="Role Info" size="md" isOpen={showAddNewRole} onClose={handleClose}>
 			<form onSubmit={handleSubmit}>

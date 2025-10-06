@@ -1,135 +1,64 @@
-import { Box, Flex, FormLabel, HStack, Icon, Select } from "@chakra-ui/react";
+import { Box, Flex } from "@chakra-ui/react";
 import ComingSoon from "components/ComingSoon";
-import PrimaryButton from "components/ui/button/PrimaryButton";
-import TextTitle from "components/ui/text/TextTitle";
-import { addDays, format, startOfWeek } from "date-fns";
+import { addDays, startOfWeek } from "date-fns";
 import useCrews from "hooks/useCrews";
 import PageLayout from "layouts/PageLayout";
 import { useEffect, useState } from "react";
-import { MdOutlineChevronLeft, MdOutlineChevronRight } from "react-icons/md";
 import LocalStorageService from "services/LocalStorageService";
-import WeeklyCalendarView from "./WeeklyCalendarView";
+import { CrewFilter } from "./header/CrewFilter";
+import { WeekFilter } from "./header/WeekFilter";
+import { WorkviewTabs } from "./header/WorkviewTabs";
+import WeeklyCalendarView from "./scheduler/WeeklyCalendarView";
 
 const ScheduleWorkView = () => {
 	const company = LocalStorageService.getItem("selectedCompany");
-
+	const TAB_VIEW = {
+		WEEK: "weekly",
+		DAILY: "daily",
+	};
 	const [timeFormat, setTimeFormat] = useState("12");
-	const [view, setView] = useState("weekly");
+	const [view, setView] = useState(TAB_VIEW.WEEK);
 	const [employeesList, setEmployeesList] = useState(null);
 	const { crews, selectedCrew, setSelectedCrew } = useCrews(company);
 	const [location, setLocation] = useState(null);
-	const [configCC, setConfigCC] = useState(null);
-	// const [locations, setLocations] = useState(null);
-	const [selectedFilter, setSelectedFilter] = useState(null);
-	const [selectedCC, setSelectedCC] = useState(null);
 	const [weekStart, setWeekStart] = useState(startOfWeek(new Date(), { weekStartsOn: 0 }));
 
 	useEffect(() => {
 		if (selectedCrew) {
 			const record = crews?.find((crew) => crew.name === selectedCrew);
-			setConfigCC(record?.config?.costCenter);
-			// setLocations(record?.config?.department);
+			// setConfigCC(record?.config?.costCenter);
 			setEmployeesList(record?.config?.employee);
+			setLocation(selectedCrew?.includes("Golf") ? "Golf course" : selectedCrew);
 		}
-		// else {
-		// setLocations(data[0]?.config?.department);
-		// setEmployeesList(data[0]?.config?.employee);
-		// setConfigCC(data[0]?.config?.costCenter);
-		// }
 	}, [selectedCrew]);
 
-	const handleChangeDate = (direction) => {
-		setWeekStart((prev) => (direction === "prev" ? addDays(prev, -7) : addDays(prev, 7)));
-	};
-
 	return (
-		<PageLayout title="WorkView">
-			<Flex justify="space-between" align="center" mb={4}>
-				<HStack justify="space-between">
-					<HStack>
-						<FormLabel>
-							<TextTitle title="Crew" />
-						</FormLabel>
-						<Select
-							size={"sm"}
-							value={selectedCrew || ""}
-							onChange={(e) => {
-								if (e.target.value) setSelectedCrew(e.target.value);
-							}}
-						>
-							{crews?.map(({ _id, name }) => (
-								<option key={_id} value={name}>
-									{name}
-								</option>
-							))}
-						</Select>
-					</HStack>
-					<HStack>
-						<FormLabel>
-							<TextTitle title="Time Format" />
-						</FormLabel>
-						<Select
-							size={"sm"}
-							value={timeFormat}
-							onChange={(e) => {
-								const { value } = e.target;
-								if (value) setTimeFormat(value);
-							}}
-							placeholder="Select time format"
-						>
-							<option value="12">12-hour</option>
-							<option value="24">24-hour</option>
-						</Select>
-					</HStack>
-				</HStack>
+		<PageLayout title="">
+			<Flex justify="space-between" alignItems="center" mb={3}>
+				<CrewFilter
+					crews={crews}
+					selectedCrew={selectedCrew}
+					setSelectedCrew={setSelectedCrew}
+					timeFormat={timeFormat}
+					setTimeFormat={setTimeFormat}
+				/>
+				<WeekFilter weekStart={weekStart} setWeekStart={setWeekStart} />
 
-				<HStack spacing={0}>
-					<Icon
-						cursor="pointer"
-						as={MdOutlineChevronLeft}
-						onClick={() => handleChangeDate("prev")}
-						boxSize="5"
-						color="fg.muted"
-					/>
-					<TextTitle
-						size="md"
-						title={`
-						${format(weekStart, "MMM d")} - ${format(addDays(weekStart, 6), "MMM d")}`}
-					/>
-					<Icon
-						cursor="pointer"
-						as={MdOutlineChevronRight}
-						onClick={() => handleChangeDate("next")}
-						boxSize="5"
-						color="fg.muted"
-					/>
-				</HStack>
-
-				{/* <Tabs variant="enclosed" onChange={(i) => setView(i === 0 ? "weekly" : "daily")} isLazy lazyBehavior="unmount">
-						<TabList>
-							<Tab> */}
-				<PrimaryButton size={"sm"} name="Weekly View" />
-				{/* </Tab>
-							<Tab>
-								<PrimaryButton
-									name="
-									Daily View"
-								/>
-							</Tab>
-						</TabList> */}
-				{/* </Tabs> */}
+				<WorkviewTabs />
 			</Flex>
 
-			{view === "weekly" && (
+			{view === TAB_VIEW.WEEK && (
 				<WeeklyCalendarView
 					timeFormat={timeFormat}
 					weekStart={weekStart}
+					weekEnd={addDays(weekStart, 6)}
 					company={company}
+					location={location}
 					selectedCrew={selectedCrew}
 					employeesList={employeesList}
 				/>
 			)}
-			{view === "daily" && (
+			{view === TAB_VIEW.DAILY && (
 				<Box mt={4} textAlign="center">
 					<ComingSoon message="Daily view coming soon" />
 				</Box>

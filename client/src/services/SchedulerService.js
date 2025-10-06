@@ -47,6 +47,10 @@ const SchedulerService = {
 		return apiService.post("/schedule", data);
 	},
 
+	async sendSchedule(data) {
+		return apiService.post("/schedule/send", data);
+	},
+
 	async addWorkShifts(data) {
 		return apiService.post("/schedule/work", data);
 	},

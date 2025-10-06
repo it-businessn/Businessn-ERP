@@ -13,6 +13,7 @@ const ActionButtonGroup = ({
 	justifyContent,
 	rightIcon,
 	bg,
+	loadingText = "Loading",
 }) => {
 	return (
 		<HStack justifyContent={justifyContent ? justifyContent : !closeLabel && "end"}>
@@ -22,7 +23,7 @@ const ActionButtonGroup = ({
 				isDisabled={isDisabled}
 				name={submitBtnName}
 				isLoading={isLoading}
-				loadingText="Loading"
+				loadingText={loadingText}
 				onOpen={onOpen}
 				rightIcon={rightIcon}
 			/>

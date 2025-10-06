@@ -7,6 +7,7 @@ import RequiredLabel from "components/ui/form/RequiredLabel";
 import SelectFormControl from "components/ui/form/SelectFormControl";
 import ModalLayout from "components/ui/modal/ModalLayout";
 import TextTitle from "components/ui/text/TextTitle";
+import usePositionRoles from "hooks/usePositionRoles";
 import moment from "moment";
 import { useEffect, useState } from "react";
 import { FaPlus } from "react-icons/fa";
@@ -25,17 +26,17 @@ const ShiftModal = ({
 	setNewShiftAdded,
 	// locations,
 	employees,
-	roles,
 	location,
 	currentDate,
 	shift,
 	crew,
 }) => {
 	const { onClose } = useDisclosure();
-
+	const [newRoleAdded, setNewRoleAdded] = useState(false);
 	const [showAddNewRole, setShowAddNewRole] = useState(false);
 	const [showAddNewLocation, setShowAddNewLocation] = useState(false);
 
+	const roles = usePositionRoles(company, newRoleAdded);
 	const defaultShiftInfo = {
 		employeeName: shift?.empName || empName || "",
 		role: shift?.role || empRole || "",
@@ -175,13 +176,19 @@ const ShiftModal = ({
 					valueText={formData?.notes || ""}
 					handleChange={handleChange}
 				/>
-				<DateTimeFormControl
+				<InputFormControl
+					label={"Select shift date"}
+					name="shiftDate"
+					readOnly
+					valueText={formData?.shiftDate}
+				/>
+				{/* <DateTimeFormControl
 					label={"Select shift date"}
 					valueText1={formData?.shiftDate || ""}
 					name1="shiftDate"
 					handleChange={handleChange}
-					required
-				/>
+					required 
+				/> */}
 				<HStack w="100%">
 					<DateTimeFormControl
 						timeLabel="Shift Start Time"
@@ -231,7 +238,7 @@ const ShiftModal = ({
 			{showAddNewRole && (
 				<AddNewShiftRole
 					showAddNewRole={showAddNewRole}
-					setRefresh={setIsRefresh}
+					setRefresh={setNewRoleAdded}
 					setShowAddNewRole={setShowAddNewRole}
 					company={company}
 				/>

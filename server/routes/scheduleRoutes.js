@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 
 const scheduleController = require("../controllers/scheduleController");
+const { storageSpace } = require("../services/fileService");
 
 router.get("/", scheduleController.getShifts);
 
@@ -22,6 +23,8 @@ router.get("/work/emp/:date/:location/:empName/:name", scheduleController.getEmp
 router.post("/", scheduleController.addShifts);
 
 router.post("/work", scheduleController.addWorkShifts);
+
+router.post("/send", storageSpace.single("file"), scheduleController.sendWorkShifts);
 
 router.put("/:id", scheduleController.updateShift);
 

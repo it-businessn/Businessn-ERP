@@ -38,6 +38,7 @@ const DateTimeFormControl = ({
 						onChange={handleChange}
 						required={required}
 						border={border}
+						cursor={"pointer"}
 					/>
 				</FormControlMain>
 			)}
@@ -52,6 +53,7 @@ const DateTimeFormControl = ({
 						onChange={handleChange}
 						required={required}
 						border={border}
+						cursor={"pointer"}
 					/>
 				</FormControlMain>
 			)}

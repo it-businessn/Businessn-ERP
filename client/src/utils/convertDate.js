@@ -23,6 +23,13 @@ export const daysAgo = (date) => {
 	return numDays;
 };
 
+export const convertTo12HourFormatRange = (timeRange) => {
+	const [start, end] = timeRange.split("-");
+	const startFormatted = moment(start, "HH:mm").format("hh:mm A");
+	const endFormatted = moment(end, "HH:mm").format("hh:mm A");
+	return `${startFormatted} - ${endFormatted}`;
+};
+
 export const getMomentDateISO = (date) => moment(date).toISOString();
 
 export const isSameAsToday = (date) => moment(date).isSame(new Date(), "day");
