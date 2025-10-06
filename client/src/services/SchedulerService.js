@@ -23,6 +23,10 @@ const SchedulerService = {
 		);
 	},
 
+	async getScheduleEmailLogs(company, week) {
+		return apiService.get(`/schedule/email-logs/${company}/${week}`);
+	},
+
 	async getWorkWeekEmpShifts(date, company, crewId) {
 		return apiService.get(`/schedule/work-emp-shift/${date}/${company}/${crewId}`);
 	},

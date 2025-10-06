@@ -24,7 +24,7 @@ import moment from "moment";
 import { useEffect, useState } from "react";
 import { BsSendCheck } from "react-icons/bs";
 import SchedulerService from "services/SchedulerService";
-import { convertTo12HourFormatRange } from "utils/convertDate";
+import { convertTo12HourFormatRange, CURRENT_YEAR } from "utils/convertDate";
 import { EmpWeekScheduleModal } from "../modal/EmpWeekScheduleModal";
 import ShiftModal from "../modal/ShiftModal";
 
@@ -39,7 +39,8 @@ const WeeklyCalendarView = ({
 }) => {
 	// const locations = useWorkLocations(company, );
 	const weekDays = [...Array(7)].map((_, i) => addDays(weekStart, i));
-	const [sentResult, setSentResult] = useState(null);
+	const [sentResult, setSentResult] = useState(false);
+	const weekTitle = `${format(weekStart, "MMM d")} - ${format(weekEnd, "MMM d")}, ${CURRENT_YEAR}`;
 
 	const [shift, setShift] = useState(null);
 	const [empName, setEmpName] = useState(null);
@@ -48,11 +49,11 @@ const WeeklyCalendarView = ({
 	const [employeeShifts, setEmployeeShifts] = useState(null);
 	const [newShiftAdded, setNewShiftAdded] = useState(null);
 	const [showAddShiftModal, setShowAddShiftModal] = useState(false);
+	const [sentEmailUsers, setSentEmailUsers] = useState(null);
 	const [dailyDataWithRunning, setDailyDataWithRunning] = useState(null);
 	const [isLoading, setIsLoading] = useState(false);
 
 	const { isOpen, onOpen, onClose } = useDisclosure();
-	const [selectedDays, setSelectedDays] = useState(new Set());
 
 	useEffect(() => {
 		const fetchShifts = async () => {
@@ -70,8 +71,20 @@ const WeeklyCalendarView = ({
 				setIsLoading(true);
 			}
 		};
-		if (selectedCrew) fetchShifts();
+		if (selectedCrew || newShiftAdded) fetchShifts();
 	}, [newShiftAdded, weekStart, selectedCrew]);
+
+	useEffect(() => {
+		const fetchEmailLogs = async () => {
+			try {
+				const { data } = await SchedulerService.getScheduleEmailLogs(company, weekTitle);
+				setSentEmailUsers(data);
+			} catch (error) {
+				console.error(error);
+			}
+		};
+		if (weekTitle) fetchEmailLogs();
+	}, [weekTitle, sentResult]);
 
 	useEffect(() => {
 		let currentMonth = null;
@@ -197,74 +210,90 @@ const WeeklyCalendarView = ({
 								description="Add shift to see them listed here"
 							/>
 						)}
-						{employeeShifts?.map((shiftEntry) => (
-							<Tr key={shiftEntry?.name}>
-								<Td p={0} w="200px" bg={"var(--bg_color_1)"}>
-									<Flex px={3} alignItems="center" gap={2}>
-										<NormalTextTitle whiteSpace="nowrap" size="sm" title={shiftEntry?.name} />
+						{employeeShifts?.map((emp) => {
+							emp.emailSent = sentEmailUsers?.find(({ employeeName }) => employeeName === emp.name);
+							return (
+								<Tr
+									key={emp?.name}
+									bg={emp.emailSent ? "var(--phoneCall_bg_light)" : "var(--bg_color_1)"}
+								>
+									<Td p={0} w="200px">
+										<Flex px={3} alignItems="center" gap={2}>
+											<NormalTextTitle whiteSpace="nowrap" size="sm" title={emp?.name} />
 
-										<Tooltip label="Send week schedule">
-											<span>
-												<BsSendCheck cursor="pointer" onClick={() => openSendModal(shiftEntry)} />
-											</span>
-										</Tooltip>
-									</Flex>
-								</Td>
-								{shiftEntry?.shifts?.map((shift, j) => {
-									return (
-										<Td w="200px" p={0} key={`shift_${shiftEntry?.name}_${j}`} px={1}>
-											<HStack
-												bg={"var(--bg_color_1)"}
-												spacing={0}
-												justify={"space-between"}
-												w="200px"
-												cursor={"pointer"}
-												onClick={() => handleItemClick(shiftEntry, shift, weekDays[j])}
-											>
-												<Button
-													minH={"40px"}
-													height={"auto"}
-													isDisabled={j === 0 || j === 6}
-													bg={shift?.shift === "Off" ? "var(--bg_color_1)" : "transparent"}
-													p={0}
-													color={
-														shift?.shift === "Off" ? "var(--main_color_black)" : "var(--empName_bg)"
-													}
-													_hover={{
-														color: "var(--main_color_black)",
-														bg: shift
-															? "transparent"
-															: shift?.shift === "Off"
-															? "var(--bg_color_1)"
-															: "var(--empName_bg)",
-													}}
-													borderRadius={"10px"}
-													whiteSpace="wrap"
+											<Tooltip label="Send week schedule">
+												<span>
+													<BsSendCheck cursor="pointer" onClick={() => openSendModal(emp)} />
+												</span>
+											</Tooltip>
+										</Flex>
+									</Td>
+									{emp?.shifts?.map((shift, j) => {
+										return (
+											<Td w="200px" p={0} key={`shift_${emp?.name}_${j}`} px={1}>
+												<HStack
+													bg={emp.emailSent ? "var(--phoneCall_bg_light)" : "var(--bg_color_1)"}
+													spacing={0}
+													justify={"space-between"}
+													w="200px"
+													cursor={"pointer"}
+													onClick={() => handleItemClick(emp, shift, weekDays[j])}
 												>
-													{shift?.shift === "Off"
-														? "Off"
-														: `${
-																timeFormat === "12"
-																	? convertTo12HourFormatRange(shift?.shift)
-																	: shift?.shift
-														  } ${shiftEntry?.role} @ ${shiftEntry?.location}`}
-												</Button>
-												<IconButton
-													color={
-														shift?.shift === "Off" ? "var(--main_color_black)" : "var(--empName_bg)"
-													}
-													size={"xs"}
-													icon={<SmallAddIcon />}
-													aria-label="Open Sidebar"
-													_hover={{ bg: "transparent" }}
-													isDisabled={j === 0 || j === 6}
-												/>
-											</HStack>
-										</Td>
-									);
-								})}
-							</Tr>
-						))}
+													<Button
+														minH={"40px"}
+														height={"auto"}
+														isDisabled={j === 0 || j === 6}
+														bg={
+															shift?.shift === "Off"
+																? emp.emailSent
+																	? "var(--phoneCall_bg_light)"
+																	: "var(--bg_color_1)"
+																: "transparent"
+														}
+														p={0}
+														color={
+															shift?.shift === "Off"
+																? "var(--main_color_black)"
+																: "var(--empName_bg)"
+														}
+														_hover={{
+															color: "var(--main_color_black)",
+															bg: shift
+																? "transparent"
+																: shift?.shift === "Off"
+																? "var(--bg_color_1)"
+																: "var(--empName_bg)",
+														}}
+														borderRadius={"10px"}
+														whiteSpace="wrap"
+													>
+														{shift?.shift === "Off"
+															? "Off"
+															: `${
+																	timeFormat === "12"
+																		? convertTo12HourFormatRange(shift?.shift)
+																		: shift?.shift
+															  } ${emp?.role} @ ${emp?.location}`}
+													</Button>
+													<IconButton
+														color={
+															shift?.shift === "Off"
+																? "var(--main_color_black)"
+																: "var(--empName_bg)"
+														}
+														size={"xs"}
+														icon={<SmallAddIcon />}
+														aria-label="Open Sidebar"
+														_hover={{ bg: "transparent" }}
+														isDisabled={j === 0 || j === 6}
+													/>
+												</HStack>
+											</Td>
+										);
+									})}
+								</Tr>
+							);
+						})}
 						{totalsRow?.map((totalRow, i) => (
 							<Tr
 								key={totalRow.label}
@@ -296,7 +325,8 @@ const WeeklyCalendarView = ({
 					selectedDays={weekDays}
 					empWeeklyShifts={empWeeklyShifts}
 					location={location}
-					sentResult={sentResult}
+					company={company}
+					weekTitle={weekTitle}
 					setSentResult={setSentResult}
 				/>
 			)}

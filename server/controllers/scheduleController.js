@@ -9,6 +9,7 @@ const Crew = require("../models/Crew");
 const DailyTotals = require("../models/DailyTotals");
 const Employee = require("../models/Employee");
 const { sendEmail } = require("../services/emailService");
+const EmployeeScheduleEmailLog = require("../models/EmployeeScheduleEmailLog");
 
 const getShifts = async (req, res) => {
 	try {
@@ -77,6 +78,19 @@ const getShiftByDate = async (req, res) => {
 			},
 		});
 		return res.status(200).json(shifts);
+	} catch (error) {
+		return res.status(500).json({ message: "Internal Server Error", error });
+	}
+};
+
+const getScheduleEmailLogs = async (req, res) => {
+	const { scheduleWeek, companyName } = req.params;
+
+	try {
+		const emailLogs = await EmployeeScheduleEmailLog.find({ scheduleWeek, companyName }).select(
+			"employeeName",
+		);
+		return res.status(200).json(emailLogs);
 	} catch (error) {
 		return res.status(500).json({ message: "Internal Server Error", error });
 	}
@@ -189,6 +203,7 @@ const getWorkWeekEmpShifts = async (req, res) => {
 				},
 			},
 		]);
+
 		for (const emp of crewEmps) {
 			const { name, role, payRate } = emp;
 			const empShiftExists = shifts?.find((_) => _.name === name);
@@ -346,20 +361,21 @@ const sendWorkShifts = async (req, res) => {
 				filename: attachment.filename,
 				path: attachment.path,
 			});
+
+			const { fullName, week, companyName } = newSchedule;
 			newSchedule.file = {
 				data: fs.readFileSync(attachment?.path),
 				contentType: attachment?.mimetype,
 				path: attachment?.path,
 			};
 			newSchedule.originalname = attachment?.originalname;
-			const assigneeEmail = await Employee.findOne({ fullName: newSchedule.fullName }).select([
-				"email",
-			]);
 
-			if (assigneeEmail?.email)
+			const assigneeEmail = await Employee.findOne({ fullName }).select(["email"]);
+
+			if (assigneeEmail?.email) {
 				await sendEmail(
 					assigneeEmail?.email,
-					`Weekly Schedule ${newSchedule.week}`,
+					`Weekly Schedule ${week}`,
 					"We have received your inquiry. An agent will get in touch with you shortly to discuss your interests and provide more information.",
 					`
 						<body style="margin: 0; font-family: Arial, Helvetica, sans-serif;height:'auto">
@@ -408,12 +424,12 @@ const sendWorkShifts = async (req, res) => {
 						font-size: 14px;
 					"
 				>
-					<h3 style="margin: 0; margin-bottom: 1em">Hi ${newSchedule?.fullName},</h3>
+					<h3 style="margin: 0; margin-bottom: 1em">Hi ${fullName},</h3>
 				 
 
 					<p style="font-weight: bold; margin: 5px 0"> ${
 						attachment
-							? `Please see your schedule for the week of ${newSchedule.week}. The attached file contains the details for your reference.`
+							? `Please see your schedule for the week of ${week}. The attached file contains the details for your reference.`
 							: ""
 					}</p>
 
@@ -426,8 +442,26 @@ const sendWorkShifts = async (req, res) => {
 					`,
 					attachments,
 				);
-			return res.status(201).json({ date: new Date(), message: "Email sent successfully" });
+				const data = {
+					employeeEmail: assigneeEmail?.email,
+					employeeName: fullName,
+					scheduleWeek: week,
+					status: "SENT",
+					companyName,
+				};
+				const existingRecord = await EmployeeScheduleEmailLog.findOne(data);
+				if (!existingRecord) {
+					await EmployeeScheduleEmailLog.create(data);
+				}
+
+				return res
+					.status(201)
+					.json({ date: new Date(), message: "Weekly schedule email sent successfully!" });
+			}
+			return res.status(404).json({ message: "Employee email not found." });
 		}
+
+		return res.status(404).json({ message: "Weekly schedule attachment not found." });
 	} catch (error) {
 		return res.status(500).json({ message: "Internal Server Error", error });
 	}
@@ -694,6 +728,7 @@ module.exports = {
 	getWorkShiftByWeek,
 	getEmpWorkShiftByDate,
 	getWorkWeekEmpShifts,
+	getScheduleEmailLogs,
 	updateDailyTotals,
 	getDailyTotals,
 	getLocationMonthlyTotals,

@@ -1,6 +1,4 @@
 import {
-	Alert,
-	AlertIcon,
 	Divider,
 	Modal,
 	ModalBody,
@@ -17,6 +15,7 @@ import {
 	Th,
 	Thead,
 	Tr,
+	useToast,
 } from "@chakra-ui/react";
 import ActionButtonGroup from "components/ui/form/ActionButtonGroup";
 import TextTitle from "components/ui/text/TextTitle";
@@ -37,9 +36,11 @@ export const EmpWeekScheduleModal = ({
 	weekStart,
 	weekEnd,
 	location,
-	sentResult,
+	company,
+	weekTitle,
 	setSentResult,
 }) => {
+	const toast = useToast();
 	const companyDetails = LocalStorageService.getItem("user")?.companyId;
 	const componentRef = useRef();
 	const [reportFileName, setReportFileName] = useState(null);
@@ -69,27 +70,36 @@ export const EmpWeekScheduleModal = ({
 		try {
 			const pdfBlob = await window.html2pdf().from(element).set(opt).outputPdf("blob");
 			const formData = new FormData();
-			formData.append("week", `${weekStart} - ${weekEnd}`);
+			formData.append("companyName", company);
+			formData.append("week", weekTitle);
 			formData.append("fullName", empWeeklyShifts?.name);
 			formData.append("file", pdfBlob, `${reportFileName}.pdf`);
 			setIsSending(true);
 			const { data } = await SchedulerService.sendSchedule(formData);
-			setSentResult(data);
+			toast({
+				title: empWeeklyShifts?.name,
+				description: `${data.message} at ${new Date(data?.date).toLocaleString()}`,
+				status: "success",
+				duration: 4000,
+				isClosable: true,
+			});
+			setSentResult((prev) => !prev);
+			onClose();
 		} catch (error) {
+			toast({
+				title: "Error",
+				description: error?.response?.data?.message,
+				status: "error",
+				duration: 3000,
+				isClosable: true,
+			});
 		} finally {
 			setIsSending(false);
 		}
 	};
 
 	return (
-		<Modal
-			isOpen={isOpen}
-			onClose={() => {
-				setSentResult(null);
-				onClose();
-			}}
-			size="2xl"
-		>
+		<Modal isOpen={isOpen} onClose={onClose} size="2xl">
 			<ModalOverlay />
 			<ModalContent>
 				<ModalHeader>Weekly Schedule</ModalHeader>
@@ -109,7 +119,7 @@ export const EmpWeekScheduleModal = ({
 							size={"lg"}
 							align={"center"}
 							textTransform={"uppercase"}
-							title={`Schedule for ${weekStart} - ${weekEnd}`}
+							title={`Schedule for ${weekTitle}`}
 						/>
 						<Stack spacing={3}>
 							<TextTitle title={`Name: ${empWeeklyShifts?.name}`} />
@@ -153,12 +163,6 @@ export const EmpWeekScheduleModal = ({
 								</Tbody>
 							</Table>
 						</TableContainer>
-						{sentResult && (
-							<Alert status="success" mt={4} rounded="md">
-								<AlertIcon />
-								{sentResult.message} — {new Date(sentResult?.date).toLocaleString()}
-							</Alert>
-						)}
 					</Stack>
 				</ModalBody>
 
