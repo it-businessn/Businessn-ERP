@@ -39,6 +39,7 @@ const WeeklyCalendarView = ({
 }) => {
 	// const locations = useWorkLocations(company, );
 	const weekDays = [...Array(7)].map((_, i) => addDays(weekStart, i));
+	const [sentResult, setSentResult] = useState(null);
 
 	const [shift, setShift] = useState(null);
 	const [empName, setEmpName] = useState(null);
@@ -295,6 +296,8 @@ const WeeklyCalendarView = ({
 					selectedDays={weekDays}
 					empWeeklyShifts={empWeeklyShifts}
 					location={location}
+					sentResult={sentResult}
+					setSentResult={setSentResult}
 				/>
 			)}
 			{showAddShiftModal && (

@@ -37,13 +37,14 @@ export const EmpWeekScheduleModal = ({
 	weekStart,
 	weekEnd,
 	location,
+	sentResult,
+	setSentResult,
 }) => {
 	const companyDetails = LocalStorageService.getItem("user")?.companyId;
 	const componentRef = useRef();
 	const [reportFileName, setReportFileName] = useState(null);
 
 	const [isSending, setIsSending] = useState(false);
-	const [sentResult, setSentResult] = useState(null);
 
 	useEffect(() => {
 		if (empWeeklyShifts?.shifts?.length) {
@@ -81,7 +82,14 @@ export const EmpWeekScheduleModal = ({
 	};
 
 	return (
-		<Modal isOpen={isOpen} onClose={onClose} size="2xl">
+		<Modal
+			isOpen={isOpen}
+			onClose={() => {
+				setSentResult(null);
+				onClose();
+			}}
+			size="2xl"
+		>
 			<ModalOverlay />
 			<ModalContent>
 				<ModalHeader>Weekly Schedule</ModalHeader>
