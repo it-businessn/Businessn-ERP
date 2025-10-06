@@ -141,7 +141,7 @@ const getWorkWeekEmpShifts = async (req, res) => {
 					notes: 1,
 					payRate: 1,
 					shift: {
-						$concat: ["$shiftStart", "-", "$shiftEnd"],
+						$concat: ["$shiftStart", " - ", "$shiftEnd"],
 					},
 					dayOfWeek: 1,
 				},
