@@ -20,7 +20,7 @@ import {
 import ActionButtonGroup from "components/ui/form/ActionButtonGroup";
 import TextTitle from "components/ui/text/TextTitle";
 import { format } from "date-fns";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 
 import { BsSendCheck } from "react-icons/bs";
 import LocalStorageService from "services/LocalStorageService";
@@ -41,22 +41,11 @@ export const EmpWeekScheduleModal = ({
 	setSentResult,
 }) => {
 	const toast = useToast();
+	const reportFileName = `${empWeeklyShifts?.name}_${weekStart}_${weekEnd}_Schedule.pdf`;
 	const companyDetails = LocalStorageService.getItem("user")?.companyId;
 	const componentRef = useRef();
-	const [reportFileName, setReportFileName] = useState(null);
 
 	const [isSending, setIsSending] = useState(false);
-
-	useEffect(() => {
-		if (empWeeklyShifts?.shifts?.length) {
-			setReportFileName(`${empWeeklyShifts.name}_${weekStart}_${weekEnd}_Schedule.pdf`);
-			empWeeklyShifts?.shifts?.map((entry) => {
-				entry.title =
-					entry?.shift === "Off" ? entry?.shift : convertTo12HourFormatRange(entry?.shift);
-				return entry;
-			});
-		}
-	}, [empWeeklyShifts?.shifts]);
 
 	const sendSchedule = async () => {
 		const element = componentRef.current;
@@ -72,9 +61,11 @@ export const EmpWeekScheduleModal = ({
 			const formData = new FormData();
 			formData.append("companyName", company);
 			formData.append("week", weekTitle);
+			formData.append("email", empWeeklyShifts?.email);
 			formData.append("fullName", empWeeklyShifts?.name);
 			formData.append("file", pdfBlob, `${reportFileName}.pdf`);
 			setIsSending(true);
+
 			const { data } = await SchedulerService.sendSchedule(formData);
 			toast({
 				title: empWeeklyShifts?.name,
@@ -121,8 +112,10 @@ export const EmpWeekScheduleModal = ({
 							textTransform={"uppercase"}
 							title={`Schedule for ${weekTitle}`}
 						/>
-						<Stack spacing={3}>
+						<Divider />
+						<Stack>
 							<TextTitle title={`Name: ${empWeeklyShifts?.name}`} />
+							<TextTitle title={`Email: ${empWeeklyShifts?.email}`} />
 							<TextTitle title={`Role: ${empWeeklyShifts?.role}`} />
 							<TextTitle title={`Location: ${empWeeklyShifts?.location || location}`} />
 						</Stack>
@@ -140,6 +133,8 @@ export const EmpWeekScheduleModal = ({
 								</Thead>
 								<Tbody>
 									{selectedDays?.map((day, i) => {
+										const currentShift = empWeeklyShifts?.shifts[i]?.shift;
+										const noShift = currentShift === "Off";
 										return (
 											<Tr key={day}>
 												<Td border="1px solid" borderColor="gray.300" fontWeight="medium">
@@ -148,13 +143,11 @@ export const EmpWeekScheduleModal = ({
 												<Td border="1px solid" borderColor="gray.300" textAlign="center">
 													<TextTitle
 														size={"sm"}
-														title={empWeeklyShifts?.shifts[i]?.title}
-														color={
-															empWeeklyShifts?.shifts[i]?.shift === "Off" ? "red.500" : "green.600"
+														title={
+															noShift ? currentShift : convertTo12HourFormatRange(currentShift)
 														}
-														fontWeight={
-															empWeeklyShifts?.shifts[i]?.shift === "Off" ? "semibold" : "normal"
-														}
+														color={noShift ? "red.500" : "green.600"}
+														fontWeight={noShift ? "semibold" : "normal"}
 													/>
 												</Td>
 											</Tr>

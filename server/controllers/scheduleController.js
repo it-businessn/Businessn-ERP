@@ -7,7 +7,6 @@ const EmployeeShift = require("../models/EmployeeShifts");
 const WorkShift = require("../models/WorkShift");
 const Crew = require("../models/Crew");
 const DailyTotals = require("../models/DailyTotals");
-const Employee = require("../models/Employee");
 const { sendEmail } = require("../services/emailService");
 const EmployeeScheduleEmailLog = require("../models/EmployeeScheduleEmailLog");
 const EmployeePayInfo = require("../models/EmployeePayInfo");
@@ -110,13 +109,24 @@ const getWorkWeekEmpShifts = async (req, res) => {
 		const crew = await Crew.findOne({ name, companyName });
 		const crewEmps = await Promise.all(
 			crew?.config?.employee?.map(async (emp) => {
-				const employeeData = await EmployeePayInfo.findOne({ empId: emp?._id, companyName });
+				const employeeData = await EmployeePayInfo.findOne({
+					empId: emp?._id,
+					companyName,
+				})
+					.populate({
+						path: "empId",
+						model: "Employee",
+						select: ["email"],
+					})
+					.select("empId roles");
 				const rate = employeeData?.roles[0]?.payRate || 0;
+				const email = employeeData?.empId?.email || "";
 
 				return {
 					name: emp?.fullName,
 					role: emp?.positions[0]?.title,
 					payRate: parseFloat(rate),
+					email,
 				};
 			}) || [],
 		);
@@ -147,6 +157,7 @@ const getWorkWeekEmpShifts = async (req, res) => {
 					location: 1,
 					notes: 1,
 					payRate: 1,
+					email: 1,
 					shift: {
 						$concat: ["$shiftStart", " - ", "$shiftEnd"],
 					},
@@ -160,6 +171,7 @@ const getWorkWeekEmpShifts = async (req, res) => {
 						role: "$role",
 						location: "$location",
 						payRate: "$payRate",
+						email: "$email",
 					},
 					notes: { $addToSet: "$notes" },
 					shifts: {
@@ -180,6 +192,7 @@ const getWorkWeekEmpShifts = async (req, res) => {
 					role: "$_id.role",
 					location: "$_id.location",
 					payRate: "$_id.payRate",
+					email: "$_id.email",
 					notes: { $arrayElemAt: ["$notes", 0] },
 					shiftsObj: { $arrayToObject: "$shifts" },
 				},
@@ -206,19 +219,21 @@ const getWorkWeekEmpShifts = async (req, res) => {
 					role: "$role",
 					location: "$location",
 					payRate: "$payRate",
+					email: "$email",
 					shifts: 1,
 				},
 			},
 		]);
 
 		for (const emp of crewEmps) {
-			const { name, role, payRate } = emp;
+			const { name, role, payRate, email } = emp;
 			const empShiftExists = shifts?.find((_) => _.name === name);
 			if (!empShiftExists) {
 				shifts.push({
 					name,
 					role,
 					payRate,
+					email,
 					shifts: [
 						{ shift: "Off" },
 						{ shift: "Off" },
@@ -377,11 +392,11 @@ const sendWorkShifts = async (req, res) => {
 			};
 			newSchedule.originalname = attachment?.originalname;
 
-			const assigneeEmail = await Employee.findOne({ fullName }).select(["email"]);
+			const employeeEmail = newSchedule.email;
 
-			if (assigneeEmail?.email) {
+			if (employeeEmail) {
 				await sendEmail(
-					assigneeEmail?.email,
+					employeeEmail,
 					`Weekly Schedule ${week}`,
 					"We have received your inquiry. An agent will get in touch with you shortly to discuss your interests and provide more information.",
 					`
@@ -450,7 +465,7 @@ const sendWorkShifts = async (req, res) => {
 					attachments,
 				);
 				const data = {
-					employeeEmail: assigneeEmail?.email,
+					employeeEmail,
 					employeeName: fullName,
 					scheduleWeek: week,
 					status: "SENT",
@@ -488,6 +503,7 @@ const addWorkShifts = async (req, res) => {
 		companyName,
 		crew,
 		payRate,
+		email,
 	} = req.body;
 
 	try {
@@ -528,6 +544,7 @@ const addWorkShifts = async (req, res) => {
 				companyName,
 				crew,
 				payRate,
+				email,
 			});
 		}
 		// }
@@ -628,6 +645,7 @@ const updateShift = async (req, res) => {
 			hours,
 			companyName,
 			payRate,
+			email,
 		} = req.body;
 
 		// if (hours <= 5) {
@@ -643,6 +661,7 @@ const updateShift = async (req, res) => {
 					shiftEnd,
 					hours,
 					payRate,
+					email,
 				},
 			},
 			{ new: true },

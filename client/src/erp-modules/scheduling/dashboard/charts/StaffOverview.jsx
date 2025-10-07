@@ -112,7 +112,7 @@ const StaffOverview = ({ company, crews, selectedCrew, setSelectedCrew }) => {
 				<Select
 					width="200px"
 					size={"sm"}
-					value={selectedCrew}
+					value={selectedCrew || ""}
 					onChange={(event) => {
 						if (event.target.value) setSelectedCrew(event.target.value);
 					}}

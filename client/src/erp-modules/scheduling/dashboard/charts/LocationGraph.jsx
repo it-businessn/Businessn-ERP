@@ -61,7 +61,7 @@ const LocationGraph = ({ company }) => {
 				<Select
 					width="200px"
 					size={"sm"}
-					value={selectedMonth}
+					value={selectedMonth || ""}
 					onChange={(event) => {
 						const month = parseInt(event.target.value);
 						setSelectedMonth(month);

@@ -1,9 +1,7 @@
-import { HStack, Select, Tooltip, useDisclosure, VStack } from "@chakra-ui/react";
-import FormControlMain from "components/ui/form";
+import { HStack, Tooltip, useDisclosure, VStack } from "@chakra-ui/react";
 import ActionButtonGroup from "components/ui/form/ActionButtonGroup";
 import DateTimeFormControl from "components/ui/form/DateTimeFormControl";
 import InputFormControl from "components/ui/form/InputFormControl";
-import RequiredLabel from "components/ui/form/RequiredLabel";
 import SelectFormControl from "components/ui/form/SelectFormControl";
 import ModalLayout from "components/ui/modal/ModalLayout";
 import TextTitle from "components/ui/text/TextTitle";
@@ -52,6 +50,7 @@ const ShiftModal = ({
 		hours: parseInt(shift?.duration) || 0,
 		crew,
 		payRate: shift?.payRate || payRate || 0,
+		email: shift?.email || "",
 	};
 	const [formData, setFormData] = useState(defaultShiftInfo);
 
@@ -101,7 +100,13 @@ const ShiftModal = ({
 			onClose={handleClose}
 		>
 			<VStack alignItems="flex-start">
-				<FormControlMain>
+				<InputFormControl
+					label="Employee Name"
+					name="fullName"
+					readOnly
+					valueText={formData?.employeeName}
+				/>
+				{/* <FormControlMain>
 					<RequiredLabel label="Employee Name" />
 					<Select
 						name="fullName"
@@ -122,7 +127,7 @@ const ShiftModal = ({
 							</option>
 						))}
 					</Select>
-				</FormControlMain>
+				</FormControlMain> */}
 				<HStack w="100%" justify={"space-between"} alignItems={"center"}>
 					<SelectFormControl
 						valueParam="name"

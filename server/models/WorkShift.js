@@ -3,9 +3,10 @@ const mongoose = require("mongoose");
 const shiftSchema = new mongoose.Schema(
 	{
 		empName: String,
-		payRate: String,
+		payRate: { type: String, ref: "EmployeePayInfo" },
 		role: String,
 		notes: String,
+		email: { type: String, ref: "Employee" },
 		location: { type: String, ref: "Location" },
 		shiftDate: Date,
 		shiftStart: String,
