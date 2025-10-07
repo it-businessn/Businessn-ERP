@@ -5,7 +5,7 @@ import "react-big-calendar/lib/css/react-big-calendar.css";
 import { Line } from "react-chartjs-2";
 import SchedulerService from "services/SchedulerService";
 
-const StaffOverview = ({ company }) => {
+const StaffOverview = ({ company, crews, selectedCrew, setSelectedCrew }) => {
 	const [dailyTotals, setDailyTotals] = useState(null);
 
 	const options = {
@@ -57,11 +57,11 @@ const StaffOverview = ({ company }) => {
 	useEffect(() => {
 		const fetchTotals = async () => {
 			try {
-				const { data } = await SchedulerService.getDailyTotals(company);
+				const { data } = await SchedulerService.getDailyTotals(company, selectedCrew);
 
 				const monthlyTotals = Array(12).fill(0);
 				data.forEach((item) => {
-					monthlyTotals[item._id - 1] = item.totalRunning; // month is 1-based
+					monthlyTotals[item._id - 1] = item.maxRunningTotal; // month is 1-based
 				});
 
 				const graphData = {
@@ -95,8 +95,8 @@ const StaffOverview = ({ company }) => {
 				setDailyTotals(graphData);
 			} catch (error) {}
 		};
-		fetchTotals();
-	}, []);
+		if (selectedCrew) fetchTotals();
+	}, [selectedCrew]);
 
 	return (
 		<Box
@@ -109,8 +109,19 @@ const StaffOverview = ({ company }) => {
 		>
 			<Flex justify="space-between" align="center" mb="1" color={"var(--nav_color)"}>
 				<TextTitle title={"Staffing Overview for Monthly running Total"} />
-				<Select width="200px" size={"sm"}>
-					<option>Crew</option>
+				<Select
+					width="200px"
+					size={"sm"}
+					value={selectedCrew}
+					onChange={(event) => {
+						if (event.target.value) setSelectedCrew(event.target.value);
+					}}
+				>
+					{crews?.map(({ name }) => (
+						<option key={name} value={name}>
+							{name}
+						</option>
+					))}
 				</Select>
 			</Flex>
 			<Box w={{ base: "650px" }} mx={"auto"}>

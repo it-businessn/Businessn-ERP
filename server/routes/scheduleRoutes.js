@@ -6,7 +6,7 @@ const { storageSpace } = require("../services/fileService");
 
 router.get("/", scheduleController.getShifts);
 
-router.get("/dailyTotals/:companyName", scheduleController.getDailyTotals);
+router.get("/dailyTotals/:companyName/:crew", scheduleController.getDailyTotals);
 
 router.get(
 	"/location-monthlyTotals/:companyName/:month",

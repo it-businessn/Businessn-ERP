@@ -1,4 +1,5 @@
 import { SimpleGrid } from "@chakra-ui/react";
+import useCrews from "hooks/useCrews";
 import PageLayout from "layouts/PageLayout";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import LocalStorageService from "services/LocalStorageService";
@@ -24,6 +25,7 @@ export const MONTHS = [
 
 const SchedulingDashboard = () => {
 	const company = LocalStorageService.getItem("selectedCompany");
+	const { crews, selectedCrew, setSelectedCrew } = useCrews(company);
 
 	return (
 		<PageLayout title={"Dashboard"}>
@@ -33,7 +35,12 @@ const SchedulingDashboard = () => {
 				mr="4"
 				templateColumns={{ lg: "70% 30%" }}
 			>
-				<StaffOverview company={company} />
+				<StaffOverview
+					company={company}
+					crews={crews}
+					selectedCrew={selectedCrew}
+					setSelectedCrew={setSelectedCrew}
+				/>
 				<StatsCard />
 			</SimpleGrid>
 			<SimpleGrid
@@ -43,7 +50,11 @@ const SchedulingDashboard = () => {
 				mr="4"
 				templateColumns={{ lg: "70% 30%" }}
 			>
-				<ProjectOverview />
+				<ProjectOverview
+					crews={crews}
+					selectedCrew={selectedCrew}
+					setSelectedCrew={setSelectedCrew}
+				/>
 				<LocationGraph company={company} />
 			</SimpleGrid>
 		</PageLayout>

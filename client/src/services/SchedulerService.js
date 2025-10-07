@@ -9,8 +9,8 @@ const SchedulerService = {
 		return apiService.get(`/schedule/${data.date}/${data.company}`);
 	},
 
-	async getDailyTotals(company) {
-		return apiService.get(`/schedule/dailyTotals/${company}`);
+	async getDailyTotals(company, crew) {
+		return apiService.get(`/schedule/dailyTotals/${company}/${crew}`);
 	},
 
 	async getLocationMonthlyTotals(company, month) {

@@ -3,7 +3,7 @@ import TextTitle from "components/ui/text/TextTitle";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import { Bar } from "react-chartjs-2";
 
-const ProjectOverview = () => {
+const ProjectOverview = ({ crews, selectedCrew, setSelectedCrew }) => {
 	const options = {
 		scales: {
 			y: {
@@ -82,14 +82,18 @@ const ProjectOverview = () => {
 			<Flex justify="space-between" align="center" mb="1" color={"var(--nav_color)"}>
 				<TextTitle title={"Project Overview"} />
 				<Select
-					width="auto"
-					border={"none"}
-					fontSize={"xs"}
-					ml={"1em"}
-					// visibility={"hidden"}
+					width="200px"
+					size={"sm"}
+					value={selectedCrew}
+					onChange={(event) => {
+						// if (event.target.value) setSelectedCrew(event.target.value);
+					}}
 				>
-					<option>Yearly</option>
-					{/* <option>Last Month</option> */}
+					{crews?.map(({ name }) => (
+						<option key={name} value={name}>
+							{name}
+						</option>
+					))}
 				</Select>
 			</Flex>
 			<Box w={{ base: "650px" }} mx={"auto"}>

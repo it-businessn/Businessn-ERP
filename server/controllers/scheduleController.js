@@ -45,15 +45,15 @@ const getLocationMonthlyTotals = async (req, res) => {
 	}
 };
 const getDailyTotals = async (req, res) => {
-	const { companyName } = req.params;
+	const { companyName, crew } = req.params;
 
 	try {
 		const totals = await DailyTotals.aggregate([
-			{ $match: { companyName } },
+			{ $match: { companyName, crew } },
 			{
 				$group: {
 					_id: "$month", // group by month (1-12)
-					totalRunning: { $sum: "$runningTotal" },
+					maxRunningTotal: { $max: "$runningTotal" },
 				},
 			},
 			{

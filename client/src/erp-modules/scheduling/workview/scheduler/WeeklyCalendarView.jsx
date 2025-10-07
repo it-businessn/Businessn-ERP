@@ -203,7 +203,7 @@ const WeeklyCalendarView = ({
 						</Tr>
 					</Thead>
 					<Tbody>
-						{(!employeeShifts || employeeShifts?.length === 0) && (
+						{employeeShifts?.length === 0 && (
 							<EmptyRowRecord
 								data={employeeShifts}
 								colSpan={weekDays?.length + 1}
@@ -295,25 +295,26 @@ const WeeklyCalendarView = ({
 								</Tr>
 							);
 						})}
-						{totalsRow?.map((totalRow, i) => (
-							<Tr
-								key={totalRow.label}
-								fontWeight="bold"
-								bg="gray.100"
-								position="sticky"
-								bottom={`${(totalsRow.length - 1 - i) * 32}px`}
-								zIndex="1"
-							>
-								<Td py={0} px={1}>
-									{totalRow.label}
-								</Td>
-								{totalRow?.value?.map((record, dayIdx) => (
-									<Td w="200px" py={2} key={`${totalRow.key}_${dayIdx}`}>
-										<TextTitle align="center" title={record.toFixed(2)} />
+						{employeeShifts?.length > 0 &&
+							totalsRow?.map((totalRow, i) => (
+								<Tr
+									key={totalRow.label}
+									fontWeight="bold"
+									bg="gray.100"
+									position="sticky"
+									bottom={`${(totalsRow.length - 1 - i) * 32}px`}
+									zIndex="1"
+								>
+									<Td py={0} px={1}>
+										{totalRow.label}
 									</Td>
-								))}
-							</Tr>
-						))}
+									{totalRow?.value?.map((record, dayIdx) => (
+										<Td w="200px" py={2} key={`${totalRow.key}_${dayIdx}`}>
+											<TextTitle align="center" title={record.toFixed(2)} />
+										</Td>
+									))}
+								</Tr>
+							))}
 					</Tbody>
 				</Table>
 			</Box>
