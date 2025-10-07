@@ -8,7 +8,10 @@ router.get("/", scheduleController.getShifts);
 
 router.get("/dailyTotals/:companyName", scheduleController.getDailyTotals);
 
-router.get("/location-monthlyTotals/:companyName", scheduleController.getLocationMonthlyTotals);
+router.get(
+	"/location-monthlyTotals/:companyName/:month",
+	scheduleController.getLocationMonthlyTotals,
+);
 
 router.get("/:id/:name", scheduleController.getShiftByDate);
 

@@ -1,6 +1,5 @@
 import { SimpleGrid } from "@chakra-ui/react";
 import PageLayout from "layouts/PageLayout";
-import { useState } from "react";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import LocalStorageService from "services/LocalStorageService";
 import LocationGraph from "./charts/LocationGraph";
@@ -8,66 +7,23 @@ import ProjectOverview from "./charts/ProjectOverview";
 import StaffOverview from "./charts/StaffOverview";
 import StatsCard from "./charts/StatsCard";
 
+export const MONTHS = [
+	{ name: "January", value: 1 },
+	{ name: "February", value: 2 },
+	{ name: "March", value: 3 },
+	{ name: "April", value: 4 },
+	{ name: "May", value: 5 },
+	{ name: "June", value: 6 },
+	{ name: "July", value: 7 },
+	{ name: "August", value: 8 },
+	{ name: "September", value: 9 },
+	{ name: "October", value: 10 },
+	{ name: "November", value: 11 },
+	{ name: "December", value: 12 },
+];
+
 const SchedulingDashboard = () => {
 	const company = LocalStorageService.getItem("selectedCompany");
-	// const [events, setEvents] = useState(null);
-	// const [meetings, setMeetings] = useState(null);
-	// const [appointments, setAppointments] = useState(null);
-	const [isRefresh, setIsRefresh] = useState(false);
-
-	// useEffect(() => {
-	// 	const fetchAllEvents = async () => {
-	// 		try {
-	// 			const {data} = await CalendarService.getEventsByType({
-	// 				type: "event",
-	// 				company,
-	// 			});
-	// 			setEvents(data);
-	// 		} catch (error) {
-	// 			console.error(error);
-	// 		}
-	// 	};
-	// 	const fetchAllMeetings = async () => {
-	// 		try {
-	// 			const {data} = await CalendarService.getEventsByType({
-	// 				type: "meeting",
-	// 				company,
-	// 			});
-	// 			setMeetings(data);
-	// 		} catch (error) {
-	// 			console.error(error);
-	// 		}
-	// 	};
-	// 	const fetchAllAppointments = async () => {
-	// 		try {
-	// 			const {data} = await CalendarService.getEventsByType({
-	// 				type: "phoneCall",
-	// 				company,
-	// 			});
-	// 			setAppointments(data);
-	// 		} catch (error) {
-	// 			console.error(error);
-	// 		}
-	// 	};
-	// 	fetchAllEvents();
-	// 	fetchAllMeetings();
-	// 	fetchAllAppointments();
-	// }, [isRefresh]);
-
-	// const STATS = [
-	// 	{
-	// 		name: "Events",
-	// 		count: events?.length,
-	// 	},
-	// 	{
-	// 		name: "Meetings",
-	// 		count: meetings?.length,
-	// 	},
-	// 	{
-	// 		name: "Appointments",
-	// 		count: appointments?.length,
-	// 	},
-	// ];
 
 	return (
 		<PageLayout title={"Dashboard"}>

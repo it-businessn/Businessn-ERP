@@ -1,6 +1,7 @@
 const { getShadowUserIds } = require("../helpers/userHelper");
 const CostCenter = require("../models/CostCenter");
 const Crew = require("../models/Crew");
+const DailyTotals = require("../models/DailyTotals");
 const Department = require("../models/Department");
 const EmployeeRole = require("../models/EmployeeRole");
 const EmploymentPositionRole = require("../models/EmploymentPositionRole");
@@ -9,6 +10,7 @@ const Group = require("../models/Group");
 const Location = require("../models/Location");
 const Module = require("../models/Module");
 const Setup = require("../models/Setup");
+const WorkShift = require("../models/WorkShift");
 
 const { CURRENT_YEAR } = require("../services/data");
 
@@ -131,6 +133,13 @@ const updateCrew = async (req, res) => {
 			config: include,
 			companyName,
 		};
+		const existingCrew = await Crew.findById(id);
+		const oldName = existingCrew.name;
+		if (oldName !== crewName) {
+			await WorkShift.updateMany({ companyName, crew: oldName }, { $set: { crew: crewName } });
+			await DailyTotals.updateMany({ companyName, crew: oldName }, { $set: { crew: crewName } });
+		}
+
 		const crew = await Crew.findByIdAndUpdate(id, { $set: updatedData }, { new: true });
 		return res.status(200).json(crew);
 	} catch (error) {

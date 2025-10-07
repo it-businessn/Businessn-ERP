@@ -4,9 +4,12 @@ import { useEffect, useState } from "react";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import { Doughnut } from "react-chartjs-2";
 import SchedulerService from "services/SchedulerService";
+import { CURRENT_MONTH } from "utils/convertDate";
+import { MONTHS } from "..";
 
 const LocationGraph = ({ company }) => {
 	const [dailyTotals, setDailyTotals] = useState(null);
+	const [selectedMonth, setSelectedMonth] = useState(CURRENT_MONTH);
 	const options = {
 		plugins: {
 			legend: {
@@ -23,16 +26,16 @@ const LocationGraph = ({ company }) => {
 	};
 
 	useEffect(() => {
-		const colors = ["#537eee", "#49a86f", "#7713c9"];
+		const colors = ["#537eee", "#49a86f", "#d68e67"];
 		const fetchTotals = async () => {
 			try {
-				const { data } = await SchedulerService.getLocationMonthlyTotals(company);
+				const { data } = await SchedulerService.getLocationMonthlyTotals(company, selectedMonth);
 
 				const graphData = {
 					labels: data.map((item) => item._id),
 					datasets: [
 						{
-							data: data.map((item) => item.totalRunning),
+							data: data.map((item) => item.maxRunningTotal),
 							backgroundColor: colors.slice(0, data.length),
 							hoverBackgroundColor: colors.slice(0, data.length),
 						},
@@ -42,7 +45,7 @@ const LocationGraph = ({ company }) => {
 			} catch (error) {}
 		};
 		fetchTotals();
-	}, []);
+	}, [selectedMonth]);
 
 	return (
 		<Box
@@ -55,8 +58,20 @@ const LocationGraph = ({ company }) => {
 		>
 			<Flex justify="space-between" align="center" mb="1" color={"var(--nav_color)"}>
 				<TextTitle title={"Overview for Location"} />
-				<Select width="200px" size={"sm"}>
-					<option>Month</option>
+				<Select
+					width="200px"
+					size={"sm"}
+					value={selectedMonth}
+					onChange={(event) => {
+						const month = parseInt(event.target.value);
+						setSelectedMonth(month);
+					}}
+				>
+					{MONTHS?.map(({ name, value }) => (
+						<option key={value} value={value}>
+							{name}
+						</option>
+					))}
 				</Select>
 			</Flex>
 			<Box w={{ base: "70%" }} mx={"auto"}>

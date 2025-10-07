@@ -77,3 +77,4 @@ export const getTaskCheckboxCss = (isTaskComplete) => {
 
 export const isBusinessN = (company) => company === COMPANIES.BUSINESSN_ORG;
 export const isCornerStone = (company) => company === COMPANIES.CORNERSTONE;
+export const isNW = (company) => company === COMPANIES.NW;

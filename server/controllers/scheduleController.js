@@ -10,6 +10,7 @@ const DailyTotals = require("../models/DailyTotals");
 const Employee = require("../models/Employee");
 const { sendEmail } = require("../services/emailService");
 const EmployeeScheduleEmailLog = require("../models/EmployeeScheduleEmailLog");
+const EmployeePayInfo = require("../models/EmployeePayInfo");
 
 const getShifts = async (req, res) => {
 	try {
@@ -21,20 +22,22 @@ const getShifts = async (req, res) => {
 };
 
 const getLocationMonthlyTotals = async (req, res) => {
-	const { companyName } = req.params;
+	const { companyName, month } = req.params;
 
 	try {
 		const totals = await DailyTotals.aggregate([
-			{ $match: { companyName } },
+			{ $match: { companyName, month: parseInt(month) } },
 			{
-				$group: {
-					_id: "$crew",
-					totalRunning: { $sum: "$runningTotal" },
+				$addFields: {
+					year: { $year: "$date" },
+					month: { $month: "$date" },
 				},
 			},
 			{
-				$sort: { _id: 1 },
+				$group: { _id: "$crew", maxRunningTotal: { $max: "$runningTotal" } },
 			},
+
+			{ $sort: { maxRunningTotal: -1 } },
 		]);
 		return res.status(200).json(totals);
 	} catch (error) {
@@ -104,15 +107,19 @@ const getWorkWeekEmpShifts = async (req, res) => {
 	const end = addDays(start, 6);
 
 	try {
-		const crew = await Crew.findOne({ name });
-		const crewEmps =
-			crew?.config?.employee?.map((_) => {
+		const crew = await Crew.findOne({ name, companyName });
+		const crewEmps = await Promise.all(
+			crew?.config?.employee?.map(async (emp) => {
+				const employeeData = await EmployeePayInfo.findOne({ empId: emp?._id, companyName });
+				const rate = employeeData?.roles[0]?.payRate || 0;
+
 				return {
-					name: _?.fullName,
-					role: _?.positions[0]?.title,
-					payRate: parseFloat(_?.positions[0]?.payRate ?? 0),
+					name: emp?.fullName,
+					role: emp?.positions[0]?.title,
+					payRate: parseFloat(rate),
 				};
-			}) || [];
+			}) || [],
+		);
 
 		// const locationIds = crew?.config?.department?.map((_) => _.name) || [];
 		const shifts = await WorkShift.aggregate([

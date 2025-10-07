@@ -127,6 +127,7 @@ const WeeklyCalendarView = ({
 					runningTotal: monthlySum,
 				};
 			});
+
 			setDailyDataWithRunning(dailyData);
 		}
 	}, [employeeShifts]);
@@ -138,7 +139,7 @@ const WeeklyCalendarView = ({
 					await SchedulerService.updateDailyTotals({ selectedCrew, dailyDataWithRunning, company });
 				} catch (error) {}
 			};
-			saveDailyTotals();
+			if (dailyDataWithRunning?.find((_) => _.dayHours > 0)) saveDailyTotals();
 		}
 	}, [dailyDataWithRunning]);
 
@@ -160,7 +161,7 @@ const WeeklyCalendarView = ({
 	// 	return hours; //`${h}h ${m}m`;
 	// };
 
-	const handleItemClick = (emp, shiftTime, shiftDate) => {
+	const onShiftClicked = (emp, shiftTime, shiftDate) => {
 		setShowAddShiftModal(true);
 		let newShift = null;
 		if (emp) {
@@ -171,8 +172,8 @@ const WeeklyCalendarView = ({
 			newShift.notes = shiftTime?.notes;
 			newShift._id = shiftTime?.shiftId;
 			const [shiftStart, shiftEnd] = shiftTime?.shift.split("-");
-			newShift.shiftStart = shiftStart;
-			newShift.shiftEnd = shiftEnd;
+			newShift.shiftStart = shiftStart?.trim();
+			newShift.shiftEnd = shiftEnd?.trim();
 		}
 		if (shiftDate) {
 			newShift.shiftDate = moment(shiftDate).toISOString();
@@ -237,7 +238,7 @@ const WeeklyCalendarView = ({
 													justify={"space-between"}
 													w="200px"
 													cursor={"pointer"}
-													onClick={() => handleItemClick(emp, shift, weekDays[j])}
+													onClick={() => onShiftClicked(emp, shift, weekDays[j])}
 												>
 													<Button
 														minH={"40px"}

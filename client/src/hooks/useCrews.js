@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import SettingService from "services/SettingService";
+import { isNW } from "utils/common";
 
 const useCrews = (company, refresh) => {
 	const [crews, setCrews] = useState(null);
@@ -10,7 +11,8 @@ const useCrews = (company, refresh) => {
 			try {
 				const { data } = await SettingService.getAllCrews(company);
 				setCrews(data);
-				setSelectedCrew("Restaurant");
+				const location = isNW(company) ? "Restaurant" : data[0]?.name;
+				setSelectedCrew(location);
 			} catch (error) {
 				console.error(error);
 			}

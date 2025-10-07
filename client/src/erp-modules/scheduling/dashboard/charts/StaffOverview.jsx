@@ -113,7 +113,7 @@ const StaffOverview = ({ company }) => {
 					<option>Crew</option>
 				</Select>
 			</Flex>
-			<Box w={{ base: "60%" }} mx={"auto"}>
+			<Box w={{ base: "650px" }} mx={"auto"}>
 				<Line data={dailyTotals} options={options} />
 			</Box>
 		</Box>
