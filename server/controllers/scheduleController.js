@@ -1,4 +1,3 @@
-const { startOfDay, addDays, format } = require("date-fns");
 const moment = require("moment");
 const path = require("path");
 const fs = require("fs");
@@ -100,10 +99,10 @@ const getScheduleEmailLogs = async (req, res) => {
 
 const getWorkWeekEmpShifts = async (req, res) => {
 	const { name, date, companyName } = req.params;
+	const inputDate = moment.utc(new Date(date));
 
-	const inputDate = new Date(date);
-	const start = startOfDay(inputDate);
-	const end = addDays(start, 6);
+	const start = inputDate.clone().startOf("week");
+	const end = inputDate.clone().endOf("week");
 
 	try {
 		const crew = await Crew.findOne({ name, companyName });
@@ -136,8 +135,8 @@ const getWorkWeekEmpShifts = async (req, res) => {
 			{
 				$match: {
 					shiftDate: {
-						$gte: start,
-						$lte: end,
+						$gte: start.toDate(),
+						$lte: end.toDate(),
 					},
 					companyName,
 					crew: name,
@@ -158,9 +157,7 @@ const getWorkWeekEmpShifts = async (req, res) => {
 					notes: 1,
 					payRate: 1,
 					email: 1,
-					shift: {
-						$concat: ["$shiftStart", " - ", "$shiftEnd"],
-					},
+					shift: { $concat: ["$shiftStart", " - ", "$shiftEnd"] },
 					dayOfWeek: 1,
 				},
 			},
@@ -215,11 +212,11 @@ const getWorkWeekEmpShifts = async (req, res) => {
 			},
 			{
 				$project: {
-					name: "$name",
-					role: "$role",
-					location: "$location",
-					payRate: "$payRate",
-					email: "$email",
+					name: 1,
+					role: 1,
+					location: 1,
+					payRate: 1,
+					email: 1,
 					shifts: 1,
 				},
 			},

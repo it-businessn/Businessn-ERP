@@ -1,4 +1,4 @@
-import { HStack, Tooltip, useDisclosure, VStack } from "@chakra-ui/react";
+import { Checkbox, HStack, Tooltip, useDisclosure, VStack } from "@chakra-ui/react";
 import ActionButtonGroup from "components/ui/form/ActionButtonGroup";
 import DateTimeFormControl from "components/ui/form/DateTimeFormControl";
 import InputFormControl from "components/ui/form/InputFormControl";
@@ -223,7 +223,7 @@ const ShiftModal = ({
 				{formData?.shiftDuration && (
 					<TextTitle size="sm" title={`Shift duration: ${formData?.shiftDuration}`} />
 				)}
-				{/* {!shift?._id && (
+				{!shift?._id && (
 					<Checkbox
 						colorScheme="facebook"
 						name="repeatSchedule"
@@ -232,7 +232,7 @@ const ShiftModal = ({
 					>
 						Repeat for 1 week
 					</Checkbox>
-				)} */}
+				)}
 			</VStack>
 			<ActionButtonGroup
 				submitBtnName={`${shift?._id ? "Save" : "Add"}`}

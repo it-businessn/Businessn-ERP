@@ -1,5 +1,6 @@
-import { Box, Flex } from "@chakra-ui/react";
+import { Box, Flex, HStack } from "@chakra-ui/react";
 import ComingSoon from "components/ComingSoon";
+import PrimaryButton from "components/ui/button/PrimaryButton";
 import { addDays, startOfWeek } from "date-fns";
 import useCrews from "hooks/useCrews";
 import PageLayout from "layouts/PageLayout";
@@ -32,6 +33,8 @@ const ScheduleWorkView = () => {
 		}
 	}, [selectedCrew]);
 
+	const handleRepeat = () => {};
+
 	return (
 		<PageLayout title="">
 			<Flex justify="space-between" alignItems="center" mb={3}>
@@ -43,8 +46,15 @@ const ScheduleWorkView = () => {
 					setTimeFormat={setTimeFormat}
 				/>
 				<WeekFilter weekStart={weekStart} setWeekStart={setWeekStart} />
-
-				<WorkviewTabs />
+				<HStack alignItems="center">
+					<PrimaryButton
+						bg="var(--empName_bg)"
+						onOpen={handleRepeat}
+						size={"sm"}
+						name="Repeat Schedule"
+					/>
+					<WorkviewTabs />
+				</HStack>
 			</Flex>
 
 			{view === TAB_VIEW.WEEK && (

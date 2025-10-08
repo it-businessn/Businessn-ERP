@@ -6,6 +6,7 @@ import { useState } from "react";
 import { format } from "date-fns";
 import moment from "moment";
 import { BsSendCheck } from "react-icons/bs";
+import { FaMinus } from "react-icons/fa";
 import { convertTo12HourFormatRange } from "utils/convertDate";
 import { EmpWeekScheduleModal } from "../modal/EmpWeekScheduleModal";
 import ShiftModal from "../modal/ShiftModal";
@@ -23,6 +24,7 @@ export const EmpScheduleRow = ({
 	selectedCrew,
 	weekTitle,
 	setSentResult,
+	filterEmpFromCurrentSchedule,
 }) => {
 	const [empName, setEmpName] = useState(null);
 	const [empRole, setEmpRole] = useState(null);
@@ -60,6 +62,11 @@ export const EmpScheduleRow = ({
 		<>
 			<Td p={0} w="200px">
 				<Flex px={3} alignItems="center" gap={2}>
+					<Tooltip label="Remove user from current schedule">
+						<span>
+							<FaMinus cursor="pointer" onClick={() => filterEmpFromCurrentSchedule(emp?.name)} />
+						</span>
+					</Tooltip>
 					<NormalTextTitle whiteSpace="nowrap" size="sm" title={emp?.name} />
 
 					<Tooltip label="Send week schedule">

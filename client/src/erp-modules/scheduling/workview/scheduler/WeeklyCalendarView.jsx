@@ -128,6 +128,10 @@ const WeeklyCalendarView = ({
 		},
 	];
 
+	const filterEmpFromCurrentSchedule = (name) => {
+		setEmployeeShifts(employeeShifts.filter((emp) => emp?.name !== name));
+	};
+
 	// const minutesToHoursAndMinutes = (mins) => {
 	// 	const hours = mins.toFixed(2);
 	// 	const h = Math.floor(mins / 60);
@@ -169,6 +173,7 @@ const WeeklyCalendarView = ({
 							>
 								<EmpScheduleRow
 									emp={emp}
+									filterEmpFromCurrentSchedule={filterEmpFromCurrentSchedule}
 									employeesList={employeesList}
 									weekDays={weekDays}
 									timeFormat={timeFormat}
