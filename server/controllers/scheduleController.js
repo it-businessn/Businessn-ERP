@@ -501,7 +501,7 @@ const repeatWeeklySchedule = async (req, res) => {
 			shifts.forEach((record, idx) => {
 				const currentShiftDate = currentWeekDates[idx];
 
-				if (record.shift !== "Off") {
+				if (record.shift && record.shift !== "Off") {
 					const [shiftStart, shiftEnd] = record.shift.split("-");
 					record.shiftStart = shiftStart;
 					record.shiftEnd = shiftEnd;
