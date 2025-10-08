@@ -44,6 +44,7 @@ export const EmpWeekScheduleModal = ({
 	const reportFileName = `${empWeeklyShifts?.name}_${weekStart}_${weekEnd}_Schedule.pdf`;
 	const companyDetails = LocalStorageService.getItem("user")?.companyId;
 	const componentRef = useRef();
+	const shiftLocation = empWeeklyShifts?.location || location;
 
 	const [isSending, setIsSending] = useState(false);
 
@@ -63,13 +64,15 @@ export const EmpWeekScheduleModal = ({
 			formData.append("week", weekTitle);
 			formData.append("email", empWeeklyShifts?.email);
 			formData.append("fullName", empWeeklyShifts?.name);
+			formData.append("location", shiftLocation);
 			formData.append("file", pdfBlob, `${reportFileName}.pdf`);
 			setIsSending(true);
 
 			const { data } = await SchedulerService.sendSchedule(formData);
 			toast({
 				title: empWeeklyShifts?.name,
-				description: `${data.message} at ${new Date(data?.date).toLocaleString()}`,
+				// description: `${data.message} at ${new Date(data?.date).toLocaleString()}`,
+				description: data.message,
 				status: "success",
 				duration: 4000,
 				isClosable: true,
@@ -117,7 +120,7 @@ export const EmpWeekScheduleModal = ({
 							<TextTitle title={`Name: ${empWeeklyShifts?.name}`} />
 							<TextTitle title={`Email: ${empWeeklyShifts?.email}`} />
 							<TextTitle title={`Role: ${empWeeklyShifts?.role}`} />
-							<TextTitle title={`Location: ${empWeeklyShifts?.location || location}`} />
+							<TextTitle title={`Location: ${shiftLocation}`} />
 						</Stack>
 						<TableContainer>
 							<Table variant="simple">

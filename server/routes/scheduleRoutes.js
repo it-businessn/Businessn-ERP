@@ -31,7 +31,7 @@ router.post("/work", scheduleController.addWorkShifts);
 
 router.post("/repeat-week-schedule", scheduleController.repeatWeeklySchedule);
 
-router.post("/send", storageSpace.single("file"), scheduleController.sendWorkShifts);
+router.post("/send", storageSpace.single("file"), scheduleController.emailWorkShifts);
 
 router.put("/:id", scheduleController.updateShift);
 

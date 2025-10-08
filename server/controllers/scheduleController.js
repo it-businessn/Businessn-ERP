@@ -364,7 +364,7 @@ const splitShiftEveryFiveHours = (shiftDate, start, end) => {
 	return workSegments?.filter((_) => _.type === "work");
 };
 
-const sendWorkShifts = async (req, res) => {
+const emailWorkShifts = async (req, res) => {
 	try {
 		const newSchedule = req.body;
 		const attachment = req.file;
@@ -381,7 +381,7 @@ const sendWorkShifts = async (req, res) => {
 				path: attachment.path,
 			});
 
-			const { fullName, week, companyName, email } = newSchedule;
+			const { fullName, week, companyName, email, location } = newSchedule;
 			newSchedule.file = {
 				data: fs.readFileSync(attachment?.path),
 				contentType: attachment?.mimetype,
@@ -421,11 +421,19 @@ const sendWorkShifts = async (req, res) => {
 							padding: 1.5em;
 						"
 					> 
-						<p
-							class="topic"
-							style="font-weight: bold; font-size: larger; margin: 5px 0"
-						> Your Weekly Schedule
-						</p>
+					<p
+						class="category"
+						style="color: #e8ccb7; font-weight: bold; margin: 0"
+					>
+						${location}
+					</p>
+					<p
+						class="topic"
+						style="font-weight: bold; font-size: larger; margin: 5px 0"
+					>
+						Weekly Schedule Confirmation
+					</p>
+						 
 					</div>
 				</div>
 				<div
@@ -835,6 +843,6 @@ module.exports = {
 	updateDailyTotals,
 	getDailyTotals,
 	getLocationMonthlyTotals,
-	sendWorkShifts,
+	emailWorkShifts,
 	deleteShift,
 };

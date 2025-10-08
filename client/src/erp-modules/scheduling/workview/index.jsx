@@ -83,6 +83,7 @@ const ScheduleWorkView = () => {
 						onOpen={handleRepeat}
 						size={"sm"}
 						name="Repeat Schedule"
+						isDisabled={true}
 					/>
 					<WorkviewTabs />
 				</HStack>
