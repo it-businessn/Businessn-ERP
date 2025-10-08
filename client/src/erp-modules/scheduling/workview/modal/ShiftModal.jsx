@@ -1,5 +1,13 @@
-import { Checkbox, HStack, Tooltip, useDisclosure, VStack } from "@chakra-ui/react";
-import ActionButtonGroup from "components/ui/form/ActionButtonGroup";
+import {
+	Checkbox,
+	HStack,
+	Spacer,
+	Tooltip,
+	useDisclosure,
+	useToast,
+	VStack,
+} from "@chakra-ui/react";
+import PrimaryButton from "components/ui/button/PrimaryButton";
 import DateTimeFormControl from "components/ui/form/DateTimeFormControl";
 import InputFormControl from "components/ui/form/InputFormControl";
 import SelectFormControl from "components/ui/form/SelectFormControl";
@@ -28,7 +36,9 @@ const ShiftModal = ({
 	currentDate,
 	shift,
 	crew,
+	setEmployeeShifts,
 }) => {
+	const toast = useToast();
 	const { onClose } = useDisclosure();
 	const [newRoleAdded, setNewRoleAdded] = useState(false);
 	const [showAddNewRole, setShowAddNewRole] = useState(false);
@@ -90,6 +100,32 @@ const ShiftModal = ({
 			: await SchedulerService.addWorkShifts(formData);
 		handleClose();
 		setNewShiftAdded(data);
+	};
+
+	const deleteShift = async () => {
+		const { data } = await SchedulerService.deleteShift(formData, shift._id);
+		setEmployeeShifts((prev) =>
+			prev.map((employee) => {
+				if (employee?.name === shift?.empName) {
+					return {
+						...employee,
+						shifts: employee.shifts.map((s) =>
+							s?.shiftId === data ? { ...s, shift: "Off", shiftId: null } : s,
+						),
+					};
+				}
+				return employee;
+			}),
+		);
+
+		toast({
+			title: "Success",
+			description: "Employee shift deleted successfully.",
+			status: "success",
+			duration: 4000,
+			isClosable: true,
+		});
+		handleClose();
 	};
 
 	return (
@@ -234,12 +270,28 @@ const ShiftModal = ({
 					</Checkbox>
 				)}
 			</VStack>
-			<ActionButtonGroup
-				submitBtnName={`${shift?._id ? "Save" : "Add"}`}
-				onClose={handleClose}
-				onOpen={handleSubmit}
-				size="sm"
-			/>
+
+			<HStack justifyContent={"space-between"}>
+				{shift?._id ? (
+					<PrimaryButton
+						bg="var(--tas_item_color)"
+						size="sm"
+						name="Delete Shift"
+						onOpen={deleteShift}
+						hover="none"
+					/>
+				) : (
+					<Spacer />
+				)}
+				<PrimaryButton
+					size="sm"
+					isDisabled={!formData?.shiftStart || formData?.shiftStart === "Off"}
+					name={`${shift?._id ? "Save" : "Add"}`}
+					onOpen={handleSubmit}
+					hover="none"
+				/>
+			</HStack>
+
 			{showAddNewRole && (
 				<AddNewShiftRole
 					showAddNewRole={showAddNewRole}

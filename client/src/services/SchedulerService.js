@@ -70,6 +70,10 @@ const SchedulerService = {
 	async updateShift(data, id) {
 		return apiService.put(`/schedule/${id}`, data, id);
 	},
+
+	async deleteShift(data, id) {
+		return apiService.delete(`/schedule/${id}`, data, id);
+	},
 };
 
 export default SchedulerService;

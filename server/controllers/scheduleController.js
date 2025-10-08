@@ -690,6 +690,21 @@ const addShifts = async (req, res) => {
 	}
 };
 
+const deleteShift = async (req, res) => {
+	const { id } = req.params;
+	try {
+		const shift = await WorkShift.findByIdAndDelete({
+			_id: id,
+		});
+		if (shift) {
+			return res.status(200).json(id);
+		}
+		return res.status(404).json({ message: "Employee shift not found." });
+	} catch (error) {
+		return res.status(500).json({ message: "Internal Server Error", error });
+	}
+};
+
 const updateShift = async (req, res) => {
 	const { id } = req.params;
 
@@ -821,4 +836,5 @@ module.exports = {
 	getDailyTotals,
 	getLocationMonthlyTotals,
 	sendWorkShifts,
+	deleteShift,
 };

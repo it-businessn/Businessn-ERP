@@ -35,6 +35,8 @@ router.post("/send", storageSpace.single("file"), scheduleController.sendWorkShi
 
 router.put("/:id", scheduleController.updateShift);
 
+router.delete("/:id", scheduleController.deleteShift);
+
 router.post("/dailyTotals", scheduleController.updateDailyTotals);
 
 module.exports = router;

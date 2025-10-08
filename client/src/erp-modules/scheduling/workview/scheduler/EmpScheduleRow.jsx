@@ -24,7 +24,7 @@ export const EmpScheduleRow = ({
 	selectedCrew,
 	weekTitle,
 	setSentResult,
-	filterEmpFromCurrentSchedule,
+	setEmployeeShifts,
 }) => {
 	const [empName, setEmpName] = useState(null);
 	const [empRole, setEmpRole] = useState(null);
@@ -58,13 +58,17 @@ export const EmpScheduleRow = ({
 		onOpen();
 	};
 
+	const filterEmpFromCurrentSchedule = () => {
+		setEmployeeShifts((prev) => prev.filter((_) => _?.name !== emp?.name));
+	};
+
 	return (
 		<>
 			<Td p={0} w="200px">
 				<Flex px={3} alignItems="center" gap={2}>
 					<Tooltip label="Remove user from current schedule">
 						<span>
-							<FaMinus cursor="pointer" onClick={() => filterEmpFromCurrentSchedule(emp?.name)} />
+							<FaMinus cursor="pointer" onClick={filterEmpFromCurrentSchedule} />
 						</span>
 					</Tooltip>
 					<NormalTextTitle whiteSpace="nowrap" size="sm" title={emp?.name} />
@@ -156,6 +160,7 @@ export const EmpScheduleRow = ({
 					empRole={empRole}
 					shift={shift}
 					crew={selectedCrew}
+					setEmployeeShifts={setEmployeeShifts}
 				/>
 			)}
 		</>
