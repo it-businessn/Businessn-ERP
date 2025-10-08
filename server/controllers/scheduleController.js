@@ -484,6 +484,55 @@ const sendWorkShifts = async (req, res) => {
 	}
 };
 
+const repeatWeeklySchedule = async (req, res) => {
+	const { startOfNextWeek, employeeShifts, companyName, crew, location } = req.body;
+	try {
+		const shiftsToSave = [];
+		const currentWeekDates = [];
+		for (let i = 0; i < 7; i++) {
+			const date = new Date(startOfNextWeek);
+			date.setDate(date.getDate() + i);
+			currentWeekDates.push(date);
+		}
+
+		for (const employee of employeeShifts) {
+			const { name, role, shifts, payRate, email } = employee;
+
+			shifts.forEach((record, idx) => {
+				const currentShiftDate = currentWeekDates[idx];
+
+				if (record.shift !== "Off") {
+					const [shiftStart, shiftEnd] = record.shift.split("-");
+					record.shiftStart = shiftStart;
+					record.shiftEnd = shiftEnd;
+				}
+				shiftsToSave.push({
+					empName: name,
+					role,
+					location,
+					notes: record.notes || null,
+					shiftDate: new Date(currentShiftDate), // Sun → Sat
+					shiftStart: record.shiftStart || null,
+					shiftEnd: record.shiftEnd || null,
+					repeatSchedule: false,
+					repeatDuration: "1 week",
+					breakDuration: 0,
+					companyName,
+					crew,
+					payRate,
+					email,
+				});
+			});
+		}
+		if (shiftsToSave.length > 0) {
+			await bulkUpdateWorkShifts(shiftsToSave);
+		}
+		return res.status(201).json({ message: `Saved ${shiftsToSave?.length} shifts for next week.` });
+	} catch (error) {
+		return res.status(500).json({ message: "Internal Server Error", error });
+	}
+};
+
 const addWorkShifts = async (req, res) => {
 	const {
 		employeeName,
@@ -543,11 +592,28 @@ const addWorkShifts = async (req, res) => {
 			});
 		}
 		// }
-		await WorkShift.insertMany(shiftsToSave);
-		return res.status(201).json(shiftsToSave);
+		if (shiftsToSave.length > 0) {
+			await bulkUpdateWorkShifts(shiftsToSave);
+		}
+		return res.status(201).json({ message: `Saved ${shiftsToSave?.length} shifts.` });
 	} catch (error) {
 		return res.status(500).json({ message: "Internal Server Error", error });
 	}
+};
+
+const bulkUpdateWorkShifts = async (shiftsToSave) => {
+	const bulkOps = shiftsToSave.map((shift) => ({
+		updateOne: {
+			filter: {
+				empName: shift.empName,
+				shiftDate: shift.shiftDate,
+				companyName: shift.companyName,
+			},
+			update: { $setOnInsert: shift },
+			upsert: true,
+		},
+	}));
+	await WorkShift.bulkWrite(bulkOps);
 };
 
 const updateDailyTotals = async (req, res) => {
@@ -745,6 +811,7 @@ module.exports = {
 	updateShift,
 	getShiftByDate,
 	addWorkShifts,
+	repeatWeeklySchedule,
 	getWorkShiftByDate,
 	getWorkShiftByWeek,
 	getEmpWorkShiftByDate,

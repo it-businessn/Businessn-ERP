@@ -59,6 +59,10 @@ const SchedulerService = {
 		return apiService.post("/schedule/work", data);
 	},
 
+	async repeatWeeklySchedule(data) {
+		return apiService.post("/schedule/repeat-week-schedule", data);
+	},
+
 	async updateDailyTotals(data) {
 		return apiService.post("/schedule/dailyTotals", data);
 	},

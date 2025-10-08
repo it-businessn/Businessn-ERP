@@ -18,11 +18,12 @@ const WeeklyCalendarView = ({
 	employeesList,
 	location,
 	weekEnd,
+	employeeShifts,
+	setEmployeeShifts,
 }) => {
 	// const locations = useWorkLocations(company, );
 	const weekDays = [...Array(7)].map((_, i) => addDays(weekStart, i));
 
-	const [employeeShifts, setEmployeeShifts] = useState(null);
 	const [newShiftAdded, setNewShiftAdded] = useState(null);
 	const [dailyDataWithRunning, setDailyDataWithRunning] = useState(null);
 	const [isLoading, setIsLoading] = useState(false);
@@ -65,16 +66,6 @@ const WeeklyCalendarView = ({
 		let currentMonth = null;
 		let monthlySum = 0;
 		if (employeeShifts) {
-			const calculateHours = (data) => {
-				const { shift } = data;
-				if (shift === "Off") return 0;
-				const [start, end] = shift.split("-");
-				const [startH, startM] = start.split(":").map(Number);
-				const [endH, endM] = end.split(":").map(Number);
-				const startMinutes = startH * 60 + startM;
-				const endMinutes = endH * 60 + endM;
-				return (endMinutes - startMinutes) / 60;
-			};
 			const dailyData = weekDays?.map((day, dayIdx) => {
 				let totalHours = 0;
 				let totalWages = 0;
@@ -83,7 +74,8 @@ const WeeklyCalendarView = ({
 					const shift = emp.shifts?.[dayIdx];
 					if (!shift) return;
 
-					const hoursWorked = calculateHours(shift) || 0;
+					const hoursWorked =
+						!shift?.shift || shift?.shift === "Off" ? 0 : calculateHours(shift?.shift);
 					totalHours += hoursWorked;
 					totalWages += hoursWorked * (parseFloat(emp.payRate) || 0);
 				});
@@ -117,6 +109,15 @@ const WeeklyCalendarView = ({
 			if (dailyDataWithRunning?.find((_) => _.dayHours > 0)) saveDailyTotals();
 		}
 	}, [dailyDataWithRunning]);
+
+	const calculateHours = (data) => {
+		const [start, end] = data.split("-");
+		const [startH, startM] = start.split(":").map(Number);
+		const [endH, endM] = end.split(":").map(Number);
+		const startMinutes = startH * 60 + startM;
+		const endMinutes = endH * 60 + endM;
+		return (endMinutes - startMinutes) / 60;
+	};
 
 	const totalsRow = [
 		{ label: "Total Hours", value: dailyDataWithRunning?.map((d) => d.dayHours), key: "hours" },

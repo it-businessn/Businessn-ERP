@@ -77,8 +77,8 @@ export const EmpScheduleRow = ({
 				</Flex>
 			</Td>
 			{emp?.shifts?.map((shift, j) => {
-				const currentShift = shift?.shift;
-				const noShift = currentShift === "Off";
+				const currentShift = shift?.shift || "Off";
+				const noShift = !currentShift || currentShift === "Off";
 				shift.color = noShift ? "var(--main_color_black)" : "var(--empName_bg)";
 				shift.bg = noShift
 					? emp.emailSent
@@ -111,7 +111,9 @@ export const EmpScheduleRow = ({
 								{noShift
 									? currentShift
 									: `${
-											timeFormat === "12" ? convertTo12HourFormatRange(shift?.shift) : shift?.shift
+											timeFormat === "12" && shift?.shift
+												? convertTo12HourFormatRange(shift?.shift)
+												: shift?.shift
 									  } ${emp?.role} @ ${emp?.location}`}
 							</Button>
 							<IconButton
