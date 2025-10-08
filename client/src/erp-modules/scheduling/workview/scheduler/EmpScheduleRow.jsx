@@ -91,7 +91,6 @@ export const EmpScheduleRow = ({
 							<Button
 								minH={"40px"}
 								height={"auto"}
-								isDisabled={j === 0 || j === 6}
 								bg={shift.bg}
 								p={0}
 								color={shift.color}
@@ -114,7 +113,6 @@ export const EmpScheduleRow = ({
 								icon={<SmallAddIcon />}
 								aria-label="Shift"
 								_hover={{ bg: "transparent" }}
-								isDisabled={j === 0 || j === 6}
 							/>
 						</HStack>
 					</Td>
