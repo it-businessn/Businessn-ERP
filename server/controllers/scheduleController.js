@@ -381,7 +381,7 @@ const sendWorkShifts = async (req, res) => {
 				path: attachment.path,
 			});
 
-			const { fullName, week, companyName } = newSchedule;
+			const { fullName, week, companyName, email } = newSchedule;
 			newSchedule.file = {
 				data: fs.readFileSync(attachment?.path),
 				contentType: attachment?.mimetype,
@@ -389,11 +389,9 @@ const sendWorkShifts = async (req, res) => {
 			};
 			newSchedule.originalname = attachment?.originalname;
 
-			const employeeEmail = newSchedule.email;
-
-			if (employeeEmail) {
+			if (email) {
 				await sendEmail(
-					employeeEmail,
+					email,
 					`Weekly Schedule ${week}`,
 					"We have received your inquiry. An agent will get in touch with you shortly to discuss your interests and provide more information.",
 					`
@@ -462,7 +460,7 @@ const sendWorkShifts = async (req, res) => {
 					attachments,
 				);
 				const data = {
-					employeeEmail,
+					employeeEmail: email,
 					employeeName: fullName,
 					scheduleWeek: week,
 					status: "SENT",
