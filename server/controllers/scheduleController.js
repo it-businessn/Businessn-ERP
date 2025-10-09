@@ -493,51 +493,58 @@ const emailWorkShifts = async (req, res) => {
 };
 
 const repeatWeeklySchedule = async (req, res) => {
-	const { startOfNextWeek, employeeShifts, companyName, crew, location } = req.body;
+	const { startOfNextWeek, employeeShifts, companyName, crew, location, weeks } = req.body;
 	try {
 		const shiftsToSave = [];
-		const currentWeekDates = [];
-		for (let i = 0; i < 7; i++) {
-			const date = new Date(startOfNextWeek);
-			date.setDate(date.getDate() + i);
-			currentWeekDates.push(date);
-		}
+		const weeksToRepeat = weeks;
 
-		for (const employee of employeeShifts) {
-			const { name, role, shifts, payRate, email } = employee;
+		for (let w = 0; w < weeksToRepeat; w++) {
+			const currentWeekDates = [];
+			for (let i = 0; i < 7; i++) {
+				const date = new Date(startOfNextWeek);
+				date.setDate(date.getDate() + i + w * 7); // offset by week
+				currentWeekDates.push(date);
+			}
 
-			shifts.forEach((record, idx) => {
-				const currentShiftDate = currentWeekDates[idx];
+			for (const employee of employeeShifts) {
+				const { name, role, shifts, payRate, email } = employee;
 
-				if (record.shift && record.shift !== "Off") {
-					const [shiftStart, shiftEnd] = record.shift.split("-");
-					record.shiftStart = shiftStart;
-					record.shiftEnd = shiftEnd;
-				}
-				shiftsToSave.push({
-					empName: name,
-					role,
-					location,
-					notes: record.notes || null,
-					shiftDate: new Date(currentShiftDate), // Sun → Sat
-					shiftStart: record.shiftStart || null,
-					shiftEnd: record.shiftEnd || null,
-					repeatSchedule: false,
-					repeatDuration: "1 week",
-					breakDuration: 0,
-					companyName,
-					crew,
-					payRate,
-					email,
+				shifts.forEach((record, idx) => {
+					const currentShiftDate = currentWeekDates[idx];
+
+					if (record.shift && record.shift !== "Off") {
+						const [shiftStart, shiftEnd] = record.shift.split("-");
+						record.shiftStart = shiftStart;
+						record.shiftEnd = shiftEnd;
+					}
+					shiftsToSave.push({
+						empName: name,
+						role,
+						location,
+						notes: record.notes || null,
+						shiftDate: new Date(currentShiftDate),
+						shiftStart: record.shiftStart || null,
+						shiftEnd: record.shiftEnd || null,
+						repeatSchedule: false,
+						repeatDuration: `${weeksToRepeat} week(s)`,
+						breakDuration: 0,
+						companyName,
+						crew,
+						payRate,
+						email,
+					});
 				});
-			});
+			}
 		}
 		if (shiftsToSave.length > 0) {
 			await bulkUpdateWorkShifts(shiftsToSave);
 		}
-		return res.status(201).json({ message: `Saved ${shiftsToSave?.length} shifts for next week.` });
+		return res.status(201).json({ message: `Schedule repeated for ${weeks} week(s).` });
 	} catch (error) {
-		return res.status(500).json({ message: "Internal Server Error", error });
+		console.error("Error repeating schedule:", error);
+		return res
+			.status(500)
+			.json({ message: "There was an error repeating the schedule. Please try again.", error });
 	}
 };
 

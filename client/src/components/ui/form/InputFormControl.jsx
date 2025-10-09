@@ -26,6 +26,7 @@ const InputFormControl = ({
 	fontSize,
 	p,
 	autoComplete,
+	min,
 }) => {
 	return (
 		<FormControlMain isInvalid={isInvalid}>
@@ -59,6 +60,7 @@ const InputFormControl = ({
 				p={p}
 				readOnly={readOnly}
 				cursor={readOnly && "not-allowed"}
+				min={min}
 			/>
 			{error && <FormHelperText color="red.500">{error}</FormHelperText>}
 		</FormControlMain>
