@@ -43,7 +43,7 @@ const SchedulingDashboard = () => {
 
 				const monthlyHeadCount = Array(12).fill(0);
 				data.forEach((item) => {
-					monthlyHeadCount[item._id - 1] = item.totalActiveEmployees; // month is 1-based
+					monthlyHeadCount[item._id - 1] = Math.round(item.avgDailyPeople);
 				});
 
 				const graphData = {
@@ -94,7 +94,7 @@ const SchedulingDashboard = () => {
 				selectedMonth,
 				selectedCrew,
 			);
-			setAvgStats(data[0]?.totalActiveEmployees || 0);
+			setAvgStats(data[0]);
 		} catch (error) {}
 	};
 

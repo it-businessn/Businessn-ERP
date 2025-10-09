@@ -25,22 +25,56 @@ const getDailyStatistics = async (req, res) => {
 	const { companyName, month, crew } = req.params;
 
 	try {
-		const avgHeadCount = await WorkShift.aggregate([
-			{ $addFields: { shiftMonth: { $month: "$shiftDate" }, shiftYear: { $year: "$shiftDate" } } },
+		const dailyStats = await DailyTotals.aggregate([
 			{
 				$match: {
 					crew,
 					companyName,
-					shiftMonth: parseInt(month),
-					shiftYear: currentYear,
+					month: parseInt(month),
+					year: currentYear,
 				},
 			},
 			{
-				$group: { _id: "$empName" },
+				$group: {
+					_id: "$date",
+					totalHours: { $sum: "$dayHours" },
+					totalWages: { $sum: "$dayWages" },
+					totalPeople: { $sum: 1 },
+				},
 			},
-			{ $count: "totalActiveEmployees" },
+			{
+				$group: {
+					_id: null,
+					avgDailyHours: { $avg: "$totalHours" },
+					avgDailyWages: { $avg: "$totalWages" },
+					avgDailyPeople: { $avg: "$totalPeople" },
+				},
+			},
+			{
+				$project: {
+					_id: 0,
+					avgDailyHours: 1,
+					avgDailyWages: 1,
+					avgDailyPeople: 1,
+				},
+			},
 		]);
-		return res.status(200).json(avgHeadCount);
+		// const avgHeadCount = await WorkShift.aggregate([
+		// 	{ $addFields: { shiftMonth: { $month: "$shiftDate" }, shiftYear: { $year: "$shiftDate" } } },
+		// 	{
+		// 		$match: {
+		// 			crew,
+		// 			companyName,
+		// 			shiftMonth: parseInt(month),
+		// 			shiftYear: currentYear,
+		// 		},
+		// 	},
+		// 	{
+		// 		$group: { _id: "$empName" },
+		// 	},
+		// 	{ $count: "totalActiveEmployees" },
+		// ]);
+		return res.status(200).json(dailyStats);
 	} catch (error) {
 		return res.status(500).json({ message: "Internal Server Error", error });
 	}
@@ -100,13 +134,14 @@ const getAvgHeadCountTotals = async (req, res) => {
 			},
 			{
 				$group: {
-					_id: { month: "$shiftMonth", empId: "$empName" },
+					_id: { month: "$shiftMonth", day: "$shiftDate" },
+					totalPeople: { $sum: 1 },
 				},
 			},
 			{
 				$group: {
 					_id: "$_id.month",
-					totalActiveEmployees: { $sum: 1 },
+					avgDailyPeople: { $avg: "$totalPeople" },
 				},
 			},
 			{ $sort: { _id: 1 } },

@@ -1,6 +1,7 @@
 import { HStack, Spacer, Stack, VStack } from "@chakra-ui/react";
 import NormalTextTitle from "components/ui/NormalTextTitle";
 import TextTitle from "components/ui/text/TextTitle";
+import { getAmount } from "utils/convertAmt";
 
 const StatsCard = ({ avgStats }) => {
 	const HEADER_CARDS = [
@@ -8,9 +9,9 @@ const StatsCard = ({ avgStats }) => {
 			title: "Daily Average Statistics",
 			bg: "var(--nav_gradient_blue)",
 			items: [
-				{ title: "Hours", value: 18 },
-				{ title: "Cost", value: 1 },
-				{ title: "People", value: avgStats || 0 },
+				{ title: "Hours", value: avgStats?.avgDailyHours || 0 },
+				{ title: "Cost", value: getAmount(avgStats?.avgDailyWages || 0) },
+				{ title: "People", value: avgStats?.avgDailyPeople || 0 },
 			],
 		},
 		{
