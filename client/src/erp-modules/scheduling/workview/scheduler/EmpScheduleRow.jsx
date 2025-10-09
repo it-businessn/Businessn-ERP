@@ -69,8 +69,15 @@ export const EmpScheduleRow = ({
 
 	return (
 		<>
-			<Td p={0} w="180px" bg={"var(--bg_color_1)"} px={2}>
-				<HStack w="180px" alignItems="center" justify={"space-between"}>
+			<Td p={0} w="180px">
+				<HStack
+					m={1}
+					px={2}
+					h={"40px"}
+					alignItems="center"
+					justifyContent={"space-between"}
+					bg={"var(--bg_color_1)"}
+				>
 					<Tooltip label="Remove user from current schedule">
 						<span>
 							<FaMinus cursor="pointer" onClick={filterEmpFromCurrentSchedule} />
@@ -106,9 +113,9 @@ export const EmpScheduleRow = ({
 									: "var(--shift_row)"
 							}
 							spacing={0}
-							justify={"space-between"}
+							alignItems="center"
+							justifyContent={"space-between"}
 							w="200px"
-							h={"50px"}
 							cursor={"pointer"}
 							onClick={() => onShiftClicked(emp, shift, weekDays[j])}
 						>
