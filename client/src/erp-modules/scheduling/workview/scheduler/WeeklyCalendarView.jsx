@@ -65,10 +65,13 @@ const WeeklyCalendarView = ({
 	useEffect(() => {
 		let currentMonth = null;
 		let monthlySum = 0;
+		let monthlyRoleTotals = {};
+
 		if (employeeShifts) {
 			const dailyData = weekDays?.map((day, dayIdx) => {
 				let totalHours = 0;
 				let totalWages = 0;
+				let roleTotals = {};
 
 				employeeShifts?.forEach((emp) => {
 					const shift = emp.shifts?.[dayIdx];
@@ -76,14 +79,39 @@ const WeeklyCalendarView = ({
 
 					const hoursWorked =
 						!shift?.shift || shift?.shift === "Off" ? 0 : calculateHours(shift?.shift);
+					const wages = hoursWorked * (parseFloat(emp.payRate) || 0);
 					totalHours += hoursWorked;
-					totalWages += hoursWorked * (parseFloat(emp.payRate) || 0);
+					totalWages += wages;
+
+					if (!roleTotals[emp.role]) {
+						roleTotals[emp.role] = { role: emp.role, dayHours: 0, dayWages: 0 };
+					}
+					roleTotals[emp.role].dayHours += hoursWorked;
+					roleTotals[emp.role].dayWages += wages;
+
+					if (!monthlyRoleTotals[emp.role]) {
+						monthlyRoleTotals[emp.role] = { role: emp.role, roleRunningTotal: 0 };
+					}
+					monthlyRoleTotals[emp.role].roleRunningTotal += wages;
 				});
+
+				const dailyTotalsByRole = Object.values(roleTotals);
+				const monthTotalsByRole = Object.values(monthlyRoleTotals);
+
 				const dayDate = day?.date || day;
 				const dayMonth = dayDate.getMonth();
 				if (currentMonth !== dayMonth) {
 					currentMonth = dayMonth;
 					monthlySum = totalWages;
+					monthlyRoleTotals = {};
+
+					// re-add current day's role totals into new month
+					dailyTotalsByRole.forEach((r) => {
+						monthlyRoleTotals[r.role] = {
+							role: r.role,
+							roleRunningTotal: r.dayWages,
+						};
+					});
 				} else {
 					monthlySum += totalWages;
 				}
@@ -91,7 +119,9 @@ const WeeklyCalendarView = ({
 					date: dayDate,
 					dayHours: totalHours,
 					dayWages: totalWages,
-					runningTotal: monthlySum,
+					crewMonthlyRunningTotal: monthlySum,
+					dailyTotalsByRole, // daily breakdown
+					monthTotalsByRole,
 				};
 			});
 
@@ -124,7 +154,7 @@ const WeeklyCalendarView = ({
 		{ label: "Total Wages", value: dailyDataWithRunning?.map((d) => d.dayWages), key: "wages" },
 		{
 			label: "Monthly Running Totals",
-			value: dailyDataWithRunning?.map((d) => d.runningTotal),
+			value: dailyDataWithRunning?.map((d) => d.crewMonthlyRunningTotal),
 			key: "monthly_running",
 		},
 	];

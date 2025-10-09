@@ -87,7 +87,11 @@ const SchedulingDashboard = () => {
 				templateColumns={{ lg: "70% 30%" }}
 			>
 				<ProjectOverview />
-				<LocationGraph company={company} selectedMonth={selectedMonth} />
+				<LocationGraph
+					company={company}
+					selectedMonth={selectedMonth}
+					selectedCrew={selectedCrew}
+				/>
 			</SimpleGrid>
 		</PageLayout>
 	);

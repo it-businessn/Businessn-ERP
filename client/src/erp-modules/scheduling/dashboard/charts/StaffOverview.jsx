@@ -107,7 +107,7 @@ const StaffOverview = ({ company, selectedCrew }) => {
 			borderRadius="1px"
 			fontWeight="bold"
 		>
-			<TextTitle title={"Staffing Overview for Monthly running Total"} />
+			<TextTitle title={"Average Headcount By Location"} />
 			<Box w={{ base: "650px" }} mx={"auto"}>
 				<Line data={dailyTotals} options={options} />
 			</Box>

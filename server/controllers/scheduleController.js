@@ -19,12 +19,15 @@ const getShifts = async (req, res) => {
 	}
 };
 
-const getLocationMonthlyTotals = async (req, res) => {
-	const { companyName, month } = req.params;
+const getCrewRolesMonthlyTotals = async (req, res) => {
+	const { companyName, month, crew } = req.params;
 
 	try {
 		const totals = await DailyTotals.aggregate([
-			{ $match: { companyName, month: parseInt(month) } },
+			{ $match: { companyName, month: parseInt(month), crew } },
+			{
+				$unwind: "$monthTotalsByRole",
+			},
 			{
 				$addFields: {
 					year: { $year: "$date" },
@@ -32,10 +35,22 @@ const getLocationMonthlyTotals = async (req, res) => {
 				},
 			},
 			{
-				$group: { _id: "$crew", maxRunningTotal: { $max: "$runningTotal" } },
+				$group: {
+					_id: { crew: "$crew", role: "$monthTotalsByRole.role" },
+					maxRunningTotal: { $max: "$monthTotalsByRole.roleRunningTotal" },
+				},
 			},
-
-			{ $sort: { maxRunningTotal: -1 } },
+			{
+				$project: {
+					_id: 0,
+					crew: "$_id.crew",
+					role: "$_id.role",
+					maxRunningTotal: "$maxRunningTotal",
+				},
+			},
+			{
+				$sort: { role: 1 },
+			},
 		]);
 		return res.status(200).json(totals);
 	} catch (error) {
@@ -51,7 +66,7 @@ const getDailyTotals = async (req, res) => {
 			{
 				$group: {
 					_id: "$month", // group by month (1-12)
-					maxRunningTotal: { $max: "$runningTotal" },
+					maxRunningTotal: { $max: "$crewMonthlyRunningTotal" },
 				},
 			},
 			{
@@ -647,7 +662,7 @@ const updateDailyTotals = async (req, res) => {
 		dailyDataWithRunning.sort((a, b) => new Date(a.date) - new Date(b.date));
 
 		let currentMonth = null;
-		let runningTotal = 0;
+		let crewMonthlyRunningTotal = 0;
 
 		for (const daily of dailyDataWithRunning) {
 			const dayDate = new Date(daily.date);
@@ -655,10 +670,10 @@ const updateDailyTotals = async (req, res) => {
 
 			if (currentMonth !== dayMonth) {
 				currentMonth = dayMonth;
-				runningTotal = 0; // reset monthly running total
+				crewMonthlyRunningTotal = 0; // reset monthly running total
 			}
 
-			runningTotal += daily.dayWages;
+			crewMonthlyRunningTotal += daily.dayWages;
 			const updatedData = {
 				date: dayDate,
 				crew: selectedCrew,
@@ -670,7 +685,8 @@ const updateDailyTotals = async (req, res) => {
 
 			updatedData.dayHours = daily.dayHours;
 			updatedData.dayWages = daily.dayWages;
-			updatedData.runningTotal = runningTotal;
+			updatedData.crewMonthlyRunningTotal = crewMonthlyRunningTotal;
+			updatedData.monthTotalsByRole = daily.monthTotalsByRole;
 
 			if (existingRecord) {
 				await DailyTotals.findByIdAndUpdate(
@@ -855,7 +871,7 @@ module.exports = {
 	getScheduleEmailLogs,
 	updateDailyTotals,
 	getDailyTotals,
-	getLocationMonthlyTotals,
+	getCrewRolesMonthlyTotals,
 	emailWorkShifts,
 	deleteShift,
 };

@@ -5,28 +5,27 @@ import TextTitle from "components/ui/text/TextTitle";
 const StatsCard = () => {
 	const HEADER_CARDS = [
 		{
-			title: "Daily Statistics",
+			title: "Daily Average Statistics",
 			bg: "var(--nav_gradient_blue)",
 			items: [
-				{ title: "Scheduled", value: 18 },
-				{ title: "On call", value: 1 },
-				{ title: "Time off", value: 0 },
+				{ title: "Hours", value: 18 },
+				{ title: "Cost", value: 1 },
+				{ title: "People", value: 0 },
 			],
 		},
 		{
-			title: "Pending Approvals",
+			title: "Monthly Expense",
 			bg: "var(--nav_gradient_orange)",
 			items: [
-				{ title: "Time off requests", value: 18 },
-				{ title: "Shift trade approvals", value: 4 },
-				{ title: "Open shift bids", value: 0 },
+				{ title: "Targeted Cost", value: 18 },
+				{ title: "Current Cost", value: 4 },
 			],
 		},
 		{
 			title: "Coming Up",
 			bg: "var(--nav_gradient_green)",
 			items: [
-				{ title: "Skill Expirations", value: 5 },
+				{ title: "Label", value: 5 },
 				{ title: "To Do's", value: 3 },
 			],
 		},
@@ -46,14 +45,15 @@ const StatsCard = () => {
 						<TextTitle title={card.title} />
 						<Spacer />
 					</HStack>
-					<HStack justify={"space-around"}>
+					<HStack justify={"space-evenly"}>
 						{card.items.map((_) => (
 							<VStack
-								align="center"
+								flex={0.3}
+								alignItems="center"
 								key={_.title}
 								color={"var(--main_color_black)"}
 							>
-								<TextTitle title={_.value} size={"lg"} />
+								<TextTitle align="center" title={_.value} size={"lg"} />
 								<NormalTextTitle title={_.title} align="center" />
 							</VStack>
 						))}

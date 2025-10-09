@@ -5,7 +5,7 @@ import "react-big-calendar/lib/css/react-big-calendar.css";
 import { Doughnut } from "react-chartjs-2";
 import SchedulerService from "services/SchedulerService";
 
-const LocationGraph = ({ company, selectedMonth }) => {
+const LocationGraph = ({ company, selectedMonth, selectedCrew }) => {
 	const [dailyTotals, setDailyTotals] = useState(null);
 	const options = {
 		plugins: {
@@ -21,28 +21,35 @@ const LocationGraph = ({ company, selectedMonth }) => {
 			},
 		},
 	};
+	function getBrightColor(index, total) {
+		const hue = (index * (360 / total)) % 360;
+		return `hsl(${hue}, 40%, 55%)`;
+	}
 
 	useEffect(() => {
-		const colors = ["#537eee", "#49a86f", "#d68e67"];
 		const fetchTotals = async () => {
 			try {
-				const { data } = await SchedulerService.getLocationMonthlyTotals(company, selectedMonth);
+				const { data } = await SchedulerService.getLocationMonthlyTotals(
+					company,
+					selectedMonth,
+					selectedCrew,
+				);
 
 				const graphData = {
-					labels: data.map((item) => item._id),
+					labels: data.map((item) => item.role),
 					datasets: [
 						{
 							data: data.map((item) => item.maxRunningTotal),
-							backgroundColor: colors.slice(0, data.length),
-							hoverBackgroundColor: colors.slice(0, data.length),
+							backgroundColor: data.map((_, i) => getBrightColor(i, data.length)),
+							hoverBackgroundColor: data.map((_, i) => getBrightColor(i, data.length)),
 						},
 					],
 				};
 				setDailyTotals(graphData);
 			} catch (error) {}
 		};
-		fetchTotals();
-	}, [selectedMonth]);
+		if (selectedCrew) fetchTotals();
+	}, [selectedMonth, selectedCrew]);
 
 	return (
 		<Box
@@ -53,7 +60,7 @@ const LocationGraph = ({ company, selectedMonth }) => {
 			borderRadius="1px"
 			fontWeight="bold"
 		>
-			<TextTitle title={"Overview for Location"} />
+			<TextTitle title={"Monthly Running Cost By Roles"} />
 
 			<Box w={{ base: "70%" }} mx={"auto"}>
 				<Doughnut data={dailyTotals} options={options} />

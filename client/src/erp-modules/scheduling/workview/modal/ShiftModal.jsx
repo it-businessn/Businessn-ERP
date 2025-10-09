@@ -164,6 +164,7 @@ const ShiftModal = ({
 				</FormControlMain> */}
 				<HStack w="100%" justify={"space-between"} alignItems={"center"}>
 					<SelectFormControl
+						required
 						valueParam="name"
 						name="name"
 						label="Role"
@@ -283,7 +284,12 @@ const ShiftModal = ({
 				)}
 				<PrimaryButton
 					size="sm"
-					isDisabled={!formData?.shiftStart || formData?.shiftStart === "Off"}
+					isDisabled={
+						!formData?.shiftStart ||
+						formData?.shiftStart === "Off" ||
+						!formData?.role ||
+						formData?.role === "Role"
+					}
 					name={`${shift?._id ? "Save" : "Add"}`}
 					onOpen={handleSubmit}
 					hover="none"

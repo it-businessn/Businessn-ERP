@@ -6,9 +6,15 @@ const dailyTotalsSchema = new mongoose.Schema(
 		date: Date,
 		dayHours: Number,
 		dayWages: Number,
-		runningTotal: Number,
+		crewMonthlyRunningTotal: Number,
 		month: Number,
 		year: Number,
+		monthTotalsByRole: [
+			{
+				role: String,
+				roleRunningTotal: Number,
+			},
+		],
 		companyName: { type: String, ref: "Company" },
 	},
 	{ timestamps: { createdAt: "createdOn", updatedAt: "updatedOn" } },
