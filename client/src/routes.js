@@ -24,6 +24,11 @@ const AccountingDashboard = lazy(() => import("./erp-modules/accounting"));
 const AccountingLedger = lazy(() => import("./erp-modules/accounting/AccountingLedger"));
 const AccountingWorkview = lazy(() => import("./erp-modules/accounting/AccountingWorkview"));
 
+// budgeting
+const BudgetingDashboard = lazy(() => import("./erp-modules/budgeting"));
+const BudgetingWorkview = lazy(() => import("./erp-modules/budgeting/BudgetingWorkview"));
+const ChartOfAccounts = lazy(() => import("./erp-modules/budgeting/ChartOfAccounts"));
+
 // hr
 const HRDashboard = lazy(() => import("./erp-modules/hr"));
 
@@ -459,6 +464,23 @@ export const router = createBrowserRouter([
 			{
 				path: `/accounting/ledger`,
 				element: <AccountingLedger />,
+			},
+			{
+				path: `/accounting/coa`,
+				element: <ChartOfAccounts />,
+			},
+			/* Budgeting */
+			{
+				path: "/budgeting",
+				element: <BudgetingDashboard />,
+			},
+			{
+				path: `/budgeting${ROUTE_PATH.WORKVIEW}`,
+				element: <BudgetingWorkview />,
+			},
+			{
+				path: `/budgeting/coa`,
+				element: <ChartOfAccounts />,
 			},
 		],
 	},

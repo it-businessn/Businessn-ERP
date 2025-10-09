@@ -68,6 +68,7 @@ const addCompanyModules = async (companyName) => {
 			"HR",
 			"Operations",
 			"Accounting",
+			"Budgeting",
 		];
 		const modules = ERP_MODULES.map((module) => {
 			return { name: module, companyName };

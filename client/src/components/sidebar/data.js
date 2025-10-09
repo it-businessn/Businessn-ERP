@@ -15,7 +15,7 @@ import { HiBadgeCheck, HiCalendar } from "react-icons/hi";
 import { IoBag, IoDocumentText, IoDocumentTextOutline } from "react-icons/io5";
 import { LiaSearchLocationSolid } from "react-icons/lia";
 import { LuLayoutDashboard } from "react-icons/lu";
-import { MdCleaningServices, MdPayments, MdSettings } from "react-icons/md";
+import { MdCleaningServices, MdManageAccounts, MdPayments, MdSettings } from "react-icons/md";
 import { PiBooksFill, PiListMagnifyingGlassFill } from "react-icons/pi";
 import { RiUserSearchFill, RiUserStarFill } from "react-icons/ri";
 import { RxDashboard } from "react-icons/rx";
@@ -449,6 +449,38 @@ export const SIDEBAR_MENU = [
 				name: "General Ledger",
 				children: [],
 				icon: <FaPeopleGroup />,
+			},
+			{
+				path: "coa",
+				name: "Chart of Accounts",
+				children: [],
+				icon: <MdManageAccounts />,
+			},
+		],
+	},
+	{
+		path: "budgeting",
+		name: "Budgeting",
+		id: "budgeting",
+		icon: <FaDashcube />,
+		children: [
+			{
+				path: "",
+				name: "Dashboard",
+				children: [],
+				icon: <TbFileInvoice />,
+			},
+			{
+				path: "workview",
+				name: "Workview",
+				children: [],
+				icon: <BiNotepad />,
+			},
+			{
+				path: "coa",
+				name: "Chart of Accounts",
+				children: [],
+				icon: <MdManageAccounts />,
 			},
 		],
 	},

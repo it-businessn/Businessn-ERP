@@ -92,6 +92,11 @@ const BUSINESSN_ADMIN_PERMISSION = [
 	{ name: "Accounting Dashboard" },
 	{ name: "Accounting Workview" },
 	{ name: "Accounting General Ledger" },
+	{ name: "Accounting Chart of Accounts" },
+	{ name: "Budgeting" },
+	{ name: "Budgeting Dashboard" },
+	{ name: "Budgeting Workview" },
+	{ name: "Budgeting Chart of Accounts" },
 ];
 
 const CLIENT_ORG_MANAGER_PERMISSION = [
