@@ -105,8 +105,8 @@ const updateEmployee = async (empId, data) => {
 					country,
 			  }
 			: employee?.primaryAddress;
-	const empEmail = userEmail || personalEmail || businessEmail;
-	const email = empEmail && empEmail !== "" ? empEmail : employee?.email;
+	const empEmail = personalEmail || userEmail || businessEmail;
+	const newEmail = empEmail && empEmail !== "" ? empEmail : employee?.email;
 
 	const updatedObj = {
 		primaryAddress,
@@ -117,7 +117,9 @@ const updateEmployee = async (empId, data) => {
 		manager,
 		phoneNumber,
 	};
-	if (email === employee?.email) updatedObj.email = email;
+	if (newEmail !== employee?.email) {
+		updatedObj.email = newEmail;
+	}
 	await Employee.findByIdAndUpdate(
 		empId,
 		{ $set: updatedObj },
@@ -223,7 +225,7 @@ const addEmployeeProfileInfo = async (req, res) => {
 			firstName,
 			middleName,
 			lastName,
-			email: userEmail || personalEmail || businessEmail,
+			email: personalEmail || userEmail || businessEmail,
 		});
 		let profileInfoEmpId = existingEmp?._id;
 		if (!existingEmp) {
@@ -231,7 +233,7 @@ const addEmployeeProfileInfo = async (req, res) => {
 				firstName,
 				middleName,
 				lastName,
-				email: userEmail || personalEmail || businessEmail,
+				email: personalEmail || userEmail || businessEmail,
 				fullName: `${firstName} ${middleName} ${lastName}`,
 				manager,
 				phoneNumber: personalPhoneNum,

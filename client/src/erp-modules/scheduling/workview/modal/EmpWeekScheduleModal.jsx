@@ -1,5 +1,7 @@
 import {
 	Divider,
+	HStack,
+	IconButton,
 	Modal,
 	ModalBody,
 	ModalCloseButton,
@@ -23,6 +25,9 @@ import { format } from "date-fns";
 import { useRef, useState } from "react";
 
 import { BsSendCheck } from "react-icons/bs";
+import { FaEdit } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
+import { ROUTE_PATH } from "routes";
 import LocalStorageService from "services/LocalStorageService";
 import SchedulerService from "services/SchedulerService";
 import { getFormattedAddress } from "utils/common";
@@ -40,6 +45,7 @@ export const EmpWeekScheduleModal = ({
 	weekTitle,
 	setSentResult,
 }) => {
+	const navigate = useNavigate();
 	const toast = useToast();
 	const reportFileName = `${empWeeklyShifts?.name}_${weekStart}_${weekEnd}_Schedule.pdf`;
 	const companyDetails = LocalStorageService.getItem("user")?.companyId;
@@ -92,6 +98,15 @@ export const EmpWeekScheduleModal = ({
 		}
 	};
 
+	const editClicked = () => {
+		if (empWeeklyShifts?.empId) {
+			const empPath = `${ROUTE_PATH.PAYROLL}${ROUTE_PATH.EMPLOYEES}/info/${
+				empWeeklyShifts.empId
+			}/${0}`;
+			navigate(empPath);
+		}
+	};
+
 	return (
 		<Modal isOpen={isOpen} onClose={onClose} size="2xl">
 			<ModalOverlay />
@@ -118,7 +133,18 @@ export const EmpWeekScheduleModal = ({
 						<Divider />
 						<Stack>
 							<TextTitle title={`Name: ${empWeeklyShifts?.name}`} />
-							<TextTitle title={`Email: ${empWeeklyShifts?.email}`} />
+							<HStack justifyContent={"start"}>
+								<TextTitle width="auto" title={`Email: ${empWeeklyShifts?.email}`} />
+								<IconButton
+									color={"#000"}
+									size={"xs"}
+									icon={<FaEdit />}
+									aria-label="Shift"
+									_hover={{ bg: "transparent" }}
+									onClick={editClicked}
+								/>
+							</HStack>
+
 							<TextTitle title={`Role: ${empWeeklyShifts?.role}`} />
 							<TextTitle title={`Location: ${shiftLocation}`} />
 						</Stack>

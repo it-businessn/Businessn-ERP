@@ -190,6 +190,7 @@ const PersonalInfo = ({ company, userId }) => {
 				workPermitExpiryNo,
 				citizenship,
 				manager,
+				userEmail,
 			} = formData.personalInfo;
 
 			const {
@@ -219,6 +220,7 @@ const PersonalInfo = ({ company, userId }) => {
 				firstName,
 				middleName,
 				lastName,
+				userEmail,
 				birthDate,
 				gender,
 				manager,

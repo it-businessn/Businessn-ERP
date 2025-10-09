@@ -58,6 +58,7 @@ const ShiftModal = ({
 		crew,
 		payRate: shift?.payRate || 0,
 		email: shift?.email || "",
+		empId: shift?.empId,
 	};
 	const [formData, setFormData] = useState(defaultShiftInfo);
 

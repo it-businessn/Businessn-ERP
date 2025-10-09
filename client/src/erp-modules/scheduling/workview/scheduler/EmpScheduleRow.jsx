@@ -35,8 +35,15 @@ export const EmpScheduleRow = ({
 		setShowAddShiftModal(true);
 		let newShift = null;
 		if (emp) {
-			const { name, role, payRate, email } = emp;
-			newShift = { empName: name, role, location: emp?.location, payRate: payRate || 0, email };
+			const { name, role, payRate, email, empId } = emp;
+			newShift = {
+				empName: name,
+				role,
+				location: emp?.location,
+				payRate: payRate || 0,
+				email,
+				empId,
+			};
 		}
 		if (shiftTime) {
 			newShift.notes = shiftTime?.notes;

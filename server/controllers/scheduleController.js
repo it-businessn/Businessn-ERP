@@ -126,6 +126,7 @@ const getWorkWeekEmpShifts = async (req, res) => {
 					role: emp?.positions[0]?.title,
 					payRate: parseFloat(rate),
 					email,
+					empId: emp?._id,
 				};
 			}) || [],
 		);
@@ -157,6 +158,7 @@ const getWorkWeekEmpShifts = async (req, res) => {
 					notes: 1,
 					payRate: 1,
 					email: 1,
+					empId: 1,
 					shift: { $concat: ["$shiftStart", " - ", "$shiftEnd"] },
 					dayOfWeek: 1,
 				},
@@ -169,6 +171,7 @@ const getWorkWeekEmpShifts = async (req, res) => {
 						location: "$location",
 						payRate: "$payRate",
 						email: "$email",
+						empId: "$empId",
 					},
 					notes: { $addToSet: "$notes" },
 					shifts: {
@@ -190,6 +193,7 @@ const getWorkWeekEmpShifts = async (req, res) => {
 					location: "$_id.location",
 					payRate: "$_id.payRate",
 					email: "$_id.email",
+					empId: "$_id.empId",
 					notes: { $arrayElemAt: ["$notes", 0] },
 					shiftsObj: { $arrayToObject: "$shifts" },
 				},
@@ -218,12 +222,13 @@ const getWorkWeekEmpShifts = async (req, res) => {
 					payRate: 1,
 					email: 1,
 					shifts: 1,
+					empId: 1,
 				},
 			},
 		]);
 
 		for (const emp of crewEmps) {
-			const { name, role, payRate, email } = emp;
+			const { name, role, payRate, email, empId } = emp;
 			const empShiftExists = shifts?.find((_) => _.name === name);
 			if (!empShiftExists) {
 				shifts.push({
@@ -231,6 +236,7 @@ const getWorkWeekEmpShifts = async (req, res) => {
 					role,
 					payRate,
 					email,
+					empId,
 					shifts: [
 						{ shift: "Off" },
 						{ shift: "Off" },
@@ -507,7 +513,7 @@ const repeatWeeklySchedule = async (req, res) => {
 			}
 
 			for (const employee of employeeShifts) {
-				const { name, role, shifts, payRate, email } = employee;
+				const { name, role, shifts, payRate, email, empId } = employee;
 
 				shifts.forEach((record, idx) => {
 					const currentShiftDate = currentWeekDates[idx];
@@ -532,6 +538,7 @@ const repeatWeeklySchedule = async (req, res) => {
 						crew,
 						payRate,
 						email,
+						empId,
 					});
 				});
 			}
@@ -563,6 +570,7 @@ const addWorkShifts = async (req, res) => {
 		crew,
 		payRate,
 		email,
+		empId,
 	} = req.body;
 
 	try {
@@ -604,6 +612,7 @@ const addWorkShifts = async (req, res) => {
 				crew,
 				payRate,
 				email,
+				empId,
 			});
 		}
 		// }
@@ -732,6 +741,7 @@ const updateShift = async (req, res) => {
 			companyName,
 			payRate,
 			email,
+			empId,
 		} = req.body;
 
 		// if (hours <= 5) {
@@ -748,6 +758,7 @@ const updateShift = async (req, res) => {
 					hours,
 					payRate,
 					email,
+					empId,
 				},
 			},
 			{ new: true },
