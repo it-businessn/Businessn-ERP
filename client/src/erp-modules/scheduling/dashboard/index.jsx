@@ -43,7 +43,7 @@ const SchedulingDashboard = () => {
 
 				const monthlyHeadCount = Array(12).fill(0);
 				data.forEach((item) => {
-					monthlyHeadCount[item._id - 1] = Math.round(item.avgDailyPeople);
+					monthlyHeadCount[item._id - 1] = item.avgDailyPeople.toFixed(1);
 				});
 
 				const graphData = {
