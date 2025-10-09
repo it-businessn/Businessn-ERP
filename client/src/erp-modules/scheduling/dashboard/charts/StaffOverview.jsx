@@ -1,11 +1,11 @@
-import { Box, Flex, Select } from "@chakra-ui/react";
+import { Box } from "@chakra-ui/react";
 import TextTitle from "components/ui/text/TextTitle";
 import { useEffect, useState } from "react";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import { Line } from "react-chartjs-2";
 import SchedulerService from "services/SchedulerService";
 
-const StaffOverview = ({ company, crews, selectedCrew, setSelectedCrew }) => {
+const StaffOverview = ({ company, selectedCrew }) => {
 	const [dailyTotals, setDailyTotals] = useState(null);
 
 	const options = {
@@ -101,29 +101,13 @@ const StaffOverview = ({ company, crews, selectedCrew, setSelectedCrew }) => {
 	return (
 		<Box
 			color={"var(--nav_color)"}
-			px="1em"
+			p="1em"
 			bg={"var(--primary_bg)"}
 			border="3px solid var(--main_color)"
 			borderRadius="1px"
 			fontWeight="bold"
 		>
-			<Flex justify="space-between" align="center" mb="1" color={"var(--nav_color)"}>
-				<TextTitle title={"Staffing Overview for Monthly running Total"} />
-				<Select
-					width="200px"
-					size={"sm"}
-					value={selectedCrew || ""}
-					onChange={(event) => {
-						if (event.target.value) setSelectedCrew(event.target.value);
-					}}
-				>
-					{crews?.map(({ name }) => (
-						<option key={name} value={name}>
-							{name}
-						</option>
-					))}
-				</Select>
-			</Flex>
+			<TextTitle title={"Staffing Overview for Monthly running Total"} />
 			<Box w={{ base: "650px" }} mx={"auto"}>
 				<Line data={dailyTotals} options={options} />
 			</Box>
