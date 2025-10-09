@@ -2,9 +2,10 @@ import { HStack, Select, SimpleGrid, Spacer } from "@chakra-ui/react";
 import TextTitle from "components/ui/text/TextTitle";
 import useCrews from "hooks/useCrews";
 import PageLayout from "layouts/PageLayout";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import LocalStorageService from "services/LocalStorageService";
+import SchedulerService from "services/SchedulerService";
 import { CURRENT_MONTH } from "utils/convertDate";
 import LocationGraph from "./charts/LocationGraph";
 import ProjectOverview from "./charts/ProjectOverview";
@@ -29,7 +30,99 @@ export const MONTHS = [
 const SchedulingDashboard = () => {
 	const company = LocalStorageService.getItem("selectedCompany");
 	const { crews, selectedCrew, setSelectedCrew } = useCrews(company);
+
 	const [selectedMonth, setSelectedMonth] = useState(CURRENT_MONTH);
+	const [avgStats, setAvgStats] = useState(0);
+	const [avgHeadCountTotals, setAvgHeadCountTotals] = useState(null);
+	const [roleMonthlyTotals, setRoleMonthlyTotals] = useState(null);
+
+	useEffect(() => {
+		const fetchHeadCount = async () => {
+			try {
+				const { data } = await SchedulerService.getAvgHeadCountTotals(company, selectedCrew);
+
+				const monthlyHeadCount = Array(12).fill(0);
+				data.forEach((item) => {
+					monthlyHeadCount[item._id - 1] = item.totalActiveEmployees; // month is 1-based
+				});
+
+				const graphData = {
+					labels: [
+						"Jan",
+						"Feb",
+						"Mar",
+						"Apr",
+						"May",
+						"Jun",
+						"Jul",
+						"Aug",
+						"Sep",
+						"Oct",
+						"Nov",
+						"Dec",
+					],
+					datasets: [
+						{
+							label: "Headcount",
+							data: monthlyHeadCount,
+							backgroundColor: "#537eee",
+							borderColor: "#537eee",
+							borderWidth: 2,
+							fill: false,
+							cubicInterpolationMode: "monotone",
+							pointRadius: 0,
+						},
+					],
+				};
+				setAvgHeadCountTotals(graphData);
+			} catch (error) {}
+		};
+		if (selectedCrew) fetchHeadCount();
+	}, [selectedCrew]);
+
+	useEffect(() => {
+		if (selectedCrew) {
+			fetchDailyStats();
+			fetchTotals();
+		}
+	}, [selectedCrew, selectedMonth]);
+
+	const fetchDailyStats = async () => {
+		try {
+			const { data } = await SchedulerService.getDailyStatistics(
+				company,
+				selectedMonth,
+				selectedCrew,
+			);
+			setAvgStats(data[0]?.totalActiveEmployees || 0);
+		} catch (error) {}
+	};
+
+	const fetchTotals = async () => {
+		function getBrightColor(index, total) {
+			const hue = (index * (360 / total)) % 360;
+			return `hsl(${hue}, 40%, 55%)`;
+		}
+		try {
+			const { data } = await SchedulerService.getLocationMonthlyTotals(
+				company,
+				selectedMonth,
+				selectedCrew,
+			);
+
+			const graphData = {
+				labels: data.map((item) => item.role),
+				datasets: [
+					{
+						data: data.map((item) => item.maxRunningTotal),
+						backgroundColor: data.map((_, i) => getBrightColor(i, data.length)),
+						hoverBackgroundColor: data.map((_, i) => getBrightColor(i, data.length)),
+					},
+				],
+			};
+			setRoleMonthlyTotals(graphData);
+		} catch (error) {}
+	};
 
 	return (
 		<PageLayout title={""}>
@@ -76,8 +169,8 @@ const SchedulingDashboard = () => {
 				mr="4"
 				templateColumns={{ lg: "70% 30%" }}
 			>
-				<StaffOverview company={company} selectedCrew={selectedCrew} />
-				<StatsCard />
+				<StaffOverview avgHeadCountTotals={avgHeadCountTotals} />
+				<StatsCard avgStats={avgStats} />
 			</SimpleGrid>
 			<SimpleGrid
 				columns={{ base: 1, md: 1, lg: 2 }}
@@ -87,11 +180,7 @@ const SchedulingDashboard = () => {
 				templateColumns={{ lg: "70% 30%" }}
 			>
 				<ProjectOverview />
-				<LocationGraph
-					company={company}
-					selectedMonth={selectedMonth}
-					selectedCrew={selectedCrew}
-				/>
+				<LocationGraph roleMonthlyTotals={roleMonthlyTotals} />
 			</SimpleGrid>
 		</PageLayout>
 	);

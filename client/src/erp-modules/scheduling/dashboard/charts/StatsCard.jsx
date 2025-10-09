@@ -2,7 +2,7 @@ import { HStack, Spacer, Stack, VStack } from "@chakra-ui/react";
 import NormalTextTitle from "components/ui/NormalTextTitle";
 import TextTitle from "components/ui/text/TextTitle";
 
-const StatsCard = () => {
+const StatsCard = ({ avgStats }) => {
 	const HEADER_CARDS = [
 		{
 			title: "Daily Average Statistics",
@@ -10,7 +10,7 @@ const StatsCard = () => {
 			items: [
 				{ title: "Hours", value: 18 },
 				{ title: "Cost", value: 1 },
-				{ title: "People", value: 0 },
+				{ title: "People", value: avgStats || 0 },
 			],
 		},
 		{
@@ -30,6 +30,7 @@ const StatsCard = () => {
 			],
 		},
 	];
+
 	return (
 		<Stack justifyContent={"space-between"}>
 			{HEADER_CARDS.map((card) => (

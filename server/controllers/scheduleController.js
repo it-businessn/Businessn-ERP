@@ -10,10 +10,37 @@ const { sendEmail } = require("../services/emailService");
 const EmployeeScheduleEmailLog = require("../models/EmployeeScheduleEmailLog");
 const EmployeePayInfo = require("../models/EmployeePayInfo");
 
+const currentYear = new Date().getFullYear();
+
 const getShifts = async (req, res) => {
 	try {
 		const shifts = await EmployeeShift.find({}).sort({ createdOn: -1 });
 		return res.status(200).json(shifts);
+	} catch (error) {
+		return res.status(500).json({ message: "Internal Server Error", error });
+	}
+};
+
+const getDailyStatistics = async (req, res) => {
+	const { companyName, month, crew } = req.params;
+
+	try {
+		const avgHeadCount = await WorkShift.aggregate([
+			{ $addFields: { shiftMonth: { $month: "$shiftDate" }, shiftYear: { $year: "$shiftDate" } } },
+			{
+				$match: {
+					crew,
+					companyName,
+					shiftMonth: parseInt(month),
+					shiftYear: currentYear,
+				},
+			},
+			{
+				$group: { _id: "$empName" },
+			},
+			{ $count: "totalActiveEmployees" },
+		]);
+		return res.status(200).json(avgHeadCount);
 	} catch (error) {
 		return res.status(500).json({ message: "Internal Server Error", error });
 	}
@@ -57,23 +84,46 @@ const getCrewRolesMonthlyTotals = async (req, res) => {
 		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
-const getDailyTotals = async (req, res) => {
+
+const getAvgHeadCountTotals = async (req, res) => {
 	const { companyName, crew } = req.params;
 
 	try {
-		const totals = await DailyTotals.aggregate([
-			{ $match: { companyName, crew } },
+		const avgHeadCount = await WorkShift.aggregate([
+			{ $addFields: { shiftMonth: { $month: "$shiftDate" }, shiftYear: { $year: "$shiftDate" } } },
 			{
-				$group: {
-					_id: "$month", // group by month (1-12)
-					maxRunningTotal: { $max: "$crewMonthlyRunningTotal" },
+				$match: {
+					crew,
+					companyName,
+					shiftYear: currentYear,
 				},
 			},
 			{
-				$sort: { _id: 1 }, // sort by month ascending
+				$group: {
+					_id: { month: "$shiftMonth", empId: "$empName" },
+				},
 			},
+			{
+				$group: {
+					_id: "$_id.month",
+					totalActiveEmployees: { $sum: 1 },
+				},
+			},
+			{ $sort: { _id: 1 } },
 		]);
-		return res.status(200).json(totals);
+		// const totals = await DailyTotals.aggregate([
+		// 	{ $match: { companyName, crew } },
+		// 	{
+		// 		$group: {
+		// 			_id: "$month", // group by month (1-12)
+		// 			maxRunningTotal: { $max: "$crewMonthlyRunningTotal" },
+		// 		},
+		// 	},
+		// 	{
+		// 		$sort: { _id: 1 }, // sort by month ascending
+		// 	},
+		// ]);
+		return res.status(200).json(avgHeadCount);
 	} catch (error) {
 		return res.status(500).json({ message: "Internal Server Error", error });
 	}
@@ -870,8 +920,9 @@ module.exports = {
 	getWorkWeekEmpShifts,
 	getScheduleEmailLogs,
 	updateDailyTotals,
-	getDailyTotals,
+	getAvgHeadCountTotals,
 	getCrewRolesMonthlyTotals,
 	emailWorkShifts,
 	deleteShift,
+	getDailyStatistics,
 };

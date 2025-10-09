@@ -1,13 +1,9 @@
 import { Box } from "@chakra-ui/react";
 import TextTitle from "components/ui/text/TextTitle";
-import { useEffect, useState } from "react";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import { Line } from "react-chartjs-2";
-import SchedulerService from "services/SchedulerService";
 
-const StaffOverview = ({ company, selectedCrew }) => {
-	const [dailyTotals, setDailyTotals] = useState(null);
-
+const StaffOverview = ({ avgHeadCountTotals }) => {
 	const options = {
 		scales: {
 			y: {
@@ -54,50 +50,6 @@ const StaffOverview = ({ company, selectedCrew }) => {
 		},
 	};
 
-	useEffect(() => {
-		const fetchTotals = async () => {
-			try {
-				const { data } = await SchedulerService.getDailyTotals(company, selectedCrew);
-
-				const monthlyTotals = Array(12).fill(0);
-				data.forEach((item) => {
-					monthlyTotals[item._id - 1] = item.maxRunningTotal; // month is 1-based
-				});
-
-				const graphData = {
-					labels: [
-						"Jan",
-						"Feb",
-						"Mar",
-						"Apr",
-						"May",
-						"Jun",
-						"Jul",
-						"Aug",
-						"Sep",
-						"Oct",
-						"Nov",
-						"Dec",
-					],
-					datasets: [
-						{
-							label: "Running Total",
-							data: monthlyTotals,
-							backgroundColor: "#537eee",
-							borderColor: "#537eee",
-							borderWidth: 2,
-							fill: false,
-							cubicInterpolationMode: "monotone",
-							pointRadius: 0,
-						},
-					],
-				};
-				setDailyTotals(graphData);
-			} catch (error) {}
-		};
-		if (selectedCrew) fetchTotals();
-	}, [selectedCrew]);
-
 	return (
 		<Box
 			color={"var(--nav_color)"}
@@ -109,7 +61,7 @@ const StaffOverview = ({ company, selectedCrew }) => {
 		>
 			<TextTitle title={"Average Headcount By Location"} />
 			<Box w={{ base: "650px" }} mx={"auto"}>
-				<Line data={dailyTotals} options={options} />
+				<Line data={avgHeadCountTotals} options={options} />
 			</Box>
 		</Box>
 	);
