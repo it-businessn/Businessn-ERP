@@ -1,5 +1,5 @@
 import { SmallAddIcon } from "@chakra-ui/icons";
-import { Button, HStack, IconButton, Td, Tooltip, useDisclosure } from "@chakra-ui/react";
+import { Button, HStack, IconButton, Spacer, Td, Tooltip, useDisclosure } from "@chakra-ui/react";
 import NormalTextTitle from "components/ui/NormalTextTitle";
 import { useState } from "react";
 
@@ -108,9 +108,11 @@ export const EmpScheduleRow = ({
 							spacing={0}
 							justify={"space-between"}
 							w="200px"
+							h={"50px"}
 							cursor={"pointer"}
 							onClick={() => onShiftClicked(emp, shift, weekDays[j])}
 						>
+							<Spacer flex={0.2} />
 							<Button
 								minH={"40px"}
 								height={"auto"}
@@ -130,7 +132,7 @@ export const EmpScheduleRow = ({
 											timeFormat === "12" && shift?.shift
 												? convertTo12HourFormatRange(shift?.shift)
 												: shift?.shift
-									  } ${emp?.role} @ ${emp?.location}`}
+									  } ${emp?.role} @ ${location}`}
 							</Button>
 							<IconButton
 								color={shift.color}

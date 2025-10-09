@@ -38,9 +38,9 @@ const StaffOverview = ({ avgHeadCountTotals }) => {
 			tooltip: {
 				callbacks: {
 					label: function (context) {
-						const month = context.label; // x-axis label
+						// const month = context.label; // x-axis label
 						const value = context.dataset.data[context.dataIndex]; // y-axis value
-						return `${month}: $${value}`; // e.g., "Sep: $100"
+						return `${value} people`;
 					},
 				},
 			},
