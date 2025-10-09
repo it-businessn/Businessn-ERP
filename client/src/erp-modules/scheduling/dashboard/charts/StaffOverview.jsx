@@ -40,7 +40,7 @@ const StaffOverview = ({ avgHeadCountTotals }) => {
 					label: function (context) {
 						// const month = context.label; // x-axis label
 						const value = context.dataset.data[context.dataIndex]; // y-axis value
-						return `${value} people`;
+						return `${value}`;
 					},
 				},
 			},

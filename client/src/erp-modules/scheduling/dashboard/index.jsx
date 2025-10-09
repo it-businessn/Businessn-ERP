@@ -94,7 +94,7 @@ const SchedulingDashboard = () => {
 				selectedMonth,
 				selectedCrew,
 			);
-			setAvgStats(data[0]);
+			setAvgStats(data);
 		} catch (error) {}
 	};
 

@@ -9,9 +9,9 @@ const StatsCard = ({ avgStats }) => {
 			title: "Daily Average Statistics",
 			bg: "var(--nav_gradient_blue)",
 			items: [
-				{ title: "Hours", value: avgStats?.avgDailyHours || 0 },
-				{ title: "Cost", value: getAmount(avgStats?.avgDailyWages || 0) },
-				{ title: "People", value: avgStats?.avgDailyPeople || 0 },
+				{ title: "Hours", value: avgStats?.dailyStats?.avgDailyHours || 0 },
+				{ title: "Cost", value: getAmount(avgStats?.dailyStats?.avgDailyWages || 0) },
+				{ title: "People", value: avgStats?.avgHeadCount?.avgDailyPeople.toFixed(1) || 0 },
 			],
 		},
 		{

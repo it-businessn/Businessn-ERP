@@ -39,7 +39,6 @@ const getDailyStatistics = async (req, res) => {
 					_id: "$date",
 					totalHours: { $sum: "$dayHours" },
 					totalWages: { $sum: "$dayWages" },
-					totalPeople: { $sum: 1 },
 				},
 			},
 			{
@@ -47,7 +46,6 @@ const getDailyStatistics = async (req, res) => {
 					_id: null,
 					avgDailyHours: { $avg: "$totalHours" },
 					avgDailyWages: { $avg: "$totalWages" },
-					avgDailyPeople: { $avg: "$totalPeople" },
 				},
 			},
 			{
@@ -55,7 +53,6 @@ const getDailyStatistics = async (req, res) => {
 					_id: 0,
 					avgDailyHours: 1,
 					avgDailyWages: 1,
-					avgDailyPeople: 1,
 				},
 			},
 		]);
@@ -74,7 +71,30 @@ const getDailyStatistics = async (req, res) => {
 		// 	},
 		// 	{ $count: "totalActiveEmployees" },
 		// ]);
-		return res.status(200).json(dailyStats);
+		const avgHeadCount = await WorkShift.aggregate([
+			{ $addFields: { shiftMonth: { $month: "$shiftDate" }, shiftYear: { $year: "$shiftDate" } } },
+			{
+				$match: {
+					crew,
+					companyName,
+					shiftYear: currentYear,
+					shiftMonth: parseInt(month),
+				},
+			},
+			{
+				$group: {
+					_id: { day: "$shiftDate" },
+					totalPeople: { $sum: 1 },
+				},
+			},
+			{
+				$group: {
+					_id: month,
+					avgDailyPeople: { $avg: "$totalPeople" },
+				},
+			},
+		]);
+		return res.status(200).json({ dailyStats: dailyStats[0], avgHeadCount: avgHeadCount[0] });
 	} catch (error) {
 		return res.status(500).json({ message: "Internal Server Error", error });
 	}
