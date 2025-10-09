@@ -643,31 +643,26 @@ const updateDailyTotals = async (req, res) => {
 			}
 
 			runningTotal += daily.dayWages;
-
-			const existingRecord = await DailyTotals.findOne({
-				date: dayDate,
-				crew: selectedCrew,
-				companyName: company,
-			});
 			const updatedData = {
 				date: dayDate,
 				crew: selectedCrew,
 				companyName: company,
-				dayHours: daily.dayHours,
-				dayWages: daily.dayWages,
-				runningTotal,
 				month: dayMonth,
 				year: dayDate.getFullYear(),
 			};
+			const existingRecord = await DailyTotals.findOne(updatedData);
+
+			updatedData.dayHours = daily.dayHours;
+			updatedData.dayWages = daily.dayWages;
+			updatedData.runningTotal = runningTotal;
+
 			if (existingRecord) {
 				await DailyTotals.findByIdAndUpdate(
 					existingRecord._id,
 					{ $set: updatedData },
 					{ new: true },
 				);
-			} else {
-				await DailyTotals.create(updatedData);
-			}
+			} else if (updatedData.dayHours > 0) await DailyTotals.create(updatedData);
 		}
 		return res.status(201).json({ message: "DailyTotals updated successfully!" });
 	} catch (error) {

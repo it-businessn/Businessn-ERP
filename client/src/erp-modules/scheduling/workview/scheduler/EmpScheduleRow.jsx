@@ -1,5 +1,5 @@
 import { SmallAddIcon } from "@chakra-ui/icons";
-import { Button, Flex, HStack, IconButton, Td, Tooltip, useDisclosure } from "@chakra-ui/react";
+import { Button, HStack, IconButton, Td, Tooltip, useDisclosure } from "@chakra-ui/react";
 import NormalTextTitle from "components/ui/NormalTextTitle";
 import { useState } from "react";
 
@@ -26,8 +26,6 @@ export const EmpScheduleRow = ({
 	setSentResult,
 	setEmployeeShifts,
 }) => {
-	const [empName, setEmpName] = useState(null);
-	const [empRole, setEmpRole] = useState(null);
 	const [showAddShiftModal, setShowAddShiftModal] = useState(false);
 	const [shift, setShift] = useState(null);
 	const [empWeeklyShifts, setEmpWeeklyShifts] = useState(null);
@@ -64,13 +62,14 @@ export const EmpScheduleRow = ({
 
 	return (
 		<>
-			<Td p={0} w="200px">
-				<Flex px={3} alignItems="center" gap={2}>
+			<Td p={0} w="180px" bg={"var(--bg_color_1)"} px={2}>
+				<HStack w="180px" alignItems="center" justify={"space-between"}>
 					<Tooltip label="Remove user from current schedule">
 						<span>
 							<FaMinus cursor="pointer" onClick={filterEmpFromCurrentSchedule} />
 						</span>
 					</Tooltip>
+
 					<NormalTextTitle whiteSpace="nowrap" size="sm" title={emp?.name} />
 
 					<Tooltip label="Send week schedule">
@@ -78,7 +77,7 @@ export const EmpScheduleRow = ({
 							<BsSendCheck cursor="pointer" onClick={() => openSendModal(emp)} />
 						</span>
 					</Tooltip>
-				</Flex>
+				</HStack>
 			</Td>
 			{emp?.shifts?.map((shift, j) => {
 				const currentShift = shift?.shift || "Off";
@@ -92,7 +91,13 @@ export const EmpScheduleRow = ({
 				return (
 					<Td w="200px" p={0} key={`shift_${emp?.name}_${j}`} px={1}>
 						<HStack
-							bg={emp.emailSent ? "var(--phoneCall_bg_light)" : "var(--bg_color_1)"}
+							bg={
+								emp.emailSent
+									? "var(--phoneCall_bg_light)"
+									: noShift
+									? "var(--bg_color_1)"
+									: "var(--shift_row)"
+							}
 							spacing={0}
 							justify={"space-between"}
 							w="200px"
@@ -156,8 +161,6 @@ export const EmpScheduleRow = ({
 					showModal={showAddShiftModal}
 					setShowModal={setShowAddShiftModal}
 					setNewShiftAdded={setNewShiftAdded}
-					empName={empName}
-					empRole={empRole}
 					shift={shift}
 					crew={selectedCrew}
 					setEmployeeShifts={setEmployeeShifts}

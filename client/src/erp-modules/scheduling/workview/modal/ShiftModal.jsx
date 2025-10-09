@@ -23,9 +23,6 @@ import AddNewShiftRole from "./AddNewShiftRole";
 
 const ShiftModal = ({
 	company,
-	empRole,
-	empName,
-	payRate,
 	setShowModal,
 	showModal,
 	setIsRefresh,
@@ -46,8 +43,8 @@ const ShiftModal = ({
 
 	const roles = usePositionRoles(company, newRoleAdded);
 	const defaultShiftInfo = {
-		employeeName: shift?.empName || empName || "",
-		role: shift?.role || empRole || "",
+		employeeName: shift?.empName || "",
+		role: shift?.role || "",
 		location: shift?.location || location || "",
 		notes: shift?.notes || "",
 		shiftDate: shift?.shiftDate?.split("T")[0] || currentDate || null,
@@ -59,7 +56,7 @@ const ShiftModal = ({
 		companyName: shift?.companyName || company,
 		hours: parseInt(shift?.duration) || 0,
 		crew,
-		payRate: shift?.payRate || payRate || 0,
+		payRate: shift?.payRate || 0,
 		email: shift?.email || "",
 	};
 	const [formData, setFormData] = useState(defaultShiftInfo);

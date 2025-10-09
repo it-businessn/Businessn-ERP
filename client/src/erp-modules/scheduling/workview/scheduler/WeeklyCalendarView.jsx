@@ -106,7 +106,7 @@ const WeeklyCalendarView = ({
 					await SchedulerService.updateDailyTotals({ selectedCrew, dailyDataWithRunning, company });
 				} catch (error) {}
 			};
-			if (dailyDataWithRunning?.find((_) => _.dayHours > 0)) saveDailyTotals();
+			saveDailyTotals();
 		}
 	}, [dailyDataWithRunning]);
 
@@ -164,10 +164,7 @@ const WeeklyCalendarView = ({
 					{employeeShifts?.map((emp) => {
 						emp.emailSent = sentEmailUsers?.find(({ employeeName }) => employeeName === emp.name);
 						return (
-							<Tr
-								key={emp?.name}
-								bg={emp.emailSent ? "var(--phoneCall_bg_light)" : "var(--bg_color_1)"}
-							>
+							<Tr key={emp?.name} bg={emp.emailSent ? "var(--phoneCall_bg_light)" : "transparent"}>
 								<EmpScheduleRow
 									emp={emp}
 									setEmployeeShifts={setEmployeeShifts}
@@ -192,12 +189,12 @@ const WeeklyCalendarView = ({
 							<Tr
 								key={totalRow.label}
 								fontWeight="bold"
-								bg="gray.100"
+								bg="var(--primary_bg_1)"
 								position="sticky"
 								bottom={`${(totalsRow.length - 1 - i) * 32}px`}
 								zIndex="1"
 							>
-								<Td py={0} px={1}>
+								<Td py={0} px={1} w="200px">
 									{totalRow.label}
 								</Td>
 								{totalRow?.value?.map((record, dayIdx) => (
